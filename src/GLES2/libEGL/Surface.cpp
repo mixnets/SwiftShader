@@ -26,6 +26,8 @@
 #include <tchar.h>
 #endif
 
+#include <algorithm>
+
 namespace egl
 {
 
