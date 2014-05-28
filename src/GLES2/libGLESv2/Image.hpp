@@ -45,7 +45,7 @@ namespace gl
 		virtual void release();
 		void unbind();   // Break parent ownership and release
 
-		bool isShared() const;
+		virtual bool isShared() const;
 		void markShared();
 
 		static sw::Format selectInternalFormat(GLenum format, GLenum type);

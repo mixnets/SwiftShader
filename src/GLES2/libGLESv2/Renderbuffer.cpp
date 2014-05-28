@@ -90,11 +90,18 @@ void RenderbufferTexture2D::releaseProxy(const Renderbuffer *proxy)
     mTexture2D->releaseProxy(proxy);
 }
 
-// Increments refcount on surface.
-// caller must release() the returned surface
+// Increments refcount on image.
+// caller must release() the returned image
 Image *RenderbufferTexture2D::getRenderTarget()
 {
 	return mTexture2D->getRenderTarget(GL_TEXTURE_2D, 0);
+}
+
+// Increments refcount on image.
+// caller must release() the returned image
+Image *RenderbufferTexture2D::createSharedImage()
+{
+    return mTexture2D->createSharedImage(GL_TEXTURE_2D, 0);
 }
 
 GLsizei RenderbufferTexture2D::getWidth() const
@@ -146,11 +153,18 @@ void RenderbufferTextureCubeMap::releaseProxy(const Renderbuffer *proxy)
     mTextureCubeMap->releaseProxy(proxy);
 }
 
-// Increments refcount on surface.
-// caller must release() the returned surface
+// Increments refcount on image.
+// caller must release() the returned image
 Image *RenderbufferTextureCubeMap::getRenderTarget()
 {
 	return mTextureCubeMap->getRenderTarget(mTarget, 0);
+}
+
+// Increments refcount on image.
+// caller must release() the returned image
+Image *RenderbufferTextureCubeMap::createSharedImage()
+{
+    return mTextureCubeMap->createSharedImage(mTarget, 0);
 }
 
 GLsizei RenderbufferTextureCubeMap::getWidth() const
@@ -207,11 +221,18 @@ void Renderbuffer::release()
     RefCountObject::release();
 }
 
-// Increments refcount on surface.
-// caller must Release() the returned surface
+// Increments refcount on image.
+// caller must Release() the returned image
 Image *Renderbuffer::getRenderTarget()
 {
 	return mInstance->getRenderTarget();
+}
+
+// Increments refcount on image.
+// caller must Release() the returned image
+Image *Renderbuffer::createSharedImage()
+{
+    return mInstance->createSharedImage();
 }
 
 GLsizei Renderbuffer::getWidth() const
@@ -290,11 +311,18 @@ RenderbufferStorage::~RenderbufferStorage()
 {
 }
 
-// Increments refcount on surface.
-// caller must Release() the returned surface
+// Increments refcount on image.
+// caller must Release() the returned image
 Image *RenderbufferStorage::getRenderTarget()
 {
 	return NULL;
+}
+
+// Increments refcount on image.
+// caller must Release() the returned image
+Image *RenderbufferStorage::createSharedImage()
+{
+    return NULL;
 }
 
 GLsizei RenderbufferStorage::getWidth() const
@@ -369,8 +397,8 @@ Colorbuffer::~Colorbuffer()
 	}
 }
 
-// Increments refcount on surface.
-// caller must release() the returned surface
+// Increments refcount on image.
+// caller must release() the returned image
 Image *Colorbuffer::getRenderTarget()
 {
 	if(mRenderTarget)
@@ -379,6 +407,19 @@ Image *Colorbuffer::getRenderTarget()
 	}
 
 	return mRenderTarget;
+}
+
+// Increments refcount on image.
+// caller must release() the returned image
+Image *Colorbuffer::createSharedImage()
+{
+    if(mRenderTarget)
+    {
+        mRenderTarget->addRef();
+        mRenderTarget->markShared();
+    }
+
+    return mRenderTarget;
 }
 
 DepthStencilbuffer::DepthStencilbuffer(Image *depthStencil) : mDepthStencil(depthStencil)
@@ -429,8 +470,8 @@ DepthStencilbuffer::~DepthStencilbuffer()
 	}
 }
 
-// Increments refcount on surface.
-// caller must release() the returned surface
+// Increments refcount on image.
+// caller must release() the returned image
 Image *DepthStencilbuffer::getRenderTarget()
 {
 	if(mDepthStencil)
@@ -439,6 +480,19 @@ Image *DepthStencilbuffer::getRenderTarget()
 	}
 
 	return mDepthStencil;
+}
+
+// Increments refcount on image.
+// caller must release() the returned image
+Image *DepthStencilbuffer::createSharedImage()
+{
+    if(mDepthStencil)
+    {
+        mDepthStencil->addRef();
+        mDepthStencil->markShared();
+    }
+
+    return mDepthStencil;
 }
 
 Depthbuffer::Depthbuffer(Image *depthStencil) : DepthStencilbuffer(depthStencil)
