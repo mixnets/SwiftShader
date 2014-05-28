@@ -33,6 +33,7 @@ namespace sw
 
 	struct Primitive
 	{
+        int y0;
 		int yMin;
 		int yMax;
 

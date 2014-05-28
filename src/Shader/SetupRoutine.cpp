@@ -213,10 +213,13 @@ namespace sw
 
 					i++;
 				}
-				Until(i >= n)
+                Until(i >= n)
 
-				Pointer<Byte> leftEdge = Pointer<Byte>(primitive + OFFSET(Primitive,outline->left)) + q * sizeof(Primitive);
-				Pointer<Byte> rightEdge = Pointer<Byte>(primitive + OFFSET(Primitive,outline->right)) + q * sizeof(Primitive);
+                Int y0 = yMin;
+                *Pointer<Int>(primitive + OFFSET(Primitive, y0)) = y0;
+
+                Pointer<Byte> leftEdge = Pointer<Byte>(primitive + OFFSET(Primitive, outline->left)) + q * sizeof(Primitive) - y0 * sizeof(Primitive::Span);
+                Pointer<Byte> rightEdge = Pointer<Byte>(primitive + OFFSET(Primitive, outline->right)) + q * sizeof(Primitive) - y0 * sizeof(Primitive::Span);
 
 				if(state.multiSample > 1)
 				{
@@ -238,7 +241,7 @@ namespace sw
 
 					Do
 					{
-						edge(primitive, data, Xq[i + 1 - d], Yq[i + 1 - d], Xq[i + d], Yq[i + d], q);
+						edge(primitive, data, Xq[i + 1 - d], Yq[i + 1 - d], Xq[i + d], Yq[i + d], q, y0);
 
 						i++;
 					}
@@ -551,7 +554,7 @@ namespace sw
 		}
 	}
 
-	void SetupRoutine::edge(Pointer<Byte> &primitive, Pointer<Byte> &data, const Int &X1, const Int &Y1, const Int &X2, const Int &Y2, Int &q)
+	void SetupRoutine::edge(Pointer<Byte> &primitive, Pointer<Byte> &data, const Int &X1, const Int &Y1, const Int &X2, const Int &Y2, Int &q, Int &y0)
 	{
 		If(Y1 != Y2)
 		{
@@ -560,8 +563,8 @@ namespace sw
 
 			Bool swap = Y2 < Y1;
 
-			Pointer<Byte> leftEdge = primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->left);
-			Pointer<Byte> rightEdge = primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->right);
+            Pointer<Byte> leftEdge = primitive + q * sizeof(Primitive) + OFFSET(Primitive, outline->left) - y0 * sizeof(Primitive::Span);
+            Pointer<Byte> rightEdge = primitive + q * sizeof(Primitive) + OFFSET(Primitive, outline->right) - y0 * sizeof(Primitive::Span);
 			Pointer<Byte> edge = IfThenElse(swap, rightEdge, leftEdge);
 
 			Int X0 = X1;

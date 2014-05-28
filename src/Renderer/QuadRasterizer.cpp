@@ -118,6 +118,8 @@ namespace sw
 			sBuffer = *Pointer<Pointer<Byte> >(r.data + OFFSET(DrawData,stencilBuffer)) + yMin * *Pointer<Int>(r.data + OFFSET(DrawData,stencilPitchB));
 		}
 
+        Int y0 = *Pointer<Int>(r.primitive + OFFSET(Primitive,y0));
+
 		Int y = yMin;
 		
 		Do
@@ -126,14 +128,14 @@ namespace sw
 			Int x1;
 			Int x2;
 
-			x0 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->left) + (y + 0) * sizeof(Primitive::Span)));
-			x2 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->left) + (y + 1) * sizeof(Primitive::Span)));
+			x0 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->left) + (y - y0 + 0) * sizeof(Primitive::Span) ));
+			x2 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->left) + (y - y0 + 1) * sizeof(Primitive::Span)));
 			x0 = Min(x0, x2);
 			
 			for(unsigned int q = 1; q < state.multiSample; q++)
 			{
-				Int x0q = Int(*Pointer<Short>(r.primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->left) + (y + 0) * sizeof(Primitive::Span)));
-				Int x2q = Int(*Pointer<Short>(r.primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->left) + (y + 1) * sizeof(Primitive::Span)));
+				Int x0q = Int(*Pointer<Short>(r.primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->left) + (y - y0 + 0) * sizeof(Primitive::Span)));
+				Int x2q = Int(*Pointer<Short>(r.primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->left) + (y - y0 + 1) * sizeof(Primitive::Span)));
 				x0q = Min(x0q, x2q);
 
 				x0 = Min(x0q, x0);
@@ -141,14 +143,14 @@ namespace sw
 			
 			x0 &= 0xFFFFFFFE;
 
-			x1 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->right) + (y + 0) * sizeof(Primitive::Span)));
-			x2 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->right) + (y + 1) * sizeof(Primitive::Span)));
+			x1 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->right) + (y - y0 + 0) * sizeof(Primitive::Span)));
+			x2 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->right) + (y - y0 + 1) * sizeof(Primitive::Span)));
 			x1 = Max(x1, x2);
 
 			for(unsigned int q = 1; q < state.multiSample; q++)
 			{
-				Int x1q = Int(*Pointer<Short>(r.primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->right) + (y + 0) * sizeof(Primitive::Span)));
-				Int x2q = Int(*Pointer<Short>(r.primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->right) + (y + 1) * sizeof(Primitive::Span)));
+				Int x1q = Int(*Pointer<Short>(r.primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->right) + (y - y0 + 0) * sizeof(Primitive::Span)));
+				Int x2q = Int(*Pointer<Short>(r.primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->right) + (y - y0 + 1) * sizeof(Primitive::Span)));
 				x1q = Max(x1q, x2q);
 
 				x1 = Max(x1q, x1);
@@ -273,7 +275,7 @@ namespace sw
 
 				for(unsigned int q = 0; q < state.multiSample; q++)
 				{
-					xLeft[q] = *Pointer<Short4>(r.primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline) + y * sizeof(Primitive::Span));
+					xLeft[q] = *Pointer<Short4>(r.primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline) + (y - y0) * sizeof(Primitive::Span));
 					xRight[q] = xLeft[q];
 
 					xLeft[q] = Swizzle(xLeft[q], 0xA0) - Short4(1, 2, 1, 2);
