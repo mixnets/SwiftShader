@@ -5,6 +5,9 @@
 //
 
 #include "compiler/osinclude.h"
+
+#include <assert.h>
+
 //
 // This file contains contains the window's specific functions
 //

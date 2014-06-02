@@ -14,20 +14,23 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-void trace(const char *format, ...)
+namespace sw
 {
-	if(false)
-	{
-		FILE *file = fopen("debug.txt", "a");
+    void trace(const char *format, ...)
+    {
+        if(false)
+        {
+            FILE *file = fopen("debug.txt", "a");
 
-		if(file)
-		{
-			va_list vararg;
-			va_start(vararg, format);
-			vfprintf(file, format, vararg);
-			va_end(vararg);
+            if(file)
+            {
+                va_list vararg;
+                va_start(vararg, format);
+                vfprintf(file, format, vararg);
+                va_end(vararg);
 
-			fclose(file);
-		}
-	}
+                fclose(file);
+            }
+        }
+    }
 }

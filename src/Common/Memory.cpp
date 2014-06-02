@@ -116,22 +116,22 @@ void deallocateExecutable(void *memory, size_t bytes)
 
 void *allocate(size_t bytes, const char *function)
 {
-	trace("[0x%0.8X]%s(...)\n", 0xFFFFFFFF, function);
+	sw::trace("[0x%0.8X]%s(...)\n", 0xFFFFFFFF, function);
 
 	void *memory = allocate(bytes);
 
-	trace("\t0x%0.8X = allocate(%d)\n", memory, bytes);
+    sw::trace("\t0x%0.8X = allocate(%d)\n", memory, bytes);
 
 	return memory;
 }
 
 void *allocateZero(size_t bytes, const char *function)
 {
-	trace("[0x%0.8X]%s(...)\n", 0xFFFFFFFF, function);
+    sw::trace("[0x%0.8X]%s(...)\n", 0xFFFFFFFF, function);
 
 	void *memory = allocateZero(bytes);
 
-	trace("\t0x%0.8X = allocateZero(%d)\n", memory, bytes);
+    sw::trace("\t0x%0.8X = allocateZero(%d)\n", memory, bytes);
 
 	return memory;
 }
@@ -140,8 +140,8 @@ void deallocate(void *memory, const char *function)
 {
 	if(memory)
 	{
-		trace("[0x%0.8X]%s(...)\n", 0xFFFFFFFF, function);
-		trace("\tdeallocate(0x%0.8X)\n", memory);
+        sw::trace("[0x%0.8X]%s(...)\n", 0xFFFFFFFF, function);
+        sw::trace("\tdeallocate(0x%0.8X)\n", memory);
 
 		deallocate(memory);
 	}

@@ -10,6 +10,8 @@
 #include "compiler/InitializeParseContext.h"
 #include "compiler/osinclude.h"
 
+#include <assert.h>
+
 OS_TLSIndex ThreadInitializeIndex = OS_INVALID_TLS_INDEX;
 
 bool InitProcess()

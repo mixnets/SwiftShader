@@ -14,6 +14,7 @@
 #include "compiler/InitializeDll.h"
 #include "compiler/preprocessor/length_limits.h"
 #include "compiler/ShHandle.h"
+#include "compiler/debug.h"
 
 #include <limits.h>
 

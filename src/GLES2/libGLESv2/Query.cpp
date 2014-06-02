@@ -14,6 +14,7 @@
 #include "Query.h"
 
 #include "main.h"
+#include "common/debug.h"
 #include "Common/Thread.hpp"
 
 namespace gl

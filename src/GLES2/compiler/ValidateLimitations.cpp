@@ -8,6 +8,7 @@
 #include "compiler/InfoSink.h"
 #include "compiler/InitializeParseContext.h"
 #include "compiler/ParseHelper.h"
+#include "compiler/debug.h"
 
 namespace {
 bool IsLoopIndex(const TIntermSymbol* symbol, const TLoopStack& stack) {

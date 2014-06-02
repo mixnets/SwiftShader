@@ -19,7 +19,6 @@
 #include "Renderbuffer.h"
 #include "RefCountObject.h"
 #include "utilities.h"
-#include "common/debug.h"
 
 #define GL_APICALL
 #include <GLES2/gl2.h>

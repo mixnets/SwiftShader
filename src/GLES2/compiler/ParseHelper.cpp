@@ -6,11 +6,12 @@
 
 #include "compiler/ParseHelper.h"
 
-#include <stdarg.h>
-#include <stdio.h>
-
 #include "compiler/glslang.h"
 #include "compiler/preprocessor/SourceLocation.h"
+#include "compiler/debug.h"
+
+#include <stdarg.h>
+#include <stdio.h>
 
 ///////////////////////////////////////////////////////////////////////
 //

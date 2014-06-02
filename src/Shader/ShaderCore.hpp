@@ -12,9 +12,10 @@
 #ifndef sw_ShaderCore_hpp
 #define sw_ShaderCore_hpp
 
-#include "Debug.hpp"
 #include "Shader.hpp"
 #include "Reactor/Reactor.hpp"
+
+#include <assert.h>
 
 namespace sw
 {
@@ -182,7 +183,7 @@ namespace sw
 
 		Register operator[](RValue<Int> i)
 		{
-			ASSERT(dynamic);
+			assert(dynamic);
 
 			return Register(x[0][i], y[0][i], z[0][i], w[0][i]);
 		}

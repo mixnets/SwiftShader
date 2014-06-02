@@ -18,6 +18,7 @@
 #include "main.h"
 #include "Texture.h"
 #include "utilities.h"
+#include "common/debug.h"
 
 namespace gl
 {

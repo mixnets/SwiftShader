@@ -19,6 +19,7 @@
 #include "Renderbuffer.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "common/debug.h"
 
 namespace gl
 {

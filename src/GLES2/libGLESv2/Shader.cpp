@@ -17,7 +17,7 @@
 
 #include "main.h"
 #include "utilities.h"
-
+#include "common/debug.h"
 #include "GLSLANG/ShaderLang.h"
 
 #include <string>
