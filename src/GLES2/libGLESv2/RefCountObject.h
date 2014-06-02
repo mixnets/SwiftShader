@@ -17,11 +17,10 @@
 #ifndef LIBGLESV2_REFCOUNTOBJECT_H_
 #define LIBGLESV2_REFCOUNTOBJECT_H_
 
-#include "common/debug.h"
-
 #define GL_APICALL
 #include <GLES2/gl2.h>
 
+#include <assert.h>
 #include <cstddef>
 
 namespace gl
@@ -48,7 +47,7 @@ class RefCountObjectBindingPointer
 {
   protected:
     RefCountObjectBindingPointer() : mObject(NULL) { }
-    ~RefCountObjectBindingPointer() { ASSERT(mObject == NULL); } // Objects have to be released before the resource manager is destroyed, so they must be explicitly cleaned up.
+    ~RefCountObjectBindingPointer() { assert(mObject == NULL); } // Objects have to be released before the resource manager is destroyed, so they must be explicitly cleaned up.
 
     void set(RefCountObject *newObject);
     RefCountObject *get() const { return mObject; }

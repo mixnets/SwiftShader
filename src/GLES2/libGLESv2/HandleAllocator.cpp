@@ -14,7 +14,7 @@
 
 #include "HandleAllocator.h"
 
-#include "main.h"
+#include "common/debug.h"
 
 namespace gl
 {

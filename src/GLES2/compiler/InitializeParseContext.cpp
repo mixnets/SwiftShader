@@ -8,6 +8,8 @@
 
 #include "compiler/osinclude.h"
 
+#include <assert.h>
+
 OS_TLSIndex GlobalParseContextIndex = OS_INVALID_TLS_INDEX;
 
 bool InitializeParseContextIndex()

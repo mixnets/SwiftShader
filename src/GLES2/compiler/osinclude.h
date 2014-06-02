@@ -7,6 +7,8 @@
 #ifndef __OSINCLUDE_H
 #define __OSINCLUDE_H
 
+#include <assert.h>
+
 //
 // This file contains contains os-specific datatypes and
 // declares any os-specific functions.
@@ -34,9 +36,6 @@
 #include <errno.h>
 #endif  // ANGLE_OS_WIN
 
-
-#include "compiler/debug.h"
-
 //
 // Thread Local Storage Operations
 //
@@ -54,7 +53,7 @@ bool OS_FreeTLSIndex(OS_TLSIndex nIndex);
 
 inline void* OS_GetTLSValue(OS_TLSIndex nIndex)
 {
-    ASSERT(nIndex != OS_INVALID_TLS_INDEX);
+    assert(nIndex != OS_INVALID_TLS_INDEX);
 #if defined(ANGLE_OS_WIN)
     return TlsGetValue(nIndex);
 #elif defined(ANGLE_OS_POSIX)

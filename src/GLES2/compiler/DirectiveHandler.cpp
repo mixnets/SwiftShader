@@ -6,10 +6,10 @@
 
 #include "compiler/DirectiveHandler.h"
 
-#include <sstream>
-
-#include "compiler/debug.h"
 #include "compiler/Diagnostics.h"
+#include "Common/Debug.hpp"
+
+#include <sstream>
 
 static TBehavior getBehavior(const std::string& str)
 {

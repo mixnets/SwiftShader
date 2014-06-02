@@ -6,13 +6,15 @@
 
 #include "compiler/PoolAlloc.h"
 
+#include "compiler/InitializeGlobals.h"
+#include "compiler/osinclude.h"
+
 #ifndef _MSC_VER
 #include <stdint.h>
 #endif
 #include <stdio.h>
 
-#include "compiler/InitializeGlobals.h"
-#include "compiler/osinclude.h"
+#include <assert.h>
 
 OS_TLSIndex PoolIndex = OS_INVALID_TLS_INDEX;
 

@@ -102,33 +102,11 @@ struct Color
 // Helper structure describing a single vertex attribute
 class VertexAttribute
 {
-  public:
-    VertexAttribute() : mType(GL_FLOAT), mSize(0), mNormalized(false), mStride(0), mPointer(NULL), mArrayEnabled(false)
-    {
-        mCurrentValue[0] = 0.0f;
-        mCurrentValue[1] = 0.0f;
-        mCurrentValue[2] = 0.0f;
-        mCurrentValue[3] = 1.0f;
-    }
+public:
+    VertexAttribute();
 
-    int typeSize() const
-    {
-        switch (mType)
-        {
-        case GL_BYTE:           return mSize * sizeof(GLbyte);
-        case GL_UNSIGNED_BYTE:  return mSize * sizeof(GLubyte);
-        case GL_SHORT:          return mSize * sizeof(GLshort);
-        case GL_UNSIGNED_SHORT: return mSize * sizeof(GLushort);
-        case GL_FIXED:          return mSize * sizeof(GLfixed);
-        case GL_FLOAT:          return mSize * sizeof(GLfloat);
-        default: UNREACHABLE(); return mSize * sizeof(GLfloat);
-        }
-    }
-
-    GLsizei stride() const
-    {
-        return mStride ? mStride : typeSize();
-    }
+    int typeSize() const;
+    GLsizei stride() const;
 
     // From glVertexAttribPointer
     GLenum mType;

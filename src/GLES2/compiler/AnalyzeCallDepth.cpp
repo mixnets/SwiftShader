@@ -5,6 +5,7 @@
 //
 
 #include "compiler/AnalyzeCallDepth.h"
+#include "compiler/debug.h"
 
 AnalyzeCallDepth::FunctionNode::FunctionNode(TIntermAggregate *node) : node(node)
 {

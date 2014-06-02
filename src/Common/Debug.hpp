@@ -18,24 +18,33 @@
 #undef min
 #undef max
 
-void trace(const char *format, ...);
+namespace sw
+{
+    void trace(const char *format, ...);
+}
 
 #ifndef NDEBUG
-	#define TRACE(format, ...) trace("[0x%0.8X]%s("format")\n", this, __FUNCTION__, ##__VA_ARGS__)
+    #define TRACE(format, ...) sw::trace("[0x%0.8X]%s("format")\n", this, __FUNCTION__, ##__VA_ARGS__)
 #else
-	#define TRACE(...) ((void)0)
+    #define TRACE(...) ((void)0)
 #endif
 
 #ifndef NDEBUG
-	#define UNIMPLEMENTED() {trace("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__); ASSERT(false);}
+    #define UNIMPLEMENTED() {sw::trace("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__); ASSERT(false);}
 #else
-	#define UNIMPLEMENTED() ((void)0)
+    #define UNIMPLEMENTED() ((void)0)
 #endif
 
 #ifndef NDEBUG
-	#define ASSERT(expression) {if(!(expression)) trace("\t! Assert failed in %s(%d): "#expression"\n", __FUNCTION__, __LINE__); assert(expression);}
+    #define UNREACHABLE() {sw::trace("\t! Unreachable reached: %s(%d)\n", __FUNCTION__, __LINE__); ASSERT(false);}
 #else
-	#define ASSERT assert
+    #define UNREACHABLE() ((void)0)
+#endif
+
+#ifndef NDEBUG
+    #define ASSERT(expression) {if(!(expression)) sw::trace("\t! Assert failed in %s(%d): "#expression"\n", __FUNCTION__, __LINE__); assert(expression);}
+#else
+    #define ASSERT assert
 #endif
 
 #endif   // Debug_hpp

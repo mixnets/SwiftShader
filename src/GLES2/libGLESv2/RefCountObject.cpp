@@ -16,6 +16,7 @@
 
 #include "RefCountObject.h"
 
+#include "common/debug.h"
 #include "Common/Thread.hpp"
 
 namespace gl

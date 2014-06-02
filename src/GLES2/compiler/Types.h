@@ -9,8 +9,8 @@
 
 #include "compiler/BaseTypes.h"
 #include "compiler/Common.h"
-#include "compiler/debug.h"
 
+#include <assert.h>
 #include <algorithm>
 
 class TType;

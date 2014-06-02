@@ -16,7 +16,6 @@
 
 #include "Context.h"
 #include "Device.hpp"
-#include "common/debug.h"
 #include "libEGL/Display.h"
 
 #define GL_APICALL
