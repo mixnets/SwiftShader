@@ -1101,81 +1101,40 @@ bool TParseContext::areAllChildConst(TIntermAggregate* aggrNode)
 //
 // Returns 0 for an error or the constructed node (aggregate or typed) for no error.
 //
-TIntermTyped* TParseContext::addConstructor(TIntermNode* node, const TType* type, TOperator op, TFunction* fnCall, TSourceLoc line)
+TIntermTyped* TParseContext::addConstructor(TIntermNode* arguments, const TType* type, TOperator op, TFunction* fnCall, TSourceLoc line)
 {
-    if (node == 0)
-        return 0;
+    TIntermAggregate *aggregateArguments = arguments->getAsAggregate();
 
-    TIntermAggregate* aggrNode = node->getAsAggregate();
-    
-    TTypeList::const_iterator memberTypes;
-    if (op == EOpConstructStruct)
-        memberTypes = type->getStruct()->begin();
-    
-    TType elementType = *type;
-    if (type->isArray())
-        elementType.clearArrayness();
-
-    bool singleArg;
-    if (aggrNode) {
-        if (aggrNode->getOp() != EOpNull || aggrNode->getSequence().size() == 1)
-            singleArg = true;
-        else
-            singleArg = false;
-    } else
-        singleArg = true;
-
-    TIntermTyped *newNode;
-    if (singleArg) {
-        // If structure constructor or array constructor is being called 
-        // for only one parameter inside the structure, we need to call constructStruct function once.
-        if (type->isArray())
-            newNode = constructStruct(node, &elementType, 1, node->getLine(), false);
-        else if (op == EOpConstructStruct)
-            newNode = constructStruct(node, (*memberTypes).type, 1, node->getLine(), false);
-        else
-            newNode = constructBuiltIn(type, op, node, node->getLine(), false);
-
-        if (newNode && newNode->getAsAggregate()) {
-            TIntermTyped* constConstructor = foldConstConstructor(newNode->getAsAggregate(), *type);
-            if (constConstructor)
-                return constConstructor;
-        }
-
-        return newNode;
+    if(!aggregateArguments)
+    {
+        aggregateArguments = new TIntermAggregate;
+        aggregateArguments->getSequence().push_back(arguments);
     }
-    
-    //
-    // Handle list of arguments.
-    //
-    TIntermSequence &sequenceVector = aggrNode->getSequence() ;    // Stores the information about the parameter to the constructor
-    // if the structure constructor contains more than one parameter, then construct
-    // each parameter
-    
-    int paramCount = 0;  // keeps a track of the constructor parameter number being checked    
-    
-    // for each parameter to the constructor call, check to see if the right type is passed or convert them 
-    // to the right type if possible (and allowed).
-    // for structure constructors, just check if the right type is passed, no conversion is allowed.
-    
-    for (TIntermSequence::iterator p = sequenceVector.begin(); 
-                                   p != sequenceVector.end(); p++, paramCount++) {
-        if (type->isArray())
-            newNode = constructStruct(*p, &elementType, paramCount+1, node->getLine(), true);
-        else if (op == EOpConstructStruct)
-            newNode = constructStruct(*p, (memberTypes[paramCount]).type, paramCount+1, node->getLine(), true);
-        else
-            newNode = constructBuiltIn(type, op, *p, node->getLine(), true);
-        
-        if (newNode) {
-            *p = newNode;
+
+    if(op == EOpConstructStruct)
+    {
+        TTypeList &fields = *type->getStruct();
+        TIntermSequence &args = aggregateArguments->getSequence();
+
+        for(size_t i = 0; i < fields.size(); i++)
+        {
+            if(args[i]->getAsTyped()->getType() != *fields[i].type)
+            {
+                error(line, "Structure constructor arguments do not match structure fields", "Error");
+                recover();
+
+                return 0;
+            }
         }
     }
 
-    TIntermTyped* constructor = intermediate.setAggregateOperator(aggrNode, op, line);
-    TIntermTyped* constConstructor = foldConstConstructor(constructor->getAsAggregate(), *type);
-    if (constConstructor)
+    // Turn the argument list itself into a constructor
+    TIntermTyped *constructor = intermediate.setAggregateOperator(aggregateArguments, op, line);
+    TIntermTyped *constConstructor = foldConstConstructor(constructor->getAsAggregate(), *type);
+    if(constConstructor)
+    {
         return constConstructor;
+    }
 
     return constructor;
 }
