@@ -846,7 +846,8 @@ namespace sh
 				}
 			}
 			break;
-		case EOpParameters: break;
+		case EOpParameters:
+            break;
 		case EOpConstructFloat:
 		case EOpConstructVec2:
 		case EOpConstructVec3:
@@ -869,7 +870,7 @@ namespace sh
 					int size = argi->getNominalSize();
 					ASSERT(!argi->isMatrix());
 
-					Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, argi);
+					Instruction *mov = emitCast(result, argi);
 					mov->dst.mask = (0xF << component) & 0xF;
 					mov->src[0].swizzle = readSwizzle(argi, size) << (component * 2);
 
@@ -893,13 +894,13 @@ namespace sh
 						{
 							// Initialize to identity matrix
 							Constant col((i == 0 ? 1.0f : 0.0f), (i == 1 ? 1.0f : 0.0f), (i == 2 ? 1.0f : 0.0f), (i == 3 ? 1.0f : 0.0f));
-							Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, &col);
+							Instruction *mov = emitCast(result, &col);
 							mov->dst.index += i;
 						}
 
 						if(i < dim2(arg0))
 						{
-							Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, arg0);
+							Instruction *mov = emitCast(result, arg0);
 							mov->dst.index += i;
 							mov->dst.mask = 0xF >> (4 - dim2(arg0));
 							argument(mov->src[0], arg0, i);
@@ -919,7 +920,7 @@ namespace sh
 
 						while(element < size)
 						{
-							Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, argi);
+							Instruction *mov = emitCast(result, argi);
 							mov->dst.index += column;
 							mov->dst.mask = (0xF << row) & 0xF;
 							mov->src[0].swizzle = (readSwizzle(argi, size) << (row * 2)) + 0x55 * element;
@@ -1255,6 +1256,25 @@ namespace sh
 
 		return instruction;
 	}
+
+    Instruction *OutputASM::emitCast(TIntermTyped *dst, TIntermTyped *src)
+    {
+        // Integers are implemented as float
+        if((dst->getBasicType() == EbtFloat || dst->getBasicType() == EbtInt) && src->getBasicType() == EbtBool)
+        {
+            return emit(sw::Shader::OPCODE_B2F, dst, src);
+        }
+        if(dst->getBasicType() == EbtBool && (src->getBasicType() == EbtFloat || src->getBasicType() == EbtInt))
+        {
+            return emit(sw::Shader::OPCODE_F2B, dst, src);
+        }
+        if(dst->getBasicType() == EbtInt && src->getBasicType() == EbtFloat)
+        {
+            return emit(sw::Shader::OPCODE_TRUNC, dst, src);
+        }
+
+        return emit(sw::Shader::OPCODE_MOV, dst, src);
+    }
 
 	void OutputASM::emitBinary(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2)
 	{
