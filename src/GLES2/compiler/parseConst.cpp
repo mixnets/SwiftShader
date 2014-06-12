@@ -151,6 +151,7 @@ void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
 {
     ConstantUnion* leftUnionArray = unionArray;
     int instanceSize = type.getObjectSize();
+    TBasicType basicType = type.getBasicType();
 
     if (index >= instanceSize)
         return;
@@ -162,7 +163,7 @@ void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
         for (int i=0; i < size; i++) {
             if (index >= instanceSize)
                 return;
-            leftUnionArray[index] = rightUnionArray[i];
+            leftUnionArray[index].cast(basicType, rightUnionArray[i]);
 
             (index)++;
         }
@@ -175,7 +176,7 @@ void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
                 if (i >= instanceSize)
                     return;
 
-                leftUnionArray[i] = rightUnionArray[count];
+                leftUnionArray[i].cast(basicType, rightUnionArray[count]);
 
                 (index)++;
                 
@@ -189,7 +190,7 @@ void TConstTraverser::visitConstantUnion(TIntermConstantUnion* node)
                 if (i >= instanceSize)
                     return;
                 if (element - i == 0 || (i - element) % (matrixSize + 1) == 0 )
-                    leftUnionArray[i] = rightUnionArray[count];
+                    leftUnionArray[i].cast(basicType, rightUnionArray[0]);
                 else 
                     leftUnionArray[i].setFConst(0.0f);
 
