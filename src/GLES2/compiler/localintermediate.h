@@ -25,7 +25,6 @@ public:
 
     TIntermediate(TInfoSink& i) : infoSink(i) { }
     TIntermSymbol* addSymbol(int Id, const TString&, const TType&, TSourceLoc);
-    TIntermTyped* addConversion(TOperator, const TType&, TIntermTyped*);
     TIntermTyped* addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc);
     TIntermTyped* addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index, TSourceLoc);
