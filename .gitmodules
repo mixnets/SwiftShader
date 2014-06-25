@@ -1,0 +1,3 @@
+[submodule "src/LLVM"]
+	path = src/LLVM
+	url = https://github.com/c0d1f1ed/llvm.git
