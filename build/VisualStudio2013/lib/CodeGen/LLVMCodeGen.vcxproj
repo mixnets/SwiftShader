@@ -1,0 +1,441 @@
+﻿<?xml version="1.0" encoding="Windows-1252"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{F49DF3A7-5D4B-4DEB-BEE8-3BCF8A389021}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>LLVMCodeGen</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+    <PropertyGroup>
+      <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">\SwiftShader\build\VisualStudio2013\lib\Debug\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">LLVMCodeGen.dir\Debug\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">LLVMCodeGen</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.lib</TargetExt>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">\SwiftShader\build\VisualStudio2013\lib\Release\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">LLVMCodeGen.dir\Release\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">LLVMCodeGen</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.lib</TargetExt>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">\SwiftShader\build\VisualStudio2013\lib\MinSizeRel\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">LLVMCodeGen.dir\MinSizeRel\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">LLVMCodeGen</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.lib</TargetExt>
+      <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">\SwiftShader\build\VisualStudio2013\lib\RelWithDebInfo\</OutDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">LLVMCodeGen.dir\RelWithDebInfo\</IntDir>
+      <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">LLVMCodeGen</TargetName>
+      <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.lib</TargetExt>
+    </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions> /EHs-c- -w14062 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\lib\CodeGen;\SwiftShader\src\LLVM\lib\CodeGen;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4146;4180;4244;4267;4345;4351;4355;4503;4624;4800;4291</DisableSpecificWarnings>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatSpecificWarningsAsErrors>4238</TreatSpecificWarningsAsErrors>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_SCL_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;__STDC_LIMIT_MACROS;_HAS_EXCEPTIONS=0;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_SCL_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;__STDC_LIMIT_MACROS;_HAS_EXCEPTIONS=0;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\lib\CodeGen;\SwiftShader\src\LLVM\lib\CodeGen;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\lib\CodeGen;\SwiftShader\src\LLVM\lib\CodeGen;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions> /EHs-c- -w14062 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\lib\CodeGen;\SwiftShader\src\LLVM\lib\CodeGen;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DisableSpecificWarnings>4146;4180;4244;4267;4345;4351;4355;4503;4624;4800;4291</DisableSpecificWarnings>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatSpecificWarningsAsErrors>4238</TreatSpecificWarningsAsErrors>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat></DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_SCL_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;__STDC_LIMIT_MACROS;_HAS_EXCEPTIONS=0;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_SCL_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;__STDC_LIMIT_MACROS;_HAS_EXCEPTIONS=0;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\lib\CodeGen;\SwiftShader\src\LLVM\lib\CodeGen;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\lib\CodeGen;\SwiftShader\src\LLVM\lib\CodeGen;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalOptions> /EHs-c- -w14062 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\lib\CodeGen;\SwiftShader\src\LLVM\lib\CodeGen;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DisableSpecificWarnings>4146;4180;4244;4267;4345;4351;4355;4503;4624;4800;4291</DisableSpecificWarnings>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatSpecificWarningsAsErrors>4238</TreatSpecificWarningsAsErrors>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat></DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_SCL_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;__STDC_LIMIT_MACROS;_HAS_EXCEPTIONS=0;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_SCL_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;__STDC_LIMIT_MACROS;_HAS_EXCEPTIONS=0;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\lib\CodeGen;\SwiftShader\src\LLVM\lib\CodeGen;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\lib\CodeGen;\SwiftShader\src\LLVM\lib\CodeGen;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalOptions> /EHs-c- -w14062 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\lib\CodeGen;\SwiftShader\src\LLVM\lib\CodeGen;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4146;4180;4244;4267;4345;4351;4355;4503;4624;4800;4291</DisableSpecificWarnings>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <TreatSpecificWarningsAsErrors>4238</TreatSpecificWarningsAsErrors>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_SCL_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;__STDC_LIMIT_MACROS;_HAS_EXCEPTIONS=0;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_SCL_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;__STDC_CONSTANT_MACROS;__STDC_FORMAT_MACROS;__STDC_LIMIT_MACROS;_HAS_EXCEPTIONS=0;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\lib\CodeGen;\SwiftShader\src\LLVM\lib\CodeGen;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\lib\CodeGen;\SwiftShader\src\LLVM\lib\CodeGen;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="\SwiftShader\src\LLVM\lib\CodeGen\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule /SwiftShader/src/LLVM/lib/CodeGen/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -H/SwiftShader/src/LLVM -B/SwiftShader/build/VisualStudio2013 --check-stamp-file \SwiftShader\build\VisualStudio2013\lib\CodeGen\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/SwiftShader/src/LLVM/lib/CodeGen/CMakeLists.txt;\SwiftShader\src\LLVM\lib\CodeGen\CMakeLists.txt;\SwiftShader\src\LLVM\lib\CodeGen\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">\SwiftShader\build\VisualStudio2013\lib\CodeGen\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule /SwiftShader/src/LLVM/lib/CodeGen/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -H/SwiftShader/src/LLVM -B/SwiftShader/build/VisualStudio2013 --check-stamp-file \SwiftShader\build\VisualStudio2013\lib\CodeGen\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/SwiftShader/src/LLVM/lib/CodeGen/CMakeLists.txt;\SwiftShader\src\LLVM\lib\CodeGen\CMakeLists.txt;\SwiftShader\src\LLVM\lib\CodeGen\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">\SwiftShader\build\VisualStudio2013\lib\CodeGen\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule /SwiftShader/src/LLVM/lib/CodeGen/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -H/SwiftShader/src/LLVM -B/SwiftShader/build/VisualStudio2013 --check-stamp-file \SwiftShader\build\VisualStudio2013\lib\CodeGen\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">/SwiftShader/src/LLVM/lib/CodeGen/CMakeLists.txt;\SwiftShader\src\LLVM\lib\CodeGen\CMakeLists.txt;\SwiftShader\src\LLVM\lib\CodeGen\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">\SwiftShader\build\VisualStudio2013\lib\CodeGen\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule /SwiftShader/src/LLVM/lib/CodeGen/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -H/SwiftShader/src/LLVM -B/SwiftShader/build/VisualStudio2013 --check-stamp-file \SwiftShader\build\VisualStudio2013\lib\CodeGen\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">/SwiftShader/src/LLVM/lib/CodeGen/CMakeLists.txt;\SwiftShader\src\LLVM\lib\CodeGen\CMakeLists.txt;\SwiftShader\src\LLVM\lib\CodeGen\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">\SwiftShader\build\VisualStudio2013\lib\CodeGen\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\AggressiveAntiDepBreaker.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\AllocationOrder.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\AntiDepBreaker.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\BranchFolding.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\CriticalAntiDepBreaker.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\InterferenceCache.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\LiveDebugVariables.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\LiveRangeCalc.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\PHIEliminationUtils.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\PrologEpilogInserter.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\RegAllocBase.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\RegisterCoalescer.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\Spiller.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\SpillPlacement.h" />
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\CodeGen\SplitKit.h" />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\AggressiveAntiDepBreaker.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\AllocationOrder.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\Analysis.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\BasicTargetTransformInfo.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\BranchFolding.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\CalcSpillWeights.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\CallingConvLower.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\CodeGen.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\CriticalAntiDepBreaker.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\DFAPacketizer.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\DeadMachineInstructionElim.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\DwarfEHPrepare.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\EarlyIfConversion.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\EdgeBundles.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\ErlangGC.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\ExecutionDepsFix.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\ExpandISelPseudos.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\ExpandPostRAPseudos.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\GCMetadata.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\GCMetadataPrinter.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\GCStrategy.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\IfConversion.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\InlineSpiller.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\InterferenceCache.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\IntrinsicLowering.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\JITCodeEmitter.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LLVMTargetMachine.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LatencyPriorityQueue.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LexicalScopes.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LiveDebugVariables.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LiveInterval.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LiveIntervalAnalysis.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LiveIntervalUnion.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LiveRangeCalc.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LiveRangeEdit.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LiveRegMatrix.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LiveRegUnits.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LiveStackAnalysis.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LiveVariables.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\LocalStackSlotAllocation.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineBasicBlock.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineBlockFrequencyInfo.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineBlockPlacement.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineBranchProbabilityInfo.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineCSE.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineCodeEmitter.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineCopyPropagation.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineDominators.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineFunction.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineFunctionAnalysis.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineFunctionPass.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineFunctionPrinterPass.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineInstr.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineInstrBundle.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineLICM.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineLoopInfo.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineModuleInfo.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineModuleInfoImpls.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachinePassRegistry.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachinePostDominators.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineRegisterInfo.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineSSAUpdater.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineScheduler.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineSink.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineTraceMetrics.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\MachineVerifier.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\OcamlGC.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\OptimizePHIs.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\PHIElimination.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\PHIEliminationUtils.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\Passes.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\PeepholeOptimizer.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\PostRASchedulerList.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\ProcessImplicitDefs.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\PrologEpilogInserter.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\PseudoSourceValue.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\RegAllocBase.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\RegAllocBasic.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\RegAllocFast.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\RegAllocGreedy.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\RegAllocPBQP.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\RegisterClassInfo.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\RegisterCoalescer.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\RegisterPressure.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\RegisterScavenging.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\ScheduleDAG.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\ScheduleDAGInstrs.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\ScheduleDAGPrinter.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\ScoreboardHazardRecognizer.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\ShadowStackGC.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\SjLjEHPrepare.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\SlotIndexes.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\SpillPlacement.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\Spiller.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\SplitKit.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\StackColoring.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\StackProtector.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\StackSlotColoring.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\StackMaps.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\TailDuplication.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\TargetFrameLoweringImpl.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\TargetInstrInfo.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\TargetLoweringBase.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\TargetLoweringObjectFileImpl.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\TargetOptionsImpl.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\TargetRegisterInfo.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\TargetSchedule.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\TwoAddressInstructionPass.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\UnreachableBlockElim.cpp"  />
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\CodeGen\VirtRegMap.cpp"  />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/lib/Analysis/LLVMAnalysis.vcxproj">
+      <Project>4E344B53-DBF4-4B27-A744-AE40DE0E91B5</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/lib/IR/LLVMCore.vcxproj">
+      <Project>A9B5C576-4F51-4A87-A0D2-C8C67DE78853</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/lib/Transforms/InstCombine/LLVMInstCombine.vcxproj">
+      <Project>5D26EB97-2F40-4E58-900F-E20E08B6D259</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/lib/MC/LLVMMC.vcxproj">
+      <Project>CA020824-8CA1-432C-9EAD-8C2D82FC7793</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/lib/Transforms/ObjCARC/LLVMObjCARCOpts.vcxproj">
+      <Project>E56268E5-1661-4BAD-84ED-CEB90934BA65</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/lib/Object/LLVMObject.vcxproj">
+      <Project>52F57DEE-0846-46E9-B5B5-6ACAFFAE03FB</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/lib/Transforms/Scalar/LLVMScalarOpts.vcxproj">
+      <Project>C83FCA6D-30D5-4123-B9EB-B8E2425F7DB5</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/lib/Support/LLVMSupport.vcxproj">
+      <Project>2A9F594F-1F77-4E35-9CA1-3E290709AB1A</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/lib/Target/LLVMTarget.vcxproj">
+      <Project>61FB783A-8AC0-4A62-99AE-0D82E62FB4EC</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/lib/Transforms/Utils/LLVMTransformUtils.vcxproj">
+      <Project>F2F9C6D8-4FC3-4EE9-91EA-0BB777DE6E20</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/lib/Analysis/IPA/LLVMipa.vcxproj">
+      <Project>D398DE47-5814-4F49-9160-5CF17A9193FD</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/ZERO_CHECK.vcxproj">
+      <Project>8CD95AE9-0887-446D-9DBF-1CA3BB33A760</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/include/llvm/IR/intrinsics_gen.vcxproj">
+      <Project>62E3F817-3B11-40E9-ACA9-5E6D88886C18</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,3 @@
+# CMake generation dependency list for this directory.
+/SwiftShader/src/LLVM/utils/llvm-lit/CMakeLists.txt
+/SwiftShader/src/LLVM/utils/llvm-lit/llvm-lit.in

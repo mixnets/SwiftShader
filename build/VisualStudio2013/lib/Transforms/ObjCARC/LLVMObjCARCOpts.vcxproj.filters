@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="Windows-1252"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\ObjCARC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\ObjCARCOpts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\ObjCARCExpand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\ObjCARCAPElim.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\ObjCARCAliasAnalysis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\ObjCARCUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\ObjCARCContract.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\DependencyAnalysis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\ProvenanceAnalysis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\ARCRuntimeEntryPoints.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\DependencyAnalysis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\ObjCARC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\ObjCARCAliasAnalysis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\ProvenanceAnalysis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="\SwiftShader\src\LLVM\lib\Transforms\ObjCARC\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{F73AA4BC-02BA-484E-84D7-033BA18BF496}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{7D34C382-6313-452C-90EC-C1D86941C42C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

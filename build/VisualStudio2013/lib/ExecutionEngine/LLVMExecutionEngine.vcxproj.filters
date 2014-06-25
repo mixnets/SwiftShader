@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="Windows-1252"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\ExecutionEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\ExecutionEngineBindings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\RTDyldMemoryManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\TargetSelect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\EventListenerCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{F73AA4BC-02BA-484E-84D7-033BA18BF496}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{7D34C382-6313-452C-90EC-C1D86941C42C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
