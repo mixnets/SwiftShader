@@ -19,7 +19,7 @@
 #undef DEFAULT_SYSROOT
 
 /* Define if you want backtraces on crash */
-#define ENABLE_BACKTRACES
+/* #undef ENABLE_BACKTRACES */
 
 /* Define to enable crash overrides */
 #define ENABLE_CRASH_OVERRIDES
