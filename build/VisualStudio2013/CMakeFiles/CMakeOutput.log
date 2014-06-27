@@ -1,0 +1,1709 @@
+The system is: Windows - 6.1 - AMD64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler:  
+Build flags: 
+Id flags: 
+
+The output was:
+0
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:25:45 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\3.0.0\CompilerIdC\CompilerIdC.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "Debug\".
+  Creating directory "Debug\CompilerIdC.tlog\".
+InitializeBuildStatus:
+  Creating "Debug\CompilerIdC.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /nologo /W0 /WX- /Od /Oy- /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CMakeCCompilerId.c
+  CMakeCCompilerId.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:".\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\CompilerIdC.lib" /MACHINE:X86 /SAFESEH Debug\CMakeCCompilerId.obj
+  CompilerIdC.vcxproj -> C:\SwiftShader\build\VisualStudio2013\CMakeFiles\3.0.0\CompilerIdC\.\CompilerIdC.exe
+PostBuildEvent:
+  for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
+  :VCEnd
+  CMAKE_C_COMPILER=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe
+FinalizeBuildStatus:
+  Deleting file "Debug\CompilerIdC.tlog\unsuccessfulbuild".
+  Touching "Debug\CompilerIdC.tlog\CompilerIdC.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\3.0.0\CompilerIdC\CompilerIdC.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.72
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
+
+The C compiler identification is MSVC, found in "/SwiftShader/build/VisualStudio2013/CMakeFiles/3.0.0/CompilerIdC/CompilerIdC.exe"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler:  
+Build flags: 
+Id flags: 
+
+The output was:
+0
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:25:47 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\3.0.0\CompilerIdCXX\CompilerIdCXX.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "Debug\".
+  Creating directory "Debug\CompilerIdCXX.tlog\".
+InitializeBuildStatus:
+  Creating "Debug\CompilerIdCXX.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /nologo /W0 /WX- /Od /Oy- /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue CMakeCXXCompilerId.cpp
+  CMakeCXXCompilerId.cpp
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:".\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\CompilerIdCXX.lib" /MACHINE:X86 /SAFESEH Debug\CMakeCXXCompilerId.obj
+  CompilerIdCXX.vcxproj -> C:\SwiftShader\build\VisualStudio2013\CMakeFiles\3.0.0\CompilerIdCXX\.\CompilerIdCXX.exe
+PostBuildEvent:
+  for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+  :VCEnd
+  CMAKE_CXX_COMPILER=C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe
+FinalizeBuildStatus:
+  Deleting file "Debug\CompilerIdCXX.tlog\unsuccessfulbuild".
+  Touching "Debug\CompilerIdCXX.tlog\CompilerIdCXX.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\3.0.0\CompilerIdCXX\CompilerIdCXX.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.20
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+
+The CXX compiler identification is MSVC, found in "/SwiftShader/build/VisualStudio2013/CMakeFiles/3.0.0/CompilerIdCXX/CompilerIdCXX.exe"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec3006691864.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:25:49 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec3006691864.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec3006691864.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec3006691864.dir\Debug\cmTryCom.0B14B57C.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec3006691864.dir\Debug\cmTryCom.0B14B57C.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec3006691864.dir\Debug\\" /Fd"cmTryCompileExec3006691864.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue testCCompiler.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec3006691864.dir\Debug\\" /Fd"cmTryCompileExec3006691864.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue testCCompiler.c
+  
+  testCCompiler.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3006691864.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3006691864.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3006691864.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec3006691864.dir\Debug\testCCompiler.obj
+  cmTryCompileExec3006691864.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3006691864.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec3006691864.dir\Debug\cmTryCom.0B14B57C.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec3006691864.dir\Debug\cmTryCom.0B14B57C.tlog\cmTryCompileExec3006691864.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec3006691864.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.50
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec3932879512.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:25:51 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec3932879512.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec3932879512.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec3932879512.dir\Debug\cmTryCom.078EAC45.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec3932879512.dir\Debug\cmTryCom.078EAC45.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec3932879512.dir\Debug\\" /Fd"cmTryCompileExec3932879512.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.0\Modules\CMakeCCompilerABI.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec3932879512.dir\Debug\\" /Fd"cmTryCompileExec3932879512.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.0\Modules\CMakeCCompilerABI.c"
+  
+  CMakeCCompilerABI.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3932879512.exe" /INCREMENTAL /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3932879512.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3932879512.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec3932879512.dir\Debug\CMakeCCompilerABI.obj
+  cmTryCompileExec3932879512.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3932879512.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec3932879512.dir\Debug\cmTryCom.078EAC45.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec3932879512.dir\Debug\cmTryCom.078EAC45.tlog\cmTryCompileExec3932879512.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec3932879512.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.23
+
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec3954432620.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:25:52 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec3954432620.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec3954432620.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec3954432620.dir\Debug\cmTryCom.9540524F.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec3954432620.dir\Debug\cmTryCom.9540524F.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec3954432620.dir\Debug\\" /Fd"cmTryCompileExec3954432620.dir\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue testCXXCompiler.cxx
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec3954432620.dir\Debug\\" /Fd"cmTryCompileExec3954432620.dir\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue testCXXCompiler.cxx
+  
+  testCXXCompiler.cxx
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3954432620.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3954432620.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3954432620.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec3954432620.dir\Debug\testCXXCompiler.obj
+  cmTryCompileExec3954432620.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3954432620.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec3954432620.dir\Debug\cmTryCom.9540524F.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec3954432620.dir\Debug\cmTryCom.9540524F.tlog\cmTryCompileExec3954432620.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec3954432620.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.16
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2144082002.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:25:54 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2144082002.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec2144082002.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec2144082002.dir\Debug\cmTryCom.B5C47EBB.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec2144082002.dir\Debug\cmTryCom.B5C47EBB.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2144082002.dir\Debug\\" /Fd"cmTryCompileExec2144082002.dir\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.0\Modules\CMakeCXXCompilerABI.cpp"
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2144082002.dir\Debug\\" /Fd"cmTryCompileExec2144082002.dir\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.0\Modules\CMakeCXXCompilerABI.cpp"
+  
+  CMakeCXXCompilerABI.cpp
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2144082002.exe" /INCREMENTAL /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2144082002.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2144082002.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec2144082002.dir\Debug\CMakeCXXCompilerABI.obj
+  cmTryCompileExec2144082002.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2144082002.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec2144082002.dir\Debug\cmTryCom.B5C47EBB.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec2144082002.dir\Debug\cmTryCom.B5C47EBB.tlog\cmTryCompileExec2144082002.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2144082002.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.15
+
+
+Determining if the include file errno.h exists passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2029118622.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:00 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2029118622.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec2029118622.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec2029118622.dir\Debug\cmTryCom.3B740D60.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec2029118622.dir\Debug\cmTryCom.3B740D60.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2029118622.dir\Debug\\" /Fd"cmTryCompileExec2029118622.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2029118622.dir\Debug\\" /Fd"cmTryCompileExec2029118622.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  
+  CheckIncludeFile.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2029118622.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2029118622.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2029118622.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec2029118622.dir\Debug\CheckIncludeFile.obj
+  cmTryCompileExec2029118622.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2029118622.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec2029118622.dir\Debug\cmTryCom.3B740D60.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec2029118622.dir\Debug\cmTryCom.3B740D60.tlog\cmTryCompileExec2029118622.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2029118622.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.16
+
+
+Determining if the include file fcntl.h exists passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec3855541448.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:02 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec3855541448.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec3855541448.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec3855541448.dir\Debug\cmTryCom.3B0E2030.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec3855541448.dir\Debug\cmTryCom.3B0E2030.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec3855541448.dir\Debug\\" /Fd"cmTryCompileExec3855541448.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec3855541448.dir\Debug\\" /Fd"cmTryCompileExec3855541448.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  
+  CheckIncludeFile.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3855541448.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3855541448.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3855541448.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec3855541448.dir\Debug\CheckIncludeFile.obj
+  cmTryCompileExec3855541448.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3855541448.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec3855541448.dir\Debug\cmTryCom.3B0E2030.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec3855541448.dir\Debug\cmTryCom.3B0E2030.tlog\cmTryCompileExec3855541448.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec3855541448.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.16
+
+
+Determining if the include file inttypes.h exists passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec149666821.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:04 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec149666821.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec149666821.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec149666821.dir\Debug\cmTryCom.C6FB8D2C.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec149666821.dir\Debug\cmTryCom.C6FB8D2C.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec149666821.dir\Debug\\" /Fd"cmTryCompileExec149666821.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec149666821.dir\Debug\\" /Fd"cmTryCompileExec149666821.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  
+  CheckIncludeFile.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec149666821.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec149666821.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec149666821.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec149666821.dir\Debug\CheckIncludeFile.obj
+  cmTryCompileExec149666821.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec149666821.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec149666821.dir\Debug\cmTryCom.C6FB8D2C.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec149666821.dir\Debug\cmTryCom.C6FB8D2C.tlog\cmTryCompileExec149666821.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec149666821.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.20
+
+
+Determining if the include file limits.h exists passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec1073870779.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:06 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1073870779.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec1073870779.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec1073870779.dir\Debug\cmTryCom.7409EEAB.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec1073870779.dir\Debug\cmTryCom.7409EEAB.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1073870779.dir\Debug\\" /Fd"cmTryCompileExec1073870779.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1073870779.dir\Debug\\" /Fd"cmTryCompileExec1073870779.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  
+  CheckIncludeFile.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1073870779.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1073870779.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1073870779.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec1073870779.dir\Debug\CheckIncludeFile.obj
+  cmTryCompileExec1073870779.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1073870779.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec1073870779.dir\Debug\cmTryCom.7409EEAB.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec1073870779.dir\Debug\cmTryCom.7409EEAB.tlog\cmTryCompileExec1073870779.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1073870779.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.12
+
+
+Determining if the include file malloc.h exists passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2296349908.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:07 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2296349908.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec2296349908.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec2296349908.dir\Debug\cmTryCom.DDFEB156.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec2296349908.dir\Debug\cmTryCom.DDFEB156.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2296349908.dir\Debug\\" /Fd"cmTryCompileExec2296349908.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2296349908.dir\Debug\\" /Fd"cmTryCompileExec2296349908.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  
+  CheckIncludeFile.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2296349908.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2296349908.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2296349908.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec2296349908.dir\Debug\CheckIncludeFile.obj
+  cmTryCompileExec2296349908.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2296349908.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec2296349908.dir\Debug\cmTryCom.DDFEB156.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec2296349908.dir\Debug\cmTryCom.DDFEB156.tlog\cmTryCompileExec2296349908.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2296349908.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.20
+
+
+Determining if the include file signal.h exists passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec1188953015.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:13 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1188953015.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec1188953015.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec1188953015.dir\Debug\cmTryCom.4015A1FB.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec1188953015.dir\Debug\cmTryCom.4015A1FB.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1188953015.dir\Debug\\" /Fd"cmTryCompileExec1188953015.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1188953015.dir\Debug\\" /Fd"cmTryCompileExec1188953015.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  
+  CheckIncludeFile.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1188953015.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1188953015.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1188953015.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec1188953015.dir\Debug\CheckIncludeFile.obj
+  cmTryCompileExec1188953015.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1188953015.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec1188953015.dir\Debug\cmTryCom.4015A1FB.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec1188953015.dir\Debug\cmTryCom.4015A1FB.tlog\cmTryCompileExec1188953015.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1188953015.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.14
+
+
+Determining if the include file stdint.h exists passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec4266819064.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:14 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec4266819064.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec4266819064.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec4266819064.dir\Debug\cmTryCom.14EF3949.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec4266819064.dir\Debug\cmTryCom.14EF3949.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec4266819064.dir\Debug\\" /Fd"cmTryCompileExec4266819064.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec4266819064.dir\Debug\\" /Fd"cmTryCompileExec4266819064.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  
+  CheckIncludeFile.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec4266819064.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec4266819064.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec4266819064.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec4266819064.dir\Debug\CheckIncludeFile.obj
+  cmTryCompileExec4266819064.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec4266819064.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec4266819064.dir\Debug\cmTryCom.14EF3949.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec4266819064.dir\Debug\cmTryCom.14EF3949.tlog\cmTryCompileExec4266819064.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec4266819064.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.18
+
+
+Determining if the include file sys/stat.h exists passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2984857932.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:24 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2984857932.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec2984857932.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec2984857932.dir\Debug\cmTryCom.75D2A2C0.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec2984857932.dir\Debug\cmTryCom.75D2A2C0.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2984857932.dir\Debug\\" /Fd"cmTryCompileExec2984857932.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2984857932.dir\Debug\\" /Fd"cmTryCompileExec2984857932.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  
+  CheckIncludeFile.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2984857932.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2984857932.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2984857932.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec2984857932.dir\Debug\CheckIncludeFile.obj
+  cmTryCompileExec2984857932.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2984857932.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec2984857932.dir\Debug\cmTryCom.75D2A2C0.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec2984857932.dir\Debug\cmTryCom.75D2A2C0.tlog\cmTryCompileExec2984857932.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2984857932.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.22
+
+
+Determining if the include file fenv.h exists passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec893123834.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:35 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec893123834.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec893123834.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec893123834.dir\Debug\cmTryCom.FD6815C5.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec893123834.dir\Debug\cmTryCom.FD6815C5.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec893123834.dir\Debug\\" /Fd"cmTryCompileExec893123834.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec893123834.dir\Debug\\" /Fd"cmTryCompileExec893123834.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckIncludeFile.c
+  
+  CheckIncludeFile.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec893123834.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec893123834.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec893123834.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec893123834.dir\Debug\CheckIncludeFile.obj
+  cmTryCompileExec893123834.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec893123834.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec893123834.dir\Debug\cmTryCom.FD6815C5.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec893123834.dir\Debug\cmTryCom.FD6815C5.tlog\cmTryCompileExec893123834.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec893123834.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.71
+
+
+Determining if the FE_ALL_EXCEPT exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2773614610.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:38 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2773614610.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec2773614610.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec2773614610.dir\Debug\cmTryCom.1FDA05A8.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec2773614610.dir\Debug\cmTryCom.1FDA05A8.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2773614610.dir\Debug\\" /Fd"cmTryCompileExec2773614610.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2773614610.dir\Debug\\" /Fd"cmTryCompileExec2773614610.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2773614610.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2773614610.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2773614610.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec2773614610.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec2773614610.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2773614610.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec2773614610.dir\Debug\cmTryCom.1FDA05A8.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec2773614610.dir\Debug\cmTryCom.1FDA05A8.tlog\cmTryCompileExec2773614610.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2773614610.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.33
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <fenv.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef FE_ALL_EXCEPT
+  return ((int*)(&FE_ALL_EXCEPT))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the FE_INEXACT exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec1444272868.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:40 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1444272868.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec1444272868.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec1444272868.dir\Debug\cmTryCom.4CDD8EA4.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec1444272868.dir\Debug\cmTryCom.4CDD8EA4.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1444272868.dir\Debug\\" /Fd"cmTryCompileExec1444272868.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1444272868.dir\Debug\\" /Fd"cmTryCompileExec1444272868.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1444272868.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1444272868.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1444272868.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec1444272868.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec1444272868.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1444272868.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec1444272868.dir\Debug\cmTryCom.4CDD8EA4.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec1444272868.dir\Debug\cmTryCom.4CDD8EA4.tlog\cmTryCompileExec1444272868.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1444272868.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.56
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <fenv.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef FE_INEXACT
+  return ((int*)(&FE_INEXACT))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the isinf exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec634952526.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:53 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec634952526.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec634952526.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec634952526.dir\Debug\cmTryCom.C4E8A776.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec634952526.dir\Debug\cmTryCom.C4E8A776.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec634952526.dir\Debug\\" /Fd"cmTryCompileExec634952526.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec634952526.dir\Debug\\" /Fd"cmTryCompileExec634952526.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec634952526.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec634952526.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec634952526.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec634952526.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec634952526.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec634952526.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec634952526.dir\Debug\cmTryCom.C4E8A776.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec634952526.dir\Debug\cmTryCom.C4E8A776.tlog\cmTryCompileExec634952526.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec634952526.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.59
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef isinf
+  return ((int*)(&isinf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the isnan exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec4000942350.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:26:58 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec4000942350.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec4000942350.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec4000942350.dir\Debug\cmTryCom.FEFD71E0.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec4000942350.dir\Debug\cmTryCom.FEFD71E0.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec4000942350.dir\Debug\\" /Fd"cmTryCompileExec4000942350.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec4000942350.dir\Debug\\" /Fd"cmTryCompileExec4000942350.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec4000942350.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec4000942350.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec4000942350.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec4000942350.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec4000942350.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec4000942350.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec4000942350.dir\Debug\cmTryCom.FEFD71E0.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec4000942350.dir\Debug\cmTryCom.FEFD71E0.tlog\cmTryCompileExec4000942350.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec4000942350.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.23
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef isnan
+  return ((int*)(&isnan))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the ceilf exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec257395850.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:00 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec257395850.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec257395850.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec257395850.dir\Debug\cmTryCom.46E2A5AE.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec257395850.dir\Debug\cmTryCom.46E2A5AE.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec257395850.dir\Debug\\" /Fd"cmTryCompileExec257395850.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec257395850.dir\Debug\\" /Fd"cmTryCompileExec257395850.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec257395850.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec257395850.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec257395850.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec257395850.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec257395850.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec257395850.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec257395850.dir\Debug\cmTryCom.46E2A5AE.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec257395850.dir\Debug\cmTryCom.46E2A5AE.tlog\cmTryCompileExec257395850.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec257395850.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.30
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef ceilf
+  return ((int*)(&ceilf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the floorf exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec967614520.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:01 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec967614520.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec967614520.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec967614520.dir\Debug\cmTryCom.E5C26492.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec967614520.dir\Debug\cmTryCom.E5C26492.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec967614520.dir\Debug\\" /Fd"cmTryCompileExec967614520.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec967614520.dir\Debug\\" /Fd"cmTryCompileExec967614520.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec967614520.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec967614520.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec967614520.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec967614520.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec967614520.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec967614520.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec967614520.dir\Debug\cmTryCom.E5C26492.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec967614520.dir\Debug\cmTryCom.E5C26492.tlog\cmTryCompileExec967614520.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec967614520.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.27
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef floorf
+  return ((int*)(&floorf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the fmodf exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec1648315854.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:03 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1648315854.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec1648315854.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec1648315854.dir\Debug\cmTryCom.25F26723.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec1648315854.dir\Debug\cmTryCom.25F26723.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1648315854.dir\Debug\\" /Fd"cmTryCompileExec1648315854.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1648315854.dir\Debug\\" /Fd"cmTryCompileExec1648315854.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1648315854.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1648315854.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1648315854.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec1648315854.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec1648315854.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1648315854.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec1648315854.dir\Debug\cmTryCom.25F26723.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec1648315854.dir\Debug\cmTryCom.25F26723.tlog\cmTryCompileExec1648315854.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1648315854.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.29
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef fmodf
+  return ((int*)(&fmodf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the log exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec3502859406.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:05 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec3502859406.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec3502859406.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec3502859406.dir\Debug\cmTryCom.16A90F5C.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec3502859406.dir\Debug\cmTryCom.16A90F5C.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec3502859406.dir\Debug\\" /Fd"cmTryCompileExec3502859406.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec3502859406.dir\Debug\\" /Fd"cmTryCompileExec3502859406.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3502859406.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3502859406.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3502859406.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec3502859406.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec3502859406.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3502859406.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec3502859406.dir\Debug\cmTryCom.16A90F5C.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec3502859406.dir\Debug\cmTryCom.16A90F5C.tlog\cmTryCompileExec3502859406.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec3502859406.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.30
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef log
+  return ((int*)(&log))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the log2 exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec1353501321.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:07 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1353501321.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec1353501321.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec1353501321.dir\Debug\cmTryCom.BB719658.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec1353501321.dir\Debug\cmTryCom.BB719658.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1353501321.dir\Debug\\" /Fd"cmTryCompileExec1353501321.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1353501321.dir\Debug\\" /Fd"cmTryCompileExec1353501321.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1353501321.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1353501321.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1353501321.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec1353501321.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec1353501321.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1353501321.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec1353501321.dir\Debug\cmTryCom.BB719658.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec1353501321.dir\Debug\cmTryCom.BB719658.tlog\cmTryCompileExec1353501321.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1353501321.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.33
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef log2
+  return ((int*)(&log2))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the log10 exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec3930523643.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:09 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec3930523643.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec3930523643.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec3930523643.dir\Debug\cmTryCom.640B016A.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec3930523643.dir\Debug\cmTryCom.640B016A.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec3930523643.dir\Debug\\" /Fd"cmTryCompileExec3930523643.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec3930523643.dir\Debug\\" /Fd"cmTryCompileExec3930523643.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3930523643.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3930523643.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec3930523643.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec3930523643.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec3930523643.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec3930523643.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec3930523643.dir\Debug\cmTryCom.640B016A.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec3930523643.dir\Debug\cmTryCom.640B016A.tlog\cmTryCompileExec3930523643.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec3930523643.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.21
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef log10
+  return ((int*)(&log10))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the exp exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2082233250.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:10 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2082233250.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec2082233250.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec2082233250.dir\Debug\cmTryCom.313799A6.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec2082233250.dir\Debug\cmTryCom.313799A6.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2082233250.dir\Debug\\" /Fd"cmTryCompileExec2082233250.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2082233250.dir\Debug\\" /Fd"cmTryCompileExec2082233250.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2082233250.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2082233250.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2082233250.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec2082233250.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec2082233250.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2082233250.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec2082233250.dir\Debug\cmTryCom.313799A6.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec2082233250.dir\Debug\cmTryCom.313799A6.tlog\cmTryCompileExec2082233250.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2082233250.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.33
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef exp
+  return ((int*)(&exp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the exp2 exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec1147665042.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:12 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1147665042.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec1147665042.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec1147665042.dir\Debug\cmTryCom.E50D2ACC.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec1147665042.dir\Debug\cmTryCom.E50D2ACC.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1147665042.dir\Debug\\" /Fd"cmTryCompileExec1147665042.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1147665042.dir\Debug\\" /Fd"cmTryCompileExec1147665042.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1147665042.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1147665042.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1147665042.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec1147665042.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec1147665042.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1147665042.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec1147665042.dir\Debug\cmTryCom.E50D2ACC.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec1147665042.dir\Debug\cmTryCom.E50D2ACC.tlog\cmTryCompileExec1147665042.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1147665042.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.19
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef exp2
+  return ((int*)(&exp2))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the nearbyintf exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2280559409.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:18 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2280559409.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec2280559409.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec2280559409.dir\Debug\cmTryCom.15EB607E.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec2280559409.dir\Debug\cmTryCom.15EB607E.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2280559409.dir\Debug\\" /Fd"cmTryCompileExec2280559409.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec2280559409.dir\Debug\\" /Fd"cmTryCompileExec2280559409.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2280559409.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2280559409.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2280559409.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec2280559409.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec2280559409.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2280559409.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec2280559409.dir\Debug\cmTryCom.15EB607E.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec2280559409.dir\Debug\cmTryCom.15EB607E.tlog\cmTryCompileExec2280559409.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2280559409.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.22
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <math.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef nearbyintf
+  return ((int*)(&nearbyintf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the strtoll exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec1288099680.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:38 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1288099680.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec1288099680.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec1288099680.dir\Debug\cmTryCom.CB4F6B3B.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec1288099680.dir\Debug\cmTryCom.CB4F6B3B.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1288099680.dir\Debug\\" /Fd"cmTryCompileExec1288099680.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1288099680.dir\Debug\\" /Fd"cmTryCompileExec1288099680.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1288099680.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1288099680.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1288099680.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec1288099680.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec1288099680.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1288099680.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec1288099680.dir\Debug\cmTryCom.CB4F6B3B.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec1288099680.dir\Debug\cmTryCom.CB4F6B3B.tlog\cmTryCompileExec1288099680.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1288099680.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.30
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdlib.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strtoll
+  return ((int*)(&strtoll))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the strerror exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec1229493496.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:41 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1229493496.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec1229493496.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec1229493496.dir\Debug\cmTryCom.39481F42.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec1229493496.dir\Debug\cmTryCom.39481F42.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1229493496.dir\Debug\\" /Fd"cmTryCompileExec1229493496.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1229493496.dir\Debug\\" /Fd"cmTryCompileExec1229493496.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+CheckSymbolExists.c(8): warning C4996: 'strerror': This function or variable may be unsafe. Consider using strerror_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1229493496.vcxproj]
+          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\string.h(168) : see declaration of 'strerror'
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1229493496.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1229493496.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1229493496.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec1229493496.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec1229493496.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1229493496.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec1229493496.dir\Debug\cmTryCom.39481F42.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec1229493496.dir\Debug\cmTryCom.39481F42.tlog\cmTryCompileExec1229493496.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1229493496.vcxproj" (default targets).
+
+Build succeeded.
+
+"C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1229493496.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  CheckSymbolExists.c(8): warning C4996: 'strerror': This function or variable may be unsafe. Consider using strerror_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details. [C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1229493496.vcxproj]
+
+    1 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.27
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <string.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strerror
+  return ((int*)(&strerror))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the strerror_s exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec824014419.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:44 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec824014419.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec824014419.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec824014419.dir\Debug\cmTryCom.0C0D5EB5.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec824014419.dir\Debug\cmTryCom.0C0D5EB5.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec824014419.dir\Debug\\" /Fd"cmTryCompileExec824014419.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec824014419.dir\Debug\\" /Fd"cmTryCompileExec824014419.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec824014419.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec824014419.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec824014419.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec824014419.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec824014419.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec824014419.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec824014419.dir\Debug\cmTryCom.0C0D5EB5.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec824014419.dir\Debug\cmTryCom.0C0D5EB5.tlog\cmTryCompileExec824014419.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec824014419.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.25
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <string.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strerror_s
+  return ((int*)(&strerror_s))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the _chsize_s exist passed with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec1748399872.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:27:47 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1748399872.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec1748399872.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec1748399872.dir\Debug\cmTryCom.01BF0198.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec1748399872.dir\Debug\cmTryCom.01BF0198.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1748399872.dir\Debug\\" /Fd"cmTryCompileExec1748399872.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"cmTryCompileExec1748399872.dir\Debug\\" /Fd"cmTryCompileExec1748399872.dir\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:queue CheckSymbolExists.c
+  
+  CheckSymbolExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1748399872.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1748399872.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec1748399872.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec1748399872.dir\Debug\CheckSymbolExists.obj
+  cmTryCompileExec1748399872.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec1748399872.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec1748399872.dir\Debug\cmTryCom.01BF0198.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec1748399872.dir\Debug\cmTryCom.01BF0198.tlog\cmTryCompileExec1748399872.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec1748399872.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.29
+
+File /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <io.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef _chsize_s
+  return ((int*)(&_chsize_s))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Performing C++ SOURCE FILE Test HAVE_INT64_T succeded with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2746931983.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:28:16 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2746931983.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec2746931983.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec2746931983.dir\Debug\cmTryCom.5BBB8777.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec2746931983.dir\Debug\cmTryCom.5BBB8777.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D HAVE_INT64_T /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2746931983.dir\Debug\\" /Fd"cmTryCompileExec2746931983.dir\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue src.cxx
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D HAVE_INT64_T /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2746931983.dir\Debug\\" /Fd"cmTryCompileExec2746931983.dir\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue src.cxx
+  
+  src.cxx
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2746931983.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2746931983.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2746931983.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec2746931983.dir\Debug\src.obj
+  cmTryCompileExec2746931983.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2746931983.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec2746931983.dir\Debug\cmTryCom.5BBB8777.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec2746931983.dir\Debug\cmTryCom.5BBB8777.tlog\cmTryCompileExec2746931983.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2746931983.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.27
+
+Source file was:
+
+    #include<sys/types.h>
+#include<inttypes.h>
+#include<stdint.h>
+ int64_t typeVar;
+    int main() {
+        return 0;
+    }
+    
+Performing C++ SOURCE FILE Test HAVE_UINT64_T succeded with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2253580597.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:28:18 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2253580597.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec2253580597.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec2253580597.dir\Debug\cmTryCom.1EE5DE88.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec2253580597.dir\Debug\cmTryCom.1EE5DE88.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D HAVE_UINT64_T /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2253580597.dir\Debug\\" /Fd"cmTryCompileExec2253580597.dir\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue src.cxx
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D HAVE_UINT64_T /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2253580597.dir\Debug\\" /Fd"cmTryCompileExec2253580597.dir\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue src.cxx
+  
+  src.cxx
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2253580597.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2253580597.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2253580597.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec2253580597.dir\Debug\src.obj
+  cmTryCompileExec2253580597.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2253580597.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec2253580597.dir\Debug\cmTryCom.1EE5DE88.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec2253580597.dir\Debug\cmTryCom.1EE5DE88.tlog\cmTryCompileExec2253580597.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2253580597.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.29
+
+Source file was:
+
+    #include<sys/types.h>
+#include<inttypes.h>
+#include<stdint.h>
+ uint64_t typeVar;
+    int main() {
+        return 0;
+    }
+    
+Performing C++ SOURCE FILE Test LLVM_HAS_ATOMICS succeded with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2289503771.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:28:21 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2289503771.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec2289503771.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec2289503771.dir\Debug\cmTryCom.A159345B.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec2289503771.dir\Debug\cmTryCom.A159345B.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D LLVM_HAS_ATOMICS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2289503771.dir\Debug\\" /Fd"cmTryCompileExec2289503771.dir\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue src.cxx
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D LLVM_HAS_ATOMICS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2289503771.dir\Debug\\" /Fd"cmTryCompileExec2289503771.dir\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue src.cxx
+  
+  src.cxx
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2289503771.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2289503771.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2289503771.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec2289503771.dir\Debug\src.obj
+  cmTryCompileExec2289503771.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2289503771.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec2289503771.dir\Debug\cmTryCom.A159345B.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec2289503771.dir\Debug\cmTryCom.A159345B.tlog\cmTryCompileExec2289503771.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2289503771.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.84
+
+Source file was:
+
+#ifdef _MSC_VER
+#include <windows.h>
+#endif
+int main() {
+#ifdef _MSC_VER
+        volatile LONG val = 1;
+        MemoryBarrier();
+        InterlockedCompareExchange(&val, 0, 1);
+        InterlockedIncrement(&val);
+        InterlockedDecrement(&val);
+#else
+        volatile unsigned long val = 1;
+        __sync_synchronize();
+        __sync_val_compare_and_swap(&val, 1, 0);
+        __sync_add_and_fetch(&val, 1);
+        __sync_sub_and_fetch(&val, 1);
+#endif
+        return 0;
+      }
+
+Performing C++ SOURCE FILE Test HAVE_ELMCB_PCSTR succeded with the following output:
+Change Dir: /SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/12.0/bin/MSBuild.exe" "cmTryCompileExec2233210143.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=12.0"
+Microsoft (R) Build Engine version 12.0.21005.1
+[Microsoft .NET Framework, version 4.0.30319.18444]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 6/27/2014 10:28:24 AM.
+Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2233210143.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTryCompileExec2233210143.dir\Debug\".
+  Creating directory "\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTryCompileExec2233210143.dir\Debug\cmTryCom.00E620D3.tlog\".
+InitializeBuildStatus:
+  Creating "cmTryCompileExec2233210143.dir\Debug\cmTryCom.00E620D3.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D HAVE_ELMCB_PCSTR /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2233210143.dir\Debug\\" /Fd"cmTryCompileExec2233210143.dir\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue src.cxx
+  Microsoft (R) C/C++ Optimizing Compiler Version 18.00.21005.1 for x86
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D HAVE_ELMCB_PCSTR /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR /Fo"cmTryCompileExec2233210143.dir\Debug\\" /Fd"cmTryCompileExec2233210143.dir\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:queue src.cxx
+  
+  src.cxx
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:QUEUE /OUT:"\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2233210143.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2233210143.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"/SwiftShader/build/VisualStudio2013/CMakeFiles/CMakeTmp/Debug/cmTryCompileExec2233210143.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /debug cmTryCompileExec2233210143.dir\Debug\src.obj
+  cmTryCompileExec2233210143.vcxproj -> \SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\Debug\cmTryCompileExec2233210143.exe
+FinalizeBuildStatus:
+  Deleting file "cmTryCompileExec2233210143.dir\Debug\cmTryCom.00E620D3.tlog\unsuccessfulbuild".
+  Touching "cmTryCompileExec2233210143.dir\Debug\cmTryCom.00E620D3.tlog\cmTryCompileExec2233210143.lastbuildstate".
+Done Building Project "C:\SwiftShader\build\VisualStudio2013\CMakeFiles\CMakeTmp\cmTryCompileExec2233210143.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.80
+
+Source file was:
+
+    #include <windows.h>
+    #include <imagehlp.h>
+    extern "C" void foo(PENUMLOADED_MODULES_CALLBACK);
+    extern "C" void foo(BOOL(CALLBACK*)(PCSTR,ULONG_PTR,ULONG,PVOID));
+    int main(){return 0;}
