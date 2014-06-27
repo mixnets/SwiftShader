@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="Windows-1252"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\RuntimeDyld\GDBRegistrar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\RuntimeDyld\RuntimeDyld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\RuntimeDyld\RuntimeDyldELF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\RuntimeDyld\RuntimeDyldMachO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\RuntimeDyld\JITRegistrar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\RuntimeDyld\ObjectImageCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\RuntimeDyld\RuntimeDyldELF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\RuntimeDyld\RuntimeDyldImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\RuntimeDyld\RuntimeDyldMachO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="\SwiftShader\src\LLVM\lib\ExecutionEngine\RuntimeDyld\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{B58C3194-3EF0-44A4-B09C-357272EE91E8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{549303A1-1216-4B7E-8A9B-60D599358CE2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="Windows-1252"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="\SwiftShader\src\LLVM\include\llvm\IR\CMakeLists.txt" />
+    <CustomBuild Include="..\..\..\CMakeFiles\ed47f9c432a33890216ede468a29d781\Intrinsics.gen.tmp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\CMakeFiles\ed47f9c432a33890216ede468a29d781\Intrinsics.gen.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\CMakeFiles\4e78b41945e4d8582b84afd4bd5e2152\intrinsics_gen.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CMakeFiles\intrinsics_gen" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{88D6FFE6-9EE3-438A-9D47-7E1FA53FFD56}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

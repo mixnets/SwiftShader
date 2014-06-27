@@ -1,0 +1,335 @@
+﻿<?xml version="1.0" encoding="Windows-1252"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{0C93BFB7-330B-47B4-8E26-6BA179F20F77}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>intrinsics_gen</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+    <PropertyGroup>
+      <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\include\llvm\IR;\SwiftShader\src\LLVM\include\llvm\IR;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\include\llvm\IR;\SwiftShader\src\LLVM\include\llvm\IR;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\include\llvm\IR;\SwiftShader\src\LLVM\include\llvm\IR;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>\SwiftShader\build\VisualStudio2013\include\llvm\IR;\SwiftShader\src\LLVM\include\llvm\IR;\SwiftShader\build\VisualStudio2013\include;\SwiftShader\src\LLVM\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="\SwiftShader\src\LLVM\include\llvm\IR\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule /SwiftShader/src/LLVM/include/llvm/IR/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -H/SwiftShader/src/LLVM -B../../.. --check-stamp-file \SwiftShader\build\VisualStudio2013\include\llvm\IR\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/SwiftShader/src/LLVM/include/llvm/IR/CMakeLists.txt;\SwiftShader\src\LLVM\include\llvm\IR\CMakeLists.txt;\SwiftShader\src\LLVM\include\llvm\IR\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule /SwiftShader/src/LLVM/include/llvm/IR/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -H/SwiftShader/src/LLVM -B../../.. --check-stamp-file \SwiftShader\build\VisualStudio2013\include\llvm\IR\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/SwiftShader/src/LLVM/include/llvm/IR/CMakeLists.txt;\SwiftShader\src\LLVM\include\llvm\IR\CMakeLists.txt;\SwiftShader\src\LLVM\include\llvm\IR\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule /SwiftShader/src/LLVM/include/llvm/IR/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -H/SwiftShader/src/LLVM -B../../.. --check-stamp-file \SwiftShader\build\VisualStudio2013\include\llvm\IR\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">/SwiftShader/src/LLVM/include/llvm/IR/CMakeLists.txt;\SwiftShader\src\LLVM\include\llvm\IR\CMakeLists.txt;\SwiftShader\src\LLVM\include\llvm\IR\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule /SwiftShader/src/LLVM/include/llvm/IR/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -H/SwiftShader/src/LLVM -B../../.. --check-stamp-file \SwiftShader\build\VisualStudio2013\include\llvm\IR\CMakeFiles\generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">/SwiftShader/src/LLVM/include/llvm/IR/CMakeLists.txt;\SwiftShader\src\LLVM\include\llvm\IR\CMakeLists.txt;\SwiftShader\src\LLVM\include\llvm\IR\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\..\CMakeFiles\ed47f9c432a33890216ede468a29d781\Intrinsics.gen.tmp.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Intrinsics.gen...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+..\..\..\bin\Debug\llvm-tblgen.exe -gen-intrinsic -I /SwiftShader/src/LLVM/include/llvm/IR -I /SwiftShader/src/LLVM/lib/Target -I /SwiftShader/src/LLVM/include /SwiftShader/src/LLVM/include/llvm/IR/Intrinsics.td -o /SwiftShader/build/VisualStudio2013/include/llvm/IR/Intrinsics.gen.tmp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/SwiftShader/build/VisualStudio2013/CMakeFiles/ed47f9c432a33890216ede468a29d781/Intrinsics.gen.tmp.rule;\SwiftShader\build\VisualStudio2013\bin\Debug\llvm-tblgen.exe;\SwiftShader\src\LLVM\include\llvm\IR\Intrinsics.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsAArch64.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsARM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsHexagon.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsMips.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsNVVM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsPowerPC.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsR600.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsX86.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsXCore.td;\SwiftShader\src\LLVM\include\llvm\CodeGen\ValueTypes.td;\SwiftShader\src\LLVM\include\llvm\IR\Intrinsics.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsAArch64.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsARM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsHexagon.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsMips.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsNVVM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsPowerPC.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsR600.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsX86.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsXCore.td;\SwiftShader\src\LLVM\include\llvm\Option\OptParser.td;\SwiftShader\src\LLVM\include\llvm\Target\Target.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetCallingConv.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetItinerary.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetSchedule.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetSelectionDAG.td;\SwiftShader\src\LLVM\include\llvm\IR\Intrinsics.td;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen.tmp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Intrinsics.gen...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+..\..\..\bin\Release\llvm-tblgen.exe -gen-intrinsic -I /SwiftShader/src/LLVM/include/llvm/IR -I /SwiftShader/src/LLVM/lib/Target -I /SwiftShader/src/LLVM/include /SwiftShader/src/LLVM/include/llvm/IR/Intrinsics.td -o /SwiftShader/build/VisualStudio2013/include/llvm/IR/Intrinsics.gen.tmp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/SwiftShader/build/VisualStudio2013/CMakeFiles/ed47f9c432a33890216ede468a29d781/Intrinsics.gen.tmp.rule;\SwiftShader\build\VisualStudio2013\bin\Release\llvm-tblgen.exe;\SwiftShader\src\LLVM\include\llvm\IR\Intrinsics.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsAArch64.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsARM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsHexagon.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsMips.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsNVVM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsPowerPC.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsR600.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsX86.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsXCore.td;\SwiftShader\src\LLVM\include\llvm\CodeGen\ValueTypes.td;\SwiftShader\src\LLVM\include\llvm\IR\Intrinsics.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsAArch64.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsARM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsHexagon.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsMips.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsNVVM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsPowerPC.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsR600.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsX86.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsXCore.td;\SwiftShader\src\LLVM\include\llvm\Option\OptParser.td;\SwiftShader\src\LLVM\include\llvm\Target\Target.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetCallingConv.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetItinerary.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetSchedule.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetSelectionDAG.td;\SwiftShader\src\LLVM\include\llvm\IR\Intrinsics.td;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen.tmp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Intrinsics.gen...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+..\..\..\bin\MinSizeRel\llvm-tblgen.exe -gen-intrinsic -I /SwiftShader/src/LLVM/include/llvm/IR -I /SwiftShader/src/LLVM/lib/Target -I /SwiftShader/src/LLVM/include /SwiftShader/src/LLVM/include/llvm/IR/Intrinsics.td -o /SwiftShader/build/VisualStudio2013/include/llvm/IR/Intrinsics.gen.tmp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">/SwiftShader/build/VisualStudio2013/CMakeFiles/ed47f9c432a33890216ede468a29d781/Intrinsics.gen.tmp.rule;\SwiftShader\build\VisualStudio2013\bin\MinSizeRel\llvm-tblgen.exe;\SwiftShader\src\LLVM\include\llvm\IR\Intrinsics.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsAArch64.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsARM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsHexagon.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsMips.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsNVVM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsPowerPC.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsR600.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsX86.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsXCore.td;\SwiftShader\src\LLVM\include\llvm\CodeGen\ValueTypes.td;\SwiftShader\src\LLVM\include\llvm\IR\Intrinsics.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsAArch64.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsARM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsHexagon.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsMips.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsNVVM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsPowerPC.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsR600.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsX86.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsXCore.td;\SwiftShader\src\LLVM\include\llvm\Option\OptParser.td;\SwiftShader\src\LLVM\include\llvm\Target\Target.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetCallingConv.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetItinerary.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetSchedule.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetSelectionDAG.td;\SwiftShader\src\LLVM\include\llvm\IR\Intrinsics.td;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen.tmp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Intrinsics.gen...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+..\..\..\bin\RelWithDebInfo\llvm-tblgen.exe -gen-intrinsic -I /SwiftShader/src/LLVM/include/llvm/IR -I /SwiftShader/src/LLVM/lib/Target -I /SwiftShader/src/LLVM/include /SwiftShader/src/LLVM/include/llvm/IR/Intrinsics.td -o /SwiftShader/build/VisualStudio2013/include/llvm/IR/Intrinsics.gen.tmp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">/SwiftShader/build/VisualStudio2013/CMakeFiles/ed47f9c432a33890216ede468a29d781/Intrinsics.gen.tmp.rule;\SwiftShader\build\VisualStudio2013\bin\RelWithDebInfo\llvm-tblgen.exe;\SwiftShader\src\LLVM\include\llvm\IR\Intrinsics.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsAArch64.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsARM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsHexagon.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsMips.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsNVVM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsPowerPC.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsR600.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsX86.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsXCore.td;\SwiftShader\src\LLVM\include\llvm\CodeGen\ValueTypes.td;\SwiftShader\src\LLVM\include\llvm\IR\Intrinsics.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsAArch64.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsARM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsHexagon.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsMips.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsNVVM.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsPowerPC.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsR600.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsX86.td;\SwiftShader\src\LLVM\include\llvm\IR\IntrinsicsXCore.td;\SwiftShader\src\LLVM\include\llvm\Option\OptParser.td;\SwiftShader\src\LLVM\include\llvm\Target\Target.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetCallingConv.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetItinerary.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetSchedule.td;\SwiftShader\src\LLVM\include\llvm\Target\TargetSelectionDAG.td;\SwiftShader\src\LLVM\include\llvm\IR\Intrinsics.td;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen.tmp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\..\CMakeFiles\ed47f9c432a33890216ede468a29d781\Intrinsics.gen.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E copy_if_different /SwiftShader/build/VisualStudio2013/include/llvm/IR/Intrinsics.gen.tmp /SwiftShader/build/VisualStudio2013/include/llvm/IR/Intrinsics.gen
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/SwiftShader/build/VisualStudio2013/CMakeFiles/ed47f9c432a33890216ede468a29d781/Intrinsics.gen.rule;\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen.tmp;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E copy_if_different /SwiftShader/build/VisualStudio2013/include/llvm/IR/Intrinsics.gen.tmp /SwiftShader/build/VisualStudio2013/include/llvm/IR/Intrinsics.gen
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/SwiftShader/build/VisualStudio2013/CMakeFiles/ed47f9c432a33890216ede468a29d781/Intrinsics.gen.rule;\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen.tmp;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E copy_if_different /SwiftShader/build/VisualStudio2013/include/llvm/IR/Intrinsics.gen.tmp /SwiftShader/build/VisualStudio2013/include/llvm/IR/Intrinsics.gen
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">/SwiftShader/build/VisualStudio2013/CMakeFiles/ed47f9c432a33890216ede468a29d781/Intrinsics.gen.rule;\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen.tmp;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+"C:\Program Files (x86)\CMake\bin\cmake.exe" -E copy_if_different /SwiftShader/build/VisualStudio2013/include/llvm/IR/Intrinsics.gen.tmp /SwiftShader/build/VisualStudio2013/include/llvm/IR/Intrinsics.gen
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">/SwiftShader/build/VisualStudio2013/CMakeFiles/ed47f9c432a33890216ede468a29d781/Intrinsics.gen.rule;\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen.tmp;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\..\CMakeFiles\4e78b41945e4d8582b84afd4bd5e2152\intrinsics_gen.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/SwiftShader/build/VisualStudio2013/CMakeFiles/4e78b41945e4d8582b84afd4bd5e2152/intrinsics_gen.rule;\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\CMakeFiles\intrinsics_gen</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">/SwiftShader/build/VisualStudio2013/CMakeFiles/4e78b41945e4d8582b84afd4bd5e2152/intrinsics_gen.rule;\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\CMakeFiles\intrinsics_gen</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">/SwiftShader/build/VisualStudio2013/CMakeFiles/4e78b41945e4d8582b84afd4bd5e2152/intrinsics_gen.rule;\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\CMakeFiles\intrinsics_gen</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">/SwiftShader/build/VisualStudio2013/CMakeFiles/4e78b41945e4d8582b84afd4bd5e2152/intrinsics_gen.rule;\SwiftShader\build\VisualStudio2013\include\llvm\IR\Intrinsics.gen;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">\SwiftShader\build\VisualStudio2013\include\llvm\IR\CMakeFiles\intrinsics_gen</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CMakeFiles\intrinsics_gen" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/ZERO_CHECK.vcxproj">
+      <Project>16BB982C-8B93-4DE6-8553-EADDFCE6FECD</Project>
+    </ProjectReference>
+    <ProjectReference Include="/SwiftShader/build/VisualStudio2013/utils/TableGen/llvm-tblgen.vcxproj">
+      <Project>5F02D138-D772-4F62-A6F8-577F7E5829A3</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
