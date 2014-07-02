@@ -1,0 +1,6 @@
+Code-Review+2: Nicolas Capens <nicolascapens@google.com>
+Submitted-by: Nicolas Capens <nicolascapens@google.com>
+Submitted-at: Wed, 02 Jul 2014 16:37:44 +0000
+Reviewed-on: https://swiftshader-review.googlesource.com/1181
+Project: SwiftShader
+Branch: refs/heads/llvm-3.4-upgrade
