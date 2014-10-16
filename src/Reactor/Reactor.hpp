@@ -9,19 +9,40 @@
 // or implied, including but not limited to any patent rights, are granted to you.
 //
 
+#ifndef BRANCHING_DEFINITIONS
+#define BRANCHING_DEFINITIONS
+
 #include "Nucleus.hpp"
 #include "Routine.hpp"
 
 namespace sw
 {
-	#define For(init, cond, inc)                     \
-	init;                                            \
-	for(llvm::BasicBlock *loopBB__ = beginLoop(),    \
-		*bodyBB__ = Nucleus::createBasicBlock(),        \
-		*endBB__ = Nucleus::createBasicBlock(),         \
-		*onceBB__ = endBB__;                         \
-		onceBB__ && branch(cond, bodyBB__, endBB__); \
-		inc, onceBB__ = 0, Nucleus::createBr(loopBB__), Nucleus::setInsertBlock(endBB__))
+	class ForContainer {
+	public:
+		ForContainer(RValue<Bool> cond)
+		  : loopBB(beginLoop())
+		  , bodyBB(Nucleus::createBasicBlock())
+		  , endBB(Nucleus::createBasicBlock())
+		  , doIncrement(true)
+		{
+			branch(cond, bodyBB, endBB);
+		}
+		bool loop() const { return doIncrement; }
+		void increment() {
+			Nucleus::createBr(loopBB);
+			Nucleus::setInsertBlock(endBB);
+			doIncrement = false;
+		}
+	private:
+		llvm::BasicBlock* loopBB;
+		llvm::BasicBlock* bodyBB;
+		llvm::BasicBlock* endBB;
+		bool doIncrement;
+	};
+
+	#define For(init, cond, inc) \
+	init;                        \
+	for (ForContainer fc(cond); fc.loop(); inc, fc.increment())
 
 	#define While(cond) For(((void*)0), cond, ((void*)0))
 
@@ -37,18 +58,57 @@ namespace sw
 		Nucleus::setInsertBlock(end); \
 	}
 
-	#define If(cond)                                                              \
-	for(llvm::BasicBlock *trueBB__ = Nucleus::createBasicBlock(), \
-		*falseBB__ = Nucleus::createBasicBlock(),                 \
-		*endBB__ = Nucleus::createBasicBlock(),                   \
-		*onceBB__ = endBB__;                                   \
-		onceBB__ && branch(cond, trueBB__, falseBB__);         \
-		onceBB__ = 0, Nucleus::createBr(endBB__), Nucleus::setInsertBlock(falseBB__), Nucleus::createBr(endBB__), Nucleus::setInsertBlock(endBB__))
+	class IfContainer {
+	public:
+		IfContainer(RValue<Bool> cond)
+		  : trueBB(Nucleus::createBasicBlock())
+		  , falseBB(Nucleus::createBasicBlock())
+		  , endBB(Nucleus::createBasicBlock())
+		  , doIncrement(true)
+		{
+			branch(cond, trueBB, falseBB);
+		}
+		bool loop() const { return doIncrement; }
+		void inc() {
+			Nucleus::createBr(endBB);
+			Nucleus::setInsertBlock(falseBB);
+			Nucleus::createBr(endBB);
+			Nucleus::setInsertBlock(endBB);
+			doIncrement = false;
+		}
+	private:
+		llvm::BasicBlock* trueBB;
+		llvm::BasicBlock* falseBB;
+		llvm::BasicBlock* endBB;
+		bool doIncrement;
+	};
 
-	#define Else                                            \
-	for(llvm::BasicBlock *endBB__ = Nucleus::getInsertBlock(), \
-		*falseBB__ = Nucleus::getPredecessor(endBB__),         \
-		*onceBB__ = endBB__;                                \
-		onceBB__ && elseBlock(falseBB__);                   \
-		onceBB__ = 0, Nucleus::createBr(endBB__), Nucleus::setInsertBlock(endBB__))
+	#define If(cond) \
+	for (IfContainer ic(cond); ic.loop(); ic.inc())
+
+	class ElseContainer {
+	public:
+		ElseContainer()
+		  : endBB(Nucleus::getInsertBlock())
+		  , falseBB(Nucleus::createBasicBlock())
+		  , doIncrement(true)
+		{
+			elseBlock(falseBB);
+		}
+		bool loop() const { return doIncrement; }
+		void inc() {
+			Nucleus::createBr(endBB);
+			Nucleus::setInsertBlock(endBB);
+			doIncrement = false;
+		}
+	private:
+		llvm::BasicBlock* endBB;
+		llvm::BasicBlock* falseBB;
+		bool doIncrement;
+	};
+
+	#define Else \
+	for (ElseContainer ec; ec.loop(); ec.inc())
 }
+
+#endif
