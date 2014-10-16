@@ -6824,20 +6824,16 @@ namespace sw
 		return loopBB;
 	}
 
-	bool branch(RValue<Bool> cmp, BasicBlock *bodyBB, BasicBlock *endBB)
+	void branch(RValue<Bool> cmp, BasicBlock *bodyBB, BasicBlock *endBB)
 	{
 		Nucleus::createCondBr(cmp.value, bodyBB, endBB);
 		Nucleus::setInsertBlock(bodyBB);
-
-		return true;
 	}
 
-	bool elseBlock(BasicBlock *falseBB)
+	void elseBlock(BasicBlock *falseBB)
 	{
 		falseBB->back().eraseFromParent();
 		Nucleus::setInsertBlock(falseBB);
-
-		return true;
 	}
 
 	RValue<Long> Ticks()
