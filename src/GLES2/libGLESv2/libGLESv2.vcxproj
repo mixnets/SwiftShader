@@ -90,8 +90,8 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\GLES2\$(Configuration)\"
+copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\GLES2\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -123,8 +123,8 @@ copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Com
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\GLES2\$(Configuration)\"
+copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\GLES2\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
@@ -155,8 +155,8 @@ copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Com
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\GLES2\$(Configuration)\"
+copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\GLES2\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

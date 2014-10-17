@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E746FCA9-64C3-433E-85E8-9A5A67AB7ED6}</ProjectGuid>
+    <ProjectGuid>{2645746D-EB1F-482E-B597-CB29CAE9AA26}</ProjectGuid>
     <RootNamespace>libEGL</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -88,8 +88,8 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\RAD\$(Configuration)\"
+copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\RAD\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -115,8 +115,8 @@ copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Comman
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\RAD\$(Configuration)\"
+copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\RAD\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
@@ -143,8 +143,8 @@ copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Comman
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\RAD\$(Configuration)\"
+copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\RAD\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

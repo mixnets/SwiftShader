@@ -15,7 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B5871A7A-968C-42E3-A33B-981E6F448E78}</ProjectGuid>
+    <ProjectGuid>{5DCEFC17-513C-4238-9E5D-9647D1389943}</ProjectGuid>
     <RootNamespace>libGLESv2</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -90,8 +90,8 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\RAD\$(Configuration)\"
+copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\RAD\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -123,8 +123,8 @@ copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Com
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\RAD\$(Configuration)\"
+copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\RAD\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
@@ -155,8 +155,8 @@ copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Com
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\RAD\$(Configuration)\"
+copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\RAD\$(Configuration)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -223,7 +223,7 @@ copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Com
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
     <ProjectReference Include="..\compiler\Compiler.vcxproj">
-      <Project>{5b3a6db8-1e7e-40d7-92b9-da8aae619fad}</Project>
+      <Project>{320432a2-8b1c-48f3-a123-1ce0dd01af45}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
