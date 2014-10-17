@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <time.h>
 
+#include <EGL/egl.h>
+
 RADdevice device;
 RADqueue queue;
 bool useCopyQueue = true;
@@ -86,11 +88,7 @@ bool benchmark = false;
 void InitRAD()
 {
     // obfuscated string for radGetProcAddress
-#ifdef _WIN32
-    PFNRADGETPROCADDRESSPROC getProc = (PFNRADGETPROCADDRESSPROC)wglGetProcAddress("fs932040fd");
-#elif __linux__
-    PFNRADGETPROCADDRESSPROC getProc = (PFNRADGETPROCADDRESSPROC)glXGetProcAddressARB((const GLubyte *)"fs932040fd");
-#endif
+	PFNRADGETPROCADDRESSPROC getProc = (PFNRADGETPROCADDRESSPROC)eglGetProcAddress("radGetProcAddress");
     radLoadProcs(getProc);
 
     // Create the "global" device and one queue

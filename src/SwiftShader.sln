@@ -246,6 +246,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "preprocessor", "RAD\compiler\preprocessor\preprocessor.vcxproj", "{E7E3EC61-A68D-4095-BFEA-AD8C5488D1C1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rad", "..\tests\HelloRAD\rad.vcxproj", "{B4537008-1302-4EE7-98C8-6897472B9E36}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2645746D-EB1F-482E-B597-CB29CAE9AA26} = {2645746D-EB1F-482E-B597-CB29CAE9AA26}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
