@@ -9,106 +9,80 @@
 // or implied, including but not limited to any patent rights, are granted to you.
 //
 
-#ifndef BRANCHING_DEFINITIONS
-#define BRANCHING_DEFINITIONS
+#ifndef sw_Reactor_hpp
+#define sw_Reactor_hpp
 
 #include "Nucleus.hpp"
-#include "Routine.hpp"
 
 namespace sw
 {
-	class ForContainer {
+	class ForHandlerImpl;
+	class ForHandler
+	{
 	public:
-		ForContainer(RValue<Bool> cond)
-		  : loopBB(beginLoop())
-		  , bodyBB(Nucleus::createBasicBlock())
-		  , endBB(Nucleus::createBasicBlock())
-		  , doIncrement(true)
-		{
-			branch(cond, bodyBB, endBB);
-		}
-		bool loop() const { return doIncrement; }
-		void increment() {
-			Nucleus::createBr(loopBB);
-			Nucleus::setInsertBlock(endBB);
-			doIncrement = false;
-		}
+		ForHandler(RValue<Bool> cond);
+		~ForHandler();
+		operator bool() const;
+		void operator++();
 	private:
-		llvm::BasicBlock* loopBB;
-		llvm::BasicBlock* bodyBB;
-		llvm::BasicBlock* endBB;
-		bool doIncrement;
+		ForHandlerImpl* impl;
 	};
 
 	#define For(init, cond, inc) \
 	init;                        \
-	for (ForContainer fc(cond); fc.loop(); inc, fc.increment())
+	for (ForHandler fc(cond); fc; inc, ++fc)
 
-	#define While(cond) For(((void*)0), cond, ((void*)0))
+	#define While(cond) \
+	for (ForHandler fc(cond); fc; ++fc)
+
+	class DoUntilHandlerImpl;
+	class DoUntilHandler
+	{
+	public:
+		DoUntilHandler();
+		~DoUntilHandler();
+		void until(RValue<Bool> cond);
+	private:
+		DoUntilHandlerImpl* impl;
+	};
 
 	#define Do \
-	{ \
-		llvm::BasicBlock *body = Nucleus::createBasicBlock(); \
-		Nucleus::createBr(body); \
-		Nucleus::setInsertBlock(body);
+	do { \
+	DoUntilHandler duh;
 
 	#define Until(cond) \
-		llvm::BasicBlock *end = Nucleus::createBasicBlock(); \
-		Nucleus::createCondBr((cond).value, end, body); \
-		Nucleus::setInsertBlock(end); \
-	}
+	duh.until(cond); \
+	} while (false)
 
-	class IfContainer {
+	class IfHandlerImpl;
+	class IfHandler
+	{
 	public:
-		IfContainer(RValue<Bool> cond)
-		  : trueBB(Nucleus::createBasicBlock())
-		  , falseBB(Nucleus::createBasicBlock())
-		  , endBB(Nucleus::createBasicBlock())
-		  , doIncrement(true)
-		{
-			branch(cond, trueBB, falseBB);
-		}
-		bool loop() const { return doIncrement; }
-		void inc() {
-			Nucleus::createBr(endBB);
-			Nucleus::setInsertBlock(falseBB);
-			Nucleus::createBr(endBB);
-			Nucleus::setInsertBlock(endBB);
-			doIncrement = false;
-		}
+		IfHandler(RValue<Bool> cond);
+		~IfHandler();
+		operator bool() const;
+		void operator++();
 	private:
-		llvm::BasicBlock* trueBB;
-		llvm::BasicBlock* falseBB;
-		llvm::BasicBlock* endBB;
-		bool doIncrement;
+		IfHandlerImpl* impl;
 	};
 
 	#define If(cond) \
-	for (IfContainer ic(cond); ic.loop(); ic.inc())
+	for (IfHandler ic(cond); ic; ++ic)
 
-	class ElseContainer {
+	class ElseHandlerImpl;
+	class ElseHandler
+	{
 	public:
-		ElseContainer()
-		  : endBB(Nucleus::getInsertBlock())
-		  , falseBB(Nucleus::createBasicBlock())
-		  , doIncrement(true)
-		{
-			elseBlock(falseBB);
-		}
-		bool loop() const { return doIncrement; }
-		void inc() {
-			Nucleus::createBr(endBB);
-			Nucleus::setInsertBlock(endBB);
-			doIncrement = false;
-		}
+		ElseHandler();
+		~ElseHandler();
+		operator bool() const;
+		void operator++();
 	private:
-		llvm::BasicBlock* endBB;
-		llvm::BasicBlock* falseBB;
-		bool doIncrement;
+		ElseHandlerImpl* impl;
 	};
 
 	#define Else \
-	for (ElseContainer ec; ec.loop(); ec.inc())
+	for (ElseHandler ec; ec; ++ec)
 }
 
-#endif
+#endif // sw_Reactor_hpp

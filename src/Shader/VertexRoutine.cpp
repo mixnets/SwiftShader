@@ -80,7 +80,7 @@ namespace sw
 				batch += sizeof(unsigned int);
 				count--;
 			}
-			Until(count == 0)
+			Until(count == 0);
 
 			Return();
 		}
