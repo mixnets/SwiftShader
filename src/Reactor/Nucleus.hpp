@@ -2471,8 +2471,8 @@ namespace sw
 	};
 
 	llvm::BasicBlock *beginLoop();
-	bool branch(RValue<Bool> cmp, llvm::BasicBlock *bodyBB, llvm::BasicBlock *endBB);
-	bool elseBlock(llvm::BasicBlock *falseBB);
+	void branch(RValue<Bool> cmp, llvm::BasicBlock *bodyBB, llvm::BasicBlock *endBB);
+	void elseBlock(llvm::BasicBlock *falseBB);
 
 	void Return();
 	void Return(bool ret);

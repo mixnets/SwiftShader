@@ -264,6 +264,7 @@
     <ClCompile Include="Nucleus.cpp" />
     <ClCompile Include="Routine.cpp" />
     <ClCompile Include="RoutineManager.cpp" />
+    <ClCompile Include="Reactor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DLL.hpp" />

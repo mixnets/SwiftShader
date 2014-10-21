@@ -9,46 +9,80 @@
 // or implied, including but not limited to any patent rights, are granted to you.
 //
 
+#ifndef sw_Reactor_hpp
+#define sw_Reactor_hpp
+
 #include "Nucleus.hpp"
-#include "Routine.hpp"
 
 namespace sw
 {
-	#define For(init, cond, inc)                     \
-	init;                                            \
-	for(llvm::BasicBlock *loopBB__ = beginLoop(),    \
-		*bodyBB__ = Nucleus::createBasicBlock(),        \
-		*endBB__ = Nucleus::createBasicBlock(),         \
-		*onceBB__ = endBB__;                         \
-		onceBB__ && branch(cond, bodyBB__, endBB__); \
-		inc, onceBB__ = 0, Nucleus::createBr(loopBB__), Nucleus::setInsertBlock(endBB__))
+	class ForHandlerImpl;
+	class ForHandler
+	{
+	public:
+		ForHandler(RValue<Bool> cond);
+		~ForHandler();
+		operator bool() const;
+		void operator++();
+	private:
+		ForHandlerImpl* impl;
+	};
 
-	#define While(cond) For(((void*)0), cond, ((void*)0))
+	#define For(init, cond, inc) \
+	init;                        \
+	for (ForHandler fc(cond); fc; inc, ++fc)
+
+	#define While(cond) \
+	for (ForHandler fc(cond); fc; ++fc)
+
+	class DoUntilHandlerImpl;
+	class DoUntilHandler
+	{
+	public:
+		DoUntilHandler();
+		~DoUntilHandler();
+		void until(RValue<Bool> cond);
+	private:
+		DoUntilHandlerImpl* impl;
+	};
 
 	#define Do \
-	{ \
-		llvm::BasicBlock *body = Nucleus::createBasicBlock(); \
-		Nucleus::createBr(body); \
-		Nucleus::setInsertBlock(body);
+	do { \
+	DoUntilHandler duh;
 
 	#define Until(cond) \
-		llvm::BasicBlock *end = Nucleus::createBasicBlock(); \
-		Nucleus::createCondBr((cond).value, end, body); \
-		Nucleus::setInsertBlock(end); \
-	}
+	duh.until(cond); \
+	} while (false)
 
-	#define If(cond)                                                              \
-	for(llvm::BasicBlock *trueBB__ = Nucleus::createBasicBlock(), \
-		*falseBB__ = Nucleus::createBasicBlock(),                 \
-		*endBB__ = Nucleus::createBasicBlock(),                   \
-		*onceBB__ = endBB__;                                   \
-		onceBB__ && branch(cond, trueBB__, falseBB__);         \
-		onceBB__ = 0, Nucleus::createBr(endBB__), Nucleus::setInsertBlock(falseBB__), Nucleus::createBr(endBB__), Nucleus::setInsertBlock(endBB__))
+	class IfHandlerImpl;
+	class IfHandler
+	{
+	public:
+		IfHandler(RValue<Bool> cond);
+		~IfHandler();
+		operator bool() const;
+		void operator++();
+	private:
+		IfHandlerImpl* impl;
+	};
 
-	#define Else                                            \
-	for(llvm::BasicBlock *endBB__ = Nucleus::getInsertBlock(), \
-		*falseBB__ = Nucleus::getPredecessor(endBB__),         \
-		*onceBB__ = endBB__;                                \
-		onceBB__ && elseBlock(falseBB__);                   \
-		onceBB__ = 0, Nucleus::createBr(endBB__), Nucleus::setInsertBlock(endBB__))
+	#define If(cond) \
+	for (IfHandler ic(cond); ic; ++ic)
+
+	class ElseHandlerImpl;
+	class ElseHandler
+	{
+	public:
+		ElseHandler();
+		~ElseHandler();
+		operator bool() const;
+		void operator++();
+	private:
+		ElseHandlerImpl* impl;
+	};
+
+	#define Else \
+	for (ElseHandler ec; ec; ++ec)
 }
+
+#endif // sw_Reactor_hpp

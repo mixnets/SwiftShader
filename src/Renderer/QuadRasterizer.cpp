@@ -70,7 +70,7 @@ namespace sw
 				primitive += sizeof(Primitive) * state.multiSample;
 				count--;
 			}
-			Until(count == 0)
+			Until(count == 0);
 
 			if(state.occlusionEnabled)
 			{
@@ -315,6 +315,6 @@ namespace sw
 
 			y += 2 * clusterCount;
 		}
-		Until(y >= yMax)
+		Until(y >= yMax);
 	}
 }

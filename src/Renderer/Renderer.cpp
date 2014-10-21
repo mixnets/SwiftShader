@@ -27,6 +27,7 @@
 #include "Constants.hpp"
 #include "Debug.hpp"
 #include "Reactor/Reactor.hpp"
+#include "Reactor/Routine.hpp"
 
 #include <malloc.h>
 #include <assert.h>
