@@ -13,6 +13,7 @@
 
 #include "Common/Debug.hpp"
 #include "Reactor/Reactor.hpp"
+#include "Reactor/Routine.hpp"
 
 namespace sw
 {

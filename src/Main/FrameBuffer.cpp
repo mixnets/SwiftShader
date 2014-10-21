@@ -17,6 +17,7 @@
 #include "Register.hpp"
 #include "Renderer/Surface.hpp"
 #include "Reactor/Reactor.hpp"
+#include "Reactor/Routine.hpp"
 #include "Common/Debug.hpp"
 
 #include <stdio.h>
