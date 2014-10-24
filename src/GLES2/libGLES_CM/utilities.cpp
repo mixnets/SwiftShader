@@ -22,172 +22,6 @@
 
 namespace gl
 {
-	int UniformComponentCount(GLenum type)
-	{
-		switch(type)
-		{
-		case GL_BOOL:
-		case GL_FLOAT:
-		case GL_INT:
-		case GL_SAMPLER_2D:
-		case GL_SAMPLER_CUBE:
-        case GL_SAMPLER_EXTERNAL_OES:
-			return 1;
-		case GL_BOOL_VEC2:
-		case GL_FLOAT_VEC2:
-		case GL_INT_VEC2:
-			return 2;
-		case GL_INT_VEC3:
-		case GL_FLOAT_VEC3:
-		case GL_BOOL_VEC3:
-			return 3;
-		case GL_BOOL_VEC4:
-		case GL_FLOAT_VEC4:
-		case GL_INT_VEC4:
-		case GL_FLOAT_MAT2:
-			return 4;
-		case GL_FLOAT_MAT3:
-			return 9;
-		case GL_FLOAT_MAT4:
-			return 16;
-		default:
-			UNREACHABLE();
-		}
-
-		return 0;
-	}
-
-	GLenum UniformComponentType(GLenum type)
-	{
-		switch(type)
-		{
-		case GL_BOOL:
-		case GL_BOOL_VEC2:
-		case GL_BOOL_VEC3:
-		case GL_BOOL_VEC4:
-			return GL_BOOL;
-		case GL_FLOAT:
-		case GL_FLOAT_VEC2:
-		case GL_FLOAT_VEC3:
-		case GL_FLOAT_VEC4:
-		case GL_FLOAT_MAT2:
-		case GL_FLOAT_MAT3:
-		case GL_FLOAT_MAT4:
-			return GL_FLOAT;
-		case GL_INT:
-		case GL_SAMPLER_2D:
-		case GL_SAMPLER_CUBE:
-        case GL_SAMPLER_EXTERNAL_OES:
-		case GL_INT_VEC2:
-		case GL_INT_VEC3:
-		case GL_INT_VEC4:
-			return GL_INT;
-		default:
-			UNREACHABLE();
-		}
-
-		return GL_NONE;
-	}
-
-	size_t UniformTypeSize(GLenum type)
-	{
-		switch(type)
-		{
-		case GL_BOOL:  return sizeof(GLboolean);
-		case GL_FLOAT: return sizeof(GLfloat);
-		case GL_INT:   return sizeof(GLint);
-		}
-
-		return UniformTypeSize(UniformComponentType(type)) * UniformComponentCount(type);
-	}
-
-	int VariableRowCount(GLenum type)
-	{
-		switch(type)
-		{
-		case GL_NONE:
-			return 0;
-		case GL_BOOL:
-		case GL_FLOAT:
-		case GL_INT:
-		case GL_BOOL_VEC2:
-		case GL_FLOAT_VEC2:
-		case GL_INT_VEC2:
-		case GL_INT_VEC3:
-		case GL_FLOAT_VEC3:
-		case GL_BOOL_VEC3:
-		case GL_BOOL_VEC4:
-		case GL_FLOAT_VEC4:
-		case GL_INT_VEC4:
-		case GL_SAMPLER_2D:
-		case GL_SAMPLER_CUBE:
-        case GL_SAMPLER_EXTERNAL_OES:
-			return 1;
-		case GL_FLOAT_MAT2:
-			return 2;
-		case GL_FLOAT_MAT3:
-			return 3;
-		case GL_FLOAT_MAT4:
-			return 4;
-		default:
-			UNREACHABLE();
-		}
-
-		return 0;
-	}
-
-	int VariableColumnCount(GLenum type)
-	{
-		switch(type)
-		{
-		case GL_NONE:
-			return 0;
-		case GL_BOOL:
-		case GL_FLOAT:
-		case GL_INT:
-			return 1;
-		case GL_BOOL_VEC2:
-		case GL_FLOAT_VEC2:
-		case GL_INT_VEC2:
-		case GL_FLOAT_MAT2:
-			return 2;
-		case GL_INT_VEC3:
-		case GL_FLOAT_VEC3:
-		case GL_BOOL_VEC3:
-		case GL_FLOAT_MAT3:
-			return 3;
-		case GL_BOOL_VEC4:
-		case GL_FLOAT_VEC4:
-		case GL_INT_VEC4:
-		case GL_FLOAT_MAT4:
-			return 4;
-		default:
-			UNREACHABLE();
-		}
-
-		return 0;
-	}
-
-	int AllocateFirstFreeBits(unsigned int *bits, unsigned int allocationSize, unsigned int bitsSize)
-	{
-		ASSERT(allocationSize <= bitsSize);
-
-		unsigned int mask = std::numeric_limits<unsigned int>::max() >> (std::numeric_limits<unsigned int>::digits - allocationSize);
-
-		for(unsigned int i = 0; i < bitsSize - allocationSize + 1; i++)
-		{
-			if((*bits & mask) == 0)
-			{
-				*bits |= mask;
-				return i;
-			}
-
-			mask <<= 1;
-		}
-
-		return -1;
-	}
-
 	GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment)
 	{
 		ASSERT(alignment > 0 && isPow2(alignment));
@@ -208,9 +42,6 @@ namespace gl
 		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 			return 8 * (GLsizei)ceil((float)width / 4.0f) * (GLsizei)ceil((float)height / 4.0f);
-		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
-		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
-			return 16 * (GLsizei)ceil((float)width / 4.0f) * (GLsizei)ceil((float)height / 4.0f);
 		default:
 			return 0;
 		}
@@ -219,9 +50,7 @@ namespace gl
 	bool IsCompressed(GLenum format)
 	{
 		if(format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
-		   format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
-		   format == GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE ||
-		   format == GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE)
+		   format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
 		{
 			return true;
 		}
@@ -233,8 +62,7 @@ namespace gl
 
 	bool IsDepthTexture(GLenum format)
 	{
-		if(format == GL_DEPTH_COMPONENT ||
-		   format == GL_DEPTH_STENCIL_OES)
+		if(format == GL_DEPTH_STENCIL_OES)
 		{
 			return true;
 		}
@@ -244,8 +72,7 @@ namespace gl
 
 	bool IsStencilTexture(GLenum format)
 	{
-		if(format == GL_STENCIL_INDEX ||
-		   format == GL_DEPTH_STENCIL_OES)
+		if(format == GL_DEPTH_STENCIL_OES)
 		{
 			return true;
 		}
@@ -289,17 +116,6 @@ namespace gl
 			default: UNREACHABLE();
 			}
 			break;
-		case GL_HALF_FLOAT_OES:
-			switch(format)
-			{
-			case GL_ALPHA:           return sizeof(unsigned short);
-			case GL_LUMINANCE:       return sizeof(unsigned short);
-			case GL_LUMINANCE_ALPHA: return sizeof(unsigned short) * 2;
-			case GL_RGB:             return sizeof(unsigned short) * 3;
-			case GL_RGBA:            return sizeof(unsigned short) * 4;
-			default: UNREACHABLE();
-			}
-			break;
 		default: UNREACHABLE();
 		}
 
@@ -308,27 +124,27 @@ namespace gl
 
 	bool IsCubemapTextureTarget(GLenum target)
 	{
-		return (target >= GL_TEXTURE_CUBE_MAP_POSITIVE_X && target <= GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
+		return (target >= GL_TEXTURE_CUBE_MAP_POSITIVE_X_OES && target <= GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_OES);
 	}
 
 	int CubeFaceIndex(GLenum cubeFace)
 	{
 		switch(cubeFace)
 		{
-		case GL_TEXTURE_CUBE_MAP:
-		case GL_TEXTURE_CUBE_MAP_POSITIVE_X: return 0;
-		case GL_TEXTURE_CUBE_MAP_NEGATIVE_X: return 1;
-		case GL_TEXTURE_CUBE_MAP_POSITIVE_Y: return 2;
-		case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y: return 3;
-		case GL_TEXTURE_CUBE_MAP_POSITIVE_Z: return 4;
-		case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z: return 5;
+		case GL_TEXTURE_CUBE_MAP_OES:
+		case GL_TEXTURE_CUBE_MAP_POSITIVE_X_OES: return 0;
+		case GL_TEXTURE_CUBE_MAP_NEGATIVE_X_OES: return 1;
+		case GL_TEXTURE_CUBE_MAP_POSITIVE_Y_OES: return 2;
+		case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_OES: return 3;
+		case GL_TEXTURE_CUBE_MAP_POSITIVE_Z_OES: return 4;
+		case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_OES: return 5;
 		default: UNREACHABLE(); return 0;
 		}
 	}
 
 	bool IsTextureTarget(GLenum target)
 	{
-		return target == GL_TEXTURE_2D || IsCubemapTextureTarget(target);
+		return target == GL_TEXTURE_2D;
 	}
 
 	// Verify that format/type are one of the combinations from table 3.4.
@@ -350,25 +166,11 @@ namespace gl
 				return false;
 			}
 		case GL_FLOAT:
-		case GL_HALF_FLOAT_OES:
-			switch(format)
-			{
-			case GL_RGBA:
-			case GL_RGB:
-			case GL_ALPHA:
-			case GL_LUMINANCE:
-			case GL_LUMINANCE_ALPHA:
-				return true;
-			default:
-				return false;
-			}
 		case GL_UNSIGNED_SHORT_4_4_4_4:
 		case GL_UNSIGNED_SHORT_5_5_5_1:
 			return (format == GL_RGBA);
 		case GL_UNSIGNED_SHORT_5_6_5:
 			return (format == GL_RGB);
-		case GL_UNSIGNED_INT:
-			return (format == GL_DEPTH_COMPONENT);
 		case GL_UNSIGNED_INT_24_8_OES:
 			return (format == GL_DEPTH_STENCIL_OES);
 		default:
@@ -380,14 +182,14 @@ namespace gl
 	{
 		switch(internalformat)
 		{
-		case GL_RGBA4:
-		case GL_RGB5_A1:
-		case GL_RGB565:
+		case GL_RGBA4_OES:
+		case GL_RGB5_A1_OES:
+		case GL_RGB565_OES:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
 			return true;
-		case GL_DEPTH_COMPONENT16:
-		case GL_STENCIL_INDEX8:
+		case GL_DEPTH_COMPONENT16_OES:
+		case GL_STENCIL_INDEX8_OES:
 		case GL_DEPTH24_STENCIL8_OES:
 			return false;
 		default:
@@ -401,13 +203,13 @@ namespace gl
 	{
 		switch(internalformat)
 		{
-		case GL_DEPTH_COMPONENT16:
+		case GL_DEPTH_COMPONENT16_OES:
 		case GL_DEPTH24_STENCIL8_OES:
 			return true;
-		case GL_STENCIL_INDEX8:
-		case GL_RGBA4:
-		case GL_RGB5_A1:
-		case GL_RGB565:
+		case GL_STENCIL_INDEX8_OES:
+		case GL_RGBA4_OES:
+		case GL_RGB5_A1_OES:
+		case GL_RGB565_OES:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
 			return false;
@@ -422,15 +224,15 @@ namespace gl
 	{
 		switch(internalformat)
 		{
-		case GL_STENCIL_INDEX8:
+		case GL_STENCIL_INDEX8_OES:
 		case GL_DEPTH24_STENCIL8_OES:
 			return true;
-		case GL_RGBA4:
-		case GL_RGB5_A1:
-		case GL_RGB565:
+		case GL_RGBA4_OES:
+		case GL_RGB5_A1_OES:
+		case GL_RGB565_OES:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
-		case GL_DEPTH_COMPONENT16:
+		case GL_DEPTH_COMPONENT16_OES:
 			return false;
 		default:
 			UNIMPLEMENTED();
@@ -442,40 +244,40 @@ namespace gl
 
 namespace es2sw
 {
-	sw::Context::DepthCompareMode ConvertDepthComparison(GLenum comparison)
+	sw::DepthCompareMode ConvertDepthComparison(GLenum comparison)
 	{
 		switch(comparison)
 		{
-		case GL_NEVER:    return sw::Context::DEPTH_NEVER;
-		case GL_ALWAYS:   return sw::Context::DEPTH_ALWAYS;
-		case GL_LESS:     return sw::Context::DEPTH_LESS;
-		case GL_LEQUAL:   return sw::Context::DEPTH_LESSEQUAL;
-		case GL_EQUAL:    return sw::Context::DEPTH_EQUAL;
-		case GL_GREATER:  return sw::Context::DEPTH_GREATER;
-		case GL_GEQUAL:   return sw::Context::DEPTH_GREATEREQUAL;
-		case GL_NOTEQUAL: return sw::Context::DEPTH_NOTEQUAL;
+		case GL_NEVER:    return sw::DEPTH_NEVER;
+		case GL_ALWAYS:   return sw::DEPTH_ALWAYS;
+		case GL_LESS:     return sw::DEPTH_LESS;
+		case GL_LEQUAL:   return sw::DEPTH_LESSEQUAL;
+		case GL_EQUAL:    return sw::DEPTH_EQUAL;
+		case GL_GREATER:  return sw::DEPTH_GREATER;
+		case GL_GEQUAL:   return sw::DEPTH_GREATEREQUAL;
+		case GL_NOTEQUAL: return sw::DEPTH_NOTEQUAL;
 		default: UNREACHABLE();
 		}
 
-		return sw::Context::DEPTH_ALWAYS;
+		return sw::DEPTH_ALWAYS;
 	}
 
-	sw::Context::StencilCompareMode ConvertStencilComparison(GLenum comparison)
+	sw::StencilCompareMode ConvertStencilComparison(GLenum comparison)
 	{
 		switch(comparison)
 		{
-		case GL_NEVER:    return sw::Context::STENCIL_NEVER;
-		case GL_ALWAYS:   return sw::Context::STENCIL_ALWAYS;
-		case GL_LESS:     return sw::Context::STENCIL_LESS;
-		case GL_LEQUAL:   return sw::Context::STENCIL_LESSEQUAL;
-		case GL_EQUAL:    return sw::Context::STENCIL_EQUAL;
-		case GL_GREATER:  return sw::Context::STENCIL_GREATER;
-		case GL_GEQUAL:   return sw::Context::STENCIL_GREATEREQUAL;
-		case GL_NOTEQUAL: return sw::Context::STENCIL_NOTEQUAL;
+		case GL_NEVER:    return sw::STENCIL_NEVER;
+		case GL_ALWAYS:   return sw::STENCIL_ALWAYS;
+		case GL_LESS:     return sw::STENCIL_LESS;
+		case GL_LEQUAL:   return sw::STENCIL_LESSEQUAL;
+		case GL_EQUAL:    return sw::STENCIL_EQUAL;
+		case GL_GREATER:  return sw::STENCIL_GREATER;
+		case GL_GEQUAL:   return sw::STENCIL_GREATEREQUAL;
+		case GL_NOTEQUAL: return sw::STENCIL_NOTEQUAL;
 		default: UNREACHABLE();
 		}
 
-		return sw::Context::STENCIL_ALWAYS;
+		return sw::STENCIL_ALWAYS;
 	}
 
 	sw::Color<float> ConvertColor(gl::Color color)
@@ -483,91 +285,87 @@ namespace es2sw
 		return sw::Color<float>(color.red, color.green, color.blue, color.alpha);
 	}
 
-	sw::Context::BlendFactor ConvertBlendFunc(GLenum blend)
+	sw::BlendFactor ConvertBlendFunc(GLenum blend)
 	{
 		switch(blend)
 		{
-		case GL_ZERO:                     return sw::Context::BLEND_ZERO;
-		case GL_ONE:                      return sw::Context::BLEND_ONE;
-		case GL_SRC_COLOR:                return sw::Context::BLEND_SOURCE;
-		case GL_ONE_MINUS_SRC_COLOR:      return sw::Context::BLEND_INVSOURCE;
-		case GL_DST_COLOR:                return sw::Context::BLEND_DEST;
-		case GL_ONE_MINUS_DST_COLOR:      return sw::Context::BLEND_INVDEST;
-		case GL_SRC_ALPHA:                return sw::Context::BLEND_SOURCEALPHA;
-		case GL_ONE_MINUS_SRC_ALPHA:      return sw::Context::BLEND_INVSOURCEALPHA;
-		case GL_DST_ALPHA:                return sw::Context::BLEND_DESTALPHA;
-		case GL_ONE_MINUS_DST_ALPHA:      return sw::Context::BLEND_INVDESTALPHA;
-		case GL_CONSTANT_COLOR:           return sw::Context::BLEND_CONSTANT;
-		case GL_ONE_MINUS_CONSTANT_COLOR: return sw::Context::BLEND_INVCONSTANT;
-		case GL_CONSTANT_ALPHA:           return sw::Context::BLEND_CONSTANTALPHA;
-		case GL_ONE_MINUS_CONSTANT_ALPHA: return sw::Context::BLEND_INVCONSTANTALPHA;
-		case GL_SRC_ALPHA_SATURATE:       return sw::Context::BLEND_SRCALPHASAT;
+		case GL_ZERO:                     return sw::BLEND_ZERO;
+		case GL_ONE:                      return sw::BLEND_ONE;
+		case GL_SRC_COLOR:                return sw::BLEND_SOURCE;
+		case GL_ONE_MINUS_SRC_COLOR:      return sw::BLEND_INVSOURCE;
+		case GL_DST_COLOR:                return sw::BLEND_DEST;
+		case GL_ONE_MINUS_DST_COLOR:      return sw::BLEND_INVDEST;
+		case GL_SRC_ALPHA:                return sw::BLEND_SOURCEALPHA;
+		case GL_ONE_MINUS_SRC_ALPHA:      return sw::BLEND_INVSOURCEALPHA;
+		case GL_DST_ALPHA:                return sw::BLEND_DESTALPHA;
+		case GL_ONE_MINUS_DST_ALPHA:      return sw::BLEND_INVDESTALPHA;
+		case GL_SRC_ALPHA_SATURATE:       return sw::BLEND_SRCALPHASAT;
 		default: UNREACHABLE();
 		}
 
-		return sw::Context::BLEND_ZERO;
+		return sw::BLEND_ZERO;
 	}
 
-	sw::Context::BlendOperation ConvertBlendOp(GLenum blendOp)
+	sw::BlendOperation ConvertBlendOp(GLenum blendOp)
 	{
 		switch(blendOp)
 		{
-		case GL_FUNC_ADD:              return sw::Context::BLENDOP_ADD;
-		case GL_FUNC_SUBTRACT:         return sw::Context::BLENDOP_SUB;
-		case GL_FUNC_REVERSE_SUBTRACT: return sw::Context::BLENDOP_INVSUB;
-		case GL_MIN_EXT:               return sw::Context::BLENDOP_MIN;
-		case GL_MAX_EXT:               return sw::Context::BLENDOP_MAX;
+		case GL_FUNC_ADD_OES:              return sw::BLENDOP_ADD;
+		case GL_FUNC_SUBTRACT_OES:         return sw::BLENDOP_SUB;
+		case GL_FUNC_REVERSE_SUBTRACT_OES: return sw::BLENDOP_INVSUB;
+		case GL_MIN_EXT:                   return sw::BLENDOP_MIN;
+		case GL_MAX_EXT:                   return sw::BLENDOP_MAX;
 		default: UNREACHABLE();
 		}
 
-		return sw::Context::BLENDOP_ADD;
+		return sw::BLENDOP_ADD;
 	}
 
-	sw::Context::StencilOperation ConvertStencilOp(GLenum stencilOp)
+	sw::StencilOperation ConvertStencilOp(GLenum stencilOp)
 	{
 		switch(stencilOp)
 		{
-		case GL_ZERO:      return sw::Context::OPERATION_ZERO;
-		case GL_KEEP:      return sw::Context::OPERATION_KEEP;
-		case GL_REPLACE:   return sw::Context::OPERATION_REPLACE;
-		case GL_INCR:      return sw::Context::OPERATION_INCRSAT;
-		case GL_DECR:      return sw::Context::OPERATION_DECRSAT;
-		case GL_INVERT:    return sw::Context::OPERATION_INVERT;
-		case GL_INCR_WRAP: return sw::Context::OPERATION_INCR;
-		case GL_DECR_WRAP: return sw::Context::OPERATION_DECR;
+		case GL_ZERO:          return sw::OPERATION_ZERO;
+		case GL_KEEP:          return sw::OPERATION_KEEP;
+		case GL_REPLACE:       return sw::OPERATION_REPLACE;
+		case GL_INCR:          return sw::OPERATION_INCRSAT;
+		case GL_DECR:          return sw::OPERATION_DECRSAT;
+		case GL_INVERT:        return sw::OPERATION_INVERT;
+		case GL_INCR_WRAP_OES: return sw::OPERATION_INCR;
+		case GL_DECR_WRAP_OES: return sw::OPERATION_DECR;
 		default: UNREACHABLE();
 		}
 
-		return sw::Context::OPERATION_KEEP;
+		return sw::OPERATION_KEEP;
 	}
 
 	sw::AddressingMode ConvertTextureWrap(GLenum wrap)
 	{
 		switch(wrap)
 		{
-		case GL_REPEAT:            return sw::ADDRESSING_WRAP;
-		case GL_CLAMP_TO_EDGE:     return sw::ADDRESSING_CLAMP;
-		case GL_MIRRORED_REPEAT:   return sw::ADDRESSING_MIRROR;
+		case GL_REPEAT:              return sw::ADDRESSING_WRAP;
+		case GL_CLAMP_TO_EDGE:       return sw::ADDRESSING_CLAMP;
+		case GL_MIRRORED_REPEAT_OES: return sw::ADDRESSING_MIRROR;
 		default: UNREACHABLE();
 		}
 
 		return sw::ADDRESSING_WRAP;
 	}
 
-	sw::Context::CullMode ConvertCullMode(GLenum cullFace, GLenum frontFace)
+	sw::CullMode ConvertCullMode(GLenum cullFace, GLenum frontFace)
 	{
 		switch(cullFace)
 		{
 		case GL_FRONT:
-			return (frontFace == GL_CCW ? sw::Context::CULL_CLOCKWISE : sw::Context::CULL_COUNTERCLOCKWISE);
+			return (frontFace == GL_CCW ? sw::CULL_CLOCKWISE : sw::CULL_COUNTERCLOCKWISE);
 		case GL_BACK:
-			return (frontFace == GL_CCW ? sw::Context::CULL_COUNTERCLOCKWISE : sw::Context::CULL_CLOCKWISE);
+			return (frontFace == GL_CCW ? sw::CULL_COUNTERCLOCKWISE : sw::CULL_CLOCKWISE);
 		case GL_FRONT_AND_BACK:
-			return sw::Context::CULL_NONE;   // culling will be handled during draw
+			return sw::CULL_NONE;   // culling will be handled during draw
 		default: UNREACHABLE();
 		}
 
-		return sw::Context::CULL_COUNTERCLOCKWISE;
+		return sw::CULL_COUNTERCLOCKWISE;
 	}
 
 	unsigned int ConvertColorMask(bool red, bool green, bool blue, bool alpha)
@@ -673,13 +471,13 @@ namespace es2sw
 	{
 		switch(format)
 		{
-		case GL_RGBA4:
-		case GL_RGB5_A1:
+		case GL_RGBA4_OES:
+		case GL_RGB5_A1_OES:
 		case GL_RGBA8_OES:            return sw::FORMAT_A8R8G8B8;
-		case GL_RGB565:               return sw::FORMAT_R5G6B5;
+		case GL_RGB565_OES:           return sw::FORMAT_R5G6B5;
 		case GL_RGB8_OES:             return sw::FORMAT_X8R8G8B8;
-		case GL_DEPTH_COMPONENT16:
-		case GL_STENCIL_INDEX8:       
+		case GL_DEPTH_COMPONENT16_OES:
+		case GL_STENCIL_INDEX8_OES:       
 		case GL_DEPTH24_STENCIL8_OES: return sw::FORMAT_D24S8;
 		default: UNREACHABLE();       return sw::FORMAT_A8R8G8B8;
 		}
@@ -823,16 +621,16 @@ namespace sw2es
 	{
 		switch(format)
 		{
-		case sw::FORMAT_A4R4G4B4: return GL_RGBA4;
+		case sw::FORMAT_A4R4G4B4: return GL_RGBA4_OES;
 		case sw::FORMAT_A8R8G8B8: return GL_RGBA8_OES;
-		case sw::FORMAT_A1R5G5B5: return GL_RGB5_A1;
-		case sw::FORMAT_R5G6B5:   return GL_RGB565;
+		case sw::FORMAT_A1R5G5B5: return GL_RGB5_A1_OES;
+		case sw::FORMAT_R5G6B5:   return GL_RGB565_OES;
 		case sw::FORMAT_X8R8G8B8: return GL_RGB8_OES;
 		default:
 			UNREACHABLE();
 		}
 
-		return GL_RGBA4;
+		return GL_RGBA4_OES;
 	}
 
 	GLenum ConvertDepthStencilFormat(sw::Format format)
@@ -842,7 +640,7 @@ namespace sw2es
 		case sw::FORMAT_D16:
 		case sw::FORMAT_D24X8:
 		case sw::FORMAT_D32:
-			return GL_DEPTH_COMPONENT16;
+			return GL_DEPTH_COMPONENT16_OES;
 		case sw::FORMAT_D24S8:
 			return GL_DEPTH24_STENCIL8_OES;
 		default:

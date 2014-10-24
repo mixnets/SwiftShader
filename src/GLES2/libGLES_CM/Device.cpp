@@ -37,48 +37,48 @@ namespace gl
 		renderTarget = 0;
 
 		setDepthBufferEnable(true);
-		setFillMode(Context::FILL_SOLID);
-		setShadingMode(Context::SHADING_GOURAUD);
+		setFillMode(FILL_SOLID);
+		setShadingMode(SHADING_GOURAUD);
 		setDepthWriteEnable(true);
 		setAlphaTestEnable(false);
-		setSourceBlendFactor(Context::BLEND_ONE);
-		setDestBlendFactor(Context::BLEND_ZERO);
-		setCullMode(Context::CULL_COUNTERCLOCKWISE);
-		setDepthCompare(Context::DEPTH_LESSEQUAL);
+		setSourceBlendFactor(BLEND_ONE);
+		setDestBlendFactor(BLEND_ZERO);
+		setCullMode(CULL_COUNTERCLOCKWISE);
+		setDepthCompare(DEPTH_LESSEQUAL);
 		setAlphaReference(0);
-		setAlphaCompare(Context::ALPHA_ALWAYS);
+		setAlphaCompare(ALPHA_ALWAYS);
 		setAlphaBlendEnable(false);
 		setFogEnable(false);
 		setSpecularEnable(false);
 		setFogColor(0);
-		setPixelFogMode(Context::FOG_NONE);
+		setPixelFogMode(FOG_NONE);
 		setFogStart(0.0f);
 		setFogEnd(1.0f);
 		setFogDensity(1.0f);
 		setRangeFogEnable(false);
 		setStencilEnable(false);
-		setStencilFailOperation(Context::OPERATION_KEEP);
-		setStencilZFailOperation(Context::OPERATION_KEEP);
-		setStencilPassOperation(Context::OPERATION_KEEP);
-		setStencilCompare(Context::STENCIL_ALWAYS);
+		setStencilFailOperation(OPERATION_KEEP);
+		setStencilZFailOperation(OPERATION_KEEP);
+		setStencilPassOperation(OPERATION_KEEP);
+		setStencilCompare(STENCIL_ALWAYS);
 		setStencilReference(0);
 		setStencilMask(0xFFFFFFFF);
 		setStencilWriteMask(0xFFFFFFFF);
-		setVertexFogMode(Context::FOG_NONE);
+		setVertexFogMode(FOG_NONE);
 		setClipFlags(0);
 		setPointSize(1.0f);
 		setPointSizeMin(0.125f);
 		setPointSpriteEnable(false);
         setPointSizeMax(8192.0f);
 		setColorWriteMask(0, 0x0000000F);
-		setBlendOperation(Context::BLENDOP_ADD);
+		setBlendOperation(BLENDOP_ADD);
 		scissorEnable = false;
 		setSlopeDepthBias(0.0f);
 		setTwoSidedStencil(false);
-		setStencilFailOperationCCW(Context::OPERATION_KEEP);
-		setStencilZFailOperationCCW(Context::OPERATION_KEEP);
-		setStencilPassOperationCCW(Context::OPERATION_KEEP);
-		setStencilCompareCCW(Context::STENCIL_ALWAYS);
+		setStencilFailOperationCCW(OPERATION_KEEP);
+		setStencilZFailOperationCCW(OPERATION_KEEP);
+		setStencilPassOperationCCW(OPERATION_KEEP);
+		setStencilCompareCCW(STENCIL_ALWAYS);
 		setColorWriteMask(1, 0x0000000F);
 		setColorWriteMask(2, 0x0000000F);
 		setColorWriteMask(3, 0x0000000F);
@@ -86,9 +86,9 @@ namespace gl
 		setWriteSRGB(false);
 		setDepthBias(0.0f);
 		setSeparateAlphaBlendEnable(false);
-		setSourceBlendFactorAlpha(Context::BLEND_ONE);
-		setDestBlendFactorAlpha(Context::BLEND_ZERO);
-		setBlendOperationAlpha(Context::BLENDOP_ADD);
+		setSourceBlendFactorAlpha(BLEND_ONE);
+		setDestBlendFactorAlpha(BLEND_ZERO);
+		setBlendOperationAlpha(BLENDOP_ADD);
 
 		for(int i = 0; i < 16; i++)
 		{
@@ -117,28 +117,6 @@ namespace gl
 			float plane[4] = {0, 0, 0, 0};
 
 			setClipPlane(i, plane);
-		}
-
-		pixelShader = 0;
-		vertexShader = 0;
-
-		pixelShaderDirty = true;
-		pixelShaderConstantsFDirty = 0;
-		vertexShaderDirty = true;
-		vertexShaderConstantsFDirty = 0;
-
-		for(int i = 0; i < 224; i++)
-		{
-			float zero[4] = {0, 0, 0, 0};
-
-			setPixelShaderConstantF(i, zero, 1);
-		}
-
-		for(int i = 0; i < 256; i++)
-		{
-			float zero[4] = {0, 0, 0, 0};
-
-			setVertexShaderConstantF(i, zero, 1);
 		}
 	}
 
@@ -272,7 +250,7 @@ namespace gl
 			UNREACHABLE();
 		}
 
-		Image *surface = new Image(0, width, height, format, GL_NONE, GL_NONE, multiSampleDepth, lockable, true);
+		Image *surface = new Image(0, width, height, format, GL_NONE_OES, GL_NONE_OES, multiSampleDepth, lockable, true);
 
 		if(!surface)
 		{
@@ -293,7 +271,7 @@ namespace gl
 			return 0;
 		}
 
-		Image *surface = new Image(0, width, height, format, GL_NONE, GL_NONE, multiSampleDepth, lockable, true);
+		Image *surface = new Image(0, width, height, format, GL_NONE_OES, GL_NONE_OES, multiSampleDepth, lockable, true);
 
 		if(!surface)
 		{
@@ -313,19 +291,19 @@ namespace gl
 			return;
 		}
 
-		Context::DrawType drawType;
+		DrawType drawType;
 
 		if(indexSize == 4)
 		{
 			switch(type)
 			{
-			case DRAW_POINTLIST:     drawType = Context::DRAW_INDEXEDPOINTLIST32;     break;
-			case DRAW_LINELIST:      drawType = Context::DRAW_INDEXEDLINELIST32;      break;
-			case DRAW_LINESTRIP:     drawType = Context::DRAW_INDEXEDLINESTRIP32;     break;
-			case DRAW_LINELOOP:      drawType = Context::DRAW_INDEXEDLINELOOP32;      break;
-			case DRAW_TRIANGLELIST:  drawType = Context::DRAW_INDEXEDTRIANGLELIST32;  break;
-			case DRAW_TRIANGLESTRIP: drawType = Context::DRAW_INDEXEDTRIANGLESTRIP32; break;
-			case DRAW_TRIANGLEFAN:   drawType = Context::DRAW_INDEXEDTRIANGLEFAN32;	  break;
+			case DRAW_POINTLIST:     drawType = sw::DRAW_INDEXEDPOINTLIST32;     break;
+			case DRAW_LINELIST:      drawType = sw::DRAW_INDEXEDLINELIST32;      break;
+			case DRAW_LINESTRIP:     drawType = sw::DRAW_INDEXEDLINESTRIP32;     break;
+			case DRAW_LINELOOP:      drawType = sw::DRAW_INDEXEDLINELOOP32;      break;
+			case DRAW_TRIANGLELIST:  drawType = sw::DRAW_INDEXEDTRIANGLELIST32;  break;
+			case DRAW_TRIANGLESTRIP: drawType = sw::DRAW_INDEXEDTRIANGLESTRIP32; break;
+			case DRAW_TRIANGLEFAN:   drawType = sw::DRAW_INDEXEDTRIANGLEFAN32;	  break;
 			default: UNREACHABLE();
 			}
 		}
@@ -333,13 +311,13 @@ namespace gl
 		{
 			switch(type)
 			{
-			case DRAW_POINTLIST:     drawType = Context::DRAW_INDEXEDPOINTLIST16;     break;
-			case DRAW_LINELIST:      drawType = Context::DRAW_INDEXEDLINELIST16;      break;
-			case DRAW_LINESTRIP:     drawType = Context::DRAW_INDEXEDLINESTRIP16;     break;
-			case DRAW_LINELOOP:      drawType = Context::DRAW_INDEXEDLINELOOP16;      break;
-			case DRAW_TRIANGLELIST:  drawType = Context::DRAW_INDEXEDTRIANGLELIST16;  break;
-			case DRAW_TRIANGLESTRIP: drawType = Context::DRAW_INDEXEDTRIANGLESTRIP16; break;
-			case DRAW_TRIANGLEFAN:   drawType = Context::DRAW_INDEXEDTRIANGLEFAN16;   break;
+			case DRAW_POINTLIST:     drawType = sw::DRAW_INDEXEDPOINTLIST16;     break;
+			case DRAW_LINELIST:      drawType = sw::DRAW_INDEXEDLINELIST16;      break;
+			case DRAW_LINESTRIP:     drawType = sw::DRAW_INDEXEDLINESTRIP16;     break;
+			case DRAW_LINELOOP:      drawType = sw::DRAW_INDEXEDLINELOOP16;      break;
+			case DRAW_TRIANGLELIST:  drawType = sw::DRAW_INDEXEDTRIANGLELIST16;  break;
+			case DRAW_TRIANGLESTRIP: drawType = sw::DRAW_INDEXEDTRIANGLESTRIP16; break;
+			case DRAW_TRIANGLEFAN:   drawType = sw::DRAW_INDEXEDTRIANGLEFAN16;   break;
 			default: UNREACHABLE();
 			}
 		}
@@ -347,13 +325,13 @@ namespace gl
 		{
 			switch(type)
 			{
-			case DRAW_POINTLIST:     drawType = Context::DRAW_INDEXEDPOINTLIST8;     break;
-			case DRAW_LINELIST:      drawType = Context::DRAW_INDEXEDLINELIST8;      break;
-			case DRAW_LINESTRIP:     drawType = Context::DRAW_INDEXEDLINESTRIP8;     break;
-			case DRAW_LINELOOP:      drawType = Context::DRAW_INDEXEDLINELOOP8;      break;
-			case DRAW_TRIANGLELIST:  drawType = Context::DRAW_INDEXEDTRIANGLELIST8;  break;
-			case DRAW_TRIANGLESTRIP: drawType = Context::DRAW_INDEXEDTRIANGLESTRIP8; break;
-			case DRAW_TRIANGLEFAN:   drawType = Context::DRAW_INDEXEDTRIANGLEFAN8;   break;
+			case DRAW_POINTLIST:     drawType = sw::DRAW_INDEXEDPOINTLIST8;     break;
+			case DRAW_LINELIST:      drawType = sw::DRAW_INDEXEDLINELIST8;      break;
+			case DRAW_LINESTRIP:     drawType = sw::DRAW_INDEXEDLINESTRIP8;     break;
+			case DRAW_LINELOOP:      drawType = sw::DRAW_INDEXEDLINELOOP8;      break;
+			case DRAW_TRIANGLELIST:  drawType = sw::DRAW_INDEXEDTRIANGLELIST8;  break;
+			case DRAW_TRIANGLESTRIP: drawType = sw::DRAW_INDEXEDTRIANGLESTRIP8; break;
+			case DRAW_TRIANGLEFAN:   drawType = sw::DRAW_INDEXEDTRIANGLEFAN8;   break;
 			default: UNREACHABLE();
 			}
 		}
@@ -373,17 +351,17 @@ namespace gl
 
 		setIndexBuffer(0);
 		
-		Context::DrawType drawType;
+		DrawType drawType;
 
 		switch(primitiveType)
 		{
-		case DRAW_POINTLIST:     drawType = Context::DRAW_POINTLIST;     break;
-		case DRAW_LINELIST:      drawType = Context::DRAW_LINELIST;      break;
-		case DRAW_LINESTRIP:     drawType = Context::DRAW_LINESTRIP;     break;
-		case DRAW_LINELOOP:      drawType = Context::DRAW_LINELOOP;      break;
-		case DRAW_TRIANGLELIST:  drawType = Context::DRAW_TRIANGLELIST;  break;
-		case DRAW_TRIANGLESTRIP: drawType = Context::DRAW_TRIANGLESTRIP; break;
-		case DRAW_TRIANGLEFAN:   drawType = Context::DRAW_TRIANGLEFAN;   break;
+		case DRAW_POINTLIST:     drawType = sw::DRAW_POINTLIST;     break;
+		case DRAW_LINELIST:      drawType = sw::DRAW_LINELIST;      break;
+		case DRAW_LINESTRIP:     drawType = sw::DRAW_LINESTRIP;     break;
+		case DRAW_LINELOOP:      drawType = sw::DRAW_LINELOOP;      break;
+		case DRAW_TRIANGLELIST:  drawType = sw::DRAW_TRIANGLELIST;  break;
+		case DRAW_TRIANGLESTRIP: drawType = sw::DRAW_TRIANGLESTRIP; break;
+		case DRAW_TRIANGLEFAN:   drawType = sw::DRAW_TRIANGLEFAN;   break;
 		default: UNREACHABLE();
 		}
 
@@ -412,30 +390,6 @@ namespace gl
 		this->depthStencil = depthStencil;
 
 		setDepthStencil(depthStencil);
-	}
-
-	void Device::setPixelShader(PixelShader *pixelShader)
-	{
-		TRACE("PixelShader *shader = 0x%0.8p", pixelShader);
-
-		this->pixelShader = pixelShader;
-		pixelShaderDirty = true;
-	}
-
-	void Device::setPixelShaderConstantF(unsigned int startRegister, const float *constantData, unsigned int count)
-	{
-		TRACE("unsigned int startRegister = %d, const int *constantData = 0x%0.8p, unsigned int count = %d", startRegister, constantData, count);
-
-		for(unsigned int i = 0; i < count && startRegister + i < 224; i++)
-		{
-			pixelShaderConstantF[startRegister + i][0] = constantData[i * 4 + 0];
-			pixelShaderConstantF[startRegister + i][1] = constantData[i * 4 + 1];
-			pixelShaderConstantF[startRegister + i][2] = constantData[i * 4 + 2];
-			pixelShaderConstantF[startRegister + i][3] = constantData[i * 4 + 3];
-		}
-
-		pixelShaderConstantsFDirty = max(startRegister + count, pixelShaderConstantsFDirty);
-		pixelShaderDirty = true;   // Reload DEF constants
 	}
 
 	void Device::setScissorEnable(bool enable)
@@ -467,30 +421,6 @@ namespace gl
 		TRACE("const sw::Rect *rect = 0x%0.8p", rect);
 
 		scissorRect = rect;
-	}
-
-	void Device::setVertexShader(VertexShader *vertexShader)
-	{
-		TRACE("VertexShader *shader = 0x%0.8p", vertexShader);
-
-		this->vertexShader = vertexShader;
-		vertexShaderDirty = true;
-	}
-
-	void Device::setVertexShaderConstantF(unsigned int startRegister, const float *constantData, unsigned int count)
-	{
-		TRACE("unsigned int startRegister = %d, const int *constantData = 0x%0.8p, unsigned int count = %d", startRegister, constantData, count);
-
-		for(unsigned int i = 0; i < count && startRegister + i < 256; i++)
-		{
-			vertexShaderConstantF[startRegister + i][0] = constantData[i * 4 + 0];
-			vertexShaderConstantF[startRegister + i][1] = constantData[i * 4 + 1];
-			vertexShaderConstantF[startRegister + i][2] = constantData[i * 4 + 2];
-			vertexShaderConstantF[startRegister + i][3] = constantData[i * 4 + 3];
-		}
-			
-		vertexShaderConstantsFDirty = max(startRegister + count, vertexShaderConstantsFDirty);
-		vertexShaderDirty = true;   // Reload DEF constants
 	}
 
 	void Device::setViewport(const Viewport &viewport)
@@ -643,52 +573,7 @@ namespace gl
 			return false;   // Zero-area target region
 		}
 
-		bindShaderConstants();
-
 		return true;
-	}
-
-	void Device::bindShaderConstants()
-	{
-		if(pixelShaderDirty)
-		{
-			if(pixelShader)
-			{
-				if(pixelShaderConstantsFDirty)
-				{
-					Renderer::setPixelShaderConstantF(0, pixelShaderConstantF[0], pixelShaderConstantsFDirty);
-				}
-
-				Renderer::setPixelShader(pixelShader);   // Loads shader constants set with DEF
-				pixelShaderConstantsFDirty = pixelShader->dirtyConstantsF;   // Shader DEF'ed constants are dirty
-			}
-			else
-			{
-				setPixelShader(0);
-			}
-
-			pixelShaderDirty = false;
-		}
-
-		if(vertexShaderDirty)
-		{
-			if(vertexShader)
-			{
-				if(vertexShaderConstantsFDirty)
-				{
-					Renderer::setVertexShaderConstantF(0, vertexShaderConstantF[0], vertexShaderConstantsFDirty);
-				}
-		
-				Renderer::setVertexShader(vertexShader);   // Loads shader constants set with DEF
-				vertexShaderConstantsFDirty = vertexShader->dirtyConstantsF;   // Shader DEF'ed constants are dirty
-			}
-			else
-			{
-				setVertexShader(0);
-			}
-
-			vertexShaderDirty = false;
-		}
 	}
 	
 	bool Device::bindViewport()

@@ -11,30 +11,23 @@
 
 // utilities.h: Conversion functions and other utility routines.
 
-#ifndef LIBGLESV2_UTILITIES_H
-#define LIBGLESV2_UTILITIES_H
+#ifndef LIBGLES_CM_UTILITIES_H
+#define LIBGLES_CM_UTILITIES_H
 
 #include "Device.hpp"
 #include "Image.hpp"
 #include "Texture.h"
 
-#define GL_APICALL
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+#define GL_API
+#include <GLES/gl.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GLES/glext.h>
 
 #include <string>
 
 namespace gl
 {
 	struct Color;
-
-	int UniformComponentCount(GLenum type);
-	GLenum UniformComponentType(GLenum type);
-	size_t UniformTypeSize(GLenum type);
-	int VariableRowCount(GLenum type);
-	int VariableColumnCount(GLenum type);
-
-	int AllocateFirstFreeBits(unsigned int *bits, unsigned int allocationSize, unsigned int bitsSize);
 
 	int ComputePixelSize(GLenum format, GLenum type);
 	GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment);
@@ -55,14 +48,14 @@ namespace gl
 
 namespace es2sw
 {
-	sw::Context::DepthCompareMode ConvertDepthComparison(GLenum comparison);
-	sw::Context::StencilCompareMode ConvertStencilComparison(GLenum comparison);
+	sw::DepthCompareMode ConvertDepthComparison(GLenum comparison);
+	sw::StencilCompareMode ConvertStencilComparison(GLenum comparison);
 	sw::Color<float> ConvertColor(gl::Color color);
-	sw::Context::BlendFactor ConvertBlendFunc(GLenum blend);
-	sw::Context::BlendOperation ConvertBlendOp(GLenum blendOp);
-	sw::Context::StencilOperation ConvertStencilOp(GLenum stencilOp);
+	sw::BlendFactor ConvertBlendFunc(GLenum blend);
+	sw::BlendOperation ConvertBlendOp(GLenum blendOp);
+	sw::StencilOperation ConvertStencilOp(GLenum stencilOp);
 	sw::AddressingMode ConvertTextureWrap(GLenum wrap);
-	sw::Context::CullMode ConvertCullMode(GLenum cullFace, GLenum frontFace);
+	sw::CullMode ConvertCullMode(GLenum cullFace, GLenum frontFace);
 	unsigned int ConvertColorMask(bool red, bool green, bool blue, bool alpha);
 	sw::FilterType ConvertMagFilter(GLenum magFilter);
 	void ConvertMinFilter(GLenum texFilter, sw::FilterType *minFilter, sw::MipmapType *mipFilter, float maxAnisotropy);
@@ -83,4 +76,4 @@ namespace sw2es
 	GLenum ConvertDepthStencilFormat(sw::Format format);
 }
 
-#endif  // LIBGLESV2_UTILITIES_H
+#endif  // LIBGLES_CM_UTILITIES_H
