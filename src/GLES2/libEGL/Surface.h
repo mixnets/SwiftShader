@@ -21,7 +21,7 @@
 #define EGLAPI
 #include <EGL/egl.h>
 
-namespace gl
+namespace gl2
 {
 class Image;
 class Texture2D;
@@ -45,8 +45,8 @@ public:
 
 	EGLNativeWindowType getWindowHandle();
     
-    virtual gl::Image *getRenderTarget();
-    virtual gl::Image *getDepthStencil();
+    virtual gl2::Image *getRenderTarget();
+    virtual gl2::Image *getDepthStencil();
 
     void setSwapInterval(EGLint interval);
 
@@ -60,8 +60,8 @@ public:
     virtual EGLenum getTextureTarget() const;
     virtual sw::Format getInternalFormat() const;
 
-    virtual void setBoundTexture(gl::Texture2D *texture);
-    virtual gl::Texture2D *getBoundTexture() const;
+    virtual void setBoundTexture(gl2::Texture2D *texture);
+    virtual gl2::Texture2D *getBoundTexture() const;
 
 	bool checkForResize();   // Returns true if surface changed due to resize
 
@@ -70,9 +70,9 @@ private:
     bool reset();
 
     Display *const mDisplay;
-    gl::Image *mDepthStencil;
+    gl2::Image *mDepthStencil;
 	sw::FrameBuffer *frameBuffer;
-	gl::Image *backBuffer;
+	gl2::Image *backBuffer;
 
 	bool reset(int backbufferWidth, int backbufferHeight);
     
@@ -95,7 +95,7 @@ private:
 //  EGLenum vgAlphaFormat;               // Alpha format for OpenVG
 //  EGLenum vgColorSpace;                // Color space for OpenVG
     EGLint mSwapInterval;
-    gl::Texture2D *mTexture;
+    gl2::Texture2D *mTexture;
 };
 }
 

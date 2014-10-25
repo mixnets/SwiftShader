@@ -238,7 +238,7 @@ bool Display::getConfigAttrib(EGLConfig config, EGLint attribute, EGLint *value)
 
 bool Display::createDevice()
 {
-    mDevice = gl::createDevice();
+    mDevice = gl2::createDevice();
 
     if(!mDevice)
     {
@@ -404,7 +404,7 @@ EGLSurface Display::createOffscreenSurface(EGLConfig config, const EGLint *attri
     return success(surface);
 }
 
-EGLContext Display::createContext(EGLConfig configHandle, const gl::Context *shareContext)
+EGLContext Display::createContext(EGLConfig configHandle, const gl2::Context *shareContext)
 {
     if(!mDevice)
     {
@@ -416,7 +416,7 @@ EGLContext Display::createContext(EGLConfig configHandle, const gl::Context *sha
 
     const egl::Config *config = mConfigSet.get(configHandle);
 
-    gl::Context *context = gl::createContext(config, shareContext);
+    gl2::Context *context = gl2::createContext(config, shareContext);
     mContextSet.insert(context);
 
     return context;
@@ -428,7 +428,7 @@ void Display::destroySurface(egl::Surface *surface)
     mSurfaceSet.erase(surface);
 }
 
-void Display::destroyContext(gl::Context *context)
+void Display::destroyContext(gl2::Context *context)
 {
     context->destroy();
     mContextSet.erase(context);
@@ -444,7 +444,7 @@ bool Display::isValidConfig(EGLConfig config)
     return mConfigSet.get(config) != NULL;
 }
 
-bool Display::isValidContext(gl::Context *context)
+bool Display::isValidContext(gl2::Context *context)
 {
     return mContextSet.find(context) != mContextSet.end();
 }
@@ -489,7 +489,7 @@ EGLint Display::getMaxSwapInterval()
     return mMaxSwapInterval;
 }
 
-gl::Device *Display::getDevice()
+gl2::Device *Display::getDevice()
 {
     if(!mDevice)
     {

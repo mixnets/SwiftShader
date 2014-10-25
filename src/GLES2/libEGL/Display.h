@@ -21,7 +21,7 @@
 
 #include <set>
 
-namespace gl
+namespace gl2
 {
 class Context;
 class Device;
@@ -44,14 +44,14 @@ namespace egl
 
 		EGLSurface createWindowSurface(EGLNativeWindowType window, EGLConfig config, const EGLint *attribList);
 		EGLSurface createOffscreenSurface(EGLConfig config, const EGLint *attribList);
-		EGLContext createContext(EGLConfig configHandle, const gl::Context *shareContext);
+		EGLContext createContext(EGLConfig configHandle, const gl2::Context *shareContext);
 
 		void destroySurface(egl::Surface *surface);
-		void destroyContext(gl::Context *context);
+		void destroyContext(gl2::Context *context);
 
 		bool isInitialized() const;
 		bool isValidConfig(EGLConfig config);
-		bool isValidContext(gl::Context *context);
+		bool isValidContext(gl2::Context *context);
 		bool isValidSurface(egl::Surface *surface);
 		bool isValidWindow(EGLNativeWindowType window);
 		bool hasExistingWindowSurface(EGLNativeWindowType window);
@@ -59,7 +59,7 @@ namespace egl
 		EGLint getMinSwapInterval();
 		EGLint getMaxSwapInterval();
 
-		virtual gl::Device *getDevice();
+		virtual gl2::Device *getDevice();
 
 		EGLNativeDisplayType getNativeDisplay() const;
 		const char *getExtensionString() const;
@@ -70,7 +70,7 @@ namespace egl
 		DisplayMode getDisplayMode() const;
 
 		const EGLNativeDisplayType displayId;
-		gl::Device *mDevice;
+		gl2::Device *mDevice;
 
 		EGLint mMaxSwapInterval;
 		EGLint mMinSwapInterval;
@@ -80,7 +80,7 @@ namespace egl
 
 		ConfigSet mConfigSet;
 
-		typedef std::set<gl::Context*> ContextSet;
+		typedef std::set<gl2::Context*> ContextSet;
 		ContextSet mContextSet;
 
 		bool createDevice();

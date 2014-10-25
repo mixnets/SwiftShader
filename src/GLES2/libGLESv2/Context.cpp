@@ -9,7 +9,7 @@
 // or implied, including but not limited to any patent rights, are granted to you.
 //
 
-// Context.cpp: Implements the gl::Context class, managing all GL state and performing
+// Context.cpp: Implements the gl2::Context class, managing all GL state and performing
 // rendering operations. It is the GLES2 specific implementation of EGLContext.
 
 #include "Context.h"
@@ -34,7 +34,7 @@
 #undef near
 #undef far
 
-namespace gl
+namespace gl2
 {
 Context::Context(const egl::Config *config, const Context *shareContext) : mConfig(config)
 {
@@ -217,9 +217,9 @@ Context::~Context()
 
 void Context::destroy()
 {
-	if(this == gl::getContext())
+	if(this == gl2::getContext())
 	{
-		gl::makeCurrent(NULL, NULL, NULL);
+		gl2::makeCurrent(NULL, NULL, NULL);
 	}
 
 	delete this;
@@ -3035,18 +3035,18 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 // Exported functions for use by EGL
 extern "C"
 {
-	gl::Context *glCreateContext(const egl::Config *config, const gl::Context *shareContext)
+	gl2::Context *glCreateContext(const egl::Config *config, const gl2::Context *shareContext)
 	{
-		return new gl::Context(config, shareContext);
+		return new gl2::Context(config, shareContext);
 	}
 
-	void glMakeCurrent(gl::Context *context, egl::Display *display, egl::Surface *surface)
+	void glMakeCurrent(gl2::Context *context, egl::Display *display, egl::Surface *surface)
 	{
-		gl::makeCurrent(context, display, surface);
+		gl2::makeCurrent(context, display, surface);
 	}
 
-	gl::Context *glGetCurrentContext()
+	gl2::Context *glGetCurrentContext()
 	{
-		return gl::getContext();
+		return gl2::getContext();
 	}
 }

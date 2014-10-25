@@ -50,7 +50,7 @@ static bool validateConfig(egl::Display *display, EGLConfig config)
     return true;
 }
 
-static bool validateContext(egl::Display *display, gl::Context *context)
+static bool validateContext(egl::Display *display, gl2::Context *context)
 {
     if(!validateDisplay(display))
     {
@@ -661,7 +661,7 @@ EGLBoolean EGLAPIENTRY eglBindTexImage(EGLDisplay dpy, EGLSurface surface, EGLin
             return error(EGL_BAD_MATCH, EGL_FALSE);
         }
 
-        gl::bindTexImage(eglSurface);
+        gl2::bindTexImage(eglSurface);
 
         return success(EGL_TRUE);
     }
@@ -702,7 +702,7 @@ EGLBoolean EGLAPIENTRY eglReleaseTexImage(EGLDisplay dpy, EGLSurface surface, EG
             return error(EGL_BAD_MATCH, EGL_FALSE);
         }
 
-        gl::Texture2D *texture = eglSurface->getBoundTexture();
+        gl2::Texture2D *texture = eglSurface->getBoundTexture();
 
         if(texture)
         {
@@ -787,7 +787,7 @@ EGLContext EGLAPIENTRY eglCreateContext(EGLDisplay dpy, EGLConfig config, EGLCon
             return EGL_NO_CONTEXT;
         }
 
-        EGLContext context = display->createContext(config, static_cast<gl::Context*>(share_context));
+        EGLContext context = display->createContext(config, static_cast<gl2::Context*>(share_context));
 
         return success(context);
     }
@@ -806,7 +806,7 @@ EGLBoolean EGLAPIENTRY eglDestroyContext(EGLDisplay dpy, EGLContext ctx)
     try
     {
         egl::Display *display = static_cast<egl::Display*>(dpy);
-        gl::Context *context = static_cast<gl::Context*>(ctx);
+        gl2::Context *context = static_cast<gl2::Context*>(ctx);
 
         if(!validateContext(display, context))
         {
@@ -838,8 +838,8 @@ EGLBoolean EGLAPIENTRY eglMakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurfac
     try
     {
         egl::Display *display = static_cast<egl::Display*>(dpy);
-        gl::Context *context = static_cast<gl::Context*>(ctx);
-        gl::Device *device = display->getDevice();
+        gl2::Context *context = static_cast<gl2::Context*>(ctx);
+        gl2::Device *device = display->getDevice();
 
         if(!device)
         {
@@ -866,7 +866,7 @@ EGLBoolean EGLAPIENTRY eglMakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurfac
         egl::setCurrentDrawSurface(draw);
         egl::setCurrentReadSurface(read);
 
-        gl::makeCurrent(context, display, static_cast<egl::Surface*>(draw));
+        gl2::makeCurrent(context, display, static_cast<egl::Surface*>(draw));
 
         return success(EGL_TRUE);
     }
@@ -884,7 +884,7 @@ EGLContext EGLAPIENTRY eglGetCurrentContext(void)
 
     try
     {
-		EGLContext context = gl::getCurrentContext();
+		EGLContext context = gl2::getCurrentContext();
 
 		return success(context);
     }
@@ -951,7 +951,7 @@ EGLBoolean EGLAPIENTRY eglQueryContext(EGLDisplay dpy, EGLContext ctx, EGLint at
     try
     {
         egl::Display *display = static_cast<egl::Display*>(dpy);
-        gl::Context *context = static_cast<gl::Context*>(ctx);
+        gl2::Context *context = static_cast<gl2::Context*>(ctx);
 
         if(!validateContext(display, context))
         {
@@ -1068,7 +1068,7 @@ EGLImageKHR EGLAPIENTRY eglCreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenu
     try
     {
         egl::Display *display = static_cast<egl::Display*>(dpy);
-        gl::Context *context = static_cast<gl::Context*>(ctx);
+        gl2::Context *context = static_cast<gl2::Context*>(ctx);
 
         if(!validateDisplay(display))
         {
@@ -1122,7 +1122,7 @@ EGLImageKHR EGLAPIENTRY eglCreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenu
             }
         }
 
-        if(textureLevel >= gl::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+        if(textureLevel >= gl2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
         {
             return error(EGL_BAD_MATCH, EGL_NO_IMAGE_KHR);
         }
@@ -1134,11 +1134,11 @@ EGLImageKHR EGLAPIENTRY eglCreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenu
             return error(EGL_BAD_PARAMETER, EGL_NO_IMAGE_KHR);
         }
 
-        gl::Image *image = 0;
+        gl2::Image *image = 0;
 
         if(textureTarget != GL_NONE)
         {
-            gl::Texture *texture = context->getTexture(name);
+            gl2::Texture *texture = context->getTexture(name);
 
             if(!texture || texture->getTarget() != textureTarget)
             {
@@ -1164,7 +1164,7 @@ EGLImageKHR EGLAPIENTRY eglCreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenu
         }
         else if(target == EGL_GL_RENDERBUFFER_KHR)
         {
-            gl::Renderbuffer *renderbuffer = context->getRenderbuffer(name);
+            gl2::Renderbuffer *renderbuffer = context->getRenderbuffer(name);
 
             if(!renderbuffer)
             {
@@ -1216,7 +1216,7 @@ EGLBoolean EGLAPIENTRY eglDestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
             return error(EGL_BAD_PARAMETER, EGL_FALSE);
         }
 
-        gl::Image *glImage = static_cast<gl::Image*>(image);
+        gl2::Image *glImage = static_cast<gl2::Image*>(image);
         glImage->release();
 
         return success(EGL_TRUE);
@@ -1255,7 +1255,7 @@ __eglMustCastToProperFunctionPointerType EGLAPIENTRY eglGetProcAddress(const cha
             }
         }
 
-		return gl::getProcAddress(procname);
+		return gl2::getProcAddress(procname);
     }
     catch(std::bad_alloc&)
     {
