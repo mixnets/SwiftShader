@@ -14,12 +14,12 @@
 
 #include "Renderer/Renderer.hpp"
 
-namespace gl
+namespace gl2
 {
 	class Texture;
 }
 
-namespace gl
+namespace gl2
 {
 	class Image;
 

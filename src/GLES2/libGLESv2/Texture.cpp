@@ -25,7 +25,7 @@
 
 #include <algorithm>
 
-namespace gl
+namespace gl2
 {
 
 Texture::Texture(GLuint id) : RefCountObject(id)
@@ -1156,11 +1156,11 @@ void TextureExternal::setImage(Image *sharedImage)
 // Exported functions for use by EGL
 extern "C"
 {
-	gl::Image *createBackBuffer(int width, int height, const egl::Config *config)
+	gl2::Image *createBackBuffer(int width, int height, const egl::Config *config)
 	{
 		if(config)
 		{
-			return new gl::Image(0, width, height, config->mAlphaSize ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE);
+			return new gl2::Image(0, width, height, config->mAlphaSize ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE);
 		}
 
 		return 0;

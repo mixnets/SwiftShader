@@ -20,7 +20,7 @@
 
 #include <set>
 
-namespace gl
+namespace gl2
 {
 class Device;
 }
@@ -60,7 +60,7 @@ namespace egl
 		EGLint getMinSwapInterval();
 		EGLint getMaxSwapInterval();
 
-		virtual gl::Device *getDevice();
+		virtual gl2::Device *getDevice();
 
 		EGLNativeDisplayType getNativeDisplay() const;
 		const char *getExtensionString() const;
@@ -71,7 +71,7 @@ namespace egl
 		DisplayMode getDisplayMode() const;
 
 		const EGLNativeDisplayType displayId;
-		gl::Device *mDevice;
+		gl2::Device *mDevice;
 
 		EGLint mMaxSwapInterval;
 		EGLint mMinSwapInterval;

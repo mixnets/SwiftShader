@@ -89,12 +89,12 @@ CONSTRUCTOR static bool eglAttachProcess()
 	#endif
 	
     libGLESv2 = loadLibrary(libGLESv2_lib);
-    gl::createDevice = (gl::Device*(*)())getProcAddress(libGLESv2, "createDevice");
-    gl::createContext = (egl::Context *(*)(const egl::Config*, const egl::Context*))getProcAddress(libGLESv2, "glCreateContext");
-    gl::makeCurrent = (void (*)(gl::Context*, egl::Display*, egl::Surface*))getProcAddress(libGLESv2, "glMakeCurrent");
-    gl::getProcAddress = (__eglMustCastToProperFunctionPointerType (*)(const char*))getProcAddress(libGLESv2, "glGetProcAddress");
-    gl::createBackBuffer = (gl::Image *(*)(int, int, const egl::Config*))getProcAddress(libGLESv2, "createBackBuffer");
-    gl::createFrameBuffer = (sw::FrameBuffer *(*)(EGLNativeDisplayType, EGLNativeWindowType, int, int))getProcAddress(libGLESv2, "createFrameBuffer");
+    gl2::createDevice = (gl2::Device*(*)())getProcAddress(libGLESv2, "createDevice");
+    gl2::createContext = (egl::Context *(*)(const egl::Config*, const egl::Context*))getProcAddress(libGLESv2, "glCreateContext");
+    gl2::makeCurrent = (void (*)(gl2::Context*, egl::Display*, egl::Surface*))getProcAddress(libGLESv2, "glMakeCurrent");
+    gl2::getProcAddress = (__eglMustCastToProperFunctionPointerType (*)(const char*))getProcAddress(libGLESv2, "glGetProcAddress");
+    gl2::createBackBuffer = (gl2::Image *(*)(int, int, const egl::Config*))getProcAddress(libGLESv2, "createBackBuffer");
+    gl2::createFrameBuffer = (sw::FrameBuffer *(*)(EGLNativeDisplayType, EGLNativeWindowType, int, int))getProcAddress(libGLESv2, "createFrameBuffer");
 
 	return libGLESv2 != 0;
 }
@@ -258,7 +258,7 @@ void error(EGLint errorCode)
     }
 }
 
-namespace gl
+namespace gl2
 {
 	Device *(*createDevice)() = 0;
 	egl::Context *(*createContext)(const egl::Config *config, const egl::Context *shareContext) = 0;

@@ -127,7 +127,7 @@ bool Surface::reset()
 
 bool Surface::reset(int backBufferWidth, int backBufferHeight)
 {
-    gl::Device *device = mDisplay->getDevice();
+    gl2::Device *device = mDisplay->getDevice();
 
     if(device == NULL)
     {
@@ -138,7 +138,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 
     if(mWindow)
     {
-		frameBuffer = gl::createFrameBuffer(mDisplay->getNativeDisplay(), mWindow, backBufferWidth, backBufferHeight);
+		frameBuffer = gl2::createFrameBuffer(mDisplay->getNativeDisplay(), mWindow, backBufferWidth, backBufferHeight);
 
 		if(!frameBuffer)
 		{
@@ -148,7 +148,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 		}
     }
 
-	backBuffer = gl::createBackBuffer(backBufferWidth, backBufferHeight, mConfig);
+	backBuffer = gl2::createBackBuffer(backBufferWidth, backBufferHeight, mConfig);
 	
     if(!backBuffer)
     {
@@ -196,7 +196,7 @@ void Surface::swap()
 	}
 }
 
-gl::Image *Surface::getRenderTarget()
+gl2::Image *Surface::getRenderTarget()
 {
     if(backBuffer)
     {
@@ -206,7 +206,7 @@ gl::Image *Surface::getRenderTarget()
     return backBuffer;
 }
 
-gl::Image *Surface::getDepthStencil()
+gl2::Image *Surface::getDepthStencil()
 {
     if(mDepthStencil)
     {
@@ -268,12 +268,12 @@ EGLenum Surface::getTextureTarget() const
     return mTextureTarget;
 }
 
-void Surface::setBoundTexture(gl::Texture2D *texture)
+void Surface::setBoundTexture(gl2::Texture2D *texture)
 {
     mTexture = texture;
 }
 
-gl::Texture2D *Surface::getBoundTexture() const
+gl2::Texture2D *Surface::getBoundTexture() const
 {
     return mTexture;
 }
@@ -311,7 +311,7 @@ bool Surface::checkForResize()
 
         if(static_cast<egl::Surface*>(getCurrentDrawSurface()) == this)
         {
-            gl::makeCurrent(static_cast<gl::Context*>(getCurrentContext()), static_cast<egl::Display*>(getCurrentDisplay()), this);
+            gl2::makeCurrent(static_cast<gl2::Context*>(getCurrentContext()), static_cast<egl::Display*>(getCurrentDisplay()), this);
         }
 
         return true;

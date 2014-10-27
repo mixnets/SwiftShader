@@ -239,7 +239,7 @@ bool Display::getConfigAttrib(EGLConfig config, EGLint attribute, EGLint *value)
 
 bool Display::createDevice()
 {
-    mDevice = gl::createDevice();
+    mDevice = gl2::createDevice();
 
     if(!mDevice)
     {
@@ -417,7 +417,7 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 
     const egl::Config *config = mConfigSet.get(configHandle);
 
-    egl::Context *context = gl::createContext(config, shareContext);
+    egl::Context *context = gl2::createContext(config, shareContext);
     mContextSet.insert(context);
 
     return context;
@@ -490,7 +490,7 @@ EGLint Display::getMaxSwapInterval()
     return mMaxSwapInterval;
 }
 
-gl::Device *Display::getDevice()
+gl2::Device *Display::getDevice()
 {
     if(!mDevice)
     {

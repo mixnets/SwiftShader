@@ -81,7 +81,7 @@ namespace sw
 }
 
 // libGLESv2 dependencies
-namespace gl
+namespace gl2
 {
 	class Device;
 	class Context;

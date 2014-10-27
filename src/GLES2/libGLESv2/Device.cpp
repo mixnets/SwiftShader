@@ -27,7 +27,7 @@
 
 bool localShaderConstants = false;
 
-namespace gl
+namespace gl2
 {
 	using namespace sw;
 
@@ -787,13 +787,13 @@ namespace gl
 // Exported functions for use by EGL
 extern "C"
 {
-	gl::Device *createDevice()
+	gl2::Device *createDevice()
 	{
 		sw::Context *context = new sw::Context();
 
 		if(context)
 		{
-			return new gl::Device(context);
+			return new gl2::Device(context);
 		}
 
 		return 0;
