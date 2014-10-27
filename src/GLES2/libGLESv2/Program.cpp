@@ -72,8 +72,6 @@ namespace gl
 
 	Program::Program(ResourceManager *manager, GLuint handle) : resourceManager(manager), handle(handle), serial(issueSerial())
 	{
-		device = getDevice();
-
 		fragmentShader = 0;
 		vertexShader = 0;
 		pixelBinary = 0;
