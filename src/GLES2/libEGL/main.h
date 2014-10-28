@@ -87,6 +87,8 @@ namespace gl
 {
 	extern egl::Context *(*createContext)(const egl::Config *config, const egl::Context *shareContext);
 	extern __eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname);
+
+	// Can also be implemented by libGLESv2
 	extern egl::Image *(*createBackBuffer)(int width, int height, const egl::Config *config);
 	extern egl::Image *(*createDepthStencil)(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
 	extern sw::FrameBuffer *(*createFrameBuffer)(EGLNativeDisplayType display, EGLNativeWindowType window, int width, int height);
@@ -97,9 +99,6 @@ namespace gl2
 {
 	extern egl::Context *(*createContext)(const egl::Config *config, const egl::Context *shareContext);
 	extern __eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname);
-	extern egl::Image *(*createBackBuffer)(int width, int height, const egl::Config *config);
-	extern egl::Image *(*createDepthStencil)(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
-	extern sw::FrameBuffer *(*createFrameBuffer)(EGLNativeDisplayType display, EGLNativeWindowType window, int width, int height);
 }
 
 extern void *libGLES_CM;   // Handle to the libGLES_CM module
