@@ -38,7 +38,11 @@ namespace es1
 {
 Device *Context::device = 0;
 
-Context::Context(const egl::Config *config, const Context *shareContext) : mConfig(config)
+Context::Context(const egl::Config *config, const Context *shareContext)
+    : modelViewStack(MAX_MODELVIEW_STACK_DEPTH),
+      projectionStack(MAX_PROJECTION_STACK_DEPTH),
+	  textureStack0(MAX_TEXTURE_STACK_DEPTH),
+	  textureStack1(MAX_TEXTURE_STACK_DEPTH)
 {
 	device = getDevice();
 
@@ -139,6 +143,8 @@ Context::Context(const egl::Config *config, const Context *shareContext) : mConf
     mHasBeenCurrent = false;
 
     markAllStateDirty();
+
+    matrixMode = GL_MODELVIEW;
 }
 
 Context::~Context()
@@ -150,7 +156,7 @@ Context::~Context()
 	
     for(int type = 0; type < TEXTURE_TYPE_COUNT; type++)
     {
-        for(int sampler = 0; sampler < MAX_COMBINED_TEXTURE_IMAGE_UNITS; sampler++)
+        for(int sampler = 0; sampler < MAX_TEXTURE_IMAGE_UNITS; sampler++)
         {
             mState.samplerTexture[type][sampler].set(NULL);
         }
@@ -883,6 +889,18 @@ bool Context::getFloatv(GLenum pname, GLfloat *params)
 	  case GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT:
         *params = MAX_TEXTURE_MAX_ANISOTROPY;
 		break;
+	  case GL_MODELVIEW_MATRIX:
+		for(int i = 0; i < 16; i++)
+		{
+			params[i] = modelViewStack.current()[i % 4][i / 4];
+		}
+		break;
+	  case GL_PROJECTION_MATRIX:
+		for(int i = 0; i < 16; i++)
+		{
+			params[i] = projectionStack.current()[i % 4][i / 4];
+		}
+		break;
       default:
         return false;
     }
@@ -1057,7 +1075,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
         break;
     case GL_TEXTURE_BINDING_2D:
         {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+            if(mState.activeSampler < 0 || mState.activeSampler > MAX_TEXTURE_IMAGE_UNITS - 1)
             {
                 error(GL_INVALID_OPERATION);
                 return false;
@@ -1068,7 +1086,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
         break;
     case GL_TEXTURE_BINDING_CUBE_MAP_OES:
         {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+            if(mState.activeSampler < 0 || mState.activeSampler > MAX_TEXTURE_IMAGE_UNITS - 1)
             {
                 error(GL_INVALID_OPERATION);
                 return false;
@@ -1079,7 +1097,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
         break;
     case GL_TEXTURE_BINDING_EXTERNAL_OES:
         {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+            if(mState.activeSampler < 0 || mState.activeSampler > MAX_TEXTURE_IMAGE_UNITS - 1)
             {
                 error(GL_INVALID_OPERATION);
                 return false;
@@ -1088,6 +1106,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
             *params = mState.samplerTexture[TEXTURE_EXTERNAL][mState.activeSampler].id();
         }
         break;
+    case GL_MAX_TEXTURE_UNITS: *params = MAX_TEXTURE_IMAGE_UNITS; break;
     default:
         return false;
     }
@@ -1150,6 +1169,10 @@ int Context::getQueryParameterNum(GLenum pname)
     case GL_TEXTURE_BINDING_2D:
     case GL_TEXTURE_BINDING_CUBE_MAP_OES:
     case GL_TEXTURE_BINDING_EXTERNAL_OES:
+	case GL_MAX_TEXTURE_UNITS:
+	case GL_MAX_MODELVIEW_STACK_DEPTH:
+	case GL_MAX_PROJECTION_STACK_DEPTH:
+	case GL_MAX_TEXTURE_STACK_DEPTH:
         return 1;
     case GL_MAX_VIEWPORT_DIMS:
         return 2;
@@ -1248,6 +1271,10 @@ bool Context::isQueryParameterInt(GLenum pname)
     case GL_MAX_VIEWPORT_DIMS:
     case GL_VIEWPORT:
     case GL_SCISSOR_BOX:
+	case GL_MAX_TEXTURE_UNITS:
+	case GL_MAX_MODELVIEW_STACK_DEPTH:
+	case GL_MAX_PROJECTION_STACK_DEPTH:
+	case GL_MAX_TEXTURE_STACK_DEPTH:
         return true;
 	default:
 		ASSERT(isQueryParameterFloat(pname) || isQueryParameterBool(pname));
@@ -1361,6 +1388,13 @@ bool Context::applyRenderTarget()
 void Context::applyState(GLenum drawMode)
 {
     Framebuffer *framebuffer = getFramebuffer();
+
+    device->setProjectionMatrix(projectionStack.current());
+    device->setViewMatrix(modelViewStack.current());
+    device->setTextureMatrix(0, textureStack0.current());
+	device->setTextureMatrix(1, textureStack1.current());
+	device->setTextureTransform(0, textureStack0.isIdentity() ? 0 : 4, false);
+	device->setTextureTransform(1, textureStack1.isIdentity() ? 0 : 4, false);
 
     if(mState.cullFace)
     {
@@ -2130,7 +2164,7 @@ void Context::detachTexture(GLuint texture)
 
     for(int type = 0; type < TEXTURE_TYPE_COUNT; type++)
     {
-        for(int sampler = 0; sampler < MAX_COMBINED_TEXTURE_IMAGE_UNITS; sampler++)
+        for(int sampler = 0; sampler < MAX_TEXTURE_IMAGE_UNITS; sampler++)
         {
             if(mState.samplerTexture[type][sampler].id() == texture)
             {
@@ -2322,6 +2356,78 @@ Device *Context::getDevice()
 	}
 
 	return device;
+}
+
+void Context::setMatrixMode(GLenum mode)
+{
+    matrixMode = mode;
+}
+
+sw::MatrixStack &Context::currentMatrixStack()
+{
+	switch(matrixMode)
+	{
+	case GL_MODELVIEW: 
+		return modelViewStack;
+	case GL_PROJECTION:
+		return projectionStack;
+	case GL_TEXTURE:
+		switch(mState.activeSampler)
+		{
+		case 0: return textureStack0;
+		case 1: return textureStack1;
+		}
+		break;    
+	}
+
+	UNREACHABLE();
+	return textureStack0;
+}
+
+void Context::loadIdentity()
+{
+	currentMatrixStack().identity();
+}
+
+void Context::pushMatrix()
+{
+	if(!currentMatrixStack().push())
+	{
+		return error(GL_STACK_OVERFLOW);
+	}
+}
+
+void Context::popMatrix()
+{
+    if(!currentMatrixStack().pop())
+	{
+		return error(GL_STACK_OVERFLOW);
+	}
+}
+
+void Context::rotate(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
+{
+    currentMatrixStack().rotate(angle, x, y, z);
+}
+
+void Context::translate(GLfloat x, GLfloat y, GLfloat z)
+{
+    currentMatrixStack().translate(x, y, z);  
+}
+
+void Context::scale(GLfloat x, GLfloat y, GLfloat z)
+{
+    currentMatrixStack().scale(x, y, z);
+}
+
+void Context::multiply(const GLfloat *m)
+{
+    currentMatrixStack().multiply(m);
+}
+
+void Context::ortho(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
+{
+	currentMatrixStack().ortho(left, right, bottom, top, zNear, zFar);
 }
 
 }
