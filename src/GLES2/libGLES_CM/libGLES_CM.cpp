@@ -2859,6 +2859,11 @@ void GL_APIENTRY glPointSize(GLfloat size)
 	UNIMPLEMENTED();
 }
 
+void GL_APIENTRY glPointSizePointerOES(GLenum type, GLsizei stride, const GLvoid *pointer)
+{
+	UNIMPLEMENTED();
+}
+
 void GL_APIENTRY glPointSizex(GLfixed size)
 {
 	UNIMPLEMENTED();
@@ -3683,7 +3688,8 @@ __eglMustCastToProperFunctionPointerType glGetProcAddress(const char *procname)
 		{"glGetFramebufferAttachmentParameterivOES", (__eglMustCastToProperFunctionPointerType)glGetFramebufferAttachmentParameterivOES},
 		{"glGenerateMipmapOES", (__eglMustCastToProperFunctionPointerType)glGenerateMipmapOES},
 		{"glBlendEquationSeparateOES", (__eglMustCastToProperFunctionPointerType)glBlendEquationSeparateOES},
-		{"glBlendFuncSeparateOES", (__eglMustCastToProperFunctionPointerType)glBlendFuncSeparateOES}
+		{"glBlendFuncSeparateOES", (__eglMustCastToProperFunctionPointerType)glBlendFuncSeparateOES},
+		{"glPointSizePointerOES", (__eglMustCastToProperFunctionPointerType)glPointSizePointerOES}
     };
 
     for(int ext = 0; ext < sizeof(glExtensions) / sizeof(Extension); ext++)
