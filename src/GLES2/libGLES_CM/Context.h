@@ -389,6 +389,10 @@ public:
     void multiply(const GLfloat *m);
     void ortho(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar);
 
+	void clientActiveTexture(GLenum texture);
+	GLenum getClientActiveTexture() const;
+	unsigned int getActiveTexture() const;
+
 private:
 	virtual ~Context();
 
@@ -447,6 +451,7 @@ private:
 	sw::MatrixStack textureStack1;
 
 	bool texture2D;
+	GLenum clientTexture;
 
     ResourceManager *mResourceManager;
 
