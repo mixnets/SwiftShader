@@ -119,6 +119,27 @@ namespace es1
 
 			setClipPlane(i, plane);
 		}
+
+		setLightingEnable(false);
+
+		setGlobalAmbient(sw::Color<float>(0.2f, 0.2f, 0.2f, 1.0f));
+		setMaterialAmbient(sw::Color<float>(0.2f, 0.2f, 0.2f, 1.0f));
+		setMaterialDiffuse(sw::Color<float>(0.8f, 0.8f, 0.8f, 1.0f));
+		setMaterialSpecular(sw::Color<float>(0.0f, 0.0f, 0.0f, 1.0f));
+		setMaterialEmission(sw::Color<float>(0.0f, 0.0f, 0.0f, 1.0f));
+
+		for(int i = 0; i < 8; i++)
+		{
+			setLightEnable(i, false);
+			setLightAmbient(i, sw::Color<float>(0.0f, 0.0f, 0.0f, 1.0f));
+			setLightDiffuse(i, sw::Color<float>(0.0f, 0.0f, 0.0f, 1.0f));
+			setLightSpecular(i, sw::Color<float>(0.0f, 0.0f, 0.0f, 1.0f));
+			setLightPosition(i, sw::Point(0.0f, 0.0f, 1e10f * 1.0f));   // At 'infinity' (0, 0, 1, 0)
+			setLightAttenuation(i, 1.0f, 0.0f, 0.0f);
+		}
+
+		setLightDiffuse(0, sw::Color<float>(1.0f, 1.0f, 1.0f, 1.0f));
+		setLightSpecular(0, sw::Color<float>(1.0f, 1.0f, 1.0f, 1.0f)); 
 	}
 
 	Device::~Device()
