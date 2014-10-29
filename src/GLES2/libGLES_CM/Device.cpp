@@ -139,7 +139,12 @@ namespace es1
 		}
 
 		setLightDiffuse(0, sw::Color<float>(1.0f, 1.0f, 1.0f, 1.0f));
-		setLightSpecular(0, sw::Color<float>(1.0f, 1.0f, 1.0f, 1.0f)); 
+		setLightSpecular(0, sw::Color<float>(1.0f, 1.0f, 1.0f, 1.0f));
+
+		setDiffuseMaterialSource(sw::MATERIAL_MATERIAL);
+        setSpecularMaterialSource(sw::MATERIAL_MATERIAL);
+        setAmbientMaterialSource(sw::MATERIAL_MATERIAL);
+        setEmissiveMaterialSource(sw::MATERIAL_MATERIAL);
 	}
 
 	Device::~Device()

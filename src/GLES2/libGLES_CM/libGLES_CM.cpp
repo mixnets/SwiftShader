@@ -3041,7 +3041,7 @@ void GL_APIENTRY glLightfv(GLenum light, GLenum pname, const GLfloat *params)
 			case GL_DIFFUSE:               device->setLightDiffuse(light - GL_LIGHT0, sw::Color<float>(params[0], params[1], params[2], params[3]));  break;
 			case GL_SPECULAR:              device->setLightSpecular(light - GL_LIGHT0, sw::Color<float>(params[0], params[1], params[2], params[3])); break;
 			case GL_POSITION:              device->setLightPosition(light - GL_LIGHT0, sw::Point(params[0], params[1], params[2]));                   break;
-			case GL_SPOT_DIRECTION:        device->setLightPosition(light - GL_LIGHT0, sw::Point(-1e10f * params[0], -1e10f * params[1], -1e10f * params[2])); break;  // Fake it as a point at 'infinity'
+			case GL_SPOT_DIRECTION:        /* UNIMPLEMENTED(); */; break;
 			case GL_SPOT_EXPONENT:         UNIMPLEMENTED(); break;
 			case GL_SPOT_CUTOFF:           UNIMPLEMENTED(); break;
 			case GL_CONSTANT_ATTENUATION:  UNIMPLEMENTED(); break;

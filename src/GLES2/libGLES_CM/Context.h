@@ -332,7 +332,7 @@ public:
 
     void setRenderbufferStorage(RenderbufferStorage *renderbuffer);
 
-    void setVertexAttrib(GLuint index, const GLfloat *values);
+    void setVertexAttrib(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
 
     Buffer *getBuffer(GLuint handle);
     virtual Texture *getTexture(GLuint handle);
