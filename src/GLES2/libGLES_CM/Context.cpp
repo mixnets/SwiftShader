@@ -145,6 +145,7 @@ Context::Context(const egl::Config *config, const Context *shareContext)
     markAllStateDirty();
 
     matrixMode = GL_MODELVIEW;
+    texture2D = false;
 }
 
 Context::~Context()
@@ -156,7 +157,7 @@ Context::~Context()
 	
     for(int type = 0; type < TEXTURE_TYPE_COUNT; type++)
     {
-        for(int sampler = 0; sampler < MAX_TEXTURE_IMAGE_UNITS; sampler++)
+        for(int sampler = 0; sampler < MAX_TEXTURE_UNITS; sampler++)
         {
             mState.samplerTexture[type][sampler].set(NULL);
         }
@@ -509,6 +510,11 @@ void Context::setLight(int index, bool enable)
 {
     Device *device = getDevice();
     device->setLightEnable(index, enable);
+}
+
+void Context::setTexture2D(bool enable)
+{
+    texture2D = enable;
 }
 
 void Context::setLineWidth(GLfloat width)
@@ -1075,7 +1081,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
         break;
     case GL_TEXTURE_BINDING_2D:
         {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_TEXTURE_IMAGE_UNITS - 1)
+            if(mState.activeSampler < 0 || mState.activeSampler > MAX_TEXTURE_UNITS - 1)
             {
                 error(GL_INVALID_OPERATION);
                 return false;
@@ -1086,7 +1092,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
         break;
     case GL_TEXTURE_BINDING_CUBE_MAP_OES:
         {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_TEXTURE_IMAGE_UNITS - 1)
+            if(mState.activeSampler < 0 || mState.activeSampler > MAX_TEXTURE_UNITS - 1)
             {
                 error(GL_INVALID_OPERATION);
                 return false;
@@ -1097,7 +1103,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
         break;
     case GL_TEXTURE_BINDING_EXTERNAL_OES:
         {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_TEXTURE_IMAGE_UNITS - 1)
+            if(mState.activeSampler < 0 || mState.activeSampler > MAX_TEXTURE_UNITS - 1)
             {
                 error(GL_INVALID_OPERATION);
                 return false;
@@ -1110,6 +1116,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
     case GL_MAX_MODELVIEW_STACK_DEPTH:  *params = MAX_MODELVIEW_STACK_DEPTH;  break;
 	case GL_MAX_PROJECTION_STACK_DEPTH: *params = MAX_PROJECTION_STACK_DEPTH; break;
 	case GL_MAX_TEXTURE_STACK_DEPTH:    *params = MAX_TEXTURE_STACK_DEPTH;    break;
+	case GL_MAX_TEXTURE_UNITS:          *params = MAX_TEXTURE_UNITS;          break;
     default:
         return false;
     }
@@ -1172,7 +1179,6 @@ int Context::getQueryParameterNum(GLenum pname)
     case GL_TEXTURE_BINDING_2D:
     case GL_TEXTURE_BINDING_CUBE_MAP_OES:
     case GL_TEXTURE_BINDING_EXTERNAL_OES:
-	case GL_MAX_TEXTURE_UNITS:
         return 1;
     case GL_MAX_VIEWPORT_DIMS:
         return 2;
@@ -1210,6 +1216,7 @@ int Context::getQueryParameterNum(GLenum pname)
 	case GL_MAX_MODELVIEW_STACK_DEPTH:
 	case GL_MAX_PROJECTION_STACK_DEPTH:
 	case GL_MAX_TEXTURE_STACK_DEPTH:
+	case GL_MAX_TEXTURE_UNITS:
         return 1;
 	default:
 		UNREACHABLE();
@@ -1279,6 +1286,7 @@ bool Context::isQueryParameterInt(GLenum pname)
 	case GL_MAX_MODELVIEW_STACK_DEPTH:
 	case GL_MAX_PROJECTION_STACK_DEPTH:
 	case GL_MAX_TEXTURE_STACK_DEPTH:
+	case GL_MAX_TEXTURE_UNITS:
         return true;
 	default:
 		ASSERT(isQueryParameterFloat(pname) || isQueryParameterBool(pname));
@@ -1620,7 +1628,7 @@ GLenum Context::applyIndexBuffer(const void *indices, GLsizei count, GLenum mode
 
 void Context::applyTextures()
 {
-    for(int samplerIndex = 0; samplerIndex < MAX_TEXTURE_IMAGE_UNITS; samplerIndex++)
+    for(int samplerIndex = 0; samplerIndex < MAX_TEXTURE_UNITS; samplerIndex++)
     {
 		UNIMPLEMENTED();
         TextureType textureType = TEXTURE_2D;
@@ -2168,7 +2176,7 @@ void Context::detachTexture(GLuint texture)
 
     for(int type = 0; type < TEXTURE_TYPE_COUNT; type++)
     {
-        for(int sampler = 0; sampler < MAX_TEXTURE_IMAGE_UNITS; sampler++)
+        for(int sampler = 0; sampler < MAX_TEXTURE_UNITS; sampler++)
         {
             if(mState.samplerTexture[type][sampler].id() == texture)
             {
