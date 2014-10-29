@@ -493,6 +493,18 @@ bool Context::isDitherEnabled() const
     return mState.dither;
 }
 
+void Context::setLighting(bool enable)
+{
+    Device *device = getDevice();
+    device->setLightingEnable(enable);
+}
+
+void Context::setLight(int index, bool enable)
+{
+    Device *device = getDevice();
+    device->setLightEnable(index, enable);
+}
+
 void Context::setLineWidth(GLfloat width)
 {
     mState.lineWidth = width;
@@ -1076,6 +1088,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
             *params = mState.samplerTexture[TEXTURE_EXTERNAL][mState.activeSampler].id();
         }
         break;
+	case GL_MAX_LIGHTS: *params = MAX_LIGHTS; break;
     default:
         return false;
     }
@@ -1171,6 +1184,7 @@ int Context::getQueryParameterNum(GLenum pname)
     case GL_COLOR_CLEAR_VALUE:
         return 4;
 	case GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT:
+	case GL_MAX_LIGHTS:
         return 1;
 	default:
 		UNREACHABLE();
@@ -1236,6 +1250,7 @@ bool Context::isQueryParameterInt(GLenum pname)
     case GL_MAX_VIEWPORT_DIMS:
     case GL_VIEWPORT:
     case GL_SCISSOR_BOX:
+	case GL_MAX_LIGHTS:
         return true;
 	default:
 		ASSERT(isQueryParameterFloat(pname) || isQueryParameterBool(pname));

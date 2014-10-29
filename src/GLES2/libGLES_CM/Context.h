@@ -69,6 +69,7 @@ enum
     MAX_COMBINED_TEXTURE_IMAGE_UNITS = MAX_TEXTURE_IMAGE_UNITS + MAX_VERTEX_TEXTURE_IMAGE_UNITS,
     MAX_FRAGMENT_UNIFORM_VECTORS = 224 - 3,    // Reserve space for gl_DepthRange
     MAX_DRAW_BUFFERS = 1,
+	MAX_LIGHTS = 8,
 
     IMPLEMENTATION_COLOR_READ_FORMAT = GL_RGB,
     IMPLEMENTATION_COLOR_READ_TYPE = GL_UNSIGNED_SHORT_5_6_5
@@ -268,6 +269,8 @@ public:
 
     void setDither(bool enabled);
     bool isDitherEnabled() const;
+	void setLighting(bool enabled);
+	void setLight(int index, bool enable);
 
     void setLineWidth(GLfloat width);
 
