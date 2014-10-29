@@ -268,6 +268,8 @@ public:
 
     void setDither(bool enabled);
     bool isDitherEnabled() const;
+	void setLighting(bool enabled);
+	void setLight(int index, bool enable);
 
     void setLineWidth(GLfloat width);
 

@@ -493,6 +493,18 @@ bool Context::isDitherEnabled() const
     return mState.dither;
 }
 
+void Context::setLighting(bool enable)
+{
+    Device *device = getDevice();
+    device->setLightingEnable(enable);
+}
+
+void Context::setLight(int index, bool enable)
+{
+    Device *device = getDevice();
+    device->setLightEnable(index, enable);
+}
+
 void Context::setLineWidth(GLfloat width)
 {
     mState.lineWidth = width;
