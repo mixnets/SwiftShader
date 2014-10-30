@@ -3754,7 +3754,7 @@ void GL_APIENTRY glTexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 
 void GL_APIENTRY glTexEnvi(GLenum target, GLenum pname, GLint param)
 {
-	UNIMPLEMENTED();
+	//UNIMPLEMENTED();
 }
 
 void GL_APIENTRY glTexEnvx(GLenum target, GLenum pname, GLfixed param)
