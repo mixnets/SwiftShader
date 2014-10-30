@@ -4220,6 +4220,72 @@ void GL_APIENTRY glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image
     }
 }
 
+GLbitfield GL_APIENTRY glQueryMatrixxOES(GLfixed mantissa[16], GLint exponent[16])
+{
+	UNIMPLEMENTED();
+	return 0;
+}
+
+void GL_APIENTRY glCurrentPaletteMatrixOES(GLuint matrixpaletteindex)
+{
+	UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glLoadPaletteFromModelViewMatrixOES(void)
+{
+	UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glMatrixIndexPointerOES(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
+{
+	UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glWeightPointerOES(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
+{
+	UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexsOES(GLshort x, GLshort y, GLshort z, GLshort width, GLshort height)
+{
+	UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexiOES(GLint x, GLint y, GLint z, GLint width, GLint height)
+{
+	UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexxOES(GLfixed x, GLfixed y, GLfixed z, GLfixed width, GLfixed height)
+{
+	UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexsvOES(const GLshort *coords)
+{
+	UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexivOES(const GLint *coords)
+{
+	UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexxvOES(const GLfixed *coords)
+{
+	UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexfOES(GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloat height)
+{
+	UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexfvOES(const GLfloat *coords)
+{
+	UNIMPLEMENTED();
+}
+
 __eglMustCastToProperFunctionPointerType glGetProcAddress(const char *procname)
 {
     struct Extension
