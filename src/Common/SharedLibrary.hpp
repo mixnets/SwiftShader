@@ -16,9 +16,20 @@
 #endif
 
 #if defined(_WIN32)
-	inline void *loadLibrary(const char *path)
+    template<int n>
+	void *loadLibrary(const char *(&path)[n])
 	{
-		return (void*)LoadLibrary(path);
+		for(int i = 0; i < n; i++)
+		{
+			HMODULE module = LoadLibrary(path[i]);
+
+			if(module)
+            {
+                return (void*)module;
+            }
+		}
+
+		return 0;
 	}
 
 	inline void freeLibrary(void *library)
@@ -31,9 +42,20 @@
 		return (void*)GetProcAddress((HMODULE)library, name);
 	}
 #else
-	inline void *loadLibrary(const char *path)
+	template<int n>
+	void *loadLibrary(const char *(&path)[n])
 	{
-		return dlopen(path, RTLD_LAZY);
+		for(int i = 0; i < n; i++)
+		{
+			void *module = dlopen(path, RTLD_LAZY);
+
+			if(module)
+            {
+                return module;
+            }
+		}
+
+		return 0;
 	}
 
 	inline void freeLibrary(void *library)
