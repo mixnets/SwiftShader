@@ -43,22 +43,20 @@ CONSTRUCTOR static bool glAttachProcess()
 
     glAttachThread();
 
-    #if defined(_WIN32)
-	const char *libEGL_lib = "libEGL.dll";
-	#else
-	const char *libEGL_lib = "libEGL.so.1";
-	#endif
+	const char *libEGL_lib[] = {"libEGL.dll",
+	                            "libEGL.so.1",
+								"libEGL.so",
+	                            "libEGL_translator.dll", 0};
 
 	libEGL = loadLibrary(libEGL_lib);
 	egl::getCurrentContext = (egl::Context *(*)())getProcAddress(libEGL, "eglGetCurrentContext");
 	egl::getCurrentDisplay = (egl::Display *(*)())getProcAddress(libEGL, "eglGetCurrentDisplay");
 
-	#if defined(_WIN32)
-	const char *libGLES_CM_lib = "libGLES_CM.dll";
-	#else
-	const char *libGLES_CM_lib = "libGLES_CM.so.1";
-	#endif
-
+	const char *libGLES_CM_lib[] = {"libGLES_CM.dll",
+	                                "libGLES_CM.so.1",
+									"libGLES_CM.so",
+									"libGLES_CM_translator.dll", 0};
+	
 	libGLES_CM = loadLibrary(libGLES_CM_lib);
 	es1::getProcAddress = (__eglMustCastToProperFunctionPointerType (*)(const char*))getProcAddress(libGLES_CM, "glGetProcAddress");
 

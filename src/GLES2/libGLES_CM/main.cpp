@@ -43,11 +43,10 @@ CONSTRUCTOR static bool glAttachProcess()
 
     glAttachThread();
 
-	#if defined(_WIN32)
-	const char *libEGL_lib = "libEGL.dll";
-	#else
-	const char *libEGL_lib = "libEGL.so.1";
-	#endif
+	const char *libEGL_lib[] = {"libEGL.dll",
+	                            "libEGL.so.1",
+								"libEGL.so",
+	                            "libEGL_translator.dll", 0};
 
 	libEGL = loadLibrary(libEGL_lib);
 	egl::getCurrentContext = (egl::Context *(*)())getProcAddress(libEGL, "eglGetCurrentContext");
