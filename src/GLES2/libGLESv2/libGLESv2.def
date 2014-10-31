@@ -1,4 +1,4 @@
-LIBRARY libGLESv2
+LIBRARY libGLESv2.dll
 EXPORTS
     glActiveTexture                 @1
     glAttachShader                  @2
@@ -154,8 +154,6 @@ EXPORTS
     glIsFenceNV                     @155
     glSetFenceNV                    @156
     glTestFenceNV                   @157
-    ;glGetTranslatedShaderSourceANGLE @159
-    ;glTexStorage2DEXT               @160
     glGetGraphicsResetStatusEXT     @161
     glReadnPixelsEXT                @162
     glGetnUniformfvEXT              @163
@@ -167,6 +165,7 @@ EXPORTS
     glEndQueryEXT                   @169
     glGetQueryivEXT                 @170
     glGetQueryObjectuivEXT          @171
+	glEGLImageTargetTexture2DOES
 
     ; EGL dependencies
     glCreateContext

@@ -20,7 +20,7 @@ namespace es
 {
 	static void output(const char *format, va_list vararg)
 	{
-		if(false)
+		if(true)
 		{
 			FILE* file = fopen(TRACE_OUTPUT_FILE, "a");
 
