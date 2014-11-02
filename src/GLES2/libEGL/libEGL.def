@@ -1,4 +1,4 @@
-LIBRARY	libEGL
+LIBRARY	libEGL.dll
 EXPORTS
 	eglBindAPI                      @14
 	eglBindTexImage                 @20
@@ -34,3 +34,14 @@ EXPORTS
 	eglWaitClient                   @16
 	eglWaitGL                       @30
 	eglWaitNative                   @31
+
+eglCreateImageKHR
+eglDestroyImageKHR
+eglCreateSyncKHR
+eglDestroySyncKHR
+eglClientWaitSyncKHR
+eglSignalSyncKHR
+eglGetSyncAttribKHR
+eglLockSurfaceKHR
+eglUnlockSurfaceKHR
+eglSetSwapRectangleANDROID
