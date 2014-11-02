@@ -1181,6 +1181,54 @@ EGLBoolean EGLAPIENTRY eglDestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
     return EGL_FALSE;
 }
 
+EGLSyncKHR EGLAPIENTRY eglCreateSyncKHR(EGLDisplay dpy, EGLenum type, const EGLint *attrib_list)
+{
+	UNIMPLEMENTED();
+	return 0;
+}
+
+EGLBoolean EGLAPIENTRY eglDestroySyncKHR(EGLDisplay dpy, EGLSyncKHR sync)
+{
+	UNIMPLEMENTED();
+	return 0;
+}
+
+EGLint EGLAPIENTRY eglClientWaitSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint flags, EGLTimeKHR timeout)
+{
+	UNIMPLEMENTED();
+	return 0;
+}
+
+EGLBoolean EGLAPIENTRY eglSignalSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLenum mode)
+{
+	UNIMPLEMENTED();
+	return 0;
+}
+
+EGLBoolean EGLAPIENTRY eglGetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, EGLint *value)
+{
+	UNIMPLEMENTED();
+	return 0;
+}
+
+EGLBoolean EGLAPIENTRY eglLockSurfaceKHR(EGLDisplay dpy, EGLSurface surface, const EGLint *attrib_list)
+{
+	UNIMPLEMENTED();
+	return 0;
+}
+
+EGLBoolean EGLAPIENTRY eglUnlockSurfaceKHR(EGLDisplay dpy, EGLSurface surface)
+{
+	UNIMPLEMENTED();
+	return 0;
+}
+
+EGLBoolean EGLAPIENTRY eglSetSwapRectangleANDROID(EGLDisplay dpy, EGLSurface draw, EGLint left, EGLint top, EGLint width, EGLint height)
+{
+	UNIMPLEMENTED();
+	return 0;
+}
+
 __eglMustCastToProperFunctionPointerType EGLAPIENTRY eglGetProcAddress(const char *procname)
 {
     TRACE("(const char *procname = \"%s\")", procname);
@@ -1197,6 +1245,14 @@ __eglMustCastToProperFunctionPointerType EGLAPIENTRY eglGetProcAddress(const cha
         {
             {"eglCreateImageKHR", (__eglMustCastToProperFunctionPointerType)eglCreateImageKHR},
             {"eglDestroyImageKHR", (__eglMustCastToProperFunctionPointerType)eglDestroyImageKHR},
+			{"eglCreateSyncKHR", (__eglMustCastToProperFunctionPointerType)eglCreateSyncKHR},
+			{"eglDestroySyncKHR", (__eglMustCastToProperFunctionPointerType)eglDestroySyncKHR},
+			{"eglClientWaitSyncKHR", (__eglMustCastToProperFunctionPointerType)eglClientWaitSyncKHR},
+			{"eglSignalSyncKHR", (__eglMustCastToProperFunctionPointerType)eglSignalSyncKHR},
+			{"eglGetSyncAttribKHR", (__eglMustCastToProperFunctionPointerType)eglGetSyncAttribKHR},
+			{"eglLockSurfaceKHR", (__eglMustCastToProperFunctionPointerType)eglLockSurfaceKHR},
+			{"eglUnlockSurfaceKHR", (__eglMustCastToProperFunctionPointerType)eglUnlockSurfaceKHR},
+			{"eglSetSwapRectangleANDROID", (__eglMustCastToProperFunctionPointerType)eglSetSwapRectangleANDROID}
         };
 
         for(int ext = 0; ext < sizeof(eglExtensions) / sizeof(Extension); ext++)

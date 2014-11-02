@@ -11,6 +11,7 @@
 
 #if defined(_WIN32)
 	#include <Windows.h>
+	#include <Psapi.h>
 #else
 	#include <dlfcn.h>
 #endif
@@ -19,6 +20,7 @@
     template<int n>
 	void *loadLibrary(const char *(&names)[n])
 	{
+<<<<<<< .mine
 		for(int i = 0; i < n; i++)
 		{
 			HMODULE module = 0;
@@ -40,6 +42,65 @@
             }
 		}
 
+		return 0;
+=======
+		//HMODULE module = 0;
+		//GetModuleHandleEx(0, path, &module);
+
+		//if(module)
+		//{
+		//	//return (void*)module;
+		//}
+
+		//HMODULE modules[1024];
+		//DWORD needed;
+		//EnumProcessModules(GetCurrentProcess(), modules, 1024, &needed);
+
+		//for(int i = 0; i < needed; i++)
+		//{
+		//	char name[1024];
+		//	GetModuleFileName(modules[i], name, 1024);
+		//}
+
+		return (void*)LoadLibrary(path);
+
+
+
+>>>>>>> .theirs
+	}
+
+	inline void *loadLibrary(const char *path[])
+	{
+		//HMODULE module = 0;
+		//GetModuleHandleEx(0, path, &module);
+
+		//if(module)
+		//{
+		//	//return (void*)module;
+		//}
+
+		//HMODULE modules[1024];
+		//DWORD needed;
+		//EnumProcessModules(GetCurrentProcess(), modules, 1024, &needed);
+
+		//for(int i = 0; i < needed; i++)
+		//{
+		//	char name[1024];
+		//	GetModuleFileName(modules[i], name, 1024);
+		//}
+
+		for(int i = 0; path[i]; i++)
+		{
+			HMODULE module = 0;
+		GetModuleHandleEx(0, path[i], &module);
+
+		if(module)
+		{
+			return (void*)module;
+		}
+			module = LoadLibrary(path[i]);
+			if(module) return (void*)module;
+		}
 		return 0;
 	}
 
