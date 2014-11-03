@@ -25,6 +25,7 @@
 #include "common/debug.h"
 #include "Common/Version.h"
 #include "Main/Register.hpp"
+#include "../libEGL/Surface.h"
 
 #define GL_APICALL
 #include <GLES2/gl2.h>
@@ -33,10 +34,11 @@
 
 #include <exception>
 #include <limits>
+#include <deque>
 
 static bool validImageSize(GLint level, GLsizei width, GLsizei height)
 {
-    if(level < 0 || level >= rad::IMPLEMENTATION_MAX_TEXTURE_LEVELS || width < 0 || height < 0)
+    if(level < 0 || level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS || width < 0 || height < 0)
     {
         return false;
     }
@@ -44,7 +46,7 @@ static bool validImageSize(GLint level, GLsizei width, GLsizei height)
     return true;
 }
 
-static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei height, GLint xoffset, GLint yoffset, GLenum target, GLint level, GLenum format, rad::Texture *texture)
+static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei height, GLint xoffset, GLint yoffset, GLenum target, GLint level, GLenum format, es2::Texture *texture)
 {
     if(!texture)
     {
@@ -104,10 +106,10 @@ static bool validReadFormatType(GLenum format, GLenum type)
             return false;
         }
         break;
-    case rad::IMPLEMENTATION_COLOR_READ_FORMAT:
+    case es2::IMPLEMENTATION_COLOR_READ_FORMAT:
         switch (type)
         {
-        case rad::IMPLEMENTATION_COLOR_READ_TYPE:
+        case es2::IMPLEMENTATION_COLOR_READ_TYPE:
             break;
         default:
             return false;
@@ -129,11 +131,11 @@ void GL_APIENTRY glActiveTexture(GLenum texture)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            if(texture < GL_TEXTURE0 || texture > GL_TEXTURE0 + rad::MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+            if(texture < GL_TEXTURE0 || texture > GL_TEXTURE0 + es2::MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
             {
                 return error(GL_INVALID_ENUM);
             }
@@ -153,12 +155,12 @@ void GL_APIENTRY glAttachShader(GLuint program, GLuint shader)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *programObject = context->getProgram(program);
-            rad::Shader *shaderObject = context->getShader(shader);
+            es2::Program *programObject = context->getProgram(program);
+            es2::Shader *shaderObject = context->getShader(shader);
 
             if(!programObject)
             {
@@ -216,7 +218,7 @@ void GL_APIENTRY glBeginQueryEXT(GLenum target, GLuint id)
             return error(GL_INVALID_OPERATION);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -235,16 +237,16 @@ void GL_APIENTRY glBindAttribLocation(GLuint program, GLuint index, const GLchar
 
     try
     {
-        if(index >= rad::MAX_VERTEX_ATTRIBS)
+        if(index >= es2::MAX_VERTEX_ATTRIBS)
         {
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject)
             {
@@ -278,7 +280,7 @@ void GL_APIENTRY glBindBuffer(GLenum target, GLuint buffer)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -312,7 +314,7 @@ void GL_APIENTRY glBindFramebuffer(GLenum target, GLuint framebuffer)
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -344,7 +346,7 @@ void GL_APIENTRY glBindRenderbuffer(GLenum target, GLuint renderbuffer)
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -363,11 +365,11 @@ void GL_APIENTRY glBindTexture(GLenum target, GLuint texture)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Texture *textureObject = context->getTexture(texture);
+            es2::Texture *textureObject = context->getTexture(texture);
 
             if(textureObject && textureObject->getTarget() != target && texture != 0)
             {
@@ -403,11 +405,11 @@ void GL_APIENTRY glBlendColor(GLclampf red, GLclampf green, GLclampf blue, GLcla
 
     try
     {
-        rad::Context* context = rad::getContext();
+        es2::Context* context = es2::getContext();
 
         if(context)
         {
-            context->setBlendColor(rad::clamp01(red), rad::clamp01(green), rad::clamp01(blue), rad::clamp01(alpha));
+            context->setBlendColor(es2::clamp01(red), es2::clamp01(green), es2::clamp01(blue), es2::clamp01(alpha));
         }
     }
     catch(std::bad_alloc&)
@@ -451,7 +453,7 @@ void GL_APIENTRY glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha)
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -562,7 +564,7 @@ void GL_APIENTRY glBlendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlp
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -597,11 +599,11 @@ void GL_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid* data
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Buffer *buffer;
+            es2::Buffer *buffer;
 
             switch(target)
             {
@@ -646,11 +648,11 @@ void GL_APIENTRY glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Buffer *buffer;
+            es2::Buffer *buffer;
 
             switch(target)
             {
@@ -694,11 +696,11 @@ GLenum GL_APIENTRY glCheckFramebufferStatus(GLenum target)
             return error(GL_INVALID_ENUM, 0);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Framebuffer *framebuffer = NULL;
+            es2::Framebuffer *framebuffer = NULL;
             if(target == GL_READ_FRAMEBUFFER_ANGLE)
             {
                 framebuffer = context->getReadFramebuffer();
@@ -730,7 +732,7 @@ void GL_APIENTRY glClear(GLbitfield mask)
 			return error(GL_INVALID_VALUE);
 		}
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -750,7 +752,7 @@ void GL_APIENTRY glClearColor(GLclampf red, GLclampf green, GLclampf blue, GLcla
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -769,7 +771,7 @@ void GL_APIENTRY glClearDepthf(GLclampf depth)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -788,7 +790,7 @@ void GL_APIENTRY glClearStencil(GLint s)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -808,7 +810,7 @@ void GL_APIENTRY glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLb
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -827,11 +829,11 @@ void GL_APIENTRY glCompileShader(GLuint shader)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Shader *shaderObject = context->getShader(shader);
+            es2::Shader *shaderObject = context->getShader(shader);
 
             if(!shaderObject)
             {
@@ -894,11 +896,11 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-			if(level > rad::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+			if(level > es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
             {
                 return error(GL_INVALID_VALUE);
             }
@@ -906,8 +908,8 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
             switch(target)
             {
               case GL_TEXTURE_2D:
-                if(width > (rad::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level) ||
-                    height > (rad::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
+                if(width > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level) ||
+                    height > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
                 {
                     return error(GL_INVALID_VALUE);
                 }
@@ -923,8 +925,8 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
                     return error(GL_INVALID_VALUE);
                 }
 
-                if(width > (rad::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level) ||
-                   height > (rad::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level))
+                if(width > (es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level) ||
+                   height > (es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level))
                 {
                     return error(GL_INVALID_VALUE);
                 }
@@ -933,14 +935,14 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
                 return error(GL_INVALID_ENUM);
             }
 
-            if(imageSize != rad::ComputeCompressedSize(width, height, internalformat))
+            if(imageSize != es2::ComputeCompressedSize(width, height, internalformat))
             {
                 return error(GL_INVALID_VALUE);
             }
 
             if(target == GL_TEXTURE_2D)
             {
-                rad::Texture2D *texture = context->getTexture2D();
+                es2::Texture2D *texture = context->getTexture2D();
 
                 if(!texture)
                 {
@@ -951,7 +953,7 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
             }
             else
             {
-                rad::TextureCubeMap *texture = context->getTextureCubeMap();
+                es2::TextureCubeMap *texture = context->getTextureCubeMap();
 
                 if(!texture)
                 {
@@ -989,7 +991,7 @@ void GL_APIENTRY glCompressedTexSubImage2D(GLenum target, GLint level, GLint xof
 
     try
     {
-        if(!rad::IsTextureTarget(target))
+        if(!es2::IsTextureTarget(target))
         {
             return error(GL_INVALID_ENUM);
         }
@@ -1019,16 +1021,16 @@ void GL_APIENTRY glCompressedTexSubImage2D(GLenum target, GLint level, GLint xof
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            if(level > rad::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+            if(level > es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
             {
                 return error(GL_INVALID_VALUE);
             }
 
-            if(imageSize != rad::ComputeCompressedSize(width, height, format))
+            if(imageSize != es2::ComputeCompressedSize(width, height, format))
             {
                 return error(GL_INVALID_VALUE);
             }
@@ -1041,16 +1043,16 @@ void GL_APIENTRY glCompressedTexSubImage2D(GLenum target, GLint level, GLint xof
 
             if(target == GL_TEXTURE_2D)
             {
-                rad::Texture2D *texture = context->getTexture2D();
+                es2::Texture2D *texture = context->getTexture2D();
 
                 if(validateSubImageParams(true, width, height, xoffset, yoffset, target, level, format, texture))
 				{
 					texture->subImageCompressed(level, xoffset, yoffset, width, height, format, imageSize, data);
 				}
             }
-            else if(rad::IsCubemapTextureTarget(target))
+            else if(es2::IsCubemapTextureTarget(target))
             {
-                rad::TextureCubeMap *texture = context->getTextureCubeMap();
+                es2::TextureCubeMap *texture = context->getTextureCubeMap();
 
                 if(validateSubImageParams(true, width, height, xoffset, yoffset, target, level, format, texture))
 				{
@@ -1087,15 +1089,15 @@ void GL_APIENTRY glCopyTexImage2D(GLenum target, GLint level, GLenum internalfor
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
             switch(target)
             {
               case GL_TEXTURE_2D:
-                if(width > (rad::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level) ||
-                   height > (rad::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
+                if(width > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level) ||
+                   height > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
                 {
                     return error(GL_INVALID_VALUE);
                 }
@@ -1111,8 +1113,8 @@ void GL_APIENTRY glCopyTexImage2D(GLenum target, GLint level, GLenum internalfor
                     return error(GL_INVALID_VALUE);
                 }
 
-                if(width > (rad::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level) ||
-                   height > (rad::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level))
+                if(width > (es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level) ||
+                   height > (es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level))
                 {
                     return error(GL_INVALID_VALUE);
                 }
@@ -1121,7 +1123,7 @@ void GL_APIENTRY glCopyTexImage2D(GLenum target, GLint level, GLenum internalfor
                 return error(GL_INVALID_ENUM);
             }
 
-            rad::Framebuffer *framebuffer = context->getReadFramebuffer();
+            es2::Framebuffer *framebuffer = context->getReadFramebuffer();
 
             if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
             {
@@ -1133,7 +1135,7 @@ void GL_APIENTRY glCopyTexImage2D(GLenum target, GLint level, GLenum internalfor
                 return error(GL_INVALID_OPERATION);
             }
 
-            rad::Renderbuffer *source = framebuffer->getColorbuffer();
+            es2::Renderbuffer *source = framebuffer->getColorbuffer();
             GLenum colorbufferFormat = source->getFormat();
 
             // [OpenGL ES 2.0.24] table 3.9
@@ -1191,7 +1193,7 @@ void GL_APIENTRY glCopyTexImage2D(GLenum target, GLint level, GLenum internalfor
 
             if(target == GL_TEXTURE_2D)
             {
-                rad::Texture2D *texture = context->getTexture2D();
+                es2::Texture2D *texture = context->getTexture2D();
 
                 if(!texture)
                 {
@@ -1200,9 +1202,9 @@ void GL_APIENTRY glCopyTexImage2D(GLenum target, GLint level, GLenum internalfor
 
                 texture->copyImage(level, internalformat, x, y, width, height, framebuffer);
             }
-            else if(rad::IsCubemapTextureTarget(target))
+            else if(es2::IsCubemapTextureTarget(target))
             {
-                rad::TextureCubeMap *texture = context->getTextureCubeMap();
+                es2::TextureCubeMap *texture = context->getTextureCubeMap();
 
                 if(!texture)
                 {
@@ -1228,7 +1230,7 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, 
 
     try
     {
-        if(!rad::IsTextureTarget(target))
+        if(!es2::IsTextureTarget(target))
         {
             return error(GL_INVALID_ENUM);
         }
@@ -1248,16 +1250,16 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, 
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            if(level > rad::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+            if(level > es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
             {
                 return error(GL_INVALID_VALUE);
             }
 
-            rad::Framebuffer *framebuffer = context->getReadFramebuffer();
+            es2::Framebuffer *framebuffer = context->getReadFramebuffer();
 
             if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
             {
@@ -1269,15 +1271,15 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, 
                 return error(GL_INVALID_OPERATION);
             }
 
-            rad::Renderbuffer *source = framebuffer->getColorbuffer();
+            es2::Renderbuffer *source = framebuffer->getColorbuffer();
             GLenum colorbufferFormat = source->getFormat();
-            rad::Texture *texture = NULL;
+            es2::Texture *texture = NULL;
 
             if(target == GL_TEXTURE_2D)
             {
                 texture = context->getTexture2D();
             }
-            else if(rad::IsCubemapTextureTarget(target))
+            else if(es2::IsCubemapTextureTarget(target))
             {
                 texture = context->getTextureCubeMap();
             }
@@ -1354,7 +1356,7 @@ GLuint GL_APIENTRY glCreateProgram(void)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1375,7 +1377,7 @@ GLuint GL_APIENTRY glCreateShader(GLenum type)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1409,7 +1411,7 @@ void GL_APIENTRY glCullFace(GLenum mode)
           case GL_BACK:
           case GL_FRONT_AND_BACK:
             {
-                rad::Context *context = rad::getContext();
+                es2::Context *context = es2::getContext();
 
                 if(context)
                 {
@@ -1438,7 +1440,7 @@ void GL_APIENTRY glDeleteBuffers(GLsizei n, const GLuint* buffers)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1465,7 +1467,7 @@ void GL_APIENTRY glDeleteFencesNV(GLsizei n, const GLuint* fences)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1492,7 +1494,7 @@ void GL_APIENTRY glDeleteFramebuffers(GLsizei n, const GLuint* framebuffers)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1522,7 +1524,7 @@ void GL_APIENTRY glDeleteProgram(GLuint program)
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1558,7 +1560,7 @@ void GL_APIENTRY glDeleteQueriesEXT(GLsizei n, const GLuint *ids)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1585,7 +1587,7 @@ void GL_APIENTRY glDeleteRenderbuffers(GLsizei n, const GLuint* renderbuffers)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1612,7 +1614,7 @@ void GL_APIENTRY glDeleteShader(GLuint shader)
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1648,7 +1650,7 @@ void GL_APIENTRY glDeleteTextures(GLsizei n, const GLuint* textures)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1688,7 +1690,7 @@ void GL_APIENTRY glDepthFunc(GLenum func)
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1707,7 +1709,7 @@ void GL_APIENTRY glDepthMask(GLboolean flag)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1726,7 +1728,7 @@ void GL_APIENTRY glDepthRangef(GLclampf zNear, GLclampf zFar)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1745,17 +1747,17 @@ void GL_APIENTRY glDetachShader(GLuint program, GLuint shader)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
 
-            rad::Program *programObject = context->getProgram(program);
-            rad::Shader *shaderObject = context->getShader(shader);
+            es2::Program *programObject = context->getProgram(program);
+            es2::Shader *shaderObject = context->getShader(shader);
             
             if(!programObject)
             {
-                rad::Shader *shaderByProgramHandle;
+                es2::Shader *shaderByProgramHandle;
                 shaderByProgramHandle = context->getShader(program);
                 if(!shaderByProgramHandle)
                 {
@@ -1769,7 +1771,7 @@ void GL_APIENTRY glDetachShader(GLuint program, GLuint shader)
 
             if(!shaderObject)
             {
-                rad::Program *programByShaderHandle = context->getProgram(shader);
+                es2::Program *programByShaderHandle = context->getProgram(shader);
                 if(!programByShaderHandle)
                 {
                     return error(GL_INVALID_VALUE);
@@ -1798,7 +1800,7 @@ void GL_APIENTRY glDisable(GLenum cap)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1830,12 +1832,12 @@ void GL_APIENTRY glDisableVertexAttribArray(GLuint index)
 
     try
     {
-        if(index >= rad::MAX_VERTEX_ATTRIBS)
+        if(index >= es2::MAX_VERTEX_ATTRIBS)
         {
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1859,7 +1861,7 @@ void GL_APIENTRY glDrawArrays(GLenum mode, GLint first, GLsizei count)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1884,7 +1886,7 @@ void GL_APIENTRY glDrawElements(GLenum mode, GLsizei count, GLenum type, const G
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1913,7 +1915,7 @@ void GL_APIENTRY glEnable(GLenum cap)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1945,12 +1947,12 @@ void GL_APIENTRY glEnableVertexAttribArray(GLuint index)
 
     try
     {
-        if(index >= rad::MAX_VERTEX_ATTRIBS)
+        if(index >= es2::MAX_VERTEX_ATTRIBS)
         {
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1978,7 +1980,7 @@ void GL_APIENTRY glEndQueryEXT(GLenum target)
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -1997,11 +1999,11 @@ void GL_APIENTRY glFinishFenceNV(GLuint fence)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Fence* fenceObject = context->getFence(fence);
+            es2::Fence* fenceObject = context->getFence(fence);
 
             if(fenceObject == NULL)
             {
@@ -2023,7 +2025,7 @@ void GL_APIENTRY glFinish(void)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -2042,7 +2044,7 @@ void GL_APIENTRY glFlush(void)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -2068,11 +2070,11 @@ void GL_APIENTRY glFramebufferRenderbuffer(GLenum target, GLenum attachment, GLe
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Framebuffer *framebuffer = NULL;
+            es2::Framebuffer *framebuffer = NULL;
             GLuint framebufferHandle = 0;
             if(target == GL_READ_FRAMEBUFFER_ANGLE)
             {
@@ -2134,7 +2136,7 @@ void GL_APIENTRY glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -2144,7 +2146,7 @@ void GL_APIENTRY glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum
             }
             else
             {
-                rad::Texture *tex = context->getTexture(texture);
+                es2::Texture *tex = context->getTexture(texture);
 
                 if(tex == NULL)
                 {
@@ -2187,7 +2189,7 @@ void GL_APIENTRY glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum
                 }
             }
 
-            rad::Framebuffer *framebuffer = NULL;
+            es2::Framebuffer *framebuffer = NULL;
             GLuint framebufferHandle = 0;
             if(target == GL_READ_FRAMEBUFFER_ANGLE)
             {
@@ -2230,7 +2232,7 @@ void GL_APIENTRY glFrontFace(GLenum mode)
           case GL_CW:
           case GL_CCW:
             {
-                rad::Context *context = rad::getContext();
+                es2::Context *context = es2::getContext();
 
                 if(context)
                 {
@@ -2259,7 +2261,7 @@ void GL_APIENTRY glGenBuffers(GLsizei n, GLuint* buffers)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -2281,11 +2283,11 @@ void GL_APIENTRY glGenerateMipmap(GLenum target)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Texture *texture;
+            es2::Texture *texture;
 
             switch(target)
             {
@@ -2324,7 +2326,7 @@ void GL_APIENTRY glGenFencesNV(GLsizei n, GLuint* fences)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -2351,7 +2353,7 @@ void GL_APIENTRY glGenFramebuffers(GLsizei n, GLuint* framebuffers)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -2378,7 +2380,7 @@ void GL_APIENTRY glGenQueriesEXT(GLsizei n, GLuint* ids)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -2405,7 +2407,7 @@ void GL_APIENTRY glGenRenderbuffers(GLsizei n, GLuint* renderbuffers)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -2432,7 +2434,7 @@ void GL_APIENTRY glGenTextures(GLsizei n, GLuint* textures)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -2461,11 +2463,11 @@ void GL_APIENTRY glGetActiveAttrib(GLuint program, GLuint index, GLsizei bufsize
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject)
             {
@@ -2506,11 +2508,11 @@ void GL_APIENTRY glGetActiveUniform(GLuint program, GLuint index, GLsizei bufsiz
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject)
             {
@@ -2550,11 +2552,11 @@ void GL_APIENTRY glGetAttachedShaders(GLuint program, GLsizei maxcount, GLsizei*
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject)
             {
@@ -2583,12 +2585,12 @@ int GL_APIENTRY glGetAttribLocation(GLuint program, const GLchar* name)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
 
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject)
             {
@@ -2624,7 +2626,7 @@ void GL_APIENTRY glGetBooleanv(GLenum pname, GLboolean* params)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -2687,11 +2689,11 @@ void GL_APIENTRY glGetBufferParameteriv(GLenum target, GLenum pname, GLint* para
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Buffer *buffer;
+            es2::Buffer *buffer;
 
             switch(target)
             {
@@ -2732,7 +2734,7 @@ GLenum GL_APIENTRY glGetError(void)
 {
     TRACE("()");
 
-    rad::Context *context = rad::getContext();
+    es2::Context *context = es2::getContext();
 
     if(context)
     {
@@ -2748,11 +2750,11 @@ void GL_APIENTRY glGetFenceivNV(GLuint fence, GLenum pname, GLint *params)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Fence *fenceObject = context->getFence(fence);
+            es2::Fence *fenceObject = context->getFence(fence);
 
             if(fenceObject == NULL)
             {
@@ -2774,7 +2776,7 @@ void GL_APIENTRY glGetFloatv(GLenum pname, GLfloat* params)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -2835,7 +2837,7 @@ void GL_APIENTRY glGetFramebufferAttachmentParameteriv(GLenum target, GLenum att
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -2844,7 +2846,7 @@ void GL_APIENTRY glGetFramebufferAttachmentParameteriv(GLenum target, GLenum att
                 return error(GL_INVALID_ENUM);
             }
 
-            rad::Framebuffer *framebuffer = NULL;
+            es2::Framebuffer *framebuffer = NULL;
             if(target == GL_READ_FRAMEBUFFER_ANGLE)
             {
                 if(context->getReadFramebufferHandle() == 0)
@@ -2888,7 +2890,7 @@ void GL_APIENTRY glGetFramebufferAttachmentParameteriv(GLenum target, GLenum att
             {
                 attachmentObjectType = attachmentType;
             }
-            else if(rad::IsTextureTarget(attachmentType))
+            else if(es2::IsTextureTarget(attachmentType))
             {
                 attachmentObjectType = GL_TEXTURE;
             }
@@ -2922,7 +2924,7 @@ void GL_APIENTRY glGetFramebufferAttachmentParameteriv(GLenum target, GLenum att
               case GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE:
                 if(attachmentObjectType == GL_TEXTURE)
                 {
-                    if(rad::IsCubemapTextureTarget(attachmentType))
+                    if(es2::IsCubemapTextureTarget(attachmentType))
                     {
                         *params = attachmentType;
                     }
@@ -2960,7 +2962,7 @@ void GL_APIENTRY glGetIntegerv(GLenum pname, GLint* params)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -3025,11 +3027,11 @@ void GL_APIENTRY glGetProgramiv(GLuint program, GLenum pname, GLint* params)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject)
             {
@@ -3088,11 +3090,11 @@ void GL_APIENTRY glGetProgramInfoLog(GLuint program, GLsizei bufsize, GLsizei* l
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject)
             {
@@ -3122,7 +3124,7 @@ void GL_APIENTRY glGetQueryivEXT(GLenum target, GLenum pname, GLint *params)
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -3150,11 +3152,11 @@ void GL_APIENTRY glGetQueryObjectuivEXT(GLuint id, GLenum pname, GLuint *params)
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Query *queryObject = context->getQuery(id, false, GL_NONE);
+            es2::Query *queryObject = context->getQuery(id, false, GL_NONE);
 
             if(!queryObject)
             {
@@ -3191,7 +3193,7 @@ void GL_APIENTRY glGetRenderbufferParameteriv(GLenum target, GLenum pname, GLint
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -3205,7 +3207,7 @@ void GL_APIENTRY glGetRenderbufferParameteriv(GLenum target, GLenum pname, GLint
                 return error(GL_INVALID_OPERATION);
             }
 
-            rad::Renderbuffer *renderbuffer = context->getRenderbuffer(context->getRenderbufferHandle());
+            es2::Renderbuffer *renderbuffer = context->getRenderbuffer(context->getRenderbufferHandle());
 
             switch(pname)
             {
@@ -3236,11 +3238,11 @@ void GL_APIENTRY glGetShaderiv(GLuint shader, GLenum pname, GLint* params)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Shader *shaderObject = context->getShader(shader);
+            es2::Shader *shaderObject = context->getShader(shader);
 
             if(!shaderObject)
             {
@@ -3287,11 +3289,11 @@ void GL_APIENTRY glGetShaderInfoLog(GLuint shader, GLsizei bufsize, GLsizei* len
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Shader *shaderObject = context->getShader(shader);
+            es2::Shader *shaderObject = context->getShader(shader);
 
             if(!shaderObject)
             {
@@ -3363,11 +3365,11 @@ void GL_APIENTRY glGetShaderSource(GLuint shader, GLsizei bufsize, GLsizei* leng
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Shader *shaderObject = context->getShader(shader);
+            es2::Shader *shaderObject = context->getShader(shader);
 
             if(!shaderObject)
             {
@@ -3389,7 +3391,7 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         switch(name)
         {
@@ -3451,11 +3453,11 @@ void GL_APIENTRY glGetTexParameterfv(GLenum target, GLenum pname, GLfloat* param
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Texture *texture;
+            es2::Texture *texture;
 
             switch(target)
             {
@@ -3509,11 +3511,11 @@ void GL_APIENTRY glGetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Texture *texture;
+            es2::Texture *texture;
 
             switch(target)
             {
@@ -3573,7 +3575,7 @@ void GL_APIENTRY glGetnUniformfvEXT(GLuint program, GLint location, GLsizei bufS
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -3582,7 +3584,7 @@ void GL_APIENTRY glGetnUniformfvEXT(GLuint program, GLint location, GLsizei bufS
                 return error(GL_INVALID_VALUE);
             }
 
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject || !programObject->isLinked())
             {
@@ -3607,7 +3609,7 @@ void GL_APIENTRY glGetUniformfv(GLuint program, GLint location, GLfloat* params)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -3616,7 +3618,7 @@ void GL_APIENTRY glGetUniformfv(GLuint program, GLint location, GLfloat* params)
                 return error(GL_INVALID_VALUE);
             }
 
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject || !programObject->isLinked())
             {
@@ -3647,7 +3649,7 @@ void GL_APIENTRY glGetnUniformivEXT(GLuint program, GLint location, GLsizei bufS
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -3656,7 +3658,7 @@ void GL_APIENTRY glGetnUniformivEXT(GLuint program, GLint location, GLsizei bufS
                 return error(GL_INVALID_VALUE);
             }
 
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject || !programObject->isLinked())
             {
@@ -3686,7 +3688,7 @@ void GL_APIENTRY glGetUniformiv(GLuint program, GLint location, GLint* params)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -3695,7 +3697,7 @@ void GL_APIENTRY glGetUniformiv(GLuint program, GLint location, GLint* params)
                 return error(GL_INVALID_VALUE);
             }
 
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject || !programObject->isLinked())
             {
@@ -3725,7 +3727,7 @@ int GL_APIENTRY glGetUniformLocation(GLuint program, const GLchar* name)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(strstr(name, "gl_") == name)
         {
@@ -3734,7 +3736,7 @@ int GL_APIENTRY glGetUniformLocation(GLuint program, const GLchar* name)
 
         if(context)
         {
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject)
             {
@@ -3770,16 +3772,16 @@ void GL_APIENTRY glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat* params
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            if(index >= rad::MAX_VERTEX_ATTRIBS)
+            if(index >= es2::MAX_VERTEX_ATTRIBS)
             {
                 return error(GL_INVALID_VALUE);
             }
 
-            const rad::VertexAttribute &attribState = context->getVertexAttribState(index);
+            const es2::VertexAttribute &attribState = context->getVertexAttribState(index);
 
             switch(pname)
             {
@@ -3823,16 +3825,16 @@ void GL_APIENTRY glGetVertexAttribiv(GLuint index, GLenum pname, GLint* params)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            if(index >= rad::MAX_VERTEX_ATTRIBS)
+            if(index >= es2::MAX_VERTEX_ATTRIBS)
             {
                 return error(GL_INVALID_VALUE);
             }
 
-            const rad::VertexAttribute &attribState = context->getVertexAttribState(index);
+            const es2::VertexAttribute &attribState = context->getVertexAttribState(index);
 
             switch(pname)
             {
@@ -3877,11 +3879,11 @@ void GL_APIENTRY glGetVertexAttribPointerv(GLuint index, GLenum pname, GLvoid** 
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            if(index >= rad::MAX_VERTEX_ATTRIBS)
+            if(index >= es2::MAX_VERTEX_ATTRIBS)
             {
                 return error(GL_INVALID_VALUE);
             }
@@ -3916,7 +3918,7 @@ void GL_APIENTRY glHint(GLenum target, GLenum mode)
             return error(GL_INVALID_ENUM); 
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
         switch(target)
         {
           case GL_GENERATE_MIPMAP_HINT:
@@ -3941,11 +3943,11 @@ GLboolean GL_APIENTRY glIsBuffer(GLuint buffer)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context && buffer)
         {
-            rad::Buffer *bufferObject = context->getBuffer(buffer);
+            es2::Buffer *bufferObject = context->getBuffer(buffer);
 
             if(bufferObject)
             {
@@ -3967,7 +3969,7 @@ GLboolean GL_APIENTRY glIsEnabled(GLenum cap)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -4001,11 +4003,11 @@ GLboolean GL_APIENTRY glIsFenceNV(GLuint fence)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Fence *fenceObject = context->getFence(fence);
+            es2::Fence *fenceObject = context->getFence(fence);
 
             if(fenceObject == NULL)
             {
@@ -4029,11 +4031,11 @@ GLboolean GL_APIENTRY glIsFramebuffer(GLuint framebuffer)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context && framebuffer)
         {
-            rad::Framebuffer *framebufferObject = context->getFramebuffer(framebuffer);
+            es2::Framebuffer *framebufferObject = context->getFramebuffer(framebuffer);
 
             if(framebufferObject)
             {
@@ -4055,11 +4057,11 @@ GLboolean GL_APIENTRY glIsProgram(GLuint program)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context && program)
         {
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(programObject)
             {
@@ -4086,11 +4088,11 @@ GLboolean GL_APIENTRY glIsQueryEXT(GLuint id)
             return GL_FALSE;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Query *queryObject = context->getQuery(id, false, GL_NONE);
+            es2::Query *queryObject = context->getQuery(id, false, GL_NONE);
 
             if(queryObject)
             {
@@ -4112,11 +4114,11 @@ GLboolean GL_APIENTRY glIsRenderbuffer(GLuint renderbuffer)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context && renderbuffer)
         {
-            rad::Renderbuffer *renderbufferObject = context->getRenderbuffer(renderbuffer);
+            es2::Renderbuffer *renderbufferObject = context->getRenderbuffer(renderbuffer);
 
             if(renderbufferObject)
             {
@@ -4138,11 +4140,11 @@ GLboolean GL_APIENTRY glIsShader(GLuint shader)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context && shader)
         {
-            rad::Shader *shaderObject = context->getShader(shader);
+            es2::Shader *shaderObject = context->getShader(shader);
 
             if(shaderObject)
             {
@@ -4164,11 +4166,11 @@ GLboolean GL_APIENTRY glIsTexture(GLuint texture)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context && texture)
         {
-            rad::Texture *textureObject = context->getTexture(texture);
+            es2::Texture *textureObject = context->getTexture(texture);
 
             if(textureObject)
             {
@@ -4195,7 +4197,7 @@ void GL_APIENTRY glLineWidth(GLfloat width)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -4214,11 +4216,11 @@ void GL_APIENTRY glLinkProgram(GLuint program)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject)
             {
@@ -4247,7 +4249,7 @@ void GL_APIENTRY glPixelStorei(GLenum pname, GLint param)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -4288,7 +4290,7 @@ void GL_APIENTRY glPolygonOffset(GLfloat factor, GLfloat units)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -4321,7 +4323,7 @@ void GL_APIENTRY glReadnPixelsEXT(GLint x, GLint y, GLsizei width, GLsizei heigh
             return error(GL_INVALID_OPERATION);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -4352,7 +4354,7 @@ void GL_APIENTRY glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, G
             return error(GL_INVALID_OPERATION);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -4371,7 +4373,7 @@ void GL_APIENTRY glReleaseShaderCompiler(void)
 
     try
     {
-        rad::Shader::releaseCompiler();
+        es2::Shader::releaseCompiler();
     }
     catch(std::bad_alloc&)
     {
@@ -4394,7 +4396,7 @@ void GL_APIENTRY glRenderbufferStorageMultisampleANGLE(GLenum target, GLsizei sa
             return error(GL_INVALID_ENUM);
         }
 
-        if(!rad::IsColorRenderable(internalformat) && !rad::IsDepthRenderable(internalformat) && !rad::IsStencilRenderable(internalformat))
+        if(!es2::IsColorRenderable(internalformat) && !es2::IsDepthRenderable(internalformat) && !es2::IsStencilRenderable(internalformat))
         {
             return error(GL_INVALID_ENUM);
         }
@@ -4404,13 +4406,13 @@ void GL_APIENTRY glRenderbufferStorageMultisampleANGLE(GLenum target, GLsizei sa
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            if(width > rad::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE || 
-               height > rad::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE ||
-               samples > rad::IMPLEMENTATION_MAX_SAMPLES)
+            if(width > es2::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE || 
+               height > es2::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE ||
+               samples > es2::IMPLEMENTATION_MAX_SAMPLES)
             {
                 return error(GL_INVALID_VALUE);
             }
@@ -4424,20 +4426,20 @@ void GL_APIENTRY glRenderbufferStorageMultisampleANGLE(GLenum target, GLsizei sa
             switch(internalformat)
             {
               case GL_DEPTH_COMPONENT16:
-                context->setRenderbufferStorage(new rad::Depthbuffer(width, height, samples));
+                context->setRenderbufferStorage(new es2::Depthbuffer(width, height, samples));
                 break;
               case GL_RGBA4:
               case GL_RGB5_A1:
               case GL_RGB565:
               case GL_RGB8_OES:
               case GL_RGBA8_OES:
-                context->setRenderbufferStorage(new rad::Colorbuffer(width, height, internalformat, samples));
+                context->setRenderbufferStorage(new es2::Colorbuffer(width, height, internalformat, samples));
                 break;
               case GL_STENCIL_INDEX8:
-                context->setRenderbufferStorage(new rad::Stencilbuffer(width, height, samples));
+                context->setRenderbufferStorage(new es2::Stencilbuffer(width, height, samples));
                 break;
               case GL_DEPTH24_STENCIL8_OES:
-                context->setRenderbufferStorage(new rad::DepthStencilbuffer(width, height, samples));
+                context->setRenderbufferStorage(new es2::DepthStencilbuffer(width, height, samples));
                 break;
               default:
                 return error(GL_INVALID_ENUM);
@@ -4461,11 +4463,11 @@ void GL_APIENTRY glSampleCoverage(GLclampf value, GLboolean invert)
 
     try
     {
-        rad::Context* context = rad::getContext();
+        es2::Context* context = es2::getContext();
 
         if(context)
         {
-            context->setSampleCoverageParams(rad::clamp01(value), invert == GL_TRUE);
+            context->setSampleCoverageParams(es2::clamp01(value), invert == GL_TRUE);
         }
     }
     catch(std::bad_alloc&)
@@ -4485,11 +4487,11 @@ void GL_APIENTRY glSetFenceNV(GLuint fence, GLenum condition)
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Fence *fenceObject = context->getFence(fence);
+            es2::Fence *fenceObject = context->getFence(fence);
 
             if(fenceObject == NULL)
             {
@@ -4516,7 +4518,7 @@ void GL_APIENTRY glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context* context = rad::getContext();
+        es2::Context* context = es2::getContext();
 
         if(context)
         {
@@ -4558,11 +4560,11 @@ void GL_APIENTRY glShaderSource(GLuint shader, GLsizei count, const GLchar *cons
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Shader *shaderObject = context->getShader(shader);
+            es2::Shader *shaderObject = context->getShader(shader);
 
             if(!shaderObject)
             {
@@ -4621,7 +4623,7 @@ void GL_APIENTRY glStencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLui
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -4663,7 +4665,7 @@ void GL_APIENTRY glStencilMaskSeparate(GLenum face, GLuint mask)
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -4751,7 +4753,7 @@ void GL_APIENTRY glStencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLe
             return error(GL_INVALID_ENUM);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -4778,11 +4780,11 @@ GLboolean GL_APIENTRY glTestFenceNV(GLuint fence)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Fence *fenceObject = context->getFence(fence);
+            es2::Fence *fenceObject = context->getFence(fence);
 
             if(fenceObject == NULL)
             {
@@ -4901,15 +4903,15 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat, 
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
             switch(target)
             {
               case GL_TEXTURE_2D:
-                if(width > (rad::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level) ||
-                   height > (rad::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
+                if(width > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level) ||
+                   height > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
                 {
                     return error(GL_INVALID_VALUE);
                 }
@@ -4925,8 +4927,8 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat, 
                     return error(GL_INVALID_VALUE);
                 }
 
-                if(width > (rad::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level) ||
-                   height > (rad::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level))
+                if(width > (es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level) ||
+                   height > (es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level))
                 {
                     return error(GL_INVALID_VALUE);
                 }
@@ -4952,7 +4954,7 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat, 
 			
             if(target == GL_TEXTURE_2D)
             {
-                rad::Texture2D *texture = context->getTexture2D();
+                es2::Texture2D *texture = context->getTexture2D();
 
                 if(!texture)
                 {
@@ -4963,7 +4965,7 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat, 
             }
             else
             {
-                rad::TextureCubeMap *texture = context->getTextureCubeMap();
+                es2::TextureCubeMap *texture = context->getTextureCubeMap();
 
                 if(!texture)
                 {
@@ -4986,11 +4988,11 @@ void GL_APIENTRY glTexParameterf(GLenum target, GLenum pname, GLfloat param)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Texture *texture;
+            es2::Texture *texture;
 
             switch(target)
             {
@@ -5061,11 +5063,11 @@ void GL_APIENTRY glTexParameteri(GLenum target, GLenum pname, GLint param)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Texture *texture;
+            es2::Texture *texture;
 
             switch(target)
             {
@@ -5140,7 +5142,7 @@ void GL_APIENTRY glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLin
 
     try
     {
-        if(!rad::IsTextureTarget(target))
+        if(!es2::IsTextureTarget(target))
         {
             return error(GL_INVALID_ENUM);
         }
@@ -5155,7 +5157,7 @@ void GL_APIENTRY glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLin
             return error(GL_INVALID_VALUE);
         }
 
-        if(!rad::CheckTextureFormatType(format, type))
+        if(!es2::CheckTextureFormatType(format, type))
         {
             return error(GL_INVALID_ENUM);
         }
@@ -5165,27 +5167,27 @@ void GL_APIENTRY glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLin
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            if(level > rad::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+            if(level > es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
             {
                 return error(GL_INVALID_VALUE);
             }
 
             if(target == GL_TEXTURE_2D)
             {
-                rad::Texture2D *texture = context->getTexture2D();
+                es2::Texture2D *texture = context->getTexture2D();
 
                 if(validateSubImageParams(false, width, height, xoffset, yoffset, target, level, format, texture))
 				{
 					texture->subImage(level, xoffset, yoffset, width, height, format, type, context->getUnpackAlignment(), pixels);
 				}
             }
-            else if(rad::IsCubemapTextureTarget(target))
+            else if(es2::IsCubemapTextureTarget(target))
             {
-                rad::TextureCubeMap *texture = context->getTextureCubeMap();
+                es2::TextureCubeMap *texture = context->getTextureCubeMap();
 				
 				if(validateSubImageParams(false, width, height, xoffset, yoffset, target, level, format, texture))
 				{
@@ -5225,11 +5227,11 @@ void GL_APIENTRY glUniform1fv(GLint location, GLsizei count, const GLfloat* v)
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *program = context->getCurrentProgram();
+            es2::Program *program = context->getCurrentProgram();
 
             if(!program)
             {
@@ -5269,11 +5271,11 @@ void GL_APIENTRY glUniform1iv(GLint location, GLsizei count, const GLint* v)
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *program = context->getCurrentProgram();
+            es2::Program *program = context->getCurrentProgram();
 
             if(!program)
             {
@@ -5315,11 +5317,11 @@ void GL_APIENTRY glUniform2fv(GLint location, GLsizei count, const GLfloat* v)
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *program = context->getCurrentProgram();
+            es2::Program *program = context->getCurrentProgram();
 
             if(!program)
             {
@@ -5361,11 +5363,11 @@ void GL_APIENTRY glUniform2iv(GLint location, GLsizei count, const GLint* v)
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *program = context->getCurrentProgram();
+            es2::Program *program = context->getCurrentProgram();
 
             if(!program)
             {
@@ -5407,11 +5409,11 @@ void GL_APIENTRY glUniform3fv(GLint location, GLsizei count, const GLfloat* v)
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *program = context->getCurrentProgram();
+            es2::Program *program = context->getCurrentProgram();
 
             if(!program)
             {
@@ -5453,11 +5455,11 @@ void GL_APIENTRY glUniform3iv(GLint location, GLsizei count, const GLint* v)
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *program = context->getCurrentProgram();
+            es2::Program *program = context->getCurrentProgram();
 
             if(!program)
             {
@@ -5499,11 +5501,11 @@ void GL_APIENTRY glUniform4fv(GLint location, GLsizei count, const GLfloat* v)
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *program = context->getCurrentProgram();
+            es2::Program *program = context->getCurrentProgram();
 
             if(!program)
             {
@@ -5545,11 +5547,11 @@ void GL_APIENTRY glUniform4iv(GLint location, GLsizei count, const GLint* v)
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *program = context->getCurrentProgram();
+            es2::Program *program = context->getCurrentProgram();
 
             if(!program)
             {
@@ -5585,11 +5587,11 @@ void GL_APIENTRY glUniformMatrix2fv(GLint location, GLsizei count, GLboolean tra
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *program = context->getCurrentProgram();
+            es2::Program *program = context->getCurrentProgram();
 
             if(!program)
             {
@@ -5625,11 +5627,11 @@ void GL_APIENTRY glUniformMatrix3fv(GLint location, GLsizei count, GLboolean tra
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *program = context->getCurrentProgram();
+            es2::Program *program = context->getCurrentProgram();
 
             if(!program)
             {
@@ -5665,11 +5667,11 @@ void GL_APIENTRY glUniformMatrix4fv(GLint location, GLsizei count, GLboolean tra
             return;
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *program = context->getCurrentProgram();
+            es2::Program *program = context->getCurrentProgram();
 
             if(!program)
             {
@@ -5694,11 +5696,11 @@ void GL_APIENTRY glUseProgram(GLuint program)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject && program != 0)
             {
@@ -5732,11 +5734,11 @@ void GL_APIENTRY glValidateProgram(GLuint program)
 
     try
     {
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::Program *programObject = context->getProgram(program);
+            es2::Program *programObject = context->getProgram(program);
 
             if(!programObject)
             {
@@ -5765,12 +5767,12 @@ void GL_APIENTRY glVertexAttrib1f(GLuint index, GLfloat x)
 
     try
     {
-        if(index >= rad::MAX_VERTEX_ATTRIBS)
+        if(index >= es2::MAX_VERTEX_ATTRIBS)
         {
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -5790,12 +5792,12 @@ void GL_APIENTRY glVertexAttrib1fv(GLuint index, const GLfloat* values)
 
     try
     {
-        if(index >= rad::MAX_VERTEX_ATTRIBS)
+        if(index >= es2::MAX_VERTEX_ATTRIBS)
         {
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -5815,12 +5817,12 @@ void GL_APIENTRY glVertexAttrib2f(GLuint index, GLfloat x, GLfloat y)
 
     try
     {
-        if(index >= rad::MAX_VERTEX_ATTRIBS)
+        if(index >= es2::MAX_VERTEX_ATTRIBS)
         {
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -5840,12 +5842,12 @@ void GL_APIENTRY glVertexAttrib2fv(GLuint index, const GLfloat* values)
 
     try
     {
-        if(index >= rad::MAX_VERTEX_ATTRIBS)
+        if(index >= es2::MAX_VERTEX_ATTRIBS)
         {
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -5865,12 +5867,12 @@ void GL_APIENTRY glVertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat z)
 
     try
     {
-        if(index >= rad::MAX_VERTEX_ATTRIBS)
+        if(index >= es2::MAX_VERTEX_ATTRIBS)
         {
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -5890,12 +5892,12 @@ void GL_APIENTRY glVertexAttrib3fv(GLuint index, const GLfloat* values)
 
     try
     {
-        if(index >= rad::MAX_VERTEX_ATTRIBS)
+        if(index >= es2::MAX_VERTEX_ATTRIBS)
         {
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -5915,12 +5917,12 @@ void GL_APIENTRY glVertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat z,
 
     try
     {
-        if(index >= rad::MAX_VERTEX_ATTRIBS)
+        if(index >= es2::MAX_VERTEX_ATTRIBS)
         {
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -5940,12 +5942,12 @@ void GL_APIENTRY glVertexAttrib4fv(GLuint index, const GLfloat* values)
 
     try
     {
-        if(index >= rad::MAX_VERTEX_ATTRIBS)
+        if(index >= es2::MAX_VERTEX_ATTRIBS)
         {
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -5966,7 +5968,7 @@ void GL_APIENTRY glVertexAttribPointer(GLuint index, GLint size, GLenum type, GL
 
     try
     {
-        if(index >= rad::MAX_VERTEX_ATTRIBS)
+        if(index >= es2::MAX_VERTEX_ATTRIBS)
         {
             return error(GL_INVALID_VALUE);
         }
@@ -5994,7 +5996,7 @@ void GL_APIENTRY glVertexAttribPointer(GLuint index, GLint size, GLenum type, GL
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -6018,7 +6020,7 @@ void GL_APIENTRY glViewport(GLint x, GLint y, GLsizei width, GLsizei height)
             return error(GL_INVALID_VALUE);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -6060,7 +6062,7 @@ void GL_APIENTRY glBlitFramebufferANGLE(GLint srcX0, GLint srcY0, GLint srcX1, G
             return error(GL_INVALID_OPERATION);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
@@ -6116,18 +6118,18 @@ void GL_APIENTRY glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image
             return error(GL_INVALID_OPERATION);
         }
 
-        rad::Context *context = rad::getContext();
+        es2::Context *context = es2::getContext();
 
         if(context)
         {
-            rad::TextureExternal *texture = context->getTextureExternal();
+            es2::TextureExternal *texture = context->getTextureExternal();
 
             if(!texture)
             {
                 return error(GL_INVALID_OPERATION);
             }
 
-            rad::Image *glImage = static_cast<rad::Image*>(image);
+            es2::Image *glImage = static_cast<es2::Image*>(image);
 
             texture->setImage(glImage);
         }
@@ -6138,185 +6140,2229 @@ void GL_APIENTRY glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image
     }
 }
 
-RADdevice RADAPIENTRY radCreateDevice (void) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceDevice (RADdevice device) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseDevice (RADdevice device) {UNIMPLEMENTED();}
-RADuint RADAPIENTRY radGetTokenHeader (RADdevice device, RADtokenName name) {UNIMPLEMENTED(); return 0;}
-RADqueue RADAPIENTRY radCreateQueue (RADdevice device, RADqueueType queuetype) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceQueue (RADqueue queue) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseQueue (RADqueue queue) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueTagBuffer (RADqueue queue, RADbuffer buffer) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueTagTexture (RADqueue queue, RADtexture texture) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueSubmitCommands (RADqueue queue, RADuint numCommands, const RADcommandHandle *handles) {UNIMPLEMENTED();}
-void RADAPIENTRY radFlushQueue (RADqueue queue) {UNIMPLEMENTED();}
-void RADAPIENTRY radFinishQueue (RADqueue queue) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueViewport (RADqueue queue, RADint x, RADint y, RADint w, RADint h) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueScissor (RADqueue queue, RADint x, RADint y, RADint w, RADint h) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueCopyBufferToImage (RADqueue queue, RADbuffer buffer, RADintptr bufferOffset, RADtexture texture, RADint level, RADuint xoffset, RADuint yoffset, RADuint zoffset, RADsizei width, RADsizei height, RADsizei depth) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueCopyImageToBuffer (RADqueue queue, RADbuffer buffer, RADintptr bufferOffset, RADtexture texture, RADint level, RADuint xoffset, RADuint yoffset, RADuint zoffset, RADsizei width, RADsizei height, RADsizei depth) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueCopyBuffer (RADqueue queue, RADbuffer srcBuffer, RADintptr srcOffset, RADbuffer dstBuffer, RADintptr dstOffset, RADsizei size) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueClearColor (RADqueue queue, RADuint index, const RADfloat *color) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueClearDepth (RADqueue queue, RADfloat depth) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueClearStencil (RADqueue queue, RADuint stencil) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueuePresent (RADqueue queue, RADtexture texture) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueDrawArrays (RADqueue queue, RADprimitiveType mode, RADint first, RADsizei count) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueDrawElements (RADqueue queue, RADprimitiveType mode, RADindexType type, RADsizei count, RADindexHandle indexHandle, RADuint offset) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueBindPipeline (RADqueue queue, RADpipelineType pipelineType, RADpipelineHandle pipelineHandle) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueBindGroup (RADqueue queue, RADbitfield stages, RADuint group, RADuint count, RADbindGroupHandle groupHandle, RADuint offset) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueBeginPass (RADqueue queue, RADpass pass) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueEndPass (RADqueue queue, RADpass pass) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueSubmitDynamic (RADqueue queue, const void *dynamic, RADsizei length) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueStencilValueMask (RADqueue queue, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueStencilMask (RADqueue queue, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueStencilRef (RADqueue queue, RADfaceBitfield faces, RADint ref) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueBlendColor (RADqueue queue, const RADfloat *blendColor) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueuePointSize (RADqueue queue, RADfloat pointSize) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueLineWidth (RADqueue queue, RADfloat lineWidth) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueuePolygonOffsetClamp (RADqueue queue, RADfloat factor, RADfloat units, RADfloat clamp) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueSampleMask (RADqueue queue, RADuint mask) {UNIMPLEMENTED();}
-RADprogram RADAPIENTRY radCreateProgram (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceProgram (RADprogram program) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseProgram (RADprogram program) {UNIMPLEMENTED();}
-void RADAPIENTRY radProgramSource (RADprogram program, RADprogramFormat format, RADsizei length, const void *source) {UNIMPLEMENTED();}
-RADbuffer RADAPIENTRY radCreateBuffer (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceBuffer (RADbuffer buffer) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseBuffer (RADbuffer buffer, RADtagMode tagMode) {UNIMPLEMENTED();}
-void RADAPIENTRY radBufferAccess (RADbuffer buffer, RADbitfield access) {UNIMPLEMENTED();}
-void RADAPIENTRY radBufferMapAccess (RADbuffer buffer, RADbitfield mapAccess) {UNIMPLEMENTED();}
-void RADAPIENTRY radBufferStorage (RADbuffer buffer, RADsizei size) {UNIMPLEMENTED();}
-void* RADAPIENTRY radMapBuffer (RADbuffer buffer) {UNIMPLEMENTED(); return 0;}
-RADvertexHandle RADAPIENTRY radGetVertexHandle (RADbuffer buffer) {UNIMPLEMENTED(); return 0;}
-RADindexHandle RADAPIENTRY radGetIndexHandle (RADbuffer buffer) {UNIMPLEMENTED(); return 0;}
-RADuniformHandle RADAPIENTRY radGetUniformHandle (RADbuffer buffer) {UNIMPLEMENTED(); return 0;}
-RADbindGroupHandle RADAPIENTRY radGetBindGroupHandle (RADbuffer buffer) {UNIMPLEMENTED(); return 0;}
-RADtexture RADAPIENTRY radCreateTexture (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceTexture (RADtexture texture) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseTexture (RADtexture texture, RADtagMode tagMode) {UNIMPLEMENTED();}
-void RADAPIENTRY radTextureAccess (RADtexture texture, RADbitfield access) {UNIMPLEMENTED();}
-void RADAPIENTRY radTextureStorage (RADtexture texture, RADtextureTarget target, RADsizei levels, RADinternalFormat internalFormat, RADsizei width, RADsizei height, RADsizei depth, RADsizei samples) {UNIMPLEMENTED();}
-RADtextureHandle RADAPIENTRY radGetTextureSamplerHandle (RADtexture texture, RADsampler sampler, RADtextureTarget target, RADinternalFormat internalFormat, RADuint minLevel, RADuint numLevels, RADuint minLayer, RADuint numLayers) {UNIMPLEMENTED(); return 0;}
-RADrenderTargetHandle RADAPIENTRY radGetTextureRenderTargetHandle (RADtexture texture, RADtextureTarget target, RADinternalFormat internalFormat, RADuint level, RADuint minLayer, RADuint numLayers) {UNIMPLEMENTED(); return 0;}
-RADsampler RADAPIENTRY radCreateSampler (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceSampler (RADsampler sampler) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseSampler (RADsampler sampler) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerDefault (RADsampler sampler) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerMinMagFilter (RADsampler sampler, RADminFilter min, RADmagFilter mag) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerWrapMode (RADsampler sampler, RADwrapMode s, RADwrapMode t, RADwrapMode r) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerLodClamp (RADsampler sampler, RADfloat min, RADfloat max) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerLodBias (RADsampler sampler, RADfloat bias) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerCompare (RADsampler sampler, RADcompareMode mode, RADcompareFunc func) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerBorderColorFloat (RADsampler sampler, const RADfloat *borderColor) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerBorderColorInt (RADsampler sampler, const RADuint *borderColor) {UNIMPLEMENTED();}
-RADcolorState RADAPIENTRY radCreateColorState (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceColorState (RADcolorState color) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseColorState (RADcolorState color) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorDefault (RADcolorState color) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorBlendEnable (RADcolorState color, RADuint index, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorBlendFunc (RADcolorState color, RADuint index, RADblendFunc srcFunc, RADblendFunc dstFunc, RADblendFunc srcFuncAlpha, RADblendFunc dstFuncAlpha) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorBlendEquation (RADcolorState color, RADuint index, RADblendEquation modeRGB, RADblendEquation modeAlpha) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorMask (RADcolorState color, RADuint index, RADboolean r, RADboolean g, RADboolean b, RADboolean a) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorNumTargets (RADcolorState color, RADuint numTargets) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorLogicOpEnable (RADcolorState color, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorLogicOp (RADcolorState color, RADlogicOp logicOp) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorAlphaToCoverageEnable (RADcolorState color, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorBlendColor (RADcolorState color, const RADfloat *blendColor) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorDynamic (RADcolorState color, RADcolorDynamic dynamic, RADboolean enable) {UNIMPLEMENTED();}
-RADrasterState RADAPIENTRY radCreateRasterState (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceRasterState (RADrasterState raster) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseRasterState (RADrasterState raster) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterDefault (RADrasterState raster) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterPointSize (RADrasterState raster, RADfloat pointSize) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterLineWidth (RADrasterState raster, RADfloat lineWidth) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterCullFace (RADrasterState raster, RADfaceBitfield face) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterFrontFace (RADrasterState raster, RADfrontFace face) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterPolygonMode (RADrasterState raster, RADpolygonMode polygonMode) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterPolygonOffsetClamp (RADrasterState raster, RADfloat factor, RADfloat units, RADfloat clamp) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterPolygonOffsetEnables (RADrasterState raster, RADpolygonOffsetEnables enables) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterDiscardEnable (RADrasterState raster, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterMultisampleEnable (RADrasterState raster, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterSamples (RADrasterState raster, RADuint samples) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterSampleMask (RADrasterState raster, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterDynamic (RADrasterState raster, RADrasterDynamic dynamic, RADboolean enable) {UNIMPLEMENTED();}
-RADdepthStencilState RADAPIENTRY radCreateDepthStencilState (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceDepthStencilState (RADdepthStencilState depthStencil) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseDepthStencilState (RADdepthStencilState depthStencil) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilDefault (RADdepthStencilState depthStencil) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilDepthTestEnable (RADdepthStencilState depthStencil, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilDepthWriteEnable (RADdepthStencilState depthStencil, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilDepthFunc (RADdepthStencilState depthStencil, RADdepthFunc func) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilStencilTestEnable (RADdepthStencilState depthStencil, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilStencilFunc (RADdepthStencilState depthStencil, RADfaceBitfield faces, RADstencilFunc func, RADint ref, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilStencilOp (RADdepthStencilState depthStencil, RADfaceBitfield faces, RADstencilOp fail, RADstencilOp depthFail, RADstencilOp depthPass) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilStencilMask (RADdepthStencilState depthStencil, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilDynamic (RADdepthStencilState depthStencil, RADdepthStencilDynamic dynamic, RADboolean enable) {UNIMPLEMENTED();}
-RADvertexState RADAPIENTRY radCreateVertexState (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceVertexState (RADvertexState vertex) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseVertexState (RADvertexState vertex) {UNIMPLEMENTED();}
-void RADAPIENTRY radVertexDefault (RADvertexState vertex) {UNIMPLEMENTED();}
-void RADAPIENTRY radVertexAttribFormat (RADvertexState vertex, RADint attribIndex, RADint numComponents, RADint bytesPerComponent, RADattribType type, RADuint relativeOffset) {UNIMPLEMENTED();}
-void RADAPIENTRY radVertexAttribBinding (RADvertexState vertex, RADint attribIndex, RADint bindingIndex) {UNIMPLEMENTED();}
-void RADAPIENTRY radVertexBindingGroup (RADvertexState vertex, RADint bindingIndex, RADint group, RADint index) {UNIMPLEMENTED();}
-void RADAPIENTRY radVertexAttribEnable (RADvertexState vertex, RADint attribIndex, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radVertexBindingStride (RADvertexState vertex, RADint bindingIndex, RADuint stride) {UNIMPLEMENTED();}
-RADrtFormatState RADAPIENTRY radCreateRtFormatState (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceRtFormatState (RADrtFormatState rtFormat) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseRtFormatState (RADrtFormatState rtFormat) {UNIMPLEMENTED();}
-void RADAPIENTRY radRtFormatDefault (RADrtFormatState rtFormat) {UNIMPLEMENTED();}
-void RADAPIENTRY radRtFormatColorFormat (RADrtFormatState rtFormat, RADuint index, RADinternalFormat format) {UNIMPLEMENTED();}
-void RADAPIENTRY radRtFormatDepthFormat (RADrtFormatState rtFormat, RADinternalFormat format) {UNIMPLEMENTED();}
-void RADAPIENTRY radRtFormatStencilFormat (RADrtFormatState rtFormat, RADinternalFormat format) {UNIMPLEMENTED();}
-void RADAPIENTRY radRtFormatColorSamples (RADrtFormatState rtFormat, RADuint samples) {UNIMPLEMENTED();}
-void RADAPIENTRY radRtFormatDepthStencilSamples (RADrtFormatState rtFormat, RADuint samples) {UNIMPLEMENTED();}
-RADpipeline RADAPIENTRY radCreatePipeline (RADdevice device, RADpipelineType pipelineType) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferencePipeline (RADpipeline pipeline) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleasePipeline (RADpipeline pipeline) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelineProgramStages (RADpipeline pipeline, RADbitfield stages, RADprogram program) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelineVertexState (RADpipeline pipeline, RADvertexState vertex) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelineColorState (RADpipeline pipeline, RADcolorState color) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelineRasterState (RADpipeline pipeline, RADrasterState raster) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelineDepthStencilState (RADpipeline pipeline, RADdepthStencilState depthStencil) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelineRtFormatState (RADpipeline pipeline, RADrtFormatState rtFormat) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelinePrimitiveType (RADpipeline pipeline, RADprimitiveType mode) {UNIMPLEMENTED();}
-void RADAPIENTRY radCompilePipeline (RADpipeline pipeline) {UNIMPLEMENTED();}
-RADpipelineHandle RADAPIENTRY radGetPipelineHandle (RADpipeline pipeline) {UNIMPLEMENTED(); return 0;}
-RADcommandBuffer RADAPIENTRY radCreateCommandBuffer (RADdevice device, RADqueueType queueType) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceCommandBuffer (RADcommandBuffer cmdBuf) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseCommandBuffer (RADcommandBuffer cmdBuf) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdBindPipeline (RADcommandBuffer cmdBuf, RADpipelineType pipelineType, RADpipelineHandle pipelineHandle) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdBindGroup (RADcommandBuffer cmdBuf, RADbitfield stages, RADuint group, RADuint count, RADbindGroupHandle groupHandle, RADuint offset) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdDrawArrays (RADcommandBuffer cmdBuf, RADprimitiveType mode, RADint first, RADsizei count) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdDrawElements (RADcommandBuffer cmdBuf, RADprimitiveType mode, RADindexType type, RADsizei count, RADindexHandle indexHandle, RADuint offset) {UNIMPLEMENTED();}
-RADboolean RADAPIENTRY radCompileCommandBuffer (RADcommandBuffer cmdBuf) {UNIMPLEMENTED(); return 0;}
-RADcommandHandle RADAPIENTRY radGetCommandHandle (RADcommandBuffer cmdBuf) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radCmdStencilValueMask (RADcommandBuffer cmdBuf, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdStencilMask (RADcommandBuffer cmdBuf, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdStencilRef (RADcommandBuffer cmdBuf, RADfaceBitfield faces, RADint ref) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdBlendColor (RADcommandBuffer cmdBuf, const RADfloat *blendColor) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdPointSize (RADcommandBuffer cmdBuf, RADfloat pointSize) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdLineWidth (RADcommandBuffer cmdBuf, RADfloat lineWidth) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdPolygonOffsetClamp (RADcommandBuffer cmdBuf, RADfloat factor, RADfloat units, RADfloat clamp) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdSampleMask (RADcommandBuffer cmdBuf, RADuint mask) {UNIMPLEMENTED();}
-RADpass RADAPIENTRY radCreatePass (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferencePass (RADpass pass) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleasePass (RADpass pass) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassDefault (RADpass pass) {UNIMPLEMENTED();}
-void RADAPIENTRY radCompilePass (RADpass pass) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassRenderTargets (RADpass pass, RADuint numColors, const RADrenderTargetHandle *colors, RADrenderTargetHandle depth, RADrenderTargetHandle stencil) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassPreserveEnable (RADpass pass, RADrtAttachment attachment, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassDiscard (RADpass pass, RADuint numTextures, const RADtexture *textures, const RADoffset2D *offsets) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassResolve (RADpass pass, RADrtAttachment attachment, RADtexture texture) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassStore (RADpass pass, RADuint numTextures, const RADtexture *textures, const RADoffset2D *offsets) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassClip (RADpass pass, const RADrect2D *rect) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassDependencies (RADpass pass, RADuint numPasses, const RADpass *otherPasses, const RADbitfield *srcMask, const RADbitfield *dstMask, const RADbitfield *flushMask, const RADbitfield *invalidateMask) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassTilingBoundary (RADpass pass, RADboolean boundary) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassTileFilterWidth (RADpass pass, RADuint filterWidth, RADuint filterHeight) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassTileFootprint (RADpass pass, RADuint bytesPerPixel, RADuint maxFilterWidth, RADuint maxFilterHeight) {UNIMPLEMENTED();}
-RADsync RADAPIENTRY radCreateSync (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceSync (RADsync sync) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseSync (RADsync sync) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueFenceSync (RADqueue queue, RADsync sync, RADsyncCondition condition, RADbitfield flags) {UNIMPLEMENTED();}
-RADwaitSyncResult RADAPIENTRY radWaitSync (RADsync sync, RADuint64 timeout) {UNIMPLEMENTED(); return RAD_WAIT_SYNC_FAILED;}
-RADboolean RADAPIENTRY radQueueWaitSync (RADqueue queue, RADsync sync) {UNIMPLEMENTED(); return 0;}
+}
+
+namespace rad
+{
+#ifndef NDEBUG
+class Object;
+std::set<Object*> radObjects;
+static bool checkingRadObjectLeaksAtExit = false;
+
+static void checkRadObjectLeaks()
+{
+	size_t leakedObjectCount = radObjects.size();
+
+	if(leakedObjectCount != 0)
+	{
+		Object *leakedObject = *radObjects.begin();
+		ASSERT(!leakedObject);
+	}
+}
+#endif
+
+class Object
+{
+public:
+	Object()
+	{
+		referenceCount = 1;
+
+		#ifndef NDEBUG
+			if(!checkingRadObjectLeaksAtExit)
+			{
+				atexit(checkRadObjectLeaks);
+				checkingRadObjectLeaksAtExit = true;
+			}
+			radObjects.insert(this);
+		#endif
+	}
+
+	void reference()
+	{
+		sw::atomicIncrement(&referenceCount);
+	}
+
+	void release()
+	{
+		ASSERT(referenceCount > 0);
+
+		if(referenceCount > 0)
+		{
+			sw::atomicDecrement(&referenceCount);
+		}
+
+		if(referenceCount == 0)
+		{
+			delete this;
+
+			#ifndef NDEBUG
+				radObjects.erase(this);
+			#endif
+		}
+	}
+
+protected:
+	virtual ~Object()
+	{
+		ASSERT(referenceCount == 0);
+	}
+
+private:
+	volatile int referenceCount;
+};
+
+static void Release(Object *object)
+{
+	if(object)
+	{
+		object->release();
+	}
+}
+
+class Device : public Object
+{
+public:
+	Device()
+	{
+	}
+
+	virtual ~Device()
+	{
+	}
+};
+
+class Buffer : public Object
+{
+public:
+	Buffer()
+	{
+		buffer = nullptr;
+		access = 0;      // FIXME: default?
+		mapAccess = 0;   // FIXME: default?
+	}
+
+	virtual ~Buffer()
+	{
+		if(buffer)
+		{
+			buffer->release();
+		}
+	}
+
+	void storage(RADsizei size)
+	{
+		ASSERT(!buffer);
+		buffer = new es2::Buffer(0);
+		buffer->addRef();
+		buffer->mContents = new sw::Resource(size);
+		buffer->mSize = size;
+	}
+
+	void *map()
+	{
+		ASSERT(buffer);
+		return const_cast<void*>(buffer->data());
+	}
+
+	es2::Buffer *buffer;
+
+	RADbitfield access;
+	RADbitfield mapAccess;
+};
+
+class Sampler : public Object
+{
+public:
+	Sampler()
+	{
+		default();
+	}
+
+	virtual ~Sampler()
+	{
+	}
+
+	void default()
+	{
+		minFilter = RAD_MIN_FILTER_NEAREST_MIPMAP_LINEAR;   // FIXME: default?
+		magFilter = RAD_MAG_FILTER_LINEAR;                  // FIXME: default?
+
+		wrapModeS = RAD_WRAP_MODE_REPEAT;   // FIXME: default?
+		wrapModeT = RAD_WRAP_MODE_REPEAT;   // FIXME: default?
+		wrapModeR = RAD_WRAP_MODE_REPEAT;   // FIXME: default?
+
+		minLod = -1000.0f;   // FIXME: default?
+		maxLod = 1000.0f;   // FIXME: default?
+		lodBias = 0.0f;
+		compareMode = RAD_COMPARE_MODE_NONE;
+		compareFunc = RAD_COMPARE_FUNC_LEQUAL;   // FIXME: default?
+		borderColor[0] = 0.0f;   // FIXME: default?
+		borderColor[1] = 0.0f;   // FIXME: default?
+		borderColor[2] = 0.0f;   // FIXME: default?
+		borderColor[3] = 0.0f;   // FIXME: default?
+		borderColorInt[0] = 0;   // FIXME: default?
+		borderColorInt[1] = 0;   // FIXME: default?
+		borderColorInt[2] = 0;   // FIXME: default?
+		borderColorInt[3] = 0;   // FIXME: default?
+	}
+
+	RADminFilter minFilter;
+	RADmagFilter magFilter;
+
+	RADwrapMode wrapModeS;
+	RADwrapMode wrapModeT;
+	RADwrapMode wrapModeR;
+
+	RADfloat minLod;
+	RADfloat maxLod;
+	RADfloat lodBias;
+	RADcompareMode compareMode;
+	RADcompareFunc compareFunc;
+	RADfloat borderColor[4];
+	RADuint borderColorInt[4];
+};
+
+class Texture;
+
+struct TextureView : public Object
+{
+	TextureView(Texture *texture, Sampler *sampler, RADtextureTarget target, RADinternalFormat internalFormat, RADuint minLevel, RADuint numLevels, RADuint minLayer, RADuint numLayers)
+	{
+		ASSERT(texture);
+		ASSERT(sampler);
+		this->texture = texture;
+		sampler->reference();
+		this->sampler = sampler;
+		this->target = target;
+		this->internalFormat = internalFormat;
+		this->minLevel = minLevel;
+		this->numLevels = numLevels;
+		this->minLayer = minLayer;
+		this->numLayers = numLayers;
+	}
+
+	virtual ~TextureView()
+	{
+		sampler->release();
+	}
+
+	Texture *texture;
+	Sampler *sampler;
+	RADtextureTarget target;
+	RADinternalFormat internalFormat;
+	RADuint minLevel;
+	RADuint numLevels;
+	RADuint minLayer;
+	RADuint numLayers;
+};
+
+class Texture : public Object
+{
+public:
+	Texture()
+	{
+		texture = nullptr;
+		access = 0;   // FIXME: default?
+		//target = 0;
+		//levels = 0;
+		//internalFormat = 0;
+		//width = 0;
+		//height = 0;
+		//depth = 0;
+		//samples = 0;
+	}
+
+	virtual ~Texture()
+	{
+		if(texture)
+		{
+			texture->release();
+		}
+
+		for(size_t i = 0; i < views.size(); i++)
+		{
+			views[i]->release();
+		}
+	}
+
+	es2::Texture *texture;
+
+	RADbitfield access;
+
+	RADtextureTarget target;
+	RADsizei levels;
+	RADinternalFormat internalFormat;
+	RADsizei width;
+	RADsizei height;
+	RADsizei depth;
+	RADsizei samples;
+
+	std::vector<TextureView*> views;
+};
+
+class Pass;
+
+class Program : public Object
+{
+public:
+	Program()
+	{
+		program = new es2::Program(nullptr, 0);
+	}
+
+	virtual ~Program()
+	{
+		program->release();
+	}
+
+	es2::Program *program;
+};
+
+template<typename T, size_t n>
+inline size_t arraySize(T(&)[n])
+{
+	return n;
+}
+
+const int RAD_MAX_COLOR_TARGETS = 1;
+
+struct ColorState : public Object
+{
+	ColorState()
+	{
+		default();
+	}
+
+	void default()
+	{
+		enable = RAD_FALSE;
+
+		for(size_t i = 0; i < arraySize(blend); i++)
+		{
+			blend[i].default();
+		}
+
+		numTargets = 1;
+		logicOpEnable = RAD_FALSE;
+		logicOp = RAD_LOGIC_OP_COPY;
+		alphaToCoverageEnable = RAD_FALSE;
+		blendColor[0] = 0.0f;
+		blendColor[1] = 0.0f;
+		blendColor[2] = 0.0f;
+		blendColor[3] = 0.0f;
+	}
+
+	RADboolean enable;
+	
+	struct Blend
+	{
+		Blend()
+		{
+			default();
+		}
+
+		void default()
+		{
+			enable = RAD_FALSE;
+			srcFunc = RAD_BLEND_FUNC_ONE;
+			dstFunc = RAD_BLEND_FUNC_ZERO;
+			srcFuncAlpha = RAD_BLEND_FUNC_ONE;
+			dstFuncAlpha = RAD_BLEND_FUNC_ZERO;
+			modeRGB = RAD_BLEND_EQUATION_ADD;
+			modeAlpha = RAD_BLEND_EQUATION_ADD;
+			maskRGBA[0] = RAD_TRUE;
+			maskRGBA[1] = RAD_TRUE;
+			maskRGBA[2] = RAD_TRUE;
+			maskRGBA[3] = RAD_TRUE;
+		}
+
+		RADboolean enable;
+		RADblendFunc srcFunc;
+		RADblendFunc dstFunc;
+		RADblendFunc srcFuncAlpha;
+		RADblendFunc dstFuncAlpha;
+		RADblendEquation modeRGB;
+		RADblendEquation modeAlpha;
+		RADboolean maskRGBA[4];
+	};
+
+	Blend blend[RAD_MAX_COLOR_TARGETS];
+
+	RADuint numTargets;
+	RADboolean logicOpEnable;
+	RADlogicOp logicOp;
+	RADboolean alphaToCoverageEnable;
+	RADfloat blendColor[4];
+};
+
+struct RasterState : public Object
+{
+	RasterState()
+	{
+		default();
+	}
+
+	void default()
+	{
+		pointSize = 1.0f;
+		lineWidth = 1.0f;
+		cullFace = RAD_FACE_NONE;
+		frontFace = RAD_FRONT_FACE_CW;
+		polygonMode = RAD_POLYGON_MODE_FILL;
+	
+		offsetFactor = 0.0f;
+		offsetUnits = 0.0f;
+		offsetClamp = 0.0f;
+
+		polygonOffsetEnables = RAD_POLYGON_OFFSET_NONE;
+		discardEnable = RAD_FALSE;
+		multisampleEnable = RAD_TRUE;
+
+		samples = 0;
+		sampleMask = ~0;
+	}
+
+	RADfloat pointSize;
+	RADfloat lineWidth;
+	RADfaceBitfield cullFace;
+	RADfrontFace frontFace;
+	RADpolygonMode polygonMode;
+	
+	RADfloat offsetFactor;
+	RADfloat offsetUnits;
+	RADfloat offsetClamp;
+
+	RADpolygonOffsetEnables polygonOffsetEnables;
+	RADboolean discardEnable;
+	RADboolean multisampleEnable;
+
+	RADuint samples;
+	RADuint sampleMask;
+};
+
+struct DepthStencilState : public Object
+{
+	DepthStencilState()
+	{
+		default();
+	}
+
+	void default()
+	{
+		depthTestEnable = RAD_FALSE;
+		depthWriteEnable = RAD_FALSE;
+		depthFunc = RAD_DEPTH_FUNC_LESS;
+		stencilTestEnable = RAD_FALSE;
+
+		stencilFuncFront = RAD_STENCIL_FUNC_ALWAYS;
+		stencilRefFront = 0;
+		stencilMaskFront = ~0;
+
+		stencilFuncBack = RAD_STENCIL_FUNC_ALWAYS;
+		stencilRefBack = 0;
+		stencilMaskBack = ~0;
+
+		stencilFailOpFront = RAD_STENCIL_OP_KEEP;
+		depthFailOpFront = RAD_STENCIL_OP_KEEP;
+		depthPassOpFront = RAD_STENCIL_OP_KEEP;
+
+		stencilFailOpBack = RAD_STENCIL_OP_KEEP;
+		depthFailOpBack = RAD_STENCIL_OP_KEEP;
+		depthPassOpBack = RAD_STENCIL_OP_KEEP;
+
+		stencilWriteMaskFront = ~0;
+		stencilWriteMaskBack = ~0;
+	}
+
+	RADboolean depthTestEnable;
+	RADboolean depthWriteEnable;
+	RADdepthFunc depthFunc;
+	RADboolean stencilTestEnable;
+	
+	RADstencilFunc stencilFuncFront;
+	RADint stencilRefFront;
+	RADuint stencilMaskFront;
+
+	RADstencilFunc stencilFuncBack;
+	RADint stencilRefBack;
+	RADuint stencilMaskBack;
+
+	RADstencilOp stencilFailOpFront;
+	RADstencilOp depthFailOpFront;
+	RADstencilOp depthPassOpFront;
+
+	RADstencilOp stencilFailOpBack;
+	RADstencilOp depthFailOpBack;
+	RADstencilOp depthPassOpBack;
+
+	RADuint stencilWriteMaskFront;
+	RADuint stencilWriteMaskBack;
+};
+
+const int RAD_MAX_VERTEX_ATTRIB = 16;
+const int RAD_MAX_VERTEX_BINDING = 16;
+
+struct VertexState : public Object
+{
+	VertexState()
+	{
+		default();
+	}
+
+	void default()
+	{
+		for(size_t i = 0; i < arraySize(attrib); i++)
+		{
+			attrib[i].default();
+		}
+
+		for(size_t i = 0; i < arraySize(binding); i++)
+		{
+			binding[i].default();
+		}
+	}
+
+	struct Attribute
+	{
+		Attribute()
+		{
+			default();
+		}
+
+		void default()
+		{
+			enable = RAD_FALSE;
+			bindingIndex = 0;
+			numComponents = 0;
+			bytesPerComponent = 0;
+			type = RAD_ATTRIB_TYPE_SNORM;
+			relativeOffset = 0;
+		}
+
+		RADboolean enable;
+		
+		RADint bindingIndex;
+		
+		RADint numComponents;
+		RADint bytesPerComponent;
+		RADattribType type;
+		RADuint relativeOffset;
+	};
+
+	Attribute attrib[RAD_MAX_VERTEX_ATTRIB];
+
+	struct Binding
+	{
+		Binding()
+		{
+			default();
+		}
+
+		void default()
+		{
+			group = 0;
+			index = 0;
+			stride = 0;
+		}
+
+		RADint group;
+		RADint index;
+
+		RADuint stride;
+	};
+
+	Binding binding[RAD_MAX_VERTEX_BINDING];
+};
+
+struct FormatState : public Object
+{
+	FormatState()
+	{
+		default();
+	}
+
+	void default()
+	{
+		for(size_t i = 0; i < arraySize(colorFormat); i++)
+		{
+			colorFormat[i] = RAD_FORMAT_NONE;
+		}
+
+		depthFormat = RAD_FORMAT_NONE;
+		stencilFormat = RAD_FORMAT_NONE;
+		colorSamples = 0;
+		depthStencilSamples = 0;
+	}
+
+	RADinternalFormat colorFormat[RAD_MAX_COLOR_TARGETS];
+	RADinternalFormat depthFormat;
+	RADinternalFormat stencilFormat;
+	RADuint colorSamples;
+	RADuint depthStencilSamples;
+};
+
+class Pipeline : public Object
+{
+public:
+	Pipeline()
+	{
+		vertexProgram = nullptr;
+		fragmentProgram = nullptr;
+		vertexState = nullptr;
+		colorState = nullptr;
+		rasterState = nullptr;
+		depthStencilState = nullptr;
+		formatState = nullptr;
+		primitiveType = RAD_TRIANGLES;
+	}
+
+	virtual ~Pipeline()
+	{
+		Release(vertexProgram);
+		Release(fragmentProgram);
+		Release(vertexState);
+		Release(colorState);
+		Release(rasterState);
+		Release(depthStencilState);
+		Release(formatState);
+	}
+
+	Program *vertexProgram;
+	Program *fragmentProgram;
+	VertexState *vertexState;
+	ColorState *colorState;
+	RasterState *rasterState;
+	DepthStencilState *depthStencilState;
+	FormatState *formatState;
+	RADprimitiveType primitiveType;
+};
+
+const int RAD_MAX_ATTACHMENTS = 1 /*depth*/ + 1 /*stencil*/ + RAD_MAX_COLOR_TARGETS;
+
+class Pass : public Object
+{
+public:
+	Pass()
+	{
+		default();
+	}
+
+	virtual ~Pass()
+	{
+		for(size_t i = 0; i < arraySize(colorTarget); i++)
+		{
+			if(colorTarget[i])
+			{
+				colorTarget[i]->release();
+			}
+		}
+
+		if(depthTarget)
+		{
+			depthTarget->release();
+		}
+
+		if(stencilTarget)
+		{
+			stencilTarget->release();
+		}
+	}
+
+	void default()
+	{
+		numColors = 0;
+
+		for(size_t i = 0; i < arraySize(colorTarget); i++)
+		{
+			colorTarget[i] = nullptr;
+		}
+
+		depthTarget = nullptr;
+		stencilTarget = nullptr;
+
+		for(size_t i = 0; i < arraySize(preserveEnable); i++)
+		{
+			preserveEnable[i] = RAD_TRUE;
+		}
+	}
+
+	RADuint numColors;
+	es2::Image *colorTarget[RAD_MAX_COLOR_TARGETS];
+	es2::Image *depthTarget;
+	es2::Image *stencilTarget;
+
+	RADboolean preserveEnable[RAD_MAX_ATTACHMENTS];
+
+	//RADuint numDiscardTextures;
+	//const RADtexture *discardTextures;
+	//const RADoffset2D *discardOffsets;
+	//
+	//RADtexture resolveTexture[RAD_MAX_ATTACHMENTS];
+
+	//RADuint numStoreTextures;
+	//const RADtexture *storeTextures;
+	//const RADoffset2D *storeOffsets;
+	//
+	//const RADrect2D *clipRect;
+
+	//RADuint numDependencies;
+	//const RADpass *dependentPasses;
+	//const RADbitfield *srcMask;
+	//const RADbitfield *dstMask;
+	//const RADbitfield *flushMask;
+	//const RADbitfield *invalidateMask;
+
+	//RADboolean tilingBoundary;
+
+	//RADuint tileFilterWidth;
+	//RADuint tileTilterHeight;
+
+	//RADuint bytesPerPixel;
+	//RADuint footprintFilterWidth;
+	//RADuint footprintFilterHeight;
+};
+
+class Command : public Object
+{
+public:
+	Command()
+	{
+		//pipeline = nullptr;
+		//pass = nullptr;
+	}
+
+	~Command()
+	{
+		//Release(pipeline);
+		//Release(pass);
+	}
+
+	virtual void execute(Pipeline *pipeline, Pass *pass) = 0;   // FIXME: Just queue as parameter?
+
+	virtual bool isPresent() const
+	{
+		return false;
+	}
+
+	//void setPipeline(Pipeline *pipeline)
+	//{
+	//	if(pipeline)
+	//	{
+	//		pipeline->reference();
+	//		this->pipeline = pipeline;
+	//	}
+	//}
+
+	//void setPass(Pass *pass)
+	//{
+	//	if(pass)
+	//	{
+	//		pass->reference();
+	//		this->pass = pass;
+	//	}
+	//}
+
+protected:
+	//Pipeline *pipeline;   // FIXME: Command-specific state captured in their constructor?
+	//Pass *pass;
+};
+
+class CopyBufferToImage : public Command
+{
+public:
+	CopyBufferToImage(Buffer *buffer, RADintptr bufferOffset, Texture *texture, RADint level, RADuint xoffset, RADuint yoffset, RADuint zoffset, RADsizei width, RADsizei height, RADsizei depth)
+	{
+		ASSERT(buffer);
+		ASSERT(texture);
+		buffer->reference();
+		this->buffer = buffer;
+		this->bufferOffset = bufferOffset;
+		texture->reference();
+		this->texture = texture;
+		this->level = level;
+		this->xoffset = xoffset;
+		this->yoffset = yoffset;
+		this->zoffset = zoffset;
+		this->width = width;
+		this->height = height;
+		this->depth = depth;
+	}
+
+	virtual ~CopyBufferToImage()
+	{
+		buffer->release();
+		texture->release();
+	}
+
+	virtual void execute(Pipeline *pipeline, Pass *pass)
+	{
+		ASSERT(depth == 1);   // FIXME: Unimplemented
+		egl::Image *image = texture->texture->getRenderTarget(GL_TEXTURE_2D, level);
+		uint8_t *output = static_cast<uint8_t*>(image->lock(xoffset, yoffset, sw::LOCK_WRITEONLY));   // FIXME: Discard if whole image
+		unsigned int pitch = image->getPitch();
+		const uint8_t *input = static_cast<const uint8_t*>(buffer->map()) + bufferOffset;   // FIXME: Necessary to lock?
+
+		ASSERT(texture->internalFormat == RAD_RGBA8);   // FIXME: Unimplemented
+		int bytesPerTexel = 4;
+
+		for(int y = 0; y < height; y++)
+		{
+			const uint8_t *source = input + y * (width * bytesPerTexel);
+			uint8_t *dest = output + y * pitch;
+
+			memcpy(dest, source, width);
+		}
+
+		image->unlock();
+	}
+
+	Buffer *buffer;
+	RADintptr bufferOffset;
+	Texture *texture;
+	RADint level;
+	RADuint xoffset;
+	RADuint yoffset;
+	RADuint zoffset;
+	RADsizei width;
+	RADsizei height;
+	RADsizei depth;
+};
+
+class Scissor : public Command
+{
+public:
+	Scissor(RADint x, RADint y, RADint w, RADint h)
+	{
+		this->x = x;
+		this->y = y;
+		this->w = w;
+		this->h = h;
+	}
+
+	virtual ~Scissor()
+	{
+	}
+
+	virtual void execute(Pipeline *pipeline, Pass *pass)
+	{
+		es2::Context *context = es2::getContext();
+		context->setScissorParams(x, y, w, h);
+	}
+
+	RADint x;
+	RADint y;
+	RADint w;
+	RADint h;
+};
+
+class Viewport : public Command
+{
+public:
+	Viewport(RADint x, RADint y, RADint w, RADint h)
+	{
+		this->x = x;
+		this->y = y;
+		this->w = w;
+		this->h = h;
+	}
+
+	virtual ~Viewport()
+	{
+	}
+
+	virtual void execute(Pipeline *pipeline, Pass *pass)
+	{
+		es2::Context *context = es2::getContext();
+		context->setViewportParams(x, y, w, h);
+	}
+
+	RADint x;
+	RADint y;
+	RADint w;
+	RADint h;
+};
+
+class ClearColor : public Command
+{
+public:
+	ClearColor(RADuint index, const RADfloat *color)
+	{
+		this->index = index;
+		this->color[0] = color[0];
+		this->color[1] = color[1];
+		this->color[2] = color[2];
+		this->color[3] = color[3];
+	}
+
+	virtual ~ClearColor()
+	{
+	}
+
+	virtual void execute(Pipeline *pipeline, Pass *pass)
+	{
+		ASSERT(pass);   // FIXME: Error if no beginPass
+		ASSERT(index < pass->numColors);
+		es2::Image *image = pass->colorTarget[index];
+
+		GLenum format = image->getFormat();
+		GLenum type = image->getType();
+		ASSERT(format == GL_RGBA);   // FIXME
+		ASSERT(type == GL_UNSIGNED_BYTE);   //  FIXME
+
+		es2::Context *context = es2::getContext();
+		int x0 = context->mState.scissorX;
+		int y0 = context->mState.scissorY;
+		int width = context->mState.scissorWidth;
+		int height = context->mState.scissorHeight;
+
+		image->clearColorBuffer(sw::Color<float>(color[0], color[1], color[2], color[3]), 0xF, x0, y0, width, height);
+	}
+
+	RADuint index;
+	RADfloat color[4];
+};
+
+class ClearDepth : public Command
+{
+public:
+	ClearDepth(RADfloat depth)
+	{
+		this->depth = depth;
+	}
+
+	virtual ~ClearDepth()
+	{
+	}
+
+	virtual void execute(Pipeline *pipeline, Pass *pass)
+	{
+		ASSERT(pass);   // FIXME: Error if no beginPass
+		es2::Image *image = pass->depthTarget;
+		
+		es2::Context *context = es2::getContext();
+		int x0 = context->mState.scissorX;
+		int y0 = context->mState.scissorY;
+		int width = context->mState.scissorWidth;
+		int height = context->mState.scissorHeight;
+
+		image->clearDepthBuffer(depth, x0, y0, width, height);
+	}
+
+	RADfloat depth;
+};
+
+class Present : public Command
+{
+public:
+	Present(Texture *texture)
+	{
+		texture->reference();
+		this->texture = texture;
+	}
+
+	virtual ~Present()
+	{
+		Release(texture);
+	}
+
+	virtual void execute(Pipeline *pipeline, Pass *pass)
+	{
+		es2::Context *context = es2::getContext();
+		sw::FrameBuffer *frameBuffer = (*es2::getDisplay()->mSurfaceSet.begin())->frameBuffer;
+
+		egl::Image *image = texture->texture->getRenderTarget(GL_TEXTURE_2D, 0);
+		void *source = image->lockInternal(0, 0, 0, sw::LOCK_READONLY, sw::PUBLIC);
+		frameBuffer->flip(source, image->getInternalFormat());
+		image->unlockInternal();
+		image->release();
+	}
+
+	virtual bool isPresent() const
+	{
+		return true;
+	}
+
+	Texture *texture;
+};
+
+class DrawElements : public Command
+{
+public:
+	DrawElements(RADprimitiveType mode, RADindexType type, RADsizei count, es2::Buffer *indexBuffer, RADuint offset)
+	{
+		this->mode = mode;
+		this->type = type;
+		this->count = count;
+		this->indexBuffer = indexBuffer;
+		this->offset = offset;
+	}
+
+	~DrawElements()
+	{
+	}
+
+	virtual void execute(Pipeline *pipeline, Pass *pass)
+	{
+		es2::Context *context = es2::getContext();
+
+		ASSERT(pipeline->vertexProgram == pipeline->fragmentProgram);   // FIXME
+		context->mState.program = pipeline->vertexProgram->program;
+
+		GLenum glType = GL_UNSIGNED_SHORT;
+		switch(type)
+		{
+		case RAD_INDEX_UNSIGNED_BYTE:  glType = GL_UNSIGNED_BYTE;  break;
+		case RAD_INDEX_UNSIGNED_SHORT: glType = GL_UNSIGNED_SHORT; break;
+		case RAD_INDEX_UNSIGNED_INT:   glType = GL_UNSIGNED_INT;   break;
+		default: UNREACHABLE();
+		}
+
+		GLenum glMode = GL_TRIANGLES;
+		switch(mode)
+		{
+		case RAD_TRIANGLES: glMode = GL_TRIANGLES; break;
+		default: UNREACHABLE();
+		}
+
+		context->mState.colorBuffer = pass->colorTarget[0];
+		context->mState.depthBuffer = pass->depthTarget;
+
+		context->mState.depthTest = pipeline->depthStencilState->depthTestEnable;
+
+		GLenum glDepth = GL_LESS;
+		switch(pipeline->depthStencilState->depthFunc)
+		{
+		case RAD_DEPTH_FUNC_NEVER:    glDepth = GL_NEVER;    break;
+		case RAD_DEPTH_FUNC_LESS:     glDepth = GL_LESS;     break;
+		case RAD_DEPTH_FUNC_EQUAL:    glDepth = GL_EQUAL;    break;
+		case RAD_DEPTH_FUNC_LEQUAL:   glDepth = GL_LEQUAL;   break;
+		case RAD_DEPTH_FUNC_GREATER:  glDepth = GL_GREATER;  break;
+		case RAD_DEPTH_FUNC_NOTEQUAL: glDepth = GL_NOTEQUAL; break;
+		case RAD_DEPTH_FUNC_GEQUAL:   glDepth = GL_GEQUAL;   break;
+		case RAD_DEPTH_FUNC_ALWAYS:   glDepth = GL_ALWAYS;   break;
+		default: UNREACHABLE();
+		}
+
+		context->mState.elementArrayBuffer.set(indexBuffer);
+		context->drawElements(glMode, count, glType, 0);
+	}
+
+	RADprimitiveType mode;
+	RADindexType type;
+	RADsizei count;
+	es2::Buffer *indexBuffer;
+	RADuint offset;
+};
+
+class BindGroup : public Command
+{
+public:
+	BindGroup(RADbitfield stages, RADuint group, RADuint count, es2::Buffer *buffer, RADuint offset)
+	{
+		this->stages = stages;
+		this->group = group;
+		this->count = count;
+		this->buffer = buffer;
+		this->offset = offset;
+	}
+
+	virtual ~BindGroup()
+	{
+	}
+
+	virtual void execute(Pipeline *pipeline, Pass *pass)
+	{
+		es2::Context *context = es2::getContext();
+
+		const RADbindGroupElement *groupElements = static_cast<const RADbindGroupElement*>(buffer->data());
+
+		// FIXME: Should parse the layout out of the shaders
+		es2::Buffer *data = reinterpret_cast<es2::Buffer*>(groupElements[0].handle);
+		void *offset = reinterpret_cast<void*>(static_cast<uintptr_t>(groupElements[0].offset));
+		context->setVertexAttribState(0, data, 3, GL_FLOAT, GL_TRUE, 0, offset);
+		context->setEnableVertexAttribArray(0, true);
+	}
+
+	RADbitfield stages;
+	RADuint group;
+	RADuint count;
+	es2::Buffer *buffer;
+	RADuint offset;
+};
+
+class Queue : public Object
+{
+public:
+	Queue()
+	{
+		graphicsPipeline = nullptr;
+		pass = nullptr;
+	}
+
+	virtual ~Queue()
+	{
+		for(size_t i = 0; i < commands.size(); i++)
+		{
+			commands[i]->release();
+		}
+
+		Release(graphicsPipeline);
+
+		ASSERT(!pass);   // FIXME: No matching endPass
+		Release(pass);
+	}
+
+	void submit(Command *command)
+	{
+		// FIXME: Make BeginPass/EndPass/BindPipeline commands too?
+		//command->setPipeline(graphicsPipeline);
+		//command->setPass(pass);
+
+		if(false)   // Queued execution
+		{
+			commands.push_back(command);
+
+			if(command->isPresent())
+			{
+				// FIXME: Flush
+			}
+		}
+		else   // Immediate execution
+		{
+			command->execute(graphicsPipeline, pass);
+
+			command->release();
+		}
+	}
+
+	void bindPipeline(RADpipelineType pipelineType, Pipeline *pipeline)
+	{
+		if(pipelineType == RAD_PIPELINE_TYPE_GRAPHICS)
+		{
+			pipeline->reference();
+
+			if(graphicsPipeline)
+			{
+				graphicsPipeline->release();
+			}
+
+			graphicsPipeline = pipeline;
+		}
+		else UNREACHABLE();
+	}
+
+	void beginPass(rad::Pass *pass)
+	{
+		ASSERT(!this->pass);   // FIXME: Can be nested?
+		pass->reference();
+		this->pass = pass;
+	}
+
+	void endPass(rad::Pass *pass)
+	{
+		ASSERT(this->pass == pass);   // FIXME: Can be nested?
+		this->pass->release();
+		this->pass = nullptr;
+	}
+
+private:
+	std::deque<Command*> commands;
+	Pipeline *graphicsPipeline;
+	Pass *pass;
+};
+}
+
+extern "C"
+{
+RADdevice RADAPIENTRY radCreateDevice(void)
+{
+	static rad::Device *device = new rad::Device();
+	return reinterpret_cast<RADdevice>(device);
+}
+
+void RADAPIENTRY radReferenceDevice(RADdevice device)
+{
+	rad::Device *radDevice = reinterpret_cast<rad::Device*>(device);
+	return radDevice->reference();
+}
+void RADAPIENTRY radReleaseDevice(RADdevice device)
+{
+	rad::Device *radDevice = reinterpret_cast<rad::Device*>(device);
+	return radDevice->release();
+}
+
+RADuint RADAPIENTRY radGetTokenHeader(RADdevice device, RADtokenName name) {UNIMPLEMENTED(); return 0;}
+
+RADqueue RADAPIENTRY radCreateQueue(RADdevice device, RADqueueType queuetype)
+{
+	rad::Queue *queue = new rad::Queue();
+	return reinterpret_cast<RADqueue>(queue);
+}
+
+void RADAPIENTRY radReferenceQueue(RADqueue queue)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	return radQueue->reference();
+}
+
+void RADAPIENTRY radReleaseQueue(RADqueue queue)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	return radQueue->release();
+}
+
+void RADAPIENTRY radQueueTagBuffer(RADqueue queue, RADbuffer buffer) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueTagTexture(RADqueue queue, RADtexture texture) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radQueueSubmitCommands(RADqueue queue, RADuint numCommands, const RADcommandHandle *handles)
+{
+	return;
+}
+
+void RADAPIENTRY radFlushQueue(RADqueue queue) {UNIMPLEMENTED();}
+void RADAPIENTRY radFinishQueue(RADqueue queue) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radQueueViewport(RADqueue queue, RADint x, RADint y, RADint w, RADint h)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	rad::Viewport *command = new rad::Viewport(x, y, w, h);
+	radQueue->submit(command);
+}
+
+void RADAPIENTRY radQueueScissor(RADqueue queue, RADint x, RADint y, RADint w, RADint h)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	rad::Scissor *command = new rad::Scissor(x, y, w, h);
+	radQueue->submit(command);
+}
+
+void RADAPIENTRY radQueueCopyBufferToImage(RADqueue queue, RADbuffer buffer, RADintptr bufferOffset, RADtexture texture, RADint level, RADuint xoffset, RADuint yoffset, RADuint zoffset, RADsizei width, RADsizei height, RADsizei depth)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	rad::Texture *radTexture = reinterpret_cast<rad::Texture*>(texture);
+	rad::CopyBufferToImage *command = new rad::CopyBufferToImage(radBuffer, bufferOffset, radTexture, level, xoffset, yoffset, zoffset, width, height, depth);
+	radQueue->submit(command);
+}
+
+void RADAPIENTRY radQueueCopyImageToBuffer(RADqueue queue, RADbuffer buffer, RADintptr bufferOffset, RADtexture texture, RADint level, RADuint xoffset, RADuint yoffset, RADuint zoffset, RADsizei width, RADsizei height, RADsizei depth) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radQueueCopyBuffer(RADqueue queue, RADbuffer srcBuffer, RADintptr srcOffset, RADbuffer dstBuffer, RADintptr dstOffset, RADsizei size)
+{
+	return;
+}
+
+void RADAPIENTRY radQueueClearColor(RADqueue queue, RADuint index, const RADfloat *color)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	rad::ClearColor *command = new rad::ClearColor(index, color);
+	radQueue->submit(command);
+}
+
+void RADAPIENTRY radQueueClearDepth(RADqueue queue, RADfloat depth)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	rad::ClearDepth *command = new rad::ClearDepth(depth);
+	radQueue->submit(command);
+}
+
+void RADAPIENTRY radQueueClearStencil(RADqueue queue, RADuint stencil) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radQueuePresent(RADqueue queue, RADtexture texture)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	rad::Texture *radTexture = reinterpret_cast<rad::Texture*>(texture);
+	rad::Present *command = new rad::Present(radTexture);
+	radQueue->submit(command);
+}
+
+void RADAPIENTRY radQueueDrawArrays(RADqueue queue, RADprimitiveType mode, RADint first, RADsizei count) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radQueueDrawElements(RADqueue queue, RADprimitiveType mode, RADindexType type, RADsizei count, RADindexHandle indexHandle, RADuint offset)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	es2::Buffer *indexBuffer = reinterpret_cast<es2::Buffer*>(indexHandle);
+	rad::DrawElements *command = new rad::DrawElements(mode, type, count, indexBuffer, offset);
+	radQueue->submit(command);
+}
+
+void RADAPIENTRY radQueueBindPipeline(RADqueue queue, RADpipelineType pipelineType, RADpipelineHandle pipelineHandle)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	rad::Pipeline *radPipeline = reinterpret_cast<rad::Pipeline*>(pipelineHandle);
+	radQueue->bindPipeline(pipelineType, radPipeline);
+}
+
+void RADAPIENTRY radQueueBindGroup(RADqueue queue, RADbitfield stages, RADuint group, RADuint count, RADbindGroupHandle groupHandle, RADuint offset)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	es2::Buffer *groupBuffer = reinterpret_cast<es2::Buffer*>(groupHandle);
+	rad::BindGroup *command = new rad::BindGroup(stages, group, count, groupBuffer, offset);
+	radQueue->submit(command);
+}
+
+void RADAPIENTRY radQueueBeginPass(RADqueue queue, RADpass pass)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	rad::Pass *radPass = reinterpret_cast<rad::Pass*>(pass);
+	radQueue->beginPass(radPass);
+}
+
+void RADAPIENTRY radQueueEndPass(RADqueue queue, RADpass pass)
+{
+	rad::Queue *radQueue = reinterpret_cast<rad::Queue*>(queue);
+	rad::Pass *radPass = reinterpret_cast<rad::Pass*>(pass);
+	radQueue->endPass(radPass);
+}
+
+void RADAPIENTRY radQueueSubmitDynamic(RADqueue queue, const void *dynamic, RADsizei length) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueStencilValueMask(RADqueue queue, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueStencilMask(RADqueue queue, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueStencilRef(RADqueue queue, RADfaceBitfield faces, RADint ref) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueBlendColor(RADqueue queue, const RADfloat *blendColor) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueuePointSize(RADqueue queue, RADfloat pointSize) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueLineWidth(RADqueue queue, RADfloat lineWidth) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueuePolygonOffsetClamp(RADqueue queue, RADfloat factor, RADfloat units, RADfloat clamp) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueSampleMask(RADqueue queue, RADuint mask) {UNIMPLEMENTED();}
+
+RADprogram RADAPIENTRY radCreateProgram(RADdevice device)
+{
+	rad::Program *program = new rad::Program();
+	return reinterpret_cast<RADprogram>(program);
+}
+
+void RADAPIENTRY radReferenceProgram(RADprogram program)
+{
+	rad::Program *radProgram = reinterpret_cast<rad::Program*>(program);
+	radProgram->reference();
+}
+
+void RADAPIENTRY radReleaseProgram(RADprogram program)
+{
+	rad::Program *radProgram = reinterpret_cast<rad::Program*>(program);
+	radProgram->release();
+}
+
+void RADAPIENTRY radProgramSource(RADprogram program, RADprogramFormat format, RADsizei length, const void *source)
+{
+	rad::Program *radProgram = reinterpret_cast<rad::Program*>(program);
+
+	// FIXME: Assumes first source is vertex shader, second is fragment shader
+	ASSERT(length == 2);
+	const char *vertexSource = static_cast<const char* const*>(source)[0];
+	const char *fragmentSource = static_cast<const char* const*>(source)[1];
+	GLint vertexLength = strlen(vertexSource);
+	GLint fragmentLength = strlen(fragmentSource);
+
+	es2::VertexShader *vertexShader = new es2::VertexShader(nullptr, 0);
+	es2::FragmentShader *fragmentShader = new es2::FragmentShader(nullptr, 0);
+
+	vertexShader->setSource(1, &vertexSource, &vertexLength);
+	fragmentShader->setSource(1, &fragmentSource, &fragmentLength);
+
+	vertexShader->compile();
+	fragmentShader->compile();
+
+	radProgram->program->attachShader(vertexShader);
+	radProgram->program->attachShader(fragmentShader);
+	radProgram->program->link();
+
+	vertexShader->release();     // Still referenced by program
+	fragmentShader->release();   // Still referenced by program
+}
+
+RADbuffer RADAPIENTRY radCreateBuffer(RADdevice device)
+{
+	rad::Buffer *buffer = new rad::Buffer();
+	return reinterpret_cast<RADbuffer>(buffer);
+}
+
+void RADAPIENTRY radReferenceBuffer(RADbuffer buffer)
+{
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	radBuffer->reference();
+}
+
+void RADAPIENTRY radReleaseBuffer(RADbuffer buffer, RADtagMode tagMode)
+{
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	radBuffer->release();
+}
+
+void RADAPIENTRY radBufferAccess(RADbuffer buffer, RADbitfield access)
+{
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	radBuffer->access = access;
+}
+
+void RADAPIENTRY radBufferMapAccess(RADbuffer buffer, RADbitfield mapAccess)
+{
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	radBuffer->mapAccess = mapAccess;
+}
+
+void RADAPIENTRY radBufferStorage(RADbuffer buffer, RADsizei size)
+{
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	radBuffer->storage(size);
+}
+
+void* RADAPIENTRY radMapBuffer(RADbuffer buffer)
+{
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	return radBuffer->map();
+}
+
+RADvertexHandle RADAPIENTRY radGetVertexHandle(RADbuffer buffer)
+{
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	return reinterpret_cast<RADvertexHandle>(radBuffer->buffer);
+}
+
+RADindexHandle RADAPIENTRY radGetIndexHandle(RADbuffer buffer)
+{
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	return reinterpret_cast<RADvertexHandle>(radBuffer->buffer);
+}
+
+RADuniformHandle RADAPIENTRY radGetUniformHandle(RADbuffer buffer)
+{
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	return reinterpret_cast<RADuniformHandle>(radBuffer->buffer);
+}
+
+RADbindGroupHandle RADAPIENTRY radGetBindGroupHandle(RADbuffer buffer)
+{
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	return reinterpret_cast<RADbindGroupHandle>(radBuffer->buffer);
+}
+
+RADtexture RADAPIENTRY radCreateTexture(RADdevice device)
+{
+	rad::Texture *colorState = new rad::Texture();
+	return reinterpret_cast<RADtexture>(colorState);
+}
+
+void RADAPIENTRY radReferenceTexture(RADtexture texture)
+{
+	rad::Texture *radTexture = reinterpret_cast<rad::Texture*>(texture);
+	radTexture->reference();
+}
+
+void RADAPIENTRY radReleaseTexture(RADtexture texture, RADtagMode tagMode)
+{
+	rad::Texture *radTexture = reinterpret_cast<rad::Texture*>(texture);
+	radTexture->release();
+}
+
+void RADAPIENTRY radTextureAccess(RADtexture texture, RADbitfield access)
+{
+	rad::Texture *radTexture = reinterpret_cast<rad::Texture*>(texture);
+	radTexture->access = access;
+}
+
+void RADAPIENTRY radTextureStorage(RADtexture texture, RADtextureTarget target, RADsizei levels, RADinternalFormat internalFormat, RADsizei width, RADsizei height, RADsizei depth, RADsizei samples)
+{
+	rad::Texture *radTexture = reinterpret_cast<rad::Texture*>(texture);
+	ASSERT(!radTexture->texture);
+
+	radTexture->target = target;
+	radTexture->levels = levels;
+	radTexture->internalFormat = internalFormat;
+	radTexture->width = width;
+	radTexture->height = height;
+	radTexture->depth = depth;
+	radTexture->samples = samples;
+
+	GLenum format = GL_NONE;
+	GLenum type = GL_NONE;
+	switch(internalFormat)
+	{
+	case RAD_RGBA8:
+		format = GL_RGBA;
+		type = GL_UNSIGNED_BYTE;
+		break;
+	case RAD_DEPTH24_STENCIL8:
+		format = GL_DEPTH_STENCIL_OES;
+		type = GL_UNSIGNED_INT_24_8_OES;
+		break;
+	default:
+		UNIMPLEMENTED();   // FIXME
+	}
+
+	switch(target)
+	{
+	case RAD_TEXTURE_2D:
+		{
+			es2::Texture2D *tex = new es2::Texture2D(0);
+			for(int level = 0; level < levels; level++)
+			{
+				tex->setImage(level, width >> level, height >> level, format, type, 1, nullptr);
+			}
+			tex->addRef();
+			radTexture->texture = tex;
+		}
+		break;
+	default:
+		UNIMPLEMENTED();   // FIXME
+	}
+}
+
+RADtextureHandle RADAPIENTRY radGetTextureSamplerHandle(RADtexture texture, RADsampler sampler, RADtextureTarget target, RADinternalFormat internalFormat, RADuint minLevel, RADuint numLevels, RADuint minLayer, RADuint numLayers)
+{
+	rad::Texture *radTexture = reinterpret_cast<rad::Texture*>(texture);
+	rad::Sampler *radSampler = reinterpret_cast<rad::Sampler*>(sampler);
+	rad::TextureView *textureView = new rad::TextureView(radTexture, radSampler, target, internalFormat, minLevel, numLevels, minLayer, numLayers);
+	radTexture->views.push_back(textureView);   // FIXME: Check for matching existing views
+	return reinterpret_cast<RADtextureHandle>(textureView);
+}
+
+RADrenderTargetHandle RADAPIENTRY radGetTextureRenderTargetHandle(RADtexture texture, RADtextureTarget target, RADinternalFormat internalFormat, RADuint level, RADuint minLayer, RADuint numLayers)
+{
+	rad::Texture *radTexture = reinterpret_cast<rad::Texture*>(texture);
+	ASSERT(radTexture->texture);
+	ASSERT(radTexture->internalFormat == internalFormat);
+	ASSERT(minLayer == 0);
+	ASSERT(numLayers == 1);
+	GLenum glTarget = GL_NONE;
+	switch(target)
+	{
+	case RAD_TEXTURE_2D:
+		glTarget = GL_TEXTURE_2D;
+		break;
+	default:
+		UNREACHABLE();
+	}
+	return reinterpret_cast<RADrenderTargetHandle>(radTexture->texture->getRenderTarget(glTarget, level));
+}
+
+RADsampler RADAPIENTRY radCreateSampler(RADdevice device)
+{
+	rad::Sampler *sampler = new rad::Sampler();
+	return reinterpret_cast<RADsampler>(sampler);
+}
+
+void RADAPIENTRY radReferenceSampler(RADsampler sampler)
+{
+	rad::Sampler *radSampler = reinterpret_cast<rad::Sampler*>(sampler);
+	radSampler->reference();
+}
+
+void RADAPIENTRY radReleaseSampler(RADsampler sampler)
+{
+	rad::Sampler *radSampler = reinterpret_cast<rad::Sampler*>(sampler);
+	radSampler->release();
+}
+
+void RADAPIENTRY radSamplerDefault(RADsampler sampler)
+{
+	rad::Sampler *radSampler = reinterpret_cast<rad::Sampler*>(sampler);
+	radSampler->default();
+}
+
+void RADAPIENTRY radSamplerMinMagFilter(RADsampler sampler, RADminFilter min, RADmagFilter mag)
+{
+	rad::Sampler *radSampler = reinterpret_cast<rad::Sampler*>(sampler);
+	radSampler->minFilter = min;
+	radSampler->magFilter = mag;
+}
+
+void RADAPIENTRY radSamplerWrapMode(RADsampler sampler, RADwrapMode s, RADwrapMode t, RADwrapMode r)
+{
+	rad::Sampler *radSampler = reinterpret_cast<rad::Sampler*>(sampler);
+	radSampler->wrapModeS = s;
+	radSampler->wrapModeT = t;
+	radSampler->wrapModeR = r;
+}
+
+void RADAPIENTRY radSamplerLodClamp(RADsampler sampler, RADfloat min, RADfloat max)
+{
+	rad::Sampler *radSampler = reinterpret_cast<rad::Sampler*>(sampler);
+	radSampler->minLod = min;
+	radSampler->maxLod = max;
+}
+
+void RADAPIENTRY radSamplerLodBias(RADsampler sampler, RADfloat bias)
+{
+	rad::Sampler *radSampler = reinterpret_cast<rad::Sampler*>(sampler);
+	radSampler->lodBias = bias;
+}
+
+void RADAPIENTRY radSamplerCompare(RADsampler sampler, RADcompareMode mode, RADcompareFunc func)
+{
+	rad::Sampler *radSampler = reinterpret_cast<rad::Sampler*>(sampler);
+	radSampler->compareMode = mode;
+	radSampler->compareFunc = func;
+}
+
+void RADAPIENTRY radSamplerBorderColorFloat(RADsampler sampler, const RADfloat *borderColor)
+{
+	rad::Sampler *radSampler = reinterpret_cast<rad::Sampler*>(sampler);
+	radSampler->borderColor[0] = borderColor[0];
+	radSampler->borderColor[1] = borderColor[1];
+	radSampler->borderColor[2] = borderColor[2];
+	radSampler->borderColor[3] = borderColor[3];
+}
+
+void RADAPIENTRY radSamplerBorderColorInt(RADsampler sampler, const RADuint *borderColor)
+{
+	rad::Sampler *radSampler = reinterpret_cast<rad::Sampler*>(sampler);
+	radSampler->borderColorInt[0] = borderColor[0];
+	radSampler->borderColorInt[1] = borderColor[1];
+	radSampler->borderColorInt[2] = borderColor[2];
+	radSampler->borderColorInt[3] = borderColor[3];
+}
+
+RADcolorState RADAPIENTRY radCreateColorState(RADdevice device)
+{
+	rad::ColorState *colorState = new rad::ColorState;
+	return reinterpret_cast<RADcolorState>(colorState);
+}
+
+void RADAPIENTRY radReferenceColorState(RADcolorState color)
+{
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	colorState->reference();
+}
+
+void RADAPIENTRY radReleaseColorState(RADcolorState color)
+{
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	colorState->release();
+}
+
+void RADAPIENTRY radColorDefault(RADcolorState color)
+{
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	colorState->default();
+}
+
+void RADAPIENTRY radColorBlendEnable(RADcolorState color, RADuint index, RADboolean enable)
+{
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	colorState->blend[index].enable = enable;
+}
+
+void RADAPIENTRY radColorBlendFunc(RADcolorState color, RADuint index, RADblendFunc srcFunc, RADblendFunc dstFunc, RADblendFunc srcFuncAlpha, RADblendFunc dstFuncAlpha)
+{
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	colorState->blend[index].srcFunc = srcFunc;
+	colorState->blend[index].dstFunc = dstFunc;
+	colorState->blend[index].srcFuncAlpha = srcFuncAlpha;
+	colorState->blend[index].dstFuncAlpha = dstFuncAlpha;
+}
+
+void RADAPIENTRY radColorBlendEquation(RADcolorState color, RADuint index, RADblendEquation modeRGB, RADblendEquation modeAlpha)
+{
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	colorState->blend[index].modeRGB = modeRGB;
+	colorState->blend[index].modeAlpha = modeAlpha;
+}
+
+void RADAPIENTRY radColorMask(RADcolorState color, RADuint index, RADboolean r, RADboolean g, RADboolean b, RADboolean a)
+{
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	colorState->blend[index].maskRGBA[0] = r;
+	colorState->blend[index].maskRGBA[1] = g;
+	colorState->blend[index].maskRGBA[2] = b;
+	colorState->blend[index].maskRGBA[3] = a;
+}
+
+void RADAPIENTRY radColorNumTargets(RADcolorState color, RADuint numTargets)
+{
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	colorState->numTargets = numTargets;
+}
+
+void RADAPIENTRY radColorLogicOpEnable(RADcolorState color, RADboolean enable)
+{
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	colorState->logicOpEnable = enable;
+}
+
+void RADAPIENTRY radColorLogicOp(RADcolorState color, RADlogicOp logicOp)
+{
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	colorState->logicOp = logicOp;
+}
+
+void RADAPIENTRY radColorAlphaToCoverageEnable(RADcolorState color, RADboolean enable)
+{
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	colorState->alphaToCoverageEnable = enable;
+}
+
+void RADAPIENTRY radColorBlendColor(RADcolorState color, const RADfloat *blendColor)
+{
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	colorState->blendColor[0] = blendColor[0];
+	colorState->blendColor[1] = blendColor[1];
+	colorState->blendColor[2] = blendColor[2];
+	colorState->blendColor[3] = blendColor[3];
+}
+
+void RADAPIENTRY radColorDynamic(RADcolorState color, RADcolorDynamic dynamic, RADboolean enable) {UNIMPLEMENTED();}
+
+RADrasterState RADAPIENTRY radCreateRasterState(RADdevice device)
+{
+	rad::RasterState *rasterState = new rad::RasterState;
+	return reinterpret_cast<RADrasterState>(rasterState);
+}
+
+void RADAPIENTRY radReferenceRasterState(RADrasterState raster)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->reference();
+}
+
+void RADAPIENTRY radReleaseRasterState(RADrasterState raster)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->release();
+}
+
+void RADAPIENTRY radRasterDefault(RADrasterState raster)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->default();
+}
+
+void RADAPIENTRY radRasterPointSize(RADrasterState raster, RADfloat pointSize)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->pointSize = pointSize;
+}
+
+void RADAPIENTRY radRasterLineWidth(RADrasterState raster, RADfloat lineWidth)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->lineWidth = lineWidth;
+}
+
+void RADAPIENTRY radRasterCullFace(RADrasterState raster, RADfaceBitfield face)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->cullFace = face;
+}
+
+void RADAPIENTRY radRasterFrontFace(RADrasterState raster, RADfrontFace face)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->frontFace = face;
+}
+
+void RADAPIENTRY radRasterPolygonMode(RADrasterState raster, RADpolygonMode polygonMode)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->polygonMode = polygonMode;
+}
+
+void RADAPIENTRY radRasterPolygonOffsetClamp(RADrasterState raster, RADfloat factor, RADfloat units, RADfloat clamp)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->offsetFactor = factor;
+	rasterState->offsetUnits = units;
+	rasterState->offsetClamp = clamp;
+}
+
+void RADAPIENTRY radRasterPolygonOffsetEnables(RADrasterState raster, RADpolygonOffsetEnables enables)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->polygonOffsetEnables = enables;
+}
+
+void RADAPIENTRY radRasterDiscardEnable(RADrasterState raster, RADboolean enable)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->discardEnable = enable;
+}
+
+void RADAPIENTRY radRasterMultisampleEnable(RADrasterState raster, RADboolean enable)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->multisampleEnable = enable;
+}
+
+void RADAPIENTRY radRasterSamples(RADrasterState raster, RADuint samples)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->samples = samples;
+}
+
+void RADAPIENTRY radRasterSampleMask(RADrasterState raster, RADuint mask)
+{
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	rasterState->sampleMask = mask;
+}
+
+void RADAPIENTRY radRasterDynamic(RADrasterState raster, RADrasterDynamic dynamic, RADboolean enable)
+{
+	UNIMPLEMENTED();
+}
+
+RADdepthStencilState RADAPIENTRY radCreateDepthStencilState(RADdevice device)
+{
+	rad::DepthStencilState *depthStencilState = new rad::DepthStencilState;
+	return reinterpret_cast<RADdepthStencilState>(depthStencilState);
+}
+
+void RADAPIENTRY radReferenceDepthStencilState(RADdepthStencilState depthStencil)
+{
+	rad::DepthStencilState *depthStencilState = reinterpret_cast<rad::DepthStencilState*>(depthStencil);
+	depthStencilState->reference();
+}
+
+void RADAPIENTRY radReleaseDepthStencilState(RADdepthStencilState depthStencil)
+{
+	rad::DepthStencilState *depthStencilState = reinterpret_cast<rad::DepthStencilState*>(depthStencil);
+	depthStencilState->release();
+}
+
+void RADAPIENTRY radDepthStencilDefault(RADdepthStencilState depthStencil)
+{
+	rad::DepthStencilState *depthStencilState = reinterpret_cast<rad::DepthStencilState*>(depthStencil);
+	depthStencilState->default();
+}
+
+void RADAPIENTRY radDepthStencilDepthTestEnable(RADdepthStencilState depthStencil, RADboolean enable)
+{
+	rad::DepthStencilState *depthStencilState = reinterpret_cast<rad::DepthStencilState*>(depthStencil);
+	depthStencilState->depthTestEnable = enable;
+}
+
+void RADAPIENTRY radDepthStencilDepthWriteEnable(RADdepthStencilState depthStencil, RADboolean enable)
+{
+	rad::DepthStencilState *depthStencilState = reinterpret_cast<rad::DepthStencilState*>(depthStencil);
+	depthStencilState->depthWriteEnable = enable;
+}
+
+void RADAPIENTRY radDepthStencilDepthFunc(RADdepthStencilState depthStencil, RADdepthFunc func)
+{
+	rad::DepthStencilState *depthStencilState = reinterpret_cast<rad::DepthStencilState*>(depthStencil);
+	depthStencilState->depthFunc = func;
+}
+
+void RADAPIENTRY radDepthStencilStencilTestEnable(RADdepthStencilState depthStencil, RADboolean enable)
+{
+	rad::DepthStencilState *depthStencilState = reinterpret_cast<rad::DepthStencilState*>(depthStencil);
+	depthStencilState->stencilTestEnable = enable;
+}
+
+void RADAPIENTRY radDepthStencilStencilFunc(RADdepthStencilState depthStencil, RADfaceBitfield faces, RADstencilFunc func, RADint ref, RADuint mask)
+{
+	rad::DepthStencilState *depthStencilState = reinterpret_cast<rad::DepthStencilState*>(depthStencil);
+
+	if(faces & RAD_FACE_FRONT)
+	{
+		depthStencilState->stencilFuncFront = func;
+		depthStencilState->stencilRefFront = ref;
+		depthStencilState->stencilMaskFront = mask;
+	}
+
+	if(faces & RAD_FACE_BACK)
+	{
+		depthStencilState->stencilFuncBack = func;
+		depthStencilState->stencilRefBack = ref;
+		depthStencilState->stencilMaskBack = mask;
+	}
+}
+
+void RADAPIENTRY radDepthStencilStencilOp(RADdepthStencilState depthStencil, RADfaceBitfield faces, RADstencilOp fail, RADstencilOp depthFail, RADstencilOp depthPass)
+{
+	rad::DepthStencilState *depthStencilState = reinterpret_cast<rad::DepthStencilState*>(depthStencil);
+	
+	if(faces & RAD_FACE_FRONT)
+	{
+		depthStencilState->stencilFailOpFront = fail;
+		depthStencilState->depthFailOpFront = depthFail;
+		depthStencilState->depthPassOpFront = depthPass;
+	}
+
+	if(faces & RAD_FACE_BACK)
+	{
+		depthStencilState->stencilFailOpBack = fail;
+		depthStencilState->depthFailOpBack = depthFail;
+		depthStencilState->depthPassOpBack = depthPass;
+	}
+}
+
+void RADAPIENTRY radDepthStencilStencilMask(RADdepthStencilState depthStencil, RADfaceBitfield faces, RADuint mask)
+{
+	rad::DepthStencilState *depthStencilState = reinterpret_cast<rad::DepthStencilState*>(depthStencil);
+	
+	if(faces & RAD_FACE_FRONT)
+	{
+		depthStencilState->stencilMaskFront = mask;
+		
+	}
+
+	if(faces & RAD_FACE_BACK)
+	{
+		depthStencilState->stencilMaskBack = mask;
+	}
+}
+
+void RADAPIENTRY radDepthStencilDynamic(RADdepthStencilState depthStencil, RADdepthStencilDynamic dynamic, RADboolean enable)
+{
+	UNIMPLEMENTED();
+}
+
+RADvertexState RADAPIENTRY radCreateVertexState(RADdevice device)
+{
+	rad::VertexState *vertexState = new rad::VertexState;
+	return reinterpret_cast<RADvertexState>(vertexState);
+}
+
+void RADAPIENTRY radReferenceVertexState(RADvertexState vertex)
+{
+	rad::VertexState *vertexState = reinterpret_cast<rad::VertexState*>(vertex);
+	vertexState->reference();
+}
+
+void RADAPIENTRY radReleaseVertexState(RADvertexState vertex)
+{
+	rad::VertexState *vertexState = reinterpret_cast<rad::VertexState*>(vertex);
+	vertexState->release();
+}
+
+void RADAPIENTRY radVertexDefault(RADvertexState vertex) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radVertexAttribFormat(RADvertexState vertex, RADint attribIndex, RADint numComponents, RADint bytesPerComponent, RADattribType type, RADuint relativeOffset)
+{
+	ASSERT(attribIndex >= 0 && attribIndex < GL_MAX_VERTEX_ATTRIBS);
+	rad::VertexState *vertexState = reinterpret_cast<rad::VertexState*>(vertex);
+	vertexState->attrib[attribIndex].numComponents = numComponents;
+	vertexState->attrib[attribIndex].bytesPerComponent = bytesPerComponent;
+	vertexState->attrib[attribIndex].type = type;
+	vertexState->attrib[attribIndex].relativeOffset = relativeOffset;
+}
+
+void RADAPIENTRY radVertexAttribBinding(RADvertexState vertex, RADint attribIndex, RADint bindingIndex)
+{
+	ASSERT(attribIndex >= 0 && attribIndex < GL_MAX_VERTEX_ATTRIBS);
+	rad::VertexState *vertexState = reinterpret_cast<rad::VertexState*>(vertex);
+	vertexState->attrib[attribIndex].bindingIndex = bindingIndex;
+}
+
+void RADAPIENTRY radVertexBindingGroup(RADvertexState vertex, RADint bindingIndex, RADint group, RADint index)
+{
+	ASSERT(bindingIndex >= 0 && bindingIndex < GL_MAX_VERTEX_ATTRIBS);
+	rad::VertexState *vertexState = reinterpret_cast<rad::VertexState*>(vertex);
+	vertexState->binding[bindingIndex].group = group;
+	vertexState->binding[bindingIndex].index = index;
+}
+
+void RADAPIENTRY radVertexAttribEnable(RADvertexState vertex, RADint attribIndex, RADboolean enable)
+{
+	ASSERT(attribIndex >= 0 && attribIndex < GL_MAX_VERTEX_ATTRIBS);
+	rad::VertexState *vertexState = reinterpret_cast<rad::VertexState*>(vertex);
+	vertexState->attrib[attribIndex].bindingIndex = enable;
+}
+
+void RADAPIENTRY radVertexBindingStride(RADvertexState vertex, RADint bindingIndex, RADuint stride)
+{
+	ASSERT(bindingIndex >= 0 && bindingIndex < GL_MAX_VERTEX_ATTRIBS);
+	rad::VertexState *vertexState = reinterpret_cast<rad::VertexState*>(vertex);
+	vertexState->binding[bindingIndex].stride = stride;
+}
+
+RADrtFormatState RADAPIENTRY radCreateRtFormatState(RADdevice device)
+{
+	rad::FormatState *formatState = new rad::FormatState;
+	return reinterpret_cast<RADrtFormatState>(formatState);
+}
+
+void RADAPIENTRY radReferenceRtFormatState(RADrtFormatState rtFormat)
+{
+	rad::FormatState *formatState = reinterpret_cast<rad::FormatState*>(rtFormat);
+	formatState->reference();
+}
+
+void RADAPIENTRY radReleaseRtFormatState(RADrtFormatState rtFormat)
+{
+	rad::FormatState *formatState = reinterpret_cast<rad::FormatState*>(rtFormat);
+	formatState->release();
+}
+
+void RADAPIENTRY radRtFormatDefault(RADrtFormatState rtFormat)
+{
+	rad::FormatState *formatState = reinterpret_cast<rad::FormatState*>(rtFormat);
+	formatState->default();
+}
+
+void RADAPIENTRY radRtFormatColorFormat(RADrtFormatState rtFormat, RADuint index, RADinternalFormat format)
+{
+	rad::FormatState *formatState = reinterpret_cast<rad::FormatState*>(rtFormat);
+	formatState->colorFormat[index] = format;
+}
+
+void RADAPIENTRY radRtFormatDepthFormat(RADrtFormatState rtFormat, RADinternalFormat format)
+{
+	rad::FormatState *formatState = reinterpret_cast<rad::FormatState*>(rtFormat);
+	formatState->depthFormat = format;
+}
+
+void RADAPIENTRY radRtFormatStencilFormat(RADrtFormatState rtFormat, RADinternalFormat format)
+{
+	rad::FormatState *formatState = reinterpret_cast<rad::FormatState*>(rtFormat);
+	formatState->stencilFormat = format;
+}
+
+void RADAPIENTRY radRtFormatColorSamples(RADrtFormatState rtFormat, RADuint samples)
+{
+	rad::FormatState *formatState = reinterpret_cast<rad::FormatState*>(rtFormat);
+	formatState->colorSamples = samples;
+}
+
+void RADAPIENTRY radRtFormatDepthStencilSamples(RADrtFormatState rtFormat, RADuint samples)
+{
+	rad::FormatState *formatState = reinterpret_cast<rad::FormatState*>(rtFormat);
+	formatState->depthStencilSamples = samples;
+}
+
+RADpipeline RADAPIENTRY radCreatePipeline(RADdevice device, RADpipelineType pipelineType)
+{
+	rad::Pipeline *pipeline = new rad::Pipeline();
+	return reinterpret_cast<RADpipeline>(pipeline);
+}
+
+void RADAPIENTRY radReferencePipeline(RADpipeline pipeline)
+{
+	rad::Pipeline *radPipeline = reinterpret_cast<rad::Pipeline*>(pipeline);
+	radPipeline->reference();
+}
+
+void RADAPIENTRY radReleasePipeline(RADpipeline pipeline)
+{
+	rad::Pipeline *radPipeline = reinterpret_cast<rad::Pipeline*>(pipeline);
+	radPipeline->release();
+}
+
+void RADAPIENTRY radPipelineProgramStages(RADpipeline pipeline, RADbitfield stages, RADprogram program)
+{
+	rad::Pipeline *radPipeline = reinterpret_cast<rad::Pipeline*>(pipeline);
+	rad::Program *radProgram = reinterpret_cast<rad::Program*>(program);
+
+	if(stages & RAD_VERTEX_SHADER_BIT)
+	{
+		ASSERT(!radPipeline->vertexProgram);
+		radProgram->reference();   // FIXME: here or at compile?
+		radPipeline->vertexProgram = radProgram;
+	}
+
+	if(stages & RAD_FRAGMENT_SHADER_BIT)
+	{
+		ASSERT(!radPipeline->fragmentProgram);
+		radProgram->reference();   // FIXME: here or at compile?
+		radPipeline->fragmentProgram = radProgram;
+	}
+}
+
+void RADAPIENTRY radPipelineVertexState(RADpipeline pipeline, RADvertexState vertex)
+{
+	rad::Pipeline *radPipeline = reinterpret_cast<rad::Pipeline*>(pipeline);
+	rad::VertexState *vertexState = reinterpret_cast<rad::VertexState*>(vertex);
+	ASSERT(!radPipeline->vertexState);
+	vertexState->reference();   // FIXME: here or at compile?
+	radPipeline->vertexState = vertexState;
+}
+
+void RADAPIENTRY radPipelineColorState(RADpipeline pipeline, RADcolorState color)
+{
+	rad::Pipeline *radPipeline = reinterpret_cast<rad::Pipeline*>(pipeline);
+	rad::ColorState *colorState = reinterpret_cast<rad::ColorState*>(color);
+	ASSERT(!radPipeline->colorState);
+	colorState->reference();   // FIXME: here or at compile?
+	radPipeline->colorState = colorState;
+}
+
+void RADAPIENTRY radPipelineRasterState(RADpipeline pipeline, RADrasterState raster)
+{
+	rad::Pipeline *radPipeline = reinterpret_cast<rad::Pipeline*>(pipeline);
+	rad::RasterState *rasterState = reinterpret_cast<rad::RasterState*>(raster);
+	ASSERT(!radPipeline->rasterState);
+	rasterState->reference();   // FIXME: here or at compile?
+	radPipeline->rasterState = rasterState;
+}
+
+void RADAPIENTRY radPipelineDepthStencilState(RADpipeline pipeline, RADdepthStencilState depthStencil)
+{
+	rad::Pipeline *radPipeline = reinterpret_cast<rad::Pipeline*>(pipeline);
+	rad::DepthStencilState *depthStencilState = reinterpret_cast<rad::DepthStencilState*>(depthStencil);
+	ASSERT(!radPipeline->depthStencilState);
+	depthStencilState->reference();   // FIXME: here or at compile?
+	radPipeline->depthStencilState = depthStencilState;
+}
+
+void RADAPIENTRY radPipelineRtFormatState(RADpipeline pipeline, RADrtFormatState rtFormat)
+{
+	rad::Pipeline *radPipeline = reinterpret_cast<rad::Pipeline*>(pipeline);
+	rad::FormatState *formatState = reinterpret_cast<rad::FormatState*>(rtFormat);
+	ASSERT(!radPipeline->formatState);
+	formatState->reference();   // FIXME: here or at compile?
+	radPipeline->formatState = formatState;
+}
+
+void RADAPIENTRY radPipelinePrimitiveType(RADpipeline pipeline, RADprimitiveType mode)
+{
+	rad::Pipeline *radPipeline = reinterpret_cast<rad::Pipeline*>(pipeline);
+	radPipeline->primitiveType = mode;
+}
+
+void RADAPIENTRY radCompilePipeline(RADpipeline pipeline)
+{
+	// FIXME: Reference state objects here or when set?
+	return;
+}
+
+RADpipelineHandle RADAPIENTRY radGetPipelineHandle(RADpipeline pipeline)
+{
+	return reinterpret_cast<RADpipelineHandle>(pipeline);
+}
+
+RADcommandBuffer RADAPIENTRY radCreateCommandBuffer(RADdevice device, RADqueueType queueType)
+{
+	return 0;
+}
+
+void RADAPIENTRY radReferenceCommandBuffer(RADcommandBuffer cmdBuf) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radReleaseCommandBuffer(RADcommandBuffer cmdBuf)
+{
+	return;
+}
+
+void RADAPIENTRY radCmdBindPipeline(RADcommandBuffer cmdBuf, RADpipelineType pipelineType, RADpipelineHandle pipelineHandle)
+{
+	return;
+}
+
+void RADAPIENTRY radCmdBindGroup(RADcommandBuffer cmdBuf, RADbitfield stages, RADuint group, RADuint count, RADbindGroupHandle groupHandle, RADuint offset)
+{
+	
+}
+
+void RADAPIENTRY radCmdDrawArrays(RADcommandBuffer cmdBuf, RADprimitiveType mode, RADint first, RADsizei count) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radCmdDrawElements(RADcommandBuffer cmdBuf, RADprimitiveType mode, RADindexType type, RADsizei count, RADindexHandle indexHandle, RADuint offset)
+{
+	return;
+}
+
+RADboolean RADAPIENTRY radCompileCommandBuffer(RADcommandBuffer cmdBuf)
+{
+	return false;
+}
+
+RADcommandHandle RADAPIENTRY radGetCommandHandle(RADcommandBuffer cmdBuf)
+{
+	return 0;
+}
+
+void RADAPIENTRY radCmdStencilValueMask(RADcommandBuffer cmdBuf, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdStencilMask(RADcommandBuffer cmdBuf, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdStencilRef(RADcommandBuffer cmdBuf, RADfaceBitfield faces, RADint ref) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdBlendColor(RADcommandBuffer cmdBuf, const RADfloat *blendColor) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdPointSize(RADcommandBuffer cmdBuf, RADfloat pointSize) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdLineWidth(RADcommandBuffer cmdBuf, RADfloat lineWidth) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdPolygonOffsetClamp(RADcommandBuffer cmdBuf, RADfloat factor, RADfloat units, RADfloat clamp) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdSampleMask(RADcommandBuffer cmdBuf, RADuint mask) {UNIMPLEMENTED();}
+
+RADpass RADAPIENTRY radCreatePass(RADdevice device)
+{
+	rad::Pass *pass = new rad::Pass();
+	return reinterpret_cast<RADpass>(pass);
+}
+
+void RADAPIENTRY radReferencePass(RADpass pass)
+{
+	rad::Pass *radPass = reinterpret_cast<rad::Pass*>(pass);
+	radPass->reference();
+}
+
+void RADAPIENTRY radReleasePass(RADpass pass)
+{
+	rad::Pass *radPass = reinterpret_cast<rad::Pass*>(pass);
+	radPass->release();
+}
+
+void RADAPIENTRY radPassDefault(RADpass pass)
+{
+	rad::Pass *radPass = reinterpret_cast<rad::Pass*>(pass);
+	radPass->default();
+}
+
+void RADAPIENTRY radCompilePass(RADpass pass)
+{
+	return;
+}
+
+void RADAPIENTRY radPassRenderTargets(RADpass pass, RADuint numColors, const RADrenderTargetHandle *colors, RADrenderTargetHandle depth, RADrenderTargetHandle stencil)
+{
+	rad::Pass *radPass = reinterpret_cast<rad::Pass*>(pass);
+	radPass->numColors = numColors;
+	for(unsigned int i = 0; i < numColors; i++)
+	{
+		ASSERT(colors[i]);
+		es2::Image *colorTarget = reinterpret_cast<es2::Image*>(colors[i]);
+		colorTarget->addRef();   // FIXME: here or at compile?
+		radPass->colorTarget[i] = colorTarget;
+	}
+
+	if(depth)
+	{
+		es2::Image *depthTarget = reinterpret_cast<es2::Image*>(depth);
+		depthTarget->addRef();   // FIXME: here or at compile?
+		radPass->depthTarget = depthTarget;
+	}
+
+	if(stencil)
+	{
+		es2::Image *stencilTarget = reinterpret_cast<es2::Image*>(stencil);
+		stencilTarget->addRef();   // FIXME: here or at compile?
+		radPass->stencilTarget = stencilTarget;
+	}
+}
+
+void RADAPIENTRY radPassPreserveEnable(RADpass pass, RADrtAttachment attachment, RADboolean enable) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassDiscard(RADpass pass, RADuint numTextures, const RADtexture *textures, const RADoffset2D *offsets) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radPassResolve(RADpass pass, RADrtAttachment attachment, RADtexture texture)
+{
+	return;
+}
+
+void RADAPIENTRY radPassStore(RADpass pass, RADuint numTextures, const RADtexture *textures, const RADoffset2D *offsets) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassClip(RADpass pass, const RADrect2D *rect) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassDependencies(RADpass pass, RADuint numPasses, const RADpass *otherPasses, const RADbitfield *srcMask, const RADbitfield *dstMask, const RADbitfield *flushMask, const RADbitfield *invalidateMask) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassTilingBoundary(RADpass pass, RADboolean boundary) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassTileFilterWidth(RADpass pass, RADuint filterWidth, RADuint filterHeight) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassTileFootprint(RADpass pass, RADuint bytesPerPixel, RADuint maxFilterWidth, RADuint maxFilterHeight) {UNIMPLEMENTED();}
+
+RADsync RADAPIENTRY radCreateSync(RADdevice device)
+{
+	return 0;
+}
+
+void RADAPIENTRY radReferenceSync(RADsync sync) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radReleaseSync(RADsync sync)
+{
+	return;
+}
+
+void RADAPIENTRY radQueueFenceSync(RADqueue queue, RADsync sync, RADsyncCondition condition, RADbitfield flags)
+{
+	return;
+}
+
+RADwaitSyncResult RADAPIENTRY radWaitSync(RADsync sync, RADuint64 timeout) {UNIMPLEMENTED(); return RAD_WAIT_SYNC_FAILED;}
+
+RADboolean RADAPIENTRY radQueueWaitSync(RADqueue queue, RADsync sync)
+{
+	return 0;
+}
 
 RADPROC RADAPIENTRY radGetProcAddress(const RADchar *procname)
 {
