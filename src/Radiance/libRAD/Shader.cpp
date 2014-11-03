@@ -22,7 +22,7 @@
 
 #include <string>
 
-namespace rad
+namespace es2
 {
 Shader::Shader(ResourceManager *manager, GLuint handle) : mHandle(handle), mResourceManager(manager)
 {
