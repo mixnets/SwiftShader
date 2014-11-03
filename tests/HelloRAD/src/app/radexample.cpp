@@ -16,30 +16,40 @@
 
 RADdevice device;
 RADqueue queue;
-bool useCopyQueue = true;
+bool useCopyQueue = false /*true*/;
 RADqueue copyQueue;
+ 
+#define SHADER_SOURCE(source) #source
 
 static const char *vsstring = 
-    "#version 440 core\n"
-    "#define BINDGROUP(GROUP,INDEX) layout(binding = ((INDEX) | ((GROUP) << 4)))\n"
-    "layout(location = 1) in vec4 tc;\n"
-    "layout(location = 0) in vec4 position;\n"
-    "BINDGROUP(0, 2) uniform Block {\n"
-    "    vec4 scale;\n"
-    "};\n"
-    "out vec4 ftc;\n"
-    "void main() {\n"
-    "  gl_Position = position*scale;\n"
-    // This line exists to trick the compiler into putting a value in the compiler
-    // constant bank, so we can exercise binding that bank
-    "  if (scale.z != 1.0 + 1.0/65536.0) {\n"
-    "      gl_Position = vec4(0,0,0,0);\n"
-    "  }\n"
-    "  ftc = tc;\n"
-    "}\n";
+    //"#version 440 core\n"
+    //"#define BINDGROUP(GROUP,INDEX) layout(binding = ((INDEX) | ((GROUP) << 4)))\n"
+    //"layout(location = 1) in vec4 tc;\n"
+    //"layout(location = 0) in vec4 position;\n"
+    //"BINDGROUP(0, 2) uniform Block {\n"
+    //"    vec4 scale;\n"
+    //"};\n"
+    //"out vec4 ftc;\n"
+    //"void main() {\n"
+    //"  gl_Position = position*scale;\n"
+    //// This line exists to trick the compiler into putting a value in the compiler
+    //// constant bank, so we can exercise binding that bank
+    //"  if (scale.z != 1.0 + 1.0/65536.0) {\n"
+    //"      gl_Position = vec4(0,0,0,0);\n"
+    //"  }\n"
+    //"  ftc = tc;\n"
+    //"}\n";
+SHADER_SOURCE(attribute highp vec4	myVertex;
+varying highp vec4 v;
+uniform highp vec4 scale;
+		void main(void)
+		{
+			gl_Position = myVertex * scale;
+			v = myVertex;
+		});
 
 static const char *fsstring = 
-    "#version 440 core\n"
+   /* "#version 440 core\n"
     "#define BINDGROUP(GROUP,INDEX) layout(binding = ((INDEX) | ((GROUP) << 4)))\n"
     "BINDGROUP(0, 3) uniform sampler2D tex;\n"
     "BINDGROUP(0, 2) uniform Block {\n"
@@ -52,7 +62,13 @@ static const char *fsstring =
     "  if (scale.z != 1.0 + 1.0/65536.0) {\n"
     "      color = vec4(0,0,0,0);\n"
     "  }\n"
-    "}\n";
+    "}\n";*/
+		SHADER_SOURCE(
+		varying highp vec4 v;
+			void main (void)
+			{
+				gl_FragColor = v;\n
+			});
 
 
 // Two triangles that intersect
@@ -74,7 +90,7 @@ static RADubyte texcoordData[] = {0, 0, 0xFF, 0xFF,
                                   0, 0xFF, 0, 0xFF};
 
 int windowWidth = 500, windowHeight = 500;
-int offscreenWidth = 100, offscreenHeight = 100;
+int offscreenWidth = 500, offscreenHeight = 500;
 
 typedef enum {
     QUEUE,
@@ -82,7 +98,7 @@ typedef enum {
     COMMAND,
 } DrawMode;
 
-DrawMode drawMode = COMMAND;
+DrawMode drawMode = QUEUE /* COMMAND */;
 bool benchmark = false;
 
 void InitRAD()
@@ -99,7 +115,16 @@ void InitRAD()
     }
 }
 
-#define USE_MULTISAMPLE 1
+void CleanRAD()
+{
+    if (useCopyQueue) {
+		radReleaseQueue(copyQueue);
+    }
+	radReleaseQueue(queue);
+	radReleaseDevice(device);
+}
+
+#define USE_MULTISAMPLE 0
 
 RADbuffer AllocAndFillBuffer(RADdevice device, void *data, int sizeofdata, RADbitfield access, bool useCopy)
 {
@@ -211,7 +236,7 @@ void TestRAD()
 
     // Create an index buffer and fill it with data
     unsigned short indexData[6] = {0, 1, 2, 3, 4, 5};
-    RADbuffer ibo = AllocAndFillBuffer(device, indexData, sizeof(indexData), RAD_INDEX_ACCESS_BIT, true);
+    RADbuffer ibo = AllocAndFillBuffer(device, indexData, sizeof(indexData), RAD_INDEX_ACCESS_BIT, false /*true*/);
 
     // Get a handle to be used for setting the buffer as an index buffer
     RADvertexHandle iboHandle = radGetVertexHandle(ibo);
