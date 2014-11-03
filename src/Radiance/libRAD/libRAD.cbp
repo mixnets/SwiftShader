@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="libGLESv2" />
+		<Option title="libRAD" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug x86">
-				<Option output="./../../bin/x86/Debug/libGLESv2.so.2" prefix_auto="0" extension_auto="0" />
+				<Option output="./../../bin/x86/Debug/libRAD.so.2" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x86/Debug/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -23,7 +23,7 @@
 				</Linker>
 			</Target>
 			<Target title="Release x86">
-				<Option output="./../../bin/x86/Release/libGLESv2.so.2" prefix_auto="0" extension_auto="0" />
+				<Option output="./../../bin/x86/Release/libRAD.so.2" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x86/Release/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -47,7 +47,7 @@
 				</Linker>
 			</Target>
 			<Target title="Debug x64">
-				<Option output="./../../bin/x64/Debug/libGLESv2.so.2" prefix_auto="0" extension_auto="0" />
+				<Option output="./../../bin/x64/Debug/libRAD.so.2" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x64/Debug/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -64,7 +64,7 @@
 				</Linker>
 			</Target>
 			<Target title="Release x64">
-				<Option output="./../../bin/x64/Release/libGLESv2.so.2" prefix_auto="0" extension_auto="0" />
+				<Option output="./../../bin/x64/Release/libRAD.so.2" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/x64/Release/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -230,47 +230,47 @@
 		<Unit filename="./../include/GLES2/gl2platform.h" />
 		<Unit filename="./../include/GLSLANG/ShaderLang.h" />
 		<Unit filename="./../include/KHR/khrplatform.h" />
-		<Unit filename="./../libGLESv2/Buffer.cpp" />
-		<Unit filename="./../libGLESv2/Buffer.h" />
-		<Unit filename="./../libGLESv2/Context.cpp" />
-		<Unit filename="./../libGLESv2/Context.h" />
-		<Unit filename="./../libGLESv2/Device.cpp" />
-		<Unit filename="./../libGLESv2/Device.hpp" />
-		<Unit filename="./../libGLESv2/Fence.cpp" />
-		<Unit filename="./../libGLESv2/Fence.h" />
-		<Unit filename="./../libGLESv2/Framebuffer.cpp" />
-		<Unit filename="./../libGLESv2/Framebuffer.h" />
-		<Unit filename="./../libGLESv2/HandleAllocator.cpp" />
-		<Unit filename="./../libGLESv2/HandleAllocator.h" />
-		<Unit filename="./../libGLESv2/Image.cpp" />
-		<Unit filename="./../libGLESv2/Image.hpp" />
-		<Unit filename="./../libGLESv2/IndexDataManager.cpp" />
-		<Unit filename="./../libGLESv2/IndexDataManager.h" />
-		<Unit filename="./../libGLESv2/Program.cpp" />
-		<Unit filename="./../libGLESv2/Program.h" />
-		<Unit filename="./../libGLESv2/Query.cpp" />
-		<Unit filename="./../libGLESv2/Query.h" />
-		<Unit filename="./../libGLESv2/RefCountObject.cpp" />
-		<Unit filename="./../libGLESv2/RefCountObject.h" />
-		<Unit filename="./../libGLESv2/Renderbuffer.cpp" />
-		<Unit filename="./../libGLESv2/Renderbuffer.h" />
-		<Unit filename="./../libGLESv2/ResourceManager.cpp" />
-		<Unit filename="./../libGLESv2/ResourceManager.h" />
-		<Unit filename="./../libGLESv2/Shader.cpp" />
-		<Unit filename="./../libGLESv2/Shader.h" />
-		<Unit filename="./../libGLESv2/Texture.cpp" />
-		<Unit filename="./../libGLESv2/Texture.h" />
-		<Unit filename="./../libGLESv2/Unknown.hpp" />
-		<Unit filename="./../libGLESv2/VertexDataManager.cpp" />
-		<Unit filename="./../libGLESv2/VertexDataManager.h" />
-		<Unit filename="./../libGLESv2/libGLESv2.cpp" />
-		<Unit filename="./../libGLESv2/main.cpp" />
-		<Unit filename="./../libGLESv2/main.h" />
-		<Unit filename="./../libGLESv2/mathutil.h" />
-		<Unit filename="./../libGLESv2/resource.h" />
-		<Unit filename="./../libGLESv2/utilities.cpp" />
-		<Unit filename="./../libGLESv2/utilities.h" />
-		<Unit filename="./../libGLESv2/vertexconversion.h" />
+		<Unit filename="./../libRAD/Buffer.cpp" />
+		<Unit filename="./../libRAD/Buffer.h" />
+		<Unit filename="./../libRAD/Context.cpp" />
+		<Unit filename="./../libRAD/Context.h" />
+		<Unit filename="./../libRAD/Device.cpp" />
+		<Unit filename="./../libRAD/Device.hpp" />
+		<Unit filename="./../libRAD/Fence.cpp" />
+		<Unit filename="./../libRAD/Fence.h" />
+		<Unit filename="./../libRAD/Framebuffer.cpp" />
+		<Unit filename="./../libRAD/Framebuffer.h" />
+		<Unit filename="./../libRAD/HandleAllocator.cpp" />
+		<Unit filename="./../libRAD/HandleAllocator.h" />
+		<Unit filename="./../libRAD/Image.cpp" />
+		<Unit filename="./../libRAD/Image.hpp" />
+		<Unit filename="./../libRAD/IndexDataManager.cpp" />
+		<Unit filename="./../libRAD/IndexDataManager.h" />
+		<Unit filename="./../libRAD/Program.cpp" />
+		<Unit filename="./../libRAD/Program.h" />
+		<Unit filename="./../libRAD/Query.cpp" />
+		<Unit filename="./../libRAD/Query.h" />
+		<Unit filename="./../libRAD/RefCountObject.cpp" />
+		<Unit filename="./../libRAD/RefCountObject.h" />
+		<Unit filename="./../libRAD/Renderbuffer.cpp" />
+		<Unit filename="./../libRAD/Renderbuffer.h" />
+		<Unit filename="./../libRAD/ResourceManager.cpp" />
+		<Unit filename="./../libRAD/ResourceManager.h" />
+		<Unit filename="./../libRAD/Shader.cpp" />
+		<Unit filename="./../libRAD/Shader.h" />
+		<Unit filename="./../libRAD/Texture.cpp" />
+		<Unit filename="./../libRAD/Texture.h" />
+		<Unit filename="./../libRAD/Unknown.hpp" />
+		<Unit filename="./../libRAD/VertexDataManager.cpp" />
+		<Unit filename="./../libRAD/VertexDataManager.h" />
+		<Unit filename="./../libRAD/libRAD.cpp" />
+		<Unit filename="./../libRAD/main.cpp" />
+		<Unit filename="./../libRAD/main.h" />
+		<Unit filename="./../libRAD/mathutil.h" />
+		<Unit filename="./../libRAD/resource.h" />
+		<Unit filename="./../libRAD/utilities.cpp" />
+		<Unit filename="./../libRAD/utilities.h" />
+		<Unit filename="./../libRAD/vertexconversion.h" />
 		<Unit filename="./../../Main/Config.cpp" />
 		<Unit filename="./../../Main/Config.hpp" />
 		<Unit filename="./../../Main/FrameBuffer.cpp" />
