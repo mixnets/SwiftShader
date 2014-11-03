@@ -321,6 +321,7 @@ typedef enum {
 } RADpolygonMode;
 
 typedef enum {
+	RAD_POLYGON_OFFSET_NONE = 0x0000,
     RAD_POLYGON_OFFSET_POINT = 0x0001,
     RAD_POLYGON_OFFSET_LINE = 0x0002,
     RAD_POLYGON_OFFSET_FILL = 0x0004,
