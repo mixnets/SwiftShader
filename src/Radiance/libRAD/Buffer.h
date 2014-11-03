@@ -25,7 +25,7 @@
 #include <cstddef>
 #include <vector>
 
-namespace rad
+namespace es2
 {
 class Buffer : public RefCountObject
 {
