@@ -38,7 +38,7 @@ class Surface;
 class Config;
 }
 
-namespace rad
+namespace es2
 {
 struct TranslatedAttribute;
 struct TranslatedIndexData;
