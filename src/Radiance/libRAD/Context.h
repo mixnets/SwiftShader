@@ -38,7 +38,7 @@ class Surface;
 class Config;
 }
 
-namespace rad
+namespace es2
 {
 struct TranslatedAttribute;
 struct TranslatedIndexData;
@@ -426,7 +426,7 @@ public:
 
 	Device *getDevice();
 
-private:
+public:
 	virtual ~Context();
 
     bool applyRenderTarget();
