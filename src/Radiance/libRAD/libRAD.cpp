@@ -6138,185 +6138,411 @@ void GL_APIENTRY glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image
     }
 }
 
-RADdevice RADAPIENTRY radCreateDevice (void) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceDevice (RADdevice device) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseDevice (RADdevice device) {UNIMPLEMENTED();}
-RADuint RADAPIENTRY radGetTokenHeader (RADdevice device, RADtokenName name) {UNIMPLEMENTED(); return 0;}
-RADqueue RADAPIENTRY radCreateQueue (RADdevice device, RADqueueType queuetype) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceQueue (RADqueue queue) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseQueue (RADqueue queue) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueTagBuffer (RADqueue queue, RADbuffer buffer) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueTagTexture (RADqueue queue, RADtexture texture) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueSubmitCommands (RADqueue queue, RADuint numCommands, const RADcommandHandle *handles) {UNIMPLEMENTED();}
-void RADAPIENTRY radFlushQueue (RADqueue queue) {UNIMPLEMENTED();}
-void RADAPIENTRY radFinishQueue (RADqueue queue) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueViewport (RADqueue queue, RADint x, RADint y, RADint w, RADint h) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueScissor (RADqueue queue, RADint x, RADint y, RADint w, RADint h) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueCopyBufferToImage (RADqueue queue, RADbuffer buffer, RADintptr bufferOffset, RADtexture texture, RADint level, RADuint xoffset, RADuint yoffset, RADuint zoffset, RADsizei width, RADsizei height, RADsizei depth) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueCopyImageToBuffer (RADqueue queue, RADbuffer buffer, RADintptr bufferOffset, RADtexture texture, RADint level, RADuint xoffset, RADuint yoffset, RADuint zoffset, RADsizei width, RADsizei height, RADsizei depth) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueCopyBuffer (RADqueue queue, RADbuffer srcBuffer, RADintptr srcOffset, RADbuffer dstBuffer, RADintptr dstOffset, RADsizei size) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueClearColor (RADqueue queue, RADuint index, const RADfloat *color) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueClearDepth (RADqueue queue, RADfloat depth) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueClearStencil (RADqueue queue, RADuint stencil) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueuePresent (RADqueue queue, RADtexture texture) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueDrawArrays (RADqueue queue, RADprimitiveType mode, RADint first, RADsizei count) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueDrawElements (RADqueue queue, RADprimitiveType mode, RADindexType type, RADsizei count, RADindexHandle indexHandle, RADuint offset) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueBindPipeline (RADqueue queue, RADpipelineType pipelineType, RADpipelineHandle pipelineHandle) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueBindGroup (RADqueue queue, RADbitfield stages, RADuint group, RADuint count, RADbindGroupHandle groupHandle, RADuint offset) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueBeginPass (RADqueue queue, RADpass pass) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueEndPass (RADqueue queue, RADpass pass) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueSubmitDynamic (RADqueue queue, const void *dynamic, RADsizei length) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueStencilValueMask (RADqueue queue, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueStencilMask (RADqueue queue, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueStencilRef (RADqueue queue, RADfaceBitfield faces, RADint ref) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueBlendColor (RADqueue queue, const RADfloat *blendColor) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueuePointSize (RADqueue queue, RADfloat pointSize) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueLineWidth (RADqueue queue, RADfloat lineWidth) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueuePolygonOffsetClamp (RADqueue queue, RADfloat factor, RADfloat units, RADfloat clamp) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueSampleMask (RADqueue queue, RADuint mask) {UNIMPLEMENTED();}
-RADprogram RADAPIENTRY radCreateProgram (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceProgram (RADprogram program) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseProgram (RADprogram program) {UNIMPLEMENTED();}
-void RADAPIENTRY radProgramSource (RADprogram program, RADprogramFormat format, RADsizei length, const void *source) {UNIMPLEMENTED();}
-RADbuffer RADAPIENTRY radCreateBuffer (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceBuffer (RADbuffer buffer) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseBuffer (RADbuffer buffer, RADtagMode tagMode) {UNIMPLEMENTED();}
-void RADAPIENTRY radBufferAccess (RADbuffer buffer, RADbitfield access) {UNIMPLEMENTED();}
-void RADAPIENTRY radBufferMapAccess (RADbuffer buffer, RADbitfield mapAccess) {UNIMPLEMENTED();}
-void RADAPIENTRY radBufferStorage (RADbuffer buffer, RADsizei size) {UNIMPLEMENTED();}
-void* RADAPIENTRY radMapBuffer (RADbuffer buffer) {UNIMPLEMENTED(); return 0;}
-RADvertexHandle RADAPIENTRY radGetVertexHandle (RADbuffer buffer) {UNIMPLEMENTED(); return 0;}
-RADindexHandle RADAPIENTRY radGetIndexHandle (RADbuffer buffer) {UNIMPLEMENTED(); return 0;}
-RADuniformHandle RADAPIENTRY radGetUniformHandle (RADbuffer buffer) {UNIMPLEMENTED(); return 0;}
-RADbindGroupHandle RADAPIENTRY radGetBindGroupHandle (RADbuffer buffer) {UNIMPLEMENTED(); return 0;}
-RADtexture RADAPIENTRY radCreateTexture (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceTexture (RADtexture texture) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseTexture (RADtexture texture, RADtagMode tagMode) {UNIMPLEMENTED();}
-void RADAPIENTRY radTextureAccess (RADtexture texture, RADbitfield access) {UNIMPLEMENTED();}
-void RADAPIENTRY radTextureStorage (RADtexture texture, RADtextureTarget target, RADsizei levels, RADinternalFormat internalFormat, RADsizei width, RADsizei height, RADsizei depth, RADsizei samples) {UNIMPLEMENTED();}
-RADtextureHandle RADAPIENTRY radGetTextureSamplerHandle (RADtexture texture, RADsampler sampler, RADtextureTarget target, RADinternalFormat internalFormat, RADuint minLevel, RADuint numLevels, RADuint minLayer, RADuint numLayers) {UNIMPLEMENTED(); return 0;}
-RADrenderTargetHandle RADAPIENTRY radGetTextureRenderTargetHandle (RADtexture texture, RADtextureTarget target, RADinternalFormat internalFormat, RADuint level, RADuint minLayer, RADuint numLayers) {UNIMPLEMENTED(); return 0;}
-RADsampler RADAPIENTRY radCreateSampler (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceSampler (RADsampler sampler) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseSampler (RADsampler sampler) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerDefault (RADsampler sampler) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerMinMagFilter (RADsampler sampler, RADminFilter min, RADmagFilter mag) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerWrapMode (RADsampler sampler, RADwrapMode s, RADwrapMode t, RADwrapMode r) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerLodClamp (RADsampler sampler, RADfloat min, RADfloat max) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerLodBias (RADsampler sampler, RADfloat bias) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerCompare (RADsampler sampler, RADcompareMode mode, RADcompareFunc func) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerBorderColorFloat (RADsampler sampler, const RADfloat *borderColor) {UNIMPLEMENTED();}
-void RADAPIENTRY radSamplerBorderColorInt (RADsampler sampler, const RADuint *borderColor) {UNIMPLEMENTED();}
-RADcolorState RADAPIENTRY radCreateColorState (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceColorState (RADcolorState color) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseColorState (RADcolorState color) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorDefault (RADcolorState color) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorBlendEnable (RADcolorState color, RADuint index, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorBlendFunc (RADcolorState color, RADuint index, RADblendFunc srcFunc, RADblendFunc dstFunc, RADblendFunc srcFuncAlpha, RADblendFunc dstFuncAlpha) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorBlendEquation (RADcolorState color, RADuint index, RADblendEquation modeRGB, RADblendEquation modeAlpha) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorMask (RADcolorState color, RADuint index, RADboolean r, RADboolean g, RADboolean b, RADboolean a) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorNumTargets (RADcolorState color, RADuint numTargets) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorLogicOpEnable (RADcolorState color, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorLogicOp (RADcolorState color, RADlogicOp logicOp) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorAlphaToCoverageEnable (RADcolorState color, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorBlendColor (RADcolorState color, const RADfloat *blendColor) {UNIMPLEMENTED();}
-void RADAPIENTRY radColorDynamic (RADcolorState color, RADcolorDynamic dynamic, RADboolean enable) {UNIMPLEMENTED();}
-RADrasterState RADAPIENTRY radCreateRasterState (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceRasterState (RADrasterState raster) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseRasterState (RADrasterState raster) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterDefault (RADrasterState raster) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterPointSize (RADrasterState raster, RADfloat pointSize) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterLineWidth (RADrasterState raster, RADfloat lineWidth) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterCullFace (RADrasterState raster, RADfaceBitfield face) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterFrontFace (RADrasterState raster, RADfrontFace face) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterPolygonMode (RADrasterState raster, RADpolygonMode polygonMode) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterPolygonOffsetClamp (RADrasterState raster, RADfloat factor, RADfloat units, RADfloat clamp) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterPolygonOffsetEnables (RADrasterState raster, RADpolygonOffsetEnables enables) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterDiscardEnable (RADrasterState raster, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterMultisampleEnable (RADrasterState raster, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterSamples (RADrasterState raster, RADuint samples) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterSampleMask (RADrasterState raster, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radRasterDynamic (RADrasterState raster, RADrasterDynamic dynamic, RADboolean enable) {UNIMPLEMENTED();}
-RADdepthStencilState RADAPIENTRY radCreateDepthStencilState (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceDepthStencilState (RADdepthStencilState depthStencil) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseDepthStencilState (RADdepthStencilState depthStencil) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilDefault (RADdepthStencilState depthStencil) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilDepthTestEnable (RADdepthStencilState depthStencil, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilDepthWriteEnable (RADdepthStencilState depthStencil, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilDepthFunc (RADdepthStencilState depthStencil, RADdepthFunc func) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilStencilTestEnable (RADdepthStencilState depthStencil, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilStencilFunc (RADdepthStencilState depthStencil, RADfaceBitfield faces, RADstencilFunc func, RADint ref, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilStencilOp (RADdepthStencilState depthStencil, RADfaceBitfield faces, RADstencilOp fail, RADstencilOp depthFail, RADstencilOp depthPass) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilStencilMask (RADdepthStencilState depthStencil, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radDepthStencilDynamic (RADdepthStencilState depthStencil, RADdepthStencilDynamic dynamic, RADboolean enable) {UNIMPLEMENTED();}
-RADvertexState RADAPIENTRY radCreateVertexState (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceVertexState (RADvertexState vertex) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseVertexState (RADvertexState vertex) {UNIMPLEMENTED();}
-void RADAPIENTRY radVertexDefault (RADvertexState vertex) {UNIMPLEMENTED();}
-void RADAPIENTRY radVertexAttribFormat (RADvertexState vertex, RADint attribIndex, RADint numComponents, RADint bytesPerComponent, RADattribType type, RADuint relativeOffset) {UNIMPLEMENTED();}
-void RADAPIENTRY radVertexAttribBinding (RADvertexState vertex, RADint attribIndex, RADint bindingIndex) {UNIMPLEMENTED();}
-void RADAPIENTRY radVertexBindingGroup (RADvertexState vertex, RADint bindingIndex, RADint group, RADint index) {UNIMPLEMENTED();}
-void RADAPIENTRY radVertexAttribEnable (RADvertexState vertex, RADint attribIndex, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radVertexBindingStride (RADvertexState vertex, RADint bindingIndex, RADuint stride) {UNIMPLEMENTED();}
-RADrtFormatState RADAPIENTRY radCreateRtFormatState (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceRtFormatState (RADrtFormatState rtFormat) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseRtFormatState (RADrtFormatState rtFormat) {UNIMPLEMENTED();}
-void RADAPIENTRY radRtFormatDefault (RADrtFormatState rtFormat) {UNIMPLEMENTED();}
-void RADAPIENTRY radRtFormatColorFormat (RADrtFormatState rtFormat, RADuint index, RADinternalFormat format) {UNIMPLEMENTED();}
-void RADAPIENTRY radRtFormatDepthFormat (RADrtFormatState rtFormat, RADinternalFormat format) {UNIMPLEMENTED();}
-void RADAPIENTRY radRtFormatStencilFormat (RADrtFormatState rtFormat, RADinternalFormat format) {UNIMPLEMENTED();}
-void RADAPIENTRY radRtFormatColorSamples (RADrtFormatState rtFormat, RADuint samples) {UNIMPLEMENTED();}
-void RADAPIENTRY radRtFormatDepthStencilSamples (RADrtFormatState rtFormat, RADuint samples) {UNIMPLEMENTED();}
-RADpipeline RADAPIENTRY radCreatePipeline (RADdevice device, RADpipelineType pipelineType) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferencePipeline (RADpipeline pipeline) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleasePipeline (RADpipeline pipeline) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelineProgramStages (RADpipeline pipeline, RADbitfield stages, RADprogram program) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelineVertexState (RADpipeline pipeline, RADvertexState vertex) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelineColorState (RADpipeline pipeline, RADcolorState color) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelineRasterState (RADpipeline pipeline, RADrasterState raster) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelineDepthStencilState (RADpipeline pipeline, RADdepthStencilState depthStencil) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelineRtFormatState (RADpipeline pipeline, RADrtFormatState rtFormat) {UNIMPLEMENTED();}
-void RADAPIENTRY radPipelinePrimitiveType (RADpipeline pipeline, RADprimitiveType mode) {UNIMPLEMENTED();}
-void RADAPIENTRY radCompilePipeline (RADpipeline pipeline) {UNIMPLEMENTED();}
-RADpipelineHandle RADAPIENTRY radGetPipelineHandle (RADpipeline pipeline) {UNIMPLEMENTED(); return 0;}
-RADcommandBuffer RADAPIENTRY radCreateCommandBuffer (RADdevice device, RADqueueType queueType) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceCommandBuffer (RADcommandBuffer cmdBuf) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseCommandBuffer (RADcommandBuffer cmdBuf) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdBindPipeline (RADcommandBuffer cmdBuf, RADpipelineType pipelineType, RADpipelineHandle pipelineHandle) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdBindGroup (RADcommandBuffer cmdBuf, RADbitfield stages, RADuint group, RADuint count, RADbindGroupHandle groupHandle, RADuint offset) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdDrawArrays (RADcommandBuffer cmdBuf, RADprimitiveType mode, RADint first, RADsizei count) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdDrawElements (RADcommandBuffer cmdBuf, RADprimitiveType mode, RADindexType type, RADsizei count, RADindexHandle indexHandle, RADuint offset) {UNIMPLEMENTED();}
-RADboolean RADAPIENTRY radCompileCommandBuffer (RADcommandBuffer cmdBuf) {UNIMPLEMENTED(); return 0;}
-RADcommandHandle RADAPIENTRY radGetCommandHandle (RADcommandBuffer cmdBuf) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radCmdStencilValueMask (RADcommandBuffer cmdBuf, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdStencilMask (RADcommandBuffer cmdBuf, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdStencilRef (RADcommandBuffer cmdBuf, RADfaceBitfield faces, RADint ref) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdBlendColor (RADcommandBuffer cmdBuf, const RADfloat *blendColor) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdPointSize (RADcommandBuffer cmdBuf, RADfloat pointSize) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdLineWidth (RADcommandBuffer cmdBuf, RADfloat lineWidth) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdPolygonOffsetClamp (RADcommandBuffer cmdBuf, RADfloat factor, RADfloat units, RADfloat clamp) {UNIMPLEMENTED();}
-void RADAPIENTRY radCmdSampleMask (RADcommandBuffer cmdBuf, RADuint mask) {UNIMPLEMENTED();}
-RADpass RADAPIENTRY radCreatePass (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferencePass (RADpass pass) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleasePass (RADpass pass) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassDefault (RADpass pass) {UNIMPLEMENTED();}
-void RADAPIENTRY radCompilePass (RADpass pass) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassRenderTargets (RADpass pass, RADuint numColors, const RADrenderTargetHandle *colors, RADrenderTargetHandle depth, RADrenderTargetHandle stencil) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassPreserveEnable (RADpass pass, RADrtAttachment attachment, RADboolean enable) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassDiscard (RADpass pass, RADuint numTextures, const RADtexture *textures, const RADoffset2D *offsets) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassResolve (RADpass pass, RADrtAttachment attachment, RADtexture texture) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassStore (RADpass pass, RADuint numTextures, const RADtexture *textures, const RADoffset2D *offsets) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassClip (RADpass pass, const RADrect2D *rect) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassDependencies (RADpass pass, RADuint numPasses, const RADpass *otherPasses, const RADbitfield *srcMask, const RADbitfield *dstMask, const RADbitfield *flushMask, const RADbitfield *invalidateMask) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassTilingBoundary (RADpass pass, RADboolean boundary) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassTileFilterWidth (RADpass pass, RADuint filterWidth, RADuint filterHeight) {UNIMPLEMENTED();}
-void RADAPIENTRY radPassTileFootprint (RADpass pass, RADuint bytesPerPixel, RADuint maxFilterWidth, RADuint maxFilterHeight) {UNIMPLEMENTED();}
-RADsync RADAPIENTRY radCreateSync (RADdevice device) {UNIMPLEMENTED(); return 0;}
-void RADAPIENTRY radReferenceSync (RADsync sync) {UNIMPLEMENTED();}
-void RADAPIENTRY radReleaseSync (RADsync sync) {UNIMPLEMENTED();}
-void RADAPIENTRY radQueueFenceSync (RADqueue queue, RADsync sync, RADsyncCondition condition, RADbitfield flags) {UNIMPLEMENTED();}
-RADwaitSyncResult RADAPIENTRY radWaitSync (RADsync sync, RADuint64 timeout) {UNIMPLEMENTED(); return RAD_WAIT_SYNC_FAILED;}
-RADboolean RADAPIENTRY radQueueWaitSync (RADqueue queue, RADsync sync) {UNIMPLEMENTED(); return 0;}
+RADdevice RADAPIENTRY radCreateDevice(void)
+{
+	static rad::Context *context = rad::getContext();
+	return reinterpret_cast<RADdevice>(context);
+}
+
+void RADAPIENTRY radReferenceDevice(RADdevice device) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseDevice(RADdevice device) {UNIMPLEMENTED();}
+RADuint RADAPIENTRY radGetTokenHeader(RADdevice device, RADtokenName name) {UNIMPLEMENTED(); return 0;}
+
+RADqueue RADAPIENTRY radCreateQueue(RADdevice device, RADqueueType queuetype)
+{
+	return 0;
+}
+
+void RADAPIENTRY radReferenceQueue(RADqueue queue) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseQueue(RADqueue queue) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueTagBuffer(RADqueue queue, RADbuffer buffer) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueTagTexture(RADqueue queue, RADtexture texture) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueSubmitCommands(RADqueue queue, RADuint numCommands, const RADcommandHandle *handles) {UNIMPLEMENTED();}
+void RADAPIENTRY radFlushQueue(RADqueue queue) {UNIMPLEMENTED();}
+void RADAPIENTRY radFinishQueue(RADqueue queue) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueViewport(RADqueue queue, RADint x, RADint y, RADint w, RADint h) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueScissor(RADqueue queue, RADint x, RADint y, RADint w, RADint h) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueCopyBufferToImage(RADqueue queue, RADbuffer buffer, RADintptr bufferOffset, RADtexture texture, RADint level, RADuint xoffset, RADuint yoffset, RADuint zoffset, RADsizei width, RADsizei height, RADsizei depth) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueCopyImageToBuffer(RADqueue queue, RADbuffer buffer, RADintptr bufferOffset, RADtexture texture, RADint level, RADuint xoffset, RADuint yoffset, RADuint zoffset, RADsizei width, RADsizei height, RADsizei depth) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueCopyBuffer(RADqueue queue, RADbuffer srcBuffer, RADintptr srcOffset, RADbuffer dstBuffer, RADintptr dstOffset, RADsizei size) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueClearColor(RADqueue queue, RADuint index, const RADfloat *color) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueClearDepth(RADqueue queue, RADfloat depth) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueClearStencil(RADqueue queue, RADuint stencil) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueuePresent(RADqueue queue, RADtexture texture) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueDrawArrays(RADqueue queue, RADprimitiveType mode, RADint first, RADsizei count) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueDrawElements(RADqueue queue, RADprimitiveType mode, RADindexType type, RADsizei count, RADindexHandle indexHandle, RADuint offset) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueBindPipeline(RADqueue queue, RADpipelineType pipelineType, RADpipelineHandle pipelineHandle) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueBindGroup(RADqueue queue, RADbitfield stages, RADuint group, RADuint count, RADbindGroupHandle groupHandle, RADuint offset) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueBeginPass(RADqueue queue, RADpass pass) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueEndPass(RADqueue queue, RADpass pass) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueSubmitDynamic(RADqueue queue, const void *dynamic, RADsizei length) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueStencilValueMask(RADqueue queue, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueStencilMask(RADqueue queue, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueStencilRef(RADqueue queue, RADfaceBitfield faces, RADint ref) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueBlendColor(RADqueue queue, const RADfloat *blendColor) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueuePointSize(RADqueue queue, RADfloat pointSize) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueLineWidth(RADqueue queue, RADfloat lineWidth) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueuePolygonOffsetClamp(RADqueue queue, RADfloat factor, RADfloat units, RADfloat clamp) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueSampleMask(RADqueue queue, RADuint mask) {UNIMPLEMENTED();}
+
+RADprogram RADAPIENTRY radCreateProgram(RADdevice device)
+{
+	rad::Program *program = new rad::Program(0, 0);
+	return reinterpret_cast<RADprogram>(program);
+}
+
+void RADAPIENTRY radReferenceProgram(RADprogram program) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseProgram(RADprogram program) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radProgramSource(RADprogram program, RADprogramFormat format, RADsizei length, const void *source)
+{
+	rad::Program *radProgram = reinterpret_cast<rad::Program*>(program);
+	rad::Shader *vs = new rad::FragmentShader(0, 0);
+	rad::Shader *ps = new rad::VertexShader(0, 0);
+	const char *const *strings = (const char *const*)source;
+	vs->setSource(1, &strings[0], 0);
+	ps->setSource(1, &strings[1], 0);
+	radProgram->attachShader(vs);
+	radProgram->attachShader(ps);
+}
+
+RADbuffer RADAPIENTRY radCreateBuffer(RADdevice device)
+{
+	rad::Buffer *buffer = new rad::Buffer(0);
+	return reinterpret_cast<RADbuffer>(buffer);
+}
+
+void RADAPIENTRY radReferenceBuffer(RADbuffer buffer) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseBuffer(RADbuffer buffer, RADtagMode tagMode) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radBufferAccess(RADbuffer buffer, RADbitfield access)
+{
+	return;
+}
+
+void RADAPIENTRY radBufferMapAccess(RADbuffer buffer, RADbitfield mapAccess)
+{
+	return;
+}
+
+void RADAPIENTRY radBufferStorage(RADbuffer buffer, RADsizei size)
+{
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	radBuffer->bufferData(0, size, GL_DYNAMIC_DRAW);
+}
+
+void* RADAPIENTRY radMapBuffer(RADbuffer buffer)
+{
+	rad::Buffer *radBuffer = reinterpret_cast<rad::Buffer*>(buffer);
+	return radBuffer->getResource()->lock(sw::PUBLIC);
+}
+
+RADvertexHandle RADAPIENTRY radGetVertexHandle(RADbuffer buffer)
+{
+	return 0;
+}
+
+RADindexHandle RADAPIENTRY radGetIndexHandle(RADbuffer buffer) {UNIMPLEMENTED(); return 0;}
+
+RADuniformHandle RADAPIENTRY radGetUniformHandle(RADbuffer buffer)
+{
+	return 0;
+}
+
+RADbindGroupHandle RADAPIENTRY radGetBindGroupHandle(RADbuffer buffer) {UNIMPLEMENTED(); return 0;}
+
+RADtexture RADAPIENTRY radCreateTexture(RADdevice device)
+{
+	return 0;
+}
+
+void RADAPIENTRY radReferenceTexture(RADtexture texture) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseTexture(RADtexture texture, RADtagMode tagMode) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radTextureAccess(RADtexture texture, RADbitfield access)
+{
+	return;
+}
+
+void RADAPIENTRY radTextureStorage(RADtexture texture, RADtextureTarget target, RADsizei levels, RADinternalFormat internalFormat, RADsizei width, RADsizei height, RADsizei depth, RADsizei samples)
+{
+	return;
+}
+
+RADtextureHandle RADAPIENTRY radGetTextureSamplerHandle(RADtexture texture, RADsampler sampler, RADtextureTarget target, RADinternalFormat internalFormat, RADuint minLevel, RADuint numLevels, RADuint minLayer, RADuint numLayers) {UNIMPLEMENTED(); return 0;}
+
+RADrenderTargetHandle RADAPIENTRY radGetTextureRenderTargetHandle(RADtexture texture, RADtextureTarget target, RADinternalFormat internalFormat, RADuint level, RADuint minLayer, RADuint numLayers)
+{
+	return 0;
+}
+
+RADsampler RADAPIENTRY radCreateSampler(RADdevice device) {UNIMPLEMENTED(); return 0;}
+void RADAPIENTRY radReferenceSampler(RADsampler sampler) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseSampler(RADsampler sampler) {UNIMPLEMENTED();}
+void RADAPIENTRY radSamplerDefault(RADsampler sampler) {UNIMPLEMENTED();}
+void RADAPIENTRY radSamplerMinMagFilter(RADsampler sampler, RADminFilter min, RADmagFilter mag) {UNIMPLEMENTED();}
+void RADAPIENTRY radSamplerWrapMode(RADsampler sampler, RADwrapMode s, RADwrapMode t, RADwrapMode r) {UNIMPLEMENTED();}
+void RADAPIENTRY radSamplerLodClamp(RADsampler sampler, RADfloat min, RADfloat max) {UNIMPLEMENTED();}
+void RADAPIENTRY radSamplerLodBias(RADsampler sampler, RADfloat bias) {UNIMPLEMENTED();}
+void RADAPIENTRY radSamplerCompare(RADsampler sampler, RADcompareMode mode, RADcompareFunc func) {UNIMPLEMENTED();}
+void RADAPIENTRY radSamplerBorderColorFloat(RADsampler sampler, const RADfloat *borderColor) {UNIMPLEMENTED();}
+void RADAPIENTRY radSamplerBorderColorInt(RADsampler sampler, const RADuint *borderColor) {UNIMPLEMENTED();}
+
+RADcolorState RADAPIENTRY radCreateColorState(RADdevice device)
+{
+	return 0;
+}
+
+void RADAPIENTRY radReferenceColorState(RADcolorState color) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseColorState(RADcolorState color) {UNIMPLEMENTED();}
+void RADAPIENTRY radColorDefault(RADcolorState color) {UNIMPLEMENTED();}
+void RADAPIENTRY radColorBlendEnable(RADcolorState color, RADuint index, RADboolean enable) {UNIMPLEMENTED();}
+void RADAPIENTRY radColorBlendFunc(RADcolorState color, RADuint index, RADblendFunc srcFunc, RADblendFunc dstFunc, RADblendFunc srcFuncAlpha, RADblendFunc dstFuncAlpha) {UNIMPLEMENTED();}
+void RADAPIENTRY radColorBlendEquation(RADcolorState color, RADuint index, RADblendEquation modeRGB, RADblendEquation modeAlpha) {UNIMPLEMENTED();}
+void RADAPIENTRY radColorMask(RADcolorState color, RADuint index, RADboolean r, RADboolean g, RADboolean b, RADboolean a) {UNIMPLEMENTED();}
+void RADAPIENTRY radColorNumTargets(RADcolorState color, RADuint numTargets) {UNIMPLEMENTED();}
+void RADAPIENTRY radColorLogicOpEnable(RADcolorState color, RADboolean enable) {UNIMPLEMENTED();}
+void RADAPIENTRY radColorLogicOp(RADcolorState color, RADlogicOp logicOp) {UNIMPLEMENTED();}
+void RADAPIENTRY radColorAlphaToCoverageEnable(RADcolorState color, RADboolean enable) {UNIMPLEMENTED();}
+void RADAPIENTRY radColorBlendColor(RADcolorState color, const RADfloat *blendColor) {UNIMPLEMENTED();}
+void RADAPIENTRY radColorDynamic(RADcolorState color, RADcolorDynamic dynamic, RADboolean enable) {UNIMPLEMENTED();}
+
+RADrasterState RADAPIENTRY radCreateRasterState(RADdevice device)
+{
+	return 0;
+}
+
+void RADAPIENTRY radReferenceRasterState(RADrasterState raster) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseRasterState(RADrasterState raster) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterDefault(RADrasterState raster) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterPointSize(RADrasterState raster, RADfloat pointSize) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterLineWidth(RADrasterState raster, RADfloat lineWidth) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterCullFace(RADrasterState raster, RADfaceBitfield face) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterFrontFace(RADrasterState raster, RADfrontFace face) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterPolygonMode(RADrasterState raster, RADpolygonMode polygonMode) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterPolygonOffsetClamp(RADrasterState raster, RADfloat factor, RADfloat units, RADfloat clamp) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterPolygonOffsetEnables(RADrasterState raster, RADpolygonOffsetEnables enables) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterDiscardEnable(RADrasterState raster, RADboolean enable) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterMultisampleEnable(RADrasterState raster, RADboolean enable) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterSamples(RADrasterState raster, RADuint samples) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterSampleMask(RADrasterState raster, RADuint mask) {UNIMPLEMENTED();}
+void RADAPIENTRY radRasterDynamic(RADrasterState raster, RADrasterDynamic dynamic, RADboolean enable) {UNIMPLEMENTED();}
+
+RADdepthStencilState RADAPIENTRY radCreateDepthStencilState(RADdevice device)
+{
+	return 0;
+}
+
+void RADAPIENTRY radReferenceDepthStencilState(RADdepthStencilState depthStencil) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseDepthStencilState(RADdepthStencilState depthStencil) {UNIMPLEMENTED();}
+void RADAPIENTRY radDepthStencilDefault(RADdepthStencilState depthStencil) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radDepthStencilDepthTestEnable(RADdepthStencilState depthStencil, RADboolean enable)
+{
+	return;
+}
+
+void RADAPIENTRY radDepthStencilDepthWriteEnable(RADdepthStencilState depthStencil, RADboolean enable)
+{
+	return;
+}
+
+void RADAPIENTRY radDepthStencilDepthFunc(RADdepthStencilState depthStencil, RADdepthFunc func)
+{
+	return;
+}
+
+void RADAPIENTRY radDepthStencilStencilTestEnable(RADdepthStencilState depthStencil, RADboolean enable) {UNIMPLEMENTED();}
+void RADAPIENTRY radDepthStencilStencilFunc(RADdepthStencilState depthStencil, RADfaceBitfield faces, RADstencilFunc func, RADint ref, RADuint mask) {UNIMPLEMENTED();}
+void RADAPIENTRY radDepthStencilStencilOp(RADdepthStencilState depthStencil, RADfaceBitfield faces, RADstencilOp fail, RADstencilOp depthFail, RADstencilOp depthPass) {UNIMPLEMENTED();}
+void RADAPIENTRY radDepthStencilStencilMask(RADdepthStencilState depthStencil, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
+void RADAPIENTRY radDepthStencilDynamic(RADdepthStencilState depthStencil, RADdepthStencilDynamic dynamic, RADboolean enable) {UNIMPLEMENTED();}
+
+struct VertexState
+{
+	VertexState()
+	{
+		memset(this, 0, sizeof(*this));
+	}
+
+	struct
+	{
+		RADboolean enable;
+		
+		RADint bindingIndex;
+		
+		RADint numComponents;
+		RADint bytesPerComponent;
+		RADattribType type;
+		RADuint relativeOffset;
+	}
+	attrib[GL_MAX_VERTEX_ATTRIBS];
+
+	struct
+	{
+		RADint group;
+		RADint index;
+
+		RADuint stride;
+	}
+	binding[GL_MAX_VERTEX_ATTRIBS];
+};
+
+RADvertexState RADAPIENTRY radCreateVertexState(RADdevice device)
+{
+	VertexState *vertexState = new VertexState;
+	return reinterpret_cast<RADvertexState>(vertexState);
+}
+
+void RADAPIENTRY radReferenceVertexState(RADvertexState vertex) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseVertexState(RADvertexState vertex) {UNIMPLEMENTED();}
+void RADAPIENTRY radVertexDefault(RADvertexState vertex) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radVertexAttribFormat(RADvertexState vertex, RADint attribIndex, RADint numComponents, RADint bytesPerComponent, RADattribType type, RADuint relativeOffset)
+{
+	ASSERT(attribIndex >= 0 && attribIndex < GL_MAX_VERTEX_ATTRIBS);
+	VertexState *vertexState = reinterpret_cast<VertexState*>(vertex);
+	vertexState->attrib[attribIndex].numComponents = numComponents;
+	vertexState->attrib[attribIndex].bytesPerComponent = bytesPerComponent;
+	vertexState->attrib[attribIndex].type = type;
+	vertexState->attrib[attribIndex].relativeOffset = relativeOffset;
+}
+
+void RADAPIENTRY radVertexAttribBinding(RADvertexState vertex, RADint attribIndex, RADint bindingIndex)
+{
+	ASSERT(attribIndex >= 0 && attribIndex < GL_MAX_VERTEX_ATTRIBS);
+	VertexState *vertexState = reinterpret_cast<VertexState*>(vertex);
+	vertexState->attrib[attribIndex].bindingIndex = bindingIndex;
+}
+
+void RADAPIENTRY radVertexBindingGroup(RADvertexState vertex, RADint bindingIndex, RADint group, RADint index)
+{
+	ASSERT(bindingIndex >= 0 && bindingIndex < GL_MAX_VERTEX_ATTRIBS);
+	VertexState *vertexState = reinterpret_cast<VertexState*>(vertex);
+	vertexState->binding[bindingIndex].group = group;
+	vertexState->binding[bindingIndex].index = index;
+}
+
+void RADAPIENTRY radVertexAttribEnable(RADvertexState vertex, RADint attribIndex, RADboolean enable)
+{
+	ASSERT(attribIndex >= 0 && attribIndex < GL_MAX_VERTEX_ATTRIBS);
+	VertexState *vertexState = reinterpret_cast<VertexState*>(vertex);
+	vertexState->attrib[attribIndex].bindingIndex = enable;
+}
+
+void RADAPIENTRY radVertexBindingStride(RADvertexState vertex, RADint bindingIndex, RADuint stride)
+{
+	ASSERT(bindingIndex >= 0 && bindingIndex < GL_MAX_VERTEX_ATTRIBS);
+	VertexState *vertexState = reinterpret_cast<VertexState*>(vertex);
+	vertexState->binding[bindingIndex].stride = stride;
+}
+
+RADrtFormatState RADAPIENTRY radCreateRtFormatState(RADdevice device)
+{
+	return 0;
+}
+
+void RADAPIENTRY radReferenceRtFormatState(RADrtFormatState rtFormat) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseRtFormatState(RADrtFormatState rtFormat) {UNIMPLEMENTED();}
+void RADAPIENTRY radRtFormatDefault(RADrtFormatState rtFormat) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radRtFormatColorFormat(RADrtFormatState rtFormat, RADuint index, RADinternalFormat format)
+{
+	return;
+}
+
+void RADAPIENTRY radRtFormatDepthFormat(RADrtFormatState rtFormat, RADinternalFormat format)
+{
+	return;
+}
+
+void RADAPIENTRY radRtFormatStencilFormat(RADrtFormatState rtFormat, RADinternalFormat format) {UNIMPLEMENTED();}
+void RADAPIENTRY radRtFormatColorSamples(RADrtFormatState rtFormat, RADuint samples) {UNIMPLEMENTED();}
+void RADAPIENTRY radRtFormatDepthStencilSamples(RADrtFormatState rtFormat, RADuint samples) {UNIMPLEMENTED();}
+
+RADpipeline RADAPIENTRY radCreatePipeline(RADdevice device, RADpipelineType pipelineType)
+{
+	return 0;
+}
+
+void RADAPIENTRY radReferencePipeline(RADpipeline pipeline) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleasePipeline(RADpipeline pipeline) {UNIMPLEMENTED();}
+
+void RADAPIENTRY radPipelineProgramStages(RADpipeline pipeline, RADbitfield stages, RADprogram program)
+{
+	return;
+}
+
+void RADAPIENTRY radPipelineVertexState(RADpipeline pipeline, RADvertexState vertex)
+{
+	return;
+}
+
+void RADAPIENTRY radPipelineColorState(RADpipeline pipeline, RADcolorState color)
+{
+	return;
+}
+
+void RADAPIENTRY radPipelineRasterState(RADpipeline pipeline, RADrasterState raster)
+{
+	return;
+}
+
+void RADAPIENTRY radPipelineDepthStencilState(RADpipeline pipeline, RADdepthStencilState depthStencil)
+{
+	return;
+}
+
+void RADAPIENTRY radPipelineRtFormatState(RADpipeline pipeline, RADrtFormatState rtFormat)
+{
+	return;
+}
+
+void RADAPIENTRY radPipelinePrimitiveType(RADpipeline pipeline, RADprimitiveType mode)
+{
+	return;
+}
+
+void RADAPIENTRY radCompilePipeline(RADpipeline pipeline) {UNIMPLEMENTED();}
+RADpipelineHandle RADAPIENTRY radGetPipelineHandle(RADpipeline pipeline) {UNIMPLEMENTED(); return 0;}
+RADcommandBuffer RADAPIENTRY radCreateCommandBuffer(RADdevice device, RADqueueType queueType) {UNIMPLEMENTED(); return 0;}
+void RADAPIENTRY radReferenceCommandBuffer(RADcommandBuffer cmdBuf) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseCommandBuffer(RADcommandBuffer cmdBuf) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdBindPipeline(RADcommandBuffer cmdBuf, RADpipelineType pipelineType, RADpipelineHandle pipelineHandle) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdBindGroup(RADcommandBuffer cmdBuf, RADbitfield stages, RADuint group, RADuint count, RADbindGroupHandle groupHandle, RADuint offset) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdDrawArrays(RADcommandBuffer cmdBuf, RADprimitiveType mode, RADint first, RADsizei count) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdDrawElements(RADcommandBuffer cmdBuf, RADprimitiveType mode, RADindexType type, RADsizei count, RADindexHandle indexHandle, RADuint offset) {UNIMPLEMENTED();}
+RADboolean RADAPIENTRY radCompileCommandBuffer(RADcommandBuffer cmdBuf) {UNIMPLEMENTED(); return 0;}
+RADcommandHandle RADAPIENTRY radGetCommandHandle(RADcommandBuffer cmdBuf) {UNIMPLEMENTED(); return 0;}
+void RADAPIENTRY radCmdStencilValueMask(RADcommandBuffer cmdBuf, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdStencilMask(RADcommandBuffer cmdBuf, RADfaceBitfield faces, RADuint mask) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdStencilRef(RADcommandBuffer cmdBuf, RADfaceBitfield faces, RADint ref) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdBlendColor(RADcommandBuffer cmdBuf, const RADfloat *blendColor) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdPointSize(RADcommandBuffer cmdBuf, RADfloat pointSize) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdLineWidth(RADcommandBuffer cmdBuf, RADfloat lineWidth) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdPolygonOffsetClamp(RADcommandBuffer cmdBuf, RADfloat factor, RADfloat units, RADfloat clamp) {UNIMPLEMENTED();}
+void RADAPIENTRY radCmdSampleMask(RADcommandBuffer cmdBuf, RADuint mask) {UNIMPLEMENTED();}
+RADpass RADAPIENTRY radCreatePass(RADdevice device) {UNIMPLEMENTED(); return 0;}
+void RADAPIENTRY radReferencePass(RADpass pass) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleasePass(RADpass pass) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassDefault(RADpass pass) {UNIMPLEMENTED();}
+void RADAPIENTRY radCompilePass(RADpass pass) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassRenderTargets(RADpass pass, RADuint numColors, const RADrenderTargetHandle *colors, RADrenderTargetHandle depth, RADrenderTargetHandle stencil) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassPreserveEnable(RADpass pass, RADrtAttachment attachment, RADboolean enable) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassDiscard(RADpass pass, RADuint numTextures, const RADtexture *textures, const RADoffset2D *offsets) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassResolve(RADpass pass, RADrtAttachment attachment, RADtexture texture) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassStore(RADpass pass, RADuint numTextures, const RADtexture *textures, const RADoffset2D *offsets) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassClip(RADpass pass, const RADrect2D *rect) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassDependencies(RADpass pass, RADuint numPasses, const RADpass *otherPasses, const RADbitfield *srcMask, const RADbitfield *dstMask, const RADbitfield *flushMask, const RADbitfield *invalidateMask) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassTilingBoundary(RADpass pass, RADboolean boundary) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassTileFilterWidth(RADpass pass, RADuint filterWidth, RADuint filterHeight) {UNIMPLEMENTED();}
+void RADAPIENTRY radPassTileFootprint(RADpass pass, RADuint bytesPerPixel, RADuint maxFilterWidth, RADuint maxFilterHeight) {UNIMPLEMENTED();}
+RADsync RADAPIENTRY radCreateSync(RADdevice device) {UNIMPLEMENTED(); return 0;}
+void RADAPIENTRY radReferenceSync(RADsync sync) {UNIMPLEMENTED();}
+void RADAPIENTRY radReleaseSync(RADsync sync) {UNIMPLEMENTED();}
+void RADAPIENTRY radQueueFenceSync(RADqueue queue, RADsync sync, RADsyncCondition condition, RADbitfield flags) {UNIMPLEMENTED();}
+RADwaitSyncResult RADAPIENTRY radWaitSync(RADsync sync, RADuint64 timeout) {UNIMPLEMENTED(); return RAD_WAIT_SYNC_FAILED;}
+RADboolean RADAPIENTRY radQueueWaitSync(RADqueue queue, RADsync sync) {UNIMPLEMENTED(); return 0;}
 
 RADPROC RADAPIENTRY radGetProcAddress(const RADchar *procname)
 {
