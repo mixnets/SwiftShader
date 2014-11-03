@@ -19,27 +19,35 @@ RADqueue queue;
 bool useCopyQueue = true;
 RADqueue copyQueue;
 
+#define SHADER_SOURCE(source) #source
+
 static const char *vsstring = 
-    "#version 440 core\n"
-    "#define BINDGROUP(GROUP,INDEX) layout(binding = ((INDEX) | ((GROUP) << 4)))\n"
-    "layout(location = 1) in vec4 tc;\n"
-    "layout(location = 0) in vec4 position;\n"
-    "BINDGROUP(0, 2) uniform Block {\n"
-    "    vec4 scale;\n"
-    "};\n"
-    "out vec4 ftc;\n"
-    "void main() {\n"
-    "  gl_Position = position*scale;\n"
-    // This line exists to trick the compiler into putting a value in the compiler
-    // constant bank, so we can exercise binding that bank
-    "  if (scale.z != 1.0 + 1.0/65536.0) {\n"
-    "      gl_Position = vec4(0,0,0,0);\n"
-    "  }\n"
-    "  ftc = tc;\n"
-    "}\n";
+    //"#version 440 core\n"
+    //"#define BINDGROUP(GROUP,INDEX) layout(binding = ((INDEX) | ((GROUP) << 4)))\n"
+    //"layout(location = 1) in vec4 tc;\n"
+    //"layout(location = 0) in vec4 position;\n"
+    //"BINDGROUP(0, 2) uniform Block {\n"
+    //"    vec4 scale;\n"
+    //"};\n"
+    //"out vec4 ftc;\n"
+    //"void main() {\n"
+    //"  gl_Position = position*scale;\n"
+    //// This line exists to trick the compiler into putting a value in the compiler
+    //// constant bank, so we can exercise binding that bank
+    //"  if (scale.z != 1.0 + 1.0/65536.0) {\n"
+    //"      gl_Position = vec4(0,0,0,0);\n"
+    //"  }\n"
+    //"  ftc = tc;\n"
+    //"}\n";
+SHADER_SOURCE(attribute highp vec4	myVertex;
+		uniform mediump mat4	myPMVMatrix;
+		void main(void)
+		{
+			gl_Position = myPMVMatrix * myVertex;
+		});
 
 static const char *fsstring = 
-    "#version 440 core\n"
+   /* "#version 440 core\n"
     "#define BINDGROUP(GROUP,INDEX) layout(binding = ((INDEX) | ((GROUP) << 4)))\n"
     "BINDGROUP(0, 3) uniform sampler2D tex;\n"
     "BINDGROUP(0, 2) uniform Block {\n"
@@ -52,7 +60,12 @@ static const char *fsstring =
     "  if (scale.z != 1.0 + 1.0/65536.0) {\n"
     "      color = vec4(0,0,0,0);\n"
     "  }\n"
-    "}\n";
+    "}\n";*/
+		SHADER_SOURCE(
+			void main (void)
+			{
+				gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\n
+			});
 
 
 // Two triangles that intersect
