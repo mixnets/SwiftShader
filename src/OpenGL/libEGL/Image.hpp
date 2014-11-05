@@ -68,6 +68,11 @@ public:
         shared = true;
     }
 
+	void Image::unShare()
+    {
+        shared = false;
+    }
+
 	void *Image::lock(unsigned int left, unsigned int top, sw::Lock lock)
 	{
 		return lockExternal(left, top, 0, lock, sw::PUBLIC);
@@ -91,6 +96,10 @@ public:
 	virtual void loadCompressedData(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels) = 0;
 
 protected:
+	virtual ~Image() = 0
+	{
+	}
+
 	const GLsizei width;
 	const GLsizei height;
 	const GLenum format;
@@ -98,7 +107,6 @@ protected:
 	const sw::Format internalFormat;
 	const int multiSampleDepth;
 
-private:
 	bool shared;   // Used as an EGLImage
 };
 }

@@ -103,15 +103,17 @@ CONSTRUCTOR static bool eglAttachProcess()
     es2::createContext = (egl::Context *(*)(const egl::Config*, const egl::Context*))getProcAddress(libGLESv2, "glCreateContext");
     es2::getProcAddress = (__eglMustCastToProperFunctionPointerType (*)(const char*))getProcAddress(libGLESv2, "glGetProcAddress");
 
+	es::createBackBuffer = (egl::Image *(*)(int, int, const egl::Config*))getProcAddress(libGLESv2, "createBackBuffer");
+	es::createDepthStencil = (egl::Image *(*)(unsigned int, unsigned int, sw::Format, int, bool))getProcAddress(libGLESv2, "createDepthStencil");
+	es::createFrameBuffer = (sw::FrameBuffer *(*)(EGLNativeDisplayType, EGLNativeWindowType, int, int))getProcAddress(libGLESv2, "createFrameBuffer");
+
+	if(!es::createBackBuffer)
+	{
+
 	es::createBackBuffer = (egl::Image *(*)(int, int, const egl::Config*))getProcAddress(libGLES_CM, "createBackBuffer");
 	es::createDepthStencil = (egl::Image *(*)(unsigned int, unsigned int, sw::Format, int, bool))getProcAddress(libGLES_CM, "createDepthStencil");
     es::createFrameBuffer = (sw::FrameBuffer *(*)(EGLNativeDisplayType, EGLNativeWindowType, int, int))getProcAddress(libGLES_CM, "createFrameBuffer");
 
-	if(!es::createBackBuffer)
-	{
-		es::createBackBuffer = (egl::Image *(*)(int, int, const egl::Config*))getProcAddress(libGLESv2, "createBackBuffer");
-		es::createDepthStencil = (egl::Image *(*)(unsigned int, unsigned int, sw::Format, int, bool))getProcAddress(libGLESv2, "createDepthStencil");
-		es::createFrameBuffer = (sw::FrameBuffer *(*)(EGLNativeDisplayType, EGLNativeWindowType, int, int))getProcAddress(libGLESv2, "createFrameBuffer");
 	}
 
 	return libGLES_CM != 0 || libGLESv2 != 0;
@@ -169,7 +171,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
     switch(reason)
     {
     case DLL_PROCESS_ATTACH:
-		if(false)
+		if(true)
 		{
 			WaitForDebugger(instance);
 		}

@@ -1,4 +1,4 @@
-LIBRARY	libEGL
+LIBRARY	libEGL.dll
 EXPORTS
 	eglBindAPI                      @14
 	eglBindTexImage                 @20
@@ -38,3 +38,14 @@ EXPORTS
 	; Functions that don't change the error code, for use by client APIs
 	clientGetCurrentContext
 	clientGetCurrentDisplay
+
+	eglCreateImageKHR
+	eglDestroyImageKHR
+	eglCreateSyncKHR
+	eglDestroySyncKHR
+	eglClientWaitSyncKHR
+	eglSignalSyncKHR
+	eglGetSyncAttribKHR
+	eglLockSurfaceKHR
+	eglUnlockSurfaceKHR
+	eglSetSwapRectangleANDROID

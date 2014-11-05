@@ -20,7 +20,7 @@
 
 #define GL_API
 #include <GLES/gl.h>
-#define GL_GLEXT_PROTOTYPES
+//#define GL_GLEXT_PROTOTYPES
 #include <GLES/glext.h>
 
 #include <string>

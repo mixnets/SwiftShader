@@ -230,7 +230,7 @@ void GL_APIENTRY glBeginQueryEXT(GLenum target, GLuint id)
 
 void GL_APIENTRY glBindAttribLocation(GLuint program, GLuint index, const GLchar* name)
 {
-    TRACE("(GLuint program = %d, GLuint index = %d, const GLchar* name = 0x%0.8p)", program, index, name);
+    TRACE("(GLuint program = %d, GLuint index = %d, const GLchar* name = %s)", program, index, name);
 
     try
     {
@@ -1290,7 +1290,7 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, 
             GLenum textureFormat = texture->getFormat(target, level);
 
             // [OpenGL ES 2.0.24] table 3.9
-            switch(textureFormat)
+            /*switch(textureFormat)
             {
             case GL_ALPHA:
                 if(colorbufferFormat != GL_ALPHA &&
@@ -1335,7 +1335,7 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, 
 				return error(GL_INVALID_OPERATION);
             default:
                 return error(GL_INVALID_OPERATION);
-            }
+            }*/
 
             texture->copySubImage(target, level, xoffset, yoffset, x, y, width, height, framebuffer);
         }
@@ -2422,7 +2422,7 @@ void GL_APIENTRY glGenRenderbuffers(GLsizei n, GLuint* renderbuffers)
 
 void GL_APIENTRY glGenTextures(GLsizei n, GLuint* textures)
 {
-    TRACE("(GLsizei n = %d, GLuint* textures =  0x%0.8p)", n, textures);
+    TRACE("(GLsizei n = %d, GLuint* textures = 0x%0.8p)", n, textures);
 
     try
     {
@@ -2495,7 +2495,7 @@ void GL_APIENTRY glGetActiveAttrib(GLuint program, GLuint index, GLsizei bufsize
 void GL_APIENTRY glGetActiveUniform(GLuint program, GLuint index, GLsizei bufsize, GLsizei* length, GLint* size, GLenum* type, GLchar* name)
 {
     TRACE("(GLuint program = %d, GLuint index = %d, GLsizei bufsize = %d, "
-          "GLsizei* length = 0x%0.8p, GLint* size = 0x%0.8p, GLenum* type = 0x%0.8p, GLchar* name = 0x%0.8p)",
+          "GLsizei* length = 0x%0.8p, GLint* size = 0x%0.8p, GLenum* type = 0x%0.8p, GLchar* name = %s)",
           program, index, bufsize, length, size, type, name);
 
     try
@@ -3020,7 +3020,7 @@ void GL_APIENTRY glGetIntegerv(GLenum pname, GLint* params)
 
 void GL_APIENTRY glGetProgramiv(GLuint program, GLenum pname, GLint* params)
 {
-    TRACE("(GLuint program = %d, GLenum pname = %d, GLint* params = 0x%0.8p)", program, pname, params);
+    TRACE("(GLuint program = %d, GLenum pname = 0x%X, GLint* params = 0x%0.8p)", program, pname, params);
 
     try
     {
@@ -3720,7 +3720,7 @@ void GL_APIENTRY glGetUniformiv(GLuint program, GLint location, GLint* params)
 
 int GL_APIENTRY glGetUniformLocation(GLuint program, const GLchar* name)
 {
-    TRACE("(GLuint program = %d, const GLchar* name = 0x%0.8p)", program, name);
+    TRACE("(GLuint program = %d, const GLchar* name = %s)", program, name);
 
     try
     {
@@ -6110,6 +6110,7 @@ void GL_APIENTRY glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image
     {
         switch(target)
         {
+		case GL_TEXTURE_2D:
         case GL_TEXTURE_EXTERNAL_OES:
             break;
         default:
@@ -6125,14 +6126,21 @@ void GL_APIENTRY glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image
 
         if(context)
         {
-            es2::TextureExternal *texture = context->getTextureExternal();
+            es2::Texture2D *texture = 0;
+			
+			switch(target)
+			{
+			case GL_TEXTURE_2D:           texture = context->getTexture2D();       break;
+			case GL_TEXTURE_EXTERNAL_OES: texture = context->getTextureExternal(); break;
+			default:                      UNREACHABLE();
+			}
 
             if(!texture)
             {
                 return error(GL_INVALID_OPERATION);
             }
 
-            es2::Image *glImage = static_cast<es2::Image*>(image);
+            egl::Image *glImage = static_cast<egl::Image*>(image);
 
             texture->setImage(glImage);
         }
@@ -6142,6 +6150,748 @@ void GL_APIENTRY glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image
         return error(GL_OUT_OF_MEMORY);
     }
 }
+
+void GL_APIENTRY glEGLImageTargetRenderbufferStorageOES (GLenum target, GLeglImageOES image)
+{
+	UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexsOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexiOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexsvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexivOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexfOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawTexfvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glAlphaFuncxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glClearColorxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glClearDepthxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glClipPlanexOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glColor4xOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDepthRangexOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glFogxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glFogxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glFrustumxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetClipPlanexOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetFixedvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetLightxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetMaterialxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetTexEnvxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetTexParameterxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glLightModelxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glLightModelxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glLightxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glLightxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glLineWidthxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glLoadMatrixxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glMaterialxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glMaterialxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glMultMatrixxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glMultiTexCoord4xOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glNormal3xOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glOrthoxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glPointParameterxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glPointParameterxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glPointSizexOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glPolygonOffsetxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glRotatexOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glSampleCoveragexOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glScalexOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexEnvxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexEnvxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexParameterxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexParameterxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTranslatexOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glMapBufferOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glUnmapBufferOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetBufferPointervOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glCurrentPaletteMatrixOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glLoadPaletteFromModelViewMatrixOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glMatrixIndexPointerOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glWeightPointerOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glQueryMatrixxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDepthRangefOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glFrustumfOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glOrthofOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glClipPlanefOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetClipPlanefOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glClearDepthfOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexGenfOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexGenfvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexGeniOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexGenivOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexGenxOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexGenxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetTexGenfvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetTexGenivOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetTexGenxvOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glBindVertexArrayOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDeleteVertexArraysOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGenVertexArraysOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glIsVertexArrayOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDiscardFramebufferEXT()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glMultiDrawArraysEXT()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glMultiDrawElementsEXT()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glClipPlanefIMG()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glClipPlanexIMG()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glRenderbufferStorageMultisampleIMG()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glFramebufferTexture2DMultisampleIMG()
+{
+    UNIMPLEMENTED();
+}
+
+//void GL_APIENTRY glDeleteFencesNV()
+//{
+//    UNIMPLEMENTED();
+//}
+//
+//void GL_APIENTRY glGenFencesNV()
+//{
+//    UNIMPLEMENTED();
+//}
+//
+//void GL_APIENTRY glIsFenceNV()
+//{
+//    UNIMPLEMENTED();
+//}
+//
+//void GL_APIENTRY glTestFenceNV()
+//{
+//    UNIMPLEMENTED();
+//}
+//
+//void GL_APIENTRY glGetFenceivNV()
+//{
+//    UNIMPLEMENTED();
+//}
+//
+//void GL_APIENTRY glFinishFenceNV()
+//{
+//    UNIMPLEMENTED();
+//}
+//
+//void GL_APIENTRY glSetFenceNV()
+//{
+//    UNIMPLEMENTED();
+//}
+
+void GL_APIENTRY glGetDriverControlsQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetDriverControlStringQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glEnableDriverControlQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDisableDriverControlQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glExtGetTexturesQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glExtGetBuffersQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glExtGetRenderbuffersQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glExtGetFramebuffersQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glExtGetTexLevelParameterivQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glExtTexObjectStateOverrideiQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glExtGetTexSubImageQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glExtGetBufferPointervQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glExtGetShadersQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glExtGetProgramsQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glExtIsProgramBinaryQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glExtGetProgramBinarySourceQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glStartTilingQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glEndTilingQCOM()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetProgramBinaryOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glProgramBinaryOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexSubImage3DOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glCopyTexSubImage3DOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glCompressedTexImage3DOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glCompressedTexSubImage3DOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glFramebufferTexture3DOES()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetPerfMonitorGroupsAMD()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetPerfMonitorCountersAMD()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetPerfMonitorGroupStringAMD()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetPerfMonitorCounterStringAMD()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetPerfMonitorCounterInfoAMD()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGenPerfMonitorsAMD()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDeletePerfMonitorsAMD()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glSelectPerfMonitorCountersAMD()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glBeginPerfMonitorAMD()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glEndPerfMonitorAMD()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetPerfMonitorCounterDataAMD()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glCoverageMaskNV()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glCoverageOperationNV()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glVertexAttribPointerData()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glVertexAttribPointerOffset()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawElementsOffset()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glDrawElementsData()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glGetCompressedTextureFormats()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glShaderString()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glFinishRoundTrip()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glVertexPointerOffset()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glColorPointerOffset()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glNormalPointerOffset()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glPointSizePointerOffset()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexCoordPointerOffset()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glWeightPointerOffset()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glMatrixIndexPointerOffset()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glVertexPointerData()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glColorPointerData()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glNormalPointerData()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glTexCoordPointerData()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glPointSizePointerData()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glWeightPointerData()
+{
+    UNIMPLEMENTED();
+}
+
+void GL_APIENTRY glMatrixIndexPointerData()
+{
+    UNIMPLEMENTED();
+}
+
+
 
 __eglMustCastToProperFunctionPointerType glGetProcAddress(const char *procname)
 {
@@ -6177,6 +6927,7 @@ __eglMustCastToProperFunctionPointerType glGetProcAddress(const char *procname)
         EXTENSION(glGetQueryivEXT),
         EXTENSION(glGetQueryObjectuivEXT),
         EXTENSION(glEGLImageTargetTexture2DOES),
+		EXTENSION(glEGLImageTargetRenderbufferStorageOES),
 
 		#undef EXTENSION
     };

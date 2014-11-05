@@ -16,7 +16,7 @@
 #include "../common/debug.h"
 #include "Common/Thread.hpp"
 
-#define GL_GLEXT_PROTOTYPES
+//#define GL_GLEXT_PROTOTYPES
 #include <GLES/glext.h>
 
 namespace es1
@@ -72,7 +72,7 @@ namespace es1
 			sw::atomicDecrement(&referenceCount);
 		}
 
-		if(referenceCount == 0)
+		if(referenceCount == 0 && !shared)
 		{
 			delete this;
 		}

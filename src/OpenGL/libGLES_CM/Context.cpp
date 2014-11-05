@@ -242,12 +242,12 @@ void Context::makeCurrent(egl::Surface *surface)
 
     if(defaultRenderTarget)
     {
-        defaultRenderTarget->release();
+        //defaultRenderTarget->release();
     }
 
     if(depthStencil)
     {
-        depthStencil->release();
+        //depthStencil->release();
     }
     
     markAllStateDirty();
@@ -834,7 +834,7 @@ void Context::bindRenderbuffer(GLuint renderbuffer)
 
 void Context::setFramebufferZero(Framebuffer *buffer)
 {
-    delete mFramebufferMap[0];
+    //delete mFramebufferMap[0];
     mFramebufferMap[0] = buffer;
 }
 
