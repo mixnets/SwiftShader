@@ -536,6 +536,17 @@ void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 	renderTarget->release();
 }
 
+void Texture2D::setImage(Image *sharedImage)
+{
+    if(image[0])
+    {
+        image[0]->release();
+    }
+
+    sharedImage->addRef();
+    image[0] = sharedImage;
+}
+
 // Tests for 2D texture sampling completeness. [OpenGL ES 2.0.24] section 3.8.2 page 85.
 bool Texture2D::isSamplerComplete() const
 {
@@ -705,17 +716,6 @@ TextureExternal::~TextureExternal()
 GLenum TextureExternal::getTarget() const
 {
     return GL_TEXTURE_EXTERNAL_OES;
-}
-
-void TextureExternal::setImage(Image *sharedImage)
-{
-    if(image[0])
-    {
-        image[0]->release();
-    }
-
-    sharedImage->addRef();
-    image[0] = sharedImage;
 }
 
 }
