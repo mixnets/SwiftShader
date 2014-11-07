@@ -206,14 +206,4 @@ void ResourceManager::checkTextureAllocation(GLuint texture, TextureType type)
     }
 }
 
-void ResourceManager::checkRenderbufferAllocation(GLuint renderbuffer)
-{
-    if(renderbuffer != 0 && !getRenderbuffer(renderbuffer))
-    {
-        Renderbuffer *renderbufferObject = new Renderbuffer(renderbuffer, new Colorbuffer(0, 0, GL_RGBA4_OES, 0));
-        mRenderbufferMap[renderbuffer] = renderbufferObject;
-        renderbufferObject->addRef();
-    }
-}
-
 }
