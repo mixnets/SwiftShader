@@ -138,8 +138,8 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
+copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -163,8 +163,8 @@ copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Comman
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
+copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -190,8 +190,8 @@ copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Comman
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
+copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -216,8 +216,8 @@ copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Comman
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
+copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
@@ -244,8 +244,8 @@ copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Comman
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
+copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
@@ -271,8 +271,8 @@ copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Comman
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
+copy "$(OutDir)libEGL.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
