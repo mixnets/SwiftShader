@@ -169,10 +169,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
     switch(reason)
     {
     case DLL_PROCESS_ATTACH:
-		if(false)
-		{
-			WaitForDebugger(instance);
-		}
+		WaitForDebugger(instance);
         return eglAttachProcess();
         break;
     case DLL_THREAD_ATTACH:
