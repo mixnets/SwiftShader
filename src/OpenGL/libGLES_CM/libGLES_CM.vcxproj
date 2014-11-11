@@ -64,9 +64,9 @@
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(DXSDK_DIR)\Include;..\include;$(DXSDK_DIR)\Include;$(VCInstallDir)PlatformSDK\include;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(DXSDK_DIR)\Include;..\include;$(DXSDK_DIR)\Include;$(VCInstallDir)PlatformSDK\include;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(DXSDK_DIR)\Include;..\include;$(DXSDK_DIR)\Include;$(VCInstallDir)PlatformSDK\include;$(IncludePath)</IncludePath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(DXSDK_DIR)\Lib\x86;$(VCInstallDir)PlatformSDK\lib;$(LibraryPath)</LibraryPath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(DXSDK_DIR)\Lib\x86;$(VCInstallDir)PlatformSDK\lib;$(LibraryPath)</LibraryPath>
-    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(DXSDK_DIR)\Lib\x86;$(VCInstallDir)PlatformSDK\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(DXSDK_DIR)\Lib\x64;$(VCInstallDir)PlatformSDK\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(DXSDK_DIR)\Lib\x64;$(VCInstallDir)PlatformSDK\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(DXSDK_DIR)\Lib\x64;$(VCInstallDir)PlatformSDK\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -90,10 +90,10 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\translator\"
-copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\translator\libGLES_CM_translator.dll"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
+copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
+mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\translator\"
+copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\translator\libGLES_CM_translator.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -125,10 +125,10 @@ copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\trans
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\translator\"
-copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\translator\libGLES_CM_translator.dll"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
+copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
+mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\translator\"
+copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\translator\libGLES_CM_translator.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">
@@ -159,10 +159,10 @@ copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\trans
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\"
-mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)\translator\"
-copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)\translator\libGLES_CM_translator.dll"</Command>
+      <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
+copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
+mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\translator\"
+copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\translator\libGLES_CM_translator.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
