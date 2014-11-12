@@ -17,6 +17,9 @@
 
 #include "common/debug.h"
 
+#define EGLAPI
+#include <EGL/eglext.h>
+
 #include <algorithm>
 #include <vector>
 
@@ -28,6 +31,19 @@ Config::Config(DisplayMode displayMode, EGLint minInterval, EGLint maxInterval, 
     : mDisplayMode(displayMode), mRenderTargetFormat(renderTargetFormat), mDepthStencilFormat(depthStencilFormat), mMultiSample(multiSample)
 {
     set(displayMode, minInterval, maxInterval, renderTargetFormat, depthStencilFormat, multiSample);
+}
+
+bool FastFormats(sw::Format format1, sw::Format format2)
+{
+    if(format1 == sw::FORMAT_A8R8G8B8 || format1 == sw::FORMAT_X8R8G8B8)
+    {
+        if(format2 == sw::FORMAT_A8R8G8B8 || format2 == sw::FORMAT_X8R8G8B8)
+        {
+            return true;
+        }
+    }
+
+    return format1 == format2;
 }
 
 void Config::set(DisplayMode displayMode, EGLint minInterval, EGLint maxInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample)
@@ -81,7 +97,7 @@ void Config::set(DisplayMode displayMode, EGLint minInterval, EGLint maxInterval
     mLuminanceSize = 0;
     mAlphaMaskSize = 0;
     mColorBufferType = EGL_RGB_BUFFER;
-    mConfigCaveat = (displayMode.format == renderTargetFormat) ? EGL_NONE : EGL_SLOW_CONFIG;
+    mConfigCaveat = FastFormats(displayMode.format, renderTargetFormat) ? EGL_NONE : EGL_SLOW_CONFIG;
     mConfigID = 0;
     mConformant = EGL_OPENGL_ES_BIT | EGL_OPENGL_ES2_BIT;
 
@@ -316,6 +332,8 @@ bool ConfigSet::getConfigs(EGLConfig *configs, const EGLint *attribList, EGLint 
             case EGL_MAX_PBUFFER_WIDTH:       match = config->mMaxPBufferWidth >= attribute[1];                 break;
             case EGL_MAX_PBUFFER_HEIGHT:      match = config->mMaxPBufferHeight >= attribute[1];                break;
             case EGL_MAX_PBUFFER_PIXELS:      match = config->mMaxPBufferPixels >= attribute[1];                break;
+			case EGL_RECORDABLE_ANDROID:      match = true;                                                    break;
+			case EGL_FRAMEBUFFER_TARGET_ANDROID: match = true; break;
 			default:
 				UNIMPLEMENTED();
 				match = false;
@@ -352,6 +370,7 @@ bool ConfigSet::getConfigs(EGLConfig *configs, const EGLint *attribList, EGLint 
         *numConfig = passed.size();
     }
 
+    // warn if zero config
     return true;
 }
 
