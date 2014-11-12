@@ -39,6 +39,16 @@ EXPORTS
 	eglCreateImageKHR
 	eglDestroyImageKHR
 
+    ; Unsupported extensions (honeypot)
+	eglCreateSyncKHR
+	eglDestroySyncKHR
+	eglClientWaitSyncKHR
+	eglSignalSyncKHR
+	eglGetSyncAttribKHR
+	eglLockSurfaceKHR
+	eglUnlockSurfaceKHR
+	eglSetSwapRectangleANDROID
+
 	; Functions that don't change the error code, for use by client APIs
 	clientGetCurrentContext
 	clientGetCurrentDisplay
