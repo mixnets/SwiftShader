@@ -389,12 +389,16 @@ int Texture2D::getLevelCount() const
 
 void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels)
 {
+    resource->lock(sw::DESTRUCT);
+
 	if(image[level])
 	{
 		image[level]->unbind();
 	}
 
 	image[level] = new Image(this, width, height, format, type);
+
+    resource->unlock();
 
 	if(!image[level])
 	{
@@ -421,6 +425,8 @@ void Texture2D::bindTexImage(egl::Surface *surface)
         return;
     }
 
+    resource->lock(sw::DESTRUCT);
+
 	for(int level = 0; level < MIPMAP_LEVELS; level++)
 	{
 		if(image[level])
@@ -432,30 +438,40 @@ void Texture2D::bindTexImage(egl::Surface *surface)
 
 	image[0] = surface->getRenderTarget();
 
+    resource->unlock();
+
     mSurface = surface;
     mSurface->setBoundTexture(this);
 }
 
 void Texture2D::releaseTexImage()
 {
+    resource->lock(sw::DESTRUCT);
+
     for(int level = 0; level < MIPMAP_LEVELS; level++)
-	{
-		if(image[level])
-		{
-			image[level]->unbind();
-			image[level] = 0;
-		}
-	}
+    {
+        if(image[level])
+        {
+            image[level]->unbind();
+            image[level] = 0;
+        }
+    }
+
+    resource->unlock();
 }
 
 void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels)
 {
+    resource->lock(sw::DESTRUCT);
+
 	if(image[level])
 	{
 		image[level]->unbind();
 	}
 
 	image[level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
+
+    resource->unlock();
 
 	if(!image[level])
 	{
@@ -485,12 +501,16 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
         return error(GL_OUT_OF_MEMORY);
     }
 
+    resource->lock(sw::DESTRUCT);
+
 	if(image[level])
 	{
 		image[level]->unbind();
 	}
 
 	image[level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
+
+    resource->unlock();
 
 	if(!image[level])
 	{
@@ -635,12 +655,16 @@ void Texture2D::generateMipmaps()
     
 	for(unsigned int i = 1; i <= q; i++)
     {
+        resource->lock(sw::DESTRUCT);
+        
 		if(image[i])
 		{
 			image[i]->unbind();
 		}
 
 		image[i] = new Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType());
+
+        resource->unlock();
 
 		if(!image[i])
 		{

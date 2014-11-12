@@ -389,12 +389,16 @@ int Texture2D::getLevelCount() const
 
 void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels)
 {
+    resource->lock(sw::DESTRUCT);
+
 	if(image[level])
 	{
 		image[level]->unbind();
 	}
 
 	image[level] = new Image(this, width, height, format, type);
+
+    resource->unlock();
 
 	if(!image[level])
 	{
@@ -421,6 +425,8 @@ void Texture2D::bindTexImage(egl::Surface *surface)
         return;
     }
 
+    resource->lock(sw::DESTRUCT);
+    
 	for(int level = 0; level < MIPMAP_LEVELS; level++)
 	{
 		if(image[level])
@@ -432,12 +438,16 @@ void Texture2D::bindTexImage(egl::Surface *surface)
 
 	image[0] = surface->getRenderTarget();
 
+    resource->unlock();
+
     mSurface = surface;
     mSurface->setBoundTexture(this);
 }
 
 void Texture2D::releaseTexImage()
 {
+    resource->lock(sw::DESTRUCT);
+    
     for(int level = 0; level < MIPMAP_LEVELS; level++)
 	{
 		if(image[level])
@@ -446,16 +456,22 @@ void Texture2D::releaseTexImage()
 			image[level] = 0;
 		}
 	}
+
+    resource->unlock();
 }
 
 void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels)
 {
+    resource->lock(sw::DESTRUCT);
+    
 	if(image[level])
 	{
 		image[level]->unbind();
 	}
 
 	image[level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
+
+    resource->unlock();
 
 	if(!image[level])
 	{
@@ -485,6 +501,8 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
         return error(GL_OUT_OF_MEMORY);
     }
 
+    resource->lock(sw::DESTRUCT);
+    
 	if(image[level])
 	{
 		image[level]->unbind();
@@ -492,6 +510,8 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 
 	image[level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
 
+    resource->lock(sw::DESTRUCT);
+    
 	if(!image[level])
 	{
 		return error(GL_OUT_OF_MEMORY);
@@ -540,12 +560,16 @@ void Texture2D::setImage(egl::Image *sharedImage)
 {
 	sharedImage->addRef();
 
+    resource->lock(sw::DESTRUCT);
+    
     if(image[0])
     {
         image[0]->unbind();
     }
 
     image[0] = sharedImage;
+
+    resource->unlock();
 }
 
 // Tests for 2D texture sampling completeness. [OpenGL ES 2.0.24] section 3.8.2 page 85.
@@ -635,12 +659,16 @@ void Texture2D::generateMipmaps()
     
 	for(unsigned int i = 1; i <= q; i++)
     {
+        resource->lock(sw::DESTRUCT);
+        
 		if(image[i])
 		{
 			image[i]->unbind();
 		}
 
 		image[i] = new Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType());
+
+        resource->unlock();
 
 		if(!image[i])
 		{
@@ -830,12 +858,16 @@ void TextureCubeMap::setCompressedImage(GLenum target, GLint level, GLenum forma
 {
 	int face = CubeFaceIndex(target);
 
+    resource->lock(sw::DESTRUCT);
+    
 	if(image[face][level])
 	{
 		image[face][level]->unbind();
 	}
 
 	image[face][level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
+    
+    resource->unlock();
 
 	if(!image[face][level])
 	{
@@ -966,12 +998,16 @@ void TextureCubeMap::setImage(GLenum target, GLint level, GLsizei width, GLsizei
 {
 	int face = CubeFaceIndex(target);
 
+    resource->lock(sw::DESTRUCT);
+    
 	if(image[face][level])
 	{
 		image[face][level]->unbind();
 	}
 
 	image[face][level] = new Image(this, width, height, format, type);
+
+    resource->unlock();
 
 	if(!image[face][level])
 	{
@@ -993,12 +1029,16 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 
 	int face = CubeFaceIndex(target);
 
+    resource->lock(sw::DESTRUCT);
+    
 	if(image[face][level])
 	{
 		image[face][level]->unbind();
 	}
 
 	image[face][level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
+
+    resource->unlock();
 
 	if(!image[face][level])
 	{
@@ -1071,12 +1111,16 @@ void TextureCubeMap::generateMipmaps()
     {
 		for(unsigned int i = 1; i <= q; i++)
 		{
+            resource->lock(sw::DESTRUCT);
+            
 			if(image[f][i])
 			{
 				image[f][i]->unbind();
 			}
 
 			image[f][i] = new Image(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat(), image[0][0]->getType());
+
+            resource->unlock();
 
 			if(!image[f][i])
 			{
