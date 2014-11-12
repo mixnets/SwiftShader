@@ -233,6 +233,7 @@ EGLBoolean EGLAPIENTRY eglGetConfigs(EGLDisplay dpy, EGLConfig *configs, EGLint 
 
         if(!display->getConfigs(configs, attribList, config_size, num_config))
         {
+            //
             return error(EGL_BAD_ATTRIBUTE, EGL_FALSE);
         }
 
