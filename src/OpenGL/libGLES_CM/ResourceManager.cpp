@@ -94,7 +94,7 @@ void ResourceManager::deleteBuffer(GLuint buffer)
     {
         mBufferHandleAllocator.release(bufferObject->first);
         if(bufferObject->second) bufferObject->second->release();
-        mBufferMap.erase(bufferObject);
+        mBufferMap.erase(bufferObject);//crash in BasicTnL
     }
 }
 
