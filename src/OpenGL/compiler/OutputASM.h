@@ -144,6 +144,8 @@ namespace sh
 		static int dim2(TIntermNode *m);
 		static unsigned int loopCount(TIntermLoop *node);
 
+		static bool IsSampler(TIntermTyped *operand);
+
 		es2::Shader *const shaderObject;
 		sw::Shader *shader;
 		sw::PixelShader *pixelShader;
@@ -160,6 +162,8 @@ namespace sh
 
 		int currentFunction;
 		std::vector<Function> functionArray;
+
+		TQualifier outputQualifier;
 
 		TParseContext &mContext;
 	};
