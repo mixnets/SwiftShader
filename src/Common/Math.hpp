@@ -109,6 +109,11 @@ namespace sw
 		return 1 << x;
 	}
 
+	inline float exp2(float x)
+	{
+		return powf(2.0f, x);
+	}
+
 	inline unsigned long log2(int x)
 	{
 		#if defined(_MSC_VER)
