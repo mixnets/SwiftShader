@@ -109,6 +109,11 @@ namespace sw
 		return 1 << x;
 	}
 
+	inline float exp2(float x)
+	{
+		return static_cast<float>(exp2(static_cast<int>(x)));
+	}
+
 	inline unsigned long log2(int x)
 	{
 		#if defined(_MSC_VER)
