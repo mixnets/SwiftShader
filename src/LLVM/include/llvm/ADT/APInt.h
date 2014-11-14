@@ -252,12 +252,12 @@ public:
   /// This constructor interprets the string \arg str in the given radix. The
   /// interpretation stops when the first character that is not suitable for the
   /// radix is encountered, or the end of the string. Acceptable radix values
-  /// are 2, 8, 10, 16, and 36. It is an error for the value implied by the 
+  /// are 2, 8, 10, 16, and 36. It is an error for the value implied by the
   /// string to require more bits than numBits.
   ///
   /// @param numBits the bit width of the constructed APInt
   /// @param str the string to be interpreted
-  /// @param radix the radix to use for the conversion 
+  /// @param radix the radix to use for the conversion
   /// @brief Construct an APInt from a string representation.
   APInt(unsigned numBits, StringRef str, uint8_t radix);
 
@@ -424,7 +424,7 @@ public:
   /// @returns the all-ones value for an APInt of the specified bit-width.
   /// @brief Get the all-ones value.
   static APInt getAllOnesValue(unsigned numBits) {
-    return APInt(numBits, _UI64_MAX, true);
+    return APInt(numBits, -1ULL, true);
   }
 
   /// @returns the '0' value for an APInt of the specified bit-width.
@@ -449,7 +449,7 @@ public:
     Res.setBit(BitNo);
     return Res;
   }
-  
+
   /// Constructs an APInt value that has a contiguous range of bits set. The
   /// bits from loBit (inclusive) to hiBit (exclusive) will be set. All other
   /// bits will be zero. For example, with parameters(32, 0, 16) you would get
@@ -495,7 +495,7 @@ public:
     if (loBitsSet == 0)
       return APInt(numBits, 0);
     if (loBitsSet == APINT_BITS_PER_WORD)
-      return APInt(numBits, _UI64_MAX);
+      return APInt(numBits, -1ULL);
     // For small values, return quickly.
     if (numBits < APINT_BITS_PER_WORD)
       return APInt(numBits, (1ULL << loBitsSet) - 1);
@@ -602,7 +602,7 @@ public:
   /// Performs a bitwise OR operation on this APInt and RHS. RHS is
   /// logically zero-extended or truncated to match the bit-width of
   /// the LHS.
-  /// 
+  ///
   /// @brief Bitwise OR assignment operator.
   APInt& operator|=(uint64_t RHS) {
     if (isSingleWord()) {
@@ -821,8 +821,8 @@ public:
       APInt::udivrem(LHS, RHS, Quotient, Remainder);
     }
   }
-  
-  
+
+
   // Operations that return overflow indicators.
   APInt sadd_ov(const APInt &RHS, bool &Overflow) const;
   APInt uadd_ov(const APInt &RHS, bool &Overflow) const;
@@ -1016,9 +1016,9 @@ public:
     return sge(APInt(getBitWidth(), RHS));
   }
 
-  
-  
-  
+
+
+
   /// This operation tests if there are any pairs of corresponding bits
   /// between this APInt and RHS that are both set.
   bool intersects(const APInt &RHS) const {
@@ -1062,11 +1062,11 @@ public:
   /// @brief Set every bit to 1.
   void setAllBits() {
     if (isSingleWord())
-      VAL = _UI64_MAX;
+      VAL = -1ULL;
     else {
       // Set all the bits in all the words.
       for (unsigned i = 0; i < getNumWords(); ++i)
-        pVal[i] = _UI64_MAX;
+        pVal[i] = -1ULL;
     }
     // Clear the unused ones
     clearUnusedBits();
@@ -1091,10 +1091,10 @@ public:
   /// @brief Toggle every bit to its opposite value.
   void flipAllBits() {
     if (isSingleWord())
-      VAL ^= _UI64_MAX;
+      VAL ^= -1ULL;
     else {
       for (unsigned i = 0; i < getNumWords(); ++i)
-        pVal[i] ^= _UI64_MAX;
+        pVal[i] ^= -1ULL;
     }
     clearUnusedBits();
   }
