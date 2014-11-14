@@ -21,6 +21,7 @@
 #include "Common/Version.h"
 
 #include <exception>
+#include <string.h>
 
 static bool validateDisplay(egl::Display *display)
 {
@@ -780,7 +781,7 @@ EGLContext EGLAPIENTRY eglCreateContext(EGLDisplay dpy, EGLConfig config, EGLCon
                 }
             }
         }
-		
+
         egl::Display *display = static_cast<egl::Display*>(dpy);
 
         if(!validateConfig(display, config))
