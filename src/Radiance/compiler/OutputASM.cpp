@@ -114,6 +114,7 @@ namespace sh
 
 		functionArray.push_back(Function(0, "main(", 0, 0));
 		currentFunction = 0;
+		outputFlags = NONE;
 	}
 
 	OutputASM::~OutputASM()
@@ -1266,7 +1267,7 @@ namespace sh
 
 	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2, int index)
 	{
-		if(dst && registerType(dst) == sw::Shader::PARAMETER_SAMPLER)
+		if(dst && OutputASM::IsSampler(dst))
 		{
 			op = sw::Shader::OPCODE_NULL;   // Can't assign to a sampler, but this is hit when indexing sampler arrays
 		}
@@ -1463,7 +1464,7 @@ namespace sh
 			{
 				parameter.index = registerIndex(arg) + index;
 
-				if(registerType(arg) == sw::Shader::PARAMETER_SAMPLER)
+				if(OutputASM::IsSampler(arg))
 				{
 					TIntermBinary *binary = argument->getAsBinaryNode();
 
@@ -1491,7 +1492,7 @@ namespace sh
 				}
 			}
 
-			if(!IsSampler(arg->getBasicType()))
+			if(!::IsSampler(arg->getBasicType()))
 			{
 				parameter.swizzle = readSwizzle(arg, size);
 			}
@@ -1731,9 +1732,14 @@ namespace sh
 		return 0xE4;
 	}
 
+	bool OutputASM::IsSampler(TIntermTyped *operand)
+	{
+		return ::IsSampler(operand->getBasicType()) && (operand->getQualifier() == EvqUniform || operand->getQualifier() == EvqTemporary); // Function parameters are temporaries
+	}
+
 	sw::Shader::ParameterType OutputASM::registerType(TIntermTyped *operand)
 	{
-		if(IsSampler(operand->getBasicType()) && (operand->getQualifier() == EvqUniform || operand->getQualifier() == EvqTemporary))   // Function parameters are temporaries
+		if(OutputASM::IsSampler(operand))
 		{
 			return sw::Shader::PARAMETER_SAMPLER;
 		}
@@ -1758,8 +1764,18 @@ namespace sh
 		case EvqFragCoord:           return sw::Shader::PARAMETER_MISCTYPE;
 		case EvqFrontFacing:         return sw::Shader::PARAMETER_MISCTYPE;
 		case EvqPointCoord:          return sw::Shader::PARAMETER_INPUT;
-		case EvqFragColor:           return sw::Shader::PARAMETER_COLOROUT;
-		case EvqFragData:            return sw::Shader::PARAMETER_COLOROUT;
+		case EvqFragColor:           if(outputFlags & FRAGDATA)
+									 {
+										 mContext.error(operand->getLine(), "static assignment to both gl_FragData and gl_FragColor", "glFragColor");
+									 }
+									 outputFlags |= FRAGCOLOR;
+							         return sw::Shader::PARAMETER_COLOROUT;
+		case EvqFragData:            if (outputFlags & FRAGCOLOR)
+									 {
+										 mContext.error(operand->getLine(), "static assignment to both gl_FragData and gl_FragColor", "glFragData");
+									 }
+									 outputFlags |= FRAGDATA;
+									 return sw::Shader::PARAMETER_COLOROUT;
 		default: UNREACHABLE();
 		}
 
@@ -1768,7 +1784,7 @@ namespace sh
 
 	int OutputASM::registerIndex(TIntermTyped *operand)
 	{
-		if(registerType(operand) == sw::Shader::PARAMETER_SAMPLER)
+		if(OutputASM::IsSampler(operand))
 		{
 			return samplerRegister(operand);
 		}
@@ -2027,7 +2043,7 @@ namespace sh
 	int OutputASM::uniformRegister(TIntermTyped *uniform)
 	{
 		const TType &type = uniform->getType();
-		ASSERT(!IsSampler(type.getBasicType()));
+		ASSERT(!::IsSampler(type.getBasicType()));
 		TIntermSymbol *symbol = uniform->getAsSymbolNode();
 		ASSERT(symbol);
 
@@ -2088,7 +2104,7 @@ namespace sh
 	int OutputASM::samplerRegister(TIntermTyped *sampler)
 	{
 		const TType &type = sampler->getType();
-		ASSERT(IsSampler(type.getBasicType()));
+		ASSERT(::IsSampler(type.getBasicType()));
 		TIntermSymbol *symbol = sampler->getAsSymbolNode();
 		TIntermBinary *binary = sampler->getAsBinaryNode();
 
@@ -2356,7 +2372,7 @@ namespace sh
 			default: UNREACHABLE();
 			}
 		}
-		else if (type.getBasicType() == EbtInt)
+		else if(type.getBasicType() == EbtInt)
 		{
 			switch (type.getPrecision())
 			{

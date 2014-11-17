@@ -95,6 +95,13 @@ namespace sh
 			FUNCTION
 		};
 
+		enum OutputType
+		{
+			NONE = 0x0,
+			FRAGCOLOR = 0x01,
+			FRAGDATA = 0x02,
+		};
+
 		void emitShader(Scope scope);
 
 		// Visit AST nodes and output their code to the body stream
@@ -144,6 +151,8 @@ namespace sh
 		static int dim2(TIntermNode *m);
 		static unsigned int loopCount(TIntermLoop *node);
 
+		static bool IsSampler(TIntermTyped *operand);
+
 		rad::Shader *const shaderObject;
 		sw::Shader *shader;
 		sw::PixelShader *pixelShader;
@@ -160,6 +169,8 @@ namespace sh
 
 		int currentFunction;
 		std::vector<Function> functionArray;
+
+		int outputFlags;
 
 		TParseContext &mContext;
 	};
