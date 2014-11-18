@@ -71,7 +71,11 @@
 /* #undef LLVM_ON_UNIX */
 
 /* Define if this is Win32ish platform */
+#if defined(_WIN32) || defined(WIN32)
 #define LLVM_ON_WIN32 1
+#else
+#define LLVM_ON_UNIX 1
+#endif
 
 /* Define to path to circo program if found or 'echo circo' otherwise */
 /* #undef LLVM_PATH_CIRCO */

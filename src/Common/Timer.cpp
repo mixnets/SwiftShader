@@ -49,8 +49,13 @@ namespace sw
 	{
 		#if defined(_WIN32)
 			return __rdtsc();
-		#elif __GNUC_PREREQ(4,5)
-			return __builtin_ia32_rdtsc();
+		#elif defined(__ANDROID__) || defined(ANDROID)
+			assert(false);   // UNIMPLEMENTED
+			return 0;
+		#elif defined(__linux__)
+			#if __GNUC_PREREQ(4,5)
+				return __builtin_ia32_rdtsc();
+			#endif
 		#else
 			assert(false);   // UNIMPLEMENTED
 			return 0;

@@ -162,9 +162,12 @@ void* DynamicLibrary::SearchForAddressOfSymbol(const char *symbolName) {
 // boldly use the EXPLICIT_SYMBOL macro without checking for a #define first.
 #if defined(__linux__)
   {
+#if defined(__ANDROID__) || defined(ANDROID)
+#else
     EXPLICIT_SYMBOL(stderr);
     EXPLICIT_SYMBOL(stdout);
     EXPLICIT_SYMBOL(stdin);
+#endif
   }
 #else
   // For everything else, we want to check to make sure the symbol isn't defined
