@@ -5146,9 +5146,9 @@ void GL_APIENTRY glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image
 
 void GL_APIENTRY glEGLImageTargetRenderbufferStorageOES(GLenum target, GLeglImageOES image)
 {
-	TRACE("(GLenum target = 0x%X, GLeglImageOES image = 0x%0.8p)", target, image);
+       TRACE("(GLenum target = 0x%X, GLeglImageOES image = 0x%0.8p)", target, image);
 
-	UNIMPLEMENTED();
+       UNIMPLEMENTED();
 }
 
 __eglMustCastToProperFunctionPointerType glGetProcAddress(const char *procname)

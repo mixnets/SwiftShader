@@ -22,7 +22,9 @@
 	#include <unistd.h>
 	#include <sched.h>
 	#include <sys/types.h>
-	#include <sys/sysctl.h>
+	#if defined(__APPLE__)
+		#include <sys/sysctl.h>
+	#endif
 #endif
 
 namespace sw
@@ -165,7 +167,12 @@ namespace sw
 		#if defined(_WIN32)
 			__cpuid(registers, info);
 		#else
+        #if defined(__PIC__)
+            __asm volatile ("mov %%ebx, %%edi;" "cpuid;" "xchgl %%ebx, %%edi;"
+                           : "=a" (registers[0]), "=D" (registers[1]), "=c" (registers[2]), "=d" (registers[3]) : "a" (info), "c" (0));
+        #else
             __asm volatile("cpuid": "=a" (registers[0]), "=b" (registers[1]), "=c" (registers[2]), "=d" (registers[3]): "a" (info));
+        #endif
 		#endif
 	}
 

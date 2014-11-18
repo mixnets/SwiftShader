@@ -84,9 +84,9 @@ CONSTRUCTOR static bool eglAttachProcess()
 	eglAttachThread();
 
 	#if defined(_WIN32)
-	const char *libGLES_CM_lib[] = {"libGLES_CM.dll", "libGLES_CM_translator.dll"};
+	const char *libGLES_CM_lib = "libGLES_CM.dll";
 	#else
-	const char *libGLES_CM_lib[] = {"libGLES_CM.so.1", "libGLES_CM.so"};
+	const char *libGLES_CM_lib = "libGLES_CM.so";
 	#endif
 
     libGLES_CM = loadLibrary(libGLES_CM_lib);
@@ -94,9 +94,9 @@ CONSTRUCTOR static bool eglAttachProcess()
     es1::getProcAddress = (__eglMustCastToProperFunctionPointerType (*)(const char*))getProcAddress(libGLES_CM, "glGetProcAddress");
 
 	#if defined(_WIN32)
-	const char *libGLESv2_lib[] = {"libGLESv2.dll", "libGLES_V2_translator.dll"};
+	const char *libGLESv2_lib = "libGLESv2.dll";
 	#else
-	const char *libGLESv2_lib[] = {"libGLESv2.so.2", "libGLESv2.so"};
+	const char *libGLESv2_lib = "libGLESv2.so";
 	#endif
 
     libGLESv2 = loadLibrary(libGLESv2_lib);
