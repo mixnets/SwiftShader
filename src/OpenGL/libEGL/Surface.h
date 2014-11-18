@@ -61,6 +61,11 @@ public:
 
 	bool checkForResize();   // Returns true if surface changed due to resize
 
+#if defined(__ANDROID__) || defined(ANDROID)
+    bool connect();
+    void disconnect();
+#endif
+
 private:
     void release();
     bool reset();

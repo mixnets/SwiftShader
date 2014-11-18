@@ -19,6 +19,9 @@ using namespace std;
 #include <stdio.h>
 #include <stdarg.h>
 #include <ctype.h>
+#if defined(__unix__)
+#include <unistd.h>
+#endif
 
 #if defined(__unix__)
 #include <unistd.h>
