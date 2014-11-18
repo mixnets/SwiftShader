@@ -104,9 +104,7 @@ public:
 	virtual void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels) = 0;
 
 protected:
-	virtual ~Image()
-	{
-	}
+	virtual ~Image() = 0;
 
 	const GLsizei width;
 	const GLsizei height;

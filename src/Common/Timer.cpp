@@ -22,6 +22,13 @@
 	#include <features.h>
 #endif
 
+#if defined(__GNUC__)
+	#if !defined(__GNUC_PREREQ)
+		#define __GNUC_PREREQ(maj, min) \
+			((__GNUC__ << 16) + __GNUC_MINOR__ >= ((maj) << 16) + (min))
+	#endif
+#endif
+
 #include <assert.h>
 
 namespace sw
