@@ -31,6 +31,9 @@ namespace sw
 	{
 		#if defined(_WIN32)
 			CloseHandle(handle);
+		#elif defined(__ANDROID__) || defined(ANDROID)
+			//Bionic doesn't support pthread_cancel().
+			join();
 		#else
 			pthread_cancel(handle);
 		#endif

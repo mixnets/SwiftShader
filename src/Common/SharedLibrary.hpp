@@ -74,14 +74,15 @@ void *loadLibrary(const char *(&names)[n])
 
 	inline void *getLibraryHandle(const char *path)
 	{
-		void *resident = dlopen(path, RTLD_LAZY | RTLD_NOLOAD);
+		return dlopen(path, RTLD_LAZY);   // Increment reference count
+		/*bool resident = (dlopen(path, RTLD_NOLOAD) != 0);
 
 		if(resident)
 		{
 			return dlopen(path, RTLD_LAZY);   // Increment reference count
 		}
 
-		return 0;
+		return 0;*/
 	}
 
     inline void freeLibrary(void *library)

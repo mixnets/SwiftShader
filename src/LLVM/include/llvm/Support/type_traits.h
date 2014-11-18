@@ -17,6 +17,9 @@
 #ifndef LLVM_SUPPORT_TYPE_TRAITS_H
 #define LLVM_SUPPORT_TYPE_TRAITS_H
 
+#if defined(__ANDROID__) || defined(ANDROID)
+#include <cstddef>
+#endif
 #include <utility>
 
 // This is actually the conforming implementation which works with abstract
