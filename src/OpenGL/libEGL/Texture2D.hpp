@@ -7,6 +7,7 @@ class Texture2D
 {
 public:
 	virtual void releaseTexImage() = 0;
+	virtual ~Texture2D() = 0;
 };
 }
 
