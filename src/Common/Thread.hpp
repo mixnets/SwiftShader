@@ -20,6 +20,7 @@
 	#include <intrin.h>
 #else
 	#include <pthread.h>
+	#include <sched.h>
 	#include <unistd.h>
 	#define TLS_OUT_OF_INDEXES (~0)
 #endif
@@ -109,6 +110,8 @@ namespace sw
 			Sleep(0);
 		#elif defined(__APPLE__)
 			pthread_yield_np();
+		#elif defined(__ANDROID__) || defined(ANDROID)
+			sched_yield();
 		#else
 			pthread_yield();
 		#endif

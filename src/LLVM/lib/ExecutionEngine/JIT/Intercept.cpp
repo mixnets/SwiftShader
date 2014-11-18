@@ -19,6 +19,7 @@
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/DynamicLibrary.h"
 #include "llvm/Config/config.h"
+
 using namespace llvm;
 
 // AtExitHandlers - List of functions to call when the program exits,
@@ -66,7 +67,10 @@ public:
     sys::DynamicLibrary::AddSymbol("lstat", (void*)(intptr_t)lstat);
     sys::DynamicLibrary::AddSymbol("stat64", (void*)(intptr_t)stat64);
     sys::DynamicLibrary::AddSymbol("\x1stat64", (void*)(intptr_t)stat64);
+#if defined(__ANDROID__) || defined(ANDROID)
+#else
     sys::DynamicLibrary::AddSymbol("\x1open64", (void*)(intptr_t)open64);
+#endif
     sys::DynamicLibrary::AddSymbol("\x1lseek64", (void*)(intptr_t)lseek64);
     sys::DynamicLibrary::AddSymbol("fstat64", (void*)(intptr_t)fstat64);
     sys::DynamicLibrary::AddSymbol("lstat64", (void*)(intptr_t)lstat64);
