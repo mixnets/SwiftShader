@@ -21,6 +21,9 @@
 #include "Common/Version.h"
 
 #include <string.h>
+#if defined(HAVE_ANDROID_OS)
+    #include <system/window.h>
+#endif
 
 static bool validateDisplay(egl::Display *display)
 {
@@ -852,6 +855,14 @@ EGLImageKHR EGLAPIENTRY eglCreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenu
 		return error(EGL_BAD_PARAMETER, EGL_NO_IMAGE_KHR);
 	}
 
+	#if defined(HAVE_ANDROID_OS)
+		if(target == EGL_NATIVE_BUFFER_ANDROID)
+		{
+			// When target is EGL_NATIVE_BUFFER_ANDROID, ctx is always EGL_NO_CONTEXT.
+			// Get the current context so that we can validate and create shared image
+			context = static_cast<egl::Context*>(egl::getCurrentContext());
+		}
+	#endif
 	EGLenum validationResult = context->validateSharedImage(target, name, textureLevel);
 
 	if(validationResult != EGL_SUCCESS)
