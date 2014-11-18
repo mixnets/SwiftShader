@@ -33,7 +33,7 @@ egl::Display *Display::getPlatformDisplay(EGLenum platform, EGLNativeDisplayType
 {
     if(platform == EGL_UNKNOWN)   // Default
     {
-        #if defined(__unix__)
+        #if defined(__unix__) && !defined(__ANDROID__) && !defined(ANDROID)
             platform = EGL_PLATFORM_X11_EXT;
         #endif
     }
@@ -42,11 +42,13 @@ egl::Display *Display::getPlatformDisplay(EGLenum platform, EGLNativeDisplayType
     {
         if(platform == EGL_PLATFORM_X11_EXT)
         {
-            #if defined(__unix__)
+            #if defined(__unix__) && !defined(__ANDROID__) && !defined(ANDROID)
                 displayId = XOpenDisplay(NULL);
             #else
                 return error(EGL_BAD_PARAMETER, (egl::Display*)EGL_NO_DISPLAY);
             #endif
+        } else if (platform == EGL_UNKNOWN) {
+            displayId = (EGLNativeDisplayType)1;
         }
     }
     else
@@ -459,6 +461,8 @@ bool Display::isValidWindow(EGLNativeWindowType window)
 {
     #if defined(_WIN32)
         return IsWindow(window) == TRUE;
+    #elif defined(__ANDROID__) || defined(ANDROID)
+        return window == 0;
     #else
         if(platform == EGL_PLATFORM_X11_EXT)
         {
@@ -467,7 +471,7 @@ bool Display::isValidWindow(EGLNativeWindowType window)
 
             return status == True;
         }
-	#endif
+    #endif
 
     return false;
 }
@@ -521,7 +525,8 @@ DisplayMode Display::getDisplayMode() const
 		}
 
 		ReleaseDC(0, deviceContext);
-	#else
+        #elif defined(__ANDROID__) || defined(ANDROID)
+        #else
         if(platform == EGL_PLATFORM_X11_EXT)
         {
             Screen *screen = XDefaultScreenOfDisplay(displayId);
