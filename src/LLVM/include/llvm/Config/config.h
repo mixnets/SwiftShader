@@ -85,11 +85,16 @@
 
 /* Define to 1 if you have the declaration of `strerror_s', and to 0 if you
    don't. */
+#if defined(_WIN32) || defined(WIN32)
 #define HAVE_DECL_STRERROR_S 1
+#endif
 
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
 /* #undef HAVE_DIRENT_H */
+#if defined(__ANDROID__) || defined(ANDROID)
+#define HAVE_DIRENT_H 1
+#endif
 
 /* Define if you have the GNU dld library. */
 #undef HAVE_DLD
@@ -189,12 +194,20 @@
 
 /* Set to 1 if the isinf function is found in <cmath> */
 /* #undef HAVE_ISINF_IN_CMATH */
+#if defined(_WIN32) || defined(WIN32)
+#else
+#define HAVE_ISINF_IN_CMATH 1
+#endif
 
 /* Set to 1 if the isinf function is found in <math.h> */
 /* #undef HAVE_ISINF_IN_MATH_H */
 
 /* Set to 1 if the isnan function is found in <cmath> */
 /* #undef HAVE_ISNAN_IN_CMATH */
+#if defined(_WIN32) || defined(WIN32)
+#else
+#define HAVE_ISNAN_IN_CMATH 1
+#endif
 
 /* Set to 1 if the isnan function is found in <math.h> */
 /* #undef HAVE_ISNAN_IN_MATH_H */
@@ -412,7 +425,11 @@
 /* #undef HAVE_STRTOQ */
 
 /* Define to 1 if you have the `sysconf' function. */
+#if defined(__ANDROID__) || defined(ANDROID)
+#define HAVE_SYSCONF 1
+#else
 #undef HAVE_SYSCONF
+#endif
 
 /* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
    */
@@ -426,6 +443,9 @@
 
 /* Define to 1 if you have the <sys/mman.h> header file. */
 /* #undef HAVE_SYS_MMAN_H */
+#if defined(__ANDROID__) || defined(ANDROID)
+#define HAVE_SYS_MMAN_H 1
+#endif
 
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
    */
@@ -463,9 +483,16 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 /* #undef HAVE_UNISTD_H */
+#if defined(_WIN32) || defined(WIN32)
+#else
+#define HAVE_UNISTD_H 1
+#endif
 
 /* Define to 1 if you have the <utime.h> header file. */
 /* #undef HAVE_UTIME_H */
+#if defined(__ANDROID__) || defined(ANDROID)
+#define HAVE_UTIME_H 1
+#endif
 
 /* Define to 1 if the system has the type `u_int64_t'. */
 /* #undef HAVE_U_INT64_T */
@@ -474,7 +501,9 @@
 /* #undef HAVE_VALGRIND_VALGRIND_H */
 
 /* Define to 1 if you have the <windows.h> header file. */
+#if defined(_WIN32) || defined(WIN32)
 #define HAVE_WINDOWS_H 1
+#endif
 
 /* Define to 1 if you have the `writev' function. */
 /* #undef HAVE_WRITEV */
@@ -591,7 +620,11 @@
 /* #undef LLVM_ON_UNIX */
 
 /* Define if this is Win32ish platform */
+#if defined(_WIN32) || defined(WIN32)
 #define LLVM_ON_WIN32 1
+#else
+#define LLVM_ON_UNIX 1
+#endif
 
 /* Define to path to circo program if found or 'echo circo' otherwise */
 /* #undef LLVM_PATH_CIRCO */
@@ -695,6 +728,8 @@
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t
 
+#if defined(__ANDROID__) || defined(ANDROID)
+#else
 /* Define to a function replacing strtoll */
 #define strtoll _strtoi64
 
@@ -706,6 +741,7 @@
 
 /* Define to a function implementing strdup */
 #define strdup _strdup
+#endif
 
 /* Define to 1 if you have the `_chsize_s' function. */
 #define HAVE__CHSIZE_S 1
