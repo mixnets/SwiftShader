@@ -61,6 +61,13 @@ public:
 
 	bool checkForResize();   // Returns true if surface changed due to resize
 
+#if defined(__ANDROID__) || defined(ANDROID)
+    bool connect();
+    void disconnect();
+    bool getZombie();
+    void setZombie(bool);
+#endif
+
 private:
     void release();
     bool reset();
@@ -92,6 +99,9 @@ private:
 //  EGLenum vgAlphaFormat;               // Alpha format for OpenVG
 //  EGLenum vgColorSpace;                // Color space for OpenVG
     EGLint mSwapInterval;
+#if defined(__ANDROID__) || defined(ANDROID)
+    bool mZombie;
+#endif
 };
 }
 

@@ -329,6 +329,14 @@ EGLBoolean EGLAPIENTRY eglDestroySurface(EGLDisplay dpy, EGLSurface surface)
 		return error(EGL_BAD_SURFACE, EGL_FALSE);
 	}
 
+#if defined(__ANDROID__) || defined(ANDROID)
+	if (egl::getCurrentDrawSurface() == surface)
+	{
+		//defer disconnect until no longer current
+		((egl::Surface*)egl::getCurrentDrawSurface())->setZombie(true);
+		return success(EGL_TRUE);
+	}
+#endif
 	display->destroySurface((egl::Surface*)surface);
 
 	return success(EGL_TRUE);
@@ -681,6 +689,27 @@ EGLBoolean EGLAPIENTRY eglMakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurfac
 	{
 		UNIMPLEMENTED();   // FIXME
 	}
+
+#if defined(__ANDROID__) || defined(ANDROID)
+	if (context == EGL_NO_CONTEXT)
+	{
+		egl::Surface *drawSurface = (egl::Surface*)egl::getCurrentDrawSurface();
+		drawSurface->disconnect();
+		if (drawSurface->getZombie())
+		{
+			display->destroySurface(drawSurface);
+		}
+		// TODO(pinghao): disconnect the readSurface too
+	}
+	else
+	{
+		if(((egl::Surface*)draw)->connect())
+		{
+			return EGL_FALSE;
+		}
+		// TODO(pinghao): connect the readSurface too
+	}
+#endif
 
 	egl::setCurrentDisplay(dpy);
 	egl::setCurrentDrawSurface(draw);

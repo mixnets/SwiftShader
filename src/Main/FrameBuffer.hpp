@@ -54,6 +54,11 @@ namespace sw
 
 		static Routine *copyRoutine(const BlitState &state);
 
+#if defined(__ANDROID__) || defined(ANDROID)
+		virtual bool connect() { return true; };
+		virtual void disconnect() {};
+#endif
+
 	protected:
 		void copy(void *source, Format format);
 		

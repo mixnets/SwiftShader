@@ -48,6 +48,9 @@ Surface::Surface(Display *display, const Config *config, EGLNativeWindowType win
     mSwapBehavior = EGL_BUFFER_PRESERVED;
     mSwapInterval = -1;
     setSwapInterval(1);
+#if defined(__ANDROID__) || defined(ANDROID)
+    mZombie = false;
+#endif
 }
 
 Surface::Surface(Display *display, const Config *config, EGLint width, EGLint height, EGLenum textureFormat, EGLenum textureType)
@@ -67,6 +70,9 @@ Surface::Surface(Display *display, const Config *config, EGLint width, EGLint he
     mSwapBehavior = EGL_BUFFER_PRESERVED;
     mSwapInterval = -1;
     setSwapInterval(1);
+#if defined(__ANDROID__) || defined(ANDROID)
+    mZombie = false;
+#endif
 }
 
 Surface::~Surface()
@@ -118,6 +124,8 @@ bool Surface::reset()
 		GetClientRect(mWindow, &windowRect);
 
 		return reset(windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
+	#elif defined(__ANDROID__) || defined(ANDROID)
+		return true;
 	#else
 		XWindowAttributes windowAttributes;
 		XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
@@ -285,6 +293,9 @@ bool Surface::checkForResize()
 
 		int clientWidth = client.right - client.left;
 		int clientHeight = client.bottom - client.top;
+	#elif defined(__ANDROID__) || defined(ANDROID)
+		int clientWidth = getWidth();
+		int clientHeight = getHeight();
 	#else
 		XWindowAttributes windowAttributes;
 		XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
@@ -309,4 +320,26 @@ bool Surface::checkForResize()
 
     return false;
 }
+
+#if defined(__ANDROID__) || defined(ANDROID)
+bool Surface::connect()
+{
+    return frameBuffer->connect();
+}
+
+void Surface::disconnect()
+{
+    frameBuffer->disconnect();
+}
+
+void Surface::setZombie(bool zombie)
+{
+    mZombie = zombie;
+}
+
+bool Surface::getZombie()
+{
+    return mZombie;
+}
+#endif
 }
