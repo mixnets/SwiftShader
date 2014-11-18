@@ -10,6 +10,7 @@
 #define COMPILER_DEBUG_H_
 
 #include <assert.h>
+#include <common/debug.h>
 
 #ifdef _DEBUG
 #define TRACE_ENABLED  // define to enable debug message tracing
@@ -31,23 +32,6 @@ void Trace(const char* format, ...);
 #define Trace(...) ((void)0)
 
 #endif  // TRACE_ENABLED
-
-// A macro asserting a condition and outputting failures to the debug log
-#define ASSERT(expression) do { \
-    if(!(expression)) \
-        Trace("Assert failed: %s(%d): "#expression"\n", __FUNCTION__, __LINE__); \
-    assert(expression); \
-} while(0)
-
-#define UNIMPLEMENTED() do { \
-    Trace("Unimplemented invoked: %s(%d)\n", __FUNCTION__, __LINE__); \
-    assert(false); \
-} while(0)
-
-#define UNREACHABLE() do { \
-    Trace("Unreachable reached: %s(%d)\n", __FUNCTION__, __LINE__); \
-    assert(false); \
-} while(0)
 
 #endif   // COMPILER_DEBUG_H_
 
