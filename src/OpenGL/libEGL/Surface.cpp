@@ -309,4 +309,16 @@ bool Surface::checkForResize()
 
     return false;
 }
+
+#if defined(__ANDROID__) || defined(ANDROID)
+bool Surface::connect()
+{
+    return framebuffer->connect();
+}
+
+void Surface::disconnect()
+{
+    framebuffer->disconnect();
+}
+#endif
 }
