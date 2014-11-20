@@ -1281,9 +1281,15 @@ namespace sh
 			instruction->dst.integer = (dst->getBasicType() == EbtInt);
 		}
 
-		argument(instruction->src[0], src0, index);
-		argument(instruction->src[1], src1, index);
-		argument(instruction->src[2], src2, index);
+		TIntermNode* src[3];
+		src[0] = src0;
+		src[1] = src1;
+		src[2] = src2;
+		for(int i = 0; i < 3; ++i)
+		{
+			TIntermTyped *srcType = src[i] ? src[i]->getAsTyped() : NULL;
+			argument(instruction->src[i], src[i], (srcType && (index >= srcType->totalRegisterCount())) ? srcType->totalRegisterCount() - 1 : index);
+		}
 
 		shader->append(instruction);
 
@@ -1525,6 +1531,13 @@ namespace sh
 	void OutputASM::assignLvalue(TIntermTyped *dst, TIntermNode *src)
 	{
 		TIntermBinary *binary = dst->getAsBinaryNode();
+		TIntermTyped *srcType = src->getAsTyped();
+		if(srcType &&
+			((srcType->isVector() && (!dst->isVector() || (dst->getNominalSize() != dst->getNominalSize()))) ||
+			 (srcType->isMatrix() && (!dst->isMatrix() || (srcType->getNominalSize() != dst->getNominalSize())))))
+		{
+			return mContext.error(src->getLine(), "Result type should match the l-value type in compound assignment", srcType->isVector() ? "vector" : "matrix");
+		}
 
 		if(binary && binary->getOp() == EOpIndexIndirect && dst->isScalar())
 		{
