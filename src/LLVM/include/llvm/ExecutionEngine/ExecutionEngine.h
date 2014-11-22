@@ -125,7 +125,7 @@ protected:
   /// getMemoryforGV - Allocate memory for a global variable.
   virtual char *getMemoryForGV(const GlobalVariable *GV);
 
-  // To avoid having libexecutionengine depend on the JIT and interpreter
+  // To avoid having libexecutionengine  depend on the JIT and interpreter
   // libraries, the execution engine implementations set these functions to ctor
   // pointers at startup time if they are linked in.
   static ExecutionEngine *(*JITCtor)(

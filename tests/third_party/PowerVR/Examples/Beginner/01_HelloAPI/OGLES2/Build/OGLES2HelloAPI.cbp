@@ -7,10 +7,10 @@
 		<Option compiler="clang" />
 		<Build>
 			<Target title="Debug x86">
-				<Option output="bin/Debug_x86/OGLES2HelloAPI" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug_x86/OGLES2Texturing" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/Debug_x86/" />
 				<Option type="1" />
-				<Option compiler="clang" />
+				<Option compiler="null" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-m32" />

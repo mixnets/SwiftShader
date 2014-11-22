@@ -97,6 +97,9 @@
 			<Add directory="./include/" />
 			<Add directory="./lib/Target/X86" />
 		</Compiler>
+		<Linker>
+			<Add option="-fvisibility=hidden" />
+		</Linker>
 		<Unit filename="include/llvm-c/Analysis.h" />
 		<Unit filename="include/llvm-c/BitReader.h" />
 		<Unit filename="include/llvm-c/BitWriter.h" />
