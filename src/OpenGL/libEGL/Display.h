@@ -28,8 +28,6 @@ namespace egl
 	class Display
 	{
 	public:
-		~Display();
-
 		static egl::Display *getPlatformDisplay(EGLenum platform, EGLNativeDisplayType displayId);
 
 		bool initialize();
@@ -60,6 +58,7 @@ namespace egl
 
 	private:
 		Display(EGLenum platform, EGLNativeDisplayType displayId);
+		~Display();
 
 		DisplayMode getDisplayMode() const;
 

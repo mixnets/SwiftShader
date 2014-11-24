@@ -73,9 +73,6 @@ Display::Display(EGLenum platform, EGLNativeDisplayType displayId) : platform(pl
 
 Display::~Display()
 {
-    terminate();
-
-	displays.erase(displayId);
 }
 
 static void cpuid(int registers[4], int info)
@@ -189,6 +186,10 @@ void Display::terminate()
     {
         destroyContext(*mContextSet.begin());
     }
+
+	displays.erase(displayId);
+
+	delete this;
 }
 
 bool Display::getConfigs(EGLConfig *configs, const EGLint *attribList, EGLint configSize, EGLint *numConfig)
