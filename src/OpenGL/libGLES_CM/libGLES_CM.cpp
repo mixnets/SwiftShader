@@ -2698,8 +2698,6 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
                 "GL_EXT_read_format_bgra "
                 #if (S3TC_SUPPORT)
                 "GL_EXT_texture_compression_dxt1 "
-                "GL_ANGLE_texture_compression_dxt3 "
-                "GL_ANGLE_texture_compression_dxt5 "
                 #endif
                 "GL_EXT_texture_filter_anisotropic "
                 "GL_EXT_texture_format_BGRA8888";

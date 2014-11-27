@@ -880,8 +880,8 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
         {
         case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
         case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
-		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+		case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
+		case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
 			if(!S3TC_SUPPORT)
             {
                 return error(GL_INVALID_ENUM);
@@ -1011,8 +1011,8 @@ void GL_APIENTRY glCompressedTexSubImage2D(GLenum target, GLint level, GLint xof
         {
         case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
         case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
-		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+		case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
+		case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
 			if(!S3TC_SUPPORT)
             {
                 return error(GL_INVALID_ENUM);
@@ -1182,8 +1182,8 @@ void GL_APIENTRY glCopyTexImage2D(GLenum target, GLint level, GLenum internalfor
                  break;
             case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
             case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-			case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
-			case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+			case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
+			case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
                 if(S3TC_SUPPORT)
                 {
                     return error(GL_INVALID_OPERATION);
@@ -1336,8 +1336,8 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, 
                 break;
             case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
             case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-			case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
-			case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+			case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
+			case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
                 return error(GL_INVALID_OPERATION);
 			case GL_DEPTH_COMPONENT:
 			case GL_DEPTH_STENCIL_OES:
@@ -3431,11 +3431,12 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
                 "GL_EXT_blend_minmax "
                 "GL_EXT_occlusion_query_boolean "
                 "GL_EXT_read_format_bgra "
-                   #if (S3TC_SUPPORT)
+                #if (S3TC_SUPPORT)
                 "GL_EXT_texture_compression_dxt1 "
                 "GL_ANGLE_texture_compression_dxt3 "
                 "GL_ANGLE_texture_compression_dxt5 "
-                   #endif
+				"GL_EXT_texture_compression_s3tc "
+                #endif
                 "GL_EXT_texture_filter_anisotropic "
                 "GL_EXT_texture_format_BGRA8888 "
                 "GL_ANGLE_framebuffer_blit "
@@ -4878,8 +4879,8 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat, 
             break;
         case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:  // error cases for compressed textures are handled below
         case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
-		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+		case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
+		case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
             break;
 		case GL_DEPTH_COMPONENT:
 			switch(type)
@@ -4945,8 +4946,8 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat, 
 
             if(format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
                format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
-			   format == GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE ||
-			   format == GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE)
+			   format == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT ||
+			   format == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)
             {
                 if(S3TC_SUPPORT)
                 {
