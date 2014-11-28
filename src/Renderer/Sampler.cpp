@@ -121,24 +121,24 @@ namespace sw
 
 				if(level == 0)
 				{
-					texture.widthHeightLOD[0] = width * exp2LOD;
+					texture.widthHeightLOD[0] =
 					texture.widthHeightLOD[1] = width * exp2LOD;
-					texture.widthHeightLOD[2] = height * exp2LOD;
+					texture.widthHeightLOD[2] =
 					texture.widthHeightLOD[3] = height * exp2LOD;
 
-					texture.widthLOD[0] = width * exp2LOD;
-					texture.widthLOD[1] = width * exp2LOD;
-					texture.widthLOD[2] = width * exp2LOD;
+					texture.widthLOD[0] =
+					texture.widthLOD[1] =
+					texture.widthLOD[2] =
 					texture.widthLOD[3] = width * exp2LOD;
 
-					texture.heightLOD[0] = height * exp2LOD;
-					texture.heightLOD[1] = height * exp2LOD;
-					texture.heightLOD[2] = height * exp2LOD;
+					texture.heightLOD[0] =
+					texture.heightLOD[1] =
+					texture.heightLOD[2] =
 					texture.heightLOD[3] = height * exp2LOD;
 
-					texture.depthLOD[0] = depth * exp2LOD;
-					texture.depthLOD[1] = depth * exp2LOD;
-					texture.depthLOD[2] = depth * exp2LOD;
+					texture.depthLOD[0] =
+					texture.depthLOD[1] =
+					texture.depthLOD[2] =
 					texture.depthLOD[3] = depth * exp2LOD;
 				}
 
@@ -153,19 +153,19 @@ namespace sw
 				}
 				else
 				{
-					mipmap.fWidth[0] = (float)width / 65536.0f;
-					mipmap.fWidth[1] = (float)width / 65536.0f;
-					mipmap.fWidth[2] = (float)width / 65536.0f;
+					mipmap.fWidth[0] =
+					mipmap.fWidth[1] =
+					mipmap.fWidth[2] =
 					mipmap.fWidth[3] = (float)width / 65536.0f;
 
-					mipmap.fHeight[0] = (float)height / 65536.0f;
-					mipmap.fHeight[1] = (float)height / 65536.0f;
-					mipmap.fHeight[2] = (float)height / 65536.0f;
+					mipmap.fHeight[0] =
+					mipmap.fHeight[1] =
+					mipmap.fHeight[2] =
 					mipmap.fHeight[3] = (float)height / 65536.0f;
 
-					mipmap.fDepth[0] = (float)depth / 65536.0f;
-					mipmap.fDepth[1] = (float)depth / 65536.0f;
-					mipmap.fDepth[2] = (float)depth / 65536.0f;
+					mipmap.fDepth[0] =
+					mipmap.fDepth[1] =
+					mipmap.fDepth[2] =
 					mipmap.fDepth[3] = (float)depth / 65536.0f;
 				}
 

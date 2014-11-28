@@ -351,10 +351,10 @@ namespace sw
 		mask = As<Int4>(CmpLT(Abs(coordinates - Float4(0.5f)), Float4(0.5f)));
 	}
 
-	Short4 SamplerCore::offsetSample(Short4 &uvw, Pointer<Byte> &mipmap, int halfOffset, bool wrap, int count)
+	Short4 SamplerCore::offsetSample(Short4 &uvw, Pointer<Byte> &mipmap, int halfOffset, AddressingMode addressingMode, int count)
 	{
-		if(wrap)
-		{
+		switch(addressingMode) {
+		case ADDRESSING_WRAP:
 			switch(count)
 			{
 			case -1: return uvw - *Pointer<Short4>(mipmap + halfOffset);
@@ -362,9 +362,8 @@ namespace sw
 			case +1: return uvw + *Pointer<Short4>(mipmap + halfOffset);
 			case  2: return uvw + *Pointer<Short4>(mipmap + halfOffset) + *Pointer<Short4>(mipmap + halfOffset);
 			}
-		}
-		else   // Clamp or mirror
-		{
+			break;
+		default: // Clamp or mirror
 			switch(count)
 			{
 			case -1: return SubSat(As<UShort4>(uvw), *Pointer<UShort4>(mipmap + halfOffset));
@@ -372,6 +371,7 @@ namespace sw
 			case +1: return AddSat(As<UShort4>(uvw), *Pointer<UShort4>(mipmap + halfOffset));
 			case  2: return AddSat(AddSat(As<UShort4>(uvw), *Pointer<UShort4>(mipmap + halfOffset)), *Pointer<UShort4>(mipmap + halfOffset));
 			}
+			break;
 		}
 
 		return uvw;
@@ -570,10 +570,10 @@ namespace sw
 			Vector4i c2;
 			Vector4i c3;
 
-			Short4 uuuu0 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 0 : -1);
-			Short4 vvvv0 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 0 : -1);
-			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1);
-			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1);
+			Short4 uuuu0 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU, gather ? 0 : -1);
+			Short4 vvvv0 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV, gather ? 0 : -1);
+			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU, gather ? 2 : +1);
+			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV, gather ? 2 : +1);
 
 			sampleTexel(c0, uuuu0, vvvv0, vvvv0, mipmap, buffer);
 			sampleTexel(c1, uuuu1, vvvv0, vvvv0, mipmap, buffer);
@@ -786,9 +786,9 @@ namespace sw
 				{
 					for(int k = 0; k < 2; k++)
 					{
-						u[i][j][k] = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, i * 2 - 1);
-						v[i][j][k] = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, j * 2 - 1);
-						s[i][j][k] = offsetSample(wwww, mipmap, OFFSET(Mipmap,wHalf), state.addressingModeW == ADDRESSING_WRAP, k * 2 - 1);
+						u[i][j][k] = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU, i * 2 - 1);
+						v[i][j][k] = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV, j * 2 - 1);
+						s[i][j][k] = offsetSample(wwww, mipmap, OFFSET(Mipmap,wHalf), state.addressingModeW, k * 2 - 1);
 					}
 				}
 			}
@@ -1062,10 +1062,10 @@ namespace sw
 			Vector4f c2;
 			Vector4f c3;
 
-			Short4 uuuu0 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 0 : -1);
-			Short4 vvvv0 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 0 : -1);
-			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1);
-			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1);
+			Short4 uuuu0 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU, gather ? 0 : -1);
+			Short4 vvvv0 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV, gather ? 0 : -1);
+			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU, gather ? 2 : +1);
+			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV, gather ? 2 : +1);
 
 			sampleTexel(c0, uuuu0, vvvv0, vvvv0, z, mipmap, buffer);		
 			sampleTexel(c1, uuuu1, vvvv0, vvvv0, z, mipmap, buffer);
@@ -1136,12 +1136,12 @@ namespace sw
 			Vector4f c6;
 			Vector4f c7;
 
-			Short4 uuuu0 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, -1);
-			Short4 vvvv0 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, -1);
-			Short4 wwww0 = offsetSample(wwww, mipmap, OFFSET(Mipmap,wHalf), state.addressingModeW == ADDRESSING_WRAP, -1);
-			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, +1);
-			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, +1);
-			Short4 wwww1 = offsetSample(wwww, mipmap, OFFSET(Mipmap,wHalf), state.addressingModeW == ADDRESSING_WRAP, +1);
+			Short4 uuuu0 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU, -1);
+			Short4 vvvv0 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV, -1);
+			Short4 wwww0 = offsetSample(wwww, mipmap, OFFSET(Mipmap,wHalf), state.addressingModeW, -1);
+			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU, +1);
+			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV, +1);
+			Short4 wwww1 = offsetSample(wwww, mipmap, OFFSET(Mipmap,wHalf), state.addressingModeW, +1);
 
 			sampleTexel(c0, uuuu0, vvvv0, wwww0, w, mipmap, buffer);
 			sampleTexel(c1, uuuu1, vvvv0, wwww0, w, mipmap, buffer);
@@ -1469,6 +1469,9 @@ namespace sw
 
 	void SamplerCore::sampleTexel(Vector4i &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4])
 	{
+		static const short HIGHBYTE = (short)(0xFF00);
+		static const short LOWBYTE  = (short)(0x00FF);
+
 		Int index[4];
 
 		computeIndices(index, uuuu, vvvv, wwww, mipmap);
@@ -1572,8 +1575,8 @@ namespace sw
 				case FORMAT_G8R8:
 				case FORMAT_V8U8:
 				case FORMAT_A8L8:
-					c.y = (c.x & Short4(0xFF00, 0xFF00, 0xFF00, 0xFF00)) | As<Short4>(As<UShort4>(c.x) >> 8);
-					c.x = (c.x & Short4(0x00FF, 0x00FF, 0x00FF, 0x00FF)) | (c.x << 8);
+					c.y = (c.x & Short4(HIGHBYTE, HIGHBYTE, HIGHBYTE, HIGHBYTE)) | As<Short4>(As<UShort4>(c.x) >> 8);
+					c.x = (c.x & Short4(LOWBYTE, LOWBYTE, LOWBYTE, LOWBYTE)) | (c.x << 8);
 					break;
 				default:
 					ASSERT(false);
@@ -1712,9 +1715,10 @@ namespace sw
 	{
 		if(addressingMode == ADDRESSING_CLAMP)
 		{
-			Float4 clamp = Min(Max(uw, Float4(0.0f)), Float4(65535.0f / 65536.0f));
+			Int4 convert = Int4(uw * Float4(1 << 16));
+			Int4 clamped = Min(Max(convert, Int4(0)), Int4(0xFFFF));
 
-			uuuu = Short4(Int4(clamp * Float4(1 << 16)));
+			uuuu = Short4(clamped);
 		}
 		else if(addressingMode == ADDRESSING_MIRROR)
 		{
