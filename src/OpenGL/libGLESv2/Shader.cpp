@@ -188,6 +188,7 @@ void Shader::clear()
     mInfoLog = NULL;
 
     varyings.clear();
+	activeUniforms.clear();
 	activeAttributes.clear();
 }
 
