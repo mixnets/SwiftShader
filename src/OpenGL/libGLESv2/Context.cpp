@@ -39,9 +39,9 @@
 
 namespace es2
 {
-Device *Context::device = 0;
+//Device *Context::device = 0;
 
-Context::Context(const egl::Config *config, const Context *shareContext) : mConfig(config)
+Context::Context(const egl::Config *config, const Context *shareContext) : mConfig(config), device(0)
 {
 	device = getDevice();
 

@@ -493,7 +493,7 @@ private:
 
     ResourceManager *mResourceManager;
 
-	static Device *device;
+	 Device *device;
 };
 }
 

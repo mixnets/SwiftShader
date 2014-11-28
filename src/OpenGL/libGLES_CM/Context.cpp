@@ -35,13 +35,14 @@
 
 namespace es1
 {
-Device *Context::device = 0;
+//Device *Context::device = 0;
 
 Context::Context(const egl::Config *config, const Context *shareContext)
     : modelViewStack(MAX_MODELVIEW_STACK_DEPTH),
       projectionStack(MAX_PROJECTION_STACK_DEPTH),
 	  textureStack0(MAX_TEXTURE_STACK_DEPTH),
-	  textureStack1(MAX_TEXTURE_STACK_DEPTH)
+	  textureStack1(MAX_TEXTURE_STACK_DEPTH),
+	  device(0)
 {
 	device = getDevice();
 
