@@ -736,6 +736,8 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
 
 	switch(internalformat)
 	{
+	case GL_ETC1_RGB8_OES:
+		break;
 	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
@@ -860,6 +862,8 @@ void GL_APIENTRY glCompressedTexSubImage2D(GLenum target, GLint level, GLint xof
 
 	switch(format)
 	{
+	case GL_ETC1_RGB8_OES:
+		break;
 	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
@@ -1171,11 +1175,20 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, 
 				return error(GL_INVALID_OPERATION);
 			}
 			break;
+		case GL_ETC1_RGB8_OES:
+			return error(GL_INVALID_OPERATION);
 		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
 		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
-			return error(GL_INVALID_OPERATION);
+			if(S3TC_SUPPORT)
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+			else
+			{
+				return error(GL_INVALID_ENUM);
+			}
 		case GL_DEPTH_COMPONENT:
 		case GL_DEPTH_STENCIL_OES:
 			return error(GL_INVALID_OPERATION);
@@ -2869,6 +2882,7 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
 		// EXT extensions
 		// Vendor extensions
 		return (GLubyte*)
+			"GL_OES_compressed_ETC1_RGB8_texture "
 			"GL_OES_depth_texture "
 			"GL_OES_depth_texture_cube_map "
 			"GL_OES_EGL_image "
@@ -4057,7 +4071,9 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat, 
 			return error(GL_INVALID_ENUM);
 		}
 		break;
-	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:  // error cases for compressed textures are handled below
+	case GL_ETC1_RGB8_OES:
+		return error(GL_INVALID_OPERATION);
+	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:  // error cases for S3TC compressed textures are handled below
 	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
 	case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:

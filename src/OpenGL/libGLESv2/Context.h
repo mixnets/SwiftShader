@@ -80,6 +80,19 @@ enum
     IMPLEMENTATION_COLOR_READ_TYPE = GL_UNSIGNED_SHORT_5_6_5
 };
 
+const GLenum compressedTextureFormats[] =
+{
+	GL_ETC1_RGB8_OES,
+#if (S3TC_SUPPORT)
+	GL_COMPRESSED_RGB_S3TC_DXT1_EXT,
+	GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,
+	GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE,
+	GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE,
+#endif
+};
+
+const GLint NUM_COMPRESSED_TEXTURE_FORMATS = sizeof(compressedTextureFormats) / sizeof(compressedTextureFormats[0]);
+
 enum QueryType
 {
     QUERY_ANY_SAMPLES_PASSED,
