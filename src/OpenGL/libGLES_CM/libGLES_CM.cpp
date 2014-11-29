@@ -2320,6 +2320,7 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
 			"GL_OES_blend_equation_separate "
 			"GL_OES_blend_func_separate "
 			"GL_OES_blend_subtract "
+			"GL_OES_compressed_ETC1_RGB8_texture "
 			"GL_OES_depth_texture "
 			"GL_OES_EGL_image "
 			"GL_OES_EGL_image_external "

@@ -2869,6 +2869,7 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
 		// EXT extensions
 		// Vendor extensions
 		return (GLubyte*)
+			"GL_OES_compressed_ETC1_RGB8_texture "
 			"GL_OES_depth_texture "
 			"GL_OES_depth_texture_cube_map "
 			"GL_OES_EGL_image "
@@ -2885,15 +2886,17 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
 			"GL_EXT_blend_minmax "
 			"GL_EXT_occlusion_query_boolean "
 			"GL_EXT_read_format_bgra "
-				#if (S3TC_SUPPORT)
+			#if (S3TC_SUPPORT)
 			"GL_EXT_texture_compression_dxt1 "
-			"GL_ANGLE_texture_compression_dxt3 "
-			"GL_ANGLE_texture_compression_dxt5 "
-				#endif
+			#endif
 			"GL_EXT_texture_filter_anisotropic "
 			"GL_EXT_texture_format_BGRA8888 "
 			"GL_ANGLE_framebuffer_blit "
 			"GL_ANGLE_framebuffer_multisample "
+			#if (S3TC_SUPPORT)
+			"GL_ANGLE_texture_compression_dxt3 "
+			"GL_ANGLE_texture_compression_dxt5 "
+			#endif
 			"GL_NV_fence";
 	default:
 		return error(GL_INVALID_ENUM, (GLubyte*)NULL);
