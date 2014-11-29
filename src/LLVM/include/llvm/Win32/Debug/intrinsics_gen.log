@@ -1,0 +1,9 @@
+﻿Build started 11/24/2014 5:17:58 PM.
+     1>Project "D:\SwiftShader-GLES\src\LLVM\include\llvm\intrinsics_gen.vcxproj" on node 2 (Build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppCommon.targets(170,5): warning MSB8017: A circular dependency has been detected while executing custom build commands for item "Intrinsics.gen". This may cause incremental build to work incorrectly.
+         Building Intrinsics.gen...
+     1>Done Building Project "D:\SwiftShader-GLES\src\LLVM\include\llvm\intrinsics_gen.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.81

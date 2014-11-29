@@ -1,0 +1,61 @@
+From f2ec301ef5beb0150f5a504e66f12cb148f93879 Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Wed, 26 Nov 2014 09:45:44 -0500
+Subject: [PATCH 4/5] half-vertex
+
+Change-Id: I0a7a55b7904fe797cdbb86627c8d0a1cc07d2d0a
+---
+ src/OpenGL/libGLESv2/VertexDataManager.cpp |  1 +
+ src/OpenGL/libGLESv2/libGLESv2.cpp         | 16 +++++++++-------
+ 2 files changed, 10 insertions(+), 7 deletions(-)
+
+diff --git a/src/OpenGL/libGLESv2/VertexDataManager.cpp b/src/OpenGL/libGLESv2/VertexDataManager.cpp
+index 37875c0..cc2df30 100644
+--- a/src/OpenGL/libGLESv2/VertexDataManager.cpp
++++ b/src/OpenGL/libGLESv2/VertexDataManager.cpp
+@@ -178,6 +178,7 @@ GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, Translat
+ 				case GL_UNSIGNED_SHORT: translated[i].type = sw::STREAMTYPE_USHORT; break;
+ 				case GL_FIXED:          translated[i].type = sw::STREAMTYPE_FIXED;  break;
+ 				case GL_FLOAT:          translated[i].type = sw::STREAMTYPE_FLOAT;  break;
++				case GL_HALF_FLOAT_OES: translated[i].type = sw::STREAMTYPE_HALF;   break;
+ 				default: UNREACHABLE(); translated[i].type = sw::STREAMTYPE_FLOAT;  break;
+ 				}
+ 
+diff --git a/src/OpenGL/libGLESv2/libGLESv2.cpp b/src/OpenGL/libGLESv2/libGLESv2.cpp
+index 83dea35..fae8680 100644
+--- a/src/OpenGL/libGLESv2/libGLESv2.cpp
++++ b/src/OpenGL/libGLESv2/libGLESv2.cpp
+@@ -3428,6 +3428,7 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
+                 "GL_OES_texture_half_float "
+                 "GL_OES_texture_half_float_linear "
+                 "GL_OES_texture_npot "
++				"GL_OES_vertex_half_float "
+                 "GL_EXT_blend_minmax "
+                 "GL_EXT_occlusion_query_boolean "
+                 "GL_EXT_read_format_bgra "
+@@ -5986,14 +5987,15 @@ void GL_APIENTRY glVertexAttribPointer(GLuint index, GLint size, GLenum type, GL
+ 
+         switch(type)
+         {
+-          case GL_BYTE:
+-          case GL_UNSIGNED_BYTE:
+-          case GL_SHORT:
+-          case GL_UNSIGNED_SHORT:
+-          case GL_FIXED:
+-          case GL_FLOAT:
++        case GL_BYTE:
++        case GL_UNSIGNED_BYTE:
++        case GL_SHORT:
++        case GL_UNSIGNED_SHORT:
++        case GL_FIXED:
++        case GL_FLOAT:
++		case GL_HALF_FLOAT_OES:
+             break;
+-          default:
++        default:
+             return error(GL_INVALID_ENUM);
+         }
+ 
+-- 
+1.8.5.2.msysgit.0
+

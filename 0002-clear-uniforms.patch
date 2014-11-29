@@ -1,0 +1,25 @@
+From 72df8d66a70c5806ef7a902da29a0385eddc8f54 Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Thu, 27 Nov 2014 22:46:20 -0500
+Subject: [PATCH 02/11] clear-uniforms
+
+Change-Id: I10c613b5c989467423f3bc84ed3c7039fa35abea
+---
+ src/OpenGL/libGLESv2/Shader.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/OpenGL/libGLESv2/Shader.cpp b/src/OpenGL/libGLESv2/Shader.cpp
+index a66a6b6..61c37b1 100644
+--- a/src/OpenGL/libGLESv2/Shader.cpp
++++ b/src/OpenGL/libGLESv2/Shader.cpp
+@@ -188,6 +188,7 @@ void Shader::clear()
+     mInfoLog = NULL;
+ 
+     varyings.clear();
++	activeUniforms.clear();
+ 	activeAttributes.clear();
+ }
+ 
+-- 
+1.8.5.2.msysgit.0
+

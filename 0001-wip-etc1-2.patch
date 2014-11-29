@@ -1,0 +1,525 @@
+From f72d7a2010de003ef50dd54e0ee38cb101dcb894 Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Tue, 25 Nov 2014 13:07:38 -0500
+Subject: [PATCH] wip-etc1
+
+Change-Id: If59067c063b28c70314c2fadceaef0917b5b83e7
+---
+ src/OpenGL/libEGL/Config.cpp                |  5 ++
+ src/OpenGL/libEGL/main.cpp                  |  2 +-
+ src/OpenGL/libGLES_CM/libGLES_CM.cpp        | 27 +++++-----
+ src/OpenGL/libGLES_CM/utilities.cpp         |  3 +-
+ src/OpenGL/libGLESv2/Context.cpp            |  4 +-
+ src/OpenGL/libGLESv2/Image.cpp              |  4 ++
+ src/OpenGL/libGLESv2/libGLESv2.cpp          | 11 +++-
+ src/OpenGL/libGLESv2/utilities.cpp          |  6 ++-
+ src/Renderer/Surface.cpp                    | 81 +++++++++++++----------------
+ src/Renderer/Surface.hpp                    |  4 +-
+ src/SwiftShader/SwiftShader.vcxproj         |  1 +
+ src/SwiftShader/SwiftShader.vcxproj.filters |  3 ++
+ 12 files changed, 86 insertions(+), 65 deletions(-)
+
+diff --git a/src/OpenGL/libEGL/Config.cpp b/src/OpenGL/libEGL/Config.cpp
+index 61a94d7..12c5e35 100644
+--- a/src/OpenGL/libEGL/Config.cpp
++++ b/src/OpenGL/libEGL/Config.cpp
+@@ -17,6 +17,9 @@
+ 
+ #include "common/debug.h"
+ 
++#define EGLAPI
++#include <EGL/eglext.h>
++
+ #include <algorithm>
+ #include <vector>
+ 
+@@ -321,6 +324,8 @@ bool ConfigSet::getConfigs(EGLConfig *configs, const EGLint *attribList, EGLint
+             case EGL_MAX_PBUFFER_WIDTH:       match = config->mMaxPBufferWidth >= attribute[1];                 break;
+             case EGL_MAX_PBUFFER_HEIGHT:      match = config->mMaxPBufferHeight >= attribute[1];                break;
+             case EGL_MAX_PBUFFER_PIXELS:      match = config->mMaxPBufferPixels >= attribute[1];                break;
++			case EGL_RECORDABLE_ANDROID:      match = true;                                                    break;
++			case EGL_FRAMEBUFFER_TARGET_ANDROID: match = true; break;
+ 			default:
+ 				UNIMPLEMENTED();
+ 				match = false;
+diff --git a/src/OpenGL/libEGL/main.cpp b/src/OpenGL/libEGL/main.cpp
+index 80882ce..55ac20c 100644
+--- a/src/OpenGL/libEGL/main.cpp
++++ b/src/OpenGL/libEGL/main.cpp
+@@ -169,7 +169,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
+     switch(reason)
+     {
+     case DLL_PROCESS_ATTACH:
+-		if(false)
++		if(true)
+ 		{
+ 			WaitForDebugger(instance);
+ 		}
+diff --git a/src/OpenGL/libGLES_CM/libGLES_CM.cpp b/src/OpenGL/libGLES_CM/libGLES_CM.cpp
+index 0374df9..39e4489 100644
+--- a/src/OpenGL/libGLES_CM/libGLES_CM.cpp
++++ b/src/OpenGL/libGLES_CM/libGLES_CM.cpp
+@@ -2679,6 +2679,7 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
+ 				"GL_OES_blend_equation_separate "
+ 				"GL_OES_blend_func_separate "
+ 				"GL_OES_blend_subtract "
++                "GL_OES_compressed_ETC1_RGB8_texture "
+                 "GL_OES_depth_texture "
+ 				"GL_OES_EGL_image "
+                 "GL_OES_EGL_image_external "
+@@ -3618,7 +3619,7 @@ void GL_APIENTRY glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
+ 
+ void GL_APIENTRY glShadeModel(GLenum mode)
+ {
+-	UNIMPLEMENTED();
++	//UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glStencilFunc(GLenum func, GLint ref, GLuint mask)
+@@ -3771,12 +3772,12 @@ void GL_APIENTRY glTexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
+ 
+ void GL_APIENTRY glTexEnvi(GLenum target, GLenum pname, GLint param)
+ {
+-	UNIMPLEMENTED();
++	//UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glTexEnvx(GLenum target, GLenum pname, GLfixed param)
+ {
+-	UNIMPLEMENTED();
++	//UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glTexEnviv(GLenum target, GLenum pname, const GLint *params)
+@@ -4054,7 +4055,7 @@ void GL_APIENTRY glTexParameteri(GLenum target, GLenum pname, GLint param)
+                 }
+                 break;
+ 			case GL_TEXTURE_CROP_RECT_OES:
+-				UNIMPLEMENTED();
++				//UNIMPLEMENTED();
+ 				break;
+             default:
+                 return error(GL_INVALID_ENUM);
+@@ -4074,7 +4075,7 @@ void GL_APIENTRY glTexParameteriv(GLenum target, GLenum pname, const GLint* para
+ 
+ void GL_APIENTRY glTexParameterx(GLenum target, GLenum pname, GLfixed param)
+ {
+-	UNIMPLEMENTED();
++	//UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glTexParameterxv(GLenum target, GLenum pname, const GLfixed *params)
+@@ -4257,42 +4258,42 @@ void GL_APIENTRY glEGLImageTargetRenderbufferStorageOES(GLenum target, GLeglImag
+ 
+ void GL_APIENTRY glDrawTexsOES(GLshort x, GLshort y, GLshort z, GLshort width, GLshort height)
+ {
+-    UNIMPLEMENTED();
++    //UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glDrawTexiOES(GLint x, GLint y, GLint z, GLint width, GLint height)
+ {
+-    UNIMPLEMENTED();
++    //UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glDrawTexxOES(GLfixed x, GLfixed y, GLfixed z, GLfixed width, GLfixed height)
+ {
+-    UNIMPLEMENTED();
++    //UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glDrawTexsvOES(const GLshort *coords)
+ {
+-    UNIMPLEMENTED();
++    //UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glDrawTexivOES(const GLint *coords)
+ {
+-    UNIMPLEMENTED();
++    //UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glDrawTexxvOES(const GLfixed *coords)
+ {
+-    UNIMPLEMENTED();
++    //UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glDrawTexfOES(GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloat height)
+ {
+-    UNIMPLEMENTED();
++    //UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glDrawTexfvOES(const GLfloat *coords)
+ {
+-    UNIMPLEMENTED();
++    //UNIMPLEMENTED();
+ }
+ 
+ __eglMustCastToProperFunctionPointerType glGetProcAddress(const char *procname)
+diff --git a/src/OpenGL/libGLES_CM/utilities.cpp b/src/OpenGL/libGLES_CM/utilities.cpp
+index 8a6312f..0a89c8d 100644
+--- a/src/OpenGL/libGLES_CM/utilities.cpp
++++ b/src/OpenGL/libGLES_CM/utilities.cpp
+@@ -50,7 +50,8 @@ namespace es1
+ 	bool IsCompressed(GLenum format)
+ 	{
+ 		if(format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
+-		   format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
++		   format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
++           format == GL_ETC1_RGB8_OES)
+ 		{
+ 			return true;
+ 		}
+diff --git a/src/OpenGL/libGLESv2/Context.cpp b/src/OpenGL/libGLESv2/Context.cpp
+index fe92c34..8a7a247 100644
+--- a/src/OpenGL/libGLESv2/Context.cpp
++++ b/src/OpenGL/libGLESv2/Context.cpp
+@@ -1333,7 +1333,8 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
+                 // GL_COMPRESSED_RGBA_S3TC_DXT1_EXT
+ 				// GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE
+ 				// GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE
+-                *params = 4;
++                // GL_ETC1_RGB8_OES
++                *params = 5;
+             }
+             else
+             {
+@@ -1390,6 +1391,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
+                 params[1] = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+ 				params[2] = GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE;
+                 params[3] = GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE;
++                params[4] = GL_ETC1_RGB8_OES;
+             }
+         }
+         break;
+diff --git a/src/OpenGL/libGLESv2/Image.cpp b/src/OpenGL/libGLESv2/Image.cpp
+index 038d18e..9ff05eb 100644
+--- a/src/OpenGL/libGLESv2/Image.cpp
++++ b/src/OpenGL/libGLESv2/Image.cpp
+@@ -100,6 +100,10 @@ namespace es2
+ 		{
+ 			return sw::FORMAT_DXT5;
+ 		}
++        else if(format == GL_ETC1_RGB8_OES)
++        {
++            return sw::FORMAT_ETC1;
++        }
+ 		else
+ 		#endif
+ 		if(type == GL_FLOAT)
+diff --git a/src/OpenGL/libGLESv2/libGLESv2.cpp b/src/OpenGL/libGLESv2/libGLESv2.cpp
+index 83dea35..21c30eb 100644
+--- a/src/OpenGL/libGLESv2/libGLESv2.cpp
++++ b/src/OpenGL/libGLESv2/libGLESv2.cpp
+@@ -882,6 +882,7 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
+         case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
++        case GL_ETC1_RGB8_OES:
+ 			if(!S3TC_SUPPORT)
+             {
+                 return error(GL_INVALID_ENUM);
+@@ -915,7 +916,7 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
+             {
+               case GL_TEXTURE_2D:
+                 if(width > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level) ||
+-                    height > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
++                   height > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
+                 {
+                     return error(GL_INVALID_VALUE);
+                 }
+@@ -1013,6 +1014,7 @@ void GL_APIENTRY glCompressedTexSubImage2D(GLenum target, GLint level, GLint xof
+         case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
++        case GL_ETC1_RGB8_OES:
+ 			if(!S3TC_SUPPORT)
+             {
+                 return error(GL_INVALID_ENUM);
+@@ -1184,6 +1186,7 @@ void GL_APIENTRY glCopyTexImage2D(GLenum target, GLint level, GLenum internalfor
+             case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+ 			case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
+ 			case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
++            case GL_ETC1_RGB8_OES:
+                 if(S3TC_SUPPORT)
+                 {
+                     return error(GL_INVALID_OPERATION);
+@@ -1338,6 +1341,7 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset,
+             case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+ 			case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
+ 			case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
++            case GL_ETC1_RGB8_OES:
+                 return error(GL_INVALID_OPERATION);
+ 			case GL_DEPTH_COMPONENT:
+ 			case GL_DEPTH_STENCIL_OES:
+@@ -3415,6 +3419,7 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
+ 	        // EXT extensions
+ 	        // Vendor extensions
+             return (GLubyte*)
++                "GL_OES_compressed_ETC1_RGB8_texture "
+                 "GL_OES_depth_texture "
+                 "GL_OES_depth_texture_cube_map "
+                 "GL_OES_EGL_image "
+@@ -4880,6 +4885,7 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat,
+         case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
++        case GL_ETC1_RGB8_OES:
+             break;
+ 		case GL_DEPTH_COMPONENT:
+ 			switch(type)
+@@ -4946,7 +4952,8 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat,
+             if(format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
+                format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
+ 			   format == GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE ||
+-			   format == GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE)
++			   format == GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE ||
++               format == GL_ETC1_RGB8_OES)
+             {
+                 if(S3TC_SUPPORT)
+                 {
+diff --git a/src/OpenGL/libGLESv2/utilities.cpp b/src/OpenGL/libGLESv2/utilities.cpp
+index 6d01e92..df2c082 100644
+--- a/src/OpenGL/libGLESv2/utilities.cpp
++++ b/src/OpenGL/libGLESv2/utilities.cpp
+@@ -207,6 +207,7 @@ namespace es2
+ 		{
+ 		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
++        case GL_ETC1_RGB8_OES:
+ 			return 8 * (GLsizei)ceil((float)width / 4.0f) * (GLsizei)ceil((float)height / 4.0f);
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+@@ -220,8 +221,9 @@ namespace es2
+ 	{
+ 		if(format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
+ 		   format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
+-		   format == GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE ||
+-		   format == GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE)
++           format == GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE ||
++           format == GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE ||
++           format == GL_ETC1_RGB8_OES)
+ 		{
+ 			return true;
+ 		}
+diff --git a/src/Renderer/Surface.cpp b/src/Renderer/Surface.cpp
+index ae62f76..de2e9bd 100644
+--- a/src/Renderer/Surface.cpp
++++ b/src/Renderer/Surface.cpp
+@@ -9,6 +9,8 @@
+ // or implied, including but not limited to any patent rights, are granted to you.
+ //
+ 
++#include "rg_etc1.h"
++
+ #include "Surface.hpp"
+ 
+ #include "Color.hpp"
+@@ -659,6 +661,7 @@ namespace sw
+ 			case FORMAT_DXT1:
+ 			#endif
+ 			case FORMAT_ATI1:
++			case FORMAT_ETC1:
+ 				return (unsigned char*)buffer + 8 * (x / 4) + (y / 4) * pitchB + z * sliceB;
+ 			#if S3TC_SUPPORT
+ 			case FORMAT_DXT3:
+@@ -941,6 +944,7 @@ namespace sw
+ 		#endif
+ 		case FORMAT_ATI1:				return 2;   // Column of four pixels
+ 		case FORMAT_ATI2:				return 4;   // Column of four pixels
++		case FORMAT_ETC1:				return 2;   // Column of four pixels
+ 		// Bumpmap formats
+ 		case FORMAT_V8U8:				return 2;
+ 		case FORMAT_L6V5U5:				return 2;
+@@ -1004,6 +1008,8 @@ namespace sw
+ 			return 2 * ((width + 3) / 4);    // 64 bit per 4x4 block, computed per row
+ 		case FORMAT_ATI2:
+ 			return 4 * ((width + 3) / 4);    // 128 bit per 4x4 block, computed per row
++		case FORMAT_ETC1:
++			return 8 * ((width + 3) / 4);    // 64 bit per 4x4 block, computed per 4 rows
+ 		default:
+ 			return bytes(format) * width;
+ 		}
+@@ -1029,6 +1035,7 @@ namespace sw
+ 		case FORMAT_DXT1:
+ 		case FORMAT_DXT3:
+ 		case FORMAT_DXT5:
++		case FORMAT_ETC1:
+ 			return pitchB(width, format, target) * ((height + 3) / 4);   // Pitch computed per 4 rows
+ 		#endif
+ 		case FORMAT_ATI1:   // Pitch computed per row
+@@ -1069,9 +1076,10 @@ namespace sw
+ 			case FORMAT_DXT1:		decodeDXT1(destination, source);		break;   // FIXME: Check destination format
+ 			case FORMAT_DXT3:		decodeDXT3(destination, source);		break;   // FIXME: Check destination format
+ 			case FORMAT_DXT5:		decodeDXT5(destination, source);		break;   // FIXME: Check destination format
++			#endif
+ 			case FORMAT_ATI1:		decodeATI1(destination, source);		break;   // FIXME: Check destination format
+ 			case FORMAT_ATI2:		decodeATI2(destination, source);		break;   // FIXME: Check destination format
+-			#endif
++			case FORMAT_ETC1:		decodeETC1(destination, source);		break;   // FIXME: Check destination format
+ 			default:				genericUpdate(destination, source);		break;
+ 			}
+ 		}
+@@ -1476,46 +1484,7 @@ namespace sw
+ 			{
+ 				for(int x = 0; x < external.width; x += 4)
+ 				{
+-					Color<byte> c[4];
+-
+-					c[0] = source->c0;
+-					c[1] = source->c1;
+-
+-					if(source->c0 > source->c1)   // No transparency
+-					{
+-						// c2 = 2 / 3 * c0 + 1 / 3 * c1
+-						c[2].r = (byte)((2 * (word)c[0].r + (word)c[1].r + 1) / 3);
+-						c[2].g = (byte)((2 * (word)c[0].g + (word)c[1].g + 1) / 3);
+-						c[2].b = (byte)((2 * (word)c[0].b + (word)c[1].b + 1) / 3);
+-						c[2].a = 0xFF;
+-
+-						// c3 = 1 / 3 * c0 + 2 / 3 * c1
+-						c[3].r = (byte)(((word)c[0].r + 2 * (word)c[1].r + 1) / 3);
+-						c[3].g = (byte)(((word)c[0].g + 2 * (word)c[1].g + 1) / 3);
+-						c[3].b = (byte)(((word)c[0].b + 2 * (word)c[1].b + 1) / 3);
+-						c[3].a = 0xFF;
+-					}
+-					else   // c3 transparent
+-					{
+-						// c2 = 1 / 2 * c0 + 1 / 2 * c1
+-						c[2].r = (byte)(((word)c[0].r + (word)c[1].r) / 2);
+-						c[2].g = (byte)(((word)c[0].g + (word)c[1].g) / 2);
+-						c[2].b = (byte)(((word)c[0].b + (word)c[1].b) / 2);
+-						c[2].a = 0xFF;
+-
+-						c[3].r = 0;
+-						c[3].g = 0;
+-						c[3].b = 0;
+-						c[3].a = 0;
+-					}
+-
+-					for(int j = 0; j < 4 && (y + j) < internal.height; j++)
+-					{
+-						for(int i = 0; i < 4 && (x + i) < internal.width; i++)
+-						{
+-							dest[(x + i) + (y + j) * internal.width] = c[(unsigned int)(source->lut >> 2 * (i + j * 4)) % 4];
+-						}
+-					}
++					rg_etc1::unpack_etc1_block(source, dest);
+ 
+ 					source++;
+ 				}
+@@ -1642,7 +1611,7 @@ namespace sw
+ 			(byte*&)destSlice += internal.sliceB;
+ 		}
+ 	}
+-
++#endif
+ 	void Surface::decodeATI1(Buffer &internal, const Buffer &external)
+ 	{
+ 		byte *destSlice = (byte*)internal.buffer;
+@@ -1775,7 +1744,29 @@ namespace sw
+ 			(byte*&)destSlice += internal.sliceB;
+ 		}
+ 	}
+-#endif
++
++	void Surface::decodeETC1(Buffer &internal, const Buffer &external)
++	{
++		unsigned int *destSlice = (unsigned int*)internal.buffer;
++		DXT1 *source = (DXT1*)external.buffer;
++
++		for(int z = 0; z < external.depth; z++)
++		{
++			unsigned int *dest = destSlice;
++
++			for(int y = 0; y < external.height; y += 4)
++			{
++				for(int x = 0; x < external.width; x += 4)
++				{
++					rg_etc1::unpack_etc1_block(source, dest);
++
++					source++;
++				}
++			}
++
++			(byte*&)destSlice += internal.sliceB;
++		}
++	}
+ 
+ 	unsigned int Surface::size(int width, int height, int depth, Format format)
+ 	{
+@@ -2835,7 +2826,7 @@ namespace sw
+ 	bool Surface::identicalFormats() const
+ 	{
+ 		return external.format == internal.format &&
+-		       external.width  == internal.width &&
++			   external.width  == internal.width &&
+ 			   external.height == internal.height &&
+ 			   external.depth  == internal.depth &&
+ 			   external.pitchB == internal.pitchB &&
+@@ -2902,6 +2893,8 @@ namespace sw
+ 			return FORMAT_R8;
+ 		case FORMAT_ATI2:
+ 			return FORMAT_G8R8;
++		case FORMAT_ETC1:
++			return FORMAT_X8R8G8B8;
+ 		// Bumpmap formats
+ 		case FORMAT_V8U8:			return FORMAT_V8U8;
+ 		case FORMAT_L6V5U5:			return FORMAT_X8L8V8U8;
+diff --git a/src/Renderer/Surface.hpp b/src/Renderer/Surface.hpp
+index 8ed6351..b408cf0 100644
+--- a/src/Renderer/Surface.hpp
++++ b/src/Renderer/Surface.hpp
+@@ -62,6 +62,7 @@ namespace sw
+ 		FORMAT_DXT5,
+ 		FORMAT_ATI1,
+ 		FORMAT_ATI2,
++        FORMAT_ETC1,
+ 		// Floating-point formats
+ 		FORMAT_R16F,
+ 		FORMAT_G16R16F,
+@@ -326,9 +327,10 @@ namespace sw
+ 		static void decodeDXT1(Buffer &internal, const Buffer &external);
+ 		static void decodeDXT3(Buffer &internal, const Buffer &external);
+ 		static void decodeDXT5(Buffer &internal, const Buffer &external);
++		#endif
+ 		static void decodeATI1(Buffer &internal, const Buffer &external);
+ 		static void decodeATI2(Buffer &internal, const Buffer &external);
+-		#endif
++		static void decodeETC1(Buffer &internal, const Buffer &external);
+ 
+ 		static void update(Buffer &destination, Buffer &source);
+ 		static void genericUpdate(Buffer &destination, Buffer &source);
+diff --git a/src/SwiftShader/SwiftShader.vcxproj b/src/SwiftShader/SwiftShader.vcxproj
+index 4477b1b..f4b0ce8 100644
+--- a/src/SwiftShader/SwiftShader.vcxproj
++++ b/src/SwiftShader/SwiftShader.vcxproj
+@@ -314,6 +314,7 @@
+     <ClCompile Include="..\Main\crc.cpp" />
+     <ClCompile Include="..\Main\FrameBufferWin.cpp" />
+     <ClCompile Include="..\Main\Register.cpp" />
++    <ClCompile Include="..\Renderer\rg_etc1.cpp" />
+     <ClCompile Include="..\Shader\Constants.cpp" />
+     <ClCompile Include="..\Shader\PixelRoutine.cpp" />
+     <ClCompile Include="..\Shader\PixelShader.cpp" />
+diff --git a/src/SwiftShader/SwiftShader.vcxproj.filters b/src/SwiftShader/SwiftShader.vcxproj.filters
+index b60d548..df2d1c4 100644
+--- a/src/SwiftShader/SwiftShader.vcxproj.filters
++++ b/src/SwiftShader/SwiftShader.vcxproj.filters
+@@ -179,6 +179,9 @@
+     <ClCompile Include="..\Main\crc.cpp">
+       <Filter>Source Files\Main</Filter>
+     </ClCompile>
++    <ClCompile Include="..\Renderer\rg_etc1.cpp">
++      <Filter>Source Files\Renderer</Filter>
++    </ClCompile>
+   </ItemGroup>
+   <ItemGroup>
+     <ClInclude Include="MemoryManager.hpp">
+-- 
+1.8.4.msysgit.0
+

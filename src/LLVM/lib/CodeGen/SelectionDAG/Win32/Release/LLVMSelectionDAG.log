@@ -1,0 +1,36 @@
+﻿Build started 11/24/2014 5:47:17 PM.
+     1>Project "D:\SwiftShader-GLES\src\LLVM\lib\CodeGen\SelectionDAG\LLVMSelectionDAG.vcxproj" on node 3 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\SelectionDAG /I..\..\..\include /nologo /W3 /WX- /MP /Ox /Ob2 /Os /Oy /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _CRT_SECURE_NO_DEPRECATE /D _CRT_SECURE_NO_WARNINGS /D _CRT_NONSTDC_NO_DEPRECATE /D _CRT_NONSTDC_NO_WARNINGS /D _SCL_SECURE_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /D __STDC_CONSTANT_MACROS /D __STDC_FORMAT_MACROS /D __STDC_LIMIT_MACROS /D _HAS_EXCEPTIONS=0 /D _HAS_EXCEPTIONS=0 /D "CMAKE_INTDIR=\"Release\"" /GF /Gm- /MT /GS- /Gy- /fp:precise /fp:except- /Zc:wchar_t /Zc:forScope /GR- /Fo"Win32\Release\\" /Fd"..\..\Release/LLVMSelectionDAG.pdb" /Gd /TP /wd4146 /wd4180 /wd4224 /wd4244 /wd4267 /wd4275 /wd4291 /wd4345 /wd4351 /wd4355 /wd4503 /wd4551 /wd4624 /wd4715 /wd4800 /wd4065 /wd4181 /analyze- /errorReport:prompt  /Zm1000 /EHs-c- -w14062 FastISel.cpp FunctionLoweringInfo.cpp SelectionDAG.cpp SelectionDAGBuilder.cpp SelectionDAGISel.cpp
+         FastISel.cpp
+         FunctionLoweringInfo.cpp
+         SelectionDAG.cpp
+         SelectionDAGBuilder.cpp
+         SelectionDAGISel.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"Win32\Release\LLVMSelectionDAG.lib" /NOLOGO /LTCG Win32\Release\DAGCombiner.obj
+         Win32\Release\FastISel.obj
+         Win32\Release\FunctionLoweringInfo.obj
+         Win32\Release\InstrEmitter.obj
+         Win32\Release\LegalizeDAG.obj
+         Win32\Release\LegalizeFloatTypes.obj
+         Win32\Release\LegalizeIntegerTypes.obj
+         Win32\Release\LegalizeTypes.obj
+         Win32\Release\LegalizeTypesGeneric.obj
+         Win32\Release\LegalizeVectorOps.obj
+         Win32\Release\LegalizeVectorTypes.obj
+         Win32\Release\ScheduleDAGList.obj
+         Win32\Release\ScheduleDAGRRList.obj
+         Win32\Release\ScheduleDAGSDNodes.obj
+         Win32\Release\SelectionDAG.obj
+         Win32\Release\SelectionDAGBuilder.obj
+         Win32\Release\SelectionDAGISel.obj
+         Win32\Release\SelectionDAGPrinter.obj
+         Win32\Release\TargetLowering.obj
+         Win32\Release\TargetSelectionDAGInfo.obj
+         LLVMSelectionDAG.vcxproj -> D:\SwiftShader-GLES\src\LLVM\lib\CodeGen\SelectionDAG\Win32\Release\LLVMSelectionDAG.lib
+     1>Done Building Project "D:\SwiftShader-GLES\src\LLVM\lib\CodeGen\SelectionDAG\LLVMSelectionDAG.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:05.74

@@ -1,0 +1,222 @@
+﻿Build started 11/24/2014 5:20:20 PM.
+     1>Project "D:\SwiftShader-GLES\src\LLVM\lib\CodeGen\LLVMCodeGen.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\CodeGen /I..\..\include /Zi /nologo /W3 /WX- /MP /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _CRT_SECURE_NO_DEPRECATE /D _CRT_SECURE_NO_WARNINGS /D _CRT_NONSTDC_NO_DEPRECATE /D _CRT_NONSTDC_NO_WARNINGS /D _SCL_SECURE_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /D __STDC_CONSTANT_MACROS /D __STDC_FORMAT_MACROS /D __STDC_LIMIT_MACROS /D _HAS_EXCEPTIONS=0 /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR- /Fo"Win32\Debug\\" /Fd"..\Debug/LLVMCodeGen.pdb" /Gd /TP /wd4146 /wd4180 /wd4224 /wd4244 /wd4267 /wd4275 /wd4291 /wd4345 /wd4351 /wd4355 /wd4503 /wd4551 /wd4624 /wd4715 /wd4800 /wd4065 /wd4181 /analyze- /errorReport:prompt  /Zm1000 /EHs-c- -w14062 AggressiveAntiDepBreaker.cpp AllocationOrder.cpp Analysis.cpp BranchFolding.cpp CalcSpillWeights.cpp CallingConvLower.cpp CodePlacementOpt.cpp CriticalAntiDepBreaker.cpp DeadMachineInstructionElim.cpp DwarfEHPrepare.cpp ELFCodeEmitter.cpp ELFWriter.cpp EdgeBundles.cpp ExecutionDepsFix.cpp ExpandISelPseudos.cpp ExpandPostRAPseudos.cpp GCMetadata.cpp GCStrategy.cpp InlineSpiller.cpp InterferenceCache.cpp IntrinsicLowering.cpp LLVMTargetMachine.cpp LatencyPriorityQueue.cpp LexicalScopes.cpp LiveDebugVariables.cpp LiveInterval.cpp LiveIntervalAnalysis.cpp LiveIntervalUnion.cpp LiveRangeCalc.cpp LiveRangeEdit.cpp LiveStackAnalysis.cpp LiveVariables.cpp LocalStackSlotAllocation.cpp MachineBasicBlock.cpp MachineCSE.cpp MachineDominators.cpp MachineFunction.cpp MachineFunctionAnalysis.cpp MachineFunctionPass.cpp MachineFunctionPrinterPass.cpp MachineInstr.cpp MachineLICM.cpp MachineLoopInfo.cpp MachineModuleInfo.cpp MachineModuleInfoImpls.cpp MachinePassRegistry.cpp MachineRegisterInfo.cpp MachineSSAUpdater.cpp MachineSink.cpp MachineVerifier.cpp ObjectCodeEmitter.cpp OptimizePHIs.cpp PHIElimination.cpp PHIEliminationUtils.cpp Passes.cpp PeepholeOptimizer.cpp PostRASchedulerList.cpp ProcessImplicitDefs.cpp PrologEpilogInserter.cpp PseudoSourceValue.cpp RegAllocBasic.cpp RegAllocFast.cpp RegAllocGreedy.cpp RegAllocLinearScan.cpp RegisterClassInfo.cpp RegisterCoalescer.cpp RegisterScavenging.cpp RenderMachineFunction.cpp ScheduleDAG.cpp ScheduleDAGEmit.cpp ScheduleDAGInstrs.cpp ScheduleDAGPrinter.cpp ScoreboardHazardRecognizer.cpp ShrinkWrapping.cpp SjLjEHPrepare.cpp SlotIndexes.cpp SpillPlacement.cpp Spiller.cpp SplitKit.cpp StackProtector.cpp StackSlotColoring.cpp StrongPHIElimination.cpp TailDuplication.cpp TargetInstrInfoImpl.cpp TargetLoweringObjectFileImpl.cpp TwoAddressInstructionPass.cpp UnreachableBlockElim.cpp VirtRegMap.cpp VirtRegRewriter.cpp
+         AggressiveAntiDepBreaker.cpp
+         AllocationOrder.cpp
+         Analysis.cpp
+         BranchFolding.cpp
+         CalcSpillWeights.cpp
+         CallingConvLower.cpp
+         CodePlacementOpt.cpp
+         CriticalAntiDepBreaker.cpp
+         DeadMachineInstructionElim.cpp
+         DwarfEHPrepare.cpp
+         ELFCodeEmitter.cpp
+         ELFWriter.cpp
+         EdgeBundles.cpp
+         ExecutionDepsFix.cpp
+         ExpandISelPseudos.cpp
+         ExpandPostRAPseudos.cpp
+         GCMetadata.cpp
+         GCStrategy.cpp
+         InlineSpiller.cpp
+         InterferenceCache.cpp
+         IntrinsicLowering.cpp
+         LLVMTargetMachine.cpp
+         LatencyPriorityQueue.cpp
+         LexicalScopes.cpp
+         LiveDebugVariables.cpp
+         LiveInterval.cpp
+         LiveIntervalAnalysis.cpp
+         LiveIntervalUnion.cpp
+         LiveRangeCalc.cpp
+         LiveRangeEdit.cpp
+         LiveStackAnalysis.cpp
+         LiveVariables.cpp
+         LocalStackSlotAllocation.cpp
+         MachineBasicBlock.cpp
+         MachineCSE.cpp
+         MachineDominators.cpp
+         MachineFunction.cpp
+         MachineFunctionAnalysis.cpp
+         MachineFunctionPass.cpp
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\liveinterval.cpp(585): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\liveinterval.cpp(589): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\liveinterval.cpp(585): warning C4756: overflow in constant arithmetic
+         MachineFunctionPrinterPass.cpp
+         MachineInstr.cpp
+         MachineLICM.cpp
+         MachineLoopInfo.cpp
+         MachineModuleInfo.cpp
+         MachineModuleInfoImpls.cpp
+         MachinePassRegistry.cpp
+         MachineRegisterInfo.cpp
+         MachineSSAUpdater.cpp
+         MachineSink.cpp
+         MachineVerifier.cpp
+         ObjectCodeEmitter.cpp
+     1>d:\swiftshader-gles\src\llvm\include\llvm\codegen\liveinterval.h(513): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\include\llvm\codegen\liveinterval.h(513): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\include\llvm\codegen\liveinterval.h(518): warning C4756: overflow in constant arithmetic
+         OptimizePHIs.cpp
+         PHIElimination.cpp
+         PHIEliminationUtils.cpp
+         Passes.cpp
+         PeepholeOptimizer.cpp
+         PostRASchedulerList.cpp
+         ProcessImplicitDefs.cpp
+         PrologEpilogInserter.cpp
+         PseudoSourceValue.cpp
+         RegAllocBasic.cpp
+         RegAllocFast.cpp
+         RegAllocGreedy.cpp
+         RegAllocLinearScan.cpp
+         RegisterClassInfo.cpp
+         RegisterCoalescer.cpp
+         RegisterScavenging.cpp
+         RenderMachineFunction.cpp
+         ScheduleDAG.cpp
+         ScheduleDAGEmit.cpp
+         ScheduleDAGInstrs.cpp
+         ScheduleDAGPrinter.cpp
+         ScoreboardHazardRecognizer.cpp
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\liveintervalanalysis.cpp(738): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\liveintervalanalysis.cpp(738): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\include\llvm\codegen\liveinterval.h(518): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\include\llvm\codegen\liveinterval.h(513): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\include\llvm\codegen\liveinterval.h(518): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\include\llvm\codegen\liveinterval.h(518): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\include\llvm\codegen\liveinterval.h(513): warning C4756: overflow in constant arithmetic
+         ShrinkWrapping.cpp
+         SjLjEHPrepare.cpp
+         SlotIndexes.cpp
+         SpillPlacement.cpp
+         Spiller.cpp
+         SplitKit.cpp
+         StackProtector.cpp
+         StackSlotColoring.cpp
+         StrongPHIElimination.cpp
+         TailDuplication.cpp
+         TargetInstrInfoImpl.cpp
+         TargetLoweringObjectFileImpl.cpp
+         TwoAddressInstructionPass.cpp
+         UnreachableBlockElim.cpp
+         VirtRegMap.cpp
+         VirtRegRewriter.cpp
+     1>SpillPlacement.cpp(225): warning C4056: overflow in floating-point constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\spillplacement.cpp(225): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\spillplacement.cpp(225): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\regalloclinearscan.cpp(1154): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\regalloclinearscan.cpp(1160): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\regalloclinearscan.cpp(1185): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\regalloclinearscan.cpp(1189): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\regalloclinearscan.cpp(1230): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\regalloclinearscan.cpp(1252): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\regalloclinearscan.cpp(1400): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\regalloclinearscan.cpp(1154): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\spiller.cpp(80): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\spiller.cpp(123): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\spiller.cpp(80): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\include\llvm\codegen\liveinterval.h(513): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\include\llvm\codegen\liveinterval.h(513): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\regallocgreedy.cpp(1097): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\regallocgreedy.cpp(1411): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\lib\codegen\regallocgreedy.cpp(1097): warning C4756: overflow in constant arithmetic
+     1>d:\swiftshader-gles\src\llvm\include\llvm\codegen\liveinterval.h(513): warning C4756: overflow in constant arithmetic
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"Win32\Debug\LLVMCodeGen.lib" /NOLOGO Win32\Debug\AggressiveAntiDepBreaker.obj
+         Win32\Debug\AllocationOrder.obj
+         Win32\Debug\Analysis.obj
+         Win32\Debug\BranchFolding.obj
+         Win32\Debug\CalcSpillWeights.obj
+         Win32\Debug\CallingConvLower.obj
+         Win32\Debug\CodePlacementOpt.obj
+         Win32\Debug\CriticalAntiDepBreaker.obj
+         Win32\Debug\DeadMachineInstructionElim.obj
+         Win32\Debug\DwarfEHPrepare.obj
+         Win32\Debug\EdgeBundles.obj
+         Win32\Debug\ELFCodeEmitter.obj
+         Win32\Debug\ELFWriter.obj
+         Win32\Debug\ExecutionDepsFix.obj
+         Win32\Debug\ExpandISelPseudos.obj
+         Win32\Debug\ExpandPostRAPseudos.obj
+         Win32\Debug\GCMetadata.obj
+         Win32\Debug\GCStrategy.obj
+         Win32\Debug\InlineSpiller.obj
+         Win32\Debug\InterferenceCache.obj
+         Win32\Debug\IntrinsicLowering.obj
+         Win32\Debug\LLVMTargetMachine.obj
+         Win32\Debug\LatencyPriorityQueue.obj
+         Win32\Debug\LexicalScopes.obj
+         Win32\Debug\LiveDebugVariables.obj
+         Win32\Debug\LiveInterval.obj
+         Win32\Debug\LiveIntervalAnalysis.obj
+         Win32\Debug\LiveIntervalUnion.obj
+         Win32\Debug\LiveStackAnalysis.obj
+         Win32\Debug\LiveVariables.obj
+         Win32\Debug\LiveRangeCalc.obj
+         Win32\Debug\LiveRangeEdit.obj
+         Win32\Debug\LocalStackSlotAllocation.obj
+         Win32\Debug\MachineBasicBlock.obj
+         Win32\Debug\MachineCSE.obj
+         Win32\Debug\MachineDominators.obj
+         Win32\Debug\MachineFunction.obj
+         Win32\Debug\MachineFunctionAnalysis.obj
+         Win32\Debug\MachineFunctionPass.obj
+         Win32\Debug\MachineFunctionPrinterPass.obj
+         Win32\Debug\MachineInstr.obj
+         Win32\Debug\MachineLICM.obj
+         Win32\Debug\MachineLoopInfo.obj
+         Win32\Debug\MachineModuleInfo.obj
+         Win32\Debug\MachineModuleInfoImpls.obj
+         Win32\Debug\MachinePassRegistry.obj
+         Win32\Debug\MachineRegisterInfo.obj
+         Win32\Debug\MachineSSAUpdater.obj
+         Win32\Debug\MachineSink.obj
+         Win32\Debug\MachineVerifier.obj
+         Win32\Debug\ObjectCodeEmitter.obj
+         Win32\Debug\OptimizePHIs.obj
+         Win32\Debug\PHIElimination.obj
+         Win32\Debug\PHIEliminationUtils.obj
+         Win32\Debug\Passes.obj
+         Win32\Debug\PeepholeOptimizer.obj
+         Win32\Debug\PostRASchedulerList.obj
+         Win32\Debug\ProcessImplicitDefs.obj
+         Win32\Debug\PrologEpilogInserter.obj
+         Win32\Debug\PseudoSourceValue.obj
+         Win32\Debug\RegAllocBasic.obj
+         Win32\Debug\RegAllocFast.obj
+         Win32\Debug\RegAllocGreedy.obj
+         Win32\Debug\RegAllocLinearScan.obj
+         Win32\Debug\RegisterClassInfo.obj
+         Win32\Debug\RegisterCoalescer.obj
+         Win32\Debug\RegisterScavenging.obj
+         Win32\Debug\RenderMachineFunction.obj
+         Win32\Debug\ScheduleDAG.obj
+         Win32\Debug\ScheduleDAGEmit.obj
+         Win32\Debug\ScheduleDAGInstrs.obj
+         Win32\Debug\ScheduleDAGPrinter.obj
+         Win32\Debug\ScoreboardHazardRecognizer.obj
+         Win32\Debug\ShrinkWrapping.obj
+         Win32\Debug\SjLjEHPrepare.obj
+         Win32\Debug\SlotIndexes.obj
+         Win32\Debug\Spiller.obj
+         Win32\Debug\SpillPlacement.obj
+         Win32\Debug\SplitKit.obj
+         Win32\Debug\StackProtector.obj
+         Win32\Debug\StackSlotColoring.obj
+         Win32\Debug\StrongPHIElimination.obj
+         Win32\Debug\TailDuplication.obj
+         Win32\Debug\TargetInstrInfoImpl.obj
+         Win32\Debug\TargetLoweringObjectFileImpl.obj
+         Win32\Debug\TwoAddressInstructionPass.obj
+         Win32\Debug\UnreachableBlockElim.obj
+         Win32\Debug\VirtRegMap.obj
+         Win32\Debug\VirtRegRewriter.obj
+         LLVMCodeGen.vcxproj -> D:\SwiftShader-GLES\src\LLVM\lib\CodeGen\Win32\Debug\LLVMCodeGen.lib
+     1>Done Building Project "D:\SwiftShader-GLES\src\LLVM\lib\CodeGen\LLVMCodeGen.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:12.41

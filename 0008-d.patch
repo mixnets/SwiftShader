@@ -1,0 +1,158 @@
+From 515e3065bdf791420d2262afca71a0d4c552a87c Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Fri, 28 Nov 2014 17:29:08 -0500
+Subject: [PATCH 08/11] d
+
+Change-Id: Iff5ae609875fe2029e13611a8dc8924cab874f8f
+---
+ src/Renderer/Surface.cpp | 64 +++++++++++++++++++++++-------------------------
+ 1 file changed, 31 insertions(+), 33 deletions(-)
+
+diff --git a/src/Renderer/Surface.cpp b/src/Renderer/Surface.cpp
+index cd291aa..24d4ce1 100644
+--- a/src/Renderer/Surface.cpp
++++ b/src/Renderer/Surface.cpp
+@@ -82,20 +82,19 @@ namespace rg_etc1
+ 		}
+ 	}; // class color_quad_u8
+ 		
++	// Table 3.17.2 sorted according to table 3.17.3
+ 	static const int g_etc1_inten_tables[8][4] =
+ 	{
+-		{-8, -2, 2, 8},
+-		{-17, -5, 5, 17},
+-		{-29, -9, 9, 29},
+-		{-42, -13, 13, 42},
+-		{-60, -18, 18, 60},
+-		{-80, -24, 24, 80},
+-		{-106, -33, 33, 106},
+-		{-183, -47, 47, 183}
++		{2, 8, -2, -8},
++		{5, 17, -5, -17},
++		{9, 29, -9, -29},
++		{13, 42, -13, -42},
++		{18, 60, -18, -60},
++		{24, 80, -24, -80},
++		{33, 106, -33, -106},
++		{47, 183, -47, -183}
+ 	};
+ 
+-	static const uint8 g_etc1_to_selector_index[4] = {2, 3, 1, 0};
+-
+ 	struct etc1_block
+ 	{
+ 		struct
+@@ -132,16 +131,14 @@ namespace rg_etc1
+ 			uint8 pixelIndexLSB[2];
+ 		};
+ 		
+-		// Returned selector value ranges from 0-3 and is a direct index into g_etc1_inten_tables.
+ 		inline uint get_selector(uint x, uint y) const
+ 		{
+ 			const uint bit_index = x * 4 + y;
+ 			const uint byte_bit_ofs = bit_index & 7;
+ 			const uint lsb = (pixelIndexLSB[1 - (bit_index >> 3)] >> byte_bit_ofs) & 1;
+ 			const uint msb = (pixelIndexMSB[1 - (bit_index >> 3)] >> byte_bit_ofs) & 1;
+-			const uint val = lsb | (msb << 1);
+-
+-			return g_etc1_to_selector_index[val];
++			
++			return lsb | (msb << 1);
+ 		}
+ 
+ 		inline uint16 get_base5_color() const
+@@ -170,10 +167,10 @@ namespace rg_etc1
+ 		static void unpack_delta3(int& r, int& g, int& b, uint16 packed_delta3);
+ 		
+ 		// subblock colors
+-		static void get_diff_subblock_colors(color_quad_u8* pDst, const etc1_block &block, uint table_idx);
+-		static bool get_diff_subblock_colors(color_quad_u8* pDst, uint16 packed_color5, uint16 packed_delta3, uint table_idx);
+-		static void get_abs_subblock_colors1(color_quad_u8* pDst, const etc1_block &block, uint table_idx);
+-		static void get_abs_subblock_colors2(color_quad_u8* pDst, const etc1_block &block, uint table_idx);
++		static void get_diff_subblock_colors1(color_quad_u8* pDst, const etc1_block &block);
++		static bool get_diff_subblock_colors2(color_quad_u8* pDst, const etc1_block &block);
++		static void get_abs_subblock_colors1(color_quad_u8* pDst, const etc1_block &block);
++		static void get_abs_subblock_colors2(color_quad_u8* pDst, const etc1_block &block);
+ 
+ 		static inline void unscaled_to_scaled_color(color_quad_u8& dst, const color_quad_u8& src, bool color4)
+ 		{
+@@ -260,9 +257,9 @@ namespace rg_etc1
+ 		if(b >= 4) b -= 8;
+ 	}
+ 
+-	void etc1_block::get_diff_subblock_colors(color_quad_u8* pDst, const etc1_block &block, uint table_idx)
++	void etc1_block::get_diff_subblock_colors1(color_quad_u8* pDst, const etc1_block &block)
+ 	{
+-		const int *pInten_modifer_table = &g_etc1_inten_tables[table_idx][0];
++		const int *pInten_modifer_table = &g_etc1_inten_tables[block.cw1][0];
+ 
+ 		uint r = block.cR1;
+ 		uint g = block.cG1;
+@@ -287,12 +284,15 @@ namespace rg_etc1
+ 		pDst[3].set(ir + y3, ig + y3, ib + y3);
+ 	}
+ 
+-	bool etc1_block::get_diff_subblock_colors(color_quad_u8* pDst, uint16 packed_color5, uint16 packed_delta3, uint table_idx)
++	bool etc1_block::get_diff_subblock_colors2(color_quad_u8* pDst, const etc1_block &block)
+ 	{
+-		const int *pInten_modifer_table = &g_etc1_inten_tables[table_idx][0];
++		const uint16 base_color5 = block.get_base5_color();
++		const uint16 delta_color3 = block.get_delta3_color();
++
++		const int *pInten_modifer_table = &g_etc1_inten_tables[block.cw2][0];
+ 
+ 		uint r, g, b;
+-		bool success = unpack_color5(r, g, b, packed_color5, packed_delta3);
++		bool success = unpack_color5(r, g, b, base_color5, delta_color3);
+ 
+ 		const int ir = static_cast<int>(r), ig = static_cast<int>(g), ib = static_cast<int>(b);
+ 
+@@ -311,9 +311,9 @@ namespace rg_etc1
+ 		return success;
+ 	}
+ 
+-	void etc1_block::get_abs_subblock_colors1(color_quad_u8* pDst, const etc1_block &block, uint table_idx)
++	void etc1_block::get_abs_subblock_colors1(color_quad_u8* pDst, const etc1_block &block)
+ 	{
+-		const int *pInten_modifer_table = &g_etc1_inten_tables[table_idx][0];
++		const int *pInten_modifer_table = &g_etc1_inten_tables[block.cw1][0];
+ 
+ 		uint r = block.iR1;
+ 		uint g = block.iG1;
+@@ -338,9 +338,9 @@ namespace rg_etc1
+ 		pDst[3].set(ir + y3, ig + y3, ib + y3);
+ 	}
+ 
+-	void etc1_block::get_abs_subblock_colors2(color_quad_u8* pDst, const etc1_block &block, uint table_idx)
++	void etc1_block::get_abs_subblock_colors2(color_quad_u8* pDst, const etc1_block &block)
+ 	{
+-		const int *pInten_modifer_table = &g_etc1_inten_tables[table_idx][0];
++		const int *pInten_modifer_table = &g_etc1_inten_tables[block.cw2][0];
+ 
+ 		uint r = block.iR2;
+ 		uint g = block.iG2;
+@@ -376,17 +376,15 @@ namespace rg_etc1
+ 
+ 		if(block.diffbit)
+ 		{
+-			const uint16 base_color5 = block.get_base5_color();
+-			const uint16 delta_color3 = block.get_delta3_color();
+-			etc1_block::get_diff_subblock_colors(subblock_colors0, block, block.cw1);
++			etc1_block::get_diff_subblock_colors1(subblock_colors0, block);
+ 
+-			if(!etc1_block::get_diff_subblock_colors(subblock_colors1, base_color5, delta_color3, block.cw2))
++			if(!etc1_block::get_diff_subblock_colors2(subblock_colors1, block))
+ 				success = false;
+ 		}
+ 		else
+ 		{
+-			etc1_block::get_abs_subblock_colors1(subblock_colors0, block, block.cw1);
+-			etc1_block::get_abs_subblock_colors2(subblock_colors1, block, block.cw2);
++			etc1_block::get_abs_subblock_colors1(subblock_colors0, block);
++			etc1_block::get_abs_subblock_colors2(subblock_colors1, block);
+ 		}
+ 
+ 		if(block.flipbit)
+-- 
+1.8.5.2.msysgit.0
+

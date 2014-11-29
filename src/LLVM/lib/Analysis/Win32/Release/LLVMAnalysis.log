@@ -1,0 +1,45 @@
+﻿Build started 11/24/2014 5:46:49 PM.
+     1>Project "D:\SwiftShader-GLES\src\LLVM\lib\Analysis\LLVMAnalysis.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\Analysis /I..\..\include /nologo /W3 /WX- /MP /Ox /Ob2 /Os /Oy /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _CRT_SECURE_NO_DEPRECATE /D _CRT_SECURE_NO_WARNINGS /D _CRT_NONSTDC_NO_DEPRECATE /D _CRT_NONSTDC_NO_WARNINGS /D _SCL_SECURE_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /D __STDC_CONSTANT_MACROS /D __STDC_FORMAT_MACROS /D __STDC_LIMIT_MACROS /D _HAS_EXCEPTIONS=0 /D "CMAKE_INTDIR=\"Release\"" /GF /Gm- /MT /GS- /Gy- /fp:precise /fp:except- /Zc:wchar_t /Zc:forScope /GR- /Fo"Win32\Release\\" /Fd"..\Release/LLVMAnalysis.pdb" /Gd /TP /wd4146 /wd4180 /wd4224 /wd4244 /wd4267 /wd4275 /wd4291 /wd4345 /wd4351 /wd4355 /wd4503 /wd4551 /wd4624 /wd4715 /wd4800 /wd4065 /wd4181 /analyze- /errorReport:prompt  /Zm1000 /EHs-c- -w14062 AliasAnalysis.cpp AliasSetTracker.cpp BasicAliasAnalysis.cpp ConstantFolding.cpp DIBuilder.cpp DebugInfo.cpp Loads.cpp MemoryDependenceAnalysis.cpp ScalarEvolutionExpander.cpp ValueTracking.cpp
+         AliasAnalysis.cpp
+         AliasSetTracker.cpp
+         BasicAliasAnalysis.cpp
+         ConstantFolding.cpp
+         DIBuilder.cpp
+         DebugInfo.cpp
+         Loads.cpp
+         MemoryDependenceAnalysis.cpp
+         ScalarEvolutionExpander.cpp
+         ValueTracking.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"Win32\Release\LLVMAnalysis.lib" /NOLOGO /LTCG Win32\Release\AliasAnalysis.obj
+         Win32\Release\AliasSetTracker.obj
+         Win32\Release\BasicAliasAnalysis.obj
+         Win32\Release\BranchProbabilityInfo.obj
+         Win32\Release\CaptureTracking.obj
+         Win32\Release\ConstantFolding.obj
+         Win32\Release\DIBuilder.obj
+         Win32\Release\DebugInfo.obj
+         Win32\Release\IVUsers.obj
+         Win32\Release\InstructionSimplify.obj
+         Win32\Release\Loads.obj
+         Win32\Release\LoopInfo.obj
+         Win32\Release\LoopPass.obj
+         Win32\Release\MemoryBuiltins.obj
+         Win32\Release\MemoryDependenceAnalysis.obj
+         Win32\Release\NoAliasAnalysis.obj
+         Win32\Release\PHITransAddr.obj
+         Win32\Release\PathNumbering.obj
+         Win32\Release\ProfileInfo.obj
+         Win32\Release\ScalarEvolution.obj
+         Win32\Release\ScalarEvolutionExpander.obj
+         Win32\Release\ScalarEvolutionNormalization.obj
+         Win32\Release\TypeBasedAliasAnalysis.obj
+         Win32\Release\ValueTracking.obj
+         LLVMAnalysis.vcxproj -> D:\SwiftShader-GLES\src\LLVM\lib\Analysis\Win32\Release\LLVMAnalysis.lib
+     1>Done Building Project "D:\SwiftShader-GLES\src\LLVM\lib\Analysis\LLVMAnalysis.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:04.21

@@ -1,0 +1,154 @@
+From 3cf34892709681a02d40850e8b2ff2c7bf0505e9 Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Mon, 24 Nov 2014 17:36:19 -0500
+Subject: [PATCH 2/5] Don't treat A8R8G8B8 on an X8R8G8B8 display as a slow EGL
+ config.
+
+Bug 18510357
+
+Change-Id: I0cd62227d3ba00c7bf5f70a8c2a2748f8cdc5242
+---
+ src/OpenGL/libEGL/Config.cpp   | 19 ++++++++++++-------
+ src/OpenGL/libEGL/Config.h     |  4 ++--
+ src/Radiance/libEGL/Config.cpp | 21 +++++++++++++--------
+ src/Radiance/libEGL/Config.h   |  4 ++--
+ 4 files changed, 29 insertions(+), 19 deletions(-)
+
+diff --git a/src/OpenGL/libEGL/Config.cpp b/src/OpenGL/libEGL/Config.cpp
+index b2f5a79..61a94d7 100644
+--- a/src/OpenGL/libEGL/Config.cpp
++++ b/src/OpenGL/libEGL/Config.cpp
+@@ -24,14 +24,9 @@ using namespace std;
+ 
+ namespace egl
+ {
+-Config::Config(DisplayMode displayMode, EGLint minInterval, EGLint maxInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample)
++Config::Config(const DisplayMode &displayMode, EGLint minInterval, EGLint maxInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample)
+     : mDisplayMode(displayMode), mRenderTargetFormat(renderTargetFormat), mDepthStencilFormat(depthStencilFormat), mMultiSample(multiSample)
+ {
+-    set(displayMode, minInterval, maxInterval, renderTargetFormat, depthStencilFormat, multiSample);
+-}
+-
+-void Config::set(DisplayMode displayMode, EGLint minInterval, EGLint maxInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample)
+-{
+     mBindToTextureRGB = EGL_FALSE;
+     mBindToTextureRGBA = EGL_FALSE;
+ 
+@@ -81,7 +76,7 @@ void Config::set(DisplayMode displayMode, EGLint minInterval, EGLint maxInterval
+     mLuminanceSize = 0;
+     mAlphaMaskSize = 0;
+     mColorBufferType = EGL_RGB_BUFFER;
+-    mConfigCaveat = (displayMode.format == renderTargetFormat) ? EGL_NONE : EGL_SLOW_CONFIG;
++    mConfigCaveat = isSlowConfig() ? EGL_SLOW_CONFIG : EGL_NONE;
+     mConfigID = 0;
+     mConformant = EGL_OPENGL_ES_BIT | EGL_OPENGL_ES2_BIT;
+ 
+@@ -156,6 +151,16 @@ EGLConfig Config::getHandle() const
+     return (EGLConfig)(size_t)mConfigID;
+ }
+ 
++bool Config::isSlowConfig() const
++{
++    if(mDisplayMode.format == sw::FORMAT_X8R8G8B8 && mRenderTargetFormat == sw::FORMAT_A8R8G8B8)
++	{
++		return false;
++	}
++
++    return mDisplayMode.format != mRenderTargetFormat;
++}
++
+ SortConfig::SortConfig(const EGLint *attribList)
+     : mWantRed(false), mWantGreen(false), mWantBlue(false), mWantAlpha(false), mWantLuminance(false)
+ {
+diff --git a/src/OpenGL/libEGL/Config.h b/src/OpenGL/libEGL/Config.h
+index 9af441f..9e78e8b 100644
+--- a/src/OpenGL/libEGL/Config.h
++++ b/src/OpenGL/libEGL/Config.h
+@@ -37,10 +37,10 @@ struct DisplayMode
+ class Config
+ {
+   public:
+-    Config(DisplayMode displayMode, EGLint minSwapInterval, EGLint maxSwapInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample);
++    Config(const DisplayMode &displayMode, EGLint minSwapInterval, EGLint maxSwapInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample);
+ 
+-    void set(DisplayMode displayMode, EGLint minSwapInterval, EGLint maxSwapInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample);
+     EGLConfig getHandle() const;
++	bool isSlowConfig() const;
+ 
+     const DisplayMode mDisplayMode;
+     const sw::Format mRenderTargetFormat;
+diff --git a/src/Radiance/libEGL/Config.cpp b/src/Radiance/libEGL/Config.cpp
+index 981b0f5..61a94d7 100644
+--- a/src/Radiance/libEGL/Config.cpp
++++ b/src/Radiance/libEGL/Config.cpp
+@@ -24,14 +24,9 @@ using namespace std;
+ 
+ namespace egl
+ {
+-Config::Config(DisplayMode displayMode, EGLint minInterval, EGLint maxInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample)
++Config::Config(const DisplayMode &displayMode, EGLint minInterval, EGLint maxInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample)
+     : mDisplayMode(displayMode), mRenderTargetFormat(renderTargetFormat), mDepthStencilFormat(depthStencilFormat), mMultiSample(multiSample)
+ {
+-    set(displayMode, minInterval, maxInterval, renderTargetFormat, depthStencilFormat, multiSample);
+-}
+-
+-void Config::set(DisplayMode displayMode, EGLint minInterval, EGLint maxInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample)
+-{
+     mBindToTextureRGB = EGL_FALSE;
+     mBindToTextureRGBA = EGL_FALSE;
+ 
+@@ -81,7 +76,7 @@ void Config::set(DisplayMode displayMode, EGLint minInterval, EGLint maxInterval
+     mLuminanceSize = 0;
+     mAlphaMaskSize = 0;
+     mColorBufferType = EGL_RGB_BUFFER;
+-    mConfigCaveat = (displayMode.format == renderTargetFormat) ? EGL_NONE : EGL_SLOW_CONFIG;
++    mConfigCaveat = isSlowConfig() ? EGL_SLOW_CONFIG : EGL_NONE;
+     mConfigID = 0;
+     mConformant = EGL_OPENGL_ES_BIT | EGL_OPENGL_ES2_BIT;
+ 
+@@ -156,6 +151,16 @@ EGLConfig Config::getHandle() const
+     return (EGLConfig)(size_t)mConfigID;
+ }
+ 
++bool Config::isSlowConfig() const
++{
++    if(mDisplayMode.format == sw::FORMAT_X8R8G8B8 && mRenderTargetFormat == sw::FORMAT_A8R8G8B8)
++	{
++		return false;
++	}
++
++    return mDisplayMode.format != mRenderTargetFormat;
++}
++
+ SortConfig::SortConfig(const EGLint *attribList)
+     : mWantRed(false), mWantGreen(false), mWantBlue(false), mWantAlpha(false), mWantLuminance(false)
+ {
+@@ -349,7 +354,7 @@ bool ConfigSet::getConfigs(EGLConfig *configs, const EGLint *attribList, EGLint
+     }
+     else
+     {
+-        *numConfig = passed.size();
++        *numConfig = static_cast<EGLint>(passed.size());
+     }
+ 
+     return true;
+diff --git a/src/Radiance/libEGL/Config.h b/src/Radiance/libEGL/Config.h
+index 9af441f..9e78e8b 100644
+--- a/src/Radiance/libEGL/Config.h
++++ b/src/Radiance/libEGL/Config.h
+@@ -37,10 +37,10 @@ struct DisplayMode
+ class Config
+ {
+   public:
+-    Config(DisplayMode displayMode, EGLint minSwapInterval, EGLint maxSwapInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample);
++    Config(const DisplayMode &displayMode, EGLint minSwapInterval, EGLint maxSwapInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample);
+ 
+-    void set(DisplayMode displayMode, EGLint minSwapInterval, EGLint maxSwapInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample);
+     EGLConfig getHandle() const;
++	bool isSlowConfig() const;
+ 
+     const DisplayMode mDisplayMode;
+     const sw::Format mRenderTargetFormat;
+-- 
+1.8.5.2.msysgit.0
+

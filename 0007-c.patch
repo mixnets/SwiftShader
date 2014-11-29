@@ -1,0 +1,101 @@
+From fe31d16fcd2c42895a2232fd3eec35e40e0e977c Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Fri, 28 Nov 2014 17:19:49 -0500
+Subject: [PATCH 07/11] c
+
+Change-Id: Iaae92bcd7e0dcc7c2124d79b1b9a010c0a668fae
+---
+ src/Renderer/Surface.cpp | 64 +++++++++++++++++++++---------------------------
+ 1 file changed, 28 insertions(+), 36 deletions(-)
+
+diff --git a/src/Renderer/Surface.cpp b/src/Renderer/Surface.cpp
+index 3a4c98d..cd291aa 100644
+--- a/src/Renderer/Surface.cpp
++++ b/src/Renderer/Surface.cpp
+@@ -98,45 +98,38 @@ namespace rg_etc1
+ 
+ 	struct etc1_block
+ 	{
+-		// big endian uint64:
+-		// bit ofs:  56  48  40  32  24  16   8   0
+-		// byte ofs: b0, b1, b2, b3, b4, b5, b6, b7 
+-		union
++		struct
+ 		{
+-			uint8 m_bytes[8];
+-
+-			struct
++			union
+ 			{
+-				union
++				struct
+ 				{
+-					struct
+-					{
+-						uint8 iR2 : 4;
+-						uint8 iR1 : 4;
+-						uint8 iG2 : 4;
+-						uint8 iG1 : 4;
+-						uint8 iB2 : 4;
+-						uint8 iB1 : 4;
+-					};
+-
+-					struct
+-					{
+-						uint8 dR2 : 3;
+-						uint8 cR1 : 5;
+-						uint8 dG2 : 3;
+-						uint8 cG1 : 5;
+-						uint8 dB2 : 3;
+-						uint8 cB1 : 5;
+-					};
++					uint8 iR2 : 4;
++					uint8 iR1 : 4;
++					uint8 iG2 : 4;
++					uint8 iG1 : 4;
++					uint8 iB2 : 4;
++					uint8 iB1 : 4;
+ 				};
+ 
+-				bool flipbit : 1;
+-				bool diffbit : 1;
+-				uint8 cw2 : 3;
+-				uint8 cw1 : 3;
+-
+-				uint32 pixelIndex;
++				struct
++				{
++					uint8 dR2 : 3;
++					uint8 cR1 : 5;
++					uint8 dG2 : 3;
++					uint8 cG1 : 5;
++					uint8 dB2 : 3;
++					uint8 cB1 : 5;
++				};
+ 			};
++
++			bool flipbit : 1;
++			bool diffbit : 1;
++			uint8 cw2 : 3;
++			uint8 cw1 : 3;
++
++			uint8 pixelIndexMSB[2];
++			uint8 pixelIndexLSB[2];
+ 		};
+ 		
+ 		// Returned selector value ranges from 0-3 and is a direct index into g_etc1_inten_tables.
+@@ -144,9 +137,8 @@ namespace rg_etc1
+ 		{
+ 			const uint bit_index = x * 4 + y;
+ 			const uint byte_bit_ofs = bit_index & 7;
+-			const uint8 *p = &m_bytes[7 - (bit_index >> 3)];
+-			const uint lsb = (p[0] >> byte_bit_ofs) & 1;
+-			const uint msb = (p[-2] >> byte_bit_ofs) & 1;
++			const uint lsb = (pixelIndexLSB[1 - (bit_index >> 3)] >> byte_bit_ofs) & 1;
++			const uint msb = (pixelIndexMSB[1 - (bit_index >> 3)] >> byte_bit_ofs) & 1;
+ 			const uint val = lsb | (msb << 1);
+ 
+ 			return g_etc1_to_selector_index[val];
+-- 
+1.8.5.2.msysgit.0
+

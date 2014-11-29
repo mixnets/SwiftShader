@@ -1,0 +1,107 @@
+﻿Build started 11/24/2014 5:47:02 PM.
+     1>Project "D:\SwiftShader-GLES\src\LLVM\lib\CodeGen\LLVMCodeGen.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\CodeGen /I..\..\include /nologo /W3 /WX- /MP /Ox /Ob2 /Os /Oy /GL /D WIN32 /D _WINDOWS /D NDEBUG /D _CRT_SECURE_NO_DEPRECATE /D _CRT_SECURE_NO_WARNINGS /D _CRT_NONSTDC_NO_DEPRECATE /D _CRT_NONSTDC_NO_WARNINGS /D _SCL_SECURE_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /D __STDC_CONSTANT_MACROS /D __STDC_FORMAT_MACROS /D __STDC_LIMIT_MACROS /D _HAS_EXCEPTIONS=0 /D "CMAKE_INTDIR=\"Release\"" /GF /Gm- /MT /GS- /Gy- /fp:precise /fp:except- /Zc:wchar_t /Zc:forScope /GR- /Fo"Win32\Release\\" /Fd"..\Release/LLVMCodeGen.pdb" /Gd /TP /wd4146 /wd4180 /wd4224 /wd4244 /wd4267 /wd4275 /wd4291 /wd4345 /wd4351 /wd4355 /wd4503 /wd4551 /wd4624 /wd4715 /wd4800 /wd4065 /wd4181 /analyze- /errorReport:prompt  /Zm1000 /EHs-c- -w14062 Analysis.cpp DwarfEHPrepare.cpp GCStrategy.cpp IntrinsicLowering.cpp LocalStackSlotAllocation.cpp SjLjEHPrepare.cpp StackProtector.cpp
+         Analysis.cpp
+         DwarfEHPrepare.cpp
+         GCStrategy.cpp
+         IntrinsicLowering.cpp
+         LocalStackSlotAllocation.cpp
+         SjLjEHPrepare.cpp
+         StackProtector.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"Win32\Release\LLVMCodeGen.lib" /NOLOGO /LTCG Win32\Release\AggressiveAntiDepBreaker.obj
+         Win32\Release\AllocationOrder.obj
+         Win32\Release\Analysis.obj
+         Win32\Release\BranchFolding.obj
+         Win32\Release\CalcSpillWeights.obj
+         Win32\Release\CallingConvLower.obj
+         Win32\Release\CodePlacementOpt.obj
+         Win32\Release\CriticalAntiDepBreaker.obj
+         Win32\Release\DeadMachineInstructionElim.obj
+         Win32\Release\DwarfEHPrepare.obj
+         Win32\Release\EdgeBundles.obj
+         Win32\Release\ELFCodeEmitter.obj
+         Win32\Release\ELFWriter.obj
+         Win32\Release\ExecutionDepsFix.obj
+         Win32\Release\ExpandISelPseudos.obj
+         Win32\Release\ExpandPostRAPseudos.obj
+         Win32\Release\GCMetadata.obj
+         Win32\Release\GCStrategy.obj
+         Win32\Release\InlineSpiller.obj
+         Win32\Release\InterferenceCache.obj
+         Win32\Release\IntrinsicLowering.obj
+         Win32\Release\LLVMTargetMachine.obj
+         Win32\Release\LatencyPriorityQueue.obj
+         Win32\Release\LexicalScopes.obj
+         Win32\Release\LiveDebugVariables.obj
+         Win32\Release\LiveInterval.obj
+         Win32\Release\LiveIntervalAnalysis.obj
+         Win32\Release\LiveIntervalUnion.obj
+         Win32\Release\LiveStackAnalysis.obj
+         Win32\Release\LiveVariables.obj
+         Win32\Release\LiveRangeCalc.obj
+         Win32\Release\LiveRangeEdit.obj
+         Win32\Release\LocalStackSlotAllocation.obj
+         Win32\Release\MachineBasicBlock.obj
+         Win32\Release\MachineCSE.obj
+         Win32\Release\MachineDominators.obj
+         Win32\Release\MachineFunction.obj
+         Win32\Release\MachineFunctionAnalysis.obj
+         Win32\Release\MachineFunctionPass.obj
+         Win32\Release\MachineFunctionPrinterPass.obj
+         Win32\Release\MachineInstr.obj
+         Win32\Release\MachineLICM.obj
+         Win32\Release\MachineLoopInfo.obj
+         Win32\Release\MachineModuleInfo.obj
+         Win32\Release\MachineModuleInfoImpls.obj
+         Win32\Release\MachinePassRegistry.obj
+         Win32\Release\MachineRegisterInfo.obj
+         Win32\Release\MachineSSAUpdater.obj
+         Win32\Release\MachineSink.obj
+         Win32\Release\MachineVerifier.obj
+         Win32\Release\ObjectCodeEmitter.obj
+         Win32\Release\OptimizePHIs.obj
+         Win32\Release\PHIElimination.obj
+         Win32\Release\PHIEliminationUtils.obj
+         Win32\Release\Passes.obj
+         Win32\Release\PeepholeOptimizer.obj
+         Win32\Release\PostRASchedulerList.obj
+         Win32\Release\ProcessImplicitDefs.obj
+         Win32\Release\PrologEpilogInserter.obj
+         Win32\Release\PseudoSourceValue.obj
+         Win32\Release\RegAllocBasic.obj
+         Win32\Release\RegAllocFast.obj
+         Win32\Release\RegAllocGreedy.obj
+         Win32\Release\RegAllocLinearScan.obj
+         Win32\Release\RegisterClassInfo.obj
+         Win32\Release\RegisterCoalescer.obj
+         Win32\Release\RegisterScavenging.obj
+         Win32\Release\RenderMachineFunction.obj
+         Win32\Release\ScheduleDAG.obj
+         Win32\Release\ScheduleDAGEmit.obj
+         Win32\Release\ScheduleDAGInstrs.obj
+         Win32\Release\ScheduleDAGPrinter.obj
+         Win32\Release\ScoreboardHazardRecognizer.obj
+         Win32\Release\ShrinkWrapping.obj
+         Win32\Release\SjLjEHPrepare.obj
+         Win32\Release\SlotIndexes.obj
+         Win32\Release\Spiller.obj
+         Win32\Release\SpillPlacement.obj
+         Win32\Release\SplitKit.obj
+         Win32\Release\StackProtector.obj
+         Win32\Release\StackSlotColoring.obj
+         Win32\Release\StrongPHIElimination.obj
+         Win32\Release\TailDuplication.obj
+         Win32\Release\TargetInstrInfoImpl.obj
+         Win32\Release\TargetLoweringObjectFileImpl.obj
+         Win32\Release\TwoAddressInstructionPass.obj
+         Win32\Release\UnreachableBlockElim.obj
+         Win32\Release\VirtRegMap.obj
+         Win32\Release\VirtRegRewriter.obj
+         LLVMCodeGen.vcxproj -> D:\SwiftShader-GLES\src\LLVM\lib\CodeGen\Win32\Release\LLVMCodeGen.lib
+     1>Done Building Project "D:\SwiftShader-GLES\src\LLVM\lib\CodeGen\LLVMCodeGen.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:14.39

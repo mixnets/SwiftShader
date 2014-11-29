@@ -1,0 +1,1959 @@
+From 7806fa7c3799c9adb8cb25b1c95651052fda3d02 Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Fri, 28 Nov 2014 11:43:15 -0500
+Subject: [PATCH 03/11] ect1
+
+Change-Id: I9ed91403883eac2cd8bececc40aaf0c28c7ff480
+---
+ src/Main/SwiftConfig.cpp             |   7 +
+ src/OpenGL/libEGL/main.cpp           |   2 +-
+ src/OpenGL/libGLES_CM/Context.cpp    |  33 +-
+ src/OpenGL/libGLES_CM/Context.h      |  15 +-
+ src/OpenGL/libGLES_CM/Texture.cpp    |   3 +
+ src/OpenGL/libGLES_CM/libGLES_CM.cpp | 244 +++++++-------
+ src/OpenGL/libGLES_CM/utilities.cpp  |   3 +-
+ src/OpenGL/libGLESv2/Context.cpp     |  41 +--
+ src/OpenGL/libGLESv2/Context.h       |  14 +-
+ src/OpenGL/libGLESv2/Image.cpp       |   6 +-
+ src/OpenGL/libGLESv2/Texture.cpp     |   5 +
+ src/OpenGL/libGLESv2/libGLESv2.cpp   | 491 +++++++++++++--------------
+ src/OpenGL/libGLESv2/utilities.cpp   |   6 +-
+ src/Renderer/Renderer.cpp            |   2 +-
+ src/Renderer/Surface.cpp             | 621 ++++++++++++++++++++++++++++++++++-
+ src/Renderer/Surface.hpp             |   4 +-
+ 16 files changed, 1066 insertions(+), 431 deletions(-)
+
+diff --git a/src/Main/SwiftConfig.cpp b/src/Main/SwiftConfig.cpp
+index 953f0bf..513d393 100644
+--- a/src/Main/SwiftConfig.cpp
++++ b/src/Main/SwiftConfig.cpp
+@@ -26,6 +26,9 @@
+ extern Profiler profiler;
+ #endif
+ 
++extern volatile int contextCount;
++extern volatile int textureCount;
++
+ namespace sw
+ {
+ 	std::string itoa(int number)
+@@ -260,6 +263,10 @@ namespace sw
+ 		html += "}\n";
+ 		html += "</script>\n";
+ 		html += "<form method='POST' action=''>\n";
++		html += "<table>\n";
++		html += "<tr><td>Contexts:</td><td>" + itoa(contextCount) + "</td></tr>\n";
++		html += "<tr><td>Textures:</td><td>" + itoa(textureCount) + "</td></tr>\n";
++		html += "</table>\n";
+ 		html += "<h1>SwiftShader Configuration Panel</h1>\n";
+ 		html += "<hr><p>\n";
+ 		html += "<input type='submit' value='Apply changes' title='Click to apply all settings.'>\n";
+diff --git a/src/OpenGL/libEGL/main.cpp b/src/OpenGL/libEGL/main.cpp
+index 80882ce..55ac20c 100644
+--- a/src/OpenGL/libEGL/main.cpp
++++ b/src/OpenGL/libEGL/main.cpp
+@@ -169,7 +169,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
+     switch(reason)
+     {
+     case DLL_PROCESS_ATTACH:
+-		if(false)
++		if(true)
+ 		{
+ 			WaitForDebugger(instance);
+ 		}
+diff --git a/src/OpenGL/libGLES_CM/Context.cpp b/src/OpenGL/libGLES_CM/Context.cpp
+index 952a4ef..1101f06 100644
+--- a/src/OpenGL/libGLES_CM/Context.cpp
++++ b/src/OpenGL/libGLES_CM/Context.cpp
+@@ -33,15 +33,18 @@
+ #undef near
+ #undef far
+ 
++volatile int contextCount = 0;
++
+ namespace es1
+ {
+-Device *Context::device = 0;
++//Device *Context::device = 0;
+ 
+ Context::Context(const egl::Config *config, const Context *shareContext)
+     : modelViewStack(MAX_MODELVIEW_STACK_DEPTH),
+       projectionStack(MAX_PROJECTION_STACK_DEPTH),
+ 	  textureStack0(MAX_TEXTURE_STACK_DEPTH),
+-	  textureStack1(MAX_TEXTURE_STACK_DEPTH)
++	  textureStack1(MAX_TEXTURE_STACK_DEPTH),
++	  device(0)
+ {
+ 	device = getDevice();
+ 
+@@ -1007,20 +1010,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
+     case GL_STENCIL_CLEAR_VALUE:              *params = mState.stencilClearValue;             break;
+     case GL_SUBPIXEL_BITS:                    *params = 4;                                    break;
+ 	case GL_MAX_TEXTURE_SIZE:                 *params = IMPLEMENTATION_MAX_TEXTURE_SIZE;      break;
+-    case GL_NUM_COMPRESSED_TEXTURE_FORMATS:
+-        {
+-            if(S3TC_SUPPORT)
+-            {
+-                // GL_COMPRESSED_RGB_S3TC_DXT1_EXT
+-                // GL_COMPRESSED_RGBA_S3TC_DXT1_EXT
+-                *params = 2;
+-            }
+-            else
+-            {
+-                *params = 0;
+-            }
+-        }
+-        break;
++	case GL_NUM_COMPRESSED_TEXTURE_FORMATS:   *params = NUM_COMPRESSED_TEXTURE_FORMATS;       break;
+ 	case GL_SAMPLE_BUFFERS:
+     case GL_SAMPLES:
+         {
+@@ -1063,11 +1053,10 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
+         break;
+     case GL_COMPRESSED_TEXTURE_FORMATS:
+         {
+-            if(S3TC_SUPPORT)
+-            {
+-                params[0] = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+-                params[1] = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+-            }
++			for(int i = 0; i < NUM_COMPRESSED_TEXTURE_FORMATS; i++)
++			{
++				params[i] = compressedTextureFormats[i];
++			}
+         }
+         break;
+     case GL_VIEWPORT:
+@@ -1195,7 +1184,7 @@ int Context::getQueryParameterNum(GLenum pname)
+     switch (pname)
+     {
+     case GL_COMPRESSED_TEXTURE_FORMATS:
+-		return S3TC_SUPPORT ? 2 : 0;
++		return NUM_COMPRESSED_TEXTURE_FORMATS;
+     case GL_NUM_COMPRESSED_TEXTURE_FORMATS:
+     case GL_ARRAY_BUFFER_BINDING:
+     case GL_FRAMEBUFFER_BINDING_OES:
+diff --git a/src/OpenGL/libGLES_CM/Context.h b/src/OpenGL/libGLES_CM/Context.h
+index 37dd321..3fe9d9e 100644
+--- a/src/OpenGL/libGLES_CM/Context.h
++++ b/src/OpenGL/libGLES_CM/Context.h
+@@ -25,6 +25,7 @@
+ 
+ #define GL_API
+ #include <GLES/gl.h>
++#include <GLES/glext.h>
+ #define EGLAPI
+ #include <EGL/egl.h>
+ 
+@@ -75,14 +76,16 @@ enum
+     IMPLEMENTATION_COLOR_READ_TYPE = GL_UNSIGNED_SHORT_5_6_5
+ };
+ 
+-enum QueryType
++const GLenum compressedTextureFormats[] =
+ {
+-    QUERY_ANY_SAMPLES_PASSED,
+-    QUERY_ANY_SAMPLES_PASSED_CONSERVATIVE,
+-
+-    QUERY_TYPE_COUNT
++#if (S3TC_SUPPORT)
++	GL_COMPRESSED_RGB_S3TC_DXT1_EXT,
++	GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,
++#endif
+ };
+ 
++const GLint NUM_COMPRESSED_TEXTURE_FORMATS = sizeof(compressedTextureFormats) / sizeof(compressedTextureFormats[0]);
++
+ const float ALIASED_LINE_WIDTH_RANGE_MIN = 1.0f;
+ const float ALIASED_LINE_WIDTH_RANGE_MAX = 1.0f;
+ const float ALIASED_POINT_SIZE_RANGE_MIN = 0.125f;
+@@ -504,7 +507,7 @@ private:
+ 
+     ResourceManager *mResourceManager;
+ 
+-	static Device *device;
++	Device *device;
+ };
+ }
+ 
+diff --git a/src/OpenGL/libGLES_CM/Texture.cpp b/src/OpenGL/libGLES_CM/Texture.cpp
+index 19ea8ab..5751f45 100644
+--- a/src/OpenGL/libGLES_CM/Texture.cpp
++++ b/src/OpenGL/libGLES_CM/Texture.cpp
+@@ -25,6 +25,9 @@
+ 
+ #include <algorithm>
+ 
++volatile int textureCount = 0;
++
++
+ namespace es1
+ {
+ 
+diff --git a/src/OpenGL/libGLES_CM/libGLES_CM.cpp b/src/OpenGL/libGLES_CM/libGLES_CM.cpp
+index d4a20f3..f418cd9 100644
+--- a/src/OpenGL/libGLES_CM/libGLES_CM.cpp
++++ b/src/OpenGL/libGLES_CM/libGLES_CM.cpp
+@@ -1219,45 +1219,45 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset,
+ 
+ 		GLenum textureFormat = texture->getFormat(target, level);
+ 
+-		// [OpenGL ES 2.0.24] table 3.9
+-		switch(textureFormat)
+-		{
+-		case GL_ALPHA:
+-			if(colorbufferFormat != GL_ALPHA &&
+-			   colorbufferFormat != GL_RGBA &&
+-			   colorbufferFormat != GL_RGBA4_OES &&
+-			   colorbufferFormat != GL_RGB5_A1_OES &&
+-			   colorbufferFormat != GL_RGBA8_OES)
+-			{
+-				return error(GL_INVALID_OPERATION);
+-			}
+-			break;
+-		case GL_LUMINANCE:
+-		case GL_RGB:
+-			if(colorbufferFormat != GL_RGB &&
+-			   colorbufferFormat != GL_RGB565_OES &&
+-			   colorbufferFormat != GL_RGB8_OES &&
+-			   colorbufferFormat != GL_RGBA &&
+-			   colorbufferFormat != GL_RGBA4_OES &&
+-			   colorbufferFormat != GL_RGB5_A1_OES &&
+-			   colorbufferFormat != GL_RGBA8_OES)
+-			{
+-				return error(GL_INVALID_OPERATION);
+-			}
+-			break;
+-		case GL_LUMINANCE_ALPHA:
+-		case GL_RGBA:
+-			if(colorbufferFormat != GL_RGBA &&
+-			   colorbufferFormat != GL_RGBA4_OES &&
+-			   colorbufferFormat != GL_RGB5_A1_OES &&
+-			   colorbufferFormat != GL_RGBA8_OES)
+-			{
+-				return error(GL_INVALID_OPERATION);
+-			}
+-			break;
+-		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+-		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+-			return error(GL_INVALID_OPERATION);
++        // [OpenGL ES 2.0.24] table 3.9
++        switch(textureFormat)
++        {
++        case GL_ALPHA:
++            if(colorbufferFormat != GL_ALPHA &&
++               colorbufferFormat != GL_RGBA &&
++               colorbufferFormat != GL_RGBA4_OES &&
++               colorbufferFormat != GL_RGB5_A1_OES &&
++               colorbufferFormat != GL_RGBA8_OES)
++            {
++                return error(GL_INVALID_OPERATION);
++            }
++            break;
++        case GL_LUMINANCE:
++        case GL_RGB:
++            if(colorbufferFormat != GL_RGB &&
++               colorbufferFormat != GL_RGB565_OES &&
++               colorbufferFormat != GL_RGB8_OES &&
++               colorbufferFormat != GL_RGBA &&
++               colorbufferFormat != GL_RGBA4_OES &&
++               colorbufferFormat != GL_RGB5_A1_OES &&
++               colorbufferFormat != GL_RGBA8_OES)
++            {
++                return error(GL_INVALID_OPERATION);
++            }
++            break;
++        case GL_LUMINANCE_ALPHA:
++        case GL_RGBA:
++            if(colorbufferFormat != GL_RGBA &&
++               colorbufferFormat != GL_RGBA4_OES &&
++               colorbufferFormat != GL_RGB5_A1_OES &&
++               colorbufferFormat != GL_RGBA8_OES)
++            {
++                return error(GL_INVALID_OPERATION);
++            }
++            break;
++        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
++        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
++            return error(GL_INVALID_OPERATION);
+ 		case GL_DEPTH_STENCIL_OES:
+ 			return error(GL_INVALID_OPERATION);
+ 		default:
+@@ -2303,50 +2303,50 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
+ {
+ 	TRACE("(GLenum name = 0x%X)", name);
+ 
+-	switch(name)
+-	{
+-	case GL_VENDOR:
+-		return (GLubyte*)"TransGaming Inc.";
+-	case GL_RENDERER:
+-		return (GLubyte*)"SwiftShader";
+-	case GL_VERSION:
+-		return (GLubyte*)"OpenGL ES 1.1 SwiftShader " VERSION_STRING;
+-	case GL_EXTENSIONS:
+-		// Keep list sorted in following order:
+-		// OES extensions
+-		// EXT extensions
+-		// Vendor extensions
+-		return (GLubyte*)
+-			"GL_OES_blend_equation_separate "
+-			"GL_OES_blend_func_separate "
+-			"GL_OES_blend_subtract "
+-			"GL_OES_depth_texture "
+-			"GL_OES_EGL_image "
+-			"GL_OES_EGL_image_external "
+-			"GL_OES_element_index_uint "
+-			"GL_OES_framebuffer_object "
+-			"GL_OES_packed_depth_stencil "
+-			"GL_OES_rgb8_rgba8 "
+-			"GL_OES_stencil8 "
+-			"GL_OES_stencil_wrap "
+-			"GL_OES_texture_float "
+-			"GL_OES_texture_float_linear "
+-			"GL_OES_texture_half_float "
+-			"GL_OES_texture_half_float_linear "
+-			"GL_OES_texture_mirrored_repeat "
+-			"GL_OES_texture_npot "
+-			"GL_EXT_blend_minmax "
+-			"GL_EXT_read_format_bgra "
+-			#if (S3TC_SUPPORT)
+-			"GL_EXT_texture_compression_dxt1 "
+-			"GL_ANGLE_texture_compression_dxt3 "
+-			"GL_ANGLE_texture_compression_dxt5 "
+-			#endif
+-			"GL_EXT_texture_filter_anisotropic "
+-			"GL_EXT_texture_format_BGRA8888";
+-	default:
+-		return error(GL_INVALID_ENUM, (GLubyte*)NULL);
+-	}
++        switch(name)
++        {
++        case GL_VENDOR:
++            return (GLubyte*)"TransGaming Inc.";
++        case GL_RENDERER:
++            return (GLubyte*)"SwiftShader";
++        case GL_VERSION:
++            return (GLubyte*)"OpenGL ES 1.1 SwiftShader " VERSION_STRING;
++        case GL_EXTENSIONS:
++            // Keep list sorted in following order:
++	        // OES extensions
++	        // EXT extensions
++	        // Vendor extensions
++            return (GLubyte*)
++				"GL_OES_blend_equation_separate "
++				"GL_OES_blend_func_separate "
++				"GL_OES_blend_subtract "
++				"GL_OES_compressed_ETC1_RGB8_texture "
++				"GL_OES_compressed_paletted_texture "
++                "GL_OES_depth_texture "
++				"GL_OES_EGL_image "
++                "GL_OES_EGL_image_external "
++                "GL_OES_element_index_uint "
++				"GL_OES_framebuffer_object "
++                "GL_OES_packed_depth_stencil "
++                "GL_OES_rgb8_rgba8 "
++				"GL_OES_stencil8 "
++				"GL_OES_stencil_wrap "
++                "GL_OES_texture_float "
++                "GL_OES_texture_float_linear "
++                "GL_OES_texture_half_float "
++                "GL_OES_texture_half_float_linear "
++				"GL_OES_texture_mirrored_repeat "
++                "GL_OES_texture_npot "
++                "GL_EXT_blend_minmax "
++                "GL_EXT_read_format_bgra "
++                #if (S3TC_SUPPORT)
++                "GL_EXT_texture_compression_dxt1 "
++                #endif
++                "GL_EXT_texture_filter_anisotropic "
++                "GL_EXT_texture_format_BGRA8888";
++        default:
++            return error(GL_INVALID_ENUM, (GLubyte*)NULL);
++        }
+ }
+ 
+ void GL_APIENTRY glGetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
+@@ -3440,45 +3440,45 @@ void GL_APIENTRY glTexParameteri(GLenum target, GLenum pname, GLint param)
+ 			return error(GL_INVALID_ENUM);
+ 		}
+ 
+-		switch(pname)
+-		{
+-		case GL_TEXTURE_WRAP_S:
+-			if(!texture->setWrapS((GLenum)param))
+-			{
+-				return error(GL_INVALID_ENUM);
+-			}
+-			break;
+-		case GL_TEXTURE_WRAP_T:
+-			if(!texture->setWrapT((GLenum)param))
+-			{
+-				return error(GL_INVALID_ENUM);
+-			}
+-			break;
+-		case GL_TEXTURE_MIN_FILTER:
+-			if(!texture->setMinFilter((GLenum)param))
+-			{
+-				return error(GL_INVALID_ENUM);
+-			}
+-			break;
+-		case GL_TEXTURE_MAG_FILTER:
+-			if(!texture->setMagFilter((GLenum)param))
+-			{
+-				return error(GL_INVALID_ENUM);
+-			}
+-			break;
+-		case GL_TEXTURE_MAX_ANISOTROPY_EXT:
+-			if(!texture->setMaxAnisotropy((GLfloat)param))
+-			{
+-				return error(GL_INVALID_VALUE);
+-			}
+-			break;
+-		case GL_TEXTURE_CROP_RECT_OES:
+-			//UNIMPLEMENTED();
+-			break;
+-		default:
+-			return error(GL_INVALID_ENUM);
+-		}
+-	}
++            switch(pname)
++            {
++            case GL_TEXTURE_WRAP_S:
++                if(!texture->setWrapS((GLenum)param))
++                {
++                    return error(GL_INVALID_ENUM);
++                }
++                break;
++            case GL_TEXTURE_WRAP_T:
++                if(!texture->setWrapT((GLenum)param))
++                {
++                    return error(GL_INVALID_ENUM);
++                }
++                break;
++            case GL_TEXTURE_MIN_FILTER:
++                if(!texture->setMinFilter((GLenum)param))
++                {
++                    return error(GL_INVALID_ENUM);
++                }
++                break;
++            case GL_TEXTURE_MAG_FILTER:
++                if(!texture->setMagFilter((GLenum)param))
++                {
++                    return error(GL_INVALID_ENUM);
++                }
++                break;
++			case GL_TEXTURE_MAX_ANISOTROPY_EXT:
++                if(!texture->setMaxAnisotropy((GLfloat)param))
++                {
++                    return error(GL_INVALID_VALUE);
++                }
++                break;
++			case GL_TEXTURE_CROP_RECT_OES:
++				//UNIMPLEMENTED();
++				break;
++            default:
++                return error(GL_INVALID_ENUM);
++            }
++        }
+ }
+ 
+ void GL_APIENTRY glTexParameteriv(GLenum target, GLenum pname, const GLint* params)
+diff --git a/src/OpenGL/libGLES_CM/utilities.cpp b/src/OpenGL/libGLES_CM/utilities.cpp
+index 8a6312f..0a89c8d 100644
+--- a/src/OpenGL/libGLES_CM/utilities.cpp
++++ b/src/OpenGL/libGLES_CM/utilities.cpp
+@@ -50,7 +50,8 @@ namespace es1
+ 	bool IsCompressed(GLenum format)
+ 	{
+ 		if(format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
+-		   format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
++		   format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
++           format == GL_ETC1_RGB8_OES)
+ 		{
+ 			return true;
+ 		}
+diff --git a/src/OpenGL/libGLESv2/Context.cpp b/src/OpenGL/libGLESv2/Context.cpp
+index fe92c34..16190d2 100644
+--- a/src/OpenGL/libGLESv2/Context.cpp
++++ b/src/OpenGL/libGLESv2/Context.cpp
+@@ -37,14 +37,18 @@
+ #undef near
+ #undef far
+ 
++volatile int contextCount = 0;
++
+ namespace es2
+ {
+-Device *Context::device = 0;
++//Device *Context::device = 0;
+ 
+-Context::Context(const egl::Config *config, const Context *shareContext) : mConfig(config)
++Context::Context(const egl::Config *config, const Context *shareContext) : mConfig(config), device(0)
+ {
+ 	device = getDevice();
+ 
++	sw::atomicIncrement(&contextCount);
++
+     mFenceHandleAllocator.setBaseHandle(0);
+ 
+     setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+@@ -220,6 +224,8 @@ Context::~Context()
+     delete mIndexDataManager;
+ 
+     mResourceManager->release();
++
++	sw::atomicDecrement(&contextCount);
+ }
+ 
+ void Context::makeCurrent(egl::Surface *surface)
+@@ -1323,25 +1329,10 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
+     case GL_STENCIL_BACK_WRITEMASK:           *params = mState.stencilBackWritemask;          break;
+     case GL_STENCIL_CLEAR_VALUE:              *params = mState.stencilClearValue;             break;
+     case GL_SUBPIXEL_BITS:                    *params = 4;                                    break;
+-	case GL_MAX_TEXTURE_SIZE:                 *params = IMPLEMENTATION_MAX_TEXTURE_SIZE;  break;
++	case GL_MAX_TEXTURE_SIZE:                 *params = IMPLEMENTATION_MAX_TEXTURE_SIZE;          break;
+ 	case GL_MAX_CUBE_MAP_TEXTURE_SIZE:        *params = IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE; break;
+-    case GL_NUM_COMPRESSED_TEXTURE_FORMATS:   
+-        {
+-            if(S3TC_SUPPORT)
+-            {
+-                // GL_COMPRESSED_RGB_S3TC_DXT1_EXT
+-                // GL_COMPRESSED_RGBA_S3TC_DXT1_EXT
+-				// GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE
+-				// GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE
+-                *params = 4;
+-            }
+-            else
+-            {
+-                *params = 0;
+-            }
+-        }
+-        break;
+-	case GL_MAX_SAMPLES_ANGLE:                *params = IMPLEMENTATION_MAX_SAMPLES; break;
++    case GL_NUM_COMPRESSED_TEXTURE_FORMATS:   *params = NUM_COMPRESSED_TEXTURE_FORMATS;           break;
++	case GL_MAX_SAMPLES_ANGLE:                *params = IMPLEMENTATION_MAX_SAMPLES;               break;
+     case GL_SAMPLE_BUFFERS:                   
+     case GL_SAMPLES:
+         {
+@@ -1384,12 +1375,10 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
+         break;
+     case GL_COMPRESSED_TEXTURE_FORMATS:
+         {
+-            if(S3TC_SUPPORT)
++			for(int i = 0; i < NUM_COMPRESSED_TEXTURE_FORMATS; i++)
+             {
+-                params[0] = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+-                params[1] = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+-				params[2] = GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE;
+-                params[3] = GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE;
++                params[i] = compressedTextureFormats[i];
++                params[4] = GL_ETC1_RGB8_OES;
+             }
+         }
+         break;
+@@ -1515,7 +1504,7 @@ bool Context::getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *nu
+       case GL_COMPRESSED_TEXTURE_FORMATS:
+ 		{
+             *type = GL_INT;
+-            *numParams = S3TC_SUPPORT ? 4 : 0;
++			*numParams = NUM_COMPRESSED_TEXTURE_FORMATS;
+         }
+ 		break;
+       case GL_SHADER_BINARY_FORMATS:
+diff --git a/src/OpenGL/libGLESv2/Context.h b/src/OpenGL/libGLESv2/Context.h
+index 073c97d..806c5aa 100644
+--- a/src/OpenGL/libGLESv2/Context.h
++++ b/src/OpenGL/libGLESv2/Context.h
+@@ -80,6 +80,18 @@ enum
+     IMPLEMENTATION_COLOR_READ_TYPE = GL_UNSIGNED_SHORT_5_6_5
+ };
+ 
++const GLenum compressedTextureFormats[] =
++{
++#if (S3TC_SUPPORT)
++	GL_COMPRESSED_RGB_S3TC_DXT1_EXT,
++	GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,
++	GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE,
++	GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE,
++#endif
++};
++
++const GLint NUM_COMPRESSED_TEXTURE_FORMATS = sizeof(compressedTextureFormats) / sizeof(compressedTextureFormats[0]);
++
+ enum QueryType
+ {
+     QUERY_ANY_SAMPLES_PASSED,
+@@ -493,7 +505,7 @@ private:
+ 
+     ResourceManager *mResourceManager;
+ 
+-	static Device *device;
++	 Device *device;
+ };
+ }
+ 
+diff --git a/src/OpenGL/libGLESv2/Image.cpp b/src/OpenGL/libGLESv2/Image.cpp
+index 038d18e..890e359 100644
+--- a/src/OpenGL/libGLESv2/Image.cpp
++++ b/src/OpenGL/libGLESv2/Image.cpp
+@@ -53,7 +53,7 @@ namespace es2
+ 	{
+ 		if(parentTexture)
+ 		{
+-			parentTexture->addRef();
++			 parentTexture->addRef();
+ 		}
+ 
+ 		sw::atomicIncrement(&referenceCount);
+@@ -100,6 +100,10 @@ namespace es2
+ 		{
+ 			return sw::FORMAT_DXT5;
+ 		}
++        else if(format == GL_ETC1_RGB8_OES)
++        {
++            return sw::FORMAT_ETC1;
++        }
+ 		else
+ 		#endif
+ 		if(type == GL_FLOAT)
+diff --git a/src/OpenGL/libGLESv2/Texture.cpp b/src/OpenGL/libGLESv2/Texture.cpp
+index 7d2386e..acc906e 100644
+--- a/src/OpenGL/libGLESv2/Texture.cpp
++++ b/src/OpenGL/libGLESv2/Texture.cpp
+@@ -25,11 +25,15 @@
+ 
+ #include <algorithm>
+ 
++volatile int textureCount = 0;
++
+ namespace es2
+ {
+ 
+ Texture::Texture(GLuint id) : RefCountObject(id)
+ {
++	sw::atomicIncrement(&textureCount);
++
+     mMinFilter = GL_NEAREST_MIPMAP_LINEAR;
+     mMagFilter = GL_LINEAR;
+     mWrapS = GL_REPEAT;
+@@ -42,6 +46,7 @@ Texture::Texture(GLuint id) : RefCountObject(id)
+ Texture::~Texture()
+ {
+ 	resource->destruct();
++	sw::atomicDecrement(&textureCount);
+ }
+ 
+ sw::Resource *Texture::getResource() const
+diff --git a/src/OpenGL/libGLESv2/libGLESv2.cpp b/src/OpenGL/libGLESv2/libGLESv2.cpp
+index 19629d5..1a434b3 100644
+--- a/src/OpenGL/libGLESv2/libGLESv2.cpp
++++ b/src/OpenGL/libGLESv2/libGLESv2.cpp
+@@ -734,26 +734,27 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
+ 		return error(GL_INVALID_VALUE);
+ 	}
+ 
+-	switch(internalformat)
+-	{
+-	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+-	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+-	case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
+-	case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+-		if(!S3TC_SUPPORT)
+-		{
+-			return error(GL_INVALID_ENUM);
+-		}
+-		break;
+-	case GL_DEPTH_COMPONENT:
+-	case GL_DEPTH_COMPONENT16:
+-	case GL_DEPTH_COMPONENT32_OES:
+-	case GL_DEPTH_STENCIL_OES:
+-	case GL_DEPTH24_STENCIL8_OES:
+-		return error(GL_INVALID_OPERATION);
+-	default:
+-		return error(GL_INVALID_ENUM);
+-	}
++        switch(internalformat)
++        {
++        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
++        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
++		case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
++		case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
++        case GL_ETC1_RGB8_OES:
++			if(!S3TC_SUPPORT)
++            {
++                return error(GL_INVALID_ENUM);
++            }
++            break;
++		case GL_DEPTH_COMPONENT:
++		case GL_DEPTH_COMPONENT16:
++		case GL_DEPTH_COMPONENT32_OES:
++		case GL_DEPTH_STENCIL_OES:
++		case GL_DEPTH24_STENCIL8_OES:
++			return error(GL_INVALID_OPERATION);
++        default:
++            return error(GL_INVALID_ENUM);
++        }
+ 
+ 	if(border != 0)
+ 	{
+@@ -769,25 +770,25 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
+ 			return error(GL_INVALID_VALUE);
+ 		}
+ 
+-		switch(target)
+-		{
+-		case GL_TEXTURE_2D:
+-			if(width > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level) ||
+-			   height > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
+-			{
+-				return error(GL_INVALID_VALUE);
+-			}
+-			break;
+-		case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
+-		case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
+-		case GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
+-		case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
+-		case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
+-		case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
+-			if(width != height)
+-			{
+-				return error(GL_INVALID_VALUE);
+-			}
++            switch(target)
++            {
++              case GL_TEXTURE_2D:
++                if(width > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level) ||
++                   height > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
++                {
++                    return error(GL_INVALID_VALUE);
++                }
++                break;
++              case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
++              case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
++              case GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
++              case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
++              case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
++              case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
++                if(width != height)
++                {
++                    return error(GL_INVALID_VALUE);
++                }
+ 
+ 			if(width > (es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level) ||
+ 			   height > (es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE >> level))
+@@ -858,20 +859,21 @@ void GL_APIENTRY glCompressedTexSubImage2D(GLenum target, GLint level, GLint xof
+ 		return error(GL_INVALID_VALUE);
+ 	}
+ 
+-	switch(format)
+-	{
+-	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+-	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+-	case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
+-	case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+-		if(!S3TC_SUPPORT)
+-		{
+-			return error(GL_INVALID_ENUM);
+-		}
+-		break;
+-	default:
+-		return error(GL_INVALID_ENUM);
+-	}
++        switch(format)
++        {
++        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
++        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
++		case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
++		case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
++        case GL_ETC1_RGB8_OES:
++			if(!S3TC_SUPPORT)
++            {
++                return error(GL_INVALID_ENUM);
++            }
++            break;
++        default:
++            return error(GL_INVALID_ENUM);
++        }
+ 
+ 	if(width == 0 || height == 0 || data == NULL)
+ 	{
+@@ -988,58 +990,59 @@ void GL_APIENTRY glCopyTexImage2D(GLenum target, GLint level, GLenum internalfor
+ 		es2::Renderbuffer *source = framebuffer->getColorbuffer();
+ 		GLenum colorbufferFormat = source->getFormat();
+ 
+-		// [OpenGL ES 2.0.24] table 3.9
+-		switch(internalformat)
+-		{
+-		case GL_ALPHA:
+-			if(colorbufferFormat != GL_ALPHA &&
+-			   colorbufferFormat != GL_RGBA &&
+-			   colorbufferFormat != GL_RGBA4 &&
+-			   colorbufferFormat != GL_RGB5_A1 &&
+-			   colorbufferFormat != GL_RGBA8_OES)
+-			{
+-				return error(GL_INVALID_OPERATION);
+-			}
+-			break;
+-		case GL_LUMINANCE:
+-		case GL_RGB:
+-			if(colorbufferFormat != GL_RGB &&
+-			   colorbufferFormat != GL_RGB565 &&
+-			   colorbufferFormat != GL_RGB8_OES &&
+-			   colorbufferFormat != GL_RGBA &&
+-			   colorbufferFormat != GL_RGBA4 &&
+-			   colorbufferFormat != GL_RGB5_A1 &&
+-			   colorbufferFormat != GL_RGBA8_OES)
+-			{
+-				return error(GL_INVALID_OPERATION);
+-			}
+-			break;
+-		case GL_LUMINANCE_ALPHA:
+-		case GL_RGBA:
+-			if(colorbufferFormat != GL_RGBA &&
+-			   colorbufferFormat != GL_RGBA4 &&
+-			   colorbufferFormat != GL_RGB5_A1 &&
+-			   colorbufferFormat != GL_RGBA8_OES)
+-			{
+-				return error(GL_INVALID_OPERATION);
+-			}
+-			break;
+-		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+-		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+-		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
+-		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+-			if(S3TC_SUPPORT)
+-			{
+-				return error(GL_INVALID_OPERATION);
+-			}
+-			else
+-			{
+-				return error(GL_INVALID_ENUM);
+-			}
+-			break;
+-		default:
+-			return error(GL_INVALID_ENUM);
+-		}
++            // [OpenGL ES 2.0.24] table 3.9
++            switch(internalformat)
++            {
++            case GL_ALPHA:
++                if(colorbufferFormat != GL_ALPHA &&
++                   colorbufferFormat != GL_RGBA &&
++                   colorbufferFormat != GL_RGBA4 &&
++                   colorbufferFormat != GL_RGB5_A1 &&
++                   colorbufferFormat != GL_RGBA8_OES)
++                {
++                    return error(GL_INVALID_OPERATION);
++                }
++                break;
++            case GL_LUMINANCE:
++            case GL_RGB:
++                if(colorbufferFormat != GL_RGB &&
++                   colorbufferFormat != GL_RGB565 &&
++                   colorbufferFormat != GL_RGB8_OES &&
++                   colorbufferFormat != GL_RGBA &&
++                   colorbufferFormat != GL_RGBA4 &&
++                   colorbufferFormat != GL_RGB5_A1 &&
++                   colorbufferFormat != GL_RGBA8_OES)
++                {
++                    return error(GL_INVALID_OPERATION);
++                }
++                break;
++            case GL_LUMINANCE_ALPHA:
++            case GL_RGBA:
++                if(colorbufferFormat != GL_RGBA &&
++                   colorbufferFormat != GL_RGBA4 &&
++                   colorbufferFormat != GL_RGB5_A1 &&
++                   colorbufferFormat != GL_RGBA8_OES)
++                 {
++                     return error(GL_INVALID_OPERATION);
++                 }
++                 break;
++            case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
++            case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
++			case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
++			case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
++            case GL_ETC1_RGB8_OES:
++                if(S3TC_SUPPORT)
++                {
++                    return error(GL_INVALID_OPERATION);
++                }
++                else
++                {
++                    return error(GL_INVALID_ENUM);
++                }
++                break;
++            default:
++                return error(GL_INVALID_ENUM);
++            }
+ 
+ 		if(target == GL_TEXTURE_2D)
+ 		{
+@@ -1135,39 +1138,39 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset,
+ 
+ 		GLenum textureFormat = texture->getFormat(target, level);
+ 
+-		// [OpenGL ES 2.0.24] table 3.9
+-		switch(textureFormat)
+-		{
+-		case GL_ALPHA:
+-			if(colorbufferFormat != GL_ALPHA &&
+-			   colorbufferFormat != GL_RGBA &&
+-			   colorbufferFormat != GL_RGBA4 &&
+-			   colorbufferFormat != GL_RGB5_A1 &&
+-			   colorbufferFormat != GL_RGBA8_OES)
+-			{
+-				return error(GL_INVALID_OPERATION);
+-			}
+-			break;
+-		case GL_LUMINANCE:
+-		case GL_RGB:
+-			if(colorbufferFormat != GL_RGB &&
+-			   colorbufferFormat != GL_RGB565 &&
+-			   colorbufferFormat != GL_RGB8_OES &&
+-			   colorbufferFormat != GL_RGBA &&
+-			   colorbufferFormat != GL_RGBA4 &&
+-			   colorbufferFormat != GL_RGB5_A1 &&
+-			   colorbufferFormat != GL_RGBA8_OES)
+-			{
+-				return error(GL_INVALID_OPERATION);
+-			}
+-			break;
+-		case GL_LUMINANCE_ALPHA:
+-		case GL_RGBA:
+-			if(colorbufferFormat != GL_RGBA &&
+-			   colorbufferFormat != GL_RGBA4 &&
+-			   colorbufferFormat != GL_RGB5_A1 &&
+-			   colorbufferFormat != GL_RGBA8_OES)
+-			{
++            // [OpenGL ES 2.0.24] table 3.9
++            switch(textureFormat)
++            {
++            case GL_ALPHA:
++                if(colorbufferFormat != GL_ALPHA &&
++                   colorbufferFormat != GL_RGBA &&
++                   colorbufferFormat != GL_RGBA4 &&
++                   colorbufferFormat != GL_RGB5_A1 &&
++                   colorbufferFormat != GL_RGBA8_OES)
++                {
++                    return error(GL_INVALID_OPERATION);
++                }
++                break;
++            case GL_LUMINANCE:
++            case GL_RGB:
++                if(colorbufferFormat != GL_RGB &&
++                   colorbufferFormat != GL_RGB565 &&
++                   colorbufferFormat != GL_RGB8_OES &&
++                   colorbufferFormat != GL_RGBA &&
++                   colorbufferFormat != GL_RGBA4 &&
++                   colorbufferFormat != GL_RGB5_A1 &&
++                   colorbufferFormat != GL_RGBA8_OES)
++                {
++                    return error(GL_INVALID_OPERATION);
++                }
++                break;
++            case GL_LUMINANCE_ALPHA:
++            case GL_RGBA:
++                if(colorbufferFormat != GL_RGBA &&
++                   colorbufferFormat != GL_RGBA4 &&
++                   colorbufferFormat != GL_RGB5_A1 &&
++                   colorbufferFormat != GL_RGBA8_OES)
++                {
+ 				return error(GL_INVALID_OPERATION);
+ 			}
+ 			break;
+@@ -2853,51 +2856,52 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
+ 
+ 	es2::Context *context = es2::getContext();
+ 
+-	switch(name)
+-	{
+-	case GL_VENDOR:
+-		return (GLubyte*)"TransGaming Inc.";
+-	case GL_RENDERER:
+-		return (GLubyte*)"SwiftShader";
+-	case GL_VERSION:
+-		return (GLubyte*)"OpenGL ES 2.0 SwiftShader " VERSION_STRING;
+-	case GL_SHADING_LANGUAGE_VERSION:
+-		return (GLubyte*)"OpenGL ES GLSL ES 1.00 SwiftShader " VERSION_STRING;
+-	case GL_EXTENSIONS:
+-		// Keep list sorted in following order:
+-		// OES extensions
+-		// EXT extensions
+-		// Vendor extensions
+-		return (GLubyte*)
+-			"GL_OES_depth_texture "
+-			"GL_OES_depth_texture_cube_map "
+-			"GL_OES_EGL_image "
+-			"GL_OES_EGL_image_external "
+-			"GL_OES_element_index_uint "
+-			"GL_OES_packed_depth_stencil "
+-			"GL_OES_rgb8_rgba8 "
+-			"GL_OES_standard_derivatives "
+-			"GL_OES_texture_float "
+-			"GL_OES_texture_float_linear "
+-			"GL_OES_texture_half_float "
+-			"GL_OES_texture_half_float_linear "
+-			"GL_OES_texture_npot "
+-			"GL_EXT_blend_minmax "
+-			"GL_EXT_occlusion_query_boolean "
+-			"GL_EXT_read_format_bgra "
+-				#if (S3TC_SUPPORT)
+-			"GL_EXT_texture_compression_dxt1 "
+-			"GL_ANGLE_texture_compression_dxt3 "
+-			"GL_ANGLE_texture_compression_dxt5 "
+-				#endif
+-			"GL_EXT_texture_filter_anisotropic "
+-			"GL_EXT_texture_format_BGRA8888 "
+-			"GL_ANGLE_framebuffer_blit "
+-			"GL_ANGLE_framebuffer_multisample "
+-			"GL_NV_fence";
+-	default:
+-		return error(GL_INVALID_ENUM, (GLubyte*)NULL);
+-	}
++        switch(name)
++        {
++        case GL_VENDOR:
++            return (GLubyte*)"TransGaming Inc.";
++        case GL_RENDERER:
++            return (GLubyte*)"SwiftShader";
++        case GL_VERSION:
++            return (GLubyte*)"OpenGL ES 2.0 SwiftShader " VERSION_STRING;
++        case GL_SHADING_LANGUAGE_VERSION:
++            return (GLubyte*)"OpenGL ES GLSL ES 1.00 SwiftShader " VERSION_STRING;
++        case GL_EXTENSIONS:
++            // Keep list sorted in following order:
++	        // OES extensions
++	        // EXT extensions
++	        // Vendor extensions
++            return (GLubyte*)
++				"GL_OES_compressed_ETC1_RGB8_texture "
++				"GL_OES_compressed_paletted_texture "
++                "GL_OES_depth_texture "
++                "GL_OES_depth_texture_cube_map "
++                "GL_OES_EGL_image "
++                "GL_OES_EGL_image_external "
++                "GL_OES_element_index_uint "
++                "GL_OES_packed_depth_stencil "
++                "GL_OES_rgb8_rgba8 "
++                "GL_OES_standard_derivatives "
++                "GL_OES_texture_float "
++                "GL_OES_texture_float_linear "
++                "GL_OES_texture_half_float "
++                "GL_OES_texture_half_float_linear "
++                "GL_OES_texture_npot "
++                "GL_EXT_blend_minmax "
++                "GL_EXT_occlusion_query_boolean "
++                "GL_EXT_read_format_bgra "
++                #if (S3TC_SUPPORT)
++                "GL_EXT_texture_compression_dxt1 "
++				"GL_EXT_texture_compression_s3tc "
++                #endif
++                "GL_EXT_texture_filter_anisotropic "
++                "GL_EXT_texture_format_BGRA8888 "
++                "GL_ANGLE_framebuffer_blit "
++                "GL_ANGLE_framebuffer_multisample "
++                "GL_NV_fence";
++        default:
++            return error(GL_INVALID_ENUM, (GLubyte*)NULL);
++        }
+ }
+ 
+ void GL_APIENTRY glGetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
+@@ -4008,63 +4012,64 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat,
+ 		return error(GL_INVALID_OPERATION);
+ 	}
+ 
+-	switch(format)
+-	{
+-	case GL_ALPHA:
+-	case GL_LUMINANCE:
+-	case GL_LUMINANCE_ALPHA:
+-		switch(type)
+-		{
+-		case GL_UNSIGNED_BYTE:
+-		case GL_FLOAT:
+-		case GL_HALF_FLOAT_OES:
+-			break;
+-		default:
+-			return error(GL_INVALID_ENUM);
+-		}
+-		break;
+-	case GL_RGB:
+-		switch(type)
+-		{
+-		case GL_UNSIGNED_BYTE:
+-		case GL_UNSIGNED_SHORT_5_6_5:
+-		case GL_FLOAT:
+-		case GL_HALF_FLOAT_OES:
+-			break;
+-		default:
+-			return error(GL_INVALID_ENUM);
+-		}
+-		break;
+-	case GL_RGBA:
+-		switch(type)
+-		{
+-		case GL_UNSIGNED_BYTE:
+-		case GL_UNSIGNED_SHORT_4_4_4_4:
+-		case GL_UNSIGNED_SHORT_5_5_5_1:
+-		case GL_FLOAT:
+-		case GL_HALF_FLOAT_OES:
+-			break;
+-		default:
+-			return error(GL_INVALID_ENUM);
+-		}
+-		break;
+-	case GL_BGRA_EXT:
+-		switch(type)
+-		{
+-		case GL_UNSIGNED_BYTE:
+-			break;
+-		default:
+-			return error(GL_INVALID_ENUM);
+-		}
+-		break;
+-	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:  // error cases for compressed textures are handled below
+-	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+-	case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
+-	case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+-		break;
+-	case GL_DEPTH_COMPONENT:
+-		switch(type)
+-		{
++        switch(format)
++        {
++        case GL_ALPHA:
++        case GL_LUMINANCE:
++        case GL_LUMINANCE_ALPHA:
++            switch(type)
++            {
++            case GL_UNSIGNED_BYTE:
++            case GL_FLOAT:
++            case GL_HALF_FLOAT_OES:
++                break;
++            default:
++                return error(GL_INVALID_ENUM);
++            }
++            break;
++        case GL_RGB:
++            switch(type)
++            {
++            case GL_UNSIGNED_BYTE:
++            case GL_UNSIGNED_SHORT_5_6_5:
++            case GL_FLOAT:
++            case GL_HALF_FLOAT_OES:
++                break;
++            default:
++                return error(GL_INVALID_ENUM);
++            }
++            break;
++        case GL_RGBA:
++            switch(type)
++            {
++            case GL_UNSIGNED_BYTE:
++            case GL_UNSIGNED_SHORT_4_4_4_4:
++            case GL_UNSIGNED_SHORT_5_5_5_1:
++            case GL_FLOAT:
++            case GL_HALF_FLOAT_OES:
++                break;
++            default:
++                return error(GL_INVALID_ENUM);
++            }
++            break;
++        case GL_BGRA_EXT:
++            switch(type)
++            {
++            case GL_UNSIGNED_BYTE:
++                break;
++            default:
++                return error(GL_INVALID_ENUM);
++            }
++            break;
++        case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:  // error cases for compressed textures are handled below
++        case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
++		case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
++		case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
++        case GL_ETC1_RGB8_OES:
++            break;
++		case GL_DEPTH_COMPONENT:
++			switch(type)
++			{
+ 		case GL_UNSIGNED_SHORT:
+ 		case GL_UNSIGNED_INT:
+ 			break;
+@@ -4159,9 +4164,9 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat,
+ 				return error(GL_INVALID_OPERATION);
+ 			}
+ 
+-			texture->setImage(target, level, width, height, format, type, context->getUnpackAlignment(), pixels);
+-		}
+-	}
++				texture->setImage(target, level, width, height, format, type, context->getUnpackAlignment(), pixels);
++            }
++        }
+ }
+ 
+ void GL_APIENTRY glTexParameterf(GLenum target, GLenum pname, GLfloat param)
+diff --git a/src/OpenGL/libGLESv2/utilities.cpp b/src/OpenGL/libGLESv2/utilities.cpp
+index 6d01e92..df2c082 100644
+--- a/src/OpenGL/libGLESv2/utilities.cpp
++++ b/src/OpenGL/libGLESv2/utilities.cpp
+@@ -207,6 +207,7 @@ namespace es2
+ 		{
+ 		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
++        case GL_ETC1_RGB8_OES:
+ 			return 8 * (GLsizei)ceil((float)width / 4.0f) * (GLsizei)ceil((float)height / 4.0f);
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+@@ -220,8 +221,9 @@ namespace es2
+ 	{
+ 		if(format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
+ 		   format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
+-		   format == GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE ||
+-		   format == GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE)
++           format == GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE ||
++           format == GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE ||
++           format == GL_ETC1_RGB8_OES)
+ 		{
+ 			return true;
+ 		}
+diff --git a/src/Renderer/Renderer.cpp b/src/Renderer/Renderer.cpp
+index 290322a..1682dbd 100644
+--- a/src/Renderer/Renderer.cpp
++++ b/src/Renderer/Renderer.cpp
+@@ -33,7 +33,7 @@
+ 
+ #undef max
+ 
+-bool disableServer = true;
++bool disableServer = false;
+ 
+ #ifndef NDEBUG
+ unsigned int minPrimitives = 1;
+diff --git a/src/Renderer/Surface.cpp b/src/Renderer/Surface.cpp
+index ae62f76..2596a9a 100644
+--- a/src/Renderer/Surface.cpp
++++ b/src/Renderer/Surface.cpp
+@@ -27,6 +27,589 @@
+ #undef min
+ #undef max
+ 
++namespace rg_etc1
++{
++	typedef unsigned char uint8;
++	typedef unsigned short uint16;
++	typedef unsigned int uint;
++	typedef unsigned int uint32;
++	typedef long long int64;
++	typedef unsigned long long uint64;
++
++	const uint32 cUINT32_MAX = 0xFFFFFFFFU;
++	const uint64 cUINT64_MAX = 0xFFFFFFFFFFFFFFFFULL; //0xFFFFFFFFFFFFFFFFui64;
++
++	template<typename T> inline T minimum(T a, T b) {
++		return (a < b) ? a : b;
++	}
++	template<typename T> inline T clamp(T value, T low, T high) {
++		return (value < low) ? low : ((value > high) ? high : value);
++	}
++
++	struct color_quad_u8
++	{
++		static inline int clamp(int v) {
++			if(v & 0xFFFFFF00U) v = (~(static_cast<int>(v) >> 31)) & 0xFF; return v;
++		}
++
++	public:
++		union
++		{
++			struct
++			{
++				unsigned char b;
++				unsigned char g;
++				unsigned char r;
++				unsigned char a;
++			};
++
++			unsigned char c[4];
++
++			uint32 m_u32;
++		};
++		
++		inline color_quad_u8()
++		{
++		}
++
++		inline color_quad_u8& operator= (const color_quad_u8& other)
++		{
++			m_u32 = other.m_u32;
++			return *this;
++		}
++
++		inline color_quad_u8& set(int red, int green, int blue, int alpha = 255U)
++		{
++			r = static_cast<unsigned char>(clamp(red));
++			g = static_cast<unsigned char>(clamp(green));
++			b = static_cast<unsigned char>(clamp(blue));
++			a = static_cast<unsigned char>(clamp(alpha));
++			return *this;
++		}
++
++		inline color_quad_u8(int red, int green, int blue, int alpha)
++		{
++			assert((red >= 0U) && (red <= 255U));
++			assert((green >= 0U) && (green <= 255U));
++			assert((blue >= 0U) && (blue <= 255U));
++			assert((alpha >= 0U) && (alpha <= 255U));
++
++			r = static_cast<unsigned char>(red);
++			g = static_cast<unsigned char>(green);
++			b = static_cast<unsigned char>(blue);
++			a = static_cast<unsigned char>(alpha);
++		}
++	}; // class color_quad_u8
++
++	struct vec3F
++	{
++		float m_s[3];
++
++		inline vec3F() { }
++		inline vec3F(float s) {
++			m_s[0] = s; m_s[1] = s; m_s[2] = s;
++		}
++		inline vec3F(float x, float y, float z) {
++			m_s[0] = x; m_s[1] = y; m_s[2] = z;
++		}
++
++		inline float operator[] (uint i) const {
++			assert(i < 3); return m_s[i];
++		}
++
++		inline vec3F& operator += (const vec3F& other) {
++			for(uint i = 0; i < 3; i++) m_s[i] += other.m_s[i]; return *this;
++		}
++
++		inline vec3F& operator *= (float s) {
++			for(uint i = 0; i < 3; i++) m_s[i] *= s; return *this;
++		}
++	};
++
++	enum etc_constants
++	{
++		cETC1BytesPerBlock = 8U,
++
++		cETC1SelectorBits = 2U,
++		cETC1SelectorValues = 1U << cETC1SelectorBits,
++		cETC1SelectorMask = cETC1SelectorValues - 1U,
++
++		cETC1BlockShift = 2U,
++		cETC1BlockSize = 1U << cETC1BlockShift,
++
++		cETC1LSBSelectorIndicesBitOffset = 0,
++		cETC1MSBSelectorIndicesBitOffset = 16,
++
++		cETC1FlipBitOffset = 32,
++		cETC1DiffBitOffset = 33,
++
++		cETC1IntenModifierNumBits = 3,
++		cETC1IntenModifierValues = 1 << cETC1IntenModifierNumBits,
++		cETC1RightIntenModifierTableBitOffset = 34,
++		cETC1LeftIntenModifierTableBitOffset = 37,
++
++		// Base+Delta encoding (5 bit bases, 3 bit delta)
++		cETC1BaseColorCompNumBits = 5,
++		cETC1BaseColorCompMax = 1 << cETC1BaseColorCompNumBits,
++
++		cETC1DeltaColorCompNumBits = 3,
++		cETC1DeltaColorComp = 1 << cETC1DeltaColorCompNumBits,
++		cETC1DeltaColorCompMax = 1 << cETC1DeltaColorCompNumBits,
++
++		cETC1BaseColor5RBitOffset = 59,
++		cETC1BaseColor5GBitOffset = 51,
++		cETC1BaseColor5BBitOffset = 43,
++
++		cETC1DeltaColor3RBitOffset = 56,
++		cETC1DeltaColor3GBitOffset = 48,
++		cETC1DeltaColor3BBitOffset = 40,
++
++		// Absolute (non-delta) encoding (two 4-bit per component bases)
++		cETC1AbsColorCompNumBits = 4,
++		cETC1AbsColorCompMax = 1 << cETC1AbsColorCompNumBits,
++
++		cETC1AbsColor4R1BitOffset = 60,
++		cETC1AbsColor4G1BitOffset = 52,
++		cETC1AbsColor4B1BitOffset = 44,
++
++		cETC1AbsColor4R2BitOffset = 56,
++		cETC1AbsColor4G2BitOffset = 48,
++		cETC1AbsColor4B2BitOffset = 40,
++
++		cETC1ColorDeltaMin = -4,
++		cETC1ColorDeltaMax = 3,
++
++		// Delta3:
++		// 0   1   2   3   4   5   6   7
++		// 000 001 010 011 100 101 110 111
++		// 0   1   2   3   -4  -3  -2  -1
++	};
++
++	static uint8 g_quant5_tab[256 + 16];
++
++	static const int g_etc1_inten_tables[cETC1IntenModifierValues][cETC1SelectorValues] =
++	{
++		{-8, -2, 2, 8}, {-17, -5, 5, 17}, {-29, -9, 9, 29}, {-42, -13, 13, 42},
++		{-60, -18, 18, 60}, {-80, -24, 24, 80}, {-106, -33, 33, 106}, {-183, -47, 47, 183}
++	};
++
++	static const uint8 g_etc1_to_selector_index[cETC1SelectorValues] = {2, 3, 1, 0};
++
++	struct etc1_block
++	{
++		// big endian uint64:
++		// bit ofs:  56  48  40  32  24  16   8   0
++		// byte ofs: b0, b1, b2, b3, b4, b5, b6, b7 
++		union
++		{
++			uint64 m_uint64;
++			uint8 m_bytes[8];
++		};
++
++		uint8 m_low_color[2];
++		uint8 m_high_color[2];
++
++		uint8 m_selectors[4];
++
++		inline uint get_byte_bits(uint ofs, uint num) const
++		{
++			assert((ofs + num) <= 64U);
++			assert(num && (num <= 8U));
++			assert((ofs >> 3) == ((ofs + num - 1) >> 3));
++			const uint byte_ofs = 7 - (ofs >> 3);
++			const uint byte_bit_ofs = ofs & 7;
++			return (m_bytes[byte_ofs] >> byte_bit_ofs) & ((1 << num) - 1);
++		}
++
++		// false = left/right subblocks
++		// true = upper/lower subblocks
++		inline bool get_flip_bit() const
++		{
++			return (m_bytes[3] & 1) != 0;
++		}
++
++		inline bool get_diff_bit() const
++		{
++			return (m_bytes[3] & 2) != 0;
++		}
++
++		// Returns intensity modifier table (0-7) used by subblock subblock_id.
++		// subblock_id=0 left/top (CW 1), 1=right/bottom (CW 2)
++		inline uint get_inten_table(uint subblock_id) const
++		{
++			assert(subblock_id < 2);
++			const uint ofs = subblock_id ? 2 : 5;
++			return (m_bytes[3] >> ofs) & 7;
++		}
++
++		// Returned selector value ranges from 0-3 and is a direct index into g_etc1_inten_tables.
++		inline uint get_selector(uint x, uint y) const
++		{
++			assert((x | y) < 4);
++
++			const uint bit_index = x * 4 + y;
++			const uint byte_bit_ofs = bit_index & 7;
++			const uint8 *p = &m_bytes[7 - (bit_index >> 3)];
++			const uint lsb = (p[0] >> byte_bit_ofs) & 1;
++			const uint msb = (p[-2] >> byte_bit_ofs) & 1;
++			const uint val = lsb | (msb << 1);
++
++			return g_etc1_to_selector_index[val];
++		}
++
++		inline uint16 get_base4_color(uint idx) const
++		{
++			uint r, g, b;
++			if(idx)
++			{
++				r = get_byte_bits(cETC1AbsColor4R2BitOffset, 4);
++				g = get_byte_bits(cETC1AbsColor4G2BitOffset, 4);
++				b = get_byte_bits(cETC1AbsColor4B2BitOffset, 4);
++			}
++			else
++			{
++				r = get_byte_bits(cETC1AbsColor4R1BitOffset, 4);
++				g = get_byte_bits(cETC1AbsColor4G1BitOffset, 4);
++				b = get_byte_bits(cETC1AbsColor4B1BitOffset, 4);
++			}
++			return static_cast<uint16>(b | (g << 4U) | (r << 8U));
++		}
++
++		inline uint16 get_base5_color() const
++		{
++			const uint r = get_byte_bits(cETC1BaseColor5RBitOffset, 5);
++			const uint g = get_byte_bits(cETC1BaseColor5GBitOffset, 5);
++			const uint b = get_byte_bits(cETC1BaseColor5BBitOffset, 5);
++			return static_cast<uint16>(b | (g << 5U) | (r << 10U));
++		}
++
++		inline uint16 get_delta3_color() const
++		{
++			const uint r = get_byte_bits(cETC1DeltaColor3RBitOffset, 3);
++			const uint g = get_byte_bits(cETC1DeltaColor3GBitOffset, 3);
++			const uint b = get_byte_bits(cETC1DeltaColor3BBitOffset, 3);
++			return static_cast<uint16>(b | (g << 3U) | (r << 6U));
++		}
++
++		static color_quad_u8 unpack_color5(uint16 packed_color5, bool scaled, uint alpha = 255U);
++		static void unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color, bool scaled);
++
++		static bool unpack_color5(color_quad_u8& result, uint16 packed_color5, uint16 packed_delta3, bool scaled, uint alpha = 255U);
++		static bool unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color5, uint16 packed_delta3, bool scaled, uint alpha = 255U);
++
++		// Delta color 3
++		// Inputs range from -4 to 3 (cETC1ColorDeltaMin to cETC1ColorDeltaMax)
++		static uint16 pack_delta3(int r, int g, int b);
++
++		// Results range from -4 to 3 (cETC1ColorDeltaMin to cETC1ColorDeltaMax)
++		static void unpack_delta3(int& r, int& g, int& b, uint16 packed_delta3);
++
++		// Abs color 4
++		static uint16 pack_color4(const color_quad_u8& color, bool scaled, uint bias = 127U);
++		static uint16 pack_color4(uint r, uint g, uint b, bool scaled, uint bias = 127U);
++
++		static color_quad_u8 unpack_color4(uint16 packed_color4, uint alpha = 255U);
++		static void unpack_color4(uint& r, uint& g, uint& b, uint16 packed_color4);
++
++		// subblock colors
++		static void get_diff_subblock_colors(color_quad_u8* pDst, uint16 packed_color5, uint table_idx);
++		static bool get_diff_subblock_colors(color_quad_u8* pDst, uint16 packed_color5, uint16 packed_delta3, uint table_idx);
++		static void get_abs_subblock_colors(color_quad_u8* pDst, uint16 packed_color4, uint table_idx);
++
++		static inline void unscaled_to_scaled_color(color_quad_u8& dst, const color_quad_u8& src, bool color4)
++		{
++			if(color4)
++			{
++				dst.r = src.r | (src.r << 4);
++				dst.g = src.g | (src.g << 4);
++				dst.b = src.b | (src.b << 4);
++			}
++			else
++			{
++				dst.r = (src.r >> 2) | (src.r << 3);
++				dst.g = (src.g >> 2) | (src.g << 3);
++				dst.b = (src.b >> 2) | (src.b << 3);
++			}
++			dst.a = src.a;
++		}
++	};
++
++	color_quad_u8 etc1_block::unpack_color5(uint16 packed_color5, bool scaled, uint alpha)
++	{
++		uint b = packed_color5 & 31U;
++		uint g = (packed_color5 >> 5U) & 31U;
++		uint r = (packed_color5 >> 10U) & 31U;
++
++		if(scaled)
++		{
++			b = (b << 3U) | (b >> 2U);
++			g = (g << 3U) | (g >> 2U);
++			r = (r << 3U) | (r >> 2U);
++		}
++
++		return color_quad_u8(r, g, b, rg_etc1::minimum(alpha, 255U));
++	}
++
++	void etc1_block::unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color5, bool scaled)
++	{
++		color_quad_u8 c(unpack_color5(packed_color5, scaled, 0));
++		r = c.r;
++		g = c.g;
++		b = c.b;
++	}
++
++	bool etc1_block::unpack_color5(color_quad_u8& result, uint16 packed_color5, uint16 packed_delta3, bool scaled, uint alpha)
++	{
++		int dc_r, dc_g, dc_b;
++		unpack_delta3(dc_r, dc_g, dc_b, packed_delta3);
++
++		int b = (packed_color5 & 31U) + dc_b;
++		int g = ((packed_color5 >> 5U) & 31U) + dc_g;
++		int r = ((packed_color5 >> 10U) & 31U) + dc_r;
++
++		bool success = true;
++		if(static_cast<uint>(r | g | b) > 31U)
++		{
++			success = false;
++			r = rg_etc1::clamp<int>(r, 0, 31);
++			g = rg_etc1::clamp<int>(g, 0, 31);
++			b = rg_etc1::clamp<int>(b, 0, 31);
++		}
++
++		if(scaled)
++		{
++			b = (b << 3U) | (b >> 2U);
++			g = (g << 3U) | (g >> 2U);
++			r = (r << 3U) | (r >> 2U);
++		}
++
++		result = color_quad_u8(r, g, b, rg_etc1::minimum(alpha, 255U));
++		return success;
++	}
++
++	bool etc1_block::unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color5, uint16 packed_delta3, bool scaled, uint alpha)
++	{
++		color_quad_u8 result;
++		const bool success = unpack_color5(result, packed_color5, packed_delta3, scaled, alpha);
++		r = result.r;
++		g = result.g;
++		b = result.b;
++		return success;
++	}
++
++	uint16 etc1_block::pack_delta3(int r, int g, int b)
++	{
++		assert((r >= cETC1ColorDeltaMin) && (r <= cETC1ColorDeltaMax));
++		assert((g >= cETC1ColorDeltaMin) && (g <= cETC1ColorDeltaMax));
++		assert((b >= cETC1ColorDeltaMin) && (b <= cETC1ColorDeltaMax));
++		if(r < 0) r += 8;
++		if(g < 0) g += 8;
++		if(b < 0) b += 8;
++		return static_cast<uint16>(b | (g << 3) | (r << 6));
++	}
++
++	void etc1_block::unpack_delta3(int& r, int& g, int& b, uint16 packed_delta3)
++	{
++		r = (packed_delta3 >> 6) & 7;
++		g = (packed_delta3 >> 3) & 7;
++		b = packed_delta3 & 7;
++		if(r >= 4) r -= 8;
++		if(g >= 4) g -= 8;
++		if(b >= 4) b -= 8;
++	}
++
++	uint16 etc1_block::pack_color4(const color_quad_u8& color, bool scaled, uint bias)
++	{
++		return pack_color4(color.r, color.g, color.b, scaled, bias);
++	}
++
++	uint16 etc1_block::pack_color4(uint r, uint g, uint b, bool scaled, uint bias)
++	{
++		if(scaled)
++		{
++			r = (r * 15U + bias) / 255U;
++			g = (g * 15U + bias) / 255U;
++			b = (b * 15U + bias) / 255U;
++		}
++
++		r = rg_etc1::minimum(r, 15U);
++		g = rg_etc1::minimum(g, 15U);
++		b = rg_etc1::minimum(b, 15U);
++
++		return static_cast<uint16>(b | (g << 4U) | (r << 8U));
++	}
++
++	color_quad_u8 etc1_block::unpack_color4(uint16 packed_color4, uint alpha)
++	{
++		uint b = packed_color4 & 15U;
++		uint g = (packed_color4 >> 4U) & 15U;
++		uint r = (packed_color4 >> 8U) & 15U;
++
++		b = (b << 4U) | b;
++		g = (g << 4U) | g;
++		r = (r << 4U) | r;
++
++		return color_quad_u8(r, g, b, rg_etc1::minimum(alpha, 255U));
++	}
++
++	void etc1_block::unpack_color4(uint& r, uint& g, uint& b, uint16 packed_color4)
++	{
++		color_quad_u8 c(unpack_color4(packed_color4, 0));
++		r = c.r;
++		g = c.g;
++		b = c.b;
++	}
++
++	void etc1_block::get_diff_subblock_colors(color_quad_u8* pDst, uint16 packed_color5, uint table_idx)
++	{
++		assert(table_idx < cETC1IntenModifierValues);
++		const int *pInten_modifer_table = &g_etc1_inten_tables[table_idx][0];
++
++		uint r, g, b;
++		unpack_color5(r, g, b, packed_color5, true);
++
++		const int ir = static_cast<int>(r), ig = static_cast<int>(g), ib = static_cast<int>(b);
++
++		const int y0 = pInten_modifer_table[0];
++		pDst[0].set(ir + y0, ig + y0, ib + y0);
++
++		const int y1 = pInten_modifer_table[1];
++		pDst[1].set(ir + y1, ig + y1, ib + y1);
++
++		const int y2 = pInten_modifer_table[2];
++		pDst[2].set(ir + y2, ig + y2, ib + y2);
++
++		const int y3 = pInten_modifer_table[3];
++		pDst[3].set(ir + y3, ig + y3, ib + y3);
++	}
++
++	bool etc1_block::get_diff_subblock_colors(color_quad_u8* pDst, uint16 packed_color5, uint16 packed_delta3, uint table_idx)
++	{
++		assert(table_idx < cETC1IntenModifierValues);
++		const int *pInten_modifer_table = &g_etc1_inten_tables[table_idx][0];
++
++		uint r, g, b;
++		bool success = unpack_color5(r, g, b, packed_color5, packed_delta3, true);
++
++		const int ir = static_cast<int>(r), ig = static_cast<int>(g), ib = static_cast<int>(b);
++
++		const int y0 = pInten_modifer_table[0];
++		pDst[0].set(ir + y0, ig + y0, ib + y0);
++
++		const int y1 = pInten_modifer_table[1];
++		pDst[1].set(ir + y1, ig + y1, ib + y1);
++
++		const int y2 = pInten_modifer_table[2];
++		pDst[2].set(ir + y2, ig + y2, ib + y2);
++
++		const int y3 = pInten_modifer_table[3];
++		pDst[3].set(ir + y3, ig + y3, ib + y3);
++
++		return success;
++	}
++
++	void etc1_block::get_abs_subblock_colors(color_quad_u8* pDst, uint16 packed_color4, uint table_idx)
++	{
++		assert(table_idx < cETC1IntenModifierValues);
++		const int *pInten_modifer_table = &g_etc1_inten_tables[table_idx][0];
++
++		uint r, g, b;
++		unpack_color4(r, g, b, packed_color4);
++
++		const int ir = static_cast<int>(r), ig = static_cast<int>(g), ib = static_cast<int>(b);
++
++		const int y0 = pInten_modifer_table[0];
++		pDst[0].set(ir + y0, ig + y0, ib + y0);
++
++		const int y1 = pInten_modifer_table[1];
++		pDst[1].set(ir + y1, ig + y1, ib + y1);
++
++		const int y2 = pInten_modifer_table[2];
++		pDst[2].set(ir + y2, ig + y2, ib + y2);
++
++		const int y3 = pInten_modifer_table[3];
++		pDst[3].set(ir + y3, ig + y3, ib + y3);
++	}
++
++	bool unpack_etc1_block(const void* pETC1_block, unsigned int* pDst_pixels_rgba, int width)
++	{
++		color_quad_u8* pDst = reinterpret_cast<color_quad_u8*>(pDst_pixels_rgba);
++		const etc1_block& block = *static_cast<const etc1_block*>(pETC1_block);
++
++		const bool diff_flag = block.get_diff_bit();
++		const bool flip_flag = block.get_flip_bit();
++		const uint table_index0 = block.get_inten_table(0);
++		const uint table_index1 = block.get_inten_table(1);
++
++		color_quad_u8 subblock_colors0[4];
++		color_quad_u8 subblock_colors1[4];
++		bool success = true;
++
++		if(diff_flag)
++		{
++			const uint16 base_color5 = block.get_base5_color();
++			const uint16 delta_color3 = block.get_delta3_color();
++			etc1_block::get_diff_subblock_colors(subblock_colors0, base_color5, table_index0);
++
++			if(!etc1_block::get_diff_subblock_colors(subblock_colors1, base_color5, delta_color3, table_index1))
++				success = false;
++		}
++		else
++		{
++			const uint16 base_color4_0 = block.get_base4_color(0);
++			etc1_block::get_abs_subblock_colors(subblock_colors0, base_color4_0, table_index0);
++
++			const uint16 base_color4_1 = block.get_base4_color(1);
++			etc1_block::get_abs_subblock_colors(subblock_colors1, base_color4_1, table_index1);
++		}
++
++		if(flip_flag)
++		{
++			// 0000
++			// 0000
++			// 1111
++			// 1111
++			for(uint y = 0; y < 2; y++)
++			{
++				pDst[0] = subblock_colors0[block.get_selector(0, y)];
++				pDst[1] = subblock_colors0[block.get_selector(1, y)];
++				pDst[2] = subblock_colors0[block.get_selector(2, y)];
++				pDst[3] = subblock_colors0[block.get_selector(3, y)];
++				pDst += width;
++			}
++
++			for(uint y = 2; y < 4; y++)
++			{
++				pDst[0] = subblock_colors1[block.get_selector(0, y)];
++				pDst[1] = subblock_colors1[block.get_selector(1, y)];
++				pDst[2] = subblock_colors1[block.get_selector(2, y)];
++				pDst[3] = subblock_colors1[block.get_selector(3, y)];
++				pDst += width;
++			}
++		}
++		else
++		{
++			// 0011
++			// 0011
++			// 0011
++			// 0011
++			for(uint y = 0; y < 4; y++)
++			{
++				pDst[0] = subblock_colors0[block.get_selector(0, y)];
++				pDst[1] = subblock_colors0[block.get_selector(1, y)];
++				pDst[2] = subblock_colors1[block.get_selector(2, y)];
++				pDst[3] = subblock_colors1[block.get_selector(3, y)];
++				pDst += width;
++			}
++		}
++
++		return success;
++	}
++
++
++} // namespace rg_etc1
++
++
+ namespace sw
+ {
+ 	extern bool quadLayoutEnabled;
+@@ -659,6 +1242,7 @@ namespace sw
+ 			case FORMAT_DXT1:
+ 			#endif
+ 			case FORMAT_ATI1:
++			case FORMAT_ETC1:
+ 				return (unsigned char*)buffer + 8 * (x / 4) + (y / 4) * pitchB + z * sliceB;
+ 			#if S3TC_SUPPORT
+ 			case FORMAT_DXT3:
+@@ -941,6 +1525,7 @@ namespace sw
+ 		#endif
+ 		case FORMAT_ATI1:				return 2;   // Column of four pixels
+ 		case FORMAT_ATI2:				return 4;   // Column of four pixels
++		case FORMAT_ETC1:				return 2;   // Column of four pixels
+ 		// Bumpmap formats
+ 		case FORMAT_V8U8:				return 2;
+ 		case FORMAT_L6V5U5:				return 2;
+@@ -1004,6 +1589,8 @@ namespace sw
+ 			return 2 * ((width + 3) / 4);    // 64 bit per 4x4 block, computed per row
+ 		case FORMAT_ATI2:
+ 			return 4 * ((width + 3) / 4);    // 128 bit per 4x4 block, computed per row
++		case FORMAT_ETC1:
++			return 8 * ((width + 3) / 4);    // 64 bit per 4x4 block, computed per 4 rows
+ 		default:
+ 			return bytes(format) * width;
+ 		}
+@@ -1029,6 +1616,7 @@ namespace sw
+ 		case FORMAT_DXT1:
+ 		case FORMAT_DXT3:
+ 		case FORMAT_DXT5:
++		case FORMAT_ETC1:
+ 			return pitchB(width, format, target) * ((height + 3) / 4);   // Pitch computed per 4 rows
+ 		#endif
+ 		case FORMAT_ATI1:   // Pitch computed per row
+@@ -1069,9 +1657,10 @@ namespace sw
+ 			case FORMAT_DXT1:		decodeDXT1(destination, source);		break;   // FIXME: Check destination format
+ 			case FORMAT_DXT3:		decodeDXT3(destination, source);		break;   // FIXME: Check destination format
+ 			case FORMAT_DXT5:		decodeDXT5(destination, source);		break;   // FIXME: Check destination format
++			#endif
+ 			case FORMAT_ATI1:		decodeATI1(destination, source);		break;   // FIXME: Check destination format
+ 			case FORMAT_ATI2:		decodeATI2(destination, source);		break;   // FIXME: Check destination format
+-			#endif
++			case FORMAT_ETC1:		decodeETC1(destination, source);		break;   // FIXME: Check destination format
+ 			default:				genericUpdate(destination, source);		break;
+ 			}
+ 		}
+@@ -1642,7 +2231,7 @@ namespace sw
+ 			(byte*&)destSlice += internal.sliceB;
+ 		}
+ 	}
+-
++#endif
+ 	void Surface::decodeATI1(Buffer &internal, const Buffer &external)
+ 	{
+ 		byte *destSlice = (byte*)internal.buffer;
+@@ -1775,7 +2364,29 @@ namespace sw
+ 			(byte*&)destSlice += internal.sliceB;
+ 		}
+ 	}
+-#endif
++
++	void Surface::decodeETC1(Buffer &internal, const Buffer &external)
++	{
++		unsigned int *destSlice = (unsigned int*)internal.buffer;
++		DXT1 *source = (DXT1*)external.buffer;
++
++		for(int z = 0; z < external.depth; z++)
++		{
++			unsigned int *dest = destSlice;
++
++			for(int y = 0; y < external.height; y += 4)
++			{
++				for(int x = 0; x < external.width; x += 4)
++				{
++					rg_etc1::unpack_etc1_block(source, &dest[x + y * internal.width], internal.width);
++
++					source++;
++				}
++			}
++
++			(byte*&)destSlice += internal.sliceB;
++		}
++	}
+ 
+ 	unsigned int Surface::size(int width, int height, int depth, Format format)
+ 	{
+@@ -2835,7 +3446,7 @@ namespace sw
+ 	bool Surface::identicalFormats() const
+ 	{
+ 		return external.format == internal.format &&
+-		       external.width  == internal.width &&
++			   external.width  == internal.width &&
+ 			   external.height == internal.height &&
+ 			   external.depth  == internal.depth &&
+ 			   external.pitchB == internal.pitchB &&
+@@ -2902,6 +3513,8 @@ namespace sw
+ 			return FORMAT_R8;
+ 		case FORMAT_ATI2:
+ 			return FORMAT_G8R8;
++		case FORMAT_ETC1:
++			return FORMAT_X8R8G8B8;
+ 		// Bumpmap formats
+ 		case FORMAT_V8U8:			return FORMAT_V8U8;
+ 		case FORMAT_L6V5U5:			return FORMAT_X8L8V8U8;
+diff --git a/src/Renderer/Surface.hpp b/src/Renderer/Surface.hpp
+index 8ed6351..b408cf0 100644
+--- a/src/Renderer/Surface.hpp
++++ b/src/Renderer/Surface.hpp
+@@ -62,6 +62,7 @@ namespace sw
+ 		FORMAT_DXT5,
+ 		FORMAT_ATI1,
+ 		FORMAT_ATI2,
++        FORMAT_ETC1,
+ 		// Floating-point formats
+ 		FORMAT_R16F,
+ 		FORMAT_G16R16F,
+@@ -326,9 +327,10 @@ namespace sw
+ 		static void decodeDXT1(Buffer &internal, const Buffer &external);
+ 		static void decodeDXT3(Buffer &internal, const Buffer &external);
+ 		static void decodeDXT5(Buffer &internal, const Buffer &external);
++		#endif
+ 		static void decodeATI1(Buffer &internal, const Buffer &external);
+ 		static void decodeATI2(Buffer &internal, const Buffer &external);
+-		#endif
++		static void decodeETC1(Buffer &internal, const Buffer &external);
+ 
+ 		static void update(Buffer &destination, Buffer &source);
+ 		static void genericUpdate(Buffer &destination, Buffer &source);
+-- 
+1.8.5.2.msysgit.0
+

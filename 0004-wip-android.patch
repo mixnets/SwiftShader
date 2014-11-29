@@ -1,0 +1,2029 @@
+From e014a95d0f0066b4a7c1a670e8278563f2ea2cd6 Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Mon, 10 Nov 2014 17:43:45 -0500
+Subject: [PATCH 4/4] wip-android
+
+Change-Id: Ibe5e9ef2135c3e14a624dd14030e7ac11c62ec2f
+---
+ src/OpenGL/libEGL/Config.cpp         |   5 +
+ src/OpenGL/libEGL/libEGL.cpp         |  60 ++-
+ src/OpenGL/libEGL/libEGL.def         |  15 +-
+ src/OpenGL/libGLES_CM/libGLES_CM.cpp | 755 ++++++++++++++++++++++++++++++++++-
+ src/OpenGL/libGLES_CM/libGLES_CM.def | 164 ++++++++
+ src/OpenGL/libGLESv2/libGLESv2.cpp   | 735 ++++++++++++++++++++++++++++++++++
+ src/OpenGL/libGLESv2/libGLESv2.def   | 144 +++++++
+ 7 files changed, 1869 insertions(+), 9 deletions(-)
+
+diff --git a/src/OpenGL/libEGL/Config.cpp b/src/OpenGL/libEGL/Config.cpp
+index 981b0f5..daf9e35 100644
+--- a/src/OpenGL/libEGL/Config.cpp
++++ b/src/OpenGL/libEGL/Config.cpp
+@@ -17,6 +17,9 @@
+ 
+ #include "common/debug.h"
+ 
++#define EGLAPI
++#include <EGL/eglext.h>
++
+ #include <algorithm>
+ #include <vector>
+ 
+@@ -316,6 +319,8 @@ bool ConfigSet::getConfigs(EGLConfig *configs, const EGLint *attribList, EGLint
+             case EGL_MAX_PBUFFER_WIDTH:       match = config->mMaxPBufferWidth >= attribute[1];                 break;
+             case EGL_MAX_PBUFFER_HEIGHT:      match = config->mMaxPBufferHeight >= attribute[1];                break;
+             case EGL_MAX_PBUFFER_PIXELS:      match = config->mMaxPBufferPixels >= attribute[1];                break;
++			case EGL_RECORDABLE_ANDROID:      match = true;                                                    break;
++			case EGL_FRAMEBUFFER_TARGET_ANDROID: match = true; break;
+ 			default:
+ 				UNIMPLEMENTED();
+ 				match = false;
+diff --git a/src/OpenGL/libEGL/libEGL.cpp b/src/OpenGL/libEGL/libEGL.cpp
+index ef0b570..2c7bda1 100644
+--- a/src/OpenGL/libEGL/libEGL.cpp
++++ b/src/OpenGL/libEGL/libEGL.cpp
+@@ -1185,6 +1185,54 @@ EGLBoolean EGLAPIENTRY eglDestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
+     return EGL_FALSE;
+ }
+ 
++EGLSyncKHR EGLAPIENTRY eglCreateSyncKHR(EGLDisplay dpy, EGLenum type, const EGLint *attrib_list)
++{
++	UNIMPLEMENTED();
++	return 0;
++}
++
++EGLBoolean EGLAPIENTRY eglDestroySyncKHR(EGLDisplay dpy, EGLSyncKHR sync)
++{
++	UNIMPLEMENTED();
++	return 0;
++}
++
++EGLint EGLAPIENTRY eglClientWaitSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint flags, EGLTimeKHR timeout)
++{
++	UNIMPLEMENTED();
++	return 0;
++}
++
++EGLBoolean EGLAPIENTRY eglSignalSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLenum mode)
++{
++	UNIMPLEMENTED();
++	return 0;
++}
++
++EGLBoolean EGLAPIENTRY eglGetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, EGLint *value)
++{
++	UNIMPLEMENTED();
++	return 0;
++}
++
++EGLBoolean EGLAPIENTRY eglLockSurfaceKHR(EGLDisplay dpy, EGLSurface surface, const EGLint *attrib_list)
++{
++	UNIMPLEMENTED();
++	return 0;
++}
++
++EGLBoolean EGLAPIENTRY eglUnlockSurfaceKHR(EGLDisplay dpy, EGLSurface surface)
++{
++	UNIMPLEMENTED();
++	return 0;
++}
++
++EGLBoolean EGLAPIENTRY eglSetSwapRectangleANDROID(EGLDisplay dpy, EGLSurface draw, EGLint left, EGLint top, EGLint width, EGLint height)
++{
++	UNIMPLEMENTED();
++	return 0;
++}
++
+ __eglMustCastToProperFunctionPointerType EGLAPIENTRY eglGetProcAddress(const char *procname)
+ {
+     TRACE("(const char *procname = \"%s\")", procname);
+@@ -1201,8 +1249,16 @@ __eglMustCastToProperFunctionPointerType EGLAPIENTRY eglGetProcAddress(const cha
+         {
+ 			#define EXTENSION(name) {#name, (__eglMustCastToProperFunctionPointerType)name}
+ 
+-			EXTENSION(eglCreateImageKHR),
+-			EXTENSION(eglDestroyImageKHR),
++            EXTENSION(eglCreateImageKHR),
++            EXTENSION(eglDestroyImageKHR),
++			EXTENSION(eglCreateSyncKHR),
++			EXTENSION(eglDestroySyncKHR),
++			EXTENSION(eglClientWaitSyncKHR),
++			EXTENSION(eglSignalSyncKHR),
++			EXTENSION(eglGetSyncAttribKHR),
++			EXTENSION(eglLockSurfaceKHR),
++			EXTENSION(eglUnlockSurfaceKHR),
++			EXTENSION(eglSetSwapRectangleANDROID),
+ 
+ 			#undef EXTENSION
+ 		};
+diff --git a/src/OpenGL/libEGL/libEGL.def b/src/OpenGL/libEGL/libEGL.def
+index 4555d71..a535d05 100644
+--- a/src/OpenGL/libEGL/libEGL.def
++++ b/src/OpenGL/libEGL/libEGL.def
+@@ -1,4 +1,4 @@
+-LIBRARY	libEGL
++LIBRARY	libEGL.dll
+ EXPORTS
+ 	eglBindAPI                      @14
+ 	eglBindTexImage                 @20
+@@ -41,4 +41,15 @@ EXPORTS
+ 
+ 	; Functions that don't change the error code, for use by client APIs
+ 	clientGetCurrentContext
+-	clientGetCurrentDisplay
+\ No newline at end of file
++	clientGetCurrentDisplay
++
++	eglCreateImageKHR
++	eglDestroyImageKHR
++	eglCreateSyncKHR
++	eglDestroySyncKHR
++	eglClientWaitSyncKHR
++	eglSignalSyncKHR
++	eglGetSyncAttribKHR
++	eglLockSurfaceKHR
++	eglUnlockSurfaceKHR
++	eglSetSwapRectangleANDROID
+diff --git a/src/OpenGL/libGLES_CM/libGLES_CM.cpp b/src/OpenGL/libGLES_CM/libGLES_CM.cpp
+index 7efba35..a28a9eb 100644
+--- a/src/OpenGL/libGLES_CM/libGLES_CM.cpp
++++ b/src/OpenGL/libGLES_CM/libGLES_CM.cpp
+@@ -3610,7 +3610,7 @@ void GL_APIENTRY glScissor(GLint x, GLint y, GLsizei width, GLsizei height)
+ 
+ void GL_APIENTRY glShadeModel(GLenum mode)
+ {
+-	UNIMPLEMENTED();
++	//UNIMPLEMENTED();   // FIXME
+ }
+ 
+ void GL_APIENTRY glStencilFunc(GLenum func, GLint ref, GLuint mask)
+@@ -3753,7 +3753,7 @@ void GL_APIENTRY glTexCoordPointer(GLint size, GLenum type, GLsizei stride, cons
+ 
+ void GL_APIENTRY glTexEnvf(GLenum target, GLenum pname, GLfloat param)
+ {
+-	UNIMPLEMENTED();
++	//UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glTexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
+@@ -3763,12 +3763,12 @@ void GL_APIENTRY glTexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
+ 
+ void GL_APIENTRY glTexEnvi(GLenum target, GLenum pname, GLint param)
+ {
+-	UNIMPLEMENTED();
++	//UNIMPLEMENTED();
+ }
+ 
+ void GL_APIENTRY glTexEnvx(GLenum target, GLenum pname, GLfixed param)
+ {
+-	UNIMPLEMENTED();
++	//UNIMPLEMENTED();   // FIXME
+ }
+ 
+ void GL_APIENTRY glTexEnviv(GLenum target, GLenum pname, const GLint *params)
+@@ -4045,6 +4045,9 @@ void GL_APIENTRY glTexParameteri(GLenum target, GLenum pname, GLint param)
+                     return error(GL_INVALID_VALUE);
+                 }
+                 break;
++			case GL_TEXTURE_CROP_RECT_OES:
++				//UNIMPLEMENTED();   // FIXME
++				break;
+             default:
+                 return error(GL_INVALID_ENUM);
+             }
+@@ -4063,7 +4066,7 @@ void GL_APIENTRY glTexParameteriv(GLenum target, GLenum pname, const GLint* para
+ 
+ void GL_APIENTRY glTexParameterx(GLenum target, GLenum pname, GLfixed param)
+ {
+-	UNIMPLEMENTED();
++	//UNIMPLEMENTED();   // FIXME
+ }
+ 
+ void GL_APIENTRY glTexParameterxv(GLenum target, GLenum pname, const GLfixed *params)
+@@ -4244,6 +4247,748 @@ void GL_APIENTRY glEGLImageTargetRenderbufferStorageOES(GLenum target, GLeglImag
+ 	UNIMPLEMENTED();
+ }
+ 
++void GL_APIENTRY glDrawTexsOES(GLshort x, GLshort y, GLshort z, GLshort width, GLshort height)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexiOES(GLint x, GLint y, GLint z, GLint width, GLint height)
++{
++    //UNIMPLEMENTED();   // FIXME
++}
++
++void GL_APIENTRY glDrawTexxOES(GLfixed x, GLfixed y, GLfixed z, GLfixed width, GLfixed height)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexsvOES(const GLshort *coords)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexivOES(const GLint *coords)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexxvOES(const GLfixed *coords)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexfOES(GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloat height)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexfvOES(const GLfloat *coords)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glAlphaFuncxOES(GLenum func, GLclampx ref)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClearColorxOES(GLclampx red, GLclampx green, GLclampx blue, GLclampx alpha)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClearDepthxOES(GLclampx depth)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClipPlanexOES(GLenum plane, const GLfixed *equation)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glColor4xOES(GLfixed red, GLfixed green, GLfixed blue, GLfixed alpha)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDepthRangexOES(GLclampx zNear, GLclampx zFar)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFogxOES(GLenum pname, GLfixed param)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFogxvOES(GLenum pname, const GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFrustumxOES(GLfixed left, GLfixed right, GLfixed bottom, GLfixed top, GLfixed zNear, GLfixed zFar)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetClipPlanexOES(GLenum pname, GLfixed eqn[4])
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetFixedvOES(GLenum pname, GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetLightxvOES(GLenum light, GLenum pname, GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetMaterialxvOES(GLenum face, GLenum pname, GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetTexEnvxvOES(GLenum env, GLenum pname, GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetTexParameterxvOES(GLenum target, GLenum pname, GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLightModelxOES(GLenum pname, GLfixed param)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLightModelxvOES(GLenum pname, const GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLightxOES(GLenum light, GLenum pname, GLfixed param)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLightxvOES(GLenum light, GLenum pname, const GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLineWidthxOES(GLfixed width)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLoadMatrixxOES(const GLfixed *m)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMaterialxOES(GLenum face, GLenum pname, GLfixed param)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMaterialxvOES(GLenum face, GLenum pname, const GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMultMatrixxOES(const GLfixed *m)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMultiTexCoord4xOES(GLenum target, GLfixed s, GLfixed t, GLfixed r, GLfixed q)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glNormal3xOES(GLfixed nx, GLfixed ny, GLfixed nz)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glOrthoxOES(GLfixed left, GLfixed right, GLfixed bottom, GLfixed top, GLfixed zNear, GLfixed zFar)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glPointParameterxOES(GLenum pname, GLfixed param)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glPointParameterxvOES(GLenum pname, const GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glPointSizexOES(GLfixed size)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glPolygonOffsetxOES(GLfixed factor, GLfixed units)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glRotatexOES(GLfixed angle, GLfixed x, GLfixed y, GLfixed z)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glSampleCoveragexOES(GLclampx value, GLboolean invert)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glScalexOES(GLfixed x, GLfixed y, GLfixed z)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexEnvxOES(GLenum target, GLenum pname, GLfixed param)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexEnvxvOES(GLenum target, GLenum pname, const GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexParameterxOES(GLenum target, GLenum pname, GLfixed param)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexParameterxvOES(GLenum target, GLenum pname, const GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTranslatexOES(GLfixed x, GLfixed y, GLfixed z)
++{
++    UNIMPLEMENTED();
++}
++
++void* GL_APIENTRY glMapBufferOES(GLenum target, GLenum access)
++{
++    UNIMPLEMENTED();
++	return 0;
++}
++
++GLboolean GL_APIENTRY glUnmapBufferOES(GLenum target)
++{
++    UNIMPLEMENTED();
++	return 0;
++}
++
++void GL_APIENTRY glGetBufferPointervOES(GLenum target, GLenum pname, GLvoid ** params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glCurrentPaletteMatrixOES(GLuint matrixpaletteindex)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLoadPaletteFromModelViewMatrixOES(void)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMatrixIndexPointerOES(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glWeightPointerOES(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
++{
++    UNIMPLEMENTED();
++}
++
++GLbitfield GL_APIENTRY glQueryMatrixxOES(GLfixed mantissa[16], GLint exponent[16])
++{
++    UNIMPLEMENTED();
++	return 0;
++}
++
++void GL_APIENTRY glDepthRangefOES(GLclampf zNear, GLclampf zFar)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFrustumfOES(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glOrthofOES(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClipPlanefOES(GLenum plane, const GLfloat *equation)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetClipPlanefOES(GLenum pname, GLfloat eqn[4])
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClearDepthfOES(GLclampf depth)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexGenfOES(GLenum coord, GLenum pname, GLfloat param)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexGenfvOES(GLenum coord, GLenum pname, const GLfloat *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexGeniOES(GLenum coord, GLenum pname, GLint param)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexGenivOES(GLenum coord, GLenum pname, const GLint *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexGenxOES(GLenum coord, GLenum pname, GLfixed param)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexGenxvOES(GLenum coord, GLenum pname, const GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetTexGenfvOES(GLenum coord, GLenum pname, GLfloat *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetTexGenivOES(GLenum coord, GLenum pname, GLint *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetTexGenxvOES(GLenum coord, GLenum pname, GLfixed *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glBindVertexArrayOES(GLuint array)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDeleteVertexArraysOES(GLsizei n, const GLuint *arrays)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGenVertexArraysOES(GLsizei n, GLuint *arrays)
++{
++    UNIMPLEMENTED();
++}
++
++GLboolean GL_APIENTRY glIsVertexArrayOES(GLuint array)
++{
++    UNIMPLEMENTED();
++	return 0;
++}
++
++void GL_APIENTRY glDiscardFramebufferEXT(GLenum target, GLsizei numAttachments, const GLenum *attachments)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMultiDrawArraysEXT(GLenum, const GLint *, const GLsizei *, GLsizei)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMultiDrawElementsEXT(GLenum, const GLsizei *, GLenum, const GLvoid* *, GLsizei)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClipPlanefIMG(GLenum, const GLfloat *)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClipPlanexIMG(GLenum, const GLfixed *)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glRenderbufferStorageMultisampleIMG(GLenum, GLsizei, GLenum, GLsizei, GLsizei)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFramebufferTexture2DMultisampleIMG(GLenum, GLenum, GLenum, GLuint, GLint, GLsizei)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDeleteFencesNV(GLsizei, const GLuint *)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGenFencesNV(GLsizei, GLuint *)
++{
++    UNIMPLEMENTED();
++}
++
++GLboolean GL_APIENTRY glIsFenceNV(GLuint)
++{
++    UNIMPLEMENTED();
++	return 0;
++}
++
++GLboolean GL_APIENTRY glTestFenceNV(GLuint)
++{
++    UNIMPLEMENTED();
++	return 0;
++}
++
++void GL_APIENTRY glGetFenceivNV(GLuint, GLenum, GLint *)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFinishFenceNV(GLuint)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glSetFenceNV(GLuint, GLenum)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetDriverControlsQCOM(GLint *num, GLsizei size, GLuint *driverControls)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetDriverControlStringQCOM(GLuint driverControl, GLsizei bufSize, GLsizei *length, GLchar *driverControlString)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glEnableDriverControlQCOM(GLuint driverControl)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDisableDriverControlQCOM(GLuint driverControl)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetTexturesQCOM(GLuint *textures, GLint maxTextures, GLint *numTextures)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetBuffersQCOM(GLuint *buffers, GLint maxBuffers, GLint *numBuffers)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetRenderbuffersQCOM(GLuint *renderbuffers, GLint maxRenderbuffers, GLint *numRenderbuffers)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetFramebuffersQCOM(GLuint *framebuffers, GLint maxFramebuffers, GLint *numFramebuffers)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetTexLevelParameterivQCOM(GLuint texture, GLenum face, GLint level, GLenum pname, GLint *params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtTexObjectStateOverrideiQCOM(GLenum target, GLenum pname, GLint param)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetTexSubImageQCOM(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLvoid *texels)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetBufferPointervQCOM(GLenum target, GLvoid **params)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetShadersQCOM(GLuint *shaders, GLint maxShaders, GLint *numShaders)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetProgramsQCOM(GLuint *programs, GLint maxPrograms, GLint *numPrograms)
++{
++    UNIMPLEMENTED();
++}
++
++GLboolean GL_APIENTRY glExtIsProgramBinaryQCOM(GLuint program)
++{
++    UNIMPLEMENTED();
++	return 0;
++}
++
++void GL_APIENTRY glExtGetProgramBinarySourceQCOM(GLuint program, GLenum shadertype, GLchar *source, GLint *length)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glStartTilingQCOM(GLuint x, GLuint y, GLuint width, GLuint height, GLbitfield preserveMask)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glEndTilingQCOM(GLbitfield preserveMask)
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetProgramBinaryOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glProgramBinaryOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexSubImage3DOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glCopyTexSubImage3DOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glCompressedTexImage3DOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glCompressedTexSubImage3DOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFramebufferTexture3DOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetPerfMonitorGroupsAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetPerfMonitorCountersAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetPerfMonitorGroupStringAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetPerfMonitorCounterStringAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetPerfMonitorCounterInfoAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGenPerfMonitorsAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDeletePerfMonitorsAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glSelectPerfMonitorCountersAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glBeginPerfMonitorAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glEndPerfMonitorAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetPerfMonitorCounterDataAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glCoverageMaskNV()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glCoverageOperationNV()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glVertexAttribPointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glVertexAttribPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawElementsOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawElementsData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetCompressedTextureFormats()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glShaderString()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFinishRoundTrip()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glVertexPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glColorPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glNormalPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glPointSizePointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexCoordPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glWeightPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMatrixIndexPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glVertexPointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glColorPointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glNormalPointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexCoordPointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glPointSizePointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glWeightPointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMatrixIndexPointerData()
++{
++    UNIMPLEMENTED();
++}
++
+ __eglMustCastToProperFunctionPointerType glGetProcAddress(const char *procname)
+ {
+     struct Extension
+diff --git a/src/OpenGL/libGLES_CM/libGLES_CM.def b/src/OpenGL/libGLES_CM/libGLES_CM.def
+index d894976..5450907 100644
+--- a/src/OpenGL/libGLES_CM/libGLES_CM.def
++++ b/src/OpenGL/libGLES_CM/libGLES_CM.def
+@@ -197,6 +197,170 @@ EXPORTS
+     glBlendEquationSeparateOES
+     glBlendFuncSeparateOES
+ 
++    ; Unsupported extensions (honeypot)
++    glDrawTexsOES
++    glDrawTexiOES
++    glDrawTexxOES
++    glDrawTexsvOES
++    glDrawTexivOES
++    glDrawTexxvOES
++    glDrawTexfOES
++    glDrawTexfvOES
++    glAlphaFuncxOES
++    glClearColorxOES
++    glClearDepthxOES
++    glClipPlanexOES
++    glColor4xOES
++    glDepthRangexOES
++    glFogxOES
++    glFogxvOES
++    glFrustumxOES
++    glGetClipPlanexOES
++    glGetFixedvOES
++    glGetLightxvOES
++    glGetMaterialxvOES
++    glGetTexEnvxvOES
++    glGetTexParameterxvOES
++    glLightModelxOES
++    glLightModelxvOES
++    glLightxOES
++    glLightxvOES
++    glLineWidthxOES
++    glLoadMatrixxOES
++    glMaterialxOES
++    glMaterialxvOES
++    glMultMatrixxOES
++    glMultiTexCoord4xOES
++    glNormal3xOES
++    glOrthoxOES
++    glPointParameterxOES
++    glPointParameterxvOES
++    glPointSizexOES
++    glPolygonOffsetxOES
++    glRotatexOES
++    glSampleCoveragexOES
++    glScalexOES
++    glTexEnvxOES
++    glTexEnvxvOES
++    glTexParameterxOES
++    glTexParameterxvOES
++    glTranslatexOES
++    glMapBufferOES
++    glUnmapBufferOES
++    glGetBufferPointervOES
++    glCurrentPaletteMatrixOES
++    glLoadPaletteFromModelViewMatrixOES
++    glMatrixIndexPointerOES
++    glWeightPointerOES
++    glQueryMatrixxOES
++    glDepthRangefOES
++    glFrustumfOES
++    glOrthofOES
++    glClipPlanefOES
++    glGetClipPlanefOES
++    glClearDepthfOES
++    glTexGenfOES
++    glTexGenfvOES
++    glTexGeniOES
++    glTexGenivOES
++    glTexGenxOES
++    glTexGenxvOES
++    glGetTexGenfvOES
++    glGetTexGenivOES
++    glGetTexGenxvOES
++    glBindVertexArrayOES
++    glDeleteVertexArraysOES
++    glGenVertexArraysOES
++    glIsVertexArrayOES
++    glDiscardFramebufferEXT
++    glMultiDrawArraysEXT
++    glMultiDrawElementsEXT
++    glClipPlanefIMG
++    glClipPlanexIMG
++    glRenderbufferStorageMultisampleIMG
++    glFramebufferTexture2DMultisampleIMG
++    glDeleteFencesNV
++    glGenFencesNV
++    glIsFenceNV
++    glTestFenceNV
++    glGetFenceivNV
++    glFinishFenceNV
++    glSetFenceNV
++    glGetDriverControlsQCOM
++    glGetDriverControlStringQCOM
++    glEnableDriverControlQCOM
++    glDisableDriverControlQCOM
++    glExtGetTexturesQCOM
++    glExtGetBuffersQCOM
++    glExtGetRenderbuffersQCOM
++    glExtGetFramebuffersQCOM
++    glExtGetTexLevelParameterivQCOM
++    glExtTexObjectStateOverrideiQCOM
++    glExtGetTexSubImageQCOM
++    glExtGetBufferPointervQCOM
++    glExtGetShadersQCOM
++    glExtGetProgramsQCOM
++    glExtIsProgramBinaryQCOM
++    glExtGetProgramBinarySourceQCOM
++    glStartTilingQCOM
++    glEndTilingQCOM
++    glGetProgramBinaryOES
++    glProgramBinaryOES
++    glTexSubImage3DOES
++    glCopyTexSubImage3DOES
++    glCompressedTexImage3DOES
++    glCompressedTexSubImage3DOES
++    glFramebufferTexture3DOES
++    glGetPerfMonitorGroupsAMD
++    glGetPerfMonitorCountersAMD
++    glGetPerfMonitorGroupStringAMD
++    glGetPerfMonitorCounterStringAMD
++    glGetPerfMonitorCounterInfoAMD
++    glGenPerfMonitorsAMD
++    glDeletePerfMonitorsAMD
++    glSelectPerfMonitorCountersAMD
++    glBeginPerfMonitorAMD
++    glEndPerfMonitorAMD
++    glGetPerfMonitorCounterDataAMD
++    glCoverageMaskNV
++    glCoverageOperationNV
++    glVertexAttribPointerData
++    glVertexAttribPointerOffset
++    glDrawElementsOffset
++    glDrawElementsData
++    glGetCompressedTextureFormats
++    glShaderString
++    glFinishRoundTrip
++    glVertexPointerOffset
++    glColorPointerOffset
++    glNormalPointerOffset
++    glPointSizePointerOffset
++    glTexCoordPointerOffset
++    glWeightPointerOffset
++    glMatrixIndexPointerOffset
++    glVertexPointerData
++    glColorPointerData
++    glNormalPointerData
++    glTexCoordPointerData
++    glPointSizePointerData
++    glWeightPointerData
++    glMatrixIndexPointerData
++    glDrawElementsOffset
++    glDrawElementsData
++	glQueryMatrixxOES
++	glCurrentPaletteMatrixOES
++	glLoadPaletteFromModelViewMatrixOES
++	glMatrixIndexPointerOES
++	glWeightPointerOES
++	glDrawTexsOES
++	glDrawTexiOES
++	glDrawTexxOES
++	glDrawTexsvOES
++	glDrawTexivOES
++	glDrawTexxvOES
++	glDrawTexfOES
++	glDrawTexfvOES
++
+     ; EGL dependencies
+     glCreateContext
+     glGetProcAddress
+diff --git a/src/OpenGL/libGLESv2/libGLESv2.cpp b/src/OpenGL/libGLESv2/libGLESv2.cpp
+index e03d6da..85164ba 100644
+--- a/src/OpenGL/libGLESv2/libGLESv2.cpp
++++ b/src/OpenGL/libGLESv2/libGLESv2.cpp
+@@ -6158,6 +6158,741 @@ void GL_APIENTRY glEGLImageTargetRenderbufferStorageOES(GLenum target, GLeglImag
+ 	UNIMPLEMENTED();
+ }
+ 
++void GL_APIENTRY glDrawTexsOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexiOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexsvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexivOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexfOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawTexfvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glAlphaFuncxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClearColorxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClearDepthxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClipPlanexOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glColor4xOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDepthRangexOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFogxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFogxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFrustumxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetClipPlanexOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetFixedvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetLightxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetMaterialxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetTexEnvxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetTexParameterxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLightModelxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLightModelxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLightxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLightxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLineWidthxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLoadMatrixxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMaterialxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMaterialxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMultMatrixxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMultiTexCoord4xOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glNormal3xOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glOrthoxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glPointParameterxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glPointParameterxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glPointSizexOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glPolygonOffsetxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glRotatexOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glSampleCoveragexOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glScalexOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexEnvxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexEnvxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexParameterxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexParameterxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTranslatexOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMapBufferOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glUnmapBufferOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetBufferPointervOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glCurrentPaletteMatrixOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glLoadPaletteFromModelViewMatrixOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMatrixIndexPointerOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glWeightPointerOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glQueryMatrixxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDepthRangefOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFrustumfOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glOrthofOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClipPlanefOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetClipPlanefOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClearDepthfOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexGenfOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexGenfvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexGeniOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexGenivOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexGenxOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexGenxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetTexGenfvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetTexGenivOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetTexGenxvOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glBindVertexArrayOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDeleteVertexArraysOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGenVertexArraysOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glIsVertexArrayOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDiscardFramebufferEXT()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMultiDrawArraysEXT()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMultiDrawElementsEXT()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClipPlanefIMG()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glClipPlanexIMG()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glRenderbufferStorageMultisampleIMG()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFramebufferTexture2DMultisampleIMG()
++{
++    UNIMPLEMENTED();
++}
++
++//void GL_APIENTRY glDeleteFencesNV()
++//{
++//    UNIMPLEMENTED();
++//}
++//
++//void GL_APIENTRY glGenFencesNV()
++//{
++//    UNIMPLEMENTED();
++//}
++//
++//void GL_APIENTRY glIsFenceNV()
++//{
++//    UNIMPLEMENTED();
++//}
++//
++//void GL_APIENTRY glTestFenceNV()
++//{
++//    UNIMPLEMENTED();
++//}
++//
++//void GL_APIENTRY glGetFenceivNV()
++//{
++//    UNIMPLEMENTED();
++//}
++//
++//void GL_APIENTRY glFinishFenceNV()
++//{
++//    UNIMPLEMENTED();
++//}
++//
++//void GL_APIENTRY glSetFenceNV()
++//{
++//    UNIMPLEMENTED();
++//}
++
++void GL_APIENTRY glGetDriverControlsQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetDriverControlStringQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glEnableDriverControlQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDisableDriverControlQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetTexturesQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetBuffersQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetRenderbuffersQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetFramebuffersQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetTexLevelParameterivQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtTexObjectStateOverrideiQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetTexSubImageQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetBufferPointervQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetShadersQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetProgramsQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtIsProgramBinaryQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glExtGetProgramBinarySourceQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glStartTilingQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glEndTilingQCOM()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetProgramBinaryOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glProgramBinaryOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexSubImage3DOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glCopyTexSubImage3DOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glCompressedTexImage3DOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glCompressedTexSubImage3DOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFramebufferTexture3DOES()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetPerfMonitorGroupsAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetPerfMonitorCountersAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetPerfMonitorGroupStringAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetPerfMonitorCounterStringAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetPerfMonitorCounterInfoAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGenPerfMonitorsAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDeletePerfMonitorsAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glSelectPerfMonitorCountersAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glBeginPerfMonitorAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glEndPerfMonitorAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetPerfMonitorCounterDataAMD()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glCoverageMaskNV()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glCoverageOperationNV()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glVertexAttribPointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glVertexAttribPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawElementsOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glDrawElementsData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glGetCompressedTextureFormats()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glShaderString()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glFinishRoundTrip()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glVertexPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glColorPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glNormalPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glPointSizePointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexCoordPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glWeightPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMatrixIndexPointerOffset()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glVertexPointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glColorPointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glNormalPointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glTexCoordPointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glPointSizePointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glWeightPointerData()
++{
++    UNIMPLEMENTED();
++}
++
++void GL_APIENTRY glMatrixIndexPointerData()
++{
++    UNIMPLEMENTED();
++}
++
+ __eglMustCastToProperFunctionPointerType glGetProcAddress(const char *procname)
+ {
+     struct Extension
+diff --git a/src/OpenGL/libGLESv2/libGLESv2.def b/src/OpenGL/libGLESv2/libGLESv2.def
+index 5b9347d..29fb004 100644
+--- a/src/OpenGL/libGLESv2/libGLESv2.def
++++ b/src/OpenGL/libGLESv2/libGLESv2.def
+@@ -168,6 +168,150 @@ EXPORTS
+ 	glEGLImageTargetTexture2DOES
+ 	glEGLImageTargetRenderbufferStorageOES
+ 
++    ; Unsupported extensions (honeypot)
++	glDrawTexsOES
++    glDrawTexiOES
++    glDrawTexxOES
++    glDrawTexsvOES
++    glDrawTexivOES
++    glDrawTexxvOES
++    glDrawTexfOES
++    glDrawTexfvOES
++    glAlphaFuncxOES
++    glClearColorxOES
++    glClearDepthxOES
++    glClipPlanexOES
++    glColor4xOES
++    glDepthRangexOES
++    glFogxOES
++    glFogxvOES
++    glFrustumxOES
++    glGetClipPlanexOES
++    glGetFixedvOES
++    glGetLightxvOES
++    glGetMaterialxvOES
++    glGetTexEnvxvOES
++    glGetTexParameterxvOES
++    glLightModelxOES
++    glLightModelxvOES
++    glLightxOES
++    glLightxvOES
++    glLineWidthxOES
++    glLoadMatrixxOES
++    glMaterialxOES
++    glMaterialxvOES
++    glMultMatrixxOES
++    glMultiTexCoord4xOES
++    glNormal3xOES
++    glOrthoxOES
++    glPointParameterxOES
++    glPointParameterxvOES
++    glPointSizexOES
++    glPolygonOffsetxOES
++    glRotatexOES
++    glSampleCoveragexOES
++    glScalexOES
++    glTexEnvxOES
++    glTexEnvxvOES
++    glTexParameterxOES
++    glTexParameterxvOES
++    glTranslatexOES
++    glMapBufferOES
++    glUnmapBufferOES
++    glGetBufferPointervOES
++    glCurrentPaletteMatrixOES
++    glLoadPaletteFromModelViewMatrixOES
++    glMatrixIndexPointerOES
++    glWeightPointerOES
++    glQueryMatrixxOES
++    glDepthRangefOES
++    glFrustumfOES
++    glOrthofOES
++    glClipPlanefOES
++    glGetClipPlanefOES
++    glClearDepthfOES
++    glTexGenfOES
++    glTexGenfvOES
++    glTexGeniOES
++    glTexGenivOES
++    glTexGenxOES
++    glTexGenxvOES
++    glGetTexGenfvOES
++    glGetTexGenivOES
++    glGetTexGenxvOES
++    glBindVertexArrayOES
++    glDeleteVertexArraysOES
++    glGenVertexArraysOES
++    glIsVertexArrayOES
++    glDiscardFramebufferEXT
++    glMultiDrawArraysEXT
++    glMultiDrawElementsEXT
++    glClipPlanefIMG
++    glClipPlanexIMG
++    glRenderbufferStorageMultisampleIMG
++    glFramebufferTexture2DMultisampleIMG
++    glGetDriverControlsQCOM
++    glGetDriverControlStringQCOM
++    glEnableDriverControlQCOM
++    glDisableDriverControlQCOM
++    glExtGetTexturesQCOM
++    glExtGetBuffersQCOM
++    glExtGetRenderbuffersQCOM
++    glExtGetFramebuffersQCOM
++    glExtGetTexLevelParameterivQCOM
++    glExtTexObjectStateOverrideiQCOM
++    glExtGetTexSubImageQCOM
++    glExtGetBufferPointervQCOM
++    glExtGetShadersQCOM
++    glExtGetProgramsQCOM
++    glExtIsProgramBinaryQCOM
++    glExtGetProgramBinarySourceQCOM
++    glStartTilingQCOM
++    glEndTilingQCOM
++    glGetProgramBinaryOES
++    glProgramBinaryOES
++    glTexSubImage3DOES
++    glCopyTexSubImage3DOES
++    glCompressedTexImage3DOES
++    glCompressedTexSubImage3DOES
++    glFramebufferTexture3DOES
++    glGetPerfMonitorGroupsAMD
++    glGetPerfMonitorCountersAMD
++    glGetPerfMonitorGroupStringAMD
++    glGetPerfMonitorCounterStringAMD
++    glGetPerfMonitorCounterInfoAMD
++    glGenPerfMonitorsAMD
++    glDeletePerfMonitorsAMD
++    glSelectPerfMonitorCountersAMD
++    glBeginPerfMonitorAMD
++    glEndPerfMonitorAMD
++    glGetPerfMonitorCounterDataAMD
++    glCoverageMaskNV
++    glCoverageOperationNV
++    glVertexAttribPointerData
++    glVertexAttribPointerOffset
++    glDrawElementsOffset
++    glDrawElementsData
++    glGetCompressedTextureFormats
++    glShaderString
++    glFinishRoundTrip
++    glVertexPointerOffset
++    glColorPointerOffset
++    glNormalPointerOffset
++    glPointSizePointerOffset
++    glTexCoordPointerOffset
++    glWeightPointerOffset
++    glMatrixIndexPointerOffset
++    glVertexPointerData
++    glColorPointerData
++    glNormalPointerData
++    glTexCoordPointerData
++    glPointSizePointerData
++    glWeightPointerData
++    glMatrixIndexPointerData
++    glDrawElementsOffset
++    glDrawElementsData
++
+     ; EGL dependencies
+     glCreateContext
+     glGetProcAddress
+-- 
+1.8.5.2.msysgit.0
+

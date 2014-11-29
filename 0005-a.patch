@@ -1,0 +1,115 @@
+From f17d3ad9bb82ee631c919b1e5c1762b14f2024ca Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Fri, 28 Nov 2014 15:58:39 -0500
+Subject: [PATCH 05/11] a
+
+Change-Id: I07ca88aef4730f9538e496a09496470aefa74f84
+---
+ src/Renderer/Surface.cpp | 70 +++++++++---------------------------------------
+ 1 file changed, 13 insertions(+), 57 deletions(-)
+
+diff --git a/src/Renderer/Surface.cpp b/src/Renderer/Surface.cpp
+index 35dbfce..11ec4c3 100644
+--- a/src/Renderer/Surface.cpp
++++ b/src/Renderer/Surface.cpp
+@@ -84,51 +84,7 @@ namespace rg_etc1
+ 			a = static_cast<unsigned char>(alpha);
+ 		}
+ 	}; // class color_quad_u8
+-
+-	struct vec3F
+-	{
+-		float m_s[3];
+-
+-		inline vec3F() { }
+-		inline vec3F(float s) {
+-			m_s[0] = s; m_s[1] = s; m_s[2] = s;
+-		}
+-		inline vec3F(float x, float y, float z) {
+-			m_s[0] = x; m_s[1] = y; m_s[2] = z;
+-		}
+-
+-		inline float operator[] (uint i) const {
+-			return m_s[i];
+-		}
+-
+-		inline vec3F& operator += (const vec3F& other) {
+-			for(uint i = 0; i < 3; i++) m_s[i] += other.m_s[i]; return *this;
+-		}
+-
+-		inline vec3F& operator *= (float s) {
+-			for(uint i = 0; i < 3; i++) m_s[i] *= s; return *this;
+-		}
+-	};
+-	
+-	enum etc_constants
+-	{
+-		cETC1BaseColor5RBitOffset = 59,
+-		cETC1BaseColor5GBitOffset = 51,
+-		cETC1BaseColor5BBitOffset = 43,
+-
+-		cETC1DeltaColor3RBitOffset = 56,
+-		cETC1DeltaColor3GBitOffset = 48,
+-		cETC1DeltaColor3BBitOffset = 40,
+-
+-		cETC1AbsColor4R1BitOffset = 60,
+-		cETC1AbsColor4G1BitOffset = 52,
+-		cETC1AbsColor4B1BitOffset = 44,
+-
+-		cETC1AbsColor4R2BitOffset = 56,
+-		cETC1AbsColor4G2BitOffset = 48,
+-		cETC1AbsColor4B2BitOffset = 40,
+-	};
+-	
++		
+ 	static const int g_etc1_inten_tables[8][4] =
+ 	{
+ 		{-8, -2, 2, 8},
+@@ -220,32 +176,32 @@ namespace rg_etc1
+ 			uint r, g, b;
+ 			if(idx)
+ 			{
+-				r = get_byte_bits(cETC1AbsColor4R2BitOffset, 4);
+-				g = get_byte_bits(cETC1AbsColor4G2BitOffset, 4);
+-				b = get_byte_bits(cETC1AbsColor4B2BitOffset, 4);
++				r = iR2;
++				g = iG2;
++				b = iB2;
+ 			}
+ 			else
+ 			{
+-				r = get_byte_bits(cETC1AbsColor4R1BitOffset, 4);
+-				g = get_byte_bits(cETC1AbsColor4G1BitOffset, 4);
+-				b = get_byte_bits(cETC1AbsColor4B1BitOffset, 4);
++				r = iR1;
++				g = iG1;
++				b = iB1;
+ 			}
+ 			return static_cast<uint16>(b | (g << 4U) | (r << 8U));
+ 		}
+ 
+ 		inline uint16 get_base5_color() const
+ 		{
+-			const uint r = get_byte_bits(cETC1BaseColor5RBitOffset, 5);
+-			const uint g = get_byte_bits(cETC1BaseColor5GBitOffset, 5);
+-			const uint b = get_byte_bits(cETC1BaseColor5BBitOffset, 5);
++			const uint r = cR1;
++			const uint g = cG1;
++			const uint b = cB1;
+ 			return static_cast<uint16>(b | (g << 5U) | (r << 10U));
+ 		}
+ 
+ 		inline uint16 get_delta3_color() const
+ 		{
+-			const uint r = get_byte_bits(cETC1DeltaColor3RBitOffset, 3);
+-			const uint g = get_byte_bits(cETC1DeltaColor3GBitOffset, 3);
+-			const uint b = get_byte_bits(cETC1DeltaColor3BBitOffset, 3);
++			const uint r = dR2;
++			const uint g = dG2;
++			const uint b = dB2;
+ 			return static_cast<uint16>(b | (g << 3U) | (r << 6U));
+ 		}
+ 
+-- 
+1.8.5.2.msysgit.0
+

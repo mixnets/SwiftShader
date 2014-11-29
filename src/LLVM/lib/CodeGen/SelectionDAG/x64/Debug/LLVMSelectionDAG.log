@@ -1,0 +1,51 @@
+﻿Build started 11/14/2014 2:53:43 PM.
+     1>Project "D:\SwiftShader-GLES\src\LLVM\lib\CodeGen\SelectionDAG\LLVMSelectionDAG.vcxproj" on node 3 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /I..\SelectionDAG /I..\..\..\include /Zi /nologo /W3 /WX- /MP /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _CRT_SECURE_NO_DEPRECATE /D _CRT_SECURE_NO_WARNINGS /D _CRT_NONSTDC_NO_DEPRECATE /D _CRT_NONSTDC_NO_WARNINGS /D _SCL_SECURE_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /D __STDC_CONSTANT_MACROS /D __STDC_FORMAT_MACROS /D __STDC_LIMIT_MACROS /D _HAS_EXCEPTIONS=0 /D _HAS_EXCEPTIONS=0 /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR- /Fo"x64\Debug\\" /Fd"..\..\Debug/LLVMSelectionDAG.pdb" /Gd /TP /wd4146 /wd4180 /wd4224 /wd4244 /wd4267 /wd4275 /wd4291 /wd4345 /wd4351 /wd4355 /wd4503 /wd4551 /wd4624 /wd4715 /wd4800 /wd4065 /wd4181 /errorReport:prompt  /Zm1000 /EHs-c- -w14062 DAGCombiner.cpp FastISel.cpp FunctionLoweringInfo.cpp InstrEmitter.cpp LegalizeDAG.cpp LegalizeFloatTypes.cpp LegalizeIntegerTypes.cpp LegalizeTypes.cpp LegalizeTypesGeneric.cpp LegalizeVectorOps.cpp LegalizeVectorTypes.cpp ScheduleDAGList.cpp ScheduleDAGRRList.cpp ScheduleDAGSDNodes.cpp SelectionDAG.cpp SelectionDAGBuilder.cpp SelectionDAGISel.cpp SelectionDAGPrinter.cpp TargetLowering.cpp TargetSelectionDAGInfo.cpp
+         DAGCombiner.cpp
+         FastISel.cpp
+         FunctionLoweringInfo.cpp
+         InstrEmitter.cpp
+         LegalizeDAG.cpp
+         LegalizeFloatTypes.cpp
+         LegalizeIntegerTypes.cpp
+         LegalizeTypes.cpp
+         LegalizeTypesGeneric.cpp
+         LegalizeVectorOps.cpp
+         LegalizeVectorTypes.cpp
+         ScheduleDAGList.cpp
+         ScheduleDAGRRList.cpp
+         ScheduleDAGSDNodes.cpp
+         SelectionDAG.cpp
+         SelectionDAGBuilder.cpp
+         SelectionDAGISel.cpp
+         SelectionDAGPrinter.cpp
+         TargetLowering.cpp
+         TargetSelectionDAGInfo.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\Lib.exe /OUT:"x64\Debug\LLVMSelectionDAG.lib" /NOLOGO /MACHINE:X64 x64\Debug\DAGCombiner.obj
+         x64\Debug\FastISel.obj
+         x64\Debug\FunctionLoweringInfo.obj
+         x64\Debug\InstrEmitter.obj
+         x64\Debug\LegalizeDAG.obj
+         x64\Debug\LegalizeFloatTypes.obj
+         x64\Debug\LegalizeIntegerTypes.obj
+         x64\Debug\LegalizeTypes.obj
+         x64\Debug\LegalizeTypesGeneric.obj
+         x64\Debug\LegalizeVectorOps.obj
+         x64\Debug\LegalizeVectorTypes.obj
+         x64\Debug\ScheduleDAGList.obj
+         x64\Debug\ScheduleDAGRRList.obj
+         x64\Debug\ScheduleDAGSDNodes.obj
+         x64\Debug\SelectionDAG.obj
+         x64\Debug\SelectionDAGBuilder.obj
+         x64\Debug\SelectionDAGISel.obj
+         x64\Debug\SelectionDAGPrinter.obj
+         x64\Debug\TargetLowering.obj
+         x64\Debug\TargetSelectionDAGInfo.obj
+         LLVMSelectionDAG.vcxproj -> D:\SwiftShader-GLES\src\LLVM\lib\CodeGen\SelectionDAG\x64\Debug\LLVMSelectionDAG.lib
+     1>Done Building Project "D:\SwiftShader-GLES\src\LLVM\lib\CodeGen\SelectionDAG\LLVMSelectionDAG.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:04.76

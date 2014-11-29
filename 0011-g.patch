@@ -1,0 +1,160 @@
+From 98fadea7813608e5ee07084be9e67349e545dcbb Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Fri, 28 Nov 2014 17:51:04 -0500
+Subject: [PATCH 11/11] g
+
+Change-Id: Ib3fa2e06f03646fb61d14731c2d1e70e779bd0f1
+---
+ src/Renderer/Surface.cpp | 99 ++++++++++++------------------------------------
+ 1 file changed, 25 insertions(+), 74 deletions(-)
+
+diff --git a/src/Renderer/Surface.cpp b/src/Renderer/Surface.cpp
+index 75c4401..e7fc5a0 100644
+--- a/src/Renderer/Surface.cpp
++++ b/src/Renderer/Surface.cpp
+@@ -80,7 +80,7 @@ namespace rg_etc1
+ 			b = static_cast<unsigned char>(blue);
+ 			a = static_cast<unsigned char>(alpha);
+ 		}
+-	}; // class color_quad_u8
++	};
+ 		
+ 	// Table 3.17.2 sorted according to table 3.17.3
+ 	static const int g_etc1_inten_tables[8][4] =
+@@ -140,69 +140,13 @@ namespace rg_etc1
+ 			
+ 			return lsb | (msb << 1);
+ 		}
+-
+-		static bool unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color5, uint16 packed_delta3);
+-		static void unpack_delta3(int& r, int& g, int& b, uint16 packed_delta3);
+ 		
+-		// subblock colors
+ 		static void get_diff_subblock_colors1(color_quad_u8* pDst, const etc1_block &block);
+-		static bool get_diff_subblock_colors2(color_quad_u8* pDst, const etc1_block &block);
++		static void get_diff_subblock_colors2(color_quad_u8* pDst, const etc1_block &block);
+ 		static void get_abs_subblock_colors1(color_quad_u8* pDst, const etc1_block &block);
+ 		static void get_abs_subblock_colors2(color_quad_u8* pDst, const etc1_block &block);
+-
+-		static inline void unscaled_to_scaled_color(color_quad_u8& dst, const color_quad_u8& src, bool color4)
+-		{
+-			if(color4)
+-			{
+-				dst.r = src.r | (src.r << 4);
+-				dst.g = src.g | (src.g << 4);
+-				dst.b = src.b | (src.b << 4);
+-			}
+-			else
+-			{
+-				dst.r = (src.r >> 2) | (src.r << 3);
+-				dst.g = (src.g >> 2) | (src.g << 3);
+-				dst.b = (src.b >> 2) | (src.b << 3);
+-			}
+-			dst.a = src.a;
+-		}
+ 	};
+ 
+-	bool etc1_block::unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color5, uint16 packed_delta3)
+-	{
+-		int dc_r, dc_g, dc_b;
+-		unpack_delta3(dc_r, dc_g, dc_b, packed_delta3);
+-
+-		b = (packed_color5 & 31U) + dc_b;
+-		g = ((packed_color5 >> 5U) & 31U) + dc_g;
+-		r = ((packed_color5 >> 10U) & 31U) + dc_r;
+-
+-		bool success = true;
+-		if(static_cast<uint>(r | g | b) > 31U)
+-		{
+-			success = false;
+-			r = rg_etc1::clamp<int>(r, 0, 31);
+-			g = rg_etc1::clamp<int>(g, 0, 31);
+-			b = rg_etc1::clamp<int>(b, 0, 31);
+-		}
+-
+-		b = (b << 3U) | (b >> 2U);
+-		g = (g << 3U) | (g >> 2U);
+-		r = (r << 3U) | (r >> 2U);
+-
+-		return success;
+-	}
+-
+-	void etc1_block::unpack_delta3(int& r, int& g, int& b, uint16 packed_delta3)
+-	{
+-		r = (packed_delta3 >> 6) & 7;
+-		g = (packed_delta3 >> 3) & 7;
+-		b = packed_delta3 & 7;
+-		if(r >= 4) r -= 8;
+-		if(g >= 4) g -= 8;
+-		if(b >= 4) b -= 8;
+-	}
+-
+ 	void etc1_block::get_diff_subblock_colors1(color_quad_u8* pDst, const etc1_block &block)
+ 	{
+ 		const int *pInten_modifer_table = &g_etc1_inten_tables[block.cw1][0];
+@@ -224,29 +168,38 @@ namespace rg_etc1
+ 		pDst[3].set(r + y3, g + y3, b + y3);
+ 	}
+ 
+-	bool etc1_block::get_diff_subblock_colors2(color_quad_u8* pDst, const etc1_block &block)
++	void etc1_block::get_diff_subblock_colors2(color_quad_u8* pDst, const etc1_block &block)
+ 	{
+-		const uint16 base_color5 = static_cast<uint16>(block.cB1 | (block.cG1 << 5) | (block.cR1 << 10));
+-		const uint16 delta_color3 = static_cast<uint16>(block.dB2 | (block.dG2 << 3) | (block.dR2 << 6));
++		int dc_r = block.dR2;
++		int	dc_g = block.dG2;
++		int dc_b = block.dB2;
++		if(dc_r >= 4) dc_r -= 8;
++		if(dc_g >= 4) dc_g -= 8;
++		if(dc_b >= 4) dc_b -= 8;
++
++		int b = block.cB1 + dc_b;
++		int g = block.cG1 + dc_g;
++		int r = block.cR1 + dc_r;
++
++		r = rg_etc1::clamp<int>(r, 0, 31);
++		g = rg_etc1::clamp<int>(g, 0, 31);
++		b = rg_etc1::clamp<int>(b, 0, 31);
+ 		
+-		uint r, g, b;
+-		bool success = unpack_color5(r, g, b, base_color5, delta_color3);
+-
+-		const int ir = static_cast<int>(r), ig = static_cast<int>(g), ib = static_cast<int>(b);
++		b = (b << 3U) | (b >> 2U);
++		g = (g << 3U) | (g >> 2U);
++		r = (r << 3U) | (r >> 2U);
+ 
+ 		const int y0 = g_etc1_inten_tables[block.cw2][0];
+-		pDst[0].set(ir + y0, ig + y0, ib + y0);
++		pDst[0].set(r + y0, g + y0, b + y0);
+ 
+ 		const int y1 = g_etc1_inten_tables[block.cw2][1];
+-		pDst[1].set(ir + y1, ig + y1, ib + y1);
++		pDst[1].set(r + y1, g + y1, b + y1);
+ 
+ 		const int y2 = g_etc1_inten_tables[block.cw2][2];
+-		pDst[2].set(ir + y2, ig + y2, ib + y2);
++		pDst[2].set(r + y2, g + y2, b + y2);
+ 
+ 		const int y3 = g_etc1_inten_tables[block.cw2][3];
+-		pDst[3].set(ir + y3, ig + y3, ib + y3);
+-
+-		return success;
++		pDst[3].set(r + y3, g + y3, b + y3);
+ 	}
+ 
+ 	void etc1_block::get_abs_subblock_colors1(color_quad_u8* pDst, const etc1_block &block)
+@@ -299,9 +252,7 @@ namespace rg_etc1
+ 		if(block.diffbit)
+ 		{
+ 			etc1_block::get_diff_subblock_colors1(subblock_colors0, block);
+-
+-			if(!etc1_block::get_diff_subblock_colors2(subblock_colors1, block))
+-				success = false;
++			etc1_block::get_diff_subblock_colors2(subblock_colors1, block);
+ 		}
+ 		else
+ 		{
+-- 
+1.8.5.2.msysgit.0
+

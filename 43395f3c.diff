@@ -1,0 +1,700 @@
+From 43395f3c2fedca13044d58ca54a923e2eaaa9275 Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Fri, 14 Nov 2014 10:49:51 -0500
+Subject: [PATCH] Fix Linux build.
+
+Change-Id: I2c06dbe89f8e079f690242cd97af6638087af593
+---
+
+diff --git a/src/Common/Configurator.cpp b/src/Common/Configurator.cpp
+index 94fbe68..8776b14 100644
+--- a/src/Common/Configurator.cpp
++++ b/src/Common/Configurator.cpp
+@@ -20,6 +20,10 @@
+ #include <stdarg.h>
+ #include <ctype.h>
+ 
++#if defined(__unix__)
++#include <unistd.h>
++#endif
++
+ namespace sw
+ {
+ 	Configurator::Configurator(string iniPath)
+@@ -185,7 +189,7 @@
+ 		}
+ 
+ 		int valueID = findValue(keyID, valueName);
+-		
++
+ 		if(valueID == -1)
+ 		{
+ 			sections[keyID].names.resize(sections[keyID].names.size() + 1, valueName);
+@@ -213,7 +217,7 @@
+ 
+ 		sprintf(svalue, "%d", defaultValue);
+ 
+-		return atoi(getValue(keyName, valueName, svalue).c_str()); 
++		return atoi(getValue(keyName, valueName, svalue).c_str());
+ 	}
+ 
+ 	bool Configurator::getBoolean(string keyName, string valueName, bool defaultValue) const
+@@ -227,7 +231,7 @@
+ 
+ 		sprintf(svalue, "%f", defaultValue);
+ 
+-		return atof(getValue(keyName, valueName, svalue).c_str()); 
++		return atof(getValue(keyName, valueName, svalue).c_str());
+ 	}
+ 
+ 	unsigned int Configurator::getFormatted(string keyName, string valueName, char *format,
+diff --git a/src/Common/SharedLibrary.hpp b/src/Common/SharedLibrary.hpp
+index eadd35d..addb815 100644
+--- a/src/Common/SharedLibrary.hpp
++++ b/src/Common/SharedLibrary.hpp
+@@ -13,7 +13,10 @@
+ 	#include <Windows.h>
+ #else
+ 	#include <dlfcn.h>
+-#endif
++#endif
++
++void *getLibraryHandle(const char *path);
++void *loadLibrary(const char *path);
+ 
+ template<int n>
+ void *loadLibrary(const char *(&names)[n])
+@@ -71,7 +74,7 @@
+ 
+ 	inline void *getLibraryHandle(const char *path)
+ 	{
+-		bool resident = (dlopen(names[i], RTLD_NOLOAD) != 0);
++		bool resident = (dlopen(path, RTLD_NOLOAD) != 0);
+ 
+ 		if(resident)
+ 		{
+diff --git a/src/LLVM/include/llvm/ADT/APInt.h b/src/LLVM/include/llvm/ADT/APInt.h
+index df1b6d6..62fd663 100644
+--- a/src/LLVM/include/llvm/ADT/APInt.h
++++ b/src/LLVM/include/llvm/ADT/APInt.h
+@@ -252,12 +252,12 @@
+   /// This constructor interprets the string \arg str in the given radix. The
+   /// interpretation stops when the first character that is not suitable for the
+   /// radix is encountered, or the end of the string. Acceptable radix values
+-  /// are 2, 8, 10, 16, and 36. It is an error for the value implied by the 
++  /// are 2, 8, 10, 16, and 36. It is an error for the value implied by the
+   /// string to require more bits than numBits.
+   ///
+   /// @param numBits the bit width of the constructed APInt
+   /// @param str the string to be interpreted
+-  /// @param radix the radix to use for the conversion 
++  /// @param radix the radix to use for the conversion
+   /// @brief Construct an APInt from a string representation.
+   APInt(unsigned numBits, StringRef str, uint8_t radix);
+ 
+@@ -424,7 +424,7 @@
+   /// @returns the all-ones value for an APInt of the specified bit-width.
+   /// @brief Get the all-ones value.
+   static APInt getAllOnesValue(unsigned numBits) {
+-    return APInt(numBits, _UI64_MAX, true);
++    return APInt(numBits, -1ULL, true);
+   }
+ 
+   /// @returns the '0' value for an APInt of the specified bit-width.
+@@ -449,7 +449,7 @@
+     Res.setBit(BitNo);
+     return Res;
+   }
+-  
++
+   /// Constructs an APInt value that has a contiguous range of bits set. The
+   /// bits from loBit (inclusive) to hiBit (exclusive) will be set. All other
+   /// bits will be zero. For example, with parameters(32, 0, 16) you would get
+@@ -495,7 +495,7 @@
+     if (loBitsSet == 0)
+       return APInt(numBits, 0);
+     if (loBitsSet == APINT_BITS_PER_WORD)
+-      return APInt(numBits, _UI64_MAX);
++      return APInt(numBits, -1ULL);
+     // For small values, return quickly.
+     if (numBits < APINT_BITS_PER_WORD)
+       return APInt(numBits, (1ULL << loBitsSet) - 1);
+@@ -602,7 +602,7 @@
+   /// Performs a bitwise OR operation on this APInt and RHS. RHS is
+   /// logically zero-extended or truncated to match the bit-width of
+   /// the LHS.
+-  /// 
++  ///
+   /// @brief Bitwise OR assignment operator.
+   APInt& operator|=(uint64_t RHS) {
+     if (isSingleWord()) {
+@@ -821,8 +821,8 @@
+       APInt::udivrem(LHS, RHS, Quotient, Remainder);
+     }
+   }
+-  
+-  
++
++
+   // Operations that return overflow indicators.
+   APInt sadd_ov(const APInt &RHS, bool &Overflow) const;
+   APInt uadd_ov(const APInt &RHS, bool &Overflow) const;
+@@ -1016,9 +1016,9 @@
+     return sge(APInt(getBitWidth(), RHS));
+   }
+ 
+-  
+-  
+-  
++
++
++
+   /// This operation tests if there are any pairs of corresponding bits
+   /// between this APInt and RHS that are both set.
+   bool intersects(const APInt &RHS) const {
+@@ -1062,11 +1062,11 @@
+   /// @brief Set every bit to 1.
+   void setAllBits() {
+     if (isSingleWord())
+-      VAL = _UI64_MAX;
++      VAL = -1ULL;
+     else {
+       // Set all the bits in all the words.
+       for (unsigned i = 0; i < getNumWords(); ++i)
+-        pVal[i] = _UI64_MAX;
++        pVal[i] = -1ULL;
+     }
+     // Clear the unused ones
+     clearUnusedBits();
+@@ -1091,10 +1091,10 @@
+   /// @brief Toggle every bit to its opposite value.
+   void flipAllBits() {
+     if (isSingleWord())
+-      VAL ^= _UI64_MAX;
++      VAL ^= -1ULL;
+     else {
+       for (unsigned i = 0; i < getNumWords(); ++i)
+-        pVal[i] ^= _UI64_MAX;
++        pVal[i] ^= -1ULL;
+     }
+     clearUnusedBits();
+   }
+diff --git a/src/OpenGL/libEGL/Image.hpp b/src/OpenGL/libEGL/Image.hpp
+index 9a5c4f2..f173f59 100644
+--- a/src/OpenGL/libEGL/Image.hpp
++++ b/src/OpenGL/libEGL/Image.hpp
+@@ -40,12 +40,12 @@
+ 		return height;
+ 	}
+ 
+-	GLenum Image::getFormat()
++	GLenum getFormat()
+ 	{
+ 		return format;
+ 	}
+-	
+-	GLenum Image::getType()
++
++	GLenum getType()
+ 	{
+ 		return type;
+ 	}
+@@ -100,9 +100,7 @@
+ 	virtual void loadCompressedData(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels) = 0;
+ 
+ protected:
+-	virtual ~Image() = 0
+-	{
+-	}
++	virtual ~Image() = 0;
+ 
+ 	const GLsizei width;
+ 	const GLsizei height;
+diff --git a/src/OpenGL/libEGL/libEGL.cbp b/src/OpenGL/libEGL/libEGL.cbp
+index 72049bf..23fa9da 100644
+--- a/src/OpenGL/libEGL/libEGL.cbp
++++ b/src/OpenGL/libEGL/libEGL.cbp
+@@ -7,7 +7,7 @@
+ 		<Option compiler="gcc" />
+ 		<Build>
+ 			<Target title="Debug x86">
+-				<Option output="./../../bin/x86/Debug/libEGL.so.1" prefix_auto="0" extension_auto="0" />
++				<Option output="./../../../lib/Debug_x86/libEGL.so.1" prefix_auto="0" extension_auto="0" />
+ 				<Option object_output="obj/x86/Debug/" />
+ 				<Option type="3" />
+ 				<Option compiler="gcc" />
+@@ -22,7 +22,7 @@
+ 				</Linker>
+ 			</Target>
+ 			<Target title="Release x86">
+-				<Option output="./../../bin/x86/Release/libEGL.so.1" prefix_auto="0" extension_auto="0" />
++				<Option output="./../../../lib/Release_x86/libEGL.so.1" prefix_auto="0" extension_auto="0" />
+ 				<Option object_output="obj/x86/Release/" />
+ 				<Option type="3" />
+ 				<Option compiler="gcc" />
+@@ -40,7 +40,7 @@
+ 				</Linker>
+ 			</Target>
+ 			<Target title="Debug x64">
+-				<Option output="./../../bin/x64/Debug/libEGL.so.1" prefix_auto="0" extension_auto="0" />
++				<Option output="./../../../lib/Debug_x64/libEGL.so.1" prefix_auto="0" extension_auto="0" />
+ 				<Option object_output="obj/x64/Debug/" />
+ 				<Option type="3" />
+ 				<Option compiler="gcc" />
+@@ -56,7 +56,7 @@
+ 				</Linker>
+ 			</Target>
+ 			<Target title="Release x64">
+-				<Option output="./../../bin/x64/Release/libEGL.so.1" prefix_auto="0" extension_auto="0" />
++				<Option output="./../../../lib/Release_x64/libEGL.so.1" prefix_auto="0" extension_auto="0" />
+ 				<Option object_output="obj/x64/Release/" />
+ 				<Option type="3" />
+ 				<Option compiler="gcc" />
+@@ -86,16 +86,18 @@
+ 		<Linker>
+ 			<Add library="pthread" />
+ 		</Linker>
++		<Unit filename="../../Common/SharedLibrary.hpp" />
+ 		<Unit filename="../common/debug.cpp" />
+-		<Unit filename="./Config.cpp" />
+-		<Unit filename="./Config.h" />
+-		<Unit filename="./Display.cpp" />
+-		<Unit filename="./Display.h" />
+-		<Unit filename="./Surface.cpp" />
+-		<Unit filename="./Surface.h" />
+-		<Unit filename="./libEGL.cpp" />
+-		<Unit filename="./main.cpp" />
+-		<Unit filename="./main.h" />
++		<Unit filename="Config.cpp" />
++		<Unit filename="Config.h" />
++		<Unit filename="Display.cpp" />
++		<Unit filename="Display.h" />
++		<Unit filename="Image.hpp" />
++		<Unit filename="Surface.cpp" />
++		<Unit filename="Surface.h" />
++		<Unit filename="libEGL.cpp" />
++		<Unit filename="main.cpp" />
++		<Unit filename="main.h" />
+ 		<Extensions>
+ 			<code_completion />
+ 			<debugger />
+diff --git a/src/OpenGL/libEGL/libEGL.cpp b/src/OpenGL/libEGL/libEGL.cpp
+index ef0b570..12f86e4 100644
+--- a/src/OpenGL/libEGL/libEGL.cpp
++++ b/src/OpenGL/libEGL/libEGL.cpp
+@@ -20,7 +20,8 @@
+ #include "common/debug.h"
+ #include "Common/Version.h"
+ 
+-#include <exception>
++#include <exception>
++#include <string.h>
+ 
+ static bool validateDisplay(egl::Display *display)
+ {
+@@ -780,7 +781,7 @@
+                 }
+             }
+         }
+-		
++
+         egl::Display *display = static_cast<egl::Display*>(dpy);
+ 
+         if(!validateConfig(display, config))
+diff --git a/src/OpenGL/libGLESv2/libGLESv2.cbp b/src/OpenGL/libGLESv2/libGLESv2.cbp
+index a045a3a..cba5654 100644
+--- a/src/OpenGL/libGLESv2/libGLESv2.cbp
++++ b/src/OpenGL/libGLESv2/libGLESv2.cbp
+@@ -7,7 +7,7 @@
+ 		<Option compiler="gcc" />
+ 		<Build>
+ 			<Target title="Debug x86">
+-				<Option output="./../../bin/x86/Debug/libGLESv2.so.2" prefix_auto="0" extension_auto="0" />
++				<Option output="./../../../lib/Debug_x86/libGLESv2.so.2" prefix_auto="0" extension_auto="0" />
+ 				<Option object_output="obj/x86/Debug/" />
+ 				<Option type="3" />
+ 				<Option compiler="gcc" />
+@@ -23,7 +23,7 @@
+ 				</Linker>
+ 			</Target>
+ 			<Target title="Release x86">
+-				<Option output="./../../bin/x86/Release/libGLESv2.so.2" prefix_auto="0" extension_auto="0" />
++				<Option output="./../../../lib/Release_x86/libGLESv2.so.2" prefix_auto="0" extension_auto="0" />
+ 				<Option object_output="obj/x86/Release/" />
+ 				<Option type="3" />
+ 				<Option compiler="gcc" />
+@@ -47,7 +47,7 @@
+ 				</Linker>
+ 			</Target>
+ 			<Target title="Debug x64">
+-				<Option output="./../../bin/x64/Debug/libGLESv2.so.2" prefix_auto="0" extension_auto="0" />
++				<Option output="./../../../lib/Debug_x64/libGLESv2.so.2" prefix_auto="0" extension_auto="0" />
+ 				<Option object_output="obj/x64/Debug/" />
+ 				<Option type="3" />
+ 				<Option compiler="gcc" />
+@@ -64,7 +64,7 @@
+ 				</Linker>
+ 			</Target>
+ 			<Target title="Release x64">
+-				<Option output="./../../bin/x64/Release/libGLESv2.so.2" prefix_auto="0" extension_auto="0" />
++				<Option output="./../../../lib/Release_x64/libGLESv2.so.2" prefix_auto="0" extension_auto="0" />
+ 				<Option object_output="obj/x64/Release/" />
+ 				<Option type="3" />
+ 				<Option compiler="gcc" />
+@@ -114,33 +114,121 @@
+ 			<Add library="X11" />
+ 			<Add library="Xext" />
+ 		</Linker>
+-		<Unit filename="./../../Common/CPUID.cpp" />
+-		<Unit filename="./../../Common/CPUID.hpp" />
+-		<Unit filename="./../../Common/Configurator.cpp" />
+-		<Unit filename="./../../Common/Configurator.hpp" />
+-		<Unit filename="./../../Common/Debug.cpp" />
+-		<Unit filename="./../../Common/Debug.hpp" />
+-		<Unit filename="./../../Common/ExceptionHandling.hpp" />
+-		<Unit filename="./../../Common/Half.cpp" />
+-		<Unit filename="./../../Common/Half.hpp" />
+-		<Unit filename="./../../Common/Math.cpp" />
+-		<Unit filename="./../../Common/Math.hpp" />
+-		<Unit filename="./../../Common/Memory.cpp" />
+-		<Unit filename="./../../Common/Memory.hpp" />
+-		<Unit filename="./../../Common/MetaMacro.hpp" />
+-		<Unit filename="./../../Common/MutexLock.hpp" />
+-		<Unit filename="./../../Common/Resource.cpp" />
+-		<Unit filename="./../../Common/Resource.hpp" />
+-		<Unit filename="./../../Common/Socket.cpp" />
+-		<Unit filename="./../../Common/Socket.hpp" />
+-		<Unit filename="./../../Common/Thread.cpp" />
+-		<Unit filename="./../../Common/Thread.hpp" />
+-		<Unit filename="./../../Common/Timer.cpp" />
+-		<Unit filename="./../../Common/Timer.hpp" />
+-		<Unit filename="./../../Common/Types.hpp" />
+-		<Unit filename="./../../Common/Version.h" />
+-		<Unit filename="./../common/debug.cpp" />
+-		<Unit filename="./../common/debug.h" />
++		<Unit filename="../../Common/CPUID.cpp" />
++		<Unit filename="../../Common/CPUID.hpp" />
++		<Unit filename="../../Common/Configurator.cpp" />
++		<Unit filename="../../Common/Configurator.hpp" />
++		<Unit filename="../../Common/Debug.cpp" />
++		<Unit filename="../../Common/Debug.hpp" />
++		<Unit filename="../../Common/ExceptionHandling.hpp" />
++		<Unit filename="../../Common/Half.cpp" />
++		<Unit filename="../../Common/Half.hpp" />
++		<Unit filename="../../Common/Math.cpp" />
++		<Unit filename="../../Common/Math.hpp" />
++		<Unit filename="../../Common/Memory.cpp" />
++		<Unit filename="../../Common/Memory.hpp" />
++		<Unit filename="../../Common/MetaMacro.hpp" />
++		<Unit filename="../../Common/MutexLock.hpp" />
++		<Unit filename="../../Common/Resource.cpp" />
++		<Unit filename="../../Common/Resource.hpp" />
++		<Unit filename="../../Common/Socket.cpp" />
++		<Unit filename="../../Common/Socket.hpp" />
++		<Unit filename="../../Common/Thread.cpp" />
++		<Unit filename="../../Common/Thread.hpp" />
++		<Unit filename="../../Common/Timer.cpp" />
++		<Unit filename="../../Common/Timer.hpp" />
++		<Unit filename="../../Common/Types.hpp" />
++		<Unit filename="../../Common/Version.h" />
++		<Unit filename="../../Main/Config.cpp" />
++		<Unit filename="../../Main/Config.hpp" />
++		<Unit filename="../../Main/FrameBuffer.cpp" />
++		<Unit filename="../../Main/FrameBuffer.hpp" />
++		<Unit filename="../../Main/FrameBufferX11.cpp" />
++		<Unit filename="../../Main/FrameBufferX11.hpp" />
++		<Unit filename="../../Main/Logo.cpp" />
++		<Unit filename="../../Main/Register.cpp" />
++		<Unit filename="../../Main/Register.hpp" />
++		<Unit filename="../../Main/SwiftConfig.cpp" />
++		<Unit filename="../../Main/SwiftConfig.hpp" />
++		<Unit filename="../../Main/crc.c">
++			<Option compilerVar="CC" />
++		</Unit>
++		<Unit filename="../../Main/crc.h" />
++		<Unit filename="../../Main/serialcommon.h" />
++		<Unit filename="../../Main/serialvalid.cpp" />
++		<Unit filename="../../Main/serialvalid.h" />
++		<Unit filename="../../Reactor/Nucleus.cpp" />
++		<Unit filename="../../Reactor/Nucleus.hpp" />
++		<Unit filename="../../Reactor/Reactor.hpp" />
++		<Unit filename="../../Reactor/Routine.cpp" />
++		<Unit filename="../../Reactor/Routine.hpp" />
++		<Unit filename="../../Reactor/RoutineManager.cpp" />
++		<Unit filename="../../Reactor/RoutineManager.hpp" />
++		<Unit filename="../../Reactor/x86.hpp" />
++		<Unit filename="../../Renderer/Blitter.cpp" />
++		<Unit filename="../../Renderer/Blitter.hpp" />
++		<Unit filename="../../Renderer/Clipper.cpp" />
++		<Unit filename="../../Renderer/Clipper.hpp" />
++		<Unit filename="../../Renderer/Color.cpp" />
++		<Unit filename="../../Renderer/Color.hpp" />
++		<Unit filename="../../Renderer/Context.cpp" />
++		<Unit filename="../../Renderer/Context.hpp" />
++		<Unit filename="../../Renderer/LRUCache.hpp" />
++		<Unit filename="../../Renderer/Matrix.cpp" />
++		<Unit filename="../../Renderer/Matrix.hpp" />
++		<Unit filename="../../Renderer/PixelProcessor.cpp" />
++		<Unit filename="../../Renderer/PixelProcessor.hpp" />
++		<Unit filename="../../Renderer/Plane.cpp" />
++		<Unit filename="../../Renderer/Plane.hpp" />
++		<Unit filename="../../Renderer/Point.cpp" />
++		<Unit filename="../../Renderer/Point.hpp" />
++		<Unit filename="../../Renderer/Polygon.hpp" />
++		<Unit filename="../../Renderer/Primitive.hpp" />
++		<Unit filename="../../Renderer/QuadRasterizer.cpp" />
++		<Unit filename="../../Renderer/QuadRasterizer.hpp" />
++		<Unit filename="../../Renderer/Rasterizer.cpp" />
++		<Unit filename="../../Renderer/Rasterizer.hpp" />
++		<Unit filename="../../Renderer/Renderer.cpp" />
++		<Unit filename="../../Renderer/Renderer.hpp" />
++		<Unit filename="../../Renderer/Sampler.cpp" />
++		<Unit filename="../../Renderer/Sampler.hpp" />
++		<Unit filename="../../Renderer/SetupProcessor.cpp" />
++		<Unit filename="../../Renderer/SetupProcessor.hpp" />
++		<Unit filename="../../Renderer/Stream.hpp" />
++		<Unit filename="../../Renderer/Surface.cpp" />
++		<Unit filename="../../Renderer/Surface.hpp" />
++		<Unit filename="../../Renderer/TextureStage.cpp" />
++		<Unit filename="../../Renderer/TextureStage.hpp" />
++		<Unit filename="../../Renderer/Triangle.hpp" />
++		<Unit filename="../../Renderer/Vector.cpp" />
++		<Unit filename="../../Renderer/Vector.hpp" />
++		<Unit filename="../../Renderer/Vertex.hpp" />
++		<Unit filename="../../Renderer/VertexProcessor.cpp" />
++		<Unit filename="../../Renderer/VertexProcessor.hpp" />
++		<Unit filename="../../Shader/Constants.cpp" />
++		<Unit filename="../../Shader/Constants.hpp" />
++		<Unit filename="../../Shader/PixelRoutine.cpp" />
++		<Unit filename="../../Shader/PixelRoutine.hpp" />
++		<Unit filename="../../Shader/PixelShader.cpp" />
++		<Unit filename="../../Shader/PixelShader.hpp" />
++		<Unit filename="../../Shader/SamplerCore.cpp" />
++		<Unit filename="../../Shader/SamplerCore.hpp" />
++		<Unit filename="../../Shader/SetupRoutine.cpp" />
++		<Unit filename="../../Shader/SetupRoutine.hpp" />
++		<Unit filename="../../Shader/Shader.cpp" />
++		<Unit filename="../../Shader/Shader.hpp" />
++		<Unit filename="../../Shader/ShaderCore.cpp" />
++		<Unit filename="../../Shader/ShaderCore.hpp" />
++		<Unit filename="../../Shader/VertexPipeline.cpp" />
++		<Unit filename="../../Shader/VertexPipeline.hpp" />
++		<Unit filename="../../Shader/VertexProgram.cpp" />
++		<Unit filename="../../Shader/VertexProgram.hpp" />
++		<Unit filename="../../Shader/VertexRoutine.cpp" />
++		<Unit filename="../../Shader/VertexRoutine.hpp" />
++		<Unit filename="../../Shader/VertexShader.cpp" />
++		<Unit filename="../../Shader/VertexShader.hpp" />
++		<Unit filename="../common/debug.cpp" />
++		<Unit filename="../common/debug.h" />
+ 		<Unit filename="../compiler/AnalyzeCallDepth.cpp" />
+ 		<Unit filename="../compiler/AnalyzeCallDepth.h" />
+ 		<Unit filename="../compiler/BaseTypes.h" />
+@@ -222,143 +310,55 @@
+ 		<Unit filename="../compiler/preprocessor/pp_utils.h" />
+ 		<Unit filename="../compiler/util.cpp" />
+ 		<Unit filename="../compiler/util.h" />
+-		<Unit filename="./../include/EGL/egl.h" />
+-		<Unit filename="./../include/EGL/eglext.h" />
+-		<Unit filename="./../include/EGL/eglplatform.h" />
+-		<Unit filename="./../include/GLES2/gl2.h" />
+-		<Unit filename="./../include/GLES2/gl2ext.h" />
+-		<Unit filename="./../include/GLES2/gl2platform.h" />
+-		<Unit filename="./../include/GLSLANG/ShaderLang.h" />
+-		<Unit filename="./../include/KHR/khrplatform.h" />
+-		<Unit filename="./../libGLESv2/Buffer.cpp" />
+-		<Unit filename="./../libGLESv2/Buffer.h" />
+-		<Unit filename="./../libGLESv2/Context.cpp" />
+-		<Unit filename="./../libGLESv2/Context.h" />
+-		<Unit filename="./../libGLESv2/Device.cpp" />
+-		<Unit filename="./../libGLESv2/Device.hpp" />
+-		<Unit filename="./../libGLESv2/Fence.cpp" />
+-		<Unit filename="./../libGLESv2/Fence.h" />
+-		<Unit filename="./../libGLESv2/Framebuffer.cpp" />
+-		<Unit filename="./../libGLESv2/Framebuffer.h" />
+-		<Unit filename="./../libGLESv2/HandleAllocator.cpp" />
+-		<Unit filename="./../libGLESv2/HandleAllocator.h" />
+-		<Unit filename="./../libGLESv2/Image.cpp" />
+-		<Unit filename="./../libGLESv2/Image.hpp" />
+-		<Unit filename="./../libGLESv2/IndexDataManager.cpp" />
+-		<Unit filename="./../libGLESv2/IndexDataManager.h" />
+-		<Unit filename="./../libGLESv2/Program.cpp" />
+-		<Unit filename="./../libGLESv2/Program.h" />
+-		<Unit filename="./../libGLESv2/Query.cpp" />
+-		<Unit filename="./../libGLESv2/Query.h" />
+-		<Unit filename="./../libGLESv2/RefCountObject.cpp" />
+-		<Unit filename="./../libGLESv2/RefCountObject.h" />
+-		<Unit filename="./../libGLESv2/Renderbuffer.cpp" />
+-		<Unit filename="./../libGLESv2/Renderbuffer.h" />
+-		<Unit filename="./../libGLESv2/ResourceManager.cpp" />
+-		<Unit filename="./../libGLESv2/ResourceManager.h" />
+-		<Unit filename="./../libGLESv2/Shader.cpp" />
+-		<Unit filename="./../libGLESv2/Shader.h" />
+-		<Unit filename="./../libGLESv2/Texture.cpp" />
+-		<Unit filename="./../libGLESv2/Texture.h" />
+-		<Unit filename="./../libGLESv2/Unknown.hpp" />
+-		<Unit filename="./../libGLESv2/VertexDataManager.cpp" />
+-		<Unit filename="./../libGLESv2/VertexDataManager.h" />
+-		<Unit filename="./../libGLESv2/libGLESv2.cpp" />
+-		<Unit filename="./../libGLESv2/main.cpp" />
+-		<Unit filename="./../libGLESv2/main.h" />
+-		<Unit filename="./../libGLESv2/mathutil.h" />
+-		<Unit filename="./../libGLESv2/resource.h" />
+-		<Unit filename="./../libGLESv2/utilities.cpp" />
+-		<Unit filename="./../libGLESv2/utilities.h" />
+-		<Unit filename="./../libGLESv2/vertexconversion.h" />
+-		<Unit filename="./../../Main/Config.cpp" />
+-		<Unit filename="./../../Main/Config.hpp" />
+-		<Unit filename="./../../Main/FrameBuffer.cpp" />
+-		<Unit filename="./../../Main/FrameBuffer.hpp" />
+-		<Unit filename="./../../Main/FrameBufferX11.cpp" />
+-		<Unit filename="./../../Main/FrameBufferX11.hpp" />
+-		<Unit filename="./../../Main/Logo.cpp" />
+-		<Unit filename="./../../Main/Register.cpp" />
+-		<Unit filename="./../../Main/Register.hpp" />
+-		<Unit filename="./../../Main/SwiftConfig.cpp" />
+-		<Unit filename="./../../Main/SwiftConfig.hpp" />
+-		<Unit filename="./../../Main/crc.c">
+-			<Option compilerVar="CC" />
+-		</Unit>
+-		<Unit filename="./../../Main/crc.h" />
+-		<Unit filename="./../../Main/serialcommon.h" />
+-		<Unit filename="./../../Main/serialvalid.cpp" />
+-		<Unit filename="./../../Main/serialvalid.h" />
+-		<Unit filename="./../../Reactor/Routine.cpp" />
+-		<Unit filename="./../../Reactor/Routine.hpp" />
+-		<Unit filename="./../../Reactor/RoutineManager.cpp" />
+-		<Unit filename="./../../Reactor/RoutineManager.hpp" />
+-		<Unit filename="./../../Reactor/Nucleus.cpp" />
+-		<Unit filename="./../../Reactor/Nucleus.hpp" />
+-		<Unit filename="./../../Reactor/Reactor.hpp" />
+-		<Unit filename="./../../Reactor/x86.hpp" />
+-		<Unit filename="./../../Renderer/Blitter.cpp" />
+-		<Unit filename="./../../Renderer/Blitter.hpp" />
+-		<Unit filename="./../../Renderer/Clipper.cpp" />
+-		<Unit filename="./../../Renderer/Clipper.hpp" />
+-		<Unit filename="./../../Renderer/Color.cpp" />
+-		<Unit filename="./../../Renderer/Color.hpp" />
+-		<Unit filename="./../../Renderer/Context.cpp" />
+-		<Unit filename="./../../Renderer/Context.hpp" />
+-		<Unit filename="./../../Renderer/LRUCache.hpp" />
+-		<Unit filename="./../../Renderer/Matrix.cpp" />
+-		<Unit filename="./../../Renderer/Matrix.hpp" />
+-		<Unit filename="./../../Renderer/PixelProcessor.cpp" />
+-		<Unit filename="./../../Renderer/PixelProcessor.hpp" />
+-		<Unit filename="./../../Renderer/Plane.cpp" />
+-		<Unit filename="./../../Renderer/Plane.hpp" />
+-		<Unit filename="./../../Renderer/Point.cpp" />
+-		<Unit filename="./../../Renderer/Point.hpp" />
+-		<Unit filename="./../../Renderer/Polygon.hpp" />
+-		<Unit filename="./../../Renderer/Primitive.hpp" />
+-		<Unit filename="./../../Renderer/QuadRasterizer.cpp" />
+-		<Unit filename="./../../Renderer/QuadRasterizer.hpp" />
+-		<Unit filename="./../../Renderer/Rasterizer.cpp" />
+-		<Unit filename="./../../Renderer/Rasterizer.hpp" />
+-		<Unit filename="./../../Renderer/Renderer.cpp" />
+-		<Unit filename="./../../Renderer/Renderer.hpp" />
+-		<Unit filename="./../../Renderer/Sampler.cpp" />
+-		<Unit filename="./../../Renderer/Sampler.hpp" />
+-		<Unit filename="./../../Renderer/SetupProcessor.cpp" />
+-		<Unit filename="./../../Renderer/SetupProcessor.hpp" />
+-		<Unit filename="./../../Renderer/Stream.hpp" />
+-		<Unit filename="./../../Renderer/Surface.cpp" />
+-		<Unit filename="./../../Renderer/Surface.hpp" />
+-		<Unit filename="./../../Renderer/TextureStage.cpp" />
+-		<Unit filename="./../../Renderer/TextureStage.hpp" />
+-		<Unit filename="./../../Renderer/Triangle.hpp" />
+-		<Unit filename="./../../Renderer/Vector.cpp" />
+-		<Unit filename="./../../Renderer/Vector.hpp" />
+-		<Unit filename="./../../Renderer/Vertex.hpp" />
+-		<Unit filename="./../../Renderer/VertexProcessor.cpp" />
+-		<Unit filename="./../../Renderer/VertexProcessor.hpp" />
+-		<Unit filename="./../../Shader/Constants.cpp" />
+-		<Unit filename="./../../Shader/Constants.hpp" />
+-		<Unit filename="./../../Shader/PixelRoutine.cpp" />
+-		<Unit filename="./../../Shader/PixelRoutine.hpp" />
+-		<Unit filename="./../../Shader/PixelShader.cpp" />
+-		<Unit filename="./../../Shader/PixelShader.hpp" />
+-		<Unit filename="./../../Shader/SamplerCore.cpp" />
+-		<Unit filename="./../../Shader/SamplerCore.hpp" />
+-		<Unit filename="./../../Shader/SetupRoutine.cpp" />
+-		<Unit filename="./../../Shader/SetupRoutine.hpp" />
+-		<Unit filename="./../../Shader/Shader.cpp" />
+-		<Unit filename="./../../Shader/Shader.hpp" />
+-		<Unit filename="./../../Shader/ShaderCore.cpp" />
+-		<Unit filename="./../../Shader/ShaderCore.hpp" />
+-		<Unit filename="./../../Shader/VertexPipeline.cpp" />
+-		<Unit filename="./../../Shader/VertexPipeline.hpp" />
+-		<Unit filename="./../../Shader/VertexProgram.cpp" />
+-		<Unit filename="./../../Shader/VertexProgram.hpp" />
+-		<Unit filename="./../../Shader/VertexRoutine.cpp" />
+-		<Unit filename="./../../Shader/VertexRoutine.hpp" />
+-		<Unit filename="./../../Shader/VertexShader.cpp" />
+-		<Unit filename="./../../Shader/VertexShader.hpp" />
++		<Unit filename="../include/EGL/egl.h" />
++		<Unit filename="../include/EGL/eglext.h" />
++		<Unit filename="../include/EGL/eglplatform.h" />
++		<Unit filename="../include/GLES2/gl2.h" />
++		<Unit filename="../include/GLES2/gl2ext.h" />
++		<Unit filename="../include/GLES2/gl2platform.h" />
++		<Unit filename="../include/GLSLANG/ShaderLang.h" />
++		<Unit filename="../include/KHR/khrplatform.h" />
++		<Unit filename="Buffer.cpp" />
++		<Unit filename="Buffer.h" />
++		<Unit filename="Context.cpp" />
++		<Unit filename="Context.h" />
++		<Unit filename="Device.cpp" />
++		<Unit filename="Device.hpp" />
++		<Unit filename="Fence.cpp" />
++		<Unit filename="Fence.h" />
++		<Unit filename="Framebuffer.cpp" />
++		<Unit filename="Framebuffer.h" />
++		<Unit filename="HandleAllocator.cpp" />
++		<Unit filename="HandleAllocator.h" />
++		<Unit filename="Image.cpp" />
++		<Unit filename="Image.hpp" />
++		<Unit filename="IndexDataManager.cpp" />
++		<Unit filename="IndexDataManager.h" />
++		<Unit filename="Program.cpp" />
++		<Unit filename="Program.h" />
++		<Unit filename="Query.cpp" />
++		<Unit filename="Query.h" />
++		<Unit filename="RefCountObject.cpp" />
++		<Unit filename="RefCountObject.h" />
++		<Unit filename="Renderbuffer.cpp" />
++		<Unit filename="Renderbuffer.h" />
++		<Unit filename="ResourceManager.cpp" />
++		<Unit filename="ResourceManager.h" />
++		<Unit filename="Shader.cpp" />
++		<Unit filename="Shader.h" />
++		<Unit filename="Texture.cpp" />
++		<Unit filename="Texture.h" />
++		<Unit filename="Unknown.hpp" />
++		<Unit filename="VertexDataManager.cpp" />
++		<Unit filename="VertexDataManager.h" />
++		<Unit filename="libGLESv2.cpp" />
++		<Unit filename="main.cpp" />
++		<Unit filename="main.h" />
++		<Unit filename="mathutil.h" />
++		<Unit filename="resource.h" />
++		<Unit filename="utilities.cpp" />
++		<Unit filename="utilities.h" />
++		<Unit filename="vertexconversion.h" />
+ 		<Extensions>
+ 			<code_completion />
+ 			<debugger />
+diff --git a/src/SwiftShader.workspace b/src/SwiftShader.workspace
+index 8db6088..1fdca9b 100644
+--- a/src/SwiftShader.workspace
++++ b/src/SwiftShader.workspace
+@@ -1,8 +1,8 @@
+ <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+ <CodeBlocks_workspace_file>
+ 	<Workspace title="SwiftShader">
+-		<Project filename="./GLES2/libEGL/libEGL.cbp" />
+-		<Project filename="./GLES2/libGLESv2/libGLESv2.cbp">
++		<Project filename="./OpenGL/libEGL/libEGL.cbp" />
++		<Project filename="./OpenGL/libGLESv2/libGLESv2.cbp">
+ 			<Depends filename="./LLVM/LLVM.cbp" />
+ 		</Project>
+ 		<Project filename="./LLVM/LLVM.cbp" />

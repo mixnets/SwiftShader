@@ -1,0 +1,367 @@
+From 6ff8bf816638bc5ddb786b431ef76a8ca16fa0fe Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Fri, 28 Nov 2014 13:19:53 -0500
+Subject: [PATCH 04/11] union
+
+Change-Id: I1dbd9303b553575f55048b7fce2ad71107902ed2
+---
+ src/OpenGL/libGLES_CM/Image.cpp                    |   5 +
+ src/OpenGL/libGLES_CM/libGLES_CM.cpp               |   2 +
+ src/OpenGL/libGLES_CM/utilities.cpp                |   1 +
+ src/Renderer/Surface.cpp                           | 148 +++++++--------------
+ .../Beginner/04_BasicTnL/OGLES/OGLESBasicTnL.cpp   |   3 +-
+ 5 files changed, 59 insertions(+), 100 deletions(-)
+
+diff --git a/src/OpenGL/libGLES_CM/Image.cpp b/src/OpenGL/libGLES_CM/Image.cpp
+index 261ab90..3f3dcb8 100644
+--- a/src/OpenGL/libGLES_CM/Image.cpp
++++ b/src/OpenGL/libGLES_CM/Image.cpp
+@@ -87,6 +87,11 @@ namespace es1
+ 
+ 	sw::Format Image::selectInternalFormat(GLenum format, GLenum type)
+ 	{
++		if(format == GL_ETC1_RGB8_OES)
++		{
++			return sw::FORMAT_ETC1;
++		}
++		else
+ 		#if S3TC_SUPPORT
+ 		if(format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
+ 		   format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
+diff --git a/src/OpenGL/libGLES_CM/libGLES_CM.cpp b/src/OpenGL/libGLES_CM/libGLES_CM.cpp
+index f418cd9..885311e 100644
+--- a/src/OpenGL/libGLES_CM/libGLES_CM.cpp
++++ b/src/OpenGL/libGLES_CM/libGLES_CM.cpp
+@@ -909,6 +909,8 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
+ 
+ 	switch(internalformat)
+ 	{
++	case GL_ETC1_RGB8_OES:
++		break;
+ 	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+ 	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+ 		if(!S3TC_SUPPORT)
+diff --git a/src/OpenGL/libGLES_CM/utilities.cpp b/src/OpenGL/libGLES_CM/utilities.cpp
+index 0a89c8d..01323e5 100644
+--- a/src/OpenGL/libGLES_CM/utilities.cpp
++++ b/src/OpenGL/libGLES_CM/utilities.cpp
+@@ -39,6 +39,7 @@ namespace es1
+ 	{
+ 		switch(format)
+ 		{
++		case GL_ETC1_RGB8_OES:
+ 		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+ 		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+ 			return 8 * (GLsizei)ceil((float)width / 4.0f) * (GLsizei)ceil((float)height / 4.0f);
+diff --git a/src/Renderer/Surface.cpp b/src/Renderer/Surface.cpp
+index 2596a9a..35dbfce 100644
+--- a/src/Renderer/Surface.cpp
++++ b/src/Renderer/Surface.cpp
+@@ -36,9 +36,6 @@ namespace rg_etc1
+ 	typedef long long int64;
+ 	typedef unsigned long long uint64;
+ 
+-	const uint32 cUINT32_MAX = 0xFFFFFFFFU;
+-	const uint64 cUINT64_MAX = 0xFFFFFFFFFFFFFFFFULL; //0xFFFFFFFFFFFFFFFFui64;
+-
+ 	template<typename T> inline T minimum(T a, T b) {
+ 		return (a < b) ? a : b;
+ 	}
+@@ -64,20 +61,12 @@ namespace rg_etc1
+ 			};
+ 
+ 			unsigned char c[4];
+-
+-			uint32 m_u32;
+ 		};
+ 		
+ 		inline color_quad_u8()
+ 		{
+ 		}
+ 
+-		inline color_quad_u8& operator= (const color_quad_u8& other)
+-		{
+-			m_u32 = other.m_u32;
+-			return *this;
+-		}
+-
+ 		inline color_quad_u8& set(int red, int green, int blue, int alpha = 255U)
+ 		{
+ 			r = static_cast<unsigned char>(clamp(red));
+@@ -89,11 +78,6 @@ namespace rg_etc1
+ 
+ 		inline color_quad_u8(int red, int green, int blue, int alpha)
+ 		{
+-			assert((red >= 0U) && (red <= 255U));
+-			assert((green >= 0U) && (green <= 255U));
+-			assert((blue >= 0U) && (blue <= 255U));
+-			assert((alpha >= 0U) && (alpha <= 255U));
+-
+ 			r = static_cast<unsigned char>(red);
+ 			g = static_cast<unsigned char>(green);
+ 			b = static_cast<unsigned char>(blue);
+@@ -114,7 +98,7 @@ namespace rg_etc1
+ 		}
+ 
+ 		inline float operator[] (uint i) const {
+-			assert(i < 3); return m_s[i];
++			return m_s[i];
+ 		}
+ 
+ 		inline vec3F& operator += (const vec3F& other) {
+@@ -125,37 +109,9 @@ namespace rg_etc1
+ 			for(uint i = 0; i < 3; i++) m_s[i] *= s; return *this;
+ 		}
+ 	};
+-
++	
+ 	enum etc_constants
+ 	{
+-		cETC1BytesPerBlock = 8U,
+-
+-		cETC1SelectorBits = 2U,
+-		cETC1SelectorValues = 1U << cETC1SelectorBits,
+-		cETC1SelectorMask = cETC1SelectorValues - 1U,
+-
+-		cETC1BlockShift = 2U,
+-		cETC1BlockSize = 1U << cETC1BlockShift,
+-
+-		cETC1LSBSelectorIndicesBitOffset = 0,
+-		cETC1MSBSelectorIndicesBitOffset = 16,
+-
+-		cETC1FlipBitOffset = 32,
+-		cETC1DiffBitOffset = 33,
+-
+-		cETC1IntenModifierNumBits = 3,
+-		cETC1IntenModifierValues = 1 << cETC1IntenModifierNumBits,
+-		cETC1RightIntenModifierTableBitOffset = 34,
+-		cETC1LeftIntenModifierTableBitOffset = 37,
+-
+-		// Base+Delta encoding (5 bit bases, 3 bit delta)
+-		cETC1BaseColorCompNumBits = 5,
+-		cETC1BaseColorCompMax = 1 << cETC1BaseColorCompNumBits,
+-
+-		cETC1DeltaColorCompNumBits = 3,
+-		cETC1DeltaColorComp = 1 << cETC1DeltaColorCompNumBits,
+-		cETC1DeltaColorCompMax = 1 << cETC1DeltaColorCompNumBits,
+-
+ 		cETC1BaseColor5RBitOffset = 59,
+ 		cETC1BaseColor5GBitOffset = 51,
+ 		cETC1BaseColor5BBitOffset = 43,
+@@ -164,10 +120,6 @@ namespace rg_etc1
+ 		cETC1DeltaColor3GBitOffset = 48,
+ 		cETC1DeltaColor3BBitOffset = 40,
+ 
+-		// Absolute (non-delta) encoding (two 4-bit per component bases)
+-		cETC1AbsColorCompNumBits = 4,
+-		cETC1AbsColorCompMax = 1 << cETC1AbsColorCompNumBits,
+-
+ 		cETC1AbsColor4R1BitOffset = 60,
+ 		cETC1AbsColor4G1BitOffset = 52,
+ 		cETC1AbsColor4B1BitOffset = 44,
+@@ -175,25 +127,21 @@ namespace rg_etc1
+ 		cETC1AbsColor4R2BitOffset = 56,
+ 		cETC1AbsColor4G2BitOffset = 48,
+ 		cETC1AbsColor4B2BitOffset = 40,
+-
+-		cETC1ColorDeltaMin = -4,
+-		cETC1ColorDeltaMax = 3,
+-
+-		// Delta3:
+-		// 0   1   2   3   4   5   6   7
+-		// 000 001 010 011 100 101 110 111
+-		// 0   1   2   3   -4  -3  -2  -1
+ 	};
+-
+-	static uint8 g_quant5_tab[256 + 16];
+-
+-	static const int g_etc1_inten_tables[cETC1IntenModifierValues][cETC1SelectorValues] =
++	
++	static const int g_etc1_inten_tables[8][4] =
+ 	{
+-		{-8, -2, 2, 8}, {-17, -5, 5, 17}, {-29, -9, 9, 29}, {-42, -13, 13, 42},
+-		{-60, -18, 18, 60}, {-80, -24, 24, 80}, {-106, -33, 33, 106}, {-183, -47, 47, 183}
++		{-8, -2, 2, 8},
++		{-17, -5, 5, 17},
++		{-29, -9, 9, 29},
++		{-42, -13, 13, 42},
++		{-60, -18, 18, 60},
++		{-80, -24, 24, 80},
++		{-106, -33, 33, 106},
++		{-183, -47, 47, 183}
+ 	};
+ 
+-	static const uint8 g_etc1_to_selector_index[cETC1SelectorValues] = {2, 3, 1, 0};
++	static const uint8 g_etc1_to_selector_index[4] = {2, 3, 1, 0};
+ 
+ 	struct etc1_block
+ 	{
+@@ -204,40 +152,52 @@ namespace rg_etc1
+ 		{
+ 			uint64 m_uint64;
+ 			uint8 m_bytes[8];
+-		};
+ 
+-		uint8 m_low_color[2];
+-		uint8 m_high_color[2];
+-
+-		uint8 m_selectors[4];
++			struct
++			{
++				union
++				{
++					struct
++					{
++						uint8 iR2 : 4;
++						uint8 iR1 : 4;
++						uint8 iG2 : 4;
++						uint8 iG1 : 4;
++						uint8 iB2 : 4;
++						uint8 iB1 : 4;
++					};
++
++					struct
++					{
++						uint8 dR2 : 3;
++						uint8 cR1 : 5;
++						uint8 dG2 : 3;
++						uint8 cG1 : 5;
++						uint8 dB2 : 3;
++						uint8 cB1 : 5;
++					};
++				};
++
++				bool flipbit : 1;
++				bool diffbit : 1;
++				uint8 cw2 : 3;
++				uint8 cw1 : 3;
++
++				uint32 pixelIndex;
++			};
++		};
+ 
+ 		inline uint get_byte_bits(uint ofs, uint num) const
+ 		{
+-			assert((ofs + num) <= 64U);
+-			assert(num && (num <= 8U));
+-			assert((ofs >> 3) == ((ofs + num - 1) >> 3));
+ 			const uint byte_ofs = 7 - (ofs >> 3);
+ 			const uint byte_bit_ofs = ofs & 7;
+ 			return (m_bytes[byte_ofs] >> byte_bit_ofs) & ((1 << num) - 1);
+ 		}
+-
+-		// false = left/right subblocks
+-		// true = upper/lower subblocks
+-		inline bool get_flip_bit() const
+-		{
+-			return (m_bytes[3] & 1) != 0;
+-		}
+-
+-		inline bool get_diff_bit() const
+-		{
+-			return (m_bytes[3] & 2) != 0;
+-		}
+-
++		
+ 		// Returns intensity modifier table (0-7) used by subblock subblock_id.
+ 		// subblock_id=0 left/top (CW 1), 1=right/bottom (CW 2)
+ 		inline uint get_inten_table(uint subblock_id) const
+ 		{
+-			assert(subblock_id < 2);
+ 			const uint ofs = subblock_id ? 2 : 5;
+ 			return (m_bytes[3] >> ofs) & 7;
+ 		}
+@@ -245,8 +205,6 @@ namespace rg_etc1
+ 		// Returned selector value ranges from 0-3 and is a direct index into g_etc1_inten_tables.
+ 		inline uint get_selector(uint x, uint y) const
+ 		{
+-			assert((x | y) < 4);
+-
+ 			const uint bit_index = x * 4 + y;
+ 			const uint byte_bit_ofs = bit_index & 7;
+ 			const uint8 *p = &m_bytes[7 - (bit_index >> 3)];
+@@ -399,9 +357,6 @@ namespace rg_etc1
+ 
+ 	uint16 etc1_block::pack_delta3(int r, int g, int b)
+ 	{
+-		assert((r >= cETC1ColorDeltaMin) && (r <= cETC1ColorDeltaMax));
+-		assert((g >= cETC1ColorDeltaMin) && (g <= cETC1ColorDeltaMax));
+-		assert((b >= cETC1ColorDeltaMin) && (b <= cETC1ColorDeltaMax));
+ 		if(r < 0) r += 8;
+ 		if(g < 0) g += 8;
+ 		if(b < 0) b += 8;
+@@ -462,7 +417,6 @@ namespace rg_etc1
+ 
+ 	void etc1_block::get_diff_subblock_colors(color_quad_u8* pDst, uint16 packed_color5, uint table_idx)
+ 	{
+-		assert(table_idx < cETC1IntenModifierValues);
+ 		const int *pInten_modifer_table = &g_etc1_inten_tables[table_idx][0];
+ 
+ 		uint r, g, b;
+@@ -485,7 +439,6 @@ namespace rg_etc1
+ 
+ 	bool etc1_block::get_diff_subblock_colors(color_quad_u8* pDst, uint16 packed_color5, uint16 packed_delta3, uint table_idx)
+ 	{
+-		assert(table_idx < cETC1IntenModifierValues);
+ 		const int *pInten_modifer_table = &g_etc1_inten_tables[table_idx][0];
+ 
+ 		uint r, g, b;
+@@ -510,7 +463,6 @@ namespace rg_etc1
+ 
+ 	void etc1_block::get_abs_subblock_colors(color_quad_u8* pDst, uint16 packed_color4, uint table_idx)
+ 	{
+-		assert(table_idx < cETC1IntenModifierValues);
+ 		const int *pInten_modifer_table = &g_etc1_inten_tables[table_idx][0];
+ 
+ 		uint r, g, b;
+@@ -536,8 +488,6 @@ namespace rg_etc1
+ 		color_quad_u8* pDst = reinterpret_cast<color_quad_u8*>(pDst_pixels_rgba);
+ 		const etc1_block& block = *static_cast<const etc1_block*>(pETC1_block);
+ 
+-		const bool diff_flag = block.get_diff_bit();
+-		const bool flip_flag = block.get_flip_bit();
+ 		const uint table_index0 = block.get_inten_table(0);
+ 		const uint table_index1 = block.get_inten_table(1);
+ 
+@@ -545,7 +495,7 @@ namespace rg_etc1
+ 		color_quad_u8 subblock_colors1[4];
+ 		bool success = true;
+ 
+-		if(diff_flag)
++		if(block.diffbit)
+ 		{
+ 			const uint16 base_color5 = block.get_base5_color();
+ 			const uint16 delta_color3 = block.get_delta3_color();
+@@ -563,7 +513,7 @@ namespace rg_etc1
+ 			etc1_block::get_abs_subblock_colors(subblock_colors1, base_color4_1, table_index1);
+ 		}
+ 
+-		if(flip_flag)
++		if(block.flipbit)
+ 		{
+ 			// 0000
+ 			// 0000
+diff --git a/tests/third_party/PowerVR/Examples/Beginner/04_BasicTnL/OGLES/OGLESBasicTnL.cpp b/tests/third_party/PowerVR/Examples/Beginner/04_BasicTnL/OGLES/OGLESBasicTnL.cpp
+index 26ffd98..aabbbc5 100644
+--- a/tests/third_party/PowerVR/Examples/Beginner/04_BasicTnL/OGLES/OGLESBasicTnL.cpp
++++ b/tests/third_party/PowerVR/Examples/Beginner/04_BasicTnL/OGLES/OGLESBasicTnL.cpp
+@@ -21,6 +21,7 @@
+ #import <OpenGLES/ES1/glext.h>
+ #else
+ #include <GLES/gl.h>
++#include <GLES/glext.h>
+ #endif
+ 
+ /******************************************************************************
+@@ -118,7 +119,7 @@ bool OGLESBasicTnL::InitView()
+ 		}
+ 	}
+ 
+-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, g_i32TexSize, g_i32TexSize, 0, GL_RGBA, GL_UNSIGNED_BYTE, pTexData);
++	glCompressedTexImage2D(GL_TEXTURE_2D, 0, GL_ETC1_RGB8_OES, g_i32TexSize, g_i32TexSize, 0, 128*128/2, pTexData);
+ 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+ 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+ 
+-- 
+1.8.5.2.msysgit.0
+

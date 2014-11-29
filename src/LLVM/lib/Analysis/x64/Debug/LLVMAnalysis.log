@@ -1,0 +1,59 @@
+﻿Build started 11/14/2014 2:53:14 PM.
+     1>Project "D:\SwiftShader-GLES\src\LLVM\lib\Analysis\LLVMAnalysis.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /I..\Analysis /I..\..\include /Zi /nologo /W3 /WX- /MP /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _CRT_SECURE_NO_DEPRECATE /D _CRT_SECURE_NO_WARNINGS /D _CRT_NONSTDC_NO_DEPRECATE /D _CRT_NONSTDC_NO_WARNINGS /D _SCL_SECURE_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS /D __STDC_CONSTANT_MACROS /D __STDC_FORMAT_MACROS /D __STDC_LIMIT_MACROS /D _HAS_EXCEPTIONS=0 /D "CMAKE_INTDIR=\"Debug\"" /Gm- /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /GR- /Fo"x64\Debug\\" /Fd"..\Debug/LLVMAnalysis.pdb" /Gd /TP /wd4146 /wd4180 /wd4224 /wd4244 /wd4267 /wd4275 /wd4291 /wd4345 /wd4351 /wd4355 /wd4503 /wd4551 /wd4624 /wd4715 /wd4800 /wd4065 /wd4181 /errorReport:prompt  /Zm1000 /EHs-c- -w14062 AliasAnalysis.cpp AliasSetTracker.cpp BasicAliasAnalysis.cpp BranchProbabilityInfo.cpp CaptureTracking.cpp ConstantFolding.cpp DIBuilder.cpp DebugInfo.cpp IVUsers.cpp InstructionSimplify.cpp Loads.cpp LoopInfo.cpp LoopPass.cpp MemoryBuiltins.cpp MemoryDependenceAnalysis.cpp NoAliasAnalysis.cpp PHITransAddr.cpp PathNumbering.cpp ProfileInfo.cpp ScalarEvolution.cpp ScalarEvolutionExpander.cpp ScalarEvolutionNormalization.cpp TypeBasedAliasAnalysis.cpp ValueTracking.cpp
+         AliasAnalysis.cpp
+         AliasSetTracker.cpp
+         BasicAliasAnalysis.cpp
+         BranchProbabilityInfo.cpp
+         CaptureTracking.cpp
+         ConstantFolding.cpp
+         DIBuilder.cpp
+         DebugInfo.cpp
+         IVUsers.cpp
+         InstructionSimplify.cpp
+         Loads.cpp
+         LoopInfo.cpp
+         LoopPass.cpp
+         MemoryBuiltins.cpp
+         MemoryDependenceAnalysis.cpp
+         NoAliasAnalysis.cpp
+         PHITransAddr.cpp
+         PathNumbering.cpp
+         ProfileInfo.cpp
+         ScalarEvolution.cpp
+         ScalarEvolutionExpander.cpp
+         ScalarEvolutionNormalization.cpp
+         TypeBasedAliasAnalysis.cpp
+         ValueTracking.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\Lib.exe /OUT:"x64\Debug\LLVMAnalysis.lib" /NOLOGO /MACHINE:X64 x64\Debug\AliasAnalysis.obj
+         x64\Debug\AliasSetTracker.obj
+         x64\Debug\BasicAliasAnalysis.obj
+         x64\Debug\BranchProbabilityInfo.obj
+         x64\Debug\CaptureTracking.obj
+         x64\Debug\ConstantFolding.obj
+         x64\Debug\DIBuilder.obj
+         x64\Debug\DebugInfo.obj
+         x64\Debug\IVUsers.obj
+         x64\Debug\InstructionSimplify.obj
+         x64\Debug\Loads.obj
+         x64\Debug\LoopInfo.obj
+         x64\Debug\LoopPass.obj
+         x64\Debug\MemoryBuiltins.obj
+         x64\Debug\MemoryDependenceAnalysis.obj
+         x64\Debug\NoAliasAnalysis.obj
+         x64\Debug\PHITransAddr.obj
+         x64\Debug\PathNumbering.obj
+         x64\Debug\ProfileInfo.obj
+         x64\Debug\ScalarEvolution.obj
+         x64\Debug\ScalarEvolutionExpander.obj
+         x64\Debug\ScalarEvolutionNormalization.obj
+         x64\Debug\TypeBasedAliasAnalysis.obj
+         x64\Debug\ValueTracking.obj
+         LLVMAnalysis.vcxproj -> D:\SwiftShader-GLES\src\LLVM\lib\Analysis\x64\Debug\LLVMAnalysis.lib
+     1>Done Building Project "D:\SwiftShader-GLES\src\LLVM\lib\Analysis\LLVMAnalysis.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:05.96

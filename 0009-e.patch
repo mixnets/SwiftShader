@@ -1,0 +1,200 @@
+From 3b50ce01786c20041a80d99e7ceb9b5e525fc2fd Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Fri, 28 Nov 2014 17:36:16 -0500
+Subject: [PATCH 09/11] e
+
+Change-Id: I895fc8bebf520cfdfe3b93b70d89c924ecd38578
+---
+ src/Renderer/Surface.cpp | 112 ++++++++++++++++-------------------------------
+ 1 file changed, 38 insertions(+), 74 deletions(-)
+
+diff --git a/src/Renderer/Surface.cpp b/src/Renderer/Surface.cpp
+index 24d4ce1..a982d51 100644
+--- a/src/Renderer/Surface.cpp
++++ b/src/Renderer/Surface.cpp
+@@ -157,9 +157,7 @@ namespace rg_etc1
+ 			return static_cast<uint16>(b | (g << 3U) | (r << 6U));
+ 		}
+ 
+-		static color_quad_u8 unpack_color5(uint16 packed_color5);
+ 		static void unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color);
+-
+ 		static bool unpack_color5(color_quad_u8& result, uint16 packed_color5, uint16 packed_delta3);
+ 		static bool unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color5, uint16 packed_delta3);
+ 		
+@@ -190,25 +188,15 @@ namespace rg_etc1
+ 		}
+ 	};
+ 
+-	color_quad_u8 etc1_block::unpack_color5(uint16 packed_color5)
++	void etc1_block::unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color5)
+ 	{
+-		uint b = packed_color5 & 31U;
+-		uint g = (packed_color5 >> 5U) & 31U;
+-		uint r = (packed_color5 >> 10U) & 31U;
++		b = packed_color5 & 31U;
++		g = (packed_color5 >> 5U) & 31U;
++		r = (packed_color5 >> 10U) & 31U;
+ 
+ 		b = (b << 3U) | (b >> 2U);
+ 		g = (g << 3U) | (g >> 2U);
+ 		r = (r << 3U) | (r >> 2U);
+-		
+-		return color_quad_u8(r, g, b, 255U);
+-	}
+-
+-	void etc1_block::unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color5)
+-	{
+-		color_quad_u8 c(unpack_color5(packed_color5));
+-		r = c.r;
+-		g = c.g;
+-		b = c.b;
+ 	}
+ 
+ 	bool etc1_block::unpack_color5(color_quad_u8& result, uint16 packed_color5, uint16 packed_delta3)
+@@ -261,51 +249,43 @@ namespace rg_etc1
+ 	{
+ 		const int *pInten_modifer_table = &g_etc1_inten_tables[block.cw1][0];
+ 
+-		uint r = block.cR1;
+-		uint g = block.cG1;
+-		uint b = block.cB1;
+-
+-		b = (b << 3U) | (b >> 2U);
+-		g = (g << 3U) | (g >> 2U);
+-		r = (r << 3U) | (r >> 2U);
+-
+-		const int ir = static_cast<int>(r), ig = static_cast<int>(g), ib = static_cast<int>(b);
++		int b = (block.cB1 << 3) | (block.cB1 >> 2);
++		int g = (block.cG1 << 3) | (block.cG1 >> 2);
++		int r = (block.cR1 << 3) | (block.cR1 >> 2);
+ 
+ 		const int y0 = pInten_modifer_table[0];
+-		pDst[0].set(ir + y0, ig + y0, ib + y0);
++		pDst[0].set(r + y0, g + y0, b + y0);
+ 
+ 		const int y1 = pInten_modifer_table[1];
+-		pDst[1].set(ir + y1, ig + y1, ib + y1);
++		pDst[1].set(r + y1, g + y1, b + y1);
+ 
+ 		const int y2 = pInten_modifer_table[2];
+-		pDst[2].set(ir + y2, ig + y2, ib + y2);
++		pDst[2].set(r + y2, g + y2, b + y2);
+ 
+ 		const int y3 = pInten_modifer_table[3];
+-		pDst[3].set(ir + y3, ig + y3, ib + y3);
++		pDst[3].set(r + y3, g + y3, b + y3);
+ 	}
+ 
+ 	bool etc1_block::get_diff_subblock_colors2(color_quad_u8* pDst, const etc1_block &block)
+ 	{
+ 		const uint16 base_color5 = block.get_base5_color();
+ 		const uint16 delta_color3 = block.get_delta3_color();
+-
+-		const int *pInten_modifer_table = &g_etc1_inten_tables[block.cw2][0];
+-
++		
+ 		uint r, g, b;
+ 		bool success = unpack_color5(r, g, b, base_color5, delta_color3);
+ 
+ 		const int ir = static_cast<int>(r), ig = static_cast<int>(g), ib = static_cast<int>(b);
+ 
+-		const int y0 = pInten_modifer_table[0];
++		const int y0 = g_etc1_inten_tables[block.cw2][0];
+ 		pDst[0].set(ir + y0, ig + y0, ib + y0);
+ 
+-		const int y1 = pInten_modifer_table[1];
++		const int y1 = g_etc1_inten_tables[block.cw2][1];
+ 		pDst[1].set(ir + y1, ig + y1, ib + y1);
+ 
+-		const int y2 = pInten_modifer_table[2];
++		const int y2 = g_etc1_inten_tables[block.cw2][2];
+ 		pDst[2].set(ir + y2, ig + y2, ib + y2);
+ 
+-		const int y3 = pInten_modifer_table[3];
++		const int y3 = g_etc1_inten_tables[block.cw2][3];
+ 		pDst[3].set(ir + y3, ig + y3, ib + y3);
+ 
+ 		return success;
+@@ -313,56 +293,40 @@ namespace rg_etc1
+ 
+ 	void etc1_block::get_abs_subblock_colors1(color_quad_u8* pDst, const etc1_block &block)
+ 	{
+-		const int *pInten_modifer_table = &g_etc1_inten_tables[block.cw1][0];
++		int r = (block.iR1 << 4) | block.iR1;
++		int g = (block.iG1 << 4) | block.iG1;
++		int b = (block.iB1 << 4) | block.iB1;
+ 
+-		uint r = block.iR1;
+-		uint g = block.iG1;
+-		uint b = block.iB1;
++		const int y0 = g_etc1_inten_tables[block.cw1][0];
++		pDst[0].set(r + y0, g + y0, b + y0);
+ 
+-		b = (b << 4U) | b;
+-		g = (g << 4U) | g;
+-		r = (r << 4U) | r;
++		const int y1 = g_etc1_inten_tables[block.cw1][1];
++		pDst[1].set(r + y1, g + y1, b + y1);
+ 
+-		const int ir = static_cast<int>(r), ig = static_cast<int>(g), ib = static_cast<int>(b);
+-
+-		const int y0 = pInten_modifer_table[0];
+-		pDst[0].set(ir + y0, ig + y0, ib + y0);
+-
+-		const int y1 = pInten_modifer_table[1];
+-		pDst[1].set(ir + y1, ig + y1, ib + y1);
+-
+-		const int y2 = pInten_modifer_table[2];
+-		pDst[2].set(ir + y2, ig + y2, ib + y2);
++		const int y2 = g_etc1_inten_tables[block.cw1][2];
++		pDst[2].set(r + y2, g + y2, b + y2);
+ 
+-		const int y3 = pInten_modifer_table[3];
+-		pDst[3].set(ir + y3, ig + y3, ib + y3);
++		const int y3 = g_etc1_inten_tables[block.cw1][3];
++		pDst[3].set(r + y3, g + y3, b + y3);
+ 	}
+ 
+ 	void etc1_block::get_abs_subblock_colors2(color_quad_u8* pDst, const etc1_block &block)
+ 	{
+-		const int *pInten_modifer_table = &g_etc1_inten_tables[block.cw2][0];
++		int r = (block.iR2 << 4) | block.iR2;
++		int g = (block.iG2 << 4) | block.iG2;
++		int b = (block.iB2 << 4) | block.iB2;
+ 
+-		uint r = block.iR2;
+-		uint g = block.iG2;
+-		uint b = block.iB2;
++		const int y0 = g_etc1_inten_tables[block.cw2][0];
++		pDst[0].set(r + y0, g + y0, b + y0);
+ 
+-		b = (b << 4U) | b;
+-		g = (g << 4U) | g;
+-		r = (r << 4U) | r;
++		const int y1 = g_etc1_inten_tables[block.cw2][1];
++		pDst[1].set(r + y1, g + y1, b + y1);
+ 
+-		const int ir = static_cast<int>(r), ig = static_cast<int>(g), ib = static_cast<int>(b);
+-
+-		const int y0 = pInten_modifer_table[0];
+-		pDst[0].set(ir + y0, ig + y0, ib + y0);
+-
+-		const int y1 = pInten_modifer_table[1];
+-		pDst[1].set(ir + y1, ig + y1, ib + y1);
+-
+-		const int y2 = pInten_modifer_table[2];
+-		pDst[2].set(ir + y2, ig + y2, ib + y2);
++		const int y2 = g_etc1_inten_tables[block.cw2][2];
++		pDst[2].set(r + y2, g + y2, b + y2);
+ 
+-		const int y3 = pInten_modifer_table[3];
+-		pDst[3].set(ir + y3, ig + y3, ib + y3);
++		const int y3 = g_etc1_inten_tables[block.cw2][3];
++		pDst[3].set(r + y3, g + y3, b + y3);
+ 	}
+ 
+ 	bool unpack_etc1_block(const void* pETC1_block, unsigned int* pDst_pixels_rgba, int width)
+-- 
+1.8.5.2.msysgit.0
+

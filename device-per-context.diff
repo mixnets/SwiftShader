@@ -1,0 +1,120 @@
+From 53de42499df842658b0264a5fd7a3d6c9f5c627a Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Mon, 01 Dec 2014 10:42:35 -0500
+Subject: [PATCH] Create a renderer device per GL context.
+
+Change-Id: I5c05ab7e0bae3581600ab4fcaba7c499fb5987a7
+---
+
+diff --git a/src/OpenGL/libGLES_CM/Context.cpp b/src/OpenGL/libGLES_CM/Context.cpp
+index 7d0ad84..0fa1318 100644
+--- a/src/OpenGL/libGLES_CM/Context.cpp
++++ b/src/OpenGL/libGLES_CM/Context.cpp
+@@ -35,15 +35,14 @@
+ 
+ namespace es1
+ {
+-Device *Context::device = 0;
+-
+ Context::Context(const egl::Config *config, const Context *shareContext)
+     : modelViewStack(MAX_MODELVIEW_STACK_DEPTH),
+       projectionStack(MAX_PROJECTION_STACK_DEPTH),
+ 	  textureStack0(MAX_TEXTURE_STACK_DEPTH),
+ 	  textureStack1(MAX_TEXTURE_STACK_DEPTH)
+ {
+-	device = getDevice();
++	sw::Context *context = new sw::Context();
++	device = new es1::Device(context);
+ 
+ 	mVertexDataManager = new VertexDataManager(this);
+     mIndexDataManager = new IndexDataManager();
+@@ -210,6 +209,7 @@
+     delete mIndexDataManager;
+ 
+     mResourceManager->release();
++	delete device;
+ }
+ 
+ void Context::makeCurrent(egl::Surface *surface)
+@@ -2450,12 +2450,6 @@
+ 
+ Device *Context::getDevice()
+ {
+-	if(!device)
+-	{
+-		sw::Context *context = new sw::Context();
+-		device = new es1::Device(context);
+-	}
+-
+ 	return device;
+ }
+ 
+diff --git a/src/OpenGL/libGLES_CM/Context.h b/src/OpenGL/libGLES_CM/Context.h
+index 677d42a..06d15e0 100644
+--- a/src/OpenGL/libGLES_CM/Context.h
++++ b/src/OpenGL/libGLES_CM/Context.h
+@@ -506,9 +506,8 @@
+ 	bool texture2D;
+ 	GLenum clientTexture;
+ 
++	Device *device;
+     ResourceManager *mResourceManager;
+-
+-	static Device *device;
+ };
+ }
+ 
+diff --git a/src/OpenGL/libGLESv2/Context.cpp b/src/OpenGL/libGLESv2/Context.cpp
+index 6f1b866..9d4fe30 100644
+--- a/src/OpenGL/libGLESv2/Context.cpp
++++ b/src/OpenGL/libGLESv2/Context.cpp
+@@ -39,11 +39,10 @@
+ 
+ namespace es2
+ {
+-Device *Context::device = 0;
+-
+ Context::Context(const egl::Config *config, const Context *shareContext) : mConfig(config)
+ {
+-	device = getDevice();
++	sw::Context *context = new sw::Context();
++	device = new es2::Device(context);
+ 
+     mFenceHandleAllocator.setBaseHandle(0);
+ 
+@@ -220,6 +219,7 @@
+     delete mIndexDataManager;
+ 
+     mResourceManager->release();
++	delete device;
+ }
+ 
+ void Context::makeCurrent(egl::Surface *surface)
+@@ -3115,12 +3115,6 @@
+ 
+ Device *Context::getDevice()
+ {
+-	if(!device)
+-	{
+-		sw::Context *context = new sw::Context();
+-		device = new es2::Device(context);
+-	}
+-
+ 	return device;
+ }
+ 
+diff --git a/src/OpenGL/libGLESv2/Context.h b/src/OpenGL/libGLESv2/Context.h
+index 52f9e6c..9c21a92 100644
+--- a/src/OpenGL/libGLESv2/Context.h
++++ b/src/OpenGL/libGLESv2/Context.h
+@@ -504,9 +504,8 @@
+     bool mFrontFaceDirty;
+     bool mDitherStateDirty;
+ 
++	Device *device;
+     ResourceManager *mResourceManager;
+-
+-	static Device *device;
+ };
+ }
+ 

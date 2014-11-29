@@ -1,0 +1,105 @@
+From ce7f869954d55649e77ee5574d363f7a28a4160c Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Fri, 28 Nov 2014 17:42:22 -0500
+Subject: [PATCH 10/11] f
+
+Change-Id: Ie938efd1e7ee661baad11e454b722d55b3a6fb84
+---
+ src/Renderer/Surface.cpp | 54 ++++++------------------------------------------
+ 1 file changed, 6 insertions(+), 48 deletions(-)
+
+diff --git a/src/Renderer/Surface.cpp b/src/Renderer/Surface.cpp
+index a982d51..75c4401 100644
+--- a/src/Renderer/Surface.cpp
++++ b/src/Renderer/Surface.cpp
+@@ -141,27 +141,7 @@ namespace rg_etc1
+ 			return lsb | (msb << 1);
+ 		}
+ 
+-		inline uint16 get_base5_color() const
+-		{
+-			const uint r = cR1;
+-			const uint g = cG1;
+-			const uint b = cB1;
+-			return static_cast<uint16>(b | (g << 5U) | (r << 10U));
+-		}
+-
+-		inline uint16 get_delta3_color() const
+-		{
+-			const uint r = dR2;
+-			const uint g = dG2;
+-			const uint b = dB2;
+-			return static_cast<uint16>(b | (g << 3U) | (r << 6U));
+-		}
+-
+-		static void unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color);
+-		static bool unpack_color5(color_quad_u8& result, uint16 packed_color5, uint16 packed_delta3);
+ 		static bool unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color5, uint16 packed_delta3);
+-		
+-		// Results range from -4 to 3 (cETC1ColorDeltaMin to cETC1ColorDeltaMax)
+ 		static void unpack_delta3(int& r, int& g, int& b, uint16 packed_delta3);
+ 		
+ 		// subblock colors
+@@ -188,25 +168,14 @@ namespace rg_etc1
+ 		}
+ 	};
+ 
+-	void etc1_block::unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color5)
+-	{
+-		b = packed_color5 & 31U;
+-		g = (packed_color5 >> 5U) & 31U;
+-		r = (packed_color5 >> 10U) & 31U;
+-
+-		b = (b << 3U) | (b >> 2U);
+-		g = (g << 3U) | (g >> 2U);
+-		r = (r << 3U) | (r >> 2U);
+-	}
+-
+-	bool etc1_block::unpack_color5(color_quad_u8& result, uint16 packed_color5, uint16 packed_delta3)
++	bool etc1_block::unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color5, uint16 packed_delta3)
+ 	{
+ 		int dc_r, dc_g, dc_b;
+ 		unpack_delta3(dc_r, dc_g, dc_b, packed_delta3);
+ 
+-		int b = (packed_color5 & 31U) + dc_b;
+-		int g = ((packed_color5 >> 5U) & 31U) + dc_g;
+-		int r = ((packed_color5 >> 10U) & 31U) + dc_r;
++		b = (packed_color5 & 31U) + dc_b;
++		g = ((packed_color5 >> 5U) & 31U) + dc_g;
++		r = ((packed_color5 >> 10U) & 31U) + dc_r;
+ 
+ 		bool success = true;
+ 		if(static_cast<uint>(r | g | b) > 31U)
+@@ -220,18 +189,7 @@ namespace rg_etc1
+ 		b = (b << 3U) | (b >> 2U);
+ 		g = (g << 3U) | (g >> 2U);
+ 		r = (r << 3U) | (r >> 2U);
+-		
+-		result = color_quad_u8(r, g, b, 255U);
+-		return success;
+-	}
+ 
+-	bool etc1_block::unpack_color5(uint& r, uint& g, uint& b, uint16 packed_color5, uint16 packed_delta3)
+-	{
+-		color_quad_u8 result;
+-		const bool success = unpack_color5(result, packed_color5, packed_delta3);
+-		r = result.r;
+-		g = result.g;
+-		b = result.b;
+ 		return success;
+ 	}
+ 
+@@ -268,8 +226,8 @@ namespace rg_etc1
+ 
+ 	bool etc1_block::get_diff_subblock_colors2(color_quad_u8* pDst, const etc1_block &block)
+ 	{
+-		const uint16 base_color5 = block.get_base5_color();
+-		const uint16 delta_color3 = block.get_delta3_color();
++		const uint16 base_color5 = static_cast<uint16>(block.cB1 | (block.cG1 << 5) | (block.cR1 << 10));
++		const uint16 delta_color3 = static_cast<uint16>(block.dB2 | (block.dG2 << 3) | (block.dR2 << 6));
+ 		
+ 		uint r, g, b;
+ 		bool success = unpack_color5(r, g, b, base_color5, delta_color3);
+-- 
+1.8.5.2.msysgit.0
+

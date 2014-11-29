@@ -1,0 +1,151 @@
+From d9a572169a46514b157cfab601ddff82ab2a8e3c Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Mon, 10 Nov 2014 16:22:07 -0500
+Subject: [PATCH 3/4] Delete EGL images only after eglDestroyImageKHR.
+
+BUG=18316605
+
+Change-Id: I85944b87642664c6202bacdfc852e9cedabc79a9
+---
+ src/OpenGL/libEGL/Image.hpp     | 24 ++++++++++++++++++------
+ src/OpenGL/libEGL/libEGL.cpp    |  6 +++++-
+ src/OpenGL/libGLES_CM/Image.cpp |  2 +-
+ src/OpenGL/libGLESv2/Image.cpp  |  2 +-
+ 4 files changed, 25 insertions(+), 9 deletions(-)
+
+diff --git a/src/OpenGL/libEGL/Image.hpp b/src/OpenGL/libEGL/Image.hpp
+index 2ca4525..9a5c4f2 100644
+--- a/src/OpenGL/libEGL/Image.hpp
++++ b/src/OpenGL/libEGL/Image.hpp
+@@ -3,6 +3,8 @@
+ 
+ #include "Renderer/Surface.hpp"
+ 
++#include <assert.h>
++
+ namespace egl
+ {
+ // Types common between gl.h and gl2.h
+@@ -58,27 +60,27 @@ public:
+ 		return multiSampleDepth;
+ 	}
+ 
+-	bool Image::isShared() const
++	bool isShared() const
+     {
+         return shared;
+     }
+ 
+-    void Image::markShared()
++    void markShared()
+     {
+         shared = true;
+     }
+ 
+-	void *Image::lock(unsigned int left, unsigned int top, sw::Lock lock)
++	void *lock(unsigned int left, unsigned int top, sw::Lock lock)
+ 	{
+ 		return lockExternal(left, top, 0, lock, sw::PUBLIC);
+ 	}
+ 
+-	unsigned int Image::getPitch() const
++	unsigned int getPitch() const
+ 	{
+ 		return getExternalPitchB();
+ 	}
+ 
+-	void Image::unlock()
++	void unlock()
+ 	{
+ 		unlockExternal();
+ 	}
+@@ -87,10 +89,21 @@ public:
+ 	virtual void release() = 0;
+ 	virtual void unbind() = 0;   // Break parent ownership and release
+ 
++	void destroyShared()   // Release a shared image
++    {
++		assert(shared);
++        shared = false;
++		release();
++    }
++
+ 	virtual void loadImageData(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *input) = 0;
+ 	virtual void loadCompressedData(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels) = 0;
+ 
+ protected:
++	virtual ~Image() = 0
++	{
++	}
++
+ 	const GLsizei width;
+ 	const GLsizei height;
+ 	const GLenum format;
+@@ -98,7 +111,6 @@ protected:
+ 	const sw::Format internalFormat;
+ 	const int multiSampleDepth;
+ 
+-private:
+ 	bool shared;   // Used as an EGLImage
+ };
+ }
+diff --git a/src/OpenGL/libEGL/libEGL.cpp b/src/OpenGL/libEGL/libEGL.cpp
+index 7a6d56d..ef0b570 100644
+--- a/src/OpenGL/libEGL/libEGL.cpp
++++ b/src/OpenGL/libEGL/libEGL.cpp
+@@ -1080,6 +1080,8 @@ EGLBoolean EGLAPIENTRY eglCopyBuffers(EGLDisplay dpy, EGLSurface surface, EGLNat
+ 
+ EGLImageKHR EGLAPIENTRY eglCreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list)
+ {
++	TRACE("(EGLDisplay dpy = 0x%0.8p, EGLContext ctx = 0x%0.8p, EGLenum target = 0x%X, buffer = 0x%0.8p, const EGLint attrib_list = 0x%0.8p)", dpy, ctx, target, buffer, attrib_list);
++
+     try
+     {
+         egl::Display *display = static_cast<egl::Display*>(dpy);
+@@ -1154,6 +1156,8 @@ EGLImageKHR EGLAPIENTRY eglCreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenu
+ 
+ EGLBoolean EGLAPIENTRY eglDestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
+ {
++	TRACE("(EGLDisplay dpy = 0x%0.8p, EGLImageKHR image = 0x%0.8p)", dpy, image);
++
+     try
+     {
+         egl::Display *display = static_cast<egl::Display*>(dpy);
+@@ -1169,7 +1173,7 @@ EGLBoolean EGLAPIENTRY eglDestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
+         }
+ 
+         egl::Image *glImage = static_cast<egl::Image*>(image);
+-        glImage->release();
++        glImage->destroyShared();
+ 
+         return success(EGL_TRUE);
+     }
+diff --git a/src/OpenGL/libGLES_CM/Image.cpp b/src/OpenGL/libGLES_CM/Image.cpp
+index 5268845..981cfc9 100644
+--- a/src/OpenGL/libGLES_CM/Image.cpp
++++ b/src/OpenGL/libGLES_CM/Image.cpp
+@@ -72,7 +72,7 @@ namespace es1
+ 			sw::atomicDecrement(&referenceCount);
+ 		}
+ 
+-		if(referenceCount == 0)
++		if(referenceCount == 0 && !shared)
+ 		{
+ 			delete this;
+ 		}
+diff --git a/src/OpenGL/libGLESv2/Image.cpp b/src/OpenGL/libGLESv2/Image.cpp
+index 541923f..2c5dcda 100644
+--- a/src/OpenGL/libGLESv2/Image.cpp
++++ b/src/OpenGL/libGLESv2/Image.cpp
+@@ -71,7 +71,7 @@ namespace es2
+ 			sw::atomicDecrement(&referenceCount);
+ 		}
+ 
+-		if(referenceCount == 0)
++		if(referenceCount == 0 && !shared)
+ 		{
+ 			delete this;
+ 		}
+-- 
+1.8.5.2.msysgit.0
+

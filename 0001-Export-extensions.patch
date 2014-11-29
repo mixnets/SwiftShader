@@ -1,0 +1,89 @@
+From 883405fe26828075bf07d03cdc3de43ab3b3a347 Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Mon, 10 Nov 2014 16:12:28 -0500
+Subject: [PATCH 1/4] Export extensions.
+
+BUG=18316605
+
+Change-Id: Iafcbb312e075746111783dc5f6da7dffe3a271ba
+---
+ src/OpenGL/libEGL/libEGL.def         |  4 ++++
+ src/OpenGL/libGLES_CM/libGLES_CM.cpp |  9 +++++++++
+ src/OpenGL/libGLES_CM/libGLES_CM.def | 18 ++++++++++++++++++
+ 3 files changed, 31 insertions(+)
+
+diff --git a/src/OpenGL/libEGL/libEGL.def b/src/OpenGL/libEGL/libEGL.def
+index 8b4caf5..4555d71 100644
+--- a/src/OpenGL/libEGL/libEGL.def
++++ b/src/OpenGL/libEGL/libEGL.def
+@@ -35,6 +35,10 @@ EXPORTS
+ 	eglWaitGL                       @30
+ 	eglWaitNative                   @31
+ 
++	; Extensions
++	eglCreateImageKHR
++	eglDestroyImageKHR
++
+ 	; Functions that don't change the error code, for use by client APIs
+ 	clientGetCurrentContext
+ 	clientGetCurrentDisplay
+\ No newline at end of file
+diff --git a/src/OpenGL/libGLES_CM/libGLES_CM.cpp b/src/OpenGL/libGLES_CM/libGLES_CM.cpp
+index f939907..cb725c9 100644
+--- a/src/OpenGL/libGLES_CM/libGLES_CM.cpp
++++ b/src/OpenGL/libGLES_CM/libGLES_CM.cpp
+@@ -513,6 +513,13 @@ void GL_APIENTRY glBindTexture(GLenum target, GLuint texture)
+     }
+ }
+ 
++void GL_APIENTRY glBlendEquationSeparateOES(GLenum modeRGB, GLenum modeAlpha);
++
++void GL_APIENTRY glBlendEquationOES(GLenum mode)
++{
++    glBlendEquationSeparateOES(mode, mode);
++}
++
+ void GL_APIENTRY glBlendEquationSeparateOES(GLenum modeRGB, GLenum modeAlpha)
+ {
+     TRACE("(GLenum modeRGB = 0x%X, GLenum modeAlpha = 0x%X)", modeRGB, modeAlpha);
+@@ -556,6 +563,8 @@ void GL_APIENTRY glBlendEquationSeparateOES(GLenum modeRGB, GLenum modeAlpha)
+     }
+ }
+ 
++void GL_APIENTRY glBlendFuncSeparateOES(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
++
+ void GL_APIENTRY glBlendFunc(GLenum sfactor, GLenum dfactor)
+ {
+     glBlendFuncSeparateOES(sfactor, dfactor, sfactor, dfactor);
+diff --git a/src/OpenGL/libGLES_CM/libGLES_CM.def b/src/OpenGL/libGLES_CM/libGLES_CM.def
+index 280624f..d894976 100644
+--- a/src/OpenGL/libGLES_CM/libGLES_CM.def
++++ b/src/OpenGL/libGLES_CM/libGLES_CM.def
+@@ -178,6 +178,24 @@ EXPORTS
+ 	glPointSizePointerOES    @168
+     glEGLImageTargetTexture2DOES
+     glEGLImageTargetRenderbufferStorageOES
++    glIsRenderbufferOES
++    glBindRenderbufferOES
++    glDeleteRenderbuffersOES
++    glGenRenderbuffersOES
++    glRenderbufferStorageOES
++    glGetRenderbufferParameterivOES
++    glIsFramebufferOES
++    glBindFramebufferOES
++    glDeleteFramebuffersOES
++    glGenFramebuffersOES
++    glCheckFramebufferStatusOES
++    glFramebufferRenderbufferOES
++    glFramebufferTexture2DOES
++    glGetFramebufferAttachmentParameterivOES
++    glGenerateMipmapOES
++    glBlendEquationOES
++    glBlendEquationSeparateOES
++    glBlendFuncSeparateOES
+ 
+     ; EGL dependencies
+     glCreateContext
+-- 
+1.8.5.2.msysgit.0
+

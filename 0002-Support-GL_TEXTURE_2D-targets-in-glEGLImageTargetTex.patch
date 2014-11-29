@@ -1,0 +1,251 @@
+From 02ab2fb912f92ee68077e98dc69a89955754bf40 Mon Sep 17 00:00:00 2001
+From: Nicolas Capens <capn@google.com>
+Date: Mon, 10 Nov 2014 16:16:39 -0500
+Subject: [PATCH 2/4] Support GL_TEXTURE_2D targets in
+ glEGLImageTargetTexture2DOES.
+
+BUG=18316605
+
+Change-Id: I46cf8b97fcb2d7606a94570ef1d742ce0f973dfb
+---
+ src/OpenGL/libGLES_CM/Texture.cpp    | 27 ++++++++++++++-------------
+ src/OpenGL/libGLES_CM/Texture.h      |  4 ++--
+ src/OpenGL/libGLES_CM/libGLES_CM.cpp | 12 ++++++++++--
+ src/OpenGL/libGLESv2/Texture.cpp     | 27 ++++++++++++++-------------
+ src/OpenGL/libGLESv2/Texture.h       |  4 ++--
+ src/OpenGL/libGLESv2/libGLESv2.cpp   | 12 ++++++++++--
+ 6 files changed, 52 insertions(+), 34 deletions(-)
+
+diff --git a/src/OpenGL/libGLES_CM/Texture.cpp b/src/OpenGL/libGLES_CM/Texture.cpp
+index 7f12933..19ea8ab 100644
+--- a/src/OpenGL/libGLES_CM/Texture.cpp
++++ b/src/OpenGL/libGLES_CM/Texture.cpp
+@@ -536,6 +536,18 @@ void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
+ 	renderTarget->release();
+ }
+ 
++void Texture2D::setImage(egl::Image *sharedImage)
++{
++	sharedImage->addRef();
++
++    if(image[0])
++    {
++        image[0]->unbind();
++    }
++
++    image[0] = sharedImage;
++}
++
+ // Tests for 2D texture sampling completeness. [OpenGL ES 2.0.24] section 3.8.2 page 85.
+ bool Texture2D::isSamplerComplete() const
+ {
+@@ -707,23 +719,12 @@ GLenum TextureExternal::getTarget() const
+     return GL_TEXTURE_EXTERNAL_OES;
+ }
+ 
+-void TextureExternal::setImage(Image *sharedImage)
+-{
+-    if(image[0])
+-    {
+-        image[0]->release();
+-    }
+-
+-    sharedImage->addRef();
+-    image[0] = sharedImage;
+-}
+-
+ }
+ 
+ // Exported functions for use by EGL
+ extern "C"
+ {
+-	es1::Image *createBackBuffer(int width, int height, const egl::Config *config)
++	egl::Image *createBackBuffer(int width, int height, const egl::Config *config)
+ 	{
+ 		if(config)
+ 		{
+@@ -733,7 +734,7 @@ extern "C"
+ 		return 0;
+ 	}
+ 
+-	es1::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard)
++	egl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard)
+ 	{
+ 		if(width == 0 || height == 0 || height > OUTLINE_RESOLUTION)
+ 		{
+diff --git a/src/OpenGL/libGLES_CM/Texture.h b/src/OpenGL/libGLES_CM/Texture.h
+index 553a00c..d5f75d2 100644
+--- a/src/OpenGL/libGLES_CM/Texture.h
++++ b/src/OpenGL/libGLES_CM/Texture.h
+@@ -136,6 +136,8 @@ public:
+     void copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
+     void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
+ 
++	void setImage(egl::Image *image);
++
+     virtual bool isSamplerComplete() const;
+     virtual bool isCompressed(GLenum target, GLint level) const;
+ 	virtual bool isDepth(GLenum target, GLint level) const;
+@@ -174,8 +176,6 @@ public:
+     virtual ~TextureExternal();
+ 
+     virtual GLenum getTarget() const;
+-
+-    void setImage(Image *image);
+ };
+ }
+ 
+diff --git a/src/OpenGL/libGLES_CM/libGLES_CM.cpp b/src/OpenGL/libGLES_CM/libGLES_CM.cpp
+index cb725c9..7efba35 100644
+--- a/src/OpenGL/libGLES_CM/libGLES_CM.cpp
++++ b/src/OpenGL/libGLES_CM/libGLES_CM.cpp
+@@ -4196,6 +4196,7 @@ void GL_APIENTRY glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image
+     {
+         switch(target)
+         {
++		case GL_TEXTURE_2D:
+         case GL_TEXTURE_EXTERNAL_OES:
+             break;
+         default:
+@@ -4211,14 +4212,21 @@ void GL_APIENTRY glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image
+ 
+         if(context)
+         {
+-            es1::TextureExternal *texture = context->getTextureExternal();
++            es1::Texture2D *texture = 0;
++			
++			switch(target)
++			{
++			case GL_TEXTURE_2D:           texture = context->getTexture2D();       break;
++			case GL_TEXTURE_EXTERNAL_OES: texture = context->getTextureExternal(); break;
++			default:                      UNREACHABLE();
++			}
+ 
+             if(!texture)
+             {
+                 return error(GL_INVALID_OPERATION);
+             }
+ 
+-            es1::Image *glImage = static_cast<es1::Image*>(image);
++            egl::Image *glImage = static_cast<egl::Image*>(image);
+ 
+             texture->setImage(glImage);
+         }
+diff --git a/src/OpenGL/libGLESv2/Texture.cpp b/src/OpenGL/libGLESv2/Texture.cpp
+index 318ccaf..7d2386e 100644
+--- a/src/OpenGL/libGLESv2/Texture.cpp
++++ b/src/OpenGL/libGLESv2/Texture.cpp
+@@ -536,6 +536,18 @@ void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
+ 	renderTarget->release();
+ }
+ 
++void Texture2D::setImage(egl::Image *sharedImage)
++{
++	sharedImage->addRef();
++
++    if(image[0])
++    {
++        image[0]->unbind();
++    }
++
++    image[0] = sharedImage;
++}
++
+ // Tests for 2D texture sampling completeness. [OpenGL ES 2.0.24] section 3.8.2 page 85.
+ bool Texture2D::isSamplerComplete() const
+ {
+@@ -1140,23 +1152,12 @@ GLenum TextureExternal::getTarget() const
+     return GL_TEXTURE_EXTERNAL_OES;
+ }
+ 
+-void TextureExternal::setImage(Image *sharedImage)
+-{
+-    if(image[0])
+-    {
+-        image[0]->release();
+-    }
+-
+-    sharedImage->addRef();
+-    image[0] = sharedImage;
+-}
+-
+ }
+ 
+ // Exported functions for use by EGL
+ extern "C"
+ {
+-	es2::Image *createBackBuffer(int width, int height, const egl::Config *config)
++	egl::Image *createBackBuffer(int width, int height, const egl::Config *config)
+ 	{
+ 		if(config)
+ 		{
+@@ -1166,7 +1167,7 @@ extern "C"
+ 		return 0;
+ 	}
+ 
+-	es2::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard)
++	egl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard)
+ 	{
+ 		if(width == 0 || height == 0 || height > OUTLINE_RESOLUTION)
+ 		{
+diff --git a/src/OpenGL/libGLESv2/Texture.h b/src/OpenGL/libGLESv2/Texture.h
+index 2d1e2fe..841c01f 100644
+--- a/src/OpenGL/libGLESv2/Texture.h
++++ b/src/OpenGL/libGLESv2/Texture.h
+@@ -136,6 +136,8 @@ public:
+     void copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
+     void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
+ 
++	void setImage(egl::Image *image);
++
+     virtual bool isSamplerComplete() const;
+     virtual bool isCompressed(GLenum target, GLint level) const;
+ 	virtual bool isDepth(GLenum target, GLint level) const;
+@@ -231,8 +233,6 @@ public:
+     virtual ~TextureExternal();
+ 
+     virtual GLenum getTarget() const;
+-
+-    void setImage(Image *image);
+ };
+ }
+ 
+diff --git a/src/OpenGL/libGLESv2/libGLESv2.cpp b/src/OpenGL/libGLESv2/libGLESv2.cpp
+index cf263dc..e03d6da 100644
+--- a/src/OpenGL/libGLESv2/libGLESv2.cpp
++++ b/src/OpenGL/libGLESv2/libGLESv2.cpp
+@@ -6110,6 +6110,7 @@ void GL_APIENTRY glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image
+     {
+         switch(target)
+         {
++		case GL_TEXTURE_2D:
+         case GL_TEXTURE_EXTERNAL_OES:
+             break;
+         default:
+@@ -6125,14 +6126,21 @@ void GL_APIENTRY glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image
+ 
+         if(context)
+         {
+-            es2::TextureExternal *texture = context->getTextureExternal();
++            es2::Texture2D *texture = 0;
++			
++			switch(target)
++			{
++			case GL_TEXTURE_2D:           texture = context->getTexture2D();       break;
++			case GL_TEXTURE_EXTERNAL_OES: texture = context->getTextureExternal(); break;
++			default:                      UNREACHABLE();
++			}
+ 
+             if(!texture)
+             {
+                 return error(GL_INVALID_OPERATION);
+             }
+ 
+-            es2::Image *glImage = static_cast<es2::Image*>(image);
++            egl::Image *glImage = static_cast<egl::Image*>(image);
+ 
+             texture->setImage(glImage);
+         }
+-- 
+1.8.5.2.msysgit.0
+
