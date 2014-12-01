@@ -506,9 +506,8 @@ private:
 	bool texture2D;
 	GLenum clientTexture;
 
+	Device *device;
     ResourceManager *mResourceManager;
-
-	static Device *device;
 };
 }
 

@@ -504,9 +504,8 @@ private:
     bool mFrontFaceDirty;
     bool mDitherStateDirty;
 
+	Device *device;
     ResourceManager *mResourceManager;
-
-	static Device *device;
 };
 }
 
