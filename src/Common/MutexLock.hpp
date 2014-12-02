@@ -13,10 +13,12 @@
 #define sw_MutexLock_hpp
 
 #include "Thread.hpp"
+#include "Types.hpp"
 
 namespace sw
 {
-	class BackoffLock
+	// Ensure that the mutex variable is on its own 64-byte cache line to avoid false sharing
+	ALIGN(128, class BackoffLock
 	{
 	public:
 		BackoffLock()
@@ -112,11 +114,8 @@ namespace sw
 		}
 
 	private:
-		// Ensure that the mutex variable is on its own 64-byte cache line to avoid false sharing
-		volatile int a[16];
 		volatile int mutex;
-		volatile int b[15];
-	};
+	});
 }
 
 #endif   // sw_MutexLock_hpp

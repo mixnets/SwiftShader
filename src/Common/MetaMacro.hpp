@@ -12,8 +12,10 @@
 #ifndef sw_MetaMacro_hpp
 #define sw_MetaMacro_hpp
 
+#if !defined(__unix__)
 //  Disables the "identifier was truncated to '255' characters in the browser information" warning
 #pragma warning(disable: 4786)
+#endif
 
 namespace Meta
 {
