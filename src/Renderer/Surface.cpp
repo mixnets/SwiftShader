@@ -2365,12 +2365,8 @@ namespace sw
 		const bool entire = x0 == 0 && y0 == 0 && width == internal.width && height == internal.height;
 		const Lock lock = entire ? LOCK_DISCARD : LOCK_WRITEONLY;
 
-		int width2 = (internal.width + 1) & ~1;
-
 		int x1 = x0 + width;
 		int y1 = y0 + height;
-
-		int bytes = 4 * (x1 - x0);
 
 	//	if(lockable || !quadLayoutEnabled)
 		{
@@ -3197,7 +3193,7 @@ namespace sw
 		{
 			if(CPUID::supportsSSE2() && (width % 4) == 0)
 			{
-				if(internal.depth == 2)
+				if(quality == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3215,7 +3211,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(quality == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3239,7 +3235,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(quality == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3275,7 +3271,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(quality == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3341,7 +3337,7 @@ namespace sw
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7F7F7F7F) + (((x) ^ (y)) & 0x01010101))
 
-				if(internal.depth == 2)
+				if(quality == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3359,7 +3355,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(quality == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3383,7 +3379,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(quality == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3419,7 +3415,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(quality == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3488,7 +3484,7 @@ namespace sw
 		{
 			if(CPUID::supportsSSE2() && (width % 4) == 0)
 			{
-				if(internal.depth == 2)
+				if(quality == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3506,7 +3502,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(quality == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3530,7 +3526,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(quality == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3566,7 +3562,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(quality == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3632,7 +3628,7 @@ namespace sw
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7FFF7FFF) + (((x) ^ (y)) & 0x00010001))
 
-				if(internal.depth == 2)
+				if(quality == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3650,7 +3646,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(quality == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3674,7 +3670,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(quality == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3710,7 +3706,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(quality == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3779,7 +3775,7 @@ namespace sw
 		{
 			if(CPUID::supportsSSE2() && (width % 2) == 0)
 			{
-				if(internal.depth == 2)
+				if(quality == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3797,7 +3793,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(quality == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3821,7 +3817,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(quality == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3857,7 +3853,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(quality == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3923,7 +3919,7 @@ namespace sw
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7FFF7FFF) + (((x) ^ (y)) & 0x00010001))
 
-				if(internal.depth == 2)
+				if(quality == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3941,7 +3937,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(quality == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3965,7 +3961,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(quality == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4001,7 +3997,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(quality == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4070,7 +4066,7 @@ namespace sw
 		{
 			if(CPUID::supportsSSE() && (width % 4) == 0)
 			{
-				if(internal.depth == 2)
+				if(quality == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4089,7 +4085,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(quality == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4114,7 +4110,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(quality == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4151,7 +4147,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(quality == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4216,7 +4212,7 @@ namespace sw
 			}
 			else
 			{
-				if(internal.depth == 2)
+				if(quality == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4235,7 +4231,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(quality == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4260,7 +4256,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(quality == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4297,7 +4293,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(quality == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4365,7 +4361,7 @@ namespace sw
 		{
 			if(CPUID::supportsSSE() && (width % 2) == 0)
 			{
-				if(internal.depth == 2)
+				if(quality == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4384,7 +4380,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(quality == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4409,7 +4405,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(quality == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4446,7 +4442,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(quality == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4511,7 +4507,7 @@ namespace sw
 			}
 			else
 			{
-				if(internal.depth == 2)
+				if(quality == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4530,7 +4526,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(quality == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4555,7 +4551,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(quality == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4592,7 +4588,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(quality == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4660,7 +4656,7 @@ namespace sw
 		{
 			if(CPUID::supportsSSE())
 			{
-				if(internal.depth == 2)
+				if(quality == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4679,7 +4675,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(quality == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4704,7 +4700,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(quality == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4741,7 +4737,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(quality == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4806,7 +4802,7 @@ namespace sw
 			}
 			else
 			{
-				if(internal.depth == 2)
+				if(quality == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4825,7 +4821,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(quality == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4850,7 +4846,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(quality == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4887,7 +4883,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(quality == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{

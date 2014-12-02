@@ -2725,7 +2725,6 @@ namespace sw
 	template<class T>
 	Pointer<T>::Pointer(const void *external) : alignment((intptr_t)external & 0x0000000F ? 1 : 16)
 	{
-		llvm::Module *module = Nucleus::getModule();
 		const llvm::GlobalValue *globalPointer = Nucleus::getGlobalValueAtAddress(const_cast<void*>(external));   // FIXME: Const
 
 		if(!globalPointer)
