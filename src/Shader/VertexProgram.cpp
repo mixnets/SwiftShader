@@ -106,9 +106,6 @@ namespace sw
 			Src src2 = instruction->src[2];
 
 			bool predicate = instruction->predicate;
-			int size = shader->size(opcode);
-			Usage usage = instruction->usage;
-			unsigned char usageIndex = instruction->usageIndex;
 			Control control = instruction->control;
 			bool integer = dst.type == Shader::PARAMETER_ADDR;
 			bool pp = dst.partialPrecision;
@@ -534,7 +531,6 @@ namespace sw
 			for(int i = 0; i < 12; i++)
 			{
 				unsigned char usage = shader->output[i][0].usage;
-				unsigned char index = shader->output[i][0].index;
 
 				switch(usage)
 				{

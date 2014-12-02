@@ -2660,12 +2660,13 @@ namespace sw
 					current.w = current.w - As<Short4>(As<UShort4>(current.w) >> 8) + Short4(0x0080, 0x0080, 0x0080, 0x0080);
 				}
 				break;
+            default:
+                break;
 			}
 		}
 
 		int rgbaWriteMask = state.colorWriteActive(index);
-		int bgraWriteMask = rgbaWriteMask & 0x0000000A | (rgbaWriteMask & 0x00000001) << 2 | (rgbaWriteMask & 0x00000004) >> 2;
-		int brgaWriteMask = rgbaWriteMask & 0x00000008 | (rgbaWriteMask & 0x00000001) << 1 | (rgbaWriteMask & 0x00000002) << 1 | (rgbaWriteMask & 0x00000004) >> 2;
+		int bgraWriteMask = (rgbaWriteMask & 0x0000000A) | (rgbaWriteMask & 0x00000001) << 2 | (rgbaWriteMask & 0x00000004) >> 2;
 
 		switch(state.targetFormat[index])
 		{
@@ -3783,7 +3784,7 @@ namespace sw
 			r.enableLeave = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 		}
 
-		bool out[4][4] = {false};
+		bool out[4][4] = {{false}};
 
 		// Create all call site return blocks up front
 		for(size_t i = 0; i < shader->getLength(); i++)

@@ -100,7 +100,8 @@ namespace sw
 		deallocate(data);
 	}
 
-	Renderer::Renderer(Context *context, bool halfIntegerCoordinates, bool symmetricNormalizedDepth, bool booleanFaceRegister, bool fullPixelPositionRegister, bool exactColorRounding) : context(context), VertexProcessor(context), PixelProcessor(context), SetupProcessor(context), viewport()
+	Renderer::Renderer(Context *ctx, bool halfIntegerCoordinates, bool symmetricNormalizedDepth, bool booleanFaceRegister, bool fullPixelPositionRegister, bool exactColorRounding)
+	 : VertexProcessor(ctx), PixelProcessor(ctx), SetupProcessor(ctx), context(ctx), viewport()
 	{
 		sw::halfIntegerCoordinates = halfIntegerCoordinates;
 		sw::symmetricNormalizedDepth = symmetricNormalizedDepth;
@@ -1395,7 +1396,6 @@ namespace sw
 
 		DrawCall &draw = *renderer->drawList[renderer->primitiveProgress[unit].drawCall % DRAW_COUNT];
 		SetupProcessor::State &state = draw.setupState;
-		SetupProcessor::RoutinePointer setupRoutine = draw.setupPointer;
 
 		const Vertex &v0 = triangle[0].v0;
 		const Vertex &v1 = triangle[0].v1;
