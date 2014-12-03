@@ -15,7 +15,7 @@
 
 namespace sw
 {
-	Resource::Resource(int bytes)
+	Resource::Resource(size_t bytes) : size(bytes)
 	{
 		blocked = 0;
 
