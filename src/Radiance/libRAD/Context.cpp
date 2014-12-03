@@ -17,7 +17,6 @@
 #include "main.h"
 #include "mathutil.h"
 #include "utilities.h"
-#include "Buffer.h"
 #include "Fence.h"
 #include "Framebuffer.h"
 #include "Program.h"
@@ -25,8 +24,6 @@
 #include "Renderbuffer.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "VertexDataManager.h"
-#include "IndexDataManager.h"
 #include "libEGL/Display.h"
 #include "libEGL/Surface.h"
 #include "Common/Half.hpp"
@@ -125,7 +122,6 @@ Context::Context(const egl::Config *config, const Context *shareContext) : mConf
 	mState.stencilBuffer = 0;
 
     mVertexDataManager = NULL;
-    mIndexDataManager = NULL;
 
     mInvalidEnum = false;
     mInvalidValue = false;
@@ -141,16 +137,12 @@ Context::Context(const egl::Config *config, const Context *shareContext) : mConf
 Context::~Context()
 {
     delete mVertexDataManager;
-    delete mIndexDataManager;
 }
 
 void Context::makeCurrent(egl::Surface *surface)
 {
     if(!mHasBeenCurrent)
     {
-        mVertexDataManager = new VertexDataManager(this);
-        mIndexDataManager = new IndexDataManager();
-
         mState.viewportX = 0;
         mState.viewportY = 0;
         mState.viewportWidth = surface->getWidth();
@@ -596,11 +588,6 @@ void Context::setVertexAttribState(unsigned int attribNum, sw::Resource *buffer,
     mState.vertexAttribute[attribNum].mOffset = offset;
 }
 
-const VertexAttributeArray &Context::getVertexAttributes()
-{
-    return mState.vertexAttribute;
-}
-
 void Context::setPackAlignment(GLint alignment)
 {
     mState.packAlignment = alignment;
@@ -888,17 +875,60 @@ void Context::applyState(GLenum drawMode)
     }
 }
 
-GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count)
+struct TranslatedAttribute
+{
+    sw::StreamType type;
+	int count;
+	bool normalized;
+
+    unsigned int offset;
+    unsigned int stride;   // 0 means not to advance the read pointer at all
+
+    sw::Resource *vertexBuffer;
+};
+
+GLenum Context::applyVertexBuffer(GLint base, GLint first)
 {
     TranslatedAttribute attributes[MAX_VERTEX_ATTRIBS];
 
-    GLenum err = mVertexDataManager->prepareVertexData(first, count, attributes);
-    if(err != GL_NO_ERROR)
+    const VertexAttributeArray &attribs = mState.vertexAttribute;
+    Program *program = mState.program;
+    
+    // Perform the vertex data translations
+    for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
     {
-        return err;
-    }
+        if(program->getAttributeStream(i) != -1)
+        {
+            if(attribs[i].mArrayEnabled)
+            {
+				attributes[i].vertexBuffer = attribs[i].buffer;
+				attributes[i].offset = first * attribs[i].stride() + attribs[i].mOffset;
+				attributes[i].stride = attribs[i].stride();
+               
+				switch(attribs[i].mType)
+				{
+				case GL_BYTE:           attributes[i].type = sw::STREAMTYPE_SBYTE;  break;
+				case GL_UNSIGNED_BYTE:  attributes[i].type = sw::STREAMTYPE_BYTE;   break;
+				case GL_SHORT:          attributes[i].type = sw::STREAMTYPE_SHORT;  break;
+				case GL_UNSIGNED_SHORT: attributes[i].type = sw::STREAMTYPE_USHORT; break;
+				case GL_FIXED:          attributes[i].type = sw::STREAMTYPE_FIXED;  break;
+				case GL_FLOAT:          attributes[i].type = sw::STREAMTYPE_FLOAT;  break;
+				default: UNREACHABLE(); attributes[i].type = sw::STREAMTYPE_FLOAT;  break;
+				}
 
-	Program *program = mState.program;
+				attributes[i].count = attribs[i].mSize;
+				attributes[i].normalized = attribs[i].mNormalized;
+            }
+            else
+            {
+                attributes[i].vertexBuffer = 0;
+                attributes[i].type = sw::STREAMTYPE_FLOAT;
+				attributes[i].count = 4;
+                attributes[i].stride = 0;
+                attributes[i].offset = 0;
+            }
+        }
+    }
 
 	device->resetInputStreams(false);
 
@@ -929,17 +959,9 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count)
 	return GL_NO_ERROR;
 }
 
-// Applies the indices and element array bindings
-GLenum Context::applyIndexBuffer(const void *indices, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo)
+void Context::applyIndexBuffer()
 {
-    GLenum err = mIndexDataManager->prepareIndexData(type, count, mState.elementArrayBuffer, indices, indexInfo);
-
-    if(err == GL_NO_ERROR)
-    {
-        device->setIndexBuffer(indexInfo->indexBuffer);
-    }
-
-    return err;
+	device->setIndexBuffer(mState.elementArrayBuffer);
 }
 
 // Applies the shaders and shader constants
@@ -1062,6 +1084,17 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 	}
 }
 
+static std::size_t typeSize(GLenum type)
+{
+    switch(type)
+    {
+    case GL_UNSIGNED_INT:   return sizeof(GLuint);
+    case GL_UNSIGNED_SHORT: return sizeof(GLushort);
+    case GL_UNSIGNED_BYTE:  return sizeof(GLubyte);
+    default: UNREACHABLE(); return sizeof(GLushort);
+    }
+}
+
 void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
 {
     if(!mState.program)
@@ -1087,7 +1120,7 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
 
     applyState(mode);
 
-    GLenum err = applyVertexBuffer(0, first, count);
+    GLenum err = applyVertexBuffer(0, first);
     if(err != GL_NO_ERROR)
     {
         return error(err);
@@ -1106,14 +1139,9 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
     }
 }
 
-void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *indices)
+void Context::drawElements(GLenum mode, GLsizei count, GLenum type, intptr_t offset)
 {
-    if(!mState.program)
-    {
-        return error(GL_INVALID_OPERATION);
-    }
-
-    if(!indices && !mState.elementArrayBuffer)
+    if(!mState.program || !mState.elementArrayBuffer)
     {
         return error(GL_INVALID_OPERATION);
     }
@@ -1136,15 +1164,9 @@ void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *
 
     applyState(mode);
 
-    TranslatedIndexData indexInfo;
-    GLenum err = applyIndexBuffer(indices, count, mode, type, &indexInfo);
-    if(err != GL_NO_ERROR)
-    {
-        return error(err);
-    }
-
-    GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
-    err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount);
+    applyIndexBuffer();
+    
+    GLenum err = applyVertexBuffer(0, 0);
     if(err != GL_NO_ERROR)
     {
         return error(err);
@@ -1160,7 +1182,7 @@ void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *
 
     if(!cullSkipsDraw(mode))
     {
-		device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, IndexDataManager::typeSize(type));
+		device->drawIndexedPrimitive(primitiveType, offset, primitiveCount, typeSize(type));
     }
 }
 
