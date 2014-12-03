@@ -23,6 +23,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="ln -s -f ./libGLES_CM.so.1 ./../../../lib/Debug_x86/libGLES_CM.so" />
+					<Add after="ln -s -f ./libGLES_CM.so.1 ./../../../lib/Debug_x86/libGLES_CM_translator.so" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release x86">
@@ -50,6 +51,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="ln -s -f ./libGLES_CM.so.1 ./../../../lib/Release_x86/libGLES_CM.so" />
+					<Add after="ln -s -f ./libGLES_CM.so.1 ./../../../lib/Release_x86/libGLES_CM_translator.so" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Debug x64">
@@ -70,6 +72,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="ln -s -f ./libGLES_CM.so.1 ./../../../lib/Debug_x64/libGLES_CM.so" />
+					<Add after="ln -s -f ./libGLES_CM.so.1 ./../../../lib/Debug_x64/lib64GLES_CM_translator.so" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release x64">
@@ -98,6 +101,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="ln -s -f ./libGLES_CM.so.1 ./../../../lib/Release_x64/libGLES_CM.so" />
+					<Add after="ln -s -f ./libGLES_CM.so.1 ./../../../lib/Release_x64/lib64GLES_CM_translator.so" />
 				</ExtraCommands>
 			</Target>
 		</Build>

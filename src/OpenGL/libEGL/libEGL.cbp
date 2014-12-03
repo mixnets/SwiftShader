@@ -22,6 +22,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="ln -s -f ./libEGL.so.1 ./../../../lib/Debug_x86/libEGL.so" />
+					<Add after="ln -s -f ./libEGL.so.1 ./../../../lib/Debug_x86/libEGL_translator.so" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release x86">
@@ -43,6 +44,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="ln -s -f ./libEGL.so.1 ./../../../lib/Release_x86/libEGL.so" />
+					<Add after="ln -s -f ./libEGL.so.1 ./../../../lib/Release_x86/libEGL_translator.so" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Debug x64">
@@ -62,6 +64,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="ln -s -f ./libEGL.so.1 ./../../../lib/Debug_x64/libEGL.so" />
+					<Add after="ln -s -f ./libEGL.so.1 ./../../../lib/Debug_x64/lib64EGL_translator.so" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release x64">
@@ -72,8 +75,8 @@
 				<Option createDefFile="1" />
 				<Option createStaticLib="1" />
 				<Compiler>
-					<Add option="-march=core2" />
 					<Add option="-O2" />
+					<Add option="-march=core2" />
 					<Add option="-m64" />
 					<Add option="-fPIC" />
 					<Add option="-DNDEBUG" />
@@ -85,6 +88,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="ln -s -f ./libEGL.so.1 ./../../../lib/Release_x64/libEGL.so" />
+					<Add after="ln -s -f ./libEGL.so.1 ./../../../lib/Release_x64/lib64EGL_translator.so" />
 				</ExtraCommands>
 			</Target>
 		</Build>
