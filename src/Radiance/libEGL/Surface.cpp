@@ -154,7 +154,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
     if(mConfig->mDepthStencilFormat != sw::FORMAT_NULL)
     {
         mDepthStencil = es2::createDepthStencil(backBufferWidth, backBufferHeight, mConfig->mDepthStencilFormat, 1, false);
-
+		
 		if(!mDepthStencil)
 		{
 			ERR("Could not create depth/stencil buffer for surface");
