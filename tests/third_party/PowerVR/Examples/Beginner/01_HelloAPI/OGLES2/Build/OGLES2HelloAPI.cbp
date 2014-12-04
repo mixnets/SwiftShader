@@ -21,7 +21,7 @@
 				</Linker>
 			</Target>
 			<Target title="Release x86">
-				<Option output="bin/Release_x86/OGLES2HelloAPI" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release_x86/OGLES2HelloAPI" prefix_auto="0" extension_auto="0" />
 				<Option object_output="obj/Release_x86/" />
 				<Option type="1" />
 				<Option compiler="clang" />
@@ -72,6 +72,7 @@
 			<Add library="X11" />
 			<Add library="EGL" />
 			<Add library="GLESv2" />
+			<Add library="dl" />
 		</Linker>
 		<Unit filename="../OGLES2HelloAPI_LinuxX11.cpp" />
 		<Extensions>

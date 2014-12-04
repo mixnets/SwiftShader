@@ -23,6 +23,8 @@
 #include "X11/Xlib.h"
 #include "X11/Xutil.h"
 
+#include <dlfcn.h>
+
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 
@@ -748,6 +750,9 @@ void ReleaseNativeResources(Display* nativeDisplay, Window nativeWindow)
 *******************************************************************************************************************************************/
 int main(int /*argc*/, char **/*argv*/)
 {
+    void *handle = dlopen("lib64EGL_translator.so", RTLD_NOW);
+    const char *err = dlerror();
+
 	// X11 variables
 	Display* nativeDisplay = NULL;
 	Window nativeWindow = 0;

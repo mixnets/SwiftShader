@@ -82,7 +82,7 @@ bool Surface::initialize()
 }
 
 void Surface::release()
-{	
+{
     if(mDepthStencil)
     {
         mDepthStencil->release();
@@ -121,7 +121,7 @@ bool Surface::reset()
 	#else
 		XWindowAttributes windowAttributes;
 		XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
-		
+
 		return reset(windowAttributes.width, windowAttributes.height);
 	#endif
 }
@@ -216,7 +216,7 @@ void Surface::setSwapInterval(EGLint interval)
     {
         return;
     }
-    
+
     mSwapInterval = interval;
     mSwapInterval = std::max(mSwapInterval, mDisplay->getMinSwapInterval());
     mSwapInterval = std::min(mSwapInterval, mDisplay->getMaxSwapInterval());

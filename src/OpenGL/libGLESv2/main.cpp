@@ -27,6 +27,32 @@
 #define DESTRUCTOR
 #endif
 
+void *getLibEGL()
+{
+	#if defined(_WIN32)
+	const char *libEGL_lib[] = {"libEGL.dll", "libEGL_translator.dll"};
+	#else
+	const char *libEGL_lib[] = {"libEGL_translator.so", "libEGL.so.1", "libEGL.so"};
+	#endif
+
+	static void *libEGL = loadLibrary(libEGL_lib);
+
+	return libEGL;
+}
+
+void *getLibGLES_CM()
+{
+	#if defined(_WIN32)
+	const char *libGLES_CM_lib[] = {"libGLES_CM.dll", "libGLES_CM_translator.dll"};
+	#else
+	const char *libGLES_CM_lib[] = {"libGLES_CM_translator.so", "libGLES_CM.so.1", "libGLES_CM.so"};
+	#endif
+
+	static void *libGLES_CM = loadLibrary(libGLES_CM_lib);
+
+	return libGLES_CM;
+}
+
 static void glAttachThread()
 {
     TRACE("()");
@@ -37,32 +63,11 @@ static void glDetachThread()
     TRACE("()");
 }
 
-CONSTRUCTOR static bool glAttachProcess()
-{
+CONSTRUCTOR static void glAttachProcess()
+{printf("hello world! es2\n");
     TRACE("()");
 
     glAttachThread();
-
-	#if defined(_WIN32)
-	const char *libEGL_lib[] = {"libEGL.dll", "libEGL_translator.dll"};
-	#else
-	const char *libEGL_lib[] = {"libEGL.so.1", "libEGL.so"};
-	#endif
-
-	libEGL = loadLibrary(libEGL_lib);
-	egl::getCurrentContext = (egl::Context *(*)())getProcAddress(libEGL, "clientGetCurrentContext");
-	egl::getCurrentDisplay = (egl::Display *(*)())getProcAddress(libEGL, "clientGetCurrentDisplay");
-
-	#if defined(_WIN32)
-	const char *libGLES_CM_lib[] = {"libGLES_CM.dll", "libGLES_CM_translator.dll"};
-	#else
-	const char *libGLES_CM_lib[] = {"libGLES_CM.so.1", "libGLES_CM.so"};
-	#endif
-
-	libGLES_CM = loadLibrary(libGLES_CM_lib);
-	es1::getProcAddress = (__eglMustCastToProperFunctionPointerType (*)(const char*))getProcAddress(libGLES_CM, "glGetProcAddress");
-
-    return libEGL != 0;
 }
 
 DESTRUCTOR static void glDetachProcess()
@@ -70,8 +75,8 @@ DESTRUCTOR static void glDetachProcess()
     TRACE("()");
 
 	glDetachThread();
-	freeLibrary(libEGL);
-	freeLibrary(libGLES_CM);
+	freeLibrary(getLibEGL());
+	freeLibrary(getLibGLES_CM());
 }
 
 #if defined(_WIN32)
@@ -80,7 +85,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
     switch(reason)
     {
     case DLL_PROCESS_ATTACH:
-        return glAttachProcess();
+        glAttachProcess();
         break;
     case DLL_THREAD_ATTACH:
         glAttachThread();
@@ -104,12 +109,12 @@ namespace es2
 es2::Context *getContext()
 {
 	egl::Context *context = egl::getCurrentContext();
-	
+
 	if(context && context->getClientVersion() == 2)
 	{
 		return static_cast<es2::Context*>(context);
 	}
-	
+
 	return 0;
 }
 
@@ -172,14 +177,24 @@ void error(GLenum errorCode)
 
 namespace egl
 {
-	egl::Context *(*getCurrentContext)() = 0;
-	egl::Display *(*getCurrentDisplay)() = 0;
+	egl::Context *getCurrentContext()
+	{
+		static auto clientGetCurrentContext = (egl::Context *(*)())getProcAddress(getLibEGL(), "clientGetCurrentContext");
+		return clientGetCurrentContext();
+	}
+
+	egl::Display *getCurrentDisplay()
+	{
+		static auto clientGetCurrentDisplay = (egl::Display *(*)())getProcAddress(getLibEGL(), "clientGetCurrentDisplay");
+		return clientGetCurrentDisplay();
+	}
 }
 
 namespace es1
 {
-	__eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname) = 0;
+	__eglMustCastToProperFunctionPointerType getProcAddress(const char *procname)
+	{
+		static auto getProcAddress = (__eglMustCastToProperFunctionPointerType(*)(const char*))::getProcAddress(getLibGLES_CM(), "glGetProcAddress");
+		return getProcAddress(procname);
+	}
 }
-
-void *libEGL = 0;   // Handle to the libEGL module
-void *libGLES_CM = 0;   // Handle to the libGLES_CM module

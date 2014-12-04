@@ -28,6 +28,31 @@ static sw::Thread::LocalStorageKey currentTLS = TLS_OUT_OF_INDEXES;
 #define DESTRUCTOR
 #endif
 
+void *getLibGLES_CM()
+{
+	#if defined(_WIN32)
+	const char *libGLES_CM_lib[] = {"libGLES_CM.dll", "libGLES_CM_translator.dll"};
+	#else
+	const char *libGLES_CM_lib[] = {"libGLES_CM.so.1", "libGLES_CM.so"};
+	#endif
+
+	static void *libGLES_CM = loadLibrary(libGLES_CM_lib);
+
+	return libGLES_CM;
+}
+
+void *getLibGLESv2()
+{
+	#if defined(_WIN32)
+	const char *libGLESv2_lib[] = {"libGLESv2.dll", "libGLES_V2_translator.dll"};
+	#else
+	const char *libGLESv2_lib[] = {"libGLESv2.so.2", "libGLESv2.so"};
+	#endif
+	static void *libGLESv2 = loadLibrary(libGLESv2_lib);
+
+	return libGLESv2;
+}
+
 static void eglAttachThread()
 {
     TRACE("()");
@@ -59,8 +84,8 @@ static void eglDetachThread()
 	}
 }
 
-CONSTRUCTOR static bool eglAttachProcess()
-{
+CONSTRUCTOR static void eglAttachProcess()
+{printf("hello world! egl\n");
     TRACE("()");
 
 	#if !defined(ANGLE_DISABLE_TRACE)
@@ -78,43 +103,10 @@ CONSTRUCTOR static bool eglAttachProcess()
 
     if(currentTLS == TLS_OUT_OF_INDEXES)
     {
-        return false;
+        return;
     }
 
 	eglAttachThread();
-
-	#if defined(_WIN32)
-	const char *libGLES_CM_lib[] = {"libGLES_CM.dll", "libGLES_CM_translator.dll"};
-	#else
-	const char *libGLES_CM_lib[] = {"libGLES_CM.so.1", "libGLES_CM.so"};
-	#endif
-
-    libGLES_CM = loadLibrary(libGLES_CM_lib);
-    es1::createContext = (egl::Context *(*)(const egl::Config*, const egl::Context*))getProcAddress(libGLES_CM, "glCreateContext");
-    es1::getProcAddress = (__eglMustCastToProperFunctionPointerType (*)(const char*))getProcAddress(libGLES_CM, "glGetProcAddress");
-
-	#if defined(_WIN32)
-	const char *libGLESv2_lib[] = {"libGLESv2.dll", "libGLES_V2_translator.dll"};
-	#else
-	const char *libGLESv2_lib[] = {"libGLESv2.so.2", "libGLESv2.so"};
-	#endif
-
-    libGLESv2 = loadLibrary(libGLESv2_lib);
-    es2::createContext = (egl::Context *(*)(const egl::Config*, const egl::Context*))getProcAddress(libGLESv2, "glCreateContext");
-    es2::getProcAddress = (__eglMustCastToProperFunctionPointerType (*)(const char*))getProcAddress(libGLESv2, "glGetProcAddress");
-
-	es::createBackBuffer = (egl::Image *(*)(int, int, const egl::Config*))getProcAddress(libGLES_CM, "createBackBuffer");
-	es::createDepthStencil = (egl::Image *(*)(unsigned int, unsigned int, sw::Format, int, bool))getProcAddress(libGLES_CM, "createDepthStencil");
-    es::createFrameBuffer = (sw::FrameBuffer *(*)(EGLNativeDisplayType, EGLNativeWindowType, int, int))getProcAddress(libGLES_CM, "createFrameBuffer");
-
-	if(!es::createBackBuffer)
-	{
-		es::createBackBuffer = (egl::Image *(*)(int, int, const egl::Config*))getProcAddress(libGLESv2, "createBackBuffer");
-		es::createDepthStencil = (egl::Image *(*)(unsigned int, unsigned int, sw::Format, int, bool))getProcAddress(libGLESv2, "createDepthStencil");
-		es::createFrameBuffer = (sw::FrameBuffer *(*)(EGLNativeDisplayType, EGLNativeWindowType, int, int))getProcAddress(libGLESv2, "createFrameBuffer");
-	}
-
-	return libGLES_CM != 0 || libGLESv2 != 0;
 }
 
 DESTRUCTOR static void eglDetachProcess()
@@ -123,7 +115,8 @@ DESTRUCTOR static void eglDetachProcess()
 
 	eglDetachThread();
 	sw::Thread::freeLocalStorageKey(currentTLS);
-	freeLibrary(libGLESv2);
+	freeLibrary(getLibGLESv2());
+	freeLibrary(getLibGLES_CM());
 }
 
 #if defined(_WIN32)
@@ -173,7 +166,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
 		{
 			WaitForDebugger(instance);
 		}
-        return eglAttachProcess();
+        eglAttachProcess();
         break;
     case DLL_THREAD_ATTACH:
         eglAttachThread();
@@ -333,22 +326,69 @@ EGLContext clientGetCurrentDisplay()
 
 namespace es1
 {
-	egl::Context *(*createContext)(const egl::Config *config, const egl::Context *shareContext) = 0;
-	__eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname) = 0;
+	egl::Context *createContext(const egl::Config *config, const egl::Context *shareContext)
+	{
+		static auto createContext = (egl::Context *(*)(const egl::Config*, const egl::Context*))::getProcAddress(getLibGLES_CM(), "glCreateContext");
+		return createContext(config, shareContext);
+	}
+
+	__eglMustCastToProperFunctionPointerType getProcAddress(const char *procname)
+	{
+		static auto getProcAddress = (__eglMustCastToProperFunctionPointerType(*)(const char*))::getProcAddress(getLibGLES_CM(), "glGetProcAddress");
+		return getProcAddress(procname);
+	}
 }
 
 namespace es2
 {
-	egl::Context *(*createContext)(const egl::Config *config, const egl::Context *shareContext) = 0;
-	__eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname) = 0;
+	egl::Context *createContext(const egl::Config *config, const egl::Context *shareContext)
+	{
+		static auto createContext = (egl::Context *(*)(const egl::Config*, const egl::Context*))::getProcAddress(getLibGLESv2(), "glCreateContext");
+		return createContext(config, shareContext);
+	}
+
+	__eglMustCastToProperFunctionPointerType getProcAddress(const char *procname)
+	{
+		static auto getProcAddress = (__eglMustCastToProperFunctionPointerType(*)(const char*))::getProcAddress(getLibGLESv2(), "glGetProcAddress");
+		return getProcAddress(procname);
+	}
 }
 
 namespace es
 {
-	egl::Image *(*createBackBuffer)(int width, int height, const egl::Config *config) = 0;
-	egl::Image *(*createDepthStencil)(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard) = 0;
-	sw::FrameBuffer *(*createFrameBuffer)(EGLNativeDisplayType display, EGLNativeWindowType window, int width, int height) = 0;
-}
+	egl::Image *createBackBuffer(int width, int height, const egl::Config *config)
+	{
+		if(getLibGLESv2())
+		{
+			static auto createBackBuffer = (egl::Image *(*)(int, int, const egl::Config*))getProcAddress(getLibGLESv2(), "createBackBuffer");
+			return createBackBuffer(width, height, config);
+		}
 
-void *libGLES_CM = 0;   // Handle to the libGLES_CM module
-void *libGLESv2 = 0;   // Handle to the libGLESv2 module
+		static auto createBackBuffer = (egl::Image *(*)(int, int, const egl::Config*))getProcAddress(getLibGLES_CM(), "createBackBuffer");
+		return createBackBuffer(width, height, config);
+	}
+
+	egl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard)
+	{
+		if(getLibGLESv2())
+		{
+			static auto createDepthStencil = (egl::Image *(*)(unsigned int, unsigned int, sw::Format, int, bool))getProcAddress(getLibGLESv2(), "createDepthStencil");
+			return createDepthStencil(width, height, format, multiSampleDepth, discard);
+		}
+
+		static auto createDepthStencil = (egl::Image *(*)(unsigned int, unsigned int, sw::Format, int, bool))getProcAddress(getLibGLES_CM(), "createDepthStencil");
+		return createDepthStencil(width, height, format, multiSampleDepth, discard);
+	}
+
+	sw::FrameBuffer *createFrameBuffer(EGLNativeDisplayType display, EGLNativeWindowType window, int width, int height)
+	{
+		if(getLibGLESv2())
+		{
+			static auto createFrameBuffer = (sw::FrameBuffer *(*)(EGLNativeDisplayType, EGLNativeWindowType, int, int))getProcAddress(getLibGLESv2(), "createFrameBuffer");
+			return createFrameBuffer(display, window, width, height);
+		}
+
+		static auto createFrameBuffer = (sw::FrameBuffer *(*)(EGLNativeDisplayType, EGLNativeWindowType, int, int))getProcAddress(getLibGLES_CM(), "createFrameBuffer");
+		return createFrameBuffer(display, window, width, height);
+	}
+}

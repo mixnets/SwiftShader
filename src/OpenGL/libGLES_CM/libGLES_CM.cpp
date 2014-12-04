@@ -126,217 +126,217 @@ extern "C"
 
 EGLint EGLAPIENTRY eglGetError(void)
 {
-	static auto eglGetError = (EGLint (EGLAPIENTRY*)(void))getProcAddress(libEGL, "eglGetError");
+	static auto eglGetError = (EGLint (EGLAPIENTRY*)(void))getProcAddress(getLibEGL(), "eglGetError");
 	return eglGetError();
 }
 
 EGLDisplay EGLAPIENTRY eglGetDisplay(EGLNativeDisplayType display_id)
 {
-	static auto eglGetDisplay = (EGLDisplay (EGLAPIENTRY*)(EGLNativeDisplayType display_id))getProcAddress(libEGL, "eglGetDisplay");
+	static auto eglGetDisplay = (EGLDisplay (EGLAPIENTRY*)(EGLNativeDisplayType display_id))getProcAddress(getLibEGL(), "eglGetDisplay");
 	return eglGetDisplay(display_id);
 }
 
 EGLBoolean EGLAPIENTRY eglInitialize(EGLDisplay dpy, EGLint *major, EGLint *minor)
 {
-	static auto eglInitialize = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLint *major, EGLint *minor))getProcAddress(libEGL, "eglInitialize");
+	static auto eglInitialize = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLint *major, EGLint *minor))getProcAddress(getLibEGL(), "eglInitialize");
 	return eglInitialize(dpy, major, minor);
 }
 
 EGLBoolean EGLAPIENTRY eglTerminate(EGLDisplay dpy)
 {
-	static auto eglTerminate = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy))getProcAddress(libEGL, "eglTerminate");
+	static auto eglTerminate = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy))getProcAddress(getLibEGL(), "eglTerminate");
 	return eglTerminate(dpy);
 }
 
 const char *EGLAPIENTRY eglQueryString(EGLDisplay dpy, EGLint name)
 {
-	static auto eglQueryString = (const char *(EGLAPIENTRY*)(EGLDisplay dpy, EGLint name))getProcAddress(libEGL, "eglQueryString");
+	static auto eglQueryString = (const char *(EGLAPIENTRY*)(EGLDisplay dpy, EGLint name))getProcAddress(getLibEGL(), "eglQueryString");
 	return eglQueryString(dpy, name);
 }
 
 EGLBoolean EGLAPIENTRY eglGetConfigs(EGLDisplay dpy, EGLConfig *configs, EGLint config_size, EGLint *num_config)
 {
-	static auto eglGetConfigs = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLConfig *configs, EGLint config_size, EGLint *num_config))getProcAddress(libEGL, "eglGetConfigs");
+	static auto eglGetConfigs = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLConfig *configs, EGLint config_size, EGLint *num_config))getProcAddress(getLibEGL(), "eglGetConfigs");
 	return eglGetConfigs(dpy, configs, config_size, num_config);
 }
 
 EGLBoolean EGLAPIENTRY eglChooseConfig(EGLDisplay dpy, const EGLint *attrib_list, EGLConfig *configs, EGLint config_size, EGLint *num_config)
 {
-	static auto eglChooseConfig = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, const EGLint *attrib_list, EGLConfig *configs, EGLint config_size, EGLint *num_config))getProcAddress(libEGL, "eglChooseConfig");
+	static auto eglChooseConfig = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, const EGLint *attrib_list, EGLConfig *configs, EGLint config_size, EGLint *num_config))getProcAddress(getLibEGL(), "eglChooseConfig");
 	return eglChooseConfig(dpy, attrib_list, configs, config_size, num_config);
 }
 
 EGLBoolean EGLAPIENTRY eglGetConfigAttrib(EGLDisplay dpy, EGLConfig config, EGLint attribute, EGLint *value)
 {
-	static auto eglGetConfigAttrib = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLConfig config, EGLint attribute, EGLint *value))getProcAddress(libEGL, "eglGetConfigAttrib");
+	static auto eglGetConfigAttrib = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLConfig config, EGLint attribute, EGLint *value))getProcAddress(getLibEGL(), "eglGetConfigAttrib");
 	return eglGetConfigAttrib(dpy, config, attribute, value);
 }
 
 EGLSurface EGLAPIENTRY eglCreateWindowSurface(EGLDisplay dpy, EGLConfig config, EGLNativeWindowType window, const EGLint *attrib_list)
 {
-	static auto eglCreateWindowSurface = (EGLSurface (EGLAPIENTRY*)(EGLDisplay dpy, EGLConfig config, EGLNativeWindowType window, const EGLint *attrib_list))getProcAddress(libEGL, "eglCreateWindowSurface");
+	static auto eglCreateWindowSurface = (EGLSurface (EGLAPIENTRY*)(EGLDisplay dpy, EGLConfig config, EGLNativeWindowType window, const EGLint *attrib_list))getProcAddress(getLibEGL(), "eglCreateWindowSurface");
 	return eglCreateWindowSurface(dpy, config, window, attrib_list);
 }
 
 EGLSurface EGLAPIENTRY eglCreatePbufferSurface(EGLDisplay dpy, EGLConfig config, const EGLint *attrib_list)
 {
-	static auto eglCreatePbufferSurface = (EGLSurface (EGLAPIENTRY*)(EGLDisplay dpy, EGLConfig config, const EGLint *attrib_list))getProcAddress(libEGL, "eglCreatePbufferSurface");
+	static auto eglCreatePbufferSurface = (EGLSurface (EGLAPIENTRY*)(EGLDisplay dpy, EGLConfig config, const EGLint *attrib_list))getProcAddress(getLibEGL(), "eglCreatePbufferSurface");
 	return eglCreatePbufferSurface(dpy, config, attrib_list);
 }
 
 EGLSurface EGLAPIENTRY eglCreatePixmapSurface(EGLDisplay dpy, EGLConfig config, EGLNativePixmapType pixmap, const EGLint *attrib_list)
 {
-	static auto eglCreatePixmapSurface = (EGLSurface (EGLAPIENTRY*)(EGLDisplay dpy, EGLConfig config, EGLNativePixmapType pixmap, const EGLint *attrib_list))getProcAddress(libEGL, "eglCreatePixmapSurface");
+	static auto eglCreatePixmapSurface = (EGLSurface (EGLAPIENTRY*)(EGLDisplay dpy, EGLConfig config, EGLNativePixmapType pixmap, const EGLint *attrib_list))getProcAddress(getLibEGL(), "eglCreatePixmapSurface");
 	return eglCreatePixmapSurface(dpy, config, pixmap, attrib_list);
 }
 
 EGLBoolean EGLAPIENTRY eglDestroySurface(EGLDisplay dpy, EGLSurface surface)
 {
-	static auto eglDestroySurface = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface))getProcAddress(libEGL, "eglDestroySurface");
+	static auto eglDestroySurface = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface))getProcAddress(getLibEGL(), "eglDestroySurface");
 	return eglDestroySurface(dpy, surface);
 }
 
 EGLBoolean EGLAPIENTRY eglQuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value)
 {
-	static auto eglQuerySurface = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value))getProcAddress(libEGL, "eglQuerySurface");
+	static auto eglQuerySurface = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value))getProcAddress(getLibEGL(), "eglQuerySurface");
 	return eglQuerySurface(dpy, surface, attribute, value);
 }
 
 EGLBoolean EGLAPIENTRY eglBindAPI(EGLenum api)
 {
-	static auto eglBindAPI = (EGLBoolean (EGLAPIENTRY*)(EGLenum api))getProcAddress(libEGL, "eglBindAPI");
+	static auto eglBindAPI = (EGLBoolean (EGLAPIENTRY*)(EGLenum api))getProcAddress(getLibEGL(), "eglBindAPI");
 	return eglBindAPI(api);
 }
 
 EGLenum EGLAPIENTRY eglQueryAPI(void)
 {
-	static auto eglQueryAPI = (EGLenum (EGLAPIENTRY*)(void))getProcAddress(libEGL, "eglQueryAPI");
+	static auto eglQueryAPI = (EGLenum (EGLAPIENTRY*)(void))getProcAddress(getLibEGL(), "eglQueryAPI");
 	return eglQueryAPI();
 }
 
 EGLBoolean EGLAPIENTRY eglWaitClient(void)
 {
-	static auto eglWaitClient = (EGLBoolean (EGLAPIENTRY*)(void))getProcAddress(libEGL, "eglWaitClient");
+	static auto eglWaitClient = (EGLBoolean (EGLAPIENTRY*)(void))getProcAddress(getLibEGL(), "eglWaitClient");
 	return eglWaitClient();
 }
 
 EGLBoolean EGLAPIENTRY eglReleaseThread(void)
 {
-	static auto eglReleaseThread = (EGLBoolean (EGLAPIENTRY*)(void))getProcAddress(libEGL, "eglReleaseThread");
+	static auto eglReleaseThread = (EGLBoolean (EGLAPIENTRY*)(void))getProcAddress(getLibEGL(), "eglReleaseThread");
 	return eglReleaseThread();
 }
 
 EGLSurface EGLAPIENTRY eglCreatePbufferFromClientBuffer(EGLDisplay dpy, EGLenum buftype, EGLClientBuffer buffer, EGLConfig config, const EGLint *attrib_list)
 {
-	static auto eglCreatePbufferFromClientBuffer = (EGLSurface (EGLAPIENTRY*)(EGLDisplay dpy, EGLenum buftype, EGLClientBuffer buffer, EGLConfig config, const EGLint *attrib_list))getProcAddress(libEGL, "eglCreatePbufferFromClientBuffer");
+	static auto eglCreatePbufferFromClientBuffer = (EGLSurface (EGLAPIENTRY*)(EGLDisplay dpy, EGLenum buftype, EGLClientBuffer buffer, EGLConfig config, const EGLint *attrib_list))getProcAddress(getLibEGL(), "eglCreatePbufferFromClientBuffer");
 	return eglCreatePbufferFromClientBuffer(dpy, buftype, buffer, config, attrib_list);
 }
 
 EGLBoolean EGLAPIENTRY eglSurfaceAttrib(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint value)
 {
-	static auto eglSurfaceAttrib = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint value))getProcAddress(libEGL, "eglSurfaceAttrib");
+	static auto eglSurfaceAttrib = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint value))getProcAddress(getLibEGL(), "eglSurfaceAttrib");
 	return eglSurfaceAttrib(dpy, surface, attribute, value);
 }
 
 EGLBoolean EGLAPIENTRY eglBindTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
 {
-	static auto eglBindTexImage = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface, EGLint buffer))getProcAddress(libEGL, "eglBindTexImage");
+	static auto eglBindTexImage = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface, EGLint buffer))getProcAddress(getLibEGL(), "eglBindTexImage");
 	return eglBindTexImage(dpy, surface, buffer);
 }
 
 EGLBoolean EGLAPIENTRY eglReleaseTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
 {
-	static auto eglReleaseTexImage = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface, EGLint buffer))getProcAddress(libEGL, "eglReleaseTexImage");
+	static auto eglReleaseTexImage = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface, EGLint buffer))getProcAddress(getLibEGL(), "eglReleaseTexImage");
 	return eglReleaseTexImage(dpy, surface, buffer);
 }
 
 EGLBoolean EGLAPIENTRY eglSwapInterval(EGLDisplay dpy, EGLint interval)
 {
-	static auto eglSwapInterval = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLint interval))getProcAddress(libEGL, "eglSwapInterval");
+	static auto eglSwapInterval = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLint interval))getProcAddress(getLibEGL(), "eglSwapInterval");
 	return eglSwapInterval(dpy, interval);
 }
 
 EGLContext EGLAPIENTRY eglCreateContext(EGLDisplay dpy, EGLConfig config, EGLContext share_context, const EGLint *attrib_list)
 {
-	static auto eglCreateContext = (EGLContext (EGLAPIENTRY*)(EGLDisplay dpy, EGLConfig config, EGLContext share_context, const EGLint *attrib_list))getProcAddress(libEGL, "eglCreateContext");
+	static auto eglCreateContext = (EGLContext (EGLAPIENTRY*)(EGLDisplay dpy, EGLConfig config, EGLContext share_context, const EGLint *attrib_list))getProcAddress(getLibEGL(), "eglCreateContext");
 	return eglCreateContext(dpy, config, share_context, attrib_list);
 }
 
 EGLBoolean EGLAPIENTRY eglDestroyContext(EGLDisplay dpy, EGLContext ctx)
 {
-	static auto eglDestroyContext = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLContext ctx))getProcAddress(libEGL, "eglDestroyContext");
+	static auto eglDestroyContext = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLContext ctx))getProcAddress(getLibEGL(), "eglDestroyContext");
 	return eglDestroyContext(dpy, ctx);
 }
 
 EGLBoolean EGLAPIENTRY eglMakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx)
 {
-	static auto eglMakeCurrent = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx))getProcAddress(libEGL, "eglMakeCurrent");
+	static auto eglMakeCurrent = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx))getProcAddress(getLibEGL(), "eglMakeCurrent");
 	return eglMakeCurrent(dpy, draw, read, ctx);
 }
 
 EGLContext EGLAPIENTRY eglGetCurrentContext(void)
 {
-	static auto eglGetCurrentContext = (EGLContext (EGLAPIENTRY*)(void))getProcAddress(libEGL, "eglGetCurrentContext");
+	static auto eglGetCurrentContext = (EGLContext (EGLAPIENTRY*)(void))getProcAddress(getLibEGL(), "eglGetCurrentContext");
 	return eglGetCurrentContext();
 }
 
 EGLSurface EGLAPIENTRY eglGetCurrentSurface(EGLint readdraw)
 {
-	static auto eglGetCurrentSurface = (EGLSurface (EGLAPIENTRY*)(EGLint readdraw))getProcAddress(libEGL, "eglGetCurrentSurface");
+	static auto eglGetCurrentSurface = (EGLSurface (EGLAPIENTRY*)(EGLint readdraw))getProcAddress(getLibEGL(), "eglGetCurrentSurface");
 	return eglGetCurrentSurface(readdraw);
 }
 
 EGLDisplay EGLAPIENTRY eglGetCurrentDisplay(void)
 {
-	static auto eglGetCurrentDisplay = (EGLDisplay (EGLAPIENTRY*)(void))getProcAddress(libEGL, "eglGetCurrentDisplay");
+	static auto eglGetCurrentDisplay = (EGLDisplay (EGLAPIENTRY*)(void))getProcAddress(getLibEGL(), "eglGetCurrentDisplay");
 	return eglGetCurrentDisplay();
 }
 
 EGLBoolean EGLAPIENTRY eglQueryContext(EGLDisplay dpy, EGLContext ctx, EGLint attribute, EGLint *value)
 {
-	static auto eglQueryContext = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLContext ctx, EGLint attribute, EGLint *value))getProcAddress(libEGL, "eglQueryContext");
+	static auto eglQueryContext = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLContext ctx, EGLint attribute, EGLint *value))getProcAddress(getLibEGL(), "eglQueryContext");
 	return eglQueryContext(dpy, ctx, attribute, value);
 }
 
 EGLBoolean EGLAPIENTRY eglWaitGL(void)
 {
-	static auto eglWaitGL = (EGLBoolean (EGLAPIENTRY*)(void))getProcAddress(libEGL, "eglWaitGL");
+	static auto eglWaitGL = (EGLBoolean (EGLAPIENTRY*)(void))getProcAddress(getLibEGL(), "eglWaitGL");
 	return eglWaitGL();
 }
 
 EGLBoolean EGLAPIENTRY eglWaitNative(EGLint engine)
 {
-	static auto eglWaitNative = (EGLBoolean (EGLAPIENTRY*)(EGLint engine))getProcAddress(libEGL, "eglWaitNative");
+	static auto eglWaitNative = (EGLBoolean (EGLAPIENTRY*)(EGLint engine))getProcAddress(getLibEGL(), "eglWaitNative");
 	return eglWaitNative(engine);
 }
 
 EGLBoolean EGLAPIENTRY eglSwapBuffers(EGLDisplay dpy, EGLSurface surface)
 {
-	static auto eglSwapBuffers = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface))getProcAddress(libEGL, "eglSwapBuffers");
+	static auto eglSwapBuffers = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface))getProcAddress(getLibEGL(), "eglSwapBuffers");
 	return eglSwapBuffers(dpy, surface);
 }
 
 EGLBoolean EGLAPIENTRY eglCopyBuffers(EGLDisplay dpy, EGLSurface surface, EGLNativePixmapType target)
 {
-	static auto eglCopyBuffers = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface, EGLNativePixmapType target))getProcAddress(libEGL, "eglCopyBuffers");
+	static auto eglCopyBuffers = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLSurface surface, EGLNativePixmapType target))getProcAddress(getLibEGL(), "eglCopyBuffers");
 	return eglCopyBuffers(dpy, surface, target);
 }
 
 EGLImageKHR EGLAPIENTRY eglCreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list)
 {
-	static auto eglCreateImageKHR = (EGLImageKHR (EGLAPIENTRY*)(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list))getProcAddress(libEGL, "eglCreateImageKHR");
+	static auto eglCreateImageKHR = (EGLImageKHR (EGLAPIENTRY*)(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list))getProcAddress(getLibEGL(), "eglCreateImageKHR");
 	return eglCreateImageKHR(dpy, ctx, target, buffer, attrib_list);
 }
 
 EGLBoolean EGLAPIENTRY eglDestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
 {
-	static auto eglDestroyImageKHR = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLImageKHR image))getProcAddress(libEGL, "eglDestroyImageKHR");
+	static auto eglDestroyImageKHR = (EGLBoolean (EGLAPIENTRY*)(EGLDisplay dpy, EGLImageKHR image))getProcAddress(getLibEGL(), "eglDestroyImageKHR");
 	return eglDestroyImageKHR(dpy, image);
 }
 
 __eglMustCastToProperFunctionPointerType EGLAPIENTRY eglGetProcAddress(const char *procname)
 {
-	static auto eglGetProcAddress = (__eglMustCastToProperFunctionPointerType (EGLAPIENTRY*)(const char*))getProcAddress(libEGL, "eglGetProcAddress");
+	static auto eglGetProcAddress = (__eglMustCastToProperFunctionPointerType (EGLAPIENTRY*)(const char*))getProcAddress(getLibEGL(), "eglGetProcAddress");
 	return eglGetProcAddress(procname);
 }
 

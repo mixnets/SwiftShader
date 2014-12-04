@@ -48,17 +48,14 @@ const T &error(GLenum errorCode, const T &returnValue)
 // libEGL dependencies
 namespace egl
 {
-	extern egl::Context *(*getCurrentContext)();
-	extern egl::Display *(*getCurrentDisplay)();
+	egl::Context *getCurrentContext();
+	egl::Display *getCurrentDisplay();
 }
 
 // libGLES_CM dependencies
 namespace es1
 {
-	extern __eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname);
+	extern __eglMustCastToProperFunctionPointerType getProcAddress(const char *procname);
 }
-
-extern void *libEGL;       // Handle to the libEGL module
-extern void *libGLES_CM;   // Handle to the libGLES_CM module
 
 #endif   // LIBGLESV2_MAIN_H_
