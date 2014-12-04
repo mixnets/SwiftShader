@@ -15,6 +15,8 @@
 
 #include "FrameBufferX11.hpp"
 
+#include "Timer.hpp"
+
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <string.h>
@@ -83,14 +85,14 @@ namespace sw
 			x_image = XCreateImage(x_display, x_visual, depth, ZPixmap, 0, buffer, width, height, 32, width * 4);
 		}
 	}
-	
+
 	FrameBufferX11::~FrameBufferX11()
 	{
 		if(!mit_shm)
 		{
 			x_image->data = 0;
 			XDestroyImage(x_image);
-			
+
 			delete[] buffer;
 			buffer = 0;
 		}
@@ -101,30 +103,30 @@ namespace sw
 			shmdt(shminfo.shmaddr);
 			shmctl(shminfo.shmid, IPC_RMID, 0);
 		}
-		
+
 		if(ownX11)
 		{
 			XCloseDisplay(x_display);
 		}
 	}
-	
+
 	void *FrameBufferX11::lock()
 	{
 		stride = x_image->bytes_per_line;
 		locked = buffer;
-		
+
 		return locked;
 	}
-	
+
 	void FrameBufferX11::unlock()
 	{
 		locked = 0;
 	}
-		
+
 	void FrameBufferX11::blit(void *source, const Rect *sourceRect, const Rect *destRect, Format format)
 	{
 		copy(source, format);
-	
+
 		if(!mit_shm)
 		{
 			XPutImage(x_display, x_window, x_gc, x_image, 0, 0, 0, 0, width, height);
@@ -133,7 +135,32 @@ namespace sw
 		{
 			XShmPutImage(x_display, x_window, x_gc, x_image, 0, 0, 0, 0, width, height, False);
 		}
-	
+
+        if(false)   // Draw the framerate on screen
+        {
+            static double fpsTime = sw::Timer::seconds();
+            static int framesSec = 0;
+
+            double time = sw::Timer::seconds();
+            double delta = time - fpsTime;
+            framesSec++;
+
+            static float FPS = 0;
+
+            if(delta > 1.0)
+            {
+                FPS = framesSec / delta;
+
+                fpsTime = time;
+                //framesTotal += framesSec;
+                framesSec = 0;
+            }
+
+            char string[256];
+            sprintf(string, "FPS: %.1f", FPS);
+            XDrawString(x_display, x_window, x_gc, 50, 50, string, strlen(string));
+        }
+
 		XSync(x_display, False);
 	}
 }
