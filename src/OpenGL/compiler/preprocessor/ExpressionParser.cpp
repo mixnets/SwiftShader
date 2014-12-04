@@ -1544,7 +1544,11 @@ yyreduce:
     {
         if ((yyvsp[(3) - (3)]) == 0) {
             std::ostringstream stream;
+#if defined(__ANDROID__) || defined(ANDROID)
+            stream << (long int)(yyvsp[(1) - (3)]) << " % " << (long int)(yyvsp[(3) - (3)]);
+#else
             stream << (yyvsp[(1) - (3)]) << " % " << (yyvsp[(3) - (3)]);
+#endif
             std::string text = stream.str();
             context->diagnostics->report(pp::Diagnostics::DIVISION_BY_ZERO,
                                          context->token->location,
@@ -1561,7 +1565,11 @@ yyreduce:
     {
         if ((yyvsp[(3) - (3)]) == 0) {
             std::ostringstream stream;
+#if defined(__ANDROID__) || defined(ANDROID)
+            stream << (long int)(yyvsp[(1) - (3)]) << " / " << (long int)(yyvsp[(3) - (3)]);
+#else
             stream << (yyvsp[(1) - (3)]) << " / " << (yyvsp[(3) - (3)]);
+#endif
             std::string text = stream.str();
             context->diagnostics->report(pp::Diagnostics::DIVISION_BY_ZERO,
                                          context->token->location,
