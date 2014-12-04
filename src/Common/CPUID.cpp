@@ -22,7 +22,9 @@
 	#include <unistd.h>
 	#include <sched.h>
 	#include <sys/types.h>
-	#include <sys/sysctl.h>
+	#if !defined(__ANDROID__) && !defined(ANDROID)
+		#include <sys/sysctl.h>
+	#endif
 #endif
 
 namespace sw
