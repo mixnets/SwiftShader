@@ -14,5 +14,6 @@
 			<Depends filename="OpenGL/libGLESv2/libGLESv2.cbp" />
 		</Project>
 		<Project filename="SwiftShader/SwiftShader.cbp" />
+		<Project filename="../tests/HelloRAD/rad.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="libRAD" />
+		<Option pch_mode="2" />
+		<Option compiler="clang" />
+		<Build>
+			<Target title="Debug x64">
+				<Option output="../../lib/Debug_x64/libRAD.so" imp_lib="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).def" prefix_auto="0" extension_auto="0" />
+				<Option type="3" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-m64" />
+					<Add option="-fPIC" />
+					<Add option="-DDISPLAY_LOGO=0" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_LIB" />
+					<Add option="-D_CRT_SECURE_NO_DEPRECATE" />
+				</Compiler>
+				<Linker>
+					<Add option="-m64" />
+					<Add library="../LLVM/bin/x64/Debug/libLLVM.a" />
+				</Linker>
+			</Target>
+			<Target title="Release x64">
+				<Option output="../../lib/Release_x64/libRAD.so" imp_lib="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).def" prefix_auto="0" extension_auto="0" />
+				<Option type="3" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-m64" />
+					<Add option="-fPIC" />
+					<Add option="-DDISPLAY_LOGO=1" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_LIB" />
+					<Add option="-D_CRT_SECURE_NO_DEPRECATE" />
+					<Add option="-D_SECURE_SCL=0" />
+					<Add option="-D_HAS_EXCEPTIONS=0" />
+				</Compiler>
+				<Linker>
+					<Add option="-m64" />
+					<Add library="../LLVM/bin/x64/Release/libLLVM.a" />
+				</Linker>
+			</Target>
+			<Target title="Release x86">
+				<Option output="../../lib/Release_x86/libRAD.so" imp_lib="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).def" prefix_auto="0" extension_auto="0" />
+				<Option type="3" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-m32" />
+					<Add option="-DDISPLAY_LOGO=1" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_LIB" />
+					<Add option="-D_CRT_SECURE_NO_DEPRECATE" />
+					<Add option="-D_SECURE_SCL=0" />
+					<Add option="-D_HAS_EXCEPTIONS=0" />
+				</Compiler>
+				<Linker>
+					<Add option="-m32" />
+					<Add library="../LLVM/bin/x86/Release/libLLVM.a" />
+				</Linker>
+			</Target>
+			<Target title="Debug x86">
+				<Option output="../../lib/Debug_x86/libRAD.so" imp_lib="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).a" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).def" prefix_auto="0" extension_auto="0" />
+				<Option type="3" />
+				<Option compiler="clang" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-m32" />
+					<Add option="-DDISPLAY_LOGO=0" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_LIB" />
+					<Add option="-D_CRT_SECURE_NO_DEPRECATE" />
+				</Compiler>
+				<Linker>
+					<Add option="-m32" />
+					<Add library="../LLVM/bin/x86/Debug/libLLVM.a" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-std=c++11" />
+			<Add option="-fno-operator-names" />
+			<Add option="-D__STDC_LIMIT_MACROS" />
+			<Add option="-D__STDC_CONSTANT_MACROS" />
+			<Add directory="../" />
+			<Add directory="../Main" />
+			<Add directory="../Renderer" />
+			<Add directory="../Shader" />
+			<Add directory="../Common" />
+			<Add directory="../SwiftAsm" />
+			<Add directory="../libjpeg" />
+			<Add directory="../SwiftShader" />
+			<Add directory="../D3D9" />
+			<Add directory="../Reactor" />
+			<Add directory="../LLVM/include" />
+			<Add directory="../LLVM/win32" />
+			<Add directory="../Radiance" />
+			<Add directory="../Radiance/include" />
+		</Compiler>
+		<Linker>
+			<Add library="pthread" />
+			<Add library="X11" />
+			<Add library="Xext" />
+		</Linker>
+		<Unit filename="../Common/CPUID.cpp" />
+		<Unit filename="../Common/CPUID.hpp" />
+		<Unit filename="../Common/Configurator.cpp" />
+		<Unit filename="../Common/Configurator.hpp" />
+		<Unit filename="../Common/Debug.cpp" />
+		<Unit filename="../Common/Debug.hpp" />
+		<Unit filename="../Common/ExceptionHandling.hpp" />
+		<Unit filename="../Common/Half.cpp" />
+		<Unit filename="../Common/Half.hpp" />
+		<Unit filename="../Common/Math.cpp" />
+		<Unit filename="../Common/Math.hpp" />
+		<Unit filename="../Common/Memory.cpp" />
+		<Unit filename="../Common/Memory.hpp" />
+		<Unit filename="../Common/MetaMacro.hpp" />
+		<Unit filename="../Common/MutexLock.hpp" />
+		<Unit filename="../Common/Resource.cpp" />
+		<Unit filename="../Common/Resource.hpp" />
+		<Unit filename="../Common/SharedLibrary.hpp" />
+		<Unit filename="../Common/Socket.cpp" />
+		<Unit filename="../Common/Socket.hpp" />
+		<Unit filename="../Common/Thread.cpp" />
+		<Unit filename="../Common/Thread.hpp" />
+		<Unit filename="../Common/Timer.cpp" />
+		<Unit filename="../Common/Timer.hpp" />
+		<Unit filename="../Common/Types.hpp" />
+		<Unit filename="../Common/Version.h" />
+		<Unit filename="../Main/Config.cpp" />
+		<Unit filename="../Main/Config.hpp" />
+		<Unit filename="../Main/FrameBuffer.cpp" />
+		<Unit filename="../Main/FrameBuffer.hpp" />
+		<Unit filename="../Main/FrameBufferX11.cpp" />
+		<Unit filename="../Main/FrameBufferX11.hpp" />
+		<Unit filename="../Main/Logo.cpp" />
+		<Unit filename="../Main/Register.cpp" />
+		<Unit filename="../Main/Register.hpp" />
+		<Unit filename="../Main/SwiftConfig.cpp" />
+		<Unit filename="../Main/SwiftConfig.hpp" />
+		<Unit filename="../Main/crc.cpp" />
+		<Unit filename="../Main/crc.h" />
+		<Unit filename="../Main/serialcommon.h" />
+		<Unit filename="../Main/serialvalid.cpp" />
+		<Unit filename="../Main/serialvalid.h" />
+		<Unit filename="../Radiance/common/debug.cpp" />
+		<Unit filename="../Radiance/common/debug.h" />
+		<Unit filename="../Radiance/compiler/AnalyzeCallDepth.cpp" />
+		<Unit filename="../Radiance/compiler/AnalyzeCallDepth.h" />
+		<Unit filename="../Radiance/compiler/BaseTypes.h" />
+		<Unit filename="../Radiance/compiler/Common.h" />
+		<Unit filename="../Radiance/compiler/Compiler.cpp" />
+		<Unit filename="../Radiance/compiler/ConstantUnion.h" />
+		<Unit filename="../Radiance/compiler/Diagnostics.cpp" />
+		<Unit filename="../Radiance/compiler/Diagnostics.h" />
+		<Unit filename="../Radiance/compiler/DirectiveHandler.cpp" />
+		<Unit filename="../Radiance/compiler/DirectiveHandler.h" />
+		<Unit filename="../Radiance/compiler/ExtensionBehavior.h" />
+		<Unit filename="../Radiance/compiler/InfoSink.cpp" />
+		<Unit filename="../Radiance/compiler/InfoSink.h" />
+		<Unit filename="../Radiance/compiler/Initialize.cpp" />
+		<Unit filename="../Radiance/compiler/Initialize.h" />
+		<Unit filename="../Radiance/compiler/InitializeDll.cpp" />
+		<Unit filename="../Radiance/compiler/InitializeDll.h" />
+		<Unit filename="../Radiance/compiler/InitializeGlobals.h" />
+		<Unit filename="../Radiance/compiler/InitializeParseContext.cpp" />
+		<Unit filename="../Radiance/compiler/InitializeParseContext.h" />
+		<Unit filename="../Radiance/compiler/IntermTraverse.cpp" />
+		<Unit filename="../Radiance/compiler/Intermediate.cpp" />
+		<Unit filename="../Radiance/compiler/MMap.h" />
+		<Unit filename="../Radiance/compiler/OutputASM.cpp" />
+		<Unit filename="../Radiance/compiler/OutputASM.h" />
+		<Unit filename="../Radiance/compiler/ParseHelper.cpp" />
+		<Unit filename="../Radiance/compiler/ParseHelper.h" />
+		<Unit filename="../Radiance/compiler/PoolAlloc.cpp" />
+		<Unit filename="../Radiance/compiler/PoolAlloc.h" />
+		<Unit filename="../Radiance/compiler/Pragma.h" />
+		<Unit filename="../Radiance/compiler/ShHandle.h" />
+		<Unit filename="../Radiance/compiler/ShaderLang.cpp" />
+		<Unit filename="../Radiance/compiler/SymbolTable.cpp" />
+		<Unit filename="../Radiance/compiler/SymbolTable.h" />
+		<Unit filename="../Radiance/compiler/TranslatorASM.cpp" />
+		<Unit filename="../Radiance/compiler/TranslatorASM.h" />
+		<Unit filename="../Radiance/compiler/Types.h" />
+		<Unit filename="../Radiance/compiler/ValidateLimitations.cpp" />
+		<Unit filename="../Radiance/compiler/ValidateLimitations.h" />
+		<Unit filename="../Radiance/compiler/debug.cpp" />
+		<Unit filename="../Radiance/compiler/debug.h" />
+		<Unit filename="../Radiance/compiler/glslang.h" />
+		<Unit filename="../Radiance/compiler/glslang_lex.cpp" />
+		<Unit filename="../Radiance/compiler/glslang_tab.cpp" />
+		<Unit filename="../Radiance/compiler/glslang_tab.h" />
+		<Unit filename="../Radiance/compiler/intermOut.cpp" />
+		<Unit filename="../Radiance/compiler/intermediate.h" />
+		<Unit filename="../Radiance/compiler/localintermediate.h" />
+		<Unit filename="../Radiance/compiler/osinclude.h" />
+		<Unit filename="../Radiance/compiler/ossource_posix.cpp" />
+		<Unit filename="../Radiance/compiler/parseConst.cpp" />
+		<Unit filename="../Radiance/compiler/preprocessor/Diagnostics.cpp" />
+		<Unit filename="../Radiance/compiler/preprocessor/Diagnostics.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/DirectiveHandler.cpp" />
+		<Unit filename="../Radiance/compiler/preprocessor/DirectiveHandler.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/DirectiveParser.cpp" />
+		<Unit filename="../Radiance/compiler/preprocessor/DirectiveParser.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/ExpressionParser.cpp" />
+		<Unit filename="../Radiance/compiler/preprocessor/ExpressionParser.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/Input.cpp" />
+		<Unit filename="../Radiance/compiler/preprocessor/Input.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/Lexer.cpp" />
+		<Unit filename="../Radiance/compiler/preprocessor/Lexer.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/Macro.cpp" />
+		<Unit filename="../Radiance/compiler/preprocessor/Macro.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/MacroExpander.cpp" />
+		<Unit filename="../Radiance/compiler/preprocessor/MacroExpander.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/Preprocessor.cpp" />
+		<Unit filename="../Radiance/compiler/preprocessor/Preprocessor.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/SourceLocation.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/Token.cpp" />
+		<Unit filename="../Radiance/compiler/preprocessor/Token.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/Tokenizer.cpp" />
+		<Unit filename="../Radiance/compiler/preprocessor/Tokenizer.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/length_limits.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/numeric_lex.h" />
+		<Unit filename="../Radiance/compiler/preprocessor/pp_utils.h" />
+		<Unit filename="../Radiance/compiler/util.cpp" />
+		<Unit filename="../Radiance/compiler/util.h" />
+		<Unit filename="../Radiance/include/EGL/egl.h" />
+		<Unit filename="../Radiance/include/EGL/eglext.h" />
+		<Unit filename="../Radiance/include/EGL/eglplatform.h" />
+		<Unit filename="../Radiance/include/GLES/egl.h" />
+		<Unit filename="../Radiance/include/GLES/gl.h" />
+		<Unit filename="../Radiance/include/GLES/glext.h" />
+		<Unit filename="../Radiance/include/GLES/glplatform.h" />
+		<Unit filename="../Radiance/include/GLES2/gl2.h" />
+		<Unit filename="../Radiance/include/GLES2/gl2ext.h" />
+		<Unit filename="../Radiance/include/GLES2/gl2platform.h" />
+		<Unit filename="../Radiance/include/GLSLANG/ShaderLang.h" />
+		<Unit filename="../Radiance/include/KHR/khrplatform.h" />
+		<Unit filename="../Radiance/include/RAD/rad.h" />
+		<Unit filename="../Radiance/libEGL/Config.cpp" />
+		<Unit filename="../Radiance/libEGL/Config.h" />
+		<Unit filename="../Radiance/libEGL/Context.hpp" />
+		<Unit filename="../Radiance/libEGL/Display.cpp" />
+		<Unit filename="../Radiance/libEGL/Display.h" />
+		<Unit filename="../Radiance/libEGL/Image.hpp" />
+		<Unit filename="../Radiance/libEGL/Surface.cpp" />
+		<Unit filename="../Radiance/libEGL/Surface.h" />
+		<Unit filename="../Radiance/libEGL/Texture2D.hpp" />
+		<Unit filename="../Radiance/libEGL/libEGL.cpp" />
+		<Unit filename="../Radiance/libEGL/main.cpp" />
+		<Unit filename="../Radiance/libEGL/main.h" />
+		<Unit filename="../Radiance/libEGL/resource.h" />
+		<Unit filename="../Radiance/libRAD/Context.cpp" />
+		<Unit filename="../Radiance/libRAD/Context.h" />
+		<Unit filename="../Radiance/libRAD/Device.cpp" />
+		<Unit filename="../Radiance/libRAD/Device.hpp" />
+		<Unit filename="../Radiance/libRAD/Fence.cpp" />
+		<Unit filename="../Radiance/libRAD/Fence.h" />
+		<Unit filename="../Radiance/libRAD/Image.cpp" />
+		<Unit filename="../Radiance/libRAD/Image.hpp" />
+		<Unit filename="../Radiance/libRAD/Program.cpp" />
+		<Unit filename="../Radiance/libRAD/Program.h" />
+		<Unit filename="../Radiance/libRAD/Shader.cpp" />
+		<Unit filename="../Radiance/libRAD/Shader.h" />
+		<Unit filename="../Radiance/libRAD/Texture.cpp" />
+		<Unit filename="../Radiance/libRAD/Texture.h" />
+		<Unit filename="../Radiance/libRAD/libRAD.cpp" />
+		<Unit filename="../Radiance/libRAD/main.cpp" />
+		<Unit filename="../Radiance/libRAD/main.h" />
+		<Unit filename="../Radiance/libRAD/mathutil.h" />
+		<Unit filename="../Radiance/libRAD/resource.h" />
+		<Unit filename="../Radiance/libRAD/utilities.cpp" />
+		<Unit filename="../Radiance/libRAD/utilities.h" />
+		<Unit filename="../Reactor/Nucleus.cpp" />
+		<Unit filename="../Reactor/Nucleus.hpp" />
+		<Unit filename="../Reactor/Reactor.hpp" />
+		<Unit filename="../Reactor/Routine.cpp" />
+		<Unit filename="../Reactor/Routine.hpp" />
+		<Unit filename="../Reactor/RoutineManager.cpp" />
+		<Unit filename="../Reactor/RoutineManager.hpp" />
+		<Unit filename="../Reactor/x86.hpp" />
+		<Unit filename="../Renderer/Blitter.cpp" />
+		<Unit filename="../Renderer/Blitter.hpp" />
+		<Unit filename="../Renderer/Clipper.cpp" />
+		<Unit filename="../Renderer/Clipper.hpp" />
+		<Unit filename="../Renderer/Color.cpp" />
+		<Unit filename="../Renderer/Color.hpp" />
+		<Unit filename="../Renderer/Context.cpp" />
+		<Unit filename="../Renderer/Context.hpp" />
+		<Unit filename="../Renderer/LRUCache.hpp" />
+		<Unit filename="../Renderer/Matrix.cpp" />
+		<Unit filename="../Renderer/Matrix.hpp" />
+		<Unit filename="../Renderer/PixelProcessor.cpp" />
+		<Unit filename="../Renderer/PixelProcessor.hpp" />
+		<Unit filename="../Renderer/Plane.cpp" />
+		<Unit filename="../Renderer/Plane.hpp" />
+		<Unit filename="../Renderer/Point.cpp" />
+		<Unit filename="../Renderer/Point.hpp" />
+		<Unit filename="../Renderer/Polygon.hpp" />
+		<Unit filename="../Renderer/Primitive.hpp" />
+		<Unit filename="../Renderer/QuadRasterizer.cpp" />
+		<Unit filename="../Renderer/QuadRasterizer.hpp" />
+		<Unit filename="../Renderer/Rasterizer.cpp" />
+		<Unit filename="../Renderer/Rasterizer.hpp" />
+		<Unit filename="../Renderer/Renderer.cpp" />
+		<Unit filename="../Renderer/Renderer.hpp" />
+		<Unit filename="../Renderer/RoutineCache.hpp" />
+		<Unit filename="../Renderer/Sampler.cpp" />
+		<Unit filename="../Renderer/Sampler.hpp" />
+		<Unit filename="../Renderer/SetupProcessor.cpp" />
+		<Unit filename="../Renderer/SetupProcessor.hpp" />
+		<Unit filename="../Renderer/Stream.hpp" />
+		<Unit filename="../Renderer/Surface.cpp" />
+		<Unit filename="../Renderer/Surface.hpp" />
+		<Unit filename="../Renderer/TextureStage.cpp" />
+		<Unit filename="../Renderer/TextureStage.hpp" />
+		<Unit filename="../Renderer/Triangle.hpp" />
+		<Unit filename="../Renderer/Vector.cpp" />
+		<Unit filename="../Renderer/Vector.hpp" />
+		<Unit filename="../Renderer/Vertex.hpp" />
+		<Unit filename="../Renderer/VertexProcessor.cpp" />
+		<Unit filename="../Renderer/VertexProcessor.hpp" />
+		<Unit filename="../Shader/Constants.cpp" />
+		<Unit filename="../Shader/Constants.hpp" />
+		<Unit filename="../Shader/PixelRoutine.cpp" />
+		<Unit filename="../Shader/PixelRoutine.hpp" />
+		<Unit filename="../Shader/PixelShader.cpp" />
+		<Unit filename="../Shader/PixelShader.hpp" />
+		<Unit filename="../Shader/SamplerCore.cpp" />
+		<Unit filename="../Shader/SamplerCore.hpp" />
+		<Unit filename="../Shader/SetupRoutine.cpp" />
+		<Unit filename="../Shader/SetupRoutine.hpp" />
+		<Unit filename="../Shader/Shader.cpp" />
+		<Unit filename="../Shader/Shader.hpp" />
+		<Unit filename="../Shader/ShaderCore.cpp" />
+		<Unit filename="../Shader/ShaderCore.hpp" />
+		<Unit filename="../Shader/VertexPipeline.cpp" />
+		<Unit filename="../Shader/VertexPipeline.hpp" />
+		<Unit filename="../Shader/VertexProgram.cpp" />
+		<Unit filename="../Shader/VertexProgram.hpp" />
+		<Unit filename="../Shader/VertexRoutine.cpp" />
+		<Unit filename="../Shader/VertexRoutine.hpp" />
+		<Unit filename="../Shader/VertexShader.cpp" />
+		<Unit filename="../Shader/VertexShader.hpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
