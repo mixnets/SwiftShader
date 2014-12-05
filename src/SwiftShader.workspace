@@ -13,5 +13,6 @@
 			<Depends filename="OpenGL/libEGL/libEGL.cbp" />
 			<Depends filename="OpenGL/libGLESv2/libGLESv2.cbp" />
 		</Project>
+		<Project filename="SwiftShader/SwiftShader.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>
