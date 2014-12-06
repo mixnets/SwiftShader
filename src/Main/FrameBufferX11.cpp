@@ -49,10 +49,11 @@ namespace sw
 		int screen = DefaultScreen(x_display);
 		x_gc = XDefaultGC(x_display, screen);
 		int depth = XDefaultDepth(x_display, screen);
+		Visual *visual = XDefaultVisual(x_display, screen);
 
-		Status status = XMatchVisualInfo(x_display, screen, 32, TrueColor, &x_visual);
-		assert(status != 0 && x_visual.blue_mask == 0xFF);   // Only X8R8G8B8 implemented
-		Visual *visual = x_visual.visual;
+		//Status status = XMatchVisualInfo(x_display, screen, 16, TrueColor, &x_visual);
+		//assert(status != 0 && x_visual.blue_mask == 0xFF);   // Only X8R8G8B8 implemented
+		//Visual *visual = x_visual.visual;
 
 		mit_shm = (XShmQueryExtension(x_display) == True);
 

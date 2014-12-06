@@ -1,0 +1,32 @@
+{
+global:
+	radGetProcAddress;
+
+	#radQueueScissor;
+
+    # EGL dependencies
+    glCreateContext;
+
+	createFrameBuffer;
+	createBackBuffer;
+	createDepthStencil;
+
+	Register;
+
+    # EGL
+    eglGetError;
+    eglGetDisplay;
+    eglInitialize;
+    eglChooseConfig;
+    eglCreateWindowSurface;
+    eglCreateContext;
+    eglBindAPI;
+    eglMakeCurrent;
+    eglMakeCurrent;
+    eglTerminate;
+    eglGetProcAddress;
+
+local:
+    *;
+};
+

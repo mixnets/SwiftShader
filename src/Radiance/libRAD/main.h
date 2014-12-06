@@ -45,13 +45,4 @@ const T &error(GLenum errorCode, const T &returnValue)
     return returnValue;
 }
 
-// libEGL dependencies
-namespace egl
-{
-	extern egl::Context *(*getCurrentContext)();
-	extern egl::Display *(*getCurrentDisplay)();
-}
-
-extern void *libEGL;       // Handle to the libEGL module
-
 #endif   // LIBGLESV2_MAIN_H_
