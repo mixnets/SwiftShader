@@ -18,10 +18,10 @@ RADdevice device;
 RADqueue queue;
 bool useCopyQueue = false /*true*/;
 RADqueue copyQueue;
- 
+
 #define SHADER_SOURCE(source) #source
 
-static const char *vsstring = 
+static const char *vsstring =
     //"#version 440 core\n"
     //"#define BINDGROUP(GROUP,INDEX) layout(binding = ((INDEX) | ((GROUP) << 4)))\n"
     //"layout(location = 1) in vec4 tc;\n"
@@ -49,7 +49,7 @@ SHADER_SOURCE(attribute highp vec4	position;
 				ftc = tc;
               });
 
-static const char *fsstring = 
+static const char *fsstring =
    /* "#version 440 core\n"
     "#define BINDGROUP(GROUP,INDEX) layout(binding = ((INDEX) | ((GROUP) << 4)))\n"
     "BINDGROUP(0, 3) uniform sampler2D tex;\n"
@@ -74,7 +74,7 @@ static const char *fsstring =
 
 
 // Two triangles that intersect
-static RADfloat vertexData[] = {-0.5f, -0.5f, 0.5f, 
+static RADfloat vertexData[] = {-0.5f, -0.5f, 0.5f,
                                 0.5f, -0.5f,  0.5f,
                                 -0.5f, 0.5f,  0.5f,
 
@@ -163,7 +163,7 @@ void TestRAD()
     // Create programs from the device, provide them shader code and compile/link them
     RADprogram pgm = radCreateProgram(device);
 
-    // XXX This is a hack because we don't have an IL. I'm just jamming through the strings 
+    // XXX This is a hack because we don't have an IL. I'm just jamming through the strings
     // as if they were an IL blob
     const char *source[2] = {vsstring, fsstring};
     radProgramSource(pgm, RAD_PROGRAM_FORMAT_GLSL, /*size*/2, (void *)source);
@@ -183,7 +183,7 @@ void TestRAD()
     radDepthStencilDepthWriteEnable(depth, RAD_TRUE);
     radDepthStencilDepthFunc(depth, RAD_DEPTH_FUNC_LESS);
 
-    // Commented out experiments to test different state settings.    
+    // Commented out experiments to test different state settings.
     //radRasterDiscardEnable(raster, RAD_TRUE);
     //radRasterPolygonMode(raster, RAD_POLYGON_MODE_LINE);
     //radRasterLineWidth(raster, 10.0f);
@@ -300,14 +300,14 @@ void TestRAD()
     RADpipelineHandle pipelineHandle = radGetPipelineHandle(pipeline);
 
     RADsampler sampler = radCreateSampler(device);
-    // Commented out experiments to test different state settings.    
+    // Commented out experiments to test different state settings.
     //radSamplerMinMagFilter(sampler, RAD_MIN_FILTER_NEAREST, RAD_MAG_FILTER_NEAREST);
 
     const int texWidth = 4, texHeight = 4;
     RADtexture texture = radCreateTexture(device);
     radTextureAccess(texture, RAD_TEXTURE_ACCESS_BIT);
     radTextureStorage(texture, RAD_TEXTURE_2D, 1, RAD_RGBA8, texWidth, texHeight, 1, 0);
-    RADtextureHandle texHandle = radGetTextureSamplerHandle(texture, sampler, RAD_TEXTURE_2D, RAD_RGBA8, 
+    RADtextureHandle texHandle = radGetTextureSamplerHandle(texture, sampler, RAD_TEXTURE_2D, RAD_RGBA8,
                                                             /*minLevel*/0, /*numLevels*/1, /*minLayer*/0, /*numLayers*/1);
 
     RADbuffer pbo = radCreateBuffer(device);
@@ -352,13 +352,17 @@ void TestRAD()
     radQueueScissor(queue, 0, 0, offscreenWidth, offscreenHeight);
     radQueueViewport(queue, 0, 0, offscreenWidth, offscreenHeight);
 
-    RADbindGroupElement b[4] = {{vboHandle, 0, ~0}, {vboHandle, sizeof(vertexData), ~0}, {uboHandle, 0, 4*sizeof(float)}, {texHandle, 0, ~0}};
+    static const RADuint DEFAULT_LENGTH = static_cast<RADuint>(~0);
+    RADbindGroupElement b[4] = {{vboHandle, 0, 0},
+                                {vboHandle, sizeof(vertexData), DEFAULT_LENGTH},
+                                {uboHandle, 0, 4*sizeof(float)},
+                                {texHandle, 0, DEFAULT_LENGTH}};
     RADbuffer bindGroup = AllocAndFillBuffer(device, b, sizeof(b), RAD_BINDGROUP_ACCESS_BIT, false);
 
     RADbindGroupHandle bindGroupHandle = radGetBindGroupHandle(bindGroup);
 
     if (useCopyQueue) {
-        // Sync from copy queue to graphics queue. Note that we currently don't sync in the 
+        // Sync from copy queue to graphics queue. Note that we currently don't sync in the
         // opposite direction at the end of the frame, because radQueuePresent effectively
         // does a Finish so it isn't needed.
         RADsync sync = radCreateSync(device);
@@ -430,7 +434,7 @@ void TestRAD()
         clock_t currentTime = clock();
         printf("%f\n", 1.0f*numIterations*CLOCKS_PER_SEC/(currentTime - startTime));
     }
-    
+
     radQueueEndPass(queue, pass);
 
     // Kickoff submitted command buffers for the queue

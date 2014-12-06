@@ -36,23 +36,11 @@ static void glDetachThread()
     TRACE("()");
 }
 
-CONSTRUCTOR static bool glAttachProcess()
+CONSTRUCTOR static void glAttachProcess()
 {
     TRACE("()");
 
     glAttachThread();
-
-    #if defined(_WIN32)
-	const char *libEGL_lib = "libEGL.dll";
-	#else
-	const char *libEGL_lib = "libEGL.so.1";
-	#endif
-
-	libEGL = loadLibrary(libEGL_lib);
-	egl::getCurrentContext = (egl::Context *(*)())getProcAddress(libEGL, "clientGetCurrentContext");
-	egl::getCurrentDisplay = (egl::Display *(*)())getProcAddress(libEGL, "clientGetCurrentDisplay");
-
-    return libEGL != 0;
 }
 
 DESTRUCTOR static void glDetachProcess()
@@ -60,7 +48,6 @@ DESTRUCTOR static void glDetachProcess()
     TRACE("()");
 
 	glDetachThread();
-	freeLibrary(libEGL);
 }
 
 #if defined(_WIN32)
@@ -92,19 +79,19 @@ namespace es2
 {
 es2::Context *getContext()
 {
-	egl::Context *context = egl::getCurrentContext();
-	
+	egl::Context *context = (egl::Context*)eglGetCurrentContext();
+
 	if(context && context->getClientVersion() == 2)
 	{
 		return static_cast<es2::Context*>(context);
 	}
-	
+
 	return 0;
 }
 
 egl::Display *getDisplay()
 {
-    return egl::getCurrentDisplay();
+    return (egl::Display*)eglGetCurrentDisplay();
 }
 
 Device *getDevice()
@@ -119,7 +106,7 @@ namespace egl
 {
 GLint getClientVersion()
 {
-	Context *context = egl::getCurrentContext();
+	Context *context = (Context*)eglGetCurrentContext();
 
     return context ? context->getClientVersion() : 0;
 }
@@ -157,12 +144,6 @@ void error(GLenum errorCode)
         default: UNREACHABLE();
         }
     }
-}
-
-namespace egl
-{
-	egl::Context *(*getCurrentContext)() = 0;
-	egl::Display *(*getCurrentDisplay)() = 0;
 }
 
 void *libEGL = 0;   // Handle to the libEGL module

@@ -189,7 +189,7 @@ namespace sw
 		}
 
 		int valueID = findValue(keyID, valueName);
-		
+
 		if(valueID == -1)
 		{
 			sections[keyID].names.resize(sections[keyID].names.size() + 1, valueName);
@@ -217,7 +217,7 @@ namespace sw
 
 		sprintf(svalue, "%d", defaultValue);
 
-		return atoi(getValue(keyName, valueName, svalue).c_str()); 
+		return atoi(getValue(keyName, valueName, svalue).c_str());
 	}
 
 	bool Configurator::getBoolean(string keyName, string valueName, bool defaultValue) const
@@ -231,7 +231,7 @@ namespace sw
 
 		sprintf(svalue, "%f", defaultValue);
 
-		return atof(getValue(keyName, valueName, svalue).c_str()); 
+		return atof(getValue(keyName, valueName, svalue).c_str());
 	}
 
 	unsigned int Configurator::getFormatted(string keyName, string valueName, char *format,
