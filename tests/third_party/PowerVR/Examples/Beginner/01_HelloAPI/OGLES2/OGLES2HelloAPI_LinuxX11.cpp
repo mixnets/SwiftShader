@@ -23,6 +23,8 @@
 #include "X11/Xlib.h"
 #include "X11/Xutil.h"
 
+#include <dlfcn.h>
+
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 
@@ -42,6 +44,23 @@
 /*******************************************************************************************************************************************
  Helper Functions
 *******************************************************************************************************************************************/
+
+void *libX11 = 0;
+int (*X11GetErrorText)(Display *display, int code, char *buffer_return, int length);
+Status (*X11MatchVisualInfo)(Display *display,  int	screen, int depth, int vclass, XVisualInfo *vinfo_return);
+int (*X11NextEvent)(Display *display, XEvent *event_return);
+int (*X11DestroyWindow)(Display *display, Window w);
+int (*X11MapWindow)(Display *display, Window w);
+Window (*X11CreateWindow)(Display *display, Window parent, int x, int y, unsigned int width, unsigned int height, unsigned int border_width,
+					      int depth, unsigned int wclass, Visual *visual, unsigned long valuemask, XSetWindowAttributes *attributes);
+int (*X11DefaultScreen)(Display *display);
+Status (*X11SetWMProtocols)(Display *display, Window w, Atom *protocols, int count);
+Atom (*X11InternAtom)(Display *display, _Xconst char *atom_name, Bool only_if_exists);
+int (*X11Pending)(Display *display);
+Colormap (*X11CreateColormap)(Display *display, Window w, Visual *visual, int alloc);
+int (*X11StoreName)(Display *display, Window w, _Xconst char *window_name);
+Display *(*X11OpenDisplay)(_Xconst char *display_name);
+int (*X11CloseDisplay)(Display *display);
 
 /*!*****************************************************************************************************************************************
  @Function		TestEGLError
@@ -76,7 +95,7 @@ int HandleX11Errors(Display *nativeDisplay, XErrorEvent *error)
 {
 	// Get the X Error
 	char errorStringBuffer[256];
-	XGetErrorText(nativeDisplay, error->error_code, errorStringBuffer, 256);
+	X11GetErrorText(nativeDisplay, error->error_code, errorStringBuffer, 256);
 
 	// Print the error
 	printf("%s", errorStringBuffer);
@@ -128,7 +147,7 @@ bool CreateNativeDisplay(Display** nativeDisplay)
 	}
 
 	// Open the display
-	*nativeDisplay = XOpenDisplay( 0 );
+	*nativeDisplay = X11OpenDisplay( 0 );
 	if (!*nativeDisplay)
 	{
 		printf("Error: Unable to open X display\n");
@@ -148,14 +167,14 @@ bool CreateNativeDisplay(Display** nativeDisplay)
 bool CreateNativeWindow(Display* nativeDisplay, Window* nativeWindow)
 {
 	// Get the default screen for the display
-	int defaultScreen = XDefaultScreen(nativeDisplay);
+	int defaultScreen = X11DefaultScreen(nativeDisplay);
 
 	// Get the default depth of the display
 	int defaultDepth = DefaultDepth(nativeDisplay, defaultScreen);
 
 	// Select a visual info
 	XVisualInfo* visualInfo = new XVisualInfo;
-	XMatchVisualInfo( nativeDisplay, defaultScreen, defaultDepth, TrueColor, visualInfo);
+	X11MatchVisualInfo( nativeDisplay, defaultScreen, defaultDepth, TrueColor, visualInfo);
 	if (!visualInfo)
 	{
 		printf("Error: Unable to acquire visual\n");
@@ -166,7 +185,7 @@ bool CreateNativeWindow(Display* nativeDisplay, Window* nativeWindow)
 	Window rootWindow = RootWindow(nativeDisplay, defaultScreen);
 
 	// Create a colour map from the display, root window and visual info
-	Colormap colourMap = XCreateColormap(nativeDisplay, rootWindow, visualInfo->visual, AllocNone);
+	Colormap colourMap = X11CreateColormap(nativeDisplay, rootWindow, visualInfo->visual, AllocNone);
 
 	// Now setup the final window by specifying some attributes
 	XSetWindowAttributes windowAttributes;
@@ -178,7 +197,7 @@ bool CreateNativeWindow(Display* nativeDisplay, Window* nativeWindow)
 	windowAttributes.event_mask = StructureNotifyMask | ExposureMask | ButtonPressMask;
 
 	// Create the window
-	*nativeWindow =XCreateWindow(nativeDisplay,               // The display used to create the window
+	*nativeWindow =X11CreateWindow(nativeDisplay,               // The display used to create the window
 	                             rootWindow,                   // The parent (root) window - the desktop
 						  		 0,                            // The horizontal (x) origin of the window
 								 0,                            // The vertical (y) origin of the window
@@ -192,14 +211,14 @@ bool CreateNativeWindow(Display* nativeDisplay, Window* nativeWindow)
 								 &windowAttributes);           // Pointer to the window attribute structure
 
 	// Make the window viewable by mapping it to the display
-	XMapWindow(nativeDisplay, *nativeWindow);
+	X11MapWindow(nativeDisplay, *nativeWindow);
 
 	// Set the window title
-	XStoreName(nativeDisplay, *nativeWindow, APPLICATION_NAME);
+	X11StoreName(nativeDisplay, *nativeWindow, APPLICATION_NAME);
 
 	// Setup the window manager protocols to handle window deletion events
-	Atom windowManagerDelete = XInternAtom(nativeDisplay, "WM_DELETE_WINDOW", True);
-	XSetWMProtocols(nativeDisplay, *nativeWindow, &windowManagerDelete , 1);
+	Atom windowManagerDelete = X11InternAtom(nativeDisplay, "WM_DELETE_WINDOW", True);
+	X11SetWMProtocols(nativeDisplay, *nativeWindow, &windowManagerDelete , 1);
 
 	// Delete the visual info
 	delete visualInfo;
@@ -660,11 +679,11 @@ bool RenderScene( GLuint shaderProgram, EGLDisplay eglDisplay, EGLSurface eglSur
 	}
 
 	// Check for messages from the windowing system.
-	int numberOfMessages = XPending(nativeDisplay);
+	int numberOfMessages = X11Pending(nativeDisplay);
 	for( int i = 0; i < numberOfMessages; i++ )
 	{
 		XEvent event;
-		XNextEvent(nativeDisplay, &event);
+		X11NextEvent(nativeDisplay, &event);
 
 		switch( event.type )
 		{
@@ -729,13 +748,13 @@ void ReleaseNativeResources(Display* nativeDisplay, Window nativeWindow)
 	// Destroy the window
 	if (nativeWindow)
 	{
-		XDestroyWindow(nativeDisplay, nativeWindow);
+		X11DestroyWindow(nativeDisplay, nativeWindow);
 	}
 
 	// Release the display.
 	if (nativeDisplay)
 	{
-		XCloseDisplay(nativeDisplay);
+		X11CloseDisplay(nativeDisplay);
 	}
 }
 
@@ -748,6 +767,22 @@ void ReleaseNativeResources(Display* nativeDisplay, Window nativeWindow)
 *******************************************************************************************************************************************/
 int main(int /*argc*/, char **/*argv*/)
 {
+	libX11 = dlopen("libX11.so", RTLD_LAZY | RTLD_LOCAL);
+	X11GetErrorText = (int (*)(Display*, int, char*, int))dlsym(libX11, "XGetErrorText");
+	X11MatchVisualInfo = (Status (*)(Display*, int, int, int, XVisualInfo*))dlsym(libX11, "XMatchVisualInfo");
+	X11NextEvent = (int (*)(Display*, XEvent*))dlsym(libX11, "XNextEvent");
+	X11DestroyWindow = (int (*)(Display*, Window))dlsym(libX11, "XDestroyWindow");
+	X11MapWindow = (int (*)(Display*, Window))dlsym(libX11, "XMapWindow");
+	X11CreateWindow = (Window (*)(Display*, Window, int, int, unsigned int, unsigned int, unsigned int, int, unsigned int, Visual*, unsigned long, XSetWindowAttributes*))dlsym(libX11, "XCreateWindow");
+	X11DefaultScreen = (int (*)(Display*))dlsym(libX11, "XDefaultScreen");
+	X11SetWMProtocols = (Status (*)(Display*, Window, Atom*, int))dlsym(libX11, "XSetWMProtocols");
+	X11InternAtom = (Atom (*)(Display*, _Xconst char*, Bool))dlsym(libX11, "XInternAtom");
+	X11Pending = (int (*)(Display*))dlsym(libX11, "XPending");
+	X11CreateColormap = (Colormap (*)(Display*, Window, Visual*, int))dlsym(libX11, "XCreateColormap");
+	X11StoreName = (int (*)(Display*, Window, _Xconst char*))dlsym(libX11, "XStoreName");
+	X11OpenDisplay = (Display *(*)(_Xconst char*))dlsym(libX11, "XOpenDisplay");
+	X11CloseDisplay = (int (*)(Display*))dlsym(libX11, "XCloseDisplay");
+
 	// X11 variables
 	Display* nativeDisplay = NULL;
 	Window nativeWindow = 0;
