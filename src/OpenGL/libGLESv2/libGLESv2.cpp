@@ -506,8 +506,10 @@ void GL_APIENTRY glBlendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlp
 	}
 }
 
-void GL_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage)
+void GL_APIENTRY glBufferData(GLenum target, GLsizeiptr size64, const GLvoid* data, GLenum usage)
 {
+	GLint size = static_cast<GLint>(size64);   // Work around issues with some 64-bit applications
+
 	TRACE("(GLenum target = 0x%X, GLsizeiptr size = %d, const GLvoid* data = 0x%0.8p, GLenum usage = %d)",
 	      target, size, data, usage);
 
@@ -553,8 +555,11 @@ void GL_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid* data
 	}
 }
 
-void GL_APIENTRY glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid* data)
+void GL_APIENTRY glBufferSubData(GLenum target, GLintptr offset64, GLsizeiptr size64, const GLvoid* data)
 {
+	GLint size = static_cast<GLint>(size64);   // Work around issues with some 64-bit applications
+	GLint offset = static_cast<GLint>(offset64);
+
 	TRACE("(GLenum target = 0x%X, GLintptr offset = %d, GLsizeiptr size = %d, const GLvoid* data = 0x%0.8p)",
 	      target, offset, size, data);
 
