@@ -111,6 +111,8 @@
 			<Add library="X11" />
 		</Linker>
 		<Unit filename="../../Common/SharedLibrary.hpp" />
+		<Unit filename="../common/Object.cpp" />
+		<Unit filename="../common/Object.hpp" />
 		<Unit filename="../common/debug.cpp" />
 		<Unit filename="Config.cpp" />
 		<Unit filename="Config.h" />
