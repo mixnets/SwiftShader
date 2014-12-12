@@ -501,9 +501,6 @@ bool TParseContext::constructorErrorCheck(int line, TIntermNode* node, TFunction
             arrayArg = true;
     }
 
-    if (constType)
-        type->setQualifier(EvqConst);
-
     if (type->isArray() && type->getArraySize() != function.getParamCount()) {
         error(line, "array constructor needs one argument per array element", "constructor");
         return true;
@@ -552,6 +549,9 @@ bool TParseContext::constructorErrorCheck(int line, TIntermNode* node, TFunction
         error(line, "cannot convert a void", "constructor");
         return true;
     }
+
+	if (constType)
+        type->setQualifier(EvqConst);
 
     return false;
 }
