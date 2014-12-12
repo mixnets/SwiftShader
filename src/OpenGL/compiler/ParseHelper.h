@@ -130,6 +130,7 @@ struct TParseContext {
     void exitStructDeclaration();
 
     bool structNestingErrorCheck(TSourceLoc line, const TType& fieldType);
+	TIntermTyped *addIndexExpression(TIntermTyped *baseExpression, TSourceLoc line, TIntermTyped *indexExpression);
 };
 
 int PaParseStrings(int count, const char* const string[], const int length[],
