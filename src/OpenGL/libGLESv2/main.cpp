@@ -37,36 +37,11 @@ static void glDetachThread()
     TRACE("()");
 }
 
-CONSTRUCTOR static bool glAttachProcess()
+CONSTRUCTOR static void glAttachProcess()
 {
     TRACE("()");
 
     glAttachThread();
-
-	#if defined(_WIN32)
-	const char *libEGL_lib[] = {"libEGL.dll", "libEGL_translator.dll"};
-	#elif defined(__LP64__)
-	const char *libEGL_lib[] = {"lib64EGL_translator.so", "libEGL.so.1", "libEGL.so"};
-	#else
-	const char *libEGL_lib[] = {"libEGL_translator.so", "libEGL.so.1", "libEGL.so"};
-	#endif
-
-	libEGL = loadLibrary(libEGL_lib);
-	egl::getCurrentContext = (egl::Context *(*)())getProcAddress(libEGL, "clientGetCurrentContext");
-	egl::getCurrentDisplay = (egl::Display *(*)())getProcAddress(libEGL, "clientGetCurrentDisplay");
-
-	#if defined(_WIN32)
-	const char *libGLES_CM_lib[] = {"libGLES_CM.dll", "libGLES_CM_translator.dll"};
-	#elif defined(__LP64__)
-	const char *libGLES_CM_lib[] = {"lib64GLES_CM_translator.so", "libGLES_CM.so.1", "libGLES_CM.so"};
-	#else
-	const char *libGLES_CM_lib[] = {"libGLES_CM_translator.so", "libGLES_CM.so.1", "libGLES_CM.so"};
-	#endif
-
-	libGLES_CM = loadLibrary(libGLES_CM_lib);
-	es1::getProcAddress = (__eglMustCastToProperFunctionPointerType (*)(const char*))getProcAddress(libGLES_CM, "glGetProcAddress");
-
-    return libEGL != 0;
 }
 
 DESTRUCTOR static void glDetachProcess()
@@ -74,8 +49,6 @@ DESTRUCTOR static void glDetachProcess()
     TRACE("()");
 
 	glDetachThread();
-	freeLibrary(libEGL);
-	freeLibrary(libGLES_CM);
 }
 
 #if defined(_WIN32)
@@ -84,7 +57,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
     switch(reason)
     {
     case DLL_PROCESS_ATTACH:
-        return glAttachProcess();
+        glAttachProcess();
         break;
     case DLL_THREAD_ATTACH:
         glAttachThread();
@@ -107,7 +80,7 @@ namespace es2
 {
 es2::Context *getContext()
 {
-	egl::Context *context = egl::getCurrentContext();
+	egl::Context *context = libEGL->getCurrentContext();
 
 	if(context && context->getClientVersion() == 2)
 	{
@@ -119,7 +92,7 @@ es2::Context *getContext()
 
 egl::Display *getDisplay()
 {
-    return egl::getCurrentDisplay();
+    return libEGL->getCurrentDisplay();
 }
 
 Device *getDevice()
@@ -134,7 +107,7 @@ namespace egl
 {
 GLint getClientVersion()
 {
-	Context *context = egl::getCurrentContext();
+	Context *context = libEGL->getCurrentContext();
 
     return context ? context->getClientVersion() : 0;
 }
@@ -174,16 +147,59 @@ void error(GLenum errorCode)
     }
 }
 
-namespace egl
+LibEGLdependencies::LibEGLdependencies()
 {
-	egl::Context *(*getCurrentContext)() = 0;
-	egl::Display *(*getCurrentDisplay)() = 0;
+	#if defined(_WIN32)
+	const char *libEGL_lib[] = {"libEGL.dll", "libEGL_translator.dll", 0};
+	#elif defined(__LP64__)
+	const char *libEGL_lib[] = {"lib64EGL_translator.so", "libEGL.so.1", "libEGL.so", 0};
+	#else
+	const char *libEGL_lib[] = {"libEGL_translator.so", "libEGL.so.1", "libEGL.so", 0};
+	#endif
+
+	libEGL = loadLibrary(libEGL_lib);
+	getCurrentContext = (egl::Context *(*)())getProcAddress(libEGL, "clientGetCurrentContext");
+	getCurrentDisplay = (egl::Display *(*)())getProcAddress(libEGL, "clientGetCurrentDisplay");
 }
 
-namespace es1
+LibEGLdependencies::~LibEGLdependencies()
 {
-	__eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname) = 0;
+	freeLibrary(libEGL);
 }
 
-void *libEGL = 0;   // Handle to the libEGL module
-void *libGLES_CM = 0;   // Handle to the libGLES_CM module
+LibEGLdependencies *LibEGLdependencies::getSingleton()
+{
+	static LibEGLdependencies singleton;
+
+	return &singleton;
+}
+
+LibEGL libEGL;
+
+LibGLES_CMdependencies::LibGLES_CMdependencies()
+{
+	#if defined(_WIN32)
+	const char *libGLES_CM_lib[] = {"libGLES_CM.dll", "libGLES_CM_translator.dll", 0};
+	#elif defined(__LP64__)
+	const char *libGLES_CM_lib[] = {"lib64GLES_CM_translator.so", "libGLES_CM.so.1", "libGLES_CM.so", 0};
+	#else
+	const char *libGLES_CM_lib[] = {"libGLES_CM_translator.so", "libGLES_CM.so.1", "libGLES_CM.so", 0};
+	#endif
+
+	libGLES_CM = loadLibrary(libGLES_CM_lib);
+	glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)getProcAddress(libGLES_CM, "glEGLImageTargetTexture2DOES");
+}
+
+LibGLES_CMdependencies::~LibGLES_CMdependencies()
+{
+	freeLibrary(libGLES_CM);
+}
+
+LibGLES_CMdependencies *LibGLES_CMdependencies::getSingleton()
+{
+	static LibGLES_CMdependencies singleton;
+
+	return &singleton;
+}
+
+LibGLES_CM libGLES_CM;
