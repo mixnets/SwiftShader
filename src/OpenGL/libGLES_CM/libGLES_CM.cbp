@@ -131,6 +131,7 @@
 		<Linker>
 			<Add option="-Wl,--version-script=./exports.map" />
 			<Add option="-Wl,--hash-style=both" />
+			<Add option="-Wl,-rpath=./" />
 			<Add library="pthread" />
 			<Add library="X11" />
 			<Add library="Xext" />

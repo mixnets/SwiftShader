@@ -45,20 +45,55 @@ const T &error(GLenum errorCode, const T &returnValue)
     return returnValue;
 }
 
-// libEGL dependencies
-namespace egl
+class LibEGLdependencies
 {
-	extern egl::Context *(*getCurrentContext)();
-	extern egl::Display *(*getCurrentDisplay)();
-}
+public:
+	static LibEGLdependencies *getSingleton();
 
-// libGLES_CM dependencies
-namespace es1
+	egl::Context *(*getCurrentContext)();
+	egl::Display *(*getCurrentDisplay)();
+
+private:
+	LibEGLdependencies();
+	~LibEGLdependencies();
+
+	void *libEGL;
+};
+
+class LibEGL
 {
-	extern __eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname);
-}
+public:
+	LibEGLdependencies *operator->()
+	{
+		return LibEGLdependencies::getSingleton();
+	}
+};
 
-extern void *libEGL;       // Handle to the libEGL module
-extern void *libGLES_CM;   // Handle to the libGLES_CM module
+extern LibEGL libEGL;
+
+class LibGLES_CMdependencies
+{
+public:
+	static LibGLES_CMdependencies *getSingleton();
+
+	PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
+
+private:
+	LibGLES_CMdependencies();
+	~LibGLES_CMdependencies();
+
+	void *libGLES_CM;
+};
+
+class LibGLES_CM
+{
+public:
+	LibGLES_CMdependencies *operator->()
+	{
+		return LibGLES_CMdependencies::getSingleton();
+	}
+};
+
+extern LibGLES_CM libGLES_CM;
 
 #endif   // LIBGLESV2_MAIN_H_

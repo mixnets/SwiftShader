@@ -18,12 +18,21 @@
 void *getLibraryHandle(const char *path);
 void *loadLibrary(const char *path);
 
-template<int n>
-void *loadLibrary(const char *(&names)[n])
+inline void *loadLibrary(const char **names)
 {
-	for(int i = 0; i < n; i++)
+	for(int i = 0; names[i]; i++)
 	{
 		void *library = getLibraryHandle(names[i]);
+
+		if(library)
+		{
+			return loadLibrary(names[i]);
+		}
+	}
+
+	for(int i = 0; names[i]; i++)
+	{
+		void *library = loadLibrary(names[i]);
 
 		if(library)
 		{
@@ -31,9 +40,14 @@ void *loadLibrary(const char *(&names)[n])
 		}
 	}
 
-	for(int i = 0; i < n; i++)
+	return 0;
+}
+
+inline void *getLibraryHandle(const char **names)
+{
+	for(int i = 0; names[i]; i++)
 	{
-		void *library = loadLibrary(names[i]);
+		void *library = getLibraryHandle(names[i]);
 
 		if(library)
 		{
@@ -52,9 +66,7 @@ void *loadLibrary(const char *(&names)[n])
 
 	inline void *getLibraryHandle(const char *path)
 	{
-		HMODULE module = 0;
-		GetModuleHandleEx(0, path, &module);
-		return (void*)module;
+		return (void*)GetModuleHandle(path);
 	}
 
 	inline void freeLibrary(void *library)
@@ -74,14 +86,14 @@ void *loadLibrary(const char *(&names)[n])
 
 	inline void *getLibraryHandle(const char *path)
 	{
-		void *resident = dlopen(path, RTLD_LAZY | RTLD_NOLOAD);
-
-		if(resident)
-		{
-			return dlopen(path, RTLD_LAZY);   // Increment reference count
-		}
-
-		return 0;
+		#if defined(__ANDROID__) || defined(ANDROID)
+			// Bionic does not support RTLD_NOLAD before Lollipop.
+			// Symbols of resident libraries can be resolved with a null handle
+			// if loaded by the linker or if dlopen(lib, RTLD_GLOBAL) is used.
+			return NULL;
+		#else
+			return dlopen(path, RTLD_LAZY | RTLD_NOLOAD);
+		#endif
 	}
 
     inline void freeLibrary(void *library)
@@ -94,6 +106,6 @@ void *loadLibrary(const char *(&names)[n])
 
 	inline void *getProcAddress(void *library, const char *name)
 	{
-		return library ? dlsym(library, name) : 0;
+		return dlsym(library, name);
 	}
 #endif
