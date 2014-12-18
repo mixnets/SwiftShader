@@ -945,15 +945,15 @@ __eglMustCastToProperFunctionPointerType EGLAPIENTRY eglGetProcAddress(const cha
 		}
 	}
 
-	if(es2::getProcAddress != 0)
+	if(libGLESv2)
 	{
-		__eglMustCastToProperFunctionPointerType proc = es2::getProcAddress(procname);
+		__eglMustCastToProperFunctionPointerType proc = libGLESv2->getProcAddress(procname);
 		if(proc) return proc;
 	}
 
-	if(es1::getProcAddress != 0)
+	if(libGLES_CM)
 	{
-		__eglMustCastToProperFunctionPointerType proc =  es1::getProcAddress(procname);
+		__eglMustCastToProperFunctionPointerType proc = libGLES_CM->getProcAddress(procname);
 		if(proc) return proc;
 	}
 

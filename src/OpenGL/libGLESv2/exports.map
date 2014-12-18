@@ -170,7 +170,7 @@ global:
 
     # EGL dependencies
     glCreateContext;
-    glGetProcAddress;
+    es2GetProcAddress;
 
 	createFrameBuffer;
 	createBackBuffer;
