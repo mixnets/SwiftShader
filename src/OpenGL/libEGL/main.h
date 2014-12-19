@@ -18,6 +18,8 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
+#include "libGLES_CM/main.h"
+
 namespace egl
 {
 	struct Current
@@ -82,28 +84,100 @@ namespace sw
 	enum Format : unsigned char;
 }
 
-// libGLES_CM dependencies
-namespace es1
+/*
+class LibGLES_CMdependencies
 {
-	extern egl::Context *(*createContext)(const egl::Config *config, const egl::Context *shareContext);
-	extern __eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname);
+public:
+	static LibGLES_CMdependencies *getSingleton();
+	static bool isResident();
+	static const char **libraryNames();
+
+	egl::Context *(*createContext)(const egl::Config *config, const egl::Context *shareContext);
+	__eglMustCastToProperFunctionPointerType(*getProcAddress)(const char *procname);
+
+	egl::Image *(*createBackBuffer)(int width, int height, const egl::Config *config);
+	egl::Image *(*createDepthStencil)(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
+	sw::FrameBuffer *(*createFrameBuffer)(EGLNativeDisplayType display, EGLNativeWindowType window, int width, int height);
+
+private:
+	LibGLES_CMdependencies();
+	~LibGLES_CMdependencies();
+
+	void *libGLES_CM;
+};
+*/
+class LibGLES_CM
+{
+public:
+	LibGLES_CM();
+	~LibGLES_CM();
+
+	es1::LibGLES_CM *operator->();
+	operator es1::LibGLES_CM*();
+
+private:
+	es1::LibGLES_CM *libGLES_CM;
+	//void *libGLES_CMlibrary;
+};
+
+extern LibGLES_CM libGLES_CM;
+
+class LibGLESv2dependencies
+{
+public:
+	static LibGLESv2dependencies *getSingleton();
+	static bool isResident();
+	static const char **libraryNames();
+
+	egl::Context *(*createContext)(const egl::Config *config, const egl::Context *shareContext);
+	__eglMustCastToProperFunctionPointerType(*getProcAddress)(const char *procname);
+
+	egl::Image *(*createBackBuffer)(int width, int height, const egl::Config *config);
+	egl::Image *(*createDepthStencil)(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
+	sw::FrameBuffer *(*createFrameBuffer)(EGLNativeDisplayType display, EGLNativeWindowType window, int width, int height);
+
+private:
+	LibGLESv2dependencies();
+	~LibGLESv2dependencies();
+
+	void *libGLESv2;
+};
+
+class LibGLESv2
+{
+public:
+	LibGLESv2dependencies *operator->()
+	{
+		return LibGLESv2dependencies::getSingleton();
+	}
+
+	operator bool()
+	{
+		return LibGLESv2dependencies::isResident();
+	}
+};
+
+extern LibGLESv2 libGLESv2;
+
+namespace egl
+{
+class LibEGL
+{
+public:
+	static LibEGL *getSingleton();
+
+	virtual egl::Context *getCurrentContext();
+	virtual egl::Display *getCurrentDisplay();
+
+private:
+	LibEGL() {};
+	//~LibEGL();
+};
 }
 
-// libGLESv2 dependencies
-namespace es2
+extern "C"
 {
-	extern egl::Context *(*createContext)(const egl::Config *config, const egl::Context *shareContext);
-	extern __eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname);
+	egl::LibEGL *libEGL();
 }
-
-namespace es
-{
-	extern egl::Image *(*createBackBuffer)(int width, int height, const egl::Config *config);
-	extern egl::Image *(*createDepthStencil)(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
-	extern sw::FrameBuffer *(*createFrameBuffer)(EGLNativeDisplayType display, EGLNativeWindowType window, int width, int height);
-}
-
-extern void *libGLES_CM;   // Handle to the libGLES_CM module
-extern void *libGLESv2;    // Handle to the libGLESv2 module
 
 #endif  // LIBEGL_MAIN_H_

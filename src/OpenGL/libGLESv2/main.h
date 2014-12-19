@@ -18,6 +18,7 @@
 #include "Device.hpp"
 #include "common/debug.h"
 #include "libEGL/Display.h"
+#include "libEGL/main.h"
 
 #define GL_APICALL
 #include <GLES2/gl2.h>
@@ -45,20 +46,44 @@ const T &error(GLenum errorCode, const T &returnValue)
     return returnValue;
 }
 
-// libEGL dependencies
-namespace egl
+class LibEGL
 {
-	extern egl::Context *(*getCurrentContext)();
-	extern egl::Display *(*getCurrentDisplay)();
-}
+public:
+	LibEGL();
+	~LibEGL();
 
-// libGLES_CM dependencies
-namespace es1
+	egl::LibEGL *operator->();
+
+private:
+	egl::LibEGL *libEGL;
+	void *libEGLlibrary;
+};
+
+extern LibEGL libEGL;
+
+class LibGLES_CMdependencies
 {
-	extern __eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname);
-}
+public:
+	static LibGLES_CMdependencies *getSingleton();
 
-extern void *libEGL;       // Handle to the libEGL module
-extern void *libGLES_CM;   // Handle to the libGLES_CM module
+	PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES;
+
+private:
+	LibGLES_CMdependencies();
+	~LibGLES_CMdependencies();
+
+	void *libGLES_CM;
+};
+
+class LibGLES_CM
+{
+public:
+	LibGLES_CMdependencies *operator->()
+	{
+		return LibGLES_CMdependencies::getSingleton();
+	}
+};
+
+extern LibGLES_CM libGLES_CM;
 
 #endif   // LIBGLESV2_MAIN_H_
