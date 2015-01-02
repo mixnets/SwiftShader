@@ -259,8 +259,6 @@ public:
 	virtual void destroy();
 	virtual int getClientVersion();
 
-    void markAllStateDirty();
-
     // State manipulation
     void setClearColor(float red, float green, float blue, float alpha);
     void setClearDepth(float depth);
@@ -493,16 +491,12 @@ private:
 
     unsigned int mAppliedProgramSerial;
     
-    // state caching flags
-    bool mDepthStateDirty;
-    bool mMaskStateDirty;
-    bool mPixelPackingStateDirty;
+    // State caching flags
     bool mBlendStateDirty;
     bool mStencilStateDirty;
     bool mPolygonOffsetStateDirty;
     bool mSampleStateDirty;
     bool mFrontFaceDirty;
-    bool mDitherStateDirty;
 
 	Device *device;
     ResourceManager *mResourceManager;

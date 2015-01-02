@@ -158,8 +158,12 @@ Context::Context(const egl::Config *config, const Context *shareContext) : mConf
     mInvalidFramebufferOperation = false;
 
     mHasBeenCurrent = false;
-
-    markAllStateDirty();
+	mAppliedProgramSerial = 0;
+    mBlendStateDirty = true;
+    mStencilStateDirty = true;
+    mPolygonOffsetStateDirty = true;
+    mSampleStateDirty = true;
+    mFrontFaceDirty = true;
 }
 
 Context::~Context()
@@ -261,8 +265,6 @@ void Context::makeCurrent(egl::Surface *surface)
     {
         depthStencil->release();
     }
-    
-    markAllStateDirty();
 }
 
 void Context::destroy()
@@ -273,21 +275,6 @@ void Context::destroy()
 int Context::getClientVersion()
 {
 	return 2;
-}
-
-// This function will set all of the state-related dirty flags, so that all state is set during next pre-draw.
-void Context::markAllStateDirty()
-{
-    mAppliedProgramSerial = 0;
-
-    mDepthStateDirty = true;
-    mMaskStateDirty = true;
-    mBlendStateDirty = true;
-    mStencilStateDirty = true;
-    mPolygonOffsetStateDirty = true;
-    mSampleStateDirty = true;
-    mDitherStateDirty = true;
-    mFrontFaceDirty = true;
 }
 
 void Context::setClearColor(float red, float green, float blue, float alpha)
@@ -334,11 +321,8 @@ void Context::setFrontFace(GLenum front)
 
 void Context::setDepthTest(bool enabled)
 {
-    if(mState.depthTest != enabled)
-    {
-        mState.depthTest = enabled;
-        mDepthStateDirty = true;
-    }
+	mState.depthTest = enabled;
+    device->setDepthBufferEnable(enabled);
 }
 
 bool Context::isDepthTestEnabled() const
@@ -348,11 +332,8 @@ bool Context::isDepthTestEnabled() const
 
 void Context::setDepthFunc(GLenum depthFunc)
 {
-    if(mState.depthFunc != depthFunc)
-    {
-        mState.depthFunc = depthFunc;
-        mDepthStateDirty = true;
-    }
+	mState.depthFunc = depthFunc;
+    device->setDepthCompare(es2sw::ConvertDepthComparison(depthFunc));
 }
 
 void Context::setDepthRange(float zNear, float zFar)
@@ -576,11 +557,8 @@ bool Context::isScissorTestEnabled() const
 
 void Context::setDither(bool enabled)
 {
-    if(mState.dither != enabled)
-    {
-        mState.dither = enabled;
-        mDitherStateDirty = true;
-    }
+	mState.dither = enabled;
+//	UNIMPLEMENTED();   // FIXME
 }
 
 bool Context::isDitherEnabled() const
@@ -624,24 +602,17 @@ void Context::setScissorParams(GLint x, GLint y, GLsizei width, GLsizei height)
 
 void Context::setColorMask(bool red, bool green, bool blue, bool alpha)
 {
-    if(mState.colorMaskRed != red || mState.colorMaskGreen != green ||
-       mState.colorMaskBlue != blue || mState.colorMaskAlpha != alpha)
-    {
-        mState.colorMaskRed = red;
-        mState.colorMaskGreen = green;
-        mState.colorMaskBlue = blue;
-        mState.colorMaskAlpha = alpha;
-        mMaskStateDirty = true;
-    }
+	mState.colorMaskRed = red;
+	mState.colorMaskGreen = green;
+	mState.colorMaskBlue = blue;
+	mState.colorMaskAlpha = alpha;
+	device->setColorWriteMask(0, es2sw::ConvertColorMask(mState.colorMaskRed, mState.colorMaskGreen, mState.colorMaskBlue, mState.colorMaskAlpha));
 }
 
 void Context::setDepthMask(bool mask)
 {
-    if(mState.depthMask != mask)
-    {
-        mState.depthMask = mask;
-        mMaskStateDirty = true;
-    }
+	mState.depthMask = mask;
+	device->setDepthWriteEnable(mask);
 }
 
 void Context::setActiveSampler(unsigned int active)
@@ -1721,21 +1692,6 @@ void Context::applyState(GLenum drawMode)
 		device->setCullMode(sw::CULL_NONE);
     }
 
-    if(mDepthStateDirty)
-    {
-        if(mState.depthTest)
-        {
-			device->setDepthBufferEnable(true);
-			device->setDepthCompare(es2sw::ConvertDepthComparison(mState.depthFunc));
-        }
-        else
-        {
-            device->setDepthBufferEnable(false);
-        }
-
-        mDepthStateDirty = false;
-    }
-
     if(mBlendStateDirty)
     {
         if(mState.blend)
@@ -1834,14 +1790,6 @@ void Context::applyState(GLenum drawMode)
         mFrontFaceDirty = false;
     }
 
-    if(mMaskStateDirty)
-    {
-		device->setColorWriteMask(0, es2sw::ConvertColorMask(mState.colorMaskRed, mState.colorMaskGreen, mState.colorMaskBlue, mState.colorMaskAlpha));
-		device->setDepthWriteEnable(mState.depthMask);
-
-        mMaskStateDirty = false;
-    }
-
     if(mPolygonOffsetStateDirty)
     {
         if(mState.polygonOffsetFill)
@@ -1909,13 +1857,6 @@ void Context::applyState(GLenum drawMode)
         }
 
         mSampleStateDirty = false;
-    }
-
-    if(mDitherStateDirty)
-    {
-    //	UNIMPLEMENTED();   // FIXME
-
-        mDitherStateDirty = false;
     }
 }
 
