@@ -12,8 +12,8 @@
 // IndexDataManager.h: Defines the IndexDataManager, a class that
 // runs the Buffer translation process for index buffers.
 
-#ifndef LIBGLES_CM_INDEXDATAMANAGER_H_
-#define LIBGLES_CM_INDEXDATAMANAGER_H_
+#ifndef LIBGL_INDEXDATAMANAGER_H_
+#define LIBGL_INDEXDATAMANAGER_H_
 
 #include "Context.h"
 
@@ -66,4 +66,4 @@ class IndexDataManager
 
 }
 
-#endif   // LIBGLES_CM_INDEXDATAMANAGER_H_
+#endif   // LIBGL_INDEXDATAMANAGER_H_

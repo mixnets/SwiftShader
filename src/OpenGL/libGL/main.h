@@ -11,8 +11,8 @@
 
 // main.h: Management of thread-local data.
 
-#ifndef LIBGLES_CM_MAIN_H_
-#define LIBGLES_CM_MAIN_H_
+#ifndef LIBGL_MAIN_H_
+#define LIBGL_MAIN_H_
 
 #include "Context.h"
 #include "Device.hpp"
@@ -50,4 +50,4 @@ namespace egl
 
 extern void *libEGL;   // Handle to the libEGL module
 
-#endif   // LIBGLES_CM_MAIN_H_
+#endif   // LIBGL_MAIN_H_

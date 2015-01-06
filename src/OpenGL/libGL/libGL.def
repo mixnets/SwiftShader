@@ -1,4 +1,4 @@
-LIBRARY libGLES_CM
+LIBRARY libGL
 EXPORTS
 	eglBindTexImage    @134
     eglChooseConfig    @1

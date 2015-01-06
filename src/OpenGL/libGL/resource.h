@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by libGLES_CM.rc
+// Used by libGL.rc
 
 // Next default values for new objects
 // 

@@ -53,7 +53,7 @@
     <ClCompile Include="Image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="libGLES_CM.cpp">
+    <ClCompile Include="libGL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MatrixStack.cpp">
@@ -132,9 +132,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="libGLES_CM.rc" />
+    <ResourceCompile Include="libGL.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="libGLES_CM.def" />
+    <None Include="libGL.def" />
   </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@
 // agreement of TransGaming Inc. Without such an agreement, no rights or licenses, express
 // or implied, including but not limited to any patent rights, are granted to you.
 //
-// libGLES_CM.cpp: Implements the exported OpenGL ES 1.1 functions.
+// libGL.cpp: Implements the exported OpenGL functions.
 
 #include "main.h"
 #include "mathutil.h"

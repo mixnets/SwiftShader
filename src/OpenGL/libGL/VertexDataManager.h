@@ -12,8 +12,8 @@
 // VertexDataManager.h: Defines the VertexDataManager, a class that
 // runs the Buffer translation process.
 
-#ifndef LIBGLES_CM_VERTEXDATAMANAGER_H_
-#define LIBGLES_CM_VERTEXDATAMANAGER_H_
+#ifndef LIBGL_VERTEXDATAMANAGER_H_
+#define LIBGL_VERTEXDATAMANAGER_H_
 
 #include "Context.h"
 #include "Device.hpp"
@@ -96,4 +96,4 @@ class VertexDataManager
 
 }
 
-#endif   // LIBGLES_CM_VERTEXDATAMANAGER_H_
+#endif   // LIBGL_VERTEXDATAMANAGER_H_
