@@ -25,13 +25,13 @@ namespace rad
 class TranslatorASM : public TCompiler
 {
 public:
-    TranslatorASM(es2::Shader *shaderObject, ShShaderType type, ShShaderSpec spec);
+    TranslatorASM(gl::Shader *shaderObject, ShShaderType type, ShShaderSpec spec);
 
 protected:
     virtual bool translate(TIntermNode* root);
 
 private:
-	es2::Shader *const shaderObject;
+	gl::Shader *const shaderObject;
 };
 
 #endif  // COMPILER_TRANSLATORASM_H_

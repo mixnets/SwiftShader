@@ -24,7 +24,7 @@
 #define GL_GLEXT_PROTOTYPES
 #include <GLES/glext.h>
 
-namespace es1
+namespace gl
 {
 	Context *getContext();
 	egl::Display *getDisplay();

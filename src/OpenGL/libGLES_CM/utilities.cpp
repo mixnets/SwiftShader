@@ -20,7 +20,7 @@
 #include <limits>
 #include <stdio.h>
 
-namespace es1
+namespace gl
 {
 	GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment)
 	{
@@ -227,7 +227,7 @@ namespace es1
 	}
 }
 
-namespace es2sw
+namespace gl2sw
 {
 	sw::DepthCompareMode ConvertDepthComparison(GLenum comparison)
 	{
@@ -265,7 +265,7 @@ namespace es2sw
 		return sw::STENCIL_ALWAYS;
 	}
 
-	sw::Color<float> ConvertColor(es1::Color color)
+	sw::Color<float> ConvertColor(gl::Color color)
 	{
 		return sw::Color<float>(color.red, color.green, color.blue, color.alpha);
 	}
@@ -413,36 +413,36 @@ namespace es2sw
 		}
 	}
 
-	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount,  es1::PrimitiveType &swPrimitiveType, int &primitiveCount)
+	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount,  gl::PrimitiveType &swPrimitiveType, int &primitiveCount)
 	{
 		switch(primitiveType)
 		{
 		case GL_POINTS:
-			swPrimitiveType = es1::DRAW_POINTLIST;
+			swPrimitiveType = gl::DRAW_POINTLIST;
 			primitiveCount = elementCount;
 			break;
 		case GL_LINES:
-			swPrimitiveType = es1::DRAW_LINELIST;
+			swPrimitiveType = gl::DRAW_LINELIST;
 			primitiveCount = elementCount / 2;
 			break;
 		case GL_LINE_LOOP:
-			swPrimitiveType = es1::DRAW_LINELOOP;
+			swPrimitiveType = gl::DRAW_LINELOOP;
 			primitiveCount = elementCount;
 			break;
 		case GL_LINE_STRIP:
-			swPrimitiveType = es1::DRAW_LINESTRIP;
+			swPrimitiveType = gl::DRAW_LINESTRIP;
 			primitiveCount = elementCount - 1;
 			break;
 		case GL_TRIANGLES:
-			swPrimitiveType = es1::DRAW_TRIANGLELIST;
+			swPrimitiveType = gl::DRAW_TRIANGLELIST;
 			primitiveCount = elementCount / 3;
 			break;
 		case GL_TRIANGLE_STRIP:
-			swPrimitiveType = es1::DRAW_TRIANGLESTRIP;
+			swPrimitiveType = gl::DRAW_TRIANGLESTRIP;
 			primitiveCount = elementCount - 2;
 			break;
 		case GL_TRIANGLE_FAN:
-			swPrimitiveType = es1::DRAW_TRIANGLEFAN;
+			swPrimitiveType = gl::DRAW_TRIANGLEFAN;
 			primitiveCount = elementCount - 2;
 			break;
 		default:

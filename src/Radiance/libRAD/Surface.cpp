@@ -31,8 +31,8 @@
 
 extern "C"
 {
-	es2::Image *createBackBuffer(int width, int height, const egl::Config *config);
-	es2::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
+	gl::Image *createBackBuffer(int width, int height, const egl::Config *config);
+	gl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
 	#if defined(_WIN32)
 	sw::FrameBuffer *createFrameBuffer(HDC display, HWND window, int width, int height);
 	#else

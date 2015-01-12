@@ -9,7 +9,7 @@
 // or implied, including but not limited to any patent rights, are granted to you.
 //
 
-// Context.cpp: Implements the es2::Context class, managing all GL state and performing
+// Context.cpp: Implements the gl::Context class, managing all GL state and performing
 // rendering operations. It is the GLES2 specific implementation of EGLContext.
 
 #include "Context.h"
@@ -30,7 +30,7 @@
 #undef near
 #undef far
 
-namespace es2
+namespace gl
 {
 int VertexAttribute::typeSize() const
 {
@@ -49,7 +49,7 @@ int VertexAttribute::typeSize() const
 Context::Context(const egl::Config *config, const Context *shareContext) : mConfig(config)
 {
 	sw::Context *context = new sw::Context();
-	device = new es2::Device(context);
+	device = new gl::Device(context);
 
     setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 

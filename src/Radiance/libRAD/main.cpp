@@ -301,15 +301,15 @@ extern "C"
 	}
 }
 
-namespace es2
+namespace gl
 {
-es2::Context *getContext()
+gl::Context *getContext()
 {
 	egl::Context *context = static_cast<egl::Context*>(egl::getCurrentContext());
 	
 	if(context && context->getClientVersion() == 2)
 	{
-		return static_cast<es2::Context*>(context);
+		return static_cast<gl::Context*>(context);
 	}
 	
 	return 0;
@@ -343,7 +343,7 @@ namespace rad
 	// Records an error code
 	void error(GLenum errorCode)
 	{
-		es2::Context *context = es2::getContext();
+		gl::Context *context = gl::getContext();
 
 		if(context)
 		{

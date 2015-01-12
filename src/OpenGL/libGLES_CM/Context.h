@@ -39,7 +39,7 @@ class Surface;
 class Config;
 }
 
-namespace es1
+namespace gl
 {
 struct TranslatedAttribute;
 struct TranslatedIndexData;

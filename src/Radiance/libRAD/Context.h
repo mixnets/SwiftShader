@@ -35,7 +35,7 @@ class Surface;
 class Config;
 }
 
-namespace es2
+namespace gl
 {
 class Device;
 class Shader;

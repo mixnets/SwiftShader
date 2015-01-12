@@ -25,7 +25,7 @@
 
 #include <string>
 
-namespace es1
+namespace gl
 {
 	struct Color;
 
@@ -46,11 +46,11 @@ namespace es1
 	bool IsStencilRenderable(GLenum internalformat);
 }
 
-namespace es2sw
+namespace gl2sw
 {
 	sw::DepthCompareMode ConvertDepthComparison(GLenum comparison);
 	sw::StencilCompareMode ConvertStencilComparison(GLenum comparison);
-	sw::Color<float> ConvertColor(es1::Color color);
+	sw::Color<float> ConvertColor(gl::Color color);
 	sw::BlendFactor ConvertBlendFunc(GLenum blend);
 	sw::BlendOperation ConvertBlendOp(GLenum blendOp);
 	sw::StencilOperation ConvertStencilOp(GLenum stencilOp);
@@ -59,7 +59,7 @@ namespace es2sw
 	unsigned int ConvertColorMask(bool red, bool green, bool blue, bool alpha);
 	sw::FilterType ConvertMagFilter(GLenum magFilter);
 	void ConvertMinFilter(GLenum texFilter, sw::FilterType *minFilter, sw::MipmapType *mipFilter, float maxAnisotropy);
-	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount,  es1::PrimitiveType &swPrimitiveType, int &primitiveCount);
+	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount,  gl::PrimitiveType &swPrimitiveType, int &primitiveCount);
 	sw::Format ConvertRenderbufferFormat(GLenum format);
 }
 

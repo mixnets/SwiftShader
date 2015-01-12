@@ -9,7 +9,7 @@
 // or implied, including but not limited to any patent rights, are granted to you.
 //
 
-// Context.cpp: Implements the es1::Context class, managing all GL state and performing
+// Context.cpp: Implements the gl::Context class, managing all GL state and performing
 // rendering operations. It is the GLES2 specific implementation of EGLContext.
 
 #include "Context.h"
@@ -33,7 +33,7 @@
 #undef near
 #undef far
 
-namespace es1
+namespace gl
 {
 Context::Context(const egl::Config *config, const Context *shareContext)
     : modelViewStack(MAX_MODELVIEW_STACK_DEPTH),
@@ -42,7 +42,7 @@ Context::Context(const egl::Config *config, const Context *shareContext)
 	  textureStack1(MAX_TEXTURE_STACK_DEPTH)
 {
 	sw::Context *context = new sw::Context();
-	device = new es1::Device(context);
+	device = new gl::Device(context);
 
 	mVertexDataManager = new VertexDataManager(this);
     mIndexDataManager = new IndexDataManager();
@@ -1448,7 +1448,7 @@ void Context::applyState(GLenum drawMode)
 
     if(mState.cullFace)
     {
-        device->setCullMode(es2sw::ConvertCullMode(mState.cullMode, mState.frontFace));
+        device->setCullMode(gl2sw::ConvertCullMode(mState.cullMode, mState.frontFace));
     }
     else
     {
@@ -1460,7 +1460,7 @@ void Context::applyState(GLenum drawMode)
         if(mState.depthTest)
         {
 			device->setDepthBufferEnable(true);
-			device->setDepthCompare(es2sw::ConvertDepthComparison(mState.depthFunc));
+			device->setDepthCompare(gl2sw::ConvertDepthComparison(mState.depthFunc));
         }
         else
         {
@@ -1477,13 +1477,13 @@ void Context::applyState(GLenum drawMode)
 			device->setAlphaBlendEnable(true);
 			device->setSeparateAlphaBlendEnable(true);
 
-			device->setSourceBlendFactor(es2sw::ConvertBlendFunc(mState.sourceBlendRGB));
-			device->setDestBlendFactor(es2sw::ConvertBlendFunc(mState.destBlendRGB));
-			device->setBlendOperation(es2sw::ConvertBlendOp(mState.blendEquationRGB));
+			device->setSourceBlendFactor(gl2sw::ConvertBlendFunc(mState.sourceBlendRGB));
+			device->setDestBlendFactor(gl2sw::ConvertBlendFunc(mState.destBlendRGB));
+			device->setBlendOperation(gl2sw::ConvertBlendOp(mState.blendEquationRGB));
 
-            device->setSourceBlendFactorAlpha(es2sw::ConvertBlendFunc(mState.sourceBlendAlpha));
-			device->setDestBlendFactorAlpha(es2sw::ConvertBlendFunc(mState.destBlendAlpha));
-			device->setBlendOperationAlpha(es2sw::ConvertBlendOp(mState.blendEquationAlpha));
+            device->setSourceBlendFactorAlpha(gl2sw::ConvertBlendFunc(mState.sourceBlendAlpha));
+			device->setDestBlendFactorAlpha(gl2sw::ConvertBlendFunc(mState.destBlendAlpha));
+			device->setBlendOperationAlpha(gl2sw::ConvertBlendOp(mState.blendEquationAlpha));
         }
         else
         {
@@ -1505,24 +1505,24 @@ void Context::applyState(GLenum drawMode)
             GLuint maxStencil = (1 << stencilbuffer->getStencilSize()) - 1;
 
 			device->setStencilWriteMask(mState.stencilWritemask);
-			device->setStencilCompare(es2sw::ConvertStencilComparison(mState.stencilFunc));
+			device->setStencilCompare(gl2sw::ConvertStencilComparison(mState.stencilFunc));
 
 			device->setStencilReference((mState.stencilRef < (GLint)maxStencil) ? mState.stencilRef : maxStencil);
 			device->setStencilMask(mState.stencilMask);
 
-			device->setStencilFailOperation(es2sw::ConvertStencilOp(mState.stencilFail));
-			device->setStencilZFailOperation(es2sw::ConvertStencilOp(mState.stencilPassDepthFail));
-			device->setStencilPassOperation(es2sw::ConvertStencilOp(mState.stencilPassDepthPass));
+			device->setStencilFailOperation(gl2sw::ConvertStencilOp(mState.stencilFail));
+			device->setStencilZFailOperation(gl2sw::ConvertStencilOp(mState.stencilPassDepthFail));
+			device->setStencilPassOperation(gl2sw::ConvertStencilOp(mState.stencilPassDepthPass));
 
 			device->setStencilWriteMaskCCW(mState.stencilWritemask);
-			device->setStencilCompareCCW(es2sw::ConvertStencilComparison(mState.stencilFunc));
+			device->setStencilCompareCCW(gl2sw::ConvertStencilComparison(mState.stencilFunc));
 
 			device->setStencilReferenceCCW((mState.stencilRef < (GLint)maxStencil) ? mState.stencilRef : maxStencil);
 			device->setStencilMaskCCW(mState.stencilMask);
 
-			device->setStencilFailOperationCCW(es2sw::ConvertStencilOp(mState.stencilFail));
-			device->setStencilZFailOperationCCW(es2sw::ConvertStencilOp(mState.stencilPassDepthFail));
-			device->setStencilPassOperationCCW(es2sw::ConvertStencilOp(mState.stencilPassDepthPass));
+			device->setStencilFailOperationCCW(gl2sw::ConvertStencilOp(mState.stencilFail));
+			device->setStencilZFailOperationCCW(gl2sw::ConvertStencilOp(mState.stencilPassDepthFail));
+			device->setStencilPassOperationCCW(gl2sw::ConvertStencilOp(mState.stencilPassDepthPass));
         }
         else
         {
@@ -1535,7 +1535,7 @@ void Context::applyState(GLenum drawMode)
 
     if(mMaskStateDirty)
     {
-		device->setColorWriteMask(0, es2sw::ConvertColorMask(mState.colorMaskRed, mState.colorMaskGreen, mState.colorMaskBlue, mState.colorMaskAlpha));
+		device->setColorWriteMask(0, gl2sw::ConvertColorMask(mState.colorMaskRed, mState.colorMaskGreen, mState.colorMaskBlue, mState.colorMaskAlpha));
 		device->setDepthWriteEnable(mState.depthMask);
 
         mMaskStateDirty = false;
@@ -1716,16 +1716,16 @@ void Context::applyTextures()
             GLenum magFilter = texture->getMagFilter();
 			GLfloat maxAnisotropy = texture->getMaxAnisotropy();
 
-			device->setAddressingModeU(sw::SAMPLER_PIXEL, samplerIndex, es2sw::ConvertTextureWrap(wrapS));
-            device->setAddressingModeV(sw::SAMPLER_PIXEL, samplerIndex, es2sw::ConvertTextureWrap(wrapT));
+			device->setAddressingModeU(sw::SAMPLER_PIXEL, samplerIndex, gl2sw::ConvertTextureWrap(wrapS));
+            device->setAddressingModeV(sw::SAMPLER_PIXEL, samplerIndex, gl2sw::ConvertTextureWrap(wrapT));
 
 			sw::FilterType minFilter;
 			sw::MipmapType mipFilter;
-            es2sw::ConvertMinFilter(texFilter, &minFilter, &mipFilter, maxAnisotropy);
-		//	ASSERT(minFilter == es2sw::ConvertMagFilter(magFilter));
+            gl2sw::ConvertMinFilter(texFilter, &minFilter, &mipFilter, maxAnisotropy);
+		//	ASSERT(minFilter == gl2sw::ConvertMagFilter(magFilter));
 
 			device->setTextureFilter(sw::SAMPLER_PIXEL, samplerIndex, minFilter);
-		//	device->setTextureFilter(sw::SAMPLER_PIXEL, samplerIndex, es2sw::ConvertMagFilter(magFilter));
+		//	device->setTextureFilter(sw::SAMPLER_PIXEL, samplerIndex, gl2sw::ConvertMagFilter(magFilter));
 			device->setMipmapFilter(sw::SAMPLER_PIXEL, samplerIndex, mipFilter);
 			device->setMaxAnisotropy(sw::SAMPLER_PIXEL, samplerIndex, maxAnisotropy);
 
@@ -2064,7 +2064,7 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
     PrimitiveType primitiveType;
     int primitiveCount;
 
-    if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
+    if(!gl2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
         return error(GL_INVALID_ENUM);
 
     if(primitiveCount <= 0)
@@ -2103,7 +2103,7 @@ void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *
     PrimitiveType primitiveType;
     int primitiveCount;
 
-    if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
+    if(!gl2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
         return error(GL_INVALID_ENUM);
 
     if(primitiveCount <= 0)
@@ -2361,7 +2361,7 @@ void Context::setVertexAttrib(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLf
 
 void Context::bindTexImage(egl::Surface *surface)
 {
-	es1::Texture2D *textureObject = getTexture2D();
+	gl::Texture2D *textureObject = getTexture2D();
 
     if(textureObject)
     {
@@ -2433,13 +2433,13 @@ egl::Image *Context::createSharedImage(EGLenum target, GLuint name, GLuint textu
 {
     if(target == EGL_GL_TEXTURE_2D_KHR)
     {
-        es1::Texture *texture = getTexture(name);
+        gl::Texture *texture = getTexture(name);
 
         return texture->createSharedImage(GL_TEXTURE_2D, textureLevel);
     }
     else if(target == EGL_GL_RENDERBUFFER_KHR)
     {
-        es1::Renderbuffer *renderbuffer = getRenderbuffer(name);
+        gl::Renderbuffer *renderbuffer = getRenderbuffer(name);
 
         return renderbuffer->createSharedImage();
     }
@@ -2550,8 +2550,8 @@ unsigned int Context::getActiveTexture() const
 // Exported functions for use by EGL
 extern "C"
 {
-	es1::Context *glCreateContext(const egl::Config *config, const es1::Context *shareContext)
+	gl::Context *glCreateContext(const egl::Config *config, const gl::Context *shareContext)
 	{
-		return new es1::Context(config, shareContext);
+		return new gl::Context(config, shareContext);
 	}
 }

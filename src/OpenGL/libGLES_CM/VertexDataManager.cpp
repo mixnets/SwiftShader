@@ -25,7 +25,7 @@ namespace
     enum {INITIAL_STREAM_BUFFER_SIZE = 1024 * 1024};
 }
 
-namespace es1
+namespace gl
 {
 
 VertexDataManager::VertexDataManager(Context *context) : mContext(context)

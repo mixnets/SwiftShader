@@ -18,7 +18,7 @@
 
 #include <math.h>
 
-namespace es1
+namespace gl
 {
 inline bool isPow2(int x)
 {

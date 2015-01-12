@@ -9,7 +9,7 @@
 // or implied, including but not limited to any patent rights, are granted to you.
 //
 
-// Context.cpp: Implements the es2::Context class, managing all GL state and performing
+// Context.cpp: Implements the gl::Context class, managing all GL state and performing
 // rendering operations. It is the GLES2 specific implementation of EGLContext.
 
 #include "Context.h"
@@ -37,12 +37,12 @@
 #undef near
 #undef far
 
-namespace es2
+namespace gl
 {
 Context::Context(const egl::Config *config, const Context *shareContext) : mConfig(config)
 {
 	sw::Context *context = new sw::Context();
-	device = new es2::Device(context);
+	device = new gl::Device(context);
 
     mFenceHandleAllocator.setBaseHandle(0);
 
@@ -1714,7 +1714,7 @@ void Context::applyState(GLenum drawMode)
 
     if(mState.cullFace)
     {
-        device->setCullMode(es2sw::ConvertCullMode(mState.cullMode, mState.frontFace));
+        device->setCullMode(gl2sw::ConvertCullMode(mState.cullMode, mState.frontFace));
     }
     else
     {
@@ -1726,7 +1726,7 @@ void Context::applyState(GLenum drawMode)
         if(mState.depthTest)
         {
 			device->setDepthBufferEnable(true);
-			device->setDepthCompare(es2sw::ConvertDepthComparison(mState.depthFunc));
+			device->setDepthCompare(gl2sw::ConvertDepthComparison(mState.depthFunc));
         }
         else
         {
@@ -1743,15 +1743,15 @@ void Context::applyState(GLenum drawMode)
 			device->setAlphaBlendEnable(true);
 			device->setSeparateAlphaBlendEnable(true);
 
-            device->setBlendConstant(es2sw::ConvertColor(mState.blendColor));
+            device->setBlendConstant(gl2sw::ConvertColor(mState.blendColor));
 
-			device->setSourceBlendFactor(es2sw::ConvertBlendFunc(mState.sourceBlendRGB));
-			device->setDestBlendFactor(es2sw::ConvertBlendFunc(mState.destBlendRGB));
-			device->setBlendOperation(es2sw::ConvertBlendOp(mState.blendEquationRGB));
+			device->setSourceBlendFactor(gl2sw::ConvertBlendFunc(mState.sourceBlendRGB));
+			device->setDestBlendFactor(gl2sw::ConvertBlendFunc(mState.destBlendRGB));
+			device->setBlendOperation(gl2sw::ConvertBlendOp(mState.blendEquationRGB));
 
-            device->setSourceBlendFactorAlpha(es2sw::ConvertBlendFunc(mState.sourceBlendAlpha));
-			device->setDestBlendFactorAlpha(es2sw::ConvertBlendFunc(mState.destBlendAlpha));
-			device->setBlendOperationAlpha(es2sw::ConvertBlendOp(mState.blendEquationAlpha));
+            device->setSourceBlendFactorAlpha(gl2sw::ConvertBlendFunc(mState.sourceBlendAlpha));
+			device->setDestBlendFactorAlpha(gl2sw::ConvertBlendFunc(mState.destBlendAlpha));
+			device->setBlendOperationAlpha(gl2sw::ConvertBlendOp(mState.blendEquationAlpha));
         }
         else
         {
@@ -1783,46 +1783,46 @@ void Context::applyState(GLenum drawMode)
 			if(mState.frontFace == GL_CCW)
 			{
 				device->setStencilWriteMask(mState.stencilWritemask);
-				device->setStencilCompare(es2sw::ConvertStencilComparison(mState.stencilFunc));
+				device->setStencilCompare(gl2sw::ConvertStencilComparison(mState.stencilFunc));
 
 				device->setStencilReference((mState.stencilRef < (GLint)maxStencil) ? mState.stencilRef : maxStencil);
 				device->setStencilMask(mState.stencilMask);
 
-				device->setStencilFailOperation(es2sw::ConvertStencilOp(mState.stencilFail));
-				device->setStencilZFailOperation(es2sw::ConvertStencilOp(mState.stencilPassDepthFail));
-				device->setStencilPassOperation(es2sw::ConvertStencilOp(mState.stencilPassDepthPass));
+				device->setStencilFailOperation(gl2sw::ConvertStencilOp(mState.stencilFail));
+				device->setStencilZFailOperation(gl2sw::ConvertStencilOp(mState.stencilPassDepthFail));
+				device->setStencilPassOperation(gl2sw::ConvertStencilOp(mState.stencilPassDepthPass));
 
 				device->setStencilWriteMaskCCW(mState.stencilBackWritemask);
-				device->setStencilCompareCCW(es2sw::ConvertStencilComparison(mState.stencilBackFunc));
+				device->setStencilCompareCCW(gl2sw::ConvertStencilComparison(mState.stencilBackFunc));
 
 				device->setStencilReferenceCCW((mState.stencilBackRef < (GLint)maxStencil) ? mState.stencilBackRef : maxStencil);
 				device->setStencilMaskCCW(mState.stencilBackMask);
 
-				device->setStencilFailOperationCCW(es2sw::ConvertStencilOp(mState.stencilBackFail));
-				device->setStencilZFailOperationCCW(es2sw::ConvertStencilOp(mState.stencilBackPassDepthFail));
-				device->setStencilPassOperationCCW(es2sw::ConvertStencilOp(mState.stencilBackPassDepthPass));
+				device->setStencilFailOperationCCW(gl2sw::ConvertStencilOp(mState.stencilBackFail));
+				device->setStencilZFailOperationCCW(gl2sw::ConvertStencilOp(mState.stencilBackPassDepthFail));
+				device->setStencilPassOperationCCW(gl2sw::ConvertStencilOp(mState.stencilBackPassDepthPass));
 			}
 			else
 			{
 				device->setStencilWriteMaskCCW(mState.stencilWritemask);
-				device->setStencilCompareCCW(es2sw::ConvertStencilComparison(mState.stencilFunc));
+				device->setStencilCompareCCW(gl2sw::ConvertStencilComparison(mState.stencilFunc));
 
 				device->setStencilReferenceCCW((mState.stencilRef < (GLint)maxStencil) ? mState.stencilRef : maxStencil);
 				device->setStencilMaskCCW(mState.stencilMask);
 
-				device->setStencilFailOperationCCW(es2sw::ConvertStencilOp(mState.stencilFail));
-				device->setStencilZFailOperationCCW(es2sw::ConvertStencilOp(mState.stencilPassDepthFail));
-				device->setStencilPassOperationCCW(es2sw::ConvertStencilOp(mState.stencilPassDepthPass));
+				device->setStencilFailOperationCCW(gl2sw::ConvertStencilOp(mState.stencilFail));
+				device->setStencilZFailOperationCCW(gl2sw::ConvertStencilOp(mState.stencilPassDepthFail));
+				device->setStencilPassOperationCCW(gl2sw::ConvertStencilOp(mState.stencilPassDepthPass));
 
 				device->setStencilWriteMask(mState.stencilBackWritemask);
-				device->setStencilCompare(es2sw::ConvertStencilComparison(mState.stencilBackFunc));
+				device->setStencilCompare(gl2sw::ConvertStencilComparison(mState.stencilBackFunc));
 
 				device->setStencilReference((mState.stencilBackRef < (GLint)maxStencil) ? mState.stencilBackRef : maxStencil);
 				device->setStencilMask(mState.stencilBackMask);
 
-				device->setStencilFailOperation(es2sw::ConvertStencilOp(mState.stencilBackFail));
-				device->setStencilZFailOperation(es2sw::ConvertStencilOp(mState.stencilBackPassDepthFail));
-				device->setStencilPassOperation(es2sw::ConvertStencilOp(mState.stencilBackPassDepthPass));
+				device->setStencilFailOperation(gl2sw::ConvertStencilOp(mState.stencilBackFail));
+				device->setStencilZFailOperation(gl2sw::ConvertStencilOp(mState.stencilBackPassDepthFail));
+				device->setStencilPassOperation(gl2sw::ConvertStencilOp(mState.stencilBackPassDepthPass));
 			}
         }
         else
@@ -1836,7 +1836,7 @@ void Context::applyState(GLenum drawMode)
 
     if(mMaskStateDirty)
     {
-		device->setColorWriteMask(0, es2sw::ConvertColorMask(mState.colorMaskRed, mState.colorMaskGreen, mState.colorMaskBlue, mState.colorMaskAlpha));
+		device->setColorWriteMask(0, gl2sw::ConvertColorMask(mState.colorMaskRed, mState.colorMaskGreen, mState.colorMaskBlue, mState.colorMaskAlpha));
 		device->setDepthWriteEnable(mState.depthMask);
 
         mMaskStateDirty = false;
@@ -2022,16 +2022,16 @@ void Context::applyTextures(sw::SamplerType samplerType)
                 GLenum magFilter = texture->getMagFilter();
 				GLfloat maxAnisotropy = texture->getMaxAnisotropy();
 
-				device->setAddressingModeU(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapS));
-                device->setAddressingModeV(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapT));
+				device->setAddressingModeU(samplerType, samplerIndex, gl2sw::ConvertTextureWrap(wrapS));
+                device->setAddressingModeV(samplerType, samplerIndex, gl2sw::ConvertTextureWrap(wrapT));
 
 				sw::FilterType minFilter;
 				sw::MipmapType mipFilter;
-                es2sw::ConvertMinFilter(texFilter, &minFilter, &mipFilter, maxAnisotropy);
-			//	ASSERT(minFilter == es2sw::ConvertMagFilter(magFilter));
+                gl2sw::ConvertMinFilter(texFilter, &minFilter, &mipFilter, maxAnisotropy);
+			//	ASSERT(minFilter == gl2sw::ConvertMagFilter(magFilter));
 
 				device->setTextureFilter(samplerType, samplerIndex, minFilter);
-			//	device->setTextureFilter(samplerType, samplerIndex, es2sw::ConvertMagFilter(magFilter));
+			//	device->setTextureFilter(samplerType, samplerIndex, gl2sw::ConvertMagFilter(magFilter));
 				device->setMipmapFilter(samplerType, samplerIndex, mipFilter);
 				device->setMaxAnisotropy(samplerType, samplerIndex, maxAnisotropy);                
 
@@ -2402,7 +2402,7 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
     PrimitiveType primitiveType;
     int primitiveCount;
 
-    if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
+    if(!gl2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
         return error(GL_INVALID_ENUM);
 
     if(primitiveCount <= 0)
@@ -2452,7 +2452,7 @@ void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *
     PrimitiveType primitiveType;
     int primitiveCount;
 
-    if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
+    if(!gl2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
         return error(GL_INVALID_ENUM);
 
     if(primitiveCount <= 0)
@@ -3002,7 +3002,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
 void Context::bindTexImage(egl::Surface *surface)
 {
-	es2::Texture2D *textureObject = getTexture2D();
+	gl::Texture2D *textureObject = getTexture2D();
 
     if(textureObject)
     {
@@ -3033,14 +3033,14 @@ EGLenum Context::validateSharedImage(EGLenum target, GLuint name, GLuint texture
         return EGL_BAD_PARAMETER;
     }
 	
-    if(textureLevel >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+    if(textureLevel >= gl::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
     {
         return EGL_BAD_MATCH;
     }
 
     if(textureTarget != GL_NONE)
     {
-        es2::Texture *texture = getTexture(name);
+        gl::Texture *texture = getTexture(name);
 
         if(!texture || texture->getTarget() != textureTarget)
         {
@@ -3064,7 +3064,7 @@ EGLenum Context::validateSharedImage(EGLenum target, GLuint name, GLuint texture
     }
     else if(target == EGL_GL_RENDERBUFFER_KHR)
     {
-        es2::Renderbuffer *renderbuffer = getRenderbuffer(name);
+        gl::Renderbuffer *renderbuffer = getRenderbuffer(name);
 
         if(!renderbuffer)
         {
@@ -3098,13 +3098,13 @@ egl::Image *Context::createSharedImage(EGLenum target, GLuint name, GLuint textu
 
     if(textureTarget != GL_NONE)
     {
-        es2::Texture *texture = getTexture(name);
+        gl::Texture *texture = getTexture(name);
 
         return texture->createSharedImage(textureTarget, textureLevel);
     }
     else if(target == EGL_GL_RENDERBUFFER_KHR)
     {
-        es2::Renderbuffer *renderbuffer = getRenderbuffer(name);
+        gl::Renderbuffer *renderbuffer = getRenderbuffer(name);
 
         return renderbuffer->createSharedImage();
     }
@@ -3123,8 +3123,8 @@ Device *Context::getDevice()
 // Exported functions for use by EGL
 extern "C"
 {
-	es2::Context *glCreateContext(const egl::Config *config, const es2::Context *shareContext)
+	gl::Context *glCreateContext(const egl::Config *config, const gl::Context *shareContext)
 	{
-		return new es2::Context(config, shareContext);
+		return new gl::Context(config, shareContext);
 	}
 }

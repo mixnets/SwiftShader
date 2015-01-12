@@ -19,7 +19,7 @@
 #include "Texture.h"
 #include "utilities.h"
 
-namespace es2
+namespace gl
 {
 RenderbufferInterface::RenderbufferInterface()
 {
@@ -369,7 +369,7 @@ Colorbuffer::Colorbuffer(int width, int height, GLenum format, GLsizei samples) 
 {
 	Device *device = getDevice();
 
-	sw::Format requestedFormat = es2sw::ConvertRenderbufferFormat(format);
+	sw::Format requestedFormat = gl2sw::ConvertRenderbufferFormat(format);
 	int supportedSamples = Context::getSupportedMultiSampleDepth(requestedFormat, samples);
 
 	if(width > 0 && height > 0)

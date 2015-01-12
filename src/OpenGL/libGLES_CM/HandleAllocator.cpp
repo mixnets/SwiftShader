@@ -16,7 +16,7 @@
 
 #include "main.h"
 
-namespace es1
+namespace gl
 {
 
 HandleAllocator::HandleAllocator() : mBaseValue(1), mNextValue(1)

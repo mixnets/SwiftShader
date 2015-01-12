@@ -277,7 +277,7 @@ public:
 		}
 	}
 
-	es2::Texture *texture;
+	gl::Texture *texture;
 
 	RADbitfield access;
 
@@ -321,7 +321,7 @@ class Program : public Object
 public:
 	Program(Device *device) : Object(device)
 	{
-		program = new es2::Program(0);
+		program = new gl::Program(0);
 		program->addRef();
 	}
 
@@ -330,7 +330,7 @@ public:
 		program->release();
 	}
 
-	es2::Program *program;
+	gl::Program *program;
 };
 
 template<typename T, size_t n>
@@ -702,9 +702,9 @@ public:
 	}
 
 	RADuint numColors;
-	es2::Image *colorTarget[RAD_MAX_COLOR_TARGETS];
-	es2::Image *depthTarget;
-	es2::Image *stencilTarget;
+	gl::Image *colorTarget[RAD_MAX_COLOR_TARGETS];
+	gl::Image *depthTarget;
+	gl::Image *stencilTarget;
 
 	RADboolean preserveEnable[RAD_MAX_ATTACHMENTS];
 
@@ -861,7 +861,7 @@ public:
 
 	virtual void execute(Pipeline *pipeline, Pass *pass)
 	{
-		es2::Context *context = es2::getContext();
+		gl::Context *context = gl::getContext();
 		context->setScissorParams(x, y, w, h);
 	}
 
@@ -888,7 +888,7 @@ public:
 
 	virtual void execute(Pipeline *pipeline, Pass *pass)
 	{
-		es2::Context *context = es2::getContext();
+		gl::Context *context = gl::getContext();
 		context->setViewportParams(x, y, w, h);
 	}
 
@@ -918,14 +918,14 @@ public:
 	{
 		ASSERT(pass);   // FIXME: Error if no beginPass
 		ASSERT(index < pass->numColors);
-		es2::Image *image = pass->colorTarget[index];
+		gl::Image *image = pass->colorTarget[index];
 
 		GLenum format = image->getFormat();
 		GLenum type = image->getType();
 		ASSERT(format == GL_RGBA);   // FIXME
 		ASSERT(type == GL_UNSIGNED_BYTE);   //  FIXME
 
-		es2::Context *context = es2::getContext();
+		gl::Context *context = gl::getContext();
 		int x0 = context->mState.scissorX;
 		int y0 = context->mState.scissorY;
 		int width = context->mState.scissorWidth;
@@ -953,9 +953,9 @@ public:
 	virtual void execute(Pipeline *pipeline, Pass *pass)
 	{
 		ASSERT(pass);   // FIXME: Error if no beginPass
-		es2::Image *image = pass->depthTarget;
+		gl::Image *image = pass->depthTarget;
 		
-		es2::Context *context = es2::getContext();
+		gl::Context *context = gl::getContext();
 		int x0 = context->mState.scissorX;
 		int y0 = context->mState.scissorY;
 		int width = context->mState.scissorWidth;
@@ -983,8 +983,8 @@ public:
 
 	virtual void execute(Pipeline *pipeline, Pass *pass)
 	{
-		es2::Context *context = es2::getContext();
-		sw::FrameBuffer *frameBuffer = (*es2::getDisplay()->mSurfaceSet.begin())->frameBuffer;
+		gl::Context *context = gl::getContext();
+		sw::FrameBuffer *frameBuffer = (*gl::getDisplay()->mSurfaceSet.begin())->frameBuffer;
 
 		egl::Image *image = texture->texture->getRenderTarget(GL_TEXTURE_2D, 0);
 		void *source = image->lockInternal(0, 0, 0, sw::LOCK_READONLY, sw::PUBLIC);
@@ -1019,7 +1019,7 @@ public:
 
 	virtual void execute(Pipeline *pipeline, Pass *pass)
 	{
-		es2::Context *context = es2::getContext();
+		gl::Context *context = gl::getContext();
 
 		ASSERT(pipeline->vertexProgram == pipeline->fragmentProgram);   // FIXME
 		context->mState.program = pipeline->vertexProgram->program;
@@ -1088,12 +1088,12 @@ public:
 
 	virtual void execute(Pipeline *pipeline, Pass *pass)
 	{
-		es2::Context *context = es2::getContext();
+		gl::Context *context = gl::getContext();
 
 		const RADbindGroupElement *groupElements = static_cast<const RADbindGroupElement*>(buffer->data());
 
 		// FIXME: Should parse the layout out of the shaders
-		es2::Program *program = pipeline->vertexProgram->program;
+		gl::Program *program = pipeline->vertexProgram->program;
 
 		sw::Resource *element0 = reinterpret_cast<sw::Resource*>(groupElements[0].handle);
 		uintptr_t offset0 = static_cast<uintptr_t>(groupElements[0].offset);
@@ -1392,9 +1392,9 @@ void RADAPIENTRY radProgramSource(RADprogram program, RADprogramFormat format, R
 	GLint vertexLength = strlen(vertexSource);
 	GLint fragmentLength = strlen(fragmentSource);
 
-	es2::VertexShader *vertexShader = new es2::VertexShader(0);
+	gl::VertexShader *vertexShader = new gl::VertexShader(0);
 	vertexShader->addRef();
-	es2::FragmentShader *fragmentShader = new es2::FragmentShader(0);
+	gl::FragmentShader *fragmentShader = new gl::FragmentShader(0);
 	fragmentShader->addRef();
 
 	vertexShader->setSource(1, &vertexSource, &vertexLength);
@@ -1536,7 +1536,7 @@ void RADAPIENTRY radTextureStorage(RADtexture texture, RADtextureTarget target, 
 	{
 	case RAD_TEXTURE_2D:
 		{
-			es2::Texture2D *tex = new es2::Texture2D();
+			gl::Texture2D *tex = new gl::Texture2D();
 			for(int level = 0; level < levels; level++)
 			{
 				tex->setImage(level, width >> level, height >> level, format, type, 1, nullptr);
@@ -2256,21 +2256,21 @@ void RADAPIENTRY radPassRenderTargets(RADpass pass, RADuint numColors, const RAD
 	for(unsigned int i = 0; i < numColors; i++)
 	{
 		ASSERT(colors[i]);
-		es2::Image *colorTarget = reinterpret_cast<es2::Image*>(colors[i]);
+		gl::Image *colorTarget = reinterpret_cast<gl::Image*>(colors[i]);
 		colorTarget->addRef();   // FIXME: here or at compile?
 		radPass->colorTarget[i] = colorTarget;
 	}
 
 	if(depth)
 	{
-		es2::Image *depthTarget = reinterpret_cast<es2::Image*>(depth);
+		gl::Image *depthTarget = reinterpret_cast<gl::Image*>(depth);
 		depthTarget->addRef();   // FIXME: here or at compile?
 		radPass->depthTarget = depthTarget;
 	}
 
 	if(stencil)
 	{
-		es2::Image *stencilTarget = reinterpret_cast<es2::Image*>(stencil);
+		gl::Image *stencilTarget = reinterpret_cast<gl::Image*>(stencil);
 		stencilTarget->addRef();   // FIXME: here or at compile?
 		radPass->stencilTarget = stencilTarget;
 	}
