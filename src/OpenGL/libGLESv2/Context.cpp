@@ -1358,8 +1358,18 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
             }
         }
         break;
-    case GL_IMPLEMENTATION_COLOR_READ_TYPE:   *params = IMPLEMENTATION_COLOR_READ_TYPE;   break;
-    case GL_IMPLEMENTATION_COLOR_READ_FORMAT: *params = IMPLEMENTATION_COLOR_READ_FORMAT; break;
+    case GL_IMPLEMENTATION_COLOR_READ_TYPE:
+		{
+			Framebuffer *framebuffer = getReadFramebuffer();
+			*params = framebuffer->getImplementationColorReadType();
+		}
+		break;
+    case GL_IMPLEMENTATION_COLOR_READ_FORMAT:
+		{
+			Framebuffer *framebuffer = getReadFramebuffer();
+			*params = framebuffer->getImplementationColorReadFormat();
+		}
+		break;
     case GL_MAX_VIEWPORT_DIMS:
         {
 			int maxDimension = IMPLEMENTATION_MAX_RENDERBUFFER_SIZE;
