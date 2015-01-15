@@ -47477,44 +47477,44 @@ bool CheckNodePredicate(SDNode *Node, unsigned PredNo) const {
   default: assert(0 && "Invalid predicate in table?");
   case 0: { // Predicate_alignednontemporalstore
     SDNode *N = Node;
-
-  if (StoreSDNode *ST = dyn_cast<StoreSDNode>(N))
-    return ST->isNonTemporal() && !ST->isTruncatingStore() &&
-           ST->getAddressingMode() == ISD::UNINDEXED &&
-           ST->getAlignment() >= 16;
-  return false;
+
+  if (StoreSDNode *ST = dyn_cast<StoreSDNode>(N))
+    return ST->isNonTemporal() && !ST->isTruncatingStore() &&
+           ST->getAddressingMode() == ISD::UNINDEXED &&
+           ST->getAlignment() >= 16;
+  return false;
 
   }
   case 1: { // Predicate_nontemporalstore
     SDNode *N = Node;
-
-  if (StoreSDNode *ST = dyn_cast<StoreSDNode>(N))
-    return ST->isNonTemporal();
-  return false;
+
+  if (StoreSDNode *ST = dyn_cast<StoreSDNode>(N))
+    return ST->isNonTemporal();
+  return false;
 
   }
   case 2: { // Predicate_unindexedload
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getAddressingMode() == ISD::UNINDEXED;
+
+  return cast<LoadSDNode>(N)->getAddressingMode() == ISD::UNINDEXED;
 
   }
   case 3: { // Predicate_load
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getExtensionType() == ISD::NON_EXTLOAD;
+
+  return cast<LoadSDNode>(N)->getExtensionType() == ISD::NON_EXTLOAD;
 
   }
   case 4: { // Predicate_unindexedstore
     SDNode *N = Node;
-
-  return cast<StoreSDNode>(N)->getAddressingMode() == ISD::UNINDEXED;
+
+  return cast<StoreSDNode>(N)->getAddressingMode() == ISD::UNINDEXED;
 
   }
   case 5: { // Predicate_store
     SDNode *N = Node;
-
-  return !cast<StoreSDNode>(N)->isTruncatingStore();
+
+  return !cast<StoreSDNode>(N)->isTruncatingStore();
 
   }
   case 6: { // Predicate_loadi16
@@ -47559,14 +47559,14 @@ bool CheckNodePredicate(SDNode *Node, unsigned PredNo) const {
   }
   case 12: { // Predicate_movlp
     SDNode *N = Node;
-
-  return X86::isMOVLPMask(cast<ShuffleVectorSDNode>(N));
+
+  return X86::isMOVLPMask(cast<ShuffleVectorSDNode>(N));
 
   }
   case 13: { // Predicate_unpckh
     SDNode *N = Node;
-
-  return X86::isUNPCKHMask(cast<ShuffleVectorSDNode>(N));
+
+  return X86::isUNPCKHMask(cast<ShuffleVectorSDNode>(N));
 
   }
   case 14: { // Predicate_srl_su
@@ -47583,32 +47583,32 @@ bool CheckNodePredicate(SDNode *Node, unsigned PredNo) const {
   }
   case 16: { // Predicate_truncstore
     SDNode *N = Node;
-
-  return cast<StoreSDNode>(N)->isTruncatingStore();
+
+  return cast<StoreSDNode>(N)->isTruncatingStore();
 
   }
   case 17: { // Predicate_truncstoref32
     SDNode *N = Node;
-
-  return cast<StoreSDNode>(N)->getMemoryVT() == MVT::f32;
+
+  return cast<StoreSDNode>(N)->getMemoryVT() == MVT::f32;
 
   }
   case 18: { // Predicate_truncstoref64
     SDNode *N = Node;
-
-  return cast<StoreSDNode>(N)->getMemoryVT() == MVT::f64;
+
+  return cast<StoreSDNode>(N)->getMemoryVT() == MVT::f64;
 
   }
   case 19: { // Predicate_alignedstore
     SDNode *N = Node;
-
-  return cast<StoreSDNode>(N)->getAlignment() >= 16;
+
+  return cast<StoreSDNode>(N)->getAlignment() >= 16;
 
   }
   case 20: { // Predicate_alignedstore256
     SDNode *N = Node;
-
-  return cast<StoreSDNode>(N)->getAlignment() >= 32;
+
+  return cast<StoreSDNode>(N)->getAlignment() >= 32;
 
   }
   case 21: { // Predicate_and_su
@@ -47619,15 +47619,15 @@ bool CheckNodePredicate(SDNode *Node, unsigned PredNo) const {
   }
   case 22: { // Predicate_memop64
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getAlignment() >= 8;
+
+  return cast<LoadSDNode>(N)->getAlignment() >= 8;
 
   }
   case 23: { // Predicate_memop
     SDNode *N = Node;
-
-  return    Subtarget->hasVectorUAMem()
-         || cast<LoadSDNode>(N)->getAlignment() >= 16;
+
+  return    Subtarget->hasVectorUAMem()
+         || cast<LoadSDNode>(N)->getAlignment() >= 16;
 
   }
   case 24: { // Predicate_loadi16_anyext
@@ -47642,17 +47642,17 @@ bool CheckNodePredicate(SDNode *Node, unsigned PredNo) const {
   }
   case 25: { // Predicate_or_is_add
     SDNode *N = Node;
-
-  if (ConstantSDNode *CN = dyn_cast<ConstantSDNode>(N->getOperand(1)))
-    return CurDAG->MaskedValueIsZero(N->getOperand(0), CN->getAPIntValue());
-
-  unsigned BitWidth = N->getValueType(0).getScalarType().getSizeInBits();
-  APInt Mask = APInt::getAllOnesValue(BitWidth);
-  APInt KnownZero0, KnownOne0;
-  CurDAG->ComputeMaskedBits(N->getOperand(0), Mask, KnownZero0, KnownOne0, 0);
-  APInt KnownZero1, KnownOne1;
-  CurDAG->ComputeMaskedBits(N->getOperand(1), Mask, KnownZero1, KnownOne1, 0);
-  return (~KnownZero0 & ~KnownZero1) == 0;
+
+  if (ConstantSDNode *CN = dyn_cast<ConstantSDNode>(N->getOperand(1)))
+    return CurDAG->MaskedValueIsZero(N->getOperand(0), CN->getAPIntValue());
+
+  unsigned BitWidth = N->getValueType(0).getScalarType().getSizeInBits();
+  APInt Mask = APInt::getAllOnesValue(BitWidth);
+  APInt KnownZero0, KnownOne0;
+  CurDAG->ComputeMaskedBits(N->getOperand(0), Mask, KnownZero0, KnownOne0, 0);
+  APInt KnownZero1, KnownOne1;
+  CurDAG->ComputeMaskedBits(N->getOperand(1), Mask, KnownZero1, KnownOne1, 0);
+  return (~KnownZero0 & ~KnownZero1) == 0;
 
   }
   case 26: { // Predicate_i64immZExt32SExt8
@@ -47667,365 +47667,365 @@ bool CheckNodePredicate(SDNode *Node, unsigned PredNo) const {
   }
   case 28: { // Predicate_sextload
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getExtensionType() == ISD::SEXTLOAD;
+
+  return cast<LoadSDNode>(N)->getExtensionType() == ISD::SEXTLOAD;
 
   }
   case 29: { // Predicate_sextloadi8
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i8;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i8;
 
   }
   case 30: { // Predicate_sextloadi16
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i16;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i16;
 
   }
   case 31: { // Predicate_zextload
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getExtensionType() == ISD::ZEXTLOAD;
+
+  return cast<LoadSDNode>(N)->getExtensionType() == ISD::ZEXTLOAD;
 
   }
   case 32: { // Predicate_zextloadi8
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i8;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i8;
 
   }
   case 33: { // Predicate_zextloadi16
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i16;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i16;
 
   }
   case 34: { // Predicate_sextloadi32
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i32;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i32;
 
   }
   case 35: { // Predicate_zextloadi32
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i32;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i32;
 
   }
   case 36: { // Predicate_zextloadi1
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i1;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i1;
 
   }
   case 37: { // Predicate_extload
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getExtensionType() == ISD::EXTLOAD;
+
+  return cast<LoadSDNode>(N)->getExtensionType() == ISD::EXTLOAD;
 
   }
   case 38: { // Predicate_extloadi1
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i1;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i1;
 
   }
   case 39: { // Predicate_extloadi8
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i8;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i8;
 
   }
   case 40: { // Predicate_extloadi16
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i16;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i16;
 
   }
   case 41: { // Predicate_extloadi32
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i32;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::i32;
 
   }
   case 42: { // Predicate_extloadf32
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::f32;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::f32;
 
   }
   case 43: { // Predicate_extloadf64
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::f64;
+
+  return cast<LoadSDNode>(N)->getMemoryVT() == MVT::f64;
 
   }
   case 44: { // Predicate_alignedload
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getAlignment() >= 16;
+
+  return cast<LoadSDNode>(N)->getAlignment() >= 16;
 
   }
   case 45: { // Predicate_alignedload256
     SDNode *N = Node;
-
-  return cast<LoadSDNode>(N)->getAlignment() >= 32;
+
+  return cast<LoadSDNode>(N)->getAlignment() >= 32;
 
   }
   case 46: { // Predicate_atomic_swap_8
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
   
   }
   case 47: { // Predicate_atomic_swap_16
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
   
   }
   case 48: { // Predicate_atomic_swap_32
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
   
   }
   case 49: { // Predicate_atomic_swap_64
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
   
   }
   case 50: { // Predicate_atomic_load_add_8
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
   
   }
   case 51: { // Predicate_atomic_load_add_16
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
   
   }
   case 52: { // Predicate_atomic_load_add_32
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
   
   }
   case 53: { // Predicate_atomic_load_add_64
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
   
   }
   case 54: { // Predicate_atomic_load_8
     SDNode *N = Node;
-
-  return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
+
+  return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
 
   }
   case 55: { // Predicate_atomic_load_16
     SDNode *N = Node;
-
-  return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
+
+  return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
 
   }
   case 56: { // Predicate_atomic_load_32
     SDNode *N = Node;
-
-  return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
+
+  return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
 
   }
   case 57: { // Predicate_atomic_load_64
     SDNode *N = Node;
-
-  return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
+
+  return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
 
   }
   case 58: { // Predicate_atomic_load_and_8
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
   
   }
   case 59: { // Predicate_atomic_load_and_16
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
   
   }
   case 60: { // Predicate_atomic_load_and_32
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
   
   }
   case 61: { // Predicate_atomic_load_and_64
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
   
   }
   case 62: { // Predicate_atomic_load_or_8
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
   
   }
   case 63: { // Predicate_atomic_load_or_16
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
   
   }
   case 64: { // Predicate_atomic_load_or_32
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
   
   }
   case 65: { // Predicate_atomic_load_or_64
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
   
   }
   case 66: { // Predicate_atomic_load_xor_8
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
   
   }
   case 67: { // Predicate_atomic_load_xor_16
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
   
   }
   case 68: { // Predicate_atomic_load_xor_32
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
   
   }
   case 69: { // Predicate_atomic_load_xor_64
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
   
   }
   case 70: { // Predicate_atomic_load_nand_8
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
   
   }
   case 71: { // Predicate_atomic_load_nand_16
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
   
   }
   case 72: { // Predicate_atomic_load_nand_32
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
   
   }
   case 73: { // Predicate_atomic_load_nand_64
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
   
   }
   case 74: { // Predicate_atomic_load_min_16
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
   
   }
   case 75: { // Predicate_atomic_load_min_32
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
   
   }
   case 76: { // Predicate_atomic_load_min_64
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
   
   }
   case 77: { // Predicate_atomic_load_max_16
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
   
   }
   case 78: { // Predicate_atomic_load_max_32
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
   
   }
   case 79: { // Predicate_atomic_load_max_64
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
   
   }
   case 80: { // Predicate_atomic_load_umin_16
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
   
   }
   case 81: { // Predicate_atomic_load_umin_32
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
   
   }
   case 82: { // Predicate_atomic_load_umin_64
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
   
   }
   case 83: { // Predicate_atomic_load_umax_16
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
   
   }
   case 84: { // Predicate_atomic_load_umax_32
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
   
   }
   case 85: { // Predicate_atomic_load_umax_64
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
   
   }
   case 86: { // Predicate_def32
     SDNode *N = Node;
-
-  return N->getOpcode() != ISD::TRUNCATE &&
-         N->getOpcode() != TargetOpcode::EXTRACT_SUBREG &&
-         N->getOpcode() != ISD::CopyFromReg &&
-         N->getOpcode() != X86ISD::CMOV;
+
+  return N->getOpcode() != ISD::TRUNCATE &&
+         N->getOpcode() != TargetOpcode::EXTRACT_SUBREG &&
+         N->getOpcode() != ISD::CopyFromReg &&
+         N->getOpcode() != X86ISD::CMOV;
 
   }
   case 87: { // Predicate_immAllZerosV
     SDNode *N = Node;
-
-  return ISD::isBuildVectorAllZeros(N);
+
+  return ISD::isBuildVectorAllZeros(N);
 
   }
   case 88: { // Predicate_fpimm0
@@ -48042,8 +48042,8 @@ bool CheckNodePredicate(SDNode *Node, unsigned PredNo) const {
   }
   case 90: { // Predicate_fp32imm0
     ConstantFPSDNode*N = cast<ConstantFPSDNode>(Node);
-
-  return N->isExactlyValue(+0.0);
+
+  return N->isExactlyValue(+0.0);
 
   }
   case 91: { // Predicate_fpimmneg0
@@ -48060,111 +48060,111 @@ bool CheckNodePredicate(SDNode *Node, unsigned PredNo) const {
   }
   case 93: { // Predicate_pshufd
     SDNode *N = Node;
-
-  return X86::isPSHUFDMask(cast<ShuffleVectorSDNode>(N));
+
+  return X86::isPSHUFDMask(cast<ShuffleVectorSDNode>(N));
 
   }
   case 94: { // Predicate_movddup
     SDNode *N = Node;
-
-  return X86::isMOVDDUPMask(cast<ShuffleVectorSDNode>(N));
+
+  return X86::isMOVDDUPMask(cast<ShuffleVectorSDNode>(N));
 
   }
   case 95: { // Predicate_pshufhw
     SDNode *N = Node;
-
-  return X86::isPSHUFHWMask(cast<ShuffleVectorSDNode>(N));
+
+  return X86::isPSHUFHWMask(cast<ShuffleVectorSDNode>(N));
 
   }
   case 96: { // Predicate_pshuflw
     SDNode *N = Node;
-
-  return X86::isPSHUFLWMask(cast<ShuffleVectorSDNode>(N));
+
+  return X86::isPSHUFLWMask(cast<ShuffleVectorSDNode>(N));
 
   }
   case 97: { // Predicate_shufp
     SDNode *N = Node;
-
-  return X86::isSHUFPMask(cast<ShuffleVectorSDNode>(N));
+
+  return X86::isSHUFPMask(cast<ShuffleVectorSDNode>(N));
 
   }
   case 98: { // Predicate_movlhps
     SDNode *N = Node;
-
-  return X86::isMOVLHPSMask(cast<ShuffleVectorSDNode>(N));
+
+  return X86::isMOVLHPSMask(cast<ShuffleVectorSDNode>(N));
 
   }
   case 99: { // Predicate_movhlps_undef
     SDNode *N = Node;
-
-  return X86::isMOVHLPS_v_undef_Mask(cast<ShuffleVectorSDNode>(N));
+
+  return X86::isMOVHLPS_v_undef_Mask(cast<ShuffleVectorSDNode>(N));
 
   }
   case 100: { // Predicate_movhlps
     SDNode *N = Node;
-
-  return X86::isMOVHLPSMask(cast<ShuffleVectorSDNode>(N));
+
+  return X86::isMOVHLPSMask(cast<ShuffleVectorSDNode>(N));
 
   }
   case 101: { // Predicate_movl
     SDNode *N = Node;
-
-  return X86::isMOVLMask(cast<ShuffleVectorSDNode>(N));
+
+  return X86::isMOVLMask(cast<ShuffleVectorSDNode>(N));
 
   }
   case 102: { // Predicate_splat_lo
     SDNode *N = Node;
-
-  ShuffleVectorSDNode *SVOp = cast<ShuffleVectorSDNode>(N);
-  return SVOp->isSplat() && SVOp->getSplatIndex() == 0;
+
+  ShuffleVectorSDNode *SVOp = cast<ShuffleVectorSDNode>(N);
+  return SVOp->isSplat() && SVOp->getSplatIndex() == 0;
 
   }
   case 103: { // Predicate_unpckl
     SDNode *N = Node;
-
-  return X86::isUNPCKLMask(cast<ShuffleVectorSDNode>(N));
+
+  return X86::isUNPCKLMask(cast<ShuffleVectorSDNode>(N));
 
   }
   case 104: { // Predicate_atomic_store_8
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i8;
   
   }
   case 105: { // Predicate_atomic_store_16
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i16;
   
   }
   case 106: { // Predicate_atomic_store_32
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i32;
   
   }
   case 107: { // Predicate_atomic_store_64
     SDNode *N = Node;
-
-    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
+
+    return cast<AtomicSDNode>(N)->getMemoryVT() == MVT::i64;
   
   }
   case 108: { // Predicate_vinsertf128_insert
     SDNode *N = Node;
-
-  return X86::isVINSERTF128Index(N);
+
+  return X86::isVINSERTF128Index(N);
 
   }
   case 109: { // Predicate_vextractf128_extract
     SDNode *N = Node;
-
-  return X86::isVEXTRACTF128Index(N);
+
+  return X86::isVEXTRACTF128Index(N);
 
   }
   case 110: { // Predicate_immAllOnesV
     SDNode *N = Node;
-
-  return ISD::isBuildVectorAllOnes(N);
+
+  return ISD::isBuildVectorAllOnes(N);
 
   }
   }
@@ -48205,53 +48205,53 @@ SDValue RunSDNodeXForm(SDValue V, unsigned XFormNo) {
   default: assert(0 && "Invalid xform # in table?");
   case 0: {  // BYTE_imm
     ConstantSDNode *N = cast<ConstantSDNode>(V.getNode());
-
-  // Transformation function: imm >> 3
-  return getI32Imm(N->getZExtValue() >> 3);
+
+  // Transformation function: imm >> 3
+  return getI32Imm(N->getZExtValue() >> 3);
 
   }
   case 1: {  // GetLo8XForm
     ConstantSDNode *N = cast<ConstantSDNode>(V.getNode());
-
-  // Transformation function: get the low 8 bits.
-  return getI8Imm((uint8_t)N->getZExtValue());
+
+  // Transformation function: get the low 8 bits.
+  return getI8Imm((uint8_t)N->getZExtValue());
 
   }
   case 2: {  // GetLo32XForm
     ConstantSDNode *N = cast<ConstantSDNode>(V.getNode());
-
-  // Transformation function: get the low 32 bits.
-  return getI32Imm((unsigned)N->getZExtValue());
+
+  // Transformation function: get the low 32 bits.
+  return getI32Imm((unsigned)N->getZExtValue());
 
   }
   case 3: {  // SHUFFLE_get_shuf_imm
     SDNode *N = V.getNode();
-
-  return getI8Imm(X86::getShuffleSHUFImmediate(N));
+
+  return getI8Imm(X86::getShuffleSHUFImmediate(N));
 
   }
   case 4: {  // SHUFFLE_get_pshufhw_imm
     SDNode *N = V.getNode();
-
-  return getI8Imm(X86::getShufflePSHUFHWImmediate(N));
+
+  return getI8Imm(X86::getShufflePSHUFHWImmediate(N));
 
   }
   case 5: {  // SHUFFLE_get_pshuflw_imm
     SDNode *N = V.getNode();
-
-  return getI8Imm(X86::getShufflePSHUFLWImmediate(N));
+
+  return getI8Imm(X86::getShufflePSHUFLWImmediate(N));
 
   }
   case 6: {  // INSERT_get_vinsertf128_imm
     SDNode *N = V.getNode();
-
-  return getI8Imm(X86::getInsertVINSERTF128Immediate(N));
+
+  return getI8Imm(X86::getInsertVINSERTF128Immediate(N));
 
   }
   case 7: {  // EXTRACT_get_vextractf128_imm
     SDNode *N = V.getNode();
-
-  return getI8Imm(X86::getExtractVEXTRACTF128Immediate(N));
+
+  return getI8Imm(X86::getExtractVEXTRACTF128Immediate(N));
 
   }
   }

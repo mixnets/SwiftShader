@@ -13,17 +13,17 @@
 
 // File data
 static const char _DefaultFragShader_fsh[] = 
-	"uniform sampler2D sTexture;\n"
-	"\n"
-	"varying mediump vec2  TexCoord;\n"
-	"\n"
-	"void main()\n"
-	"{\n"
-	"    gl_FragColor = texture2D(sTexture, TexCoord);\n"
-	"}\n";
+	"uniform sampler2D sTexture;\r\n"
+	"\r\n"
+	"varying mediump vec2  TexCoord;\r\n"
+	"\r\n"
+	"void main()\r\n"
+	"{\r\n"
+	"    gl_FragColor = texture2D(sTexture, TexCoord);\r\n"
+	"}\r\n";
 
 // Register DefaultFragShader.fsh in memory file system at application startup time
-static CPVRTMemoryFileSystem RegisterFile_DefaultFragShader_fsh("DefaultFragShader.fsh", _DefaultFragShader_fsh, 128);
+static CPVRTMemoryFileSystem RegisterFile_DefaultFragShader_fsh("DefaultFragShader.fsh", _DefaultFragShader_fsh, 136);
 
 // ******** End: DefaultFragShader.fsh ********
 
