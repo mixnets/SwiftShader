@@ -1162,7 +1162,12 @@ Program *Context::getCurrentProgram()
 
 Texture2D *Context::getTexture2D()
 {
-    return static_cast<Texture2D*>(getSamplerTexture(mState.activeSampler, TEXTURE_2D));
+	return static_cast<Texture2D*>(getSamplerTexture(mState.activeSampler, TEXTURE_2D));
+}
+
+Texture3D *Context::getTexture3D()
+{
+	return static_cast<Texture3D*>(getSamplerTexture(mState.activeSampler, TEXTURE_3D));
 }
 
 TextureCubeMap *Context::getTextureCubeMap()
@@ -2028,12 +2033,14 @@ void Context::applyTextures(sw::SamplerType samplerType)
             {
                 GLenum wrapS = texture->getWrapS();
                 GLenum wrapT = texture->getWrapT();
+				GLenum wrapR = texture->getWrapR();
                 GLenum texFilter = texture->getMinFilter();
                 GLenum magFilter = texture->getMagFilter();
 				GLfloat maxAnisotropy = texture->getMaxAnisotropy();
 
 				device->setAddressingModeU(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapS));
-                device->setAddressingModeV(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapT));
+				device->setAddressingModeV(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapT));
+				device->setAddressingModeW(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapR));
 
 				sw::FilterType minFilter;
 				sw::MipmapType mipFilter;
@@ -2107,6 +2114,27 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D);
+			}
+		}
+		else if(baseTexture->getTarget() == GL_TEXTURE_3D_OES)
+		{
+			Texture3D *texture = static_cast<Texture3D*>(baseTexture);
+
+			for(int mipmapLevel = 0; mipmapLevel < MIPMAP_LEVELS; mipmapLevel++)
+			{
+				int surfaceLevel = mipmapLevel;
+
+				if(surfaceLevel < 0)
+				{
+					surfaceLevel = 0;
+				}
+				else if(surfaceLevel >= levelCount)
+				{
+					surfaceLevel = levelCount - 1;
+				}
+
+				egl::Image *surface = texture->getImage(surfaceLevel);
+				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_3D);
 			}
 		}
 		else if(baseTexture->getTarget() == GL_TEXTURE_CUBE_MAP)

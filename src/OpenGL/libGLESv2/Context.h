@@ -49,6 +49,7 @@ class Shader;
 class Program;
 class Texture;
 class Texture2D;
+class Texture3D;
 class TextureCubeMap;
 class TextureExternal;
 class Framebuffer;
@@ -397,7 +398,8 @@ public:
     Buffer *getElementArrayBuffer();
     Program *getCurrentProgram();
     Texture2D *getTexture2D();
-    TextureCubeMap *getTextureCubeMap();
+	Texture3D *getTexture3D();
+	TextureCubeMap *getTextureCubeMap();
     TextureExternal *getTextureExternal();
     Texture *getSamplerTexture(unsigned int sampler, TextureType type);
     Framebuffer *getReadFramebuffer();

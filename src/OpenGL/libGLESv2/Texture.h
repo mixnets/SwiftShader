@@ -63,13 +63,15 @@ public:
     bool setMinFilter(GLenum filter);
     bool setMagFilter(GLenum filter);
     bool setWrapS(GLenum wrap);
-    bool setWrapT(GLenum wrap);
+	bool setWrapT(GLenum wrap);
+	bool setWrapR(GLenum wrap);
 	bool setMaxAnisotropy(GLfloat textureMaxAnisotropy);
 
     GLenum getMinFilter() const;
     GLenum getMagFilter() const;
     GLenum getWrapS() const;
-    GLenum getWrapT() const;
+	GLenum getWrapT() const;
+	GLenum getWrapR() const;
 	GLfloat getMaxAnisotropy() const;
 
     virtual GLsizei getWidth(GLenum target, GLint level) const = 0;
@@ -93,9 +95,9 @@ public:
 
 protected:
     void setImage(GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, egl::Image *image);
-    void subImage(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, egl::Image *image);
+    void subImage(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, egl::Image *image);
     void setCompressedImage(GLsizei imageSize, const void *pixels, egl::Image *image);
-    void subImageCompressed(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels, egl::Image *image);
+    void subImageCompressed(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *pixels, egl::Image *image);
 
 	bool copy(egl::Image *source, const sw::Rect &sourceRect, GLenum destFormat, GLint xoffset, GLint yoffset, egl::Image *dest);
 
@@ -105,6 +107,7 @@ protected:
     GLenum mMagFilter;
     GLenum mWrapS;
     GLenum mWrapT;
+    GLenum mWrapR;
 	GLfloat mMaxAnisotropy;
 
 	sw::Resource *resource;
@@ -224,6 +227,63 @@ private:
     // the count drops to zero, but will not cause deletion of the Renderbuffer.
     Renderbuffer *mFaceProxies[6];
 	unsigned int mFaceProxyRefs[6];
+};
+
+class Texture3D : public Texture
+{
+public:
+	explicit Texture3D(GLuint id);
+
+	virtual ~Texture3D();
+
+	void addProxyRef(const Renderbuffer *proxy);
+	void releaseProxy(const Renderbuffer *proxy);
+
+	virtual GLenum getTarget() const;
+
+	virtual GLsizei getWidth(GLenum target, GLint level) const;
+	virtual GLsizei getHeight(GLenum target, GLint level) const;
+	virtual GLsizei getDepth(GLenum target, GLint level) const;
+	virtual GLenum getFormat(GLenum target, GLint level) const;
+	virtual GLenum getType(GLenum target, GLint level) const;
+	virtual sw::Format getInternalFormat(GLenum target, GLint level) const;
+	virtual int getLevelCount() const;
+
+	void setImage(GLint level, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
+	void setCompressedImage(GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
+	void subImage(GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
+	void subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *pixels);
+
+	void setImage(egl::Image *image);
+
+	virtual bool isSamplerComplete() const;
+	virtual bool isCompressed(GLenum target, GLint level) const;
+	virtual bool isDepth(GLenum target, GLint level) const;
+	virtual void bindTexImage(egl::Surface *surface);
+	virtual void releaseTexImage();
+
+	virtual void generateMipmaps();
+
+	virtual Renderbuffer *getRenderbuffer(GLenum target);
+	virtual egl::Image *getRenderTarget(GLenum target, unsigned int level);
+	virtual bool isShared(GLenum target, unsigned int level) const;
+
+	egl::Image *getImage(unsigned int level);
+
+protected:
+	bool isMipmapComplete() const;
+
+	egl::Image *image[IMPLEMENTATION_MAX_TEXTURE_LEVELS];
+
+	egl::Surface *mSurface;
+
+	// A specific internal reference count is kept for colorbuffer proxy references,
+	// because, as the renderbuffer acting as proxy will maintain a binding pointer
+	// back to this texture, there would be a circular reference if we used a binding
+	// pointer here. This reference count will cause the pointer to be set to NULL if
+	// the count drops to zero, but will not cause deletion of the Renderbuffer.
+	Renderbuffer *mColorbufferProxy;
+	unsigned int mProxyRefs;
 };
 
 class TextureExternal : public Texture2D
