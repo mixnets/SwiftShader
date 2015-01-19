@@ -131,6 +131,7 @@ Context::Context(const egl::Config *config, const Context *shareContext) : mConf
     // objects all of whose names are 0.
 
     mTexture2DZero.set(new Texture2D(0));
+	mTexture3DZero.set(new Texture3D(0));
     mTextureCubeMapZero.set(new TextureCubeMap(0));
     mTextureExternalZero.set(new TextureExternal(0));
 
@@ -212,6 +213,7 @@ Context::~Context()
     mState.renderbuffer.set(NULL);
 
     mTexture2DZero.set(NULL);
+	mTexture3DZero.set(NULL);
     mTextureCubeMapZero.set(NULL);
     mTextureExternalZero.set(NULL);
 
@@ -1162,7 +1164,12 @@ Program *Context::getCurrentProgram()
 
 Texture2D *Context::getTexture2D()
 {
-    return static_cast<Texture2D*>(getSamplerTexture(mState.activeSampler, TEXTURE_2D));
+	return static_cast<Texture2D*>(getSamplerTexture(mState.activeSampler, TEXTURE_2D));
+}
+
+Texture3D *Context::getTexture3D()
+{
+	return static_cast<Texture3D*>(getSamplerTexture(mState.activeSampler, TEXTURE_3D));
 }
 
 TextureCubeMap *Context::getTextureCubeMap()
@@ -1184,6 +1191,7 @@ Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type)
         switch (type)
         {
         case TEXTURE_2D: return mTexture2DZero.get();
+		case TEXTURE_3D: return mTexture3DZero.get();
         case TEXTURE_CUBE: return mTextureCubeMapZero.get();
         case TEXTURE_EXTERNAL: return mTextureExternalZero.get();
         default: UNREACHABLE();
@@ -2028,12 +2036,14 @@ void Context::applyTextures(sw::SamplerType samplerType)
             {
                 GLenum wrapS = texture->getWrapS();
                 GLenum wrapT = texture->getWrapT();
+				GLenum wrapR = texture->getWrapR();
                 GLenum texFilter = texture->getMinFilter();
                 GLenum magFilter = texture->getMagFilter();
 				GLfloat maxAnisotropy = texture->getMaxAnisotropy();
 
 				device->setAddressingModeU(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapS));
-                device->setAddressingModeV(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapT));
+				device->setAddressingModeV(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapT));
+				device->setAddressingModeW(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapR));
 
 				sw::FilterType minFilter;
 				sw::MipmapType mipFilter;
@@ -2107,6 +2117,27 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D);
+			}
+		}
+		else if(baseTexture->getTarget() == GL_TEXTURE_3D_OES)
+		{
+			Texture3D *texture = static_cast<Texture3D*>(baseTexture);
+
+			for(int mipmapLevel = 0; mipmapLevel < MIPMAP_LEVELS; mipmapLevel++)
+			{
+				int surfaceLevel = mipmapLevel;
+
+				if(surfaceLevel < 0)
+				{
+					surfaceLevel = 0;
+				}
+				else if(surfaceLevel >= levelCount)
+				{
+					surfaceLevel = levelCount - 1;
+				}
+
+				egl::Image *surface = texture->getImage(surfaceLevel);
+				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_3D);
 			}
 		}
 		else if(baseTexture->getTarget() == GL_TEXTURE_CUBE_MAP)
@@ -3046,7 +3077,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
             egl::Image *readRenderTarget = readFramebuffer->getRenderTarget();
             egl::Image *drawRenderTarget = drawFramebuffer->getRenderTarget();
  
-            bool success = device->stretchRect(readRenderTarget, &sourceRect, drawRenderTarget, &destRect, false);
+            bool success = device->stretchRect(readRenderTarget, &sourceRect, 0, drawRenderTarget, &destRect, false);
 
             readRenderTarget->release();
             drawRenderTarget->release();
@@ -3060,7 +3091,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
         if(blitDepthStencil)
         {
-            bool success = device->stretchRect(readFramebuffer->getDepthStencil(), NULL, drawFramebuffer->getDepthStencil(), NULL, false);
+            bool success = device->stretchRect(readFramebuffer->getDepthStencil(), NULL, 0, drawFramebuffer->getDepthStencil(), NULL, false);
 
             if(!success)
             {

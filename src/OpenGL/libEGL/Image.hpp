@@ -25,6 +25,13 @@ public:
 		shared = false;
 	}
 
+	Image(sw::Resource *resource, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, sw::Format internalFormat)
+		: width(width), height(height), format(format), type(type), internalFormat(internalFormat), multiSampleDepth(depth)
+		, sw::Surface(resource, width, height, depth, internalFormat, true, true)
+	{
+		shared = false;
+	}
+
 	Image(sw::Resource *resource, int width, int height, int depth, sw::Format internalFormat, bool lockable, bool renderTarget)
 		: width(width), height(height), format(0 /*GL_NONE*/), type(0 /*GL_NONE*/), internalFormat(internalFormat), multiSampleDepth(depth)
 		, sw::Surface(resource, width, height, depth, internalFormat, lockable, renderTarget)
@@ -32,32 +39,37 @@ public:
 		shared = false;
 	}
 
-	GLsizei getWidth()
+	GLsizei getWidth() const
 	{
 		return width;
 	}
 
-	GLsizei getHeight()
+	GLsizei getHeight() const
 	{
 		return height;
 	}
 
-	GLenum getFormat()
+	int getDepth() const
+	{
+		return multiSampleDepth; // FIXME: add member if depth and multiSampleDepth are ever simultaneously required
+	}
+
+	GLenum getFormat() const
 	{
 		return format;
 	}
 
-	GLenum getType()
+	GLenum getType() const
 	{
 		return type;
 	}
 
-	sw::Format getInternalFormat()
+	sw::Format getInternalFormat() const
 	{
 		return internalFormat;
 	}
 
-	int getMultiSampleDepth()
+	int getMultiSampleDepth() const
 	{
 		return multiSampleDepth;
 	}
@@ -98,8 +110,8 @@ public:
 		release();
     }
 
-	virtual void loadImageData(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *input) = 0;
-	virtual void loadCompressedData(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels) = 0;
+	virtual void loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLint unpackAlignment, const void *input) = 0;
+	virtual void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels) = 0;
 
 protected:
 	virtual ~Image()

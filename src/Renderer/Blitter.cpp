@@ -26,14 +26,14 @@ namespace sw
 		delete blitCache;
 	}
 
-	void Blitter::blit(Surface *source, const Rect &sRect, Surface *dest, const Rect &dRect, bool filter)
+	void Blitter::blit(Surface *source, const Rect &sRect, int sourceZ, Surface *dest, const Rect &dRect, bool filter)
 	{
 		if(blitReactor(source, sRect, dest, dRect, filter))
 		{
 			return;
 		}
 
-		source->lockInternal(sRect.x0, sRect.y0, 0, sw::LOCK_READONLY, sw::PUBLIC);
+		source->lockInternal(sRect.x0, sRect.y0, sourceZ, sw::LOCK_READONLY, sw::PUBLIC);
 		dest->lockInternal(dRect.x0, dRect.y0, 0, sw::LOCK_WRITEONLY, sw::PUBLIC);
 
 		float w = 1.0f / (dRect.x1 - dRect.x0) * (sRect.x1 - sRect.x0);

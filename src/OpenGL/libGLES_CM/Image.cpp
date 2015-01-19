@@ -157,8 +157,10 @@ namespace es1
 		return sw::FORMAT_A8R8G8B8;
 	}
 
-	void Image::loadImageData(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *input)
+	void Image::loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLint unpackAlignment, const void *input)
 	{
+		ASSERT(zoffset == 0 && depth == 1);
+
 		GLsizei inputPitch = ComputePitch(width, format, type, unpackAlignment);
 		void *buffer = lock(0, 0, sw::LOCK_WRITEONLY);
 		
@@ -524,8 +526,10 @@ namespace es1
 		}
 	}
 
-	void Image::loadCompressedData(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels)
+	void Image::loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels)
 	{
+		ASSERT(zoffset == 0 && depth == 1);
+
 		int inputPitch = ComputeCompressedPitch(width, format);
 		int rows = imageSize / inputPitch;
 		void *buffer = lock(xoffset, yoffset, sw::LOCK_WRITEONLY);

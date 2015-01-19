@@ -471,7 +471,7 @@ namespace es2
 		this->viewport = viewport;
 	}
 
-	bool Device::stretchRect(egl::Image *source, const sw::Rect *sourceRect, egl::Image *dest, const sw::Rect *destRect, bool filter)
+	bool Device::stretchRect(egl::Image *source, const sw::Rect *sourceRect, int sourceZ, egl::Image *dest, const sw::Rect *destRect, bool filter)
 	{
 		if(!source || !dest || !validRectangle(sourceRect, source) || !validRectangle(destRect, dest))
 		{
@@ -527,7 +527,7 @@ namespace es2
 		{
 			if(source->hasDepth())
 			{
-				sw::byte *sourceBuffer = (sw::byte*)source->lockInternal(0, 0, 0, LOCK_READONLY, PUBLIC);
+				sw::byte *sourceBuffer = (sw::byte*)source->lockInternal(0, 0, sourceZ, LOCK_READONLY, PUBLIC);
 				sw::byte *destBuffer = (sw::byte*)dest->lockInternal(0, 0, 0, LOCK_DISCARD, PUBLIC);
 
 				unsigned int width = source->getInternalWidth();
@@ -569,7 +569,7 @@ namespace es2
 		}
 		else if(!scaling && equalFormats)
 		{
-			unsigned char *sourceBytes = (unsigned char*)source->lockInternal(sRect.x0, sRect.y0, 0, LOCK_READONLY, PUBLIC);
+			unsigned char *sourceBytes = (unsigned char*)source->lockInternal(sRect.x0, sRect.y0, sourceZ, LOCK_READONLY, PUBLIC);
 			unsigned char *destBytes = (unsigned char*)dest->lockInternal(dRect.x0, dRect.y0, 0, LOCK_READWRITE, PUBLIC);
 			unsigned int sourcePitch = source->getInternalPitchB();
 			unsigned int destPitch = dest->getInternalPitchB();
@@ -599,7 +599,7 @@ namespace es2
 		}
 		else
 		{
-			blit(source, sRect, dest, dRect, scaling && filter);
+			blit(source, sRect, sourceZ, dest, dRect, scaling && filter);
 		}
 
 		return true;
