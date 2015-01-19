@@ -5047,6 +5047,545 @@ void GL_APIENTRY glTexImage3DOES(GLenum target, GLint level, GLenum internalform
 	      "GLenum format = 0x%X, GLenum type = 0x%x, const GLvoid* pixels = 0x%0.8p)",
 	      target, level, internalformat, width, height, depth, border, format, type, pixels);
 
+	switch(target)
+	{
+	case GL_TEXTURE_3D_OES:
+		switch(format)
+		{
+		case GL_DEPTH_COMPONENT:
+		case GL_DEPTH_STENCIL_OES:
+			return error(GL_INVALID_OPERATION);
+		default:
+			break;
+		}
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
+	switch(type)
+	{
+	case GL_UNSIGNED_BYTE:
+	case GL_BYTE:
+	case GL_UNSIGNED_SHORT:
+	case GL_SHORT:
+	case GL_UNSIGNED_INT:
+	case GL_INT:
+	case GL_HALF_FLOAT_OES:
+	case GL_FLOAT:
+	case GL_UNSIGNED_SHORT_5_6_5:
+	case GL_UNSIGNED_SHORT_4_4_4_4:
+	case GL_UNSIGNED_SHORT_5_5_5_1:
+	case GL_UNSIGNED_INT_2_10_10_10_REV_EXT:
+	case GL_UNSIGNED_INT_10F_11F_11F_REV_APPLE:
+	case GL_UNSIGNED_INT_5_9_9_9_REV_APPLE:
+	case GL_UNSIGNED_INT_24_8_OES:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
+	switch(format)
+	{
+	case GL_RED_EXT:
+	case GL_RG_EXT:
+	case GL_RGB:
+	case GL_RGBA:
+	case GL_DEPTH_COMPONENT:
+	case GL_DEPTH_STENCIL_OES:
+	case GL_LUMINANCE_ALPHA:
+	case GL_LUMINANCE:
+	case GL_ALPHA:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
+	switch(internalformat)
+	{
+	case GL_RGB:
+		if(format == GL_RGB)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+			case GL_UNSIGNED_SHORT_5_6_5:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RGBA:
+		if(format == GL_RGBA)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+			case GL_UNSIGNED_SHORT_4_4_4_4:
+			case GL_UNSIGNED_SHORT_5_5_5_1:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_LUMINANCE_ALPHA:
+		if(format == GL_LUMINANCE_ALPHA)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_LUMINANCE:
+		if(format == GL_LUMINANCE)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_ALPHA:
+		if(format == GL_ALPHA)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_R8_EXT:
+		if(format == GL_RED_EXT)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_R16F_EXT:
+		if(format == GL_RED_EXT)
+		{
+			switch(type)
+			{
+			case GL_HALF_FLOAT_OES:
+			case GL_FLOAT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_R32F_EXT:
+		if(format == GL_RED_EXT)
+		{
+			switch(type)
+			{
+			case GL_FLOAT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RG8_EXT:
+		if(format == GL_RG_EXT)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RG16F_EXT:
+		if(format == GL_RG_EXT)
+		{
+			switch(type)
+			{
+			case GL_HALF_FLOAT_OES:
+			case GL_FLOAT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RG32F_EXT:
+		if(format == GL_RG_EXT)
+		{
+			switch(type)
+			{
+			case GL_FLOAT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RGB8_OES:
+		if(format == GL_RGB)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_SRGB8_NV:
+		if(format == GL_RGB)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RGB565:
+		if(format == GL_RGB)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+			case GL_UNSIGNED_SHORT_5_6_5:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_R11F_G11F_B10F_APPLE:
+		if(format == GL_RGB)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_INT_10F_11F_11F_REV_APPLE:
+			case GL_HALF_FLOAT_OES:
+			case GL_FLOAT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RGB9_E5_APPLE:
+		if(format == GL_RGB)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_INT_5_9_9_9_REV_APPLE:
+			case GL_HALF_FLOAT_OES:
+				case GL_FLOAT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RGB16F_EXT:
+		if(format == GL_HALF_FLOAT_OES)
+		{
+			switch(type)
+			{
+			case GL_FLOAT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RGB32F_EXT:
+		if(format == GL_RGB)
+		{
+			switch(type)
+			{
+			case GL_FLOAT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RGBA8_OES:
+		if(format == GL_RGBA)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_SRGB8_ALPHA8_EXT:
+		if(format == GL_RGBA)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RGB5_A1:
+		if(format == GL_RGBA)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+			case GL_UNSIGNED_SHORT_5_5_5_1:
+			case GL_UNSIGNED_INT_2_10_10_10_REV_EXT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RGBA4:
+		if(format == GL_RGBA)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+			case GL_UNSIGNED_SHORT_4_4_4_4:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RGB10_A2_EXT:
+		if(format == GL_RGBA)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_INT_2_10_10_10_REV_EXT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RGBA16F_EXT:
+		if(format == GL_RGBA)
+		{
+			switch(type)
+			{
+			case GL_HALF_FLOAT_OES:
+			case GL_FLOAT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_RGBA32F_EXT:
+		if(format == GL_RGBA)
+		{
+			switch(type)
+			{
+			case GL_FLOAT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_DEPTH_COMPONENT16:
+		if(format == GL_DEPTH_COMPONENT)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_SHORT:
+			case GL_UNSIGNED_INT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_DEPTH_COMPONENT24_OES:
+		if(format == GL_DEPTH_COMPONENT)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_INT:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	case GL_DEPTH24_STENCIL8_OES:
+		if(format == GL_DEPTH_STENCIL_OES)
+		{
+			switch(type)
+			{
+			case GL_UNSIGNED_INT_24_8_OES:
+				break;
+			default:
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+		break;
+	default:
+		break;
+	}
+
+	if(level < 0 || level > es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return error(GL_INVALID_VALUE);
+	}
+
+	const GLsizei maxSize3D(es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level);
+	if((width < 0) || (height < 0) || (depth < 0) || (width > maxSize3D) || (height > maxSize3D) || (depth > maxSize3D))
+	{
+		return error(GL_INVALID_VALUE);
+	}
+
+	if((border != 0) && (border != 1))
+	{
+		return error(GL_INVALID_VALUE);
+	}
+
 	UNIMPLEMENTED();   // FIXME
 }
 
