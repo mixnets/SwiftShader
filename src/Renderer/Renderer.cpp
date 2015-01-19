@@ -186,9 +186,9 @@ namespace sw
 		delete swiftConfig;
 	}
 
-	void Renderer::blit(Surface *source, const Rect &sRect, Surface *dest, const Rect &dRect, bool filter)
+	void Renderer::blit(Surface *source, const Rect &sRect, int sourceZ, Surface *dest, const Rect &dRect, bool filter)
 	{
-		blitter.blit(source, sRect, dest, dRect, filter);
+		blitter.blit(source, sRect, sourceZ, dest, dRect, filter);
 	}
 
 	void Renderer::draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update)

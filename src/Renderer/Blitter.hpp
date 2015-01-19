@@ -27,7 +27,7 @@ namespace sw
 
 		virtual ~Blitter();
 
-		void blit(Surface *source, const Rect &sRect, Surface *dest, const Rect &dRect, bool filter);
+		void blit(Surface *source, const Rect &sRect, int sourceZ, Surface *dest, const Rect &dRect, bool filter);
 
 	private:
 		bool read(Float4 &color, Pointer<Byte> element, Format format);
