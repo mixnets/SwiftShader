@@ -33,6 +33,15 @@
 #include <exception>
 #include <limits>
 
+typedef std::pair<GLenum, GLenum> InternalFormatTypePair;
+typedef std::map<InternalFormatTypePair, GLenum> FormatMap;
+
+// A helper function to insert data into the format map with fewer characters.
+static void InsertFormatMapping(FormatMap& map, GLenum internalformat, GLenum format, GLenum type)
+{
+	map[InternalFormatTypePair(internalformat, type)] = format;
+}
+
 static bool validImageSize(GLint level, GLsizei width, GLsizei height)
 {
 	if(level < 0 || level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS || width < 0 || height < 0)
@@ -76,6 +85,128 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 	}
 
 	return true;
+}
+
+static FormatMap BuildFormatMap3D()
+{
+	FormatMap map;
+
+	//                       Internal format | Format | Type
+	InsertFormatMapping(map, GL_RGB, GL_UNSIGNED_BYTE, GL_RGB);
+	InsertFormatMapping(map, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, GL_RGB);
+	InsertFormatMapping(map, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_RGBA, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4);
+	InsertFormatMapping(map, GL_RGBA, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1);
+	InsertFormatMapping(map, GL_LUMINANCE_ALPHA, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_LUMINANCE, GL_LUMINANCE, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_ALPHA, GL_ALPHA, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_R8_EXT, GL_RED_EXT, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_R16F_EXT, GL_RED_EXT, GL_HALF_FLOAT_OES);
+	InsertFormatMapping(map, GL_R16F_EXT, GL_RED_EXT, GL_FLOAT);
+	InsertFormatMapping(map, GL_R32F_EXT, GL_RED_EXT, GL_FLOAT);
+	InsertFormatMapping(map, GL_RG8_EXT, GL_RG_EXT, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_R16F_EXT, GL_RED_EXT, GL_HALF_FLOAT_OES);
+	InsertFormatMapping(map, GL_R16F_EXT, GL_RED_EXT, GL_FLOAT);
+	InsertFormatMapping(map, GL_RG32F_EXT, GL_RG_EXT, GL_FLOAT);
+	InsertFormatMapping(map, GL_RGB8_OES, GL_RGB, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_SRGB8_NV, GL_RGB, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_RGB565, GL_RGB, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_RGB565, GL_RGB, GL_UNSIGNED_SHORT_5_6_5);
+	InsertFormatMapping(map, GL_RGB16F_EXT, GL_HALF_FLOAT_OES, GL_FLOAT);
+	InsertFormatMapping(map, GL_RGB32F_EXT, GL_RGB, GL_FLOAT);
+	InsertFormatMapping(map, GL_RGBA8_OES, GL_RGBA, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_SRGB8_ALPHA8_EXT, GL_RGBA, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_RGB5_A1, GL_RGBA, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_RGB5_A1, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1);
+	InsertFormatMapping(map, GL_RGB5_A1, GL_RGBA, GL_UNSIGNED_INT_2_10_10_10_REV_EXT);
+	InsertFormatMapping(map, GL_RGBA4, GL_RGBA, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_RGBA4, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4);
+	InsertFormatMapping(map, GL_RGB10_A2_EXT, GL_RGBA, GL_UNSIGNED_INT_2_10_10_10_REV_EXT);
+	InsertFormatMapping(map, GL_RGBA16F_EXT, GL_RGBA, GL_HALF_FLOAT_OES);
+	InsertFormatMapping(map, GL_RGBA16F_EXT, GL_RGBA, GL_FLOAT);
+	InsertFormatMapping(map, GL_RGBA32F_EXT, GL_RGBA, GL_FLOAT);
+
+#if 0
+	// For the GL_APPLE_color_buffer_packed_float extension (currently unsupported)
+	InsertFormatMapping(map, GL_R11F_G11F_B10F_APPLE, GL_RGB, GL_UNSIGNED_INT_10F_11F_11F_REV_APPLE);
+	InsertFormatMapping(map, GL_R11F_G11F_B10F_APPLE, GL_RGB, GL_HALF_FLOAT_OES);
+	InsertFormatMapping(map, GL_R11F_G11F_B10F_APPLE, GL_RGB, GL_FLOAT);
+	InsertFormatMapping(map, GL_RGB9_E5_APPLE, GL_RGB, GL_UNSIGNED_INT_5_9_9_9_REV_APPLE);
+	InsertFormatMapping(map, GL_RGB9_E5_APPLE, GL_RGB, GL_HALF_FLOAT_OES);
+	InsertFormatMapping(map, GL_RGB9_E5_APPLE, GL_RGB, GL_FLOAT);
+
+	// The GL_DEPTH_COMPONENT and GL_DEPTH_STENCIL_OES cause a GL_INVALID_OPERATION when used with
+	// GL_TEXTURE_3D_OES, so these will only be used when GL_TEXTURE_2D_ARRAY support is added
+	InsertFormatMapping(map, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT);
+	InsertFormatMapping(map, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
+	InsertFormatMapping(map, GL_DEPTH_COMPONENT24_OES, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
+	InsertFormatMapping(map, GL_DEPTH24_STENCIL8_OES, GL_DEPTH_STENCIL_OES, GL_UNSIGNED_INT_24_8_OES);
+#endif
+
+	return map;
+}
+
+static bool ValidateType3D(GLenum type)
+{
+	switch(type)
+	{
+	case GL_UNSIGNED_BYTE:
+	case GL_BYTE:
+	case GL_UNSIGNED_SHORT:
+	case GL_SHORT:
+	case GL_UNSIGNED_INT:
+	case GL_INT:
+	case GL_HALF_FLOAT_OES:
+	case GL_FLOAT:
+	case GL_UNSIGNED_SHORT_5_6_5:
+	case GL_UNSIGNED_SHORT_4_4_4_4:
+	case GL_UNSIGNED_SHORT_5_5_5_1:
+	case GL_UNSIGNED_INT_2_10_10_10_REV_EXT:
+#if 0
+	// For the GL_APPLE_color_buffer_packed_float extension (currently unsupported)
+	case GL_UNSIGNED_INT_10F_11F_11F_REV_APPLE:
+	case GL_UNSIGNED_INT_5_9_9_9_REV_APPLE:
+
+	// The GL_DEPTH_COMPONENT and GL_DEPTH_STENCIL_OES cause a GL_INVALID_OPERATION when used with
+	// GL_TEXTURE_3D_OES, so these will only be used when GL_TEXTURE_2D_ARRAY support is added
+	case GL_UNSIGNED_INT_24_8_OES:
+#endif
+		return true;
+	default:
+		break;
+	}
+	return false;
+}
+
+static bool ValidateFormat3D(GLenum format)
+{
+	switch(format)
+	{
+	case GL_RED_EXT:
+	case GL_RG_EXT:
+	case GL_RGB:
+	case GL_RGBA:
+	case GL_DEPTH_COMPONENT:
+	case GL_DEPTH_STENCIL_OES:
+	case GL_LUMINANCE_ALPHA:
+	case GL_LUMINANCE:
+	case GL_ALPHA:
+		return true;
+	default:
+		break;
+	}
+	return false;
+}
+
+static bool ValidateInternalFormat3D(GLenum internalformat, GLenum format, GLenum type)
+{
+	static const FormatMap formatMap = BuildFormatMap3D();
+	FormatMap::const_iterator iter = formatMap.find(InternalFormatTypePair(internalformat, type));
+	if(iter != formatMap.end())
+	{
+		return iter->second == format;
+	}
+	return false;
 }
 
 extern "C"
@@ -730,7 +861,7 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
 
 	if(context)
 	{
-		if(level > es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+		if(level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
 		{
 			return error(GL_INVALID_VALUE);
 		}
@@ -850,7 +981,7 @@ void GL_APIENTRY glCompressedTexSubImage2D(GLenum target, GLint level, GLint xof
 
 	if(context)
 	{
-		if(level > es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+		if(level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
 		{
 			return error(GL_INVALID_VALUE);
 		}
@@ -1066,7 +1197,7 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, 
 
 	if(context)
 	{
-		if(level > es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+		if(level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
 		{
 			return error(GL_INVALID_VALUE);
 		}
@@ -4302,7 +4433,7 @@ void GL_APIENTRY glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLin
 
 	if(context)
 	{
-		if(level > es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+		if(level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
 		{
 			return error(GL_INVALID_VALUE);
 		}
@@ -5046,6 +5177,48 @@ void GL_APIENTRY glTexImage3DOES(GLenum target, GLint level, GLenum internalform
 	      "GLsizei width = %d, GLsizei height = %d, GLsizei depth = %d, GLint border = %d, "
 	      "GLenum format = 0x%X, GLenum type = 0x%x, const GLvoid* pixels = 0x%0.8p)",
 	      target, level, internalformat, width, height, depth, border, format, type, pixels);
+
+	switch(target)
+	{
+	case GL_TEXTURE_3D_OES:
+		switch(format)
+		{
+		case GL_DEPTH_COMPONENT:
+		case GL_DEPTH_STENCIL_OES:
+			return error(GL_INVALID_OPERATION);
+		default:
+			break;
+		}
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
+	if(!ValidateType3D(type) || !ValidateFormat3D(format))
+	{
+		return error(GL_INVALID_ENUM);
+	}
+
+	if(!ValidateInternalFormat3D(internalformat, format, type))
+	{
+		return error(GL_INVALID_OPERATION);
+	}
+
+	if((level < 0) || (level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS))
+	{
+		return error(GL_INVALID_VALUE);
+	}
+
+	const GLsizei maxSize3D = es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level;
+	if((width < 0) || (height < 0) || (depth < 0) || (width > maxSize3D) || (height > maxSize3D) || (depth > maxSize3D))
+	{
+		return error(GL_INVALID_VALUE);
+	}
+
+	if((border != 0) && (border != 1))
+	{
+		return error(GL_INVALID_VALUE);
+	}
 
 	UNIMPLEMENTED();   // FIXME
 }
