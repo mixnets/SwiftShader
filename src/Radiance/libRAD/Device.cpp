@@ -599,7 +599,7 @@ namespace es2
 		}
 		else
 		{
-			blit(source, sRect, dest, dRect, scaling && filter);
+			blit(source, sRect, 0, dest, dRect, scaling && filter);
 		}
 
 		return true;
