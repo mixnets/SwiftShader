@@ -1221,7 +1221,7 @@ namespace es2
 		unsigned int usedLocations = 0;
 
 		// Link attributes that have a binding location
-		for(sh::ActiveAttributes::iterator attribute = vertexShader->activeAttributes.begin(); attribute != vertexShader->activeAttributes.end(); attribute++)
+		for(glsl::ActiveAttributes::iterator attribute = vertexShader->activeAttributes.begin(); attribute != vertexShader->activeAttributes.end(); attribute++)
 		{
 			int location = getAttributeBinding(attribute->name);
 
@@ -1250,7 +1250,7 @@ namespace es2
 		}
 
 		// Link attributes that don't have a binding location
-		for(sh::ActiveAttributes::iterator attribute = vertexShader->activeAttributes.begin(); attribute != vertexShader->activeAttributes.end(); attribute++)
+		for(glsl::ActiveAttributes::iterator attribute = vertexShader->activeAttributes.begin(); attribute != vertexShader->activeAttributes.end(); attribute++)
 		{
 			int location = getAttributeBinding(attribute->name);
 
@@ -1298,11 +1298,11 @@ namespace es2
 
 	bool Program::linkUniforms(Shader *shader)
 	{
-		const sh::ActiveUniforms &activeUniforms = shader->activeUniforms;
+		const glsl::ActiveUniforms &activeUniforms = shader->activeUniforms;
 
 		for(unsigned int uniformIndex = 0; uniformIndex < activeUniforms.size(); uniformIndex++)
 		{
-			const sh::Uniform &uniform = activeUniforms[uniformIndex];
+			const glsl::Uniform &uniform = activeUniforms[uniformIndex];
 
 			if(!defineUniform(shader->getType(), uniform.type, uniform.precision, uniform.name, uniform.arraySize, uniform.registerIndex))
 			{

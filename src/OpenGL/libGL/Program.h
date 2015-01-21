@@ -171,7 +171,7 @@ namespace es2
 		sw::VertexShader *vertexBinary;
     
 		std::set<std::string> attributeBinding[MAX_VERTEX_ATTRIBS];
-		sh::Attribute linkedAttribute[MAX_VERTEX_ATTRIBS];
+		glsl::Attribute linkedAttribute[MAX_VERTEX_ATTRIBS];
 		int attributeStream[MAX_VERTEX_ATTRIBS];
 
 		struct Sampler

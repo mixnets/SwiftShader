@@ -27,7 +27,7 @@
 #include <list>
 #include <vector>
 
-namespace sh
+namespace glsl
 {
 	class OutputASM;
 }
@@ -64,7 +64,7 @@ typedef std::list<Varying> VaryingList;
 class Shader
 {
     friend class Program;
-	friend class sh::OutputASM;
+	friend class glsl::OutputASM;
 
 public:
     Shader(ResourceManager *manager, GLuint handle);
@@ -108,8 +108,8 @@ protected:
 	char *mInfoLog;
 
     VaryingList varyings;
-	sh::ActiveUniforms activeUniforms;
-	sh::ActiveAttributes activeAttributes;
+	glsl::ActiveUniforms activeUniforms;
+	glsl::ActiveAttributes activeAttributes;
 
 private:
 	const GLuint mHandle;
