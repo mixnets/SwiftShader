@@ -425,7 +425,7 @@ int VertexShader::getSemanticIndex(const std::string &attributeName)
 {
     if(!attributeName.empty())
     {
-		for(sh::ActiveAttributes::iterator attribute = activeAttributes.begin(); attribute != activeAttributes.end(); attribute++)
+		for(glsl::ActiveAttributes::iterator attribute = activeAttributes.begin(); attribute != activeAttributes.end(); attribute++)
         {
             if(attribute->name == attributeName)
             {
