@@ -89,7 +89,6 @@ namespace gl
 		setSourceBlendFactorAlpha(BLEND_ONE);
 		setDestBlendFactorAlpha(BLEND_ZERO);
 		setBlendOperationAlpha(BLENDOP_ADD);
-		setPointSpriteEnable(true);
 
 		for(int i = 0; i < 16; i++)
 		{
@@ -141,6 +140,25 @@ namespace gl
 
 			setVertexShaderConstantF(i, zero, 1);
 		}
+
+		setLightingEnable(false);
+
+		setGlobalAmbient(sw::Color<float>(0.2f, 0.2f, 0.2f, 1.0f));
+		setMaterialAmbient(sw::Color<float>(0.2f, 0.2f, 0.2f, 1.0f));
+		setMaterialDiffuse(sw::Color<float>(0.8f, 0.8f, 0.8f, 1.0f));
+		setMaterialSpecular(sw::Color<float>(0.0f, 0.0f, 0.0f, 1.0f));
+		setMaterialEmission(sw::Color<float>(0.0f, 0.0f, 0.0f, 1.0f));
+
+		for(int i = 0; i < 8; i++)
+		{
+			setLightEnable(i, false);
+			setLightAttenuation(i, 1.0f, 0.0f, 0.0f);
+		}
+
+        setDiffuseMaterialSource(sw::MATERIAL_COLOR1);
+        setSpecularMaterialSource(sw::MATERIAL_MATERIAL);
+        setAmbientMaterialSource(sw::MATERIAL_COLOR1);
+        setEmissiveMaterialSource(sw::MATERIAL_MATERIAL);
 	}
 
 	Device::~Device()
@@ -265,7 +283,7 @@ namespace gl
 			UNREACHABLE();
 		}
 
-		Image *surface = new Image(0, width, height, format, multiSampleDepth, lockable, true);
+		Image *surface = new Image(0, width, height, format, GL_NONE, GL_NONE, multiSampleDepth, lockable, true);
 
 		if(!surface)
 		{
@@ -284,7 +302,7 @@ namespace gl
 			return 0;
 		}
 
-		Image *surface = new Image(0, width, height, format, multiSampleDepth, lockable, true);
+		Image *surface = new Image(0, width, height, format, GL_NONE, GL_NONE, multiSampleDepth, lockable, true);
 
 		if(!surface)
 		{
@@ -424,7 +442,7 @@ namespace gl
 		scissorEnable = enable;
 	}
 
-	void Device::setRenderTarget(egl::Image *renderTarget)
+	void Device::setRenderTarget(Image *renderTarget)
 	{
 		if(renderTarget)
 		{
@@ -471,7 +489,7 @@ namespace gl
 		this->viewport = viewport;
 	}
 
-	bool Device::stretchRect(egl::Image *source, const sw::Rect *sourceRect, egl::Image *dest, const sw::Rect *destRect, bool filter)
+	bool Device::stretchRect(Image *source, const sw::Rect *sourceRect, Image *dest, const sw::Rect *destRect, bool filter)
 	{
 		if(!source || !dest || !validRectangle(sourceRect, source) || !validRectangle(destRect, dest))
 		{
@@ -722,7 +740,7 @@ namespace gl
 		return true;
 	}
 
-	bool Device::validRectangle(const sw::Rect *rect, egl::Image *surface)
+	bool Device::validRectangle(const sw::Rect *rect, Image *surface)
 	{
 		if(!rect)
 		{
@@ -750,5 +768,22 @@ namespace gl
 	void Device::finish()
 	{
 		synchronize();
+	}
+}
+
+// Exported functions for use by EGL
+//extern "C"
+namespace gl
+{
+	gl::Device *createDevice()
+	{
+		sw::Context *context = new sw::Context();
+
+		if(context)
+		{
+			return new gl::Device(context);
+		}
+
+		return 0;
 	}
 }

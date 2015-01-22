@@ -20,6 +20,10 @@
 
 #define GL_APICALL
 #include <GLES2/gl2.h>
+//#define _GDI32_
+//#include <windows.h>
+//#include <gl\GL.h>
+//#include <GL\glext.h>
 
 namespace gl
 {

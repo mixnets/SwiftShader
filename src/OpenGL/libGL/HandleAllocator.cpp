@@ -12,57 +12,57 @@
 // HandleAllocator.cpp: Implements the HandleAllocator class, which is used
 // to allocate GL handles.
 
-#include "HandleAllocator.h"
-
-#include "main.h"
-
-namespace gl
-{
-
-HandleAllocator::HandleAllocator() : mBaseValue(1), mNextValue(1)
-{
-}
-
-HandleAllocator::~HandleAllocator()
-{
-}
-
-void HandleAllocator::setBaseHandle(GLuint value)
-{
-    ASSERT(mBaseValue == mNextValue);
-    mBaseValue = value;
-    mNextValue = value;
-}
-
-GLuint HandleAllocator::allocate()
-{
-    if(mFreeValues.size())
-    {
-        GLuint handle = mFreeValues.back();
-        mFreeValues.pop_back();
-        return handle;
-    }
-    return mNextValue++;
-}
-
-void HandleAllocator::release(GLuint handle)
-{
-    if(handle == mNextValue - 1)
-    {
-        // Don't drop below base value
-        if(mNextValue > mBaseValue)
-        {
-            mNextValue--;
-        }
-    }
-    else
-    {
-        // Only free handles that we own - don't drop below the base value
-        if(handle >= mBaseValue)
-        {
-            mFreeValues.push_back(handle);
-        }
-    }
-}
-
-}
+//#include "HandleAllocator.h"
+//
+//#include "main.h"
+//
+//namespace gl
+//{
+//
+//HandleAllocator::HandleAllocator() : mBaseValue(1), mNextValue(1)
+//{
+//}
+//
+//HandleAllocator::~HandleAllocator()
+//{
+//}
+//
+//void HandleAllocator::setBaseHandle(GLuint value)
+//{
+//    ASSERT(mBaseValue == mNextValue);
+//    mBaseValue = value;
+//    mNextValue = value;
+//}
+//
+//GLuint HandleAllocator::allocate()
+//{
+//    if(mFreeValues.size())
+//    {
+//        GLuint handle = mFreeValues.back();
+//        mFreeValues.pop_back();
+//        return handle;
+//    }
+//    return mNextValue++;
+//}
+//
+//void HandleAllocator::release(GLuint handle)
+//{
+//    if(handle == mNextValue - 1)
+//    {
+//        // Don't drop below base value
+//        if(mNextValue > mBaseValue)
+//        {
+//            mNextValue--;
+//        }
+//    }
+//    else
+//    {
+//        // Only free handles that we own - don't drop below the base value
+//        if(handle >= mBaseValue)
+//        {
+//            mFreeValues.push_back(handle);
+//        }
+//    }
+//}
+//
+//}

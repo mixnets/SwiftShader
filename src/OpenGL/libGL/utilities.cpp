@@ -11,6 +11,12 @@
 
 // utilities.cpp: Conversion functions and other utility routines.
 
+#define _GDI32_
+#include <windows.h>
+#include <gl\GL.h>
+#include <gl\GLext.h>
+
+#include <GL\glext.h>
 #include "utilities.h"
 
 #include "mathutil.h"
@@ -31,7 +37,6 @@ namespace gl
 		case GL_INT:
 		case GL_SAMPLER_2D:
 		case GL_SAMPLER_CUBE:
-        case GL_SAMPLER_EXTERNAL_OES:
 			return 1;
 		case GL_BOOL_VEC2:
 		case GL_FLOAT_VEC2:
@@ -77,7 +82,6 @@ namespace gl
 		case GL_INT:
 		case GL_SAMPLER_2D:
 		case GL_SAMPLER_CUBE:
-        case GL_SAMPLER_EXTERNAL_OES:
 		case GL_INT_VEC2:
 		case GL_INT_VEC3:
 		case GL_INT_VEC4:
@@ -121,7 +125,6 @@ namespace gl
 		case GL_INT_VEC4:
 		case GL_SAMPLER_2D:
 		case GL_SAMPLER_CUBE:
-        case GL_SAMPLER_EXTERNAL_OES:
 			return 1;
 		case GL_FLOAT_MAT2:
 			return 2;
@@ -207,7 +210,6 @@ namespace gl
 		{
 		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-        case GL_ETC1_RGB8_OES:
 			return 8 * (GLsizei)ceil((float)width / 4.0f) * (GLsizei)ceil((float)height / 4.0f);
 		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
 		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
@@ -219,23 +221,39 @@ namespace gl
 
 	bool IsCompressed(GLenum format)
 	{
-		return format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
-		       format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
-               format == GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE ||
-               format == GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE ||
-               format == GL_ETC1_RGB8_OES;
+		if(format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
+		   format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
+		   format == GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE ||
+		   format == GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	bool IsDepthTexture(GLenum format)
 	{
-		return format == GL_DEPTH_COMPONENT ||
-		       format == GL_DEPTH_STENCIL_OES;
+		if(format == GL_DEPTH_COMPONENT ||
+		   format == GL_DEPTH_STENCIL_OES)
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	bool IsStencilTexture(GLenum format)
 	{
-		return format == GL_STENCIL_INDEX_OES ||
-		       format == GL_DEPTH_STENCIL_OES;
+		if(//format == GL_STENCIL_INDEX ||
+		   format == GL_DEPTH_STENCIL_OES)
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	// Returns the size, in bytes, of a single texel in an Image
@@ -262,6 +280,7 @@ namespace gl
 			return sizeof(unsigned short);
 		case GL_UNSIGNED_INT:
 		case GL_UNSIGNED_INT_24_8_OES:
+        case GL_UNSIGNED_INT_8_8_8_8_REV:
 			return sizeof(unsigned int);
 		case GL_FLOAT:
 			switch(format)
@@ -356,6 +375,8 @@ namespace gl
 			return (format == GL_DEPTH_COMPONENT);
 		case GL_UNSIGNED_INT_24_8_OES:
 			return (format == GL_DEPTH_STENCIL_OES);
+        case GL_UNSIGNED_INT_8_8_8_8_REV:
+            return (format == GL_BGRA);
 		default:
 			return false;
 		}
@@ -372,6 +393,7 @@ namespace gl
 		case GL_RGBA8_OES:
 			return true;
 		case GL_DEPTH_COMPONENT16:
+        case GL_DEPTH_COMPONENT24:
 		case GL_STENCIL_INDEX8:
 		case GL_DEPTH24_STENCIL8_OES:
 			return false;
@@ -387,6 +409,7 @@ namespace gl
 		switch(internalformat)
 		{
 		case GL_DEPTH_COMPONENT16:
+        case GL_DEPTH_COMPONENT24:
 		case GL_DEPTH24_STENCIL8_OES:
 			return true;
 		case GL_STENCIL_INDEX8:
@@ -416,6 +439,7 @@ namespace gl
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
 		case GL_DEPTH_COMPONENT16:
+        case GL_DEPTH_COMPONENT24:
 			return false;
 		default:
 			UNIMPLEMENTED();
@@ -500,8 +524,6 @@ namespace es2sw
 		case GL_FUNC_ADD:              return sw::BLENDOP_ADD;
 		case GL_FUNC_SUBTRACT:         return sw::BLENDOP_SUB;
 		case GL_FUNC_REVERSE_SUBTRACT: return sw::BLENDOP_INVSUB;
-		case GL_MIN_EXT:               return sw::BLENDOP_MIN;
-		case GL_MAX_EXT:               return sw::BLENDOP_MAX;
 		default: UNREACHABLE();
 		}
 
@@ -530,6 +552,7 @@ namespace es2sw
 	{
 		switch(wrap)
 		{
+        case GL_CLAMP:             return sw::ADDRESSING_CLAMP;
 		case GL_REPEAT:            return sw::ADDRESSING_WRAP;
 		case GL_CLAMP_TO_EDGE:     return sw::ADDRESSING_CLAMP;
 		case GL_MIRRORED_REPEAT:   return sw::ADDRESSING_MIRROR;
@@ -647,6 +670,10 @@ namespace es2sw
 			swPrimitiveType = gl::DRAW_TRIANGLEFAN;
 			primitiveCount = elementCount - 2;
 			break;
+        case GL_QUADS:
+            swPrimitiveType = gl::DRAW_QUADLIST;
+			primitiveCount = (elementCount / 4) * 2;
+			break;
 		default:
 			return false;
 		}
@@ -664,6 +691,7 @@ namespace es2sw
 		case GL_RGB565:               return sw::FORMAT_R5G6B5;
 		case GL_RGB8_OES:             return sw::FORMAT_X8R8G8B8;
 		case GL_DEPTH_COMPONENT16:
+        case GL_DEPTH_COMPONENT24:
 		case GL_STENCIL_INDEX8:       
 		case GL_DEPTH24_STENCIL8_OES: return sw::FORMAT_D24S8;
 		default: UNREACHABLE();       return sw::FORMAT_A8R8G8B8;
@@ -825,9 +853,10 @@ namespace sw2es
 		switch(format)
 		{
 		case sw::FORMAT_D16:
-		case sw::FORMAT_D24X8:
 		case sw::FORMAT_D32:
 			return GL_DEPTH_COMPONENT16;
+        case sw::FORMAT_D24X8:
+            return GL_DEPTH_COMPONENT24;
 		case sw::FORMAT_D24S8:
 			return GL_DEPTH24_STENCIL8_OES;
 		default:
