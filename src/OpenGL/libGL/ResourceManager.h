@@ -19,6 +19,10 @@
 
 #define GL_APICALL
 #include <GLES2/gl2.h>
+//#define _GDI32_
+//#include <windows.h>
+//#include <gl\GL.h>
+//#include <GL\glext.h>
 
 #include <map>
 
@@ -33,8 +37,8 @@ class Renderbuffer;
 enum TextureType
 {
     TEXTURE_2D,
+    PROXY_TEXTURE_2D,
     TEXTURE_CUBE,
-    TEXTURE_EXTERNAL,
 
     TEXTURE_TYPE_COUNT,
     TEXTURE_UNKNOWN
@@ -71,28 +75,29 @@ class ResourceManager
 
     void checkBufferAllocation(unsigned int buffer);
     void checkTextureAllocation(GLuint texture, TextureType type);
+    void checkRenderbufferAllocation(GLuint renderbuffer);
 
   private:
     std::size_t mRefCount;
 
     typedef std::map<GLint, Buffer*> BufferMap;
     BufferMap mBufferMap;
-    HandleAllocator mBufferHandleAllocator;
+    //HandleAllocator mBufferHandleAllocator;
 
     typedef std::map<GLint, Shader*> ShaderMap;
     ShaderMap mShaderMap;
 
     typedef std::map<GLint, Program*> ProgramMap;
     ProgramMap mProgramMap;
-    HandleAllocator mProgramShaderHandleAllocator;
+    //HandleAllocator mProgramShaderHandleAllocator;
 
     typedef std::map<GLint, Texture*> TextureMap;
     TextureMap mTextureMap;
-    HandleAllocator mTextureHandleAllocator;
+    //HandleAllocator mTextureHandleAllocator;
 
     typedef std::map<GLint, Renderbuffer*> RenderbufferMap;
     RenderbufferMap mRenderbufferMap;
-    HandleAllocator mRenderbufferHandleAllocator;
+    //HandleAllocator mRenderbufferHandleAllocator;
 };
 
 }

@@ -17,29 +17,33 @@
 
 #define GL_APICALL
 #include <GLES2/gl2.h>
+//#define _GDI32_
+//#include <windows.h>
+//#include <gl\GL.h>
+//#include <GL\glext.h>
 
 #include <vector>
 
 namespace gl
 {
 
-class HandleAllocator
-{
-  public:
-    HandleAllocator();
-    virtual ~HandleAllocator();
-
-    void setBaseHandle(GLuint value);
-
-    GLuint allocate();
-    void release(GLuint handle);
-
-  private:
-    GLuint mBaseValue;
-    GLuint mNextValue;
-    typedef std::vector<GLuint> HandleList;
-    HandleList mFreeValues;
-};
+//class HandleAllocator
+//{
+//  public:
+//    HandleAllocator();
+//    virtual ~HandleAllocator();
+//
+//    void setBaseHandle(GLuint value);
+//
+//    GLuint allocate();
+//    void release(GLuint handle);
+//
+//  private:
+//    GLuint mBaseValue;
+//    GLuint mNextValue;
+//    typedef std::vector<GLuint> HandleList;
+//    HandleList mFreeValues;
+//};
 
 }
 

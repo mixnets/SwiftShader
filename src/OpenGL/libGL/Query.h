@@ -14,16 +14,20 @@
 #ifndef LIBGL_QUERY_H_
 #define LIBGL_QUERY_H_
 
-#include "common/Object.hpp"
+#include "RefCountObject.h"
 #include "Renderer/Renderer.hpp"
 
 #define GL_APICALL
 #include <GLES2/gl2.h>
+//#define _GDI32_
+//#include <windows.h>
+//#include <gl\GL.h>
+//#include <GL\glext.h>
 
 namespace gl
 {
 
-class Query : public gl::RefCountObject
+class Query : public RefCountObject
 {
   public:
     Query(GLuint id, GLenum type);

@@ -16,18 +16,22 @@
 #ifndef LIBGL_BUFFER_H_
 #define LIBGL_BUFFER_H_
 
-#include "common/Object.hpp"
+#include "RefCountObject.h"
 #include "Common/Resource.hpp"
 
 #define GL_APICALL
 #include <GLES2/gl2.h>
+//#define _GDI32_
+//#include <windows.h>
+//#include <gl\GL.h>
+//#include <GL\glext.h>
 
 #include <cstddef>
 #include <vector>
 
 namespace gl
 {
-class Buffer : public gl::RefCountObject
+class Buffer : public RefCountObject
 {
   public:
     explicit Buffer(GLuint id);
