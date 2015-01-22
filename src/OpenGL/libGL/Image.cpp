@@ -9,6 +9,11 @@
 // or implied, including but not limited to any patent rights, are granted to you.
 //
 
+#define _GDI32_
+#include <windows.h>
+#include <gl\GL.h>
+#include <GL\glext.h>
+
 #include "Image.hpp"
 
 #include "Texture.h"
@@ -31,15 +36,16 @@ namespace gl
 	}
 
 	Image::Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
-		: parentTexture(parentTexture)
-		, egl::Image(getParentResource(parentTexture), width, height, format, type, selectInternalFormat(format, type))
+		: parentTexture(parentTexture), width(width), height(height), format(format), type(type)
+		, internalFormat(selectInternalFormat(format, type)), multiSampleDepth(1)
+		, sw::Surface(getParentResource(parentTexture), width, height, 1, selectInternalFormat(format, type), true, true)
 	{
 		referenceCount = 1;
 	}
 
-	Image::Image(Texture *parentTexture, GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable, bool renderTarget)
-		: parentTexture(parentTexture)
-		, egl::Image(getParentResource(parentTexture), width, height, multiSampleDepth, internalFormat, lockable, renderTarget)
+	Image::Image(Texture *parentTexture, GLsizei width, GLsizei height, sw::Format internalFormat, GLenum format, GLenum type, int multiSampleDepth, bool lockable, bool renderTarget)
+		: parentTexture(parentTexture), width(width), height(height), internalFormat(internalFormat), format(format), type(type), multiSampleDepth(multiSampleDepth)
+		, sw::Surface(getParentResource(parentTexture), width, height, multiSampleDepth, internalFormat, lockable, renderTarget)
 	{
 		referenceCount = 1;
 	}
@@ -47,6 +53,51 @@ namespace gl
 	Image::~Image()
 	{
 		ASSERT(referenceCount == 0);
+	}
+
+	void *Image::lock(unsigned int left, unsigned int top, sw::Lock lock)
+	{
+		return lockExternal(left, top, 0, lock, sw::PUBLIC);
+	}
+
+	unsigned int Image::getPitch() const
+	{
+		return getExternalPitchB();
+	}
+
+	void Image::unlock()
+	{
+		unlockExternal();
+	}
+
+	int Image::getWidth()
+	{
+		return width;
+	}
+	
+	int Image::getHeight()
+	{
+		return height;
+	}
+
+	GLenum Image::getFormat()
+	{
+		return format;
+	}
+	
+	GLenum Image::getType()
+	{
+		return type;
+	}
+	
+	sw::Format Image::getInternalFormat()
+	{
+		return internalFormat;
+	}
+	
+	int Image::getMultiSampleDepth()
+	{
+		return multiSampleDepth;
 	}
 
 	void Image::addRef()
@@ -73,28 +124,24 @@ namespace gl
 
 		if(referenceCount == 0)
 		{
-			ASSERT(!shared);   // Should still hold a reference if eglDestroyImage hasn't been called
 			delete this;
 		}
 	}
 
-	void Image::unbind(const egl::Texture *parent)
+	void Image::unbind()
 	{
-		if(parentTexture == parent)
-		{
-			parentTexture = 0;
-		}
+		parentTexture = 0;
 
 		release();
 	}
 
 	sw::Format Image::selectInternalFormat(GLenum format, GLenum type)
 	{
-		if(format == GL_ETC1_RGB8_OES)
-		{
-			return sw::FORMAT_ETC1;
-		}
-		else
+        if(type == GL_NONE && format == GL_NONE)
+        {
+            return sw::FORMAT_NULL;
+        }
+        else
 		#if S3TC_SUPPORT
 		if(format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
 		   format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
@@ -171,9 +218,19 @@ namespace gl
 		{
 			return sw::FORMAT_X8R8G8B8;
 		}
+        else if(type == GL_UNSIGNED_INT_8_8_8_8_REV)
+        {
+            return sw::FORMAT_A8R8G8B8;
+        }
+
 		else UNREACHABLE();
 
 		return sw::FORMAT_A8R8G8B8;
+	}
+
+	int Image::bytes(sw::Format format)
+	{
+		return sw::Surface::bytes(format);
 	}
 
 	void Image::loadImageData(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *input)
@@ -186,6 +243,7 @@ namespace gl
 			switch(type)
 			{
 			case GL_UNSIGNED_BYTE:
+            case GL_UNSIGNED_INT_8_8_8_8_REV:
 				switch(format)
 				{
 				case GL_ALPHA:

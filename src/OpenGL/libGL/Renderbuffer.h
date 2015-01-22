@@ -17,11 +17,15 @@
 #ifndef LIBGL_RENDERBUFFER_H_
 #define LIBGL_RENDERBUFFER_H_
 
-#include "common/Object.hpp"
+#include "RefCountObject.h"
 #include "Image.hpp"
 
 #define GL_APICALL
 #include <GLES2/gl2.h>
+//#define _GDI32_
+//#include <windows.h>
+//#include <gl\GL.h>
+//#include <GL\glext.h>
 
 namespace gl
 {
@@ -41,9 +45,7 @@ public:
 	virtual void addProxyRef(const Renderbuffer *proxy);
     virtual void releaseProxy(const Renderbuffer *proxy);
 
-	virtual egl::Image *getRenderTarget() = 0;
-    virtual egl::Image *createSharedImage() = 0;
-    virtual bool isShared() const = 0;
+	virtual Image *getRenderTarget() = 0;
 
 	virtual GLsizei getWidth() const = 0;
 	virtual GLsizei getHeight() const = 0;
@@ -69,9 +71,7 @@ public:
 	virtual void addProxyRef(const Renderbuffer *proxy);
     virtual void releaseProxy(const Renderbuffer *proxy);
 
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	Image *getRenderTarget();
 
 	virtual GLsizei getWidth() const;
 	virtual GLsizei getHeight() const;
@@ -80,7 +80,7 @@ public:
 	virtual GLsizei getSamples() const;
 
 private:
-	gl::BindingPointer<Texture2D> mTexture2D;
+	BindingPointer<Texture2D> mTexture2D;
 };
 
 class RenderbufferTextureCubeMap : public RenderbufferInterface
@@ -93,9 +93,7 @@ public:
 	virtual void addProxyRef(const Renderbuffer *proxy);
     virtual void releaseProxy(const Renderbuffer *proxy);
 
-	virtual Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	Image *getRenderTarget();
 
 	virtual GLsizei getWidth() const;
 	virtual GLsizei getHeight() const;
@@ -104,7 +102,7 @@ public:
 	virtual GLsizei getSamples() const;
 
 private:
-	gl::BindingPointer<TextureCubeMap> mTextureCubeMap;
+	BindingPointer<TextureCubeMap> mTextureCubeMap;
 	GLenum mTarget;
 };
 
@@ -118,9 +116,7 @@ public:
 
 	virtual ~RenderbufferStorage() = 0;
 
-	virtual egl::Image *getRenderTarget() = 0;
-    virtual egl::Image *createSharedImage() = 0;
-    virtual bool isShared() const = 0;
+	virtual Image *getRenderTarget();
 
 	virtual GLsizei getWidth() const;
 	virtual GLsizei getHeight() const;
@@ -139,7 +135,7 @@ protected:
 // Renderbuffer implements the GL renderbuffer object.
 // It's only a proxy for a RenderbufferInterface instance; the internal object
 // can change whenever glRenderbufferStorage is called.
-class Renderbuffer : public gl::RefCountObject
+class Renderbuffer : public RefCountObject
 {
 public:
 	Renderbuffer(GLuint id, RenderbufferInterface *storage);
@@ -153,9 +149,7 @@ public:
     virtual void addRef();
     virtual void release();
 
-	egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	Image *getRenderTarget();
 
 	GLsizei getWidth() const;
 	GLsizei getHeight() const;
@@ -178,39 +172,35 @@ private:
 class Colorbuffer : public RenderbufferStorage
 {
 public:
-	explicit Colorbuffer(egl::Image *renderTarget);
+	explicit Colorbuffer(Image *renderTarget);
 	Colorbuffer(GLsizei width, GLsizei height, GLenum format, GLsizei samples);
 
 	virtual ~Colorbuffer();
 
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	virtual Image *getRenderTarget();
 
 private:
-	egl::Image *mRenderTarget;
+	Image *mRenderTarget;
 };
 
 class DepthStencilbuffer : public RenderbufferStorage
 {
 public:
-	explicit DepthStencilbuffer(egl::Image *depthStencil);
+	explicit DepthStencilbuffer(Image *depthStencil);
 	DepthStencilbuffer(GLsizei width, GLsizei height, GLsizei samples);
 
 	~DepthStencilbuffer();
 
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	virtual Image *getRenderTarget();
 
 protected:
-	egl::Image *mDepthStencil;
+	Image *mDepthStencil;
 };
 
 class Depthbuffer : public DepthStencilbuffer
 {
 public:
-	explicit Depthbuffer(egl::Image *depthStencil);
+	explicit Depthbuffer(Image *depthStencil);
 	Depthbuffer(GLsizei width, GLsizei height, GLsizei samples);
 
 	virtual ~Depthbuffer();
@@ -219,7 +209,7 @@ public:
 class Stencilbuffer : public DepthStencilbuffer
 {
 public:
-	explicit Stencilbuffer(egl::Image *depthStencil);
+	explicit Stencilbuffer(Image *depthStencil);
 	Stencilbuffer(GLsizei width, GLsizei height, GLsizei samples);
 
 	virtual ~Stencilbuffer();

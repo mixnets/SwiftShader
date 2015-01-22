@@ -17,13 +17,16 @@
 #define LIBGL_TEXTURE_H_
 
 #include "Renderbuffer.h"
-#include "common/Object.hpp"
+#include "RefCountObject.h"
 #include "utilities.h"
-#include "libEGL/Texture.hpp"
 #include "common/debug.h"
 
 #define GL_APICALL
 #include <GLES2/gl2.h>
+//#define _GDI32_
+//#include <windows.h>
+//#include <gl\GL.h>
+//#include <GL\glext.h>
 
 #include <vector>
 
@@ -46,7 +49,7 @@ enum
 	IMPLEMENTATION_MAX_SAMPLES = 4
 };
 
-class Texture : public egl::Texture
+class Texture : public RefCountObject
 {
 public:
     explicit Texture(GLuint id);
@@ -54,6 +57,8 @@ public:
     virtual ~Texture();
 
 	sw::Resource *getResource() const;
+	virtual bool isTexture2D();
+	virtual bool isTextureCubeMap();
 
 	virtual void addProxyRef(const Renderbuffer *proxy) = 0;
     virtual void releaseProxy(const Renderbuffer *proxy) = 0;
@@ -65,6 +70,7 @@ public:
     bool setWrapS(GLenum wrap);
     bool setWrapT(GLenum wrap);
 	bool setMaxAnisotropy(GLfloat textureMaxAnisotropy);
+	bool setMaxLevel(int level);
 
     GLenum getMinFilter() const;
     GLenum getMagFilter() const;
@@ -84,20 +90,18 @@ public:
 	virtual bool isDepth(GLenum target, GLint level) const = 0;
 
     virtual Renderbuffer *getRenderbuffer(GLenum target) = 0;
-    virtual egl::Image *getRenderTarget(GLenum target, unsigned int level) = 0;
-    virtual egl::Image *createSharedImage(GLenum target, unsigned int level);
-    virtual bool isShared(GLenum target, unsigned int level) const = 0;
+	virtual Image *getRenderTarget(GLenum target, GLint level) = 0;
 
     virtual void generateMipmaps() = 0;
     virtual void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source) = 0;
 
 protected:
-    void setImage(GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, egl::Image *image);
-    void subImage(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, egl::Image *image);
-    void setCompressedImage(GLsizei imageSize, const void *pixels, egl::Image *image);
-    void subImageCompressed(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels, egl::Image *image);
+    void setImage(GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, Image *image);
+    void subImage(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, Image *image);
+    void setCompressedImage(GLsizei imageSize, const void *pixels, Image *image);
+    void subImageCompressed(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels, Image *image);
 
-	bool copy(egl::Image *source, const sw::Rect &sourceRect, GLenum destFormat, GLint xoffset, GLint yoffset, egl::Image *dest);
+	bool copy(Image *source, const sw::Rect &sourceRect, GLenum destFormat, GLint xoffset, GLint yoffset, Image *dest);
 
 	bool isMipmapFiltered() const;
 
@@ -106,6 +110,7 @@ protected:
     GLenum mWrapS;
     GLenum mWrapT;
 	GLfloat mMaxAnisotropy;
+	GLint mMaxLevel;
 
 	sw::Resource *resource;
 };
@@ -116,6 +121,8 @@ public:
     explicit Texture2D(GLuint id);
 
     virtual ~Texture2D();
+
+	virtual bool isTexture2D();
 
 	void addProxyRef(const Renderbuffer *proxy);
     void releaseProxy(const Renderbuffer *proxy);
@@ -136,8 +143,6 @@ public:
     void copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
     void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
 
-	void setImage(egl::Image *image);
-
     virtual bool isSamplerComplete() const;
     virtual bool isCompressed(GLenum target, GLint level) const;
 	virtual bool isDepth(GLenum target, GLint level) const;
@@ -146,16 +151,14 @@ public:
 
     virtual void generateMipmaps();
 
-	virtual Renderbuffer *getRenderbuffer(GLenum target);
-    virtual egl::Image *getRenderTarget(GLenum target, unsigned int level);
-	virtual bool isShared(GLenum target, unsigned int level) const;
+	virtual Image *getImage(unsigned int level);
+    virtual Renderbuffer *getRenderbuffer(GLenum target);
+	Image *getRenderTarget(GLenum target, GLint level);
 
-    egl::Image *getImage(unsigned int level);
-
-protected:
+private:
 	bool isMipmapComplete() const;
 
-	egl::Image *image[IMPLEMENTATION_MAX_TEXTURE_LEVELS];
+	Image *image[IMPLEMENTATION_MAX_TEXTURE_LEVELS];
     
     egl::Surface *mSurface;
     
@@ -174,6 +177,8 @@ public:
     explicit TextureCubeMap(GLuint id);
 
     virtual ~TextureCubeMap();
+
+	virtual bool isTextureCubeMap();
 
 	void addProxyRef(const Renderbuffer *proxy);
     void releaseProxy(const Renderbuffer *proxy);
@@ -198,13 +203,11 @@ public:
     virtual bool isSamplerComplete() const;
     virtual bool isCompressed(GLenum target, GLint level) const;
 	virtual bool isDepth(GLenum target, GLint level) const;
-	virtual void releaseTexImage();
 
     virtual void generateMipmaps();
 
     virtual Renderbuffer *getRenderbuffer(GLenum target);
-	virtual Image *getRenderTarget(GLenum target, unsigned int level);
-	virtual bool isShared(GLenum target, unsigned int level) const;
+	virtual Image *getRenderTarget(GLenum target, GLint level);
 
 	Image *getImage(int face, unsigned int level);
 
@@ -224,16 +227,6 @@ private:
     // the count drops to zero, but will not cause deletion of the Renderbuffer.
     Renderbuffer *mFaceProxies[6];
 	unsigned int mFaceProxyRefs[6];
-};
-
-class TextureExternal : public Texture2D
-{
-public:
-    explicit TextureExternal(GLuint id);
-
-    virtual ~TextureExternal();
-
-    virtual GLenum getTarget() const;
 };
 }
 
