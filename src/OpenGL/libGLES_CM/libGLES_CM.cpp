@@ -856,7 +856,16 @@ void GL_APIENTRY glVertexAttribPointer(GLuint index, GLint size, GLenum type, GL
 
 void GL_APIENTRY glColorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLint size = %d, GLenum type = 0x%X, GLsizei stride = %d, const GLvoid *pointer = 0x%0.8p)", size, type, stride, pointer);
+
+	es1::Context *context = es1::getContext();
+
+	if(context)
+	{
+		GLenum texture = context->getClientActiveTexture();
+
+		glVertexAttribPointer(sw::Color0 + (texture - GL_TEXTURE0), size, type, false, stride, pointer);
+	}
 }
 
 void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height,
