@@ -233,11 +233,14 @@ typedef unsigned long long int khronos_uintptr_t;
 typedef signed   long long int khronos_ssize_t;
 typedef unsigned long long int khronos_usize_t;
 #else
-typedef signed   long  int     khronos_intptr_t;
+//typedef signed   long  int     khronos_intptr_t;
 typedef unsigned long  int     khronos_uintptr_t;
-typedef signed   long  int     khronos_ssize_t;
+//typedef signed   long  int     khronos_ssize_t;
 typedef unsigned long  int     khronos_usize_t;
 #endif
+
+//typedef int khronos_ssize_t;
+//typedef int khronos_intptr_t;
 
 #if KHRONOS_SUPPORT_FLOAT
 /*

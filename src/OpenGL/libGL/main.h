@@ -17,25 +17,41 @@
 #include "Context.h"
 #include "Device.hpp"
 #include "common/debug.h"
-#include "libEGL/Display.h"
+#include "Display.h"
 
-#define GL_APICALL
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+//#define GL_APICALL
+//#include <GLES2/gl2.h>
+//#include <GLES2/gl2ext.h>
+//#define _GDI32_
+//#include <windows.h>
+//#include <GL/GL.h>
+//#include <GL/glext.h>
 
 namespace gl
 {
+	struct Current
+	{
+		Context *context;
+		egl::Display *display;
+	};
+
+	void makeCurrent(Context *context, egl::Display *display, egl::Surface *surface);
+
 	Context *getContext();
 	egl::Display *getDisplay();
+
 	Device *getDevice();
 }
 
-namespace egl
-{
-	GLint getClientVersion();
-}
-
 void error(GLenum errorCode);
+
+template<class T>
+T &error(GLenum errorCode, T &returnValue)
+{
+    error(errorCode);
+
+    return returnValue;
+}
 
 template<class T>
 const T &error(GLenum errorCode, const T &returnValue)
@@ -44,21 +60,5 @@ const T &error(GLenum errorCode, const T &returnValue)
 
     return returnValue;
 }
-
-// libEGL dependencies
-namespace egl
-{
-	extern egl::Context *(*getCurrentContext)();
-	extern egl::Display *(*getCurrentDisplay)();
-}
-
-// libGLES_CM dependencies
-namespace es1
-{
-	extern __eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname);
-}
-
-extern void *libEGL;       // Handle to the libEGL module
-extern void *libGLES_CM;   // Handle to the libGLES_CM module
 
 #endif   // LIBGL_MAIN_H_
