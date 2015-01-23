@@ -4410,8 +4410,8 @@ GLAPI void APIENTRY glWindowPos3svARB (const GLshort *v);
 #define GL_KHR_texture_compression_astc_ldr 1
 #endif /* GL_KHR_texture_compression_astc_ldr */
 
-#ifndef GL_OES_byte_coordinates
-#define GL_OES_byte_coordinates 1
+#ifndef GL_EXT_byte_coordinates
+#define GL_EXT_byte_coordinates 1
 typedef void (APIENTRYP PFNGLMULTITEXCOORD1BOESPROC) (GLenum texture, GLbyte s);
 typedef void (APIENTRYP PFNGLMULTITEXCOORD1BVOESPROC) (GLenum texture, const GLbyte *coords);
 typedef void (APIENTRYP PFNGLMULTITEXCOORD2BOESPROC) (GLenum texture, GLbyte s, GLbyte t);
@@ -4458,26 +4458,26 @@ GLAPI void APIENTRY glVertex3bvOES (const GLbyte *coords);
 GLAPI void APIENTRY glVertex4bOES (GLbyte x, GLbyte y, GLbyte z);
 GLAPI void APIENTRY glVertex4bvOES (const GLbyte *coords);
 #endif
-#endif /* GL_OES_byte_coordinates */
+#endif /* GL_EXT_byte_coordinates */
 
-#ifndef GL_OES_compressed_paletted_texture
-#define GL_OES_compressed_paletted_texture 1
-#define GL_PALETTE4_RGB8_OES              0x8B90
-#define GL_PALETTE4_RGBA8_OES             0x8B91
-#define GL_PALETTE4_R5_G6_B5_OES          0x8B92
-#define GL_PALETTE4_RGBA4_OES             0x8B93
-#define GL_PALETTE4_RGB5_A1_OES           0x8B94
-#define GL_PALETTE8_RGB8_OES              0x8B95
-#define GL_PALETTE8_RGBA8_OES             0x8B96
-#define GL_PALETTE8_R5_G6_B5_OES          0x8B97
-#define GL_PALETTE8_RGBA4_OES             0x8B98
-#define GL_PALETTE8_RGB5_A1_OES           0x8B99
-#endif /* GL_OES_compressed_paletted_texture */
+#ifndef GL_EXT_compressed_paletted_texture
+#define GL_EXT_compressed_paletted_texture 1
+#define GL_PALETTE4_RGB8_EXT              0x8B90
+#define GL_PALETTE4_RGBA8_EXT             0x8B91
+#define GL_PALETTE4_R5_G6_B5_EXT          0x8B92
+#define GL_PALETTE4_RGBA4_EXT             0x8B93
+#define GL_PALETTE4_RGB5_A1_EXT           0x8B94
+#define GL_PALETTE8_RGB8_EXT              0x8B95
+#define GL_PALETTE8_RGBA8_EXT             0x8B96
+#define GL_PALETTE8_R5_G6_B5_EXT          0x8B97
+#define GL_PALETTE8_RGBA4_EXT             0x8B98
+#define GL_PALETTE8_RGB5_A1_EXT           0x8B99
+#endif /* GL_EXT_compressed_paletted_texture */
 
-#ifndef GL_OES_fixed_point
-#define GL_OES_fixed_point 1
+#ifndef GL_EXT_fixed_point
+#define GL_EXT_fixed_point 1
 typedef GLint GLfixed;
-#define GL_FIXED_OES                      0x140C
+#define GL_FIXED_EXT                      0x140C
 typedef void (APIENTRYP PFNGLALPHAFUNCXOESPROC) (GLenum func, GLfixed ref);
 typedef void (APIENTRYP PFNGLCLEARCOLORXOESPROC) (GLfixed red, GLfixed green, GLfixed blue, GLfixed alpha);
 typedef void (APIENTRYP PFNGLCLEARDEPTHXOESPROC) (GLfixed depth);
@@ -4688,24 +4688,24 @@ GLAPI void APIENTRY glVertex3xvOES (const GLfixed *coords);
 GLAPI void APIENTRY glVertex4xOES (GLfixed x, GLfixed y, GLfixed z);
 GLAPI void APIENTRY glVertex4xvOES (const GLfixed *coords);
 #endif
-#endif /* GL_OES_fixed_point */
+#endif /* GL_EXT_fixed_point */
 
-#ifndef GL_OES_query_matrix
-#define GL_OES_query_matrix 1
+#ifndef GL_EXT_query_matrix
+#define GL_EXT_query_matrix 1
 typedef GLbitfield (APIENTRYP PFNGLQUERYMATRIXXOESPROC) (GLfixed *mantissa, GLint *exponent);
 #ifdef GL_GLEXT_PROTOTYPES
 GLAPI GLbitfield APIENTRY glQueryMatrixxOES (GLfixed *mantissa, GLint *exponent);
 #endif
-#endif /* GL_OES_query_matrix */
+#endif /* GL_EXT_query_matrix */
 
-#ifndef GL_OES_read_format
-#define GL_OES_read_format 1
-#define GL_IMPLEMENTATION_COLOR_READ_TYPE_OES 0x8B9A
-#define GL_IMPLEMENTATION_COLOR_READ_FORMAT_OES 0x8B9B
-#endif /* GL_OES_read_format */
+#ifndef GL_EXT_read_format
+#define GL_EXT_read_format 1
+#define GL_IMPLEMENTATION_COLOR_READ_TYPE_EXT 0x8B9A
+#define GL_IMPLEMENTATION_COLOR_READ_FORMAT_EXT 0x8B9B
+#endif /* GL_EXT_read_format */
 
-#ifndef GL_OES_single_precision
-#define GL_OES_single_precision 1
+#ifndef GL_EXT_single_precision
+#define GL_EXT_single_precision 1
 typedef void (APIENTRYP PFNGLCLEARDEPTHFOESPROC) (GLclampf depth);
 typedef void (APIENTRYP PFNGLCLIPPLANEFOESPROC) (GLenum plane, const GLfloat *equation);
 typedef void (APIENTRYP PFNGLDEPTHRANGEFOESPROC) (GLclampf n, GLclampf f);
@@ -4720,7 +4720,7 @@ GLAPI void APIENTRY glFrustumfOES (GLfloat l, GLfloat r, GLfloat b, GLfloat t, G
 GLAPI void APIENTRY glGetClipPlanefOES (GLenum plane, GLfloat *equation);
 GLAPI void APIENTRY glOrthofOES (GLfloat l, GLfloat r, GLfloat b, GLfloat t, GLfloat n, GLfloat f);
 #endif
-#endif /* GL_OES_single_precision */
+#endif /* GL_EXT_single_precision */
 
 #ifndef GL_3DFX_multisample
 #define GL_3DFX_multisample 1
@@ -7949,7 +7949,7 @@ GLAPI void APIENTRY glStringMarkerGREMEDY (GLsizei len, const void *string);
 #define GL_IMAGE_SCALE_Y_HP               0x8156
 #define GL_IMAGE_TRANSLATE_X_HP           0x8157
 #define GL_IMAGE_TRANSLATE_Y_HP           0x8158
-#define GL_IMAGE_ROTATE_ANGLE_HP          0x8159
+#define GL_IMAGE_ROTATE_EXT_HP          0x8159
 #define GL_IMAGE_ROTATE_ORIGIN_X_HP       0x815A
 #define GL_IMAGE_ROTATE_ORIGIN_Y_HP       0x815B
 #define GL_IMAGE_MAG_FILTER_HP            0x815C

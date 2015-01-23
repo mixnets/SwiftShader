@@ -13,10 +13,14 @@
 #define gl_Image_hpp
 
 #include "Renderer/Surface.hpp"
-#include "libEGL/Image.hpp"
+#include "ImageEGL.hpp"
 
-#define GL_APICALL
-#include <GLES2/gl2.h>
+//#define GL_APICALL
+//#include <GLES2/gl2.h>
+#define _GDI32_
+#include <windows.h>
+#include <GL/GL.h>
+#include <GL/glext.h>
 
 namespace gl
 {

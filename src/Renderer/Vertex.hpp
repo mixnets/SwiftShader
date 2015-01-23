@@ -93,6 +93,15 @@ namespace sw
 		};
 	});
 
+	struct InVertex
+	{
+		float4 P;
+		float4 N;
+		float4 C;
+		float4 T0;
+		float4 T1;
+	};
+
 	META_ASSERT((sizeof(Vertex) & 0x0000000F) == 0);
 }
 

@@ -21,8 +21,8 @@
 
 #include "compiler/TranslatorASM.h"
 
-#define GL_APICALL
-#include <GLES2/gl2.h>
+//#define GL_APICALL
+//#include <GLES2/gl2.h>
 
 #include <list>
 #include <vector>

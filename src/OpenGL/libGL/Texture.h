@@ -17,13 +17,13 @@
 #define LIBGL_TEXTURE_H_
 
 #include "Renderbuffer.h"
-#include "common/Object.hpp"
+#include "RefCountObject.h"
 #include "utilities.h"
-#include "libEGL/Texture.hpp"
+#include "TextureEGL.hpp"
 #include "common/debug.h"
 
-#define GL_APICALL
-#include <GLES2/gl2.h>
+//#define GL_APICALL
+//#include <GLES2/gl2.h>
 
 #include <vector>
 
@@ -65,6 +65,7 @@ public:
     bool setWrapS(GLenum wrap);
     bool setWrapT(GLenum wrap);
 	bool setMaxAnisotropy(GLfloat textureMaxAnisotropy);
+	bool setMaxLevel(int level);
 
     GLenum getMinFilter() const;
     GLenum getMagFilter() const;
@@ -85,8 +86,8 @@ public:
 
     virtual Renderbuffer *getRenderbuffer(GLenum target) = 0;
     virtual egl::Image *getRenderTarget(GLenum target, unsigned int level) = 0;
-    virtual egl::Image *createSharedImage(GLenum target, unsigned int level);
-    virtual bool isShared(GLenum target, unsigned int level) const = 0;
+    //virtual egl::Image *createSharedImage(GLenum target, unsigned int level);
+    //virtual bool isShared(GLenum target, unsigned int level) const = 0;
 
     virtual void generateMipmaps() = 0;
     virtual void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source) = 0;
@@ -106,6 +107,7 @@ protected:
     GLenum mWrapS;
     GLenum mWrapT;
 	GLfloat mMaxAnisotropy;
+	GLint mMaxLevel;
 
 	sw::Resource *resource;
 };
@@ -224,16 +226,6 @@ private:
     // the count drops to zero, but will not cause deletion of the Renderbuffer.
     Renderbuffer *mFaceProxies[6];
 	unsigned int mFaceProxyRefs[6];
-};
-
-class TextureExternal : public Texture2D
-{
-public:
-    explicit TextureExternal(GLuint id);
-
-    virtual ~TextureExternal();
-
-    virtual GLenum getTarget() const;
 };
 }
 
