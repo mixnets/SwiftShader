@@ -94,6 +94,8 @@ namespace sw
 		case DRAW_INDEXEDTRIANGLESTRIP32:
 		case DRAW_INDEXEDTRIANGLEFAN32:
 			return fillModeAware ? fillMode == FILL_VERTEX : false;
+        case DRAW_QUADLIST:
+            return false;
 		default:
 			ASSERT(false);
 		}
@@ -136,6 +138,8 @@ namespace sw
 		case DRAW_INDEXEDTRIANGLESTRIP32:
 		case DRAW_INDEXEDTRIANGLEFAN32:
 			return fillModeAware ? fillMode == FILL_WIREFRAME : false;
+        case DRAW_QUADLIST:
+            return false;
 		default:
 			ASSERT(false);
 		}
@@ -178,6 +182,8 @@ namespace sw
 		case DRAW_INDEXEDTRIANGLESTRIP32:
 		case DRAW_INDEXEDTRIANGLEFAN32:
 			return fillModeAware ? fillMode == FILL_SOLID : true;
+        case DRAW_QUADLIST:
+            return true;
 		default:
 			ASSERT(false);
 		}
@@ -288,6 +294,7 @@ namespace sw
 
 		pointSpriteEnable = false;
 		pointScaleEnable = false;
+		lineWidth = 1.0f;
 
 		writeSRGB = false;
 		sampleMask = 0xFFFFFFFF;
@@ -528,11 +535,11 @@ namespace sw
 			switch(texGen[coordinate])
 			{
 			case TEXGEN_PASSTHRU:
-				if(input[TexCoord0 + textureStage[coordinate].texCoordIndex].type == STREAMTYPE_FLOAT)
+				//if(input[TexCoord0 + textureStage[coordinate].texCoordIndex].type == STREAMTYPE_FLOAT)
 				{
 					hasTexture = hasTexture || (component < input[TexCoord0 + textureStage[coordinate].texCoordIndex].count);
 				}
-				else ASSERT(!input[TexCoord0 + textureStage[coordinate].texCoordIndex]);
+				//else ASSERT(!input[TexCoord0 + textureStage[coordinate].texCoordIndex]);   // FIXME
 				break;
 			case TEXGEN_NORMAL:
 				hasTexture = hasTexture || (component <= 2);
@@ -1282,7 +1289,7 @@ namespace sw
 		
 		if(!vertexShader)
 		{
-			vertexSpecular = input[Color1] || (lightingEnable && specularEnable);
+			vertexSpecular = (input[Color1] || lightingEnable) && specularEnable;
 		}
 		else
 		{
@@ -1290,7 +1297,7 @@ namespace sw
 		}
 
 		// Pixel processor requires specular component
-		bool pixelSpecular = specularUsed(component) || fogActive();
+		bool pixelSpecular = specularUsed(component)/* || fogActive()*/;
 
 		return vertexSpecular && pixelSpecular;
 	}
@@ -1361,7 +1368,7 @@ namespace sw
 
 			if(texture)
 			{
-				for(int i = coordinate - 1; i >= 0; i--)
+				for(int i = coordinate; i >= 0; i--)
 				{
 					if(textureStage[i].stageOperation == TextureStage::STAGE_DISABLE)
 					{
