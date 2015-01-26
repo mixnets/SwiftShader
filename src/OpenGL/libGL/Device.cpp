@@ -68,7 +68,6 @@ namespace gl
 		setClipFlags(0);
 		setPointSize(1.0f);
 		setPointSizeMin(0.125f);
-		setPointSpriteEnable(false);
         setPointSizeMax(8192.0f);
 		setColorWriteMask(0, 0x0000000F);
 		setBlendOperation(BLENDOP_ADD);
@@ -141,6 +140,25 @@ namespace gl
 
 			setVertexShaderConstantF(i, zero, 1);
 		}
+
+		setLightingEnable(false);
+
+		setGlobalAmbient(sw::Color<float>(0.2f, 0.2f, 0.2f, 1.0f));
+		setMaterialAmbient(sw::Color<float>(0.2f, 0.2f, 0.2f, 1.0f));
+		setMaterialDiffuse(sw::Color<float>(0.8f, 0.8f, 0.8f, 1.0f));
+		setMaterialSpecular(sw::Color<float>(0.0f, 0.0f, 0.0f, 1.0f));
+		setMaterialEmission(sw::Color<float>(0.0f, 0.0f, 0.0f, 1.0f));
+
+		for(int i = 0; i < 8; i++)
+		{
+			setLightEnable(i, false);
+			setLightAttenuation(i, 1.0f, 0.0f, 0.0f);
+		}
+
+        setDiffuseMaterialSource(sw::MATERIAL_COLOR1);
+        setSpecularMaterialSource(sw::MATERIAL_MATERIAL);
+        setAmbientMaterialSource(sw::MATERIAL_COLOR1);
+        setEmissiveMaterialSource(sw::MATERIAL_MATERIAL);
 	}
 
 	Device::~Device()
@@ -371,6 +389,7 @@ namespace gl
 		case DRAW_TRIANGLELIST:  drawType = sw::DRAW_TRIANGLELIST;  break;
 		case DRAW_TRIANGLESTRIP: drawType = sw::DRAW_TRIANGLESTRIP; break;
 		case DRAW_TRIANGLEFAN:   drawType = sw::DRAW_TRIANGLEFAN;   break;
+        case DRAW_QUADLIST:      drawType = sw::DRAW_QUADLIST;      break;
 		default: UNREACHABLE();
 		}
 
@@ -750,5 +769,22 @@ namespace gl
 	void Device::finish()
 	{
 		synchronize();
+	}
+}
+
+// Exported functions for use by EGL
+//extern "C"
+namespace gl
+{
+	gl::Device *createDevice()
+	{
+		sw::Context *context = new sw::Context();
+
+		if(context)
+		{
+			return new gl::Device(context);
+		}
+
+		return 0;
 	}
 }

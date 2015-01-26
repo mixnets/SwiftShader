@@ -323,11 +323,11 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		}
 		else if(width != depthbuffer->getWidth() || height != depthbuffer->getHeight())
 		{
-			return GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS;
+			return GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT;
 		}
 		else if(samples != depthbuffer->getSamples())
 		{
-			return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE;
+			return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT;
 		}
 	}
 
@@ -375,11 +375,11 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		}
 		else if(width != stencilbuffer->getWidth() || height != stencilbuffer->getHeight())
 		{
-			return GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS;
+			return GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT;
 		}
 		else if(samples != stencilbuffer->getSamples())
 		{
-			return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE;
+			return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT;
 		}
 	}
 
