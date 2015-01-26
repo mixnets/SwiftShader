@@ -12,6 +12,11 @@
 // Context.cpp: Implements the gl::Context class, managing all GL state and performing
 // rendering operations. It is the GLES2 specific implementation of EGLContext.
 
+#define _GDI32_
+#include <windows.h>
+#include <gl\GL.h>
+#include <gl\glext.h>
+
 #include "Context.h"
 
 #include "main.h"
@@ -28,23 +33,20 @@
 #include "Texture.h"
 #include "VertexDataManager.h"
 #include "IndexDataManager.h"
-#include "libEGL/Display.h"
-#include "libEGL/Surface.h"
+#include "Display.h"
+#include "Surface.h"
 #include "Common/Half.hpp"
-
-#include <EGL/eglext.h>
 
 #undef near
 #undef far
 
 namespace gl
 {
-Context::Context(const egl::Config *config, const Context *shareContext) : mConfig(config)
+Context::Context(const egl::Config *config, const Context *shareContext)
+    : modelView(32),
+      projection(2)
 {
-	sw::Context *context = new sw::Context();
-	device = new gl::Device(context);
-
-    mFenceHandleAllocator.setBaseHandle(0);
+    //mFenceHandleAllocator.setBaseHandle(0);
 
     setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -131,8 +133,8 @@ Context::Context(const egl::Config *config, const Context *shareContext) : mConf
     // objects all of whose names are 0.
 
     mTexture2DZero.set(new Texture2D(0));
+    mProxyTexture2DZero.set(new Texture2D(0));
     mTextureCubeMapZero.set(new TextureCubeMap(0));
-    mTextureExternalZero.set(new TextureExternal(0));
 
     mState.activeSampler = 0;
     bindArrayBuffer(0);
@@ -160,6 +162,41 @@ Context::Context(const egl::Config *config, const Context *shareContext) : mConf
     mHasBeenCurrent = false;
 
     markAllStateDirty();
+
+    matrixMode = GL_MODELVIEW;
+
+	listMode = 0;
+	//memset(displayList, 0, sizeof(displayList));
+	listIndex = 0;
+    list = 0;
+	firstFreeIndex = 1;
+
+	clientTexture = GL_TEXTURE0;
+
+    drawing = false;
+    drawMode = 0;   // FIXME
+
+    mState.vertexAttribute[sw::Color0].mCurrentValue[0] = 1.0f;
+    mState.vertexAttribute[sw::Color0].mCurrentValue[1] = 1.0f;
+    mState.vertexAttribute[sw::Color0].mCurrentValue[2] = 1.0f;
+    mState.vertexAttribute[sw::Color0].mCurrentValue[3] = 1.0f;
+    mState.vertexAttribute[sw::Normal].mCurrentValue[0] = 0.0f;
+    mState.vertexAttribute[sw::Normal].mCurrentValue[1] = 0.0f;
+    mState.vertexAttribute[sw::Normal].mCurrentValue[2] = 1.0f;
+    mState.vertexAttribute[sw::Normal].mCurrentValue[3] = 0.0f;
+    mState.vertexAttribute[sw::TexCoord0].mCurrentValue[0] = 0.0f;
+    mState.vertexAttribute[sw::TexCoord0].mCurrentValue[1] = 0.0f;
+    mState.vertexAttribute[sw::TexCoord0].mCurrentValue[2] = 0.0f;
+    mState.vertexAttribute[sw::TexCoord0].mCurrentValue[3] = 1.0f;
+	mState.vertexAttribute[sw::TexCoord1].mCurrentValue[0] = 0.0f;
+    mState.vertexAttribute[sw::TexCoord1].mCurrentValue[1] = 0.0f;
+    mState.vertexAttribute[sw::TexCoord1].mCurrentValue[2] = 0.0f;
+    mState.vertexAttribute[sw::TexCoord1].mCurrentValue[3] = 1.0f;
+
+    for(int i = 0; i < 8; i++)
+    {
+        envEnable[i] = true;
+    }
 }
 
 Context::~Context()
@@ -212,23 +249,22 @@ Context::~Context()
     mState.renderbuffer.set(NULL);
 
     mTexture2DZero.set(NULL);
+	mProxyTexture2DZero.set(NULL);
     mTextureCubeMapZero.set(NULL);
-    mTextureExternalZero.set(NULL);
 
     delete mVertexDataManager;
     delete mIndexDataManager;
 
     mResourceManager->release();
-	delete device;
 }
 
-void Context::makeCurrent(egl::Surface *surface)
+void Context::makeCurrent(egl::Display *display, egl::Surface *surface)
 {
     if(!mHasBeenCurrent)
     {
         mVertexDataManager = new VertexDataManager(this);
         mIndexDataManager = new IndexDataManager();
-
+        
         mState.viewportX = 0;
         mState.viewportY = 0;
         mState.viewportWidth = surface->getWidth();
@@ -263,16 +299,6 @@ void Context::makeCurrent(egl::Surface *surface)
     }
     
     markAllStateDirty();
-}
-
-void Context::destroy()
-{
-	delete this;
-}
-
-int Context::getClientVersion()
-{
-	return 2;
 }
 
 // This function will set all of the state-related dirty flags, so that all state is set during next pre-draw.
@@ -512,6 +538,7 @@ void Context::setPolygonOffsetFill(bool enabled)
 bool Context::isPolygonOffsetFillEnabled() const
 {
     return mState.polygonOffsetFill;
+
 }
 
 void Context::setPolygonOffsetParams(GLfloat factor, GLfloat units)
@@ -591,6 +618,7 @@ bool Context::isDitherEnabled() const
 void Context::setLineWidth(GLfloat width)
 {
     mState.lineWidth = width;
+//	getDevice()->setLineWidth(width);
 }
 
 void Context::setGenerateMipmapHint(GLenum hint)
@@ -675,10 +703,10 @@ GLuint Context::getActiveQuery(GLenum target) const
     
     switch(target)
     {
-    case GL_ANY_SAMPLES_PASSED_EXT:
+    case GL_ANY_SAMPLES_PASSED:
         queryObject = mState.activeQuery[QUERY_ANY_SAMPLES_PASSED].get();
         break;
-    case GL_ANY_SAMPLES_PASSED_CONSERVATIVE_EXT:
+    case GL_ANY_SAMPLES_PASSED_CONSERVATIVE:
         queryObject = mState.activeQuery[QUERY_ANY_SAMPLES_PASSED_CONSERVATIVE].get();
         break;
     default:
@@ -772,7 +800,12 @@ GLuint Context::createRenderbuffer()
 // Returns an unused framebuffer name
 GLuint Context::createFramebuffer()
 {
-    GLuint handle = mFramebufferHandleAllocator.allocate();
+    unsigned int handle = 1;
+
+    while (mFramebufferMap.find(handle) != mFramebufferMap.end())
+    {
+        handle++;
+    }
 
     mFramebufferMap[handle] = NULL;
 
@@ -781,7 +814,12 @@ GLuint Context::createFramebuffer()
 
 GLuint Context::createFence()
 {
-    GLuint handle = mFenceHandleAllocator.allocate();
+    unsigned int handle = 1;
+
+    while (mFenceMap.find(handle) != mFenceMap.end())
+    {
+        handle++;
+    }
 
     mFenceMap[handle] = new Fence;
 
@@ -791,7 +829,12 @@ GLuint Context::createFence()
 // Returns an unused query name
 GLuint Context::createQuery()
 {
-    GLuint handle = mQueryHandleAllocator.allocate();
+    unsigned int handle = 1;
+
+    while (mQueryMap.find(handle) != mQueryMap.end())
+    {
+        handle++;
+    }
 
     mQueryMap[handle] = NULL;
 
@@ -846,7 +889,7 @@ void Context::deleteFramebuffer(GLuint framebuffer)
     {
         detachFramebuffer(framebuffer);
 
-        mFramebufferHandleAllocator.release(framebufferObject->first);
+        //mFramebufferHandleAllocator.release(framebufferObject->first);
         delete framebufferObject->second;
         mFramebufferMap.erase(framebufferObject);
     }
@@ -858,7 +901,7 @@ void Context::deleteFence(GLuint fence)
 
     if(fenceObject != mFenceMap.end())
     {
-        mFenceHandleAllocator.release(fenceObject->first);
+        //mFenceHandleAllocator.release(fenceObject->first);
         delete fenceObject->second;
         mFenceMap.erase(fenceObject);
     }
@@ -870,7 +913,7 @@ void Context::deleteQuery(GLuint query)
     
 	if(queryObject != mQueryMap.end())
     {
-        mQueryHandleAllocator.release(queryObject->first);
+        //mQueryHandleAllocator.release(queryObject->first);
         
 		if(queryObject->second)
         {
@@ -944,13 +987,6 @@ void Context::bindTextureCubeMap(GLuint texture)
     mState.samplerTexture[TEXTURE_CUBE][mState.activeSampler].set(getTexture(texture));
 }
 
-void Context::bindTextureExternal(GLuint texture)
-{
-    mResourceManager->checkTextureAllocation(texture, TEXTURE_EXTERNAL);
-
-    mState.samplerTexture[TEXTURE_EXTERNAL][mState.activeSampler].set(getTexture(texture));
-}
-
 void Context::bindReadFramebuffer(GLuint framebuffer)
 {
     if(!getFramebuffer(framebuffer))
@@ -973,6 +1009,8 @@ void Context::bindDrawFramebuffer(GLuint framebuffer)
 
 void Context::bindRenderbuffer(GLuint renderbuffer)
 {
+    mResourceManager->checkRenderbufferAllocation(renderbuffer);
+
     mState.renderbuffer.set(getRenderbuffer(renderbuffer));
 }
 
@@ -1026,10 +1064,10 @@ void Context::beginQuery(GLenum target, GLuint query)
     QueryType qType;
     switch(target)
     {
-    case GL_ANY_SAMPLES_PASSED_EXT: 
+    case GL_ANY_SAMPLES_PASSED: 
         qType = QUERY_ANY_SAMPLES_PASSED; 
         break;
-    case GL_ANY_SAMPLES_PASSED_CONSERVATIVE_EXT: 
+    case GL_ANY_SAMPLES_PASSED_CONSERVATIVE: 
         qType = QUERY_ANY_SAMPLES_PASSED_CONSERVATIVE; 
         break;
     default: 
@@ -1063,10 +1101,10 @@ void Context::endQuery(GLenum target)
 
     switch(target)
     {
-    case GL_ANY_SAMPLES_PASSED_EXT: 
+    case GL_ANY_SAMPLES_PASSED:
         qType = QUERY_ANY_SAMPLES_PASSED; 
         break;
-    case GL_ANY_SAMPLES_PASSED_CONSERVATIVE_EXT: 
+    case GL_ANY_SAMPLES_PASSED_CONSERVATIVE:
         qType = QUERY_ANY_SAMPLES_PASSED_CONSERVATIVE; 
         break;
     default: 
@@ -1160,19 +1198,24 @@ Program *Context::getCurrentProgram()
     return mResourceManager->getProgram(mState.currentProgram);
 }
 
-Texture2D *Context::getTexture2D()
+Texture2D *Context::getTexture2D(GLenum target)
 {
-    return static_cast<Texture2D*>(getSamplerTexture(mState.activeSampler, TEXTURE_2D));
+    if(target == GL_TEXTURE_2D)
+    {
+        return static_cast<Texture2D*>(getSamplerTexture(mState.activeSampler, TEXTURE_2D));
+    }
+    else if(target == GL_PROXY_TEXTURE_2D)
+    {
+        return static_cast<Texture2D*>(getSamplerTexture(mState.activeSampler, PROXY_TEXTURE_2D));
+    }
+    else UNREACHABLE();
+
+    return 0;
 }
 
 TextureCubeMap *Context::getTextureCubeMap()
 {
     return static_cast<TextureCubeMap*>(getSamplerTexture(mState.activeSampler, TEXTURE_CUBE));
-}
-
-TextureExternal *Context::getTextureExternal()
-{
-    return static_cast<TextureExternal*>(getSamplerTexture(mState.activeSampler, TEXTURE_EXTERNAL));
 }
 
 Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type)
@@ -1183,9 +1226,9 @@ Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type)
     {
         switch (type)
         {
-        case TEXTURE_2D: return mTexture2DZero.get();
-        case TEXTURE_CUBE: return mTextureCubeMapZero.get();
-        case TEXTURE_EXTERNAL: return mTextureExternalZero.get();
+        case TEXTURE_2D:       return mTexture2DZero.get();
+        case PROXY_TEXTURE_2D: return mProxyTexture2DZero.get();
+        case TEXTURE_CUBE:     return mTextureCubeMapZero.get();
         default: UNREACHABLE();
         }
     }
@@ -1262,6 +1305,18 @@ bool Context::getFloatv(GLenum pname, GLfloat *params)
 	  case GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT:
         *params = MAX_TEXTURE_MAX_ANISOTROPY;
 		break;
+	  case GL_MODELVIEW_MATRIX:
+		for(int i = 0; i < 16; i++)
+		{
+			params[i] = modelView.current()[i % 4][i / 4];
+		}
+		break;
+	  case GL_PROJECTION_MATRIX:
+		for(int i = 0; i < 16; i++)
+		{
+			params[i] = projection.current()[i % 4][i / 4];
+		}
+		break;
       default:
         return false;
     }
@@ -1280,25 +1335,27 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
     {
     case GL_MAX_VERTEX_ATTRIBS:               *params = MAX_VERTEX_ATTRIBS;               break;
     case GL_MAX_VERTEX_UNIFORM_VECTORS:       *params = MAX_VERTEX_UNIFORM_VECTORS;       break;
+    case GL_MAX_VERTEX_UNIFORM_COMPONENTS:    *params = MAX_VERTEX_UNIFORM_VECTORS * 4;   break;   // FIXME: Verify
     case GL_MAX_VARYING_VECTORS:              *params = MAX_VARYING_VECTORS;              break;
     case GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: *params = MAX_COMBINED_TEXTURE_IMAGE_UNITS; break;
     case GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS:   *params = MAX_VERTEX_TEXTURE_IMAGE_UNITS;   break;
     case GL_MAX_TEXTURE_IMAGE_UNITS:          *params = MAX_TEXTURE_IMAGE_UNITS;          break;
 	case GL_MAX_FRAGMENT_UNIFORM_VECTORS:     *params = MAX_FRAGMENT_UNIFORM_VECTORS;     break;
+    case GL_MAX_FRAGMENT_UNIFORM_COMPONENTS:  *params = MAX_VERTEX_UNIFORM_VECTORS * 4;   break;   // FIXME: Verify
 	case GL_MAX_RENDERBUFFER_SIZE:            *params = IMPLEMENTATION_MAX_RENDERBUFFER_SIZE; break;
     case GL_NUM_SHADER_BINARY_FORMATS:        *params = 0;                                    break;
     case GL_SHADER_BINARY_FORMATS:      /* no shader binary formats are supported */          break;
     case GL_ARRAY_BUFFER_BINDING:             *params = mState.arrayBuffer.id();              break;
     case GL_ELEMENT_ARRAY_BUFFER_BINDING:     *params = mState.elementArrayBuffer.id();       break;
 //	case GL_FRAMEBUFFER_BINDING:            // now equivalent to GL_DRAW_FRAMEBUFFER_BINDING_ANGLE
-    case GL_DRAW_FRAMEBUFFER_BINDING_ANGLE:   *params = mState.drawFramebuffer;               break;
-    case GL_READ_FRAMEBUFFER_BINDING_ANGLE:   *params = mState.readFramebuffer;               break;
+    case GL_DRAW_FRAMEBUFFER_BINDING:   *params = mState.drawFramebuffer;               break;
+    case GL_READ_FRAMEBUFFER_BINDING:   *params = mState.readFramebuffer;               break;
     case GL_RENDERBUFFER_BINDING:             *params = mState.renderbuffer.id();             break;
     case GL_CURRENT_PROGRAM:                  *params = mState.currentProgram;                break;
     case GL_PACK_ALIGNMENT:                   *params = mState.packAlignment;                 break;
     case GL_UNPACK_ALIGNMENT:                 *params = mState.unpackAlignment;               break;
     case GL_GENERATE_MIPMAP_HINT:             *params = mState.generateMipmapHint;            break;
-    case GL_FRAGMENT_SHADER_DERIVATIVE_HINT_OES: *params = mState.fragmentShaderDerivativeHint; break;
+    case GL_FRAGMENT_SHADER_DERIVATIVE_HINT: *params = mState.fragmentShaderDerivativeHint; break;
     case GL_ACTIVE_TEXTURE:                   *params = (mState.activeSampler + GL_TEXTURE0); break;
     case GL_STENCIL_FUNC:                     *params = mState.stencilFunc;                   break;
     case GL_STENCIL_REF:                      *params = mState.stencilRef;                    break;
@@ -1323,10 +1380,26 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
     case GL_STENCIL_BACK_WRITEMASK:           *params = mState.stencilBackWritemask;          break;
     case GL_STENCIL_CLEAR_VALUE:              *params = mState.stencilClearValue;             break;
     case GL_SUBPIXEL_BITS:                    *params = 4;                                    break;
-	case GL_MAX_TEXTURE_SIZE:                 *params = IMPLEMENTATION_MAX_TEXTURE_SIZE;          break;
+	case GL_MAX_TEXTURE_SIZE:                 *params = IMPLEMENTATION_MAX_TEXTURE_SIZE;  break;
 	case GL_MAX_CUBE_MAP_TEXTURE_SIZE:        *params = IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE; break;
-    case GL_NUM_COMPRESSED_TEXTURE_FORMATS:   *params = NUM_COMPRESSED_TEXTURE_FORMATS;           break;
-	case GL_MAX_SAMPLES_ANGLE:                *params = IMPLEMENTATION_MAX_SAMPLES;               break;
+    case GL_MAX_ARRAY_TEXTURE_LAYERS:         *params = 0;                                    break;
+    case GL_NUM_COMPRESSED_TEXTURE_FORMATS:   
+        {
+            if(S3TC_SUPPORT)
+            {
+                // GL_COMPRESSED_RGB_S3TC_DXT1_EXT
+                // GL_COMPRESSED_RGBA_S3TC_DXT1_EXT
+				// GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE
+				// GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE
+                *params = 4;
+            }
+            else
+            {
+                *params = 0;
+            }
+        }
+        break;
+	case GL_MAX_SAMPLES:                *params = IMPLEMENTATION_MAX_SAMPLES; break;
     case GL_SAMPLE_BUFFERS:                   
     case GL_SAMPLES:
         {
@@ -1369,9 +1442,12 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
         break;
     case GL_COMPRESSED_TEXTURE_FORMATS:
         {
-			for(int i = 0; i < NUM_COMPRESSED_TEXTURE_FORMATS; i++)
+            if(S3TC_SUPPORT)
             {
-                params[i] = compressedTextureFormats[i];
+                params[0] = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+                params[1] = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+//				params[2] = GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE;
+//                params[3] = GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE;
             }
         }
         break;
@@ -1465,17 +1541,14 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
             *params = mState.samplerTexture[TEXTURE_CUBE][mState.activeSampler].id();
         }
         break;
-    case GL_TEXTURE_BINDING_EXTERNAL_OES:
-        {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
-            {
-                error(GL_INVALID_OPERATION);
-                return false;
-            }
-
-            *params = mState.samplerTexture[TEXTURE_EXTERNAL][mState.activeSampler].id();
-        }
-        break;
+//    case GL_NUM_EXTENSIONS:
+//        return gl_num_extensions;
+//    case GL_NUM_SHADING_LANGUAGE_VERSIONS:
+//        return 6;
+//    case GL_CONTEXT_PROFILE_MASK:
+//        return /*GL_CONTEXT_COMPATIBILITY_PROFILE_BIT | */GL_CONTEXT_CORE_PROFILE_BIT;
+	case GL_MAX_TEXTURE_UNITS:
+		return MAX_TEXTURE_IMAGE_UNITS;
     default:
         return false;
     }
@@ -1497,7 +1570,7 @@ bool Context::getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *nu
       case GL_COMPRESSED_TEXTURE_FORMATS:
 		{
             *type = GL_INT;
-			*numParams = NUM_COMPRESSED_TEXTURE_FORMATS;
+            *numParams = S3TC_SUPPORT ? 4 : 0;
         }
 		break;
       case GL_SHADER_BINARY_FORMATS:
@@ -1523,7 +1596,7 @@ bool Context::getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *nu
       case GL_PACK_ALIGNMENT:
       case GL_UNPACK_ALIGNMENT:
       case GL_GENERATE_MIPMAP_HINT:
-      case GL_FRAGMENT_SHADER_DERIVATIVE_HINT_OES:
+      case GL_FRAGMENT_SHADER_DERIVATIVE_HINT:
       case GL_RED_BITS:
       case GL_GREEN_BITS:
       case GL_BLUE_BITS:
@@ -1565,13 +1638,15 @@ bool Context::getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *nu
       case GL_IMPLEMENTATION_COLOR_READ_FORMAT:
       case GL_TEXTURE_BINDING_2D:
       case GL_TEXTURE_BINDING_CUBE_MAP:
-      case GL_TEXTURE_BINDING_EXTERNAL_OES:
+      case GL_MAX_VERTEX_UNIFORM_COMPONENTS:
+      case GL_MAX_FRAGMENT_UNIFORM_COMPONENTS:
+      case GL_MAX_ARRAY_TEXTURE_LAYERS:
         {
             *type = GL_INT;
             *numParams = 1;
         }
         break;
-      case GL_MAX_SAMPLES_ANGLE:
+      case GL_MAX_SAMPLES:
         {
             *type = GL_INT;
             *numParams = 1;
@@ -1652,6 +1727,7 @@ bool Context::getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *nu
 // Applies the render target surface, depth stencil surface, viewport rectangle and scissor rectangle
 bool Context::applyRenderTarget()
 {
+    Device *device = getDevice();
     Framebuffer *framebuffer = getDrawFramebuffer();
 	int width, height, samples;
 
@@ -1710,6 +1786,7 @@ bool Context::applyRenderTarget()
 // Applies the fixed-function state (culling, depth test, alpha blending, stenciling, etc)
 void Context::applyState(GLenum drawMode)
 {
+    Device *device = getDevice();
     Framebuffer *framebuffer = getDrawFramebuffer();
 
     if(mState.cullFace)
@@ -1929,13 +2006,14 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count)
         return err;
     }
 
+    Device *device = getDevice();
 	Program *program = getCurrentProgram();
 
 	device->resetInputStreams(false);
 
     for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
 	{
-		if(program->getAttributeStream(i) == -1)
+		if(program && program->getAttributeStream(i) == -1)
 		{
 			continue;
 		}
@@ -1953,7 +2031,7 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count)
 		attribute.count = attributes[i].count;
 		attribute.normalized = attributes[i].normalized;
 
-		int stream = program->getAttributeStream(i);
+		int stream = program ? program->getAttributeStream(i) : i;
 		device->setInputStream(stream, attribute);
 	}
 
@@ -1963,6 +2041,7 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count)
 // Applies the indices and element array bindings
 GLenum Context::applyIndexBuffer(const void *indices, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo)
 {
+    Device *device = getDevice();
     GLenum err = mIndexDataManager->prepareIndexData(type, count, mState.elementArrayBuffer.get(), indices, indexInfo);
 
     if(err == GL_NO_ERROR)
@@ -1976,7 +2055,14 @@ GLenum Context::applyIndexBuffer(const void *indices, GLsizei count, GLenum mode
 // Applies the shaders and shader constants
 void Context::applyShaders()
 {
+    Device *device = getDevice();
     Program *programObject = getCurrentProgram();
+    if(!programObject)
+    {
+        device->setVertexShader(0);
+        device->setPixelShader(0);
+        return;
+    }
     sw::VertexShader *vertexShader = programObject->getVertexShader();
 	sw::PixelShader *pixelShader = programObject->getPixelShader();
 
@@ -1995,26 +2081,27 @@ void Context::applyShaders()
 void Context::applyTextures()
 {
     applyTextures(sw::SAMPLER_PIXEL);
-	applyTextures(sw::SAMPLER_VERTEX);
+	//applyTextures(sw::SAMPLER_VERTEX);
 }
 
 void Context::applyTextures(sw::SamplerType samplerType)
 {
+    Device *device = getDevice();
     Program *programObject = getCurrentProgram();
 
     int samplerCount = (samplerType == sw::SAMPLER_PIXEL) ? MAX_TEXTURE_IMAGE_UNITS : MAX_VERTEX_TEXTURE_IMAGE_UNITS;   // Range of samplers of given sampler type
 
     for(int samplerIndex = 0; samplerIndex < samplerCount; samplerIndex++)
     {
-        int textureUnit = programObject->getSamplerMapping(samplerType, samplerIndex);   // OpenGL texture image unit index
+        int textureUnit = programObject ? programObject->getSamplerMapping(samplerType, samplerIndex) : samplerIndex;   // OpenGL texture image unit index
 
         if(textureUnit != -1)
         {
-            TextureType textureType = programObject->getSamplerTextureType(samplerType, samplerIndex);
+            TextureType textureType = programObject ? programObject->getSamplerTextureType(samplerType, samplerIndex) : TEXTURE_2D;
 
             Texture *texture = getSamplerTexture(textureUnit, textureType);
 
-			if(texture->isSamplerComplete())
+			if(envEnable[samplerIndex] && texture->isSamplerComplete())
             {
                 GLenum wrapS = texture->getWrapS();
                 GLenum wrapT = texture->getWrapT();
@@ -2033,13 +2120,35 @@ void Context::applyTextures(sw::SamplerType samplerType)
 				device->setTextureFilter(samplerType, samplerIndex, minFilter);
 			//	device->setTextureFilter(samplerType, samplerIndex, es2sw::ConvertMagFilter(magFilter));
 				device->setMipmapFilter(samplerType, samplerIndex, mipFilter);
-				device->setMaxAnisotropy(samplerType, samplerIndex, maxAnisotropy);                
+				device->setMaxAnisotropy(samplerType, samplerIndex, (int)maxAnisotropy);
 
 				applyTexture(samplerType, samplerIndex, texture);
+
+                device->setStageOperation(samplerIndex, sw::TextureStage::STAGE_MODULATE);
+                device->setFirstArgument(samplerIndex, sw::TextureStage::SOURCE_TEXTURE);
+                device->setSecondArgument(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
+		        //device->setThirdArgument(samplerIndex, sw::TextureStage::SOURCE_CONSTANT);
+
+                device->setStageOperationAlpha(samplerIndex, sw::TextureStage::STAGE_MODULATE);
+                device->setFirstArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_TEXTURE);
+                device->setSecondArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
+		        //device->setThirdArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CONSTANT);
+
+		        //device->setConstantColor(0, sw::Color<float>(0.0f, 0.0f, 0.0f, 0.0f));
             }
             else
             {
                 applyTexture(samplerType, samplerIndex, 0);
+
+                device->setStageOperation(samplerIndex, sw::TextureStage::STAGE_SELECTARG1);
+                device->setFirstArgument(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
+                device->setSecondArgument(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
+		        //device->setThirdArgument(samplerIndex, sw::TextureStage::SOURCE_CONSTANT);
+
+                device->setStageOperationAlpha(samplerIndex, sw::TextureStage::STAGE_SELECTARG1);
+                device->setFirstArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
+                device->setSecondArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
+		        //device->setThirdArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CONSTANT);
             }
         }
         else
@@ -2051,17 +2160,18 @@ void Context::applyTextures(sw::SamplerType samplerType)
 
 void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture)
 {
+	Device *device = getDevice();
 	Program *program = getCurrentProgram();
 	int sampler = (type == sw::SAMPLER_PIXEL) ? index : 16 + index;
 	bool textureUsed = false;
 
 	if(type == sw::SAMPLER_PIXEL)
 	{
-		textureUsed = program->getPixelShader()->usesSampler(index);
+		textureUsed = program ? program->getPixelShader()->usesSampler(index) : true;
 	}
 	else if(type == sw::SAMPLER_VERTEX)
 	{
-		textureUsed = program->getVertexShader()->usesSampler(index);
+		textureUsed = program ? program->getVertexShader()->usesSampler(index) : false;
 	}
 	else UNREACHABLE();
 
@@ -2078,7 +2188,7 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 	{
 		int levelCount = baseTexture->getLevelCount();
 
-		if(baseTexture->getTarget() == GL_TEXTURE_2D || baseTexture->getTarget() == GL_TEXTURE_EXTERNAL_OES)
+		if(baseTexture->getTarget() == GL_TEXTURE_2D)
 		{
 			Texture2D *texture = static_cast<Texture2D*>(baseTexture);
 
@@ -2288,34 +2398,34 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 						dest[4 * i + j * outputPitch + 2] = (unsigned char)(255 * r + 0.5f);
 						dest[4 * i + j * outputPitch + 3] = (unsigned char)(255 * a + 0.5f);
 						break;
-					case GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT:
-						// According to the desktop GL spec in the "Transfer of Pixel Rectangles" section
-						// this type is packed as follows:
-						//   15   14   13   12   11   10    9    8    7    6    5    4    3    2    1    0
-						//  --------------------------------------------------------------------------------
-						// |       4th         |        3rd         |        2nd        |   1st component   |
-						//  --------------------------------------------------------------------------------
-						// in the case of BGRA_EXT, B is the first component, G the second, and so forth.
-						dest16[i + j * outputPitch / sizeof(unsigned short)] =
-							((unsigned short)(15 * a + 0.5f) << 12)|
-							((unsigned short)(15 * r + 0.5f) << 8) |
-							((unsigned short)(15 * g + 0.5f) << 4) |
-							((unsigned short)(15 * b + 0.5f) << 0);
-						break;
-					case GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT:
-						// According to the desktop GL spec in the "Transfer of Pixel Rectangles" section
-						// this type is packed as follows:
-						//   15   14   13   12   11   10    9    8    7    6    5    4    3    2    1    0
-						//  --------------------------------------------------------------------------------
-						// | 4th |          3rd           |           2nd          |      1st component     |
-						//  --------------------------------------------------------------------------------
-						// in the case of BGRA_EXT, B is the first component, G the second, and so forth.
-						dest16[i + j * outputPitch / sizeof(unsigned short)] =
-							((unsigned short)(     a + 0.5f) << 15) |
-							((unsigned short)(31 * r + 0.5f) << 10) |
-							((unsigned short)(31 * g + 0.5f) << 5) |
-							((unsigned short)(31 * b + 0.5f) << 0);
-						break;
+					//case GL_UNSIGNED_SHORT_4_4_4_4_REV_ARB:
+					//	// According to the desktop GL spec in the "Transfer of Pixel Rectangles" section
+					//	// this type is packed as follows:
+					//	//   15   14   13   12   11   10    9    8    7    6    5    4    3    2    1    0
+					//	//  --------------------------------------------------------------------------------
+					//	// |       4th         |        3rd         |        2nd        |   1st component   |
+					//	//  --------------------------------------------------------------------------------
+					//	// in the case of BGRA_EXT, B is the first component, G the second, and so forth.
+					//	dest16[i + j * outputPitch / sizeof(unsigned short)] =
+					//		((unsigned short)(15 * a + 0.5f) << 12)|
+					//		((unsigned short)(15 * r + 0.5f) << 8) |
+					//		((unsigned short)(15 * g + 0.5f) << 4) |
+					//		((unsigned short)(15 * b + 0.5f) << 0);
+					//	break;
+					//case GL_UNSIGNED_SHORT_1_5_5_5_REV:
+					//	// According to the desktop GL spec in the "Transfer of Pixel Rectangles" section
+					//	// this type is packed as follows:
+					//	//   15   14   13   12   11   10    9    8    7    6    5    4    3    2    1    0
+					//	//  --------------------------------------------------------------------------------
+					//	// | 4th |          3rd           |           2nd          |      1st component     |
+					//	//  --------------------------------------------------------------------------------
+					//	// in the case of BGRA_EXT, B is the first component, G the second, and so forth.
+					//	dest16[i + j * outputPitch / sizeof(unsigned short)] =
+					//		((unsigned short)(     a + 0.5f) << 15) |
+					//		((unsigned short)(31 * r + 0.5f) << 10) |
+					//		((unsigned short)(31 * g + 0.5f) << 5) |
+					//		((unsigned short)(31 * b + 0.5f) << 0);
+					//	break;
 					default: UNREACHABLE();
 					}
 					break;
@@ -2354,7 +2464,9 @@ void Context::clear(GLbitfield mask)
     {
         return;
     }
-	
+
+	Device *device = getDevice();
+
 	unsigned int color = (unorm<8>(mState.colorClearValue.alpha) << 24) |
                          (unorm<8>(mState.colorClearValue.red) << 16) |
                          (unorm<8>(mState.colorClearValue.green) << 8) | 
@@ -2394,9 +2506,17 @@ void Context::clear(GLbitfield mask)
 
 void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
 {
+    Device *device = getDevice();
+
     if(!mState.currentProgram)
     {
-        return error(GL_INVALID_OPERATION);
+        //return;// error(GL_INVALID_OPERATION);
+        device->setProjectionMatrix(projection.current());
+        device->setViewMatrix(modelView.current());
+		device->setTextureMatrix(0, texture[0].current());
+		device->setTextureMatrix(1, texture[1].current());
+		device->setTextureTransform(0, texture[0].isIdentity() ? 0 : 4, false);
+		device->setTextureTransform(1, texture[1].isIdentity() ? 0 : 4, false);
     }
 
     PrimitiveType primitiveType;
@@ -2426,7 +2546,7 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
     applyShaders();
     applyTextures();
 
-    if(!getCurrentProgram()->validateSamplers(false))
+    if(getCurrentProgram() && !getCurrentProgram()->validateSamplers(false))
     {
         return error(GL_INVALID_OPERATION);
     }
@@ -2449,6 +2569,7 @@ void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *
         return error(GL_INVALID_OPERATION);
     }
 
+    Device *device = getDevice();
     PrimitiveType primitiveType;
     int primitiveCount;
 
@@ -2497,6 +2618,8 @@ void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *
 
 void Context::finish()
 {
+	Device *device = getDevice();
+
 	device->finish();
 }
 
@@ -2719,14 +2842,14 @@ bool Context::isTriangleMode(GLenum drawMode)
     return false;
 }
 
-void Context::setVertexAttrib(GLuint index, const GLfloat *values)
+void Context::setVertexAttrib(GLuint index, float x, float y, float z, float w)
 {
     ASSERT(index < MAX_VERTEX_ATTRIBS);
 
-    mState.vertexAttribute[index].mCurrentValue[0] = values[0];
-    mState.vertexAttribute[index].mCurrentValue[1] = values[1];
-    mState.vertexAttribute[index].mCurrentValue[2] = values[2];
-    mState.vertexAttribute[index].mCurrentValue[3] = values[3];
+    mState.vertexAttribute[index].mCurrentValue[0] = x;
+    mState.vertexAttribute[index].mCurrentValue[1] = y;
+    mState.vertexAttribute[index].mCurrentValue[2] = z;
+    mState.vertexAttribute[index].mCurrentValue[3] = w;
 
     mVertexDataManager->dirtyCurrentValue(index);
 }
@@ -2735,6 +2858,8 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
                               GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1,
                               GLbitfield mask)
 {
+    Device *device = getDevice();
+
     Framebuffer *readFramebuffer = getReadFramebuffer();
     Framebuffer *drawFramebuffer = getDrawFramebuffer();
 
@@ -3000,131 +3125,623 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
     }
 }
 
-void Context::bindTexImage(egl::Surface *surface)
+void Context::setMatrixMode(GLenum mode)
 {
-	gl::Texture2D *textureObject = getTexture2D();
+    matrixMode = mode;
+}
 
-    if(textureObject)
-    {
-		textureObject->bindTexImage(surface);
+sw::MatrixStack &Context::currentMatrixStack()
+{
+	switch(matrixMode)
+	{
+	case GL_MODELVIEW:  return modelView;                     break;
+	case GL_PROJECTION: return projection;                    break;
+	case GL_TEXTURE:    return texture[mState.activeSampler]; break;
+	default:		    UNREACHABLE();
 	}
 }
 
-EGLenum Context::validateSharedImage(EGLenum target, GLuint name, GLuint textureLevel)
+void Context::loadIdentity()
 {
-    GLenum textureTarget = GL_NONE;
-
-    switch(target)
+    if(drawing)
     {
-    case EGL_GL_TEXTURE_2D_KHR:
-        textureTarget = GL_TEXTURE_2D;
-        break;
-    case EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_X_KHR:
-    case EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_X_KHR:
-    case EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_Y_KHR:
-    case EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_KHR:
-    case EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_Z_KHR:
-    case EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_KHR:
-        textureTarget = GL_TEXTURE_CUBE_MAP;
-        break;
-    case EGL_GL_RENDERBUFFER_KHR:
-        break;
-    default:
-        return EGL_BAD_PARAMETER;
-    }
-	
-    if(textureLevel >= gl::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
-    {
-        return EGL_BAD_MATCH;
+        return error(GL_INVALID_OPERATION);
     }
 
-    if(textureTarget != GL_NONE)
-    {
-        gl::Texture *texture = getTexture(name);
-
-        if(!texture || texture->getTarget() != textureTarget)
-        {
-            return EGL_BAD_PARAMETER;
-        }
-
-        if(texture->isShared(textureTarget, textureLevel))   // Bound to an EGLSurface or already an EGLImage sibling
-        {
-            return EGL_BAD_ACCESS;
-        }
-
-        if(textureLevel != 0 && !texture->isSamplerComplete())
-        {
-            return EGL_BAD_PARAMETER;
-        }
-
-        if(textureLevel == 0 && !(texture->isSamplerComplete() && texture->getLevelCount() == 1))
-        {
-            return EGL_BAD_PARAMETER;
-        }
-    }
-    else if(target == EGL_GL_RENDERBUFFER_KHR)
-    {
-        gl::Renderbuffer *renderbuffer = getRenderbuffer(name);
-
-        if(!renderbuffer)
-        {
-            return EGL_BAD_PARAMETER;
-        }
-
-        if(renderbuffer->isShared())   // Already an EGLImage sibling
-        {
-            return EGL_BAD_ACCESS;
-        }
-    }
-    else UNREACHABLE();
-
-	return EGL_SUCCESS;
+	currentMatrixStack().identity();
 }
 
-egl::Image *Context::createSharedImage(EGLenum target, GLuint name, GLuint textureLevel)
+void Context::pushMatrix()
 {
-	GLenum textureTarget = GL_NONE;
+    //if(drawing)
+    //{
+    //    return error(GL_INVALID_OPERATION);
+    //}
 
-    switch(target)
+	if(!currentMatrixStack().push())
+	{
+		return error(GL_STACK_OVERFLOW);
+	}
+}
+
+void Context::popMatrix()
+{
+    //if(drawing)
+    //{
+    //    return error(GL_INVALID_OPERATION);
+    //}
+
+    if(!currentMatrixStack().pop())
+	{
+		return error(GL_STACK_OVERFLOW);
+	}
+}
+
+void Context::rotate(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
+{
+    if(drawing)
     {
-    case EGL_GL_TEXTURE_2D_KHR:                  textureTarget = GL_TEXTURE_2D;                  break;
-    case EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_X_KHR: textureTarget = GL_TEXTURE_CUBE_MAP_POSITIVE_X; break;
-    case EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_X_KHR: textureTarget = GL_TEXTURE_CUBE_MAP_NEGATIVE_X; break;
-    case EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_Y_KHR: textureTarget = GL_TEXTURE_CUBE_MAP_POSITIVE_Y; break;
-    case EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_KHR: textureTarget = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y; break;
-    case EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_Z_KHR: textureTarget = GL_TEXTURE_CUBE_MAP_POSITIVE_Z; break;
-    case EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_KHR: textureTarget = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; break;
+        return error(GL_INVALID_OPERATION);
     }
 
-    if(textureTarget != GL_NONE)
-    {
-        gl::Texture *texture = getTexture(name);
+    currentMatrixStack().rotate(angle, x, y, z);
+}
 
-        return texture->createSharedImage(textureTarget, textureLevel);
-    }
-    else if(target == EGL_GL_RENDERBUFFER_KHR)
+void Context::translate(GLfloat x, GLfloat y, GLfloat z)
+{
+    if(drawing)
     {
-        gl::Renderbuffer *renderbuffer = getRenderbuffer(name);
-
-        return renderbuffer->createSharedImage();
+        return error(GL_INVALID_OPERATION);
     }
-    else UNREACHABLE();
+
+    currentMatrixStack().translate(x, y, z);  
+}
+
+void Context::scale(GLfloat x, GLfloat y, GLfloat z)
+{
+    if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+    currentMatrixStack().scale(x, y, z);
+}
+
+void Context::multiply(const GLfloat *m)
+{
+    if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+    currentMatrixStack().multiply(m);
+}
+
+void Context::ortho(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar)
+{
+    if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+	currentMatrixStack().ortho(left, right, bottom, top, zNear, zFar);
+}
+
+void Context::setLighting(bool enable)
+{
+    if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+    Device *device = getDevice();
+    device->setLightingEnable(enable);
+}
+
+void Context::setFog(bool enable)
+{
+    if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+    Device *device = getDevice();
+    device->setFogEnable(enable);
+}
+
+void Context::setAlphaTest(bool enable)
+{
+    if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+    Device *device = getDevice();
+	device->setAlphaTestEnable(enable);
+}
+
+void Context::alphaFunc(GLenum func, GLclampf ref)
+{
+	if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+	Device *device = getDevice();
+	
+	switch(func)
+	{
+	case GL_NEVER:    device->setAlphaCompare(sw::ALPHA_NEVER);        break;
+	case GL_LESS:     device->setAlphaCompare(sw::ALPHA_LESS);         break;
+	case GL_EQUAL:    device->setAlphaCompare(sw::ALPHA_EQUAL);        break;
+	case GL_LEQUAL:   device->setAlphaCompare(sw::ALPHA_LESSEQUAL);    break;
+	case GL_GREATER:  device->setAlphaCompare(sw::ALPHA_GREATER);      break;
+	case GL_NOTEQUAL: device->setAlphaCompare(sw::ALPHA_NOTEQUAL);     break;
+	case GL_GEQUAL:   device->setAlphaCompare(sw::ALPHA_GREATEREQUAL); break;
+	case GL_ALWAYS:   device->setAlphaCompare(sw::ALPHA_ALWAYS);       break;
+	default: UNREACHABLE();
+	}
+
+	device->setAlphaReference(gl::clamp01(ref));
+}
+
+void Context::setTexture2D(bool enable)
+{
+    if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+    envEnable[mState.activeSampler] = enable;
+}
+
+void Context::setShadeModel(GLenum mode)
+{
+    //if(drawing)
+    //{
+    //    return error(GL_INVALID_OPERATION);
+    //}
+
+    Device *device = getDevice();
+
+    switch(mode)
+	{
+	case GL_FLAT:   device->setShadingMode(sw::SHADING_FLAT);    break;
+	case GL_SMOOTH: device->setShadingMode(sw::SHADING_GOURAUD); break;
+	default: return error(GL_INVALID_ENUM);
+	}
+}
+
+void Context::setLight(int index, bool enable)
+{
+    Device *device = getDevice();
+
+    device->setLightEnable(index, enable);
+}
+
+void Context::setNormalizeNormals(bool enable)
+{
+	Device *device = getDevice();
+	device->setNormalizeNormals(enable);
+}
+
+GLuint Context::genLists(GLsizei range)
+{
+	if(drawing)
+    {
+        return error(GL_INVALID_OPERATION, 0);
+    }
+
+	int firstIndex = std::max(1u, firstFreeIndex);
+	for(; true; firstIndex++)
+	{
+		int empty = 0;
+		for(; empty < range; empty++)
+		{
+			if(displayList[firstIndex + empty] != 0)
+			{
+				break;
+			}
+		}
+
+		if(empty == range)
+		{
+			for(int i = firstIndex; i < firstIndex + range; i++)
+			{
+				displayList[i] = new DisplayList();
+			}
+
+			if(firstIndex == firstFreeIndex)
+			{
+				firstFreeIndex = firstIndex + range;
+			}
+
+			return firstIndex;
+		}
+	}
 
 	return 0;
 }
 
-Device *Context::getDevice()
+void Context::newList(GLuint list, GLenum mode)
 {
-	return device;
+	if(drawing || listIndex != 0)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+    ASSERT(!this->list);
+    this->list = new DisplayList();
+
+	listIndex = list;
+	listMode = mode;
+}
+
+void Context::endList()
+{
+    if(drawing || listIndex == 0)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+    ASSERT(list);
+	delete displayList[listIndex];
+    displayList[listIndex] = list;
+    list = 0;
+
+	listIndex = 0;
+	listMode = 0;
+}
+
+void Context::callList(GLuint list)
+{
+	ASSERT(displayList[list]);
+	if(displayList[list])
+	{
+		displayList[list]->call();
+	}
+}
+
+void Context::deleteList(GLuint list)
+{
+	delete displayList[list];
+	displayList[list] = 0;
+	displayList.erase(list);
+	firstFreeIndex = std::min(firstFreeIndex , list);
+}
+
+void Context::listCommand(Command *command)
+{
+    ASSERT(list);
+	list->list.push_back(command);
+
+	if(listMode == GL_COMPILE_AND_EXECUTE)
+	{
+		listMode = 0;
+		command->call();
+		listMode = GL_COMPILE_AND_EXECUTE;
+	}
+}
+
+void GL_APIENTRY glVertexAttribArray(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* ptr)
+{
+    TRACE("(GLuint index = %d, GLint size = %d, GLenum type = 0x%X, "
+          "GLboolean normalized = %d, GLsizei stride = %d, const GLvoid* ptr = 0x%0.8p)",
+          index, size, type, normalized, stride, ptr);
+
+	gl::Context *context = gl::getContext();
+
+    if(context)
+    {
+        context->setVertexAttribState(index, context->getArrayBuffer(), size, type, (normalized == GL_TRUE), stride, ptr);
+		context->setEnableVertexAttribArray(index, ptr != 0);
+    }
+}
+
+void Context::captureAttribs()
+{
+	memcpy(clientAttribute, mState.vertexAttribute, sizeof(mState.vertexAttribute));
+}
+
+void Context::captureDrawArrays(GLenum mode, GLint first, GLsizei count)
+{
+	ASSERT(first == 0);   // FIXME: UNIMPLEMENTED!
+
+	for(GLuint i = 0; i < MAX_VERTEX_ATTRIBS; i++)
+	{
+		GLint size = mState.vertexAttribute[i].mSize;
+		GLenum type = mState.vertexAttribute[i].mType;
+		GLboolean normalized = mState.vertexAttribute[i].mNormalized;
+		GLsizei stride = mState.vertexAttribute[i].mStride;
+		const GLvoid *pointer = mState.vertexAttribute[i].mPointer;
+
+		size_t length = count * mState.vertexAttribute[i].stride();
+
+		if(mState.vertexAttribute[i].mArrayEnabled)
+		{
+			ASSERT(pointer);   // FIXME: Add to condition?
+			const int padding = 1024;   // For SIMD processing of vertices   // FIXME: Still necessary?
+			void *buffer = new unsigned char[length + padding];
+			memcpy(buffer, pointer, length);
+
+			listCommand(gl::newCommand(glVertexAttribArray, i, size, type, normalized, stride, (const void*)buffer));
+		}
+		else
+		{
+			listCommand(gl::newCommand(glVertexAttribArray, i, size, type, normalized, stride, (const void*)0));
+		}
+	}
+}
+
+void Context::restoreAttribs()
+{
+	memcpy(mState.vertexAttribute, clientAttribute, sizeof(mState.vertexAttribute));
+}
+
+void Context::clientActiveTexture(GLenum texture)
+{
+	clientTexture = texture;
+}
+
+GLenum Context::getClientActiveTexture() const
+{
+	return clientTexture;
+}
+
+unsigned int Context::getActiveTexture() const
+{
+	return mState.activeSampler;
+}
+
+void Context::begin(GLenum mode)
+{
+    if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+    drawing = true;
+    drawMode = mode;
+
+    vertex.clear();
+}
+
+void Context::position(GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+{
+    sw::InVertex v;
+
+	v.P.x = x;
+	v.P.y = y;
+	v.P.z = z;
+	v.P.w = w;
+    v.C.r = mState.vertexAttribute[sw::Color0].mCurrentValue[0];
+	v.C.g = mState.vertexAttribute[sw::Color0].mCurrentValue[1];
+	v.C.b = mState.vertexAttribute[sw::Color0].mCurrentValue[2];
+	v.C.a = mState.vertexAttribute[sw::Color0].mCurrentValue[3];
+	v.N.x = mState.vertexAttribute[sw::Normal].mCurrentValue[0];
+	v.N.y = mState.vertexAttribute[sw::Normal].mCurrentValue[1];
+	v.N.z = mState.vertexAttribute[sw::Normal].mCurrentValue[2];
+	v.N.w = mState.vertexAttribute[sw::Normal].mCurrentValue[3];
+    v.T0.x = mState.vertexAttribute[sw::TexCoord0].mCurrentValue[0];
+	v.T0.y = mState.vertexAttribute[sw::TexCoord0].mCurrentValue[1];
+    v.T0.z = mState.vertexAttribute[sw::TexCoord0].mCurrentValue[2];
+	v.T0.w = mState.vertexAttribute[sw::TexCoord0].mCurrentValue[3];
+	v.T1.x = mState.vertexAttribute[sw::TexCoord1].mCurrentValue[0];
+	v.T1.y = mState.vertexAttribute[sw::TexCoord1].mCurrentValue[1];
+    v.T1.z = mState.vertexAttribute[sw::TexCoord1].mCurrentValue[2];
+	v.T1.w = mState.vertexAttribute[sw::TexCoord1].mCurrentValue[3];
+
+	vertex.push_back(v);
+}
+/*
+void Context::texCoord(GLfloat s, GLfloat t, GLfloat r, GLfloat q)
+{
+    currentTexCoord.s = s;
+    currentTexCoord.t = t;
+    currentTexCoord.r = r;
+    currentTexCoord.q = q;
+}
+
+void Context::color(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+{
+    currentColor.r = r;
+    currentColor.g = g;
+    currentColor.b = g;
+    currentColor.a = a;
+}
+
+void Context::normal(GLfloat nx, GLfloat ny, GLfloat nz)
+{
+	currentNormal.x = nx;
+	currentNormal.y = ny;
+	currentNormal.z = nz;
+}
+*/
+void Context::end()
+{
+    if(!drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+    Device *device = getDevice();
+
+	device->setProjectionMatrix(projection.current());
+    device->setViewMatrix(modelView.current());
+    device->setTextureMatrix(0, texture[0].current());
+	device->setTextureMatrix(1, texture[1].current());
+	device->setTextureTransform(0, texture[0].isIdentity() ? 0 : 4, false);
+	device->setTextureTransform(1, texture[1].isIdentity() ? 0 : 4, false);
+
+	captureAttribs();
+
+    /*sw::Stream position;
+    sw::Stream normal;
+    sw::Stream color0;
+    sw::Stream texCoord0;
+    sw::Stream texCoord1;
+
+    position.define(&vertex[0].v[sw::Position], sw::STREAMTYPE_FLOAT, 4);
+    position.stride = sizeof(sw::Vertex);
+    normal.define(&vertex[0].v[sw::Normal], sw::STREAMTYPE_FLOAT, 4);
+    normal.stride = sizeof(sw::Vertex);
+    color0.define(&vertex[0].v[sw::Color0], sw::STREAMTYPE_FLOAT, 4);
+    color0.stride = sizeof(sw::Vertex);
+    texCoord0.define(&vertex[0].v[sw::TexCoord0], sw::STREAMTYPE_FLOAT, 4);
+    texCoord0.stride = sizeof(sw::Vertex);
+    texCoord1.define(&vertex[0].v[sw::TexCoord1], sw::STREAMTYPE_FLOAT, 4);
+    texCoord1.stride = sizeof(sw::Vertex);
+
+    device->setInputStream(sw::Position, position);
+    device->setInputStream(sw::Normal, normal);
+    device->setInputStream(sw::Color0, color0);
+    device->setInputStream(sw::TexCoord0, texCoord0);
+    device->setInputStream(sw::TexCoord1, texCoord1);*/
+
+	for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
+	{
+		mState.vertexAttribute[i].mArrayEnabled = false;
+	}
+
+	setVertexAttribState(sw::Position, 0, 4, GL_FLOAT, false, sizeof(sw::InVertex), &vertex[0].P);
+	setVertexAttribState(sw::Normal, 0, 4, GL_FLOAT, false, sizeof(sw::InVertex), &vertex[0].N);
+	setVertexAttribState(sw::Color0, 0, 4, GL_FLOAT, false, sizeof(sw::InVertex), &vertex[0].C);
+	setVertexAttribState(sw::TexCoord0, 0, 2, GL_FLOAT, false, sizeof(sw::InVertex), &vertex[0].T0);
+	setVertexAttribState(sw::TexCoord1, 0, 2, GL_FLOAT, false, sizeof(sw::InVertex), &vertex[0].T1);
+
+	mState.vertexAttribute[sw::Position].mArrayEnabled = true;
+	mState.vertexAttribute[sw::Normal].mArrayEnabled = true;
+	mState.vertexAttribute[sw::Color0].mArrayEnabled = true;
+	mState.vertexAttribute[sw::TexCoord0].mArrayEnabled = true;
+	mState.vertexAttribute[sw::TexCoord1].mArrayEnabled = true;
+
+	applyState(drawMode);
+
+	GLenum err = applyVertexBuffer(0, 0, vertex.size());
+    if(err != GL_NO_ERROR)
+    {
+        return error(err);
+    }
+
+	applyTextures();
+	
+    switch(drawMode)
+    {
+    case GL_POINTS:
+        UNIMPLEMENTED();
+        break;
+    case GL_LINES:
+        UNIMPLEMENTED();
+        break;
+    case GL_LINE_STRIP:
+        UNIMPLEMENTED();
+        break;
+    case GL_LINE_LOOP:
+        UNIMPLEMENTED();
+        break;
+    case GL_TRIANGLES:
+        UNIMPLEMENTED();
+        break;
+    case GL_TRIANGLE_STRIP:
+        device->drawPrimitive(DRAW_TRIANGLESTRIP, vertex.size() - 2);
+        break;
+    case GL_TRIANGLE_FAN:
+        UNIMPLEMENTED();
+        break;
+    case GL_QUADS:
+        UNIMPLEMENTED();
+        break;
+    case GL_QUAD_STRIP:
+        UNIMPLEMENTED();
+        break;
+    case GL_POLYGON:
+        UNIMPLEMENTED();
+        break;
+    default:
+        UNREACHABLE();
+    }
+
+	restoreAttribs();
+
+    drawing = false;
+}
+
+void Context::setColorMaterial(bool enable)
+{
+    Device *device = getDevice();
+
+    device->setColorVertexEnable(enable);
+}
+
+void Context::setColorMaterialMode(GLenum mode)
+{
+    Device *device = getDevice();
+
+    switch(mode)
+    {
+    case GL_EMISSION:
+        device->setDiffuseMaterialSource(sw::MATERIAL_MATERIAL);
+        device->setSpecularMaterialSource(sw::MATERIAL_MATERIAL);
+        device->setAmbientMaterialSource(sw::MATERIAL_MATERIAL);
+        device->setEmissiveMaterialSource(sw::MATERIAL_COLOR1);
+        break;
+    case GL_AMBIENT:
+        device->setDiffuseMaterialSource(sw::MATERIAL_MATERIAL);
+        device->setSpecularMaterialSource(sw::MATERIAL_MATERIAL);
+        device->setAmbientMaterialSource(sw::MATERIAL_COLOR1);
+        device->setEmissiveMaterialSource(sw::MATERIAL_MATERIAL);
+        break;
+    case GL_DIFFUSE:
+        device->setDiffuseMaterialSource(sw::MATERIAL_COLOR1);
+        device->setSpecularMaterialSource(sw::MATERIAL_MATERIAL);
+        device->setAmbientMaterialSource(sw::MATERIAL_MATERIAL);
+        device->setEmissiveMaterialSource(sw::MATERIAL_MATERIAL);
+        break;
+    case GL_SPECULAR:
+        device->setDiffuseMaterialSource(sw::MATERIAL_MATERIAL);
+        device->setSpecularMaterialSource(sw::MATERIAL_COLOR1);
+        device->setAmbientMaterialSource(sw::MATERIAL_MATERIAL);
+        device->setEmissiveMaterialSource(sw::MATERIAL_MATERIAL);
+        break;
+    case GL_AMBIENT_AND_DIFFUSE:
+        device->setDiffuseMaterialSource(sw::MATERIAL_COLOR1);
+        device->setSpecularMaterialSource(sw::MATERIAL_MATERIAL);
+        device->setAmbientMaterialSource(sw::MATERIAL_COLOR1);
+        device->setEmissiveMaterialSource(sw::MATERIAL_MATERIAL);
+        break;
+    default:
+        UNREACHABLE();
+    }
 }
 
 }
 
 // Exported functions for use by EGL
-extern "C"
+//extern "C"
+namespace gl
 {
-	gl::Context *glCreateContext(const egl::Config *config, const gl::Context *shareContext)
+	Context *createContext(const egl::Config *config, const Context *shareContext)
 	{
-		return new gl::Context(config, shareContext);
+		return new Context(config, shareContext);
+	}
+
+	void destroyContext(Context *context)
+	{
+		delete context;
+
+		if(context == getContext())
+		{
+			makeCurrent(NULL, NULL, NULL);
+		}
+	}
+
+	void glMakeCurrent(Context *context, egl::Display *display, egl::Surface *surface)
+	{
+		makeCurrent(context, display, surface);
+	}
+
+	Context *getCurrentContext()
+	{
+		return getContext();
 	}
 }

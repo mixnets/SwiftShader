@@ -9,6 +9,11 @@
 // or implied, including but not limited to any patent rights, are granted to you.
 //
 
+#define _GDI32_
+#include <windows.h>
+#include <GL/GL.h>
+#include <GL/glext.h>
+
 #include "Image.hpp"
 
 #include "Texture.h"
@@ -16,7 +21,7 @@
 #include "../common/debug.h"
 #include "Common/Thread.hpp"
 
-#include <GLES2/gl2ext.h>
+//#include <GLES2/gl2ext.h>
 
 namespace gl
 {
@@ -73,7 +78,6 @@ namespace gl
 
 		if(referenceCount == 0)
 		{
-			ASSERT(!shared);   // Should still hold a reference if eglDestroyImage hasn't been called
 			delete this;
 		}
 	}
@@ -90,22 +94,22 @@ namespace gl
 
 	sw::Format Image::selectInternalFormat(GLenum format, GLenum type)
 	{
-		if(format == GL_ETC1_RGB8_OES)
-		{
-			return sw::FORMAT_ETC1;
-		}
-		else
+        if(type == GL_NONE && format == GL_NONE)
+        {
+            return sw::FORMAT_NULL;
+        }
+        else
 		#if S3TC_SUPPORT
 		if(format == GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
 		   format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
 		{
 			return sw::FORMAT_DXT1;
 		}
-		else if(format == GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE)
+		else if(format == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT)
 		{
 			return sw::FORMAT_DXT3;
 		}
-		else if(format == GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE)
+		else if(format == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)
 		{
 			return sw::FORMAT_DXT5;
 		}
@@ -115,7 +119,7 @@ namespace gl
 		{
 			return sw::FORMAT_A32B32G32R32F;
 		}
-		else if(type == GL_HALF_FLOAT_OES)
+		else if(type == GL_HALF_FLOAT)
 		{
 			return sw::FORMAT_A16B16G16R16F;
 		}
@@ -151,9 +155,9 @@ namespace gl
 			}
 			else UNREACHABLE();
 		}
-		else if(type == GL_UNSIGNED_INT_24_8_OES)
+		else if(type == GL_UNSIGNED_INT_24_8_EXT)
 		{
-			if(format == GL_DEPTH_STENCIL_OES)
+			if(format == GL_DEPTH_STENCIL_EXT)
 			{
 				return sw::FORMAT_D32FS8_TEXTURE;
 			}
@@ -171,10 +175,20 @@ namespace gl
 		{
 			return sw::FORMAT_X8R8G8B8;
 		}
+        else if(type == GL_UNSIGNED_INT_8_8_8_8_REV)
+        {
+            return sw::FORMAT_A8R8G8B8;
+        }
+
 		else UNREACHABLE();
 
 		return sw::FORMAT_A8R8G8B8;
 	}
+
+	//int Image::bytes(sw::Format format)
+	//{
+	//	return sw::Surface::bytes(format);
+	//}
 
 	void Image::loadImageData(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *input)
 	{
@@ -186,6 +200,7 @@ namespace gl
 			switch(type)
 			{
 			case GL_UNSIGNED_BYTE:
+            case GL_UNSIGNED_INT_8_8_8_8_REV:
 				switch(format)
 				{
 				case GL_ALPHA:
@@ -258,7 +273,7 @@ namespace gl
 				default: UNREACHABLE();
 				}
 				break;
-			  case GL_HALF_FLOAT_OES:
+			  case GL_HALF_FLOAT:
 				switch(format)
 				{
 				// float textures are converted to RGBA, not BGRA
@@ -286,7 +301,7 @@ namespace gl
 			case GL_UNSIGNED_INT:
 				loadD32ImageData(xoffset, yoffset, width, height, inputPitch, input, buffer);
 				break;
-			case GL_UNSIGNED_INT_24_8_OES:
+			case GL_UNSIGNED_INT_24_8_EXT:
 				loadD24S8ImageData(xoffset, yoffset, width, height, inputPitch, input, buffer);
 				break;
 			default: UNREACHABLE();

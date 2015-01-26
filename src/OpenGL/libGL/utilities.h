@@ -18,9 +18,13 @@
 #include "Image.hpp"
 #include "Texture.h"
 
-#define GL_APICALL
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+//#define GL_APICALL
+//#include <GLES2/gl2.h>
+//#include <GLES2/gl2ext.h>
+//#define _GDI32_
+//#include <windows.h>
+//#include <GL/GL.h>
+//#include <GL/glext.h>
 
 #include <string>
 
