@@ -21,8 +21,8 @@ namespace sw
 	enum Out   // Default vertex attribute semantic
 	{
 		Pos = 0,
-		D0 = 1,
-		D1 = 2,
+		D0 = 1,   // Diffuse
+		D1 = 2,   // Specular
 		T0 = 3,
 		T1 = 4,
 		T2 = 5,
