@@ -58,6 +58,7 @@ namespace sw
 		DRAW_TRIANGLELIST,
 		DRAW_TRIANGLESTRIP,
 		DRAW_TRIANGLEFAN,
+		DRAW_QUADLIST,
 
 		DRAW_INDEXEDPOINTLIST8,
 		DRAW_INDEXEDLINELIST8,
@@ -472,6 +473,7 @@ namespace sw
 
 		bool pointSpriteEnable;
 		bool pointScaleEnable;
+		float lineWidth;
 
 		int colorWriteMask[4];   // RGBA
 		bool writeSRGB;
