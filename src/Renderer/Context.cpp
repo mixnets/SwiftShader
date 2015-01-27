@@ -94,6 +94,8 @@ namespace sw
 		case DRAW_INDEXEDTRIANGLESTRIP32:
 		case DRAW_INDEXEDTRIANGLEFAN32:
 			return fillModeAware ? fillMode == FILL_VERTEX : false;
+        case DRAW_QUADLIST:
+            return false;
 		default:
 			ASSERT(false);
 		}
@@ -136,6 +138,8 @@ namespace sw
 		case DRAW_INDEXEDTRIANGLESTRIP32:
 		case DRAW_INDEXEDTRIANGLEFAN32:
 			return fillModeAware ? fillMode == FILL_WIREFRAME : false;
+        case DRAW_QUADLIST:
+            return false;
 		default:
 			ASSERT(false);
 		}
@@ -178,6 +182,8 @@ namespace sw
 		case DRAW_INDEXEDTRIANGLESTRIP32:
 		case DRAW_INDEXEDTRIANGLEFAN32:
 			return fillModeAware ? fillMode == FILL_SOLID : true;
+        case DRAW_QUADLIST:
+            return true;
 		default:
 			ASSERT(false);
 		}
@@ -529,11 +535,11 @@ namespace sw
 			switch(texGen[coordinate])
 			{
 			case TEXGEN_PASSTHRU:
-				if(input[TexCoord0 + textureStage[coordinate].texCoordIndex].type == STREAMTYPE_FLOAT)
+				//if(input[TexCoord0 + textureStage[coordinate].texCoordIndex].type == STREAMTYPE_FLOAT)
 				{
 					hasTexture = hasTexture || (component < input[TexCoord0 + textureStage[coordinate].texCoordIndex].count);
 				}
-				else ASSERT(!input[TexCoord0 + textureStage[coordinate].texCoordIndex]);
+				//else ASSERT(!input[TexCoord0 + textureStage[coordinate].texCoordIndex]);   // FIXME
 				break;
 			case TEXGEN_NORMAL:
 				hasTexture = hasTexture || (component <= 2);
@@ -645,7 +651,7 @@ namespace sw
 			return MATERIAL_MATERIAL;
 		}
 
-		if(specularMaterialSource == MATERIAL_MATERIAL || !colorVertexEnable ||
+		if(!colorVertexEnable ||
 		   (specularMaterialSource == MATERIAL_COLOR1 && !input[Color0]) ||
 		   (specularMaterialSource == MATERIAL_COLOR2 && !input[Color1]))
 		{
@@ -662,7 +668,7 @@ namespace sw
 			return MATERIAL_MATERIAL;
 		}
 
-		if(ambientMaterialSource == MATERIAL_MATERIAL || !colorVertexEnable ||
+		if(!colorVertexEnable ||
 		   (ambientMaterialSource == MATERIAL_COLOR1 && !input[Color0]) ||
 		   (ambientMaterialSource == MATERIAL_COLOR2 && !input[Color1]))
 		{
@@ -679,7 +685,7 @@ namespace sw
 			return MATERIAL_MATERIAL;
 		}
 
-		if(emissiveMaterialSource == MATERIAL_MATERIAL || !colorVertexEnable ||
+		if(!colorVertexEnable ||
 		   (emissiveMaterialSource == MATERIAL_COLOR1 && !input[Color0]) ||
 		   (emissiveMaterialSource == MATERIAL_COLOR2 && !input[Color1]))
 		{
@@ -1283,7 +1289,7 @@ namespace sw
 		
 		if(!vertexShader)
 		{
-			vertexSpecular = input[Color1] || (lightingEnable && specularEnable);
+			vertexSpecular = (input[Color1] || lightingEnable) && specularEnable;
 		}
 		else
 		{
@@ -1291,7 +1297,7 @@ namespace sw
 		}
 
 		// Pixel processor requires specular component
-		bool pixelSpecular = specularUsed(component) || fogActive();
+		bool pixelSpecular = specularUsed(component)/* || fogActive()*/;
 
 		return vertexSpecular && pixelSpecular;
 	}
@@ -1362,7 +1368,7 @@ namespace sw
 
 			if(texture)
 			{
-				for(int i = coordinate - 1; i >= 0; i--)
+				for(int i = coordinate; i >= 0; i--)
 				{
 					if(textureStage[i].stageOperation == TextureStage::STAGE_DISABLE)
 					{

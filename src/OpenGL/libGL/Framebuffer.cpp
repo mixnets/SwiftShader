@@ -123,7 +123,7 @@ void Framebuffer::detachRenderbuffer(GLuint renderbuffer)
 
 // Increments refcount on surface.
 // caller must Release() the returned surface
-egl::Image *Framebuffer::getRenderTarget()
+Image *Framebuffer::getRenderTarget()
 {
 	Renderbuffer *colorbuffer = mColorbufferPointer.get();
 
@@ -137,7 +137,7 @@ egl::Image *Framebuffer::getRenderTarget()
 
 // Increments refcount on surface.
 // caller must Release() the returned surface
-egl::Image *Framebuffer::getDepthStencil()
+Image *Framebuffer::getDepthStencil()
 {
 	Renderbuffer *depthstencilbuffer = mDepthbufferPointer.get();
 	
@@ -323,11 +323,11 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		}
 		else if(width != depthbuffer->getWidth() || height != depthbuffer->getHeight())
 		{
-			return GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS;
+			return GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT;
 		}
 		else if(samples != depthbuffer->getSamples())
 		{
-			return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE;
+			return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT;
 		}
 	}
 
@@ -375,11 +375,11 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		}
 		else if(width != stencilbuffer->getWidth() || height != stencilbuffer->getHeight())
 		{
-			return GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS;
+			return GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT;
 		}
 		else if(samples != stencilbuffer->getSamples())
 		{
-			return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE;
+			return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT;
 		}
 	}
 

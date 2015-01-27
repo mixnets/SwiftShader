@@ -17,25 +17,54 @@
 #include "Context.h"
 #include "Device.hpp"
 #include "common/debug.h"
-#include "libEGL/Display.h"
+#include "Display.h"
 
-#define GL_APICALL
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+#define _GDI32_
+#include <windows.h>
+#include <GL/GL.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GL/glext.h>
 
 namespace gl
 {
-	Context *getContext();
-	egl::Display *getDisplay();
-	Device *getDevice();
-}
+	struct Current
+	{
+		Context *context;
+		egl::Display *display;
 
-namespace egl
-{
-	GLint getClientVersion();
+		egl::Surface *drawSurface;
+		egl::Surface *readSurface;
+	};
+
+	void makeCurrent(Context *context, egl::Display *display, egl::Surface *surface);
+
+	Context *getContext();       //
+	egl::Display *getDisplay();  //
+
+	Device *getDevice();
+	
+	//void setCurrentDisplay(egl::Display *dpy);
+	//egl::Display *getCurrentDisplay();
+
+	//void setCurrentContext(gl::Context *ctx);
+	//gl::Context *getCurrentContext();
+
+	void setCurrentDrawSurface(egl::Surface *surface);
+	egl::Surface *getCurrentDrawSurface();
+
+	void setCurrentReadSurface(egl::Surface *surface);
+	egl::Surface *getCurrentReadSurface();
 }
 
 void error(GLenum errorCode);
+
+template<class T>
+T &error(GLenum errorCode, T &returnValue)
+{
+    error(errorCode);
+
+    return returnValue;
+}
 
 template<class T>
 const T &error(GLenum errorCode, const T &returnValue)
@@ -45,20 +74,8 @@ const T &error(GLenum errorCode, const T &returnValue)
     return returnValue;
 }
 
-// libEGL dependencies
-namespace egl
-{
-	extern egl::Context *(*getCurrentContext)();
-	extern egl::Display *(*getCurrentDisplay)();
-}
-
-// libGLES_CM dependencies
-namespace es1
-{
-	extern __eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname);
-}
-
-extern void *libEGL;       // Handle to the libEGL module
-extern void *libGLES_CM;   // Handle to the libGLES_CM module
+extern "C" sw::FrameBuffer *createFrameBuffer(NativeDisplayType display, NativeWindowType window, int width, int height);
+extern "C" gl::Image *createBackBuffer(int width, int height);
+extern "C" gl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
 
 #endif   // LIBGL_MAIN_H_
