@@ -25,9 +25,6 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-#include <GLES/gl.h>
-#include <GLES/glext.h>
-
 #include <limits>
 
 namespace es1

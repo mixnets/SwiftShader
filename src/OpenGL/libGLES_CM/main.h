@@ -20,9 +20,6 @@
 #include "libEGL/libEGL.hpp"
 #include "libEGL/Display.h"
 
-#include <GLES/gl.h>
-#include <GLES/glext.h>
-
 namespace es1
 {
 	Context *getContext();

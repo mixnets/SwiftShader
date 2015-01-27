@@ -18,7 +18,9 @@
 #include "libGLESv2/libGLESv2.hpp"
 
 #include <EGL/egl.h>
+#define EGL_EGLEXT_PROTOTYPES
 #include <EGL/eglext.h>
+#undef EGL_EGLEXT_PROTOTYPES
 
 namespace egl
 {
