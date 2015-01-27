@@ -122,12 +122,8 @@ namespace sw
 		
 		Do
 		{
-			Int x0;
-			Int x1;
-			Int x2;
-
-			x0 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->left) + (y + 0) * sizeof(Primitive::Span)));
-			x2 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->left) + (y + 1) * sizeof(Primitive::Span)));
+			Int x0 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->left) + (y + 0) * sizeof(Primitive::Span)));
+			Int x2 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->left) + (y + 1) * sizeof(Primitive::Span)));
 			x0 = Min(x0, x2);
 			
 			for(unsigned int q = 1; q < state.multiSample; q++)
@@ -141,7 +137,7 @@ namespace sw
 			
 			x0 &= 0xFFFFFFFE;
 
-			x1 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->right) + (y + 0) * sizeof(Primitive::Span)));
+			Int x1 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->right) + (y + 0) * sizeof(Primitive::Span)));
 			x2 = Int(*Pointer<Short>(r.primitive + OFFSET(Primitive,outline->right) + (y + 1) * sizeof(Primitive::Span)));
 			x1 = Max(x1, x2);
 

@@ -10,7 +10,7 @@
 //
 
 // Program.cpp: Implements the Program class. Implements GL program objects
-// and related functionality. [OpenGL ES 2.0.24] section 2.10.3 page 28.
+// and related functionality.
 
 #include "Program.h"
 
@@ -590,8 +590,8 @@ namespace gl
 
 		if(targetUniform->type == GL_INT ||
 		   targetUniform->type == GL_SAMPLER_2D ||
-		   targetUniform->type == GL_SAMPLER_CUBE ||
-           targetUniform->type == GL_SAMPLER_EXTERNAL_OES)
+		   targetUniform->type == GL_SAMPLER_CUBE/* ||
+           targetUniform->type == GL_SAMPLER_EXTERNAL*/)
 		{
 			memcpy(targetUniform->data + uniformIndex[location].element * sizeof(GLint),
 				   v, sizeof(GLint) * count);
@@ -924,7 +924,7 @@ namespace gl
 				  case GL_FLOAT_MAT4: applyUniformMatrix4fv(location, size, f); break;
 				  case GL_SAMPLER_2D:
 				  case GL_SAMPLER_CUBE:
-                  case GL_SAMPLER_EXTERNAL_OES:
+//                  case GL_SAMPLER_EXTERNAL_EXT:
 				  case GL_INT:        applyUniform1iv(location, size, i);       break;
 				  case GL_INT_VEC2:   applyUniform2iv(location, size, i);       break;
 				  case GL_INT_VEC3:   applyUniform3iv(location, size, i);       break;
@@ -938,7 +938,7 @@ namespace gl
 		}
 	}
 
-	// Packs varyings into generic varying registers, using the algorithm from [OpenGL ES Shading Language 1.00 rev. 17] appendix A section 7 page 111
+	// Packs varyings into generic varying registers.
 	// Returns the number of used varying registers, or -1 if unsuccesful
 	int Program::packVaryings(const glsl::Varying *packing[][4])
 	{
@@ -1315,7 +1315,7 @@ namespace gl
 
 	bool Program::defineUniform(GLenum shader, GLenum type, GLenum precision, const std::string &name, unsigned int arraySize, int registerIndex)
 	{
-		if(type == GL_SAMPLER_2D || type == GL_SAMPLER_CUBE || type == GL_SAMPLER_EXTERNAL_OES)
+		if(type == GL_SAMPLER_2D || type == GL_SAMPLER_CUBE/* || type == GL_SAMPLER_EXTERNAL_EXT*/)
 	    {
 			int index = registerIndex;
 			
@@ -1736,8 +1736,8 @@ namespace gl
 		if(targetUniform->psRegisterIndex != -1)
 		{
             if(targetUniform->type == GL_SAMPLER_2D ||
-               targetUniform->type == GL_SAMPLER_CUBE ||
-               targetUniform->type == GL_SAMPLER_EXTERNAL_OES)
+               targetUniform->type == GL_SAMPLER_CUBE/* ||
+               targetUniform->type == GL_SAMPLER_EXTERNAL_EXT*/)
 			{
 				for(int i = 0; i < count; i++)
 				{
@@ -1759,8 +1759,8 @@ namespace gl
 		if(targetUniform->vsRegisterIndex != -1)
 		{
 			if(targetUniform->type == GL_SAMPLER_2D ||
-               targetUniform->type == GL_SAMPLER_CUBE ||
-               targetUniform->type == GL_SAMPLER_EXTERNAL_OES)
+               targetUniform->type == GL_SAMPLER_CUBE/* ||
+               targetUniform->type == GL_SAMPLER_EXTERNAL_EXT*/)
 			{
 				for(int i = 0; i < count; i++)
 				{
