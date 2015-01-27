@@ -63,11 +63,12 @@ namespace sw
 				{
 					Gradient color[2][4];
 					Gradient texture[8][4];
-					Gradient fog;
 				};
 
 				Gradient gradient[10][4];
 			};
+
+			Gradient fog;
 		};
 
 		struct State : States
