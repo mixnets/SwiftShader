@@ -25,6 +25,8 @@
 /src/OpenGL/compiler/preprocessor/Debug/
 /src/OpenGL/compiler/preprocessor/Release/
 /src/OpenGL/compiler/preprocessor/x64/
+/src/OpenGL/libGL/Win32/Debug/
+/src/OpenGL/libGL/Win32/Release/
 
 # Ignored files #
 *.user
@@ -43,4 +45,5 @@
 *.sdf
 *.suo
 *.o
-
+*.orig
+*.opensdf
