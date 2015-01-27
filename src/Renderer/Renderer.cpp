@@ -958,7 +958,7 @@ namespace sw
 			task->vertexCache.drawCall = primitiveProgress[unit].drawCall;
 		}
 
-		unsigned int batch[128][3];   // FIXME: Adjust to dynamic batch size
+		unsigned int batch[256][3];   // FIXME: Adjust to dynamic batch size
 
 		switch(draw->drawType)
 		{
@@ -1342,10 +1342,29 @@ namespace sw
 				}
 			}
 			break;
+        case DRAW_QUADLIST:
+			{
+				unsigned int index = 4 * start / 2;
+
+				for(unsigned int i = 0; i < count; i += 2)
+				{
+					batch[i+0][0] = index + 0;
+					batch[i+0][1] = index + 1;
+					batch[i+0][2] = index + 2;
+
+                    batch[i+1][0] = index + 0;
+					batch[i+1][1] = index + 2;
+					batch[i+1][2] = index + 3;
+
+					index += 4;
+				}
+			}
+			break;
 		default:
 			ASSERT(false);
 		}
 
+        ASSERT(count <= sizeof(batch) / sizeof(batch[0]));
 		task->count = count * 3;
 		vertexRoutine(&triangle->v0, (unsigned int*)&batch, task, data);
 	}
