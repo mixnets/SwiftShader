@@ -19,8 +19,7 @@
 #include "mathutil.h"
 #include "Framebuffer.h"
 #include "Device.hpp"
-#include "libEGL/Display.h"
-#include "libEGL/Surface.h"
+#include "Display.h"
 #include "common/debug.h"
 
 #include <algorithm>
@@ -35,6 +34,7 @@ Texture::Texture(GLuint id) : egl::Texture(id)
     mWrapS = GL_REPEAT;
     mWrapT = GL_REPEAT;
 	mMaxAnisotropy = 1.0f;
+	mMaxLevel = 1000;
 
 	resource = new sw::Resource(0);
 }
@@ -54,17 +54,12 @@ bool Texture::setMinFilter(GLenum filter)
 {
     switch(filter)
     {
+    case GL_NEAREST:
+    case GL_LINEAR:
     case GL_NEAREST_MIPMAP_NEAREST:
     case GL_LINEAR_MIPMAP_NEAREST:
     case GL_NEAREST_MIPMAP_LINEAR:
     case GL_LINEAR_MIPMAP_LINEAR:
-        if(getTarget() == GL_TEXTURE_EXTERNAL_OES)
-        {
-            return false;
-        }
-        // Fall through
-    case GL_NEAREST:
-    case GL_LINEAR:
         mMinFilter = filter;
         return true;
     default:
@@ -91,14 +86,10 @@ bool Texture::setWrapS(GLenum wrap)
 {
     switch(wrap)
     {
+    case GL_CLAMP:
     case GL_REPEAT:
-    case GL_MIRRORED_REPEAT:
-        if(getTarget() == GL_TEXTURE_EXTERNAL_OES)
-        {
-            return false;
-        }
-        // Fall through
     case GL_CLAMP_TO_EDGE:
+    case GL_MIRRORED_REPEAT:
         mWrapS = wrap;
         return true;
     default:
@@ -111,14 +102,10 @@ bool Texture::setWrapT(GLenum wrap)
 {
     switch(wrap)
     {
+    case GL_CLAMP:
     case GL_REPEAT:
-    case GL_MIRRORED_REPEAT:
-        if(getTarget() == GL_TEXTURE_EXTERNAL_OES)
-        {
-            return false;
-        }
-        // Fall through
     case GL_CLAMP_TO_EDGE:
+    case GL_MIRRORED_REPEAT:
          mWrapT = wrap;
          return true;
     default:
@@ -140,6 +127,18 @@ bool Texture::setMaxAnisotropy(float textureMaxAnisotropy)
     {
         mMaxAnisotropy = textureMaxAnisotropy;
     }
+
+    return true;
+}
+
+bool Texture::setMaxLevel(int level)
+{
+    if(level < 0)
+    {
+        return false;
+    }
+    
+	mMaxLevel = level;
 
     return true;
 }
@@ -169,19 +168,7 @@ GLfloat Texture::getMaxAnisotropy() const
     return mMaxAnisotropy;
 }
 
-egl::Image *Texture::createSharedImage(GLenum target, unsigned int level)
-{
-    egl::Image *image = getRenderTarget(target, level);   // Increments reference count
-
-    if(image)
-    {
-        image->markShared();
-    }
-
-    return image;
-}
-
-void Texture::setImage(GLenum format, GLenum type, GLint unpackAlignment, const void *pixels,egl:: Image *image)
+void Texture::setImage(GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, Image *image)
 {
     if(pixels && image)
     {
@@ -189,7 +176,7 @@ void Texture::setImage(GLenum format, GLenum type, GLint unpackAlignment, const 
     }
 }
 
-void Texture::setCompressedImage(GLsizei imageSize, const void *pixels, egl::Image *image)
+void Texture::setCompressedImage(GLsizei imageSize, const void *pixels, Image *image)
 {
     if(pixels && image)
     {
@@ -197,7 +184,7 @@ void Texture::setCompressedImage(GLsizei imageSize, const void *pixels, egl::Ima
     }
 }
 
-void Texture::subImage(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, egl::Image *image)
+void Texture::subImage(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, Image *image)
 {
 	if(!image)
 	{
@@ -225,7 +212,7 @@ void Texture::subImage(GLint xoffset, GLint yoffset, GLsizei width, GLsizei heig
     }
 }
 
-void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels, egl::Image *image)
+void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels, Image *image)
 {
 	if(!image)
 	{
@@ -248,7 +235,7 @@ void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLsizei width, GL
     }
 }
 
-bool Texture::copy(egl::Image *source, const sw::Rect &sourceRect, GLenum destFormat, GLint xoffset, GLint yoffset, egl::Image *dest)
+bool Texture::copy(Image *source, const sw::Rect &sourceRect, GLenum destFormat, GLint xoffset, GLint yoffset, Image *dest)
 {
     Device *device = getDevice();
 	
@@ -302,7 +289,7 @@ Texture2D::~Texture2D()
 	{
 		if(image[i])
 		{
-			image[i]->unbind(this);
+			image[i]->unbind();
 			image[i] = 0;
 		}
 	}
@@ -346,31 +333,31 @@ GLenum Texture2D::getTarget() const
 
 GLsizei Texture2D::getWidth(GLenum target, GLint level) const
 {
-	ASSERT(target == GL_TEXTURE_2D);
+	ASSERT(target == GL_TEXTURE_2D || target == GL_PROXY_TEXTURE_2D);
     return image[level] ? image[level]->getWidth() : 0;
 }
 
 GLsizei Texture2D::getHeight(GLenum target, GLint level) const
 {
-	ASSERT(target == GL_TEXTURE_2D);
+	ASSERT(target == GL_TEXTURE_2D || target == GL_PROXY_TEXTURE_2D);
     return image[level] ? image[level]->getHeight() : 0;
 }
 
 GLenum Texture2D::getFormat(GLenum target, GLint level) const
 {
-	ASSERT(target == GL_TEXTURE_2D);
+	ASSERT(target == GL_TEXTURE_2D || target == GL_PROXY_TEXTURE_2D);
     return image[level] ? image[level]->getFormat() : 0;
 }
 
 GLenum Texture2D::getType(GLenum target, GLint level) const
 {
-	ASSERT(target == GL_TEXTURE_2D);
+	ASSERT(target == GL_TEXTURE_2D || target == GL_PROXY_TEXTURE_2D);
     return image[level] ? image[level]->getType() : 0;
 }
 
 sw::Format Texture2D::getInternalFormat(GLenum target, GLint level) const
 {
-	ASSERT(target == GL_TEXTURE_2D);
+	ASSERT(target == GL_TEXTURE_2D || target == GL_PROXY_TEXTURE_2D);
 	return image[level] ? image[level]->getInternalFormat() : sw::FORMAT_NULL;
 }
 
@@ -391,7 +378,7 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 {
 	if(image[level])
 	{
-		image[level]->unbind(this);
+		image[level]->unbind();
 	}
 
 	image[level] = new Image(this, width, height, format, type);
@@ -425,7 +412,7 @@ void Texture2D::bindTexImage(egl::Surface *surface)
 	{
 		if(image[level])
 		{
-			image[level]->unbind(this);
+			image[level]->unbind();
 			image[level] = 0;
 		}
 	}
@@ -442,7 +429,7 @@ void Texture2D::releaseTexImage()
 	{
 		if(image[level])
 		{
-			image[level]->unbind(this);
+			image[level]->unbind();
 			image[level] = 0;
 		}
 	}
@@ -452,7 +439,7 @@ void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 {
 	if(image[level])
 	{
-		image[level]->unbind(this);
+		image[level]->unbind();
 	}
 
 	image[level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
@@ -477,7 +464,7 @@ void Texture2D::subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GL
 
 void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source)
 {
-    egl::Image *renderTarget = source->getRenderTarget();
+    Image *renderTarget = source->getRenderTarget();
 
     if(!renderTarget)
     {
@@ -487,7 +474,7 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 
 	if(image[level])
 	{
-		image[level]->unbind(this);
+		image[level]->unbind();
 	}
 
 	image[level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
@@ -520,7 +507,7 @@ void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
         return error(GL_INVALID_VALUE);
     }
 
-	egl::Image *renderTarget = source->getRenderTarget();
+	Image *renderTarget = source->getRenderTarget();
 
     if(!renderTarget)
     {
@@ -536,13 +523,13 @@ void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 	renderTarget->release();
 }
 
-void Texture2D::setImage(egl::Image *sharedImage)
+void Texture2D::setImage(Image *sharedImage)
 {
 	sharedImage->addRef();
 
     if(image[0])
     {
-        image[0]->unbind(this);
+        image[0]->unbind();
     }
 
     image[0] = sharedImage;
@@ -583,7 +570,7 @@ bool Texture2D::isMipmapComplete() const
 
     int q = log2(std::max(width, height));
 
-    for(int level = 1; level <= q; level++)
+    for(int level = 1; level <= q && level <= mMaxLevel; level++)
     {
 		if(!image[level])
 		{
@@ -637,7 +624,7 @@ void Texture2D::generateMipmaps()
     {
 		if(image[i])
 		{
-			image[i]->unbind(this);
+			image[i]->unbind();
 		}
 
 		image[i] = new Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType());
@@ -651,7 +638,7 @@ void Texture2D::generateMipmaps()
     }
 }
 
-egl::Image *Texture2D::getImage(unsigned int level)
+Image *Texture2D::getImage(unsigned int level)
 {
 	return image[level];
 }
@@ -660,7 +647,7 @@ Renderbuffer *Texture2D::getRenderbuffer(GLenum target)
 {
     if(target != GL_TEXTURE_2D)
     {
-        return error(GL_INVALID_OPERATION, (Renderbuffer *)NULL);
+        return error(GL_INVALID_OPERATION, (Renderbuffer*)NULL);
     }
 
     if(mColorbufferProxy == NULL)
@@ -671,7 +658,7 @@ Renderbuffer *Texture2D::getRenderbuffer(GLenum target)
     return mColorbufferProxy;
 }
 
-egl::Image *Texture2D::getRenderTarget(GLenum target, unsigned int level)
+Image *Texture2D::getRenderTarget(GLenum target, unsigned int level)
 {
     ASSERT(target == GL_TEXTURE_2D);
 	ASSERT(level < IMPLEMENTATION_MAX_TEXTURE_LEVELS);
@@ -682,24 +669,6 @@ egl::Image *Texture2D::getRenderTarget(GLenum target, unsigned int level)
 	}
 
 	return image[level];
-}
-
-bool Texture2D::isShared(GLenum target, unsigned int level) const
-{
-    ASSERT(target == GL_TEXTURE_2D);
-    ASSERT(level < IMPLEMENTATION_MAX_TEXTURE_LEVELS);
-
-    if(mSurface)   // Bound to an EGLSurface
-    {
-        return true;
-    }
-
-    if(!image[level])
-    {
-        return false;
-    }
-
-    return image[level]->isShared();
 }
 
 TextureCubeMap::TextureCubeMap(GLuint id) : Texture(id)
@@ -729,7 +698,7 @@ TextureCubeMap::~TextureCubeMap()
 		{
 			if(image[f][i])
 			{
-				image[f][i]->unbind(this);
+				image[f][i]->unbind();
 				image[f][i] = 0;
 			}
 		}
@@ -832,7 +801,7 @@ void TextureCubeMap::setCompressedImage(GLenum target, GLint level, GLenum forma
 
 	if(image[face][level])
 	{
-		image[face][level]->unbind(this);
+		image[face][level]->unbind();
 	}
 
 	image[face][level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
@@ -973,7 +942,7 @@ void TextureCubeMap::setImage(GLenum target, GLint level, GLsizei width, GLsizei
 
 	if(image[face][level])
 	{
-		image[face][level]->unbind(this);
+		image[face][level]->unbind();
 	}
 
 	image[face][level] = new Image(this, width, height, format, type);
@@ -988,7 +957,7 @@ void TextureCubeMap::setImage(GLenum target, GLint level, GLsizei width, GLsizei
 
 void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source)
 {
-	egl::Image *renderTarget = source->getRenderTarget();
+	Image *renderTarget = source->getRenderTarget();
 
     if(!renderTarget)
     {
@@ -1000,7 +969,7 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 
 	if(image[face][level])
 	{
-		image[face][level]->unbind(this);
+		image[face][level]->unbind();
 	}
 
 	image[face][level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
@@ -1047,7 +1016,7 @@ void TextureCubeMap::copySubImage(GLenum target, GLint level, GLint xoffset, GLi
         return error(GL_INVALID_VALUE);
     }
 
-    egl::Image *renderTarget = source->getRenderTarget();
+    Image *renderTarget = source->getRenderTarget();
 
     if(!renderTarget)
     {
@@ -1078,7 +1047,7 @@ void TextureCubeMap::generateMipmaps()
 		{
 			if(image[f][i])
 			{
-				image[f][i]->unbind(this);
+				image[f][i]->unbind();
 			}
 
 			image[f][i] = new Image(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat(), image[0][0]->getType());
@@ -1125,44 +1094,12 @@ Image *TextureCubeMap::getRenderTarget(GLenum target, unsigned int level)
 	return image[face][level];
 }
 
-bool TextureCubeMap::isShared(GLenum target, unsigned int level) const
-{
-    ASSERT(IsCubemapTextureTarget(target));
-    ASSERT(level < IMPLEMENTATION_MAX_TEXTURE_LEVELS);
-
-    int face = CubeFaceIndex(target);
-
-    if(!image[face][level])
-    {
-        return false;
-    }
-
-    return image[face][level]->isShared();
-}
-
-TextureExternal::TextureExternal(GLuint id) : Texture2D(id)
-{
-    mMinFilter = GL_LINEAR;
-    mMagFilter = GL_LINEAR;
-    mWrapS = GL_CLAMP_TO_EDGE;
-    mWrapT = GL_CLAMP_TO_EDGE;
-}
-
-TextureExternal::~TextureExternal()
-{
-}
-
-GLenum TextureExternal::getTarget() const
-{
-    return GL_TEXTURE_EXTERNAL_OES;
-}
-
 }
 
 // Exported functions for use by EGL
 extern "C"
 {
-	egl::Image *createBackBuffer(int width, int height, const egl::Config *config)
+	gl::Image *createBackBuffer(int width, int height, const egl::Config *config)
 	{
 		if(config)
 		{
@@ -1172,7 +1109,7 @@ extern "C"
 		return 0;
 	}
 
-	egl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard)
+	gl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard)
 	{
 		if(width == 0 || height == 0 || height > OUTLINE_RESOLUTION)
 		{
