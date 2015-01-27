@@ -451,11 +451,9 @@ namespace sw
 				*Pointer<Float4>(primitive + OFFSET(Primitive,z.C), 16) = C;
 			}
 
-			for(int interpolant = 0; interpolant < 11; interpolant++)
+			for(int interpolant = 0; interpolant < 10; interpolant++)
 			{
-				int componentCount = interpolant < 10 ? 4 : 1;   // Fog only has one component
-
-				for(int component = 0; component < componentCount; component++)
+				for(int component = 0; component < 4; component++)
 				{
 					int attribute = state.gradient[interpolant][component].attribute;
 					bool flat = state.gradient[interpolant][component].flat;
@@ -466,6 +464,14 @@ namespace sw
 						setupGradient(primitive, tri, w012, M, v0, v1, v2, OFFSET(Vertex,v[attribute][component]), OFFSET(Primitive,V[interpolant][component]), flat, sprite, state.perspective, wrap, component);
 					}
 				}
+			}
+
+			// Fog only has one component
+			int fog = state.gradient[Fog][0].attribute;
+
+			if(fog < 12)
+			{
+				setupGradient(primitive, tri, w012, M, v0, v1, v2, OFFSET(Vertex,v[fog][0]), OFFSET(Primitive,V[Fog][0]), false, sprite, state.perspective, false, 0);
 			}
 
 			Return(true);
