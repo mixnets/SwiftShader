@@ -1051,7 +1051,7 @@ void GL_APIENTRY glCopyTexImage2D(GLenum target, GLint level, GLenum internalfor
 			return error(GL_INVALID_FRAMEBUFFER_OPERATION_OES);
 		}
 
-		if(context->getFramebufferHandle() != 0 && framebuffer->getColorbuffer()->getSamples() > 1)
+		if(context->getFramebufferName() != 0 && framebuffer->getColorbuffer()->getSamples() > 1)
 		{
 			return error(GL_INVALID_OPERATION);
 		}
@@ -1168,7 +1168,7 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, 
 			return error(GL_INVALID_FRAMEBUFFER_OPERATION_OES);
 		}
 
-		if(context->getFramebufferHandle() != 0 && framebuffer->getColorbuffer()->getSamples() > 1)
+		if(context->getFramebufferName() != 0 && framebuffer->getColorbuffer()->getSamples() > 1)
 		{
 			return error(GL_INVALID_OPERATION);
 		}
@@ -1637,7 +1637,7 @@ void GL_APIENTRY glFramebufferRenderbufferOES(GLenum target, GLenum attachment, 
 	if(context)
 	{
 		es1::Framebuffer *framebuffer = context->getFramebuffer();
-		GLuint framebufferHandle = context->getFramebufferHandle();
+		GLuint framebufferHandle = context->getFramebufferName();
 
 		if(!framebuffer || (framebufferHandle == 0 && renderbuffer != 0))
 		{
@@ -1722,7 +1722,7 @@ void GL_APIENTRY glFramebufferTexture2DOES(GLenum target, GLenum attachment, GLe
 		}
 
 		es1::Framebuffer *framebuffer = context->getFramebuffer();
-		GLuint framebufferHandle = context->getFramebufferHandle();
+		GLuint framebufferHandle = context->getFramebufferName();
 
 		if(framebufferHandle == 0 || !framebuffer)
 		{
@@ -1997,12 +1997,12 @@ void GL_APIENTRY glGetRenderbufferParameterivOES(GLenum target, GLenum pname, GL
 			return error(GL_INVALID_ENUM);
 		}
 
-		if(context->getRenderbufferHandle() == 0)
+		if(context->getRenderbufferName() == 0)
 		{
 			return error(GL_INVALID_OPERATION);
 		}
 
-		es1::Renderbuffer *renderbuffer = context->getRenderbuffer(context->getRenderbufferHandle());
+		es1::Renderbuffer *renderbuffer = context->getRenderbuffer(context->getRenderbufferName());
 
 		switch(pname)
 		{
@@ -2223,7 +2223,7 @@ void GL_APIENTRY glGetFramebufferAttachmentParameterivOES(GLenum target, GLenum 
 			return error(GL_INVALID_ENUM);
 		}
 
-		if(context->getFramebufferHandle() == 0)
+		if(context->getFramebufferName() == 0)
 		{
 			return error(GL_INVALID_OPERATION);
 		}
@@ -2236,15 +2236,15 @@ void GL_APIENTRY glGetFramebufferAttachmentParameterivOES(GLenum target, GLenum 
 		{
 		case GL_COLOR_ATTACHMENT0_OES:
 			attachmentType = framebuffer->getColorbufferType();
-			attachmentHandle = framebuffer->getColorbufferHandle();
+			attachmentHandle = framebuffer->getColorbufferName();
 			break;
 		case GL_DEPTH_ATTACHMENT_OES:
 			attachmentType = framebuffer->getDepthbufferType();
-			attachmentHandle = framebuffer->getDepthbufferHandle();
+			attachmentHandle = framebuffer->getDepthbufferName();
 			break;
 		case GL_STENCIL_ATTACHMENT_OES:
 			attachmentType = framebuffer->getStencilbufferType();
-			attachmentHandle = framebuffer->getStencilbufferHandle();
+			attachmentHandle = framebuffer->getStencilbufferName();
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -3054,7 +3054,7 @@ void GL_APIENTRY glRenderbufferStorageOES(GLenum target, GLenum internalformat, 
 			return error(GL_INVALID_VALUE);
 		}
 
-		GLuint handle = context->getRenderbufferHandle();
+		GLuint handle = context->getRenderbufferName();
 		if(handle == 0)
 		{
 			return error(GL_INVALID_OPERATION);
