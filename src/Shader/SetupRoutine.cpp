@@ -35,10 +35,10 @@ namespace sw
 	{
 		Function<Bool(Pointer<Byte>, Pointer<Byte>, Pointer<Byte>, Pointer<Byte>)> function;
 		{
-			Pointer<Byte> primitive(function.arg(0));
-			Pointer<Byte> tri(function.arg(1));
-			Pointer<Byte> polygon(function.arg(2));
-			Pointer<Byte> data(function.arg(3));
+			Pointer<Byte> primitive(function.arg<0>());
+			Pointer<Byte> tri(function.arg<1>());
+			Pointer<Byte> polygon(function.arg<2>());
+			Pointer<Byte> data(function.arg<3>());
 
 			Pointer<Byte> constants = *Pointer<Pointer<Byte> >(data + OFFSET(DrawData,constants));
 

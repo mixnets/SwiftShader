@@ -129,7 +129,7 @@ namespace sw
 		{
 			Function<Void(Pointer<Byte>)> function;
 			{
-				Pointer<Byte> blit(function.arg(0));
+				Pointer<Byte> blit(function.arg<0>());
 
 				Pointer<Byte> source = *Pointer<Pointer<Byte> >(blit + OFFSET(BlitData,source));
 				Pointer<Byte> dest = *Pointer<Pointer<Byte> >(blit + OFFSET(BlitData,dest));

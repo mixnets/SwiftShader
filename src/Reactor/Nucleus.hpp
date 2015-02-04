@@ -2459,6 +2459,29 @@ namespace sw
 	template<class T>
 	void Return(RValue<Pointer<T> > ret);
 
+	template<int index, typename ...Arguments>
+	class Arg;
+
+	template<typename A0, typename ...Arguments>
+	class Arg<0, A0, Arguments...>
+	{
+	public:
+		typedef A0 T;
+	};
+
+	template<int index, typename A0, typename A1, typename ...Arguments>
+	class Arg<index, A0, A1, Arguments...>
+	{
+	public:
+		using T = typename Arg<index - 1, A1, Arguments...>::T;
+	};
+	/*
+	template<int index, typename Return, typename... Arguments>
+	typename Arg<index, Arguments...>::T Function<Return(Arguments...)>::arg(int index)
+	{
+		return Nucleus::getArgument(function, index);
+	}
+	*/
 	// Generic template, leave undefined
 	template<typename Return, typename ...Arguments>
 	class Function;
@@ -2472,7 +2495,11 @@ namespace sw
 
 		virtual ~Function();
 
-		llvm::Argument *arg(int index);
+		template<int index>
+		typename Arg<index, Arguments...>::T arg()
+		{
+			return (Arg<index, Arguments...>::T)(Nucleus::getArgument(function, index));
+		}
 
 		Routine *operator()(const wchar_t *name, ...);
 
@@ -2923,12 +2950,6 @@ namespace sw
 	Function<Return(Arguments...)>::~Function()
 	{
 		delete core;
-	}
-
-	template<typename Return, typename... Arguments>
-	llvm::Argument *Function<Return(Arguments...)>::arg(int index)
-	{
-		return Nucleus::getArgument(function, index);
 	}
 
 	template<typename Return, typename... Arguments>
