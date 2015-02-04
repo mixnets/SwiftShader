@@ -127,7 +127,7 @@ namespace sw
 		
 		if(!blitRoutine)
 		{
-			Function<Void, Pointer<Byte> > function;
+			Function<Void(Pointer<Byte>)> function;
 			{
 				Pointer<Byte> blit(function.arg(0));
 
