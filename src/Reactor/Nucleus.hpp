@@ -360,6 +360,8 @@ namespace sw
 		RValue(typename FloatLiteral<T>::type f);
 		RValue(const Reference<T> &rhs);
 
+		RValue<T> &operator=(const RValue<T>&) = delete;
+
 		llvm::Value *value;   // FIXME: Make private
 	};
 
