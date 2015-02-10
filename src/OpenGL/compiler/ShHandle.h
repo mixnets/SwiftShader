@@ -53,6 +53,7 @@ public:
                  int compileOptions);
 
     // Get results of the last compilation.
+    int getShaderVersion() const { return shaderVersion; }
     TInfoSink& getInfoSink() { return infoSink; }
 
 protected:
@@ -85,6 +86,7 @@ private:
     TExtensionBehavior extensionBehavior;
 
     // Results of compilation.
+    int shaderVersion;
     TInfoSink infoSink;  // Output sink.
 };
 
