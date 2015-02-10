@@ -413,6 +413,11 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Content\Background.cpp;%(Outputs)</Outputs>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\Tools\OGLES2\Build\WindowsVC2010\OGLES2Tools.vcxproj">
+      <Project>{09abe661-9bc0-4152-a820-1fb0522cac01}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
