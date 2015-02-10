@@ -15,29 +15,45 @@
 #ifndef gl_NameSpace_hpp
 #define gl_NameSpace_hpp
 
-#include <vector>
+#include "Object.hpp"
+#include "debug.h"
+
+#include <unordered_map>
 
 typedef unsigned int GLuint;
 
 namespace gl
 {
 
-class NameSpace
+template<class ObjectType, GLuint baseName = 1>
+class NameSpace : public std::unordered_map<GLuint, ObjectType*>
 {
-  public:
-    NameSpace();
-    virtual ~NameSpace();
+public:
+	NameSpace() : nextName(baseName)
+	{
+	}
 
-    void setBaseHandle(GLuint value);
+    virtual ~NameSpace()
+	{
+		ASSERT(empty());
+	}
 
-    GLuint allocate();
-    void release(GLuint handle);
+    GLuint allocate(ObjectType *object)
+	{
+	}
+
+	GLuint insert(GLuint name, ObjectType *object)
+	{
+		ASSERT();
+	}
+
+    void release(GLuint name)
+	{
+		
+	}
 
 private:
-    GLuint baseValue;
-    GLuint nextValue;
-    typedef std::vector<GLuint> HandleList;
-    HandleList freeValues;
+    GLuint nextName;   // Last known available name
 };
 
 }

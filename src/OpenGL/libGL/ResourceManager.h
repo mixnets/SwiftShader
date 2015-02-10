@@ -23,8 +23,6 @@
 #define GL_GLEXT_PROTOTYPES
 #include <GL/glext.h>
 
-#include <map>
-
 namespace gl
 {
 class Buffer;
@@ -79,24 +77,20 @@ class ResourceManager
   private:
     std::size_t mRefCount;
 
-    typedef std::map<GLint, Buffer*> BufferMap;
+    typedef NameSpace<Buffer> BufferMap;
     BufferMap mBufferMap;
-    //NameSpace mBufferNameSpace;
-
-    typedef std::map<GLint, Shader*> ShaderMap;
+    
+    typedef NameSpace<Shader> ShaderMap;
     ShaderMap mShaderMap;
 
-    typedef std::map<GLint, Program*> ProgramMap;
+    typedef NameSpace<Program> ProgramMap;
     ProgramMap mProgramMap;
-    //NameSpace mProgramShaderNameSpace;
-
-    typedef std::map<GLint, Texture*> TextureMap;
+    
+    typedef NameSpace<Texture> TextureMap;
     TextureMap mTextureMap;
-    //NameSpace mTextureNameSpace;
-
-    typedef std::map<GLint, Renderbuffer*> RenderbufferMap;
+    
+    typedef NameSpace<Renderbuffer> RenderbufferMap;
     RenderbufferMap mRenderbufferMap;
-    //NameSpace mRenderbufferNameSpace;
 };
 
 }
