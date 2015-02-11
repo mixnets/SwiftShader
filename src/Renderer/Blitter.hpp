@@ -43,6 +43,8 @@ namespace sw
 			Format sourceFormat;
 			Format destFormat;
 			bool filter;
+			bool flipX;
+			bool flipY;
 		};
 
 		struct BlitData
