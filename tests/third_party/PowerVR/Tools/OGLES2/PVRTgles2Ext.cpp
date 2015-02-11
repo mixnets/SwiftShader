@@ -53,6 +53,7 @@ void CPVRTgles2Ext::LoadExtensions()
 	glGetQueryObjectuivEXT = 0;
 	glRenderbufferStorageMultisampleEXT = 0;
 	glFramebufferTexture2DMultisampleEXT = 0;
+	glBlitFramebufferNV = 0;
 	glTexImage3DOES = 0;
 	glTexSubImage3DOES = 0;
 	glCopyTexSubImage3DOES = 0;
@@ -106,16 +107,22 @@ void CPVRTgles2Ext::LoadExtensions()
 		glRenderbufferStorageMultisampleEXT = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXT) PVRGetProcAddress(glRenderbufferStorageMultisampleEXT);
 		glFramebufferTexture2DMultisampleEXT = (PFNGLFRAMEBUFFERTEXTURE2DMULTISAMPLEEXT) PVRGetProcAddress(glFramebufferTexture2DMultisampleEXT);
 	}
-	
+
+	/* GL_NV_framebuffer_blit */
+	if (strstr((char *)pszGLExtensions, "GL_NV_framebuffer_blit"))
+	{
+		glBlitFramebufferNV = (PFNGLBLITFRAMEBUFFERNVPROC) PVRGetProcAddress(glBlitFramebufferNV);
+	}
+
 	/* GL_OES_texture_3D */
 	if(strstr((char *)pszGLExtensions, "GL_OES_texture_3D"))
 	{
-		glTexImage3DOES = (PFNGLTEXIMAGE3DOES)PVRGetProcAddress(glTexImage3DOES);
-		glTexSubImage3DOES = (PFNGLTEXSUBIMAGE3DOES)PVRGetProcAddress(glTexSubImage3DOES);
-		glCopyTexSubImage3DOES = (PFNGLCOPYTEXSUBIMAGE3DOES)PVRGetProcAddress(glCopyTexSubImage3DOES);
-		glCompressedTexImage3DOES = (PFNGLCOMPRESSEDTEXIMAGE3DOES)PVRGetProcAddress(glCompressedTexImage3DOES);
-		glCompressedTexSubImage3DOES = (PFNGLCOMPRESSEDTEXSUBIMAGE3DOES)PVRGetProcAddress(glCompressedTexSubImage3DOES);
-		glFramebufferTexture3DOES = (PFNGLFRAMEBUFFERTEXTURE3DOES)PVRGetProcAddress(glFramebufferTexture3DOES);
+		glTexImage3DOES = (PFNGLTEXIMAGE3DOES) PVRGetProcAddress(glTexImage3DOES);
+		glTexSubImage3DOES = (PFNGLTEXSUBIMAGE3DOES) PVRGetProcAddress(glTexSubImage3DOES);
+		glCopyTexSubImage3DOES = (PFNGLCOPYTEXSUBIMAGE3DOES) PVRGetProcAddress(glCopyTexSubImage3DOES);
+		glCompressedTexImage3DOES = (PFNGLCOMPRESSEDTEXIMAGE3DOES) PVRGetProcAddress(glCompressedTexImage3DOES);
+		glCompressedTexSubImage3DOES = (PFNGLCOMPRESSEDTEXSUBIMAGE3DOES) PVRGetProcAddress(glCompressedTexSubImage3DOES);
+		glFramebufferTexture3DOES = (PFNGLFRAMEBUFFERTEXTURE3DOES) PVRGetProcAddress(glFramebufferTexture3DOES);
 	}
 
 	/* GL_EXT_draw_buffers */
