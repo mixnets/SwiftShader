@@ -30,6 +30,12 @@ namespace sw
 		int y1;   // Exclusive
 	};
 
+	struct SliceRect
+	{
+		Rect rect;
+		int z;
+	};
+
 	enum Format : unsigned char
 	{
 		FORMAT_NULL,

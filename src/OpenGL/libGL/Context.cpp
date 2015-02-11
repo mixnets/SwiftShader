@@ -2094,7 +2094,7 @@ void Context::applyTextures(sw::SamplerType samplerType)
 				device->setTextureFilter(samplerType, samplerIndex, minFilter);
 			//	device->setTextureFilter(samplerType, samplerIndex, es2sw::ConvertMagFilter(magFilter));
 				device->setMipmapFilter(samplerType, samplerIndex, mipFilter);
-				device->setMaxAnisotropy(samplerType, samplerIndex, (int)maxAnisotropy);
+				device->setMaxAnisotropy(samplerType, samplerIndex, maxAnisotropy);
 
 				applyTexture(samplerType, samplerIndex, texture);
 
@@ -2834,68 +2834,70 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
         return error(GL_INVALID_OPERATION);
     }
 
-    sw::Rect sourceRect;
-    sw::Rect destRect;
+    sw::SliceRect sourceRect;
+    sw::SliceRect destRect;
+    sourceRect.z = 0;
+    destRect.z = 0;
 
     if(srcX0 < srcX1)
     {
-        sourceRect.x0 = srcX0;
-        sourceRect.x1 = srcX1;
-        destRect.x0 = dstX0;
-        destRect.x1 = dstX1;
+        sourceRect.rect.x0 = srcX0;
+        sourceRect.rect.x1 = srcX1;
+        destRect.rect.x0 = dstX0;
+        destRect.rect.x1 = dstX1;
     }
     else
     {
-        sourceRect.x0 = srcX1;
-        destRect.x0 = dstX1;
-        sourceRect.x1 = srcX0;
-        destRect.x1 = dstX0;
+        sourceRect.rect.x0 = srcX1;
+        destRect.rect.x0 = dstX1;
+        sourceRect.rect.x1 = srcX0;
+        destRect.rect.x1 = dstX0;
     }
 
     if(srcY0 < srcY1)
     {
-        sourceRect.y0 = srcY0;
-        destRect.y0 = dstY0;
-        sourceRect.y1 = srcY1;
-        destRect.y1 = dstY1;
+        sourceRect.rect.y0 = srcY0;
+        destRect.rect.y0 = dstY0;
+        sourceRect.rect.y1 = srcY1;
+        destRect.rect.y1 = dstY1;
     }
     else
     {
-        sourceRect.y0 = srcY1;
-        destRect.y0 = dstY1;
-        sourceRect.y1 = srcY0;
-        destRect.y1 = dstY0;
+        sourceRect.rect.y0 = srcY1;
+        destRect.rect.y0 = dstY1;
+        sourceRect.rect.y1 = srcY0;
+        destRect.rect.y1 = dstY0;
     }
 
-    sw::Rect sourceScissoredRect = sourceRect;
-    sw::Rect destScissoredRect = destRect;
+    sw::Rect sourceScissoredRect = sourceRect.rect;
+    sw::Rect destScissoredRect = destRect.rect;
 
     if(mState.scissorTest)   // Only write to parts of the destination framebuffer which pass the scissor test
     {
-        if(destRect.x0 < mState.scissorX)
+        if(destRect.rect.x0 < mState.scissorX)
         {
-            int xDiff = mState.scissorX - destRect.x0;
+            int xDiff = mState.scissorX - destRect.rect.x0;
             destScissoredRect.x0 = mState.scissorX;
             sourceScissoredRect.x0 += xDiff;
         }
 
-        if(destRect.x1 > mState.scissorX + mState.scissorWidth)
+        if(destRect.rect.x1 > mState.scissorX + mState.scissorWidth)
         {
-            int xDiff = destRect.x1 - (mState.scissorX + mState.scissorWidth);
+            int xDiff = destRect.rect.x1 - (mState.scissorX + mState.scissorWidth);
             destScissoredRect.x1 = mState.scissorX + mState.scissorWidth;
             sourceScissoredRect.x1 -= xDiff;
         }
 
-        if(destRect.y0 < mState.scissorY)
+        if(destRect.rect.y0 < mState.scissorY)
         {
-            int yDiff = mState.scissorY - destRect.y0;
+            int yDiff = mState.scissorY - destRect.rect.y0;
             destScissoredRect.y0 = mState.scissorY;
             sourceScissoredRect.y0 += yDiff;
         }
 
-        if(destRect.y1 > mState.scissorY + mState.scissorHeight)
+        if(destRect.rect.y1 > mState.scissorY + mState.scissorHeight)
         {
-            int yDiff = destRect.y1 - (mState.scissorY + mState.scissorHeight);
+            int yDiff = destRect.rect.y1 - (mState.scissorY + mState.scissorHeight);
             destScissoredRect.y1 = mState.scissorY + mState.scissorHeight;
             sourceScissoredRect.y1 -= yDiff;
         }
