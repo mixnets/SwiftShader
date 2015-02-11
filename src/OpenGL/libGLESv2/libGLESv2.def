@@ -144,27 +144,27 @@ EXPORTS
     glViewport                      @142
 
     ; Extensions
-    glTexImage3DOES                 @143
-    glBlitFramebufferANGLE          @149
-    glRenderbufferStorageMultisampleANGLE @150
-    glDeleteFencesNV                @151
-    glFinishFenceNV                 @152
-    glGenFencesNV                   @153
-    glGetFenceivNV                  @154
-    glIsFenceNV                     @155
-    glSetFenceNV                    @156
-    glTestFenceNV                   @157
-    glGetGraphicsResetStatusEXT     @161
-    glReadnPixelsEXT                @162
-    glGetnUniformfvEXT              @163
-    glGetnUniformivEXT              @164
-    glGenQueriesEXT                 @165
-    glDeleteQueriesEXT              @166
-    glIsQueryEXT                    @167
-    glBeginQueryEXT                 @168
-    glEndQueryEXT                   @169
-    glGetQueryivEXT                 @170
-    glGetQueryObjectuivEXT          @171
+    glTexImage3DOES
+    glBlitFramebufferANGLE
+    glRenderbufferStorageMultisampleANGLE
+    glDeleteFencesNV
+    glFinishFenceNV
+    glGenFencesNV
+    glGetFenceivNV
+    glIsFenceNV
+    glSetFenceNV
+    glTestFenceNV
+    glGetGraphicsResetStatusEXT
+    glReadnPixelsEXT
+    glGetnUniformfvEXT
+    glGetnUniformivEXT
+    glGenQueriesEXT
+    glDeleteQueriesEXT
+    glIsQueryEXT
+    glBeginQueryEXT
+    glEndQueryEXT
+    glGetQueryivEXT
+    glGetQueryObjectuivEXT
 	glEGLImageTargetTexture2DOES
 	glEGLImageTargetRenderbufferStorageOES
 
