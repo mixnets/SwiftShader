@@ -470,9 +470,9 @@ namespace es2
 		this->viewport = viewport;
 	}
 
-	bool Device::stretchRect(egl::Image *source, const sw::Rect *sourceRect, egl::Image *dest, const sw::Rect *destRect, bool filter)
+	bool Device::stretchRect(egl::Image *source, const sw::SliceRect *sourceRect, egl::Image *dest, const sw::SliceRect *destRect, bool filter)
 	{
-		if(!source || !dest || !validRectangle(sourceRect, source) || !validRectangle(destRect, dest))
+		if(!source || !dest || (sourceRect && !validRectangle(&(sourceRect->rect), source)) || (destRect && !validRectangle(&(destRect->rect), dest)))
 		{
 			ERR("Invalid parameters");
 			return false;
@@ -483,8 +483,8 @@ namespace es2
 		int dWidth = dest->getExternalWidth();
 		int dHeight = dest->getExternalHeight();
 
-		Rect sRect;
-		Rect dRect;
+		SliceRect sRect;
+		SliceRect dRect;
 
 		if(sourceRect)
 		{
@@ -492,10 +492,11 @@ namespace es2
 		}
 		else
 		{
-			sRect.y0 = 0;
-			sRect.x0 = 0;
-			sRect.y1 = sHeight;
-			sRect.x1 = sWidth;
+			sRect.rect.y0 = 0;
+			sRect.rect.x0 = 0;
+			sRect.rect.y1 = sHeight;
+			sRect.rect.x1 = sWidth;
+			sRect.z = 0;
 		}
 
 		if(destRect)
@@ -504,13 +505,14 @@ namespace es2
 		}
 		else
 		{
-			dRect.y0 = 0;
-			dRect.x0 = 0;
-			dRect.y1 = dHeight;
-			dRect.x1 = dWidth;
+			dRect.rect.y0 = 0;
+			dRect.rect.x0 = 0;
+			dRect.rect.y1 = dHeight;
+			dRect.rect.x1 = dWidth;
+			dRect.z = 0;
 		}
 
-		bool scaling = (sRect.x1 - sRect.x0 != dRect.x1 - dRect.x0) || (sRect.y1 - sRect.y0 != dRect.y1 - dRect.y0);
+		bool scaling = (sRect.rect.x1 - sRect.rect.x0 != dRect.rect.x1 - dRect.rect.x0) || (sRect.rect.y1 - sRect.rect.y0 != dRect.rect.y1 - dRect.rect.y0);
 		bool equalFormats = source->getInternalFormat() == dest->getInternalFormat();
 		bool depthStencil = Image::isDepth(source->getInternalFormat()) || Image::isStencil(source->getInternalFormat());
 		bool alpha0xFF = false;
@@ -526,8 +528,8 @@ namespace es2
 		{
 			if(source->hasDepth())
 			{
-				sw::byte *sourceBuffer = (sw::byte*)source->lockInternal(0, 0, 0, LOCK_READONLY, PUBLIC);
-				sw::byte *destBuffer = (sw::byte*)dest->lockInternal(0, 0, 0, LOCK_DISCARD, PUBLIC);
+				sw::byte *sourceBuffer = (sw::byte*)source->lockInternal(0, 0, sourceRect->z, LOCK_READONLY, PUBLIC);
+				sw::byte *destBuffer = (sw::byte*)dest->lockInternal(0, 0, destRect->z, LOCK_DISCARD, PUBLIC);
 
 				unsigned int width = source->getInternalWidth();
 				unsigned int height = source->getInternalHeight();
@@ -568,13 +570,13 @@ namespace es2
 		}
 		else if(!scaling && equalFormats)
 		{
-			unsigned char *sourceBytes = (unsigned char*)source->lockInternal(sRect.x0, sRect.y0, 0, LOCK_READONLY, PUBLIC);
-			unsigned char *destBytes = (unsigned char*)dest->lockInternal(dRect.x0, dRect.y0, 0, LOCK_READWRITE, PUBLIC);
+			unsigned char *sourceBytes = (unsigned char*)source->lockInternal(sRect.rect.x0, sRect.rect.y0, sourceRect->z, LOCK_READONLY, PUBLIC);
+			unsigned char *destBytes = (unsigned char*)dest->lockInternal(dRect.rect.x0, dRect.rect.y0, destRect->z, LOCK_READWRITE, PUBLIC);
 			unsigned int sourcePitch = source->getInternalPitchB();
 			unsigned int destPitch = dest->getInternalPitchB();
 
-			unsigned int width = dRect.x1 - dRect.x0;
-			unsigned int height = dRect.y1 - dRect.y0;
+			unsigned int width = dRect.rect.x1 - dRect.rect.x0;
+			unsigned int height = dRect.rect.y1 - dRect.rect.y0;
 			unsigned int bytes = width * Image::bytes(source->getInternalFormat());
 
 			for(unsigned int y = 0; y < height; y++)

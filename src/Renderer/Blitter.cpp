@@ -26,26 +26,26 @@ namespace sw
 		delete blitCache;
 	}
 
-	void Blitter::blit(Surface *source, const Rect &sRect, Surface *dest, const Rect &dRect, bool filter)
+	void Blitter::blit(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter)
 	{
 		if(blitReactor(source, sRect, dest, dRect, filter))
 		{
 			return;
 		}
 
-		source->lockInternal(sRect.x0, sRect.y0, 0, sw::LOCK_READONLY, sw::PUBLIC);
-		dest->lockInternal(dRect.x0, dRect.y0, 0, sw::LOCK_WRITEONLY, sw::PUBLIC);
+		source->lockInternal(sRect.rect.x0, sRect.rect.y0, sRect.z, sw::LOCK_READONLY, sw::PUBLIC);
+		dest->lockInternal(dRect.rect.x0, dRect.rect.y0, dRect.z, sw::LOCK_WRITEONLY, sw::PUBLIC);
 
-		float w = 1.0f / (dRect.x1 - dRect.x0) * (sRect.x1 - sRect.x0);
-		float h = 1.0f / (dRect.y1 - dRect.y0) * (sRect.y1 - sRect.y0);
+		float w = 1.0f / (dRect.rect.x1 - dRect.rect.x0) * (sRect.rect.x1 - sRect.rect.x0);
+		float h = 1.0f / (dRect.rect.y1 - dRect.rect.y0) * (sRect.rect.y1 - sRect.rect.y0);
 
-		float y = (float)sRect.y0 + 0.5f * h;
+		float y = (float)sRect.rect.y0 + 0.5f * h;
 
-		for(int j = dRect.y0; j < dRect.y1; j++)
+		for(int j = dRect.rect.y0; j < dRect.rect.y1; j++)
 		{
-			float x = (float)sRect.x0 + 0.5f * w;
+			float x = (float)sRect.rect.x0 + 0.5f * w;
 
-			for(int i = dRect.x0; i < dRect.x1; i++)
+			for(int i = dRect.rect.x0; i < dRect.rect.x1; i++)
 			{
 				sw::Color<float> color;
 
@@ -115,7 +115,7 @@ namespace sw
 		return true;
 	}
 
-	bool Blitter::blitReactor(Surface *source, const Rect &sRect, Surface *dest, const Rect &dRect, bool filter)
+	bool Blitter::blitReactor(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter)
 	{
 		BlitState state;
 
@@ -321,20 +321,20 @@ namespace sw
 
 		BlitData data;
 
-		data.source = source->lockInternal(0, 0, 0, sw::LOCK_READONLY, sw::PUBLIC);
-		data.dest = dest->lockInternal(0, 0, 0, sw::LOCK_WRITEONLY, sw::PUBLIC);
+		data.source = source->lockInternal(0, 0, sRect.z, sw::LOCK_READONLY, sw::PUBLIC);
+		data.dest = dest->lockInternal(0, 0, dRect.z, sw::LOCK_WRITEONLY, sw::PUBLIC);
 		data.sPitchB = source->getInternalPitchB();
 		data.dPitchB = dest->getInternalPitchB();
 
-		data.w = 1.0f / (dRect.x1 - dRect.x0) * (sRect.x1 - sRect.x0);
-		data.h = 1.0f / (dRect.y1 - dRect.y0) * (sRect.y1 - sRect.y0);
-		data.x0 = (float)sRect.x0 + 0.5f * data.w;
-		data.y0 = (float)sRect.y0 + 0.5f * data.h;
+		data.w = 1.0f / (dRect.rect.x1 - dRect.rect.x0) * (sRect.rect.x1 - sRect.rect.x0);
+		data.h = 1.0f / (dRect.rect.y1 - dRect.rect.y0) * (sRect.rect.y1 - sRect.rect.y0);
+		data.x0 = (float)sRect.rect.x0 + 0.5f * data.w;
+		data.y0 = (float)sRect.rect.y0 + 0.5f * data.h;
 		
-		data.x0d = dRect.x0;
-		data.x1d = dRect.x1;
-		data.y0d = dRect.y0;
-		data.y1d = dRect.y1;
+		data.x0d = dRect.rect.x0;
+		data.x1d = dRect.rect.x1;
+		data.y0d = dRect.rect.y0;
+		data.y1d = dRect.rect.y1;
 
 		data.sWidth = source->getInternalWidth();
 		data.sHeight = source->getInternalHeight();
