@@ -251,7 +251,7 @@ struct State
 class Context : public egl::Context
 {
 public:
-    Context(const egl::Config *config, const Context *shareContext);
+    Context(const egl::Config *config, const Context *shareContext, int clientVersion);
 
 	virtual void makeCurrent(egl::Surface *surface);
 	virtual void destroy();
@@ -459,6 +459,7 @@ private:
     bool cullSkipsDraw(GLenum drawMode);
     bool isTriangleMode(GLenum drawMode);
 
+	const int clientVersion;
     const egl::Config *const mConfig;
 
     State mState;
