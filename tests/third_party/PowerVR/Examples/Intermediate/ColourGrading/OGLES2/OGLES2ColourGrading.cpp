@@ -561,9 +561,9 @@ bool OGLES2ColourGrading::CreateFBO()
 		glGenRenderbuffers(1, &m_uiColourBufferMultisampled);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_uiColourBufferMultisampled);
 		if(m_eMultisampleMode == eMultisampleExtension_EXT)
-			m_Extensions.glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER, samples, GL_RGB, PVRShellGet(prefWidth), PVRShellGet(prefHeight));
+			m_Extensions.glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER, samples, GL_RGB8_OES, PVRShellGet(prefWidth), PVRShellGet(prefHeight));
 		else
-			m_Extensions.glRenderbufferStorageMultisampleIMG(GL_RENDERBUFFER, samples, GL_RGB, PVRShellGet(prefWidth), PVRShellGet(prefHeight));
+			m_Extensions.glRenderbufferStorageMultisampleIMG(GL_RENDERBUFFER, samples, GL_RGB8_OES, PVRShellGet(prefWidth), PVRShellGet(prefHeight));
 
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
@@ -852,8 +852,7 @@ bool OGLES2ColourGrading::RenderScene()
 		{
 			glBindFramebuffer(GL_READ_FRAMEBUFFER_NV, m_uiFBOMultisampled);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER_NV, m_uiFBO);
-			return false; // FIXME: fix the multisampling path by adding a blit function below
-			//glBlitFramebuffer(0, 0, PVRShellGet(prefWidth), PVRShellGet(prefHeight), 0, 0, PVRShellGet(prefWidth), PVRShellGet(prefHeight), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			m_Extensions.glBlitFramebufferNV(0, 0, PVRShellGet(prefWidth), PVRShellGet(prefHeight), 0, 0, PVRShellGet(prefWidth), PVRShellGet(prefHeight), GL_COLOR_BUFFER_BIT, GL_NEAREST);
 		}
 
 		// We are done with rendering to our FBO so switch back to the back buffer.

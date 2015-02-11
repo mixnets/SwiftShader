@@ -2975,7 +2975,9 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
 			#endif
 			"GL_EXT_texture_filter_anisotropic "
 			"GL_EXT_texture_format_BGRA8888 "
+			"GL_EXT_multisampled_render_to_texture "
 			"GL_ANGLE_framebuffer_blit "
+			"GL_NV_framebuffer_blit "
 			"GL_ANGLE_framebuffer_multisample "
 			#if (S3TC_SUPPORT)
 			"GL_ANGLE_texture_compression_dxt3 "
@@ -3785,6 +3787,16 @@ void GL_APIENTRY glRenderbufferStorageMultisampleANGLE(GLenum target, GLsizei sa
 			return error(GL_INVALID_ENUM);
 		}
 	}
+}
+
+void GL_APIENTRY glRenderbufferStorageMultisampleEXT(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height)
+{
+	glRenderbufferStorageMultisampleANGLE(target, samples, internalformat, width, height);
+}
+
+void GL_APIENTRY glFramebufferTexture2DMultisampleEXT(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples)
+{
+	UNIMPLEMENTED();
 }
 
 void GL_APIENTRY glRenderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height)
@@ -5169,6 +5181,11 @@ void GL_APIENTRY glBlitFramebufferANGLE(GLint srcX0, GLint srcY0, GLint srcX1, G
 	}
 }
 
+void GL_APIENTRY glBlitFramebufferNV(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
+{
+	glBlitFramebufferANGLE(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+}
+
 void GL_APIENTRY glTexImage3DOES(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth,
                                  GLint border, GLenum format, GLenum type, const GLvoid* pixels)
 {
@@ -5613,7 +5630,10 @@ __eglMustCastToProperFunctionPointerType glGetProcAddress(const char *procname)
 
 		EXTENSION(glTexImage3DOES),
 		EXTENSION(glBlitFramebufferANGLE),
+		EXTENSION(glBlitFramebufferNV),
 		EXTENSION(glRenderbufferStorageMultisampleANGLE),
+		EXTENSION(glRenderbufferStorageMultisampleEXT),
+		EXTENSION(glFramebufferTexture2DMultisampleEXT),
 		EXTENSION(glDeleteFencesNV),
 		EXTENSION(glGenFencesNV),
 		EXTENSION(glIsFenceNV),

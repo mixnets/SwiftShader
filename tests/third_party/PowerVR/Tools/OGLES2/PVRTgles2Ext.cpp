@@ -53,6 +53,7 @@ void CPVRTgles2Ext::LoadExtensions()
 	glGetQueryObjectuivEXT = 0;
 	glRenderbufferStorageMultisampleEXT = 0;
 	glFramebufferTexture2DMultisampleEXT = 0;
+	glBlitFramebufferNV = 0;
 	glTexImage3DOES = 0;
 	glTexSubImage3DOES = 0;
 	glCopyTexSubImage3DOES = 0;
@@ -103,10 +104,16 @@ void CPVRTgles2Ext::LoadExtensions()
 	/* GL_EXT_multisampled_render_to_texture */
 	if (strstr((char *)pszGLExtensions, "GL_EXT_multisampled_render_to_texture"))
 	{
-		glRenderbufferStorageMultisampleEXT = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXT) PVRGetProcAddress(glRenderbufferStorageMultisampleEXT);
-		glFramebufferTexture2DMultisampleEXT = (PFNGLFRAMEBUFFERTEXTURE2DMULTISAMPLEEXT) PVRGetProcAddress(glFramebufferTexture2DMultisampleEXT);
+		glRenderbufferStorageMultisampleEXT = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXT)PVRGetProcAddress(glRenderbufferStorageMultisampleEXT);
+		glFramebufferTexture2DMultisampleEXT = (PFNGLFRAMEBUFFERTEXTURE2DMULTISAMPLEEXT)PVRGetProcAddress(glFramebufferTexture2DMultisampleEXT);
 	}
-	
+
+	/* GL_NV_framebuffer_blit */
+	if (strstr((char *)pszGLExtensions, "GL_NV_framebuffer_blit"))
+	{
+		glBlitFramebufferNV = (PFNGLBLITFRAMEBUFFERNVPROC)PVRGetProcAddress(glBlitFramebufferNV);
+	}
+
 	/* GL_OES_texture_3D */
 	if(strstr((char *)pszGLExtensions, "GL_OES_texture_3D"))
 	{
