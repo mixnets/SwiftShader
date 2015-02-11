@@ -26,24 +26,42 @@ namespace sw
 		delete blitCache;
 	}
 
-	void Blitter::blit(Surface *source, const Rect &sRect, Surface *dest, const Rect &dRect, bool filter)
+	void Blitter::blit(Surface *source, const Rect &sourceRect, Surface *dest, const Rect &destRect, bool filter)
 	{
-		if(blitReactor(source, sRect, dest, dRect, filter))
+		if(blitReactor(source, sourceRect, dest, destRect, filter))
 		{
 			return;
 		}
 
+		Rect sRect = sourceRect;
+		Rect dRect = destRect;
+
+		bool flipX = destRect.x0 > destRect.x1;
+		bool flipY = destRect.y0 > destRect.y1;
+
+		if(flipX)
+		{
+			swap(dRect.x0, dRect.x1);
+		}
+		if(flipY)
+		{
+			swap(dRect.y0, dRect.y1);
+		}
+		int xMax = dRect.x1 - 1;
+		int yMax = dRect.y1 - 1;
+
 		source->lockInternal(sRect.x0, sRect.y0, 0, sw::LOCK_READONLY, sw::PUBLIC);
 		dest->lockInternal(dRect.x0, dRect.y0, 0, sw::LOCK_WRITEONLY, sw::PUBLIC);
 
-		float w = 1.0f / (dRect.x1 - dRect.x0) * (sRect.x1 - sRect.x0);
-		float h = 1.0f / (dRect.y1 - dRect.y0) * (sRect.y1 - sRect.y0);
+		float w = (flipX ? -1.0f : 1.0f) / (dRect.x1 - dRect.x0) * (sRect.x1 - sRect.x0);
+		float h = (flipY ? -1.0f : 1.0f) / (dRect.y1 - dRect.y0) * (sRect.y1 - sRect.y0);
 
-		float y = (float)sRect.y0 + 0.5f * h;
+		const float xStart = (float)(flipX ? sRect.x1 : sRect.x0) + 0.5f * w;
+		float y            = (float)(flipY ? sRect.y1 : sRect.y0) + 0.5f * h;
 
 		for(int j = dRect.y0; j < dRect.y1; j++)
 		{
-			float x = (float)sRect.x0 + 0.5f * w;
+			float x = xStart;
 
 			for(int i = dRect.x0; i < dRect.x1; i++)
 			{
@@ -115,13 +133,28 @@ namespace sw
 		return true;
 	}
 
-	bool Blitter::blitReactor(Surface *source, const Rect &sRect, Surface *dest, const Rect &dRect, bool filter)
+	bool Blitter::blitReactor(Surface *source, const Rect &sRect, Surface *dest, const Rect &destRect, bool filter)
 	{
+		bool flipX = destRect.x0 > destRect.x1;
+		bool flipY = destRect.y0 > destRect.y1;
+
+		Rect dRect = destRect;
+		if(flipX)
+		{
+			swap(dRect.x0, dRect.x1);
+		}
+		if(flipY)
+		{
+			swap(dRect.y0, dRect.y1);
+		}
+
 		BlitState state;
 
 		state.sourceFormat = source->getInternalFormat();
 		state.destFormat = dest->getInternalFormat();
 		state.filter = filter;
+		state.flipX = flipX;
+		state.flipY = flipY;
 
 		Routine *blitRoutine = blitCache->query(state);
 		
@@ -262,7 +295,7 @@ namespace sw
 													  Surface::isUnsignedComponent(state.destFormat, 3) ? 0.0f : -1.0f));
 						}
 
-						Pointer<Byte> d = dest + j * dPitchB + i * Surface::bytes(state.destFormat);
+						Pointer<Byte> d = dest + (flipY ? y1d - j - 1 : j) * dPitchB + (flipX ? x1d - i - 1 : i) * Surface::bytes(state.destFormat);
 
 						switch(state.destFormat)
 						{
