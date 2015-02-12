@@ -16,7 +16,6 @@ Inspired by http://www.cs.rit.edu/~ncs/Courses/570/UserGuide/OpenGLonWin-11.html
 #include <math.h>
 
 #include <gl\GL.h>
-#pragma comment (lib, "opengl32.lib")
 
 #define PI 3.14159265
 
