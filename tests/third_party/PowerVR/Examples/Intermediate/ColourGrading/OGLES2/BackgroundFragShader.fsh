@@ -1,9 +1,12 @@
-uniform sampler2D sTexture;
+#version 300 es
 
-varying mediump vec2 texCoords;
+uniform  sampler2D      sTexture;
+
+in mediump vec2 texCoords;
+layout(location = 0) out lowp vec4 oFragColour;
 
 void main()
 {
-    highp vec3 vCol = texture2D(sTexture, texCoords).rgb;
-    gl_FragColor = vec4(vCol, 1.0);
+    highp vec3 vCol = texture(sTexture, texCoords).rgb;
+    oFragColour = vec4(vCol, 1.0);
 }
