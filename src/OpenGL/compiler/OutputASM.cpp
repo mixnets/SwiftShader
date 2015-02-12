@@ -1278,19 +1278,19 @@ namespace glsl
 		return true;
 	}
 
-	bool OutputASM::isSamplerRegister(TIntermTyped *operand)
+	bool OutputASM::isSamplerRegister(const TType &operand)
 	{
 		// A sampler register's qualifiers can be:
 		// - EvqUniform: The sampler uniform is used as is in the code (default case).
 		// - EvqTemporary: The sampler is indexed. It's still a sampler register.
 		// - EvqIn (and other similar types): The sampler has been passed as a function argument. At this point,
 		//                                    the sampler has been copied and is no longer a sampler register.
-		return IsSampler(operand->getBasicType()) && (operand->getQualifier() == EvqUniform || operand->getQualifier() == EvqTemporary);
+		return IsSampler(operand.getBasicType()) && (operand.getQualifier() == EvqUniform || operand.getQualifier() == EvqTemporary);
 	}
 
 	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2, int index)
 	{
-		if(dst && isSamplerRegister(dst))
+		if(dst && isSamplerRegister(dst->getType()))
 		{
 			op = sw::Shader::OPCODE_NULL;   // Can't assign to a sampler, but this is hit when indexing sampler arrays
 		}
@@ -1487,7 +1487,7 @@ namespace glsl
 			{
 				parameter.index = registerIndex(arg) + index;
 
-				if(isSamplerRegister(arg))
+				if(isSamplerRegister(arg->getType()))
 				{
 					TIntermBinary *binary = argument->getAsBinaryNode();
 
@@ -1509,6 +1509,10 @@ namespace glsl
 								parameter.rel.scale = 1;
 								parameter.rel.deterministic = true;
 							}
+						}
+						else if(binary->getOp() == EOpIndexDirectStruct)
+						{
+							parameter.index += right->getAsConstantUnion()->getIConst(0);
 						}
 						else UNREACHABLE();
 					}
@@ -1764,7 +1768,7 @@ namespace glsl
 
 	sw::Shader::ParameterType OutputASM::registerType(TIntermTyped *operand)
 	{
-		if(isSamplerRegister(operand))
+		if(isSamplerRegister(operand->getType()))
 		{
 			return sw::Shader::PARAMETER_SAMPLER;
 		}
@@ -1810,7 +1814,7 @@ namespace glsl
 
 	int OutputASM::registerIndex(TIntermTyped *operand)
 	{
-		if(isSamplerRegister(operand))
+		if(isSamplerRegister(operand->getType()))
 		{
 			return samplerRegister(operand);
 		}
@@ -2142,9 +2146,10 @@ namespace glsl
 	int OutputASM::samplerRegister(TIntermTyped *sampler)
 	{
 		const TType &type = sampler->getType();
-		ASSERT(IsSampler(type.getBasicType()));
+//		ASSERT(IsSampler(type.getBasicType()));
 		TIntermSymbol *symbol = sampler->getAsSymbolNode();
 		TIntermBinary *binary = sampler->getAsBinaryNode();
+		TIntermConstantUnion *constant = sampler->getAsConstantUnion();
 
 		if(symbol)
 		{
@@ -2153,13 +2158,19 @@ namespace glsl
 			if(index == -1)
 			{
 				index = allocate(samplers, sampler);
-				ActiveUniforms &activeUniforms = shaderObject->activeUniforms;
-				const char *name = symbol->getSymbol().c_str();
-				activeUniforms.push_back(Uniform(glVariableType(type), glVariablePrecision(type), name, sampler->getArraySize(), index));
 
-				for(int i = 0; i < sampler->totalRegisterCount(); i++)
+				if(sampler->getQualifier() == EvqUniform)
 				{
-					shader->declareSampler(index + i);
+					const char *name = symbol->getSymbol().c_str();
+					declareUniform(type, name, index);
+
+					//ActiveUniforms &activeUniforms = shaderObject->activeUniforms;
+					//activeUniforms.push_back(Uniform(glVariableType(type), glVariablePrecision(type), name, sampler->getArraySize(), index));
+
+					//for(int i = 0; i < sampler->totalRegisterCount(); i++)
+					//{
+					//	shader->declareSampler(index + i);
+					//}
 				}
 			}
 
@@ -2167,9 +2178,15 @@ namespace glsl
 		}
 		else if(binary)
 		{
-			ASSERT(binary->getOp() == EOpIndexDirect || binary->getOp() == EOpIndexIndirect);
-
-			return samplerRegister(binary->getLeft());   // Index added later
+			if(binary->getOp() == EOpIndexDirect || binary->getOp() == EOpIndexIndirect)
+			{
+				return samplerRegister(binary->getLeft());   // Index added later
+			}
+			else if(binary->getOp() == EOpIndexDirectStruct)
+			{
+				return samplerRegister(binary->getLeft());   // Index added later
+			}
+			else UNREACHABLE();
 		}
 		else UNREACHABLE();
 
@@ -2275,7 +2292,17 @@ namespace glsl
 
 		if(!structure)
 		{
-			activeUniforms.push_back(Uniform(glVariableType(type), glVariablePrecision(type), name.c_str(), type.getArraySize(), index));
+			if(isSamplerRegister(type))
+			{
+				for(int i = 0; i < type.totalRegisterCount(); i++)
+				{
+					shader->declareSampler(index + i);
+				}
+			}
+			else
+			{
+				activeUniforms.push_back(Uniform(glVariableType(type), glVariablePrecision(type), name.c_str(), type.getArraySize(), index));
+			}
 		}
 		else
 		{

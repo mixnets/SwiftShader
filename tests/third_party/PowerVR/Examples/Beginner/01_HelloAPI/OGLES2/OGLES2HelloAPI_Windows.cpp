@@ -139,13 +139,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		0.0f,0.0f,1.0f,0.0f,
 		0.0f,0.0f,0.0f,1.0f
 	};
-
+#define SHADER(x) #x
 	// Fragment and vertex shaders code
-	char* pszFragShader = "\
-		void main (void)\
-		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
-		}";
+	char* pszFragShader =
+		SHADER(
+			struct Struct
+			{
+				lowp sampler2D field;
+			};
+			
+			mediump vec4 sample(in Struct x)
+			{
+				return texture2D(x.field, vec2(0.5, 0.5));
+			}
+			
+			uniform Struct a;
+
+			void main()
+			{
+				gl_FragColor = sample(a);
+			}
+		);
 	char* pszVertShader = "\
 		attribute highp vec4	myVertex;\
 		uniform mediump mat4	myPMVMatrix;\
