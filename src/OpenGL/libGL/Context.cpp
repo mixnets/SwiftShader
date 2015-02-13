@@ -44,8 +44,10 @@
 namespace gl
 {
 Context::Context(const Context *shareContext)
-    : modelView(32),
-      projection(2)
+    : modelViewStack(MAX_MODELVIEW_STACK_DEPTH),
+      projectionStack(MAX_PROJECTION_STACK_DEPTH),
+	  textureStack0(MAX_TEXTURE_STACK_DEPTH),
+	  textureStack1(MAX_TEXTURE_STACK_DEPTH)
 {
 	sw::Context *context = new sw::Context();
 	device = new gl::Device(context);
@@ -1314,13 +1316,13 @@ bool Context::getFloatv(GLenum pname, GLfloat *params)
 	  case GL_MODELVIEW_MATRIX:
 		for(int i = 0; i < 16; i++)
 		{
-			params[i] = modelView.current()[i % 4][i / 4];
+			params[i] = modelViewStack.current()[i % 4][i / 4];
 		}
 		break;
 	  case GL_PROJECTION_MATRIX:
 		for(int i = 0; i < 16; i++)
 		{
-			params[i] = projection.current()[i % 4][i / 4];
+			params[i] = modelViewStack.current()[i % 4][i / 4];
 		}
 		break;
       default:
@@ -1972,6 +1974,47 @@ void Context::applyState(GLenum drawMode)
 
         mDitherStateDirty = false;
     }
+
+	if(!mState.currentProgram)
+    {
+		device->setLightingEnable(lighting);
+		device->setGlobalAmbient(sw::Color<float>(globalAmbient.red, globalAmbient.green, globalAmbient.blue, globalAmbient.alpha));
+
+		for(int i = 0; i < MAX_LIGHTS; i++)
+		{
+			device->setLightEnable(i, light[i].enable);
+			device->setLightAmbient(i, sw::Color<float>(light[i].ambient.red, light[i].ambient.green, light[i].ambient.blue, light[i].ambient.alpha));
+			device->setLightDiffuse(i, sw::Color<float>(light[i].diffuse.red, light[i].diffuse.green, light[i].diffuse.blue, light[i].diffuse.alpha));
+			device->setLightSpecular(i, sw::Color<float>(light[i].specular.red, light[i].specular.green, light[i].specular.blue, light[i].specular.alpha));
+			device->setLightAttenuation(i, light[i].attenuation.constant, light[i].attenuation.linear, light[i].attenuation.quadratic);
+
+			if(light[i].position.w != 0.0f)
+			{
+				device->setLightPosition(i, sw::Point(light[i].position.x / light[i].position.w, light[i].position.y / light[i].position.w, light[i].position.z / light[i].position.w));
+			}
+			else   // Hack: set the position far way
+			{
+				device->setLightPosition(i, sw::Point(1e10f * light[i].position.x, 1e10f * light[i].position.y, 1e10f * light[i].position.z));
+			}
+		}
+
+		device->setMaterialAmbient(sw::Color<float>(materialAmbient.red, materialAmbient.green, materialAmbient.blue, materialAmbient.alpha));
+		device->setMaterialDiffuse(sw::Color<float>(materialDiffuse.red, materialDiffuse.green, materialDiffuse.blue, materialDiffuse.alpha));
+		device->setMaterialSpecular(sw::Color<float>(materialSpecular.red, materialSpecular.green, materialSpecular.blue, materialSpecular.alpha));
+		device->setMaterialEmission(sw::Color<float>(materialEmission.red, materialEmission.green, materialEmission.blue, materialEmission.alpha));
+
+		device->setDiffuseMaterialSource(sw::MATERIAL_MATERIAL);
+		device->setSpecularMaterialSource(sw::MATERIAL_MATERIAL);
+		device->setAmbientMaterialSource(sw::MATERIAL_MATERIAL);
+		device->setEmissiveMaterialSource(sw::MATERIAL_MATERIAL);
+
+		device->setProjectionMatrix(projectionStack.current());
+		device->setModelMatrix(modelViewStack.current());
+		device->setTextureMatrix(0, textureStack0.current());
+		device->setTextureMatrix(1, textureStack1.current());
+		device->setTextureTransform(0, textureStack0.isIdentity() ? 0 : 4, false);
+		device->setTextureTransform(1, textureStack1.isIdentity() ? 0 : 4, false);
+	}
 }
 
 GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count)
@@ -2477,17 +2520,6 @@ void Context::clear(GLbitfield mask)
 
 void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
 {
-    if(!mState.currentProgram)
-    {
-        //return;// error(GL_INVALID_OPERATION);
-        device->setProjectionMatrix(projection.current());
-        device->setViewMatrix(modelView.current());
-		device->setTextureMatrix(0, texture[0].current());
-		device->setTextureMatrix(1, texture[1].current());
-		device->setTextureTransform(0, texture[0].isIdentity() ? 0 : 4, false);
-		device->setTextureTransform(1, texture[1].isIdentity() ? 0 : 4, false);
-    }
-
     PrimitiveType primitiveType;
     int primitiveCount;
 
@@ -3091,11 +3123,21 @@ sw::MatrixStack &Context::currentMatrixStack()
 {
 	switch(matrixMode)
 	{
-	case GL_MODELVIEW:  return modelView;                     break;
-	case GL_PROJECTION: return projection;                    break;
-	case GL_TEXTURE:    return texture[mState.activeSampler]; break;
-	default:		    UNREACHABLE();
+	case GL_MODELVIEW:
+		return modelViewStack;
+	case GL_PROJECTION:
+		return projectionStack;
+	case GL_TEXTURE:
+		switch(mState.activeSampler)
+		{
+		case 0: return textureStack0;
+		case 1: return textureStack1;
+		}
+		break;
 	}
+
+	UNREACHABLE();
+	return textureStack0;
 }
 
 void Context::loadIdentity()
@@ -3194,6 +3236,96 @@ void Context::setLighting(bool enable)
     device->setLightingEnable(enable);
 }
 
+void Context::setLight(int index, bool enable)
+{
+	if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+    light[index].enable = enable;
+}
+
+void Context::setLightAmbient(int index, float r, float g, float b, float a)
+{
+	if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+	light[index].ambient = {r, g, b, a};
+}
+
+void Context::setLightDiffuse(int index, float r, float g, float b, float a)
+{
+	if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+	light[index].diffuse = {r, g, b, a};
+}
+
+void Context::setLightSpecular(int index, float r, float g, float b, float a)
+{
+	if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+	light[index].specular = {r, g, b, a};
+}
+
+void Context::setLightPosition(int index, float x, float y, float z, float w)
+{
+	if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+	light[index].position = {x, y, z, w};
+}
+
+void Context::setLightDirection(int index, float x, float y, float z)
+{
+	if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+	light[index].direction = {x, y, z};
+}
+
+void Context::setLightAttenuationConstant(int index, float constant)
+{
+	if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+	light[index].attenuation.constant = constant;
+}
+
+void Context::setLightAttenuationLinear(int index, float linear)
+{
+	if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+	light[index].attenuation.linear = linear;
+}
+
+void Context::setLightAttenuationQuadratic(int index, float quadratic)
+{
+	if(drawing)
+    {
+        return error(GL_INVALID_OPERATION);
+    }
+
+	light[index].attenuation.quadratic = quadratic;
+}
+
 void Context::setFog(bool enable)
 {
     if(drawing)
@@ -3260,11 +3392,6 @@ void Context::setShadeModel(GLenum mode)
 	case GL_SMOOTH: device->setShadingMode(sw::SHADING_GOURAUD); break;
 	default: return error(GL_INVALID_ENUM);
 	}
-}
-
-void Context::setLight(int index, bool enable)
-{
-    device->setLightEnable(index, enable);
 }
 
 void Context::setNormalizeNormals(bool enable)
@@ -3488,12 +3615,12 @@ void Context::end()
         return error(GL_INVALID_OPERATION);
     }
 
-	device->setProjectionMatrix(projection.current());
-    device->setViewMatrix(modelView.current());
-    device->setTextureMatrix(0, texture[0].current());
-	device->setTextureMatrix(1, texture[1].current());
-	device->setTextureTransform(0, texture[0].isIdentity() ? 0 : 4, false);
-	device->setTextureTransform(1, texture[1].isIdentity() ? 0 : 4, false);
+	device->setProjectionMatrix(projectionStack.current());
+    device->setViewMatrix(modelViewStack.current());
+    device->setTextureMatrix(0, textureStack0.current());
+	device->setTextureMatrix(1, textureStack1.current());
+	device->setTextureTransform(0, textureStack0.isIdentity() ? 0 : 4, false);
+	device->setTextureTransform(1, textureStack1.isIdentity() ? 0 : 4, false);
 
 	captureAttribs();
 

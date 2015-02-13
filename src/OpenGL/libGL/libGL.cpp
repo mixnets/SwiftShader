@@ -6597,27 +6597,26 @@ void APIENTRY glLightfv(GLenum light, GLenum pname, const GLfloat *params)
 			UNIMPLEMENTED();
 		}
 
-		gl::Device *device = gl::getDevice();   // FIXME
+		int index = light - GL_LIGHT0;
+
+		if(index < 0 || index > gl::MAX_LIGHTS)
+		{
+			return error(GL_INVALID_ENUM);
+		}
 
 		switch(pname)
 		{
-		case GL_AMBIENT:  device->setLightAmbient(light - GL_LIGHT0, sw::Color<float>(params[0], params[1], params[2], params[3]));  break;
-		case GL_DIFFUSE:  device->setLightDiffuse(light - GL_LIGHT0, sw::Color<float>(params[0], params[1], params[2], params[3]));  break;
-		case GL_SPECULAR: device->setLightSpecular(light - GL_LIGHT0, sw::Color<float>(params[0], params[1], params[2], params[3])); break;
-		case GL_POSITION:
-			if(params[3] == 0.0f)   // Directional light
-			{
-				// Create a very far out point light
-				float max = std::max(std::max(abs(params[0]), abs(params[1])), abs(params[2]));
-				device->setLightPosition(light - GL_LIGHT0, sw::Point(params[0] / max * 1e10f, params[1] / max * 1e10f, params[2] / max * 1e10f));
-			}
-			else
-			{
-				device->setLightPosition(light - GL_LIGHT0, sw::Point(params[0] / params[3], params[1] / params[3], params[2] / params[3]));
-			}
-			break;
+		case GL_AMBIENT:               context->setLightAmbient(index, params[0], params[1], params[2], params[3]);  break;
+		case GL_DIFFUSE:               context->setLightDiffuse(index, params[0], params[1], params[2], params[3]);  break;
+		case GL_SPECULAR:              context->setLightSpecular(index, params[0], params[1], params[2], params[3]); break;
+		case GL_POSITION:              context->setLightPosition(index, params[0], params[1], params[2], params[3]); break;
+		case GL_SPOT_DIRECTION:        context->setLightDirection(index, params[0], params[1], params[2]);           break;
+		case GL_SPOT_EXPONENT:         UNIMPLEMENTED(); break;
+		case GL_SPOT_CUTOFF:           UNIMPLEMENTED(); break;
+		case GL_CONSTANT_ATTENUATION:  context->setLightAttenuationConstant(index, params[0]);                       break;
+		case GL_LINEAR_ATTENUATION:    context->setLightAttenuationLinear(index, params[0]);                         break;
+		case GL_QUADRATIC_ATTENUATION: context->setLightAttenuationQuadratic(index, params[0]);                      break;
 		default:
-			UNIMPLEMENTED();
 			return error(GL_INVALID_ENUM);
 		}
 	}
@@ -8232,7 +8231,7 @@ BOOL WINAPI wglShareLists(HGLRC, HGLRC)
 	return FALSE;
 }
 
-void WINAPI wglSwapBuffers()
+void WINAPI wglSwapBuffers(HDC hdc)
 {
 	TRACE("(*)");
 	

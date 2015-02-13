@@ -319,6 +319,11 @@ enum
     MAX_COMBINED_TEXTURE_IMAGE_UNITS = MAX_TEXTURE_IMAGE_UNITS + MAX_VERTEX_TEXTURE_IMAGE_UNITS,
     MAX_FRAGMENT_UNIFORM_VECTORS = 224 - 3,    // Reserve space for gl_DepthRange
     MAX_DRAW_BUFFERS = 1,
+	MAX_LIGHTS = 8,
+
+	MAX_MODELVIEW_STACK_DEPTH = 32,
+	MAX_PROJECTION_STACK_DEPTH = 2,
+	MAX_TEXTURE_STACK_DEPTH = 2,
 
     IMPLEMENTATION_COLOR_READ_FORMAT = GL_RGB,
     IMPLEMENTATION_COLOR_READ_TYPE = GL_UNSIGNED_SHORT_5_6_5
@@ -356,6 +361,39 @@ struct Color
     float green;
     float blue;
     float alpha;
+};
+
+struct Point
+{
+	float x;
+	float y;
+	float z;
+	float w;
+};
+
+struct Vector
+{
+	float x;
+	float y;
+	float z;
+};
+
+struct Attenuation
+{
+	float constant;
+	float linear;
+	float quadratic;
+};
+
+struct Light
+{
+	bool enable;
+	Color ambient;
+	Color diffuse;
+	Color specular;
+	Point position;
+	Vector direction;
+	Attenuation attenuation;
 };
 
 // Helper structure describing a single vertex attribute
@@ -685,12 +723,21 @@ public:
     void ortho(double left, double right, double bottom, double top, double zNear, double zFar);   // FIXME: GLdouble
 
     void setLighting(bool enabled);
+	void setLight(int index, bool enable);
+	void setLightAmbient(int index, float r, float g, float b, float a);
+	void setLightDiffuse(int index, float r, float g, float b, float a);
+	void setLightSpecular(int index, float r, float g, float b, float a);
+	void setLightPosition(int index, float x, float y, float z, float w);
+	void setLightDirection(int index, float x, float y, float z);
+	void setLightAttenuationConstant(int index, float constant);
+	void setLightAttenuationLinear(int index, float linear);
+	void setLightAttenuationQuadratic(int index, float quadratic);
+
     void setFog(bool enabled);
 	void setAlphaTest(bool enabled);
 	void alphaFunc(GLenum func, GLclampf ref);
     void setTexture2D(bool enabled);
 	void setShadeModel(GLenum mode);
-    void setLight(int index, bool enable);
 	void setNormalizeNormals(bool enable);
 
 	GLuint genLists(GLsizei range);
@@ -757,6 +804,14 @@ private:
     VertexDataManager *mVertexDataManager;
     IndexDataManager *mIndexDataManager;
 
+	bool lighting;
+	Light light[MAX_LIGHTS];
+	Color globalAmbient;
+	Color materialAmbient;
+	Color materialDiffuse;
+	Color materialSpecular;
+	Color materialEmission;
+
     // Recorded errors
     bool mInvalidEnum;
     bool mInvalidValue;
@@ -784,9 +839,10 @@ private:
 
 	sw::MatrixStack &currentMatrixStack();
 	GLenum matrixMode;
-    sw::MatrixStack modelView;
-	sw::MatrixStack projection;
-	sw::MatrixStack texture[8];
+    sw::MatrixStack modelViewStack;
+	sw::MatrixStack projectionStack;
+	sw::MatrixStack textureStack0;
+	sw::MatrixStack textureStack1;
 
 	GLenum listMode;
 	//std::map<GLuint, GLuint> listMap;
