@@ -2967,6 +2967,7 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
 			"GL_OES_texture_half_float_linear "
 			"GL_OES_texture_npot "
 			"GL_OES_texture_3D "
+			"GL_OES_vertex_half_float "
 			"GL_EXT_blend_minmax "
 			"GL_EXT_occlusion_query_boolean "
 			"GL_EXT_read_format_bgra "
@@ -5093,6 +5094,7 @@ void GL_APIENTRY glVertexAttribPointer(GLuint index, GLint size, GLenum type, GL
 	case GL_UNSIGNED_SHORT:
 	case GL_FIXED:
 	case GL_FLOAT:
+	case GL_HALF_FLOAT_OES:
 		break;
 	default:
 		return error(GL_INVALID_ENUM);
