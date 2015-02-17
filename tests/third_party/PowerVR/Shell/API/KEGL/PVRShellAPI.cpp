@@ -787,45 +787,6 @@ bool PVRShellInit::ApiScreenCaptureBuffer(int Width,int Height,unsigned char *pB
 *************************************************************************/
 void PVRShellInit::ApiRenderComplete()
 {
-
-#if defined(BUILD_OGLES) || defined(BUILD_OGLES2) || defined(BUILD_OGLES3)
-	//Discard the framebuffer if set.
-#if !defined(BUILD_OGLES3)
-	if (glDiscardFramebufferEXT)
-#endif
-	{
-		const GLint numAttachments=3;
-		GLenum attachments[numAttachments];
-		GLint currentAttachment=0;
-		if (m_pShell->PVRShellGet(prefDiscardColor))
-		{
-			attachments[currentAttachment] = GL_COLOR_EXT;
-			currentAttachment++;
-		}
-		if (m_pShell->PVRShellGet(prefDiscardDepth))
-		{
-			attachments[currentAttachment] = GL_DEPTH_EXT;
-			currentAttachment++;
-		}
-		if (m_pShell->PVRShellGet(prefDiscardStencil))
-		{
-			attachments[currentAttachment] = GL_STENCIL_EXT;
-			currentAttachment++;
-		}
-		//Assuming some attachments have been chosen, discard/invalidate them.
-		if (currentAttachment!=0)
-		{
-#if defined(BUILD_OGLES)
-			glDiscardFramebufferEXT(GL_FRAMEBUFFER_OES, currentAttachment, attachments);
-#elif defined(BUILD_OGLES2)
-			glDiscardFramebufferEXT(GL_FRAMEBUFFER, currentAttachment, attachments);
-#elif defined(BUILD_OGLES3)
-			glInvalidateFramebuffer(GL_FRAMEBUFFER, currentAttachment, attachments);
-#endif
-		}
-	}
-#endif
-
 	bool bRes;
 
 	if(m_pShell->m_pShellData->bNeedPixmap)
