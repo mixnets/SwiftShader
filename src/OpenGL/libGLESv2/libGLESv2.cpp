@@ -2627,6 +2627,44 @@ void GL_APIENTRY glGetIntegerv(GLenum pname, GLint* params)
 			}
 		}
 	}
+	else
+	{
+		switch (pname)
+		{
+		case GL_MAX_VERTEX_ATTRIBS:               *params = es2::MAX_VERTEX_ATTRIBS;               break;
+		case GL_MAX_VERTEX_UNIFORM_VECTORS:       *params = es2::MAX_VERTEX_UNIFORM_VECTORS;       break;
+		case GL_MAX_VARYING_VECTORS:              *params = es2::MAX_VARYING_VECTORS;              break;
+		case GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: *params = es2::MAX_COMBINED_TEXTURE_IMAGE_UNITS; break;
+		case GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS:   *params = es2::MAX_VERTEX_TEXTURE_IMAGE_UNITS;   break;
+		case GL_MAX_TEXTURE_IMAGE_UNITS:          *params = es2::MAX_TEXTURE_IMAGE_UNITS;          break;
+		case GL_MAX_FRAGMENT_UNIFORM_VECTORS:     *params = es2::MAX_FRAGMENT_UNIFORM_VECTORS;     break;
+		case GL_MAX_RENDERBUFFER_SIZE:            *params = es2::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE; break;
+		case GL_NUM_SHADER_BINARY_FORMATS:        *params = 0;                                    break;
+		case GL_SUBPIXEL_BITS:                    *params = 4;                                    break;
+		case GL_MAX_TEXTURE_SIZE:                 *params = es2::IMPLEMENTATION_MAX_TEXTURE_SIZE;          break;
+		case GL_MAX_CUBE_MAP_TEXTURE_SIZE:        *params = es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE; break;
+		case GL_NUM_COMPRESSED_TEXTURE_FORMATS:   *params = es2::NUM_COMPRESSED_TEXTURE_FORMATS;           break;
+		case GL_MAX_SAMPLES_ANGLE:                *params = es2::IMPLEMENTATION_MAX_SAMPLES;               break;
+		case GL_SAMPLE_BUFFERS:                   
+		case GL_MAX_VIEWPORT_DIMS:
+			{
+				int maxDimension = es2::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE;
+				params[0] = maxDimension;
+				params[1] = maxDimension;
+			}
+			break;
+		case GL_COMPRESSED_TEXTURE_FORMATS:
+			{
+				for(int i = 0; i < es2::NUM_COMPRESSED_TEXTURE_FORMATS; i++)
+				{
+					params[i] = es2::compressedTextureFormats[i];
+				}
+			}
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
+		}
+	}
 }
 
 void GL_APIENTRY glGetProgramiv(GLuint program, GLenum pname, GLint* params)
