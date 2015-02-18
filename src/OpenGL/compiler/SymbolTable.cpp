@@ -189,6 +189,8 @@ TSymbol *TSymbolTable::find(const TString &name, int shaderVersion,
 
     do
     {
+        if (level == ESSL3_BUILTINS && shaderVersion != 300)
+            level--;
         if (level == ESSL1_BUILTINS && shaderVersion != 100)
             level--;
 
@@ -209,6 +211,8 @@ TSymbol *TSymbolTable::findBuiltIn(
 {
     for (int level = LAST_BUILTIN_LEVEL; level >= 0; level--)
     {
+        if (level == ESSL3_BUILTINS && shaderVersion != 300)
+            level--;
         if (level == ESSL1_BUILTINS && shaderVersion != 100)
             level--;
 
