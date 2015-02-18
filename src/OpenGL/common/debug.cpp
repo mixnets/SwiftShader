@@ -16,18 +16,21 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+static FILE* file = NULL;
+
 namespace es
 {
 	static void output(const char *format, va_list vararg)
 	{
 		if(false)
 		{
-			FILE* file = fopen(TRACE_OUTPUT_FILE, "a");
-
 			if(file)
 			{
 				vfprintf(file, format, vararg);
-				fclose(file);
+			}
+			else
+			{
+				file = fopen(TRACE_OUTPUT_FILE, "w");
 			}
 		}
 	}
