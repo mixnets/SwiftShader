@@ -53,6 +53,12 @@ ShBuiltInResources::ShBuiltInResources()
 	OES_fragment_precision_high = 0;
     OES_EGL_image_external = 0;
 
+	// GLSL ES 3.0 constants.
+    MaxVertexOutputVectors = 16;
+    MaxFragmentInputVectors = 15;
+    MinProgramTexelOffset = -8;
+    MaxProgramTexelOffset = 7;
+
 	MaxCallStackDepth = UINT_MAX;
 }
 
@@ -150,13 +156,9 @@ bool TCompiler::compile(const char* const shaderStrings[],
 bool TCompiler::InitBuiltInSymbolTable(const ShBuiltInResources &resources)
 {
     assert(symbolTable.isEmpty());
-    
-    //
-    // Push the symbol table to give it an initial scope.  This
-    // push should not have a corresponding pop, so that built-ins
-    // are preserved, and the test for an empty table fails.
-    //
-    symbolTable.push();
+    symbolTable.push();   // COMMON_BUILTINS
+    symbolTable.push();   // ESSL1_BUILTINS
+    symbolTable.push();   // ESSL3_BUILTINS
 
 	TPublicType integer;
 	integer.type = EbtInt;
@@ -182,7 +184,7 @@ bool TCompiler::InitBuiltInSymbolTable(const ShBuiltInResources &resources)
     default: assert(false && "Language not supported");
     }
 
-	InsertBuiltInFunctions(shaderType, resources, symbolTable);
+	InsertBuiltInFunctions(shaderType, resources, extensionBehavior, symbolTable);
 
     IdentifyBuiltIns(shaderType, resources, symbolTable);
 

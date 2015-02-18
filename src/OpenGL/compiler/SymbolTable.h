@@ -38,7 +38,8 @@
 //
 // Symbol base class.  (Can build functions or variables out of these...)
 //
-class TSymbol {    
+class TSymbol
+{    
 public:
     POOL_ALLOCATOR_NEW_DELETE();
     TSymbol(const TString *n) :  name(n) { }
@@ -67,7 +68,8 @@ protected:
 // different values for different types polymorphically, so this is 
 // just simple and pragmatic.
 //
-class TVariable : public TSymbol {
+class TVariable : public TSymbol
+{
 public:
     TVariable(const TString *name, const TType& t, bool uT = false ) : TSymbol(name), type(t), userType(uT), unionArray(0), arrayInformationType(0) { }
     virtual ~TVariable() { }
@@ -111,7 +113,8 @@ protected:
 // The function sub-class of symbols and the parser will need to
 // share this definition of a function parameter.
 //
-struct TParameter {
+struct TParameter
+{
     TString *name;
     TType *type;
 };
@@ -119,7 +122,8 @@ struct TParameter {
 //
 // The function sub-class of a symbol.  
 //
-class TFunction : public TSymbol {
+class TFunction : public TSymbol
+{
 public:
     TFunction(TOperator o) :
         TSymbol(0),
@@ -142,7 +146,7 @@ public:
     }
 
     void addParameter(TParameter& p) 
-    { 
+    {
         parameters.push_back(p);
         mangledName = mangledName + p.type->getMangledName();
     }
@@ -173,7 +177,8 @@ protected:
 };
 
 
-class TSymbolTableLevel {
+class TSymbolTableLevel
+{
 public:
     typedef TMap<TString, TSymbol*> tLevel;
     typedef tLevel::const_iterator const_iterator;
@@ -214,7 +219,17 @@ protected:
 	static int uniqueId;     // for unique identification in code generation
 };
 
-class TSymbolTable {
+enum ESymbolLevel
+{
+    COMMON_BUILTINS = 0,
+    ESSL1_BUILTINS = 1,
+    ESSL3_BUILTINS = 2,
+    LAST_BUILTIN_LEVEL = ESSL3_BUILTINS,
+    GLOBAL_LEVEL = 3
+};
+
+class TSymbolTable
+{
 public:
     TSymbolTable()
     {
@@ -227,19 +242,15 @@ public:
 
     ~TSymbolTable()
     {
-        // level 0 is always built In symbols, so we never pop that out
-        while (table.size() > 1)
-            pop();
+		while(currentLevel() > LAST_BUILTIN_LEVEL)
+		{
+			pop();
+		}
     }
 
-    //
-    // When the symbol table is initialized with the built-ins, there should
-    // 'push' calls, so that built-ins are at level 0 and the shader
-    // globals are at level 1.
-    //
-    bool isEmpty() { return table.size() == 0; }
-    bool atBuiltInLevel() { return table.size() == 1; }
-    bool atGlobalLevel() { return table.size() <= 2; }
+    bool isEmpty() { return table.empty(); }
+    bool atBuiltInLevel() { return currentLevel() <= LAST_BUILTIN_LEVEL; }
+    bool atGlobalLevel() { return currentLevel() <= GLOBAL_LEVEL; }
     void push()
     {
         table.push_back(new TSymbolTableLevel);
@@ -247,85 +258,72 @@ public:
     }
 
     void pop()
-    { 
-        delete table[currentLevel()]; 
-        table.pop_back(); 
+    {
+        delete table[currentLevel()];
+        table.pop_back();
         precisionStack.pop_back();
     }
 
-    bool insert(TSymbol& symbol)
+    bool declare(TSymbol &symbol)
     {
-        return table[currentLevel()]->insert(symbol);
+        return insert(currentLevel(), symbol);
     }
 
-	bool insertConstInt(const char *name, int value)
+    bool insert(ESymbolLevel level, TSymbol &symbol)
+    {
+        return table[level]->insert(symbol);
+    }
+
+    bool insertConstInt(ESymbolLevel level, const char *name, int value)
+    {
+        TVariable *constant = new TVariable(NewPoolTString(name), TType(EbtInt, EbpUndefined, EvqConst, 1));
+        constant->getConstPointer()->setIConst(value);
+        return insert(level, *constant);
+    }
+
+    bool insertBuiltIn(ESymbolLevel level, TType *rvalue, const char *name, TType *ptype1, const char *pname1, TType *ptype2 = 0, const char *pname2 = 0, TType *ptype3 = 0, const char *pname3 = 0)
+    {
+        TFunction *function = new TFunction(NewPoolTString(name), *rvalue);
+
+        TParameter param1 = {NewPoolTString(pname1), ptype1};
+        function->addParameter(param1);
+
+        if(pname2)
+        {
+            TParameter param2 = {NewPoolTString(pname2), ptype2};
+            function->addParameter(param2);
+        }
+
+        if(pname3)
+        {
+            TParameter param3 = {NewPoolTString(pname3), ptype3};
+            function->addParameter(param3);
+        }
+
+        return insert(level, *function);
+    }
+
+    TSymbol *find(const TString &name, int shaderVersion, bool *builtIn = false, bool *sameScope = false) const;
+    TSymbol *findBuiltIn(const TString &name, int shaderVersion) const;
+    
+    TSymbolTableLevel *getOuterLevel()
 	{
-		TVariable *constant = new TVariable(NewPoolTString(name), TType(EbtInt, EbpUndefined, EvqConst, 1));
-		constant->getConstPointer()->setIConst(value);
-		return insert(*constant);
-	}
-
-	bool insertBuiltIn(TType *rvalue, const char *name, TType *ptype1, TType *ptype2 = 0, TType *ptype3 = 0)
-	{
-		TFunction *function = new TFunction(NewPoolTString(name), *rvalue);
-
-		TParameter param1 = {0, ptype1};
-		function->addParameter(param1);
-
-		if(ptype2)
-		{
-			TParameter param2 = {0, ptype2};
-			function->addParameter(param2);
-		}
-
-		if(ptype3)
-		{
-			TParameter param3 = {0, ptype3};
-			function->addParameter(param3);
-		}
-
-		return insert(*function);
-	}
-
-    TSymbol* find(const TString& name, bool* builtIn = 0, bool *sameScope = 0) 
-    {
-        int level = currentLevel();
-        TSymbol* symbol;
-        do {
-            symbol = table[level]->find(name);
-            --level;
-        } while (symbol == 0 && level >= 0);
-        level++;
-        if (builtIn)
-            *builtIn = level == 0;
-        if (sameScope)
-            *sameScope = level == currentLevel();
-        return symbol;
-    }
-
-    TSymbol *findBuiltIn(const TString &name)
-    {
-        return table[0]->find(name);
-    }
-
-    TSymbolTableLevel* getGlobalLevel() {
-        assert(table.size() >= 2);
-        return table[1];
-    }
-
-    TSymbolTableLevel* getOuterLevel() {
-        assert(table.size() >= 2);
+        assert(currentLevel() >= 1);
         return table[currentLevel() - 1];
     }
 
-    void relateToOperator(const char* name, TOperator op) {
-        table[0]->relateToOperator(name, op);
+    void relateToOperator(ESymbolLevel level, const char *name, TOperator op)
+	{
+        table[level]->relateToOperator(name, op);
     }
-    void relateToExtension(const char* name, const TString& ext) {
-        table[0]->relateToExtension(name, ext);
+    
+	void relateToExtension(ESymbolLevel level, const char *name, const TString &ext)
+	{
+        table[level]->relateToExtension(name, ext);
     }
 
-    bool setDefaultPrecision( const TPublicType& type, TPrecision prec ){
+    bool setDefaultPrecision(const TPublicType &type, TPrecision prec)
+	{
         if (IsSampler(type.type))
             return true;  // Skip sampler types for the time being
         if (type.type != EbtFloat && type.type != EbtInt)
@@ -338,8 +336,8 @@ public:
     }
 
     // Searches down the precisionStack for a precision qualifier for the specified TBasicType
-    TPrecision getDefaultPrecision( TBasicType type)
-    {
+    TPrecision getDefaultPrecision( TBasicType type){
+
         // unsigned integers use the same precision as signed
         if (type == EbtUInt) type = EbtInt;
 
@@ -359,8 +357,8 @@ public:
         return prec;
     }
 
-protected:    
-    int currentLevel() const { return static_cast<int>(table.size()) - 1; }
+protected:
+    ESymbolLevel currentLevel() const { return static_cast<ESymbolLevel>(table.size() - 1); }
 
     std::vector<TSymbolTableLevel*> table;
     typedef std::map< TBasicType, TPrecision > PrecisionStackLevel;

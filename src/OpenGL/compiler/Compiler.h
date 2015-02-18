@@ -46,6 +46,12 @@ struct ShBuiltInResources
 	int OES_fragment_precision_high;
     int OES_EGL_image_external;
 
+	// GLSL ES 3.0 constants.
+    int MaxVertexOutputVectors;
+    int MaxFragmentInputVectors;
+    int MinProgramTexelOffset;
+    int MaxProgramTexelOffset;
+
     unsigned int MaxCallStackDepth;
 };
 
