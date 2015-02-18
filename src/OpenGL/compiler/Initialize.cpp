@@ -16,11 +16,12 @@
 
 void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TSymbolTable &symbolTable)
 {
-	TType *float1 = new TType(EbtFloat, 1);
+	TType *float1 = new TType(EbtFloat);
 	TType *float2 = new TType(EbtFloat, 2);
 	TType *float3 = new TType(EbtFloat, 3);
 	TType *float4 = new TType(EbtFloat, 4);
 
+	TType *int1 = new TType(EbtInt);
 	TType *int2 = new TType(EbtInt, 2);
 	TType *int3 = new TType(EbtInt, 3);
 	TType *int4 = new TType(EbtInt, 4);
@@ -245,7 +246,7 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
     symbolTable.insertBuiltIn(COMMON_BUILTINS, mat3, "matrixCompMult", mat3, mat3);
     symbolTable.insertBuiltIn(COMMON_BUILTINS, mat4, "matrixCompMult", mat4, mat4);
 
-	TType *bool1 = new TType(EbtBool, 1);
+	TType *bool1 = new TType(EbtBool);
 	TType *bool2 = new TType(EbtBool, 2);
 	TType *bool3 = new TType(EbtBool, 3);
 	TType *bool4 = new TType(EbtBool, 4);
@@ -321,9 +322,9 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
     symbolTable.insertBuiltIn(COMMON_BUILTINS, bool3, "not", bool3);
     symbolTable.insertBuiltIn(COMMON_BUILTINS, bool4, "not", bool4);
 
-	TType *sampler2D = new TType(EbtSampler2D, 1);
-	TType *samplerCube = new TType(EbtSamplerCube, 1);
-	TType *sampler3D = new TType(EbtSampler3D, 1);
+	TType *sampler2D = new TType(EbtSampler2D);
+	TType *samplerCube = new TType(EbtSamplerCube);
+	TType *sampler3D = new TType(EbtSampler3D);
 
     //
     // Texture Functions for GLSL ES 1.0
@@ -336,7 +337,7 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
 
 	if(resources.OES_EGL_image_external)
     {
-        TType *samplerExternalOES = new TType(EbtSamplerExternalOES, 1);
+        TType *samplerExternalOES = new TType(EbtSamplerExternalOES);
 
         symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture2D", samplerExternalOES, float2);
         symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture2DProj", samplerExternalOES, float3);
@@ -378,6 +379,39 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
 		symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "textureCubeLod", samplerCube, float3, float1);
 		symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture3DLod", sampler3D, float3, float1);
 	}
+
+    TType *gvec4 = new TType(EbtGVec4);
+
+    TType *gsampler2D = new TType(EbtGSampler2D);
+    TType *gsamplerCube = new TType(EbtGSamplerCube);
+    TType *gsampler3D = new TType(EbtGSampler3D);
+    TType *gsampler2DArray = new TType(EbtGSampler2DArray);
+
+    //
+    // Texture Functions for GLSL ES 3.0
+    //
+    symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "texture", gsampler2D, float2);
+    symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "texture", gsampler3D, float3);
+    symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "texture", gsamplerCube, float3);
+    symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "texture", gsampler2DArray, float3);
+    symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "textureProj", gsampler2D, float3);
+    symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "textureProj", gsampler2D, float4);
+    symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "textureProj", gsampler3D, float4);
+    symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "textureLod", gsampler2D, float2, float1);
+    symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "textureLod", gsampler3D, float3, float1);
+    symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "textureLod", gsamplerCube, float3, float1);
+    symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "textureLod", gsampler2DArray, float3, float1);
+
+    if(type == GL_FRAGMENT_SHADER)
+    {
+        symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "texture", gsampler2D, float2, float1);
+        symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "texture", gsampler3D, float3, float1);
+        symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "texture", gsamplerCube, float3, float1);
+        symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "texture", gsampler2DArray, float3, float1);
+        symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "textureProj", gsampler2D, float3, float1);
+        symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "textureProj", gsampler2D, float4, float1);
+        symbolTable.insertBuiltIn(ESSL3_BUILTINS, gvec4, "textureProj", gsampler3D, float4, float1);
+    }
 
     //
     // Depth range in window coordinates
