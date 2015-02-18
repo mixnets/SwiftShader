@@ -11,7 +11,8 @@
 #include "Compiler.h"
 #include "SymbolTable.h"
 
-void InsertBuiltInFunctions(GLenum shaderType, const ShBuiltInResources &resources, TSymbolTable &table);
+void InsertBuiltInFunctions(GLenum shaderType, const ShBuiltInResources &resources,
+                            const TExtensionBehavior &extensionBehavior, TSymbolTable &table);
 
 void IdentifyBuiltIns(GLenum shaderType,
                       const ShBuiltInResources& resources,

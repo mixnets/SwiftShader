@@ -193,7 +193,7 @@ variable_identifier
             context->recover();
             TType type(EbtFloat, EbpUndefined);
             TVariable* fakeVariable = new TVariable($1.string, type);
-            context->symbolTable.insert(*fakeVariable);
+            context->symbolTable.declare(*fakeVariable);
             variable = fakeVariable;
         } else {
             // This identifier can only be a variable type symbol
@@ -1025,7 +1025,7 @@ function_prototype
         //
         // Redeclarations are allowed.  But, return types and parameter qualifiers must match.
         //
-        TFunction* prevDec = static_cast<TFunction*>(context->symbolTable.find($1->getMangledName()));
+        TFunction* prevDec = static_cast<TFunction*>(context->symbolTable.find($1->getMangledName(), context->shaderVersion));
         if (prevDec) {
             if (prevDec->getReturnType() != $1->getReturnType()) {
                 context->error($2.line, "overloaded functions must have the same return type", $1->getReturnType().getBasicString());
@@ -1457,7 +1457,7 @@ single_declaration
 //        if (context->reservedErrorCheck($2.line, *$2.string, context))
 //            context->recover();
 //        $$.variable = new TVariable($2.string, $1);
-//        if (! context->symbolTable.insert(*$$.variable)) {
+//        if (! context->symbolTable.declare(*$$.variable)) {
 //            context->error($2.line, "redefinition", $$.variable->getName().c_str());
 //            context->recover();
 //            // don't have to delete $$.variable, the pool pop will take care of it
@@ -1799,7 +1799,7 @@ struct_specifier
 
         TType* structure = new TType($5, *$2.string);
         TVariable* userTypeDef = new TVariable($2.string, *structure, true);
-        if (! context->symbolTable.insert(*userTypeDef)) {
+        if (! context->symbolTable.declare(*userTypeDef)) {
             context->error($2.line, "redefinition", $2.string->c_str(), "struct");
             context->recover();
         }
@@ -2129,7 +2129,7 @@ function_definition
     : function_prototype {
         TFunction* function = $1.function;
         
-        const TSymbol *builtIn = context->symbolTable.findBuiltIn(function->getMangledName());
+        const TSymbol *builtIn = context->symbolTable.findBuiltIn(function->getMangledName(), context->shaderVersion);
         
         if (builtIn)
         {
@@ -2137,7 +2137,7 @@ function_definition
             context->recover();
         }
         
-        TFunction* prevDec = static_cast<TFunction*>(context->symbolTable.find(function->getMangledName()));
+        TFunction* prevDec = static_cast<TFunction*>(context->symbolTable.find(function->getMangledName(), context->shaderVersion));
         //
         // Note:  'prevDec' could be 'function' if this is the first time we've seen function
         // as it would have just been put in the symbol table.  Otherwise, we're looking up
@@ -2188,7 +2188,7 @@ function_definition
                 //
                 // Insert the parameters with name in the symbol table.
                 //
-                if (! context->symbolTable.insert(*variable)) {
+                if (! context->symbolTable.declare(*variable)) {
                     context->error($1.line, "redefinition", variable->getName().c_str());
                     context->recover();
                     delete variable;
