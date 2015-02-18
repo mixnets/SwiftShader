@@ -22,12 +22,15 @@ namespace es
 	{
 		if(false)
 		{
-			FILE* file = fopen(TRACE_OUTPUT_FILE, "a");
-
+			static FILE* file = nullptr;
 			if(file)
 			{
 				vfprintf(file, format, vararg);
-				fclose(file);
+			}
+			else
+			{
+				file = fopen(TRACE_OUTPUT_FILE, "w");
+				vfprintf(file, format, vararg);
 			}
 		}
 	}
