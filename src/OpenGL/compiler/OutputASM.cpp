@@ -767,8 +767,11 @@ namespace glsl
 				else
 				{
 					TString name = TFunction::unmangleName(node->getName());
+					TIntermSequence &arguments = node->getSequence();
+					TBasicType samplerType = arguments[0]->getAsTyped()->getType().getBasicType();
 
-					if(name == "texture2D" || name == "textureCube" || name == "texture3D")
+					if(name == "texture2D" || name == "textureCube" || name == "texture3D" ||
+					   (name == "texture" && (samplerType == EbtSampler2D || samplerType == EbtSampler3D)))
 					{
 						if(argumentCount == 2)
 						{	
