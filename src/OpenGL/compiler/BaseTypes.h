@@ -40,7 +40,15 @@ enum TBasicType
     EbtInt,
     EbtUInt,
     EbtBool,
-	EbtGVec4,              // non type: represents vec4, ivec4 and uvec4
+	EbtGVec4,              // non type: represents vec4, ivec4, and uvec4
+	EbtGenType,            // non type: represents float, vec2, vec3, and vec4
+	EbtGenIType,           // non type: represents int, ivec2, ivec3, and ivec4
+	EbtGenUType,           // non type: represents uint, uvec2, uvec3, and uvec4
+	EbtGenBType,           // non type: represents bool, bvec2, bvec3, and bvec4
+	EbtVec,                // non type: represents vec2, vec3, and vec4
+	EbtIVec,               // non type: represents ivec2, ivec3, and ivec4
+	EbtUVec,               // non type: represents uvec2, uvec3, and uvec4
+	EbtBVec,               // non type: represents bvec2, bvec3, and bvec4
     EbtGuardSamplerBegin,  // non type: see implementation of IsSampler()
     EbtSampler2D,
     EbtSampler3D,
@@ -59,10 +67,10 @@ enum TBasicType
     EbtSamplerCubeShadow,
     EbtSampler2DArrayShadow,
 	EbtGuardSamplerEnd,    // non type: see implementation of IsSampler()
-    EbtGSampler2D,         // non type: represents sampler2D, isampler2D and usampler2D
-    EbtGSampler3D,         // non type: represents sampler3D, isampler3D and usampler3D
-    EbtGSamplerCube,       // non type: represents samplerCube, isamplerCube and usamplerCube
-    EbtGSampler2DArray,    // non type: represents sampler2DArray, isampler2DArray and usampler2DArray
+    EbtGSampler2D,         // non type: represents sampler2D, isampler2D, and usampler2D
+    EbtGSampler3D,         // non type: represents sampler3D, isampler3D, and usampler3D
+    EbtGSamplerCube,       // non type: represents samplerCube, isamplerCube, and usamplerCube
+    EbtGSampler2DArray,    // non type: represents sampler2DArray, isampler2DArray, and usampler2DArray
     EbtStruct,
     EbtAddress,            // should be deprecated??
     EbtInvariant           // used as a type when qualifying a previously declared variable as being invariant
