@@ -155,7 +155,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 
 void Surface::swap()
 {
-    #if PERF_PROFILE
+    #if PERF_ACTIVE
 		profiler.nextFrame();
 	#endif
 

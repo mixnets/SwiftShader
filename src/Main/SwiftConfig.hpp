@@ -38,6 +38,7 @@ namespace sw
 			int textureSampleQuality;
 			int mipmapQuality;
 			bool perspectiveCorrection;
+			bool nullRenderer;
 			int transcendentalPrecision;
 			int threadCount;
 			bool enableSSE;

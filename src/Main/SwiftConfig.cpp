@@ -22,7 +22,7 @@
 #include <sys/stat.h>
 #include <string.h>
 
-#if PERF_PROFILE
+#if PERF_ACTIVE
 extern Profiler profiler;
 #endif
 
@@ -265,6 +265,7 @@ namespace sw
 		html += "<input type='submit' value='Apply changes' title='Click to apply all settings.'>\n";
 	//	html += "<input type='reset' value='Reset changes' title='Click to reset your changes to the previous value.'>\n";
 		html += "</p><hr>\n";
+		html += "NullRenderer:<input name = 'nullRenderer' type='checkbox'" + (config.nullRenderer ? checked : empty) + " title='Disables draw operations.'>\n";
 		html += "<h2><em>Device capabilities</em></h2>\n";
 		html += "<table>\n";
 		html += "<tr><td>Build revision:</td><td>" REVISION_STRING "</td></tr>\n";
@@ -390,11 +391,11 @@ namespace sw
 		html += "<option value='15'" + (config.threadCount == 15 ? selected : empty) + ">15</option>\n";
 		html += "<option value='16'" + (config.threadCount == 16 ? selected : empty) + ">16</option>\n";
 		html += "</select></td></tr>\n";
-		html += "<tr><td>Enable SSE:</td><td><input name = 'enableSSE' type='checkbox'" + (config.enableSSE == true ? checked : empty) + " disabled='disabled' title='If checked enables the use of SSE instruction set extentions if supported by the CPU.'></td></tr>";
-		html += "<tr><td>Enable SSE2:</td><td><input name = 'enableSSE2' type='checkbox'" + (config.enableSSE2 == true ? checked : empty) + " title='If checked enables the use of SSE2 instruction set extentions if supported by the CPU.'></td></tr>";
-		html += "<tr><td>Enable SSE3:</td><td><input name = 'enableSSE3' type='checkbox'" + (config.enableSSE3 == true ? checked : empty) + " title='If checked enables the use of SSE3 instruction set extentions if supported by the CPU.'></td></tr>";
-		html += "<tr><td>Enable SSSE3:</td><td><input name = 'enableSSSE3' type='checkbox'" + (config.enableSSSE3 == true ? checked : empty) + " title='If checked enables the use of SSSE3 instruction set extentions if supported by the CPU.'></td></tr>";
-		html += "<tr><td>Enable SSE4.1:</td><td><input name = 'enableSSE4_1' type='checkbox'" + (config.enableSSE4_1 == true ? checked : empty) + " title='If checked enables the use of SSE4.1 instruction set extentions if supported by the CPU.'></td></tr>";
+		html += "<tr><td>Enable SSE:</td><td><input name = 'enableSSE' type='checkbox'" + (config.enableSSE ? checked : empty) + " disabled='disabled' title='If checked enables the use of SSE instruction set extentions if supported by the CPU.'></td></tr>";
+		html += "<tr><td>Enable SSE2:</td><td><input name = 'enableSSE2' type='checkbox'" + (config.enableSSE2 ? checked : empty) + " title='If checked enables the use of SSE2 instruction set extentions if supported by the CPU.'></td></tr>";
+		html += "<tr><td>Enable SSE3:</td><td><input name = 'enableSSE3' type='checkbox'" + (config.enableSSE3 ? checked : empty) + " title='If checked enables the use of SSE3 instruction set extentions if supported by the CPU.'></td></tr>";
+		html += "<tr><td>Enable SSSE3:</td><td><input name = 'enableSSSE3' type='checkbox'" + (config.enableSSSE3 ? checked : empty) + " title='If checked enables the use of SSSE3 instruction set extentions if supported by the CPU.'></td></tr>";
+		html += "<tr><td>Enable SSE4.1:</td><td><input name = 'enableSSE4_1' type='checkbox'" + (config.enableSSE4_1 ? checked : empty) + " title='If checked enables the use of SSE4.1 instruction set extentions if supported by the CPU.'></td></tr>";
 		html += "</table>\n";
 		html += "<h2><em>Compiler optimizations</em></h2>\n";
 		html += "<table>\n";
@@ -453,7 +454,7 @@ namespace sw
 		html += "</body>\n";
 		html += "</html>\n";
 
-		#if PERF_PROFILE
+		#if PERF_ACTIVE
 			profiler.reset();
 		#endif
 
@@ -464,47 +465,51 @@ namespace sw
 	{
 		std::string html;
 
-		#if PERF_PROFILE
-			int texTime = (int)(1000 * profiler.cycles[PERF_TEX] / profiler.cycles[PERF_PIXEL] + 0.5);
-			int shaderTime = (int)(1000 * profiler.cycles[PERF_SHADER] / profiler.cycles[PERF_PIXEL] + 0.5);
-			int pipeTime = (int)(1000 * profiler.cycles[PERF_PIPE] / profiler.cycles[PERF_PIXEL] + 0.5);
-			int ropTime = (int)(1000 * profiler.cycles[PERF_ROP] / profiler.cycles[PERF_PIXEL] + 0.5);
-			int interpTime = (int)(1000 * profiler.cycles[PERF_INTERP] / profiler.cycles[PERF_PIXEL] + 0.5);
-			int rastTime = 1000 - pipeTime;
-
-			pipeTime -= shaderTime + ropTime + interpTime;
-			shaderTime -= texTime;
-
-			double texTimeF = (double)texTime / 10;
-			double shaderTimeF = (double)shaderTime / 10;
-			double pipeTimeF = (double)pipeTime / 10;
-			double ropTimeF = (double)ropTime / 10;
-			double interpTimeF = (double)interpTime / 10;
-			double rastTimeF = (double)rastTime / 10;
-
-			double averageRopOperations = profiler.ropOperationsTotal / std::max(profiler.framesTotal, 1) / 1.0e6f;
-			double averageCompressedTex = profiler.compressedTexTotal / std::max(profiler.framesTotal, 1) / 1.0e6f;
-			double averageTexOperations = profiler.texOperationsTotal / std::max(profiler.framesTotal, 1) / 1.0e6f;
+		#if PERF_ACTIVE
 
 			html += "<p>FPS: " + ftoa(profiler.FPS) + "</p>\n";
 			html += "<p>Frame: " + itoa(profiler.framesTotal) + "</p>\n";
-			html += "<p>Raster operations (million): " + ftoa(profiler.ropOperationsFrame / 1.0e6f) + " (current), " + ftoa(averageRopOperations) + " (average)</p>\n";
-			html += "<p>Texture operations (million): " + ftoa(profiler.texOperationsFrame / 1.0e6f) + " (current), " + ftoa(averageTexOperations) + " (average)</p>\n";
-			html += "<p>Compressed texture operations (million): " + ftoa(profiler.compressedTexFrame / 1.0e6f) + " (current), " + ftoa(averageCompressedTex) + " (average)</p>\n";
-			html += "<div id='profile' style='position:relative; width:1010px; height:50px; background-color:silver;'>";
-			html += "<div style='position:relative; width:1000px; height:40px; background-color:white; left:5px; top:5px;'>";
-			html += "<div style='position:relative; float:left; width:" + itoa(rastTime)   + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FFFF7F; overflow:hidden;'>" + ftoa(rastTimeF)   + "% rast</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(pipeTime)   + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FF7F7F; overflow:hidden;'>" + ftoa(pipeTimeF)   + "% pipe</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(interpTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7FFFFF; overflow:hidden;'>" + ftoa(interpTimeF) + "% interp</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(shaderTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7FFF7F; overflow:hidden;'>" + ftoa(shaderTimeF) + "% shader</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(texTime)    + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FF7FFF; overflow:hidden;'>" + ftoa(texTimeF)    + "% tex</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(ropTime)    + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7F7FFF; overflow:hidden;'>" + ftoa(ropTimeF)    + "% rop</div>\n";
-			html += "</div></div>\n";
 
-			for(int i = 0; i < PERF_TIMERS; i++)
-			{
-				profiler.cycles[i] = 0;
-			}
+			#if PERF_PROFILE
+				int texTime = (int)(1000 * profiler.cycles[PERF_TEX] / profiler.cycles[PERF_PIXEL] + 0.5);
+				int shaderTime = (int)(1000 * profiler.cycles[PERF_SHADER] / profiler.cycles[PERF_PIXEL] + 0.5);
+				int pipeTime = (int)(1000 * profiler.cycles[PERF_PIPE] / profiler.cycles[PERF_PIXEL] + 0.5);
+				int ropTime = (int)(1000 * profiler.cycles[PERF_ROP] / profiler.cycles[PERF_PIXEL] + 0.5);
+				int interpTime = (int)(1000 * profiler.cycles[PERF_INTERP] / profiler.cycles[PERF_PIXEL] + 0.5);
+				int rastTime = 1000 - pipeTime;
+
+				pipeTime -= shaderTime + ropTime + interpTime;
+				shaderTime -= texTime;
+
+				double texTimeF = (double)texTime / 10;
+				double shaderTimeF = (double)shaderTime / 10;
+				double pipeTimeF = (double)pipeTime / 10;
+				double ropTimeF = (double)ropTime / 10;
+				double interpTimeF = (double)interpTime / 10;
+				double rastTimeF = (double)rastTime / 10;
+
+				double averageRopOperations = profiler.ropOperationsTotal / std::max(profiler.framesTotal, 1) / 1.0e6f;
+				double averageCompressedTex = profiler.compressedTexTotal / std::max(profiler.framesTotal, 1) / 1.0e6f;
+				double averageTexOperations = profiler.texOperationsTotal / std::max(profiler.framesTotal, 1) / 1.0e6f;
+
+				html += "<p>Raster operations (million): " + ftoa(profiler.ropOperationsFrame / 1.0e6f) + " (current), " + ftoa(averageRopOperations) + " (average)</p>\n";
+				html += "<p>Texture operations (million): " + ftoa(profiler.texOperationsFrame / 1.0e6f) + " (current), " + ftoa(averageTexOperations) + " (average)</p>\n";
+				html += "<p>Compressed texture operations (million): " + ftoa(profiler.compressedTexFrame / 1.0e6f) + " (current), " + ftoa(averageCompressedTex) + " (average)</p>\n";
+				html += "<div id='profile' style='position:relative; width:1010px; height:50px; background-color:silver;'>";
+				html += "<div style='position:relative; width:1000px; height:40px; background-color:white; left:5px; top:5px;'>";
+				html += "<div style='position:relative; float:left; width:" + itoa(rastTime)   + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FFFF7F; overflow:hidden;'>" + ftoa(rastTimeF)   + "% rast</div>\n";
+				html += "<div style='position:relative; float:left; width:" + itoa(pipeTime)   + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FF7F7F; overflow:hidden;'>" + ftoa(pipeTimeF)   + "% pipe</div>\n";
+				html += "<div style='position:relative; float:left; width:" + itoa(interpTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7FFFFF; overflow:hidden;'>" + ftoa(interpTimeF) + "% interp</div>\n";
+				html += "<div style='position:relative; float:left; width:" + itoa(shaderTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7FFF7F; overflow:hidden;'>" + ftoa(shaderTimeF) + "% shader</div>\n";
+				html += "<div style='position:relative; float:left; width:" + itoa(texTime)    + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FF7FFF; overflow:hidden;'>" + ftoa(texTimeF)    + "% tex</div>\n";
+				html += "<div style='position:relative; float:left; width:" + itoa(ropTime)    + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7F7FFF; overflow:hidden;'>" + ftoa(ropTimeF)    + "% rop</div>\n";
+				html += "</div></div>\n";
+
+				for(int i = 0; i < PERF_TIMERS; i++)
+				{
+					profiler.cycles[i] = 0;
+				}
+			#endif
 		#endif
 
 		return html;
@@ -547,6 +552,7 @@ namespace sw
 		config.disable10BitMode = false;
 		config.precache = false;
 		config.forceClearRegisters = false;
+		config.nullRenderer = false;
 
 		while(*post != 0)
 		{
@@ -616,6 +622,10 @@ namespace sw
 			else if(sscanf(post, "shadowMapping=%d", &integer))
 			{
 				config.shadowMapping = integer;
+			}
+			else if(strstr(post, "nullRenderer=on"))
+			{
+				config.nullRenderer = true;
 			}
 			else if(strstr(post, "enableSSE=on"))
 			{
@@ -727,6 +737,7 @@ namespace sw
 		config.textureSampleQuality = ini.getInteger("Quality", "TextureSampleQuality", 2);
 		config.mipmapQuality = ini.getInteger("Quality", "MipmapQuality", 1);
 		config.perspectiveCorrection = ini.getBoolean("Quality", "PerspectiveCorrection", true);
+		config.nullRenderer = ini.getBoolean("Testing", "NullRenderer", false);
 		config.transcendentalPrecision = ini.getInteger("Quality", "TranscendentalPrecision", 2);
 		config.transparencyAntialiasing = ini.getInteger("Quality", "TransparencyAntialiasing", 0);
 		config.threadCount = ini.getInteger("Processor", "ThreadCount", 0);
@@ -785,6 +796,7 @@ namespace sw
 		ini.addValue("Quality", "TextureSampleQuality", itoa(config.textureSampleQuality));
 		ini.addValue("Quality", "MipmapQuality", itoa(config.mipmapQuality));
 		ini.addValue("Quality", "PerspectiveCorrection", itoa(config.perspectiveCorrection));
+		ini.addValue("Testing", "NullRenderer", itoa(config.nullRenderer));
 		ini.addValue("Quality", "TranscendentalPrecision", itoa(config.transcendentalPrecision));
 		ini.addValue("Quality", "TransparencyAntialiasing", itoa(config.transparencyAntialiasing));
 		ini.addValue("Processor", "ThreadCount", itoa(config.threadCount));

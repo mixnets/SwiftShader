@@ -52,6 +52,7 @@ namespace sw
 	extern TranscendentalPrecision rcpPrecision;
 	extern TranscendentalPrecision rsqPrecision;
 	extern bool perspectiveCorrection;
+	extern bool nullrenderer;
 
 	struct Query
 	{

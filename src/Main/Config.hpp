@@ -15,14 +15,16 @@
 #include "Common/Types.hpp"
 
 #define PERF_HUD 0       // Display time spent on vertex, setup and pixel processing for each thread
+#define PERF_FPS 1
 #define PERF_PROFILE 0   // Profile various pipeline stages and display the timing in SwiftConfig
+#define PERF_ACTIVE (PERF_FPS || PERF_PROFILE)
 #if defined(_WIN32)
 #define S3TC_SUPPORT 1
 #else
 #define S3TC_SUPPORT 0
 #endif
 
-#if PERF_PROFILE
+#if PERF_ACTIVE
 enum
 {
 	PERF_PIXEL,
@@ -45,6 +47,8 @@ struct Profiler
 	int framesSec;
 	int framesTotal;
 	double FPS;
+
+	#if PERF_PROFILE
 	double cycles[PERF_TIMERS];
 
 	int64_t ropOperations;
@@ -58,6 +62,7 @@ struct Profiler
 	int64_t compressedTex;
 	int64_t compressedTexTotal;
 	int64_t compressedTexFrame;
+	#endif
 };
 
 extern Profiler profiler;

@@ -33,7 +33,7 @@
 
 #undef max
 
-bool disableServer = true;
+bool disableServer = false;
 
 #ifndef NDEBUG
 unsigned int minPrimitives = 1;
@@ -68,6 +68,7 @@ namespace sw
 	TranscendentalPrecision rcpPrecision = ACCURATE;
 	TranscendentalPrecision rsqPrecision = ACCURATE;
 	bool perspectiveCorrection = true;
+	bool nullRenderer = false;
 
 	struct Parameters
 	{
@@ -203,6 +204,12 @@ namespace sw
 		context->drawType = drawType;
 
 		updateConfiguration();
+
+		if(nullRenderer)
+		{
+			return;
+		}
+
 		updateClipper();
 
 		int ss = context->getSuperSampleCount();
@@ -2453,6 +2460,8 @@ namespace sw
 
 			SwiftConfig::Configuration configuration = {0};
 			swiftConfig->getConfiguration(configuration);
+
+			nullRenderer = configuration.nullRenderer;
 
 			precacheVertex = !newConfiguration && configuration.precache;
 			precacheSetup = !newConfiguration && configuration.precache;

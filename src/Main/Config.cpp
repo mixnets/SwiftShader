@@ -14,7 +14,7 @@
 #include "Thread.hpp"
 #include "Timer.hpp"
 
-#if PERF_PROFILE
+#if PERF_ACTIVE
 Profiler profiler;
 
 Profiler::Profiler()
@@ -28,33 +28,37 @@ void Profiler::reset()
 	framesTotal = 0;
 	FPS = 0;
 	
-	for(int i = 0; i < PERF_TIMERS; i++)
-	{
-		cycles[i] = 0;
-	}
+	#if PERF_PROFILE
+		for(int i = 0; i < PERF_TIMERS; i++)
+		{
+			cycles[i] = 0;
+		}
 
-	ropOperations = 0;
-	ropOperationsTotal = 0;
-	ropOperationsFrame = 0;
+		ropOperations = 0;
+		ropOperationsTotal = 0;
+		ropOperationsFrame = 0;
 	
-	texOperations = 0;
-	texOperationsTotal = 0;
-	texOperationsFrame = 0;
+		texOperations = 0;
+		texOperationsTotal = 0;
+		texOperationsFrame = 0;
 	
-	compressedTex = 0;
-	compressedTexTotal = 0;
-	compressedTexFrame = 0;
+		compressedTex = 0;
+		compressedTexTotal = 0;
+		compressedTexFrame = 0;
+	#endif
 };
 
 void Profiler::nextFrame()
 {
-	ropOperationsFrame = sw::atomicExchange(&ropOperations, 0);
-	texOperationsFrame = sw::atomicExchange(&texOperations, 0);
-	compressedTexFrame = sw::atomicExchange(&compressedTex, 0);
+	#if PERF_PROFILE
+		ropOperationsFrame = sw::atomicExchange(&ropOperations, 0);
+		texOperationsFrame = sw::atomicExchange(&texOperations, 0);
+		compressedTexFrame = sw::atomicExchange(&compressedTex, 0);
 
-	ropOperationsTotal += ropOperationsFrame;
-	texOperationsTotal += texOperationsFrame;
-	compressedTexTotal += compressedTexFrame;
+		ropOperationsTotal += ropOperationsFrame;
+		texOperationsTotal += texOperationsFrame;
+		compressedTexTotal += compressedTexFrame;
+	#endif
 
 	static double fpsTime = sw::Timer::seconds();
 

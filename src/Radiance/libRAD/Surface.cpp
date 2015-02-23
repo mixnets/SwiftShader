@@ -181,7 +181,7 @@ EGLNativeWindowType Surface::getWindowHandle()
 
 void Surface::swap()
 {
-    #if PERF_PROFILE
+    #if PERF_ACTIVE
 		profiler.nextFrame();
 	#endif
 
