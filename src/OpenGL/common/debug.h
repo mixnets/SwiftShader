@@ -16,15 +16,17 @@
 
 #include <stdio.h>
 #include <assert.h>
+#include <fstream>
 
 #if !defined(TRACE_OUTPUT_FILE)
-#define TRACE_OUTPUT_FILE "debug.txt"
+#define TRACE_OUTPUT_FILE "C:\\Users\\mgregoire\\debug.txt"
 #endif
 
 namespace es
 {
     // Outputs text to the debugging log
     void trace(const char *format, ...);
+	void maxTrace(const char *format, ...);
 }
 
 // A macro to output a trace of a function call and its arguments to the debugging log
@@ -47,6 +49,8 @@ namespace es
 #else
 #define ERR(message, ...) do {es::trace("err: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); assert(false);} while(false)
 #endif
+
+#define MAX(message, ...) es::maxTrace(message, ##__VA_ARGS__);
 
 // A macro asserting a condition and outputting failures to the debug log
 #if !defined(NDEBUG)

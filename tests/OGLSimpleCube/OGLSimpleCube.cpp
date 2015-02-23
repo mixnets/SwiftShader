@@ -100,10 +100,15 @@ void initDisplayList(void)
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
 
-	glPushMatrix();
-	glMultMatrixf(S);
-	glDrawArrays(GL_QUADS, 0, 24);
-	glPopMatrix();
+	//glPushMatrix();
+	//glMultMatrixf(S);
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDrawArrays(GL_QUADS, 0, 4);
+	//glPopMatrix();
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);

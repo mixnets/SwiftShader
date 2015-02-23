@@ -22,6 +22,7 @@
 #include "Renderer/Sampler.hpp"
 #include "Renderer/Vertex.hpp"
 #include "MatrixStack.hpp"
+#include <fstream>
 
 #define _GDI32_
 #include <windows.h>
@@ -46,6 +47,14 @@ namespace gl
 		virtual ~Command() {};
 
 		virtual void call() = 0;
+
+		virtual void * getFunction() { return (void *)0; };
+
+		virtual int getArg1() { return 0; };
+
+		virtual int getArg2() { return 0; };
+
+		virtual int getArg3() { return 0; };
 	};
 
 	class Command0 : public Command
@@ -62,6 +71,11 @@ namespace gl
 		}
 
 		void (APIENTRY *function)();
+
+		virtual void * getFunction()
+		{
+			return (void *)function;
+		}
 	};
 
 	template<typename A1>
@@ -81,6 +95,11 @@ namespace gl
 
 		void (APIENTRY *function)(A1);
 		A1 argument1;
+
+		virtual void * getFunction()
+		{
+			return (void *)function;
+		}
 	};
 
 	template<typename A1, typename A2>
@@ -102,6 +121,11 @@ namespace gl
 		void (APIENTRY *function)(A1, A2);
 		A1 argument1;
 		A2 argument2;
+
+		virtual void * getFunction()
+		{
+			return (void *)function;
+		}
 	};
 
     template<typename A1, typename A2, typename A3>
@@ -125,6 +149,27 @@ namespace gl
 		A1 argument1;
 		A2 argument2;
         A3 argument3;
+
+
+		virtual void * getFunction()
+		{
+			return (void *)function;
+		}
+
+		virtual int getArg1()
+		{
+			return argument1;
+		}
+
+		virtual int getArg2()
+		{
+			return argument2;
+		}
+
+		virtual int getArg3()
+		{
+			return argument3;
+		}
 	};
 
 	template<typename A1, typename A2, typename A3, typename A4>
@@ -491,6 +536,8 @@ struct State
 
     GLint unpackAlignment;
     GLint packAlignment;
+
+	std::ofstream outfile;
 };
 
 class Context
@@ -701,6 +748,7 @@ public:
 	GLuint getListIndex() {return listIndex;}
 	GLenum getListMode() {return listMode;}
 	void listCommand(Command *command);
+	void listCommandDraw(GLenum mode, GLint first, GLsizei &count, void(APIENTRY *glCaptureAttribs)(), void(APIENTRY *glRestoreAttribs)());
 
 	void captureAttribs();
     void captureDrawArrays(GLenum mode, GLint first, GLsizei count);

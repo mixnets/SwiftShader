@@ -1741,7 +1741,7 @@ void APIENTRY glDrawArrays(GLenum mode, GLint first, GLsizei count)
 		{
 			ASSERT(context->getListMode() != GL_COMPILE_AND_EXECUTE);   // UNIMPLEMENTED!
 
-			context->listCommand(gl::newCommand(glCaptureAttribs));
+			context->listCommandDraw(mode, first, count, glCaptureAttribs, glRestoreAttribs);
 			context->captureDrawArrays(mode, first, count);
 			context->listCommand(gl::newCommand(glDrawArrays, mode, first, count));
 			context->listCommand(gl::newCommand(glRestoreAttribs));
@@ -1749,6 +1749,7 @@ void APIENTRY glDrawArrays(GLenum mode, GLint first, GLsizei count)
 			return;
 		}
 
+		MAX("draw count = %d ", count);
 		context->drawArrays(mode, first, count);
 	}
 }
@@ -5646,7 +5647,7 @@ void APIENTRY glBitmap(GLsizei width, GLsizei height, GLfloat xorig, GLfloat yor
 void APIENTRY glCallList(GLuint list)
 {
 	TRACE("(GLuint list = %d)", list);
-
+	
 	if(list == 0)
 	{
 		return error(GL_INVALID_VALUE);
@@ -6782,7 +6783,7 @@ void APIENTRY glMultMatrixf(const GLfloat *m)
 	{
 		if(context->getListIndex() != 0)
 		{
-			return context->listCommand(gl::newCommand(glMultMatrixm, sw::Matrix(m)));
+			//return context->listCommand(gl::newCommand(glMultMatrixm, sw::Matrix(m)));
 		}
 
 		context->multiply(m);
@@ -6982,7 +6983,7 @@ void APIENTRY glPopMatrix(void)
 	{
 		if(context->getListIndex() != 0)
 		{
-			return context->listCommand(gl::newCommand(glPopMatrix));
+			//return context->listCommand(gl::newCommand(glPopMatrix));
 		}
 
 		context->popMatrix();
@@ -7019,7 +7020,7 @@ void APIENTRY glPushMatrix(void)
 	{
 		if(context->getListIndex() != 0)
 		{
-			return context->listCommand(gl::newCommand(glPushMatrix));
+			//return context->listCommand(gl::newCommand(glPushMatrix));
 		}
 
 		context->pushMatrix();

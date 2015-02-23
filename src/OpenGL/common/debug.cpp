@@ -16,18 +16,37 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+static bool fileInit;
+static FILE* file = NULL;
+
 namespace es
 {
+	static bool maxInit;
+	static FILE* outfile;
+
+	static void outputMax(const char *format, va_list vararg)
+	{
+		if(!maxInit)
+		{
+			outfile = fopen("C:\\Users\\mgregoire\\list_time.txt", "w");
+			maxInit = true;
+		}
+
+		vfprintf(outfile, format, vararg);
+	}
+
 	static void output(const char *format, va_list vararg)
 	{
 		if(false)
 		{
-			FILE* file = fopen(TRACE_OUTPUT_FILE, "a");
-
 			if(file)
 			{
 				vfprintf(file, format, vararg);
-				fclose(file);
+			}
+			else
+			{
+				file = fopen(TRACE_OUTPUT_FILE, "w");
+				fileInit = true;
 			}
 		}
 	}
@@ -37,6 +56,14 @@ namespace es
 		va_list vararg;
 		va_start(vararg, format);
 		output(format, vararg);
+		va_end(vararg);
+	}
+
+	void maxTrace(const char *format, ...)
+	{
+		va_list vararg;
+		va_start(vararg, format);
+		outputMax(format, vararg);
 		va_end(vararg);
 	}
 }

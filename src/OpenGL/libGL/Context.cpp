@@ -31,6 +31,7 @@
 #include "Display.h"
 #include "Surface.h"
 #include "Common/Half.hpp"
+#include <ctime>
 
 #define _GDI32_
 #include <windows.h>
@@ -119,6 +120,8 @@ Context::Context(const Context *shareContext)
     mState.colorMaskBlue = true;
     mState.colorMaskAlpha = true;
     mState.depthMask = true;
+
+	mState.outfile.open("C:\\Users\\mgregoire\\list_time.txt", std::ios_base::app);
 
     if(shareContext != NULL)
     {
@@ -3310,6 +3313,8 @@ GLuint Context::genLists(GLsizei range)
 	return 0;
 }
 
+static LARGE_INTEGER StartingTime1, EndingTime1, ElapsedMicroseconds1;
+static LARGE_INTEGER Frequency1;
 void Context::newList(GLuint list, GLenum mode)
 {
 	if(drawing || listIndex != 0)
@@ -3319,6 +3324,10 @@ void Context::newList(GLuint list, GLenum mode)
 
     ASSERT(!this->list);
     this->list = new DisplayList();
+
+	MAX("New list %d : ", list);
+	QueryPerformanceFrequency(&Frequency1);
+	QueryPerformanceCounter(&StartingTime1);
 
 	listIndex = list;
 	listMode = mode;
@@ -3332,6 +3341,13 @@ void Context::endList()
     }
 
     ASSERT(list);
+
+	QueryPerformanceCounter(&EndingTime1);
+	ElapsedMicroseconds1.QuadPart = EndingTime1.QuadPart - StartingTime1.QuadPart;
+	ElapsedMicroseconds1.QuadPart *= 1000000;
+	ElapsedMicroseconds1.QuadPart /= Frequency1.QuadPart;
+	MAX("time = %f \n", ((double)ElapsedMicroseconds1.QuadPart));
+
 	delete displayList[listIndex];
     displayList[listIndex] = list;
     list = 0;
@@ -3343,10 +3359,26 @@ void Context::endList()
 void Context::callList(GLuint list)
 {
 	ASSERT(displayList[list]);
+
+	MAX("Call list %d : ", list);
+
+	LARGE_INTEGER StartingTime, EndingTime, ElapsedMicroseconds;
+	LARGE_INTEGER Frequency;
+
+	QueryPerformanceFrequency(&Frequency);
+	QueryPerformanceCounter(&StartingTime);
+
 	if(displayList[list])
 	{
 		displayList[list]->call();
 	}
+
+	QueryPerformanceCounter(&EndingTime);
+	ElapsedMicroseconds.QuadPart = EndingTime.QuadPart - StartingTime.QuadPart;
+	ElapsedMicroseconds.QuadPart *= 1000000;
+	ElapsedMicroseconds.QuadPart /= Frequency.QuadPart;
+		
+	MAX("time = %f \n", ((double)ElapsedMicroseconds.QuadPart));
 }
 
 void Context::deleteList(GLuint list)
@@ -3357,9 +3389,12 @@ void Context::deleteList(GLuint list)
 	firstFreeIndex = std::min(firstFreeIndex , list);
 }
 
+static int DrawCallSize = 0;
+
 void Context::listCommand(Command *command)
 {
-    ASSERT(list);
+	ASSERT(list);
+
 	list->list.push_back(command);
 
 	if(listMode == GL_COMPILE_AND_EXECUTE)
@@ -3367,6 +3402,65 @@ void Context::listCommand(Command *command)
 		listMode = 0;
 		command->call();
 		listMode = GL_COMPILE_AND_EXECUTE;
+	}
+}
+
+void Context::listCommandDraw(GLenum mode, GLint first, GLsizei &count, void(APIENTRY *glCaptureAttribs)(), void(APIENTRY *glRestoreAttribs)())
+{
+	ASSERT(list);
+
+	if(list->list.size() < 12 || mode != GL_QUADS)
+	{
+		listCommand(gl::newCommand(glCaptureAttribs));
+	}
+	else
+	{
+		std::list<Command*>::iterator it = list->list.end();
+		/*for(int i = 0; i <= 11; i++)
+		{*/
+			it--;
+		//}
+		Command* c = (Command*)*it;
+		void* p = c->getFunction();
+		
+		if(p != glRestoreAttribs)
+		{
+			it++;
+			listCommand(gl::newCommand(glCaptureAttribs));
+			return;
+		}
+
+		//TODO check if mode and first are equal
+
+		MAX(" Combining draw calls ");
+		
+		it--;
+		c = (Command*)*it;
+		p = c->getFunction();
+
+		int pastCount = c->getArg3();
+		int pastFirst = c->getArg2();
+		int pastMode = c->getArg1();
+		it++;
+		it++;
+		
+		if(pastFirst != first || pastMode != mode)
+		{
+			MAX(" NOT SAME first or MODE ");
+			listCommand(gl::newCommand(glCaptureAttribs));
+			return;
+		}
+
+		for(int i = 0; i < 12; i++)
+		{
+			list->list.pop_back();
+			int z = list->list.size();
+			int x = 3;
+		}
+
+		count += pastCount;
+		listCommand(gl::newCommand(glCaptureAttribs));
+		return;
 	}
 }
 
