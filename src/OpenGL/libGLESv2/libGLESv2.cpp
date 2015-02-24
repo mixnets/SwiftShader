@@ -2010,6 +2010,9 @@ void GL_APIENTRY glGenerateMipmap(GLenum target)
 		case GL_TEXTURE_CUBE_MAP:
 			texture = context->getTextureCubeMap();
 			break;
+		case GL_TEXTURE_3D_OES:
+			texture = context->getTexture3D();
+			break;
 		default:
 			return error(GL_INVALID_ENUM);
 		}
