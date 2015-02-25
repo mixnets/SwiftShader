@@ -168,6 +168,18 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     }
 
     //
+    // See if we can fold constants.
+    //
+    TIntermConstantUnion *leftTempConstant = left->getAsConstantUnion();
+    TIntermConstantUnion *rightTempConstant = right->getAsConstantUnion();
+    if (leftTempConstant && rightTempConstant) {
+        TIntermTyped *typedReturnNode = leftTempConstant->fold(op, rightTempConstant, infoSink);
+
+        if (typedReturnNode)
+            return typedReturnNode;
+    }
+
+    //
     // Need a new node holding things together then.  Make
     // one and promote it to the right type.
     //
@@ -180,18 +192,6 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
     node->setRight(right);
     if (!node->promote(infoSink))
         return 0;
-
-    //
-    // See if we can fold constants.
-    //
-    TIntermConstantUnion *leftTempConstant = left->getAsConstantUnion();
-    TIntermConstantUnion *rightTempConstant = right->getAsConstantUnion();
-    if (leftTempConstant && rightTempConstant) {
-        TIntermTyped *typedReturnNode = leftTempConstant->fold(node->getOp(), rightTempConstant, infoSink);
-
-        if (typedReturnNode)
-            return typedReturnNode;
-    }
 
     return node;
 }
