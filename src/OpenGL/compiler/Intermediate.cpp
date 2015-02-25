@@ -303,6 +303,30 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     return node;
 }
 
+void TIntermAggregate::setType(const TType &t)
+{
+	type = t;
+
+	if(IsOperator(op))
+	{
+		bool constant = true;
+
+		for(TIntermSequence::iterator sit = sequence.begin(); sit != sequence.end(); sit++)
+		{
+			if(!(*sit)->getAsConstantUnion())
+			{
+				constant = false;
+				break;
+			}
+		}
+
+		if(constant)
+		{
+			type.setQualifier(EvqConst);
+		}
+	}
+}
+
 //
 // This is the safe way to change the operator on an aggregate, as it
 // does lots of error checking and fixing.  Especially for establishing

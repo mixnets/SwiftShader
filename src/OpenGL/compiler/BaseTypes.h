@@ -52,7 +52,7 @@ enum TBasicType : unsigned char
     EbtUVec,               // non type: represents uvec2, uvec3, and uvec4
     EbtBVec,               // non type: represents bvec2, bvec3, and bvec4
     EbtGuardSamplerBegin,  // non type: see implementation of IsSampler()
-    EbtSampler2D,
+    EbtSampler2D = EbtGuardSamplerBegin,
     EbtSampler3D,
     EbtSamplerCube,
     EbtSampler2DArray,
@@ -68,7 +68,7 @@ enum TBasicType : unsigned char
     EbtSampler2DShadow,
     EbtSamplerCubeShadow,
     EbtSampler2DArrayShadow,
-    EbtGuardSamplerEnd,    // non type: see implementation of IsSampler()
+    EbtGuardSamplerEnd = EbtSampler2DArrayShadow,    // non type: see implementation of IsSampler()
     EbtGSampler2D,         // non type: represents sampler2D, isampler2D, and usampler2D
     EbtGSampler3D,         // non type: represents sampler3D, isampler3D, and usampler3D
     EbtGSamplerCube,       // non type: represents samplerCube, isamplerCube, and usamplerCube
@@ -98,7 +98,7 @@ inline const char *getBasicString(TBasicType type)
 
 inline bool IsSampler(TBasicType type)
 {
-    return type > EbtGuardSamplerBegin && type < EbtGuardSamplerEnd;
+    return type >= EbtGuardSamplerBegin && type <= EbtGuardSamplerEnd;
 }
 
 //
