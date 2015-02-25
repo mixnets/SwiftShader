@@ -202,10 +202,17 @@ class TIntermNode {
 public:
     POOL_ALLOCATOR_NEW_DELETE();
 
-    TIntermNode() : line(0) {}
+    TIntermNode()
+	{
+        // TODO: Move this to TSourceLoc constructor
+        // after getting rid of TPublicType.
+        line.first_file = line.last_file = 0;
+        line.first_line = line.last_line = 0;
+    }
+    virtual ~TIntermNode() { }
 
-    TSourceLoc getLine() const { return line; }
-    void setLine(TSourceLoc l) { line = l; }
+    const TSourceLoc& getLine() const { return line; }
+    void setLine(const TSourceLoc& l) { line = l; }
 
     virtual void traverse(TIntermTraverser*) = 0;
     virtual TIntermTyped* getAsTyped() { return 0; }
@@ -217,7 +224,6 @@ public:
     virtual TIntermSymbol* getAsSymbolNode() { return 0; }
     virtual TIntermLoop* getAsLoopNode() { return 0; }
 	virtual TIntermBranch* getAsBranchNode() { return 0; }
-    virtual ~TIntermNode() { }
 
 protected:
     TSourceLoc line;
@@ -439,7 +445,7 @@ typedef TVector<int> TQualifierList;
 //
 class TIntermAggregate : public TIntermOperator {
 public:
-    TIntermAggregate() : TIntermOperator(EOpNull), userDefined(false), endLine(0) { }
+    TIntermAggregate() : TIntermOperator(EOpNull), userDefined(false) { }
     TIntermAggregate(TOperator o) : TIntermOperator(o) { }
     ~TIntermAggregate() { }
 
@@ -458,9 +464,6 @@ public:
     bool getOptimize() { return optimize; }
     void setDebug(bool d) { debug = d; }
     bool getDebug() { return debug; }
-
-    void setEndLine(TSourceLoc line) { endLine = line; }
-    TSourceLoc getEndLine() const { return endLine; }
 
 protected:
     TIntermAggregate(const TIntermAggregate&); // disallow copy constructor

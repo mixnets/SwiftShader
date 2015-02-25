@@ -61,7 +61,7 @@ void OutputTreeText(TInfoSinkBase& sink, TIntermNode* node, const int depth)
 {
     int i;
 
-    sink.location(node->getLine());
+    sink.location(node->getLine().first_file, node->getLine().first_line);
 
     for (i = 0; i < depth; ++i)
         sink << "  ";
