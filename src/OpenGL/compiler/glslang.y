@@ -530,7 +530,6 @@ function_call
                     // This is a real function call
 
                     $$ = context->intermediate.setAggregateOperator($1.intermAggregate, EOpFunctionCall, $1.line);
-                    $$->setType(fnCandidate->getReturnType());
 
                     // this is how we know whether the given function is a builtIn function or a user defined function
                     // if builtIn == false, it's a userDefined -> could be an overloaded builtIn function also

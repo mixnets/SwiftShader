@@ -23,7 +23,8 @@
 //
 // Operators used by the high-level (parse tree) representation.
 //
-enum TOperator {
+enum TOperator
+{
     EOpNull,            // if in a node, should only mean a node is still being built
     EOpSequence,        // denotes a list of statements, or parameters, etc.
     EOpFunctionCall,    
@@ -83,7 +84,8 @@ enum TOperator {
     // Built-in functions potentially mapped to operators
     //
 
-    EOpRadians,
+	EOpOperatorBegin,
+    EOpRadians = EOpOperatorBegin,
     EOpDegrees,
     EOpSin,
     EOpCos,
@@ -130,6 +132,7 @@ enum TOperator {
 
     EOpAny,
     EOpAll,
+	EOpOperatorEnd = EOpAll,
 
     //
     // Branch
@@ -180,6 +183,11 @@ enum TOperator {
     EOpMatrixTimesMatrixAssign,
     EOpDivAssign
 };
+
+inline bool IsOperator(TOperator op)
+{
+    return op >= EOpOperatorBegin && op <= EOpOperatorEnd;
+}
 
 extern const char* getOperatorString(TOperator op);
 
@@ -239,7 +247,7 @@ public:
     TIntermTyped(const TType& t) : type(t)  { }
     virtual TIntermTyped* getAsTyped() { return this; }
 
-    void setType(const TType& t) { type = t; }
+    virtual void setType(const TType& t) { type = t; }
     const TType& getType() const { return type; }
     TType* getTypePointer() { return &type; }
 
@@ -450,6 +458,8 @@ public:
 
     void setName(const TString& n) { name = n; }
     const TString& getName() const { return name; }
+
+	void setType(const TType& t);
 
     void setUserDefined() { userDefined = true; }
     bool isUserDefined() const { return userDefined; }

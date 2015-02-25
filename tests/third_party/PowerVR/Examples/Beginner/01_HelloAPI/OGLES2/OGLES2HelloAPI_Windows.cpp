@@ -151,6 +151,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		uniform mediump mat4	myPMVMatrix;\
 		void main(void)\
 		{\
+			const float x = clamp(1.0, 2.0, 3.0);\
 			gl_Position = myPMVMatrix * myVertex;\
 		}";
 
