@@ -47,7 +47,10 @@ WHICH GENERATES THE GLSL ES LEXER (glslang_lex.cpp).
 #pragma warning(disable : 4102)
 #endif
 
-#define YY_USER_ACTION yylval->lex.line = yylineno;
+#define YY_USER_ACTION                                 \
+    yylloc->first_file = yylloc->last_file = yycolumn; \
+    yylloc->first_line = yylloc->last_line = yylineno;
+
 #define YY_INPUT(buf, result, max_size) \
     result = string_input(buf, max_size, yyscanner);
 
@@ -61,7 +64,7 @@ static int uint_constant(TParseContext *context);
 %}
 
 %option noyywrap nounput never-interactive
-%option yylineno reentrant bison-bridge
+%option yylineno reentrant bison-bridge bison-locations
 %option stack
 %option extra-type="TParseContext*"
 %x COMMENT FIELDS
@@ -294,7 +297,7 @@ O           [0-7]
 
 0[xX]{H}+         { yylval->lex.i = strtol(yytext, 0, 0); return(INTCONSTANT); }
 0{O}+             { yylval->lex.i = strtol(yytext, 0, 0); return(INTCONSTANT); }
-0{D}+             { context->error(yylineno, "Invalid Octal number.", yytext); context->recover(); return 0;}
+0{D}+             { context->error(*yylloc, "Invalid Octal number.", yytext); context->recover(); return 0;}
 {D}+              { yylval->lex.i = strtol(yytext, 0, 0); return(INTCONSTANT); }
 0[xX]{H}+[uU]     { return uint_constant(context); }
 0{O}+[uU]         { return uint_constant(context); }
@@ -360,7 +363,7 @@ O           [0-7]
 
 [ \t\v\n\f\r]   {  }
 <*><<EOF>>      { context->AfterEOF = true; yyterminate(); }
-<*>.            { context->warning(yylineno, "Unknown char", yytext, ""); return 0; }
+<*>.            { context->warning(*yylloc, "Unknown char", yytext, ""); return 0; }
 
 %%
 
@@ -373,7 +376,8 @@ int string_input(char* buf, int max_size, yyscan_t yyscanner)
     len = token.type == pp::Token::LAST ? 0 : token.text.size();
     if ((len > 0) && (len < max_size))
         memcpy(buf, token.text.c_str(), len);
-    yyset_lineno(EncodeSourceLoc(token.location.file, token.location.line), yyscanner);
+    yyset_column(token.location.file, yyscanner);
+    yyset_lineno(token.location.line, yyscanner);
 
     if (len >= max_size)
         YY_FATAL_ERROR("Input buffer overflow");
@@ -401,7 +405,7 @@ int check_type(yyscan_t yyscanner) {
 int reserved_word(yyscan_t yyscanner) {
     struct yyguts_t* yyg = (struct yyguts_t*) yyscanner;
 
-    yyextra->error(yylineno, "Illegal use of reserved word", yytext, "");
+    yyextra->error(*yylloc, "Illegal use of reserved word", yytext, "");
     yyextra->recover();
     return 0;
 }
@@ -452,24 +456,13 @@ int uint_constant(TParseContext *context)
 
     if (context->shaderVersion < 300)
     {
-        context->error(yylineno, "Unsigned integers are unsupported prior to GLSL ES 3.00", yytext, "");
+        context->error(*yylloc, "Unsigned integers are unsupported prior to GLSL ES 3.00", yytext, "");
         context->recover();
         return 0;
     }
 
     yylval->lex.u = static_cast<unsigned int>(strtol(yytext, 0, 0));
     return UINTCONSTANT;
-}
-
-void yyerror(TParseContext* context, const char* reason) {
-    struct yyguts_t* yyg = (struct yyguts_t*) context->scanner;
-
-    if (context->AfterEOF) {
-        context->error(yylineno, reason, "unexpected EOF");
-    } else {
-        context->error(yylineno, reason, yytext);
-    }
-    context->recover();
 }
 
 int glslang_initialize(TParseContext* context) {
@@ -494,7 +487,8 @@ int glslang_finalize(TParseContext* context) {
 int glslang_scan(int count, const char* const string[], const int length[],
                  TParseContext* context) {
     yyrestart(NULL, context->scanner);
-    yyset_lineno(EncodeSourceLoc(0, 1), context->scanner);
+    yyset_column(0, context->scanner);
+    yyset_lineno(1, context->scanner);
     context->AfterEOF = false;
 
     // Initialize preprocessor.

@@ -31,7 +31,7 @@ public:
     virtual bool visitLoop(Visit, TIntermLoop*);
 
 private:
-    void error(TSourceLoc loc, const char *reason, const char* token);
+    void error(const TSourceLoc &loc, const char *reason, const char* token);
 
     bool withinLoopBody() const;
     bool isLoopIndex(const TIntermSymbol* symbol) const;

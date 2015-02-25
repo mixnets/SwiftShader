@@ -68,61 +68,61 @@ struct TParseContext {
     int getShaderVersion() const { return shaderVersion; }
     int numErrors() const { return diagnostics.numErrors(); }
     TInfoSink& infoSink() { return diagnostics.infoSink(); }
-    void error(TSourceLoc loc, const char *reason, const char* token,
+    void error(const TSourceLoc &loc, const char *reason, const char* token,
                const char* extraInfo="");
-    void warning(TSourceLoc loc, const char* reason, const char* token,
+    void warning(const TSourceLoc &loc, const char* reason, const char* token,
                  const char* extraInfo="");
     void trace(const char* str);
     void recover();
 
-    bool parseVectorFields(const TString&, int vecSize, TVectorFields&, int line);
-    bool parseMatrixFields(const TString&, int matSize, TMatrixFields&, int line);
+    bool parseVectorFields(const TString&, int vecSize, TVectorFields&, const TSourceLoc &line);
+    bool parseMatrixFields(const TString&, int matSize, TMatrixFields&, const TSourceLoc &line);
 
-    bool reservedErrorCheck(int line, const TString& identifier);
-    void assignError(int line, const char* op, TString left, TString right);
-    void unaryOpError(int line, const char* op, TString operand);
-    void binaryOpError(int line, const char* op, TString left, TString right);
-    bool precisionErrorCheck(int line, TPrecision precision, TBasicType type);
-    bool lValueErrorCheck(int line, const char* op, TIntermTyped*);
+    bool reservedErrorCheck(const TSourceLoc &line, const TString& identifier);
+    void assignError(const TSourceLoc &line, const char* op, TString left, TString right);
+    void unaryOpError(const TSourceLoc &line, const char* op, TString operand);
+    void binaryOpError(const TSourceLoc &line, const char* op, TString left, TString right);
+    bool precisionErrorCheck(const TSourceLoc &line, TPrecision precision, TBasicType type);
+    bool lValueErrorCheck(const TSourceLoc &line, const char* op, TIntermTyped*);
     bool constErrorCheck(TIntermTyped* node);
     bool integerErrorCheck(TIntermTyped* node, const char* token);
-    bool globalErrorCheck(int line, bool global, const char* token);
-    bool constructorErrorCheck(int line, TIntermNode*, TFunction&, TOperator, TType*);
-    bool arraySizeErrorCheck(int line, TIntermTyped* expr, int& size);
-    bool arrayQualifierErrorCheck(int line, TPublicType type);
-    bool arrayTypeErrorCheck(int line, TPublicType type);
-    bool arrayErrorCheck(int line, TString& identifier, TPublicType type, TVariable*& variable);
-    bool voidErrorCheck(int, const TString&, const TPublicType&);
-    bool boolErrorCheck(int, const TIntermTyped*);
-    bool boolErrorCheck(int, const TPublicType&);
-    bool samplerErrorCheck(int line, const TPublicType& pType, const char* reason);
-    bool structQualifierErrorCheck(int line, const TPublicType& pType);
-    bool parameterSamplerErrorCheck(int line, TQualifier qualifier, const TType& type);
-    bool nonInitConstErrorCheck(int line, TString& identifier, TPublicType& type, bool array);
-    bool nonInitErrorCheck(int line, TString& identifier, TPublicType& type, TVariable*& variable);
-    bool paramErrorCheck(int line, TQualifier qualifier, TQualifier paramQualifier, TType* type);
-    bool extensionErrorCheck(int line, const TString&);
+    bool globalErrorCheck(const TSourceLoc &line, bool global, const char* token);
+    bool constructorErrorCheck(const TSourceLoc &line, TIntermNode*, TFunction&, TOperator, TType*);
+    bool arraySizeErrorCheck(const TSourceLoc &line, TIntermTyped* expr, int& size);
+    bool arrayQualifierErrorCheck(const TSourceLoc &line, TPublicType type);
+    bool arrayTypeErrorCheck(const TSourceLoc &line, TPublicType type);
+    bool arrayErrorCheck(const TSourceLoc &line, TString& identifier, TPublicType type, TVariable*& variable);
+    bool voidErrorCheck(const TSourceLoc &line, const TString&, const TPublicType&);
+    bool boolErrorCheck(const TSourceLoc &line, const TIntermTyped*);
+    bool boolErrorCheck(const TSourceLoc &line, const TPublicType&);
+    bool samplerErrorCheck(const TSourceLoc &line, const TPublicType& pType, const char* reason);
+    bool structQualifierErrorCheck(const TSourceLoc &line, const TPublicType& pType);
+    bool parameterSamplerErrorCheck(const TSourceLoc &line, TQualifier qualifier, const TType& type);
+    bool nonInitConstErrorCheck(const TSourceLoc &line, TString& identifier, TPublicType& type, bool array);
+    bool nonInitErrorCheck(const TSourceLoc &line, TString& identifier, TPublicType& type, TVariable*& variable);
+    bool paramErrorCheck(const TSourceLoc &line, TQualifier qualifier, TQualifier paramQualifier, TType* type);
+    bool extensionErrorCheck(const TSourceLoc &line, const TString&);
 
     const TExtensionBehavior& extensionBehavior() const { return directiveHandler.extensionBehavior(); }
     bool supportsExtension(const char* extension);
-    void handleExtensionDirective(int line, const char* extName, const char* behavior);
+    void handleExtensionDirective(const TSourceLoc &line, const char* extName, const char* behavior);
 
     const TPragma& pragma() const { return directiveHandler.pragma(); }
-    void handlePragmaDirective(int line, const char* name, const char* value);
+    void handlePragmaDirective(const TSourceLoc &line, const char* name, const char* value);
 
     bool containsSampler(TType& type);
     bool areAllChildConst(TIntermAggregate* aggrNode);
-    const TFunction* findFunction(int line, TFunction* pfnCall, bool *builtIn = 0);
-    bool executeInitializer(TSourceLoc line, TString& identifier, TPublicType& pType,
+    const TFunction* findFunction(const TSourceLoc &line, TFunction* pfnCall, bool *builtIn = 0);
+    bool executeInitializer(const TSourceLoc &line, TString& identifier, TPublicType& pType,
                             TIntermTyped* initializer, TIntermNode*& intermNode, TVariable* variable = 0);
-    bool arraySetMaxSize(TIntermSymbol*, TType*, int, bool, TSourceLoc);
+    bool arraySetMaxSize(TIntermSymbol*, TType*, int, bool, const TSourceLoc &line);
 
-    TIntermTyped* addConstructor(TIntermNode*, const TType*, TOperator, TFunction*, TSourceLoc);
+    TIntermTyped* addConstructor(TIntermNode*, const TType*, TOperator, TFunction*, const TSourceLoc &line);
     TIntermTyped* foldConstConstructor(TIntermAggregate* aggrNode, const TType& type);
-    TIntermTyped* addConstVectorNode(TVectorFields&, TIntermTyped*, TSourceLoc);
-    TIntermTyped* addConstMatrixNode(int , TIntermTyped*, TSourceLoc);
-    TIntermTyped* addConstArrayNode(int index, TIntermTyped* node, TSourceLoc line);
-    TIntermTyped* addConstStruct(TString& , TIntermTyped*, TSourceLoc);
+    TIntermTyped* addConstVectorNode(TVectorFields&, TIntermTyped*, const TSourceLoc &line);
+    TIntermTyped* addConstMatrixNode(int , TIntermTyped*, const TSourceLoc &line);
+    TIntermTyped* addConstArrayNode(int index, TIntermTyped* node, const TSourceLoc &line);
+    TIntermTyped* addConstStruct(TString& , TIntermTyped*, const TSourceLoc &line);
 
     TLayoutQualifier parseLayoutQualifier(const TString &qualifierType, const TSourceLoc& qualifierTypeLine);
     TLayoutQualifier parseLayoutQualifier(const TString &qualifierType, const TSourceLoc& qualifierTypeLine, const TString &intValueString, int intValue, const TSourceLoc& intValueLine);
@@ -131,10 +131,10 @@ struct TParseContext {
     // Performs an error check for embedded struct declarations.
     // Returns true if an error was raised due to the declaration of
     // this struct.
-    bool enterStructDeclaration(TSourceLoc line, const TString& identifier);
+    bool enterStructDeclaration(const TSourceLoc &line, const TString& identifier);
     void exitStructDeclaration();
 
-    bool structNestingErrorCheck(TSourceLoc line, const TType& fieldType);
+    bool structNestingErrorCheck(const TSourceLoc &line, const TType& fieldType);
 };
 
 int PaParseStrings(int count, const char* const string[], const int length[],

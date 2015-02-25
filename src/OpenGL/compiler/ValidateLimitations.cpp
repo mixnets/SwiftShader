@@ -187,11 +187,11 @@ bool ValidateLimitations::visitLoop(Visit, TIntermLoop* node)
     return false;
 }
 
-void ValidateLimitations::error(TSourceLoc loc,
+void ValidateLimitations::error(const TSourceLoc &loc,
                                 const char *reason, const char* token)
 {
     mSink.prefix(EPrefixError);
-    mSink.location(loc);
+    mSink.location(loc.first_file, loc.first_line);
     mSink << "'" << token << "' : " << reason << "\n";
     ++mNumErrors;
 }

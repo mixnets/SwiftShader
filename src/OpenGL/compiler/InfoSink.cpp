@@ -6,54 +6,56 @@
 
 #include "InfoSink.h"
 
-void TInfoSinkBase::prefix(TPrefixType message) {
-    switch(message) {
-        case EPrefixNone:
-            break;
-        case EPrefixWarning:
-            sink.append("WARNING: ");
-            break;
-        case EPrefixError:
-            sink.append("ERROR: ");
-            break;
-        case EPrefixInternalError:
-            sink.append("INTERNAL ERROR: ");
-            break;
-        case EPrefixUnimplemented:
-            sink.append("UNIMPLEMENTED: ");
-            break;
-        case EPrefixNote:
-            sink.append("NOTE: ");
-            break;
-        default:
-            sink.append("UNKOWN ERROR: ");
-            break;
+void TInfoSinkBase::prefix(TPrefixType message)
+{
+    switch(message)
+	{
+    case EPrefixNone:
+        break;
+    case EPrefixWarning:
+        sink.append("WARNING: ");
+        break;
+    case EPrefixError:
+        sink.append("ERROR: ");
+        break;
+    case EPrefixInternalError:
+        sink.append("INTERNAL ERROR: ");
+        break;
+    case EPrefixUnimplemented:
+        sink.append("UNIMPLEMENTED: ");
+        break;
+    case EPrefixNote:
+        sink.append("NOTE: ");
+        break;
+    default:
+        sink.append("UNKOWN ERROR: ");
+        break;
     }
 }
 
-void TInfoSinkBase::location(TSourceLoc loc) {
-    int string = 0, line = 0;
-    DecodeSourceLoc(loc, &string, &line);
-
+void TInfoSinkBase::location(int file, int line)
+{
     TPersistStringStream stream;
     if (line)
-        stream << string << ":" << line;
+        stream << file << ":" << line;
     else
-        stream << string << ":? ";
+        stream << file << ":? ";
     stream << ": ";
 
     sink.append(stream.str());
 }
 
-void TInfoSinkBase::message(TPrefixType message, const char* s) {
+void TInfoSinkBase::message(TPrefixType message, const char* s)
+{
     prefix(message);
     sink.append(s);
     sink.append("\n");
 }
 
-void TInfoSinkBase::message(TPrefixType message, const char* s, TSourceLoc loc) {
+void TInfoSinkBase::message(TPrefixType message, const char* s, const TSourceLoc &loc)
+{
     prefix(message);
-    location(loc);
+    location(loc.first_file, loc.first_line);
     sink.append(s);
     sink.append("\n");
 }
