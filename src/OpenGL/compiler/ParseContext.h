@@ -123,6 +123,7 @@ struct TParseContext {
     TIntermTyped* addConstMatrixNode(int , TIntermTyped*, const TSourceLoc &line);
     TIntermTyped* addConstArrayNode(int index, TIntermTyped* node, const TSourceLoc &line);
     TIntermTyped* addConstStruct(TString& , TIntermTyped*, const TSourceLoc &line);
+	TIntermTyped* addIndexExpression(TIntermTyped *baseExpression, const TSourceLoc& location, TIntermTyped *indexExpression);
 
     TLayoutQualifier parseLayoutQualifier(const TString &qualifierType, const TSourceLoc& qualifierTypeLine);
     TLayoutQualifier parseLayoutQualifier(const TString &qualifierType, const TSourceLoc& qualifierTypeLine, const TString &intValueString, int intValue, const TSourceLoc& intValueLine);

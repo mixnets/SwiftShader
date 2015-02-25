@@ -1405,6 +1405,91 @@ void TParseContext::exitStructDeclaration()
     --structNestingLevel;
 }
 
+TIntermTyped* TParseContext::addIndexExpression(TIntermTyped *baseExpression, const TSourceLoc& location, TIntermTyped *indexExpression)
+{
+	TIntermTyped *indexedExpression = nullptr;
+
+    if (!baseExpression->isArray() && !baseExpression->isMatrix() && !baseExpression->isVector()) {
+        if (baseExpression->getAsSymbolNode())
+            error(location, " left of '[' is not of type array, matrix, or vector ", baseExpression->getAsSymbolNode()->getSymbol().c_str());
+        else
+            error(location, " left of '[' is not of type array, matrix, or vector ", "expression");
+        recover();
+    }
+    if (baseExpression->getType().getQualifier() == EvqConstExpr && indexExpression->getQualifier() == EvqConstExpr) {
+        if (baseExpression->isArray()) { // constant folding for arrays
+            indexedExpression = addConstArrayNode(indexExpression->getAsConstantUnion()->getIConst(0), baseExpression, location);
+        } else if (baseExpression->isVector()) {  // constant folding for vectors
+            TVectorFields fields;
+            fields.num = 1;
+            fields.offsets[0] = indexExpression->getAsConstantUnion()->getIConst(0); // need to do it this way because v.xy sends fields integer array
+            indexedExpression = addConstVectorNode(fields, baseExpression, location);
+        } else if (baseExpression->isMatrix()) { // constant folding for matrices
+            indexedExpression = addConstMatrixNode(indexExpression->getAsConstantUnion()->getIConst(0), baseExpression, location);
+        }
+    } else {
+        if (indexExpression->getQualifier() == EvqConstExpr) {
+            if ((baseExpression->isVector() || baseExpression->isMatrix()) && baseExpression->getType().getNominalSize() <= indexExpression->getAsConstantUnion()->getIConst(0) && !baseExpression->isArray() ) {
+                std::stringstream extraInfoStream;
+                extraInfoStream << "field selection out of range '" << indexExpression->getAsConstantUnion()->getIConst(0) << "'";
+                std::string extraInfo = extraInfoStream.str();
+                error(location, "", "[", extraInfo.c_str());
+                recover();
+            } else {
+                if (baseExpression->isArray()) {
+                    if (baseExpression->getType().getArraySize() == 0) {
+                        if (baseExpression->getType().getMaxArraySize() <= indexExpression->getAsConstantUnion()->getIConst(0)) {
+                            if (arraySetMaxSize(baseExpression->getAsSymbolNode(), baseExpression->getTypePointer(), indexExpression->getAsConstantUnion()->getIConst(0), true, location))
+                                recover();
+                        } else {
+                            if (arraySetMaxSize(baseExpression->getAsSymbolNode(), baseExpression->getTypePointer(), 0, false, location))
+                                recover();
+                        }
+                    } else if ( indexExpression->getAsConstantUnion()->getIConst(0) >= baseExpression->getType().getArraySize()) {
+                        std::stringstream extraInfoStream;
+                        extraInfoStream << "array index out of range '" << indexExpression->getAsConstantUnion()->getIConst(0) << "'";
+                        std::string extraInfo = extraInfoStream.str();
+                        error(location, "", "[", extraInfo.c_str());
+                        recover();
+                    }
+                }
+                indexedExpression = intermediate.addIndex(EOpIndexDirect, baseExpression, indexExpression, location);
+            }
+        } else {
+            if (baseExpression->isArray() && baseExpression->getType().getArraySize() == 0) {
+                error(location, "", "[", "array must be redeclared with a size before being indexed with a variable");
+                recover();
+            }
+
+            indexedExpression = intermediate.addIndex(EOpIndexIndirect, baseExpression, indexExpression, location);
+        }
+    }
+    if (indexedExpression == 0) {
+        ConstantUnion *unionArray = new ConstantUnion[1];
+        unionArray->setFConst(0.0f);
+        indexedExpression = intermediate.addConstantUnion(unionArray, TType(EbtFloat, EbpHigh, EvqConstExpr), location);
+    } else if (baseExpression->isArray()) {
+        if (baseExpression->getType().getStruct())
+            indexedExpression->setType(TType(baseExpression->getType().getStruct(), baseExpression->getType().getTypeName()));
+        else
+            indexedExpression->setType(TType(baseExpression->getBasicType(), baseExpression->getPrecision(), EvqTemporary, baseExpression->getNominalSize(), baseExpression->isMatrix()));
+
+        if (baseExpression->getType().getQualifier() == EvqConstExpr)
+            indexedExpression->getTypePointer()->setQualifier(EvqConstExpr);
+    } else if (baseExpression->isMatrix() && baseExpression->getType().getQualifier() == EvqConstExpr)
+        indexedExpression->setType(TType(baseExpression->getBasicType(), baseExpression->getPrecision(), EvqConstExpr, baseExpression->getNominalSize()));
+    else if (baseExpression->isMatrix())
+        indexedExpression->setType(TType(baseExpression->getBasicType(), baseExpression->getPrecision(), EvqTemporary, baseExpression->getNominalSize()));
+    else if (baseExpression->isVector() && baseExpression->getType().getQualifier() == EvqConstExpr)
+        indexedExpression->setType(TType(baseExpression->getBasicType(), baseExpression->getPrecision(), EvqConstExpr));
+    else if (baseExpression->isVector())
+        indexedExpression->setType(TType(baseExpression->getBasicType(), baseExpression->getPrecision(), EvqTemporary));
+    else
+        indexedExpression->setType(baseExpression->getType());
+
+	return indexedExpression;
+}
+
 //
 // Parse an array of strings using yyparse.
 //
