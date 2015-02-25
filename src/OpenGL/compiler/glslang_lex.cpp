@@ -993,7 +993,7 @@ WHICH GENERATES THE GLSL ES LEXER (glslang_lex.cpp).
 */
 
 #include "glslang.h"
-#include "ParseHelper.h"
+#include "ParseContext.h"
 #include "preprocessor/Token.h"
 #include "util.h"
 #include "glslang_tab.h"

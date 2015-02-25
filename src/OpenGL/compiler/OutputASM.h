@@ -13,7 +13,7 @@
 #define COMPILER_OUTPUTASM_H_
 
 #include "intermediate.h"
-#include "ParseHelper.h"
+#include "ParseContext.h"
 #include "Shader/PixelShader.hpp"
 #include "Shader/VertexShader.hpp"
 

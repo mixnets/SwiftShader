@@ -10,7 +10,7 @@
 #include "Initialize.h"
 #include "InitializeParseContext.h"
 #include "InitializeGlobals.h"
-#include "ParseHelper.h"
+#include "ParseContext.h"
 #include "ValidateLimitations.h"
 
 namespace 

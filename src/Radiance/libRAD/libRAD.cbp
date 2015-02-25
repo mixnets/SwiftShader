@@ -180,8 +180,8 @@
 		<Unit filename="../../OpenGL/compiler/MMap.h" />
 		<Unit filename="../../OpenGL/compiler/OutputASM.cpp" />
 		<Unit filename="../../OpenGL/compiler/OutputASM.h" />
-		<Unit filename="../../OpenGL/compiler/ParseHelper.cpp" />
-		<Unit filename="../../OpenGL/compiler/ParseHelper.h" />
+		<Unit filename="../../OpenGL/compiler/ParseContext.cpp" />
+		<Unit filename="../../OpenGL/compiler/ParseContext.h" />
 		<Unit filename="../../OpenGL/compiler/PoolAlloc.cpp" />
 		<Unit filename="../../OpenGL/compiler/PoolAlloc.h" />
 		<Unit filename="../../OpenGL/compiler/Pragma.h" />

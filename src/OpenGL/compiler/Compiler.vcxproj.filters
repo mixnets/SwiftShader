@@ -41,9 +41,6 @@
     <ClCompile Include="parseConst.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ParseHelper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PoolAlloc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -83,6 +80,9 @@
     <ClCompile Include="AnalyzeCallDepth.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ParseContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseTypes.h">
@@ -116,9 +116,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="osinclude.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ParseHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PoolAlloc.h">
@@ -167,6 +164,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="glslang.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParseContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

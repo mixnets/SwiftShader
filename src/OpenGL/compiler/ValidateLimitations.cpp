@@ -7,7 +7,7 @@
 #include "ValidateLimitations.h"
 #include "InfoSink.h"
 #include "InitializeParseContext.h"
-#include "ParseHelper.h"
+#include "ParseContext.h"
 
 namespace {
 bool IsLoopIndex(const TIntermSymbol* symbol, const TLoopStack& stack) {

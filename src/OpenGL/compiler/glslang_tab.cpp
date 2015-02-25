@@ -89,7 +89,7 @@
 #endif
 
 #include "SymbolTable.h"
-#include "ParseHelper.h"
+#include "ParseContext.h"
 
 #define YYENABLE_NLS 0
 

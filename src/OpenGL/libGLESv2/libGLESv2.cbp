@@ -277,8 +277,8 @@
 		<Unit filename="../compiler/MMap.h" />
 		<Unit filename="../compiler/OutputASM.cpp" />
 		<Unit filename="../compiler/OutputASM.h" />
-		<Unit filename="../compiler/ParseHelper.cpp" />
-		<Unit filename="../compiler/ParseHelper.h" />
+		<Unit filename="../compiler/ParseContext.cpp" />
+		<Unit filename="../compiler/ParseContext.h" />
 		<Unit filename="../compiler/PoolAlloc.cpp" />
 		<Unit filename="../compiler/PoolAlloc.h" />
 		<Unit filename="../compiler/Pragma.h" />
