@@ -261,7 +261,7 @@ namespace glsl
 		case EOpIndexDirect:
 			if(visit == PostVisit)
 			{
-				int index = right->getAsConstantUnion()->getIConst(0);
+				int index = right->getAsConstantUnion()->getIConst();
 
 				if(result->isMatrix() || result->isStruct())
  				{
@@ -362,7 +362,7 @@ namespace glsl
 
 						if(element)
 						{
-							int i = element->getUnionArrayPointer()[0].getIConst();
+							int i = element->getIConst();
 							swizzle |= i << (component * 2);
 							component++;
 						}
@@ -1067,7 +1067,7 @@ namespace glsl
 		{
 			if(constantCondition)
 			{
-				bool trueCondition = constantCondition->getUnionArrayPointer()->getBConst();
+				bool trueCondition = constantCondition->getBConst();
 
 				if(trueCondition)
 				{
@@ -1110,7 +1110,7 @@ namespace glsl
 		{
 			if(constantCondition)
 			{
-				bool trueCondition = constantCondition->getUnionArrayPointer()->getBConst();
+				bool trueCondition = constantCondition->getBConst();
 
 				if(trueCondition)
 				{
@@ -1503,7 +1503,7 @@ namespace glsl
 
 						if(binary->getOp() == EOpIndexDirect)
 						{
-							parameter.index += right->getAsConstantUnion()->getIConst(0);
+							parameter.index += right->getAsConstantUnion()->getIConst();
 						}
 						else if(binary->getOp() == EOpIndexIndirect)
 						{
@@ -1517,7 +1517,7 @@ namespace glsl
 						}
 						else if(binary->getOp() == EOpIndexDirectStruct)
 						{
-							parameter.index += right->getAsConstantUnion()->getIConst(0);
+							parameter.index += right->getAsConstantUnion()->getIConst();
 						}
 						else UNREACHABLE();
 					}
@@ -1621,7 +1621,7 @@ namespace glsl
 			{
 			case EOpIndexDirect:
 				{
-					int rightIndex = right->getAsConstantUnion()->getIConst(0);
+					int rightIndex = right->getAsConstantUnion()->getIConst();
 
 					if(left->isRegister())
 					{
@@ -1743,7 +1743,7 @@ namespace glsl
 
 					for(unsigned int i = 0; i < sequence.size(); i++)
 					{
-						int index = sequence[i]->getAsConstantUnion()->getIConst(0);
+						int index = sequence[i]->getAsConstantUnion()->getIConst();
 
 						int element = swizzleElement(leftSwizzle, index);
 						rightMask = rightMask | (1 << element);
@@ -1945,7 +1945,7 @@ namespace glsl
 
 				if(constantCondition)
 				{
-					bool trueCondition = constantCondition->getUnionArrayPointer()->getBConst();
+					bool trueCondition = constantCondition->getBConst();
 
 					if(trueCondition)
 					{

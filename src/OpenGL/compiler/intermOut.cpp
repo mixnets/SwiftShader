@@ -311,9 +311,9 @@ void TOutputTraverser::visitConstantUnion(TIntermConstantUnion* node)
 
     for (int i = 0; i < size; i++) {
         OutputTreeText(out, node, depth);
-        switch (node->getUnionArrayPointer()[i].getType()) {
+        switch (node->getConst(i)->getType()) {
             case EbtBool:
-                if (node->getUnionArrayPointer()[i].getBConst())
+                if (node->getConst(i)->getBConst())
                     out << "true";
                 else
                     out << "false";
@@ -322,15 +322,15 @@ void TOutputTraverser::visitConstantUnion(TIntermConstantUnion* node)
                 out << "\n";
                 break;
             case EbtFloat:
-                out << node->getUnionArrayPointer()[i].getFConst();
+                out << node->getFConst(i);
                 out << " (const float)\n";
                 break;
             case EbtInt:
-                out << node->getUnionArrayPointer()[i].getIConst();
+                out << node->getIConst(i);
                 out << " (const int)\n";
                 break;
             case EbtUInt:
-                out << node->getUnionArrayPointer()[i].getUConst();
+                out << node->getUConst(i);
                 out << " (const uint)\n";
                 break;
             default:

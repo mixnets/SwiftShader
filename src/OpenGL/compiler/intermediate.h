@@ -23,7 +23,8 @@
 //
 // Operators used by the high-level (parse tree) representation.
 //
-enum TOperator {
+enum TOperator
+{
     EOpNull,            // if in a node, should only mean a node is still being built
     EOpSequence,        // denotes a list of statements, or parameters, etc.
     EOpFunctionCall,    
@@ -68,6 +69,7 @@ enum TOperator {
     EOpVectorTimesMatrix,
     EOpMatrixTimesVector,
     EOpMatrixTimesScalar,
+    EOpMatrixTimesMatrix,
 
     EOpLogicalOr,
     EOpLogicalXor,
@@ -83,7 +85,8 @@ enum TOperator {
     // Built-in functions potentially mapped to operators
     //
 
-    EOpRadians,
+	EOpGuardIntrinsicBegin,   // Non-operator, see IsIntrinsic()
+    EOpRadians = EOpGuardIntrinsicBegin,
     EOpDegrees,
     EOpSin,
     EOpCos,
@@ -126,10 +129,9 @@ enum TOperator {
     EOpDFdy,            // Fragment only, OES_standard_derivatives extension
     EOpFwidth,          // Fragment only, OES_standard_derivatives extension
 
-    EOpMatrixTimesMatrix,
-
     EOpAny,
     EOpAll,
+	EOpGuardIntrinsicEnd = EOpAll,   // Non-operator, see IsIntrinsic()
 
     //
     // Branch
@@ -180,6 +182,11 @@ enum TOperator {
     EOpMatrixTimesMatrixAssign,
     EOpDivAssign
 };
+
+inline bool IsIntrinsic(TOperator op)
+{
+    return op >= EOpGuardIntrinsicBegin && op <= EOpGuardIntrinsicEnd;
+}
 
 extern const char* getOperatorString(TOperator op);
 
@@ -239,7 +246,7 @@ public:
     TIntermTyped(const TType& t) : type(t)  { }
     virtual TIntermTyped* getAsTyped() { return this; }
 
-    void setType(const TType& t) { type = t; }
+    virtual void setType(const TType& t) { type = t; }
     const TType& getType() const { return type; }
     TType* getTypePointer() { return &type; }
 
@@ -360,10 +367,11 @@ public:
 
     ConstantUnion* getUnionArrayPointer() const { return unionArrayPointer; }
     
-    int getIConst(int index) const { return unionArrayPointer ? unionArrayPointer[index].getIConst() : 0; }
-    int getUConst(int index) const { return unionArrayPointer ? unionArrayPointer[index].getUConst() : 0; }
-    float getFConst(int index) const { return unionArrayPointer ? unionArrayPointer[index].getFConst() : 0.0f; }
-    bool getBConst(int index) const { return unionArrayPointer ? unionArrayPointer[index].getBConst() : false; }
+    const ConstantUnion *getConst(int index = 0) const { return unionArrayPointer ? &unionArrayPointer[index] : nullptr; }
+    int getIConst(int index = 0) const { return unionArrayPointer ? unionArrayPointer[index].getIConst() : 0; }
+    int getUConst(int index = 0) const { return unionArrayPointer ? unionArrayPointer[index].getUConst() : 0; }
+    float getFConst(int index = 0) const { return unionArrayPointer ? unionArrayPointer[index].getFConst() : 0.0f; }
+    bool getBConst(int index = 0) const { return unionArrayPointer ? unionArrayPointer[index].getBConst() : false; }
 
     virtual TIntermConstantUnion* getAsConstantUnion()  { return this; }
     virtual void traverse(TIntermTraverser*);
@@ -450,6 +458,8 @@ public:
 
     void setName(const TString& n) { name = n; }
     const TString& getName() const { return name; }
+
+	virtual void setType(const TType& t);
 
     void setUserDefined() { userDefined = true; }
     bool isUserDefined() const { return userDefined; }

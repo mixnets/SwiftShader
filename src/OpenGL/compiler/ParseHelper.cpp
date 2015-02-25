@@ -285,7 +285,7 @@ bool TParseContext::lValueErrorCheck(int line, const char* op, TIntermTyped* nod
 
                 for (TIntermSequence::iterator p = aggrNode->getSequence().begin();
                                                p != aggrNode->getSequence().end(); p++) {
-                    int value = (*p)->getAsTyped()->getAsConstantUnion()->getIConst(0);
+                    int value = (*p)->getAsTyped()->getAsConstantUnion()->getIConst();
                     offset[value]++;
                     if (offset[value] > 1) {
                         error(line, " l-value of swizzle cannot have duplicate components", op);
@@ -666,7 +666,7 @@ bool TParseContext::arraySizeErrorCheck(int line, TIntermTyped* expr, int& size)
 
     if (constant->getBasicType() == EbtUInt)
     {
-        unsigned int uintSize = constant->getUConst(0);
+        unsigned int uintSize = constant->getUConst();
         if (uintSize > static_cast<unsigned int>(std::numeric_limits<int>::max()))
         {
             error(line, "array size too large", "");
@@ -678,7 +678,7 @@ bool TParseContext::arraySizeErrorCheck(int line, TIntermTyped* expr, int& size)
     }
     else
     {
-        size = constant->getIConst(0);
+        size = constant->getIConst();
 
         if (size <= 0)
         {
@@ -1051,7 +1051,7 @@ bool TParseContext::executeInitializer(TSourceLoc line, TString& identifier, TPu
             ConstantUnion* unionArray = variable->getConstPointer();
 
             if (type.getObjectSize() == 1 && type.getBasicType() != EbtStruct) {
-                *unionArray = (initializer->getAsConstantUnion()->getUnionArrayPointer())[0];
+                *unionArray = *initializer->getAsConstantUnion()->getConst();
             } else {
                 variable->shareConstPointer(initializer->getAsConstantUnion()->getUnionArrayPointer());
             }

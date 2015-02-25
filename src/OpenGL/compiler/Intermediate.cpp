@@ -303,6 +303,30 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     return node;
 }
 
+void TIntermAggregate::setType(const TType &t)
+{
+	type = t;
+
+	if(IsIntrinsic(op))
+	{
+		bool constant = true;
+
+		for(TIntermSequence::iterator sit = sequence.begin(); sit != sequence.end(); sit++)
+		{
+			if(!(*sit)->getAsConstantUnion())
+			{
+				constant = false;
+				break;
+			}
+		}
+
+		if(constant)
+		{
+			type.setQualifier(EvqConst);
+		}
+	}
+}
+
 //
 // This is the safe way to change the operator on an aggregate, as it
 // does lots of error checking and fixing.  Especially for establishing
@@ -410,7 +434,7 @@ TIntermNode* TIntermediate::addSelection(TIntermTyped* cond, TIntermNodePair nod
     //
 
     if (cond->getAsTyped() && cond->getAsTyped()->getAsConstantUnion()) {
-        if (cond->getAsConstantUnion()->getBConst(0) == true)
+        if (cond->getAsConstantUnion()->getBConst() == true)
             return nodePair.node1 ? setAggregateOperator(nodePair.node1, EOpSequence, nodePair.node1->getLine()) : NULL;
         else
             return nodePair.node2 ? setAggregateOperator(nodePair.node2, EOpSequence, nodePair.node2->getLine()) : NULL;
@@ -455,7 +479,7 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
     //
 
     if (cond->getAsConstantUnion() && trueBlock->getAsConstantUnion() && falseBlock->getAsConstantUnion()) {
-        if (cond->getAsConstantUnion()->getBConst(0))
+        if (cond->getAsConstantUnion()->getBConst())
             return trueBlock;
         else
             return falseBlock;
@@ -907,13 +931,13 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
         if (constantNode->getType().getObjectSize() == 1 && objectSize > 1) {
             rightUnionArray = new ConstantUnion[objectSize];
             for (int i = 0; i < objectSize; ++i)
-                rightUnionArray[i] = *node->getUnionArrayPointer();
+                rightUnionArray[i] = *node->getConst();
             returnType = getType();
         } else if (constantNode->getType().getObjectSize() > 1 && objectSize == 1) {
             // for a case like float f = vec4(2,3,4,5) + 1.2;
             unionArray = new ConstantUnion[constantNode->getType().getObjectSize()];
             for (int i = 0; i < constantNode->getType().getObjectSize(); ++i)
-                unionArray[i] = *getUnionArrayPointer();
+                unionArray[i] = *getConst();
             returnType = node->getType();
             objectSize = constantNode->getType().getObjectSize();
         }

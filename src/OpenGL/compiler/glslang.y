@@ -261,36 +261,36 @@ postfix_expression
         }
         if ($1->getType().getQualifier() == EvqConst && $3->getQualifier() == EvqConst) {
             if ($1->isArray()) { // constant folding for arrays
-                $$ = context->addConstArrayNode($3->getAsConstantUnion()->getIConst(0), $1, $2.line);
+                $$ = context->addConstArrayNode($3->getAsConstantUnion()->getIConst(), $1, $2.line);
             } else if ($1->isVector()) {  // constant folding for vectors
                 TVectorFields fields;
                 fields.num = 1;
-                fields.offsets[0] = $3->getAsConstantUnion()->getIConst(0); // need to do it this way because v.xy sends fields integer array
+                fields.offsets[0] = $3->getAsConstantUnion()->getIConst(); // need to do it this way because v.xy sends fields integer array
                 $$ = context->addConstVectorNode(fields, $1, $2.line);
             } else if ($1->isMatrix()) { // constant folding for matrices
-                $$ = context->addConstMatrixNode($3->getAsConstantUnion()->getIConst(0), $1, $2.line);
+                $$ = context->addConstMatrixNode($3->getAsConstantUnion()->getIConst(), $1, $2.line);
             }
         } else {
             if ($3->getQualifier() == EvqConst) {
-                if (($1->isVector() || $1->isMatrix()) && $1->getType().getNominalSize() <= $3->getAsConstantUnion()->getIConst(0) && !$1->isArray() ) {
+                if (($1->isVector() || $1->isMatrix()) && $1->getType().getNominalSize() <= $3->getAsConstantUnion()->getIConst() && !$1->isArray() ) {
                     std::stringstream extraInfoStream;
-                    extraInfoStream << "field selection out of range '" << $3->getAsConstantUnion()->getIConst(0) << "'";
+                    extraInfoStream << "field selection out of range '" << $3->getAsConstantUnion()->getIConst() << "'";
                     std::string extraInfo = extraInfoStream.str();
                     context->error($2.line, "", "[", extraInfo.c_str());
                     context->recover();
                 } else {
                     if ($1->isArray()) {
                         if ($1->getType().getArraySize() == 0) {
-                            if ($1->getType().getMaxArraySize() <= $3->getAsConstantUnion()->getIConst(0)) {
-                                if (context->arraySetMaxSize($1->getAsSymbolNode(), $1->getTypePointer(), $3->getAsConstantUnion()->getIConst(0), true, $2.line))
+                            if ($1->getType().getMaxArraySize() <= $3->getAsConstantUnion()->getIConst()) {
+                                if (context->arraySetMaxSize($1->getAsSymbolNode(), $1->getTypePointer(), $3->getAsConstantUnion()->getIConst(), true, $2.line))
                                     context->recover();
                             } else {
                                 if (context->arraySetMaxSize($1->getAsSymbolNode(), $1->getTypePointer(), 0, false, $2.line))
                                     context->recover();
                             }
-                        } else if ( $3->getAsConstantUnion()->getIConst(0) >= $1->getType().getArraySize()) {
+                        } else if ( $3->getAsConstantUnion()->getIConst() >= $1->getType().getArraySize()) {
                             std::stringstream extraInfoStream;
-                            extraInfoStream << "array index out of range '" << $3->getAsConstantUnion()->getIConst(0) << "'";
+                            extraInfoStream << "array index out of range '" << $3->getAsConstantUnion()->getIConst() << "'";
                             std::string extraInfo = extraInfoStream.str();
                             context->error($2.line, "", "[", extraInfo.c_str());
                             context->recover();
@@ -530,7 +530,6 @@ function_call
                     // This is a real function call
 
                     $$ = context->intermediate.setAggregateOperator($1.intermAggregate, EOpFunctionCall, $1.line);
-                    $$->setType(fnCandidate->getReturnType());
 
                     // this is how we know whether the given function is a builtIn function or a user defined function
                     // if builtIn == false, it's a userDefined -> could be an overloaded builtIn function also
