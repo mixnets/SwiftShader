@@ -1423,81 +1423,81 @@ TIntermTyped *TParseContext::addIndexExpression(TIntermTyped *baseExpression, co
 		recover();
 	}
 
-	if(baseExpression->getType().getQualifier() == EvqConstExpr && indexExpression->getQualifier() == EvqConstExpr)
+	TIntermConstantUnion *constantIndex = indexExpression->getAsConstantUnion();
+	int index = constantIndex ? constantIndex->getIConst(0) : 0;
+
+	if(baseExpression->getType().getQualifier() == EvqConstExpr && indexExpression->getQualifier() == EvqConstExpr)   // Can be constant folded
 	{
 		if(baseExpression->isArray())
 		{
-			indexedExpression = addConstArrayNode(indexExpression->getAsConstantUnion()->getIConst(0), baseExpression, location);
+			indexedExpression = addConstArrayNode(index, baseExpression, location);
 		}
 		else if(baseExpression->isVector())
 		{
 			TVectorFields fields;
 			fields.num = 1;
-			fields.offsets[0] = indexExpression->getAsConstantUnion()->getIConst(0); // need to do it this way because v.xy sends fields integer array
+			fields.offsets[0] = index;   // Need to do it this way because v.xy sends fields integer array
 			indexedExpression = addConstVectorNode(fields, baseExpression, location);
 		}
 		else if(baseExpression->isMatrix())
 		{
-			indexedExpression = addConstMatrixNode(indexExpression->getAsConstantUnion()->getIConst(0), baseExpression, location);
+			indexedExpression = addConstMatrixNode(index, baseExpression, location);
+		}
+	}
+	else if(indexExpression->getQualifier() == EvqConstExpr)
+	{
+		if((baseExpression->isVector() || baseExpression->isMatrix()) && baseExpression->getType().getNominalSize() <= index && !baseExpression->isArray())
+		{
+			std::stringstream extraInfoStream;
+			extraInfoStream << "field selection out of range '" << index << "'";
+			std::string extraInfo = extraInfoStream.str();
+			error(location, "", "[", extraInfo.c_str());
+			recover();
+		}
+		else
+		{
+			if(baseExpression->isArray())
+			{
+				if(baseExpression->getType().getArraySize() == 0)
+				{
+					if(baseExpression->getType().getMaxArraySize() <= index)
+					{
+						if(arraySetMaxSize(baseExpression->getAsSymbolNode(), baseExpression->getTypePointer(), index, true, location))
+						{
+							recover();
+						}
+					}
+					else
+					{
+						if(arraySetMaxSize(baseExpression->getAsSymbolNode(), baseExpression->getTypePointer(), 0, false, location))
+						{
+							recover();
+						}
+					}
+
+				}
+				else if(index >= baseExpression->getType().getArraySize())
+				{
+					std::stringstream extraInfoStream;
+					extraInfoStream << "array index out of range '" << index << "'";
+					std::string extraInfo = extraInfoStream.str();
+					error(location, "", "[", extraInfo.c_str());
+					recover();
+				}
+			}
+
+			indexedExpression = intermediate.addIndex(EOpIndexDirect, baseExpression, indexExpression, location);
 		}
 	}
 	else
 	{
-		if(indexExpression->getQualifier() == EvqConstExpr)
+		if(baseExpression->isArray() && baseExpression->getType().getArraySize() == 0)
 		{
-			if((baseExpression->isVector() || baseExpression->isMatrix()) && baseExpression->getType().getNominalSize() <= indexExpression->getAsConstantUnion()->getIConst(0) && !baseExpression->isArray())
-			{
-				std::stringstream extraInfoStream;
-				extraInfoStream << "field selection out of range '" << indexExpression->getAsConstantUnion()->getIConst(0) << "'";
-				std::string extraInfo = extraInfoStream.str();
-				error(location, "", "[", extraInfo.c_str());
-				recover();
-			}
-			else
-			{
-				if(baseExpression->isArray())
-				{
-					if(baseExpression->getType().getArraySize() == 0)
-					{
-						if(baseExpression->getType().getMaxArraySize() <= indexExpression->getAsConstantUnion()->getIConst(0))
-						{
-							if(arraySetMaxSize(baseExpression->getAsSymbolNode(), baseExpression->getTypePointer(), indexExpression->getAsConstantUnion()->getIConst(0), true, location))
-							{
-								recover();
-							}
-						}
-						else
-						{
-							if(arraySetMaxSize(baseExpression->getAsSymbolNode(), baseExpression->getTypePointer(), 0, false, location))
-							{
-								recover();
-							}
-						}
-
-					}
-					else if(indexExpression->getAsConstantUnion()->getIConst(0) >= baseExpression->getType().getArraySize())
-					{
-						std::stringstream extraInfoStream;
-						extraInfoStream << "array index out of range '" << indexExpression->getAsConstantUnion()->getIConst(0) << "'";
-						std::string extraInfo = extraInfoStream.str();
-						error(location, "", "[", extraInfo.c_str());
-						recover();
-					}
-				}
-
-				indexedExpression = intermediate.addIndex(EOpIndexDirect, baseExpression, indexExpression, location);
-			}
+			error(location, "", "[", "array must be redeclared with a size before being indexed with a variable");
+			recover();
 		}
-		else
-		{
-			if(baseExpression->isArray() && baseExpression->getType().getArraySize() == 0)
-			{
-				error(location, "", "[", "array must be redeclared with a size before being indexed with a variable");
-				recover();
-			}
 
-			indexedExpression = intermediate.addIndex(EOpIndexIndirect, baseExpression, indexExpression, location);
-		}
+		indexedExpression = intermediate.addIndex(EOpIndexIndirect, baseExpression, indexExpression, location);
 	}
 
 	if(indexedExpression == 0)
