@@ -144,7 +144,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 	char* pszFragShader = "\
 		void main (void)\
 		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+			gl_FragColor = vec4(1.0, 1.0, 0.66 , abs(0.5 + 0.5));\
 		}";
 	char* pszVertShader = "\
 		attribute highp vec4	myVertex;\

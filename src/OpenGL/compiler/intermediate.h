@@ -359,6 +359,8 @@ public:
     TIntermConstantUnion(ConstantUnion *unionPointer, const TType& t) : TIntermTyped(t), unionArrayPointer(unionPointer) { }
 
     ConstantUnion* getUnionArrayPointer() const { return unionArrayPointer; }
+
+	ConstantUnion operator[](int index) const;
     
     int getIConst(int index) const { return unionArrayPointer ? unionArrayPointer[index].getIConst() : 0; }
     int getUConst(int index) const { return unionArrayPointer ? unionArrayPointer[index].getUConst() : 0; }
@@ -367,8 +369,6 @@ public:
 
     virtual TIntermConstantUnion* getAsConstantUnion()  { return this; }
     virtual void traverse(TIntermTraverser*);
-
-    TIntermTyped* fold(TOperator, TIntermTyped*, TInfoSink&);
 
 protected:
     ConstantUnion *unionArrayPointer;
@@ -405,7 +405,9 @@ public:
     void setRight(TIntermTyped* n) { right = n; }
     TIntermTyped* getLeft() const { return left; }
     TIntermTyped* getRight() const { return right; }
-    bool promote(TInfoSink&);
+    
+	bool promote(TInfoSink&);
+	TIntermConstantUnion *fold(TInfoSink&);
 
 protected:
     TIntermTyped* left;
@@ -425,7 +427,9 @@ public:
 
     void setOperand(TIntermTyped* o) { operand = o; }
     TIntermTyped* getOperand() { return operand; }    
-    bool promote(TInfoSink&);
+    
+	bool promote(TInfoSink&);
+	TIntermConstantUnion *fold(TInfoSink&);
 
 protected:
     TIntermTyped* operand;
