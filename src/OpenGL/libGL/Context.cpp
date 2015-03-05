@@ -2454,7 +2454,8 @@ void Context::clear(GLbitfield mask)
 
 		if(rgbaMask != 0)
 		{
-			device->clearColor(color, rgbaMask);
+			//device->clearColor(color, rgbaMask);
+			device->clearColorAsynchronous(color, rgbaMask);
 		}
 	}
 
@@ -2462,7 +2463,8 @@ void Context::clear(GLbitfield mask)
 	{
 		if(mState.depthMask != 0)
 		{
-			device->clearDepth(depth);
+			//device->clearDepth(depth);
+			device->clearDepthAsynchronous(depth);
 		}
 	}
 

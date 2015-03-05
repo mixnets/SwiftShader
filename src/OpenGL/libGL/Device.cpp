@@ -31,6 +31,22 @@ namespace gl
 {
 	using namespace sw;
 
+	struct ClearColorParameters
+	{
+		unsigned int color;
+		unsigned int rgbaMask;
+		Device *device;
+	};
+
+	struct ClearDepthParameters
+	{
+		float z;
+		Device *device;
+	};
+
+	Thread *colorThread;
+	Thread *depthThread;
+
 	Device::Device(Context *context) : Renderer(context, true, true, true, true, true), context(context)
 	{
 		depthStencil = 0;
@@ -175,7 +191,36 @@ namespace gl
 			renderTarget = 0;
 		}
 
+		if(depthThread)
+		{
+			depthThread->~Thread();
+		}
+
+		if(colorThread)
+		{
+			colorThread->~Thread();
+		}
+
 		delete context;
+	}
+
+	void Device::clearColorAsynchronous(unsigned int color, unsigned int rgbaMask)
+	{
+		static ClearColorParameters parameters;
+		parameters.device = this;
+		parameters.color = color;
+		parameters.rgbaMask = rgbaMask;
+
+		colorThread = new Thread(clearColorThreadFunction, &parameters);
+	}
+
+	void Device::clearColorThreadFunction(void *parameters)
+	{
+		Device *device = static_cast<ClearColorParameters*>(parameters)->device;
+		unsigned int color = static_cast<ClearColorParameters*>(parameters)->color;
+		unsigned int rgbaMask = static_cast<ClearColorParameters*>(parameters)->rgbaMask;
+
+		device->clearColor(color, rgbaMask);
 	}
 
 	void Device::clearColor(unsigned int color, unsigned int rgbaMask)
@@ -199,6 +244,23 @@ namespace gl
 		}
 
 		renderTarget->clearColorBuffer(color, rgbaMask, x0, y0, width, height);
+	}
+
+	void Device::clearDepthAsynchronous(float z)
+	{
+		static ClearDepthParameters parameters;
+		parameters.device = this;
+		parameters.z = z;
+
+		depthThread = new Thread(clearDepthThreadFunction, &parameters);
+	}
+
+	void Device::clearDepthThreadFunction(void *parameters)
+	{
+		Device *device = static_cast<ClearDepthParameters*>(parameters)->device;
+		float z = static_cast<ClearDepthParameters*>(parameters)->z;
+
+		device->clearDepth(z);
 	}
 
 	void Device::clearDepth(float z)

@@ -48,6 +48,10 @@ namespace gl
 
 		virtual ~Device();
 
+		static void clearColorThreadFunction(void *parameters);
+		static void clearDepthThreadFunction(void *parameters);
+		virtual void clearDepthAsynchronous(float z);
+		virtual void clearColorAsynchronous(unsigned int color, unsigned int rgbaMask);
 		virtual void clearColor(unsigned int color, unsigned int rgbaMask);
 		virtual void clearDepth(float z);
 		virtual void clearStencil(unsigned int stencil, unsigned int mask);
