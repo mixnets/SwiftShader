@@ -570,7 +570,8 @@ namespace sw
 
 				if(draw->depthStencil)
 				{
-					data->depthBuffer = (float*)context->depthStencil->lockInternal(0, 0, q * ms, LOCK_READWRITE, MANAGED);
+					data->depthBuffer = (float*)context->depthStencil->lockDepth(0, 0, q * ms, LOCK_READWRITE, MANAGED);
+					draw->depthStencil = context->depthStencil->getLastLockDepth();
 					data->depthPitchB = context->depthStencil->getInternalPitchB();
 					data->depthSliceB = context->depthStencil->getInternalSliceB();
 
@@ -903,7 +904,7 @@ namespace sw
 
 				if(draw.depthStencil)
 				{
-					draw.depthStencil->unlockInternal();
+					draw.depthStencil->unlockDepth(draw.depthStencil);
 					draw.depthStencil->unlockStencil();
 				}
 

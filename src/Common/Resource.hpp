@@ -33,6 +33,7 @@ namespace sw
 
 		void *lock(Accessor claimer);
 		void *lock(Accessor relinquisher, Accessor claimer);
+		bool isLocked() { if (count > 0) return true; else return false; }
 		void unlock();
 		void unlock(Accessor relinquisher);
 

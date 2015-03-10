@@ -21,6 +21,9 @@
 #include "Common/Debug.hpp"
 #include "Reactor/Reactor.hpp"
 
+// jim: TEMP
+#include "Common/Timer.hpp"
+
 #include <xmmintrin.h>
 #include <emmintrin.h>
 
@@ -35,6 +38,11 @@ namespace sw
 
 	unsigned int *Surface::palette = 0;
 	unsigned int Surface::paletteID = 0;
+	std::map<void *, sw::Surface *> Surface::sDepthBuffers;
+	std::vector<Surface *> Surface::sStencilBuffers;
+	Surface * Surface::currentDepthLock = NULL;
+	Surface * Surface::currentStencilLock = NULL;
+	bool Surface::bUnblockingDepthStencil = true; // Should wait for depth, or create new depth instead of locking.
 
 	void Rect::clip(int minX, int minY, int maxX, int maxY)
 	{
@@ -803,6 +811,62 @@ namespace sw
 		external.unlockRect();
 	}
 
+	void *Surface::lockDepth(int x, int y, int z, Lock lock, Accessor client)
+	{
+		if (bUnblockingDepthStencil)
+		{
+			if (!resource->isLocked())
+			{
+				std::map<void *, Surface *>::iterator surf = sDepthBuffers.find(resource);
+				if (surf->second == NULL)
+				{
+					sDepthBuffers.insert(std::pair<void *, Surface *>(getResource(), this));
+				}
+				currentDepthLock = this;
+				return lockInternal(x, y, z, lock, client);
+			}
+
+			for (std::map<void *, Surface *>::iterator it = sDepthBuffers.begin(); it != sDepthBuffers.end(); it++)
+			{
+				if (!it->second->getResource()->isLocked())
+				{
+					currentDepthLock = it->second;
+					return it->second->lockInternal(x, y, z, lock, client);
+				}
+			}
+
+			// Create new Surface and add to map
+			Surface * pSurf = new Surface(0, internal.width, internal.height, internal.depth, external.format, true, true );
+			sDepthBuffers.insert(std::pair<void *, Surface *>(pSurf->getResource(), pSurf));
+			currentDepthLock = pSurf;
+			return pSurf->lockInternal(x, y, z, lock, client);
+		}
+		else
+		{
+			return lockInternal(x, y, z, lock, client);
+		}
+	}
+
+	void Surface::unlockDepth(Surface * surf)
+	{
+		if (bUnblockingDepthStencil)
+			surf->unlockInternal();
+		else
+			unlockInternal();
+		//currentDepthLock = NULL;
+#if 0
+		std::map<void *, Surface *>::iterator it = sDepthBuffers.find(resource);
+		if (it->second != NULL)
+		{
+			Surface * pRes = it->second;
+			pRes->unlockInternal();
+			pRes->currentDepthLock = NULL;
+			//sDepthBuffers.erase(it);
+		}
+#endif
+		//internal.unlockRect();
+	}
+
 	void *Surface::lockInternal(int x, int y, int z, Lock lock, Accessor client)
 	{
 		if(lock != LOCK_UNLOCKED)
@@ -889,6 +953,48 @@ namespace sw
 
 	void *Surface::lockStencil(int front, Accessor client)
 	{
+		if (bUnblockingDepthStencil)
+		{
+			Surface *pSurf = NULL;
+			if (!resource->isLocked())
+			{
+				for (int i = 0; i < sStencilBuffers.size(); i++)
+				{
+					if (sStencilBuffers[i] == this)
+					{
+						pSurf = this;
+					}
+				}
+				if (pSurf == NULL)
+				{
+					sStencilBuffers.push_back(this);
+				}
+				currentStencilLock = this;
+				return lockInternalStencil(front, client);
+			}
+
+			for (int i = 0; i < sStencilBuffers.size(); i++)
+			{
+				if (sStencilBuffers[i]->getResource()->isLocked())
+				{
+					currentStencilLock = sStencilBuffers[i];
+					return lockInternalStencil(front, client);
+				}
+			}
+			// Create new Surface and add to map
+			pSurf = new Surface(0, internal.width, internal.height, internal.depth, external.format, true, true );
+			sStencilBuffers.push_back(pSurf);
+			currentStencilLock = pSurf;
+			return pSurf->lockInternalStencil(front, client);
+		}
+		else
+		{
+			return lockInternalStencil(front, client);
+		}
+	}
+
+	void * Surface::lockInternalStencil(int front, Accessor client)
+	{
 		resource->lock(client);
 
 		if(!stencil.buffer)
@@ -900,6 +1006,25 @@ namespace sw
 	}
 
 	void Surface::unlockStencil()
+	{
+		if (bUnblockingDepthStencil)
+		{
+			// This could be an independent depth surface that got locked, but not its stencil,
+			// so check if the resource is actually locked
+			if (resource->isLocked())
+			{
+				resource->unlock();
+				stencil.unlockRect();
+			}
+		}
+		else
+		{
+			resource->unlock();
+			stencil.unlockRect();
+		}
+	}
+
+	void Surface::unlockInternalStencil()
 	{
 		resource->unlock();
 
@@ -2320,6 +2445,7 @@ namespace sw
 
 				pointer += 16;
 			}
+			_mm_mfence();
 
 			buffer = pointer;
 		}
@@ -2641,8 +2767,35 @@ namespace sw
 		}*/
 	}
 
+	Surface* Surface::getLastLockDepth()
+	{
+		if (bUnblockingDepthStencil)
+			return currentDepthLock;
+		else
+			return this;
+	}
+
+	void Surface::cleanupDepthStencil()
+	{
+		for (std::map<void *, Surface *>::iterator it = sDepthBuffers.begin(); it != sDepthBuffers.end(); it++)
+		{
+			Surface * pSurf = it->second;
+			// Do not destroy this surface as the Device has control over it.
+			if (pSurf == this)
+				continue;
+			pSurf->lockDepth(0, 0, 0, LOCK_DISCARD, PUBLIC);
+			pSurf->unlockDepth(pSurf);
+			delete pSurf;
+			sDepthBuffers.erase(it);
+		}
+	}
+
 	void Surface::clearDepthBuffer(float depth, int x0, int y0, int width, int height)
 	{
+		// jim: TEMP
+		int64_t lockT1, lockDT;
+		int64_t t1 = Timer::counter();
+
 		// Not overlapping
 		if(x0 > internal.width) return;
 		if(y0 > internal.height) return;
@@ -2687,7 +2840,11 @@ namespace sw
 				depth = 1 - depth;
 			}
 
-			float *buffer = (float*)lockInternal(0, 0, 0, lock, PUBLIC);
+			lockT1 = Timer::counter();
+			//float *buffer = (float*)lockInternal(0, 0, 0, lock, PUBLIC);
+			float *buffer = (float*)lockDepth(0, 0, 0, lock, PUBLIC);
+			Surface *pLock = getLastLockDepth();
+			lockDT = Timer::counter() - lockT1;
 
 			for(int z = 0; z < internal.depth; z++)
 			{
@@ -2755,12 +2912,28 @@ namespace sw
 				buffer += internal.sliceP;
 			}
 
-			unlockInternal();
+			//unlockInternal();
+			unlockDepth(pLock);
+		}
+
+		//jim: TEMP
+		int64_t t2 = Timer::counter();
+		int64_t time = t2 - t1;
+		if (time > 2000)
+		{
+			float clearTime = (float)time / 1000.0f;
+			float lockTime = (float)lockDT / 1000.0f;
+			float pct = lockTime / clearTime * 100.0f;
+			fprintf(stderr, "depth: %.2f ms (Lock Time = %.2f ms, %.2f%\n",
+				clearTime, lockTime, pct);
 		}
 	}
 
 	void Surface::clearStencilBuffer(unsigned char s, unsigned char mask, int x0, int y0, int width, int height)
 	{
+		// jim: TEMP
+		int64_t t1 = Timer::counter();
+
 		// Not overlapping
 		if(x0 > internal.width) return;
 		if(y0 > internal.height) return;
@@ -2853,6 +3026,13 @@ namespace sw
 			}
 
 			unlockStencil();
+		}
+		//jim: TEMP
+		int64_t t2 = Timer::counter();
+		int64_t time = t2 - t1;
+		if (time > 2000)
+		{
+			printf("stencil: %.2f ms\n", (float)time / 1000.0f);
 		}
 	}
 

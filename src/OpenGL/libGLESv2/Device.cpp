@@ -146,6 +146,11 @@ namespace es2
 	{		
 		if(depthStencil)
 		{
+			if (depthStencil->bUnblockingDepthStencil)
+			{
+				// Clean up extra depth buffers
+				depthStencil->cleanupDepthStencil();
+			}
 			depthStencil->release();
 			depthStencil = 0;
 		}

@@ -15,6 +15,8 @@
 #include "Color.hpp"
 #include "Main/Config.hpp"
 #include "Common/Resource.hpp"
+#include <map>
+#include <vector>
 
 namespace sw
 {
@@ -178,6 +180,12 @@ namespace sw
 
 		virtual void *lockInternal(int x, int y, int z, Lock lock, Accessor client);
 		virtual void unlockInternal();
+		virtual void *lockDepth(int x, int y, int z, Lock lock, Accessor client);
+		virtual void unlockDepth(Surface * surf);
+		virtual Surface *getLastLockDepth();
+		virtual Surface *getLastLockStencil() { return currentStencilLock; }
+		virtual void cleanupDepthStencil();
+
 		inline int getInternalWidth() const;
 		inline int getInternalHeight() const;
 		inline int getInternalDepth() const;
@@ -189,6 +197,8 @@ namespace sw
 
 		void *lockStencil(int front, Accessor client);
 		void unlockStencil();
+		void unlockInternalStencil();
+		void *lockInternalStencil(int front, Accessor client);
 		inline int getStencilPitchB() const;
 		inline int getStencilPitchP() const;
 		inline int getStencilSliceB() const;
@@ -243,6 +253,8 @@ namespace sw
 		static int componentCount(Format format);
 
 		static void setTexturePalette(unsigned int *palette);
+
+		static bool bUnblockingDepthStencil;
 
 	private:
 		typedef unsigned char byte;
@@ -366,6 +378,11 @@ namespace sw
 
 		static unsigned int *palette;   // FIXME: Not multi-device safe
 		static unsigned int paletteID;
+
+		static std::map<void *, sw::Surface *> sDepthBuffers;
+		static std::vector<Surface *> sStencilBuffers;
+		static Surface *currentDepthLock;
+		static Surface *currentStencilLock;
 
 		sw::Resource *resource;
 		bool hasParent;
