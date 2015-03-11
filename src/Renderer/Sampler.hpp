@@ -12,6 +12,9 @@
 #ifndef sw_Sampler_hpp
 #define sw_Sampler_hpp
 
+#include <iostream>
+#include <map>
+
 #include "Main/Config.hpp"
 #include "Renderer/Surface.hpp"
 
@@ -49,6 +52,21 @@ namespace sw
 		short depth[4];
 		short onePitchP[4];
 		int sliceP[2];
+
+		void init()
+		{
+			static unsigned int zero = 0x00FF00FF;
+			memset(this, 0, sizeof(Mipmap));
+
+			for (int face = 0; face < 6; face++)
+			{
+				buffer[face] = &zero;
+			}
+
+			uFrac = 16;
+			vFrac = 16;
+			wFrac = 16;
+		}
 	};
 
 	struct Texture
@@ -141,6 +159,10 @@ namespace sw
 		State samplerState() const;
 
 		void setTextureLevel(int face, int level, Surface *surface, TextureType type);
+		void setTexture(unsigned int target, unsigned int name);
+		bool isTexturePresent(unsigned int target, unsigned int name);
+		void addTexture(unsigned int target, unsigned int name);
+		void deleteTexture(unsigned int target, unsigned int name);
 
 		void setTextureFilter(FilterType textureFilter);
 		void setMipmapFilter(MipmapType mipmapFilter);
@@ -171,7 +193,7 @@ namespace sw
 		AddressingMode getAddressingModeU() const;
 		AddressingMode getAddressingModeV() const;
 		AddressingMode getAddressingModeW() const;
-
+		
 		Format externalTextureFormat;
 		Format internalTextureFormat;
 		TextureType textureType;
@@ -184,6 +206,7 @@ namespace sw
 		bool sRGB;
 		bool gather;
 
+		std::map<std::pair<unsigned int, unsigned int>, sw::Texture> textureMap;
 		Texture texture;
 		float exp2LOD;
 

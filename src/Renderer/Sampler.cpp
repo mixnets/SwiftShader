@@ -33,23 +33,10 @@ namespace sw
 
 	Sampler::Sampler()
 	{
-		// FIXME: Mipmap::init
-		static unsigned int zero = 0x00FF00FF;
-
 		for(int level = 0; level < MIPMAP_LEVELS; level++)
 		{
 			Mipmap &mipmap = texture.mipmap[level];
-
-			memset(&mipmap, 0, sizeof(Mipmap));
-
-			for(int face = 0; face < 6; face++)   
-			{
-				mipmap.buffer[face] = &zero;
-			}
-
-			mipmap.uFrac = 16;
-			mipmap.vFrac = 16;
-			mipmap.wFrac = 16;
+			mipmap.init();
 		}
 
 		externalTextureFormat = FORMAT_NULL;
@@ -96,6 +83,28 @@ namespace sw
 		return state;
 	}
 
+	void Sampler::setTexture(unsigned int target, unsigned int name)
+	{
+		texture = textureMap[std::make_pair(target, name)];
+	}
+
+	bool Sampler::isTexturePresent(unsigned int target, unsigned int name)
+	{
+		return textureMap.count(std::make_pair(target, name));
+	}
+
+	void Sampler::addTexture(unsigned int target, unsigned int name)
+	{
+		std::pair<unsigned int, unsigned int> pair = std::make_pair(target, name);
+		textureMap[pair] = texture;
+		texture = textureMap[pair];
+	}
+
+	void Sampler::deleteTexture(unsigned int target, unsigned int name)
+	{
+		textureMap.erase(std::make_pair(target, name));
+	}
+	
 	void Sampler::setTextureLevel(int face, int level, Surface *surface, TextureType type)
 	{
 		if(surface)
@@ -315,7 +324,7 @@ namespace sw
 	}
 
 	const Texture &Sampler::getTextureData()
-	{
+	{		
 		return texture;
 	}
 
