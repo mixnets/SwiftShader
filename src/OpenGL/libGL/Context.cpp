@@ -2074,29 +2074,42 @@ void Context::applyTextures(sw::SamplerType samplerType)
             TextureType textureType = programObject ? programObject->getSamplerTextureType(samplerType, samplerIndex) : TEXTURE_2D;
 
             Texture *texture = getSamplerTexture(textureUnit, textureType);
+			bool texturePresent = false;
+			if(texture && device->isTexturePresent(samplerIndex, texture->getTarget(), texture->name))
+			{
+				device->setTexture(samplerIndex, texture->getTarget(), texture->name);
+				texturePresent = true;
+			}
+			else
+			{
+ 				device->newTexture(samplerIndex);
+			}
 
 			if(envEnable[samplerIndex] && texture->isSamplerComplete())
-            {
-                GLenum wrapS = texture->getWrapS();
-                GLenum wrapT = texture->getWrapT();
-                GLenum texFilter = texture->getMinFilter();
-                GLenum magFilter = texture->getMagFilter();
+            {				
+				GLenum wrapS = texture->getWrapS();
+				GLenum wrapT = texture->getWrapT();
+				GLenum texFilter = texture->getMinFilter();
+				GLenum magFilter = texture->getMagFilter();
 				GLfloat maxAnisotropy = texture->getMaxAnisotropy();
 
 				device->setAddressingModeU(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapS));
-                device->setAddressingModeV(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapT));
+				device->setAddressingModeV(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapT));
 
 				sw::FilterType minFilter;
 				sw::MipmapType mipFilter;
-                es2sw::ConvertMinFilter(texFilter, &minFilter, &mipFilter, maxAnisotropy);
-			//	ASSERT(minFilter == es2sw::ConvertMagFilter(magFilter));
+				es2sw::ConvertMinFilter(texFilter, &minFilter, &mipFilter, maxAnisotropy);
+				//	ASSERT(minFilter == es2sw::ConvertMagFilter(magFilter));
 
 				device->setTextureFilter(samplerType, samplerIndex, minFilter);
-			//	device->setTextureFilter(samplerType, samplerIndex, es2sw::ConvertMagFilter(magFilter));
+				//	device->setTextureFilter(samplerType, samplerIndex, es2sw::ConvertMagFilter(magFilter));
 				device->setMipmapFilter(samplerType, samplerIndex, mipFilter);
 				device->setMaxAnisotropy(samplerType, samplerIndex, maxAnisotropy);
 
-				applyTexture(samplerType, samplerIndex, texture);
+				if(!texturePresent)
+				{
+					applyTexture(samplerType, samplerIndex, texture);
+				}
 
                 device->setStageOperation(samplerIndex, sw::TextureStage::STAGE_MODULATE);
                 device->setFirstArgument(samplerIndex, sw::TextureStage::SOURCE_TEXTURE);
@@ -2105,25 +2118,33 @@ void Context::applyTextures(sw::SamplerType samplerType)
 
                 device->setStageOperationAlpha(samplerIndex, sw::TextureStage::STAGE_MODULATE);
                 device->setFirstArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_TEXTURE);
-                device->setSecondArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
+				device->setSecondArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
 		        //device->setThirdArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CONSTANT);
 
 		        //device->setConstantColor(0, sw::Color<float>(0.0f, 0.0f, 0.0f, 0.0f));
             }
             else
             {
-                applyTexture(samplerType, samplerIndex, 0);
+				if(!texturePresent)
+				{
+					applyTexture(samplerType, samplerIndex, 0);
+				}
 
-                device->setStageOperation(samplerIndex, sw::TextureStage::STAGE_SELECTARG1);
-                device->setFirstArgument(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
-                device->setSecondArgument(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
-		        //device->setThirdArgument(samplerIndex, sw::TextureStage::SOURCE_CONSTANT);
+				device->setStageOperation(samplerIndex, sw::TextureStage::STAGE_SELECTARG1);
+				device->setFirstArgument(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
+				device->setSecondArgument(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
+				//device->setThirdArgument(samplerIndex, sw::TextureStage::SOURCE_CONSTANT);
 
-                device->setStageOperationAlpha(samplerIndex, sw::TextureStage::STAGE_SELECTARG1);
-                device->setFirstArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
-                device->setSecondArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
-		        //device->setThirdArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CONSTANT);
+				device->setStageOperationAlpha(samplerIndex, sw::TextureStage::STAGE_SELECTARG1);
+				device->setFirstArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
+				device->setSecondArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
+				//device->setThirdArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CONSTANT);
             }
+
+			if(texture && !texturePresent)
+			{
+				device->addTexture(samplerIndex, texture->getTarget(), texture->name);
+			}
         }
         else
         {
@@ -2156,7 +2177,7 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 	}
 
 	device->setTextureResource(sampler, resource);
-			
+
 	if(baseTexture && textureUsed)
 	{
 		int levelCount = baseTexture->getLevelCount();
