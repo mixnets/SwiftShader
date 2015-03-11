@@ -36,9 +36,11 @@ namespace sw
 		// FIXME: Mipmap::init
 		static unsigned int zero = 0x00FF00FF;
 
+		texture = &placeholderTexture;
+
 		for(int level = 0; level < MIPMAP_LEVELS; level++)
 		{
-			Mipmap &mipmap = texture.mipmap[level];
+			Mipmap &mipmap = texture->mipmap[level];
 
 			memset(&mipmap, 0, sizeof(Mipmap));
 
@@ -64,7 +66,7 @@ namespace sw
 		sRGB = false;
 		gather = false;
 
-		texture.LOD = 0.0f;
+		texture->LOD = 0.0f;
 		exp2LOD = 1.0f;
 	}
 
@@ -96,11 +98,39 @@ namespace sw
 		return state;
 	}
 
+	void Sampler::setTexture(unsigned int target, unsigned int name)
+	{
+		texture = &textureMap[std::make_pair(target, name)];
+	}
+
+	bool Sampler::isTexturePresent(unsigned int target, unsigned int name)
+	{
+		return textureMap.count(std::make_pair(target, name));
+	}
+
+	void Sampler::addTexture(unsigned int target, unsigned int name)
+	{
+		std::pair<unsigned int, unsigned int> pair = std::make_pair(target, name);
+		textureMap[pair] = *texture;
+		texture = &textureMap[pair];
+	}
+
+	void Sampler::newTexture()
+	{
+		texture = &placeholderTexture;
+	}
+
+	void Sampler::deleteTexture(unsigned int target, unsigned int name)
+	{
+		texture = &placeholderTexture;
+		textureMap.erase(std::make_pair(target, name));
+	}
+	
 	void Sampler::setTextureLevel(int face, int level, Surface *surface, TextureType type)
 	{
 		if(surface)
 		{
-			Mipmap &mipmap = texture.mipmap[level];
+			Mipmap &mipmap = texture->mipmap[level];
 
 			mipmap.buffer[face] = surface->lockInternal(0, 0, 0, LOCK_UNLOCKED, PRIVATE);
 
@@ -121,25 +151,25 @@ namespace sw
 
 				if(level == 0)
 				{
-					texture.widthHeightLOD[0] = width * exp2LOD;
-					texture.widthHeightLOD[1] = width * exp2LOD;
-					texture.widthHeightLOD[2] = height * exp2LOD;
-					texture.widthHeightLOD[3] = height * exp2LOD;
+					texture->widthHeightLOD[0] = width * exp2LOD;
+					texture->widthHeightLOD[1] = width * exp2LOD;
+					texture->widthHeightLOD[2] = height * exp2LOD;
+					texture->widthHeightLOD[3] = height * exp2LOD;
 
-					texture.widthLOD[0] = width * exp2LOD;
-					texture.widthLOD[1] = width * exp2LOD;
-					texture.widthLOD[2] = width * exp2LOD;
-					texture.widthLOD[3] = width * exp2LOD;
+					texture->widthLOD[0] = width * exp2LOD;
+					texture->widthLOD[1] = width * exp2LOD;
+					texture->widthLOD[2] = width * exp2LOD;
+					texture->widthLOD[3] = width * exp2LOD;
 
-					texture.heightLOD[0] = height * exp2LOD;
-					texture.heightLOD[1] = height * exp2LOD;
-					texture.heightLOD[2] = height * exp2LOD;
-					texture.heightLOD[3] = height * exp2LOD;
+					texture->heightLOD[0] = height * exp2LOD;
+					texture->heightLOD[1] = height * exp2LOD;
+					texture->heightLOD[2] = height * exp2LOD;
+					texture->heightLOD[3] = height * exp2LOD;
 
-					texture.depthLOD[0] = depth * exp2LOD;
-					texture.depthLOD[1] = depth * exp2LOD;
-					texture.depthLOD[2] = depth * exp2LOD;
-					texture.depthLOD[3] = depth * exp2LOD;
+					texture->depthLOD[0] = depth * exp2LOD;
+					texture->depthLOD[1] = depth * exp2LOD;
+					texture->depthLOD[2] = depth * exp2LOD;
+					texture->depthLOD[3] = depth * exp2LOD;
 				}
 
 				if(!Surface::isFloatFormat(internalTextureFormat))
@@ -259,20 +289,20 @@ namespace sw
 		short b = iround(0xFFFF * borderColor.b);
 		short a = iround(0xFFFF * borderColor.a);
 
-		texture.borderColor4[0][0] = texture.borderColor4[0][1] = texture.borderColor4[0][2] = texture.borderColor4[0][3] = r;
-		texture.borderColor4[1][0] = texture.borderColor4[1][1] = texture.borderColor4[1][2] = texture.borderColor4[1][3] = g;
-		texture.borderColor4[2][0] = texture.borderColor4[2][1] = texture.borderColor4[2][2] = texture.borderColor4[2][3] = b;
-		texture.borderColor4[3][0] = texture.borderColor4[3][1] = texture.borderColor4[3][2] = texture.borderColor4[3][3] = a;
+		texture->borderColor4[0][0] = texture->borderColor4[0][1] = texture->borderColor4[0][2] = texture->borderColor4[0][3] = r;
+		texture->borderColor4[1][0] = texture->borderColor4[1][1] = texture->borderColor4[1][2] = texture->borderColor4[1][3] = g;
+		texture->borderColor4[2][0] = texture->borderColor4[2][1] = texture->borderColor4[2][2] = texture->borderColor4[2][3] = b;
+		texture->borderColor4[3][0] = texture->borderColor4[3][1] = texture->borderColor4[3][2] = texture->borderColor4[3][3] = a;
 
-		texture.borderColorF[0][0] = texture.borderColorF[0][1] = texture.borderColorF[0][2] = texture.borderColorF[0][3] = borderColor.r;
-		texture.borderColorF[1][0] = texture.borderColorF[1][1] = texture.borderColorF[1][2] = texture.borderColorF[1][3] = borderColor.g;
-		texture.borderColorF[2][0] = texture.borderColorF[2][1] = texture.borderColorF[2][2] = texture.borderColorF[2][3] = borderColor.b;
-		texture.borderColorF[3][0] = texture.borderColorF[3][1] = texture.borderColorF[3][2] = texture.borderColorF[3][3] = borderColor.a;
+		texture->borderColorF[0][0] = texture->borderColorF[0][1] = texture->borderColorF[0][2] = texture->borderColorF[0][3] = borderColor.r;
+		texture->borderColorF[1][0] = texture->borderColorF[1][1] = texture->borderColorF[1][2] = texture->borderColorF[1][3] = borderColor.g;
+		texture->borderColorF[2][0] = texture->borderColorF[2][1] = texture->borderColorF[2][2] = texture->borderColorF[2][3] = borderColor.b;
+		texture->borderColorF[3][0] = texture->borderColorF[3][1] = texture->borderColorF[3][2] = texture->borderColorF[3][3] = borderColor.a;
 	}
 
 	void Sampler::setMaxAnisotropy(float maxAnisotropy)
 	{
-		texture.maxAnisotropy = maxAnisotropy;
+		texture->maxAnisotropy = maxAnisotropy;
 	}
 
 	void Sampler::setFilterQuality(FilterType maximumFilterQuality)
@@ -287,7 +317,7 @@ namespace sw
 
 	void Sampler::setMipmapLOD(float LOD)
 	{
-		texture.LOD = LOD;
+		texture->LOD = LOD;
 		exp2LOD = exp2(LOD);
 	}
 
@@ -316,7 +346,7 @@ namespace sw
 
 	const Texture &Sampler::getTextureData()
 	{
-		return texture;
+		return *texture;
 	}
 
 	MipmapType Sampler::mipmapFilter() const
@@ -325,7 +355,7 @@ namespace sw
 		{
 			for(int i = 1; i < MIPMAP_LEVELS; i++)
 			{
-				if(texture.mipmap[0].buffer[0] != texture.mipmap[i].buffer[0])
+				if(texture->mipmap[0].buffer[0] != texture->mipmap[i].buffer[0])
 				{
 					return mipmapFilterState;
 				}
@@ -343,12 +373,12 @@ namespace sw
 			return false;
 		}
 
-		if(texture.mipmap[0].width[0] != texture.mipmap[0].onePitchP[1])
+		if(texture->mipmap[0].width[0] != texture->mipmap[0].onePitchP[1])
 		{
 			return true;   // Shifting of the texture coordinates doesn't yield the correct address, so using multiply by pitch
 		}
 
-		return !isPow2(texture.mipmap[0].width[0]) || !isPow2(texture.mipmap[0].height[0]) || !isPow2(texture.mipmap[0].depth[0]);
+		return !isPow2(texture->mipmap[0].width[0]) || !isPow2(texture->mipmap[0].height[0]) || !isPow2(texture->mipmap[0].depth[0]);
 	}
 
 	TextureType Sampler::getTextureType() const
@@ -365,7 +395,7 @@ namespace sw
 			filter = FILTER_GATHER;
 		}
 
-		if(textureType != TEXTURE_2D || texture.maxAnisotropy == 1.0f)
+		if(textureType != TEXTURE_2D || texture->maxAnisotropy == 1.0f)
 		{
 			return (FilterType)min(filter, FILTER_LINEAR);
 		}
