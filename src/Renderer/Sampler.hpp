@@ -12,6 +12,9 @@
 #ifndef sw_Sampler_hpp
 #define sw_Sampler_hpp
 
+#include <iostream>
+#include <map>
+
 #include "Main/Config.hpp"
 #include "Renderer/Surface.hpp"
 
@@ -141,6 +144,10 @@ namespace sw
 		State samplerState() const;
 
 		void setTextureLevel(int face, int level, Surface *surface, TextureType type);
+		void setTexture(unsigned int target, unsigned int name);
+		bool isTexturePresent(unsigned int target, unsigned int name);
+		void addTexture(unsigned int target, unsigned int name);
+		void newTexture();
 
 		void setTextureFilter(FilterType textureFilter);
 		void setMipmapFilter(MipmapType mipmapFilter);
@@ -171,7 +178,7 @@ namespace sw
 		AddressingMode getAddressingModeU() const;
 		AddressingMode getAddressingModeV() const;
 		AddressingMode getAddressingModeW() const;
-
+		
 		Format externalTextureFormat;
 		Format internalTextureFormat;
 		TextureType textureType;
@@ -184,7 +191,9 @@ namespace sw
 		bool sRGB;
 		bool gather;
 
-		Texture texture;
+		std::map<std::pair<unsigned int, unsigned int>, sw::Texture> textureMap;
+		Texture placeholderTexture;
+		Texture * texture;
 		float exp2LOD;
 
 		static FilterType maximumTextureFilterQuality;

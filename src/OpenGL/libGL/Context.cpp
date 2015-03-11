@@ -2075,6 +2075,15 @@ void Context::applyTextures(sw::SamplerType samplerType)
 
             Texture *texture = getSamplerTexture(textureUnit, textureType);
 
+			if(texture && device->isTexturePresent(samplerIndex, texture->getTarget(), texture->name))
+			{
+				device->setTexture(samplerIndex, texture->getTarget(), texture->name);
+			}
+			else
+			{
+				device->newTexture(samplerIndex);
+			}
+
 			if(envEnable[samplerIndex] && texture->isSamplerComplete())
             {
                 GLenum wrapS = texture->getWrapS();
@@ -2124,6 +2133,11 @@ void Context::applyTextures(sw::SamplerType samplerType)
                 device->setSecondArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CURRENT);
 		        //device->setThirdArgumentAlpha(samplerIndex, sw::TextureStage::SOURCE_CONSTANT);
             }
+
+			if(texture)
+			{
+				device->addTexture(samplerIndex, texture->getTarget(), texture->name);
+			}
         }
         else
         {
@@ -2156,7 +2170,7 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 	}
 
 	device->setTextureResource(sampler, resource);
-			
+
 	if(baseTexture && textureUsed)
 	{
 		int levelCount = baseTexture->getLevelCount();

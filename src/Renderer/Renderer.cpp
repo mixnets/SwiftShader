@@ -2091,6 +2091,26 @@ namespace sw
 		context->sampler[sampler].setTextureLevel(face, level, surface, type);
 	}
 
+	void Renderer::setTexture(unsigned int sampler, unsigned int target, unsigned int name)
+	{
+		context->sampler[sampler].setTexture(target, name);
+	}
+
+	bool Renderer::isTexturePresent(unsigned int sampler, unsigned int target, unsigned int name)
+	{
+		return context->sampler[sampler].isTexturePresent(target, name);
+	}
+
+	void Renderer::addTexture(unsigned int sampler, unsigned int target, unsigned int name)
+	{
+		context->sampler[sampler].addTexture(target, name);
+	}
+
+	void Renderer::newTexture(unsigned int sampler)
+	{
+		context->sampler[sampler].newTexture();
+	}
+
 	void Renderer::setTextureFilter(SamplerType type, int sampler, FilterType textureFilter)
 	{
 		if(type == SAMPLER_PIXEL)

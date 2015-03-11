@@ -280,6 +280,10 @@ namespace sw
 
 		virtual void setTextureResource(unsigned int sampler, Resource *resource);
 		virtual void setTextureLevel(unsigned int sampler, unsigned int face, unsigned int level, Surface *surface, TextureType type);
+		virtual void setTexture(unsigned int sampler, unsigned int target, unsigned int name);
+		virtual bool isTexturePresent(unsigned int sampler, unsigned int target, unsigned int name);
+		virtual void addTexture(unsigned int sampler, unsigned int target, unsigned int name);
+		virtual void newTexture(unsigned int sampler);
 
 		virtual void setTextureFilter(SamplerType type, int sampler, FilterType textureFilter);
 		virtual void setMipmapFilter(SamplerType type, int sampler, MipmapType mipmapFilter);
