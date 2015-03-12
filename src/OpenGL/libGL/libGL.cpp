@@ -6239,7 +6239,7 @@ void APIENTRY glFogiv(GLenum pname, const GLint *params)
 
 void APIENTRY glFrustum(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble zNear, GLdouble zFar)
 {
-	TRACE("(*)");
+	TRACE("(GLfloat left = %f, GLfloat right = %f, GLfloat bottom = %f, GLfloat top = %f, GLfloat zNear = %f, GLfloat zFar = %f)", left, right, bottom, top, zNear, zFar);
 
 	gl::Context *context = gl::getContext();
 
