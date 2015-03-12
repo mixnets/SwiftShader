@@ -21,7 +21,7 @@
 #include "common/Object.hpp"
 #include "Image.hpp"
 #include "Renderer/Sampler.hpp"
-#include "MatrixStack.hpp"
+#include "common/MatrixStack.hpp"
 
 #define GL_API
 #include <GLES/gl.h>
@@ -445,6 +445,7 @@ public:
     void translate(GLfloat x, GLfloat y, GLfloat z);
 	void scale(GLfloat x, GLfloat y, GLfloat z);
     void multiply(const GLfloat *m);
+	void frustum(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar);
     void ortho(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar);
 
 private:
