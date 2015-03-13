@@ -2580,6 +2580,20 @@ void GL_APIENTRY glGetIntegerv(GLenum pname, GLint* params)
 
 	es2::Context *context = es2::getContext();
 
+	if(!context)
+	{
+		switch(pname)
+		{
+		case GL_MAX_TEXTURE_SIZE:                 *params = es2::IMPLEMENTATION_MAX_TEXTURE_SIZE;       return;
+		case GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS:   *params = es2::MAX_VERTEX_TEXTURE_IMAGE_UNITS;        return;
+		case GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS: *params = es2::MAX_COMBINED_TEXTURE_IMAGE_UNITS;      return;
+		case GL_ALIASED_LINE_WIDTH_RANGE:         params[0] = (GLint)es2::ALIASED_LINE_WIDTH_RANGE_MIN;
+												  params[1] = (GLint)es2::ALIASED_LINE_WIDTH_RANGE_MAX; return;
+		case GL_STENCIL_BITS:                     *params = 8;                                          return;
+		default:                                  UNREACHABLE();
+		}
+	}
+
 	if(context)
 	{
 		if(!(context->getIntegerv(pname, params)))
