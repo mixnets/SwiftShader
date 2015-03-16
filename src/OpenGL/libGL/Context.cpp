@@ -1978,7 +1978,7 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count)
 {
     TranslatedAttribute attributes[MAX_VERTEX_ATTRIBS];
 
-    GLenum err = mVertexDataManager->prepareVertexData(first, count, attributes);
+	GLenum err = mVertexDataManager->prepareVertexData(first, count, attributes, currentList);
     if(err != GL_NO_ERROR)
     {
         return err;
@@ -2505,12 +2505,12 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
     }
 
     applyState(mode);
-
-    GLenum err = applyVertexBuffer(0, first, count);
-    if(err != GL_NO_ERROR)
-    {
-        return error(err);
-    }
+	GLenum err = applyVertexBuffer(0, first, count);
+    
+	if(err != GL_NO_ERROR)
+	{
+		return error(err);
+	}
 
     applyShaders();
     applyTextures();
@@ -3365,7 +3365,9 @@ void Context::callList(GLuint list)
 	ASSERT(displayList[list]);
 	if(displayList[list])
 	{
+		currentList = list;
 		displayList[list]->call();
+		currentList = 0;
 	}
 }
 

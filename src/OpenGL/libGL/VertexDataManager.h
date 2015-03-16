@@ -63,9 +63,12 @@ class ConstantVertexBuffer : public VertexBuffer
 class StreamingVertexBuffer : public VertexBuffer
 {
   public:
-    StreamingVertexBuffer(unsigned int size);
-    ~StreamingVertexBuffer();
+	  StreamingVertexBuffer(unsigned int size = 1048576);
+	  virtual ~StreamingVertexBuffer();
 
+	unsigned int getWritePosition();
+	void setWritePosition(unsigned int);
+	void StreamingVertexBuffer::reinitializeResource(unsigned int size);
     void *map(const VertexAttribute &attribute, unsigned int requiredSpace, unsigned int *streamOffset);
     void reserveRequiredSpace();
     void addRequiredSpace(unsigned int requiredSpace);
@@ -83,8 +86,7 @@ class VertexDataManager
     virtual ~VertexDataManager();
 
     void dirtyCurrentValue(int index) { mDirtyCurrentValue[index] = true; }
-
-    GLenum prepareVertexData(GLint start, GLsizei count, TranslatedAttribute *outAttribs);
+	GLenum prepareVertexData(GLint start, GLsizei count, TranslatedAttribute *outAttribs, int currentList);
 
   private:
     unsigned int writeAttributeData(StreamingVertexBuffer *vertexBuffer, GLint start, GLsizei count, const VertexAttribute &attribute);
