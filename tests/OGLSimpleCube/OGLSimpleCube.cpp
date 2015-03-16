@@ -106,12 +106,34 @@ void initDisplayList(void)
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glEndList();
+
+	glNewList(2, GL_COMPILE);
+	glNormalPointer(GL_FLOAT, 0, normals1);
+	glColorPointer(3, GL_FLOAT, 0, colors1);
+	glVertexPointer(3, GL_FLOAT, 0, vertices1);
+
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glPushMatrix();
+	glMultMatrixf(S);
+	glTranslatef(1, 1, 1);
+	glDrawArrays(GL_QUADS, 0, 24);
+	glPopMatrix();
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glEndList();
 }
 
 void redraw(void)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClearColor(1, 0, 0, 0);
 	glCallList(listIndex);
+	glCallList(2);
 	
 	// Rotation
 	glMultMatrixf(R);

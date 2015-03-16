@@ -496,7 +496,8 @@ struct State
 class Context
 {
 public:
-    Context(const Context *shareContext);
+	int currentList;
+	Context(const Context *shareContext);
 
     ~Context();
 
@@ -720,7 +721,7 @@ public:
 
 	Device *getDevice();
 
-private:
+private:	
     bool applyRenderTarget();
     void applyState(GLenum drawMode);
     GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count);

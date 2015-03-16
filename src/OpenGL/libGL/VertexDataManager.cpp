@@ -108,9 +108,32 @@ unsigned int VertexDataManager::writeAttributeData(StreamingVertexBuffer *vertex
     return streamOffset;
 }
 
-GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, TranslatedAttribute *translated)
+//bool mapB[3];
+//StreamingVertexBuffer map[3]; 
+std::map<int, StreamingVertexBuffer> map;
+std::map<int, unsigned int> mapWriteOffset;
+//StreamingVertexBuffer storedVertexBuffer[41000];
+
+GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, TranslatedAttribute *translated, int currentList)
 {
-    if(!mStreamingBuffer)
+	bool needsWriting = true;
+	bool full = map.size() >= 5000;
+	int listBackup = currentList;
+	if(full && !map.count(currentList))
+	{
+		currentList = 0;
+	}
+
+	if(currentList != 0 && map.count(currentList))
+	{
+		//sw::Resource * res = mStreamingBuffer->getResource();
+		//memcpy(res->lock(sw::PUBLIC), map[currentList]->getResource()->data(), res->size);
+		//res->unlock();
+		needsWriting = false;
+		////return GL_NO_ERROR;
+	}
+
+	if(!mStreamingBuffer)
     {
         return GL_OUT_OF_MEMORY;
     }
@@ -118,23 +141,48 @@ GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, Translat
     const VertexAttributeArray &attribs = mContext->getVertexAttributes();
     Program *program = mContext->getCurrentProgram();
 
-    // Determine the required storage size per used buffer
-    for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
-    {
-        if(!program || program->getAttributeStream(i) != -1)
-        {
-            if(attribs[i].mArrayEnabled)
-            {
-                if(!attribs[i].mBoundBuffer)
-                {
-                    mStreamingBuffer->addRequiredSpace(attribs[i].typeSize() * count);
-                }
-            }
-        }
-    }
+	if(needsWriting && currentList != 0)
+	{
+		//mapB[currentList] = true;
+		//map.push_back(StreamingVertexBuffer());
+		map[currentList] = StreamingVertexBuffer();
+		map[currentList].reinitializeResource(INITIAL_STREAM_BUFFER_SIZE);
+		//map.insert(std::make_pair(currentList, new StreamingVertexBuffer(INITIAL_STREAM_BUFFER_SIZE)));// std::pair<int, StreamingVertexBuffer>(currentList, StreamingVertexBuffer(INITIAL_STREAM_BUFFER_SIZE)));
+		//map[currentList].
+			//svb.mWritePosition = mWritePosition;
+			//svb.mRequiredSpace = mRequiredSpace; });
+	}
 
-    mStreamingBuffer->reserveRequiredSpace();
-    
+    // Determine the required storage size per used buffer
+	if(needsWriting)
+	{
+		for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
+		{
+			if(!program || program->getAttributeStream(i) != -1)
+			{
+				if(attribs[i].mArrayEnabled)
+				{
+					if(!attribs[i].mBoundBuffer)
+					{
+						mStreamingBuffer->addRequiredSpace(attribs[i].typeSize() * count);
+						if(currentList != 0)
+						{
+							//map[currentList]->addRequiredSpace(attribs[i].typeSize() * count);
+							map[currentList].addRequiredSpace(attribs[i].typeSize() * count);
+						}
+					}
+				}
+			}
+		}
+
+		mStreamingBuffer->reserveRequiredSpace();
+		if(currentList != 0)
+		{
+			//map[currentList]->reserveRequiredSpace();
+			map[currentList].reserveRequiredSpace();
+		}
+	}
+
     // Perform the vertex data translations
     for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
     {
@@ -161,14 +209,41 @@ GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, Translat
                 }
                 else
                 {
-                    unsigned int streamOffset = writeAttributeData(mStreamingBuffer, start, count, attribs[i]);
-
-					if(streamOffset == -1)
+					unsigned int streamOffset = 0;// map[currentList].getWritePosition();
+					if(needsWriting)
 					{
-						return GL_OUT_OF_MEMORY;
+						if(currentList != 0)
+						{
+							//writeAttributeData(map[currentList], start, count, attribs[i]);
+							unsigned int writePos = writeAttributeData(&map[currentList], start, count, attribs[i]);
+							mStreamingBuffer->setWritePosition(writePos + mStreamingBuffer->getWritePosition());
+							mapWriteOffset[currentList] = writePos;
+						}
+						else
+						{
+							streamOffset = writeAttributeData(mStreamingBuffer, start, count, attribs[i]);
+						}
+
+						if(streamOffset == -1)
+						{
+							return GL_OUT_OF_MEMORY;
+						}
+					}
+					else
+					{
+						mStreamingBuffer->setWritePosition(mStreamingBuffer->getWritePosition() + mapWriteOffset[currentList]);
 					}
 
-					translated[i].vertexBuffer = mStreamingBuffer->getResource();
+					if(currentList != 0)
+					{
+						//translated[i].vertexBuffer = map[currentList]->getResource();
+						translated[i].vertexBuffer = map[currentList].getResource();
+					}
+					else
+					{
+						translated[i].vertexBuffer = mStreamingBuffer->getResource();
+					}
+
 					translated[i].offset = streamOffset;
 					translated[i].stride = attribs[i].typeSize();
                 }
@@ -205,7 +280,7 @@ GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, Translat
             }
         }
     }
-
+	currentList = listBackup;
     return GL_NO_ERROR;
 }
 
@@ -271,6 +346,22 @@ StreamingVertexBuffer::StreamingVertexBuffer(unsigned int size) : VertexBuffer(s
 
 StreamingVertexBuffer::~StreamingVertexBuffer()
 {
+}
+
+unsigned int StreamingVertexBuffer::getWritePosition()
+{
+	return mWritePosition;
+}
+
+
+void StreamingVertexBuffer::setWritePosition(unsigned int writePosition)
+{
+	mWritePosition = writePosition;
+}
+
+void StreamingVertexBuffer::reinitializeResource(unsigned int size)
+{
+	mVertexBuffer = new sw::Resource(size + 1024);
 }
 
 void StreamingVertexBuffer::addRequiredSpace(unsigned int requiredSpace)
