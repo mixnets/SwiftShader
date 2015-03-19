@@ -62,6 +62,8 @@ namespace sw
 
 	void PixelProgram::applyShader(PixelRoutine::Registers &rBase, Int cMask[4])
 	{
+		shader->print("FragmentShader-%0.8X.txt", state.shaderID);
+
 		Registers& r = *static_cast<Registers*>(&rBase);
 
 		r.enableIndex = 0;
@@ -72,7 +74,16 @@ namespace sw
 			r.enableLeave = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 		}
 
-		bool out[4][4] = { false };
+		r.dynOutUsed = false;
+		memset(&(r.out[0][0]), 0, sizeof(r.out));
+		r.dynOut = UInt(0);
+		for(int i = 0; i < 4; i++)
+		{
+			if(state.targetFormat[i] != FORMAT_NULL)
+			{
+				r.oC[i] = Vector4f(0.0f, 0.0f, 0.0f, 0.0f);
+			}
+		}
 
 		// Create all call site return blocks up front
 		for(size_t i = 0; i < shader->getLength(); i++)
@@ -104,6 +115,7 @@ namespace sw
 			const Src &src1 = instruction->src[1];
 			const Src &src2 = instruction->src[2];
 			const Src &src3 = instruction->src[3];
+			const Src &src4 = instruction->src[4];
 
 			bool predicate = instruction->predicate;
 			Control control = instruction->control;
@@ -116,6 +128,7 @@ namespace sw
 			Vector4f s1;
 			Vector4f s2;
 			Vector4f s3;
+			Vector4f s4;
 
 			if(opcode == Shader::OPCODE_TEXKILL)   // Takes destination as input
 			{
@@ -136,6 +149,7 @@ namespace sw
 			if(src1.type != Shader::PARAMETER_VOID) s1 = fetchRegisterF(r, src1);
 			if(src2.type != Shader::PARAMETER_VOID) s2 = fetchRegisterF(r, src2);
 			if(src3.type != Shader::PARAMETER_VOID) s3 = fetchRegisterF(r, src3);
+			if(src4.type != Shader::PARAMETER_VOID) s4 = fetchRegisterF(r, src4);
 
 			switch(opcode)
 			{
@@ -225,6 +239,12 @@ namespace sw
 			case Shader::OPCODE_FLOATBITSTOUINT:
 			case Shader::OPCODE_INTBITSTOFLOAT:
 			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                                   break;
+			case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d, s0);                     break;
+			case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d, s0);                     break;
+			case Shader::OPCODE_PACKHALF2x16:    packHalf2x16(d, s0);                      break;
+			case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0);                   break;
+			case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0);                   break;
+			case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0);                    break;
 			case Shader::OPCODE_POWX:       powx(d, s0, s1, pp);                           break;
 			case Shader::OPCODE_POW:        pow(d, s0, s1, pp);                            break;
 			case Shader::OPCODE_SGN:        sgn(d, s0);                                    break;
@@ -269,6 +289,12 @@ namespace sw
 			case Shader::OPCODE_TEXLDL:     TEXLDL(r, d, s0, src1, project, bias);         break;
 			case Shader::OPCODE_TEXSIZE:    TEXSIZE(r, d, s0.x, src1);                     break;
 			case Shader::OPCODE_TEXKILL:    TEXKILL(cMask, d, dst.mask);                   break;
+			case Shader::OPCODE_TEXOFFSET:  TEXOFFSET(r, d, s0, src1, s2, s3, project, bias); break;
+			case Shader::OPCODE_TEXLDLOFFSET: TEXLDL(r, d, s0, src1, s2, project, bias);   break;
+			case Shader::OPCODE_TEXELFETCH: TEXELFETCH(r, d, s0, src1, s2);                break;
+			case Shader::OPCODE_TEXELFETCHOFFSET: TEXELFETCH(r, d, s0, src1, s2, s3);      break;
+			case Shader::OPCODE_TEXGRAD:    TEXGRAD(r, d, s0, src1, s2, s3);               break;
+			case Shader::OPCODE_TEXGRADOFFSET: TEXGRAD(r, d, s0, src1, s2, s3, s4);        break;
 			case Shader::OPCODE_DISCARD:    DISCARD(r, cMask, instruction);                break;
 			case Shader::OPCODE_DFDX:       DFDX(d, s0);                                   break;
 			case Shader::OPCODE_DFDY:       DFDY(d, s0);                                   break;
@@ -362,11 +388,22 @@ namespace sw
 						}
 						break;
 					case Shader::PARAMETER_COLOROUT:
-						ASSERT(dst.rel.type == Shader::PARAMETER_VOID);
-						if(dst.x) pDst.x = r.oC[dst.index].x;
-						if(dst.y) pDst.y = r.oC[dst.index].y;
-						if(dst.z) pDst.z = r.oC[dst.index].z;
-						if(dst.w) pDst.w = r.oC[dst.index].w;
+						if(dst.rel.type == Shader::PARAMETER_VOID)
+						{
+							if(dst.x) pDst.x = r.oC[dst.index].x;
+							if(dst.y) pDst.y = r.oC[dst.index].y;
+							if(dst.z) pDst.z = r.oC[dst.index].z;
+							if(dst.w) pDst.w = r.oC[dst.index].w;
+						}
+						else
+						{
+							Int a = relativeAddress(r, dst) + dst.index;
+
+							if(dst.x) pDst.x = r.oC[a].x;
+							if(dst.y) pDst.y = r.oC[a].y;
+							if(dst.z) pDst.z = r.oC[a].z;
+							if(dst.w) pDst.w = r.oC[a].w;
+						}
 						break;
 					case Shader::PARAMETER_PREDICATE:
 						if(dst.x) pDst.x = r.p0.x;
@@ -445,11 +482,22 @@ namespace sw
 					}
 					break;
 				case Shader::PARAMETER_COLOROUT:
-					ASSERT(dst.rel.type == Shader::PARAMETER_VOID);
-					if(dst.x) { r.oC[dst.index].x = d.x; out[dst.index][0] = true; }
-					if(dst.y) { r.oC[dst.index].y = d.y; out[dst.index][1] = true; }
-					if(dst.z) { r.oC[dst.index].z = d.z; out[dst.index][2] = true; }
-					if(dst.w) { r.oC[dst.index].w = d.w; out[dst.index][3] = true; }
+					if(dst.rel.type == Shader::PARAMETER_VOID)
+					{
+						if(dst.x) { r.oC[dst.index].x = d.x; r.out[dst.index][0] = true; }
+						if(dst.y) { r.oC[dst.index].y = d.y; r.out[dst.index][1] = true; }
+						if(dst.z) { r.oC[dst.index].z = d.z; r.out[dst.index][2] = true; }
+						if(dst.w) { r.oC[dst.index].w = d.w; r.out[dst.index][3] = true; }
+					}
+					else
+					{
+						Int a = relativeAddress(r, dst) + dst.index;
+
+						if(dst.x) { r.oC[a].x = d.x; r.dynOut |= (UInt(1) << UInt(a * 4    )); r.dynOutUsed = true; }
+						if(dst.y) { r.oC[a].y = d.y; r.dynOut |= (UInt(1) << UInt(a * 4 + 1)); r.dynOutUsed = true; }
+						if(dst.z) { r.oC[a].z = d.z; r.dynOut |= (UInt(1) << UInt(a * 4 + 2)); r.dynOutUsed = true; }
+						if(dst.w) { r.oC[a].w = d.w; r.dynOut |= (UInt(1) << UInt(a * 4 + 3)); r.dynOutUsed = true; }
+					}
 					break;
 				case Shader::PARAMETER_PREDICATE:
 					if(dst.x) r.p0.x = d.x;
@@ -473,12 +521,16 @@ namespace sw
 
 		for(int i = 0; i < 4; i++)
 		{
-			if(state.targetFormat[i] != FORMAT_NULL)
+			r.c[i] = r.oC[i];
+			if(r.dynOutUsed)
 			{
-				if(!out[i][0]) r.oC[i].x = Float4(0.0f);
-				if(!out[i][1]) r.oC[i].y = Float4(0.0f);
-				if(!out[i][2]) r.oC[i].z = Float4(0.0f);
-				if(!out[i][3]) r.oC[i].w = Float4(0.0f);
+				for(int j = 0; j < 4; ++j)
+				{
+					if(r.out[i][j])
+					{
+						r.dynOut |= (UInt(1) << UInt(i * 4 + j));
+					}
+				}
 			}
 		}
 	}
@@ -487,7 +539,7 @@ namespace sw
 	{
 		Registers& r = *static_cast<Registers*>(&rBase);
 
-		clampColor(r.oC);
+		clampColor(r.c);
 
 		if(!state.alphaTestActive())
 		{
@@ -498,7 +550,7 @@ namespace sw
 
 		if(state.transparencyAntialiasing == TRANSPARENCY_NONE)
 		{
-			Short4 alpha = RoundShort4(r.oC[0].w * Float4(0x1000));
+			Short4 alpha = RoundShort4(r.c[0].w * Float4(0x1000));
 
 			PixelRoutine::alphaTest(r, aMask, alpha);
 
@@ -509,7 +561,7 @@ namespace sw
 		}
 		else if(state.transparencyAntialiasing == TRANSPARENCY_ALPHA_TO_COVERAGE)
 		{
-			alphaToCoverage(r, cMask, r.oC[0].w);
+			alphaToCoverage(r, cMask, r.c[0].w);
 		}
 		else ASSERT(false);
 
@@ -523,6 +575,68 @@ namespace sw
 		return pass != 0x0;
 	}
 
+	void PixelProgram::rasterOperation(int index, Registers &r, Float4 &fog, Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], Int zMask[4], Int cMask[4])
+	{
+		if(!postBlendSRGB && state.writeSRGB)
+		{
+			r.c[index].x = linearToSRGB(r.c[index].x);
+			r.c[index].y = linearToSRGB(r.c[index].y);
+			r.c[index].z = linearToSRGB(r.c[index].z);
+		}
+
+		if(index == 0)
+		{
+			fogBlend(r, r.c[index], fog);
+		}
+
+		switch(state.targetFormat[index])
+		{
+		case FORMAT_R5G6B5:
+		case FORMAT_X8R8G8B8:
+		case FORMAT_X8B8G8R8:
+		case FORMAT_A8R8G8B8:
+		case FORMAT_A8B8G8R8:
+		case FORMAT_A8:
+		case FORMAT_G16R16:
+		case FORMAT_A16B16G16R16:
+			for(unsigned int q = 0; q < state.multiSample; q++)
+			{
+				Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(r.data + OFFSET(DrawData, colorSliceB[index]));
+				Vector4s color;
+
+				color.x = convertFixed16(r.c[index].x, false);
+				color.y = convertFixed16(r.c[index].y, false);
+				color.z = convertFixed16(r.c[index].z, false);
+				color.w = convertFixed16(r.c[index].w, false);
+
+				if(state.multiSampleMask & (1 << q))
+				{
+					alphaBlend(r, index, buffer, color, x);
+					logicOperation(r, index, buffer, color, x);
+					writeColor(r, index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
+				}
+			}
+			break;
+		case FORMAT_R32F:
+		case FORMAT_G32R32F:
+		case FORMAT_A32B32G32R32F:
+			for(unsigned int q = 0; q < state.multiSample; q++)
+			{
+				Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(r.data + OFFSET(DrawData, colorSliceB[index]));
+				Vector4f color = r.c[index];
+
+				if(state.multiSampleMask & (1 << q))
+				{
+					alphaBlend(r, index, buffer, color, x);
+					writeColor(r, index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
+				}
+			}
+			break;
+		default:
+			ASSERT(false);
+		}
+	}
+
 	void PixelProgram::rasterOperation(PixelRoutine::Registers &rBase, Float4 &fog, Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], Int zMask[4], Int cMask[4])
 	{
 		Registers& r = *static_cast<Registers*>(&rBase);
@@ -534,63 +648,16 @@ namespace sw
 				continue;
 			}
 
-			if(!postBlendSRGB && state.writeSRGB)
+			if(r.dynOutUsed)
 			{
-				r.oC[index].x = linearToSRGB(r.oC[index].x);
-				r.oC[index].y = linearToSRGB(r.oC[index].y);
-				r.oC[index].z = linearToSRGB(r.oC[index].z);
-			}
-
-			if(index == 0)
-			{
-				fogBlend(r, r.oC[index], fog);
-			}
-
-			switch(state.targetFormat[index])
-			{
-			case FORMAT_R5G6B5:
-			case FORMAT_X8R8G8B8:
-			case FORMAT_X8B8G8R8:
-			case FORMAT_A8R8G8B8:
-			case FORMAT_A8B8G8R8:
-			case FORMAT_A8:
-			case FORMAT_G16R16:
-			case FORMAT_A16B16G16R16:
-				for(unsigned int q = 0; q < state.multiSample; q++)
+				If((r.dynOut & UInt(0xF << (index * 4))) != UInt(0))
 				{
-					Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(r.data + OFFSET(DrawData, colorSliceB[index]));
-					Vector4s color;
-
-					color.x = convertFixed16(r.oC[index].x, false);
-					color.y = convertFixed16(r.oC[index].y, false);
-					color.z = convertFixed16(r.oC[index].z, false);
-					color.w = convertFixed16(r.oC[index].w, false);
-
-					if(state.multiSampleMask & (1 << q))
-					{
-						alphaBlend(r, index, buffer, color, x);
-						logicOperation(r, index, buffer, color, x);
-						writeColor(r, index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
-					}
+					rasterOperation(index, r, fog, cBuffer, x, sMask, zMask, cMask);
 				}
-				break;
-			case FORMAT_R32F:
-			case FORMAT_G32R32F:
-			case FORMAT_A32B32G32R32F:
-				for(unsigned int q = 0; q < state.multiSample; q++)
-				{
-					Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(r.data + OFFSET(DrawData, colorSliceB[index]));
-					Vector4f color = r.oC[index];
-
-					if(state.multiSampleMask & (1 << q))
-					{
-						alphaBlend(r, index, buffer, color, x);
-						writeColor(r, index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
-					}
-				}
-				break;
-			default:
-				ASSERT(false);
+			}
+			else if(r.out[index][0] || r.out[index][1] || r.out[index][2] || r.out[index][3])
+			{
+				rasterOperation(index, r, fog, cBuffer, x, sMask, zMask, cMask);
 			}
 		}
 	}
@@ -779,7 +846,16 @@ namespace sw
 		case Shader::PARAMETER_CONSTBOOL:   return reg; // Dummy
 		case Shader::PARAMETER_LOOP:        return reg; // Dummy
 		case Shader::PARAMETER_COLOROUT:
-			reg = r.oC[i];
+			if(src.rel.type == Shader::PARAMETER_VOID)   // Not relative
+			{
+				reg = r.oC[i];
+			}
+			else
+			{
+				Int a = relativeAddress(r, src);
+
+				reg = r.oC[i + a];
+			}
 			break;
 		case Shader::PARAMETER_DEPTHOUT:
 			reg.x = r.oDepth;
@@ -997,6 +1073,36 @@ namespace sw
 		dst.y = tmp[(src1.swizzle >> 2) & 0x3];
 		dst.z = tmp[(src1.swizzle >> 4) & 0x3];
 		dst.w = tmp[(src1.swizzle >> 6) & 0x3];
+	}
+
+	void PixelProgram::TEXOFFSET(Registers &r, Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3, bool project, bool bias)
+	{
+		UNIMPLEMENTED();
+	}
+
+	void PixelProgram::TEXLDL(Registers &r, Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, bool project, bool bias)
+	{
+		UNIMPLEMENTED();
+	}
+
+	void PixelProgram::TEXELFETCH(Registers &r, Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2)
+	{
+		UNIMPLEMENTED();
+	}
+
+	void PixelProgram::TEXELFETCH(Registers &r, Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3)
+	{
+		UNIMPLEMENTED();
+	}
+
+	void PixelProgram::TEXGRAD(Registers &r, Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3)
+	{
+		UNIMPLEMENTED();
+	}
+
+	void PixelProgram::TEXGRAD(Registers &r, Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3, Vector4f &src4)
+	{
+		UNIMPLEMENTED();
 	}
 
 	void PixelProgram::TEXLDD(Registers &r, Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, Vector4f &src3, bool project, bool bias)

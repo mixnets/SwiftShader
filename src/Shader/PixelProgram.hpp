@@ -60,7 +60,11 @@ namespace sw
 			RegisterArray<4096> r;
 
 			// Color outputs
-			Vector4f oC[4];
+			Vector4f c[4];
+			RegisterArray<4, true> oC;
+			bool out[4][4];
+			UInt dynOut;
+			bool dynOutUsed;
 
 			// Shader variables
 			Vector4f vPos;
@@ -88,6 +92,7 @@ namespace sw
 		void sampleTexture(Registers &r, Vector4f &c, int sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project = false, bool bias = false, bool gradients = false, bool lodProvided = false);
 
 		// Raster operations
+		void rasterOperation(int index, Registers &r, Float4 &fog, Pointer<Byte> cBuffer[4], Int &x, Int sMask[4], Int zMask[4], Int cMask[4]);
 		void clampColor(Vector4f oC[4]);
 
 		Int4 enableMask(Registers &r, const Shader::Instruction *instruction);
@@ -111,6 +116,12 @@ namespace sw
 		void TEXLDL(Registers &r, Vector4f &dst, Vector4f &src0, const Src &src1, bool project, bool bias);
 		void TEXSIZE(Registers &r, Vector4f &dst, Float4 &lod, const Src &src1);
 		void TEXKILL(Int cMask[4], Vector4f &src, unsigned char mask);
+		void TEXOFFSET(Registers &r, Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2, Vector4f &src3, bool project, bool bias);
+		void TEXLDL(Registers &r, Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, bool project, bool bias);
+		void TEXELFETCH(Registers &r, Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2);
+		void TEXELFETCH(Registers &r, Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2, Vector4f &src3);
+		void TEXGRAD(Registers &r, Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2, Vector4f &src3);
+		void TEXGRAD(Registers &r, Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2, Vector4f &src3, Vector4f &src4);
 		void DISCARD(Registers &r, Int cMask[4], const Shader::Instruction *instruction);
 		void DFDX(Vector4f &dst, Vector4f &src);
 		void DFDY(Vector4f &dst, Vector4f &src);

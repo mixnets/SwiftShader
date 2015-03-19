@@ -120,7 +120,8 @@ namespace sw
 
 		struct VS
 		{
-			float4 c[256 + 1];   // One extra for indices out of range, c[256] = {0, 0, 0, 0}
+			float4 c[VERTEX_UNIFORM_VECTORS + 1];   // One extra for indices out of range, c[256] = {0, 0, 0, 0}
+			void* u[MAX_UNIFORM_BUFFER_BINDINGS];
 			int4 i[16];
 			bool b[16];
 		};
@@ -129,6 +130,7 @@ namespace sw
 		{
 			word4 cW[8][4];
 			float4 c[FRAGMENT_UNIFORM_VECTORS];
+			void* u[MAX_UNIFORM_BUFFER_BINDINGS];
 			int4 i[16];
 			bool b[16];
 		};
@@ -329,6 +331,12 @@ namespace sw
 		virtual void setSwizzleG(SamplerType type, int sampler, SwizzleType swizzleG);
 		virtual void setSwizzleB(SamplerType type, int sampler, SwizzleType swizzleB);
 		virtual void setSwizzleA(SamplerType type, int sampler, SwizzleType swizzleA);
+		virtual void setCompFunc(SamplerType type, int sampler, CompareFunc compFunc);
+		virtual void setCompMode(SamplerType type, int sampler, CompareMode compMode);
+		virtual void setBaseLevel(SamplerType type, int sampler, int baseLevel);
+		virtual void setMaxLevel(SamplerType type, int sampler, int maxLevel);
+		virtual void setMinLod(SamplerType type, int sampler, float minLod);
+		virtual void setMaxLod(SamplerType type, int sampler, float maxLod);
 		
 		virtual void setPointSpriteEnable(bool pointSpriteEnable);
 		virtual void setPointScaleEnable(bool pointScaleEnable);

@@ -127,14 +127,14 @@ namespace gl
 		vertexShaderDirty = true;
 		vertexShaderConstantsFDirty = 0;
 
-		for(int i = 0; i < 224; i++)
+		for(int i = 0; i < FRAGMENT_UNIFORM_VECTORS; i++)
 		{
 			float zero[4] = {0, 0, 0, 0};
 
 			setPixelShaderConstantF(i, zero, 1);
 		}
 
-		for(int i = 0; i < 256; i++)
+		for(int i = 0; i < VERTEX_UNIFORM_VECTORS; i++)
 		{
 			float zero[4] = {0, 0, 0, 0};
 
@@ -443,7 +443,7 @@ namespace gl
 		scissorEnable = enable;
 	}
 
-	void Device::setRenderTarget(Image *renderTarget)
+	void Device::setRenderTarget(int index, Image *renderTarget)
 	{
 		if(renderTarget)
 		{
@@ -457,7 +457,7 @@ namespace gl
 
 		this->renderTarget = renderTarget;
 
-		Renderer::setRenderTarget(0, renderTarget);
+		Renderer::setRenderTarget(index, renderTarget);
 	}
 
 	void Device::setScissorRect(const sw::Rect &rect)

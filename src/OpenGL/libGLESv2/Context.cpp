@@ -165,8 +165,10 @@ Context::Context(const egl::Config *config, const Context *shareContext, EGLint 
     mState.packAlignment = 4;
 	mState.unpackInfo.alignment = 4;
 	mState.packRowLength = 0;
+	mState.packImageHeight = 0;
 	mState.packSkipPixels = 0;
 	mState.packSkipRows = 0;
+	mState.packSkipImages = 0;
 	mState.unpackInfo.rowLength = 0;
 	mState.unpackInfo.imageHeight = 0;
 	mState.unpackInfo.skipPixels = 0;
@@ -631,7 +633,6 @@ bool Context::isDitherEnabled() const
 
 void Context::setPrimitiveRestartFixedIndexEnabled(bool enabled)
 {
-    UNIMPLEMENTED();
     mState.primitiveRestartFixedIndexEnabled = enabled;
 }
 
@@ -642,7 +643,10 @@ bool Context::isPrimitiveRestartFixedIndexEnabled() const
 
 void Context::setRasterizerDiscardEnabled(bool enabled)
 {
-    UNIMPLEMENTED();
+	if(enabled)
+	{
+		UNIMPLEMENTED();
+	}
     mState.rasterizerDiscardEnabled = enabled;
 }
 
@@ -848,6 +852,11 @@ void Context::setPackRowLength(GLint rowLength)
 	mState.packRowLength = rowLength;
 }
 
+void Context::setPackImageHeight(GLint imageHeight)
+{
+	mState.packImageHeight = imageHeight;
+}
+
 void Context::setPackSkipPixels(GLint skipPixels)
 {
 	mState.packSkipPixels = skipPixels;
@@ -856,6 +865,11 @@ void Context::setPackSkipPixels(GLint skipPixels)
 void Context::setPackSkipRows(GLint skipRows)
 {
 	mState.packSkipRows = skipRows;
+}
+
+void Context::setPackSkipImages(GLint skipImages)
+{
+	mState.packSkipImages = skipImages;
 }
 
 void Context::setUnpackRowLength(GLint rowLength)
@@ -2197,7 +2211,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = IMPLEMENTATION_MAX_TEXTURE_SIZE;
 		break;
 	case GL_MAX_COLOR_ATTACHMENTS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_COLOR_ATTACHMENTS;
 		break;
 	case GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS: // integer, at least 50048
@@ -2213,7 +2226,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS;
 		break;
 	case GL_MAX_DRAW_BUFFERS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_DRAW_BUFFERS;
 		break;
 	case GL_MAX_ELEMENT_INDEX:
@@ -2254,7 +2266,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = 64;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS: // integer, at least 4
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS: // integer, at least 4
@@ -2702,8 +2713,8 @@ void Context::applyScissor(int width, int height)
 
 egl::Image *Context::getScissoredImage(GLint drawbuffer, int &x0, int &y0, int &width, int &height, bool depthStencil)
 {
-	Framebuffer* framebuffer = getFramebuffer(drawbuffer);
-	egl::Image* image = depthStencil ? framebuffer->getDepthStencil() : framebuffer->getRenderTarget(0);
+	Framebuffer* framebuffer = getDrawFramebuffer();
+	egl::Image* image = depthStencil ? framebuffer->getDepthStencil() : framebuffer->getRenderTarget(drawbuffer);
 
 	applyScissor(image->getWidth(), image->getHeight());
 
@@ -2723,9 +2734,12 @@ bool Context::applyRenderTarget()
         return error(GL_INVALID_FRAMEBUFFER_OPERATION, false);
     }
 
-	egl::Image *renderTarget = framebuffer->getRenderTarget(0);
-	device->setRenderTarget(renderTarget);
-	if(renderTarget) renderTarget->release();
+	for(int i = 0; i < MAX_DRAW_BUFFERS; ++i)
+	{
+		egl::Image *renderTarget = framebuffer->getRenderTarget(i);
+		device->setRenderTarget(i, renderTarget);
+		if(renderTarget) renderTarget->release();
+	}
 
     egl::Image *depthStencil = framebuffer->getDepthStencil();
     device->setDepthStencilSurface(depthStencil);
@@ -3004,8 +3018,13 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsize
 	return GL_NO_ERROR;
 }
 
+GLenum Context::computePrimitiveRestart(const void *indices, GLsizei count, GLenum type, PrimitiveRestartData* restartData)
+{
+	return mIndexDataManager->computePrimitiveRestart(type, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, restartData);
+}
+
 // Applies the indices and element array bindings
-GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo)
+GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum type, TranslatedIndexData *indexInfo)
 {
 	GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, indexInfo);
 
@@ -3033,17 +3052,16 @@ void Context::applyShaders()
         mAppliedProgramSerial = programObject->getSerial();
     }
 
+    programObject->applyUniformBuffers(mState.uniformBuffers);
     programObject->applyUniforms();
-    programObject->applyUniformBuffers();
 }
 
-void Context::applyTextures()
+bool Context::applyTextures()
 {
-    applyTextures(sw::SAMPLER_PIXEL);
-	applyTextures(sw::SAMPLER_VERTEX);
+    return applyTextures(sw::SAMPLER_PIXEL) && applyTextures(sw::SAMPLER_VERTEX);
 }
 
-void Context::applyTextures(sw::SamplerType samplerType)
+bool Context::applyTextures(sw::SamplerType samplerType)
 {
     Program *programObject = getCurrentProgram();
 
@@ -3061,7 +3079,8 @@ void Context::applyTextures(sw::SamplerType samplerType)
 
 			if(texture->isSamplerComplete())
             {
-				GLenum wrapS, wrapT, wrapR, texFilter, magFilter;
+				GLenum wrapS, wrapT, wrapR, texFilter, magFilter, compFunc, compMode;
+				GLfloat minLOD, maxLOD;
 
 				Sampler *samplerObject = mState.sampler[textureUnit];
 				if(samplerObject)
@@ -3071,6 +3090,10 @@ void Context::applyTextures(sw::SamplerType samplerType)
 					wrapR = samplerObject->getWrapR();
 					texFilter = samplerObject->getMinFilter();
 					magFilter = samplerObject->getMagFilter();
+					minLOD = samplerObject->getMinLod();
+					maxLOD = samplerObject->getMaxLod();
+					compFunc = samplerObject->getComparisonFunc();
+					compMode = samplerObject->getComparisonMode();
 				}
 				else
 				{
@@ -3079,9 +3102,15 @@ void Context::applyTextures(sw::SamplerType samplerType)
 					wrapR = texture->getWrapR();
 					texFilter = texture->getMinFilter();
 					magFilter = texture->getMagFilter();
+					minLOD = texture->getMinLOD();
+					maxLOD = texture->getMaxLOD();
+					compFunc = texture->getCompareFunc();
+					compMode = texture->getCompareMode();
 				}
 				GLfloat maxAnisotropy = texture->getMaxAnisotropy();
 
+				GLint baseLevel = texture->getBaseLevel();
+				GLint maxLevel = texture->getMaxLevel();
 				GLenum swizzleR = texture->getSwizzleR();
 				GLenum swizzleG = texture->getSwizzleG();
 				GLenum swizzleB = texture->getSwizzleB();
@@ -3090,10 +3119,16 @@ void Context::applyTextures(sw::SamplerType samplerType)
 				device->setAddressingModeU(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapS));
 				device->setAddressingModeV(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapT));
 				device->setAddressingModeW(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapR));
+				device->setCompFunc(samplerType, samplerIndex, es2sw::ConvertCompareFunc(compFunc));
+				device->setCompMode(samplerType, samplerIndex, es2sw::ConvertCompareMode(compMode));
 				device->setSwizzleR(samplerType, samplerIndex, es2sw::ConvertSwizzleType(swizzleR));
 				device->setSwizzleG(samplerType, samplerIndex, es2sw::ConvertSwizzleType(swizzleG));
 				device->setSwizzleB(samplerType, samplerIndex, es2sw::ConvertSwizzleType(swizzleB));
 				device->setSwizzleA(samplerType, samplerIndex, es2sw::ConvertSwizzleType(swizzleA));
+				device->setMinLod(samplerType, samplerIndex, minLOD);
+				device->setMaxLod(samplerType, samplerIndex, maxLOD);
+				device->setBaseLevel(samplerType, samplerIndex, baseLevel);
+				device->setMaxLevel(samplerType, samplerIndex, maxLevel);
 
 				sw::FilterType minFilter;
 				sw::MipmapType mipFilter;
@@ -3105,21 +3140,32 @@ void Context::applyTextures(sw::SamplerType samplerType)
 				device->setMipmapFilter(samplerType, samplerIndex, mipFilter);
 				device->setMaxAnisotropy(samplerType, samplerIndex, maxAnisotropy);                
 
-				applyTexture(samplerType, samplerIndex, texture);
+				if(!applyTexture(samplerType, samplerIndex, texture))
+				{
+					return false;
+				}
             }
             else
             {
-                applyTexture(samplerType, samplerIndex, nullptr);
+				if(!applyTexture(samplerType, samplerIndex, nullptr))
+				{
+					return false;
+				}
             }
         }
         else
         {
-            applyTexture(samplerType, samplerIndex, nullptr);
+			if(!applyTexture(samplerType, samplerIndex, nullptr))
+			{
+				return false;
+			}
         }
     }
+
+	return true;
 }
 
-void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture)
+bool Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture)
 {
 	Program *program = getCurrentProgram();
 	int sampler = (type == sw::SAMPLER_PIXEL) ? index : 16 + index;
@@ -3133,7 +3179,11 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 	{
 		textureUsed = program->getVertexShader()->usesSampler(index);
 	}
-	else UNREACHABLE(type);
+	else
+	{
+		UNREACHABLE(type);
+		return false;
+	}
 
 	sw::Resource *resource = 0;
 
@@ -3166,6 +3216,10 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
+				if(surface->getInternalFormat() == sw::FORMAT_NULL)
+				{
+					return false;
+				}
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D);
 			}
 		}
@@ -3187,6 +3241,10 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
+				if(surface->getInternalFormat() == sw::FORMAT_NULL)
+				{
+					return false;
+				}
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_3D);
 			}
 		}
@@ -3208,6 +3266,10 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
+				if(surface->getInternalFormat() == sw::FORMAT_NULL)
+				{
+					return false;
+				}
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D_ARRAY);
 			}
 		}
@@ -3231,16 +3293,26 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 					}
 
 					egl::Image *surface = cubeTexture->getImage(face, surfaceLevel);
+					if(surface->getInternalFormat() == sw::FORMAT_NULL)
+					{
+						return false;
+					}
 					device->setTextureLevel(sampler, face, mipmapLevel, surface, sw::TEXTURE_CUBE);
 				}
 			}
 		}
-		else UNIMPLEMENTED();
+		else
+		{
+			UNIMPLEMENTED();
+			return false;
+		}
 	}
 	else
 	{
 		device->setTextureLevel(sampler, 0, 0, 0, sw::TEXTURE_NULL);
 	}
+
+	return true;
 }
 
 void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
@@ -3259,15 +3331,18 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
         return error(GL_INVALID_OPERATION);
     }
 
-	if(format != GL_RGBA || type != GL_UNSIGNED_BYTE)
+	GLenum readFormat = framebuffer->getImplementationColorReadFormat();
+	GLenum readType = framebuffer->getImplementationColorReadType();
+
+	if(!(readFormat == format && readType == type) && !ValidReadFormatType(readFormat, readType, format, type, clientVersion))
 	{
-		if(format != framebuffer->getImplementationColorReadFormat() || type != framebuffer->getImplementationColorReadType())
-		{
-			return error(GL_INVALID_OPERATION);
-		}
+		return error(GL_INVALID_OPERATION);
 	}
 
-	GLsizei outputPitch = (mState.packRowLength > 0) ? mState.packRowLength : egl::ComputePitch(width, format, type, mState.packAlignment);
+	GLsizei outputPitch = egl::ComputePitch((mState.packRowLength > 0) ? mState.packRowLength : width, format, type, mState.packAlignment);
+	GLsizei outputHeight = (mState.packImageHeight == 0) ? height : mState.packImageHeight;
+	pixels = getPixelPackBuffer() ? (unsigned char*)getPixelPackBuffer()->data() + (ptrdiff_t)pixels : (unsigned char*)pixels;
+	pixels = ((char*)pixels) + (mState.packSkipImages * outputHeight + mState.packSkipRows) * outputPitch + mState.packSkipPixels;
     
 	// Sized query sanity check
     if(bufSize)
@@ -3279,7 +3354,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
         }
     }
 
-    egl::Image *renderTarget = framebuffer->getRenderTarget(0);
+    egl::Image *renderTarget = framebuffer->getReadRenderTarget();
 
     if(!renderTarget)
     {
@@ -3289,256 +3364,13 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 	x += mState.packSkipPixels;
 	y += mState.packSkipRows;
 	sw::Rect rect = {x, y, x + width, y + height};
+	sw::Rect dstRect = { 0, 0, width, height };
 	rect.clip(0, 0, renderTarget->getWidth(), renderTarget->getHeight());
 
-    unsigned char *source = (unsigned char*)renderTarget->lock(rect.x0, rect.y0, sw::LOCK_READONLY);
-    unsigned char *dest = getPixelPackBuffer() ? (unsigned char*)getPixelPackBuffer()->data() + (ptrdiff_t)pixels : (unsigned char*)pixels;
-    int inputPitch = (int)renderTarget->getPitch();
-
-    for(int j = 0; j < rect.y1 - rect.y0; j++)
-    {
-		unsigned short *dest16 = (unsigned short*)dest;
-		unsigned int *dest32 = (unsigned int*)dest;
-
-		if(renderTarget->getInternalFormat() == sw::FORMAT_A8B8G8R8 &&
-           format == GL_RGBA && type == GL_UNSIGNED_BYTE)
-        {
-            memcpy(dest, source, (rect.x1 - rect.x0) * 4);
-        }
-		else if(renderTarget->getInternalFormat() == sw::FORMAT_A8R8G8B8 &&
-                format == GL_RGBA && type == GL_UNSIGNED_BYTE)
-        {
-            for(int i = 0; i < rect.x1 - rect.x0; i++)
-			{
-				unsigned int argb = *(unsigned int*)(source + 4 * i);
-
-				dest32[i] = (argb & 0xFF00FF00) | ((argb & 0x000000FF) << 16) | ((argb & 0x00FF0000) >> 16);
-			}
-        }
-		else if(renderTarget->getInternalFormat() == sw::FORMAT_X8R8G8B8 &&
-                format == GL_RGBA && type == GL_UNSIGNED_BYTE)
-        {
-            for(int i = 0; i < rect.x1 - rect.x0; i++)
-			{
-				unsigned int xrgb = *(unsigned int*)(source + 4 * i);
-
-				dest32[i] = (xrgb & 0xFF00FF00) | ((xrgb & 0x000000FF) << 16) | ((xrgb & 0x00FF0000) >> 16) | 0xFF000000;
-			}
-        }
-		else if(renderTarget->getInternalFormat() == sw::FORMAT_X8R8G8B8 &&
-                format == GL_BGRA_EXT && type == GL_UNSIGNED_BYTE)
-        {
-            for(int i = 0; i < rect.x1 - rect.x0; i++)
-			{
-				unsigned int xrgb = *(unsigned int*)(source + 4 * i);
-
-				dest32[i] = xrgb | 0xFF000000;
-			}
-        }
-        else if(renderTarget->getInternalFormat() == sw::FORMAT_A8R8G8B8 &&
-                format == GL_BGRA_EXT && type == GL_UNSIGNED_BYTE)
-        {
-            memcpy(dest, source, (rect.x1 - rect.x0) * 4);
-        }
-		else if(renderTarget->getInternalFormat() == sw::FORMAT_A16B16G16R16F &&
-                format == GL_RGBA && (type == GL_HALF_FLOAT || type == GL_HALF_FLOAT_OES))
-        {
-            memcpy(dest, source, (rect.x1 - rect.x0) * 8);
-        }
-		else if(renderTarget->getInternalFormat() == sw::FORMAT_A32B32G32R32F &&
-                format == GL_RGBA && type == GL_FLOAT)
-        {
-            memcpy(dest, source, (rect.x1 - rect.x0) * 16);
-        }
-		else if(renderTarget->getInternalFormat() == sw::FORMAT_A1R5G5B5 &&
-                format == GL_BGRA_EXT && type == GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT)
-        {
-            memcpy(dest, source, (rect.x1 - rect.x0) * 2);
-        }
-		else if(renderTarget->getInternalFormat() == sw::FORMAT_R5G6B5 &&
-                format == 0x80E0 && type == GL_UNSIGNED_SHORT_5_6_5)   // GL_BGR_EXT
-        {
-            memcpy(dest, source, (rect.x1 - rect.x0) * 2);
-        }
-		else
-		{
-			for(int i = 0; i < rect.x1 - rect.x0; i++)
-			{
-				float r;
-				float g;
-				float b;
-				float a;
-
-				switch(renderTarget->getInternalFormat())
-				{
-				case sw::FORMAT_R5G6B5:
-					{
-						unsigned short rgb = *(unsigned short*)(source + 2 * i);
-
-						a = 1.0f;
-						b = (rgb & 0x001F) * (1.0f / 0x001F);
-						g = (rgb & 0x07E0) * (1.0f / 0x07E0);
-						r = (rgb & 0xF800) * (1.0f / 0xF800);
-					}
-					break;
-				case sw::FORMAT_A1R5G5B5:
-					{
-						unsigned short argb = *(unsigned short*)(source + 2 * i);
-
-						a = (argb & 0x8000) ? 1.0f : 0.0f;
-						b = (argb & 0x001F) * (1.0f / 0x001F);
-						g = (argb & 0x03E0) * (1.0f / 0x03E0);
-						r = (argb & 0x7C00) * (1.0f / 0x7C00);
-					}
-					break;
-				case sw::FORMAT_A8R8G8B8:
-					{
-						unsigned int argb = *(unsigned int*)(source + 4 * i);
-
-						a = (argb & 0xFF000000) * (1.0f / 0xFF000000);
-						b = (argb & 0x000000FF) * (1.0f / 0x000000FF);
-						g = (argb & 0x0000FF00) * (1.0f / 0x0000FF00);
-						r = (argb & 0x00FF0000) * (1.0f / 0x00FF0000);
-					}
-					break;
-				case sw::FORMAT_A8B8G8R8:
-					{
-						unsigned int abgr = *(unsigned int*)(source + 4 * i);
-
-						a = (abgr & 0xFF000000) * (1.0f / 0xFF000000);
-						b = (abgr & 0x00FF0000) * (1.0f / 0x00FF0000);
-						g = (abgr & 0x0000FF00) * (1.0f / 0x0000FF00);
-						r = (abgr & 0x000000FF) * (1.0f / 0x000000FF);
-					}
-					break;
-				case sw::FORMAT_X8R8G8B8:
-					{
-						unsigned int xrgb = *(unsigned int*)(source + 4 * i);
-
-						a = 1.0f;
-						b = (xrgb & 0x000000FF) * (1.0f / 0x000000FF);
-						g = (xrgb & 0x0000FF00) * (1.0f / 0x0000FF00);
-						r = (xrgb & 0x00FF0000) * (1.0f / 0x00FF0000);
-					}
-					break;
-				case sw::FORMAT_X8B8G8R8:
-					{
-						unsigned int xbgr = *(unsigned int*)(source + 4 * i);
-
-						a = 1.0f;
-						b = (xbgr & 0x00FF0000) * (1.0f / 0x00FF0000);
-						g = (xbgr & 0x0000FF00) * (1.0f / 0x0000FF00);
-						r = (xbgr & 0x000000FF) * (1.0f / 0x000000FF);
-					}
-					break;
-				case sw::FORMAT_A2R10G10B10:
-					{
-						unsigned int argb = *(unsigned int*)(source + 4 * i);
-
-						a = (argb & 0xC0000000) * (1.0f / 0xC0000000);
-						b = (argb & 0x000003FF) * (1.0f / 0x000003FF);
-						g = (argb & 0x000FFC00) * (1.0f / 0x000FFC00);
-						r = (argb & 0x3FF00000) * (1.0f / 0x3FF00000);
-					}
-					break;
-				case sw::FORMAT_A32B32G32R32F:
-					{
-						r = *((float*)(source + 16 * i) + 0);
-						g = *((float*)(source + 16 * i) + 1);
-						b = *((float*)(source + 16 * i) + 2);
-						a = *((float*)(source + 16 * i) + 3);
-					}
-					break;
-				case sw::FORMAT_A16B16G16R16F:
-					{
-						r = (float)*((sw::half*)(source + 8 * i) + 0);
-						g = (float)*((sw::half*)(source + 8 * i) + 1);
-						b = (float)*((sw::half*)(source + 8 * i) + 2);
-						a = (float)*((sw::half*)(source + 8 * i) + 3);
-					}
-					break;
-				default:
-					UNIMPLEMENTED();   // FIXME
-					UNREACHABLE(renderTarget->getInternalFormat());
-				}
-
-				switch(format)
-				{
-				case GL_RGBA:
-					switch(type)
-					{
-					case GL_UNSIGNED_BYTE:
-						dest[4 * i + 0] = (unsigned char)(255 * r + 0.5f);
-						dest[4 * i + 1] = (unsigned char)(255 * g + 0.5f);
-						dest[4 * i + 2] = (unsigned char)(255 * b + 0.5f);
-						dest[4 * i + 3] = (unsigned char)(255 * a + 0.5f);
-						break;
-					default: UNREACHABLE(type);
-					}
-					break;
-				case GL_BGRA_EXT:
-					switch(type)
-					{
-					case GL_UNSIGNED_BYTE:
-						dest[4 * i + 0] = (unsigned char)(255 * b + 0.5f);
-						dest[4 * i + 1] = (unsigned char)(255 * g + 0.5f);
-						dest[4 * i + 2] = (unsigned char)(255 * r + 0.5f);
-						dest[4 * i + 3] = (unsigned char)(255 * a + 0.5f);
-						break;
-					case GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT:
-						// According to the desktop GL spec in the "Transfer of Pixel Rectangles" section
-						// this type is packed as follows:
-						//   15   14   13   12   11   10    9    8    7    6    5    4    3    2    1    0
-						//  --------------------------------------------------------------------------------
-						// |       4th         |        3rd         |        2nd        |   1st component   |
-						//  --------------------------------------------------------------------------------
-						// in the case of BGRA_EXT, B is the first component, G the second, and so forth.
-						dest16[i] =
-							((unsigned short)(15 * a + 0.5f) << 12)|
-							((unsigned short)(15 * r + 0.5f) << 8) |
-							((unsigned short)(15 * g + 0.5f) << 4) |
-							((unsigned short)(15 * b + 0.5f) << 0);
-						break;
-					case GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT:
-						// According to the desktop GL spec in the "Transfer of Pixel Rectangles" section
-						// this type is packed as follows:
-						//   15   14   13   12   11   10    9    8    7    6    5    4    3    2    1    0
-						//  --------------------------------------------------------------------------------
-						// | 4th |          3rd           |           2nd          |      1st component     |
-						//  --------------------------------------------------------------------------------
-						// in the case of BGRA_EXT, B is the first component, G the second, and so forth.
-						dest16[i] =
-							((unsigned short)(     a + 0.5f) << 15) |
-							((unsigned short)(31 * r + 0.5f) << 10) |
-							((unsigned short)(31 * g + 0.5f) << 5) |
-							((unsigned short)(31 * b + 0.5f) << 0);
-						break;
-					default: UNREACHABLE(type);
-					}
-					break;
-				case GL_RGB:
-					switch(type)
-					{
-					case GL_UNSIGNED_SHORT_5_6_5:
-						dest16[i] =
-							((unsigned short)(31 * b + 0.5f) << 0) |
-							((unsigned short)(63 * g + 0.5f) << 5) |
-							((unsigned short)(31 * r + 0.5f) << 11);
-						break;
-					default: UNREACHABLE(type);
-					}
-					break;
-				default: UNREACHABLE(format);
-				}
-			}
-        }
-
-		source += inputPitch;
-		dest += outputPitch;
-    }
-
-	renderTarget->unlock();
-	renderTarget->release();
+	sw::Surface externalSurface(width, height, 1, egl::SelectInternalFormat(format, type), pixels, outputPitch, outputPitch * outputHeight);
+	sw::SliceRect sliceRect(rect);
+	sw::SliceRect dstSliceRect(dstRect);
+	device->blit(renderTarget, sliceRect, &externalSurface, dstSliceRect, false);
 }
 
 void Context::clear(GLbitfield mask)
@@ -3714,9 +3546,8 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 		}
 
 		applyShaders();
-		applyTextures();
 
-		if(!getCurrentProgram()->validateSamplers(false))
+		if(!applyTextures() || !getCurrentProgram()->validateSamplers(false))
 		{
 			return error(GL_INVALID_OPERATION);
 		}
@@ -3758,35 +3589,57 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 
     applyState(mode);
 
+	PrimitiveRestartData restartData;
+	if(isPrimitiveRestartFixedIndexEnabled())
+	{
+		GLenum err = computePrimitiveRestart(indices, count, type, &restartData);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
+	}
+	else
+	{
+		restartData.data.push_back(PrimitiveRestartData::Datum::Datum(indices, count));
+	}
+
 	for(int i = 0; i < instanceCount; ++i)
 	{
 		device->setInstanceID(i);
 
-		TranslatedIndexData indexInfo;
-		GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
-		if(err != GL_NO_ERROR)
+		for(std::vector<PrimitiveRestartData::Datum>::iterator it = restartData.data.begin(); it != restartData.data.end(); ++it)
 		{
-			return error(err);
-		}
+			es2sw::ConvertPrimitiveType(mode, it->count, primitiveType, primitiveCount);
+			if(primitiveCount <= 0)
+			{
+				continue;
+			}
 
-		GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
-		err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount, i);
-		if(err != GL_NO_ERROR)
-		{
-			return error(err);
-		}
+			TranslatedIndexData indexInfo;
+			GLenum err = applyIndexBuffer(it->indices, start, end, it->count, type, &indexInfo);
+			if(err != GL_NO_ERROR)
+			{
+				return error(err);
+			}
 
-		applyShaders();
-		applyTextures();
+			GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
+			err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount, i);
+			if(err != GL_NO_ERROR)
+			{
+				return error(err);
+			}
 
-		if(!getCurrentProgram()->validateSamplers(false))
-		{
-			return error(GL_INVALID_OPERATION);
-		}
+			applyShaders();
 
-		if(!cullSkipsDraw(mode))
-		{
-			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, IndexDataManager::typeSize(type));
+			if(!applyTextures() || !getCurrentProgram()->validateSamplers(false))
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+
+			if(!cullSkipsDraw(mode))
+			{
+				device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, IndexDataManager::typeSize(type));
+			}
 		}
 	}
 }
@@ -4481,6 +4334,8 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 	// Vendor extensions
 	static const GLubyte* extensions[] = {
 		(const GLubyte*)"GL_OES_compressed_ETC1_RGB8_texture",
+		(const GLubyte*)"GL_KHR_texture_compression_astc_ldr",
+		(const GLubyte*)"GL_KHR_texture_compression_astc_hdr",
 		(const GLubyte*)"GL_OES_depth_texture",
 		(const GLubyte*)"GL_OES_depth_texture_cube_map",
 		(const GLubyte*)"GL_OES_EGL_image",
@@ -4497,6 +4352,7 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 		(const GLubyte*)"GL_OES_texture_npot",
 		(const GLubyte*)"GL_OES_texture_3D",
 		(const GLubyte*)"GL_EXT_blend_minmax",
+		(const GLubyte*)"GL_EXT_color_buffer_float",
 		(const GLubyte*)"GL_EXT_occlusion_query_boolean",
 		(const GLubyte*)"GL_EXT_read_format_bgra",
 #if (S3TC_SUPPORT)

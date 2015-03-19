@@ -23,6 +23,154 @@
 
 namespace es2
 {
+	// ES2 requires that format is equal to internal format at all glTex*Image2D entry points and the implementation
+	// can decide the true, sized, internal format. The ES2FormatMap determines the internal format for all valid
+	// format and type combinations.
+
+	typedef std::pair<GLenum, GLenum> FormatTypePair;
+	typedef std::pair<FormatTypePair, GLenum> FormatPair;
+	typedef std::map<FormatTypePair, GLenum> FormatMap;
+
+	// A helper function to insert data into the format map with fewer characters.
+	static inline void InsertFormatMapping(FormatMap *map, GLenum format, GLenum type, GLenum internalFormat)
+	{
+		map->insert(FormatPair(FormatTypePair(format, type), internalFormat));
+	}
+
+	FormatMap BuildFormatMap()
+	{
+		static const GLenum GL_BGRA4_ANGLEX = 0x6ABC;
+		static const GLenum GL_BGR5_A1_ANGLEX = 0x6ABD;
+
+		FormatMap map;
+
+		//                       | Format | Type | Internal format |
+		InsertFormatMapping(&map, GL_RGBA, GL_UNSIGNED_BYTE, GL_RGBA8);
+		InsertFormatMapping(&map, GL_RGBA, GL_BYTE, GL_RGBA8_SNORM);
+		InsertFormatMapping(&map, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4, GL_RGBA4);
+		InsertFormatMapping(&map, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, GL_RGB5_A1);
+		InsertFormatMapping(&map, GL_RGBA, GL_UNSIGNED_INT_2_10_10_10_REV, GL_RGB10_A2);
+		InsertFormatMapping(&map, GL_RGBA, GL_FLOAT, GL_RGBA32F);
+		InsertFormatMapping(&map, GL_RGBA, GL_HALF_FLOAT, GL_RGBA16F);
+		InsertFormatMapping(&map, GL_RGBA, GL_HALF_FLOAT_OES, GL_RGBA16F);
+
+		InsertFormatMapping(&map, GL_RGBA_INTEGER, GL_UNSIGNED_BYTE, GL_RGBA8UI);
+		InsertFormatMapping(&map, GL_RGBA_INTEGER, GL_BYTE, GL_RGBA8I);
+		InsertFormatMapping(&map, GL_RGBA_INTEGER, GL_UNSIGNED_SHORT, GL_RGBA16UI);
+		InsertFormatMapping(&map, GL_RGBA_INTEGER, GL_SHORT, GL_RGBA16I);
+		InsertFormatMapping(&map, GL_RGBA_INTEGER, GL_UNSIGNED_INT, GL_RGBA32UI);
+		InsertFormatMapping(&map, GL_RGBA_INTEGER, GL_INT, GL_RGBA32I);
+		InsertFormatMapping(&map, GL_RGBA_INTEGER, GL_UNSIGNED_INT_2_10_10_10_REV, GL_RGB10_A2UI);
+
+		InsertFormatMapping(&map, GL_RGB, GL_UNSIGNED_BYTE, GL_RGB8);
+		InsertFormatMapping(&map, GL_RGB, GL_BYTE, GL_RGB8_SNORM);
+		InsertFormatMapping(&map, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, GL_RGB565);
+		InsertFormatMapping(&map, GL_RGB, GL_UNSIGNED_INT_10F_11F_11F_REV, GL_R11F_G11F_B10F);
+		InsertFormatMapping(&map, GL_RGB, GL_UNSIGNED_INT_5_9_9_9_REV, GL_RGB9_E5);
+		InsertFormatMapping(&map, GL_RGB, GL_FLOAT, GL_RGB32F);
+		InsertFormatMapping(&map, GL_RGB, GL_HALF_FLOAT, GL_RGB16F);
+		InsertFormatMapping(&map, GL_RGB, GL_HALF_FLOAT_OES, GL_RGB16F);
+
+		InsertFormatMapping(&map, GL_RGB_INTEGER, GL_UNSIGNED_BYTE, GL_RGB8UI);
+		InsertFormatMapping(&map, GL_RGB_INTEGER, GL_BYTE, GL_RGB8I);
+		InsertFormatMapping(&map, GL_RGB_INTEGER, GL_UNSIGNED_SHORT, GL_RGB16UI);
+		InsertFormatMapping(&map, GL_RGB_INTEGER, GL_SHORT, GL_RGB16I);
+		InsertFormatMapping(&map, GL_RGB_INTEGER, GL_UNSIGNED_INT, GL_RGB32UI);
+		InsertFormatMapping(&map, GL_RGB_INTEGER, GL_INT, GL_RGB32I);
+
+		InsertFormatMapping(&map, GL_RG, GL_UNSIGNED_BYTE, GL_RG8);
+		InsertFormatMapping(&map, GL_RG, GL_BYTE, GL_RG8_SNORM);
+		InsertFormatMapping(&map, GL_RG, GL_FLOAT, GL_RG32F);
+		InsertFormatMapping(&map, GL_RG, GL_HALF_FLOAT, GL_RG16F);
+		InsertFormatMapping(&map, GL_RG, GL_HALF_FLOAT_OES, GL_RG16F);
+
+		InsertFormatMapping(&map, GL_RG_INTEGER, GL_UNSIGNED_BYTE, GL_RG8UI);
+		InsertFormatMapping(&map, GL_RG_INTEGER, GL_BYTE, GL_RG8I);
+		InsertFormatMapping(&map, GL_RG_INTEGER, GL_UNSIGNED_SHORT, GL_RG16UI);
+		InsertFormatMapping(&map, GL_RG_INTEGER, GL_SHORT, GL_RG16I);
+		InsertFormatMapping(&map, GL_RG_INTEGER, GL_UNSIGNED_INT, GL_RG32UI);
+		InsertFormatMapping(&map, GL_RG_INTEGER, GL_INT, GL_RG32I);
+
+		InsertFormatMapping(&map, GL_RED, GL_UNSIGNED_BYTE, GL_R8);
+		InsertFormatMapping(&map, GL_RED, GL_BYTE, GL_R8_SNORM);
+		InsertFormatMapping(&map, GL_RED, GL_FLOAT, GL_R32F);
+		InsertFormatMapping(&map, GL_RED, GL_HALF_FLOAT, GL_R16F);
+		InsertFormatMapping(&map, GL_RED, GL_HALF_FLOAT_OES, GL_R16F);
+
+		InsertFormatMapping(&map, GL_RED_INTEGER, GL_UNSIGNED_BYTE, GL_R8UI);
+		InsertFormatMapping(&map, GL_RED_INTEGER, GL_BYTE, GL_R8I);
+		InsertFormatMapping(&map, GL_RED_INTEGER, GL_UNSIGNED_SHORT, GL_R16UI);
+		InsertFormatMapping(&map, GL_RED_INTEGER, GL_SHORT, GL_R16I);
+		InsertFormatMapping(&map, GL_RED_INTEGER, GL_UNSIGNED_INT, GL_R32UI);
+		InsertFormatMapping(&map, GL_RED_INTEGER, GL_INT, GL_R32I);
+
+		InsertFormatMapping(&map, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, GL_LUMINANCE8_ALPHA8_EXT);
+		InsertFormatMapping(&map, GL_LUMINANCE, GL_UNSIGNED_BYTE, GL_LUMINANCE8_EXT);
+		InsertFormatMapping(&map, GL_ALPHA, GL_UNSIGNED_BYTE, GL_ALPHA8_EXT);
+		InsertFormatMapping(&map, GL_LUMINANCE_ALPHA, GL_FLOAT, GL_LUMINANCE_ALPHA32F_EXT);
+		InsertFormatMapping(&map, GL_LUMINANCE, GL_FLOAT, GL_LUMINANCE32F_EXT);
+		InsertFormatMapping(&map, GL_ALPHA, GL_FLOAT, GL_ALPHA32F_EXT);
+		InsertFormatMapping(&map, GL_LUMINANCE_ALPHA, GL_HALF_FLOAT, GL_LUMINANCE_ALPHA16F_EXT);
+		InsertFormatMapping(&map, GL_LUMINANCE_ALPHA, GL_HALF_FLOAT_OES, GL_LUMINANCE_ALPHA16F_EXT);
+		InsertFormatMapping(&map, GL_LUMINANCE, GL_HALF_FLOAT, GL_LUMINANCE16F_EXT);
+		InsertFormatMapping(&map, GL_LUMINANCE, GL_HALF_FLOAT_OES, GL_LUMINANCE16F_EXT);
+		InsertFormatMapping(&map, GL_ALPHA, GL_HALF_FLOAT, GL_ALPHA16F_EXT);
+		InsertFormatMapping(&map, GL_ALPHA, GL_HALF_FLOAT_OES, GL_ALPHA16F_EXT);
+
+		InsertFormatMapping(&map, GL_BGRA_EXT, GL_UNSIGNED_BYTE, GL_BGRA8_EXT);
+		InsertFormatMapping(&map, GL_BGRA_EXT, GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT, GL_BGRA4_ANGLEX);
+		InsertFormatMapping(&map, GL_BGRA_EXT, GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT, GL_BGR5_A1_ANGLEX);
+
+		InsertFormatMapping(&map, GL_SRGB_EXT, GL_UNSIGNED_BYTE, GL_SRGB8);
+		InsertFormatMapping(&map, GL_SRGB_ALPHA_EXT, GL_UNSIGNED_BYTE, GL_SRGB8_ALPHA8);
+
+		InsertFormatMapping(&map, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, GL_UNSIGNED_BYTE, GL_COMPRESSED_RGB_S3TC_DXT1_EXT);
+		InsertFormatMapping(&map, GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, GL_UNSIGNED_BYTE, GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
+		InsertFormatMapping(&map, GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE, GL_UNSIGNED_BYTE, GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE);
+		InsertFormatMapping(&map, GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE, GL_UNSIGNED_BYTE, GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE);
+
+		InsertFormatMapping(&map, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, GL_DEPTH_COMPONENT16);
+		InsertFormatMapping(&map, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, GL_DEPTH_COMPONENT32_OES);
+		InsertFormatMapping(&map, GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_COMPONENT32F);
+
+		InsertFormatMapping(&map, GL_STENCIL, GL_UNSIGNED_BYTE, GL_STENCIL_INDEX8);
+
+		InsertFormatMapping(&map, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, GL_DEPTH24_STENCIL8);
+		InsertFormatMapping(&map, GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, GL_DEPTH32F_STENCIL8);
+
+		return map;
+	}
+
+	GLenum GetSizedInternalFormat(GLenum internalFormat, GLenum type)
+	{
+		switch(internalFormat)
+		{
+		case GL_ALPHA:
+		case GL_LUMINANCE:
+		case GL_LUMINANCE_ALPHA:
+		case GL_RED:
+		case GL_RG:
+		case GL_RGB:
+		case GL_RGBA:
+		case GL_RED_INTEGER:
+		case GL_RG_INTEGER:
+		case GL_RGB_INTEGER:
+		case GL_RGBA_INTEGER:
+		case GL_BGRA_EXT:
+		case GL_DEPTH_COMPONENT:
+		case GL_DEPTH_STENCIL:
+		case GL_SRGB_EXT:
+		case GL_SRGB_ALPHA_EXT:
+			{
+				static const FormatMap formatMap = BuildFormatMap();
+				FormatMap::const_iterator iter = formatMap.find(FormatTypePair(internalFormat, type));
+				return (iter != formatMap.end()) ? iter->second : GL_NONE;
+			}
+		default:
+			return internalFormat;
+		}
+	}
+
 	unsigned int UniformComponentCount(GLenum type)
 	{
 		switch(type)
@@ -377,16 +525,165 @@ namespace es2
 		}
 	}
 
+	GLenum ValidateSubImageParams(bool compressed, GLsizei width, GLsizei height, GLint xoffset, GLint yoffset, GLenum target, GLint level, GLenum format, GLenum type, Texture *texture)
+	{
+		if(!texture)
+		{
+			return GL_INVALID_OPERATION;
+		}
+
+		if(compressed != texture->isCompressed(target, level))
+		{
+			return GL_INVALID_OPERATION;
+		}
+
+		if(format != GL_NONE && GetSizedInternalFormat(format, type) != texture->getFormat(target, level))
+		{
+			return GL_INVALID_OPERATION;
+		}
+
+		if(compressed)
+		{
+			if((width % 4 != 0 && width != texture->getWidth(target, 0)) ||
+			   (height % 4 != 0 && height != texture->getHeight(target, 0)))
+			{
+				return GL_INVALID_OPERATION;
+			}
+		}
+
+		if(xoffset + width > texture->getWidth(target, level) ||
+		   yoffset + height > texture->getHeight(target, level))
+		{
+			return GL_INVALID_VALUE;
+		}
+
+		return GL_NONE;
+	}
+
+	GLenum ValidateSubImageParams(bool compressed, GLsizei width, GLsizei height, GLsizei depth, GLint xoffset, GLint yoffset, GLint zoffset, GLenum target, GLint level, GLenum format, GLenum type, Texture *texture)
+	{
+		if(!texture)
+		{
+			return GL_INVALID_OPERATION;
+		}
+
+		if(compressed != texture->isCompressed(target, level))
+		{
+			return GL_INVALID_OPERATION;
+		}
+
+		if(format != GL_NONE && GetSizedInternalFormat(format, type) != GetSizedInternalFormat(texture->getFormat(target, level), texture->getType(target, level)))
+		{
+			return GL_INVALID_OPERATION;
+		}
+
+		if(compressed)
+		{
+			if((width % 4 != 0 && width != texture->getWidth(target, 0)) ||
+			   (height % 4 != 0 && height != texture->getHeight(target, 0)) ||
+			   (depth % 4 != 0 && depth != texture->getDepth(target, 0)))
+			{
+				return GL_INVALID_OPERATION;
+			}
+		}
+
+		if(xoffset + width > texture->getWidth(target, level) ||
+		   yoffset + height > texture->getHeight(target, level) ||
+		   zoffset + depth > texture->getDepth(target, level))
+		{
+			return GL_INVALID_VALUE;
+		}
+
+		return GL_NONE;
+	}
+
+	bool ValidReadFormatType(GLenum internalFormat, GLenum internalType, GLenum format, GLenum type, egl::GLint clientVersion)
+	{
+		switch(format)
+		{
+		case GL_RGBA:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				break;
+			case GL_UNSIGNED_INT_2_10_10_10_REV:
+				return (clientVersion >= 3) && (internalFormat == GL_RGB10_A2);
+			case GL_FLOAT:
+				return (clientVersion >= 3) && (internalType == GL_FLOAT);
+			default:
+				return false;
+			}
+			break;
+		case GL_RGBA_INTEGER:
+			if(clientVersion < 3)
+			{
+				return false;
+			}
+			switch(type)
+			{
+			case GL_INT:
+				if(internalType != GL_INT)
+				{
+					return false;
+				}
+				break;
+			case GL_UNSIGNED_INT:
+				if(internalType != GL_UNSIGNED_INT)
+				{
+					return false;
+				}
+				break;
+			default:
+				return false;
+			}
+			break;
+		case GL_BGRA_EXT:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+			case GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT:
+			case GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT:
+				break;
+			default:
+				return false;
+			}
+			break;
+		case GL_RG_EXT:
+		case GL_RED_EXT:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				break;
+			default:
+				return false;
+			}
+			break;
+
+		default:
+			return false;
+		}
+		return true;
+	}
+
 	bool IsDepthTexture(GLenum format)
 	{
 		return format == GL_DEPTH_COMPONENT ||
-		       format == GL_DEPTH_STENCIL_OES;
+		       format == GL_DEPTH_STENCIL_OES ||
+		       format == GL_DEPTH_STENCIL_OES ||
+		       format == GL_DEPTH_COMPONENT16 ||
+		       format == GL_DEPTH_COMPONENT32_OES ||
+		       format == GL_DEPTH_COMPONENT32F ||
+		       format == GL_DEPTH24_STENCIL8 ||
+		       format == GL_DEPTH32F_STENCIL8;
 	}
 
 	bool IsStencilTexture(GLenum format)
 	{
 		return format == GL_STENCIL_INDEX_OES ||
-		       format == GL_DEPTH_STENCIL_OES;
+		       format == GL_DEPTH_STENCIL_OES ||
+		       format == GL_STENCIL_INDEX8 ||
+		       format == GL_DEPTH24_STENCIL8 ||
+		       format == GL_DEPTH32F_STENCIL8;
 	}
 
 	bool IsCubemapTextureTarget(GLenum target)
@@ -567,8 +864,18 @@ namespace es2
 		case GL_RGB565:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
+		case GL_R16F:
+		case GL_RG16F:
+		case GL_R11F_G11F_B10F:
+		case GL_RGB16F:
+		case GL_RGBA16F:
+		case GL_R32F:
+		case GL_RG32F:
+		case GL_RGB32F:
+		case GL_RGBA32F:
 			return true;
 		case GL_DEPTH_COMPONENT24:
+		case GL_DEPTH_COMPONENT32_OES:
 		case GL_DEPTH_COMPONENT32F:
 		case GL_DEPTH32F_STENCIL8:
 		case GL_DEPTH_COMPONENT16:
@@ -587,6 +894,7 @@ namespace es2
 		switch(internalformat)
 		{
 		case GL_DEPTH_COMPONENT24:
+		case GL_DEPTH_COMPONENT32_OES:
 		case GL_DEPTH_COMPONENT32F:
 		case GL_DEPTH32F_STENCIL8:
 		case GL_DEPTH_COMPONENT16:
@@ -621,6 +929,15 @@ namespace es2
 		case GL_RGB565:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
+		case GL_R16F:
+		case GL_RG16F:
+		case GL_R11F_G11F_B10F:
+		case GL_RGB16F:
+		case GL_RGBA16F:
+		case GL_R32F:
+		case GL_RG32F:
+		case GL_RGB32F:
+		case GL_RGBA32F:
 			return false;
 		default:
 			UNIMPLEMENTED();
@@ -665,8 +982,18 @@ namespace es2
 		case GL_RGB565:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
+		case GL_R16F:
+		case GL_RG16F:
+		case GL_R11F_G11F_B10F:
+		case GL_RGB16F:
+		case GL_RGBA16F:
+		case GL_R32F:
+		case GL_RG32F:
+		case GL_RGB32F:
+		case GL_RGBA32F:
 		case GL_DEPTH_COMPONENT16:
 		case GL_DEPTH_COMPONENT24:
+		case GL_DEPTH_COMPONENT32_OES:
 		case GL_DEPTH_COMPONENT32F:
 			return false;
 		default:
@@ -822,6 +1149,36 @@ namespace es2sw
 		return sw::ADDRESSING_WRAP;
 	}
 
+	sw::CompareFunc ConvertCompareFunc(GLenum compareFunc)
+	{
+		switch(compareFunc)
+		{
+		case GL_LEQUAL:   return sw::COMPARE_FUNC_LEQUAL;
+		case GL_GEQUAL:   return sw::COMPARE_FUNC_GEQUAL;
+		case GL_LESS:     return sw::COMPARE_FUNC_LESS;
+		case GL_GREATER:  return sw::COMPARE_FUNC_GREATER;
+		case GL_EQUAL:    return sw::COMPARE_FUNC_EQUAL;
+		case GL_NOTEQUAL: return sw::COMPARE_FUNC_NOTEQUAL;
+		case GL_ALWAYS:   return sw::COMPARE_FUNC_ALWAYS;
+		case GL_NEVER:    return sw::COMPARE_FUNC_NEVER;
+		default: UNREACHABLE(compareFunc);
+		}
+
+		return sw::COMPARE_FUNC_LEQUAL;
+	};
+
+	sw::CompareMode ConvertCompareMode(GLenum compareMode)
+	{
+		switch(compareMode)
+		{
+		case GL_COMPARE_REF_TO_TEXTURE: return sw::COMPARE_MODE_REF_TO_TEXTURE;
+		case GL_NONE:                   return sw::COMPARE_MODE_NONE;
+		default: UNREACHABLE(compareMode);
+		}
+
+		return sw::COMPARE_MODE_NONE;
+	};
+
 	sw::SwizzleType ConvertSwizzleType(GLenum swizzleType)
 	{
 		switch(swizzleType)
@@ -965,7 +1322,46 @@ namespace es2sw
 		case GL_DEPTH_COMPONENT16:
 		case GL_STENCIL_INDEX8:       
 		case GL_DEPTH24_STENCIL8_OES: return sw::FORMAT_D24S8;
-		default: UNREACHABLE(format); return sw::FORMAT_A8B8G8R8;
+		case GL_DEPTH_COMPONENT32_OES:return sw::FORMAT_D32;
+		case GL_R8:                   return sw::FORMAT_R8;
+		case GL_RG8:                  return sw::FORMAT_G8R8;
+		case GL_R8I:                  return sw::FORMAT_R8I;
+		case GL_RG8I:                 return sw::FORMAT_G8R8I;
+		case GL_RGB8I:                return sw::FORMAT_X8B8G8R8I;
+		case GL_RGBA8I:               return sw::FORMAT_A8B8G8R8I;
+		case GL_R8UI:                 return sw::FORMAT_R8UI;
+		case GL_RG8UI:                return sw::FORMAT_G8R8UI;
+		case GL_RGB8UI:               return sw::FORMAT_X8B8G8R8UI;
+		case GL_RGBA8UI:              return sw::FORMAT_A8B8G8R8UI;
+		case GL_R16I:                 return sw::FORMAT_R16I;
+		case GL_RG16I:                return sw::FORMAT_G16R16I;
+		case GL_RGB16I:               return sw::FORMAT_X16B16G16R16I;
+		case GL_RGBA16I:              return sw::FORMAT_A16B16G16R16I;
+		case GL_R16UI:                return sw::FORMAT_R16UI;
+		case GL_RG16UI:               return sw::FORMAT_G16R16UI;
+		case GL_RGB16UI:              return sw::FORMAT_X16B16G16R16UI;
+		case GL_RGB10_A2UI:
+		case GL_RGBA16UI:             return sw::FORMAT_A16B16G16R16UI;
+		case GL_R32I:                 return sw::FORMAT_R32I;
+		case GL_RG32I:                return sw::FORMAT_G32R32I;
+		case GL_RGB32I:               return sw::FORMAT_X32B32G32R32I;
+		case GL_RGBA32I:              return sw::FORMAT_A32B32G32R32I;
+		case GL_R32UI:                return sw::FORMAT_R32UI;
+		case GL_RG32UI:               return sw::FORMAT_G32R32UI;
+		case GL_RGB32UI:              return sw::FORMAT_X32B32G32R32UI;
+		case GL_RGBA32UI:             return sw::FORMAT_A32B32G32R32UI;
+		case GL_R16F:                 return sw::FORMAT_R16F;
+		case GL_RG16F:                return sw::FORMAT_G16R16F;
+		case GL_R11F_G11F_B10F:
+		case GL_RGB16F:               return sw::FORMAT_B16G16R16F;
+		case GL_RGBA16F:              return sw::FORMAT_A16B16G16R16F;
+		case GL_R32F:                 return sw::FORMAT_R32F;
+		case GL_RG32F:                return sw::FORMAT_G32R32F;
+		case GL_RGB32F:               return sw::FORMAT_B32G32R32F;
+		case GL_RGBA32F:              return sw::FORMAT_A32B32G32R32F;
+		case GL_RGB10_A2:             return sw::FORMAT_A2B10G10R10;
+		case GL_SRGB8_ALPHA8:         // FIXME: Implement SRGB
+		default: UNREACHABLE(format); return sw::FORMAT_NULL;
 		}
 	}
 }
@@ -1002,14 +1398,23 @@ namespace sw2es
 		switch(colorFormat)
 		{
 		case sw::FORMAT_A16B16G16R16F:
+		case sw::FORMAT_A16B16G16R16I:
+		case sw::FORMAT_A16B16G16R16UI:
 			return 16;
 		case sw::FORMAT_A32B32G32R32F:
+		case sw::FORMAT_A32B32G32R32I:
+		case sw::FORMAT_A32B32G32R32UI:
 			return 32;
 		case sw::FORMAT_A2R10G10B10:
 			return 2;
 		case sw::FORMAT_A8R8G8B8:
 		case sw::FORMAT_A8B8G8R8:
+		case sw::FORMAT_A8B8G8R8I:
+		case sw::FORMAT_A8B8G8R8UI:
+		case sw::FORMAT_A8B8G8R8I_SNORM:
 			return 8;
+		case sw::FORMAT_A2B10G10R10:
+			return 2;
 		case sw::FORMAT_A1R5G5B5:
 			return 1;
 		case sw::FORMAT_X8R8G8B8:
@@ -1025,16 +1430,53 @@ namespace sw2es
 	{
 		switch(colorFormat)
 		{
+		case sw::FORMAT_R16F:
+		case sw::FORMAT_G16R16F:
+		case sw::FORMAT_B16G16R16F:
 		case sw::FORMAT_A16B16G16R16F:
+		case sw::FORMAT_R16I:
+		case sw::FORMAT_G16R16I:
+		case sw::FORMAT_X16B16G16R16I:
+		case sw::FORMAT_A16B16G16R16I:
+		case sw::FORMAT_R16UI:
+		case sw::FORMAT_G16R16UI:
+		case sw::FORMAT_X16B16G16R16UI:
+		case sw::FORMAT_A16B16G16R16UI:
 			return 16;
+		case sw::FORMAT_R32F:
+		case sw::FORMAT_G32R32F:
+		case sw::FORMAT_B32G32R32F:
 		case sw::FORMAT_A32B32G32R32F:
+		case sw::FORMAT_R32I:
+		case sw::FORMAT_G32R32I:
+		case sw::FORMAT_X32B32G32R32I:
+		case sw::FORMAT_A32B32G32R32I:
+		case sw::FORMAT_R32UI:
+		case sw::FORMAT_G32R32UI:
+		case sw::FORMAT_X32B32G32R32UI:
+		case sw::FORMAT_A32B32G32R32UI:
 			return 32;
+		case sw::FORMAT_A2B10G10R10:
 		case sw::FORMAT_A2R10G10B10:
 			return 10;
 		case sw::FORMAT_A8R8G8B8:
 		case sw::FORMAT_A8B8G8R8:
 		case sw::FORMAT_X8R8G8B8:
 		case sw::FORMAT_X8B8G8R8:
+		case sw::FORMAT_R8:
+		case sw::FORMAT_G8R8:
+		case sw::FORMAT_R8I:
+		case sw::FORMAT_G8R8I:
+		case sw::FORMAT_X8B8G8R8I:
+		case sw::FORMAT_A8B8G8R8I:
+		case sw::FORMAT_R8UI:
+		case sw::FORMAT_G8R8UI:
+		case sw::FORMAT_X8B8G8R8UI:
+		case sw::FORMAT_A8B8G8R8UI:
+		case sw::FORMAT_R8I_SNORM:
+		case sw::FORMAT_G8R8I_SNORM:
+		case sw::FORMAT_X8B8G8R8I_SNORM:
+		case sw::FORMAT_A8B8G8R8I_SNORM:
 			return 8;
 		case sw::FORMAT_A1R5G5B5:
 		case sw::FORMAT_R5G6B5:
@@ -1048,16 +1490,43 @@ namespace sw2es
 	{
 		switch(colorFormat)
 		{
+		case sw::FORMAT_G16R16F:
+		case sw::FORMAT_B16G16R16F:
 		case sw::FORMAT_A16B16G16R16F:
+		case sw::FORMAT_G16R16I:
+		case sw::FORMAT_X16B16G16R16I:
+		case sw::FORMAT_A16B16G16R16I:
+		case sw::FORMAT_G16R16UI:
+		case sw::FORMAT_X16B16G16R16UI:
+		case sw::FORMAT_A16B16G16R16UI:
 			return 16;
+		case sw::FORMAT_G32R32F:
+		case sw::FORMAT_B32G32R32F:
 		case sw::FORMAT_A32B32G32R32F:
+		case sw::FORMAT_G32R32I:
+		case sw::FORMAT_X32B32G32R32I:
+		case sw::FORMAT_A32B32G32R32I:
+		case sw::FORMAT_G32R32UI:
+		case sw::FORMAT_X32B32G32R32UI:
+		case sw::FORMAT_A32B32G32R32UI:
 			return 32;
+		case sw::FORMAT_A2B10G10R10:
 		case sw::FORMAT_A2R10G10B10:
 			return 10;
 		case sw::FORMAT_A8R8G8B8:
 		case sw::FORMAT_A8B8G8R8:
 		case sw::FORMAT_X8R8G8B8:
 		case sw::FORMAT_X8B8G8R8:
+		case sw::FORMAT_G8R8:
+		case sw::FORMAT_G8R8I:
+		case sw::FORMAT_X8B8G8R8I:
+		case sw::FORMAT_A8B8G8R8I:
+		case sw::FORMAT_G8R8UI:
+		case sw::FORMAT_X8B8G8R8UI:
+		case sw::FORMAT_A8B8G8R8UI:
+		case sw::FORMAT_G8R8I_SNORM:
+		case sw::FORMAT_X8B8G8R8I_SNORM:
+		case sw::FORMAT_A8B8G8R8I_SNORM:
 			return 8;
 		case sw::FORMAT_A1R5G5B5:
 			return 5;
@@ -1072,16 +1541,33 @@ namespace sw2es
 	{
 		switch(colorFormat)
 		{
+		case sw::FORMAT_B16G16R16F:
 		case sw::FORMAT_A16B16G16R16F:
+		case sw::FORMAT_X16B16G16R16I:
+		case sw::FORMAT_A16B16G16R16I:
+		case sw::FORMAT_X16B16G16R16UI:
+		case sw::FORMAT_A16B16G16R16UI:
 			return 16;
+		case sw::FORMAT_B32G32R32F:
 		case sw::FORMAT_A32B32G32R32F:
+		case sw::FORMAT_X32B32G32R32I:
+		case sw::FORMAT_A32B32G32R32I:
+		case sw::FORMAT_X32B32G32R32UI:
+		case sw::FORMAT_A32B32G32R32UI:
 			return 32;
+		case sw::FORMAT_A2B10G10R10:
 		case sw::FORMAT_A2R10G10B10:
 			return 10;
 		case sw::FORMAT_A8R8G8B8:
 		case sw::FORMAT_A8B8G8R8:
 		case sw::FORMAT_X8R8G8B8:
 		case sw::FORMAT_X8B8G8R8:
+		case sw::FORMAT_X8B8G8R8I:
+		case sw::FORMAT_A8B8G8R8I:
+		case sw::FORMAT_X8B8G8R8UI:
+		case sw::FORMAT_A8B8G8R8UI:
+		case sw::FORMAT_X8B8G8R8I_SNORM:
+		case sw::FORMAT_A8B8G8R8I_SNORM:
 			return 8;
 		case sw::FORMAT_A1R5G5B5:
 		case sw::FORMAT_R5G6B5:
@@ -1134,9 +1620,44 @@ namespace sw2es
 		case GL_COLOR_ATTACHMENT15:
 			switch(format)
 			{
+			case sw::FORMAT_R8I:
+			case sw::FORMAT_G8R8I:
+			case sw::FORMAT_X8B8G8R8I:
+			case sw::FORMAT_A8B8G8R8I:
+			case sw::FORMAT_R16I:
+			case sw::FORMAT_G16R16I:
+			case sw::FORMAT_X16B16G16R16I:
+			case sw::FORMAT_A16B16G16R16I:
+			case sw::FORMAT_R32I:
+			case sw::FORMAT_G32R32I:
+			case sw::FORMAT_X32B32G32R32I:
+			case sw::FORMAT_A32B32G32R32I:
+				return GL_INT;
+			case sw::FORMAT_R8UI:
+			case sw::FORMAT_G8R8UI:
+			case sw::FORMAT_X8B8G8R8UI:
+			case sw::FORMAT_A8B8G8R8UI:
+			case sw::FORMAT_R16UI:
+			case sw::FORMAT_G16R16UI:
+			case sw::FORMAT_X16B16G16R16UI:
+			case sw::FORMAT_A16B16G16R16UI:
+			case sw::FORMAT_R32UI:
+			case sw::FORMAT_G32R32UI:
+			case sw::FORMAT_X32B32G32R32UI:
+			case sw::FORMAT_A32B32G32R32UI:
+				return GL_UNSIGNED_INT;
+			case sw::FORMAT_R16F:
+			case sw::FORMAT_G16R16F:
+			case sw::FORMAT_B16G16R16F:
 			case sw::FORMAT_A16B16G16R16F:
+			case sw::FORMAT_R32F:
+			case sw::FORMAT_G32R32F:
+			case sw::FORMAT_B32G32R32F:
 			case sw::FORMAT_A32B32G32R32F:
 				return GL_FLOAT;
+			case sw::FORMAT_R8:
+			case sw::FORMAT_G8R8:
+			case sw::FORMAT_A2B10G10R10:
 			case sw::FORMAT_A2R10G10B10:
 			case sw::FORMAT_A8R8G8B8:
 			case sw::FORMAT_A8B8G8R8:
@@ -1145,6 +1666,11 @@ namespace sw2es
 			case sw::FORMAT_A1R5G5B5:
 			case sw::FORMAT_R5G6B5:
 				return GL_UNSIGNED_NORMALIZED;
+			case sw::FORMAT_R8I_SNORM:
+			case sw::FORMAT_X8B8G8R8I_SNORM:
+			case sw::FORMAT_A8B8G8R8I_SNORM:
+			case sw::FORMAT_G8R8I_SNORM:
+				return GL_SIGNED_NORMALIZED;
 			default:
 				UNREACHABLE(format);
 				return 0;
