@@ -342,7 +342,7 @@ namespace sw
 				r.current.z &= Short4(0xF800u);
 			}
 
-			fogBlend(r, r.current, fog, r.z[0], r.rhw);
+			fogBlend(r, r.current, fog);
 
 			for(unsigned int q = 0; q < state.multiSample; q++)
 			{
@@ -361,7 +361,7 @@ namespace sw
 		case FORMAT_G32R32F:
 		case FORMAT_A32B32G32R32F:
 			convertSigned12(oC, r.current);
-			PixelRoutine::fogBlend(r, oC, fog, r.z[0], r.rhw);
+			PixelRoutine::fogBlend(r, oC, fog);
 
 			for(unsigned int q = 0; q < state.multiSample; q++)
 			{
@@ -1174,7 +1174,7 @@ namespace sw
 		}
 	}
 
-	void PixelPipeline::fogBlend(Registers &r, Vector4s &current, Float4 &f, Float4 &z, Float4 &rhw)
+	void PixelPipeline::fogBlend(Registers &r, Vector4s &current, Float4 &f)
 	{
 		if(!state.fogActive)
 		{
@@ -1183,7 +1183,7 @@ namespace sw
 
 		if(state.pixelFogMode != FOG_NONE)
 		{
-			pixelFog(r, f, z, rhw);
+			pixelFog(r, f);
 		}
 
 		UShort4 fog = convertFixed16(f, true);

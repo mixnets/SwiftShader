@@ -2432,7 +2432,6 @@ void GenerateMipmap(GLenum target)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}
@@ -3154,11 +3153,6 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 		case GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE:
 			if(clientVersion >= 3)
 			{
-				if(attachment == GL_DEPTH_STENCIL_ATTACHMENT)
-				{
-					return error(GL_INVALID_OPERATION);
-				}
-
 				*params = sw2es::GetComponentType(renderbuffer->getInternalFormat(), attachment);
 			}
 			else return error(GL_INVALID_ENUM);
@@ -3582,9 +3576,9 @@ void GetShaderPrecisionFormat(GLenum shadertype, GLenum precisiontype, GLint* ra
 	case GL_LOW_INT:
 	case GL_MEDIUM_INT:
 	case GL_HIGH_INT:
-		// Single-precision floating-point numbers can accurately represent integers up to +/-16777216
-		range[0] = 24;
-		range[1] = 24;
+		// Full integer precision is supported
+		range[0] = 31;
+		range[1] = 31;
 		*precision = 0;
 		break;
 	default:
@@ -3681,7 +3675,6 @@ void GetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}
@@ -3828,7 +3821,6 @@ void GetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}
@@ -4155,7 +4147,7 @@ void GetVertexAttribfv(GLuint index, GLenum pname, GLfloat* params)
 				const VertexAttribute& attrib = context->getCurrentVertexAttributes()[index];
 				for(int i = 0; i < 4; ++i)
 				{
-					params[i] = attrib.getCurrentValue(i);
+					params[i] = attrib.getCurrentValueF(i);
 				}
 			}
 			break;
@@ -4228,7 +4220,7 @@ void GetVertexAttribiv(GLuint index, GLenum pname, GLint* params)
 				const VertexAttribute& attrib = context->getCurrentVertexAttributes()[index];
 				for(int i = 0; i < 4; ++i)
 				{
-					float currentValue = attrib.getCurrentValue(i);
+					float currentValue = attrib.getCurrentValueF(i);
 					params[i] = (GLint)(currentValue > 0.0f ? floor(currentValue + 0.5f) : ceil(currentValue - 0.5f));
 				}
 			}
@@ -4666,6 +4658,9 @@ void PixelStorei(GLenum pname, GLint param)
 				break;
 			}
 			else return error(GL_INVALID_ENUM);
+		// FIXME: these cases are missing	
+		//case GL_PACK_IMAGE_HEIGHT:
+		//case GL_PACK_SKIP_IMAGES:
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -5934,7 +5929,6 @@ void TexParameterf(GLenum target, GLenum pname, GLfloat param)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}
@@ -6090,7 +6084,6 @@ void TexParameteri(GLenum target, GLenum pname, GLint param)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}

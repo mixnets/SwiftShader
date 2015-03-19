@@ -146,12 +146,31 @@ namespace sw
 			case Shader::OPCODE_DCL:                                                       break;
 			case Shader::OPCODE_NOP:                                                       break;
 			case Shader::OPCODE_MOV:        mov(d, s0);                                    break;
+			case Shader::OPCODE_NEG:        neg(d, s0);                                    break;
+			case Shader::OPCODE_NEGI:       negi(d, s0);                                   break;
+			case Shader::OPCODE_NEGU:       negu(d, s0);                                   break;
 			case Shader::OPCODE_F2B:        f2b(d, s0);                                    break;
 			case Shader::OPCODE_B2F:        b2f(d, s0);                                    break;
+			case Shader::OPCODE_F2I:        f2i(d, s0);                                    break;
+			case Shader::OPCODE_I2F:        i2f(d, s0);                                    break;
+			case Shader::OPCODE_F2U:        f2u(d, s0);                                    break;
+			case Shader::OPCODE_U2F:        u2f(d, s0);                                    break;
+			case Shader::OPCODE_I2B:        i2b(d, s0);                                    break;
+			case Shader::OPCODE_B2I:        b2i(d, s0);                                    break;
+			case Shader::OPCODE_U2B:        u2b(d, s0);                                    break;
+			case Shader::OPCODE_B2U:        b2u(d, s0);                                    break;
 			case Shader::OPCODE_ADD:        add(d, s0, s1);                                break;
+			case Shader::OPCODE_ADDI:       addi(d, s0, s1);                               break;
+			case Shader::OPCODE_ADDU:       addu(d, s0, s1);                               break;
 			case Shader::OPCODE_SUB:        sub(d, s0, s1);                                break;
+			case Shader::OPCODE_SUBI:       subi(d, s0, s1);                               break;
+			case Shader::OPCODE_SUBU:       subu(d, s0, s1);                               break;
 			case Shader::OPCODE_MUL:        mul(d, s0, s1);                                break;
+			case Shader::OPCODE_MULI:       muli(d, s0, s1);                               break;
+			case Shader::OPCODE_MULU:       mulu(d, s0, s1);                               break;
 			case Shader::OPCODE_MAD:        mad(d, s0, s1, s2);                            break;
+			case Shader::OPCODE_MADI:       madi(d, s0, s1, s2);                           break;
+			case Shader::OPCODE_MADU:       madu(d, s0, s1, s2);                           break;
 			case Shader::OPCODE_DP1:        dp1(d, s0, s1);                                break;
 			case Shader::OPCODE_DP2:        dp2(d, s0, s1);                                break;
 			case Shader::OPCODE_DP2ADD:     dp2add(d, s0, s1, s2);                         break;
@@ -159,6 +178,7 @@ namespace sw
 			case Shader::OPCODE_DP4:        dp4(d, s0, s1);                                break;
 			case Shader::OPCODE_CMP0:       cmp0(d, s0, s1, s2);                           break;
 			case Shader::OPCODE_ICMP:       icmp(d, s0, s1, control);                      break;
+			case Shader::OPCODE_UCMP:       ucmp(d, s0, s1, control);                      break;
 			case Shader::OPCODE_SELECT:     select(d, s0, s1, s2);                         break;
 			case Shader::OPCODE_EXTRACT:    extract(d.x, s0, s1.x);                        break;
 			case Shader::OPCODE_INSERT:     insert(d, s0, s1.x, s2.x);                     break;
@@ -176,7 +196,15 @@ namespace sw
 			case Shader::OPCODE_LOG:        log(d, s0, pp);                                break;
 			case Shader::OPCODE_RCPX:       rcpx(d, s0, pp);                               break;
 			case Shader::OPCODE_DIV:        div(d, s0, s1);                                break;
+			case Shader::OPCODE_DIVI:       divi(d, s0, s1);                               break;
+			case Shader::OPCODE_DIVU:       divu(d, s0, s1);                               break;
 			case Shader::OPCODE_MOD:        mod(d, s0, s1);                                break;
+			case Shader::OPCODE_MODI:       modi(d, s0, s1);                               break;
+			case Shader::OPCODE_MODU:       modu(d, s0, s1);                               break;
+			case Shader::OPCODE_LSI:        lsi(d, s0, s1);                                break;
+			case Shader::OPCODE_LSU:        lsu(d, s0, s1);                                break;
+			case Shader::OPCODE_RSI:        rsi(d, s0, s1);                                break;
+			case Shader::OPCODE_RSU:        rsu(d, s0, s1);                                break;
 			case Shader::OPCODE_RSQX:       rsqx(d, s0, pp);                               break;
 			case Shader::OPCODE_SQRT:       sqrt(d, s0, pp);                               break;
 			case Shader::OPCODE_RSQ:        rsq(d, s0, pp);                                break;
@@ -188,10 +216,18 @@ namespace sw
 			case Shader::OPCODE_DIST3:      dist3(d.x, s0, s1, pp);                        break;
 			case Shader::OPCODE_DIST4:      dist4(d.x, s0, s1, pp);                        break;
 			case Shader::OPCODE_MIN:        min(d, s0, s1);                                break;
+			case Shader::OPCODE_MINI:       mini(d, s0, s1);                               break;
+			case Shader::OPCODE_MINU:       minu(d, s0, s1);                               break;
 			case Shader::OPCODE_MAX:        max(d, s0, s1);                                break;
+			case Shader::OPCODE_MAXI:       maxi(d, s0, s1);                               break;
+			case Shader::OPCODE_MAXU:       maxu(d, s0, s1);                               break;
 			case Shader::OPCODE_LRP:        lrp(d, s0, s1, s2);                            break;
 			case Shader::OPCODE_STEP:       step(d, s0, s1);                               break;
 			case Shader::OPCODE_SMOOTH:     smooth(d, s0, s1, s2);                         break;
+			case Shader::OPCODE_FLOATBITSTOINT:
+			case Shader::OPCODE_FLOATBITSTOUINT:
+			case Shader::OPCODE_INTBITSTOFLOAT:
+			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                                   break;
 			case Shader::OPCODE_POWX:       powx(d, s0, s1, pp);                           break;
 			case Shader::OPCODE_POW:        pow(d, s0, s1, pp);                            break;
 			case Shader::OPCODE_SGN:        sgn(d, s0);                                    break;
@@ -234,6 +270,7 @@ namespace sw
 			case Shader::OPCODE_TEX:        TEXLD(r, d, s0, src1, project, bias);          break;
 			case Shader::OPCODE_TEXLDD:     TEXLDD(r, d, s0, src1, s2, s3, project, bias); break;
 			case Shader::OPCODE_TEXLDL:     TEXLDL(r, d, s0, src1, project, bias);         break;
+			case Shader::OPCODE_TEXSIZE:    TEXSIZE(r, d, s0.x, src1);                     break;
 			case Shader::OPCODE_TEXKILL:    TEXKILL(cMask, d, dst.mask);                   break;
 			case Shader::OPCODE_DISCARD:    DISCARD(r, cMask, instruction);                break;
 			case Shader::OPCODE_DFDX:       DFDX(d, s0);                                   break;
@@ -263,9 +300,9 @@ namespace sw
 			case Shader::OPCODE_ALL:        all(d.x, s0);                                  break;
 			case Shader::OPCODE_ANY:        any(d.x, s0);                                  break;
 			case Shader::OPCODE_NOT:        not(d, s0);                                    break;
-			case Shader::OPCODE_OR:         or(d.x, s0.x, s1.x);                           break;
-			case Shader::OPCODE_XOR:        xor(d.x, s0.x, s1.x);                          break;
-			case Shader::OPCODE_AND:        and(d.x, s0.x, s1.x);                          break;
+			case Shader::OPCODE_OR:         or(d, s0, s1);                                 break;
+			case Shader::OPCODE_XOR:        xor(d, s0, s1);                                break;
+			case Shader::OPCODE_AND:        and(d, s0, s1);                                break;
 			case Shader::OPCODE_END:                                                       break;
 			default:
 				ASSERT(false);
@@ -507,7 +544,7 @@ namespace sw
 
 			if(index == 0)
 			{
-				fogBlend(r, r.oC[index], fog, r.z[0], r.rhw);
+				fogBlend(r, r.oC[index], fog);
 			}
 
 			switch(state.targetFormat[index])
@@ -728,7 +765,7 @@ namespace sw
 			}
 			else if(src.rel.type == Shader::PARAMETER_TEMP)
 			{
-				reg.x = As<Float4>(Int4(i) + RoundInt(r.rf[src.rel.index].x));
+				reg.x = As<Float4>(Int4(i) + As<Int4>(r.rf[src.rel.index].x));
 			}
 			return reg;
 		case Shader::PARAMETER_PREDICATE:   return reg; // Dummy
@@ -866,21 +903,21 @@ namespace sw
 
 		if(var.rel.type == Shader::PARAMETER_TEMP)
 		{
-			return RoundInt(Extract(r.rf[var.rel.index].x, 0)) * var.rel.scale;
+			return As<Int>(Extract(r.rf[var.rel.index].x, 0)) * var.rel.scale;
 		}
 		else if(var.rel.type == Shader::PARAMETER_INPUT)
 		{
-			return RoundInt(Extract(r.vf[var.rel.index].x, 0)) * var.rel.scale;
+			return As<Int>(Extract(r.vf[var.rel.index].x, 0)) * var.rel.scale;
 		}
 		else if(var.rel.type == Shader::PARAMETER_OUTPUT)
 		{
-			return RoundInt(Extract(r.oC[var.rel.index].x, 0)) * var.rel.scale;
+			return As<Int>(Extract(r.oC[var.rel.index].x, 0)) * var.rel.scale;
 		}
 		else if(var.rel.type == Shader::PARAMETER_CONST)
 		{
-			RValue<Float4> c = *Pointer<Float4>(r.data + OFFSET(DrawData, ps.c[var.rel.index]));
+			RValue<Int4> c = *Pointer<Int4>(r.data + OFFSET(DrawData, ps.c[var.rel.index]));
 
-			return RoundInt(Extract(c, 0)) * var.rel.scale;
+			return Extract(c, 0) * var.rel.scale;
 		}
 		else ASSERT(false);
 
@@ -983,6 +1020,13 @@ namespace sw
 		dst.y = tmp[(src1.swizzle >> 2) & 0x3];
 		dst.z = tmp[(src1.swizzle >> 4) & 0x3];
 		dst.w = tmp[(src1.swizzle >> 6) & 0x3];
+	}
+
+	void PixelProgram::TEXSIZE(Registers &r, Vector4f &dst, Float4 &lod, const Src &src1)
+	{
+		Pointer<Byte> mipmap = r.data + OFFSET(DrawData, mipmap) + src1.index * sizeof(Texture)+OFFSET(Texture, mipmap);
+		dst.x = Float4(*Pointer<Short4>(mipmap + OFFSET(Mipmap, width)));
+		dst.y = Float4(*Pointer<Short4>(mipmap + OFFSET(Mipmap, height)));
 	}
 
 	void PixelProgram::TEXKILL(Int cMask[4], Vector4f &src, unsigned char mask)

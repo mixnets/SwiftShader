@@ -133,6 +133,8 @@ namespace sw
 			case Shader::OPCODE_NOP:										break;
 			case Shader::OPCODE_ABS:		abs(d, s0);						break;
 			case Shader::OPCODE_ADD:		add(d, s0, s1);					break;
+			case Shader::OPCODE_ADDI:       addi(d, s0, s1);                break;
+			case Shader::OPCODE_ADDU:       addu(d, s0, s1);                break;
 			case Shader::OPCODE_CRS:		crs(d, s0, s1);					break;
 			case Shader::OPCODE_FORWARD1:	forward1(d, s0, s1, s2);		break;
 			case Shader::OPCODE_FORWARD2:	forward2(d, s0, s1, s2);		break;
@@ -169,19 +171,48 @@ namespace sw
 			case Shader::OPCODE_LRP:		lrp(d, s0, s1, s2);				break;
 			case Shader::OPCODE_STEP:		step(d, s0, s1);				break;
 			case Shader::OPCODE_SMOOTH:		smooth(d, s0, s1, s2);			break;
+			case Shader::OPCODE_FLOATBITSTOINT:
+			case Shader::OPCODE_FLOATBITSTOUINT:
+			case Shader::OPCODE_INTBITSTOFLOAT:
+			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                    break;
+//			case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d.x, s0);	break;
+//			case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d.x, s0);	break;
+//			case Shader::OPCODE_PACKHALF2x16:	 packHalf2x16(d.x, s0);		break;
+//			case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0.x));	break;
+//			case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0.x));	break;
+//			case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0.x));	break;
 			case Shader::OPCODE_M3X2:		M3X2(r, d, s0, src1);			break;
 			case Shader::OPCODE_M3X3:		M3X3(r, d, s0, src1);			break;
 			case Shader::OPCODE_M3X4:		M3X4(r, d, s0, src1);			break;
 			case Shader::OPCODE_M4X3:		M4X3(r, d, s0, src1);			break;
 			case Shader::OPCODE_M4X4:		M4X4(r, d, s0, src1);			break;
 			case Shader::OPCODE_MAD:		mad(d, s0, s1, s2);				break;
+			case Shader::OPCODE_MADI:		madi(d, s0, s1, s2);			break;
+			case Shader::OPCODE_MADU:		madu(d, s0, s1, s2);			break;
 			case Shader::OPCODE_MAX:		max(d, s0, s1);					break;
+			case Shader::OPCODE_MAXI:       maxi(d, s0, s1);                break;
+			case Shader::OPCODE_MAXU:       maxu(d, s0, s1);                break;
 			case Shader::OPCODE_MIN:		min(d, s0, s1);					break;
+			case Shader::OPCODE_MINI:       mini(d, s0, s1);                break;
+			case Shader::OPCODE_MINU:       minu(d, s0, s1);                break;
 			case Shader::OPCODE_MOV:		mov(d, s0, integer);			break;
 			case Shader::OPCODE_MOVA:		mov(d, s0);						break;
+			case Shader::OPCODE_NEG:        neg(d, s0);                     break;
+			case Shader::OPCODE_NEGI:       negi(d, s0);                    break;
+			case Shader::OPCODE_NEGU:       negu(d, s0);                    break;
 			case Shader::OPCODE_F2B:		f2b(d, s0);						break;
 			case Shader::OPCODE_B2F:		b2f(d, s0);						break;
+			case Shader::OPCODE_F2I:        f2i(d, s0);                     break;
+			case Shader::OPCODE_I2F:        i2f(d, s0);                     break;
+			case Shader::OPCODE_F2U:        f2u(d, s0);                     break;
+			case Shader::OPCODE_U2F:        u2f(d, s0);                     break;
+			case Shader::OPCODE_I2B:        i2b(d, s0);                     break;
+			case Shader::OPCODE_B2I:        b2i(d, s0);                     break;
+			case Shader::OPCODE_U2B:        u2b(d, s0);                     break;
+			case Shader::OPCODE_B2U:        b2u(d, s0);                     break;
 			case Shader::OPCODE_MUL:		mul(d, s0, s1);					break;
+			case Shader::OPCODE_MULI:       muli(d, s0, s1);                break;
+			case Shader::OPCODE_MULU:       mulu(d, s0, s1);                break;
 			case Shader::OPCODE_NRM2:		nrm2(d, s0, pp);				break;
 			case Shader::OPCODE_NRM3:		nrm3(d, s0, pp);				break;
 			case Shader::OPCODE_NRM4:		nrm4(d, s0, pp);				break;
@@ -189,7 +220,15 @@ namespace sw
 			case Shader::OPCODE_POW:		pow(d, s0, s1, pp);				break;
 			case Shader::OPCODE_RCPX:		rcpx(d, s0, pp);				break;
 			case Shader::OPCODE_DIV:		div(d, s0, s1);					break;
+			case Shader::OPCODE_DIVI:       divi(d, s0, s1);                break;
+			case Shader::OPCODE_DIVU:       divu(d, s0, s1);                break;
 			case Shader::OPCODE_MOD:		mod(d, s0, s1);					break;
+			case Shader::OPCODE_MODI:       modi(d, s0, s1);                break;
+			case Shader::OPCODE_MODU:       modu(d, s0, s1);                break;
+			case Shader::OPCODE_LSI:        lsi(d, s0, s1);                 break;
+			case Shader::OPCODE_LSU:        lsu(d, s0, s1);                 break;
+			case Shader::OPCODE_RSI:        rsi(d, s0, s1);                 break;
+			case Shader::OPCODE_RSU:        rsu(d, s0, s1);                 break;
 			case Shader::OPCODE_RSQX:		rsqx(d, s0, pp);				break;
 			case Shader::OPCODE_SQRT:		sqrt(d, s0, pp);				break;
 			case Shader::OPCODE_RSQ:		rsq(d, s0, pp);					break;
@@ -218,6 +257,8 @@ namespace sw
 			case Shader::OPCODE_ATANH:		atanh(d, s0, pp);				break;
 			case Shader::OPCODE_SLT:		slt(d, s0, s1);					break;
 			case Shader::OPCODE_SUB:		sub(d, s0, s1);					break;
+			case Shader::OPCODE_SUBI:       subi(d, s0, s1);                break;
+			case Shader::OPCODE_SUBU:       subu(d, s0, s1);                break;
 			case Shader::OPCODE_BREAK:		BREAK(r);						break;
 			case Shader::OPCODE_BREAKC:		BREAKC(r, s0, s1, control);		break;
 			case Shader::OPCODE_BREAKP:		BREAKP(r, src0);				break;
@@ -240,17 +281,19 @@ namespace sw
 			case Shader::OPCODE_LEAVE:		LEAVE(r);						break;
 			case Shader::OPCODE_CMP:		cmp(d, s0, s1, control);		break;
 			case Shader::OPCODE_ICMP:		icmp(d, s0, s1, control);		break;
+			case Shader::OPCODE_UCMP:       ucmp(d, s0, s1, control);       break;
 			case Shader::OPCODE_SELECT:		select(d, s0, s1, s2);			break;
 			case Shader::OPCODE_EXTRACT:	extract(d.x, s0, s1.x);			break;
 			case Shader::OPCODE_INSERT:		insert(d, s0, s1.x, s2.x);		break;
 			case Shader::OPCODE_ALL:		all(d.x, s0);					break;
 			case Shader::OPCODE_ANY:		any(d.x, s0);					break;
 			case Shader::OPCODE_NOT:		not(d, s0);						break;
-			case Shader::OPCODE_OR:			or(d.x, s0.x, s1.x);			break;
-			case Shader::OPCODE_XOR:		xor(d.x, s0.x, s1.x);			break;
-			case Shader::OPCODE_AND:		and(d.x, s0.x, s1.x);			break;
+			case Shader::OPCODE_OR:         or(d, s0, s1);                  break;
+			case Shader::OPCODE_XOR:        xor(d, s0, s1);                 break;
+			case Shader::OPCODE_AND:        and(d, s0, s1);                 break;
 			case Shader::OPCODE_TEXLDL:		TEXLDL(r, d, s0, src1);			break;
 			case Shader::OPCODE_TEX:		TEX(r, d, s0, src1);			break;
+			case Shader::OPCODE_TEXSIZE:	TEXSIZE(r, d, s0.x, src1);		break;
 			case Shader::OPCODE_END:										break;
 			default:
 				ASSERT(false);
@@ -648,7 +691,7 @@ namespace sw
 			}
 			else if(src.rel.type == Shader::PARAMETER_TEMP)
 			{
-				reg.x = As<Float4>(Int4(i) + RoundInt(r.r[src.rel.index].x));
+				reg.x = As<Float4>(Int4(i) + As<Int4>(r.r[src.rel.index].x));
 			}
 			return reg;
 		case Shader::PARAMETER_OUTPUT:
@@ -662,7 +705,7 @@ namespace sw
 			}
 			break;
 		case Shader::PARAMETER_MISCTYPE:
-			reg.x = Float(r.instanceID);
+			reg.x = As<Float>(Int(r.instanceID));
 			return reg;
 		default:
 			ASSERT(false);
@@ -789,7 +832,7 @@ namespace sw
 				default: ASSERT(false);
 				}
 
-				Int4 index = Int4(i) + RoundInt(a) * Int4(src.rel.scale);
+				Int4 index = Int4(i) + As<Int4>(a) * Int4(src.rel.scale);
 
 				index = Min(As<UInt4>(index), UInt4(256));   // Clamp to constant register range, c[256] = {0, 0, 0, 0}
 				
@@ -816,21 +859,21 @@ namespace sw
 
 		if(var.rel.type == Shader::PARAMETER_TEMP)
 		{
-			return RoundInt(Extract(r.r[var.rel.index].x, 0)) * var.rel.scale;
+			return As<Int>(Extract(r.r[var.rel.index].x, 0)) * var.rel.scale;
 		}
 		else if(var.rel.type == Shader::PARAMETER_INPUT)
 		{
-			return RoundInt(Extract(r.v[var.rel.index].x, 0)) * var.rel.scale;
+			return As<Int>(Extract(r.v[var.rel.index].x, 0)) * var.rel.scale;
 		}
 		else if(var.rel.type == Shader::PARAMETER_OUTPUT)
 		{
-			return RoundInt(Extract(r.o[var.rel.index].x, 0)) * var.rel.scale;
+			return As<Int>(Extract(r.o[var.rel.index].x, 0)) * var.rel.scale;
 		}
 		else if(var.rel.type == Shader::PARAMETER_CONST)
 		{
-			RValue<Float4> c = *Pointer<Float4>(r.data + OFFSET(DrawData,vs.c[var.rel.index]));
+			RValue<Int4> c = *Pointer<Int4>(r.data + OFFSET(DrawData, vs.c[var.rel.index]));
 
-			return RoundInt(Extract(c, 0)) * var.rel.scale;
+			return Extract(c, 0) * var.rel.scale;
 		}
 		else ASSERT(false);
 
@@ -1447,6 +1490,13 @@ namespace sw
 		dst.y = tmp[(src1.swizzle >> 2) & 0x3];
 		dst.z = tmp[(src1.swizzle >> 4) & 0x3];
 		dst.w = tmp[(src1.swizzle >> 6) & 0x3];
+	}
+
+	void VertexProgram::TEXSIZE(Registers &r, Vector4f &dst, Float4 &lod, const Src &src1)
+	{
+		Pointer<Byte> mipmap = r.data + OFFSET(DrawData,mipmap) + src1.index * sizeof(Texture) + OFFSET(Texture,mipmap);
+		dst.x = Float4(*Pointer<Short4>(mipmap + OFFSET(Mipmap,width)));
+		dst.y = Float4(*Pointer<Short4>(mipmap + OFFSET(Mipmap,height)));
 	}
 
 	void VertexProgram::sampleTexture(Registers &r, Vector4f &c, const Src &s, Float4 &u, Float4 &v, Float4 &w, Float4 &q)

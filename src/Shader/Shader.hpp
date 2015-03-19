@@ -115,6 +115,7 @@ namespace sw
 			OPCODE_CMP,   // D3DSIO_SETP
 			OPCODE_TEXLDL,
 			OPCODE_BREAKP,
+			OPCODE_TEXSIZE,
 
 			OPCODE_PHASE = 0xFFFD,
 			OPCODE_COMMENT = 0xFFFE,
@@ -180,8 +181,17 @@ namespace sw
 			OPCODE_POW,
 			OPCODE_F2B,   // Float to bool
 			OPCODE_B2F,   // Bool to float
+			OPCODE_F2I,   // Float to int
+			OPCODE_I2F,   // Int to float
+			OPCODE_F2U,   // Float to uint
+			OPCODE_U2F,   // Uint to float
+			OPCODE_I2B,   // Int to bool
+			OPCODE_B2I,   // Bool to int
+			OPCODE_U2B,   // Uint to bool
+			OPCODE_B2U,   // Bool to uint
 			OPCODE_ALL,
 			OPCODE_ANY,
+			OPCODE_NEG,
 			OPCODE_NOT,
 			OPCODE_OR,
 			OPCODE_XOR,
@@ -213,6 +223,7 @@ namespace sw
 			OPCODE_REFRACT3,
 			OPCODE_REFRACT4,
 			OPCODE_ICMP,
+			OPCODE_UCMP,
 			OPCODE_SELECT,
 			OPCODE_EXTRACT,
 			OPCODE_INSERT,
@@ -221,6 +232,32 @@ namespace sw
 			OPCODE_LEAVE,   // Return before the end of the function
 			OPCODE_CONTINUE,
 			OPCODE_TEST,   // Marks the end of the code that can be skipped by 'continue'
+
+			// Integer opcodes
+			OPCODE_NEGI,
+			OPCODE_ADDI,
+			OPCODE_SUBI,
+			OPCODE_MULI,
+			OPCODE_DIVI,
+			OPCODE_MADI,
+			OPCODE_MODI,
+			OPCODE_LSI,
+			OPCODE_RSI,
+			OPCODE_MINI,
+			OPCODE_MAXI,
+
+			// Unsigned integer opcodes
+			OPCODE_NEGU,
+			OPCODE_ADDU,
+			OPCODE_SUBU,
+			OPCODE_MULU,
+			OPCODE_DIVU,
+			OPCODE_MADU,
+			OPCODE_MODU,
+			OPCODE_LSU,
+			OPCODE_RSU,
+			OPCODE_MINU,
+			OPCODE_MAXU,
 		};
 
 		static Opcode OPCODE_DP(int);
@@ -398,7 +435,7 @@ namespace sw
 				};
 			};
 
-			DestinationParameter() : mask(0xF), integer(false), saturate(false), partialPrecision(false), centroid(false), shift(0)
+			DestinationParameter() : mask(0xF), integer(false), saturate(false), partialPrecision(false), centroid(false), smooth(true), shift(0)
 			{
 			}
 
@@ -410,6 +447,7 @@ namespace sw
 			bool saturate         : 1;
 			bool partialPrecision : 1;
 			bool centroid         : 1;
+			bool smooth           : 1;
 			signed char shift     : 4;
 		};
 
@@ -524,7 +562,7 @@ namespace sw
 
 		struct Semantic
 		{
-			Semantic(unsigned char usage = 0xFF, unsigned char index = 0xFF) : usage(usage), index(index), centroid(false)
+			Semantic(unsigned char usage = 0xFF, unsigned char index = 0xFF) : usage(usage), index(index), centroid(false), smooth(true)
 			{
 			}
 
@@ -541,6 +579,7 @@ namespace sw
 			unsigned char usage;
 			unsigned char index;
 			bool centroid;
+			bool smooth;
 		};
 
 		void optimize();

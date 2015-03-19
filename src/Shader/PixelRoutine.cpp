@@ -29,7 +29,6 @@ namespace sw
 
 	PixelRoutine::Registers::Registers(const PixelShader *shader) :
 		QuadRasterizer::Registers(),
-		rf(shader && shader->dynamicallyIndexedTemporaries),
 		vf(shader && shader->dynamicallyIndexedInput)
 	{
 		if(!shader || shader->getVersion() < 0x0200 || forceClearRegisters)
@@ -105,7 +104,7 @@ namespace sw
 					x -= *Pointer<Float4>(r.constants + OFFSET(Constants,X) + q * sizeof(float4));
 				}
 
-				z[q] = interpolate(x, r.Dz[q], z[q], r.primitive + OFFSET(Primitive,z), false, false);
+				z[q] = interpolate(x, r.Dz[q], z[q], r.primitive + OFFSET(Primitive,z), false, true, false);
 			}
 		}
 
@@ -152,12 +151,12 @@ namespace sw
 
 			if(interpolateW())
 			{
-				w = interpolate(xxxx, r.Dw, rhw, r.primitive + OFFSET(Primitive,w), false, false);
+				w = interpolate(xxxx, r.Dw, rhw, r.primitive + OFFSET(Primitive,w), false, true, false);
 				rhw = reciprocal(w);
 
 				if(state.centroid)
 				{
-					rhwCentroid = reciprocal(interpolateCentroid(XXXX, YYYY, rhwCentroid, r.primitive + OFFSET(Primitive,w), false, false));
+					rhwCentroid = reciprocal(interpolateCentroid(XXXX, YYYY, rhwCentroid, r.primitive + OFFSET(Primitive,w), false, true, false));
 				}
 			}
 
@@ -169,11 +168,11 @@ namespace sw
 					{
 						if(!state.interpolant[interpolant].centroid)
 						{
-							r.vf[interpolant][component] = interpolate(xxxx, r.Dv[interpolant][component], rhw, r.primitive + OFFSET(Primitive, V[interpolant][component]), (state.interpolant[interpolant].flat & (1 << component)) != 0, state.perspective);
+							r.vf[interpolant][component] = interpolate(xxxx, r.Dv[interpolant][component], rhw, r.primitive + OFFSET(Primitive, V[interpolant][component]), ((state.interpolant[interpolant].flat & (1 << component)) != 0), state.interpolant[interpolant].smooth, state.perspective);
 						}
 						else
 						{
-							r.vf[interpolant][component] = interpolateCentroid(XXXX, YYYY, rhwCentroid, r.primitive + OFFSET(Primitive, V[interpolant][component]), (state.interpolant[interpolant].flat & (1 << component)) != 0, state.perspective);
+							r.vf[interpolant][component] = interpolateCentroid(XXXX, YYYY, rhwCentroid, r.primitive + OFFSET(Primitive, V[interpolant][component]), ((state.interpolant[interpolant].flat & (1 << component)) != 0), state.interpolant[interpolant].smooth, state.perspective);
 						}
 					}
 				}
@@ -204,7 +203,7 @@ namespace sw
 
 			if(state.fog.component)
 			{
-				f = interpolate(xxxx, r.Df, rhw, r.primitive + OFFSET(Primitive,f), state.fog.flat & 0x01, state.perspective);
+				f = interpolate(xxxx, r.Df, rhw, r.primitive + OFFSET(Primitive,f), state.fog.flat & 0x01, state.smooth, state.perspective);
 			}
 
 			setBuiltins(r, x, y, z, w);
@@ -297,7 +296,7 @@ namespace sw
 		#endif
 	}
 
-	Float4 PixelRoutine::interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
+	Float4 PixelRoutine::interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool smooth, bool perspective)
 	{
 		Float4 interpolant = *Pointer<Float4>(planeEquation + OFFSET(PlaneEquation,C), 16);
 
@@ -602,7 +601,7 @@ namespace sw
 		cMask[3] &= aMask3;
 	}
 
-	void PixelRoutine::fogBlend(Registers &r, Vector4f &c0, Float4 &fog, Float4 &z, Float4 &rhw)
+	void PixelRoutine::fogBlend(Registers &r, Vector4f &c0, Float4 &fog)
 	{
 		if(!state.fogActive)
 		{
@@ -611,7 +610,7 @@ namespace sw
 
 		if(state.pixelFogMode != FOG_NONE)
 		{
-			pixelFog(r, fog, z, rhw);
+			pixelFog(r, fog);
 
 			fog = Min(fog, Float4(1.0f));
 			fog = Max(fog, Float4(0.0f));
@@ -630,7 +629,7 @@ namespace sw
 		c0.z += *Pointer<Float4>(r.data + OFFSET(DrawData,fog.colorF[2]));
 	}
 
-	void PixelRoutine::pixelFog(Registers &r, Float4 &visibility, Float4 &z, Float4 &rhw)
+	void PixelRoutine::pixelFog(Registers &r, Float4 &visibility)
 	{
 		Float4 &zw = visibility;
 
@@ -638,17 +637,17 @@ namespace sw
 		{
 			if(state.wBasedFog)
 			{
-				zw = rhw;
+				zw = r.rhw;
 			}
 			else
 			{
 				if(complementaryDepthBuffer)
 				{
-					zw = Float4(1.0f) - z;
+					zw = Float4(1.0f) - r.z[0];
 				}
 				else
 				{
-					zw = z;
+					zw = r.z[0];
 				}
 			}
 		}
