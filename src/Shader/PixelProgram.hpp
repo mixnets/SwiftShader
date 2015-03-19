@@ -38,7 +38,10 @@ namespace sw
 	private:
 		struct Registers : public PixelRoutine::Registers
 		{
-			Registers(const PixelShader *shader) : PixelRoutine::Registers(shader), loopDepth(-1)
+			Registers(const PixelShader *shader) :
+				PixelRoutine::Registers(shader),
+				rf(shader && shader->dynamicallyIndexedTemporaries),
+				loopDepth(-1)
 			{
 				enableStack[0] = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 
@@ -52,6 +55,12 @@ namespace sw
 					enableContinue = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 				}
 			}
+
+			// Computation registers
+			RegisterArray<4096> rf;
+
+			// Color outputs
+			Vector4f oC[4];
 
 			// Shader variables
 			Vector4f vPos;
@@ -100,6 +109,7 @@ namespace sw
 		void TEXLD(Registers &r, Vector4f &dst, Vector4f &src0, const Src &src1, bool project, bool bias);
 		void TEXLDD(Registers &r, Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, Vector4f &src3, bool project, bool bias);
 		void TEXLDL(Registers &r, Vector4f &dst, Vector4f &src0, const Src &src1, bool project, bool bias);
+		void TEXSIZE(Registers &r, Vector4f &dst, Float4 &lod, const Src &src1);
 		void TEXKILL(Int cMask[4], Vector4f &src, unsigned char mask);
 		void DISCARD(Registers &r, Int cMask[4], const Shader::Instruction *instruction);
 		void DFDX(Vector4f &dst, Vector4f &src);
