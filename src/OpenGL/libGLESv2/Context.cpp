@@ -631,7 +631,10 @@ bool Context::isDitherEnabled() const
 
 void Context::setPrimitiveRestartFixedIndex(bool enabled)
 {
-    UNIMPLEMENTED();
+	if(enabled)
+	{
+		UNIMPLEMENTED();
+	}
     mState.primitiveRestartFixedIndex = enabled;
 }
 
@@ -642,7 +645,10 @@ bool Context::isPrimitiveRestartFixedIndexEnabled() const
 
 void Context::setRasterizerDiscard(bool enabled)
 {
-    UNIMPLEMENTED();
+	if(enabled)
+	{
+		UNIMPLEMENTED();
+	}
     mState.rasterizerDiscard = enabled;
 }
 
@@ -2102,7 +2108,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = IMPLEMENTATION_MAX_TEXTURE_SIZE;
 		break;
 	case GL_MAX_COLOR_ATTACHMENTS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_COLOR_ATTACHMENTS;
 		break;
 	case GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS: // integer, at least 50048
@@ -2118,7 +2123,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS;
 		break;
 	case GL_MAX_DRAW_BUFFERS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_DRAW_BUFFERS;
 		break;
 	case GL_MAX_ELEMENT_INDEX:
@@ -2159,7 +2163,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = 64;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS: // integer, at least 4
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS: // integer, at least 4

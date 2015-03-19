@@ -53,7 +53,6 @@ WHICH GENERATES THE GLSL ES PARSER (glslang_tab.cpp AND glslang_tab.h).
 
 %union {
     struct {
-        TSourceLoc line;
         union {
             TString *string;
             float f;
@@ -64,7 +63,6 @@ WHICH GENERATES THE GLSL ES PARSER (glslang_tab.cpp AND glslang_tab.h).
         TSymbol* symbol;
     } lex;
     struct {
-        TSourceLoc line;
         TOperator op;
         union {
             TIntermNode* intermNode;
@@ -91,7 +89,21 @@ WHICH GENERATES THE GLSL ES PARSER (glslang_tab.cpp AND glslang_tab.h).
 extern int yylex(YYSTYPE* yylval, YYLTYPE* yylloc, void* yyscanner);
 extern void yyerror(YYLTYPE* lloc, TParseContext* context, const char* reason);
 
-#define YYLLOC_DEFAULT(Current, Rhs, N) do { (Current) = YYRHSLOC(Rhs, N ? 1 : 0); } while (0)
+#define YYLLOC_DEFAULT(Current, Rhs, N)                      \
+  do {                                                       \
+      if (N) {                                         \
+        (Current).first_file = YYRHSLOC(Rhs, 1).first_file;  \
+        (Current).first_line = YYRHSLOC(Rhs, 1).first_line;  \
+        (Current).last_file = YYRHSLOC(Rhs, N).last_file;    \
+        (Current).last_line = YYRHSLOC(Rhs, N).last_line;    \
+      }                                                      \
+      else {                                                 \
+        (Current).first_file = YYRHSLOC(Rhs, 0).last_file;   \
+        (Current).first_line = YYRHSLOC(Rhs, 0).last_line;   \
+        (Current).last_file = YYRHSLOC(Rhs, 0).last_file;    \
+        (Current).last_line = YYRHSLOC(Rhs, 0).last_line;    \
+      }                                                      \
+  } while (0)
 
 #define FRAG_VERT_ONLY(S, L) {  \
     if (context->getShaderType() != GL_FRAGMENT_SHADER &&  \
@@ -294,7 +306,7 @@ integer_expression
 function_call
     : function_call_or_method {
         bool fatalError = false;
-        $$ = context->addFunctionCallOrMethod($1.function, $1.intermNode, nullptr, @1, &fatalError);
+        $$ = context->addFunctionCallOrMethod($1.function, $1.nodePair.node1, $1.nodePair.node2, @1, &fatalError);
         if (fatalError)
         {
             YYERROR;
@@ -305,48 +317,47 @@ function_call
 function_call_or_method
     : function_call_generic {
         $$ = $1;
+        $$.nodePair.node2 = nullptr;
     }
     | postfix_expression DOT function_call_generic {
-        context->error(@3, "methods are not supported", "");
-        context->recover();
+        ES3_ONLY("", @3, "methods");
         $$ = $3;
+        $$.nodePair.node2 = $1;
     }
     ;
 
 function_call_generic
     : function_call_header_with_parameters RIGHT_PAREN {
         $$ = $1;
-        $$.line = @2;
     }
     | function_call_header_no_parameters RIGHT_PAREN {
         $$ = $1;
-        $$.line = @2;
     }
     ;
 
 function_call_header_no_parameters
     : function_call_header VOID_TYPE {
         $$.function = $1;
-        $$.intermNode = 0;
+        $$.nodePair.node1 = nullptr;
     }
     | function_call_header {
         $$.function = $1;
-        $$.intermNode = 0;
+        $$.nodePair.node1 = nullptr;
     }
     ;
 
 function_call_header_with_parameters
     : function_call_header assignment_expression {
-        TParameter param = { 0, new TType($2->getType()) };
-        $1->addParameter(param);
+        const TType *type = new TType($2->getType());
+        $1->addParameter(TConstParameter(type));
         $$.function = $1;
-        $$.intermNode = $2;
+        $$.nodePair.node1 = $2;
     }
     | function_call_header_with_parameters COMMA assignment_expression {
-        TParameter param = { 0, new TType($3->getType()) };
-        $1.function->addParameter(param);
+        const TType *type = new TType($3->getType());
+        $1.function->addParameter(TConstParameter(type));
         $$.function = $1.function;
-        $$.intermNode = context->intermediate.growAggregate($1.intermNode, $3, @2);
+        $$.nodePair.node1 = context->intermediate.growAggregate($1.intermNode, $3, @2);
     }
     ;
 
@@ -386,40 +397,14 @@ unary_expression
         $$ = $1;
     }
     | INC_OP unary_expression {
-        if (context->lValueErrorCheck(@1, "++", $2))
-            context->recover();
-        $$ = context->intermediate.addUnaryMath(EOpPreIncrement, $2, @1);
-        if ($$ == 0) {
-            context->unaryOpError(@1, "++", $2->getCompleteString());
-            context->recover();
-            $$ = $2;
-        }
+        $$ = context->addUnaryMathLValue(EOpPreIncrement, $2, @1);
     }
     | DEC_OP unary_expression {
-        if (context->lValueErrorCheck(@1, "--", $2))
-            context->recover();
-        $$ = context->intermediate.addUnaryMath(EOpPreDecrement, $2, @1);
-        if ($$ == 0) {
-            context->unaryOpError(@1, "--", $2->getCompleteString());
-            context->recover();
-            $$ = $2;
-        }
+        $$ = context->addUnaryMathLValue(EOpPreDecrement, $2, @1);
     }
     | unary_operator unary_expression {
         if ($1.op != EOpNull) {
-            $$ = context->intermediate.addUnaryMath($1.op, $2, @1);
-            if ($$ == 0) {
-                const char* errorOp = "";
-                switch($1.op) {
-                case EOpNegative:   errorOp = "-"; break;
-                case EOpLogicalNot: errorOp = "!"; break;
-                case EOpBitwiseNot: errorOp = "~"; break;
-                default: break;
-                }
-                context->unaryOpError(@1, errorOp, $2->getCompleteString());
-                context->recover();
-                $$ = $2;
-            }
+            $$ = context->addUnaryMath($1.op, $2, @1);
         } else
             $$ = $2;
     }
@@ -427,12 +412,12 @@ unary_expression
 // Grammar Note:  No traditional style type casts.
 
 unary_operator
-    : PLUS  { $$.line = @1; $$.op = EOpNull; }
-    | DASH  { $$.line = @1; $$.op = EOpNegative; }
-    | BANG  { $$.line = @1; $$.op = EOpLogicalNot; }
+    : PLUS  { $$.op = EOpNull; }
+    | DASH  { $$.op = EOpNegative; }
+    | BANG  { $$.op = EOpLogicalNot; }
     | TILDE {
         ES3_ONLY("~", @1, "bit-wise operator");
-        $$.line = @1; $$.op = EOpBitwiseNot;
+        $$.op = EOpBitwiseNot;
     }
     ;
 // Grammar Note:  No '*' or '&' unary ops.  Pointers are not supported.
@@ -550,18 +535,7 @@ logical_or_expression
 conditional_expression
     : logical_or_expression { $$ = $1; }
     | logical_or_expression QUESTION expression COLON assignment_expression {
-       if (context->boolErrorCheck(@2, $1))
-            context->recover();
-
-        $$ = context->intermediate.addSelection($1, $3, $5, @2);
-        if ($3->getType() != $5->getType())
-            $$ = 0;
-
-        if ($$ == 0) {
-            context->binaryOpError(@2, ":", $3->getCompleteString(), $5->getCompleteString());
-            context->recover();
-            $$ = $5;
-        }
+        $$ = context->addTernarySelection($1, $3, $5, @2);
     }
     ;
 
@@ -575,23 +549,28 @@ assignment_expression
     ;
 
 assignment_operator
-    : EQUAL        {                                    $$.line = @1; $$.op = EOpAssign; }
-    | MUL_ASSIGN   { FRAG_VERT_ONLY("*=", @1);     $$.line = @1; $$.op = EOpMulAssign; }
-    | DIV_ASSIGN   { FRAG_VERT_ONLY("/=", @1);     $$.line = @1; $$.op = EOpDivAssign; }
+    : EQUAL        {                           $$.op = EOpAssign; }
+    | MUL_ASSIGN   { FRAG_VERT_ONLY("*=", @1); $$.op = EOpMulAssign; }
+    | DIV_ASSIGN   { FRAG_VERT_ONLY("/=", @1); $$.op = EOpDivAssign; }
     | MOD_ASSIGN   { ES3_ONLY("%=", @1, "integer modulus operator");
-                     FRAG_VERT_ONLY("%=", @1);     $$.line = @1; $$.op = EOpIModAssign; }
-    | ADD_ASSIGN   {                                    $$.line = @1; $$.op = EOpAddAssign; }
-    | SUB_ASSIGN   {                                    $$.line = @1; $$.op = EOpSubAssign; }
+                     FRAG_VERT_ONLY("%=", @1); $$.op = EOpIModAssign; }
+    | ADD_ASSIGN   {                           $$.op = EOpAddAssign; }
+    | SUB_ASSIGN   {                           $$.op = EOpSubAssign; }
     | LEFT_ASSIGN  { ES3_ONLY("<<=", @1, "bit-wise operator");
-                     FRAG_VERT_ONLY("<<=", @1);    $$.line = @1; $$.op = EOpBitShiftLeftAssign; }
+                     FRAG_VERT_ONLY("<<=", @1);
+                     $$.op = EOpBitShiftLeftAssign; }
     | RIGHT_ASSIGN { ES3_ONLY(">>=", @1, "bit-wise operator");
-                     FRAG_VERT_ONLY(">>=", @1);    $$.line = @1; $$.op = EOpBitShiftRightAssign; }
+                     FRAG_VERT_ONLY(">>=", @1);
+                     $$.op = EOpBitShiftRightAssign; }
     | AND_ASSIGN   { ES3_ONLY("&=", @1, "bit-wise operator");
-                     FRAG_VERT_ONLY("&=", @1);     $$.line = @1; $$.op = EOpBitwiseAndAssign; }
+                     FRAG_VERT_ONLY("&=", @1);
+                     $$.op = EOpBitwiseAndAssign; }
     | XOR_ASSIGN   { ES3_ONLY("^=", @1, "bit-wise operator");
-                     FRAG_VERT_ONLY("^=", @1);     $$.line = @1; $$.op = EOpBitwiseXorAssign; }
+                     FRAG_VERT_ONLY("^=", @1);
+                     $$.op = EOpBitwiseXorAssign; }
     | OR_ASSIGN    { ES3_ONLY("|=", @1, "bit-wise operator");
-                     FRAG_VERT_ONLY("|=", @1);     $$.line = @1; $$.op = EOpBitwiseOrAssign; }
+                     FRAG_VERT_ONLY("|=", @1);
+                     $$.op = EOpBitwiseOrAssign; }
     ;
 
 expression
@@ -634,7 +613,7 @@ declaration
         
         for (size_t i = 0; i < function.getParamCount(); i++)
         {
-            const TParameter &param = function.getParam(i);
+            const TConstParameter &param = function.getParam(i);
             if (param.name != 0)
             {
                 TVariable variable(param.name, *param.type);
@@ -713,7 +692,6 @@ function_prototype
         // being redeclared.  So, pass back up this declaration, not the one in the symbol table.
         //
         $$.function = $1;
-        $$.line = @2;
 
         // We're at the inner scope level of the function's arguments and body statement.
         // Add the function prototype to the surrounding scope instead.
@@ -736,7 +714,7 @@ function_header_with_parameters
         // Add the parameter
         $$ = $1;
         if ($2.param.type->getBasicType() != EbtVoid)
-            $1->addParameter($2.param);
+            $1->addParameter($2.param.turnToConst());
         else
             delete $2.param.type;
     }
@@ -755,7 +733,7 @@ function_header_with_parameters
         } else {
             // Add the parameter
             $$ = $1;
-            $1->addParameter($3.param);
+            $1->addParameter($3.param.turnToConst());
         }
     }
     ;
@@ -790,7 +768,6 @@ parameter_declarator
         if (context->reservedErrorCheck(@2, *$2.string))
             context->recover();
         TParameter param = {$2.string, new TType($1)};
-        $$.line = @2;
         $$.param = param;
     }
     | type_specifier IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET {
@@ -808,7 +785,6 @@ parameter_declarator
 
         TType* type = new TType($1);
         TParameter param = { $2.string, type };
-        $$.line = @2;
         $$.param = param;
     }
     ;
@@ -1081,22 +1057,29 @@ type_qualifier
         $$.setBasic(EbtVoid, $2.qualifier, @2);
         $$.layoutQualifier = $1;
     }
+    | INVARIANT storage_qualifier {
+        context->es3InvariantErrorCheck($2.qualifier, @1);
+        $$.setBasic(EbtVoid, $2.qualifier, @2);
+        $$.invariant = true;
+    }
+    | INVARIANT interpolation_qualifier storage_qualifier {
+        context->es3InvariantErrorCheck($3.qualifier, @1);
+        $$ = context->joinInterpolationQualifiers(@2, $2.qualifier, @3, $3.qualifier);
+        $$.invariant = true;
+    }
     ;
 
 storage_qualifier
     : CONST_QUAL {
         $$.qualifier = EvqConstExpr;
-		$$.line = @1;
     }
     | IN_QUAL {
         ES3_ONLY("in", @1, "storage qualifier");
         $$.qualifier = (context->getShaderType() == GL_FRAGMENT_SHADER) ? EvqFragmentIn : EvqVertexIn;
-		$$.line = @1;
     }
     | OUT_QUAL {
         ES3_ONLY("out", @1, "storage qualifier");
         $$.qualifier = (context->getShaderType() == GL_FRAGMENT_SHADER) ? EvqFragmentOut : EvqVertexOut;
-		$$.line = @1;
     }
     | CENTROID IN_QUAL {
         ES3_ONLY("centroid in", @1, "storage qualifier");
@@ -1106,7 +1089,6 @@ storage_qualifier
             context->recover();
         }
         $$.qualifier = (context->getShaderType() == GL_FRAGMENT_SHADER) ? EvqCentroidIn : EvqVertexIn;
-		$$.line = @2;
     }
     | CENTROID OUT_QUAL {
         ES3_ONLY("centroid out", @1, "storage qualifier");
@@ -1116,13 +1098,11 @@ storage_qualifier
             context->recover();
         }
         $$.qualifier = (context->getShaderType() == GL_FRAGMENT_SHADER) ? EvqFragmentOut : EvqCentroidOut;
-		$$.line = @2;
     }
 	| UNIFORM {
         if (context->globalErrorCheck(@1, context->symbolTable.atGlobalLevel(), "uniform"))
             context->recover();
         $$.qualifier = EvqUniform;
-		$$.line = @1;
     }
     ;
 
@@ -1576,10 +1556,10 @@ compound_statement_no_new_scope
 
 statement_list
     : statement {
-        $$ = context->intermediate.makeAggregate($1, 0);
+        $$ = context->intermediate.makeAggregate($1, @$);
     }
     | statement_list statement {
-        $$ = context->intermediate.growAggregate($1, $2, 0);
+        $$ = context->intermediate.growAggregate($1, $2, @$);
     }
     ;
 
@@ -1724,7 +1704,7 @@ translation_unit
         context->setTreeRoot($$);
     }
     | translation_unit external_declaration {
-        $$ = context->intermediate.growAggregate($1, $2, 0);
+        $$ = context->intermediate.growAggregate($1, $2, @$);
         context->setTreeRoot($$);
     }
     ;
@@ -1795,7 +1775,7 @@ function_definition
         //
         TIntermAggregate* paramNodes = new TIntermAggregate;
         for (size_t i = 0; i < function->getParamCount(); i++) {
-            const TParameter& param = function->getParam(i);
+            const TConstParameter& param = function->getParam(i);
             if (param.name != 0) {
                 TVariable *variable = new TVariable(param.name, *param.type);
                 //
@@ -1832,7 +1812,7 @@ function_definition
             context->recover();
         }
         
-        $$ = context->intermediate.growAggregate($1.intermAggregate, $3, 0);
+        $$ = context->intermediate.growAggregate($1.intermAggregate, $3, @$);
         context->intermediate.setAggregateOperator($$, EOpFunction, @1);
         $$->getAsAggregate()->setName($1.function->getMangledName().c_str());
         $$->getAsAggregate()->setType($1.function->getReturnType());

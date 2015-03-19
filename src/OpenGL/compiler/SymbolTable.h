@@ -114,12 +114,57 @@ protected:
     TType *arrayInformationType;  // this is used for updating maxArraySize in all the references to a given symbol
 };
 
+// Immutable version of TParameter.
+struct TConstParameter
+{
+	TConstParameter()
+	: name(nullptr),
+	type(nullptr)
+	{
+	}
+	explicit TConstParameter(const TString *n)
+		: name(n),
+		type(nullptr)
+	{
+	}
+	explicit TConstParameter(const TType *t)
+		: name(nullptr),
+		type(t)
+	{
+	}
+	TConstParameter(const TString *n, const TType *t)
+		: name(n),
+		type(t)
+	{
+	}
+
+	// Both constructor arguments must be const.
+	TConstParameter(TString *n, TType *t) = delete;
+	TConstParameter(const TString *n, TType *t) = delete;
+	TConstParameter(TString *n, const TType *t) = delete;
+
+	const TString *name;
+	const TType *type;
+};
+
 //
 // The function sub-class of symbols and the parser will need to
 // share this definition of a function parameter.
 //
 struct TParameter
 {
+	// Destructively converts to TConstParameter.
+	// This method resets name and type to nullptrs to make sure
+	// their content cannot be modified after the call.
+	TConstParameter turnToConst()
+	{
+		const TString *constName = name;
+		const TType *constType = type;
+		name = nullptr;
+		type = nullptr;
+		return TConstParameter(constName, constType);
+	}
+
     TString *name;
     TType *type;
 };
@@ -151,7 +196,7 @@ public:
         return TString(mangledName.c_str(), mangledName.find_first_of('('));
     }
 
-    void addParameter(TParameter& p)
+    void addParameter(const TConstParameter &p)
     {
         parameters.push_back(p);
         mangledName = mangledName + p.type->getMangledName();
@@ -167,10 +212,10 @@ public:
     bool isDefined() { return defined; }
 
     size_t getParamCount() const { return parameters.size(); }
-    const TParameter& getParam(int i) const { return parameters[i]; }
+    const TConstParameter& getParam(int i) const { return parameters[i]; }
 
 protected:
-    typedef TVector<TParameter> TParamList;
+    typedef TVector<TConstParameter> TParamList;
     TParamList parameters;
     TType returnType;
     TString mangledName;
@@ -400,31 +445,26 @@ public:
 		{
 			TFunction *function = new TFunction(NewPoolTString(name), *rvalue, op, ext);
 
-			TParameter param1 = {0, ptype1};
-			function->addParameter(param1);
+			function->addParameter(TConstParameter(ptype1));
 
 			if(ptype2)
 			{
-				TParameter param2 = {0, ptype2};
-				function->addParameter(param2);
+				function->addParameter(TConstParameter(ptype2));
 			}
 
 			if(ptype3)
 			{
-				TParameter param3 = {0, ptype3};
-				function->addParameter(param3);
+				function->addParameter(TConstParameter(ptype3));
 			}
 
 			if(ptype4)
 			{
-				TParameter param4 = {0, ptype4};
-				function->addParameter(param4);
+				function->addParameter(TConstParameter(ptype4));
 			}
 
 			if(ptype5)
 			{
-				TParameter param5 = {0, ptype5};
-				function->addParameter(param5);
+				function->addParameter(TConstParameter(ptype5));
 			}
 
 			insert(level, *function);

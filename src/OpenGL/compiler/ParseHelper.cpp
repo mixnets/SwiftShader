@@ -180,8 +180,7 @@ void TParseContext::error(const TSourceLoc& loc,
                           const char* reason, const char* token,
                           const char* extraInfo)
 {
-    pp::SourceLocation srcLoc;
-    DecodeSourceLoc(loc, &srcLoc.file, &srcLoc.line);
+    pp::SourceLocation srcLoc(loc.first_file, loc.first_line);
     mDiagnostics.writeInfo(pp::Diagnostics::PP_ERROR,
                            srcLoc, reason, token, extraInfo);
 
@@ -190,8 +189,7 @@ void TParseContext::error(const TSourceLoc& loc,
 void TParseContext::warning(const TSourceLoc& loc,
                             const char* reason, const char* token,
                             const char* extraInfo) {
-    pp::SourceLocation srcLoc;
-    DecodeSourceLoc(loc, &srcLoc.file, &srcLoc.line);
+    pp::SourceLocation srcLoc(loc.first_file, loc.first_line);
     mDiagnostics.writeInfo(pp::Diagnostics::PP_WARNING,
                            srcLoc, reason, token, extraInfo);
 }
@@ -490,7 +488,7 @@ bool TParseContext::constructorErrorCheck(const TSourceLoc &line, TIntermNode* n
     bool matrixInMatrix = false;
     bool arrayArg = false;
     for (size_t i = 0; i < function.getParamCount(); ++i) {
-        const TParameter& param = function.getParam(i);
+        const TConstParameter& param = function.getParam(i);
         size += param.type->getObjectSize();
 
         if (constructingMatrix && param.type->isMatrix())
@@ -1055,6 +1053,24 @@ bool TParseContext::functionCallLValueErrorCheck(const TFunction *fnCandidate, T
 	return false;
 }
 
+void TParseContext::es3InvariantErrorCheck(const TQualifier qualifier, const TSourceLoc &invariantLocation)
+{
+	switch(qualifier)
+	{
+	case EvqVaryingOut:
+	case EvqSmoothOut:
+	case EvqFlatOut:
+	case EvqCentroidOut:
+	case EvqVertexOut:
+	case EvqFragmentOut:
+		break;
+	default:
+		error(invariantLocation, "Only out variables can be invariant.", "invariant");
+		recover();
+		break;
+	}
+}
+
 bool TParseContext::supportsExtension(const char* extension)
 {
     const TExtensionBehavior& extbehavior = extensionBehavior();
@@ -1064,15 +1080,13 @@ bool TParseContext::supportsExtension(const char* extension)
 
 void TParseContext::handleExtensionDirective(const TSourceLoc &line, const char* extName, const char* behavior)
 {
-    pp::SourceLocation loc;
-    DecodeSourceLoc(line, &loc.file, &loc.line);
+    pp::SourceLocation loc(line.first_file, line.first_line);
     mDirectiveHandler.handleExtension(loc, extName, behavior);
 }
 
 void TParseContext::handlePragmaDirective(const TSourceLoc &line, const char* name, const char* value)
 {
-    pp::SourceLocation loc;
-    DecodeSourceLoc(line, &loc.file, &loc.line);
+    pp::SourceLocation loc(line.first_file, line.first_line);
     mDirectiveHandler.handlePragma(loc, name, value);
 }
 
@@ -3401,6 +3415,29 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 	}
 	delete fnCall;
 	return callNode;
+}
+
+TIntermTyped *TParseContext::addTernarySelection(TIntermTyped *cond, TIntermTyped *trueBlock, TIntermTyped *falseBlock, const TSourceLoc &loc)
+{
+	if(boolErrorCheck(loc, cond))
+		recover();
+
+	if(trueBlock->getType() != falseBlock->getType())
+	{
+		binaryOpError(loc, ":", trueBlock->getCompleteString(), falseBlock->getCompleteString());
+		recover();
+		return falseBlock;
+	}
+	// ESSL1 sections 5.2 and 5.7:
+	// ESSL3 section 5.7:
+	// Ternary operator is not among the operators allowed for structures/arrays.
+	if(trueBlock->isArray() || trueBlock->getBasicType() == EbtStruct)
+	{
+		error(loc, "ternary operator is not allowed for structures or arrays", ":");
+		recover();
+		return falseBlock;
+	}
+	return intermediate.addSelection(cond, trueBlock, falseBlock, loc);
 }
 
 //

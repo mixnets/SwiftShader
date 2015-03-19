@@ -555,6 +555,7 @@ namespace glsl
 			break;
 		case EOpVectorLogicalNot: if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpLogicalNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
+		case EOpBitwiseNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpPostIncrement:
 			if(visit == PostVisit)
 			{
@@ -676,6 +677,8 @@ namespace glsl
 				}
 			}
 			break;
+		case EOpDeterminant:
+		case EOpInverse:
 		default: UNREACHABLE(node->getOp());
 		}
 
@@ -821,7 +824,7 @@ namespace glsl
 						}
 						else UNREACHABLE(argumentCount);
 					}
-					else if(name == "texture2DProj")
+					else if(name == "texture2DProj" || name == "textureProj")
 					{
 						TIntermTyped *t = arg[1]->getAsTyped();
 
@@ -862,7 +865,7 @@ namespace glsl
 						}
 						else UNREACHABLE(argumentCount);
 					}
-					else if(name == "texture2DLod" || name == "textureCubeLod")
+					else if(name == "texture2DLod" || name == "textureCubeLod" || name == "textureLod")
 					{
 						Temporary uvwb(this);
 						emit(sw::Shader::OPCODE_MOV, &uvwb, arg[1]);
@@ -871,7 +874,7 @@ namespace glsl
 
 						emit(sw::Shader::OPCODE_TEXLDL, result, &uvwb, arg[0]);
 					}
-					else if(name == "texture2DProjLod")
+					else if(name == "texture2DProjLod" || name == "textureProjLod")
 					{
 						TIntermTyped *t = arg[1]->getAsTyped();
 						Temporary proj(this);
@@ -894,6 +897,10 @@ namespace glsl
 						lod->dst.mask = 0x8;
 
 						emit(sw::Shader::OPCODE_TEXLDL, result, &proj, arg[0]);
+					}
+					else if(name == "textureSize")
+					{
+						emit(sw::Shader::OPCODE_TEXSIZE, result, arg[1], arg[0]);
 					}
 					else UNREACHABLE(0);
 				}
@@ -1866,6 +1873,12 @@ namespace glsl
 		case EvqFragmentIn:          return sw::Shader::PARAMETER_INPUT;
 		case EvqInvariantVaryingIn:  return sw::Shader::PARAMETER_INPUT;    // FIXME: Guarantee invariance at the backend
 		case EvqInvariantVaryingOut: return sw::Shader::PARAMETER_OUTPUT;   // FIXME: Guarantee invariance at the backend 
+		case EvqSmooth:              return sw::Shader::PARAMETER_OUTPUT;
+		case EvqFlat:                return sw::Shader::PARAMETER_OUTPUT;
+		case EvqCentroidOut:         return sw::Shader::PARAMETER_OUTPUT;
+		case EvqSmoothIn:            return sw::Shader::PARAMETER_INPUT;
+		case EvqFlatIn:              return sw::Shader::PARAMETER_INPUT;
+		case EvqCentroidIn:          return sw::Shader::PARAMETER_INPUT;
 		case EvqUniform:             return sw::Shader::PARAMETER_CONST;
 		case EvqIn:                  return sw::Shader::PARAMETER_TEMP;
 		case EvqOut:                 return sw::Shader::PARAMETER_TEMP;
@@ -1906,6 +1919,12 @@ namespace glsl
 		case EvqFragmentIn:          return varyingRegister(operand);
 		case EvqInvariantVaryingIn:  return varyingRegister(operand);
 		case EvqInvariantVaryingOut: return varyingRegister(operand);
+		case EvqSmooth:              return varyingRegister(operand);
+		case EvqFlat:                return varyingRegister(operand);
+		case EvqCentroidOut:         return varyingRegister(operand);
+		case EvqSmoothIn:            return varyingRegister(operand);
+		case EvqFlatIn:              return varyingRegister(operand);
+		case EvqCentroidIn:          return varyingRegister(operand);
 		case EvqUniform:             return uniformRegister(operand);
 		case EvqIn:                  return temporaryRegister(operand);
 		case EvqOut:                 return temporaryRegister(operand);
@@ -2065,7 +2084,7 @@ namespace glsl
 		if(var == -1)
 		{
 			var = allocate(varyings, varying);
-			int componentCount = varying->getNominalSize();
+			int componentCount = varying->isMatrix() ? varying->getSecondarySize() : varying->getNominalSize();
 			int registerCount = varying->totalRegisterCount();
 
 			if(pixelShader)
@@ -2540,23 +2559,37 @@ namespace glsl
 			else UNREACHABLE(0);
 			break;
 		case EbtSampler2D:
-		case EbtISampler2D:
-		case EbtUSampler2D:
 			return GL_SAMPLER_2D;
+		case EbtISampler2D:
+			return GL_INT_SAMPLER_2D;
+		case EbtUSampler2D:
+			return GL_UNSIGNED_INT_SAMPLER_2D;
 		case EbtSamplerCube:
-		case EbtISamplerCube:
-		case EbtUSamplerCube:
 			return GL_SAMPLER_CUBE;
+		case EbtISamplerCube:
+			return GL_INT_SAMPLER_CUBE;
+		case EbtUSamplerCube:
+			return GL_UNSIGNED_INT_SAMPLER_CUBE;
 		case EbtSamplerExternalOES:
 			return GL_SAMPLER_EXTERNAL_OES;
 		case EbtSampler3D:
-		case EbtISampler3D:
-		case EbtUSampler3D:
 			return GL_SAMPLER_3D_OES;
+		case EbtISampler3D:
+			return GL_INT_SAMPLER_3D;
+		case EbtUSampler3D:
+			return GL_UNSIGNED_INT_SAMPLER_3D;
 		case EbtSampler2DArray:
-		case EbtISampler2DArray:
-		case EbtUSampler2DArray:
 			return GL_SAMPLER_2D_ARRAY;
+		case EbtISampler2DArray:
+			return GL_INT_SAMPLER_2D_ARRAY;
+		case EbtUSampler2DArray:
+			return GL_UNSIGNED_INT_SAMPLER_2D_ARRAY;
+		case EbtSampler2DShadow:
+			return GL_SAMPLER_2D_SHADOW;
+		case EbtSamplerCubeShadow:
+			return GL_SAMPLER_CUBE_SHADOW;
+		case EbtSampler2DArrayShadow:
+			return GL_SAMPLER_2D_ARRAY_SHADOW;
 		default:
 			UNREACHABLE(type.getBasicType());
 			break;

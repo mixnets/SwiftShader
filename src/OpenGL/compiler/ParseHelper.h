@@ -133,6 +133,7 @@ public:
 	bool singleDeclarationErrorCheck(const TPublicType &publicType, const TSourceLoc &identifierLocation);
     bool layoutLocationErrorCheck(const TSourceLoc& location, const TLayoutQualifier &layoutQualifier);
     bool functionCallLValueErrorCheck(const TFunction *fnCandidate, TIntermAggregate *);
+	void es3InvariantErrorCheck(const TQualifier qualifier, const TSourceLoc &invariantLocation);
 
     const TExtensionBehavior& extensionBehavior() const { return mDirectiveHandler.extensionBehavior(); }
     bool supportsExtension(const char* extension);
@@ -222,6 +223,8 @@ public:
 	TIntermBranch *addBranch(TOperator op, TIntermTyped *returnValue, const TSourceLoc &loc);
 
 	TIntermTyped *addFunctionCallOrMethod(TFunction *fnCall, TIntermNode *paramNode, TIntermNode *thisNode, const TSourceLoc &loc, bool *fatalError);
+
+	TIntermTyped *addTernarySelection(TIntermTyped *cond, TIntermTyped *trueBlock, TIntermTyped *falseBlock, const TSourceLoc &line);
 
 private:
 	bool declareVariable(const TSourceLoc &line, const TString &identifier, const TType &type, TVariable **variable);

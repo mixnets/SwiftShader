@@ -44,6 +44,16 @@ namespace glsl
 
 	typedef std::vector<Uniform> ActiveUniforms;
 
+	struct UniformBlock
+	{
+		std::vector<Uniform> uniforms;
+		std::string name;
+
+		int registerIndex;
+	};
+
+	typedef std::vector<UniformBlock> ActiveUniformBlocks;
+
 	struct Attribute
 	{
 		Attribute();
@@ -98,6 +108,7 @@ namespace glsl
 		VaryingList varyings;
 		ActiveUniforms activeUniforms;
 		ActiveAttributes activeAttributes;
+		ActiveUniformBlocks activeUniformBlocks;
 	};
 
 	struct Function

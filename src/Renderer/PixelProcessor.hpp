@@ -79,6 +79,7 @@ namespace sw
 			unsigned int multiSampleMask                      : 4;
 			TransparencyAntialiasing transparencyAntialiasing : BITS(TRANSPARENCY_LAST);
 			bool centroid                                     : 1;
+			bool smooth                                       : 1;
 
 			Sampler::State sampler[TEXTURE_IMAGE_UNITS];
 			TextureStage::State textureStage[8];
@@ -89,6 +90,7 @@ namespace sw
 				unsigned char flat : 4;
 				unsigned char project : 2;
 				bool centroid : 1;
+				bool smooth : 1;
 			};
 
 			union
