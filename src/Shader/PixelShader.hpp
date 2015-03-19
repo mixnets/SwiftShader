@@ -28,6 +28,7 @@ namespace sw
 		bool depthOverride() const;
 		bool containsKill() const;
 		bool containsCentroid() const;
+		bool containsNonSmooth() const;
 		bool usesDiffuse(int component) const;
 		bool usesSpecular(int component) const;
 		bool usesTexture(int coordinate, int component) const;
@@ -48,6 +49,7 @@ namespace sw
 		bool zOverride;
 		bool kill;
 		bool centroid;
+		bool smooth;
 	};
 }
 

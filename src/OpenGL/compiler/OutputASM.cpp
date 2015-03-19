@@ -166,7 +166,7 @@ namespace glsl
 	{
 		// Vertex varyings don't have to be actively used to successfully link
 		// against pixel shaders that use them. So make sure they're declared.
-		if(symbol->getQualifier() == EvqVaryingOut || symbol->getQualifier() == EvqInvariantVaryingOut)
+		if(symbol->getQualifier() == EvqVaryingOut || symbol->getQualifier() == EvqInvariantVaryingOut || symbol->getQualifier() == EvqVertexOut)
 		{
 			if(symbol->getBasicType() != EbtInvariant)   // Typeless declarations are not new varyings
 			{
@@ -326,13 +326,14 @@ namespace glsl
 			{
 				ASSERT(leftType.isStruct());
 
-				const TTypeList *structure = leftType.getStruct();
+				const TStructure *structure = leftType.getStruct();
+				const TFieldList& fields = structure->fields();
 				const TString &fieldName = rightType.getFieldName();
 				int fieldOffset = 0;
 
-				for(size_t i = 0; i < structure->size(); i++)
+				for(size_t i = 0; i < fields.size(); i++)
 				{
-					const TType &fieldType = *(*structure)[i].type;
+					const TType &fieldType = *(fields[i]->type());
 
 					if(fieldType.getFieldName() == fieldName)
 					{
@@ -559,6 +560,7 @@ namespace glsl
 			break;
 		case EOpVectorLogicalNot: if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpLogicalNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
+		case EOpBitwiseNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpPostIncrement:
 			if(visit == PostVisit)
 			{
@@ -652,6 +654,16 @@ namespace glsl
 		case EOpFwidth:           if(visit == PostVisit) emit(sw::Shader::OPCODE_FWIDTH, result, arg); break;
 		case EOpAny:              if(visit == PostVisit) emit(sw::Shader::OPCODE_ANY, result, arg); break;
 		case EOpAll:              if(visit == PostVisit) emit(sw::Shader::OPCODE_ALL, result, arg); break;
+		case EOpFloatBitsToInt:   if(visit == PostVisit) emit(sw::Shader::OPCODE_FLOATBITSTOINT, result, arg); break;
+		case EOpFloatBitsToUint:  if(visit == PostVisit) emit(sw::Shader::OPCODE_FLOATBITSTOUINT, result, arg); break;
+		case EOpIntBitsToFloat:   if(visit == PostVisit) emit(sw::Shader::OPCODE_INTBITSTOFLOAT, result, arg); break;
+		case EOpUintBitsToFloat:  if(visit == PostVisit) emit(sw::Shader::OPCODE_UINTBITSTOFLOAT, result, arg); break;
+		case EOpPackSnorm2x16:    if(visit == PostVisit) emit(sw::Shader::OPCODE_PACKSNORM2x16, result, arg); break;
+		case EOpPackUnorm2x16:    if(visit == PostVisit) emit(sw::Shader::OPCODE_PACKUNORM2x16, result, arg); break;
+		case EOpPackHalf2x16:     if(visit == PostVisit) emit(sw::Shader::OPCODE_PACKHALF2x16, result, arg); break;
+		case EOpUnpackSnorm2x16:  if(visit == PostVisit) emit(sw::Shader::OPCODE_UNPACKSNORM2x16, result, arg); break;
+		case EOpUnpackUnorm2x16:  if(visit == PostVisit) emit(sw::Shader::OPCODE_UNPACKUNORM2x16, result, arg); break;
+		case EOpUnpackHalf2x16:   if(visit == PostVisit) emit(sw::Shader::OPCODE_UNPACKHALF2x16, result, arg); break;
 		case EOpTranspose:
 			if(visit == PostVisit)
 			{
@@ -670,6 +682,8 @@ namespace glsl
 				}
 			}
 			break;
+		case EOpDeterminant:
+		case EOpInverse:
 		default: UNREACHABLE();
 		}
 
@@ -1062,16 +1076,6 @@ namespace glsl
 		case EOpMix:         if(visit == PostVisit) emit(sw::Shader::OPCODE_LRP, result, arg[2], arg[1], arg[0]); break;
 		case EOpStep:        if(visit == PostVisit) emit(sw::Shader::OPCODE_STEP, result, arg[0], arg[1]); break;
 		case EOpSmoothStep:  if(visit == PostVisit) emit(sw::Shader::OPCODE_SMOOTH, result, arg[0], arg[1], arg[2]); break;
-		case EOpFloatBitsToInt:  if(visit == PostVisit) emit(sw::Shader::OPCODE_FLOATBITSTOINT, result, arg[0]); break;
-		case EOpFloatBitsToUint: if(visit == PostVisit) emit(sw::Shader::OPCODE_FLOATBITSTOUINT, result, arg[0]); break;
-		case EOpIntBitsToFloat:  if(visit == PostVisit) emit(sw::Shader::OPCODE_INTBITSTOFLOAT, result, arg[0]); break;
-		case EOpUintBitsToFloat: if(visit == PostVisit) emit(sw::Shader::OPCODE_UINTBITSTOFLOAT, result, arg[0]); break;
-		case EOpPackSnorm2x16:   if(visit == PostVisit) emit(sw::Shader::OPCODE_PACKSNORM2x16, result, arg[0]); break;
-		case EOpPackUnorm2x16:   if(visit == PostVisit) emit(sw::Shader::OPCODE_PACKUNORM2x16, result, arg[0]); break;
-		case EOpPackHalf2x16:    if(visit == PostVisit) emit(sw::Shader::OPCODE_PACKHALF2x16, result, arg[0]); break;
-		case EOpUnpackSnorm2x16: if(visit == PostVisit) emit(sw::Shader::OPCODE_UNPACKSNORM2x16, result, arg[0]); break;
-		case EOpUnpackUnorm2x16: if(visit == PostVisit) emit(sw::Shader::OPCODE_UNPACKUNORM2x16, result, arg[0]); break;
-		case EOpUnpackHalf2x16:  if(visit == PostVisit) emit(sw::Shader::OPCODE_UNPACKHALF2x16, result, arg[0]); break;
 		case EOpDistance:    if(visit == PostVisit) emit(sw::Shader::OPCODE_DIST(dim(arg[0])), result, arg[0], arg[1]); break;
 		case EOpDot:         if(visit == PostVisit) emit(sw::Shader::OPCODE_DP(dim(arg[0])), result, arg[0], arg[1]); break;
 		case EOpCross:       if(visit == PostVisit) emit(sw::Shader::OPCODE_CRS, result, arg[0], arg[1]); break;
@@ -1439,12 +1443,13 @@ namespace glsl
 
 		if(type.isStruct())
 		{
-			TTypeList *structure = type.getStruct();
+			const TStructure *structure = type.getStruct();
+			const TFieldList& fields = structure->fields();
 			int elements = 0;
 
-			for(TTypeList::const_iterator field = structure->begin(); field != structure->end(); field++)
+			for(TFieldList::const_iterator field = fields.begin(); field != fields.end(); field++)
 			{
-				const TType &fieldType = *field->type;
+				const TType &fieldType = *((*field)->type());
 
 				if(fieldType.totalRegisterCount() <= registers)
 				{
@@ -1472,7 +1477,9 @@ namespace glsl
 		{
 			if(type.isStruct())
 			{
-				return registerSize(*type.getStruct()->begin()->type, 0);
+				const TStructure *structure = type.getStruct();
+				const TFieldList& fields = structure->fields();
+				return registerSize(*((*(fields.begin()))->type()), 0);
 			}
 
 			return type.isMatrix() ? type.getSecondarySize() : type.getNominalSize();
@@ -1487,12 +1494,13 @@ namespace glsl
 
 		if(type.isStruct())
 		{
-			TTypeList *structure = type.getStruct();
+			const TStructure *structure = type.getStruct();
+			const TFieldList& fields = structure->fields();
 			int elements = 0;
 
-			for(TTypeList::const_iterator field = structure->begin(); field != structure->end(); field++)
+			for(TFieldList::const_iterator field = fields.begin(); field != fields.end(); field++)
 			{
-				const TType &fieldType = *field->type;
+				const TType &fieldType = *((*field)->type());
 				
 				if(fieldType.totalRegisterCount() <= registers)
 				{
@@ -1520,7 +1528,6 @@ namespace glsl
 		{
 			TIntermTyped *arg = argument->getAsTyped();
 			const TType &type = arg->getType();
-			const TTypeList *structure = type.getStruct();
 			index = (index >= arg->totalRegisterCount()) ? arg->totalRegisterCount() - 1 : index;
 
 			int size = registerSize(type, index);
@@ -1771,13 +1778,14 @@ namespace glsl
 				break;
 			case EOpIndexDirectStruct:
 				{
-					const TTypeList *structure = left->getType().getStruct();
+					const TStructure *structure = left->getType().getStruct();
+					const TFieldList& fields = structure->fields();
 					const TString &fieldName = right->getType().getFieldName();
 
 					int offset = 0;
-					for(TTypeList::const_iterator field = structure->begin(); field != structure->end(); field++)
+					for(TFieldList::const_iterator field = fields.begin(); field != fields.end(); field++)
 					{
-						if(field->type->getFieldName() == fieldName)
+						if((*field)->type()->getFieldName() == fieldName)
 						{
 							dst.type = registerType(left);
 							dst.index += offset;
@@ -1786,7 +1794,7 @@ namespace glsl
 							return 0xE4;
 						}
 
-						offset += field->type->totalRegisterCount();
+						offset += (*field)->type()->totalRegisterCount();
 					}
 				}
 				break;
@@ -1857,6 +1865,10 @@ namespace glsl
 		case EvqAttribute:           return sw::Shader::PARAMETER_INPUT;
 		case EvqVaryingIn:           return sw::Shader::PARAMETER_INPUT;
 		case EvqVaryingOut:          return sw::Shader::PARAMETER_OUTPUT;
+		case EvqVertexIn:            return sw::Shader::PARAMETER_INPUT;
+		case EvqFragmentOut:         return sw::Shader::PARAMETER_COLOROUT;
+		case EvqVertexOut:           return sw::Shader::PARAMETER_OUTPUT;
+		case EvqFragmentIn:          return sw::Shader::PARAMETER_INPUT;
 		case EvqInvariantVaryingIn:  return sw::Shader::PARAMETER_INPUT;    // FIXME: Guarantee invariance at the backend
 		case EvqInvariantVaryingOut: return sw::Shader::PARAMETER_OUTPUT;   // FIXME: Guarantee invariance at the backend 
 		case EvqUniform:             return sw::Shader::PARAMETER_CONST;
@@ -1872,6 +1884,12 @@ namespace glsl
 		case EvqPointCoord:          return sw::Shader::PARAMETER_INPUT;
 		case EvqFragColor:           return sw::Shader::PARAMETER_COLOROUT;
 		case EvqFragData:            return sw::Shader::PARAMETER_COLOROUT;
+		case EvqSmooth:              return sw::Shader::PARAMETER_OUTPUT;
+		case EvqFlat:                return sw::Shader::PARAMETER_OUTPUT;
+		case EvqCentroidOut:         return sw::Shader::PARAMETER_OUTPUT;
+		case EvqSmoothIn:            return sw::Shader::PARAMETER_INPUT;
+		case EvqFlatIn:              return sw::Shader::PARAMETER_INPUT;
+		case EvqCentroidIn:          return sw::Shader::PARAMETER_INPUT;
 		default: UNREACHABLE();
 		}
 
@@ -1893,6 +1911,10 @@ namespace glsl
 		case EvqAttribute:           return attributeRegister(operand);
 		case EvqVaryingIn:           return varyingRegister(operand);
 		case EvqVaryingOut:          return varyingRegister(operand);
+		case EvqVertexIn:            return attributeRegister(operand);
+		case EvqFragmentOut:         return 0;
+		case EvqVertexOut:           return varyingRegister(operand);
+		case EvqFragmentIn:          return varyingRegister(operand);
 		case EvqInvariantVaryingIn:  return varyingRegister(operand);
 		case EvqInvariantVaryingOut: return varyingRegister(operand);
 		case EvqUniform:             return uniformRegister(operand);
@@ -1908,6 +1930,12 @@ namespace glsl
 		case EvqPointCoord:          return varyingRegister(operand);
 		case EvqFragColor:           return 0;
 		case EvqFragData:            return 0;
+		case EvqSmooth:              return varyingRegister(operand);
+		case EvqFlat:                return varyingRegister(operand);
+		case EvqCentroidOut:         return varyingRegister(operand);
+		case EvqSmoothIn:            return varyingRegister(operand);
+		case EvqFlatIn:              return varyingRegister(operand);
+		case EvqCentroidIn:          return varyingRegister(operand);
 		default: UNREACHABLE();
 		}
 
@@ -2053,7 +2081,7 @@ namespace glsl
 		if(var == -1)
 		{
 			var = allocate(varyings, varying);
-			int componentCount = varying->getNominalSize();
+			int componentCount = varying->isMatrix() ? varying->getSecondarySize() : varying->getNominalSize();
 			int registerCount = varying->totalRegisterCount();
 
 			if(pixelShader)
@@ -2346,7 +2374,7 @@ namespace glsl
 
 	void OutputASM::declareUniform(const TType &type, const TString &name, int index)
 	{
-		const TTypeList *structure = type.getStruct();
+		const TStructure *structure = type.getStruct();
 		ActiveUniforms &activeUniforms = shaderObject->activeUniforms;
 
 		if(!structure)
@@ -2363,15 +2391,16 @@ namespace glsl
 		}
 		else
 		{
+			const TFieldList& fields = structure->fields();
 			if(type.isArray())
 			{
 				int elementIndex = index;
 
 				for(int i = 0; i < type.getArraySize(); i++)
 				{
-					for(size_t j = 0; j < structure->size(); j++)
+					for(size_t j = 0; j < fields.size(); j++)
 					{
-						const TType &fieldType = *(*structure)[j].type;
+						const TType &fieldType = *(fields[j]->type());
 						const TString &fieldName = fieldType.getFieldName();
 
 						const TString uniformName = name + "[" + str(i) + "]." + fieldName;
@@ -2384,9 +2413,9 @@ namespace glsl
 			{
 				int fieldIndex = index;
 
-				for(size_t i = 0; i < structure->size(); i++)
+				for(size_t i = 0; i < fields.size(); i++)
 				{
-					const TType &fieldType = *(*structure)[i].type;
+					const TType &fieldType = *(fields[i]->type());
 					const TString &fieldName = fieldType.getFieldName();
 
 					const TString uniformName = name + "." + fieldName;

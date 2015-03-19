@@ -67,6 +67,8 @@ WHICH GENERATES THE GLSL ES PARSER (glslang_tab.cpp AND glslang_tab.h).
             TIntermNodePair nodePair;
             TIntermTyped* intermTypedNode;
             TIntermAggregate* intermAggregate;
+            TIntermSwitch* intermSwitch;
+            TIntermCase* intermCase;
         };
         union {
             TPublicType type;
@@ -75,8 +77,8 @@ WHICH GENERATES THE GLSL ES PARSER (glslang_tab.cpp AND glslang_tab.h).
             TQualifier qualifier;
             TFunction* function;
             TParameter param;
-            TTypeLine typeLine;
-            TTypeList* typeList;
+            TField* field;
+            TFieldList* fieldList;
         };
     } interm;
 }
@@ -165,6 +167,8 @@ extern void yyerror(TParseContext* context, const char* reason);
 %type <interm.intermNode> declaration external_declaration
 %type <interm.intermNode> for_init_statement compound_statement_no_new_scope
 %type <interm.nodePair> selection_rest_statement for_rest_statement
+%type <interm.intermSwitch> switch_statement
+%type <interm.intermCase> case_label
 %type <interm.intermNode> iteration_statement jump_statement statement_no_new_scope statement_with_scope
 %type <interm> single_declaration init_declarator_list
 
@@ -176,12 +180,14 @@ extern void yyerror(TParseContext* context, const char* reason);
 %type <interm.type> type_qualifier fully_specified_type type_specifier storage_qualifier interpolation_qualifier
 %type <interm.type> type_specifier_no_prec type_specifier_nonarray
 %type <interm.type> struct_specifier
-%type <interm.typeLine> struct_declarator
-%type <interm.typeList> struct_declarator_list struct_declaration struct_declaration_list
+%type <interm.field> struct_declarator
+%type <interm.fieldList> struct_declarator_list struct_declaration struct_declaration_list
 %type <interm.function> function_header function_declarator function_identifier
 %type <interm.function> function_header_with_parameters function_call_header
 %type <interm> function_call_header_with_parameters function_call_header_no_parameters function_call_generic function_prototype
 %type <interm> function_call_or_method
+
+%type <lex> enter_struct
 
 %start translation_unit
 %%
@@ -255,207 +261,19 @@ postfix_expression
         $$ = $1;
     }
     | postfix_expression LEFT_BRACKET integer_expression RIGHT_BRACKET {
-        if (!$1->isArray() && !$1->isMatrix() && !$1->isVector()) {
-            if ($1->getAsSymbolNode())
-                context->error($2.line, " left of '[' is not of type array, matrix, or vector ", $1->getAsSymbolNode()->getSymbol().c_str());
-            else
-                context->error($2.line, " left of '[' is not of type array, matrix, or vector ", "expression");
-            context->recover();
-        }
-        if ($1->getType().getQualifier() == EvqConstExpr && $3->getQualifier() == EvqConstExpr) {
-            if ($1->isArray()) { // constant folding for arrays
-                $$ = context->addConstArrayNode($3->getAsConstantUnion()->getIConst(0), $1, $2.line);
-            } else if ($1->isVector()) {  // constant folding for vectors
-                TVectorFields fields;
-                fields.num = 1;
-                fields.offsets[0] = $3->getAsConstantUnion()->getIConst(0); // need to do it this way because v.xy sends fields integer array
-                $$ = context->addConstVectorNode(fields, $1, $2.line);
-            } else if ($1->isMatrix()) { // constant folding for matrices
-                $$ = context->addConstMatrixNode($3->getAsConstantUnion()->getIConst(0), $1, $2.line);
-            }
-        } else {
-            if ($3->getQualifier() == EvqConstExpr) {
-                if (($1->isVector() || $1->isMatrix()) && $1->getType().getNominalSize() <= $3->getAsConstantUnion()->getIConst(0) && !$1->isArray() ) {
-                    std::stringstream extraInfoStream;
-                    extraInfoStream << "field selection out of range '" << $3->getAsConstantUnion()->getIConst(0) << "'";
-                    std::string extraInfo = extraInfoStream.str();
-                    context->error($2.line, "", "[", extraInfo.c_str());
-                    context->recover();
-                } else {
-                    if ($1->isArray()) {
-                        if ($1->getType().getArraySize() == 0) {
-                            if ($1->getType().getMaxArraySize() <= $3->getAsConstantUnion()->getIConst(0)) {
-                                if (context->arraySetMaxSize($1->getAsSymbolNode(), $1->getTypePointer(), $3->getAsConstantUnion()->getIConst(0), true, $2.line))
-                                    context->recover();
-                            } else {
-                                if (context->arraySetMaxSize($1->getAsSymbolNode(), $1->getTypePointer(), 0, false, $2.line))
-                                    context->recover();
-                            }
-                        } else if ( $3->getAsConstantUnion()->getIConst(0) >= $1->getType().getArraySize()) {
-                            std::stringstream extraInfoStream;
-                            extraInfoStream << "array index out of range '" << $3->getAsConstantUnion()->getIConst(0) << "'";
-                            std::string extraInfo = extraInfoStream.str();
-                            context->error($2.line, "", "[", extraInfo.c_str());
-                            context->recover();
-                        }
-                    }
-                    $$ = context->intermediate.addIndex(EOpIndexDirect, $1, $3, $2.line);
-                }
-            } else {
-                if ($1->isArray() && $1->getType().getArraySize() == 0) {
-                    context->error($2.line, "", "[", "array must be redeclared with a size before being indexed with a variable");
-                    context->recover();
-                }
-
-                $$ = context->intermediate.addIndex(EOpIndexIndirect, $1, $3, $2.line);
-            }
-        }
-        if ($$ == 0) {
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setFConst(0.0f);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtFloat, EbpHigh, EvqConstExpr), $2.line);
-        } else if ($1->isArray()) {
-            if ($1->getType().getStruct())
-                $$->setType(TType($1->getType().getStruct(), $1->getType().getTypeName()));
-            else
-                $$->setType(TType($1->getBasicType(), $1->getPrecision(), EvqTemporary, $1->getNominalSize(), $1->getSecondarySize()));
-
-            if ($1->getType().getQualifier() == EvqConstExpr)
-                $$->getTypePointer()->setQualifier(EvqConstExpr);
-        } else if ($1->isMatrix() && $1->getType().getQualifier() == EvqConstExpr)
-            $$->setType(TType($1->getBasicType(), $1->getPrecision(), EvqConstExpr, $1->getSecondarySize()));
-        else if ($1->isMatrix())
-            $$->setType(TType($1->getBasicType(), $1->getPrecision(), EvqTemporary, $1->getSecondarySize()));
-        else if ($1->isVector() && $1->getType().getQualifier() == EvqConstExpr)
-            $$->setType(TType($1->getBasicType(), $1->getPrecision(), EvqConstExpr));
-        else if ($1->isVector())
-            $$->setType(TType($1->getBasicType(), $1->getPrecision(), EvqTemporary));
-        else
-            $$->setType($1->getType());
+        $$ = context->addIndexExpression($1, $2.line, $3);
     }
     | function_call {
         $$ = $1;
     }
     | postfix_expression DOT FIELD_SELECTION {
-        if ($1->isArray()) {
-            context->error($3.line, "cannot apply dot operator to an array", ".");
-            context->recover();
-        }
-
-        if ($1->isVector()) {
-            TVectorFields fields;
-            if (! context->parseVectorFields(*$3.string, $1->getNominalSize(), fields, $3.line)) {
-                fields.num = 1;
-                fields.offsets[0] = 0;
-                context->recover();
-            }
-
-            if ($1->getType().getQualifier() == EvqConstExpr) { // constant folding for vector fields
-                $$ = context->addConstVectorNode(fields, $1, $3.line);
-                if ($$ == 0) {
-                    context->recover();
-                    $$ = $1;
-                }
-                else
-                    $$->setType(TType($1->getBasicType(), $1->getPrecision(), EvqConstExpr, (int) (*$3.string).size()));
-            } else {
-                TString vectorString = *$3.string;
-                TIntermTyped* index = context->intermediate.addSwizzle(fields, $3.line);
-                $$ = context->intermediate.addIndex(EOpVectorSwizzle, $1, index, $2.line);
-                $$->setType(TType($1->getBasicType(), $1->getPrecision(), EvqTemporary, (int) vectorString.size()));
-            }
-        } else if ($1->isMatrix()) {
-            TMatrixFields fields;
-            if (! context->parseMatrixFields(*$3.string, $1->getNominalSize(), $1->getSecondarySize(), fields, $3.line)) {
-                fields.wholeRow = false;
-                fields.wholeCol = false;
-                fields.row = 0;
-                fields.col = 0;
-                context->recover();
-            }
-
-            if (fields.wholeRow || fields.wholeCol) {
-                context->error($2.line, " non-scalar fields not implemented yet", ".");
-                context->recover();
-                ConstantUnion *unionArray = new ConstantUnion[1];
-                unionArray->setIConst(0);
-                TIntermTyped* index = context->intermediate.addConstantUnion(unionArray, TType(EbtInt, EbpUndefined, EvqConstExpr), $3.line);
-                $$ = context->intermediate.addIndex(EOpIndexDirect, $1, index, $2.line);
-                $$->setType(TType($1->getBasicType(), $1->getPrecision(),EvqTemporary, $1->getNominalSize()));
-            } else {
-                ConstantUnion *unionArray = new ConstantUnion[1];
-                unionArray->setIConst(fields.col * $1->getNominalSize() + fields.row);
-                TIntermTyped* index = context->intermediate.addConstantUnion(unionArray, TType(EbtInt, EbpUndefined, EvqConstExpr), $3.line);
-                $$ = context->intermediate.addIndex(EOpIndexDirect, $1, index, $2.line);
-                $$->setType(TType($1->getBasicType(), $1->getPrecision()));
-            }
-        } else if ($1->getBasicType() == EbtStruct) {
-            bool fieldFound = false;
-            const TTypeList* fields = $1->getType().getStruct();
-            if (fields == 0) {
-                context->error($2.line, "structure has no fields", "Internal Error");
-                context->recover();
-                $$ = $1;
-            } else {
-                unsigned int i;
-                for (i = 0; i < fields->size(); ++i) {
-                    if ((*fields)[i].type->getFieldName() == *$3.string) {
-                        fieldFound = true;
-                        break;
-                    }
-                }
-                if (fieldFound) {
-                    if ($1->getType().getQualifier() == EvqConstExpr) {
-                        $$ = context->addConstStruct(*$3.string, $1, $2.line);
-                        if ($$ == 0) {
-                            context->recover();
-                            $$ = $1;
-                        }
-                        else {
-                            $$->setType(*(*fields)[i].type);
-                            // change the qualifier of the return type, not of the structure field
-                            // as the structure definition is shared between various structures.
-                            $$->getTypePointer()->setQualifier(EvqConstExpr);
-                        }
-                    } else {
-                        ConstantUnion *unionArray = new ConstantUnion[1];
-                        unionArray->setIConst(i);
-                        TIntermTyped* index = context->intermediate.addConstantUnion(unionArray, *(*fields)[i].type, $3.line);
-                        $$ = context->intermediate.addIndex(EOpIndexDirectStruct, $1, index, $2.line);
-                        $$->setType(*(*fields)[i].type);
-                    }
-                } else {
-                    context->error($2.line, " no such field in structure", $3.string->c_str());
-                    context->recover();
-                    $$ = $1;
-                }
-            }
-        } else {
-            context->error($2.line, " field selection requires structure, vector, or matrix on left hand side", $3.string->c_str());
-            context->recover();
-            $$ = $1;
-        }
-        // don't delete $3.string, it's from the pool
+        $$ = context->addFieldSelectionExpression($1, $2.line, *$3.string, $3.line);
     }
     | postfix_expression INC_OP {
-        if (context->lValueErrorCheck($2.line, "++", $1))
-            context->recover();
-        $$ = context->intermediate.addUnaryMath(EOpPostIncrement, $1, $2.line);
-        if ($$ == 0) {
-            context->unaryOpError($2.line, "++", $1->getCompleteString());
-            context->recover();
-            $$ = $1;
-        }
+        $$ = context->addUnaryMathLValue(EOpPostIncrement, $1, $2.line);
     }
     | postfix_expression DEC_OP {
-        if (context->lValueErrorCheck($2.line, "--", $1))
-            context->recover();
-        $$ = context->intermediate.addUnaryMath(EOpPostDecrement, $1, $2.line);
-        if ($$ == 0) {
-            context->unaryOpError($2.line, "--", $1->getCompleteString());
-            context->recover();
-            $$ = $1;
-        }
+        $$ = context->addUnaryMathLValue(EOpPostDecrement, $1, $2.line);
     }
     ;
 
@@ -1076,6 +894,14 @@ constant_expression
     }
     ;
 
+enter_struct
+    : IDENTIFIER LEFT_BRACE {
+        if (context->enterStructDeclaration($1.line, *$1.string))
+            context->recover();
+        $$ = $1;
+    }
+    ;
+
 declaration
     : function_prototype SEMICOLON   {
         TFunction &function = *($1.function);
@@ -1114,6 +940,22 @@ declaration
             context->error($1.line, "illegal type argument for default precision qualifier", getBasicString($3.type));
             context->recover();
         }
+        $$ = 0;
+    }
+    | type_qualifier enter_struct struct_declaration_list RIGHT_BRACE SEMICOLON {
+        ES3_ONLY(getQualifierString($1.qualifier), $1.line);
+        $$ = context->addInterfaceBlock($1, $2.line, *$2.string, $3, NULL, $1.line, NULL, $1.line);
+    }
+    | type_qualifier enter_struct struct_declaration_list RIGHT_BRACE IDENTIFIER SEMICOLON {
+        ES3_ONLY(getQualifierString($1.qualifier), $1.line);
+        $$ = context->addInterfaceBlock($1, $2.line, *$2.string, $3, $5.string, $5.line, NULL, $1.line);
+    }
+    | type_qualifier enter_struct struct_declaration_list RIGHT_BRACE IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET SEMICOLON {
+        ES3_ONLY(getQualifierString($1.qualifier), $1.line);
+        $$ = context->addInterfaceBlock($1, $2.line, *$2.string, $3, $5.string, $5.line, $7, $6.line);
+    }
+    | type_qualifier SEMICOLON {
+        context->parseGlobalLayoutQualifier($1);
         $$ = 0;
     }
     ;
@@ -1573,30 +1415,14 @@ fully_specified_type
         $$ = $1;
 
         if ($1.array) {
-            context->error($1.line, "not supported", "first-class array");
-            context->recover();
-            $1.setArray(false);
+            ES3_ONLY("[]", $1.line);
+            if (context->getShaderVersion() != 300) {
+                $1.clearArrayness();
+            }
         }
     }
     | type_qualifier type_specifier  {
-        if ($2.array) {
-            context->error($2.line, "not supported", "first-class array");
-            context->recover();
-            $2.setArray(false);
-        }
-
-        if ($1.qualifier == EvqAttribute &&
-            ($2.type == EbtBool || $2.type == EbtInt)) {
-            context->error($2.line, "cannot be bool or int", getQualifierString($1.qualifier));
-            context->recover();
-        }
-        if (($1.qualifier == EvqVaryingIn || $1.qualifier == EvqVaryingOut) &&
-            ($2.type == EbtBool || $2.type == EbtInt)) {
-            context->error($2.line, "cannot be bool or int", getQualifierString($1.qualifier));
-            context->recover();
-        }
-        $$ = $2;
-        $$.qualifier = $1.qualifier;
+        $$ = context->addFullySpecifiedType($1.qualifier, $1.invariant, $1.layoutQualifier, $2);
     }
     ;
 
@@ -1671,24 +1497,32 @@ storage_qualifier
     }
     | IN_QUAL {
 		ES3_ONLY("in", $1.line);
-        $$.qualifier = (context->shaderType == GL_FRAGMENT_SHADER) ? EvqVaryingIn : EvqAttribute;
+        $$.qualifier = (context->shaderType == GL_FRAGMENT_SHADER) ? EvqFragmentIn : EvqVertexIn;
 		$$.line = $1.line;
     }
     | OUT_QUAL {
 		ES3_ONLY("out", $1.line);
-        $$.qualifier = (context->shaderType == GL_FRAGMENT_SHADER) ? EvqFragColor : EvqVaryingOut;
+        $$.qualifier = (context->shaderType == GL_FRAGMENT_SHADER) ? EvqFragmentOut : EvqVertexOut;
 		$$.line = $1.line;
     }
     | CENTROID IN_QUAL {
-		ES3_ONLY("in", $1.line);
-	    // FIXME: Handle centroid qualifier
-        $$.qualifier = (context->shaderType == GL_FRAGMENT_SHADER) ? EvqVaryingIn : EvqAttribute;
+		ES3_ONLY("centroid in", $1.line);
+        if (context->shaderType == GL_VERTEX_SHADER)
+        {
+            context->error($1.line, "invalid storage qualifier", "it is an error to use 'centroid in' in the vertex shader");
+            context->recover();
+        }
+        $$.qualifier = (context->shaderType == GL_FRAGMENT_SHADER) ? EvqCentroidIn : EvqVertexIn;
 		$$.line = $2.line;
     }
 	| CENTROID OUT_QUAL {
-		ES3_ONLY("out", $1.line);
-	    // FIXME: Handle centroid qualifier
-        $$.qualifier = (context->shaderType == GL_FRAGMENT_SHADER) ? EvqFragColor : EvqVaryingOut;
+		ES3_ONLY("centroid out", $1.line);
+        if (context->shaderType == GL_FRAGMENT_SHADER)
+        {
+            context->error($1.line, "invalid storage qualifier", "it is an error to use 'centroid out' in the fragment shader");
+            context->recover();
+        }
+        $$.qualifier = (context->shaderType == GL_FRAGMENT_SHADER) ? EvqFragmentOut : EvqCentroidOut;
 		$$.line = $2.line;
     }
 	| UNIFORM {
@@ -2012,24 +1846,10 @@ type_specifier_nonarray
 
 struct_specifier
     : STRUCT IDENTIFIER LEFT_BRACE { if (context->enterStructDeclaration($2.line, *$2.string)) context->recover(); } struct_declaration_list RIGHT_BRACE {
-        if (context->reservedErrorCheck($2.line, *$2.string))
-            context->recover();
-
-        TType* structure = new TType($5, *$2.string);
-        TVariable* userTypeDef = new TVariable($2.string, *structure, true);
-        if (! context->symbolTable.declare(*userTypeDef)) {
-            context->error($2.line, "redefinition", $2.string->c_str(), "struct");
-            context->recover();
-        }
-        $$.setBasic(EbtStruct, EvqTemporary, $1.line);
-        $$.userDef = structure;
-        context->exitStructDeclaration();
+        $$ = context->addStructure($1.line, $2.line, $2.string, $5);
     }
     | STRUCT LEFT_BRACE { if (context->enterStructDeclaration($2.line, *$2.string)) context->recover(); } struct_declaration_list RIGHT_BRACE {
-        TType* structure = new TType($4, TString(""));
-        $$.setBasic(EbtStruct, EvqTemporary, $1.line);
-        $$.userDef = structure;
-        context->exitStructDeclaration();
+        $$ = context->addStructure($1.line, $1.line, NewPoolTString(""), $4);
     }
     ;
 
@@ -2041,8 +1861,8 @@ struct_declaration_list
         $$ = $1;
         for (unsigned int i = 0; i < $2->size(); ++i) {
             for (unsigned int j = 0; j < $$->size(); ++j) {
-                if ((*$$)[j].type->getFieldName() == (*$2)[i].type->getFieldName()) {
-                    context->error((*$2)[i].line, "duplicate field name in structure:", "struct", (*$2)[i].type->getFieldName().c_str());
+                if ((*$$)[j]->type()->getFieldName() == (*$2)[i]->type()->getFieldName()) {
+                    context->error((*$2)[i]->line(), "duplicate field name in structure:", "struct", (*$2)[i]->type()->getFieldName().c_str());
                     context->recover();
                 }
             }
@@ -2053,39 +1873,19 @@ struct_declaration_list
 
 struct_declaration
     : type_specifier struct_declarator_list SEMICOLON {
-        $$ = $2;
-
-        if (context->voidErrorCheck($1.line, (*$2)[0].type->getFieldName(), $1)) {
-            context->recover();
-        }
-        for (unsigned int i = 0; i < $$->size(); ++i) {
-            //
-            // Careful not to replace already known aspects of type, like array-ness
-            //
-            TType* type = (*$$)[i].type;
-            type->setBasicType($1.type);
-            type->setNominalSize($1.primarySize);
-            type->setSecondarySize($1.secondarySize);
-            type->setPrecision($1.precision);
-
-            // don't allow arrays of arrays
-            if (type->isArray()) {
-                if (context->arrayTypeErrorCheck($1.line, $1))
-                    context->recover();
-            }
-            if ($1.array)
-                type->setArraySize($1.arraySize);
-            if ($1.userDef) {
-                type->setStruct($1.userDef->getStruct());
-                type->setTypeName($1.userDef->getTypeName());
-            }
-        }
+        $$ = context->addStructDeclaratorList($1, $2);
+    }
+    | type_qualifier type_specifier struct_declarator_list SEMICOLON {
+        // ES3 Only, but errors should be handled elsewhere
+        $2.qualifier = $1.qualifier;
+        $2.layoutQualifier = $1.layoutQualifier;
+        $$ = context->addStructDeclaratorList($2, $3);
     }
     ;
 
 struct_declarator_list
     : struct_declarator {
-        $$ = NewPoolTTypeList();
+        $$ = NewPoolTFieldList();
         $$->push_back($1);
     }
     | struct_declarator_list COMMA struct_declarator {
@@ -2098,22 +1898,20 @@ struct_declarator
         if (context->reservedErrorCheck($1.line, *$1.string))
             context->recover();
 
-        $$.type = new TType(EbtVoid, EbpUndefined);
-        $$.line = $1.line;
-        $$.type->setFieldName(*$1.string);
+        TType* type = new TType(EbtVoid, EbpUndefined);
+        $$ = new TField(type, $1.string, $1.line);
     }
     | IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET {
         if (context->reservedErrorCheck($1.line, *$1.string))
             context->recover();
 
-        $$.type = new TType(EbtVoid, EbpUndefined);
-        $$.line = $1.line;
-        $$.type->setFieldName(*$1.string);
-
+        TType* type = new TType(EbtVoid, EbpUndefined);
         int size;
-        if (context->arraySizeErrorCheck($2.line, $3, size))
+        if (context->arraySizeErrorCheck($3->getLine(), $3, size))
             context->recover();
-        $$.type->setArraySize(size);
+        $$->type()->setArraySize(size);
+
+        $$ = new TField(type, $1.string, $1.line);
     }
     ;
 
@@ -2136,6 +1934,8 @@ simple_statement
     : declaration_statement { $$ = $1; }
     | expression_statement  { $$ = $1; }
     | selection_statement   { $$ = $1; }
+    | switch_statement      { $$ = $1; }
+    | case_label            { $$ = $1; }
     | iteration_statement   { $$ = $1; }
     | jump_statement        { $$ = $1; }
     ;
@@ -2208,7 +2008,23 @@ selection_rest_statement
     }
     ;
 
-// Grammar Note:  No 'switch'.  Switch statements not supported.
+switch_statement
+    : SWITCH LEFT_PAREN expression RIGHT_PAREN { context->incrSwitchNestingLevel(); } compound_statement {
+        $$ = context->addSwitch($3, $6, $1.line);
+        context->decrSwitchNestingLevel();
+    }
+    ;
+
+case_label
+    : CASE constant_expression COLON {
+        $$ = context->addCase($2, $1.line);
+    }
+    | DEFAULT COLON {
+        $$ = context->addDefault($1.line);
+    }
+    ;
+
+// Grammar Note:  Labeled statements for SWITCH only; 'goto' is not supported.
 
 condition
     // In 1996 c++ draft, conditions can include single declarations
@@ -2284,40 +2100,20 @@ for_rest_statement
 
 jump_statement
     : CONTINUE SEMICOLON {
-        if (context->loopNestingLevel <= 0) {
-            context->error($1.line, "continue statement only allowed in loops", "");
-            context->recover();
-        }
-        $$ = context->intermediate.addBranch(EOpContinue, $1.line);
+        $$ = context->addBranch(EOpContinue, $1.line);
     }
     | BREAK SEMICOLON {
-        if (context->loopNestingLevel <= 0) {
-            context->error($1.line, "break statement only allowed in loops", "");
-            context->recover();
-        }
-        $$ = context->intermediate.addBranch(EOpBreak, $1.line);
+        $$ = context->addBranch(EOpBreak, $1.line);
     }
     | RETURN SEMICOLON {
-        $$ = context->intermediate.addBranch(EOpReturn, $1.line);
-        if (context->currentFunctionType->getBasicType() != EbtVoid) {
-            context->error($1.line, "non-void function must return a value", "return");
-            context->recover();
-        }
+        $$ = context->addBranch(EOpReturn, $1.line);
     }
     | RETURN expression SEMICOLON {
-        $$ = context->intermediate.addBranch(EOpReturn, $2, $1.line);
-        context->functionReturnsValue = true;
-        if (context->currentFunctionType->getBasicType() == EbtVoid) {
-            context->error($1.line, "void function cannot return a value", "return");
-            context->recover();
-        } else if (*(context->currentFunctionType) != $2->getType()) {
-            context->error($1.line, "function return is not matching type:", "return");
-            context->recover();
-        }
+        $$ = context->addBranch(EOpReturn, $2, $1.line);
     }
     | DISCARD SEMICOLON {
         FRAG_ONLY("discard", $1.line);
-        $$ = context->intermediate.addBranch(EOpKill, $1.line);
+        $$ = context->addBranch(EOpKill, $1.line);
     }
     ;
 

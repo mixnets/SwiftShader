@@ -151,6 +151,7 @@ Context::Context(const egl::Config *config, const Context *shareContext, EGLint 
     bindReadFramebuffer(0);
     bindDrawFramebuffer(0);
     bindRenderbuffer(0);
+    bindGenericUniformBuffer(0);
     bindTransformFeedback(0);
 
 	mState.readFramebufferColorIndex = 0;
@@ -251,7 +252,7 @@ Context::~Context()
 	mState.copyWriteBuffer = NULL;
 	mState.pixelPackBuffer = NULL;
 	mState.pixelUnpackBuffer = NULL;
-	mState.uniformBuffer = NULL;
+	mState.genericUniformBuffer = NULL;
 	mState.renderbuffer = NULL;
 
 	for(int i = 0; i < MAX_COMBINED_TEXTURE_IMAGE_UNITS; ++i)
@@ -635,7 +636,10 @@ bool Context::isDitherEnabled() const
 
 void Context::setPrimitiveRestartFixedIndex(bool enabled)
 {
-    UNIMPLEMENTED();
+	if(enabled)
+	{
+		UNIMPLEMENTED();
+	}
     mState.primitiveRestartFixedIndex = enabled;
 }
 
@@ -646,7 +650,10 @@ bool Context::isPrimitiveRestartFixedIndexEnabled() const
 
 void Context::setRasterizerDiscard(bool enabled)
 {
-    UNIMPLEMENTED();
+	if(enabled)
+	{
+		UNIMPLEMENTED();
+	}
     mState.rasterizerDiscard = enabled;
 }
 
@@ -1196,13 +1203,6 @@ void Context::bindTransformFeedbackBuffer(GLuint buffer)
 	}
 }
 
-void Context::bindUniformBuffer(GLuint buffer)
-{
-	mResourceManager->checkBufferAllocation(buffer);
-
-	mState.uniformBuffer = getBuffer(buffer);
-}
-
 void Context::bindTexture2D(GLuint texture)
 {
     mResourceManager->checkTextureAllocation(texture, TEXTURE_2D);
@@ -1276,6 +1276,44 @@ bool Context::bindVertexArray(GLuint array)
 	mState.vertexArray = array;
 
 	return !!vertexArray;
+}
+
+void Context::bindGenericUniformBuffer(GLuint buffer)
+{
+	mResourceManager->checkBufferAllocation(buffer);
+
+	mState.genericUniformBuffer = getBuffer(buffer);
+}
+
+void Context::bindIndexedUniformBuffer(GLuint buffer, GLuint index, GLintptr offset, GLsizeiptr size)
+{
+	mResourceManager->checkBufferAllocation(buffer);
+
+	Buffer* bufferObject = getBuffer(buffer);
+	if(bufferObject)
+	{
+		bufferObject->setOffsetSize(offset, size);
+	}
+	mState.uniformBuffers[index] = bufferObject;
+}
+
+void Context::bindGenericTransformFeedbackBuffer(GLuint buffer)
+{
+	mResourceManager->checkBufferAllocation(buffer);
+
+	getTransformFeedback()->setGenericBuffer(getBuffer(buffer));
+}
+
+void Context::bindIndexedTransformFeedbackBuffer(GLuint buffer, GLuint index, GLintptr offset, GLsizeiptr size)
+{
+	mResourceManager->checkBufferAllocation(buffer);
+
+	Buffer* bufferObject = getBuffer(buffer);
+	if(bufferObject)
+	{
+		bufferObject->setOffsetSize(offset, size);
+	}
+	getTransformFeedback()->setBuffer(index, bufferObject);
 }
 
 bool Context::bindTransformFeedback(GLuint id)
@@ -1563,9 +1601,9 @@ Buffer *Context::getPixelUnpackBuffer() const
 	return mState.pixelUnpackBuffer;
 }
 
-Buffer *Context::getUniformBuffer() const
+Buffer *Context::getGenericUniformBuffer() const
 {
-	return mState.uniformBuffer;
+	return mState.genericUniformBuffer;
 }
 
 bool Context::getBuffer(GLenum target, es2::Buffer **buffer) const
@@ -1617,7 +1655,7 @@ bool Context::getBuffer(GLenum target, es2::Buffer **buffer) const
 	case GL_UNIFORM_BUFFER:
 		if(clientVersion >= 3)
 		{
-			*buffer = getUniformBuffer();
+			*buffer = getGenericUniformBuffer();
 			break;
 		}
 		else return false;
@@ -1790,6 +1828,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
     // GetIntegerv as its native query function. As it would require conversion in any
     // case, this should make no difference to the calling application. You may find it in 
     // Context::getFloatv.
+
     switch (pname)
     {
     case GL_MAX_VERTEX_ATTRIBS:               *params = MAX_VERTEX_ATTRIBS;               break;
@@ -2065,7 +2104,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = IMPLEMENTATION_MAX_TEXTURE_SIZE;
 		break;
 	case GL_MAX_COLOR_ATTACHMENTS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_COLOR_ATTACHMENTS;
 		break;
 	case GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS: // integer, at least 50048
@@ -2081,7 +2119,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS;
 		break;
 	case GL_MAX_DRAW_BUFFERS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_DRAW_BUFFERS;
 		break;
 	case GL_MAX_ELEMENT_INDEX:
@@ -2122,7 +2159,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = 64;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS: // integer, at least 4
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS: // integer, at least 4
@@ -2134,7 +2170,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = 16384;
 		break;
 	case GL_MAX_UNIFORM_BUFFER_BINDINGS: // integer, at least 36
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS;
 		break;
 	case GL_MAX_VARYING_COMPONENTS: // integer, at least 60
@@ -2214,7 +2249,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_UNIFORM_BUFFER_BINDING: // name, initially 0
 		if(clientVersion >= 3)
 		{
-			*params = mState.uniformBuffer.name();
+			*params = mState.genericUniformBuffer.name();
 		}
 		else
 		{
@@ -2222,15 +2257,27 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		}
 		break;
 	case GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT: // integer, defaults to 1
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_UNIFORM_BUFFER_OFFSET_ALIGNMENT;
 		break;
 	case GL_UNIFORM_BUFFER_SIZE: // indexed[n] 64-bit integer, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		if(clientVersion >= 3)
+		{
+			*params = mState.genericUniformBuffer->size();
+		}
+		else
+		{
+			return false;
+		}
 		break;
 	case GL_UNIFORM_BUFFER_START: // indexed[n] 64-bit integer, initially 0
-		UNIMPLEMENTED();
+		if(clientVersion >= 3)
+		{
+			*params = mState.genericUniformBuffer->offset();
+		}
+		else
+		{
+			return false;
+		}
 		*params = 0;
 		break;
 	case GL_UNPACK_IMAGE_HEIGHT: // integer, initially 0

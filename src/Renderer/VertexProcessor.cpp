@@ -802,6 +802,7 @@ namespace sw
 		state.pointSizeActive = context->pointSizeActive();
 		state.pointScaleActive = context->pointScaleActive();
 
+		state.instanceID = context->instanceID;
 		state.preTransformed = context->preTransformed;
 		state.superSampling = context->getSuperSampleCount() > 1;
 		state.multiSampling = context->getMultiSampleCount() > 1;
