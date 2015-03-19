@@ -62,6 +62,8 @@ namespace sw
 
 	void PixelProgram::applyShader(PixelRoutine::Registers &rBase, Int cMask[4])
 	{
+		shader->print("FragmentShader-%0.8X.txt", state.shaderID);
+
 		Registers& r = *static_cast<Registers*>(&rBase);
 
 		r.enableIndex = 0;
@@ -225,6 +227,12 @@ namespace sw
 			case Shader::OPCODE_FLOATBITSTOUINT:
 			case Shader::OPCODE_INTBITSTOFLOAT:
 			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                                   break;
+			case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d, s0);                     break;
+			case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d, s0);                     break;
+			case Shader::OPCODE_PACKHALF2x16:    packHalf2x16(d, s0);                      break;
+			case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0);                   break;
+			case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0);                   break;
+			case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0);                    break;
 			case Shader::OPCODE_POWX:       powx(d, s0, s1, pp);                           break;
 			case Shader::OPCODE_POW:        pow(d, s0, s1, pp);                            break;
 			case Shader::OPCODE_SGN:        sgn(d, s0);                                    break;
@@ -267,6 +275,7 @@ namespace sw
 			case Shader::OPCODE_TEX:        TEXLD(r, d, s0, src1, project, bias);          break;
 			case Shader::OPCODE_TEXLDD:     TEXLDD(r, d, s0, src1, s2, s3, project, bias); break;
 			case Shader::OPCODE_TEXLDL:     TEXLDL(r, d, s0, src1, project, bias);         break;
+			case Shader::OPCODE_TEXSIZE:    TEXSIZE(r, d, s0.x, src1);                     break;
 			case Shader::OPCODE_TEXKILL:    TEXKILL(cMask, d, dst.mask);                   break;
 			case Shader::OPCODE_DISCARD:    DISCARD(r, cMask, instruction);                break;
 			case Shader::OPCODE_DFDX:       DFDX(d, s0);                                   break;
@@ -1018,6 +1027,19 @@ namespace sw
 		dst.y = tmp[(src1.swizzle >> 2) & 0x3];
 		dst.z = tmp[(src1.swizzle >> 4) & 0x3];
 		dst.w = tmp[(src1.swizzle >> 6) & 0x3];
+	}
+
+	void PixelProgram::TEXSIZE(Registers &r, Vector4f &dst, Float4 &lod, const Src &src1)
+	{
+		Pointer<Byte> textureMipmap = r.data + OFFSET(DrawData, mipmap) + src1.index * sizeof(Texture) + OFFSET(Texture, mipmap);
+		Float lodBias[4] = { lod.x, lod.y, lod.z, lod.w };
+		for(int i = 0; i < 4; ++i)
+		{
+			Pointer<Byte> mipmap = textureMipmap + (As<Int>(lodBias[i]) + Int(1)) * sizeof(Mipmap);
+			dst.x = Insert(dst.x, As<Float>(Int(*Pointer<Short>(mipmap + OFFSET(Mipmap, width)))), i);
+			dst.y = Insert(dst.y, As<Float>(Int(*Pointer<Short>(mipmap + OFFSET(Mipmap, height)))), i);
+			dst.z = Insert(dst.z, As<Float>(Int(*Pointer<Short>(mipmap + OFFSET(Mipmap, depth)))), i);
+		}
 	}
 
 	void PixelProgram::TEXKILL(Int cMask[4], Vector4f &src, unsigned char mask)

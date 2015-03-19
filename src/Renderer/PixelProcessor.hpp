@@ -79,6 +79,7 @@ namespace sw
 			unsigned int multiSampleMask                      : 4;
 			TransparencyAntialiasing transparencyAntialiasing : BITS(TRANSPARENCY_LAST);
 			bool centroid                                     : 1;
+			bool smooth                                       : 1;
 
 			LogicalOperation logicalOperation : BITS(LOGICALOP_LAST);
 
@@ -91,6 +92,7 @@ namespace sw
 				unsigned char flat : 4;
 				unsigned char project : 2;
 				bool centroid : 1;
+				bool smooth : 1;
 			};
 
 			union
@@ -225,6 +227,16 @@ namespace sw
 		virtual void setMipmapLOD(unsigned int sampler, float bias);
 		virtual void setBorderColor(unsigned int sampler, const Color<float> &borderColor);
 		virtual void setMaxAnisotropy(unsigned int sampler, float maxAnisotropy);
+		virtual void setSwizzleR(unsigned int sampler, SwizzleType swizzleR);
+		virtual void setSwizzleG(unsigned int sampler, SwizzleType swizzleG);
+		virtual void setSwizzleB(unsigned int sampler, SwizzleType swizzleB);
+		virtual void setSwizzleA(unsigned int sampler, SwizzleType swizzleA);
+		virtual void setCompFunc(unsigned int sampler, CompareFunc compFunc);
+		virtual void setCompMode(unsigned int sampler, CompareMode compMode);
+		virtual void setBaseLevel(unsigned int sampler, int baseLevel);
+		virtual void setMaxLevel(unsigned int sampler, int maxLevel);
+		virtual void setMinLod(unsigned int sampler, float minLod);
+		virtual void setMaxLod(unsigned int sampler, float maxLod);
 
 		virtual void setWriteSRGB(bool sRGB);
 		virtual void setDepthBufferEnable(bool depthBufferEnable);

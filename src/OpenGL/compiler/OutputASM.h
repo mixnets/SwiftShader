@@ -164,6 +164,24 @@ namespace glsl
 			FUNCTION
 		};
 
+		struct TextureFunction
+		{
+			TextureFunction(const TString& name);
+
+			enum Method
+			{
+				IMPLICIT,   // Mipmap LOD determined implicitly (standard lookup)
+				LOD,
+				SIZE,   // textureSize()
+				FETCH,
+				GRAD
+			};
+
+			Method method;
+			bool proj;
+			bool offset;
+		};
+
 		void emitShader(Scope scope);
 
 		// Visit AST nodes and output their code to the body stream

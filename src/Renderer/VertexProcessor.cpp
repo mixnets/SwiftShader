@@ -126,7 +126,7 @@ namespace sw
 
 	void VertexProcessor::setFloatConstant(unsigned int index, const float value[4])
 	{
-		if(index < 256)
+		if(index < VERTEX_UNIFORM_VECTORS)
 		{
 			c[index][0] = value[0];
 			c[index][1] = value[1];
@@ -541,6 +541,97 @@ namespace sw
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
 			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMaxAnisotropy(maxAnisotropy);
+		}
+		else ASSERT(false);
+	}
+
+
+	void VertexProcessor::setSwizzleR(unsigned int sampler, SwizzleType swizzleR)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setSwizzleR(swizzleR);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setSwizzleG(unsigned int sampler, SwizzleType swizzleG)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setSwizzleG(swizzleG);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setSwizzleB(unsigned int sampler, SwizzleType swizzleB)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setSwizzleB(swizzleB);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setSwizzleA(unsigned int sampler, SwizzleType swizzleA)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setSwizzleA(swizzleA);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setCompFunc(unsigned int sampler, CompareFunc compFunc)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setCompFunc(compFunc);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setCompMode(unsigned int sampler, CompareMode compMode)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setCompMode(compMode);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setBaseLevel(unsigned int sampler, int baseLevel)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setBaseLevel(baseLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setMaxLevel(unsigned int sampler, int maxLevel)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMaxLevel(maxLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setMinLod(unsigned int sampler, float minLod)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMinLod(minLod);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setMaxLod(unsigned int sampler, float maxLod)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMaxLod(maxLod);
 		}
 		else ASSERT(false);
 	}
