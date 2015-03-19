@@ -71,6 +71,7 @@ public:
 	bool setCompareFunc(GLenum compareFunc);
 	bool setCompareMode(GLenum compareMode);
 	void makeImmutable(GLsizei levels);
+	bool setImmutableLevels(GLsizei levels);
 	bool setMaxLevel(GLint maxLevel);
 	bool setMaxLOD(GLfloat maxLOD);
 	bool setMinLOD(GLfloat minLOD);

@@ -33,7 +33,7 @@ namespace sw
 
 		Float4 Dz[4];
 		Float4 Dw;
-		Float4 Dv[10][4];
+		Float4 Dv[MAX_INPUT_VARYINGS][4];
 		Float4 Df;
 
 		UInt occlusion;
@@ -46,7 +46,7 @@ namespace sw
 
 		bool interpolateZ() const;
 		bool interpolateW() const;
-		Float4 interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective);
+		Float4 interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool smooth, bool perspective);
 
 		const PixelProcessor::State &state;
 		const PixelShader *const shader;

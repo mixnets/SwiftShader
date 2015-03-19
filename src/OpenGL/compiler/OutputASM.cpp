@@ -930,6 +930,7 @@ namespace glsl
 			break;
 		case EOpVectorLogicalNot: if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpLogicalNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
+		case EOpBitwiseNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpPostIncrement:
 			if(visit == PostVisit)
 			{
@@ -1828,6 +1829,79 @@ namespace glsl
 		return emit(op, dst, 0, src0, 0, src1, 0, src2, 0, src3, 0, src4, 0);
 	}
 
+	void OutputASM::emitBlockUnpacking(sw::Shader::Opcode op, Temporary** blockTemporaries, TIntermNode** src, int* index)
+	{
+		for(int i = 0; i < 5; ++i)
+		{
+			TIntermTyped* srcIntermTyped = src[i] ? src[i]->getAsTyped() : nullptr;
+			if(srcIntermTyped)
+			{
+				TInterfaceBlock* srcBlock = srcIntermTyped->getType().getInterfaceBlock();
+				const TType& srcType = srcIntermTyped->getType();
+				if(srcBlock && (srcType.getQualifier() == EvqUniform))
+				{
+					const ArgumentInfo argumentInfo = getArgumentInfo(src[i], index[i]);
+					const TType &memberType = argumentInfo.typedMemberInfo.type;
+
+					if(memberType.getBasicType() == EbtBool && (op != sw::Shader::OPCODE_I2B))
+					{
+						int arraySize = (memberType.isArray() ? memberType.getArraySize() : 1);
+						ASSERT(argumentInfo.clampedIndex < arraySize);
+
+						blockTemporaries[i] = new Temporary(this);
+
+						// Convert the packed bool, which is currently an int, to a true bool
+						Instruction *instruction = new Instruction(sw::Shader::OPCODE_I2B);
+						instruction->dst.type = registerType(blockTemporaries[i]);
+						instruction->dst.index = registerIndex(blockTemporaries[i]);
+						instruction->src[0].type = sw::Shader::PARAMETER_CONST;
+						instruction->src[0].bufferIndex = argumentInfo.bufferIndex;
+						instruction->src[0].index = argumentInfo.typedMemberInfo.offset + argumentInfo.clampedIndex * argumentInfo.typedMemberInfo.arrayStride;
+
+						shader->append(instruction);
+
+						src[i] = blockTemporaries[i];
+						index[i] = 0;
+					}
+					else if((srcBlock->matrixPacking() == EmpRowMajor) && memberType.isMatrix())
+					{
+						blockTemporaries[i] = new Temporary(this);
+
+						int numCols = memberType.getNominalSize();
+						int numRows = memberType.getSecondarySize();
+						int arraySize = (memberType.isArray() ? memberType.getArraySize() : 1);
+
+						ASSERT(argumentInfo.clampedIndex < (numCols * arraySize));
+
+						sw::Shader::ParameterType dstType = registerType(blockTemporaries[i]);
+						unsigned int dstIndex = registerIndex(blockTemporaries[i]);
+						unsigned int srcSwizzle = (argumentInfo.clampedIndex % numCols) * 0x55;
+						int arrayIndex = argumentInfo.clampedIndex / numCols;
+						int matrixStartOffset = argumentInfo.typedMemberInfo.offset + arrayIndex * argumentInfo.typedMemberInfo.arrayStride;
+
+						for(int j = 0; j < numRows; ++j)
+						{
+							// Transpose the row major matrix
+							Instruction *instruction = new Instruction(sw::Shader::OPCODE_MOV);
+							instruction->dst.type = dstType;
+							instruction->dst.index = dstIndex;
+							instruction->dst.mask = 1 << j;
+							instruction->src[0].type = sw::Shader::PARAMETER_CONST;
+							instruction->src[0].bufferIndex = argumentInfo.bufferIndex;
+							instruction->src[0].index = matrixStartOffset + j * argumentInfo.typedMemberInfo.matrixStride;
+							instruction->src[0].swizzle = srcSwizzle;
+
+							shader->append(instruction);
+						}
+
+						src[i] = blockTemporaries[i];
+						index[i] = 0;
+					}
+				}
+			}
+		}
+	}
+
 	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, int dstIndex, TIntermNode *src0, int index0, TIntermNode *src1, int index1,
 	                             TIntermNode *src2, int index2, TIntermNode *src3, int index3, TIntermNode *src4, int index4)
 	{
@@ -1835,6 +1909,11 @@ namespace glsl
 		{
 			op = sw::Shader::OPCODE_NULL;   // Can't assign to a sampler, but this is hit when indexing sampler arrays
 		}
+
+		Temporary* blockTemporaries[5] = { 0 };
+		TIntermNode* src[5] = { src0, src1, src2, src3, src4 };
+		int index[5] = { index0, index1, index2, index3, index4 };
+		emitBlockUnpacking(op, blockTemporaries, src, index);
 
 		Instruction *instruction = new Instruction(op);
 
@@ -1846,11 +1925,11 @@ namespace glsl
 			instruction->dst.integer = (dst->getBasicType() == EbtInt);
 		}
 
-		argument(instruction->src[0], src0, index0);
-		argument(instruction->src[1], src1, index1);
-		argument(instruction->src[2], src2, index2);
-		argument(instruction->src[3], src3, index3);
-		argument(instruction->src[4], src4, index4);
+		for(int i = 0; i < 5; ++i)
+		{
+			argument(instruction->src[i], src[i], index[i]);
+			delete blockTemporaries[i];
+		}
 
 		shader->append(instruction);
 
@@ -2039,21 +2118,107 @@ namespace glsl
 		return 0;
 	}
 
+	int OutputASM::getBlockId(TIntermTyped *arg)
+	{
+		if(arg)
+		{
+			const TType &type = arg->getType();
+			TInterfaceBlock* block = type.getInterfaceBlock();
+			if(block && (type.getQualifier() == EvqUniform))
+			{
+				// Make sure the uniform block is declared
+				uniformRegister(arg);
+
+				const std::string blockName = block->name().c_str();
+
+				// Fetch uniform block index from array of blocks
+				for(ActiveUniformBlocks::const_iterator it = shaderObject->activeUniformBlocks.begin(); it != shaderObject->activeUniformBlocks.end(); ++it)
+				{
+					const std::string currentBlockName = it->name;
+					if(blockName.compare(currentBlockName) == 0)
+					{
+						return it->blockId;
+					}
+				}
+
+				ASSERT(false);
+			}
+		}
+
+		return -1;
+	}
+
+	OutputASM::ArgumentInfo OutputASM::getArgumentInfo(TIntermNode *argument, int index)
+	{
+		TIntermTyped *arg = argument->getAsTyped();
+		const TType &type = arg->getType();
+		int blockId = getBlockId(arg);
+		ArgumentInfo argumentInfo(BlockMemberInfo::getDefaultBlockInfo(), type, -1, -1);
+		if(blockId != -1)
+		{
+			argumentInfo.bufferIndex = 0;
+			for(int i = 0; i < blockId; ++i)
+			{
+				int blockArraySize = shaderObject->activeUniformBlocks[i].arraySize;
+				argumentInfo.bufferIndex += blockArraySize > 0 ? blockArraySize : 1;
+			}
+
+			const BlockDefinition& blockDefinition = blockDefinitions[blockId];
+
+			BlockDefinition::IndexMap::const_iterator itEnd = blockDefinition.indexMap.end();
+			BlockDefinition::IndexMap::const_iterator it = itEnd;
+
+			argumentInfo.clampedIndex = index;
+			if(type.isInterfaceBlock())
+			{
+				// Offset index to the beginning of the selected instance
+				size_t blockRegisters = type.elementRegisterCount();
+				size_t bufferOffset = argumentInfo.clampedIndex / blockRegisters;
+				argumentInfo.bufferIndex += bufferOffset;
+				argumentInfo.clampedIndex -= bufferOffset * blockRegisters;
+			}
+
+			int regIndex = registerIndex(arg);
+			for(int i = regIndex + argumentInfo.clampedIndex; i >= regIndex; --i)
+			{
+				it = blockDefinition.indexMap.find(i);
+				if(it != itEnd)
+				{
+					argumentInfo.clampedIndex -= (i - regIndex);
+					break;
+				}
+			}
+			ASSERT(it != itEnd);
+
+			argumentInfo.typedMemberInfo = it->second;
+
+			int registerCount = argumentInfo.typedMemberInfo.type.totalRegisterCount();
+			argumentInfo.clampedIndex = (argumentInfo.clampedIndex >= registerCount) ? registerCount - 1 : argumentInfo.clampedIndex;
+		}
+		else
+		{
+			argumentInfo.clampedIndex = (index >= arg->totalRegisterCount()) ? arg->totalRegisterCount() - 1 : index;
+		}
+
+		return argumentInfo;
+	}
+
 	void OutputASM::argument(sw::Shader::SourceParameter &parameter, TIntermNode *argument, int index)
 	{
 		if(argument)
 		{
+			const ArgumentInfo argumentInfo = getArgumentInfo(argument, index);
+			const TType &type = argumentInfo.typedMemberInfo.type;
+
+			int size = registerSize(type, argumentInfo.clampedIndex);
+
 			TIntermTyped *arg = argument->getAsTyped();
-			const TType &type = arg->getType();
-			index = (index >= arg->totalRegisterCount()) ? arg->totalRegisterCount() - 1 : index;
-
-			int size = registerSize(type, index);
-
 			parameter.type = registerType(arg);
+			parameter.bufferIndex = argumentInfo.bufferIndex;
 
 			if(arg->getQualifier() == EvqConstExpr)
 			{
-				int component = componentCount(type, index);
+				int component = componentCount(type, argumentInfo.clampedIndex);
 				ConstantUnion *constants = arg->getAsConstantUnion()->getUnionArrayPointer();
 
 				for(int i = 0; i < 4; i++)
@@ -2074,7 +2239,7 @@ namespace glsl
 			}
 			else
 			{
-				parameter.index = registerIndex(arg) + index;
+				parameter.index = registerIndex(arg) + argumentInfo.clampedIndex;
 
 				if(isSamplerRegister(arg))
 				{
@@ -2107,6 +2272,11 @@ namespace glsl
 							UNREACHABLE(binary->getOp());
 						}
 					}
+				}
+				else if(parameter.bufferIndex != -1)
+				{
+					int stride = (argumentInfo.typedMemberInfo.matrixStride > 0) ? argumentInfo.typedMemberInfo.matrixStride : argumentInfo.typedMemberInfo.arrayStride;
+					parameter.index = argumentInfo.typedMemberInfo.offset + argumentInfo.clampedIndex * stride;
 				}
 			}
 
@@ -2605,7 +2775,7 @@ namespace glsl
 
 			if(pixelShader)
 			{
-				if((var + registerCount) > sw::PixelShader::MAX_INPUT_VARYINGS)
+				if((var + registerCount) > sw::MAX_INPUT_VARYINGS)
 				{
 					mContext.error(varying->getLine(), "Varyings packing failed: Too many varyings", "fragment shader");
 					return 0;
@@ -2632,7 +2802,7 @@ namespace glsl
 			}
 			else if(vertexShader)
 			{
-				if((var + registerCount) > sw::VertexShader::MAX_OUTPUT_VARYINGS)
+				if((var + registerCount) > sw::MAX_OUTPUT_VARYINGS)
 				{
 					mContext.error(varying->getLine(), "Varyings packing failed: Too many varyings", "vertex shader");
 					return 0;
@@ -2706,14 +2876,19 @@ namespace glsl
 
 		if(symbol || block)
 		{
-			int index = lookup(uniforms, uniform);
+			TInterfaceBlock* parentBlock = type.getInterfaceBlock();
+			bool isBlockMember = (!block && parentBlock);
+			int index = isBlockMember ? lookup(uniforms, parentBlock) : lookup(uniforms, uniform);
 
-			if(index == -1)
+			if(index == -1 || isBlockMember)
 			{
-				index = allocate(uniforms, uniform);
+				if(index == -1)
+				{
+					index = allocate(uniforms, uniform, isBlockMember ? TType::TotalRegisterCount(parentBlock) : -1);
+				}
 				const TString &name = symbol ? symbol->getSymbol() : block->name();
 
-				declareUniform(type, name, index);
+				index = declareUniform(type, name, index);
 			}
 
 			return index;
@@ -2867,13 +3042,25 @@ namespace glsl
 		return -1;
 	}
 
-	int OutputASM::allocate(VariableArray &list, TIntermTyped *variable)
+	int OutputASM::lookup(VariableArray &list, TInterfaceBlock *block)
+	{
+		for(unsigned int i = 0; i < list.size(); i++)
+		{
+			if(list[i] && (list[i]->getType().getInterfaceBlock() == block))
+			{
+				return i;   // Pointer match
+			}
+		}
+		return -1;
+	}
+
+	int OutputASM::allocate(VariableArray &list, TIntermTyped *variable, int variableRegisterCount)
 	{
 		int index = lookup(list, variable);
 
 		if(index == -1)
 		{
-			unsigned int registerCount = variable->totalRegisterCount();
+			unsigned int registerCount = (variableRegisterCount == -1) ? variable->totalRegisterCount() : variableRegisterCount;
 
 			for(unsigned int i = 0; i < list.size(); i++)
 			{

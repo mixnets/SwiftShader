@@ -182,6 +182,9 @@
     <ClCompile Include="..\Shader\PixelProgram.cpp">
       <Filter>Source Files\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="..\Renderer\ASTC_Decoder.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="..\Renderer\ETC_Decoder.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
@@ -367,6 +370,9 @@
     </ClInclude>
     <ClInclude Include="..\Shader\PixelPipeline.hpp">
       <Filter>Header Files\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Renderer\ASTC_Decoder.hpp">
+      <Filter>Header Files\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Renderer\ETC_Decoder.hpp">
       <Filter>Header Files\Renderer</Filter>

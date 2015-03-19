@@ -31,7 +31,7 @@ namespace sw
 	{
 		if(!shader || shader->getVersion() < 0x0200 || forceClearRegisters)
 		{
-			for(int i = 0; i < 10; i++)
+			for(int i = 0; i < MAX_INPUT_VARYINGS; i++)
 			{
 				v[i].x = Float4(0.0f);
 				v[i].y = Float4(0.0f);
@@ -51,6 +51,14 @@ namespace sw
 
 	void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[4], Int &x, Int &y)
 	{
+		// shader->print("FragmentShader-%0.8X.txt", state.shaderID);
+		{
+			std::string shaderString;
+			for(unsigned int i = 0; i < (shader ? shader->getLength() : 0); i++)
+				shaderString += shader->getInstruction(i)->string(shader->getShaderType(), shader->getVersion()) + "\n";
+			shaderString += "\n";
+		}
+
 		#if PERF_PROFILE
 			Long pipeTime = Ticks();
 		#endif
@@ -92,7 +100,7 @@ namespace sw
 					x -= *Pointer<Float4>(constants + OFFSET(Constants,X) + q * sizeof(float4));
 				}
 
-				z[q] = interpolate(x, Dz[q], z[q], primitive + OFFSET(Primitive,z), false, false);
+				z[q] = interpolate(x, Dz[q], z[q], primitive + OFFSET(Primitive,z), false, true, false);
 			}
 		}
 
@@ -139,16 +147,16 @@ namespace sw
 
 			if(interpolateW())
 			{
-				w = interpolate(xxxx, Dw, rhw, primitive + OFFSET(Primitive,w), false, false);
+				w = interpolate(xxxx, Dw, rhw, primitive + OFFSET(Primitive,w), false, true, false);
 				rhw = reciprocal(w, false, false, true);
 
 				if(state.centroid)
 				{
-					rhwCentroid = reciprocal(interpolateCentroid(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive,w), false, false));
+					rhwCentroid = reciprocal(interpolateCentroid(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive,w), false, true, false));
 				}
 			}
 
-			for(int interpolant = 0; interpolant < 10; interpolant++)
+			for(int interpolant = 0; interpolant < MAX_INPUT_VARYINGS; interpolant++)
 			{
 				for(int component = 0; component < 4; component++)
 				{
@@ -156,11 +164,11 @@ namespace sw
 					{
 						if(!state.interpolant[interpolant].centroid)
 						{
-							v[interpolant][component] = interpolate(xxxx, Dv[interpolant][component], rhw, primitive + OFFSET(Primitive, V[interpolant][component]), (state.interpolant[interpolant].flat & (1 << component)) != 0, state.perspective);
+							v[interpolant][component] = interpolate(xxxx, Dv[interpolant][component], rhw, primitive + OFFSET(Primitive, V[interpolant][component]), ((state.interpolant[interpolant].flat & (1 << component)) != 0), state.interpolant[interpolant].smooth, state.perspective);
 						}
 						else
 						{
-							v[interpolant][component] = interpolateCentroid(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive, V[interpolant][component]), (state.interpolant[interpolant].flat & (1 << component)) != 0, state.perspective);
+							v[interpolant][component] = interpolateCentroid(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive, V[interpolant][component]), ((state.interpolant[interpolant].flat & (1 << component)) != 0), state.interpolant[interpolant].smooth, state.perspective);
 						}
 					}
 				}
@@ -191,7 +199,7 @@ namespace sw
 
 			if(state.fog.component)
 			{
-				f = interpolate(xxxx, Df, rhw, primitive + OFFSET(Primitive,f), state.fog.flat & 0x01, state.perspective);
+				f = interpolate(xxxx, Df, rhw, primitive + OFFSET(Primitive,f), state.fog.flat & 0x01, state.smooth, state.perspective);
 			}
 
 			setBuiltins(x, y, z, w);
@@ -284,7 +292,7 @@ namespace sw
 		#endif
 	}
 
-	Float4 PixelRoutine::interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
+	Float4 PixelRoutine::interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool smooth, bool perspective)
 	{
 		Float4 interpolant = *Pointer<Float4>(planeEquation + OFFSET(PlaneEquation,C), 16);
 

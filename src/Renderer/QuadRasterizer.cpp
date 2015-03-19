@@ -176,7 +176,7 @@ namespace sw
 
 					For(Int x = x0, x < x1, x += 2)
 					{
-						Float4 z = interpolate(xxxx, Dz[0], z, primitive + OFFSET(Primitive,z), false, false);
+						Float4 z = interpolate(xxxx, Dz[0], z, primitive + OFFSET(Primitive,z), false, true, false);
 
 						Float4 zValue;
 
@@ -234,7 +234,7 @@ namespace sw
 					Dw = *Pointer<Float4>(primitive + OFFSET(Primitive,w.C), 16) + yyyy * *Pointer<Float4>(primitive + OFFSET(Primitive,w.B), 16);
 				}
 
-				for(int interpolant = 0; interpolant < 10; interpolant++)
+				for(int interpolant = 0; interpolant < MAX_INPUT_VARYINGS; interpolant++)
 				{
 					for(int component = 0; component < 4; component++)
 					{
@@ -310,7 +310,7 @@ namespace sw
 		Until(y >= yMax)
 	}
 
-	Float4 QuadRasterizer::interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
+	Float4 QuadRasterizer::interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool smooth, bool perspective)
 	{
 		Float4 interpolant = D;
 

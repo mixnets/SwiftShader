@@ -31,7 +31,7 @@ namespace sw
 		Float4 w;    // Used as is
 		Float4 rhw;  // Reciprocal w
 
-		RegisterArray<10> v;   // Varying registers
+		RegisterArray<MAX_INPUT_VARYINGS> v;   // Varying registers
 
 		// Depth output
 		Float4 oDepth;
@@ -64,7 +64,7 @@ namespace sw
 		SamplerCore *sampler[TEXTURE_IMAGE_UNITS];
 
 	private:
-		Float4 interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective);
+		Float4 interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool smooth, bool perspective);
 		void stencilTest(Pointer<Byte> &sBuffer, int q, Int &x, Int &sMask, Int &cMask);
 		void stencilTest(Byte8 &value, StencilCompareMode stencilCompareMode, bool CCW);
 		void stencilOperation(Byte8 &newValue, Byte8 &bufferValue, StencilOperation stencilPassOperation, StencilOperation stencilZFailOperation, StencilOperation stencilFailOperation, bool CCW, Int &zMask, Int &sMask);

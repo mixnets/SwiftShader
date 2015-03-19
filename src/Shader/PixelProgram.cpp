@@ -60,6 +60,8 @@ namespace sw
 
 	void PixelProgram::applyShader(Int cMask[4])
 	{
+		shader->print("FragmentShader-%0.8X.txt", state.shaderID);
+
 		enableIndex = 0;
 		stackIndex = 0;
 
@@ -228,6 +230,12 @@ namespace sw
 			case Shader::OPCODE_FLOATBITSTOUINT:
 			case Shader::OPCODE_INTBITSTOFLOAT:
 			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                                   break;
+			case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d, s0);                     break;
+			case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d, s0);                     break;
+			case Shader::OPCODE_PACKHALF2x16:    packHalf2x16(d, s0);                      break;
+			case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0);                   break;
+			case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0);                   break;
+			case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0);                    break;
 			case Shader::OPCODE_POWX:       powx(d, s0, s1, pp);                           break;
 			case Shader::OPCODE_POW:        pow(d, s0, s1, pp);                            break;
 			case Shader::OPCODE_SGN:        sgn(d, s0);                                    break;
@@ -599,6 +607,7 @@ namespace sw
 				break;
 			case FORMAT_R32F:
 			case FORMAT_G32R32F:
+			case FORMAT_B32G32R32F:
 			case FORMAT_A32B32G32R32F:
 			case FORMAT_R32I:
 			case FORMAT_G32R32I:
@@ -704,6 +713,7 @@ namespace sw
 				break;
 			case FORMAT_R32F:
 			case FORMAT_G32R32F:
+			case FORMAT_B32G32R32F:
 			case FORMAT_A32B32G32R32F:
 			case FORMAT_R32I:
 			case FORMAT_G32R32I:

@@ -612,6 +612,60 @@ namespace sw
 		else ASSERT(false);
 	}
 
+	void VertexProcessor::setCompFunc(unsigned int sampler, CompareFunc compFunc)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setCompFunc(compFunc);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setCompMode(unsigned int sampler, CompareMode compMode)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setCompMode(compMode);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setBaseLevel(unsigned int sampler, int baseLevel)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setBaseLevel(baseLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setMaxLevel(unsigned int sampler, int maxLevel)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMaxLevel(maxLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setMinLod(unsigned int sampler, float minLod)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMinLod(minLod);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setMaxLod(unsigned int sampler, float maxLod)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMaxLod(maxLod);
+		}
+		else ASSERT(false);
+	}
+
 	void VertexProcessor::setPointSize(float pointSize)
 	{
 		point.pointSize = replicate(pointSize);
@@ -968,7 +1022,7 @@ namespace sw
 				}
 			}
 
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < VERTEX_TEXTURE_IMAGE_UNITS; i++)
 			{
 				if(context->input[TexCoord0 + i])
 				{

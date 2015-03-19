@@ -139,10 +139,6 @@ GLsizei RenderbufferTexture2D::getSamples() const
 RenderbufferTexture3D::RenderbufferTexture3D(Texture3D *texture, GLint level, GLint layer) : mLevel(level), mLayer(layer)
 {
 	mTexture3D = texture;
-	if(mLayer != 0)
-	{
-		UNIMPLEMENTED();
-	}
 }
 
 RenderbufferTexture3D::~RenderbufferTexture3D()
@@ -419,8 +415,8 @@ RenderbufferStorage::RenderbufferStorage()
 {
 	mWidth = 0;
 	mHeight = 0;
-	format = GL_RGBA4;
-	internalFormat = sw::FORMAT_A8B8G8R8;
+	format = GL_NONE;
+	internalFormat = sw::FORMAT_NULL;
 	mSamples = 0;
 }
 

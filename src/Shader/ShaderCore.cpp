@@ -66,92 +66,6 @@ namespace sw
 		return x;
 	}
 
-	Vector4i::Vector4i()
-	{
-	}
-
-	Vector4i::Vector4i(int x, int y, int z, int w)
-	{
-		this->x = Int4(x);
-		this->y = Int4(y);
-		this->z = Int4(z);
-		this->w = Int4(w);
-	}
-
-	Vector4i::Vector4i(const Vector4i &rhs)
-	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
-	}
-
-	Vector4i &Vector4i::operator=(const Vector4i &rhs)
-	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
-
-		return *this;
-	}
-
-	Int4 &Vector4i::operator[](int i)
-	{
-		switch(i)
-		{
-		case 0: return x;
-		case 1: return y;
-		case 2: return z;
-		case 3: return w;
-		}
-
-		return x;
-	}
-
-	Vector4u::Vector4u()
-	{
-	}
-
-	Vector4u::Vector4u(unsigned int x, unsigned int y, unsigned int z, unsigned int w)
-	{
-		this->x = UInt4(x);
-		this->y = UInt4(y);
-		this->z = UInt4(z);
-		this->w = UInt4(w);
-	}
-
-	Vector4u::Vector4u(const Vector4u &rhs)
-	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
-	}
-
-	Vector4u &Vector4u::operator=(const Vector4u &rhs)
-	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
-
-		return *this;
-	}
-
-	UInt4 &Vector4u::operator[](int i)
-	{
-		switch(i)
-		{
-		case 0: return x;
-		case 1: return y;
-		case 2: return z;
-		case 3: return w;
-		}
-
-		return x;
-	}
-
 	Vector4f::Vector4f()
 	{
 	}
@@ -1121,6 +1035,121 @@ namespace sw
 		Float4 ty = Min(Max((x.y - edge0.y) / (edge1.y - edge0.y), Float4(0.0f)), Float4(1.0f)); dst.y = ty * ty * (Float4(3.0f) - Float4(2.0f) * ty);
 		Float4 tz = Min(Max((x.z - edge0.z) / (edge1.z - edge0.z), Float4(0.0f)), Float4(1.0f)); dst.z = tz * tz * (Float4(3.0f) - Float4(2.0f) * tz);
 		Float4 tw = Min(Max((x.w - edge0.w) / (edge1.w - edge0.w), Float4(0.0f)), Float4(1.0f)); dst.w = tw * tw * (Float4(3.0f) - Float4(2.0f) * tw);
+	}
+
+	void ShaderCore::floatToHalfBits(Float4& dst, const Float4& floatBits, bool storeInUpperBits)
+	{
+		static const unsigned char shift = 13;
+		static const unsigned char shiftSign = 16;
+
+		static const int infN = 0x7F800000; // flt32 infinity
+		static const int maxN = 0x477FE000; // max flt16 normal as a flt32
+		static const int minN = 0x38800000; // min flt16 normal as a flt32
+		static const int signN = 0x80000000; // flt32 sign bit
+
+		static const int infC = infN >> shift;
+		static const int nanN = (infC + 1) << shift; // minimum flt16 nan as a flt32
+		static const int maxC = maxN >> shift;
+		static const int minC = minN >> shift;
+
+		static const int mulN = 0x52000000; // (1 << 23) / minN
+
+		static const int subC = 0x003FF; // max flt32 subnormal down shifted
+
+		static const int maxD = infC - maxC - 1;
+		static const int minD = minC - subC - 1;
+
+		Int4 v(As<Int4>(floatBits));
+		Int4 s(As<Float4>(Int4(mulN)) * floatBits); // correct subnormals
+		UInt4 d = v & Int4(signN); // Sign bit
+		v ^= d;
+		d >>= shiftSign; // logical shift
+		v ^= (s ^ v) & -(CmpNLE(Int4(minN), v));
+		v ^= (Int4(infN) ^ v) & -(CmpNLE(Int4(infN), v) & CmpNLE(v, Int4(maxN)));
+		v ^= (Int4(nanN) ^ v) & -(CmpNLE(Int4(nanN), v) & CmpNLE(v, Int4(infN)));
+		v = As<Int4>(As<UInt4>(v) >> 13); // logical shift
+		v ^= ((v - Int4(maxD)) ^ v) & -CmpNLE(v, Int4(maxC));
+		v ^= ((v - Int4(minD)) ^ v) & -CmpNLE(v, Int4(subC));
+		d |= As<UInt4>(v);
+		dst = As<Float4>(storeInUpperBits ? As<UInt4>(dst) | (d << 16) : d);
+	}
+
+	void ShaderCore::halfToFloatBits(Float4& dst, const Float4& halfBits)
+	{
+		static const unsigned char shift = 13;
+		static const unsigned char shiftSign = 16;
+
+		static const int infN = 0x7F800000; // flt32 infinity
+		static const int maxN = 0x477FE000; // max flt16 normal as a flt32
+		static const int minN = 0x38800000; // min flt16 normal as a flt32
+		static const int signN = 0x80000000; // flt32 sign bit
+
+		static const int infC = infN >> shift;
+		static const int maxC = maxN >> shift;
+		static const int minC = minN >> shift;
+		static const int signC = signN >> shiftSign; // flt16 sign bit
+
+		static const int mulC = 0x33800000; // minN / (1 << (23 - shift))
+
+		static const int subC = 0x003FF; // max flt32 subnormal down shifted
+		static const int norC = 0x00400; // min flt32 normal down shifted
+
+		static const int maxD = infC - maxC - 1;
+		static const int minD = minC - subC - 1;
+
+		Int4 v(As<Int4>(halfBits));
+		Int4 sign(v & Int4(signC));
+		v ^= sign;
+		sign <<= shiftSign;
+		v ^= ((v + Int4(minD)) ^ v) & -CmpNLE(v, Int4(subC));
+		v ^= ((v + Int4(maxD)) ^ v) & -CmpNLE(v, Int4(maxC));
+		Int4 s(As<Float4>(Int4(mulC)) * Float4(v));
+		Int4 mask(-(CmpNLE(Int4(norC), v)));
+		v <<= shift;
+		v ^= (s ^ v) & mask;
+		dst = As<Float4>(v | sign);
+	}
+
+	void ShaderCore::packSnorm2x16(Vector4f &d, const Vector4f &s0)
+	{
+		// round(clamp(c, -1.0, 1.0) * 32767.0)
+		d.x = As<Float4>((Int4(Round(Min(Max(s0.x, Float4(-1.0f)), Float4(1.0f)) * Float4(32767.0f))) & Int4(0xFFFF)) |
+		                 ((Int4(Round(Min(Max(s0.y, Float4(-1.0f)), Float4(1.0f)) * Float4(32767.0f))) & Int4(0xFFFF)) << 16));
+	}
+
+	void ShaderCore::packUnorm2x16(Vector4f &d, const Vector4f &s0)
+	{
+		// round(clamp(c, 0.0, 1.0) * 65535.0)
+		d.x = As<Float4>((UInt4(Round(Min(Max(s0.x, Float4(0.0f)), Float4(1.0f))) * Float4(65535.0f)) & UInt4(0xFFFF)) |
+			             ((UInt4(Round(Min(Max(s0.y, Float4(0.0f)), Float4(1.0f))) * Float4(65535.0f)) & UInt4(0xFFFF)) << 16));
+	}
+
+	void ShaderCore::packHalf2x16(Vector4f &d, const Vector4f &s0)
+	{
+		// half2 | half1
+		floatToHalfBits(d.x, s0.x, false);
+		floatToHalfBits(d.x, s0.y, true);
+	}
+
+	void ShaderCore::unpackSnorm2x16(Vector4f &dst, const Vector4f &s0)
+	{
+		// clamp(f / 32727.0, -1.0, 1.0)
+		dst.x = Min(Max(Float4(As<Short4>(As<UInt4>(s0.x) & UInt4(0xFFFF))) * Float4(1.0f / 32767.0f), Float4(-1.0f)), Float4(1.0f));
+		dst.y = Min(Max(Float4(As<Short4>((As<UInt4>(s0.x) & UInt4(0xFFFF0000) >> 16))) * Float4(1.0f / 32767.0f), Float4(-1.0f)), Float4(1.0f));
+	}
+
+	void ShaderCore::unpackUnorm2x16(Vector4f &dst, const Vector4f &s0)
+	{
+		// f / 65535.0
+		dst.x = Float4(As<UShort4>(As<UInt4>(s0.x) & UInt4(0xFFFF))) * Float4(1.0f / 65535.0f);
+		dst.y = Float4(As<UShort4>((As<UInt4>(s0.x) & UInt4(0xFFFF0000) >> 16))) * Float4(1.0f / 65535.0f);
+	}
+
+	void ShaderCore::unpackHalf2x16(Vector4f &dst, const Vector4f &s0)
+	{
+		// half2 | half1
+		halfToFloatBits(dst.x, As<Float4>(As<UInt4>(s0.x) & UInt4(0x0000FFFF)));
+		halfToFloatBits(dst.y, As<Float4>(As<UInt4>(s0.x) & UInt4(0xFFFF0000)));
 	}
 
 	void ShaderCore::det2(Vector4f &dst, const Vector4f &src0, const Vector4f &src1)

@@ -80,7 +80,7 @@ namespace sw
 
 	void VertexProgram::program()
 	{
-	//	shader->print("VertexShader-%0.8X.txt", state.shaderID);
+		shader->print("VertexShader-%0.8X.txt", state.shaderID);
 
 		unsigned short version = shader->getVersion();
 
@@ -203,6 +203,12 @@ namespace sw
 			case Shader::OPCODE_FLOATBITSTOUINT:
 			case Shader::OPCODE_INTBITSTOFLOAT:
 			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                    break;
+			case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d, s0);      break;
+			case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d, s0);      break;
+			case Shader::OPCODE_PACKHALF2x16:    packHalf2x16(d, s0);       break;
+			case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0);    break;
+			case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0);    break;
+			case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0);     break;
 			case Shader::OPCODE_M3X2:       M3X2(d, s0, src1);              break;
 			case Shader::OPCODE_M3X3:       M3X3(d, s0, src1);              break;
 			case Shader::OPCODE_M3X4:       M3X4(d, s0, src1);              break;
@@ -583,7 +589,7 @@ namespace sw
 	{
 		if(shader)
 		{
-			for(int i = 0; i < 12; i++)
+			for(int i = 0; i < MAX_OUTPUT_VARYINGS; i++)
 			{
 				unsigned char usage = shader->output[i][0].usage;
 
@@ -635,7 +641,7 @@ namespace sw
 				o[D0 + i].w = v[Color0 + i].w;
 			}
 
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < VERTEX_TEXTURE_IMAGE_UNITS; i++)
 			{
 				o[T0 + i].x = v[TexCoord0 + i].x;
 				o[T0 + i].y = v[TexCoord0 + i].y;

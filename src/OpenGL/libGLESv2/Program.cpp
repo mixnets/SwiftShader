@@ -446,9 +446,15 @@ namespace es2
 		return GL_INVALID_INDEX;
 	}
 
-	void Program::bindUniformBlock(GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+	bool Program::bindUniformBlock(GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 	{
+		if(uniformBlockIndex > std::min(uniformBlocks.size(), (size_t)MAX_UNIFORM_BUFFER_BINDINGS))
+		{
+			return false;
+		}
+
 		uniformBlockBindings[uniformBlockIndex] = uniformBlockBinding;
+		return true;
 	}
 
 	GLuint Program::getUniformBlockBinding(GLuint uniformBlockIndex) const

@@ -483,6 +483,60 @@ namespace sw
 		else ASSERT(false);
 	}
 
+	void PixelProcessor::setCompFunc(unsigned int sampler, CompareFunc compFunc)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setCompFunc(compFunc);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setCompMode(unsigned int sampler, CompareMode compMode)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setCompMode(compMode);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setBaseLevel(unsigned int sampler, int baseLevel)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setBaseLevel(baseLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setMaxLevel(unsigned int sampler, int maxLevel)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setMaxLevel(maxLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setMinLod(unsigned int sampler, float minLod)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setMinLod(minLod);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setMaxLod(unsigned int sampler, float maxLod)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setMaxLod(maxLod);
+		}
+		else ASSERT(false);
+	}
+
 	void PixelProcessor::setWriteSRGB(bool sRGB)
 	{
 		context->setWriteSRGB(sRGB);
@@ -981,6 +1035,7 @@ namespace sw
 		if(state.multiSample > 1 && context->pixelShader)
 		{
 			state.centroid = context->pixelShader->containsCentroid();
+			state.smooth = !context->pixelShader->containsNonSmooth();
 		}
 
 		if(!context->pixelShader)
@@ -1076,9 +1131,9 @@ namespace sw
 				}
 			}
 		}
-		else
+		else if(context->pixelShader)
 		{
-			for(int interpolant = 0; interpolant < 10; interpolant++)
+			for(int interpolant = 0; interpolant < MAX_INPUT_VARYINGS; interpolant++)
 			{
 				for(int component = 0; component < 4; component++)
 				{
@@ -1103,13 +1158,24 @@ namespace sw
 			}
 		}
 
-		if(state.centroid)
+		if(state.centroid && context->pixelShader)
 		{
-			for(int interpolant = 0; interpolant < 10; interpolant++)
+			for(int interpolant = 0; interpolant < MAX_INPUT_VARYINGS; interpolant++)
 			{
 				for(int component = 0; component < 4; component++)
 				{
 					state.interpolant[interpolant].centroid = context->pixelShader->semantic[interpolant][0].centroid;
+				}
+			}
+		}
+
+		if(!state.smooth && context->pixelShader)
+		{
+			for(int interpolant = 0; interpolant < MAX_INPUT_VARYINGS; interpolant++)
+			{
+				for(int component = 0; component < 4; component++)
+				{
+					state.interpolant[interpolant].smooth = context->pixelShader->semantic[interpolant][0].smooth;
 				}
 			}
 		}

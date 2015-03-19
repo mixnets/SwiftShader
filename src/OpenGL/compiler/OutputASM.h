@@ -262,6 +262,7 @@ namespace glsl
 		                  TIntermNode *src2 = 0, int index2 = 0, TIntermNode *src3 = 0, int index3 = 0, TIntermNode *src4 = 0, int index4 = 0);
 		Instruction *emitCast(TIntermTyped *dst, TIntermTyped *src);
 		Instruction *emitCast(TIntermTyped *dst, int dstIndex, TIntermTyped *src, int srcIndex);
+		void emitBlockUnpacking(sw::Shader::Opcode op, Temporary** blockTemporaries, TIntermNode** src, int* index);
 		void emitBinary(sw::Shader::Opcode op, TIntermTyped *dst = 0, TIntermNode *src0 = 0, TIntermNode *src1 = 0, TIntermNode *src2 = 0);
 		void emitAssign(sw::Shader::Opcode op, TIntermTyped *result, TIntermTyped *lhs, TIntermTyped *src0, TIntermTyped *src1 = 0);
 		void emitCmp(sw::Shader::Control cmpOp, TIntermTyped *dst, TIntermNode *left, TIntermNode *right, int index = 0);
@@ -286,11 +287,13 @@ namespace glsl
 		int fragmentOutputRegister(TIntermTyped *fragmentOutput);
 		int samplerRegister(TIntermTyped *sampler);
 		int samplerRegister(TIntermSymbol *sampler);
+		int getBlockId(TIntermTyped *);
 
 		typedef std::vector<TIntermTyped*> VariableArray;
 
 		int lookup(VariableArray &list, TIntermTyped *variable);
-		int allocate(VariableArray &list, TIntermTyped *variable);
+		int lookup(VariableArray &list, TInterfaceBlock *block);
+		int allocate(VariableArray &list, TIntermTyped *variable, int variableRegisterCount = -1);
 		void free(VariableArray &list, TIntermTyped *variable);
 
 		int declareUniform(const TType &type, const TString &name, int registerIndex, int blockId = -1, BlockLayoutEncoder* encoder = nullptr);
@@ -321,6 +324,15 @@ namespace glsl
 			TypedMemberInfo(const BlockMemberInfo& b, const TType& t) : BlockMemberInfo(b), type(t) {}
 			TType type;
 		};
+		struct ArgumentInfo
+		{
+			ArgumentInfo(const BlockMemberInfo& b, const TType& t, int clampedIndex, int bufferIndex) :
+			    typedMemberInfo(b, t), clampedIndex(clampedIndex), bufferIndex(bufferIndex) {}
+			TypedMemberInfo typedMemberInfo;
+			int clampedIndex;
+			int bufferIndex;
+		};
+		ArgumentInfo getArgumentInfo(TIntermNode *argument, int index);
 
 		struct BlockDefinition
 		{
