@@ -134,7 +134,7 @@ namespace es2
 
 		GLuint getUniformIndex(const std::string &name) const;
 		GLuint getUniformBlockIndex(const std::string &name) const;
-		void bindUniformBlock(GLuint uniformBlockIndex, GLuint uniformBlockBinding);
+		bool bindUniformBlock(GLuint uniformBlockIndex, GLuint uniformBlockBinding);
 		GLuint getUniformBlockBinding(GLuint uniformBlockIndex) const;
 		void getActiveUniformBlockiv(GLuint uniformBlockIndex, GLenum pname, GLint *params) const;
 
@@ -167,7 +167,7 @@ namespace es2
 
 		void dirtyAllUniforms();
 		void applyUniforms();
-		void applyUniformBuffers();
+		void applyUniformBuffers(gl::OffsetBindingPointer<Buffer>* uniformBuffers);
 
 		void link();
 		bool isLinked() const;

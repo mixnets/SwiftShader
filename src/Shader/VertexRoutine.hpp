@@ -49,7 +49,7 @@ namespace sw
 			Int clipFlags;
 
 			RegisterArray<16> v;
-			RegisterArray<4096> r;
+			RegisterArray<16384> r;
 			RegisterArray<12> o;
 			Vector4f a0;
 			Array<Int, 4> aL;

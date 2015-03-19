@@ -46,7 +46,7 @@ public:
 
 private:
 	gl::BindingPointer<Buffer> mGenericBuffer;
-	gl::BindingPointer<Buffer> mBuffer[MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS];
+	gl::OffsetBindingPointer<Buffer> mBuffer[MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS];
 
 	bool mActive;
 	bool mPaused;

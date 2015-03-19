@@ -438,7 +438,7 @@ namespace sw
 				};
 			};
 
-			DestinationParameter() : mask(0xF), integer(false), saturate(false), partialPrecision(false), centroid(false), shift(0)
+			DestinationParameter() : mask(0xF), integer(false), saturate(false), partialPrecision(false), centroid(false), smooth(true), shift(0)
 			{
 			}
 
@@ -450,12 +450,13 @@ namespace sw
 			bool saturate         : 1;
 			bool partialPrecision : 1;
 			bool centroid         : 1;
+			bool smooth           : 1;
 			signed char shift     : 4;
 		};
 
 		struct SourceParameter : Parameter
 		{
-			SourceParameter() : swizzle(0xE4), modifier(MODIFIER_NONE)
+			SourceParameter() : swizzle(0xE4), modifier(MODIFIER_NONE), bufferIndex(-1)
 			{
 			}
 
@@ -465,6 +466,7 @@ namespace sw
 
 			unsigned int swizzle : 8;
 			Modifier modifier : 8;
+			int bufferIndex : 8;
 		};
 
 		struct Instruction
@@ -564,7 +566,7 @@ namespace sw
 
 		struct Semantic
 		{
-			Semantic(unsigned char usage = 0xFF, unsigned char index = 0xFF) : usage(usage), index(index), centroid(false)
+			Semantic(unsigned char usage = 0xFF, unsigned char index = 0xFF) : usage(usage), index(index), centroid(false), smooth(true)
 			{
 			}
 
@@ -581,6 +583,7 @@ namespace sw
 			unsigned char usage;
 			unsigned char index;
 			bool centroid;
+			bool smooth;
 		};
 
 		void optimize();

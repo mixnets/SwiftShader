@@ -157,6 +157,32 @@ namespace sw
 		else ASSERT(false);
 	}
 
+	void VertexProcessor::setUniformBuffer(int index, sw::Resource* buffer, int offset)
+	{
+		uniformBuffer[index] = buffer;
+		uniformBufferOffset[index] = offset;
+	}
+
+	void VertexProcessor::lockUniformBuffers(byte** u)
+	{
+		for(int i = 0; i < MAX_UNIFORM_BUFFER_BINDINGS; ++i)
+		{
+			u[i] = uniformBuffer[i] ? static_cast<byte*>(uniformBuffer[i]->lock(PUBLIC, PRIVATE)) + uniformBufferOffset[i] : nullptr;
+		}
+	}
+
+	void VertexProcessor::unlockUniformBuffers()
+	{
+		for(int i = 0; i < MAX_UNIFORM_BUFFER_BINDINGS; ++i)
+		{
+			if(uniformBuffer[i])
+			{
+				uniformBuffer[i]->unlock();
+				uniformBuffer[i] = nullptr;
+			}
+		}
+	}
+
 	void VertexProcessor::setModelMatrix(const Matrix &M, int i)
 	{
 		if(i < 12)
@@ -577,6 +603,60 @@ namespace sw
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
 			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setSwizzleA(swizzleA);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setCompFunc(unsigned int sampler, CompareFunc compFunc)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setCompFunc(compFunc);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setCompMode(unsigned int sampler, CompareMode compMode)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setCompMode(compMode);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setBaseLevel(unsigned int sampler, int baseLevel)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setBaseLevel(baseLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setMaxLevel(unsigned int sampler, int maxLevel)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMaxLevel(maxLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setMinLod(unsigned int sampler, float minLod)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMinLod(minLod);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setMaxLod(unsigned int sampler, float maxLod)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMaxLod(maxLod);
 		}
 		else ASSERT(false);
 	}

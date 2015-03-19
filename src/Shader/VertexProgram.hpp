@@ -43,7 +43,9 @@ namespace sw
 
 		Vector4f fetchRegisterF(Registers &r, const Src &src, unsigned int offset = 0);
 		Vector4f readConstant(Registers &r, const Src &src, unsigned int offset = 0);
-		Int relativeAddress(Registers &r, const Shader::Parameter &var);
+		RValue<Pointer<Byte> > readUniform(Registers &r, int bufferIndex, unsigned int index);
+		RValue<Pointer<Byte> > readUniform(Registers &r, int bufferIndex, unsigned int index, Int& offset);
+		Int relativeAddress(Registers &r, const Shader::Parameter &var, int bufferIndex = -1);
 		Int4 enableMask(Registers &r, const Shader::Instruction *instruction);
 
 		void M3X2(Registers &r, Vector4f &dst, Vector4f &src0, Src &src1);

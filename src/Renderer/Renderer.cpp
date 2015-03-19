@@ -382,6 +382,8 @@ namespace sw
 					memcpy(&data->ps.b, PixelProcessor::b, sizeof(bool) * draw->psDirtyConstB);
 					draw->psDirtyConstB = 0;
 				}
+
+				PixelProcessor::lockUniformBuffers(data->ps.u);
 			}
 			
 			if(context->pixelShaderVersion() <= 0x0104)
@@ -434,6 +436,8 @@ namespace sw
 				{
 					data->instanceID = context->instanceID;
 				}
+
+				VertexProcessor::lockUniformBuffers(data->vs.u);
 			}
 			else
 			{
@@ -953,6 +957,9 @@ namespace sw
 				{
 					draw.indexBuffer->unlock();
 				}
+
+				PixelProcessor::unlockUniformBuffers();
+				VertexProcessor::unlockUniformBuffers();
 
 				draw.vertexRoutine->unbind();
 				draw.setupRoutine->unbind();
@@ -2280,6 +2287,78 @@ namespace sw
 		else
 		{
 			VertexProcessor::setSwizzleA(sampler, swizzleA);
+		}
+	}
+
+	void Renderer::setCompFunc(SamplerType type, int sampler, CompareFunc compFunc)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setCompFunc(sampler, compFunc);
+		}
+		else
+		{
+			VertexProcessor::setCompFunc(sampler, compFunc);
+		}
+	}
+
+	void Renderer::setCompMode(SamplerType type, int sampler, CompareMode compMode)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setCompMode(sampler, compMode);
+		}
+		else
+		{
+			VertexProcessor::setCompMode(sampler, compMode);
+		}
+	}
+
+	void Renderer::setBaseLevel(SamplerType type, int sampler, int baseLevel)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setBaseLevel(sampler, baseLevel);
+		}
+		else
+		{
+			VertexProcessor::setBaseLevel(sampler, baseLevel);
+		}
+	}
+
+	void Renderer::setMaxLevel(SamplerType type, int sampler, int maxLevel)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setMaxLevel(sampler, maxLevel);
+		}
+		else
+		{
+			VertexProcessor::setMaxLevel(sampler, maxLevel);
+		}
+	}
+
+	void Renderer::setMinLod(SamplerType type, int sampler, float minLod)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setMinLod(sampler, minLod);
+		}
+		else
+		{
+			VertexProcessor::setMinLod(sampler, minLod);
+		}
+	}
+
+	void Renderer::setMaxLod(SamplerType type, int sampler, float maxLod)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setMaxLod(sampler, maxLod);
+		}
+		else
+		{
+			VertexProcessor::setMaxLod(sampler, maxLod);
 		}
 	}
 

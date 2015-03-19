@@ -61,7 +61,7 @@ namespace sw
 
 	void VertexProgram::program(Registers &r)
 	{
-	//	shader->print("VertexShader-%0.8X.txt", state.shaderID);
+		shader->print("VertexShader-%0.8X.txt", state.shaderID);
 
 		unsigned short version = shader->getVersion();
 
@@ -183,6 +183,12 @@ namespace sw
 			case Shader::OPCODE_FLOATBITSTOUINT:
 			case Shader::OPCODE_INTBITSTOFLOAT:
 			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                    break;
+			case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d, s0);      break;
+			case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d, s0);      break;
+			case Shader::OPCODE_PACKHALF2x16:    packHalf2x16(d, s0);       break;
+			case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0);    break;
+			case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0);    break;
+			case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0);     break;
 			case Shader::OPCODE_M3X2:		M3X2(r, d, s0, src1);			break;
 			case Shader::OPCODE_M3X3:		M3X3(r, d, s0, src1);			break;
 			case Shader::OPCODE_M3X4:		M3X4(r, d, s0, src1);			break;
@@ -658,7 +664,7 @@ namespace sw
 			}
 			else
 			{
-				reg = r.r[i + relativeAddress(r, src)];
+				reg = r.r[i + relativeAddress(r, src, src.bufferIndex)];
 			}
 			break;
 		case Shader::PARAMETER_CONST:
@@ -671,7 +677,7 @@ namespace sw
 			}
 			else
 			{
-				reg = r.v[i + relativeAddress(r, src)];
+				reg = r.v[i + relativeAddress(r, src, src.bufferIndex)];
 			}
             break;
 		case Shader::PARAMETER_VOID:			return r.r[0];   // Dummy
@@ -703,7 +709,7 @@ namespace sw
 			}
 			else
 			{
-				reg = r.o[i + relativeAddress(r, src)];
+				reg = r.o[i + relativeAddress(r, src, src.bufferIndex)];
 			}
 			break;
 		case Shader::PARAMETER_MISCTYPE:
@@ -759,6 +765,16 @@ namespace sw
 		return mod;
 	}
 
+	RValue<Pointer<Byte> > VertexProgram::readUniform(Registers &r, int bufferIndex, unsigned int index)
+	{
+		return (bufferIndex == -1) ? r.data + OFFSET(DrawData, vs.c[index]) : *Pointer<Pointer<Byte>>(r.data + OFFSET(DrawData, vs.u[bufferIndex])) + index;
+	}
+
+	RValue<Pointer<Byte> > VertexProgram::readUniform(Registers &r, int bufferIndex, unsigned int index, Int& offset)
+	{
+		return readUniform(r, bufferIndex, index) + offset * sizeof(float4);
+	}
+
 	Vector4f VertexProgram::readConstant(Registers &r, const Src &src, unsigned int offset)
 	{
 		Vector4f c;
@@ -766,7 +782,7 @@ namespace sw
 
 		if(src.rel.type == Shader::PARAMETER_VOID)   // Not relative
 		{
-			c.x = c.y = c.z = c.w = *Pointer<Float4>(r.data + OFFSET(DrawData,vs.c[i]));
+			c.x = c.y = c.z = c.w = *Pointer<Float4>(readUniform(r, src.bufferIndex, i));
 
 			c.x = c.x.xxxx;
 			c.y = c.y.yyyy;
@@ -798,7 +814,7 @@ namespace sw
 		{
 			Int loopCounter = r.aL[r.loopDepth];
 
-			c.x = c.y = c.z = c.w = *Pointer<Float4>(r.data + OFFSET(DrawData,vs.c[i]) + loopCounter * 16);
+			c.x = c.y = c.z = c.w = *Pointer<Float4>(readUniform(r, src.bufferIndex, i, loopCounter));
 
 			c.x = c.x.xxxx;
 			c.y = c.y.yyyy;
@@ -809,9 +825,9 @@ namespace sw
 		{
 			if(src.rel.deterministic)
 			{
-				Int a = relativeAddress(r, src);
+				Int a = relativeAddress(r, src, src.bufferIndex);
 			
-				c.x = c.y = c.z = c.w = *Pointer<Float4>(r.data + OFFSET(DrawData,vs.c[i]) + a * 16);
+				c.x = c.y = c.z = c.w = *Pointer<Float4>(readUniform(r, src.bufferIndex, i, a));
 
 				c.x = c.x.xxxx;
 				c.y = c.y.yyyy;
@@ -829,7 +845,7 @@ namespace sw
 				case Shader::PARAMETER_TEMP:   a = r.r[src.rel.index][component]; break;
 				case Shader::PARAMETER_INPUT:  a = r.v[src.rel.index][component]; break;
 				case Shader::PARAMETER_OUTPUT: a = r.o[src.rel.index][component]; break;
-				case Shader::PARAMETER_CONST:  a = *Pointer<Float>(r.data + OFFSET(DrawData,vs.c[src.rel.index][component])); break;
+				case Shader::PARAMETER_CONST:  a = *Pointer<Float>(readUniform(r, src.bufferIndex, src.rel.index) + component * sizeof(float)); break;
 				default: ASSERT(false);
 				}
 
@@ -842,10 +858,10 @@ namespace sw
 				Int index2 = Extract(index, 2);
 				Int index3 = Extract(index, 3);
 
-				c.x = *Pointer<Float4>(r.data + OFFSET(DrawData,vs.c) + index0 * 16, 16);
-				c.y = *Pointer<Float4>(r.data + OFFSET(DrawData,vs.c) + index1 * 16, 16);
-				c.z = *Pointer<Float4>(r.data + OFFSET(DrawData,vs.c) + index2 * 16, 16);
-				c.w = *Pointer<Float4>(r.data + OFFSET(DrawData,vs.c) + index3 * 16, 16);
+				c.x = *Pointer<Float4>(readUniform(r, src.bufferIndex, 0, index0), 16);
+				c.y = *Pointer<Float4>(readUniform(r, src.bufferIndex, 0, index1), 16);
+				c.z = *Pointer<Float4>(readUniform(r, src.bufferIndex, 0, index2), 16);
+				c.w = *Pointer<Float4>(readUniform(r, src.bufferIndex, 0, index3), 16);
 
 				transpose4x4(c.x, c.y, c.z, c.w);
 			}
@@ -854,7 +870,7 @@ namespace sw
 		return c;
 	}
 
-	Int VertexProgram::relativeAddress(Registers &r, const Shader::Parameter &var)
+	Int VertexProgram::relativeAddress(Registers &r, const Shader::Parameter &var, int bufferIndex)
 	{
 		ASSERT(var.rel.deterministic);
 
@@ -872,7 +888,7 @@ namespace sw
 		}
 		else if(var.rel.type == Shader::PARAMETER_CONST)
 		{
-			RValue<Int4> c = *Pointer<Int4>(r.data + OFFSET(DrawData, vs.c[var.rel.index]));
+			RValue<Int4> c = *Pointer<Int4>(readUniform(r, bufferIndex, var.rel.index));
 
 			return Extract(c, 0) * var.rel.scale;
 		}

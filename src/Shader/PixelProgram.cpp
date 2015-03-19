@@ -60,6 +60,8 @@ namespace sw
 
 	void PixelProgram::applyShader(Int cMask[4])
 	{
+		shader->print("FragmentShader-%0.8X.txt", state.shaderID);
+
 		enableIndex = 0;
 		stackIndex = 0;
 
@@ -228,6 +230,12 @@ namespace sw
 			case Shader::OPCODE_FLOATBITSTOUINT:
 			case Shader::OPCODE_INTBITSTOFLOAT:
 			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                                   break;
+			case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d, s0);                     break;
+			case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d, s0);                     break;
+			case Shader::OPCODE_PACKHALF2x16:    packHalf2x16(d, s0);                      break;
+			case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0);                   break;
+			case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0);                   break;
+			case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0);                    break;
 			case Shader::OPCODE_POWX:       powx(d, s0, s1, pp);                           break;
 			case Shader::OPCODE_POW:        pow(d, s0, s1, pp);                            break;
 			case Shader::OPCODE_SGN:        sgn(d, s0);                                    break;
@@ -597,6 +605,7 @@ namespace sw
 				break;
 			case FORMAT_R32F:
 			case FORMAT_G32R32F:
+			case FORMAT_B32G32R32F:
 			case FORMAT_A32B32G32R32F:
 				for(unsigned int q = 0; q < state.multiSample; q++)
 				{
@@ -696,6 +705,7 @@ namespace sw
 				break;
 			case FORMAT_R32F:
 			case FORMAT_G32R32F:
+			case FORMAT_B32G32R32F:
 			case FORMAT_A32B32G32R32F:
 				break;
 			default:
@@ -743,7 +753,7 @@ namespace sw
 			}
 			else
 			{
-				Int a = relativeAddress(src);
+				Int a = relativeAddress(src, src.bufferIndex);
 
 				reg = r[i + a];
 			}
@@ -762,7 +772,7 @@ namespace sw
 				}
 				else
 				{
-					Int a = relativeAddress(src);
+					Int a = relativeAddress(src, src.bufferIndex);
 
 					reg = v[i + a];
 				}
@@ -806,7 +816,7 @@ namespace sw
 			}
 			else
 			{
-				Int a = relativeAddress(src);
+				Int a = relativeAddress(src, src.bufferIndex);
 
 				reg = oC[i + a];
 			}
@@ -864,6 +874,17 @@ namespace sw
 		return mod;
 	}
 
+	RValue<Pointer<Byte> > PixelProgram::readUniform(int bufferIndex, unsigned int index)
+	{
+		return (bufferIndex == -1) ? data + OFFSET(DrawData, ps.c[index]) : *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, ps.u[bufferIndex])) + index;
+	}
+
+	RValue<Pointer<Byte> > PixelProgram::readUniform(int bufferIndex, unsigned int index, Int& offset)
+	{
+		return readUniform(bufferIndex, index) + offset * sizeof(float4);
+	}
+
+
 	Vector4f PixelProgram::readConstant(const Src &src, unsigned int offset)
 	{
 		Vector4f c;
@@ -871,7 +892,7 @@ namespace sw
 
 		if(src.rel.type == Shader::PARAMETER_VOID)   // Not relative
 		{
-			c.x = c.y = c.z = c.w = *Pointer<Float4>(data + OFFSET(DrawData, ps.c[i]));
+			c.x = c.y = c.z = c.w = *Pointer<Float4>(readUniform(src.bufferIndex, i));
 
 			c.x = c.x.xxxx;
 			c.y = c.y.yyyy;
@@ -903,7 +924,7 @@ namespace sw
 		{
 			Int loopCounter = aL[loopDepth];
 
-			c.x = c.y = c.z = c.w = *Pointer<Float4>(data + OFFSET(DrawData, ps.c[i]) + loopCounter * 16);
+			c.x = c.y = c.z = c.w = *Pointer<Float4>(readUniform(src.bufferIndex, i, loopCounter));
 
 			c.x = c.x.xxxx;
 			c.y = c.y.yyyy;
@@ -912,9 +933,9 @@ namespace sw
 		}
 		else
 		{
-			Int a = relativeAddress(src);
+			Int a = relativeAddress(src, src.bufferIndex);
 
-			c.x = c.y = c.z = c.w = *Pointer<Float4>(data + OFFSET(DrawData, ps.c[i]) + a * 16);
+			c.x = c.y = c.z = c.w = *Pointer<Float4>(readUniform(src.bufferIndex, i, a));
 
 			c.x = c.x.xxxx;
 			c.y = c.y.yyyy;
@@ -925,7 +946,7 @@ namespace sw
 		return c;
 	}
 
-	Int PixelProgram::relativeAddress(const Shader::Parameter &var)
+	Int PixelProgram::relativeAddress(const Shader::Parameter &var, int bufferIndex)
 	{
 		ASSERT(var.rel.deterministic);
 
@@ -943,7 +964,7 @@ namespace sw
 		}
 		else if(var.rel.type == Shader::PARAMETER_CONST)
 		{
-			RValue<Int4> c = *Pointer<Int4>(data + OFFSET(DrawData, ps.c[var.rel.index]));
+			RValue<Int4> c = *Pointer<Int4>(readUniform(bufferIndex, var.rel.index));
 
 			return Extract(c, 0) * var.rel.scale;
 		}

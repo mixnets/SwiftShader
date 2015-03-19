@@ -134,8 +134,8 @@ public:
 		GLint skipImages;
 	};
 
-	void loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input);
-	void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
+	bool loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input);
+	bool loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
 
 	virtual void addRef();
 	virtual void release();
@@ -148,7 +148,7 @@ public:
 		release();
 	}
 
-protected:
+private:
 	const GLsizei width;
 	const GLsizei height;
 	const GLenum format;

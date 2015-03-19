@@ -28,7 +28,7 @@ TransformFeedback::~TransformFeedback()
 	mGenericBuffer = NULL;
 	for(int i = 0; i < MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS; ++i)
 	{
-		mBuffer[i] = NULL;
+		mBuffer[i].set(nullptr);
 	}
 }
 
@@ -80,16 +80,12 @@ void TransformFeedback::setGenericBuffer(Buffer* buffer)
 
 void TransformFeedback::setBuffer(GLuint index, Buffer* buffer)
 {
-	mBuffer[index] = buffer;
+	mBuffer[index].set(buffer);
 }
 
 void TransformFeedback::setBuffer(GLuint index, Buffer* buffer, GLintptr offset, GLsizeiptr size)
 {
-	mBuffer[index] = buffer;
-	if(buffer)
-	{
-		buffer->mapRange(offset, size, buffer->access());
-	}
+	mBuffer[index].set(buffer, offset, size);
 }
 
 void TransformFeedback::detachBuffer(GLuint buffer)
@@ -103,7 +99,7 @@ void TransformFeedback::detachBuffer(GLuint buffer)
 	{
 		if(mBuffer[i].name() == buffer)
 		{
-			mBuffer[i] = NULL;
+			mBuffer[i].set(nullptr);
 		}
 	}
 }

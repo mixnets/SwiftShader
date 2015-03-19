@@ -4641,6 +4641,9 @@ void PixelStorei(GLenum pname, GLint param)
 				break;
 			}
 			else return error(GL_INVALID_ENUM);
+		// FIXME: these cases are missing	
+		//case GL_PACK_IMAGE_HEIGHT:
+		//case GL_PACK_SKIP_IMAGES:
 		default:
 			return error(GL_INVALID_ENUM);
 		}

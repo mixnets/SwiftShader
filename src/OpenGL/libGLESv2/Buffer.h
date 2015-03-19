@@ -44,8 +44,6 @@ class Buffer : public gl::NamedObject
 	GLsizeiptr length() const { return mLength; }
 	GLbitfield access() const { return mAccess; }
 
-	void setOffset(GLintptr offset) { mOffset = offset; }
-	void setSize(size_t size) { mSize = size; }
 	void* mapRange(GLintptr offset, GLsizeiptr length, GLbitfield access);
 	bool unmap();
 	void flushMappedRange(GLintptr offset, GLsizeiptr length) {}

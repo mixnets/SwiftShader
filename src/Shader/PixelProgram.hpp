@@ -51,7 +51,7 @@ namespace sw
 
 	private:
 		// Temporary registers
-		RegisterArray<4096> r;
+		RegisterArray<16384> r;
 
 		// Color outputs
 		Vector4f c[RENDERTARGETS];
@@ -88,7 +88,9 @@ namespace sw
 
 		Vector4f fetchRegisterF(const Src &src, unsigned int offset = 0);
 		Vector4f readConstant(const Src &src, unsigned int offset = 0);
-		Int relativeAddress(const Shader::Parameter &var);
+		RValue<Pointer<Byte> > readUniform(int bufferIndex, unsigned int index);
+		RValue<Pointer<Byte> > readUniform(int bufferIndex, unsigned int index, Int& offset);
+		Int relativeAddress(const Shader::Parameter &var, int bufferIndex = -1);
 
 		Float4 linearToSRGB(const Float4 &x);
 
