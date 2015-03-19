@@ -15,6 +15,7 @@
 #include "Program.h"
 
 #include "main.h"
+#include "Buffer.h"
 #include "Shader.h"
 #include "utilities.h"
 #include "common/debug.h"
@@ -37,14 +38,28 @@ namespace es2
 
 	Uniform::BlockInfo::BlockInfo(const glsl::Uniform& uniform, int blockIndex, bool rowMajorLayout)
 	{
+		static unsigned int registerSizeStd140 = 4; // std140 packing requires dword alignment
+
 		if(blockIndex >= 0)
 		{
 			index = blockIndex;
-			offset = uniform.registerIndex;
-			arrayStride = UniformTypeSize(uniform.type) * uniform.arraySize;
+			offset = uniform.offset * registerSizeStd140;
 			isRowMajorMatrix = rowMajorLayout;
+			int componentSize = UniformTypeSize(UniformComponentType(uniform.type));
 			int rowCount = VariableRowCount(uniform.type);
-			matrixStride = (rowCount > 1) ? (isRowMajorMatrix ? rowCount : VariableColumnCount(uniform.type)) * UniformTypeSize(UniformComponentType(uniform.type)) : 0;
+			if(rowCount > 1)
+			{
+				int colCount = VariableColumnCount(uniform.type);
+				int matrixComponentCount = (isRowMajorMatrix ? colCount : rowCount);
+				matrixStride = (rowCount > 1) ? matrixComponentCount * componentSize : 0;
+				arrayStride = (uniform.arraySize > 0) ? matrixStride * (isRowMajorMatrix ? rowCount : colCount) : 0;
+			}
+			else
+			{
+				matrixStride = 0;
+				int componentCount = UniformComponentCount(uniform.type);
+				arrayStride = (uniform.arraySize > 0) ? componentSize * componentCount : 0;
+			}
 		}
 		else
 		{
@@ -1123,7 +1138,7 @@ namespace es2
 		}
 	}
 
-	void Program::applyUniformBuffers()
+	void Program::applyUniformBuffers(gl::BindingPointer<Buffer>* uniformBuffers)
 	{
 		GLint vertexUniformBuffers[IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS];
 		GLint fragmentUniformBuffers[IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS];
@@ -1161,6 +1176,54 @@ namespace es2
 				unsigned int registerIndex = uniformBlock.psRegisterIndex;
 				ASSERT(fragmentUniformBuffers[registerIndex] == -1);
 				fragmentUniformBuffers[registerIndex] = blockBinding;
+			}
+		}
+
+		for(UniformArray::iterator it = uniforms.begin(); it != uniforms.end(); ++it)
+		{
+			Uniform* uniform = *it;
+			if(!uniform || (uniform->blockInfo.index == -1))
+			{
+				continue;
+			}
+
+			UniformBlock& uniformBlock = uniformBlocks[uniform->blockInfo.index];
+			Buffer* buffer = nullptr;
+			if(uniform->vsRegisterIndex != -1)
+			{
+				buffer = uniformBuffers[vertexUniformBuffers[uniformBlock.vsRegisterIndex]];
+			}
+			else if(uniform->psRegisterIndex != -1)
+			{
+				buffer = uniformBuffers[fragmentUniformBuffers[uniformBlock.psRegisterIndex]];
+			}
+
+			if(buffer)
+			{
+				int rows = VariableRowCount(uniform->type);
+				if((rows > 1) && uniform->blockInfo.isRowMajorMatrix)
+				{
+					int nbElems = std::max(uniform->size(), 1);
+					int cols = VariableColumnCount(uniform->type);
+					float* dst = (float*)uniform->data;
+					const float* src = (const float*)((const unsigned char*)(buffer->data()) + uniform->blockInfo.offset);
+					int matStride = rows * cols;
+					for(int elem = 0; elem < nbElems; ++elem, dst += matStride, src += matStride)
+					{
+						for(int i = 0; i < rows; ++i)
+						{
+							for(int j = 0; j < cols; ++j)
+							{
+								dst[j * rows + i] = src[i * cols + j];
+							}
+						}
+					}
+				}
+				else
+				{
+					int totalSize = UniformTypeSize(uniform->type) * uniform->size();
+					memcpy(uniform->data, (const unsigned char*)(buffer->data()) + uniform->blockInfo.offset, totalSize);
+				}
 			}
 		}
 	}
@@ -1691,7 +1754,7 @@ namespace es2
 			std::vector<unsigned int> memberUniformIndexes;
 			for(size_t i = 0; i < fields.size(); ++i)
 			{
-				memberUniformIndexes.push_back(activeUniforms[fields[i]].registerIndex);
+				memberUniformIndexes.push_back(fields[i]);
 			}
 
 			if(block.arraySize > 0)

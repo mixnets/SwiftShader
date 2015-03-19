@@ -502,7 +502,7 @@ namespace egl
 		}
 		else UNREACHABLE(type);
 
-		return sw::FORMAT_A8B8G8R8;
+		return sw::FORMAT_NULL;
 	}
 
 	// Returns the size, in bytes, of a single texel in an Image

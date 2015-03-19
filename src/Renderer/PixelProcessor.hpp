@@ -79,6 +79,7 @@ namespace sw
 			unsigned int multiSampleMask                      : 4;
 			TransparencyAntialiasing transparencyAntialiasing : BITS(TRANSPARENCY_LAST);
 			bool centroid                                     : 1;
+			bool smooth                                       : 1;
 
 			LogicalOperation logicalOperation : BITS(LOGICALOP_LAST);
 
@@ -91,6 +92,7 @@ namespace sw
 				unsigned char flat : 4;
 				unsigned char project : 2;
 				bool centroid : 1;
+				bool smooth : 1;
 			};
 
 			union

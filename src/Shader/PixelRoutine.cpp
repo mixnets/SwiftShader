@@ -105,7 +105,7 @@ namespace sw
 					x -= *Pointer<Float4>(r.constants + OFFSET(Constants,X) + q * sizeof(float4));
 				}
 
-				z[q] = interpolate(x, r.Dz[q], z[q], r.primitive + OFFSET(Primitive,z), false, false);
+				z[q] = interpolate(x, r.Dz[q], z[q], r.primitive + OFFSET(Primitive,z), false, true, false);
 			}
 		}
 
@@ -152,12 +152,12 @@ namespace sw
 
 			if(interpolateW())
 			{
-				w = interpolate(xxxx, r.Dw, rhw, r.primitive + OFFSET(Primitive,w), false, false);
+				w = interpolate(xxxx, r.Dw, rhw, r.primitive + OFFSET(Primitive,w), false, true, false);
 				rhw = reciprocal(w);
 
 				if(state.centroid)
 				{
-					rhwCentroid = reciprocal(interpolateCentroid(XXXX, YYYY, rhwCentroid, r.primitive + OFFSET(Primitive,w), false, false));
+					rhwCentroid = reciprocal(interpolateCentroid(XXXX, YYYY, rhwCentroid, r.primitive + OFFSET(Primitive,w), false, true, false));
 				}
 			}
 
@@ -169,11 +169,11 @@ namespace sw
 					{
 						if(!state.interpolant[interpolant].centroid)
 						{
-							r.vf[interpolant][component] = interpolate(xxxx, r.Dv[interpolant][component], rhw, r.primitive + OFFSET(Primitive, V[interpolant][component]), (state.interpolant[interpolant].flat & (1 << component)) != 0, state.perspective);
+							r.vf[interpolant][component] = interpolate(xxxx, r.Dv[interpolant][component], rhw, r.primitive + OFFSET(Primitive, V[interpolant][component]), ((state.interpolant[interpolant].flat & (1 << component)) != 0), state.interpolant[interpolant].smooth, state.perspective);
 						}
 						else
 						{
-							r.vf[interpolant][component] = interpolateCentroid(XXXX, YYYY, rhwCentroid, r.primitive + OFFSET(Primitive, V[interpolant][component]), (state.interpolant[interpolant].flat & (1 << component)) != 0, state.perspective);
+							r.vf[interpolant][component] = interpolateCentroid(XXXX, YYYY, rhwCentroid, r.primitive + OFFSET(Primitive, V[interpolant][component]), ((state.interpolant[interpolant].flat & (1 << component)) != 0), state.interpolant[interpolant].smooth, state.perspective);
 						}
 					}
 				}
@@ -204,7 +204,7 @@ namespace sw
 
 			if(state.fog.component)
 			{
-				f = interpolate(xxxx, r.Df, rhw, r.primitive + OFFSET(Primitive,f), state.fog.flat & 0x01, state.perspective);
+				f = interpolate(xxxx, r.Df, rhw, r.primitive + OFFSET(Primitive,f), state.fog.flat & 0x01, state.smooth, state.perspective);
 			}
 
 			setBuiltins(r, x, y, z, w);
@@ -297,7 +297,7 @@ namespace sw
 		#endif
 	}
 
-	Float4 PixelRoutine::interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
+	Float4 PixelRoutine::interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool smooth, bool perspective)
 	{
 		Float4 interpolant = *Pointer<Float4>(planeEquation + OFFSET(PlaneEquation,C), 16);
 
