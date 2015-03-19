@@ -826,6 +826,16 @@ namespace es2
 				}
 			}
 			break;
+			case GL_UNSIGNED_INT:
+			{
+				GLuint *uintParams = (GLuint*)targetUniform->data + uniformIndex[location].element * count;
+
+				for(unsigned int i = 0; i < count; i++)
+				{
+					params[i] = (float)uintParams[i];
+				}
+			}
+			break;
 		  default: UNREACHABLE();
 		}
 
@@ -871,6 +881,7 @@ namespace es2
 			}
 			break;
 		  case GL_INT:
+		  case GL_UNSIGNED_INT:
 			memcpy(params, targetUniform->data + uniformIndex[location].element * count * sizeof(GLint),
 				   count * sizeof(GLint));
 			break;

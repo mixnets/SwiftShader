@@ -469,7 +469,7 @@ void BindBuffer(GLenum target, GLuint buffer)
 		case GL_UNIFORM_BUFFER:
 			if(clientVersion >= 3)
 			{
-				context->bindUniformBuffer(buffer);
+				context->bindGenericUniformBuffer(buffer);
 				return;
 			}
 			else return error(GL_INVALID_ENUM);
@@ -2242,6 +2242,14 @@ void FramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuff
 		case GL_STENCIL_ATTACHMENT:
 			framebuffer->setStencilbuffer(GL_RENDERBUFFER, renderbuffer);
 			break;
+		case GL_DEPTH_STENCIL_ATTACHMENT:
+			if(clientVersion >= 3)
+			{
+				framebuffer->setDepthbuffer(GL_RENDERBUFFER, renderbuffer);
+				framebuffer->setStencilbuffer(GL_RENDERBUFFER, renderbuffer);
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -2443,7 +2451,6 @@ void GenerateMipmap(GLenum target)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}
@@ -2987,6 +2994,18 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 			attachmentType = framebuffer->getStencilbufferType();
 			attachmentHandle = framebuffer->getStencilbufferName();
 			break;
+		case GL_DEPTH_STENCIL_ATTACHMENT:
+			if(clientVersion >= 3)
+			{
+				attachmentType = framebuffer->getDepthbufferType();
+				attachmentHandle = framebuffer->getDepthbufferName();
+				if(attachmentHandle != framebuffer->getStencilbufferName())
+				{
+					// Different attachments to DEPTH and STENCIL, query fails
+					return error(GL_INVALID_OPERATION);
+				}
+			}
+			else return error(GL_INVALID_ENUM);
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -3043,6 +3062,14 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 			{
 				return error(GL_INVALID_ENUM);
 			}
+			break;
+		case GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER:
+			if(clientVersion >= 3)
+			{
+				*params = 0;
+				UNIMPLEMENTED();
+			}
+			else return error(GL_INVALID_ENUM);
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -3154,6 +3181,8 @@ void GetProgramiv(GLuint program, GLenum pname, GLint* params)
 			return error(GL_INVALID_VALUE);
 		}
 
+		egl::GLint clientVersion = egl::getClientVersion();
+
 		switch(pname)
 		{
 		case GL_DELETE_STATUS:
@@ -3183,6 +3212,29 @@ void GetProgramiv(GLuint program, GLenum pname, GLint* params)
 		case GL_ACTIVE_UNIFORM_MAX_LENGTH:
 			*params = programObject->getActiveUniformMaxLength();
 			return;
+		case GL_ACTIVE_UNIFORM_BLOCKS:
+			if(clientVersion >= 3)
+			{
+				*params = programObject->getActiveUniformBlockCount();
+				return;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH:
+			if(clientVersion >= 3)
+			{
+				*params = programObject->getActiveUniformBlockMaxLength();
+				return;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_PROGRAM_BINARY_RETRIEVABLE_HINT:
+		case GL_TRANSFORM_FEEDBACK_BUFFER_MODE:
+		case GL_TRANSFORM_FEEDBACK_VARYINGS:
+		case GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH:
+			if(clientVersion >= 3)
+			{
+				UNIMPLEMENTED();
+			}
+			else return error(GL_INVALID_ENUM);
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -3494,7 +3546,6 @@ void GetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}
@@ -3641,7 +3692,6 @@ void GetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}
@@ -4161,6 +4211,8 @@ GLboolean IsEnabled(GLenum cap)
 		case GL_DEPTH_TEST:               return context->isDepthTestEnabled();
 		case GL_BLEND:                    return context->isBlendEnabled();
 		case GL_DITHER:                   return context->isDitherEnabled();
+		case GL_PRIMITIVE_RESTART_FIXED_INDEX: return context->isPrimitiveRestartFixedIndexEnabled();
+		case GL_RASTERIZER_DISCARD:       return context->isRasterizerDiscardEnabled();
 		default:
 			return error(GL_INVALID_ENUM, false);
 		}
@@ -4465,6 +4517,9 @@ void PixelStorei(GLenum pname, GLint param)
 				break;
 			}
 			else return error(GL_INVALID_ENUM);
+		// FIXME: these cases are missing	
+		//case GL_PACK_IMAGE_HEIGHT:
+		//case GL_PACK_SKIP_IMAGES:
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -5519,6 +5574,21 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 			break;
 		case GL_ETC1_RGB8_OES:
 			return error(GL_INVALID_OPERATION);
+		case GL_COMPRESSED_R11_EAC:
+		case GL_COMPRESSED_SIGNED_R11_EAC:
+		case GL_COMPRESSED_RG11_EAC:
+		case GL_COMPRESSED_SIGNED_RG11_EAC:
+		case GL_COMPRESSED_RGB8_ETC2:
+		case GL_COMPRESSED_SRGB8_ETC2:
+		case GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		case GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		case GL_COMPRESSED_RGBA8_ETC2_EAC:
+		case GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:
+			if(clientVersion >= 3)
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+			return error(GL_INVALID_ENUM);
 		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
@@ -5681,7 +5751,6 @@ void TexParameterf(GLenum target, GLenum pname, GLfloat param)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}
@@ -5837,7 +5906,6 @@ void TexParameteri(GLenum target, GLenum pname, GLint param)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}

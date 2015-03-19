@@ -6693,6 +6693,19 @@ namespace sw
 		}
 	}
 
+	RValue<Float4> RoundEven(RValue<Float4> x)
+	{
+		// FIXME: This code is Round, not RoundEven, RoundEven should round .5 towards the closest even number.
+		if(CPUID::supportsSSE4_1())
+		{
+			return x86::roundps(x, 0);
+		}
+		else
+		{
+			return Float4(RoundInt(x));
+		}
+	}
+
 	RValue<Float4> Trunc(RValue<Float4> x)
 	{
 		if(CPUID::supportsSSE4_1())

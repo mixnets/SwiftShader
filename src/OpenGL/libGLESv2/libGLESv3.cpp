@@ -548,6 +548,12 @@ GL_APICALL void GL_APIENTRY glDrawRangeElements(GLenum mode, GLuint start, GLuin
 
 	if(context)
 	{
+		es2::TransformFeedback* transformFeedback = context->getTransformFeedback();
+		if(transformFeedback && transformFeedback->isActive() && !transformFeedback->isPaused())
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+
 		context->drawElements(mode, start, end, count, type, indices);
 	}
 }
@@ -1827,11 +1833,8 @@ GL_APICALL void GL_APIENTRY glBindBufferRange(GLenum target, GLuint index, GLuin
 			{
 				return error(GL_INVALID_VALUE);
 			}
-			else
-			{
-				es2::TransformFeedback* transformFeedback = context->getTransformFeedback();
-				transformFeedback->setBuffer(index, context->getBuffer(buffer), offset, size);
-			}
+			context->bindIndexedTransformFeedbackBuffer(buffer, index, offset, size);
+			context->bindGenericTransformFeedbackBuffer(buffer);
 			break;
 		case GL_UNIFORM_BUFFER:
 			if(index >= es2::IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS)
@@ -1842,7 +1845,8 @@ GL_APICALL void GL_APIENTRY glBindBufferRange(GLenum target, GLuint index, GLuin
 			{
 				return error(GL_INVALID_VALUE);
 			}
-			UNIMPLEMENTED();
+			context->bindIndexedUniformBuffer(buffer, index, offset, size);
+			context->bindGenericUniformBuffer(buffer);
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -1866,18 +1870,16 @@ GL_APICALL void GL_APIENTRY glBindBufferBase(GLenum target, GLuint index, GLuint
 			{
 				return error(GL_INVALID_VALUE);
 			}
-			else
-			{
-				es2::TransformFeedback* transformFeedback = context->getTransformFeedback();
-				transformFeedback->setBuffer(index, context->getBuffer(buffer));
-			}
+			context->bindIndexedTransformFeedbackBuffer(buffer, index, 0, 0);
+			context->bindGenericTransformFeedbackBuffer(buffer);
 			break;
 		case GL_UNIFORM_BUFFER:
 			if(index >= es2::IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS)
 			{
 				return error(GL_INVALID_VALUE);
 			}
-			UNIMPLEMENTED();
+			context->bindIndexedUniformBuffer(buffer, index, 0, 0);
+			context->bindGenericUniformBuffer(buffer);
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -2252,9 +2254,10 @@ GL_APICALL GLint GL_APIENTRY glGetFragDataLocation(GLuint program, const GLchar 
 		{
 			return error(GL_INVALID_OPERATION, -1);
 		}
+
+		UNIMPLEMENTED();
 	}
 
-	UNIMPLEMENTED();
 	return -1;
 }
 
@@ -2624,9 +2627,12 @@ GL_APICALL void GL_APIENTRY glGetUniformIndices(GLuint program, GLsizei uniformC
 		{
 			return error(GL_INVALID_OPERATION);
 		}
-	}
 
-	UNIMPLEMENTED();
+		for(int i = 0; i < uniformCount; ++i)
+		{
+			uniformIndices[i] = programObject->getUniformLocation(uniformNames[i]);
+		}
+	}
 }
 
 GL_APICALL void GL_APIENTRY glGetActiveUniformsiv(GLuint program, GLsizei uniformCount, const GLuint *uniformIndices, GLenum pname, GLint *params)
@@ -2679,9 +2685,10 @@ GL_APICALL GLuint GL_APIENTRY glGetUniformBlockIndex(GLuint program, const GLcha
 		{
 			return error(GL_INVALID_OPERATION, GL_INVALID_INDEX);
 		}
+
+		return programObject->getUniformBlockLocation(uniformBlockName);
 	}
 
-	UNIMPLEMENTED();
 	return GL_INVALID_INDEX;
 }
 
@@ -2734,15 +2741,20 @@ GL_APICALL void GL_APIENTRY glGetActiveUniformBlockName(GLuint program, GLuint u
 		{
 			return error(GL_INVALID_OPERATION);
 		}
-	}
 
-	UNIMPLEMENTED();
+		programObject->getActiveUniformBlockName(uniformBlockIndex, bufSize, length, uniformBlockName);
+	}
 }
 
 GL_APICALL void GL_APIENTRY glUniformBlockBinding(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
 	TRACE("(GLuint program = %d, GLuint uniformBlockIndex = %d, GLuint uniformBlockBinding = %d)",
 	      program, uniformBlockIndex, uniformBlockBinding);
+
+	if(uniformBlockBinding >= es2::IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS)
+	{
+		return error(GL_INVALID_VALUE);
+	}
 
 	es2::Context *context = es2::getContext();
 
@@ -2754,9 +2766,9 @@ GL_APICALL void GL_APIENTRY glUniformBlockBinding(GLuint program, GLuint uniform
 		{
 			return error(GL_INVALID_VALUE);
 		}
-	}
 
-	UNIMPLEMENTED();
+		programObject->bindUniformBlockLocation(uniformBlockIndex, uniformBlockIndex);
+	}
 }
 
 GL_APICALL void GL_APIENTRY glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
@@ -3068,7 +3080,7 @@ GL_APICALL void GL_APIENTRY glGetBufferParameteri64v(GLenum target, GLenum pname
 			UNIMPLEMENTED();
 			break;
 		case GL_UNIFORM_BUFFER:
-			buffer = context->getUniformBuffer();
+			buffer = context->getGenericUniformBuffer();
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -3898,6 +3910,28 @@ GL_APICALL void GL_APIENTRY glGetInternalformativ(GLenum target, GLenum internal
 {
 	TRACE("(GLenum target = 0x%X, GLenum internalformat = 0x%X, GLenum pname = 0x%X, GLsizei bufSize = %d, GLint *params = %p)",
 	      target, internalformat, pname, bufSize, params);
+
+	if(bufSize < 0)
+	{
+		return error( GL_INVALID_VALUE);
+	}
+
+	switch(target)
+	{
+	case GL_RENDERBUFFER:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
+	switch(pname)
+	{
+	case GL_SAMPLES:
+	case GL_NUM_SAMPLE_COUNTS:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
 
 	UNIMPLEMENTED();
 }

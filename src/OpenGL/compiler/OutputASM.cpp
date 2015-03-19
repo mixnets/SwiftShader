@@ -326,13 +326,14 @@ namespace glsl
 			{
 				ASSERT(leftType.isStruct());
 
-				const TTypeList *structure = leftType.getStruct();
+				const TStructure *structure = leftType.getStruct();
+				const TFieldList& fields = structure->fields();
 				const TString &fieldName = rightType.getFieldName();
 				int fieldOffset = 0;
 
-				for(size_t i = 0; i < structure->size(); i++)
+				for(size_t i = 0; i < fields.size(); i++)
 				{
-					const TType &fieldType = *(*structure)[i].type;
+					const TType &fieldType = *(fields[i]->type());
 
 					if(fieldType.getFieldName() == fieldName)
 					{
@@ -559,6 +560,7 @@ namespace glsl
 			break;
 		case EOpVectorLogicalNot: if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpLogicalNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
+		case EOpBitwiseNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpPostIncrement:
 			if(visit == PostVisit)
 			{
@@ -652,6 +654,26 @@ namespace glsl
 		case EOpFwidth:           if(visit == PostVisit) emit(sw::Shader::OPCODE_FWIDTH, result, arg); break;
 		case EOpAny:              if(visit == PostVisit) emit(sw::Shader::OPCODE_ANY, result, arg); break;
 		case EOpAll:              if(visit == PostVisit) emit(sw::Shader::OPCODE_ALL, result, arg); break;
+		case EOpTranspose:
+			if(visit == PostVisit)
+			{
+				int numCols = arg->getNominalSize();
+				int numRows = arg->getSecondarySize();
+				for(int i = 0; i < numCols; ++i)
+				{
+					for(int j = 0; j < numRows; ++j)
+					{
+						Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, arg);
+						mov->src[0].index += i;
+						mov->src[0].swizzle = 0x55 * j;
+						mov->dst.index += j;
+						mov->dst.mask = 1 << i;
+					}
+				}
+			}
+			break;
+		case EOpDeterminant:
+		case EOpInverse:
 		default: UNREACHABLE();
 		}
 
@@ -1074,6 +1096,17 @@ namespace glsl
 				}
 			}
 			break;
+		case EOpOuterProduct:
+			if(visit == PostVisit)
+			{
+				for(int i = 0; i < dim(arg[1]); i++)
+				{
+					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, arg[0], arg[1]);
+					mul->dst.index += i;
+					mul->src[1].swizzle = 0x55 * i;
+				}
+			}
+			break;
 		default: UNREACHABLE();
 		}
 
@@ -1410,12 +1443,13 @@ namespace glsl
 
 		if(type.isStruct())
 		{
-			TTypeList *structure = type.getStruct();
+			const TStructure *structure = type.getStruct();
+			const TFieldList& fields = structure->fields();
 			int elements = 0;
 
-			for(TTypeList::const_iterator field = structure->begin(); field != structure->end(); field++)
+			for(TFieldList::const_iterator field = fields.begin(); field != fields.end(); field++)
 			{
-				const TType &fieldType = *field->type;
+				const TType &fieldType = *((*field)->type());
 
 				if(fieldType.totalRegisterCount() <= registers)
 				{
@@ -1430,7 +1464,7 @@ namespace glsl
 		}
 		else if(type.isMatrix())
 		{
-			return registers * type.getNominalSize();
+			return registers * type.getSecondarySize();
 		}
 		
 		UNREACHABLE();
@@ -1443,10 +1477,12 @@ namespace glsl
 		{
 			if(type.isStruct())
 			{
-				return registerSize(*type.getStruct()->begin()->type, 0);
+				const TStructure *structure = type.getStruct();
+				const TFieldList& fields = structure->fields();
+				return registerSize(*((*(fields.begin()))->type()), 0);
 			}
 
-			return type.getNominalSize();
+			return type.isMatrix() ? type.getSecondarySize() : type.getNominalSize();
 		}
 
 		if(type.isArray() && registers >= type.elementRegisterCount())
@@ -1458,12 +1494,13 @@ namespace glsl
 
 		if(type.isStruct())
 		{
-			TTypeList *structure = type.getStruct();
+			const TStructure *structure = type.getStruct();
+			const TFieldList& fields = structure->fields();
 			int elements = 0;
 
-			for(TTypeList::const_iterator field = structure->begin(); field != structure->end(); field++)
+			for(TFieldList::const_iterator field = fields.begin(); field != fields.end(); field++)
 			{
-				const TType &fieldType = *field->type;
+				const TType &fieldType = *((*field)->type());
 				
 				if(fieldType.totalRegisterCount() <= registers)
 				{
@@ -1491,7 +1528,6 @@ namespace glsl
 		{
 			TIntermTyped *arg = argument->getAsTyped();
 			const TType &type = arg->getType();
-			const TTypeList *structure = type.getStruct();
 			index = (index >= arg->totalRegisterCount()) ? arg->totalRegisterCount() - 1 : index;
 
 			int size = registerSize(type, index);
@@ -1590,7 +1626,7 @@ namespace glsl
 	{
 		if(src &&
 			((src->isVector() && (!dst->isVector() || (dst->getNominalSize() != dst->getNominalSize()))) ||
-			 (src->isMatrix() && (!dst->isMatrix() || (src->getNominalSize() != dst->getNominalSize())))))
+			 (src->isMatrix() && (!dst->isMatrix() || (src->getNominalSize() != dst->getNominalSize()) || (src->getSecondarySize() != dst->getSecondarySize())))))
 		{
 			return mContext.error(src->getLine(), "Result type should match the l-value type in compound assignment", src->isVector() ? "vector" : "matrix");
 		}
@@ -1742,13 +1778,14 @@ namespace glsl
 				break;
 			case EOpIndexDirectStruct:
 				{
-					const TTypeList *structure = left->getType().getStruct();
+					const TStructure *structure = left->getType().getStruct();
+					const TFieldList& fields = structure->fields();
 					const TString &fieldName = right->getType().getFieldName();
 
 					int offset = 0;
-					for(TTypeList::const_iterator field = structure->begin(); field != structure->end(); field++)
+					for(TFieldList::const_iterator field = fields.begin(); field != fields.end(); field++)
 					{
-						if(field->type->getFieldName() == fieldName)
+						if((*field)->type()->getFieldName() == fieldName)
 						{
 							dst.type = registerType(left);
 							dst.index += offset;
@@ -1757,7 +1794,7 @@ namespace glsl
 							return 0xE4;
 						}
 
-						offset += field->type->totalRegisterCount();
+						offset += (*field)->type()->totalRegisterCount();
 					}
 				}
 				break;
@@ -1837,11 +1874,18 @@ namespace glsl
 		case EvqConstReadOnly:       return sw::Shader::PARAMETER_TEMP;
 		case EvqPosition:            return sw::Shader::PARAMETER_OUTPUT;
 		case EvqPointSize:           return sw::Shader::PARAMETER_OUTPUT;
+		case EvqInstanceID:          return sw::Shader::PARAMETER_INPUT;
 		case EvqFragCoord:           return sw::Shader::PARAMETER_MISCTYPE;
 		case EvqFrontFacing:         return sw::Shader::PARAMETER_MISCTYPE;
 		case EvqPointCoord:          return sw::Shader::PARAMETER_INPUT;
 		case EvqFragColor:           return sw::Shader::PARAMETER_COLOROUT;
 		case EvqFragData:            return sw::Shader::PARAMETER_COLOROUT;
+		case EvqSmooth:              return sw::Shader::PARAMETER_OUTPUT;
+		case EvqFlat:                return sw::Shader::PARAMETER_OUTPUT;
+		case EvqCentroidOut:         return sw::Shader::PARAMETER_OUTPUT;
+		case EvqSmoothIn:            return sw::Shader::PARAMETER_INPUT;
+		case EvqFlatIn:              return sw::Shader::PARAMETER_INPUT;
+		case EvqCentroidIn:          return sw::Shader::PARAMETER_INPUT;
 		default: UNREACHABLE();
 		}
 
@@ -1872,11 +1916,18 @@ namespace glsl
 		case EvqConstReadOnly:       return temporaryRegister(operand);
 		case EvqPosition:            return varyingRegister(operand);
 		case EvqPointSize:           return varyingRegister(operand);
+		case EvqInstanceID:          return temporaryRegister(operand);
 		case EvqFragCoord:           pixelShader->vPosDeclared = true;  return 0;
 		case EvqFrontFacing:         pixelShader->vFaceDeclared = true; return 1;
 		case EvqPointCoord:          return varyingRegister(operand);
 		case EvqFragColor:           return 0;
 		case EvqFragData:            return 0;
+		case EvqSmooth:              return varyingRegister(operand);
+		case EvqFlat:                return varyingRegister(operand);
+		case EvqCentroidOut:         return varyingRegister(operand);
+		case EvqSmoothIn:            return varyingRegister(operand);
+		case EvqFlatIn:              return varyingRegister(operand);
+		case EvqCentroidIn:          return varyingRegister(operand);
 		default: UNREACHABLE();
 		}
 
@@ -2022,7 +2073,7 @@ namespace glsl
 		if(var == -1)
 		{
 			var = allocate(varyings, varying);
-			int componentCount = varying->getNominalSize();
+			int componentCount = varying->isMatrix() ? varying->getSecondarySize() : varying->getNominalSize();
 			int registerCount = varying->totalRegisterCount();
 
 			if(pixelShader)
@@ -2315,7 +2366,7 @@ namespace glsl
 
 	void OutputASM::declareUniform(const TType &type, const TString &name, int index)
 	{
-		const TTypeList *structure = type.getStruct();
+		const TStructure *structure = type.getStruct();
 		ActiveUniforms &activeUniforms = shaderObject->activeUniforms;
 
 		if(!structure)
@@ -2332,15 +2383,16 @@ namespace glsl
 		}
 		else
 		{
+			const TFieldList& fields = structure->fields();
 			if(type.isArray())
 			{
 				int elementIndex = index;
 
 				for(int i = 0; i < type.getArraySize(); i++)
 				{
-					for(size_t j = 0; j < structure->size(); j++)
+					for(size_t j = 0; j < fields.size(); j++)
 					{
-						const TType &fieldType = *(*structure)[j].type;
+						const TType &fieldType = *(fields[j]->type());
 						const TString &fieldName = fieldType.getFieldName();
 
 						const TString uniformName = name + "[" + str(i) + "]." + fieldName;
@@ -2353,9 +2405,9 @@ namespace glsl
 			{
 				int fieldIndex = index;
 
-				for(size_t i = 0; i < structure->size(); i++)
+				for(size_t i = 0; i < fields.size(); i++)
 				{
-					const TType &fieldType = *(*structure)[i].type;
+					const TType &fieldType = *(fields[i]->type());
 					const TString &fieldName = fieldType.getFieldName();
 
 					const TString uniformName = name + "." + fieldName;

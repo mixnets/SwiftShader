@@ -103,7 +103,7 @@ namespace sw
 					x -= *Pointer<Float4>(r.constants + OFFSET(Constants,X) + q * sizeof(float4));
 				}
 
-				z[q] = interpolate(x, r.Dz[q], z[q], r.primitive + OFFSET(Primitive,z), false, false);
+				z[q] = interpolate(x, r.Dz[q], z[q], r.primitive + OFFSET(Primitive,z), false, true, false);
 			}
 		}
 
@@ -150,12 +150,12 @@ namespace sw
 
 			if(interpolateW())
 			{
-				w = interpolate(xxxx, r.Dw, rhw, r.primitive + OFFSET(Primitive,w), false, false);
+				w = interpolate(xxxx, r.Dw, rhw, r.primitive + OFFSET(Primitive,w), false, true, false);
 				rhw = reciprocal(w);
 
 				if(state.centroid)
 				{
-					rhwCentroid = reciprocal(interpolateCentroid(XXXX, YYYY, rhwCentroid, r.primitive + OFFSET(Primitive,w), false, false));
+					rhwCentroid = reciprocal(interpolateCentroid(XXXX, YYYY, rhwCentroid, r.primitive + OFFSET(Primitive,w), false, true, false));
 				}
 			}
 
@@ -167,11 +167,11 @@ namespace sw
 					{
 						if(!state.interpolant[interpolant].centroid)
 						{
-							r.vf[interpolant][component] = interpolate(xxxx, r.Dv[interpolant][component], rhw, r.primitive + OFFSET(Primitive,V[interpolant][component]), (state.interpolant[interpolant].flat & (1 << component)) != 0, state.perspective);
+							r.vf[interpolant][component] = interpolate(xxxx, r.Dv[interpolant][component], rhw, r.primitive + OFFSET(Primitive, V[interpolant][component]), ((state.interpolant[interpolant].flat & (1 << component)) != 0), state.interpolant[interpolant].smooth, state.perspective);
 						}
 						else
 						{
-							r.vf[interpolant][component] = interpolateCentroid(XXXX, YYYY, rhwCentroid, r.primitive + OFFSET(Primitive,V[interpolant][component]), (state.interpolant[interpolant].flat & (1 << component)) != 0, state.perspective);
+							r.vf[interpolant][component] = interpolateCentroid(XXXX, YYYY, rhwCentroid, r.primitive + OFFSET(Primitive, V[interpolant][component]), ((state.interpolant[interpolant].flat & (1 << component)) != 0), state.interpolant[interpolant].smooth, state.perspective);
 						}
 					}
 				}
@@ -202,7 +202,7 @@ namespace sw
 
 			if(state.fog.component)
 			{
-				f = interpolate(xxxx, r.Df, rhw, r.primitive + OFFSET(Primitive,f), state.fog.flat & 0x01, state.perspective);
+				f = interpolate(xxxx, r.Df, rhw, r.primitive + OFFSET(Primitive,f), state.fog.flat & 0x01, state.smooth, state.perspective);
 			}
 
 			if(integerPipeline)
@@ -396,7 +396,7 @@ namespace sw
 		#endif
 	}
 
-	Float4 PixelRoutine::interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
+	Float4 PixelRoutine::interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool smooth, bool perspective)
 	{
 		Float4 interpolant = D;
 
@@ -413,7 +413,7 @@ namespace sw
 		return interpolant;
 	}
 
-	Float4 PixelRoutine::interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
+	Float4 PixelRoutine::interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool smooth, bool perspective)
 	{
 		Float4 interpolant = *Pointer<Float4>(planeEquation + OFFSET(PlaneEquation,C), 16);
 
@@ -3935,6 +3935,7 @@ namespace sw
 			case Shader::OPCODE_TRUNC:      trunc(d, s0);                                   break;
 			case Shader::OPCODE_FLOOR:      floor(d, s0);                                   break;
 			case Shader::OPCODE_ROUND:		round(d, s0);                                   break;
+//			case Shader::OPCODE_ROUNDEVEN:	roundEven(d, s0);                               break;
 			case Shader::OPCODE_CEIL:       ceil(d, s0);                                    break;
 			case Shader::OPCODE_EXP2X:		exp2x(d, s0, pp);								break;
 			case Shader::OPCODE_EXP2:		exp2(d, s0, pp);								break;
@@ -3960,6 +3961,10 @@ namespace sw
 			case Shader::OPCODE_LRP:		lrp(d, s0, s1, s2);								break;
 			case Shader::OPCODE_STEP:		step(d, s0, s1);								break;
 			case Shader::OPCODE_SMOOTH:		smooth(d, s0, s1, s2);							break;
+//			case Shader::OPCODE_FLOATBITSTOINT:  floatBitsToInt(d, s0);						break;
+//			case Shader::OPCODE_FLOATBITSTOUINT: floatBitsToUInt(d, s0);					break;
+//			case Shader::OPCODE_INTBITSTOFLOAT:	 intBitsToFloat(d, s0);						break;
+//			case Shader::OPCODE_UINTBITSTOFLOAT: uintBitsToFloat(d, s0);					break;
 			case Shader::OPCODE_POWX:		powx(d, s0, s1, pp);							break;
 			case Shader::OPCODE_POW:		pow(d, s0, s1, pp);								break;
 			case Shader::OPCODE_SGN:		sgn(d, s0);										break;

@@ -2373,6 +2373,7 @@ namespace sw
 	RValue<Int4> CmpNLT(RValue<Float4> x, RValue<Float4> y);
 	RValue<Int4> CmpNLE(RValue<Float4> x, RValue<Float4> y);
 	RValue<Float4> Round(RValue<Float4> x);
+	RValue<Float4> RoundEven(RValue<Float4> x);
 	RValue<Float4> Trunc(RValue<Float4> x);
 	RValue<Float4> Frac(RValue<Float4> x);
 	RValue<Float4> Floor(RValue<Float4> x);

@@ -73,7 +73,7 @@ enum
     MAX_VERTEX_ATTRIBS = 16,
 	MAX_UNIFORM_VECTORS = 256,   // Device limit
     MAX_VERTEX_UNIFORM_VECTORS = VERTEX_UNIFORM_VECTORS - 3,   // Reserve space for gl_DepthRange
-    MAX_VARYING_VECTORS = 10,
+    MAX_VARYING_VECTORS = 15 /*es2: 10*/,
     MAX_TEXTURE_IMAGE_UNITS = TEXTURE_IMAGE_UNITS,
     MAX_VERTEX_TEXTURE_IMAGE_UNITS = VERTEX_TEXTURE_IMAGE_UNITS,
     MAX_COMBINED_TEXTURE_IMAGE_UNITS = MAX_TEXTURE_IMAGE_UNITS + MAX_VERTEX_TEXTURE_IMAGE_UNITS,
@@ -331,7 +331,8 @@ struct State
 	gl::BindingPointer<Buffer> copyWriteBuffer;
 	gl::BindingPointer<Buffer> pixelPackBuffer;
 	gl::BindingPointer<Buffer> pixelUnpackBuffer;
-	gl::BindingPointer<Buffer> uniformBuffer;
+	gl::BindingPointer<Buffer> genericUniformBuffer;
+	gl::BindingPointer<Buffer> uniformBuffers[MAX_UNIFORM_BUFFER_BINDINGS];
 
     GLuint readFramebuffer;
     GLuint drawFramebuffer;
@@ -512,7 +513,6 @@ public:
 	void bindPixelPackBuffer(GLuint buffer);
 	void bindPixelUnpackBuffer(GLuint buffer);
 	void bindTransformFeedbackBuffer(GLuint buffer);
-	void bindUniformBuffer(GLuint buffer);
     void bindTexture2D(GLuint texture);
     void bindTextureCubeMap(GLuint texture);
     void bindTextureExternal(GLuint texture);
@@ -522,9 +522,13 @@ public:
     void bindDrawFramebuffer(GLuint framebuffer);
     void bindRenderbuffer(GLuint renderbuffer);
 	bool bindVertexArray(GLuint array);
+	void bindGenericUniformBuffer(GLuint buffer);
+	void bindIndexedUniformBuffer(GLuint buffer, GLuint index, GLintptr offset, GLsizeiptr size);
+	void bindGenericTransformFeedbackBuffer(GLuint buffer);
+	void bindIndexedTransformFeedbackBuffer(GLuint buffer, GLuint index, GLintptr offset, GLsizeiptr size);
 	bool bindTransformFeedback(GLuint transformFeedback);
 	bool bindSampler(GLuint unit, GLuint sampler);
-    void useProgram(GLuint program);
+	void useProgram(GLuint program);
 
 	void beginQuery(GLenum target, GLuint query);
     void endQuery(GLenum target);
@@ -557,7 +561,7 @@ public:
 	Buffer *getCopyWriteBuffer() const;
 	Buffer *getPixelPackBuffer() const;
 	Buffer *getPixelUnpackBuffer() const;
-	Buffer *getUniformBuffer() const;
+	Buffer *getGenericUniformBuffer() const;
 	bool getBuffer(GLenum target, es2::Buffer **buffer) const;
 	Program *getCurrentProgram() const;
 	Texture2D *getTexture2D() const;
@@ -569,9 +573,9 @@ public:
 	Framebuffer *getReadFramebuffer() const;
 	Framebuffer *getDrawFramebuffer() const;
 
-	bool getFloatv(GLenum pname, GLfloat *params) const;
+    bool getFloatv(GLenum pname, GLfloat *params) const;
 	template<typename T> bool getIntegerv(GLenum pname, T *params) const;
-	bool getBooleanv(GLenum pname, GLboolean *params) const;
+    bool getBooleanv(GLenum pname, GLboolean *params) const;
 	template<typename T> bool getTransformFeedbackiv(GLuint xfb, GLenum pname, T *param) const;
 
 	bool getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams) const;
