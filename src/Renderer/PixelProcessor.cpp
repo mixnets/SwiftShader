@@ -901,6 +901,7 @@ namespace sw
 		if(state.multiSample > 1 && context->pixelShader)
 		{
 			state.centroid = context->pixelShader->containsCentroid();
+			state.smooth = !context->pixelShader->containsNonSmooth();
 		}
 
 		if(!context->pixelShader)
@@ -1030,6 +1031,17 @@ namespace sw
 				for(int component = 0; component < 4; component++)
 				{
 					state.interpolant[interpolant].centroid = context->pixelShader->semantic[interpolant][0].centroid;
+				}
+			}
+		}
+
+		if(!state.smooth)
+		{
+			for(int interpolant = 0; interpolant < 10; interpolant++)
+			{
+				for(int component = 0; component < 4; component++)
+				{
+					state.interpolant[interpolant].smooth = context->pixelShader->semantic[interpolant][0].smooth;
 				}
 			}
 		}

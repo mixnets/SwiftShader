@@ -184,7 +184,7 @@ namespace sw
 
 					For(Int x = x0, x < x1, x += 2)
 					{
-						Float4 z = interpolate(xxxx, r.Dz[0], z, r.primitive + OFFSET(Primitive,z), false, false);
+						Float4 z = interpolate(xxxx, r.Dz[0], z, r.primitive + OFFSET(Primitive,z), false, true, false);
 
 						Float4 zValue;
 						

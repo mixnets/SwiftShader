@@ -366,6 +366,26 @@ namespace sw
 		return theta;
 	}
 
+	Int4 floatBitsToInt(RValue<Float4> x)
+	{
+		return As<Int4>(x);
+	}
+	
+	UInt4 floatBitsToUInt(RValue<Float4> x)
+	{
+		return As<UInt4>(x);
+	}
+
+	Float4 intBitsToFloat(RValue<Int4> x)
+	{
+		return As<Float4>(x);
+	}
+
+	Float4 uintBitsToFloat(RValue<UInt4> x)
+	{
+		return As<Float4>(x);
+	}
+
 	Float4 dot2(Vector4f &v0, Vector4f &v1)
 	{
 		return v0.x * v1.x + v0.y * v1.y;
@@ -799,6 +819,38 @@ namespace sw
 		Float4 tw = Min(Max((x.w - edge0.w) / (edge1.w - edge0.w), Float4(0.0f)), Float4(1.0f)); dst.w = tw * tw * (Float4(3.0f) - Float4(2.0f) * tw);
 	}
 
+	void ShaderCore::floatBitsToInt(Vector4i &dst, Vector4f &src)
+	{
+		dst.x = sw::floatBitsToInt(src.x);
+		dst.y = sw::floatBitsToInt(src.y);
+		dst.z = sw::floatBitsToInt(src.z);
+		dst.w = sw::floatBitsToInt(src.w);
+	}
+
+	void ShaderCore::floatBitsToUInt(Vector4u &dst, Vector4f &src)
+	{
+		dst.x = sw::floatBitsToUInt(src.x);
+		dst.y = sw::floatBitsToUInt(src.y);
+		dst.z = sw::floatBitsToUInt(src.z);
+		dst.w = sw::floatBitsToUInt(src.w);
+	}
+
+	void ShaderCore::intBitsToFloat(Vector4f &dst, Vector4i &src)
+	{
+		dst.x = sw::intBitsToFloat(src.x);
+		dst.y = sw::intBitsToFloat(src.y);
+		dst.z = sw::intBitsToFloat(src.z);
+		dst.w = sw::intBitsToFloat(src.w);
+	}
+
+	void ShaderCore::uintBitsToFloat(Vector4f &dst, Vector4u &src)
+	{
+		dst.x = sw::uintBitsToFloat(src.x);
+		dst.y = sw::uintBitsToFloat(src.y);
+		dst.z = sw::uintBitsToFloat(src.z);
+		dst.w = sw::uintBitsToFloat(src.w);
+	}
+
 	void ShaderCore::frc(Vector4f &dst, Vector4f &src)
 	{
 		dst.x = Frac(src.x);
@@ -821,6 +873,22 @@ namespace sw
 		dst.y = Floor(src.y);
 		dst.z = Floor(src.z);
 		dst.w = Floor(src.w);
+	}
+
+	void ShaderCore::round(Vector4f &dst, Vector4f &src)
+	{
+		dst.x = Round(src.x);
+		dst.y = Round(src.y);
+		dst.z = Round(src.z);
+		dst.w = Round(src.w);
+	}
+
+	void ShaderCore::roundEven(Vector4f &dst, Vector4f &src)
+	{
+		dst.x = RoundEven(src.x);
+		dst.y = RoundEven(src.y);
+		dst.z = RoundEven(src.z);
+		dst.w = RoundEven(src.w);
 	}
 
 	void ShaderCore::ceil(Vector4f &dst, Vector4f &src)

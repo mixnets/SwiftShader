@@ -22,7 +22,10 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
 	TType *float4 = new TType(EbtFloat, 4);
 	TType *genType = new TType(EbtGenType);
 
-    //
+	TType *genIType = new TType(EbtGenIType);
+	TType *genUType = new TType(EbtGenUType);
+
+	//
     // Angle and Trigonometric Functions.
     //
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpRadians, genType, "radians", genType);
@@ -51,8 +54,11 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
     //
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpAbs, genType, "abs", genType);
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpSign, genType, "sign", genType);
-    symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpFloor, genType, "floor", genType);
-    symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpCeil, genType, "ceil", genType);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpFloor, genType, "floor", genType);
+	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpTrunc, genType, "trunc", genType);
+	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpRound, genType, "round", genType);
+	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpRoundEven, genType, "roundEven", genType);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpCeil, genType, "ceil", genType);
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpFract, genType, "fract", genType);
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMod, genType, "mod", genType, float1);
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMod, genType, "mod", genType, genType);
@@ -68,6 +74,10 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpStep, genType, "step", float1, genType);
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpSmoothStep, genType, "smoothstep", genType, genType, genType);
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpSmoothStep, genType, "smoothstep", float1, float1, genType);
+	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpFloatBitsToInt, genIType, "floatBitsToInt", genType);
+	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpFloatBitsToUInt, genUType, "floatBitsToUint", genType);
+	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpIntBitsToFloat, genType, "intBitsToFloat", genIType);
+	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpUIntBitsToFloat, genType, "uintBitsToFloat", genUType);
 
     //
     // Geometric Functions.
@@ -81,16 +91,28 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpReflect, genType, "reflect", genType, genType);
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpRefract, genType, "refract", genType, genType, float1);
 
-	TType *mat2 = new TType(EbtFloat, 2, 2);
-	TType *mat3 = new TType(EbtFloat, 3, 3);
-	TType *mat4 = new TType(EbtFloat, 4, 4);
+	TType *mat2   = new TType(EbtFloat, 2, 2);
+	TType *mat2x3 = new TType(EbtFloat, 2, 3);
+	TType *mat2x4 = new TType(EbtFloat, 2, 4);
+	TType *mat3x2 = new TType(EbtFloat, 3, 2);
+	TType *mat3   = new TType(EbtFloat, 3, 3);
+	TType *mat3x4 = new TType(EbtFloat, 3, 4);
+	TType *mat4x2 = new TType(EbtFloat, 4, 2);
+	TType *mat4x3 = new TType(EbtFloat, 4, 3);
+	TType *mat4   = new TType(EbtFloat, 4, 4);
 
     //
     // Matrix Functions.
     //
-    symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMul, mat2, "matrixCompMult", mat2, mat2);
-    symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMul, mat3, "matrixCompMult", mat3, mat3);
-    symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMul, mat4, "matrixCompMult", mat4, mat4);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMul, mat2,   "matrixCompMult", mat2,   mat2);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMul, mat2x3, "matrixCompMult", mat2x3, mat2x3);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMul, mat2x4, "matrixCompMult", mat2x4, mat2x4);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMul, mat3x2, "matrixCompMult", mat3x2, mat3x2);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMul, mat3,   "matrixCompMult", mat3,   mat3);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMul, mat3x4, "matrixCompMult", mat3x4, mat3x4);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMul, mat4x2, "matrixCompMult", mat4x2, mat4x2);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMul, mat4x3, "matrixCompMult", mat4x3, mat4x3);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpMul, mat4,   "matrixCompMult", mat4,   mat4);
 
 	TType *bool1 = new TType(EbtBool);
 	TType *vec = new TType(EbtVec);

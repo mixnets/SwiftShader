@@ -20,6 +20,7 @@
 #include "common/NameSpace.hpp"
 #include "common/Object.hpp"
 #include "Image.hpp"
+#include "Texture.h"
 #include "Renderer/Sampler.hpp"
 #include "TransformFeedback.h"
 
@@ -49,11 +50,6 @@ class Device;
 class Buffer;
 class Shader;
 class Program;
-class Texture;
-class Texture2D;
-class Texture3D;
-class TextureCubeMap;
-class TextureExternal;
 class Framebuffer;
 class Renderbuffer;
 class RenderbufferStorage;
@@ -74,7 +70,7 @@ enum
     MAX_VERTEX_ATTRIBS = 16,
 	MAX_UNIFORM_VECTORS = 256,   // Device limit
     MAX_VERTEX_UNIFORM_VECTORS = VERTEX_UNIFORM_VECTORS - 3,   // Reserve space for gl_DepthRange
-    MAX_VARYING_VECTORS = 10,
+    MAX_VARYING_VECTORS = 15 /*es2: 10*/,
     MAX_TEXTURE_IMAGE_UNITS = TEXTURE_IMAGE_UNITS,
     MAX_VERTEX_TEXTURE_IMAGE_UNITS = VERTEX_TEXTURE_IMAGE_UNITS,
     MAX_COMBINED_TEXTURE_IMAGE_UNITS = MAX_TEXTURE_IMAGE_UNITS + MAX_VERTEX_TEXTURE_IMAGE_UNITS,
@@ -333,6 +329,8 @@ struct State
 
     GLuint readFramebuffer;
     GLuint drawFramebuffer;
+    GLuint readFramebufferColorIndex;
+    std::vector<GLuint> drawFramebufferColorIndices;
     gl::BindingPointer<Renderbuffer> renderbuffer;
     GLuint currentProgram;
     gl::BindingPointer<VertexArray> vertexArray;
@@ -426,6 +424,12 @@ public:
     GLuint getDrawFramebufferName() const;
     GLuint getRenderbufferName() const;
 
+	void setReadFramebufferColorIndex(GLuint index);
+	void clearDrawFramebufferColorIndex();
+	void addDrawFramebufferColorIndex(GLuint index);
+	GLuint getReadFramebufferColorIndex() const;
+	GLuint getDrawFramebufferColorIndex(GLuint outputIndex) const;
+
 	GLuint getActiveQuery(GLenum target) const;
 
     GLuint getArrayBufferName() const;
@@ -489,6 +493,7 @@ public:
 	void bindCopyWriteBuffer(GLuint buffer);
 	void bindPixelPackBuffer(GLuint buffer);
 	void bindPixelUnpackBuffer(GLuint buffer);
+	void bindTransformFeedbackBuffer(GLuint buffer);
 	void bindUniformBuffer(GLuint buffer);
     void bindTexture2D(GLuint texture);
     void bindTextureCubeMap(GLuint texture);
@@ -500,7 +505,7 @@ public:
 	bool bindVertexArray(GLuint array);
 	bool bindTransformFeedback(GLuint transformFeedback);
 	bool bindSampler(GLuint unit, GLuint sampler);
-    void useProgram(GLuint program);
+	void useProgram(GLuint program);
 
 	void beginQuery(GLenum target, GLuint query);
     void endQuery(GLenum target);
@@ -544,16 +549,16 @@ public:
     Framebuffer *getDrawFramebuffer();
 
     bool getFloatv(GLenum pname, GLfloat *params);
-    bool getIntegerv(GLenum pname, GLint *params);
+    template<typename T> bool getIntegerv(GLenum pname, T *params);
     bool getBooleanv(GLenum pname, GLboolean *params);
-	bool getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param);
+	template<typename T> bool getTransformFeedbackiv(GLuint xfb, GLenum pname, T *param);
 
     bool getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams);
 
     void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLsizei *bufSize, void* pixels);
     void clear(GLbitfield mask);
     void drawArrays(GLenum mode, GLint first, GLsizei count);
-    void drawElements(GLenum mode, GLsizei count, GLenum type, const void *indices);
+    void drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices);
     void finish();
     void flush();
 
@@ -585,7 +590,7 @@ private:
     bool applyRenderTarget();
     void applyState(GLenum drawMode);
     GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count);
-    GLenum applyIndexBuffer(const void *indices, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo);
+    GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo);
     void applyShaders();
     void applyTextures();
     void applyTextures(sw::SamplerType type);

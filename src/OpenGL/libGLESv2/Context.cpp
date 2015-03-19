@@ -26,7 +26,6 @@
 #include "Renderbuffer.h"
 #include "Sampler.h"
 #include "Shader.h"
-#include "Texture.h"
 #include "TransformFeedback.h"
 #include "VertexArray.h"
 #include "VertexDataManager.h"
@@ -150,6 +149,9 @@ Context::Context(const egl::Config *config, const Context *shareContext, EGLint 
     bindDrawFramebuffer(0);
     bindRenderbuffer(0);
     bindTransformFeedback(0);
+
+	mState.readFramebufferColorIndex = 0;
+	mState.drawFramebufferColorIndices.push_back(0);
 
     mState.currentProgram = 0;
 
@@ -620,7 +622,10 @@ bool Context::isDitherEnabled() const
 
 void Context::setPrimitiveRestartFixedIndex(bool enabled)
 {
-    UNIMPLEMENTED();
+	if(enabled)
+	{
+		UNIMPLEMENTED();
+	}
     mState.primitiveRestartFixedIndex = enabled;
 }
 
@@ -631,7 +636,10 @@ bool Context::isPrimitiveRestartFixedIndexEnabled() const
 
 void Context::setRasterizerDiscard(bool enabled)
 {
-    UNIMPLEMENTED();
+	if(enabled)
+	{
+		UNIMPLEMENTED();
+	}
     mState.rasterizerDiscard = enabled;
 }
 
@@ -715,6 +723,31 @@ GLuint Context::getDrawFramebufferName() const
 GLuint Context::getRenderbufferName() const
 {
     return mState.renderbuffer.name();
+}
+
+void Context::setReadFramebufferColorIndex(GLuint index)
+{
+	mState.readFramebufferColorIndex = index;
+}
+
+void Context::addDrawFramebufferColorIndex(GLuint index)
+{
+	mState.drawFramebufferColorIndices.push_back(index);
+}
+
+void Context::clearDrawFramebufferColorIndex()
+{
+	mState.drawFramebufferColorIndices.clear();
+}
+
+GLuint Context::getReadFramebufferColorIndex() const
+{
+	return mState.readFramebufferColorIndex;
+}
+
+GLuint Context::getDrawFramebufferColorIndex(GLuint outputIndex) const
+{
+	return (outputIndex < mState.drawFramebufferColorIndices.size()) ? mState.drawFramebufferColorIndices[outputIndex] : GL_INVALID_INDEX;
 }
 
 GLuint Context::getArrayBufferName() const
@@ -1092,6 +1125,18 @@ void Context::bindPixelUnpackBuffer(GLuint buffer)
 	mState.pixelUnpackBuffer = getBuffer(buffer);
 }
 
+void Context::bindTransformFeedbackBuffer(GLuint buffer)
+{
+	mResourceManager->checkBufferAllocation(buffer);
+
+	TransformFeedback* transformFeedback = getTransformFeedback(mState.transformFeedback);
+	
+	if(transformFeedback)
+	{
+		transformFeedback->setGenericBuffer(getBuffer(buffer));
+	}
+}
+
 void Context::bindUniformBuffer(GLuint buffer)
 {
 	mResourceManager->checkBufferAllocation(buffer);
@@ -1408,6 +1453,11 @@ Buffer *Context::getPixelUnpackBuffer()
 	return mState.pixelUnpackBuffer;
 }
 
+TransformFeedback *Context::getTransformFeedback()
+{
+	return getTransformFeedback(mState.transformFeedback);
+}
+
 Buffer *Context::getUniformBuffer()
 {
 	return mState.uniformBuffer;
@@ -1454,8 +1504,9 @@ bool Context::getBuffer(GLenum target, es2::Buffer **buffer)
 	case GL_TRANSFORM_FEEDBACK_BUFFER:
 		if(clientVersion >= 3)
 		{
-			UNIMPLEMENTED();
-			return false;
+			TransformFeedback* transformFeedback = getTransformFeedback();
+			*buffer = transformFeedback ? static_cast<es2::Buffer*>(transformFeedback->getGenericBuffer()) : nullptr;
+			break;
 		}
 		else return false;
 	case GL_UNIFORM_BUFFER:
@@ -1469,11 +1520,6 @@ bool Context::getBuffer(GLenum target, es2::Buffer **buffer)
 		return false;
 	}
 	return true;
-}
-
-TransformFeedback *Context::getTransformFeedback()
-{
-	return getTransformFeedback(mState.transformFeedback);
 }
 
 Program *Context::getCurrentProgram()
@@ -1618,13 +1664,17 @@ bool Context::getFloatv(GLenum pname, GLfloat *params)
     return true;
 }
 
-bool Context::getIntegerv(GLenum pname, GLint *params)
+template bool Context::getIntegerv<GLint>(GLenum pname, GLint *params);
+template bool Context::getIntegerv<GLint64>(GLenum pname, GLint64 *params);
+
+template<typename T> bool Context::getIntegerv(GLenum pname, T *params)
 {
     // Please note: DEPTH_CLEAR_VALUE is not included in our internal getIntegerv implementation
     // because it is stored as a float, despite the fact that the GL ES 2.0 spec names
     // GetIntegerv as its native query function. As it would require conversion in any
     // case, this should make no difference to the calling application. You may find it in 
     // Context::getFloatv.
+
     switch (pname)
     {
     case GL_MAX_VERTEX_ATTRIBS:               *params = MAX_VERTEX_ATTRIBS;               break;
@@ -1754,7 +1804,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
     case GL_ALPHA_BITS:
         {
             Framebuffer *framebuffer = getDrawFramebuffer();
-            Renderbuffer *colorbuffer = framebuffer->getColorbuffer();
+            Renderbuffer *colorbuffer = framebuffer->getDrawColorbuffer(0);
 
             if(colorbuffer)
             {
@@ -2107,7 +2157,10 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
     return true;
 }
 
-bool Context::getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param)
+template bool Context::getTransformFeedbackiv<GLint>(GLuint xfb, GLenum pname, GLint *param);
+template bool Context::getTransformFeedbackiv<GLint64>(GLuint xfb, GLenum pname, GLint64 *param);
+
+template<typename T> bool Context::getTransformFeedbackiv(GLuint xfb, GLenum pname, T *param)
 {
 	UNIMPLEMENTED();
 
@@ -2395,7 +2448,7 @@ bool Context::applyRenderTarget()
         return error(GL_INVALID_FRAMEBUFFER_OPERATION, false);
     }
 
-    egl::Image *renderTarget = framebuffer->getRenderTarget();
+    egl::Image *renderTarget = framebuffer->getDrawRenderTarget(0);
 	device->setRenderTarget(renderTarget);
 	if(renderTarget) renderTarget->release();
 
@@ -2696,9 +2749,9 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count)
 }
 
 // Applies the indices and element array bindings
-GLenum Context::applyIndexBuffer(const void *indices, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo)
+GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo)
 {
-    GLenum err = mIndexDataManager->prepareIndexData(type, count, mState.elementArrayBuffer, indices, indexInfo);
+    GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, mState.elementArrayBuffer, indices, indexInfo);
 
     if(err == GL_NO_ERROR)
     {
@@ -2925,7 +2978,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
         }
     }
 
-    egl::Image *renderTarget = framebuffer->getRenderTarget();
+	egl::Image *renderTarget = framebuffer->getDrawRenderTarget(0);
 
     if(!renderTarget)
     {
@@ -3281,7 +3334,7 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
     }
 }
 
-void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *indices)
+void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices)
 {
     if(!mState.currentProgram)
     {
@@ -3312,7 +3365,7 @@ void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *
     applyState(mode);
 
     TranslatedIndexData indexInfo;
-    GLenum err = applyIndexBuffer(indices, count, mode, type, &indexInfo);
+    GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
     if(err != GL_NO_ERROR)
     {
         return error(err);
@@ -3771,10 +3824,10 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
     if(mask & GL_COLOR_BUFFER_BIT)
     {
-        const bool validReadType = readFramebuffer->getColorbufferType() == GL_TEXTURE_2D ||
-                                   readFramebuffer->getColorbufferType() == GL_RENDERBUFFER;
-        const bool validDrawType = drawFramebuffer->getColorbufferType() == GL_TEXTURE_2D ||
-                                   drawFramebuffer->getColorbufferType() == GL_RENDERBUFFER;
+		const bool validReadType = readFramebuffer->getColorbufferType(getReadFramebufferColorIndex()) == GL_TEXTURE_2D ||
+                                   readFramebuffer->getColorbufferType(getReadFramebufferColorIndex()) == GL_RENDERBUFFER;
+		const bool validDrawType = drawFramebuffer->getColorbufferType(getDrawFramebufferColorIndex(0)) == GL_TEXTURE_2D ||
+                                   drawFramebuffer->getColorbufferType(getDrawFramebufferColorIndex(0)) == GL_RENDERBUFFER;
         if(!validReadType || !validDrawType)
         {
             return error(GL_INVALID_OPERATION);
@@ -3843,8 +3896,8 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
     {
         if(blitRenderTarget)
         {
-            egl::Image *readRenderTarget = readFramebuffer->getRenderTarget();
-            egl::Image *drawRenderTarget = drawFramebuffer->getRenderTarget();
+			egl::Image *readRenderTarget = readFramebuffer->getReadRenderTarget();
+			egl::Image *drawRenderTarget = drawFramebuffer->getDrawRenderTarget(0);
  
 			if(flipX)
 			{

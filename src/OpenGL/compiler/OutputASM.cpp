@@ -633,6 +633,9 @@ namespace glsl
 		case EOpAbs:              if(visit == PostVisit) emit(sw::Shader::OPCODE_ABS, result, arg); break;
 		case EOpSign:             if(visit == PostVisit) emit(sw::Shader::OPCODE_SGN, result, arg); break;
 		case EOpFloor:            if(visit == PostVisit) emit(sw::Shader::OPCODE_FLOOR, result, arg); break;
+		case EOpTrunc:            if(visit == PostVisit) emit(sw::Shader::OPCODE_TRUNC, result, arg); break;
+		case EOpRound:            if(visit == PostVisit) emit(sw::Shader::OPCODE_ROUND, result, arg); break;
+		case EOpRoundEven:        if(visit == PostVisit) emit(sw::Shader::OPCODE_ROUNDEVEN, result, arg); break;
 		case EOpCeil:             if(visit == PostVisit) emit(sw::Shader::OPCODE_CEIL, result, arg, result); break;
 		case EOpFract:            if(visit == PostVisit) emit(sw::Shader::OPCODE_FRC, result, arg); break;
 		case EOpLength:           if(visit == PostVisit) emit(sw::Shader::OPCODE_LEN(dim(arg)), result, arg); break;
@@ -915,7 +918,13 @@ namespace glsl
 			}
 			break;
 		case EOpConstructMat2:
+		case EOpConstructMat2x3:
+		case EOpConstructMat2x4:
+		case EOpConstructMat3x2:
 		case EOpConstructMat3:
+		case EOpConstructMat3x4:
+		case EOpConstructMat4x2:
+		case EOpConstructMat4x3:
 		case EOpConstructMat4:
 			if(visit == PostVisit)
 			{
@@ -1024,6 +1033,10 @@ namespace glsl
 		case EOpMix:         if(visit == PostVisit) emit(sw::Shader::OPCODE_LRP, result, arg[2], arg[1], arg[0]); break;
 		case EOpStep:        if(visit == PostVisit) emit(sw::Shader::OPCODE_STEP, result, arg[0], arg[1]); break;
 		case EOpSmoothStep:  if(visit == PostVisit) emit(sw::Shader::OPCODE_SMOOTH, result, arg[0], arg[1], arg[2]); break;
+		case EOpFloatBitsToInt:  if(visit == PostVisit) emit(sw::Shader::OPCODE_FLOATBITSTOINT, result, arg[0]); break;
+		case EOpFloatBitsToUInt: if(visit == PostVisit) emit(sw::Shader::OPCODE_FLOATBITSTOUINT, result, arg[0]); break;
+		case EOpIntBitsToFloat:  if(visit == PostVisit) emit(sw::Shader::OPCODE_INTBITSTOFLOAT, result, arg[0]); break;
+		case EOpUIntBitsToFloat: if(visit == PostVisit) emit(sw::Shader::OPCODE_UINTBITSTOFLOAT, result, arg[0]); break;
 		case EOpDistance:    if(visit == PostVisit) emit(sw::Shader::OPCODE_DIST(dim(arg[0])), result, arg[0], arg[1]); break;
 		case EOpDot:         if(visit == PostVisit) emit(sw::Shader::OPCODE_DP(dim(arg[0])), result, arg[0], arg[1]); break;
 		case EOpCross:       if(visit == PostVisit) emit(sw::Shader::OPCODE_CRS, result, arg[0], arg[1]); break;
@@ -1812,6 +1825,12 @@ namespace glsl
 		case EvqPointCoord:          return sw::Shader::PARAMETER_INPUT;
 		case EvqFragColor:           return sw::Shader::PARAMETER_COLOROUT;
 		case EvqFragData:            return sw::Shader::PARAMETER_COLOROUT;
+		case EvqSmooth:              return sw::Shader::PARAMETER_OUTPUT;
+		case EvqFlat:                return sw::Shader::PARAMETER_OUTPUT;
+		case EvqCentroidOut:         return sw::Shader::PARAMETER_OUTPUT;
+		case EvqSmoothIn:            return sw::Shader::PARAMETER_INPUT;
+		case EvqFlatIn:              return sw::Shader::PARAMETER_INPUT;
+		case EvqCentroidIn:          return sw::Shader::PARAMETER_INPUT;
 		default: UNREACHABLE();
 		}
 
@@ -1847,6 +1866,12 @@ namespace glsl
 		case EvqPointCoord:          return varyingRegister(operand);
 		case EvqFragColor:           return 0;
 		case EvqFragData:            return 0;
+		case EvqSmooth:              return varyingRegister(operand);
+		case EvqFlat:                return varyingRegister(operand);
+		case EvqCentroidOut:         return varyingRegister(operand);
+		case EvqSmoothIn:            return varyingRegister(operand);
+		case EvqFlatIn:              return varyingRegister(operand);
+		case EvqCentroidIn:          return varyingRegister(operand);
 		default: UNREACHABLE();
 		}
 
@@ -2486,7 +2511,7 @@ namespace glsl
 	{
 		TIntermTyped *matrix = m->getAsTyped();
 		ASSERT(matrix && matrix->isMatrix() && !matrix->isArray());
-		return matrix->getNominalSize();
+		return matrix->getSecondarySize();
 	}
 
 	// Returns ~0 if no loop count could be determined

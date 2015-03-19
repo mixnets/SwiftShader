@@ -34,6 +34,38 @@ namespace sw
 		Short4 w;
 	};
 
+	class Vector4i
+	{
+	public:
+		Vector4i();
+		Vector4i(int x, int y, int z, int w);
+		Vector4i(const Vector4i &rhs);
+
+		Int4 &operator[](int i);
+		Vector4i &operator=(const Vector4i &rhs);
+
+		Int4 x;
+		Int4 y;
+		Int4 z;
+		Int4 w;
+	};
+
+	class Vector4u
+	{
+	public:
+		Vector4u();
+		Vector4u(unsigned int x, unsigned int y, unsigned int z, unsigned int w);
+		Vector4u(const Vector4u &rhs);
+
+		UInt4 &operator[](int i);
+		Vector4u &operator=(const Vector4u &rhs);
+
+		UInt4 x;
+		UInt4 y;
+		UInt4 z;
+		UInt4 w;
+	};
+
 	class Vector4f
 	{
 	public:
@@ -67,6 +99,10 @@ namespace sw
 	Float4 arcsin(RValue<Float4> x, bool pp = false);
 	Float4 arctan(RValue<Float4> x, bool pp = false);
 	Float4 arctan(RValue<Float4> y, RValue<Float4> x, bool pp = false);
+	Int4 floatBitsToInt(RValue<Float4> x);
+	UInt4 floatBitsToUInt(RValue<Float4> x);
+	Float4 intBitsToFloat(RValue<Int4> x);
+	Float4 uintBitsToFloat(RValue<UInt4> x);
 
 	Float4 dot2(Vector4f &v0, Vector4f &v1);
 	Float4 dot3(Vector4f &v0, Vector4f &v1);
@@ -239,9 +275,15 @@ namespace sw
 		void att(Vector4f &dst, Vector4f &src0, Vector4f &src1);
 		void lrp(Vector4f &dst, Vector4f &src0, Vector4f &src1, Vector4f &src2);
 		void smooth(Vector4f &dst, Vector4f &src0, Vector4f &src1, Vector4f &src2);
+		void floatBitsToInt(Vector4i &dst, Vector4f &src);
+		void floatBitsToUInt(Vector4u &dst, Vector4f &src);
+		void intBitsToFloat(Vector4f &dst, Vector4i &src);
+		void uintBitsToFloat(Vector4f &dst, Vector4u &src);
 		void frc(Vector4f &dst, Vector4f &src);
 		void trunc(Vector4f &dst, Vector4f &src);
 		void floor(Vector4f &dst, Vector4f &src);
+		void round(Vector4f &dst, Vector4f &src);
+		void roundEven(Vector4f &dst, Vector4f &src);
 		void ceil(Vector4f &dst, Vector4f &src);
 		void powx(Vector4f &dst, Vector4f &src0, Vector4f &src1, bool pp = false);
 		void pow(Vector4f &dst, Vector4f &src0, Vector4f &src1, bool pp = false);

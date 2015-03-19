@@ -329,6 +329,11 @@ namespace sw
 			modifierString += "_pp";
 		}
 
+		if(!smooth)
+		{
+			modifierString += "_flat";
+		}
+
 		if(centroid)
 		{
 			modifierString += "_centroid";
@@ -764,6 +769,10 @@ namespace sw
 		case OPCODE_LRP:			return "lrp";
 		case OPCODE_STEP:			return "step";
 		case OPCODE_SMOOTH:			return "smooth";
+		case OPCODE_FLOATBITSTOINT:  return "floatBitsToInt";
+		case OPCODE_FLOATBITSTOUINT: return "floatBitsToUInt";
+		case OPCODE_INTBITSTOFLOAT:	 return "intBitsToFloat";
+		case OPCODE_UINTBITSTOFLOAT: return "uintBitsToFloat";
 		case OPCODE_FRC:			return "frc";
 		case OPCODE_M4X4:			return "m4x4";
 		case OPCODE_M4X3:			return "m4x3";
@@ -868,6 +877,8 @@ namespace sw
 		case OPCODE_DP2:            return "dp2";
 		case OPCODE_TRUNC:          return "trunc";
 		case OPCODE_FLOOR:          return "floor";
+		case OPCODE_ROUND:          return "round";
+		case OPCODE_ROUNDEVEN:      return "roundEven";
 		case OPCODE_CEIL:           return "ceil";
 		case OPCODE_EXP2:           return "exp2";
 		case OPCODE_LOG2:           return "log2";
