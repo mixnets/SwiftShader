@@ -236,7 +236,17 @@ namespace es2
 		       format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
                format == GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE ||
                format == GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE ||
-               format == GL_ETC1_RGB8_OES;
+               format == GL_ETC1_RGB8_OES ||
+               format == GL_COMPRESSED_R11_EAC ||
+               format == GL_COMPRESSED_SIGNED_R11_EAC ||
+               format == GL_COMPRESSED_RG11_EAC ||
+               format == GL_COMPRESSED_SIGNED_RG11_EAC ||
+               format == GL_COMPRESSED_RGB8_ETC2 ||
+               format == GL_COMPRESSED_SRGB8_ETC2 ||
+               format == GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2 ||
+               format == GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2 ||
+               format == GL_COMPRESSED_RGBA8_ETC2_EAC ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC;
 	}
 
 	bool IsDepthTexture(GLenum format)
@@ -435,6 +445,79 @@ namespace es2
 		}
 
 		return false;
+	}
+
+	const GLubyte* GetExtensions(GLuint index, GLuint* numExt)
+	{
+		// Keep list sorted in following order:
+		// OES extensions
+		// EXT extensions
+		// Vendor extensions
+		static const GLubyte* extensions[] = {
+			(const GLubyte*)"GL_OES_compressed_ETC1_RGB8_texture",
+			(const GLubyte*)"GL_OES_depth_texture",
+			(const GLubyte*)"GL_OES_depth_texture_cube_map",
+			(const GLubyte*)"GL_OES_EGL_image",
+			(const GLubyte*)"GL_OES_EGL_image_external",
+			(const GLubyte*)"GL_OES_element_index_uint",
+			(const GLubyte*)"GL_OES_packed_depth_stencil",
+			(const GLubyte*)"GL_OES_rgb8_rgba8",
+			(const GLubyte*)"GL_OES_standard_derivatives",
+			(const GLubyte*)"GL_OES_texture_float",
+			(const GLubyte*)"GL_OES_texture_float_linear",
+			(const GLubyte*)"GL_OES_texture_half_float",
+			(const GLubyte*)"GL_OES_texture_half_float_linear",
+			(const GLubyte*)"GL_OES_texture_npot",
+			(const GLubyte*)"GL_OES_texture_3D",
+			(const GLubyte*)"GL_EXT_blend_minmax",
+			(const GLubyte*)"GL_EXT_occlusion_query_boolean",
+			(const GLubyte*)"GL_EXT_read_format_bgra",
+#if (S3TC_SUPPORT)
+			(const GLubyte*)"GL_EXT_texture_compression_dxt1",
+#endif
+			(const GLubyte*)"GL_EXT_texture_filter_anisotropic",
+			(const GLubyte*)"GL_EXT_texture_format_BGRA8888",
+			(const GLubyte*)"GL_ANGLE_framebuffer_blit",
+			(const GLubyte*)"GL_NV_framebuffer_blit",
+			(const GLubyte*)"GL_ANGLE_framebuffer_multisample",
+#if (S3TC_SUPPORT)
+			(const GLubyte*)"GL_ANGLE_texture_compression_dxt3",
+			(const GLubyte*)"GL_ANGLE_texture_compression_dxt5",
+#endif
+			(const GLubyte*)"GL_NV_fence"
+		};
+		static const GLuint numExtensions = sizeof(extensions) / sizeof(*extensions);
+
+		if(numExt)
+		{
+			*numExt = numExtensions;
+			return nullptr;
+		}
+
+		if(index == GL_INVALID_INDEX)
+		{
+			static const int large_extension_name_length = 40; // Arbitrary number larger than the average extension name length
+			static GLubyte extensionsCat[numExtensions * large_extension_name_length] = { 0 };
+			if(extensionsCat[0] == 0)
+			{
+				for(int i = 0; i < numExtensions; ++i)
+				{
+					if(i != 0)
+					{
+						strcat(reinterpret_cast<char*>(extensionsCat), " ");
+					}
+					strcat(reinterpret_cast<char*>(extensionsCat), reinterpret_cast<const char*>(extensions[i]));
+				}
+			}
+			return extensionsCat;
+		}
+
+		if(index >= numExtensions)
+		{
+			return nullptr;
+		}
+
+		return extensions[index];
 	}
 }
 
