@@ -726,6 +726,11 @@ void Context::setEnableVertexAttribArray(unsigned int attribNum, bool enabled)
     mState.vertexAttribute[attribNum].mArrayEnabled = enabled;
 }
 
+void Context::setVertexAttribDivisor(unsigned int attribNum, GLuint divisor)
+{
+	mState.vertexAttribute[attribNum].mDivisor = divisor;
+}
+
 const VertexAttribute &Context::getVertexAttribState(unsigned int attribNum)
 {
     return mState.vertexAttribute[attribNum];
@@ -826,6 +831,16 @@ GLuint Context::createQuery()
     return handle;
 }
 
+// Returns an unused vertex array name
+GLuint Context::createVertexArray()
+{
+	GLuint handle = mVertexArrayNameSpace.allocate();
+
+	mVertexArrayMap[handle] = NULL;
+
+	return handle;
+}
+
 void Context::deleteBuffer(GLuint buffer)
 {
     if(mResourceManager->getBuffer(buffer))
@@ -907,6 +922,23 @@ void Context::deleteQuery(GLuint query)
         
 		mQueryMap.erase(queryObject);
     }
+}
+
+void Context::deleteVertexArray(GLuint vertexArray)
+{
+	VertexArrayMap::iterator vertexArrayObject = mVertexArrayMap.find(vertexArray);
+
+	if(vertexArrayObject != mVertexArrayMap.end())
+	{
+		mVertexArrayNameSpace.release(vertexArrayObject->first);
+
+		if(vertexArrayObject->second)
+		{
+			vertexArrayObject->second->release();
+		}
+
+		mVertexArrayMap.erase(vertexArrayObject);
+	}
 }
 
 Buffer *Context::getBuffer(GLuint handle)
@@ -1009,6 +1041,18 @@ void Context::bindDrawFramebuffer(GLuint framebuffer)
 void Context::bindRenderbuffer(GLuint renderbuffer)
 {
     mState.renderbuffer = getRenderbuffer(renderbuffer);
+}
+
+bool Context::bindVertexArray(GLuint array)
+{
+	VertexArray* vertexArray = getVertexArray(array);
+
+	if(vertexArray)
+	{
+		mState.vertexArray = vertexArray;
+	}
+
+	return vertexArray;
 }
 
 void Context::useProgram(GLuint program)
@@ -1178,6 +1222,13 @@ Query *Context::getQuery(unsigned int handle, bool create, GLenum type)
 
         return query->second;
     }
+}
+
+VertexArray *Context::getVertexArray(GLuint array)
+{
+	VertexArrayMap::iterator vertexArray = mVertexArrayMap.find(array);
+
+	return (vertexArray == mVertexArrayMap.end()) ? NULL : vertexArray->second;
 }
 
 Buffer *Context::getArrayBuffer()
@@ -3195,12 +3246,27 @@ void Context::setVertexAttrib(GLuint index, const GLfloat *values)
 {
     ASSERT(index < MAX_VERTEX_ATTRIBS);
 
-    mState.vertexAttribute[index].mCurrentValue[0] = values[0];
-    mState.vertexAttribute[index].mCurrentValue[1] = values[1];
-    mState.vertexAttribute[index].mCurrentValue[2] = values[2];
-    mState.vertexAttribute[index].mCurrentValue[3] = values[3];
+    mState.vertexAttribute[index].setCurrentValue(values);
 
     mVertexDataManager->dirtyCurrentValue(index);
+}
+
+void Context::setVertexAttrib(GLuint index, const GLint *values)
+{
+	ASSERT(index < MAX_VERTEX_ATTRIBS);
+
+	mState.vertexAttribute[index].setCurrentValue(values);
+
+	mVertexDataManager->dirtyCurrentValue(index);
+}
+
+void Context::setVertexAttrib(GLuint index, const GLuint *values)
+{
+	ASSERT(index < MAX_VERTEX_ATTRIBS);
+
+	mState.vertexAttribute[index].setCurrentValue(values);
+
+	mVertexDataManager->dirtyCurrentValue(index);
 }
 
 void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, 
