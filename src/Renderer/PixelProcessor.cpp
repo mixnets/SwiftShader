@@ -136,6 +136,31 @@ namespace sw
 		else ASSERT(false);
 	}
 
+	void PixelProcessor::setUniformBuffers(int index, sw::Resource* uniformBuffer)
+	{
+		context->uniformBuffers[index] = uniformBuffer;
+	}
+
+	void PixelProcessor::lockUniformBuffers(void** u)
+	{
+		for(int i = 0; i < MAX_UNIFORM_BUFFER_BINDINGS; ++i)
+		{
+			u[i] = context->uniformBuffers[i] ? context->uniformBuffers[i]->lock(PUBLIC, PRIVATE) : 0;
+		}
+	}
+
+	void PixelProcessor::unlockUniformBuffers()
+	{
+		for(int i = 0; i < MAX_UNIFORM_BUFFER_BINDINGS; ++i)
+		{
+			if(context->uniformBuffers[i])
+			{
+				context->uniformBuffers[i]->unlock();
+				context->uniformBuffers[i] = 0;
+			}
+		}
+	}
+
 	void PixelProcessor::setRenderTarget(int index, Surface *renderTarget)
 	{
 		context->renderTarget[index] = renderTarget;
@@ -448,6 +473,60 @@ namespace sw
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
 			context->sampler[sampler].setSwizzleA(swizzleA);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setCompFunc(unsigned int sampler, CompareFunc compFunc)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setCompFunc(compFunc);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setCompMode(unsigned int sampler, CompareMode compMode)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setCompMode(compMode);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setBaseLevel(unsigned int sampler, int baseLevel)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setBaseLevel(baseLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setMaxLevel(unsigned int sampler, int maxLevel)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setMaxLevel(maxLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setMinLod(unsigned int sampler, float minLod)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setMinLod(minLod);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setMaxLod(unsigned int sampler, float maxLod)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setMaxLod(maxLod);
 		}
 		else ASSERT(false);
 	}
@@ -950,6 +1029,7 @@ namespace sw
 		if(state.multiSample > 1 && context->pixelShader)
 		{
 			state.centroid = context->pixelShader->containsCentroid();
+			state.smooth = !context->pixelShader->containsNonSmooth();
 		}
 
 		if(!context->pixelShader)
@@ -1079,6 +1159,17 @@ namespace sw
 				for(int component = 0; component < 4; component++)
 				{
 					state.interpolant[interpolant].centroid = context->pixelShader->semantic[interpolant][0].centroid;
+				}
+			}
+		}
+
+		if(!state.smooth)
+		{
+			for(int interpolant = 0; interpolant < 10; interpolant++)
+			{
+				for(int component = 0; component < 4; component++)
+				{
+					state.interpolant[interpolant].smooth = context->pixelShader->semantic[interpolant][0].smooth;
 				}
 			}
 		}

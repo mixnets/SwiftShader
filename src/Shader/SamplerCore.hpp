@@ -33,12 +33,16 @@ namespace sw
 		void sampleAniso(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, bool lodProvided);
 		void sampleQuad(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, Int face[4], bool secondLOD);
 		void sampleQuad2D(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float &lod, Int face[4], bool secondLOD);
+		void sampleQuad2DFilter(Vector4s &c, Short4 &uuuu, Short4 &vvvv, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4]);
 		void sample3D(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, bool secondLOD);
+		void sample3DFilter(Vector4s &c_, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4]);
 		void sampleFloatFilter(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool lodProvided);
 		void sampleFloatAniso(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, bool lodProvided);
 		void sampleFloat(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, Int face[4], bool secondLOD);
 		void sampleFloat2D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &z, Float &lod, Int face[4], bool secondLOD);
+		void sampleFloat2DFilter(Vector4f &c, Short4 &uuuu, Short4 &vvvv, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4]);
 		void sampleFloat3D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, bool secondLOD);
+		void sampleFloat3DFilter(Vector4f &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Float4 &w, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4]);
 		void computeLod(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &u, Float4 &v, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, bool bias, bool gradients, bool lodProvided);
 		void computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, bool bias, bool gradients, bool lodProvided);
 		void cubeFace(Int face[4], Float4 &U, Float4 &V, Float4 &lodU, Float4 &lodV, Float4 &x, Float4 &y, Float4 &z);
@@ -58,7 +62,7 @@ namespace sw
 		void sRGBtoLinear16_6_12(Short4 &c);
 		void sRGBtoLinear16_5_12(Short4 &c);
 
-		bool hasFloatTexture() const;
+		bool hasFloatOr32BitTexture() const;
 		bool hasUnsignedTextureComponent(int component) const;
 		int textureComponentCount() const;
 		bool has16bitTextureFormat() const;
@@ -66,6 +70,8 @@ namespace sw
 		bool has16bitTextureComponents() const;
 		bool hasYuvFormat() const;
 		bool isRGBComponent(int component) const;
+		float magnificationThreshold() const;
+		Bool useFilter(Float& lod) const;
 
 		Pointer<Byte> &constants;
 		const Sampler::State &state;

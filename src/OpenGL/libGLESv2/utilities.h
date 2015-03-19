@@ -41,7 +41,10 @@ namespace es2
 	GLint floatToInt(GLfloat value);
 
 	bool IsCompressed(GLenum format, egl::GLint clientVersion);
+	GLenum GetSizedInternalFormat(GLenum internalFormat, GLenum type);
 	GLenum ValidateCompressedFormat(GLenum format, egl::GLint clientVersion, bool expectCompressedFormats);
+	GLenum ValidateSubImageParams(bool compressed, GLsizei width, GLsizei height, GLint xoffset, GLint yoffset, GLenum target, GLint level, GLenum format, GLenum type, Texture *texture);
+	GLenum ValidateSubImageParams(bool compressed, GLsizei width, GLsizei height, GLsizei depth, GLint xoffset, GLint yoffset, GLint zoffset, GLenum target, GLint level, GLenum format, GLenum type, Texture *texture);
 	bool ValidReadPixelsFormatType(GLenum internalFormat, GLenum internalType, GLenum format, GLenum type, egl::GLint clientVersion);
 	bool IsDepthTexture(GLenum format);
 	bool IsStencilTexture(GLenum format);
@@ -69,11 +72,12 @@ namespace es2sw
 	sw::LogicalOperation ConvertLogicalOperation(GLenum logicalOperation);
 	sw::StencilOperation ConvertStencilOp(GLenum stencilOp);
 	sw::AddressingMode ConvertTextureWrap(GLenum wrap);
+	sw::CompareFunc ConvertCompareFunc(GLenum compareFunc);
+	sw::CompareMode ConvertCompareMode(GLenum compareMode);
 	sw::SwizzleType ConvertSwizzleType(GLenum swizzleType);
 	sw::CullMode ConvertCullMode(GLenum cullFace, GLenum frontFace);
 	unsigned int ConvertColorMask(bool red, bool green, bool blue, bool alpha);
-	sw::FilterType ConvertMagFilter(GLenum magFilter);
-	void ConvertMinFilter(GLenum texFilter, sw::FilterType *minFilter, sw::MipmapType *mipFilter, float maxAnisotropy);
+	void ConvertTextureFilter(GLenum minFilter, GLenum magFilter, sw::FilterType *textureFilter, sw::MipmapType *mipFilter, float maxAnisotropy);
 	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount,  es2::PrimitiveType &swPrimitiveType, int &primitiveCount);
 	sw::Format ConvertRenderbufferFormat(GLenum format);
 }

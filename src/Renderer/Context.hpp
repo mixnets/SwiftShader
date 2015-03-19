@@ -434,6 +434,7 @@ namespace sw
 		Resource *texture[TOTAL_IMAGE_UNITS];
 		Stream input[VERTEX_ATTRIBUTES];
 		Resource *indexBuffer;
+		Resource *uniformBuffers[MAX_UNIFORM_BUFFER_BINDINGS];
 
 		bool preTransformed;   // FIXME: Private
 

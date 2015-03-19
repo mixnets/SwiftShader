@@ -46,42 +46,6 @@ static bool validImageSize(GLint level, GLsizei width, GLsizei height)
 	return true;
 }
 
-static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei height, GLsizei depth, GLint xoffset, GLint yoffset, GLint zoffset, GLenum target, GLint level, GLenum format, es2::Texture *texture)
-{
-	if(!texture)
-	{
-		return error(GL_INVALID_OPERATION, false);
-	}
-
-	if(compressed != texture->isCompressed(target, level))
-	{
-		return error(GL_INVALID_OPERATION, false);
-	}
-
-	if(format != GL_NONE && format != texture->getFormat(target, level))
-	{
-		return error(GL_INVALID_OPERATION, false);
-	}
-
-	if(compressed)
-	{
-		if((width % 4 != 0 && width != texture->getWidth(target, 0)) ||
-		   (height % 4 != 0 && height != texture->getHeight(target, 0)) ||
-		   (depth % 4 != 0 && depth != texture->getDepth(target, 0)))
-		{
-			return error(GL_INVALID_OPERATION, false);
-		}
-	}
-
-	if(xoffset + width > texture->getWidth(target, level) ||
-		yoffset + height > texture->getHeight(target, level) ||
-		zoffset + depth > texture->getDepth(target, level))
-	{
-		return error(GL_INVALID_VALUE, false);
-	}
-
-	return true;
-}
 
 static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFormat)
 {
@@ -213,6 +177,7 @@ static FormatMap BuildFormatMap3D()
 	InsertFormatMapping(map, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT);
 	InsertFormatMapping(map, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
 	InsertFormatMapping(map, GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
+	InsertFormatMapping(map, GL_DEPTH_COMPONENT32_OES, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT);
 	InsertFormatMapping(map, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT);
 	InsertFormatMapping(map, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8);
 	InsertFormatMapping(map, GL_DEPTH32F_STENCIL8, GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
@@ -746,9 +711,14 @@ GL_APICALL void GL_APIENTRY glTexSubImage3D(GLenum target, GLint level, GLint xo
 	{
 		es2::Texture3D *texture = (target == GL_TEXTURE_3D) ? context->getTexture3D() : context->getTexture2DArray();
 
-		if(validateSubImageParams(false, width, height, depth, xoffset, yoffset, zoffset, target, level, format, texture))
+		GLenum formatError = ValidateSubImageParams(false, width, height, depth, xoffset, yoffset, zoffset, target, level, format, type, texture);
+		if(formatError == GL_NONE)
 		{
 			texture->subImage(level, xoffset, yoffset, zoffset, width, height, depth, format, type, context->getUnpackInfo(), pixels);
+		}
+		else
+		{
+			return error(formatError);
 		}
 	}
 }
@@ -799,9 +769,10 @@ GL_APICALL void GL_APIENTRY glCopyTexSubImage3D(GLenum target, GLint level, GLin
 		GLenum colorbufferFormat = source->getFormat();
 		es2::Texture3D *texture = (target == GL_TEXTURE_3D) ? context->getTexture3D() : context->getTexture2DArray();
 
-		if(!validateSubImageParams(false, width, height, 1, xoffset, yoffset, zoffset, target, level, GL_NONE, texture))
+		GLenum formatError = ValidateSubImageParams(false, width, height, 1, xoffset, yoffset, zoffset, target, level, GL_NONE, GL_NONE, texture);
+		if(formatError != GL_NONE)
 		{
-			return;
+			return error(formatError);
 		}
 
 		GLenum textureFormat = texture->getFormat(target, level);
@@ -1507,6 +1478,7 @@ GL_APICALL void GL_APIENTRY glRenderbufferStorageMultisample(GLenum target, GLsi
 		{
 		case GL_DEPTH_COMPONENT16:
 		case GL_DEPTH_COMPONENT24:
+		case GL_DEPTH_COMPONENT32_OES:
 		case GL_DEPTH_COMPONENT32F:
 			context->setRenderbufferStorage(new es2::Depthbuffer(width, height, samples));
 			break;
@@ -2412,9 +2384,10 @@ GL_APICALL GLint GL_APIENTRY glGetFragDataLocation(GLuint program, const GLchar 
 		{
 			return error(GL_INVALID_OPERATION, -1);
 		}
+
+		UNIMPLEMENTED();
 	}
 
-	UNIMPLEMENTED();
 	return -1;
 }
 
@@ -2964,12 +2937,10 @@ GL_APICALL void GL_APIENTRY glUniformBlockBinding(GLuint program, GLuint uniform
 	{
 		es2::Program *programObject = context->getProgram(program);
 
-		if(!programObject)
+		if(!programObject || !programObject->bindUniformBlock(uniformBlockIndex, uniformBlockBinding))
 		{
 			return error(GL_INVALID_VALUE);
 		}
-
-		programObject->bindUniformBlock(uniformBlockIndex, uniformBlockIndex);
 	}
 }
 

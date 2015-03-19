@@ -185,6 +185,10 @@ namespace sw
 		virtual void setIntegerConstant(unsigned int index, const int integer[4]);
 		virtual void setBooleanConstant(unsigned int index, int boolean);
 
+		virtual void setUniformBuffers(int index, sw::Resource* uniformBuffer);
+		virtual void lockUniformBuffers(void** u);
+		virtual void unlockUniformBuffers();
+
 		// Transformations
 		virtual void setModelMatrix(const Matrix &M, int i = 0);
 		virtual void setViewMatrix(const Matrix &V);
@@ -247,6 +251,12 @@ namespace sw
 		virtual void setSwizzleG(unsigned int sampler, SwizzleType swizzleG);
 		virtual void setSwizzleB(unsigned int sampler, SwizzleType swizzleB);
 		virtual void setSwizzleA(unsigned int sampler, SwizzleType swizzleA);
+		virtual void setCompFunc(unsigned int sampler, CompareFunc compFunc);
+		virtual void setCompMode(unsigned int sampler, CompareMode compMode);
+		virtual void setBaseLevel(unsigned int sampler, int baseLevel);
+		virtual void setMaxLevel(unsigned int sampler, int maxLevel);
+		virtual void setMinLod(unsigned int sampler, float minLod);
+		virtual void setMaxLod(unsigned int sampler, float maxLod);
 
 		virtual void setPointSize(float pointSize);
 		virtual void setPointSizeMin(float pointSizeMin);
@@ -266,7 +276,7 @@ namespace sw
 		void setRoutineCacheSize(int cacheSize);
 
 		// Shader constants
-		float4 c[256 + 1];   // One extra for indices out of range, c[256] = {0, 0, 0, 0}
+		float4 c[VERTEX_UNIFORM_VECTORS + 1];   // One extra for indices out of range, c[256] = {0, 0, 0, 0}
 		int4 i[16];
 		bool b[16];
 
