@@ -272,7 +272,7 @@ static FormatMapStorage BuildFormatMapStorage2D()
 	InsertFormatStorageMapping(map, GL_R32I, GL_INT);
 	InsertFormatStorageMapping(map, GL_RG8, GL_UNSIGNED_BYTE);
 	InsertFormatStorageMapping(map, GL_RG8_SNORM, GL_BYTE);
-	InsertFormatStorageMapping(map, GL_R16F, GL_HALF_FLOAT);
+	InsertFormatStorageMapping(map, GL_RG16F, GL_HALF_FLOAT);
 	InsertFormatStorageMapping(map, GL_RG32F, GL_FLOAT);
 	InsertFormatStorageMapping(map, GL_RG8UI, GL_UNSIGNED_BYTE);
 	InsertFormatStorageMapping(map, GL_RG8I, GL_BYTE);
@@ -296,6 +296,7 @@ static FormatMapStorage BuildFormatMapStorage2D()
 	InsertFormatStorageMapping(map, GL_RGB32I, GL_INT);
 	InsertFormatStorageMapping(map, GL_RGBA8, GL_UNSIGNED_BYTE);
 	InsertFormatStorageMapping(map, GL_SRGB8_ALPHA8, GL_UNSIGNED_BYTE);
+	InsertFormatStorageMapping(map, GL_RGBA8_SNORM, GL_BYTE);
 	InsertFormatStorageMapping(map, GL_RGB5_A1, GL_UNSIGNED_SHORT_5_5_5_1);
 	InsertFormatStorageMapping(map, GL_RGBA4, GL_UNSIGNED_SHORT_4_4_4_4);
 	InsertFormatStorageMapping(map, GL_RGB10_A2, GL_UNSIGNED_INT_2_10_10_10_REV);
@@ -512,10 +513,10 @@ GL_APICALL void GL_APIENTRY glReadBuffer(GLenum src)
 			{
 				return error(GL_INVALID_OPERATION);
 			}
-			context->setReadFramebufferColorIndex(0);
+			context->setReadFramebufferColorMode(src);
 			break;
 		case GL_NONE:
-			context->setReadFramebufferColorIndex(GL_INVALID_INDEX);
+			context->setReadFramebufferColorMode(src);
 			break;
 		case GL_COLOR_ATTACHMENT0:
 		case GL_COLOR_ATTACHMENT1:
@@ -559,7 +560,7 @@ GL_APICALL void GL_APIENTRY glReadBuffer(GLenum src)
 			{
 				return error(GL_INVALID_OPERATION);
 			}
-			context->setReadFramebufferColorIndex(index);
+			context->setReadFramebufferColorMode(src);
 		}
 			break;
 		default:
@@ -1210,7 +1211,7 @@ GL_APICALL void GL_APIENTRY glDrawBuffers(GLsizei n, const GLenum *bufs)
 			}
 		}
 
-		context->setDrawFramebufferColorIndices(n, bufs);
+		context->setDrawFramebufferColorModes(n, bufs);
 	}
 }
 
@@ -1826,6 +1827,7 @@ GL_APICALL void GL_APIENTRY glGetIntegeri_v(GLenum target, GLuint index, GLint *
 	if(context)
 	{
 		if(!context->getTransformFeedbackiv(index, target, data) &&
+		   !context->getUniformBufferiv(index, target, data) &&
 		   !context->getIntegerv(target, data))
 		{
 			GLenum nativeType;
@@ -3234,7 +3236,8 @@ GL_APICALL void GL_APIENTRY glGetInteger64i_v(GLenum target, GLuint index, GLint
 	if(context)
 	{
 		if(!context->getTransformFeedbackiv(index, target, data) &&
-			!context->getIntegerv(target, data))
+		   !context->getUniformBufferiv(index, target, data) &&
+		   !context->getIntegerv(target, data))
 		{
 			GLenum nativeType;
 			unsigned int numParams = 0;
@@ -3857,6 +3860,7 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 				height = std::max(1, (height / 2));
 			}
 			texture->setImmutableFormat(GL_TRUE);
+			texture->setImmutableLevels(levels);
 		}
 			break;
 		case GL_TEXTURE_CUBE_MAP:
@@ -3877,6 +3881,7 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 				height = std::max(1, (height / 2));
 			}
 			texture->setImmutableFormat(GL_TRUE);
+			texture->setImmutableLevels(levels);
 		}
 			break;
 		default:
@@ -3928,6 +3933,7 @@ GL_APICALL void GL_APIENTRY glTexStorage3D(GLenum target, GLsizei levels, GLenum
 				depth = std::max(1, (depth / 2));
 			}
 			texture->setImmutableFormat(GL_TRUE);
+			texture->setImmutableLevels(levels);
 		}
 			break;
 		case GL_TEXTURE_2D_ARRAY:
@@ -3953,6 +3959,7 @@ GL_APICALL void GL_APIENTRY glTexStorage3D(GLenum target, GLsizei levels, GLenum
 				height = std::max(1, (height / 2));
 			}
 			texture->setImmutableFormat(GL_TRUE);
+			texture->setImmutableLevels(levels);
 		}
 			break;
 		default:
@@ -3971,6 +3978,11 @@ GL_APICALL void GL_APIENTRY glGetInternalformativ(GLenum target, GLenum internal
 		return error(GL_INVALID_VALUE);
 	}
 
+	if(bufSize == 0)
+	{
+		return;
+	}
+
 	if(!IsColorRenderable(internalformat, egl::getClientVersion()) && !IsDepthRenderable(internalformat) && !IsStencilRenderable(internalformat))
 	{
 		return error(GL_INVALID_ENUM);
@@ -3984,13 +3996,48 @@ GL_APICALL void GL_APIENTRY glGetInternalformativ(GLenum target, GLenum internal
 		return error(GL_INVALID_ENUM);
 	}
 
+	// Integer types have no multisampling
+	GLint numMultisampleCounts = NUM_MULTISAMPLE_COUNTS;
+	switch(internalformat)
+	{
+	case GL_R8UI:
+	case GL_R8I:
+	case GL_R16UI:
+	case GL_R16I:
+	case GL_R32UI:
+	case GL_R32I:
+	case GL_RG8UI:
+	case GL_RG8I:
+	case GL_RG16UI:
+	case GL_RG16I:
+	case GL_RG32UI:
+	case GL_RG32I:
+	case GL_RGB8UI:
+	case GL_RGB8I:
+	case GL_RGB16UI:
+	case GL_RGB16I:
+	case GL_RGB32UI:
+	case GL_RGB32I:
+	case GL_RGBA8UI:
+	case GL_RGBA8I:
+	case GL_RGB10_A2UI:
+	case GL_RGBA16UI:
+	case GL_RGBA16I:
+	case GL_RGBA32UI:
+	case GL_RGBA32I:
+		numMultisampleCounts = 0;
+		break;
+	default:
+		break;
+	}
+
 	switch(pname)
 	{
 	case GL_NUM_SAMPLE_COUNTS:
-		*params = NUM_MULTISAMPLE_COUNTS;
+		*params = numMultisampleCounts;
 		break;
 	case GL_SAMPLES:
-		for(int i = 0; i < NUM_MULTISAMPLE_COUNTS && i < bufSize; i++)
+		for(int i = 0; i < numMultisampleCounts && i < bufSize; i++)
 		{
 			params[i] = multisampleCount[i];
 		}

@@ -80,7 +80,7 @@ namespace sw
 
 	void VertexProgram::program()
 	{
-	//	shader->print("VertexShader-%0.8X.txt", state.shaderID);
+		shader->print("VertexShader-%0.8X.txt", state.shaderID);
 
 		unsigned short version = shader->getVersion();
 
@@ -202,6 +202,12 @@ namespace sw
 			case Shader::OPCODE_FLOATBITSTOUINT:
 			case Shader::OPCODE_INTBITSTOFLOAT:
 			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                    break;
+			case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d, s0);      break;
+			case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d, s0);      break;
+			case Shader::OPCODE_PACKHALF2x16:    packHalf2x16(d, s0);       break;
+			case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0);    break;
+			case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0);    break;
+			case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0);     break;
 			case Shader::OPCODE_M3X2:       M3X2(d, s0, src1);              break;
 			case Shader::OPCODE_M3X3:       M3X3(d, s0, src1);              break;
 			case Shader::OPCODE_M3X4:       M3X4(d, s0, src1);              break;
@@ -831,8 +837,6 @@ namespace sw
 			
 				c.x = c.y = c.z = c.w = *Pointer<Float4>(uniformAddress(src.bufferIndex, i, a));
 
-				c.x = c.y = c.z = c.w = *Pointer<Float4>(data + OFFSET(DrawData,vs.c[i]) + a * 16);
-
 				c.x = c.x.xxxx;
 				c.y = c.y.yyyy;
 				c.z = c.z.zzzz;
@@ -892,9 +896,7 @@ namespace sw
 		}
 		else if(var.rel.type == Shader::PARAMETER_CONST)
 		{
-			RValue<Int4> c = *Pointer<Int4>(uniformAddress(bufferIndex, var.rel.index));
-
-			return Extract(c, 0) * var.rel.scale;
+			return *Pointer<Int>(uniformAddress(bufferIndex, var.rel.index)) * var.rel.scale;
 		}
 		else if(var.rel.type == Shader::PARAMETER_LOOP)
 		{

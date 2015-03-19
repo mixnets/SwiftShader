@@ -329,6 +329,11 @@ namespace sw
 			modifierString += "_pp";
 		}
 
+		if(!smooth)
+		{
+			modifierString += "_flat";
+		}
+
 		if(centroid)
 		{
 			modifierString += "_centroid";
@@ -455,6 +460,19 @@ namespace sw
 			else if(rel.type == PARAMETER_LOOP)
 			{
 				return "[aL]";
+			}
+			else if(rel.type == PARAMETER_CONST)
+			{
+				std::ostringstream buffer;
+				buffer << rel.index;
+
+				switch(rel.swizzle & 0x03)
+				{
+				case 0: return "[c" + buffer.str() + ".x]";
+				case 1: return "[c" + buffer.str() + ".y]";
+				case 2: return "[c" + buffer.str() + ".z]";
+				case 3: return "[c" + buffer.str() + ".w]";
+				}
 			}
 			else ASSERT(false);
 		}
@@ -1405,19 +1423,22 @@ namespace sw
 
 	void Shader::print(const char *fileName, ...) const
 	{
-		char fullName[1024 + 1];
+		/*char fullName[1024 + 1];
 
 		va_list vararg;
 		va_start(vararg, fileName);
 		vsnprintf(fullName, 1024, fileName, vararg);
 		va_end(vararg);
 
-		std::ofstream file(fullName, std::ofstream::out);
+		std::ofstream file(fullName, std::ofstream::out);*/
+		std::string shaderString;
 
 		for(unsigned int i = 0; i < instruction.size(); i++)
 		{
-			file << instruction[i]->string(shaderType, version) << std::endl;
+			//file << instruction[i]->string(shaderType, version) << std::endl;
+			shaderString += instruction[i]->string(shaderType, version) + "\n";
 		}
+		shaderString += "\n";
 	}
 
 	void Shader::printInstruction(int index, const char *fileName) const

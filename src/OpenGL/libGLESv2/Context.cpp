@@ -151,12 +151,6 @@ Context::Context(const egl::Config *config, const Context *shareContext, EGLint 
     bindGenericUniformBuffer(0);
     bindTransformFeedback(0);
 
-	mState.readFramebufferColorIndex = 0;
-	for(int i = 0; i < MAX_COLOR_ATTACHMENTS; ++i)
-	{
-		mState.drawFramebufferColorIndices[i] = GL_NONE;
-	}
-
     mState.currentProgram = 0;
 
     mState.packAlignment = 4;
@@ -630,7 +624,6 @@ bool Context::isDitherEnabled() const
 
 void Context::setPrimitiveRestartFixedIndexEnabled(bool enabled)
 {
-    UNIMPLEMENTED();
     mState.primitiveRestartFixedIndexEnabled = enabled;
 }
 
@@ -641,7 +634,10 @@ bool Context::isPrimitiveRestartFixedIndexEnabled() const
 
 void Context::setRasterizerDiscardEnabled(bool enabled)
 {
-    UNIMPLEMENTED();
+	if(enabled)
+	{
+		UNIMPLEMENTED();
+	}
     mState.rasterizerDiscardEnabled = enabled;
 }
 
@@ -735,22 +731,32 @@ GLuint Context::getRenderbufferName() const
     return mState.renderbuffer.name();
 }
 
-void Context::setReadFramebufferColorIndex(GLuint index)
+void Context::setReadFramebufferColorMode(GLuint mode)
 {
-	mState.readFramebufferColorIndex = index;
+	getReadFramebuffer()->setReadMode(mode);
 }
 
-void Context::setDrawFramebufferColorIndices(GLsizei n, const GLenum *bufs)
+void Context::setDrawFramebufferColorModes(GLsizei n, const GLenum *bufs)
 {
+	Framebuffer* drawFramebuffer = getDrawFramebuffer();
 	for(int i = 0; i < n; ++i)
 	{
-		mState.drawFramebufferColorIndices[i] = ((bufs[i] == GL_BACK) || (bufs[i] == GL_NONE)) ? bufs[i] : i;
+		drawFramebuffer->setDrawMode(i, bufs[i]);
 	}
 }
 
 GLuint Context::getReadFramebufferColorIndex() const
 {
-	return mState.readFramebufferColorIndex;
+	GLenum readMode = getReadFramebuffer()->getReadMode();
+	switch(readMode)
+	{
+	case GL_BACK:
+		return 0;
+	case GL_NONE:
+		return GL_INVALID_INDEX;
+	default:
+		return readMode - GL_COLOR_ATTACHMENT0;
+	}
 }
 
 GLuint Context::getArrayBufferName() const
@@ -1947,10 +1953,10 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
     case GL_ACTIVE_TEXTURE:                   *params = (mState.activeSampler + GL_TEXTURE0); break;
     case GL_STENCIL_FUNC:                     *params = mState.stencilFunc;                   break;
     case GL_STENCIL_REF:                      *params = mState.stencilRef;                    break;
-    case GL_STENCIL_VALUE_MASK:               *params = mState.stencilMask;                   break;
+	case GL_STENCIL_VALUE_MASK:               *params = sw::clampToInt(mState.stencilMask);   break;
     case GL_STENCIL_BACK_FUNC:                *params = mState.stencilBackFunc;               break;
     case GL_STENCIL_BACK_REF:                 *params = mState.stencilBackRef;                break;
-    case GL_STENCIL_BACK_VALUE_MASK:          *params = mState.stencilBackMask;               break;
+	case GL_STENCIL_BACK_VALUE_MASK:          *params = sw::clampToInt(mState.stencilBackMask); break;
     case GL_STENCIL_FAIL:                     *params = mState.stencilFail;                   break;
     case GL_STENCIL_PASS_DEPTH_FAIL:          *params = mState.stencilPassDepthFail;          break;
     case GL_STENCIL_PASS_DEPTH_PASS:          *params = mState.stencilPassDepthPass;          break;
@@ -1964,8 +1970,8 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
     case GL_BLEND_DST_ALPHA:                  *params = mState.destBlendAlpha;                break;
     case GL_BLEND_EQUATION_RGB:               *params = mState.blendEquationRGB;              break;
     case GL_BLEND_EQUATION_ALPHA:             *params = mState.blendEquationAlpha;            break;
-    case GL_STENCIL_WRITEMASK:                *params = mState.stencilWritemask;              break;
-    case GL_STENCIL_BACK_WRITEMASK:           *params = mState.stencilBackWritemask;          break;
+	case GL_STENCIL_WRITEMASK:                *params = sw::clampToInt(mState.stencilWritemask); break;
+	case GL_STENCIL_BACK_WRITEMASK:           *params = sw::clampToInt(mState.stencilBackWritemask); break;
     case GL_STENCIL_CLEAR_VALUE:              *params = mState.stencilClearValue;             break;
     case GL_SUBPIXEL_BITS:                    *params = 4;                                    break;
 	case GL_MAX_TEXTURE_SIZE:                 *params = IMPLEMENTATION_MAX_TEXTURE_SIZE;          break;
@@ -2099,49 +2105,49 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
         }
         break;
     case GL_TEXTURE_BINDING_2D:
-        {
-            if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
-            {
-                error(GL_INVALID_OPERATION);
-                return false;
-            }
-
-            *params = mState.samplerTexture[TEXTURE_2D][mState.activeSampler].name();
-        }
-        break;
-    case GL_TEXTURE_BINDING_CUBE_MAP:
-        {
-            if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
-            {
-                error(GL_INVALID_OPERATION);
-                return false;
-            }
-
-            *params = mState.samplerTexture[TEXTURE_CUBE][mState.activeSampler].name();
-        }
-        break;
-    case GL_TEXTURE_BINDING_EXTERNAL_OES:
-        {
-            if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
-            {
-                error(GL_INVALID_OPERATION);
-                return false;
-            }
-
-            *params = mState.samplerTexture[TEXTURE_EXTERNAL][mState.activeSampler].name();
-        }
-        break;
-	case GL_TEXTURE_BINDING_3D_OES:
-	case GL_TEXTURE_BINDING_2D_ARRAY: // GLES 3.0
-	    {
-			if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
-			{
-				error(GL_INVALID_OPERATION);
-				return false;
-			}
-
-			*params = mState.samplerTexture[TEXTURE_3D][mState.activeSampler].name();
+		if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+		{
+			error(GL_INVALID_OPERATION);
+			return false;
 		}
+
+		*params = mState.samplerTexture[TEXTURE_2D][mState.activeSampler].name();
+		break;
+	case GL_TEXTURE_BINDING_CUBE_MAP:
+		if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+		{
+			error(GL_INVALID_OPERATION);
+			return false;
+		}
+
+		*params = mState.samplerTexture[TEXTURE_CUBE][mState.activeSampler].name();
+		break;
+	case GL_TEXTURE_BINDING_EXTERNAL_OES:
+		if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+		{
+			error(GL_INVALID_OPERATION);
+			return false;
+		}
+
+		*params = mState.samplerTexture[TEXTURE_EXTERNAL][mState.activeSampler].name();
+		break;
+	case GL_TEXTURE_BINDING_3D_OES:
+		if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+		{
+			error(GL_INVALID_OPERATION);
+			return false;
+		}
+
+		*params = mState.samplerTexture[TEXTURE_3D][mState.activeSampler].name();
+		break;
+	case GL_TEXTURE_BINDING_2D_ARRAY: // GLES 3.0
+		if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+		{
+			error(GL_INVALID_OPERATION);
+			return false;
+		}
+
+		*params = mState.samplerTexture[TEXTURE_2D_ARRAY][mState.activeSampler].name();
 		break;
 	case GL_COPY_READ_BUFFER_BINDING: // name, initially 0
 		if(clientVersion >= 3)
@@ -2164,9 +2170,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		}
 		break;
 	case GL_DRAW_BUFFER0: // symbolic constant, initial value is GL_BACK​
-		UNIMPLEMENTED();
-		*params = GL_BACK;
-		break;
 	case GL_DRAW_BUFFER1: // symbolic constant, initial value is GL_NONE
 	case GL_DRAW_BUFFER2:
 	case GL_DRAW_BUFFER3:
@@ -2182,12 +2185,10 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_DRAW_BUFFER13:
 	case GL_DRAW_BUFFER14:
 	case GL_DRAW_BUFFER15:
-		UNIMPLEMENTED();
-		*params = GL_NONE;
+		*params = getDrawFramebuffer()->getDrawMode(pname - GL_DRAW_BUFFER0);
 		break;
 	case GL_MAJOR_VERSION: // integer, at least 3
-		UNIMPLEMENTED();
-		*params = 3;
+		*params = clientVersion;
 		break;
 	case GL_MAX_3D_TEXTURE_SIZE: // GLint, at least 2048
 		*params = IMPLEMENTATION_MAX_TEXTURE_SIZE;
@@ -2196,11 +2197,9 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = IMPLEMENTATION_MAX_TEXTURE_SIZE;
 		break;
 	case GL_MAX_COLOR_ATTACHMENTS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_COLOR_ATTACHMENTS;
 		break;
 	case GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS: // integer, at least 50048
-		UNIMPLEMENTED();
 		*params = MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS;
 		break;
 	case GL_MAX_COMBINED_UNIFORM_BLOCKS: // integer, at least 70
@@ -2208,11 +2207,9 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = 70;
 		break;
 	case GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS: // integer, at least 50176
-		UNIMPLEMENTED();
 		*params = MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS;
 		break;
 	case GL_MAX_DRAW_BUFFERS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_DRAW_BUFFERS;
 		break;
 	case GL_MAX_ELEMENT_INDEX:
@@ -2253,7 +2250,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = 64;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS: // integer, at least 4
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS: // integer, at least 4
@@ -2334,12 +2330,10 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = 0;
 		break;
 	case GL_READ_BUFFER: // symbolic constant,  initial value is GL_BACK​
-		UNIMPLEMENTED();
-		*params = GL_BACK;
+		*params = getReadFramebuffer()->getReadMode();
 		break;
 	case GL_SAMPLER_BINDING: // GLint, default 0
-		UNIMPLEMENTED();
-		*params = 0;
+		*params = mState.sampler[mState.activeSampler].name();
 		break;
 	case GL_UNIFORM_BUFFER_BINDING: // name, initially 0
 		if(clientVersion >= 3)
@@ -2393,6 +2387,32 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_VERTEX_ARRAY_BINDING: // GLint, initially 0
 		*params = getCurrentVertexArray()->name;
 		break;
+	case GL_TRANSFORM_FEEDBACK_BINDING:
+		{
+			TransformFeedback* transformFeedback = getTransformFeedback(mState.transformFeedback);
+			if(transformFeedback)
+			{
+				*params = transformFeedback->name;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		break;
+	case GL_TRANSFORM_FEEDBACK_BUFFER_BINDING:
+		{
+			TransformFeedback* transformFeedback = getTransformFeedback(mState.transformFeedback);
+			if(transformFeedback)
+			{
+				*params = transformFeedback->getGenericBufferName();
+			}
+			else
+			{
+				return false;
+			}
+		}
+		break;
 	default:
         return false;
     }
@@ -2400,13 +2420,11 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
     return true;
 }
 
-template bool Context::getTransformFeedbackiv<GLint>(GLuint xfb, GLenum pname, GLint *param) const;
-template bool Context::getTransformFeedbackiv<GLint64>(GLuint xfb, GLenum pname, GLint64 *param) const;
+template bool Context::getTransformFeedbackiv<GLint>(GLuint index, GLenum pname, GLint *param) const;
+template bool Context::getTransformFeedbackiv<GLint64>(GLuint index, GLenum pname, GLint64 *param) const;
 
-template<typename T> bool Context::getTransformFeedbackiv(GLuint xfb, GLenum pname, T *param) const
+template<typename T> bool Context::getTransformFeedbackiv(GLuint index, GLenum pname, T *param) const
 {
-	UNIMPLEMENTED();
-
 	TransformFeedback* transformFeedback = getTransformFeedback(mState.transformFeedback);
 	if(!transformFeedback)
 	{
@@ -2416,26 +2434,55 @@ template<typename T> bool Context::getTransformFeedbackiv(GLuint xfb, GLenum pna
 	switch(pname)
 	{
 	case GL_TRANSFORM_FEEDBACK_BINDING: // GLint, initially 0
-		*param = 0;
+		*param = transformFeedback->name;
 		break;
 	case GL_TRANSFORM_FEEDBACK_ACTIVE: // boolean, initially GL_FALSE
 		*param = transformFeedback->isActive();
 		break;
 	case GL_TRANSFORM_FEEDBACK_BUFFER_BINDING: // name, initially 0
-		*param = transformFeedback->name;
+		*param = transformFeedback->getBufferName(index);
 		break;
 	case GL_TRANSFORM_FEEDBACK_PAUSED: // boolean, initially GL_FALSE
 		*param = transformFeedback->isPaused();
 		break;
 	case GL_TRANSFORM_FEEDBACK_BUFFER_SIZE: // indexed[n] 64-bit integer, initially 0
-		if(transformFeedback->getGenericBuffer())
+		if(transformFeedback->getBuffer(index))
 		{
-			*param = transformFeedback->getGenericBuffer()->size();
+			*param = transformFeedback->getSize(index);
 			break;
 		}
 		else return false;
 	case GL_TRANSFORM_FEEDBACK_BUFFER_START: // indexed[n] 64-bit integer, initially 0
-		*param = 0;
+		if(transformFeedback->getBuffer(index))
+		{
+			*param = transformFeedback->getOffset(index);
+			break;
+		}
+		else return false;
+	default:
+		return false;
+	}
+
+	return true;
+}
+
+template bool Context::getUniformBufferiv<GLint>(GLuint index, GLenum pname, GLint *param) const;
+template bool Context::getUniformBufferiv<GLint64>(GLuint index, GLenum pname, GLint64 *param) const;
+
+template<typename T> bool Context::getUniformBufferiv(GLuint index, GLenum pname, T *param) const
+{
+	const UniformBufferBinding& uniformBuffer = mState.uniformBuffers[index];
+
+	switch(pname)
+	{
+	case GL_UNIFORM_BUFFER_BINDING: // name, initially 0
+		*param = uniformBuffer.get().name();
+		break;
+	case GL_UNIFORM_BUFFER_SIZE: // indexed[n] 64-bit integer, initially 0
+		*param = uniformBuffer.getSize();
+		break;
+	case GL_UNIFORM_BUFFER_START: // indexed[n] 64-bit integer, initially 0
+		*param = uniformBuffer.getOffset();
 		break;
 	default:
 		return false;
@@ -2596,6 +2643,8 @@ bool Context::getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *nu
     case GL_UNPACK_SKIP_PIXELS:
     case GL_UNPACK_SKIP_ROWS:
     case GL_VERTEX_ARRAY_BINDING:
+	case GL_TRANSFORM_FEEDBACK_BINDING:
+	case GL_TRANSFORM_FEEDBACK_BUFFER_BINDING:
         {
             *type = GL_INT;
             *numParams = 1;
@@ -3006,8 +3055,13 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsize
 	return GL_NO_ERROR;
 }
 
+GLenum Context::computePrimitiveRestart(const void *indices, GLsizei count, GLenum type, PrimitiveRestartData* restartData)
+{
+	return mIndexDataManager->computePrimitiveRestart(type, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, restartData);
+}
+
 // Applies the indices and element array bindings
-GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo)
+GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum type, TranslatedIndexData *indexInfo)
 {
 	GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, indexInfo);
 
@@ -3039,13 +3093,12 @@ void Context::applyShaders()
     programObject->applyUniforms();
 }
 
-void Context::applyTextures()
+bool Context::applyTextures()
 {
-    applyTextures(sw::SAMPLER_PIXEL);
-	applyTextures(sw::SAMPLER_VERTEX);
+    return applyTextures(sw::SAMPLER_PIXEL) && applyTextures(sw::SAMPLER_VERTEX);
 }
 
-void Context::applyTextures(sw::SamplerType samplerType)
+bool Context::applyTextures(sw::SamplerType samplerType)
 {
     Program *programObject = getCurrentProgram();
 
@@ -3063,7 +3116,8 @@ void Context::applyTextures(sw::SamplerType samplerType)
 
 			if(texture->isSamplerComplete())
             {
-				GLenum wrapS, wrapT, wrapR, minFilter, magFilter;
+				GLenum wrapS, wrapT, wrapR, minFilter, magFilter, compFunc, compMode;
+				GLfloat minLOD, maxLOD;
 
 				Sampler *samplerObject = mState.sampler[textureUnit];
 				if(samplerObject)
@@ -3073,6 +3127,10 @@ void Context::applyTextures(sw::SamplerType samplerType)
 					wrapR = samplerObject->getWrapR();
 					minFilter = samplerObject->getMinFilter();
 					magFilter = samplerObject->getMagFilter();
+					minLOD = samplerObject->getMinLod();
+					maxLOD = samplerObject->getMaxLod();
+					compFunc = samplerObject->getComparisonFunc();
+					compMode = samplerObject->getComparisonMode();
 				}
 				else
 				{
@@ -3081,9 +3139,15 @@ void Context::applyTextures(sw::SamplerType samplerType)
 					wrapR = texture->getWrapR();
 					minFilter = texture->getMinFilter();
 					magFilter = texture->getMagFilter();
+					minLOD = texture->getMinLOD();
+					maxLOD = texture->getMaxLOD();
+					compFunc = texture->getCompareFunc();
+					compMode = texture->getCompareMode();
 				}
 				GLfloat maxAnisotropy = texture->getMaxAnisotropy();
 
+				GLint baseLevel = texture->getBaseLevel();
+				GLint maxLevel = texture->getMaxLevel();
 				GLenum swizzleR = texture->getSwizzleR();
 				GLenum swizzleG = texture->getSwizzleG();
 				GLenum swizzleB = texture->getSwizzleB();
@@ -3092,30 +3156,47 @@ void Context::applyTextures(sw::SamplerType samplerType)
 				device->setAddressingModeU(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapS));
 				device->setAddressingModeV(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapT));
 				device->setAddressingModeW(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapR));
+				device->setCompFunc(samplerType, samplerIndex, es2sw::ConvertCompareFunc(compFunc));
+				device->setCompMode(samplerType, samplerIndex, es2sw::ConvertCompareMode(compMode));
 				device->setSwizzleR(samplerType, samplerIndex, es2sw::ConvertSwizzleType(swizzleR));
 				device->setSwizzleG(samplerType, samplerIndex, es2sw::ConvertSwizzleType(swizzleG));
 				device->setSwizzleB(samplerType, samplerIndex, es2sw::ConvertSwizzleType(swizzleB));
 				device->setSwizzleA(samplerType, samplerIndex, es2sw::ConvertSwizzleType(swizzleA));
+				device->setMinLod(samplerType, samplerIndex, minLOD);
+				device->setMaxLod(samplerType, samplerIndex, maxLOD);
+				device->setBaseLevel(samplerType, samplerIndex, baseLevel);
+				device->setMaxLevel(samplerType, samplerIndex, maxLevel);
 
 				device->setTextureFilter(samplerType, samplerIndex, es2sw::ConvertTextureFilter(minFilter, magFilter, maxAnisotropy));
 				device->setMipmapFilter(samplerType, samplerIndex, es2sw::ConvertMipMapFilter(minFilter));
-				device->setMaxAnisotropy(samplerType, samplerIndex, maxAnisotropy);
+				device->setMaxAnisotropy(samplerType, samplerIndex, maxAnisotropy);                
 
-				applyTexture(samplerType, samplerIndex, texture);
+				if(!applyTexture(samplerType, samplerIndex, texture))
+				{
+					return false;
+				}
             }
             else
             {
-                applyTexture(samplerType, samplerIndex, nullptr);
+				if(!applyTexture(samplerType, samplerIndex, nullptr))
+				{
+					return false;
+				}
             }
         }
         else
         {
-            applyTexture(samplerType, samplerIndex, nullptr);
+			if(!applyTexture(samplerType, samplerIndex, nullptr))
+			{
+				return false;
+			}
         }
     }
+
+	return true;
 }
 
-void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture)
+bool Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture)
 {
 	Program *program = getCurrentProgram();
 	int sampler = (type == sw::SAMPLER_PIXEL) ? index : 16 + index;
@@ -3129,7 +3210,11 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 	{
 		textureUsed = program->getVertexShader()->usesSampler(index);
 	}
-	else UNREACHABLE(type);
+	else
+	{
+		UNREACHABLE(type);
+		return false;
+	}
 
 	sw::Resource *resource = 0;
 
@@ -3162,6 +3247,10 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
+				if(surface->getInternalFormat() == sw::FORMAT_NULL)
+				{
+					return false;
+				}
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D);
 			}
 		}
@@ -3183,6 +3272,10 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
+				if(surface->getInternalFormat() == sw::FORMAT_NULL)
+				{
+					return false;
+				}
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_3D);
 			}
 		}
@@ -3204,6 +3297,10 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
+				if(surface->getInternalFormat() == sw::FORMAT_NULL)
+				{
+					return false;
+				}
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D_ARRAY);
 			}
 		}
@@ -3227,16 +3324,26 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 					}
 
 					egl::Image *surface = cubeTexture->getImage(face, surfaceLevel);
+					if(surface->getInternalFormat() == sw::FORMAT_NULL)
+					{
+						return false;
+					}
 					device->setTextureLevel(sampler, face, mipmapLevel, surface, sw::TEXTURE_CUBE);
 				}
 			}
 		}
-		else UNIMPLEMENTED();
+		else
+		{
+			UNIMPLEMENTED();
+			return false;
+		}
 	}
 	else
 	{
 		device->setTextureLevel(sampler, 0, 0, 0, sw::TEXTURE_NULL);
 	}
+
+	return true;
 }
 
 void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
@@ -3263,10 +3370,11 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 		return error(GL_INVALID_OPERATION);
 	}
 
-	GLsizei outputPitch = egl::ComputePitch((mState.packRowLength > 0) ? mState.packRowLength : width, format, type, mState.packAlignment);
+	GLsizei outputWidth = (mState.packRowLength > 0) ? mState.packRowLength : width;
+	GLsizei outputPitch = egl::ComputePitch(outputWidth, format, type, mState.packAlignment);
 	GLsizei outputHeight = (mState.packImageHeight == 0) ? height : mState.packImageHeight;
 	pixels = getPixelPackBuffer() ? (unsigned char*)getPixelPackBuffer()->data() + (ptrdiff_t)pixels : (unsigned char*)pixels;
-	pixels = ((char*)pixels) + (mState.packSkipImages * outputHeight + mState.packSkipRows) * outputPitch + mState.packSkipPixels;
+	pixels = ((char*)pixels) + egl::ComputePackingOffset(format, type, outputWidth, outputHeight, mState.packAlignment, mState.packSkipImages, mState.packSkipRows, mState.packSkipPixels);
 
 	// Sized query sanity check
     if(bufSize)
@@ -3285,8 +3393,6 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
         return error(GL_OUT_OF_MEMORY);
     }
 
-	x += mState.packSkipPixels;
-	y += mState.packSkipRows;
 	sw::Rect rect = {x, y, x + width, y + height};
 	sw::Rect dstRect = { 0, 0, width, height };
 	rect.clip(0, 0, renderTarget->getWidth(), renderTarget->getHeight());
@@ -3460,9 +3566,8 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 		}
 
 		applyShaders();
-		applyTextures();
 
-		if(!getCurrentProgram()->validateSamplers(false))
+		if(!applyTextures() || !getCurrentProgram()->validateSamplers(false))
 		{
 			return error(GL_INVALID_OPERATION);
 		}
@@ -3504,35 +3609,57 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 
     applyState(mode);
 
+	PrimitiveRestartData restartData;
+	if(isPrimitiveRestartFixedIndexEnabled())
+	{
+		GLenum err = computePrimitiveRestart(indices, count, type, &restartData);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
+	}
+	else
+	{
+		restartData.data.push_back(PrimitiveRestartData::Datum::Datum(indices, count));
+	}
+
 	for(int i = 0; i < instanceCount; ++i)
 	{
 		device->setInstanceID(i);
 
-		TranslatedIndexData indexInfo;
-		GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
-		if(err != GL_NO_ERROR)
+		for(std::vector<PrimitiveRestartData::Datum>::iterator it = restartData.data.begin(); it != restartData.data.end(); ++it)
 		{
-			return error(err);
-		}
+			es2sw::ConvertPrimitiveType(mode, it->count, type, primitiveType, primitiveCount);
+			if(primitiveCount <= 0)
+			{
+				continue;
+			}
 
-		GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
-		err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount, i);
-		if(err != GL_NO_ERROR)
-		{
-			return error(err);
-		}
+			TranslatedIndexData indexInfo;
+			GLenum err = applyIndexBuffer(it->indices, start, end, it->count, type, &indexInfo);
+			if(err != GL_NO_ERROR)
+			{
+				return error(err);
+			}
 
-		applyShaders();
-		applyTextures();
+			GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
+			err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount, i);
+			if(err != GL_NO_ERROR)
+			{
+				return error(err);
+			}
 
-		if(!getCurrentProgram()->validateSamplers(false))
-		{
-			return error(GL_INVALID_OPERATION);
-		}
+			applyShaders();
 
-		if(!cullSkipsDraw(mode))
-		{
-			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount);
+			if(!applyTextures() || !getCurrentProgram()->validateSamplers(false))
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+
+			if(!cullSkipsDraw(mode))
+			{
+				device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount);
+			}
 		}
 	}
 }
@@ -3637,23 +3764,48 @@ void Context::detachBuffer(GLuint buffer)
     // If a buffer object is deleted while it is bound, all bindings to that object in the current context
     // (i.e. in the thread that called Delete-Buffers) are reset to zero.
 
-    if(getArrayBufferName() == buffer)
-    {
-        mState.arrayBuffer = NULL;
-    }
-
-	for(auto tfIt = mTransformFeedbackMap.begin(); tfIt != mTransformFeedbackMap.end(); tfIt++)
+	if(mState.copyReadBuffer.name() == buffer)
 	{
-		tfIt->second->detachBuffer(buffer);
+		mState.copyReadBuffer = nullptr;
 	}
 
-	for(auto vaoIt = mVertexArrayMap.begin(); vaoIt != mVertexArrayMap.end(); vaoIt++)
+	if(mState.copyWriteBuffer.name() == buffer)
 	{
-		VertexArray* vertexArray = vaoIt->second;
-		if(vertexArray)
-		{
-			vertexArray->detachBuffer(buffer);
-		}
+		mState.copyWriteBuffer = nullptr;
+	}
+
+	if(mState.pixelPackBuffer.name() == buffer)
+	{
+		mState.pixelPackBuffer = nullptr;
+	}
+
+	if(mState.pixelUnpackBuffer.name() == buffer)
+	{
+		mState.pixelUnpackBuffer = nullptr;
+	}
+
+	if(mState.genericUniformBuffer.name() == buffer)
+	{
+		mState.genericUniformBuffer = nullptr;
+	}
+
+    if(getArrayBufferName() == buffer)
+    {
+		mState.arrayBuffer = nullptr;
+    }
+
+	// Only detch from the current transform feedback
+	TransformFeedback* currentTransformFeedback = getTransformFeedback();
+	if(currentTransformFeedback)
+	{
+		currentTransformFeedback->detachBuffer(buffer);
+	}
+
+	// Only detch from the current vertex array
+	VertexArray* currentVertexArray = getCurrentVertexArray();
+	if(currentVertexArray)
+	{
+		currentVertexArray->detachBuffer(buffer);
 	}
 
     for(int attribute = 0; attribute < MAX_VERTEX_ATTRIBS; attribute++)
@@ -4231,6 +4383,8 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 	// Vendor extensions
 	static const GLubyte* extensions[] = {
 		(const GLubyte*)"GL_OES_compressed_ETC1_RGB8_texture",
+		(const GLubyte*)"GL_KHR_texture_compression_astc_ldr",
+		(const GLubyte*)"GL_KHR_texture_compression_astc_hdr",
 		(const GLubyte*)"GL_OES_depth24",
 		(const GLubyte*)"GL_OES_depth32",
 		(const GLubyte*)"GL_OES_depth_texture",
@@ -4250,6 +4404,7 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 		(const GLubyte*)"GL_OES_texture_npot",
 		(const GLubyte*)"GL_OES_texture_3D",
 		(const GLubyte*)"GL_EXT_blend_minmax",
+		(const GLubyte*)"GL_EXT_color_buffer_float",
 		(const GLubyte*)"GL_EXT_color_buffer_half_float",
 		(const GLubyte*)"GL_EXT_occlusion_query_boolean",
 		(const GLubyte*)"GL_EXT_read_format_bgra",

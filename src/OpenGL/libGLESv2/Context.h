@@ -42,6 +42,7 @@ namespace es2
 {
 struct TranslatedAttribute;
 struct TranslatedIndexData;
+struct PrimitiveRestartData;
 
 class Device;
 class Shader;
@@ -73,7 +74,7 @@ enum
     MAX_VERTEX_ATTRIBS = VERTEX_ATTRIBUTES,
 	MAX_UNIFORM_VECTORS = 256,   // Device limit
     MAX_VERTEX_UNIFORM_VECTORS = VERTEX_UNIFORM_VECTORS - 3,   // Reserve space for gl_DepthRange
-    MAX_VARYING_VECTORS = 10,
+    MAX_VARYING_VECTORS = 15 /*es2: 10*/,
     MAX_TEXTURE_IMAGE_UNITS = TEXTURE_IMAGE_UNITS,
     MAX_VERTEX_TEXTURE_IMAGE_UNITS = VERTEX_TEXTURE_IMAGE_UNITS,
     MAX_COMBINED_TEXTURE_IMAGE_UNITS = MAX_TEXTURE_IMAGE_UNITS + MAX_VERTEX_TEXTURE_IMAGE_UNITS,
@@ -381,8 +382,6 @@ struct State
 
     GLuint readFramebuffer;
     GLuint drawFramebuffer;
-    GLuint readFramebufferColorIndex;
-    GLuint drawFramebufferColorIndices[MAX_COLOR_ATTACHMENTS];
     gl::BindingPointer<Renderbuffer> renderbuffer;
     GLuint currentProgram;
 	GLuint vertexArray;
@@ -482,8 +481,8 @@ public:
     GLuint getDrawFramebufferName() const;
     GLuint getRenderbufferName() const;
 
-	void setReadFramebufferColorIndex(GLuint index);
-	void setDrawFramebufferColorIndices(GLsizei n, const GLenum *bufs);
+	void setReadFramebufferColorMode(GLenum mode);
+	void setDrawFramebufferColorModes(GLsizei n, const GLenum *bufs);
 	GLuint getReadFramebufferColorIndex() const;
 
 	GLuint getActiveQuery(GLenum target) const;
@@ -615,6 +614,7 @@ public:
 	Buffer *getPixelUnpackBuffer() const;
 	Buffer *getGenericUniformBuffer() const;
 	bool getBuffer(GLenum target, es2::Buffer **buffer) const;
+	bool getBufferMapping(GLenum target, int& offset, int& size) const;
 	Program *getCurrentProgram() const;
 	Texture2D *getTexture2D() const;
 	Texture3D *getTexture3D() const;
@@ -628,7 +628,8 @@ public:
 	bool getFloatv(GLenum pname, GLfloat *params) const;
 	template<typename T> bool getIntegerv(GLenum pname, T *params) const;
 	bool getBooleanv(GLenum pname, GLboolean *params) const;
-	template<typename T> bool getTransformFeedbackiv(GLuint xfb, GLenum pname, T *param) const;
+	template<typename T> bool getTransformFeedbackiv(GLuint index, GLenum pname, T *param) const;
+	template<typename T> bool getUniformBufferiv(GLuint index, GLenum pname, T *param) const;
 	void samplerParameteri(GLuint sampler, GLenum pname, GLint param);
 	void samplerParameterf(GLuint sampler, GLenum pname, GLfloat param);
 	GLint getSamplerParameteri(GLuint sampler, GLenum pname);
@@ -681,11 +682,12 @@ private:
     bool applyRenderTarget();
     void applyState(GLenum drawMode);
 	GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsizei instanceId);
-    GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo);
+    GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum type, TranslatedIndexData *indexInfo);
+	GLenum computePrimitiveRestart(const void *indices, GLsizei count, GLenum type, PrimitiveRestartData* restartInfo);
     void applyShaders();
-    void applyTextures();
-    void applyTextures(sw::SamplerType type);
-	void applyTexture(sw::SamplerType type, int sampler, Texture *texture);
+    bool applyTextures();
+    bool applyTextures(sw::SamplerType type);
+	bool applyTexture(sw::SamplerType type, int sampler, Texture *texture);
 	void clearColorBuffer(GLint drawbuffer, void *value, sw::Format format);
 
     void detachBuffer(GLuint buffer);

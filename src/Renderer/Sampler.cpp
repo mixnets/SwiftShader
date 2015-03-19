@@ -96,6 +96,12 @@ namespace sw
 			state.swizzleG = swizzleG;
 			state.swizzleB = swizzleB;
 			state.swizzleA = swizzleA;
+			state.compFunc = compFunc;
+			state.compMode = compMode;
+			state.baseLevel = baseLevel;
+			state.maxLevel = maxLevel;
+			state.minLod = minLod;
+			state.maxLod = maxLod;
 
 			#if PERF_PROFILE
 				state.compressedFormat = Surface::isCompressed(externalTextureFormat);
@@ -151,7 +157,7 @@ namespace sw
 					texture.depthLOD[3] = depth * exp2LOD;
 				}
 
-				if(!Surface::isFloatFormat(internalTextureFormat))
+				if(!Surface::isFloatOr32BitFormat(internalTextureFormat))
 				{
 					mipmap.uInt = logWidth;
 					mipmap.vInt = logHeight;
@@ -330,6 +336,36 @@ namespace sw
 	void Sampler::setSwizzleA(SwizzleType swizzleA)
 	{
 		this->swizzleA = swizzleA;
+	}
+
+	void Sampler::setCompFunc(CompareFunc compFunc)
+	{
+		this->compFunc = compFunc;
+	}
+
+	void Sampler::setCompMode(CompareMode compMode)
+	{
+		this->compMode = compMode;
+	}
+
+	void Sampler::setBaseLevel(int baseLevel)
+	{
+		this->baseLevel = baseLevel;
+	}
+
+	void Sampler::setMaxLevel(int maxLevel)
+	{
+		this->maxLevel = maxLevel;
+	}
+
+	void Sampler::setMinLod(float minLod)
+	{
+		this->minLod = minLod;
+	}
+
+	void Sampler::setMaxLod(float maxLod)
+	{
+		this->maxLod = maxLod;
 	}
 
 	void Sampler::setFilterQuality(FilterType maximumFilterQuality)

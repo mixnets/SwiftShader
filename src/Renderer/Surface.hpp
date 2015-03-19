@@ -287,13 +287,6 @@ namespace sw
 		void clearDepthBuffer(float depth, int x0, int y0, int width, int height);
 		void clearStencilBuffer(unsigned char stencil, unsigned char mask, int x0, int y0, int width, int height);
 		void fill(const Color<float> &color, int x0, int y0, int width, int height);
-
-		Color<float> readExternal(int x, int y, int z) const;
-		Color<float> readExternal(int x, int y) const;
-		Color<float> sampleExternal(float x, float y, float z) const;
-		Color<float> sampleExternal(float x, float y) const;
-		void writeExternal(int x, int y, int z, const Color<float> &color);
-		void writeExternal(int x, int y, const Color<float> &color);
 		
 		void copyInternal(const Surface* src, int x, int y, float srcX, float srcY, bool filter);
 		void copyInternal(const Surface* src, int x, int y, int z, float srcX, float srcY, float srcZ, bool filter);
@@ -319,6 +312,7 @@ namespace sw
 		static bool isDepth(Format format);
 		static bool isPalette(Format format);
 
+		static bool isFloatOr32BitFormat(Format format);
 		static bool isFloatFormat(Format format);
 		static bool isUnsignedComponent(Format format, int component);
 		static bool isSRGBreadable(Format format);

@@ -30,6 +30,13 @@ Framebuffer::Framebuffer()
 	}
 	mDepthbufferType = GL_NONE;
 	mStencilbufferType = GL_NONE;
+
+	readMode = GL_BACK;
+	drawMode[0] = GL_BACK;
+	for(int i = 1; i < MAX_COLOR_ATTACHMENTS; ++i)
+	{
+		drawMode[i] = GL_NONE;
+	}
 }
 
 Framebuffer::~Framebuffer()
@@ -68,6 +75,11 @@ void Framebuffer::setColorbuffer(GLenum type, GLuint colorbuffer, GLuint index, 
 {
 	mColorbufferType[index] = (colorbuffer != 0) ? type : GL_NONE;
 	mColorbufferPointer[index] = lookupRenderbuffer(type, colorbuffer, level, layer);
+	drawMode[index] = (colorbuffer != 0) ? GL_COLOR_ATTACHMENT0 + index : GL_NONE;
+	if(index == 0)
+	{
+		readMode = drawMode[0];
+	}
 }
 
 void Framebuffer::setDepthbuffer(GLenum type, GLuint depthbuffer, GLint level, GLint layer)
@@ -80,6 +92,26 @@ void Framebuffer::setStencilbuffer(GLenum type, GLuint stencilbuffer, GLint leve
 {
 	mStencilbufferType = (stencilbuffer != 0) ? type : GL_NONE;
 	mStencilbufferPointer = lookupRenderbuffer(type, stencilbuffer, level, layer);
+}
+
+void Framebuffer::setReadMode(GLenum mode)
+{
+	readMode = mode;
+}
+
+void Framebuffer::setDrawMode(GLuint index, GLenum mode)
+{
+	drawMode[index] = mode;
+}
+
+GLenum Framebuffer::getReadMode() const
+{
+	return readMode;
+}
+
+GLenum Framebuffer::getDrawMode(GLuint index) const
+{
+	return drawMode[index];
 }
 
 void Framebuffer::detachTexture(GLuint texture)
@@ -476,6 +508,7 @@ GLenum Framebuffer::getImplementationColorReadFormat()
 		case sw::FORMAT_X16B16G16R16UI:
 		case sw::FORMAT_X32B32G32R32I:
 		case sw::FORMAT_X32B32G32R32UI:return GL_RGB_INTEGER;
+		case sw::FORMAT_B32G32R32F:
 		case sw::FORMAT_B16G16R16F:
 		case sw::FORMAT_X8B8G8R8I_SNORM:
 		case sw::FORMAT_X8B8G8R8:

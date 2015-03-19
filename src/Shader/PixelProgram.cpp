@@ -60,6 +60,8 @@ namespace sw
 
 	void PixelProgram::applyShader(Int cMask[4])
 	{
+		shader->print("FragmentShader-%0.8X.txt", state.shaderID);
+
 		enableIndex = 0;
 		stackIndex = 0;
 
@@ -228,6 +230,12 @@ namespace sw
 			case Shader::OPCODE_FLOATBITSTOUINT:
 			case Shader::OPCODE_INTBITSTOFLOAT:
 			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                                   break;
+			case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d, s0);                     break;
+			case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d, s0);                     break;
+			case Shader::OPCODE_PACKHALF2x16:    packHalf2x16(d, s0);                      break;
+			case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0);                   break;
+			case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0);                   break;
+			case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0);                    break;
 			case Shader::OPCODE_POWX:       powx(d, s0, s1, pp);                           break;
 			case Shader::OPCODE_POW:        pow(d, s0, s1, pp);                            break;
 			case Shader::OPCODE_SGN:        sgn(d, s0);                                    break;
@@ -597,7 +605,14 @@ namespace sw
 				break;
 			case FORMAT_R32F:
 			case FORMAT_G32R32F:
+			case FORMAT_B32G32R32F:
 			case FORMAT_A32B32G32R32F:
+			case FORMAT_R32I:
+			case FORMAT_G32R32I:
+			case FORMAT_A32B32G32R32I:
+			case FORMAT_R32UI:
+			case FORMAT_G32R32UI:
+			case FORMAT_A32B32G32R32UI:
 				for(unsigned int q = 0; q < state.multiSample; q++)
 				{
 					Pointer<Byte> buffer = cBuffer[index] + q * *Pointer<Int>(data + OFFSET(DrawData, colorSliceB[index]));
@@ -696,7 +711,14 @@ namespace sw
 				break;
 			case FORMAT_R32F:
 			case FORMAT_G32R32F:
+			case FORMAT_B32G32R32F:
 			case FORMAT_A32B32G32R32F:
+			case FORMAT_R32I:
+			case FORMAT_G32R32I:
+			case FORMAT_A32B32G32R32I:
+			case FORMAT_R32UI:
+			case FORMAT_G32R32UI:
+			case FORMAT_A32B32G32R32UI:
 				break;
 			default:
 				ASSERT(false);
@@ -954,9 +976,7 @@ namespace sw
 		}
 		else if(var.rel.type == Shader::PARAMETER_CONST)
 		{
-			RValue<Int4> c = *Pointer<Int4>(uniformAddress(bufferIndex, var.rel.index));
-
-			return Extract(c, 0) * var.rel.scale;
+			return *Pointer<Int>(uniformAddress(bufferIndex, var.rel.index)) * var.rel.scale;
 		}
 		else if(var.rel.type == Shader::PARAMETER_LOOP)
 		{

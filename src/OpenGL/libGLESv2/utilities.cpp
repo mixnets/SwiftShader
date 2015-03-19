@@ -660,6 +660,7 @@ namespace es2
 	bool IsDepthTexture(GLenum format)
 	{
 		return format == GL_DEPTH_COMPONENT ||
+		       format == GL_DEPTH_STENCIL_OES;
 		       format == GL_DEPTH_STENCIL_OES ||
 		       format == GL_DEPTH_COMPONENT16 ||
 		       format == GL_DEPTH_COMPONENT24 ||
@@ -673,6 +674,7 @@ namespace es2
 	{
 		return format == GL_STENCIL_INDEX_OES ||
 		       format == GL_DEPTH_STENCIL_OES ||
+		       format == GL_STENCIL_INDEX8 ||
 		       format == GL_DEPTH24_STENCIL8 ||
 		       format == GL_DEPTH32F_STENCIL8;
 	}
@@ -855,6 +857,8 @@ namespace es2
 		case GL_RGB565:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
+		case GL_RGB:
+		case GL_RGBA:
 			return true;
 		case GL_R16F:
 		case GL_RG16F:
@@ -1140,6 +1144,36 @@ namespace es2sw
 
 		return sw::ADDRESSING_WRAP;
 	}
+
+	sw::CompareFunc ConvertCompareFunc(GLenum compareFunc)
+	{
+		switch(compareFunc)
+		{
+		case GL_LEQUAL:   return sw::COMPARE_FUNC_LEQUAL;
+		case GL_GEQUAL:   return sw::COMPARE_FUNC_GEQUAL;
+		case GL_LESS:     return sw::COMPARE_FUNC_LESS;
+		case GL_GREATER:  return sw::COMPARE_FUNC_GREATER;
+		case GL_EQUAL:    return sw::COMPARE_FUNC_EQUAL;
+		case GL_NOTEQUAL: return sw::COMPARE_FUNC_NOTEQUAL;
+		case GL_ALWAYS:   return sw::COMPARE_FUNC_ALWAYS;
+		case GL_NEVER:    return sw::COMPARE_FUNC_NEVER;
+		default: UNREACHABLE(compareFunc);
+		}
+
+		return sw::COMPARE_FUNC_LEQUAL;
+	};
+
+	sw::CompareMode ConvertCompareMode(GLenum compareMode)
+	{
+		switch(compareMode)
+		{
+		case GL_COMPARE_REF_TO_TEXTURE: return sw::COMPARE_MODE_REF_TO_TEXTURE;
+		case GL_NONE:                   return sw::COMPARE_MODE_NONE;
+		default: UNREACHABLE(compareMode);
+		}
+
+		return sw::COMPARE_MODE_NONE;
+	};
 
 	sw::SwizzleType ConvertSwizzleType(GLenum swizzleType)
 	{

@@ -3719,6 +3719,13 @@ void GetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
 				break;
 			}
 			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_IMMUTABLE_LEVELS:
+			if(clientVersion >= 3)
+			{
+				*params = (GLfloat)texture->getImmutableLevels();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
 		case GL_TEXTURE_MAX_LEVEL:
 			if(clientVersion >= 3)
 			{
@@ -3862,6 +3869,13 @@ void GetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 			if(clientVersion >= 3)
 			{
 				*params = (GLint)texture->getImmutableFormat();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_IMMUTABLE_LEVELS:
+			if(clientVersion >= 3)
+			{
+				*params = (GLint)texture->getImmutableLevels();
 				break;
 			}
 			else return error(GL_INVALID_ENUM);
@@ -4641,6 +4655,9 @@ void PixelStorei(GLenum pname, GLint param)
 				break;
 			}
 			else return error(GL_INVALID_ENUM);
+		// FIXME: these cases are missing	
+		//case GL_PACK_IMAGE_HEIGHT:
+		//case GL_PACK_SKIP_IMAGES:
 		default:
 			return error(GL_INVALID_ENUM);
 		}

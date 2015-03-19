@@ -51,6 +51,14 @@ namespace sw
 
 	void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[4], Int &x, Int &y)
 	{
+		// shader->print("FragmentShader-%0.8X.txt", state.shaderID);
+		{
+			std::string shaderString;
+			for(unsigned int i = 0; i < shader->getLength(); i++)
+				shaderString += shader->getInstruction(i)->string(shader->getShaderType(), shader->getVersion()) + "\n";
+			shaderString += "\n";
+		}
+
 		#if PERF_PROFILE
 			Long pipeTime = Ticks();
 		#endif
@@ -92,7 +100,7 @@ namespace sw
 					x -= *Pointer<Float4>(constants + OFFSET(Constants,X) + q * sizeof(float4));
 				}
 
-				z[q] = interpolate(x, Dz[q], z[q], primitive + OFFSET(Primitive,z), false, false);
+				z[q] = interpolate(x, Dz[q], z[q], primitive + OFFSET(Primitive,z), false, true, false);
 			}
 		}
 
@@ -139,12 +147,12 @@ namespace sw
 
 			if(interpolateW())
 			{
-				w = interpolate(xxxx, Dw, rhw, primitive + OFFSET(Primitive,w), false, false);
+				w = interpolate(xxxx, Dw, rhw, primitive + OFFSET(Primitive,w), false, true, false);
 				rhw = reciprocal(w);
 
 				if(state.centroid)
 				{
-					rhwCentroid = reciprocal(interpolateCentroid(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive,w), false, false));
+					rhwCentroid = reciprocal(interpolateCentroid(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive,w), false, true, false));
 				}
 			}
 
@@ -156,11 +164,11 @@ namespace sw
 					{
 						if(!state.interpolant[interpolant].centroid)
 						{
-							v[interpolant][component] = interpolate(xxxx, Dv[interpolant][component], rhw, primitive + OFFSET(Primitive, V[interpolant][component]), (state.interpolant[interpolant].flat & (1 << component)) != 0, state.perspective);
+							v[interpolant][component] = interpolate(xxxx, Dv[interpolant][component], rhw, primitive + OFFSET(Primitive, V[interpolant][component]), ((state.interpolant[interpolant].flat & (1 << component)) != 0), state.interpolant[interpolant].smooth, state.perspective);
 						}
 						else
 						{
-							v[interpolant][component] = interpolateCentroid(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive, V[interpolant][component]), (state.interpolant[interpolant].flat & (1 << component)) != 0, state.perspective);
+							v[interpolant][component] = interpolateCentroid(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive, V[interpolant][component]), ((state.interpolant[interpolant].flat & (1 << component)) != 0), state.interpolant[interpolant].smooth, state.perspective);
 						}
 					}
 				}
@@ -191,7 +199,7 @@ namespace sw
 
 			if(state.fog.component)
 			{
-				f = interpolate(xxxx, Df, rhw, primitive + OFFSET(Primitive,f), state.fog.flat & 0x01, state.perspective);
+				f = interpolate(xxxx, Df, rhw, primitive + OFFSET(Primitive,f), state.fog.flat & 0x01, state.smooth, state.perspective);
 			}
 
 			setBuiltins(x, y, z, w);
@@ -284,7 +292,7 @@ namespace sw
 		#endif
 	}
 
-	Float4 PixelRoutine::interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
+	Float4 PixelRoutine::interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool smooth, bool perspective)
 	{
 		Float4 interpolant = *Pointer<Float4>(planeEquation + OFFSET(PlaneEquation,C), 16);
 
@@ -1963,6 +1971,24 @@ namespace sw
 
 		switch(state.targetFormat[index])
 		{
+		case FORMAT_R32I:
+		case FORMAT_G32R32I:
+			pixel.w = As<Float4>(Int4(0x7FFFFFFF));
+			break;
+		case FORMAT_R32UI:
+		case FORMAT_G32R32UI:
+			pixel.w = As<Float4>(Int4(0xFFFFFFFF));
+			break;
+		case FORMAT_R32F:
+		case FORMAT_G32R32F:
+			pixel.w = Float4(1.0f);
+			break;
+		}
+
+		switch(state.targetFormat[index])
+		{
+		case FORMAT_R32I:
+		case FORMAT_R32UI:
 		case FORMAT_R32F:
 			buffer = cBuffer;
 			// FIXME: movlps
@@ -1972,10 +1998,10 @@ namespace sw
 			// FIXME: movhps
 			pixel.x.z = *Pointer<Float>(buffer + 4 * x + 0);
 			pixel.x.w = *Pointer<Float>(buffer + 4 * x + 4);
-			pixel.y = Float4(1.0f);
-			pixel.z = Float4(1.0f);
-			pixel.w = Float4(1.0f);
+			pixel.y = pixel.z = pixel.w;
 			break;
+		case FORMAT_G32R32I:
+		case FORMAT_G32R32UI:
 		case FORMAT_G32R32F:
 			buffer = cBuffer;
 			pixel.x = *Pointer<Float4>(buffer + 8 * x, 16);
@@ -1985,10 +2011,11 @@ namespace sw
 			pixel.x = ShuffleLowHigh(pixel.x, pixel.y, 0x88);
 			pixel.z = ShuffleLowHigh(pixel.z, pixel.y, 0xDD);
 			pixel.y = pixel.z;
-			pixel.z = Float4(1.0f);
-			pixel.w = Float4(1.0f);
+			pixel.z = pixel.w;
 			break;
 		case FORMAT_A32B32G32R32F:
+		case FORMAT_A32B32G32R32I:
+		case FORMAT_A32B32G32R32UI:
 			buffer = cBuffer;
 			pixel.x = *Pointer<Float4>(buffer + 16 * x, 16);
 			pixel.y = *Pointer<Float4>(buffer + 16 * x + 16, 16);
@@ -2123,14 +2150,20 @@ namespace sw
 		switch(state.targetFormat[index])
 		{
 		case FORMAT_R32F:
+		case FORMAT_R32I:
+		case FORMAT_R32UI:
 			break;
 		case FORMAT_G32R32F:
+		case FORMAT_G32R32I:
+		case FORMAT_G32R32UI:
 			oC.z = oC.x;
 			oC.x = UnpackLow(oC.x, oC.y);
 			oC.z = UnpackHigh(oC.z, oC.y);
 			oC.y = oC.z;
 			break;
 		case FORMAT_A32B32G32R32F:
+		case FORMAT_A32B32G32R32I:
+		case FORMAT_A32B32G32R32UI:
 			transpose4x4(oC.x, oC.y, oC.z, oC.w);
 			break;
 		default:
@@ -2161,6 +2194,8 @@ namespace sw
 		switch(state.targetFormat[index])
 		{
 		case FORMAT_R32F:
+		case FORMAT_R32I:
+		case FORMAT_R32UI:
 			if(rgbaWriteMask & 0x00000001)
 			{
 				buffer = cBuffer + 4 * x;
@@ -2191,6 +2226,8 @@ namespace sw
 			}
 			break;
 		case FORMAT_G32R32F:
+		case FORMAT_G32R32I:
+		case FORMAT_G32R32UI:
 			buffer = cBuffer + 8 * x;
 
 			value = *Pointer<Float4>(buffer);
@@ -2228,6 +2265,8 @@ namespace sw
 			*Pointer<Float4>(buffer) = oC.y;
 			break;
 		case FORMAT_A32B32G32R32F:
+		case FORMAT_A32B32G32R32I:
+		case FORMAT_A32B32G32R32UI:
 			buffer = cBuffer + 16 * x;
 
 			{
