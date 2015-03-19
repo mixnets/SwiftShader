@@ -115,6 +115,7 @@ namespace sw
 			OPCODE_CMP,   // D3DSIO_SETP
 			OPCODE_TEXLDL,
 			OPCODE_BREAKP,
+			OPCODE_TEXSIZE,
 
 			OPCODE_PHASE = 0xFFFD,
 			OPCODE_COMMENT = 0xFFFE,
@@ -188,6 +189,9 @@ namespace sw
 			OPCODE_B2I,   // Bool to int
 			OPCODE_U2B,   // Uint to bool
 			OPCODE_B2U,   // Bool to uint
+			OPCODE_DET2,
+			OPCODE_DET3,
+			OPCODE_DET4,
 			OPCODE_ALL,
 			OPCODE_ANY,
 			OPCODE_NEG,
@@ -430,7 +434,7 @@ namespace sw
 				};
 			};
 
-			DestinationParameter() : mask(0xF), integer(false), saturate(false), partialPrecision(false), centroid(false), shift(0)
+			DestinationParameter() : mask(0xF), integer(false), saturate(false), partialPrecision(false), centroid(false), smooth(true), shift(0)
 			{
 			}
 
@@ -442,6 +446,7 @@ namespace sw
 			bool saturate         : 1;
 			bool partialPrecision : 1;
 			bool centroid         : 1;
+			bool smooth           : 1;
 			signed char shift     : 4;
 		};
 
@@ -556,7 +561,7 @@ namespace sw
 
 		struct Semantic
 		{
-			Semantic(unsigned char usage = 0xFF, unsigned char index = 0xFF) : usage(usage), index(index), centroid(false)
+			Semantic(unsigned char usage = 0xFF, unsigned char index = 0xFF) : usage(usage), index(index), centroid(false), smooth(true)
 			{
 			}
 
@@ -573,6 +578,7 @@ namespace sw
 			unsigned char usage;
 			unsigned char index;
 			bool centroid;
+			bool smooth;
 		};
 
 		void optimize();

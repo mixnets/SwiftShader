@@ -57,6 +57,36 @@ namespace glsl
 			constants[3].setFConst(w);
 		}
 
+		Constant(int value, TBasicType type) : TIntermConstantUnion(constants, TType(type, EbpHigh, EvqConstExpr, 4, 1, false))
+		{
+			switch(type)
+			{
+			case EbtInt:
+				constants[0].setIConst(value);
+				constants[1].setIConst(value);
+				constants[2].setIConst(value);
+				constants[3].setIConst(value);
+				break;
+			case EbtUInt:
+				constants[0].setUConst(value);
+				constants[1].setUConst(value);
+				constants[2].setUConst(value);
+				constants[3].setUConst(value);
+				break;
+			case EbtFloat:
+			{
+				float valuef = static_cast<float>(value);
+				constants[0].setFConst(valuef);
+				constants[1].setFConst(valuef);
+				constants[2].setFConst(valuef);
+				constants[3].setFConst(valuef);
+			}
+				break;
+			default:
+				UNREACHABLE(type);
+			}
+		}
+
 		Constant(bool b) : TIntermConstantUnion(constants, TType(EbtBool, EbpHigh, EvqConstExpr, 1, 1, false))
 		{
 			constants[0].setBConst(b);
@@ -111,6 +141,86 @@ namespace glsl
 	sw::VertexShader *Shader::getVertexShader() const
 	{
 		return 0;
+	}
+
+	OutputASM::TextureFunction::TextureFunction(const TString& nodeName) : method(IMPLICIT), proj(false), offset(false)
+	{
+		TString name = TFunction::unmangleName(nodeName);
+
+		if(name == "texture2D" || name == "textureCube" || name == "texture" || name == "texture3D")
+		{
+			method = IMPLICIT;
+		}
+		else if(name == "texture2DProj" || name == "textureProj")
+		{
+			method = IMPLICIT;
+			proj = true;
+		}
+		else if(name == "texture2DLod" || name == "textureCubeLod" || name == "textureLod")
+		{
+			method = LOD;
+		}
+		else if(name == "texture2DProjLod" || name == "textureProjLod")
+		{
+			method = LOD;
+			proj = true;
+		}
+		else if(name == "textureSize")
+		{
+			method = SIZE;
+		}
+		else if(name == "textureOffset")
+		{
+			method = IMPLICIT;
+			offset = true;
+		}
+		else if(name == "textureProjOffset")
+		{
+			method = IMPLICIT;
+			offset = true;
+			proj = true;
+		}
+		else if(name == "textureLodOffset")
+		{
+			method = LOD;
+			offset = true;
+		}
+		else if(name == "textureProjLodOffset")
+		{
+			method = LOD;
+			proj = true;
+			offset = true;
+		}
+		else if(name == "texelFetch")
+		{
+			method = FETCH;
+		}
+		else if(name == "texelFetchOffset")
+		{
+			method = FETCH;
+			offset = true;
+		}
+		else if(name == "textureGrad")
+		{
+			method = GRAD;
+		}
+		else if(name == "textureGradOffset")
+		{
+			method = GRAD;
+			offset = true;
+		}
+		else if(name == "textureProjGrad")
+		{
+			method = GRAD;
+			proj = true;
+		}
+		else if(name == "textureProjGradOffset")
+		{
+			method = GRAD;
+			proj = true;
+			offset = true;
+		}
+		else UNREACHABLE(name);
 	}
 
 	OutputASM::OutputASM(TParseContext &context, Shader *shaderObject) : TIntermTraverser(true, true, true), mContext(context), shaderObject(shaderObject)
@@ -533,11 +643,12 @@ namespace glsl
 		case EOpVectorTimesMatrix:
 			if(visit == PostVisit)
 			{
-				int size = leftType.getNominalSize();
+				sw::Shader::Opcode dpOpcode = sw::Shader::OPCODE_DP(leftType.getNominalSize());
 
+				int size = rightType.getNominalSize();
 				for(int i = 0; i < size; i++)
 				{
-					Instruction *dot = emit(sw::Shader::OPCODE_DP(size), result, left, right);
+					Instruction *dot = emit(dpOpcode, result, left, right);
 					dot->dst.mask = 1 << i;
 					argument(dot->src[1], right, i);
 				}
@@ -549,7 +660,8 @@ namespace glsl
 				Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, left, right);
 				mul->src[1].swizzle = 0x00;
 
-				for(int i = 1; i < leftType.getNominalSize(); i++)
+				int size = rightType.getNominalSize();
+				for(int i = 1; i < size; i++)
 				{
 					Instruction *mad = emit(sw::Shader::OPCODE_MAD, result, left, right, result);
 					argument(mad->src[0], left, i);
@@ -562,7 +674,8 @@ namespace glsl
 			{
 				int dim = leftType.getNominalSize();
 
-				for(int i = 0; i < dim; i++)
+				int size = rightType.getNominalSize();
+				for(int i = 0; i < size; i++)
 				{
 					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, left, right);
 					mul->dst.index += i;
@@ -633,6 +746,74 @@ namespace glsl
 		return true;
 	}
 
+	void OutputASM::emitDeterminant(TIntermTyped *result, TIntermTyped *arg, int size, int col, int row, int outCol, int outRow)
+	{
+		switch(size)
+		{
+		case 1: // Used for cofactor computation only
+			{
+				// For a 2x2 matrix, the cofactor is simply a transposed move or negate
+				bool isMov = (row == col);
+				sw::Shader::Opcode op = isMov ? sw::Shader::OPCODE_MOV : sw::Shader::OPCODE_NEG;
+				Instruction *mov = emit(op, result, arg);
+				mov->src[0].index += isMov ? 1 - row : row;
+				mov->src[0].swizzle = 0x55 * (isMov ? 1 - col : col);
+				mov->dst.index += outCol;
+				mov->dst.mask = 1 << outRow;
+			}
+			break;
+		case 2:
+			{
+				static const unsigned int swizzle[3] = { 0x99, 0x88, 0x44 }; // xy?? : yzyz, xzxz, xyxy
+
+				bool isCofactor = (col >= 0) && (row >= 0);
+				int col0 = (isCofactor && (col <= 0)) ? 1 : 0;
+				int col1 = (isCofactor && (col <= 1)) ? 2 : 1;
+				bool negate = isCofactor && ((col & 0x01) ^ (row & 0x01));
+
+				Instruction *det = emit(sw::Shader::OPCODE_DET2, result, arg, arg);
+				det->src[0].index += negate ? col1 : col0;
+				det->src[1].index += negate ? col0 : col1;
+				det->src[0].swizzle = det->src[1].swizzle = swizzle[isCofactor ? row : 2];
+				det->dst.index += outCol;
+				det->dst.mask = 1 << outRow;
+			}
+			break;
+		case 3:
+			{
+				static const unsigned int swizzle[4] = { 0xF9, 0xF8, 0xF4, 0xE4 }; // xyz? : yzww, xzww, xyww, xyzw
+
+				bool isCofactor = (col >= 0) && (row >= 0);
+				int col0 = (isCofactor && (col <= 0)) ? 1 : 0;
+				int col1 = (isCofactor && (col <= 1)) ? 2 : 1;
+				int col2 = (isCofactor && (col <= 2)) ? 3 : 2;
+				bool negate = isCofactor && ((col & 0x01) ^ (row & 0x01));
+
+				Instruction *det = emit(sw::Shader::OPCODE_DET3, result, arg, arg, arg);
+				det->src[0].index += col0;
+				det->src[1].index += negate ? col2 : col1;
+				det->src[2].index += negate ? col1 : col2;
+				det->src[0].swizzle = det->src[1].swizzle = det->src[2].swizzle = swizzle[isCofactor ? row : 3];
+				det->dst.index += outCol;
+				det->dst.mask = 1 << outRow;
+			}
+			break;
+		case 4:
+			{
+				Instruction *det = emit(sw::Shader::OPCODE_DET4, result, arg, arg, arg, arg);
+				det->src[1].index += 1;
+				det->src[2].index += 2;
+				det->src[3].index += 3;
+				det->dst.index += outCol;
+				det->dst.mask = 1 << outRow;
+			}
+			break;
+		default:
+			UNREACHABLE(size);
+			break;
+		}
+	}
+
 	bool OutputASM::visitUnary(Visit visit, TIntermUnary *node)
 	{
 		if(currentScope != emitScope)
@@ -679,6 +860,7 @@ namespace glsl
 			break;
 		case EOpVectorLogicalNot: if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpLogicalNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
+		case EOpBitwiseNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpPostIncrement:
 			if(visit == PostVisit)
 			{
@@ -801,6 +983,60 @@ namespace glsl
 						mov->dst.index += j;
 						mov->dst.mask = 1 << i;
 					}
+				}
+			}
+			break;
+		case EOpDeterminant:
+			if(visit == PostVisit)
+			{
+				int numCols = arg->getNominalSize();
+				int numRows = arg->getSecondarySize();
+				if(numCols == numRows)
+				{
+					emitDeterminant(result, arg, numCols);
+				}
+				else
+				{
+					UNREACHABLE(10 * numCols + numRows);
+				}
+			}
+			break;
+		case EOpInverse:
+			if(visit == PostVisit)
+			{
+				int numCols = arg->getNominalSize();
+				int numRows = arg->getSecondarySize();
+				if(numCols == numRows)
+				{
+					// Compute transposed matrix of cofactors
+					for(int i = 0; i < numCols; ++i)
+					{
+						for(int j = 0; j < numRows; ++j)
+						{
+							// For a 2x2 matrix, the cofactor is simply a transposed move or negate
+							// For a 3x3 or 4x4 matrix, the cofactor is a transposed determinant
+							emitDeterminant(result, arg, numCols - 1, j, i, i, j);
+						}
+					}
+
+					// Compute 1 / determinant
+					Temporary invDet(this);
+					emitDeterminant(&invDet, arg, numCols);
+					Constant one(1.0f, 1.0f, 1.0f, 1.0f);
+					Instruction *div = emit(sw::Shader::OPCODE_DIV, &invDet, &one, &invDet);
+					div->src[1].swizzle = 0x00; // xxxx
+
+					// Divide transposed matrix of cofactors by determinant
+					for(int i = 0; i < numCols; ++i)
+					{
+						Instruction *div = emit(sw::Shader::OPCODE_MUL, result, result, &invDet);
+						div->src[0].index += i;
+						div->dst.index += i;
+					}
+				}
+				else
+				{
+					UNREACHABLE(10 * numCols + numRows);
 				}
 			}
 			break;
@@ -929,101 +1165,146 @@ namespace glsl
 				}
 				else
 				{
-					TString name = TFunction::unmangleName(node->getName());
-
-					if(name == "texture" || name == "texture2D" || name == "textureCube" || name == "texture3D")
+					const TextureFunction textureFunction(node->getName());
+					switch(textureFunction.method)
 					{
-						if(argumentCount == 2)
+					case TextureFunction::IMPLICIT:
+						if(textureFunction.offset)
 						{
-							emit(sw::Shader::OPCODE_TEX, result, arg[1], arg[0]);
+							if(textureFunction.proj)
+							{
+							}
+							else
+							{
+							}
 						}
-						else if(argumentCount == 3)   // bias
+						else
 						{
+							TIntermTyped *t = arg[1]->getAsTyped();
+
+							if(argumentCount == 2)
+							{
+								Instruction *tex = emit(sw::Shader::OPCODE_TEX, result, arg[1], arg[0]);
+								if(textureFunction.proj)
+								{
+									tex->project = true;
+
+									if(t->getNominalSize() == 3)
+									{
+										tex->src[0].swizzle = 0xA4;
+									}
+									else ASSERT(t->getNominalSize() == 4);
+								}
+							}
+							else if(argumentCount == 3)   // bias
+							{
+								Temporary uvwb(this);
+								if(textureFunction.proj)
+								{
+									if(t->getNominalSize() == 3)
+									{
+										Instruction *div = emit(sw::Shader::OPCODE_DIV, &uvwb, arg[1], arg[1]);
+										div->src[1].swizzle = 0xAA;
+										div->dst.mask = 0x3;
+									}
+									else if(t->getNominalSize() == 4)
+									{
+										Instruction *div = emit(sw::Shader::OPCODE_DIV, &uvwb, arg[1], arg[1]);
+										div->src[1].swizzle = 0xFF;
+										div->dst.mask = 0x3;
+									}
+									else UNREACHABLE(t->getNominalSize());
+								}
+								else
+								{
+									emit(sw::Shader::OPCODE_MOV, &uvwb, arg[1]);
+								}
+
+								Instruction *bias = emit(sw::Shader::OPCODE_MOV, &uvwb, arg[2]);
+								bias->dst.mask = 0x8;
+
+								Instruction *tex = emit(sw::Shader::OPCODE_TEX, result, &uvwb, arg[0]);   // FIXME: Implement an efficient TEXLDB instruction
+								tex->bias = true;
+							}
+							else UNREACHABLE(argumentCount);
+						}
+						break;
+					case TextureFunction::LOD:
+						if(textureFunction.offset)
+						{
+							if(textureFunction.proj)
+							{
+							}
+							else
+							{
+							}
+						}
+						else
+						{
+							TIntermTyped *t = arg[1]->getAsTyped();
 							Temporary uvwb(this);
-							emit(sw::Shader::OPCODE_MOV, &uvwb, arg[1]);
-							Instruction *bias = emit(sw::Shader::OPCODE_MOV, &uvwb, arg[2]);
-							bias->dst.mask = 0x8;
 
-							Instruction *tex = emit(sw::Shader::OPCODE_TEX, result, &uvwb, arg[0]);   // FIXME: Implement an efficient TEXLDB instruction
-							tex->bias = true;
-						}
-						else UNREACHABLE(argumentCount);
-					}
-					else if(name == "texture2DProj" || name == "textureProj")
-					{
-						TIntermTyped *t = arg[1]->getAsTyped();
-
-						if(argumentCount == 2)
-						{
-							Instruction *tex = emit(sw::Shader::OPCODE_TEX, result, arg[1], arg[0]);
-							tex->project = true;
-
-							if(t->getNominalSize() == 3)
+							if(textureFunction.proj)
 							{
-								tex->src[0].swizzle = 0xA4;
+								if(t->getNominalSize() == 3)
+								{
+									Instruction *div = emit(sw::Shader::OPCODE_DIV, &uvwb, arg[1], arg[1]);
+									div->src[1].swizzle = 0xAA;
+									div->dst.mask = 0x3;
+								}
+								else if(t->getNominalSize() == 4)
+								{
+									Instruction *div = emit(sw::Shader::OPCODE_DIV, &uvwb, arg[1], arg[1]);
+									div->src[1].swizzle = 0xFF;
+									div->dst.mask = 0x3;
+								}
+								else UNREACHABLE(t->getNominalSize());
 							}
-							else ASSERT(t->getNominalSize() == 4);
-						}
-						else if(argumentCount == 3)   // bias
-						{
-							Temporary proj(this);
-
-							if(t->getNominalSize() == 3)
+							else
 							{
-								Instruction *div = emit(sw::Shader::OPCODE_DIV, &proj, arg[1], arg[1]);
-								div->src[1].swizzle = 0xAA;
-								div->dst.mask = 0x3;
+								emit(sw::Shader::OPCODE_MOV, &uvwb, arg[1]);
 							}
-							else if(t->getNominalSize() == 4)
+
+							Instruction *lod = emit(sw::Shader::OPCODE_MOV, &uvwb, arg[2]);
+							lod->dst.mask = 0x8;
+
+							emit(sw::Shader::OPCODE_TEXLDL, result, &uvwb, arg[0]);
+						}
+						break;
+					case TextureFunction::FETCH:
+						if(textureFunction.offset)
+						{
+						}
+						else
+						{
+						}
+						break;
+					case TextureFunction::GRAD:
+						if(textureFunction.offset)
+						{
+							if(textureFunction.proj)
 							{
-								Instruction *div = emit(sw::Shader::OPCODE_DIV, &proj, arg[1], arg[1]);
-								div->src[1].swizzle = 0xFF;
-								div->dst.mask = 0x3;
 							}
-							else UNREACHABLE(t->getNominalSize());
-
-							Instruction *bias = emit(sw::Shader::OPCODE_MOV, &proj, arg[2]);
-							bias->dst.mask = 0x8;
-
-							Instruction *tex = emit(sw::Shader::OPCODE_TEX, result, &proj, arg[0]);
-							tex->bias = true;
+							else
+							{
+							}
 						}
-						else UNREACHABLE(argumentCount);
-					}
-					else if(name == "texture2DLod" || name == "textureCubeLod" || name == "textureLod")
-					{
-						Temporary uvwb(this);
-						emit(sw::Shader::OPCODE_MOV, &uvwb, arg[1]);
-						Instruction *lod = emit(sw::Shader::OPCODE_MOV, &uvwb, arg[2]);
-						lod->dst.mask = 0x8;
-
-						emit(sw::Shader::OPCODE_TEXLDL, result, &uvwb, arg[0]);
-					}
-					else if(name == "texture2DProjLod" || name == "textureProjLod")
-					{
-						TIntermTyped *t = arg[1]->getAsTyped();
-						Temporary proj(this);
-
-						if(t->getNominalSize() == 3)
+						else
 						{
-							Instruction *div = emit(sw::Shader::OPCODE_DIV, &proj, arg[1], arg[1]);
-							div->src[1].swizzle = 0xAA;
-							div->dst.mask = 0x3;
+							if(textureFunction.proj)
+							{
+							}
+							else
+							{
+							}
 						}
-						else if(t->getNominalSize() == 4)
-						{
-							Instruction *div = emit(sw::Shader::OPCODE_DIV, &proj, arg[1], arg[1]);
-							div->src[1].swizzle = 0xFF;
-							div->dst.mask = 0x3;
-						}
-						else UNREACHABLE(t->getNominalSize());
-
-						Instruction *lod = emit(sw::Shader::OPCODE_MOV, &proj, arg[2]);
-						lod->dst.mask = 0x8;
-
-						emit(sw::Shader::OPCODE_TEXLDL, result, &proj, arg[0]);
+						break;
+					case TextureFunction::SIZE:
+						emit(sw::Shader::OPCODE_TEXSIZE, result, arg[1], arg[0]);
+						break;
+					default:
+						UNREACHABLE(textureFunction.method);
 					}
-					else UNREACHABLE(0);
 				}
 			}
 			break;
@@ -1211,7 +1492,7 @@ namespace glsl
 			{
 				ASSERT(dim2(arg[0]) == dim2(arg[1]));
 
-				for(int i = 0; i < dim2(arg[0]); i++)
+				for(int i = 0; i < dim(arg[0]); i++)
 				{
 					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, arg[0], arg[1]);
 					mul->dst.index += i;
@@ -1363,7 +1644,7 @@ namespace glsl
 		TIntermTyped *condition = node->getCondition();
 		TIntermTyped *expression = node->getExpression();
 		TIntermNode *body = node->getBody();
-
+		
 		if(node->getType() == ELoopDoWhile)
 		{
 			Temporary iterate(this);
@@ -1487,7 +1768,7 @@ namespace glsl
 		return IsSampler(type.getBasicType()) && (type.getQualifier() == EvqUniform || type.getQualifier() == EvqTemporary);
 	}
 
-	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2, int index)
+	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2, TIntermNode *src3, int index)
 	{
 		if(isSamplerRegister(dst))
 		{
@@ -1507,6 +1788,7 @@ namespace glsl
 		argument(instruction->src[0], src0, index);
 		argument(instruction->src[1], src1, index);
 		argument(instruction->src[2], src2, index);
+		argument(instruction->src[3], src3, index);
 
 		shader->append(instruction);
 
@@ -1562,7 +1844,7 @@ namespace glsl
 	{
 		for(int index = 0; index < dst->elementRegisterCount(); index++)
 		{
-			emit(op, dst, src0, src1, src2, index);
+			emit(op, dst, src0, src1, src2, 0, index);
 		}
 	}
 

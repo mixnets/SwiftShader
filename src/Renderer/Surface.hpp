@@ -47,7 +47,14 @@ namespace sw
 		FORMAT_NULL,
 
 		FORMAT_A8,
-		FORMAT_R8,
+		FORMAT_R8I,
+		FORMAT_R8UI,
+		FORMAT_R8I_SNORM,
+		FORMAT_R8, // UI_SNORM
+		FORMAT_R16I,
+		FORMAT_R16, // UI
+		FORMAT_R32I,
+		FORMAT_R32, // UI
 		FORMAT_R3G3B2,
 		FORMAT_A8R3G3B2,
 		FORMAT_X4R4G4B4,
@@ -58,16 +65,35 @@ namespace sw
 		FORMAT_B8G8R8,
 		FORMAT_X8R8G8B8,
 		FORMAT_A8R8G8B8,
-		FORMAT_X8B8G8R8,
-		FORMAT_A8B8G8R8,
+		FORMAT_X8B8G8R8I,
+		FORMAT_X8B8G8R8UI,
+		FORMAT_X8B8G8R8I_SNORM,
+		FORMAT_X8B8G8R8, // UI_SNORM
+		FORMAT_A8B8G8R8I,
+		FORMAT_A8B8G8R8UI,
+		FORMAT_A8B8G8R8I_SNORM,
+		FORMAT_A8B8G8R8, // UI_SNORM
 		FORMAT_X1R5G5B5,
 		FORMAT_A1R5G5B5,
 		FORMAT_R5G5B5A1,
-		FORMAT_G8R8,
-		FORMAT_G16R16,
+		FORMAT_G8R8I,
+		FORMAT_G8R8UI,
+		FORMAT_G8R8I_SNORM,
+		FORMAT_G8R8, // UI_SNORM
+		FORMAT_G16R16I,
+		FORMAT_G16R16, // UI
+		FORMAT_G32R32I,
+		FORMAT_G32R32, // UI
 		FORMAT_A2R10G10B10,
 		FORMAT_A2B10G10R10,
-		FORMAT_A16B16G16R16,
+		FORMAT_X16B16G16R16I,
+		FORMAT_X16B16G16R16, // UI
+		FORMAT_A16B16G16R16I,
+		FORMAT_A16B16G16R16, // UI
+		FORMAT_X32B32G32R32I,
+		FORMAT_X32B32G32R32, // UI
+		FORMAT_A32B32G32R32I,
+		FORMAT_A32B32G32R32, // UI
 		// Paletted formats
 		FORMAT_P8,
 		FORMAT_A8P8,
@@ -168,7 +194,7 @@ namespace sw
 		FORMAT_YV12_BT709,
 		FORMAT_YV12_JFIF,    // Full-swing BT.601
 
-		FORMAT_LAST = FORMAT_A8G8R8B8Q
+		FORMAT_LAST = FORMAT_YV12_JFIF
 	};
 
 	enum Lock
@@ -294,7 +320,7 @@ namespace sw
 		static bool isDepth(Format format);
 		static bool isPalette(Format format);
 
-		static bool isFloatFormat(Format format);
+		static bool isFloatOr32BitFormat(Format format);
 		static bool isUnsignedComponent(Format format, int component);
 		static bool isSRGBreadable(Format format);
 		static bool isSRGBwritable(Format format);
@@ -401,7 +427,6 @@ namespace sw
 		#endif
 		static void decodeATI1(Buffer &internal, const Buffer &external);
 		static void decodeATI2(Buffer &internal, const Buffer &external);
-		static void decodeETC1(Buffer &internal, const Buffer &external);
 		static void decodeEAC(Buffer &internal, const Buffer &external, int nbChannels, bool isSigned);
 		static void decodeETC2(Buffer &internal, const Buffer &external, int nbAlphaBits, bool isSRGB);
 		static void decodeASTC(Buffer &internal, const Buffer &external, int xSize, int ySize, int zSize, bool isSRGB);

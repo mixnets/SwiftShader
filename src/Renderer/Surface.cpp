@@ -11,8 +11,10 @@
 
 #include "Surface.hpp"
 
+#include "ASTC_Decoder.hpp"
 #include "Color.hpp"
 #include "Context.hpp"
+#include "ETC_Decoder.hpp"
 #include "Renderer.hpp"
 #include "Common/Half.hpp"
 #include "Common/Memory.hpp"
@@ -65,8 +67,29 @@ namespace sw
 		case FORMAT_A8:
 			*(unsigned char*)element = unorm<8>(color.a);
 			break;
+		case FORMAT_R8I_SNORM:
+			*(char*)element = snorm<8>(color.r);
+			break;
 		case FORMAT_R8:
 			*(unsigned char*)element = unorm<8>(color.r);
+			break;
+		case FORMAT_R8I:
+			*(char*)element = static_cast<char>(color.r);
+			break;
+		case FORMAT_R8UI:
+			*(unsigned char*)element = static_cast<unsigned char>(color.r);
+			break;
+		case FORMAT_R16I:
+			*(short*)element = static_cast<short>(color.r);
+			break;
+		case FORMAT_R16:
+			*(unsigned short*)element = static_cast<unsigned short>(color.r);
+			break;
+		case FORMAT_R32I:
+			*(int*)element = static_cast<int>(color.r);
+			break;
+		case FORMAT_R32:
+			*(unsigned int*)element = static_cast<unsigned int>(color.r);
 			break;
 		case FORMAT_R3G3B2:
 			*(unsigned char*)element = (unorm<3>(color.r) << 5) | (unorm<3>(color.g) << 2) | (unorm<2>(color.b) << 0);
@@ -101,11 +124,41 @@ namespace sw
 		case FORMAT_X8R8G8B8:
 			*(unsigned int*)element = 0xFF000000 | (unorm<8>(color.r) << 16) | (unorm<8>(color.g) << 8) | (unorm<8>(color.b) << 0);
 			break;
+		case FORMAT_A8B8G8R8I_SNORM:
+			*(unsigned int*)element = (static_cast<unsigned int>(snorm<8>(color.a)) << 24) |
+			                          (static_cast<unsigned int>(snorm<8>(color.b)) << 16) |
+			                          (static_cast<unsigned int>(snorm<8>(color.g)) << 8) |
+			                          (static_cast<unsigned int>(snorm<8>(color.r)) << 0);
+			break;
 		case FORMAT_A8B8G8R8:
 			*(unsigned int*)element = (unorm<8>(color.a) << 24) | (unorm<8>(color.b) << 16) | (unorm<8>(color.g) << 8) | (unorm<8>(color.r) << 0);
 			break;
+		case FORMAT_A8B8G8R8I:
+		case FORMAT_A8B8G8R8UI:
+			*(unsigned int*)element = (static_cast<unsigned int>(color.a) << 24) |
+			                          (static_cast<unsigned int>(color.b) << 16) |
+			                          (static_cast<unsigned int>(color.g) << 8) |
+			                          (static_cast<unsigned int>(color.r) << 0);
+			break;
+		case FORMAT_X8B8G8R8I_SNORM:
+			*(unsigned int*)element = 0x7F000000 |
+			                          (static_cast<unsigned int>(snorm<8>(color.b)) << 16) |
+			                          (static_cast<unsigned int>(snorm<8>(color.g)) << 8) |
+			                          (static_cast<unsigned int>(snorm<8>(color.r)) << 0);
+			break;
 		case FORMAT_X8B8G8R8:
 			*(unsigned int*)element = 0xFF000000 | (unorm<8>(color.b) << 16) | (unorm<8>(color.g) << 8) | (unorm<8>(color.r) << 0);
+			break;
+		case FORMAT_X8B8G8R8I:
+			*(unsigned int*)element = 0x7F000000 |
+			                          (static_cast<unsigned int>(color.b) << 16) |
+			                          (static_cast<unsigned int>(color.g) << 8) |
+			                          (static_cast<unsigned int>(color.r) << 0);
+		case FORMAT_X8B8G8R8UI:
+			*(unsigned int*)element = 0xFF000000 |
+			                          (static_cast<unsigned int>(color.b) << 16) |
+			                          (static_cast<unsigned int>(color.g) << 8) |
+			                          (static_cast<unsigned int>(color.r) << 0);
 			break;
 		case FORMAT_A2R10G10B10:
 			*(unsigned int*)element = (unorm<2>(color.a) << 30) | (unorm<10>(color.r) << 20) | (unorm<10>(color.g) << 10) | (unorm<10>(color.b) << 0);
@@ -113,17 +166,53 @@ namespace sw
 		case FORMAT_A2B10G10R10:
 			*(unsigned int*)element = (unorm<2>(color.a) << 30) | (unorm<10>(color.b) << 20) | (unorm<10>(color.g) << 10) | (unorm<10>(color.r) << 0);
 			break;
+		case FORMAT_G8R8I_SNORM:
+			*(unsigned short*)element = (static_cast<unsigned short>(snorm<8>(color.g)) << 8) |
+			                            (static_cast<unsigned short>(snorm<8>(color.r)) << 0);
+			break;
 		case FORMAT_G8R8:
-			*(unsigned int*)element = (unorm<8>(color.g) << 8) | (unorm<8>(color.r) << 0);
+			*(unsigned short*)element = (unorm<8>(color.g) << 8) | (unorm<8>(color.r) << 0);
 			break;
+		case FORMAT_G8R8I:
+		case FORMAT_G8R8UI:
+			*(unsigned short*)element = (static_cast<unsigned short>(color.g) << 8) |
+			                            (static_cast<unsigned short>(color.r) << 0);
+			break;
+		case FORMAT_G16R16I:
 		case FORMAT_G16R16:
-			*(unsigned int*)element = (unorm<16>(color.g) << 16) | (unorm<16>(color.r) << 0);
+			*(unsigned int*)element = (static_cast<unsigned int>(color.g) << 16) |
+			                          (static_cast<unsigned int>(color.r) << 0);
 			break;
+		case FORMAT_G32R32I:
+		case FORMAT_G32R32:
+			((unsigned int*)element)[0] = static_cast<unsigned int>(color.r);
+			((unsigned int*)element)[1] = static_cast<unsigned int>(color.g);
+			break;
+		case FORMAT_A16B16G16R16I:
 		case FORMAT_A16B16G16R16:
-			((unsigned short*)element)[0] = unorm<16>(color.r);
-			((unsigned short*)element)[1] = unorm<16>(color.g);
-			((unsigned short*)element)[2] = unorm<16>(color.b);
-			((unsigned short*)element)[3] = unorm<16>(color.a);
+			((unsigned short*)element)[0] = static_cast<unsigned short>(color.r);
+			((unsigned short*)element)[1] = static_cast<unsigned short>(color.g);
+			((unsigned short*)element)[2] = static_cast<unsigned short>(color.b);
+			((unsigned short*)element)[3] = static_cast<unsigned short>(color.a);
+			break;
+		case FORMAT_X16B16G16R16I:
+		case FORMAT_X16B16G16R16:
+			((unsigned short*)element)[0] = static_cast<unsigned short>(color.r);
+			((unsigned short*)element)[1] = static_cast<unsigned short>(color.g);
+			((unsigned short*)element)[2] = static_cast<unsigned short>(color.b);
+			break;
+		case FORMAT_A32B32G32R32I:
+		case FORMAT_A32B32G32R32:
+			((unsigned int*)element)[0] = static_cast<unsigned int>(color.r);
+			((unsigned int*)element)[1] = static_cast<unsigned int>(color.g);
+			((unsigned int*)element)[2] = static_cast<unsigned int>(color.b);
+			((unsigned int*)element)[3] = static_cast<unsigned int>(color.a);
+			break;
+		case FORMAT_X32B32G32R32I:
+		case FORMAT_X32B32G32R32:
+			((unsigned int*)element)[0] = static_cast<unsigned int>(color.r);
+			((unsigned int*)element)[1] = static_cast<unsigned int>(color.g);
+			((unsigned int*)element)[2] = static_cast<unsigned int>(color.b);
 			break;
 		case FORMAT_V8U8:
 			*(unsigned short*)element = (snorm<8>(color.g) << 8) | (snorm<8>(color.r) << 0);
@@ -303,8 +392,17 @@ namespace sw
 			b = 0;
 			a = *(unsigned char*)element * (1.0f / 0xFF);
 			break;
+		case FORMAT_R8I_SNORM:
+			r = max((*(signed char*)element) * (1.0f / 0x7F), -1.0f);
+			break;
 		case FORMAT_R8:
 			r = *(unsigned char*)element * (1.0f / 0xFF);
+			break;
+		case FORMAT_R8I:
+			r = *(signed char*)element;
+			break;
+		case FORMAT_R8UI:
+			r = *(unsigned char*)element;
 			break;
 		case FORMAT_R3G3B2:
 			{
@@ -411,6 +509,16 @@ namespace sw
 				b = (xrgb & 0x000000FF) * (1.0f / 0x000000FF);
 			}
 			break;
+		case FORMAT_A8B8G8R8I_SNORM:
+			{
+				signed char* abgr = (signed char*)element;
+				
+				r = max(abgr[0] * (1.0f / 0x7F), -1.0f);
+				g = max(abgr[1] * (1.0f / 0x7F), -1.0f);
+				b = max(abgr[2] * (1.0f / 0x7F), -1.0f);
+				a = max(abgr[3] * (1.0f / 0x7F), -1.0f);
+			}
+			break;
 		case FORMAT_A8B8G8R8:
 			{
 				unsigned int abgr = *(unsigned int*)element;
@@ -421,13 +529,68 @@ namespace sw
 				r = (abgr & 0x000000FF) * (1.0f / 0x000000FF);
 			}
 			break;
+		case FORMAT_A8B8G8R8I:
+			{
+				signed char* abgr = (signed char*)element;
+				
+				r = abgr[0];
+				g = abgr[1];
+				b = abgr[2];
+				a = abgr[3];
+			}
+			break;
+		case FORMAT_A8B8G8R8UI:
+			{
+				unsigned char* abgr = (unsigned char*)element;
+
+				r = abgr[0];
+				g = abgr[1];
+				b = abgr[2];
+				a = abgr[3];
+			}
+			break;
+		case FORMAT_X8B8G8R8I_SNORM:
+			{
+				signed char* bgr = (signed char*)element;
+				
+				r = max(bgr[0] * (1.0f / 0x7F), -1.0f);
+				g = max(bgr[1] * (1.0f / 0x7F), -1.0f);
+				b = max(bgr[2] * (1.0f / 0x7F), -1.0f);
+			}
+			break;
 		case FORMAT_X8B8G8R8:
 			{
-				unsigned int xbgr = *(unsigned int*)element;
+				unsigned int bgr = *(unsigned int*)element;
 				
-				b = (xbgr & 0x00FF0000) * (1.0f / 0x00FF0000);
-				g = (xbgr & 0x0000FF00) * (1.0f / 0x0000FF00);
-				r = (xbgr & 0x000000FF) * (1.0f / 0x000000FF);
+				b = (bgr & 0x00FF0000) * (1.0f / 0x00FF0000);
+				g = (bgr & 0x0000FF00) * (1.0f / 0x0000FF00);
+				r = (bgr & 0x000000FF) * (1.0f / 0x000000FF);
+			}
+			break;
+		case FORMAT_X8B8G8R8I:
+			{
+				signed char* bgr = (signed char*)element;
+				
+				r = bgr[0];
+				g = bgr[1];
+				b = bgr[2];
+			}
+			break;
+		case FORMAT_X8B8G8R8UI:
+			{
+				unsigned char* bgr = (unsigned char*)element;
+
+				r = bgr[0];
+				g = bgr[1];
+				b = bgr[2];
+			}
+			break;
+		case FORMAT_G8R8I_SNORM:
+			{
+				signed char* gr = (signed char*)element;
+				
+				r = (gr[0] & 0xFF00) * (1.0f / 0xFF00);
+				g = (gr[1] & 0x00FF) * (1.0f / 0x00FF);
 			}
 			break;
 		case FORMAT_G8R8:
@@ -438,12 +601,42 @@ namespace sw
 				r = (gr & 0x00FF) * (1.0f / 0x00FF);
 			}
 			break;
+		case FORMAT_G8R8I:
+			{
+				signed char* gr = (signed char*)element;
+				
+				r = gr[0];
+				g = gr[1];
+			}
+			break;
+		case FORMAT_G8R8UI:
+			{
+				unsigned char* gr = (unsigned char*)element;
+				
+				r = gr[0];
+				g = gr[1];
+			}
+			break;
+		case FORMAT_R16I:
+			r = *((short*)element);
+			break;
+		case FORMAT_R16:
+			r = *((unsigned short*)element);
+			break;
+		case FORMAT_G16R16I:
+			{
+				short* gr = (short*)element;
+				
+				r = gr[0];
+				g = gr[1];
+			}
+			break;
 		case FORMAT_G16R16:
 			{
-				unsigned int gr = *(unsigned int*)element;
+				unsigned short* gr = (unsigned short*)element;
 				
-				g = (gr & 0xFFFF0000) * (1.0f / 0xFFFF0000);
-				r = (gr & 0x0000FFFF) * (1.0f / 0x0000FFFF);
+				r = gr[0];
+				g = gr[1];
 			}
 			break;
 		case FORMAT_A2R10G10B10:
@@ -466,11 +659,103 @@ namespace sw
 				r = (abgr & 0x000003FF) * (1.0f / 0x000003FF);
 			}
 			break;
+		case FORMAT_A16B16G16R16I:
+			{
+				short* abgr = (short*)element;
+				
+				r = abgr[0];
+				g = abgr[1];
+				b = abgr[2];
+				a = abgr[3];
+			}
+			break;
 		case FORMAT_A16B16G16R16:
-			r = ((unsigned short*)element)[0] * (1.0f / 0xFFFF);
-			g = ((unsigned short*)element)[1] * (1.0f / 0xFFFF);
-			b = ((unsigned short*)element)[2] * (1.0f / 0xFFFF);
-			a = ((unsigned short*)element)[3] * (1.0f / 0xFFFF);
+			{
+				unsigned short* abgr = (unsigned short*)element;
+				
+				r = abgr[0];
+				g = abgr[1];
+				b = abgr[2];
+				a = abgr[3];
+			}
+			break;
+		case FORMAT_X16B16G16R16I:
+			{
+				short* bgr = (short*)element;
+				
+				r = bgr[0];
+				g = bgr[1];
+				b = bgr[2];
+			}
+			break;
+		case FORMAT_X16B16G16R16:
+			{
+				unsigned short* bgr = (unsigned short*)element;
+				
+				r = bgr[0];
+				g = bgr[1];
+				b = bgr[2];
+			}
+			break;
+		case FORMAT_A32B32G32R32I:
+			{
+				int* abgr = (int*)element;
+				
+				r = static_cast<float>(abgr[0]);
+				g = static_cast<float>(abgr[1]);
+				b = static_cast<float>(abgr[2]);
+				a = static_cast<float>(abgr[3]);
+			}
+			break;
+		case FORMAT_A32B32G32R32:
+			{
+				unsigned int* abgr = (unsigned int*)element;
+				
+				r = static_cast<float>(abgr[0]);
+				g = static_cast<float>(abgr[1]);
+				b = static_cast<float>(abgr[2]);
+				a = static_cast<float>(abgr[3]);
+			}
+			break;
+		case FORMAT_X32B32G32R32I:
+			{
+				int* bgr = (int*)element;
+				
+				r = static_cast<float>(bgr[0]);
+				g = static_cast<float>(bgr[1]);
+				b = static_cast<float>(bgr[2]);
+			}
+			break;
+		case FORMAT_X32B32G32R32:
+			{
+				unsigned int* bgr = (unsigned int*)element;
+				
+				r = static_cast<float>(bgr[0]);
+				g = static_cast<float>(bgr[1]);
+				b = static_cast<float>(bgr[2]);
+			}
+			break;
+		case FORMAT_G32R32I:
+			{
+				int* gr = (int*)element;
+				
+				r = static_cast<float>(gr[0]);
+				g = static_cast<float>(gr[1]);
+			}
+			break;
+		case FORMAT_G32R32:
+			{
+				unsigned int* gr = (unsigned int*)element;
+				
+				r = static_cast<float>(gr[0]);
+				g = static_cast<float>(gr[1]);
+			}
+			break;
+		case FORMAT_R32I:
+			r = static_cast<float>(*((int*)element));
+			break;
+		case FORMAT_R32:
+			r = static_cast<float>(*((unsigned int*)element));
 			break;
 		case FORMAT_V8U8:
 			{
@@ -1124,29 +1409,52 @@ namespace sw
 		case FORMAT_P8:					return 1;
 		case FORMAT_A8P8:				return 2;
 		case FORMAT_A8:					return 1;
+		case FORMAT_R8I:				return 1;
 		case FORMAT_R8:					return 1;
 		case FORMAT_R3G3B2:				return 1;
+		case FORMAT_R16I:				return 2;
+		case FORMAT_R16:				return 2;
 		case FORMAT_A8R3G3B2:			return 2;
 		case FORMAT_R5G6B5:				return 2;
 		case FORMAT_A1R5G5B5:			return 2;
 		case FORMAT_X1R5G5B5:			return 2;
-		case FORMAT_R5G5B5A1:           return 2;
 		case FORMAT_X4R4G4B4:			return 2;
 		case FORMAT_A4R4G4B4:			return 2;
-		case FORMAT_R4G4B4A4:           return 2;
 		case FORMAT_R8G8B8:				return 3;
-		case FORMAT_B8G8R8:             return 3;
+		case FORMAT_R32I:				return 4;
+		case FORMAT_R32:				return 4;
 		case FORMAT_X8R8G8B8:			return 4;
 	//	case FORMAT_X8G8R8B8Q:			return 4;
 		case FORMAT_A8R8G8B8:			return 4;
 	//	case FORMAT_A8G8R8B8Q:			return 4;
+		case FORMAT_X8B8G8R8I:			return 4;
 		case FORMAT_X8B8G8R8:			return 4;
+		case FORMAT_A8B8G8R8I:			return 4;
+		case FORMAT_R8UI:				return 1;
+		case FORMAT_G8R8UI:				return 2;
+		case FORMAT_X8B8G8R8UI:			return 4;
+		case FORMAT_A8B8G8R8UI:			return 4;
 		case FORMAT_A8B8G8R8:			return 4;
+		case FORMAT_R8I_SNORM:			return 1;
+		case FORMAT_G8R8I_SNORM:		return 2;
+		case FORMAT_X8B8G8R8I_SNORM:	return 4;
+		case FORMAT_A8B8G8R8I_SNORM:	return 4;
 		case FORMAT_A2R10G10B10:		return 4;
 		case FORMAT_A2B10G10R10:		return 4;
+		case FORMAT_G8R8I:				return 2;
 		case FORMAT_G8R8:				return 2;
+		case FORMAT_G16R16I:			return 4;
 		case FORMAT_G16R16:				return 4;
+		case FORMAT_G32R32I:			return 8;
+		case FORMAT_G32R32:				return 8;
+		case FORMAT_X16B16G16R16I:		return 8;
+		case FORMAT_X16B16G16R16:		return 8;
+		case FORMAT_A16B16G16R16I:		return 8;
 		case FORMAT_A16B16G16R16:		return 8;
+		case FORMAT_X32B32G32R32I:		return 16;
+		case FORMAT_X32B32G32R32:		return 16;
+		case FORMAT_A32B32G32R32I:		return 16;
+		case FORMAT_A32B32G32R32:		return 16;
 		// Compressed formats
 		#if S3TC_SUPPORT
 		case FORMAT_DXT1:				return 2;   // Column of four pixels
@@ -1428,11 +1736,11 @@ namespace sw
 			#endif
 			case FORMAT_ATI1:		decodeATI1(destination, source);		break;   // FIXME: Check destination format
 			case FORMAT_ATI2:		decodeATI2(destination, source);		break;   // FIXME: Check destination format
-			case FORMAT_ETC1:		decodeETC1(destination, source);		break;   // FIXME: Check destination format
 			case FORMAT_R11_EAC:         decodeEAC(destination, source, 1, false); break; // FIXME: Check destination format
 			case FORMAT_SIGNED_R11_EAC:  decodeEAC(destination, source, 1, true);  break; // FIXME: Check destination format
 			case FORMAT_RG11_EAC:        decodeEAC(destination, source, 2, false); break; // FIXME: Check destination format
 			case FORMAT_SIGNED_RG11_EAC: decodeEAC(destination, source, 2, true);  break; // FIXME: Check destination format
+			case FORMAT_ETC1:
 			case FORMAT_RGB8_ETC2:                      decodeETC2(destination, source, 0, false); break; // FIXME: Check destination format
 			case FORMAT_SRGB8_ETC2:                     decodeETC2(destination, source, 0, true);  break; // FIXME: Check destination format
 			case FORMAT_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:  decodeETC2(destination, source, 1, false); break; // FIXME: Check destination format
@@ -2061,209 +2369,99 @@ namespace sw
 		}
 	}
 
-	struct bgrx8
+	void Surface::decodeETC2(Buffer &internal, const Buffer &external, int nbAlphaBits, bool isSRGB)
 	{
-		byte b;
-		byte g;
-		byte r;
-		byte x;
+		ETC_Decoder::Decode((const byte*)external.buffer, (byte*)internal.buffer, external.width, external.height, internal.width, internal.height, internal.pitchB, internal.bytes,
+							(nbAlphaBits == 8) ? ETC_Decoder::ETC_RGBA : ((nbAlphaBits == 1) ? ETC_Decoder::ETC_RGB_PUNCHTHROUGH_ALPHA : ETC_Decoder::ETC_RGB));
 
-		inline bgrx8()
+		if(isSRGB)
 		{
-		}
-
-		inline void set(int red, int green, int blue)
-		{
-			r = static_cast<byte>(clamp(red, 0, 255));
-			g = static_cast<byte>(clamp(green, 0, 255));
-			b = static_cast<byte>(clamp(blue, 0, 255));
-			x = 255;
-		}
-	};
-
-	struct ETC1
-	{
-		struct
-		{
-			union
+			// Perform sRGB conversion in place after decoding
+			byte* src = (byte*)internal.buffer;
+			for(int y = 0; y < internal.height; y++)
 			{
-				struct   // Individual colors
+				byte* srcRow = src + y * internal.pitchB;
+				for(int x = 0; x <  internal.width; x++)
 				{
-					byte R2 : 4;
-					byte R1 : 4;
-					byte G2 : 4;
-					byte G1 : 4;
-					byte B2 : 4;
-					byte B1 : 4;
-				};
-
-				struct   // Differential colors
-				{
-					sbyte dR : 3;
-					byte R : 5;
-					sbyte dG : 3;
-					byte G : 5;
-					sbyte dB : 3;
-					byte B : 5;
-				};
-			};
-
-			bool flipbit : 1;
-			bool diffbit : 1;
-			byte cw2 : 3;
-			byte cw1 : 3;
-
-			byte pixelIndexMSB[2];
-			byte pixelIndexLSB[2];
-		};
-
-		inline int getIndex(int x, int y) const
-		{
-			int bitIndex = x * 4 + y;
-			int bitOffset = bitIndex & 7;
-			int lsb = (pixelIndexLSB[1 - (bitIndex >> 3)] >> bitOffset) & 1;
-			int msb = (pixelIndexMSB[1 - (bitIndex >> 3)] >> bitOffset) & 1;
-
-			return (msb << 1) | lsb;
-		}
-	};
-
-	inline int extend_4to8bits(int x)
-	{
-		return (x << 4) | x;
-	}
-
-	inline int extend_5to8bits(int x)
-	{
-		return (x << 3) | (x >> 2);
-	}
-
-	void Surface::decodeETC1(Buffer &internal, const Buffer &external)
-	{
-		unsigned int *destSlice = (unsigned int*)internal.buffer;
-		const ETC1 *source = (const ETC1*)external.buffer;
-
-		for(int z = 0; z < external.depth; z++)
-		{
-			unsigned int *dest = destSlice;
-
-			for(int y = 0; y < external.height; y += 4)
-			{
-				for(int x = 0; x < external.width; x += 4)
-				{
-					bgrx8 *color = reinterpret_cast<bgrx8*>(&dest[x + y * internal.pitchP]);
-
-					int r1, g1, b1;
-					int r2, g2, b2;
-
-					if(source->diffbit)
+					byte* srcPix = srcRow + x * internal.bytes;
+					for(int i = 0; i < 3; i++)
 					{
-						b1 = extend_5to8bits(source->B);
-						g1 = extend_5to8bits(source->G);
-						r1 = extend_5to8bits(source->R);
-
-						r2 = extend_5to8bits(source->R + source->dR);
-						g2 = extend_5to8bits(source->G + source->dG);
-						b2 = extend_5to8bits(source->B + source->dB);
+						srcPix[i] = sw::sRGB8toLinear8(srcPix[i]);
 					}
-					else
-					{
-						r1 = extend_4to8bits(source->R1);
-						g1 = extend_4to8bits(source->G1);
-						b1 = extend_4to8bits(source->B1);
-
-						r2 = extend_4to8bits(source->R2);
-						g2 = extend_4to8bits(source->G2);
-						b2 = extend_4to8bits(source->B2);
-					}
-
-					bgrx8 subblockColors0[4];
-					bgrx8 subblockColors1[4];
-
-					// Table 3.17.2 sorted according to table 3.17.3
-					static const int intensityModifier[8][4] =
-					{
-						{2, 8, -2, -8},
-						{5, 17, -5, -17},
-						{9, 29, -9, -29},
-						{13, 42, -13, -42},
-						{18, 60, -18, -60},
-						{24, 80, -24, -80},
-						{33, 106, -33, -106},
-						{47, 183, -47, -183}
-					};
-
-					const int i10 = intensityModifier[source->cw1][0];
-					const int i11 = intensityModifier[source->cw1][1];
-					const int i12 = intensityModifier[source->cw1][2];
-					const int i13 = intensityModifier[source->cw1][3];
-
-					subblockColors0[0].set(r1 + i10, g1 + i10, b1 + i10);
-					subblockColors0[1].set(r1 + i11, g1 + i11, b1 + i11);
-					subblockColors0[2].set(r1 + i12, g1 + i12, b1 + i12);
-					subblockColors0[3].set(r1 + i13, g1 + i13, b1 + i13);
-
-					const int i20 = intensityModifier[source->cw2][0];
-					const int i21 = intensityModifier[source->cw2][1];
-					const int i22 = intensityModifier[source->cw2][2];
-					const int i23 = intensityModifier[source->cw2][3];
-
-					subblockColors1[0].set(r2 + i20, g2 + i20, b2 + i20);
-					subblockColors1[1].set(r2 + i21, g2 + i21, b2 + i21);
-					subblockColors1[2].set(r2 + i22, g2 + i22, b2 + i22);
-					subblockColors1[3].set(r2 + i23, g2 + i23, b2 + i23);
-
-					if(source->flipbit)
-					{
-						for(int j = 0; j < 2 && (y + j) < internal.height; j++)
-						{
-							if((x + 0) < internal.width) color[0] = subblockColors0[source->getIndex(0, j)];
-							if((x + 1) < internal.width) color[1] = subblockColors0[source->getIndex(1, j)];
-							if((x + 2) < internal.width) color[2] = subblockColors0[source->getIndex(2, j)];
-							if((x + 3) < internal.width) color[3] = subblockColors0[source->getIndex(3, j)];
-							color += internal.pitchP;
-						}
-
-						for(int j = 2; j < 4 && (y + j) < internal.height; j++)
-						{
-							if((x + 0) < internal.width) color[0] = subblockColors1[source->getIndex(0, j)];
-							if((x + 1) < internal.width) color[1] = subblockColors1[source->getIndex(1, j)];
-							if((x + 2) < internal.width) color[2] = subblockColors1[source->getIndex(2, j)];
-							if((x + 3) < internal.width) color[3] = subblockColors1[source->getIndex(3, j)];
-							color += internal.pitchP;
-						}
-					}
-					else
-					{
-						for(int j = 0; j < 4 && (y + j) < internal.height; j++)
-						{
-							if((x + 0) < internal.width) color[0] = subblockColors0[source->getIndex(0, j)];
-							if((x + 1) < internal.width) color[1] = subblockColors0[source->getIndex(1, j)];
-							if((x + 2) < internal.width) color[2] = subblockColors1[source->getIndex(2, j)];
-							if((x + 3) < internal.width) color[3] = subblockColors1[source->getIndex(3, j)];
-							color += internal.pitchP;
-						}
-					}
-
-					source++;
 				}
 			}
-
-			(byte*&)destSlice += internal.sliceB;
 		}
 	}
 
 	void Surface::decodeEAC(Buffer &internal, const Buffer &external, int nbChannels, bool isSigned)
 	{
-		ASSERT((nbChannels == 1) || (nbChannels == 2));
-	}
+		ASSERT(nbChannels == 1 || nbChannels == 2);
 
-	void Surface::decodeETC2(Buffer &internal, const Buffer &external, int nbAlphaBits, bool isSRGB)
-	{
+		ETC_Decoder::Decode((const byte*)external.buffer, (byte*)internal.buffer, external.width, external.height, internal.width, internal.height, internal.pitchB, internal.bytes,
+		                    (nbChannels == 1) ? (isSigned ? ETC_Decoder::ETC_R_SIGNED : ETC_Decoder::ETC_R_UNSIGNED) : (isSigned ? ETC_Decoder::ETC_RG_SIGNED : ETC_Decoder::ETC_RG_UNSIGNED));
+
+		// FIXME: We convert signed data to float, until signed integer internal formats are supported
+		//        This code can be removed if signed ETC2 images are decoded to internal 8 bit signed R/RG formats
+		if(isSigned)
+		{
+			sbyte* src = (sbyte*)internal.buffer;
+
+			for(int y = 0; y < internal.height; y++)
+			{
+				sbyte* srcRow = src + y * internal.pitchB;
+				for(int x = internal.width - 1; x >= 0; x--)
+				{
+					int dx = x & 0xFFFFFFFC;
+					int mx = x - dx;
+					sbyte* srcPix = srcRow + dx * internal.bytes + mx * nbChannels;
+					float* dstPix = (float*)(srcRow + x * internal.bytes);
+					for(int c = nbChannels - 1; c >= 0; c--)
+					{
+						static const float normalization = 1.0f / 127.875f;
+						dstPix[c] = clamp(static_cast<float>(srcPix[c]) * normalization, -1.0f, 1.0f);
+					}
+				}
+			}
+		}
 	}
 
 	void Surface::decodeASTC(Buffer &internal, const Buffer &external, int xBlockSize, int yBlockSize, int zBlockSize, bool isSRGB)
 	{
+		int xblocks = (external.width + xBlockSize - 1) / xBlockSize;
+		int yblocks = (external.height + yBlockSize - 1) / yBlockSize;
+		int zblocks = (zBlockSize > 1) ? (external.depth + zBlockSize - 1) / zBlockSize : 1;
+
+		const byte *source = (const byte*)external.buffer;
+		byte* dest = (byte*)internal.buffer;
+
+		for(int z = 0; z < zblocks; z++)
+		{
+			for(int y = 0; y < yblocks; y++)
+			{
+				for(int x = 0; x < xblocks; x++, source += 16)
+				{
+					ASTC_Decoder::DecodeBlock(source, dest, internal.width, internal.height, internal.depth, internal.pitchB, internal.sliceB, xBlockSize, yBlockSize, zBlockSize, x, y, z);
+				}
+			}
+		}
+
+		if(isSRGB)
+		{
+			// Perform sRGB conversion in place after decoding
+			byte* src = (byte*)internal.buffer;
+			for(int y = 0; y < internal.height; y++)
+			{
+				byte* srcRow = src + y * internal.pitchB;
+				for(int x = 0; x < internal.width; x++)
+				{
+					float* srcPix = reinterpret_cast<float*>(srcRow + x * internal.bytes);
+					for(int i = 0; i < 3; i++)
+					{
+						srcPix[i] = sRGBtoLinear(clamp(static_cast<float>(srcPix[i]), 0.0f, 1.0f));
+					}
+				}
+			}
+		}
 	}
 
 	unsigned int Surface::size(int width, int height, int depth, Format format)
@@ -2417,17 +2615,34 @@ namespace sw
 		}
 	}
 
-	bool Surface::isFloatFormat(Format format)
+	bool Surface::isFloatOr32BitFormat(Format format)
 	{
 		switch(format)
 		{
 		case FORMAT_R5G6B5:
 		case FORMAT_X8R8G8B8:
+		case FORMAT_X8B8G8R8I:
 		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:
+		case FORMAT_A8B8G8R8I:
+		case FORMAT_R8UI:
+		case FORMAT_G8R8UI:
+		case FORMAT_X8B8G8R8UI:
+		case FORMAT_A8B8G8R8UI:
 		case FORMAT_A8B8G8R8:
+		case FORMAT_G8R8I:
 		case FORMAT_G8R8:
+		case FORMAT_R8I_SNORM:
+		case FORMAT_G8R8I_SNORM:
+		case FORMAT_X8B8G8R8I_SNORM:
+		case FORMAT_A8B8G8R8I_SNORM:
+		case FORMAT_R16I:
+		case FORMAT_R16:
+		case FORMAT_G16R16I:
 		case FORMAT_G16R16:
+		case FORMAT_X16B16G16R16I:
+		case FORMAT_X16B16G16R16:
+		case FORMAT_A16B16G16R16I:
 		case FORMAT_A16B16G16R16:
 		case FORMAT_V8U8:
 		case FORMAT_Q8W8V8U8:
@@ -2436,6 +2651,7 @@ namespace sw
 		case FORMAT_A16W16V16U16:
 		case FORMAT_Q16W16V16U16:
 		case FORMAT_A8:
+		case FORMAT_R8I:
 		case FORMAT_R8:
 		case FORMAT_L8:
 		case FORMAT_L16:
@@ -2444,6 +2660,14 @@ namespace sw
 		case FORMAT_YV12_BT709:
 		case FORMAT_YV12_JFIF:
 			return false;
+		case FORMAT_R32I:
+		case FORMAT_R32:
+		case FORMAT_G32R32I:
+		case FORMAT_G32R32:
+		case FORMAT_X32B32G32R32I:
+		case FORMAT_X32B32G32R32:
+		case FORMAT_A32B32G32R32I:
+		case FORMAT_A32B32G32R32:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
 		case FORMAT_A32B32G32R32F:
@@ -2475,8 +2699,18 @@ namespace sw
 		case FORMAT_A8R8G8B8:
 		case FORMAT_A8B8G8R8:
 		case FORMAT_G8R8:
+		case FORMAT_R16:
 		case FORMAT_G16R16:
+		case FORMAT_X16B16G16R16:
 		case FORMAT_A16B16G16R16:
+		case FORMAT_R32:
+		case FORMAT_G32R32:
+		case FORMAT_X32B32G32R32:
+		case FORMAT_A32B32G32R32:
+		case FORMAT_R8UI:
+		case FORMAT_G8R8UI:
+		case FORMAT_X8B8G8R8UI:
+		case FORMAT_A8B8G8R8UI:
 		case FORMAT_D32F:
 		case FORMAT_D32F_COMPLEMENTARY:
 		case FORMAT_D32F_LOCKABLE:
@@ -2491,6 +2725,23 @@ namespace sw
 		case FORMAT_YV12_BT709:
 		case FORMAT_YV12_JFIF:
 			return true;
+		case FORMAT_R8I:
+		case FORMAT_R16I:
+		case FORMAT_R32I:
+		case FORMAT_G8R8I:
+		case FORMAT_G16R16I:
+		case FORMAT_G32R32I:
+		case FORMAT_X8B8G8R8I:
+		case FORMAT_X16B16G16R16I:
+		case FORMAT_X32B32G32R32I:
+		case FORMAT_A8B8G8R8I:
+		case FORMAT_A16B16G16R16I:
+		case FORMAT_A32B32G32R32I:
+		case FORMAT_R8I_SNORM:
+		case FORMAT_G8R8I_SNORM:
+		case FORMAT_X8B8G8R8I_SNORM:
+		case FORMAT_A8B8G8R8I_SNORM:
+			return false;
 		case FORMAT_V8U8:
 		case FORMAT_X8L8V8U8:
 		case FORMAT_V16U16:
@@ -2651,12 +2902,33 @@ namespace sw
 		{
 		case FORMAT_R5G6B5:         return 3;
 		case FORMAT_X8R8G8B8:       return 3;
+		case FORMAT_X8B8G8R8I:		return 3;
 		case FORMAT_X8B8G8R8:       return 3;
 		case FORMAT_A8R8G8B8:       return 4;
+		case FORMAT_A8B8G8R8I:		return 4;
 		case FORMAT_A8B8G8R8:       return 4;
+		case FORMAT_G8R8I:			return 2;
 		case FORMAT_G8R8:           return 2;
+		case FORMAT_R8I_SNORM:		return 1;
+		case FORMAT_G8R8I_SNORM:	return 2;
+		case FORMAT_X8B8G8R8I_SNORM:return 3;
+		case FORMAT_A8B8G8R8I_SNORM:return 4;
+		case FORMAT_R8UI:           return 1;
+		case FORMAT_G8R8UI:         return 2;
+		case FORMAT_X8B8G8R8UI:     return 3;
+		case FORMAT_A8B8G8R8UI:     return 4;
+		case FORMAT_G16R16I:		return 2;
 		case FORMAT_G16R16:         return 2;
+		case FORMAT_G32R32I:		return 2;
+		case FORMAT_G32R32:			return 2;
+		case FORMAT_X16B16G16R16I:	return 3;
+		case FORMAT_X16B16G16R16:	return 3;
+		case FORMAT_A16B16G16R16I:	return 4;
 		case FORMAT_A16B16G16R16:   return 4;
+		case FORMAT_X32B32G32R32I:	return 3;
+		case FORMAT_X32B32G32R32:	return 3;
+		case FORMAT_A32B32G32R32I:	return 4;
+		case FORMAT_A32B32G32R32:	return 4;
 		case FORMAT_V8U8:           return 2;
 		case FORMAT_Q8W8V8U8:       return 4;
 		case FORMAT_X8L8V8U8:       return 3;
@@ -2666,11 +2938,17 @@ namespace sw
 		case FORMAT_R32F:           return 1;
 		case FORMAT_G32R32F:        return 2;
 		case FORMAT_A32B32G32R32F:  return 4;
+		case FORMAT_D32F:           return 1;
 		case FORMAT_D32F_LOCKABLE:  return 1;
 		case FORMAT_D32FS8_TEXTURE: return 1;
 		case FORMAT_D32FS8_SHADOW:  return 1;
 		case FORMAT_A8:             return 1;
+		case FORMAT_R8I:			return 1;
 		case FORMAT_R8:             return 1;
+		case FORMAT_R16I:			return 1;
+		case FORMAT_R16:			return 1;
+		case FORMAT_R32I:			return 1;
+		case FORMAT_R32:			return 1;
 		case FORMAT_L8:             return 1;
 		case FORMAT_L16:            return 1;
 		case FORMAT_A8L8:           return 2;
@@ -3534,16 +3812,52 @@ namespace sw
 			return FORMAT_A8R8G8B8;
 		case FORMAT_A8:
 			return FORMAT_A8;
+		case FORMAT_R8I:
+			return FORMAT_R8I;
+		case FORMAT_R8UI:
+			return FORMAT_R8UI;
+		case FORMAT_R8I_SNORM:
+			return FORMAT_R8I;
 		case FORMAT_R8:
 			return FORMAT_R8;
+		case FORMAT_R16I:
+			return FORMAT_R16I;
+		case FORMAT_R16:
+			return FORMAT_R16;
+		case FORMAT_R32I:
+			return FORMAT_R32I;
+		case FORMAT_R32:
+			return FORMAT_R32;
 		case FORMAT_A2R10G10B10:
 		case FORMAT_A2B10G10R10:
+		case FORMAT_X16B16G16R16I:
+		case FORMAT_A16B16G16R16I:
+			return FORMAT_A16B16G16R16I;
+		case FORMAT_X16B16G16R16:
 		case FORMAT_A16B16G16R16:
 			return FORMAT_A16B16G16R16;
+		case FORMAT_X32B32G32R32I:
+		case FORMAT_A32B32G32R32I:
+			return FORMAT_A32B32G32R32I;
+		case FORMAT_X32B32G32R32:
+		case FORMAT_A32B32G32R32:
+			return FORMAT_A32B32G32R32;
+		case FORMAT_G8R8I:
+			return FORMAT_G8R8I;
+		case FORMAT_G8R8UI:
+			return FORMAT_G8R8UI;
+		case FORMAT_G8R8I_SNORM:
+			return FORMAT_G8R8I_SNORM;
 		case FORMAT_G8R8:
 			return FORMAT_G8R8;
+		case FORMAT_G16R16I:
+			return FORMAT_G16R16I;
 		case FORMAT_G16R16:
 			return FORMAT_G16R16;
+		case FORMAT_G32R32I:
+			return FORMAT_G32R32I;
+		case FORMAT_G32R32:
+			return FORMAT_G32R32;
 		case FORMAT_A8R8G8B8:
 			if(lockable || !quadLayoutEnabled)
 			{
@@ -3553,8 +3867,12 @@ namespace sw
 			{
 				return FORMAT_A8G8R8B8Q;
 			}
-		case FORMAT_R5G5B5A1:
-		case FORMAT_R4G4B4A4:
+		case FORMAT_A8B8G8R8I:
+			return FORMAT_A8B8G8R8I;
+		case FORMAT_A8B8G8R8UI:
+			return FORMAT_A8B8G8R8UI;
+		case FORMAT_A8B8G8R8I_SNORM:
+			return FORMAT_A8B8G8R8I_SNORM;
 		case FORMAT_A8B8G8R8:
 			return FORMAT_A8B8G8R8;
 		case FORMAT_R5G6B5:
@@ -3572,7 +3890,12 @@ namespace sw
 			{
 				return FORMAT_X8G8R8B8Q;
 			}
-		case FORMAT_B8G8R8:
+		case FORMAT_X8B8G8R8I:
+			return FORMAT_X8B8G8R8I;
+		case FORMAT_X8B8G8R8UI:
+			return FORMAT_X8B8G8R8UI;
+		case FORMAT_X8B8G8R8I_SNORM:
+			return FORMAT_X8B8G8R8I_SNORM;
 		case FORMAT_X8B8G8R8:
 			return FORMAT_X8B8G8R8;
 		// Compressed formats
@@ -3585,6 +3908,7 @@ namespace sw
 		case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
 		case FORMAT_RGBA8_ETC2_EAC:
 		case FORMAT_SRGB8_ALPHA8_ETC2_EAC:
+			return FORMAT_A8R8G8B8;
 		case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:
@@ -3599,7 +3923,6 @@ namespace sw
 		case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR:
-			return FORMAT_A8R8G8B8;
 		case FORMAT_RGBA_ASTC_4x4_KHR:
 		case FORMAT_RGBA_ASTC_5x4_KHR:
 		case FORMAT_RGBA_ASTC_5x5_KHR:
@@ -3618,12 +3941,14 @@ namespace sw
 			return FORMAT_A32B32G32R32F; // FIXME: 16FP is probably sufficient, but it's currently unsupported
 		case FORMAT_ATI1:
 		case FORMAT_R11_EAC:
-		case FORMAT_SIGNED_R11_EAC:
 			return FORMAT_R8;
+		case FORMAT_SIGNED_R11_EAC:
+			return FORMAT_R32F; // FIXME: Signed 8bit format would be sufficient
 		case FORMAT_ATI2:
 		case FORMAT_RG11_EAC:
-		case FORMAT_SIGNED_RG11_EAC:
 			return FORMAT_G8R8;
+		case FORMAT_SIGNED_RG11_EAC:
+			return FORMAT_G32R32F; // FIXME: Signed 8bit format would be sufficient
 		case FORMAT_ETC1:
 		case FORMAT_RGB8_ETC2:
 		case FORMAT_SRGB8_ETC2:
@@ -3674,6 +3999,7 @@ namespace sw
 			{
 				return FORMAT_D32F;
 			}
+		case FORMAT_D32F:			return FORMAT_D32F;
 		case FORMAT_D32F_LOCKABLE:  return FORMAT_D32F_LOCKABLE;
 		case FORMAT_D32FS8_TEXTURE: return FORMAT_D32FS8_TEXTURE;
 		case FORMAT_INTZ:           return FORMAT_D32FS8_TEXTURE;

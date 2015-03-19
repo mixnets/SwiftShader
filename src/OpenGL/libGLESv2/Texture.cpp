@@ -403,7 +403,10 @@ void Texture::setImage(GLenum format, GLenum type, const egl::Image::UnpackInfo&
     if(pixels && image)
     {
 		GLsizei depth = (getTarget() == GL_TEXTURE_3D_OES || getTarget() == GL_TEXTURE_2D_ARRAY) ? image->getDepth() : 1;
-		image->loadImageData(0, 0, 0, image->getWidth(), image->getHeight(), depth, format, type, unpackInfo, pixels);
+		if(!image->loadImageData(0, 0, 0, image->getWidth(), image->getHeight(), depth, format, type, unpackInfo, pixels))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
     }
 }
 
@@ -412,7 +415,10 @@ void Texture::setCompressedImage(GLsizei imageSize, const void *pixels, egl::Ima
     if(pixels && image)
     {
 		GLsizei depth = (getTarget() == GL_TEXTURE_3D_OES || getTarget() == GL_TEXTURE_2D_ARRAY) ? image->getDepth() : 1;
-		image->loadCompressedData(0, 0, 0, image->getWidth(), image->getHeight(), depth, imageSize, pixels);
+		if(!image->loadCompressedData(0, 0, 0, image->getWidth(), image->getHeight(), depth, imageSize, pixels))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
     }
 }
 
@@ -438,10 +444,10 @@ void Texture::subImage(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei widt
         return error(GL_INVALID_OPERATION);
     }
 
-    if(pixels)
-    {
-		image->loadImageData(xoffset, yoffset, zoffset, width, height, depth, format, type, unpackInfo, pixels);
-    }
+	if(pixels && !image->loadImageData(xoffset, yoffset, zoffset, width, height, depth, format, type, unpackInfo, pixels))
+	{
+		return error(GL_INVALID_OPERATION);
+	}
 }
 
 void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *pixels, egl::Image *image)
@@ -461,10 +467,10 @@ void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLint zoffset, GL
         return error(GL_INVALID_OPERATION);
     }
 
-    if(pixels)
-    {
-		image->loadCompressedData(xoffset, yoffset, zoffset, width, height, depth, imageSize, pixels);
-    }
+	if(pixels && !image->loadCompressedData(xoffset, yoffset, zoffset, width, height, depth, imageSize, pixels))
+	{
+		return error(GL_INVALID_OPERATION);
+	}
 }
 
 bool Texture::copy(egl::Image *source, const sw::SliceRect &sourceRect, GLenum destFormat, GLint xoffset, GLint yoffset, GLint zoffset, egl::Image *dest)
