@@ -42,6 +42,7 @@ namespace es2
 {
 struct TranslatedAttribute;
 struct TranslatedIndexData;
+struct PrimitiveRestartData;
 
 class Device;
 class Buffer;
@@ -74,7 +75,7 @@ enum
     MAX_VERTEX_ATTRIBS = VERTEX_ATTRIBUTES,
 	MAX_UNIFORM_VECTORS = 256,   // Device limit
     MAX_VERTEX_UNIFORM_VECTORS = VERTEX_UNIFORM_VECTORS - 3,   // Reserve space for gl_DepthRange
-    MAX_VARYING_VECTORS = 10,
+    MAX_VARYING_VECTORS = 15 /*es2: 10*/,
     MAX_TEXTURE_IMAGE_UNITS = TEXTURE_IMAGE_UNITS,
     MAX_VERTEX_TEXTURE_IMAGE_UNITS = VERTEX_TEXTURE_IMAGE_UNITS,
     MAX_COMBINED_TEXTURE_IMAGE_UNITS = MAX_TEXTURE_IMAGE_UNITS + MAX_VERTEX_TEXTURE_IMAGE_UNITS,
@@ -397,8 +398,10 @@ struct State
 	egl::Image::UnpackInfo unpackInfo;
     GLint packAlignment;
 	GLint packRowLength;
+	GLint packImageHeight;
 	GLint packSkipPixels;
 	GLint packSkipRows;
+	GLint packSkipImages;
 };
 
 class Context : public egl::Context
@@ -511,8 +514,10 @@ public:
 
     void setPackAlignment(GLint alignment);
 	void setPackRowLength(GLint rowLength);
+	void setPackImageHeight(GLint imageHeight);
 	void setPackSkipPixels(GLint skipPixels);
 	void setPackSkipRows(GLint skipRows);
+	void setPackSkipImages(GLint skipImages);
 
     // These create  and destroy methods are merely pass-throughs to 
     // ResourceManager, which owns these object types
@@ -677,11 +682,13 @@ private:
     bool applyRenderTarget();
     void applyState(GLenum drawMode);
 	GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsizei instanceId);
-    GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo);
+    GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum type, TranslatedIndexData *indexInfo);
+	GLenum computePrimitiveRestart(const void *indices, GLsizei count, GLenum type, PrimitiveRestartData* restartInfo);
     void applyShaders();
-    void applyTextures();
-    void applyTextures(sw::SamplerType type);
-	void applyTexture(sw::SamplerType type, int sampler, Texture *texture);
+    bool applyTextures();
+    bool applyTextures(sw::SamplerType type);
+	bool applyTexture(sw::SamplerType type, int sampler, Texture *texture);
+	void clearColorBuffer(GLint drawbuffer, void *value, sw::Format format);
 
     void detachBuffer(GLuint buffer);
     void detachTexture(GLuint texture);

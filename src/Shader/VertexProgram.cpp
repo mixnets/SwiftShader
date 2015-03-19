@@ -61,7 +61,7 @@ namespace sw
 
 	void VertexProgram::program(Registers &r)
 	{
-	//	shader->print("VertexShader-%0.8X.txt", state.shaderID);
+		shader->print("VertexShader-%0.8X.txt", state.shaderID);
 
 		unsigned short version = shader->getVersion();
 
@@ -103,6 +103,7 @@ namespace sw
 			Src src1 = instruction->src[1];
 			Src src2 = instruction->src[2];
 			Src src3 = instruction->src[3];
+			Src src4 = instruction->src[4];
 
 			bool predicate = instruction->predicate;
 			Control control = instruction->control;
@@ -114,11 +115,13 @@ namespace sw
 			Vector4f s1;
 			Vector4f s2;
 			Vector4f s3;
+			Vector4f s4;
 
 			if(src0.type != Shader::PARAMETER_VOID) s0 = fetchRegisterF(r, src0);
 			if(src1.type != Shader::PARAMETER_VOID) s1 = fetchRegisterF(r, src1);
 			if(src2.type != Shader::PARAMETER_VOID) s2 = fetchRegisterF(r, src2);
 			if(src3.type != Shader::PARAMETER_VOID) s3 = fetchRegisterF(r, src3);
+			if(src4.type != Shader::PARAMETER_VOID) s4 = fetchRegisterF(r, src4);
 
 			switch(opcode)
 			{
@@ -180,6 +183,12 @@ namespace sw
 			case Shader::OPCODE_FLOATBITSTOUINT:
 			case Shader::OPCODE_INTBITSTOFLOAT:
 			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                    break;
+			case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d, s0);      break;
+			case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d, s0);      break;
+			case Shader::OPCODE_PACKHALF2x16:    packHalf2x16(d, s0);       break;
+			case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0);    break;
+			case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0);    break;
+			case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0);     break;
 			case Shader::OPCODE_M3X2:		M3X2(r, d, s0, src1);			break;
 			case Shader::OPCODE_M3X3:		M3X3(r, d, s0, src1);			break;
 			case Shader::OPCODE_M3X4:		M3X4(r, d, s0, src1);			break;
@@ -289,6 +298,12 @@ namespace sw
 			case Shader::OPCODE_NE:         notEqual(d, s0, s1);            break;
 			case Shader::OPCODE_TEXLDL:		TEXLDL(r, d, s0, src1);			break;
 			case Shader::OPCODE_TEX:		TEX(r, d, s0, src1);			break;
+			case Shader::OPCODE_TEXOFFSET:  TEXOFFSET(r, d, s0, src1, s2, s3);        break;
+			case Shader::OPCODE_TEXLDLOFFSET: TEXLDL(r, d, s0, src1, s2);	break;
+			case Shader::OPCODE_TEXELFETCH: TEXELFETCH(r, d, s0, src1, s2);           break;
+			case Shader::OPCODE_TEXELFETCHOFFSET: TEXELFETCH(r, d, s0, src1, s2, s3); break;
+			case Shader::OPCODE_TEXGRAD:    TEXGRAD(r, d, s0, src1, s2, s3);          break;
+			case Shader::OPCODE_TEXGRADOFFSET: TEXGRAD(r, d, s0, src1, s2, s3, s4);   break;
 			case Shader::OPCODE_TEXSIZE:	TEXSIZE(r, d, s0.x, src1);		break;
 			case Shader::OPCODE_END:										break;
 			default:
@@ -1486,6 +1501,36 @@ namespace sw
 		dst.y = tmp[(src1.swizzle >> 2) & 0x3];
 		dst.z = tmp[(src1.swizzle >> 4) & 0x3];
 		dst.w = tmp[(src1.swizzle >> 6) & 0x3];
+	}
+
+	void VertexProgram::TEXOFFSET(Registers &r, Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3)
+	{
+		UNIMPLEMENTED();
+	}
+
+	void VertexProgram::TEXLDL(Registers &r, Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2)
+	{
+		UNIMPLEMENTED();
+	}
+
+	void VertexProgram::TEXELFETCH(Registers &r, Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2)
+	{
+		UNIMPLEMENTED();
+	}
+
+	void VertexProgram::TEXELFETCH(Registers &r, Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3)
+	{
+		UNIMPLEMENTED();
+	}
+
+	void VertexProgram::TEXGRAD(Registers &r, Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3)
+	{
+		UNIMPLEMENTED();
+	}
+
+	void VertexProgram::TEXGRAD(Registers &r, Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3, Vector4f &src4)
+	{
+		UNIMPLEMENTED();
 	}
 
 	void VertexProgram::TEXSIZE(Registers &r, Vector4f &dst, Float4 &lod, const Src &src1)

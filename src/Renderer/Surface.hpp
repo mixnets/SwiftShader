@@ -208,6 +208,18 @@ namespace sw
 		LOCK_DISCARD
 	};
 
+	enum BlitterOptions : unsigned char
+	{
+		USE_NONE = 0x00,
+		USE_R = 0x01,
+		USE_G = 0x02,
+		USE_B = 0x04,
+		USE_A = 0x08,
+		USE_RGBA = USE_R | USE_G | USE_B | USE_A,
+		USE_FILTER = 0x10,
+		USE_CONST_SRC = 0x20
+	};
+
 	class Surface
 	{
 	private:
@@ -282,19 +294,13 @@ namespace sw
 		inline int getMultiSampleCount() const;
 		inline int getSuperSampleCount() const;
 
-		void clearColorBuffer(float red, float green, float blue, float alpha, unsigned int rgbaMask, int x0, int y0, int width, int height);
+		bool isEntire(const SliceRect& rect) const;
+		bool getClearRect(int x0, int y0, int width, int height, SliceRect& rect) const;
 		void clearDepthBuffer(float depth, int x0, int y0, int width, int height);
 		void clearStencilBuffer(unsigned char stencil, unsigned char mask, int x0, int y0, int width, int height);
 		void fill(const Color<float> &color, int x0, int y0, int width, int height);
-
-		Color<float> readExternal(int x, int y, int z) const;
-		Color<float> readExternal(int x, int y) const;
-		Color<float> sampleExternal(float x, float y, float z) const;
-		Color<float> sampleExternal(float x, float y) const;
-		void writeExternal(int x, int y, int z, const Color<float> &color);
-		void writeExternal(int x, int y, const Color<float> &color);
 		
-		void copyInternal(const Surface* src, int x, int y, float srcX, float srcY, bool filter);
+		void copyInternal(const Surface* src, int x, int y, float srcX, float srcY, const sw::BlitterOptions& options);
 		void copyInternal(const Surface* src, int x, int y, int z, float srcX, float srcY, float srcZ, bool filter);
 
 		bool hasStencil() const;
@@ -318,6 +324,7 @@ namespace sw
 		static bool isDepth(Format format);
 		static bool isPalette(Format format);
 
+		static bool isFloatOr32BitFormat(Format format);
 		static bool isFloatFormat(Format format);
 		static bool isUnsignedComponent(Format format, int component);
 		static bool isSRGBreadable(Format format);

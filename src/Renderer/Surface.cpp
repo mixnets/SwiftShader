@@ -11,6 +11,7 @@
 
 #include "Surface.hpp"
 
+#include "ASTC_Decoder.hpp"
 #include "Color.hpp"
 #include "Context.hpp"
 #include "ETC_Decoder.hpp"
@@ -179,7 +180,8 @@ namespace sw
 			*(unsigned short*)element = (ucast<8>(color.g) << 8) | (ucast<8>(color.r) << 0);
 			break;
 		case FORMAT_G16R16:
-			*(unsigned int*)element = (unorm<16>(color.g) << 16) | (unorm<16>(color.r) << 0);
+			*(unsigned int*)element = (static_cast<unsigned int>(color.g) << 16) |
+			                          (static_cast<unsigned int>(color.r) << 0);
 			break;
 		case FORMAT_G16R16I:
 			*(unsigned int*)element = (static_cast<unsigned int>(scast<16>(color.g)) << 16) |
@@ -194,10 +196,10 @@ namespace sw
 			((unsigned int*)element)[1] = static_cast<unsigned int>(color.g);
 			break;
 		case FORMAT_A16B16G16R16:
-			((unsigned short*)element)[0] = unorm<16>(color.r);
-			((unsigned short*)element)[1] = unorm<16>(color.g);
-			((unsigned short*)element)[2] = unorm<16>(color.b);
-			((unsigned short*)element)[3] = unorm<16>(color.a);
+			((unsigned short*)element)[0] = static_cast<unsigned short>(color.r);
+			((unsigned short*)element)[1] = static_cast<unsigned short>(color.g);
+			((unsigned short*)element)[2] = static_cast<unsigned short>(color.b);
+			((unsigned short*)element)[3] = static_cast<unsigned short>(color.a);
 			break;
 		case FORMAT_A16B16G16R16I:
 			((unsigned short*)element)[0] = static_cast<unsigned short>(scast<16>(color.r));
@@ -580,11 +582,11 @@ namespace sw
 			break;
 		case FORMAT_X8B8G8R8:
 			{
-				unsigned int xbgr = *(unsigned int*)element;
+				unsigned int bgr = *(unsigned int*)element;
 				
-				b = (xbgr & 0x00FF0000) * (1.0f / 0x00FF0000);
-				g = (xbgr & 0x0000FF00) * (1.0f / 0x0000FF00);
-				r = (xbgr & 0x000000FF) * (1.0f / 0x000000FF);
+				b = (bgr & 0x00FF0000) * (1.0f / 0x00FF0000);
+				g = (bgr & 0x0000FF00) * (1.0f / 0x0000FF00);
+				r = (bgr & 0x000000FF) * (1.0f / 0x000000FF);
 			}
 			break;
 		case FORMAT_X8B8G8R8I:
@@ -652,13 +654,6 @@ namespace sw
 			}
 			break;
 		case FORMAT_G16R16:
-			{
-				unsigned int gr = *(unsigned int*)element;
-				
-				g = (gr & 0xFFFF0000) * (1.0f / 0xFFFF0000);
-				r = (gr & 0x0000FFFF) * (1.0f / 0x0000FFFF);
-			}
-			break;
 		case FORMAT_G16R16UI:
 			{
 				unsigned short* gr = (unsigned short*)element;
@@ -698,11 +693,6 @@ namespace sw
 			}
 			break;
 		case FORMAT_A16B16G16R16:
-			r = ((unsigned short*)element)[0] * (1.0f / 0xFFFF);
-			g = ((unsigned short*)element)[1] * (1.0f / 0xFFFF);
-			b = ((unsigned short*)element)[2] * (1.0f / 0xFFFF);
-			a = ((unsigned short*)element)[3] * (1.0f / 0xFFFF);
-			break;
 		case FORMAT_A16B16G16R16UI:
 			{
 				unsigned short* abgr = (unsigned short*)element;
@@ -1452,12 +1442,9 @@ namespace sw
 		case FORMAT_R5G6B5:				return 2;
 		case FORMAT_A1R5G5B5:			return 2;
 		case FORMAT_X1R5G5B5:			return 2;
-		case FORMAT_R5G5B5A1:           return 2;
 		case FORMAT_X4R4G4B4:			return 2;
 		case FORMAT_A4R4G4B4:			return 2;
-		case FORMAT_R4G4B4A4:           return 2;
 		case FORMAT_R8G8B8:				return 3;
-		case FORMAT_B8G8R8:             return 3;
 		case FORMAT_R32I:				return 4;
 		case FORMAT_R32UI:				return 4;
 		case FORMAT_X8R8G8B8:			return 4;
@@ -2411,21 +2398,10 @@ namespace sw
 	void Surface::decodeETC2(Buffer &internal, const Buffer &external, int nbAlphaBits, bool isSRGB)
 	{
 		ETC_Decoder::Decode((const byte*)external.buffer, (byte*)internal.buffer, external.width, external.height, internal.width, internal.height, internal.pitchB, internal.bytes,
-		                    (nbAlphaBits == 8) ? ETC_Decoder::ETC_RGBA : ((nbAlphaBits == 1) ? ETC_Decoder::ETC_RGB_PUNCHTHROUGH_ALPHA : ETC_Decoder::ETC_RGB));
+							(nbAlphaBits == 8) ? ETC_Decoder::ETC_RGBA : ((nbAlphaBits == 1) ? ETC_Decoder::ETC_RGB_PUNCHTHROUGH_ALPHA : ETC_Decoder::ETC_RGB));
 
 		if(isSRGB)
 		{
-			static byte sRGBtoLinearTable[256];
-			static bool sRGBtoLinearTableDirty = true;
-			if(sRGBtoLinearTableDirty)
-			{
-				for(int i = 0; i < 256; i++)
-				{
-					sRGBtoLinearTable[i] = static_cast<byte>(sRGBtoLinear(static_cast<float>(i) / 255.0f) * 255.0f + 0.5f);
-				}
-				sRGBtoLinearTableDirty = false;
-			}
-
 			// Perform sRGB conversion in place after decoding
 			byte* src = (byte*)internal.buffer;
 			for(int y = 0; y < internal.height; y++)
@@ -2436,7 +2412,7 @@ namespace sw
 					byte* srcPix = srcRow + x * internal.bytes;
 					for(int i = 0; i < 3; i++)
 					{
-						srcPix[i] = sRGBtoLinearTable[srcPix[i]];
+						srcPix[i] = sw::sRGB8toLinear8(srcPix[i]);
 					}
 				}
 			}
@@ -2477,6 +2453,41 @@ namespace sw
 
 	void Surface::decodeASTC(Buffer &internal, const Buffer &external, int xBlockSize, int yBlockSize, int zBlockSize, bool isSRGB)
 	{
+		int xblocks = (external.width + xBlockSize - 1) / xBlockSize;
+		int yblocks = (external.height + yBlockSize - 1) / yBlockSize;
+		int zblocks = (zBlockSize > 1) ? (external.depth + zBlockSize - 1) / zBlockSize : 1;
+
+		const byte *source = (const byte*)external.buffer;
+		byte* dest = (byte*)internal.buffer;
+
+		for(int z = 0; z < zblocks; z++)
+		{
+			for(int y = 0; y < yblocks; y++)
+			{
+				for(int x = 0; x < xblocks; x++, source += 16)
+				{
+					ASTC_Decoder::DecodeBlock(source, dest, internal.width, internal.height, internal.depth, internal.pitchB, internal.sliceB, xBlockSize, yBlockSize, zBlockSize, x, y, z);
+				}
+			}
+		}
+
+		if(isSRGB)
+		{
+			// Perform sRGB conversion in place after decoding
+			byte* src = (byte*)internal.buffer;
+			for(int y = 0; y < internal.height; y++)
+			{
+				byte* srcRow = src + y * internal.pitchB;
+				for(int x = 0; x < internal.width; x++)
+				{
+					float* srcPix = reinterpret_cast<float*>(srcRow + x * internal.bytes);
+					for(int i = 0; i < 3; i++)
+					{
+						srcPix[i] = sRGBtoLinear(clamp(static_cast<float>(srcPix[i]), 0.0f, 1.0f));
+					}
+				}
+			}
+		}
 	}
 
 	unsigned int Surface::size(int width, int height, int depth, Format format)
@@ -2630,6 +2641,81 @@ namespace sw
 		}
 	}
 
+	bool Surface::isFloatOr32BitFormat(Format format)
+	{
+		switch(format)
+		{
+		case FORMAT_R5G6B5:
+		case FORMAT_X8R8G8B8:
+		case FORMAT_X8B8G8R8I:
+		case FORMAT_X8B8G8R8:
+		case FORMAT_A8R8G8B8:
+		case FORMAT_A8B8G8R8I:
+		case FORMAT_R8UI:
+		case FORMAT_G8R8UI:
+		case FORMAT_X8B8G8R8UI:
+		case FORMAT_A8B8G8R8UI:
+		case FORMAT_A8B8G8R8:
+		case FORMAT_G8R8I:
+		case FORMAT_G8R8:
+		case FORMAT_R8I_SNORM:
+		case FORMAT_G8R8I_SNORM:
+		case FORMAT_X8B8G8R8I_SNORM:
+		case FORMAT_A8B8G8R8I_SNORM:
+		case FORMAT_R16I:
+		case FORMAT_R16UI:
+		case FORMAT_G16R16I:
+		case FORMAT_G16R16UI:
+		case FORMAT_G16R16:
+		case FORMAT_X16B16G16R16I:
+		case FORMAT_X16B16G16R16UI:
+		case FORMAT_A16B16G16R16I:
+		case FORMAT_A16B16G16R16UI:
+		case FORMAT_A16B16G16R16:
+		case FORMAT_V8U8:
+		case FORMAT_Q8W8V8U8:
+		case FORMAT_X8L8V8U8:
+		case FORMAT_V16U16:
+		case FORMAT_A16W16V16U16:
+		case FORMAT_Q16W16V16U16:
+		case FORMAT_A8:
+		case FORMAT_R8I:
+		case FORMAT_R8:
+		case FORMAT_L8:
+		case FORMAT_L16:
+		case FORMAT_A8L8:
+		case FORMAT_YV12_BT601:
+		case FORMAT_YV12_BT709:
+		case FORMAT_YV12_JFIF:
+			return false;
+		case FORMAT_R32I:
+		case FORMAT_R32UI:
+		case FORMAT_G32R32I:
+		case FORMAT_G32R32UI:
+		case FORMAT_X32B32G32R32I:
+		case FORMAT_X32B32G32R32UI:
+		case FORMAT_A32B32G32R32I:
+		case FORMAT_A32B32G32R32UI:
+		case FORMAT_R32F:
+		case FORMAT_G32R32F:
+		case FORMAT_A32B32G32R32F:
+		case FORMAT_D32F:
+		case FORMAT_D32F_COMPLEMENTARY:
+		case FORMAT_D32F_LOCKABLE:
+		case FORMAT_D32FS8_TEXTURE:
+		case FORMAT_D32FS8_SHADOW:
+		case FORMAT_L16F:
+		case FORMAT_A16L16F:
+		case FORMAT_L32F:
+		case FORMAT_A32L32F:
+			return true;
+		default:
+			ASSERT(false);
+		}
+		
+		return false;
+	}
+
 	bool Surface::isFloatFormat(Format format)
 	{
 		switch(format)
@@ -2701,7 +2787,7 @@ namespace sw
 		default:
 			ASSERT(false);
 		}
-		
+
 		return false;
 	}
 
@@ -3063,361 +3149,31 @@ namespace sw
 		}
 	}
 
-	void Surface::clearColorBuffer(float red, float green, float blue, float alpha, unsigned int rgbaMask, int x0, int y0, int width, int height)
+	bool Surface::isEntire(const SliceRect& rect) const
 	{
-		// FIXME: Also clear buffers in other formats?
+		return (rect.x0 == 0 && rect.y0 == 0 && rect.x1 == internal.width && rect.y1 == internal.height && internal.depth == 1);
+	}
 
+	bool Surface::getClearRect(int x0, int y0, int width, int height, SliceRect& rect) const
+	{
 		// Not overlapping
-		if(x0 > internal.width) return;
-		if(y0 > internal.height) return;
-		if(x0 + width < 0) return;
-		if(y0 + height < 0) return;
+		if(x0 > internal.width) return false;
+		if(y0 > internal.height) return false;
+		if(x0 + width < 0) return false;
+		if(y0 + height < 0) return false;
 
 		// Clip against dimensions
-		if(x0 < 0) {width += x0; x0 = 0;}
+		if(x0 < 0) { width += x0; x0 = 0; }
 		if(x0 + width > internal.width) width = internal.width - x0;
-		if(y0 < 0) {height += y0; y0 = 0;}
+		if(y0 < 0) { height += y0; y0 = 0; }
 		if(y0 + height > internal.height) height = internal.height - y0;
 
-		const bool entire = x0 == 0 && y0 == 0 && width == internal.width && height == internal.height;
-		const Lock lock = entire ? LOCK_DISCARD : LOCK_WRITEONLY;
+		rect.x0 = x0;
+		rect.x1 = x0 + width;
+		rect.y0 = y0;
+		rect.y1 = y0 + height;
 
-		int x1 = x0 + width;
-		int y1 = y0 + height;
-
-	//	if(lockable || !quadLayoutEnabled)
-		{
-			unsigned char *buffer = (unsigned char*)lockInternal(x0, y0, 0, lock, PUBLIC);
-
-			for(int z = 0; z < internal.depth; z++)
-			{
-				unsigned char *target = buffer;
-
-				for(int y = y0; y < y1; y++)
-				{
-					switch(internal.format)
-					{
-					case FORMAT_NULL:
-						break;
-					case FORMAT_X8R8G8B8:
-					case FORMAT_A8R8G8B8:
-				//	case FORMAT_X8G8R8B8Q:   // FIXME
-				//	case FORMAT_A8G8R8B8Q:   // FIXME
-						{
-							unsigned char r8 = iround(red * 0xFF);
-							unsigned char g8 = iround(green * 0xFF);
-							unsigned char b8 = iround(blue * 0xFF);
-							unsigned char a8 = iround(alpha * 0xFF);
-							unsigned char a8r8g8b8[4] = {b8, g8, r8, a8};
-							unsigned int colorARGB = (unsigned int&)a8r8g8b8;
-
-							if(rgbaMask == 0xF || (internal.format == FORMAT_X8R8G8B8 && rgbaMask == 0x7))
-							{
-								memfill4(target, colorARGB, 4 * (x1 - x0));
-							}
-							else
-							{
-								unsigned int bgraMask = (rgbaMask & 0x1 ? 0x00FF0000 : 0) | (rgbaMask & 0x2 ? 0x0000FF00 : 0) | (rgbaMask & 0x4 ? 0x000000FF : 0) | (rgbaMask & 0x8 ? 0xFF000000 : 0);
-								unsigned int invMask = ~bgraMask;
-								unsigned int maskedColor = colorARGB & bgraMask;
-								unsigned int *target32 = (unsigned int*)target;
-
-								for(int x = 0; x < width; x++)
-								{
-									target32[x] = maskedColor | (target32[x] & invMask);
-								}
-							}
-						}
-						break;
-					case FORMAT_X8B8G8R8:
-					case FORMAT_A8B8G8R8:
-						{
-							unsigned char r8 = iround(red * 0xFF);
-							unsigned char g8 = iround(green * 0xFF);
-							unsigned char b8 = iround(blue * 0xFF);
-							unsigned char a8 = iround(alpha * 0xFF);
-							unsigned char a8b8g8r8[4] = {r8, g8, b8, a8};
-							unsigned int colorABGR = (unsigned int&)a8b8g8r8;
-
-							if(rgbaMask == 0xF || (internal.format == FORMAT_X8B8G8R8 && rgbaMask == 0x7))
-							{
-								memfill4(target, colorABGR, 4 * (x1 - x0));
-							}
-							else
-							{
-								unsigned int rgbaMask32 = (rgbaMask & 0x1 ? 0x000000FF : 0) | (rgbaMask & 0x2 ? 0x0000FF00 : 0) | (rgbaMask & 0x4 ? 0x00FF0000 : 0) | (rgbaMask & 0x8 ? 0xFF000000 : 0);
-								unsigned int invMask = ~rgbaMask32;
-								unsigned int maskedColor = colorABGR & rgbaMask32;
- 								unsigned int *target32 = (unsigned int*)target;
-
-								for(int x = 0; x < width; x++)
-								{
-									target32[x] = maskedColor | (target32[x] & invMask);
-								}
-							}
-						}
-						break;
-					case FORMAT_G8R8:
-						{
-							unsigned char r8 = iround(red * 0xFF);
-							unsigned char g8 = iround(green * 0xFF);
-							unsigned char g8r8[4] = {r8, g8, r8, g8};
-
-							if((rgbaMask & 0x3) == 0x3)
-							{
-								memfill4(target, (int&)g8r8, 2 * (x1 - x0));
-							}
-							else
-							{
-								unsigned short rgMask = (rgbaMask & 0x1 ? 0x000000FF : 0) | (rgbaMask & 0x2 ? 0x0000FF00 : 0);
-								unsigned short invMask = ~rgMask;
-								unsigned short maskedColor = (unsigned short&)g8r8 & rgMask;
-								unsigned short *target16 = (unsigned short*)target;
-
-								for(int x = 0; x < width; x++)
-								{
-									target16[x] = maskedColor | (target16[x] & invMask);
-								}
-							}
-						}
-						break;
-					case FORMAT_G16R16:
-						{
-							unsigned char r16 = iround(red * 0xFFFF);
-							unsigned char g16 = iround(green * 0xFFFF);
-							unsigned short g16r16[2] = {r16, g16};
-
-							if((rgbaMask & 0x3) == 0x3)
-							{
-								memfill4(target, (int&)g16r16, 4 * (x1 - x0));
-							}
-							else
-							{
-								unsigned int rgMask = (rgbaMask & 0x1 ? 0x0000FFFF : 0) | (rgbaMask & 0x2 ? 0xFFFF0000 : 0);
-								unsigned int invMask = ~rgMask;
-								unsigned int maskedColor = (unsigned int&)g16r16 & rgMask;
-								unsigned int *target32 = (unsigned int*)target;
-
-								for(int x = 0; x < width; x++)
-								{
-									target32[x] = maskedColor | (target32[x] & invMask);
-								}
-							}
-						}
-						break;
-					case FORMAT_A16B16G16R16:
-						{
-							unsigned char r16 = iround(red * 0xFFFF);
-							unsigned char g16 = iround(green * 0xFFFF);
-							unsigned char b16 = iround(blue * 0xFFFF);
-							unsigned char a16 = iround(alpha * 0xFFFF);
-
-							if(rgbaMask == 0xF)
-							{
-								for(int x = 0; x < width; x++)
-								{
-									((unsigned short*)target)[4 * x + 0] = r16;
-									((unsigned short*)target)[4 * x + 1] = g16;
-									((unsigned short*)target)[4 * x + 2] = b16;
-									((unsigned short*)target)[4 * x + 3] = a16;
-								}
-							}
-							else
-							{
-								if(rgbaMask & 0x1) for(int x = 0; x < width; x++) ((unsigned short*)target)[4 * x + 0] = r16;
-								if(rgbaMask & 0x2) for(int x = 0; x < width; x++) ((unsigned short*)target)[4 * x + 1] = g16;
-								if(rgbaMask & 0x4) for(int x = 0; x < width; x++) ((unsigned short*)target)[4 * x + 2] = b16;
-								if(rgbaMask & 0x8) for(int x = 0; x < width; x++) ((unsigned short*)target)[4 * x + 3] = a16;
-							}
-						}
-						break;
-					case FORMAT_R32F:
-						if(rgbaMask & 0x1)
-						{
-							for(int x = 0; x < width; x++)
-							{
-								((float*)target)[x] = red;
-							}
-						}
-						break;
-					case FORMAT_G32R32F:
-						if((rgbaMask & 0x3) == 0x3)
-						{
-							for(int x = 0; x < width; x++)
-							{
-								((float*)target)[2 * x + 0] = red;
-								((float*)target)[2 * x + 1] = green;
-							}
-						}
-						else
-						{
-							if(rgbaMask & 0x1) for(int x = 0; x < width; x++) ((float*)target)[2 * x + 0] = red;
-							if(rgbaMask & 0x2) for(int x = 0; x < width; x++) ((float*)target)[2 * x + 1] = green;
-						}
-						break;
-					case FORMAT_A32B32G32R32F:
-						if(rgbaMask == 0xF)
-						{
-							for(int x = 0; x < width; x++)
-							{
-								((float*)target)[4 * x + 0] = red;
-								((float*)target)[4 * x + 1] = green;
-								((float*)target)[4 * x + 2] = blue;
-								((float*)target)[4 * x + 3] = alpha;
-							}
-						}
-						else
-						{
-							if(rgbaMask & 0x1) for(int x = 0; x < width; x++) ((float*)target)[4 * x + 0] = red;
-							if(rgbaMask & 0x2) for(int x = 0; x < width; x++) ((float*)target)[4 * x + 1] = green;
-							if(rgbaMask & 0x4) for(int x = 0; x < width; x++) ((float*)target)[4 * x + 2] = blue;
-							if(rgbaMask & 0x8) for(int x = 0; x < width; x++) ((float*)target)[4 * x + 3] = alpha;
-						}
-						break;
-					case FORMAT_R5G6B5:
-						{
-							unsigned int r5 = iround(red * 0x1F);
-							unsigned int g6 = iround(green * 0x3F);
-							unsigned int b5 = iround(blue * 0x1F);
-							unsigned int r5g6b5 = (r5 << 11) | (g6 << 5) | b5;
-
-							if((rgbaMask & 0x7) == 0x7)
-							{
-								unsigned int r5g6b5r5g6b5 = r5g6b5 | (r5g6b5 << 16);
-								memfill4(target, r5g6b5r5g6b5, 2 * (x1 - x0));
-							}
-							else
-							{
-								unsigned short rgbMask = (rgbaMask & 0x1 ? 0xF800 : 0) | (rgbaMask & 0x2 ? 0x07E0 : 0) | (rgbaMask & 0x3 ? 0x001F : 0);
-								unsigned short invMask = ~rgbMask;
-								unsigned short maskedColor = r5g6b5 & rgbMask;
-								unsigned short *target16 = (unsigned short*)target;
-
-								for(int x = 0; x < width; x++)
-								{
-									target16[x] = maskedColor | (target16[x] & invMask);
-								}
-							}
-						}
-						break;
-					default:
-						ASSERT(false);
-					}
-
-					target += internal.pitchB;
-				}
-
-				buffer += internal.sliceB;
-			}
-
-			unlockInternal();
-		}
-	/*	else
-		{
-			int width2 = (internal.width + 1) & ~1;
-
-		//	unsigned char *target = (unsigned char*&)buffer;
-		//
-		//	for(int y = y0; y < y1; y++)
-		//	{
-		//		for(int x = x0; x < x1; x++)
-		//		{
-		//			target[width2 * 4 * (y & ~1) + 2 * (y & 1) + 8 * (x & ~1) + (x & 1) + 0] =  (color & 0x000000FF) >> 0;
-		//			target[width2 * 4 * (y & ~1) + 2 * (y & 1) + 8 * (x & ~1) + (x & 1) + 4] =  (color & 0x00FF0000) >> 16;
-		//			target[width2 * 4 * (y & ~1) + 2 * (y & 1) + 8 * (x & ~1) + (x & 1) + 8] =  (color & 0x0000FF00) >> 8;
-		//			target[width2 * 4 * (y & ~1) + 2 * (y & 1) + 8 * (x & ~1) + (x & 1) + 12] = (color & 0xFF000000) >> 24;
-		//		}
-		//	}
-
-			unsigned char colorQ[16];
-
-			colorQ[0] =  (color & 0x000000FF) >> 0;
-			colorQ[1] =  (color & 0x000000FF) >> 0;
-			colorQ[2] =  (color & 0x000000FF) >> 0;
-			colorQ[3] =  (color & 0x000000FF) >> 0;
-			colorQ[4] =  (color & 0x00FF0000) >> 16;
-			colorQ[5] =  (color & 0x00FF0000) >> 16;
-			colorQ[6] =  (color & 0x00FF0000) >> 16;
-			colorQ[7] =  (color & 0x00FF0000) >> 16;
-			colorQ[8] =  (color & 0x0000FF00) >> 8;
-			colorQ[9] =  (color & 0x0000FF00) >> 8;
-			colorQ[10] = (color & 0x0000FF00) >> 8;
-			colorQ[11] = (color & 0x0000FF00) >> 8;
-			colorQ[12] = (color & 0xFF000000) >> 24;
-			colorQ[13] = (color & 0xFF000000) >> 24;
-			colorQ[14] = (color & 0xFF000000) >> 24;
-			colorQ[15] = (color & 0xFF000000) >> 24;
-
-			for(int y = y0; y < y1; y++)
-			{
-				unsigned char *target = (unsigned char*)lockInternal(0, 0, 0, lock) + width2 * 4 * (y & ~1) + 2 * (y & 1);   // FIXME: Unlock
-
-				if((y & 1) == 0 && y + 1 < y1)   // Fill quad line at once
-				{
-					if((x0 & 1) != 0)
-					{
-						target[8 * (x0 & ~1) + 1 + 0] =  (color & 0x000000FF) >> 0;
-						target[8 * (x0 & ~1) + 1 + 4] =  (color & 0x00FF0000) >> 16;
-						target[8 * (x0 & ~1) + 1 + 8] =  (color & 0x0000FF00) >> 8;
-						target[8 * (x0 & ~1) + 1 + 12] = (color & 0xFF000000) >> 24;
-
-						target[8 * (x0 & ~1) + 3 + 0] =  (color & 0x000000FF) >> 0;
-						target[8 * (x0 & ~1) + 3 + 4] =  (color & 0x00FF0000) >> 16;
-						target[8 * (x0 & ~1) + 3 + 8] =  (color & 0x0000FF00) >> 8;
-						target[8 * (x0 & ~1) + 3 + 12] = (color & 0xFF000000) >> 24;
-					}
-
-					__asm
-					{
-						movq mm0, colorQ+0
-						movq mm1, colorQ+8
-
-						mov eax, x0
-						add eax, 1
-						and eax, 0xFFFFFFFE
-						cmp eax, x1
-						jge qEnd
-
-						mov edi, target
-
-					qLoop:
-						movntq [edi+8*eax+0], mm0
-						movntq [edi+8*eax+8], mm1
-
-						add eax, 2
-						cmp eax, x1
-						jl qLoop
-					qEnd:
-						emms
-					}
-
-					if((x1 & 1) != 0)
-					{
-						target[8 * (x1 & ~1) + 0 + 0] =  (color & 0x000000FF) >> 0;
-						target[8 * (x1 & ~1) + 0 + 4] =  (color & 0x00FF0000) >> 16;
-						target[8 * (x1 & ~1) + 0 + 8] =  (color & 0x0000FF00) >> 8;
-						target[8 * (x1 & ~1) + 0 + 12] = (color & 0xFF000000) >> 24;
-
-						target[8 * (x1 & ~1) + 2 + 0] =  (color & 0x000000FF) >> 0;
-						target[8 * (x1 & ~1) + 2 + 4] =  (color & 0x00FF0000) >> 16;
-						target[8 * (x1 & ~1) + 2 + 8] =  (color & 0x0000FF00) >> 8;
-						target[8 * (x1 & ~1) + 2 + 12] = (color & 0xFF000000) >> 24;
-					}
-
-					y++;
-				}
-				else
-				{
-					for(int x = x0; x < x1; x++)
-					{
-						target[8 * (x & ~1) + (x & 1) + 0] =  (color & 0x000000FF) >> 0;
-						target[8 * (x & ~1) + (x & 1) + 4] =  (color & 0x00FF0000) >> 16;
-						target[8 * (x & ~1) + (x & 1) + 8] =  (color & 0x0000FF00) >> 8;
-						target[8 * (x & ~1) + (x & 1) + 12] = (color & 0xFF000000) >> 24;
-					}
-				}
-			}
-		}*/
+		return true;
 	}
 
 	void Surface::clearDepthBuffer(float depth, int x0, int y0, int width, int height)
@@ -3693,55 +3449,13 @@ namespace sw
 		}
 	}
 
-	Color<float> Surface::readExternal(int x, int y, int z) const
-	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
-
-		return external.read(x, y, z);
-	}
-
-	Color<float> Surface::readExternal(int x, int y) const
-	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
-
-		return external.read(x, y);
-	}
-
-	Color<float> Surface::sampleExternal(float x, float y, float z) const
-	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
-
-		return external.sample(x, y, z);
-	}
-
-	Color<float> Surface::sampleExternal(float x, float y) const
-	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
-
-		return external.sample(x, y);
-	}
-
-	void Surface::writeExternal(int x, int y, int z, const Color<float> &color)
-	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
-
-		external.write(x, y, z, color);
-	}
-
-	void Surface::writeExternal(int x, int y, const Color<float> &color)
-	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
-
-		external.write(x, y, color);
-	}
-
-	void Surface::copyInternal(const Surface* source, int x, int y, float srcX, float srcY, bool filter)
+	void Surface::copyInternal(const Surface* source, int x, int y, float srcX, float srcY, const sw::BlitterOptions& options)
 	{
 		ASSERT(internal.lock != LOCK_UNLOCKED && source && source->internal.lock != LOCK_UNLOCKED);
 
 		sw::Color<float> color;
 
-		if(!filter)
+		if(!(options & USE_FILTER))
 		{
 			color = source->internal.read((int)srcX, (int)srcY);
 		}
@@ -3750,6 +3464,7 @@ namespace sw
 			color = source->internal.sample(srcX, srcY);
 		}
 
+		// FIXME: Support RGBA mask
 		internal.write(x, y, color);
 	}
 
@@ -3933,6 +3648,7 @@ namespace sw
 		case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
 		case FORMAT_RGBA8_ETC2_EAC:
 		case FORMAT_SRGB8_ALPHA8_ETC2_EAC:
+			return FORMAT_A8R8G8B8;
 		case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:
@@ -3947,7 +3663,6 @@ namespace sw
 		case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR:
-			return FORMAT_A8R8G8B8;
 		case FORMAT_RGBA_ASTC_4x4_KHR:
 		case FORMAT_RGBA_ASTC_5x4_KHR:
 		case FORMAT_RGBA_ASTC_5x5_KHR:
