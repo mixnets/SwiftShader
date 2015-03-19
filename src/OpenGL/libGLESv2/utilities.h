@@ -51,6 +51,8 @@ namespace es2
 	bool IsColorRenderable(GLenum internalformat);
 	bool IsDepthRenderable(GLenum internalformat);
 	bool IsStencilRenderable(GLenum internalformat);
+
+	const GLubyte* GetExtensions(GLuint index, GLuint* numExt = nullptr);
 }
 
 namespace es2sw

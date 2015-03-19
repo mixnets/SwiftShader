@@ -414,6 +414,8 @@ void GL_APIENTRY glBindBuffer(GLenum target, GLuint buffer)
 
 	if(context)
 	{
+		egl::GLint clientVersion = egl::getClientVersion();
+
 		switch(target)
 		{
 		case GL_ARRAY_BUFFER:
@@ -422,6 +424,48 @@ void GL_APIENTRY glBindBuffer(GLenum target, GLuint buffer)
 		case GL_ELEMENT_ARRAY_BUFFER:
 			context->bindElementArrayBuffer(buffer);
 			return;
+		case GL_COPY_READ_BUFFER:
+			if(clientVersion >= 3)
+			{
+				context->bindCopyReadBuffer(buffer);
+				return;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_COPY_WRITE_BUFFER:
+			if(clientVersion >= 3)
+			{
+				context->bindCopyWriteBuffer(buffer);
+				return;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_PIXEL_PACK_BUFFER:
+			if(clientVersion >= 3)
+			{
+				context->bindPixelPackBuffer(buffer);
+				return;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_PIXEL_UNPACK_BUFFER:
+			if(clientVersion >= 3)
+			{
+				context->bindPixelUnpackBuffer(buffer);
+				return;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TRANSFORM_FEEDBACK_BUFFER:
+			if(clientVersion >= 3)
+			{
+				context->bindTransformFeedbackBuffer(buffer);
+				return;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_UNIFORM_BUFFER:
+			if(clientVersion >= 3)
+			{
+				context->bindUniformBuffer(buffer);
+				return;
+			}
+			else return error(GL_INVALID_ENUM);
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -494,6 +538,8 @@ void GL_APIENTRY glBindTexture(GLenum target, GLuint texture)
 			return error(GL_INVALID_OPERATION);
 		}
 
+		egl::GLint clientVersion = egl::getClientVersion();
+
 		switch(target)
 		{
 		case GL_TEXTURE_2D:
@@ -505,6 +551,12 @@ void GL_APIENTRY glBindTexture(GLenum target, GLuint texture)
 		case GL_TEXTURE_EXTERNAL_OES:
 			context->bindTextureExternal(texture);
 			return;
+		case GL_TEXTURE_2D_ARRAY:
+			if(clientVersion < 3)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			// Fall through
 		case GL_TEXTURE_3D_OES:
 			context->bindTexture3D(texture);
 			return;
@@ -684,11 +736,24 @@ void GL_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid* data
 		return error(GL_INVALID_VALUE);
 	}
 
+	egl::GLint clientVersion = egl::getClientVersion();
+
 	switch(usage)
 	{
 	case GL_STREAM_DRAW:
 	case GL_STATIC_DRAW:
 	case GL_DYNAMIC_DRAW:
+		break;
+	case GL_STREAM_READ:
+	case GL_STREAM_COPY:
+	case GL_STATIC_READ:
+	case GL_STATIC_COPY:
+	case GL_DYNAMIC_READ:
+	case GL_DYNAMIC_COPY:
+		if(clientVersion < 3)
+		{
+			return error(GL_INVALID_ENUM);
+		}
 		break;
 	default:
 		return error(GL_INVALID_ENUM);
@@ -699,21 +764,14 @@ void GL_APIENTRY glBufferData(GLenum target, GLsizeiptr size, const GLvoid* data
 	if(context)
 	{
 		es2::Buffer *buffer;
-
-		switch(target)
+		if(!context->getBuffer(target, &buffer))
 		{
-		case GL_ARRAY_BUFFER:
-			buffer = context->getArrayBuffer();
-			break;
-		case GL_ELEMENT_ARRAY_BUFFER:
-			buffer = context->getElementArrayBuffer();
-			break;
-		default:
 			return error(GL_INVALID_ENUM);
 		}
 
 		if(!buffer)
 		{
+			// A null buffer means that "0" is bound to the requested buffer target
 			return error(GL_INVALID_OPERATION);
 		}
 
@@ -744,21 +802,14 @@ void GL_APIENTRY glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size
 	if(context)
 	{
 		es2::Buffer *buffer;
-
-		switch(target)
+		if(!context->getBuffer(target, &buffer))
 		{
-		case GL_ARRAY_BUFFER:
-			buffer = context->getArrayBuffer();
-			break;
-		case GL_ELEMENT_ARRAY_BUFFER:
-			buffer = context->getElementArrayBuffer();
-			break;
-		default:
 			return error(GL_INVALID_ENUM);
 		}
 
 		if(!buffer)
 		{
+			// A null buffer means that "0" is bound to the requested buffer target
 			return error(GL_INVALID_OPERATION);
 		}
 
@@ -905,10 +956,32 @@ void GL_APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum inter
 		return error(GL_INVALID_VALUE);
 	}
 
+	egl::GLint clientVersion = egl::getClientVersion();
+
 	switch(internalformat)
 	{
 	case GL_ETC1_RGB8_OES:
+		if(clientVersion < 3)
+		{
+			// This isn't supported by default in ES3
+			return error(GL_INVALID_ENUM);
+		}
 		break;
+	case GL_COMPRESSED_R11_EAC:
+	case GL_COMPRESSED_SIGNED_R11_EAC:
+	case GL_COMPRESSED_RG11_EAC:
+	case GL_COMPRESSED_SIGNED_RG11_EAC:
+	case GL_COMPRESSED_RGB8_ETC2:
+	case GL_COMPRESSED_SRGB8_ETC2:
+	case GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+	case GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+	case GL_COMPRESSED_RGBA8_ETC2_EAC:
+	case GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:
+		if(clientVersion >= 3)
+		{
+			break;
+		}
+		return error(GL_INVALID_ENUM);
 	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
@@ -1031,10 +1104,32 @@ void GL_APIENTRY glCompressedTexSubImage2D(GLenum target, GLint level, GLint xof
 		return error(GL_INVALID_VALUE);
 	}
 
+	egl::GLint clientVersion = egl::getClientVersion();
+
 	switch(format)
 	{
 	case GL_ETC1_RGB8_OES:
+		if(clientVersion < 3)
+		{
+			// This isn't supported by default in ES3
+			return error(GL_INVALID_ENUM);
+		}
 		break;
+	case GL_COMPRESSED_R11_EAC:
+	case GL_COMPRESSED_SIGNED_R11_EAC:
+	case GL_COMPRESSED_RG11_EAC:
+	case GL_COMPRESSED_SIGNED_RG11_EAC:
+	case GL_COMPRESSED_RGB8_ETC2:
+	case GL_COMPRESSED_SRGB8_ETC2:
+	case GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+	case GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+	case GL_COMPRESSED_RGBA8_ETC2_EAC:
+	case GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:
+		if(clientVersion >= 3)
+		{
+			break;
+		}
+		return error(GL_INVALID_ENUM);
 	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
@@ -1667,6 +1762,12 @@ void GL_APIENTRY glDrawArrays(GLenum mode, GLint first, GLsizei count)
 
 	if(context)
 	{
+		es2::TransformFeedback* transformFeedback = context->getTransformFeedback();
+		if(transformFeedback && transformFeedback->isActive() && (mode != transformFeedback->primitiveMode()))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+
 		context->drawArrays(mode, first, count);
 	}
 }
@@ -1675,6 +1776,20 @@ void GL_APIENTRY glDrawElements(GLenum mode, GLsizei count, GLenum type, const G
 {
 	TRACE("(GLenum mode = 0x%X, GLsizei count = %d, GLenum type = 0x%X, const GLvoid* indices = 0x%0.8p)",
 	      mode, count, type, indices);
+
+	switch(mode)
+	{
+	case GL_POINTS:
+	case GL_LINES:
+	case GL_LINE_LOOP:
+	case GL_LINE_STRIP:
+	case GL_TRIANGLES:
+	case GL_TRIANGLE_FAN:
+	case GL_TRIANGLE_STRIP:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
 
 	if(count < 0)
 	{
@@ -1685,6 +1800,12 @@ void GL_APIENTRY glDrawElements(GLenum mode, GLsizei count, GLenum type, const G
 
 	if(context)
 	{
+		es2::TransformFeedback* transformFeedback = context->getTransformFeedback();
+		if(transformFeedback && transformFeedback->isActive() && !transformFeedback->isPaused())
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+
 		switch(type)
 		{
 		case GL_UNSIGNED_BYTE:
@@ -1840,6 +1961,8 @@ void GL_APIENTRY glFramebufferRenderbuffer(GLenum target, GLenum attachment, GLe
 			return error(GL_INVALID_OPERATION);
 		}
 
+		egl::GLint clientVersion = egl::getClientVersion();
+
 		switch(attachment)
 		{
 		case GL_COLOR_ATTACHMENT0:
@@ -1851,6 +1974,14 @@ void GL_APIENTRY glFramebufferRenderbuffer(GLenum target, GLenum attachment, GLe
 		case GL_STENCIL_ATTACHMENT:
 			framebuffer->setStencilbuffer(GL_RENDERBUFFER, renderbuffer);
 			break;
+		case GL_DEPTH_STENCIL_ATTACHMENT:
+			if(clientVersion >= 3)
+			{
+				framebuffer->setDepthbuffer(GL_RENDERBUFFER, renderbuffer);
+				framebuffer->setStencilbuffer(GL_RENDERBUFFER, renderbuffer);
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -2007,6 +2138,8 @@ void GL_APIENTRY glGenerateMipmap(GLenum target)
 	{
 		es2::Texture *texture;
 
+		egl::GLint clientVersion = egl::getClientVersion();
+
 		switch(target)
 		{
 		case GL_TEXTURE_2D:
@@ -2014,6 +2147,15 @@ void GL_APIENTRY glGenerateMipmap(GLenum target)
 			break;
 		case GL_TEXTURE_CUBE_MAP:
 			texture = context->getTextureCubeMap();
+			break;
+		case GL_TEXTURE_2D_ARRAY:
+			if(clientVersion < 3)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			// Fall through
+		case GL_TEXTURE_3D:
+			texture = context->getTexture3D();
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -2335,16 +2477,8 @@ void GL_APIENTRY glGetBufferParameteriv(GLenum target, GLenum pname, GLint* para
 	if(context)
 	{
 		es2::Buffer *buffer;
-
-		switch(target)
+		if(!context->getBuffer(target, &buffer))
 		{
-		case GL_ARRAY_BUFFER:
-			buffer = context->getArrayBuffer();
-			break;
-		case GL_ELEMENT_ARRAY_BUFFER:
-			buffer = context->getElementArrayBuffer();
-			break;
-		default:
 			return error(GL_INVALID_ENUM);
 		}
 
@@ -2354,6 +2488,8 @@ void GL_APIENTRY glGetBufferParameteriv(GLenum target, GLenum pname, GLint* para
 			return error(GL_INVALID_OPERATION);
 		}
 
+		egl::GLint clientVersion = egl::getClientVersion();
+
 		switch(pname)
 		{
 		case GL_BUFFER_USAGE:
@@ -2362,6 +2498,34 @@ void GL_APIENTRY glGetBufferParameteriv(GLenum target, GLenum pname, GLint* para
 		case GL_BUFFER_SIZE:
 			*params = buffer->size();
 			break;
+		case GL_BUFFER_ACCESS_FLAGS:
+			if(clientVersion >= 3)
+			{
+				*params = buffer->access();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_BUFFER_MAPPED:
+			if(clientVersion >= 3)
+			{
+				*params = buffer->mapped();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_BUFFER_MAP_LENGTH:
+			if(clientVersion >= 3)
+			{
+				*params = buffer->length();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_BUFFER_MAP_OFFSET:
+			if(clientVersion >= 3)
+			{
+				*params = buffer->offset();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -2488,6 +2652,8 @@ void GL_APIENTRY glGetFramebufferAttachmentParameteriv(GLenum target, GLenum att
 			framebuffer = context->getDrawFramebuffer();
 		}
 
+		egl::GLint clientVersion = egl::getClientVersion();
+
 		GLenum attachmentType;
 		GLuint attachmentHandle;
 		switch(attachment)
@@ -2504,6 +2670,18 @@ void GL_APIENTRY glGetFramebufferAttachmentParameteriv(GLenum target, GLenum att
 			attachmentType = framebuffer->getStencilbufferType();
 			attachmentHandle = framebuffer->getStencilbufferName();
 			break;
+		case GL_DEPTH_STENCIL_ATTACHMENT:
+			if(clientVersion >= 3)
+			{
+				attachmentType = framebuffer->getDepthbufferType();
+				attachmentHandle = framebuffer->getDepthbufferName();
+				if(attachmentHandle != framebuffer->getStencilbufferName())
+				{
+					// Different attachments to DEPTH and STENCIL, query fails
+					return error(GL_INVALID_OPERATION);
+				}
+			}
+			else return error(GL_INVALID_ENUM);
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -2561,6 +2739,14 @@ void GL_APIENTRY glGetFramebufferAttachmentParameteriv(GLenum target, GLenum att
 				return error(GL_INVALID_ENUM);
 			}
 			break;
+		case GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER:
+			if(clientVersion >= 3)
+			{
+				*params = 0;
+				UNIMPLEMENTED();
+			}
+			else return error(GL_INVALID_ENUM);
+			break;
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -2601,10 +2787,7 @@ void GL_APIENTRY glGetIntegerv(GLenum pname, GLint* params)
 
 				for(unsigned int i = 0; i < numParams; ++i)
 				{
-					if(boolParams[i] == GL_FALSE)
-						params[i] = 0;
-					else
-						params[i] = 1;
+					params[i] = (boolParams[i] == GL_FALSE) ? 0 : 1;
 				}
 
 				delete [] boolParams;
@@ -2620,7 +2803,7 @@ void GL_APIENTRY glGetIntegerv(GLenum pname, GLint* params)
 				{
 					if(pname == GL_DEPTH_RANGE || pname == GL_COLOR_CLEAR_VALUE || pname == GL_DEPTH_CLEAR_VALUE || pname == GL_BLEND_COLOR)
 					{
-						params[i] = (GLint)(((GLfloat)(0xFFFFFFFF) * floatParams[i] - 1.0f) / 2.0f);
+						params[i] = (GLint)(((GLfloat)(0xFFFFFFFF) * floatParams[i] - 1.0f) * 0.5f);
 					}
 					else
 					{
@@ -2648,6 +2831,8 @@ void GL_APIENTRY glGetProgramiv(GLuint program, GLenum pname, GLint* params)
 		{
 			return error(GL_INVALID_VALUE);
 		}
+
+		egl::GLint clientVersion = egl::getClientVersion();
 
 		switch(pname)
 		{
@@ -2678,6 +2863,17 @@ void GL_APIENTRY glGetProgramiv(GLuint program, GLenum pname, GLint* params)
 		case GL_ACTIVE_UNIFORM_MAX_LENGTH:
 			*params = programObject->getActiveUniformMaxLength();
 			return;
+		case GL_ACTIVE_UNIFORM_BLOCKS:
+		case GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH:
+		case GL_PROGRAM_BINARY_RETRIEVABLE_HINT:
+		case GL_TRANSFORM_FEEDBACK_BUFFER_MODE:
+		case GL_TRANSFORM_FEEDBACK_VARYINGS:
+		case GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH:
+			if(clientVersion >= 3)
+			{
+				UNIMPLEMENTED();
+			}
+			else return error(GL_INVALID_ENUM);
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -2942,7 +3138,7 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
 	switch(name)
 	{
 	case GL_VENDOR:
-		return (GLubyte*)"TransGaming Inc.";
+		return (GLubyte*)"Google Inc.";
 	case GL_RENDERER:
 		return (GLubyte*)"SwiftShader";
 	case GL_VERSION:
@@ -2950,42 +3146,7 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
 	case GL_SHADING_LANGUAGE_VERSION:
 		return (GLubyte*)"OpenGL ES GLSL ES 1.00 SwiftShader " VERSION_STRING;
 	case GL_EXTENSIONS:
-		// Keep list sorted in following order:
-		// OES extensions
-		// EXT extensions
-		// Vendor extensions
-		return (GLubyte*)
-			"GL_OES_compressed_ETC1_RGB8_texture "
-			"GL_OES_depth_texture "
-			"GL_OES_depth_texture_cube_map "
-			"GL_OES_EGL_image "
-			"GL_OES_EGL_image_external "
-			"GL_OES_element_index_uint "
-			"GL_OES_packed_depth_stencil "
-			"GL_OES_rgb8_rgba8 "
-			"GL_OES_standard_derivatives "
-			"GL_OES_texture_float "
-			"GL_OES_texture_float_linear "
-			"GL_OES_texture_half_float "
-			"GL_OES_texture_half_float_linear "
-			"GL_OES_texture_npot "
-			"GL_OES_texture_3D "
-			"GL_EXT_blend_minmax "
-			"GL_EXT_occlusion_query_boolean "
-			"GL_EXT_read_format_bgra "
-			#if (S3TC_SUPPORT)
-			"GL_EXT_texture_compression_dxt1 "
-			#endif
-			"GL_EXT_texture_filter_anisotropic "
-			"GL_EXT_texture_format_BGRA8888 "
-			"GL_ANGLE_framebuffer_blit "
-			"GL_NV_framebuffer_blit "
-			"GL_ANGLE_framebuffer_multisample "
-			#if (S3TC_SUPPORT)
-			"GL_ANGLE_texture_compression_dxt3 "
-			"GL_ANGLE_texture_compression_dxt5 "
-			#endif
-			"GL_NV_fence";
+		return es2::GetExtensions(GL_INVALID_INDEX);
 	default:
 		return error(GL_INVALID_ENUM, (GLubyte*)NULL);
 	}
@@ -3001,6 +3162,8 @@ void GL_APIENTRY glGetTexParameterfv(GLenum target, GLenum pname, GLfloat* param
 	{
 		es2::Texture *texture;
 
+		egl::GLint clientVersion = egl::getClientVersion();
+
 		switch(target)
 		{
 		case GL_TEXTURE_2D:
@@ -3011,6 +3174,15 @@ void GL_APIENTRY glGetTexParameterfv(GLenum target, GLenum pname, GLfloat* param
 			break;
 		case GL_TEXTURE_EXTERNAL_OES:
 			texture = context->getTextureExternal();
+			break;
+		case GL_TEXTURE_2D_ARRAY:
+			if(clientVersion < 3)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			// Fall through
+		case GL_TEXTURE_3D_OES:
+			texture = context->getTexture3D();
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -3039,6 +3211,83 @@ void GL_APIENTRY glGetTexParameterfv(GLenum target, GLenum pname, GLfloat* param
 		case GL_REQUIRED_TEXTURE_IMAGE_UNITS_OES:
 			*params = (GLfloat)1;
 			break;
+		case GL_TEXTURE_BASE_LEVEL:
+			if(clientVersion >= 3)
+			{
+				*params = (GLfloat)texture->getBaseLevel();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_COMPARE_FUNC:
+			if(clientVersion >= 3)
+			{
+				*params = (GLfloat)texture->getCompareFunc();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_COMPARE_MODE:
+			if(clientVersion >= 3)
+			{
+				*params = (GLfloat)texture->getCompareMode();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_IMMUTABLE_FORMAT:
+			if(clientVersion >= 3)
+			{
+				*params = (GLfloat)texture->getImmutableFormat();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_MAX_LEVEL:
+			if(clientVersion >= 3)
+			{
+				*params = (GLfloat)texture->getMaxLevel();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_MAX_LOD:
+			if(clientVersion >= 3)
+			{
+				*params = texture->getMaxLOD();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_MIN_LOD:
+			if(clientVersion >= 3)
+			{
+				*params = texture->getMinLOD();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_SWIZZLE_R:
+			if(clientVersion >= 3)
+			{
+				*params = (GLfloat)texture->getSwizzleR();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_SWIZZLE_G:
+			if(clientVersion >= 3)
+			{
+				*params = (GLfloat)texture->getSwizzleG();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_SWIZZLE_B:
+			if(clientVersion >= 3)
+			{
+				*params = (GLfloat)texture->getSwizzleB();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_SWIZZLE_A:
+			if(clientVersion >= 3)
+			{
+				*params = (GLfloat)texture->getSwizzleA();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -3055,6 +3304,8 @@ void GL_APIENTRY glGetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 	{
 		es2::Texture *texture;
 
+		egl::GLint clientVersion = egl::getClientVersion();
+
 		switch(target)
 		{
 		case GL_TEXTURE_2D:
@@ -3065,6 +3316,15 @@ void GL_APIENTRY glGetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 			break;
 		case GL_TEXTURE_EXTERNAL_OES:
 			texture = context->getTextureExternal();
+			break;
+		case GL_TEXTURE_2D_ARRAY:
+			if(clientVersion < 3)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			// Fall through
+		case GL_TEXTURE_3D_OES:
+			texture = context->getTexture3D();
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -3093,6 +3353,83 @@ void GL_APIENTRY glGetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 		case GL_REQUIRED_TEXTURE_IMAGE_UNITS_OES:
 			*params = 1;
 			break;
+		case GL_TEXTURE_BASE_LEVEL:
+			if(clientVersion >= 3)
+			{
+				*params = texture->getBaseLevel();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_COMPARE_FUNC:
+			if(clientVersion >= 3)
+			{
+				*params = (GLint)texture->getCompareFunc();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_COMPARE_MODE:
+			if(clientVersion >= 3)
+			{
+				*params = (GLint)texture->getCompareMode();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_IMMUTABLE_FORMAT:
+			if(clientVersion >= 3)
+			{
+				*params = (GLint)texture->getImmutableFormat();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_MAX_LEVEL:
+			if(clientVersion >= 3)
+			{
+				*params = texture->getMaxLevel();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_MAX_LOD:
+			if(clientVersion >= 3)
+			{
+				*params = (GLint)texture->getMaxLOD();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_MIN_LOD:
+			if(clientVersion >= 3)
+			{
+				*params = (GLint)texture->getMinLOD();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_SWIZZLE_R:
+			if(clientVersion >= 3)
+			{
+				*params = (GLint)texture->getSwizzleR();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_SWIZZLE_G:
+			if(clientVersion >= 3)
+			{
+				*params = (GLint)texture->getSwizzleG();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_SWIZZLE_B:
+			if(clientVersion >= 3)
+			{
+				*params = (GLint)texture->getSwizzleB();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_TEXTURE_SWIZZLE_A:
+			if(clientVersion >= 3)
+			{
+				*params = (GLint)texture->getSwizzleA();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -3281,6 +3618,8 @@ void GL_APIENTRY glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat* params
 		}
 
 		const es2::VertexAttribute &attribState = context->getVertexAttribState(index);
+		
+		egl::GLint clientVersion = egl::getClientVersion();
 
 		switch(pname)
 		{
@@ -3305,9 +3644,36 @@ void GL_APIENTRY glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat* params
 		case GL_CURRENT_VERTEX_ATTRIB:
 			for(int i = 0; i < 4; ++i)
 			{
-				params[i] = attribState.mCurrentValue[i];
+				params[i] = attribState.getCurrentValue(i);
 			}
 			break;
+		case GL_VERTEX_ATTRIB_ARRAY_INTEGER:
+			if(clientVersion >= 3) {
+				switch(attribState.mType)
+				{
+				case GL_BYTE:
+				case GL_UNSIGNED_BYTE:
+				case GL_SHORT:
+				case GL_UNSIGNED_SHORT:
+				case GL_INT:
+				case GL_INT_2_10_10_10_REV:
+				case GL_UNSIGNED_INT:
+				case GL_FIXED:
+					*params = (GLfloat)GL_TRUE;
+					break;
+				default:
+					*params = (GLfloat)GL_FALSE;
+					break;
+				}
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_VERTEX_ATTRIB_ARRAY_DIVISOR:
+			if(clientVersion >= 3) {
+				*params = (GLfloat)attribState.mDivisor;
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
 		default: return error(GL_INVALID_ENUM);
 		}
 	}
@@ -3327,6 +3693,8 @@ void GL_APIENTRY glGetVertexAttribiv(GLuint index, GLenum pname, GLint* params)
 		}
 
 		const es2::VertexAttribute &attribState = context->getVertexAttribState(index);
+
+		egl::GLint clientVersion = egl::getClientVersion();
 
 		switch(pname)
 		{
@@ -3351,10 +3719,37 @@ void GL_APIENTRY glGetVertexAttribiv(GLuint index, GLenum pname, GLint* params)
 		case GL_CURRENT_VERTEX_ATTRIB:
 			for(int i = 0; i < 4; ++i)
 			{
-				float currentValue = attribState.mCurrentValue[i];
+				float currentValue = attribState.getCurrentValue(i);
 				params[i] = (GLint)(currentValue > 0.0f ? floor(currentValue + 0.5f) : ceil(currentValue - 0.5f));
 			}
 			break;
+		case GL_VERTEX_ATTRIB_ARRAY_INTEGER:
+			if(clientVersion >= 3) {
+				switch(attribState.mType)
+				{
+				case GL_BYTE:
+				case GL_UNSIGNED_BYTE:
+				case GL_SHORT:
+				case GL_UNSIGNED_SHORT:
+				case GL_INT:
+				case GL_INT_2_10_10_10_REV:
+				case GL_UNSIGNED_INT:
+				case GL_FIXED:
+					*params = GL_TRUE;
+					break;
+				default:
+					*params = GL_FALSE;
+					break;
+				}
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
+		case GL_VERTEX_ATTRIB_ARRAY_DIVISOR:
+			if(clientVersion >= 3) {
+				*params = attribState.mDivisor;
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
 		default: return error(GL_INVALID_ENUM);
 		}
 	}
@@ -3448,6 +3843,8 @@ GLboolean GL_APIENTRY glIsEnabled(GLenum cap)
 		case GL_DEPTH_TEST:               return context->isDepthTestEnabled();
 		case GL_BLEND:                    return context->isBlendEnabled();
 		case GL_DITHER:                   return context->isDitherEnabled();
+		case GL_PRIMITIVE_RESTART_FIXED_INDEX: return context->isPrimitiveRestartFixedIndexEnabled();
+		case GL_RASTERIZER_DISCARD:       return context->isRasterizerDiscardEnabled();
 		default:
 			return error(GL_INVALID_ENUM, false);
 		}
@@ -3647,6 +4044,8 @@ void GL_APIENTRY glPixelStorei(GLenum pname, GLint param)
 
 	if(context)
 	{
+		egl::GLint clientVersion = egl::getClientVersion();
+
 		switch(pname)
 		{
 		case GL_UNPACK_ALIGNMENT:
@@ -3663,6 +4062,22 @@ void GL_APIENTRY glPixelStorei(GLenum pname, GLint param)
 			}
 			context->setPackAlignment(param);
 			break;
+		case GL_PACK_ROW_LENGTH:
+		case GL_PACK_SKIP_PIXELS:
+		case GL_PACK_SKIP_ROWS:
+		case GL_UNPACK_ROW_LENGTH:
+		case GL_UNPACK_IMAGE_HEIGHT:
+		case GL_UNPACK_SKIP_PIXELS:
+		case GL_UNPACK_SKIP_ROWS:
+		case GL_UNPACK_SKIP_IMAGES:
+		// FIXME: these cases are missing	
+		//case GL_PACK_IMAGE_HEIGHT:
+		//case GL_PACK_SKIP_IMAGES:
+			if(clientVersion >= 3) {
+				UNIMPLEMENTED();
+				break;
+			}
+			else return error(GL_INVALID_ENUM);
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -4117,29 +4532,538 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat, 
 				return error(GL_INVALID_ENUM);
 			}
 			break;
-		case GL_RGB:
-			switch(type)
+		case GL_RED:
+			switch(internalformat)
 			{
-			case GL_UNSIGNED_BYTE:
-			case GL_UNSIGNED_SHORT_5_6_5:
-			case GL_FLOAT:
-			case GL_HALF_FLOAT_OES:
+			case GL_R8:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_R8_SNORM:
+				switch(type)
+				{
+				case GL_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_R16F:
+				switch(type)
+				{
+				case GL_FLOAT:
+				case GL_HALF_FLOAT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_R32F:
+				switch(type)
+				{
+				case GL_FLOAT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
 				break;
 			default:
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_RED_INTEGER:
+			switch(internalformat)
+			{
+			case GL_R8UI:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_R8I:
+				switch(type)
+				{
+				case GL_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_R16UI:
+				switch(type)
+				{
+				case GL_UNSIGNED_SHORT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_R16I:
+				switch(type)
+				{
+				case GL_SHORT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_R32UI:
+				switch(type)
+				{
+				case GL_UNSIGNED_INT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_R32I:
+				switch(type)
+				{
+				case GL_INT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			default:
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_RG_INTEGER:
+			switch(internalformat)
+			{
+			case GL_RG8UI:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RG8I:
+				switch(type)
+				{
+				case GL_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RG16UI:
+				switch(type)
+				{
+				case GL_UNSIGNED_SHORT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RG16I:
+				switch(type)
+				{
+				case GL_SHORT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RG32UI:
+				switch(type)
+				{
+				case GL_UNSIGNED_INT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RG32I:
+				switch(type)
+				{
+				case GL_INT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			default:
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_RGB_INTEGER:
+			switch(internalformat)
+			{
+			case GL_RGB8UI:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB8I:
+				switch(type)
+				{
+				case GL_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB16UI:
+				switch(type)
+				{
+				case GL_UNSIGNED_SHORT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB16I:
+				switch(type)
+				{
+				case GL_SHORT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB32UI:
+				switch(type)
+				{
+				case GL_UNSIGNED_INT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB32I:
+				switch(type)
+				{
+				case GL_INT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			default:
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_RGBA_INTEGER:
+			switch(internalformat)
+			{
+			case GL_RGBA8UI:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGBA8I:
+				switch(type)
+				{
+				case GL_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB10_A2UI:
+				switch(type)
+				{
+				case GL_UNSIGNED_INT_2_10_10_10_REV:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGBA16UI:
+				switch(type)
+				{
+				case GL_UNSIGNED_SHORT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGBA16I:
+				switch(type)
+				{
+				case GL_SHORT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGBA32UI:
+				switch(type)
+				{
+				case GL_INT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGBA32I:
+				switch(type)
+				{
+				case GL_UNSIGNED_INT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			default:
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_RG:
+			switch(internalformat)
+			{
+			case GL_RG8:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RG8_SNORM:
+				switch(type)
+				{
+				case GL_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RG16F:
+				switch(type)
+				{
+				case GL_FLOAT:
+				case GL_HALF_FLOAT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RG32F:
+				switch(type)
+				{
+				case GL_FLOAT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			default:
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_RGB:
+			switch(internalformat)
+			{
+			case GL_RGB:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+				case GL_UNSIGNED_SHORT_5_6_5:
+				case GL_FLOAT:
+				case GL_HALF_FLOAT_OES:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB8:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_SRGB8:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB565:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+				case GL_UNSIGNED_SHORT_5_6_5:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB8_SNORM:
+				switch(type)
+				{
+				case GL_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_R11F_G11F_B10F:
+				switch(type)
+				{
+				case GL_UNSIGNED_INT_10F_11F_11F_REV:
+				case GL_FLOAT:
+				case GL_HALF_FLOAT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB9_E5:
+				switch(type)
+				{
+				case GL_UNSIGNED_INT_5_9_9_9_REV:
+				case GL_FLOAT:
+				case GL_HALF_FLOAT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB16F:
+				switch(type)
+				{
+				case GL_FLOAT:
+				case GL_HALF_FLOAT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB32F:
+				switch(type)
+				{
+				case GL_FLOAT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			default:
+				return error(GL_INVALID_VALUE);
 			}
 			break;
 		case GL_RGBA:
-			switch(type)
+			switch(internalformat)
 			{
-			case GL_UNSIGNED_BYTE:
-			case GL_UNSIGNED_SHORT_4_4_4_4:
-			case GL_UNSIGNED_SHORT_5_5_5_1:
-			case GL_FLOAT:
-			case GL_HALF_FLOAT_OES:
+			case GL_RGBA:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+				case GL_UNSIGNED_SHORT_4_4_4_4:
+				case GL_UNSIGNED_SHORT_5_5_5_1:
+				case GL_FLOAT:
+				case GL_HALF_FLOAT_OES:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGBA8:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_SRGB8_ALPHA8:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB5_A1:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+				case GL_UNSIGNED_SHORT_5_5_5_1:
+				case GL_UNSIGNED_INT_2_10_10_10_REV:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGBA8_SNORM:
+				switch(type)
+				{
+				case GL_BYTE:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGBA4:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+				case GL_UNSIGNED_SHORT_4_4_4_4:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGB10_A2:
+				switch(type)
+				{
+				case GL_UNSIGNED_INT_2_10_10_10_REV:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGBA16F:
+				switch(type)
+				{
+				case GL_FLOAT:
+				case GL_HALF_FLOAT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_RGBA32F:
+				switch(type)
+				{
+				case GL_FLOAT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
 				break;
 			default:
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_VALUE);
 			}
 			break;
 		case GL_BGRA_EXT:
@@ -4166,22 +5090,65 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat, 
 				return error(GL_INVALID_ENUM);
 			}
 		case GL_DEPTH_COMPONENT:
-			switch(type)
+			switch(internalformat)
 			{
-			case GL_UNSIGNED_SHORT:
-			case GL_UNSIGNED_INT:
+			case GL_DEPTH_COMPONENT:
+			case GL_DEPTH_COMPONENT16:
+				switch(type)
+				{
+				case GL_UNSIGNED_SHORT:
+				case GL_UNSIGNED_INT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_DEPTH_COMPONENT24:
+				switch(type)
+				{
+				case GL_UNSIGNED_INT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_DEPTH_COMPONENT32F:
+				switch(type)
+				{
+				case GL_UNSIGNED_INT:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
 				break;
 			default:
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_VALUE);
 			}
 			break;
 		case GL_DEPTH_STENCIL_OES:
-			switch(type)
+			switch(internalformat)
 			{
-			case GL_UNSIGNED_INT_24_8_OES:
+			case GL_DEPTH_STENCIL_OES:
+			case GL_DEPTH24_STENCIL8:
+				switch(type)
+				{
+				case GL_UNSIGNED_INT_24_8_OES:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
+				break;
+			case GL_DEPTH32F_STENCIL8:
+				switch(type)
+				{
+				case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
+					break;
+				default:
+					return error(GL_INVALID_ENUM);
+				}
 				break;
 			default:
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_VALUE);
 			}
 			break;
 		default:
@@ -4258,11 +5225,19 @@ void GL_APIENTRY glTexParameterf(GLenum target, GLenum pname, GLfloat param)
 	{
 		es2::Texture *texture;
 
+		egl::GLint clientVersion = egl::getClientVersion();
+
 		switch(target)
 		{
 		case GL_TEXTURE_2D:
 			texture = context->getTexture2D();
 			break;
+		case GL_TEXTURE_2D_ARRAY:
+			if(clientVersion < 3)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			// Fall through
 		case GL_TEXTURE_3D_OES:
 			texture = context->getTexture3D();
 			break;
@@ -4314,6 +5289,72 @@ void GL_APIENTRY glTexParameterf(GLenum target, GLenum pname, GLfloat param)
 				return error(GL_INVALID_VALUE);
 			}
 			break;
+		case GL_TEXTURE_BASE_LEVEL:
+			if(clientVersion < 3 || !texture->setBaseLevel((GLint)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_COMPARE_FUNC:
+			if(clientVersion < 3 || !texture->setCompareFunc((GLenum)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_COMPARE_MODE:
+			if(clientVersion < 3 || !texture->setCompareMode((GLenum)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_IMMUTABLE_FORMAT:
+			if(clientVersion < 3 || !texture->setCompareMode((GLboolean)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_MAX_LEVEL:
+			if(clientVersion < 3 || !texture->setMaxLevel((GLint)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_MAX_LOD:
+			if(clientVersion < 3 || !texture->setMaxLOD(param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_MIN_LOD:
+			if(clientVersion < 3 || !texture->setMinLOD(param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_SWIZZLE_R:
+			if(clientVersion < 3 || !texture->setSwizzleR((GLenum)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_SWIZZLE_G:
+			if(clientVersion < 3 || !texture->setSwizzleG((GLenum)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_SWIZZLE_B:
+			if(clientVersion < 3 || !texture->setSwizzleB((GLenum)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_SWIZZLE_A:
+			if(clientVersion < 3 || !texture->setSwizzleA((GLenum)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -4335,11 +5376,19 @@ void GL_APIENTRY glTexParameteri(GLenum target, GLenum pname, GLint param)
 	{
 		es2::Texture *texture;
 
+		egl::GLint clientVersion = egl::getClientVersion();
+
 		switch(target)
 		{
 		case GL_TEXTURE_2D:
 			texture = context->getTexture2D();
 			break;
+		case GL_TEXTURE_2D_ARRAY:
+			if(clientVersion < 3)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			// Fall through
 		case GL_TEXTURE_3D_OES:
 			texture = context->getTexture3D();
 			break;
@@ -4387,6 +5436,71 @@ void GL_APIENTRY glTexParameteri(GLenum target, GLenum pname, GLint param)
 			break;
 		case GL_TEXTURE_MAX_ANISOTROPY_EXT:
 			if(!texture->setMaxAnisotropy((GLfloat)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_BASE_LEVEL:
+			if(clientVersion < 3 || !texture->setBaseLevel(param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_COMPARE_FUNC:
+			if(clientVersion < 3 || !texture->setCompareFunc((GLenum)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_COMPARE_MODE:
+			if(clientVersion < 3 || !texture->setCompareMode((GLenum)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+		case GL_TEXTURE_IMMUTABLE_FORMAT:
+			if(clientVersion < 3 || !texture->setCompareMode((GLboolean)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_MAX_LEVEL:
+			if(clientVersion < 3 || !texture->setMaxLevel(param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_MAX_LOD:
+			if(clientVersion < 3 || !texture->setMaxLOD((GLfloat)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_MIN_LOD:
+			if(clientVersion < 3 || !texture->setMinLOD((GLfloat)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_SWIZZLE_R:
+			if(clientVersion < 3 || !texture->setSwizzleR((GLenum)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_SWIZZLE_G:
+			if(clientVersion < 3 || !texture->setSwizzleG((GLenum)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_SWIZZLE_B:
+			if(clientVersion < 3 || !texture->setSwizzleB((GLenum)param))
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			break;
+		case GL_TEXTURE_SWIZZLE_A:
+			if(clientVersion < 3 || !texture->setSwizzleA((GLenum)param))
 			{
 				return error(GL_INVALID_VALUE);
 			}
@@ -5092,6 +6206,8 @@ void GL_APIENTRY glVertexAttribPointer(GLuint index, GLint size, GLenum type, GL
 		return error(GL_INVALID_VALUE);
 	}
 
+	egl::GLint clientVersion = egl::getClientVersion();
+
 	switch(type)
 	{
 	case GL_BYTE:
@@ -5101,6 +6217,24 @@ void GL_APIENTRY glVertexAttribPointer(GLuint index, GLint size, GLenum type, GL
 	case GL_FIXED:
 	case GL_FLOAT:
 		break;
+	case GL_INT_2_10_10_10_REV:
+	case GL_UNSIGNED_INT_2_10_10_10_REV:
+		if(clientVersion >= 3)
+		{
+			if(size != 4)
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+		else return error(GL_INVALID_ENUM);
+	case GL_INT:
+	case GL_UNSIGNED_INT:
+	case GL_HALF_FLOAT:
+		if(clientVersion >= 3)
+		{
+			break;
+		}
+		else return error(GL_INVALID_ENUM);
 	default:
 		return error(GL_INVALID_ENUM);
 	}

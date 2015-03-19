@@ -171,7 +171,8 @@ const char *EGLAPIENTRY eglQueryString(EGLDisplay dpy, EGLint name)
 		return success("EGL_KHR_gl_texture_2D_image "
 						"EGL_KHR_gl_texture_cubemap_image "
 						"EGL_KHR_gl_renderbuffer_image "
-						"EGL_KHR_image_base");
+						"EGL_KHR_image_base "
+						"EGL_KHR_create_context");
 	case EGL_VENDOR:
 		return success("TransGaming Inc.");
 	case EGL_VERSION:

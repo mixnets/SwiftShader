@@ -20,6 +20,7 @@
 #include "common/NameSpace.hpp"
 #include "common/Object.hpp"
 #include "Image.hpp"
+#include "Texture.h"
 #include "Renderer/Sampler.hpp"
 
 #define GL_APICALL
@@ -48,11 +49,6 @@ class Device;
 class Buffer;
 class Shader;
 class Program;
-class Texture;
-class Texture2D;
-class Texture3D;
-class TextureCubeMap;
-class TextureExternal;
 class Framebuffer;
 class Renderbuffer;
 class RenderbufferStorage;
@@ -70,12 +66,12 @@ enum
 {
     MAX_VERTEX_ATTRIBS = 16,
 	MAX_UNIFORM_VECTORS = 256,   // Device limit
-    MAX_VERTEX_UNIFORM_VECTORS = 256 - 3,   // Reserve space for gl_DepthRange
-    MAX_VARYING_VECTORS = 10,
-    MAX_TEXTURE_IMAGE_UNITS = 16,
-    MAX_VERTEX_TEXTURE_IMAGE_UNITS = 4,
+    MAX_VERTEX_UNIFORM_VECTORS = VERTEX_UNIFORM_VECTORS - 3,   // Reserve space for gl_DepthRange
+    MAX_VARYING_VECTORS = 15 /*es2: 10*/,
+    MAX_TEXTURE_IMAGE_UNITS = TEXTURE_IMAGE_UNITS,
+    MAX_VERTEX_TEXTURE_IMAGE_UNITS = VERTEX_TEXTURE_IMAGE_UNITS,
     MAX_COMBINED_TEXTURE_IMAGE_UNITS = MAX_TEXTURE_IMAGE_UNITS + MAX_VERTEX_TEXTURE_IMAGE_UNITS,
-    MAX_FRAGMENT_UNIFORM_VECTORS = 224 - 3,    // Reserve space for gl_DepthRange
+    MAX_FRAGMENT_UNIFORM_VECTORS = FRAGMENT_UNIFORM_VECTORS - 3,    // Reserve space for gl_DepthRange
     MAX_DRAW_BUFFERS = 1,
 };
 
@@ -126,16 +122,81 @@ struct Color
     float alpha;
 };
 
+struct VertexArray : public gl::Object
+{
+	// FIXME: Change this when implementing vertex arrays
+};
+
+struct Sampler : public gl::Object
+{
+	// FIXME: Change this when implementing sampler objects
+
+	Sampler(GLuint name) : Object(name)
+	{
+		mMinFilter = GL_NEAREST_MIPMAP_LINEAR;
+		mMagFilter = GL_LINEAR;
+
+		mWrapModeS = GL_REPEAT;
+		mWrapModeT = GL_REPEAT;
+		mWrapModeR = GL_REPEAT;
+
+		mMinLod = -1000.0f;
+		mMaxLod = 1000.0f;
+		mCompareMode = GL_NONE;
+		mCompareFunc = GL_LEQUAL;
+	}
+
+	GLenum mMinFilter;
+	GLenum mMagFilter;
+
+	GLenum mWrapModeS;
+	GLenum mWrapModeT;
+	GLenum mWrapModeR;
+
+	GLfloat mMinLod;
+	GLfloat mMaxLod;
+	GLenum mCompareMode;
+	GLenum mCompareFunc;
+};
+
+struct TransformFeedback : public gl::Object
+{
+	// FIXME: Change this when implementing transform feedback
+	TransformFeedback(GLuint name);
+
+	Buffer* getGenericBuffer() const;
+	Buffer* getBuffer(GLuint index) const;
+	bool isActive() const;
+	bool isPaused() const;
+	GLenum primitiveMode() const;
+
+	void setGenericBuffer(Buffer* buffer);
+	void setBuffer(GLuint index, Buffer* buffer);
+	void setBuffer(GLuint index, Buffer* buffer, GLintptr offset, GLsizeiptr size);
+	void begin(GLenum primitiveMode);
+	void end();
+	void setPaused(bool paused);
+
+private:
+	gl::BindingPointer<Buffer> mGenericBuffer;
+	gl::BindingPointer<Buffer> mBuffer[es2::IMPLEMENTATION_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS];
+
+	bool mActive;
+	bool mPaused;
+	GLenum mPrimitiveMode;
+};
+
 // Helper structure describing a single vertex attribute
 class VertexAttribute
 {
   public:
-    VertexAttribute() : mType(GL_FLOAT), mSize(0), mNormalized(false), mStride(0), mPointer(NULL), mArrayEnabled(false)
+    VertexAttribute() : mType(GL_FLOAT), mSize(0), mNormalized(false), mStride(0), mDivisor(0), mPointer(NULL), mArrayEnabled(false)
     {
-        mCurrentValue[0] = 0.0f;
-        mCurrentValue[1] = 0.0f;
-        mCurrentValue[2] = 0.0f;
-        mCurrentValue[3] = 1.0f;
+        mCurrentValue[0].f = 0.0f;
+        mCurrentValue[1].f = 0.0f;
+        mCurrentValue[2].f = 0.0f;
+        mCurrentValue[3].f = 1.0f;
+		mCurrentValueType = ValueUnion::FloatType;
     }
 
     int typeSize() const
@@ -157,11 +218,72 @@ class VertexAttribute
         return mStride ? mStride : typeSize();
     }
 
+	inline float getCurrentValue(int i) const
+	{
+		switch(mCurrentValueType)
+		{
+		case ValueUnion::FloatType:	return mCurrentValue[i].f;
+		case ValueUnion::IntType:	return static_cast<float>(mCurrentValue[i].i);
+		case ValueUnion::UIntType:	return static_cast<float>(mCurrentValue[i].ui);
+		default: UNREACHABLE();		return mCurrentValue[i].f;
+		}
+	}
+
+	inline GLint getCurrentValueI(int i) const
+	{
+		switch(mCurrentValueType)
+		{
+		case ValueUnion::FloatType:	return static_cast<GLint>(mCurrentValue[i].f);
+		case ValueUnion::IntType:	return mCurrentValue[i].i;
+		case ValueUnion::UIntType:	return static_cast<GLint>(mCurrentValue[i].ui);
+		default: UNREACHABLE();		return mCurrentValue[i].i;
+		}
+	}
+
+	inline GLuint getCurrentValueUI(int i) const
+	{
+		switch(mCurrentValueType)
+		{
+		case ValueUnion::FloatType:	return static_cast<GLuint>(mCurrentValue[i].f);
+		case ValueUnion::IntType:	return static_cast<GLuint>(mCurrentValue[i].i);
+		case ValueUnion::UIntType:	return mCurrentValue[i].ui;
+		default: UNREACHABLE();		return mCurrentValue[i].ui;
+		}
+	}
+
+	inline void setCurrentValue(const GLfloat *values)
+	{
+		mCurrentValue[0].f = values[0];
+		mCurrentValue[1].f = values[1];
+		mCurrentValue[2].f = values[2];
+		mCurrentValue[3].f = values[3];
+		mCurrentValueType = ValueUnion::FloatType;
+	}
+
+	inline void setCurrentValue(const GLint *values)
+	{
+		mCurrentValue[0].i = values[0];
+		mCurrentValue[1].i = values[1];
+		mCurrentValue[2].i = values[2];
+		mCurrentValue[3].i = values[3];
+		mCurrentValueType = ValueUnion::IntType;
+	}
+
+	inline void setCurrentValue(const GLuint *values)
+	{
+		mCurrentValue[0].ui = values[0];
+		mCurrentValue[1].ui = values[1];
+		mCurrentValue[2].ui = values[2];
+		mCurrentValue[3].ui = values[3];
+		mCurrentValueType = ValueUnion::UIntType;
+	}
+
     // From glVertexAttribPointer
     GLenum mType;
     GLint mSize;
     bool mNormalized;
     GLsizei mStride;   // 0 means natural stride
+    GLuint mDivisor;   // From glVertexAttribDivisor
 
     union
     {
@@ -172,7 +294,17 @@ class VertexAttribute
     gl::BindingPointer<Buffer> mBoundBuffer;   // Captured when glVertexAttribPointer is called.
 
     bool mArrayEnabled;   // From glEnable/DisableVertexAttribArray
-    float mCurrentValue[4];   // From glVertexAttrib
+private:
+	union ValueUnion
+	{
+		enum Type { FloatType, IntType, UIntType };
+
+		float f;
+		GLint i;
+		GLuint ui;
+	};
+	ValueUnion mCurrentValue[4];   // From glVertexAttrib
+	ValueUnion::Type mCurrentValueType;
 };
 
 typedef VertexAttribute VertexAttributeArray[MAX_VERTEX_ATTRIBS];
@@ -250,10 +382,19 @@ struct State
     unsigned int activeSampler;   // Active texture unit selector - GL_TEXTURE0
     gl::BindingPointer<Buffer> arrayBuffer;
     gl::BindingPointer<Buffer> elementArrayBuffer;
+	gl::BindingPointer<Buffer> copyReadBuffer;
+	gl::BindingPointer<Buffer> copyWriteBuffer;
+	gl::BindingPointer<Buffer> pixelPackBuffer;
+	gl::BindingPointer<Buffer> pixelUnpackBuffer;
+	gl::BindingPointer<Buffer> uniformBuffer;
+
     GLuint readFramebuffer;
     GLuint drawFramebuffer;
     gl::BindingPointer<Renderbuffer> renderbuffer;
     GLuint currentProgram;
+    gl::BindingPointer<VertexArray> vertexArray;
+	gl::BindingPointer<TransformFeedback> transformFeedback;
+	gl::BindingPointer<Sampler> sampler[MAX_COMBINED_TEXTURE_IMAGE_UNITS];
 
     VertexAttribute vertexAttribute[MAX_VERTEX_ATTRIBS];
     gl::BindingPointer<Texture> samplerTexture[TEXTURE_TYPE_COUNT][MAX_COMBINED_TEXTURE_IMAGE_UNITS];
@@ -348,6 +489,7 @@ public:
     GLuint getArrayBufferName() const;
 
     void setEnableVertexAttribArray(unsigned int attribNum, bool enabled);
+    void setVertexAttribDivisor(unsigned int attribNum, GLuint divisor);
     const VertexAttribute &getVertexAttribState(unsigned int attribNum);
     void setVertexAttribState(unsigned int attribNum, Buffer *boundBuffer, GLint size, GLenum type,
                               bool normalized, GLsizei stride, const void *pointer);
@@ -384,11 +526,29 @@ public:
     void deleteFence(GLuint fence);
 
 	// Queries are owned by the Context
-    GLuint createQuery();
-    void deleteQuery(GLuint query);
+	GLuint createQuery();
+	void deleteQuery(GLuint query);
+
+	// Vertex arrays are owned by the Context
+	GLuint createVertexArray();
+	void deleteVertexArray(GLuint array);
+
+	// Transform feedbacks are owned by the Context
+	GLuint createTransformFeedback();
+	void deleteTransformFeedback(GLuint transformFeedback);
+
+	// Samplers are owned by the Context
+	GLuint createSampler();
+	void deleteSampler(GLuint sampler);
 
     void bindArrayBuffer(GLuint buffer);
     void bindElementArrayBuffer(GLuint buffer);
+	void bindCopyReadBuffer(GLuint buffer);
+	void bindCopyWriteBuffer(GLuint buffer);
+	void bindPixelPackBuffer(GLuint buffer);
+	void bindPixelUnpackBuffer(GLuint buffer);
+	void bindTransformFeedbackBuffer(GLuint buffer);
+	void bindUniformBuffer(GLuint buffer);
     void bindTexture2D(GLuint texture);
     void bindTextureCubeMap(GLuint texture);
     void bindTextureExternal(GLuint texture);
@@ -396,7 +556,10 @@ public:
     void bindReadFramebuffer(GLuint framebuffer);
     void bindDrawFramebuffer(GLuint framebuffer);
     void bindRenderbuffer(GLuint renderbuffer);
-    void useProgram(GLuint program);
+	bool bindVertexArray(GLuint array);
+	bool bindTransformFeedback(GLuint transformFeedback);
+	bool bindSampler(GLuint unit, GLuint sampler);
+	void useProgram(GLuint program);
 
 	void beginQuery(GLenum target, GLuint query);
     void endQuery(GLenum target);
@@ -406,6 +569,8 @@ public:
     void setRenderbufferStorage(RenderbufferStorage *renderbuffer);
 
     void setVertexAttrib(GLuint index, const GLfloat *values);
+    void setVertexAttrib(GLuint index, const GLint *values);
+    void setVertexAttrib(GLuint index, const GLuint *values);
 
     Buffer *getBuffer(GLuint handle);
     Fence *getFence(GLuint handle);
@@ -415,9 +580,19 @@ public:
     Framebuffer *getFramebuffer(GLuint handle);
     virtual Renderbuffer *getRenderbuffer(GLuint handle);
 	Query *getQuery(GLuint handle, bool create, GLenum type);
+	VertexArray *getVertexArray(GLuint array);
+	TransformFeedback *getTransformFeedback(GLuint transformFeedback);
+	TransformFeedback *getTransformFeedback();
+	Sampler *getSampler(GLuint sampler);
 
     Buffer *getArrayBuffer();
     Buffer *getElementArrayBuffer();
+	Buffer *getCopyReadBuffer();
+	Buffer *getCopyWriteBuffer();
+	Buffer *getPixelPackBuffer();
+	Buffer *getPixelUnpackBuffer();
+	Buffer *getUniformBuffer();
+	bool getBuffer(GLenum target, es2::Buffer **buffer);
     Program *getCurrentProgram();
     Texture2D *getTexture2D();
 	Texture3D *getTexture3D();
@@ -428,9 +603,9 @@ public:
     Framebuffer *getDrawFramebuffer();
 
     bool getFloatv(GLenum pname, GLfloat *params);
-    bool getIntegerv(GLenum pname, GLint *params);
+    template<typename T> bool getIntegerv(GLenum pname, T *params);
     bool getBooleanv(GLenum pname, GLboolean *params);
-	bool getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param);
+	template<typename T> bool getTransformFeedbackiv(GLuint xfb, GLenum pname, T *param);
 
     bool getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams);
 
@@ -502,6 +677,20 @@ private:
 	typedef std::map<GLint, Query*> QueryMap;
     QueryMap mQueryMap;
     gl::NameSpace mQueryNameSpace;
+
+	typedef std::map<GLint, VertexArray*> VertexArrayMap;
+	VertexArrayMap mVertexArrayMap;
+	gl::NameSpace mVertexArrayNameSpace;
+
+	typedef std::map<GLint, TransformFeedback*> TransformFeedbackMap;
+	TransformFeedbackMap mTransformFeedbackMap;
+	gl::NameSpace mTransformFeedbackNameSpace;
+
+	typedef std::map<GLint, Sampler*> SamplerMap;
+	SamplerMap mSamplerMap;
+	gl::NameSpace mSamplerNameSpace;
+
+	TransformFeedback defaultTransformFeedback;
 
     VertexDataManager *mVertexDataManager;
     IndexDataManager *mIndexDataManager;
