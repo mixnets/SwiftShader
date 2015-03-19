@@ -67,7 +67,11 @@ extern Profiler profiler;
 enum
 {
 	OUTLINE_RESOLUTION = 4096,   // Maximum vertical resolution of the render target
-	MIPMAP_LEVELS = 14
+	MIPMAP_LEVELS = 14,
+	TEXTURE_IMAGE_UNITS = 16,
+	VERTEX_TEXTURE_IMAGE_UNITS = 16,
+	FRAGMENT_UNIFORM_VECTORS = 227,
+	VERTEX_UNIFORM_VECTORS = 259
 };
 
 #endif   // sw_Config_hpp

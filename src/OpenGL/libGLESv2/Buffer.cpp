@@ -27,6 +27,7 @@ Buffer::Buffer(GLuint name) : Object(name)
     mContents = 0;
     mSize = 0;
     mUsage = GL_DYNAMIC_DRAW;
+    unmap();
 }
 
 Buffer::~Buffer()
@@ -73,6 +74,29 @@ void Buffer::bufferSubData(const void *data, GLsizeiptr size, GLintptr offset)
 		memcpy(buffer + offset, data, size);
 		mContents->unlock();
 	}
+}
+
+void* Buffer::mapRange(GLintptr offset, GLsizeiptr length, GLbitfield access)
+{
+	const void* dataPtr = data();
+	if(dataPtr)
+	{
+		mMapped = true;
+		mOffset = offset;
+		mLength = length;
+		mAccess = access;
+		return ((char*)dataPtr) + offset;
+	}
+	return nullptr;
+}
+
+bool Buffer::unmap()
+{
+	mMapped = false;
+	mOffset = 0;
+	mLength = 0;
+	mAccess = 0;
+	return true;
 }
 
 sw::Resource *Buffer::getResource()
