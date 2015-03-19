@@ -403,7 +403,10 @@ void Texture::setImage(GLenum format, GLenum type, const egl::Image::UnpackInfo&
     if(pixels && image)
     {
 		GLsizei depth = (getTarget() == GL_TEXTURE_3D_OES || getTarget() == GL_TEXTURE_2D_ARRAY) ? image->getDepth() : 1;
-		image->loadImageData(0, 0, 0, image->getWidth(), image->getHeight(), depth, format, type, unpackInfo, pixels);
+		if(!image->loadImageData(0, 0, 0, image->getWidth(), image->getHeight(), depth, format, type, unpackInfo, pixels))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
     }
 }
 
@@ -412,7 +415,10 @@ void Texture::setCompressedImage(GLsizei imageSize, const void *pixels, egl::Ima
     if(pixels && image)
     {
 		GLsizei depth = (getTarget() == GL_TEXTURE_3D_OES || getTarget() == GL_TEXTURE_2D_ARRAY) ? image->getDepth() : 1;
-		image->loadCompressedData(0, 0, 0, image->getWidth(), image->getHeight(), depth, imageSize, pixels);
+		if(!image->loadCompressedData(0, 0, 0, image->getWidth(), image->getHeight(), depth, imageSize, pixels))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
     }
 }
 
@@ -438,10 +444,10 @@ void Texture::subImage(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei widt
         return error(GL_INVALID_OPERATION);
     }
 
-    if(pixels)
-    {
-		image->loadImageData(xoffset, yoffset, zoffset, width, height, depth, format, type, unpackInfo, pixels);
-    }
+	if(pixels && !image->loadImageData(xoffset, yoffset, zoffset, width, height, depth, format, type, unpackInfo, pixels))
+	{
+		return error(GL_INVALID_OPERATION);
+	}
 }
 
 void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *pixels, egl::Image *image)
@@ -461,10 +467,10 @@ void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLint zoffset, GL
         return error(GL_INVALID_OPERATION);
     }
 
-    if(pixels)
-    {
-		image->loadCompressedData(xoffset, yoffset, zoffset, width, height, depth, imageSize, pixels);
-    }
+	if(pixels && !image->loadCompressedData(xoffset, yoffset, zoffset, width, height, depth, imageSize, pixels))
+	{
+		return error(GL_INVALID_OPERATION);
+	}
 }
 
 bool Texture::copy(egl::Image *source, const sw::SliceRect &sourceRect, GLenum destFormat, GLint xoffset, GLint yoffset, GLint zoffset, egl::Image *dest)
@@ -822,12 +828,12 @@ bool Texture2D::isSamplerComplete() const
 // Tests for 2D texture (mipmap) completeness. [OpenGL ES 2.0.24] section 3.7.10 page 81.
 bool Texture2D::isMipmapComplete() const
 {
-    GLsizei width = image[0]->getWidth();
-    GLsizei height = image[0]->getHeight();
+    GLsizei width = image[mBaseLevel]->getWidth();
+    GLsizei height = image[mBaseLevel]->getHeight();
 
-    int q = log2(std::max(width, height));
+    int q = std::min(log2(std::max(width, height)), mMaxLevel);
 
-    for(int level = 1; level <= q; level++)
+    for(int level = mBaseLevel + 1; level <= q; level++)
     {
 		if(!image[level])
 		{
@@ -1138,17 +1144,17 @@ bool TextureCubeMap::isSamplerComplete() const
 // Tests for cube texture completeness. [OpenGL ES 2.0.24] section 3.7.10 page 81.
 bool TextureCubeMap::isCubeComplete() const
 {
-    if(image[0][0]->getWidth() <= 0 || image[0][0]->getHeight() != image[0][0]->getWidth())
+    if(image[0][mBaseLevel]->getWidth() <= 0 || image[0][mBaseLevel]->getHeight() != image[0][mBaseLevel]->getWidth())
     {
         return false;
     }
 
     for(unsigned int face = 1; face < 6; face++)
     {
-        if(image[face][0]->getWidth()  != image[0][0]->getWidth() ||
-           image[face][0]->getWidth()  != image[0][0]->getHeight() ||
-           image[face][0]->getFormat() != image[0][0]->getFormat() ||
-           image[face][0]->getType()   != image[0][0]->getType())
+        if(image[face][mBaseLevel]->getWidth()  != image[0][mBaseLevel]->getWidth() ||
+           image[face][mBaseLevel]->getWidth()  != image[0][mBaseLevel]->getHeight() ||
+           image[face][mBaseLevel]->getFormat() != image[0][mBaseLevel]->getFormat() ||
+           image[face][mBaseLevel]->getType()   != image[0][mBaseLevel]->getType())
         {
             return false;
         }
@@ -1164,24 +1170,24 @@ bool TextureCubeMap::isMipmapCubeComplete() const
         return false;
     }
 
-    GLsizei size = image[0][0]->getWidth();
-    int q = log2(size);
+    GLsizei size = image[0][mBaseLevel]->getWidth();
+    int q = std::min(log2(size), mMaxLevel);
 
     for(int face = 0; face < 6; face++)
     {
-        for(int level = 1; level <= q; level++)
+        for(int level = mBaseLevel + 1; level <= q; level++)
         {
 			if(!image[face][level])
 			{
 				return false;
 			}
 
-            if(image[face][level]->getFormat() != image[0][0]->getFormat())
+            if(image[face][level]->getFormat() != image[0][mBaseLevel]->getFormat())
             {
                 return false;
             }
 
-            if(image[face][level]->getType() != image[0][0]->getType())
+            if(image[face][level]->getType() != image[0][mBaseLevel]->getType())
             {
                 return false;
             }
@@ -1722,13 +1728,13 @@ bool Texture3D::isSamplerComplete() const
 // Tests for 3D texture (mipmap) completeness. [OpenGL ES 2.0.24] section 3.7.10 page 81.
 bool Texture3D::isMipmapComplete() const
 {
-	GLsizei width = image[0]->getWidth();
-	GLsizei height = image[0]->getHeight();
-	GLsizei depth = image[0]->getDepth();
+	GLsizei width = image[mBaseLevel]->getWidth();
+	GLsizei height = image[mBaseLevel]->getHeight();
+	GLsizei depth = image[mBaseLevel]->getDepth();
 
-	int q = log2(std::max(std::max(width, height), depth));
+	int q = std::min(log2(std::max(std::max(width, height), depth)), mMaxLevel);
 
-	for(int level = 1; level <= q; level++)
+	for(int level = mBaseLevel + 1; level <= q; level++)
 	{
 		if(!image[level])
 		{
