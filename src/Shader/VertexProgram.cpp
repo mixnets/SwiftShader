@@ -164,6 +164,7 @@ namespace sw
 			case Shader::OPCODE_TRUNC:      trunc(d, s0);                   break;
 			case Shader::OPCODE_FLOOR:      floor(d, s0);                   break;
 			case Shader::OPCODE_ROUND:      round(d, s0);                   break;
+//			case Shader::OPCODE_ROUNDEVEN:  roundEven(d, s0);               break;
 			case Shader::OPCODE_CEIL:       ceil(d, s0);                    break;
 			case Shader::OPCODE_LIT:		lit(d, s0);						break;
 			case Shader::OPCODE_LOG2X:		log2x(d, s0, pp);				break;
@@ -173,6 +174,10 @@ namespace sw
 			case Shader::OPCODE_LRP:		lrp(d, s0, s1, s2);				break;
 			case Shader::OPCODE_STEP:		step(d, s0, s1);				break;
 			case Shader::OPCODE_SMOOTH:		smooth(d, s0, s1, s2);			break;
+//			case Shader::OPCODE_FLOATBITSTOINT:  floatBitsToInt(d, s0);				break;
+//			case Shader::OPCODE_FLOATBITSTOUINT: floatBitsToUInt(d, s0);			break;
+//			case Shader::OPCODE_INTBITSTOFLOAT:	 intBitsToFloat(d, s0);				break;
+//			case Shader::OPCODE_UINTBITSTOFLOAT: uintBitsToFloat(d, s0, s1, s2);	break;
 			case Shader::OPCODE_M3X2:		M3X2(r, d, s0, src1);			break;
 			case Shader::OPCODE_M3X3:		M3X3(r, d, s0, src1);			break;
 			case Shader::OPCODE_M3X4:		M3X4(r, d, s0, src1);			break;

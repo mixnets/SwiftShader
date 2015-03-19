@@ -64,7 +64,8 @@ void Buffer::bufferData(const void *data, GLsizeiptr size, GLenum usage)
 
 		if(data)
 		{
-			memcpy((void*)mContents->data(), data, size);
+			char *buffer = (char*)mContents->data();
+			memcpy(buffer + mOffset, data, size);
 		}
 	}
 }
@@ -77,6 +78,12 @@ void Buffer::bufferSubData(const void *data, GLsizeiptr size, GLintptr offset)
 		memcpy(buffer + offset, data, size);
 		mContents->unlock();
 	}
+}
+
+void Buffer::setOffsetSize(GLintptr offset, size_t size)
+{
+	mOffset = offset;
+	mSize = size;
 }
 
 void* Buffer::mapRange(GLintptr offset, GLsizeiptr length, GLbitfield access)

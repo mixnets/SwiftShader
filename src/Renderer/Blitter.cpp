@@ -131,11 +131,38 @@ namespace sw
 			c.xyz = 0.0f;
 			c.w = Float(Int(*Pointer<Byte>(element)));
 			break;
+		case FORMAT_R8:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<Byte>(element)));
+			break;
+		case FORMAT_R8I:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<SByte>(element)));
+			break;
+		case FORMAT_R16:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<UShort>(element)));
+			break;
+		case FORMAT_R16I:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<Short>(element)));
+			break;
+		case FORMAT_R32:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<UInt>(element)));
+			break;
+		case FORMAT_R32I:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<Int>(element)));
+			break;
 		case FORMAT_A8R8G8B8:
 			c = Float4(*Pointer<Byte4>(element)).zyxw;
 			break;
 		case FORMAT_A8B8G8R8:
 			c = Float4(*Pointer<Byte4>(element));
+			break;
+		case FORMAT_A8B8G8R8I:
+			c = Float4(*Pointer<SByte4>(element));
 			break;
 		case FORMAT_X8R8G8B8:
 			c = Float4(*Pointer<Byte4>(element)).zyxw;
@@ -145,13 +172,67 @@ namespace sw
 			c = Float4(*Pointer<Byte4>(element));
 			c.w = 1.0f;
 			break;
+		case FORMAT_X8B8G8R8I:
+			c = Float4(*Pointer<SByte4>(element));
+			c.w = 1.0f;
+			break;
 		case FORMAT_A16B16G16R16:
 			c = Float4(*Pointer<UShort4>(element));
+			break;
+		case FORMAT_A16B16G16R16I:
+			c = Float4(*Pointer<Short4>(element));
+			break;
+		case FORMAT_X16B16G16R16:
+			c = Float4(*Pointer<UShort4>(element)).zyxw;
+			c.w = 1.0f;
+			break;
+		case FORMAT_X16B16G16R16I:
+			c = Float4(*Pointer<Short4>(element)).zyxw;
+			c.w = 1.0f;
+			break;
+		case FORMAT_A32B32G32R32:
+			c = Float4(*Pointer<UInt4>(element));
+			break;
+		case FORMAT_A32B32G32R32I:
+			c = Float4(*Pointer<Int4>(element));
+			break;
+		case FORMAT_X32B32G32R32:
+			c = Float4(*Pointer<UInt4>(element)).zyxw;
+			c.w = 1.0f;
+			break;
+		case FORMAT_X32B32G32R32I:
+			c = Float4(*Pointer<Int4>(element)).zyxw;
+			c.w = 1.0f;
+			break;
+		case FORMAT_G8R8:
+			// FIXME: Optimize
+			c.x = Float(Int(*Pointer<Byte>(element + 0)));
+			c.y = Float(Int(*Pointer<Byte>(element + 1)));
+			break;
+		case FORMAT_G8R8I:
+			// FIXME: Optimize
+			c.x = Float(Int(*Pointer<SByte>(element + 0)));
+			c.y = Float(Int(*Pointer<SByte>(element + 1)));
 			break;
 		case FORMAT_G16R16:
 			// FIXME: Optimize
 			c.x = Float(Int(*Pointer<UShort>(element + 0)));
 			c.y = Float(Int(*Pointer<UShort>(element + 2)));
+			break;
+		case FORMAT_G16R16I:
+			// FIXME: Optimize
+			c.x = Float(Int(*Pointer<Short>(element + 0)));
+			c.y = Float(Int(*Pointer<Short>(element + 2)));
+			break;
+		case FORMAT_G32R32:
+			// FIXME: Optimize
+			c.x = Float(Int(*Pointer<UInt>(element + 0)));
+			c.y = Float(Int(*Pointer<UInt>(element + 4)));
+			break;
+		case FORMAT_G32R32I:
+			// FIXME: Optimize
+			c.x = Float(Int(*Pointer<Int>(element + 0)));
+			c.y = Float(Int(*Pointer<Int>(element + 4)));
 			break;
 		case FORMAT_A32B32G32R32F:
 			c = *Pointer<Float4>(element);

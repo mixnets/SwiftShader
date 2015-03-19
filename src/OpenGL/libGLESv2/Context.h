@@ -50,6 +50,7 @@ class Program;
 class Texture;
 class Texture2D;
 class Texture3D;
+class Texture2DArray;
 class TextureCubeMap;
 class TextureExternal;
 class Framebuffer;
@@ -72,7 +73,7 @@ enum
     MAX_VERTEX_ATTRIBS = 16,
 	MAX_UNIFORM_VECTORS = 256,   // Device limit
     MAX_VERTEX_UNIFORM_VECTORS = VERTEX_UNIFORM_VECTORS - 3,   // Reserve space for gl_DepthRange
-    MAX_VARYING_VECTORS = 10,
+    MAX_VARYING_VECTORS = 15 /*es2: 10*/,
     MAX_TEXTURE_IMAGE_UNITS = TEXTURE_IMAGE_UNITS,
     MAX_VERTEX_TEXTURE_IMAGE_UNITS = VERTEX_TEXTURE_IMAGE_UNITS,
     MAX_COMBINED_TEXTURE_IMAGE_UNITS = MAX_TEXTURE_IMAGE_UNITS + MAX_VERTEX_TEXTURE_IMAGE_UNITS,
@@ -118,6 +119,7 @@ enum QueryType
 {
     QUERY_ANY_SAMPLES_PASSED,
     QUERY_ANY_SAMPLES_PASSED_CONSERVATIVE,
+    QUERY_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN,
 
     QUERY_TYPE_COUNT
 };
@@ -329,10 +331,13 @@ struct State
 	gl::BindingPointer<Buffer> copyWriteBuffer;
 	gl::BindingPointer<Buffer> pixelPackBuffer;
 	gl::BindingPointer<Buffer> pixelUnpackBuffer;
-	gl::BindingPointer<Buffer> uniformBuffer;
+	gl::BindingPointer<Buffer> genericUniformBuffer;
+	gl::BindingPointer<Buffer> uniformBuffers[MAX_UNIFORM_BUFFER_BINDINGS];
 
     GLuint readFramebuffer;
     GLuint drawFramebuffer;
+    GLuint readFramebufferColorIndex;
+    std::vector<GLuint> drawFramebufferColorIndices;
     gl::BindingPointer<Renderbuffer> renderbuffer;
     GLuint currentProgram;
 	GLuint vertexArray;
@@ -343,8 +348,11 @@ struct State
     gl::BindingPointer<Texture> samplerTexture[TEXTURE_TYPE_COUNT][MAX_COMBINED_TEXTURE_IMAGE_UNITS];
 	gl::BindingPointer<Query> activeQuery[QUERY_TYPE_COUNT];
 
-    GLint unpackAlignment;
+	egl::Image::UnpackInfo unpackInfo;
     GLint packAlignment;
+	GLint packRowLength;
+	GLint packSkipPixels;
+	GLint packSkipRows;
 };
 
 class Context : public egl::Context
@@ -426,6 +434,12 @@ public:
     GLuint getDrawFramebufferName() const;
     GLuint getRenderbufferName() const;
 
+	void setReadFramebufferColorIndex(GLuint index);
+	void clearDrawFramebufferColorIndex();
+	void addDrawFramebufferColorIndex(GLuint index);
+	GLuint getReadFramebufferColorIndex() const;
+	GLuint getDrawFramebufferColorIndex(GLuint outputIndex) const;
+
 	GLuint getActiveQuery(GLenum target) const;
 
     GLuint getArrayBufferName() const;
@@ -443,10 +457,17 @@ public:
 	const VertexAttributeArray &getCurrentVertexAttributes();
 
     void setUnpackAlignment(GLint alignment);
-    GLint getUnpackAlignment() const;
+	void setUnpackRowLength(GLint rowLength);
+	void setUnpackImageHeight(GLint imageHeight);
+	void setUnpackSkipPixels(GLint skipPixels);
+	void setUnpackSkipRows(GLint skipRows);
+	void setUnpackSkipImages(GLint skipImages);
+	const egl::Image::UnpackInfo& getUnpackInfo() const;
 
     void setPackAlignment(GLint alignment);
-    GLint getPackAlignment() const;
+	void setPackRowLength(GLint rowLength);
+	void setPackSkipPixels(GLint skipPixels);
+	void setPackSkipRows(GLint skipRows);
 
     // These create  and destroy methods are merely pass-throughs to 
     // ResourceManager, which owns these object types
@@ -493,7 +514,6 @@ public:
 	void bindPixelPackBuffer(GLuint buffer);
 	void bindPixelUnpackBuffer(GLuint buffer);
 	void bindTransformFeedbackBuffer(GLuint buffer);
-	void bindUniformBuffer(GLuint buffer);
     void bindTexture2D(GLuint texture);
     void bindTextureCubeMap(GLuint texture);
     void bindTextureExternal(GLuint texture);
@@ -502,9 +522,13 @@ public:
     void bindDrawFramebuffer(GLuint framebuffer);
     void bindRenderbuffer(GLuint renderbuffer);
 	bool bindVertexArray(GLuint array);
+	void bindGenericUniformBuffer(GLuint buffer);
+	void bindIndexedUniformBuffer(GLuint buffer, GLuint index, GLintptr offset, GLsizeiptr size);
+	void bindGenericTransformFeedbackBuffer(GLuint buffer);
+	void bindIndexedTransformFeedbackBuffer(GLuint buffer, GLuint index, GLintptr offset, GLsizeiptr size);
 	bool bindTransformFeedback(GLuint transformFeedback);
 	bool bindSampler(GLuint unit, GLuint sampler);
-    void useProgram(GLuint program);
+	void useProgram(GLuint program);
 
 	void beginQuery(GLenum target, GLuint query);
     void endQuery(GLenum target);
@@ -537,21 +561,22 @@ public:
 	Buffer *getCopyWriteBuffer() const;
 	Buffer *getPixelPackBuffer() const;
 	Buffer *getPixelUnpackBuffer() const;
-	Buffer *getUniformBuffer() const;
+	Buffer *getGenericUniformBuffer() const;
 	bool getBuffer(GLenum target, es2::Buffer **buffer) const;
 	Program *getCurrentProgram() const;
 	Texture2D *getTexture2D() const;
 	Texture3D *getTexture3D() const;
+	Texture2DArray *getTexture2DArray() const;
 	TextureCubeMap *getTextureCubeMap() const;
 	TextureExternal *getTextureExternal() const;
 	Texture *getSamplerTexture(unsigned int sampler, TextureType type) const;
 	Framebuffer *getReadFramebuffer() const;
 	Framebuffer *getDrawFramebuffer() const;
 
-	bool getFloatv(GLenum pname, GLfloat *params) const;
-	bool getIntegerv(GLenum pname, GLint *params) const;
-	bool getBooleanv(GLenum pname, GLboolean *params) const;
-	bool getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param) const;
+    bool getFloatv(GLenum pname, GLfloat *params) const;
+    template<typename T> bool getIntegerv(GLenum pname, T *params) const;
+    bool getBooleanv(GLenum pname, GLboolean *params) const;
+	template<typename T> bool getTransformFeedbackiv(GLuint xfb, GLenum pname, T *param) const;
 
 	bool getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams) const;
 
@@ -615,6 +640,7 @@ private:
 
 	gl::BindingPointer<Texture2D> mTexture2DZero;
 	gl::BindingPointer<Texture3D> mTexture3DZero;
+	gl::BindingPointer<Texture2DArray> mTexture2DArrayZero;
 	gl::BindingPointer<TextureCubeMap> mTextureCubeMapZero;
     gl::BindingPointer<TextureExternal> mTextureExternalZero;
 

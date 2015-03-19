@@ -208,6 +208,42 @@ namespace es2
 		return attributeStream[attributeIndex];
 	}
 
+	void Program::bindUniformBlockLocation(GLuint index, GLuint binding)
+	{
+		if(index < IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS)
+		{
+			for(int i = 0; i < IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS; i++)
+			{
+				uniformBlockBinding[i].erase(binding);
+			}
+
+			uniformBlockBinding[index].insert(binding);
+		}
+	}
+
+	GLuint Program::getUniformBlockLocation(const char *name)
+	{
+		if(name)
+		{
+			for(int index = 0; index < IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS; index++)
+			{
+				if(linkedUniformBlock[index].name == std::string(name))
+				{
+					return index;
+				}
+			}
+		}
+
+		return -1;
+	}
+
+	int Program::getUniformBlockStream(int uniformBlockIndex)
+	{
+		ASSERT(uniformBlockIndex >= 0 && uniformBlockIndex < IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS);
+
+		return uniformBlockStream[uniformBlockIndex];
+	}
+
 	// Returns the index of the texture image unit (0-19) corresponding to a sampler index (0-15 for the pixel shader and 0-3 for the vertex shader)
 	GLint Program::getSamplerMapping(sw::SamplerType type, unsigned int samplerIndex)
 	{
@@ -2005,6 +2041,44 @@ namespace es2
 				{
 					length += 3;  // Counting in "[0]".
 				}
+				maxLength = std::max(length, maxLength);
+			}
+		}
+
+		return maxLength;
+	}
+
+	void Program::getActiveUniformBlockName(GLuint index, GLsizei bufSize, GLsizei *length, GLchar *name) const
+	{
+		if(bufSize > 0)
+		{
+			std::string string = uniformBlocks[index]->name;
+
+			strncpy(name, string.c_str(), bufSize);
+			name[bufSize - 1] = '\0';
+
+			if(length)
+			{
+				*length = strlen(name);
+			}
+		}
+	}
+
+	GLint Program::getActiveUniformBlockCount() const
+	{
+		return uniformBlocks.size();
+	}
+
+	GLint Program::getActiveUniformBlockMaxLength() const
+	{
+		int maxLength = 0;
+
+		unsigned int numUniformBlocks = uniformBlocks.size();
+		for(unsigned int uniformBlockIndex = 0; uniformBlockIndex < numUniformBlocks; uniformBlockIndex++)
+		{
+			if(!uniformBlocks[uniformBlockIndex]->name.empty())
+			{
+				int length = (int)(uniformBlocks[uniformBlockIndex]->name.length() + 1);
 				maxLength = std::max(length, maxLength);
 			}
 		}

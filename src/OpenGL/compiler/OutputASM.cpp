@@ -1833,11 +1833,18 @@ namespace glsl
 		case EvqConstReadOnly:       return sw::Shader::PARAMETER_TEMP;
 		case EvqPosition:            return sw::Shader::PARAMETER_OUTPUT;
 		case EvqPointSize:           return sw::Shader::PARAMETER_OUTPUT;
+		case EvqInstanceID:          return sw::Shader::PARAMETER_INPUT;
 		case EvqFragCoord:           return sw::Shader::PARAMETER_MISCTYPE;
 		case EvqFrontFacing:         return sw::Shader::PARAMETER_MISCTYPE;
 		case EvqPointCoord:          return sw::Shader::PARAMETER_INPUT;
 		case EvqFragColor:           return sw::Shader::PARAMETER_COLOROUT;
 		case EvqFragData:            return sw::Shader::PARAMETER_COLOROUT;
+		case EvqSmooth:              return sw::Shader::PARAMETER_OUTPUT;
+		case EvqFlat:                return sw::Shader::PARAMETER_OUTPUT;
+		case EvqCentroidOut:         return sw::Shader::PARAMETER_OUTPUT;
+		case EvqSmoothIn:            return sw::Shader::PARAMETER_INPUT;
+		case EvqFlatIn:              return sw::Shader::PARAMETER_INPUT;
+		case EvqCentroidIn:          return sw::Shader::PARAMETER_INPUT;
 		default: UNREACHABLE();
 		}
 
@@ -1868,11 +1875,18 @@ namespace glsl
 		case EvqConstReadOnly:       return temporaryRegister(operand);
 		case EvqPosition:            return varyingRegister(operand);
 		case EvqPointSize:           return varyingRegister(operand);
+		case EvqInstanceID:          return temporaryRegister(operand);
 		case EvqFragCoord:           pixelShader->vPosDeclared = true;  return 0;
 		case EvqFrontFacing:         pixelShader->vFaceDeclared = true; return 1;
 		case EvqPointCoord:          return varyingRegister(operand);
 		case EvqFragColor:           return 0;
 		case EvqFragData:            return 0;
+		case EvqSmooth:              return varyingRegister(operand);
+		case EvqFlat:                return varyingRegister(operand);
+		case EvqCentroidOut:         return varyingRegister(operand);
+		case EvqSmoothIn:            return varyingRegister(operand);
+		case EvqFlatIn:              return varyingRegister(operand);
+		case EvqCentroidIn:          return varyingRegister(operand);
 		default: UNREACHABLE();
 		}
 
@@ -2364,8 +2378,9 @@ namespace glsl
 
 	GLenum OutputASM::glVariableType(const TType &type)
 	{
-		if(type.getBasicType() == EbtFloat)
+		switch(type.getBasicType())
 		{
+		case EbtFloat:
 			if(type.isScalar())
 			{
 				return GL_FLOAT;
@@ -2412,9 +2427,8 @@ namespace glsl
 				}
 			}
 			else UNREACHABLE();
-		}
-		else if(type.getBasicType() == EbtInt)
-		{
+			break;
+		case EbtInt:
 			if(type.isScalar())
 			{
 				return GL_INT;
@@ -2430,9 +2444,25 @@ namespace glsl
 				}
 			}
 			else UNREACHABLE();
-		}
-		else if(type.getBasicType() == EbtBool)
-		{
+			break;
+		case EbtUInt:
+			if(type.isScalar())
+			{
+				return GL_UNSIGNED_INT;
+			}
+			else if(type.isVector())
+			{
+				switch(type.getNominalSize())
+				{
+				case 2: return GL_UNSIGNED_INT_VEC2;
+				case 3: return GL_UNSIGNED_INT_VEC3;
+				case 4: return GL_UNSIGNED_INT_VEC4;
+				default: UNREACHABLE();
+				}
+			}
+			else UNREACHABLE();
+			break;
+		case EbtBool:
 			if(type.isScalar())
 			{
 				return GL_BOOL;
@@ -2448,24 +2478,29 @@ namespace glsl
 				}
 			}
 			else UNREACHABLE();
-		}
-		else if(type.getBasicType() == EbtSampler2D)
-		{
+			break;
+		case EbtSampler2D:
+		case EbtISampler2D:
+		case EbtUSampler2D:
 			return GL_SAMPLER_2D;
-		}
-		else if(type.getBasicType() == EbtSamplerCube)
-		{
+		case EbtSamplerCube:
+		case EbtISamplerCube:
+		case EbtUSamplerCube:
 			return GL_SAMPLER_CUBE;
-		}
-		else if(type.getBasicType() == EbtSamplerExternalOES)
-		{
+		case EbtSamplerExternalOES:
 			return GL_SAMPLER_EXTERNAL_OES;
-		}
-		else if(type.getBasicType() == EbtSampler3D)
-		{
+		case EbtSampler3D:
+		case EbtISampler3D:
+		case EbtUSampler3D:
 			return GL_SAMPLER_3D_OES;
+		case EbtSampler2DArray:
+		case EbtISampler2DArray:
+		case EbtUSampler2DArray:
+			return GL_SAMPLER_2D_ARRAY;
+		default:
+			UNREACHABLE();
+			break;
 		}
-		else UNREACHABLE();
 
 		return GL_NONE;
 	}

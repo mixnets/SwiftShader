@@ -43,10 +43,10 @@ enum
     IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE = 1 << (MIPMAP_LEVELS - 1),
 	IMPLEMENTATION_MAX_RENDERBUFFER_SIZE = OUTLINE_RESOLUTION,
 	IMPLEMENTATION_MAX_SAMPLES = 4,
-	IMPLEMENTATION_MAX_COLOR_ATTACHMENTS = 8,
+	IMPLEMENTATION_MAX_COLOR_ATTACHMENTS = MAX_COLOR_ATTACHMENTS,
 	IMPLEMENTATION_MAX_DRAW_BUFFERS = 8,
 	IMPLEMENTATION_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS,
-	IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS = 36,
+	IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS = MAX_UNIFORM_BUFFER_BINDINGS,
 	IMPLEMENTATION_UNIFORM_BUFFER_OFFSET_ALIGNMENT = 1,
 };
 
@@ -121,8 +121,8 @@ public:
 	virtual void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source) = 0;
 
 protected:
-    void setImage(GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, egl::Image *image);
-    void subImage(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, egl::Image *image);
+    void setImage(GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels, egl::Image *image);
+    void subImage(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels, egl::Image *image);
     void setCompressedImage(GLsizei imageSize, const void *pixels, egl::Image *image);
     void subImageCompressed(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *pixels, egl::Image *image);
 
@@ -170,9 +170,9 @@ public:
     virtual sw::Format getInternalFormat(GLenum target, GLint level) const;
 	virtual int getLevelCount() const;
 
-    void setImage(GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
+    void setImage(GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);
     void setCompressedImage(GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels);
-    void subImage(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
+    void subImage(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);
     void subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels);
     void copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
 	virtual void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
@@ -228,10 +228,10 @@ public:
     virtual sw::Format getInternalFormat(GLenum target, GLint level) const;
 	virtual int getLevelCount() const;
 
-	void setImage(GLenum target, GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
+	void setImage(GLenum target, GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);
     void setCompressedImage(GLenum target, GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels);
 
-    void subImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
+    void subImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);
     void subImageCompressed(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels);
     void copyImage(GLenum target, GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
 	virtual void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
@@ -287,9 +287,9 @@ public:
 	virtual sw::Format getInternalFormat(GLenum target, GLint level) const;
 	virtual int getLevelCount() const;
 
-	void setImage(GLint level, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
+	void setImage(GLint level, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);
 	void setCompressedImage(GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
-	void subImage(GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
+	void subImage(GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);
 	void subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *pixels);
 	void copyImage(GLint level, GLenum format, GLint x, GLint y, GLint z, GLsizei width, GLsizei height, GLsizei depth, Framebuffer *source);
 	void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
@@ -324,6 +324,17 @@ protected:
 	// the count drops to zero, but will not cause deletion of the Renderbuffer.
 	Renderbuffer *mColorbufferProxy;
 	unsigned int mProxyRefs;
+};
+
+class Texture2DArray : public Texture3D
+{
+public:
+	explicit Texture2DArray(GLuint name);
+
+	virtual ~Texture2DArray();
+
+	virtual GLenum getTarget() const;
+	virtual void generateMipmaps();
 };
 
 class TextureExternal : public Texture2D

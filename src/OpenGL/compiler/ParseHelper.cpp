@@ -323,6 +323,7 @@ bool TParseContext::lValueErrorCheck(int line, const char* op, TIntermTyped* nod
     case EvqFragCoord:      message = "can't modify gl_FragCoord";   break;
     case EvqFrontFacing:    message = "can't modify gl_FrontFacing"; break;
     case EvqPointCoord:     message = "can't modify gl_PointCoord";  break;
+    case EvqInstanceID:     message = "can't modify gl_InstanceID";  break;
     default:
 
         //
@@ -457,9 +458,15 @@ bool TParseContext::constructorErrorCheck(int line, TIntermNode* node, TFunction
 
     bool constructingMatrix = false;
     switch(op) {
-    case EOpConstructMat2:
-    case EOpConstructMat3:
-    case EOpConstructMat4:
+	case EOpConstructMat2:
+	case EOpConstructMat2x3:
+	case EOpConstructMat2x4:
+	case EOpConstructMat3x2:
+	case EOpConstructMat3:
+	case EOpConstructMat3x4:
+	case EOpConstructMat4x2:
+	case EOpConstructMat4x3:
+	case EOpConstructMat4:
         constructingMatrix = true;
         break;
     default:
