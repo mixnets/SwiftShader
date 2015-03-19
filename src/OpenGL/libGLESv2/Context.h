@@ -130,12 +130,12 @@ struct Color
 class VertexAttribute
 {
   public:
-    VertexAttribute() : mType(GL_FLOAT), mSize(0), mNormalized(false), mStride(0), mPointer(NULL), mArrayEnabled(false)
+    VertexAttribute() : mType(GL_FLOAT), mSize(0), mNormalized(false), mStride(0), mDivisor(0), mPointer(NULL), mArrayEnabled(false)
     {
-        mCurrentValue[0] = 0.0f;
-        mCurrentValue[1] = 0.0f;
-        mCurrentValue[2] = 0.0f;
-        mCurrentValue[3] = 1.0f;
+        mCurrentValue[0].f = 0.0f;
+        mCurrentValue[1].f = 0.0f;
+        mCurrentValue[2].f = 0.0f;
+        mCurrentValue[3].f = 1.0f;
     }
 
     int typeSize() const
@@ -157,11 +157,54 @@ class VertexAttribute
         return mStride ? mStride : typeSize();
     }
 
+	inline float getCurrentValue(int i) const
+	{
+		// FIXME: do proper conversion when required
+		return mCurrentValue[i].f;
+	}
+
+	inline GLint getCurrentValueI(int i) const
+	{
+		// FIXME: do proper conversion when required
+		return mCurrentValue[i].i;
+	}
+
+	inline GLuint getCurrentValueUI(int i) const
+	{
+		// FIXME: do proper conversion when required
+		return mCurrentValue[i].ui;
+	}
+
+	inline void setCurrentValue(const GLfloat *values)
+	{
+		mCurrentValue[0].f = values[0];
+		mCurrentValue[1].f = values[1];
+		mCurrentValue[2].f = values[2];
+		mCurrentValue[3].f = values[3];
+	}
+
+	inline void setCurrentValue(const GLint *values)
+	{
+		mCurrentValue[0].i = values[0];
+		mCurrentValue[1].i = values[1];
+		mCurrentValue[2].i = values[2];
+		mCurrentValue[3].i = values[3];
+	}
+
+	inline void setCurrentValue(const GLuint *values)
+	{
+		mCurrentValue[0].ui = values[0];
+		mCurrentValue[1].ui = values[1];
+		mCurrentValue[2].ui = values[2];
+		mCurrentValue[3].ui = values[3];
+	}
+
     // From glVertexAttribPointer
     GLenum mType;
     GLint mSize;
     bool mNormalized;
     GLsizei mStride;   // 0 means natural stride
+    GLuint mDivisor; // From glVertexAttribDivisor
 
     union
     {
@@ -172,7 +215,13 @@ class VertexAttribute
     gl::BindingPointer<Buffer> mBoundBuffer;   // Captured when glVertexAttribPointer is called.
 
     bool mArrayEnabled;   // From glEnable/DisableVertexAttribArray
-    float mCurrentValue[4];   // From glVertexAttrib
+private:
+	union ValueType {
+		float f;
+		GLint i;
+		GLuint ui;
+	};
+	ValueType mCurrentValue[4];   // From glVertexAttrib
 };
 
 typedef VertexAttribute VertexAttributeArray[MAX_VERTEX_ATTRIBS];
@@ -348,6 +397,7 @@ public:
     GLuint getArrayBufferName() const;
 
     void setEnableVertexAttribArray(unsigned int attribNum, bool enabled);
+    void setVertexAttribDivisor(unsigned int attribNum, GLuint divisor);
     const VertexAttribute &getVertexAttribState(unsigned int attribNum);
     void setVertexAttribState(unsigned int attribNum, Buffer *boundBuffer, GLint size, GLenum type,
                               bool normalized, GLsizei stride, const void *pointer);
@@ -406,6 +456,8 @@ public:
     void setRenderbufferStorage(RenderbufferStorage *renderbuffer);
 
     void setVertexAttrib(GLuint index, const GLfloat *values);
+    void setVertexAttrib(GLuint index, const GLint *values);
+    void setVertexAttrib(GLuint index, const GLuint *values);
 
     Buffer *getBuffer(GLuint handle);
     Fence *getFence(GLuint handle);

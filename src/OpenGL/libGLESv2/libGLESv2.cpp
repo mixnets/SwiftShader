@@ -3306,7 +3306,7 @@ void GL_APIENTRY glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat* params
 		case GL_CURRENT_VERTEX_ATTRIB:
 			for(int i = 0; i < 4; ++i)
 			{
-				params[i] = attribState.mCurrentValue[i];
+				params[i] = attribState.getCurrentValue(i);
 			}
 			break;
 		default: return error(GL_INVALID_ENUM);
@@ -3352,7 +3352,7 @@ void GL_APIENTRY glGetVertexAttribiv(GLuint index, GLenum pname, GLint* params)
 		case GL_CURRENT_VERTEX_ATTRIB:
 			for(int i = 0; i < 4; ++i)
 			{
-				float currentValue = attribState.mCurrentValue[i];
+				float currentValue = attribState.getCurrentValue(i);
 				params[i] = (GLint)(currentValue > 0.0f ? floor(currentValue + 0.5f) : ceil(currentValue - 0.5f));
 			}
 			break;
@@ -5093,6 +5093,8 @@ void GL_APIENTRY glVertexAttribPointer(GLuint index, GLint size, GLenum type, GL
 		return error(GL_INVALID_VALUE);
 	}
 
+	bool isES3 = (egl::getClientVersion() == 3);
+
 	switch(type)
 	{
 	case GL_BYTE:
@@ -5102,6 +5104,19 @@ void GL_APIENTRY glVertexAttribPointer(GLuint index, GLint size, GLenum type, GL
 	case GL_FIXED:
 	case GL_FLOAT:
 		break;
+	case GL_INT_2_10_10_10_REV:
+	case GL_UNSIGNED_INT_2_10_10_10_REV:
+		if(isES3 && (size != 4))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+	case GL_INT:
+	case GL_UNSIGNED_INT:
+	case GL_HALF_FLOAT:
+		if(isES3)
+		{
+			break;
+		}
 	default:
 		return error(GL_INVALID_ENUM);
 	}
