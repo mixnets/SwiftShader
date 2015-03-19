@@ -329,6 +329,11 @@ namespace sw
 			modifierString += "_pp";
 		}
 
+		if(!smooth)
+		{
+			modifierString += "_flat";
+		}
+
 		if(centroid)
 		{
 			modifierString += "_centroid";

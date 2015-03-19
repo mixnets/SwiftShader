@@ -169,9 +169,9 @@ bool Display::initialize()
         {
             sw::Format depthStencilFormat = depthStencilFormats[depthStencilIndex];
 
-            // FIXME: enumerate multi-sampling
-
             configSet.add(currentDisplayMode, mMinSwapInterval, mMaxSwapInterval, renderTargetFormat, depthStencilFormat, 0);
+            configSet.add(currentDisplayMode, mMinSwapInterval, mMaxSwapInterval, renderTargetFormat, depthStencilFormat, 2);
+            configSet.add(currentDisplayMode, mMinSwapInterval, mMaxSwapInterval, renderTargetFormat, depthStencilFormat, 4);
         }
     }
 

@@ -42,6 +42,7 @@ namespace es2
 {
 struct TranslatedAttribute;
 struct TranslatedIndexData;
+struct PrimitiveRestartData;
 
 class Device;
 class Buffer;
@@ -74,7 +75,7 @@ enum
     MAX_VERTEX_ATTRIBS = VERTEX_ATTRIBUTES,
 	MAX_UNIFORM_VECTORS = 256,   // Device limit
     MAX_VERTEX_UNIFORM_VECTORS = VERTEX_UNIFORM_VECTORS - 3,   // Reserve space for gl_DepthRange
-    MAX_VARYING_VECTORS = 10,
+    MAX_VARYING_VECTORS = 15 /*es2: 10*/,
     MAX_TEXTURE_IMAGE_UNITS = TEXTURE_IMAGE_UNITS,
     MAX_VERTEX_TEXTURE_IMAGE_UNITS = VERTEX_TEXTURE_IMAGE_UNITS,
     MAX_COMBINED_TEXTURE_IMAGE_UNITS = MAX_TEXTURE_IMAGE_UNITS + MAX_VERTEX_TEXTURE_IMAGE_UNITS,
@@ -109,6 +110,34 @@ const GLenum compressedTextureFormats[] =
 	GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2,
 	GL_COMPRESSED_RGBA8_ETC2_EAC,
 	GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC,
+	GL_COMPRESSED_RGBA_ASTC_4x4_KHR,
+	GL_COMPRESSED_RGBA_ASTC_5x4_KHR,
+	GL_COMPRESSED_RGBA_ASTC_5x5_KHR,
+	GL_COMPRESSED_RGBA_ASTC_6x5_KHR,
+	GL_COMPRESSED_RGBA_ASTC_6x6_KHR,
+	GL_COMPRESSED_RGBA_ASTC_8x5_KHR,
+	GL_COMPRESSED_RGBA_ASTC_8x6_KHR,
+	GL_COMPRESSED_RGBA_ASTC_8x8_KHR,
+	GL_COMPRESSED_RGBA_ASTC_10x5_KHR,
+	GL_COMPRESSED_RGBA_ASTC_10x6_KHR,
+	GL_COMPRESSED_RGBA_ASTC_10x8_KHR,
+	GL_COMPRESSED_RGBA_ASTC_10x10_KHR,
+	GL_COMPRESSED_RGBA_ASTC_12x10_KHR,
+	GL_COMPRESSED_RGBA_ASTC_12x12_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR,
+	GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR,
 #endif
 };
 
@@ -645,7 +674,8 @@ private:
     bool applyRenderTarget();
     void applyState(GLenum drawMode);
 	GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsizei instanceId);
-    GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo);
+    GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum type, TranslatedIndexData *indexInfo);
+	GLenum computePrimitiveRestart(const void *indices, GLsizei count, GLenum type, PrimitiveRestartData* restartInfo);
     void applyShaders();
     void applyTextures();
     void applyTextures(sw::SamplerType type);

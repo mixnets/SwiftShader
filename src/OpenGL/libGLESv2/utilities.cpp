@@ -332,7 +332,35 @@ namespace es2
                format == GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2 ||
                format == GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2 ||
                format == GL_COMPRESSED_RGBA8_ETC2_EAC ||
-               format == GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC;
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC ||
+               format == GL_COMPRESSED_RGBA_ASTC_4x4_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_5x4_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_5x5_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_6x5_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_6x6_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_8x5_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_8x6_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_8x8_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_10x5_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_10x6_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_10x8_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_10x10_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_12x10_KHR ||
+               format == GL_COMPRESSED_RGBA_ASTC_12x12_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR ||
+               format == GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR;
 	}
 
 	bool IsDepthTexture(GLenum format)
@@ -836,7 +864,7 @@ namespace es2sw
 		case GL_DEPTH_COMPONENT16:
 		case GL_STENCIL_INDEX8:       
 		case GL_DEPTH24_STENCIL8_OES: return sw::FORMAT_D24S8;
-		default: UNREACHABLE(format); return sw::FORMAT_A8B8G8R8;
+		default: UNREACHABLE(format); return sw::FORMAT_NULL;
 		}
 	}
 }
