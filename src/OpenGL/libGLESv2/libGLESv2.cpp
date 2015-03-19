@@ -415,6 +415,8 @@ void GL_APIENTRY glBindBuffer(GLenum target, GLuint buffer)
 
 	if(context)
 	{
+		bool isES3 = (egl::getClientVersion() == 3);
+
 		switch(target)
 		{
 		case GL_ARRAY_BUFFER:
@@ -423,6 +425,42 @@ void GL_APIENTRY glBindBuffer(GLenum target, GLuint buffer)
 		case GL_ELEMENT_ARRAY_BUFFER:
 			context->bindElementArrayBuffer(buffer);
 			return;
+		case GL_COPY_READ_BUFFER:
+			if(isES3)
+			{
+				context->bindCopyReadBuffer(buffer);
+				return;
+			}
+		case GL_COPY_WRITE_BUFFER:
+			if(isES3)
+			{
+				context->bindCopyWriteBuffer(buffer);
+				return;
+			}
+		case GL_PIXEL_PACK_BUFFER:
+			if(isES3)
+			{
+				context->bindPixelPackBuffer(buffer);
+				return;
+			}
+		case GL_PIXEL_UNPACK_BUFFER:
+			if(isES3)
+			{
+				context->bindPixelUnpackBuffer(buffer);
+				return;
+			}
+		case GL_TRANSFORM_FEEDBACK_BUFFER:
+			if(isES3)
+			{
+				context->bindTransformFeedbackBuffer(buffer);
+				return;
+			}
+		case GL_UNIFORM_BUFFER:
+			if(isES3)
+			{
+				context->bindUniformBuffer(buffer);
+				return;
+			}
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -2335,6 +2373,8 @@ void GL_APIENTRY glGetBufferParameteriv(GLenum target, GLenum pname, GLint* para
 
 	if(context)
 	{
+		bool isES3 = (egl::getClientVersion() == 3);
+
 		es2::Buffer *buffer;
 
 		switch(target)
@@ -2345,6 +2385,42 @@ void GL_APIENTRY glGetBufferParameteriv(GLenum target, GLenum pname, GLint* para
 		case GL_ELEMENT_ARRAY_BUFFER:
 			buffer = context->getElementArrayBuffer();
 			break;
+		case GL_COPY_READ_BUFFER:
+			if(isES3)
+			{
+				buffer = context->getCopyReadBuffer();
+				break;
+			}
+		case GL_COPY_WRITE_BUFFER:
+			if(isES3)
+			{
+				buffer = context->getCopyWriteBuffer();
+				break;
+			}
+		case GL_PIXEL_PACK_BUFFER:
+			if(isES3)
+			{
+				buffer = context->getPixelPackBuffer();
+				break;
+			}
+		case GL_PIXEL_UNPACK_BUFFER:
+			if(isES3)
+			{
+				buffer = context->getPixelUnpackBuffer();
+				break;
+			}
+		case GL_TRANSFORM_FEEDBACK_BUFFER:
+			if(isES3)
+			{
+				buffer = context->getTransformFeedbackBuffer();
+				break;
+			}
+		case GL_UNIFORM_BUFFER:
+			if(isES3)
+			{
+				buffer = context->getUniformBuffer();
+				break;
+			}
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -2363,6 +2439,15 @@ void GL_APIENTRY glGetBufferParameteriv(GLenum target, GLenum pname, GLint* para
 		case GL_BUFFER_SIZE:
 			*params = buffer->size();
 			break;
+		case GL_BUFFER_ACCESS_FLAGS:
+		case GL_BUFFER_MAPPED:
+		case GL_BUFFER_MAP_LENGTH:
+		case GL_BUFFER_MAP_OFFSET:
+			if(isES3)
+			{
+				UNIMPLEMENTED();
+				break;
+			}
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -2602,10 +2687,7 @@ void GL_APIENTRY glGetIntegerv(GLenum pname, GLint* params)
 
 				for(unsigned int i = 0; i < numParams; ++i)
 				{
-					if(boolParams[i] == GL_FALSE)
-						params[i] = 0;
-					else
-						params[i] = 1;
+					params[i] = (boolParams[i] == GL_FALSE) ? 0 : 1;
 				}
 
 				delete [] boolParams;
@@ -2621,7 +2703,7 @@ void GL_APIENTRY glGetIntegerv(GLenum pname, GLint* params)
 				{
 					if(pname == GL_DEPTH_RANGE || pname == GL_COLOR_CLEAR_VALUE || pname == GL_DEPTH_CLEAR_VALUE || pname == GL_BLEND_COLOR)
 					{
-						params[i] = (GLint)(((GLfloat)(0xFFFFFFFF) * floatParams[i] - 1.0f) / 2.0f);
+						params[i] = (GLint)(((GLfloat)(0xFFFFFFFF) * floatParams[i] - 1.0f) * 0.5f);
 					}
 					else
 					{
@@ -3306,7 +3388,7 @@ void GL_APIENTRY glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat* params
 		case GL_CURRENT_VERTEX_ATTRIB:
 			for(int i = 0; i < 4; ++i)
 			{
-				params[i] = attribState.mCurrentValue[i];
+				params[i] = attribState.getCurrentValue(i);
 			}
 			break;
 		default: return error(GL_INVALID_ENUM);
@@ -3352,7 +3434,7 @@ void GL_APIENTRY glGetVertexAttribiv(GLuint index, GLenum pname, GLint* params)
 		case GL_CURRENT_VERTEX_ATTRIB:
 			for(int i = 0; i < 4; ++i)
 			{
-				float currentValue = attribState.mCurrentValue[i];
+				float currentValue = attribState.getCurrentValue(i);
 				params[i] = (GLint)(currentValue > 0.0f ? floor(currentValue + 0.5f) : ceil(currentValue - 0.5f));
 			}
 			break;
@@ -5093,6 +5175,8 @@ void GL_APIENTRY glVertexAttribPointer(GLuint index, GLint size, GLenum type, GL
 		return error(GL_INVALID_VALUE);
 	}
 
+	bool isES3 = (egl::getClientVersion() == 3);
+
 	switch(type)
 	{
 	case GL_BYTE:
@@ -5102,6 +5186,19 @@ void GL_APIENTRY glVertexAttribPointer(GLuint index, GLint size, GLenum type, GL
 	case GL_FIXED:
 	case GL_FLOAT:
 		break;
+	case GL_INT_2_10_10_10_REV:
+	case GL_UNSIGNED_INT_2_10_10_10_REV:
+		if(isES3 && (size != 4))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+	case GL_INT:
+	case GL_UNSIGNED_INT:
+	case GL_HALF_FLOAT:
+		if(isES3)
+		{
+			break;
+		}
 	default:
 		return error(GL_INVALID_ENUM);
 	}
