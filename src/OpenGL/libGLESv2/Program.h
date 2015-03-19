@@ -54,6 +54,13 @@ namespace es2
 		short vsRegisterIndex;
 	};
 
+	// Helper struct representing a single shader uniform block
+	struct UniformBlock
+	{
+		std::vector<Uniform> uniforms;
+		std::string name;
+	};
+
 	// Struct used for correlating uniforms/elements of uniform arrays to handles
 	struct UniformLocation
 	{
@@ -81,6 +88,10 @@ namespace es2
 		void bindAttributeLocation(GLuint index, const char *name);
 		GLuint getAttributeLocation(const char *name);
 		int getAttributeStream(int attributeIndex);
+
+		void bindUniformBlockLocation(GLuint index, GLuint binding);
+		GLuint getUniformBlockLocation(const char *name);
+		int getUniformBlockStream(int uniformBlockIndex);
 
 		GLint getSamplerMapping(sw::SamplerType type, unsigned int samplerIndex);
 		TextureType getSamplerTextureType(sw::SamplerType type, unsigned int samplerIndex);
@@ -128,6 +139,10 @@ namespace es2
 		void getActiveUniform(GLuint index, GLsizei bufsize, GLsizei *length, GLint *size, GLenum *type, GLchar *name) const;
 		GLint getActiveUniformCount() const;
 		GLint getActiveUniformMaxLength() const;
+
+		void getActiveUniformBlockName(GLuint index, GLsizei bufSize, GLsizei *length, GLchar *name) const;
+		GLint getActiveUniformBlockCount() const;
+		GLint getActiveUniformBlockMaxLength() const;
 
 		void addRef();
 		void release();
@@ -189,6 +204,10 @@ namespace es2
 		glsl::Attribute linkedAttribute[MAX_VERTEX_ATTRIBS];
 		int attributeStream[MAX_VERTEX_ATTRIBS];
 
+		std::set<GLuint> uniformBlockBinding[IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS];
+		glsl::UniformBlock linkedUniformBlock[IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS];
+		int uniformBlockStream[IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS];
+
 		struct Sampler
 		{
 			bool active;
@@ -203,6 +222,8 @@ namespace es2
 		UniformArray uniforms;
 		typedef std::vector<UniformLocation> UniformIndex;
 		UniformIndex uniformIndex;
+		typedef std::vector<UniformBlock*> UniformBlockArray;
+		UniformBlockArray uniformBlocks;
 
 		bool linked;
 		bool orphaned;   // Flag to indicate that the program can be deleted when no longer in use
