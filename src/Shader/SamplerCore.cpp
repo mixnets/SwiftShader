@@ -175,8 +175,8 @@ namespace sw
 				case FORMAT_YV12_BT601:
 				case FORMAT_YV12_BT709:
 				case FORMAT_YV12_JFIF:
-					if(componentCount < 2) c.y = Short4(0x1000, 0x1000, 0x1000, 0x1000);
-					if(componentCount < 3) c.z = Short4(0x1000, 0x1000, 0x1000, 0x1000);
+					if(componentCount < 2) c.y = Short4(0x0000, 0x0000, 0x0000, 0x0000);
+					if(componentCount < 3) c.z = Short4(0x0000, 0x0000, 0x0000, 0x0000);
 					if(componentCount < 4) c.w = Short4(0x1000, 0x1000, 0x1000, 0x1000);
 					break;
 				case FORMAT_A8:
@@ -197,9 +197,9 @@ namespace sw
 					c.z = c.x;
 					break;
 				case FORMAT_R32F:
-					c.y = Short4(0x1000, 0x1000, 0x1000, 0x1000);
+					c.y = Short4(0x0000, 0x0000, 0x0000, 0x0000);
 				case FORMAT_G32R32F:
-					c.z = Short4(0x1000, 0x1000, 0x1000, 0x1000);
+					c.z = Short4(0x0000, 0x0000, 0x0000, 0x0000);
 					c.w = Short4(0x1000, 0x1000, 0x1000, 0x1000);
 				case FORMAT_A32B32G32R32F:
 					break;
@@ -361,8 +361,8 @@ namespace sw
 				case FORMAT_G8R8:
 				case FORMAT_G16R16:
 				case FORMAT_A16B16G16R16:
-					if(componentCount < 2) c.y = Float4(1.0f);
-					if(componentCount < 3) c.z = Float4(1.0f);
+					if(componentCount < 2) c.y = Float4(0.0f);
+					if(componentCount < 3) c.z = Float4(0.0f);
 					if(componentCount < 4) c.w = Float4(1.0f);
 					break;
 				case FORMAT_A8:
@@ -383,9 +383,9 @@ namespace sw
 					c.z = c.x;
 					break;
 				case FORMAT_R32F:
-					c.y = Float4(1.0f);
+					c.y = Float4(0.0f);
 				case FORMAT_G32R32F:
-					c.z = Float4(1.0f);
+					c.z = Float4(0.0f);
 					c.w = Float4(1.0f);
 				case FORMAT_A32B32G32R32F:
 					break;

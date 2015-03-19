@@ -174,6 +174,12 @@ namespace sw
 			case Shader::OPCODE_FLOATBITSTOUINT:
 			case Shader::OPCODE_INTBITSTOFLOAT:
 			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                    break;
+			case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d, s0);      break;
+			case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d, s0);      break;
+			case Shader::OPCODE_PACKHALF2x16:    packHalf2x16(d, s0);       break;
+			case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0);    break;
+			case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0);    break;
+			case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0);     break;
 			case Shader::OPCODE_M3X2:		M3X2(r, d, s0, src1);			break;
 			case Shader::OPCODE_M3X3:		M3X3(r, d, s0, src1);			break;
 			case Shader::OPCODE_M3X4:		M3X4(r, d, s0, src1);			break;
@@ -283,6 +289,7 @@ namespace sw
 			case Shader::OPCODE_NE:         notEqual(d, s0, s1);            break;
 			case Shader::OPCODE_TEXLDL:		TEXLDL(r, d, s0, src1);			break;
 			case Shader::OPCODE_TEX:		TEX(r, d, s0, src1);			break;
+			case Shader::OPCODE_TEXSIZE:	TEXSIZE(r, d, s0.x, src1);		break;
 			case Shader::OPCODE_END:										break;
 			default:
 				ASSERT(false);
@@ -1479,6 +1486,17 @@ namespace sw
 		dst.y = tmp[(src1.swizzle >> 2) & 0x3];
 		dst.z = tmp[(src1.swizzle >> 4) & 0x3];
 		dst.w = tmp[(src1.swizzle >> 6) & 0x3];
+	}
+
+	void VertexProgram::TEXSIZE(Registers &r, Vector4f &dst, Float4 &lod, const Src &src1)
+	{
+		Pointer<Byte> texture = r.data + OFFSET(DrawData, mipmap[16]) + src1.index * sizeof(Texture);
+		Int lodBase = Int(*Pointer<Float>(texture + OFFSET(Texture, LOD))) + Int(1);
+		Int lodBias = As<Int>(Float(lod.x));
+		Pointer<Byte> mipmap = texture + OFFSET(Texture, mipmap) + (lodBias + lodBase) * sizeof(Mipmap);
+		dst.x = Float4(As<Float>(Int(*Pointer<Short>(mipmap + OFFSET(Mipmap, width)))));
+		dst.y = Float4(As<Float>(Int(*Pointer<Short>(mipmap + OFFSET(Mipmap, height)))));
+		dst.z = Float4(As<Float>(Int(*Pointer<Short>(mipmap + OFFSET(Mipmap, depth)))));
 	}
 
 	void VertexProgram::sampleTexture(Registers &r, Vector4f &c, const Src &s, Float4 &u, Float4 &v, Float4 &w, Float4 &q)

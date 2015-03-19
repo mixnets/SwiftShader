@@ -2375,7 +2375,6 @@ void GenerateMipmap(GLenum target)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}
@@ -3097,11 +3096,6 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 		case GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE:
 			if(clientVersion >= 3)
 			{
-				if(attachment == GL_DEPTH_STENCIL_ATTACHMENT)
-				{
-					return error(GL_INVALID_OPERATION);
-				}
-
 				*params = sw2es::GetComponentType(renderbuffer->getInternalFormat(), attachment);
 			}
 			else return error(GL_INVALID_ENUM);
@@ -3624,7 +3618,6 @@ void GetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}
@@ -3771,7 +3764,6 @@ void GetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}
@@ -4609,6 +4601,9 @@ void PixelStorei(GLenum pname, GLint param)
 				break;
 			}
 			else return error(GL_INVALID_ENUM);
+		// FIXME: these cases are missing	
+		//case GL_PACK_IMAGE_HEIGHT:
+		//case GL_PACK_SKIP_IMAGES:
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -5854,7 +5849,6 @@ void TexParameterf(GLenum target, GLenum pname, GLfloat param)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}
@@ -6010,7 +6004,6 @@ void TexParameteri(GLenum target, GLenum pname, GLint param)
 			}
 			else
 			{
-				UNIMPLEMENTED();
 				texture = context->getTexture3D();
 				break;
 			}

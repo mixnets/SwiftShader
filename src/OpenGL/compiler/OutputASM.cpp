@@ -57,6 +57,36 @@ namespace glsl
 			constants[3].setFConst(w);
 		}
 
+		Constant(int value, TBasicType type) : TIntermConstantUnion(constants, TType(type, EbpHigh, EvqConstExpr, 4, 1, false))
+		{
+			switch(type)
+			{
+			case EbtInt:
+				constants[0].setIConst(value);
+				constants[1].setIConst(value);
+				constants[2].setIConst(value);
+				constants[3].setIConst(value);
+				break;
+			case EbtUInt:
+				constants[0].setUConst(value);
+				constants[1].setUConst(value);
+				constants[2].setUConst(value);
+				constants[3].setUConst(value);
+				break;
+			case EbtFloat:
+			{
+				float valuef = static_cast<float>(value);
+				constants[0].setFConst(valuef);
+				constants[1].setFConst(valuef);
+				constants[2].setFConst(valuef);
+				constants[3].setFConst(valuef);
+			}
+				break;
+			default:
+				UNREACHABLE(type);
+			}
+		}
+
 		Constant(bool b) : TIntermConstantUnion(constants, TType(EbtBool, EbpHigh, EvqConstExpr, 1, 1, false))
 		{
 			constants[0].setBConst(b);
@@ -679,6 +709,7 @@ namespace glsl
 			break;
 		case EOpVectorLogicalNot: if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpLogicalNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
+		case EOpBitwiseNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpPostIncrement:
 			if(visit == PostVisit)
 			{
@@ -804,6 +835,8 @@ namespace glsl
 				}
 			}
 			break;
+		case EOpDeterminant:
+		case EOpInverse:
 		default: UNREACHABLE(node->getOp());
 		}
 
@@ -1022,6 +1055,10 @@ namespace glsl
 						lod->dst.mask = 0x8;
 
 						emit(sw::Shader::OPCODE_TEXLDL, result, &proj, arg[0]);
+					}
+					else if(name == "textureSize")
+					{
+						emit(sw::Shader::OPCODE_TEXSIZE, result, arg[1], arg[0]);
 					}
 					else UNREACHABLE(0);
 				}

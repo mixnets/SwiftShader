@@ -2423,9 +2423,10 @@ GL_APICALL GLint GL_APIENTRY glGetFragDataLocation(GLuint program, const GLchar 
 		{
 			return error(GL_INVALID_OPERATION, -1);
 		}
+
+		UNIMPLEMENTED();
 	}
 
-	UNIMPLEMENTED();
 	return -1;
 }
 

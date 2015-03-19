@@ -877,7 +877,7 @@ namespace es2sw
 		case GL_DEPTH_COMPONENT16:
 		case GL_STENCIL_INDEX8:       
 		case GL_DEPTH24_STENCIL8_OES: return sw::FORMAT_D24S8;
-		default: UNREACHABLE(format); return sw::FORMAT_A8B8G8R8;
+		default: UNREACHABLE(format); return sw::FORMAT_NULL;
 		}
 	}
 }
