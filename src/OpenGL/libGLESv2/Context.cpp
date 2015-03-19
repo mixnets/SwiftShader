@@ -213,6 +213,12 @@ Context::~Context()
 
     mState.arrayBuffer = NULL;
     mState.elementArrayBuffer = NULL;
+    mState.copyReadBuffer = NULL;
+    mState.copyWriteBuffer = NULL;
+    mState.pixelPackBuffer = NULL;
+    mState.pixelUnpackBuffer = NULL;
+    mState.transformFeedbackBuffer = NULL;
+    mState.uniformBuffer = NULL;
     mState.renderbuffer = NULL;
 
     mTexture2DZero = NULL;
@@ -726,6 +732,11 @@ void Context::setEnableVertexAttribArray(unsigned int attribNum, bool enabled)
     mState.vertexAttribute[attribNum].mArrayEnabled = enabled;
 }
 
+void Context::setVertexAttribDivisor(unsigned int attribNum, GLuint divisor)
+{
+	mState.vertexAttribute[attribNum].mDivisor = divisor;
+}
+
 const VertexAttribute &Context::getVertexAttribState(unsigned int attribNum)
 {
     return mState.vertexAttribute[attribNum];
@@ -826,6 +837,16 @@ GLuint Context::createQuery()
     return handle;
 }
 
+// Returns an unused vertex array name
+GLuint Context::createVertexArray()
+{
+	GLuint handle = mVertexArrayNameSpace.allocate();
+
+	mVertexArrayMap[handle] = NULL;
+
+	return handle;
+}
+
 void Context::deleteBuffer(GLuint buffer)
 {
     if(mResourceManager->getBuffer(buffer))
@@ -909,6 +930,23 @@ void Context::deleteQuery(GLuint query)
     }
 }
 
+void Context::deleteVertexArray(GLuint vertexArray)
+{
+	VertexArrayMap::iterator vertexArrayObject = mVertexArrayMap.find(vertexArray);
+
+	if(vertexArrayObject != mVertexArrayMap.end())
+	{
+		mVertexArrayNameSpace.release(vertexArrayObject->first);
+
+		if(vertexArrayObject->second)
+		{
+			vertexArrayObject->second->release();
+		}
+
+		mVertexArrayMap.erase(vertexArrayObject);
+	}
+}
+
 Buffer *Context::getBuffer(GLuint handle)
 {
     return mResourceManager->getBuffer(handle);
@@ -956,6 +994,48 @@ void Context::bindElementArrayBuffer(unsigned int buffer)
     mResourceManager->checkBufferAllocation(buffer);
 
     mState.elementArrayBuffer = getBuffer(buffer);
+}
+
+void Context::bindCopyReadBuffer(GLuint buffer)
+{
+	mResourceManager->checkBufferAllocation(buffer);
+
+	mState.copyReadBuffer = getBuffer(buffer);
+}
+
+void Context::bindCopyWriteBuffer(GLuint buffer)
+{
+	mResourceManager->checkBufferAllocation(buffer);
+
+	mState.copyWriteBuffer = getBuffer(buffer);
+}
+
+void Context::bindPixelPackBuffer(GLuint buffer)
+{
+	mResourceManager->checkBufferAllocation(buffer);
+
+	mState.pixelPackBuffer = getBuffer(buffer);
+}
+
+void Context::bindPixelUnpackBuffer(GLuint buffer)
+{
+	mResourceManager->checkBufferAllocation(buffer);
+
+	mState.pixelUnpackBuffer = getBuffer(buffer);
+}
+
+void Context::bindTransformFeedbackBuffer(GLuint buffer)
+{
+	mResourceManager->checkBufferAllocation(buffer);
+
+	mState.transformFeedbackBuffer = getBuffer(buffer);
+}
+
+void Context::bindUniformBuffer(GLuint buffer)
+{
+	mResourceManager->checkBufferAllocation(buffer);
+
+	mState.uniformBuffer = getBuffer(buffer);
 }
 
 void Context::bindTexture2D(GLuint texture)
@@ -1009,6 +1089,18 @@ void Context::bindDrawFramebuffer(GLuint framebuffer)
 void Context::bindRenderbuffer(GLuint renderbuffer)
 {
     mState.renderbuffer = getRenderbuffer(renderbuffer);
+}
+
+bool Context::bindVertexArray(GLuint array)
+{
+	VertexArray* vertexArray = getVertexArray(array);
+
+	if(vertexArray)
+	{
+		mState.vertexArray = vertexArray;
+	}
+
+	return vertexArray;
 }
 
 void Context::useProgram(GLuint program)
@@ -1180,6 +1272,13 @@ Query *Context::getQuery(unsigned int handle, bool create, GLenum type)
     }
 }
 
+VertexArray *Context::getVertexArray(GLuint array)
+{
+	VertexArrayMap::iterator vertexArray = mVertexArrayMap.find(array);
+
+	return (vertexArray == mVertexArrayMap.end()) ? NULL : vertexArray->second;
+}
+
 Buffer *Context::getArrayBuffer()
 {
     return mState.arrayBuffer;
@@ -1188,6 +1287,36 @@ Buffer *Context::getArrayBuffer()
 Buffer *Context::getElementArrayBuffer()
 {
     return mState.elementArrayBuffer;
+}
+
+Buffer *Context::getCopyReadBuffer()
+{
+	return mState.copyReadBuffer;
+}
+
+Buffer *Context::getCopyWriteBuffer()
+{
+	return mState.copyWriteBuffer;
+}
+
+Buffer *Context::getPixelPackBuffer()
+{
+	return mState.pixelPackBuffer;
+}
+
+Buffer *Context::getPixelUnpackBuffer()
+{
+	return mState.pixelUnpackBuffer;
+}
+
+Buffer *Context::getTransformFeedbackBuffer()
+{
+	return mState.transformFeedbackBuffer;
+}
+
+Buffer *Context::getUniformBuffer()
+{
+	return mState.uniformBuffer;
 }
 
 Program *Context::getCurrentProgram()
@@ -1312,13 +1441,17 @@ bool Context::getFloatv(GLenum pname, GLfloat *params)
     return true;
 }
 
-bool Context::getIntegerv(GLenum pname, GLint *params)
+template bool Context::getIntegerv<GLint>(GLenum pname, GLint *params);
+template bool Context::getIntegerv<GLint64>(GLenum pname, GLint64 *params);
+
+template<typename T> bool Context::getIntegerv(GLenum pname, T *params)
 {
     // Please note: DEPTH_CLEAR_VALUE is not included in our internal getIntegerv implementation
     // because it is stored as a float, despite the fact that the GL ES 2.0 spec names
     // GetIntegerv as its native query function. As it would require conversion in any
     // case, this should make no difference to the calling application. You may find it in 
     // Context::getFloatv.
+
     switch (pname)
     {
     case GL_MAX_VERTEX_ATTRIBS:               *params = MAX_VERTEX_ATTRIBS;               break;
@@ -1542,12 +1675,24 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 		}
 		break;
 	case GL_COPY_READ_BUFFER_BINDING: // name, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		if(clientVersion >= 3)
+		{
+			*params = mState.copyReadBuffer.name();
+		}
+		else
+		{
+			return false;
+		}
 		break;
 	case GL_COPY_WRITE_BUFFER_BINDING: // name, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		if(clientVersion >= 3)
+		{
+			*params = mState.copyWriteBuffer.name();
+		}
+		else
+		{
+			return false;
+		}
 		break;
 	case GL_DRAW_BUFFER0: // symbolic constant, initial value is GL_BACK​
 		UNIMPLEMENTED();
@@ -1601,7 +1746,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 		break;
 	case GL_MAX_DRAW_BUFFERS: // integer, at least 8
 		UNIMPLEMENTED();
-		*params = 8;
+		*params = IMPLEMENTATION_MAX_DRAW_BUFFERS;
 		break;
 	case GL_MAX_ELEMENT_INDEX: // integer, at least 16777215
 		UNIMPLEMENTED();
@@ -1645,7 +1790,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS: // integer, at least 4
 		UNIMPLEMENTED();
-		*params = 4;
+		*params = IMPLEMENTATION_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS: // integer, at least 4
 		UNIMPLEMENTED();
@@ -1704,12 +1849,24 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 		*params = 0;
 		break;
 	case GL_PIXEL_PACK_BUFFER_BINDING: // integer, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		if(clientVersion >= 3)
+		{
+			*params = mState.pixelPackBuffer.name();
+		}
+		else
+		{
+			return false;
+		}
 		break;
 	case GL_PIXEL_UNPACK_BUFFER_BINDING: // integer, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		if(clientVersion >= 3)
+		{
+			*params = mState.pixelUnpackBuffer.name();
+		}
+		else
+		{
+			return false;
+		}
 		break;
 	case GL_PROGRAM_BINARY_FORMATS: // integer[GL_NUM_PROGRAM_BINARY_FORMATS​]
 		UNIMPLEMENTED();
@@ -1724,8 +1881,14 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 		*params = 0;
 		break;
 	case GL_UNIFORM_BUFFER_BINDING: // name, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		if(clientVersion >= 3)
+		{
+			*params = mState.uniformBuffer.name();
+		}
+		else
+		{
+			return false;
+		}
 		break;
 	case GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT: // integer, defaults to 1
 		UNIMPLEMENTED();
@@ -1770,7 +1933,10 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
     return true;
 }
 
-bool Context::getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param)
+template bool Context::getTransformFeedbackiv<GLint>(GLuint xfb, GLenum pname, GLint *param);
+template bool Context::getTransformFeedbackiv<GLint64>(GLuint xfb, GLenum pname, GLint64 *param);
+
+template<typename T> bool Context::getTransformFeedbackiv(GLuint xfb, GLenum pname, T *param)
 {
 	UNIMPLEMENTED();
 
@@ -1783,7 +1949,7 @@ bool Context::getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param)
 		*param = GL_FALSE;
 		break;
 	case GL_TRANSFORM_FEEDBACK_BUFFER_BINDING: // name, initially 0
-		*param = 0;
+		*param = mState.transformFeedbackBuffer.name();
 		break;
 	case GL_TRANSFORM_FEEDBACK_PAUSED: // boolean, initially GL_FALSE
 		*param = GL_FALSE;
@@ -3195,12 +3361,27 @@ void Context::setVertexAttrib(GLuint index, const GLfloat *values)
 {
     ASSERT(index < MAX_VERTEX_ATTRIBS);
 
-    mState.vertexAttribute[index].mCurrentValue[0] = values[0];
-    mState.vertexAttribute[index].mCurrentValue[1] = values[1];
-    mState.vertexAttribute[index].mCurrentValue[2] = values[2];
-    mState.vertexAttribute[index].mCurrentValue[3] = values[3];
+    mState.vertexAttribute[index].setCurrentValue(values);
 
     mVertexDataManager->dirtyCurrentValue(index);
+}
+
+void Context::setVertexAttrib(GLuint index, const GLint *values)
+{
+	ASSERT(index < MAX_VERTEX_ATTRIBS);
+
+	mState.vertexAttribute[index].setCurrentValue(values);
+
+	mVertexDataManager->dirtyCurrentValue(index);
+}
+
+void Context::setVertexAttrib(GLuint index, const GLuint *values)
+{
+	ASSERT(index < MAX_VERTEX_ATTRIBS);
+
+	mState.vertexAttribute[index].setCurrentValue(values);
+
+	mVertexDataManager->dirtyCurrentValue(index);
 }
 
 void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, 
