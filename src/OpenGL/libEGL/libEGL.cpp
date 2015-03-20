@@ -20,8 +20,10 @@
 #include "common/debug.h"
 #include "Common/Version.h"
 
-#include <exception>
 #include <string.h>
+#if defined(HAVE_ANDROID_OS)
+    #include <system/window.h>
+#endif
 
 static bool validateDisplay(egl::Display *display)
 {
@@ -853,14 +855,55 @@ EGLImageKHR EGLAPIENTRY eglCreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenu
 		return error(EGL_BAD_PARAMETER, EGL_NO_IMAGE_KHR);
 	}
 
-	EGLenum validationResult = context->validateSharedImage(target, name, textureLevel);
+	EGLenum validationResult;
+	// TODO(pinghao): move the platform-dependent validation elsewhere?
+	#if defined(HAVE_ANDROID_OS)
+		validationResult = EGL_SUCCESS;
+		if(target == EGL_NATIVE_BUFFER_ANDROID)
+		{
+			ANativeWindowBuffer* native_buffer = reinterpret_cast<ANativeWindowBuffer*>(name);
+			if (native_buffer->common.magic != ANDROID_NATIVE_BUFFER_MAGIC)
+			{
+				validationResult = EGL_BAD_PARAMETER;
+			}
+
+			if (native_buffer->common.version != sizeof(ANativeWindowBuffer))
+			{
+				validationResult = EGL_BAD_PARAMETER;
+			}
+
+			switch (native_buffer->format) {
+				case HAL_PIXEL_FORMAT_RGBA_8888:
+				case HAL_PIXEL_FORMAT_RGBX_8888:
+				case HAL_PIXEL_FORMAT_RGB_565:
+					break;
+				default:
+					validationResult = EGL_BAD_PARAMETER;
+			}
+			validationResult = EGL_SUCCESS;
+		}
+	#else
+		validationResult = context->validateSharedImage(target, name, textureLevel);
+	#endif
 
 	if(validationResult != EGL_SUCCESS)
 	{
 		return error(validationResult, EGL_NO_IMAGE_KHR);
 	}
 
-	egl::Image *image = context->createSharedImage(target, name, textureLevel);
+	egl::Image *image;
+	// TODO(pinghao): move the platform-dependent validation elsewhere?
+	#if defined(_HAVE_ANDROID_OS)
+		if(target == EGL_NATIVE_BUFFER_ANDROID)
+		{
+			ANativeWindowBuffer* nativeBuffer = reinterpret_cast<ANativeWindowBuffer*>(name);
+			nativeBuffer->common.incRef(&nativeBuffer->common);
+			// FIXME(pinghao): properly create an egl::Image from nativeBuffer
+			image = reinterpret_cast<egl::Image *>(name);
+		}
+	#else
+		image = context->createSharedImage(target, name, textureLevel);
+	#endif
 
 	if(!image)
 	{
@@ -891,6 +934,21 @@ EGLBoolean EGLAPIENTRY eglDestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
 		return error(EGL_BAD_PARAMETER, EGL_FALSE);
 	}
 
+	#if defined(HAVE_ANDROID_OS)
+		// FIXME(pinghao): should get the nativeBuffer from image, which of type egl::Image
+		ANativeWindowBuffer* nativeBuffer = reinterpret_cast<ANativeWindowBuffer*>(image);
+		if (nativeBuffer->common.magic != ANDROID_NATIVE_BUFFER_MAGIC)
+		{
+			return error(EGL_BAD_PARAMETER, EGL_FALSE);
+		}
+
+		if (nativeBuffer->common.version != sizeof(ANativeWindowBuffer))
+		{
+			return error(EGL_BAD_PARAMETER, EGL_FALSE);
+		}
+
+		nativeBuffer->common.decRef(&nativeBuffer->common);
+	#endif
 	egl::Image *glImage = static_cast<egl::Image*>(image);
 	glImage->destroyShared();
 

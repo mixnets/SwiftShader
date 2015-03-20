@@ -23,6 +23,9 @@
 #include <algorithm>
 #include <vector>
 #include <map>
+#if defined(__ANDROID__) || defined(ANDROID)
+    #include <system/window.h>
+#endif
 
 namespace egl
 {
@@ -459,6 +462,15 @@ bool Display::isValidWindow(EGLNativeWindowType window)
 {
     #if defined(_WIN32)
         return IsWindow(window) == TRUE;
+    #elif defined(__ANDROID__) || defined(ANDROID)
+        #if defined(HAVE_ANDROID_OS)
+            if (window)
+            {
+                return static_cast<ANativeWindow*>(window)->common.magic == ANDROID_NATIVE_WINDOW_MAGIC;
+            }
+        #else
+            return window != 0;
+        #endif
     #else
         if(platform == EGL_PLATFORM_X11_EXT)
         {
@@ -521,7 +533,11 @@ DisplayMode Display::getDisplayMode() const
 		}
 
 		ReleaseDC(0, deviceContext);
-	#else
+	#elif defined(__ANDROID__) || defined(ANDROID)
+		displayMode.width = 0;
+		displayMode.height = 0;
+		displayMode.format = sw::FORMAT_X8R8G8B8;
+        #else
         if(platform == EGL_PLATFORM_X11_EXT)
         {
             Screen *screen = XDefaultScreenOfDisplay(displayId);
