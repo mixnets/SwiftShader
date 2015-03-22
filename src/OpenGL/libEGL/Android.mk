@@ -16,7 +16,7 @@ LOCAL_SRC_FILES += \
 	main.cpp
 
 LOCAL_CFLAGS += -DLOG_TAG=\"libEGL_swiftshader\"
-LOCAL_CFLAGS += -DNDEBUG -DANGLE_DISABLE_TRACE
+#LOCAL_CFLAGS += -DNDEBUG -DANGLE_DISABLE_TRACE
 LOCAL_CFLAGS += -std=c++11
 
 # These changes tie the build to Cloud Android. Do something else
