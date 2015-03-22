@@ -4,6 +4,10 @@
 #include "Renderer/Surface.hpp"
 
 #include <assert.h>
+#if defined(HAVE_ANDROID_OS)
+	#include <hardware/gralloc.h>
+	#include <system/window.h>
+#endif
 
 namespace egl
 {
@@ -23,6 +27,12 @@ public:
 		, sw::Surface(resource, width, height, depth, internalFormat, true, true)
 	{
 		shared = false;
+		#if defined(HAVE_ANDROID_OS)
+			nativeBuffer = NULL;
+			hw_module_t const* pModule;
+			hw_get_module(GRALLOC_HARDWARE_MODULE_ID, &pModule);
+			module = reinterpret_cast<gralloc_module_t const*>(pModule);
+		#endif
 	}
 
 	Image(sw::Resource *resource, int width, int height, int depth, sw::Format internalFormat, bool lockable, bool renderTarget)
@@ -30,6 +40,12 @@ public:
 		, sw::Surface(resource, width, height, depth, internalFormat, lockable, renderTarget)
 	{
 		shared = false;
+		#if defined(HAVE_ANDROID_OS)
+			nativeBuffer = NULL;
+			hw_module_t const* pModule;
+			hw_get_module(GRALLOC_HARDWARE_MODULE_ID, &pModule);
+			module = reinterpret_cast<gralloc_module_t const*>(pModule);
+		#endif
 	}
 
 	GLsizei getWidth() const
@@ -76,6 +92,16 @@ public:
 
 	void *lock(unsigned int left, unsigned int top, sw::Lock lock)
 	{
+		#if defined(HAVE_ANDROID_OS)
+			// Lock the buffer from ANativeWindowBuffer
+			if (nativeBuffer)
+			{
+				void* buffer = NULL;
+				nativeBuffer->common.incRef(&nativeBuffer->common);
+				module->lock(module, nativeBuffer->handle, GRALLOC_USAGE_SW_READ_OFTEN, 0, 0, nativeBuffer->width, nativeBuffer->height, &buffer);
+				return buffer;
+			}
+		#endif
 		return lockExternal(left, top, 0, lock, sw::PUBLIC);
 	}
 
@@ -86,6 +112,15 @@ public:
 
 	void unlock()
 	{
+		#if defined(HAVE_ANDROID_OS)
+			// Unlock the buffer from ANativeWindowBuffer
+			if (nativeBuffer)
+			{
+				module->unlock(module, nativeBuffer->handle);
+				nativeBuffer->common.decRef(&nativeBuffer->common);
+				return;
+			}
+		#endif
 		unlockExternal();
 	}
 
@@ -94,14 +129,54 @@ public:
 	virtual void unbind(const Texture *parent) = 0;   // Break parent ownership and release
 
 	void destroyShared()   // Release a shared image
-    {
+	{
+		#if defined(HAVE_ANDROID_OS)
+			if (nativeBuffer)
+			{
+				nativeBuffer->common.decRef(&nativeBuffer->common);
+			}
+		#endif
 		assert(shared);
-        shared = false;
+		shared = false;
 		release();
-    }
+	}
 
 	virtual void loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLint unpackAlignment, const void *input) = 0;
 	virtual void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels) = 0;
+
+	#if defined(HAVE_ANDROID_OS)
+	void setNativeBuffer(ANativeWindowBuffer* buffer)
+	{
+		nativeBuffer = buffer;
+		nativeBuffer->common.incRef(&nativeBuffer->common);
+	}
+
+	virtual void *lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client)
+	{
+		// Lock the buffer from ANativeWindowBuffer
+		if (nativeBuffer)
+		{
+			void* buffer = NULL;
+			nativeBuffer->common.incRef(&nativeBuffer->common);
+			module->lock(module, nativeBuffer->handle, GRALLOC_USAGE_SW_READ_OFTEN, 0, 0, nativeBuffer->width, nativeBuffer->height, &buffer);
+			return buffer;
+		}
+		return sw::Surface::lockInternal(x, y, z, lock, client);
+	}
+
+	virtual void unlockInternal()
+	{
+		// Unlock the buffer from ANativeWindowBuffer
+		if (nativeBuffer)
+		{
+			module->unlock(module, nativeBuffer->handle);
+			nativeBuffer->common.decRef(&nativeBuffer->common);
+			return;
+		}
+		return sw::Surface::unlockInternal();
+	}
+
+	#endif
 
 protected:
 	virtual ~Image()
@@ -116,6 +191,11 @@ protected:
 	const int depth;
 
 	bool shared;   // Used as an EGLImage
+
+	#if defined(HAVE_ANDROID_OS)
+	ANativeWindowBuffer *nativeBuffer;
+	gralloc_module_t const* module;
+	#endif
 };
 }
 
