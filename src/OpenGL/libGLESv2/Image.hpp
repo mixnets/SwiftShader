@@ -38,6 +38,11 @@ namespace es2
 
 		static sw::Format selectInternalFormat(GLenum format, GLenum type);
 
+		#if defined(HAVE_ANDROID_OS)
+		static GLenum getColorFormatFromAndroid(int format);
+		static GLenum getPixelFormatFromAndroid(int format);
+		#endif
+
 	private:
 		virtual ~Image();
 
