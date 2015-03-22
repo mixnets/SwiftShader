@@ -18,6 +18,15 @@
 
 namespace es
 {
+#if defined(ANDROID) || defined(__ANDROID__)
+	#include <utils/String8.h>
+	#include <log/log.h>
+
+	void output(const char *format, va_list vararg)
+	{
+		ALOGI("%s", android::String8::formatV(format, vararg).string());
+	}
+#else
 	static void output(const char *format, va_list vararg)
 	{
 		if(false)
@@ -34,6 +43,7 @@ namespace es
 			}
 		}
 	}
+#endif
 
 	void trace(const char *format, ...)
 	{
