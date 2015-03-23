@@ -17,6 +17,8 @@
 
 #include "Common/Thread.hpp"
 
+#define KEEP_OBJECTS
+
 namespace gl
 {
 
@@ -37,17 +39,19 @@ void Object::addRef()
 
 void Object::release()
 {
-    ASSERT(referenceCount > 0);
+	#ifdef KEEP_OBJECTS
+		ASSERT(referenceCount > 0);
 
-    if(referenceCount > 0)
-	{
-		sw::atomicDecrement(&referenceCount);
-	}
+		if(referenceCount > 0)
+		{
+			sw::atomicDecrement(&referenceCount);
+		}
 
-	if(referenceCount == 0)
-	{
-		delete this;
-	}
+		if(referenceCount == 0)
+		{
+			delete this;
+		}
+	#endif
 }
 
 }
