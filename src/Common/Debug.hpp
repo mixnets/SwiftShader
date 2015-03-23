@@ -12,6 +12,10 @@
 #ifndef Debug_hpp
 #define Debug_hpp
 
+#ifdef __ANDROID__
+#include <cutils/log.h>
+#endif
+
 #include <assert.h>
 #include <stdio.h>
 
@@ -26,10 +30,15 @@ void trace(const char *format, ...);
 	#define TRACE(...) ((void)0)
 #endif
 
-#ifndef NDEBUG
-	#define UNIMPLEMENTED() {trace("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__); ASSERT(false);}
+#ifdef __ANDROID__
+	// Crashing is sort-of draconian. Log unconditionally.
+	#define UNIMPLEMENTED() {ALOGE("Unimplemented: %s %s:%d", __FUNCTION__, __FILE__, __LINE__); }
 #else
-	#define UNIMPLEMENTED() ((void)0)
+	#ifndef NDEBUG
+		#define UNIMPLEMENTED() {trace("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__); ASSERT(false);}
+	#else
+		#define UNIMPLEMENTED() ((void)0)
+	#endif
 #endif
 
 #ifndef NDEBUG
