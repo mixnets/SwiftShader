@@ -3382,7 +3382,7 @@ void GL_APIENTRY glTexEnvi(GLenum target, GLenum pname, GLint param)
 
 void GL_APIENTRY glTexEnvx(GLenum target, GLenum pname, GLfixed param)
 {
-	UNIMPLEMENTED();
+	//UNIMPLEMENTED();
 }
 
 void GL_APIENTRY glTexEnviv(GLenum target, GLenum pname, const GLint *params)
@@ -3640,7 +3640,7 @@ void GL_APIENTRY glTexParameteri(GLenum target, GLenum pname, GLint param)
 			}
 			break;
 		case GL_TEXTURE_CROP_RECT_OES:
-			UNIMPLEMENTED();
+			//UNIMPLEMENTED();
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -3655,7 +3655,7 @@ void GL_APIENTRY glTexParameteriv(GLenum target, GLenum pname, const GLint* para
 
 void GL_APIENTRY glTexParameterx(GLenum target, GLenum pname, GLfixed param)
 {
-	UNIMPLEMENTED();
+	//UNIMPLEMENTED();
 }
 
 void GL_APIENTRY glTexParameterxv(GLenum target, GLenum pname, const GLfixed *params)
@@ -3815,7 +3815,7 @@ void GL_APIENTRY glDrawTexsOES(GLshort x, GLshort y, GLshort z, GLshort width, G
 
 void GL_APIENTRY glDrawTexiOES(GLint x, GLint y, GLint z, GLint width, GLint height)
 {
-	UNIMPLEMENTED();
+	//UNIMPLEMENTED();
 }
 
 void GL_APIENTRY glDrawTexxOES(GLfixed x, GLfixed y, GLfixed z, GLfixed width, GLfixed height)
