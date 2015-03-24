@@ -135,8 +135,9 @@ public:
 			{
 				nativeBuffer->common.decRef(&nativeBuffer->common);
 			}
+		#else
+			assert(shared);
 		#endif
-		assert(shared);
 		shared = false;
 		release();
 	}
