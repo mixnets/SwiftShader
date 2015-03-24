@@ -14,6 +14,10 @@
 #ifndef COMMON_DEBUG_H_
 #define COMMON_DEBUG_H_
 
+#ifdef __ANDROID__
+#include <cutils/log.h>
+#endif
+
 #include <stdio.h>
 #include <assert.h>
 
@@ -60,13 +64,17 @@ namespace es
 #endif
 
 // A macro to indicate unimplemented functionality
-#if !defined(NDEBUG)
-#define UNIMPLEMENTED() do { \
-    FIXME("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__); \
-    assert(false); \
-    } while(0)
+#ifdef __ANDROID__
+	#define UNIMPLEMENTED() {ALOGE("Unimplemented: %s %s:%d", __FUNCTION__, __FILE__, __LINE__); }
 #else
-    #define UNIMPLEMENTED() FIXME("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__)
+	#if !defined(NDEBUG)
+	#define UNIMPLEMENTED() do { \
+	    FIXME("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__); \
+	    assert(false); \
+	    } while(0)
+	#else
+	    #define UNIMPLEMENTED() FIXME("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__)
+	#endif
 #endif
 
 // A macro for code which is not expected to be reached under valid assumptions
