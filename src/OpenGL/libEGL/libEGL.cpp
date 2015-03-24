@@ -482,7 +482,9 @@ EGLBoolean EGLAPIENTRY eglSurfaceAttrib(EGLDisplay dpy, EGLSurface surface, EGLi
 		return EGL_FALSE;
 	}
 
+#ifndef __ANDROID__
 	UNIMPLEMENTED();   // FIXME
+#endif
 
 	return success(EGL_TRUE);
 }
