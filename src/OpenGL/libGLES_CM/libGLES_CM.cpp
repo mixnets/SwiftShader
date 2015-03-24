@@ -3626,7 +3626,9 @@ void GL_APIENTRY glTexParameteri(GLenum target, GLenum pname, GLint param)
 			}
 			break;
 		case GL_TEXTURE_CROP_RECT_OES:
+#ifndef __ANDROID__
 			UNIMPLEMENTED();
+#endif
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
