@@ -1780,7 +1780,7 @@ void GL_APIENTRY glFogf(GLenum pname, GLfloat param)
 		default:
 			return error(GL_INVALID_ENUM);
 		}
-	}	
+	}
 }
 
 void GL_APIENTRY glFogfv(GLenum pname, const GLfloat *params)
@@ -1830,7 +1830,7 @@ void GL_APIENTRY glFogfv(GLenum pname, const GLfloat *params)
 		default:
 			return error(GL_INVALID_ENUM);
 		}
-	}	
+	}
 }
 
 void GL_APIENTRY glFogx(GLenum pname, GLfixed param)
@@ -3018,7 +3018,7 @@ void GL_APIENTRY glReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, G
 	{
 		return error(GL_INVALID_VALUE);
 	}
-	
+
 	es1::Context *context = es1::getContext();
 
 	if(context)
@@ -3340,7 +3340,7 @@ void GL_APIENTRY glTexEnvi(GLenum target, GLenum pname, GLint param)
 					UNIMPLEMENTED();
 					break;
 				case GL_ADD:
-					context->setTextureEnvMode((GLenum)param);	
+					context->setTextureEnvMode((GLenum)param);
 					break;
 				case GL_ADD_SIGNED:
 					UNIMPLEMENTED();
@@ -3816,7 +3816,51 @@ void GL_APIENTRY glDrawTexsOES(GLshort x, GLshort y, GLshort z, GLshort width, G
 
 void GL_APIENTRY glDrawTexiOES(GLint x, GLint y, GLint z, GLint width, GLint height)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLint x = %d, GLint y = %d, GLint z = %d, GLint width = %d, GLint height = %d)", x0, y0, z, width, height);
+
+	if(width <= 0 || height <= 0)
+	{
+		return error(GL_INVALID_VALUE);
+	}
+
+	es1::Context *context = es1::getContext();
+
+	if(context)
+	{
+		es1::Framebuffer *framebuffer = context->getFramebuffer();
+		es1::Renderbuffer *renderbuffer = framebuffer->getColorbuffer();
+		float targetWidth = renderbuffer->getWidth();
+		float targetHeight = renderbuffer->getHeight();
+		float x0 = 2.0f * x / targetWidth - 1.0f;
+		float y0 = 2.0f * y / targetHeight - 1.0f;
+		float x1 = 2.0f * (x + width) / targetWidth - 1.0f;
+		float y1 = 2.0f * (y + height) / targetHeight - 1.0f;
+
+		float vertices[][3] = {{x0, y0, z},
+							   {x0, y1, z},
+							   {x1, y0, z},
+							   {x1, y1, z}};
+
+		es1::Texture2D *texture = context->getTexture2D();
+		float textureWidth = texture->getWidth(GL_TEXTURE_2D, 0);
+		float textureHeight = texture->getHeight(GL_TEXTURE_2D, 0);
+		int Ucr = texture->getCropRectU();
+		int Vcr = texture->getCropRectV();
+		int Wcr = texture->getCropRectW();
+		int Hcr = texture->getCropRectH();
+
+		float texCoords[][2] = {{Ucr / textureWidth, Vcr / textureHeight},
+		                        {Ucr / textureWidth, (Vcr + Hcr) / textureHeight},
+		                        {(Ucr + Wcr) / textureWidth, Vcr / textureHeight},
+		                        {(Ucr + Wcr) / textureWidth, (Vcr + Hcr) / textureHeight}};
+
+		glVertexPointer(3, GL_FLOAT, 3 * sizeof(float), vertices);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glTexCoordPointer(2, GL_FLOAT, 2 * sizeof(float), texCoords);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		context->drawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	}
 }
 
 void GL_APIENTRY glDrawTexxOES(GLfixed x, GLfixed y, GLfixed z, GLfixed width, GLfixed height)
