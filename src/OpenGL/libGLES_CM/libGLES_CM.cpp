@@ -3814,9 +3814,43 @@ void GL_APIENTRY glDrawTexsOES(GLshort x, GLshort y, GLshort z, GLshort width, G
 	UNIMPLEMENTED();
 }
 
-void GL_APIENTRY glDrawTexiOES(GLint x, GLint y, GLint z, GLint width, GLint height)
+void GL_APIENTRY glDrawTexiOES(GLint x0, GLint y0, GLint z, GLint width, GLint height)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLint x = %d, GLint y = %d, GLint z = %d, GLint width = %d, GLint height = %d)", x0, y0, z, width, height);
+
+	if(width <= 0 || height <= 0)
+	{
+		return error(GL_INVALID_VALUE);
+	}
+
+	es1::Context *context = es1::getContext();
+
+	if(context)
+	{
+		es1::Framebuffer *framebuffer = context->getFramebuffer();
+		es1::Renderbuffer *renderbuffer = framebuffer->getColorbuffer();
+		float targetWidth = renderbuffer->getWidth();
+		float targetHeight = renderbuffer->getHeight();
+		int x1 = x0 + width;
+		int y1 = y0 + height;
+
+		float vertices[][3] = {{2.0f * x0 / targetWidth - 1.0f, 2.0f * y0 / targetHeight - 1.0f, z},
+							   {2.0f * x0 / targetWidth - 1.0f, 2.0f * y1 / targetHeight - 1.0f, z},
+							   {2.0f * x1 / targetWidth - 1.0f, 2.0f * y1 / targetHeight - 1.0f, z},
+							   {2.0f * x1 / targetWidth - 1.0f, 2.0f * y0 / targetHeight - 1.0f, z}};
+
+		float texCoords[][2] = {{0.0, 0.0},
+		                        {0.0, 1.0},
+		                        {1.0, 1.0},
+		                        {1.0, 0.0}};
+
+		glVertexPointer(3, GL_FLOAT, 3 * sizeof(float), vertices);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glTexCoordPointer(2, GL_FLOAT, 2 * sizeof(float), texCoords);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		context->drawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	}
 }
 
 void GL_APIENTRY glDrawTexxOES(GLfixed x, GLfixed y, GLfixed z, GLfixed width, GLfixed height)
