@@ -1335,6 +1335,9 @@ namespace es2
 						case GL_SAMPLER_3D_OES:
 							samplersVS[index].textureType = TEXTURE_3D;
 							break;
+						case GL_SAMPLER_EXTERNAL_OES:
+							samplersVS[index].textureType = TEXTURE_EXTERNAL;
+							break;
 						default:
 							samplersVS[index].textureType = TEXTURE_2D;
 							break;
@@ -1358,6 +1361,9 @@ namespace es2
 							break;
 						case GL_SAMPLER_3D_OES:
 							samplersPS[index].textureType = TEXTURE_3D;
+							break;
+						case GL_SAMPLER_EXTERNAL_OES:
+							samplersPS[index].textureType = TEXTURE_EXTERNAL;
 							break;
 						default:
 							samplersPS[index].textureType = TEXTURE_2D;
