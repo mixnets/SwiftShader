@@ -2,6 +2,7 @@
 
 #include <cutils/log.h>
 #include <ui/Fence.h>
+#include <GceFrameBufferConfig.h>
 
 namespace sw
 {
@@ -66,7 +67,7 @@ namespace sw
         }
 
         locked = bits;
-        stride = buffer->stride;
+        stride = buffer->stride * sizeof(GceFrameBufferConfig::Pixel);
         return locked;
     }
 

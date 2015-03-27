@@ -140,6 +140,7 @@ LOCAL_STATIC_LIBRARIES += libLLVM_swiftshader
 LOCAL_LDFLAGS += -Wl,--gc-sections -Wl,--version-script=$(LOCAL_PATH)/exports.map -Wl,--hash-style=sysv
 
 LOCAL_C_INCLUDES += \
+        device/google/gce/include \
 	$(LOCAL_PATH)/../include \
 	$(LOCAL_PATH)/../ \
 	$(LOCAL_PATH)/../../ \
