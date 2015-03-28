@@ -134,7 +134,9 @@ namespace sw
 				{
 				case FORMAT_R8:
 				case FORMAT_X8R8G8B8:
+				case FORMAT_X8B8G8R8:
 				case FORMAT_A8R8G8B8:
+				case FORMAT_A8B8G8R8:
 				case FORMAT_V8U8:
 				case FORMAT_Q8W8V8U8:
 				case FORMAT_X8L8V8U8:
@@ -288,7 +290,9 @@ namespace sw
 				{
 				case FORMAT_R8:
 				case FORMAT_X8R8G8B8:
+				case FORMAT_X8B8G8R8:
 				case FORMAT_A8R8G8B8:
+				case FORMAT_A8B8G8R8:
 				case FORMAT_V8U8:
 				case FORMAT_Q8W8V8U8:
 				case FORMAT_X8L8V8U8:
@@ -1509,6 +1513,7 @@ namespace sw
 						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
 						c.w = UnpackHigh(As<Byte8>(c.w), As<Byte8>(c.w));
 						break;
+					case FORMAT_A8B8G8R8:
 					case FORMAT_Q8W8V8U8:
 						c.z = c.x;
 						c.x = As<Short4>(UnpackLow(c.x, c.y));
@@ -1545,6 +1550,7 @@ namespace sw
 						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
 						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
 						break;
+					case FORMAT_X8B8G8R8:
 					case FORMAT_X8L8V8U8:
 						c.z = c.x;
 						c.x = As<Short4>(UnpackLow(c.x, c.y));
@@ -1811,7 +1817,9 @@ namespace sw
 		{
 		case FORMAT_G8R8:
 		case FORMAT_X8R8G8B8:
+		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:
+		case FORMAT_A8B8G8R8:
 		case FORMAT_V8U8:
 		case FORMAT_Q8W8V8U8:
 		case FORMAT_X8L8V8U8:
@@ -1846,7 +1854,9 @@ namespace sw
 		{
 		case FORMAT_G8R8:           return component < 2;
 		case FORMAT_X8R8G8B8:       return component < 3;
+		case FORMAT_X8B8G8R8:       return component < 3;
 		case FORMAT_A8R8G8B8:       return component < 3;
+		case FORMAT_A8B8G8R8:       return component < 3;
 		case FORMAT_V8U8:           return false;
 		case FORMAT_Q8W8V8U8:       return false;
 		case FORMAT_X8L8V8U8:       return false;
