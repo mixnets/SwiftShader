@@ -65,8 +65,16 @@ namespace sw
             return NULL;
         }
 
+		switch(buffer->format)
+		{
+		default: ASSERT(false);
+		case HAL_PIXEL_FORMAT_RGBA_8888: destFormat = FORMAT_A8B8G8R8; break;
+		case HAL_PIXEL_FORMAT_RGBX_8888: destFormat = FORMAT_X8B8G8R8; break;
+		case HAL_PIXEL_FORMAT_BGRA_8888: destFormat = FORMAT_A8R8G8B8; break;
+		}
+
         locked = bits;
-        stride = buffer->stride;
+        stride = buffer->stride * Surface::bytes(destFormat);
         return locked;
     }
 
