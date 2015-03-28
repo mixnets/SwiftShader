@@ -322,6 +322,40 @@ namespace sw
 						d += dBytes;
 					}
 				}
+				else if(state.destFormat == FORMAT_X8B8G8R8 || state.destFormat == FORMAT_A8B8G8R8)
+				{
+					Int x = x0;
+
+					if(state.sourceFormat == FORMAT_X8R8G8B8 || state.sourceFormat == FORMAT_A8R8G8B8)
+					{
+						For(, x < width - 3, x += 4)
+						{
+							Int4 bgra = *Pointer<Int4>(s, width % 4 ? 1 : 16);
+							*Pointer<Int4>(d, 1) = (bgra & Int4(0x00FF0000) >> 16) |
+							                       (bgra & Int4(0x000000FF) << 16) |
+							                       (bgra & Int4(0xFF00FF00));
+
+							s += 4 * sBytes;
+							d += 4 * dBytes;
+						}
+					}
+					else ASSERT(false);
+
+					For(, x < width, x++)
+					{
+						if(state.sourceFormat == FORMAT_X8R8G8B8 || state.sourceFormat == FORMAT_A8R8G8B8)
+						{
+							Int bgra = *Pointer<Int>(s);
+							*Pointer<Int>(d) = (bgra & Int(0x00FF0000) >> 16) |
+							                   (bgra & Int(0x000000FF) << 16) |
+							                   (bgra & Int(0xFF00FF00));
+						}
+						else ASSERT(false);
+
+						s += sBytes;
+						d += dBytes;
+					}
+				}
 				else if(state.destFormat == FORMAT_R8G8B8)
 				{
 					For(Int x = x0, x < width, x++)
