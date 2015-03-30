@@ -2984,6 +2984,7 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
 			"GL_OES_packed_depth_stencil "
 			"GL_OES_rgb8_rgba8 "
 			"GL_OES_standard_derivatives "
+			"GL_OES_texture_external "
 			"GL_OES_texture_float "
 			"GL_OES_texture_float_linear "
 			"GL_OES_texture_half_float "

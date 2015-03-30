@@ -154,9 +154,9 @@ const char *EGLAPIENTRY eglQueryString(EGLDisplay dpy, EGLint name)
 	if(dpy == EGL_NO_DISPLAY && name == EGL_EXTENSIONS)
 	{
 		return success("EGL_KHR_platform_gbm "
-						"EGL_KHR_platform_x11 "
-						"EGL_EXT_client_extensions "
-						"EGL_EXT_platform_base");
+		               "EGL_KHR_platform_x11 "
+		               "EGL_EXT_client_extensions "
+		               "EGL_EXT_platform_base");
 	}
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
@@ -171,10 +171,16 @@ const char *EGLAPIENTRY eglQueryString(EGLDisplay dpy, EGLint name)
 	case EGL_CLIENT_APIS:
 		return success("OpenGL_ES");
 	case EGL_EXTENSIONS:
-		return success("EGL_KHR_gl_texture_2D_image "
-						"EGL_KHR_gl_texture_cubemap_image "
-						"EGL_KHR_gl_renderbuffer_image "
-						"EGL_KHR_image_base");
+		return success(
+		               #if defined(__ANDROID__)
+		               "EGL_ANDROID_framebuffer_target "
+		               "EGL_ANDROID_image_native_buffer "
+					   "EGL_ANDROID_recordable "
+		               #endif
+		               "EGL_KHR_gl_texture_2D_image "
+		               "EGL_KHR_gl_texture_cubemap_image "
+		               "EGL_KHR_gl_renderbuffer_image "
+		               "EGL_KHR_image_base");
 	case EGL_VENDOR:
 		return success("TransGaming Inc.");
 	case EGL_VERSION:

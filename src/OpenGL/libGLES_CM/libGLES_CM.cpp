@@ -2419,6 +2419,7 @@ const GLubyte* GL_APIENTRY glGetString(GLenum name)
 			"GL_OES_rgb8_rgba8 "
 			"GL_OES_stencil8 "
 			"GL_OES_stencil_wrap "
+			"GL_OES_texture_external "
 			"GL_OES_texture_mirrored_repeat "
 			"GL_OES_texture_npot "
 			"GL_EXT_blend_minmax "
