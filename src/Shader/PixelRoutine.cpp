@@ -2195,6 +2195,7 @@ namespace sw
 				if(state.multiSampleMask & (1 << q))
 				{
 					alphaBlend(r, 0, buffer, color, x);
+					logicOperation(r, 0, buffer, color, x, sMask[q], zMask[q], cMask[q]);
 					writeColor(r, 0, buffer, x, color, sMask[q], zMask[q], cMask[q]);
 				}
 			}
@@ -2265,6 +2266,7 @@ namespace sw
 					if(state.multiSampleMask & (1 << q))
 					{
 						alphaBlend(r, index, buffer, color, x);
+						logicOperation(r, index, buffer, color, x, sMask[q], zMask[q], cMask[q]);
 						writeColor(r, index, buffer, x, color, sMask[q], zMask[q], cMask[q]);
 					}
 				}
@@ -2421,16 +2423,8 @@ namespace sw
 		}
 	}
 
-	void PixelRoutine::alphaBlend(Registers &r, int index, Pointer<Byte> &cBuffer, Vector4i &current, Int &x)
+	void PixelRoutine::readPixel(Registers &r, int index, Pointer<Byte> &cBuffer, Vector4i &current, Int &x, Pointer<Byte> &buffer, Vector4i &pixel)
 	{
-		if(!state.alphaBlendActive)
-		{
-			return;
-		}
-		 
-		Pointer<Byte> buffer;
-
-		Vector4i pixel;
 		Short4 c01;
 		Short4 c23;
 
@@ -2440,7 +2434,7 @@ namespace sw
 		case FORMAT_A8R8G8B8:
 			buffer = cBuffer + 4 * x;
 			c01 = *Pointer<Short4>(buffer);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
+			buffer += *Pointer<Int>(r.data + OFFSET(DrawData, colorPitchB[index]));
 			c23 = *Pointer<Short4>(buffer);
 			pixel.z = c01;
 			pixel.y = c01;
@@ -2456,29 +2450,10 @@ namespace sw
 			pixel.z = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(pixel.z));
 			pixel.w = UnpackHigh(As<Byte8>(pixel.w), As<Byte8>(pixel.w));
 			break;
-		case FORMAT_A8B8G8R8:
-			buffer = cBuffer + 4 * x;
-			c01 = *Pointer<Short4>(buffer);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-			c23 = *Pointer<Short4>(buffer);
-			pixel.z = c01;
-			pixel.y = c01;
-			pixel.z = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(c23));
-			pixel.y = UnpackHigh(As<Byte8>(pixel.y), As<Byte8>(c23));
-			pixel.x = pixel.z;
-			pixel.z = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(pixel.y));
-			pixel.x = UnpackHigh(As<Byte8>(pixel.x), As<Byte8>(pixel.y));
-			pixel.y = pixel.z;
-			pixel.w = pixel.x;
-			pixel.x = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(pixel.z));
-			pixel.y = UnpackHigh(As<Byte8>(pixel.y), As<Byte8>(pixel.y));
-			pixel.z = UnpackLow(As<Byte8>(pixel.w), As<Byte8>(pixel.w));
-			pixel.w = UnpackHigh(As<Byte8>(pixel.w), As<Byte8>(pixel.w));
-			break;
 		case FORMAT_A8:
 			buffer = cBuffer + 1 * x;
 			pixel.w = Insert(pixel.w, *Pointer<Short>(buffer), 0);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
+			buffer += *Pointer<Int>(r.data + OFFSET(DrawData, colorPitchB[index]));
 			pixel.w = Insert(pixel.w, *Pointer<Short>(buffer), 1);
 			pixel.w = UnpackLow(As<Byte8>(pixel.w), As<Byte8>(pixel.w));
 			pixel.x = Short4(0x0000);
@@ -2488,7 +2463,7 @@ namespace sw
 		case FORMAT_X8R8G8B8:
 			buffer = cBuffer + 4 * x;
 			c01 = *Pointer<Short4>(buffer);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
+			buffer += *Pointer<Int>(r.data + OFFSET(DrawData, colorPitchB[index]));
 			c23 = *Pointer<Short4>(buffer);
 			pixel.z = c01;
 			pixel.y = c01;
@@ -2503,53 +2478,34 @@ namespace sw
 			pixel.z = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(pixel.z));
 			pixel.w = Short4(0xFFFFu);
 			break;
-		case FORMAT_X8B8G8R8:
-			buffer = cBuffer + 4 * x;
-			c01 = *Pointer<Short4>(buffer);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-			c23 = *Pointer<Short4>(buffer);
-			pixel.z = c01;
-			pixel.y = c01;
-			pixel.z = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(c23));
-			pixel.y = UnpackHigh(As<Byte8>(pixel.y), As<Byte8>(c23));
-			pixel.x = pixel.z;
-			pixel.z = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(pixel.y));
-			pixel.x = UnpackHigh(As<Byte8>(pixel.x), As<Byte8>(pixel.y));
-			pixel.y = pixel.z;
-			pixel.w = pixel.x;
-			pixel.x = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(pixel.z));
-			pixel.y = UnpackHigh(As<Byte8>(pixel.y), As<Byte8>(pixel.y));
-			pixel.z = UnpackLow(As<Byte8>(pixel.w), As<Byte8>(pixel.w));
-			pixel.w = Short4(0xFFFFu);
-			break;
 		case FORMAT_A8G8R8B8Q:
 			UNIMPLEMENTED();
-		//	pixel.z = UnpackLow(As<Byte8>(pixel.z), *Pointer<Byte8>(cBuffer + 8 * x + 0));
-		//	pixel.x = UnpackHigh(As<Byte8>(pixel.x), *Pointer<Byte8>(cBuffer + 8 * x + 0));
-		//	pixel.y = UnpackLow(As<Byte8>(pixel.y), *Pointer<Byte8>(cBuffer + 8 * x + 8));
-		//	pixel.w = UnpackHigh(As<Byte8>(pixel.w), *Pointer<Byte8>(cBuffer + 8 * x + 8));
+			//	pixel.z = UnpackLow(As<Byte8>(pixel.z), *Pointer<Byte8>(cBuffer + 8 * x + 0));
+			//	pixel.x = UnpackHigh(As<Byte8>(pixel.x), *Pointer<Byte8>(cBuffer + 8 * x + 0));
+			//	pixel.y = UnpackLow(As<Byte8>(pixel.y), *Pointer<Byte8>(cBuffer + 8 * x + 8));
+			//	pixel.w = UnpackHigh(As<Byte8>(pixel.w), *Pointer<Byte8>(cBuffer + 8 * x + 8));
 			break;
 		case FORMAT_X8G8R8B8Q:
 			UNIMPLEMENTED();
-		//	pixel.z = UnpackLow(As<Byte8>(pixel.z), *Pointer<Byte8>(cBuffer + 8 * x + 0));
-		//	pixel.x = UnpackHigh(As<Byte8>(pixel.x), *Pointer<Byte8>(cBuffer + 8 * x + 0));
-		//	pixel.y = UnpackLow(As<Byte8>(pixel.y), *Pointer<Byte8>(cBuffer + 8 * x + 8));
-		//	pixel.w = Short4(0xFFFFu);
+			//	pixel.z = UnpackLow(As<Byte8>(pixel.z), *Pointer<Byte8>(cBuffer + 8 * x + 0));
+			//	pixel.x = UnpackHigh(As<Byte8>(pixel.x), *Pointer<Byte8>(cBuffer + 8 * x + 0));
+			//	pixel.y = UnpackLow(As<Byte8>(pixel.y), *Pointer<Byte8>(cBuffer + 8 * x + 8));
+			//	pixel.w = Short4(0xFFFFu);
 			break;
 		case FORMAT_A16B16G16R16:
-			buffer  = cBuffer;
+			buffer = cBuffer;
 			pixel.x = *Pointer<Short4>(buffer + 8 * x);
 			pixel.y = *Pointer<Short4>(buffer + 8 * x + 8);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
+			buffer += *Pointer<Int>(r.data + OFFSET(DrawData, colorPitchB[index]));
 			pixel.z = *Pointer<Short4>(buffer + 8 * x);
 			pixel.w = *Pointer<Short4>(buffer + 8 * x + 8);
 			transpose4x4(pixel.x, pixel.y, pixel.z, pixel.w);
 			break;
 		case FORMAT_G16R16:
 			buffer = cBuffer;
-			pixel.x = *Pointer<Short4>(buffer  + 4 * x);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-			pixel.y = *Pointer<Short4>(buffer  + 4 * x);
+			pixel.x = *Pointer<Short4>(buffer + 4 * x);
+			buffer += *Pointer<Int>(r.data + OFFSET(DrawData, colorPitchB[index]));
+			pixel.y = *Pointer<Short4>(buffer + 4 * x);
 			pixel.z = pixel.x;
 			pixel.x = As<Short4>(UnpackLow(pixel.x, pixel.y));
 			pixel.z = As<Short4>(UnpackHigh(pixel.z, pixel.y));
@@ -2565,8 +2521,25 @@ namespace sw
 
 		if(postBlendSRGB && state.writeSRGB)
 		{
-			sRGBtoLinear16_16(r, pixel);	
+			sRGBtoLinear16_16(r, pixel);
 		}
+	}
+
+	void PixelRoutine::alphaBlend(Registers &r, int index, Pointer<Byte> &cBuffer, Vector4i &current, Int &x)
+	{
+		if(!state.alphaBlendActive)
+		{
+			return;
+		}
+		 
+		Pointer<Byte> buffer;
+
+		Vector4i pixel;
+		Short4 c01;
+		Short4 c23;
+
+		// Read pixel
+		readPixel(r, index, cBuffer, current, x, buffer, pixel);
 
 		// Final Color = ObjectColor * SourceBlendFactor + PixelColor * DestinationBlendFactor
 		Vector4i sourceFactor;
@@ -2674,7 +2647,106 @@ namespace sw
 			break;
 		default:
 			ASSERT(false);
+		}		
+	}
+
+	void PixelRoutine::logicOperation(Registers &r, int index, Pointer<Byte> &cBuffer, Vector4i &current, Int &x, Int &sMask, Int &zMask, Int &cMask)
+	{
+		if(!state.colorLogicOpEnabled)
+		{
+			return;
 		}
+
+		Pointer<Byte> buffer;
+		Vector4i pixel;
+		Short4 c01;
+		Short4 c23;
+
+		// Read pixel
+		readPixel(r, index, cBuffer, current, x, buffer, pixel);
+
+		switch(state.logicalOperation)
+		{
+		case LOGICALOP_CLEAR:
+			current.x = 0;
+			current.y = 0;
+			current.z = 0;
+			break;
+		case LOGICALOP_SET:
+			current.x = 0xFFFF;
+			current.y = 0xFFFF;
+			current.z = 0xFFFF;
+			break;
+		case LOGICALOP_COPY:
+			break;
+		case LOGICALOP_COPY_INVERTED:
+			current.x = ~current.x;
+			current.y = ~current.y;
+			current.z = ~current.z;
+			break;
+		case LOGICALOP_NOOP:
+			current.x = pixel.x;
+			current.y = pixel.y;
+			current.z = pixel.z;
+			break;
+		case LOGICALOP_INVERT:
+			current.x = ~pixel.x;
+			current.y = ~pixel.y;
+			current.z = ~pixel.z;
+			break;
+		case LOGICALOP_AND:
+			current.x = pixel.x & current.x;
+			current.y = pixel.y & current.y;
+			current.z = pixel.z & current.z;
+			break;
+		case LOGICALOP_NAND:
+			current.x = ~(pixel.x & current.x);
+			current.y = ~(pixel.y & current.y);
+			current.z = ~(pixel.z & current.z);
+			break;
+		case LOGICALOP_OR:
+			current.x = pixel.x | current.x;
+			current.y = pixel.y | current.y;
+			current.z = pixel.z | current.z;
+			break;
+		case LOGICALOP_NOR:
+			current.x = ~(pixel.x | current.x);
+			current.y = ~(pixel.y | current.y);
+			current.z = ~(pixel.z | current.z);
+			break;
+		case LOGICALOP_XOR:
+			current.x = pixel.x ^ current.x;
+			current.y = pixel.y ^ current.y;
+			current.z = pixel.z ^ current.z;
+			break;
+		case LOGICALOP_EQUIV:
+			current.x = ~(pixel.x ^ current.x);
+			current.y = ~(pixel.y ^ current.y);
+			current.z = ~(pixel.z ^ current.z);
+			break;
+		case LOGICALOP_AND_REVERSE:
+			current.x = ~pixel.x & current.x;
+			current.y = ~pixel.y & current.y;
+			current.z = ~pixel.z & current.z;
+			break;
+		case LOGICALOP_AND_INVERTED:
+			current.x = pixel.x & ~current.x;
+			current.y = pixel.y & ~current.y;
+			current.z = pixel.z & ~current.z;
+			break;
+		case LOGICALOP_OR_REVERSE:
+			current.x = ~pixel.x | current.x;
+			current.y = ~pixel.y | current.y;
+			current.z = ~pixel.z | current.z;
+			break;
+		case LOGICALOP_OR_INVERTED:
+			current.x = pixel.x | ~current.x;
+			current.y = pixel.y | ~current.y;
+			current.z = pixel.z | ~current.z;
+			break;
+		default:
+			ASSERT(false);
+		}		
 	}
 
 	void PixelRoutine::writeColor(Registers &r, int index, Pointer<Byte> &cBuffer, Int &x, Vector4i &current, Int &sMask, Int &zMask, Int &cMask)

@@ -148,7 +148,9 @@ struct State
     GLclampf sampleCoverageValue;
     bool sampleCoverageInvert;
     bool scissorTest;
-    bool dither;
+	bool dither;
+	bool colorLogicOp;
+	GLenum logicalOperation;
 
     GLfloat lineWidth;
 

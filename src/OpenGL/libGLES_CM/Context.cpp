@@ -82,7 +82,9 @@ Context::Context(const egl::Config *config, const Context *shareContext)
     mState.scissorTest = false;
     mState.dither = true;
 	mState.shadeModel = GL_SMOOTH;
-    mState.generateMipmapHint = GL_DONT_CARE;
+	mState.generateMipmapHint = GL_DONT_CARE;
+	mState.colorLogicOp = false;
+	mState.logicalOperation = GL_COPY;
 
     mState.lineWidth = 1.0f;
 

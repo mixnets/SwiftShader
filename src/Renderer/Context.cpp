@@ -443,6 +443,20 @@ namespace sw
 		return modified;
 	}
 
+	bool Context::setColorLogicOpEnabled(bool enabled)
+	{
+		bool modified = (Context::colorLogicOpEnabled != enabled);
+		Context::colorLogicOpEnabled = enabled;
+		return modified;
+	}
+
+	bool Context::setLogicalOperation(LogicalOperation logicalOperation)
+	{
+		bool modified = (Context::logicalOperation != logicalOperation);
+		Context::logicalOperation = logicalOperation;
+		return modified;
+	}
+	
 	void Context::setColorVertexEnable(bool colorVertexEnable)
 	{
 		Context::colorVertexEnable = colorVertexEnable;
@@ -723,6 +737,16 @@ namespace sw
 		bool alphaBlend = separateAlphaBlendEnable ? !(blendOperationAlpha() == BLENDOP_SOURCE && sourceBlendFactorAlpha() == BLEND_ONE) : colorBlend;
 
 		return colorBlend || alphaBlend;
+	}
+
+	bool Context::colorLogicOpActive()
+	{
+		if(colorLogicOpEnabled)
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	BlendFactor Context::sourceBlendFactor()
