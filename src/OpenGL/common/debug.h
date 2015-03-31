@@ -19,7 +19,6 @@
 #endif
 
 #include <stdio.h>
-#include <assert.h>
 
 #if !defined(TRACE_OUTPUT_FILE)
 #define TRACE_OUTPUT_FILE "debug.txt"
@@ -30,6 +29,8 @@ namespace es
     // Outputs text to the debugging log
     void trace(const char *format, ...);
 }
+
+void HaltDebugger(const char *message = 0);
 
 // A macro to output a trace of a function call and its arguments to the debugging log
 #if defined(ANGLE_DISABLE_TRACE)
@@ -42,14 +43,14 @@ namespace es
 #if defined(ANGLE_DISABLE_TRACE)
 #define FIXME(message, ...) (void(0))
 #else
-#define FIXME(message, ...) do {es::trace("fixme: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); assert(false);} while(false)
+#define FIXME(message, ...) do {es::trace("fixme: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); HaltDebugger();} while(false)
 #endif
 
 // A macro to output a function call and its arguments to the debugging log, in case of error.
 #if defined(ANGLE_DISABLE_TRACE)
 #define ERR(message, ...) (void(0))
 #else
-#define ERR(message, ...) do {es::trace("err: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); assert(false);} while(false)
+#define ERR(message, ...) do {es::trace("err: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); HaltDebugger();} while(false)
 #endif
 
 // A macro asserting a condition and outputting failures to the debug log
@@ -57,7 +58,7 @@ namespace es
 #define ASSERT(expression) do { \
     if(!(expression)) \
         ERR("\t! Assert failed in %s(%d): "#expression"\n", __FUNCTION__, __LINE__); \
-        assert(expression); \
+        HaltDebugger(#expression); \
     } while(0)
 #else
 #define ASSERT(expression) (void(0))
@@ -86,7 +87,7 @@ namespace es
 	#if !defined(NDEBUG)
 		#define UNIMPLEMENTED() do { \
 			FIXME("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__); \
-			assert(false); \
+			HaltDebugger(); \
 		} while(0)
 	#else
 	    #define UNIMPLEMENTED() FIXME("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__)
@@ -98,7 +99,7 @@ namespace es
 #if !defined(NDEBUG)
 #define UNREACHABLE() do { \
     ERR("\t! Unreachable reached: %s(%d)\n", __FUNCTION__, __LINE__); \
-    assert(false); \
+    HaltDebugger(); \
     } while(0)
 #else
     #define UNREACHABLE() ERR("\t! Unreachable reached: %s(%d)\n", __FUNCTION__, __LINE__)

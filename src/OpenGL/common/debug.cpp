@@ -18,6 +18,12 @@
 #include <cutils/log.h>
 #endif
 
+#if defined(_WIN32)
+#include <Windows.h>
+#else
+#include <signal.h>
+#endif
+
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -55,3 +61,31 @@ namespace es
 		va_end(vararg);
 	}
 }
+
+#if defined(_WIN32)
+void HaltDebugger(const char *message)
+{
+	if(IsDebuggerPresent())
+	{
+		if(message)
+		{
+			OutputDebugString(message);
+		}
+
+		DebugBreak();
+	}
+}
+#else
+static void ResetSignalHandler(int signum)
+{
+    // Set the signal handler back to the default handler
+    signal(SIGTRAP, SIG_DFL);
+}
+ 
+void HaltDebugger(const char *message)
+{
+    // Raise a trap signal, using a bening handler to avoid aborting
+    signal(SIGTRAP, ResetSignalHandler);
+    raise(SIGTRAP);
+}
+#endif
