@@ -19,45 +19,49 @@
 #endif
 
 #include <stdio.h>
-#include <assert.h>
 
 #if !defined(TRACE_OUTPUT_FILE)
 #define TRACE_OUTPUT_FILE "debug.txt"
 #endif
 
-namespace es
+namespace gl
 {
-    // Outputs text to the debugging log
-    void trace(const char *format, ...);
+    void log(const char *format, ...);
 }
+
+#ifndef NDEBUG
+void HaltDebugger();
+#else
+inline void HaltDebugger() {}
+#endif
 
 // A macro to output a trace of a function call and its arguments to the debugging log
 #if defined(ANGLE_DISABLE_TRACE)
 #define TRACE(message, ...) (void(0))
 #else
-#define TRACE(message, ...) es::trace("trace: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define TRACE(message, ...) gl::log("Trace: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #endif
 
 // A macro to output a function call and its arguments to the debugging log, to denote an item in need of fixing.
 #if defined(ANGLE_DISABLE_TRACE)
 #define FIXME(message, ...) (void(0))
 #else
-#define FIXME(message, ...) do {es::trace("fixme: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); assert(false);} while(false)
+#define FIXME(message, ...) do {gl::log("\t! Fixme: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); HaltDebugger();} while(false)
 #endif
 
 // A macro to output a function call and its arguments to the debugging log, in case of error.
 #if defined(ANGLE_DISABLE_TRACE)
 #define ERR(message, ...) (void(0))
 #else
-#define ERR(message, ...) do {es::trace("err: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); assert(false);} while(false)
+#define ERR(message, ...) do {gl::log("\t! Error: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); HaltDebugger();} while(false)
 #endif
 
 // A macro asserting a condition and outputting failures to the debug log
 #if !defined(NDEBUG)
 #define ASSERT(expression) do { \
-    if(!(expression)) \
-        ERR("\t! Assert failed in %s(%d): "#expression"\n", __FUNCTION__, __LINE__); \
-        assert(expression); \
+    if(!(expression)) { \
+        gl::log("\t! Assert failed in %s(%d): " #expression "\n", __FUNCTION__, __LINE__); \
+        HaltDebugger(); } \
     } while(0)
 #else
 #define ASSERT(expression) (void(0))
@@ -85,8 +89,8 @@ namespace es
 #else
 	#if !defined(NDEBUG)
 		#define UNIMPLEMENTED() do { \
-			FIXME("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__); \
-			assert(false); \
+			gl::log("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__); \
+			HaltDebugger(); \
 		} while(0)
 	#else
 	    #define UNIMPLEMENTED() FIXME("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__)
@@ -97,8 +101,8 @@ namespace es
 
 #if !defined(NDEBUG)
 #define UNREACHABLE() do { \
-    ERR("\t! Unreachable reached: %s(%d)\n", __FUNCTION__, __LINE__); \
-    assert(false); \
+    gl::log("\t! Unreachable reached: %s(%d)\n", __FUNCTION__, __LINE__); \
+    HaltDebugger(); \
     } while(0)
 #else
     #define UNREACHABLE() ERR("\t! Unreachable reached: %s(%d)\n", __FUNCTION__, __LINE__)

@@ -18,10 +18,16 @@
 #include <cutils/log.h>
 #endif
 
+#if defined(_WIN32)
+#include <Windows.h>
+#else
+#include <signal.h>
+#endif
+
 #include <stdio.h>
 #include <stdarg.h>
 
-namespace es
+namespace gl
 {
 #ifdef __ANDROID__
 	void output(const char *format, va_list vararg)
@@ -47,7 +53,7 @@ namespace es
 	}
 #endif
 
-	void trace(const char *format, ...)
+	void log(const char *format, ...)
 	{
 		va_list vararg;
 		va_start(vararg, format);
@@ -55,3 +61,28 @@ namespace es
 		va_end(vararg);
 	}
 }
+
+#ifndef NDEBUG
+#if defined(_WIN32)
+void HaltDebugger()
+{
+	if(IsDebuggerPresent())
+	{
+		DebugBreak();
+	}
+}
+#else   // Assume POSIX
+static void ResetSignalHandler(int signum)
+{
+    // Set the signal handler back to the default handler
+    signal(SIGTRAP, SIG_DFL);
+}
+ 
+void HaltDebugger()
+{
+    // Raise a trap signal, using a bening handler to avoid aborting
+    signal(SIGTRAP, ResetSignalHandler);
+    raise(SIGTRAP);
+}
+#endif
+#endif   // !NDEBUG
