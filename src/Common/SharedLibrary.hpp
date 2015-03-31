@@ -89,7 +89,7 @@ void *loadLibrary(const char *(&names)[n], const char *mustContainSymbol = nullp
 
 	inline void *getLibraryHandle(const char *path)
 	{
-		#ifdef __ANDROID__
+		#if defined(__ANDROID__) && GCE_PLATFORM_SDK_VERSION < 21
 			// bionic doesn't support RTLD_NOLOAD before L
 			return dlopen(path, RTLD_NOW);
 		#else
