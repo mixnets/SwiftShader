@@ -74,10 +74,6 @@ void *loadLibrary(const char *(&names)[n])
 
 	inline void *getLibraryHandle(const char *path)
 	{
-		#ifdef __ANDROID__
-			// bionic doesn't support RTLD_NOLOAD before L
-			return dlopen(path, RTLD_NOW);
-		#else
 			void *resident = dlopen(path, RTLD_LAZY | RTLD_NOLOAD);
 
 			if(resident)
@@ -86,7 +82,6 @@ void *loadLibrary(const char *(&names)[n])
 			}
 
 			return 0;
-		#endif
 	}
 
     inline void freeLibrary(void *library)
