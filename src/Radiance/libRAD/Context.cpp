@@ -97,7 +97,9 @@ Context::Context(const egl::Config *config, const Context *shareContext) : mConf
     mState.scissorTest = false;
     mState.dither = true;
     mState.generateMipmapHint = GL_DONT_CARE;
-    mState.fragmentShaderDerivativeHint = GL_DONT_CARE;
+	mState.fragmentShaderDerivativeHint = GL_DONT_CARE;
+	mState.colorLogicOp = false;
+	mState.logicalOperation = GL_COPY;
 
     mState.lineWidth = 1.0f;
 

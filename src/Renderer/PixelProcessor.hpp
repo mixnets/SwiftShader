@@ -80,6 +80,9 @@ namespace sw
 			TransparencyAntialiasing transparencyAntialiasing : BITS(TRANSPARENCY_LAST);
 			bool centroid                                     : 1;
 
+			bool colorLogicOpEnabled			: 1;
+			LogicalOperation logicalOperation	: BITS(LOGICALOP_LAST);
+
 			Sampler::State sampler[TEXTURE_IMAGE_UNITS];
 			TextureStage::State textureStage[8];
 
@@ -125,7 +128,7 @@ namespace sw
 			{
 				return pixelFogMode != FOG_NONE;
 			}
-
+			
 			unsigned int hash;
 		};
 
@@ -232,6 +235,9 @@ namespace sw
 		virtual void setAlphaTestEnable(bool alphaTestEnable);
 		virtual void setCullMode(CullMode cullMode);
 		virtual void setColorWriteMask(int index, int rgbaMask);
+
+		virtual void setColorLogicOpEnabled(bool colorLogicOpEnabled);
+		virtual void setLogicalOperation(LogicalOperation logicalOperation);
 
 		virtual void setStencilEnable(bool stencilEnable);
 		virtual void setStencilCompare(StencilCompareMode stencilCompareMode);
