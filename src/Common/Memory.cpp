@@ -13,6 +13,10 @@
 
 #include "Types.hpp"
 #include "Debug.hpp"
+#include <sys/mman.h>
+#include <errno.h>
+#include <string.h>
+#include <cutils/log.h>
 
 #if defined(_WIN32)
 	#ifndef WIN32_LEAN_AND_MEAN
@@ -95,11 +99,17 @@ void deallocate(void *memory)
 	}
 }
 
-void *allocateExecutable(size_t bytes)
-{
+void *allocateExecutable(size_t bytes) {
 	size_t pageSize = memoryPageSize();
-
-	return allocate((bytes + pageSize - 1) & -pageSize, pageSize);
+	void *rval = mmap(0,
+              (bytes + pageSize - 1) & -pageSize,
+              PROT_READ | PROT_WRITE | PROT_EXEC,
+              MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+        if (rval == MAP_FAILED) {
+		ALOGE("%s(%z) failed (%s)", __FUNCTION__, bytes, strerror(errno));
+                return NULL;
+        }
+        return rval;
 }
 
 void markExecutable(void *memory, size_t bytes)
@@ -107,8 +117,6 @@ void markExecutable(void *memory, size_t bytes)
 	#if defined(_WIN32)
 		unsigned long oldProtection;
 		VirtualProtect(memory, bytes, PAGE_EXECUTE_READ, &oldProtection);
-	#else
-		mprotect(memory, bytes, PROT_READ | PROT_WRITE | PROT_EXEC);
 	#endif
 }
 
@@ -117,11 +125,12 @@ void deallocateExecutable(void *memory, size_t bytes)
 	#if defined(_WIN32)
 		unsigned long oldProtection;
 		VirtualProtect(memory, bytes, PAGE_READWRITE, &oldProtection);
+                deallocate(memory);
 	#else
-		mprotect(memory, bytes, PROT_READ | PROT_WRITE);
+                size_t pageSize = memoryPageSize();
+                bytes = (bytes + pageSize - 1) & -pageSize;
+		munmap(memory, bytes);
 	#endif
-
-	deallocate(memory);
 }
 
 void *allocate(size_t bytes, const char *function)
