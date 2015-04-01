@@ -49,6 +49,21 @@ namespace sw
 		short depth[4];
 		short onePitchP[4];
 		int sliceP[2];
+
+		void init()
+		{
+			static unsigned int zero = 0x00FF00FF;
+			memset(this, 0, sizeof(Mipmap));
+
+			for(int face = 0; face < 6; face++)
+			{
+				buffer[face] = &zero;
+			}
+
+			uFrac = 16;
+			vFrac = 16;
+			wFrac = 16;
+		}
 	};
 
 	struct Texture

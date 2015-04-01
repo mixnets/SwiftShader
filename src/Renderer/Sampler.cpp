@@ -33,23 +33,10 @@ namespace sw
 
 	Sampler::Sampler()
 	{
-		// FIXME: Mipmap::init
-		static unsigned int zero = 0x00FF00FF;
-
 		for(int level = 0; level < MIPMAP_LEVELS; level++)
 		{
 			Mipmap &mipmap = texture.mipmap[level];
-
-			memset(&mipmap, 0, sizeof(Mipmap));
-
-			for(int face = 0; face < 6; face++)   
-			{
-				mipmap.buffer[face] = &zero;
-			}
-
-			mipmap.uFrac = 16;
-			mipmap.vFrac = 16;
-			mipmap.wFrac = 16;
+			mipmap.init();
 		}
 
 		externalTextureFormat = FORMAT_NULL;
