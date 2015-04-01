@@ -2580,9 +2580,6 @@ void GL_APIENTRY glGetIntegerv(GLenum pname, GLint* params)
 
 	es2::Context *context = es2::getContext();
 
-	if(!context)
-	{
-		ERR("glGetIntegerv() called without current context.");   // Not strictly an error, but probably unintended or attempting to rely on non-compliant behavior
 
 		// This is not spec compliant! When there is no current GL context, functions should
 		// have no side effects. Google Maps queries these values before creating a context,
@@ -2598,7 +2595,6 @@ void GL_APIENTRY glGetIntegerv(GLenum pname, GLint* params)
 			params[1] = (GLint)es2::ALIASED_LINE_WIDTH_RANGE_MAX;
 			return;
 		}
-	}
 
 	if(context)
 	{
