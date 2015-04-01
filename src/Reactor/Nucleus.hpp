@@ -13,6 +13,7 @@
 #define sw_Nucleus_hpp
 
 #include "Common/Types.hpp"
+#include "Common/MutexLock.hpp"
 
 #include <stdarg.h>
 #include <vector>
@@ -218,6 +219,8 @@ namespace sw
 		static llvm::LLVMContext *context;
 		static llvm::Module *module;
 		static RoutineManager *routineManager;
+
+		static BackoffLock codegenMutex;
 	};
 
 	class Byte;
@@ -2903,6 +2906,8 @@ namespace sw
 	template<class R, class A1, class A2, class A3, class A4>
 	Function<R, A1, A2, A3, A4>::Function()
 	{
+		BackoffLock codegenMutex;
+
 		core = new Nucleus();
 
 		if(!A1::isVoid()) arguments.push_back(A1::getType());
