@@ -486,6 +486,8 @@ public:
 
 	Device *getDevice();
 
+	const GLubyte* getExtensions(GLuint index, GLuint* numExt = nullptr);
+
 private:
 	virtual ~Context();
 
