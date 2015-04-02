@@ -836,7 +836,7 @@ GLuint Context::createQuery()
 {
     //GLuint handle = mQueryNameSpace.allocate();
     unsigned int handle = 1;
-
+	
     while (mQueryMap.find(handle) != mQueryMap.end())
     {
         handle++;
