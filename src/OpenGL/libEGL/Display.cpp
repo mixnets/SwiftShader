@@ -289,7 +289,7 @@ EGLSurface Display::createWindowSurface(EGLNativeWindowType window, EGLConfig co
 
     if(!surface->initialize())
     {
-        delete surface;
+        surface->release();
         return EGL_NO_SURFACE;
     }
 
@@ -391,7 +391,7 @@ EGLSurface Display::createOffscreenSurface(EGLConfig config, const EGLint *attri
 
     if(!surface->initialize())
     {
-        delete surface;
+        surface->release();
         return EGL_NO_SURFACE;
     }
 
@@ -437,7 +437,6 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 
 void Display::destroySurface(egl::Surface *surface)
 {
-    delete surface;
     mSurfaceSet.erase(surface);
 
 	if(surface == getCurrentDrawSurface())
@@ -453,7 +452,6 @@ void Display::destroySurface(egl::Surface *surface)
 
 void Display::destroyContext(egl::Context *context)
 {
-    context->destroy();
     mContextSet.erase(context);
 
 	if(context == getCurrentContext())
