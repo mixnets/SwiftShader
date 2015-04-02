@@ -2038,8 +2038,21 @@ const GLubyte *GL_APIENTRY glGetStringi(GLenum name, GLuint index)
 {
 	TRACE("(GLenum name = 0x%X, GLuint index = %d)", name, index);
 
-	UNIMPLEMENTED();
-	return nullptr;
+	GLuint numExtensions;
+	es2::GetExtensions(0, &numExtensions);
+
+	if(index >= numExtensions)
+	{
+		return error(GL_INVALID_VALUE, (GLubyte*)NULL);
+	}
+
+	switch(name)
+	{
+	case GL_EXTENSIONS:
+		return es2::GetExtensions(index);
+	default:
+		return error(GL_INVALID_ENUM, (GLubyte*)NULL);
+	}
 }
 
 void GL_APIENTRY glCopyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size)

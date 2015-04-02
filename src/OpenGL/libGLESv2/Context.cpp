@@ -1684,8 +1684,9 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 		*params = 0;
 		break;
 	case GL_NUM_EXTENSIONS: // integer
-		UNIMPLEMENTED();
-		*params = 0;
+		GLuint numExtensions;
+		es2::GetExtensions(0, &numExtensions);
+		*params = numExtensions;
 		break;
 	case GL_NUM_PROGRAM_BINARY_FORMATS: // integer, at least 0
 		UNIMPLEMENTED();
