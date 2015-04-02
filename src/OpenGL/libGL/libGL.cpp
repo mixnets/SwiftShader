@@ -218,6 +218,13 @@ void APIENTRY glBeginQueryEXT(GLenum target, GLuint name)
 	}
 }
 
+void APIENTRY glBeginQueryARB(GLenum target, GLuint name)
+{
+	TRACE("(GLenum target = 0x%X, GLuint name = %d)", target, name);
+
+	glBeginQueryEXT(target, name);
+}
+
 void APIENTRY glBindAttribLocation(GLuint program, GLuint index, const GLchar* name)
 {
 	TRACE("(GLuint program = %d, GLuint index = %d, const GLchar* name = %s)", program, index, name);
@@ -1450,6 +1457,13 @@ void APIENTRY glDeleteQueriesEXT(GLsizei n, const GLuint *ids)
 	}
 }
 
+void APIENTRY glDeleteQueriesARB(GLsizei n, const GLuint *ids)
+{
+	TRACE("(GLsizei n = %d, const GLuint *ids = 0x%0.8p)", n, ids);
+
+	glDeleteQueriesEXT(n, ids);
+}
+
 void APIENTRY glDeleteRenderbuffers(GLsizei n, const GLuint* renderbuffers)
 {
 	TRACE("(GLsizei n = %d, const GLuint* renderbuffers = 0x%0.8p)", n, renderbuffers);
@@ -1872,6 +1886,13 @@ void APIENTRY glEndQueryEXT(GLenum target)
 	}
 }
 
+void APIENTRY glEndQueryARB(GLenum target)
+{
+	TRACE("GLenum target = 0x%X)", target);
+
+	glEndQueryEXT(target);
+}
+
 void APIENTRY glFinishFenceNV(GLuint fence)
 {
 	TRACE("(GLuint fence = %d)", fence);
@@ -2234,6 +2255,13 @@ void APIENTRY glGenQueriesEXT(GLsizei n, GLuint* ids)
 			ids[i] = context->createQuery();
 		}
 	}
+}
+
+void APIENTRY glGenQueriesARB(GLsizei n, GLuint* ids)
+{
+	TRACE("(GLsizei n = %d, GLuint* ids = 0x%0.8p)", n, ids);
+
+	glGenQueriesEXT(n, ids);
 }
 
 void APIENTRY glGenRenderbuffers(GLsizei n, GLuint* renderbuffers)
@@ -2881,6 +2909,20 @@ void APIENTRY glGetQueryivEXT(GLenum target, GLenum pname, GLint *params)
 	}
 }
 
+void APIENTRY glGetQueryivARB(GLenum target, GLenum pname, GLint *params)
+{
+	TRACE("GLenum target = 0x%X, GLenum pname = 0x%X, GLint *params = 0x%0.8p)", target, pname, params);
+
+	glGetQueryivEXT(target, pname, params);
+}
+
+void APIENTRY glGetQueryObjectivARB(GLuint name, GLenum pname, GLint *params)
+{
+	TRACE("(GLuint name = %d, GLenum pname = 0x%X, GLint *params = 0x%0.8p)", name, pname, params);
+
+	UNIMPLEMENTED();
+}
+
 void APIENTRY glGetQueryObjectuivEXT(GLuint name, GLenum pname, GLuint *params)
 {
 	TRACE("(GLuint name = %d, GLenum pname = 0x%X, GLuint *params = 0x%0.8p)", name, pname, params);
@@ -2922,6 +2964,13 @@ void APIENTRY glGetQueryObjectuivEXT(GLuint name, GLenum pname, GLuint *params)
 			ASSERT(false);
 		}
 	}
+}
+
+void APIENTRY glGetQueryObjectuivARB(GLuint name, GLenum pname, GLuint *params)
+{
+	TRACE("(GLuint name = %d, GLenum pname = 0x%X, GLuint *params = 0x%0.8p)", name, pname, params);
+
+	glGetQueryObjectuivEXT(name, pname, params);
 }
 
 void APIENTRY glGetRenderbufferParameteriv(GLenum target, GLenum pname, GLint* params)
@@ -3108,6 +3157,8 @@ const GLubyte* APIENTRY glGetString(GLenum name)
 		// Vendor extensions
 		return (GLubyte*)
 			"GL_ARB_framebuffer_object "
+			"GL_ARB_occlusion_query "
+			"GL_ARB_occlusion_query2 "
 			"GL_EXT_blend_minmax "
 			"GL_EXT_depth_texture "
 			"GL_EXT_depth_texture_cube_map "
@@ -3671,6 +3722,13 @@ GLboolean APIENTRY glIsQueryEXT(GLuint name)
 	}
 
 	return GL_FALSE;
+}
+
+GLboolean APIENTRY glIsQueryARB(GLuint name)
+{
+	TRACE("(GLuint name = %d)", name);
+
+	return glIsQueryEXT(name);
 }
 
 GLboolean APIENTRY glIsRenderbuffer(GLuint renderbuffer)
@@ -7962,6 +8020,7 @@ const char *WINAPI wglGetExtensionsStringARB(HDC hdc)
 	TRACE("(*)");
 
 	return "GL_ARB_framebuffer_object "
+		   "GL_ARB_occlusion_query "
 		   "WGL_EXT_extensions_string "
 		   "WGL_EXT_swap_control";
 }
@@ -8183,6 +8242,14 @@ PROC WINAPI wglGetProcAddress(LPCSTR lpszProc)
 		EXT(glGetFramebufferAttachmentParameteriv),
 		EXT(glBlitFramebuffer),
 		EXT(glGenerateMipmap),
+		EXT(glGenQueriesARB),
+		EXT(glDeleteQueriesARB),
+		EXT(glIsQueryARB),
+		EXT(glBeginQueryARB),
+		EXT(glEndQueryARB),
+		EXT(glGetQueryivARB),
+		EXT(glGetQueryObjectivARB),
+		EXT(glGetQueryObjectuivARB),
 
 		// EXT
 		EXT(wglSwapIntervalEXT),
