@@ -436,7 +436,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 	glBufferData(GL_ARRAY_BUFFER, uiSize, afVertices, GL_STATIC_DRAW);
 
 	// Draws a triangle for 800 frames
-	for(int i = 0; i < 800; ++i)
+	while(true)
 	{
 		// Check if the message handler finished the demo
 		if (g_bDemoDone) break;
@@ -473,7 +473,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 			This function allows the use of other primitive types : triangle strips, lines, ...
 			For indexed geometry, use the function glDrawElements() with an index list.
 		*/
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		/*
 			Swap Buffers.

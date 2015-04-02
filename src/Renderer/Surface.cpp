@@ -2227,7 +2227,7 @@ namespace sw
 			bytes -= 2;
 		}
 
-		if(CPUID::supportsSSE())
+		if(bytes > 1024 * 1024 && CPUID::supportsSSE2())
 		{
 			while((size_t)buffer & 0xF && bytes >= 4)
 			{
@@ -2251,6 +2251,8 @@ namespace sw
 
 				pointer += 16;
 			}
+
+			_mm_mfence();
 
 			buffer = pointer;
 		}
@@ -2296,7 +2298,11 @@ namespace sw
 		const bool entire = x0 == 0 && y0 == 0 && width == internal.width && height == internal.height;
 		const Lock lock = entire ? LOCK_DISCARD : LOCK_WRITEONLY;
 
-		int width2 = (internal.width + 1) & ~1;
+		if(entire && internal.pitchP <= internal.width + 4)   // Treat it as a 1D buffer that could be cleared with one memfill instead of line-by-line
+		{
+			height = 1;
+			width = internal.pitchP * internal.height;
+		}
 
 		int x1 = x0 + width;
 		int y1 = y0 + height;
@@ -2321,7 +2327,7 @@ namespace sw
 			float g32f = g8 / 255.0f;
 			float b32f = b8 / 255.0f;
 			float a32f = a8 / 255.0f;
-			
+
 			unsigned char g8r8[4] = {r8, g8, r8, g8};
 			unsigned short g16r16[2] = {r16, g16};
 			unsigned char a8b8g8r8[4] = {r8, g8, b8, a8};
