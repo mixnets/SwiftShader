@@ -835,8 +835,8 @@ GLuint Context::createFence()
 GLuint Context::createQuery()
 {
     //GLuint handle = mQueryNameSpace.allocate();
-    unsigned int handle = 1;
-
+    static unsigned int handle = 1;
+	
     while (mQueryMap.find(handle) != mQueryMap.end())
     {
         handle++;
