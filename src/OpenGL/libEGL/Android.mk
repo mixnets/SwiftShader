@@ -19,9 +19,9 @@ LOCAL_CFLAGS += -DLOG_TAG=\"libEGL_swiftshader\"
 
 # Android's make system also uses NDEBUG, so we need to set/unset it forcefully
 # Uncomment for ON:
-LOCAL_CFLAGS += -UNDEBUG
+#LOCAL_CFLAGS += -UNDEBUG
 # Uncomment for OFF:
-#LOCAL_CFLAGS += -DNDEBUG -DANGLE_DISABLE_TRACE
+LOCAL_CFLAGS += -DNDEBUG -DANGLE_DISABLE_TRACE
 
 LOCAL_CFLAGS += -std=c++11
 

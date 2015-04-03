@@ -92,9 +92,9 @@ LOCAL_CFLAGS += -std=c++11
 
 # Android's make system also uses NDEBUG, so we need to set/unset it forcefully
 # Uncomment for ON:
-LOCAL_CFLAGS += -UNDEBUG
+#LOCAL_CFLAGS += -UNDEBUG
 # Uncomment for OFF:
-#LOCAL_CFLAGS += -fomit-frame-pointer -ffunction-sections -fdata-sections -DNDEBUG -DANGLE_DISABLE_TRACE
+LOCAL_CFLAGS += -fomit-frame-pointer -ffunction-sections -fdata-sections -DNDEBUG -DANGLE_DISABLE_TRACE
 
 LOCAL_SHARED_LIBRARIES += libdl liblog libcutils libhardware libui libutils
 LOCAL_STATIC_LIBRARIES += libLLVM_swiftshader
