@@ -33,6 +33,10 @@
 
 #include <limits>
 
+#ifdef ANDROID
+#include <cutils/log.h>
+#endif
+
 typedef std::pair<GLenum, GLenum> InternalFormatTypePair;
 typedef std::map<InternalFormatTypePair, GLenum> FormatMap;
 
@@ -2718,7 +2722,7 @@ void GL_APIENTRY glGetIntegerv(GLenum pname, GLint* params)
 
 	if(!context)
 	{
-		ERR("glGetIntegerv() called without current context.");   // Not strictly an error, but probably unintended or attempting to rely on non-compliant behavior
+		ALOGE("glGetIntegerv() called without current context.");   // Not strictly an error, but probably unintended or attempting to rely on non-compliant behavior
 
 		// This is not spec compliant! When there is no current GL context, functions should
 		// have no side effects. Google Maps queries these values before creating a context,
