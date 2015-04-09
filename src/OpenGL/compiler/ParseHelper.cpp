@@ -580,7 +580,7 @@ bool TParseContext::boolErrorCheck(int line, const TIntermTyped* type)
 //
 bool TParseContext::boolErrorCheck(int line, const TPublicType& pType)
 {
-    if (pType.type != EbtBool || pType.array || pType.matrix || (pType.size > 1)) {
+    if (pType.type != EbtBool || pType.array || (pType.size[0] > 1) || (pType.size[1] > 1)) {
         error(line, "boolean expression expected", "");
         return true;
     }
