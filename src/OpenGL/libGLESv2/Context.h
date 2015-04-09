@@ -515,6 +515,7 @@ private:
 	gl::BindingPointer<Texture3D> mTexture3DZero;
 	gl::BindingPointer<TextureCubeMap> mTextureCubeMapZero;
     gl::BindingPointer<TextureExternal> mTextureExternalZero;
+	gl::BindingPointer<TransformFeedback> mTransformFeedbackZero;
 
     typedef std::map<GLint, Framebuffer*> FramebufferMap;
     FramebufferMap mFramebufferMap;
