@@ -174,52 +174,74 @@ Context::Context(const egl::Config *config, const Context *shareContext, EGLint 
 
 Context::~Context()
 {
-    if(mState.currentProgram != 0)
-    {
-        Program *programObject = mResourceManager->getProgram(mState.currentProgram);
-        if(programObject)
-        {
-            programObject->release();
-        }
-        mState.currentProgram = 0;
-    }
+	if(mState.currentProgram != 0)
+	{
+		Program *programObject = mResourceManager->getProgram(mState.currentProgram);
+		if(programObject)
+		{
+			programObject->release();
+		}
+		mState.currentProgram = 0;
+	}
 
-    while(!mFramebufferMap.empty())
-    {
-        deleteFramebuffer(mFramebufferMap.begin()->first);
-    }
+	while(!mFramebufferMap.empty())
+	{
+		deleteFramebuffer(mFramebufferMap.begin()->first);
+	}
 
-    while(!mFenceMap.empty())
-    {
-        deleteFence(mFenceMap.begin()->first);
-    }
+	while(!mFenceMap.empty())
+	{
+		deleteFence(mFenceMap.begin()->first);
+	}
 
 	while(!mQueryMap.empty())
-    {
-        deleteQuery(mQueryMap.begin()->first);
-    }
+	{
+		deleteQuery(mQueryMap.begin()->first);
+	}
 
-    for(int type = 0; type < TEXTURE_TYPE_COUNT; type++)
-    {
-        for(int sampler = 0; sampler < MAX_COMBINED_TEXTURE_IMAGE_UNITS; sampler++)
-        {
-            mState.samplerTexture[type][sampler] = NULL;
-        }
-    }
+	while(!mVertexArrayMap.empty())
+	{
+		deleteVertexArray(mVertexArrayMap.begin()->first);
+	}
 
-    for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
-    {
-        mState.vertexAttribute[i].mBoundBuffer = NULL;
-    }
+	while(!mTransformFeedbackMap.empty())
+	{
+		deleteTransformFeedback(mTransformFeedbackMap.begin()->first);
+	}
+
+	while(!mSamplerMap.empty())
+	{
+		deleteSampler(mSamplerMap.begin()->first);
+	}
+
+	for(int type = 0; type < TEXTURE_TYPE_COUNT; type++)
+	{
+		for(int sampler = 0; sampler < MAX_COMBINED_TEXTURE_IMAGE_UNITS; sampler++)
+		{
+			mState.samplerTexture[type][sampler] = NULL;
+		}
+	}
+
+	for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
+	{
+		mState.vertexAttribute[i].mBoundBuffer = NULL;
+	}
 
 	for(int i = 0; i < QUERY_TYPE_COUNT; i++)
-    {
-        mState.activeQuery[i] = NULL;
-    }
+	{
+		mState.activeQuery[i] = NULL;
+	}
 
-    mState.arrayBuffer = NULL;
-    mState.elementArrayBuffer = NULL;
-    mState.renderbuffer = NULL;
+	mState.arrayBuffer = NULL;
+	mState.elementArrayBuffer = NULL;
+	mState.renderbuffer = NULL;
+
+	mState.vertexArray = NULL;
+	mState.transformFeedback = NULL;
+	for(int i = 0; i < MAX_COMBINED_TEXTURE_IMAGE_UNITS; ++i)
+	{
+		mState.sampler[i] = NULL;
+	}
 
     mTexture2DZero = NULL;
 	mTexture3DZero = NULL;
