@@ -195,9 +195,24 @@ Context::~Context()
     }
 
 	while(!mQueryMap.empty())
-    {
-        deleteQuery(mQueryMap.begin()->first);
-    }
+	{
+		deleteQuery(mQueryMap.begin()->first);
+	}
+
+	while(!mVertexArrayMap.empty())
+	{
+		deleteVertexArray(mVertexArrayMap.begin()->first);
+	}
+
+	while(!mTransformFeedbackMap.empty())
+	{
+		deleteTransformFeedback(mTransformFeedbackMap.begin()->first);
+	}
+
+	while(!mSamplerMap.empty())
+	{
+		deleteSampler(mSamplerMap.begin()->first);
+	}
 
     for(int type = 0; type < TEXTURE_TYPE_COUNT; type++)
     {
