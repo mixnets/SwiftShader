@@ -35,3 +35,11 @@ namespace sw
 }
 
 #endif   // sw_FrameBufferAndroid
+
+/* Local Variables: */
+/* indent-tabs-mode: t */
+/* tab-width: 4 */
+/* c-basic-offset: 4 */
+/* eval: (c-set-offset 'innamespace  '+) */
+/* eval: (c-set-offset 'access-label  '-) */
+/* End: */
