@@ -195,9 +195,24 @@ Context::~Context()
     }
 
 	while(!mQueryMap.empty())
-    {
-        deleteQuery(mQueryMap.begin()->first);
-    }
+	{
+		deleteQuery(mQueryMap.begin()->first);
+	}
+
+	while(!mVertexArrayMap.empty())
+	{
+		deleteVertexArray(mVertexArrayMap.begin()->first);
+	}
+
+	while(!mTransformFeedbackMap.empty())
+	{
+		deleteTransformFeedback(mTransformFeedbackMap.begin()->first, true);
+	}
+
+	while(!mSamplerMap.empty())
+	{
+		deleteSampler(mSamplerMap.begin()->first);
+	}
 
     for(int type = 0; type < TEXTURE_TYPE_COUNT; type++)
     {
@@ -962,8 +977,13 @@ void Context::deleteVertexArray(GLuint vertexArray)
 	}
 }
 
-void Context::deleteTransformFeedback(GLuint transformFeedback)
+void Context::deleteTransformFeedback(GLuint transformFeedback, bool contextDestruction)
 {
+	if(transformFeedback == 0 && !contextDestruction)
+	{
+		return; // Never delete the default transform feedback object unless we're destroying the context
+	}
+
 	TransformFeedbackMap::iterator transformFeedbackObject = mTransformFeedbackMap.find(transformFeedback);
 
 	if(transformFeedbackObject != mTransformFeedbackMap.end())

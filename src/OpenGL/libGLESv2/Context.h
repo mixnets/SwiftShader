@@ -399,7 +399,7 @@ public:
 
 	// Transform feedbacks are owned by the Context
 	GLuint createTransformFeedback();
-	void deleteTransformFeedback(GLuint transformFeedback);
+	void deleteTransformFeedback(GLuint transformFeedback, bool contextDestruction = false);
 
 	// Samplers are owned by the Context
 	GLuint createSampler();
