@@ -21,6 +21,9 @@
 #include "Common/SharedLibrary.hpp"
 #include "common/debug.h"
 
+#define EGL_EGLEXT_PROTOTYPES
+#include <EGL\eglext.h>
+
 static sw::Thread::LocalStorageKey currentTLS = TLS_OUT_OF_INDEXES;
 
 #if !defined(_MSC_VER)
@@ -329,7 +332,6 @@ egl::Surface *getCurrentReadSurface()
 
     return current->readSurface;
 }
-}
 
 void error(EGLint errorCode)
 {
@@ -357,15 +359,16 @@ void error(EGLint errorCode)
 		}
 	}
 }
+}
 
 extern "C"
 {
-EGLContext clientGetCurrentContext()
+egl::Context *clientGetCurrentContext()
 {
     return egl::getCurrentContext();
 }
 
-EGLContext clientGetCurrentDisplay()
+egl::Display *clientGetCurrentDisplay()
 {
     return egl::getCurrentDisplay();
 }
@@ -392,3 +395,57 @@ namespace es
 
 void *libGLES_CM = 0;   // Handle to the libGLES_CM module
 void *libGLESv2 = 0;   // Handle to the libGLESv2 module
+
+LibEGLexports::LibEGLexports()
+{
+	this->eglGetError = ::eglGetError;
+	this->eglGetDisplay = ::eglGetDisplay;
+	this->eglInitialize = ::eglInitialize;
+	this->eglTerminate = ::eglTerminate;
+	this->eglQueryString = ::eglQueryString;
+	this->eglGetConfigs = ::eglGetConfigs;
+	this->eglChooseConfig = ::eglChooseConfig;
+	this->eglGetConfigAttrib = ::eglGetConfigAttrib;
+	this->eglCreateWindowSurface = ::eglCreateWindowSurface;
+	this->eglCreatePbufferSurface = ::eglCreatePbufferSurface;
+	this->eglCreatePixmapSurface = ::eglCreatePixmapSurface;
+	this->eglDestroySurface = ::eglDestroySurface;
+	this->eglQuerySurface = ::eglQuerySurface;
+	this->eglBindAPI = ::eglBindAPI;
+	this->eglQueryAPI = ::eglQueryAPI;
+	this->eglWaitClient = ::eglWaitClient;
+	this->eglReleaseThread = ::eglReleaseThread;
+	this->eglCreatePbufferFromClientBuffer = ::eglCreatePbufferFromClientBuffer;
+	this->eglSurfaceAttrib = ::eglSurfaceAttrib;
+	this->eglBindTexImage = ::eglBindTexImage;
+	this->eglReleaseTexImage = ::eglReleaseTexImage;
+	this->eglSwapInterval = ::eglSwapInterval;
+	this->eglCreateContext = ::eglCreateContext;
+	this->eglDestroyContext = ::eglDestroyContext;
+	this->eglMakeCurrent = ::eglMakeCurrent;
+	this->eglGetCurrentContext = ::eglGetCurrentContext;
+	this->eglGetCurrentSurface = ::eglGetCurrentSurface;
+	this->eglGetCurrentDisplay = ::eglGetCurrentDisplay;
+	this->eglQueryContext = ::eglQueryContext;
+	this->eglWaitGL = ::eglWaitGL;
+	this->eglWaitNative = ::eglWaitNative;
+	this->eglSwapBuffers = ::eglSwapBuffers;
+	this->eglCopyBuffers = ::eglCopyBuffers;
+	this->eglCreateImageKHR = ::eglCreateImageKHR;
+	this->eglDestroyImageKHR = ::eglDestroyImageKHR;
+	this->eglGetProcAddress = ::eglGetProcAddress;
+
+	this->clientGetCurrentContext = ::clientGetCurrentContext;
+	this->clientGetCurrentDisplay = ::clientGetCurrentDisplay;
+}
+
+LibEGLexports *LibEGLexports::getSingleton()
+{
+	static LibEGLexports libEGL;
+	return &libEGL;
+}
+
+extern "C" LibEGLexports *libEGLexports()
+{
+	return LibEGLexports::getSingleton();
+}

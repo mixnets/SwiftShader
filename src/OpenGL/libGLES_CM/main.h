@@ -17,6 +17,7 @@
 #include "Context.h"
 #include "Device.hpp"
 #include "common/debug.h"
+#include "libEGL/main.h"
 #include "libEGL/Display.h"
 
 #define GL_API
@@ -41,13 +42,17 @@ const T &error(GLenum errorCode, const T &returnValue)
     return returnValue;
 }
 
-// libEGL dependencies
-namespace egl
+class LibEGL
 {
-	extern egl::Context *(*getCurrentContext)();
-	extern egl::Display *(*getCurrentDisplay)();
-}
+public:
+	~LibEGL();
 
-extern void *libEGL;   // Handle to the libEGL module
+	LibEGLexports *operator->();
+
+private:
+	static void *libEGL;
+};
+
+extern LibEGL libEGL;
 
 #endif   // LIBGLES_CM_MAIN_H_

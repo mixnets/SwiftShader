@@ -206,9 +206,6 @@ EXPORTS
     glDrawTexfvOES
 
     ; EGL dependencies
-    glCreateContext
-    glGetProcAddress
-
 	createFrameBuffer
 	createBackBuffer
 	createDepthStencil

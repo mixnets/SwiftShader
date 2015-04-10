@@ -26,6 +26,8 @@
 
 #include <string.h>
 
+using namespace egl;
+
 static bool validateDisplay(egl::Display *display)
 {
 	if(display == EGL_NO_DISPLAY)
