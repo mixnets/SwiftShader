@@ -21,6 +21,9 @@
 #include "Common/SharedLibrary.hpp"
 #include "common/debug.h"
 
+#define EGL_EGLEXT_PROTOTYPES
+#include <EGL\eglext.h>
+
 static sw::Thread::LocalStorageKey currentTLS = TLS_OUT_OF_INDEXES;
 
 #if !defined(_MSC_VER)
@@ -360,12 +363,12 @@ void error(EGLint errorCode)
 
 extern "C"
 {
-EGLContext clientGetCurrentContext()
+egl::Context *clientGetCurrentContext()
 {
     return egl::getCurrentContext();
 }
 
-EGLContext clientGetCurrentDisplay()
+egl::Display *clientGetCurrentDisplay()
 {
     return egl::getCurrentDisplay();
 }
@@ -392,3 +395,43 @@ namespace es
 
 void *libGLES_CM = 0;   // Handle to the libGLES_CM module
 void *libGLESv2 = 0;   // Handle to the libGLESv2 module
+
+EGLint (EGLAPIENTRY *LibEGLexports::eglGetError)(void) = eglGetError;
+EGLDisplay (EGLAPIENTRY *LibEGLexports::eglGetDisplay)(EGLNativeDisplayType display_id) = eglGetDisplay;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglInitialize)(EGLDisplay dpy, EGLint *major, EGLint *minor) = eglInitialize;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglTerminate)(EGLDisplay dpy) = eglTerminate;
+const char *(EGLAPIENTRY *LibEGLexports::eglQueryString)(EGLDisplay dpy, EGLint name) = eglQueryString;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglGetConfigs)(EGLDisplay dpy, EGLConfig *configs, EGLint config_size, EGLint *num_config) = eglGetConfigs;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglChooseConfig)(EGLDisplay dpy, const EGLint *attrib_list, EGLConfig *configs, EGLint config_size, EGLint *num_config) = eglChooseConfig;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglGetConfigAttrib)(EGLDisplay dpy, EGLConfig config, EGLint attribute, EGLint *value) = eglGetConfigAttrib;
+EGLSurface (EGLAPIENTRY *LibEGLexports::eglCreateWindowSurface)(EGLDisplay dpy, EGLConfig config, EGLNativeWindowType window, const EGLint *attrib_list) = eglCreateWindowSurface;
+EGLSurface (EGLAPIENTRY *LibEGLexports::eglCreatePbufferSurface)(EGLDisplay dpy, EGLConfig config, const EGLint *attrib_list) = eglCreatePbufferSurface;
+EGLSurface (EGLAPIENTRY *LibEGLexports::eglCreatePixmapSurface)(EGLDisplay dpy, EGLConfig config, EGLNativePixmapType pixmap, const EGLint *attrib_list) = eglCreatePixmapSurface;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglDestroySurface)(EGLDisplay dpy, EGLSurface surface) = eglDestroySurface;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglQuerySurface)(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value) = eglQuerySurface;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglBindAPI)(EGLenum api) = eglBindAPI;
+EGLenum (EGLAPIENTRY *LibEGLexports::eglQueryAPI)(void) = eglQueryAPI;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglWaitClient)(void) = eglWaitClient;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglReleaseThread)(void) = eglReleaseThread;
+EGLSurface (EGLAPIENTRY *LibEGLexports::eglCreatePbufferFromClientBuffer)(EGLDisplay dpy, EGLenum buftype, EGLClientBuffer buffer, EGLConfig config, const EGLint *attrib_list) = eglCreatePbufferFromClientBuffer;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglSurfaceAttrib)(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint value) = eglSurfaceAttrib;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglBindTexImage)(EGLDisplay dpy, EGLSurface surface, EGLint buffer) = eglBindTexImage;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglReleaseTexImage)(EGLDisplay dpy, EGLSurface surface, EGLint buffer) = eglReleaseTexImage;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglSwapInterval)(EGLDisplay dpy, EGLint interval) = eglSwapInterval;
+EGLContext (EGLAPIENTRY *LibEGLexports::eglCreateContext)(EGLDisplay dpy, EGLConfig config, EGLContext share_context, const EGLint *attrib_list) = eglCreateContext;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglDestroyContext)(EGLDisplay dpy, EGLContext ctx) = eglDestroyContext;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglMakeCurrent)(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx) = eglMakeCurrent;
+EGLContext (EGLAPIENTRY *LibEGLexports::eglGetCurrentContext)(void) = eglGetCurrentContext;
+EGLSurface (EGLAPIENTRY *LibEGLexports::eglGetCurrentSurface)(EGLint readdraw) = eglGetCurrentSurface;
+EGLDisplay (EGLAPIENTRY *LibEGLexports::eglGetCurrentDisplay)(void) = eglGetCurrentDisplay;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglQueryContext)(EGLDisplay dpy, EGLContext ctx, EGLint attribute, EGLint *value) = eglQueryContext;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglWaitGL)(void) = eglWaitGL;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglWaitNative)(EGLint engine) = eglWaitNative;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglSwapBuffers)(EGLDisplay dpy, EGLSurface surface) = eglSwapBuffers;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglCopyBuffers)(EGLDisplay dpy, EGLSurface surface, EGLNativePixmapType target) = eglCopyBuffers;
+EGLImageKHR (EGLAPIENTRY *LibEGLexports::eglCreateImageKHR)(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list) = eglCreateImageKHR;
+EGLBoolean (EGLAPIENTRY *LibEGLexports::eglDestroyImageKHR)(EGLDisplay dpy, EGLImageKHR image) = eglDestroyImageKHR;
+__eglMustCastToProperFunctionPointerType (EGLAPIENTRY *LibEGLexports::eglGetProcAddress)(const char*) = eglGetProcAddress;
+
+egl::Context *(*LibEGLexports::getCurrentContext)() = clientGetCurrentContext;
+egl::Display *(*LibEGLexports::getCurrentDisplay)() = clientGetCurrentDisplay;
