@@ -369,7 +369,7 @@
     <ClCompile Include="..\Main\SwiftConfig.cpp" />
     <ClCompile Include="..\Common\Configurator.cpp" />
     <ClCompile Include="..\Common\CPUID.cpp" />
-    <ClCompile Include="..\Common\Debug.cpp" />
+    <ClCompile Include="..\Common\DebugGeneric.cpp" />
     <ClCompile Include="..\Common\Half.cpp" />
     <ClCompile Include="..\Common\Math.cpp" />
     <ClCompile Include="..\Common\Memory.cpp" />
@@ -427,6 +427,7 @@
     <ClInclude Include="..\Main\SwiftConfig.hpp" />
     <ClInclude Include="..\Common\Configurator.hpp" />
     <ClInclude Include="..\Common\CPUID.hpp" />
+    <ClInclude Include="..\Common\DebugGeneric.hpp" />
     <ClInclude Include="..\Common\Debug.hpp" />
     <ClInclude Include="..\Common\Half.hpp" />
     <ClInclude Include="..\Common\Math.hpp" />
