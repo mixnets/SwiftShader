@@ -295,7 +295,7 @@ void Context::makeCurrent(egl::Surface *surface)
     markAllStateDirty();
 }
 
-EGLint Context::getClientVersion()
+EGLint Context::getClientVersion() const
 {
 	return clientVersion;
 }
@@ -3867,11 +3867,7 @@ Device *Context::getDevice()
 
 }
 
-// Exported functions for use by EGL
-extern "C"
+es2::Context *es2CreateContext(const egl::Config *config, const es2::Context *shareContext, int clientVersion)
 {
-	es2::Context *glCreateContext(const egl::Config *config, const es2::Context *shareContext, int clientVersion)
-	{
-		return new es2::Context(config, shareContext, clientVersion);
-	}
+	return new es2::Context(config, shareContext, clientVersion);
 }

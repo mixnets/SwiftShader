@@ -37,27 +37,11 @@ static void glDetachThread()
     TRACE("()");
 }
 
-CONSTRUCTOR static bool glAttachProcess()
+CONSTRUCTOR static void glAttachProcess()
 {
     TRACE("()");
 
     glAttachThread();
-
-	#if defined(_WIN32)
-	const char *libEGL_lib[] = {"libEGL.dll", "libEGL_translator.dll"};
-	#elif defined(__ANDROID__)
-	const char *libEGL_lib[] = {"/vendor/lib/egl/libEGL_swiftshader.so"};
-	#elif defined(__LP64__)
-	const char *libEGL_lib[] = {"lib64EGL_translator.so", "libEGL.so.1", "libEGL.so"};
-	#else
-	const char *libEGL_lib[] = {"libEGL_translator.so", "libEGL.so.1", "libEGL.so"};
-	#endif
-
-	libEGL = loadLibrary(libEGL_lib);
-	egl::getCurrentContext = (egl::Context *(*)())getProcAddress(libEGL, "clientGetCurrentContext");
-	egl::getCurrentDisplay = (egl::Display *(*)())getProcAddress(libEGL, "clientGetCurrentDisplay");
-
-    return libEGL != 0;
 }
 
 DESTRUCTOR static void glDetachProcess()
@@ -65,7 +49,6 @@ DESTRUCTOR static void glDetachProcess()
     TRACE("()");
 
 	glDetachThread();
-	freeLibrary(libEGL);
 }
 
 #if defined(_WIN32)
@@ -74,7 +57,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
     switch(reason)
     {
     case DLL_PROCESS_ATTACH:
-        return glAttachProcess();
+        glAttachProcess();
         break;
     case DLL_THREAD_ATTACH:
         glAttachThread();
@@ -97,7 +80,7 @@ namespace es1
 {
 es1::Context *getContext()
 {
-	egl::Context *context = egl::getCurrentContext();
+	egl::Context *context = libEGL->clientGetCurrentContext();
 
 	if(context && context->getClientVersion() == 1)
 	{
@@ -109,7 +92,7 @@ es1::Context *getContext()
 
 egl::Display *getDisplay()
 {
-    return egl::getCurrentDisplay();
+    return libEGL->clientGetCurrentDisplay();
 }
 
 Device *getDevice()
@@ -117,7 +100,6 @@ Device *getDevice()
     Context *context = getContext();
 
     return context ? context->getDevice() : 0;
-}
 }
 
 // Records an error code
@@ -153,11 +135,55 @@ void error(GLenum errorCode)
         }
     }
 }
-
-namespace egl
-{
-	egl::Context *(*getCurrentContext)() = 0;
-	egl::Display *(*getCurrentDisplay)() = 0;
 }
 
-void *libEGL = 0;   // Handle to the libEGL module
+LibGLES_CMexports::LibGLES_CMexports()
+{
+	this->es1CreateContext = ::es1CreateContext;
+	this->es1GetProcAddress = ::es1GetProcAddress;
+	this->createBackBuffer = ::createBackBuffer;
+	this->createDepthStencil = ::createDepthStencil;
+	this->createFrameBuffer = ::createFrameBuffer;
+}
+
+LibGLES_CMexports *LibGLES_CMexports::getSingleton()
+{
+	static LibGLES_CMexports libGLES_CM;
+	return &libGLES_CM;
+}
+
+extern "C" LibGLES_CMexports *libGLES_CMexports()
+{
+	return LibGLES_CMexports::getSingleton();
+}
+
+LibEGL libEGL;
+void *LibEGL::libEGL = nullptr;
+
+LibEGL::~LibEGL()
+{
+	freeLibrary(libEGL);
+}
+
+LibEGLexports *LibEGL::operator->()
+{
+	static LibEGLexports *(*libEGLexports)() = nullptr;
+
+	if(!libEGL)
+	{
+		#if defined(_WIN32)
+		const char *libEGL_lib[] = {"libEGL.dll", "libEGL_translator.dll"};
+		#elif defined(__ANDROID__)
+		const char *libEGL_lib[] = {"/vendor/lib/egl/libEGL_swiftshader.so"};
+		#elif defined(__LP64__)
+		const char *libEGL_lib[] = {"lib64EGL_translator.so", "libEGL.so.1", "libEGL.so"};
+		#else
+		const char *libEGL_lib[] = {"libEGL_translator.so", "libEGL.so.1", "libEGL.so"};
+		#endif
+
+		libEGL = loadLibrary(libEGL_lib);
+		libEGLexports = (LibEGLexports *(*)())getProcAddress(libEGL, "libEGLexports");
+	}
+
+	return libEGLexports();
+}

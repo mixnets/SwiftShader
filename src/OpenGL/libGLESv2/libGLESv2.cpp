@@ -6753,7 +6753,7 @@ void GL_APIENTRY glEGLImageTargetRenderbufferStorageOES(GLenum target, GLeglImag
 	UNIMPLEMENTED();
 }
 
-__eglMustCastToProperFunctionPointerType glGetProcAddress(const char *procname)
+__eglMustCastToProperFunctionPointerType es2GetProcAddress(const char *procname)
 {
 	struct Extension
 	{

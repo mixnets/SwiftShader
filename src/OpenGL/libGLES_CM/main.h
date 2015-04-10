@@ -17,6 +17,7 @@
 #include "Context.h"
 #include "Device.hpp"
 #include "common/debug.h"
+#include "libEGL/main.h"
 #include "libEGL/Display.h"
 
 #define GL_API
@@ -29,25 +30,57 @@ namespace es1
 	Context *getContext();
 	egl::Display *getDisplay();
 	Device *getDevice();
+
+	void error(GLenum errorCode);
+
+	template<class T>
+	const T &error(GLenum errorCode, const T &returnValue)
+	{
+		error(errorCode);
+
+		return returnValue;
+	}
 }
 
-void error(GLenum errorCode);
-
-template<class T>
-const T &error(GLenum errorCode, const T &returnValue)
+namespace sw
 {
-    error(errorCode);
-
-    return returnValue;
+class FrameBuffer;
 }
 
-// libEGL dependencies
-namespace egl
+es1::Context *es1CreateContext(const egl::Config *config, const egl::Context *shareContext);
+extern "C" __eglMustCastToProperFunctionPointerType es1GetProcAddress(const char *procname);
+egl::Image *createBackBuffer(int width, int height, const egl::Config *config);
+egl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
+sw::FrameBuffer *createFrameBuffer(EGLNativeDisplayType display, EGLNativeWindowType window, int width, int height);
+
+class LibGLES_CMexports
 {
-	extern egl::Context *(*getCurrentContext)();
-	extern egl::Display *(*getCurrentDisplay)();
-}
+public:
+	static LibGLES_CMexports *getSingleton();
 
-extern void *libEGL;   // Handle to the libEGL module
+	es1::Context *(*es1CreateContext)(const egl::Config *config, const egl::Context *shareContext);
+	__eglMustCastToProperFunctionPointerType (*es1GetProcAddress)(const char *procname);
+	egl::Image *(*createBackBuffer)(int width, int height, const egl::Config *config);
+	egl::Image *(*createDepthStencil)(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
+	sw::FrameBuffer *(*createFrameBuffer)(EGLNativeDisplayType display, EGLNativeWindowType window, int width, int height);
+
+private:
+	LibGLES_CMexports();
+};
+
+class LibEGLexports;
+
+class LibEGL
+{
+public:
+	~LibEGL();
+
+	LibEGLexports *operator->();
+
+private:
+	static void *libEGL;
+};
+
+extern LibEGL libEGL;
 
 #endif   // LIBGLES_CM_MAIN_H_
