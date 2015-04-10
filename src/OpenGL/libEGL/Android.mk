@@ -8,7 +8,7 @@ LOCAL_MODULE := libEGL_swiftshader
 
 LOCAL_SRC_FILES += \
 	../common/Object.cpp \
-	../common/debug.cpp \
+	../../Common/DebugAndroid.cpp \
 	Config.cpp \
 	Display.cpp \
 	Surface.cpp \
@@ -19,7 +19,7 @@ LOCAL_CFLAGS += -DLOG_TAG=\"libEGL_swiftshader\"
 
 # Android's make system also uses NDEBUG, so we need to set/unset it forcefully
 # Uncomment for ON:
-LOCAL_CFLAGS += -UNDEBUG -g
+LOCAL_CFLAGS += -UNDEBUG -g -O0
 # Uncomment for OFF:
 #LOCAL_CFLAGS += -DNDEBUG -DANGLE_DISABLE_TRACE
 
@@ -30,7 +30,7 @@ LOCAL_CFLAGS += -std=c++11
 LOCAL_STATIC_LIBRARIES += libgceframebufferconfig libgcemetadata
 LOCAL_C_INCLUDES += device/google/gce/include
 
-LOCAL_SHARED_LIBRARIES += libdl liblog libandroid libutils
+LOCAL_SHARED_LIBRARIES += libdl liblog libandroid libutils libcutils
 LOCAL_LDFLAGS += -Wl,--version-script=$(LOCAL_PATH)/exports.map -Wl,--hash-style=sysv -g
 
 LOCAL_C_INCLUDES += \
