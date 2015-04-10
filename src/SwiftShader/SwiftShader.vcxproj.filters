@@ -143,7 +143,7 @@
     <ClCompile Include="..\Common\CPUID.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\Debug.cpp">
+    <ClCompile Include="..\Common\DebugGeneric.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\Half.cpp">
@@ -308,6 +308,9 @@
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\CPUID.hpp">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\DebugGeneric.hpp">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Debug.hpp">
