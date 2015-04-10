@@ -253,6 +253,12 @@ struct State
     unsigned int activeSampler;   // Active texture unit selector - GL_TEXTURE0
     gl::BindingPointer<Buffer> arrayBuffer;
     gl::BindingPointer<Buffer> elementArrayBuffer;
+	gl::BindingPointer<Buffer> copyReadBuffer;
+	gl::BindingPointer<Buffer> copyWriteBuffer;
+	gl::BindingPointer<Buffer> pixelPackBuffer;
+	gl::BindingPointer<Buffer> pixelUnpackBuffer;
+	gl::BindingPointer<Buffer> uniformBuffer;
+
     GLuint readFramebuffer;
     GLuint drawFramebuffer;
     gl::BindingPointer<Renderbuffer> renderbuffer;
@@ -406,6 +412,11 @@ public:
 
     void bindArrayBuffer(GLuint buffer);
     void bindElementArrayBuffer(GLuint buffer);
+	void bindCopyReadBuffer(GLuint buffer);
+	void bindCopyWriteBuffer(GLuint buffer);
+	void bindPixelPackBuffer(GLuint buffer);
+	void bindPixelUnpackBuffer(GLuint buffer);
+	void bindUniformBuffer(GLuint buffer);
     void bindTexture2D(GLuint texture);
     void bindTextureCubeMap(GLuint texture);
     void bindTextureExternal(GLuint texture);
@@ -442,6 +453,12 @@ public:
 
     Buffer *getArrayBuffer();
     Buffer *getElementArrayBuffer();
+	Buffer *getCopyReadBuffer();
+	Buffer *getCopyWriteBuffer();
+	Buffer *getPixelPackBuffer();
+	Buffer *getPixelUnpackBuffer();
+	Buffer *getUniformBuffer();
+	bool getBuffer(GLenum target, es2::Buffer **buffer);
     Program *getCurrentProgram();
     Texture2D *getTexture2D();
 	Texture3D *getTexture3D();
