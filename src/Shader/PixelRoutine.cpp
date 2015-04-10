@@ -20,7 +20,9 @@
 #include "Constants.hpp"
 #include "Debug.hpp"
 
+#ifndef __ANDROID__
 #include <assert.h>
+#endif
 
 extern bool localShaderConstants;
 
