@@ -29,7 +29,9 @@
 #include "Reactor/Reactor.hpp"
 
 #include <malloc.h>
+#ifndef __ANDROID__
 #include <assert.h>
+#endif
 
 #undef max
 

@@ -4497,6 +4497,11 @@ void GL_APIENTRY glTexImage2D(GLenum target, GLint level, GLint internalformat, 
 	      "GLint border = %d, GLenum format = 0x%X, GLenum type = 0x%X, const GLvoid* pixels =  0x%0.8p)",
 	      target, level, internalformat, width, height, border, format, type, pixels);
 
+	if (!width)
+	{
+		UNIMPLEMENTED();
+	}
+
 	if(!validImageSize(level, width, height))
 	{
 		return error(GL_INVALID_VALUE);
