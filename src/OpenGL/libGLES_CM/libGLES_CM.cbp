@@ -139,7 +139,8 @@
 		<Unit filename="../../Common/CPUID.hpp" />
 		<Unit filename="../../Common/Configurator.cpp" />
 		<Unit filename="../../Common/Configurator.hpp" />
-		<Unit filename="../../Common/Debug.cpp" />
+		<Unit filename="../../Common/DebugGeneric.cpp" />
+		<Unit filename="../../Common/DebugGeneric.hpp" />
 		<Unit filename="../../Common/Debug.hpp" />
 		<Unit filename="../../Common/ExceptionHandling.hpp" />
 		<Unit filename="../../Common/Half.cpp" />
