@@ -90,7 +90,7 @@ void computeRange(GLenum type, const void *indices, GLsizei count, GLuint *minIn
     else UNREACHABLE();
 }
 
-GLenum IndexDataManager::prepareIndexData(GLenum type, GLsizei count, Buffer *buffer, const void *indices, TranslatedIndexData *translated)
+GLenum IndexDataManager::prepareIndexData(GLenum type, GLuint start, GLuint end, GLsizei count, Buffer *buffer, const void *indices, TranslatedIndexData *translated)
 {
     if(!mStreamingBuffer)
     {
@@ -151,6 +151,13 @@ GLenum IndexDataManager::prepareIndexData(GLenum type, GLsizei count, Buffer *bu
 		translated->indexBuffer = streamingBuffer->getResource();
 		translated->indexOffset = streamOffset;
     }
+
+#ifndef NDEBUG
+	if(translated->minIndex < start || translated->maxIndex > end)
+	{
+		return GL_INVALID_OPERATION;
+	}
+#endif
 
     return GL_NO_ERROR;
 }
