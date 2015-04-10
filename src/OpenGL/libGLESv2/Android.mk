@@ -9,7 +9,7 @@ LOCAL_MODULE := libGLESv2_swiftshader
 LOCAL_SRC_FILES := \
 	../../Common/CPUID.cpp \
 	../../Common/Configurator.cpp \
-	../../Common/Debug.cpp \
+	../../Common/DebugAndroid.cpp \
 	../../Common/Half.cpp \
 	../../Common/Math.cpp \
 	../../Common/Memory.cpp \
