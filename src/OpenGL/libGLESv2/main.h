@@ -17,7 +17,9 @@
 #include "Context.h"
 #include "Device.hpp"
 #include "common/debug.h"
+#include "libEGL/libEGL.hpp"
 #include "libEGL/Display.h"
+#include "libGLES_CM/main.h"
 
 #define GL_APICALL
 #include <GLES2/gl2.h>
@@ -29,6 +31,16 @@ namespace es2
 	Context *getContext();
 	egl::Display *getDisplay();
 	Device *getDevice();
+
+	void error(GLenum errorCode);
+
+	template<class T>
+	const T &error(GLenum errorCode, const T &returnValue)
+	{
+		error(errorCode);
+
+		return returnValue;
+	}
 }
 
 namespace egl
@@ -36,30 +48,44 @@ namespace egl
 	GLint getClientVersion();
 }
 
-void error(GLenum errorCode);
-
-template<class T>
-const T &error(GLenum errorCode, const T &returnValue)
+namespace sw
 {
-    error(errorCode);
-
-    return returnValue;
+class FrameBuffer;
 }
 
-// libEGL dependencies
-namespace egl
-{
-	extern egl::Context *(*getCurrentContext)();
-	extern egl::Display *(*getCurrentDisplay)();
-}
+es2::Context *es2CreateContext(const egl::Config *config, const egl::Context *shareContext, int clientVersion);
+extern "C" __eglMustCastToProperFunctionPointerType es2GetProcAddress(const char *procname);
+egl::Image *createBackBuffer(int width, int height, const egl::Config *config);
+egl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
+sw::FrameBuffer *createFrameBuffer(EGLNativeDisplayType display, EGLNativeWindowType window, int width, int height);
 
-// libGLES_CM dependencies
-namespace es1
+class LibGLESv2exports
 {
-	extern __eglMustCastToProperFunctionPointerType (*getProcAddress)(const char *procname);
-}
+public:
+	static LibGLESv2exports *getSingleton();
 
-extern void *libEGL;       // Handle to the libEGL module
-extern void *libGLES_CM;   // Handle to the libGLES_CM module
+	es2::Context *(*es2CreateContext)(const egl::Config *config, const egl::Context *shareContext, int clientVersion);
+	__eglMustCastToProperFunctionPointerType (*es2GetProcAddress)(const char *procname);
+	egl::Image *(*createBackBuffer)(int width, int height, const egl::Config *config);
+	egl::Image *(*createDepthStencil)(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
+	sw::FrameBuffer *(*createFrameBuffer)(EGLNativeDisplayType display, EGLNativeWindowType window, int width, int height);
+
+private:
+	LibGLESv2exports();
+};
+
+class LibGLESv2
+{
+public:
+	~LibGLESv2();
+
+	LibGLESv2exports *operator->();
+
+private:
+	static void *libGLESv2;
+};
+
+extern LibEGL libEGL;
+extern LibGLES_CM libGLES_CM;
 
 #endif   // LIBGLESV2_MAIN_H_
