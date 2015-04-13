@@ -131,9 +131,9 @@
 		<Linker>
 			<Add option="-Wl,--version-script=./exports.map" />
 			<Add option="-Wl,--hash-style=both" />
+			<Add option="-Wl,--no-undefined" />
 			<Add library="pthread" />
-			<Add library="X11" />
-			<Add library="Xext" />
+			<Add library="dl" />
 		</Linker>
 		<Unit filename="../../Common/CPUID.cpp" />
 		<Unit filename="../../Common/CPUID.hpp" />
@@ -161,6 +161,8 @@
 		<Unit filename="../../Common/Timer.hpp" />
 		<Unit filename="../../Common/Types.hpp" />
 		<Unit filename="../../Common/Version.h" />
+		<Unit filename="../../Common/X11.cpp" />
+		<Unit filename="../../Common/X11.hpp" />
 		<Unit filename="../../Main/Config.cpp" />
 		<Unit filename="../../Main/Config.hpp" />
 		<Unit filename="../../Main/FrameBuffer.cpp" />

@@ -68,7 +68,7 @@ namespace egl
 
 		EGLint mMaxSwapInterval;
 		EGLint mMinSwapInterval;
-    
+
 		typedef std::set<Surface*> SurfaceSet;
 		SurfaceSet mSurfaceSet;
 

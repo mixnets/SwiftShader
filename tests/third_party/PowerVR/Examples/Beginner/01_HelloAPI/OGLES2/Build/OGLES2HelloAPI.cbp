@@ -68,9 +68,9 @@
 			<Add directory="../../../../../Builds/Include" />
 		</Compiler>
 		<Linker>
-			<Add library="X11" />
 			<Add library="EGL" />
 			<Add library="GLESv2" />
+			<Add library="X11" />
 		</Linker>
 		<Unit filename="../OGLES2HelloAPI_LinuxX11.cpp" />
 		<Extensions>

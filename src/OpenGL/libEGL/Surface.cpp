@@ -20,6 +20,7 @@
 #include "Texture.hpp"
 #include "Image.hpp"
 #include "Context.hpp"
+#include "Common/X11.hpp"
 #include "common/debug.h"
 #include "Main/FrameBuffer.hpp"
 
@@ -82,7 +83,7 @@ bool Surface::initialize()
 }
 
 void Surface::deleteResources()
-{	
+{
     if(mDepthStencil)
     {
         mDepthStencil->release();
@@ -122,8 +123,8 @@ bool Surface::reset()
 		return reset(ANativeWindow_getWidth(mWindow), ANativeWindow_getHeight(mWindow));
 	#else
 		XWindowAttributes windowAttributes;
-		XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
-		
+		libX11->XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
+
 		return reset(windowAttributes.width, windowAttributes.height);
 	#endif
 }
@@ -219,7 +220,7 @@ void Surface::setSwapInterval(EGLint interval)
     {
         return;
     }
-    
+
     mSwapInterval = interval;
     mSwapInterval = std::max(mSwapInterval, mDisplay->getMinSwapInterval());
     mSwapInterval = std::min(mSwapInterval, mDisplay->getMaxSwapInterval());
@@ -302,7 +303,7 @@ bool Surface::checkForResize()
 		int clientHeight = ANativeWindow_getHeight(mWindow);
 	#else
 		XWindowAttributes windowAttributes;
-		XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
+		libX11->XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
 
 		int clientWidth = windowAttributes.width;
 		int clientHeight = windowAttributes.height;

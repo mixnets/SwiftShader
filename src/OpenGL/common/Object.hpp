@@ -31,7 +31,7 @@ public:
 
     virtual void addRef();
 	virtual void release();
-    
+
 private:
     volatile int referenceCount;
 };
@@ -53,7 +53,7 @@ public:
 
 	~BindingPointer() { ASSERT(!object); }   // Objects have to be released before the resource manager is destroyed, so they must be explicitly cleaned up.
 
-    ObjectType *operator=(ObjectType *newObject) 
+    ObjectType *operator=(ObjectType *newObject)
 	{
 		if(newObject) newObject->addRef();
 		if(object) object->release();

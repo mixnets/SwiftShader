@@ -66,7 +66,7 @@ namespace sw
 			int w;
 		};
 
-		int &operator[](int i)	
+		int &operator[](int i)
 		{
 			return (&x)[i];
 		}
@@ -108,7 +108,7 @@ namespace sw
 			};
 		};
 
-		float &operator[](int i)	
+		float &operator[](int i)
 		{
 			return (&x)[i];
 		}
@@ -140,7 +140,7 @@ namespace sw
 
 		return v;
 	}
-	
+
 	inline float4 replicate(float f)
 	{
 		float4 v;
