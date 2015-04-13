@@ -44,9 +44,9 @@ TString TType::getCompleteString() const
         stream << getQualifierString() << " " << getPrecisionString() << " ";
     if (array)
         stream << "array of ";
-    if (matrix)
-        stream << size << "X" << size << " matrix of ";
-    else if (size > 1)
+    if (isMatrix())
+        stream << size[0] << "X" << size[1] << " matrix of ";
+    else if (size[0] > 1)
         stream << size << "-component vector of ";
 
     stream << getBasicString();

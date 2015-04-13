@@ -156,14 +156,12 @@ bool TCompiler::InitBuiltInSymbolTable(const ShBuiltInResources &resources)
 
 	TPublicType integer;
 	integer.type = EbtInt;
-	integer.size = 1;
-	integer.matrix = false;
+	integer.size[0] = integer.size[1] = 1;
 	integer.array = false;
 
 	TPublicType floatingPoint;
 	floatingPoint.type = EbtFloat;
-	floatingPoint.size = 1;
-	floatingPoint.matrix = false;
+	floatingPoint.size[0] = floatingPoint.size[1] = 1;
 	floatingPoint.array = false;
 
 	switch(shaderType)

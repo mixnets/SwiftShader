@@ -25,9 +25,12 @@
 int TSymbolTableLevel::uniqueId = 0;
 
 TType::TType(const TPublicType &p) :
-    type(p.type), precision(p.precision), qualifier(p.qualifier), size(p.size), matrix(p.matrix), array(p.array), arraySize(p.arraySize),
+    type(p.type), precision(p.precision), qualifier(p.qualifier), array(p.array), arraySize(p.arraySize),
     maxArraySize(0), arrayInformationType(0), structure(0), structureSize(0), deepestStructNesting(0), fieldName(0), mangled(0), typeName(0)
 {
+	size[0] = p.size[0];
+	size[1] = p.size[1];
+
     if (p.userDef)
     {
         structure = p.userDef->getStruct();
