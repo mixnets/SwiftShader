@@ -26,6 +26,8 @@
 
 #include <string.h>
 
+using namespace egl;
+
 static bool validateDisplay(egl::Display *display)
 {
 	if(display == EGL_NO_DISPLAY)
@@ -630,13 +632,19 @@ EGLContext EGLAPIENTRY eglCreateContext(EGLDisplay dpy, EGLConfig config, EGLCon
 	}
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Context *shareContext = static_cast<egl::Context*>(share_context);
 
 	if(!validateConfig(display, config))
 	{
 		return EGL_NO_CONTEXT;
 	}
 
-	return display->createContext(config, static_cast<egl::Context*>(share_context), clientVersion);
+	if(shareContext && shareContext->getClientVersion() != clientVersion)
+	{
+		return error(EGL_BAD_CONTEXT, EGL_NO_CONTEXT);
+	}
+
+	return display->createContext(config, shareContext, clientVersion);
 }
 
 EGLBoolean EGLAPIENTRY eglDestroyContext(EGLDisplay dpy, EGLContext ctx)
@@ -976,16 +984,16 @@ __eglMustCastToProperFunctionPointerType EGLAPIENTRY eglGetProcAddress(const cha
 			return (__eglMustCastToProperFunctionPointerType)eglExtensions[ext].address;
 		}
 	}
-
+/*
 	if(es2::getProcAddress != 0)
 	{
 		__eglMustCastToProperFunctionPointerType proc = es2::getProcAddress(procname);
 		if(proc) return proc;
 	}
-
-	if(es1::getProcAddress != 0)
+*/
+	if(libGLES_CM->es1GetProcAddress != 0)
 	{
-		__eglMustCastToProperFunctionPointerType proc =  es1::getProcAddress(procname);
+		__eglMustCastToProperFunctionPointerType proc =  libGLES_CM->es1GetProcAddress(procname);
 		if(proc) return proc;
 	}
 
