@@ -785,7 +785,12 @@ void GL_APIENTRY glClipPlanex(GLenum plane, const GLfixed *equation)
 
 void GL_APIENTRY glColor4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 {
-	UNIMPLEMENTED();
+	es1::Context *context = es1::getContext();
+
+	if(context)
+	{
+		context->setVertexAttrib(sw::Color0, red, green, blue, alpha);
+	}
 }
 
 void GL_APIENTRY glColor4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte alpha)
