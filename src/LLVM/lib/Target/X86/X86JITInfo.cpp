@@ -343,7 +343,14 @@ extern "C" {
  // the following function is called only from this translation unit,
  // unless we are under 64bit Windows with MSC, where there is
  // no support for inline assembly
+ //
+ // In the J branch Android's compiler will mangle the name of this function due to
+ // the static, even in the presence of attribute(__used__). J and K report exactly the
+ // same clang version even though they behave differently. Fix this by eliminating static
+ // on J.
+#if !defined(GCE_PLATFORM_SDK_VERSION) || GCE_PLATFORM_SDK_VERSION > 19
 static
+#endif
 #endif
 void LLVM_ATTRIBUTE_USED
 X86CompilationCallback2(intptr_t *StackPtr, intptr_t RetAddr) {
