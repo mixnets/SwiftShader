@@ -138,6 +138,7 @@ Context::Context(const egl::Config *config, const Context *shareContext, EGLint 
 
     mTexture2DZero = new Texture2D(0);
 	mTexture3DZero = new Texture3D(0);
+	mTexture2DArrayZero = new Texture2DArray(0);
     mTextureCubeMapZero = new TextureCubeMap(0);
     mTextureExternalZero = new TextureExternal(0);
 
@@ -247,6 +248,7 @@ Context::~Context()
 
     mTexture2DZero = NULL;
 	mTexture3DZero = NULL;
+	mTexture2DArrayZero = NULL;
     mTextureCubeMapZero = NULL;
     mTextureExternalZero = NULL;
 
@@ -1491,6 +1493,11 @@ Texture3D *Context::getTexture3D()
 	return static_cast<Texture3D*>(getSamplerTexture(mState.activeSampler, TEXTURE_3D));
 }
 
+Texture2DArray *Context::getTexture2DArray()
+{
+	return static_cast<Texture2DArray*>(getSamplerTexture(mState.activeSampler, TEXTURE_2D_ARRAY));
+}
+
 TextureCubeMap *Context::getTextureCubeMap()
 {
     return static_cast<TextureCubeMap*>(getSamplerTexture(mState.activeSampler, TEXTURE_CUBE));
@@ -1511,6 +1518,7 @@ Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type)
         {
         case TEXTURE_2D: return mTexture2DZero;
 		case TEXTURE_3D: return mTexture3DZero;
+		case TEXTURE_2D_ARRAY: return mTexture2DArrayZero;
         case TEXTURE_CUBE: return mTextureCubeMapZero;
         case TEXTURE_EXTERNAL: return mTextureExternalZero;
         default: UNREACHABLE();
@@ -2855,6 +2863,27 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_3D);
+			}
+		}
+		else if(baseTexture->getTarget() == GL_TEXTURE_2D_ARRAY)
+		{
+			Texture2DArray *texture = static_cast<Texture2DArray*>(baseTexture);
+
+			for(int mipmapLevel = 0; mipmapLevel < MIPMAP_LEVELS; mipmapLevel++)
+			{
+				int surfaceLevel = mipmapLevel;
+
+				if(surfaceLevel < 0)
+				{
+					surfaceLevel = 0;
+				}
+				else if(surfaceLevel >= levelCount)
+				{
+					surfaceLevel = levelCount - 1;
+				}
+
+				egl::Image *surface = texture->getImage(surfaceLevel);
+				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D_ARRAY);
 			}
 		}
 		else if(baseTexture->getTarget() == GL_TEXTURE_CUBE_MAP)

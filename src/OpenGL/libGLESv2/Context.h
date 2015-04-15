@@ -52,6 +52,7 @@ class Program;
 class Texture;
 class Texture2D;
 class Texture3D;
+class Texture2DArray;
 class TextureCubeMap;
 class TextureExternal;
 class Framebuffer;
@@ -537,6 +538,7 @@ public:
     Program *getCurrentProgram();
     Texture2D *getTexture2D();
 	Texture3D *getTexture3D();
+	Texture2DArray *getTexture2DArray();
 	TextureCubeMap *getTextureCubeMap();
     TextureExternal *getTextureExternal();
     Texture *getSamplerTexture(unsigned int sampler, TextureType type);
@@ -606,6 +608,7 @@ private:
 
 	gl::BindingPointer<Texture2D> mTexture2DZero;
 	gl::BindingPointer<Texture3D> mTexture3DZero;
+	gl::BindingPointer<Texture2DArray> mTexture2DArrayZero;
 	gl::BindingPointer<TextureCubeMap> mTextureCubeMapZero;
     gl::BindingPointer<TextureExternal> mTextureExternalZero;
 
