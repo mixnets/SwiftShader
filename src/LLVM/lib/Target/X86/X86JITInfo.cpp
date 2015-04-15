@@ -343,7 +343,14 @@ extern "C" {
  // the following function is called only from this translation unit,
  // unless we are under 64bit Windows with MSC, where there is
  // no support for inline assembly
+ //
+ // In the JellyBean branch Android's compiler will mangle the name of this function due to
+ // the static, even in the presence of attribute(__used__). KitKat reports exactly the
+ // same clang version even though the compiler behaves differently. Fix this by
+ // eliminating static only on JellyBean.
+#if !defined(GCE_PLATFORM_SDK_VERSION) || GCE_PLATFORM_SDK_VERSION > 18
 static
+#endif
 #endif
 void LLVM_ATTRIBUTE_USED
 X86CompilationCallback2(intptr_t *StackPtr, intptr_t RetAddr) {
