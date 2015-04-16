@@ -1618,7 +1618,10 @@ bool Context::getFloatv(GLenum pname, GLfloat *params)
     return true;
 }
 
-bool Context::getIntegerv(GLenum pname, GLint *params)
+template bool Context::getIntegerv<GLint>(GLenum pname, GLint *params);
+template bool Context::getIntegerv<GLint64>(GLenum pname, GLint64 *params);
+
+template<typename T> bool Context::getIntegerv(GLenum pname, T *params)
 {
     // Please note: DEPTH_CLEAR_VALUE is not included in our internal getIntegerv implementation
     // because it is stored as a float, despite the fact that the GL ES 2.0 spec names
@@ -2107,7 +2110,10 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
     return true;
 }
 
-bool Context::getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param)
+template bool Context::getTransformFeedbackiv<GLint>(GLuint xfb, GLenum pname, GLint *param);
+template bool Context::getTransformFeedbackiv<GLint64>(GLuint xfb, GLenum pname, GLint64 *param);
+
+template<typename T> bool Context::getTransformFeedbackiv(GLuint xfb, GLenum pname, T *param)
 {
 	UNIMPLEMENTED();
 

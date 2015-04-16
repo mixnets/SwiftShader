@@ -544,9 +544,9 @@ public:
     Framebuffer *getDrawFramebuffer();
 
     bool getFloatv(GLenum pname, GLfloat *params);
-    bool getIntegerv(GLenum pname, GLint *params);
+    template<typename T> bool getIntegerv(GLenum pname, T *params);
     bool getBooleanv(GLenum pname, GLboolean *params);
-	bool getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param);
+	template<typename T> bool getTransformFeedbackiv(GLuint xfb, GLenum pname, T *param);
 
     bool getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams);
 
