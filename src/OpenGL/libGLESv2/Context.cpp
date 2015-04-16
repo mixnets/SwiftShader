@@ -151,6 +151,9 @@ Context::Context(const egl::Config *config, const Context *shareContext, EGLint 
     bindRenderbuffer(0);
     bindTransformFeedback(0);
 
+	mState.readFramebufferColorIndex = 0;
+	mState.drawFramebufferColorIndices.push_back(0);
+
     mState.currentProgram = 0;
 
     mState.packAlignment = 4;
@@ -715,6 +718,31 @@ GLuint Context::getDrawFramebufferName() const
 GLuint Context::getRenderbufferName() const
 {
     return mState.renderbuffer.name();
+}
+
+void Context::setReadFramebufferColorIndex(GLuint index)
+{
+	mState.readFramebufferColorIndex = index;
+}
+
+void Context::addDrawFramebufferColorIndex(GLuint index)
+{
+	mState.drawFramebufferColorIndices.push_back(index);
+}
+
+void Context::clearDrawFramebufferColorIndex()
+{
+	mState.drawFramebufferColorIndices.clear();
+}
+
+GLuint Context::getReadFramebufferColorIndex() const
+{
+	return mState.readFramebufferColorIndex;
+}
+
+GLuint Context::getDrawFramebufferColorIndex(GLuint outputIndex) const
+{
+	return (outputIndex < mState.drawFramebufferColorIndices.size()) ? mState.drawFramebufferColorIndices[outputIndex] : GL_INVALID_INDEX;
 }
 
 GLuint Context::getArrayBufferName() const
@@ -1754,7 +1782,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
     case GL_ALPHA_BITS:
         {
             Framebuffer *framebuffer = getDrawFramebuffer();
-            Renderbuffer *colorbuffer = framebuffer->getColorbuffer();
+            Renderbuffer *colorbuffer = framebuffer->getDrawColorbuffer(0);
 
             if(colorbuffer)
             {
@@ -2395,7 +2423,7 @@ bool Context::applyRenderTarget()
         return error(GL_INVALID_FRAMEBUFFER_OPERATION, false);
     }
 
-    egl::Image *renderTarget = framebuffer->getRenderTarget();
+    egl::Image *renderTarget = framebuffer->getDrawRenderTarget(0);
 	device->setRenderTarget(renderTarget);
 	if(renderTarget) renderTarget->release();
 
@@ -2925,7 +2953,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
         }
     }
 
-    egl::Image *renderTarget = framebuffer->getRenderTarget();
+    egl::Image *renderTarget = framebuffer->getDrawRenderTarget(0);
 
     if(!renderTarget)
     {
@@ -3771,10 +3799,10 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
     if(mask & GL_COLOR_BUFFER_BIT)
     {
-        const bool validReadType = readFramebuffer->getColorbufferType() == GL_TEXTURE_2D ||
-                                   readFramebuffer->getColorbufferType() == GL_RENDERBUFFER;
-        const bool validDrawType = drawFramebuffer->getColorbufferType() == GL_TEXTURE_2D ||
-                                   drawFramebuffer->getColorbufferType() == GL_RENDERBUFFER;
+        const bool validReadType = readFramebuffer->getColorbufferType(getReadFramebufferColorIndex()) == GL_TEXTURE_2D ||
+                                   readFramebuffer->getColorbufferType(getReadFramebufferColorIndex()) == GL_RENDERBUFFER;
+        const bool validDrawType = drawFramebuffer->getColorbufferType(getDrawFramebufferColorIndex(0)) == GL_TEXTURE_2D ||
+                                   drawFramebuffer->getColorbufferType(getDrawFramebufferColorIndex(0)) == GL_RENDERBUFFER;
         if(!validReadType || !validDrawType)
         {
             return error(GL_INVALID_OPERATION);
@@ -3843,8 +3871,8 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
     {
         if(blitRenderTarget)
         {
-            egl::Image *readRenderTarget = readFramebuffer->getRenderTarget();
-            egl::Image *drawRenderTarget = drawFramebuffer->getRenderTarget();
+            egl::Image *readRenderTarget = readFramebuffer->getReadRenderTarget();
+            egl::Image *drawRenderTarget = drawFramebuffer->getDrawRenderTarget(0);
  
 			if(flipX)
 			{
