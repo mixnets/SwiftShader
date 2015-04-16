@@ -1251,12 +1251,13 @@ void GL_APIENTRY glCopyTexImage2D(GLenum target, GLint level, GLenum internalfor
 			return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 		}
 
-		if(context->getReadFramebufferName() != 0 && framebuffer->getColorbuffer()->getSamples() > 1)
+		es2::Renderbuffer *source = framebuffer->getReadColorbuffer();
+
+		if(context->getReadFramebufferName() != 0 && (!source || source->getSamples() > 1))
 		{
 			return error(GL_INVALID_OPERATION);
 		}
 
-		es2::Renderbuffer *source = framebuffer->getColorbuffer();
 		GLenum colorbufferFormat = source->getFormat();
 
 		if(!validateColorBufferFormat(internalformat, colorbufferFormat))
@@ -1332,12 +1333,13 @@ void GL_APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, 
 			return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 		}
 
-		if(context->getReadFramebufferName() != 0 && framebuffer->getColorbuffer()->getSamples() > 1)
+		es2::Renderbuffer *source = framebuffer->getReadColorbuffer();
+
+		if(context->getReadFramebufferName() != 0 && (!source || source->getSamples() > 1))
 		{
 			return error(GL_INVALID_OPERATION);
 		}
 
-		es2::Renderbuffer *source = framebuffer->getColorbuffer();
 		GLenum colorbufferFormat = source->getFormat();
 		es2::Texture *texture = NULL;
 
@@ -2079,10 +2081,36 @@ void GL_APIENTRY glFramebufferRenderbuffer(GLenum target, GLenum attachment, GLe
 			return error(GL_INVALID_OPERATION);
 		}
 
+		egl::GLint clientVersion = context->getClientVersion();
+
 		switch(attachment)
 		{
+		case GL_COLOR_ATTACHMENT1:
+		case GL_COLOR_ATTACHMENT2:
+		case GL_COLOR_ATTACHMENT3:
+		case GL_COLOR_ATTACHMENT4:
+		case GL_COLOR_ATTACHMENT5:
+		case GL_COLOR_ATTACHMENT6:
+		case GL_COLOR_ATTACHMENT7:
+		case GL_COLOR_ATTACHMENT8:
+		case GL_COLOR_ATTACHMENT9:
+		case GL_COLOR_ATTACHMENT10:
+		case GL_COLOR_ATTACHMENT11:
+		case GL_COLOR_ATTACHMENT12:
+		case GL_COLOR_ATTACHMENT13:
+		case GL_COLOR_ATTACHMENT14:
+		case GL_COLOR_ATTACHMENT15:
+			if(clientVersion < 3)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			// fall through
 		case GL_COLOR_ATTACHMENT0:
-			framebuffer->setColorbuffer(GL_RENDERBUFFER, renderbuffer);
+			if((attachment - GL_COLOR_ATTACHMENT0) >= es2::IMPLEMENTATION_MAX_COLOR_ATTACHMENTS)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			framebuffer->setColorbuffer(GL_RENDERBUFFER, renderbuffer, attachment - GL_COLOR_ATTACHMENT0);
 			break;
 		case GL_DEPTH_ATTACHMENT:
 			framebuffer->setDepthbuffer(GL_RENDERBUFFER, renderbuffer);
@@ -2185,9 +2213,37 @@ void GL_APIENTRY glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum
 			return error(GL_INVALID_OPERATION);
 		}
 
+		egl::GLint clientVersion = context->getClientVersion();
+
 		switch(attachment)
 		{
-		case GL_COLOR_ATTACHMENT0:  framebuffer->setColorbuffer(textarget, texture);   break;
+		case GL_COLOR_ATTACHMENT1:
+		case GL_COLOR_ATTACHMENT2:
+		case GL_COLOR_ATTACHMENT3:
+		case GL_COLOR_ATTACHMENT4:
+		case GL_COLOR_ATTACHMENT5:
+		case GL_COLOR_ATTACHMENT6:
+		case GL_COLOR_ATTACHMENT7:
+		case GL_COLOR_ATTACHMENT8:
+		case GL_COLOR_ATTACHMENT9:
+		case GL_COLOR_ATTACHMENT10:
+		case GL_COLOR_ATTACHMENT11:
+		case GL_COLOR_ATTACHMENT12:
+		case GL_COLOR_ATTACHMENT13:
+		case GL_COLOR_ATTACHMENT14:
+		case GL_COLOR_ATTACHMENT15:
+			if(clientVersion < 3)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			// fall through
+		case GL_COLOR_ATTACHMENT0:
+			if((attachment - GL_COLOR_ATTACHMENT0) >= es2::IMPLEMENTATION_MAX_COLOR_ATTACHMENTS)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			framebuffer->setColorbuffer(textarget, texture, attachment - GL_COLOR_ATTACHMENT0);
+			break;
 		case GL_DEPTH_ATTACHMENT:   framebuffer->setDepthbuffer(textarget, texture);   break;
 		case GL_STENCIL_ATTACHMENT: framebuffer->setStencilbuffer(textarget, texture); break;
 		}
@@ -2765,13 +2821,39 @@ void GL_APIENTRY glGetFramebufferAttachmentParameteriv(GLenum target, GLenum att
 			framebuffer = context->getDrawFramebuffer();
 		}
 
+		egl::GLint clientVersion = context->getClientVersion();
+
 		GLenum attachmentType;
 		GLuint attachmentHandle;
 		switch(attachment)
 		{
+		case GL_COLOR_ATTACHMENT1:
+		case GL_COLOR_ATTACHMENT2:
+		case GL_COLOR_ATTACHMENT3:
+		case GL_COLOR_ATTACHMENT4:
+		case GL_COLOR_ATTACHMENT5:
+		case GL_COLOR_ATTACHMENT6:
+		case GL_COLOR_ATTACHMENT7:
+		case GL_COLOR_ATTACHMENT8:
+		case GL_COLOR_ATTACHMENT9:
+		case GL_COLOR_ATTACHMENT10:
+		case GL_COLOR_ATTACHMENT11:
+		case GL_COLOR_ATTACHMENT12:
+		case GL_COLOR_ATTACHMENT13:
+		case GL_COLOR_ATTACHMENT14:
+		case GL_COLOR_ATTACHMENT15:
+			if(clientVersion < 3)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			// fall through
 		case GL_COLOR_ATTACHMENT0:
-			attachmentType = framebuffer->getColorbufferType();
-			attachmentHandle = framebuffer->getColorbufferName();
+			if((attachment - GL_COLOR_ATTACHMENT0) >= es2::IMPLEMENTATION_MAX_COLOR_ATTACHMENTS)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			attachmentType = framebuffer->getColorbufferType(attachment - GL_COLOR_ATTACHMENT0);
+			attachmentHandle = framebuffer->getColorbufferName(attachment - GL_COLOR_ATTACHMENT0);
 			break;
 		case GL_DEPTH_ATTACHMENT:
 			attachmentType = framebuffer->getDepthbufferType();
@@ -6566,12 +6648,13 @@ void GL_APIENTRY glCopyTexSubImage3DOES(GLenum target, GLint level, GLint xoffse
 			return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 		}
 
-		if(context->getReadFramebufferName() != 0 && framebuffer->getColorbuffer()->getSamples() > 1)
+		es2::Renderbuffer *source = framebuffer->getReadColorbuffer();
+
+		if(context->getReadFramebufferName() != 0 && (!source || source->getSamples() > 1))
 		{
 			return error(GL_INVALID_OPERATION);
 		}
 
-		es2::Renderbuffer *source = framebuffer->getColorbuffer();
 		GLenum colorbufferFormat = source->getFormat();
 		es2::Texture3D *texture = context->getTexture3D();
 
@@ -6794,9 +6877,37 @@ void GL_APIENTRY glFramebufferTexture3DOES(GLenum target, GLenum attachment, GLe
 			return error(GL_INVALID_OPERATION);
 		}
 
+		egl::GLint clientVersion = context->getClientVersion();
+
 		switch(attachment)
 		{
-		case GL_COLOR_ATTACHMENT0:  framebuffer->setColorbuffer(textarget, texture);   break;
+		case GL_COLOR_ATTACHMENT1:
+		case GL_COLOR_ATTACHMENT2:
+		case GL_COLOR_ATTACHMENT3:
+		case GL_COLOR_ATTACHMENT4:
+		case GL_COLOR_ATTACHMENT5:
+		case GL_COLOR_ATTACHMENT6:
+		case GL_COLOR_ATTACHMENT7:
+		case GL_COLOR_ATTACHMENT8:
+		case GL_COLOR_ATTACHMENT9:
+		case GL_COLOR_ATTACHMENT10:
+		case GL_COLOR_ATTACHMENT11:
+		case GL_COLOR_ATTACHMENT12:
+		case GL_COLOR_ATTACHMENT13:
+		case GL_COLOR_ATTACHMENT14:
+		case GL_COLOR_ATTACHMENT15:
+			if(clientVersion < 3)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			// fall through
+		case GL_COLOR_ATTACHMENT0:
+			if((attachment - GL_COLOR_ATTACHMENT0) >= es2::IMPLEMENTATION_MAX_COLOR_ATTACHMENTS)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			framebuffer->setColorbuffer(textarget, texture, attachment - GL_COLOR_ATTACHMENT0);
+			break;
 		case GL_DEPTH_ATTACHMENT:   framebuffer->setDepthbuffer(textarget, texture);   break;
 		case GL_STENCIL_ATTACHMENT: framebuffer->setStencilbuffer(textarget, texture); break;
 		}
