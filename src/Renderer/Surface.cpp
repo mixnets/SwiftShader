@@ -682,6 +682,7 @@ namespace sw
 
 	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget) : lockable(lockable), renderTarget(renderTarget)
 	{
+		ALOGI("GSH: tid=%d surface=%p allocating", gettid(), this);
 		resource = texture ? texture : new Resource(0);
 		hasParent = texture != 0;
 		depth = max(1, depth);
@@ -727,11 +728,13 @@ namespace sw
 
 		dirtyMipmaps = true;
 		paletteUsed = 0;
+		ALOGI("GSH: tid=%d surface=%p done allocating surface", gettid(), this);
 	}
 
 	Surface::~Surface()
 	{
 		// Synchronize so we can deallocate the buffers below
+		ALOGI("GSH: tid=%d surface=%p destroying surface", gettid(), this);
 		resource->lock(DESTRUCT);
 		resource->unlock();
 
@@ -747,11 +750,18 @@ namespace sw
 			deallocate(internal.buffer);
 		}
 
+		bool didFree = false;
+		if (stencil.buffer)
+		{
+			ALOGI("GSH: tid=%d surface=%p buf=%p attempting to free stencil.buffer", gettid(), this, stencil.buffer);
+			didFree = true;
+		}
 		deallocate(stencil.buffer);
 
 		external.buffer = 0;
 		internal.buffer = 0;
 		stencil.buffer = 0;
+		ALOGI("GSH: tid=%d surface=%p did_free=%d done destroying surface", gettid(), this, didFree);
 	}
 
 	void *Surface::lockExternal(int x, int y, int z, Lock lock, Accessor client)
@@ -893,7 +903,9 @@ namespace sw
 
 		if(!stencil.buffer)
 		{
+			ALOGI("GSH: tid=%d surface=%p allocating stencil.buffer", gettid(), this);
 			stencil.buffer = allocateBuffer(stencil.width, stencil.height, stencil.depth, stencil.format);
+			ALOGI("GSH: tid=%d surface=%p buf=%p stencil.buffer set", gettid(), this, stencil.buffer);
 		}
 
 		return stencil.lockRect(0, 0, front, LOCK_READWRITE);   // FIXME

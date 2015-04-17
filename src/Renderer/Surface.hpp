@@ -250,6 +250,10 @@ namespace sw
 		typedef unsigned int dword;
 		typedef uint64_t qword;
 
+		// Disallow copy constructor and assignment: surfaces have pointers.
+		Surface(const Surface& );
+		Surface& operator=(const Surface& );
+
 		#if S3TC_SUPPORT
 		struct DXT1
 		{
