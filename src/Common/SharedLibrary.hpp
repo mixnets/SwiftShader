@@ -14,11 +14,11 @@
 
 #if defined(_WIN32)
 	#include <Windows.h>
+	#include <Psapi.h>
 #else
 	#include <dlfcn.h>
 #endif
 
-void *getLibraryHandle(const char *path);
 void *loadLibrary(const char *path);
 void freeLibrary(void *library);
 void *getProcAddress(void *library, const char *name);
@@ -26,20 +26,31 @@ void *getProcAddress(void *library, const char *name);
 template<int n>
 void *loadLibrary(const char *(&names)[n], const char *mustContainSymbol = nullptr)
 {
-	for(int i = 0; i < n; i++)
+	HANDLE process = GetCurrentProcess();
+	DWORD count = 0;
+	EnumProcessModules(process, nullptr, 0, &count);
+	HMODULE *modules = new HMODULE[count];
+	EnumProcessModules(process, modules, count * sizeof(HMODULE), &count);
+
+	for(int i = 0; i < count; i++)
 	{
-		void *library = getLibraryHandle(names[i]);
-
-		if(library)
+		if(GetProcAddress(modules[i], mustContainSymbol))
 		{
-			if(!mustContainSymbol || getProcAddress(library, mustContainSymbol))
-			{
-				return library;
-			}
+			HMODULE winner;
 
-			freeLibrary(library);
+			GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS , (LPCSTR)modules[i], &winner);
+
+			delete[] modules;
+
+			return winner;
 		}
 	}
+
+	delete[] modules;
+
+	//////////////////////////////////////////////////////////////
+
+	
 
 	for(int i = 0; i < n; i++)
 	{
@@ -65,13 +76,6 @@ void *loadLibrary(const char *(&names)[n], const char *mustContainSymbol = nullp
 		return (void*)LoadLibrary(path);
 	}
 
-	inline void *getLibraryHandle(const char *path)
-	{
-		HMODULE module = 0;
-		GetModuleHandleEx(0, path, &module);
-		return (void*)module;
-	}
-
 	inline void freeLibrary(void *library)
 	{
 		FreeLibrary((HMODULE)library);
@@ -85,23 +89,6 @@ void *loadLibrary(const char *(&names)[n], const char *mustContainSymbol = nullp
 	inline void *loadLibrary(const char *path)
 	{
 		return dlopen(path, RTLD_LAZY);
-	}
-
-	inline void *getLibraryHandle(const char *path)
-	{
-		#ifdef __ANDROID__
-			// bionic doesn't support RTLD_NOLOAD before L
-			return dlopen(path, RTLD_NOW);
-		#else
-			void *resident = dlopen(path, RTLD_LAZY | RTLD_NOLOAD);
-
-			if(resident)
-			{
-				return dlopen(path, RTLD_LAZY);   // Increment reference count
-			}
-
-			return 0;
-		#endif
 	}
 
     inline void freeLibrary(void *library)
