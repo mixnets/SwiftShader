@@ -49,14 +49,38 @@ size_t memoryPageSize()
 	return pageSize;
 }
 
+static const int page_size = memoryPageSize();
+
 struct Allocation
 {
-//	size_t bytes;
+	size_t bytes;
 	unsigned char *block;
 };
 
+void* allocate_pages(size_t bytes)
+{
+	size_t rounded = (bytes + sizeof(Allocation) + page_size - 1) &~ (page_size - 1);
+	void* base = mmap(NULL, rounded + page_size, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+	if (base == MAP_FAILED)
+	{
+		return NULL;
+	}
+	mprotect(base, rounded, PROT_READ|PROT_WRITE);
+	char* rval = reinterpret_cast<char *>(base) + rounded - bytes;
+	Allocation* a = reinterpret_cast<Allocation*>(rval - sizeof(Allocation));
+	ASSERT(a >= base);
+	a->block = reinterpret_cast<unsigned char*>(base);
+	a->bytes = rounded + page_size;
+	ALOGI("GSH: Allocated pages %p-%p-%p", base, rval, rval + bytes);
+	return rval;
+}
+
 void *allocate(size_t bytes, size_t alignment)
 {
+	if ((bytes >= page_size) && (alignment == 1))
+	{
+		return allocate_pages(bytes);
+	}
 	unsigned char *block = new unsigned char[bytes + sizeof(Allocation) + alignment];
 	unsigned char *aligned = 0;
 
@@ -65,7 +89,7 @@ void *allocate(size_t bytes, size_t alignment)
 		aligned = (unsigned char*)((uintptr_t)(block + sizeof(Allocation) + alignment - 1) & -(intptr_t)alignment);
 		Allocation *allocation = (Allocation*)(aligned - sizeof(Allocation));
 
-	//	allocation->bytes = bytes;
+		allocation->bytes = 0;
 		allocation->block = block;
 	}
 
@@ -90,8 +114,13 @@ void deallocate(void *memory)
 	{
 		unsigned char *aligned = (unsigned char*)memory;
 		Allocation *allocation = (Allocation*)(aligned - sizeof(Allocation));
-
-		delete[] allocation->block;
+		if (allocation->bytes)
+		{
+			ALOGI("GSH: Free pages %p-%p", allocation->block, allocation->block + allocation->bytes);
+			munmap(allocation->block, allocation->bytes);
+		} else {
+			delete[] allocation->block;
+		}
 	}
 }
 
@@ -128,7 +157,7 @@ void *allocate(size_t bytes, const char *function)
 {
 	trace("[0x%0.8X]%s(...)\n", 0xFFFFFFFF, function);
 
-	void *memory = allocate(bytes);
+	void *memory = allocate(bytes, 1);
 
 	trace("\t0x%0.8X = allocate(%d)\n", memory, bytes);
 
