@@ -190,7 +190,20 @@ protected:
 	void initGralloc()
 	{
 		hw_module_t const *module;
-		hw_get_module(GRALLOC_HARDWARE_MODULE_ID, &module);
+		hw_get_module("converting_gralloc", &module);
+		if (module)
+		{
+			ALOGI("Loaded converting gralloc");
+		}
+		else
+		{
+			ALOGE("Falling back to standard gralloc with reduced format support");
+			hw_get_module(GRALLOC_HARDWARE_MODULE_ID, &module);
+		}
+		if (!module)
+		{
+			ALOGE("Failed to load standard gralloc");
+		}
 		gralloc = reinterpret_cast<gralloc_module_t const*>(module);
 	}
 

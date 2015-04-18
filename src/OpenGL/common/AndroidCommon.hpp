@@ -1,6 +1,7 @@
 #ifndef ANDROID_COMMON
 #define ANDROID_COMMON
 
+// Used internally
 static inline GLenum getColorFormatFromAndroid(int format)
 {
     switch(format)
@@ -28,6 +29,7 @@ static inline GLenum getColorFormatFromAndroid(int format)
     return GL_RGBA;
 }
 
+// Used internally
 static inline GLenum getPixelFormatFromAndroid(int format)
 {
     switch(format)
@@ -51,4 +53,56 @@ static inline GLenum getPixelFormatFromAndroid(int format)
     }
     return GL_UNSIGNED_BYTE;
 }
+
+// Used in V1 & V2 Context.cpp
+static inline EGLenum isSupportedAndroidBuffer(GLuint name)
+{
+    ANativeWindowBuffer *nativeBuffer = reinterpret_cast<ANativeWindowBuffer*>(name);
+
+    if(!name)
+    {
+        ALOGE("%s called with name==NULL %s:%d", __FUNCTION__, __FILE__, __LINE__);
+        return EGL_BAD_PARAMETER;
+    }
+    if(nativeBuffer->common.magic != ANDROID_NATIVE_BUFFER_MAGIC)
+    {
+        ALOGE("%s: failed: bad magic", __FUNCTION__);
+        return EGL_BAD_PARAMETER;
+    }
+
+    if(nativeBuffer->common.version != sizeof(ANativeWindowBuffer))
+    {
+        ALOGE("%s: failed: bad size", __FUNCTION__ );
+        return EGL_BAD_PARAMETER;
+    }
+
+    switch(nativeBuffer->format)
+    {
+        case HAL_PIXEL_FORMAT_RGBA_8888:
+        case HAL_PIXEL_FORMAT_RGBX_8888:
+        case HAL_PIXEL_FORMAT_RGB_565:
+            return EGL_SUCCESS;
+        default:
+            ALOGE("%s: failed: bad format", __FUNCTION__ );
+            return EGL_BAD_PARAMETER;
+    }
+}
+
+// Used in V1 & V2 Context.cpp
+template <typename I> I* wrapAndroidNativeWindow(GLuint name)
+{
+    ANativeWindowBuffer *nativeBuffer = reinterpret_cast<ANativeWindowBuffer*>(name);
+    ALOGV("%s: wrapping %p", __FUNCTION__, nativeBuffer);
+    nativeBuffer->common.incRef(&nativeBuffer->common);
+
+    GLenum format = getColorFormatFromAndroid(nativeBuffer->format);
+    GLenum type = getPixelFormatFromAndroid(nativeBuffer->format);
+
+    I *image = new I(0, nativeBuffer->width, nativeBuffer->height, format, type);
+    image->setNativeBuffer(nativeBuffer);
+    image->markShared();
+
+    return image;
+}
+
 #endif  // ANDROID_COMMON
