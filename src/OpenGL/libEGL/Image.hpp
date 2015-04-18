@@ -9,7 +9,9 @@
 #endif
 
 #ifdef __ANDROID__
-#include "../../Common/DebugAndroid.hpp"
+	#include <system/window.h>
+	#include "../../Common/DebugAndroid.hpp"
+	#include "../../Common/GrallocAndroid.hpp"
 #else
 #include <assert.h>
 #endif
@@ -35,7 +37,6 @@ public:
 
 		#if defined(__ANDROID__)
 			nativeBuffer = 0;
-			gralloc = 0;
 		#endif
 	}
 
@@ -47,7 +48,6 @@ public:
 
 		#if defined(__ANDROID__)
 			nativeBuffer = 0;
-			gralloc = 0;
 		#endif
 	}
 
@@ -98,7 +98,7 @@ public:
 		#if defined(__ANDROID__)
 			if(nativeBuffer)   // Lock the buffer from ANativeWindowBuffer
 			{
-				return lockNativeBuffer(GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN);
+				return lockNativeBuffer();
 			}
 		#endif
 
@@ -154,7 +154,7 @@ public:
 	{
 		if(nativeBuffer)   // Lock the buffer from ANativeWindowBuffer
 		{
-			return lockNativeBuffer(GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN);
+			return lockNativeBuffer();
 		}
 		return sw::Surface::lockInternal(x, y, z, lock, client);
 	}
@@ -185,35 +185,19 @@ protected:
 
 	#if defined(__ANDROID__)
 	ANativeWindowBuffer *nativeBuffer;
-	gralloc_module_t const *gralloc;
 
-	void initGralloc()
+	void* lockNativeBuffer()
 	{
-		hw_module_t const *module;
-		hw_get_module(GRALLOC_HARDWARE_MODULE_ID, &module);
-		gralloc = reinterpret_cast<gralloc_module_t const*>(module);
-	}
-
-	void* lockNativeBuffer(int usage)
-	{
-		if(!gralloc)
-		{
-			initGralloc();
-		}
-
 		void *buffer = 0;
-		gralloc->lock(gralloc, nativeBuffer->handle, usage, 0, 0, nativeBuffer->width, nativeBuffer->height, &buffer);
+		GrallocModule::getInstance()->lock(
+			nativeBuffer->handle, 0, 0,
+			nativeBuffer->width, nativeBuffer->height, &buffer);
 		return buffer;
 	}
 
 	void unlockNativeBuffer()
 	{
-		if(!gralloc)
-		{
-			initGralloc();
-		}
-
-		gralloc->unlock(gralloc, nativeBuffer->handle);
+		GrallocModule::getInstance()->unlock(nativeBuffer->handle);
 	}
 	#endif
 };
