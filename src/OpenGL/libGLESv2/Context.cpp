@@ -3242,6 +3242,10 @@ void Context::clear(GLbitfield mask)
 
 void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
 {
+	for(int i = 0; i < instanceCount; ++i)
+	{
+		device->setInstanceID(i);
+
     if(!mState.currentProgram)
     {
         return error(GL_INVALID_OPERATION);
@@ -3283,10 +3287,15 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
     {
         device->drawPrimitive(primitiveType, primitiveCount);
     }
+	}
 }
 
 void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLsizei instanceCount)
 {
+	for(int i = 0; i < instanceCount; ++i)
+	{
+		device->setInstanceID(i);
+
     if(!mState.currentProgram)
     {
         return error(GL_INVALID_OPERATION);
@@ -3341,6 +3350,7 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
     {
 		device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, IndexDataManager::typeSize(type));
     }
+	}
 }
 
 void Context::finish()
