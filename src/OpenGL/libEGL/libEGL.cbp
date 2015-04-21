@@ -100,7 +100,9 @@
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
-			<Add option="-fvisibility=protected" />
+			<Add option="-fvisibility=hidden" />
+			<Add option="-fvisibility-inlines-hidden" />
+			<Add option='-DEGLAPI="__attribute__((visibility(\\"default\\")))"' />
 			<Add directory="./../include/" />
 			<Add directory="./../" />
 			<Add directory="./../../" />
