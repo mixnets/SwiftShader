@@ -26,7 +26,6 @@
 #include "Common/Version.h"
 #include "Main/Register.hpp"
 
-#define GL_APICALL
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <GLES3/gl3.h>
@@ -3722,7 +3721,7 @@ void GL_APIENTRY glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat* params
 		}
 
 		const es2::VertexAttribute &attribState = context->getVertexAttribState(index);
-		
+
 		egl::GLint clientVersion = context->getClientVersion();
 
 		switch(pname)
@@ -6574,7 +6573,7 @@ void GL_APIENTRY glCopyTexSubImage3DOES(GLenum target, GLint level, GLint xoffse
 		{
 			return;
 		}
-		
+
 		texture->copySubImage(target, level, xoffset, yoffset, zoffset, x, y, width, height, framebuffer);
 	}
 }

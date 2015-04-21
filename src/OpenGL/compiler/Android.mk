@@ -50,6 +50,7 @@ LOCAL_CFLAGS += -UNDEBUG -g -O0
 
 LOCAL_CFLAGS += -fno-operator-names -msse2 -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS
 LOCAL_CFLAGS += -std=c++11
+LOCAL_CFLAGS += -fvisibility=hidden -fvisibility-inlines-hidden
 
 LOCAL_C_INCLUDES += \
 	$(LOCAL_PATH)/../include \
