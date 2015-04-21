@@ -100,7 +100,9 @@
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
-			<Add option="-fvisibility=protected" />
+			<Add option="-fvisibility=hidden" />
+			<Add option="-fvisibility-inlines-hidden" />
+			<Add option="-include defines.h" />
 			<Add directory="./../include/" />
 			<Add directory="./../" />
 			<Add directory="./../../" />
@@ -125,6 +127,7 @@
 		<Unit filename="Image.hpp" />
 		<Unit filename="Surface.cpp" />
 		<Unit filename="Surface.h" />
+		<Unit filename="defines.h" />
 		<Unit filename="exports.map" />
 		<Unit filename="libEGL.cpp" />
 		<Unit filename="libEGL.hpp" />

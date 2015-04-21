@@ -20,7 +20,6 @@
 #include "Common/SharedLibrary.hpp"
 #include "common/debug.h"
 
-#define GL_GLEXT_PROTOTYPES
 #include <GLES/glext.h>
 
 #if !defined(_MSC_VER)
@@ -157,7 +156,7 @@ LibGLES_CMexports::LibGLES_CMexports()
 	this->glEGLImageTargetTexture2DOES = ::glEGLImageTargetTexture2DOES;
 }
 
-extern "C" LibGLES_CMexports *libGLES_CM_swiftshader()
+extern "C" EXPORT LibGLES_CMexports *libGLES_CM_swiftshader()
 {
 	static LibGLES_CMexports libGLES_CM;
 	return &libGLES_CM;

@@ -115,7 +115,9 @@
 			<Add option="-fexceptions" />
 			<Add option="-fno-operator-names" />
 			<Add option="-msse2" />
-			<Add option="-fvisibility=protected" />
+			<Add option="-fvisibility=hidden" />
+			<Add option="-fvisibility-inlines-hidden" />
+			<Add option="-include defines.h" />
 			<Add option="-D__STDC_LIMIT_MACROS" />
 			<Add option="-D__STDC_CONSTANT_MACROS" />
 			<Add directory="./../" />
@@ -285,6 +287,7 @@
 		<Unit filename="Texture.h" />
 		<Unit filename="VertexDataManager.cpp" />
 		<Unit filename="VertexDataManager.h" />
+		<Unit filename="defines.h" />
 		<Unit filename="exports.map" />
 		<Unit filename="libGLES_CM.cpp" />
 		<Unit filename="libGLES_CM.hpp" />
