@@ -49,6 +49,7 @@ namespace sw
 			bool shaderContainsTexldl      : 1;
 			unsigned int positionRegister  : 4;
 			unsigned int pointSizeRegister : 4;   // 0xF signifies no vertex point size
+			int instanceID                 : 4;
 				
 			unsigned int vertexBlendMatrixCount               : 3;
 			bool indexedVertexBlendEnable                     : 1;
@@ -204,6 +205,8 @@ namespace sw
 		virtual void setLightAmbient(unsigned int light, const Color<float> &lightAmbient);
 		virtual void setLightAttenuation(unsigned int light, float constant, float linear, float quadratic);
 		virtual void setLightRange(unsigned int light, float lightRange);
+
+		virtual void setInstanceID(int instanceID);
 
 		virtual void setFogEnable(bool fogEnable);
 		virtual void setVertexFogMode(FogMode fogMode);

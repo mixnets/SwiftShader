@@ -1833,6 +1833,7 @@ namespace glsl
 		case EvqConstReadOnly:       return sw::Shader::PARAMETER_TEMP;
 		case EvqPosition:            return sw::Shader::PARAMETER_OUTPUT;
 		case EvqPointSize:           return sw::Shader::PARAMETER_OUTPUT;
+		case EvqInstanceID:          return sw::Shader::PARAMETER_INPUT;
 		case EvqFragCoord:           return sw::Shader::PARAMETER_MISCTYPE;
 		case EvqFrontFacing:         return sw::Shader::PARAMETER_MISCTYPE;
 		case EvqPointCoord:          return sw::Shader::PARAMETER_INPUT;
@@ -1868,6 +1869,7 @@ namespace glsl
 		case EvqConstReadOnly:       return temporaryRegister(operand);
 		case EvqPosition:            return varyingRegister(operand);
 		case EvqPointSize:           return varyingRegister(operand);
+		case EvqInstanceID:          return temporaryRegister(operand);
 		case EvqFragCoord:           pixelShader->vPosDeclared = true;  return 0;
 		case EvqFrontFacing:         pixelShader->vFaceDeclared = true; return 1;
 		case EvqPointCoord:          return varyingRegister(operand);
