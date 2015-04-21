@@ -19,7 +19,6 @@
 #include "Texture.h"
 #include "common/debug.h"
 
-#define GL_APICALL
 #include <GLES3/gl3.h>
 #include <GLES2/gl2ext.h>
 
