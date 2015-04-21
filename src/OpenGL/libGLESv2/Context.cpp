@@ -3242,105 +3242,115 @@ void Context::clear(GLbitfield mask)
 
 void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
 {
-    if(!mState.currentProgram)
-    {
-        return error(GL_INVALID_OPERATION);
-    }
+	for(int i = 0; i < instanceCount; ++i)
+	{
+		device->setInstanceID(i);
 
-    PrimitiveType primitiveType;
-    int primitiveCount;
+		if(!mState.currentProgram)
+		{
+			return error(GL_INVALID_OPERATION);
+		}
 
-    if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
-        return error(GL_INVALID_ENUM);
+		PrimitiveType primitiveType;
+		int primitiveCount;
 
-    if(primitiveCount <= 0)
-    {
-        return;
-    }
+		if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
+			return error(GL_INVALID_ENUM);
 
-    if(!applyRenderTarget())
-    {
-        return;
-    }
+		if(primitiveCount <= 0)
+		{
+			return;
+		}
 
-    applyState(mode);
+		if(!applyRenderTarget())
+		{
+			return;
+		}
 
-    GLenum err = applyVertexBuffer(0, first, count);
-    if(err != GL_NO_ERROR)
-    {
-        return error(err);
-    }
+		applyState(mode);
 
-    applyShaders();
-    applyTextures();
+		GLenum err = applyVertexBuffer(0, first, count);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
 
-    if(!getCurrentProgram()->validateSamplers(false))
-    {
-        return error(GL_INVALID_OPERATION);
-    }
+		applyShaders();
+		applyTextures();
 
-    if(!cullSkipsDraw(mode))
-    {
-        device->drawPrimitive(primitiveType, primitiveCount);
-    }
+		if(!getCurrentProgram()->validateSamplers(false))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+
+		if(!cullSkipsDraw(mode))
+		{
+			device->drawPrimitive(primitiveType, primitiveCount);
+		}
+	}
 }
 
 void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLsizei instanceCount)
 {
-    if(!mState.currentProgram)
-    {
-        return error(GL_INVALID_OPERATION);
-    }
+	for(int i = 0; i < instanceCount; ++i)
+	{
+		device->setInstanceID(i);
 
-    if(!indices && !mState.elementArrayBuffer)
-    {
-        return error(GL_INVALID_OPERATION);
-    }
+		if(!mState.currentProgram)
+		{
+			return error(GL_INVALID_OPERATION);
+		}
 
-    PrimitiveType primitiveType;
-    int primitiveCount;
+		if(!indices && !mState.elementArrayBuffer)
+		{
+			return error(GL_INVALID_OPERATION);
+		}
 
-    if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
-        return error(GL_INVALID_ENUM);
+		PrimitiveType primitiveType;
+		int primitiveCount;
 
-    if(primitiveCount <= 0)
-    {
-        return;
-    }
+		if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
+			return error(GL_INVALID_ENUM);
 
-    if(!applyRenderTarget())
-    {
-        return;
-    }
+		if(primitiveCount <= 0)
+		{
+			return;
+		}
 
-    applyState(mode);
+		if(!applyRenderTarget())
+		{
+			return;
+		}
 
-    TranslatedIndexData indexInfo;
-    GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
-    if(err != GL_NO_ERROR)
-    {
-        return error(err);
-    }
+		applyState(mode);
 
-    GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
-    err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount);
-    if(err != GL_NO_ERROR)
-    {
-        return error(err);
-    }
+		TranslatedIndexData indexInfo;
+		GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
 
-    applyShaders();
-    applyTextures();
+		GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
+		err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
 
-    if(!getCurrentProgram()->validateSamplers(false))
-    {
-        return error(GL_INVALID_OPERATION);
-    }
+		applyShaders();
+		applyTextures();
 
-    if(!cullSkipsDraw(mode))
-    {
-		device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, IndexDataManager::typeSize(type));
-    }
+		if(!getCurrentProgram()->validateSamplers(false))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+
+		if(!cullSkipsDraw(mode))
+		{
+			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, IndexDataManager::typeSize(type));
+		}
+	}
 }
 
 void Context::finish()
