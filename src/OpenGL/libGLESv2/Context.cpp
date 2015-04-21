@@ -3544,6 +3544,8 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 
 	for(int i = 0; i < instanceCount; ++i)
 	{
+		device->setInstanceID(i);
+
 		GLenum err = applyVertexBuffer(0, first, count, i);
 		if(err != GL_NO_ERROR)
 		{
@@ -3563,6 +3565,7 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 			device->drawPrimitive(primitiveType, primitiveCount);
 		}
 	}
+	device->setInstanceID(0);
 }
 
 void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLsizei instanceCount)
@@ -3597,6 +3600,8 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 
 	for(int i = 0; i < instanceCount; ++i)
 	{
+		device->setInstanceID(i);
+
 		TranslatedIndexData indexInfo;
 		GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
 		if(err != GL_NO_ERROR)
@@ -3624,6 +3629,7 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, IndexDataManager::typeSize(type));
 		}
 	}
+	device->setInstanceID(0);
 }
 
 void Context::finish()
