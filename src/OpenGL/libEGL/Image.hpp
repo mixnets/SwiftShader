@@ -3,15 +3,13 @@
 
 #include "Renderer/Surface.hpp"
 
-#if defined(__ANDROID__)
-#include <hardware/gralloc.h>
-#include <system/window.h>
-#endif
-
 #ifdef __ANDROID__
-#include "../../Common/DebugAndroid.hpp"
+	#include <system/window.h>
+	#include "../../Common/DebugAndroid.hpp"
+	#include <hardware/gralloc.h>
+	#include <system/window.h>
 #else
-#include <assert.h>
+	#include <assert.h>
 #endif
 
 namespace egl
@@ -28,8 +26,8 @@ class Image : public sw::Surface
 {
 public:
 	Image(sw::Resource *resource, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, sw::Format internalFormat)
-		: width(width), height(height), format(format), type(type), internalFormat(internalFormat), depth(depth)
-		, sw::Surface(resource, width, height, depth, internalFormat, true, true)
+			: sw::Surface(resource, width, height, depth, internalFormat, true, true),
+			  width(width), height(height), format(format), type(type), internalFormat(internalFormat), depth(depth)
 	{
 		shared = false;
 
@@ -40,8 +38,8 @@ public:
 	}
 
 	Image(sw::Resource *resource, int width, int height, int depth, sw::Format internalFormat, bool lockable, bool renderTarget)
-		: width(width), height(height), format(0 /*GL_NONE*/), type(0 /*GL_NONE*/), internalFormat(internalFormat), depth(depth)
-		, sw::Surface(resource, width, height, depth, internalFormat, lockable, renderTarget)
+			: sw::Surface(resource, width, height, depth, internalFormat, lockable, renderTarget),
+			width(width), height(height), format(0 /*GL_NONE*/), type(0 /*GL_NONE*/), internalFormat(internalFormat), depth(depth)
 	{
 		shared = false;
 
