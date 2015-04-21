@@ -3242,6 +3242,8 @@ void Context::clear(GLbitfield mask)
 
 void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
 {
+    device->setInstanceID(-1);
+
     if(!mState.currentProgram)
     {
         return error(GL_INVALID_OPERATION);
@@ -3287,6 +3289,8 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
 
 void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *indices)
 {
+    device->setInstanceID(-1);
+
     if(!mState.currentProgram)
     {
         return error(GL_INVALID_OPERATION);

@@ -291,6 +291,8 @@ namespace sw
 		pixelShader = 0;
 		vertexShader = 0;
 
+		instanceID = -1;
+
 		occlusionEnabled = false;
 
 		pointSpriteEnable = false;
