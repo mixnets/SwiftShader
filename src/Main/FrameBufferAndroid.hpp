@@ -4,7 +4,6 @@
 #include "Main/FrameBuffer.hpp"
 #include "Common/Debug.hpp"
 
-#include <hardware/gralloc.h>
 #include <system/window.h>
 
 namespace sw
@@ -25,12 +24,11 @@ namespace sw
         bool setSwapRectangle(int l, int t, int w, int h);
 
     private:
-        int lock(ANativeWindowBuffer* buf, int usage, void** vaddr);
+        int lock(ANativeWindowBuffer* buf, void** vaddr);
         int unlock(ANativeWindowBuffer* buf);
 
         ANativeWindow* nativeWindow;
         ANativeWindowBuffer* buffer;
-        gralloc_module_t const* gralloc;
     };
 }
 
