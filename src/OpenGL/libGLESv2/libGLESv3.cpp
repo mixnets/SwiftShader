@@ -12,6 +12,7 @@
 
 #include "main.h"
 #include "Buffer.h"
+#include "Fence.h"
 #include "Framebuffer.h"
 #include "Program.h"
 #include "Query.h"
@@ -2726,7 +2727,13 @@ GL_APICALL GLsync GL_APIENTRY glFenceSync(GLenum condition, GLbitfield flags)
 		return error(GL_INVALID_VALUE, nullptr);
 	}
 
-	UNIMPLEMENTED();
+	es2::Context *context = es2::getContext();
+
+	if(context)
+	{
+		return context->createFenceSync(condition, flags);
+	}
+
 	return nullptr;
 }
 
@@ -2734,7 +2741,18 @@ GL_APICALL GLboolean GL_APIENTRY glIsSync(GLsync sync)
 {
 	TRACE("(GLsync sync = %p)", sync);
 
-	UNIMPLEMENTED();
+	es2::Context *context = es2::getContext();
+
+	if(context)
+	{
+		es2::FenceSync *fenceSyncObject = context->getFenceSync(sync);
+
+		if(fenceSyncObject)
+		{
+			return GL_TRUE;
+		}
+	}
+
 	return GL_FALSE;
 }
 
@@ -2742,7 +2760,12 @@ GL_APICALL void GL_APIENTRY glDeleteSync(GLsync sync)
 {
 	TRACE("(GLsync sync = %p)", sync);
 
-	UNIMPLEMENTED();
+	es2::Context *context = es2::getContext();
+
+	if(context)
+	{
+		context->deleteFenceSync(sync);
+	}
 }
 
 GL_APICALL GLenum GL_APIENTRY glClientWaitSync(GLsync sync, GLbitfield flags, GLuint64 timeout)
@@ -2754,7 +2777,22 @@ GL_APICALL GLenum GL_APIENTRY glClientWaitSync(GLsync sync, GLbitfield flags, GL
 		error(GL_INVALID_VALUE);
 	}
 
-	UNIMPLEMENTED();
+	es2::Context *context = es2::getContext();
+
+	if(context)
+	{
+		es2::FenceSync *fenceSyncObject = context->getFenceSync(sync);
+
+		if(fenceSyncObject)
+		{
+			return fenceSyncObject->clientWait(flags, timeout);
+		}
+		else
+		{
+			return error(GL_INVALID_VALUE, GL_FALSE);
+		}
+	}
+
 	return GL_FALSE;
 }
 
@@ -2772,7 +2810,21 @@ GL_APICALL void GL_APIENTRY glWaitSync(GLsync sync, GLbitfield flags, GLuint64 t
 		return error(GL_INVALID_VALUE);
 	}
 
-	UNIMPLEMENTED();
+	es2::Context *context = es2::getContext();
+
+	if(context)
+	{
+		es2::FenceSync *fenceSyncObject = context->getFenceSync(sync);
+
+		if(fenceSyncObject)
+		{
+			fenceSyncObject->serverWait(flags, timeout);
+		}
+		else
+		{
+			return error(GL_INVALID_VALUE);
+		}
+	}
 }
 
 GL_APICALL void GL_APIENTRY glGetInteger64v(GLenum pname, GLint64 *data)
