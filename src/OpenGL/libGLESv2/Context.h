@@ -65,6 +65,7 @@ class DepthStencilbuffer;
 class VertexDataManager;
 class IndexDataManager;
 class Fence;
+class FenceSync;
 class Query;
 class Sampler;
 class VertexArray;
@@ -455,12 +456,16 @@ public:
     GLuint createProgram();
     GLuint createTexture();
     GLuint createRenderbuffer();
+    GLuint createSampler();
+    GLsync createFenceSync(GLenum condition, GLbitfield flags);
 
     void deleteBuffer(GLuint buffer);
     void deleteShader(GLuint shader);
     void deleteProgram(GLuint program);
     void deleteTexture(GLuint texture);
     void deleteRenderbuffer(GLuint renderbuffer);
+    void deleteSampler(GLuint sampler);
+    void deleteFenceSync(GLsync fenceSync);
 
     // Framebuffers are owned by the Context, so these methods do not pass through
     GLuint createFramebuffer();
@@ -481,10 +486,6 @@ public:
 	// Transform feedbacks are owned by the Context
 	GLuint createTransformFeedback();
 	void deleteTransformFeedback(GLuint transformFeedback);
-
-	// Samplers are owned by the Context
-	GLuint createSampler();
-	void deleteSampler(GLuint sampler);
 
     void bindArrayBuffer(GLuint buffer);
     void bindElementArrayBuffer(GLuint buffer);
@@ -519,6 +520,7 @@ public:
 
 	Buffer *getBuffer(GLuint handle) const;
 	Fence *getFence(GLuint handle) const;
+	FenceSync *getFenceSync(GLsync handle) const;
 	Shader *getShader(GLuint handle) const;
 	Program *getProgram(GLuint handle) const;
 	virtual Texture *getTexture(GLuint handle) const;
@@ -600,6 +602,7 @@ private:
     void detachTexture(GLuint texture);
     void detachFramebuffer(GLuint framebuffer);
     void detachRenderbuffer(GLuint renderbuffer);
+    void detachSampler(GLuint sampler);
 
     bool cullSkipsDraw(GLenum drawMode);
     bool isTriangleMode(GLenum drawMode);
@@ -635,10 +638,6 @@ private:
 	typedef std::map<GLint, TransformFeedback*> TransformFeedbackMap;
 	TransformFeedbackMap mTransformFeedbackMap;
 	gl::NameSpace mTransformFeedbackNameSpace;
-
-	typedef std::map<GLint, Sampler*> SamplerMap;
-	SamplerMap mSamplerMap;
-	gl::NameSpace mSamplerNameSpace;
 
     VertexDataManager *mVertexDataManager;
     IndexDataManager *mIndexDataManager;
