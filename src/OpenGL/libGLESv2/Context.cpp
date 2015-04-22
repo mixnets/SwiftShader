@@ -211,11 +211,6 @@ Context::~Context()
 		deleteTransformFeedback(mTransformFeedbackMap.begin()->first);
 	}
 
-	while(!mSamplerMap.empty())
-	{
-		deleteSampler(mSamplerMap.begin()->first);
-	}
-
 	for(int type = 0; type < TEXTURE_TYPE_COUNT; type++)
 	{
 		for(int sampler = 0; sampler < MAX_COMBINED_TEXTURE_IMAGE_UNITS; sampler++)
@@ -870,6 +865,13 @@ GLuint Context::createVertexArray()
 	return handle;
 }
 
+GLsync Context::createFenceSync(GLenum condition, GLbitfield flags)
+{
+	GLuint handle = mResourceManager->createFenceSync(condition, flags);
+
+	return reinterpret_cast<GLsync>(static_cast<uintptr_t>(handle));
+}
+
 // Returns an unused transform feedback name
 GLuint Context::createTransformFeedback()
 {
@@ -883,11 +885,7 @@ GLuint Context::createTransformFeedback()
 // Returns an unused sampler name
 GLuint Context::createSampler()
 {
-	GLuint handle = mSamplerNameSpace.allocate();
-
-	mSamplerMap[handle] = NULL;
-
-	return handle;
+	return mResourceManager->createSampler();
 }
 
 void Context::deleteBuffer(GLuint buffer)
@@ -990,6 +988,15 @@ void Context::deleteVertexArray(GLuint vertexArray)
 	}
 }
 
+void Context::deleteFenceSync(GLsync fenceSync)
+{
+	// The spec specifies the underlying Fence object is not deleted until all current
+	// wait commands finish. However, since the name becomes invalid, we cannot query the fence,
+	// and since our API is currently designed for being called from a single thread, we can delete
+	// the fence immediately.
+	mResourceManager->deleteFenceSync(static_cast<GLuint>(reinterpret_cast<uintptr_t>(fenceSync)));
+}
+
 void Context::deleteTransformFeedback(GLuint transformFeedback)
 {
 	TransformFeedbackMap::iterator transformFeedbackObject = mTransformFeedbackMap.find(transformFeedback);
@@ -1004,19 +1011,12 @@ void Context::deleteTransformFeedback(GLuint transformFeedback)
 
 void Context::deleteSampler(GLuint sampler)
 {
-	SamplerMap::iterator samplerObject = mSamplerMap.find(sampler);
-
-	if(samplerObject != mSamplerMap.end())
+	if(mResourceManager->getSampler(sampler))
 	{
-		mSamplerNameSpace.release(samplerObject->first);
-
-		if(samplerObject->second)
-		{
-			samplerObject->second->release();
-		}
-
-		mSamplerMap.erase(samplerObject);
+		detachSampler(sampler);
 	}
+
+	mResourceManager->deleteSampler(sampler);
 }
 
 Buffer *Context::getBuffer(GLuint handle)
@@ -1341,6 +1341,11 @@ Fence *Context::getFence(unsigned int handle)
     }
 }
 
+FenceSync *Context::getFenceSync(GLsync handle)
+{
+	return mResourceManager->getFenceSync(static_cast<GLuint>(reinterpret_cast<uintptr_t>(handle)));
+}
+
 Query *Context::getQuery(unsigned int handle, bool create, GLenum type)
 {
     QueryMap::iterator query = mQueryMap.find(handle);
@@ -1375,11 +1380,9 @@ TransformFeedback *Context::getTransformFeedback(GLuint transformFeedback)
 	return (transformFeedbackObject == mTransformFeedbackMap.end()) ? NULL : transformFeedbackObject->second;
 }
 
-Sampler *Context::getSampler(GLuint sampler)
+Sampler *Context::getSampler(GLuint handle)
 {
-	SamplerMap::iterator samplerObject = mSamplerMap.find(sampler);
-
-	return (samplerObject == mSamplerMap.end()) ? NULL : samplerObject->second;
+	return mResourceManager->getSampler(handle);
 }
 
 Buffer *Context::getArrayBuffer()
@@ -3541,6 +3544,22 @@ void Context::detachRenderbuffer(GLuint renderbuffer)
     {
         drawFramebuffer->detachRenderbuffer(renderbuffer);
     }
+}
+
+void Context::detachSampler(GLuint sampler)
+{
+	// [OpenGL ES 3.0.2] section 3.8.2 pages 123-124:
+	// If a sampler object that is currently bound to one or more texture units is
+	// deleted, it is as though BindSampler is called once for each texture unit to
+	// which the sampler is bound, with unit set to the texture unit and sampler set to zero.
+	for(size_t textureUnit = 0; textureUnit < MAX_COMBINED_TEXTURE_IMAGE_UNITS; ++textureUnit)
+	{
+		gl::BindingPointer<Sampler> &samplerBinding = mState.sampler[textureUnit];
+		if(samplerBinding.name() == sampler)
+		{
+			samplerBinding = NULL;
+		}
+	}
 }
 
 bool Context::cullSkipsDraw(GLenum drawMode)
