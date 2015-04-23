@@ -159,6 +159,14 @@ Context::Context(const egl::Config *config, const Context *shareContext, EGLint 
 
     mState.packAlignment = 4;
     mState.unpackAlignment = 4;
+	mState.packRowLength = 0;
+	mState.packSkipPixels = 0;
+	mState.packSkipRows = 0;
+	mState.unpackRowLength = 0;
+	mState.unpackImageHeight = 0;
+	mState.unpackSkipPixels = 0;
+	mState.unpackSkipRows = 0;
+	mState.unpackSkipImages = 0;
 
     mVertexDataManager = NULL;
     mIndexDataManager = NULL;
@@ -791,11 +799,6 @@ void Context::setPackAlignment(GLint alignment)
     mState.packAlignment = alignment;
 }
 
-GLint Context::getPackAlignment() const
-{
-    return mState.packAlignment;
-}
-
 void Context::setUnpackAlignment(GLint alignment)
 {
     mState.unpackAlignment = alignment;
@@ -804,6 +807,71 @@ void Context::setUnpackAlignment(GLint alignment)
 GLint Context::getUnpackAlignment() const
 {
     return mState.unpackAlignment;
+}
+
+void Context::setPackRowLength(GLint rowLength)
+{
+	mState.packRowLength = rowLength;
+}
+
+void Context::setPackSkipPixels(GLint skipPixels)
+{
+	mState.packSkipPixels = skipPixels;
+}
+
+void Context::setPackSkipRows(GLint skipRows)
+{
+	mState.packSkipRows = skipRows;
+}
+
+void Context::setUnpackRowLength(GLint rowLength)
+{
+	mState.unpackRowLength = rowLength;
+}
+
+void Context::setUnpackImageHeight(GLint imageHeight)
+{
+	mState.unpackImageHeight = imageHeight;
+}
+
+void Context::setUnpackSkipPixels(GLint skipPixels)
+{
+	mState.unpackSkipPixels = skipPixels;
+}
+
+void Context::setUnpackSkipRows(GLint skipRows)
+{
+	mState.unpackSkipRows = skipRows;
+}
+
+void Context::setUnpackSkipImages(GLint skipImages)
+{
+	mState.unpackSkipImages = skipImages;
+}
+
+const GLvoid* Context::computeUnpackPixels(const Texture* texture, const GLvoid* pixels) const
+{
+	if(!texture || !pixels)
+	{
+		return pixels;
+	}
+
+	int offset = 0;
+	if(mState.unpackSkipImages > 0 || mState.unpackSkipRows > 0)
+	{
+		GLenum target = texture->getTarget();
+		GLsizei pitch = ComputePitch(texture->getWidth(target, 0), texture->getFormat(target, 0), texture->getType(target, 0), mState.unpackAlignment);
+		if(mState.unpackSkipImages > 0) {
+			offset += mState.unpackSkipImages * pitch * texture->getHeight(target, 0);
+		}
+		if(mState.unpackSkipRows > 0) {
+			offset += mState.unpackSkipRows * pitch;
+		}
+	}
+	if(mState.unpackSkipPixels > 0) {
+		offset += mState.unpackSkipPixels;
+	}
+	return (const GLvoid*)(((const char*)pixels) + offset);
 }
 
 GLuint Context::createBuffer()
@@ -2015,16 +2083,13 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 		*params = 0;
 		break;
 	case GL_PACK_ROW_LENGTH: // integer, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		*params = mState.packRowLength;
 		break;
 	case GL_PACK_SKIP_PIXELS: // integer, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		*params = mState.packSkipPixels;
 		break;
 	case GL_PACK_SKIP_ROWS: // integer, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		*params = mState.packSkipRows;
 		break;
 	case GL_PIXEL_PACK_BUFFER_BINDING: // integer, initially 0
 		if(clientVersion >= 3)
@@ -2081,24 +2146,19 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 		*params = 0;
 		break;
 	case GL_UNPACK_IMAGE_HEIGHT: // integer, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		*params = mState.unpackImageHeight;
 		break;
 	case GL_UNPACK_ROW_LENGTH: // integer, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		*params = mState.unpackRowLength;
 		break;
 	case GL_UNPACK_SKIP_IMAGES: // integer, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		*params = mState.unpackSkipImages;
 		break;
 	case GL_UNPACK_SKIP_PIXELS: // integer, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		*params = mState.unpackSkipPixels;
 		break;
 	case GL_UNPACK_SKIP_ROWS: // integer, initially 0
-		UNIMPLEMENTED();
-		*params = 0;
+		*params = mState.unpackSkipRows;
 		break;
 	case GL_VERTEX_ARRAY_BINDING: // GLint, initially 0
 		UNIMPLEMENTED();
@@ -2917,7 +2977,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 		}
 	}
 
-	GLsizei outputPitch = ComputePitch(width, format, type, mState.packAlignment);
+	GLsizei outputPitch = (mState.packRowLength > 0) ? mState.packRowLength : ComputePitch(width, format, type, mState.packAlignment);
     
 	// Sized query sanity check
     if(bufSize)
@@ -2936,6 +2996,8 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
         return error(GL_OUT_OF_MEMORY);
     }
 
+	x += mState.packSkipPixels;
+	y += mState.packSkipRows;
 	sw::Rect rect = {x, y, x + width, y + height};
 	rect.clip(0, 0, renderTarget->getWidth(), renderTarget->getHeight());
 
@@ -3242,41 +3304,41 @@ void Context::clear(GLbitfield mask)
 
 void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
 {
-    if(!mState.currentProgram)
-    {
-        return error(GL_INVALID_OPERATION);
-    }
+		if(!mState.currentProgram)
+		{
+			return error(GL_INVALID_OPERATION);
+		}
 
-    PrimitiveType primitiveType;
-    int primitiveCount;
+		PrimitiveType primitiveType;
+		int primitiveCount;
 
-    if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
-        return error(GL_INVALID_ENUM);
+		if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
+			return error(GL_INVALID_ENUM);
 
-    if(primitiveCount <= 0)
-    {
-        return;
-    }
+		if(primitiveCount <= 0)
+		{
+			return;
+		}
 
-    if(!applyRenderTarget())
-    {
-        return;
-    }
+		if(!applyRenderTarget())
+		{
+			return;
+		}
 
-    applyState(mode);
+		applyState(mode);
 
-    GLenum err = applyVertexBuffer(0, first, count);
-    if(err != GL_NO_ERROR)
-    {
-        return error(err);
-    }
+		GLenum err = applyVertexBuffer(0, first, count);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
 
-    applyShaders();
-    applyTextures();
+		applyShaders();
+		applyTextures();
 
-    if(!getCurrentProgram()->validateSamplers(false))
-    {
-        return error(GL_INVALID_OPERATION);
+		if(!getCurrentProgram()->validateSamplers(false))
+		{
+			return error(GL_INVALID_OPERATION);
     }
 
     if(!cullSkipsDraw(mode))
@@ -3295,52 +3357,52 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
     if(!indices && !mState.elementArrayBuffer)
     {
         return error(GL_INVALID_OPERATION);
-    }
+		}
 
-    PrimitiveType primitiveType;
-    int primitiveCount;
+		PrimitiveType primitiveType;
+		int primitiveCount;
 
-    if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
-        return error(GL_INVALID_ENUM);
+		if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
+			return error(GL_INVALID_ENUM);
 
-    if(primitiveCount <= 0)
-    {
-        return;
-    }
+		if(primitiveCount <= 0)
+		{
+			return;
+		}
 
-    if(!applyRenderTarget())
-    {
-        return;
-    }
+		if(!applyRenderTarget())
+		{
+			return;
+		}
 
-    applyState(mode);
+		applyState(mode);
 
-    TranslatedIndexData indexInfo;
-    GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
-    if(err != GL_NO_ERROR)
-    {
-        return error(err);
-    }
+		TranslatedIndexData indexInfo;
+		GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
 
-    GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
-    err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount);
-    if(err != GL_NO_ERROR)
-    {
-        return error(err);
-    }
+		GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
+		err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
 
-    applyShaders();
-    applyTextures();
+		applyShaders();
+		applyTextures();
 
-    if(!getCurrentProgram()->validateSamplers(false))
-    {
-        return error(GL_INVALID_OPERATION);
-    }
+		if(!getCurrentProgram()->validateSamplers(false))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
 
-    if(!cullSkipsDraw(mode))
-    {
-		device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, IndexDataManager::typeSize(type));
-    }
+		if(!cullSkipsDraw(mode))
+		{
+			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, IndexDataManager::typeSize(type));
+		}
 }
 
 void Context::finish()

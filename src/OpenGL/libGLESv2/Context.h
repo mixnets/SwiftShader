@@ -345,6 +345,14 @@ struct State
 
     GLint unpackAlignment;
     GLint packAlignment;
+	GLint packRowLength;
+	GLint packSkipPixels;
+	GLint packSkipRows;
+	GLint unpackRowLength;
+	GLint unpackImageHeight;
+	GLint unpackSkipPixels;
+	GLint unpackSkipRows;
+	GLint unpackSkipImages;
 };
 
 class Context : public egl::Context
@@ -443,7 +451,16 @@ public:
     GLint getUnpackAlignment() const;
 
     void setPackAlignment(GLint alignment);
-    GLint getPackAlignment() const;
+	void setPackRowLength(GLint rowLength);
+	void setPackSkipPixels(GLint skipPixels);
+	void setPackSkipRows(GLint skipRows);
+	void setUnpackRowLength(GLint rowLength);
+	void setUnpackImageHeight(GLint imageHeight);
+	void setUnpackSkipPixels(GLint skipPixels);
+	void setUnpackSkipRows(GLint skipRows);
+	void setUnpackSkipImages(GLint skipImages);
+
+	const GLvoid* computeUnpackPixels(const Texture* texture, const GLvoid* pixels) const;
 
     // These create  and destroy methods are merely pass-throughs to 
     // ResourceManager, which owns these object types
@@ -500,7 +517,7 @@ public:
 	bool bindVertexArray(GLuint array);
 	bool bindTransformFeedback(GLuint transformFeedback);
 	bool bindSampler(GLuint unit, GLuint sampler);
-    void useProgram(GLuint program);
+	void useProgram(GLuint program);
 
 	void beginQuery(GLenum target, GLuint query);
     void endQuery(GLenum target);

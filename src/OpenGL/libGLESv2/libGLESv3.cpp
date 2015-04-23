@@ -456,16 +456,16 @@ void GL_APIENTRY glReadBuffer(GLenum src)
 		break;
 	case GL_COLOR_ATTACHMENT0:
 	case GL_COLOR_ATTACHMENT1:
-	case GL_COLOR_ATTACHMENT2:
-	case GL_COLOR_ATTACHMENT3:
-	case GL_COLOR_ATTACHMENT4:
-	case GL_COLOR_ATTACHMENT5:
-	case GL_COLOR_ATTACHMENT6:
-	case GL_COLOR_ATTACHMENT7:
-	case GL_COLOR_ATTACHMENT8:
-	case GL_COLOR_ATTACHMENT9:
-	case GL_COLOR_ATTACHMENT10:
-	case GL_COLOR_ATTACHMENT11:
+		case GL_COLOR_ATTACHMENT2:
+		case GL_COLOR_ATTACHMENT3:
+		case GL_COLOR_ATTACHMENT4:
+		case GL_COLOR_ATTACHMENT5:
+		case GL_COLOR_ATTACHMENT6:
+		case GL_COLOR_ATTACHMENT7:
+		case GL_COLOR_ATTACHMENT8:
+		case GL_COLOR_ATTACHMENT9:
+		case GL_COLOR_ATTACHMENT10:
+		case GL_COLOR_ATTACHMENT11:
 	case GL_COLOR_ATTACHMENT12:
 	case GL_COLOR_ATTACHMENT13:
 	case GL_COLOR_ATTACHMENT14:
@@ -578,7 +578,7 @@ void GL_APIENTRY glTexImage3D(GLenum target, GLint level, GLint internalformat, 
 			return error(GL_INVALID_OPERATION);
 		}
 
-		texture->setImage(level, width, height, depth, internalformat, type, context->getUnpackAlignment(), pixels);
+		texture->setImage(level, width, height, depth, internalformat, type, context->getUnpackAlignment(), context->computeUnpackPixels(texture, pixels));
 	}
 }
 
@@ -621,7 +621,7 @@ void GL_APIENTRY glTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLin
 
 		if(validateSubImageParams(false, width, height, depth, xoffset, yoffset, zoffset, target, level, format, texture))
 		{
-			texture->subImage(level, xoffset, yoffset, zoffset, width, height, depth, format, type, context->getUnpackAlignment(), pixels);
+			texture->subImage(level, xoffset, yoffset, zoffset, width, height, depth, format, type, context->getUnpackAlignment(), context->computeUnpackPixels(texture, pixels));
 		}
 	}
 }
