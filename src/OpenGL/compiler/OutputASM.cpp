@@ -1590,7 +1590,7 @@ namespace glsl
 	{
 		if(src &&
 			((src->isVector() && (!dst->isVector() || (dst->getNominalSize() != dst->getNominalSize()))) ||
-			 (src->isMatrix() && (!dst->isMatrix() || (src->getNominalSize() != dst->getNominalSize())))))
+			 (src->isMatrix() && (!dst->isMatrix() || (src->getNominalSize() != dst->getNominalSize()) || (src->getSecondarySize() != dst->getSecondarySize())))))
 		{
 			return mContext.error(src->getLine(), "Result type should match the l-value type in compound assignment", src->isVector() ? "vector" : "matrix");
 		}

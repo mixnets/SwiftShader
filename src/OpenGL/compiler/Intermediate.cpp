@@ -645,7 +645,13 @@ bool TIntermOperator::isConstructor() const
         case EOpConstructVec3:
         case EOpConstructVec4:
         case EOpConstructMat2:
+        case EOpConstructMat2x3:
+        case EOpConstructMat2x4:
+        case EOpConstructMat3x2:
         case EOpConstructMat3:
+        case EOpConstructMat3x4:
+        case EOpConstructMat4x2:
+        case EOpConstructMat4x3:
         case EOpConstructMat4:
         case EOpConstructFloat:
         case EOpConstructIVec2:
@@ -1056,13 +1062,14 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                     return 0;
                 }
                 {// support MSVC++6.0
-                    int size = getNominalSize();
-                    tempConstArray = new ConstantUnion[size*size];
-                    for (int row = 0; row < size; row++) {
-                        for (int column = 0; column < size; column++) {
-                            tempConstArray[size * column + row].setFConst(0.0f);
-                            for (int i = 0; i < size; i++) {
-                                tempConstArray[size * column + row].setFConst(tempConstArray[size * column + row].getFConst() + unionArray[i * size + row].getFConst() * (rightUnionArray[column * size + i].getFConst()));
+                    int numCols = getNominalSize();
+                    int numRows = getSecondarySize();
+                    tempConstArray = new ConstantUnion[numCols*numRows];
+                    for (int row = 0; row < numRows; row++) {
+                        for (int column = 0; column < numCols; column++) {
+                            tempConstArray[numRows * column + row].setFConst(0.0f);
+                            for (int i = 0; i < numRows; i++) {
+                                tempConstArray[numRows * column + row].setFConst(tempConstArray[numRows * column + row].getFConst() + unionArray[i * numCols + row].getFConst() * (rightUnionArray[column * numRows + i].getFConst()));
                             }
                         }
                     }

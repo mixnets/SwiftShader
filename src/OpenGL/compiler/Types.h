@@ -115,7 +115,7 @@ public:
 		}
 		else if(isMatrix())
 		{
-			return getNominalSize();
+			return getSecondarySize();
 		}
 		else
 		{
