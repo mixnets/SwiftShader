@@ -578,7 +578,7 @@ void GL_APIENTRY glTexImage3D(GLenum target, GLint level, GLint internalformat, 
 			return error(GL_INVALID_OPERATION);
 		}
 
-		texture->setImage(level, width, height, depth, internalformat, type, context->getUnpackAlignment(), pixels);
+		texture->setImage(level, width, height, depth, internalformat, type, context->getUnpackInfo(), pixels);
 	}
 }
 
@@ -621,7 +621,7 @@ void GL_APIENTRY glTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLin
 
 		if(validateSubImageParams(false, width, height, depth, xoffset, yoffset, zoffset, target, level, format, texture))
 		{
-			texture->subImage(level, xoffset, yoffset, zoffset, width, height, depth, format, type, context->getUnpackAlignment(), pixels);
+			texture->subImage(level, xoffset, yoffset, zoffset, width, height, depth, format, type, context->getUnpackInfo(), pixels);
 		}
 	}
 }
@@ -3541,7 +3541,7 @@ void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum internalfo
 
 			for(int level = 0; level < levels; ++level)
 			{
-				texture->setImage(level, width, height, internalformat, type, context->getUnpackAlignment(), NULL);
+				texture->setImage(level, width, height, internalformat, type, context->getUnpackInfo(), NULL);
 				width = std::max(1, (width / 2));
 				height = std::max(1, (height / 2));
 			}
@@ -3560,7 +3560,7 @@ void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum internalfo
 			{
 				for(int face = GL_TEXTURE_CUBE_MAP_POSITIVE_X; face <= GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; ++face)
 				{
-					texture->setImage(face, level, width, height, internalformat, type, context->getUnpackAlignment(), NULL);
+					texture->setImage(face, level, width, height, internalformat, type, context->getUnpackInfo(), NULL);
 				}
 				width = std::max(1, (width / 2));
 				height = std::max(1, (height / 2));
@@ -3611,7 +3611,7 @@ void GL_APIENTRY glTexStorage3D(GLenum target, GLsizei levels, GLenum internalfo
 
 			for(int level = 0; level < levels; ++level)
 			{
-				texture->setImage(level, width, height, depth, internalformat, type, context->getUnpackAlignment(), NULL);
+				texture->setImage(level, width, height, depth, internalformat, type, context->getUnpackInfo(), NULL);
 				width = std::max(1, (width / 2));
 				height = std::max(1, (height / 2));
 				depth = std::max(1, (depth / 2));
@@ -3636,7 +3636,7 @@ void GL_APIENTRY glTexStorage3D(GLenum target, GLsizei levels, GLenum internalfo
 			{
 				for(int face = GL_TEXTURE_CUBE_MAP_POSITIVE_X; face <= GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; ++face)
 				{
-					texture->setImage(level, width, height, depth, internalformat, type, context->getUnpackAlignment(), NULL);
+					texture->setImage(level, width, height, depth, internalformat, type, context->getUnpackInfo(), NULL);
 				}
 				width = std::max(1, (width / 2));
 				height = std::max(1, (height / 2));
