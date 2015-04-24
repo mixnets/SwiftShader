@@ -324,7 +324,6 @@ struct State
 
     unsigned int activeSampler;   // Active texture unit selector - GL_TEXTURE0
     gl::BindingPointer<Buffer> arrayBuffer;
-    gl::BindingPointer<Buffer> elementArrayBuffer;
 	gl::BindingPointer<Buffer> copyReadBuffer;
 	gl::BindingPointer<Buffer> copyWriteBuffer;
 	gl::BindingPointer<Buffer> pixelPackBuffer;
@@ -335,7 +334,7 @@ struct State
     GLuint drawFramebuffer;
     gl::BindingPointer<Renderbuffer> renderbuffer;
     GLuint currentProgram;
-    gl::BindingPointer<VertexArray> vertexArray;
+	GLuint vertexArray;
 	GLuint transformFeedback;
 	gl::BindingPointer<Sampler> sampler[MAX_COMBINED_TEXTURE_IMAGE_UNITS];
 
@@ -437,7 +436,8 @@ public:
                               bool normalized, GLsizei stride, const void *pointer);
     const void *getVertexAttribPointer(unsigned int attribNum) const;
 
-    const VertexAttributeArray &getVertexAttributes();
+	const VertexAttributeArray &getVertexArrayAttributes();
+	const VertexAttributeArray &getCurrentVertexAttributes();
 
     void setUnpackAlignment(GLint alignment);
     GLint getUnpackAlignment() const;
@@ -513,42 +513,45 @@ public:
     void setVertexAttrib(GLuint index, const GLint *values);
     void setVertexAttrib(GLuint index, const GLuint *values);
 
-    Buffer *getBuffer(GLuint handle);
-    Fence *getFence(GLuint handle);
-    Shader *getShader(GLuint handle);
-    Program *getProgram(GLuint handle);
-    virtual Texture *getTexture(GLuint handle);
-    Framebuffer *getFramebuffer(GLuint handle);
-    virtual Renderbuffer *getRenderbuffer(GLuint handle);
-	Query *getQuery(GLuint handle, bool create, GLenum type);
-	VertexArray *getVertexArray(GLuint array);
-	TransformFeedback *getTransformFeedback(GLuint transformFeedback);
-	TransformFeedback *getTransformFeedback();
-	Sampler *getSampler(GLuint sampler);
+	Buffer *getBuffer(GLuint handle) const;
+	Fence *getFence(GLuint handle) const;
+	Shader *getShader(GLuint handle) const;
+	Program *getProgram(GLuint handle) const;
+	virtual Texture *getTexture(GLuint handle) const;
+	Framebuffer *getFramebuffer(GLuint handle) const;
+	virtual Renderbuffer *getRenderbuffer(GLuint handle) const;
+	Query *getQuery(GLuint handle) const;
+	VertexArray *getVertexArray(GLuint array) const;
+	VertexArray *getCurrentVertexArray() const;
+	TransformFeedback *getTransformFeedback(GLuint transformFeedback) const;
+	TransformFeedback *getTransformFeedback() const;
+	Sampler *getSampler(GLuint sampler) const;
 
-    Buffer *getArrayBuffer();
-    Buffer *getElementArrayBuffer();
-	Buffer *getCopyReadBuffer();
-	Buffer *getCopyWriteBuffer();
-	Buffer *getPixelPackBuffer();
-	Buffer *getPixelUnpackBuffer();
-	Buffer *getUniformBuffer();
-	bool getBuffer(GLenum target, es2::Buffer **buffer);
-    Program *getCurrentProgram();
-    Texture2D *getTexture2D();
-	Texture3D *getTexture3D();
-	TextureCubeMap *getTextureCubeMap();
-    TextureExternal *getTextureExternal();
-    Texture *getSamplerTexture(unsigned int sampler, TextureType type);
-    Framebuffer *getReadFramebuffer();
-    Framebuffer *getDrawFramebuffer();
+	Buffer *getArrayBuffer() const;
+	Buffer *getElementArrayBuffer() const;
+	Buffer *getCopyReadBuffer() const;
+	Buffer *getCopyWriteBuffer() const;
+	Buffer *getPixelPackBuffer() const;
+	Buffer *getPixelUnpackBuffer() const;
+	Buffer *getUniformBuffer() const;
+	bool getBuffer(GLenum target, es2::Buffer **buffer) const;
+	Program *getCurrentProgram() const;
+	Texture2D *getTexture2D() const;
+	Texture3D *getTexture3D() const;
+	TextureCubeMap *getTextureCubeMap() const;
+	TextureExternal *getTextureExternal() const;
+	Texture *getSamplerTexture(unsigned int sampler, TextureType type) const;
+	Framebuffer *getReadFramebuffer() const;
+	Framebuffer *getDrawFramebuffer() const;
 
-    bool getFloatv(GLenum pname, GLfloat *params);
-    bool getIntegerv(GLenum pname, GLint *params);
-    bool getBooleanv(GLenum pname, GLboolean *params);
-	bool getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param);
+	bool getFloatv(GLenum pname, GLfloat *params) const;
+	bool getIntegerv(GLenum pname, GLint *params) const;
+	bool getBooleanv(GLenum pname, GLboolean *params) const;
+	bool getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param) const;
 
-    bool getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams);
+	bool getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams) const;
+
+	bool hasZeroDivisor() const;
 
     void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLsizei *bufSize, void* pixels);
     void clear(GLbitfield mask);
@@ -577,14 +580,14 @@ public:
 
 	Device *getDevice();
 
-	const GLubyte* getExtensions(GLuint index, GLuint* numExt = nullptr);
+	const GLubyte* getExtensions(GLuint index, GLuint* numExt = nullptr) const;
 
 private:
 	virtual ~Context();
 
     bool applyRenderTarget();
     void applyState(GLenum drawMode);
-    GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count);
+	GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsizei instanceId);
     GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo);
     void applyShaders();
     void applyTextures();
@@ -598,6 +601,8 @@ private:
 
     bool cullSkipsDraw(GLenum drawMode);
     bool isTriangleMode(GLenum drawMode);
+
+	Query *createQuery(GLuint handle, GLenum type);
 
 	const EGLint clientVersion;
     const egl::Config *const mConfig;

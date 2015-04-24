@@ -146,7 +146,8 @@ Context::Context(const egl::Config *config, const Context *shareContext, EGLint 
     mTextureExternalZero = new TextureExternal(0);
 
     mState.activeSampler = 0;
-    bindArrayBuffer(0);
+	bindVertexArray(0);
+	bindArrayBuffer(0);
     bindElementArrayBuffer(0);
     bindTextureCubeMap(0);
     bindTexture2D(0);
@@ -235,7 +236,6 @@ Context::~Context()
 	}
 
 	mState.arrayBuffer = NULL;
-	mState.elementArrayBuffer = NULL;
 	mState.copyReadBuffer = NULL;
 	mState.copyWriteBuffer = NULL;
 	mState.pixelPackBuffer = NULL;
@@ -243,7 +243,6 @@ Context::~Context()
 	mState.uniformBuffer = NULL;
 	mState.renderbuffer = NULL;
 
-	mState.vertexArray = NULL;
 	for(int i = 0; i < MAX_COMBINED_TEXTURE_IMAGE_UNITS; ++i)
 	{
 		mState.sampler[i] = NULL;
@@ -752,38 +751,38 @@ GLuint Context::getActiveQuery(GLenum target) const
 
 void Context::setEnableVertexAttribArray(unsigned int attribNum, bool enabled)
 {
-    mState.vertexAttribute[attribNum].mArrayEnabled = enabled;
+	getCurrentVertexArray()->enableAttribute(attribNum, enabled);
 }
 
 void Context::setVertexAttribDivisor(unsigned int attribNum, GLuint divisor)
 {
-	mState.vertexAttribute[attribNum].mDivisor = divisor;
+	getCurrentVertexArray()->setVertexAttribDivisor(attribNum, divisor);
 }
 
 const VertexAttribute &Context::getVertexAttribState(unsigned int attribNum)
 {
-    return mState.vertexAttribute[attribNum];
+	return getCurrentVertexArray()->getVertexAttribute(attribNum);
 }
 
 void Context::setVertexAttribState(unsigned int attribNum, Buffer *boundBuffer, GLint size, GLenum type, bool normalized,
                                    GLsizei stride, const void *pointer)
 {
-    mState.vertexAttribute[attribNum].mBoundBuffer = boundBuffer;
-    mState.vertexAttribute[attribNum].mSize = size;
-    mState.vertexAttribute[attribNum].mType = type;
-    mState.vertexAttribute[attribNum].mNormalized = normalized;
-    mState.vertexAttribute[attribNum].mStride = stride;
-    mState.vertexAttribute[attribNum].mPointer = pointer;
+	getCurrentVertexArray()->setAttributeState(attribNum, boundBuffer, size, type, normalized, stride, pointer);
 }
 
 const void *Context::getVertexAttribPointer(unsigned int attribNum) const
 {
-    return mState.vertexAttribute[attribNum].mPointer;
+	return getCurrentVertexArray()->getVertexAttribute(attribNum).mPointer;
 }
 
-const VertexAttributeArray &Context::getVertexAttributes()
+const VertexAttributeArray &Context::getVertexArrayAttributes()
 {
-    return mState.vertexAttribute;
+	return getCurrentVertexArray()->getVertexAttributes();
+}
+
+const VertexAttributeArray &Context::getCurrentVertexAttributes()
+{
+	return mState.vertexAttribute;
 }
 
 void Context::setPackAlignment(GLint alignment)
@@ -979,13 +978,20 @@ void Context::deleteVertexArray(GLuint vertexArray)
 
 	if(vertexArrayObject != mVertexArrayMap.end())
 	{
-		mVertexArrayNameSpace.release(vertexArrayObject->first);
+		// Vertex array detachment is handled by Context, because 0 is a valid
+		// VAO, and a pointer to it must be passed from Context to State at
+		// binding time.
 
-		if(vertexArrayObject->second)
+		// [OpenGL ES 3.0.2] section 2.10 page 43:
+		// If a vertex array object that is currently bound is deleted, the binding
+		// for that object reverts to zero and the default vertex array becomes current.
+		if(getCurrentVertexArray()->name == vertexArray)
 		{
-			vertexArrayObject->second->release();
+			bindVertexArray(0);
 		}
 
+		mVertexArrayNameSpace.release(vertexArrayObject->first);
+		delete vertexArrayObject->second;
 		mVertexArrayMap.erase(vertexArrayObject);
 	}
 }
@@ -1019,37 +1025,37 @@ void Context::deleteSampler(GLuint sampler)
 	}
 }
 
-Buffer *Context::getBuffer(GLuint handle)
+Buffer *Context::getBuffer(GLuint handle) const
 {
     return mResourceManager->getBuffer(handle);
 }
 
-Shader *Context::getShader(GLuint handle)
+Shader *Context::getShader(GLuint handle) const
 {
     return mResourceManager->getShader(handle);
 }
 
-Program *Context::getProgram(GLuint handle)
+Program *Context::getProgram(GLuint handle) const
 {
     return mResourceManager->getProgram(handle);
 }
 
-Texture *Context::getTexture(GLuint handle)
+Texture *Context::getTexture(GLuint handle) const
 {
     return mResourceManager->getTexture(handle);
 }
 
-Renderbuffer *Context::getRenderbuffer(GLuint handle)
+Renderbuffer *Context::getRenderbuffer(GLuint handle) const
 {
     return mResourceManager->getRenderbuffer(handle);
 }
 
-Framebuffer *Context::getReadFramebuffer()
+Framebuffer *Context::getReadFramebuffer() const
 {
     return getFramebuffer(mState.readFramebuffer);
 }
 
-Framebuffer *Context::getDrawFramebuffer()
+Framebuffer *Context::getDrawFramebuffer() const
 {
     return getFramebuffer(mState.drawFramebuffer);
 }
@@ -1065,7 +1071,7 @@ void Context::bindElementArrayBuffer(unsigned int buffer)
 {
     mResourceManager->checkBufferAllocation(buffer);
 
-    mState.elementArrayBuffer = getBuffer(buffer);
+	getCurrentVertexArray()->setElementArrayBuffer(getBuffer(buffer));
 }
 
 void Context::bindCopyReadBuffer(GLuint buffer)
@@ -1160,10 +1166,13 @@ bool Context::bindVertexArray(GLuint array)
 {
 	VertexArray* vertexArray = getVertexArray(array);
 
-	if(vertexArray)
+	if(!vertexArray)
 	{
-		mState.vertexArray = vertexArray;
+		vertexArray = new VertexArray(array);
+		mVertexArrayMap[array] = vertexArray;
 	}
+
+	mState.vertexArray = array;
 
 	return !!vertexArray;
 }
@@ -1252,7 +1261,7 @@ void Context::beginQuery(GLenum target, GLuint query)
         ASSERT(false);
     }
 
-    Query *queryObject = getQuery(query, true, target);
+    Query *queryObject = createQuery(query, target);
 
     // Check that name was obtained with glGenQueries
     if(!queryObject)
@@ -1313,9 +1322,9 @@ void Context::setRenderbufferStorage(RenderbufferStorage *renderbuffer)
     renderbufferObject->setStorage(renderbuffer);
 }
 
-Framebuffer *Context::getFramebuffer(unsigned int handle)
+Framebuffer *Context::getFramebuffer(unsigned int handle) const
 {
-    FramebufferMap::iterator framebuffer = mFramebufferMap.find(handle);
+    FramebufferMap::const_iterator framebuffer = mFramebufferMap.find(handle);
 
     if(framebuffer == mFramebufferMap.end())
     {
@@ -1327,9 +1336,9 @@ Framebuffer *Context::getFramebuffer(unsigned int handle)
     }
 }
 
-Fence *Context::getFence(unsigned int handle)
+Fence *Context::getFence(unsigned int handle) const
 {
-    FenceMap::iterator fence = mFenceMap.find(handle);
+    FenceMap::const_iterator fence = mFenceMap.find(handle);
 
     if(fence == mFenceMap.end())
     {
@@ -1341,83 +1350,118 @@ Fence *Context::getFence(unsigned int handle)
     }
 }
 
-Query *Context::getQuery(unsigned int handle, bool create, GLenum type)
+Query *Context::createQuery(unsigned int handle, GLenum type)
 {
-    QueryMap::iterator query = mQueryMap.find(handle);
+	QueryMap::iterator query = mQueryMap.find(handle);
 
-    if(query == mQueryMap.end())
-    {
-        return NULL;
-    }
-    else
-    {
-        if(!query->second && create)
-        {
-            query->second = new Query(handle, type);
-            query->second->addRef();
-        }
+	if(query == mQueryMap.end())
+	{
+		return NULL;
+	}
+	else
+	{
+		if(!query->second)
+		{
+			query->second = new Query(handle, type);
+			query->second->addRef();
+		}
 
-        return query->second;
-    }
+		return query->second;
+	}
 }
 
-VertexArray *Context::getVertexArray(GLuint array)
+Query *Context::getQuery(unsigned int handle) const
 {
-	VertexArrayMap::iterator vertexArray = mVertexArrayMap.find(array);
+	QueryMap::const_iterator query = mQueryMap.find(handle);
+
+	if(query == mQueryMap.end())
+	{
+		return NULL;
+	}
+	else
+	{
+		return query->second;
+	}
+}
+
+VertexArray *Context::getVertexArray(GLuint array) const
+{
+	VertexArrayMap::const_iterator vertexArray = mVertexArrayMap.find(array);
 
 	return (vertexArray == mVertexArrayMap.end()) ? NULL : vertexArray->second;
 }
 
-TransformFeedback *Context::getTransformFeedback(GLuint transformFeedback)
+VertexArray *Context::getCurrentVertexArray() const
 {
-	TransformFeedbackMap::iterator transformFeedbackObject = mTransformFeedbackMap.find(transformFeedback);
+	return getVertexArray(mState.vertexArray);
+}
+
+bool Context::hasZeroDivisor() const
+{
+	// Verify there is at least one active attribute with a divisor of zero
+	es2::Program *programObject = getCurrentProgram();
+	for(int attributeIndex = 0; attributeIndex < MAX_VERTEX_ATTRIBS; attributeIndex++)
+	{
+		bool active = (programObject->getAttributeStream(attributeIndex) != -1);
+		if(active && getCurrentVertexArray()->getVertexAttribute(attributeIndex).mDivisor == 0)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+TransformFeedback *Context::getTransformFeedback(GLuint transformFeedback) const
+{
+	TransformFeedbackMap::const_iterator transformFeedbackObject = mTransformFeedbackMap.find(transformFeedback);
 
 	return (transformFeedbackObject == mTransformFeedbackMap.end()) ? NULL : transformFeedbackObject->second;
 }
 
-Sampler *Context::getSampler(GLuint sampler)
+Sampler *Context::getSampler(GLuint sampler) const
 {
-	SamplerMap::iterator samplerObject = mSamplerMap.find(sampler);
+	SamplerMap::const_iterator samplerObject = mSamplerMap.find(sampler);
 
 	return (samplerObject == mSamplerMap.end()) ? NULL : samplerObject->second;
 }
 
-Buffer *Context::getArrayBuffer()
+Buffer *Context::getArrayBuffer() const
 {
     return mState.arrayBuffer;
 }
 
-Buffer *Context::getElementArrayBuffer()
+Buffer *Context::getElementArrayBuffer() const
 {
-    return mState.elementArrayBuffer;
+	return getCurrentVertexArray()->getElementArrayBuffer();
 }
 
-Buffer *Context::getCopyReadBuffer()
+Buffer *Context::getCopyReadBuffer() const
 {
 	return mState.copyReadBuffer;
 }
 
-Buffer *Context::getCopyWriteBuffer()
+Buffer *Context::getCopyWriteBuffer() const
 {
 	return mState.copyWriteBuffer;
 }
 
-Buffer *Context::getPixelPackBuffer()
+Buffer *Context::getPixelPackBuffer() const
 {
 	return mState.pixelPackBuffer;
 }
 
-Buffer *Context::getPixelUnpackBuffer()
+Buffer *Context::getPixelUnpackBuffer() const
 {
 	return mState.pixelUnpackBuffer;
 }
 
-Buffer *Context::getUniformBuffer()
+Buffer *Context::getUniformBuffer() const
 {
 	return mState.uniformBuffer;
 }
 
-bool Context::getBuffer(GLenum target, es2::Buffer **buffer)
+bool Context::getBuffer(GLenum target, es2::Buffer **buffer) const
 {
 	switch(target)
 	{
@@ -1475,37 +1519,37 @@ bool Context::getBuffer(GLenum target, es2::Buffer **buffer)
 	return true;
 }
 
-TransformFeedback *Context::getTransformFeedback()
+TransformFeedback *Context::getTransformFeedback() const
 {
 	return getTransformFeedback(mState.transformFeedback);
 }
 
-Program *Context::getCurrentProgram()
+Program *Context::getCurrentProgram() const
 {
     return mResourceManager->getProgram(mState.currentProgram);
 }
 
-Texture2D *Context::getTexture2D()
+Texture2D *Context::getTexture2D() const
 {
 	return static_cast<Texture2D*>(getSamplerTexture(mState.activeSampler, TEXTURE_2D));
 }
 
-Texture3D *Context::getTexture3D()
+Texture3D *Context::getTexture3D() const
 {
 	return static_cast<Texture3D*>(getSamplerTexture(mState.activeSampler, TEXTURE_3D));
 }
 
-TextureCubeMap *Context::getTextureCubeMap()
+TextureCubeMap *Context::getTextureCubeMap() const
 {
     return static_cast<TextureCubeMap*>(getSamplerTexture(mState.activeSampler, TEXTURE_CUBE));
 }
 
-TextureExternal *Context::getTextureExternal()
+TextureExternal *Context::getTextureExternal() const
 {
     return static_cast<TextureExternal*>(getSamplerTexture(mState.activeSampler, TEXTURE_EXTERNAL));
 }
 
-Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type)
+Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type) const
 {
     GLuint texid = mState.samplerTexture[type][sampler].name();
 
@@ -1524,7 +1568,7 @@ Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type)
     return mState.samplerTexture[type][sampler];
 }
 
-bool Context::getBooleanv(GLenum pname, GLboolean *params)
+bool Context::getBooleanv(GLenum pname, GLboolean *params) const
 {
     switch (pname)
     {
@@ -1575,7 +1619,7 @@ bool Context::getBooleanv(GLenum pname, GLboolean *params)
     return true;
 }
 
-bool Context::getFloatv(GLenum pname, GLfloat *params)
+bool Context::getFloatv(GLenum pname, GLfloat *params) const
 {
     // Please note: DEPTH_CLEAR_VALUE is included in our internal getFloatv implementation
     // because it is stored as a float, despite the fact that the GL ES 2.0 spec names
@@ -1622,7 +1666,7 @@ bool Context::getFloatv(GLenum pname, GLfloat *params)
     return true;
 }
 
-bool Context::getIntegerv(GLenum pname, GLint *params)
+bool Context::getIntegerv(GLenum pname, GLint *params) const
 {
     // Please note: DEPTH_CLEAR_VALUE is not included in our internal getIntegerv implementation
     // because it is stored as a float, despite the fact that the GL ES 2.0 spec names
@@ -1641,8 +1685,8 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 	case GL_MAX_RENDERBUFFER_SIZE:            *params = IMPLEMENTATION_MAX_RENDERBUFFER_SIZE; break;
     case GL_NUM_SHADER_BINARY_FORMATS:        *params = 0;                                    break;
     case GL_SHADER_BINARY_FORMATS:      /* no shader binary formats are supported */          break;
-    case GL_ARRAY_BUFFER_BINDING:             *params = mState.arrayBuffer.name();            break;
-    case GL_ELEMENT_ARRAY_BUFFER_BINDING:     *params = mState.elementArrayBuffer.name();     break;
+    case GL_ARRAY_BUFFER_BINDING:             *params = getArrayBufferName();                 break;
+	case GL_ELEMENT_ARRAY_BUFFER_BINDING:     *params = getCurrentVertexArray()->getElementArrayBuffer()->name; break;
 //	case GL_FRAMEBUFFER_BINDING:            // now equivalent to GL_DRAW_FRAMEBUFFER_BINDING_ANGLE
     case GL_DRAW_FRAMEBUFFER_BINDING_ANGLE:   *params = mState.drawFramebuffer;               break;
     case GL_READ_FRAMEBUFFER_BINDING_ANGLE:   *params = mState.readFramebuffer;               break;
@@ -2111,7 +2155,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
     return true;
 }
 
-bool Context::getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param)
+bool Context::getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param) const
 {
 	UNIMPLEMENTED();
 
@@ -2152,7 +2196,7 @@ bool Context::getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param)
 	return true;
 }
 
-bool Context::getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams)
+bool Context::getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams) const
 {
     // Please note: the query type returned for DEPTH_CLEAR_VALUE in this implementation
     // is FLOAT rather than INT, as would be suggested by the GL ES 2.0 spec. This is due
@@ -2658,11 +2702,11 @@ void Context::applyState(GLenum drawMode)
     }
 }
 
-GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count)
+GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsizei instanceId)
 {
     TranslatedAttribute attributes[MAX_VERTEX_ATTRIBS];
 
-    GLenum err = mVertexDataManager->prepareVertexData(first, count, attributes);
+    GLenum err = mVertexDataManager->prepareVertexData(first, count, attributes, instanceId);
     if(err != GL_NO_ERROR)
     {
         return err;
@@ -2702,7 +2746,7 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count)
 // Applies the indices and element array bindings
 GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo)
 {
-    GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, mState.elementArrayBuffer, indices, indexInfo);
+	GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, indexInfo);
 
     if(err == GL_NO_ERROR)
     {
@@ -3265,24 +3309,27 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 
     applyState(mode);
 
-    GLenum err = applyVertexBuffer(0, first, count);
-    if(err != GL_NO_ERROR)
-    {
-        return error(err);
-    }
+	for(int i = 0; i < instanceCount; ++i)
+	{
+		GLenum err = applyVertexBuffer(0, first, count, i);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
 
-    applyShaders();
-    applyTextures();
+		applyShaders();
+		applyTextures();
 
-    if(!getCurrentProgram()->validateSamplers(false))
-    {
-        return error(GL_INVALID_OPERATION);
-    }
+		if(!getCurrentProgram()->validateSamplers(false))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
 
-    if(!cullSkipsDraw(mode))
-    {
-        device->drawPrimitive(primitiveType, primitiveCount);
-    }
+		if(!cullSkipsDraw(mode))
+		{
+			device->drawPrimitive(primitiveType, primitiveCount);
+		}
+	}
 }
 
 void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLsizei instanceCount)
@@ -3292,7 +3339,7 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
         return error(GL_INVALID_OPERATION);
     }
 
-    if(!indices && !mState.elementArrayBuffer)
+	if(!indices && !getCurrentVertexArray()->getElementArrayBuffer())
     {
         return error(GL_INVALID_OPERATION);
     }
@@ -3315,32 +3362,35 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 
     applyState(mode);
 
-    TranslatedIndexData indexInfo;
-    GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
-    if(err != GL_NO_ERROR)
-    {
-        return error(err);
-    }
+	for(int i = 0; i < instanceCount; ++i)
+	{
+		TranslatedIndexData indexInfo;
+		GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
 
-    GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
-    err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount);
-    if(err != GL_NO_ERROR)
-    {
-        return error(err);
-    }
+		GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
+		err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount, i);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
 
-    applyShaders();
-    applyTextures();
+		applyShaders();
+		applyTextures();
 
-    if(!getCurrentProgram()->validateSamplers(false))
-    {
-        return error(GL_INVALID_OPERATION);
-    }
+		if(!getCurrentProgram()->validateSamplers(false))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
 
-    if(!cullSkipsDraw(mode))
-    {
-		device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, IndexDataManager::typeSize(type));
-    }
+		if(!cullSkipsDraw(mode))
+		{
+			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, IndexDataManager::typeSize(type));
+		}
+	}
 }
 
 void Context::finish()
@@ -3441,15 +3491,15 @@ void Context::detachBuffer(GLuint buffer)
     // If a buffer object is deleted while it is bound, all bindings to that object in the current context
     // (i.e. in the thread that called Delete-Buffers) are reset to zero.
 
-    if(mState.arrayBuffer.name() == buffer)
+    if(getArrayBufferName() == buffer)
     {
         mState.arrayBuffer = NULL;
     }
 
-    if(mState.elementArrayBuffer.name() == buffer)
-    {
-        mState.elementArrayBuffer = NULL;
-    }
+	for(auto vaoIt = mVertexArrayMap.begin(); vaoIt != mVertexArrayMap.end(); vaoIt++)
+	{
+		vaoIt->second->detachBuffer(buffer);
+	}
 
     for(int attribute = 0; attribute < MAX_VERTEX_ATTRIBS; attribute++)
     {
@@ -3571,7 +3621,7 @@ void Context::setVertexAttrib(GLuint index, const GLfloat *values)
 {
     ASSERT(index < MAX_VERTEX_ATTRIBS);
 
-    mState.vertexAttribute[index].setCurrentValue(values);
+	mState.vertexAttribute[index].setCurrentValue(values);
 
     mVertexDataManager->dirtyCurrentValue(index);
 }
@@ -4048,7 +4098,7 @@ Device *Context::getDevice()
 	return device;
 }
 
-const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt)
+const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 {
 	// Keep list sorted in following order:
 	// OES extensions
@@ -4087,6 +4137,7 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt)
 #endif
 		(const GLubyte*)"GL_NV_fence",
 		(const GLubyte*)"GL_EXT_instanced_arrays",
+		(const GLubyte*)"GL_ANGLE_instanced_arrays",
 	};
 	static const GLuint numExtensions = sizeof(extensions) / sizeof(*extensions);
 
