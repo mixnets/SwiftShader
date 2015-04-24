@@ -22,6 +22,7 @@
 #include "Image.hpp"
 #include "Renderer/Sampler.hpp"
 #include "TransformFeedback.h"
+#include "VertexArray.h"
 
 #define GL_APICALL
 #include <GLES2/gl2.h>
@@ -71,7 +72,6 @@ class VertexArray;
 
 enum
 {
-    MAX_VERTEX_ATTRIBS = 16,
 	MAX_UNIFORM_VECTORS = 256,   // Device limit
     MAX_VERTEX_UNIFORM_VECTORS = VERTEX_UNIFORM_VECTORS - 3,   // Reserve space for gl_DepthRange
     MAX_VARYING_VECTORS = 10,
@@ -128,129 +128,6 @@ struct Color
     float blue;
     float alpha;
 };
-
-// Helper structure describing a single vertex attribute
-class VertexAttribute
-{
-  public:
-    VertexAttribute() : mType(GL_FLOAT), mSize(0), mNormalized(false), mStride(0), mDivisor(0), mPointer(NULL), mArrayEnabled(false)
-    {
-        mCurrentValue[0].f = 0.0f;
-        mCurrentValue[1].f = 0.0f;
-        mCurrentValue[2].f = 0.0f;
-        mCurrentValue[3].f = 1.0f;
-		mCurrentValueType = ValueUnion::FloatType;
-    }
-
-    int typeSize() const
-    {
-        switch (mType)
-        {
-        case GL_BYTE:           return mSize * sizeof(GLbyte);
-        case GL_UNSIGNED_BYTE:  return mSize * sizeof(GLubyte);
-        case GL_SHORT:          return mSize * sizeof(GLshort);
-        case GL_UNSIGNED_SHORT: return mSize * sizeof(GLushort);
-        case GL_FIXED:          return mSize * sizeof(GLfixed);
-        case GL_FLOAT:          return mSize * sizeof(GLfloat);
-        default: UNREACHABLE(); return mSize * sizeof(GLfloat);
-        }
-    }
-
-    GLsizei stride() const
-    {
-        return mStride ? mStride : typeSize();
-    }
-
-	inline float getCurrentValue(int i) const
-	{
-		switch(mCurrentValueType)
-		{
-		case ValueUnion::FloatType:	return mCurrentValue[i].f;
-		case ValueUnion::IntType:	return static_cast<float>(mCurrentValue[i].i);
-		case ValueUnion::UIntType:	return static_cast<float>(mCurrentValue[i].ui);
-		default: UNREACHABLE();		return mCurrentValue[i].f;
-		}
-	}
-
-	inline GLint getCurrentValueI(int i) const
-	{
-		switch(mCurrentValueType)
-		{
-		case ValueUnion::FloatType:	return static_cast<GLint>(mCurrentValue[i].f);
-		case ValueUnion::IntType:	return mCurrentValue[i].i;
-		case ValueUnion::UIntType:	return static_cast<GLint>(mCurrentValue[i].ui);
-		default: UNREACHABLE();		return mCurrentValue[i].i;
-		}
-	}
-
-	inline GLuint getCurrentValueUI(int i) const
-	{
-		switch(mCurrentValueType)
-		{
-		case ValueUnion::FloatType:	return static_cast<GLuint>(mCurrentValue[i].f);
-		case ValueUnion::IntType:	return static_cast<GLuint>(mCurrentValue[i].i);
-		case ValueUnion::UIntType:	return mCurrentValue[i].ui;
-		default: UNREACHABLE();		return mCurrentValue[i].ui;
-		}
-	}
-
-	inline void setCurrentValue(const GLfloat *values)
-	{
-		mCurrentValue[0].f = values[0];
-		mCurrentValue[1].f = values[1];
-		mCurrentValue[2].f = values[2];
-		mCurrentValue[3].f = values[3];
-		mCurrentValueType = ValueUnion::FloatType;
-	}
-
-	inline void setCurrentValue(const GLint *values)
-	{
-		mCurrentValue[0].i = values[0];
-		mCurrentValue[1].i = values[1];
-		mCurrentValue[2].i = values[2];
-		mCurrentValue[3].i = values[3];
-		mCurrentValueType = ValueUnion::IntType;
-	}
-
-	inline void setCurrentValue(const GLuint *values)
-	{
-		mCurrentValue[0].ui = values[0];
-		mCurrentValue[1].ui = values[1];
-		mCurrentValue[2].ui = values[2];
-		mCurrentValue[3].ui = values[3];
-		mCurrentValueType = ValueUnion::UIntType;
-	}
-
-    // From glVertexAttribPointer
-    GLenum mType;
-    GLint mSize;
-    bool mNormalized;
-    GLsizei mStride;   // 0 means natural stride
-    GLuint mDivisor;   // From glVertexAttribDivisor
-
-    union
-    {
-        const void *mPointer;
-        intptr_t mOffset;
-    };
-
-    gl::BindingPointer<Buffer> mBoundBuffer;   // Captured when glVertexAttribPointer is called.
-
-    bool mArrayEnabled;   // From glEnable/DisableVertexAttribArray
-private:
-	union ValueUnion
-	{
-		enum Type { FloatType, IntType, UIntType };
-
-		float f;
-		GLint i;
-		GLuint ui;
-	};
-	ValueUnion mCurrentValue[4];   // From glVertexAttrib
-	ValueUnion::Type mCurrentValueType;
-};
-
-typedef VertexAttribute VertexAttributeArray[MAX_VERTEX_ATTRIBS];
 
 // Helper structure to store all raw state
 struct State
@@ -324,7 +201,6 @@ struct State
 
     unsigned int activeSampler;   // Active texture unit selector - GL_TEXTURE0
     gl::BindingPointer<Buffer> arrayBuffer;
-    gl::BindingPointer<Buffer> elementArrayBuffer;
 	gl::BindingPointer<Buffer> copyReadBuffer;
 	gl::BindingPointer<Buffer> copyWriteBuffer;
 	gl::BindingPointer<Buffer> pixelPackBuffer;
@@ -335,7 +211,7 @@ struct State
     GLuint drawFramebuffer;
     gl::BindingPointer<Renderbuffer> renderbuffer;
     GLuint currentProgram;
-    gl::BindingPointer<VertexArray> vertexArray;
+	GLuint vertexArray;
 	GLuint transformFeedback;
 	gl::BindingPointer<Sampler> sampler[MAX_COMBINED_TEXTURE_IMAGE_UNITS];
 
@@ -437,7 +313,8 @@ public:
                               bool normalized, GLsizei stride, const void *pointer);
     const void *getVertexAttribPointer(unsigned int attribNum) const;
 
-    const VertexAttributeArray &getVertexAttributes();
+	const VertexAttributeArray &getVertexAttributes();
+	const VertexAttributeArray &getCurrentVertexAttributes();
 
     void setUnpackAlignment(GLint alignment);
     GLint getUnpackAlignment() const;
@@ -513,42 +390,45 @@ public:
     void setVertexAttrib(GLuint index, const GLint *values);
     void setVertexAttrib(GLuint index, const GLuint *values);
 
-    Buffer *getBuffer(GLuint handle);
-    Fence *getFence(GLuint handle);
-    Shader *getShader(GLuint handle);
-    Program *getProgram(GLuint handle);
-    virtual Texture *getTexture(GLuint handle);
-    Framebuffer *getFramebuffer(GLuint handle);
-    virtual Renderbuffer *getRenderbuffer(GLuint handle);
-	Query *getQuery(GLuint handle, bool create, GLenum type);
-	VertexArray *getVertexArray(GLuint array);
-	TransformFeedback *getTransformFeedback(GLuint transformFeedback);
-	TransformFeedback *getTransformFeedback();
-	Sampler *getSampler(GLuint sampler);
+	Buffer *getBuffer(GLuint handle) const;
+	Fence *getFence(GLuint handle) const;
+	Shader *getShader(GLuint handle) const;
+	Program *getProgram(GLuint handle) const;
+	virtual Texture *getTexture(GLuint handle) const;
+	Framebuffer *getFramebuffer(GLuint handle) const;
+	virtual Renderbuffer *getRenderbuffer(GLuint handle) const;
+	Query *getQuery(GLuint handle) const;
+	VertexArray *getVertexArray(GLuint array) const;
+	VertexArray *getCurrentVertexArray() const;
+	TransformFeedback *getTransformFeedback(GLuint transformFeedback) const;
+	TransformFeedback *getTransformFeedback() const;
+	Sampler *getSampler(GLuint sampler) const;
 
-    Buffer *getArrayBuffer();
-    Buffer *getElementArrayBuffer();
-	Buffer *getCopyReadBuffer();
-	Buffer *getCopyWriteBuffer();
-	Buffer *getPixelPackBuffer();
-	Buffer *getPixelUnpackBuffer();
-	Buffer *getUniformBuffer();
-	bool getBuffer(GLenum target, es2::Buffer **buffer);
-    Program *getCurrentProgram();
-    Texture2D *getTexture2D();
-	Texture3D *getTexture3D();
-	TextureCubeMap *getTextureCubeMap();
-    TextureExternal *getTextureExternal();
-    Texture *getSamplerTexture(unsigned int sampler, TextureType type);
-    Framebuffer *getReadFramebuffer();
-    Framebuffer *getDrawFramebuffer();
+	Buffer *getArrayBuffer() const;
+	Buffer *getElementArrayBuffer() const;
+	Buffer *getCopyReadBuffer() const;
+	Buffer *getCopyWriteBuffer() const;
+	Buffer *getPixelPackBuffer() const;
+	Buffer *getPixelUnpackBuffer() const;
+	Buffer *getUniformBuffer() const;
+	bool getBuffer(GLenum target, es2::Buffer **buffer) const;
+	Program *getCurrentProgram() const;
+	Texture2D *getTexture2D() const;
+	Texture3D *getTexture3D() const;
+	TextureCubeMap *getTextureCubeMap() const;
+	TextureExternal *getTextureExternal() const;
+	Texture *getSamplerTexture(unsigned int sampler, TextureType type) const;
+	Framebuffer *getReadFramebuffer() const;
+	Framebuffer *getDrawFramebuffer() const;
 
-    bool getFloatv(GLenum pname, GLfloat *params);
-    bool getIntegerv(GLenum pname, GLint *params);
-    bool getBooleanv(GLenum pname, GLboolean *params);
-	bool getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param);
+	bool getFloatv(GLenum pname, GLfloat *params) const;
+	bool getIntegerv(GLenum pname, GLint *params) const;
+	bool getBooleanv(GLenum pname, GLboolean *params) const;
+	bool getTransformFeedbackiv(GLuint xfb, GLenum pname, GLint *param) const;
 
-    bool getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams);
+	bool getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *numParams) const;
+
+	bool hasZeroDivisor() const;
 
     void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLsizei *bufSize, void* pixels);
     void clear(GLbitfield mask);
@@ -577,7 +457,7 @@ public:
 
 	Device *getDevice();
 
-	const GLubyte* getExtensions(GLuint index, GLuint* numExt = nullptr);
+	const GLubyte* getExtensions(GLuint index, GLuint* numExt = nullptr) const;
 
 private:
 	virtual ~Context();
@@ -598,6 +478,8 @@ private:
 
     bool cullSkipsDraw(GLenum drawMode);
     bool isTriangleMode(GLenum drawMode);
+
+	Query *createQuery(GLuint handle, GLenum type);
 
 	const EGLint clientVersion;
     const egl::Config *const mConfig;
