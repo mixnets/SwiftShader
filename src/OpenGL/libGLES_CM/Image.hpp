@@ -15,7 +15,6 @@
 #include "Renderer/Surface.hpp"
 #include "libEGL/Image.hpp"
 
-#define GL_API
 #include <GLES/gl.h>
 
 namespace es1
