@@ -6,6 +6,7 @@
 			<Depends filename="LLVM/LLVM.cbp" />
 		</Project>
 		<Project filename="OpenGL/libGLES_CM/libGLES_CM.cbp">
+			<Depends filename="OpenGL/libEGL/libEGL.cbp" />
 			<Depends filename="LLVM/LLVM.cbp" />
 		</Project>
 		<Project filename="LLVM/LLVM.cbp" />

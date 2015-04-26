@@ -24,6 +24,7 @@ LOCAL_SRC_FILES += \
 LOCAL_CFLAGS += -DLOG_TAG=\"libGLES_CM_swiftshader\"
 LOCAL_CFLAGS += -fno-operator-names -msse2 -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS
 LOCAL_CFLAGS += -std=c++11
+LOCAL_CFLAGS += -fvisibility=hidden -fvisibility-inlines-hidden
 LOCAL_CFLAGS += -DEGLAPI="__attribute__((visibility(\"default\")))"
 LOCAL_CFLAGS += -DGL_API="__attribute__((visibility(\"default\")))"
 LOCAL_CFLAGS += -DGL_GLEXT_PROTOTYPES

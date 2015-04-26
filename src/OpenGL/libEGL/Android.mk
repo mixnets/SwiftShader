@@ -22,6 +22,7 @@ LOCAL_CFLAGS += -UNDEBUG -g -O0
 #LOCAL_CFLAGS += -DANGLE_DISABLE_TRACE
 
 LOCAL_CFLAGS += -std=c++11
+LOCAL_CFLAGS += -fvisibility=hidden -fvisibility-inlines-hidden
 LOCAL_CFLAGS += -DEGLAPI="__attribute__((visibility(\"default\")))"
 LOCAL_CFLAGS += -DEGL_EGLEXT_PROTOTYPES
 

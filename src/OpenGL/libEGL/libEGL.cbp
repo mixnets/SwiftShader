@@ -100,6 +100,8 @@
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
+			<Add option="-fvisibility=hidden" />
+			<Add option="-fvisibility-inlines-hidden" />
 			<Add option='-DEGLAPI="__attribute__((visibility(\\"default\\")))"' />
 			<Add option="-DEGL_EGLEXT_PROTOTYPES" />
 			<Add directory="./../include/" />
