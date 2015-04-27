@@ -62,7 +62,7 @@ void AndroidEnterDebugger();
 		AndroidEnterDebugger();							\
 	} while(0)
 
-#ifndef NDEBUG
+#ifdef TRACE_EVERYTHING
 	#define TRACE(format, ...)								   \
 		ALOGV("%s %s:%d (" format ")", __FUNCTION__, __FILE__, \
 			  __LINE__, ##__VA_ARGS__)
