@@ -100,7 +100,8 @@
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
-			<Add option="-fvisibility=protected" />
+			<Add option="-fvisibility=hidden" />
+			<Add option="-fvisibility-inlines-hidden" />
 			<Add option="-DEGLAPI=" />
 			<Add option="-DEGL_EGLEXT_PROTOTYPES" />
 			<Add directory="./../include/" />

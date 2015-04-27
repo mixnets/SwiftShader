@@ -400,6 +400,7 @@ LOCAL_CFLAGS += -DLOG_TAG=\"libLLVM_swiftshader\"
 LOCAL_CFLAGS += -fomit-frame-pointer -Os -ffunction-sections -fdata-sections
 LOCAL_CFLAGS += -fno-operator-names -msse2 -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS
 LOCAL_CFLAGS += -std=c++11
+LOCAL_CFLAGS += -fvisibility=hidden -fvisibility-inlines-hidden
 
 # Android's make system also uses NDEBUG, so we need to set/unset it forcefully
 # Uncomment for debug ON:
