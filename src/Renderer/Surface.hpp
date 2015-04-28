@@ -134,6 +134,22 @@ namespace sw
 		struct Buffer
 		{
 		public:
+			static void initialize(int width, int height, int depth, Format format, bool target, Buffer *dest)
+			{
+				dest->buffer = NULL;
+				dest->width = width;
+				dest->height = height;
+				dest->depth = depth;
+				dest->bytes = Surface::bytes(format);
+				dest->pitchB = Surface::pitchB(width, format, target);
+				dest->pitchP = Surface::pitchP(width, format, target);
+				dest->sliceB = Surface::sliceB(width, height, format, target);
+				dest->sliceP = Surface::sliceP(width, height, format, target);
+				dest->format = format;
+				dest->lock = LOCK_UNLOCKED;
+				dest->dirty = false;
+			}
+
 			void write(int x, int y, int z, const Color<float> &color);
 			void write(int x, int y, const Color<float> &color);
 			void write(void *element, const Color<float> &color);
@@ -159,6 +175,10 @@ namespace sw
 			Lock lock;
 
 			bool dirty;
+
+		private:
+			Buffer(const Buffer&);
+			Buffer& operator=(const Buffer&);
 		};
 
 		Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget);
@@ -351,9 +371,9 @@ namespace sw
 
 		void resolve();
 
-		Buffer external;
-		Buffer internal;
-		Buffer stencil;
+		Buffer* external;
+		Buffer* internal;
+		Buffer* stencil;
 
 		const bool lockable;
 		const bool renderTarget;
@@ -376,107 +396,107 @@ namespace sw
 {
 	int Surface::getExternalWidth() const
 	{
-		return external.width;
+		return external->width;
 	}
 
 	int Surface::getExternalHeight() const
 	{
-		return external.height;
+		return external->height;
 	}
 
 	int Surface::getExternalDepth() const
 	{
-		return external.depth;
+		return external->depth;
 	}
 
 	Format Surface::getExternalFormat() const
 	{
-		return external.format;
+		return external->format;
 	}
 
 	int Surface::getExternalPitchB() const
 	{
-		return external.pitchB;
+		return external->pitchB;
 	}
 
 	int Surface::getExternalPitchP() const
 	{
-		return external.pitchP;
+		return external->pitchP;
 	}
 
 	int Surface::getExternalSliceB() const
 	{
-		return external.sliceB;
+		return external->sliceB;
 	}
 
 	int Surface::getExternalSliceP() const
 	{
-		return external.sliceP;
+		return external->sliceP;
 	}
 
 	int Surface::getInternalWidth() const
 	{
-		return internal.width;
+		return internal->width;
 	}
 
 	int Surface::getInternalHeight() const
 	{
-		return internal.height;
+		return internal->height;
 	}
 
 	int Surface::getInternalDepth() const
 	{
-		return internal.depth;
+		return internal->depth;
 	}
 
 	Format Surface::getInternalFormat() const
 	{
-		return internal.format;
+		return internal->format;
 	}
 
 	int Surface::getInternalPitchB() const
 	{
-		return internal.pitchB;
+		return internal->pitchB;
 	}
 
 	int Surface::getInternalPitchP() const
 	{
-		return internal.pitchP;
+		return internal->pitchP;
 	}
 
 	int Surface::getInternalSliceB() const
 	{
-		return internal.sliceB;
+		return internal->sliceB;
 	}
 
 	int Surface::getInternalSliceP() const
 	{
-		return internal.sliceP;
+		return internal->sliceP;
 	}
 
 	int Surface::getStencilPitchB() const
 	{
-		return stencil.pitchB;
+		return stencil->pitchB;
 	}
 
 	int Surface::getStencilPitchP() const
 	{
-		return stencil.pitchP;
+		return stencil->pitchP;
 	}
 
 	int Surface::getStencilSliceB() const
 	{
-		return stencil.sliceB;
+		return stencil->sliceB;
 	}
 
 	int Surface::getMultiSampleCount() const
 	{
-		return sw::min(internal.depth, 4);
+		return sw::min(internal->depth, 4);
 	}
 
 	int Surface::getSuperSampleCount() const
 	{
-		return internal.depth > 4 ? internal.depth / 4 : 1;
+		return internal->depth > 4 ? internal->depth / 4 : 1;
 	}
 }
 
