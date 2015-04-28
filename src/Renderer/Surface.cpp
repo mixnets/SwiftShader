@@ -680,50 +680,34 @@ namespace sw
 		lock = LOCK_UNLOCKED;
 	}
 
-	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget) : lockable(lockable), renderTarget(renderTarget)
+	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, Buffer *pInternal, Buffer *pExternal) : lockable(lockable), renderTarget(renderTarget)
 	{
 		resource = texture ? texture : new Resource(0);
 		hasParent = texture != 0;
 		depth = max(1, depth);
 
-		external.buffer = 0;
-		external.width = width;
-		external.height = height;
-		external.depth = depth;
-		external.format = format;
-		external.bytes = bytes(external.format);
-		external.pitchB = pitchB(external.width, external.format, renderTarget && !texture);
-		external.pitchP = pitchP(external.width, external.format, renderTarget && !texture);
-		external.sliceB = sliceB(external.width, external.height, external.format, renderTarget && !texture);
-		external.sliceP = sliceP(external.width, external.height, external.format, renderTarget && !texture);
-		external.lock = LOCK_UNLOCKED;
-		external.dirty = false;
+		if (pExternal) {
+			external = pExternal;
+			externalToFree = NULL;
+		} else {
+			external = new Buffer(width, height, depth, format, renderTarget && !texture);
+			externalToFree = external;
+		}
+		if (pInternal) {
+			internal = pInternal;
+			internalToFree = NULL;
+		}
+		else
+		{
+			// TODO(work out the internal / external sharing thing
+			Format internalFormat = selectInternalFormat(format);
+			internal = new Buffer(width, height, depth, internalFormat, !!renderTarget);
+			internalToFree = internal;
+		}
+		stencil = new Buffer(width, height, depth, FORMAT_S8, !!renderTarget);
 
-		internal.buffer = 0;
-		internal.width = width;
-		internal.height = height;
-		internal.depth = depth;
-		internal.format = selectInternalFormat(format);
-		internal.bytes = bytes(internal.format);
-		internal.pitchB = pitchB(internal.width, internal.format, renderTarget);
-		internal.pitchP = pitchP(internal.width, internal.format, renderTarget);
-		internal.sliceB = sliceB(internal.width, internal.height, internal.format, renderTarget);
-		internal.sliceP = sliceP(internal.width, internal.height, internal.format, renderTarget);
-		internal.lock = LOCK_UNLOCKED;
-		internal.dirty = false;
-
-		stencil.buffer = 0;
-		stencil.width = width;
-		stencil.height = height;
-		stencil.depth = depth;
-		stencil.format = FORMAT_S8;
-		stencil.bytes = bytes(stencil.format);
-		stencil.pitchB = pitchB(stencil.width, stencil.format, renderTarget);
-		stencil.pitchP = pitchP(stencil.width, stencil.format, renderTarget);
-		stencil.sliceB = sliceB(stencil.width, stencil.height, stencil.format, renderTarget);
-		stencil.sliceP = sliceP(stencil.width, stencil.height, stencil.format, renderTarget);
-		stencil.lock = LOCK_UNLOCKED;
-		stencil.dirty = false;
+		ALOGI("%s: internal=%p .buffer %p external=%p .buffer %p",
+			  __FUNCTION__, internal, internal->buffer, external, external->buffer);
 
 		dirtyMipmaps = true;
 		paletteUsed = 0;
@@ -739,45 +723,56 @@ namespace sw
 		{
 			resource->destruct();
 		}
-
-		deallocate(external.buffer);
-
-		if(internal.buffer != external.buffer)
+		if (externalToFree)
 		{
-			deallocate(internal.buffer);
+			deallocate(external->buffer);
+			external->buffer = 0;
 		}
+		if (internalToFree && (internal->buffer != external->buffer))
+		{
+			deallocate(internal->buffer);
+			internal->buffer = 0;
+		}
+		deallocate(stencil->buffer);
+		stencil->buffer = 0;
 
-		deallocate(stencil.buffer);
+		if (externalToFree) {
+			delete externalToFree;
+			externalToFree = NULL;
+		}
+		external = 0;
+		if (internalToFree) {
+			delete internalToFree;
+			internalToFree = NULL;
+		}
+		internal = 0;
 
-		external.buffer = 0;
-		internal.buffer = 0;
-		stencil.buffer = 0;
+		delete stencil;
+		stencil = 0;
 	}
 
 	void *Surface::lockExternal(int x, int y, int z, Lock lock, Accessor client)
 	{
 		resource->lock(client);
 
-		if(!external.buffer)
+		if(!external->buffer)
 		{
-			if(internal.buffer && identicalFormats())
+			if(internal->buffer && identicalFormats())
 			{
-				external.buffer = internal.buffer;
+				external->buffer = internal->buffer;
 			}
 			else
 			{
-				external.buffer = allocateBuffer(external.width, external.height, external.depth, external.format);
+				external->buffer = allocateBuffer(external->width, external->height, external->depth, external->format);
 			}
 		}
-
-		if(internal.dirty)
+		if (internal->dirty)
 		{
 			if(lock != LOCK_DISCARD)
 			{
-				update(external, internal);
+				update(*external, *internal);
 			}
-
-			internal.dirty = false;
+			internal->dirty = false;
 		}
 
 		switch(lock)
@@ -793,43 +788,43 @@ namespace sw
 			ASSERT(false);
 		}
 
-		return external.lockRect(x, y, z, lock);
+		return external->lockRect(x, y, z, lock);
 	}
 
 	void Surface::unlockExternal()
 	{
 		resource->unlock();
 
-		external.unlockRect();
+		external->unlockRect();
 	}
 
-	void *Surface::lockInternal(int x, int y, int z, Lock lock, Accessor client)
+	void *Surface::lockInternal(int x, int y, int z, Lock requestedLock, Accessor client)
 	{
-		if(lock != LOCK_UNLOCKED)
+		if (requestedLock != LOCK_UNLOCKED)
 		{
 			resource->lock(client);
 		}
 
-		if(!internal.buffer)
+		if(!internal->buffer)
 		{
-			if(external.buffer && identicalFormats())
+			if(external->buffer && identicalFormats())
 			{
-				internal.buffer = external.buffer;
+				internal->buffer = external->buffer;
 			}
 			else
 			{
-				internal.buffer = allocateBuffer(internal.width, internal.height, internal.depth, internal.format);
+				internal->buffer = allocateBuffer(internal->width, internal->height, internal->depth, internal->format);
 			}
 		}
 
 		// FIXME: WHQL requires conversion to lower external precision and back
-		if(logPrecision >= WHQL)
+		if (logPrecision >= WHQL)
 		{
-			if(internal.dirty && renderTarget && internal.format != external.format)
+			if (internal->dirty && renderTarget && internal->format != external->format)
 			{
-				if(lock != LOCK_DISCARD)
+				if(requestedLock != LOCK_DISCARD)
 				{
-					switch(external.format)
+					switch(external->format)
 					{
 					case FORMAT_R3G3B2:
 					case FORMAT_A8R3G3B2:
@@ -847,18 +842,18 @@ namespace sw
 			}
 		}
 
-		if(external.dirty || (isPalette(external.format) && paletteUsed != Surface::paletteID))
+		if (external->dirty || (isPalette(external->format) && paletteUsed != Surface::paletteID))
 		{
-			if(lock != LOCK_DISCARD)
+			if (requestedLock != LOCK_DISCARD)
 			{
-				update(internal, external);
+				update(*internal, *external);
 			}
 
-			external.dirty = false;
+			external->dirty = false;
 			paletteUsed = Surface::paletteID;
 		}
 
-		switch(lock)
+		switch(requestedLock)
 		{
 		case LOCK_UNLOCKED:
 		case LOCK_READONLY:
@@ -872,38 +867,38 @@ namespace sw
 			ASSERT(false);
 		}
 
-		if(lock == LOCK_READONLY && client == PUBLIC)
+		if(requestedLock == LOCK_READONLY && client == PUBLIC)
 		{
 			resolve();
 		}
 
-		return internal.lockRect(x, y, z, lock);
+		if(!stencil->buffer)
+		{
+			stencil->buffer = allocateBuffer(stencil->width, stencil->height, stencil->depth, stencil->format);
+		}
+
+		return internal->lockRect(x, y, z, requestedLock);
 	}
 
 	void Surface::unlockInternal()
 	{
 		resource->unlock();
 
-		internal.unlockRect();
+		internal->unlockRect();
 	}
 
 	void *Surface::lockStencil(int front, Accessor client)
 	{
 		resource->lock(client);
 
-		if(!stencil.buffer)
-		{
-			stencil.buffer = allocateBuffer(stencil.width, stencil.height, stencil.depth, stencil.format);
-		}
-
-		return stencil.lockRect(0, 0, front, LOCK_READWRITE);   // FIXME
+		return stencil->lockRect(0, 0, front, LOCK_READWRITE);   // FIXME
 	}
 
 	void Surface::unlockStencil()
 	{
 		resource->unlock();
 
-		stencil.unlockRect();
+		stencil->unlockRect();
 	}
 
 	int Surface::bytes(Format format)
@@ -2282,21 +2277,21 @@ namespace sw
 		// FIXME: Also clear buffers in other formats?
 
 		// Not overlapping
-		if(x0 > internal.width) return;
-		if(y0 > internal.height) return;
+		if(x0 > internal->width) return;
+		if(y0 > internal->height) return;
 		if(x0 + width < 0) return;
 		if(y0 + height < 0) return;
 
 		// Clip against dimensions
 		if(x0 < 0) {width += x0; x0 = 0;}
-		if(x0 + width > internal.width) width = internal.width - x0;
+		if(x0 + width > internal->width) width = internal->width - x0;
 		if(y0 < 0) {height += y0; y0 = 0;}
-		if(y0 + height > internal.height) height = internal.height - y0;
+		if(y0 + height > internal->height) height = internal->height - y0;
 
-		const bool entire = x0 == 0 && y0 == 0 && width == internal.width && height == internal.height;
+		const bool entire = x0 == 0 && y0 == 0 && width == internal->width && height == internal->height;
 		const Lock lock = entire ? LOCK_DISCARD : LOCK_WRITEONLY;
 
-		int width2 = (internal.width + 1) & ~1;
+		int width2 = (internal->width + 1) & ~1;
 
 		int x1 = x0 + width;
 		int y1 = y0 + height;
@@ -2327,13 +2322,13 @@ namespace sw
 			unsigned char a8b8g8r8[4] = {r8, g8, b8, a8};
 			unsigned int colorABGR = (unsigned int&)a8b8g8r8;
 
-			for(int z = 0; z < internal.depth; z++)
+			for(int z = 0; z < internal->depth; z++)
 			{
 				unsigned char *target = buffer;
 
 				for(int y = y0; y < y1; y++)
 				{
-					switch(internal.format)
+					switch(internal->format)
 					{
 					case FORMAT_NULL:
 						break;
@@ -2341,7 +2336,7 @@ namespace sw
 					case FORMAT_A8R8G8B8:
 				//	case FORMAT_X8G8R8B8Q:   // FIXME
 				//	case FORMAT_A8G8R8B8Q:   // FIXME
-						if(rgbaMask == 0xF || (internal.format == FORMAT_X8R8G8B8 && rgbaMask == 0x7))
+						if(rgbaMask == 0xF || (internal->format == FORMAT_X8R8G8B8 && rgbaMask == 0x7))
 						{
 							memfill(target, colorARGB, 4 * (x1 - x0));
 						}
@@ -2360,7 +2355,7 @@ namespace sw
 						break;
 					case FORMAT_X8B8G8R8:
 					case FORMAT_A8B8G8R8:
-						if(rgbaMask == 0xF || (internal.format == FORMAT_X8B8G8R8 && rgbaMask == 0x7))
+						if(rgbaMask == 0xF || (internal->format == FORMAT_X8B8G8R8 && rgbaMask == 0x7))
 						{
 							memfill(target, colorABGR, 4 * (x1 - x0));
 						}
@@ -2479,10 +2474,10 @@ namespace sw
 						ASSERT(false);
 					}
 
-					target += internal.pitchB;
+					target += internal->pitchB;
 				}
 
-				buffer += internal.sliceB;
+				buffer += internal->sliceB;
 			}
 
 			unlockInternal();
@@ -2596,32 +2591,32 @@ namespace sw
 	void Surface::clearDepthBuffer(float depth, int x0, int y0, int width, int height)
 	{
 		// Not overlapping
-		if(x0 > internal.width) return;
-		if(y0 > internal.height) return;
+		if(x0 > internal->width) return;
+		if(y0 > internal->height) return;
 		if(x0 + width < 0) return;
 		if(y0 + height < 0) return;
 
 		// Clip against dimensions
 		if(x0 < 0) {width += x0; x0 = 0;}
-		if(x0 + width > internal.width) width = internal.width - x0;
+		if(x0 + width > internal->width) width = internal->width - x0;
 		if(y0 < 0) {height += y0; y0 = 0;}
-		if(y0 + height > internal.height) height = internal.height - y0;
+		if(y0 + height > internal->height) height = internal->height - y0;
 
-		const bool entire = x0 == 0 && y0 == 0 && width == internal.width && height == internal.height;
+		const bool entire = x0 == 0 && y0 == 0 && width == internal->width && height == internal->height;
 		const Lock lock = entire ? LOCK_DISCARD : LOCK_WRITEONLY;
 
-		int width2 = (internal.width + 1) & ~1;
+		int width2 = (internal->width + 1) & ~1;
 
 		int x1 = x0 + width;
 		int y1 = y0 + height;
 
-		if(internal.format == FORMAT_D32F_LOCKABLE ||
-		   internal.format == FORMAT_D32FS8_TEXTURE ||
-		   internal.format == FORMAT_D32FS8_SHADOW)
+		if(internal->format == FORMAT_D32F_LOCKABLE ||
+		   internal->format == FORMAT_D32FS8_TEXTURE ||
+		   internal->format == FORMAT_D32FS8_SHADOW)
 		{
 			float *target = (float*)lockInternal(0, 0, 0, lock, PUBLIC) + x0 + width2 * y0;
 
-			for(int z = 0; z < internal.depth; z++)
+			for(int z = 0; z < internal->depth; z++)
 			{
 				for(int y = y0; y < y1; y++)
 				{
@@ -2641,7 +2636,7 @@ namespace sw
 
 			float *buffer = (float*)lockInternal(0, 0, 0, lock, PUBLIC);
 
-			for(int z = 0; z < internal.depth; z++)
+			for(int z = 0; z < internal->depth; z++)
 			{
 				for(int y = y0; y < y1; y++)
 				{
@@ -2704,7 +2699,7 @@ namespace sw
 					}
 				}
 
-				buffer += internal.sliceP;
+				buffer += internal->sliceP;
 			}
 
 			unlockInternal();
@@ -2714,18 +2709,18 @@ namespace sw
 	void Surface::clearStencilBuffer(unsigned char s, unsigned char mask, int x0, int y0, int width, int height)
 	{
 		// Not overlapping
-		if(x0 > internal.width) return;
-		if(y0 > internal.height) return;
+		if(x0 > internal->width) return;
+		if(y0 > internal->height) return;
 		if(x0 + width < 0) return;
 		if(y0 + height < 0) return;
 
 		// Clip against dimensions
 		if(x0 < 0) {width += x0; x0 = 0;}
-		if(x0 + width > internal.width) width = internal.width - x0;
+		if(x0 + width > internal->width) width = internal->width - x0;
 		if(y0 < 0) {height += y0; y0 = 0;}
-		if(y0 + height > internal.height) height = internal.height - y0;
+		if(y0 + height > internal->height) height = internal->height - y0;
 
-		int width2 = (internal.width + 1) & ~1;
+		int width2 = (internal->width + 1) & ~1;
 
 		int x1 = x0 + width;
 		int y1 = y0 + height;
@@ -2739,7 +2734,7 @@ namespace sw
 		{
 			char *target = (char*)lockStencil(0, PUBLIC) + x0 + width2 * y0;
 
-			for(int z = 0; z < stencil.depth; z++)
+			for(int z = 0; z < stencil->depth; z++)
 			{
 				for(int y = y0; y < y0 + height; y++)
 				{
@@ -2767,7 +2762,7 @@ namespace sw
 
 			if(mask == 0xFF)
 			{
-				for(int z = 0; z < stencil.depth; z++)
+				for(int z = 0; z < stencil->depth; z++)
 				{
 					for(int y = y0; y < y1; y++)
 					{
@@ -2800,7 +2795,7 @@ namespace sw
 						}
 					}
 
-					buffer += stencil.sliceP;
+					buffer += stencil->sliceP;
 				}
 			}
 
@@ -2813,15 +2808,15 @@ namespace sw
 		unsigned char *row;
 		Buffer *buffer;
 		
-		if(internal.dirty)
+		if(internal->dirty)
 		{
 			row = (unsigned char*)lockInternal(x0, y0, 0, LOCK_WRITEONLY, PUBLIC);
-			buffer = &internal;
+			buffer = internal;
 		}
 		else
 		{
 			row = (unsigned char*)lockExternal(x0, y0, 0, LOCK_WRITEONLY, PUBLIC);
-			buffer = &external;
+			buffer = external;
 		}
 
 		if(buffer->bytes <= 4)
@@ -2856,7 +2851,7 @@ namespace sw
 			}
 		}
 
-		if(buffer == &internal)
+		if(buffer == internal)
 		{
 			unlockInternal();
 		}
@@ -2868,101 +2863,101 @@ namespace sw
 
 	Color<float> Surface::readExternal(int x, int y, int z) const
 	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
+		ASSERT(external->lock != LOCK_UNLOCKED);
 
-		return external.read(x, y, z);
+		return external->read(x, y, z);
 	}
 
 	Color<float> Surface::readExternal(int x, int y) const
 	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
+		ASSERT(external->lock != LOCK_UNLOCKED);
 
-		return external.read(x, y);
+		return external->read(x, y);
 	}
 
 	Color<float> Surface::sampleExternal(float x, float y, float z) const
 	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
+		ASSERT(external->lock != LOCK_UNLOCKED);
 
-		return external.sample(x, y, z);
+		return external->sample(x, y, z);
 	}
 
 	Color<float> Surface::sampleExternal(float x, float y) const
 	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
+		ASSERT(external->lock != LOCK_UNLOCKED);
 
-		return external.sample(x, y);
+		return external->sample(x, y);
 	}
 
 	void Surface::writeExternal(int x, int y, int z, const Color<float> &color)
 	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
+		ASSERT(external->lock != LOCK_UNLOCKED);
 
-		external.write(x, y, z, color);
+		external->write(x, y, z, color);
 	}
 
 	void Surface::writeExternal(int x, int y, const Color<float> &color)
 	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
+		ASSERT(external->lock != LOCK_UNLOCKED);
 
-		external.write(x, y, color);
+		external->write(x, y, color);
 	}
 
 	Color<float> Surface::readInternal(int x, int y, int z) const
 	{
-		ASSERT(internal.lock != LOCK_UNLOCKED);
+		ASSERT(internal->lock != LOCK_UNLOCKED);
 
-		return internal.read(x, y, z);
+		return internal->read(x, y, z);
 	}
 
 	Color<float> Surface::readInternal(int x, int y) const
 	{
-		ASSERT(internal.lock != LOCK_UNLOCKED);
+		ASSERT(internal->lock != LOCK_UNLOCKED);
 
-		return internal.read(x, y);
+		return internal->read(x, y);
 	}
 
 	Color<float> Surface::sampleInternal(float x, float y, float z) const
 	{
-		ASSERT(internal.lock != LOCK_UNLOCKED);
+		ASSERT(internal->lock != LOCK_UNLOCKED);
 
-		return internal.sample(x, y, z);
+		return internal->sample(x, y, z);
 	}
 
 	Color<float> Surface::sampleInternal(float x, float y) const
 	{
-		ASSERT(internal.lock != LOCK_UNLOCKED);
+		ASSERT(internal->lock != LOCK_UNLOCKED);
 
-		return internal.sample(x, y);
+		return internal->sample(x, y);
 	}
 
 	void Surface::writeInternal(int x, int y, int z, const Color<float> &color)
 	{
-		ASSERT(internal.lock != LOCK_UNLOCKED);
+		ASSERT(internal->lock != LOCK_UNLOCKED);
 
-		internal.write(x, y, z, color);
+		internal->write(x, y, z, color);
 	}
 
 	void Surface::writeInternal(int x, int y, const Color<float> &color)
 	{
-		ASSERT(internal.lock != LOCK_UNLOCKED);
+		ASSERT(internal->lock != LOCK_UNLOCKED);
 
-		internal.write(x, y, color);
+		internal->write(x, y, color);
 	}
 
 	bool Surface::hasStencil() const
 	{
-		return isStencil(external.format);
+		return isStencil(external->format);
 	}
-	
+
 	bool Surface::hasDepth() const
 	{
-		return isDepth(external.format);
+		return isDepth(external->format);
 	}
 
 	bool Surface::hasPalette() const
 	{
-		return isPalette(external.format);
+		return isPalette(external->format);
 	}
 
 	bool Surface::isRenderTarget() const
@@ -2987,12 +2982,16 @@ namespace sw
 
 	bool Surface::identicalFormats() const
 	{
-		return external.format == internal.format &&
-		       external.width  == internal.width &&
-		       external.height == internal.height &&
-		       external.depth  == internal.depth &&
-		       external.pitchB == internal.pitchB &&
-		       external.sliceB == internal.sliceB;
+		if (internal == external)
+		{
+			return true;
+		}
+		return external->format == internal->format &&
+		       external->width  == internal->width &&
+		       external->height == internal->height &&
+		       external->depth  == internal->depth &&
+		       external->pitchB == internal->pitchB &&
+		       external->sliceB == internal->sliceB;
 	}
 
 	Format Surface::selectInternalFormat(Format format) const
@@ -3117,18 +3116,18 @@ namespace sw
 
 	void Surface::resolve()
 	{
-		if(internal.depth <= 1 || !internal.dirty || !renderTarget || internal.format == FORMAT_NULL)
+		if(internal->depth <= 1 || !internal->dirty || !renderTarget || internal->format == FORMAT_NULL)
 		{
 			return;
 		}
 
-		void *source = internal.lockRect(0, 0, 0, LOCK_READWRITE);
+		void *source = internal->lockRect(0, 0, 0, LOCK_READWRITE);
 
-		int quality = internal.depth;
-		int width = internal.width;
-		int height = internal.height;
-		int pitch = internal.pitchB;
-		int slice = internal.sliceB;
+		int quality = internal->depth;
+		int width = internal->width;
+		int height = internal->height;
+		int pitch = internal->pitchB;
+		int slice = internal->sliceB;
 
 		unsigned char *source0 = (unsigned char*)source;
 		unsigned char *source1 = source0 + slice;
@@ -3147,11 +3146,11 @@ namespace sw
 		unsigned char *sourceE = sourceD + slice;
 		unsigned char *sourceF = sourceE + slice;
 
-		if(internal.format == FORMAT_X8R8G8B8 || internal.format == FORMAT_A8R8G8B8 || internal.format == FORMAT_X8B8G8R8 || internal.format == FORMAT_A8B8G8R8)
+		if(internal->format == FORMAT_X8R8G8B8 || internal->format == FORMAT_A8R8G8B8 || internal->format == FORMAT_X8B8G8R8 || internal->format == FORMAT_A8B8G8R8)
 		{
 			if(CPUID::supportsSSE2() && (width % 4) == 0)
 			{
-				if(internal.depth == 2)
+				if(internal->depth == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3169,7 +3168,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal->depth == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3193,7 +3192,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal->depth == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3229,7 +3228,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal->depth == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3295,7 +3294,7 @@ namespace sw
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7F7F7F7F) + (((x) ^ (y)) & 0x01010101))
 
-				if(internal.depth == 2)
+				if(internal->depth == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3313,7 +3312,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal->depth == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3337,7 +3336,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal->depth == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3373,7 +3372,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal->depth == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3438,11 +3437,11 @@ namespace sw
 				#undef AVERAGE
 			}
 		}
-		else if(internal.format == FORMAT_G16R16)
+		else if(internal->format == FORMAT_G16R16)
 		{
 			if(CPUID::supportsSSE2() && (width % 4) == 0)
 			{
-				if(internal.depth == 2)
+				if(internal->depth == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3460,7 +3459,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal->depth == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3484,7 +3483,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal->depth == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3520,7 +3519,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal->depth == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3586,7 +3585,7 @@ namespace sw
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7FFF7FFF) + (((x) ^ (y)) & 0x00010001))
 
-				if(internal.depth == 2)
+				if(internal->depth == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3604,7 +3603,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal->depth == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3628,7 +3627,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal->depth == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3664,7 +3663,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal->depth == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3729,11 +3728,11 @@ namespace sw
 				#undef AVERAGE
 			}
 		}
-		else if(internal.format == FORMAT_A16B16G16R16)
+		else if(internal->format == FORMAT_A16B16G16R16)
 		{
 			if(CPUID::supportsSSE2() && (width % 2) == 0)
 			{
-				if(internal.depth == 2)
+				if(internal->depth == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3751,7 +3750,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal->depth == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3775,7 +3774,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal->depth == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3811,7 +3810,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal->depth == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3877,7 +3876,7 @@ namespace sw
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7FFF7FFF) + (((x) ^ (y)) & 0x00010001))
 
-				if(internal.depth == 2)
+				if(internal->depth == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3895,7 +3894,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal->depth == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3919,7 +3918,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal->depth == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -3955,7 +3954,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal->depth == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4020,11 +4019,11 @@ namespace sw
 				#undef AVERAGE
 			}
 		}
-		else if(internal.format == FORMAT_R32F)
+		else if(internal->format == FORMAT_R32F)
 		{
 			if(CPUID::supportsSSE() && (width % 4) == 0)
 			{
-				if(internal.depth == 2)
+				if(internal->depth == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4043,7 +4042,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal->depth == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4068,7 +4067,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal->depth == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4105,7 +4104,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal->depth == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4170,7 +4169,7 @@ namespace sw
 			}
 			else
 			{
-				if(internal.depth == 2)
+				if(internal->depth == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4189,7 +4188,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal->depth == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4214,7 +4213,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal->depth == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4251,7 +4250,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal->depth == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4315,11 +4314,11 @@ namespace sw
 				else ASSERT(false);
 			}
 		}
-		else if(internal.format == FORMAT_G32R32F)
+		else if(internal->format == FORMAT_G32R32F)
 		{
 			if(CPUID::supportsSSE() && (width % 2) == 0)
 			{
-				if(internal.depth == 2)
+				if(internal->depth == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4338,7 +4337,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal->depth == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4363,7 +4362,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal->depth == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4400,7 +4399,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal->depth == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4465,7 +4464,7 @@ namespace sw
 			}
 			else
 			{
-				if(internal.depth == 2)
+				if(internal->depth == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4484,7 +4483,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal->depth == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4509,7 +4508,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal->depth == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4546,7 +4545,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal->depth == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4610,11 +4609,11 @@ namespace sw
 				else ASSERT(false);
 			}
 		}
-		else if(internal.format == FORMAT_A32B32G32R32F)
+		else if(internal->format == FORMAT_A32B32G32R32F)
 		{
 			if(CPUID::supportsSSE())
 			{
-				if(internal.depth == 2)
+				if(internal->depth == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4633,7 +4632,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal->depth == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4658,7 +4657,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal->depth == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4695,7 +4694,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal->depth == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4760,7 +4759,7 @@ namespace sw
 			}
 			else
 			{
-				if(internal.depth == 2)
+				if(internal->depth == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4779,7 +4778,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal->depth == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4804,7 +4803,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal->depth == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4841,7 +4840,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal->depth == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
