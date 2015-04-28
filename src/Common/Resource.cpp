@@ -15,7 +15,7 @@
 
 namespace sw
 {
-	Resource::Resource(size_t bytes) : size(bytes)
+	Resource::Resource(size_t bytes, bool shared) : size(bytes), unblock(shared)
 	{
 		blocked = 0;
 

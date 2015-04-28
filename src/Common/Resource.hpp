@@ -27,7 +27,7 @@ namespace sw
 	class Resource
 	{
 	public:
-		Resource(size_t bytes);
+		Resource(size_t bytes, bool shared = false);
 
 		void destruct();   // Asynchronous destructor
 

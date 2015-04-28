@@ -129,7 +129,8 @@ namespace sw
 
 	class Surface
 	{
-	private:
+	public:
+		// Also used by gralloc on Android
 		struct Buffer
 		{
 		public:
@@ -156,13 +157,11 @@ namespace sw
 			int sliceP;
 			Format format;
 			Lock lock;
-			
+
 			bool dirty;
 		};
 
-	public:
 		Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget);
-		
 		virtual ~Surface();
 
 		void *lockExternal(int x, int y, int z, Lock lock, Accessor client);

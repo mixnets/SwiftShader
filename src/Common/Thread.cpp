@@ -59,13 +59,29 @@ namespace sw
 		}
 	#endif
 
-	Event::Event()
+	Event::Event(bool shared)
 	{
 		#if defined(_WIN32)
 			handle = CreateEvent(0, FALSE, FALSE, 0);
 		#else
-			pthread_cond_init(&handle, 0);
-			pthread_mutex_init(&mutex, 0);
+			if (!shared)
+			{
+				pthread_cond_init(&handle, 0);
+				pthread_mutex_init(&mutex, 0);
+			}
+			else
+			{
+				pthread_condattr_t ca;
+				pthread_condattr_init(&ca);
+				pthread_condattr_setpshared(&ca, PTHREAD_PROCESS_SHARED);
+				pthread_cond_init(&handle, &ca);
+				pthread_condattr_destroy(&ca);
+				pthread_mutexattr_t ma;
+				pthread_mutexattr_init(&ma);
+				pthread_mutexattr_setpshared(&ma, PTHREAD_PROCESS_SHARED);
+				pthread_mutex_init(&mutex, &ma);
+				pthread_mutexattr_destroy(&ma);
+			}
 			signaled = false;
 		#endif
 	}

@@ -74,7 +74,7 @@ namespace sw
 		friend class Thread;
 
 	public:
-		Event();
+		Event(bool shared = false);
 
 		~Event();
 
