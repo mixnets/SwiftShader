@@ -273,8 +273,6 @@
 		<Unit filename="Device.hpp" />
 		<Unit filename="Framebuffer.cpp" />
 		<Unit filename="Framebuffer.h" />
-		<Unit filename="Image.cpp" />
-		<Unit filename="Image.hpp" />
 		<Unit filename="IndexDataManager.cpp" />
 		<Unit filename="IndexDataManager.h" />
 		<Unit filename="Renderbuffer.cpp" />
