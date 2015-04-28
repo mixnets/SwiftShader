@@ -126,7 +126,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 		}
     }
 
-	backBuffer = new Image(0, backBufferWidth, backBufferHeight, GL_RGB, GL_UNSIGNED_BYTE);
+	backBuffer = new egl::Image(0, backBufferWidth, backBufferHeight, GL_RGB, GL_UNSIGNED_BYTE);
 
     if(!backBuffer)
     {
@@ -137,7 +137,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 
     if(true)   // Always provide a depth/stencil buffer
     {
-        mDepthStencil = new Image(0, backBufferWidth, backBufferHeight, sw::FORMAT_D24S8, 1, false, true);
+        mDepthStencil = new egl::Image(0, backBufferWidth, backBufferHeight, sw::FORMAT_D24S8, 1, false, true);
 
 		if(!mDepthStencil)
 		{
