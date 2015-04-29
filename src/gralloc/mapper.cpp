@@ -39,6 +39,7 @@
 #include "GceFrameBufferConfig.h"
 
 #include "gralloc_priv.h"
+#include "remoter_framework_pkt.h"
 
 
 /* desktop Linux needs a little help with gettid() */
@@ -264,11 +265,9 @@ int gralloc_converting_lock(
   return 0;
 }
 
-int gralloc_converting_unlock(gralloc_module_t const* module,
-        buffer_handle_t handle) {
-  if (private_handle_t::validate(handle) < 0)
-    return -EINVAL;
-  return 0;
+int gralloc_converting_unlock(
+    gralloc_module_t const* module, buffer_handle_t handle) {
+    return gralloc_unlock(module, handle);
 }
 #else
 int gralloc_lock(gralloc_module_t const* /*module*/,
@@ -276,13 +275,6 @@ int gralloc_lock(gralloc_module_t const* /*module*/,
         int /*l*/, int /*t*/, int /*w*/, int /*h*/,
         void** vaddr) {
   char name_buf[ASHMEM_NAME_LEN];
-  // this is called when a buffer is being locked for software
-  // access. in thin implementation we have nothing to do since
-  // not synchronization with the h/w is needed.
-  // typically this is used to wait for the h/w to finish with
-  // this buffer if relevant. the data cache may need to be
-  // flushed or invalidated depending on the usage bits and the
-  // hardware.
 
   if (private_handle_t::validate(handle) < 0)
     return -EINVAL;
@@ -310,15 +302,50 @@ int gralloc_lock(gralloc_module_t const* /*module*/,
   *vaddr = primary_buffer;
   return 0;
 }
+#endif
 
-int gralloc_unlock(gralloc_module_t const* /*module*/,
-        buffer_handle_t handle) {
-  // we're done with a software buffer. nothing to do in this
-  // implementation. typically this is used to flush the data cache.
-
-  if (private_handle_t::validate(handle) < 0)
-    return -EINVAL;
-  return 0;
+static bool remoter_write(const struct remoter_request_packet &pkt) {
+    static int remoter_socket = -1;
+    if (remoter_socket == -1) {
+        int rval = socket_local_client(
+            "remoter", ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_STREAM);
+        if (rval >= 0) {
+            remoter_socket = rval;
+        } else {
+            ALOGE("Error connecting to remoter (%s)", strerror(errno));
+            return false;
+        }
+    }
+    if (write(remoter_socket, &pkt, sizeof(pkt)) < -1) {
+        ALOGE("Remoter socket write failed (%s)", strerror(errno));
+        close(remoter_socket);
+        remoter_socket = -1;
+        return false;
+    }
+    return true;
 }
 
-#endif
+int gralloc_unlock(
+    gralloc_module_t const* /*module*/, buffer_handle_t handle) {
+    // we're done with a software buffer. nothing to do in this
+    // implementation. typically this is used to flush the data cache.
+
+    if (private_handle_t::validate(handle) < 0) {
+        return -EINVAL;
+    }
+    const private_handle_t* hnd = reinterpret_cast<private_handle_t const*>(
+        handle);
+    if (!(hnd->flags & private_handle_t::PRIV_FLAGS_FRAMEBUFFER)) {
+        return 0;
+    }
+    const GceFrameBufferConfig* config = GceFrameBufferConfig::getInstance();
+    const int yoffset = hnd->frame_offset / config->line_length();
+    struct remoter_request_packet pkt;
+    remoter_request_packet_init(&pkt, REMOTER_OP_FB_POST, 0);
+    pkt.params.fb_post_params.y_offset = yoffset;
+    bool rval = remoter_write(pkt);
+    if (!rval) {
+        ALOGI("Failed to post frame y_offset=%d", yoffset);
+    }
+    return 0;
+}

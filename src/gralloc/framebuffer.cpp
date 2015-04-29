@@ -43,7 +43,6 @@
 #endif
 
 #include "gralloc_priv.h"
-#include "gr.h"
 
 #include <GceFrameBufferConfig.h>
 #include "remoter_framework_pkt.h"

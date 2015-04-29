@@ -39,7 +39,6 @@
 
 #include "GceFrameBufferConfig.h"
 #include "gralloc_priv.h"
-#include "gr.h"
 
 /*****************************************************************************/
 
