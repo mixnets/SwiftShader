@@ -703,6 +703,14 @@ void Context::setColorMask(bool red, bool green, bool blue, bool alpha)
     }
 }
 
+unsigned int Context::getColorMask() const
+{
+	return (mState.colorMaskRed ? 0x1 : 0) |
+	       (mState.colorMaskGreen ? 0x2 : 0) |
+	       (mState.colorMaskBlue ? 0x4 : 0) |
+	       (mState.colorMaskAlpha ? 0x8 : 0);
+}
+
 void Context::setDepthMask(bool mask)
 {
     if(mState.depthMask != mask)
@@ -3368,22 +3376,16 @@ void Context::clear(GLbitfield mask)
         return;
     }
 	
-	unsigned int color = (unorm<8>(mState.colorClearValue.alpha) << 24) |
-                         (unorm<8>(mState.colorClearValue.red) << 16) |
-                         (unorm<8>(mState.colorClearValue.green) << 8) | 
-                         (unorm<8>(mState.colorClearValue.blue) << 0);
-    float depth = clamp01(mState.depthClearValue);
-    int stencil = mState.stencilClearValue & 0x000000FF;
-
 	if(mask & GL_COLOR_BUFFER_BIT)
 	{
-		unsigned int rgbaMask = (mState.colorMaskRed ? 0x1 : 0) |
-		                        (mState.colorMaskGreen ? 0x2 : 0) | 
-		                        (mState.colorMaskBlue ? 0x4 : 0) |
-		                        (mState.colorMaskAlpha ? 0x8 : 0);
+		unsigned int rgbaMask = getColorMask();
 
 		if(rgbaMask != 0)
 		{
+			unsigned int color = (unorm<8>(mState.colorClearValue.alpha) << 24) |
+			                     (unorm<8>(mState.colorClearValue.red) << 16) |
+			                     (unorm<8>(mState.colorClearValue.green) << 8) |
+			                     (unorm<8>(mState.colorClearValue.blue) << 0);
 			device->clearColor(color, rgbaMask);
 		}
 	}
@@ -3392,6 +3394,7 @@ void Context::clear(GLbitfield mask)
 	{
 		if(mState.depthMask != 0)
 		{
+			float depth = clamp01(mState.depthClearValue);
 			device->clearDepth(depth);
 		}
 	}
@@ -3400,7 +3403,123 @@ void Context::clear(GLbitfield mask)
 	{
 		if(mState.stencilWritemask != 0)
 		{
+			int stencil = mState.stencilClearValue & 0x000000FF;
 			device->clearStencil(stencil, mState.stencilWritemask);
+		}
+	}
+}
+
+void Context::clearColorBuffer(GLint drawbuffer, const GLint *value)
+{
+	const Device* device = getDevice();
+	unsigned int rgbaMask = getColorMask();
+	if(device && rgbaMask)
+	{
+		Framebuffer* framebuffer = getFramebuffer(drawbuffer);
+		egl::Image* image = framebuffer->getRenderTarget(0);
+
+		int x0(0), y0(0), width(0), height(0);
+		device->getScissoredRegion(image, x0, y0, width, height);
+
+		unsigned int color = (value[0] < 0 ? 0 : (value[0] & 0x7F800000) << 1) |
+		                     (value[1] < 0 ? 0 : (value[1] & 0x7F800000) >> 7) |
+		                     (value[2] < 0 ? 0 : (value[2] & 0x7F800000) >> 15) |
+		                     (value[3] < 0 ? 0 : (value[3] & 0x7F800000) >> 23);
+		image->clearColorBuffer(color, rgbaMask, x0, y0, width, height);
+	}
+}
+
+void Context::clearColorBuffer(GLint drawbuffer, const GLuint *value)
+{
+	const Device* device = getDevice();
+	unsigned int rgbaMask = getColorMask();
+	if(device && rgbaMask)
+	{
+		Framebuffer* framebuffer = getFramebuffer(drawbuffer);
+		egl::Image* image = framebuffer->getRenderTarget(0);
+
+		int x0(0), y0(0), width(0), height(0);
+		device->getScissoredRegion(image, x0, y0, width, height);
+
+		unsigned int color = (value[0] & 0xFF000000) >> 0 |
+		                     (value[1] & 0xFF000000) >> 8 |
+		                     (value[2] & 0xFF000000) >> 16 |
+		                     (value[3] & 0xFF000000) >> 24;
+		image->clearColorBuffer(color, rgbaMask, x0, y0, width, height);
+	}
+}
+
+void Context::clearColorBuffer(GLint drawbuffer, const GLfloat *value)
+{
+	const Device* device = getDevice();
+	unsigned int rgbaMask = getColorMask();
+	if(device && rgbaMask)
+	{
+		Framebuffer* framebuffer = getFramebuffer(drawbuffer);
+		egl::Image* image = framebuffer->getRenderTarget(0);
+
+		int x0(0), y0(0), width(0), height(0);
+		device->getScissoredRegion(image, x0, y0, width, height);
+
+		unsigned int color = (unorm<8>(value[0]) << 24) |
+		                     (unorm<8>(value[1]) << 16) |
+		                     (unorm<8>(value[2]) << 8) |
+		                     (unorm<8>(value[3]) << 0);
+		image->clearColorBuffer(color, rgbaMask, x0, y0, width, height);
+	}
+}
+
+void Context::clearDepthBuffer(GLint drawbuffer, const GLfloat *value)
+{
+	const Device* device = getDevice();
+	if(device && mState.depthMask)
+	{
+		Framebuffer* framebuffer = getFramebuffer(drawbuffer);
+		egl::Image* image = framebuffer->getDepthStencil();
+
+		int x0(0), y0(0), width(0), height(0);
+		device->getScissoredRegion(image, x0, y0, width, height);
+
+		float depth = clamp01(value[0]);
+		image->clearDepthBuffer(depth, x0, y0, width, height);
+	}
+}
+
+void Context::clearStencilBuffer(GLint drawbuffer, const GLint *value)
+{
+	const Device* device = getDevice();
+	if(device && mState.stencilWritemask)
+	{
+		Framebuffer* framebuffer = getFramebuffer(drawbuffer);
+		egl::Image* image = framebuffer->getDepthStencil();
+
+		int x0(0), y0(0), width(0), height(0);
+		device->getScissoredRegion(image, x0, y0, width, height);
+
+		unsigned char stencil = value[0] < 0 ? 0 : static_cast<unsigned char>((value[0] & 0x7F800000) >> 23);
+		image->clearStencilBuffer(stencil, static_cast<unsigned char>(mState.stencilWritemask), x0, y0, width, height);
+	}
+}
+
+void Context::clearDepthStencilBuffer(GLint drawbuffer, GLfloat depth, GLint stencil)
+{
+	const Device* device = getDevice();
+	if(device && (mState.depthMask || mState.stencilWritemask))
+	{
+		Framebuffer* framebuffer = getFramebuffer(drawbuffer);
+		egl::Image* image = framebuffer->getDepthStencil();
+
+		int x0(0), y0(0), width(0), height(0);
+		device->getScissoredRegion(image, x0, y0, width, height);
+
+		if(mState.stencilWritemask)
+		{
+			image->clearStencilBuffer(static_cast<unsigned char>(stencil & 0x000000FF), static_cast<unsigned char>(mState.stencilWritemask), x0, y0, width, height);
+		}
+
+		if(mState.depthMask)
+		{
+			image->clearDepthBuffer(clamp01(depth), x0, y0, width, height);
 		}
 	}
 }
