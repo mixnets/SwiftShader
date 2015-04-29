@@ -10,6 +10,13 @@
 //
 // libGLES_CM.cpp: Implements the exported OpenGL ES 1.1 functions.
 
+#ifdef _WIN32
+#define GL_API
+#define GLAPI
+#define GL_APICALL
+#define EGLAPI
+#endif
+
 #include "main.h"
 #include "mathutil.h"
 #include "utilities.h"
@@ -24,9 +31,6 @@
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
-
-#include <GLES/gl.h>
-#include <GLES/glext.h>
 
 #include <limits>
 

@@ -26,7 +26,9 @@
 #define _GDI32_
 #include <windows.h>
 #include <GL/GL.h>
+#define GL_GLEXT_PROTOTYPES
 #include <GL/glext.h>
+#undef GL_GLEXT_PROTOTYPES
 
 #include <map>
 #include <string>

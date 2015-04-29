@@ -21,10 +21,6 @@
 #include "libEGL/Display.h"
 #include "libGLES_CM/libGLES_CM.hpp"
 
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#include <GLES3/gl3.h>
-
 namespace es2
 {
 	Context *getContext();

@@ -26,11 +26,6 @@
 #include "Common/Version.h"
 #include "Main/Register.hpp"
 
-#define _GDI32_
-#include <windows.h>
-#include <GL/GL.h>
-#include <GL/glext.h>
-
 #include <limits>
 
 static bool validImageSize(GLint level, GLsizei width, GLsizei height)

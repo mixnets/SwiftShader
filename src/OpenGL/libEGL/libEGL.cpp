@@ -11,6 +11,10 @@
 
 // libEGL.cpp: Implements the exported EGL functions.
 
+#ifdef _WIN32
+#define EGLAPI
+#endif
+
 #include "main.h"
 #include "Display.h"
 #include "Surface.h"
