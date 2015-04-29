@@ -3126,8 +3126,6 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 					UNIMPLEMENTED();
 					break;
 				case GL_MODULATE:
-					UNIMPLEMENTED();
-					break;
 				case GL_ADD:
 					context->setTextureEnvMode((GLenum)param);
 					break;

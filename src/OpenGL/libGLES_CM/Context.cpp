@@ -1768,8 +1768,6 @@ GLenum Context::applyIndexBuffer(const void *indices, GLsizei count, GLenum mode
 
 void Context::applyTextures()
 {
-	GLenum texEnvMode = getTextureEnvMode();
-
 	for(int samplerIndex = 0; samplerIndex < MAX_TEXTURE_UNITS; samplerIndex++)
     {
         Texture *texture = getSamplerTexture(samplerIndex, TEXTURE_2D);
@@ -1799,7 +1797,7 @@ void Context::applyTextures()
 
 			GLenum texFormat = texture->getFormat(GL_TEXTURE_2D, 0);
 			sw::TextureStage::StageOperation rgbOperation, alphaOperation;
-			es2sw::ConvertTextureOperations(texEnvMode, texFormat, &rgbOperation, &alphaOperation);
+			es2sw::ConvertTextureOperations(mState.textureEnvMode, texFormat, &rgbOperation, &alphaOperation);
 
 			device->setStageOperation(samplerIndex, rgbOperation);
             device->setFirstArgument(samplerIndex, sw::TextureStage::SOURCE_TEXTURE);
@@ -2752,11 +2750,6 @@ GLenum Context::getClientActiveTexture() const
 unsigned int Context::getActiveTexture() const
 {
 	return mState.activeSampler;
-}
-
-GLenum Context::getTextureEnvMode()
-{
-	return mState.textureEnvMode;
 }
 
 }

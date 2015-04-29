@@ -328,7 +328,6 @@ public:
 	unsigned int getActiveTexture() const;
 
 	void setTextureEnvMode(GLenum texEnvMode);
-	GLenum getTextureEnvMode();
 
     void setLineWidth(GLfloat width);
 
