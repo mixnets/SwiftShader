@@ -122,11 +122,15 @@ static int gralloc_unmap(gralloc_module_t const* /*module*/,
   if (!(hnd->flags & private_handle_t::PRIV_FLAGS_FRAMEBUFFER)) {
     ALOGI("Unmapped %s hnd=%p fd=%d base=%p", buffer_name(hnd, name_buf), hnd,
           hnd->fd, hnd->base);
+#if 0
     if (munmap(hnd->base, hnd->total_size) < 0) {
       ALOGE("Could not unmap %s", strerror(errno));
     }
+#endif
   }
+#if 0
   hnd->base = 0;
+#endif
   return 0;
 }
 

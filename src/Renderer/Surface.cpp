@@ -686,14 +686,11 @@ namespace sw
 		hasParent = texture != 0;
 		depth = max(1, depth);
 
-		external = reinterpret_cast<Buffer*>(allocate(sizeof(*external)));
-		Buffer::initialize(width, height, depth, format, renderTarget && !texture, external);
+		external = Buffer::create(width, height, depth, format, renderTarget && !texture);
 		// TODO(work out the internal / external sharing thing
 		Format internalFormat = selectInternalFormat(format);
-		internal = reinterpret_cast<Buffer*>(allocate(sizeof(*internal)));
-		Buffer::initialize(width, height, depth, internalFormat, !!renderTarget, internal);
-		stencil = reinterpret_cast<Buffer*>(allocate(sizeof(*stencil)));
-		Buffer::initialize(width, height, depth, FORMAT_S8, !!renderTarget, stencil);
+		internal = Buffer::create(width, height, depth, internalFormat, !!renderTarget);
+		stencil = Buffer::create(width, height, depth, FORMAT_S8, !!renderTarget);
 
 		ALOGI("%s: internal=%p .buffer %p external=%p .buffer %p",
 			  __FUNCTION__, internal, internal->buffer, external, external->buffer);
@@ -712,17 +709,14 @@ namespace sw
 		{
 			resource->destruct();
 		}
-		deallocate(external->buffer);
-		if (internal->buffer != external->buffer)
-		{
-			deallocate(internal->buffer);
-		}
-		deallocate(stencil->buffer);
-		external->buffer = 0;
-		internal->buffer = 0;
-		stencil->buffer = 0;
+		Buffer::verify(external);
 		deallocate(external);
-		deallocate(internal);
+		if (internal != external)
+		{
+			Buffer::verify(internal);
+			deallocate(internal);
+		}
+		Buffer::verify(stencil);
 		deallocate(stencil);
 		external = 0;
 		internal = 0;
@@ -733,17 +727,6 @@ namespace sw
 	{
 		resource->lock(client);
 
-		if(!external->buffer)
-		{
-			if(internal->buffer && identicalFormats())
-			{
-				external->buffer = internal->buffer;
-			}
-			else
-			{
-				external->buffer = allocateBuffer(external->width, external->height, external->depth, external->format);
-			}
-		}
 		if (internal->dirty)
 		{
 			if(lock != LOCK_DISCARD)
@@ -781,18 +764,6 @@ namespace sw
 		if (requestedLock != LOCK_UNLOCKED)
 		{
 			resource->lock(client);
-		}
-
-		if(!internal->buffer)
-		{
-			if(external->buffer && identicalFormats())
-			{
-				internal->buffer = external->buffer;
-			}
-			else
-			{
-				internal->buffer = allocateBuffer(internal->width, internal->height, internal->depth, internal->format);
-			}
 		}
 
 		// FIXME: WHQL requires conversion to lower external precision and back
@@ -863,11 +834,6 @@ namespace sw
 	void *Surface::lockStencil(int front, Accessor client)
 	{
 		resource->lock(client);
-
-		if(!stencil->buffer)
-		{
-			stencil->buffer = allocateBuffer(stencil->width, stencil->height, stencil->depth, stencil->format);
-		}
 
 		return stencil->lockRect(0, 0, front, LOCK_READWRITE);   // FIXME
 	}
@@ -2176,12 +2142,12 @@ namespace sw
 		return 1;
 	}
 
-	void *Surface::allocateBuffer(int width, int height, int depth, Format format)
+	unsigned int Surface::sizeBuffer(int width, int height, int depth, Format format)
 	{
 		int width4 = (width + 3) & ~3;
 		int height4 = (height + 3) & ~3;
 
-		return allocateZero(size(width4, height4, depth, format));
+		return size(width4, height4, depth, format);
 	}
 
 	void Surface::memfill(void *buffer, int pattern, int bytes)

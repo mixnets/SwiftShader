@@ -14,7 +14,12 @@
 
 #include "Color.hpp"
 #include "Main/Config.hpp"
+#include "Common/Memory.hpp"
+#undef allocate
+#undef allocateZero
+#undef deallocate
 #include "Common/Resource.hpp"
+#include <cutils/log.h>
 
 namespace sw
 {
@@ -134,9 +139,33 @@ namespace sw
 		struct Buffer
 		{
 		public:
+			static Buffer * create(int width, int height, int depth, Format format, bool target)
+			{
+				unsigned int size = Surface::sizeBuffer(width, height, depth, format) + sizeof(Buffer);
+				Buffer * rval = reinterpret_cast<Buffer*>(allocateZero(size * 3, __FUNCTION__));
+				initialize(width, height, depth, format, target, rval);
+				rval->bound = size;
+				rval->actual_end = size * 3;
+				return rval;
+			}
+
+			static void verify(Buffer *in)
+			{
+				const char * start = reinterpret_cast<const char*>(in) + in->bound;
+				const char * it = start;
+				const char * end = reinterpret_cast<const char*>(in) + in->actual_end;
+				while (it != end)
+				{
+					if (*it++)
+					{
+						ALOGE("Buffer %p corrupted at %d", int(it - start));
+						return;
+					}
+				}
+			}
+
 			static void initialize(int width, int height, int depth, Format format, bool target, Buffer *dest)
 			{
-				dest->buffer = NULL;
 				dest->width = width;
 				dest->height = height;
 				dest->depth = depth;
@@ -162,7 +191,6 @@ namespace sw
 			void *lockRect(int x, int y, int z, Lock lock);
 			void unlockRect();
 
-			void *buffer;
 			int width;
 			int height;
 			int depth;
@@ -175,8 +203,12 @@ namespace sw
 			Lock lock;
 
 			bool dirty;
+			unsigned int bound;
+			unsigned int actual_end;
+			ALIGN(16, char) buffer[1];
 
 		private:
+			Buffer();
 			Buffer(const Buffer&);
 			Buffer& operator=(const Buffer&);
 		};
@@ -363,7 +395,7 @@ namespace sw
 
 		static void update(Buffer &destination, Buffer &source);
 		static void genericUpdate(Buffer &destination, Buffer &source);
-		static void *allocateBuffer(int width, int height, int depth, Format format);
+		static unsigned int sizeBuffer(int width, int height, int depth, Format format);
 		static void memfill(void *buffer, int pattern, int bytes);
 
 		bool identicalFormats() const;
