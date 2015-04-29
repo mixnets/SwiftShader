@@ -10,6 +10,11 @@
 //
 // libGLESv2.cpp: Implements the exported OpenGL ES 2.0 functions.
 
+#ifdef _WIN32
+#define GL_API
+#define GL_APICALL
+#endif
+
 #include "main.h"
 #include "mathutil.h"
 #include "utilities.h"

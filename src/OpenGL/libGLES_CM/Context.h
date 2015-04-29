@@ -24,7 +24,9 @@
 #include "common/MatrixStack.hpp"
 
 #include <GLES/gl.h>
+#define GL_GLEXT_PROTOTYPES
 #include <GLES/glext.h>
+#undef GL_GLEXT_PROTOTYPES
 #include <EGL/egl.h>
 
 #include <map>

@@ -10,6 +10,11 @@
 //
 // libGLESv3.cpp: Implements the exported OpenGL ES 3.0 functions.
 
+#ifdef _WIN32
+#define GL_API __declspec(dllexport)
+#define GL_APICALL __declspec(dllexport)
+#endif
+
 #include "main.h"
 #include "Buffer.h"
 #include "Framebuffer.h"

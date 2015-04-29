@@ -19,11 +19,6 @@
 #include "common/debug.h"
 #include "Display.h"
 
-#define _GDI32_
-#include <windows.h>
-#include <GL/GL.h>
-#include <GL/glext.h>
-
 namespace gl
 {
 	struct Current

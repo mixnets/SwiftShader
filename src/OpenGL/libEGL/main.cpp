@@ -11,6 +11,10 @@
 
 // main.cpp: DLL entry point and management of thread-local data.
 
+#ifdef _WIN32
+#define EGLAPI __declspec(dllexport)
+#endif
+
 #include "main.h"
 
 #include "libEGL.hpp"
