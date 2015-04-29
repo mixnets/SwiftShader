@@ -154,6 +154,7 @@ struct SPVRTPrint3DAPI
 	GLboolean					isBlendEnabled;
 	GLboolean					isDepthTestEnabled;
 	GLint						nArrayBufferBinding;
+	GLint						nElementArrayBufferBinding;
 	GLint						nCurrentProgram;
 	GLint						nTextureBinding2D;
 	GLint						eFrontFace;
@@ -490,6 +491,7 @@ void CPVRTPrint3D::APIRenderStates(int nAction)
 		glGetIntegerv(GL_FRONT_FACE, &m_pAPI->eFrontFace);
 		glGetIntegerv(GL_CULL_FACE_MODE, &m_pAPI->eCullFaceMode);
 		glGetIntegerv(GL_ARRAY_BUFFER_BINDING,&m_pAPI->nArrayBufferBinding);
+		glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING,&m_pAPI->nElementArrayBufferBinding);
 		glGetIntegerv(GL_CURRENT_PROGRAM, &m_pAPI->nCurrentProgram);
 		glGetIntegerv(GL_TEXTURE_BINDING_2D, &m_pAPI->nTextureBinding2D);
 
