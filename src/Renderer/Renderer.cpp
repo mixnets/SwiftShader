@@ -611,6 +611,8 @@ namespace sw
 				resume[0]->signal();
 			}
 		}
+
+		synchronize();
 	}
 
 	void Renderer::threadFunction(void *parameters)
