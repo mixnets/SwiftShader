@@ -2316,30 +2316,69 @@ GL_APICALL void GL_APIENTRY glUniform4uiv(GLint location, GLsizei count, const G
 	}
 }
 
+class DrawFramebufferGuard
+{
+public:
+	DrawFramebufferGuard(GLint drawbuffer) : mContext(es2::getContext())
+	{
+		mDrawFramebufferName = mContext->getDrawFramebufferName();
+		mContext->bindDrawFramebuffer(drawbuffer);
+	}
+
+	~DrawFramebufferGuard()
+	{
+		mContext->bindDrawFramebuffer(mDrawFramebufferName);
+	}
+private:
+	es2::Context *mContext;
+	GLint mDrawFramebufferName;
+};
+
 GL_APICALL void GL_APIENTRY glClearBufferiv(GLenum buffer, GLint drawbuffer, const GLint *value)
 {
 	TRACE("(GLenum buffer = 0x%X, GLint drawbuffer = %d, const GLint *value = %p)",
 	      buffer, drawbuffer, value);
 
-	switch(buffer)
-	{
-	case GL_COLOR:
-		if(drawbuffer > es2::IMPLEMENTATION_MAX_DRAW_BUFFERS)
-		{
-			return error(GL_INVALID_VALUE);
-		}
-		break;
-	case GL_STENCIL:
-		if(drawbuffer != 0)
-		{
-			return error(GL_INVALID_VALUE);
-		}
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
-	}
+	es2::Context *context = es2::getContext();
 
-	UNIMPLEMENTED();
+	if(context)
+	{
+		switch(buffer)
+		{
+		case GL_COLOR:
+			if(drawbuffer < 0 || drawbuffer >= es2::IMPLEMENTATION_MAX_DRAW_BUFFERS)
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			else
+			{
+				DrawFramebufferGuard dfg(drawbuffer);
+				GLfloat originalValue[4];
+				context->getFloatv(GL_COLOR_CLEAR_VALUE, originalValue);
+				context->setClearColor((float)value[0], (float)value[1], (float)value[2], (float)value[3]);
+				context->clear(GL_COLOR_BUFFER_BIT);
+				context->setClearColor(originalValue[0], originalValue[1], originalValue[2], originalValue[3]);
+			}
+			break;
+		case GL_STENCIL:
+			if(drawbuffer != 0)
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			else
+			{
+				DrawFramebufferGuard dfg(drawbuffer);
+				GLint originalValue;
+				context->getIntegerv(GL_STENCIL_CLEAR_VALUE, &originalValue);
+				context->setClearStencil(value[0]);
+				context->clear(GL_STENCIL_BUFFER_BIT);
+				context->setClearStencil(originalValue);
+			}
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
+		}
+	}
 }
 
 GL_APICALL void GL_APIENTRY glClearBufferuiv(GLenum buffer, GLint drawbuffer, const GLuint *value)
@@ -2347,19 +2386,31 @@ GL_APICALL void GL_APIENTRY glClearBufferuiv(GLenum buffer, GLint drawbuffer, co
 	TRACE("(GLenum buffer = 0x%X, GLint drawbuffer = %d, const GLuint *value = %p)",
 	      buffer, drawbuffer, value);
 
-	switch(buffer)
-	{
-	case GL_COLOR:
-		if(drawbuffer > es2::IMPLEMENTATION_MAX_DRAW_BUFFERS)
-		{
-			return error(GL_INVALID_VALUE);
-		}
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
-	}
+	es2::Context *context = es2::getContext();
 
-	UNIMPLEMENTED();
+	if(context)
+	{
+		switch(buffer)
+		{
+		case GL_COLOR:
+			if(drawbuffer < 0 || drawbuffer >= es2::IMPLEMENTATION_MAX_DRAW_BUFFERS)
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			else
+			{
+				DrawFramebufferGuard dfg(drawbuffer);
+				GLfloat originalValue[4];
+				context->getFloatv(GL_COLOR_CLEAR_VALUE, originalValue);
+				context->setClearColor((float)value[0], (float)value[1], (float)value[2], (float)value[3]);
+				context->clear(GL_COLOR_BUFFER_BIT);
+				context->setClearColor(originalValue[0], originalValue[1], originalValue[2], originalValue[3]);
+			}
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
+		}
+	}
 }
 
 GL_APICALL void GL_APIENTRY glClearBufferfv(GLenum buffer, GLint drawbuffer, const GLfloat *value)
@@ -2367,25 +2418,46 @@ GL_APICALL void GL_APIENTRY glClearBufferfv(GLenum buffer, GLint drawbuffer, con
 	TRACE("(GLenum buffer = 0x%X, GLint drawbuffer = %d, const GLfloat *value = %p)",
 	      buffer, drawbuffer, value);
 
-	switch(buffer)
-	{
-	case GL_COLOR:
-		if(drawbuffer > es2::IMPLEMENTATION_MAX_DRAW_BUFFERS)
-		{
-			return error(GL_INVALID_VALUE);
-		}
-		break;
-	case GL_DEPTH:
-		if(drawbuffer != 0)
-		{
-			return error(GL_INVALID_VALUE);
-		}
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
-	}
+	es2::Context *context = es2::getContext();
 
-	UNIMPLEMENTED();
+	if(context)
+	{
+		switch(buffer)
+		{
+		case GL_COLOR:
+			if(drawbuffer < 0 || drawbuffer >= es2::IMPLEMENTATION_MAX_DRAW_BUFFERS)
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			else
+			{
+				DrawFramebufferGuard dfg(drawbuffer);
+				GLfloat originalValue[4];
+				context->getFloatv(GL_COLOR_CLEAR_VALUE, originalValue);
+				context->setClearColor(value[0], value[1], value[2], value[3]);
+				context->clear(GL_COLOR_BUFFER_BIT);
+				context->setClearColor(originalValue[0], originalValue[1], originalValue[2], originalValue[3]);
+			}
+			break;
+		case GL_DEPTH:
+			if(drawbuffer != 0)
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			else
+			{
+				DrawFramebufferGuard dfg(drawbuffer);
+				GLfloat originalValue;
+				context->getFloatv(GL_DEPTH_CLEAR_VALUE, &originalValue);
+				context->setClearDepth(value[0]);
+				context->clear(GL_DEPTH_BUFFER_BIT);
+				context->setClearDepth(originalValue);
+			}
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
+		}
+	}
 }
 
 GL_APICALL void GL_APIENTRY glClearBufferfi(GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil)
@@ -2393,19 +2465,35 @@ GL_APICALL void GL_APIENTRY glClearBufferfi(GLenum buffer, GLint drawbuffer, GLf
 	TRACE("(GLenum buffer = 0x%X, GLint drawbuffer = %d, GLfloat depth = %f, GLint stencil = %d)",
 	      buffer, drawbuffer, depth, stencil);
 
-	switch(buffer)
-	{
-	case GL_DEPTH_STENCIL:
-		if(drawbuffer != 0)
-		{
-			return error(GL_INVALID_VALUE);
-		}
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
-	}
+	es2::Context *context = es2::getContext();
 
-	UNIMPLEMENTED();
+	if(context)
+	{
+		switch(buffer)
+		{
+		case GL_DEPTH_STENCIL:
+			if(drawbuffer != 0)
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			else
+			{
+				DrawFramebufferGuard dfg(drawbuffer);
+				GLfloat originalDepthValue;
+				context->getFloatv(GL_DEPTH_CLEAR_VALUE, &originalDepthValue);
+				GLint originalStencilValue;
+				context->getIntegerv(GL_STENCIL_CLEAR_VALUE, &originalStencilValue);
+				context->setClearStencil(stencil);
+				context->setClearDepth(depth);
+				context->clear(GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+				context->setClearDepth(originalDepthValue);
+				context->setClearStencil(originalStencilValue);
+			}
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
+		}
+	}
 }
 
 GL_APICALL const GLubyte *GL_APIENTRY glGetStringi(GLenum name, GLuint index)
