@@ -6,8 +6,8 @@
 namespace sw
 {
     FrameBufferAndroid::FrameBufferAndroid(ANativeWindow* window, int width, int height)
-        : FrameBuffer(width, height, false, false),
-        nativeWindow(window), buffer(0), gralloc(0)
+			: FrameBuffer(width, height, false, false),
+			  nativeWindow(window), buffer(0), gralloc(0)
     {
         hw_module_t const* pModule;
         hw_get_module(GRALLOC_HARDWARE_MODULE_ID, &pModule);
@@ -49,6 +49,12 @@ namespace sw
         {
             return NULL;
         }
+
+		if ((buffer->width < width) || (buffer->height < height))
+		{
+			ALOGE("badness: buffer of %dx%d to small for window of %dx%d",
+				  buffer->width, buffer->height, width, height);
+		}
 
         android::sp<android::Fence> fence(new android::Fence(fenceFd));
         if (fence->wait(android::Fence::TIMEOUT_NEVER) != android::NO_ERROR)
@@ -96,7 +102,10 @@ namespace sw
     }
 }
 
-sw::FrameBuffer *createFrameBuffer(void *display, ANativeWindow* window, int width, int height)
+sw::FrameBuffer *createFrameBuffer(void *display, ANativeWindow* window, int /*width*/, int /*height*/)
 {
+	int width, height;
+	window->query(window, NATIVE_WINDOW_WIDTH, &width);
+	window->query(window, NATIVE_WINDOW_HEIGHT, &height);
     return new sw::FrameBufferAndroid(window, width, height);
 }
