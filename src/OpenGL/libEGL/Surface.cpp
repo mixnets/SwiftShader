@@ -206,11 +206,11 @@ void Surface::swap()
 {
 	if(backBuffer)
     {
+		checkForResize();
+
 		void *source = backBuffer->lockInternal(0, 0, 0, sw::LOCK_READONLY, sw::PUBLIC);
 		frameBuffer->flip(source, backBuffer->getInternalFormat());
 		backBuffer->unlockInternal();
-
-        checkForResize();
 	}
 }
 
