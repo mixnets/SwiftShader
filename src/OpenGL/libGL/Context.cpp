@@ -736,6 +736,7 @@ const VertexAttribute &Context::getVertexAttribState(unsigned int attribNum)
 void Context::setVertexAttribState(unsigned int attribNum, Buffer *boundBuffer, GLint size, GLenum type, bool normalized,
                                    GLsizei stride, const void *pointer)
 {
+	mState.vertexAttribute[attribNum].mBoundBuffer.isCommon = true;
     mState.vertexAttribute[attribNum].mBoundBuffer = boundBuffer;
     mState.vertexAttribute[attribNum].mSize = size;
     mState.vertexAttribute[attribNum].mType = type;
