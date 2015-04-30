@@ -179,14 +179,17 @@ static int gralloc_alloc_buffer(
 
   int bytes_per_pixel = formatToBytesPerPixel(format);
   int bytes_per_line = GceFrameBufferConfig::align(bytes_per_pixel * w);
-  int size = GceFrameBufferConfig::align(sizeof(gralloc_buffer_control_t));
+  int size = GceFrameBufferConfig::align(sizeof(gralloc_buffer_control_t), 16);
   int primary_offset = size;
-  size = roundUpToPageSize(size + bytes_per_line * h);
+  int w4 = GceFrameBufferConfig::align(w, 4);
+  int h4 = GceFrameBufferConfig::align(h, 4);
+  int bytes_per_line4 = GceFrameBufferConfig::align(bytes_per_pixel * w4);
+  size = roundUpToPageSize(size + bytes_per_line4 * h4);
   size += PAGE_SIZE;
   int secondary_offset = 0;
   if (bytes_per_pixel != 4) {
     secondary_offset = size;
-    size += roundUpToPageSize(GceFrameBufferConfig::align(4 * w) * h);
+    size += roundUpToPageSize(GceFrameBufferConfig::align(4 * w4) * h4);
     size += PAGE_SIZE;
   }
 
