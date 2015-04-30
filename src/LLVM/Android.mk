@@ -3,7 +3,6 @@ include $(CLEAR_VARS)
 
 LOCAL_CLANG := true
 
-LOCAL_MODULE_PATH := $(TARGET_OUT)/vendor/lib/egl
 LOCAL_MODULE := libLLVM_swiftshader
 
 LOCAL_SRC_FILES := \
