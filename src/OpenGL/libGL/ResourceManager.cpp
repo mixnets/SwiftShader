@@ -72,7 +72,7 @@ void ResourceManager::release()
 GLuint ResourceManager::createBuffer()
 {
     //GLuint handle = mBufferNameSpace.allocate();
-    unsigned int handle = 1;
+    static unsigned int handle = 1;
 
     while (mBufferMap.find(handle) != mBufferMap.end())
     {
