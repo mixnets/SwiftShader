@@ -83,6 +83,9 @@ LOCAL_CFLAGS += -UNDEBUG -g -O0
 # Uncomment for OFF:
 #LOCAL_CFLAGS += -fomit-frame-pointer -ffunction-sections -fdata-sections -DANGLE_DISABLE_TRACE
 
+# Remove logo on a release build for internal use
+LOCAL_CFLAGS += -DDISPLAY_LOGO=0
+
 LOCAL_C_INCLUDES += \
         $(LOCAL_PATH)/OpenGL/include \
         $(LOCAL_PATH)/OpenGL/ \
