@@ -1885,11 +1885,8 @@ GL_APICALL void GL_APIENTRY glBindBufferRange(GLenum target, GLuint index, GLuin
 			{
 				return error(GL_INVALID_VALUE);
 			}
-			else
-			{
-				es2::TransformFeedback* transformFeedback = context->getTransformFeedback();
-				transformFeedback->setBuffer(index, context->getBuffer(buffer), offset, size);
-			}
+			context->bindIndexedTransformFeedbackBuffer(buffer, index, offset, size);
+			context->bindGenericTransformFeedbackBuffer(buffer);
 			break;
 		case GL_UNIFORM_BUFFER:
 			if(index >= es2::IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS)
@@ -1900,7 +1897,8 @@ GL_APICALL void GL_APIENTRY glBindBufferRange(GLenum target, GLuint index, GLuin
 			{
 				return error(GL_INVALID_VALUE);
 			}
-			UNIMPLEMENTED();
+			context->bindIndexedUniformBuffer(buffer, index, offset, size);
+			context->bindGenericUniformBuffer(buffer);
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -1924,18 +1922,16 @@ GL_APICALL void GL_APIENTRY glBindBufferBase(GLenum target, GLuint index, GLuint
 			{
 				return error(GL_INVALID_VALUE);
 			}
-			else
-			{
-				es2::TransformFeedback* transformFeedback = context->getTransformFeedback();
-				transformFeedback->setBuffer(index, context->getBuffer(buffer));
-			}
+			context->bindIndexedTransformFeedbackBuffer(buffer, index, 0, 0);
+			context->bindGenericTransformFeedbackBuffer(buffer);
 			break;
 		case GL_UNIFORM_BUFFER:
 			if(index >= es2::IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS)
 			{
 				return error(GL_INVALID_VALUE);
 			}
-			UNIMPLEMENTED();
+			context->bindIndexedUniformBuffer(buffer, index, 0, 0);
+			context->bindGenericUniformBuffer(buffer);
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -3165,7 +3161,7 @@ GL_APICALL void GL_APIENTRY glGetBufferParameteri64v(GLenum target, GLenum pname
 			UNIMPLEMENTED();
 			break;
 		case GL_UNIFORM_BUFFER:
-			buffer = context->getUniformBuffer();
+			buffer = context->getGenericUniformBuffer();
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
