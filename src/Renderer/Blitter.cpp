@@ -131,27 +131,132 @@ namespace sw
 			c.xyz = 0.0f;
 			c.w = Float(Int(*Pointer<Byte>(element)));
 			break;
+		case FORMAT_R8I:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<SByte>(element)));
+			break;
+		case FORMAT_R8UI:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<Byte>(element)));
+			break;
+		case FORMAT_R8I_SNORM:
+			c.yzw = 0.0f;
+			c.x = Max(Float(Int(*Pointer<SByte>(element))) * Float(1.0f / float(0x7F)), Float(-1.0f));
+			break;
+		case FORMAT_R8:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<Byte>(element))) * Float(1.0f / float(0xFF));
+			break;
+		case FORMAT_R16I:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<Short>(element)));
+			break;
+		case FORMAT_R16:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<UShort>(element)));
+			break;
+		case FORMAT_R32I:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<Int>(element)));
+			break;
+		case FORMAT_R32:
+			c.yzw = 0.0f;
+			c.x = Float(Int(*Pointer<UInt>(element)));
+			break;
 		case FORMAT_A8R8G8B8:
 			c = Float4(*Pointer<Byte4>(element)).zyxw;
 			break;
-		case FORMAT_A8B8G8R8:
+		case FORMAT_A8B8G8R8I:
+			c = Float4(*Pointer<SByte4>(element));
+			break;
+		case FORMAT_A8B8G8R8UI:
 			c = Float4(*Pointer<Byte4>(element));
+			break;
+		case FORMAT_A8B8G8R8I_SNORM:
+			c = Max(Float4(*Pointer<SByte4>(element)) * Float4(1.0f / float(0x7F)), Float4(-1.0f));
+			break;
+		case FORMAT_A8B8G8R8:
+			c = Float4(*Pointer<Byte4>(element)) * Float4(1.0f / float(0xFF));
 			break;
 		case FORMAT_X8R8G8B8:
 			c = Float4(*Pointer<Byte4>(element)).zyxw;
 			c.w = 1.0f;
 			break;
-		case FORMAT_X8B8G8R8:
+		case FORMAT_X8B8G8R8I:
+			c = Float4(*Pointer<SByte4>(element));
+			c.w = 1.0f;
+			break;
+		case FORMAT_X8B8G8R8UI:
 			c = Float4(*Pointer<Byte4>(element));
 			c.w = 1.0f;
+			break;
+		case FORMAT_X8B8G8R8I_SNORM:
+			c = Max(Float4(*Pointer<SByte4>(element)) * Float4(1.0f / float(0x7F)), Float4(-1.0f));
+			c.w = 1.0f;
+			break;
+		case FORMAT_X8B8G8R8:
+			c = Float4(*Pointer<Byte4>(element)) * Float4(1.0f / float(0xFF));
+			c.w = 1.0f;
+			break;
+		case FORMAT_A16B16G16R16I:
+			c = Float4(*Pointer<Short4>(element));
 			break;
 		case FORMAT_A16B16G16R16:
 			c = Float4(*Pointer<UShort4>(element));
 			break;
+		case FORMAT_X16B16G16R16I:
+			c = Float4(*Pointer<Short4>(element));
+			c.w = 1.0f;
+			break;
+		case FORMAT_X16B16G16R16:
+			c = Float4(*Pointer<UShort4>(element));
+			c.w = 1.0f;
+			break;
+		case FORMAT_A32B32G32R32I:
+			c = Float4(*Pointer<Int4>(element));
+			break;
+		case FORMAT_A32B32G32R32:
+			c = Float4(*Pointer<UInt4>(element));
+			break;
+		case FORMAT_X32B32G32R32I:
+			c = Float4(*Pointer<Int4>(element));
+			c.w = 1.0f;
+			break;
+		case FORMAT_X32B32G32R32:
+			c = Float4(*Pointer<UInt4>(element));
+			c.w = 1.0f;
+			break;
+		case FORMAT_G8R8I:
+			c.x = Float(Int(*Pointer<SByte>(element + 0)));
+			c.y = Float(Int(*Pointer<SByte>(element + 1)));
+			break;
+		case FORMAT_G8R8UI:
+			c.x = Float(Int(*Pointer<Byte>(element + 0)));
+			c.y = Float(Int(*Pointer<Byte>(element + 1)));
+			break;
+		case FORMAT_G8R8I_SNORM:
+			c.x = Max(Float(Int(*Pointer<SByte>(element + 0))) * Float(1.0f / float(0x7F)), Float(-1.0f));
+			c.y = Max(Float(Int(*Pointer<SByte>(element + 1))) * Float(1.0f / float(0x7F)), Float(-1.0f));
+			break;
+		case FORMAT_G8R8:
+			c.x = Float(Int(*Pointer<Byte>(element + 0))) * Float(1.0f / float(0xFF));
+			c.y = Float(Int(*Pointer<Byte>(element + 1))) * Float(1.0f / float(0xFF));
+			break;
+		case FORMAT_G16R16I:
+			c.x = Float(Int(*Pointer<Short>(element + 0)));
+			c.y = Float(Int(*Pointer<Short>(element + 2)));
+			break;
 		case FORMAT_G16R16:
-			// FIXME: Optimize
 			c.x = Float(Int(*Pointer<UShort>(element + 0)));
 			c.y = Float(Int(*Pointer<UShort>(element + 2)));
+			break;
+		case FORMAT_G32R32I:
+			c.x = Float(Int(*Pointer<Int>(element + 0)));
+			c.y = Float(Int(*Pointer<Int>(element + 4)));
+			break;
+		case FORMAT_G32R32:
+			c.x = Float(Int(*Pointer<UInt>(element + 0)));
+			c.y = Float(Int(*Pointer<UInt>(element + 4)));
 			break;
 		case FORMAT_A32B32G32R32F:
 			c = *Pointer<Float4>(element);
@@ -277,15 +382,43 @@ namespace sw
 						case FORMAT_L8:
 						case FORMAT_A8:
 						case FORMAT_A8R8G8B8:
-						case FORMAT_A8B8G8R8:
 						case FORMAT_X8R8G8B8:
+						case FORMAT_R8:
+						case FORMAT_G8R8:
 						case FORMAT_X8B8G8R8:
-							unscale = vector(255, 255, 255, 255);
+						case FORMAT_A8B8G8R8:
+							unscale = vector(0xFF, 0xFF, 0xFF, 0xFF);
 							break;
-						case FORMAT_A16B16G16R16:
+						case FORMAT_R8I_SNORM:
+						case FORMAT_G8R8I_SNORM:
+						case FORMAT_X8B8G8R8I_SNORM:
+						case FORMAT_A8B8G8R8I_SNORM:
+							unscale = vector(0x7F, 0x7F, 0x7F, 0x7F);
+							break;
+						case FORMAT_R8I:
+						case FORMAT_R8UI:
+						case FORMAT_G8R8I:
+						case FORMAT_G8R8UI:
+						case FORMAT_X8B8G8R8I:
+						case FORMAT_X8B8G8R8UI:
+						case FORMAT_A8B8G8R8I:
+						case FORMAT_A8B8G8R8UI:
+						case FORMAT_R16I:
+						case FORMAT_R16:
+						case FORMAT_G16R16I:
 						case FORMAT_G16R16:
-							unscale = vector(65535, 65535, 65535, 65535);
-							break;
+						case FORMAT_X16B16G16R16I:
+						case FORMAT_X16B16G16R16:
+						case FORMAT_A16B16G16R16I:
+						case FORMAT_A16B16G16R16:
+						case FORMAT_R32I:
+						case FORMAT_R32:
+						case FORMAT_G32R32I:
+						case FORMAT_G32R32:
+						case FORMAT_X32B32G32R32I:
+						case FORMAT_X32B32G32R32:
+						case FORMAT_A32B32G32R32I:
+						case FORMAT_A32B32G32R32:
 						case FORMAT_A32B32G32R32F:
 						case FORMAT_G32R32F:
 						case FORMAT_R32F:
@@ -302,15 +435,43 @@ namespace sw
 						case FORMAT_L8:
 						case FORMAT_A8:
 						case FORMAT_A8R8G8B8:
-						case FORMAT_A8B8G8R8:
 						case FORMAT_X8R8G8B8:
+						case FORMAT_R8:
+						case FORMAT_G8R8:
 						case FORMAT_X8B8G8R8:
-							scale = vector(255, 255, 255, 255);
+						case FORMAT_A8B8G8R8:
+							scale = vector(0xFF, 0xFF, 0xFF, 0xFF);
 							break;
-						case FORMAT_A16B16G16R16:
+						case FORMAT_R8I_SNORM:
+						case FORMAT_G8R8I_SNORM:
+						case FORMAT_X8B8G8R8I_SNORM:
+						case FORMAT_A8B8G8R8I_SNORM:
+							scale = vector(0x7F, 0x7F, 0x7F, 0x7F);
+							break;
+						case FORMAT_R8I:
+						case FORMAT_R8UI:
+						case FORMAT_G8R8I:
+						case FORMAT_G8R8UI:
+						case FORMAT_X8B8G8R8I:
+						case FORMAT_X8B8G8R8UI:
+						case FORMAT_A8B8G8R8I:
+						case FORMAT_A8B8G8R8UI:
+						case FORMAT_R16I:
+						case FORMAT_R16:
+						case FORMAT_G16R16I:
 						case FORMAT_G16R16:
-							scale = vector(65535, 65535, 65535, 65535);
-							break;
+						case FORMAT_X16B16G16R16I:
+						case FORMAT_X16B16G16R16:
+						case FORMAT_A16B16G16R16I:
+						case FORMAT_A16B16G16R16:
+						case FORMAT_R32I:
+						case FORMAT_R32:
+						case FORMAT_G32R32I:
+						case FORMAT_G32R32:
+						case FORMAT_X32B32G32R32I:
+						case FORMAT_X32B32G32R32:
+						case FORMAT_A32B32G32R32I:
+						case FORMAT_A32B32G32R32:
 						case FORMAT_A32B32G32R32F:
 						case FORMAT_G32R32F:
 						case FORMAT_R32F:
