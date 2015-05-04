@@ -3051,7 +3051,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
             memcpy(dest, source, (rect.x1 - rect.x0) * 4);
         }
 		else if(renderTarget->getInternalFormat() == sw::FORMAT_A16B16G16R16F &&
-                format == GL_RGBA && type == GL_HALF_FLOAT_OES)
+                format == GL_RGBA && (type == GL_HALF_FLOAT_OES || type == GL_HALF_FLOAT))
         {
             memcpy(dest, source, (rect.x1 - rect.x0) * 8);
         }

@@ -133,10 +133,17 @@ namespace sw
 				switch(state.textureFormat)
 				{
 				case FORMAT_R8:
+				case FORMAT_R8I:
+				case FORMAT_R16:
+				case FORMAT_R16I:
+				case FORMAT_R32:
+				case FORMAT_R32I:
 				case FORMAT_X8R8G8B8:
 				case FORMAT_X8B8G8R8:
+				case FORMAT_X8B8G8R8I:
 				case FORMAT_A8R8G8B8:
 				case FORMAT_A8B8G8R8:
+				case FORMAT_A8B8G8R8I:
 				case FORMAT_V8U8:
 				case FORMAT_Q8W8V8U8:
 				case FORMAT_X8L8V8U8:
@@ -144,8 +151,19 @@ namespace sw
 				case FORMAT_A16W16V16U16:
 				case FORMAT_Q16W16V16U16:
 				case FORMAT_G8R8:
+				case FORMAT_G8R8I:
 				case FORMAT_G16R16:
+				case FORMAT_G16R16I:
+				case FORMAT_G32R32:
+				case FORMAT_G32R32I:
+				case FORMAT_X16B16G16R16:
+				case FORMAT_X16B16G16R16I:
 				case FORMAT_A16B16G16R16:
+				case FORMAT_A16B16G16R16I:
+				case FORMAT_X32B32G32R32:
+				case FORMAT_X32B32G32R32I:
+				case FORMAT_A32B32G32R32:
+				case FORMAT_A32B32G32R32I:
 					if(componentCount < 2) c.y = Short4(0x1000, 0x1000, 0x1000, 0x1000);
 					if(componentCount < 3) c.z = Short4(0x1000, 0x1000, 0x1000, 0x1000);
 					if(componentCount < 4) c.w = Short4(0x1000, 0x1000, 0x1000, 0x1000);
@@ -289,10 +307,17 @@ namespace sw
 				switch(state.textureFormat)
 				{
 				case FORMAT_R8:
+				case FORMAT_R8I:
+				case FORMAT_R16:
+				case FORMAT_R16I:
+				case FORMAT_R32:
+				case FORMAT_R32I:
 				case FORMAT_X8R8G8B8:
 				case FORMAT_X8B8G8R8:
+				case FORMAT_X8B8G8R8I:
 				case FORMAT_A8R8G8B8:
 				case FORMAT_A8B8G8R8:
+				case FORMAT_A8B8G8R8I:
 				case FORMAT_V8U8:
 				case FORMAT_Q8W8V8U8:
 				case FORMAT_X8L8V8U8:
@@ -300,8 +325,19 @@ namespace sw
 				case FORMAT_A16W16V16U16:
 				case FORMAT_Q16W16V16U16:
 				case FORMAT_G8R8:
+				case FORMAT_G8R8I:
 				case FORMAT_G16R16:
+				case FORMAT_G16R16I:
+				case FORMAT_G32R32:
+				case FORMAT_G32R32I:
+				case FORMAT_X16B16G16R16:
+				case FORMAT_X16B16G16R16I:
 				case FORMAT_A16B16G16R16:
+				case FORMAT_A16B16G16R16I:
+				case FORMAT_X32B32G32R32:
+				case FORMAT_X32B32G32R32I:
+				case FORMAT_A32B32G32R32:
+				case FORMAT_A32B32G32R32I:
 					if(componentCount < 2) c.y = Float4(1.0f);
 					if(componentCount < 3) c.z = Float4(1.0f);
 					if(componentCount < 4) c.w = Float4(1.0f);
@@ -1814,27 +1850,45 @@ namespace sw
 		switch(state.textureFormat)
 		{
 		case FORMAT_G8R8:
+		case FORMAT_G8R8I:
+		case FORMAT_G32R32:
+		case FORMAT_G32R32I:
 		case FORMAT_X8R8G8B8:
 		case FORMAT_X8B8G8R8:
+		case FORMAT_X8B8G8R8I:
 		case FORMAT_A8R8G8B8:
 		case FORMAT_A8B8G8R8:
+		case FORMAT_A8B8G8R8I:
 		case FORMAT_V8U8:
 		case FORMAT_Q8W8V8U8:
 		case FORMAT_X8L8V8U8:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
+		case FORMAT_A32B32G32R32:
+		case FORMAT_A32B32G32R32I:
+		case FORMAT_X32B32G32R32:
+		case FORMAT_X32B32G32R32I:
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_A8:
 		case FORMAT_R8:
+		case FORMAT_R8I:
+		case FORMAT_R32:
+		case FORMAT_R32I:
 		case FORMAT_L8:
 		case FORMAT_A8L8:
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32FS8_SHADOW:
 			return false;
+		case FORMAT_R16:
+		case FORMAT_R16I:
 		case FORMAT_L16:
 		case FORMAT_G16R16:
+		case FORMAT_G16R16I:
 		case FORMAT_A16B16G16R16:
+		case FORMAT_A16B16G16R16I:
+		case FORMAT_X16B16G16R16:
+		case FORMAT_X16B16G16R16I:
 		case FORMAT_V16U16:
 		case FORMAT_A16W16V16U16:
 		case FORMAT_Q16W16V16U16:
@@ -1851,10 +1905,13 @@ namespace sw
 		switch(state.textureFormat)
 		{
 		case FORMAT_G8R8:           return component < 2;
+		case FORMAT_G8R8I:          return component < 2;
 		case FORMAT_X8R8G8B8:       return component < 3;
 		case FORMAT_X8B8G8R8:       return component < 3;
+		case FORMAT_X8B8G8R8I:      return component < 3;
 		case FORMAT_A8R8G8B8:       return component < 3;
 		case FORMAT_A8B8G8R8:       return component < 3;
+		case FORMAT_A8B8G8R8I:      return component < 3;
 		case FORMAT_V8U8:           return false;
 		case FORMAT_Q8W8V8U8:       return false;
 		case FORMAT_X8L8V8U8:       return false;
@@ -1863,6 +1920,11 @@ namespace sw
 		case FORMAT_A32B32G32R32F:  return component < 3;
 		case FORMAT_A8:             return false;
 		case FORMAT_R8:             return component < 1;
+		case FORMAT_R8I:            return component < 1;
+		case FORMAT_R16:            return component < 1;
+		case FORMAT_R16I:           return component < 1;
+		case FORMAT_R32:            return component < 1;
+		case FORMAT_R32I:           return component < 1;
 		case FORMAT_L8:             return component < 1;
 		case FORMAT_A8L8:           return component < 1;
 		case FORMAT_D32F_LOCKABLE:  return false;
@@ -1870,7 +1932,17 @@ namespace sw
 		case FORMAT_D32FS8_SHADOW:  return false;
 		case FORMAT_L16:            return component < 1;
 		case FORMAT_G16R16:         return component < 2;
+		case FORMAT_G16R16I:        return component < 2;
+		case FORMAT_G32R32:         return component < 2;
+		case FORMAT_G32R32I:        return component < 2;
 		case FORMAT_A16B16G16R16:   return component < 3;
+		case FORMAT_A16B16G16R16I:  return component < 3;
+		case FORMAT_X16B16G16R16:   return component < 3;
+		case FORMAT_X16B16G16R16I:  return component < 3;
+		case FORMAT_A32B32G32R32:   return component < 3;
+		case FORMAT_A32B32G32R32I:  return component < 3;
+		case FORMAT_X32B32G32R32:   return component < 3;
+		case FORMAT_X32B32G32R32I:  return component < 3;
 		case FORMAT_V16U16:         return false;
 		case FORMAT_A16W16V16U16:   return false;
 		case FORMAT_Q16W16V16U16:   return false;

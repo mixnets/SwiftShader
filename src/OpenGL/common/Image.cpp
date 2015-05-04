@@ -26,24 +26,28 @@ namespace
 {
 	enum DataType
 	{
-		Alpha,
+		Bytes_1,
+		Bytes_2,
+		Bytes_4,
+		Bytes_8,
+		Bytes_16,
 		AlphaFloat,
 		AlphaHalfFloat,
-		Luminance,
 		LuminanceFloat,
 		LuminanceHalfFloat,
-		LuminanceAlpha,
 		LuminanceAlphaFloat,
 		LuminanceAlphaHalfFloat,
+		ByteRGB,
 		UByteRGB,
+		ShortRGB,
+		UShortRGB,
+		IntRGB,
+		UIntRGB,
 		RGB565,
 		FloatRGB,
 		HalfFloatRGB,
-		UByte4,
 		RGBA4444,
 		RGBA5551,
-		Float4,
-		HalfFloat4,
 		D16,
 		D24,
 		D32,
@@ -57,9 +61,33 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<Alpha>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void LoadImageRow<Bytes_1>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
 		memcpy(dest + xoffset, source, width);
+	}
+
+	template<>
+	void LoadImageRow<Bytes_2>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		memcpy(dest + xoffset * 2, source, width * 2);
+	}
+
+	template<>
+	void LoadImageRow<Bytes_4>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		memcpy(dest + xoffset * 4, source, width * 4);
+	}
+
+	template<>
+	void LoadImageRow<Bytes_8>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		memcpy(dest + xoffset * 8, source, width * 8);
+	}
+
+	template<>
+	void LoadImageRow<Bytes_16>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		memcpy(dest + xoffset * 16, source, width * 16);
 	}
 
 	template<>
@@ -93,12 +121,6 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<Luminance>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		memcpy(dest + xoffset, source, width);
-	}
-
-	template<>
 	void LoadImageRow<LuminanceFloat>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
 		const float *sourceF = reinterpret_cast<const float*>(source);
@@ -126,12 +148,6 @@ namespace
 			destH[4 * x + 2] = sourceH[x];
 			destH[4 * x + 3] = 0x3C00; // SEEEEEMMMMMMMMMM, S = 0, E = 15, M = 0: 16bit flpt representation of 1
 		}
-	}
-
-	template<>
-	void LoadImageRow<LuminanceAlpha>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		memcpy(dest + xoffset * 2, source, width * 2);
 	}
 
 	template<>
@@ -165,6 +181,20 @@ namespace
 	}
 
 	template<>
+	void LoadImageRow<ByteRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		unsigned char *destB = dest + xoffset * 4;
+
+		for(int x = 0; x < width; x++)
+		{
+			destB[4 * x + 0] = source[x * 3 + 0];
+			destB[4 * x + 1] = source[x * 3 + 1];
+			destB[4 * x + 2] = source[x * 3 + 2];
+			destB[4 * x + 3] = 0x7F;
+		}
+	}
+
+	template<>
 	void LoadImageRow<UByteRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
 		unsigned char *destB = dest + xoffset * 4;
@@ -175,6 +205,66 @@ namespace
 			destB[4 * x + 1] = source[x * 3 + 1];
 			destB[4 * x + 2] = source[x * 3 + 2];
 			destB[4 * x + 3] = 0xFF;
+		}
+	}
+
+	template<>
+	void LoadImageRow<ShortRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const unsigned short *sourceS = reinterpret_cast<const unsigned short*>(source);
+		unsigned short *destS = reinterpret_cast<unsigned short*>(dest + xoffset * 8);
+
+		for(int x = 0; x < width; x++)
+		{
+			destS[4 * x + 0] = sourceS[x * 3 + 0];
+			destS[4 * x + 1] = sourceS[x * 3 + 1];
+			destS[4 * x + 2] = sourceS[x * 3 + 2];
+			destS[4 * x + 3] = 0x7FFF;
+		}
+	}
+
+	template<>
+	void LoadImageRow<UShortRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const unsigned short *sourceS = reinterpret_cast<const unsigned short*>(source);
+		unsigned short *destS = reinterpret_cast<unsigned short*>(dest + xoffset * 8);
+
+		for(int x = 0; x < width; x++)
+		{
+			destS[4 * x + 0] = sourceS[x * 3 + 0];
+			destS[4 * x + 1] = sourceS[x * 3 + 1];
+			destS[4 * x + 2] = sourceS[x * 3 + 2];
+			destS[4 * x + 3] = 0xFFFF;
+		}
+	}
+
+	template<>
+	void LoadImageRow<IntRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source);
+		unsigned int *destI = reinterpret_cast<unsigned int*>(dest + xoffset * 16);
+
+		for(int x = 0; x < width; x++)
+		{
+			destI[4 * x + 0] = sourceI[x * 3 + 0];
+			destI[4 * x + 1] = sourceI[x * 3 + 1];
+			destI[4 * x + 2] = sourceI[x * 3 + 2];
+			destI[4 * x + 3] = 0x7FFFFFFF;
+		}
+	}
+
+	template<>
+	void LoadImageRow<UIntRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source);
+		unsigned int *destI = reinterpret_cast<unsigned int*>(dest + xoffset * 16);
+
+		for(int x = 0; x < width; x++)
+		{
+			destI[4 * x + 0] = sourceI[x * 3 + 0];
+			destI[4 * x + 1] = sourceI[x * 3 + 1];
+			destI[4 * x + 2] = sourceI[x * 3 + 2];
+			destI[4 * x + 3] = 0xFFFFFFFF;
 		}
 	}
 
@@ -225,18 +315,6 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<UByte4>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source);
-		unsigned int *destI = reinterpret_cast<unsigned int*>(dest + xoffset * 4);
-
-		for(int x = 0; x < width; x++)
-		{
-			memcpy(dest + xoffset * 4, source, width * 4);
-		}
-	}
-
-	template<>
 	void LoadImageRow<RGBA4444>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
 		const unsigned short *source4444 = reinterpret_cast<const unsigned short*>(source);
@@ -266,18 +344,6 @@ namespace
 			dest5551[4 * x + 2] = ((rgba & 0xF800) >> 8) | ((rgba & 0xF800) >> 13);
 			dest5551[4 * x + 3] = (rgba & 0x0001) ? 0xFF : 0;
 		}
-	}
-
-	template<>
-	void LoadImageRow<Float4>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		memcpy(dest + xoffset * 16, source, width * 16);
-	}
-
-	template<>
-	void LoadImageRow<HalfFloat4>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		memcpy(dest + xoffset * 8, source, width * 8);
 	}
 
 	template<>
@@ -353,24 +419,78 @@ namespace egl
 	{
 		switch(type)
 		{
+		case GL_BYTE:
+			switch(format)
+			{
+			case GL_RED_INTEGER:     return sizeof(char);
+			case GL_RG_INTEGER:      return sizeof(char) * 2;
+			case GL_RGB_INTEGER:     return sizeof(char) * 3;
+			case GL_RGBA_INTEGER:    return sizeof(char) * 4;
+			default: UNREACHABLE();
+			}
+			break;
 		case GL_UNSIGNED_BYTE:
 			switch(format)
 			{
+			case GL_RED_INTEGER:     return sizeof(unsigned char);
 			case GL_ALPHA:           return sizeof(unsigned char);
 			case GL_LUMINANCE:       return sizeof(unsigned char);
 			case GL_LUMINANCE_ALPHA: return sizeof(unsigned char) * 2;
+			case GL_RG_INTEGER:      return sizeof(unsigned char) * 2;
 			case GL_RGB:             return sizeof(unsigned char) * 3;
+			case GL_RGB_INTEGER:     return sizeof(unsigned char) * 3;
 			case GL_RGBA:            return sizeof(unsigned char) * 4;
+			case GL_RGBA_INTEGER:    return sizeof(unsigned char) * 4;
 			case GL_BGRA_EXT:        return sizeof(unsigned char) * 4;
+			default: UNREACHABLE();
+			}
+			break;
+		case GL_SHORT:
+			switch(format)
+			{
+			case GL_RED_INTEGER:     return sizeof(short);
+			case GL_RG_INTEGER:      return sizeof(short)* 2;
+			case GL_RGB_INTEGER:     return sizeof(short)* 3;
+			case GL_RGBA_INTEGER:    return sizeof(short)* 4;
+			default: UNREACHABLE();
+			}
+			break;
+		case GL_UNSIGNED_SHORT:
+			switch(format)
+			{
+			case GL_DEPTH_COMPONENT: return sizeof(unsigned short);
+			case GL_RED_INTEGER:     return sizeof(unsigned short);
+			case GL_RG_INTEGER:      return sizeof(unsigned short)* 2;
+			case GL_RGB_INTEGER:     return sizeof(unsigned short)* 3;
+			case GL_RGBA_INTEGER:    return sizeof(unsigned short)* 4;
+			default: UNREACHABLE();
+			}
+			break;
+		case GL_INT:
+			switch(format)
+			{
+			case GL_RED_INTEGER:     return sizeof(int);
+			case GL_RG_INTEGER:      return sizeof(int)* 2;
+			case GL_RGB_INTEGER:     return sizeof(int)* 3;
+			case GL_RGBA_INTEGER:    return sizeof(int)* 4;
+			default: UNREACHABLE();
+			}
+			break;
+		case GL_UNSIGNED_INT:
+			switch(format)
+			{
+			case GL_DEPTH_COMPONENT: return sizeof(unsigned int);
+			case GL_RED_INTEGER:     return sizeof(unsigned int);
+			case GL_RG_INTEGER:      return sizeof(unsigned int)* 2;
+			case GL_RGB_INTEGER:     return sizeof(unsigned int)* 3;
+			case GL_RGBA_INTEGER:    return sizeof(unsigned int)* 4;
 			default: UNREACHABLE();
 			}
 			break;
 		case GL_UNSIGNED_SHORT_4_4_4_4:
 		case GL_UNSIGNED_SHORT_5_5_5_1:
 		case GL_UNSIGNED_SHORT_5_6_5:
-		case GL_UNSIGNED_SHORT:
 			return sizeof(unsigned short);
-		case GL_UNSIGNED_INT:
 		case GL_UNSIGNED_INT_24_8_OES:
 			return sizeof(unsigned int);
 		case GL_FLOAT:
@@ -384,6 +504,7 @@ namespace egl
 			default: UNREACHABLE();
 			}
 			break;
+		case GL_HALF_FLOAT:
 		case GL_HALF_FLOAT_OES:
 			switch(format)
 			{
@@ -508,71 +629,136 @@ namespace egl
 		}
 		else
 		#endif
-		if(type == GL_FLOAT)
 		{
-			return sw::FORMAT_A32B32G32R32F;
-		}
-		else if(type == GL_HALF_FLOAT_OES)
-		{
-			return sw::FORMAT_A16B16G16R16F;
-		}
-		else if(type == GL_UNSIGNED_BYTE)
-		{
-			if(format == GL_LUMINANCE)
+			switch(type)
 			{
-				return sw::FORMAT_L8;
-			}
-			else if(format == GL_LUMINANCE_ALPHA)
-			{
-				return sw::FORMAT_A8L8;
-			}
-			else if(format == GL_RGBA)
-			{
-				return sw::FORMAT_A8B8G8R8;
-			}
-			else if(format == GL_BGRA_EXT)
-			{
+			case GL_FLOAT:
+				return sw::FORMAT_A32B32G32R32F;
+			case GL_HALF_FLOAT:
+			case GL_HALF_FLOAT_OES:
+				return sw::FORMAT_A16B16G16R16F;
+			case GL_BYTE:
+				switch(format)
+				{
+				case GL_RED:
+				case GL_RED_INTEGER:
+					return sw::FORMAT_R8I;
+				case GL_RG:
+				case GL_RG_INTEGER:
+					return sw::FORMAT_G8R8I;
+				case GL_RGB:
+				case GL_RGB_INTEGER:
+					return sw::FORMAT_X8B8G8R8I;
+				case GL_RGBA:
+				case GL_RGBA_INTEGER:
+					return sw::FORMAT_A8B8G8R8I;
+				default:
+					UNREACHABLE();
+				}
+			case GL_UNSIGNED_BYTE:
+				switch(format)
+				{
+				case GL_LUMINANCE:
+					return sw::FORMAT_L8;
+				case GL_LUMINANCE_ALPHA:
+					return sw::FORMAT_A8L8;
+				case GL_RED:
+				case GL_RED_INTEGER:
+					return sw::FORMAT_R8;
+				case GL_RG:
+				case GL_RG_INTEGER:
+					return sw::FORMAT_G8R8;
+				case GL_RGB:
+				case GL_RGB_INTEGER:
+					return sw::FORMAT_X8B8G8R8;
+				case GL_RGBA:
+				case GL_RGBA_INTEGER:
+					return sw::FORMAT_A8B8G8R8;
+				case GL_BGRA_EXT:
+					return sw::FORMAT_A8R8G8B8;
+				case GL_ALPHA:
+					return sw::FORMAT_A8;
+				default:
+					UNREACHABLE();
+				}
+			case GL_SHORT:
+				switch(format)
+				{
+				case GL_RED_INTEGER:
+					return sw::FORMAT_R16I;
+				case GL_RG_INTEGER:
+					return sw::FORMAT_G16R16I;
+				case GL_RGB_INTEGER:
+					return sw::FORMAT_X16B16G16R16I;
+				case GL_RGBA_INTEGER:
+					return sw::FORMAT_A16B16G16R16I;
+				default:
+					UNREACHABLE();
+				}
+			case GL_UNSIGNED_SHORT:
+				switch(format)
+				{
+				case GL_RED_INTEGER:
+					return sw::FORMAT_R16;
+				case GL_RG_INTEGER:
+					return sw::FORMAT_G16R16;
+				case GL_RGB_INTEGER:
+					return sw::FORMAT_X16B16G16R16;
+				case GL_RGBA_INTEGER:
+					return sw::FORMAT_A16B16G16R16;
+				case GL_DEPTH_COMPONENT:
+					return sw::FORMAT_D32FS8_TEXTURE;
+				default:
+					UNREACHABLE();
+				}
+			case GL_INT:
+				switch(format)
+				{
+				case GL_RED_INTEGER:
+					return sw::FORMAT_R32I;
+				case GL_RG_INTEGER:
+					return sw::FORMAT_G32R32I;
+				case GL_RGB_INTEGER:
+					return sw::FORMAT_X32B32G32R32I;
+				case GL_RGBA_INTEGER:
+					return sw::FORMAT_A32B32G32R32I;
+				default:
+					UNREACHABLE();
+				}
+			case GL_UNSIGNED_INT:
+				switch(format)
+				{
+				case GL_RED_INTEGER:
+					return sw::FORMAT_R32;
+				case GL_RG_INTEGER:
+					return sw::FORMAT_G32R32;
+				case GL_RGB_INTEGER:
+					return sw::FORMAT_X32B32G32R32;
+				case GL_RGBA_INTEGER:
+					return sw::FORMAT_A32B32G32R32;
+				case GL_DEPTH_COMPONENT:
+					return sw::FORMAT_D32FS8_TEXTURE;
+				default:
+					UNREACHABLE();
+				}
+			case GL_UNSIGNED_INT_24_8_OES:
+				if(format == GL_DEPTH_STENCIL_OES)
+				{
+					return sw::FORMAT_D32FS8_TEXTURE;
+				}
+				else UNREACHABLE();
+			case GL_UNSIGNED_SHORT_4_4_4_4:
 				return sw::FORMAT_A8R8G8B8;
+			case GL_UNSIGNED_SHORT_5_5_5_1:
+				return sw::FORMAT_A8R8G8B8;
+			case GL_UNSIGNED_SHORT_5_6_5:
+				return sw::FORMAT_X8R8G8B8;
+			case GL_UNSIGNED_INT_2_10_10_10_REV:
+				return sw::FORMAT_A2B10G10R10;
+			default:
+				UNREACHABLE();
 			}
-			else if(format == GL_RGB)
-			{
-				return sw::FORMAT_X8B8G8R8;
-			}
-			else if(format == GL_ALPHA)
-			{
-				return sw::FORMAT_A8;
-			}
-			else UNREACHABLE();
 		}
-		else if(type == GL_UNSIGNED_SHORT || type == GL_UNSIGNED_INT)
-		{
-			if(format == GL_DEPTH_COMPONENT)
-			{
-				return sw::FORMAT_D32FS8_TEXTURE;
-			}
-			else UNREACHABLE();
-		}
-		else if(type == GL_UNSIGNED_INT_24_8_OES)
-		{
-			if(format == GL_DEPTH_STENCIL_OES)
-			{
-				return sw::FORMAT_D32FS8_TEXTURE;
-			}
-			else UNREACHABLE();
-		}
-		else if(type == GL_UNSIGNED_SHORT_4_4_4_4)
-		{
-			return sw::FORMAT_A8R8G8B8;
-		}
-		else if(type == GL_UNSIGNED_SHORT_5_5_5_1)
-		{
-			return sw::FORMAT_A8R8G8B8;
-		}
-		else if(type == GL_UNSIGNED_SHORT_5_6_5)
-		{
-			return sw::FORMAT_X8R8G8B8;
-		}
-		else UNREACHABLE();
 
 		return sw::FORMAT_A8B8G8R8;
 	}
@@ -586,24 +772,54 @@ namespace egl
 		{
 			switch(type)
 			{
+			case GL_BYTE:
+				switch(format)
+				{
+				case GL_RED:
+				case GL_RED_INTEGER:
+				case GL_ALPHA:
+				case GL_LUMINANCE:
+					LoadImageData<Bytes_1>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RG:
+				case GL_RG_INTEGER:
+				case GL_LUMINANCE_ALPHA:
+					LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RGB:
+				case GL_RGB_INTEGER:
+					LoadImageData<ByteRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RGBA:
+				case GL_RGBA_INTEGER:
+				case GL_BGRA_EXT:
+					LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				default: UNREACHABLE();
+				}
+				break;
 			case GL_UNSIGNED_BYTE:
 				switch(format)
 				{
+				case GL_RED:
+				case GL_RED_INTEGER:
 				case GL_ALPHA:
-					LoadImageData<Alpha>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
-					break;
 				case GL_LUMINANCE:
-					LoadImageData<Luminance>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					LoadImageData<Bytes_1>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
 					break;
+				case GL_RG:
+				case GL_RG_INTEGER:
 				case GL_LUMINANCE_ALPHA:
-					LoadImageData<LuminanceAlpha>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
 					break;
 				case GL_RGB:
+				case GL_RGB_INTEGER:
 					LoadImageData<UByteRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
 					break;
 				case GL_RGBA:
+				case GL_RGBA_INTEGER:
 				case GL_BGRA_EXT:
-					LoadImageData<UByte4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
 					break;
 				default: UNREACHABLE();
 				}
@@ -652,11 +868,12 @@ namespace egl
 					LoadImageData<FloatRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
 					break;
 				case GL_RGBA:
-					LoadImageData<Float4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					LoadImageData<Bytes_16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
 					break;
 				default: UNREACHABLE();
 				}
 				break;
+			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
 				switch(format)
 				{
@@ -673,16 +890,120 @@ namespace egl
 					LoadImageData<HalfFloatRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
 					break;
 				case GL_RGBA:
-					LoadImageData<HalfFloat4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				default: UNREACHABLE();
+				}
+				break;
+			case GL_SHORT:
+				switch(format)
+				{
+				case GL_RED:
+				case GL_RED_INTEGER:
+				case GL_ALPHA:
+				case GL_LUMINANCE:
+					LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RG:
+				case GL_RG_INTEGER:
+				case GL_LUMINANCE_ALPHA:
+					LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RGB:
+				case GL_RGB_INTEGER:
+					LoadImageData<ShortRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RGBA:
+				case GL_RGBA_INTEGER:
+				case GL_BGRA_EXT:
+					LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
 					break;
 				default: UNREACHABLE();
 				}
 				break;
 			case GL_UNSIGNED_SHORT:
-				LoadImageData<D16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+				switch(format)
+				{
+				case GL_RED:
+				case GL_RED_INTEGER:
+				case GL_ALPHA:
+				case GL_LUMINANCE:
+					LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RG:
+				case GL_RG_INTEGER:
+				case GL_LUMINANCE_ALPHA:
+					LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RGB:
+				case GL_RGB_INTEGER:
+					LoadImageData<UShortRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RGBA:
+				case GL_RGBA_INTEGER:
+				case GL_BGRA_EXT:
+					LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_DEPTH_COMPONENT:
+					LoadImageData<D16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				default: UNREACHABLE();
+				}
+				break;
+			case GL_INT:
+				switch(format)
+				{
+				case GL_RED:
+				case GL_RED_INTEGER:
+				case GL_ALPHA:
+				case GL_LUMINANCE:
+					LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RG:
+				case GL_RG_INTEGER:
+				case GL_LUMINANCE_ALPHA:
+					LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RGB:
+				case GL_RGB_INTEGER:
+					LoadImageData<IntRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RGBA:
+				case GL_RGBA_INTEGER:
+				case GL_BGRA_EXT:
+					LoadImageData<Bytes_16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				default: UNREACHABLE();
+				}
 				break;
 			case GL_UNSIGNED_INT:
-				LoadImageData<D32>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+				switch(format)
+				{
+				case GL_RED:
+				case GL_RED_INTEGER:
+				case GL_ALPHA:
+				case GL_LUMINANCE:
+					LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RG:
+				case GL_RG_INTEGER:
+				case GL_LUMINANCE_ALPHA:
+					LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RGB:
+				case GL_RGB_INTEGER:
+					LoadImageData<UIntRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_RGBA:
+				case GL_RGBA_INTEGER:
+				case GL_BGRA_EXT:
+					LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				case GL_DEPTH_COMPONENT:
+					LoadImageData<D32>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, getPitch(), getHeight(), input, buffer);
+					break;
+				default: UNREACHABLE();
+				}
 				break;
 			case GL_UNSIGNED_INT_24_8_OES:
 				loadD24S8ImageData(xoffset, yoffset, zoffset, width, height, depth, inputPitch, input, buffer);

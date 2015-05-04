@@ -266,6 +266,7 @@ namespace es2
 				return false;
 			}
 		case GL_FLOAT:
+		case GL_HALF_FLOAT:
 		case GL_HALF_FLOAT_OES:
 			switch(format)
 			{
