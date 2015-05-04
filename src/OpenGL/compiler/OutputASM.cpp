@@ -2364,8 +2364,9 @@ namespace glsl
 
 	GLenum OutputASM::glVariableType(const TType &type)
 	{
-		if(type.getBasicType() == EbtFloat)
+		switch(type.getBasicType())
 		{
+		case EbtFloat:
 			if(type.isScalar())
 			{
 				return GL_FLOAT;
@@ -2412,9 +2413,8 @@ namespace glsl
 				}
 			}
 			else UNREACHABLE();
-		}
-		else if(type.getBasicType() == EbtInt)
-		{
+			break;
+		case EbtInt:
 			if(type.isScalar())
 			{
 				return GL_INT;
@@ -2430,9 +2430,25 @@ namespace glsl
 				}
 			}
 			else UNREACHABLE();
-		}
-		else if(type.getBasicType() == EbtBool)
-		{
+			break;
+		case EbtUInt:
+			if(type.isScalar())
+			{
+				return GL_UNSIGNED_INT;
+			}
+			else if(type.isVector())
+			{
+				switch(type.getNominalSize())
+				{
+				case 2: return GL_UNSIGNED_INT_VEC2;
+				case 3: return GL_UNSIGNED_INT_VEC3;
+				case 4: return GL_UNSIGNED_INT_VEC4;
+				default: UNREACHABLE();
+				}
+			}
+			else UNREACHABLE();
+			break;
+		case EbtBool:
 			if(type.isScalar())
 			{
 				return GL_BOOL;
@@ -2448,24 +2464,29 @@ namespace glsl
 				}
 			}
 			else UNREACHABLE();
-		}
-		else if(type.getBasicType() == EbtSampler2D)
-		{
+			break;
+		case EbtSampler2D:
+		case EbtISampler2D:
+		case EbtUSampler2D:
 			return GL_SAMPLER_2D;
-		}
-		else if(type.getBasicType() == EbtSamplerCube)
-		{
+		case EbtSamplerCube:
+		case EbtISamplerCube:
+		case EbtUSamplerCube:
 			return GL_SAMPLER_CUBE;
-		}
-		else if(type.getBasicType() == EbtSamplerExternalOES)
-		{
+		case EbtSamplerExternalOES:
 			return GL_SAMPLER_EXTERNAL_OES;
-		}
-		else if(type.getBasicType() == EbtSampler3D)
-		{
+		case EbtSampler3D:
+		case EbtISampler3D:
+		case EbtUSampler3D:
 			return GL_SAMPLER_3D_OES;
+		case EbtSampler2DArray:
+		case EbtISampler2DArray:
+		case EbtUSampler2DArray:
+			return GL_SAMPLER_2D_ARRAY;
+		default:
+			UNREACHABLE();
+			break;
 		}
-		else UNREACHABLE();
 
 		return GL_NONE;
 	}
