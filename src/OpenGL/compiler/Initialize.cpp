@@ -27,6 +27,7 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
     TType *genIType = new TType(EbtGenIType);
     TType *genUType = new TType(EbtGenUType);
     TType *genBType = new TType(EbtGenBType);
+	TType *position = new TType(EbtFloat, EbpHigh, EvqPosition, 4);
 
     //
     // Angle and Trigonometric Functions.
@@ -122,7 +123,8 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpNormalize, genType, "normalize", genType);
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpFaceForward, genType, "faceforward", genType, genType, genType);
     symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpReflect, genType, "reflect", genType, genType);
-    symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpRefract, genType, "refract", genType, genType, float1);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpRefract, genType, "refract", genType, genType, float1);
+	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpFtransform, position, "ftransform", 0);
 
 	TType *mat2 = new TType(EbtFloat, 2, 2);
 	TType *mat2x3 = new TType(EbtFloat, 2, 3);
@@ -316,7 +318,8 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
     symbolTable.insertConstInt(COMMON_BUILTINS, "gl_MaxVertexTextureImageUnits", resources.MaxVertexTextureImageUnits);
     symbolTable.insertConstInt(COMMON_BUILTINS, "gl_MaxCombinedTextureImageUnits", resources.MaxCombinedTextureImageUnits);
     symbolTable.insertConstInt(COMMON_BUILTINS, "gl_MaxTextureImageUnits", resources.MaxTextureImageUnits);
-    symbolTable.insertConstInt(COMMON_BUILTINS, "gl_MaxFragmentUniformVectors", resources.MaxFragmentUniformVectors);
+	symbolTable.insertConstInt(COMMON_BUILTINS, "gl_MaxFragmentUniformVectors", resources.MaxFragmentUniformVectors);
+	symbolTable.insertConstInt(ESSL1_BUILTINS, "gl_MaxTextureCoords", resources.MaxTextureCoords);
     symbolTable.insertConstInt(ESSL1_BUILTINS, "gl_MaxVaryingVectors", resources.MaxVaryingVectors);
     symbolTable.insertConstInt(ESSL1_BUILTINS, "gl_MaxDrawBuffers", resources.MaxDrawBuffers);
     symbolTable.insertConstInt(ESSL3_BUILTINS, "gl_MaxVertexOutputVectors", resources.MaxVertexOutputVectors);
@@ -340,12 +343,20 @@ void IdentifyBuiltIns(GLenum shaderType,
         symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_FrontFacing"), TType(EbtBool,  EbpUndefined, EvqFrontFacing, 1)));
         symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_PointCoord"), TType(EbtFloat, EbpMedium, EvqPointCoord,  2)));
         symbolTable.insert(ESSL1_BUILTINS, *new TVariable(NewPoolTString("gl_FragColor"), TType(EbtFloat, EbpMedium, EvqFragColor,   4)));
-        symbolTable.insert(ESSL1_BUILTINS, *new TVariable(NewPoolTString("gl_FragData[gl_MaxDrawBuffers]"), TType(EbtFloat, EbpMedium, EvqFragData,    4)));
+		symbolTable.insert(ESSL1_BUILTINS, *new TVariable(NewPoolTString("gl_FragData[gl_MaxDrawBuffers]"), TType(EbtFloat, EbpMedium, EvqFragData, 4)));
         break;
-    case GL_VERTEX_SHADER:
+	case GL_VERTEX_SHADER:
+		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_MultiTexCoord0"), TType(EbtFloat, EbpMedium, EvqMultiTexCoord0, 4)));
+		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_MultiTexCoord1"), TType(EbtFloat, EbpMedium, EvqMultiTexCoord1, 4)));
+		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_MultiTexCoord2"), TType(EbtFloat, EbpMedium, EvqMultiTexCoord2, 4)));
+		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_MultiTexCoord3"), TType(EbtFloat, EbpMedium, EvqMultiTexCoord3, 4)));
+		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_MultiTexCoord4"), TType(EbtFloat, EbpMedium, EvqMultiTexCoord4, 4)));
+		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_MultiTexCoord5"), TType(EbtFloat, EbpMedium, EvqMultiTexCoord5, 4)));
+		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_MultiTexCoord6"), TType(EbtFloat, EbpMedium, EvqMultiTexCoord6, 4)));
+		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_MultiTexCoord7"), TType(EbtFloat, EbpMedium, EvqMultiTexCoord7, 4)));
         symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_Position"), TType(EbtFloat, EbpHigh, EvqPosition,    4)));
-        symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_PointSize"), TType(EbtFloat, EbpMedium, EvqPointSize,   1)));
-        symbolTable.insert(ESSL3_BUILTINS, *new TVariable(NewPoolTString("gl_InstanceID"), TType(EbtInt, EbpHigh, EvqInstanceID, 1)));
+		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_PointSize"), TType(EbtFloat, EbpMedium, EvqPointSize, 1)));
+		symbolTable.insert(ESSL3_BUILTINS, *new TVariable(NewPoolTString("gl_InstanceID"), TType(EbtInt, EbpHigh, EvqInstanceID, 1)));
         break;
     default: assert(false && "Language not supported");
     }
@@ -361,6 +372,14 @@ void IdentifyBuiltIns(GLenum shaderType,
             symbolTable.insert(ESSL1_BUILTINS, *new TVariable(NewPoolTString("gl_FragData"), fragData));
 		}
 		break;
+	case GL_VERTEX_SHADER:
+	{
+		// Set up gl_TexCoord
+		TType texCoord(EbtFloat, EbpMedium, EvqTexCoords, 4, 1, true);
+		texCoord.setArraySize(resources.MaxTextureCoords);
+		symbolTable.insert(ESSL1_BUILTINS, *new TVariable(NewPoolTString("gl_TexCoord"), texCoord));
+	}
+	break;
     default: break;
     }
 }

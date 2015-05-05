@@ -138,7 +138,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
     {
     case DLL_PROCESS_ATTACH:
 		#ifndef NDEBUG
-			WaitForDebugger(instance);
+		    WaitForDebugger(instance);
 		#endif
         return glAttachProcess();
         break;

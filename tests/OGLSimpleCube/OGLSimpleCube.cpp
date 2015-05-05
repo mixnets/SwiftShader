@@ -16,6 +16,7 @@ Inspired by http://www.cs.rit.edu/~ncs/Courses/570/UserGuide/OpenGLonWin-11.html
 #include <math.h>
 
 #include <gl\GL.h>
+#include <gl\GLU.h>
 
 #define PI 3.14159265
 #define SCALE_FACTOR 0.5
@@ -69,6 +70,7 @@ GLfloat colors1[] = {
 
 void initializeView(void)
 {
+	wglGetProcAddress("wglGetExtensionsStringARB");
 	// Set viewing projection
 	glMatrixMode(GL_PROJECTION);
 	glFrustum(-0.5, 0.5, -0.5, 0.5, 1.0, 3.0);

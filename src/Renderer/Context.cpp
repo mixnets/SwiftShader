@@ -514,7 +514,7 @@ namespace sw
 
 		return lightingEnable && !preTransformed;
 	}
-
+	
 	bool Context::texCoordActive(int coordinate, int component)
 	{
 		bool hasTexture = pointSpriteActive();

@@ -172,11 +172,11 @@ copy "$(OutDir)opengl32.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platf
       <PreprocessorDefinitions>WIN32;GL_API=;GL_GLEXT_PROTOTYPES;_DEBUG;_WINDOWS;_USRDLL;LIBGL_EXPORTS;_CRT_SECURE_NO_DEPRECATE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderFile />
     </ClCompile>
     <Link>
       <AdditionalDependencies>dxguid.lib;WS2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>

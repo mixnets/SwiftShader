@@ -1792,6 +1792,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
     // Context::getFloatv.
     switch (pname)
     {
+	case GL_MAX_TEXTURE_UNITS:				  *params = MAX_TEXTURE_IMAGE_UNITS;		  break;
     case GL_MAX_VERTEX_ATTRIBS:               *params = MAX_VERTEX_ATTRIBS;               break;
     case GL_MAX_VERTEX_UNIFORM_VECTORS:       *params = MAX_VERTEX_UNIFORM_VECTORS;       break;
     case GL_MAX_VARYING_VECTORS:              *params = MAX_VARYING_VECTORS;              break;

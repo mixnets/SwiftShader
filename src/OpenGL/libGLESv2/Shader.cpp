@@ -20,6 +20,8 @@
 
 #include <string>
 
+#define SHADER_SOURCE(...) #__VA_ARGS__
+
 namespace es2
 {
 bool Shader::compilerInitialized = false;
@@ -204,6 +206,15 @@ void Shader::compile()
     {
         source = mSource;
     }
+
+	source = SHADER_SOURCE
+		(
+		attribute vec4 vPosition;
+	void main()
+	{
+		gl_Position = vPosition;
+	}
+	);
 
 	bool success = compiler->compile(&source, 1, SH_OBJECT_CODE);
 

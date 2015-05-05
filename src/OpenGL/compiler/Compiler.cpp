@@ -45,6 +45,7 @@ ShBuiltInResources::ShBuiltInResources()
     MaxVertexTextureImageUnits = 0;
     MaxCombinedTextureImageUnits = 8;
     MaxTextureImageUnits = 8;
+	MaxTextureCoords = 8;
     MaxFragmentUniformVectors = 16;
     MaxDrawBuffers = 1;
     MaxVertexOutputVectors = 16;

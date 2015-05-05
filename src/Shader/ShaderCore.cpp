@@ -1355,7 +1355,7 @@ namespace sw
 			log2x(dst, src, true);
 		}
 	}
-	
+
 	void ShaderCore::cmp0(Vector4f &dst, Vector4f &src0, Vector4f &src1, Vector4f &src2)
 	{
 		cmp0(dst.x, src0.x, src1.x, src2.x);

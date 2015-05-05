@@ -20,6 +20,8 @@
 
 #include <string>
 
+#define SHADER_SOURCE(...) #__VA_ARGS__
+
 namespace gl
 {
 bool Shader::compilerInitialized = false;
@@ -167,6 +169,7 @@ TranslatorASM *Shader::createCompiler(GLenum shaderType)
 	resources.MaxVertexTextureImageUnits = MAX_VERTEX_TEXTURE_IMAGE_UNITS;
 	resources.MaxCombinedTextureImageUnits = MAX_COMBINED_TEXTURE_IMAGE_UNITS;
 	resources.MaxTextureImageUnits = MAX_TEXTURE_IMAGE_UNITS;
+	resources.MaxTextureCoords = MAX_TEXTURE_COORDS;
 	resources.MaxFragmentUniformVectors = MAX_FRAGMENT_UNIFORM_VECTORS;
 	resources.MaxDrawBuffers = MAX_DRAW_BUFFERS;
 	resources.OES_standard_derivatives = 1;
@@ -199,6 +202,31 @@ void Shader::compile()
     {
         source = mSource;
     }
+
+	/*switch(getType())
+	{
+	case GL_VERTEX_SHADER:
+		source = SHADER_SOURCE
+			(
+				attribute vec4 vPosition;
+				void main()
+				{
+					gl_Position = vPosition;
+				}
+			);
+		break;
+	case GL_FRAGMENT_SHADER:
+		source = SHADER_SOURCE
+			(
+				precision mediump float;
+				void main()
+				{
+					gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+				}
+			);
+		break;
+	default: UNREACHABLE();
+	}*/
 
 	bool success = compiler->compile(&source, 1, SH_OBJECT_CODE);
 

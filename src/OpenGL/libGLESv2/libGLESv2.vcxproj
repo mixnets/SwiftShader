@@ -210,7 +210,9 @@ copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Plat
       <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
 copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
 mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\translator"
-copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\translator\libGLES_V2_translator.dll"</Command>
+copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\translator\libGLES_V2_translator.dll"
+copy "$(OutDir)$(TargetName).lib" "$(ProjectDir)..\..\lib\$(Configuration)\"
+copy "$(OutDir)$(TargetName).dll" "C:\Program Files\Adobe\Adobe Photoshop CS6 (64 Bit)\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -314,7 +316,8 @@ copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Plat
       <Command>mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
 copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\"
 mkdir "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\translator"
-copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\translator\libGLES_V2_translator.dll"</Command>
+copy "$(OutDir)libGLESv2.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Platform)\translator\libGLES_V2_translator.dll"
+copy "$(OutDir)$(TargetName).dll" "C:\Program Files\Adobe\Adobe Photoshop CS6 (64 Bit)\"</Command>
     </PostBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN64</PreprocessorDefinitions>

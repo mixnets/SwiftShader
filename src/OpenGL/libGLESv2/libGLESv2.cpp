@@ -3451,9 +3451,9 @@ const GLubyte* GetString(GLenum name)
 	case GL_RENDERER:
 		return (GLubyte*)"SwiftShader";
 	case GL_VERSION:
-		return (GLubyte*)"OpenGL ES 2.0 SwiftShader " VERSION_STRING;
+		return (GLubyte*)"OpenGL ES 2.1 SwiftShader " VERSION_STRING;
 	case GL_SHADING_LANGUAGE_VERSION:
-		return (GLubyte*)"OpenGL ES GLSL ES 1.00 SwiftShader " VERSION_STRING;
+		return (GLubyte*)"1.20.8 SwiftShader " VERSION_STRING;
 	case GL_EXTENSIONS:
 	{
 		es2::Context *context = es2::getContext();
@@ -6884,6 +6884,51 @@ void TexImage3DOES(GLenum target, GLint level, GLenum internalformat, GLsizei wi
 		texture->setImage(level, width, height, depth, internalformat, type, context->getUnpackInfo(), pixels);
 	}
 }
+
+void WINAPI glBindAttribLocationARB() {UNIMPLEMENTED();}
+void WINAPI glGetActiveAttribARB() {UNIMPLEMENTED();}
+void WINAPI glGetAttribLocationARB() {UNIMPLEMENTED();}
+void WINAPI glAttachObjectARB() {UNIMPLEMENTED();}
+void WINAPI glCompileShaderARB() {UNIMPLEMENTED();}
+void WINAPI glCreateProgramObjectARB() {UNIMPLEMENTED();}
+void WINAPI glCreateShaderObjectARB() {UNIMPLEMENTED();}
+void WINAPI glDeleteObjectARB() {UNIMPLEMENTED();}
+void WINAPI glDetachObjectARB() {UNIMPLEMENTED();}
+void WINAPI glGetActiveUniformARB() {UNIMPLEMENTED();}
+void WINAPI glGetAttachedObjectsARB() {UNIMPLEMENTED();}
+void WINAPI glGetHandleARB() {UNIMPLEMENTED();}
+void WINAPI glGetInfoLogARB() {UNIMPLEMENTED();}
+void WINAPI glGetObjectParameterfvARB() {UNIMPLEMENTED();}
+void WINAPI glGetObjectParameterivARB() {UNIMPLEMENTED();}
+void WINAPI glGetShaderSourceARB() {UNIMPLEMENTED();}
+void WINAPI glGetUniformLocationARB() {UNIMPLEMENTED();}
+void WINAPI glGetUniformfvARB() {UNIMPLEMENTED();}
+void WINAPI glGetUniformivARB() {UNIMPLEMENTED();}
+void WINAPI glLinkProgramARB() {UNIMPLEMENTED();}
+void WINAPI glShaderSourceARB() {UNIMPLEMENTED();}
+void WINAPI glUniform1fARB() {UNIMPLEMENTED();}
+void WINAPI glUniform1fvARB() {UNIMPLEMENTED();}
+void WINAPI glUniform1iARB() {UNIMPLEMENTED();}
+void WINAPI glUniform1ivARB() {UNIMPLEMENTED();}
+void WINAPI glUniform2fARB() {UNIMPLEMENTED();}
+void WINAPI glUniform2fvARB() {UNIMPLEMENTED();}
+void WINAPI glUniform2iARB() {UNIMPLEMENTED();}
+void WINAPI glUniform2ivARB() {UNIMPLEMENTED();}
+void WINAPI glUniform3fARB() {UNIMPLEMENTED();}
+void WINAPI glUniform3fvARB() {UNIMPLEMENTED();}
+void WINAPI glUniform3iARB() {UNIMPLEMENTED();}
+void WINAPI glUniform3ivARB() {UNIMPLEMENTED();}
+void WINAPI glUniform4fARB() {UNIMPLEMENTED();}
+void WINAPI glUniform4fvARB() {UNIMPLEMENTED();}
+void WINAPI glUniform4iARB() {UNIMPLEMENTED();}
+void WINAPI glUniform4ivARB() {UNIMPLEMENTED();}
+void WINAPI glUniformMatrix2fvARB() {UNIMPLEMENTED();}
+void WINAPI glUniformMatrix3fvARB() {UNIMPLEMENTED();}
+void WINAPI glUniformMatrix4fvARB() {UNIMPLEMENTED();}
+void WINAPI glUseProgramObjectARB() {UNIMPLEMENTED();}
+void WINAPI glValidateProgramARB() {UNIMPLEMENTED();}
+void WINAPI glcuR0d4nX() {UNIMPLEMENTED();}
+void WINAPI wgl1fx34c0da() {UNIMPLEMENTED();}
 
 void TexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const void *pixels)
 {
