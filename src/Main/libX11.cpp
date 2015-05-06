@@ -42,13 +42,22 @@ LibX11exports *LibX11::loadExports()
 
     if(!libX11)
     {
-        libX11 = loadLibrary("libX11.so");
-
-        if(libX11)
+        if(getProcAddress(RTLD_DEFAULT, "XOpenDisplay"))   // Search the global scope for pre-loaded library
         {
-			libXext = loadLibrary("libXext.so");
-			libX11exports = new LibX11exports(libX11, libXext);
-		}
+            libX11exports = new LibX11exports(RTLD_DEFAULT, RTLD_DEFAULT);
+        }
+		else
+		{
+			libX11 = loadLibrary("libX11.so");
+
+			if(libX11)
+			{
+				libXext = loadLibrary("libXext.so");
+				libX11exports = new LibX11exports(libX11, libXext);
+			}
+        }
+
+        libX11 = (void*)-1;   // Don't attempt loading more than once.
     }
 
     return libX11exports;
