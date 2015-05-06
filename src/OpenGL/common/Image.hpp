@@ -177,12 +177,15 @@ public:
 {
     nativeBuffer->common.incRef(&nativeBuffer->common);
     markShared();
+	ALOGI("Live image at %p nativeBuffer=%p", this, nativeBuffer);
 }
 
 private:
 	ANativeWindowBuffer *nativeBuffer;
 
-	virtual ~AndroidNativeImage() { }
+	virtual ~AndroidNativeImage() {
+		ALOGI("Dead image at %p nativeBuffer=%p", this, nativeBuffer);
+	}
 
 	void setNativeBuffer(ANativeWindowBuffer* buffer)
 	{
