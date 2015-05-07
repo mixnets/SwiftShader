@@ -16,6 +16,7 @@
 
 #ifdef __ANDROID__
 #include "../../Common/DebugAndroid.hpp"
+#define LOGLOCK(...) // ALOGI(__VA_ARGS__)
 #else
 #include <assert.h>
 #endif
@@ -195,9 +196,13 @@ private:
 
 	virtual void *lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client)
 	{
-		if(nativeBuffer)   // Lock the buffer from ANativeWindowBuffer
+		LOGLOCK("image=%p op=%s lock=%d", this, __FUNCTION__, lock);
+		// Always do this for reference counting.
+		void *data = sw::Surface::lockInternal(x, y, z, lock, client);
+		if(nativeBuffer)
 		{
-			void *data = lockNativeBuffer(
+			// Lock the ANativeWindowBuffer and use it's address.
+			data = lockNativeBuffer(
 				GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN);
 			if (lock == sw::LOCK_UNLOCKED)
 			{
@@ -205,27 +210,31 @@ private:
 				// immediately. This keeps the gralloc reference counts sane.
 				unlockNativeBuffer();
 			}
-			return data;
 		}
-		return sw::Surface::lockInternal(x, y, z, lock, client);
+		return data;
 	}
 
 	virtual void unlockInternal()
 	{
+		LOGLOCK("image=%p op=%s", this, __FUNCTION__);
+		sw::Surface::unlockInternal();
 		if(nativeBuffer)   // Unlock the buffer from ANativeWindowBuffer
 		{
-			return unlockNativeBuffer();
+			unlockNativeBuffer();
 		}
-		return sw::Surface::unlockInternal();
 	}
 
-	virtual void *lock(unsigned int /*left*/, unsigned int /*top*/, sw::Lock /*lock*/)
+	virtual void *lock(unsigned int left, unsigned int top, sw::Lock lock)
 	{
+		LOGLOCK("image=%p op=%s lock=%d", this, __FUNCTION__, lock);
+		(void)sw::Surface::lockExternal(left, top, 0, lock, sw::PUBLIC);
 		return lockNativeBuffer(GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN);
 	}
 
 	virtual void unlock()
 	{
+		LOGLOCK("image=%p op=%s", this, __FUNCTION__);
+		sw::Surface::unlockExternal();
 		unlockNativeBuffer();
 	}
 
