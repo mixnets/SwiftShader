@@ -262,6 +262,7 @@ public:
 
 	virtual void makeCurrent(egl::Surface *surface);
 	virtual int getClientVersion() const;
+	virtual void synchronize();
 
     void markAllStateDirty();
 
