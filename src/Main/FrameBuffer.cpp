@@ -35,6 +35,37 @@ extern const unsigned int logoData[];
 
 namespace sw
 {
+	static Byte unpack_R5_to_Byte(const Pointer<Byte>& s)
+	{
+		return (*Pointer<Byte>(s + 0) & Byte(0xF8)) |
+		       (*Pointer<Byte>(s + 0) >> Byte(5));
+	}
+
+	static Byte unpack_G6_to_Byte(const Pointer<Byte>& s)
+	{
+		return ((*Pointer<Byte>(s + 0) & Byte(0x07)) << Byte(5)) |
+		       ((*Pointer<Byte>(s + 1) & Byte(0xE0)) >> Byte(3)) |
+		       ((*Pointer<Byte>(s + 0) & Byte(0x07)) >> Byte(1));
+	}
+
+	static Byte unpack_B5_to_Byte(const Pointer<Byte>& s)
+	{
+		return ((*Pointer<Byte>(s + 1) & Byte(0x1F)) << Byte(3)) |
+		       (*Pointer<Byte>(s + 1) >> Byte(2));
+	}
+
+	static void unpack_R5G6B5_to_A16R16G16B16(const Pointer<Byte>& s, Short4& c)
+	{
+		UInt argb(*Pointer<UShort>(s));
+		argb = UInt(0xFF000000) |
+		       ((argb & UInt(0x0000F800)) << UInt(8)) |
+			   ((argb & UInt(0x0000E01F)) << UInt(3)) |
+			   ((argb & UInt(0x000007E0)) << UInt(5)) |
+			   ((argb & UInt(0x00000600)) >> UInt(1)) |
+			   ((argb & UInt(0x0000001C)) >> UInt(2));
+		c = Unpack(As<Byte4>(argb));
+	}
+
 	extern bool forceWindowed;
 
 	Surface *FrameBuffer::logo;
@@ -320,6 +351,18 @@ namespace sw
 								d += 2 * dBytes;
 							}
 							break;
+						case FORMAT_R5G6B5:
+							For(, x < width - 3, x++)
+							{
+								*Pointer<Byte>(d + 2) = unpack_R5_to_Byte(s);
+								*Pointer<Byte>(d + 1) = unpack_G6_to_Byte(s);
+								*Pointer<Byte>(d + 0) = unpack_B5_to_Byte(s);
+								*Pointer<Byte>(d + 3) = Byte(0xFF);
+
+								s += sBytes;
+								d += dBytes;
+							}
+							break;
 						default:
 							ASSERT(false);
 							break;
@@ -349,6 +392,12 @@ namespace sw
 
 									*Pointer<Int>(d) = Int(As<Int2>(Pack(c, c)));
 								}
+								break;
+							case FORMAT_R5G6B5:
+								*Pointer<Byte>(d + 2) = unpack_R5_to_Byte(s);
+								*Pointer<Byte>(d + 1) = unpack_G6_to_Byte(s);
+								*Pointer<Byte>(d + 0) = unpack_B5_to_Byte(s);
+								*Pointer<Byte>(d + 3) = Byte(0xFF);
 								break;
 							default:
 								ASSERT(false);
@@ -403,6 +452,18 @@ namespace sw
 								d += 2 * dBytes;
 							}
 							break;
+						case FORMAT_R5G6B5:
+							For(, x < width - 3, x++)
+							{
+								*Pointer<Byte>(d + 0) = unpack_R5_to_Byte(s);
+								*Pointer<Byte>(d + 1) = unpack_G6_to_Byte(s);
+								*Pointer<Byte>(d + 2) = unpack_B5_to_Byte(s);
+								*Pointer<Byte>(d + 3) = Byte(0xFF);
+
+								s += sBytes;
+								d += dBytes;
+							}
+							break;
 						default:
 							ASSERT(false);
 							break;
@@ -431,6 +492,12 @@ namespace sw
 
 									*Pointer<Int>(d) = Int(As<Int2>(Pack(c, c)));
 								}
+								break;
+							case FORMAT_R5G6B5:
+								*Pointer<Byte>(d + 0) = unpack_R5_to_Byte(s);
+								*Pointer<Byte>(d + 1) = unpack_G6_to_Byte(s);
+								*Pointer<Byte>(d + 2) = unpack_B5_to_Byte(s);
+								*Pointer<Byte>(d + 3) = Byte(0xFF);
 								break;
 							default:
 								ASSERT(false);
@@ -463,6 +530,11 @@ namespace sw
 								*Pointer<Byte>(d + 0) = *Pointer<Byte>(s + 5);
 								*Pointer<Byte>(d + 1) = *Pointer<Byte>(s + 3);
 								*Pointer<Byte>(d + 2) = *Pointer<Byte>(s + 1);
+								break;
+							case FORMAT_R5G6B5:
+								*Pointer<Byte>(d + 0) = unpack_R5_to_Byte(s);
+								*Pointer<Byte>(d + 1) = unpack_G6_to_Byte(s);
+								*Pointer<Byte>(d + 2) = unpack_B5_to_Byte(s);
 								break;
 							default:
 								ASSERT(false);
@@ -509,6 +581,9 @@ namespace sw
 															   (c & 0x0000FC00) >> 5 |
 															   (c & 0x000000F8) << 8);
 								}
+								break;
+							case FORMAT_R5G6B5:
+								*Pointer<Short>(d) = *Pointer<Short>(s);
 								break;
 							default:
 								ASSERT(false);
@@ -611,6 +686,9 @@ namespace sw
 			break;
 		case FORMAT_A16B16G16R16:
 			c2 = Swizzle(*Pointer<Short4>(s + 0), 0xC6);
+			break;
+		case FORMAT_R5G6B5:
+			unpack_R5G6B5_to_A16R16G16B16(s, c2);
 			break;
 		default:
 			ASSERT(false);
