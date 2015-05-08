@@ -320,6 +320,20 @@ namespace sw
 								d += 2 * dBytes;
 							}
 							break;
+						case FORMAT_R5G6B5:
+							For(, x < width, x++)
+							{
+								Int rgb = Int(*Pointer<Short>(s));
+
+								*Pointer<Int>(d) = 0xFF000000 |
+								                   ((rgb & 0xF800) << 8) | ((rgb & 0xE000) << 3) |
+								                   ((rgb & 0x07E0) << 5) | ((rgb & 0x0600) >> 1) |
+								                   ((rgb & 0x001F) << 3) | ((rgb & 0x001C) >> 2);
+
+								s += sBytes;
+								d += dBytes;
+							}
+							break;
 						default:
 							ASSERT(false);
 							break;
@@ -348,6 +362,20 @@ namespace sw
 									UShort4 c = As<UShort4>(Swizzle(*Pointer<Short4>(s), 0xC6)) >> 8;
 
 									*Pointer<Int>(d) = Int(As<Int2>(Pack(c, c)));
+								}
+								break;
+							case FORMAT_R5G6B5:
+								{
+									Int rgb = Int(*Pointer<Short>(s));
+
+									Int r5 = rgb & 0xF800;
+									Int g6 = rgb & 0x07E0;
+									Int b5 = rgb & 0x001F;
+
+									*Pointer<Int>(d) = 0xFF000000 |
+									                   ((rgb & 0xF800) << 8) | ((rgb & 0xE000) << 3) |
+								                       ((rgb & 0x07E0) << 5) | ((rgb & 0x0600) >> 1) |
+								                       ((rgb & 0x001F) << 3) | ((rgb & 0x001C) >> 2);
 								}
 								break;
 							default:
@@ -403,6 +431,20 @@ namespace sw
 								d += 2 * dBytes;
 							}
 							break;
+						case FORMAT_R5G6B5:
+							For(, x < width - 3, x++)
+							{
+								Int rgb = Int(*Pointer<Short>(s));
+
+								*Pointer<Int>(d) = 0xFF000000 |
+								                   ((rgb & 0x001F) << 19) | ((rgb & 0x001C) << 14) |
+								                   ((rgb & 0x07E0) << 5) | ((rgb & 0x0600) >> 1) |
+								                   ((rgb & 0xF800) >> 8) | ((rgb & 0xE000) >> 13);
+
+								s += sBytes;
+								d += dBytes;
+							}
+							break;
 						default:
 							ASSERT(false);
 							break;
@@ -430,6 +472,20 @@ namespace sw
 									UShort4 c = *Pointer<UShort4>(s) >> 8;
 
 									*Pointer<Int>(d) = Int(As<Int2>(Pack(c, c)));
+								}
+								break;
+							case FORMAT_R5G6B5:
+								{
+									Int rgb = Int(*Pointer<Short>(s));
+
+									Int r5 = rgb & 0xF800;
+									Int g6 = rgb & 0x07E0;
+									Int b5 = rgb & 0x001F;
+
+									*Pointer<Int>(d) = 0xFF000000 |
+									                   ((rgb & 0x001F) << 19) | ((rgb & 0x001C) << 14) |
+								                       ((rgb & 0x07E0) << 5) | ((rgb & 0x0600) >> 1) |
+								                       ((rgb & 0xF800) >> 8) | ((rgb & 0xE000) >> 13);
 								}
 								break;
 							default:
@@ -463,6 +519,19 @@ namespace sw
 								*Pointer<Byte>(d + 0) = *Pointer<Byte>(s + 5);
 								*Pointer<Byte>(d + 1) = *Pointer<Byte>(s + 3);
 								*Pointer<Byte>(d + 2) = *Pointer<Byte>(s + 1);
+								break;
+							case FORMAT_R5G6B5:
+								{
+									Int rgb = Int(*Pointer<Short>(s));
+
+									Int r5 = rgb & 0xF800;
+									Int g6 = rgb & 0x07E0;
+									Int b5 = rgb & 0x001F;
+
+									*Pointer<Byte>(d + 2) = Byte(((r5 << 8) | (r5 << 3) & 0x00FF0000));
+									*Pointer<Byte>(d + 1) = Byte(((g6 << 5) | (g6 >> 1) & 0x0000FF00));
+									*Pointer<Byte>(d + 0) = Byte((b5 << 3) | (b5 >> 2));
+								}
 								break;
 							default:
 								ASSERT(false);
@@ -509,6 +578,9 @@ namespace sw
 															   (c & 0x0000FC00) >> 5 |
 															   (c & 0x000000F8) << 8);
 								}
+								break;
+							case FORMAT_R5G6B5:
+								*Pointer<Short>(d) = *Pointer<Short>(s);
 								break;
 							default:
 								ASSERT(false);
@@ -610,7 +682,17 @@ namespace sw
 			c2 = Swizzle(UnpackLow(As<Byte8>(c2), *Pointer<Byte8>(s)), 0xC6);
 			break;
 		case FORMAT_A16B16G16R16:
-			c2 = Swizzle(*Pointer<Short4>(s + 0), 0xC6);
+			c2 = Swizzle(*Pointer<Short4>(s), 0xC6);
+			break;
+		case FORMAT_R5G6B5:
+			{
+				Int rgb(*Pointer<Short>(s));
+				rgb = 0xFF000000 |
+				      ((rgb & 0x001F) << 19) | ((rgb & 0x001C) << 14) |
+				      ((rgb & 0x07E0) << 5) | ((rgb & 0x0600) >> 1) |
+				      ((rgb & 0xF800) >> 8) | ((rgb & 0xE000) >> 13);
+				c2 = Unpack(As<Byte4>(rgb));
+			}
 			break;
 		default:
 			ASSERT(false);

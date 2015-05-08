@@ -2733,7 +2733,7 @@ namespace sw
 		case FORMAT_R5G6B5:
 			{
 				current.x = current.x & Short4(0xF800u);
-				current.y = As<UShort4>(current.y& Short4(0xFC00u)) >> 10;
+				current.y = As<UShort4>(current.y & Short4(0xFC00u)) >> 5;
 				current.z = As<UShort4>(current.z) >> 11;
 
 				current.x = current.x | current.y | current.z;
