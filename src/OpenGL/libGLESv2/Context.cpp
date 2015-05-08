@@ -256,6 +256,14 @@ Context::~Context()
 	delete device;
 }
 
+void Context::synchronize()
+{
+	if (device)
+	{
+		device->synchronize();
+	}
+}
+
 void Context::makeCurrent(egl::Surface *surface)
 {
     if(!mHasBeenCurrent)

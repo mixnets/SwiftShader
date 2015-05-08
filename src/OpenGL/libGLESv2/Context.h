@@ -355,6 +355,7 @@ public:
 
 	virtual void makeCurrent(egl::Surface *surface);
 	virtual EGLint getClientVersion() const;
+	virtual void synchronize();
 
     void markAllStateDirty();
 

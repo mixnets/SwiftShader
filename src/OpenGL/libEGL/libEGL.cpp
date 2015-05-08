@@ -917,6 +917,14 @@ EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
 {
 	TRACE("(EGLDisplay dpy = %p, EGLImageKHR image = %p)", dpy, image);
 
+#ifdef __ANDROID__
+	egl::Context* context = getCurrentContext();
+	if (context)
+	{
+		context->synchronize();
+	}
+#endif
+
 	egl::Display *display = static_cast<egl::Display*>(dpy);
 
 	if(!validateDisplay(display))
