@@ -258,11 +258,11 @@ private:
 
 	virtual void destroyShared()   // Release a shared image
 	{
+		egl::Image::destroyShared();
 		if(nativeBuffer)
 		{
 			nativeBuffer->common.decRef(&nativeBuffer->common);
 		}
-		egl::Image::destroyShared();
 	}
 };
 
