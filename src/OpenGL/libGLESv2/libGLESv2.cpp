@@ -2947,6 +2947,9 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 				return error(GL_INVALID_ENUM);
 			}
 			break;
+		case FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE_EXT:
+			*params = framebuffer->getAttachmentComponentType();
+			break;
 		default:
 			return error(GL_INVALID_ENUM);
 		}

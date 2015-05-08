@@ -301,6 +301,14 @@ namespace es2
 		case GL_RGB565:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
+		case GL_RGBA16F:
+        case GL_RGB16F:
+        case GL_RG16F:
+        case GL_R16F:
+        case GL_RGBA32F:
+        case GL_RGB32F:
+        case GL_RG32F:
+        case GL_R32F:
 			return true;
 		case GL_DEPTH_COMPONENT16:
 		case GL_STENCIL_INDEX8:
@@ -326,6 +334,14 @@ namespace es2
 		case GL_RGB565:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
+		case GL_RGBA16F:
+        case GL_RGB16F:
+        case GL_RG16F:
+        case GL_R16F:
+        case GL_RGBA32F:
+        case GL_RGB32F:
+        case GL_RG32F:
+        case GL_R32F:
 			return false;
 		default:
 			UNIMPLEMENTED();
@@ -347,6 +363,14 @@ namespace es2
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
 		case GL_DEPTH_COMPONENT16:
+		case GL_RGBA16F:
+        case GL_RGB16F:
+        case GL_RG16F:
+        case GL_R16F:
+        case GL_RGBA32F:
+        case GL_RGB32F:
+        case GL_RG32F:
+        case GL_R32F:
 			return false;
 		default:
 			UNIMPLEMENTED();
@@ -595,7 +619,7 @@ namespace es2sw
 		case GL_RGB565:               return sw::FORMAT_R5G6B5;
 		case GL_RGB8_OES:             return sw::FORMAT_X8B8G8R8;
 		case GL_DEPTH_COMPONENT16:
-		case GL_STENCIL_INDEX8:       
+		case GL_STENCIL_INDEX8:
 		case GL_DEPTH24_STENCIL8_OES: return sw::FORMAT_D24S8;
 		default: UNREACHABLE();       return sw::FORMAT_A8B8G8R8;
 		}
