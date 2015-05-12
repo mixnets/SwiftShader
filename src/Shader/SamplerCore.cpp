@@ -259,7 +259,7 @@ namespace sw
 			{
 				Vector4s cs;
 
-				sampleTexture(texture, cs, u, v, w, q, dsx, dsy, bias, false, gradients, lodProvided);
+				sampleTexture(texture, cs, u, v, w, q, dsx, dsy, bias, gradients, lodProvided, false);
 
 				for(int component = 0; component < textureComponentCount(); component++)
 				{
