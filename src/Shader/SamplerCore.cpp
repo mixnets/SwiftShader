@@ -1484,7 +1484,21 @@ namespace sw
 
 		if(has16bitTextureFormat())
 		{
-			UNIMPLEMENTED();
+			c.x = Insert(c.x, *Pointer<Short>(buffer[f0] + 2 * index[0]), 0);
+			c.x = Insert(c.x, *Pointer<Short>(buffer[f1] + 2 * index[1]), 1);
+			c.x = Insert(c.x, *Pointer<Short>(buffer[f2] + 2 * index[2]), 2);
+			c.x = Insert(c.x, *Pointer<Short>(buffer[f3] + 2 * index[3]), 3);
+
+			switch(state.textureFormat)
+			{
+			case FORMAT_R5G6B5:
+				c.z = (c.x & Short4(0x001F)) << 11;
+				c.y = (c.x & Short4(0x07E0)) << 5;
+				c.x = (c.x & Short4(0xF800));
+				break;
+			default:
+				ASSERT(false);
+			}
 		}
 		else if(!has16bitTextureComponents())   // 8-bit components
 		{
