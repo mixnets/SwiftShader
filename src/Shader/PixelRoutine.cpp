@@ -2677,11 +2677,6 @@ namespace sw
 
 	void PixelRoutine::writeColor(Registers &r, int index, Pointer<Byte> &cBuffer, Int &x, Vector4s &current, Int &sMask, Int &zMask, Int &cMask)
 	{
-		if(!state.colorWriteActive(index))
-		{
-			return;
-		}
-
 		if(postBlendSRGB && state.writeSRGB)
 		{
 			linearToSRGB16_16(r, current);
@@ -3238,6 +3233,21 @@ namespace sw
 		// Read pixel
 		switch(state.targetFormat[index])
 		{
+		case FORMAT_R5G6B5:
+			buffer = cBuffer + 2 * x;
+			c01 = As<Short4>(Insert(As<Int2>(c01), *Pointer<Int>(buffer), 0));
+			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
+			c01 = As<Short4>(Insert(As<Int2>(c01), *Pointer<Int>(buffer), 1));
+
+			color.x = c01 & Short4(0xF800);
+			color.y = c01 & Short4(0x07E0) << 5;
+			color.z = c01 & Short4(0x001F) << 11;
+
+			pixel.x = Float4(As<UShort4>(color.x)) * Float4(1.0f / 0xF800);
+			pixel.y = Float4(As<UShort4>(color.y)) * Float4(1.0f / 0x07E0);
+			pixel.z = Float4(As<UShort4>(color.z)) * Float4(1.0f / 0x001F);
+			pixel.w = Float4(1.0f);
+			break;
 		case FORMAT_A8R8G8B8:
 			buffer = cBuffer + 4 * x;
 			c01 = *Pointer<Short4>(buffer);
@@ -3543,15 +3553,16 @@ namespace sw
 
 	void PixelRoutine::writeColor(Registers &r, int index, Pointer<Byte> &cBuffer, Int &x, Vector4f &oC, Int &sMask, Int &zMask, Int &cMask)
 	{
-		if(!state.colorWriteActive(index))
-		{
-			return;
-		}
-
 		Vector4s color;
 
 		switch(state.targetFormat[index])
 		{
+		case FORMAT_R5G6B5:
+			color.x = UShort4(oC.x * Float4(0xFFFF), true);
+			color.y = UShort4(oC.y * Float4(0xFFFF), true);
+			color.z = UShort4(oC.z * Float4(0xFFFF), true);
+			writeColor(r, index, cBuffer, x, color, sMask, zMask, cMask);
+			return;
 		case FORMAT_X8R8G8B8:
 		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:

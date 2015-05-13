@@ -4824,6 +4824,15 @@ namespace sw
 		}
 	}
 
+	RValue<Int2> Concatenate(RValue<Int> lo, RValue<Int> hi)
+	{
+		Value *int2 = UndefValue::get(Int2::getType());
+		int2 = Nucleus::createInsertElement(int2, lo.value, 0);
+		int2 = Nucleus::createInsertElement(int2, hi.value, 1);
+
+		return RValue<Int2>(int2);
+	}
+
 	RValue<Int> Extract(RValue<Int2> val, int i)
 	{
 		if(false)   // FIXME: LLVM does not generate optimal code
@@ -4845,11 +4854,10 @@ namespace sw
 		}
 	}
 
-	// FIXME: Crashes LLVM
-//	RValue<Int2> Insert(RValue<Int2> val, RValue<Int> element, int i)
-//	{
-//		return RValue<Int2>(Nucleus::createInsertElement(val.value, element.value, Nucleus::createConstantInt(i)));
-//	}
+	RValue<Int2> Insert(RValue<Int2> val, RValue<Int> element, int i)
+	{
+		return RValue<Int2>(Nucleus::createInsertElement(val.value, element.value, i));
+	}
 
 	Type *Int2::getType()
 	{
