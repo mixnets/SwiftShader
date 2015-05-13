@@ -54,6 +54,8 @@ namespace sw
 		void convertSigned15(Float4 &cf, Short4 &ci);
 		void convertUnsigned16(Float4 &cf, Short4 &ci);
 		void sRGBtoLinear16_8_12(Short4 &c);
+		void sRGBtoLinear16_6_12(Short4 &c);
+		void sRGBtoLinear16_5_12(Short4 &c);
 
 		bool hasFloatTexture() const;
 		bool hasUnsignedTextureComponent(int component) const;
