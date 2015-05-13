@@ -19,9 +19,7 @@ namespace sw
 	struct Constants
 	{
 		Constants();
-
-		unsigned short sRGBtoLinear8[256];
-
+		
 		unsigned int transposeBit0[16];
 		unsigned int transposeBit1[16];
 		unsigned int transposeBit2[16];
@@ -66,6 +64,10 @@ namespace sw
 		word4 invMaskW01Q[4];
 		dword4 maskD01X[4];
 		dword4 invMaskD01X[4];
+
+		unsigned short sRGBtoLinear8[256];
+		unsigned short sRGBtoLinear6[64];
+		unsigned short sRGBtoLinear5[32];
 
 		unsigned short linToSRGB12_16[4096];
 		unsigned short sRGBtoLin12_16[4096];
