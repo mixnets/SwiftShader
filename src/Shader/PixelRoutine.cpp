@@ -2435,6 +2435,17 @@ namespace sw
 		// Read pixel
 		switch(state.targetFormat[index])
 		{
+		case FORMAT_R5G6B5:
+			buffer = cBuffer + 2 * x;
+			c01 = As<Short4>(Insert(As<Int2>(c01), *Pointer<Int>(buffer), 0));
+			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
+			c01 = As<Short4>(Insert(As<Int2>(c01), *Pointer<Int>(buffer), 1));
+
+			pixel.x = c01 & Short4(0xF800);
+			pixel.y = c01 & Short4(0x07E0) << 5;
+			pixel.z = c01 & Short4(0x001F) << 11;
+			pixel.w = Short4(0xFFFFu);
+			break;
 		case FORMAT_A8R8G8B8:
 			buffer = cBuffer + 4 * x;
 			c01 = *Pointer<Short4>(buffer);
@@ -2563,7 +2574,7 @@ namespace sw
 
 		if(postBlendSRGB && state.writeSRGB)
 		{
-			sRGBtoLinear16_16(r, pixel);	
+			sRGBtoLinear16_12_16(r, pixel);	
 		}
 
 		// Final Color = ObjectColor * SourceBlendFactor + PixelColor * DestinationBlendFactor
@@ -2679,7 +2690,7 @@ namespace sw
 	{
 		if(postBlendSRGB && state.writeSRGB)
 		{
-			linearToSRGB16_16(r, current);
+			linearToSRGB16_12_16(r, current);
 		}
 
 		if(exactColorRounding)
@@ -4378,7 +4389,7 @@ namespace sw
 		return Float4(cs) * Float4(1.0f / 0xFFFF);
 	}
 
-	void PixelRoutine::sRGBtoLinear16_16(Registers &r, Vector4s &c)
+	void PixelRoutine::sRGBtoLinear16_12_16(Registers &r, Vector4s &c)
 	{
 		c.x = As<UShort4>(c.x) >> 4;
 		c.y = As<UShort4>(c.y) >> 4;
@@ -4407,7 +4418,7 @@ namespace sw
 		c.z = Insert(c.z, *Pointer<Short>(LUT + 2 * Int(Extract(c.z, 3))), 3);
 	}
 
-	void PixelRoutine::linearToSRGB16_16(Registers &r, Vector4s &c)
+	void PixelRoutine::linearToSRGB16_12_16(Registers &r, Vector4s &c)
 	{
 		c.x = As<UShort4>(c.x) >> 4;
 		c.y = As<UShort4>(c.y) >> 4;

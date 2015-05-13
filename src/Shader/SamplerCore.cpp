@@ -138,7 +138,7 @@ namespace sw
 					{
 						if(state.sRGB && isRGBComponent(component))
 						{
-							sRGBtoLinear16_12(c[component]);   // FIXME: Perform linearization at surface level for read-only textures
+							sRGBtoLinear16_8_12(c[component]);   // FIXME: Perform linearization at surface level for read-only textures
 						}
 						else
 						{
@@ -326,7 +326,7 @@ namespace sw
 					{
 						if(state.sRGB && isRGBComponent(component))
 						{
-							sRGBtoLinear16_12(cs[component]);   // FIXME: Perform linearization at surface level for read-only textures
+							sRGBtoLinear16_8_12(cs[component]);   // FIXME: Perform linearization at surface level for read-only textures
 							convertSigned12(c[component], cs[component]);
 						}
 						else
@@ -1852,7 +1852,7 @@ namespace sw
 		cf = Float4(As<UShort4>(cs)) * Float4(1.0f / 0xFFFF);
 	}
 
-	void SamplerCore::sRGBtoLinear16_12(Short4 &c)
+	void SamplerCore::sRGBtoLinear16_8_12(Short4 &c)
 	{
 		c = As<UShort4>(c) >> 8;
 
