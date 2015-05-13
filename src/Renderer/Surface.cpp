@@ -3030,8 +3030,13 @@ namespace sw
 			}
 		case FORMAT_A8B8G8R8:
 			return FORMAT_A8B8G8R8;
-		case FORMAT_R3G3B2:
 		case FORMAT_R5G6B5:
+			if(!renderTarget)
+			{
+				return FORMAT_R5G6B5;
+			}
+			// Fall through to X8R8G8B8
+		case FORMAT_R3G3B2:
 		case FORMAT_R8G8B8:
 		case FORMAT_X4R4G4B4:
 		case FORMAT_X1R5G5B5:
