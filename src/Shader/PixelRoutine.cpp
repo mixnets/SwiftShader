@@ -2563,7 +2563,7 @@ namespace sw
 
 		if(postBlendSRGB && state.writeSRGB)
 		{
-			sRGBtoLinear16_16(r, pixel);	
+			sRGBtoLinear16_12_16(r, pixel);	
 		}
 
 		// Final Color = ObjectColor * SourceBlendFactor + PixelColor * DestinationBlendFactor
@@ -2684,7 +2684,7 @@ namespace sw
 
 		if(postBlendSRGB && state.writeSRGB)
 		{
-			linearToSRGB16_16(r, current);
+			linearToSRGB16_12_16(r, current);
 		}
 
 		if(exactColorRounding)
@@ -4367,7 +4367,7 @@ namespace sw
 		return Float4(cs) * Float4(1.0f / 0xFFFF);
 	}
 
-	void PixelRoutine::sRGBtoLinear16_16(Registers &r, Vector4s &c)
+	void PixelRoutine::sRGBtoLinear16_12_16(Registers &r, Vector4s &c)
 	{
 		c.x = As<UShort4>(c.x) >> 4;
 		c.y = As<UShort4>(c.y) >> 4;
@@ -4396,7 +4396,7 @@ namespace sw
 		c.z = Insert(c.z, *Pointer<Short>(LUT + 2 * Int(Extract(c.z, 3))), 3);
 	}
 
-	void PixelRoutine::linearToSRGB16_16(Registers &r, Vector4s &c)
+	void PixelRoutine::linearToSRGB16_12_16(Registers &r, Vector4s &c)
 	{
 		c.x = As<UShort4>(c.x) >> 4;
 		c.y = As<UShort4>(c.y) >> 4;
