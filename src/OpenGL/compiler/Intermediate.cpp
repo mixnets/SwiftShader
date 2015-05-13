@@ -181,8 +181,16 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
         case EOpSub:
         case EOpDiv:
         case EOpMul:
-            if (left->getBasicType() == EbtStruct || left->getBasicType() == EbtBool)
+            if (left->getBasicType() == EbtStruct || left->getBasicType() == EbtBool) {
                 return 0;
+            }
+            break;
+        case EOpIMod:
+            // Note that this is only for the % operator, not for mod()
+            if (left->getBasicType() == EbtStruct || left->getBasicType() == EbtBool || left->getBasicType() == EbtFloat) {
+                return 0;
+            }
+            break;
         default: break;
     }
 
@@ -285,6 +293,12 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     }
 
     switch (op) {
+        case EOpBitwiseNot:
+            if((child->getType().getBasicType() != EbtInt && child->getType().getBasicType() != EbtUInt) || child->getType().isMatrix() || child->getType().isArray()) {
+                return 0;
+            }
+            break;
+
         case EOpLogicalNot:
             if (child->getType().getBasicType() != EbtBool || child->getType().isMatrix() || child->getType().isArray() || child->getType().isVector()) {
                 return 0;
@@ -727,7 +741,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
     }
 
     int size = std::max(left->getNominalSize(), right->getNominalSize());
-	int matrixSize = std::max(left->getSecondarySize(), right->getSecondarySize()); // FIXME: This will have to change for NxM matrices
+	int secondarySize = std::max(left->getSecondarySize(), right->getSecondarySize()); // FIXME: This will have to change for NxM matrices
 
     //
     // All scalars. Code after this test assumes this case is removed!
@@ -794,7 +808,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
                     op = EOpVectorTimesMatrix;
                 else {
                     op = EOpMatrixTimesScalar;
-                    setType(TType(basicType, higherPrecision, EvqTemporary, size, matrixSize));
+                    setType(TType(basicType, higherPrecision, EvqTemporary, size, secondarySize));
                 }
             } else if (left->isMatrix() && !right->isMatrix()) {
                 if (right->isVector()) {
@@ -852,6 +866,12 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
         case EOpAdd:
         case EOpSub:
         case EOpDiv:
+        case EOpIMod:
+        case EOpBitShiftLeft:
+        case EOpBitShiftRight:
+        case EOpBitwiseAnd:
+        case EOpBitwiseXor:
+        case EOpBitwiseOr:
         case EOpAddAssign:
         case EOpSubAssign:
         case EOpDivAssign:
@@ -864,7 +884,35 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
             if ((left->isMatrix() && right->isVector()) ||
                 (left->isVector() && right->isMatrix()))
                 return false;
-            setType(TType(basicType, higherPrecision, EvqTemporary, size, matrixSize));
+
+            // Are the sizes compatible?
+            if(left->getNominalSize() != right->getNominalSize() ||
+               left->getSecondarySize() != right->getSecondarySize())
+            {
+                // If the nominal sizes of operands do not match:
+                // One of them must be a scalar.
+                if(!left->isScalar() && !right->isScalar())
+                    return false;
+
+                // In the case of compound assignment other than multiply-assign,
+                // the right side needs to be a scalar. Otherwise a vector/matrix
+                // would be assigned to a scalar. A scalar can't be shifted by a
+                // vector either.
+                if(!right->isScalar() && (modifiesState() || op == EOpBitShiftLeft || op == EOpBitShiftRight))
+                    return false;
+            }
+
+            {
+                setType(TType(basicType, higherPrecision, EvqTemporary,
+                    static_cast<unsigned char>(size), static_cast<unsigned char>(secondarySize)));
+                if(left->isArray())
+                {
+                    ASSERT(left->getArraySize() == right->getArraySize());
+                    type.setArraySize(left->getArraySize());
+                }
+            }
+
+            setType(TType(basicType, higherPrecision, EvqTemporary, size, secondarySize));
             break;
 
         case EOpEqual:
@@ -1009,35 +1057,50 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                 }
                 break;
             case EOpDiv:
+            case EOpIMod:
                 tempConstArray = new ConstantUnion[objectSize];
                 {// support MSVC++6.0
                     for (int i = 0; i < objectSize; i++) {
                         switch (getType().getBasicType()) {
-            case EbtFloat:
-                if (rightUnionArray[i] == 0.0f) {
-                    infoSink.info.message(EPrefixWarning, "Divide by zero error during constant folding", getLine());
-                    tempConstArray[i].setFConst(FLT_MAX);
-                } else
-                    tempConstArray[i].setFConst(unionArray[i].getFConst() / rightUnionArray[i].getFConst());
-                break;
+                            case EbtFloat:
+                                if (rightUnionArray[i] == 0.0f) {
+                                    infoSink.info.message(EPrefixWarning, "Divide by zero error during constant folding", getLine());
+                                    tempConstArray[i].setFConst(FLT_MAX);
+                                } else {
+                                    ASSERT(op == EOpDiv);
+                                    tempConstArray[i].setFConst(unionArray[i].getFConst() / rightUnionArray[i].getFConst());
+                                }
+                                break;
 
-            case EbtInt:
-                if (rightUnionArray[i] == 0) {
-                    infoSink.info.message(EPrefixWarning, "Divide by zero error during constant folding", getLine());
-                    tempConstArray[i].setIConst(INT_MAX);
-                } else
-                    tempConstArray[i].setIConst(unionArray[i].getIConst() / rightUnionArray[i].getIConst());
-                break;
-            case EbtUInt:
-                if (rightUnionArray[i] == 0) {
-                    infoSink.info.message(EPrefixWarning, "Divide by zero error during constant folding", getLine());
-                    tempConstArray[i].setUConst(UINT_MAX);
-                } else
-                    tempConstArray[i].setUConst(unionArray[i].getUConst() / rightUnionArray[i].getUConst());
-                break;
-            default:
-                infoSink.info.message(EPrefixInternalError, "Constant folding cannot be done for \"/\"", getLine());
-                return 0;
+                            case EbtInt:
+                                if (rightUnionArray[i] == 0) {
+                                    infoSink.info.message(EPrefixWarning, "Divide by zero error during constant folding", getLine());
+                                    tempConstArray[i].setIConst(INT_MAX);
+                                } else {
+                                    if(op == EOpDiv) {
+                                        tempConstArray[i].setIConst(unionArray[i].getIConst() / rightUnionArray[i].getIConst());
+                                    } else {
+                                        ASSERT(op == EOpIMod);
+                                        tempConstArray[i].setIConst(unionArray[i].getIConst() % rightUnionArray[i].getIConst());
+                                    }
+                                }
+                                break;
+                            case EbtUInt:
+                                if (rightUnionArray[i] == 0) {
+                                    infoSink.info.message(EPrefixWarning, "Divide by zero error during constant folding", getLine());
+                                    tempConstArray[i].setUConst(UINT_MAX);
+                                } else {
+                                    if(op == EOpDiv) {
+                                        tempConstArray[i].setUConst(unionArray[i].getUConst() / rightUnionArray[i].getUConst());
+                                    } else {
+                                        ASSERT(op == EOpIMod);
+                                        tempConstArray[i].setUConst(unionArray[i].getUConst() % rightUnionArray[i].getUConst());
+                                    }
+                                }
+                                break;
+                            default:
+                                infoSink.info.message(EPrefixInternalError, "Constant folding cannot be done for \"/\"", getLine());
+                                return 0;
                         }
                     }
                 }
@@ -1102,10 +1165,36 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                 {// support MSVC++6.0
                     for (int i = 0; i < objectSize; i++)
                         switch (getType().getBasicType()) {
-            case EbtBool: tempConstArray[i].setBConst((unionArray[i] == rightUnionArray[i]) ? false : true); break;
-            default: assert(false && "Default missing");
+                            case EbtBool: tempConstArray[i].setBConst((unionArray[i] == rightUnionArray[i]) ? false : true); break;
+                            default: assert(false && "Default missing");
                     }
                 }
+                break;
+
+            case EOpBitwiseAnd:
+                tempConstArray = new ConstantUnion[objectSize];
+                for(int i = 0; i < objectSize; i++)
+                    tempConstArray[i] = unionArray[i] & rightUnionArray[i];
+                break;
+            case EOpBitwiseXor:
+                tempConstArray = new ConstantUnion[objectSize];
+                for(int i = 0; i < objectSize; i++)
+                    tempConstArray[i] = unionArray[i] ^ rightUnionArray[i];
+                break;
+            case EOpBitwiseOr:
+                tempConstArray = new ConstantUnion[objectSize];
+                for(int i = 0; i < objectSize; i++)
+                    tempConstArray[i] = unionArray[i] | rightUnionArray[i];
+                break;
+            case EOpBitShiftLeft:
+                tempConstArray = new ConstantUnion[objectSize];
+                for(int i = 0; i < objectSize; i++)
+                    tempConstArray[i] = unionArray[i] << rightUnionArray[i];
+                break;
+            case EOpBitShiftRight:
+                tempConstArray = new ConstantUnion[objectSize];
+                for(int i = 0; i < objectSize; i++)
+                    tempConstArray[i] = unionArray[i] >> rightUnionArray[i];
                 break;
 
             case EOpLessThan:
@@ -1221,6 +1310,15 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                 case EOpLogicalNot: // this code is written for possible future use, will not get executed currently
                     switch (getType().getBasicType()) {
                         case EbtBool:  tempConstArray[i].setBConst(!unionArray[i].getBConst()); break;
+                        default:
+                            infoSink.info.message(EPrefixInternalError, "Unary operation not folded into constant", getLine());
+                            return 0;
+                    }
+                    break;
+                case EOpBitwiseNot:
+                    switch(getType().getBasicType()) {
+                        case EbtInt: tempConstArray[i].setIConst(~unionArray[i].getIConst()); break;
+                        case EbtUInt: tempConstArray[i].setUConst(~unionArray[i].getUConst()); break;
                         default:
                             infoSink.info.message(EPrefixInternalError, "Unary operation not folded into constant", getLine());
                             return 0;
