@@ -22,11 +22,6 @@ namespace sw
 
 	Constants::Constants()
 	{
-		for(int i = 0; i < 256; i++)
-		{
-			sRGBtoLinear8[i] = (unsigned short)(sw::sRGBtoLinear((float)i / 0xFF) * 0x1000 + 0.5f);
-		}
-
 		static const unsigned int transposeBit0[16] =
 		{
 			0x00000000,
@@ -264,6 +259,21 @@ namespace sw
 			invMaskD01X[i][1] =  ~-(i >> 1 & 1);
 			invMaskD01X[i][2] =  ~-(i >> 0 & 1);
 			invMaskD01X[i][3] =  ~-(i >> 1 & 1);
+		}
+
+		for(int i = 0; i < 256; i++)
+		{
+			sRGBtoLinear8[i] = (unsigned short)(sw::sRGBtoLinear((float)i / 0xFF) * 0x1000 + 0.5f);
+		}
+
+		for(int i = 0; i < 64; i++)
+		{
+			sRGBtoLinear6[i] = (unsigned short)(sw::sRGBtoLinear((float)i / 0x3F) * 0x1000 + 0.5f);
+		}
+
+		for(int i = 0; i < 32; i++)
+		{
+			sRGBtoLinear5[i] = (unsigned short)(sw::sRGBtoLinear((float)i / 0x1F) * 0x1000 + 0.5f);
 		}
 
 		for(int i = 0; i < 0x1000; i++)
