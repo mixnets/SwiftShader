@@ -551,7 +551,7 @@ namespace sw
 					r.o[T0 + stage].z = v.z;
 					r.o[T0 + stage].w = v.w;
 
-					if(state.input[TexCoord0 + i])
+					/*if(state.input[TexCoord0 + i])
 					{
 						switch(state.input[TexCoord0 + i].count)
 						{
@@ -572,7 +572,7 @@ namespace sw
 						default:
 							ASSERT(false);
 						}
-					}
+					}*/
 				}
 				break;
 			case TEXGEN_NORMAL:
