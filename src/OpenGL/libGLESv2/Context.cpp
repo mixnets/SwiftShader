@@ -37,6 +37,10 @@
 
 #include <EGL/eglext.h>
 
+#ifdef __ANDROID__
+#include "DebugAndroid.hpp"
+#endif
+
 #undef near
 #undef far
 
@@ -3527,26 +3531,31 @@ void Context::flush()
 void Context::recordInvalidEnum()
 {
     mInvalidEnum = true;
+    AndroidEnterDebugger();
 }
 
 void Context::recordInvalidValue()
 {
     mInvalidValue = true;
+    AndroidEnterDebugger();
 }
 
 void Context::recordInvalidOperation()
 {
     mInvalidOperation = true;
+    AndroidEnterDebugger();
 }
 
 void Context::recordOutOfMemory()
 {
     mOutOfMemory = true;
+    AndroidEnterDebugger();
 }
 
 void Context::recordInvalidFramebufferOperation()
 {
     mInvalidFramebufferOperation = true;
+    AndroidEnterDebugger();
 }
 
 // Get one of the recorded errors and clear its flag, if any.

@@ -24,6 +24,10 @@
 
 #include <EGL/eglext.h>
 
+#ifdef __ANDROID__
+#include "Common/DebugAndroid.hpp"
+#endif
+
 static sw::Thread::LocalStorageKey currentTLS = TLS_OUT_OF_INDEXES;
 
 #if !defined(_MSC_VER)
@@ -180,6 +184,12 @@ static Current *eglGetCurrent(void)
 void setCurrentError(EGLint error)
 {
     Current *current = eglGetCurrent();
+#ifdef __ANDROID__
+    if (error != EGL_SUCCESS)
+    {
+      AndroidEnterDebugger();
+    }
+#endif
 
     current->error = error;
 }
