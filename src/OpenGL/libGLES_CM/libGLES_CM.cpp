@@ -1229,6 +1229,7 @@ void Disable(GLenum cap)
 		case GL_LIGHT7:                   context->setLight(7, false);              break;
 		case GL_FOG:                      context->setFog(false);					break;
 		case GL_TEXTURE_2D:               context->setTexture2D(false);             break;
+		case GL_TEXTURE_EXTERNAL_OES:     /*UNIMPLEMENTED();*/ break;
 		case GL_ALPHA_TEST:               UNIMPLEMENTED(); break;
 		case GL_COLOR_LOGIC_OP:           UNIMPLEMENTED(); break;
 		case GL_POINT_SMOOTH:             UNIMPLEMENTED(); break;
@@ -1344,6 +1345,7 @@ void Enable(GLenum cap)
 		case GL_LIGHT7:                   context->setLight(7, true);              break;
 		case GL_FOG:                      context->setFog(true);				   break;
 		case GL_TEXTURE_2D:               context->setTexture2D(true);             break;
+		case GL_TEXTURE_EXTERNAL_OES:     /*UNIMPLEMENTED();*/ break;
 		case GL_ALPHA_TEST:               UNIMPLEMENTED(); break;
 		case GL_COLOR_LOGIC_OP:           UNIMPLEMENTED(); break;
 		case GL_POINT_SMOOTH:             UNIMPLEMENTED(); break;
