@@ -2677,11 +2677,6 @@ namespace sw
 
 	void PixelRoutine::writeColor(Registers &r, int index, Pointer<Byte> &cBuffer, Int &x, Vector4s &current, Int &sMask, Int &zMask, Int &cMask)
 	{
-		if(!state.colorWriteActive(index))
-		{
-			return;
-		}
-
 		if(postBlendSRGB && state.writeSRGB)
 		{
 			linearToSRGB16_12_16(r, current);
@@ -2817,20 +2812,6 @@ namespace sw
 		case FORMAT_A16B16G16R16:
 			transpose4x4(current.x, current.y, current.z, current.w);
 			break;
-		case FORMAT_R32F:
-		case FORMAT_G32R32F:
-		case FORMAT_A32B32G32R32F:
-			{
-				Vector4f oC;
-
-				oC.x = convertUnsigned16(UShort4(current.x));
-				oC.y = convertUnsigned16(UShort4(current.y));
-				oC.z = convertUnsigned16(UShort4(current.z));
-				oC.w = convertUnsigned16(UShort4(current.w));
-
-				writeColor(r, index, cBuffer, x, oC, sMask, zMask, cMask);
-			}
-			return;
 		default:
 			ASSERT(false);
 		}
@@ -3543,25 +3524,8 @@ namespace sw
 
 	void PixelRoutine::writeColor(Registers &r, int index, Pointer<Byte> &cBuffer, Int &x, Vector4f &oC, Int &sMask, Int &zMask, Int &cMask)
 	{
-		if(!state.colorWriteActive(index))
-		{
-			return;
-		}
-
-		Vector4s color;
-
 		switch(state.targetFormat[index])
 		{
-		case FORMAT_X8R8G8B8:
-		case FORMAT_X8B8G8R8:
-		case FORMAT_A8R8G8B8:
-		case FORMAT_A8B8G8R8:
-		case FORMAT_A8:
-		case FORMAT_G16R16:
-		case FORMAT_A16B16G16R16:
-			convertFixed16(color, oC, true);
-			writeColor(r, index, cBuffer, x, color, sMask, zMask, cMask);
-			return;
 		case FORMAT_R32F:
 			break;
 		case FORMAT_G32R32F:
