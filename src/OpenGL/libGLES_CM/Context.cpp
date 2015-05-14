@@ -28,6 +28,10 @@
 #include "libEGL/Surface.h"
 #include "Common/Half.hpp"
 
+#ifdef __ANDROID__
+#include "DebugAndroid.hpp"
+#endif
+
 #include <EGL/eglext.h>
 
 #undef near
@@ -2357,26 +2361,31 @@ void Context::flush()
 void Context::recordInvalidEnum()
 {
     mInvalidEnum = true;
+    AndroidEnterDebugger();
 }
 
 void Context::recordInvalidValue()
 {
     mInvalidValue = true;
+    AndroidEnterDebugger();
 }
 
 void Context::recordInvalidOperation()
 {
     mInvalidOperation = true;
+    AndroidEnterDebugger();
 }
 
 void Context::recordOutOfMemory()
 {
     mOutOfMemory = true;
+    AndroidEnterDebugger();
 }
 
 void Context::recordInvalidFramebufferOperation()
 {
     mInvalidFramebufferOperation = true;
+    AndroidEnterDebugger();
 }
 
 // Get one of the recorded errors and clear its flag, if any.
