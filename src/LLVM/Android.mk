@@ -396,10 +396,20 @@ LOCAL_SRC_FILES += \
 	lib/VMCore/Verifier.cpp \
 
 
-LOCAL_CFLAGS += -DLOG_TAG=\"libLLVM_swiftshader\" -Wno-unused-parameter
-LOCAL_CFLAGS += -fomit-frame-pointer -Os -ffunction-sections -fdata-sections
-LOCAL_CFLAGS += -fno-operator-names -msse2 -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS
-LOCAL_CFLAGS += -std=c++11
+LOCAL_CFLAGS += \
+	-DLOG_TAG=\"libLLVM_swiftshader\" \
+	-Wno-unused-parameter \
+	-fomit-frame-pointer \
+	-Os \
+	-ffunction-sections \
+	-fdata-sections \
+	-fno-operator-names \
+	-msse2 \
+	-D__STDC_CONSTANT_MACROS \
+	-D__STDC_LIMIT_MACROS \
+	-std=c++11 \
+	$(SWIFTSHADER_PER_BRANCH_FLAGS)
+
 
 # Android's make system also uses NDEBUG, so we need to set/unset it forcefully
 # Uncomment for debug ON:

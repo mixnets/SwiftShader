@@ -5,7 +5,8 @@ COMMON_CFLAGS := \
 	-std=c++11 \
 	-DEGLAPI= \
 	-DEGL_EGLEXT_PROTOTYPES \
-	-Wno-unused-parameter
+	-Wno-unused-parameter \
+	$(SWIFTSHADER_PER_BRANCH_FLAGS)
 
 COMMON_SRC_FILES := \
 	Config.cpp \

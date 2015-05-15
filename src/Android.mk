@@ -73,9 +73,15 @@ LOCAL_SRC_FILES += \
 	OpenGL/common/Object.cpp \
 	OpenGL/common/MatrixStack.cpp \
 
-LOCAL_CFLAGS += -DLOG_TAG=\"swiftshader\" -Wno-unused-parameter
-LOCAL_CFLAGS += -fno-operator-names -msse2 -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS
-LOCAL_CFLAGS += -std=c++11
+LOCAL_CFLAGS += \
+	-DLOG_TAG=\"swiftshader\" \
+	-Wno-unused-parameter \
+	-fno-operator-names \
+	-msse2 \
+	-D__STDC_CONSTANT_MACROS \
+	-D__STDC_LIMIT_MACROS \
+	$(SWIFTSHADER_PER_BRANCH_FLAGS) \
+	-std=c++11
 
 # Android's make system also uses NDEBUG, so we need to set/unset it forcefully
 # Uncomment for ON:

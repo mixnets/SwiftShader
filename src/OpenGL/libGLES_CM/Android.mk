@@ -11,7 +11,8 @@ COMMON_CFLAGS := \
 	-DGL_API= \
 	-DGL_APICALL= \
 	-DGL_GLEXT_PROTOTYPES \
-	-Wno-unused-parameter
+	-Wno-unused-parameter \
+	$(SWIFTSHADER_PER_BRANCH_FLAGS)
 
 
 COMMON_SRC_FILES := \
