@@ -24,6 +24,8 @@
 
 using namespace std;
 
+bool localShaderConstants = false;
+
 namespace egl
 {
 Config::Config(const DisplayMode &displayMode, EGLint minInterval, EGLint maxInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample)
