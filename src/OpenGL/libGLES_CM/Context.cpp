@@ -1834,18 +1834,7 @@ void Context::applyTextures()
 
 void Context::setTextureEnvMode(GLenum texEnvMode)
 {
-	switch(texEnvMode)
-	{
-	case GL_MODULATE:
-	case GL_DECAL:
-	case GL_BLEND:
-	case GL_ADD:
-	case GL_REPLACE:
-		mState.textureEnvMode = texEnvMode;
-		break;
-	default:
-		UNREACHABLE();
-	}
+	mState.textureEnvMode = texEnvMode;
 }
 
 void Context::applyTexture(int index, Texture *baseTexture)

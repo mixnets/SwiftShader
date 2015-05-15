@@ -3123,33 +3123,19 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				switch((GLenum)param)
 				{
 				case GL_REPLACE:
-					UNIMPLEMENTED();
-					break;
 				case GL_MODULATE:
-					UNIMPLEMENTED();
-					break;
 				case GL_ADD:
-					context->setTextureEnvMode((GLenum)param);
-					break;
 				case GL_ADD_SIGNED:
-					UNIMPLEMENTED();
-					break;
 				case GL_INTERPOLATE:
-					UNIMPLEMENTED();
-					break;
 				case GL_SUBTRACT:
-					UNIMPLEMENTED();
-					break;
 				case GL_DOT3_RGB:
-					UNIMPLEMENTED();
-					break;
 				case GL_DOT3_RGBA:
-					UNIMPLEMENTED();
 					break;
 				default:
 					error(GL_INVALID_ENUM);
 				}
 
+				context->setTextureEnvMode((GLenum)param);
 				break;
 			case GL_COMBINE_ALPHA:
 				UNIMPLEMENTED();

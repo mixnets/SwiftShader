@@ -429,25 +429,21 @@ namespace es2sw
 			default: UNREACHABLE();
 			}
 			break;
-
 		case GL_REPLACE:
 			*rgbOperation = sw::TextureStage::STAGE_SELECTARG1;
 			*alphaOperation = sw::TextureStage::STAGE_SELECTARG1;
 			break;
-
 		case GL_ADD:
 			*rgbOperation = sw::TextureStage::STAGE_ADD;
 			*alphaOperation = sw::TextureStage::STAGE_SELECTARG1;
 			break; 
-
 		case GL_DECAL:
 		case GL_BLEND:
+			UNIMPLEMENTED();
 			// Default operations for compatibility
 			*rgbOperation = sw::TextureStage::STAGE_MODULATE;
 			*alphaOperation = sw::TextureStage::STAGE_MODULATE;
-			UNIMPLEMENTED();
 			break;
-
 		default:
 			UNREACHABLE();
 		}
