@@ -4,7 +4,8 @@ COMMON_CFLAGS := \
 	-DLOG_TAG=\"libEGL_swiftshader\" \
 	-std=c++11 \
 	-DEGLAPI= \
-	-DEGL_EGLEXT_PROTOTYPES
+	-DEGL_EGLEXT_PROTOTYPES \
+	-Wno-unused-parameter
 
 COMMON_SRC_FILES := \
 	Config.cpp \
@@ -21,6 +22,7 @@ COMMON_C_INCLUDES := \
 
 COMMON_STATIC_LIBRARIES := \
 	swiftshader_top \
+	libLLVM_swiftshader \
 	libgcemetadata
 
 COMMON_SHARED_LIBRARIES := \
