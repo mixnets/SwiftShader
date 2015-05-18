@@ -42,7 +42,12 @@ MachineSSAUpdater::MachineSSAUpdater(MachineFunction &MF,
 }
 
 MachineSSAUpdater::~MachineSSAUpdater() {
-  delete &getAvailableVals(AV);
+  // AV can be NULL. References aren't allowed to be NULL, and getAvailableVals
+  // casts to a reference. Delete of NULL would normally be OK, but some
+  // compilers skip the NULL check based on this being a reference, causing
+  // a crash in the destructor.
+  if (AV)
+    delete &getAvailableVals(AV);
 }
 
 /// Initialize - Reset this object to get ready for a new set of SSA
