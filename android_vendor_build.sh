@@ -55,13 +55,16 @@ for config in ${CONFIGS}; do
   TARGET_ARCH=$(get_build_var TARGET_ARCH)
 
   rm -rf ${OBJECT_DIR}/${TARGET_ARCH}
-  make -j ${JOBS} \
+
+  make -j ${JOBS} DISABLE_SWIFTSHADER_VENDOR_MAKEFILE=1 \
+     showcommands \
+     libswiftshader_common \
      libEGL_swiftshader_vendor_debug \
      libEGL_swiftshader_vendor_release \
      libGLESv1_CM_swiftshader_vendor_debug \
      libGLESv1_CM_swiftshader_vendor_release \
      libGLESv2_swiftshader_vendor_debug \
-     libGLESv2_swiftshader_vendor_release
+     libGLESv2_swiftshader_vendor_release > build.out
 
   # We don't need the obj files since they can be generated from the syms
 
@@ -103,3 +106,4 @@ git commit \
   -m "$(cd ${SOURCE_DIR}; git log -n1 | grep '^ *Change-Id:' | tail -1 | sed 's,-, ,')" \
   -m "    At $(cd ${SOURCE_DIR}; git remote -v | grep ^origin | head -1 | awk '{ print $2; }')"
 popd
+rm -rf "${SOURCE_DIR_LINKED}"
