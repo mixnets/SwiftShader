@@ -21,10 +21,10 @@ COMMON_C_INCLUDES := \
 	$(LOCAL_PATH)/../../
 
 COMMON_STATIC_LIBRARIES := \
-	swiftshader_top \
 	libgcemetadata
 
 COMMON_SHARED_LIBRARIES := \
+	swiftshader_top \
 	libgceframebufferconfig \
 	libdl \
 	liblog \
