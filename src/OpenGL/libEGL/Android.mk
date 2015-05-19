@@ -21,10 +21,10 @@ COMMON_C_INCLUDES := \
 	$(LOCAL_PATH)/../../
 
 COMMON_STATIC_LIBRARIES := \
-	swiftshader_top \
 	libgcemetadata
 
 COMMON_SHARED_LIBRARIES := \
+	libswiftshader_common \
 	libgceframebufferconfig \
 	libdl \
 	liblog \
@@ -69,6 +69,7 @@ LOCAL_CLANG := true
 LOCAL_SRC_FILES := $(COMMON_SRC_FILES)
 LOCAL_C_INCLUDES += $(COMMON_C_INCLUDES)
 LOCAL_STATIC_LIBRARIES += $(COMMON_STATIC_LIBRARIES)
+LOCAL_SHARED_LIBRARIES += $(COMMON_SHARED_LIBRARIES)
 LOCAL_SHARED_LIBRARIES += $(COMMON_SHARED_LIBRARIES)
 LOCAL_LDFLAGS += $(COMMON_LDFLAGS)
 include external/stlport/libstlport.mk

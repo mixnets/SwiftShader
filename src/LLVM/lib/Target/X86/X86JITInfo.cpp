@@ -57,6 +57,12 @@ static TargetJITInfo::JITCompilerFn JITCompilerFunction;
 #define GETASMPREFIX(X) GETASMPREFIX2(X)
 #define ASMPREFIX GETASMPREFIX(__USER_LABEL_PREFIX__)
 
+#ifndef __PIC__
+#define ASMSUFFIX
+#else
+#define ASMSUFFIX "@PLT"
+#endif
+
 // For ELF targets, use a .size and .type directive, to let tools
 // know the extent of functions defined in assembler.
 #if defined(__ELF__)
@@ -136,7 +142,7 @@ extern "C" {
 #else
     "movq    %rbp, %rdi\n"    // Pass prev frame and return address
     "movq    8(%rbp), %rsi\n"
-    "call    " ASMPREFIX "X86CompilationCallback2\n"
+    "call    " ASMPREFIX "X86CompilationCallback2" ASMSUFFIX "\n"
 #endif
     // Restore all XMM arg registers
     "movaps  112(%rsp), %xmm7\n"
@@ -213,7 +219,7 @@ extern "C" {
     "movl    4(%ebp), %eax\n" // Pass prev frame and return address
     "movl    %eax, 4(%esp)\n"
     "movl    %ebp, (%esp)\n"
-    "call    " ASMPREFIX "X86CompilationCallback2\n"
+    "call    " ASMPREFIX "X86CompilationCallback2" ASMSUFFIX "\n"
     "movl    %ebp, %esp\n"    // Restore ESP
     CFI(".cfi_def_cfa_register %esp\n")
     "subl    $12, %esp\n"
@@ -269,7 +275,7 @@ extern "C" {
     "movl    4(%ebp), %eax\n" // Pass prev frame and return address
     "movl    %eax, 4(%esp)\n"
     "movl    %ebp, (%esp)\n"
-    "call    " ASMPREFIX "X86CompilationCallback2\n"
+    "call    " ASMPREFIX "X86CompilationCallback2" ASMSUFFIX "\n"
     "addl    $16, %esp\n"
     "movaps  48(%esp), %xmm3\n"
     CFI(".cfi_restore %xmm3\n")
