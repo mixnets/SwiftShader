@@ -56,12 +56,13 @@ for config in ${CONFIGS}; do
 
   rm -rf ${OBJECT_DIR}/${TARGET_ARCH}
   make -j ${JOBS} \
+     showcommands \
      libEGL_swiftshader_vendor_debug \
      libEGL_swiftshader_vendor_release \
      libGLESv1_CM_swiftshader_vendor_debug \
      libGLESv1_CM_swiftshader_vendor_release \
      libGLESv2_swiftshader_vendor_debug \
-     libGLESv2_swiftshader_vendor_release
+     libGLESv2_swiftshader_vendor_release > build.out
 
   # We don't need the obj files since they can be generated from the syms
 
