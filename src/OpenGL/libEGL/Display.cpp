@@ -27,6 +27,7 @@
 #ifdef __ANDROID__
 #include <system/window.h>
 #include <GceFrameBufferConfig.h>
+#include <cutils/log.h>
 #endif
 
 #include <algorithm>
@@ -424,6 +425,13 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 {
     const egl::Config *config = mConfigSet.get(configHandle);
 	egl::Context *context = 0;
+
+#ifdef __ANDROID__
+	if (clientVersion > 2)
+	{
+		ALOGI("expected_badness: attempt to create context v=%d", clientVersion);
+	}
+#endif
 
 	if(clientVersion == 1 && config->mRenderableType & EGL_OPENGL_ES_BIT)
 	{
