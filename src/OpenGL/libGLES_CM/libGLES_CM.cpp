@@ -590,7 +590,13 @@ void Color4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte alpha)
 
 void Color4x(GLfixed red, GLfixed green, GLfixed blue, GLfixed alpha)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLclampx red = %d, GLfloat green = %d, GLfloat blue = %d, GLfloat alpha = %d)", red, green, blue, alpha);
+	es1::Context *context = es1::getContext();
+
+	if(context)
+	{
+		context->setVertexAttrib(sw::Color0, red/65536.0f, green/65536.0f, blue/65536.0f, alpha/65536.0f);
+	}
 }
 
 void ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
@@ -2751,7 +2757,13 @@ void PointParameterxv(GLenum pname, const GLfixed *params)
 
 void PointSize(GLfloat size)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLfloat size = %f)", size);
+
+	es1::Context *context = es1::getContext();
+	if (context)
+	{
+		context->setPointSize(size);
+	}
 }
 
 void PointSizePointerOES(GLenum type, GLsizei stride, const GLvoid *pointer)
