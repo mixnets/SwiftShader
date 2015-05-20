@@ -85,8 +85,11 @@ es2::Context *getContext()
 {
 	egl::Context *context = libEGL->clientGetCurrentContext();
 
-	if(context && (context->getClientVersion() == 2 ||
-	               context->getClientVersion() == 3))
+	if(context && (context->getClientVersion() == 2
+#ifndef __ANDROID__ // Do not allow GLES 3.0 on Android
+				|| context->getClientVersion() == 3
+#endif
+	  ))
 	{
 		return static_cast<es2::Context*>(context);
 	}
