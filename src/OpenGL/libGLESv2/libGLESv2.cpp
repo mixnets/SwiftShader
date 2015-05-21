@@ -204,10 +204,12 @@ static FormatMap BuildFormatMap3D()
 	InsertFormatMapping(map, GL_LUMINANCE, GL_LUMINANCE, GL_UNSIGNED_BYTE);
 	InsertFormatMapping(map, GL_ALPHA, GL_ALPHA, GL_UNSIGNED_BYTE);
 	InsertFormatMapping(map, GL_R8_EXT, GL_RED_EXT, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_R16F_EXT, GL_RED_EXT, GL_HALF_FLOAT);
 	InsertFormatMapping(map, GL_R16F_EXT, GL_RED_EXT, GL_HALF_FLOAT_OES);
 	InsertFormatMapping(map, GL_R16F_EXT, GL_RED_EXT, GL_FLOAT);
 	InsertFormatMapping(map, GL_R32F_EXT, GL_RED_EXT, GL_FLOAT);
 	InsertFormatMapping(map, GL_RG8_EXT, GL_RG_EXT, GL_UNSIGNED_BYTE);
+	InsertFormatMapping(map, GL_R16F_EXT, GL_RED_EXT, GL_HALF_FLOAT);
 	InsertFormatMapping(map, GL_R16F_EXT, GL_RED_EXT, GL_HALF_FLOAT_OES);
 	InsertFormatMapping(map, GL_R16F_EXT, GL_RED_EXT, GL_FLOAT);
 	InsertFormatMapping(map, GL_RG32F_EXT, GL_RG_EXT, GL_FLOAT);
@@ -215,6 +217,7 @@ static FormatMap BuildFormatMap3D()
 	InsertFormatMapping(map, GL_SRGB8_NV, GL_RGB, GL_UNSIGNED_BYTE);
 	InsertFormatMapping(map, GL_RGB565, GL_RGB, GL_UNSIGNED_BYTE);
 	InsertFormatMapping(map, GL_RGB565, GL_RGB, GL_UNSIGNED_SHORT_5_6_5);
+	InsertFormatMapping(map, GL_RGB16F_EXT, GL_RGB, GL_HALF_FLOAT);
 	InsertFormatMapping(map, GL_RGB16F_EXT, GL_RGB, GL_HALF_FLOAT_OES);
 	InsertFormatMapping(map, GL_RGB16F_EXT, GL_RGB, GL_FLOAT);
 	InsertFormatMapping(map, GL_RGB32F_EXT, GL_RGB, GL_FLOAT);
@@ -226,6 +229,7 @@ static FormatMap BuildFormatMap3D()
 	InsertFormatMapping(map, GL_RGBA4, GL_RGBA, GL_UNSIGNED_BYTE);
 	InsertFormatMapping(map, GL_RGBA4, GL_RGBA, GL_UNSIGNED_SHORT_4_4_4_4);
 	InsertFormatMapping(map, GL_RGB10_A2_EXT, GL_RGBA, GL_UNSIGNED_INT_2_10_10_10_REV_EXT);
+	InsertFormatMapping(map, GL_RGBA16F_EXT, GL_RGBA, GL_HALF_FLOAT);
 	InsertFormatMapping(map, GL_RGBA16F_EXT, GL_RGBA, GL_HALF_FLOAT_OES);
 	InsertFormatMapping(map, GL_RGBA16F_EXT, GL_RGBA, GL_FLOAT);
 	InsertFormatMapping(map, GL_RGBA32F_EXT, GL_RGBA, GL_FLOAT);
@@ -243,6 +247,7 @@ static bool ValidateType3D(GLenum type)
 	case GL_SHORT:
 	case GL_UNSIGNED_INT:
 	case GL_INT:
+	case GL_HALF_FLOAT:
 	case GL_HALF_FLOAT_OES:
 	case GL_FLOAT:
 	case GL_UNSIGNED_SHORT_5_6_5:
@@ -4908,6 +4913,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 			{
 			case GL_UNSIGNED_BYTE:
 			case GL_FLOAT:
+			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
 				break;
 			default:
@@ -4940,6 +4946,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				{
 				case GL_FLOAT:
 				case GL_HALF_FLOAT:
+				case GL_HALF_FLOAT_OES:
 					break;
 				default:
 					return error(GL_INVALID_ENUM);
@@ -5237,6 +5244,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				{
 				case GL_FLOAT:
 				case GL_HALF_FLOAT:
+				case GL_HALF_FLOAT_OES:
 					break;
 				default:
 					return error(GL_INVALID_ENUM);
@@ -5264,6 +5272,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_BYTE:
 				case GL_UNSIGNED_SHORT_5_6_5:
 				case GL_FLOAT:
+				case GL_HALF_FLOAT:
 				case GL_HALF_FLOAT_OES:
 					break;
 				default:
@@ -5313,6 +5322,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_INT_10F_11F_11F_REV:
 				case GL_FLOAT:
 				case GL_HALF_FLOAT:
+				case GL_HALF_FLOAT_OES:
 					break;
 				default:
 					return error(GL_INVALID_ENUM);
@@ -5324,6 +5334,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_INT_5_9_9_9_REV:
 				case GL_FLOAT:
 				case GL_HALF_FLOAT:
+				case GL_HALF_FLOAT_OES:
 					break;
 				default:
 					return error(GL_INVALID_ENUM);
@@ -5334,6 +5345,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				{
 				case GL_FLOAT:
 				case GL_HALF_FLOAT:
+				case GL_HALF_FLOAT_OES:
 					break;
 				default:
 					return error(GL_INVALID_ENUM);
@@ -5362,6 +5374,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_SHORT_4_4_4_4:
 				case GL_UNSIGNED_SHORT_5_5_5_1:
 				case GL_FLOAT:
+				case GL_HALF_FLOAT:
 				case GL_HALF_FLOAT_OES:
 					break;
 				default:
@@ -5430,6 +5443,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				{
 				case GL_FLOAT:
 				case GL_HALF_FLOAT:
+				case GL_HALF_FLOAT_OES:
 					break;
 				default:
 					return error(GL_INVALID_ENUM);
@@ -6623,6 +6637,7 @@ void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normal
 	case GL_INT:
 	case GL_UNSIGNED_INT:
 	case GL_HALF_FLOAT:
+	case GL_HALF_FLOAT_OES:
 		if(clientVersion >= 3)
 		{
 			break;
