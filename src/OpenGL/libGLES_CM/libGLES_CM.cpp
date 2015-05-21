@@ -2938,7 +2938,7 @@ void Scalef(GLfloat x, GLfloat y, GLfloat z)
 
 void Scalex(GLfixed x, GLfixed y, GLfixed z)
 {
-	UNIMPLEMENTED();
+	Scalef((float)x / 0x10000, (float)y / 0x10000, (float)z / 0x10000);
 }
 
 void Scissor(GLint x, GLint y, GLsizei width, GLsizei height)
@@ -3571,7 +3571,7 @@ void Translatef(GLfloat x, GLfloat y, GLfloat z)
 
 void Translatex(GLfixed x, GLfixed y, GLfixed z)
 {
-	UNIMPLEMENTED();
+	Translatef((float)x / 0x10000, (float)y / 0x10000, (float)z / 0x10000);
 }
 
 void VertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
