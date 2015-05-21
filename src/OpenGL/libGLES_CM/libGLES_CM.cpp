@@ -3377,6 +3377,11 @@ void TexParameterf(GLenum target, GLenum pname, GLfloat param)
 				return error(GL_INVALID_VALUE);
 			}
 			break;
+		case GL_GENERATE_MIPMAP:
+			if((GLboolean)param != GL_FALSE)
+			{
+				UNIMPLEMENTED();
+			}
 		default:
 			return error(GL_INVALID_ENUM);
 		}
