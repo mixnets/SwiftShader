@@ -590,7 +590,7 @@ void Color4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte alpha)
 
 void Color4x(GLfixed red, GLfixed green, GLfixed blue, GLfixed alpha)
 {
-	UNIMPLEMENTED();
+	Color4f((float)red / 0x10000, (float)green / 0x10000, (float)blue / 0x10000, (float)alpha / 0x10000);
 }
 
 void ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
