@@ -590,7 +590,7 @@ void Color4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte alpha)
 
 void Color4x(GLfixed red, GLfixed green, GLfixed blue, GLfixed alpha)
 {
-	UNIMPLEMENTED();
+	Color4f((float)red / 0x10000, (float)green / 0x10000, (float)blue / 0x10000, (float)alpha / 0x10000);
 }
 
 void ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
@@ -2271,6 +2271,9 @@ void GetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
 		case GL_TEXTURE_MAX_ANISOTROPY_EXT:
 			*params = texture->getMaxAnisotropy();
 			break;
+		case GL_GENERATE_MIPMAP:
+			*params = (GLfloat)texture->getGenerateMipmap();
+			break;
 		case GL_REQUIRED_TEXTURE_IMAGE_UNITS_OES:
 			*params = (GLfloat)1;
 			break;
@@ -2318,6 +2321,9 @@ void GetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 			break;
 		case GL_TEXTURE_MAX_ANISOTROPY_EXT:
 			*params = (GLint)texture->getMaxAnisotropy();
+			break;
+		case GL_GENERATE_MIPMAP:
+			*params = (GLint)texture->getGenerateMipmap();
 			break;
 		case GL_REQUIRED_TEXTURE_IMAGE_UNITS_OES:
 			*params = 1;
@@ -2370,6 +2376,9 @@ void Hint(GLenum target, GLenum mode)
 		{
 		case GL_GENERATE_MIPMAP_HINT:
 			context->setGenerateMipmapHint(mode);
+			break;
+		case GL_PERSPECTIVE_CORRECTION_HINT:
+			// Always using high-precision
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -2935,7 +2944,7 @@ void Scalef(GLfloat x, GLfloat y, GLfloat z)
 
 void Scalex(GLfixed x, GLfixed y, GLfixed z)
 {
-	UNIMPLEMENTED();
+	Scalef((float)x / 0x10000, (float)y / 0x10000, (float)z / 0x10000);
 }
 
 void Scissor(GLint x, GLint y, GLsizei width, GLsizei height)
@@ -3374,6 +3383,9 @@ void TexParameterf(GLenum target, GLenum pname, GLfloat param)
 				return error(GL_INVALID_VALUE);
 			}
 			break;
+		case GL_GENERATE_MIPMAP:
+			texture->setGenerateMipmap((GLboolean)param);
+			break;
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -3438,6 +3450,9 @@ void TexParameteri(GLenum target, GLenum pname, GLint param)
 			{
 				return error(GL_INVALID_VALUE);
 			}
+			break;
+		case GL_GENERATE_MIPMAP:
+			texture->setGenerateMipmap((GLboolean)param);
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -3562,7 +3577,7 @@ void Translatef(GLfloat x, GLfloat y, GLfloat z)
 
 void Translatex(GLfixed x, GLfixed y, GLfixed z)
 {
-	UNIMPLEMENTED();
+	Translatef((float)x / 0x10000, (float)y / 0x10000, (float)z / 0x10000);
 }
 
 void VertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
