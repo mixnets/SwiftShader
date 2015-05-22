@@ -3141,41 +3141,58 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				switch((GLenum)param)
 				{
 				case GL_REPLACE:
-					UNIMPLEMENTED();
-					break;
 				case GL_MODULATE:
-					UNIMPLEMENTED();
-					break;
 				case GL_ADD:
-					context->setTextureEnvMode((GLenum)param);
-					break;
 				case GL_ADD_SIGNED:
-					UNIMPLEMENTED();
-					break;
 				case GL_INTERPOLATE:
-					UNIMPLEMENTED();
-					break;
 				case GL_SUBTRACT:
-					UNIMPLEMENTED();
-					break;
 				case GL_DOT3_RGB:
-					UNIMPLEMENTED();
-					break;
 				case GL_DOT3_RGBA:
-					UNIMPLEMENTED();
 					break;
 				default:
 					error(GL_INVALID_ENUM);
 				}
 
+				context->setCombineRGB((GLenum)param);
 				break;
 			case GL_COMBINE_ALPHA:
-				UNIMPLEMENTED();
+				switch((GLenum)param)
+				{
+				case GL_REPLACE:
+				case GL_MODULATE:
+				case GL_ADD:
+				case GL_ADD_SIGNED:
+				case GL_INTERPOLATE:
+				case GL_SUBTRACT:
+					break;
+				default:
+					error(GL_INVALID_ENUM);
+				}
+
+				context->setCombineAlpha((GLenum)param);
 				break;
 			case GL_RGB_SCALE:
 				UNIMPLEMENTED();
 				break;
 			case GL_ALPHA_SCALE:
+				UNIMPLEMENTED();
+				break;
+			case GL_OPERAND0_RGB:
+				UNIMPLEMENTED();
+				break;
+			case GL_OPERAND1_RGB:
+				UNIMPLEMENTED();
+				break;
+			case GL_OPERAND2_RGB:
+				UNIMPLEMENTED();
+				break;
+			case GL_OPERAND0_ALPHA:
+				UNIMPLEMENTED();
+				break;
+			case GL_OPERAND1_ALPHA:
+				UNIMPLEMENTED();
+				break;
+			case GL_OPERAND2_ALPHA:
 				UNIMPLEMENTED();
 				break;
 			default:
