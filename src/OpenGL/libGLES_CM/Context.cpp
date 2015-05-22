@@ -107,21 +107,21 @@ Context::Context(const egl::Config *config, const Context *shareContext)
 
 	for(int unit = 0; unit < MAX_TEXTURE_UNITS; unit++)
 	{
-		mState.textureEnvMode[unit] = GL_MODULATE;
-		mState.combineRGB[unit] = GL_MODULATE;
-		mState.combineAlpha[unit] = GL_MODULATE;
-		mState.src0RGB[unit] = GL_TEXTURE;
-		mState.src1RGB[unit] = GL_PREVIOUS;
-		mState.src2RGB[unit] = GL_CONSTANT;
-		mState.src0Alpha[unit] = GL_TEXTURE;
-		mState.src1Alpha[unit] = GL_PREVIOUS;
-		mState.src2Alpha[unit] = GL_CONSTANT;
-		mState.operand0RGB[unit] = GL_SRC_COLOR;
-		mState.operand1RGB[unit] = GL_SRC_COLOR;
-		mState.operand2RGB[unit] = GL_SRC_ALPHA;
-		mState.operand0Alpha[unit] = GL_SRC_ALPHA;
-		mState.operand1Alpha[unit] = GL_SRC_ALPHA;
-		mState.operand2Alpha[unit] = GL_SRC_ALPHA;
+		mState.textureUnit[unit].environmentMode = GL_MODULATE;
+		mState.textureUnit[unit].combineRGB = GL_MODULATE;
+		mState.textureUnit[unit].combineAlpha = GL_MODULATE;
+		mState.textureUnit[unit].src0RGB = GL_TEXTURE;
+		mState.textureUnit[unit].src1RGB = GL_PREVIOUS;
+		mState.textureUnit[unit].src2RGB = GL_CONSTANT;
+		mState.textureUnit[unit].src0Alpha = GL_TEXTURE;
+		mState.textureUnit[unit].src1Alpha = GL_PREVIOUS;
+		mState.textureUnit[unit].src2Alpha = GL_CONSTANT;
+		mState.textureUnit[unit].operand0RGB = GL_SRC_COLOR;
+		mState.textureUnit[unit].operand1RGB = GL_SRC_COLOR;
+		mState.textureUnit[unit].operand2RGB = GL_SRC_ALPHA;
+		mState.textureUnit[unit].operand0Alpha = GL_SRC_ALPHA;
+		mState.textureUnit[unit].operand1Alpha = GL_SRC_ALPHA;
+		mState.textureUnit[unit].operand2Alpha = GL_SRC_ALPHA;
 	}
 
     if(shareContext != NULL)
@@ -1848,7 +1848,7 @@ void Context::applyTextures()
 
 			applyTexture(unit, texture);
 
-			if(mState.textureEnvMode[unit] != GL_COMBINE)
+			if(mState.textureUnit[unit].environmentMode != GL_COMBINE)
 			{
 				GLenum texFormat = texture->getFormat(GL_TEXTURE_2D, 0);
 
@@ -1866,7 +1866,7 @@ void Context::applyTextures()
 				device->setThirdArgumentAlpha(unit, sw::TextureStage::SOURCE_CONSTANT);   // Ac
 				device->setThirdModifierAlpha(unit, sw::TextureStage::MODIFIER_ALPHA);
 
-				switch(mState.textureEnvMode[unit])
+				switch(mState.textureUnit[unit].environmentMode)
 				{
 				case GL_REPLACE:
 					switch(texFormat)
@@ -1985,6 +1985,23 @@ void Context::applyTextures()
 			else   // GL_COMBINE
 			{
 				
+				device->setFirstArgument(unit, es2sw::ConvertSourceArgument(mState.textureUnit[unit].src0RGB));
+				device->setFirstModifier(unit, es2sw::ConvertSourceOperand(mState.textureUnit[unit].operand0RGB));
+				device->setSecondArgument(unit, es2sw::ConvertSourceArgument(mState.textureUnit[unit].src1RGB));
+				device->setSecondModifier(unit, es2sw::ConvertSourceOperand(mState.textureUnit[unit].operand1RGB));
+				device->setThirdArgument(unit, es2sw::ConvertSourceArgument(mState.textureUnit[unit].src2RGB));
+				device->setThirdModifier(unit, es2sw::ConvertSourceOperand(mState.textureUnit[unit].operand2RGB));
+
+				device->setStageOperation(unit, es2sw::ConvertCombineOperation(mState.textureUnit[unit].combineRGB));
+
+				device->setFirstArgumentAlpha(unit, es2sw::ConvertSourceArgument(mState.textureUnit[unit].src0Alpha));
+				device->setFirstModifierAlpha(unit, es2sw::ConvertSourceOperand(mState.textureUnit[unit].operand0Alpha));
+				device->setSecondArgumentAlpha(unit, es2sw::ConvertSourceArgument(mState.textureUnit[unit].src1Alpha));
+				device->setSecondModifierAlpha(unit, es2sw::ConvertSourceOperand(mState.textureUnit[unit].operand1Alpha));
+				device->setThirdArgumentAlpha(unit, es2sw::ConvertSourceArgument(mState.textureUnit[unit].src2Alpha));
+				device->setThirdModifierAlpha(unit, es2sw::ConvertSourceOperand(mState.textureUnit[unit].operand2Alpha));
+
+				device->setStageOperationAlpha(unit, es2sw::ConvertCombineOperation(mState.textureUnit[unit].combineAlpha));
 			}
         }
         else
@@ -2004,7 +2021,7 @@ void Context::applyTextures()
 
 void Context::setTextureEnvMode(GLenum texEnvMode)
 {
-	mState.textureEnvMode[mState.activeSampler] = texEnvMode;
+	mState.textureUnit[mState.activeSampler].environmentMode = texEnvMode;
 }
 
 void Context::applyTexture(int index, Texture *baseTexture)
