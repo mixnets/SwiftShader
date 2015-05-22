@@ -253,7 +253,21 @@ struct State
     GLint unpackAlignment;
     GLint packAlignment;
 
-	GLenum textureEnvMode;
+	GLenum textureEnvMode[MAX_TEXTURE_UNITS];
+	GLenum combineRGB[MAX_TEXTURE_UNITS];
+	GLenum combineAlpha[MAX_TEXTURE_UNITS];
+	GLenum src0RGB[MAX_TEXTURE_UNITS];
+	GLenum src0Alpha[MAX_TEXTURE_UNITS];
+	GLenum src1RGB[MAX_TEXTURE_UNITS];
+	GLenum src1Alpha[MAX_TEXTURE_UNITS];
+	GLenum src2RGB[MAX_TEXTURE_UNITS];
+	GLenum src2Alpha[MAX_TEXTURE_UNITS];
+	GLenum operand0RGB[MAX_TEXTURE_UNITS];
+	GLenum operand0Alpha[MAX_TEXTURE_UNITS];
+	GLenum operand1RGB[MAX_TEXTURE_UNITS];
+	GLenum operand1Alpha[MAX_TEXTURE_UNITS];
+	GLenum operand2RGB[MAX_TEXTURE_UNITS];
+	GLenum operand2Alpha[MAX_TEXTURE_UNITS];
 };
 
 class Context : public egl::Context
@@ -332,7 +346,6 @@ public:
 	unsigned int getActiveTexture() const;
 
 	void setTextureEnvMode(GLenum texEnvMode);
-	GLenum getTextureEnvMode();
 
     void setLineWidth(GLfloat width);
 
