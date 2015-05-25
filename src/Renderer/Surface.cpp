@@ -2475,6 +2475,24 @@ namespace sw
 							if(rgbaMask & 0x8) for(int x = 0; x < width; x++) ((float*)target)[4 * x + 3] = a32f;
 						}
 						break;
+					case FORMAT_R5G6B5:
+						if((rgbaMask & 0x3) == 0x3)
+						{
+							memfill(target, (int&)g16r16, 4 * (x1 - x0));
+						}
+						else
+						{
+							unsigned int rgMask = (rgbaMask & 0x1 ? 0x0000FFFF : 0) | (rgbaMask & 0x2 ? 0xFFFF0000 : 0);
+							unsigned int invMask = ~rgMask;
+							unsigned int maskedColor = (unsigned int&)g16r16 & rgMask;
+							unsigned int *target32 = (unsigned int*)target;
+
+							for(int x = 0; x < width; x++)
+							{
+								target32[x] = maskedColor | (target32[x] & invMask);
+							}
+						}
+						break;
 					default:
 						ASSERT(false);
 					}
@@ -3031,7 +3049,6 @@ namespace sw
 		case FORMAT_A8B8G8R8:
 			return FORMAT_A8B8G8R8;
 		case FORMAT_R3G3B2:
-		case FORMAT_R5G6B5:
 		case FORMAT_R8G8B8:
 		case FORMAT_X4R4G4B4:
 		case FORMAT_X1R5G5B5:
@@ -3044,6 +3061,8 @@ namespace sw
 			{
 				return FORMAT_X8G8R8B8Q;
 			}
+		case FORMAT_R5G6B5:
+			return FORMAT_R5G6B5;
 		case FORMAT_X8B8G8R8:
 			return FORMAT_X8B8G8R8;
 		// Compressed formats
