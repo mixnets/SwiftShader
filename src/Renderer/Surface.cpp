@@ -2312,10 +2312,10 @@ namespace sw
 			unsigned char b8 = (colorARGB & 0x000000FF) >> 0;
 			unsigned char a8 = (colorARGB & 0xFF000000) >> 24;
 
-			unsigned short r16 = (r8 << 8) + r8;
-			unsigned short g16 = (g8 << 8) + g8;
-			unsigned short b16 = (b8 << 8) + b8;
-			unsigned short a16 = (a8 << 8) + a8;
+			unsigned short r16 = (r8 << 8) | r8;
+			unsigned short g16 = (g8 << 8) | g8;
+			unsigned short b16 = (b8 << 8) | b8;
+			unsigned short a16 = (a8 << 8) | a8;
 
 			float r32f = r8 / 255.0f;
 			float g32f = g8 / 255.0f;
@@ -2326,6 +2326,7 @@ namespace sw
 			unsigned short g16r16[2] = {r16, g16};
 			unsigned char a8b8g8r8[4] = {r8, g8, b8, a8};
 			unsigned int colorABGR = (unsigned int&)a8b8g8r8;
+			unsigned short r5g6b5 = (((unsigned short)r8 << 8) & 0xF800) | (((unsigned short)g8 << 3) & 0x07E0) | ((unsigned short)b8 >> 3);
 
 			for(int z = 0; z < internal.depth; z++)
 			{
@@ -2473,6 +2474,24 @@ namespace sw
 							if(rgbaMask & 0x2) for(int x = 0; x < width; x++) ((float*)target)[4 * x + 1] = g32f;
 							if(rgbaMask & 0x4) for(int x = 0; x < width; x++) ((float*)target)[4 * x + 2] = b32f;
 							if(rgbaMask & 0x8) for(int x = 0; x < width; x++) ((float*)target)[4 * x + 3] = a32f;
+						}
+						break;
+					case FORMAT_R5G6B5:
+						if((rgbaMask & 0x7) == 0x7)
+						{
+							memfill(target, (int&)r5g6b5, 2 * (x1 - x0));
+						}
+						else
+						{
+							unsigned short rgbMask = (rgbaMask & 0x1 ? 0xF800 : 0) | (rgbaMask & 0x2 ? 0x07E0 : 0) | (rgbaMask & 0x3 ? 0x001F : 0);
+							unsigned short invMask = ~rgbMask;
+							unsigned short maskedColor = r5g6b5 & rgbMask;
+							unsigned short *target16 = (unsigned short*)target;
+
+							for(int x = 0; x < width; x++)
+							{
+								target16[x] = maskedColor | (target16[x] & invMask);
+							}
 						}
 						break;
 					default:
