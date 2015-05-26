@@ -5142,6 +5142,13 @@ namespace sw
 		storeValue(xyzw);
 	}
 
+	Int4::Int4(RValue<Short4> cast)
+	{
+		Value *integer = Nucleus::createSExt(cast.value, Int4::getType());
+
+		storeValue(integer);
+	}
+
 	Int4::Int4()
 	{
 	//	xyzw.parent = this;
@@ -5479,6 +5486,13 @@ namespace sw
 		Value *xyzw = Nucleus::createFPToUI(cast.value, UInt4::getType());
 
 		storeValue(xyzw);
+	}
+
+	UInt4::UInt4(RValue<UShort4> cast)
+	{
+		Value *integer = Nucleus::createZExt(cast.value, Int4::getType());
+
+		storeValue(integer);
 	}
 
 	UInt4::UInt4()
