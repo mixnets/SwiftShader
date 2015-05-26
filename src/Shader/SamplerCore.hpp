@@ -22,7 +22,7 @@ namespace sw
 	public:
 		SamplerCore(Pointer<Byte> &r, const Sampler::State &state);
 
-		void sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool bias = false, bool fixed12 = true, bool gradients = false, bool lodProvided = false);
+		void sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool bias = false, bool gradients = false, bool lodProvided = false, bool fixed12 = true);
 		void sampleTexture(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool bias = false, bool gradients = false, bool lodProvided = false);
 
 	private:
@@ -53,12 +53,15 @@ namespace sw
 		void convertSigned12(Float4 &cf, Short4 &ci);
 		void convertSigned15(Float4 &cf, Short4 &ci);
 		void convertUnsigned16(Float4 &cf, Short4 &ci);
-		void sRGBtoLinear16_12(Short4 &c);
+		void sRGBtoLinear16_8_12(Short4 &c);
+		void sRGBtoLinear16_6_12(Short4 &c);
+		void sRGBtoLinear16_5_12(Short4 &c);
 
 		bool hasFloatTexture() const;
 		bool hasUnsignedTextureComponent(int component) const;
 		int textureComponentCount() const;
-		bool has16bitTexture() const;
+		bool has16bitTextureFormat() const;
+		bool has16bitTextureComponents() const;
 		bool isRGBComponent(int component) const;
 
 		Pointer<Byte> &constants;

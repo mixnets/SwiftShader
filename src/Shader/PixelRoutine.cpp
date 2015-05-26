@@ -2028,15 +2028,15 @@ namespace sw
 		sampleTexture(r, c, stage, u, v, w, q, project);
 	}
 
-	void PixelRoutine::sampleTexture(Registers &r, Vector4s &c, int stage, Float4 &u, Float4 &v, Float4 &w, Float4 &q, bool project, bool bias, bool fixed12)
+	void PixelRoutine::sampleTexture(Registers &r, Vector4s &c, int stage, Float4 &u, Float4 &v, Float4 &w, Float4 &q, bool project, bool bias)
 	{
 		Vector4f dsx;
 		Vector4f dsy;
 
-		sampleTexture(r, c, stage, u, v, w, q, dsx, dsy, project, bias, fixed12, false);
+		sampleTexture(r, c, stage, u, v, w, q, dsx, dsy, project, bias, false);
 	}
 
-	void PixelRoutine::sampleTexture(Registers &r, Vector4s &c, int stage, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project, bool bias, bool fixed12, bool gradients, bool lodProvided)
+	void PixelRoutine::sampleTexture(Registers &r, Vector4s &c, int stage, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project, bool bias, bool gradients, bool lodProvided)
 	{
 		#if PERF_PROFILE
 			Long texTime = Ticks();
@@ -2046,7 +2046,7 @@ namespace sw
 
 		if(!project)
 		{
-			sampler[stage]->sampleTexture(texture, c, u, v, w, q, dsx, dsy, bias, fixed12, gradients, lodProvided);
+			sampler[stage]->sampleTexture(texture, c, u, v, w, q, dsx, dsy, bias, gradients, lodProvided);
 		}
 		else
 		{
@@ -2056,7 +2056,7 @@ namespace sw
 			Float4 v_q = v * rq;
 			Float4 w_q = w * rq;
 
-			sampler[stage]->sampleTexture(texture, c, u_q, v_q, w_q, q, dsx, dsy, bias, fixed12, gradients, lodProvided);
+			sampler[stage]->sampleTexture(texture, c, u_q, v_q, w_q, q, dsx, dsy, bias, gradients, lodProvided);
 		}
 
 		#if PERF_PROFILE
@@ -2129,13 +2129,14 @@ namespace sw
 			{
 			case FORMAT_NULL:
 				break;
-			case FORMAT_A16B16G16R16:
+			case FORMAT_R5G6B5:
 			case FORMAT_A8R8G8B8:
 			case FORMAT_A8B8G8R8:
 			case FORMAT_X8R8G8B8:
 			case FORMAT_X8B8G8R8:
 			case FORMAT_A8:
 			case FORMAT_G16R16:
+			case FORMAT_A16B16G16R16:
 				oC[index].x = Max(oC[index].x, Float4(0.0f)); oC[index].x = Min(oC[index].x, Float4(1.0f));
 				oC[index].y = Max(oC[index].y, Float4(0.0f)); oC[index].y = Min(oC[index].y, Float4(1.0f));
 				oC[index].z = Max(oC[index].z, Float4(0.0f)); oC[index].z = Min(oC[index].z, Float4(1.0f));
@@ -2162,6 +2163,7 @@ namespace sw
 
 		switch(state.targetFormat[0])
 		{
+		case FORMAT_R5G6B5:
 		case FORMAT_X8R8G8B8:
 		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:
@@ -2179,6 +2181,13 @@ namespace sw
 				current.y <<= 4;
 				current.z <<= 4;
 				current.w <<= 4;
+			}
+
+			if(state.targetFormat[0] == FORMAT_R5G6B5)
+			{
+				current.x &= Short4(0xF800u);
+				current.y &= Short4(0xFC00u);
+				current.z &= Short4(0xF800u);
 			}
 
 			fogBlend(r, current, fog, r.z[0], r.rhw);
@@ -2241,6 +2250,7 @@ namespace sw
 
 			switch(state.targetFormat[index])
 			{
+			case FORMAT_R5G6B5:
 			case FORMAT_X8R8G8B8:
 			case FORMAT_X8B8G8R8:
 			case FORMAT_A8R8G8B8:
@@ -2433,6 +2443,17 @@ namespace sw
 		// Read pixel
 		switch(state.targetFormat[index])
 		{
+		case FORMAT_R5G6B5:
+			buffer = cBuffer + 2 * x;
+			c01 = As<Short4>(Insert(As<Int2>(c01), *Pointer<Int>(buffer), 0));
+			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
+			c01 = As<Short4>(Insert(As<Int2>(c01), *Pointer<Int>(buffer), 1));
+
+			pixel.x = c01 & Short4(0xF800u);
+			pixel.y = (c01 & Short4(0x07E0u)) << 5;
+			pixel.z = (c01 & Short4(0x001Fu)) << 11;
+			pixel.w = Short4(0xFFFFu);
+			break;
 		case FORMAT_A8R8G8B8:
 			buffer = cBuffer + 4 * x;
 			c01 = *Pointer<Short4>(buffer);
@@ -2561,7 +2582,7 @@ namespace sw
 
 		if(postBlendSRGB && state.writeSRGB)
 		{
-			sRGBtoLinear16_16(r, pixel);	
+			sRGBtoLinear16_12_16(r, pixel);
 		}
 
 		// Final Color = ObjectColor * SourceBlendFactor + PixelColor * DestinationBlendFactor
@@ -2675,20 +2696,18 @@ namespace sw
 
 	void PixelRoutine::writeColor(Registers &r, int index, Pointer<Byte> &cBuffer, Int &x, Vector4s &current, Int &sMask, Int &zMask, Int &cMask)
 	{
-		if(!state.colorWriteActive(index))
-		{
-			return;
-		}
-
 		if(postBlendSRGB && state.writeSRGB)
 		{
-			linearToSRGB16_16(r, current);
+			linearToSRGB16_12_16(r, current);
 		}
 
 		if(exactColorRounding)
 		{
 			switch(state.targetFormat[index])
 			{
+			case FORMAT_R5G6B5:
+			//	UNIMPLEMENTED();   // FIXME
+				break;
 			case FORMAT_X8G8R8B8Q:
 			case FORMAT_A8G8R8B8Q:
 			case FORMAT_X8R8G8B8:
@@ -2711,6 +2730,15 @@ namespace sw
 
 		switch(state.targetFormat[index])
 		{
+		case FORMAT_R5G6B5:
+			{
+				current.x = current.x & Short4(0xF800u);
+				current.y = As<UShort4>(current.y & Short4(0xFC00u)) >> 5;
+				current.z = As<UShort4>(current.z) >> 11;
+
+				current.x = current.x | current.y | current.z;
+			}
+			break;
 		case FORMAT_X8G8R8B8Q:
 			UNIMPLEMENTED();
 		//	current.x = As<Short4>(As<UShort4>(current.x) >> 8);
@@ -2815,20 +2843,6 @@ namespace sw
 		case FORMAT_A16B16G16R16:
 			transpose4x4(current.x, current.y, current.z, current.w);
 			break;
-		case FORMAT_R32F:
-		case FORMAT_G32R32F:
-		case FORMAT_A32B32G32R32F:
-			{
-				Vector4f oC;
-
-				oC.x = convertUnsigned16(UShort4(current.x));
-				oC.y = convertUnsigned16(UShort4(current.y));
-				oC.z = convertUnsigned16(UShort4(current.z));
-				oC.w = convertUnsigned16(UShort4(current.w));
-
-				writeColor(r, index, cBuffer, x, oC, sMask, zMask, cMask);
-			}
-			return;
 		default:
 			ASSERT(false);
 		}
@@ -2857,6 +2871,45 @@ namespace sw
 
 		switch(state.targetFormat[index])
 		{
+		case FORMAT_R5G6B5:
+			{
+				Pointer<Byte> buffer = cBuffer + 2 * x;
+				Int value = *Pointer<Int>(buffer);
+
+				Int c01 = Extract(As<Int2>(current.x), 0);
+
+				if((bgraWriteMask & 0x00000007) != 0x00000007)
+				{
+					Int masked = value;
+					c01 &= *Pointer<Int>(r.constants + OFFSET(Constants,mask565Q[bgraWriteMask & 0x7][0]));
+					masked &= *Pointer<Int>(r.constants + OFFSET(Constants,invMask565Q[bgraWriteMask & 0x7][0]));
+					c01 |= masked;
+				}
+
+				c01 &= *Pointer<Int>(r.constants + OFFSET(Constants,maskW4Q[0][0]) + xMask * 8);
+				value &= *Pointer<Int>(r.constants + OFFSET(Constants,invMaskW4Q[0][0]) + xMask * 8);
+				c01 |= value;
+				*Pointer<Int>(buffer) = c01;
+
+				buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
+				value = *Pointer<Int>(buffer);
+
+				Int c23 = Extract(As<Int2>(current.x), 1);
+
+				if((bgraWriteMask & 0x00000007) != 0x00000007)
+				{
+					Int masked = value;
+					c23 &= *Pointer<Int>(r.constants + OFFSET(Constants,mask565Q[bgraWriteMask & 0x7][0]));
+					masked &= *Pointer<Int>(r.constants + OFFSET(Constants,invMask565Q[bgraWriteMask & 0x7][0]));
+					c23 |= masked;
+				}
+
+				c23 &= *Pointer<Int>(r.constants + OFFSET(Constants,maskW4Q[0][2]) + xMask * 8);
+				value &= *Pointer<Int>(r.constants + OFFSET(Constants,invMaskW4Q[0][2]) + xMask * 8);
+				c23 |= value;
+				*Pointer<Int>(buffer) = c23;
+			}
+			break;
 		case FORMAT_A8G8R8B8Q:
 		case FORMAT_X8G8R8B8Q:   // FIXME: Don't touch alpha?
 			UNIMPLEMENTED();
@@ -2896,84 +2949,89 @@ namespace sw
 			break;
 		case FORMAT_A8R8G8B8:
 		case FORMAT_X8R8G8B8:   // FIXME: Don't touch alpha?
-			buffer = cBuffer + x * 4;
-			value = *Pointer<Short4>(buffer);
-
-			if((state.targetFormat[index] == FORMAT_A8R8G8B8 && bgraWriteMask != 0x0000000F) ||
-			   ((state.targetFormat[index] == FORMAT_X8R8G8B8 && bgraWriteMask != 0x00000007) &&
-			    (state.targetFormat[index] == FORMAT_X8R8G8B8 && bgraWriteMask != 0x0000000F)))   // FIXME: Need for masking when XRGB && Fh?
 			{
-				Short4 masked = value;
-				c01 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskB4Q[bgraWriteMask][0]));
-				masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskB4Q[bgraWriteMask][0]));
-				c01 |= masked;
+				Pointer<Byte> buffer = cBuffer + x * 4;
+				Short4 value = *Pointer<Short4>(buffer);
+
+				if((state.targetFormat[index] == FORMAT_A8R8G8B8 && bgraWriteMask != 0x0000000F) ||
+				   ((state.targetFormat[index] == FORMAT_X8R8G8B8 && bgraWriteMask != 0x00000007) &&
+					(state.targetFormat[index] == FORMAT_X8R8G8B8 && bgraWriteMask != 0x0000000F)))   // FIXME: Need for masking when XRGB && Fh?
+				{
+					Short4 masked = value;
+					c01 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskB4Q[bgraWriteMask][0]));
+					masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskB4Q[bgraWriteMask][0]));
+					c01 |= masked;
+				}
+
+				c01 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD01Q) + xMask * 8);
+				value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD01Q) + xMask * 8);
+				c01 |= value;
+				*Pointer<Short4>(buffer) = c01;
+
+				buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
+				value = *Pointer<Short4>(buffer);
+
+				if((state.targetFormat[index] == FORMAT_A8R8G8B8 && bgraWriteMask != 0x0000000F) ||
+				   ((state.targetFormat[index] == FORMAT_X8R8G8B8 && bgraWriteMask != 0x00000007) &&
+					(state.targetFormat[index] == FORMAT_X8R8G8B8 && bgraWriteMask != 0x0000000F)))   // FIXME: Need for masking when XRGB && Fh?
+				{
+					Short4 masked = value;
+					c23 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskB4Q[bgraWriteMask][0]));
+					masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskB4Q[bgraWriteMask][0]));
+					c23 |= masked;
+				}
+
+				c23 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD23Q) + xMask * 8);
+				value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD23Q) + xMask * 8);
+				c23 |= value;
+				*Pointer<Short4>(buffer) = c23;
 			}
-
-			c01 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD01Q) + xMask * 8);
-			value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD01Q) + xMask * 8);
-			c01 |= value;
-			*Pointer<Short4>(buffer) = c01;
-
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-			value = *Pointer<Short4>(buffer);
-
-			if((state.targetFormat[index] == FORMAT_A8R8G8B8 && bgraWriteMask != 0x0000000F) ||
-			   ((state.targetFormat[index] == FORMAT_X8R8G8B8 && bgraWriteMask != 0x00000007) &&
-			    (state.targetFormat[index] == FORMAT_X8R8G8B8 && bgraWriteMask != 0x0000000F)))   // FIXME: Need for masking when XRGB && Fh?
-			{
-				Short4 masked = value;
-				c23 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskB4Q[bgraWriteMask][0]));
-				masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskB4Q[bgraWriteMask][0]));
-				c23 |= masked;
-			}
-
-			c23 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD23Q) + xMask * 8);
-			value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD23Q) + xMask * 8);
-			c23 |= value;
-			*Pointer<Short4>(buffer) = c23;
 			break;
 		case FORMAT_A8B8G8R8:
 		case FORMAT_X8B8G8R8:   // FIXME: Don't touch alpha?
-			buffer = cBuffer + x * 4;
-			value = *Pointer<Short4>(buffer);
-
-			if((state.targetFormat[index] == FORMAT_A8B8G8R8 && rgbaWriteMask != 0x0000000F) ||
-			   ((state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask != 0x00000007) &&
-			    (state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask != 0x0000000F)))   // FIXME: Need for masking when XBGR && Fh?
 			{
-				Short4 masked = value;
-				c01 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskB4Q[rgbaWriteMask][0]));
-				masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskB4Q[rgbaWriteMask][0]));
-				c01 |= masked;
+				Pointer<Byte> buffer = cBuffer + x * 4;
+				Short4 value = *Pointer<Short4>(buffer);
+
+				if((state.targetFormat[index] == FORMAT_A8B8G8R8 && rgbaWriteMask != 0x0000000F) ||
+				   ((state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask != 0x00000007) &&
+					(state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask != 0x0000000F)))   // FIXME: Need for masking when XBGR && Fh?
+				{
+					Short4 masked = value;
+					c01 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskB4Q[rgbaWriteMask][0]));
+					masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskB4Q[rgbaWriteMask][0]));
+					c01 |= masked;
+				}
+
+				c01 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD01Q) + xMask * 8);
+				value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD01Q) + xMask * 8);
+				c01 |= value;
+				*Pointer<Short4>(buffer) = c01;
+
+				buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
+				value = *Pointer<Short4>(buffer);
+
+				if((state.targetFormat[index] == FORMAT_A8B8G8R8 && rgbaWriteMask != 0x0000000F) ||
+				   ((state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask != 0x00000007) &&
+					(state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask != 0x0000000F)))   // FIXME: Need for masking when XBGR && Fh?
+				{
+					Short4 masked = value;
+					c23 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskB4Q[rgbaWriteMask][0]));
+					masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskB4Q[rgbaWriteMask][0]));
+					c23 |= masked;
+				}
+
+				c23 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD23Q) + xMask * 8);
+				value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD23Q) + xMask * 8);
+				c23 |= value;
+				*Pointer<Short4>(buffer) = c23;
 			}
-
-			c01 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD01Q) + xMask * 8);
-			value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD01Q) + xMask * 8);
-			c01 |= value;
-			*Pointer<Short4>(buffer) = c01;
-
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-			value = *Pointer<Short4>(buffer);
-
-			if((state.targetFormat[index] == FORMAT_A8B8G8R8 && rgbaWriteMask != 0x0000000F) ||
-			   ((state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask != 0x00000007) &&
-			    (state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask != 0x0000000F)))   // FIXME: Need for masking when XBGR && Fh?
-			{
-				Short4 masked = value;
-				c23 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskB4Q[rgbaWriteMask][0]));
-				masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskB4Q[rgbaWriteMask][0]));
-				c23 |= masked;
-			}
-
-			c23 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD23Q) + xMask * 8);
-			value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD23Q) + xMask * 8);
-			c23 |= value;
-			*Pointer<Short4>(buffer) = c23;
 			break;
 		case FORMAT_A8:
 			if(rgbaWriteMask & 0x00000008)
 			{
-				buffer = cBuffer + 1 * x;
+				Pointer<Byte> buffer = cBuffer + 1 * x;
+				Short4 value;
 				Insert(value, *Pointer<Short>(buffer), 0);
 				Int pitch = *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
 				Insert(value, *Pointer<Short>(buffer + pitch), 1);
@@ -2988,111 +3046,115 @@ namespace sw
 			}
 			break;
 		case FORMAT_G16R16:
-			buffer = cBuffer + 4 * x;
-
-			value = *Pointer<Short4>(buffer);
-
-			if((rgbaWriteMask & 0x00000003) != 0x00000003)
 			{
-				Short4 masked = value;
-				current.x &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskW01Q[rgbaWriteMask & 0x3][0]));
-				masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskW01Q[rgbaWriteMask & 0x3][0]));
-				current.x |= masked;
-			}
+				Pointer<Byte> buffer = cBuffer + 4 * x;
 
-			current.x &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD01Q) + xMask * 8);
-			value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD01Q) + xMask * 8);
-			current.x |= value;
-			*Pointer<Short4>(buffer) = current.x;
+				Short4 value = *Pointer<Short4>(buffer);
 
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-
-			value = *Pointer<Short4>(buffer);
-
-			if((rgbaWriteMask & 0x00000003) != 0x00000003)
-			{
-				Short4 masked = value;
-				current.y &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskW01Q[rgbaWriteMask & 0x3][0]));
-				masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskW01Q[rgbaWriteMask & 0x3][0]));
-				current.y |= masked;
-			}
-
-			current.y &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD23Q) + xMask * 8);
-			value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD23Q) + xMask * 8);
-			current.y |= value;
-			*Pointer<Short4>(buffer) = current.y;
-			break;
-		case FORMAT_A16B16G16R16:
-			buffer = cBuffer + 8 * x;
-
-			{
-				value = *Pointer<Short4>(buffer);
-
-				if(rgbaWriteMask != 0x0000000F)
+				if((rgbaWriteMask & 0x00000003) != 0x00000003)
 				{
 					Short4 masked = value;
-					current.x &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskW4Q[rgbaWriteMask][0]));
-					masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskW4Q[rgbaWriteMask][0]));
+					current.x &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskW01Q[rgbaWriteMask & 0x3][0]));
+					masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskW01Q[rgbaWriteMask & 0x3][0]));
 					current.x |= masked;
 				}
 
-				current.x &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskQ0Q) + xMask * 8);
-				value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskQ0Q) + xMask * 8);
+				current.x &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD01Q) + xMask * 8);
+				value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD01Q) + xMask * 8);
 				current.x |= value;
 				*Pointer<Short4>(buffer) = current.x;
-			}
 
-			{
-				value = *Pointer<Short4>(buffer + 8);
+				buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
 
-				if(rgbaWriteMask != 0x0000000F)
+				value = *Pointer<Short4>(buffer);
+
+				if((rgbaWriteMask & 0x00000003) != 0x00000003)
 				{
 					Short4 masked = value;
-					current.y &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskW4Q[rgbaWriteMask][0]));
-					masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskW4Q[rgbaWriteMask][0]));
+					current.y &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskW01Q[rgbaWriteMask & 0x3][0]));
+					masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskW01Q[rgbaWriteMask & 0x3][0]));
 					current.y |= masked;
 				}
 
-				current.y &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskQ1Q) + xMask * 8);
-				value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskQ1Q) + xMask * 8);
+				current.y &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD23Q) + xMask * 8);
+				value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD23Q) + xMask * 8);
 				current.y |= value;
-				*Pointer<Short4>(buffer + 8) = current.y;
+				*Pointer<Short4>(buffer) = current.y;
 			}
-
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-
+			break;
+		case FORMAT_A16B16G16R16:
 			{
-				value = *Pointer<Short4>(buffer);
+				Pointer<Byte> buffer = cBuffer + 8 * x;
 
-				if(rgbaWriteMask != 0x0000000F)
 				{
-					Short4 masked = value;
-					current.z &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskW4Q[rgbaWriteMask][0]));
-					masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskW4Q[rgbaWriteMask][0]));
-					current.z |= masked;
+					Short4 value = *Pointer<Short4>(buffer);
+
+					if(rgbaWriteMask != 0x0000000F)
+					{
+						Short4 masked = value;
+						current.x &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskW4Q[rgbaWriteMask][0]));
+						masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskW4Q[rgbaWriteMask][0]));
+						current.x |= masked;
+					}
+
+					current.x &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskQ0Q) + xMask * 8);
+					value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskQ0Q) + xMask * 8);
+					current.x |= value;
+					*Pointer<Short4>(buffer) = current.x;
 				}
 
-				current.z &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskQ2Q) + xMask * 8);
-				value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskQ2Q) + xMask * 8);
-				current.z |= value;
-				*Pointer<Short4>(buffer) = current.z;
-			}
-
-			{
-				value = *Pointer<Short4>(buffer + 8);
-
-				if(rgbaWriteMask != 0x0000000F)
 				{
-					Short4 masked = value;
-					current.w &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskW4Q[rgbaWriteMask][0]));
-					masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskW4Q[rgbaWriteMask][0]));
-					current.w |= masked;
+					Short4 value = *Pointer<Short4>(buffer + 8);
+
+					if(rgbaWriteMask != 0x0000000F)
+					{
+						Short4 masked = value;
+						current.y &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskW4Q[rgbaWriteMask][0]));
+						masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskW4Q[rgbaWriteMask][0]));
+						current.y |= masked;
+					}
+
+					current.y &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskQ1Q) + xMask * 8);
+					value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskQ1Q) + xMask * 8);
+					current.y |= value;
+					*Pointer<Short4>(buffer + 8) = current.y;
 				}
 
-				current.w &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskQ3Q) + xMask * 8);
-				value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskQ3Q) + xMask * 8);
-				current.w |= value;
-				*Pointer<Short4>(buffer + 8) = current.w;
+				buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
+
+				{
+					Short4 value = *Pointer<Short4>(buffer);
+
+					if(rgbaWriteMask != 0x0000000F)
+					{
+						Short4 masked = value;
+						current.z &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskW4Q[rgbaWriteMask][0]));
+						masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskW4Q[rgbaWriteMask][0]));
+						current.z |= masked;
+					}
+
+					current.z &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskQ2Q) + xMask * 8);
+					value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskQ2Q) + xMask * 8);
+					current.z |= value;
+					*Pointer<Short4>(buffer) = current.z;
+				}
+
+				{
+					Short4 value = *Pointer<Short4>(buffer + 8);
+
+					if(rgbaWriteMask != 0x0000000F)
+					{
+						Short4 masked = value;
+						current.w &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskW4Q[rgbaWriteMask][0]));
+						masked &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskW4Q[rgbaWriteMask][0]));
+						current.w |= masked;
+					}
+
+					current.w &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskQ3Q) + xMask * 8);
+					value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskQ3Q) + xMask * 8);
+					current.w |= value;
+					*Pointer<Short4>(buffer + 8) = current.w;
+				}
 			}
 			break;
 		default:
@@ -3236,154 +3298,6 @@ namespace sw
 		// Read pixel
 		switch(state.targetFormat[index])
 		{
-		case FORMAT_A8R8G8B8:
-			buffer = cBuffer + 4 * x;
-			c01 = *Pointer<Short4>(buffer);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-			c23 = *Pointer<Short4>(buffer);
-			color.z = c01;
-			color.y = c01;
-			color.z = UnpackLow(As<Byte8>(color.z), As<Byte8>(c23));
-			color.y = UnpackHigh(As<Byte8>(color.y), As<Byte8>(c23));
-			color.x = color.z;
-			color.z = UnpackLow(As<Byte8>(color.z), As<Byte8>(color.y));
-			color.x = UnpackHigh(As<Byte8>(color.x), As<Byte8>(color.y));
-			color.y = color.z;
-			color.w = color.x;
-			color.x = UnpackLow(As<Byte8>(color.x), As<Byte8>(color.x));
-			color.y = UnpackHigh(As<Byte8>(color.y), As<Byte8>(color.y));
-			color.z = UnpackLow(As<Byte8>(color.z), As<Byte8>(color.z));
-			color.w = UnpackHigh(As<Byte8>(color.w), As<Byte8>(color.w));
-
-			pixel.x = convertUnsigned16(As<UShort4>(color.x));
-			pixel.y = convertUnsigned16(As<UShort4>(color.y));
-			pixel.z = convertUnsigned16(As<UShort4>(color.z));
-			pixel.w = convertUnsigned16(As<UShort4>(color.w));
-			break;
-		case FORMAT_A8B8G8R8:
-			buffer = cBuffer + 4 * x;
-			c01 = *Pointer<Short4>(buffer);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-			c23 = *Pointer<Short4>(buffer);
-			color.z = c01;
-			color.y = c01;
-			color.z = UnpackLow(As<Byte8>(color.z), As<Byte8>(c23));
-			color.y = UnpackHigh(As<Byte8>(color.y), As<Byte8>(c23));
-			color.x = color.z;
-			color.z = UnpackLow(As<Byte8>(color.z), As<Byte8>(color.y));
-			color.x = UnpackHigh(As<Byte8>(color.x), As<Byte8>(color.y));
-			color.y = color.z;
-			color.w = color.x;
-			color.x = UnpackLow(As<Byte8>(color.x), As<Byte8>(color.x));
-			color.y = UnpackHigh(As<Byte8>(color.y), As<Byte8>(color.y));
-			color.z = UnpackLow(As<Byte8>(color.z), As<Byte8>(color.z));
-			color.w = UnpackHigh(As<Byte8>(color.w), As<Byte8>(color.w));
-
-			pixel.x = convertUnsigned16(As<UShort4>(color.z));
-			pixel.y = convertUnsigned16(As<UShort4>(color.y));
-			pixel.z = convertUnsigned16(As<UShort4>(color.x));
-			pixel.w = convertUnsigned16(As<UShort4>(color.w));
-			break;
-		case FORMAT_X8R8G8B8:
-			buffer = cBuffer + 4 * x;
-			c01 = *Pointer<Short4>(buffer);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-			c23 = *Pointer<Short4>(buffer);
-			color.z = c01;
-			color.y = c01;
-			color.z = UnpackLow(As<Byte8>(color.z), As<Byte8>(c23));
-			color.y = UnpackHigh(As<Byte8>(color.y), As<Byte8>(c23));
-			color.x = color.z;
-			color.z = UnpackLow(As<Byte8>(color.z), As<Byte8>(color.y));
-			color.x = UnpackHigh(As<Byte8>(color.x), As<Byte8>(color.y));
-			color.y = color.z;
-			color.x = UnpackLow(As<Byte8>(color.x), As<Byte8>(color.x));
-			color.y = UnpackHigh(As<Byte8>(color.y), As<Byte8>(color.y));
-			color.z = UnpackLow(As<Byte8>(color.z), As<Byte8>(color.z));
-
-			pixel.x = convertUnsigned16(As<UShort4>(color.x));
-			pixel.y = convertUnsigned16(As<UShort4>(color.y));
-			pixel.z = convertUnsigned16(As<UShort4>(color.z));
-			pixel.w = Float4(1.0f);
-			break;
-		case FORMAT_X8B8G8R8:
-			buffer = cBuffer + 4 * x;
-			c01 = *Pointer<Short4>(buffer);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-			c23 = *Pointer<Short4>(buffer);
-			color.z = c01;
-			color.y = c01;
-			color.z = UnpackLow(As<Byte8>(color.z), As<Byte8>(c23));
-			color.y = UnpackHigh(As<Byte8>(color.y), As<Byte8>(c23));
-			color.x = color.z;
-			color.z = UnpackLow(As<Byte8>(color.z), As<Byte8>(color.y));
-			color.x = UnpackHigh(As<Byte8>(color.x), As<Byte8>(color.y));
-			color.y = color.z;
-			color.x = UnpackLow(As<Byte8>(color.x), As<Byte8>(color.x));
-			color.y = UnpackHigh(As<Byte8>(color.y), As<Byte8>(color.y));
-			color.z = UnpackLow(As<Byte8>(color.z), As<Byte8>(color.z));
-
-			pixel.x = convertUnsigned16(As<UShort4>(color.z));
-			pixel.y = convertUnsigned16(As<UShort4>(color.y));
-			pixel.z = convertUnsigned16(As<UShort4>(color.x));
-			pixel.w = Float4(1.0f);
-			break;
-		case FORMAT_A8:
-			buffer = cBuffer + 1 * x;
-			c01 = Insert(c01, *Pointer<Short>(buffer), 0);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-			c01 = Insert(c01, *Pointer<Short>(buffer), 1);
-			pixel.w = convertUnsigned16(As<UShort4>(UnpackLow(As<Byte8>(c01), As<Byte8>(c01))));
-			pixel.x = Float4(0.0f);
-			pixel.y = Float4(0.0f);
-			pixel.z = Float4(0.0f);
-			break;
-		case FORMAT_A8G8R8B8Q:
-			UNIMPLEMENTED();
-		//	UnpackLow(pixel.z, qword_ptr [cBuffer+8*x+0]);
-		//	UnpackHigh(pixel.x, qword_ptr [cBuffer+8*x+0]);
-		//	UnpackLow(pixel.y, qword_ptr [cBuffer+8*x+8]);
-		//	UnpackHigh(pixel.w, qword_ptr [cBuffer+8*x+8]);
-			break;
-		case FORMAT_X8G8R8B8Q:
-			UNIMPLEMENTED();
-		//	UnpackLow(pixel.z, qword_ptr [cBuffer+8*x+0]);
-		//	UnpackHigh(pixel.x, qword_ptr [cBuffer+8*x+0]);
-		//	UnpackLow(pixel.y, qword_ptr [cBuffer+8*x+8]);
-		//	pixel.w = Short4(0xFFFFu);
-			break;
-		case FORMAT_A16B16G16R16:
-			buffer  = cBuffer;
-			color.x = *Pointer<Short4>(buffer + 8 * x);
-			color.y = *Pointer<Short4>(buffer + 8 * x + 8);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-			color.z = *Pointer<Short4>(buffer + 8 * x);
-			color.w = *Pointer<Short4>(buffer + 8 * x + 8);
-			
-			transpose4x4(color.x, color.y, color.z, color.w);
-
-			pixel.x = convertUnsigned16(As<UShort4>(color.x));
-			pixel.y = convertUnsigned16(As<UShort4>(color.y));
-			pixel.z = convertUnsigned16(As<UShort4>(color.z));
-			pixel.w = convertUnsigned16(As<UShort4>(color.w));
-			break;
-		case FORMAT_G16R16:
-			buffer = cBuffer;
-			color.x = *Pointer<Short4>(buffer  + 4 * x);
-			buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-			color.y = *Pointer<Short4>(buffer  + 4 * x);
-			color.z = color.x;
-			color.x = As<Short4>(UnpackLow(color.x, color.y));
-			color.z = As<Short4>(UnpackHigh(color.z, color.y));
-			color.y = color.z;
-			color.x = As<Short4>(UnpackLow(color.x, color.z));
-			color.y = As<Short4>(UnpackHigh(color.y, color.z));
-			
-			pixel.x = convertUnsigned16(As<UShort4>(color.x));
-			pixel.y = convertUnsigned16(As<UShort4>(color.y));
-			pixel.z = Float4(1.0f);
-			pixel.w = Float4(1.0f);
-			break;
 		case FORMAT_R32F:
 			buffer = cBuffer;
 			// FIXME: movlps
@@ -3541,25 +3455,8 @@ namespace sw
 
 	void PixelRoutine::writeColor(Registers &r, int index, Pointer<Byte> &cBuffer, Int &x, Vector4f &oC, Int &sMask, Int &zMask, Int &cMask)
 	{
-		if(!state.colorWriteActive(index))
-		{
-			return;
-		}
-
-		Vector4s color;
-
 		switch(state.targetFormat[index])
 		{
-		case FORMAT_X8R8G8B8:
-		case FORMAT_X8B8G8R8:
-		case FORMAT_A8R8G8B8:
-		case FORMAT_A8B8G8R8:
-		case FORMAT_A8:
-		case FORMAT_G16R16:
-		case FORMAT_A16B16G16R16:
-			convertFixed16(color, oC, true);
-			writeColor(r, index, cBuffer, x, color, sMask, zMask, cMask);
-			return;
 		case FORMAT_R32F:
 			break;
 		case FORMAT_G32R32F:
@@ -4365,7 +4262,7 @@ namespace sw
 		return Float4(cs) * Float4(1.0f / 0xFFFF);
 	}
 
-	void PixelRoutine::sRGBtoLinear16_16(Registers &r, Vector4s &c)
+	void PixelRoutine::sRGBtoLinear16_12_16(Registers &r, Vector4s &c)
 	{
 		c.x = As<UShort4>(c.x) >> 4;
 		c.y = As<UShort4>(c.y) >> 4;
@@ -4376,7 +4273,7 @@ namespace sw
 
 	void PixelRoutine::sRGBtoLinear12_16(Registers &r, Vector4s &c)
 	{
-		Pointer<Byte> LUT = r.constants + OFFSET(Constants,sRGBtoLin12_16);
+		Pointer<Byte> LUT = r.constants + OFFSET(Constants,sRGBtoLinear12_16);
 
 		c.x = Insert(c.x, *Pointer<Short>(LUT + 2 * Int(Extract(c.x, 0))), 0);
 		c.x = Insert(c.x, *Pointer<Short>(LUT + 2 * Int(Extract(c.x, 1))), 1);
@@ -4394,7 +4291,7 @@ namespace sw
 		c.z = Insert(c.z, *Pointer<Short>(LUT + 2 * Int(Extract(c.z, 3))), 3);
 	}
 
-	void PixelRoutine::linearToSRGB16_16(Registers &r, Vector4s &c)
+	void PixelRoutine::linearToSRGB16_12_16(Registers &r, Vector4s &c)
 	{
 		c.x = As<UShort4>(c.x) >> 4;
 		c.y = As<UShort4>(c.y) >> 4;
@@ -4405,7 +4302,7 @@ namespace sw
 
 	void PixelRoutine::linearToSRGB12_16(Registers &r, Vector4s &c)
 	{
-		Pointer<Byte> LUT = r.constants + OFFSET(Constants,linToSRGB12_16);
+		Pointer<Byte> LUT = r.constants + OFFSET(Constants,linearToSRGB12_16);
 
 		c.x = Insert(c.x, *Pointer<Short>(LUT + 2 * Int(Extract(c.x, 0))), 0);
 		c.x = Insert(c.x, *Pointer<Short>(LUT + 2 * Int(Extract(c.x, 1))), 1);

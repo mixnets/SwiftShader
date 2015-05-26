@@ -168,8 +168,8 @@ namespace sw
 		void specularPixel(Vector4s &current, Vector4s &specular);
 
 		void sampleTexture(Registers &r, Vector4s &c, int coordinates, int sampler, bool project = false);
-		void sampleTexture(Registers &r, Vector4s &c, int sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, bool project = false, bool bias = false, bool fixed12 = true);
-		void sampleTexture(Registers &r, Vector4s &c, int sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project = false, bool bias = false, bool fixed12 = true, bool gradients = false, bool lodProvided = false);
+		void sampleTexture(Registers &r, Vector4s &c, int sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, bool project = false, bool bias = false);
+		void sampleTexture(Registers &r, Vector4s &c, int sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project = false, bool bias = false, bool gradients = false, bool lodProvided = false);
 		void sampleTexture(Registers &r, Vector4f &c, const Src &sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project = false, bool bias = false, bool gradients = false, bool lodProvided = false);
 		void sampleTexture(Registers &r, Vector4f &c, int sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project = false, bool bias = false, bool gradients = false, bool lodProvided = false);
 	
@@ -198,9 +198,9 @@ namespace sw
 		Float4 convertUnsigned16(UShort4 cs);
 		UShort4 convertFixed16(Float4 &cf, bool saturate = true);
 		void convertFixed16(Vector4s &cs, Vector4f &cf, bool saturate = true);
-		void sRGBtoLinear16_16(Registers &r, Vector4s &c);
+		void sRGBtoLinear16_12_16(Registers &r, Vector4s &c);
 		void sRGBtoLinear12_16(Registers &r, Vector4s &c);
-		void linearToSRGB16_16(Registers &r, Vector4s &c);
+		void linearToSRGB16_12_16(Registers &r, Vector4s &c);
 		void linearToSRGB12_16(Registers &r, Vector4s &c);
 		Float4 sRGBtoLinear(const Float4 &x);
 		Float4 linearToSRGB(const Float4 &x);
