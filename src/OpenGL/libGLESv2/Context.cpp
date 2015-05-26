@@ -3143,6 +3143,16 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
         {
             memcpy(dest, source, (rect.x1 - rect.x0) * 4);
         }
+		else if(renderTarget->getInternalFormat() == sw::FORMAT_A8B8G8R8 &&
+                format == GL_BGRA_EXT && type == GL_UNSIGNED_BYTE)
+        {
+            for(int i = 0; i < rect.x1 - rect.x0; i++)
+			{
+				unsigned int argb = *(unsigned int*)(source + 4 * i);
+
+				dest32[i] = (argb & 0xFF00FF00) | ((argb & 0x000000FF) << 16) | ((argb & 0x00FF0000) >> 16);
+			}
+        }
 		else if(renderTarget->getInternalFormat() == sw::FORMAT_A8R8G8B8 &&
                 format == GL_RGBA && type == GL_UNSIGNED_BYTE)
         {
