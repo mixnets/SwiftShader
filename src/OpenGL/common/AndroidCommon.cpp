@@ -23,17 +23,7 @@ GLenum getColorFormatFromAndroid(int format)
         case HAL_PIXEL_FORMAT_BGRA_8888:
             return GL_BGRA_EXT;
         case HAL_PIXEL_FORMAT_RGB_565:
-#if LATER
-            if (GrallocModule::getInstance()->supportsConversion()) {
-                return GL_RGB565_OES;
-            } else {
-				ALOGE("%s badness converting gralloc not supported for RGB_565",
-					  __FUNCTION__);
-                return GL_RGB565_OES;
-            }
-#else
             return GL_RGB565_OES;
-#endif
         case HAL_PIXEL_FORMAT_YV12:
         case HAL_PIXEL_FORMAT_RAW_SENSOR:
         case HAL_PIXEL_FORMAT_BLOB:
