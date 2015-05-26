@@ -3082,7 +3082,6 @@ namespace sw
 		case FORMAT_A8B8G8R8:
 			return FORMAT_A8B8G8R8;
 		case FORMAT_R3G3B2:
-		case FORMAT_R5G6B5:
 		case FORMAT_R8G8B8:
 		case FORMAT_X4R4G4B4:
 		case FORMAT_X1R5G5B5:
@@ -3095,6 +3094,8 @@ namespace sw
 			{
 				return FORMAT_X8G8R8B8Q;
 			}
+		case FORMAT_R5G6B5:
+			return FORMAT_R5G6B5;
 		case FORMAT_X8B8G8R8:
 			return FORMAT_X8B8G8R8;
 		// Compressed formats
