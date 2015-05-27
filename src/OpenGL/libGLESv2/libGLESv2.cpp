@@ -4542,11 +4542,6 @@ void RenderbufferStorageMultisampleANGLE(GLenum target, GLsizei samples, GLenum 
 		return error(GL_INVALID_ENUM);
 	}
 
-	if(!es2::IsColorRenderable(internalformat) && !es2::IsDepthRenderable(internalformat) && !es2::IsStencilRenderable(internalformat))
-	{
-		return error(GL_INVALID_ENUM);
-	}
-
 	if(width < 0 || height < 0 || samples < 0)
 	{
 		return error(GL_INVALID_VALUE);
@@ -4556,6 +4551,12 @@ void RenderbufferStorageMultisampleANGLE(GLenum target, GLsizei samples, GLenum 
 
 	if(context)
 	{
+		egl::GLint clientVersion = context->getClientVersion();
+		if(!es2::IsColorRenderable(internalformat, clientVersion) && !es2::IsDepthRenderable(internalformat, clientVersion) && !es2::IsStencilRenderable(internalformat, clientVersion))
+		{
+			return error(GL_INVALID_ENUM);
+		}
+
 		if(width > es2::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE ||
 		   height > es2::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE ||
 		   samples > es2::IMPLEMENTATION_MAX_SAMPLES)
@@ -4572,6 +4573,8 @@ void RenderbufferStorageMultisampleANGLE(GLenum target, GLsizei samples, GLenum 
 		switch(internalformat)
 		{
 		case GL_DEPTH_COMPONENT16:
+		case GL_DEPTH_COMPONENT24:
+		case GL_DEPTH_COMPONENT32F:
 			context->setRenderbufferStorage(new es2::Depthbuffer(width, height, samples));
 			break;
 		case GL_RGBA4:
@@ -4579,12 +4582,36 @@ void RenderbufferStorageMultisampleANGLE(GLenum target, GLsizei samples, GLenum 
 		case GL_RGB565:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
+		case GL_R8:
+		case GL_R8UI:
+		case GL_R8I:
+		case GL_R16UI:
+		case GL_R16I:
+		case GL_R32UI:
+		case GL_R32I:
+		case GL_RG8:
+		case GL_RG8UI:
+		case GL_RG8I:
+		case GL_RG16UI:
+		case GL_RG16I:
+		case GL_RG32UI:
+		case GL_RG32I:
+		case GL_SRGB8_ALPHA8:
+		case GL_RGB10_A2:
+		case GL_RGBA8UI:
+		case GL_RGBA8I:
+		case GL_RGB10_A2UI:
+		case GL_RGBA16UI:
+		case GL_RGBA16I:
+		case GL_RGBA32I:
+		case GL_RGBA32UI:
 			context->setRenderbufferStorage(new es2::Colorbuffer(width, height, internalformat, samples));
 			break;
 		case GL_STENCIL_INDEX8:
 			context->setRenderbufferStorage(new es2::Stencilbuffer(width, height, samples));
 			break;
 		case GL_DEPTH24_STENCIL8_OES:
+		case GL_DEPTH32F_STENCIL8:
 			context->setRenderbufferStorage(new es2::DepthStencilbuffer(width, height, samples));
 			break;
 		default:

@@ -45,9 +45,9 @@ namespace es2
 	bool IsTextureTarget(GLenum target);
 	bool CheckTextureFormatType(GLenum format, GLenum type, egl::GLint clientVersion);
 
-	bool IsColorRenderable(GLenum internalformat);
-	bool IsDepthRenderable(GLenum internalformat);
-	bool IsStencilRenderable(GLenum internalformat);
+	bool IsColorRenderable(GLenum internalformat, egl::GLint clientVersion);
+	bool IsDepthRenderable(GLenum internalformat, egl::GLint clientVersion);
+	bool IsStencilRenderable(GLenum internalformat, egl::GLint clientVersion);
 }
 
 namespace es2sw

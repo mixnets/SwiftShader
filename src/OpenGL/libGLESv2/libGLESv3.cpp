@@ -1396,11 +1396,6 @@ GL_APICALL void GL_APIENTRY glRenderbufferStorageMultisample(GLenum target, GLsi
 		return error(GL_INVALID_ENUM);
 	}
 
-	if(!es2::IsColorRenderable(internalformat) && !es2::IsDepthRenderable(internalformat) && !es2::IsStencilRenderable(internalformat))
-	{
-		return error(GL_INVALID_ENUM);
-	}
-
 	if(width < 0 || height < 0 || samples < 0)
 	{
 		return error(GL_INVALID_VALUE);
@@ -1410,6 +1405,12 @@ GL_APICALL void GL_APIENTRY glRenderbufferStorageMultisample(GLenum target, GLsi
 
 	if(context)
 	{
+		egl::GLint clientVersion = context->getClientVersion();
+		if(!es2::IsColorRenderable(internalformat, clientVersion) && !es2::IsDepthRenderable(internalformat, clientVersion) && !es2::IsStencilRenderable(internalformat, clientVersion))
+		{
+			return error(GL_INVALID_ENUM);
+		}
+
 		if(width > es2::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE ||
 			height > es2::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE ||
 			samples > es2::IMPLEMENTATION_MAX_SAMPLES)
