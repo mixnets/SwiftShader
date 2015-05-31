@@ -99,6 +99,8 @@ class SortConfig
     bool mWantBlue;
     bool mWantAlpha;
     bool mWantLuminance;
+
+	bool totalOrder;
 };
 
 class ConfigSet
@@ -106,7 +108,7 @@ class ConfigSet
     friend class Display;
 
   public:
-    ConfigSet();
+    ConfigSet(const EGLint *attribList = nullptr);
 
     void add(const DisplayMode &displayMode, EGLint minSwapInterval, EGLint maxSwapInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample);
     size_t size() const;
@@ -117,8 +119,6 @@ class ConfigSet
     typedef std::set<Config, SortConfig> Set;
     typedef Set::iterator Iterator;
     Set mSet;
-
-    static const EGLint mSortAttribs[];
 };
 }
 
