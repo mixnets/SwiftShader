@@ -81,11 +81,13 @@ class Config
     EGLint mTransparentBlueValue;    // Transparent blue value
 };
 
-// Function object used by STL sorting routines for ordering Configs according to [EGL] section 3.4.1 page 24.
+// Function object used by STL sorting routines for ordering Configs.
+// If no attribute list is provided, it implements strict ordering,
+// else the ordering in [EGL] section 3.4.1 page 24 is used.
 class SortConfig
 {
   public:
-    explicit SortConfig(const EGLint *attribList);
+    explicit SortConfig(const EGLint *attribList = nullptr);
 
     bool operator()(const Config *x, const Config *y) const;
     bool operator()(const Config &x, const Config &y) const;
@@ -93,6 +95,8 @@ class SortConfig
   private:
     void scanForWantedComponents(const EGLint *attribList);
     EGLint wantedComponentsSize(const Config &config) const;
+
+	bool strictOrdering;
 
     bool mWantRed;
     bool mWantGreen;
@@ -117,8 +121,6 @@ class ConfigSet
     typedef std::set<Config, SortConfig> Set;
     typedef Set::iterator Iterator;
     Set mSet;
-
-    static const EGLint mSortAttribs[];
 };
 }
 

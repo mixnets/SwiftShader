@@ -161,7 +161,15 @@ bool Config::isSlowConfig() const
 SortConfig::SortConfig(const EGLint *attribList)
     : mWantRed(false), mWantGreen(false), mWantBlue(false), mWantAlpha(false), mWantLuminance(false)
 {
-    scanForWantedComponents(attribList);
+	if(attribList)
+	{
+		strictOrdering = false;
+		scanForWantedComponents(attribList);
+	}
+	else
+	{
+		strictOrdering = true;
+	}
 }
 
 void SortConfig::scanForWantedComponents(const EGLint *attribList)
@@ -217,13 +225,23 @@ bool SortConfig::operator()(const Config &x, const Config &y) const
     META_ASSERT(EGL_RGB_BUFFER < EGL_LUMINANCE_BUFFER);
     SORT(mColorBufferType);
 
-    // By larger total number of color bits, only considering those that are requested to be > 0.
-    EGLint xComponentsSize = wantedComponentsSize(x);
-    EGLint yComponentsSize = wantedComponentsSize(y);
-    if(xComponentsSize != yComponentsSize)
-    {
-        return xComponentsSize > yComponentsSize;
-    }
+	if(strictOrdering)
+	{
+		SORT(mRedSize);
+		SORT(mGreenSize);
+		SORT(mBlueSize);
+		SORT(mAlphaSize);
+	}
+	else
+	{
+		// By larger total number of color bits, only considering those that are requested to be > 0.
+		EGLint xComponentsSize = wantedComponentsSize(x);
+		EGLint yComponentsSize = wantedComponentsSize(y);
+		if(xComponentsSize != yComponentsSize)
+		{
+			return xComponentsSize > yComponentsSize;
+		}
+	}
 
     SORT(mBufferSize);
     SORT(mSampleBuffers);
@@ -236,26 +254,14 @@ bool SortConfig::operator()(const Config &x, const Config &y) const
 
     #undef SORT
 
+	// Strict ordering requires sorting all non-equal fields above
+	assert(!strictOrdering || memcmp(&x, &y, sizeof(Config)) == 0);
+
     return false;
 }
 
-// We'd like to use SortConfig to also eliminate duplicate configs.
-// This works as long as we never have two configs with different per-RGB-component layouts,
-// but the same total.
-// 5551 and 565 are different because R+G+B is different.
-// 5551 and 555 are different because bufferSize is different.
-const EGLint ConfigSet::mSortAttribs[] =
-{
-    EGL_RED_SIZE, 1,
-    EGL_GREEN_SIZE, 1,
-    EGL_BLUE_SIZE, 1,
-    EGL_LUMINANCE_SIZE, 1,
-    // BUT NOT ALPHA
-    EGL_NONE
-};
-
 ConfigSet::ConfigSet()
-    : mSet(SortConfig(mSortAttribs))
+    : mSet(SortConfig())
 {
 }
 
