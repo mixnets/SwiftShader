@@ -85,7 +85,7 @@ class Config
 class SortConfig
 {
   public:
-    explicit SortConfig(const EGLint *attribList);
+    explicit SortConfig(const EGLint *attribList = nullptr);
 
     bool operator()(const Config *x, const Config *y) const;
     bool operator()(const Config &x, const Config &y) const;
@@ -99,6 +99,8 @@ class SortConfig
     bool mWantBlue;
     bool mWantAlpha;
     bool mWantLuminance;
+
+	bool totalOrder;
 };
 
 class ConfigSet
@@ -117,8 +119,6 @@ class ConfigSet
     typedef std::set<Config, SortConfig> Set;
     typedef Set::iterator Iterator;
     Set mSet;
-
-    static const EGLint mSortAttribs[];
 };
 }
 
