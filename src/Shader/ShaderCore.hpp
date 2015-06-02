@@ -285,6 +285,12 @@ namespace sw
 		void floatBitsToUInt(Vector4u &dst, Vector4f &src);
 		void intBitsToFloat(Vector4f &dst, Vector4i &src);
 		void uintBitsToFloat(Vector4f &dst, Vector4u &src);
+		void packSnorm2x16(UInt4 &d, Vector4f &s0);
+		void packUnorm2x16(UInt4 &d, Vector4f &s0);
+		void packHalf2x16(UInt4 &d, Vector4f &s0);
+		void unpackSnorm2x16(Vector4f &dst, UInt4 &s0);
+		void unpackUnorm2x16(Vector4f &dst, UInt4 &s0);
+		void unpackHalf2x16(Vector4f &dst, UInt4 &s0);
 		void frc(Vector4f &dst, Vector4f &src);
 		void trunc(Vector4f &dst, Vector4f &src);
 		void floor(Vector4f &dst, Vector4f &src);
@@ -343,6 +349,8 @@ namespace sw
 		void sgn(Float4 &dst, Float4 &src);
 		void cmp0(Float4 &dst, Float4 &src0, Float4 &src1, Float4 &src2);
 		void select(Float4 &dst, RValue<Int4> src0, Float4 &src1, Float4 &src2);
+		void floatToHalfBits(UInt4& dst, UInt4& floatBits);
+		void halfToFloatBits(UInt4& dst, UInt4& halfBits);
 	};
 }
 
