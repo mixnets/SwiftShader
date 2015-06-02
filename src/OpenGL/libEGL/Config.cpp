@@ -54,7 +54,7 @@ Config::Config(const DisplayMode &displayMode, EGLint minInterval, EGLint maxInt
         mGreenSize = 8;
         mBlueSize = 8;
         mAlphaSize = 8;
-        mBindToTextureRGBA = true;
+        mBindToTextureRGBA = EGL_TRUE;
         break;
       case sw::FORMAT_R5G6B5:
         mBufferSize = 16;
@@ -69,7 +69,7 @@ Config::Config(const DisplayMode &displayMode, EGLint minInterval, EGLint maxInt
         mGreenSize = 8;
         mBlueSize = 8;
         mAlphaSize = 0;
-        mBindToTextureRGB = true;
+        mBindToTextureRGB = EGL_TRUE;
         break;
       default:
         UNREACHABLE();   // Other formats should not be valid
@@ -213,24 +213,30 @@ bool SortConfig::operator()(const Config *x, const Config *y) const
 
 bool SortConfig::operator()(const Config &x, const Config &y) const
 {
-    #define SORT(attribute)                        \
+    #define SORT_SMALLER(attribute)                \
         if(x.attribute != y.attribute)             \
         {                                          \
             return x.attribute < y.attribute;      \
         }
 
+	#define SORT_LARGER(attribute)                \
+        if(x.attribute != y.attribute)             \
+        {                                          \
+            return x.attribute > y.attribute;      \
+        }
+
     META_ASSERT(EGL_NONE < EGL_SLOW_CONFIG && EGL_SLOW_CONFIG < EGL_NON_CONFORMANT_CONFIG);
-    SORT(mConfigCaveat);
+    SORT_SMALLER(mConfigCaveat);
 
     META_ASSERT(EGL_RGB_BUFFER < EGL_LUMINANCE_BUFFER);
-    SORT(mColorBufferType);
+    SORT_SMALLER(mColorBufferType);
 
 	if(totalOrder)
 	{
-		SORT(mRedSize);
-		SORT(mGreenSize);
-		SORT(mBlueSize);
-		SORT(mAlphaSize);
+		SORT_LARGER(mRedSize);
+		SORT_LARGER(mGreenSize);
+		SORT_LARGER(mBlueSize);
+		SORT_LARGER(mAlphaSize);
 	}
 	else
 	{
@@ -243,14 +249,14 @@ bool SortConfig::operator()(const Config &x, const Config &y) const
 		}
 	}
 
-    SORT(mBufferSize);
-    SORT(mSampleBuffers);
-    SORT(mSamples);
-    SORT(mDepthSize);
-    SORT(mStencilSize);
-    SORT(mAlphaMaskSize);
-    SORT(mNativeVisualType);
-    SORT(mConfigID);
+    SORT_SMALLER(mBufferSize);
+    SORT_SMALLER(mSampleBuffers);
+    SORT_SMALLER(mSamples);
+    SORT_SMALLER(mDepthSize);
+    SORT_SMALLER(mStencilSize);
+    SORT_SMALLER(mAlphaMaskSize);
+    SORT_SMALLER(mNativeVisualType);
+    SORT_SMALLER(mConfigID);
 
     #undef SORT
 
