@@ -1586,12 +1586,12 @@ fully_specified_type
         }
 
         if ($1.qualifier == EvqAttribute &&
-            ($2.type == EbtBool || $2.type == EbtInt)) {
+            ($2.type == EbtBool || $2.type == EbtInt || $2.type == EbtUInt)) {
             context->error($2.line, "cannot be bool or int", getQualifierString($1.qualifier));
             context->recover();
         }
         if (($1.qualifier == EvqVaryingIn || $1.qualifier == EvqVaryingOut) &&
-            ($2.type == EbtBool || $2.type == EbtInt)) {
+            ($2.type == EbtBool || $2.type == EbtInt || $2.type == EbtUInt)) {
             context->error($2.line, "cannot be bool or int", getQualifierString($1.qualifier));
             context->recover();
         }
