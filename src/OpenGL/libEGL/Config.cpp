@@ -34,48 +34,44 @@ Config::Config(const DisplayMode &displayMode, EGLint minInterval, EGLint maxInt
 
     switch (renderTargetFormat)
     {
-      case sw::FORMAT_A1R5G5B5:
-        mBufferSize = 16;
+    case sw::FORMAT_A1R5G5B5:
         mRedSize = 5;
         mGreenSize = 5;
         mBlueSize = 5;
         mAlphaSize = 1;
         break;
-      case sw::FORMAT_A2R10G10B10:
-        mBufferSize = 32;
+    case sw::FORMAT_A2R10G10B10:
         mRedSize = 10;
         mGreenSize = 10;
         mBlueSize = 10;
         mAlphaSize = 2;
         break;
-      case sw::FORMAT_A8R8G8B8:
-        mBufferSize = 32;
+    case sw::FORMAT_A8R8G8B8:
         mRedSize = 8;
         mGreenSize = 8;
         mBlueSize = 8;
         mAlphaSize = 8;
         mBindToTextureRGBA = EGL_TRUE;
         break;
-      case sw::FORMAT_R5G6B5:
-        mBufferSize = 16;
+    case sw::FORMAT_R5G6B5:
         mRedSize = 5;
         mGreenSize = 6;
         mBlueSize = 5;
         mAlphaSize = 0;
         break;
-      case sw::FORMAT_X8R8G8B8:
-        mBufferSize = 32;
+    case sw::FORMAT_X8R8G8B8:
         mRedSize = 8;
         mGreenSize = 8;
         mBlueSize = 8;
         mAlphaSize = 0;
         mBindToTextureRGB = EGL_TRUE;
         break;
-      default:
+    default:
         UNREACHABLE();   // Other formats should not be valid
     }
 
     mLuminanceSize = 0;
+    mBufferSize = mRedSize + mGreenSize + mBlueSize + mLuminanceSize + mAlphaSize;
     mAlphaMaskSize = 0;
     mColorBufferType = EGL_RGB_BUFFER;
     mConfigCaveat = isSlowConfig() ? EGL_SLOW_CONFIG : EGL_NONE;
@@ -124,7 +120,7 @@ Config::Config(const DisplayMode &displayMode, EGLint minInterval, EGLint maxInt
 //      mDepthSize = 24;
 //      mStencilSize = 8;
 //      break;
-	  default:
+	default:
 		UNREACHABLE();
 	}
 
