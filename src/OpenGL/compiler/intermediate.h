@@ -240,6 +240,8 @@ class TIntermSymbol;
 class TIntermLoop;
 class TIntermBranch;
 class TInfoSink;
+class TIntermSwitch;
+class TIntermCase;
 
 //
 // Base class for the tree nodes
@@ -263,6 +265,8 @@ public:
     virtual TIntermSymbol* getAsSymbolNode() { return 0; }
     virtual TIntermLoop* getAsLoopNode() { return 0; }
 	virtual TIntermBranch* getAsBranchNode() { return 0; }
+	virtual TIntermSwitch *getAsSwitchNode() { return 0; }
+	virtual TIntermCase *getAsCaseNode() { return 0; }
     virtual ~TIntermNode() { }
 
 protected:
@@ -548,6 +552,49 @@ protected:
     TIntermNode* falseBlock;
 };
 
+//
+// Switch statement.
+//
+class TIntermSwitch : public TIntermNode
+{
+public:
+	TIntermSwitch(TIntermTyped *init, TIntermAggregate *statementList)
+		: TIntermNode(), mInit(init), mStatementList(statementList)
+	{}
+
+	void traverse(TIntermTraverser *it);
+
+	TIntermSwitch *getAsSwitchNode() { return this; }
+
+	TIntermAggregate *getStatementList() { return mStatementList; }
+	void setStatementList(TIntermAggregate *statementList) { mStatementList = statementList; }
+
+protected:
+	TIntermTyped *mInit;
+	TIntermAggregate *mStatementList;
+};
+
+//
+// Case label.
+//
+class TIntermCase : public TIntermNode
+{
+public:
+	TIntermCase(TIntermTyped *condition)
+		: TIntermNode(), mCondition(condition)
+	{}
+
+	void traverse(TIntermTraverser *it);
+
+	TIntermCase *getAsCaseNode() { return this; }
+
+	bool hasCondition() const { return mCondition != nullptr; }
+	TIntermTyped *getCondition() const { return mCondition; }
+
+protected:
+	TIntermTyped *mCondition;
+};
+
 enum Visit
 {
     PreVisit,
@@ -572,7 +619,8 @@ public:
             inVisit(inVisit),
             postVisit(postVisit),
             rightToLeft(rightToLeft),
-            depth(0) {}
+            mDepth(0),
+            mMaxDepth(0) {}
     virtual ~TIntermTraverser() {};
 
     virtual void visitSymbol(TIntermSymbol*) {}
@@ -583,9 +631,35 @@ public:
     virtual bool visitAggregate(Visit visit, TIntermAggregate*) {return true;}
     virtual bool visitLoop(Visit visit, TIntermLoop*) {return true;}
     virtual bool visitBranch(Visit visit, TIntermBranch*) {return true;}
+	virtual bool visitSwitch(Visit, TIntermSwitch*) { return true; }
+	virtual bool visitCase(Visit, TIntermCase*) { return true; }
 
-    void incrementDepth() {depth++;}
-    void decrementDepth() {depth--;}
+	void incrementDepth(TIntermNode *current)
+	{
+		mDepth++;
+		mMaxDepth = std::max(mMaxDepth, mDepth);
+		mPath.push_back(current);
+	}
+
+	void decrementDepth()
+	{
+		mDepth--;
+		mPath.pop_back();
+	}
+
+	TIntermNode *getParentNode()
+	{
+		return mPath.size() == 0 ? NULL : mPath.back();
+	}
+
+	void pushParentBlock(TIntermAggregate *node);
+	void incrementParentBlockPos();
+	void popParentBlock();
+
+	bool parentNodeIsBlock()
+	{
+		return !mParentBlockStack.empty() && getParentNode() == mParentBlockStack.back().node;
+	}
 
     const bool preVisit;
     const bool inVisit;
@@ -593,7 +667,24 @@ public:
     const bool rightToLeft;
 
 protected:
-    int depth;
+	int mDepth;
+	int mMaxDepth;
+
+	// All the nodes from root to the current node's parent during traversing.
+	TVector<TIntermNode *> mPath;
+
+private:
+	struct ParentBlock
+	{
+		ParentBlock(TIntermAggregate *nodeIn, TIntermSequence::size_type posIn)
+		: node(nodeIn), pos(posIn)
+		{}
+
+		TIntermAggregate *node;
+		TIntermSequence::size_type pos;
+	};
+	// All the code blocks from the root to the current node's parent during traversal.
+	std::vector<ParentBlock> mParentBlockStack;
 };
 
 #endif // __INTERMEDIATE_H
