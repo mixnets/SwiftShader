@@ -33,15 +33,12 @@ namespace es
 	{
 		if(false)
 		{
-			static FILE* file = nullptr;
-			if(!file)
-			{
-				file = fopen(TRACE_OUTPUT_FILE, "w");
-			}
+			 FILE* file = fopen(TRACE_OUTPUT_FILE, "a");
 
 			if(file)
 			{
 				vfprintf(file, format, vararg);
+				fclose(file);
 			}
 		}
 	}
