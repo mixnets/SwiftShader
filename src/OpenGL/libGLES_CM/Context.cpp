@@ -2529,6 +2529,20 @@ void Context::drawTexture(GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloa
 	textureStack0.pop();
 }
 
+bool Context::copy(egl::Image *source, const sw::Rect &sourceRect, GLint xoffset, GLint yoffset, egl::Image *dest)
+{
+    sw::SliceRect destRect(xoffset, yoffset, xoffset + (sourceRect.x1 - sourceRect.x0), yoffset + (sourceRect.y1 - sourceRect.y0), 0);
+    sw::SliceRect sourceSliceRect(sourceRect);
+    bool success = device->stretchRect(source, &sourceSliceRect, dest, &destRect, false);
+
+    if(!success)
+    {
+        return error(GL_OUT_OF_MEMORY, false);
+    }
+
+    return true;
+}
+
 void Context::finish()
 {
 	device->finish();

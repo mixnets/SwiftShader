@@ -403,7 +403,7 @@ void Texture::setImage(GLenum format, GLenum type, const egl::Image::UnpackInfo&
     if(pixels && image)
     {
 		GLsizei depth = (getTarget() == GL_TEXTURE_3D_OES || getTarget() == GL_TEXTURE_2D_ARRAY) ? image->getDepth() : 1;
-		image->loadImageData(0, 0, 0, image->getWidth(), image->getHeight(), depth, format, type, unpackInfo, pixels);
+		image->loadImageData(getContext(), 0, 0, 0, image->getWidth(), image->getHeight(), depth, format, type, unpackInfo, pixels);
     }
 }
 
@@ -440,7 +440,7 @@ void Texture::subImage(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei widt
 
     if(pixels)
     {
-		image->loadImageData(xoffset, yoffset, zoffset, width, height, depth, format, type, unpackInfo, pixels);
+		image->loadImageData(getContext(), xoffset, yoffset, zoffset, width, height, depth, format, type, unpackInfo, pixels);
     }
 }
 
