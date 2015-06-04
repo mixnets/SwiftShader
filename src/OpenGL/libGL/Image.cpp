@@ -676,7 +676,7 @@ namespace gl
 			}
 		}
 
-		unsigned char *stencil = reinterpret_cast<unsigned char*>(lockStencil(0, sw::PUBLIC));
+		unsigned char *stencil = reinterpret_cast<unsigned char*>(lockStencil(0, 0, 0, sw::PUBLIC));
 
 		if(stencil)
 		{

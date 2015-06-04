@@ -580,7 +580,7 @@ namespace sw
 					data->depthPitchB = context->depthStencil->getInternalPitchB();
 					data->depthSliceB = context->depthStencil->getInternalSliceB();
 
-					data->stencilBuffer = (unsigned char*)context->depthStencil->lockStencil(q * ms, MANAGED);
+					data->stencilBuffer = (unsigned char*)context->depthStencil->lockStencil(0, 0, q * ms, MANAGED);
 					data->stencilPitchB = context->depthStencil->getStencilPitchB();
 					data->stencilSliceB = context->depthStencil->getStencilSliceB();
 				}

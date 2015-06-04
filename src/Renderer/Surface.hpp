@@ -187,7 +187,7 @@ namespace sw
 		inline int getInternalSliceB() const;
 		inline int getInternalSliceP() const;
 
-		void *lockStencil(int front, Accessor client);
+		void *lockStencil(int x, int y, int z, Accessor client);
 		void unlockStencil();
 		inline int getStencilPitchB() const;
 		inline int getStencilPitchP() const;

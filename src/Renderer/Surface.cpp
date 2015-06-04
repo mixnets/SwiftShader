@@ -887,7 +887,7 @@ namespace sw
 		internal.unlockRect();
 	}
 
-	void *Surface::lockStencil(int front, Accessor client)
+	void *Surface::lockStencil(int x, int y, int z, Accessor client)
 	{
 		resource->lock(client);
 
@@ -896,7 +896,7 @@ namespace sw
 			stencil.buffer = allocateBuffer(stencil.width, stencil.height, stencil.depth, stencil.format);
 		}
 
-		return stencil.lockRect(0, 0, front, LOCK_READWRITE);   // FIXME
+		return stencil.lockRect(x, y, z, LOCK_READWRITE);
 	}
 
 	void Surface::unlockStencil()
@@ -2788,7 +2788,7 @@ namespace sw
 
 		if(false)
 		{
-			char *target = (char*)lockStencil(0, PUBLIC) + x0 + width2 * y0;
+			char *target = (char*)lockStencil(x0, y0, 0, PUBLIC);
 
 			for(int z = 0; z < stencil.depth; z++)
 			{
@@ -2814,7 +2814,7 @@ namespace sw
 		}
 		else   // Quad layout
 		{
-			char *buffer = (char*)lockStencil(0, PUBLIC);
+			char *buffer = (char*)lockStencil(0, 0, 0, PUBLIC);
 
 			if(mask == 0xFF)
 			{

@@ -115,9 +115,9 @@ public:
         shared = true;
     }
 
-	virtual void *lock(unsigned int left, unsigned int top, sw::Lock lock)
+	virtual void *lock(unsigned int left, unsigned int top, unsigned int front, sw::Lock lock)
 	{
-		return lockExternal(left, top, 0, lock, sw::PUBLIC);
+		return lockExternal(left, top, front, lock, sw::PUBLIC);
 	}
 
 	unsigned int getPitch() const
