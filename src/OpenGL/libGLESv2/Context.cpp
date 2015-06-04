@@ -3622,7 +3622,7 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 	}
 }
 
-bool Context::copy(egl::Image *source, const sw::Rect &sourceRect, GLint xoffset, GLint yoffset, egl::Image *dest)
+bool Context::copy(sw::Surface *source, const sw::Rect &sourceRect, GLint xoffset, GLint yoffset, sw::Surface *dest)
 {
     sw::SliceRect destRect(xoffset, yoffset, xoffset + (sourceRect.x1 - sourceRect.x0), yoffset + (sourceRect.y1 - sourceRect.y0), 0);
     sw::SliceRect sourceSliceRect(sourceRect);

@@ -204,6 +204,20 @@ namespace sw
 		case FORMAT_A8L8:
 			*(unsigned short*)element = (unorm<8>(color.a) << 8) | (unorm<8>(color.r) << 0);
 			break;
+		case FORMAT_L16F:
+			*(half*)element = (half)color.r;
+			break;
+		case FORMAT_A16L16F:
+			((half*)element)[0] = (half)color.r;
+			((half*)element)[1] = (half)color.a;
+			break;
+		case FORMAT_L32F:
+			*(float*)element = color.r;
+			break;
+		case FORMAT_A32L32F:
+			((float*)element)[0] = color.r;
+			((float*)element)[1] = color.a;
+			break;
 		default:
 			ASSERT(false);
 		}
@@ -508,6 +522,28 @@ namespace sw
 			b = ((unsigned char*)element)[0] * (1.0f / 0xFF);
 			a = ((unsigned char*)element)[1] * (1.0f / 0xFF);
 			break;
+		case FORMAT_L16F:
+			r =
+			g =
+			b = *(half*)element;
+			break;
+		case FORMAT_A16L16F:
+			r =
+			g =
+			b = ((half*)element)[0];
+			a = ((half*)element)[1];
+			break;
+		case FORMAT_L32F:
+			r =
+			g =
+			b = *(float*)element;
+			break;
+		case FORMAT_A32L32F:
+			r =
+			g =
+			b = ((float*)element)[0];
+			a = ((float*)element)[1];
+			break;
 		case FORMAT_R16F:
 			r = *(half*)element;
 			break;
@@ -680,10 +716,61 @@ namespace sw
 		lock = LOCK_UNLOCKED;
 	}
 
+	Surface::Surface(int width, int height, int depth, Format format, void *pixels) : lockable(true), renderTarget(false)
+	{
+		resource = new Resource(0);
+		hasParent = false;
+		ownBuffers = false;
+		depth = max(1, depth);
+
+		external.buffer = pixels;
+		external.width = width;
+		external.height = height;
+		external.depth = depth;
+		external.format = format;
+		external.bytes = bytes(external.format);
+		external.pitchB = pitchB(external.width, external.format, false);
+		external.pitchP = pitchP(external.width, external.format, false);
+		external.sliceB = sliceB(external.width, external.height, external.format, false);
+		external.sliceP = sliceP(external.width, external.height, external.format, false);
+		external.lock = LOCK_UNLOCKED;
+		external.dirty = false;
+
+		internal.buffer = pixels;
+		internal.width = width;
+		internal.height = height;
+		internal.depth = depth;
+		internal.format = selectInternalFormat(format);
+		internal.bytes = bytes(internal.format);
+		internal.pitchB = pitchB(internal.width, internal.format, false);
+		internal.pitchP = pitchP(internal.width, internal.format, false);
+		internal.sliceB = sliceB(internal.width, internal.height, internal.format, false);
+		internal.sliceP = sliceP(internal.width, internal.height, internal.format, false);
+		internal.lock = LOCK_UNLOCKED;
+		internal.dirty = false;
+
+		stencil.buffer = 0;
+		stencil.width = width;
+		stencil.height = height;
+		stencil.depth = depth;
+		stencil.format = FORMAT_S8;
+		stencil.bytes = bytes(stencil.format);
+		stencil.pitchB = pitchB(stencil.width, stencil.format, false);
+		stencil.pitchP = pitchP(stencil.width, stencil.format, false);
+		stencil.sliceB = sliceB(stencil.width, stencil.height, stencil.format, false);
+		stencil.sliceP = sliceP(stencil.width, stencil.height, stencil.format, false);
+		stencil.lock = LOCK_UNLOCKED;
+		stencil.dirty = false;
+
+		dirtyMipmaps = true;
+		paletteUsed = 0;
+	}
+
 	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget) : lockable(lockable), renderTarget(renderTarget)
 	{
 		resource = texture ? texture : new Resource(0);
 		hasParent = texture != 0;
+		ownBuffers = true;
 		depth = max(1, depth);
 
 		external.buffer = 0;
@@ -731,7 +818,6 @@ namespace sw
 
 	Surface::~Surface()
 	{
-		// Synchronize so we can deallocate the buffers below
 		resource->lock(DESTRUCT);
 		resource->unlock();
 
@@ -740,14 +826,17 @@ namespace sw
 			resource->destruct();
 		}
 
-		deallocate(external.buffer);
-
-		if(internal.buffer != external.buffer)
+		if(ownBuffers)
 		{
-			deallocate(internal.buffer);
-		}
+			deallocate(external.buffer);
 
-		deallocate(stencil.buffer);
+			if(internal.buffer != external.buffer)
+			{
+				deallocate(internal.buffer);
+			}
+
+			deallocate(stencil.buffer);
+		}
 
 		external.buffer = 0;
 		internal.buffer = 0;
@@ -957,6 +1046,10 @@ namespace sw
 		case FORMAT_A4L4:				return 1;
 		case FORMAT_L16:				return 2;
 		case FORMAT_A8L8:				return 2;
+		case FORMAT_L16F:               return 2;
+		case FORMAT_A16L16F:            return 4;
+		case FORMAT_L32F:               return 4;
+		case FORMAT_A32L32F:            return 8;
 		// Floating-point formats
 		case FORMAT_R16F:				return 2;
 		case FORMAT_G16R16F:			return 4;
@@ -2021,6 +2114,10 @@ namespace sw
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32FS8_SHADOW:
+		case FORMAT_L16F:
+		case FORMAT_A16L16F:
+		case FORMAT_L32F:
+		case FORMAT_A32L32F:
 			return true;
 		default:
 			ASSERT(false);

@@ -96,6 +96,10 @@ namespace sw
 		FORMAT_A4L4,
 		FORMAT_L16,
 		FORMAT_A8L8,
+		FORMAT_L16F,
+		FORMAT_A16L16F,
+		FORMAT_L32F,
+		FORMAT_A32L32F,
 		// Depth/stencil formats
 		FORMAT_D16,
 		FORMAT_D32,
@@ -161,6 +165,7 @@ namespace sw
 		};
 
 	public:
+		Surface(int width, int height, int depth, Format format, void *pixels);
 		Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget);
 		
 		virtual ~Surface();
@@ -369,6 +374,7 @@ namespace sw
 		static unsigned int paletteID;
 
 		bool hasParent;
+		bool ownBuffers;
 	};
 }
 
