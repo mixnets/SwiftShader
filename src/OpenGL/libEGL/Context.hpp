@@ -2,6 +2,7 @@
 #define egl_Context_hpp
 
 #include "common/Object.hpp"
+#include "Renderer/Surface.hpp"
 
 #include <EGL/egl.h>
 #include <GLES/gl.h>
@@ -19,6 +20,7 @@ public:
 	virtual EGLenum validateSharedImage(EGLenum target, GLuint name, GLuint textureLevel) = 0;
 	virtual Image *createSharedImage(EGLenum target, GLuint name, GLuint textureLevel) = 0;
 	virtual int getClientVersion() const = 0;
+	virtual bool copy(egl::Image *source, const sw::Rect &sourceRect, GLint xoffset, GLint yoffset, egl::Image *dest) = 0;
 
 protected:
 	virtual ~Context() {};
