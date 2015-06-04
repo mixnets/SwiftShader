@@ -34,6 +34,7 @@ struct TParseContext {
             treeRoot(0),
             lexAfterType(false),
             loopNestingLevel(0),
+            switchNestingLevel(0),
             structNestingLevel(0),
             inTypeParen(false),
             currentFunctionType(NULL),
@@ -53,6 +54,7 @@ struct TParseContext {
     TIntermNode* treeRoot;       // root of parse tree being created
     bool lexAfterType;           // true if we've recognized a type, so can only be looking for an identifier
     int loopNestingLevel;        // 0 if outside all loops
+    int switchNestingLevel;      // 0 if outside all switch statements
     int structNestingLevel;      // incremented while parsing a struct declaration
     bool inTypeParen;            // true if in parentheses, looking only for an identifier
     const TType* currentFunctionType;  // the return type of the function that's currently being parsed
@@ -74,6 +76,9 @@ struct TParseContext {
                  const char* extraInfo="");
     void trace(const char* str);
     void recover();
+
+    void incrSwitchNestingLevel() { ++switchNestingLevel; }
+    void decrSwitchNestingLevel() { --switchNestingLevel; }
 
     bool parseVectorFields(const TString&, int vecSize, TVectorFields&, int line);
     bool parseMatrixFields(const TString&, int matCols, int matRows, TMatrixFields&, int line);
@@ -139,6 +144,13 @@ struct TParseContext {
     void exitStructDeclaration();
 
     bool structNestingErrorCheck(TSourceLoc line, const TType& fieldType);
+
+    TIntermSwitch *addSwitch(TIntermTyped *init, TIntermAggregate *statementList, const TSourceLoc &loc);
+    TIntermCase *addCase(TIntermTyped *condition, const TSourceLoc &loc);
+    TIntermCase *addDefault(const TSourceLoc &loc);
+
+    TIntermBranch *addBranch(TOperator op, const TSourceLoc &loc);
+    TIntermBranch *addBranch(TOperator op, TIntermTyped *returnValue, const TSourceLoc &loc);
 };
 
 int PaParseStrings(int count, const char* const string[], const int length[],
