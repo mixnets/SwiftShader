@@ -20,7 +20,7 @@ public:
 	virtual EGLenum validateSharedImage(EGLenum target, GLuint name, GLuint textureLevel) = 0;
 	virtual Image *createSharedImage(EGLenum target, GLuint name, GLuint textureLevel) = 0;
 	virtual int getClientVersion() const = 0;
-	virtual bool copy(egl::Image *source, const sw::Rect &sourceRect, GLint xoffset, GLint yoffset, egl::Image *dest) = 0;
+	virtual bool copy(sw::Surface *source, const sw::Rect &sourceRect, GLint xoffset, GLint yoffset, sw::Surface *dest) = 0;
 
 protected:
 	virtual ~Context() {};

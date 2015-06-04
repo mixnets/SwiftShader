@@ -80,11 +80,17 @@ namespace sw
 		case FORMAT_A4R4G4B4:
 			*(unsigned short*)element = (unorm<4>(color.a) << 12) | (unorm<4>(color.r) << 8) | (unorm<4>(color.g) << 4) | (unorm<4>(color.b) << 0);
 			break;
+		case FORMAT_R4G4B4A4:
+			*(unsigned short*)element = (unorm<4>(color.r) << 12) | (unorm<4>(color.g) << 8) | (unorm<4>(color.b) << 4) | (unorm<4>(color.a) << 0);
+			break;
 		case FORMAT_R5G6B5:
 			*(unsigned short*)element = (unorm<5>(color.r) << 11) | (unorm<6>(color.g) << 5) | (unorm<5>(color.b) << 0);
 			break;
 		case FORMAT_A1R5G5B5:
 			*(unsigned short*)element = (unorm<1>(color.a) << 15) | (unorm<5>(color.r) << 10) | (unorm<5>(color.g) << 5) | (unorm<5>(color.b) << 0);
+			break;
+		case FORMAT_R5G5B5A1:
+			*(unsigned short*)element = (unorm<5>(color.r) << 11) | (unorm<5>(color.g) << 6) | (unorm<5>(color.b) << 1) | (unorm<5>(color.a) << 0);
 			break;
 		case FORMAT_X1R5G5B5:
 			*(unsigned short*)element = 0x8000 | (unorm<5>(color.r) << 10) | (unorm<5>(color.g) << 5) | (unorm<5>(color.b) << 0);
@@ -154,6 +160,11 @@ namespace sw
 			((unsigned char*)element)[1] = unorm<8>(color.g);
 			((unsigned char*)element)[2] = unorm<8>(color.r);
 			break;
+		case FORMAT_B8G8R8:
+			((unsigned char*)element)[0] = unorm<8>(color.r);
+			((unsigned char*)element)[1] = unorm<8>(color.g);
+			((unsigned char*)element)[2] = unorm<8>(color.b);
+			break;
 		case FORMAT_R16F:
 			*(half*)element = (half)color.r;
 			break;
@@ -203,6 +214,20 @@ namespace sw
 			break;
 		case FORMAT_A8L8:
 			*(unsigned short*)element = (unorm<8>(color.a) << 8) | (unorm<8>(color.r) << 0);
+			break;
+		case FORMAT_L16F:
+			*(half*)element = (half)color.r;
+			break;
+		case FORMAT_A16L16F:
+			((half*)element)[0] = (half)color.r;
+			((half*)element)[1] = (half)color.a;
+			break;
+		case FORMAT_L32F:
+			*(float*)element = color.r;
+			break;
+		case FORMAT_A32L32F:
+			((float*)element)[0] = color.r;
+			((float*)element)[1] = color.a;
 			break;
 		default:
 			ASSERT(false);
@@ -303,6 +328,16 @@ namespace sw
 				b = (argb & 0x000F) * (1.0f / 0x000F);
 			}
 			break;
+		case FORMAT_R4G4B4A4:
+			{
+				unsigned short rgba = *(unsigned short*)element;
+				
+				r = (rgba & 0xF000) * (1.0f / 0xF000);
+				g = (rgba & 0x0F00) * (1.0f / 0x0F00);
+				b = (rgba & 0x00F0) * (1.0f / 0x00F0);
+				a = (rgba & 0x000F) * (1.0f / 0x000F);
+			}
+			break;
 		case FORMAT_R5G6B5:
 			{
 				unsigned short rgb = *(unsigned short*)element;
@@ -320,6 +355,16 @@ namespace sw
 				r = (argb & 0x7C00) * (1.0f / 0x7C00);
 				g = (argb & 0x03E0) * (1.0f / 0x03E0);
 				b = (argb & 0x001F) * (1.0f / 0x001F);
+			}
+			break;
+		case FORMAT_R5G5B5A1:
+			{
+				unsigned short rgba = *(unsigned short*)element;
+				
+				r = (rgba & 0xF800) * (1.0f / 0xF800);
+				g = (rgba & 0x07C0) * (1.0f / 0x07C0);
+				b = (rgba & 0x003E) * (1.0f / 0x003E);
+				a = (rgba & 0x0001) * (1.0f / 0x0001);
 			}
 			break;
 		case FORMAT_X1R5G5B5:
@@ -452,6 +497,11 @@ namespace sw
 			g = ((unsigned char*)element)[1] * (1.0f / 0xFF);
 			b = ((unsigned char*)element)[0] * (1.0f / 0xFF);
 			break;
+		case FORMAT_B8G8R8:
+			r = ((unsigned char*)element)[0] * (1.0f / 0xFF);
+			g = ((unsigned char*)element)[1] * (1.0f / 0xFF);
+			b = ((unsigned char*)element)[2] * (1.0f / 0xFF);
+			break;
 		case FORMAT_V16U16:
 			{
 				unsigned int vu = *(unsigned int*)element;
@@ -507,6 +557,28 @@ namespace sw
 			g =
 			b = ((unsigned char*)element)[0] * (1.0f / 0xFF);
 			a = ((unsigned char*)element)[1] * (1.0f / 0xFF);
+			break;
+		case FORMAT_L16F:
+			r =
+			g =
+			b = *(half*)element;
+			break;
+		case FORMAT_A16L16F:
+			r =
+			g =
+			b = ((half*)element)[0];
+			a = ((half*)element)[1];
+			break;
+		case FORMAT_L32F:
+			r =
+			g =
+			b = *(float*)element;
+			break;
+		case FORMAT_A32L32F:
+			r =
+			g =
+			b = ((float*)element)[0];
+			a = ((float*)element)[1];
 			break;
 		case FORMAT_R16F:
 			r = *(half*)element;
@@ -680,10 +752,61 @@ namespace sw
 		lock = LOCK_UNLOCKED;
 	}
 
+	Surface::Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice) : lockable(true), renderTarget(false)
+	{
+		resource = new Resource(0);
+		hasParent = false;
+		ownBuffers = false;
+		depth = max(1, depth);
+
+		external.buffer = pixels;
+		external.width = width;
+		external.height = height;
+		external.depth = depth;
+		external.format = format;
+		external.bytes = bytes(external.format);
+		external.pitchB = pitch;
+		external.pitchP = pitch / external.bytes;
+		external.sliceB = slice;
+		external.sliceP = slice / external.bytes;
+		external.lock = LOCK_UNLOCKED;
+		external.dirty = true;
+
+		internal.buffer = 0;
+		internal.width = width;
+		internal.height = height;
+		internal.depth = depth;
+		internal.format = selectInternalFormat(format);
+		internal.bytes = bytes(internal.format);
+		internal.pitchB = pitchB(internal.width, internal.format, false);
+		internal.pitchP = pitchP(internal.width, internal.format, false);
+		internal.sliceB = sliceB(internal.width, internal.height, internal.format, false);
+		internal.sliceP = sliceP(internal.width, internal.height, internal.format, false);
+		internal.lock = LOCK_UNLOCKED;
+		internal.dirty = false;
+
+		stencil.buffer = 0;
+		stencil.width = width;
+		stencil.height = height;
+		stencil.depth = depth;
+		stencil.format = FORMAT_S8;
+		stencil.bytes = bytes(stencil.format);
+		stencil.pitchB = pitchB(stencil.width, stencil.format, false);
+		stencil.pitchP = pitchP(stencil.width, stencil.format, false);
+		stencil.sliceB = sliceB(stencil.width, stencil.height, stencil.format, false);
+		stencil.sliceP = sliceP(stencil.width, stencil.height, stencil.format, false);
+		stencil.lock = LOCK_UNLOCKED;
+		stencil.dirty = false;
+
+		dirtyMipmaps = true;
+		paletteUsed = 0;
+	}
+
 	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget) : lockable(lockable), renderTarget(renderTarget)
 	{
 		resource = texture ? texture : new Resource(0);
 		hasParent = texture != 0;
+		ownBuffers = true;
 		depth = max(1, depth);
 
 		external.buffer = 0;
@@ -731,7 +854,6 @@ namespace sw
 
 	Surface::~Surface()
 	{
-		// Synchronize so we can deallocate the buffers below
 		resource->lock(DESTRUCT);
 		resource->unlock();
 
@@ -740,14 +862,17 @@ namespace sw
 			resource->destruct();
 		}
 
-		deallocate(external.buffer);
-
-		if(internal.buffer != external.buffer)
+		if(ownBuffers)
 		{
-			deallocate(internal.buffer);
-		}
+			deallocate(external.buffer);
 
-		deallocate(stencil.buffer);
+			if(internal.buffer != external.buffer)
+			{
+				deallocate(internal.buffer);
+			}
+
+			deallocate(stencil.buffer);
+		}
 
 		external.buffer = 0;
 		internal.buffer = 0;
@@ -920,9 +1045,12 @@ namespace sw
 		case FORMAT_R5G6B5:				return 2;
 		case FORMAT_A1R5G5B5:			return 2;
 		case FORMAT_X1R5G5B5:			return 2;
+		case FORMAT_R5G5B5A1:           return 2;
 		case FORMAT_X4R4G4B4:			return 2;
 		case FORMAT_A4R4G4B4:			return 2;
+		case FORMAT_R4G4B4A4:           return 2;
 		case FORMAT_R8G8B8:				return 3;
+		case FORMAT_B8G8R8:             return 3;
 		case FORMAT_X8R8G8B8:			return 4;
 	//	case FORMAT_X8G8R8B8Q:			return 4;
 		case FORMAT_A8R8G8B8:			return 4;
@@ -957,6 +1085,10 @@ namespace sw
 		case FORMAT_A4L4:				return 1;
 		case FORMAT_L16:				return 2;
 		case FORMAT_A8L8:				return 2;
+		case FORMAT_L16F:               return 2;
+		case FORMAT_A16L16F:            return 4;
+		case FORMAT_L32F:               return 4;
+		case FORMAT_A32L32F:            return 8;
 		// Floating-point formats
 		case FORMAT_R16F:				return 2;
 		case FORMAT_G16R16F:			return 4;
@@ -2021,6 +2153,10 @@ namespace sw
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32FS8_SHADOW:
+		case FORMAT_L16F:
+		case FORMAT_A16L16F:
+		case FORMAT_L32F:
+		case FORMAT_A32L32F:
 			return true;
 		default:
 			ASSERT(false);
@@ -3079,6 +3215,8 @@ namespace sw
 			{
 				return FORMAT_A8G8R8B8Q;
 			}
+		case FORMAT_R5G5B5A1:
+		case FORMAT_R4G4B4A4:
 		case FORMAT_A8B8G8R8:
 			return FORMAT_A8B8G8R8;
 		case FORMAT_R3G3B2:
@@ -3095,6 +3233,7 @@ namespace sw
 			{
 				return FORMAT_X8G8R8B8Q;
 			}
+		case FORMAT_B8G8R8:
 		case FORMAT_X8B8G8R8:
 			return FORMAT_X8B8G8R8;
 		// Compressed formats
