@@ -442,6 +442,7 @@ public:
     void drawArrays(GLenum mode, GLint first, GLsizei count);
     void drawElements(GLenum mode, GLsizei count, GLenum type, const void *indices);
     void drawTexture(GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloat height);
+	bool copy(egl::Image *source, const sw::Rect &sourceRect, GLint xoffset, GLint yoffset, egl::Image *dest);
     void finish();
     void flush();
 
