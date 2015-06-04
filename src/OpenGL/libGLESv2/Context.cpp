@@ -3221,6 +3221,36 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 						r = (argb & 0x7C00) * (1.0f / 0x7C00);
 					}
 					break;
+				case sw::FORMAT_R5G5B5A1:
+					{
+						unsigned short rgba = *(unsigned short*)(source + 2 * i);
+
+						r = (rgba & 0xF800) * (1.0f / 0xF800);
+						g = (rgba & 0x07C0) * (1.0f / 0x07C0);
+						b = (rgba & 0x003E) * (1.0f / 0x003E);
+						a = (rgba & 0x0001) * (1.0f / 0x0001);
+					}
+					break;
+				case sw::FORMAT_B8G8R8:
+					{
+						unsigned char *bgr = source + 3 * i;
+
+						a = 1.0f;
+						b = bgr[2] * (1.0f / 0xFF);
+						g = bgr[1] * (1.0f / 0xFF);
+						r = bgr[0] * (1.0f / 0xFF);
+					}
+					break;
+				case sw::FORMAT_R4G4B4A4:
+					{
+						unsigned short rgba = *(unsigned short*)(source + 2 * i);
+
+						r = (rgba & 0xF000) * (1.0f / 0xF000);
+						g = (rgba & 0x0F00) * (1.0f / 0x0F00);
+						b = (rgba & 0x00F0) * (1.0f / 0x00F0);
+						a = (rgba & 0x000F) * (1.0f / 0x000F);
+					}
+					break;
 				case sw::FORMAT_A8R8G8B8:
 					{
 						unsigned int argb = *(unsigned int*)(source + 4 * i);
@@ -3622,7 +3652,7 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 	}
 }
 
-bool Context::copy(egl::Image *source, const sw::Rect &sourceRect, GLint xoffset, GLint yoffset, egl::Image *dest)
+bool Context::copy(sw::Surface *source, const sw::Rect &sourceRect, GLint xoffset, GLint yoffset, sw::Surface *dest)
 {
     sw::SliceRect destRect(xoffset, yoffset, xoffset + (sourceRect.x1 - sourceRect.x0), yoffset + (sourceRect.y1 - sourceRect.y0), 0);
     sw::SliceRect sourceSliceRect(sourceRect);

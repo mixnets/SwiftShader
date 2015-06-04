@@ -32,6 +32,7 @@ typedef int GLsizei;
 
 class Context;
 
+sw::Format ConvertFormatType(GLenum format, GLenum type);
 int ComputePixelSize(GLenum format, GLenum type);
 GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment);
 GLsizei ComputeCompressedPitch(GLsizei width, GLenum format);
@@ -50,8 +51,8 @@ class Image : public sw::Surface
 {
 public:
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
-			: sw::Surface(getParentResource(parentTexture), width, height, 1, selectInternalFormat(format, type), true, true),
-			  width(width), height(height), format(format), type(type), internalFormat(selectInternalFormat(format, type)), depth(1),
+			: sw::Surface(getParentResource(parentTexture), width, height, 1, ConvertFormatType(format, type), true, true),
+			  width(width), height(height), format(format), type(type), internalFormat(ConvertFormatType(format, type)), depth(1),
 			  parentTexture(parentTexture)
 	{
 		shared = false;
@@ -59,8 +60,8 @@ public:
 	}
 
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
-			: sw::Surface(getParentResource(parentTexture), width, height, depth, selectInternalFormat(format, type), true, true),
-			  width(width), height(height), format(format), type(type), internalFormat(selectInternalFormat(format, type)), depth(depth),
+			: sw::Surface(getParentResource(parentTexture), width, height, depth, ConvertFormatType(format, type), true, true),
+			  width(width), height(height), format(format), type(type), internalFormat(ConvertFormatType(format, type)), depth(depth),
 			  parentTexture(parentTexture)
 	{
 		shared = false;
@@ -146,8 +147,6 @@ public:
 
 	void loadImageData(egl::Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input);
 	void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
-
-	static sw::Format selectInternalFormat(GLenum format, GLenum type);
 
 	virtual void addRef();
 	virtual void release();
