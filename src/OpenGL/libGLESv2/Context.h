@@ -592,7 +592,7 @@ public:
     void clearDepthStencilBuffer(GLint drawbuffer, GLfloat depth, GLint stencil);
     void drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount = 1);
     void drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLsizei instanceCount = 1);
-	bool copy(egl::Image *source, const sw::Rect &sourceRect, GLint xoffset, GLint yoffset, egl::Image *dest);
+	bool copy(sw::Surface *source, const sw::Rect &sourceRect, GLint xoffset, GLint yoffset, sw::Surface *dest) override;
     void finish();
     void flush();
 
