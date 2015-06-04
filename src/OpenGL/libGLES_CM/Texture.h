@@ -105,8 +105,6 @@ protected:
     void setCompressedImage(GLsizei imageSize, const void *pixels, egl::Image *image);
     void subImageCompressed(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels, egl::Image *image);
 
-	bool copy(egl::Image *source, const sw::Rect &sourceRect, GLenum destFormat, GLint xoffset, GLint yoffset, egl::Image *dest);
-
 	bool isMipmapFiltered() const;
 
     GLenum mMinFilter;

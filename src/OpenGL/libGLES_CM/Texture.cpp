@@ -230,7 +230,7 @@ void Texture::setImage(GLenum format, GLenum type, GLint unpackAlignment, const 
     {
 		egl::Image::UnpackInfo unpackInfo;
 		unpackInfo.alignment = unpackAlignment;
-		image->loadImageData(0, 0, 0, image->getWidth(), image->getHeight(), 1, format, type, unpackInfo, pixels);
+		image->loadImageData(getContext(), 0, 0, 0, image->getWidth(), image->getHeight(), 1, format, type, unpackInfo, pixels);
     }
 }
 
@@ -268,7 +268,7 @@ void Texture::subImage(GLint xoffset, GLint yoffset, GLsizei width, GLsizei heig
     {
 		egl::Image::UnpackInfo unpackInfo;
 		unpackInfo.alignment = unpackAlignment;
-		image->loadImageData(xoffset, yoffset, 0, width, height, 1, format, type, unpackInfo, pixels);
+		image->loadImageData(getContext(), xoffset, yoffset, 0, width, height, 1, format, type, unpackInfo, pixels);
     }
 }
 
@@ -293,22 +293,6 @@ void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLsizei width, GL
     {
 		image->loadCompressedData(xoffset, yoffset, 0, width, height, 1, imageSize, pixels);
     }
-}
-
-bool Texture::copy(egl::Image *source, const sw::Rect &sourceRect, GLenum destFormat, GLint xoffset, GLint yoffset, egl::Image *dest)
-{
-    Device *device = getDevice();
-
-    sw::SliceRect destRect(xoffset, yoffset, xoffset + (sourceRect.x1 - sourceRect.x0), yoffset + (sourceRect.y1 - sourceRect.y0), 0);
-    sw::SliceRect sourceSliceRect(sourceRect);
-    bool success = device->stretchRect(source, &sourceSliceRect, dest, &destRect, false);
-
-    if(!success)
-    {
-        return error(GL_OUT_OF_MEMORY, false);
-    }
-
-    return true;
 }
 
 bool Texture::isMipmapFiltered() const
@@ -554,7 +538,7 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 		sw::Rect sourceRect = {x, y, x + width, y + height};
 		sourceRect.clip(0, 0, source->getColorbuffer()->getWidth(), source->getColorbuffer()->getHeight());
 
-        copy(renderTarget, sourceRect, format, 0, 0, image[level]);
+        getContext()->copy(renderTarget, sourceRect, 0, 0, image[level]);
     }
 
 	renderTarget->release();
@@ -583,7 +567,7 @@ void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 	sw::Rect sourceRect = {x, y, x + width, y + height};
 	sourceRect.clip(0, 0, source->getColorbuffer()->getWidth(), source->getColorbuffer()->getHeight());
 
-	copy(renderTarget, sourceRect, image[level]->getFormat(), xoffset, yoffset, image[level]);
+	getContext()->copy(renderTarget, sourceRect, xoffset, yoffset, image[level]);
 
 	renderTarget->release();
 }
