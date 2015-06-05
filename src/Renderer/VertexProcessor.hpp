@@ -49,6 +49,7 @@ namespace sw
 			bool shaderContainsTexldl      : 1;
 			unsigned int positionRegister  : 4;
 			unsigned int pointSizeRegister : 4;   // 0xF signifies no vertex point size
+			int instanceID                 : 32;
 				
 			unsigned int vertexBlendMatrixCount               : 3;
 			bool indexedVertexBlendEnable                     : 1;
