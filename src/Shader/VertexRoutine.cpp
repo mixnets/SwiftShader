@@ -52,6 +52,7 @@ namespace sw
 			Registers r(shader);
 			r.data = data;
 			r.constants = *Pointer<Pointer<Byte> >(data + OFFSET(DrawData,constants));
+			r.instanceID = *Pointer<Int>(data + OFFSET(DrawData,instanceID));
 
 			Do
 			{
