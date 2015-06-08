@@ -326,13 +326,13 @@ namespace glsl
 			{
 				ASSERT(leftType.isStruct());
 
-				const TTypeList *structure = leftType.getStruct();
+				const TFieldList& fields = leftType.getStruct()->fields();
 				const TString &fieldName = rightType.getFieldName();
 				int fieldOffset = 0;
 
-				for(size_t i = 0; i < structure->size(); i++)
+				for(size_t i = 0; i < fields.size(); i++)
 				{
-					const TType &fieldType = *(*structure)[i].type;
+					const TType &fieldType = *(fields[i]->type());
 
 					if(fieldType.getFieldName() == fieldName)
 					{
@@ -1439,12 +1439,12 @@ namespace glsl
 
 		if(type.isStruct())
 		{
-			TTypeList *structure = type.getStruct();
+			const TFieldList& fields = type.getStruct()->fields();
 			int elements = 0;
 
-			for(TTypeList::const_iterator field = structure->begin(); field != structure->end(); field++)
+			for(TFieldList::const_iterator field = fields.begin(); field != fields.end(); field++)
 			{
-				const TType &fieldType = *field->type;
+				const TType &fieldType = *((*field)->type());
 
 				if(fieldType.totalRegisterCount() <= registers)
 				{
@@ -1472,7 +1472,7 @@ namespace glsl
 		{
 			if(type.isStruct())
 			{
-				return registerSize(*type.getStruct()->begin()->type, 0);
+				return registerSize(*((*(type.getStruct()->fields().begin()))->type()), 0);
 			}
 
 			return type.isMatrix() ? type.getSecondarySize() : type.getNominalSize();
@@ -1487,12 +1487,12 @@ namespace glsl
 
 		if(type.isStruct())
 		{
-			TTypeList *structure = type.getStruct();
+			const TFieldList& fields = type.getStruct()->fields();
 			int elements = 0;
 
-			for(TTypeList::const_iterator field = structure->begin(); field != structure->end(); field++)
+			for(TFieldList::const_iterator field = fields.begin(); field != fields.end(); field++)
 			{
-				const TType &fieldType = *field->type;
+				const TType &fieldType = *((*field)->type());
 				
 				if(fieldType.totalRegisterCount() <= registers)
 				{
@@ -1520,7 +1520,6 @@ namespace glsl
 		{
 			TIntermTyped *arg = argument->getAsTyped();
 			const TType &type = arg->getType();
-			const TTypeList *structure = type.getStruct();
 			index = (index >= arg->totalRegisterCount()) ? arg->totalRegisterCount() - 1 : index;
 
 			int size = registerSize(type, index);
@@ -1771,13 +1770,13 @@ namespace glsl
 				break;
 			case EOpIndexDirectStruct:
 				{
-					const TTypeList *structure = left->getType().getStruct();
+					const TFieldList& fields = left->getType().getStruct()->fields();
 					const TString &fieldName = right->getType().getFieldName();
 
 					int offset = 0;
-					for(TTypeList::const_iterator field = structure->begin(); field != structure->end(); field++)
+					for(TFieldList::const_iterator field = fields.begin(); field != fields.end(); field++)
 					{
-						if(field->type->getFieldName() == fieldName)
+						if((*field)->type()->getFieldName() == fieldName)
 						{
 							dst.type = registerType(left);
 							dst.index += offset;
@@ -1786,7 +1785,7 @@ namespace glsl
 							return 0xE4;
 						}
 
-						offset += field->type->totalRegisterCount();
+						offset += (*field)->type()->totalRegisterCount();
 					}
 				}
 				break;
@@ -2354,7 +2353,7 @@ namespace glsl
 
 	void OutputASM::declareUniform(const TType &type, const TString &name, int index)
 	{
-		const TTypeList *structure = type.getStruct();
+		const TStructure *structure = type.getStruct();
 		ActiveUniforms &activeUniforms = shaderObject->activeUniforms;
 
 		if(!structure)
@@ -2371,15 +2370,16 @@ namespace glsl
 		}
 		else
 		{
+			const TFieldList& fields = structure->fields();
 			if(type.isArray())
 			{
 				int elementIndex = index;
 
 				for(int i = 0; i < type.getArraySize(); i++)
 				{
-					for(size_t j = 0; j < structure->size(); j++)
+					for(size_t j = 0; j < fields.size(); j++)
 					{
-						const TType &fieldType = *(*structure)[j].type;
+						const TType &fieldType = *(fields[j]->type());
 						const TString &fieldName = fieldType.getFieldName();
 
 						const TString uniformName = name + "[" + str(i) + "]." + fieldName;
@@ -2392,9 +2392,9 @@ namespace glsl
 			{
 				int fieldIndex = index;
 
-				for(size_t i = 0; i < structure->size(); i++)
+				for(size_t i = 0; i < fields.size(); i++)
 				{
-					const TType &fieldType = *(*structure)[i].type;
+					const TType &fieldType = *(fields[i]->type());
 					const TString &fieldName = fieldType.getFieldName();
 
 					const TString uniformName = name + "." + fieldName;
