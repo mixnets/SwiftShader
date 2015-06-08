@@ -326,8 +326,16 @@ void StreamingVertexBuffer::reserveRequiredSpace()
     {
         if(mVertexBuffer)
         {
-            mVertexBuffer->destruct();
-			mVertexBuffer = new sw::Resource(mBufferSize);
+			if(mVertexBuffer->attemptLock(sw::PRIVATE))
+			{
+				// Buffer is no longer in use; reuse it
+				mVertexBuffer->unlock();
+			}
+			else
+			{
+				mVertexBuffer->destruct();   // Orphan
+				mVertexBuffer = new sw::Resource(mBufferSize);
+			}
         }
 
         mWritePosition = 0;

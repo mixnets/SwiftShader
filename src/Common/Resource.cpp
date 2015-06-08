@@ -100,6 +100,25 @@ namespace sw
 		return buffer;
 	}
 
+	void *Resource::attemptLock(Accessor claimer)
+	{
+		criticalSection.lock();
+
+		if(count != 0 && accessor != claimer)
+		{
+			criticalSection.unlock();
+
+			return nullptr;   // Attempt failed
+		}
+
+		accessor = claimer;
+		count++;
+
+		criticalSection.unlock();
+
+		return buffer;
+	}
+
 	void Resource::unlock()
 	{
 		criticalSection.lock();

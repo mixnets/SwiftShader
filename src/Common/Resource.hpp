@@ -33,6 +33,7 @@ namespace sw
 
 		void *lock(Accessor claimer);
 		void *lock(Accessor relinquisher, Accessor claimer);
+		void *attemptLock(Accessor claimer);
 		void unlock();
 		void unlock(Accessor relinquisher);
 
