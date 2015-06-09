@@ -808,7 +808,7 @@ namespace sw
 		internal.width = width;
 		internal.height = height;
 		internal.depth = depth;
-		internal.format = selectInternalFormat(format);
+		internal.native = selectInternalFormat(format);
 		internal.bytes = bytes(internal.format);
 		internal.pitchB = pitchB(internal.width, internal.format, false);
 		internal.pitchP = pitchP(internal.width, internal.format, false);
@@ -858,7 +858,7 @@ namespace sw
 		internal.width = width;
 		internal.height = height;
 		internal.depth = depth;
-		internal.format = selectInternalFormat(format);
+		internal.native = selectInternalFormat(format);
 		internal.bytes = bytes(internal.format);
 		internal.pitchB = pitchB(internal.width, internal.format, renderTarget);
 		internal.pitchP = pitchP(internal.width, internal.format, renderTarget);
@@ -3218,43 +3218,43 @@ namespace sw
 		       external.sliceB == internal.sliceB;
 	}
 
-	Format Surface::selectInternalFormat(Format format) const
+	NativeFormat Surface::selectInternalFormat(Format format) const
 	{
 		switch(format)
 		{
 		case FORMAT_NULL:
-			return FORMAT_NULL;
+			return NATIVE_NULL;
 		case FORMAT_P8:
 		case FORMAT_A8P8:
 		case FORMAT_A4R4G4B4:
 		case FORMAT_A1R5G5B5:
 		case FORMAT_A8R3G3B2:
-			return FORMAT_A8R8G8B8;
+			return NATIVE_A8R8G8B8;
 		case FORMAT_A8:
-			return FORMAT_A8;
+			return NATIVE_A8;
 		case FORMAT_R8:
-			return FORMAT_R8;
+			return NATIVE_R8;
 		case FORMAT_A2R10G10B10:
 		case FORMAT_A2B10G10R10:
 		case FORMAT_A16B16G16R16:
-			return FORMAT_A16B16G16R16;
+			return NATIVE_A16B16G16R16;
 		case FORMAT_G8R8:
-			return FORMAT_G8R8;
+			return NATIVE_G8R8;
 		case FORMAT_G16R16:
-			return FORMAT_G16R16;
+			return NATIVE_G16R16;
 		case FORMAT_A8R8G8B8:
 			if(lockable || !quadLayoutEnabled)
 			{
-				return FORMAT_A8R8G8B8;
+				return NATIVE_A8R8G8B8;
 			}
 			else
 			{
-				return FORMAT_A8G8R8B8Q;
+				return NATIVE_A8G8R8B8Q;
 			}
 		case FORMAT_R5G5B5A1:
 		case FORMAT_R4G4B4A4:
 		case FORMAT_A8B8G8R8:
-			return FORMAT_A8B8G8R8;
+			return NATIVE_A8B8G8R8;
 		case FORMAT_R3G3B2:
 		case FORMAT_R5G6B5:
 		case FORMAT_R8G8B8:
@@ -3263,56 +3263,56 @@ namespace sw
 		case FORMAT_X8R8G8B8:
 			if(lockable || !quadLayoutEnabled)
 			{
-				return FORMAT_X8R8G8B8;
+				return NATIVE_X8R8G8B8;
 			}
 			else
 			{
-				return FORMAT_X8G8R8B8Q;
+				return NATIVE_X8G8R8B8Q;
 			}
 		case FORMAT_B8G8R8:
 		case FORMAT_X8B8G8R8:
-			return FORMAT_X8B8G8R8;
+			return NATIVE_X8B8G8R8;
 		// Compressed formats
 		#if S3TC_SUPPORT
 		case FORMAT_DXT1:
 		case FORMAT_DXT3:
 		case FORMAT_DXT5:
-			return FORMAT_A8R8G8B8;
+			return NATIVE_A8R8G8B8;
 		#endif
 		case FORMAT_ATI1:
-			return FORMAT_R8;
+			return NATIVE_R8;
 		case FORMAT_ATI2:
-			return FORMAT_G8R8;
+			return NATIVE_G8R8;
 		case FORMAT_ETC1:
-			return FORMAT_X8R8G8B8;
+			return NATIVE_X8R8G8B8;
 		// Bumpmap formats
-		case FORMAT_V8U8:			return FORMAT_V8U8;
-		case FORMAT_L6V5U5:			return FORMAT_X8L8V8U8;
-		case FORMAT_Q8W8V8U8:		return FORMAT_Q8W8V8U8;
-		case FORMAT_X8L8V8U8:		return FORMAT_X8L8V8U8;
-		case FORMAT_V16U16:			return FORMAT_V16U16;
-		case FORMAT_A2W10V10U10:	return FORMAT_A16W16V16U16;
-		case FORMAT_Q16W16V16U16:	return FORMAT_Q16W16V16U16;
+		case FORMAT_V8U8:			return NATIVE_V8U8;
+		case FORMAT_L6V5U5:			return NATIVE_X8L8V8U8;
+		case FORMAT_Q8W8V8U8:		return NATIVE_Q8W8V8U8;
+		case FORMAT_X8L8V8U8:		return NATIVE_X8L8V8U8;
+		case FORMAT_V16U16:			return NATIVE_V16U16;
+		case FORMAT_A2W10V10U10:	return NATIVE_A16W16V16U16;
+		case FORMAT_Q16W16V16U16:	return NATIVE_Q16W16V16U16;
 		// Floating-point formats
-		case FORMAT_A16F:			return FORMAT_A32B32G32R32F;
-		case FORMAT_R16F:			return FORMAT_R32F;
-		case FORMAT_G16R16F:		return FORMAT_G32R32F;
-		case FORMAT_B16G16R16F:     return FORMAT_A32B32G32R32F;
-		case FORMAT_A16B16G16R16F:	return FORMAT_A32B32G32R32F;
-		case FORMAT_A32F:			return FORMAT_A32B32G32R32F;
-		case FORMAT_R32F:			return FORMAT_R32F;
-		case FORMAT_G32R32F:		return FORMAT_G32R32F;
-		case FORMAT_B32G32R32F:     return FORMAT_A32B32G32R32F;
-		case FORMAT_A32B32G32R32F:	return FORMAT_A32B32G32R32F;
+		case FORMAT_A16F:			return NATIVE_A32B32G32R32F;
+		case FORMAT_R16F:			return NATIVE_R32F;
+		case FORMAT_G16R16F:		return NATIVE_G32R32F;
+		case FORMAT_B16G16R16F:     return NATIVE_A32B32G32R32F;
+		case FORMAT_A16B16G16R16F:	return NATIVE_A32B32G32R32F;
+		case FORMAT_A32F:			return NATIVE_A32B32G32R32F;
+		case FORMAT_R32F:			return NATIVE_R32F;
+		case FORMAT_G32R32F:		return NATIVE_G32R32F;
+		case FORMAT_B32G32R32F:     return NATIVE_A32B32G32R32F;
+		case FORMAT_A32B32G32R32F:	return NATIVE_A32B32G32R32F;
 		// Luminance formats
-		case FORMAT_L8:				return FORMAT_L8;
-		case FORMAT_A4L4:			return FORMAT_A8L8;
-		case FORMAT_L16:			return FORMAT_L16;
-		case FORMAT_A8L8:			return FORMAT_A8L8;
-		case FORMAT_L16F:           return FORMAT_A32B32G32R32F;
-		case FORMAT_A16L16F:        return FORMAT_A32B32G32R32F;
-		case FORMAT_L32F:           return FORMAT_A32B32G32R32F;
-		case FORMAT_A32L32F:        return FORMAT_A32B32G32R32F;
+		case FORMAT_L8:				return NATIVE_L8;
+		case FORMAT_A4L4:			return NATIVE_A8L8;
+		case FORMAT_L16:			return NATIVE_L16;
+		case FORMAT_A8L8:			return NATIVE_A8L8;
+		case FORMAT_L16F:           return NATIVE_A32B32G32R32F;
+		case FORMAT_A16L16F:        return NATIVE_A32B32G32R32F;
+		case FORMAT_L32F:           return NATIVE_A32B32G32R32F;
+		case FORMAT_A32L32F:        return NATIVE_A32B32G32R32F;
 		// Depth/stencil formats
 		case FORMAT_D16:
 		case FORMAT_D32:
@@ -3321,26 +3321,26 @@ namespace sw
 		case FORMAT_D24FS8:
 			if(hasParent)   // Texture
 			{
-				return FORMAT_D32FS8_SHADOW;
+				return NATIVE_D32FS8_SHADOW;
 			}
 			else if(complementaryDepthBuffer)
 			{
-				return FORMAT_D32F_COMPLEMENTARY;
+				return NATIVE_D32F_COMPLEMENTARY;
 			}
 			else
 			{
-				return FORMAT_D32F;
+				return NATIVE_D32F;
 			}
-		case FORMAT_D32F_LOCKABLE:  return FORMAT_D32F_LOCKABLE;
-		case FORMAT_D32FS8_TEXTURE: return FORMAT_D32FS8_TEXTURE;
-		case FORMAT_INTZ:           return FORMAT_D32FS8_TEXTURE;
-		case FORMAT_DF24S8:         return FORMAT_D32FS8_SHADOW;
-		case FORMAT_DF16S8:         return FORMAT_D32FS8_SHADOW;
+		case FORMAT_D32F_LOCKABLE:  return NATIVE_D32F_LOCKABLE;
+		case FORMAT_D32FS8_TEXTURE: return NATIVE_D32FS8_TEXTURE;
+		case FORMAT_INTZ:           return NATIVE_D32FS8_TEXTURE;
+		case FORMAT_DF24S8:         return NATIVE_D32FS8_SHADOW;
+		case FORMAT_DF16S8:         return NATIVE_D32FS8_SHADOW;
 		default:
 			ASSERT(false);
 		}
 
-		return FORMAT_NULL;
+		return NATIVE_NULL;
 	}
 
 	void Surface::setTexturePalette(unsigned int *palette)

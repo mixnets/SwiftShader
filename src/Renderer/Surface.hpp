@@ -42,6 +42,93 @@ namespace sw
 		int slice;
 	};
 
+	enum NativeFormat : unsigned char
+	{
+		NATIVE_NULL,
+
+		NATIVE_A8,
+		NATIVE_R8,
+		//NATIVE_R3G3B2,
+		//NATIVE_A8R3G3B2,
+		//NATIVE_X4R4G4B4,
+		//NATIVE_A4R4G4B4,
+		//NATIVE_R4G4B4A4,
+		//NATIVE_R5G6B5,
+		//NATIVE_R8G8B8,
+		//NATIVE_B8G8R8,
+		NATIVE_X8R8G8B8,
+		NATIVE_A8R8G8B8,
+		NATIVE_X8B8G8R8,
+		NATIVE_A8B8G8R8,
+		//NATIVE_X1R5G5B5,
+		//NATIVE_A1R5G5B5,
+		//NATIVE_R5G5B5A1,
+		NATIVE_G8R8,
+		NATIVE_G16R16,
+		//NATIVE_A2R10G10B10,
+		//NATIVE_A2B10G10R10,
+		NATIVE_A16B16G16R16,
+		//// Paletted formats
+		//NATIVE_P8,
+		//NATIVE_A8P8,
+		//// Compressed formats
+		//NATIVE_DXT1,
+		//NATIVE_DXT3,
+		//NATIVE_DXT5,
+		//NATIVE_ATI1,
+		//NATIVE_ATI2,
+  //      NATIVE_ETC1,
+		//// Floating-point formats
+		//NATIVE_A16F,
+		//NATIVE_R16F,
+		//NATIVE_G16R16F,
+		//NATIVE_B16G16R16F,
+		//NATIVE_A16B16G16R16F,
+		//NATIVE_A32F,
+		NATIVE_R32F,
+		NATIVE_G32R32F,
+		//NATIVE_B32G32R32F,
+		NATIVE_A32B32G32R32F, 
+		//// Bump map formats
+		NATIVE_V8U8,
+		//NATIVE_L6V5U5,
+		NATIVE_Q8W8V8U8,
+		NATIVE_X8L8V8U8,
+		//NATIVE_A2W10V10U10,
+		NATIVE_V16U16,
+		NATIVE_A16W16V16U16,
+		NATIVE_Q16W16V16U16,
+		//// Luminance formats
+		NATIVE_L8,
+		//NATIVE_A4L4,
+		NATIVE_L16,
+		NATIVE_A8L8,
+		//NATIVE_L16F,
+		//NATIVE_A16L16F,
+		//NATIVE_L32F,
+		//NATIVE_A32L32F,
+		//// Depth/stencil formats
+		//NATIVE_D16,
+		//NATIVE_D32,
+		//NATIVE_D24X8,
+		//NATIVE_D24S8,
+		//NATIVE_D24FS8,
+		NATIVE_D32F,                 // Quad layout
+		NATIVE_D32F_COMPLEMENTARY,   // Quad layout, 1 - z
+		NATIVE_D32F_LOCKABLE,        // Linear layout
+		NATIVE_D32FS8_TEXTURE,       // Linear layout, no PCF
+		NATIVE_D32FS8_SHADOW,        // Linear layout, PCF
+		//NATIVE_DF24S8,
+		//NATIVE_DF16S8,
+		//NATIVE_INTZ,
+		//NATIVE_S8,
+		// Quad layout framebuffer
+		NATIVE_X8G8R8B8Q,
+		NATIVE_A8G8R8B8Q,
+
+		NATIVE_LAST = NATIVE_A8G8R8B8Q
+	};
+
 	enum Format : unsigned char
 	{
 		FORMAT_NULL,
@@ -165,7 +252,13 @@ namespace sw
 			int pitchP;
 			int sliceB;
 			int sliceP;
+
+			union
+			{
 			Format format;
+			NativeFormat native;
+			};
+			
 			Lock lock;
 			
 			bool dirty;
@@ -363,7 +456,7 @@ namespace sw
 		static void memfill4(void *buffer, int pattern, int bytes);
 
 		bool identicalFormats() const;
-		Format selectInternalFormat(Format format) const;
+		NativeFormat selectInternalFormat(Format format) const;
 
 		void resolve();
 
