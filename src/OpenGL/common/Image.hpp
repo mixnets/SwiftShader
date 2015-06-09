@@ -49,7 +49,7 @@ public:
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
 		: sw::Surface(getParentResource(parentTexture), width, height, 1, SelectInternalFormat(format, type), true, true),
 		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
-			  parentTexture(parentTexture)
+		  parentTexture(parentTexture)
 	{
 		shared = false;
 		referenceCount = 1;
@@ -58,7 +58,7 @@ public:
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
 		: sw::Surface(getParentResource(parentTexture), width, height, depth, SelectInternalFormat(format, type), true, true),
 		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(depth),
-			  parentTexture(parentTexture)
+		  parentTexture(parentTexture)
 	{
 		shared = false;
 		referenceCount = 1;

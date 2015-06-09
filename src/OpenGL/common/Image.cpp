@@ -661,128 +661,129 @@ namespace egl
 		GLsizei inputPitch  = (unpackInfo.rowLength == 0) ? ComputePitch(width, format, type, unpackInfo.alignment) : unpackInfo.rowLength;
 		GLsizei inputHeight = (unpackInfo.imageHeight == 0) ? height : unpackInfo.imageHeight;
 		input = ((char*)input) + (unpackInfo.skipImages * inputHeight + unpackInfo.skipRows) * inputPitch + unpackInfo.skipPixels;
-		void *buffer = lock(0, 0, sw::LOCK_WRITEONLY);
 
-		if(buffer)
+		if(SelectInternalFormat(format, type) == internalFormat)
 		{
-			//if(SelectInternalFormat(format, type) == internalFormat)
-			//{
-			//	switch(type)
-			//	{
-			//	case GL_UNSIGNED_BYTE:
-			//		switch(format)
-			//		{
-			//		case GL_ALPHA:
-			//			LoadImageData<Alpha>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		case GL_LUMINANCE:
-			//			LoadImageData<Luminance>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		case GL_LUMINANCE_ALPHA:
-			//			LoadImageData<LuminanceAlpha>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		case GL_RGB:
-			//			LoadImageData<UByteRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		case GL_RGBA:
-			//		case GL_BGRA_EXT:
-			//			LoadImageData<UByte4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		default: UNREACHABLE();
-			//		}
-			//		break;
-			//	case GL_UNSIGNED_SHORT_5_6_5:
-			//		switch(format)
-			//		{
-			//		case GL_RGB:
-			//			LoadImageData<RGB565>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		default: UNREACHABLE();
-			//		}
-			//		break;
-			//	case GL_UNSIGNED_SHORT_4_4_4_4:
-			//		switch(format)
-			//		{
-			//		case GL_RGBA:
-			//			LoadImageData<RGBA4444>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		default: UNREACHABLE();
-			//		}
-			//		break;
-			//	case GL_UNSIGNED_SHORT_5_5_5_1:
-			//		switch(format)
-			//		{
-			//		case GL_RGBA:
-			//			LoadImageData<RGBA5551>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		default: UNREACHABLE();
-			//		}
-			//		break;
-			//	case GL_FLOAT:
-			//		switch(format)
-			//		{
-			//		// float textures are converted to RGBA, not BGRA
-			//		case GL_ALPHA:
-			//			LoadImageData<AlphaFloat>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		case GL_LUMINANCE:
-			//			LoadImageData<LuminanceFloat>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		case GL_LUMINANCE_ALPHA:
-			//			LoadImageData<LuminanceAlphaFloat>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		case GL_RGB:
-			//			LoadImageData<FloatRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		case GL_RGBA:
-			//			LoadImageData<Float4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		default: UNREACHABLE();
-			//		}
-			//		break;
-			//	case GL_HALF_FLOAT:
-			//	case GL_HALF_FLOAT_OES:
-			//		switch(format)
-			//		{
-			//		case GL_ALPHA:
-			//			LoadImageData<AlphaHalfFloat>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		case GL_LUMINANCE:
-			//			LoadImageData<LuminanceHalfFloat>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		case GL_LUMINANCE_ALPHA:
-			//			LoadImageData<LuminanceAlphaHalfFloat>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		case GL_RGB:
-			//			LoadImageData<HalfFloatRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		case GL_RGBA:
-			//			LoadImageData<HalfFloat4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//			break;
-			//		default: UNREACHABLE();
-			//		}
-			//		break;
-			//	case GL_UNSIGNED_SHORT:
-			//		LoadImageData<D16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//		break;
-			//	case GL_UNSIGNED_INT:
-			//		LoadImageData<D32>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
-			//		break;
-			//	case GL_UNSIGNED_INT_24_8_OES:
-			//		loadD24S8ImageData(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, input, buffer);
-			//		break;
-			//	default: UNREACHABLE();
-			//	}
-			//}
-			//else
+			void *buffer = lock(0, 0, sw::LOCK_WRITEONLY);
+
+			if(buffer)
+			{
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+					switch(format)
+					{
+					case GL_ALPHA:
+						LoadImageData<Alpha>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					case GL_LUMINANCE:
+						LoadImageData<Luminance>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					case GL_LUMINANCE_ALPHA:
+						LoadImageData<LuminanceAlpha>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					case GL_RGB:
+						LoadImageData<UByteRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					case GL_RGBA:
+					case GL_BGRA_EXT:
+						LoadImageData<UByte4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					default: UNREACHABLE();
+					}
+					break;
+				case GL_UNSIGNED_SHORT_5_6_5:
+					switch(format)
+					{
+					case GL_RGB:
+						LoadImageData<RGB565>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					default: UNREACHABLE();
+					}
+					break;
+				case GL_UNSIGNED_SHORT_4_4_4_4:
+					switch(format)
+					{
+					case GL_RGBA:
+						LoadImageData<RGBA4444>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					default: UNREACHABLE();
+					}
+					break;
+				case GL_UNSIGNED_SHORT_5_5_5_1:
+					switch(format)
+					{
+					case GL_RGBA:
+						LoadImageData<RGBA5551>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					default: UNREACHABLE();
+					}
+					break;
+				case GL_FLOAT:
+					switch(format)
+					{
+					// float textures are converted to RGBA, not BGRA
+					case GL_ALPHA:
+						LoadImageData<AlphaFloat>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					case GL_LUMINANCE:
+						LoadImageData<LuminanceFloat>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					case GL_LUMINANCE_ALPHA:
+						LoadImageData<LuminanceAlphaFloat>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					case GL_RGB:
+						LoadImageData<FloatRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					case GL_RGBA:
+						LoadImageData<Float4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					default: UNREACHABLE();
+					}
+					break;
+				case GL_HALF_FLOAT:
+				case GL_HALF_FLOAT_OES:
+					switch(format)
+					{
+					case GL_ALPHA:
+						LoadImageData<AlphaHalfFloat>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					case GL_LUMINANCE:
+						LoadImageData<LuminanceHalfFloat>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					case GL_LUMINANCE_ALPHA:
+						LoadImageData<LuminanceAlphaHalfFloat>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					case GL_RGB:
+						LoadImageData<HalfFloatRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					case GL_RGBA:
+						LoadImageData<HalfFloat4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+						break;
+					default: UNREACHABLE();
+					}
+					break;
+				case GL_UNSIGNED_SHORT:
+					LoadImageData<D16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+					break;
+				case GL_UNSIGNED_INT:
+					LoadImageData<D32>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer, internalFormat);
+					break;
+				case GL_UNSIGNED_INT_24_8_OES:
+					loadD24S8ImageData(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, input, buffer);
+					break;
+				default: UNREACHABLE();
+				}
+
+				unlock();
+			}
+			else
 			{
 				sw::Surface source(width, height, depth, ConvertFormatType(format, type), const_cast<void*>(input), inputPitch, inputPitch * inputHeight);
 				sw::Rect sourceRect(0, 0, width, height);
 				context->copy(&source, sourceRect, xoffset, yoffset, this);
 			}
 		}
-
-		unlock();
 	}
 
 	void Image::loadD24S8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer)
