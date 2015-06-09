@@ -93,18 +93,18 @@ namespace sw
 		source->lockInternal(0, 0, 0, sw::LOCK_READONLY, sw::PUBLIC);
 		dest->lockInternal(0, 0, 0, sw::LOCK_WRITEONLY, sw::PUBLIC);
 
-		float w = static_cast<float>(source->getExternalWidth())  / static_cast<float>(dest->getExternalWidth());
-		float h = static_cast<float>(source->getExternalHeight()) / static_cast<float>(dest->getExternalHeight());
-		float d = static_cast<float>(source->getExternalDepth())  / static_cast<float>(dest->getExternalDepth());
+		float w = static_cast<float>(source->getWidth())  / static_cast<float>(dest->getWidth());
+		float h = static_cast<float>(source->getHeight()) / static_cast<float>(dest->getHeight());
+		float d = static_cast<float>(source->getDepth())  / static_cast<float>(dest->getDepth());
 
 		float z = 0.5f * d;
-		for(int k = 0; k < dest->getExternalDepth(); ++k)
+		for(int k = 0; k < dest->getDepth(); ++k)
 		{
 			float y = 0.5f * h;
-			for(int j = 0; j < dest->getExternalHeight(); ++j)
+			for(int j = 0; j < dest->getHeight(); ++j)
 			{
 				float x = 0.5f * w;
-				for(int i = 0; i < dest->getExternalWidth(); ++i)
+				for(int i = 0; i < dest->getWidth(); ++i)
 				{
 					dest->writeInternal(i, j, k, source->sampleInternal(x, y, z));
 					x += w;
@@ -187,8 +187,11 @@ namespace sw
 
 		BlitState state;
 
-		state.sourceFormat = source->getInternalFormat();
-		state.destFormat = dest->getInternalFormat();
+		bool useSourceInternal = !source->isExternalDirty();
+		bool useDestInternal = !dest->isExternalDirty();
+
+		state.sourceFormat = source->getFormat(useSourceInternal);
+		state.destFormat = dest->getFormat(useDestInternal);
 		state.filter = filter;
 
 		Routine *blitRoutine = blitCache->query(state);
@@ -408,10 +411,10 @@ namespace sw
 
 		BlitData data;
 
-		data.source = source->lockInternal(0, 0, sourceRect.slice, sw::LOCK_READONLY, sw::PUBLIC);
-		data.dest = dest->lockInternal(0, 0, destRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC);
-		data.sPitchB = source->getInternalPitchB();
-		data.dPitchB = dest->getInternalPitchB();
+		data.source = source->lock(0, 0, sourceRect.slice, sw::LOCK_READONLY, sw::PUBLIC, useSourceInternal);
+		data.dest = dest->lock(0, 0, destRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC, useDestInternal);
+		data.sPitchB = source->getPitchB(useSourceInternal);
+		data.dPitchB = dest->getPitchB(useDestInternal);
 
 		data.w = 1.0f / (dRect.x1 - dRect.x0) * (sRect.x1 - sRect.x0);
 		data.h = 1.0f / (dRect.y1 - dRect.y0) * (sRect.y1 - sRect.y0);
@@ -423,13 +426,13 @@ namespace sw
 		data.y0d = dRect.y0;
 		data.y1d = dRect.y1;
 
-		data.sWidth = source->getInternalWidth();
-		data.sHeight = source->getInternalHeight();
+		data.sWidth = source->getWidth();
+		data.sHeight = source->getHeight();
 
 		blitFunction(&data);
 
-		source->unlockInternal();
-		dest->unlockInternal();
+		source->unlock(true);
+		dest->unlock(true);
 
 		return true;
 	}
