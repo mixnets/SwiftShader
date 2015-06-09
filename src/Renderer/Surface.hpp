@@ -165,11 +165,19 @@ namespace sw
 		
 		virtual ~Surface();
 
+		inline void *lock(int x, int y, int z, Lock lock, Accessor client, bool internal = false);
+		inline void unlock(bool internal = false);
+		inline int getWidth() const;
+		inline int getHeight() const;
+		inline int getDepth() const;
+		inline Format getFormat(bool internal = false) const;
+		inline int getPitchB(bool internal = false) const;
+		inline int getPitchP(bool internal = false) const;
+		inline int getSliceB(bool internal = false) const;
+		inline int getSliceP(bool internal = false) const;
+
 		void *lockExternal(int x, int y, int z, Lock lock, Accessor client);
 		void unlockExternal();
-		inline int getExternalWidth() const;
-		inline int getExternalHeight() const;
-		inline int getExternalDepth() const;
 		inline Format getExternalFormat() const;
 		inline int getExternalPitchB() const;
 		inline int getExternalPitchP() const;
@@ -178,9 +186,6 @@ namespace sw
 
 		virtual void *lockInternal(int x, int y, int z, Lock lock, Accessor client);
 		virtual void unlockInternal();
-		inline int getInternalWidth() const;
-		inline int getInternalHeight() const;
-		inline int getInternalDepth() const;
 		inline Format getInternalFormat() const;
 		inline int getInternalPitchB() const;
 		inline int getInternalPitchP() const;
@@ -222,6 +227,7 @@ namespace sw
 
 		bool hasDirtyMipmaps() const;
 		void cleanMipmaps();
+		inline bool isExternalDirty() const;
 		Resource *getResource();
 
 		static int bytes(Format format);
@@ -377,19 +383,54 @@ namespace sw
 
 namespace sw
 {
-	int Surface::getExternalWidth() const
+	void *Surface::lock(int x, int y, int z, Lock lock, Accessor client, bool internal)
+	{
+		return internal ? lockInternal(x, y, z, lock, client) : lockExternal(x, y, z, lock, client);
+	}
+
+	void Surface::unlock(bool internal)
+	{
+		return internal ? unlockInternal() : unlockExternal();
+	}
+
+	int Surface::getWidth() const
 	{
 		return external.width;
 	}
 
-	int Surface::getExternalHeight() const
+	int Surface::getHeight() const
 	{
 		return external.height;
 	}
 
-	int Surface::getExternalDepth() const
+	int Surface::getDepth() const
 	{
 		return external.depth;
+	}
+
+	Format Surface::getFormat(bool internal) const
+	{
+		return internal ? getInternalFormat() : getExternalFormat();
+	}
+
+	int Surface::getPitchB(bool internal) const
+	{
+		return internal ? getInternalPitchB() : getExternalPitchB();
+	}
+
+	int Surface::getPitchP(bool internal) const
+	{
+		return internal ? getInternalPitchP() : getExternalPitchB();
+	}
+
+	int Surface::getSliceB(bool internal) const
+	{
+		return internal ? getInternalSliceB() : getExternalSliceB();
+	}
+
+	int Surface::getSliceP(bool internal) const
+	{
+		return internal ? getInternalSliceP() : getExternalSliceB();
 	}
 
 	Format Surface::getExternalFormat() const
@@ -415,21 +456,6 @@ namespace sw
 	int Surface::getExternalSliceP() const
 	{
 		return external.sliceP;
-	}
-
-	int Surface::getInternalWidth() const
-	{
-		return internal.width;
-	}
-
-	int Surface::getInternalHeight() const
-	{
-		return internal.height;
-	}
-
-	int Surface::getInternalDepth() const
-	{
-		return internal.depth;
 	}
 
 	Format Surface::getInternalFormat() const
@@ -480,6 +506,11 @@ namespace sw
 	int Surface::getSuperSampleCount() const
 	{
 		return internal.depth > 4 ? internal.depth / 4 : 1;
+	}
+
+	bool Surface::isExternalDirty() const
+	{
+		return external.buffer && external.buffer != internal.buffer && external.dirty;
 	}
 }
 
