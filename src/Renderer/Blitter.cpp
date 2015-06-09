@@ -16,6 +16,8 @@
 
 namespace sw
 {
+	Blitter blitter;
+
 	Blitter::Blitter()
 	{
 		blitCache = new RoutineCache<BlitState>(1024);
@@ -191,6 +193,7 @@ namespace sw
 		state.destFormat = dest->getInternalFormat();
 		state.filter = filter;
 
+		criticalSection.lock();
 		Routine *blitRoutine = blitCache->query(state);
 		
 		if(!blitRoutine)
@@ -402,6 +405,7 @@ namespace sw
 			blitRoutine = function(L"BlitRoutine");
 
 			blitCache->add(state, blitRoutine);
+			criticalSection.unlock();
 		}
 
 		void (*blitFunction)(const BlitData *data) = (void(*)(const BlitData*))blitRoutine->getEntry();

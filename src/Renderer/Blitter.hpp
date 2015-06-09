@@ -68,7 +68,10 @@ namespace sw
 		};
 
 		RoutineCache<BlitState> *blitCache;
+		BackoffLock criticalSection;
 	};
+
+	extern Blitter blitter;
 }
 
 #endif   // sw_Blitter_hpp
