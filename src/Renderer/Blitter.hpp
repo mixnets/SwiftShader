@@ -22,18 +22,6 @@ namespace sw
 {
 	class Blitter
 	{
-	public:
-		Blitter();
-
-		virtual ~Blitter();
-
-		void blit(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter);
-		void blit3D(Surface *source, Surface *dest);
-
-	private:
-		bool read(Float4 &color, Pointer<Byte> element, Format format);
-		bool blitReactor(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter);
-
 		struct BlitState
 		{
 			bool operator==(const BlitState &state) const
@@ -67,8 +55,24 @@ namespace sw
 			int sHeight;
 		};
 
+	public:
+		Blitter();
+
+		virtual ~Blitter();
+
+		void blit(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter);
+		void blit3D(Surface *source, Surface *dest);
+
+	private:
+		bool read(Float4 &color, Pointer<Byte> element, Format format);
+		bool blitReactor(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter);
+		Routine *generate(BlitState &state);
+
 		RoutineCache<BlitState> *blitCache;
+		BackoffLock criticalSection;
 	};
+
+	extern Blitter blitter;
 }
 
 #endif   // sw_Blitter_hpp
