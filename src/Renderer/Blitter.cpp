@@ -95,18 +95,18 @@ namespace sw
 		source->lockInternal(0, 0, 0, sw::LOCK_READONLY, sw::PUBLIC);
 		dest->lockInternal(0, 0, 0, sw::LOCK_WRITEONLY, sw::PUBLIC);
 
-		float w = static_cast<float>(source->getExternalWidth())  / static_cast<float>(dest->getExternalWidth());
-		float h = static_cast<float>(source->getExternalHeight()) / static_cast<float>(dest->getExternalHeight());
-		float d = static_cast<float>(source->getExternalDepth())  / static_cast<float>(dest->getExternalDepth());
+		float w = static_cast<float>(source->getWidth())  / static_cast<float>(dest->getWidth());
+		float h = static_cast<float>(source->getHeight()) / static_cast<float>(dest->getHeight());
+		float d = static_cast<float>(source->getDepth())  / static_cast<float>(dest->getDepth());
 
 		float z = 0.5f * d;
-		for(int k = 0; k < dest->getExternalDepth(); ++k)
+		for(int k = 0; k < dest->getDepth(); ++k)
 		{
 			float y = 0.5f * h;
-			for(int j = 0; j < dest->getExternalHeight(); ++j)
+			for(int j = 0; j < dest->getHeight(); ++j)
 			{
 				float x = 0.5f * w;
-				for(int i = 0; i < dest->getExternalWidth(); ++i)
+				for(int i = 0; i < dest->getWidth(); ++i)
 				{
 					dest->writeInternal(i, j, k, source->sampleInternal(x, y, z));
 					x += w;
@@ -439,8 +439,8 @@ namespace sw
 		data.y0d = dRect.y0;
 		data.y1d = dRect.y1;
 
-		data.sWidth = source->getInternalWidth();
-		data.sHeight = source->getInternalHeight();
+		data.sWidth = source->getWidth();
+		data.sHeight = source->getHeight();
 
 		blitFunction(&data);
 
