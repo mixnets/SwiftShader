@@ -232,20 +232,20 @@ public:
 	TType(TBasicType t, int s0 = 1, int s1 = 1) :
 		type(t), precision(EbpUndefined), qualifier(EvqGlobal), invariant(false), layoutQualifier(TLayoutQualifier::create()),
 		primarySize(s0), secondarySize(s1), array(false), arraySize(0), maxArraySize(0), arrayInformationType(0), interfaceBlock(0),
-		structure(0), deepestStructNesting(0), fieldName(0), mangled(0), typeName(0)
+		structure(0), deepestStructNesting(0), mangled(0)
     {
     }
     TType(TBasicType t, TPrecision p, TQualifier q = EvqTemporary, int s0 = 1, int s1 = 1, bool a = false) :
 		type(t), precision(p), qualifier(q), invariant(false), layoutQualifier(TLayoutQualifier::create()),
 		primarySize(s0), secondarySize(s1), array(a), arraySize(0), maxArraySize(0), arrayInformationType(0), interfaceBlock(0),
-		structure(0), deepestStructNesting(0), fieldName(0), mangled(0), typeName(0)
+		structure(0), deepestStructNesting(0), mangled(0)
     {
     }
     explicit TType(const TPublicType &p);
 	TType(TStructure* userDef, TPrecision p = EbpUndefined) :
 		type(EbtStruct), precision(p), qualifier(EvqTemporary), invariant(false), layoutQualifier(TLayoutQualifier::create()),
 		primarySize(1), secondarySize(1), array(false), arraySize(0), maxArraySize(0), arrayInformationType(0), interfaceBlock(0),
-		structure(userDef), deepestStructNesting(0), fieldName(0), mangled(0)
+		structure(userDef), deepestStructNesting(0), mangled(0)
     {
     }
 
@@ -254,7 +254,7 @@ public:
 		: type(EbtInterfaceBlock), precision(EbpUndefined), qualifier(qualifierIn),
 		invariant(false), layoutQualifier(layoutQualifierIn),
 		primarySize(1), secondarySize(1), array(arraySizeIn > 0), arraySize(arraySizeIn), maxArraySize(0), arrayInformationType(0),
-		interfaceBlock(interfaceBlockIn), structure(0), deepestStructNesting(0), fieldName(0), mangled(0)
+		interfaceBlock(interfaceBlockIn), structure(0), deepestStructNesting(0), mangled(0)
 	{
 	}
 
@@ -366,17 +366,6 @@ public:
 	TStructure* getStruct() const { return structure; }
 	void setStruct(TStructure* s) { structure = s; computeDeepestStructNesting(); }
 
-    bool isField() const { return fieldName != 0; }
-    const TString& getFieldName() const
-    {
-        assert(fieldName);
-        return *fieldName;
-    }
-    void setFieldName(const TString& n)
-    {
-        fieldName = NewPoolTString(n.c_str());
-    }
-
     TString& getMangledName() {
         if (!mangled) {
             mangled = NewPoolTString("");
@@ -470,9 +459,7 @@ protected:
 	TStructure *structure;      // 0 unless this is a struct
     int deepestStructNesting;
 
-    TString *fieldName;         // for structure field names
     TString *mangled;
-    TString *typeName;          // for structure field type name
 };
 
 //

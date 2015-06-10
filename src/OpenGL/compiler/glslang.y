@@ -400,7 +400,7 @@ postfix_expression
                 unsigned int i;
                 const TFieldList& fields = structure->fields();
                 for (i = 0; i < fields.size(); ++i) {
-                    if (fields[i]->type()->getFieldName() == *$3.string) {
+                    if (fields[i]->name() == *$3.string) {
                         fieldFound = true;
                         break;
                     }
@@ -2034,9 +2034,10 @@ struct_declaration_list
     | struct_declaration_list struct_declaration {
         $$ = $1;
         for (unsigned int i = 0; i < $2->size(); ++i) {
+            TField* field = (*$2)[i];
             for (unsigned int j = 0; j < $$->size(); ++j) {
-                if ((*$$)[j]->type()->getFieldName() == (*$2)[i]->type()->getFieldName()) {
-                    context->error((*$2)[i]->line(), "duplicate field name in structure:", "struct", (*$2)[i]->type()->getFieldName().c_str());
+                if ((*$$)[j]->name() == field->name()) {
+                    context->error((*$2)[i]->line(), "duplicate field name in structure:", "struct", field->name().c_str());
                     context->recover();
                 }
             }
@@ -2049,7 +2050,7 @@ struct_declaration
     : type_specifier struct_declarator_list SEMICOLON {
         $$ = $2;
 
-        if (context->voidErrorCheck($1.line, (*$2)[0]->type()->getFieldName(), $1)) {
+        if (context->voidErrorCheck($1.line, (*$2)[0]->name(), $1)) {
             context->recover();
         }
         for (unsigned int i = 0; i < $$->size(); ++i) {
@@ -2102,7 +2103,7 @@ struct_declarator
         int size;
         if (context->arraySizeErrorCheck($3->getLine(), $3, size))
             context->recover();
-        $$->type()->setArraySize(size);
+        type->setArraySize(size);
 
         $$ = new TField(type, $1.string, $1.line);
     }

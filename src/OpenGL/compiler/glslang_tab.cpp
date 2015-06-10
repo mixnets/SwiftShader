@@ -749,13 +749,13 @@ static const yytype_uint16 yyrline[] =
     1826,  1831,  1836,  1841,  1846,  1851,  1857,  1863,  1869,  1875,
     1881,  1887,  1893,  1899,  1905,  1910,  1915,  1924,  1929,  1934,
     1939,  1944,  1949,  1954,  1959,  1964,  1969,  1974,  1979,  1984,
-    1989,  1994,  2007,  2007,  2021,  2021,  2031,  2034,  2049,  2080,
-    2084,  2090,  2097,  2112,  2116,  2120,  2121,  2127,  2128,  2129,
-    2130,  2131,  2135,  2136,  2136,  2136,  2146,  2147,  2151,  2151,
-    2152,  2152,  2157,  2160,  2170,  2173,  2179,  2180,  2184,  2192,
-    2196,  2206,  2211,  2228,  2228,  2233,  2233,  2240,  2240,  2248,
-    2251,  2257,  2260,  2266,  2270,  2277,  2284,  2291,  2298,  2309,
-    2318,  2322,  2329,  2332,  2338,  2338
+    1989,  1994,  2007,  2007,  2021,  2021,  2031,  2034,  2050,  2081,
+    2085,  2091,  2098,  2113,  2117,  2121,  2122,  2128,  2129,  2130,
+    2131,  2132,  2136,  2137,  2137,  2137,  2147,  2148,  2152,  2152,
+    2153,  2153,  2158,  2161,  2171,  2174,  2180,  2181,  2185,  2193,
+    2197,  2207,  2212,  2229,  2229,  2234,  2234,  2241,  2241,  2249,
+    2252,  2258,  2261,  2267,  2271,  2278,  2285,  2292,  2299,  2310,
+    2319,  2323,  2330,  2333,  2339,  2339
 };
 #endif
 
@@ -2550,7 +2550,7 @@ yyreduce:
                 unsigned int i;
                 const TFieldList& fields = structure->fields();
                 for (i = 0; i < fields.size(); ++i) {
-                    if (fields[i]->type()->getFieldName() == *(yyvsp[(3) - (3)].lex).string) {
+                    if (fields[i]->name() == *(yyvsp[(3) - (3)].lex).string) {
                         fieldFound = true;
                         break;
                     }
@@ -4688,9 +4688,10 @@ yyreduce:
     {
         (yyval.interm.fieldList) = (yyvsp[(1) - (2)].interm.fieldList);
         for (unsigned int i = 0; i < (yyvsp[(2) - (2)].interm.fieldList)->size(); ++i) {
+            TField* field = (*(yyvsp[(2) - (2)].interm.fieldList))[i];
             for (unsigned int j = 0; j < (yyval.interm.fieldList)->size(); ++j) {
-                if ((*(yyval.interm.fieldList))[j]->type()->getFieldName() == (*(yyvsp[(2) - (2)].interm.fieldList))[i]->type()->getFieldName()) {
-                    context->error((*(yyvsp[(2) - (2)].interm.fieldList))[i]->line(), "duplicate field name in structure:", "struct", (*(yyvsp[(2) - (2)].interm.fieldList))[i]->type()->getFieldName().c_str());
+                if ((*(yyval.interm.fieldList))[j]->name() == field->name()) {
+                    context->error((*(yyvsp[(2) - (2)].interm.fieldList))[i]->line(), "duplicate field name in structure:", "struct", field->name().c_str());
                     context->recover();
                 }
             }
@@ -4704,7 +4705,7 @@ yyreduce:
     {
         (yyval.interm.fieldList) = (yyvsp[(2) - (3)].interm.fieldList);
 
-        if (context->voidErrorCheck((yyvsp[(1) - (3)].interm.type).line, (*(yyvsp[(2) - (3)].interm.fieldList))[0]->type()->getFieldName(), (yyvsp[(1) - (3)].interm.type))) {
+        if (context->voidErrorCheck((yyvsp[(1) - (3)].interm.type).line, (*(yyvsp[(2) - (3)].interm.fieldList))[0]->name(), (yyvsp[(1) - (3)].interm.type))) {
             context->recover();
         }
         for (unsigned int i = 0; i < (yyval.interm.fieldList)->size(); ++i) {
@@ -4767,7 +4768,7 @@ yyreduce:
         int size;
         if (context->arraySizeErrorCheck((yyvsp[(3) - (4)].interm.intermTypedNode)->getLine(), (yyvsp[(3) - (4)].interm.intermTypedNode), size))
             context->recover();
-        (yyval.interm.field)->type()->setArraySize(size);
+        type->setArraySize(size);
 
         (yyval.interm.field) = new TField(type, (yyvsp[(1) - (4)].lex).string, (yyvsp[(1) - (4)].lex).line);
     }

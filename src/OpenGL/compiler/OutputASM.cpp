@@ -327,19 +327,12 @@ namespace glsl
 				ASSERT(leftType.isStruct());
 
 				const TFieldList& fields = leftType.getStruct()->fields();
-				const TString &fieldName = rightType.getFieldName();
+				int index = right->getAsConstantUnion()->getIConst(0);
 				int fieldOffset = 0;
 
-				for(size_t i = 0; i < fields.size(); i++)
+				for(int i = 0; i < index; i++)
 				{
-					const TType &fieldType = *(fields[i]->type());
-
-					if(fieldType.getFieldName() == fieldName)
-					{
-						break;
-					}
-
-					fieldOffset += fieldType.totalRegisterCount();
+					fieldOffset += fields[i]->type()->totalRegisterCount();
 				}
 
 				copy(result, left, fieldOffset);
@@ -1771,22 +1764,19 @@ namespace glsl
 			case EOpIndexDirectStruct:
 				{
 					const TFieldList& fields = left->getType().getStruct()->fields();
-					const TString &fieldName = right->getType().getFieldName();
+					int index = right->getAsConstantUnion()->getIConst(0);
+					int fieldOffset = 0;
 
-					int offset = 0;
-					for(TFieldList::const_iterator field = fields.begin(); field != fields.end(); field++)
+					for(int i = 0; i < index; i++)
 					{
-						if((*field)->type()->getFieldName() == fieldName)
-						{
-							dst.type = registerType(left);
-							dst.index += offset;
-							dst.mask = writeMask(right);
-							
-							return 0xE4;
-						}
-
-						offset += (*field)->type()->totalRegisterCount();
+						fieldOffset += fields[i]->type()->totalRegisterCount();
 					}
+
+					dst.type = registerType(left);
+					dst.index += fieldOffset;
+					dst.mask = writeMask(right);
+
+					return 0xE4;
 				}
 				break;
 			case EOpVectorSwizzle:
@@ -2380,7 +2370,7 @@ namespace glsl
 					for(size_t j = 0; j < fields.size(); j++)
 					{
 						const TType &fieldType = *(fields[j]->type());
-						const TString &fieldName = fieldType.getFieldName();
+						const TString &fieldName = fields[j]->name();
 
 						const TString uniformName = name + "[" + str(i) + "]." + fieldName;
 						declareUniform(fieldType, uniformName, elementIndex);
@@ -2395,7 +2385,7 @@ namespace glsl
 				for(size_t i = 0; i < fields.size(); i++)
 				{
 					const TType &fieldType = *(fields[i]->type());
-					const TString &fieldName = fieldType.getFieldName();
+					const TString &fieldName = fields[i]->name();
 
 					const TString uniformName = name + "." + fieldName;
 					declareUniform(fieldType, uniformName, fieldIndex);

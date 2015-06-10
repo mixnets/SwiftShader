@@ -1412,7 +1412,7 @@ TIntermTyped* TParseContext::addConstStruct(TString& identifier, TIntermTyped* n
     TIntermConstantUnion *tempConstantNode = node->getAsConstantUnion();
 
     for ( index = 0; index < fields.size(); ++index) {
-        if (fields[index]->type()->getFieldName() == identifier) {
+        if (fields[index]->name() == identifier) {
             break;
         } else {
             instanceSize += fields[index]->type()->getObjectSize();
