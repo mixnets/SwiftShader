@@ -114,8 +114,10 @@ namespace sw
 		// Quad layout framebuffer
 		FORMAT_X8G8R8B8Q,
 		FORMAT_A8G8R8B8Q,
+		// YUV formats
+		FORMAT_YV12,
 
-		FORMAT_LAST = FORMAT_A8G8R8B8Q
+		FORMAT_LAST = FORMAT_YV12
 	};
 
 	enum Lock
@@ -344,6 +346,7 @@ namespace sw
 		static void decodeATI1(Buffer &internal, const Buffer &external);
 		static void decodeATI2(Buffer &internal, const Buffer &external);
 		static void decodeETC1(Buffer &internal, const Buffer &external);
+		static void decodeYV12(Buffer &internal, const Buffer &external);
 
 		static void update(Buffer &destination, Buffer &source);
 		static void genericUpdate(Buffer &destination, Buffer &source);

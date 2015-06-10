@@ -979,6 +979,8 @@ namespace sw
 		case FORMAT_DF16S8:				return 2;
 		case FORMAT_INTZ:				return 4;
 		case FORMAT_S8:					return 1;
+		// YUV formats
+		case FORMAT_YV12:               return 6;   // 2x2 pixels
 		default:
 			ASSERT(false);
 		}
@@ -1077,6 +1079,7 @@ namespace sw
 			case FORMAT_ATI1:		decodeATI1(destination, source);		break;   // FIXME: Check destination format
 			case FORMAT_ATI2:		decodeATI2(destination, source);		break;   // FIXME: Check destination format
 			case FORMAT_ETC1:		decodeETC1(destination, source);		break;   // FIXME: Check destination format
+			case FORMAT_YV12:       decodeYV12(destination, source);        break;   // FIXME: Check destination format
 			default:				genericUpdate(destination, source);		break;
 			}
 		}
@@ -1445,7 +1448,7 @@ namespace sw
 					{
 						for(int i = 0; i < 4 && (x + i) < internal.width; i++)
 						{
-							dest[(x + i) + (y + j) * internal.width] = c[(unsigned int)(source->lut >> 2 * (i + j * 4)) % 4];
+							dest[(x + i) + (y + j) * internal.pitchP] = c[(unsigned int)(source->lut >> 2 * (i + j * 4)) % 4];
 						}
 					}
 
@@ -1492,7 +1495,7 @@ namespace sw
 							unsigned int a = (unsigned int)(source->a >> 4 * (i + j * 4)) & 0x0F;
 							unsigned int color = (c[(unsigned int)(source->lut >> 2 * (i + j * 4)) % 4] & 0x00FFFFFF) | ((a << 28) + (a << 24));
 
-							dest[(x + i) + (y + j) * internal.width] = color;
+							dest[(x + i) + (y + j) * internal.pitchP] = color;
 						}
 					}
 
@@ -1563,7 +1566,7 @@ namespace sw
 							unsigned int alpha = (unsigned int)a[(unsigned int)(source->alut >> (16 + 3 * (i + j * 4))) % 8] << 24;
 							unsigned int color = (c[(source->clut >> 2 * (i + j * 4)) % 4] & 0x00FFFFFF) | alpha;
 							
-							dest[(x + i) + (y + j) * internal.width] = color;
+							dest[(x + i) + (y + j) * internal.pitchP] = color;
 						}
 					}
 
@@ -1617,7 +1620,7 @@ namespace sw
 					{
 						for(int i = 0; i < 4 && (x + i) < internal.width; i++)
 						{
-							dest[(x + i) + (y + j) * internal.width] = r[(unsigned int)(source->rlut >> (16 + 3 * (i + j * 4))) % 8];
+							dest[(x + i) + (y + j) * internal.pitchP] = r[(unsigned int)(source->rlut >> (16 + 3 * (i + j * 4))) % 8];
 						}
 					}
 
@@ -1697,7 +1700,7 @@ namespace sw
 							word r = X[(unsigned int)(source->xlut >> (16 + 3 * (i + j * 4))) % 8];
 							word g = Y[(unsigned int)(source->ylut >> (16 + 3 * (i + j * 4))) % 8];
 
-							dest[(x + i) + (y + j) * internal.width] = (g << 8) + r;
+							dest[(x + i) + (y + j) * internal.pitchP] = (g << 8) + r;
 						}
 					}
 
@@ -1799,7 +1802,7 @@ namespace sw
 			{
 				for(int x = 0; x < external.width; x += 4)
 				{
-					bgrx8 *color = reinterpret_cast<bgrx8*>(&dest[x + y * internal.width]);
+					bgrx8 *color = reinterpret_cast<bgrx8*>(&dest[x + y * internal.pitchP]);
 
 					int r1, g1, b1;
 					int r2, g2, b2;
@@ -1869,7 +1872,7 @@ namespace sw
 							color[1] = subblockColors0[source->getIndex(1, y)];
 							color[2] = subblockColors0[source->getIndex(2, y)];
 							color[3] = subblockColors0[source->getIndex(3, y)];
-							color += internal.width;
+							color += internal.pitchP;
 						}
 
 						for(int y = 2; y < 4; y++)
@@ -1878,7 +1881,7 @@ namespace sw
 							color[1] = subblockColors1[source->getIndex(1, y)];
 							color[2] = subblockColors1[source->getIndex(2, y)];
 							color[3] = subblockColors1[source->getIndex(3, y)];
-							color += internal.width;
+							color += internal.pitchP;
 						}
 					}
 					else
@@ -1889,7 +1892,7 @@ namespace sw
 							color[1] = subblockColors0[source->getIndex(1, y)];
 							color[2] = subblockColors1[source->getIndex(2, y)];
 							color[3] = subblockColors1[source->getIndex(3, y)];
-							color += internal.width;
+							color += internal.pitchP;
 						}
 					}
 
@@ -1898,6 +1901,54 @@ namespace sw
 			}
 
 			(byte*&)destSlice += internal.sliceB;
+		}
+	}
+
+	void Surface::decodeYV12(Buffer &internal, const Buffer &external)
+	{
+		byte4 *RGBX = (byte4*)internal.buffer;
+		unsigned int pixels = external.width * external.height;
+		const byte *Y = (const byte*)external.buffer;
+		const byte *U = Y + pixels;
+		const byte *V = U + pixels / 4;
+
+		for(int y = 0; y < external.height; y += 2)
+		{
+			for(int x = 0; x < external.width; x += 2)
+			{
+				sbyte R = ((const int)(1.403f * 256) * ((int)V - 128)) >> 8;
+				sbyte G = ((const int)(-0.344f * 256) * ((int)U - 128) + (const int)(-0.714f * 256) * ((int)V - 128)) >> 8;
+				sbyte B = ((const int)(1.770f * 256) * ((int)U - 128)) >> 8;
+
+				byte Y00 = Y[0 + 0 * external.width];
+				byte Y01 = Y[1 + 0 * external.width];
+				byte Y10 = Y[0 + 1 * external.width];
+				byte Y11 = Y[1 + 1 * external.width];
+
+				RGBX[(x + 0) + (y + 0) * internal.pitchP][0] = Y00 + R;
+				RGBX[(x + 0) + (y + 0) * internal.pitchP][1] = Y00 + G;
+				RGBX[(x + 0) + (y + 0) * internal.pitchP][2] = Y00 + B;
+				RGBX[(x + 0) + (y + 0) * internal.pitchP][3] = 0xFF;
+
+				RGBX[(x + 1) + (y + 0) * internal.pitchP][0] = Y01 + R;
+				RGBX[(x + 1) + (y + 0) * internal.pitchP][1] = Y01 + G;
+				RGBX[(x + 1) + (y + 0) * internal.pitchP][2] = Y01 + B;
+				RGBX[(x + 1) + (y + 0) * internal.pitchP][3] = 0xFF;
+
+				RGBX[(x + 0) + (y + 1) * internal.pitchP][0] = Y10 + R;
+				RGBX[(x + 0) + (y + 1) * internal.pitchP][1] = Y10 + G;
+				RGBX[(x + 0) + (y + 1) * internal.pitchP][2] = Y10 + B;
+				RGBX[(x + 0) + (y + 1) * internal.pitchP][3] = 0xFF;
+
+				RGBX[(x + 1) + (y + 1) * internal.pitchP][0] = Y11 + R;
+				RGBX[(x + 1) + (y + 1) * internal.pitchP][1] = Y11 + G;
+				RGBX[(x + 1) + (y + 1) * internal.pitchP][2] = Y11 + B;
+				RGBX[(x + 1) + (y + 1) * internal.pitchP][3] = 0xFF;
+
+				Y += 4;
+				U += 1;
+				V += 1;
+			}
 		}
 	}
 
@@ -3153,6 +3204,8 @@ namespace sw
 		case FORMAT_INTZ:           return FORMAT_D32FS8_TEXTURE;
 		case FORMAT_DF24S8:         return FORMAT_D32FS8_SHADOW;
 		case FORMAT_DF16S8:         return FORMAT_D32FS8_SHADOW;
+		// YUV formats
+		case FORMAT_YV12:           return FORMAT_X8B8G8R8;
 		default:
 			ASSERT(false);
 		}
