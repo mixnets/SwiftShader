@@ -72,7 +72,7 @@ namespace sw
 
 		Stream &defaults()
 		{
-			static const float4 null = {0, 0, 0, 1};
+			static const float4 null = {{{0, 0, 0, 1}}};
 	
 			resource = 0;
 			buffer = &null;
