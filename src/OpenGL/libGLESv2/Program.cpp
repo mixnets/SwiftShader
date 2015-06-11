@@ -2530,18 +2530,12 @@ namespace es2
 
 		if(bufSize > 0)
 		{
-			std::string string = uniformBlock.name;
-
 			if(uniformBlock.isArrayElement())
 			{
-				string += "[";
-				string += std::to_string(uniformBlock.elementIndex);
-				string += "]";
+				snprintf(name, bufSize, "%s[%u]", uniformBlock.name.c_str(), uniformBlock.elementIndex);
+			} else {
+				snprintf(name, bufSize, "%s", uniformBlock.name.c_str());
 			}
-
-			strncpy(name, string.c_str(), bufSize);
-			name[bufSize - 1] = '\0';
-
 			if(length)
 			{
 				*length = strlen(name);
