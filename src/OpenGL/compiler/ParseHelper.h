@@ -125,6 +125,7 @@ struct TParseContext {
     TPublicType addFullySpecifiedType(TQualifier qualifier, bool invariant, TLayoutQualifier layoutQualifier, const TPublicType &typeSpecifier);
     bool arraySetMaxSize(TIntermSymbol*, TType*, int, bool, TSourceLoc);
 
+    void parseGlobalLayoutQualifier(const TPublicType &typeQualifier);
     TIntermTyped* addConstructor(TIntermNode*, const TType*, TOperator, TFunction*, TSourceLoc);
     TIntermTyped* foldConstConstructor(TIntermAggregate* aggrNode, const TType& type);
     TIntermTyped* addConstVectorNode(TVectorFields&, TIntermTyped*, TSourceLoc);
@@ -136,6 +137,9 @@ struct TParseContext {
 
     TFieldList *addStructDeclaratorList(const TPublicType &typeSpecifier, TFieldList *fieldList);
     TPublicType addStructure(const TSourceLoc &structLine, const TSourceLoc &nameLine, const TString *structName, TFieldList *fieldList);
+
+    TIntermAggregate* addInterfaceBlock(const TPublicType& typeQualifier, const TSourceLoc& nameLine, const TString& blockName, TFieldList* fieldList,
+                                        const TString* instanceName, const TSourceLoc& instanceLine, TIntermTyped* arrayIndex, const TSourceLoc& arrayIndexLine);
 
     TLayoutQualifier parseLayoutQualifier(const TString &qualifierType, const TSourceLoc& qualifierTypeLine);
     TLayoutQualifier parseLayoutQualifier(const TString &qualifierType, const TSourceLoc& qualifierTypeLine, const TString &intValueString, int intValue, const TSourceLoc& intValueLine);
