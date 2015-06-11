@@ -620,7 +620,7 @@ void Context::setFogMode(GLenum mode)
 		device->setPixelFogMode(sw::FOG_EXP2);
 		break;
 	default:
-		UNREACHABLE();
+		FIXME("mode not supported: mode=%x", mode);
 	}
 }
 
@@ -967,7 +967,7 @@ Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type)
         {
         case TEXTURE_2D: return mTexture2DZero;
         case TEXTURE_EXTERNAL: return mTextureExternalZero;
-        default: UNREACHABLE();
+        default: FIXME("type not supported: type=%x", type);
         }
     }
 
@@ -1357,7 +1357,7 @@ int Context::getQueryParameterNum(GLenum pname)
 	case GL_MAX_TEXTURE_UNITS:
         return 1;
 	default:
-		UNREACHABLE();
+		FIXME("pname not supported: pname=%x", pname);
     }
 
     return -1;
@@ -1712,7 +1712,7 @@ void Context::applyState(GLenum drawMode)
 
 	switch(mState.shadeModel)
 	{
-	default: UNREACHABLE();
+	default: FIXME("unknown shareModel=%x", mState.shadeModel);
 	case GL_SMOOTH: device->setShadingMode(sw::SHADING_GOURAUD); break;
 	case GL_FLAT:   device->setShadingMode(sw::SHADING_FLAT);    break;
 	}
@@ -1885,7 +1885,7 @@ void Context::applyTextures()
 						device->setStageOperation(unit, sw::TextureStage::STAGE_SELECTARG1);
 						device->setStageOperationAlpha(unit, sw::TextureStage::STAGE_SELECTARG1);
 						break;
-					default: UNREACHABLE();
+					default: FIXME("unknown texFormat=%x", texFormat);
 					}
 					break;
 				case GL_MODULATE:
@@ -1909,7 +1909,7 @@ void Context::applyTextures()
 						device->setStageOperation(unit, sw::TextureStage::STAGE_MODULATE);
 						device->setStageOperationAlpha(unit, sw::TextureStage::STAGE_MODULATE);
 						break;
-					default: UNREACHABLE();
+					default: FIXME("unknown texFormat=%x", texFormat);
 					}
 					break;
 				case GL_DECAL:
@@ -1933,7 +1933,7 @@ void Context::applyTextures()
 						device->setStageOperation(unit, sw::TextureStage::STAGE_BLENDTEXTUREALPHA);   // Alpha * (Arg1 - Arg2) + Arg2
 						device->setStageOperationAlpha(unit, sw::TextureStage::STAGE_SELECTARG2);
 						break;
-					default: UNREACHABLE();
+					default: FIXME("unknown texFormat=%x", texFormat);
 					}
 					break;
 				case GL_BLEND:
@@ -1957,7 +1957,7 @@ void Context::applyTextures()
 						device->setStageOperation(unit, sw::TextureStage::STAGE_LERP);   // Arg3 * (Arg1 - Arg2) + Arg2
 						device->setStageOperationAlpha(unit, sw::TextureStage::STAGE_MODULATE);
 						break;
-					default: UNREACHABLE();
+					default: FIXME("unknown texFormat=%x", texFormat);
 					}
 					break;
 				case GL_ADD:
@@ -1981,11 +1981,11 @@ void Context::applyTextures()
 						device->setStageOperation(unit, sw::TextureStage::STAGE_ADD);
 						device->setStageOperationAlpha(unit, sw::TextureStage::STAGE_MODULATE);
 						break;
-					default: UNREACHABLE();
+					default: FIXME("unknown texFormat=%x", texFormat);
 					}
 					break;
 				default:
-					UNREACHABLE();
+					FIXME("unknown environmentMode=%x", mState.textureUnit[unit].environmentMode);
 				}
 			}
 			else   // GL_COMBINE
@@ -2075,7 +2075,7 @@ void Context::applyTexture(int index, Texture *baseTexture)
 				device->setTextureLevel(index, 0, mipmapLevel, surface, sw::TEXTURE_2D);
 			}
 		}
-		else UNIMPLEMENTED();
+		else FIXME("unknown target=%x", baseTexture->getTarget());
 	}
 	else
 	{
@@ -2270,7 +2270,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 					}
 					break;
 				default:
-					UNIMPLEMENTED();   // FIXME
+					FIXME("unimplemented internal format=%x", renderTarget->getInternalFormat());   // FIXME
 					UNREACHABLE();
 				}
 
@@ -2285,7 +2285,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 						dest[4 * i + 2] = (unsigned char)(255 * b + 0.5f);
 						dest[4 * i + 3] = (unsigned char)(255 * a + 0.5f);
 						break;
-					default: UNREACHABLE();
+					default: FIXME("bad type for GL_RGBA=%x", type);
 					}
 					break;
 				case GL_BGRA_EXT:
@@ -2325,7 +2325,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 							((unsigned short)(31 * g + 0.5f) << 5) |
 							((unsigned short)(31 * b + 0.5f) << 0);
 						break;
-					default: UNREACHABLE();
+					default: FIXME("bad type for GL_BGRA_EXT type=%x", type);
 					}
 					break;
 				case GL_RGB:
@@ -2337,10 +2337,10 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 							((unsigned short)(63 * g + 0.5f) << 5) |
 							((unsigned short)(31 * r + 0.5f) << 11);
 						break;
-					default: UNREACHABLE();
+					default: FIXME("bad type for GL_RGB type=%x", type);
 					}
 					break;
-				default: UNREACHABLE();
+				default: FIXME("unknown format=%x", format);
 				}
 			}
         }
@@ -2736,7 +2736,7 @@ bool Context::isTriangleMode(GLenum drawMode)
       case GL_LINE_LOOP:
       case GL_LINE_STRIP:
         return false;
-      default: UNREACHABLE();
+      default: FIXME("unknown drawMode=%x", drawMode);
     }
 
     return false;
@@ -2819,7 +2819,7 @@ EGLenum Context::validateSharedImage(EGLenum target, GLuint name, GLuint texture
             return EGL_BAD_ACCESS;
         }
     }
-    else UNREACHABLE();
+    else FIXME("unexpected target=%x", target);
 
 	return EGL_SUCCESS;
 }
@@ -2838,7 +2838,7 @@ egl::Image *Context::createSharedImage(EGLenum target, GLuint name, GLuint textu
 
         return renderbuffer->createSharedImage();
     }
-    else UNREACHABLE();
+    else FIXME("unknown target=%x", target);
 
 	return 0;
 }
@@ -2870,7 +2870,7 @@ sw::MatrixStack &Context::currentMatrixStack()
 		break;
 	}
 
-	UNREACHABLE();
+	FIXME("unknown matrixMode=%x", matrixMode);
 	return textureStack0;
 }
 
