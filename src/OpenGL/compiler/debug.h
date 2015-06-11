@@ -39,17 +39,26 @@ void Trace(const char* format, ...);
 #endif  // TRACE_ENABLED
 
 // A macro asserting a condition and outputting failures to the debug log
+#ifdef ASSERT
+#undef ASSERT
+#endif
 #define ASSERT(expression) do { \
     if(!(expression)) \
         Trace("Assert failed: %s(%d): "#expression"\n", __FUNCTION__, __LINE__); \
     assert(expression); \
 } while(0)
 
+#ifdef UNIMPLEMENTED
+#undef UNIMPLEMENTED
+#endif
 #define UNIMPLEMENTED() do { \
     Trace("Unimplemented invoked: %s(%d)\n", __FUNCTION__, __LINE__); \
     assert(false); \
 } while(0)
 
+#ifdef UNREACHABLE
+#undef UNREACHABLE
+#endif
 #define UNREACHABLE() do { \
     Trace("Unreachable reached: %s(%d)\n", __FUNCTION__, __LINE__); \
     assert(false); \

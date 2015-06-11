@@ -791,10 +791,10 @@ namespace gl
 		}
 
 		Uniform *targetUniform = uniforms[uniformIndex[location].index];
-		unsigned int count = UniformComponentCount(targetUniform->type);
+		int count = UniformComponentCount(targetUniform->type);
 
 		// Sized query - ensure the provided buffer is large enough
-		if(bufSize && *bufSize < count * sizeof(GLfloat))
+		if(bufSize && *bufSize < count * static_cast<int>(sizeof(GLfloat)))
 		{
 			return false;
 		}
@@ -805,7 +805,7 @@ namespace gl
 			{
 				GLboolean *boolParams = (GLboolean*)targetUniform->data + uniformIndex[location].element * count;
 
-				for(unsigned int i = 0; i < count; i++)
+				for(int i = 0; i < count; i++)
 				{
 					params[i] = (boolParams[i] == GL_FALSE) ? 0.0f : 1.0f;
 				}
@@ -819,7 +819,7 @@ namespace gl
 			{
 				GLint *intParams = (GLint*)targetUniform->data + uniformIndex[location].element * count;
 
-				for(unsigned int i = 0; i < count; i++)
+				for(int i = 0; i < count; i++)
 				{
 					params[i] = (float)intParams[i];
 				}
@@ -839,10 +839,10 @@ namespace gl
 		}
 
 		Uniform *targetUniform = uniforms[uniformIndex[location].index];
-		unsigned int count = UniformComponentCount(targetUniform->type);
+		int count = UniformComponentCount(targetUniform->type);
 
 		// Sized query - ensure the provided buffer is large enough
-		if(bufSize && *bufSize < count * sizeof(GLint))
+		if(bufSize && *bufSize < count * static_cast<int>(sizeof(GLint)))
 		{
 			return false;
 		}
@@ -853,7 +853,7 @@ namespace gl
 			{
 				GLboolean *boolParams = targetUniform->data + uniformIndex[location].element * count;
 
-				for(unsigned int i = 0; i < count; i++)
+				for(int i = 0; i < count; i++)
 				{
 					params[i] = (GLint)boolParams[i];
 				}
@@ -863,7 +863,7 @@ namespace gl
 			{
 				GLfloat *floatParams = (GLfloat*)targetUniform->data + uniformIndex[location].element * count;
 
-				for(unsigned int i = 0; i < count; i++)
+				for(int i = 0; i < count; i++)
 				{
 					params[i] = (GLint)floatParams[i];
 				}
@@ -1351,7 +1351,7 @@ namespace gl
 
 				index++;
 			}
-			while(index < registerIndex + arraySize);
+			while(index < registerIndex + static_cast<int>(arraySize));
 	    }
 
 		Uniform *uniform = 0;
@@ -1398,7 +1398,7 @@ namespace gl
 			uniforms.push_back(uniform);
 			unsigned int index = uniforms.size() - 1;
 
-			for(unsigned int i = 0; i < uniform->size(); i++)
+			for(int i = 0; i < uniform->size(); i++)
 			{
 				uniformIndex.push_back(UniformLocation(name, i, index));
 			}

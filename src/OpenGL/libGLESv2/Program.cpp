@@ -853,10 +853,10 @@ namespace es2
 		}
 
 		Uniform *targetUniform = uniforms[uniformIndex[location].index];
-		unsigned int count = UniformComponentCount(targetUniform->type);
+		int count = UniformComponentCount(targetUniform->type);
 
 		// Sized query - ensure the provided buffer is large enough
-		if(bufSize && *bufSize < count * sizeof(GLfloat))
+		if(bufSize && *bufSize < count * static_cast<int>(sizeof(GLfloat)))
 		{
 			return false;
 		}
@@ -867,7 +867,7 @@ namespace es2
 			{
 				GLboolean *boolParams = (GLboolean*)targetUniform->data + uniformIndex[location].element * count;
 
-				for(unsigned int i = 0; i < count; i++)
+				for(int i = 0; i < count; i++)
 				{
 					params[i] = (boolParams[i] == GL_FALSE) ? 0.0f : 1.0f;
 				}
@@ -881,7 +881,7 @@ namespace es2
 			{
 				GLint *intParams = (GLint*)targetUniform->data + uniformIndex[location].element * count;
 
-				for(unsigned int i = 0; i < count; i++)
+				for(int i = 0; i < count; i++)
 				{
 					params[i] = (float)intParams[i];
 				}
@@ -891,7 +891,7 @@ namespace es2
 			{
 				GLuint *uintParams = (GLuint*)targetUniform->data + uniformIndex[location].element * count;
 
-				for(unsigned int i = 0; i < count; i++)
+				for(int i = 0; i < count; i++)
 				{
 					params[i] = (float)uintParams[i];
 				}
@@ -912,10 +912,10 @@ namespace es2
 		}
 
 		Uniform *targetUniform = uniforms[uniformIndex[location].index];
-		unsigned int count = UniformComponentCount(targetUniform->type);
+		int count = UniformComponentCount(targetUniform->type);
 
 		// Sized query - ensure the provided buffer is large enough
-		if(bufSize && *bufSize < count * sizeof(GLint))
+		if(bufSize && *bufSize < count * static_cast<int>(sizeof(GLint)))
 		{
 			return false;
 		}
@@ -926,7 +926,7 @@ namespace es2
 			{
 				GLboolean *boolParams = targetUniform->data + uniformIndex[location].element * count;
 
-				for(unsigned int i = 0; i < count; i++)
+				for(int i = 0; i < count; i++)
 				{
 					params[i] = (GLint)boolParams[i];
 				}
@@ -936,7 +936,7 @@ namespace es2
 			{
 				GLfloat *floatParams = (GLfloat*)targetUniform->data + uniformIndex[location].element * count;
 
-				for(unsigned int i = 0; i < count; i++)
+				for(int i = 0; i < count; i++)
 				{
 					params[i] = (GLint)floatParams[i];
 				}
@@ -961,10 +961,10 @@ namespace es2
 		}
 
 		Uniform *targetUniform = uniforms[uniformIndex[location].index];
-		unsigned int count = UniformComponentCount(targetUniform->type);
+		int count = UniformComponentCount(targetUniform->type);
 
 		// Sized query - ensure the provided buffer is large enough
-		if(bufSize && *bufSize < count * sizeof(GLuint))
+		if(bufSize && *bufSize < count * static_cast<int>(sizeof(GLuint)))
 		{
 			return false;
 		}
@@ -975,7 +975,7 @@ namespace es2
 		{
 			GLboolean *boolParams = targetUniform->data + uniformIndex[location].element * count;
 
-			for(unsigned int i = 0; i < count; i++)
+			for(int i = 0; i < count; i++)
 			{
 				params[i] = (GLuint)boolParams[i];
 			}
@@ -985,7 +985,7 @@ namespace es2
 		{
 			GLfloat *floatParams = (GLfloat*)targetUniform->data + uniformIndex[location].element * count;
 
-			for(unsigned int i = 0; i < count; i++)
+			for(int i = 0; i < count; i++)
 			{
 				params[i] = (GLuint)floatParams[i];
 			}
@@ -1360,7 +1360,7 @@ namespace es2
 
 				index++;
 			}
-			while(index < registerIndex + arraySize);
+			while(index < registerIndex + static_cast<int>(arraySize));
 	    }
 
 		Uniform *uniform = 0;
@@ -1407,7 +1407,7 @@ namespace es2
 			uniforms.push_back(uniform);
 			unsigned int index = uniforms.size() - 1;
 
-			for(unsigned int i = 0; i < uniform->size(); i++)
+			for(int i = 0; i < uniform->size(); i++)
 			{
 				uniformIndex.push_back(UniformLocation(name, i, index));
 			}
