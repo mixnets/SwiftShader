@@ -48,7 +48,7 @@ static bool ValidateMultiplication(TOperator op, const TType &left, const TType 
 		return left.getNominalSize() == right.getNominalSize() &&
 		       left.getSecondarySize() == right.getSecondarySize();
 	default:
-		UNREACHABLE();
+		UNREACHABLE(0);
 		return false;
 	}
 }
@@ -1124,7 +1124,7 @@ float ComputeDeterminant(int size, ConstantUnion* unionArray)
 		                    unionArray[14].getFConst(),
 		                    unionArray[15].getFConst());
 	default:
-		UNREACHABLE();
+		UNREACHABLE(0);
 		return 0.0f;
 	}
 }
@@ -1211,7 +1211,7 @@ ConstantUnion* CreateInverse(TIntermConstantUnion* node, ConstantUnion* unionArr
 			}
 			break;
 		default:
-			UNREACHABLE();
+			UNREACHABLE(0);
 		}
 	}
 	return tempConstArray;

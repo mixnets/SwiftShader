@@ -52,7 +52,7 @@ unsigned int AnalyzeCallDepth::FunctionNode::analyzeCallDepth(AnalyzeCallDepth *
 			callDepth = std::max(callDepth, 1 + callees[i]->analyzeCallDepth(analyzeCallDepth));
 			break;
         default:
-            UNREACHABLE();
+            UNREACHABLE(0);
             break;
         }
     }

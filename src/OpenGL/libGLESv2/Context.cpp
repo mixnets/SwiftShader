@@ -1678,7 +1678,7 @@ Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type) cons
 		case TEXTURE_2D_ARRAY: return mTexture2DArrayZero;
         case TEXTURE_CUBE: return mTextureCubeMapZero;
         case TEXTURE_EXTERNAL: return mTextureExternalZero;
-        default: UNREACHABLE();
+        default: UNREACHABLE(type);
         }
     }
 
@@ -2966,7 +2966,7 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 	{
 		textureUsed = program->getVertexShader()->usesSampler(index);
 	}
-	else UNREACHABLE();
+	else UNREACHABLE(type);
 
 	sw::Resource *resource = 0;
 
@@ -3292,7 +3292,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 					break;
 				default:
 					UNIMPLEMENTED();   // FIXME
-					UNREACHABLE();
+					UNREACHABLE(renderTarget->getInternalFormat());
 				}
 
 				switch(format)
@@ -3306,7 +3306,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 						dest[4 * i + 2] = (unsigned char)(255 * b + 0.5f);
 						dest[4 * i + 3] = (unsigned char)(255 * a + 0.5f);
 						break;
-					default: UNREACHABLE();
+					default: UNREACHABLE(type);
 					}
 					break;
 				case GL_BGRA_EXT:
@@ -3346,7 +3346,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 							((unsigned short)(31 * g + 0.5f) << 5) |
 							((unsigned short)(31 * b + 0.5f) << 0);
 						break;
-					default: UNREACHABLE();
+					default: UNREACHABLE(type);
 					}
 					break;
 				case GL_RGB:
@@ -3358,10 +3358,10 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 							((unsigned short)(63 * g + 0.5f) << 5) |
 							((unsigned short)(31 * r + 0.5f) << 11);
 						break;
-					default: UNREACHABLE();
+					default: UNREACHABLE(type);
 					}
 					break;
-				default: UNREACHABLE();
+				default: UNREACHABLE(format);
 				}
 			}
         }
@@ -3859,7 +3859,7 @@ bool Context::isTriangleMode(GLenum drawMode)
       case GL_LINE_LOOP:
       case GL_LINE_STRIP:
         return false;
-      default: UNREACHABLE();
+      default: UNREACHABLE(drawMode);
     }
 
     return false;
@@ -4258,7 +4258,7 @@ EGLenum Context::validateSharedImage(EGLenum target, GLuint name, GLuint texture
             return EGL_BAD_ACCESS;
         }
     }
-    else UNREACHABLE();
+    else UNREACHABLE(target);
 
 	return EGL_SUCCESS;
 }
@@ -4290,7 +4290,7 @@ egl::Image *Context::createSharedImage(EGLenum target, GLuint name, GLuint textu
 
         return renderbuffer->createSharedImage();
     }
-    else UNREACHABLE();
+    else UNREACHABLE(target);
 
 	return 0;
 }

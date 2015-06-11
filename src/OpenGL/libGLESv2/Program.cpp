@@ -158,7 +158,7 @@ namespace es2
 			fragmentShader = (FragmentShader*)shader;
 			fragmentShader->addRef();
 		}
-		else UNREACHABLE();
+		else UNREACHABLE(0);
 
 		return true;
 	}
@@ -185,7 +185,7 @@ namespace es2
 			fragmentShader->release();
 			fragmentShader = 0;
 		}
-		else UNREACHABLE();
+		else UNREACHABLE(0);
 
 		return true;
 	}
@@ -264,7 +264,7 @@ namespace es2
 				logicalTextureUnit = samplersVS[samplerIndex].logicalTextureUnit;
 			}
 			break;
-		default: UNREACHABLE();
+		default: UNREACHABLE(0);
 		}
 
 		if(logicalTextureUnit >= 0 && logicalTextureUnit < MAX_COMBINED_TEXTURE_IMAGE_UNITS)
@@ -288,7 +288,7 @@ namespace es2
 			ASSERT(samplerIndex < sizeof(samplersVS)/sizeof(samplersVS[0]));
 			ASSERT(samplersVS[samplerIndex].active);
 			return samplersVS[samplerIndex].textureType;
-		default: UNREACHABLE();
+		default: UNREACHABLE(0);
 		}
 
 		return TEXTURE_2D;
@@ -373,7 +373,7 @@ namespace es2
 		case GL_UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER:
 			*params = static_cast<GLint>(uniformBlock.isReferencedByFragmentShader());
 			break;
-		default: UNREACHABLE();
+		default: UNREACHABLE(0);
 		}
 	}
 
@@ -908,7 +908,7 @@ namespace es2
 			}
 			break;
 
-		  default: UNREACHABLE();
+		  default: UNREACHABLE(0);
 		}
 
 		return true;
@@ -957,7 +957,7 @@ namespace es2
 			memcpy(params, targetUniform->data + uniformIndex[location].element * count * sizeof(GLint),
 				   count * sizeof(GLint));
 			break;
-		  default: UNREACHABLE();
+		  default: UNREACHABLE(0);
 		}
 
 		return true;
@@ -1006,7 +1006,7 @@ namespace es2
 			memcpy(params, targetUniform->data + uniformIndex[location].element * count * sizeof(GLuint),
 				   count * sizeof(GLuint));
 			break;
-		default: UNREACHABLE();
+		default: UNREACHABLE(0);
 		}
 
 		return true;
@@ -1074,7 +1074,7 @@ namespace es2
 				  case GL_UNSIGNED_INT_VEC3: applyUniform3uiv(location, size, ui); break;
 				  case GL_UNSIGNED_INT_VEC4: applyUniform4uiv(location, size, ui); break;
 				  default:
-					UNREACHABLE();
+					UNREACHABLE(0);
 				}
 
 				targetUniform->dirty = false;
@@ -1328,7 +1328,7 @@ namespace es2
 
 						switch(type)
 						{
-						default:                      UNREACHABLE();
+						default:                      UNREACHABLE(0);
 						case GL_SAMPLER_2D:           samplersVS[index].textureType = TEXTURE_2D;       break;
 						case GL_SAMPLER_CUBE:         samplersVS[index].textureType = TEXTURE_CUBE;     break;
 						case GL_SAMPLER_3D_OES:       samplersVS[index].textureType = TEXTURE_3D;       break;
@@ -1351,7 +1351,7 @@ namespace es2
 						
 						switch(type)
 						{
-						default:                      UNREACHABLE();
+						default:                      UNREACHABLE(0);
 						case GL_SAMPLER_2D:           samplersPS[index].textureType = TEXTURE_2D;       break;
 						case GL_SAMPLER_CUBE:         samplersPS[index].textureType = TEXTURE_CUBE;     break;
 						case GL_SAMPLER_3D_OES:       samplersPS[index].textureType = TEXTURE_3D;       break;
@@ -1366,7 +1366,7 @@ namespace es2
 						return false;
 					}
 				}
-				else UNREACHABLE();
+				else UNREACHABLE(0);
 
 				index++;
 			}
@@ -1410,7 +1410,7 @@ namespace es2
 		{
 			uniform->psRegisterIndex = registerIndex;
 		}
-		else UNREACHABLE();
+		else UNREACHABLE(0);
 
 		if(location == -1)   // Not previously defined
 		{
@@ -1439,7 +1439,7 @@ namespace es2
 				return false;
 			}
 		}
-		else UNREACHABLE();
+		else UNREACHABLE(0);
 
 		return true;
 	}
@@ -2526,7 +2526,7 @@ namespace es2
 		case GL_UNIFORM_MATRIX_STRIDE: return uniform.blockInfo.matrixStride;
 		case GL_UNIFORM_IS_ROW_MAJOR: return static_cast<GLint>(uniform.blockInfo.isRowMajorMatrix);
 		default:
-			UNREACHABLE();
+			UNREACHABLE(0);
 			break;
 		}
 		return 0;

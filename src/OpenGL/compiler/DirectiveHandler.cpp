@@ -140,7 +140,7 @@ void TDirectiveHandler::handleExtension(const pp::SourceLocation& loc,
         severity = pp::Diagnostics::PP_WARNING;
         break;
       default:
-        UNREACHABLE();
+        UNREACHABLE(0);
         break;
     }
     mDiagnostics.writeInfo(severity, loc,

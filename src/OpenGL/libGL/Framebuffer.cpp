@@ -55,7 +55,7 @@ Renderbuffer *Framebuffer::lookupRenderbuffer(GLenum type, GLuint handle) const
 	}
 	else
 	{
-		UNREACHABLE();
+		UNREACHABLE(0);
 	}
 
 	return buffer;
@@ -269,7 +269,7 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		}
 		else
 		{
-			UNREACHABLE();
+			UNREACHABLE(0);
 			return GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
 		}
 
@@ -311,7 +311,7 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		}
 		else
 		{
-			UNREACHABLE();
+			UNREACHABLE(0);
 			return GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
 		}
 
@@ -363,7 +363,7 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		}
 		else
 		{
-			UNREACHABLE();
+			UNREACHABLE(0);
 			return GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
 		}
 

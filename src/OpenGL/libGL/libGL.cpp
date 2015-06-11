@@ -897,7 +897,7 @@ void APIENTRY glCompressedTexImage2D(GLenum target, GLint level, GLenum internal
 			case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
 				texture->setCompressedImage(target, level, internalformat, width, height, imageSize, data);
 				break;
-			default: UNREACHABLE();
+			default: UNREACHABLE(0);
 			}
 		}
 	}
@@ -986,7 +986,7 @@ void APIENTRY glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffse
 		}
 		else
 		{
-			UNREACHABLE();
+			UNREACHABLE(0);
 		}
 	}
 }
@@ -1134,7 +1134,7 @@ void APIENTRY glCopyTexImage2D(GLenum target, GLint level, GLenum internalformat
 
 			texture->copyImage(target, level, internalformat, x, y, width, height, framebuffer);
 		}
-		else UNREACHABLE();
+		else UNREACHABLE(0);
 	}
 }
 
@@ -1200,7 +1200,7 @@ void APIENTRY glCopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLi
 		{
 			texture = context->getTextureCubeMap();
 		}
-		else UNREACHABLE();
+		else UNREACHABLE(0);
 
 		if(!validateSubImageParams(false, width, height, xoffset, yoffset, target, level, GL_NONE, texture))
 		{
@@ -2610,7 +2610,7 @@ void APIENTRY glGetFramebufferAttachmentParameteriv(GLenum target, GLenum attach
 		{
 			attachmentObjectType = GL_TEXTURE;
 		}
-		else UNREACHABLE();
+		else UNREACHABLE(0);
 
 		switch(pname)
 		{
@@ -4648,7 +4648,7 @@ void APIENTRY glTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint y
 		}
 		else
 		{
-			UNREACHABLE();
+			UNREACHABLE(0);
 		}
 	}
 }
@@ -5625,7 +5625,7 @@ void APIENTRY glCallLists(GLsizei n, GLenum type, const GLvoid *lists)
 			case GL_UNSIGNED_INT: context->callList(((unsigned int*)lists)[i]); break;
 			default:
 				UNIMPLEMENTED();
-				UNREACHABLE();
+				UNREACHABLE(0);
 			}
 		}
 	}
@@ -7669,7 +7669,7 @@ void APIENTRY glClientActiveTexture(GLenum texture)
 		break;
 	default:
 		UNIMPLEMENTED();
-		UNREACHABLE();
+		UNREACHABLE(0);
 	}
 
 	gl::Context *context = gl::getContext();

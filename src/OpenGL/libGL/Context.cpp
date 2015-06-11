@@ -1213,7 +1213,7 @@ Texture2D *Context::getTexture2D(GLenum target)
     {
         return static_cast<Texture2D*>(getSamplerTexture(mState.activeSampler, PROXY_TEXTURE_2D));
     }
-    else UNREACHABLE();
+    else UNREACHABLE(target);
 
     return 0;
 }
@@ -1234,7 +1234,7 @@ Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type)
         case TEXTURE_2D:       return mTexture2DZero;
         case PROXY_TEXTURE_2D: return mProxyTexture2DZero;
         case TEXTURE_CUBE:     return mTextureCubeMapZero;
-        default: UNREACHABLE();
+        default: UNREACHABLE(type);
         }
     }
 
@@ -2145,7 +2145,7 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 	{
 		textureUsed = program ? program->getVertexShader()->usesSampler(index) : false;
 	}
-	else UNREACHABLE();
+	else UNREACHABLE(type);
 
 	sw::Resource *resource = 0;
 
@@ -2344,7 +2344,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 					break;
 				default:
 					UNIMPLEMENTED();   // FIXME
-					UNREACHABLE();
+					UNREACHABLE(renderTarget->getInternalFormat());
 				}
 
 				switch(format)
@@ -2358,7 +2358,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 						dest[4 * i + j * outputPitch + 2] = (unsigned char)(255 * b + 0.5f);
 						dest[4 * i + j * outputPitch + 3] = (unsigned char)(255 * a + 0.5f);
 						break;
-					default: UNREACHABLE();
+					default: UNREACHABLE(type);
 					}
 					break;
 				case GL_BGRA_EXT:
@@ -2398,7 +2398,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 							((unsigned short)(31 * g + 0.5f) << 5) |
 							((unsigned short)(31 * b + 0.5f) << 0);
 						break;
-					default: UNREACHABLE();
+					default: UNREACHABLE(type);
 					}
 					break;
 				case GL_RGB:   // IMPLEMENTATION_COLOR_READ_FORMAT
@@ -2410,10 +2410,10 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 							((unsigned short)(63 * g + 0.5f) << 5) |
 							((unsigned short)(31 * r + 0.5f) << 11);
 						break;
-					default: UNREACHABLE();
+					default: UNREACHABLE(type);
 					}
 					break;
-				default: UNREACHABLE();
+				default: UNREACHABLE(format);
 				}
 			}
         }
@@ -2796,7 +2796,7 @@ bool Context::isTriangleMode(GLenum drawMode)
       case GL_LINE_LOOP:
       case GL_LINE_STRIP:
         return false;
-      default: UNREACHABLE();
+      default: UNREACHABLE(drawMode);
     }
 
     return false;
@@ -3095,7 +3095,7 @@ sw::MatrixStack &Context::currentMatrixStack()
 	case GL_MODELVIEW:  return modelView;                     break;
 	case GL_PROJECTION: return projection;                    break;
 	case GL_TEXTURE:    return texture[mState.activeSampler]; break;
-	default:            UNREACHABLE(); return modelView;      break;
+	default:            UNREACHABLE(matrixMode); return modelView;      break;
 	}
 }
 
@@ -3252,7 +3252,7 @@ void Context::alphaFunc(GLenum func, GLclampf ref)
 	case GL_NOTEQUAL: device->setAlphaCompare(sw::ALPHA_NOTEQUAL);     break;
 	case GL_GEQUAL:   device->setAlphaCompare(sw::ALPHA_GREATEREQUAL); break;
 	case GL_ALWAYS:   device->setAlphaCompare(sw::ALPHA_ALWAYS);       break;
-	default: UNREACHABLE();
+	default: UNREACHABLE(func);
 	}
 
 	device->setAlphaReference(gl::clamp01(ref));
@@ -3578,7 +3578,7 @@ void Context::end()
         UNIMPLEMENTED();
         break;
     default:
-        UNREACHABLE();
+        UNREACHABLE(drawMode);
     }
 
 	restoreAttribs();
@@ -3626,7 +3626,7 @@ void Context::setColorMaterialMode(GLenum mode)
         device->setEmissiveMaterialSource(sw::MATERIAL_MATERIAL);
         break;
     default:
-        UNREACHABLE();
+        UNREACHABLE(mode);
     }
 }
 
