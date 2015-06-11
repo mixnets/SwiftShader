@@ -856,7 +856,7 @@ namespace es2
 		unsigned int count = UniformComponentCount(targetUniform->type);
 
 		// Sized query - ensure the provided buffer is large enough
-		if(bufSize && *bufSize < count * sizeof(GLfloat))
+		if(bufSize && static_cast<unsigned int>(*bufSize) < count * sizeof(GLfloat))
 		{
 			return false;
 		}
@@ -915,7 +915,7 @@ namespace es2
 		unsigned int count = UniformComponentCount(targetUniform->type);
 
 		// Sized query - ensure the provided buffer is large enough
-		if(bufSize && *bufSize < count * sizeof(GLint))
+		if(bufSize && static_cast<unsigned int>(*bufSize) < count * sizeof(GLint))
 		{
 			return false;
 		}
@@ -964,7 +964,7 @@ namespace es2
 		unsigned int count = UniformComponentCount(targetUniform->type);
 
 		// Sized query - ensure the provided buffer is large enough
-		if(bufSize && *bufSize < count * sizeof(GLuint))
+		if(bufSize && static_cast<unsigned int>(*bufSize) < count * sizeof(GLuint))
 		{
 			return false;
 		}
@@ -1360,7 +1360,7 @@ namespace es2
 
 				index++;
 			}
-			while(index < registerIndex + arraySize);
+			while(index < registerIndex + static_cast<int>(arraySize));
 	    }
 
 		Uniform *uniform = 0;
@@ -1407,7 +1407,7 @@ namespace es2
 			uniforms.push_back(uniform);
 			unsigned int index = uniforms.size() - 1;
 
-			for(unsigned int i = 0; i < uniform->size(); i++)
+			for(int i = 0; i < uniform->size(); i++)
 			{
 				uniformIndex.push_back(UniformLocation(name, i, index));
 			}
