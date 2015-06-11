@@ -43,7 +43,10 @@ struct TParseContext {
             shaderVersion(100),
             directiveHandler(ext, diagnostics, shaderVersion),
             preprocessor(&diagnostics, &directiveHandler),
-            scanner(NULL) {  }
+            scanner(NULL),
+            mDeferredSingleDeclarationErrorCheck(false),
+            mUsesFragData(false),
+            mUsesFragColor(false) {  }
     TIntermediate& intermediate; // to hold and build a parse tree
     TSymbolTable& symbolTable;   // symbol table that goes with the language currently being parsed
     GLenum shaderType;              // vertex or fragment language (future: pack or unpack)
@@ -75,6 +78,9 @@ struct TParseContext {
     void trace(const char* str);
     void recover();
 
+	// This method is guaranteed to succeed, even if no variable with 'name' exists.
+	const TVariable *getNamedVariable(const TSourceLoc &location, const TString *name, const TSymbol *symbol);
+
     bool parseVectorFields(const TString&, int vecSize, TVectorFields&, int line);
     bool parseMatrixFields(const TString&, int matCols, int matRows, TMatrixFields&, int line);
 
@@ -92,16 +98,18 @@ struct TParseContext {
     bool arrayQualifierErrorCheck(int line, TPublicType type);
     bool arrayTypeErrorCheck(int line, TPublicType type);
     bool arrayErrorCheck(int line, TString& identifier, TPublicType type, TVariable*& variable);
-    bool voidErrorCheck(int, const TString&, const TPublicType&);
+    bool voidErrorCheck(int, const TString&, const TBasicType&);
     bool boolErrorCheck(int, const TIntermTyped*);
     bool boolErrorCheck(int, const TPublicType&);
     bool samplerErrorCheck(int line, const TPublicType& pType, const char* reason);
+	bool locationDeclaratorListCheck(const TSourceLoc &line, const TPublicType &pType);
     bool structQualifierErrorCheck(int line, const TPublicType& pType);
     bool parameterSamplerErrorCheck(int line, TQualifier qualifier, const TType& type);
     bool nonInitConstErrorCheck(int line, TString& identifier, TPublicType& type, bool array);
-    bool nonInitErrorCheck(int line, TString& identifier, TPublicType& type, TVariable*& variable);
+    bool nonInitErrorCheck(int line, const TString& identifier, TPublicType& type);
     bool paramErrorCheck(int line, TQualifier qualifier, TQualifier paramQualifier, TType* type);
     bool extensionErrorCheck(int line, const TString&);
+	bool singleDeclarationErrorCheck(const TPublicType &publicType, const TSourceLoc &identifierLocation);
     bool layoutLocationErrorCheck(const TSourceLoc &location, const TLayoutQualifier &layoutQualifier);
 
     const TExtensionBehavior& extensionBehavior() const { return directiveHandler.extensionBehavior(); }
@@ -114,11 +122,38 @@ struct TParseContext {
     bool containsSampler(TType& type);
     bool areAllChildConst(TIntermAggregate* aggrNode);
     const TFunction* findFunction(int line, TFunction* pfnCall, bool *builtIn = 0);
-    bool executeInitializer(TSourceLoc line, TString& identifier, TPublicType& pType,
+    bool executeInitializer(TSourceLoc line, const TString& identifier, const TPublicType& pType,
                             TIntermTyped* initializer, TIntermNode*& intermNode, TVariable* variable = 0);
 
     TPublicType addFullySpecifiedType(TQualifier qualifier, bool invariant, TLayoutQualifier layoutQualifier, const TPublicType &typeSpecifier);
     bool arraySetMaxSize(TIntermSymbol*, TType*, int, bool, TSourceLoc);
+
+	TIntermAggregate *parseSingleDeclaration(TPublicType &publicType, const TSourceLoc &identifierOrTypeLocation, const TString &identifier);
+	TIntermAggregate *parseSingleArrayDeclaration(TPublicType &publicType, const TSourceLoc &identifierLocation, const TString &identifier,
+	                                              const TSourceLoc &indexLocation, TIntermTyped *indexExpression);
+	TIntermAggregate *parseSingleInitDeclaration(const TPublicType &publicType, const TSourceLoc &identifierLocation, const TString &identifier,
+	                                             const TSourceLoc &initLocation, TIntermTyped *initializer);
+
+	// Parse a declaration like "type a[n] = initializer"
+	// Note that this does not apply to declarations like "type[n] a = initializer"
+	TIntermAggregate *parseSingleArrayInitDeclaration(TPublicType &publicType, const TSourceLoc &identifierLocation, const TString &identifier,
+	                                                  const TSourceLoc &indexLocation, TIntermTyped *indexExpression,
+	                                                  const TSourceLoc &initLocation, TIntermTyped *initializer);
+
+	TIntermAggregate *parseInvariantDeclaration(const TSourceLoc &invariantLoc, const TSourceLoc &identifierLoc, const TString *identifier,
+	                                            const TSymbol *symbol);
+
+	TIntermAggregate *parseDeclarator(TPublicType &publicType, TIntermAggregate *aggregateDeclaration, const TSourceLoc &identifierLocation,
+	                                  const TString &identifier);
+	TIntermAggregate *parseArrayDeclarator(TPublicType &publicType, TIntermAggregate *aggregateDeclaration, const TSourceLoc &identifierLocation,
+	                                       const TString &identifier, const TSourceLoc &arrayLocation, TIntermTyped *indexExpression);
+	TIntermAggregate *parseInitDeclarator(const TPublicType &publicType, TIntermAggregate *aggregateDeclaration, const TSourceLoc &identifierLocation,
+	                                      const TString &identifier, const TSourceLoc &initLocation, TIntermTyped *initializer);
+
+	// Parse a declarator like "a[n] = initializer"
+	TIntermAggregate *parseArrayInitDeclarator(const TPublicType &publicType, TIntermAggregate *aggregateDeclaration, const TSourceLoc &identifierLocation,
+	                                           const TString &identifier, const TSourceLoc &indexLocation, TIntermTyped *indexExpression,
+                                               const TSourceLoc &initLocation, TIntermTyped *initializer);
 
     TIntermTyped* addConstructor(TIntermNode*, const TType*, TOperator, TFunction*, TSourceLoc);
     TIntermTyped* foldConstConstructor(TIntermAggregate* aggrNode, const TType& type);
@@ -138,7 +173,14 @@ struct TParseContext {
     bool enterStructDeclaration(TSourceLoc line, const TString& identifier);
     void exitStructDeclaration();
 
-    bool structNestingErrorCheck(TSourceLoc line, const TType& fieldType);
+	bool structNestingErrorCheck(const TSourceLoc &line, const TField &field);
+
+private:
+	bool declareVariable(const TSourceLoc &line, const TString &identifier, const TType &type, TVariable **variable);
+
+	bool mDeferredSingleDeclarationErrorCheck;
+	bool mUsesFragData; // track if we are using both gl_FragData and gl_FragColor
+	bool mUsesFragColor;
 };
 
 int PaParseStrings(int count, const char* const string[], const int length[],
