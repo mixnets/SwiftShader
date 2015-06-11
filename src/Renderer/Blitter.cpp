@@ -271,7 +271,7 @@ namespace sw
 						unscale = vector(1.0f, 1.0f, 1.0f, 1.0f);
 						break;
 					default:
-						return false;
+						return NULL;
 					}
 
 					float4 scale;
@@ -296,7 +296,7 @@ namespace sw
 						scale = vector(1.0f, 1.0f, 1.0f, 1.0f);
 						break;
 					default:
-						return false;
+						return NULL;
 					}
 
 					if(unscale != scale)
@@ -368,7 +368,7 @@ namespace sw
 						*Pointer<Float>(d) = color.x;
 						break;
 					default:
-						return false;
+						return NULL;
 					}
 
 					x += w;
