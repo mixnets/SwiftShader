@@ -58,15 +58,12 @@ namespace sw
 
 	ALIGN(16, struct int4
 	{
-		struct
-		{
-			int x;
-			int y;
-			int z;
-			int w;
-		};
+		int x;
+		int y;
+		int z;
+		int w;
 
-		int &operator[](int i)	
+		int &operator[](int i)
 		{
 			return (&x)[i];
 		}
@@ -89,26 +86,12 @@ namespace sw
 
 	ALIGN(16, struct float4
 	{
-		union
-		{
-			struct
-			{
-				float x;
-				float y;
-				float z;
-				float w;
-			};
+		float x;
+		float y;
+		float z;
+		float w;
 
-			struct
-			{
-				float r;
-				float g;
-				float b;
-				float a;
-			};
-		};
-
-		float &operator[](int i)	
+		float &operator[](int i)
 		{
 			return (&x)[i];
 		}
