@@ -439,6 +439,47 @@ namespace es2sw
 		default: UNREACHABLE();      return sw::TextureStage::MODIFIER_COLOR;
 		}
 	}
+
+	bool IsAlpha(GLenum texFormat)
+	{
+		switch(texFormat)
+		{
+		case GL_ALPHA:
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	bool IsRGB(GLenum texFormat)
+	{
+		switch(texFormat)
+		{
+		case GL_LUMINANCE:
+		case GL_RGB:
+		case GL_RGB565_OES:   // GL_OES_framebuffer_object
+		case GL_RGB8_OES:     // GL_OES_rgb8_rgba8
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	bool IsRGBA(GLenum texFormat)
+	{
+		switch(texFormat)
+		{
+		case GL_LUMINANCE_ALPHA:
+		case GL_RGBA:
+		case GL_BGRA_EXT:      // GL_EXT_texture_format_BGRA8888
+		case GL_RGBA4_OES:     // GL_OES_framebuffer_object
+		case GL_RGB5_A1_OES:   // GL_OES_framebuffer_object
+		case GL_RGBA8_OES:     // GL_OES_rgb8_rgba8
+			return true;
+		default:
+			return false;
+		}
+	}
 }
 
 namespace sw2es
