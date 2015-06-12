@@ -21,7 +21,7 @@
 #include <assert.h>
 
 #if !defined(TRACE_OUTPUT_FILE)
-#define TRACE_OUTPUT_FILE "debug.txt"
+#define TRACE_OUTPUT_FILE "C:/Users/mgregoire/opencl.txt"
 #endif
 
 namespace es

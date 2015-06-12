@@ -1177,37 +1177,70 @@ namespace gl
 	{
 		unlink();
 
-		if(!fragmentShader || !fragmentShader->isCompiled())
+		//if(!fragmentShader || !fragmentShader->isCompiled())
+		//{
+		//	return;
+		//}
+
+		//if(!vertexShader || !vertexShader->isCompiled())
+		//{
+		//	return;
+		//}
+
+		//vertexBinary = new sw::VertexShader(vertexShader->getVertexShader());
+		//pixelBinary = new sw::PixelShader(fragmentShader->getPixelShader());
+		//	
+		//if(!linkVaryings())
+		//{
+		//	return;
+		//}
+
+		//if(!linkAttributes())
+		//{
+		//	return;
+		//}
+
+		//if(!linkUniforms(fragmentShader))
+		//{
+		//	return;
+		//}
+
+		//if(!linkUniforms(vertexShader))
+		//{
+		//	return;
+		//}
+
+		//linked = true;   // Success
+
+		if(fragmentShader && fragmentShader->isCompiled() && vertexShader && vertexShader->isCompiled())
 		{
-			return;
+			if(!linkVaryings())
+			{
+				return;
+			}
 		}
 
-		if(!vertexShader || !vertexShader->isCompiled())
+		if(fragmentShader && fragmentShader->isCompiled())
 		{
-			return;
+			pixelBinary = new sw::PixelShader(fragmentShader->getPixelShader());
+			if(!linkUniforms(fragmentShader))
+			{
+				return;
+			}
 		}
 
-		vertexBinary = new sw::VertexShader(vertexShader->getVertexShader());
-		pixelBinary = new sw::PixelShader(fragmentShader->getPixelShader());
-			
-		if(!linkVaryings())
+		if(vertexShader && vertexShader->isCompiled())
 		{
-			return;
-		}
+			vertexBinary = new sw::VertexShader(vertexShader->getVertexShader());
+			if(!linkAttributes())
+			{
+				return;
+			}
 
-		if(!linkAttributes())
-		{
-			return;
-		}
-
-		if(!linkUniforms(fragmentShader))
-		{
-			return;
-		}
-
-		if(!linkUniforms(vertexShader))
-		{
-			return;
+			if(!linkUniforms(vertexShader))
+			{
+				return;
+			}
 		}
 
 		linked = true;   // Success

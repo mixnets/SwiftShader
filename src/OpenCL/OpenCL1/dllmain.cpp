@@ -103,13 +103,12 @@ static void WaitForDebugger(HINSTANCE instance)
 
 extern "C" BOOL APIENTRY DllMain(HINSTANCE instance, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
-	//UNIMPLEMENTED();
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		/*#ifdef NDEBUG
+		#ifndef NDEBUG
 			WaitForDebugger(instance);
-		#endif*/
+		#endif
 		return clAttachProcess();
 		break;
 	case DLL_THREAD_ATTACH:

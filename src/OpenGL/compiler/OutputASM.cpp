@@ -1877,6 +1877,7 @@ namespace glsl
 		case EvqFragCoord:           return sw::Shader::PARAMETER_MISCTYPE;
 		case EvqFrontFacing:         return sw::Shader::PARAMETER_MISCTYPE;
 		case EvqPointCoord:          return sw::Shader::PARAMETER_INPUT;
+		case EvqVertex:          return sw::Shader::PARAMETER_INPUT;
 		case EvqMultiTexCoord0:          return sw::Shader::PARAMETER_INPUT;
 		case EvqMultiTexCoord1:          return sw::Shader::PARAMETER_INPUT;
 		case EvqMultiTexCoord2:          return sw::Shader::PARAMETER_INPUT;
@@ -1886,8 +1887,10 @@ namespace glsl
 		case EvqMultiTexCoord6:          return sw::Shader::PARAMETER_INPUT;
 		case EvqMultiTexCoord7:          return sw::Shader::PARAMETER_INPUT;
 		case EvqTexCoords:				return sw::Shader::PARAMETER_TEXTURE;
+		case EvqTextureMatrix:				return sw::Shader::PARAMETER_TEXTURE;
 		case EvqFragColor:           return sw::Shader::PARAMETER_COLOROUT;
 		case EvqFragData:            return sw::Shader::PARAMETER_COLOROUT;
+		case EvqModelViewProjectionMatrix:	return sw::Shader::PARAMETER_TEMP;
 		default: UNREACHABLE();
 		}
 
@@ -1919,6 +1922,7 @@ namespace glsl
 		case EvqPosition:            return varyingRegister(operand);
 		case EvqPointSize:           return varyingRegister(operand);
 		case EvqInstanceID:          vertexShader->instanceIdDeclared = true; return 0;
+		case EvqVertex:				return 0; //UNIMPLEMENTED();
 		case EvqMultiTexCoord0:		return 0; //UNIMPLEMENTED();
 		case EvqMultiTexCoord1:		return 0; //UNIMPLEMENTED();
 		case EvqMultiTexCoord2:		return 0; //UNIMPLEMENTED();
@@ -1927,12 +1931,14 @@ namespace glsl
 		case EvqMultiTexCoord5:		return 0; //UNIMPLEMENTED();
 		case EvqMultiTexCoord6:		return 0; //UNIMPLEMENTED();
 		case EvqMultiTexCoord7:		return 0; //UNIMPLEMENTED();
-		case EvqTexCoords:			 return 0;
+		case EvqTexCoords:			return 0;
+		case EvqTextureMatrix:		return 0;
 		case EvqFragCoord:           pixelShader->vPosDeclared = true;  return 0;
 		case EvqFrontFacing:         pixelShader->vFaceDeclared = true; return 1;
 		case EvqPointCoord:          return varyingRegister(operand);
 		case EvqFragColor:           return 0;
 		case EvqFragData:            return 0;
+		case EvqModelViewProjectionMatrix: return 0;
 		default: UNREACHABLE();
 		}
 
@@ -2525,6 +2531,7 @@ namespace glsl
 			}
 			else UNREACHABLE();
 			break;
+		case EbtSampler1D: //NOT SURE
 		case EbtSampler2D:
 		case EbtISampler2D:
 		case EbtUSampler2D:

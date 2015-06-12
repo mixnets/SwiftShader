@@ -320,6 +320,7 @@ bool TParseContext::lValueErrorCheck(int line, const char* op, TIntermTyped* nod
     case EvqCentroidIn:
     case EvqVaryingIn:      message = "can't modify a varying";      break;
 	case EvqInput:          message = "can't modify an input";       break;
+	case EvqVertex:      message = "can't modify gl_Vertex";   break;
 	case EvqMultiTexCoord0:      message = "can't modify gl_MultiTexCoord0";   break;
 	case EvqMultiTexCoord1:      message = "can't modify gl_MultiTexCoord1";   break;
 	case EvqMultiTexCoord2:      message = "can't modify gl_MultiTexCoord2";   break;

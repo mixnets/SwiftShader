@@ -31,10 +31,14 @@ namespace es
 #else
 	static void output(const char *format, va_list vararg)
 	{
-		if(false)
+		if(true)
 		{
 			static FILE* file = nullptr;
-			if(!file)
+			file = fopen(TRACE_OUTPUT_FILE, "a+");
+			vfprintf(file, format, vararg);
+			fclose(file);
+
+			/*if(!file)
 			{
 				file = fopen(TRACE_OUTPUT_FILE, "w");
 			}
@@ -42,7 +46,7 @@ namespace es
 			if(file)
 			{
 				vfprintf(file, format, vararg);
-			}
+			}*/
 		}
 	}
 #endif

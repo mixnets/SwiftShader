@@ -52,6 +52,7 @@ enum TBasicType : unsigned char
     EbtUVec,               // non type: represents uvec2, uvec3, and uvec4
     EbtBVec,               // non type: represents bvec2, bvec3, and bvec4
     EbtGuardSamplerBegin,  // non type: see implementation of IsSampler()
+	EbtSampler1D,
     EbtSampler2D,
     EbtSampler3D,
     EbtSamplerCube,
@@ -87,6 +88,7 @@ inline const char *getBasicString(TBasicType type)
     case EbtInt:                return "int";
     case EbtUInt:               return "uint";
     case EbtBool:               return "bool";
+	case EbtSampler1D:			return "sampler1D";
     case EbtSampler2D:          return "sampler2D";
     case EbtSamplerCube:        return "samplerCube";
     case EbtSamplerExternalOES: return "samplerExternalOES";
@@ -129,7 +131,8 @@ enum TQualifier : unsigned char
     EvqInOut,
     EvqConstReadOnly,
 
-	// built-ins read by fragment shader
+	// built-ins read by vertex shader
+	EvqVertex,
 	EvqMultiTexCoord0,
 	EvqMultiTexCoord1,
 	EvqMultiTexCoord2,
@@ -163,6 +166,10 @@ enum TQualifier : unsigned char
     EvqSmoothIn,
     EvqFlatIn,
     EvqCentroidIn,    // Implies smooth
+
+	// Built-ins compatibility profile state
+	EvqModelViewProjectionMatrix,
+	EvqTextureMatrix,
 
     // end of list
     EvqLast
@@ -213,6 +220,7 @@ inline const char *getQualifierString(TQualifier qualifier)
     case EvqPointSize:      return "PointSize";      break;
     case EvqInstanceID:     return "InstanceID";     break;
 	case EvqFragCoord:      return "FragCoord";      break;
+	case EvqVertex:      return "Vertex";      break;
 	case EvqMultiTexCoord0:      return "MultiTexCoord0";      break;
 	case EvqMultiTexCoord1:      return "MultiTexCoord1";      break;
 	case EvqMultiTexCoord2:      return "MultiTexCoord2";      break;
@@ -231,6 +239,8 @@ inline const char *getQualifierString(TQualifier qualifier)
     case EvqSmoothIn:       return "SmoothIn";       break;
     case EvqFlatIn:         return "FlatIn";         break;
     case EvqCentroidIn:     return "CentroidIn";     break;
+	case EvqModelViewProjectionMatrix: return "ModelViewProjectionMatrix";	break;
+	case EvqTextureMatrix:	return "TextureMatrix";	break;
     default: UNREACHABLE(); return "unknown qualifier";
     }
 }

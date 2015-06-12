@@ -148,6 +148,9 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
 	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpMul, mat3x4, "matrixCompMult", mat3x4, mat3x4);
 	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpMul, mat4x3, "matrixCompMult", mat4x3, mat4x3);
 
+	TType *vec4 = new TType(EbtFloat, 4);
+	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpMatrixTimesVector, vec4, "matrixCompMult", mat4, vec4);
+	
 	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpOuterProduct, mat2, "outerProduct", float2, float2);
 	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpOuterProduct, mat3, "outerProduct", float3, float3);
 	symbolTable.insertBuiltIn(ESSL3_BUILTINS, EOpOuterProduct, mat4, "outerProduct", float4, float4);
@@ -210,6 +213,7 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
 	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpAll, bool1, "all", bvec);
 	symbolTable.insertBuiltIn(COMMON_BUILTINS, EOpVectorLogicalNot, bvec, "not", bvec);
 
+	TType *sampler1D = new TType(EbtSampler1D);
 	TType *sampler2D = new TType(EbtSampler2D);
 	TType *samplerCube = new TType(EbtSamplerCube);
 	TType *sampler3D = new TType(EbtSampler3D);
@@ -217,6 +221,7 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
 	//
 	// Texture Functions for GLSL ES 1.0
 	//
+	symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture1D", sampler1D, float1);
 	symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture2D", sampler2D, float2);
 	symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture2DProj", sampler2D, float3);
 	symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture2DProj", sampler2D, float4);
@@ -345,6 +350,7 @@ void IdentifyBuiltIns(GLenum shaderType,
 		symbolTable.insert(ESSL1_BUILTINS, *new TVariable(NewPoolTString("gl_FragData[gl_MaxDrawBuffers]"), TType(EbtFloat, EbpMedium, EvqFragData, 4)));
 		break;
 	case GL_VERTEX_SHADER:
+		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_Vertex"), TType(EbtFloat, EbpMedium, EvqVertex, 4)));
 		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_MultiTexCoord0"), TType(EbtFloat, EbpMedium, EvqMultiTexCoord0, 4)));
 		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_MultiTexCoord1"), TType(EbtFloat, EbpMedium, EvqMultiTexCoord1, 4)));
 		symbolTable.insert(COMMON_BUILTINS, *new TVariable(NewPoolTString("gl_MultiTexCoord2"), TType(EbtFloat, EbpMedium, EvqMultiTexCoord2, 4)));
@@ -364,6 +370,17 @@ void IdentifyBuiltIns(GLenum shaderType,
 	TType texCoord(EbtFloat, EbpMedium, EvqTexCoords, 4, 1, true);
 	texCoord.setArraySize(resources.MaxTextureCoords);
 	symbolTable.insert(ESSL1_BUILTINS, *new TVariable(NewPoolTString("gl_TexCoord"), texCoord));
+
+	// Set up gl_ModelViewProjectionMatrix
+	TType mat4(EbtFloat, EbpMedium, EvqModelViewProjectionMatrix, 4, 4, false);
+	/*mat4.setArraySize(4);
+	mat4.setSecondarySize(4);*/
+	symbolTable.insert(ESSL1_BUILTINS, *new TVariable(NewPoolTString("gl_ModelViewProjectionMatrix"), mat4));
+
+	// Set up gl_TextureMatrix[gl_MaxTextureCoords]
+	TType texMatrix(EbtFloat, EbpMedium, EvqTextureMatrix, 4, 4, true);
+	texMatrix.setArraySize(resources.MaxTextureCoords);
+	symbolTable.insert(ESSL1_BUILTINS, *new TVariable(NewPoolTString("gl_TextureMatrix"), texMatrix));
 
 	// Finally add resource-specific variables.
 	switch(shaderType)
