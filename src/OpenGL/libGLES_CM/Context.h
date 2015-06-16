@@ -342,8 +342,6 @@ public:
 	void setMaterialEmission(float red, float green, float blue, float alpha);
 	void setMaterialShininess(float shininess);
 
-	void setPointSize(float size);
-
 	void setFog(bool enabled);
 	void setFogMode(GLenum mode);
 	void setFogDensity(float fogDensity);
