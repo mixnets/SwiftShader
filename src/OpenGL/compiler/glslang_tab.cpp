@@ -743,30 +743,30 @@ static const yytype_uint16 yyrline[] =
        0,   196,   196,   231,   234,   239,   244,   249,   254,   260,
      263,   266,   269,   272,   275,   281,   289,   389,   392,   400,
      404,   411,   415,   422,   428,   437,   445,   522,   529,   539,
-     542,   552,   562,   584,   585,   586,   587,   595,   596,   605,
-     614,   627,   628,   636,   647,   648,   657,   669,   670,   680,
-     690,   700,   713,   714,   724,   737,   738,   752,   753,   767,
-     768,   782,   783,   796,   797,   810,   811,   824,   825,   842,
-     843,   856,   857,   858,   859,   861,   862,   863,   865,   867,
-     869,   871,   876,   879,   890,   898,   906,   933,   939,   946,
-     950,   954,   958,   965,  1003,  1006,  1013,  1021,  1042,  1063,
-    1074,  1103,  1108,  1118,  1123,  1133,  1136,  1139,  1142,  1148,
-    1155,  1158,  1162,  1166,  1171,  1176,  1183,  1187,  1191,  1195,
-    1200,  1205,  1209,  1285,  1295,  1301,  1304,  1310,  1316,  1323,
-    1332,  1341,  1344,  1347,  1354,  1358,  1365,  1369,  1374,  1379,
-    1389,  1399,  1408,  1418,  1425,  1428,  1431,  1437,  1444,  1447,
-    1453,  1456,  1459,  1465,  1468,  1483,  1487,  1491,  1495,  1499,
-    1503,  1508,  1513,  1518,  1523,  1528,  1533,  1538,  1543,  1548,
-    1553,  1558,  1563,  1569,  1575,  1581,  1587,  1593,  1599,  1605,
-    1611,  1617,  1622,  1627,  1636,  1641,  1646,  1651,  1656,  1661,
-    1666,  1671,  1676,  1681,  1686,  1691,  1696,  1701,  1706,  1719,
-    1719,  1722,  1722,  1728,  1731,  1747,  1750,  1759,  1763,  1769,
-    1776,  1791,  1795,  1799,  1800,  1806,  1807,  1808,  1809,  1810,
-    1811,  1812,  1816,  1817,  1817,  1817,  1827,  1828,  1832,  1832,
-    1833,  1833,  1838,  1841,  1851,  1854,  1860,  1861,  1865,  1873,
-    1877,  1884,  1884,  1891,  1894,  1903,  1908,  1925,  1925,  1930,
-    1930,  1937,  1937,  1945,  1948,  1954,  1957,  1963,  1967,  1974,
-    1977,  1980,  1983,  1986,  1995,  1999,  2006,  2009,  2015,  2015
+     542,   552,   562,   584,   585,   586,   587,   595,   596,   600,
+     604,   612,   613,   616,   622,   623,   627,   634,   635,   638,
+     641,   644,   650,   651,   654,   660,   661,   668,   669,   676,
+     677,   684,   685,   691,   692,   698,   699,   705,   706,   723,
+     724,   737,   738,   739,   740,   742,   743,   744,   746,   748,
+     750,   752,   757,   760,   771,   779,   787,   814,   820,   827,
+     831,   835,   839,   846,   884,   887,   894,   902,   923,   944,
+     955,   984,   989,   999,  1004,  1014,  1017,  1020,  1023,  1029,
+    1036,  1039,  1043,  1047,  1052,  1057,  1064,  1068,  1072,  1076,
+    1081,  1086,  1090,  1166,  1176,  1182,  1185,  1191,  1197,  1204,
+    1213,  1222,  1225,  1228,  1235,  1239,  1246,  1250,  1255,  1260,
+    1270,  1280,  1289,  1299,  1306,  1309,  1312,  1318,  1325,  1328,
+    1334,  1337,  1340,  1346,  1349,  1364,  1368,  1372,  1376,  1380,
+    1384,  1389,  1394,  1399,  1404,  1409,  1414,  1419,  1424,  1429,
+    1434,  1439,  1444,  1450,  1456,  1462,  1468,  1474,  1480,  1486,
+    1492,  1498,  1503,  1508,  1517,  1522,  1527,  1532,  1537,  1542,
+    1547,  1552,  1557,  1562,  1567,  1572,  1577,  1582,  1587,  1600,
+    1600,  1603,  1603,  1609,  1612,  1628,  1631,  1640,  1644,  1650,
+    1657,  1672,  1676,  1680,  1681,  1687,  1688,  1689,  1690,  1691,
+    1692,  1693,  1697,  1698,  1698,  1698,  1708,  1709,  1713,  1713,
+    1714,  1714,  1719,  1722,  1732,  1735,  1741,  1742,  1746,  1754,
+    1758,  1765,  1765,  1772,  1775,  1784,  1789,  1806,  1806,  1811,
+    1811,  1818,  1818,  1826,  1829,  1835,  1838,  1844,  1848,  1855,
+    1858,  1861,  1864,  1867,  1876,  1880,  1887,  1890,  1896,  1896
 };
 #endif
 
@@ -2907,12 +2907,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("*", (yyvsp[(2) - (3)].lex).line);
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpMul, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "*", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            (yyval.interm.intermTypedNode) = (yyvsp[(1) - (3)].interm.intermTypedNode);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMath(EOpMul, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -2920,12 +2915,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("/", (yyvsp[(2) - (3)].lex).line);
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpDiv, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "/", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            (yyval.interm.intermTypedNode) = (yyvsp[(1) - (3)].interm.intermTypedNode);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMath(EOpDiv, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -2934,12 +2924,7 @@ yyreduce:
     {
         FRAG_VERT_ONLY("%", (yyvsp[(2) - (3)].lex).line);
         ES3_ONLY("%", (yyvsp[(2) - (3)].lex).line);
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpIMod, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "%", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            (yyval.interm.intermTypedNode) = (yyvsp[(1) - (3)].interm.intermTypedNode);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMath(EOpIMod, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -2951,24 +2936,14 @@ yyreduce:
   case 42:
 
     {
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpAdd, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "+", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            (yyval.interm.intermTypedNode) = (yyvsp[(1) - (3)].interm.intermTypedNode);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMath(EOpAdd, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
   case 43:
 
     {
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpSub, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "-", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            (yyval.interm.intermTypedNode) = (yyvsp[(1) - (3)].interm.intermTypedNode);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMath(EOpSub, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -2981,12 +2956,7 @@ yyreduce:
 
     {
         ES3_ONLY("<<", (yyvsp[(2) - (3)].lex).line);
-        context->intermediate.addBinaryMath(EOpBitShiftLeft, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "<<", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            (yyval.interm.intermTypedNode) = (yyvsp[(1) - (3)].interm.intermTypedNode);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMath(EOpBitShiftLeft, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -2994,12 +2964,7 @@ yyreduce:
 
     {
         ES3_ONLY(">>", (yyvsp[(2) - (3)].lex).line);
-        context->intermediate.addBinaryMath(EOpBitShiftRight, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, ">>", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            (yyval.interm.intermTypedNode) = (yyvsp[(1) - (3)].interm.intermTypedNode);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMath(EOpBitShiftRight, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -3011,56 +2976,28 @@ yyreduce:
   case 48:
 
     {
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpLessThan, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "<", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yyvsp[(2) - (3)].lex).line);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMathBooleanResult(EOpLessThan, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
   case 49:
 
     {
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpGreaterThan, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, ">", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yyvsp[(2) - (3)].lex).line);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMathBooleanResult(EOpGreaterThan, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
   case 50:
 
     {
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpLessThanEqual, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "<=", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yyvsp[(2) - (3)].lex).line);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMathBooleanResult(EOpLessThanEqual, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
   case 51:
 
     {
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpGreaterThanEqual, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, ">=", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yyvsp[(2) - (3)].lex).line);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMathBooleanResult(EOpGreaterThanEqual, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -3072,28 +3009,14 @@ yyreduce:
   case 53:
 
     {
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpEqual, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "==", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yyvsp[(2) - (3)].lex).line);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMathBooleanResult(EOpEqual, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
   case 54:
 
     {
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpNotEqual, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "!=", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yyvsp[(2) - (3)].lex).line);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMathBooleanResult(EOpNotEqual, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -3106,14 +3029,7 @@ yyreduce:
 
     {
         ES3_ONLY("&", (yyvsp[(2) - (3)].lex).line);
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpBitwiseAnd, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "&", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yyvsp[(2) - (3)].lex).line);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMath(EOpBitwiseAnd, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -3126,14 +3042,7 @@ yyreduce:
 
     {
         ES3_ONLY("^", (yyvsp[(2) - (3)].lex).line);
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpBitwiseXor, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "^", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yyvsp[(2) - (3)].lex).line);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMath(EOpBitwiseXor, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -3146,14 +3055,7 @@ yyreduce:
 
     {
         ES3_ONLY("|", (yyvsp[(2) - (3)].lex).line);
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpBitwiseOr, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "|", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yyvsp[(2) - (3)].lex).line);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMath(EOpBitwiseOr, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -3165,14 +3067,7 @@ yyreduce:
   case 62:
 
     {
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpLogicalAnd, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "&&", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yyvsp[(2) - (3)].lex).line);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMathBooleanResult(EOpLogicalAnd, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -3184,14 +3079,7 @@ yyreduce:
   case 64:
 
     {
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpLogicalXor, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "^^", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yyvsp[(2) - (3)].lex).line);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMathBooleanResult(EOpLogicalXor, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 
@@ -3203,14 +3091,7 @@ yyreduce:
   case 66:
 
     {
-        (yyval.interm.intermTypedNode) = context->intermediate.addBinaryMath(EOpLogicalOr, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
-        if ((yyval.interm.intermTypedNode) == 0) {
-            context->binaryOpError((yyvsp[(2) - (3)].lex).line, "||", (yyvsp[(1) - (3)].interm.intermTypedNode)->getCompleteString(), (yyvsp[(3) - (3)].interm.intermTypedNode)->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yyvsp[(2) - (3)].lex).line);
-        }
+        (yyval.interm.intermTypedNode) = context->addBinaryMathBooleanResult(EOpLogicalOr, (yyvsp[(1) - (3)].interm.intermTypedNode), (yyvsp[(3) - (3)].interm.intermTypedNode), (yyvsp[(2) - (3)].lex).line);
     }
     break;
 

@@ -595,51 +595,26 @@ multiplicative_expression
     : unary_expression { $$ = $1; }
     | multiplicative_expression STAR unary_expression {
         FRAG_VERT_ONLY("*", $2.line);
-        $$ = context->intermediate.addBinaryMath(EOpMul, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "*", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            $$ = $1;
-        }
+        $$ = context->addBinaryMath(EOpMul, $1, $3, $2.line);
     }
     | multiplicative_expression SLASH unary_expression {
         FRAG_VERT_ONLY("/", $2.line);
-        $$ = context->intermediate.addBinaryMath(EOpDiv, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "/", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            $$ = $1;
-        }
+        $$ = context->addBinaryMath(EOpDiv, $1, $3, $2.line);
     }
     | multiplicative_expression PERCENT unary_expression {
         FRAG_VERT_ONLY("%", $2.line);
         ES3_ONLY("%", $2.line);
-        $$ = context->intermediate.addBinaryMath(EOpIMod, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "%", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            $$ = $1;
-        }
+        $$ = context->addBinaryMath(EOpIMod, $1, $3, $2.line);
     }
     ;
 
 additive_expression
     : multiplicative_expression { $$ = $1; }
     | additive_expression PLUS multiplicative_expression {
-        $$ = context->intermediate.addBinaryMath(EOpAdd, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "+", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            $$ = $1;
-        }
+        $$ = context->addBinaryMath(EOpAdd, $1, $3, $2.line);
     }
     | additive_expression DASH multiplicative_expression {
-        $$ = context->intermediate.addBinaryMath(EOpSub, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "-", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            $$ = $1;
-        }
+        $$ = context->addBinaryMath(EOpSub, $1, $3, $2.line);
     }
     ;
 
@@ -647,89 +622,37 @@ shift_expression
     : additive_expression { $$ = $1; }
     | shift_expression LEFT_OP additive_expression {
         ES3_ONLY("<<", $2.line);
-        context->intermediate.addBinaryMath(EOpBitShiftLeft, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "<<", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            $$ = $1;
-        }
+        $$ = context->addBinaryMath(EOpBitShiftLeft, $1, $3, $2.line);
     }
     | shift_expression RIGHT_OP additive_expression {
         ES3_ONLY(">>", $2.line);
-        context->intermediate.addBinaryMath(EOpBitShiftRight, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, ">>", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            $$ = $1;
-        }
+        $$ = context->addBinaryMath(EOpBitShiftRight, $1, $3, $2.line);
     }
     ;
 
 relational_expression
     : shift_expression { $$ = $1; }
     | relational_expression LEFT_ANGLE shift_expression {
-        $$ = context->intermediate.addBinaryMath(EOpLessThan, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "<", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), $2.line);
-        }
+        $$ = context->addBinaryMathBooleanResult(EOpLessThan, $1, $3, $2.line);
     }
     | relational_expression RIGHT_ANGLE shift_expression  {
-        $$ = context->intermediate.addBinaryMath(EOpGreaterThan, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, ">", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), $2.line);
-        }
+        $$ = context->addBinaryMathBooleanResult(EOpGreaterThan, $1, $3, $2.line);
     }
     | relational_expression LE_OP shift_expression  {
-        $$ = context->intermediate.addBinaryMath(EOpLessThanEqual, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "<=", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), $2.line);
-        }
+        $$ = context->addBinaryMathBooleanResult(EOpLessThanEqual, $1, $3, $2.line);
     }
     | relational_expression GE_OP shift_expression  {
-        $$ = context->intermediate.addBinaryMath(EOpGreaterThanEqual, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, ">=", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), $2.line);
-        }
+        $$ = context->addBinaryMathBooleanResult(EOpGreaterThanEqual, $1, $3, $2.line);
     }
     ;
 
 equality_expression
     : relational_expression { $$ = $1; }
     | equality_expression EQ_OP relational_expression  {
-        $$ = context->intermediate.addBinaryMath(EOpEqual, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "==", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), $2.line);
-        }
+        $$ = context->addBinaryMathBooleanResult(EOpEqual, $1, $3, $2.line);
     }
     | equality_expression NE_OP relational_expression {
-        $$ = context->intermediate.addBinaryMath(EOpNotEqual, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "!=", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), $2.line);
-        }
+        $$ = context->addBinaryMathBooleanResult(EOpNotEqual, $1, $3, $2.line);
     }
     ;
 
@@ -737,14 +660,7 @@ and_expression
     : equality_expression { $$ = $1; }
     | and_expression AMPERSAND equality_expression {
         ES3_ONLY("&", $2.line);
-        $$ = context->intermediate.addBinaryMath(EOpBitwiseAnd, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "&", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), $2.line);
-        }
+        $$ = context->addBinaryMath(EOpBitwiseAnd, $1, $3, $2.line);
     }
     ;
 
@@ -752,14 +668,7 @@ exclusive_or_expression
     : and_expression { $$ = $1; }
     | exclusive_or_expression CARET and_expression {
         ES3_ONLY("^", $2.line);
-        $$ = context->intermediate.addBinaryMath(EOpBitwiseXor, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "^", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), $2.line);
-        }
+        $$ = context->addBinaryMath(EOpBitwiseXor, $1, $3, $2.line);
     }
     ;
 
@@ -767,56 +676,28 @@ inclusive_or_expression
     : exclusive_or_expression { $$ = $1; }
     | inclusive_or_expression VERTICAL_BAR exclusive_or_expression {
         ES3_ONLY("|", $2.line);
-        $$ = context->intermediate.addBinaryMath(EOpBitwiseOr, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "|", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), $2.line);
-        }
+        $$ = context->addBinaryMath(EOpBitwiseOr, $1, $3, $2.line);
     }
     ;
 
 logical_and_expression
     : inclusive_or_expression { $$ = $1; }
     | logical_and_expression AND_OP inclusive_or_expression {
-        $$ = context->intermediate.addBinaryMath(EOpLogicalAnd, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "&&", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), $2.line);
-        }
+        $$ = context->addBinaryMathBooleanResult(EOpLogicalAnd, $1, $3, $2.line);
     }
     ;
 
 logical_xor_expression
     : logical_and_expression { $$ = $1; }
     | logical_xor_expression XOR_OP logical_and_expression  {
-        $$ = context->intermediate.addBinaryMath(EOpLogicalXor, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "^^", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), $2.line);
-        }
+        $$ = context->addBinaryMathBooleanResult(EOpLogicalXor, $1, $3, $2.line);
     }
     ;
 
 logical_or_expression
     : logical_xor_expression { $$ = $1; }
     | logical_or_expression OR_OP logical_xor_expression  {
-        $$ = context->intermediate.addBinaryMath(EOpLogicalOr, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->binaryOpError($2.line, "||", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            ConstantUnion *unionArray = new ConstantUnion[1];
-            unionArray->setBConst(false);
-            $$ = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), $2.line);
-        }
+        $$ = context->addBinaryMathBooleanResult(EOpLogicalOr, $1, $3, $2.line);
     }
     ;
 
