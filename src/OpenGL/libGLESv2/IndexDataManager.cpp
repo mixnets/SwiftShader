@@ -175,7 +175,7 @@ StreamingIndexBuffer::StreamingIndexBuffer(unsigned int initialSize) : mBufferSi
 {
 	if(initialSize > 0)
     {
-		mIndexBuffer = new sw::Resource(initialSize + 16);
+		mIndexBuffer = new sw::Resource(initialSize + 16, LockResourceId::StreamingIndexBuffer);
 
         if(!mIndexBuffer)
         {
@@ -235,7 +235,7 @@ void StreamingIndexBuffer::reserveSpace(unsigned int requiredSpace, GLenum type)
 
         mBufferSize = std::max(requiredSpace, 2 * mBufferSize);
 
-		mIndexBuffer = new sw::Resource(mBufferSize + 16);
+		mIndexBuffer = new sw::Resource(mBufferSize + 16, LockResourceId::StreamingIndexBuffer);
     
         if(!mIndexBuffer)
         {
@@ -249,7 +249,7 @@ void StreamingIndexBuffer::reserveSpace(unsigned int requiredSpace, GLenum type)
 		if(mIndexBuffer)
 		{
 			mIndexBuffer->destruct();
-			mIndexBuffer = new sw::Resource(mBufferSize + 16);
+			mIndexBuffer = new sw::Resource(mBufferSize + 16, LockResourceId::StreamingIndexBuffer);
 		}
 
         mWritePosition = 0;

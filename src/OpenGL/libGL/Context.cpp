@@ -134,9 +134,9 @@ Context::Context(const Context *shareContext)
     // In order that access to these initial textures not be lost, they are treated as texture
     // objects all of whose names are 0.
 
-    mTexture2DZero = new Texture2D(0);
-    mProxyTexture2DZero = new Texture2D(0);
-    mTextureCubeMapZero = new TextureCubeMap(0);
+    mTexture2DZero = new Texture2D(0, LockResourceId::Texture2d);
+	mProxyTexture2DZero = new Texture2D(0, LockResourceId::Texture2dProxy);
+	mTextureCubeMapZero = new TextureCubeMap(0, LockResourceId::TextureCubeMap);
 
     mState.activeSampler = 0;
     bindArrayBuffer(0);
@@ -265,8 +265,8 @@ void Context::makeCurrent(Surface *surface)
 {
     if(!mHasBeenCurrent)
     {
-        mVertexDataManager = new VertexDataManager(this);
-        mIndexDataManager = new IndexDataManager();
+		mVertexDataManager = new VertexDataManager(this);
+		mIndexDataManager = new IndexDataManager();
 
         mState.viewportX = 0;
         mState.viewportY = 0;

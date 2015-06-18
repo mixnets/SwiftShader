@@ -53,7 +53,7 @@ enum
 class Texture : public egl::Texture
 {
 public:
-    explicit Texture(GLuint name);
+	explicit Texture(GLuint name, LockResourceId id);
 
     virtual ~Texture();
 
@@ -130,6 +130,8 @@ protected:
 
 	bool isMipmapFiltered() const;
 
+	LockResourceId lockId;
+
     GLenum mMinFilter;
     GLenum mMagFilter;
     GLenum mWrapS;
@@ -154,7 +156,7 @@ protected:
 class Texture2D : public Texture
 {
 public:
-    explicit Texture2D(GLuint name);
+	explicit Texture2D(GLuint name, LockResourceId id);
 
     virtual ~Texture2D();
 
@@ -212,7 +214,7 @@ protected:
 class TextureCubeMap : public Texture
 {
 public:
-    explicit TextureCubeMap(GLuint name);
+	explicit TextureCubeMap(GLuint name, LockResourceId id);
 
     virtual ~TextureCubeMap();
 
@@ -270,7 +272,7 @@ private:
 class Texture3D : public Texture
 {
 public:
-	explicit Texture3D(GLuint name);
+	explicit Texture3D(GLuint name, LockResourceId id);
 
 	virtual ~Texture3D();
 
@@ -329,7 +331,7 @@ protected:
 class Texture2DArray : public Texture3D
 {
 public:
-	explicit Texture2DArray(GLuint name);
+	explicit Texture2DArray(GLuint name, LockResourceId id);
 
 	virtual ~Texture2DArray();
 
@@ -340,7 +342,7 @@ public:
 class TextureExternal : public Texture2D
 {
 public:
-    explicit TextureExternal(GLuint name);
+	explicit TextureExternal(GLuint name, LockResourceId id);
 
     virtual ~TextureExternal();
 

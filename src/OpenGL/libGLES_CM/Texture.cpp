@@ -28,7 +28,7 @@
 namespace es1
 {
 
-Texture::Texture(GLuint name) : egl::Texture(name)
+Texture::Texture(GLuint name, LockResourceId id) : egl::Texture(name)
 {
     mMinFilter = GL_NEAREST_MIPMAP_LINEAR;
     mMagFilter = GL_LINEAR;
@@ -41,7 +41,7 @@ Texture::Texture(GLuint name) : egl::Texture(name)
 	cropRectW = 0;
 	cropRectH = 0;
 
-	resource = new sw::Resource(0);
+	resource = new sw::Resource(0, id);
 }
 
 Texture::~Texture()
@@ -329,7 +329,7 @@ bool Texture::isMipmapFiltered() const
 	return false;
 }
 
-Texture2D::Texture2D(GLuint name) : Texture(name)
+Texture2D::Texture2D(GLuint name, LockResourceId id) : Texture(name, id)
 {
 	for(int i = 0; i < MIPMAP_LEVELS; i++)
 	{
@@ -442,7 +442,7 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 		image[level]->unbind(this);
 	}
 
-	image[level] = new egl::Image(this, width, height, format, type);
+	image[level] = new egl::Image(this, width, height, format, type, lockId);
 
 	if(!image[level])
 	{
@@ -507,7 +507,7 @@ void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 		image[level]->unbind(this);
 	}
 
-	image[level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE);
+	image[level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE, lockId);
 
 	if(!image[level])
 	{
@@ -542,7 +542,7 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 		image[level]->unbind(this);
 	}
 
-	image[level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE);
+	image[level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE, lockId);
 
 	if(!image[level])
 	{
@@ -692,7 +692,7 @@ void Texture2D::generateMipmaps()
 			image[i]->unbind(this);
 		}
 
-		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType());
+		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType(), lockId);
 
 		if(!image[i])
 		{
@@ -763,7 +763,7 @@ bool Texture2D::isShared(GLenum target, unsigned int level) const
     return image[level]->isShared();
 }
 
-TextureExternal::TextureExternal(GLuint name) : Texture2D(name)
+TextureExternal::TextureExternal(GLuint name, LockResourceId id) : Texture2D(name, id)
 {
     mMinFilter = GL_LINEAR;
     mMagFilter = GL_LINEAR;
@@ -786,7 +786,7 @@ egl::Image *createBackBuffer(int width, int height, const egl::Config *config)
 {
 	if(config)
 	{
-		return new egl::Image(width, height, config->mRenderTargetFormat, 1, false, true);
+		return new egl::Image(width, height, config->mRenderTargetFormat, 1, false, true, LockResourceId::SurfaceBackBuffer);
 	}
 
 	return 0;
@@ -825,7 +825,7 @@ egl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Form
 		UNREACHABLE(format);
 	}
 
-	egl::Image *surface = new egl::Image(width, height, format, multiSampleDepth, lockable, true);
+	egl::Image *surface = new egl::Image(width, height, format, multiSampleDepth, lockable, true, LockResourceId::SurfaceDepthStencil);
 
 	if(!surface)
 	{

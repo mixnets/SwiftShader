@@ -22,11 +22,12 @@
 namespace es1
 {
 
-Buffer::Buffer(GLuint name) : NamedObject(name)
+Buffer::Buffer(GLuint name, LockResourceId id) : NamedObject(name)
 {
     mContents = 0;
     mSize = 0;
     mUsage = GL_DYNAMIC_DRAW;
+	lockId = id;
 }
 
 Buffer::~Buffer()
@@ -51,7 +52,7 @@ void Buffer::bufferData(const void *data, GLsizeiptr size, GLenum usage)
 	if(size > 0)
 	{
 		const int padding = 1024;   // For SIMD processing of vertices
-		mContents = new sw::Resource(size + padding);
+		mContents = new sw::Resource(size + padding, lockId);
 
 		if(!mContents)
 		{

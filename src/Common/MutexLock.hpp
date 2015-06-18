@@ -13,6 +13,7 @@
 #define sw_MutexLock_hpp
 
 #include "Thread.hpp"
+#include "ThreadAnalyser.h"
 
 namespace sw
 {
@@ -37,12 +38,20 @@ namespace sw
 			return false;
 		}
 
-		void lock()
+		void lock(LockResourceId lockId)
 		{
 			int backoff = 1;
+			bool logged = false;
 
 			while(!attemptLock())
 			{
+				if(!logged)
+				{
+					// Locked by another thread, log the conflict!
+					ThreadAnalyzer::Instance()->ConflictWhenLocking(lockId);
+					logged = true;
+				}
+
 				if(backoff <= 64)
 				{
 					for(int i = 0; i < backoff; i++)
@@ -99,6 +108,12 @@ namespace sw
 					backoff = 1;
 				}
 			};
+
+			// Succesfuly locked, no (more) conflicts!
+			if(logged)
+			{
+				ThreadAnalyzer::Instance()->UnlockedConflictingResource(lockId);
+			}
 		}
 
 		void unlock()

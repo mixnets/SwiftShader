@@ -281,7 +281,7 @@ namespace gl
 			UNREACHABLE(format);
 		}
 
-		Image *surface = new Image(0, width, height, format, multiSampleDepth, lockable, true);
+		Image *surface = new Image(0, width, height, format, multiSampleDepth, lockable, true, LockResourceId::DeviceDepthStencil);
 
 		if(!surface)
 		{
@@ -300,7 +300,7 @@ namespace gl
 			return 0;
 		}
 
-		Image *surface = new Image(0, width, height, format, multiSampleDepth, lockable, true);
+		Image *surface = new Image(0, width, height, format, multiSampleDepth, lockable, true, LockResourceId::DeviceRenderTarget);
 
 		if(!surface)
 		{

@@ -240,7 +240,7 @@ namespace es1
 			UNREACHABLE(format);
 		}
 
-		egl::Image *surface = new egl::Image(width, height, format, multiSampleDepth, lockable, true);
+		egl::Image *surface = new egl::Image(width, height, format, multiSampleDepth, lockable, true, LockResourceId::DeviceDepthStencil);
 
 		if(!surface)
 		{
@@ -259,7 +259,7 @@ namespace es1
 			return 0;
 		}
 
-		egl::Image *surface = new egl::Image(width, height, format, multiSampleDepth, lockable, true);
+		egl::Image *surface = new egl::Image(width, height, format, multiSampleDepth, lockable, true, LockResourceId::DeviceRenderTarget);
 
 		if(!surface)
 		{

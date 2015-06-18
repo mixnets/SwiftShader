@@ -44,28 +44,31 @@ static inline sw::Resource *getParentResource(egl::Texture *texture)
 class Image : public sw::Surface
 {
 public:
-	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
-		: sw::Surface(getParentResource(parentTexture), width, height, 1, SelectInternalFormat(format, type), true, true),
+	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type, LockResourceId id)
+		: sw::Surface(getParentResource(parentTexture), width, height, 1, SelectInternalFormat(format, type), true, true, id),
 		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
 		  parentTexture(parentTexture)
 	{
+		lockId = id;
 		shared = false;
 		referenceCount = 1;
 	}
 
-	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
-		: sw::Surface(getParentResource(parentTexture), width, height, depth, SelectInternalFormat(format, type), true, true),
+	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, LockResourceId id)
+		: sw::Surface(getParentResource(parentTexture), width, height, depth, SelectInternalFormat(format, type), true, true, id),
 		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(depth),
 		  parentTexture(parentTexture)
 	{
+		lockId = id;
 		shared = false;
 		referenceCount = 1;
 	}
 
-	Image(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable, bool renderTarget)
-		: sw::Surface(nullptr, width, height, multiSampleDepth, internalFormat, lockable, renderTarget),
+	Image(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable, bool renderTarget, LockResourceId id)
+		: sw::Surface(nullptr, width, height, multiSampleDepth, internalFormat, lockable, renderTarget, id),
 		  width(width), height(height), format(0 /*GL_NONE*/), type(0 /*GL_NONE*/), internalFormat(internalFormat), depth(multiSampleDepth), parentTexture(nullptr)
 	{
+		lockId = id;
 		shared = false;
 		referenceCount = 1;
 	}
@@ -162,6 +165,8 @@ protected:
 	const int depth;
 
 	bool shared;   // Used as an EGLImage
+
+	LockResourceId lockId;
 
 	egl::Texture *parentTexture;
 

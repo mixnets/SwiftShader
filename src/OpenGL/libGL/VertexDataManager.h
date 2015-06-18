@@ -41,7 +41,7 @@ struct TranslatedAttribute
 class VertexBuffer
 {
   public:
-    VertexBuffer(unsigned int size);
+    VertexBuffer(unsigned int size, LockResourceId id);
     virtual ~VertexBuffer();
 
     void unmap();
@@ -55,7 +55,7 @@ class VertexBuffer
 class ConstantVertexBuffer : public VertexBuffer
 {
   public:
-    ConstantVertexBuffer(float x, float y, float z, float w);
+    ConstantVertexBuffer(float x, float y, float z, float w, LockResourceId id);
     ~ConstantVertexBuffer();
 };
 
@@ -86,6 +86,7 @@ class VertexDataManager
     GLenum prepareVertexData(GLint start, GLsizei count, TranslatedAttribute *outAttribs);
 
   private:
+    LockResourceId lockId;
     unsigned int writeAttributeData(StreamingVertexBuffer *vertexBuffer, GLint start, GLsizei count, const VertexAttribute &attribute);
 
     Context *const mContext;

@@ -181,7 +181,7 @@ void ResourceManager::checkBufferAllocation(unsigned int buffer)
 {
     if(buffer != 0 && !getBuffer(buffer))
     {
-        Buffer *bufferObject = new Buffer(buffer);
+        Buffer *bufferObject = new Buffer(buffer, LockResourceId::ResourceManagerBuffer);
         mBufferMap[buffer] = bufferObject;
         bufferObject->addRef();
     }
@@ -195,11 +195,11 @@ void ResourceManager::checkTextureAllocation(GLuint texture, TextureType type)
 
         if(type == TEXTURE_2D)
         {
-            textureObject = new Texture2D(texture);
+			textureObject = new Texture2D(texture, LockResourceId::Texture2d);
         }
         else if(type == TEXTURE_EXTERNAL)
         {
-            textureObject = new TextureExternal(texture);
+			textureObject = new TextureExternal(texture, LockResourceId::TextureExternal);
         }
         else
         {

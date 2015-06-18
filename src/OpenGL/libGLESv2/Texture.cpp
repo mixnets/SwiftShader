@@ -28,8 +28,9 @@
 namespace es2
 {
 
-Texture::Texture(GLuint name) : egl::Texture(name)
+Texture::Texture(GLuint name, LockResourceId id) : egl::Texture(name)
 {
+	lockId = id;
     mMinFilter = GL_NEAREST_MIPMAP_LINEAR;
     mMagFilter = GL_LINEAR;
     mWrapS = GL_REPEAT;
@@ -48,7 +49,7 @@ Texture::Texture(GLuint name) : egl::Texture(name)
 	mSwizzleB = GL_BLUE;
 	mSwizzleA = GL_ALPHA;
 
-	resource = new sw::Resource(0);
+	resource = new sw::Resource(0, id);
 }
 
 Texture::~Texture()
@@ -500,7 +501,7 @@ bool Texture::isMipmapFiltered() const
 	return false;
 }
 
-Texture2D::Texture2D(GLuint name) : Texture(name)
+Texture2D::Texture2D(GLuint name, LockResourceId id) : Texture(name, id)
 {
 	for(int i = 0; i < MIPMAP_LEVELS; i++)
 	{
@@ -613,7 +614,7 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 		image[level]->unbind(this);
 	}
 
-	image[level] = new egl::Image(this, width, height, format, type);
+	image[level] = new egl::Image(this, width, height, format, type, lockId);
 
 	if(!image[level])
 	{
@@ -678,7 +679,7 @@ void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 		image[level]->unbind(this);
 	}
 
-	image[level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE);
+	image[level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE, lockId);
 
 	if(!image[level])
 	{
@@ -713,7 +714,7 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 		image[level]->unbind(this);
 	}
 
-	image[level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE);
+	image[level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE, lockId);
 
 	if(!image[level])
 	{
@@ -879,7 +880,7 @@ void Texture2D::generateMipmaps()
 			image[i]->unbind(this);
 		}
 
-		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType());
+		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType(), lockId);
 
 		if(!image[i])
 		{
@@ -941,7 +942,7 @@ bool Texture2D::isShared(GLenum target, unsigned int level) const
     return image[level]->isShared();
 }
 
-TextureCubeMap::TextureCubeMap(GLuint name) : Texture(name)
+TextureCubeMap::TextureCubeMap(GLuint name, LockResourceId id) : Texture(name, id)
 {
 	for(int f = 0; f < 6; f++)
 	{
@@ -1074,7 +1075,7 @@ void TextureCubeMap::setCompressedImage(GLenum target, GLint level, GLenum forma
 		image[face][level]->unbind(this);
 	}
 
-	image[face][level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE);
+	image[face][level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE, lockId);
 
 	if(!image[face][level])
 	{
@@ -1215,7 +1216,7 @@ void TextureCubeMap::setImage(GLenum target, GLint level, GLsizei width, GLsizei
 		image[face][level]->unbind(this);
 	}
 
-	image[face][level] = new egl::Image(this, width, height, format, type);
+	image[face][level] = new egl::Image(this, width, height, format, type, lockId);
 
 	if(!image[face][level])
 	{
@@ -1242,7 +1243,7 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 		image[face][level]->unbind(this);
 	}
 
-	image[face][level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE);
+	image[face][level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE, lockId);
 
 	if(!image[face][level])
 	{
@@ -1336,7 +1337,7 @@ void TextureCubeMap::generateMipmaps()
 				image[f][i]->unbind(this);
 			}
 
-			image[f][i] = new egl::Image(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat(), image[0][0]->getType());
+			image[f][i] = new egl::Image(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat(), image[0][0]->getType(), lockId);
 
 			if(!image[f][i])
 			{
@@ -1395,7 +1396,7 @@ bool TextureCubeMap::isShared(GLenum target, unsigned int level) const
     return image[face][level]->isShared();
 }
 
-Texture3D::Texture3D(GLuint name) : Texture(name)
+Texture3D::Texture3D(GLuint name, LockResourceId id) : Texture(name, id)
 {
 	for(int i = 0; i < MIPMAP_LEVELS; i++)
 	{
@@ -1514,7 +1515,7 @@ void Texture3D::setImage(GLint level, GLsizei width, GLsizei height, GLsizei dep
 		image[level]->unbind(this);
 	}
 
-	image[level] = new egl::Image(this, width, height, depth, format, type);
+	image[level] = new egl::Image(this, width, height, depth, format, type, lockId);
 
 	if(!image[level])
 	{
@@ -1575,7 +1576,7 @@ void Texture3D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 		image[level]->unbind(this);
 	}
 
-	image[level] = new egl::Image(this, width, height, depth, format, GL_UNSIGNED_BYTE);
+	image[level] = new egl::Image(this, width, height, depth, format, GL_UNSIGNED_BYTE, lockId);
 
 	if(!image[level])
 	{
@@ -1610,7 +1611,7 @@ void Texture3D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLint z,
 		image[level]->unbind(this);
 	}
 
-	image[level] = new egl::Image(this, width, height, depth, format, GL_UNSIGNED_BYTE);
+	image[level] = new egl::Image(this, width, height, depth, format, GL_UNSIGNED_BYTE, lockId);
 
 	if(!image[level])
 	{
@@ -1785,7 +1786,7 @@ void Texture3D::generateMipmaps()
 			image[i]->unbind(this);
 		}
 
-		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), std::max(image[0]->getDepth() >> i, 1), image[0]->getFormat(), image[0]->getType());
+		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), std::max(image[0]->getDepth() >> i, 1), image[0]->getFormat(), image[0]->getType(), lockId);
 
 		if(!image[i])
 		{
@@ -1847,7 +1848,7 @@ bool Texture3D::isShared(GLenum target, unsigned int level) const
 	return image[level]->isShared();
 }
 
-Texture2DArray::Texture2DArray(GLuint name) : Texture3D(name)
+Texture2DArray::Texture2DArray(GLuint name, LockResourceId id) : Texture3D(name, id)
 {
 }
 
@@ -1865,7 +1866,7 @@ void Texture2DArray::generateMipmaps()
 	UNIMPLEMENTED();
 }
 
-TextureExternal::TextureExternal(GLuint name) : Texture2D(name)
+TextureExternal::TextureExternal(GLuint name, LockResourceId id) : Texture2D(name, id)
 {
     mMinFilter = GL_LINEAR;
     mMagFilter = GL_LINEAR;
@@ -1889,7 +1890,7 @@ egl::Image *createBackBuffer(int width, int height, const egl::Config *config)
 {
 	if(config)
 	{
-		return new egl::Image(width, height, config->mRenderTargetFormat, 1, false, true);
+		return new egl::Image(width, height, config->mRenderTargetFormat, 1, false, true, LockResourceId::SurfaceBackBuffer);
 	}
 
 	return 0;
@@ -1928,7 +1929,7 @@ egl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Form
 		UNREACHABLE(format);
 	}
 
-	egl::Image *surface = new egl::Image(width, height, format, multiSampleDepth, lockable, true);
+	egl::Image *surface = new egl::Image(width, height, format, multiSampleDepth, lockable, true, LockResourceId::SurfaceDepthStencil);
 
 	if(!surface)
 	{

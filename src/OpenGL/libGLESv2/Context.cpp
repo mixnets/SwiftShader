@@ -136,11 +136,11 @@ Context::Context(const egl::Config *config, const Context *shareContext, EGLint 
     // In order that access to these initial textures not be lost, they are treated as texture
     // objects all of whose names are 0.
 
-    mTexture2DZero = new Texture2D(0);
-	mTexture3DZero = new Texture3D(0);
-	mTexture2DArrayZero = new Texture2DArray(0);
-    mTextureCubeMapZero = new TextureCubeMap(0);
-    mTextureExternalZero = new TextureExternal(0);
+    mTexture2DZero = new Texture2D(0, LockResourceId::Texture2d);
+	mTexture3DZero = new Texture3D(0, LockResourceId::Texture3d);
+	mTexture2DArrayZero = new Texture2DArray(0, LockResourceId::Texture2dArray);
+	mTextureCubeMapZero = new TextureCubeMap(0, LockResourceId::TextureCubeMap);
+	mTextureExternalZero = new TextureExternal(0, LockResourceId::TextureExternal);
 
     mState.activeSampler = 0;
 	bindVertexArray(0);

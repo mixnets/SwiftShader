@@ -29,7 +29,7 @@ namespace es1
 class Buffer : public gl::NamedObject
 {
   public:
-    explicit Buffer(GLuint name);
+    explicit Buffer(GLuint name, LockResourceId id);
 
     virtual ~Buffer();
 
@@ -43,6 +43,7 @@ class Buffer : public gl::NamedObject
 	sw::Resource *getResource();
 
   private:
+	LockResourceId lockId;
     sw::Resource *mContents;
     size_t mSize;
     GLenum mUsage;

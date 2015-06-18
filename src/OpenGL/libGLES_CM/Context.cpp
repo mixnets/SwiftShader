@@ -142,8 +142,8 @@ Context::Context(const egl::Config *config, const Context *shareContext)
     // In order that access to these initial textures not be lost, they are treated as texture
     // objects all of whose names are 0.
 
-    mTexture2DZero = new Texture2D(0);
-    mTextureExternalZero = new TextureExternal(0);
+	mTexture2DZero = new Texture2D(0, LockResourceId::Texture2d);
+	mTextureExternalZero = new TextureExternal(0, LockResourceId::TextureExternal);
 
     mState.activeSampler = 0;
     bindArrayBuffer(0);
