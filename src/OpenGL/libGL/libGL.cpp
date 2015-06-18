@@ -6540,6 +6540,13 @@ void APIENTRY glLightfv(GLenum light, GLenum pname, const GLfloat *params)
 {
 	TRACE("(GLenum light = 0x%X, GLenum pname = 0x%X, const GLint *params)", light, pname);
 	
+	int index = light - GL_LIGHT0;
+
+	if(index < 0 || index >= gl::MAX_LIGHTS)
+	{
+		return error(GL_INVALID_ENUM);
+	}
+
 	gl::Context *context = gl::getContext();
 
 	if(context)
@@ -6547,13 +6554,6 @@ void APIENTRY glLightfv(GLenum light, GLenum pname, const GLfloat *params)
 		if(context->getListIndex() != 0)
 		{
 			UNIMPLEMENTED();
-		}
-
-		int index = light - GL_LIGHT0;
-
-		if(index < 0 || index > gl::MAX_LIGHTS)
-		{
-			return error(GL_INVALID_ENUM);
 		}
 
 		switch(pname)

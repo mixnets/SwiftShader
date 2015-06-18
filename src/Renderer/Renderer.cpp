@@ -2063,18 +2063,18 @@ namespace sw
 	{
 		if(updateClipPlanes)
 		{
-			if(VertexProcessor::isFixedFunction())   // User plane in world space
-			{
-				const Matrix &scissorWorld = getViewTransform();
+		//	if(VertexProcessor::isFixedFunction())   // User plane in world space
+		//	{
+		//		const Matrix &scissorWorld = getViewTransform();
 
-				if(clipFlags & Clipper::CLIP_PLANE0) clipPlane[0] = scissorWorld * userPlane[0];
-				if(clipFlags & Clipper::CLIP_PLANE1) clipPlane[1] = scissorWorld * userPlane[1];
-				if(clipFlags & Clipper::CLIP_PLANE2) clipPlane[2] = scissorWorld * userPlane[2];
-				if(clipFlags & Clipper::CLIP_PLANE3) clipPlane[3] = scissorWorld * userPlane[3];
-				if(clipFlags & Clipper::CLIP_PLANE4) clipPlane[4] = scissorWorld * userPlane[4];
-				if(clipFlags & Clipper::CLIP_PLANE5) clipPlane[5] = scissorWorld * userPlane[5];
-			}
-			else   // User plane in clip space
+		//		if(clipFlags & Clipper::CLIP_PLANE0) clipPlane[0] = scissorWorld * userPlane[0];
+		//		if(clipFlags & Clipper::CLIP_PLANE1) clipPlane[1] = scissorWorld * userPlane[1];
+		//		if(clipFlags & Clipper::CLIP_PLANE2) clipPlane[2] = scissorWorld * userPlane[2];
+		//		if(clipFlags & Clipper::CLIP_PLANE3) clipPlane[3] = scissorWorld * userPlane[3];
+		//		if(clipFlags & Clipper::CLIP_PLANE4) clipPlane[4] = scissorWorld * userPlane[4];
+		//		if(clipFlags & Clipper::CLIP_PLANE5) clipPlane[5] = scissorWorld * userPlane[5];
+		//	}
+		//	else   // User plane in clip space
 			{
 				if(clipFlags & Clipper::CLIP_PLANE0) clipPlane[0] = userPlane[0];
 				if(clipFlags & Clipper::CLIP_PLANE1) clipPlane[1] = userPlane[1];
