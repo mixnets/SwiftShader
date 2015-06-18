@@ -579,7 +579,14 @@ void Context::setLightSpecular(int index, float r, float g, float b, float a)
 
 void Context::setLightPosition(int index, float x, float y, float z, float w)
 {
-	light[index].position = {x, y, z, w};
+	const sw::Matrix &M = modelViewStack.current();
+
+	float Mx = M(1, 1) * x + M(1, 2) * y + M(1, 3) * z + M(1, 4) * w;
+	float My = M(2, 1) * x + M(2, 2) * y + M(2, 3) * z + M(2, 4) * w;
+	float Mz = M(3, 1) * x + M(3, 2) * y + M(3, 3) * z + M(3, 4) * w;
+	float Mw = M(4, 1) * x + M(4, 2) * y + M(4, 3) * z + M(4, 4) * w;
+
+	light[index].position = {Mx, My, Mz, Mw};
 }
 
 void Context::setLightDirection(int index, float x, float y, float z)
@@ -1796,7 +1803,7 @@ void Context::applyState(GLenum drawMode)
 	device->setEmissiveMaterialSource(sw::MATERIAL_MATERIAL);
 
     device->setProjectionMatrix(projectionStack.current());
-    device->setViewMatrix(modelViewStack.current());
+    device->setModelMatrix(modelViewStack.current());
     device->setTextureMatrix(0, textureStack0.current());
 	device->setTextureMatrix(1, textureStack1.current());
 	device->setTextureTransform(0, textureStack0.isIdentity() ? 0 : 4, false);
