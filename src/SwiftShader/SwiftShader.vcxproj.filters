@@ -179,6 +179,9 @@
     <ClCompile Include="..\Main\crc.cpp">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadAnalyzer.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MemoryManager.hpp">
@@ -354,6 +357,9 @@
       <Filter>Header Files\Main</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\SharedLibrary.hpp">
+      <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ThreadAnalyser.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
   </ItemGroup>

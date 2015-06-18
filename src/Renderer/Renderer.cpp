@@ -27,6 +27,7 @@
 #include "Constants.hpp"
 #include "Debug.hpp"
 #include "Reactor/Reactor.hpp"
+#include "ThreadAnalyser.h"
 
 #include <malloc.h>
 
@@ -166,7 +167,7 @@ namespace sw
 		swiftConfig = new SwiftConfig(disableServer);
 		updateConfiguration(true);
 
-		sync = new Resource(0);
+		sync = new Resource(0, LockResourceId::RendererSync);
 	}
 
 	Renderer::~Renderer()
@@ -604,7 +605,7 @@ namespace sw
 
 			draw->references = (count + batch - 1) / batch;
 
-			schedulerMutex.lock();
+			schedulerMutex.lock(LockResourceId::RendererSchedulerLock);
 			nextDraw++;
 			schedulerMutex.unlock();
 
@@ -737,7 +738,7 @@ namespace sw
 
 	void Renderer::scheduleTask(int threadIndex)
 	{
-		schedulerMutex.lock();
+		schedulerMutex.lock(LockResourceId::RendererSchedulerLock);
 
 		if((int)qSize < threadCount - threadsAwake + 1)
 		{
@@ -787,6 +788,7 @@ namespace sw
 		{
 		case Task::PRIMITIVES:
 			{
+				ThreadAnalyzer::Instance()->startTask(threadIndex, task[threadIndex].type);
 				int unit = task[threadIndex].primitiveUnit;
 				
 				int input = primitiveProgress[unit].firstPrimitive;
@@ -810,10 +812,13 @@ namespace sw
 				#if PERF_HUD
 					setupTime[threadIndex] += Timer::ticks() - startTick;
 				#endif
+				
+				ThreadAnalyzer::Instance()->endTask(threadIndex, task[threadIndex].type);
 			}
 			break;
 		case Task::PIXELS:
 			{
+				ThreadAnalyzer::Instance()->startTask(threadIndex, task[threadIndex].type);
 				int unit = task[threadIndex].primitiveUnit;
 				int visible = primitiveProgress[unit].visible;
 
@@ -833,11 +838,15 @@ namespace sw
 				#if PERF_HUD
 					pixelTime[threadIndex] += Timer::ticks() - startTick;
 				#endif
+				
+				ThreadAnalyzer::Instance()->endTask(threadIndex, task[threadIndex].type);
 			}
 			break;
 		case Task::RESUME:
+			ThreadAnalyzer::Instance()->endTask(threadIndex, SLEEP_TASK);
 			break;
 		case Task::SUSPEND:
+			ThreadAnalyzer::Instance()->startTask(threadIndex, SLEEP_TASK);
 			break;
 		default:
 			ASSERT(false);
@@ -2536,6 +2545,9 @@ namespace sw
 			case 1:  transparencyAntialiasing = TRANSPARENCY_ALPHA_TO_COVERAGE; break;
 			default: transparencyAntialiasing = TRANSPARENCY_NONE;              break;
 			}
+
+			ThreadAnalyzer::Instance()->setThreadAnalysisActive(configuration.threadAnalysisActive);
+			ThreadAnalyzer::Instance()->setResourceAnalysisActive(configuration.resourceContentionActive);
 
 			switch(configuration.threadCount)
 			{

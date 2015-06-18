@@ -32,6 +32,7 @@
 #include "CPUID.hpp"
 #include "Thread.hpp"
 #include "Memory.hpp"
+#include "ThreadAnalyser.h"
 
 #include <fstream>
 
@@ -74,7 +75,7 @@ namespace sw
 
 	Nucleus::Nucleus()
 	{
-		codegenMutex.lock();   // Reactor and LLVM are currently not thread safe
+		codegenMutex.lock(LockResourceId::NucleusCodegenMutexLock);   // Reactor and LLVM are currently not thread safe
 
 		InitializeNativeTarget();
 		JITEmitDebugInfo = false;

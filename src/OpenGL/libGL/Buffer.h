@@ -31,7 +31,7 @@ namespace gl
 class Buffer : public NamedObject
 {
   public:
-    explicit Buffer(GLuint name);
+    explicit Buffer(GLuint name, LockResourceId id);
 
     virtual ~Buffer();
 
@@ -45,6 +45,7 @@ class Buffer : public NamedObject
 	sw::Resource *getResource();
 
   private:
+    LockResourceId lockId;
     sw::Resource *mContents;
     size_t mSize;
     GLenum mUsage;
