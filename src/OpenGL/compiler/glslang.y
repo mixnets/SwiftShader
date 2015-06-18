@@ -442,82 +442,11 @@ function_call_header
 // Grammar Note:  Constructors look like functions, but are recognized as types.
 
 function_identifier
-    : type_specifier_nonarray {
-        //
-        // Constructor
-        //
-        TOperator op = EOpNull;
-        if ($1.userDef) {
-            op = EOpConstructStruct;
-        } else {
-            switch ($1.type) {
-            case EbtFloat:
-                switch($1.primarySize) {
-                case 1:
-                    op = EOpConstructFloat; break;
-                case 2:
-                    switch($1.secondarySize) {
-					case 1:                                 op = EOpConstructVec2;    break;
-                    case 2:                                 op = EOpConstructMat2;    break;
-                    case 3:                                 op = EOpConstructMat2x3;  break;
-                    case 4:                                 op = EOpConstructMat2x4;  break;
-                    }
-                    break;
-                case 3:
-                    switch($1.secondarySize) {
-					case 1:                                 op = EOpConstructVec3;    break;
-                    case 2:                                 op = EOpConstructMat3x2;  break;
-                    case 3:                                 op = EOpConstructMat3;    break;
-                    case 4:                                 op = EOpConstructMat3x4;  break;
-                    }
-                    break;
-                case 4:
-                    switch($1.secondarySize) {
-					case 1:                                 op = EOpConstructVec4;    break;
-                    case 2:                                 op = EOpConstructMat4x2;  break;
-                    case 3:                                 op = EOpConstructMat4x3;  break;
-                    case 4:                                 op = EOpConstructMat4;    break;
-                    }
-                    break;
-                }
-                break;
-            case EbtInt:
-                switch($1.primarySize) {
-                case 1:                                         op = EOpConstructInt;   break;
-                case 2:       FRAG_VERT_ONLY("ivec2", $1.line); op = EOpConstructIVec2; break;
-                case 3:       FRAG_VERT_ONLY("ivec3", $1.line); op = EOpConstructIVec3; break;
-                case 4:       FRAG_VERT_ONLY("ivec4", $1.line); op = EOpConstructIVec4; break;
-                }
-                break;
-            case EbtUInt:
-                switch($1.primarySize) {
-                case 1:                                         op = EOpConstructUInt;  break;
-                case 2:       FRAG_VERT_ONLY("uvec2", $1.line); op = EOpConstructUVec2; break;
-                case 3:       FRAG_VERT_ONLY("uvec3", $1.line); op = EOpConstructUVec3; break;
-                case 4:       FRAG_VERT_ONLY("uvec4", $1.line); op = EOpConstructUVec4; break;
-                }
-                break;
-            case EbtBool:
-                switch($1.primarySize) {
-                case 1:                                         op = EOpConstructBool;  break;
-                case 2:       FRAG_VERT_ONLY("bvec2", $1.line); op = EOpConstructBVec2; break;
-                case 3:       FRAG_VERT_ONLY("bvec3", $1.line); op = EOpConstructBVec3; break;
-                case 4:       FRAG_VERT_ONLY("bvec4", $1.line); op = EOpConstructBVec4; break;
-                }
-                break;
-            default: break;
-            }
-            if (op == EOpNull) {
-                context->error($1.line, "cannot construct this type", getBasicString($1.type));
-                context->recover();
-                $1.type = EbtFloat;
-                op = EOpConstructFloat;
-            }
+    : type_specifier_no_prec {
+        if ($1.array) {
+            ES3_ONLY("[]", $1.line);
         }
-        TString tempString;
-        TType type($1);
-        TFunction *function = new TFunction(&tempString, type, op);
-        $$ = function;
+        $$ = context->addConstructorFunc($1);
     }
     | IDENTIFIER {
         if (context->reservedErrorCheck($1.line, *$1.string))
@@ -843,12 +772,7 @@ assignment_expression
     | unary_expression assignment_operator assignment_expression {
         if (context->lValueErrorCheck($2.line, "assign", $1))
             context->recover();
-        $$ = context->intermediate.addAssign($2.op, $1, $3, $2.line);
-        if ($$ == 0) {
-            context->assignError($2.line, "assign", $1->getCompleteString(), $3->getCompleteString());
-            context->recover();
-            $$ = $1;
-        }
+        $$ = context->addAssign($2.op, $1, $3, $2.line);
     }
     ;
 
@@ -1465,6 +1389,11 @@ type_specifier_no_prec
     : type_specifier_nonarray {
         $$ = $1;
     }
+    | type_specifier_nonarray LEFT_BRACKET RIGHT_BRACKET {
+        ES3_ONLY("[]", $2.line);
+        $$ = $1;
+        $$.setArray(true, 0);
+    }
     | type_specifier_nonarray LEFT_BRACKET constant_expression RIGHT_BRACKET {
         $$ = $1;
 
@@ -1912,7 +1841,7 @@ condition
         if (context->boolErrorCheck($2.line, $1))
             context->recover();
 
-        if (!context->executeInitializer($2.line, *$2.string, $1, $4, intermNode))
+        if (!context->executeInitializer($2.line, *$2.string, $1, $4, &intermNode))
             $$ = $4;
         else {
             context->recover();

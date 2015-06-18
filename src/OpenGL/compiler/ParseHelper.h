@@ -106,7 +106,6 @@ struct TParseContext {
     bool arraySizeErrorCheck(const TSourceLoc &line, TIntermTyped* expr, int& size);
     bool arrayQualifierErrorCheck(const TSourceLoc &line, TPublicType type);
     bool arrayTypeErrorCheck(const TSourceLoc &line, TPublicType type);
-    bool arrayErrorCheck(const TSourceLoc &line, TString& identifier, TPublicType type, TVariable*& variable);
     bool voidErrorCheck(const TSourceLoc&, const TString&, const TBasicType&);
     bool boolErrorCheck(const TSourceLoc&, const TIntermTyped*);
     bool boolErrorCheck(const TSourceLoc&, const TPublicType&);
@@ -132,8 +131,8 @@ struct TParseContext {
     bool containsSampler(TType& type);
     bool areAllChildConst(TIntermAggregate* aggrNode);
     const TFunction* findFunction(const TSourceLoc &line, TFunction* pfnCall, bool *builtIn = 0);
-    bool executeInitializer(const TSourceLoc &line, const TString& identifier, const TPublicType& pType,
-                            TIntermTyped* initializer, TIntermNode*& intermNode, TVariable* variable = 0);
+    bool executeInitializer(const TSourceLoc &line, const TString &identifier, const TPublicType &pType,
+                            TIntermTyped *initializer, TIntermNode **intermNode);
 
     TPublicType addFullySpecifiedType(TQualifier qualifier, bool invariant, TLayoutQualifier layoutQualifier, const TPublicType &typeSpecifier);
     bool arraySetMaxSize(TIntermSymbol*, TType*, int, bool, const TSourceLoc&);
@@ -166,6 +165,7 @@ struct TParseContext {
                                                const TSourceLoc &initLocation, TIntermTyped *initializer);
 
     void parseGlobalLayoutQualifier(const TPublicType &typeQualifier);
+	TFunction *addConstructorFunc(const TPublicType &publicType);
     TIntermTyped* addConstructor(TIntermNode*, const TType*, TOperator, TFunction*, const TSourceLoc&);
     TIntermTyped* foldConstConstructor(TIntermAggregate* aggrNode, const TType& type);
     TIntermTyped* addConstVectorNode(TVectorFields&, TIntermTyped*, const TSourceLoc&);
@@ -201,11 +201,15 @@ struct TParseContext {
 	TIntermTyped *addUnaryMath(TOperator op, TIntermTyped *child, const TSourceLoc &loc);
 	TIntermTyped *addUnaryMathLValue(TOperator op, TIntermTyped *child, const TSourceLoc &loc);
 
+	TIntermTyped *addAssign(TOperator op, TIntermTyped *left, TIntermTyped *right, const TSourceLoc &loc);
+
 	TIntermBranch *addBranch(TOperator op, const TSourceLoc &loc);
 	TIntermBranch *addBranch(TOperator op, TIntermTyped *returnValue, const TSourceLoc &loc);
 
 private:
 	bool declareVariable(const TSourceLoc &line, const TString &identifier, const TType &type, TVariable **variable);
+
+	TIntermTyped *createAssign(TOperator op, TIntermTyped *left, TIntermTyped *right, const TSourceLoc &loc);
 
 	// The funcReturnType parameter is expected to be non-null when the operation is a built-in function.
 	// It is expected to be null for other unary operators.
