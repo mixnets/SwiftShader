@@ -46,7 +46,7 @@ enum
 class Texture : public NamedObject
 {
 public:
-    explicit Texture(GLuint name);
+    explicit Texture(GLuint name, LockResourceId id);
 
     virtual ~Texture();
 
@@ -104,13 +104,15 @@ protected:
 	GLfloat mMaxAnisotropy;
 	GLint mMaxLevel;
 
+	LockResourceId lockId;
+
 	sw::Resource *resource;
 };
 
 class Texture2D : public Texture
 {
 public:
-    explicit Texture2D(GLuint name);
+    explicit Texture2D(GLuint name, LockResourceId id);
 
     virtual ~Texture2D();
 
@@ -163,7 +165,7 @@ protected:
 class TextureCubeMap : public Texture
 {
 public:
-    explicit TextureCubeMap(GLuint name);
+    explicit TextureCubeMap(GLuint name, LockResourceId id);
 
     virtual ~TextureCubeMap();
 

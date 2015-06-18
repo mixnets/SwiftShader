@@ -381,11 +381,13 @@
     <ClCompile Include="..\Common\Memory.cpp" />
     <ClCompile Include="..\Common\Resource.cpp" />
     <ClCompile Include="..\Common\Timer.cpp" />
+    <ClCompile Include="ThreadAnalyzer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Common\SharedLibrary.hpp" />
     <ClInclude Include="..\Common\Socket.hpp" />
     <ClInclude Include="..\Common\Thread.hpp" />
+    <ClInclude Include="..\Common\ThreadAnalyser.h" />
     <ClInclude Include="..\Common\Version.h" />
     <ClInclude Include="..\Main\FrameBufferWin.hpp" />
     <ClInclude Include="..\Main\Register.hpp" />

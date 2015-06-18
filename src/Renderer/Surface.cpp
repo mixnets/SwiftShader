@@ -784,9 +784,9 @@ namespace sw
 		lock = LOCK_UNLOCKED;
 	}
 
-	Surface::Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice) : lockable(true), renderTarget(false)
+	Surface::Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice, LockResourceId id) : lockable(true), renderTarget(false)
 	{
-		resource = new Resource(0);
+		resource = new Resource(0, id);
 		hasParent = false;
 		ownExternal = false;
 		depth = max(1, depth);
@@ -834,9 +834,9 @@ namespace sw
 		paletteUsed = 0;
 	}
 
-	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget) : lockable(lockable), renderTarget(renderTarget)
+	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, LockResourceId id) : lockable(lockable), renderTarget(renderTarget)
 	{
-		resource = texture ? texture : new Resource(0);
+		resource = texture ? texture : new Resource(0, id);
 		hasParent = texture != 0;
 		ownExternal = true;
 		depth = max(1, depth);

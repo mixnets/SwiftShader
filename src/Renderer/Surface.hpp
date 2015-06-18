@@ -15,6 +15,7 @@
 #include "Color.hpp"
 #include "Main/Config.hpp"
 #include "Common/Resource.hpp"
+#include "Common/ThreadAnalyser.h"
 
 namespace sw
 {
@@ -172,8 +173,8 @@ namespace sw
 		};
 
 	public:
-		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
-		Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget);
+		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice, LockResourceId id);
+		Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, LockResourceId id);
 		
 		virtual ~Surface();
 
