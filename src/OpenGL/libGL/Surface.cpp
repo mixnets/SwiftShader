@@ -30,7 +30,7 @@
 namespace gl
 {
 
-Surface::Surface(Display *display, NativeWindowType window)
+    Surface::Surface(Display *display, NativeWindowType window)
     : mDisplay(display), mWindow(window)
 {
     frameBuffer = 0;
@@ -44,7 +44,7 @@ Surface::Surface(Display *display, NativeWindowType window)
     setSwapInterval(1);
 }
 
-Surface::Surface(Display *display, GLint width, GLint height, GLenum textureFormat, GLenum textureType)
+    Surface::Surface(Display *display, GLint width, GLint height, GLenum textureFormat, GLenum textureType)
     : mDisplay(display), mWindow(NULL), mWidth(width), mHeight(height)
 {
 	frameBuffer = 0;
@@ -126,7 +126,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 		}
     }
 
-	backBuffer = new Image(0, backBufferWidth, backBufferHeight, GL_RGB, GL_UNSIGNED_BYTE);
+	backBuffer = new Image(0, backBufferWidth, backBufferHeight, GL_RGB, GL_UNSIGNED_BYTE, LockResourceId::SurfaceBackBuffer);
 
     if(!backBuffer)
     {
@@ -137,7 +137,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 
     if(true)   // Always provide a depth/stencil buffer
     {
-        mDepthStencil = new Image(0, backBufferWidth, backBufferHeight, sw::FORMAT_D24S8, 1, false, true);
+        mDepthStencil = new Image(0, backBufferWidth, backBufferHeight, sw::FORMAT_D24S8, 1, false, true, LockResourceId::SurfaceDepthStencil);
 
 		if(!mDepthStencil)
 		{

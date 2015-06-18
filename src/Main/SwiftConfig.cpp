@@ -15,7 +15,9 @@
 #include "Debug.hpp"
 #include "Config.hpp"
 #include "Version.h"
+#include "ThreadAnalyser.h"
 
+#include <algorithm>
 #include <sstream>
 #include <stdio.h>
 #include <time.h>
@@ -71,7 +73,7 @@ namespace sw
 		listenSocket = new Socket("localhost", "8080");
 		listenSocket->listen();
 
-		terminate = false;
+		terminate = false; 
 		serverThread = new Thread(serverRoutine, this);
 	}
 
@@ -107,7 +109,7 @@ namespace sw
 
 	void SwiftConfig::getConfiguration(Configuration &configuration)
 	{
-		criticalSection.lock();
+		criticalSection.lock(LockResourceId::SwiftConfig);
 		configuration = config;
 		criticalSection.unlock();
 	}
@@ -182,7 +184,7 @@ namespace sw
 			{
 				if(match(&request, " ") || match(&request, "/ "))
 				{
-					criticalSection.lock();
+					criticalSection.lock(LockResourceId::SwiftConfig);
 
 					const char *postData = strstr(request, "\r\n\r\n");
 					postData = postData ? postData + 4 : 0;
@@ -416,6 +418,8 @@ namespace sw
 		html += "</table>\n";
 		html += "<h2><em>Testing & Experimental</em></h2>\n";
 		html += "<table>\n";
+		html += "<tr><td>Thread Analysis:</td><td><input name='ThreadAnalysisActive' type='checkbox'" + (config.threadAnalysisActive == true ? checked : empty) + " title='Analyze the amount of time spent on each task by worker threads.'></td></tr>";
+		html += "<tr><td>Resource Contention Analysis:</td><td><input name='ResourceContentionActive' type='checkbox'" + (config.resourceContentionActive == true ? checked : empty) + " title='Analyze the amount of time spent trying to access locked resources.'></td></tr>";
 		html += "<tr><td>Disable SwiftConfig server:</td><td><input name = 'disableServer' type='checkbox'" + (config.disableServer == true ? checked : empty) + " title='If checked disables the web browser based control panel.'></td></tr>";
 		html += "<tr><td>Force windowed mode:</td><td><input name = 'forceWindowed' type='checkbox'" + (config.forceWindowed == true ? checked : empty) + " title='If checked prevents the application from switching to full-screen mode.'></td></tr>";
 		html += "<tr><td>Complementary depth buffer:</td><td><input name = 'complementaryDepthBuffer' type='checkbox'" + (config.complementaryDepthBuffer == true ? checked : empty) + " title='If checked causes 1 - z to be stored in the depth buffer.'></td></tr>";
@@ -490,12 +494,12 @@ namespace sw
 			html += "<p>Compressed texture operations (million): " + ftoa(profiler.compressedTexFrame / 1.0e6f) + " (current), " + ftoa(averageCompressedTex) + " (average)</p>\n";
 			html += "<div id='profile' style='position:relative; width:1010px; height:50px; background-color:silver;'>";
 			html += "<div style='position:relative; width:1000px; height:40px; background-color:white; left:5px; top:5px;'>";
-			html += "<div style='position:relative; float:left; width:" + itoa(rastTime)   + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FFFF7F; overflow:hidden;'>" + ftoa(rastTimeF)   + "% rast</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(pipeTime)   + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FF7F7F; overflow:hidden;'>" + ftoa(pipeTimeF)   + "% pipe</div>\n";
+			html += "<div style='position:relative; float:left; width:" + itoa(rastTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FFFF7F; overflow:hidden;'>" + ftoa(rastTimeF) + "% rast</div>\n";
+			html += "<div style='position:relative; float:left; width:" + itoa(pipeTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FF7F7F; overflow:hidden;'>" + ftoa(pipeTimeF) + "% pipe</div>\n";
 			html += "<div style='position:relative; float:left; width:" + itoa(interpTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7FFFFF; overflow:hidden;'>" + ftoa(interpTimeF) + "% interp</div>\n";
 			html += "<div style='position:relative; float:left; width:" + itoa(shaderTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7FFF7F; overflow:hidden;'>" + ftoa(shaderTimeF) + "% shader</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(texTime)    + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FF7FFF; overflow:hidden;'>" + ftoa(texTimeF)    + "% tex</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(ropTime)    + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7F7FFF; overflow:hidden;'>" + ftoa(ropTimeF)    + "% rop</div>\n";
+			html += "<div style='position:relative; float:left; width:" + itoa(texTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FF7FFF; overflow:hidden;'>" + ftoa(texTimeF) + "% tex</div>\n";
+			html += "<div style='position:relative; float:left; width:" + itoa(ropTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7F7FFF; overflow:hidden;'>" + ftoa(ropTimeF) + "% rop</div>\n";
 			html += "</div></div>\n";
 
 			for(int i = 0; i < PERF_TIMERS; i++)
@@ -503,6 +507,89 @@ namespace sw
 				profiler.cycles[i] = 0;
 			}
 		#endif
+
+		static char * colors[LockResourceId::Last] =
+		{
+			"FFFF7F",
+			"FF7F7F",
+			"7FFFFF",
+			"7FFF7F",
+			"FF7FFF",
+			"7F7FFF",
+			"1FFF7F",
+			"FF3F7F",
+			"F0FF7F",
+			"FFF17F",
+			"F5FF7F",
+			"CC99CC",
+			"6FF7F3",
+			"F11F7F",
+			"F897F0",
+			"F2F48F",
+			"4F4F76",
+			"66FFFF",
+			"4F50F1"
+		};
+
+		ThreadTask * tt = ThreadAnalyzer::Instance()->getThreadTasks();
+
+		if(ThreadAnalyzer::Instance()->getThreadAnalysisActive() && tt != NULL)
+		{
+			int threadTime;
+
+			for(int i = 0; i < THREAD_AMOUNT; i++)
+			{
+				if(tt[i].timePixels == 0 && tt[i].timePrimitives == 0)
+				{
+					continue;
+				}
+
+				html += "<tr><td>Thread " + itoa(i) + ":</td></tr>";
+				html += "<div id='locks' style='position:relative; width:1010px; height:30px; background-color:silver;'>";
+				html += "<div style='position:relative; width:1000px; height:20px; background-color:white; left:5px; top:5px;'>";
+				threadTime = tt[i].timePrimitives + tt[i].timePixels + tt[i].timeSleep;
+				int primitivesWidth = (double)tt[i].timePrimitives / threadTime * 1000;
+				int pixelsWidth = (double)tt[i].timePixels / threadTime * 1000;
+				int sleepWidth = (double)tt[i].timeSleep / threadTime * 1000;
+				html += "<div style='font-size:8pt; position:relative; float:left; width:" + itoa(primitivesWidth) + "px; height:20px; border-style:none; text-align:center; line-height:20px; background-color:#FFFF7F; overflow:hidden;' title='" + ftoa((double)(primitivesWidth) / 10) + "% Primitives'>" + ftoa((double)(primitivesWidth) / 10) + "% Primitives tasks</div>\n";
+				html += "<div style='font-size:8pt; position:relative; float:left; width:" + itoa(pixelsWidth) + "px; height:20px; border-style:none; text-align:center; line-height:20px; background-color:#FF7F7F; overflow:hidden;' title='" + ftoa((double)(pixelsWidth) / 10) + "% Pixels'>" + ftoa((double)(pixelsWidth) / 10) + "% Pixels tasks</div>\n";
+				html += "<div style='font-size:8pt; position:relative; float:left; width:" + itoa(sleepWidth) + "px; height:20px; border-style:none; text-align:center; line-height:20px; background-color:#7FFFFF; overflow:hidden;' title='" + ftoa((double)(sleepWidth) / 10) + "% Sleep'>" + ftoa((double)(sleepWidth) / 10) + "% Sleeping</div>\n";
+				html += "</div></div>\n";
+			}
+		}
+
+		LockInfo * li = ThreadAnalyzer::Instance()->getLockInfo();
+
+		if(ThreadAnalyzer::Instance()->getResourceAnalysisActive() && li != NULL)
+		{
+			int totalTime = 0;
+
+			for(int i = 0; i < LockResourceId::Last; i++)
+			{
+				totalTime += li[i].totalConflictingTime;
+			}
+
+			if(totalTime <= 0)
+			{
+				return html;
+			}
+
+			html += "<tr><td>Resource contention:</td></tr>";
+			html += "<div id='locks' style='position:relative; width:1010px; height:50px; background-color:silver;'>";
+			html += "<div style='position:relative; width:1000px; height:40px; background-color:white; left:5px; top:5px;'>";
+
+			for(int i = 0; i < LockResourceId::Last; i++)
+			{
+				int temp = (((double)li[i].totalConflictingTime) / totalTime) * 1000;
+				html += "<div style='font-size:8pt; position:relative; float:left; width:" + itoa(temp) +
+					"px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#" + colors[i] +
+					"; overflow:hidden;' title='" + ftoa(((double)temp) / 10) + "% " +
+					ThreadAnalyzer::Instance()->getLockName((LockResourceId)i) + "'>" + ftoa(((double)temp) / 10) + "% " +
+					ThreadAnalyzer::Instance()->getLockName((LockResourceId)i) + "</div>\n";
+			}
+
+			html += "</div></div>\n";
+		}
 
 		return html;
 	}
@@ -530,6 +617,8 @@ namespace sw
 	void SwiftConfig::parsePost(const char *post)
 	{
 		// Only enabled checkboxes appear in the POST
+		config.threadAnalysisActive = false;
+		config.resourceContentionActive = false;
 		config.enableSSE = true;
 		config.enableSSE2 = false;
 		config.enableSSE3 = false;
@@ -550,7 +639,15 @@ namespace sw
 			int integer;
 			int index;
 
-			if(sscanf(post, "pixelShaderVersion=%d", &integer))
+			if(strstr(post, "ThreadAnalysisActive=on"))
+			{
+				config.threadAnalysisActive = true;
+			}
+			else if(strstr(post, "ResourceContentionActive=on"))
+			{
+				config.resourceContentionActive = true;
+			}
+			else if(sscanf(post, "pixelShaderVersion=%d", &integer))
 			{
 				config.pixelShaderVersion = integer;
 			}
@@ -738,6 +835,8 @@ namespace sw
 			config.optimization[pass] = (Optimization)ini.getInteger("Optimization", "OptimizationPass" + itoa(pass + 1), pass == 0 ? InstructionCombining : Disabled);
 		}
 
+		config.threadAnalysisActive = ini.getBoolean("Testing", "ThreadAnalysisActive", false);
+		config.threadAnalysisActive = ini.getBoolean("Testing", "ResourceAnalysisActive", false);
 		config.disableServer = ini.getBoolean("Testing", "DisableServer", false);
 		config.forceWindowed = ini.getBoolean("Testing", "ForceWindowed", false);
 		config.complementaryDepthBuffer = ini.getBoolean("Testing", "ComplementaryDepthBuffer", false);
@@ -796,6 +895,8 @@ namespace sw
 			ini.addValue("Optimization", "OptimizationPass" + itoa(pass + 1), itoa(config.optimization[pass]));
 		}
 
+		ini.addValue("Testing", "ThreadAnalysisActive", itoa(config.threadAnalysisActive));
+		ini.addValue("Testing", "ResourceContentionActive", itoa(config.resourceContentionActive));
 		ini.addValue("Testing", "DisableServer", itoa(config.disableServer));
 		ini.addValue("Testing", "ForceWindowed", itoa(config.forceWindowed));
 		ini.addValue("Testing", "ComplementaryDepthBuffer", itoa(config.complementaryDepthBuffer));

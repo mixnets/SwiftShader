@@ -27,15 +27,17 @@ namespace
 namespace gl
 {
 
-VertexDataManager::VertexDataManager(Context *context) : mContext(context)
+    VertexDataManager::VertexDataManager(Context *context, LockResourceId id) : mContext(context)
 {
+    lockId = id;
+
     for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
     {
         mDirtyCurrentValue[i] = true;
         mCurrentValueBuffer[i] = NULL;
     }
 
-    mStreamingBuffer = new StreamingVertexBuffer(INITIAL_STREAM_BUFFER_SIZE);
+    mStreamingBuffer = new StreamingVertexBuffer(INITIAL_STREAM_BUFFER_SIZE, id);
 
     if(!mStreamingBuffer)
     {
@@ -192,7 +194,7 @@ GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, Translat
                 if(mDirtyCurrentValue[i])
                 {
                     delete mCurrentValueBuffer[i];
-                    mCurrentValueBuffer[i] = new ConstantVertexBuffer(attribs[i].mCurrentValue[0], attribs[i].mCurrentValue[1], attribs[i].mCurrentValue[2], attribs[i].mCurrentValue[3]);
+                    mCurrentValueBuffer[i] = new ConstantVertexBuffer(attribs[i].mCurrentValue[0], attribs[i].mCurrentValue[1], attribs[i].mCurrentValue[2], attribs[i].mCurrentValue[3], lockId);
                     mDirtyCurrentValue[i] = false;
                 }
 
@@ -209,11 +211,11 @@ GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, Translat
     return GL_NO_ERROR;
 }
 
-VertexBuffer::VertexBuffer(unsigned int size) : mVertexBuffer(NULL)
+VertexBuffer::VertexBuffer(unsigned int size, LockResourceId id) : mVertexBuffer(NULL)
 {
     if(size > 0)
     {
-        mVertexBuffer = new sw::Resource(size + 1024);
+        mVertexBuffer = new sw::Resource(size + 1024, id);
         
         if(!mVertexBuffer)
         {
@@ -243,7 +245,7 @@ sw::Resource *VertexBuffer::getResource() const
     return mVertexBuffer;
 }
 
-ConstantVertexBuffer::ConstantVertexBuffer(float x, float y, float z, float w) : VertexBuffer(4 * sizeof(float))
+ConstantVertexBuffer::ConstantVertexBuffer(float x, float y, float z, float w, LockResourceId id) : VertexBuffer(4 * sizeof(float), id)
 {
     if(mVertexBuffer)
     {
@@ -262,8 +264,9 @@ ConstantVertexBuffer::~ConstantVertexBuffer()
 {
 }
 
-StreamingVertexBuffer::StreamingVertexBuffer(unsigned int size) : VertexBuffer(size)
+StreamingVertexBuffer::StreamingVertexBuffer(unsigned int size, LockResourceId id) : VertexBuffer(size, id)
 {
+    lockId = id;
     mBufferSize = size;
     mWritePosition = 0;
     mRequiredSpace = 0;
@@ -306,7 +309,7 @@ void StreamingVertexBuffer::reserveRequiredSpace()
 
         mBufferSize = std::max(mRequiredSpace, 3 * mBufferSize / 2);   // 1.5 x mBufferSize is arbitrary and should be checked to see we don't have too many reallocations.
 
-		mVertexBuffer = new sw::Resource(mBufferSize);
+		mVertexBuffer = new sw::Resource(mBufferSize, lockId);
     
         if(!mVertexBuffer)
         {
@@ -320,7 +323,7 @@ void StreamingVertexBuffer::reserveRequiredSpace()
         if(mVertexBuffer)
         {
             mVertexBuffer->destruct();
-			mVertexBuffer = new sw::Resource(mBufferSize);
+			mVertexBuffer = new sw::Resource(mBufferSize, lockId);
         }
 
         mWritePosition = 0;

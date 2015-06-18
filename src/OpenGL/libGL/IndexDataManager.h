@@ -37,12 +37,12 @@ struct TranslatedIndexData
 class StreamingIndexBuffer
 {
   public:
-    StreamingIndexBuffer(unsigned int initialSize);
+	  StreamingIndexBuffer(unsigned int initialSize, LockResourceId id);
     virtual ~StreamingIndexBuffer();
 
     void *map(unsigned int requiredSpace, unsigned int *offset);
 	void unmap();
-    void reserveSpace(unsigned int requiredSpace, GLenum type);
+	void reserveSpace(unsigned int requiredSpace, GLenum type, LockResourceId id);
 
 	sw::Resource *getResource() const;
 
@@ -55,7 +55,7 @@ class StreamingIndexBuffer
 class IndexDataManager
 {
   public:
-    IndexDataManager();
+	IndexDataManager(LockResourceId id);
     virtual ~IndexDataManager();
 
     GLenum prepareIndexData(GLenum type, GLsizei count, Buffer *arrayElementBuffer, const void *indices, TranslatedIndexData *translated);
@@ -63,6 +63,7 @@ class IndexDataManager
 	static std::size_t typeSize(GLenum type);
 
   private:
+	  LockResourceId lockId;
     StreamingIndexBuffer *mStreamingBuffer;
 };
 
