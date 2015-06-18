@@ -54,19 +54,31 @@ public:
 	~BindingPointer() { ASSERT(!object); }   // Objects have to be released before the resource manager is destroyed, so they must be explicitly cleaned up.
 
     ObjectType *operator=(ObjectType *newObject) 
-	{
-		if(newObject) newObject->addRef();
-		if(object) object->release();
+	{				
+		if(newObject)
+		{
+			newObject->addRef();
+		}
+		
+
+		if(object && !isCommon)
+		{
+			object->release();
+		}
+		else
+		{
+			isCommon = false;
+		}
 
 		object = newObject;
-
+		
 		return object;
 	}
     operator ObjectType*() const { return object; }
     ObjectType *operator->() const { return object; }
 	GLuint name() const { return object ? object->name : 0; }
-    bool operator!() const { return !object; }
-
+	bool operator!() const { return !object; }
+	bool isCommon = false;
 private:
     ObjectType *object;
 };

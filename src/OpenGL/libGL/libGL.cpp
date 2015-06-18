@@ -7426,7 +7426,7 @@ void APIENTRY glTexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 
 void APIENTRY glTexEnvi(GLenum target, GLenum pname, GLint param)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLenum target = %d, GLenum pname = %d, GLint param = %d)", target, pname, param);
 }
 
 void APIENTRY glTexEnviv(GLenum target, GLenum pname, const GLint *params)

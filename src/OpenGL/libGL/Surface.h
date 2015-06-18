@@ -38,8 +38,8 @@ class Display;
 class Surface
 {
 public:
-    Surface(Display *display, NativeWindowType window);
-    Surface(Display *display, GLint width, GLint height, GLenum textureFormat, GLenum textureTarget);
+	Surface(Display *display, NativeWindowType window);
+	Surface(Display *display, GLint width, GLint height, GLenum textureFormat, GLenum textureTarget);
 
     virtual ~Surface();
 
@@ -60,7 +60,7 @@ public:
 
 private:
     void release();
-    bool reset();
+	bool reset();
 
     Display *const mDisplay;
     Image *mDepthStencil;

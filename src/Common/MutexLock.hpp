@@ -13,6 +13,7 @@
 #define sw_MutexLock_hpp
 
 #include "Thread.hpp"
+#include "ThreadAnalyser.h"
 
 namespace sw
 {
@@ -36,13 +37,21 @@ namespace sw
 
 			return false;
 		}
-
-		void lock()
+		
+		void lock(LockResourceId lockId)
 		{
 			int backoff = 1;
+			bool logged = false;
 
 			while(!attemptLock())
 			{
+				if(!logged)
+				{
+					// Locked by another thread, log the conflict!
+					ThreadAnalyzer::Instance()->ConflictWhenLocking(lockId);
+					logged = true;
+				}
+
 				if(backoff <= 64)
 				{
 					for(int i = 0; i < backoff; i++)
@@ -99,6 +108,107 @@ namespace sw
 					backoff = 1;
 				}
 			};
+
+			// Succesfuly locked, no (more) conflicts!
+			ThreadAnalyzer::Instance()->UnlockedConflictingResource(lockId);
+		}
+
+		void unlock()
+		{
+			mutex = 0;
+		}
+
+		bool isLocked()
+		{
+			return mutex != 0;
+		}
+
+	private:
+		// Ensure that the mutex variable is on its own 64-byte cache line to avoid false sharing
+		volatile int a[16];
+		volatile int mutex;
+		volatile int b[15];
+	};
+
+	class SleeplessLock
+	{
+	public:
+		SleeplessLock()
+		{
+			mutex = 0;
+		}
+
+		bool attemptLock()
+		{
+			if(!isLocked())
+			{
+				if(atomicExchange(&mutex, 1) == 0)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		void lock(LockResourceId lockId)
+		{
+			int backoff = 1;
+			bool logged = false;
+			while(!attemptLock())
+			{
+				if(!logged)
+				{
+					// Locked by another thread, log the conflict!
+					ThreadAnalyzer::Instance()->ConflictWhenLocking(lockId);
+					logged = true;
+				}
+
+				nop();
+				nop();
+				nop();
+				nop();
+				nop();
+
+				nop();
+				nop();
+				nop();
+				nop();
+				nop();
+
+				nop();
+				nop();
+				nop();
+				nop();
+				nop();
+
+				nop();
+				nop();
+				nop();
+				nop();
+				nop();
+
+				nop();
+				nop();
+				nop();
+				nop();
+				nop();
+
+				nop();
+				nop();
+				nop();
+				nop();
+				nop();
+
+				nop();
+				nop();
+				nop();
+				nop();
+				nop();
+			};
+
+			// Succesfuly locked, no (more) conflicts!
+			ThreadAnalyzer::Instance()->UnlockedConflictingResource(lockId);
 		}
 
 		void unlock()

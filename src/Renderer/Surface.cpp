@@ -784,9 +784,9 @@ namespace sw
 		lock = LOCK_UNLOCKED;
 	}
 
-	Surface::Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice) : lockable(true), renderTarget(false)
+	Surface::Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice, LockResourceId id) : lockable(true), renderTarget(false)
 	{
-		resource = new Resource(0);
+		resource = new Resource(0, id);
 		hasParent = false;
 		ownExternal = false;
 		depth = max(1, depth);
@@ -834,9 +834,9 @@ namespace sw
 		paletteUsed = 0;
 	}
 
-	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget) : lockable(lockable), renderTarget(renderTarget)
+	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, LockResourceId id) : lockable(lockable), renderTarget(renderTarget)
 	{
-		resource = texture ? texture : new Resource(0);
+		resource = texture ? texture : new Resource(0, id);
 		hasParent = texture != 0;
 		ownExternal = true;
 		depth = max(1, depth);
@@ -2452,6 +2452,11 @@ namespace sw
 			bytes -= 1;
 		}
 	}
+	
+	void *Surface::getUnlockedBuffer()
+	{
+		return internal.buffer;
+	}
 
 	void Surface::clearColorBuffer(unsigned int colorARGB, unsigned int rgbaMask, int x0, int y0, int width, int height)
 	{
@@ -2834,7 +2839,6 @@ namespace sw
 
 		const bool entire = x0 == 0 && y0 == 0 && width == internal.width && height == internal.height;
 		const Lock lock = entire ? LOCK_DISCARD : LOCK_WRITEONLY;
-
 		int width2 = (internal.width + 1) & ~1;
 
 		int x1 = x0 + width;
@@ -2865,6 +2869,8 @@ namespace sw
 			}
 
 			float *buffer = (float*)lockInternal(0, 0, 0, lock, PUBLIC);
+			/*deallocate(buffer);
+			buffer = (float*)allocateBuffer(internal.width, internal.height, internal.depth, internal.format);*/
 
 			for(int z = 0; z < internal.depth; z++)
 			{

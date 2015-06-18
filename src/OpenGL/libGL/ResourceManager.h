@@ -21,7 +21,7 @@
 #include <windows.h>
 #include <GL/GL.h>
 #include <GL/glext.h>
-
+#include "Common\ThreadAnalyser.h"
 #include <map>
 
 namespace gl

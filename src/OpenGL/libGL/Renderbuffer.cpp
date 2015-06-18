@@ -405,7 +405,7 @@ DepthStencilbuffer::DepthStencilbuffer(int width, int height, GLsizei samples)
 
 	if(width > 0 && height > 0)
 	{
-		mDepthStencil = device->createDepthStencilSurface(width, height, sw::FORMAT_D24S8, supportedSamples, false);
+		mDepthStencil = device->createDepthStencilSurface(width, height, sw::FORMAT_D24FS8/* sw::FORMAT_D24S8*/, supportedSamples, false);
 
 		if(!mDepthStencil)
 		{
@@ -417,7 +417,7 @@ DepthStencilbuffer::DepthStencilbuffer(int width, int height, GLsizei samples)
 	mWidth = width;
 	mHeight = height;
 	format = GL_DEPTH24_STENCIL8_EXT;
-	internalFormat = sw::FORMAT_D24S8;
+	internalFormat = sw::FORMAT_D24FS8/*sw::FORMAT_D24S8*/;
 	mSamples = supportedSamples & ~1;
 }
 

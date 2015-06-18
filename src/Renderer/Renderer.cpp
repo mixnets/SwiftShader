@@ -27,12 +27,13 @@
 #include "Constants.hpp"
 #include "Debug.hpp"
 #include "Reactor/Reactor.hpp"
+#include "ThreadAnalyser.h"
 
 #include <malloc.h>
 
 #undef max
 
-bool disableServer = true;
+bool disableServer = false;
 
 #ifndef NDEBUG
 unsigned int minPrimitives = 1;
@@ -166,7 +167,7 @@ namespace sw
 		swiftConfig = new SwiftConfig(disableServer);
 		updateConfiguration(true);
 
-		sync = new Resource(0);
+		sync = new Resource(0, LockResourceId::RendererSync);
 	}
 
 	Renderer::~Renderer()
@@ -177,6 +178,7 @@ namespace sw
 		clipper = 0;
 
 		terminateThreads();
+
 		delete resumeApp;
 
 		for(int draw = 0; draw < DRAW_COUNT; draw++)
@@ -223,7 +225,7 @@ namespace sw
 			{
 				continue;
 			}
-
+			
 			sync->lock(sw::PRIVATE);
 
 			Routine *vertexRoutine;
@@ -328,9 +330,17 @@ namespace sw
 				data->input[i] = context->input[i].buffer;
 				data->stride[i] = context->input[i].stride;
 
+				//if(draw->vertexStream[i])
+				//{
+				//	draw->vertexStream[i]->lock(MANAGED);// ->lock(PUBLIC, MANAGED/*PRIVATE*/);
+				//}
+			}
+			
+			for(int i = 0; i < 6; i++)
+			{
 				if(draw->vertexStream[i])
 				{
-					draw->vertexStream[i]->lock(PUBLIC, PRIVATE);
+					draw->vertexStream[i]->lock(MANAGED);// ->lock(PUBLIC, MANAGED/*PRIVATE*/);
 				}
 			}
 
@@ -346,13 +356,12 @@ namespace sw
 				draw->texture[sampler] = 0;
 			}
 
-			for(int sampler = 0; sampler < TEXTURE_IMAGE_UNITS; sampler++)
+			for(int sampler = 0; sampler < 2/*TEXTURE_IMAGE_UNITS*/; sampler++)
 			{
 				if(pixelState.sampler[sampler].textureType != TEXTURE_NULL)
 				{
 					draw->texture[sampler] = context->texture[sampler];
-					draw->texture[sampler]->lock(PUBLIC, isReadWriteTexture(sampler) ? MANAGED : PRIVATE);   // If the texure is both read and written, use the same read/write lock as render targets
-
+					//draw->texture[sampler]->lock(PUBLIC, isReadWriteTexture(sampler) ? MANAGED : PRIVATE);   // If the texure is both read and written, use the same read/write lock as render targets
 					data->mipmap[sampler] = context->sampler[sampler].getTextureData();
 				}
 			}
@@ -562,10 +571,11 @@ namespace sw
 					if(clipFlags & Clipper::CLIP_PLANE5) data->clipPlane[5] = clipPlane[5];
 				}
 			}
-
+			
+			//static bool firstTime = true;
 			// Target
 			{
-				for(int index = 0; index < 4; index++)
+				for(int index = 0; index < 1/*4*/; index++)
 				{
 					draw->renderTarget[index] = context->renderTarget[index];
 
@@ -581,7 +591,15 @@ namespace sw
 
 				if(draw->depthStencil)
 				{
-					data->depthBuffer = (float*)context->depthStencil->lockInternal(0, 0, q * ms, LOCK_READWRITE, MANAGED);
+
+					/*if(firstTime)
+					{
+						data->depthBuffer = (float*)context->depthStencil->lockInternal(0, 0, q * ms, LOCK_UNLOCKED, MANAGED);
+					}
+					else
+					{*/
+						data->depthBuffer = (float*)context->depthStencil->getUnlockedBuffer();//(float*)context->depthStencil->lockInternal(0, 0, q * ms, LOCK_UNLOCKED, MANAGED);
+					/*}*/
 					data->depthPitchB = context->depthStencil->getInternalPitchB();
 					data->depthSliceB = context->depthStencil->getInternalSliceB();
 
@@ -604,7 +622,7 @@ namespace sw
 
 			draw->references = (count + batch - 1) / batch;
 
-			schedulerMutex.lock();
+			schedulerMutex.lock(LockResourceId::RendererSchedulerLock);
 			nextDraw++;
 			schedulerMutex.unlock();
 
@@ -737,7 +755,7 @@ namespace sw
 
 	void Renderer::scheduleTask(int threadIndex)
 	{
-		schedulerMutex.lock();
+		schedulerMutex.lock(LockResourceId::RendererSchedulerLock);
 
 		if((int)qSize < threadCount - threadsAwake + 1)
 		{
@@ -758,6 +776,7 @@ namespace sw
 					if(task[i].type == Task::SUSPEND)
 					{
 						suspend[i]->wait();
+
 						task[i].type = Task::RESUME;
 						resume[i]->signal();
 
@@ -787,6 +806,7 @@ namespace sw
 		{
 		case Task::PRIMITIVES:
 			{
+				ThreadAnalyzer::Instance()->startTask(threadIndex, task[threadIndex].type);
 				int unit = task[threadIndex].primitiveUnit;
 				
 				int input = primitiveProgress[unit].firstPrimitive;
@@ -810,10 +830,13 @@ namespace sw
 				#if PERF_HUD
 					setupTime[threadIndex] += Timer::ticks() - startTick;
 				#endif
+				
+				ThreadAnalyzer::Instance()->endTask(threadIndex, task[threadIndex].type);
 			}
 			break;
 		case Task::PIXELS:
 			{
+				ThreadAnalyzer::Instance()->startTask(threadIndex, task[threadIndex].type);
 				int unit = task[threadIndex].primitiveUnit;
 				int visible = primitiveProgress[unit].visible;
 
@@ -833,11 +856,15 @@ namespace sw
 				#if PERF_HUD
 					pixelTime[threadIndex] += Timer::ticks() - startTick;
 				#endif
+				
+				ThreadAnalyzer::Instance()->endTask(threadIndex, SLEEP_TASK);
 			}
 			break;
 		case Task::RESUME:
+			ThreadAnalyzer::Instance()->endTask(threadIndex, SLEEP_TASK);
 			break;
 		case Task::SUSPEND:
+			ThreadAnalyzer::Instance()->startTask(threadIndex, SLEEP_TASK);
 			break;
 		default:
 			ASSERT(false);
@@ -904,7 +931,7 @@ namespace sw
 					draw.queries = 0;
 				}
 
-				for(int i = 0; i < 4; i++)
+				for(int i = 0; i < 1/*4*/; i++)
 				{
 					if(draw.renderTarget[i])
 					{
@@ -914,15 +941,15 @@ namespace sw
 
 				if(draw.depthStencil)
 				{
-					draw.depthStencil->unlockInternal();
+					//draw.depthStencil->unlockInternal();
 					draw.depthStencil->unlockStencil();
 				}
 
-				for(int i = 0; i < TOTAL_IMAGE_UNITS; i++)
+				for(int i = 0; i < 2/*TOTAL_IMAGE_UNITS*/; i++)
 				{
 					if(draw.texture[i])
 					{
-						draw.texture[i]->unlock();
+						//draw.texture[i]->unlock();
 					}
 				}
 
@@ -933,6 +960,16 @@ namespace sw
 						draw.vertexStream[i]->unlock();
 					}
 				}
+
+				//if(draw.vertexStream[0])
+				//{
+				//	draw.vertexStream[0]->unlock();
+				//}
+
+				//if(draw.vertexStream[2])
+				//{
+				//	draw.vertexStream[2]->unlock();
+				//}
 
 				if(draw.indexBuffer)
 				{
@@ -2536,6 +2573,9 @@ namespace sw
 			case 1:  transparencyAntialiasing = TRANSPARENCY_ALPHA_TO_COVERAGE; break;
 			default: transparencyAntialiasing = TRANSPARENCY_NONE;              break;
 			}
+
+			ThreadAnalyzer::Instance()->setThreadAnalysisActive(configuration.threadAnalysisActive);
+			ThreadAnalyzer::Instance()->setResourceAnalysisActive(configuration.resourceContentionActive);
 
 			switch(configuration.threadCount)
 			{

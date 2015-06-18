@@ -359,7 +359,7 @@ namespace sw
 
 	bool TextureStage::uses(SourceArgument source) const
 	{
-		return usesColor(source) || usesAlpha(source);
+		return usesColor(source) /*|| usesAlpha(source)*/;
 	}
 
 	bool TextureStage::usesCurrent() const

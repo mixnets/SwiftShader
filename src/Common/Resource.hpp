@@ -27,7 +27,7 @@ namespace sw
 	class Resource
 	{
 	public:
-		Resource(size_t bytes);
+		Resource(size_t bytes, LockResourceId id);
 
 		void destruct();   // Asynchronous destructor
 
@@ -36,12 +36,15 @@ namespace sw
 		void unlock();
 		void unlock(Accessor relinquisher);
 
+		void *getBufferUnlocked();
+
 		const void *data() const;
 		const size_t size;
 
 	private:
 		~Resource();   // Always call destruct() instead
 
+		LockResourceId resourceId;
 		BackoffLock criticalSection;
 		Event unblock;
 		volatile int blocked;

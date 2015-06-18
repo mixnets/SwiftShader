@@ -15,7 +15,7 @@
 
 namespace sw
 {
-	Resource::Resource(size_t bytes) : size(bytes)
+	Resource::Resource(size_t bytes, LockResourceId id) : size(bytes), resourceId(id)
 	{
 		blocked = 0;
 
@@ -33,7 +33,7 @@ namespace sw
 
 	void *Resource::lock(Accessor claimer)
 	{
-		criticalSection.lock();
+		criticalSection.lock(resourceId);
 
 		while(count != 0 && accessor != claimer)
 		{
@@ -42,7 +42,7 @@ namespace sw
 
 			unblock.wait();
 
-			criticalSection.lock();
+			criticalSection.lock(resourceId);
 			blocked--;
 		}
 
@@ -54,9 +54,14 @@ namespace sw
 		return buffer;
 	}
 
+	void *Resource::getBufferUnlocked()
+	{
+		return buffer;
+	}
+
 	void *Resource::lock(Accessor relinquisher, Accessor claimer)
 	{
-		criticalSection.lock();
+		criticalSection.lock(resourceId);
 
 		// Release
 		while(count > 0 && accessor == relinquisher)
@@ -88,7 +93,7 @@ namespace sw
 
 			unblock.wait();
 
-			criticalSection.lock();
+			criticalSection.lock(resourceId);
 			blocked--;
 		}
 
@@ -102,7 +107,7 @@ namespace sw
 
 	void Resource::unlock()
 	{
-		criticalSection.lock();
+		criticalSection.lock(resourceId);
 
 		count--;
 
@@ -127,7 +132,7 @@ namespace sw
 
 	void Resource::unlock(Accessor relinquisher)
 	{
-		criticalSection.lock();
+		criticalSection.lock(resourceId);
 
 		while(count > 0 && accessor == relinquisher)
 		{
@@ -155,7 +160,7 @@ namespace sw
 
 	void Resource::destruct()
 	{
-		criticalSection.lock();
+		criticalSection.lock(resourceId);
 
 		if(count == 0 && !blocked)
 		{
