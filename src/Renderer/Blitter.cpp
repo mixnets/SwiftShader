@@ -405,7 +405,7 @@ namespace sw
 		state.destFormat = dest->getFormat(useDestInternal);
 		state.filter = filter;
 
-		criticalSection.lock();
+		criticalSection.lock(LockResourceId::BlitterCriticalSection);
 		Routine *blitRoutine = blitCache->query(state);
 		
 		if(!blitRoutine)
