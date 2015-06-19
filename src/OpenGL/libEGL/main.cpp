@@ -359,6 +359,11 @@ EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image);
 EGLDisplay GetPlatformDisplayEXT(EGLenum platform, void *native_display, const EGLint *attrib_list);
 EGLSurface CreatePlatformWindowSurfaceEXT(EGLDisplay dpy, EGLConfig config, void *native_window, const EGLint *attrib_list);
 EGLSurface CreatePlatformPixmapSurfaceEXT(EGLDisplay dpy, EGLConfig config, void *native_pixmap, const EGLint *attrib_list);
+EGLSyncKHR CreateSyncKHR(EGLDisplay dpy, EGLenum type, const EGLint *attrib_list);
+EGLBoolean DestroySyncKHR(EGLDisplay dpy, EGLSyncKHR sync);
+EGLint ClientWaitSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint flags, EGLTimeKHR timeout);
+EGLBoolean GetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, EGLint *value);
+EGLint DupNativeFenceFDANDROID(EGLDisplay dpy, EGLSyncKHR sync);
 __eglMustCastToProperFunctionPointerType GetProcAddress(const char *procname);
 }
 
@@ -554,6 +559,31 @@ EGLAPI EGLSurface EGLAPIENTRY eglCreatePlatformPixmapSurfaceEXT(EGLDisplay dpy, 
 	return egl::CreatePlatformPixmapSurfaceEXT(dpy, config, native_pixmap, attrib_list);
 }
 
+EGLAPI EGLSyncKHR EGLAPIENTRY eglCreateSyncKHR(EGLDisplay dpy, EGLenum type, const EGLint *attrib_list)
+{
+	return egl::CreateSyncKHR(dpy, type, attrib_list);
+}
+
+EGLAPI EGLBoolean EGLAPIENTRY eglDestroySyncKHR(EGLDisplay dpy, EGLSyncKHR sync)
+{
+	return egl::DestroySyncKHR(dpy, sync);
+}
+
+EGLAPI EGLint EGLAPIENTRY eglClientWaitSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint flags, EGLTimeKHR timeout)
+{
+	return egl::ClientWaitSyncKHR(dpy, sync, flags, timeout);
+}
+
+EGLAPI EGLBoolean EGLAPIENTRY eglGetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, EGLint *value)
+{
+	return egl::GetSyncAttribKHR(dpy, sync, attribute, value);
+}
+
+EGLAPI EGLint EGLAPIENTRY eglDupNativeFenceFDANDROID(EGLDisplay dpy, EGLSyncKHR sync)
+{
+	return egl::DupNativeFenceFDANDROID(dpy, sync);
+}
+
 EGLAPI __eglMustCastToProperFunctionPointerType EGLAPIENTRY eglGetProcAddress(const char *procname)
 {
 	return egl::GetProcAddress(procname);
@@ -598,6 +628,11 @@ LibEGLexports::LibEGLexports()
 	this->eglCreateImageKHR = egl::CreateImageKHR;
 	this->eglDestroyImageKHR = egl::DestroyImageKHR;
 	this->eglGetProcAddress = egl::GetProcAddress;
+	this->eglCreateSyncKHR = egl::CreateSyncKHR;
+	this->eglDestroySyncKHR = egl::DestroySyncKHR;
+	this->eglClientWaitSyncKHR = egl::ClientWaitSyncKHR;
+	this->eglGetSyncAttribKHR = egl::GetSyncAttribKHR;
+	this->eglDupNativeFenceFDANDROID = egl::DupNativeFenceFDANDROID;
 
 	this->clientGetCurrentContext = egl::getCurrentContext;
 	this->clientGetCurrentDisplay = egl::getCurrentDisplay;

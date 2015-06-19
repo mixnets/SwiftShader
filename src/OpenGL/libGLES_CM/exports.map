@@ -205,6 +205,11 @@ global:
     glDrawTexxvOES;
     glDrawTexfOES;
     glDrawTexfvOES;
+    eglCreateSyncKHR;
+    eglDestroySyncKHR;
+    eglClientWaitSyncKHR;
+    eglGetSyncAttribKHR;
+    eglDupNativeFenceFDANDROID;
 
     libGLES_CM_swiftshader;
 
