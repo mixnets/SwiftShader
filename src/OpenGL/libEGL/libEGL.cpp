@@ -1114,6 +1114,10 @@ __eglMustCastToProperFunctionPointerType GetProcAddress(const char *procname)
 		if(proc) return proc;
 	}
 
+#ifdef __ANDROID__
+	ALOGI("badness: returning NULL from %s(%s)", __FUNCTION__, procname);
+#endif
+
 	return NULL;
 }
 }
