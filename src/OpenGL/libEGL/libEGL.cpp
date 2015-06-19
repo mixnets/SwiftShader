@@ -952,6 +952,100 @@ EGLSurface CreatePlatformPixmapSurfaceEXT(EGLDisplay dpy, EGLConfig config, void
 	return CreatePixmapSurface(dpy, config, (EGLNativePixmapType)native_pixmap, attrib_list);
 }
 
+#define FENCE_SYNC_HANDLE (EGLSyncKHR)0xFE4CE
+
+EGLSyncKHR CreateSyncKHR(EGLDisplay dpy, EGLenum type, const EGLint *attrib_list)
+{
+	egl::Display *display = static_cast<egl::Display*>(dpy);
+    if (!validateDisplay(display))
+	{
+		return error(EGL_BAD_DISPLAY, EGL_NO_SYNC_KHR);
+	}
+
+    if (type != EGL_SYNC_FENCE_KHR ||
+            (attrib_list != NULL && attrib_list[0] != EGL_NONE)) {
+        return error(EGL_BAD_ATTRIBUTE, EGL_NO_SYNC_KHR);
+    }
+
+	egl::Context *context = static_cast<egl::Context*>(egl::getCurrentContext());
+	if (!validateContext(display, context))
+	{
+        return error(EGL_BAD_MATCH, EGL_NO_SYNC_KHR);
+    }
+
+    return FENCE_SYNC_HANDLE;
+}
+
+EGLBoolean DestroySyncKHR(EGLDisplay dpy, EGLSyncKHR sync)
+{
+	egl::Display *display = static_cast<egl::Display*>(dpy);
+    if (!validateDisplay(display))
+	{
+		return error(EGL_BAD_DISPLAY, EGL_FALSE);
+	}
+
+    if (sync != FENCE_SYNC_HANDLE) {
+        return error(EGL_BAD_PARAMETER, EGL_FALSE);
+    }
+
+    return EGL_TRUE;
+}
+
+EGLint ClientWaitSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint flags,
+        EGLTimeKHR timeout)
+{
+	egl::Display *display = static_cast<egl::Display*>(dpy);
+    if (!validateDisplay(display))
+	{
+		return error(EGL_BAD_DISPLAY, EGL_FALSE);
+	}
+
+    (void)flags;
+    (void)timeout;
+
+    if (sync != FENCE_SYNC_HANDLE)
+	{
+        return error(EGL_BAD_PARAMETER, EGL_FALSE);
+    }
+
+    return EGL_CONDITION_SATISFIED_KHR;
+}
+
+EGLBoolean GetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync,
+        EGLint attribute, EGLint *value)
+{
+	egl::Display *display = static_cast<egl::Display*>(dpy);
+    if (!validateDisplay(display))
+	{
+		return error(EGL_BAD_DISPLAY, EGL_FALSE);
+	}
+
+
+    if (sync != FENCE_SYNC_HANDLE)
+	{
+        return error(EGL_BAD_PARAMETER, EGL_FALSE);
+    }
+
+    switch (attribute) {
+    case EGL_SYNC_TYPE_KHR:
+        *value = EGL_SYNC_FENCE_KHR;
+        return EGL_TRUE;
+    case EGL_SYNC_STATUS_KHR:
+        *value = EGL_SIGNALED_KHR;
+        return EGL_TRUE;
+    case EGL_SYNC_CONDITION_KHR:
+        *value = EGL_SYNC_PRIOR_COMMANDS_COMPLETE_KHR;
+        return EGL_TRUE;
+    default:
+        return error(EGL_BAD_ATTRIBUTE, EGL_FALSE);
+    }
+}
+
+EGLint DupNativeFenceFDANDROID(EGLDisplay dpy, EGLSyncKHR sync)
+{
+	return -1;
+}
+
 __eglMustCastToProperFunctionPointerType GetProcAddress(const char *procname)
 {
 	TRACE("(const char *procname = \"%s\")", procname);
@@ -971,6 +1065,11 @@ __eglMustCastToProperFunctionPointerType GetProcAddress(const char *procname)
 		EXTENSION(eglGetPlatformDisplayEXT),
 		EXTENSION(eglCreatePlatformWindowSurfaceEXT),
 		EXTENSION(eglCreatePlatformPixmapSurfaceEXT),
+		EXTENSION(eglCreateSyncKHR),
+		EXTENSION(eglDestroySyncKHR),
+		EXTENSION(eglClientWaitSyncKHR),
+		EXTENSION(eglGetSyncAttribKHR),
+		EXTENSION(eglDupNativeFenceFDANDROID),
 
 		#undef EXTENSION
 	};
