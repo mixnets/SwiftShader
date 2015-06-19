@@ -54,7 +54,7 @@ for config in ${CONFIGS}; do
 
   TARGET_ARCH=$(get_build_var TARGET_ARCH)
 
-  rm -rf ${OBJECT_DIR}/${TARGET_ARCH}
+  # rm -rf ${OBJECT_DIR}/${TARGET_ARCH}
   make -j ${JOBS} \
      libEGL_swiftshader_vendor_debug \
      libEGL_swiftshader_vendor_release \
@@ -84,6 +84,8 @@ for config in ${CONFIGS}; do
   git add ${TARGET_ARCH}
   popd
 done
+
+exit 0
 
 # Decide if we need any warning in the commit message
 
