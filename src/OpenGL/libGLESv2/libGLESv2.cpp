@@ -2943,6 +2943,7 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 
 		GLenum attachmentType;
 		GLuint attachmentHandle;
+		GLint attachmentLayer(0);
 		switch(attachment)
 		{
 		case GL_COLOR_ATTACHMENT1:
@@ -2972,6 +2973,7 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 			}
 			attachmentType = framebuffer->getColorbufferType(attachment - GL_COLOR_ATTACHMENT0);
 			attachmentHandle = framebuffer->getColorbufferName(attachment - GL_COLOR_ATTACHMENT0);
+			attachmentLayer = framebuffer->getColorbufferLayer(attachment - GL_COLOR_ATTACHMENT0);
 			break;
 		case GL_DEPTH_ATTACHMENT:
 			attachmentType = framebuffer->getDepthbufferType();
@@ -3037,6 +3039,13 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 			{
 				return error(GL_INVALID_ENUM);
 			}
+			break;
+		case GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER:
+			if(clientVersion >= 3)
+			{
+				*params = attachmentLayer;
+			}
+			else return error(GL_INVALID_ENUM);
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
