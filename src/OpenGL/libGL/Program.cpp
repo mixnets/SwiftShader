@@ -125,7 +125,7 @@ namespace gl
 			fragmentShader = (FragmentShader*)shader;
 			fragmentShader->addRef();
 		}
-		else UNREACHABLE();
+		else UNREACHABLE(shader->getType());
 
 		return true;
 	}
@@ -152,7 +152,7 @@ namespace gl
 			fragmentShader->release();
 			fragmentShader = 0;
 		}
-		else UNREACHABLE();
+		else UNREACHABLE(shader->getType());
 
 		return true;
 	}
@@ -231,7 +231,7 @@ namespace gl
 				logicalTextureUnit = samplersVS[samplerIndex].logicalTextureUnit;
 			}
 			break;
-		default: UNREACHABLE();
+		default: UNREACHABLE(type);
 		}
 
 		if(logicalTextureUnit >= 0 && logicalTextureUnit < MAX_COMBINED_TEXTURE_IMAGE_UNITS)
@@ -255,7 +255,7 @@ namespace gl
 			ASSERT(samplerIndex < sizeof(samplersVS)/sizeof(samplersVS[0]));
 			ASSERT(samplersVS[samplerIndex].active);
 			return samplersVS[samplerIndex].textureType;
-		default: UNREACHABLE();
+		default: UNREACHABLE(type);
 		}
 
 		return TEXTURE_2D;
@@ -825,7 +825,7 @@ namespace gl
 				}
 			}
 			break;
-		  default: UNREACHABLE();
+		  default: UNREACHABLE(targetUniform->type);
 		}
 
 		return true;
@@ -873,7 +873,7 @@ namespace gl
 			memcpy(params, targetUniform->data + uniformIndex[location].element * count * sizeof(GLint),
 				   count * sizeof(GLint));
 			break;
-		  default: UNREACHABLE();
+		  default: UNREACHABLE(targetUniform->type);
 		}
 
 		return true;
@@ -928,7 +928,7 @@ namespace gl
 				  case GL_INT_VEC3:   applyUniform3iv(location, size, i);       break;
 				  case GL_INT_VEC4:   applyUniform4iv(location, size, i);       break;
 				  default:
-					UNREACHABLE();
+					UNREACHABLE(targetUniform->type);
 				}
 
 				targetUniform->dirty = false;
@@ -1059,7 +1059,7 @@ namespace gl
 					success = true;
 				}
 			}
-			else UNREACHABLE();
+			else UNREACHABLE(m);
 
 			if(!success)
 			{
@@ -1347,7 +1347,7 @@ namespace gl
 						return false;
 					}
 				}
-				else UNREACHABLE();
+				else UNREACHABLE(shader);
 
 				index++;
 			}
@@ -1391,7 +1391,7 @@ namespace gl
 		{
 			uniform->psRegisterIndex = registerIndex;
 		}
-		else UNREACHABLE();
+		else UNREACHABLE(shader);
 
 		if(location == -1)   // Not previously defined
 		{
@@ -1420,7 +1420,7 @@ namespace gl
 				return false;
 			}
 		}
-		else UNREACHABLE();
+		else UNREACHABLE(shader);
 
 		return true;
 	}
