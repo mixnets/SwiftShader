@@ -4198,6 +4198,8 @@ GLboolean IsEnabled(GLenum cap)
 		case GL_DEPTH_TEST:               return context->isDepthTestEnabled();
 		case GL_BLEND:                    return context->isBlendEnabled();
 		case GL_DITHER:                   return context->isDitherEnabled();
+		case GL_PRIMITIVE_RESTART_FIXED_INDEX: return context->isPrimitiveRestartFixedIndexEnabled();
+		case GL_RASTERIZER_DISCARD:       return context->isRasterizerDiscardEnabled();
 		default:
 			return error(GL_INVALID_ENUM, false);
 		}
