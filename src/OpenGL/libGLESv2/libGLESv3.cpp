@@ -3884,7 +3884,35 @@ GL_APICALL void GL_APIENTRY glProgramParameteri(GLuint program, GLenum pname, GL
 	TRACE("(GLuint program = %d, GLenum pname = 0x%X, GLint value = %d)",
 	      program, pname, value);
 
-	UNIMPLEMENTED();
+	switch(value)
+	{
+	case GL_TRUE:
+	case GL_FALSE:
+		break;
+	default:
+		return error(GL_INVALID_VALUE);
+	}
+
+	es2::Context *context = es2::getContext();
+
+	if(context)
+	{
+		es2::Program *programObject = context->getProgram(program);
+
+		if(!programObject)
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+
+		switch(pname)
+		{
+		case GL_PROGRAM_BINARY_RETRIEVABLE_HINT:
+			programObject->setBinaryRetrievable(value == GL_TRUE);
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
+		}
+	}
 }
 
 GL_APICALL void GL_APIENTRY glInvalidateFramebuffer(GLenum target, GLsizei numAttachments, const GLenum *attachments)
