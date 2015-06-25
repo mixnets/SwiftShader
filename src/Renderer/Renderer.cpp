@@ -1856,14 +1856,13 @@ namespace sw
 
 	unsigned int Renderer::computeClipFlags(const float4 &v, const DrawData &data)
 	{
-		float clX = v.x + data.halfPixelX[0] * v.w;
-		float clY = v.y + data.halfPixelY[0] * v.w;
+		float clW = 2.0f * v.w;
 
-		return ((clX > v.w)  << 0) |
-			   ((clY > v.w)  << 1) |
+		return ((v.x > clW)  << 0) |
+			   ((v.y > clW)  << 1) |
 			   ((v.z > v.w)  << 2) |
-			   ((clX < -v.w) << 3) |
-		       ((clY < -v.w) << 4) |
+			   ((v.x < -clW) << 3) |
+		       ((v.y < -clW) << 4) |
 			   ((v.z < 0)    << 5) |
 			   Clipper::CLIP_FINITE;   // FIXME: xyz finite
 	}

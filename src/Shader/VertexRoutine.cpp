@@ -134,14 +134,8 @@ namespace sw
 			r.o[pos].y = r.o[pos].y + *Pointer<Float4>(r.data + OFFSET(DrawData,YYYY)) * r.o[pos].w;
 		}
 
-		Float4 clipX = r.o[pos].x;
-		Float4 clipY = r.o[pos].y;
-
-		if(state.multiSampling)   // Clip at pixel edges instead of pixel centers
-		{
-			clipX += *Pointer<Float4>(r.data + OFFSET(DrawData,halfPixelX)) * r.o[pos].w;
-			clipY += *Pointer<Float4>(r.data + OFFSET(DrawData,halfPixelY)) * r.o[pos].w;
-		}
+		Float4 clipX = r.o[pos].x * Float4(0.5f);
+		Float4 clipY = r.o[pos].y * Float4(0.5f);
 
 		Int4 maxX = CmpLT(r.o[pos].w, clipX);
 		Int4 maxY = CmpLT(r.o[pos].w, clipY);
