@@ -310,7 +310,7 @@ GLenum Shader::parseType(const std::string &type)
     {
         return GL_FLOAT_MAT4;
     }
-    else UNREACHABLE(type);
+    else UNREACHABLE(type.c_str());
 
     return GL_NONE;
 }
