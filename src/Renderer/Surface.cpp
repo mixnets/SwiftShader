@@ -2378,10 +2378,7 @@ namespace sw
 
 	void *Surface::allocateBuffer(int width, int height, int depth, Format format)
 	{
-		int width4 = (width + 3) & ~3;
-		int height4 = (height + 3) & ~3;
-
-		return allocateZero(size(width4, height4, depth, format));
+		return allocateZero(size(width, height, depth, format));
 	}
 
 	void Surface::memfill4(void *buffer, int pattern, int bytes)
