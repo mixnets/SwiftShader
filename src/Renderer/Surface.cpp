@@ -2378,7 +2378,9 @@ namespace sw
 
 	void *Surface::allocateBuffer(int width, int height, int depth, Format format)
 	{
-		return allocateZero(size(width, height, depth, format));
+		// FIXME: Unpacking byte4 to short4 in the sampler currently involves reading 8 bytes,
+		// so we have to allocate 4 extra bytes to avoid buffer overruns.
+		return allocateZero(size(width, height, depth, format) + 4);
 	}
 
 	void Surface::memfill4(void *buffer, int pattern, int bytes)
