@@ -22,6 +22,12 @@
 #include "common/debug.h"
 #include "Main/Register.hpp"
 
+#ifdef __ANDROID__
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <cutils/log.h>
+#endif
+
 #if !defined(_MSC_VER)
 #define CONSTRUCTOR __attribute__((constructor))
 #define DESTRUCTOR __attribute__((destructor))
@@ -43,6 +49,14 @@ static void glDetachThread()
 CONSTRUCTOR static void glAttachProcess()
 {
     TRACE("()");
+#ifdef __ANDROID__
+    rlimit rl;
+    rl.rlim_cur = RLIM_INFINITY;
+    rl.rlim_max = RLIM_INFINITY;
+    if (setrlimit(RLIMIT_CORE, &rl) == -1) {
+      ALOGE("setrlimit(RLIMIT_CORE) failed");
+    }
+#endif
 
     glAttachThread();
 }
