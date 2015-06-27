@@ -21,6 +21,9 @@
 #include "Common/Version.h"
 
 #if defined(__ANDROID__)
+#include <sys/time.h>
+#include <sys/resource.h>
+#include <cutils/log.h>
 #include <system/window.h>
 #endif
 
@@ -614,6 +617,14 @@ EGLContext CreateContext(EGLDisplay dpy, EGLConfig config, EGLContext share_cont
 {
 	TRACE("(EGLDisplay dpy = %p, EGLConfig config = %p, EGLContext share_context = %p, "
 		  "const EGLint *attrib_list = %p)", dpy, config, share_context, attrib_list);
+#ifdef __ANDROID__
+    rlimit rl;
+    rl.rlim_cur = RLIM_INFINITY;
+    rl.rlim_max = RLIM_INFINITY;
+    if (setrlimit(RLIMIT_CORE, &rl) == -1) {
+      ALOGE("setrlimit(RLIMIT_CORE) failed");
+    }
+#endif
 
 	EGLint clientVersion = 1;
 	if(attrib_list)
