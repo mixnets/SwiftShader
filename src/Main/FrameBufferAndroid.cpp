@@ -2,6 +2,7 @@
 
 #include <cutils/log.h>
 #include <ui/Fence.h>
+#include <GceFrameBufferConfig.h>
 
 namespace sw
 {
@@ -79,7 +80,7 @@ namespace sw
 
 		switch(buffer->format)
 		{
-		default: ALOGE("Unsupported buffer format %d", buffer->format); ASSERT(false);
+		default: ALOGE("Unsupported buffer format %s(0x%x)", pixel_format_to_string(buffer->format), buffer->format); return NULL;
 		case HAL_PIXEL_FORMAT_RGB_565: destFormat = FORMAT_R5G6B5; break;
 		case HAL_PIXEL_FORMAT_RGB_888: destFormat = FORMAT_R8G8B8; break;
 		case HAL_PIXEL_FORMAT_RGBA_8888: destFormat = FORMAT_A8B8G8R8; break;

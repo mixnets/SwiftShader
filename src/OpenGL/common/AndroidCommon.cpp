@@ -2,6 +2,7 @@
 #include "GL/glcorearb.h"
 #include "GL/glext.h"
 #include "EGL/egl.h"
+#include <GceFrameBufferConfig.h>
 
 #define GL_RGB565_OES                     0x8D62
 
@@ -38,7 +39,7 @@ GLenum getColorFormatFromAndroid(int format)
         case HAL_PIXEL_FORMAT_BLOB:
         case HAL_PIXEL_FORMAT_IMPLEMENTATION_DEFINED:
         default:
-			ALOGE("%s badness unsupported format=%x", __FUNCTION__, format);
+			ALOGE("%s badness unsupported format=%s(0x%x)", __FUNCTION__, pixel_format_to_string(format), format);
     }
     return GL_RGBA;
 }
@@ -104,16 +105,7 @@ GLenum isSupportedAndroidBuffer(GLuint name)
         case HAL_PIXEL_FORMAT_RGBX_8888:
             return EGL_SUCCESS;
         case HAL_PIXEL_FORMAT_RGB_565:
-#if LATER
-            if (GrallocModule::getInstance()->supportsConversion()) {
-                return EGL_SUCCESS;
-            } else {
-				ALOGE("badness %s failed: conversion not supported", __FUNCTION__ );
-                return EGL_BAD_PARAMETER;
-            }
-#else
             return EGL_SUCCESS;
-#endif
         default:
 			ALOGE("badness %s failed: bad format=%x", __FUNCTION__, nativeBuffer->format);
             return EGL_BAD_PARAMETER;
