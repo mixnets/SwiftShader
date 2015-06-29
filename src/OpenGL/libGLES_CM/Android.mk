@@ -54,6 +54,7 @@ COMMON_SHARED_LIBRARIES := \
 	libhardware \
 	libui \
 	libutils \
+	libgceframebufferconfig \
 	$(GCE_STLPORT_LIBS)
 
 COMMON_LDFLAGS := \
