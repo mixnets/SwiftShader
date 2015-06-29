@@ -70,6 +70,8 @@ void AndroidEnterDebugger();
 	#define TRACE(...) ((void)0)
 #endif
 
+const char* android_pixel_format_to_string(int format);
+
 void trace(const char *format, ...);
 
 #endif   // DebugAndroid_hpp
