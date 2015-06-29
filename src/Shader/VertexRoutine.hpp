@@ -91,7 +91,6 @@ namespace sw
 		Vector4f readStream(Registers &r, Pointer<Byte> &buffer, UInt &stride, const Stream &stream, const UInt &index);
 		void readInput(Registers &r, UInt &index);
 		void computeClipFlags(Registers &r);
-		void postTransform(Registers &r);
 		void writeCache(Pointer<Byte> &cacheLine, Registers &r);
 		void writeVertex(Pointer<Byte> &vertex, Pointer<Byte> &cacheLine);
 

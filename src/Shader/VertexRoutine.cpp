@@ -69,7 +69,6 @@ namespace sw
 
 					readInput(r, indexQ);
 					pipeline(r);
-					postTransform(r);
 					computeClipFlags(r);
 
 					Pointer<Byte> cacheLine0 = vertexCache + tagIndex * UInt((int)sizeof(Vertex));
@@ -481,22 +480,6 @@ namespace sw
 		return v;
 	}
 
-	void VertexRoutine::postTransform(Registers &r)
-	{
-		int pos = state.positionRegister;
-
-		if(halfIntegerCoordinates)
-		{
-			r.o[pos].x = r.o[pos].x - *Pointer<Float4>(r.data + OFFSET(DrawData,halfPixelX)) * r.o[pos].w;
-			r.o[pos].y = r.o[pos].y - *Pointer<Float4>(r.data + OFFSET(DrawData,halfPixelY)) * r.o[pos].w;
-		}
-
-		if(symmetricNormalizedDepth)
-		{
-			r.o[pos].z = (r.o[pos].z + r.o[pos].w) * Float4(0.5f);
-		}
-	}
-
 	void VertexRoutine::writeCache(Pointer<Byte> &cacheLine, Registers &r)
 	{
 		Vector4f v;
@@ -571,6 +554,17 @@ namespace sw
 		v.y = r.o[pos].y;
 		v.z = r.o[pos].z;
 		v.w = r.o[pos].w;
+
+		if(halfIntegerCoordinates)
+		{
+		//	v.x = v.x - *Pointer<Float4>(r.data + OFFSET(DrawData,halfPixelX)) * v.w;
+		//	v.y = v.y - *Pointer<Float4>(r.data + OFFSET(DrawData,halfPixelY)) * v.w;
+		}
+
+		if(symmetricNormalizedDepth)
+		{
+			v.z = (v.z + v.w) * Float4(0.5f);
+		}
 
 		Float4 w = As<Float4>(As<Int4>(v.w) | (As<Int4>(CmpEQ(v.w, Float4(0.0f))) & As<Int4>(Float4(1.0f))));
 		Float4 rhw = Float4(1.0f) / w;

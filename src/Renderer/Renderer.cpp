@@ -540,8 +540,8 @@ namespace sw
 
 				data->Wx16 = replicate(W * 16);
 				data->Hx16 = replicate(H * 16);
-				data->X0x16 = replicate(X0 * 16);
-				data->Y0x16 = replicate(Y0 * 16);
+				data->X0x16 = replicate(X0 * 16 - 0.5f / W);
+				data->Y0x16 = replicate(Y0 * 16 - 0.5f / H);
 				data->XXXX = replicate(X[s][q] / W);
 				data->YYYY = replicate(Y[s][q] / H);
 				data->halfPixelX = replicate(0.5f / W);
