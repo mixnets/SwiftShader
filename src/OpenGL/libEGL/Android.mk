@@ -37,6 +37,7 @@ COMMON_SHARED_LIBRARIES := \
 	libutils \
 	libcutils \
 	libhardware \
+	libgceframebufferconfig \
 	$(GCE_STLPORT_LIBS)
 
 COMMON_LDFLAGS := \
