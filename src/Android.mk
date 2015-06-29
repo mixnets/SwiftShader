@@ -98,6 +98,7 @@ LOCAL_C_INCLUDES += \
         $(LOCAL_PATH)/Common/ \
         $(LOCAL_PATH)/Shader/ \
         $(LOCAL_PATH)/LLVM/include \
-        $(LOCAL_PATH)/Main/
+        $(LOCAL_PATH)/Main/ \
+        device/google/gce/include
 
 include $(BUILD_STATIC_LIBRARY)
