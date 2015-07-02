@@ -118,7 +118,9 @@ void Display::terminate()
 
 gl::Context *Display::createContext(const gl::Context *shareContext)
 {
-    gl::Context *context = new gl::Context(shareContext);
+	initThreadAnalyzer();
+	ta = threadAnalyzer;
+    gl::Context *context = new gl::Context(shareContext, threadAnalyzer);
     mContextSet.insert(context);
 
     return context;
@@ -179,11 +181,11 @@ GLint Display::getMaxSwapInterval()
     return mMaxSwapInterval;
 }
 
-Surface *Display::getPrimarySurface()
+Surface *Display::getPrimarySurface(ThreadAnalyzer * ta)
 {
     if(mSurfaceSet.size() == 0)
 	{
-		Surface *surface = new Surface(this, WindowFromDC(displayId));
+		Surface *surface = new Surface(this, WindowFromDC(displayId), ta);
 
 		if(!surface->initialize())
 		{

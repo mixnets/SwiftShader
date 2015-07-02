@@ -29,8 +29,9 @@ namespace gl
 {
 	using namespace sw;
 
-	Device::Device(Context *context) : Renderer(context, OpenGL, true), context(context)
+	Device::Device(Context *context, ThreadAnalyzer * ta) : Renderer(context, OpenGL, true, ta), context(context)
 	{
+		threadAnalyzer = ta;
 		depthStencil = 0;
 		renderTarget = 0;
 
@@ -281,7 +282,7 @@ namespace gl
 			UNREACHABLE(format);
 		}
 
-		Image *surface = new Image(0, width, height, format, multiSampleDepth, lockable, true);
+		Image *surface = new Image(0, width, height, format, multiSampleDepth, lockable, true, LockResourceId::DeviceDepthStencil, threadAnalyzer);
 
 		if(!surface)
 		{
@@ -300,7 +301,7 @@ namespace gl
 			return 0;
 		}
 
-		Image *surface = new Image(0, width, height, format, multiSampleDepth, lockable, true);
+		Image *surface = new Image(0, width, height, format, multiSampleDepth, lockable, true, LockResourceId::DeviceRenderTarget, threadAnalyzer);
 
 		if(!surface)
 		{

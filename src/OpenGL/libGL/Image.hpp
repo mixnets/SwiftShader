@@ -26,8 +26,8 @@ namespace gl
 	class Image : public sw::Surface
 	{
 	public:
-		Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type);
-		Image(Texture *parentTexture, GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable, bool renderTarget);
+		Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type, LockResourceId id, ThreadAnalyzer * ta);
+		Image(Texture *parentTexture, GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable, bool renderTarget, LockResourceId id, ThreadAnalyzer * ta);
 
 		void loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, GLint unpackAlignment, const void *input);
 		void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);

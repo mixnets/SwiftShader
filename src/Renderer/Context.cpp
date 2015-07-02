@@ -18,6 +18,7 @@
 #include "Memory.hpp"
 #include "CPUID.hpp"
 #include "Debug.hpp"
+#include "ThreadAnalyser.h"
 
 #include <string.h>
 #include <malloc.h>
@@ -41,8 +42,9 @@ namespace sw
 	TransparencyAntialiasing transparencyAntialiasing = TRANSPARENCY_NONE;
 	bool forceClearRegisters = false;
 
-	Context::Context()
+	Context::Context(ThreadAnalyzer * ta)
 	{
+		threadAnalyzer = ta;
 		init();
 	}
 
@@ -578,10 +580,10 @@ namespace sw
 
 	bool Context::texCoordActive(int coordinate)
 	{
-		return texCoordActive(coordinate, 0) ||
+		return texCoordActive(coordinate, 0)  /*||
 		       texCoordActive(coordinate, 1) ||
 			   texCoordActive(coordinate, 2) ||
-			   texCoordActive(coordinate, 3);
+			   texCoordActive(coordinate, 3)*/;
 	}
 
 	bool Context::isProjectionComponent(unsigned int coordinate, int component)
@@ -1277,7 +1279,7 @@ namespace sw
 
 	bool Context::specularActive()
 	{
-		return specularActive(0) || specularActive(1) || specularActive(2) || specularActive(3);
+		return specularActive(0)/* || specularActive(1) || specularActive(2) || specularActive(3)*/;
 	}
 
 	bool Context::specularActive(int component)
@@ -1444,17 +1446,17 @@ namespace sw
 			return 0;
 		}
 
-		if(blendOperation() == BLENDOP_DEST && destBlendFactor() == BLEND_ONE &&
+		/*if(blendOperation() == BLENDOP_DEST && destBlendFactor() == BLEND_ONE &&
 		   (!separateAlphaBlendEnable || (blendOperationAlpha() == BLENDOP_DEST && destBlendFactorAlpha() == BLEND_ONE)))
 		{
 			return 0;
-		}
+		}*/
 
 		return colorWriteMask[index];
 	}
 
 	bool Context::colorUsed()
 	{
-		return colorWriteActive() || alphaTestActive() || (pixelShader && pixelShader->containsKill());
+		return colorWriteActive() /*|| alphaTestActive() || (pixelShader && pixelShader->containsKill())*/;
 	}
 }

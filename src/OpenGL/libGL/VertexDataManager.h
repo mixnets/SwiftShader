@@ -41,7 +41,7 @@ struct TranslatedAttribute
 class VertexBuffer
 {
   public:
-    VertexBuffer(unsigned int size);
+	  VertexBuffer(unsigned int size, LockResourceId id, ThreadAnalyzer * ta);
     virtual ~VertexBuffer();
 
     void unmap();
@@ -55,14 +55,14 @@ class VertexBuffer
 class ConstantVertexBuffer : public VertexBuffer
 {
   public:
-    ConstantVertexBuffer(float x, float y, float z, float w);
+	  ConstantVertexBuffer(float x, float y, float z, float w, LockResourceId id, ThreadAnalyzer * ta);
     ~ConstantVertexBuffer();
 };
 
 class StreamingVertexBuffer : public VertexBuffer
 {
   public:
-    StreamingVertexBuffer(unsigned int size);
+	  StreamingVertexBuffer(unsigned int size, LockResourceId id, ThreadAnalyzer * ta);
     ~StreamingVertexBuffer();
 
     void *map(const VertexAttribute &attribute, unsigned int requiredSpace, unsigned int *streamOffset);
@@ -70,6 +70,7 @@ class StreamingVertexBuffer : public VertexBuffer
     void addRequiredSpace(unsigned int requiredSpace);
 
   protected:
+	LockResourceId lockId;
     unsigned int mBufferSize;
     unsigned int mWritePosition;
     unsigned int mRequiredSpace;
@@ -78,14 +79,15 @@ class StreamingVertexBuffer : public VertexBuffer
 class VertexDataManager
 {
   public:
-    VertexDataManager(Context *context);
+	  VertexDataManager(Context *context, LockResourceId id, ThreadAnalyzer * ta);
     virtual ~VertexDataManager();
 
     void dirtyCurrentValue(int index) { mDirtyCurrentValue[index] = true; }
 
-    GLenum prepareVertexData(GLint start, GLsizei count, TranslatedAttribute *outAttribs);
+	GLenum prepareVertexData(GLint start, GLsizei count, TranslatedAttribute *outAttribs, ThreadAnalyzer * ta);
 
   private:
+	LockResourceId lockId;
     unsigned int writeAttributeData(StreamingVertexBuffer *vertexBuffer, GLint start, GLsizei count, const VertexAttribute &attribute);
 
     Context *const mContext;

@@ -21,7 +21,7 @@
 #include <windows.h>
 #include <GL/GL.h>
 #include <GL/glext.h>
-
+#include "Common\ThreadAnalyser.h"
 #include <map>
 
 namespace gl
@@ -45,7 +45,7 @@ enum TextureType
 class ResourceManager
 {
   public:
-    ResourceManager();
+    ResourceManager(ThreadAnalyzer * ta);
     ~ResourceManager();
 
     void addRef();
@@ -76,6 +76,7 @@ class ResourceManager
     void checkRenderbufferAllocation(GLuint renderbuffer);
 
   private:
+	ThreadAnalyzer * ta;
     std::size_t mRefCount;
 
     typedef std::map<GLint, Buffer*> BufferMap;

@@ -759,7 +759,7 @@ namespace sw
 			if(!logo)
 			{
 				#if S3TC_SUPPORT
-					logo = new Surface(0, logoWidth, logoHeight, 1, FORMAT_DXT5, true, false);
+					logo = new Surface(0, logoWidth, logoHeight, 1, FORMAT_DXT5, true, false, LockResourceId::Logo, threadAnalyzer);
 					void *data = logo->lockExternal(0, 0, 0, LOCK_WRITEONLY, sw::PUBLIC);
 					memcpy(data, logoData, logoWidth * logoHeight);
 					logo->unlockExternal();

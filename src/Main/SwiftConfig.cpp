@@ -15,7 +15,9 @@
 #include "Debug.hpp"
 #include "Config.hpp"
 #include "Version.h"
+#include "ThreadAnalyser.h"
 
+#include <algorithm>
 #include <sstream>
 #include <stdio.h>
 #include <time.h>
@@ -40,8 +42,9 @@ namespace sw
 		return ss.str();
 	}
 
-	SwiftConfig::SwiftConfig(bool disableServerOverride) : listenSocket(0)
+	SwiftConfig::SwiftConfig(bool disableServerOverride, ThreadAnalyzer * ta) : listenSocket(0)
 	{
+		threadAnalyzer = ta;
 		readConfiguration(disableServerOverride);
 
 		if(!disableServerOverride)
@@ -62,6 +65,12 @@ namespace sw
 		destroyServer();
 	}
 
+	struct Parameters
+	{
+		SwiftConfig *swiftConfig;
+		ThreadAnalyzer *threadAnalyzer;
+	};
+
 	void SwiftConfig::createServer()
 	{
 		bufferLength = 16 * 1024;
@@ -71,8 +80,11 @@ namespace sw
 		listenSocket = new Socket("localhost", "8080");
 		listenSocket->listen();
 
-		terminate = false;
-		serverThread = new Thread(serverRoutine, this);
+		terminate = false; 
+		Parameters parameters;
+		parameters.swiftConfig = this;
+		parameters.threadAnalyzer = threadAnalyzer;
+		serverThread = new Thread(serverRoutine, &parameters);
 	}
 
 	void SwiftConfig::destroyServer()
@@ -107,20 +119,32 @@ namespace sw
 
 	void SwiftConfig::getConfiguration(Configuration &configuration)
 	{
-		criticalSection.lock();
+		criticalSection.lock(LockResourceId::SwiftConfig, threadAnalyzer);
 		configuration = config;
 		criticalSection.unlock();
 	}
 
 	void SwiftConfig::serverRoutine(void *parameters)
 	{
-		SwiftConfig *swiftConfig = (SwiftConfig*)parameters;
+		threadAnalyzer = static_cast<Parameters*>(parameters)->threadAnalyzer;
+		SwiftConfig *swiftConfig = static_cast<Parameters*>(parameters)->swiftConfig;
 
 		swiftConfig->serverLoop();
 	}
 
 	void SwiftConfig::serverLoop()
 	{
+		/*while(&config == NULL)
+		{
+			nop();
+			nop();
+			nop();
+			nop();
+			nop();
+
+			Thread::yield();
+		}*/
+
 		readConfiguration();
 
 		while(!terminate)
@@ -182,7 +206,7 @@ namespace sw
 			{
 				if(match(&request, " ") || match(&request, "/ "))
 				{
-					criticalSection.lock();
+					criticalSection.lock(LockResourceId::SwiftConfig, threadAnalyzer);
 
 					const char *postData = strstr(request, "\r\n\r\n");
 					postData = postData ? postData + 4 : 0;
@@ -265,7 +289,8 @@ namespace sw
 		html += "</p><hr>\n";
 		html += "<h2><em>Device capabilities</em></h2>\n";
 		html += "<table>\n";
-		html += "<tr><td>Build revision:</td><td>" REVISION_STRING "</td></tr>\n";
+		html += "<tr><td>Build revision:</td><td>" REVISION_STRING "</td></tr>\n"; 
+		html += "<tr><td>Resource Contention Analysis:</td><td><input name='ThreadAnalysisActive' type='checkbox'" + (config.threadAnalysisActive == true ? checked : empty) + " title='Analyze the armount of time spent trying to access locked resources by all the threads.'></td></tr>";
 		html += "<tr><td>Pixel shader model:</td><td><select name='pixelShaderVersion' title='The highest version of pixel shader supported by SwiftShader. Lower versions might be faster if supported by the application. Only effective after restarting the application.'>\n";
 		html += "<option value='0'"  + (config.pixelShaderVersion ==  0 ? selected : empty) + ">0.0</option>\n";
 		html += "<option value='11'" + (config.pixelShaderVersion == 11 ? selected : empty) + ">1.1</option>\n";
@@ -459,50 +484,135 @@ namespace sw
 	std::string SwiftConfig::profile()
 	{
 		std::string html;
+		const std::string checked = "checked='checked'";
+		const std::string empty = "";
 
 		html += "<p>FPS: " + ftoa(profiler.FPS) + "</p>\n";
 		html += "<p>Frame: " + itoa(profiler.framesTotal) + "</p>\n";
 
-		#if PERF_PROFILE
-			int texTime = (int)(1000 * profiler.cycles[PERF_TEX] / profiler.cycles[PERF_PIXEL] + 0.5);
-			int shaderTime = (int)(1000 * profiler.cycles[PERF_SHADER] / profiler.cycles[PERF_PIXEL] + 0.5);
-			int pipeTime = (int)(1000 * profiler.cycles[PERF_PIPE] / profiler.cycles[PERF_PIXEL] + 0.5);
-			int ropTime = (int)(1000 * profiler.cycles[PERF_ROP] / profiler.cycles[PERF_PIXEL] + 0.5);
-			int interpTime = (int)(1000 * profiler.cycles[PERF_INTERP] / profiler.cycles[PERF_PIXEL] + 0.5);
-			int rastTime = 1000 - pipeTime;
+#if PERF_PROFILE
+		int texTime = (int)(1000 * profiler.cycles[PERF_TEX] / profiler.cycles[PERF_PIXEL] + 0.5);
+		int shaderTime = (int)(1000 * profiler.cycles[PERF_SHADER] / profiler.cycles[PERF_PIXEL] + 0.5);
+		int pipeTime = (int)(1000 * profiler.cycles[PERF_PIPE] / profiler.cycles[PERF_PIXEL] + 0.5);
+		int ropTime = (int)(1000 * profiler.cycles[PERF_ROP] / profiler.cycles[PERF_PIXEL] + 0.5);
+		int interpTime = (int)(1000 * profiler.cycles[PERF_INTERP] / profiler.cycles[PERF_PIXEL] + 0.5);
+		int rastTime = 1000 - pipeTime;
 
-			pipeTime -= shaderTime + ropTime + interpTime;
-			shaderTime -= texTime;
+		pipeTime -= shaderTime + ropTime + interpTime;
+		shaderTime -= texTime;
 
-			double texTimeF = (double)texTime / 10;
-			double shaderTimeF = (double)shaderTime / 10;
-			double pipeTimeF = (double)pipeTime / 10;
-			double ropTimeF = (double)ropTime / 10;
-			double interpTimeF = (double)interpTime / 10;
-			double rastTimeF = (double)rastTime / 10;
+		double texTimeF = (double)texTime / 10;
+		double shaderTimeF = (double)shaderTime / 10;
+		double pipeTimeF = (double)pipeTime / 10;
+		double ropTimeF = (double)ropTime / 10;
+		double interpTimeF = (double)interpTime / 10;
+		double rastTimeF = (double)rastTime / 10;
 
-			double averageRopOperations = profiler.ropOperationsTotal / std::max(profiler.framesTotal, 1) / 1.0e6f;
-			double averageCompressedTex = profiler.compressedTexTotal / std::max(profiler.framesTotal, 1) / 1.0e6f;
-			double averageTexOperations = profiler.texOperationsTotal / std::max(profiler.framesTotal, 1) / 1.0e6f;
+		double averageRopOperations = profiler.ropOperationsTotal / std::max(profiler.framesTotal, 1) / 1.0e6f;
+		double averageCompressedTex = profiler.compressedTexTotal / std::max(profiler.framesTotal, 1) / 1.0e6f;
+		double averageTexOperations = profiler.texOperationsTotal / std::max(profiler.framesTotal, 1) / 1.0e6f;
 
-			html += "<p>Raster operations (million): " + ftoa(profiler.ropOperationsFrame / 1.0e6f) + " (current), " + ftoa(averageRopOperations) + " (average)</p>\n";
-			html += "<p>Texture operations (million): " + ftoa(profiler.texOperationsFrame / 1.0e6f) + " (current), " + ftoa(averageTexOperations) + " (average)</p>\n";
-			html += "<p>Compressed texture operations (million): " + ftoa(profiler.compressedTexFrame / 1.0e6f) + " (current), " + ftoa(averageCompressedTex) + " (average)</p>\n";
-			html += "<div id='profile' style='position:relative; width:1010px; height:50px; background-color:silver;'>";
-			html += "<div style='position:relative; width:1000px; height:40px; background-color:white; left:5px; top:5px;'>";
-			html += "<div style='position:relative; float:left; width:" + itoa(rastTime)   + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FFFF7F; overflow:hidden;'>" + ftoa(rastTimeF)   + "% rast</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(pipeTime)   + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FF7F7F; overflow:hidden;'>" + ftoa(pipeTimeF)   + "% pipe</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(interpTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7FFFFF; overflow:hidden;'>" + ftoa(interpTimeF) + "% interp</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(shaderTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7FFF7F; overflow:hidden;'>" + ftoa(shaderTimeF) + "% shader</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(texTime)    + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FF7FFF; overflow:hidden;'>" + ftoa(texTimeF)    + "% tex</div>\n";
-			html += "<div style='position:relative; float:left; width:" + itoa(ropTime)    + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7F7FFF; overflow:hidden;'>" + ftoa(ropTimeF)    + "% rop</div>\n";
-			html += "</div></div>\n";
+		html += "<p>Raster operations (million): " + ftoa(profiler.ropOperationsFrame / 1.0e6f) + " (current), " + ftoa(averageRopOperations) + " (average)</p>\n";
+		html += "<p>Texture operations (million): " + ftoa(profiler.texOperationsFrame / 1.0e6f) + " (current), " + ftoa(averageTexOperations) + " (average)</p>\n";
+		html += "<p>Compressed texture operations (million): " + ftoa(profiler.compressedTexFrame / 1.0e6f) + " (current), " + ftoa(averageCompressedTex) + " (average)</p>\n";
+		html += "<div id='profile' style='position:relative; width:1010px; height:50px; background-color:silver;'>";
+		html += "<div style='position:relative; width:1000px; height:40px; background-color:white; left:5px; top:5px;'>";
+		html += "<div style='position:relative; float:left; width:" + itoa(rastTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FFFF7F; overflow:hidden;'>" + ftoa(rastTimeF) + "% rast</div>\n";
+		html += "<div style='position:relative; float:left; width:" + itoa(pipeTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FF7F7F; overflow:hidden;'>" + ftoa(pipeTimeF) + "% pipe</div>\n";
+		html += "<div style='position:relative; float:left; width:" + itoa(interpTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7FFFFF; overflow:hidden;'>" + ftoa(interpTimeF) + "% interp</div>\n";
+		html += "<div style='position:relative; float:left; width:" + itoa(shaderTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7FFF7F; overflow:hidden;'>" + ftoa(shaderTimeF) + "% shader</div>\n";
+		html += "<div style='position:relative; float:left; width:" + itoa(texTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#FF7FFF; overflow:hidden;'>" + ftoa(texTimeF) + "% tex</div>\n";
+		html += "<div style='position:relative; float:left; width:" + itoa(ropTime) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#7F7FFF; overflow:hidden;'>" + ftoa(ropTimeF) + "% rop</div>\n";
+		html += "</div></div>\n";
 
-			for(int i = 0; i < PERF_TIMERS; i++)
+		for(int i = 0; i < PERF_TIMERS; i++)
+		{
+			profiler.cycles[i] = 0;
+		}
+#endif
+
+		if(!threadAnalyzer->threadAnalysisActive)
+		{
+			return html;
+		}
+		
+		LockInfo * li = getLockInfo();
+		if(li == NULL)
+		{
+			return html;
+		}
+
+		int totalTime = 0;
+
+		for(int i = 0; i < LockResourceId::Last; i++)
+		{
+			totalTime += li[i].totalConflictingTime;
+		}
+
+		html += "<tr><td>Resource contention:</td></tr>";
+		html += "<div id='locks' style='position:relative; width:1010px; height:50px; background-color:silver;'>";
+		html += "<div style='position:relative; width:1000px; height:40px; background-color:white; left:5px; top:5px;'>";
+
+		static char * colors[LockResourceId::Last] =
+		{
+			"FFFF7F",
+			"FF7F7F",
+			"7FFFFF",
+			"7FFF7F",
+			"FF7FFF",
+			"7F7FFF",
+			"1FFF7F",
+			"FF3F7F",
+			"F0FF7F",
+			"FFF17F",
+			"F5FF7F",
+			"CC99CC",
+			"6FF7F3",
+			"F11F7F",
+			"F897F0",
+			"F2F48F",
+			"4F4F76",
+			"66FFFF",
+			"4F50F1"
+		};
+
+		for(int i = 0; i < LockResourceId::Last; i++)
+		{
+			int temp = (((double)li[i].totalConflictingTime)/ totalTime) * 1000;
+			html += "<div style='font-size:8pt; position:relative; float:left; width:" + itoa(temp) + "px; height:40px; border-style:none; text-align:center; line-height:40px; background-color:#" + colors[i] + "; overflow:hidden;' title='" + ftoa(((double)temp) / 10) + "% " +getLockName((LockResourceId)i) + "'>" + ftoa(((double)temp) / 10) + "% " + getLockName((LockResourceId)i) + "</div>\n";
+		}
+
+		html += "</div></div>\n";
+		
+		
+
+		ThreadTask * tt = getThreadTasks();
+		if(tt == NULL)
+		{
+			return html;
+		}
+		
+		int threadTime;
+
+		for(int i = 0; i < THREAD_AMOUNT; i++)
+		{
+			if(tt[i].timePixels == 0 && tt[i].timePrimitives == 0)
 			{
-				profiler.cycles[i] = 0;
+				continue;
 			}
-		#endif
+
+			html += "<tr><td>Thread " + itoa(i) + ":</td></tr>";
+			html += "<div id='locks' style='position:relative; width:1010px; height:30px; background-color:silver;'>";
+			html += "<div style='position:relative; width:1000px; height:20px; background-color:white; left:5px; top:5px;'>";
+			threadTime = tt[i].timePrimitives + tt[i].timePixels + tt[i].timeSleep;
+			int primitivesWidth = (double)tt[i].timePrimitives / threadTime * 1000;
+			int pixelsWidth = (double)tt[i].timePixels / threadTime * 1000;
+			int sleepWidth = (double)tt[i].timeSleep / threadTime * 1000;
+			html += "<div style='font-size:8pt; position:relative; float:left; width:" + itoa(primitivesWidth) + "px; height:20px; border-style:none; text-align:center; line-height:20px; background-color:#FFFF7F; overflow:hidden;' title='" + ftoa((double)(primitivesWidth) / 10) + "% Primitives'>" + ftoa((double)(primitivesWidth) / 10) + "% Primitives tasks</div>\n";
+			html += "<div style='font-size:8pt; position:relative; float:left; width:" + itoa(pixelsWidth) + "px; height:20px; border-style:none; text-align:center; line-height:20px; background-color:#FF7F7F; overflow:hidden;' title='" + ftoa((double)(pixelsWidth) / 10) + "% Pixels'>" + ftoa((double)(pixelsWidth) / 10) + "% Pixels tasks</div>\n";
+			html += "<div style='font-size:8pt; position:relative; float:left; width:" + itoa(sleepWidth) + "px; height:20px; border-style:none; text-align:center; line-height:20px; background-color:#7FFFFF; overflow:hidden;' title='" + ftoa((double)(sleepWidth) / 10) + "% Sleep'>" + ftoa((double)(sleepWidth) / 10) + "% Sleeping</div>\n";
+			html += "</div></div>\n";
+		}
 
 		return html;
 	}
@@ -530,6 +640,7 @@ namespace sw
 	void SwiftConfig::parsePost(const char *post)
 	{
 		// Only enabled checkboxes appear in the POST
+		config.threadAnalysisActive = false;
 		config.enableSSE = true;
 		config.enableSSE2 = false;
 		config.enableSSE3 = false;
@@ -550,7 +661,11 @@ namespace sw
 			int integer;
 			int index;
 
-			if(sscanf(post, "pixelShaderVersion=%d", &integer))
+			if(strstr(post, "ThreadAnalysisActive=on"))
+			{
+				config.threadAnalysisActive = true;
+			}
+			else if(sscanf(post, "pixelShaderVersion=%d", &integer))
 			{
 				config.pixelShaderVersion = integer;
 			}
@@ -747,6 +862,7 @@ namespace sw
 		config.disable10BitMode = ini.getBoolean("Testing", "Disable10BitMode", false);
 		config.frameBufferAPI = ini.getInteger("Testing", "FrameBufferAPI", 0);
 		config.precache = ini.getBoolean("Testing", "Precache", false);
+		//config.threadAnalysisActive = ini.getBoolean("Testing", "ThreadAnalysisActive", false);
 		config.shadowMapping = ini.getInteger("Testing", "ShadowMapping", 3);
 		config.forceClearRegisters = ini.getBoolean("Testing", "ForceClearRegisters", false);
 
@@ -804,6 +920,7 @@ namespace sw
 		ini.addValue("Testing", "DisableAlphaMode", itoa(config.disableAlphaMode));
 		ini.addValue("Testing", "Disable10BitMode", itoa(config.disable10BitMode));
 		ini.addValue("Testing", "FrameBufferAPI", itoa(config.frameBufferAPI));
+		ini.addValue("Testing", "ThreadAnalysisActive", itoa(config.threadAnalysisActive));
 		ini.addValue("Testing", "Precache", itoa(config.precache));
 		ini.addValue("Testing", "ShadowMapping", itoa(config.shadowMapping));
 		ini.addValue("Testing", "ForceClearRegisters", itoa(config.forceClearRegisters));

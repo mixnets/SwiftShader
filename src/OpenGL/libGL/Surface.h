@@ -38,8 +38,8 @@ class Display;
 class Surface
 {
 public:
-    Surface(Display *display, NativeWindowType window);
-    Surface(Display *display, GLint width, GLint height, GLenum textureFormat, GLenum textureTarget);
+	Surface(Display *display, NativeWindowType window, ThreadAnalyzer * ta);
+	Surface(Display *display, GLint width, GLint height, GLenum textureFormat, GLenum textureTarget, ThreadAnalyzer * ta);
 
     virtual ~Surface();
 
@@ -60,8 +60,9 @@ public:
 
 private:
     void release();
-    bool reset();
+	bool reset();
 
+	ThreadAnalyzer * ta;
     Display *const mDisplay;
     Image *mDepthStencil;
 	sw::FrameBuffer *frameBuffer;

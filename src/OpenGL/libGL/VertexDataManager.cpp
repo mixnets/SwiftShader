@@ -27,15 +27,17 @@ namespace
 namespace gl
 {
 
-VertexDataManager::VertexDataManager(Context *context) : mContext(context)
+	VertexDataManager::VertexDataManager(Context *context, LockResourceId id, ThreadAnalyzer * ta) : mContext(context)
 {
+	lockId = id;
+
     for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
     {
         mDirtyCurrentValue[i] = true;
         mCurrentValueBuffer[i] = NULL;
     }
 
-    mStreamingBuffer = new StreamingVertexBuffer(INITIAL_STREAM_BUFFER_SIZE);
+    mStreamingBuffer = new StreamingVertexBuffer(INITIAL_STREAM_BUFFER_SIZE, id, ta);
 
     if(!mStreamingBuffer)
     {
@@ -108,7 +110,7 @@ unsigned int VertexDataManager::writeAttributeData(StreamingVertexBuffer *vertex
     return streamOffset;
 }
 
-GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, TranslatedAttribute *translated)
+GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, TranslatedAttribute *translated, ThreadAnalyzer * ta)
 {
     if(!mStreamingBuffer)
     {
@@ -192,7 +194,7 @@ GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, Translat
                 if(mDirtyCurrentValue[i])
                 {
                     delete mCurrentValueBuffer[i];
-                    mCurrentValueBuffer[i] = new ConstantVertexBuffer(attribs[i].mCurrentValue[0], attribs[i].mCurrentValue[1], attribs[i].mCurrentValue[2], attribs[i].mCurrentValue[3]);
+                    mCurrentValueBuffer[i] = new ConstantVertexBuffer(attribs[i].mCurrentValue[0], attribs[i].mCurrentValue[1], attribs[i].mCurrentValue[2], attribs[i].mCurrentValue[3], lockId, ta);
                     mDirtyCurrentValue[i] = false;
                 }
 
@@ -209,11 +211,11 @@ GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, Translat
     return GL_NO_ERROR;
 }
 
-VertexBuffer::VertexBuffer(unsigned int size) : mVertexBuffer(NULL)
+VertexBuffer::VertexBuffer(unsigned int size, LockResourceId id, ThreadAnalyzer * ta) : mVertexBuffer(NULL)
 {
     if(size > 0)
     {
-        mVertexBuffer = new sw::Resource(size + 1024);
+		mVertexBuffer = new sw::Resource(size + 1024, id, ta);
         
         if(!mVertexBuffer)
         {
@@ -234,7 +236,7 @@ void VertexBuffer::unmap()
 {
     if(mVertexBuffer)
     {
-		mVertexBuffer->unlock();
+		//mVertexBuffer->unlock();
     }
 }
 
@@ -243,7 +245,7 @@ sw::Resource *VertexBuffer::getResource() const
     return mVertexBuffer;
 }
 
-ConstantVertexBuffer::ConstantVertexBuffer(float x, float y, float z, float w) : VertexBuffer(4 * sizeof(float))
+ConstantVertexBuffer::ConstantVertexBuffer(float x, float y, float z, float w, LockResourceId id, ThreadAnalyzer * ta) : VertexBuffer(4 * sizeof(float), id, ta)
 {
     if(mVertexBuffer)
     {
@@ -262,8 +264,10 @@ ConstantVertexBuffer::~ConstantVertexBuffer()
 {
 }
 
-StreamingVertexBuffer::StreamingVertexBuffer(unsigned int size) : VertexBuffer(size)
+StreamingVertexBuffer::StreamingVertexBuffer(unsigned int size, LockResourceId id, ThreadAnalyzer * ta) : VertexBuffer(size, id, ta)
 {
+	threadAnalyzer = ta;
+	lockId = id;
     mBufferSize = size;
     mWritePosition = 0;
     mRequiredSpace = 0;
@@ -285,7 +289,8 @@ void *StreamingVertexBuffer::map(const VertexAttribute &attribute, unsigned int 
     if(mVertexBuffer)
     {
 		// We can use a private lock because we never overwrite the content
-		mapPtr = (char*)mVertexBuffer->lock(sw::PRIVATE) + mWritePosition;
+		//mapPtr = (char*)mVertexBuffer->lock(sw::PRIVATE) + mWritePosition;
+		mapPtr = (char*)mVertexBuffer->getBufferUnlocked() + mWritePosition;
        
         *offset = mWritePosition;
         mWritePosition += requiredSpace;
@@ -306,7 +311,7 @@ void StreamingVertexBuffer::reserveRequiredSpace()
 
         mBufferSize = std::max(mRequiredSpace, 3 * mBufferSize / 2);   // 1.5 x mBufferSize is arbitrary and should be checked to see we don't have too many reallocations.
 
-		mVertexBuffer = new sw::Resource(mBufferSize);
+		mVertexBuffer = new sw::Resource(mBufferSize, lockId, threadAnalyzer);
     
         if(!mVertexBuffer)
         {
@@ -320,7 +325,7 @@ void StreamingVertexBuffer::reserveRequiredSpace()
         if(mVertexBuffer)
         {
             mVertexBuffer->destruct();
-			mVertexBuffer = new sw::Resource(mBufferSize);
+			mVertexBuffer = new sw::Resource(mBufferSize, lockId, threadAnalyzer);
         }
 
         mWritePosition = 0;

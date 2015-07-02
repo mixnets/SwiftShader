@@ -247,7 +247,7 @@ namespace sw
 	class Context
 	{
 	public:
-		Context();
+		Context(ThreadAnalyzer * ta);
 
 		~Context();
 

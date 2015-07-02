@@ -28,9 +28,11 @@ namespace
 namespace gl
 {
 
-IndexDataManager::IndexDataManager()
+IndexDataManager::IndexDataManager(LockResourceId id, ThreadAnalyzer * ta)
 {
-    mStreamingBuffer = new StreamingIndexBuffer(INITIAL_INDEX_BUFFER_SIZE);
+	threadAnalyzer = ta;
+	lockId = id;
+    mStreamingBuffer = new StreamingIndexBuffer(INITIAL_INDEX_BUFFER_SIZE, id, threadAnalyzer);
 
     if(!mStreamingBuffer)
     {
@@ -134,7 +136,7 @@ GLenum IndexDataManager::prepareIndexData(GLenum type, GLsizei count, Buffer *bu
 		unsigned int streamOffset = 0;
         int convertCount = count;
 
-        streamingBuffer->reserveSpace(convertCount * typeSize(type), type);
+        streamingBuffer->reserveSpace(convertCount * typeSize(type), type, lockId);
         void *output = streamingBuffer->map(typeSize(type) * convertCount, &streamOffset);
         
         if(output == NULL)
@@ -166,11 +168,12 @@ std::size_t IndexDataManager::typeSize(GLenum type)
     }
 }
 
-StreamingIndexBuffer::StreamingIndexBuffer(unsigned int initialSize) : mBufferSize(initialSize), mIndexBuffer(NULL)
+StreamingIndexBuffer::StreamingIndexBuffer(unsigned int initialSize, LockResourceId id, ThreadAnalyzer * ta) : mBufferSize(initialSize), mIndexBuffer(NULL)
 {
+	threadAnalyzer = ta;
 	if(initialSize > 0)
     {
-		mIndexBuffer = new sw::Resource(initialSize + 16);
+		mIndexBuffer = new sw::Resource(initialSize + 16, id, threadAnalyzer);
 
         if(!mIndexBuffer)
         {
@@ -218,7 +221,7 @@ void StreamingIndexBuffer::unmap()
     }
 }
 
-void StreamingIndexBuffer::reserveSpace(unsigned int requiredSpace, GLenum type)
+void StreamingIndexBuffer::reserveSpace(unsigned int requiredSpace, GLenum type, LockResourceId id)
 {
     if(requiredSpace > mBufferSize)
     {
@@ -230,7 +233,7 @@ void StreamingIndexBuffer::reserveSpace(unsigned int requiredSpace, GLenum type)
 
         mBufferSize = std::max(requiredSpace, 2 * mBufferSize);
 
-		mIndexBuffer = new sw::Resource(mBufferSize + 16);
+		mIndexBuffer = new sw::Resource(mBufferSize + 16, id, threadAnalyzer);
     
         if(!mIndexBuffer)
         {
@@ -244,7 +247,7 @@ void StreamingIndexBuffer::reserveSpace(unsigned int requiredSpace, GLenum type)
 		if(mIndexBuffer)
 		{
 			mIndexBuffer->destruct();
-			mIndexBuffer = new sw::Resource(mBufferSize + 16);
+			mIndexBuffer = new sw::Resource(mBufferSize + 16, id, threadAnalyzer);
 		}
 
         mWritePosition = 0;

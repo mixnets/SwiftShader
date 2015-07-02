@@ -495,7 +495,7 @@ struct State
 class Context
 {
 public:
-    Context(const Context *shareContext);
+    Context(const Context *shareContext, ThreadAnalyzer * ta);
 
     ~Context();
 

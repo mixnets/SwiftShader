@@ -33,17 +33,17 @@ namespace gl
 		return 0;
 	}
 
-	Image::Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
+	Image::Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type, LockResourceId id, ThreadAnalyzer * ta)
 		: parentTexture(parentTexture), width(width), height(height), format(format), type(type)
 		, internalFormat(selectInternalFormat(format, type)), multiSampleDepth(1)
-		, sw::Surface(getParentResource(parentTexture), width, height, 1, selectInternalFormat(format, type), true, true)
+		, sw::Surface(getParentResource(parentTexture), width, height, 1, selectInternalFormat(format, type), true, true, id, ta)
 	{
 		referenceCount = 1;
 	}
 
-	Image::Image(Texture *parentTexture, GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable, bool renderTarget)
+	Image::Image(Texture *parentTexture, GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable, bool renderTarget, LockResourceId id, ThreadAnalyzer * ta)
 		: parentTexture(parentTexture), width(width), height(height), internalFormat(internalFormat), format(0 /*GL_NONE*/), type(0 /*GL_NONE*/), multiSampleDepth(multiSampleDepth)
-		, sw::Surface(getParentResource(parentTexture), width, height, multiSampleDepth, internalFormat, lockable, renderTarget)
+		, sw::Surface(getParentResource(parentTexture), width, height, multiSampleDepth, internalFormat, lockable, renderTarget, id, ta)
 	{
 		referenceCount = 1;
 	}

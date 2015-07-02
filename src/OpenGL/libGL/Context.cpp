@@ -42,12 +42,13 @@
 
 namespace gl
 {
-Context::Context(const Context *shareContext)
+Context::Context(const Context *shareContext, ThreadAnalyzer * ta)
     : modelView(32),
       projection(2)
 {
-	sw::Context *context = new sw::Context();
-	device = new gl::Device(context);
+	threadAnalyzer = ta;
+	sw::Context *context = new sw::Context(threadAnalyzer);
+	device = new gl::Device(context, threadAnalyzer);
 
     //mFenceNameSpace.setBaseHandle(0);
 
@@ -126,7 +127,7 @@ Context::Context(const Context *shareContext)
     }
     else
     {
-        mResourceManager = new ResourceManager();
+        mResourceManager = new ResourceManager(threadAnalyzer);
     }
 
     // In the initial state, TEXTURE_2D and TEXTURE_CUBE_MAP have twodimensional
@@ -134,9 +135,9 @@ Context::Context(const Context *shareContext)
     // In order that access to these initial textures not be lost, they are treated as texture
     // objects all of whose names are 0.
 
-    mTexture2DZero = new Texture2D(0);
-    mProxyTexture2DZero = new Texture2D(0);
-    mTextureCubeMapZero = new TextureCubeMap(0);
+    mTexture2DZero = new Texture2D(0, LockResourceId::Texture2d, threadAnalyzer);
+	mProxyTexture2DZero = new Texture2D(0, LockResourceId::Texture2dProxy, threadAnalyzer);
+	mTextureCubeMapZero = new TextureCubeMap(0, LockResourceId::TextureCubeMap, threadAnalyzer);
 
     mState.activeSampler = 0;
     bindArrayBuffer(0);
@@ -259,14 +260,15 @@ Context::~Context()
 
     mResourceManager->release();
 	delete device;
+	deleteThreadAnalalyzer();
 }
 
 void Context::makeCurrent(Surface *surface)
 {
     if(!mHasBeenCurrent)
     {
-        mVertexDataManager = new VertexDataManager(this);
-        mIndexDataManager = new IndexDataManager();
+		mVertexDataManager = new VertexDataManager(this, LockResourceId::ContextVertexDataManager, threadAnalyzer);
+		mIndexDataManager = new IndexDataManager(LockResourceId::ContextIndexDataManager, threadAnalyzer);
 
         mState.viewportX = 0;
         mState.viewportY = 0;
@@ -736,6 +738,7 @@ const VertexAttribute &Context::getVertexAttribState(unsigned int attribNum)
 void Context::setVertexAttribState(unsigned int attribNum, Buffer *boundBuffer, GLint size, GLenum type, bool normalized,
                                    GLsizei stride, const void *pointer)
 {
+	mState.vertexAttribute[attribNum].mBoundBuffer.isCommon = true;
     mState.vertexAttribute[attribNum].mBoundBuffer = boundBuffer;
     mState.vertexAttribute[attribNum].mSize = size;
     mState.vertexAttribute[attribNum].mType = type;
@@ -1977,7 +1980,7 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count)
 {
     TranslatedAttribute attributes[MAX_VERTEX_ATTRIBS];
 
-    GLenum err = mVertexDataManager->prepareVertexData(first, count, attributes);
+    GLenum err = mVertexDataManager->prepareVertexData(first, count, attributes, threadAnalyzer);
     if(err != GL_NO_ERROR)
     {
         return err;

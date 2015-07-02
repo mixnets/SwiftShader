@@ -40,6 +40,7 @@ namespace sw
 			bool perspectiveCorrection;
 			int transcendentalPrecision;
 			int threadCount;
+			bool threadAnalysisActive;
 			bool enableSSE;
 			bool enableSSE2;
 			bool enableSSE3;
@@ -65,7 +66,7 @@ namespace sw
 		#endif
 		};
 
-		SwiftConfig(bool disableServerOverride);
+		SwiftConfig(bool disableServerOverride, ThreadAnalyzer * ta);
 
 		~SwiftConfig();
 

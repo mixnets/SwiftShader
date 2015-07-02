@@ -53,10 +53,10 @@ namespace gl
 		GLint getMinSwapInterval();
 		GLint getMaxSwapInterval();
 
-        virtual Surface *getPrimarySurface();
+		virtual Surface *getPrimarySurface(ThreadAnalyzer * ta);
 
 		NativeDisplayType getNativeDisplay() const;
-
+		ThreadAnalyzer * ta;
 	private:
 		Display(NativeDisplayType displayId);
 		

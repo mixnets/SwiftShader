@@ -44,7 +44,7 @@ namespace gl
 	class Device : public sw::Renderer
 	{
 	public:
-		explicit Device(sw::Context *context);
+		explicit Device(sw::Context *context, ThreadAnalyzer * ta);
 
 		virtual ~Device();
 

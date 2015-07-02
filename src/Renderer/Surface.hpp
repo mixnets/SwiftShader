@@ -15,6 +15,7 @@
 #include "Color.hpp"
 #include "Main/Config.hpp"
 #include "Common/Resource.hpp"
+#include "Common/ThreadAnalyser.h"
 
 namespace sw
 {
@@ -172,8 +173,8 @@ namespace sw
 		};
 
 	public:
-		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
-		Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget);
+		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice, LockResourceId id, ThreadAnalyzer * ta);
+		Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, LockResourceId id, ThreadAnalyzer * ta);
 		
 		virtual ~Surface();
 
@@ -198,6 +199,7 @@ namespace sw
 
 		virtual void *lockInternal(int x, int y, int z, Lock lock, Accessor client);
 		virtual void unlockInternal();
+		void *getUnlockedBuffer();
 		inline Format getInternalFormat() const;
 		inline int getInternalPitchB() const;
 		inline int getInternalPitchP() const;
@@ -475,7 +477,7 @@ namespace sw
 	{
 		return internal.format;
 	}
-
+	
 	int Surface::getInternalPitchB() const
 	{
 		return internal.pitchB;

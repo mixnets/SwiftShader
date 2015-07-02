@@ -31,11 +31,11 @@ namespace gl
 class Buffer : public NamedObject
 {
   public:
-    explicit Buffer(GLuint name);
+    explicit Buffer(GLuint name, LockResourceId id, ThreadAnalyzer * ta);
 
     virtual ~Buffer();
 
-    void bufferData(const void *data, GLsizeiptr size, GLenum usage);
+	void bufferData(const void *data, GLsizeiptr size, GLenum usage);
     void bufferSubData(const void *data, GLsizeiptr size, GLintptr offset);
 
 	const void *data() { return mContents ? mContents->data() : 0; }
@@ -45,6 +45,8 @@ class Buffer : public NamedObject
 	sw::Resource *getResource();
 
   private:
+	ThreadAnalyzer * ta;
+	LockResourceId lockId;
     sw::Resource *mContents;
     size_t mSize;
     GLenum mUsage;

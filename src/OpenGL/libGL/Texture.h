@@ -46,7 +46,7 @@ enum
 class Texture : public NamedObject
 {
 public:
-    explicit Texture(GLuint name);
+	explicit Texture(GLuint name, LockResourceId id, ThreadAnalyzer * ta);
 
     virtual ~Texture();
 
@@ -84,9 +84,10 @@ public:
     virtual Renderbuffer *getRenderbuffer(GLenum target) = 0;
     virtual Image *getRenderTarget(GLenum target, unsigned int level) = 0;
 
-    virtual void generateMipmaps() = 0;
+	virtual void generateMipmaps() = 0;
     virtual void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source) = 0;
 
+	ThreadAnalyzer * ta;
 protected:
     void setImage(GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, Image *image);
     void subImage(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, Image *image);
@@ -104,13 +105,15 @@ protected:
 	GLfloat mMaxAnisotropy;
 	GLint mMaxLevel;
 
+	LockResourceId lockId;
+
 	sw::Resource *resource;
 };
 
 class Texture2D : public Texture
 {
 public:
-    explicit Texture2D(GLuint name);
+	explicit Texture2D(GLuint name, LockResourceId id, ThreadAnalyzer * ta);
 
     virtual ~Texture2D();
 
@@ -126,11 +129,11 @@ public:
     virtual sw::Format getInternalFormat(GLenum target, GLint level) const;
 	virtual int getLevelCount() const;
 
-    void setImage(GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
-    void setCompressedImage(GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels);
+	void setImage(GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
+	void setCompressedImage(GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels);
     void subImage(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
     void subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels);
-    void copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
+	void copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
     void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
 
 	void setImage(Image *image);
@@ -139,7 +142,7 @@ public:
     virtual bool isCompressed(GLenum target, GLint level) const;
 	virtual bool isDepth(GLenum target, GLint level) const;
 
-    virtual void generateMipmaps();
+	virtual void generateMipmaps();
 
 	virtual Renderbuffer *getRenderbuffer(GLenum target);
     virtual Image *getRenderTarget(GLenum target, unsigned int level);
@@ -163,7 +166,7 @@ protected:
 class TextureCubeMap : public Texture
 {
 public:
-    explicit TextureCubeMap(GLuint name);
+	explicit TextureCubeMap(GLuint name, LockResourceId id, ThreadAnalyzer * ta);
 
     virtual ~TextureCubeMap();
 
@@ -180,18 +183,18 @@ public:
 	virtual int getLevelCount() const;
 
 	void setImage(GLenum target, GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
-    void setCompressedImage(GLenum target, GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels);
+	void setCompressedImage(GLenum target, GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels);
 
     void subImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels);
     void subImageCompressed(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels);
-    void copyImage(GLenum target, GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
+	void copyImage(GLenum target, GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
     virtual void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
 
     virtual bool isSamplerComplete() const;
     virtual bool isCompressed(GLenum target, GLint level) const;
 	virtual bool isDepth(GLenum target, GLint level) const;
 	
-    virtual void generateMipmaps();
+	virtual void generateMipmaps();
 
     virtual Renderbuffer *getRenderbuffer(GLenum target);
 	virtual Image *getRenderTarget(GLenum target, unsigned int level);

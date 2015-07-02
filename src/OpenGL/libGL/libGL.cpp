@@ -7426,7 +7426,7 @@ void APIENTRY glTexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 
 void APIENTRY glTexEnvi(GLenum target, GLenum pname, GLint param)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLenum target = %d, GLenum pname = %d, GLint param = %d)", target, pname, param);
 }
 
 void APIENTRY glTexEnviv(GLenum target, GLenum pname, const GLint *params)
@@ -8152,8 +8152,9 @@ BOOL WINAPI wglMakeCurrent(HDC hdc, HGLRC hglrc)
 	if(hdc && hglrc)
 	{
 		gl::Display *display = (gl::Display*)gl::Display::getDisplay(hdc);
-		gl::makeCurrent((gl::Context*)hglrc, display, display->getPrimarySurface());
-		gl::setCurrentDrawSurface(display->getPrimarySurface());
+		threadAnalyzer = display->ta;
+		gl::makeCurrent((gl::Context*)hglrc, display, display->getPrimarySurface(threadAnalyzer));
+		gl::setCurrentDrawSurface(display->getPrimarySurface(threadAnalyzer));
 		gl::setCurrentDisplay(display);
 	}
 	else
@@ -8198,7 +8199,7 @@ BOOL WINAPI wglSwapBuffers(HDC hdc)
 	
 	if(display)
 	{
-		display->getPrimarySurface()->swap();
+		display->getPrimarySurface(threadAnalyzer)->swap();
 		return TRUE;
 	}
 

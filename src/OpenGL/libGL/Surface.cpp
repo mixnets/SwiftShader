@@ -30,9 +30,11 @@
 namespace gl
 {
 
-Surface::Surface(Display *display, NativeWindowType window)
+	Surface::Surface(Display *display, NativeWindowType window, ThreadAnalyzer * ta)
     : mDisplay(display), mWindow(window)
 {
+	this->ta = ta;
+	threadAnalyzer = ta;
     frameBuffer = 0;
 	backBuffer = 0;
 
@@ -44,9 +46,11 @@ Surface::Surface(Display *display, NativeWindowType window)
     setSwapInterval(1);
 }
 
-Surface::Surface(Display *display, GLint width, GLint height, GLenum textureFormat, GLenum textureType)
+	Surface::Surface(Display *display, GLint width, GLint height, GLenum textureFormat, GLenum textureType, ThreadAnalyzer * ta)
     : mDisplay(display), mWindow(NULL), mWidth(width), mHeight(height)
 {
+	this->ta = ta;
+	threadAnalyzer = ta;
 	frameBuffer = 0;
 	backBuffer = 0;
 
@@ -93,7 +97,7 @@ bool Surface::reset()
 {
     if(!mWindow)
     {
-        return reset(mWidth, mHeight);
+		return reset(mWidth, mHeight);
     }
 
 	// FIXME: Wrap into an abstract Window class
@@ -126,7 +130,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 		}
     }
 
-	backBuffer = new Image(0, backBufferWidth, backBufferHeight, GL_RGB, GL_UNSIGNED_BYTE);
+	backBuffer = new Image(0, backBufferWidth, backBufferHeight, GL_RGB, GL_UNSIGNED_BYTE, LockResourceId::SurfaceBackBuffer, ta);
 
     if(!backBuffer)
     {
@@ -137,7 +141,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 
     if(true)   // Always provide a depth/stencil buffer
     {
-        mDepthStencil = new Image(0, backBufferWidth, backBufferHeight, sw::FORMAT_D24S8, 1, false, true);
+        mDepthStencil = new Image(0, backBufferWidth, backBufferHeight, sw::FORMAT_D24S8, 1, false, true, LockResourceId::SurfaceDepthStencil, ta);
 
 		if(!mDepthStencil)
 		{

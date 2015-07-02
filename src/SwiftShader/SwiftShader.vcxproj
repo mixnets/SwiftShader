@@ -290,7 +290,7 @@
       <OmitFramePointers>false</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;..\LLVM\include;..\LLVM\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DISPLAY_LOGO=0;WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DISPLAY_LOGO=0;WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -386,6 +386,7 @@
     <ClInclude Include="..\Common\SharedLibrary.hpp" />
     <ClInclude Include="..\Common\Socket.hpp" />
     <ClInclude Include="..\Common\Thread.hpp" />
+    <ClInclude Include="..\Common\ThreadAnalyser.h" />
     <ClInclude Include="..\Common\Version.h" />
     <ClInclude Include="..\Main\FrameBufferWin.hpp" />
     <ClInclude Include="..\Main\Register.hpp" />

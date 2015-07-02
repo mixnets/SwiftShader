@@ -27,8 +27,11 @@
 namespace gl
 {
 
-Texture::Texture(GLuint name) : NamedObject(name)
+Texture::Texture(GLuint name, LockResourceId id, ThreadAnalyzer * ta) : NamedObject(name)
 {
+	this->ta = ta;
+	threadAnalyzer = ta;
+	lockId = id;
     mMinFilter = GL_NEAREST_MIPMAP_LINEAR;
     mMagFilter = GL_LINEAR;
     mWrapS = GL_REPEAT;
@@ -36,7 +39,7 @@ Texture::Texture(GLuint name) : NamedObject(name)
 	mMaxAnisotropy = 1.0f;
 	mMaxLevel = 1000;
 
-	resource = new sw::Resource(0);
+	resource = new sw::Resource(0, id, ta);
 }
 
 Texture::~Texture()
@@ -269,7 +272,7 @@ bool Texture::isMipmapFiltered() const
 	return false;
 }
 
-Texture2D::Texture2D(GLuint name) : Texture(name)
+Texture2D::Texture2D(GLuint name, LockResourceId id, ThreadAnalyzer * ta) : Texture(name, id, ta)
 {
 	for(int i = 0; i < MIPMAP_LEVELS; i++)
 	{
@@ -374,7 +377,7 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 		image[level]->unbind();
 	}
 
-	image[level] = new Image(this, width, height, format, type);
+	image[level] = new Image(this, width, height, format, type, lockId, ta);
 
 	if(!image[level])
 	{
@@ -391,7 +394,7 @@ void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 		image[level]->unbind();
 	}
 
-	image[level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
+	image[level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE, lockId, ta);
 
 	if(!image[level])
 	{
@@ -426,7 +429,7 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 		image[level]->unbind();
 	}
 
-	image[level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
+	image[level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE, lockId, ta);
 
 	if(!image[level])
 	{
@@ -576,7 +579,7 @@ void Texture2D::generateMipmaps()
 			image[i]->unbind();
 		}
 
-		image[i] = new Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType());
+		image[i] = new Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType(), lockId, ta);
 
 		if(!image[i])
 		{
@@ -620,7 +623,7 @@ Image *Texture2D::getRenderTarget(GLenum target, unsigned int level)
 	return image[level];
 }
 
-TextureCubeMap::TextureCubeMap(GLuint name) : Texture(name)
+TextureCubeMap::TextureCubeMap(GLuint name, LockResourceId id, ThreadAnalyzer * ta) : Texture(name, id, ta)
 {
 	for(int f = 0; f < 6; f++)
 	{
@@ -753,7 +756,7 @@ void TextureCubeMap::setCompressedImage(GLenum target, GLint level, GLenum forma
 		image[face][level]->unbind();
 	}
 
-	image[face][level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
+	image[face][level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE, lockId, ta);
 
 	if(!image[face][level])
 	{
@@ -889,7 +892,7 @@ void TextureCubeMap::setImage(GLenum target, GLint level, GLsizei width, GLsizei
 		image[face][level]->unbind();
 	}
 
-	image[face][level] = new Image(this, width, height, format, type);
+	image[face][level] = new Image(this, width, height, format, type, lockId, ta);
 
 	if(!image[face][level])
 	{
@@ -916,7 +919,7 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 		image[face][level]->unbind();
 	}
 
-	image[face][level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
+	image[face][level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE, lockId, ta);
 
 	if(!image[face][level])
 	{
@@ -994,7 +997,7 @@ void TextureCubeMap::generateMipmaps()
 				image[f][i]->unbind();
 			}
 
-			image[f][i] = new Image(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat(), image[0][0]->getType());
+			image[f][i] = new Image(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat(), image[0][0]->getType(), lockId, ta);
 
 			if(!image[f][i])
 			{

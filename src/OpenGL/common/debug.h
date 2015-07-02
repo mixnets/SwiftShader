@@ -21,7 +21,7 @@
 #include <assert.h>
 
 #if !defined(TRACE_OUTPUT_FILE)
-#define TRACE_OUTPUT_FILE "debug.txt"
+#define TRACE_OUTPUT_FILE "C:/Users/mgregoire/debug.txt"
 #endif
 
 namespace es

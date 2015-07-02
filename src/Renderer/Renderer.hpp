@@ -286,7 +286,7 @@ namespace sw
 		};
 
 	public:
-		Renderer(Context *context, Conventions conventions, bool exactColorRounding);
+		Renderer(Context *context, Conventions conventions, bool exactColorRounding, ThreadAnalyzer * ta);
 
 		virtual ~Renderer();
 

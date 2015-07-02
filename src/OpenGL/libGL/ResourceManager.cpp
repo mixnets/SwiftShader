@@ -22,8 +22,9 @@
 
 namespace gl
 {
-ResourceManager::ResourceManager()
+ResourceManager::ResourceManager(ThreadAnalyzer * ta)
 {
+	this->ta = ta;
     mRefCount = 1;
 }
 
@@ -72,7 +73,7 @@ void ResourceManager::release()
 GLuint ResourceManager::createBuffer()
 {
     //GLuint handle = mBufferNameSpace.allocate();
-    unsigned int handle = 1;
+    static unsigned int handle = 1;
 
     while (mBufferMap.find(handle) != mBufferMap.end())
     {
@@ -311,7 +312,7 @@ void ResourceManager::checkBufferAllocation(unsigned int buffer)
 {
     if(buffer != 0 && !getBuffer(buffer))
     {
-        Buffer *bufferObject = new Buffer(buffer);
+        Buffer *bufferObject = new Buffer(buffer, LockResourceId::ResourceManagerBuffer, ta);
         mBufferMap[buffer] = bufferObject;
         bufferObject->addRef();
     }
@@ -325,11 +326,11 @@ void ResourceManager::checkTextureAllocation(GLuint texture, TextureType type)
 
         if(type == TEXTURE_2D)
         {
-            textureObject = new Texture2D(texture);
+            textureObject = new Texture2D(texture, LockResourceId::Texture2d, ta);
         }
         else if(type == TEXTURE_CUBE)
         {
-            textureObject = new TextureCubeMap(texture);
+            textureObject = new TextureCubeMap(texture, LockResourceId::TextureCubeMap, ta);
         }
         else
         {
