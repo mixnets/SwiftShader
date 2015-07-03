@@ -1785,10 +1785,9 @@ namespace sw
 			zw = exponential2(zw, true);
 			break;
 		case FOG_EXP2:
-			zw *= *Pointer<Float4>(r.data + OFFSET(DrawData,fog.densityE2));
 			zw *= zw;
+			zw *= *Pointer<Float4>(r.data + OFFSET(DrawData,fog.density2E));
 			zw = exponential2(zw, true);
-			zw = Rcp_pp(zw);
 			break;
 		default:
 			ASSERT(false);
@@ -2704,7 +2703,7 @@ namespace sw
 
 	void PixelRoutine::logicOperation(Registers &r, int index, Pointer<Byte> &cBuffer, Vector4s &current, Int &x)
 	{
-		if(state.logicalOperation == LogicalOperation::LOGICALOP_COPY)
+		if(state.logicalOperation == LOGICALOP_COPY)
 		{
 			return;
 		}
@@ -2722,9 +2721,9 @@ namespace sw
 			current.z = 0;
 			break;
 		case LOGICALOP_SET:
-			current.x = 0xFFFF;
-			current.y = 0xFFFF;
-			current.z = 0xFFFF;
+			current.x = 0xFFFFu;
+			current.y = 0xFFFFu;
+			current.z = 0xFFFFu;
 			break;
 		case LOGICALOP_COPY:
 			ASSERT(false);   // Optimized out

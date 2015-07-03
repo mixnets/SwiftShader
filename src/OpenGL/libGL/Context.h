@@ -452,7 +452,7 @@ struct State
     bool sampleCoverageInvert;
     bool scissorTest;
     bool dither;
-	bool colorLogicOp;
+	bool colorLogicOpEnable;
 	GLenum logicalOperation;
 
     GLfloat lineWidth;
