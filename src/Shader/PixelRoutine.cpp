@@ -2722,9 +2722,9 @@ namespace sw
 			current.z = 0;
 			break;
 		case LOGICALOP_SET:
-			current.x = 0xFFFF;
-			current.y = 0xFFFF;
-			current.z = 0xFFFF;
+			current.x = 0xFFFFu;
+			current.y = 0xFFFFu;
+			current.z = 0xFFFFu;
 			break;
 		case LOGICALOP_COPY:
 			ASSERT(false);   // Optimized out
