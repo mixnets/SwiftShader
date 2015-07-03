@@ -143,7 +143,9 @@ GLuint ResourceManager::createSampler()
 {
 	GLuint handle = mSamplerHandleAllocator.allocate();
 
-	mSamplerMap[handle] = NULL;
+	Sampler* samplerObject = new Sampler(handle);
+	mSamplerMap[handle] = samplerObject;
+	samplerObject->addRef();
 
 	return handle;
 }
