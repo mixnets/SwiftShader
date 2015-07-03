@@ -596,7 +596,15 @@ void ClipPlanef(GLenum plane, const GLfloat *equation)
 
 void ClipPlanex(GLenum plane, const GLfixed *equation)
 {
-	UNIMPLEMENTED();
+	GLfloat equationf[4] =
+	{
+		(float)equation[0] / 0x10000,
+		(float)equation[1] / 0x10000,
+		(float)equation[2] / 0x10000,
+		(float)equation[3] / 0x10000,
+	};
+	
+	ClipPlanef(plane, equationf);
 }
 
 void Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
@@ -613,7 +621,7 @@ void Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 
 void Color4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte alpha)
 {
-	UNIMPLEMENTED();
+	Color4f((float)red / 0xFF, (float)green / 0xFF, (float)blue / 0xFF, (float)alpha / 0xFF);
 }
 
 void Color4x(GLfixed red, GLfixed green, GLfixed blue, GLfixed alpha)
@@ -1239,19 +1247,32 @@ void DisableClientState(GLenum array)
 {
 	TRACE("(GLenum array = 0x%X)", array);
 
+	switch(array)
+	{
+	case GL_VERTEX_ARRAY:
+	case GL_NORMAL_ARRAY:
+	case GL_COLOR_ARRAY:
+	case GL_POINT_SIZE_ARRAY_OES:
+	case GL_TEXTURE_COORD_ARRAY:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
 	es1::Context *context = es1::getContext();
 
-	if (context)
+	if(context)
 	{
 		GLenum texture = context->getClientActiveTexture();
 
-		switch (array)
+		switch(array)
 		{
-		case GL_VERTEX_ARRAY:        context->setEnableVertexAttribArray(sw::Position, false);                            break;
-		case GL_COLOR_ARRAY:         context->setEnableVertexAttribArray(sw::Color0, false);                              break;
-		case GL_TEXTURE_COORD_ARRAY: context->setEnableVertexAttribArray(sw::TexCoord0 + (texture - GL_TEXTURE0), false); break;
-		case GL_NORMAL_ARRAY:        context->setEnableVertexAttribArray(sw::Normal, false);                              break;
-		default:                     UNIMPLEMENTED();
+		case GL_VERTEX_ARRAY:         context->setEnableVertexAttribArray(sw::Position, false);                            break;
+		case GL_NORMAL_ARRAY:         context->setEnableVertexAttribArray(sw::Normal, false);                              break;
+		case GL_COLOR_ARRAY:          context->setEnableVertexAttribArray(sw::Color0, false);                              break;
+		case GL_POINT_SIZE_ARRAY_OES: context->setEnableVertexAttribArray(sw::PointSize, false);                           break;
+		case GL_TEXTURE_COORD_ARRAY:  context->setEnableVertexAttribArray(sw::TexCoord0 + (texture - GL_TEXTURE0), false); break;
+		default:                      UNREACHABLE(array);
 		}
 	}
 }
@@ -1361,6 +1382,18 @@ void EnableClientState(GLenum array)
 {
 	TRACE("(GLenum array = 0x%X)", array);
 
+	switch(array)
+	{
+	case GL_VERTEX_ARRAY:
+	case GL_NORMAL_ARRAY:
+	case GL_COLOR_ARRAY:
+	case GL_POINT_SIZE_ARRAY_OES:
+	case GL_TEXTURE_COORD_ARRAY:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
 	es1::Context *context = es1::getContext();
 
 	if(context)
@@ -1369,11 +1402,12 @@ void EnableClientState(GLenum array)
 
 		switch(array)
 		{
-		case GL_VERTEX_ARRAY:        context->setEnableVertexAttribArray(sw::Position, true);                            break;
-		case GL_COLOR_ARRAY:         context->setEnableVertexAttribArray(sw::Color0, true);                              break;
-		case GL_TEXTURE_COORD_ARRAY: context->setEnableVertexAttribArray(sw::TexCoord0 + (texture - GL_TEXTURE0), true); break;
-		case GL_NORMAL_ARRAY:        context->setEnableVertexAttribArray(sw::Normal, true);                              break;
-		default:                     UNIMPLEMENTED();
+		case GL_VERTEX_ARRAY:         context->setEnableVertexAttribArray(sw::Position, true);                            break;
+		case GL_NORMAL_ARRAY:         context->setEnableVertexAttribArray(sw::Normal, true);                              break;
+		case GL_COLOR_ARRAY:          context->setEnableVertexAttribArray(sw::Color0, true);                              break;
+		case GL_POINT_SIZE_ARRAY_OES: context->setEnableVertexAttribArray(sw::PointSize, true);                           break;
+		case GL_TEXTURE_COORD_ARRAY:  context->setEnableVertexAttribArray(sw::TexCoord0 + (texture - GL_TEXTURE0), true); break;
+		default:                      UNREACHABLE(array);
 		}
 	}
 }
@@ -1523,6 +1557,7 @@ void Fogf(GLenum pname, GLfloat param)
 	TRACE("(GLenum pname = 0x%X, GLfloat param = %f)", pname, param);
 
 	es1::Context *context = es1::getContext();
+
 	if(context)
 	{
 		switch(pname)
@@ -1539,24 +1574,19 @@ void Fogf(GLenum pname, GLfloat param)
 				return error(GL_INVALID_ENUM);
 			}
 			break;
-
 		case GL_FOG_DENSITY:
 			if(param < 0)
 			{
 				return error(GL_INVALID_VALUE);
 			}
-
 			context->setFogDensity(param);
 			break;
-
 		case GL_FOG_START:
 			context->setFogStart(param);
 			break;
-
 		case GL_FOG_END:
 			context->setFogEnd(param);
 			break;
-
 		case GL_FOG_COLOR:
 		default:
 			return error(GL_INVALID_ENUM);
@@ -1586,28 +1616,22 @@ void Fogfv(GLenum pname, const GLfloat *params)
 				return error(GL_INVALID_ENUM);
 			}
 			break;
-
 		case GL_FOG_DENSITY:
 			if(params[0] < 0)
 			{
 				return error(GL_INVALID_VALUE);
 			}
-
 			context->setFogDensity(params[0]);
 			break;
-
 		case GL_FOG_START:
 			context->setFogStart(params[0]);
 			break;
-
 		case GL_FOG_END:
 			context->setFogEnd(params[0]);
 			break;
-
 		case GL_FOG_COLOR:
 			context->setFogColor(params[0], params[1], params[2], params[3]);
 			break;
-
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -1616,7 +1640,44 @@ void Fogfv(GLenum pname, const GLfloat *params)
 
 void Fogx(GLenum pname, GLfixed param)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLenum pname = 0x%X, GLfixed param = %d)", pname, param);
+
+	es1::Context *context = es1::getContext();
+
+	if(context)
+	{
+		switch(pname)
+		{
+		case GL_FOG_MODE:
+			switch((GLenum)param)
+			{
+			case GL_LINEAR:
+			case GL_EXP:
+			case GL_EXP2:
+				context->setFogMode((GLenum)param);
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
+			}
+			break;
+		case GL_FOG_DENSITY:
+			if(param < 0)
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			context->setFogDensity(param);
+			break;
+		case GL_FOG_START:
+			context->setFogStart(param);
+			break;
+		case GL_FOG_END:
+			context->setFogEnd(param);
+			break;
+		case GL_FOG_COLOR:
+		default:
+			return error(GL_INVALID_ENUM);
+		}
+	}
 }
 
 void Fogxv(GLenum pname, const GLfixed *params)
@@ -2415,6 +2476,11 @@ GLboolean IsEnabled(GLenum cap)
 		case GL_CLIP_PLANE3:              return context->isClipPlaneEnabled(3);
 		case GL_CLIP_PLANE4:              return context->isClipPlaneEnabled(4);
 		case GL_CLIP_PLANE5:              return context->isClipPlaneEnabled(5);
+		case GL_VERTEX_ARRAY:             return context->getVertexAttribState(sw::Position).mArrayEnabled;
+		case GL_NORMAL_ARRAY:             return context->getVertexAttribState(sw::Normal).mArrayEnabled;
+		case GL_COLOR_ARRAY:              return context->getVertexAttribState(sw::Color0).mArrayEnabled;
+		case GL_POINT_SIZE_ARRAY_OES:     return context->getVertexAttribState(sw::PointSize).mArrayEnabled;
+		case GL_TEXTURE_COORD_ARRAY:      return context->getVertexAttribState(sw::TexCoord0 + context->getClientActiveTexture()).mArrayEnabled;
 		default:
 			return error(GL_INVALID_ENUM, GL_FALSE);
 		}
@@ -2749,7 +2815,23 @@ void MultMatrixx(const GLfixed *m)
 
 void MultiTexCoord4f(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLenum target = 0x%X, GLfloat s = %f, GLfloat t = %f, GLfloat r = %f, GLfloat q = %f)", target, s, t, r, q);
+
+	switch(target)
+	{
+	case GL_TEXTURE0:
+	case GL_TEXTURE1:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
+	es1::Context *context = es1::getContext();
+
+	if(context)
+	{
+		context->setVertexAttrib(sw::TexCoord0 + (target - GL_TEXTURE0), s, t, r, q);
+	}
 }
 
 void MultiTexCoord4x(GLenum target, GLfixed s, GLfixed t, GLfixed r, GLfixed q)
@@ -2759,7 +2841,14 @@ void MultiTexCoord4x(GLenum target, GLfixed s, GLfixed t, GLfixed r, GLfixed q)
 
 void Normal3f(GLfloat nx, GLfloat ny, GLfloat nz)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLfloat nx, GLfloat ny, GLfloat nz)", nx, ny, nz);
+
+	es1::Context *context = es1::getContext();
+
+	if(context)
+	{
+		context->setVertexAttrib(sw::Normal, nx, ny, nz, 0);
+	}
 }
 
 void Normal3x(GLfixed nx, GLfixed ny, GLfixed nz)
@@ -2847,6 +2936,11 @@ void PointSize(GLfloat size)
 {
 	TRACE("(GLfloat size = %f)", size);
 
+	if(size <= 0)
+	{
+		return error(GL_INVALID_VALUE);
+	}
+
 	es1::Context *context = es1::getContext();
 
 	if(context)
@@ -2857,7 +2951,18 @@ void PointSize(GLfloat size)
 
 void PointSizePointerOES(GLenum type, GLsizei stride, const GLvoid *pointer)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLenum type = 0x%X, GLsizei stride = %d, const GLvoid *pointer = %p)", type, stride, pointer);
+
+	switch(type)
+	{
+	case GL_FIXED:
+	case GL_FLOAT:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
+	VertexAttribPointer(sw::PointSize, 1, type, true, stride, pointer);
 }
 
 void PointSizex(GLfixed size)

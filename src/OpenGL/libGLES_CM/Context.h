@@ -445,6 +445,7 @@ public:
 	bool isQueryParameterInt(GLenum pname);
 	bool isQueryParameterFloat(GLenum pname);
 	bool isQueryParameterBool(GLenum pname);
+	bool isQueryParameterPointer(GLenum pname);
 
     void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLsizei *bufSize, void* pixels);
     void clear(GLbitfield mask);
