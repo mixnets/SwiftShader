@@ -54,19 +54,19 @@ Context::Context(const egl::Config *config, const Context *shareContext)
     mState.depthClearValue = 1.0f;
     mState.stencilClearValue = 0;
 
-    mState.cullFace = false;
+    mState.cullFaceEnable = false;
     mState.cullMode = GL_BACK;
     mState.frontFace = GL_CCW;
-    mState.depthTest = false;
+    mState.depthTestEnable = false;
     mState.depthFunc = GL_LESS;
-    mState.blend = false;
+    mState.blendEnable = false;
     mState.sourceBlendRGB = GL_ONE;
     mState.sourceBlendAlpha = GL_ONE;
     mState.destBlendRGB = GL_ZERO;
     mState.destBlendAlpha = GL_ZERO;
     mState.blendEquationRGB = GL_FUNC_ADD_OES;
     mState.blendEquationAlpha = GL_FUNC_ADD_OES;
-    mState.stencilTest = false;
+    mState.stencilTestEnable = false;
     mState.stencilFunc = GL_ALWAYS;
     mState.stencilRef = 0;
     mState.stencilMask = -1;
@@ -74,18 +74,19 @@ Context::Context(const egl::Config *config, const Context *shareContext)
     mState.stencilFail = GL_KEEP;
     mState.stencilPassDepthFail = GL_KEEP;
     mState.stencilPassDepthPass = GL_KEEP;
-    mState.polygonOffsetFill = false;
+    mState.polygonOffsetFillEnable = false;
     mState.polygonOffsetFactor = 0.0f;
     mState.polygonOffsetUnits = 0.0f;
-    mState.sampleAlphaToCoverage = false;
-    mState.sampleCoverage = false;
+    mState.sampleAlphaToCoverageEnable = false;
+    mState.sampleCoverageEnable = false;
     mState.sampleCoverageValue = 1.0f;
     mState.sampleCoverageInvert = false;
-    mState.scissorTest = false;
-    mState.dither = true;
+    mState.scissorTestEnable = false;
+    mState.ditherEnable = true;
 	mState.shadeModel = GL_SMOOTH;
     mState.generateMipmapHint = GL_DONT_CARE;
 	mState.perspectiveCorrectionHint = GL_DONT_CARE;
+	mState.fogHint = GL_DONT_CARE;
 
     mState.lineWidth = 1.0f;
 
@@ -109,6 +110,7 @@ Context::Context(const egl::Config *config, const Context *shareContext)
 
 	for(int i = 0; i < MAX_TEXTURE_UNITS; i++)
 	{
+		mState.textureUnit[i].color = {0, 0, 0, 0};
 		mState.textureUnit[i].environmentMode = GL_MODULATE;
 		mState.textureUnit[i].combineRGB = GL_MODULATE;
 		mState.textureUnit[i].combineAlpha = GL_MODULATE;
@@ -160,8 +162,10 @@ Context::Context(const egl::Config *config, const Context *shareContext)
     mInvalidOperation = false;
     mOutOfMemory = false;
     mInvalidFramebufferOperation = false;
+	mMatrixStackOverflow = false;
+	mMatrixStackUnderflow = false;
 
-	lighting = false;
+	lightingEnable = false;
 
 	for(int i = 0; i < MAX_LIGHTS; i++)
 	{
@@ -183,13 +187,14 @@ Context::Context(const egl::Config *config, const Context *shareContext)
 	materialSpecular = {0.0f, 0.0f, 0.0f, 1.0f};
 	materialEmission = {0.0f, 0.0f, 0.0f, 1.0f};
 	materialShininess = 0.0f;
+	lightModelTwoSide = false;
 
 	matrixMode = GL_MODELVIEW;
     
 	for(int i = 0; i < MAX_TEXTURE_UNITS; i++)
 	{
-		texture2Denabled[i] = false;
-		textureExternalEnabled[i] = false;
+		texture2Denable[i] = false;
+		textureExternalEnable[i] = false;
 	}
 
 	clientTexture = GL_TEXTURE0;
@@ -206,9 +211,29 @@ Context::Context(const egl::Config *config, const Context *shareContext)
 
 	clipFlags = 0;
 
-	alphaTest = false;
+	alphaTestEnable = false;
 	alphaTestFunc = GL_ALWAYS;
 	alphaTestRef = 0;
+
+	fogEnable = false;
+	fogMode = GL_EXP;
+	fogDensity = 1.0f;
+	fogStart = 0.0f;
+	fogEnd = 1.0f;
+	fogColor = {0, 0, 0, 0};
+
+	colorLogicOpEnable = false;
+	pointSmoothEnable = false;
+	lineSmoothEnable = false;
+	colorMaterialEnable = false;
+	normalizeEnable = false;
+	rescaleNormalEnable = false;
+	multisampleEnable = true;
+	sampleAlphaToOneEnable = false;
+	pointSpriteEnable = false;
+
+	colorLogicOpEnable = false;
+	logicalOperation = GL_COPY;
 
     mHasBeenCurrent = false;
 
@@ -325,14 +350,14 @@ void Context::setClearStencil(int stencil)
     mState.stencilClearValue = stencil;
 }
 
-void Context::setCullFace(bool enabled)
+void Context::setCullFaceEnable(bool enabled)
 {
-    mState.cullFace = enabled;
+    mState.cullFaceEnable = enabled;
 }
 
 bool Context::isCullFaceEnabled() const
 {
-    return mState.cullFace;
+    return mState.cullFaceEnable;
 }
 
 void Context::setCullMode(GLenum mode)
@@ -349,18 +374,18 @@ void Context::setFrontFace(GLenum front)
     }
 }
 
-void Context::setDepthTest(bool enabled)
+void Context::setDepthTestEnable(bool enabled)
 {
-    if(mState.depthTest != enabled)
+    if(mState.depthTestEnable != enabled)
     {
-        mState.depthTest = enabled;
+        mState.depthTestEnable = enabled;
         mDepthStateDirty = true;
     }
 }
 
 bool Context::isDepthTestEnabled() const
 {
-    return mState.depthTest;
+    return mState.depthTestEnable;
 }
 
 void Context::setDepthFunc(GLenum depthFunc)
@@ -378,14 +403,14 @@ void Context::setDepthRange(float zNear, float zFar)
     mState.zFar = zFar;
 }
 
-void Context::setAlphaTest(bool enabled)
+void Context::setAlphaTestEnable(bool enabled)
 {
-	alphaTest = enabled;
+	alphaTestEnable = enabled;
 }
 
 bool Context::isAlphaTestEnabled() const
 {
-	return alphaTest;
+	return alphaTestEnable;
 }
 
 void Context::setAlphaFunc(GLenum alphaFunc, GLclampf reference)
@@ -394,18 +419,18 @@ void Context::setAlphaFunc(GLenum alphaFunc, GLclampf reference)
 	alphaTestRef = reference;
 }
 
-void Context::setBlend(bool enabled)
+void Context::setBlendEnable(bool enabled)
 {
-    if(mState.blend != enabled)
+    if(mState.blendEnable != enabled)
     {
-        mState.blend = enabled;
+        mState.blendEnable = enabled;
         mBlendStateDirty = true;
     }
 }
 
 bool Context::isBlendEnabled() const
 {
-    return mState.blend;
+    return mState.blendEnable;
 }
 
 void Context::setBlendFactors(GLenum sourceRGB, GLenum destRGB, GLenum sourceAlpha, GLenum destAlpha)
@@ -434,18 +459,18 @@ void Context::setBlendEquation(GLenum rgbEquation, GLenum alphaEquation)
     }
 }
 
-void Context::setStencilTest(bool enabled)
+void Context::setStencilTestEnable(bool enabled)
 {
-    if(mState.stencilTest != enabled)
+    if(mState.stencilTestEnable != enabled)
     {
-        mState.stencilTest = enabled;
+        mState.stencilTestEnable = enabled;
         mStencilStateDirty = true;
     }
 }
 
 bool Context::isStencilTestEnabled() const
 {
-    return mState.stencilTest;
+    return mState.stencilTestEnable;
 }
 
 void Context::setStencilParams(GLenum stencilFunc, GLint stencilRef, GLuint stencilMask)
@@ -483,18 +508,18 @@ void Context::setStencilOperations(GLenum stencilFail, GLenum stencilPassDepthFa
     }
 }
 
-void Context::setPolygonOffsetFill(bool enabled)
+void Context::setPolygonOffsetFillEnable(bool enabled)
 {
-    if(mState.polygonOffsetFill != enabled)
+    if(mState.polygonOffsetFillEnable != enabled)
     {
-        mState.polygonOffsetFill = enabled;
+        mState.polygonOffsetFillEnable = enabled;
         mPolygonOffsetStateDirty = true;
     }
 }
 
 bool Context::isPolygonOffsetFillEnabled() const
 {
-    return mState.polygonOffsetFill;
+    return mState.polygonOffsetFillEnable;
 }
 
 void Context::setPolygonOffsetParams(GLfloat factor, GLfloat units)
@@ -508,32 +533,32 @@ void Context::setPolygonOffsetParams(GLfloat factor, GLfloat units)
     }
 }
 
-void Context::setSampleAlphaToCoverage(bool enabled)
+void Context::setSampleAlphaToCoverageEnable(bool enabled)
 {
-    if(mState.sampleAlphaToCoverage != enabled)
+    if(mState.sampleAlphaToCoverageEnable != enabled)
     {
-        mState.sampleAlphaToCoverage = enabled;
+        mState.sampleAlphaToCoverageEnable = enabled;
         mSampleStateDirty = true;
     }
 }
 
 bool Context::isSampleAlphaToCoverageEnabled() const
 {
-    return mState.sampleAlphaToCoverage;
+    return mState.sampleAlphaToCoverageEnable;
 }
 
-void Context::setSampleCoverage(bool enabled)
+void Context::setSampleCoverageEnable(bool enabled)
 {
-    if(mState.sampleCoverage != enabled)
+    if(mState.sampleCoverageEnable != enabled)
     {
-        mState.sampleCoverage = enabled;
+        mState.sampleCoverageEnable = enabled;
         mSampleStateDirty = true;
     }
 }
 
 bool Context::isSampleCoverageEnabled() const
 {
-    return mState.sampleCoverage;
+    return mState.sampleCoverageEnable;
 }
 
 void Context::setSampleCoverageParams(GLclampf value, bool invert)
@@ -547,14 +572,14 @@ void Context::setSampleCoverageParams(GLclampf value, bool invert)
     }
 }
 
-void Context::setScissorTest(bool enabled)
+void Context::setScissorTestEnable(bool enabled)
 {
-    mState.scissorTest = enabled;
+    mState.scissorTestEnable = enabled;
 }
 
 bool Context::isScissorTestEnabled() const
 {
-    return mState.scissorTest;
+    return mState.scissorTestEnable;
 }
 
 void Context::setShadeModel(GLenum mode)
@@ -562,28 +587,38 @@ void Context::setShadeModel(GLenum mode)
     mState.shadeModel = mode;
 }
 
-void Context::setDither(bool enabled)
+void Context::setDitherEnable(bool enabled)
 {
-    if(mState.dither != enabled)
+    if(mState.ditherEnable != enabled)
     {
-        mState.dither = enabled;
+        mState.ditherEnable = enabled;
         mDitherStateDirty = true;
     }
 }
 
 bool Context::isDitherEnabled() const
 {
-    return mState.dither;
+    return mState.ditherEnable;
 }
 
-void Context::setLighting(bool enable)
+void Context::setLightingEnable(bool enable)
 {
-    lighting = enable;
+    lightingEnable = enable;
 }
 
-void Context::setLight(int index, bool enable)
+bool Context::isLightingEnabled() const
+{
+	return lightingEnable;
+}
+
+void Context::setLightEnable(int index, bool enable)
 {
     light[index].enable = enable;
+}
+
+bool Context::isLightEnabled(int index) const
+{
+	return light[index].enable;
 }
 
 void Context::setLightAmbient(int index, float r, float g, float b, float a)
@@ -632,6 +667,16 @@ void Context::setLightAttenuationQuadratic(int index, float quadratic)
 	light[index].attenuation.quadratic = quadratic;
 }
 
+void Context::setSpotLightExponent(int index, float exponent)
+{
+	light[index].spotExponent = exponent;
+}
+
+void Context::setSpotLightCutoff(int index, float cutoff)
+{
+	light[index].spotCutoffAngle = cutoff;
+}
+
 void Context::setGlobalAmbient(float red, float green, float blue, float alpha)
 {
 	globalAmbient.red = red;
@@ -677,13 +722,26 @@ void Context::setMaterialShininess(float shininess)
 	materialShininess = shininess;
 }
 
-void Context::setFog(bool enable)
+void Context::setLightModelTwoSide(bool enable)
 {
+	lightModelTwoSide = enable;
+}
+
+void Context::setFogEnable(bool enable)
+{
+	fogEnable = enable;
 	device->setFogEnable(enable);
+}
+
+bool Context::isFogEnabled() const
+{
+	return fogEnable;
 }
 
 void Context::setFogMode(GLenum mode)
 {
+	fogMode = mode;
+
 	switch(mode)
 	{
 	case GL_LINEAR:
@@ -702,32 +760,46 @@ void Context::setFogMode(GLenum mode)
 
 void Context::setFogDensity(float fogDensity)
 {
+	this->fogDensity = fogDensity;
 	device->setFogDensity(fogDensity);
 }
 
 void Context::setFogStart(float fogStart)
 {
+	this->fogStart = fogStart;
 	device->setFogStart(fogStart);
 }
 
 void Context::setFogEnd(float fogEnd)
 {
+	this->fogEnd = fogEnd;
 	device->setFogEnd(fogEnd);
 }
 
 void Context::setFogColor(float r, float g, float b, float a)
 {
+	this->fogColor = {r, g, b, a};
 	device->setFogColor(sw::Color<float>(r, g, b, a));
 }
 
-void Context::setTexture2Denabled(bool enable)
+void Context::setTexture2Denable(bool enable)
 {
-    texture2Denabled[mState.activeSampler] = enable;
+    texture2Denable[mState.activeSampler] = enable;
 }
 
-void Context::setTextureExternalEnabled(bool enable)
+bool Context::isTexture2Denabled() const
 {
-    textureExternalEnabled[mState.activeSampler] = enable;
+	return texture2Denable[mState.activeSampler];
+}
+
+void Context::setTextureExternalEnable(bool enable)
+{
+    textureExternalEnable[mState.activeSampler] = enable;
+}
+
+bool Context::isTextureExternalEnabled() const
+{
+    return textureExternalEnable[mState.activeSampler];
 }
 
 void Context::setLineWidth(GLfloat width)
@@ -744,6 +816,11 @@ void Context::setGenerateMipmapHint(GLenum hint)
 void Context::setPerspectiveCorrectionHint(GLenum hint)
 {
     mState.perspectiveCorrectionHint = hint;
+}
+
+void Context::setFogHint(GLenum hint)
+{
+    mState.fogHint = hint;
 }
 
 void Context::setViewportParams(GLint x, GLint y, GLsizei width, GLsizei height)
@@ -1039,7 +1116,7 @@ Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type)
 
     if(texid == 0)   // Special case: 0 refers to different initial textures based on the target
     {
-        switch (type)
+        switch(type)
         {
         case TEXTURE_2D: return mTexture2DZero;
         case TEXTURE_EXTERNAL: return mTextureExternalZero;
@@ -1052,26 +1129,27 @@ Texture *Context::getSamplerTexture(unsigned int sampler, TextureType type)
 
 bool Context::getBooleanv(GLenum pname, GLboolean *params)
 {
-    switch (pname)
+    switch(pname)
     {
-      case GL_SAMPLE_COVERAGE_INVERT:   *params = mState.sampleCoverageInvert;      break;
-      case GL_DEPTH_WRITEMASK:          *params = mState.depthMask;                 break;
-      case GL_COLOR_WRITEMASK:
+    case GL_SAMPLE_COVERAGE_INVERT:   *params = mState.sampleCoverageInvert;        break;
+    case GL_DEPTH_WRITEMASK:          *params = mState.depthMask;                   break;
+    case GL_COLOR_WRITEMASK:
         params[0] = mState.colorMaskRed;
         params[1] = mState.colorMaskGreen;
         params[2] = mState.colorMaskBlue;
         params[3] = mState.colorMaskAlpha;
         break;
-      case GL_CULL_FACE:                *params = mState.cullFace;                  break;
-      case GL_POLYGON_OFFSET_FILL:      *params = mState.polygonOffsetFill;         break;
-      case GL_SAMPLE_ALPHA_TO_COVERAGE: *params = mState.sampleAlphaToCoverage;     break;
-      case GL_SAMPLE_COVERAGE:          *params = mState.sampleCoverage;            break;
-      case GL_SCISSOR_TEST:             *params = mState.scissorTest;               break;
-      case GL_STENCIL_TEST:             *params = mState.stencilTest;               break;
-      case GL_DEPTH_TEST:               *params = mState.depthTest;                 break;
-      case GL_BLEND:                    *params = mState.blend;                     break;
-      case GL_DITHER:                   *params = mState.dither;                    break;
-      default:
+    case GL_CULL_FACE:                *params = mState.cullFaceEnable;              break;
+    case GL_POLYGON_OFFSET_FILL:      *params = mState.polygonOffsetFillEnable;     break;
+    case GL_SAMPLE_ALPHA_TO_COVERAGE: *params = mState.sampleAlphaToCoverageEnable; break;
+    case GL_SAMPLE_COVERAGE:          *params = mState.sampleCoverageEnable;        break;
+    case GL_SCISSOR_TEST:             *params = mState.scissorTestEnable;           break;
+    case GL_STENCIL_TEST:             *params = mState.stencilTestEnable;           break;
+    case GL_DEPTH_TEST:               *params = mState.depthTestEnable;             break;
+    case GL_BLEND:                    *params = mState.blendEnable;                 break;
+    case GL_DITHER:                   *params = mState.ditherEnable;                break;
+	case GL_LIGHT_MODEL_TWO_SIDE:     *params = lightModelTwoSide;                  break;
+    default:
         return false;
     }
 
@@ -1098,6 +1176,14 @@ bool Context::getFloatv(GLenum pname, GLfloat *params)
     case GL_ALIASED_POINT_SIZE_RANGE:
         params[0] = ALIASED_POINT_SIZE_RANGE_MIN;
         params[1] = ALIASED_POINT_SIZE_RANGE_MAX;
+        break;
+	case GL_SMOOTH_LINE_WIDTH_RANGE:
+        params[0] = SMOOTH_LINE_WIDTH_RANGE_MIN;
+        params[1] = SMOOTH_LINE_WIDTH_RANGE_MAX;
+        break;
+    case GL_SMOOTH_POINT_SIZE_RANGE:
+        params[0] = SMOOTH_POINT_SIZE_RANGE_MIN;
+        params[1] = SMOOTH_POINT_SIZE_RANGE_MAX;
         break;
     case GL_DEPTH_RANGE:
         params[0] = mState.zNear;
@@ -1138,7 +1224,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
     // GetIntegerv as its native query function. As it would require conversion in any
     // case, this should make no difference to the calling application. You may find it in
     // Context::getFloatv.
-    switch (pname)
+    switch(pname)
     {
     case GL_ARRAY_BUFFER_BINDING:             *params = mState.arrayBuffer.name();            break;
     case GL_ELEMENT_ARRAY_BUFFER_BINDING:     *params = mState.elementArrayBuffer.name();     break;
@@ -1249,12 +1335,12 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 
             if(colorbuffer)
             {
-                switch (pname)
+                switch(pname)
                 {
-                  case GL_RED_BITS:   *params = colorbuffer->getRedSize();   break;
-                  case GL_GREEN_BITS: *params = colorbuffer->getGreenSize(); break;
-                  case GL_BLUE_BITS:  *params = colorbuffer->getBlueSize();  break;
-                  case GL_ALPHA_BITS: *params = colorbuffer->getAlphaSize(); break;
+                case GL_RED_BITS:   *params = colorbuffer->getRedSize();   break;
+                case GL_GREEN_BITS: *params = colorbuffer->getGreenSize(); break;
+                case GL_BLUE_BITS:  *params = colorbuffer->getBlueSize();  break;
+                case GL_ALPHA_BITS: *params = colorbuffer->getAlphaSize(); break;
                 }
             }
             else
@@ -1293,45 +1379,30 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
             }
         }
         break;
-    case GL_TEXTURE_BINDING_2D:
-        {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_TEXTURE_UNITS - 1)
-            {
-                error(GL_INVALID_OPERATION);
-                return false;
-            }
-
-            *params = mState.samplerTexture[TEXTURE_2D][mState.activeSampler].name();
-        }
-        break;
-    case GL_TEXTURE_BINDING_CUBE_MAP_OES:
-        {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_TEXTURE_UNITS - 1)
-            {
-                error(GL_INVALID_OPERATION);
-                return false;
-            }
-
-            *params = mState.samplerTexture[TEXTURE_CUBE][mState.activeSampler].name();
-        }
-        break;
-    case GL_TEXTURE_BINDING_EXTERNAL_OES:
-        {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_TEXTURE_UNITS - 1)
-            {
-                error(GL_INVALID_OPERATION);
-                return false;
-            }
-
-            *params = mState.samplerTexture[TEXTURE_EXTERNAL][mState.activeSampler].name();
-        }
-        break;
-	case GL_MAX_LIGHTS:                 *params = MAX_LIGHTS;                 break;
-    case GL_MAX_MODELVIEW_STACK_DEPTH:  *params = MAX_MODELVIEW_STACK_DEPTH;  break;
-	case GL_MAX_PROJECTION_STACK_DEPTH: *params = MAX_PROJECTION_STACK_DEPTH; break;
-	case GL_MAX_TEXTURE_STACK_DEPTH:    *params = MAX_TEXTURE_STACK_DEPTH;    break;
-	case GL_MAX_TEXTURE_UNITS:          *params = MAX_TEXTURE_UNITS;          break;
-	case GL_MAX_CLIP_PLANES:            *params = MAX_CLIP_PLANES;            break;
+    case GL_TEXTURE_BINDING_2D:                  *params = mState.samplerTexture[TEXTURE_2D][mState.activeSampler].name();                   break;
+    case GL_TEXTURE_BINDING_CUBE_MAP_OES:        *params = mState.samplerTexture[TEXTURE_CUBE][mState.activeSampler].name();                 break;
+    case GL_TEXTURE_BINDING_EXTERNAL_OES:        *params = mState.samplerTexture[TEXTURE_EXTERNAL][mState.activeSampler].name();             break;
+	case GL_MAX_LIGHTS:                          *params = MAX_LIGHTS;                                                                       break;
+    case GL_MAX_MODELVIEW_STACK_DEPTH:           *params = MAX_MODELVIEW_STACK_DEPTH;                                                        break;
+	case GL_MAX_PROJECTION_STACK_DEPTH:          *params = MAX_PROJECTION_STACK_DEPTH;                                                       break;
+	case GL_MAX_TEXTURE_STACK_DEPTH:             *params = MAX_TEXTURE_STACK_DEPTH;                                                          break;
+	case GL_MAX_TEXTURE_UNITS:                   *params = MAX_TEXTURE_UNITS;                                                                break;
+	case GL_MAX_CLIP_PLANES:                     *params = MAX_CLIP_PLANES;                                                                  break;
+	case GL_POINT_SIZE_ARRAY_TYPE_OES:           *params = mState.vertexAttribute[sw::PointSize].mType;                                      break;
+	case GL_POINT_SIZE_ARRAY_STRIDE_OES:         *params = mState.vertexAttribute[sw::PointSize].mStride;                                    break;
+	case GL_POINT_SIZE_ARRAY_BUFFER_BINDING_OES: *params = mState.vertexAttribute[sw::PointSize].mBoundBuffer.name();                        break;
+	case GL_VERTEX_ARRAY_TYPE:                   *params = mState.vertexAttribute[sw::Position].mType;                                       break;
+	case GL_VERTEX_ARRAY_STRIDE:                 *params = mState.vertexAttribute[sw::Position].mStride;                                     break;
+	case GL_VERTEX_ARRAY_BUFFER_BINDING:         *params = mState.vertexAttribute[sw::Position].mBoundBuffer.name();                         break;
+	case GL_NORMAL_ARRAY_TYPE:                   *params = mState.vertexAttribute[sw::Normal].mType;                                         break;
+	case GL_NORMAL_ARRAY_STRIDE:                 *params = mState.vertexAttribute[sw::Normal].mStride;                                       break;
+	case GL_NORMAL_ARRAY_BUFFER_BINDING:         *params = mState.vertexAttribute[sw::Normal].mBoundBuffer.name();                           break;
+	case GL_COLOR_ARRAY_TYPE:                    *params = mState.vertexAttribute[sw::Color0].mType;                                         break;
+	case GL_COLOR_ARRAY_STRIDE:                  *params = mState.vertexAttribute[sw::Color0].mStride;                                       break;
+	case GL_COLOR_ARRAY_BUFFER_BINDING:          *params = mState.vertexAttribute[sw::Color0].mBoundBuffer.name();                           break;
+	case GL_TEXTURE_COORD_ARRAY_TYPE:            *params = mState.vertexAttribute[sw::TexCoord0 + mState.activeSampler].mType;               break;
+	case GL_TEXTURE_COORD_ARRAY_STRIDE:          *params = mState.vertexAttribute[sw::TexCoord0 + mState.activeSampler].mStride;             break;
+	case GL_TEXTURE_COORD_ARRAY_BUFFER_BINDING:  *params = mState.vertexAttribute[sw::TexCoord0 + mState.activeSampler].mBoundBuffer.name(); break;
     default:
         return false;
     }
@@ -1348,7 +1419,7 @@ int Context::getQueryParameterNum(GLenum pname)
     // in the case that one calls glGetIntegerv to retrieve a float-typed state variable, we
     // place DEPTH_CLEAR_VALUE with the floats. This should make no difference to the calling
     // application.
-    switch (pname)
+    switch(pname)
     {
     case GL_COMPRESSED_TEXTURE_FORMATS:
 		return NUM_COMPRESSED_TEXTURE_FORMATS;
@@ -1433,7 +1504,57 @@ int Context::getQueryParameterNum(GLenum pname)
 	case GL_MAX_TEXTURE_STACK_DEPTH:
 	case GL_MAX_TEXTURE_UNITS:
 	case GL_MAX_CLIP_PLANES:
+	case GL_POINT_SIZE_ARRAY_TYPE_OES:
+	case GL_POINT_SIZE_ARRAY_STRIDE_OES:
+	case GL_POINT_SIZE_ARRAY_BUFFER_BINDING_OES:
         return 1;
+	case GL_CURRENT_COLOR:
+		return 4;
+	case GL_CURRENT_NORMAL:
+		return 3;
+	case GL_CURRENT_TEXTURE_COORDS:
+		return 4;
+	case GL_POINT_SIZE:
+	case GL_POINT_SIZE_MIN:
+	case GL_POINT_SIZE_MAX:
+	case GL_POINT_FADE_THRESHOLD_SIZE:
+		return 1;
+	case GL_POINT_DISTANCE_ATTENUATION:
+		return 3;
+	case GL_SMOOTH_POINT_SIZE_RANGE:
+	case GL_SMOOTH_LINE_WIDTH_RANGE:
+		return 2;
+	case GL_SHADE_MODEL:
+	case GL_MATRIX_MODE:
+	case GL_MODELVIEW_STACK_DEPTH:
+	case GL_PROJECTION_STACK_DEPTH:
+	case GL_TEXTURE_STACK_DEPTH:
+		return 1;
+	case GL_MODELVIEW_MATRIX:
+	case GL_PROJECTION_MATRIX:
+	case GL_TEXTURE_MATRIX:
+		return 16;
+	case GL_ALPHA_TEST_FUNC:
+	case GL_ALPHA_TEST_REF:
+	case GL_BLEND_DST:
+	case GL_BLEND_SRC:
+	case GL_LOGIC_OP_MODE:
+	case GL_VERTEX_ARRAY_SIZE:
+	case GL_VERTEX_ARRAY_TYPE:
+	case GL_VERTEX_ARRAY_STRIDE:
+	case GL_NORMAL_ARRAY_TYPE:
+	case GL_NORMAL_ARRAY_STRIDE:
+	case GL_COLOR_ARRAY_SIZE:
+	case GL_COLOR_ARRAY_TYPE:
+	case GL_COLOR_ARRAY_STRIDE:
+	case GL_TEXTURE_COORD_ARRAY_SIZE:
+	case GL_TEXTURE_COORD_ARRAY_TYPE:
+	case GL_TEXTURE_COORD_ARRAY_STRIDE:
+	case GL_VERTEX_ARRAY_POINTER:
+	case GL_NORMAL_ARRAY_POINTER:
+	case GL_COLOR_ARRAY_POINTER:
+	case GL_TEXTURE_COORD_ARRAY_POINTER:
+		return 1;
 	default:
 		UNREACHABLE(pname);
     }
@@ -1503,9 +1624,11 @@ bool Context::isQueryParameterInt(GLenum pname)
 	case GL_MAX_PROJECTION_STACK_DEPTH:
 	case GL_MAX_TEXTURE_STACK_DEPTH:
 	case GL_MAX_TEXTURE_UNITS:
+	case GL_MAX_CLIP_PLANES:
+	case GL_POINT_SIZE_ARRAY_TYPE_OES:
+	case GL_POINT_SIZE_ARRAY_STRIDE_OES:
+	case GL_POINT_SIZE_ARRAY_BUFFER_BINDING_OES:
         return true;
-	default:
-		ASSERT(isQueryParameterFloat(pname) || isQueryParameterBool(pname));
     }
 
     return false;
@@ -1529,12 +1652,12 @@ bool Context::isQueryParameterFloat(GLenum pname)
     case GL_LINE_WIDTH:
     case GL_ALIASED_LINE_WIDTH_RANGE:
     case GL_ALIASED_POINT_SIZE_RANGE:
+    case GL_SMOOTH_LINE_WIDTH_RANGE:
+    case GL_SMOOTH_POINT_SIZE_RANGE:
     case GL_DEPTH_RANGE:
     case GL_COLOR_CLEAR_VALUE:
 	case GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT:
         return true;
-    default:
-        ASSERT(isQueryParameterInt(pname) || isQueryParameterBool(pname));
     }
 
     return false;
@@ -1557,8 +1680,21 @@ bool Context::isQueryParameterBool(GLenum pname)
     case GL_DITHER:
     case GL_COLOR_WRITEMASK:
         return true;
-    default:
-        ASSERT(isQueryParameterInt(pname) || isQueryParameterFloat(pname));
+    }
+
+    return false;
+}
+
+bool Context::isQueryParameterPointer(GLenum pname)
+{
+    switch(pname)
+    {
+	case GL_VERTEX_ARRAY_POINTER:
+	case GL_NORMAL_ARRAY_POINTER:
+	case GL_COLOR_ARRAY_POINTER:
+	case GL_TEXTURE_COORD_ARRAY_POINTER:
+	case GL_POINT_SIZE_ARRAY_POINTER_OES:
+        return true;
     }
 
     return false;
@@ -1596,7 +1732,7 @@ bool Context::applyRenderTarget()
 
     device->setViewport(viewport);
 
-    if(mState.scissorTest)
+    if(mState.scissorTestEnable)
     {
 		sw::Rect scissor = {mState.scissorX, mState.scissorY, mState.scissorX + mState.scissorWidth, mState.scissorY + mState.scissorHeight};
 		scissor.clip(0, 0, width, height);
@@ -1617,7 +1753,7 @@ void Context::applyState(GLenum drawMode)
 {
     Framebuffer *framebuffer = getFramebuffer();
 
-    if(mState.cullFace)
+    if(mState.cullFaceEnable)
     {
         device->setCullMode(es2sw::ConvertCullMode(mState.cullMode, mState.frontFace));
     }
@@ -1628,7 +1764,7 @@ void Context::applyState(GLenum drawMode)
 
     if(mDepthStateDirty)
     {
-        if(mState.depthTest)
+        if(mState.depthTestEnable)
         {
 			device->setDepthBufferEnable(true);
 			device->setDepthCompare(es2sw::ConvertDepthComparison(mState.depthFunc));
@@ -1643,7 +1779,7 @@ void Context::applyState(GLenum drawMode)
 
     if(mBlendStateDirty)
     {
-        if(mState.blend)
+        if(mState.blendEnable)
         {
 			device->setAlphaBlendEnable(true);
 			device->setSeparateAlphaBlendEnable(true);
@@ -1666,7 +1802,7 @@ void Context::applyState(GLenum drawMode)
 
     if(mStencilStateDirty || mFrontFaceDirty)
     {
-        if(mState.stencilTest && framebuffer->hasStencil())
+        if(mState.stencilTestEnable && framebuffer->hasStencil())
         {
 			device->setStencilEnable(true);
 			device->setTwoSidedStencil(true);
@@ -1714,7 +1850,7 @@ void Context::applyState(GLenum drawMode)
 
     if(mPolygonOffsetStateDirty)
     {
-        if(mState.polygonOffsetFill)
+        if(mState.polygonOffsetFillEnable)
         {
             Renderbuffer *depthbuffer = framebuffer->getDepthbuffer();
             if(depthbuffer)
@@ -1735,7 +1871,7 @@ void Context::applyState(GLenum drawMode)
 
     if(mSampleStateDirty)
     {
-        if(mState.sampleAlphaToCoverage)
+        if(mState.sampleAlphaToCoverageEnable)
         {
             device->setTransparencyAntialiasing(sw::TRANSPARENCY_ALPHA_TO_COVERAGE);
         }
@@ -1744,7 +1880,7 @@ void Context::applyState(GLenum drawMode)
 			device->setTransparencyAntialiasing(sw::TRANSPARENCY_NONE);
 		}
 
-        if(mState.sampleCoverage)
+        if(mState.sampleCoverageEnable)
         {
             unsigned int mask = 0;
             if(mState.sampleCoverageValue != 0)
@@ -1795,7 +1931,7 @@ void Context::applyState(GLenum drawMode)
 	case GL_FLAT:   device->setShadingMode(sw::SHADING_FLAT);    break;
 	}
 
-	device->setLightingEnable(lighting);
+	device->setLightingEnable(lightingEnable);
 	device->setGlobalAmbient(sw::Color<float>(globalAmbient.red, globalAmbient.green, globalAmbient.blue, globalAmbient.alpha));
 
 	for(int i = 0; i < MAX_LIGHTS; i++)
@@ -1843,7 +1979,7 @@ void Context::applyState(GLenum drawMode)
 	device->setTexGen(0, sw::TEXGEN_NONE);
 	device->setTexGen(1, sw::TEXGEN_NONE);
 
-	device->setAlphaTestEnable(alphaTest);
+	device->setAlphaTestEnable(alphaTestEnable);
 	device->setAlphaCompare(es2sw::ConvertAlphaComparison(alphaTestFunc));
 	device->setAlphaReference(alphaTestRef * 0xFF);
 }
@@ -1900,11 +2036,11 @@ void Context::applyTextures()
     {
         Texture *texture = nullptr;
 		
-		if(textureExternalEnabled[unit])
+		if(textureExternalEnable[unit])
 		{
 			texture = getSamplerTexture(unit, TEXTURE_EXTERNAL);
 		}
-		else if(texture2Denabled[unit])
+		else if(texture2Denable[unit])
 		{
 			texture = getSamplerTexture(unit, TEXTURE_2D);
 		}
@@ -1933,6 +2069,8 @@ void Context::applyTextures()
 			device->setMaxAnisotropy(sw::SAMPLER_PIXEL, unit, maxAnisotropy);
 
 			applyTexture(unit, texture);
+
+			device->setConstantColor(unit, sw::Color<float>(mState.textureUnit[unit].color.red, mState.textureUnit[unit].color.green, mState.textureUnit[unit].color.blue, mState.textureUnit[unit].color.alpha));
 
 			if(mState.textureUnit[unit].environmentMode != GL_COMBINE)
 			{
@@ -2104,6 +2242,11 @@ void Context::applyTextures()
 void Context::setTextureEnvMode(GLenum texEnvMode)
 {
 	mState.textureUnit[mState.activeSampler].environmentMode = texEnvMode;
+}
+
+void Context::setTextureEnvColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+{
+	mState.textureUnit[mState.activeSampler].color = {red, green, blue, alpha};
 }
 
 void Context::setCombineRGB(GLenum combineRGB)
@@ -2566,8 +2709,8 @@ void Context::drawTexture(GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloa
 {
 	es1::Framebuffer *framebuffer = getFramebuffer();
 	es1::Renderbuffer *renderbuffer = framebuffer->getColorbuffer();
-	float targetWidth = renderbuffer->getWidth();
-	float targetHeight = renderbuffer->getHeight();
+	float targetWidth = (float)renderbuffer->getWidth();
+	float targetHeight = (float)renderbuffer->getHeight();
 	float x0 = 2.0f * x / targetWidth - 1.0f;
 	float y0 = 2.0f * y / targetHeight - 1.0f;
 	float x1 = 2.0f * (x + width) / targetWidth - 1.0f;
@@ -2581,8 +2724,8 @@ void Context::drawTexture(GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloa
 
 	ASSERT(mState.samplerTexture[TEXTURE_2D][1].name() == 0);   // Multi-texturing unimplemented
 	es1::Texture *texture = getSamplerTexture(0, TEXTURE_2D);
-	float textureWidth = texture->getWidth(GL_TEXTURE_2D, 0);
-	float textureHeight = texture->getHeight(GL_TEXTURE_2D, 0);
+	float textureWidth = (float)texture->getWidth(GL_TEXTURE_2D, 0);
+	float textureHeight = (float)texture->getHeight(GL_TEXTURE_2D, 0);
 	int Ucr = texture->getCropRectU();
 	int Vcr = texture->getCropRectV();
 	int Wcr = texture->getCropRectW();
@@ -2647,6 +2790,16 @@ void Context::recordInvalidFramebufferOperation()
     mInvalidFramebufferOperation = true;
 }
 
+void Context::recordMatrixStackOverflow()
+{
+    mMatrixStackOverflow = true;
+}
+
+void Context::recordMatrixStackUnderflow()
+{
+    mMatrixStackUnderflow = true;
+}
+
 // Get one of the recorded errors and clear its flag, if any.
 // [OpenGL ES 2.0.24] section 2.5 page 13.
 GLenum Context::getError()
@@ -2682,6 +2835,20 @@ GLenum Context::getError()
     if(mInvalidFramebufferOperation)
     {
         mInvalidFramebufferOperation = false;
+
+        return GL_INVALID_FRAMEBUFFER_OPERATION_OES;
+    }
+
+	if(mMatrixStackOverflow)
+    {
+        mMatrixStackOverflow = false;
+
+        return GL_INVALID_FRAMEBUFFER_OPERATION_OES;
+    }
+
+	if(mMatrixStackUnderflow)
+    {
+        mMatrixStackUnderflow = false;
 
         return GL_INVALID_FRAMEBUFFER_OPERATION_OES;
     }
@@ -2797,23 +2964,23 @@ void Context::detachRenderbuffer(GLuint renderbuffer)
 
 bool Context::cullSkipsDraw(GLenum drawMode)
 {
-    return mState.cullFace && mState.cullMode == GL_FRONT_AND_BACK && isTriangleMode(drawMode);
+    return mState.cullFaceEnable && mState.cullMode == GL_FRONT_AND_BACK && isTriangleMode(drawMode);
 }
 
 bool Context::isTriangleMode(GLenum drawMode)
 {
-    switch (drawMode)
+    switch(drawMode)
     {
-      case GL_TRIANGLES:
-      case GL_TRIANGLE_FAN:
-      case GL_TRIANGLE_STRIP:
+    case GL_TRIANGLES:
+    case GL_TRIANGLE_FAN:
+    case GL_TRIANGLE_STRIP:
         return true;
-      case GL_POINTS:
-      case GL_LINES:
-      case GL_LINE_LOOP:
-      case GL_LINE_STRIP:
+    case GL_POINTS:
+    case GL_LINES:
+    case GL_LINE_LOOP:
+    case GL_LINE_STRIP:
         return false;
-      default: UNREACHABLE(drawMode);
+    default: UNREACHABLE(drawMode);
     }
 
     return false;
@@ -3022,6 +3189,151 @@ void Context::setClipPlaneEnable(int index, bool enable)
 bool Context::isClipPlaneEnabled(int index) const
 {
 	return (clipFlags & (1 << index)) != 0;
+}
+
+void Context::setColorLogicOpEnable(bool enable)
+{
+	colorLogicOpEnable = enable;
+}
+
+bool Context::isColorLogicOpEnabled() const
+{
+	return colorLogicOpEnable;
+}
+
+void Context::setLogicalOperation(GLenum logicOp)
+{
+	logicalOperation = logicOp;
+}
+
+void Context::setPointSmoothEnable(bool enable)
+{
+	pointSmoothEnable = enable;
+}
+
+bool Context::isPointSmoothEnabled() const
+{
+	return pointSmoothEnable;
+}
+
+void Context::setLineSmoothEnable(bool enable)
+{
+	lineSmoothEnable = enable;
+}
+
+bool Context::isLineSmoothEnabled() const
+{
+	return lineSmoothEnable;
+}
+
+void Context::setColorMaterialEnable(bool enable)
+{
+	colorMaterialEnable = enable;
+}
+
+bool Context::isColorMaterialEnabled() const
+{
+	return colorMaterialEnable;
+}
+
+void Context::setNormalizeEnable(bool enable)
+{
+	normalizeEnable = enable;
+}
+
+bool Context::isNormalizeEnabled() const
+{
+	return normalizeEnable;
+}
+
+void Context::setRescaleNormalEnable(bool enable)
+{
+	rescaleNormalEnable = enable;
+}
+
+bool Context::isRescaleNormalEnabled() const
+{
+	return rescaleNormalEnable;
+}
+
+void Context::setVertexArrayEnable(bool enable)
+{
+	mState.vertexAttribute[sw::Position].mArrayEnabled = enable;
+}
+
+bool Context::isVertexArrayEnabled() const
+{
+	return mState.vertexAttribute[sw::Position].mArrayEnabled;
+}
+
+void Context::setNormalArrayEnable(bool enable)
+{
+	mState.vertexAttribute[sw::Normal].mArrayEnabled = enable;
+}
+
+bool Context::isNormalArrayEnabled() const
+{
+	return mState.vertexAttribute[sw::Normal].mArrayEnabled;
+}
+
+void Context::setColorArrayEnable(bool enable)
+{
+	mState.vertexAttribute[sw::Color0].mArrayEnabled = enable;
+}
+
+bool Context::isColorArrayEnabled() const
+{
+	return mState.vertexAttribute[sw::Color0].mArrayEnabled;
+}
+
+void Context::setPointSizeArrayEnable(bool enable)
+{
+	mState.vertexAttribute[sw::PointSize].mArrayEnabled = enable;
+}
+
+bool Context::isPointSizeArrayEnabled() const
+{
+	return mState.vertexAttribute[sw::PointSize].mArrayEnabled;
+}
+
+void Context::setTextureCoordArrayEnable(bool enable)
+{
+	mState.vertexAttribute[sw::TexCoord0 + clientTexture].mArrayEnabled = enable;
+}
+
+bool Context::isTextureCoordArrayEnabled() const
+{
+	return mState.vertexAttribute[sw::TexCoord0 + clientTexture].mArrayEnabled;
+}
+
+void Context::setMultisampleEnable(bool enable)
+{
+	multisampleEnable = enable;
+}
+
+bool Context::isMultisampleEnabled() const
+{
+	return multisampleEnable;
+}
+
+void Context::setSampleAlphaToOneEnable(bool enable)
+{
+	sampleAlphaToOneEnable = enable;
+}
+
+bool Context::isSampleAlphaToOneEnabled() const
+{
+	return sampleAlphaToOneEnable;
+}
+
+void Context::setPointSpriteEnable(bool enable)
+{
+	pointSpriteEnable = enable;
+}
+
+bool Context::isPointSpriteEnabled() const
+{
+	return pointSpriteEnable;
 }
 
 void Context::clientActiveTexture(GLenum texture)
