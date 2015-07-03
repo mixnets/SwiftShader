@@ -356,6 +356,12 @@
     <ClInclude Include="..\Common\SharedLibrary.hpp">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Shader\PixelProgram.hpp">
+      <Filter>Header Files\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shader\PixelPipeline.hpp">
+      <Filter>Header Files\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SwiftShader.ini" />

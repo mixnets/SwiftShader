@@ -21,10 +21,51 @@ namespace sw
 {
 	extern bool veryEarlyDepthTest;
 	extern bool complementaryDepthBuffer;
+	extern bool fullPixelPositionRegister;
+	extern bool forceClearRegisters;
 
 	extern int clusterCount;
 
-	QuadRasterizer::QuadRasterizer(const PixelProcessor::State &state, const PixelShader *pixelShader) : PixelRoutine(state, pixelShader)
+	QuadRasterizer::Registers::Registers(const PixelShader *shader) :
+		current(rs[0]), diffuse(vs[0]), specular(vs[1]),
+		rf(shader && shader->dynamicallyIndexedTemporaries),
+		vf(shader && shader->dynamicallyIndexedInput)
+	{
+		if(!shader || shader->getVersion() < 0x0200 || forceClearRegisters)
+		{
+			for(int i = 0; i < 10; i++)
+			{
+				vf[i].x = Float4(0.0f);
+				vf[i].y = Float4(0.0f);
+				vf[i].z = Float4(0.0f);
+				vf[i].w = Float4(0.0f);
+			}
+		}
+
+		loopDepth = -1;
+		enableStack[0] = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+
+		if(shader && shader->containsBreakInstruction())
+		{
+			enableBreak = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+		}
+
+		if(shader && shader->containsContinueInstruction())
+		{
+			enableContinue = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+		}
+
+		occlusion = 0;
+
+#if PERF_PROFILE
+		for(int i = 0; i < PERF_TIMERS; i++)
+		{
+			cycles[i] = 0;
+		}
+#endif
+	}
+
+	QuadRasterizer::QuadRasterizer(const PixelProcessor::State &state, const PixelShader *pixelShader) : Rasterizer(state), shader(pixelShader)
 	{
 	}
 
@@ -316,5 +357,32 @@ namespace sw
 			y += 2 * clusterCount;
 		}
 		Until(y >= yMax)
+	}
+
+	Float4 QuadRasterizer::interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
+	{
+		Float4 interpolant = D;
+
+		if(!flat)
+		{
+			interpolant += x * *Pointer<Float4>(planeEquation + OFFSET(PlaneEquation, A), 16);
+
+			if(perspective)
+			{
+				interpolant *= rhw;
+			}
+		}
+
+		return interpolant;
+	}
+
+	bool QuadRasterizer::interpolateZ() const
+	{
+		return state.depthTestActive || state.pixelFogActive() || (shader && shader->vPosDeclared && fullPixelPositionRegister);
+	}
+
+	bool QuadRasterizer::interpolateW() const
+	{
+		return state.perspective || (shader && shader->vPosDeclared && fullPixelPositionRegister);
 	}
 }

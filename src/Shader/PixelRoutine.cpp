@@ -29,7 +29,7 @@ namespace sw
 	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
 	extern bool fullPixelPositionRegister;
 
-	PixelRoutine::PixelRoutine(const PixelProcessor::State &state, const PixelShader *shader) : Rasterizer(state), shader(shader)
+	PixelRoutine::PixelRoutine(const PixelProcessor::State &state, const PixelShader *shader) : QuadRasterizer(state, shader)
 	{
 		perturbate = false;
 		luminance = false;
@@ -394,23 +394,6 @@ namespace sw
 		#if PERF_PROFILE
 			r.cycles[PERF_PIPE] += Ticks() - pipeTime;
 		#endif
-	}
-
-	Float4 PixelRoutine::interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
-	{
-		Float4 interpolant = D;
-
-		if(!flat)
-		{
-			interpolant += x * *Pointer<Float4>(planeEquation + OFFSET(PlaneEquation,A), 16);
-
-			if(perspective)
-			{
-				interpolant *= rhw;
-			}
-		}
-
-		return interpolant;
 	}
 
 	Float4 PixelRoutine::interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)
@@ -5911,15 +5894,5 @@ namespace sw
 	unsigned short PixelRoutine::shaderVersion() const
 	{
 		return shader ? shader->getVersion() : 0x0000;
-	}
-
-	bool PixelRoutine::interpolateZ() const
-	{
-		return state.depthTestActive || state.pixelFogActive() || (shader && shader->vPosDeclared && fullPixelPositionRegister);
-	}
-
-	bool PixelRoutine::interpolateW() const
-	{
-		return state.perspective || (shader && shader->vPosDeclared && fullPixelPositionRegister);
 	}
 }

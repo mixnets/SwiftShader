@@ -390,6 +390,8 @@
     <ClInclude Include="..\Main\FrameBufferWin.hpp" />
     <ClInclude Include="..\Main\Register.hpp" />
     <ClInclude Include="..\Renderer\RoutineCache.hpp" />
+    <ClInclude Include="..\Shader\PixelPipeline.hpp" />
+    <ClInclude Include="..\Shader\PixelProgram.hpp" />
     <ClInclude Include="MemoryManager.hpp" />
     <ClInclude Include="..\Shader\Constants.hpp" />
     <ClInclude Include="..\Shader\PixelRoutine.hpp" />

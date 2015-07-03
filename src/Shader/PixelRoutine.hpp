@@ -12,20 +12,14 @@
 #ifndef sw_PixelRoutine_hpp
 #define sw_PixelRoutine_hpp
 
-#include "Rasterizer.hpp"
-#include "ShaderCore.hpp"
-#include "PixelShader.hpp"
-
-#include "Types.hpp"
+#include "QuadRasterizer.hpp"
 
 namespace sw
 {
-	extern bool forceClearRegisters;
-
 	class PixelShader;
 	class SamplerCore;
 
-	class PixelRoutine : public Rasterizer, public ShaderCore
+	class PixelRoutine : public sw::QuadRasterizer, public ShaderCore
 	{
 		friend class PixelProcessor;   // FIXME
 
@@ -35,122 +29,12 @@ namespace sw
 		~PixelRoutine();
 
 	protected:
-		struct Registers
-		{
-			Registers(const PixelShader *shader) :
-				current(rs[0]), diffuse(vs[0]), specular(vs[1]),
-				rf(shader && shader->dynamicallyIndexedTemporaries),
-				vf(shader && shader->dynamicallyIndexedInput)
-			{
-				if(!shader || shader->getVersion() < 0x0200 || forceClearRegisters)
-				{
-					for(int i = 0; i < 10; i++)
-					{
-						vf[i].x = Float4(0.0f);
-						vf[i].y = Float4(0.0f);
-						vf[i].z = Float4(0.0f);
-						vf[i].w = Float4(0.0f);
-					}
-				}
-
-				loopDepth = -1;
-				enableStack[0] = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
-				
-				if(shader && shader->containsBreakInstruction())
-				{
-					enableBreak = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
-				}
-
-				if(shader && shader->containsContinueInstruction())
-				{
-					enableContinue = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
-				}
-
-				occlusion = 0;
-				
-				#if PERF_PROFILE
-					for(int i = 0; i < PERF_TIMERS; i++)
-					{
-						cycles[i] = 0;
-					}
-				#endif
-			}
-
-			Pointer<Byte> constants;
-
-			Pointer<Byte> primitive;
-			Int cluster;
-			Pointer<Byte> data;
-
-			Float4 z[4];
-			Float4 w;
-			Float4 rhw;
-
-			Float4 Dz[4];
-			Float4 Dw;
-			Float4 Dv[10][4];
-			Float4 Df;
-
-			Vector4s &current;
-			Vector4s &diffuse;
-			Vector4s &specular;
-
-			Vector4s rs[6];
-			Vector4s vs[2];
-			Vector4s ts[6];
-
-			RegisterArray<4096> rf;
-			RegisterArray<10> vf;
-
-			Vector4f vPos;
-			Vector4f vFace;
-
-			Vector4f oC[4];
-			Float4 oDepth;
-
-			Vector4f p0;
-			Array<Int, 4> aL;
-
-			Array<Int, 4> increment;
-			Array<Int, 4> iteration;
-
-			Int loopDepth;
-			Int stackIndex;   // FIXME: Inc/decrement callStack
-			Array<UInt, 16> callStack;
-
-			Int enableIndex;
-			Array<Int4, 1 + 24> enableStack;
-			Int4 enableBreak;
-			Int4 enableContinue;
-			Int4 enableLeave;
-
-			// bem(l) offsets and luminance
-			Float4 du;
-			Float4 dv;
-			Short4 L;
-
-			// texm3x3 temporaries
-			Float4 u_;   // FIXME
-			Float4 v_;   // FIXME
-			Float4 w_;   // FIXME
-			Float4 U;   // FIXME
-			Float4 V;   // FIXME
-			Float4 W;   // FIXME
-
-			UInt occlusion;
-
-			#if PERF_PROFILE
-				Long cycles[PERF_TIMERS];
-			#endif
-		};
-
 		typedef Shader::DestinationParameter Dst;
 		typedef Shader::SourceParameter Src;
 		typedef Shader::Control Control;
 
-		void quad(Registers &r, Pointer<Byte> cBuffer[4], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[4], Int &x, Int &y);
+		virtual void quad(Registers &r, Pointer<Byte> cBuffer[4], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[4], Int &x, Int &y);
 
-		Float4 interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective);
 		Float4 interpolateCentroid(Float4 &x, Float4 &y, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective);
 		void stencilTest(Registers &r, Pointer<Byte> &sBuffer, int q, Int &x, Int &sMask, Int &cMask);
 		void stencilTest(Registers &r, Byte8 &value, StencilCompareMode stencilCompareMode, bool CCW);
@@ -290,10 +174,6 @@ namespace sw
 
 		bool colorUsed();
 		unsigned short shaderVersion() const;
-		bool interpolateZ() const;
-		bool interpolateW() const;
-
-		const PixelShader *const shader;
 
 	private:
 		SamplerCore *sampler[TEXTURE_IMAGE_UNITS];
