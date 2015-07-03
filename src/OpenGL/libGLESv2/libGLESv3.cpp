@@ -3629,10 +3629,10 @@ GL_APICALL void GL_APIENTRY glGetSamplerParameteriv(GLuint sampler, GLenum pname
 			*params = samplerObject->mMagFilter;
 			break;
 		case GL_TEXTURE_MIN_LOD:
-			*params = (GLint)samplerObject->mMinLod;
+			*params = (GLint)roundf(samplerObject->mMinLod);
 			break;
 		case GL_TEXTURE_MAX_LOD:
-			*params = (GLint)samplerObject->mMaxLod;
+			*params = (GLint)roundf(samplerObject->mMaxLod);
 			break;
 		case GL_TEXTURE_COMPARE_MODE:
 			*params = samplerObject->mCompareMode;
