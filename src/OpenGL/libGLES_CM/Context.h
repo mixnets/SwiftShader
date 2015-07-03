@@ -86,6 +86,10 @@ const float ALIASED_LINE_WIDTH_RANGE_MIN = 1.0f;
 const float ALIASED_LINE_WIDTH_RANGE_MAX = 1.0f;
 const float ALIASED_POINT_SIZE_RANGE_MIN = 0.125f;
 const float ALIASED_POINT_SIZE_RANGE_MAX = 8192.0f;
+const float SMOOTH_LINE_WIDTH_RANGE_MIN = 1.0f;
+const float SMOOTH_LINE_WIDTH_RANGE_MAX = 1.0f;
+const float SMOOTH_POINT_SIZE_RANGE_MIN = 0.125f;
+const float SMOOTH_POINT_SIZE_RANGE_MAX = 8192.0f;
 const float MAX_TEXTURE_MAX_ANISOTROPY = 16.0f;
 
 struct Color
@@ -182,6 +186,7 @@ typedef VertexAttribute VertexAttributeArray[MAX_VERTEX_ATTRIBS];
 
 struct TextureUnit
 {
+	Color color;
 	GLenum environmentMode;
 	GLenum combineRGB;
 	GLenum combineAlpha;
@@ -241,6 +246,7 @@ struct State
 
     GLenum generateMipmapHint;
 	GLenum perspectiveCorrectionHint;
+	GLenum fogHint;
 
     GLint viewportX;
     GLint viewportY;
@@ -360,6 +366,7 @@ public:
 	unsigned int getActiveTexture() const;
 
 	void setTextureEnvMode(GLenum texEnvMode);
+	void setTextureEnvColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
 	void setCombineRGB(GLenum combineRGB);
 	void setCombineAlpha(GLenum combineAlpha);
 
@@ -367,6 +374,7 @@ public:
 
     void setGenerateMipmapHint(GLenum hint);
 	void setPerspectiveCorrectionHint(GLenum hint);
+	void setFogHint(GLenum hint);
 
     void setViewportParams(GLint x, GLint y, GLsizei width, GLsizei height);
 
@@ -445,6 +453,7 @@ public:
 	bool isQueryParameterInt(GLenum pname);
 	bool isQueryParameterFloat(GLenum pname);
 	bool isQueryParameterBool(GLenum pname);
+	bool isQueryParameterPointer(GLenum pname);
 
     void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLsizei *bufSize, void* pixels);
     void clear(GLbitfield mask);
@@ -459,6 +468,8 @@ public:
     void recordInvalidOperation();
     void recordOutOfMemory();
     void recordInvalidFramebufferOperation();
+	void recordMatrixStackOverflow();
+	void recordMatrixStackUnderflow();
 
     GLenum getError();
 
@@ -531,6 +542,8 @@ private:
     bool mInvalidOperation;
     bool mOutOfMemory;
     bool mInvalidFramebufferOperation;
+	bool mMatrixStackOverflow;
+	bool mMatrixStackUnderflow;
 
     bool mHasBeenCurrent;
 

@@ -596,7 +596,15 @@ void ClipPlanef(GLenum plane, const GLfloat *equation)
 
 void ClipPlanex(GLenum plane, const GLfixed *equation)
 {
-	UNIMPLEMENTED();
+	GLfloat equationf[4] =
+	{
+		(float)equation[0] / 0x10000,
+		(float)equation[1] / 0x10000,
+		(float)equation[2] / 0x10000,
+		(float)equation[3] / 0x10000,
+	};
+	
+	ClipPlanef(plane, equationf);
 }
 
 void Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
@@ -613,7 +621,7 @@ void Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 
 void Color4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte alpha)
 {
-	UNIMPLEMENTED();
+	Color4f((float)red / 0xFF, (float)green / 0xFF, (float)blue / 0xFF, (float)alpha / 0xFF);
 }
 
 void Color4x(GLfixed red, GLfixed green, GLfixed blue, GLfixed alpha)
@@ -1211,24 +1219,25 @@ void Disable(GLenum cap)
 		case GL_TEXTURE_2D:               context->setTexture2Denabled(false);      break;
 		case GL_TEXTURE_EXTERNAL_OES:     context->setTextureExternalEnabled(false); break;
 		case GL_ALPHA_TEST:               context->setAlphaTest(false);             break;
-		case GL_COLOR_LOGIC_OP:           UNIMPLEMENTED(); break;
-		case GL_POINT_SMOOTH:             UNIMPLEMENTED(); break;
-		case GL_LINE_SMOOTH:              UNIMPLEMENTED(); break;
-		case GL_COLOR_MATERIAL:           UNIMPLEMENTED(); break;
-		case GL_NORMALIZE:                UNIMPLEMENTED(); break;
-		case GL_RESCALE_NORMAL:           UNIMPLEMENTED(); break;
-		case GL_VERTEX_ARRAY:             UNIMPLEMENTED(); break;
-		case GL_NORMAL_ARRAY:             UNIMPLEMENTED(); break;
-		case GL_COLOR_ARRAY:              UNIMPLEMENTED(); break;
-		case GL_TEXTURE_COORD_ARRAY:      UNIMPLEMENTED(); break;
-		case GL_MULTISAMPLE:              UNIMPLEMENTED(); break;
-		case GL_SAMPLE_ALPHA_TO_ONE:      UNIMPLEMENTED(); break;
+		case GL_COLOR_LOGIC_OP:           /* UNIMPLEMENTED(); */ break;
+		case GL_POINT_SMOOTH:             /* UNIMPLEMENTED(); */ break;
+		case GL_LINE_SMOOTH:              /* UNIMPLEMENTED(); */ break;
+		case GL_COLOR_MATERIAL:           /* UNIMPLEMENTED(); */ break;
+		case GL_NORMALIZE:                /* UNIMPLEMENTED(); */ break;
+		case GL_RESCALE_NORMAL:           /* UNIMPLEMENTED(); */ break;
+		case GL_VERTEX_ARRAY:             /* UNIMPLEMENTED(); */ break;
+		case GL_NORMAL_ARRAY:             /* UNIMPLEMENTED(); */ break;
+		case GL_COLOR_ARRAY:              /* UNIMPLEMENTED(); */ break;
+		case GL_TEXTURE_COORD_ARRAY:      /* UNIMPLEMENTED(); */ break;
+		case GL_MULTISAMPLE:              /* UNIMPLEMENTED(); */ break;
+		case GL_SAMPLE_ALPHA_TO_ONE:      /* UNIMPLEMENTED(); */ break;
 		case GL_CLIP_PLANE0:              context->setClipPlaneEnable(0, false); break;
 		case GL_CLIP_PLANE1:              context->setClipPlaneEnable(1, false); break;
 		case GL_CLIP_PLANE2:              context->setClipPlaneEnable(2, false); break;
 		case GL_CLIP_PLANE3:              context->setClipPlaneEnable(3, false); break;
 		case GL_CLIP_PLANE4:              context->setClipPlaneEnable(4, false); break;
 		case GL_CLIP_PLANE5:              context->setClipPlaneEnable(5, false); break;
+		case GL_POINT_SPRITE_OES:         /* UNIMPLEMENTED(); */ break;
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -1239,19 +1248,32 @@ void DisableClientState(GLenum array)
 {
 	TRACE("(GLenum array = 0x%X)", array);
 
+	switch(array)
+	{
+	case GL_VERTEX_ARRAY:
+	case GL_NORMAL_ARRAY:
+	case GL_COLOR_ARRAY:
+	case GL_POINT_SIZE_ARRAY_OES:
+	case GL_TEXTURE_COORD_ARRAY:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
 	es1::Context *context = es1::getContext();
 
-	if (context)
+	if(context)
 	{
 		GLenum texture = context->getClientActiveTexture();
 
-		switch (array)
+		switch(array)
 		{
-		case GL_VERTEX_ARRAY:        context->setEnableVertexAttribArray(sw::Position, false);                            break;
-		case GL_COLOR_ARRAY:         context->setEnableVertexAttribArray(sw::Color0, false);                              break;
-		case GL_TEXTURE_COORD_ARRAY: context->setEnableVertexAttribArray(sw::TexCoord0 + (texture - GL_TEXTURE0), false); break;
-		case GL_NORMAL_ARRAY:        context->setEnableVertexAttribArray(sw::Normal, false);                              break;
-		default:                     UNIMPLEMENTED();
+		case GL_VERTEX_ARRAY:         context->setEnableVertexAttribArray(sw::Position, false);                            break;
+		case GL_NORMAL_ARRAY:         context->setEnableVertexAttribArray(sw::Normal, false);                              break;
+		case GL_COLOR_ARRAY:          context->setEnableVertexAttribArray(sw::Color0, false);                              break;
+		case GL_POINT_SIZE_ARRAY_OES: context->setEnableVertexAttribArray(sw::PointSize, false);                           break;
+		case GL_TEXTURE_COORD_ARRAY:  context->setEnableVertexAttribArray(sw::TexCoord0 + (texture - GL_TEXTURE0), false); break;
+		default:                      UNREACHABLE(array);
 		}
 	}
 }
@@ -1361,6 +1383,18 @@ void EnableClientState(GLenum array)
 {
 	TRACE("(GLenum array = 0x%X)", array);
 
+	switch(array)
+	{
+	case GL_VERTEX_ARRAY:
+	case GL_NORMAL_ARRAY:
+	case GL_COLOR_ARRAY:
+	case GL_POINT_SIZE_ARRAY_OES:
+	case GL_TEXTURE_COORD_ARRAY:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
 	es1::Context *context = es1::getContext();
 
 	if(context)
@@ -1369,11 +1403,12 @@ void EnableClientState(GLenum array)
 
 		switch(array)
 		{
-		case GL_VERTEX_ARRAY:        context->setEnableVertexAttribArray(sw::Position, true);                            break;
-		case GL_COLOR_ARRAY:         context->setEnableVertexAttribArray(sw::Color0, true);                              break;
-		case GL_TEXTURE_COORD_ARRAY: context->setEnableVertexAttribArray(sw::TexCoord0 + (texture - GL_TEXTURE0), true); break;
-		case GL_NORMAL_ARRAY:        context->setEnableVertexAttribArray(sw::Normal, true);                              break;
-		default:                     UNIMPLEMENTED();
+		case GL_VERTEX_ARRAY:         context->setEnableVertexAttribArray(sw::Position, true);                            break;
+		case GL_NORMAL_ARRAY:         context->setEnableVertexAttribArray(sw::Normal, true);                              break;
+		case GL_COLOR_ARRAY:          context->setEnableVertexAttribArray(sw::Color0, true);                              break;
+		case GL_POINT_SIZE_ARRAY_OES: context->setEnableVertexAttribArray(sw::PointSize, true);                           break;
+		case GL_TEXTURE_COORD_ARRAY:  context->setEnableVertexAttribArray(sw::TexCoord0 + (texture - GL_TEXTURE0), true); break;
+		default:                      UNREACHABLE(array);
 		}
 	}
 }
@@ -1523,6 +1558,7 @@ void Fogf(GLenum pname, GLfloat param)
 	TRACE("(GLenum pname = 0x%X, GLfloat param = %f)", pname, param);
 
 	es1::Context *context = es1::getContext();
+
 	if(context)
 	{
 		switch(pname)
@@ -1539,24 +1575,19 @@ void Fogf(GLenum pname, GLfloat param)
 				return error(GL_INVALID_ENUM);
 			}
 			break;
-
 		case GL_FOG_DENSITY:
 			if(param < 0)
 			{
 				return error(GL_INVALID_VALUE);
 			}
-
 			context->setFogDensity(param);
 			break;
-
 		case GL_FOG_START:
 			context->setFogStart(param);
 			break;
-
 		case GL_FOG_END:
 			context->setFogEnd(param);
 			break;
-
 		case GL_FOG_COLOR:
 		default:
 			return error(GL_INVALID_ENUM);
@@ -1586,28 +1617,22 @@ void Fogfv(GLenum pname, const GLfloat *params)
 				return error(GL_INVALID_ENUM);
 			}
 			break;
-
 		case GL_FOG_DENSITY:
 			if(params[0] < 0)
 			{
 				return error(GL_INVALID_VALUE);
 			}
-
 			context->setFogDensity(params[0]);
 			break;
-
 		case GL_FOG_START:
 			context->setFogStart(params[0]);
 			break;
-
 		case GL_FOG_END:
 			context->setFogEnd(params[0]);
 			break;
-
 		case GL_FOG_COLOR:
 			context->setFogColor(params[0], params[1], params[2], params[3]);
 			break;
-
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -1616,7 +1641,44 @@ void Fogfv(GLenum pname, const GLfloat *params)
 
 void Fogx(GLenum pname, GLfixed param)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLenum pname = 0x%X, GLfixed param = %d)", pname, param);
+
+	es1::Context *context = es1::getContext();
+
+	if(context)
+	{
+		switch(pname)
+		{
+		case GL_FOG_MODE:
+			switch((GLenum)param)
+			{
+			case GL_LINEAR:
+			case GL_EXP:
+			case GL_EXP2:
+				context->setFogMode((GLenum)param);
+				break;
+			default:
+				return error(GL_INVALID_ENUM);
+			}
+			break;
+		case GL_FOG_DENSITY:
+			if(param < 0)
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			context->setFogDensity(param);
+			break;
+		case GL_FOG_START:
+			context->setFogStart(param);
+			break;
+		case GL_FOG_END:
+			context->setFogEnd(param);
+			break;
+		case GL_FOG_COLOR:
+		default:
+			return error(GL_INVALID_ENUM);
+		}
+	}
 }
 
 void Fogxv(GLenum pname, const GLfixed *params)
@@ -1864,6 +1926,7 @@ void GetBooleanv(GLenum pname, GLboolean* params)
 
 				delete [] intParams;
 			}
+			else UNREACHABLE(pname);
 		}
 	}
 }
@@ -1992,6 +2055,7 @@ void GetFloatv(GLenum pname, GLfloat* params)
 
 				delete [] intParams;
 			}
+			else UNREACHABLE(pname);
 		}
 	}
 }
@@ -2139,6 +2203,7 @@ void GetIntegerv(GLenum pname, GLint* params)
 
 				delete [] floatParams;
 			}
+			else UNREACHABLE(pname);
 		}
 	}
 }
@@ -2364,6 +2429,9 @@ void Hint(GLenum target, GLenum mode)
 		case GL_PERSPECTIVE_CORRECTION_HINT:
 			context->setPerspectiveCorrectionHint(mode);
 			break;
+		case GL_FOG_HINT:
+			context->setFogHint(mode);
+			break;
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -2415,6 +2483,11 @@ GLboolean IsEnabled(GLenum cap)
 		case GL_CLIP_PLANE3:              return context->isClipPlaneEnabled(3);
 		case GL_CLIP_PLANE4:              return context->isClipPlaneEnabled(4);
 		case GL_CLIP_PLANE5:              return context->isClipPlaneEnabled(5);
+		case GL_VERTEX_ARRAY:             return context->getVertexAttribState(sw::Position).mArrayEnabled;
+		case GL_NORMAL_ARRAY:             return context->getVertexAttribState(sw::Normal).mArrayEnabled;
+		case GL_COLOR_ARRAY:              return context->getVertexAttribState(sw::Color0).mArrayEnabled;
+		case GL_POINT_SIZE_ARRAY_OES:     return context->getVertexAttribState(sw::PointSize).mArrayEnabled;
+		case GL_TEXTURE_COORD_ARRAY:      return context->getVertexAttribState(sw::TexCoord0 + context->getClientActiveTexture()).mArrayEnabled;
 		default:
 			return error(GL_INVALID_ENUM, GL_FALSE);
 		}
@@ -2749,7 +2822,23 @@ void MultMatrixx(const GLfixed *m)
 
 void MultiTexCoord4f(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLenum target = 0x%X, GLfloat s = %f, GLfloat t = %f, GLfloat r = %f, GLfloat q = %f)", target, s, t, r, q);
+
+	switch(target)
+	{
+	case GL_TEXTURE0:
+	case GL_TEXTURE1:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
+	es1::Context *context = es1::getContext();
+
+	if(context)
+	{
+		context->setVertexAttrib(sw::TexCoord0 + (target - GL_TEXTURE0), s, t, r, q);
+	}
 }
 
 void MultiTexCoord4x(GLenum target, GLfixed s, GLfixed t, GLfixed r, GLfixed q)
@@ -2759,7 +2848,14 @@ void MultiTexCoord4x(GLenum target, GLfixed s, GLfixed t, GLfixed r, GLfixed q)
 
 void Normal3f(GLfloat nx, GLfloat ny, GLfloat nz)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLfloat nx, GLfloat ny, GLfloat nz)", nx, ny, nz);
+
+	es1::Context *context = es1::getContext();
+
+	if(context)
+	{
+		context->setVertexAttrib(sw::Normal, nx, ny, nz, 0);
+	}
 }
 
 void Normal3x(GLfixed nx, GLfixed ny, GLfixed nz)
@@ -2847,6 +2943,11 @@ void PointSize(GLfloat size)
 {
 	TRACE("(GLfloat size = %f)", size);
 
+	if(size <= 0)
+	{
+		return error(GL_INVALID_VALUE);
+	}
+
 	es1::Context *context = es1::getContext();
 
 	if(context)
@@ -2857,7 +2958,18 @@ void PointSize(GLfloat size)
 
 void PointSizePointerOES(GLenum type, GLsizei stride, const GLvoid *pointer)
 {
-	UNIMPLEMENTED();
+	TRACE("(GLenum type = 0x%X, GLsizei stride = %d, const GLvoid *pointer = %p)", type, stride, pointer);
+
+	switch(type)
+	{
+	case GL_FIXED:
+	case GL_FLOAT:
+		break;
+	default:
+		return error(GL_INVALID_ENUM);
+	}
+
+	VertexAttribPointer(sw::PointSize, 1, type, true, stride, pointer);
 }
 
 void PointSizex(GLfixed size)
@@ -3193,7 +3305,103 @@ void TexEnvf(GLenum target, GLenum pname, GLfloat param)
 
 void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 {
-	UNIMPLEMENTED();
+	es1::Context *context = es1::getContext();
+
+	if(context)
+	{
+		switch(target)
+		{
+	//	case GL_POINT_SPRITE_OES:
+	//		UNIMPLEMENTED();
+	//		break;
+		case GL_TEXTURE_ENV:
+			switch(pname)
+			{
+		//	case GL_TEXTURE_ENV_MODE:
+		//		switch((GLenum)params[0])
+		//		{
+		//		case GL_REPLACE:
+		//		case GL_MODULATE:
+		//		case GL_DECAL:
+		//		case GL_BLEND:
+		//		case GL_ADD:
+		//		case GL_COMBINE:
+		//			break;
+		//		default:
+		//			error(GL_INVALID_ENUM);
+		//		}
+
+		//		context->setTextureEnvMode((GLenum)param);
+		//		break;
+			case GL_TEXTURE_ENV_COLOR:
+				context->setTextureEnvColor(clamp01(params[0]), clamp01(params[1]), clamp01(params[2]), clamp01(params[3]));
+				break;
+		//	case GL_COMBINE_RGB:
+		//		switch((GLenum)param)
+		//		{
+		//		case GL_REPLACE:
+		//		case GL_MODULATE:
+		//		case GL_ADD:
+		//		case GL_ADD_SIGNED:
+		//		case GL_INTERPOLATE:
+		//		case GL_SUBTRACT:
+		//		case GL_DOT3_RGB:
+		//		case GL_DOT3_RGBA:
+		//			break;
+		//		default:
+		//			error(GL_INVALID_ENUM);
+		//		}
+
+		//		context->setCombineRGB((GLenum)param);
+		//		break;
+		//	case GL_COMBINE_ALPHA:
+		//		switch((GLenum)param)
+		//		{
+		//		case GL_REPLACE:
+		//		case GL_MODULATE:
+		//		case GL_ADD:
+		//		case GL_ADD_SIGNED:
+		//		case GL_INTERPOLATE:
+		//		case GL_SUBTRACT:
+		//			break;
+		//		default:
+		//			error(GL_INVALID_ENUM);
+		//		}
+
+		//		context->setCombineAlpha((GLenum)param);
+		//		break;
+		//	case GL_RGB_SCALE:
+		//		UNIMPLEMENTED();
+		//		break;
+		//	case GL_ALPHA_SCALE:
+		//		UNIMPLEMENTED();
+		//		break;
+		//	case GL_OPERAND0_RGB:
+		//		UNIMPLEMENTED();
+		//		break;
+		//	case GL_OPERAND1_RGB:
+		//		UNIMPLEMENTED();
+		//		break;
+		//	case GL_OPERAND2_RGB:
+		//		UNIMPLEMENTED();
+		//		break;
+		//	case GL_OPERAND0_ALPHA:
+		//		UNIMPLEMENTED();
+		//		break;
+		//	case GL_OPERAND1_ALPHA:
+		//		UNIMPLEMENTED();
+		//		break;
+		//	case GL_OPERAND2_ALPHA:
+		//		UNIMPLEMENTED();
+		//		break;
+			default:
+				return error(GL_INVALID_ENUM);
+			}
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
+		}
+	}
 }
 
 void TexEnvi(GLenum target, GLenum pname, GLint param)
