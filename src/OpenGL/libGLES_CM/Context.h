@@ -86,6 +86,10 @@ const float ALIASED_LINE_WIDTH_RANGE_MIN = 1.0f;
 const float ALIASED_LINE_WIDTH_RANGE_MAX = 1.0f;
 const float ALIASED_POINT_SIZE_RANGE_MIN = 0.125f;
 const float ALIASED_POINT_SIZE_RANGE_MAX = 8192.0f;
+const float SMOOTH_LINE_WIDTH_RANGE_MIN = 1.0f;
+const float SMOOTH_LINE_WIDTH_RANGE_MAX = 1.0f;
+const float SMOOTH_POINT_SIZE_RANGE_MIN = 0.125f;
+const float SMOOTH_POINT_SIZE_RANGE_MAX = 8192.0f;
 const float MAX_TEXTURE_MAX_ANISOTROPY = 16.0f;
 
 struct Color
@@ -127,12 +131,14 @@ struct Light
 	Point position;
 	Vector direction;
 	Attenuation attenuation;
+	float spotExponent;
+	float spotCutoffAngle;
 };
 
 // Helper structure describing a single vertex attribute
 class VertexAttribute
 {
-  public:
+public:
     VertexAttribute() : mType(GL_FLOAT), mSize(0), mNormalized(false), mStride(0), mPointer(NULL), mArrayEnabled(false)
     {
         mCurrentValue[0] = 0.0f;
@@ -182,6 +188,7 @@ typedef VertexAttribute VertexAttributeArray[MAX_VERTEX_ATTRIBS];
 
 struct TextureUnit
 {
+	Color color;
 	GLenum environmentMode;
 	GLenum combineRGB;
 	GLenum combineAlpha;
@@ -206,19 +213,19 @@ struct State
     GLclampf depthClearValue;
     int stencilClearValue;
 
-    bool cullFace;
+    bool cullFaceEnable;
     GLenum cullMode;
     GLenum frontFace;
-    bool depthTest;
+    bool depthTestEnable;
     GLenum depthFunc;
-    bool blend;
+    bool blendEnable;
     GLenum sourceBlendRGB;
     GLenum destBlendRGB;
     GLenum sourceBlendAlpha;
     GLenum destBlendAlpha;
     GLenum blendEquationRGB;
     GLenum blendEquationAlpha;
-    bool stencilTest;
+    bool stencilTestEnable;
     GLenum stencilFunc;
     GLint stencilRef;
     GLuint stencilMask;
@@ -226,23 +233,22 @@ struct State
     GLenum stencilPassDepthFail;
     GLenum stencilPassDepthPass;
     GLuint stencilWritemask;
-    bool polygonOffsetFill;
+    bool polygonOffsetFillEnable;
     GLfloat polygonOffsetFactor;
     GLfloat polygonOffsetUnits;
-    bool sampleAlphaToCoverage;
-    bool sampleCoverage;
+    bool sampleAlphaToCoverageEnable;
+    bool sampleCoverageEnable;
     GLclampf sampleCoverageValue;
     bool sampleCoverageInvert;
-    bool scissorTest;
-    bool dither;
+    bool scissorTestEnable;
+    bool ditherEnable;
 	GLenum shadeModel;
-	bool colorLogicOp;
-	GLenum logicalOperation;
 
     GLfloat lineWidth;
 
     GLenum generateMipmapHint;
 	GLenum perspectiveCorrectionHint;
+	GLenum fogHint;
 
     GLint viewportX;
     GLint viewportY;
@@ -292,46 +298,48 @@ public:
     void setClearDepth(float depth);
     void setClearStencil(int stencil);
 
-    void setCullFace(bool enabled);
+    void setCullFaceEnable(bool enabled);
     bool isCullFaceEnabled() const;
     void setCullMode(GLenum mode);
     void setFrontFace(GLenum front);
 
-    void setDepthTest(bool enabled);
+    void setDepthTestEnable(bool enabled);
     bool isDepthTestEnabled() const;
     void setDepthFunc(GLenum depthFunc);
     void setDepthRange(float zNear, float zFar);
 
-	void setAlphaTest(bool enabled);
+	void setAlphaTestEnable(bool enabled);
     bool isAlphaTestEnabled() const;
     void setAlphaFunc(GLenum alphaFunc, GLclampf reference);
 
-    void setBlend(bool enabled);
+    void setBlendEnable(bool enabled);
     bool isBlendEnabled() const;
     void setBlendFactors(GLenum sourceRGB, GLenum destRGB, GLenum sourceAlpha, GLenum destAlpha);
     void setBlendEquation(GLenum rgbEquation, GLenum alphaEquation);
 
-    void setStencilTest(bool enabled);
+    void setStencilTestEnable(bool enabled);
     bool isStencilTestEnabled() const;
     void setStencilParams(GLenum stencilFunc, GLint stencilRef, GLuint stencilMask);
     void setStencilWritemask(GLuint stencilWritemask);
     void setStencilOperations(GLenum stencilFail, GLenum stencilPassDepthFail, GLenum stencilPassDepthPass);
 
-    void setPolygonOffsetFill(bool enabled);
+    void setPolygonOffsetFillEnable(bool enabled);
     bool isPolygonOffsetFillEnabled() const;
     void setPolygonOffsetParams(GLfloat factor, GLfloat units);
 
-    void setSampleAlphaToCoverage(bool enabled);
+    void setSampleAlphaToCoverageEnable(bool enabled);
     bool isSampleAlphaToCoverageEnabled() const;
-    void setSampleCoverage(bool enabled);
+    void setSampleCoverageEnable(bool enabled);
     bool isSampleCoverageEnabled() const;
     void setSampleCoverageParams(GLclampf value, bool invert);
 
 	void setShadeModel(GLenum mode);
-    void setDither(bool enabled);
+    void setDitherEnable(bool enabled);
     bool isDitherEnabled() const;
-	void setLighting(bool enabled);
-	void setLight(int index, bool enable);
+	void setLightingEnable(bool enabled);
+	bool isLightingEnabled() const;
+	void setLightEnable(int index, bool enable);
+	bool isLightEnabled(int index) const;
 	void setLightAmbient(int index, float r, float g, float b, float a);
 	void setLightDiffuse(int index, float r, float g, float b, float a);
 	void setLightSpecular(int index, float r, float g, float b, float a);
@@ -340,6 +348,8 @@ public:
 	void setLightAttenuationConstant(int index, float constant);
 	void setLightAttenuationLinear(int index, float linear);
 	void setLightAttenuationQuadratic(int index, float quadratic);
+	void setSpotLightExponent(int index, float exponent);
+	void setSpotLightCutoff(int index, float cutoff);
 	
 	void setGlobalAmbient(float red, float green, float blue, float alpha);
 	void setMaterialAmbient(float red, float green, float blue, float alpha);
@@ -347,21 +357,26 @@ public:
 	void setMaterialSpecular(float red, float green, float blue, float alpha);
 	void setMaterialEmission(float red, float green, float blue, float alpha);
 	void setMaterialShininess(float shininess);
+	void setLightModelTwoSide(bool enable);
 
-	void setFog(bool enabled);
+	void setFogEnable(bool enabled);
+	bool isFogEnabled() const;
 	void setFogMode(GLenum mode);
 	void setFogDensity(float fogDensity);
 	void setFogStart(float fogStart);
 	void setFogEnd(float fogEnd);
 	void setFogColor(float r, float g, float b, float a);
 
-    void setTexture2Denabled(bool enabled);
-	void setTextureExternalEnabled(bool enabled);
+    void setTexture2Denable(bool enabled);
+	bool isTexture2Denabled() const;
+	void setTextureExternalEnable(bool enabled);
+	bool isTextureExternalEnabled() const;
     void clientActiveTexture(GLenum texture);
 	GLenum getClientActiveTexture() const;
 	unsigned int getActiveTexture() const;
 
 	void setTextureEnvMode(GLenum texEnvMode);
+	void setTextureEnvColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
 	void setCombineRGB(GLenum combineRGB);
 	void setCombineAlpha(GLenum combineAlpha);
 
@@ -369,10 +384,11 @@ public:
 
     void setGenerateMipmapHint(GLenum hint);
 	void setPerspectiveCorrectionHint(GLenum hint);
+	void setFogHint(GLenum hint);
 
     void setViewportParams(GLint x, GLint y, GLsizei width, GLsizei height);
 
-	void setScissorTest(bool enabled);
+	void setScissorTestEnable(bool enabled);
     bool isScissorTestEnabled() const;
     void setScissorParams(GLint x, GLint y, GLsizei width, GLsizei height);
 
@@ -400,7 +416,7 @@ public:
     void setPackAlignment(GLint alignment);
     GLint getPackAlignment() const;
 
-    // These create  and destroy methods are merely pass-throughs to
+    // These create and destroy methods are merely pass-throughs to
     // ResourceManager, which owns these object types
     GLuint createBuffer();
     GLuint createTexture();
@@ -447,6 +463,7 @@ public:
 	bool isQueryParameterInt(GLenum pname);
 	bool isQueryParameterFloat(GLenum pname);
 	bool isQueryParameterBool(GLenum pname);
+	bool isQueryParameterPointer(GLenum pname);
 
     void readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLsizei *bufSize, void* pixels);
     void clear(GLbitfield mask);
@@ -461,6 +478,8 @@ public:
     void recordInvalidOperation();
     void recordOutOfMemory();
     void recordInvalidFramebufferOperation();
+	void recordMatrixStackOverflow();
+	void recordMatrixStackUnderflow();
 
     GLenum getError();
 
@@ -487,6 +506,53 @@ public:
 	void setClipPlane(int index, const float plane[4]);
 	void setClipPlaneEnable(int index, bool enable);
 	bool isClipPlaneEnabled(int index) const;
+
+	void setColorLogicOpEnable(bool enable);
+	bool isColorLogicOpEnabled() const;
+	void setLogicalOperation(GLenum logicOp);
+
+	void setPointSmoothEnable(bool enable);
+	bool isPointSmoothEnabled() const;
+
+	void setLineSmoothEnable(bool enable);
+	bool isLineSmoothEnabled() const;
+
+	void setColorMaterialEnable(bool enable);
+	bool isColorMaterialEnabled() const;
+
+	void setNormalizeEnable(bool enable);
+	bool isNormalizeEnabled() const;
+
+	void setRescaleNormalEnable(bool enable);
+	bool isRescaleNormalEnabled() const;
+
+	void setVertexArrayEnable(bool enable);
+	bool isVertexArrayEnabled() const;
+
+	void setNormalArrayEnable(bool enable);
+	bool isNormalArrayEnabled() const;
+
+	void setColorArrayEnable(bool enable);
+	bool isColorArrayEnabled() const;
+
+	void setPointSizeArrayEnable(bool enable);
+	bool isPointSizeArrayEnabled() const;
+
+	void setTextureCoordArrayEnable(bool enable);
+	bool isTextureCoordArrayEnabled() const;
+
+	void setMultisampleEnable(bool enable);
+	bool isMultisampleEnabled() const;
+
+	void setSampleAlphaToOneEnable(bool enable);
+	bool isSampleAlphaToOneEnabled() const;
+
+	void setPointSpriteEnable(bool enable);
+	bool isPointSpriteEnabled() const;
+	void setPointSizeMin(float min);
+	void setPointSizeMax(float max);
+	void setPointDistanceAttenuation(float a, float b, float c);
+	void setPointFadeThresholdSize(float threshold);
 
 private:
 	virtual ~Context();
@@ -518,7 +584,7 @@ private:
     VertexDataManager *mVertexDataManager;
     IndexDataManager *mIndexDataManager;
 
-	bool lighting;
+	bool lightingEnable;
 	Light light[MAX_LIGHTS];
 	Color globalAmbient;
 	Color materialAmbient;
@@ -526,6 +592,7 @@ private:
 	Color materialSpecular;
 	Color materialEmission;
 	GLfloat materialShininess;
+	bool lightModelTwoSide;
 
     // Recorded errors
     bool mInvalidEnum;
@@ -533,6 +600,8 @@ private:
     bool mInvalidOperation;
     bool mOutOfMemory;
     bool mInvalidFramebufferOperation;
+	bool mMatrixStackOverflow;
+	bool mMatrixStackUnderflow;
 
     bool mHasBeenCurrent;
 
@@ -554,15 +623,39 @@ private:
 	sw::MatrixStack textureStack0;
 	sw::MatrixStack textureStack1;
 
-	bool texture2Denabled[MAX_TEXTURE_UNITS];
-	bool textureExternalEnabled[MAX_TEXTURE_UNITS];
+	bool texture2Denable[MAX_TEXTURE_UNITS];
+	bool textureExternalEnable[MAX_TEXTURE_UNITS];
 	GLenum clientTexture;
 
 	int clipFlags;
 
-	bool alphaTest;
+	bool alphaTestEnable;
 	GLenum alphaTestFunc;
 	float alphaTestRef;
+
+	bool fogEnable;
+	GLenum fogMode;
+	float fogDensity;
+	float fogStart;
+	float fogEnd;
+	Color fogColor;
+
+	bool lineSmoothEnable;
+	bool colorMaterialEnable;
+	bool normalizeEnable;
+	bool rescaleNormalEnable;
+	bool multisampleEnable;
+	bool sampleAlphaToOneEnable;
+
+	bool pointSpriteEnable;
+	bool pointSmoothEnable;
+	float pointSizeMin;
+	float pointSizeMax;
+	Attenuation pointDistanceAttenuation;
+	float pointFadeThresholdSize;
+
+	bool colorLogicOpEnable;
+	GLenum logicalOperation;
 
 	Device *device;
     ResourceManager *mResourceManager;

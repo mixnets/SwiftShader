@@ -172,6 +172,8 @@ namespace sw
 		r.o[Pos].z = position.z;
 		r.o[Pos].w = position.w;
 
+		Vector4f vertexPosition = transformBlend(r, r.v[Position], Pointer<Byte>(r.data + OFFSET(DrawData,ff.cameraTransformT)), true);
+
 		if(state.vertexNormalActive)
 		{
 			normal = transformBlend(r, r.v[Normal], Pointer<Byte>(r.data + OFFSET(DrawData,ff.normalTransformT)), false);
@@ -238,8 +240,6 @@ namespace sw
 			diffuseSum.y = Float4(0.0f);
 			diffuseSum.z = Float4(0.0f);
 			diffuseSum.w = Float4(0.0f);
-
-			Vector4f vertexPosition = transformBlend(r, r.v[Position], Pointer<Byte>(r.data + OFFSET(DrawData,ff.cameraTransformT)), true);
 
 			for(int i = 0; i < 8; i++)
 			{
@@ -505,18 +505,11 @@ namespace sw
 			case FOG_EXP2:
 				if(!state.rangeFogActive)
 				{
-					r.o[Fog].x = r.o[Pos].z;
+					r.o[Fog].x = Abs(vertexPosition.z);
 				}
 				else
 				{
-					Vector4f pos;
-
-					pos.x = r.o[Pos].x;
-					pos.y = r.o[Pos].y;
-					pos.z = r.o[Pos].z;
-					pos.w = r.o[Pos].w;
-
-					r.o[Fog].x = Sqrt(dot3(pos, pos));   // FIXME: oFog = length(o[Pos]);
+					r.o[Fog].x = Sqrt(dot3(vertexPosition, vertexPosition));   // FIXME: oFog = length(vertexPosition);
 				}
 
 				r.o[Fog].x = r.o[Fog].x * *Pointer<Float4>(r.data + OFFSET(DrawData,fog.scale)) + *Pointer<Float4>(r.data + OFFSET(DrawData,fog.offset));
@@ -839,10 +832,10 @@ namespace sw
 				}
 			}
 
-			dst.x = src.x * m[0][0] + src.y * m[0][1] + src.z * m[0][2] + m[0][3];
-			dst.y = src.x * m[1][0] + src.y * m[1][1] + src.z * m[1][2] + m[1][3];
-			dst.z = src.x * m[2][0] + src.y * m[2][1] + src.z * m[2][2] + m[2][3];
-			dst.w = src.x * m[3][0] + src.y * m[3][1] + src.z * m[3][2] + m[3][3];
+			dst.x = src.x * m[0][0] + src.y * m[0][1] + src.z * m[0][2] + src.w * m[0][3];
+			dst.y = src.x * m[1][0] + src.y * m[1][1] + src.z * m[1][2] + src.w * m[1][3];
+			dst.z = src.x * m[2][0] + src.y * m[2][1] + src.z * m[2][2] + src.w * m[2][3];
+			dst.w = src.x * m[3][0] + src.y * m[3][1] + src.z * m[3][2] + src.w * m[3][3];
 		}
 		else
 		{

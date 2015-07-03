@@ -216,6 +216,9 @@ bool OGLESBasicTnL::RenderScene()
 	// Loads our matrix into OpenGL Model View matrix
 	glLoadMatrixf(aModelView);
 
+	glMatrixMode(GL_PROJECTION);
+	glOrthof(-1, 1, -1, 1, 1, -1);
+
 	// Increments the angle of the view
 	m_fAngle += .02f;
 
