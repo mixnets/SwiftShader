@@ -3503,7 +3503,13 @@ const GLubyte* GetString(GLenum name)
 	case GL_RENDERER:
 		return (GLubyte*)"SwiftShader";
 	case GL_VERSION:
-		return (GLubyte*)"OpenGL ES 2.0 SwiftShader " VERSION_STRING;
+	{
+		es2::Context *context = es2::getContext();
+		egl::GLint clientVersion = context->getClientVersion();
+		return (clientVersion >= 3) ?
+		       (GLubyte*)"OpenGL ES 3.0 SwiftShader " VERSION_STRING :
+			   (GLubyte*)"OpenGL ES 2.0 SwiftShader " VERSION_STRING;
+	}
 	case GL_SHADING_LANGUAGE_VERSION:
 		return (GLubyte*)"OpenGL ES GLSL ES 1.00 SwiftShader " VERSION_STRING;
 	case GL_EXTENSIONS:
