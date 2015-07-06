@@ -2936,6 +2936,7 @@ void Context::applyShaders()
     }
 
     programObject->applyUniforms();
+    programObject->applyUniformBuffers();
 }
 
 void Context::applyTextures()
