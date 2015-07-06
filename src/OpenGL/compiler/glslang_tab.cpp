@@ -766,33 +766,33 @@ static const yytype_int16 yyrhs[] =
 static const yytype_uint16 yyrline[] =
 {
        0,   202,   202,   237,   240,   245,   250,   255,   260,   266,
-     269,   272,   275,   278,   281,   287,   295,   306,   309,   317,
-     321,   328,   332,   339,   345,   354,   362,   368,   375,   385,
-     388,   398,   408,   430,   431,   432,   433,   441,   442,   446,
-     450,   458,   459,   462,   468,   469,   473,   480,   481,   484,
-     487,   490,   496,   497,   500,   506,   507,   514,   515,   522,
-     523,   530,   531,   537,   538,   544,   545,   551,   552,   569,
-     570,   578,   579,   580,   581,   583,   584,   585,   587,   589,
-     591,   593,   598,   601,   612,   620,   628,   655,   661,   668,
-     672,   676,   680,   687,   725,   728,   735,   743,   764,   785,
-     796,   825,   830,   840,   845,   855,   858,   861,   864,   870,
-     877,   880,   884,   888,   893,   898,   905,   909,   913,   917,
-     922,   927,   931,  1007,  1017,  1023,  1026,  1032,  1038,  1045,
-    1054,  1063,  1066,  1069,  1076,  1080,  1087,  1091,  1096,  1101,
-    1111,  1121,  1130,  1140,  1147,  1150,  1153,  1159,  1166,  1169,
-    1175,  1178,  1181,  1187,  1190,  1195,  1210,  1214,  1218,  1222,
-    1226,  1230,  1235,  1240,  1245,  1250,  1255,  1260,  1265,  1270,
-    1275,  1280,  1285,  1290,  1296,  1302,  1308,  1314,  1320,  1326,
-    1332,  1338,  1344,  1349,  1354,  1363,  1368,  1373,  1378,  1383,
-    1388,  1393,  1398,  1403,  1408,  1413,  1418,  1423,  1428,  1433,
-    1446,  1446,  1449,  1449,  1455,  1458,  1474,  1477,  1486,  1490,
-    1496,  1503,  1518,  1522,  1526,  1527,  1533,  1534,  1535,  1536,
-    1537,  1538,  1539,  1543,  1544,  1544,  1544,  1554,  1555,  1559,
-    1559,  1560,  1560,  1565,  1568,  1578,  1581,  1587,  1588,  1592,
-    1600,  1604,  1611,  1611,  1618,  1621,  1630,  1635,  1652,  1652,
-    1657,  1657,  1664,  1664,  1672,  1675,  1681,  1684,  1690,  1694,
-    1701,  1704,  1707,  1710,  1713,  1722,  1726,  1733,  1736,  1742,
-    1742
+     269,   272,   275,   278,   281,   287,   295,   306,   310,   318,
+     321,   327,   331,   338,   344,   353,   361,   367,   374,   384,
+     387,   397,   407,   429,   430,   431,   432,   440,   441,   445,
+     449,   457,   458,   461,   467,   468,   472,   479,   480,   483,
+     486,   489,   495,   496,   499,   505,   506,   513,   514,   521,
+     522,   529,   530,   536,   537,   543,   544,   550,   551,   568,
+     569,   577,   578,   579,   580,   582,   583,   584,   586,   588,
+     590,   592,   597,   600,   611,   619,   627,   654,   660,   667,
+     671,   675,   679,   686,   724,   727,   734,   742,   763,   784,
+     795,   824,   829,   839,   844,   854,   857,   860,   863,   869,
+     876,   879,   883,   887,   892,   897,   904,   908,   912,   916,
+     921,   926,   930,  1006,  1016,  1022,  1025,  1031,  1037,  1044,
+    1053,  1062,  1065,  1068,  1075,  1079,  1086,  1090,  1095,  1100,
+    1110,  1120,  1129,  1139,  1146,  1149,  1152,  1158,  1165,  1168,
+    1174,  1177,  1180,  1186,  1189,  1194,  1209,  1213,  1217,  1221,
+    1225,  1229,  1234,  1239,  1244,  1249,  1254,  1259,  1264,  1269,
+    1274,  1279,  1284,  1289,  1295,  1301,  1307,  1313,  1319,  1325,
+    1331,  1337,  1343,  1348,  1353,  1362,  1367,  1372,  1377,  1382,
+    1387,  1392,  1397,  1402,  1407,  1412,  1417,  1422,  1427,  1432,
+    1445,  1445,  1448,  1448,  1454,  1457,  1473,  1476,  1485,  1489,
+    1495,  1502,  1517,  1521,  1525,  1526,  1532,  1533,  1534,  1535,
+    1536,  1537,  1538,  1542,  1543,  1543,  1543,  1553,  1554,  1558,
+    1558,  1559,  1559,  1564,  1567,  1577,  1580,  1586,  1587,  1591,
+    1599,  1603,  1610,  1610,  1617,  1620,  1629,  1634,  1651,  1651,
+    1656,  1656,  1663,  1663,  1671,  1674,  1680,  1683,  1689,  1693,
+    1700,  1703,  1706,  1709,  1712,  1721,  1725,  1732,  1735,  1741,
+    1741
 };
 #endif
 
@@ -2626,7 +2626,7 @@ yyreduce:
 
     {
         bool fatalError = false;
-        (yyval.interm.intermTypedNode) = context->addFunctionCallOrMethod((yyvsp[(1) - (1)].interm).function, (yyvsp[(1) - (1)].interm).intermNode, nullptr, (yylsp[(1) - (1)]), &fatalError);
+        (yyval.interm.intermTypedNode) = context->addFunctionCallOrMethod((yyvsp[(1) - (1)].interm).function, (yyvsp[(1) - (1)].interm).nodePair.node1, (yyvsp[(1) - (1)].interm).nodePair.node2, (yylsp[(1) - (1)]), &fatalError);
         if (fatalError)
         {
             YYERROR;
@@ -2638,15 +2638,16 @@ yyreduce:
 
     {
         (yyval.interm) = (yyvsp[(1) - (1)].interm);
+        (yyval.interm).nodePair.node2 = nullptr;
     }
     break;
 
   case 18:
 
     {
-        context->error((yylsp[(3) - (3)]), "methods are not supported", "");
-        context->recover();
+        ES3_ONLY("", (yylsp[(3) - (3)]), "methods");
         (yyval.interm) = (yyvsp[(3) - (3)].interm);
+        (yyval.interm).nodePair.node2 = (yyvsp[(1) - (3)].interm.intermTypedNode);
     }
     break;
 
@@ -2654,7 +2655,6 @@ yyreduce:
 
     {
         (yyval.interm) = (yyvsp[(1) - (2)].interm);
-        (yyval.interm).line = (yylsp[(2) - (2)]);
     }
     break;
 
@@ -2662,7 +2662,6 @@ yyreduce:
 
     {
         (yyval.interm) = (yyvsp[(1) - (2)].interm);
-        (yyval.interm).line = (yylsp[(2) - (2)]);
     }
     break;
 
@@ -2670,7 +2669,7 @@ yyreduce:
 
     {
         (yyval.interm).function = (yyvsp[(1) - (2)].interm.function);
-        (yyval.interm).intermNode = 0;
+        (yyval.interm).nodePair.node1 = nullptr;
     }
     break;
 
@@ -2678,27 +2677,27 @@ yyreduce:
 
     {
         (yyval.interm).function = (yyvsp[(1) - (1)].interm.function);
-        (yyval.interm).intermNode = 0;
+        (yyval.interm).nodePair.node1 = nullptr;
     }
     break;
 
   case 23:
 
     {
-        TParameter param = { 0, new TType((yyvsp[(2) - (2)].interm.intermTypedNode)->getType()) };
-        (yyvsp[(1) - (2)].interm.function)->addParameter(param);
+        const TType *type = new TType((yyvsp[(2) - (2)].interm.intermTypedNode)->getType());
+        (yyvsp[(1) - (2)].interm.function)->addParameter(TConstParameter(type));
         (yyval.interm).function = (yyvsp[(1) - (2)].interm.function);
-        (yyval.interm).intermNode = (yyvsp[(2) - (2)].interm.intermTypedNode);
+        (yyval.interm).nodePair.node1 = (yyvsp[(2) - (2)].interm.intermTypedNode);
     }
     break;
 
   case 24:
 
     {
-        TParameter param = { 0, new TType((yyvsp[(3) - (3)].interm.intermTypedNode)->getType()) };
-        (yyvsp[(1) - (3)].interm).function->addParameter(param);
+        const TType *type = new TType((yyvsp[(3) - (3)].interm.intermTypedNode)->getType());
+        (yyvsp[(1) - (3)].interm).function->addParameter(TConstParameter(type));
         (yyval.interm).function = (yyvsp[(1) - (3)].interm).function;
-        (yyval.interm).intermNode = context->intermediate.growAggregate((yyvsp[(1) - (3)].interm).intermNode, (yyvsp[(3) - (3)].interm.intermTypedNode), (yylsp[(2) - (3)]));
+        (yyval.interm).nodePair.node1 = context->intermediate.growAggregate((yyvsp[(1) - (3)].interm).intermNode, (yyvsp[(3) - (3)].interm.intermTypedNode), (yylsp[(2) - (3)]));
     }
     break;
 
@@ -3164,7 +3163,7 @@ yyreduce:
         
         for (size_t i = 0; i < function.getParamCount(); i++)
         {
-            const TParameter &param = function.getParam(i);
+            const TConstParameter &param = function.getParam(i);
             if (param.name != 0)
             {
                 TVariable variable(param.name, *param.type);
@@ -3296,7 +3295,7 @@ yyreduce:
         // Add the parameter
         (yyval.interm.function) = (yyvsp[(1) - (2)].interm.function);
         if ((yyvsp[(2) - (2)].interm).param.type->getBasicType() != EbtVoid)
-            (yyvsp[(1) - (2)].interm.function)->addParameter((yyvsp[(2) - (2)].interm).param);
+            (yyvsp[(1) - (2)].interm.function)->addParameter((yyvsp[(2) - (2)].interm).param.turnToConst());
         else
             delete (yyvsp[(2) - (2)].interm).param.type;
     }
@@ -3319,7 +3318,7 @@ yyreduce:
         } else {
             // Add the parameter
             (yyval.interm.function) = (yyvsp[(1) - (3)].interm.function);
-            (yyvsp[(1) - (3)].interm.function)->addParameter((yyvsp[(3) - (3)].interm).param);
+            (yyvsp[(1) - (3)].interm.function)->addParameter((yyvsp[(3) - (3)].interm).param.turnToConst());
         }
     }
     break;
@@ -4827,7 +4826,7 @@ yyreduce:
         //
         TIntermAggregate* paramNodes = new TIntermAggregate;
         for (size_t i = 0; i < function->getParamCount(); i++) {
-            const TParameter& param = function->getParam(i);
+            const TConstParameter& param = function->getParam(i);
             if (param.name != 0) {
                 TVariable *variable = new TVariable(param.name, *param.type);
                 //

@@ -445,7 +445,7 @@ bool ValidateLimitations::validateFunctionCall(TIntermAggregate* node)
     TFunction* function = static_cast<TFunction*>(symbol);
     for (ParamIndex::const_iterator i = pIndex.begin();
          i != pIndex.end(); ++i) {
-        const TParameter& param = function->getParam(*i);
+        const TConstParameter& param = function->getParam(*i);
         TQualifier qual = param.type->getQualifier();
         if ((qual == EvqOut) || (qual == EvqInOut)) {
             error(params[*i]->getLine(),

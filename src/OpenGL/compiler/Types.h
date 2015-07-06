@@ -371,7 +371,7 @@ public:
 	TStructure* getStruct() const { return structure; }
 	void setStruct(TStructure* s) { structure = s; computeDeepestStructNesting(); }
 
-    TString& getMangledName() {
+    const TString& getMangledName() const {
         if (!mangled) {
             mangled = NewPoolTString("");
             buildMangledName(*mangled);
@@ -442,7 +442,7 @@ public:
     }
 
 protected:
-    void buildMangledName(TString&);
+    void buildMangledName(TString&) const;
     int getStructSize() const;
     void computeDeepestStructNesting();
 
@@ -464,7 +464,7 @@ protected:
 	TStructure *structure;      // 0 unless this is a struct
     int deepestStructNesting;
 
-    TString *mangled;
+    mutable TString *mangled;
 };
 
 //
