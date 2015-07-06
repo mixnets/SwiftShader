@@ -222,7 +222,8 @@ namespace gl
 			if(height > scissorRect.y1 - scissorRect.y0) height = scissorRect.y1 - scissorRect.y0;
 		}
 			
-		depthStencil->clearDepthBuffer(z, x0, y0, width, height);
+		Renderer::clearDepth(z, x0, y0, width, height);
+		//depthStencil->clearDepthBuffer(z, x0, y0, width, height);
 	}
 
 	void Device::clearStencil(unsigned int stencil, unsigned int mask)
