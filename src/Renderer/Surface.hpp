@@ -203,6 +203,8 @@ namespace sw
 		inline int getInternalPitchP() const;
 		inline int getInternalSliceB() const;
 		inline int getInternalSliceP() const;
+		inline int getInternalWidth() const;
+		inline int getInternalDepth() const;
 
 		void *lockStencil(int front, Accessor client);
 		void unlockStencil();
@@ -213,6 +215,8 @@ namespace sw
 		inline int getMultiSampleCount() const;
 		inline int getSuperSampleCount() const;
 
+		bool isEntireSurface(int x0, int y0, int width, int height);
+		bool validateDimensions(int &x0, int &y0, int &width, int &height);
 		void clearColorBuffer(unsigned int colorARGB, unsigned int rgbaMask, int x0, int y0, int width, int height);
 		void clearDepthBuffer(float depth, int x0, int y0, int width, int height);
 		void clearStencilBuffer(unsigned char stencil, unsigned char mask, int x0, int y0, int width, int height);
@@ -261,6 +265,7 @@ namespace sw
 		static int componentCount(Format format);
 
 		static void setTexturePalette(unsigned int *palette);
+		static void memfill4(void *buffer, int pattern, int bytes);
 
 	protected:
 		sw::Resource *resource;
@@ -366,7 +371,6 @@ namespace sw
 		static void update(Buffer &destination, Buffer &source);
 		static void genericUpdate(Buffer &destination, Buffer &source);
 		static void *allocateBuffer(int width, int height, int depth, Format format);
-		static void memfill4(void *buffer, int pattern, int bytes);
 
 		bool identicalFormats() const;
 		Format selectInternalFormat(Format format) const;
@@ -494,6 +498,16 @@ namespace sw
 	int Surface::getInternalSliceP() const
 	{
 		return internal.sliceP;
+	}
+
+	int Surface::getInternalWidth() const
+	{
+		return internal.width;
+	}
+
+	int Surface::getInternalDepth() const
+	{
+		return internal.depth;
 	}
 
 	int Surface::getStencilPitchB() const

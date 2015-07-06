@@ -198,8 +198,8 @@ namespace es2
 
 		int x0(0), y0(0), width(0), height(0);
 		getScissoredRegion(depthStencil, x0, y0, width, height);
-			
-		depthStencil->clearDepthBuffer(z, x0, y0, width, height);
+
+		Renderer::clearDepth(z, x0, y0, width, height);
 	}
 
 	void Device::clearStencil(unsigned int stencil, unsigned int mask)

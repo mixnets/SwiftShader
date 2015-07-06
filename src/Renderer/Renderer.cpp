@@ -88,7 +88,7 @@ namespace sw
 		psDirtyConstB = 16;
 
 		references = -1;
-
+		
 		data = (DrawData*)allocate(sizeof(DrawData));
 		data->constants = &constants;
 	}
@@ -136,6 +136,9 @@ namespace sw
 		currentDraw = 0;
 		nextDraw = 0;
 
+		currentClear = 0;
+		nextClear = 0;
+
 		qHead = 0;
 		qSize = 0;
 
@@ -149,8 +152,11 @@ namespace sw
 		{
 			drawCall[draw] = new DrawCall();
 			drawList[draw] = drawCall[draw];
-		}
 
+			clearCall[draw] = new DrawCall();
+			clearList[draw] = clearCall[draw];
+		}
+		
 		for(int unit = 0; unit < 16; unit++)
 		{
 			primitiveProgress[unit].init();
@@ -159,6 +165,11 @@ namespace sw
 		for(int cluster = 0; cluster < 16; cluster++)
 		{
 			pixelProgress[cluster].init();
+		}
+
+		for(int unit = 0; unit < 16; unit++)
+		{
+			clearProgress[unit].init();
 		}
 
 		clipFlags = 0;
@@ -182,6 +193,7 @@ namespace sw
 		for(int draw = 0; draw < DRAW_COUNT; draw++)
 		{
 			delete drawCall[draw];
+			delete clearCall[draw];
 		}
 
 		delete swiftConfig;
@@ -195,6 +207,66 @@ namespace sw
 	void Renderer::blit3D(Surface *source, Surface *dest)
 	{
 		blitter.blit3D(source, dest);
+	}
+
+	void Renderer::clearDepth(float depth, int x0, int y0, int width, int height)
+	{
+		if(!context->depthStencil)
+		{
+			return;
+		}
+
+		updateConfiguration();
+
+		sync->lock(sw::PRIVATE);
+
+		DrawCall *draw = 0;
+
+		do
+		{
+			for(int i = 0; i < DRAW_COUNT; i++)
+			{
+				if(clearCall[i]->references == -1)
+				{
+					draw = clearCall[i];
+					clearList[nextClear % DRAW_COUNT] = draw;
+
+					break;
+				}
+			}
+
+			if(!draw)
+			{
+				resumeApp->wait();
+			}
+		} while(!draw);
+		
+		DrawData *data = draw->data;
+
+		// Add needed info to data structure
+		draw->depthStencil = context->depthStencil;
+		draw->references++;
+		draw->drawType = DRAW_CLEARDEPTHBUFFER;
+
+		data->dp.depth = depth;
+		data->dp.x0 = x0;
+		data->dp.y0 = y0;
+		data->dp.width = width;
+		data->dp.height = height;
+
+		schedulerMutex.lock();
+		nextClear++;
+		schedulerMutex.unlock();
+
+		if(!threadsAwake)
+		{
+			suspend[0]->wait();
+
+			threadsAwake = 1;
+			task[0].type = Task::RESUME;
+
+			resume[0]->signal();
+		}
 	}
 
 	void Renderer::draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update)
@@ -224,7 +296,7 @@ namespace sw
 				continue;
 			}
 
-			sync->lock(sw::PRIVATE);
+			sync->lock(sw::PUBLIC);
 
 			Routine *vertexRoutine;
 			Routine *setupRoutine;
@@ -688,6 +760,39 @@ namespace sw
 			}
 		}
 	
+		// Find buffer-clearing tasks
+		for(int unit = 0; unit < unitCount; unit++)
+		{
+			if(!clearProgress[unit].executing)
+			{
+				DrawCall *draw = clearList[currentClear % DRAW_COUNT];
+
+				
+				if(currentClear == nextClear)
+				{
+					break;   // No more clearing calls to process
+				}
+
+				if(!clearProgress[unit].references && draw->drawType == DRAW_CLEARDEPTHBUFFER)
+				{										
+					Task &task = taskQueue[qHead];
+					task.type = Task::CLEAR_BUFFER;
+					task.clearingUnit = unit;
+
+					clearProgress[unit].clearCall = currentClear;
+					clearProgress[unit].executing = true;
+					clearProgress[unit].references = -1;
+
+					currentClear++;
+
+					// Commit to the task queue
+					qHead = (qHead + 1) % 32;
+					qSize++;
+					break;
+				}
+			}
+		}
+
 		// Find primitive tasks
 		if(currentDraw == nextDraw)
 		{
@@ -731,6 +836,84 @@ namespace sw
 				// Commit to the task queue
 				qHead = (qHead + 1) % 32;
 				qSize++;
+			}
+		}		
+	}
+
+	void Renderer::clearDepthBuffer(sw::Surface * depthStencil, DepthParameters dp)
+	{
+		if(!depthStencil->validateDimensions(dp.x0, dp.y0, dp.width, dp.height))
+		{
+			return;
+		}
+
+		const bool entire = depthStencil->isEntireSurface(dp.x0, dp.y0, dp.width, dp.height);
+		const Lock lock = entire ? LOCK_DISCARD : LOCK_WRITEONLY;
+
+		int width2 = (depthStencil->getInternalWidth() + 1) & ~1;
+
+		int x1 = dp.x0 + dp.width;
+		int y1 = dp.y0 + dp.height;
+
+		if(depthStencil->getInternalFormat() == FORMAT_D32F_LOCKABLE ||
+			depthStencil->getInternalFormat() == FORMAT_D32FS8_TEXTURE ||
+			depthStencil->getInternalFormat() == FORMAT_D32FS8_SHADOW)
+		{
+			float *target = (float*)depthStencil->lockInternal(0, 0, 0, lock, MANAGED) + dp.x0 + width2 * dp.y0;
+			depthStencil->lockStencil(0, MANAGED);
+			for(int z = 0; z < depthStencil->getInternalDepth(); z++)
+			{
+				for(int y = dp.y0; y < y1; y++)
+				{
+					Surface::memfill4(target, (int&)dp.depth, 4 * dp.width);
+					target += width2;
+				}
+			}
+		}
+		else   // Quad layout
+		{
+			if(complementaryDepthBuffer)
+			{
+				dp.depth = 1 - dp.depth;
+			}
+
+			float *buffer = (float*)depthStencil->lockInternal(0, 0, 0, lock, MANAGED);
+			depthStencil->lockStencil(0, MANAGED);
+
+			for(int z = 0; z < depthStencil->getInternalDepth(); z++)
+			{
+				for(int y = dp.y0; y < y1; y++)
+				{
+					float *target = buffer + (y & ~1) * width2 + (y & 1) * 2;
+
+					if((y & 1) == 0 && y + 1 < y1)   // Fill quad line at once
+					{
+						if((dp.x0 & 1) != 0)
+						{
+							target[(dp.x0 & ~1) * 2 + 1] = dp.depth;
+							target[(dp.x0 & ~1) * 2 + 3] = dp.depth;
+						}
+
+						Surface::memfill4(&target[((dp.x0 + 1) & ~1) * 2], (int&)dp.depth, 8 * ((x1 & ~1) - ((dp.x0 + 1) & ~1)));
+
+						if((x1 & 1) != 0)
+						{
+							target[(x1 & ~1) * 2 + 0] = dp.depth;
+							target[(x1 & ~1) * 2 + 2] = dp.depth;
+						}
+
+						y++;
+					}
+					else
+					{
+						for(int x = dp.x0; x < x1; x++)
+						{
+							target[(x & ~1) * 2 + (x & 1)] = dp.depth;
+						}
+					}
+				}
+
+				buffer += depthStencil->getInternalSliceP();
 			}
 		}
 	}
@@ -835,6 +1018,15 @@ namespace sw
 				#endif
 			}
 			break;
+		case Task::CLEAR_BUFFER:
+			{
+				int unit = task[threadIndex].clearingUnit;
+				DrawCall *draw = clearList[clearProgress[unit].clearCall % DRAW_COUNT];
+				DrawData *data = draw->data;
+				clearDepthBuffer(draw->depthStencil, data->dp);
+				finishClearingBuffer(task[threadIndex]);
+			}
+			break;
 		case Task::RESUME:
 			break;
 		case Task::SUSPEND:
@@ -843,11 +1035,30 @@ namespace sw
 			ASSERT(false);
 		}
 	}
-
+		
 	void Renderer::synchronize()
 	{
 		sync->lock(sw::PUBLIC);
 		sync->unlock();
+	}
+
+	void Renderer::finishClearingBuffer(Task &task)
+	{
+		int unit = task.clearingUnit;
+
+		DrawCall &draw = *clearList[unit];
+		DrawData &data = *draw.data;
+				
+		draw.depthStencil->unlockInternal();
+		draw.depthStencil->unlockStencil();
+
+		sync->unlock();
+
+		clearProgress[unit].references = 0;
+		draw.references = -1;
+		resumeApp->signal();
+
+		clearProgress[unit].executing = false;
 	}
 
 	void Renderer::finishRendering(Task &pixelTask)
