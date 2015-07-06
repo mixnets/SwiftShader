@@ -2818,6 +2818,28 @@ namespace sw
 		}*/
 	}
 
+	bool Surface::isEntireSurface(int x0, int y0, int width, int height)
+	{
+		return x0 == 0 && y0 == 0 && width == internal.width && height == internal.height;
+	}
+
+	bool Surface::validateDimensions(int &x0, int &y0, int &width, int &height)
+	{
+		// Not overlapping
+		if(x0 > internal.width) return false;
+		if(y0 > internal.height) return false;
+		if(x0 + width < 0) return false;
+		if(y0 + height < 0) return false;
+
+		// Clip against dimensions
+		if(x0 < 0) { width += x0; x0 = 0; }
+		if(x0 + width > internal.width) width = internal.width - x0;
+		if(y0 < 0) { height += y0; y0 = 0; }
+		if(y0 + height > internal.height) height = internal.height - y0;
+
+		return true;
+	}
+
 	void Surface::clearDepthBuffer(float depth, int x0, int y0, int width, int height)
 	{
 		// Not overlapping

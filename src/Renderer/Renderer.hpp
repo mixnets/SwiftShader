@@ -96,6 +96,15 @@ namespace sw
 		volatile unsigned int data;
 	};
 
+	struct DepthParameters
+	{
+		float depth;
+		int x0;
+		int y0;
+		int width;
+		int height;
+	};
+
 	struct DrawData
 	{
 		const void *constants;
@@ -124,6 +133,7 @@ namespace sw
 		{
 			VS vs;
 			VertexProcessor::FixedFunction ff;
+			DepthParameters dp;
 		};
 
 		PS ps;
@@ -213,9 +223,7 @@ namespace sw
 		int psDirtyConstF;
 		int psDirtyConstI;
 		int psDirtyConstB;
-
 		std::list<Query*> *queries;
-
 		int clipFlags;
 
 		volatile int primitive;    // Current primitive to enter pipeline
@@ -243,6 +251,7 @@ namespace sw
 			{
 				PRIMITIVES,
 				PIXELS,
+				CLEAR_BUFFER,
 
 				RESUME,
 				SUSPEND
@@ -285,6 +294,18 @@ namespace sw
 			volatile bool executing;
 		};
 
+		struct ClearProgress
+		{
+			void init()
+			{
+				executing = false;
+			}
+
+			volatile int clearCall;
+			volatile bool executing;
+			volatile int references;
+		};
+
 	public:
 		Renderer(Context *context, Conventions conventions, bool exactColorRounding);
 
@@ -292,6 +313,7 @@ namespace sw
 
 		virtual void blit(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter);
 		virtual void blit3D(Surface *source, Surface *dest);
+		virtual void clearDepth(float depth, int x0, int y0, int width, int height);
 		virtual void draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update = true);
 
 		virtual void setIndexBuffer(Resource *indexBuffer);
@@ -366,6 +388,8 @@ namespace sw
 		void scheduleTask(int threadIndex);
 		void executeTask(int threadIndex);
 		void finishRendering(Task &pixelTask);
+		void finishClearingBuffer(Task &task);
+		void clearDepthBuffer(sw::Surface * depthStencil, DepthParameters dp);
 
 		void processPrimitiveVertices(int unit, unsigned int start, unsigned int count, unsigned int loop, int thread);
 
@@ -411,6 +435,7 @@ namespace sw
 
 		PrimitiveProgress primitiveProgress[16];
 		PixelProgress pixelProgress[16];
+		ClearProgress clearProgress;
 		Task task[16];   // Current tasks for threads
 
 		enum {DRAW_COUNT = 16};   // Number of draw calls buffered
@@ -419,6 +444,9 @@ namespace sw
 
 		volatile int currentDraw;
 		volatile int nextDraw;
+
+		volatile int currentClear;
+		volatile int nextClear;
 
 		Task taskQueue[32];
 		unsigned int qHead;
