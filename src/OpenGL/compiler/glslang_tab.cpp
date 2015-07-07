@@ -266,7 +266,6 @@ typedef union YYSTYPE
 
 
     struct {
-        TSourceLoc line;
         union {
             TString *string;
             float f;
@@ -277,7 +276,6 @@ typedef union YYSTYPE
         TSymbol* symbol;
     } lex;
     struct {
-        TSourceLoc line;
         TOperator op;
         union {
             TIntermNode* intermNode;
@@ -327,7 +325,21 @@ typedef struct YYLTYPE
 extern int yylex(YYSTYPE* yylval, YYLTYPE* yylloc, void* yyscanner);
 extern void yyerror(YYLTYPE* lloc, TParseContext* context, const char* reason);
 
-#define YYLLOC_DEFAULT(Current, Rhs, N) do { (Current) = YYRHSLOC(Rhs, N ? 1 : 0); } while (0)
+#define YYLLOC_DEFAULT(Current, Rhs, N)                      \
+  do {                                                       \
+      if (N) {                                         \
+        (Current).first_file = YYRHSLOC(Rhs, 1).first_file;  \
+        (Current).first_line = YYRHSLOC(Rhs, 1).first_line;  \
+        (Current).last_file = YYRHSLOC(Rhs, N).last_file;    \
+        (Current).last_line = YYRHSLOC(Rhs, N).last_line;    \
+      }                                                      \
+      else {                                                 \
+        (Current).first_file = YYRHSLOC(Rhs, 0).last_file;   \
+        (Current).first_line = YYRHSLOC(Rhs, 0).last_line;   \
+        (Current).last_file = YYRHSLOC(Rhs, 0).last_file;    \
+        (Current).last_line = YYRHSLOC(Rhs, 0).last_line;    \
+      }                                                      \
+  } while (0)
 
 #define FRAG_VERT_ONLY(S, L) {  \
     if (context->getShaderType() != GL_FRAGMENT_SHADER &&  \
@@ -765,34 +777,34 @@ static const yytype_int16 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   202,   202,   237,   240,   245,   250,   255,   260,   266,
-     269,   272,   275,   278,   281,   287,   295,   306,   309,   317,
-     321,   328,   332,   339,   345,   354,   362,   368,   375,   385,
-     388,   398,   408,   430,   431,   432,   433,   441,   442,   446,
-     450,   458,   459,   462,   468,   469,   473,   480,   481,   484,
-     487,   490,   496,   497,   500,   506,   507,   514,   515,   522,
-     523,   530,   531,   537,   538,   544,   545,   551,   552,   569,
-     570,   578,   579,   580,   581,   583,   584,   585,   587,   589,
-     591,   593,   598,   601,   612,   620,   628,   655,   661,   668,
-     672,   676,   680,   687,   725,   728,   735,   743,   764,   785,
-     796,   825,   830,   840,   845,   855,   858,   861,   864,   870,
-     877,   880,   884,   888,   893,   898,   905,   909,   913,   917,
-     922,   927,   931,  1007,  1017,  1023,  1026,  1032,  1038,  1045,
-    1054,  1063,  1066,  1069,  1076,  1080,  1087,  1091,  1096,  1101,
-    1111,  1121,  1130,  1140,  1147,  1150,  1153,  1159,  1166,  1169,
-    1175,  1178,  1181,  1187,  1190,  1195,  1210,  1214,  1218,  1222,
-    1226,  1230,  1235,  1240,  1245,  1250,  1255,  1260,  1265,  1270,
-    1275,  1280,  1285,  1290,  1296,  1302,  1308,  1314,  1320,  1326,
-    1332,  1338,  1344,  1349,  1354,  1363,  1368,  1373,  1378,  1383,
-    1388,  1393,  1398,  1403,  1408,  1413,  1418,  1423,  1428,  1433,
-    1446,  1446,  1449,  1449,  1455,  1458,  1474,  1477,  1486,  1490,
-    1496,  1503,  1518,  1522,  1526,  1527,  1533,  1534,  1535,  1536,
-    1537,  1538,  1539,  1543,  1544,  1544,  1544,  1554,  1555,  1559,
-    1559,  1560,  1560,  1565,  1568,  1578,  1581,  1587,  1588,  1592,
-    1600,  1604,  1611,  1611,  1618,  1621,  1630,  1635,  1652,  1652,
-    1657,  1657,  1664,  1664,  1672,  1675,  1681,  1684,  1690,  1694,
-    1701,  1704,  1707,  1710,  1713,  1722,  1726,  1733,  1736,  1742,
-    1742
+       0,   214,   214,   249,   252,   257,   262,   267,   272,   278,
+     281,   284,   287,   290,   293,   299,   307,   318,   321,   329,
+     332,   338,   342,   349,   355,   364,   372,   378,   385,   395,
+     398,   408,   418,   440,   441,   442,   443,   451,   452,   456,
+     460,   468,   469,   472,   478,   479,   483,   490,   491,   494,
+     497,   500,   506,   507,   510,   516,   517,   524,   525,   532,
+     533,   540,   541,   547,   548,   554,   555,   561,   562,   579,
+     580,   588,   589,   590,   591,   593,   594,   595,   598,   601,
+     604,   607,   613,   616,   627,   635,   643,   670,   676,   683,
+     687,   691,   695,   702,   739,   742,   749,   757,   778,   799,
+     809,   837,   842,   852,   857,   867,   870,   873,   876,   882,
+     889,   892,   896,   900,   905,   910,   917,   921,   925,   929,
+     934,   939,   943,  1019,  1029,  1035,  1038,  1044,  1050,  1057,
+    1066,  1075,  1078,  1081,  1088,  1092,  1099,  1102,  1106,  1110,
+    1119,  1128,  1136,  1146,  1153,  1156,  1159,  1165,  1172,  1175,
+    1181,  1184,  1187,  1193,  1196,  1201,  1216,  1220,  1224,  1228,
+    1232,  1236,  1241,  1246,  1251,  1256,  1261,  1266,  1271,  1276,
+    1281,  1286,  1291,  1296,  1302,  1308,  1314,  1320,  1326,  1332,
+    1338,  1344,  1350,  1355,  1360,  1369,  1374,  1379,  1384,  1389,
+    1394,  1399,  1404,  1409,  1414,  1419,  1424,  1429,  1434,  1439,
+    1452,  1452,  1455,  1455,  1461,  1464,  1480,  1483,  1492,  1496,
+    1502,  1509,  1524,  1528,  1532,  1533,  1539,  1540,  1541,  1542,
+    1543,  1544,  1545,  1549,  1550,  1550,  1550,  1560,  1561,  1565,
+    1565,  1566,  1566,  1571,  1574,  1584,  1587,  1593,  1594,  1598,
+    1606,  1610,  1617,  1617,  1624,  1627,  1636,  1641,  1658,  1658,
+    1663,  1663,  1670,  1670,  1678,  1681,  1687,  1690,  1696,  1700,
+    1707,  1710,  1713,  1716,  1719,  1728,  1732,  1739,  1742,  1748,
+    1748
 };
 #endif
 
@@ -2654,7 +2666,6 @@ yyreduce:
 
     {
         (yyval.interm) = (yyvsp[(1) - (2)].interm);
-        (yyval.interm).line = (yylsp[(2) - (2)]);
     }
     break;
 
@@ -2662,7 +2673,6 @@ yyreduce:
 
     {
         (yyval.interm) = (yyvsp[(1) - (2)].interm);
-        (yyval.interm).line = (yylsp[(2) - (2)]);
     }
     break;
 
@@ -2800,24 +2810,24 @@ yyreduce:
 
   case 33:
 
-    { (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpNull; }
+    { (yyval.interm).op = EOpNull; }
     break;
 
   case 34:
 
-    { (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpNegative; }
+    { (yyval.interm).op = EOpNegative; }
     break;
 
   case 35:
 
-    { (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpLogicalNot; }
+    { (yyval.interm).op = EOpLogicalNot; }
     break;
 
   case 36:
 
     {
         ES3_ONLY("~", (yylsp[(1) - (1)]), "bit-wise operator");
-        (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpBitwiseNot;
+        (yyval.interm).op = EOpBitwiseNot;
     }
     break;
 
@@ -3057,63 +3067,68 @@ yyreduce:
 
   case 71:
 
-    {                                    (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpAssign; }
+    {                           (yyval.interm).op = EOpAssign; }
     break;
 
   case 72:
 
-    { FRAG_VERT_ONLY("*=", (yylsp[(1) - (1)]));     (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpMulAssign; }
+    { FRAG_VERT_ONLY("*=", (yylsp[(1) - (1)])); (yyval.interm).op = EOpMulAssign; }
     break;
 
   case 73:
 
-    { FRAG_VERT_ONLY("/=", (yylsp[(1) - (1)]));     (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpDivAssign; }
+    { FRAG_VERT_ONLY("/=", (yylsp[(1) - (1)])); (yyval.interm).op = EOpDivAssign; }
     break;
 
   case 74:
 
     { ES3_ONLY("%=", (yylsp[(1) - (1)]), "integer modulus operator");
-                     FRAG_VERT_ONLY("%=", (yylsp[(1) - (1)]));     (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpIModAssign; }
+                     FRAG_VERT_ONLY("%=", (yylsp[(1) - (1)])); (yyval.interm).op = EOpIModAssign; }
     break;
 
   case 75:
 
-    {                                    (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpAddAssign; }
+    {                           (yyval.interm).op = EOpAddAssign; }
     break;
 
   case 76:
 
-    {                                    (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpSubAssign; }
+    {                           (yyval.interm).op = EOpSubAssign; }
     break;
 
   case 77:
 
     { ES3_ONLY("<<=", (yylsp[(1) - (1)]), "bit-wise operator");
-                     FRAG_VERT_ONLY("<<=", (yylsp[(1) - (1)]));    (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpBitShiftLeftAssign; }
+                     FRAG_VERT_ONLY("<<=", (yylsp[(1) - (1)]));
+                     (yyval.interm).op = EOpBitShiftLeftAssign; }
     break;
 
   case 78:
 
     { ES3_ONLY(">>=", (yylsp[(1) - (1)]), "bit-wise operator");
-                     FRAG_VERT_ONLY(">>=", (yylsp[(1) - (1)]));    (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpBitShiftRightAssign; }
+                     FRAG_VERT_ONLY(">>=", (yylsp[(1) - (1)]));
+                     (yyval.interm).op = EOpBitShiftRightAssign; }
     break;
 
   case 79:
 
     { ES3_ONLY("&=", (yylsp[(1) - (1)]), "bit-wise operator");
-                     FRAG_VERT_ONLY("&=", (yylsp[(1) - (1)]));     (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpBitwiseAndAssign; }
+                     FRAG_VERT_ONLY("&=", (yylsp[(1) - (1)]));
+                     (yyval.interm).op = EOpBitwiseAndAssign; }
     break;
 
   case 80:
 
     { ES3_ONLY("^=", (yylsp[(1) - (1)]), "bit-wise operator");
-                     FRAG_VERT_ONLY("^=", (yylsp[(1) - (1)]));     (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpBitwiseXorAssign; }
+                     FRAG_VERT_ONLY("^=", (yylsp[(1) - (1)]));
+                     (yyval.interm).op = EOpBitwiseXorAssign; }
     break;
 
   case 81:
 
     { ES3_ONLY("|=", (yylsp[(1) - (1)]), "bit-wise operator");
-                     FRAG_VERT_ONLY("|=", (yylsp[(1) - (1)]));     (yyval.interm).line = (yylsp[(1) - (1)]); (yyval.interm).op = EOpBitwiseOrAssign; }
+                     FRAG_VERT_ONLY("|=", (yylsp[(1) - (1)]));
+                     (yyval.interm).op = EOpBitwiseOrAssign; }
     break;
 
   case 82:
@@ -3268,7 +3283,6 @@ yyreduce:
         // being redeclared.  So, pass back up this declaration, not the one in the symbol table.
         //
         (yyval.interm).function = (yyvsp[(1) - (2)].interm.function);
-        (yyval.interm).line = (yylsp[(2) - (2)]);
 
         // We're at the inner scope level of the function's arguments and body statement.
         // Add the function prototype to the surrounding scope instead.
@@ -3355,7 +3369,6 @@ yyreduce:
         if (context->reservedErrorCheck((yylsp[(2) - (2)]), *(yyvsp[(2) - (2)].lex).string))
             context->recover();
         TParameter param = {(yyvsp[(2) - (2)].lex).string, new TType((yyvsp[(1) - (2)].interm.type))};
-        (yyval.interm).line = (yylsp[(2) - (2)]);
         (yyval.interm).param = param;
     }
     break;
@@ -3377,7 +3390,6 @@ yyreduce:
 
         TType* type = new TType((yyvsp[(1) - (5)].interm.type));
         TParameter param = { (yyvsp[(2) - (5)].lex).string, type };
-        (yyval.interm).line = (yylsp[(2) - (5)]);
         (yyval.interm).param = param;
     }
     break;
@@ -3689,7 +3701,6 @@ yyreduce:
 
     {
         (yyval.interm.type).qualifier = EvqConstExpr;
-		(yyval.interm.type).line = (yylsp[(1) - (1)]);
     }
     break;
 
@@ -3698,7 +3709,6 @@ yyreduce:
     {
         ES3_ONLY("in", (yylsp[(1) - (1)]), "storage qualifier");
         (yyval.interm.type).qualifier = (context->getShaderType() == GL_FRAGMENT_SHADER) ? EvqFragmentIn : EvqVertexIn;
-		(yyval.interm.type).line = (yylsp[(1) - (1)]);
     }
     break;
 
@@ -3707,7 +3717,6 @@ yyreduce:
     {
         ES3_ONLY("out", (yylsp[(1) - (1)]), "storage qualifier");
         (yyval.interm.type).qualifier = (context->getShaderType() == GL_FRAGMENT_SHADER) ? EvqFragmentOut : EvqVertexOut;
-		(yyval.interm.type).line = (yylsp[(1) - (1)]);
     }
     break;
 
@@ -3721,7 +3730,6 @@ yyreduce:
             context->recover();
         }
         (yyval.interm.type).qualifier = (context->getShaderType() == GL_FRAGMENT_SHADER) ? EvqCentroidIn : EvqVertexIn;
-		(yyval.interm.type).line = (yylsp[(2) - (2)]);
     }
     break;
 
@@ -3735,7 +3743,6 @@ yyreduce:
             context->recover();
         }
         (yyval.interm.type).qualifier = (context->getShaderType() == GL_FRAGMENT_SHADER) ? EvqFragmentOut : EvqCentroidOut;
-		(yyval.interm.type).line = (yylsp[(2) - (2)]);
     }
     break;
 
@@ -3745,7 +3752,6 @@ yyreduce:
         if (context->globalErrorCheck((yylsp[(1) - (1)]), context->symbolTable.atGlobalLevel(), "uniform"))
             context->recover();
         (yyval.interm.type).qualifier = EvqUniform;
-		(yyval.interm.type).line = (yylsp[(1) - (1)]);
     }
     break;
 
@@ -4515,14 +4521,14 @@ yyreduce:
   case 235:
 
     {
-        (yyval.interm.intermAggregate) = context->intermediate.makeAggregate((yyvsp[(1) - (1)].interm.intermNode), 0);
+        (yyval.interm.intermAggregate) = context->intermediate.makeAggregate((yyvsp[(1) - (1)].interm.intermNode), (yyloc));
     }
     break;
 
   case 236:
 
     {
-        (yyval.interm.intermAggregate) = context->intermediate.growAggregate((yyvsp[(1) - (2)].interm.intermAggregate), (yyvsp[(2) - (2)].interm.intermNode), 0);
+        (yyval.interm.intermAggregate) = context->intermediate.growAggregate((yyvsp[(1) - (2)].interm.intermAggregate), (yyvsp[(2) - (2)].interm.intermNode), (yyloc));
     }
     break;
 
@@ -4750,7 +4756,7 @@ yyreduce:
   case 266:
 
     {
-        (yyval.interm.intermNode) = context->intermediate.growAggregate((yyvsp[(1) - (2)].interm.intermNode), (yyvsp[(2) - (2)].interm.intermNode), 0);
+        (yyval.interm.intermNode) = context->intermediate.growAggregate((yyvsp[(1) - (2)].interm.intermNode), (yyvsp[(2) - (2)].interm.intermNode), (yyloc));
         context->setTreeRoot((yyval.interm.intermNode));
     }
     break;
@@ -4868,7 +4874,7 @@ yyreduce:
             context->recover();
         }
         
-        (yyval.interm.intermNode) = context->intermediate.growAggregate((yyvsp[(1) - (3)].interm).intermAggregate, (yyvsp[(3) - (3)].interm.intermNode), 0);
+        (yyval.interm.intermNode) = context->intermediate.growAggregate((yyvsp[(1) - (3)].interm).intermAggregate, (yyvsp[(3) - (3)].interm.intermNode), (yyloc));
         context->intermediate.setAggregateOperator((yyval.interm.intermNode), EOpFunction, (yylsp[(1) - (3)]));
         (yyval.interm.intermNode)->getAsAggregate()->setName((yyvsp[(1) - (3)].interm).function->getMangledName().c_str());
         (yyval.interm.intermNode)->getAsAggregate()->setType((yyvsp[(1) - (3)].interm).function->getReturnType());
