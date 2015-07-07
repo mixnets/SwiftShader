@@ -626,7 +626,8 @@ namespace egl
 		if (newCount == 0)
 		{
 			ASSERT(!shared);   // Should still hold a reference if eglDestroyImage hasn't been called
-			delete this;
+			if (!shared)
+				delete this;
 		}
 	}
 
