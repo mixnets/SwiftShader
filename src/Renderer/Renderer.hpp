@@ -96,6 +96,7 @@ namespace sw
 		volatile unsigned int data;
 	};
 
+	struct Constants;
 	struct DrawData
 	{
 		const Constants *constants;
