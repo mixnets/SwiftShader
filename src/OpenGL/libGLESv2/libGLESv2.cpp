@@ -61,32 +61,32 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 {
 	if(!texture)
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(compressed != texture->isCompressed(target, level))
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(format != GL_NONE && format != texture->getFormat(target, level))
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(compressed)
 	{
 		if((width % 4 != 0 && width != texture->getWidth(target, 0)) ||
-			(height % 4 != 0 && height != texture->getHeight(target, 0)))
+		   (height % 4 != 0 && height != texture->getHeight(target, 0)))
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 	}
 
 	if(xoffset + width > texture->getWidth(target, level) ||
-		yoffset + height > texture->getHeight(target, level))
+	   yoffset + height > texture->getHeight(target, level))
 	{
-		return error(GL_INVALID_VALUE, false);
+		return error(GL_INVALID_VALUE), false;
 	}
 
 	return true;
@@ -96,17 +96,17 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 {
 	if(!texture)
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(compressed != texture->isCompressed(target, level))
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(format != GL_NONE && format != texture->getFormat(target, level))
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(compressed)
@@ -115,7 +115,7 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 		   (height % 4 != 0 && height != texture->getHeight(target, 0)) ||
 		   (depth % 4 != 0 && depth != texture->getDepth(target, 0)))
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 	}
 
@@ -123,7 +123,7 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 	   yoffset + height > texture->getHeight(target, level) ||
 	   zoffset + depth > texture->getDepth(target, level))
 	{
-		return error(GL_INVALID_VALUE, false);
+		return error(GL_INVALID_VALUE), false;
 	}
 
 	return true;
@@ -141,7 +141,7 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 		   colorbufferFormat != GL_RGB5_A1 &&
 		   colorbufferFormat != GL_RGBA8_OES)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 		break;
 	case GL_LUMINANCE:
@@ -154,7 +154,7 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 		   colorbufferFormat != GL_RGB5_A1 &&
 		   colorbufferFormat != GL_RGBA8_OES)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 		break;
 	case GL_LUMINANCE_ALPHA:
@@ -164,28 +164,28 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 		   colorbufferFormat != GL_RGB5_A1 &&
 		   colorbufferFormat != GL_RGBA8_OES)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 		break;
 	case GL_ETC1_RGB8_OES:
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
 	case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
 		if(S3TC_SUPPORT)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 		else
 		{
-			return error(GL_INVALID_ENUM, false);
+			return error(GL_INVALID_ENUM), false;
 		}
 	case GL_DEPTH_COMPONENT:
 	case GL_DEPTH_STENCIL_OES:
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	default:
-		return error(GL_INVALID_ENUM, false);
+		return error(GL_INVALID_ENUM), false;
 	}
 	return true;
 }
@@ -845,7 +845,7 @@ GLenum CheckFramebufferStatus(GLenum target)
 
 	if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER_ANGLE && target != GL_READ_FRAMEBUFFER_ANGLE)
 	{
-		return error(GL_INVALID_ENUM, 0);
+		return error(GL_INVALID_ENUM), 0;
 	}
 
 	es2::Context *context = es2::getContext();
@@ -1392,7 +1392,7 @@ GLuint CreateShader(GLenum type)
 		case GL_VERTEX_SHADER:
 			return context->createShader(type);
 		default:
-			return error(GL_INVALID_ENUM, 0);
+			return error(GL_INVALID_ENUM), 0;
 		}
 	}
 
@@ -2683,17 +2683,17 @@ int GetAttribLocation(GLuint program, const GLchar* name)
 		{
 			if(context->getShader(program))
 			{
-				return error(GL_INVALID_OPERATION, -1);
+				return error(GL_INVALID_OPERATION), -1;
 			}
 			else
 			{
-				return error(GL_INVALID_VALUE, -1);
+				return error(GL_INVALID_VALUE), -1;
 			}
 		}
 
 		if(!programObject->isLinked())
 		{
-			return error(GL_INVALID_OPERATION, -1);
+			return error(GL_INVALID_OPERATION), -1;
 		}
 
 		return programObject->getAttributeLocation(name);
@@ -3522,7 +3522,7 @@ const GLubyte* GetString(GLenum name)
 		return context ? context->getExtensions(GL_INVALID_INDEX) : (GLubyte*)NULL;
 	}
 	default:
-		return error(GL_INVALID_ENUM, (GLubyte*)NULL);
+		return error(GL_INVALID_ENUM), nullptr;
 	}
 }
 
@@ -3969,17 +3969,17 @@ int GetUniformLocation(GLuint program, const GLchar* name)
 		{
 			if(context->getShader(program))
 			{
-				return error(GL_INVALID_OPERATION, -1);
+				return error(GL_INVALID_OPERATION), -1;
 			}
 			else
 			{
-				return error(GL_INVALID_VALUE, -1);
+				return error(GL_INVALID_VALUE), -1;
 			}
 		}
 
 		if(!programObject->isLinked())
 		{
-			return error(GL_INVALID_OPERATION, -1);
+			return error(GL_INVALID_OPERATION), -1;
 		}
 
 		return programObject->getUniformLocation(name);
@@ -4230,15 +4230,15 @@ GLboolean IsEnabled(GLenum cap)
 			{
 				return context->isPrimitiveRestartFixedIndexEnabled();
 			}
-			else return error(GL_INVALID_ENUM, false);
+			else return error(GL_INVALID_ENUM), false;
 		case GL_RASTERIZER_DISCARD:
 			if(clientVersion >= 3)
 			{
 				return context->isRasterizerDiscardEnabled();
 			}
-			else return error(GL_INVALID_ENUM, false);
+			else return error(GL_INVALID_ENUM), false;
 		default:
-			return error(GL_INVALID_ENUM, false);
+			return error(GL_INVALID_ENUM), false;
 		}
 	}
 
@@ -4984,7 +4984,7 @@ GLboolean TestFenceNV(GLuint fence)
 
 		if(fenceObject == NULL)
 		{
-			return error(GL_INVALID_OPERATION, GL_TRUE);
+			return error(GL_INVALID_OPERATION), GL_TRUE;
 		}
 
 		return fenceObject->testFence();

@@ -305,7 +305,7 @@ bool Texture::copy(egl::Image *source, const sw::Rect &sourceRect, GLenum destFo
 
     if(!success)
     {
-        return error(GL_OUT_OF_MEMORY, false);
+        return error(GL_OUT_OF_MEMORY), false;
     }
 
     return true;
@@ -721,7 +721,7 @@ Renderbuffer *Texture2D::getRenderbuffer(GLenum target)
 {
     if(target != GL_TEXTURE_2D)
     {
-        return error(GL_INVALID_OPERATION, (Renderbuffer *)NULL);
+        return error(GL_INVALID_OPERATION), nullptr;
     }
 
     if(mColorbufferProxy == NULL)

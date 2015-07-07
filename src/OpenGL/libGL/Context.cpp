@@ -1711,7 +1711,7 @@ bool Context::applyRenderTarget()
 
     if(!framebuffer || framebuffer->completeness(width, height, samples) != GL_FRAMEBUFFER_COMPLETE)
     {
-        return error(GL_INVALID_FRAMEBUFFER_OPERATION, false);
+        return error(GL_INVALID_FRAMEBUFFER_OPERATION), false;
     }
 
     Image *renderTarget = framebuffer->getRenderTarget();
@@ -3303,7 +3303,7 @@ GLuint Context::genLists(GLsizei range)
 {
 	if(drawing)
     {
-        return error(GL_INVALID_OPERATION, 0);
+        return error(GL_INVALID_OPERATION), 0;
     }
 
 	int firstIndex = std::max(1u, firstFreeIndex);

@@ -47,17 +47,17 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 {
 	if(!texture)
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(compressed != texture->isCompressed(target, level))
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(format != GL_NONE_OES && format != texture->getFormat(target, level))
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(compressed)
@@ -65,14 +65,14 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 		if((width % 4 != 0 && width != texture->getWidth(target, 0)) ||
 		   (height % 4 != 0 && height != texture->getHeight(target, 0)))
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 	}
 
 	if(xoffset + width > texture->getWidth(target, level) ||
 	   yoffset + height > texture->getHeight(target, level))
 	{
-		return error(GL_INVALID_VALUE, false);
+		return error(GL_INVALID_VALUE), false;
 	}
 
 	return true;
@@ -475,7 +475,7 @@ GLenum CheckFramebufferStatusOES(GLenum target)
 
 	if(target != GL_FRAMEBUFFER_OES)
 	{
-		return error(GL_INVALID_ENUM, 0);
+		return error(GL_INVALID_ENUM), 0;
 	}
 
 	es1::Context *context = es1::getContext();
@@ -2212,7 +2212,7 @@ const GLubyte* GetString(GLenum name)
 			"GL_EXT_texture_filter_anisotropic "
 			"GL_EXT_texture_format_BGRA8888";
 	default:
-		return error(GL_INVALID_ENUM, (GLubyte*)NULL);
+		return error(GL_INVALID_ENUM), nullptr;
 	}
 }
 
@@ -2416,7 +2416,7 @@ GLboolean IsEnabled(GLenum cap)
 		case GL_CLIP_PLANE4:              return context->isClipPlaneEnabled(4);
 		case GL_CLIP_PLANE5:              return context->isClipPlaneEnabled(5);
 		default:
-			return error(GL_INVALID_ENUM, GL_FALSE);
+			return error(GL_INVALID_ENUM), GL_FALSE;
 		}
 	}
 

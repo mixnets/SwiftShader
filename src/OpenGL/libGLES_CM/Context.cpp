@@ -1572,7 +1572,7 @@ bool Context::applyRenderTarget()
 
     if(!framebuffer || framebuffer->completeness(width, height, samples) != GL_FRAMEBUFFER_COMPLETE_OES)
     {
-        return error(GL_INVALID_FRAMEBUFFER_OPERATION_OES, false);
+        return error(GL_INVALID_FRAMEBUFFER_OPERATION_OES), false;
     }
 
     egl::Image *renderTarget = framebuffer->getRenderTarget();

@@ -69,7 +69,7 @@ egl::Display *Display::getPlatformDisplay(EGLenum platform, EGLNativeDisplayType
 						return error(EGL_BAD_PARAMETER, (egl::Display*)EGL_NO_DISPLAY);
 					}
                 #else
-                    return error(EGL_BAD_PARAMETER, (egl::Display*)EGL_NO_DISPLAY);
+                    return error(EGL_BAD_PARAMETER), (egl::Display*)EGL_NO_DISPLAY;
                 #endif
             }
         }
@@ -281,17 +281,17 @@ EGLSurface Display::createWindowSurface(EGLNativeWindowType window, EGLConfig co
                   case EGL_BACK_BUFFER:
                     break;
                   case EGL_SINGLE_BUFFER:
-                    return error(EGL_BAD_MATCH, EGL_NO_SURFACE);   // Rendering directly to front buffer not supported
+                    return error(EGL_BAD_MATCH), EGL_NO_SURFACE;   // Rendering directly to front buffer not supported
                   default:
-                    return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+                    return error(EGL_BAD_ATTRIBUTE), EGL_NO_SURFACE;
                 }
                 break;
               case EGL_VG_COLORSPACE:
-                return error(EGL_BAD_MATCH, EGL_NO_SURFACE);
+                return error(EGL_BAD_MATCH), EGL_NO_SURFACE;
               case EGL_VG_ALPHA_FORMAT:
-                return error(EGL_BAD_MATCH, EGL_NO_SURFACE);
+                return error(EGL_BAD_MATCH), EGL_NO_SURFACE;
               default:
-                return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+                return error(EGL_BAD_ATTRIBUTE), EGL_NO_SURFACE;
             }
 
             attribList += 2;
@@ -300,7 +300,7 @@ EGLSurface Display::createWindowSurface(EGLNativeWindowType window, EGLConfig co
 
     if(hasExistingWindowSurface(window))
     {
-        return error(EGL_BAD_ALLOC, EGL_NO_SURFACE);
+        return error(EGL_BAD_ALLOC), EGL_NO_SURFACE;
     }
 
     Surface *surface = new Surface(this, configuration, window);
@@ -330,49 +330,49 @@ EGLSurface Display::createOffscreenSurface(EGLConfig config, const EGLint *attri
         {
             switch (attribList[0])
             {
-              case EGL_WIDTH:
+            case EGL_WIDTH:
                 width = attribList[1];
                 break;
-              case EGL_HEIGHT:
+            case EGL_HEIGHT:
                 height = attribList[1];
                 break;
-              case EGL_LARGEST_PBUFFER:
+            case EGL_LARGEST_PBUFFER:
                 if(attribList[1] != EGL_FALSE)
                   UNIMPLEMENTED(); // FIXME
                 break;
-              case EGL_TEXTURE_FORMAT:
+            case EGL_TEXTURE_FORMAT:
                 switch (attribList[1])
                 {
-                  case EGL_NO_TEXTURE:
-                  case EGL_TEXTURE_RGB:
-                  case EGL_TEXTURE_RGBA:
+                case EGL_NO_TEXTURE:
+                case EGL_TEXTURE_RGB:
+                case EGL_TEXTURE_RGBA:
                     textureFormat = attribList[1];
                     break;
-                  default:
-                    return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+                default:
+                    return error(EGL_BAD_ATTRIBUTE), EGL_NO_SURFACE;
                 }
                 break;
-              case EGL_TEXTURE_TARGET:
+            case EGL_TEXTURE_TARGET:
                 switch (attribList[1])
                 {
-                  case EGL_NO_TEXTURE:
-                  case EGL_TEXTURE_2D:
+                case EGL_NO_TEXTURE:
+                case EGL_TEXTURE_2D:
                     textureTarget = attribList[1];
                     break;
-                  default:
-                    return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+                default:
+                    return error(EGL_BAD_ATTRIBUTE), EGL_NO_SURFACE;
                 }
                 break;
-              case EGL_MIPMAP_TEXTURE:
+            case EGL_MIPMAP_TEXTURE:
                 if(attribList[1] != EGL_FALSE)
-                  return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+                  return error(EGL_BAD_ATTRIBUTE), EGL_NO_SURFACE;
                 break;
-              case EGL_VG_COLORSPACE:
-                return error(EGL_BAD_MATCH, EGL_NO_SURFACE);
-              case EGL_VG_ALPHA_FORMAT:
-                return error(EGL_BAD_MATCH, EGL_NO_SURFACE);
-              default:
-                return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+            case EGL_VG_COLORSPACE:
+                return error(EGL_BAD_MATCH), EGL_NO_SURFACE;
+            case EGL_VG_ALPHA_FORMAT:
+                return error(EGL_BAD_MATCH), EGL_NO_SURFACE;
+            default:
+                return error(EGL_BAD_ATTRIBUTE), EGL_NO_SURFACE;
             }
 
             attribList += 2;
@@ -381,29 +381,29 @@ EGLSurface Display::createOffscreenSurface(EGLConfig config, const EGLint *attri
 
     if(width < 0 || height < 0)
     {
-        return error(EGL_BAD_PARAMETER, EGL_NO_SURFACE);
+        return error(EGL_BAD_PARAMETER), EGL_NO_SURFACE;
     }
 
     if(width == 0 || height == 0)
     {
-        return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+        return error(EGL_BAD_ATTRIBUTE), EGL_NO_SURFACE;
     }
 
     if((textureFormat != EGL_NO_TEXTURE && textureTarget == EGL_NO_TEXTURE) ||
        (textureFormat == EGL_NO_TEXTURE && textureTarget != EGL_NO_TEXTURE))
     {
-        return error(EGL_BAD_MATCH, EGL_NO_SURFACE);
+        return error(EGL_BAD_MATCH), EGL_NO_SURFACE;
     }
 
     if(!(configuration->mSurfaceType & EGL_PBUFFER_BIT))
     {
-        return error(EGL_BAD_MATCH, EGL_NO_SURFACE);
+        return error(EGL_BAD_MATCH), EGL_NO_SURFACE;
     }
 
     if((textureFormat == EGL_TEXTURE_RGB && configuration->mBindToTextureRGB != EGL_TRUE) ||
        (textureFormat == EGL_TEXTURE_RGBA && configuration->mBindToTextureRGBA != EGL_TRUE))
     {
-        return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+        return error(EGL_BAD_ATTRIBUTE), EGL_NO_SURFACE;
     }
 
     Surface *surface = new Surface(this, configuration, width, height, textureFormat, textureTarget);
@@ -445,12 +445,12 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 	}
 	else
 	{
-		return error(EGL_BAD_CONFIG, EGL_NO_CONTEXT);
+		return error(EGL_BAD_CONFIG), EGL_NO_CONTEXT;
 	}
 
 	if(!context)
 	{
-		return error(EGL_BAD_ALLOC, EGL_NO_CONTEXT);
+		return error(EGL_BAD_ALLOC), EGL_NO_CONTEXT;
 	}
 
 	context->addRef();

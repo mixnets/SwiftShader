@@ -32,14 +32,6 @@ namespace es2
 	Device *getDevice();
 
 	void error(GLenum errorCode);
-
-	template<class T>
-	const T &error(GLenum errorCode, const T &returnValue)
-	{
-		error(errorCode);
-
-		return returnValue;
-	}
 }
 
 namespace egl

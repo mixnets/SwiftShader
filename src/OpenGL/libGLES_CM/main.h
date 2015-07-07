@@ -30,14 +30,6 @@ namespace es1
 	Device *getDevice();
 
 	void error(GLenum errorCode);
-
-	template<class T>
-	const T &error(GLenum errorCode, const T &returnValue)
-	{
-		error(errorCode);
-
-		return returnValue;
-	}
 }
 
 extern LibEGL libEGL;

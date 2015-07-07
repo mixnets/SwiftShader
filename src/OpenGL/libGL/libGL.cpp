@@ -47,17 +47,17 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 {
 	if(!texture)
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(compressed != texture->isCompressed(target, level))
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(format != GL_NONE && format != texture->getFormat(target, level))
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(compressed)
@@ -65,14 +65,14 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 		if((width % 4 != 0 && width != texture->getWidth(target, 0)) ||
 		   (height % 4 != 0 && height != texture->getHeight(target, 0)))
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 	}
 
 	if(xoffset + width > texture->getWidth(target, level) ||
 	   yoffset + height > texture->getHeight(target, level))
 	{
-		return error(GL_INVALID_VALUE, false);
+		return error(GL_INVALID_VALUE), false;
 	}
 
 	return true;
@@ -634,7 +634,7 @@ GLenum APIENTRY glCheckFramebufferStatus(GLenum target)
 
 	if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER_EXT && target != GL_READ_FRAMEBUFFER_EXT)
 	{
-		return error(GL_INVALID_ENUM, 0);
+		return error(GL_INVALID_ENUM), 0;
 	}
 
 	gl::Context *context = gl::getContext();
@@ -1236,7 +1236,7 @@ GLuint APIENTRY glCreateShader(GLenum type)
 		case GL_VERTEX_SHADER:
 			return context->createShader(type);
 		default:
-			return error(GL_INVALID_ENUM, 0);
+			return error(GL_INVALID_ENUM), 0;
 		}
 	}
 
@@ -2341,17 +2341,17 @@ int APIENTRY glGetAttribLocation(GLuint program, const GLchar* name)
 		{
 			if(context->getShader(program))
 			{
-				return error(GL_INVALID_OPERATION, -1);
+				return error(GL_INVALID_OPERATION), -1;
 			}
 			else
 			{
-				return error(GL_INVALID_VALUE, -1);
+				return error(GL_INVALID_VALUE), -1;
 			}
 		}
 
 		if(!programObject->isLinked())
 		{
-			return error(GL_INVALID_OPERATION, -1);
+			return error(GL_INVALID_OPERATION), -1;
 		}
 
 		return programObject->getAttributeLocation(name);
@@ -3075,7 +3075,7 @@ const GLubyte* APIENTRY glGetString(GLenum name)
 			#endif
 			"GL_NV_fence";
 	default:
-		return error(GL_INVALID_ENUM, (GLubyte*)NULL);
+		return error(GL_INVALID_ENUM), nullptr;
 	}
 
 	return NULL;
@@ -3320,17 +3320,17 @@ int APIENTRY glGetUniformLocation(GLuint program, const GLchar* name)
 		{
 			if(context->getShader(program))
 			{
-				return error(GL_INVALID_OPERATION, -1);
+				return error(GL_INVALID_OPERATION), -1;
 			}
 			else
 			{
-				return error(GL_INVALID_VALUE, -1);
+				return error(GL_INVALID_VALUE), -1;
 			}
 		}
 
 		if(!programObject->isLinked())
 		{
-			return error(GL_INVALID_OPERATION, -1);
+			return error(GL_INVALID_OPERATION), -1;
 		}
 
 		return programObject->getUniformLocation(name);
@@ -3521,7 +3521,7 @@ GLboolean APIENTRY glIsEnabled(GLenum cap)
 		case GL_BLEND:                    return context->isBlendEnabled();
 		case GL_DITHER:                   return context->isDitherEnabled();
 		default:
-			return error(GL_INVALID_ENUM, false);
+			return error(GL_INVALID_ENUM), false;
 		}
 	}
 
@@ -4212,7 +4212,7 @@ GLboolean APIENTRY glTestFenceNV(GLuint fence)
 
 		if(fenceObject == NULL)
 		{
-			return error(GL_INVALID_OPERATION, GL_TRUE);
+			return error(GL_INVALID_OPERATION), GL_TRUE;
 		}
 
 		return fenceObject->testFence();
@@ -6194,7 +6194,7 @@ GLuint APIENTRY glGenLists(GLsizei range)
 
 	if(range < 0)
 	{
-		return error(GL_INVALID_VALUE, 0);
+		return error(GL_INVALID_VALUE), 0;
 	}
 
 	gl::Context *context = gl::getContext();

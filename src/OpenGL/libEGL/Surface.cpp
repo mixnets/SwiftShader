@@ -151,7 +151,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 		{
 			ERR("Could not create frame buffer");
 			deleteResources();
-			return error(EGL_BAD_ALLOC, false);
+			return error(EGL_BAD_ALLOC), false;
 		}
     }
 
@@ -168,7 +168,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
     {
         ERR("Could not create back buffer");
         deleteResources();
-        return error(EGL_BAD_ALLOC, false);
+        return error(EGL_BAD_ALLOC), false;
     }
 
     if(mConfig->mDepthStencilFormat != sw::FORMAT_NULL)
@@ -186,7 +186,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 		{
 			ERR("Could not create depth/stencil buffer for surface");
 			deleteResources();
-			return error(EGL_BAD_ALLOC, false);
+			return error(EGL_BAD_ALLOC), false;
 		}
     }
 

@@ -55,14 +55,6 @@ namespace egl
 	Surface *getCurrentReadSurface();
 
 	void error(EGLint errorCode);
-	
-	template<class T>
-	const T &error(EGLint errorCode, const T &returnValue)
-	{
-		egl::error(errorCode);
-
-		return returnValue;
-	}
 
 	template<class T>
 	const T &success(const T &returnValue)

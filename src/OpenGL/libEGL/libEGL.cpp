@@ -32,12 +32,12 @@ static bool validateDisplay(egl::Display *display)
 {
 	if(display == EGL_NO_DISPLAY)
 	{
-		return error(EGL_BAD_DISPLAY, false);
+		return error(EGL_BAD_DISPLAY), false;
 	}
 
 	if(!display->isInitialized())
 	{
-		return error(EGL_NOT_INITIALIZED, false);
+		return error(EGL_NOT_INITIALIZED), false;
 	}
 
 	return true;
@@ -52,7 +52,7 @@ static bool validateConfig(egl::Display *display, EGLConfig config)
 
 	if(!display->isValidConfig(config))
 	{
-		return error(EGL_BAD_CONFIG, false);
+		return error(EGL_BAD_CONFIG), false;
 	}
 
 	return true;
@@ -67,7 +67,7 @@ static bool validateContext(egl::Display *display, egl::Context *context)
 
 	if(!display->isValidContext(context))
 	{
-		return error(EGL_BAD_CONTEXT, false);
+		return error(EGL_BAD_CONTEXT), false;
 	}
 
 	return true;
@@ -82,7 +82,7 @@ static bool validateSurface(egl::Display *display, egl::Surface *surface)
 
 	if(!display->isValidSurface(surface))
 	{
-		return error(EGL_BAD_SURFACE, false);
+		return error(EGL_BAD_SURFACE), false;
 	}
 
 	return true;
@@ -118,14 +118,14 @@ EGLBoolean Initialize(EGLDisplay dpy, EGLint *major, EGLint *minor)
 
 	if(dpy == EGL_NO_DISPLAY)
 	{
-		return error(EGL_BAD_DISPLAY, EGL_FALSE);
+		return error(EGL_BAD_DISPLAY), EGL_FALSE;
 	}
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
 
 	if(!display->initialize())
 	{
-		return error(EGL_NOT_INITIALIZED, EGL_FALSE);
+		return error(EGL_NOT_INITIALIZED), EGL_FALSE;
 	}
 
 	if(major) *major = 1;
@@ -140,7 +140,7 @@ EGLBoolean Terminate(EGLDisplay dpy)
 
 	if(dpy == EGL_NO_DISPLAY)
 	{
-		return error(EGL_BAD_DISPLAY, EGL_FALSE);
+		return error(EGL_BAD_DISPLAY), EGL_FALSE;
 	}
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
@@ -184,7 +184,7 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 		return success("1.4 SwiftShader " VERSION_STRING);
 	}
 
-	return error(EGL_BAD_PARAMETER, (const char*)NULL);
+	return error(EGL_BAD_PARAMETER), nullptr;
 }
 
 EGLBoolean GetConfigs(EGLDisplay dpy, EGLConfig *configs, EGLint config_size, EGLint *num_config)
@@ -202,14 +202,14 @@ EGLBoolean GetConfigs(EGLDisplay dpy, EGLConfig *configs, EGLint config_size, EG
 
 	if(!num_config)
 	{
-		return error(EGL_BAD_PARAMETER, EGL_FALSE);
+		return error(EGL_BAD_PARAMETER), EGL_FALSE;
 	}
 
 	const EGLint attribList[] = {EGL_NONE};
 
 	if(!display->getConfigs(configs, attribList, config_size, num_config))
 	{
-		return error(EGL_BAD_ATTRIBUTE, EGL_FALSE);
+		return error(EGL_BAD_ATTRIBUTE), EGL_FALSE;
 	}
 
 	return success(EGL_TRUE);
@@ -230,7 +230,7 @@ EGLBoolean ChooseConfig(EGLDisplay dpy, const EGLint *attrib_list, EGLConfig *co
 
 	if(!num_config)
 	{
-		return error(EGL_BAD_PARAMETER, EGL_FALSE);
+		return error(EGL_BAD_PARAMETER), EGL_FALSE;
 	}
 
 	const EGLint attribList[] = {EGL_NONE};
@@ -259,7 +259,7 @@ EGLBoolean GetConfigAttrib(EGLDisplay dpy, EGLConfig config, EGLint attribute, E
 
 	if(!display->getConfigAttrib(config, attribute, value))
 	{
-		return error(EGL_BAD_ATTRIBUTE, EGL_FALSE);
+		return error(EGL_BAD_ATTRIBUTE), EGL_FALSE;
 	}
 
 	return success(EGL_TRUE);
@@ -279,7 +279,7 @@ EGLSurface CreateWindowSurface(EGLDisplay dpy, EGLConfig config, EGLNativeWindow
 
 	if(!display->isValidWindow(window))
 	{
-		return error(EGL_BAD_NATIVE_WINDOW, EGL_NO_SURFACE);
+		return error(EGL_BAD_NATIVE_WINDOW), EGL_NO_SURFACE;
 	}
 
 	return display->createWindowSurface(window, config, attrib_list);
@@ -331,7 +331,7 @@ EGLBoolean DestroySurface(EGLDisplay dpy, EGLSurface surface)
 
 	if(surface == EGL_NO_SURFACE)
 	{
-		return error(EGL_BAD_SURFACE, EGL_FALSE);
+		return error(EGL_BAD_SURFACE), EGL_FALSE;
 	}
 
 	display->destroySurface((egl::Surface*)surface);
@@ -354,7 +354,7 @@ EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EG
 
 	if(surface == EGL_NO_SURFACE)
 	{
-		return error(EGL_BAD_SURFACE, EGL_FALSE);
+		return error(EGL_BAD_SURFACE), EGL_FALSE;
 	}
 
 	switch(attribute)
@@ -408,7 +408,7 @@ EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EG
 		*value = eglSurface->getWidth();
 		break;
 	default:
-		return error(EGL_BAD_ATTRIBUTE, EGL_FALSE);
+		return error(EGL_BAD_ATTRIBUTE), EGL_FALSE;
 	}
 
 	return success(EGL_TRUE);
@@ -422,11 +422,11 @@ EGLBoolean BindAPI(EGLenum api)
 	{
 		case EGL_OPENGL_API:
 		case EGL_OPENVG_API:
-		return error(EGL_BAD_PARAMETER, EGL_FALSE);   // Not supported by this implementation
+		return error(EGL_BAD_PARAMETER), EGL_FALSE;   // Not supported by this implementation
 		case EGL_OPENGL_ES_API:
 		break;
 		default:
-		return error(EGL_BAD_PARAMETER, EGL_FALSE);
+		return error(EGL_BAD_PARAMETER), EGL_FALSE;
 	}
 
 	egl::setCurrentAPI(api);
@@ -469,7 +469,7 @@ EGLSurface CreatePbufferFromClientBuffer(EGLDisplay dpy, EGLenum buftype, EGLCli
 
 	UNIMPLEMENTED();
 
-	return error(EGL_BAD_PARAMETER, EGL_NO_SURFACE);
+	return error(EGL_BAD_PARAMETER), EGL_NO_SURFACE;
 }
 
 EGLBoolean SurfaceAttrib(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint value)
@@ -492,12 +492,12 @@ EGLBoolean SurfaceAttrib(EGLDisplay dpy, EGLSurface surface, EGLint attribute, E
 		{
 			if(!(eglSurface->getSurfaceType() & EGL_SWAP_BEHAVIOR_PRESERVED_BIT))
 			{
-				return error(EGL_BAD_MATCH, EGL_FALSE);
+				return error(EGL_BAD_MATCH), EGL_FALSE;
 			}
 		}
 		else if(value != EGL_BUFFER_DESTROYED)
 		{
-			return error(EGL_BAD_PARAMETER, EGL_FALSE);
+			return error(EGL_BAD_PARAMETER), EGL_FALSE;
 		}
 		eglSurface->setSwapBehavior(value);
 		break;
@@ -522,22 +522,22 @@ EGLBoolean BindTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
 
 	if(buffer != EGL_BACK_BUFFER)
 	{
-		return error(EGL_BAD_PARAMETER, EGL_FALSE);
+		return error(EGL_BAD_PARAMETER), EGL_FALSE;
 	}
 
 	if(surface == EGL_NO_SURFACE || eglSurface->getWindowHandle())
 	{
-		return error(EGL_BAD_SURFACE, EGL_FALSE);
+		return error(EGL_BAD_SURFACE), EGL_FALSE;
 	}
 
 	if(eglSurface->getBoundTexture())
 	{
-		return error(EGL_BAD_ACCESS, EGL_FALSE);
+		return error(EGL_BAD_ACCESS), EGL_FALSE;
 	}
 
 	if(eglSurface->getTextureFormat() == EGL_NO_TEXTURE)
 	{
-		return error(EGL_BAD_MATCH, EGL_FALSE);
+		return error(EGL_BAD_MATCH), EGL_FALSE;
 	}
 
 	egl::Context *context = static_cast<egl::Context*>(egl::getCurrentContext());
@@ -564,17 +564,17 @@ EGLBoolean ReleaseTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
 
 	if(buffer != EGL_BACK_BUFFER)
 	{
-		return error(EGL_BAD_PARAMETER, EGL_FALSE);
+		return error(EGL_BAD_PARAMETER), EGL_FALSE;
 	}
 
 	if(surface == EGL_NO_SURFACE || eglSurface->getWindowHandle())
 	{
-		return error(EGL_BAD_SURFACE, EGL_FALSE);
+		return error(EGL_BAD_SURFACE), EGL_FALSE;
 	}
 
 	if(eglSurface->getTextureFormat() == EGL_NO_TEXTURE)
 	{
-		return error(EGL_BAD_MATCH, EGL_FALSE);
+		return error(EGL_BAD_MATCH), EGL_FALSE;
 	}
 
 	egl::Texture *texture = eglSurface->getBoundTexture();
@@ -602,7 +602,7 @@ EGLBoolean SwapInterval(EGLDisplay dpy, EGLint interval)
 
 	if(draw_surface == NULL)
 	{
-		return error(EGL_BAD_SURFACE, EGL_FALSE);
+		return error(EGL_BAD_SURFACE), EGL_FALSE;
 	}
 
 	draw_surface->setSwapInterval(interval);
@@ -626,7 +626,7 @@ EGLContext CreateContext(EGLDisplay dpy, EGLConfig config, EGLContext share_cont
 			}
 			else
 			{
-				return error(EGL_BAD_ATTRIBUTE, EGL_NO_CONTEXT);
+				return error(EGL_BAD_ATTRIBUTE), EGL_NO_CONTEXT;
 			}
 		}
 	}
@@ -641,7 +641,7 @@ EGLContext CreateContext(EGLDisplay dpy, EGLConfig config, EGLContext share_cont
 
 	if(shareContext && shareContext->getClientVersion() != clientVersion)
 	{
-		return error(EGL_BAD_CONTEXT, EGL_NO_CONTEXT);
+		return error(EGL_BAD_CONTEXT), EGL_NO_CONTEXT;
 	}
 
 	return display->createContext(config, shareContext, clientVersion);
@@ -661,7 +661,7 @@ EGLBoolean DestroyContext(EGLDisplay dpy, EGLContext ctx)
 
 	if(ctx == EGL_NO_CONTEXT)
 	{
-		return error(EGL_BAD_CONTEXT, EGL_FALSE);
+		return error(EGL_BAD_CONTEXT), EGL_FALSE;
 	}
 
 	display->destroyContext(context);
@@ -689,7 +689,7 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 
 	if(ctx == EGL_NO_CONTEXT && (draw != EGL_NO_SURFACE || read != EGL_NO_SURFACE))
 	{
-		return error(EGL_BAD_MATCH, EGL_FALSE);
+		return error(EGL_BAD_MATCH), EGL_FALSE;
 	}
 
 	if(ctx != EGL_NO_CONTEXT && !validateContext(display, context))
@@ -705,7 +705,7 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 
 	if((draw != EGL_NO_SURFACE) ^ (read != EGL_NO_SURFACE))
 	{
-		return error(EGL_BAD_MATCH, EGL_FALSE);
+		return error(EGL_BAD_MATCH), EGL_FALSE;
 	}
 
 	if(draw != read)
@@ -751,7 +751,7 @@ EGLSurface GetCurrentSurface(EGLint readdraw)
 	}
 	else
 	{
-		return error(EGL_BAD_PARAMETER, EGL_NO_SURFACE);
+		return error(EGL_BAD_PARAMETER), EGL_NO_SURFACE;
 	}
 }
 
@@ -814,7 +814,7 @@ EGLBoolean SwapBuffers(EGLDisplay dpy, EGLSurface surface)
 
 	if(surface == EGL_NO_SURFACE)
 	{
-		return error(EGL_BAD_SURFACE, EGL_FALSE);
+		return error(EGL_BAD_SURFACE), EGL_FALSE;
 	}
 
 	eglSurface->swap();
@@ -848,12 +848,12 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 
 	if(!validateDisplay(display))
 	{
-		return error(EGL_BAD_DISPLAY, EGL_NO_IMAGE_KHR);
+		return error(EGL_BAD_DISPLAY), EGL_NO_IMAGE_KHR;
 	}
 
 	if(context != EGL_NO_CONTEXT && !display->isValidContext(context))
 	{
-		return error(EGL_BAD_CONTEXT, EGL_NO_IMAGE_KHR);
+		return error(EGL_BAD_CONTEXT), EGL_NO_IMAGE_KHR;
 	}
 
 	EGLenum imagePreserved = EGL_FALSE;
@@ -872,7 +872,7 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 			}
 			else
 			{
-				return error(EGL_BAD_ATTRIBUTE, EGL_NO_IMAGE_KHR);
+				return error(EGL_BAD_ATTRIBUTE), EGL_NO_IMAGE_KHR;
 			}
 		}
 	}
@@ -881,7 +881,7 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 
 	if(name == 0)
 	{
-		return error(EGL_BAD_PARAMETER, EGL_NO_IMAGE_KHR);
+		return error(EGL_BAD_PARAMETER), EGL_NO_IMAGE_KHR;
 	}
 
 	#if defined(__ANDROID__)
@@ -895,19 +895,19 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 
 	if(validationResult != EGL_SUCCESS)
 	{
-		return error(validationResult, EGL_NO_IMAGE_KHR);
+		return error(validationResult), EGL_NO_IMAGE_KHR;
 	}
 
 	egl::Image *image = context->createSharedImage(target, name, textureLevel);
 
 	if(!image)
 	{
-		return error(EGL_BAD_MATCH, EGL_NO_IMAGE_KHR);
+		return error(EGL_BAD_MATCH), EGL_NO_IMAGE_KHR;
 	}
 
 	if(image->getDepth() > 1)
 	{
-		return error(EGL_BAD_PARAMETER, EGL_NO_IMAGE_KHR);
+		return error(EGL_BAD_PARAMETER), EGL_NO_IMAGE_KHR;
 	}
 
 	return success((EGLImageKHR)image);
@@ -921,12 +921,12 @@ EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
 
 	if(!validateDisplay(display))
 	{
-		return error(EGL_BAD_DISPLAY, EGL_FALSE);
+		return error(EGL_BAD_DISPLAY), EGL_FALSE;
 	}
 
 	if(!image)
 	{
-		return error(EGL_BAD_PARAMETER, EGL_FALSE);
+		return error(EGL_BAD_PARAMETER), EGL_FALSE;
 	}
 
 	egl::Image *glImage = static_cast<egl::Image*>(image);

@@ -54,7 +54,7 @@ GLboolean Fence::testFence()
 {
     if(!mQuery)
     {
-        return error(GL_INVALID_OPERATION, GL_TRUE);
+        return error(GL_INVALID_OPERATION), GL_TRUE;
     }
 
     // The current assumtion is that no matter where the fence is placed, it is

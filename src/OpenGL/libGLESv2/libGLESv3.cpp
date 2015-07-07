@@ -48,17 +48,17 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 {
 	if(!texture)
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(compressed != texture->isCompressed(target, level))
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(format != GL_NONE && format != texture->getFormat(target, level))
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(compressed)
@@ -66,14 +66,14 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 		if((width % 4 != 0 && width != texture->getWidth(target, 0)) ||
 		   (height % 4 != 0 && height != texture->getHeight(target, 0)))
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 	}
 
 	if(xoffset + width > texture->getWidth(target, level) ||
 		yoffset + height > texture->getHeight(target, level))
 	{
-		return error(GL_INVALID_VALUE, false);
+		return error(GL_INVALID_VALUE), false;
 	}
 
 	return true;
@@ -83,17 +83,17 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 {
 	if(!texture)
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(compressed != texture->isCompressed(target, level))
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(format != GL_NONE && format != texture->getFormat(target, level))
 	{
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	}
 
 	if(compressed)
@@ -102,7 +102,7 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 			(height % 4 != 0 && height != texture->getHeight(target, 0)) ||
 			(depth % 4 != 0 && depth != texture->getDepth(target, 0)))
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 	}
 
@@ -110,7 +110,7 @@ static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei heigh
 		yoffset + height > texture->getHeight(target, level) ||
 		zoffset + depth > texture->getDepth(target, level))
 	{
-		return error(GL_INVALID_VALUE, false);
+		return error(GL_INVALID_VALUE), false;
 	}
 
 	return true;
@@ -127,7 +127,7 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 			colorbufferFormat != GL_RGB5_A1 &&
 			colorbufferFormat != GL_RGBA8)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 		break;
 	case GL_LUMINANCE:
@@ -140,7 +140,7 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 			colorbufferFormat != GL_RGB5_A1 &&
 			colorbufferFormat != GL_RGBA8)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 		break;
 	case GL_LUMINANCE_ALPHA:
@@ -150,7 +150,7 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 			colorbufferFormat != GL_RGB5_A1 &&
 			colorbufferFormat != GL_RGBA8)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 		break;
 	case GL_ETC1_RGB8_OES:
@@ -164,24 +164,24 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 	case GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
 	case GL_COMPRESSED_RGBA8_ETC2_EAC:
 	case GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 	case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
 	case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
 		if(S3TC_SUPPORT)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 		else
 		{
-			return error(GL_INVALID_ENUM, false);
+			return error(GL_INVALID_ENUM), false;
 		}
 	case GL_DEPTH_COMPONENT:
 	case GL_DEPTH_STENCIL:
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	default:
-		return error(GL_INVALID_ENUM, false);
+		return error(GL_INVALID_ENUM), false;
 	}
 	return true;
 }
@@ -1045,13 +1045,13 @@ GL_APICALL GLboolean GL_APIENTRY glUnmapBuffer(GLenum target)
 		es2::Buffer *buffer = nullptr;
 		if(!context->getBuffer(target, &buffer))
 		{
-			return error(GL_INVALID_ENUM, GL_TRUE);
+			return error(GL_INVALID_ENUM), GL_TRUE;
 		}
 
 		if(!buffer)
 		{
 			// A null buffer means that "0" is bound to the requested buffer target
-			return error(GL_INVALID_OPERATION, GL_TRUE);
+			return error(GL_INVALID_OPERATION), GL_TRUE;
 		}
 
 		return buffer->unmap() ? GL_TRUE : GL_FALSE;
@@ -1610,13 +1610,13 @@ GL_APICALL void *GL_APIENTRY glMapBufferRange(GLenum target, GLintptr offset, GL
 		es2::Buffer *buffer = nullptr;
 		if(!context->getBuffer(target, &buffer))
 		{
-			return error(GL_INVALID_ENUM, nullptr);
+			return error(GL_INVALID_ENUM), nullptr;
 		}
 
 		if(!buffer)
 		{
 			// A null buffer means that "0" is bound to the requested buffer target
-			return error(GL_INVALID_OPERATION, nullptr);
+			return error(GL_INVALID_OPERATION), nullptr;
 		}
 
 		GLint bufferSize = buffer->size();
@@ -2316,17 +2316,17 @@ GL_APICALL GLint GL_APIENTRY glGetFragDataLocation(GLuint program, const GLchar 
 		{
 			if(context->getShader(program))
 			{
-				return error(GL_INVALID_OPERATION, -1);
+				return error(GL_INVALID_OPERATION), -1;
 			}
 			else
 			{
-				return error(GL_INVALID_VALUE, -1);
+				return error(GL_INVALID_VALUE), -1;
 			}
 		}
 
 		if(!programObject->isLinked())
 		{
-			return error(GL_INVALID_OPERATION, -1);
+			return error(GL_INVALID_OPERATION), -1;
 		}
 	}
 
@@ -2632,7 +2632,7 @@ GL_APICALL const GLubyte *GL_APIENTRY glGetStringi(GLenum name, GLuint index)
 
 		if(index >= numExtensions)
 		{
-			return error(GL_INVALID_VALUE, (GLubyte*)NULL);
+			return error(GL_INVALID_VALUE), nullptr;
 		}
 
 		switch(name)
@@ -2640,7 +2640,7 @@ GL_APICALL const GLubyte *GL_APIENTRY glGetStringi(GLenum name, GLuint index)
 		case GL_EXTENSIONS:
 			return context->getExtensions(index);
 		default:
-			return error(GL_INVALID_ENUM, (GLubyte*)NULL);
+			return error(GL_INVALID_ENUM), nullptr;
 		}
 	}
 
@@ -2786,7 +2786,7 @@ GL_APICALL GLuint GL_APIENTRY glGetUniformBlockIndex(GLuint program, const GLcha
 
 		if(!programObject)
 		{
-			return error(GL_INVALID_OPERATION, GL_INVALID_INDEX);
+			return error(GL_INVALID_OPERATION), GL_INVALID_INDEX;
 		}
 
 		return programObject->getUniformBlockIndex(uniformBlockName);
@@ -2970,12 +2970,12 @@ GL_APICALL GLsync GL_APIENTRY glFenceSync(GLenum condition, GLbitfield flags)
 	case GL_SYNC_GPU_COMMANDS_COMPLETE:
 		break;
 	default:
-		return error(GL_INVALID_ENUM, nullptr);
+		return error(GL_INVALID_ENUM), nullptr;
 	}
 
 	if(flags != 0)
 	{
-		return error(GL_INVALID_VALUE, nullptr);
+		return error(GL_INVALID_VALUE), nullptr;
 	}
 
 	es2::Context *context = es2::getContext();
@@ -3040,7 +3040,7 @@ GL_APICALL GLenum GL_APIENTRY glClientWaitSync(GLsync sync, GLbitfield flags, GL
 		}
 		else
 		{
-			return error(GL_INVALID_VALUE, GL_FALSE);
+			return error(GL_INVALID_VALUE), GL_FALSE;
 		}
 	}
 
