@@ -51,7 +51,7 @@ namespace gl
 	void setCurrentReadSurface(Surface *surface);
 }
 
-void error(GLenum errorCode);
+void error(GLenum errorCode, int reason = 0);
 
 extern sw::FrameBuffer *createFrameBuffer(void *display, NativeWindowType window, int width, int height);
 

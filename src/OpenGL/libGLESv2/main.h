@@ -33,7 +33,7 @@ namespace es2
 	Context *getContext();
 	Device *getDevice();
 
-	void error(GLenum errorCode);
+	void error(GLenum errorCode, int reason = 0);
 }
 
 namespace egl
