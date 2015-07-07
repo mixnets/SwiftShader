@@ -29,7 +29,7 @@ namespace es1
 	egl::Display *getDisplay();
 	Device *getDevice();
 
-	void error(GLenum errorCode);
+	void error(GLenum errorCode, int reason = 0);
 }
 
 extern LibEGL libEGL;

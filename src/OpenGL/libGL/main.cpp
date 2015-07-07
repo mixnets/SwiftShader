@@ -251,7 +251,7 @@ Surface *getCurrentReadSurface()
 }
 
 // Records an error code
-void error(GLenum errorCode)
+void error(GLenum errorCode, int reason)
 {
     gl::Context *context = gl::getContext();
 
@@ -261,11 +261,11 @@ void error(GLenum errorCode)
         {
         case GL_INVALID_ENUM:
             context->recordInvalidEnum();
-            TRACE("\t! Error generated: invalid enum\n");
+            TRACE("\t! Error generated: invalid enum (%X)\n", reason);
             break;
         case GL_INVALID_VALUE:
             context->recordInvalidValue();
-            TRACE("\t! Error generated: invalid value\n");
+            TRACE("\t! Error generated: invalid value (%d)\n", reason);
             break;
         case GL_INVALID_OPERATION:
             context->recordInvalidOperation();
