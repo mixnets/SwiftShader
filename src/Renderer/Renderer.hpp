@@ -98,8 +98,6 @@ namespace sw
 
 	struct DrawData
 	{
-		const Constants *constants;
-
 		const void *input[VERTEX_ATTRIBUTES];
 		unsigned int stride[VERTEX_ATTRIBUTES];
 		Texture mipmap[TOTAL_IMAGE_UNITS];
