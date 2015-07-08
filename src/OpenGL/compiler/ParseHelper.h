@@ -31,8 +31,6 @@ public:
             symbolTable(symt),
             compileOptions(options),
             sourcePath(sourcePath),
-            lexAfterType(false),
-            inTypeParen(false),
             AfterEOF(false),
             mDeferredSingleDeclarationErrorCheck(false),
             mShaderType(type),
@@ -56,8 +54,6 @@ public:
     TSymbolTable& symbolTable;   // symbol table that goes with the language currently being parsed
     int compileOptions;
     const char* sourcePath;      // Path of source file or NULL.
-    bool lexAfterType;           // true if we've recognized a type, so can only be looking for an identifier
-    bool inTypeParen;            // true if in parentheses, looking only for an identifier
     bool AfterEOF;
 
     const pp::Preprocessor &getPreprocessor() const { return mPreprocessor; }
