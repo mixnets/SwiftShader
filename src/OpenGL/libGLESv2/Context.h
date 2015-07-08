@@ -306,6 +306,9 @@ struct State
     bool dither;
     bool primitiveRestartFixedIndex;
     bool rasterizerDiscard;
+    bool rasterizerDiscard;
+    bool colorLogicOp;
+    GLenum logicalOperation;
 
     GLfloat lineWidth;
 
