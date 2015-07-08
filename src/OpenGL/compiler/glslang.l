@@ -140,20 +140,20 @@ O           [0-7]
 "out"          { return(OUT_QUAL); }
 "inout"        { return(INOUT_QUAL); }
 
-"float"        { context->lexAfterType = true; return(FLOAT_TYPE); }
-"int"          { context->lexAfterType = true; return(INT_TYPE); }
+"float"        { return(FLOAT_TYPE); }
+"int"          { return(INT_TYPE); }
 "uint"         { return ES2_identifier_ES3_keyword(context, UINT_TYPE); }
-"void"         { context->lexAfterType = true; return(VOID_TYPE); }
-"bool"         { context->lexAfterType = true; return(BOOL_TYPE); }
+"void"         { return(VOID_TYPE); }
+"bool"         { return(BOOL_TYPE); }
 "true"         { yylval->lex.b = true;  return(BOOLCONSTANT); }
 "false"        { yylval->lex.b = false; return(BOOLCONSTANT); }
 
 "discard"      { return(DISCARD); }
 "return"       { return(RETURN); }
 
-"mat2"         { context->lexAfterType = true; return(MATRIX2); }
-"mat3"         { context->lexAfterType = true; return(MATRIX3); }
-"mat4"         { context->lexAfterType = true; return(MATRIX4); }
+"mat2"         { return(MATRIX2); }
+"mat3"         { return(MATRIX3); }
+"mat4"         { return(MATRIX4); }
 
 "mat2x2"       { return ES2_identifier_ES3_keyword(context, MATRIX2); }
 "mat3x3"       { return ES2_identifier_ES3_keyword(context, MATRIX3); }
@@ -166,38 +166,38 @@ O           [0-7]
 "mat3x4"       { return ES2_identifier_ES3_keyword(context, MATRIX3x4); }
 "mat4x3"       { return ES2_identifier_ES3_keyword(context, MATRIX4x3); }
 
-"vec2"         { context->lexAfterType = true; return (VEC2); }
-"vec3"         { context->lexAfterType = true; return (VEC3); }
-"vec4"         { context->lexAfterType = true; return (VEC4); }
-"ivec2"        { context->lexAfterType = true; return (IVEC2); }
-"ivec3"        { context->lexAfterType = true; return (IVEC3); }
-"ivec4"        { context->lexAfterType = true; return (IVEC4); }
+"vec2"         { return (VEC2); }
+"vec3"         { return (VEC3); }
+"vec4"         { return (VEC4); }
+"ivec2"        { return (IVEC2); }
+"ivec3"        { return (IVEC3); }
+"ivec4"        { return (IVEC4); }
 "uvec2"        { return ES2_identifier_ES3_keyword(context, UVEC2); }
 "uvec3"        { return ES2_identifier_ES3_keyword(context, UVEC3); }
 "uvec4"        { return ES2_identifier_ES3_keyword(context, UVEC4); }
-"bvec2"        { context->lexAfterType = true; return (BVEC2); }
-"bvec3"        { context->lexAfterType = true; return (BVEC3); }
-"bvec4"        { context->lexAfterType = true; return (BVEC4); }
+"bvec2"        { return (BVEC2); }
+"bvec3"        { return (BVEC3); }
+"bvec4"        { return (BVEC4); }
 
-"sampler2D"          { context->lexAfterType = true; return SAMPLER2D; }
-"samplerCube"        { context->lexAfterType = true; return SAMPLERCUBE; }
-"samplerExternalOES" { context->lexAfterType = true; return SAMPLER_EXTERNAL_OES; }
-"sampler3D"          { context->lexAfterType = true; return SAMPLER3D; }
+"sampler2D"          { return SAMPLER2D; }
+"samplerCube"        { return SAMPLERCUBE; }
+"samplerExternalOES" { return SAMPLER_EXTERNAL_OES; }
+"sampler3D"          { return SAMPLER3D; }
 "sampler3DRect"      { return ES2_reserved_ES3_keyword(context, SAMPLER3DRECT); }
-"sampler2DArray"     { return  ES2_identifier_ES3_keyword(context, SAMPLER2DARRAY); }
-"isampler2D"         { return  ES2_identifier_ES3_keyword(context, ISAMPLER2D); }
-"isampler3D"         { return  ES2_identifier_ES3_keyword(context, ISAMPLER3D); }
-"isamplerCube"       { return  ES2_identifier_ES3_keyword(context, ISAMPLERCUBE); }
-"isampler2DArray"    { return  ES2_identifier_ES3_keyword(context, ISAMPLER2DARRAY); }
-"usampler2D"         { return  ES2_identifier_ES3_keyword(context, USAMPLER2D); }
-"usampler3D"         { return  ES2_identifier_ES3_keyword(context, USAMPLER3D); }
-"usamplerCube"       { return  ES2_identifier_ES3_keyword(context, USAMPLERCUBE); }
-"usampler2DArray"    { return  ES2_identifier_ES3_keyword(context, USAMPLER2DARRAY); }
+"sampler2DArray"     { return ES2_identifier_ES3_keyword(context, SAMPLER2DARRAY); }
+"isampler2D"         { return ES2_identifier_ES3_keyword(context, ISAMPLER2D); }
+"isampler3D"         { return ES2_identifier_ES3_keyword(context, ISAMPLER3D); }
+"isamplerCube"       { return ES2_identifier_ES3_keyword(context, ISAMPLERCUBE); }
+"isampler2DArray"    { return ES2_identifier_ES3_keyword(context, ISAMPLER2DARRAY); }
+"usampler2D"         { return ES2_identifier_ES3_keyword(context, USAMPLER2D); }
+"usampler3D"         { return ES2_identifier_ES3_keyword(context, USAMPLER3D); }
+"usamplerCube"       { return ES2_identifier_ES3_keyword(context, USAMPLERCUBE); }
+"usampler2DArray"    { return ES2_identifier_ES3_keyword(context, USAMPLER2DARRAY); }
 "sampler2DShadow"    { return ES2_reserved_ES3_keyword(context, SAMPLER2DSHADOW); }
-"samplerCubeShadow"  { return  ES2_identifier_ES3_keyword(context, SAMPLERCUBESHADOW); }
-"sampler2DArrayShadow" { return  ES2_identifier_ES3_keyword(context, SAMPLER2DARRAYSHADOW); }
+"samplerCubeShadow"  { return ES2_identifier_ES3_keyword(context, SAMPLERCUBESHADOW); }
+"sampler2DArrayShadow" { return ES2_identifier_ES3_keyword(context, SAMPLER2DARRAYSHADOW); }
 
-"struct"       { context->lexAfterType = true; return(STRUCT); }
+"struct"       { return(STRUCT); }
 
 "layout"  { return ES2_identifier_ES3_keyword(context, LAYOUT); }
 
@@ -352,36 +352,36 @@ O           [0-7]
 {D}+"."{D}*({E})?[fF] { return floatsuffix_check(context); }
 "."{D}+({E})?[fF]     { return floatsuffix_check(context); }
 
-"+="            {  return(ADD_ASSIGN); }
-"-="            {  return(SUB_ASSIGN); }
-"*="            {  return(MUL_ASSIGN); }
-"/="            {  return(DIV_ASSIGN); }
-"%="            {  return(MOD_ASSIGN); }
-"<<="           {  return(LEFT_ASSIGN); }
-">>="           {  return(RIGHT_ASSIGN); }
-"&="            {  return(AND_ASSIGN); }
-"^="            {  return(XOR_ASSIGN); }
-"|="            {  return(OR_ASSIGN); }
+"+="            { return(ADD_ASSIGN); }
+"-="            { return(SUB_ASSIGN); }
+"*="            { return(MUL_ASSIGN); }
+"/="            { return(DIV_ASSIGN); }
+"%="            { return(MOD_ASSIGN); }
+"<<="           { return(LEFT_ASSIGN); }
+">>="           { return(RIGHT_ASSIGN); }
+"&="            { return(AND_ASSIGN); }
+"^="            { return(XOR_ASSIGN); }
+"|="            { return(OR_ASSIGN); }
 
-"++"            {  return(INC_OP); }
-"--"            {  return(DEC_OP); }
-"&&"            {  return(AND_OP); }
-"||"            {  return(OR_OP); }
-"^^"            {  return(XOR_OP); }
-"<="            {  return(LE_OP); }
-">="            {  return(GE_OP); }
-"=="            {  return(EQ_OP); }
-"!="            {  return(NE_OP); }
-"<<"            {  return(LEFT_OP); }
-">>"            {  return(RIGHT_OP); }
-";"             { context->lexAfterType = false; return(SEMICOLON); }
-("{"|"<%")      { context->lexAfterType = false; return(LEFT_BRACE); }
+"++"            { return(INC_OP); }
+"--"            { return(DEC_OP); }
+"&&"            { return(AND_OP); }
+"||"            { return(OR_OP); }
+"^^"            { return(XOR_OP); }
+"<="            { return(LE_OP); }
+">="            { return(GE_OP); }
+"=="            { return(EQ_OP); }
+"!="            { return(NE_OP); }
+"<<"            { return(LEFT_OP); }
+">>"            { return(RIGHT_OP); }
+";"             { return(SEMICOLON); }
+("{"|"<%")      { return(LEFT_BRACE); }
 ("}"|"%>")      { return(RIGHT_BRACE); }
-","             { if (context->inTypeParen) context->lexAfterType = false; return(COMMA); }
+","             { return(COMMA); }
 ":"             { return(COLON); }
-"="             { context->lexAfterType = false; return(EQUAL); }
-"("             { context->lexAfterType = false; context->inTypeParen = true; return(LEFT_PAREN); }
-")"             { context->inTypeParen = false; return(RIGHT_PAREN); }
+"="             { return(EQUAL); }
+"("             { return(LEFT_PAREN); }
+")"             { return(RIGHT_PAREN); }
 ("["|"<:")      { return(LEFT_BRACKET); }
 ("]"|":>")      { return(RIGHT_BRACKET); }
 "."             { BEGIN(FIELDS);  return(DOT); }
@@ -433,12 +433,10 @@ int check_type(yyscan_t yyscanner) {
     
     int token = IDENTIFIER;
     TSymbol* symbol = yyextra->symbolTable.find(yytext, yyextra->getShaderVersion());
-    if (yyextra->lexAfterType == false && symbol && symbol->isVariable()) {
+    if (symbol && symbol->isVariable()) {
         TVariable* variable = static_cast<TVariable*>(symbol);
-        if (variable->isUserType()) {
-            yyextra->lexAfterType = true;
+        if (variable->isUserType())
             token = TYPE_NAME;
-        }
     }
     yylval->lex.symbol = symbol;
     return token;

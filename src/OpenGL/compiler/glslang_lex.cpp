@@ -1,4 +1,4 @@
-#line 17 "./glslang.l"
+#line 25 "./glslang.l"
 // Copyright 2016 The SwiftShader Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@
 
 
 
-#line 25 "./glslang_lex.cpp"
+#line 33 "./glslang_lex.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -1546,11 +1546,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return(FLOAT_TYPE); }
+{ return(FLOAT_TYPE); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return(INT_TYPE); }
+{ return(INT_TYPE); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
@@ -1558,11 +1558,11 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return(VOID_TYPE); }
+{ return(VOID_TYPE); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return(BOOL_TYPE); }
+{ return(BOOL_TYPE); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
@@ -1582,15 +1582,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return(MATRIX2); }
+{ return(MATRIX2); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return(MATRIX3); }
+{ return(MATRIX3); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return(MATRIX4); }
+{ return(MATRIX4); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
@@ -1630,27 +1630,27 @@ YY_RULE_SETUP
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return (VEC2); }
+{ return (VEC2); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return (VEC3); }
+{ return (VEC3); }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return (VEC4); }
+{ return (VEC4); }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return (IVEC2); }
+{ return (IVEC2); }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return (IVEC3); }
+{ return (IVEC3); }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return (IVEC4); }
+{ return (IVEC4); }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
@@ -1666,31 +1666,31 @@ YY_RULE_SETUP
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return (BVEC2); }
+{ return (BVEC2); }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return (BVEC3); }
+{ return (BVEC3); }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return (BVEC4); }
+{ return (BVEC4); }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return SAMPLER2D; }
+{ return SAMPLER2D; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return SAMPLERCUBE; }
+{ return SAMPLERCUBE; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return SAMPLER_EXTERNAL_OES; }
+{ return SAMPLER_EXTERNAL_OES; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return SAMPLER3D; }
+{ return SAMPLER3D; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
@@ -1698,39 +1698,39 @@ YY_RULE_SETUP
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-{ return  ES2_identifier_ES3_keyword(context, SAMPLER2DARRAY); }
+{ return ES2_identifier_ES3_keyword(context, SAMPLER2DARRAY); }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-{ return  ES2_identifier_ES3_keyword(context, ISAMPLER2D); }
+{ return ES2_identifier_ES3_keyword(context, ISAMPLER2D); }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-{ return  ES2_identifier_ES3_keyword(context, ISAMPLER3D); }
+{ return ES2_identifier_ES3_keyword(context, ISAMPLER3D); }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-{ return  ES2_identifier_ES3_keyword(context, ISAMPLERCUBE); }
+{ return ES2_identifier_ES3_keyword(context, ISAMPLERCUBE); }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-{ return  ES2_identifier_ES3_keyword(context, ISAMPLER2DARRAY); }
+{ return ES2_identifier_ES3_keyword(context, ISAMPLER2DARRAY); }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-{ return  ES2_identifier_ES3_keyword(context, USAMPLER2D); }
+{ return ES2_identifier_ES3_keyword(context, USAMPLER2D); }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-{ return  ES2_identifier_ES3_keyword(context, USAMPLER3D); }
+{ return ES2_identifier_ES3_keyword(context, USAMPLER3D); }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-{ return  ES2_identifier_ES3_keyword(context, USAMPLERCUBE); }
+{ return ES2_identifier_ES3_keyword(context, USAMPLERCUBE); }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-{ return  ES2_identifier_ES3_keyword(context, USAMPLER2DARRAY); }
+{ return ES2_identifier_ES3_keyword(context, USAMPLER2DARRAY); }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
@@ -1738,15 +1738,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-{ return  ES2_identifier_ES3_keyword(context, SAMPLERCUBESHADOW); }
+{ return ES2_identifier_ES3_keyword(context, SAMPLERCUBESHADOW); }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-{ return  ES2_identifier_ES3_keyword(context, SAMPLER2DARRAYSHADOW); }
+{ return ES2_identifier_ES3_keyword(context, SAMPLER2DARRAYSHADOW); }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-{ context->lexAfterType = true; return(STRUCT); }
+{ return(STRUCT); }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
@@ -1934,95 +1934,95 @@ YY_RULE_SETUP
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-{  return(ADD_ASSIGN); }
+{ return(ADD_ASSIGN); }
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-{  return(SUB_ASSIGN); }
+{ return(SUB_ASSIGN); }
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
-{  return(MUL_ASSIGN); }
+{ return(MUL_ASSIGN); }
 	YY_BREAK
 case 198:
 YY_RULE_SETUP
-{  return(DIV_ASSIGN); }
+{ return(DIV_ASSIGN); }
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
-{  return(MOD_ASSIGN); }
+{ return(MOD_ASSIGN); }
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-{  return(LEFT_ASSIGN); }
+{ return(LEFT_ASSIGN); }
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-{  return(RIGHT_ASSIGN); }
+{ return(RIGHT_ASSIGN); }
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-{  return(AND_ASSIGN); }
+{ return(AND_ASSIGN); }
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-{  return(XOR_ASSIGN); }
+{ return(XOR_ASSIGN); }
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
-{  return(OR_ASSIGN); }
+{ return(OR_ASSIGN); }
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
-{  return(INC_OP); }
+{ return(INC_OP); }
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-{  return(DEC_OP); }
+{ return(DEC_OP); }
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-{  return(AND_OP); }
+{ return(AND_OP); }
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-{  return(OR_OP); }
+{ return(OR_OP); }
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-{  return(XOR_OP); }
+{ return(XOR_OP); }
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-{  return(LE_OP); }
+{ return(LE_OP); }
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-{  return(GE_OP); }
+{ return(GE_OP); }
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
-{  return(EQ_OP); }
+{ return(EQ_OP); }
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-{  return(NE_OP); }
+{ return(NE_OP); }
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-{  return(LEFT_OP); }
+{ return(LEFT_OP); }
 	YY_BREAK
 case 215:
 YY_RULE_SETUP
-{  return(RIGHT_OP); }
+{ return(RIGHT_OP); }
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
-{ context->lexAfterType = false; return(SEMICOLON); }
+{ return(SEMICOLON); }
 	YY_BREAK
 case 217:
 YY_RULE_SETUP
-{ context->lexAfterType = false; return(LEFT_BRACE); }
+{ return(LEFT_BRACE); }
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
@@ -2030,7 +2030,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
-{ if (context->inTypeParen) context->lexAfterType = false; return(COMMA); }
+{ return(COMMA); }
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
@@ -2038,15 +2038,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
-{ context->lexAfterType = false; return(EQUAL); }
+{ return(EQUAL); }
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-{ context->lexAfterType = false; context->inTypeParen = true; return(LEFT_PAREN); }
+{ return(LEFT_PAREN); }
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-{ context->inTypeParen = false; return(RIGHT_PAREN); }
+{ return(RIGHT_PAREN); }
 	YY_BREAK
 case 224:
 YY_RULE_SETUP
@@ -3363,12 +3363,10 @@ int check_type(yyscan_t yyscanner) {
     
     int token = IDENTIFIER;
     TSymbol* symbol = yyextra->symbolTable.find(yytext, yyextra->getShaderVersion());
-    if (yyextra->lexAfterType == false && symbol && symbol->isVariable()) {
+    if (symbol && symbol->isVariable()) {
         TVariable* variable = static_cast<TVariable*>(symbol);
-        if (variable->isUserType()) {
-            yyextra->lexAfterType = true;
+        if (variable->isUserType())
             token = TYPE_NAME;
-        }
     }
     yylval->lex.symbol = symbol;
     return token;

@@ -183,6 +183,7 @@ extern void yyerror(YYLTYPE* lloc, TParseContext* context, void* scanner, const 
 %token <lex> COMMA COLON EQUAL SEMICOLON BANG DASH TILDE PLUS STAR SLASH PERCENT
 %token <lex> LEFT_ANGLE RIGHT_ANGLE VERTICAL_BAR CARET AMPERSAND QUESTION
 
+%type <lex> identifier
 %type <interm> assignment_operator unary_operator
 %type <interm.intermTypedNode> variable_identifier primary_expression postfix_expression
 %type <interm.intermTypedNode> expression integer_expression assignment_expression
@@ -224,6 +225,10 @@ extern void yyerror(YYLTYPE* lloc, TParseContext* context, void* scanner, const 
 
 %start translation_unit
 %%
+
+identifier
+    : IDENTIFIER
+    | TYPE_NAME
 
 variable_identifier
     : IDENTIFIER {
@@ -709,7 +714,7 @@ function_header
 
 parameter_declarator
     // Type + name
-    : type_specifier IDENTIFIER {
+    : type_specifier identifier {
         if ($1.type == EbtVoid) {
             context->error(@2, "illegal use of type 'void'", $2.string->c_str());
             context->recover();
@@ -719,7 +724,7 @@ parameter_declarator
         TParameter param = {$2.string, new TType($1)};
         $$.param = param;
     }
-    | type_specifier IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET {
+    | type_specifier identifier LEFT_BRACKET constant_expression RIGHT_BRACKET {
         // Check that we can make an array out of this type
         if (context->arrayTypeErrorCheck(@3, $1))
             context->recover();
@@ -802,25 +807,25 @@ init_declarator_list
     : single_declaration {
         $$ = $1;
     }
-    | init_declarator_list COMMA IDENTIFIER {
+    | init_declarator_list COMMA identifier {
         $$ = $1;
         $$.intermAggregate = context->parseDeclarator($$.type, $1.intermAggregate, @3, *$3.string);
     }
-    | init_declarator_list COMMA IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET {
+    | init_declarator_list COMMA identifier LEFT_BRACKET constant_expression RIGHT_BRACKET {
         $$ = $1;
         $$.intermAggregate = context->parseArrayDeclarator($$.type, $1.intermAggregate, @3, *$3.string, @4, $5);
     }
-    | init_declarator_list COMMA IDENTIFIER LEFT_BRACKET RIGHT_BRACKET EQUAL initializer {
+    | init_declarator_list COMMA identifier LEFT_BRACKET RIGHT_BRACKET EQUAL initializer {
         ES3_ONLY("[]", @3, "implicitly sized array");
         $$ = $1;
         $$.intermAggregate = context->parseArrayInitDeclarator($$.type, $1.intermAggregate, @3, *$3.string, @4, nullptr, @6, $7);
     }
-    | init_declarator_list COMMA IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET EQUAL initializer {
+    | init_declarator_list COMMA identifier LEFT_BRACKET constant_expression RIGHT_BRACKET EQUAL initializer {
         ES3_ONLY("=", @7, "first-class arrays (array initializer)");
         $$ = $1;
         $$.intermAggregate = context->parseArrayInitDeclarator($$.type, $1.intermAggregate, @3, *$3.string, @4, $5, @7, $8);
     }
-    | init_declarator_list COMMA IDENTIFIER EQUAL initializer {
+    | init_declarator_list COMMA identifier EQUAL initializer {
         $$ = $1;
         $$.intermAggregate = context->parseInitDeclarator($$.type, $1.intermAggregate, @3, *$3.string, @4, $5);
     }
@@ -831,25 +836,25 @@ single_declaration
         $$.type = $1;
         $$.intermAggregate = context->parseSingleDeclaration($$.type, @1, "");
     }
-    | fully_specified_type IDENTIFIER {
+    | fully_specified_type identifier {
         $$.type = $1;
         $$.intermAggregate = context->parseSingleDeclaration($$.type, @2, *$2.string);
     }
-    | fully_specified_type IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET {
+    | fully_specified_type identifier LEFT_BRACKET constant_expression RIGHT_BRACKET {
         $$.type = $1;
         $$.intermAggregate = context->parseSingleArrayDeclaration($$.type, @2, *$2.string, @3, $4);
     }
-    | fully_specified_type IDENTIFIER LEFT_BRACKET RIGHT_BRACKET EQUAL initializer {
+    | fully_specified_type identifier LEFT_BRACKET RIGHT_BRACKET EQUAL initializer {
         ES3_ONLY("[]", @3, "implicitly sized array");
         $$.type = $1;
         $$.intermAggregate = context->parseSingleArrayInitDeclaration($$.type, @2, *$2.string, @3, nullptr, @5, $6);
     }
-    | fully_specified_type IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET EQUAL initializer {
+    | fully_specified_type identifier LEFT_BRACKET constant_expression RIGHT_BRACKET EQUAL initializer {
         ES3_ONLY("=", @6, "first-class arrays (array initializer)");
         $$.type = $1;
         $$.intermAggregate = context->parseSingleArrayInitDeclaration($$.type, @2, *$2.string, @3, $4, @6, $7);
     }
-    | fully_specified_type IDENTIFIER EQUAL initializer {
+    | fully_specified_type identifier EQUAL initializer {
         $$.type = $1;
         $$.intermAggregate = context->parseSingleInitDeclaration($$.type, @2, *$2.string, @3, $4);
     }
@@ -1313,7 +1318,7 @@ type_specifier_nonarray
     ;
 
 struct_specifier
-    : STRUCT IDENTIFIER LEFT_BRACE { if (context->enterStructDeclaration(@2, *$2.string)) context->recover(); } struct_declaration_list RIGHT_BRACE {
+    : STRUCT identifier LEFT_BRACE { if (context->enterStructDeclaration(@2, *$2.string)) context->recover(); } struct_declaration_list RIGHT_BRACE {
         $$ = context->addStructure(@1, @2, $2.string, $5);
     }
     | STRUCT LEFT_BRACE { if (context->enterStructDeclaration(@2, *$2.string)) context->recover(); } struct_declaration_list RIGHT_BRACE {
@@ -1363,14 +1368,14 @@ struct_declarator_list
     ;
 
 struct_declarator
-    : IDENTIFIER {
+    : identifier {
         if (context->reservedErrorCheck(@1, *$1.string))
             context->recover();
 
         TType* type = new TType(EbtVoid, EbpUndefined);
         $$ = new TField(type, $1.string, @1);
     }
-    | IDENTIFIER LEFT_BRACKET constant_expression RIGHT_BRACKET {
+    | identifier LEFT_BRACKET constant_expression RIGHT_BRACKET {
         if (context->reservedErrorCheck(@1, *$1.string))
             context->recover();
 
@@ -1500,7 +1505,7 @@ condition
         if (context->boolErrorCheck($1->getLine(), $1))
             context->recover();
     }
-    | fully_specified_type IDENTIFIER EQUAL initializer {
+    | fully_specified_type identifier EQUAL initializer {
         TIntermNode *intermNode;
         if (context->boolErrorCheck(@2, $1))
             context->recover();
