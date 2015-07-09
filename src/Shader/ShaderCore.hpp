@@ -18,69 +18,35 @@
 
 namespace sw
 {
-	class Vector4s
+	template<typename T> struct Traits {};
+	template<> struct Traits<Short4> { typedef unsigned short type; };
+	template<> struct Traits<Int4> { typedef int type; };
+	template<> struct Traits<UInt4> { typedef unsigned int type; };
+	template<> struct Traits<Float4> { typedef float type; };
+
+	template<typename T>
+	class VectorBase
 	{
 	public:
-		Vector4s();
-		Vector4s(unsigned short x, unsigned short y, unsigned short z, unsigned short w);
-		Vector4s(const Vector4s &rhs);
+		typedef typename Traits<T>::type baseType;
 
-		Short4 &operator[](int i);
-		Vector4s &operator=(const Vector4s &rhs);
+		VectorBase();
+		VectorBase(baseType x, baseType y, baseType z, baseType w);
+		VectorBase(const VectorBase<T> &rhs);
 
-		Short4 x;
-		Short4 y;
-		Short4 z;
-		Short4 w;
+		inline T &operator[](int i);
+		inline VectorBase &operator=(const VectorBase<T> &rhs);
+
+		T x;
+		T y;
+		T z;
+		T w;
 	};
 
-	class Vector4i
-	{
-	public:
-		Vector4i();
-		Vector4i(int x, int y, int z, int w);
-		Vector4i(const Vector4i &rhs);
-
-		Int4 &operator[](int i);
-		Vector4i &operator=(const Vector4i &rhs);
-
-		Int4 x;
-		Int4 y;
-		Int4 z;
-		Int4 w;
-	};
-
-	class Vector4u
-	{
-	public:
-		Vector4u();
-		Vector4u(unsigned int x, unsigned int y, unsigned int z, unsigned int w);
-		Vector4u(const Vector4u &rhs);
-
-		UInt4 &operator[](int i);
-		Vector4u &operator=(const Vector4u &rhs);
-
-		UInt4 x;
-		UInt4 y;
-		UInt4 z;
-		UInt4 w;
-	};
-
-	class Vector4f
-	{
-	public:
-		Vector4f();
-		Vector4f(float x, float y, float z, float w);
-		Vector4f(const Vector4f &rhs);
-
-		Float4 &operator[](int i);
-		Vector4f &operator=(const Vector4f &rhs);
-		
-		Float4 x;
-		Float4 y;
-		Float4 z;
-		Float4 w;
-	};
+	typedef VectorBase<Short4> Vector4s;
+	typedef VectorBase<Int4> Vector4i;
+	typedef VectorBase<UInt4> Vector4u;
+	typedef VectorBase<Float4> Vector4f;
 
 	Float4 exponential2(RValue<Float4> x, bool pp = false);
 	Float4 logarithm2(RValue<Float4> x, bool abs, bool pp = false);
@@ -123,14 +89,15 @@ namespace sw
 	void transpose2x4h(Float4 &row0, Float4 &row1, Float4 &row2, Float4 &row3);
 	void transpose4xN(Float4 &row0, Float4 &row1, Float4 &row2, Float4 &row3, int N);
 
-	class Register
+	template<typename T>
+	class RegisterBase
 	{
 	public:
-		Register(const Reference<Float4> &x, const Reference<Float4> &y, const Reference<Float4> &z, const Reference<Float4> &w) : x(x), y(y), z(z), w(w)
+		RegisterBase(const Reference<T> &x, const Reference<T> &y, const Reference<T> &z, const Reference<T> &w) : x(x), y(y), z(z), w(w)
 		{
 		}
 
-		Reference<Float4> &operator[](int i)
+		Reference<T> &operator[](int i)
 		{
 			switch(i)
 			{
@@ -142,7 +109,7 @@ namespace sw
 			}
 		}
 
-		Register &operator=(const Register &rhs)
+		RegisterBase<T> &operator=(const RegisterBase<T> &rhs)
 		{
 			x = rhs.x;
 			y = rhs.y;
@@ -152,7 +119,7 @@ namespace sw
 			return *this;
 		}
 
-		Register &operator=(const Vector4f &rhs)
+		RegisterBase<T> &operator=(const VectorBase<T> &rhs)
 		{
 			x = rhs.x;
 			y = rhs.y;
@@ -162,9 +129,9 @@ namespace sw
 			return *this;
 		}
 
-		operator Vector4f()
+		operator VectorBase<T>()
 		{
-			Vector4f v;
+			VectorBase<T> v;
 
 			v.x = x;
 			v.y = y;
@@ -174,35 +141,39 @@ namespace sw
 			return v;
 		}
 
-		Reference<Float4> x;
-		Reference<Float4> y;
-		Reference<Float4> z;
-		Reference<Float4> w;
+		Reference<T> x;
+		Reference<T> y;
+		Reference<T> z;
+		Reference<T> w;
 	};
 
-	template<int S, bool D = false>
-	class RegisterArray
+	typedef RegisterBase<Int4> RegisterI;
+	typedef RegisterBase<UInt4> RegisterU;
+	typedef RegisterBase<Float4> Register;
+
+	template<int S, typename T>
+	class RegisterArrayBase
 	{
 	public:
-		RegisterArray(bool dynamic = D) : dynamic(dynamic)
+		RegisterArrayBase(bool dynamic = false) : dynamic(dynamic)
 		{
 			if(dynamic)
 			{
-				x = new Array<Float4>(S);
-				y = new Array<Float4>(S);
-				z = new Array<Float4>(S);
-				w = new Array<Float4>(S);
+				x = new Array<T>(S);
+				y = new Array<T>(S);
+				z = new Array<T>(S);
+				w = new Array<T>(S);
 			}
 			else
 			{
-				x = new Array<Float4>[S];
-				y = new Array<Float4>[S];
-				z = new Array<Float4>[S];
-				w = new Array<Float4>[S];
+				x = new Array<T>[S];
+				y = new Array<T>[S];
+				z = new Array<T>[S];
+				w = new Array<T>[S];
 			}
 		}
 
-		~RegisterArray()
+		~RegisterArrayBase()
 		{
 			delete[] x;
 			delete[] y;
@@ -210,32 +181,36 @@ namespace sw
 			delete[] w;
 		}
 
-		Register operator[](int i)
+		RegisterBase<T> operator[](int i)
 		{
 			if(dynamic)
 			{
-				return Register(x[0][i], y[0][i], z[0][i], w[0][i]);
+				return RegisterBase<T>(x[0][i], y[0][i], z[0][i], w[0][i]);
 			}
 			else
 			{
-				return Register(x[i][0], y[i][0], z[i][0], w[i][0]);
+				return RegisterBase<T>(x[i][0], y[i][0], z[i][0], w[i][0]);
 			}
 		}
 
-		Register operator[](RValue<Int> i)
+		RegisterBase<T> operator[](RValue<Int> i)
 		{
 			ASSERT(dynamic);
 
-			return Register(x[0][i], y[0][i], z[0][i], w[0][i]);
+			return RegisterBase<T>(x[0][i], y[0][i], z[0][i], w[0][i]);
 		}
 
 	private:
 		const bool dynamic;
-		Array<Float4> *x;
-		Array<Float4> *y;
-		Array<Float4> *z;
-		Array<Float4> *w;
+		Array<T> *x;
+		Array<T> *y;
+		Array<T> *z;
+		Array<T> *w;
 	};
+
+	template <int S> using RegisterArrayI = RegisterArrayBase<S, Int4>;
+	template <int S> using RegisterArrayU = RegisterArrayBase<S, UInt4>;
+	template <int S> using RegisterArray = RegisterArrayBase<S, Float4>;
 
 	class ShaderCore
 	{

@@ -21,70 +21,26 @@ namespace sw
 	extern TranscendentalPrecision rcpPrecision;
 	extern TranscendentalPrecision rsqPrecision;
 
-	Vector4s::Vector4s()
+	template class VectorBase<Short4>;
+	template class VectorBase<Int4>;
+	template class VectorBase<UInt4>;
+	template class VectorBase<Float4>;
+
+	template<typename T> VectorBase<T>::VectorBase()
 	{
 	}
 
-	Vector4s::Vector4s(unsigned short x, unsigned short y, unsigned short z, unsigned short w)
-	{
-		this->x = Short4(x);
-		this->y = Short4(y);
-		this->z = Short4(z);
-		this->w = Short4(w);
-	}
-
-	Vector4s::Vector4s(const Vector4s &rhs)
-	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
-	}
-
-	Vector4s &Vector4s::operator=(const Vector4s &rhs)
-	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
-
-		return *this;
-	}
-
-	Short4 &Vector4s::operator[](int i)
-	{
-		switch(i)
-		{
-		case 0: return x;
-		case 1: return y;
-		case 2: return z;
-		case 3: return w;
-		}
-
-		return x;
-	}
-
-	Vector4i::Vector4i()
+	template<typename T> VectorBase<T>::VectorBase(baseType x, baseType y, baseType z, baseType w) :
+		x(x), y(y), z(z), w(w)
 	{
 	}
 
-	Vector4i::Vector4i(int x, int y, int z, int w)
+	template<typename T> VectorBase<T>::VectorBase(const VectorBase<T> &rhs) :
+		x(rhs.x), y(rhs.y), z(rhs.z), w(rhs.w)
 	{
-		this->x = Int4(x);
-		this->y = Int4(y);
-		this->z = Int4(z);
-		this->w = Int4(w);
 	}
 
-	Vector4i::Vector4i(const Vector4i &rhs)
-	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
-	}
-
-	Vector4i &Vector4i::operator=(const Vector4i &rhs)
+	template<typename T> VectorBase<T> &VectorBase<T>::operator=(const VectorBase<T> &rhs)
 	{
 		x = rhs.x;
 		y = rhs.y;
@@ -94,93 +50,7 @@ namespace sw
 		return *this;
 	}
 
-	Int4 &Vector4i::operator[](int i)
-	{
-		switch(i)
-		{
-		case 0: return x;
-		case 1: return y;
-		case 2: return z;
-		case 3: return w;
-		}
-
-		return x;
-	}
-
-	Vector4u::Vector4u()
-	{
-	}
-
-	Vector4u::Vector4u(unsigned int x, unsigned int y, unsigned int z, unsigned int w)
-	{
-		this->x = UInt4(x);
-		this->y = UInt4(y);
-		this->z = UInt4(z);
-		this->w = UInt4(w);
-	}
-
-	Vector4u::Vector4u(const Vector4u &rhs)
-	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
-	}
-
-	Vector4u &Vector4u::operator=(const Vector4u &rhs)
-	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
-
-		return *this;
-	}
-
-	UInt4 &Vector4u::operator[](int i)
-	{
-		switch(i)
-		{
-		case 0: return x;
-		case 1: return y;
-		case 2: return z;
-		case 3: return w;
-		}
-
-		return x;
-	}
-
-	Vector4f::Vector4f()
-	{
-	}
-
-	Vector4f::Vector4f(float x, float y, float z, float w)
-	{
-		this->x = Float4(x);
-		this->y = Float4(y);
-		this->z = Float4(z);
-		this->w = Float4(w);
-	}
-
-	Vector4f::Vector4f(const Vector4f &rhs)
-	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
-	}
-
-	Vector4f &Vector4f::operator=(const Vector4f &rhs)
-	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
-
-		return *this;
-	}
-
-	Float4 &Vector4f::operator[](int i)
+	template<typename T> T &VectorBase<T>::operator[](int i)
 	{
 		switch(i)
 		{
