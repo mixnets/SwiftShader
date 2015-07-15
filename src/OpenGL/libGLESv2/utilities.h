@@ -32,6 +32,8 @@ namespace es2
 	size_t UniformTypeSize(GLenum type);
 	int VariableRowCount(GLenum type);
 	int VariableColumnCount(GLenum type);
+	int VariableRegisterCount(GLenum type);
+	int VariableRegisterSize(GLenum type);
 
 	int AllocateFirstFreeBits(unsigned int *bits, unsigned int allocationSize, unsigned int bitsSize);
 
