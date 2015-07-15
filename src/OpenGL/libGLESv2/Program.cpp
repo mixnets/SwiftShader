@@ -1255,7 +1255,7 @@ namespace es2
 		// Link attributes that have a binding location
 		for(glsl::ActiveAttributes::iterator attribute = vertexShader->activeAttributes.begin(); attribute != vertexShader->activeAttributes.end(); ++attribute)
 		{
-			int location = getAttributeBinding(attribute->name);
+			int location = attribute->location == -1 ? getAttributeBinding(attribute->name) : attribute->location;
 
 			if(location != -1)   // Set by glBindAttribLocation
 			{
@@ -1266,7 +1266,7 @@ namespace es2
 
 				linkedAttribute[location] = *attribute;
 
-				int rows = VariableRowCount(attribute->type);
+				int rows = VariableRegisterCount(attribute->type);
 
 				if(rows + location > MAX_VERTEX_ATTRIBS)
 				{
@@ -1284,11 +1284,11 @@ namespace es2
 		// Link attributes that don't have a binding location
 		for(glsl::ActiveAttributes::iterator attribute = vertexShader->activeAttributes.begin(); attribute != vertexShader->activeAttributes.end(); ++attribute)
 		{
-			int location = getAttributeBinding(attribute->name);
+			int location = attribute->location == -1 ? getAttributeBinding(attribute->name) : attribute->location;
 
 			if(location == -1)   // Not set by glBindAttribLocation
 			{
-				int rows = VariableRowCount(attribute->type);
+				int rows = VariableRegisterCount(attribute->type);
 				int availableIndex = AllocateFirstFreeBits(&usedLocations, rows, MAX_VERTEX_ATTRIBS);
 
 				if(availableIndex == -1 || availableIndex + rows > MAX_VERTEX_ATTRIBS)
@@ -1304,7 +1304,7 @@ namespace es2
 		for(int attributeIndex = 0; attributeIndex < MAX_VERTEX_ATTRIBS; )
 		{
 			int index = vertexShader->getSemanticIndex(linkedAttribute[attributeIndex].name);
-			int rows = std::max(VariableRowCount(linkedAttribute[attributeIndex].type), 1);
+			int rows = std::max(VariableRegisterCount(linkedAttribute[attributeIndex].type), 1);
 
 			for(int r = 0; r < rows; r++)
 			{

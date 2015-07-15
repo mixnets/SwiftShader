@@ -91,11 +91,12 @@ namespace glsl
 		registerIndex = 0;
 	}
 
-	Attribute::Attribute(GLenum type, const std::string &name, int arraySize, int registerIndex)
+	Attribute::Attribute(GLenum type, const std::string &name, int arraySize, int location, int registerIndex)
 	{
 		this->type = type;
 		this->name = name;
 		this->arraySize = arraySize;
+		this->location = location;
 		this->registerIndex = registerIndex;
 	}
 
@@ -964,11 +965,12 @@ namespace glsl
 			if(visit == PostVisit)
 			{
 				TIntermTyped *arg0 = arg[0]->getAsTyped();
-				const int dim = result->getNominalSize();
+				const int outCols = result->getNominalSize();
+				const int outRows = result->getSecondarySize();
 
 				if(arg0->isScalar() && arg.size() == 1)   // Construct scale matrix
 				{
-					for(int i = 0; i < dim; i++)
+					for(int i = 0; i < outCols; i++)
 					{
 						Instruction *init = emit(sw::Shader::OPCODE_MOV, result, &zero);
 						init->dst.index += i;
@@ -980,9 +982,12 @@ namespace glsl
 				}
 				else if(arg0->isMatrix())
 				{
-					for(int i = 0; i < dim; i++)
+					const int inCols = arg0->getNominalSize();
+					const int inRows = arg0->getSecondarySize();
+
+					for(int i = 0; i < outCols; i++)
 					{
-						if(dim > dim2(arg0))
+						if(i >= inCols || outRows > inRows)
 						{
 							// Initialize to identity matrix
 							Constant col((i == 0 ? 1.0f : 0.0f), (i == 1 ? 1.0f : 0.0f), (i == 2 ? 1.0f : 0.0f), (i == 3 ? 1.0f : 0.0f));
@@ -990,11 +995,11 @@ namespace glsl
 							mov->dst.index += i;
 						}
 
-						if(i < dim2(arg0))
+						if(i < inCols)
 						{
 							Instruction *mov = emitCast(result, arg0);
 							mov->dst.index += i;
-							mov->dst.mask = 0xF >> (4 - dim2(arg0));
+							mov->dst.mask = 0xF >> (4 - inRows);
 							argument(mov->src[0], arg0, i);
 						}
 					}
@@ -1018,9 +1023,9 @@ namespace glsl
 							mov->src[0].swizzle = (readSwizzle(argi, size) << (row * 2)) + 0x55 * element;
 
 							int end = row + size - element;
-							column = end >= dim ? column + 1 : column;
-							element = element + dim - row;
-							row = end >= dim ? 0 : end;
+							column = end >= outRows ? column + 1 : column;
+							element = element + outRows - row;
+							row = end >= outRows ? 0 : end;
 						}
 					}
 				}
@@ -2228,7 +2233,7 @@ namespace glsl
 				ActiveAttributes &activeAttributes = shaderObject->activeAttributes;
 
 				const char *name = symbol->getSymbol().c_str();
-				activeAttributes.push_back(Attribute(glVariableType(type), name, 0, index));
+				activeAttributes.push_back(Attribute(glVariableType(type), name, type.getArraySize(), type.getLayoutQualifier().location, index));
 			}
 		}
 
