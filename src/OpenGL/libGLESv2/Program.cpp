@@ -65,7 +65,7 @@ namespace es2
 
 	int Uniform::registerCount() const
 	{
-		return size() * VariableRowCount(type);
+		return size() * VariableRegisterCount(type);
 	}
 
 	UniformBlock::UniformBlock(const std::string &name, unsigned int elementIndex, unsigned int dataSize) :
@@ -1124,8 +1124,8 @@ namespace es2
 				{
 					int in = input->reg;
 					int out = output->reg;
-					int components = VariableColumnCount(output->type);
-					int registers = VariableRowCount(output->type) * output->size();
+					int components = VariableRegisterSize(output->type);
+					int registers = VariableRegisterCount(output->type) * output->size();
 
 					ASSERT(in >= 0);
 
@@ -1266,7 +1266,7 @@ namespace es2
 
 				linkedAttribute[location] = *attribute;
 
-				int rows = VariableRowCount(attribute->type);
+				int rows = VariableRegisterCount(attribute->type);
 
 				if(rows + location > MAX_VERTEX_ATTRIBS)
 				{
@@ -1288,7 +1288,7 @@ namespace es2
 
 			if(location == -1)   // Not set by glBindAttribLocation
 			{
-				int rows = VariableRowCount(attribute->type);
+				int rows = VariableRegisterCount(attribute->type);
 				int availableIndex = AllocateFirstFreeBits(&usedLocations, rows, MAX_VERTEX_ATTRIBS);
 
 				if(availableIndex == -1 || availableIndex + rows > MAX_VERTEX_ATTRIBS)
@@ -1304,7 +1304,7 @@ namespace es2
 		for(int attributeIndex = 0; attributeIndex < MAX_VERTEX_ATTRIBS; )
 		{
 			int index = vertexShader->getSemanticIndex(linkedAttribute[attributeIndex].name);
-			int rows = std::max(VariableRowCount(linkedAttribute[attributeIndex].type), 1);
+			int rows = std::max(VariableRegisterCount(linkedAttribute[attributeIndex].type), 1);
 
 			for(int r = 0; r < rows; r++)
 			{
