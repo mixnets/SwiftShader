@@ -383,7 +383,7 @@ void BindAttribLocation(GLuint program, GLuint index, const GLchar* name)
 
 	if(index >= es2::MAX_VERTEX_ATTRIBS)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, index);
 	}
 
 	es2::Context *context = es2::getContext();
@@ -6790,12 +6790,12 @@ void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normal
 
 	if(index >= es2::MAX_VERTEX_ATTRIBS)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, index);
 	}
 
 	if(size < 1 || size > 4)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, size);
 	}
 
 	egl::GLint clientVersion = egl::getClientVersion();

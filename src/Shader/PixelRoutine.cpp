@@ -580,10 +580,10 @@ namespace sw
 		switch(state.depthCompareMode)
 		{
 		case DEPTH_ALWAYS:
-			// Optimized
+			ASSERT(false);   // Optimized out
 			break;
 		case DEPTH_NEVER:
-			// Optimized
+			ASSERT(false);   // Optimized out
 			break;
 		case DEPTH_EQUAL:
 			zTest = CmpEQ(zValue, Z);
@@ -2301,10 +2301,10 @@ namespace sw
 		switch(blendFactorActive)
 		{
 		case BLEND_ZERO:
-			// Optimized
+			ASSERT(false);   // Optimized out
 			break;
 		case BLEND_ONE:
-			// Optimized
+			ASSERT(false);   // Optimized out
 			break;
 		case BLEND_SOURCE:
 			blendFactor.x = current.x;
@@ -2382,10 +2382,10 @@ namespace sw
 		switch(blendFactorAlphaActive)
 		{
 		case BLEND_ZERO:
-			// Optimized
+			ASSERT(false);   // Optimized out
 			break;
 		case BLEND_ONE:
-			// Optimized
+			ASSERT(false);   // Optimized out
 			break;
 		case BLEND_SOURCE:
 			blendFactor.w = current.w;
@@ -3164,10 +3164,10 @@ namespace sw
 		switch(blendFactorActive)
 		{
 		case BLEND_ZERO:
-			// Optimized
+			ASSERT(false);   // Optimized out
 			break;
 		case BLEND_ONE:
-			// Optimized
+			ASSERT(false);   // Optimized out
 			break;
 		case BLEND_SOURCE:
 			blendFactor.x = oC.x;
@@ -3235,10 +3235,10 @@ namespace sw
 		switch(blendFactorAlphaActive)
 		{
 		case BLEND_ZERO:
-			// Optimized
+			ASSERT(false);   // Optimized out
 			break;
 		case BLEND_ONE:
-			// Optimized
+			ASSERT(false);   // Optimized out
 			break;
 		case BLEND_SOURCE:
 			blendFactor.w = oC.w;
