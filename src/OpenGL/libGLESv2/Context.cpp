@@ -622,7 +622,6 @@ bool Context::isDitherEnabled() const
 
 void Context::setPrimitiveRestartFixedIndexEnabled(bool enabled)
 {
-    UNIMPLEMENTED();
     mState.primitiveRestartFixedIndexEnabled = enabled;
 }
 
@@ -2967,10 +2966,15 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsize
 	return GL_NO_ERROR;
 }
 
-// Applies the indices and element array bindings
-GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo)
+GLenum Context::computePrimitiveRestart(const void *indices, GLsizei count, GLenum type, PrimitiveRestartData* restartData)
 {
-	GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, indexInfo);
+	return mIndexDataManager->computePrimitiveRestart(type, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, restartData);
+}
+
+// Applies the indices and element array bindings
+GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum type, TranslatedIndexData *indexInfo)
+{
+	GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, indexInfo, isPrimitiveRestartFixedIndexEnabled());
 
     if(err == GL_NO_ERROR)
     {
@@ -3474,35 +3478,58 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 
     applyState(mode);
 
+	PrimitiveRestartData restartData;
+	if(isPrimitiveRestartFixedIndexEnabled())
+	{
+		GLenum err = computePrimitiveRestart(indices, count, type, &restartData);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
+	}
+	else
+	{
+		restartData.data.push_back(PrimitiveRestartData::Datum::Datum(indices, count));
+	}
+
 	for(int i = 0; i < instanceCount; ++i)
 	{
 		device->setInstanceID(i);
 
-		TranslatedIndexData indexInfo;
-		GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
-		if(err != GL_NO_ERROR)
+		for(std::vector<PrimitiveRestartData::Datum>::iterator it = restartData.data.begin(); it != restartData.data.end(); ++it)
 		{
-			return error(err);
-		}
+			es2sw::ConvertPrimitiveType(mode, it->count, type, primitiveType, primitiveCount);
+			if(primitiveCount <= 0)
+			{
+				continue;
+			}
 
-		GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
-		err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount, i);
-		if(err != GL_NO_ERROR)
-		{
-			return error(err);
-		}
+			TranslatedIndexData indexInfo;
+			GLenum err = applyIndexBuffer(it->indices, start, end, it->count, type, &indexInfo);
+			if(err != GL_NO_ERROR)
+			{
+				return error(err);
+			}
 
-		applyShaders();
-		applyTextures();
+			GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
+			err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount, i);
+			if(err != GL_NO_ERROR)
+			{
+				return error(err);
+			}
 
-		if(!getCurrentProgram()->validateSamplers(false))
-		{
-			return error(GL_INVALID_OPERATION);
-		}
+			applyShaders();
+			applyTextures();
 
-		if(!cullSkipsDraw(mode))
-		{
+			if(!getCurrentProgram()->validateSamplers(false))
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+
+			if(!cullSkipsDraw(mode))
+			{
 			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount);
+			}
 		}
 	}
 }

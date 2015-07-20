@@ -42,6 +42,7 @@ namespace es2
 {
 struct TranslatedAttribute;
 struct TranslatedIndexData;
+struct PrimitiveRestartData;
 
 class Device;
 class Shader;
@@ -680,7 +681,8 @@ private:
     bool applyRenderTarget();
     void applyState(GLenum drawMode);
 	GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsizei instanceId);
-    GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo);
+    GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum type, TranslatedIndexData *indexInfo);
+	GLenum computePrimitiveRestart(const void *indices, GLsizei count, GLenum type, PrimitiveRestartData* restartInfo);
     void applyShaders();
     void applyTextures();
     void applyTextures(sw::SamplerType type);
