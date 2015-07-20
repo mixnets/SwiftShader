@@ -52,17 +52,35 @@ private:
 	unsigned int mWritePosition;
 };
 
+struct PrimitiveRestartData
+{
+	struct Datum
+	{
+		Datum(const void *i, GLsizei c) : indices(i), count(c) {}
+		const void *indices;
+		GLsizei count;
+	};
+
+	PrimitiveRestartData() : index(-1) {}
+
+	std::vector<Datum> data;
+	GLuint index;
+};
+
 class IndexDataManager
 {
 public:
 	IndexDataManager();
 	virtual ~IndexDataManager();
 
-	GLenum prepareIndexData(GLenum type, GLuint start, GLuint end, GLsizei count, Buffer *arrayElementBuffer, const void *indices, TranslatedIndexData *translated);
+	GLenum prepareIndexData(GLenum type, GLuint start, GLuint end, GLsizei count, Buffer *arrayElementBuffer, const void *indices, TranslatedIndexData *translated, bool preparedIndices);
+	GLenum computePrimitiveRestart(GLenum type, GLsizei count, Buffer *arrayElementBuffer, const void *indices, PrimitiveRestartData* restartInfo);
 
 	static std::size_t typeSize(GLenum type);
 
 private:
+	GLenum prepareIndices(GLenum type, GLsizei count, Buffer *buffer, const void* &indices, intptr_t& offset);
+
 	StreamingIndexBuffer *mStreamingBuffer;
 };
 
