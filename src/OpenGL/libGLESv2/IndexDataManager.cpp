@@ -61,6 +61,31 @@ void copyIndices(GLenum type, const void *input, GLsizei count, void *output)
 }
 
 template<class IndexType>
+void computePrimitiveRestartData(GLsizei count, IndexType *indices, PrimitiveRestartData* data)
+{
+	IndexType restartIndex = (IndexType)(data->index);
+	int currentStart = 0;
+	bool previousIsRestartIndex = false;
+	for(int i = 0; i < count; ++i)
+	{
+		bool isRestartIndex = (indices[i] == restartIndex);
+		if(isRestartIndex)
+		{
+			if((currentStart != i) && !previousIsRestartIndex)
+			{
+				data->data.push_back(PrimitiveRestartData::Datum::Datum(indices + currentStart, i - currentStart));
+			}
+			currentStart = i + 1;
+		}
+		previousIsRestartIndex = isRestartIndex;
+	}
+	if(currentStart < count)
+	{
+		data->data.push_back(PrimitiveRestartData::Datum::Datum(indices + currentStart, count - currentStart));
+	}
+}
+
+template<class IndexType>
 void computeRange(const IndexType *indices, GLsizei count, GLuint *minIndex, GLuint *maxIndex)
 {
     *minIndex = indices[0];
@@ -90,14 +115,9 @@ void computeRange(GLenum type, const void *indices, GLsizei count, GLuint *minIn
     else UNREACHABLE(type);
 }
 
-GLenum IndexDataManager::prepareIndexData(GLenum type, GLuint start, GLuint end, GLsizei count, Buffer *buffer, const void *indices, TranslatedIndexData *translated)
+GLenum IndexDataManager::prepareIndices(GLenum type, GLsizei count, Buffer *buffer, const void* &indices, intptr_t& offset)
 {
-    if(!mStreamingBuffer)
-    {
-        return GL_OUT_OF_MEMORY;
-    }
-
-    intptr_t offset = reinterpret_cast<intptr_t>(indices);
+    offset = reinterpret_cast<intptr_t>(indices);
     bool alignedOffset = false;
 
     if(buffer != NULL)
@@ -117,6 +137,23 @@ GLenum IndexDataManager::prepareIndexData(GLenum type, GLuint start, GLuint end,
 
         indices = static_cast<const GLubyte*>(buffer->data()) + offset;
     }
+
+	return GL_NO_ERROR;
+}
+
+GLenum IndexDataManager::prepareIndexData(GLenum type, GLuint start, GLuint end, GLsizei count, Buffer *buffer, const void *indices, TranslatedIndexData *translated)
+{
+    if(!mStreamingBuffer)
+    {
+        return GL_OUT_OF_MEMORY;
+    }
+
+	intptr_t offset;
+	GLenum err = prepareIndices(type, count, buffer, indices, offset);
+	if(err != GL_NO_ERROR)
+	{
+		return err;
+	}
 
     StreamingIndexBuffer *streamingBuffer = mStreamingBuffer;
 
@@ -158,6 +195,32 @@ GLenum IndexDataManager::prepareIndexData(GLenum type, GLuint start, GLuint end,
 	}
 
     return GL_NO_ERROR;
+}
+
+GLenum IndexDataManager::computePrimitiveRestart(GLenum type, GLsizei count, Buffer *buffer, const void *indices, PrimitiveRestartData* primitiveRestartData)
+{
+	intptr_t offset;
+	GLenum err = prepareIndices(type, count, buffer, indices, offset);
+	if(err != GL_NO_ERROR)
+	{
+		return err;
+	}
+
+	switch(type)
+	{
+	case GL_UNSIGNED_BYTE:
+		computePrimitiveRestartData(count, (const GLubyte*)indices, primitiveRestartData);
+		break;
+	case GL_UNSIGNED_SHORT:
+		computePrimitiveRestartData(count, (const GLushort*)indices, primitiveRestartData);
+		break;
+	case GL_UNSIGNED_INT:
+		computePrimitiveRestartData(count, (const GLuint*)indices, primitiveRestartData);
+		break;
+	default:
+		UNREACHABLE(type);
+	}
+	return GL_NO_ERROR;
 }
 
 std::size_t IndexDataManager::typeSize(GLenum type)
