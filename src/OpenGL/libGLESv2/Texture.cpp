@@ -775,9 +775,9 @@ void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 	renderTarget->release();
 }
 
-void Texture2D::setImage(egl::Image *sharedImage)
+void Texture2D::setSharedImage(egl::Image *sharedImage)
 {
-	if (sharedImage == image[0])
+	if(sharedImage == image[0])
 	{
 		return;
 	}
@@ -1679,8 +1679,13 @@ void Texture3D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 	renderTarget->release();
 }
 
-void Texture3D::setImage(egl::Image *sharedImage)
+void Texture3D::setSharedImage(egl::Image *sharedImage)
 {
+	if(sharedImage == image[0])
+	{
+		return;
+	}
+
 	sharedImage->addRef();
 
 	if(image[0])
