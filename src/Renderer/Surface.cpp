@@ -2072,7 +2072,7 @@ namespace sw
 
 	unsigned int Surface::size(int width, int height, int depth, Format format)
 	{
-		// Dimensions rounded up to multiples of 4, used for DXTC formats
+		// Dimensions rounded up to multiples of 4, used for compressed formats
 		int width4 = (width + 3) & ~3;
 		int height4 = (height + 3) & ~3;
 
@@ -2378,13 +2378,13 @@ namespace sw
 
 	void *Surface::allocateBuffer(int width, int height, int depth, Format format)
 	{
-		// Render targets require 2x2 quads
-		int width2 = (width + 1) & ~1;
-		int height2 = (height + 1) & ~1;
+		// Compressed images require 4x4 tiles (their internal buffer too)
+		int width4 = (width + 3) & ~3;
+		int height4 = (height + 3) & ~3;
 
 		// FIXME: Unpacking byte4 to short4 in the sampler currently involves reading 8 bytes,
 		// so we have to allocate 4 extra bytes to avoid buffer overruns.
-		return allocateZero(size(width2, height2, depth, format) + 4);
+		return allocateZero(size(width4, height4, depth, format) + 4);
 	}
 
 	void Surface::memfill4(void *buffer, int pattern, int bytes)
