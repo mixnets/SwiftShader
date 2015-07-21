@@ -177,7 +177,7 @@ public:
     void copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
 	virtual void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
 
-	void setImage(egl::Image *image);
+	void setSharedImage(egl::Image *sharedImage);
 
     virtual bool isSamplerComplete() const;
     virtual bool isCompressed(GLenum target, GLint level) const;
@@ -294,7 +294,7 @@ public:
 	void copyImage(GLint level, GLenum format, GLint x, GLint y, GLint z, GLsizei width, GLsizei height, GLsizei depth, Framebuffer *source);
 	void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
 
-	void setImage(egl::Image *image);
+	void setSharedImage(egl::Image *sharedImage);
 
 	virtual bool isSamplerComplete() const;
 	virtual bool isCompressed(GLenum target, GLint level) const;
