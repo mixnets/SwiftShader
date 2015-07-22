@@ -226,6 +226,16 @@ GLint Framebuffer::getColorbufferLayer(GLuint index)
 	return (colorbuffer != nullptr) ? colorbuffer->getLayer() : 0;
 }
 
+GLint Framebuffer::getDepthbufferLayer()
+{
+	return (mDepthbufferPointer != nullptr) ? mDepthbufferPointer->getLayer() : 0;
+}
+
+GLint Framebuffer::getStencilbufferLayer()
+{
+	return (mStencilbufferPointer != nullptr) ? mStencilbufferPointer->getLayer() : 0;
+}
+
 bool Framebuffer::hasStencil()
 {
 	if(mStencilbufferType != GL_NONE)
