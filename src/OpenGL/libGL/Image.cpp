@@ -128,8 +128,7 @@ namespace gl
 
 	void Image::unbind()
 	{
-		parentTexture = 0;
-
+		parentTexture = nullptr;
 		release();
 	}
 

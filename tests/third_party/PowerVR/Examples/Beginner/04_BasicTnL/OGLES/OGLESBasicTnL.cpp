@@ -21,6 +21,9 @@
 #import <OpenGLES/ES1/glext.h>
 #else
 #include <GLES/gl.h>
+#include <EGL/egl.h>
+#define EGL_EGLEXT_PROTOTYPES
+#include <EGL/eglext.h>
 #endif
 
 /******************************************************************************

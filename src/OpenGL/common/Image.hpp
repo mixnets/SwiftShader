@@ -144,7 +144,7 @@ public:
 
 	virtual void addRef();
 	virtual void release();
-	virtual void unbind(const Texture *parent);   // Break parent ownership and release
+	virtual void destroy(const Texture *parent);   // Break parent ownership and release
 
 	virtual void destroyShared()   // Release a shared image
 	{

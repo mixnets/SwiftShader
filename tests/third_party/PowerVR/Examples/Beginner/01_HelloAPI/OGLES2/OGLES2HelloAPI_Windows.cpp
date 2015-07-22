@@ -19,7 +19,14 @@
 #include <TCHAR.h>
 
 #include <EGL/egl.h>
+#define EGL_EGLEXT_PROTOTYPES
+#include <EGL/eglext.h>
+
 #include <GLES2/gl2.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GLES2/gl2ext.h>
+
+#include <malloc.h>
 
 /******************************************************************************
  Defines
@@ -409,6 +416,72 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// Actually use the created program
     glUseProgram(uiProgramObject);
+	/*
+	GLuint texture1;
+	glGenTextures(1, &texture1);
+	glBindTexture(GL_TEXTURE_2D, texture1);
+	GLuint* pTexData1 = new GLuint[128*128];
+
+	for(int i = 0; i < 128; ++i)
+	{
+		for(int j = 0; j < 128; ++j)
+		{
+			GLuint col = (255<<24) + ((255-j*2)<<16) + ((255-i)<<8) + (255-i*2);
+
+			if ( ((i*j)/8) % 2 )
+				col = 0xffff00ff;
+
+			pTexData1[j*128+i] = col;
+		}
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 128, 128, 0, GL_RGBA, GL_UNSIGNED_BYTE, pTexData1);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	EGLImageKHR eglImage1 = eglCreateImageKHR(eglDisplay, eglContext, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)texture1, nullptr);
+
+	GLuint texture2;
+	glGenTextures(1, &texture2);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+	GLuint* pTexData2 = new GLuint[128*128];
+
+	for(int i = 0; i < 128; ++i)
+	{
+		for(int j = 0; j < 128; ++j)
+		{
+			GLuint col = (255<<24) + ((255-j*2)<<8) + ((255-i)<<16) + (255-i*2);
+
+			if ( ((i*j)/8) % 2 )
+				col = 0xffff00ff;
+
+			pTexData2[j*128+i] = col;
+		}
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 128, 128, 0, GL_RGBA, GL_UNSIGNED_BYTE, pTexData2);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	EGLImageKHR eglImage2 = eglCreateImageKHR(eglDisplay, eglContext, EGL_GL_TEXTURE_2D_KHR, (EGLClientBuffer)texture2, nullptr);
+
+	glBindTexture(GL_TEXTURE_2D, texture1);
+	glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, eglImage1);
+
+	glBindTexture(GL_TEXTURE_2D, texture1);
+	glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, eglImage2);
+
+	glBindTexture(GL_TEXTURE_2D, texture2);
+	glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, eglImage1);
+
+	glBindTexture(GL_TEXTURE_2D, texture1);
+	glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, eglImage1);
+
+	eglDestroyImageKHR(eglDisplay, eglImage1);
+	eglDestroyImageKHR(eglDisplay, eglImage2);
+
+	glDeleteTextures(1, &texture1);
+	glDeleteTextures(1, &texture2);*/
 
 	// Sets the clear color.
 	// The colours are passed per channel (red,green,blue,alpha) as float values from 0.0 to 1.0

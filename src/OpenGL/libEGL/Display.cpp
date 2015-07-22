@@ -18,6 +18,7 @@
 #include "main.h"
 #include "libEGL/Surface.h"
 #include "libEGL/Context.hpp"
+#include "common/Object.hpp"
 #include "common/debug.h"
 
 #if defined(__unix__) && !defined(__ANDROID__)
@@ -212,6 +213,8 @@ void Display::terminate()
 	{
 		setCurrentDisplay(nullptr);
 	}
+
+	ASSERT(gl::Object::count == 0);
 }
 
 bool Display::getConfigs(EGLConfig *configs, const EGLint *attribList, EGLint configSize, EGLint *numConfig)

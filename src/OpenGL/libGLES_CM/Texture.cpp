@@ -350,7 +350,7 @@ Texture2D::~Texture2D()
 	{
 		if(image[i])
 		{
-			image[i]->unbind(this);
+			image[i]->destroy(this);
 			image[i] = 0;
 		}
 	}
@@ -439,7 +439,7 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 {
 	if(image[level])
 	{
-		image[level]->unbind(this);
+		image[level]->destroy(this);
 	}
 
 	image[level] = new egl::Image(this, width, height, format, type);
@@ -477,7 +477,7 @@ void Texture2D::bindTexImage(egl::Surface *surface)
 	{
 		if(image[level])
 		{
-			image[level]->unbind(this);
+			image[level]->destroy(this);
 			image[level] = 0;
 		}
 	}
@@ -494,7 +494,7 @@ void Texture2D::releaseTexImage()
 	{
 		if(image[level])
 		{
-			image[level]->unbind(this);
+			image[level]->destroy(this);
 			image[level] = 0;
 		}
 	}
@@ -504,7 +504,7 @@ void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 {
 	if(image[level])
 	{
-		image[level]->unbind(this);
+		image[level]->destroy(this);
 	}
 
 	image[level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE);
@@ -539,7 +539,7 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 
 	if(image[level])
 	{
-		image[level]->unbind(this);
+		image[level]->destroy(this);
 	}
 
 	image[level] = new egl::Image(this, width, height, format, GL_UNSIGNED_BYTE);
@@ -599,7 +599,7 @@ void Texture2D::setSharedImage(egl::Image *sharedImage)
 
     if(image[0])
     {
-        image[0]->unbind(this);
+        image[0]->destroy(this);
     }
 
     image[0] = sharedImage;
@@ -694,7 +694,7 @@ void Texture2D::generateMipmaps()
     {
 		if(image[i])
 		{
-			image[i]->unbind(this);
+			image[i]->destroy(this);
 		}
 
 		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType());
