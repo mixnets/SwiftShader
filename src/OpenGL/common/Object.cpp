@@ -19,15 +19,24 @@
 
 namespace gl
 {
+unsigned int Object::count = 0;
 
 Object::Object()
 {
 	referenceCount = 0;
+
+	#ifndef NDEBUG
+		count++;
+	#endif
 }
 
 Object::~Object()
 {
     ASSERT(referenceCount == 0);
+
+	#ifndef NDEBUG
+		count--;
+	#endif
 }
 
 void Object::addRef()

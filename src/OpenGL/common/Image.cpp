@@ -630,11 +630,11 @@ namespace egl
 		}
 	}
 
-	void Image::unbind(const egl::Texture *parent)
+	void Image::destroy(const egl::Texture *parent)
 	{
-		if(parentTexture == parent)
+		if(parentTexture == parent && !shared)
 		{
-			parentTexture = 0;
+			parentTexture = nullptr;
 		}
 
 		release();
