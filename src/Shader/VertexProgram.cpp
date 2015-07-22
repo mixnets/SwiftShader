@@ -251,6 +251,7 @@ namespace sw
 			case Shader::OPCODE_AND:		and(d.x, s0.x, s1.x);			break;
 			case Shader::OPCODE_TEXLDL:		TEXLDL(r, d, s0, src1);			break;
 			case Shader::OPCODE_TEX:		TEX(r, d, s0, src1);			break;
+			case Shader::OPCODE_TEXSIZE:	TEXSIZE(r, d, s0.x, src1);		break;
 			case Shader::OPCODE_END:										break;
 			default:
 				ASSERT(false);
@@ -1447,6 +1448,13 @@ namespace sw
 		dst.y = tmp[(src1.swizzle >> 2) & 0x3];
 		dst.z = tmp[(src1.swizzle >> 4) & 0x3];
 		dst.w = tmp[(src1.swizzle >> 6) & 0x3];
+	}
+
+	void VertexProgram::TEXSIZE(Registers &r, Vector4f &dst, Float4 &lod, const Src &src1)
+	{
+		Pointer<Byte> mipmap = r.data + OFFSET(DrawData,mipmap) + src1.index * sizeof(Texture) + OFFSET(Texture,mipmap);
+		dst.x = Float4(*Pointer<Short4>(mipmap + OFFSET(Mipmap,width)));
+		dst.y = Float4(*Pointer<Short4>(mipmap + OFFSET(Mipmap,height)));
 	}
 
 	void VertexProgram::sampleTexture(Registers &r, Vector4f &c, const Src &s, Float4 &u, Float4 &v, Float4 &w, Float4 &q)
