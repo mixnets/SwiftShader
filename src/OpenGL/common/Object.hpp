@@ -31,9 +31,14 @@ public:
 
     virtual void addRef();
 	virtual void release();
-    
+
 private:
     volatile int referenceCount;
+
+#ifndef NDEBUG
+public:
+	static unsigned int instanceCount;
+#endif
 };
 
 class NamedObject : public Object

@@ -18,6 +18,7 @@
 #include "main.h"
 #include "libEGL/Surface.h"
 #include "libEGL/Context.hpp"
+#include "common/Object.hpp"
 #include "common/debug.h"
 #include "Common/MutexLock.hpp"
 
@@ -198,6 +199,8 @@ void Display::terminate()
 	{
 		setCurrentDisplay(nullptr);
 	}
+
+	ASSERT(gl::Object::instanceCount == 0);
 }
 
 bool Display::getConfigs(EGLConfig *configs, const EGLint *attribList, EGLint configSize, EGLint *numConfig)
