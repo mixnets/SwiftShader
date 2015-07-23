@@ -18,6 +18,7 @@
 #include "main.h"
 #include "libEGL/Surface.h"
 #include "libEGL/Context.hpp"
+#include "common/Object.hpp"
 #include "common/debug.h"
 #include "Common/MutexLock.hpp"
 

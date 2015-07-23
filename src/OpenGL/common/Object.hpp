@@ -34,6 +34,11 @@ public:
     
 private:
     volatile int referenceCount;
+
+#ifndef NDEBUG
+public:
+	static unsigned int instanceCount;
+#endif
 };
 
 class NamedObject : public Object

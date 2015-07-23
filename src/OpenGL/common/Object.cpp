@@ -19,15 +19,26 @@
 
 namespace gl
 {
+#ifndef NDEBUG
+unsigned int Object::instanceCount = 0;
+#endif
 
 Object::Object()
 {
 	referenceCount = 0;
+
+	#ifndef NDEBUG
+		instanceCount++;
+	#endif
 }
 
 Object::~Object()
 {
     ASSERT(referenceCount == 0);
+
+	#ifndef NDEBUG
+		instanceCount--;
+	#endif
 }
 
 void Object::addRef()
@@ -57,5 +68,17 @@ NamedObject::NamedObject(GLuint name) : name(name)
 NamedObject::~NamedObject()
 {
 }
+
+#ifndef NDEBUG
+struct ObjectLeakCheck
+{
+	~ObjectLeakCheck()
+	{
+		ASSERT(gl::Object::instanceCount == 0);
+	}
+};
+
+static ObjectLeakCheck objectLeakCheck;
+#endif
 
 }
