@@ -98,7 +98,7 @@ Context::Context(const Context *shareContext)
     mState.dither = true;
     mState.generateMipmapHint = GL_DONT_CARE;
     mState.fragmentShaderDerivativeHint = GL_DONT_CARE;
-	mState.colorLogicOp = false;
+	mState.colorLogicOpEnable = false;
 	mState.logicalOperation = GL_COPY;
 
     mState.lineWidth = 1.0f;
@@ -319,6 +319,7 @@ void Context::markAllStateDirty()
     mSampleStateDirty = true;
     mDitherStateDirty = true;
     mFrontFaceDirty = true;
+	mColorLogicOperatorDirty = true;
 }
 
 void Context::setClearColor(float red, float green, float blue, float alpha)
@@ -1819,7 +1820,7 @@ void Context::applyState(GLenum drawMode)
 
 	if(mColorLogicOperatorDirty)
 	{
-		if(mState.colorLogicOp)
+		if(mState.colorLogicOpEnable)
 		{
 			device->setColorLogicOpEnabled(true);
 			device->setLogicalOperation(es2sw::ConvertLogicalOperation(mState.logicalOperation));
@@ -3616,21 +3617,25 @@ void Context::end()
 
 void Context::setColorLogicOpEnable(bool colorLogicOpEnabled)
 {
-	if(mState.colorLogicOp != colorLogicOpEnabled)
+	if(mState.colorLogicOpEnable != colorLogicOpEnabled)
 	{
-		mState.colorLogicOp = colorLogicOpEnabled;
+		mState.colorLogicOpEnable = colorLogicOpEnabled;
 		mColorLogicOperatorDirty = true;
 	}
 }
 
 bool Context::isColorLogicOpEnabled()
 {
-	return mState.colorLogicOp;
+	return mState.colorLogicOpEnable;
 }
 
 void Context::setLogicalOperation(GLenum logicalOperation)
 {
-	mState.logicalOperation = logicalOperation;
+	if(mState.logicalOperation != logicalOperation)
+	{
+		mState.logicalOperation = logicalOperation;
+		mColorLogicOperatorDirty = true;
+	}
 }
 
 void Context::setColorMaterial(bool enable)
