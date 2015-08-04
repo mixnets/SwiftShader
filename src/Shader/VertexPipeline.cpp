@@ -172,6 +172,8 @@ namespace sw
 		r.o[Pos].z = position.z;
 		r.o[Pos].w = position.w;
 
+		Vector4f vertexPosition = transformBlend(r, r.v[Position], Pointer<Byte>(r.data + OFFSET(DrawData,ff.cameraTransformT)), true);
+
 		if(state.vertexNormalActive)
 		{
 			normal = transformBlend(r, r.v[Normal], Pointer<Byte>(r.data + OFFSET(DrawData,ff.normalTransformT)), false);
@@ -238,8 +240,6 @@ namespace sw
 			diffuseSum.y = Float4(0.0f);
 			diffuseSum.z = Float4(0.0f);
 			diffuseSum.w = Float4(0.0f);
-
-			Vector4f vertexPosition = transformBlend(r, r.v[Position], Pointer<Byte>(r.data + OFFSET(DrawData,ff.cameraTransformT)), true);
 
 			for(int i = 0; i < 8; i++)
 			{
@@ -379,9 +379,9 @@ namespace sw
 					spec.y = Max(spec.y, Float4(0.0f));
 					spec.z = Max(spec.z, Float4(0.0f));
 
-					r.o[D1].x = r.o[D1].x + spec.x;
-					r.o[D1].y = r.o[D1].y + spec.y;
-					r.o[D1].z = r.o[D1].z + spec.z;
+					diffuseSum.x += spec.x;
+					diffuseSum.y += spec.y;
+					diffuseSum.z += spec.z;
 				}
 			}
 
@@ -488,6 +488,17 @@ namespace sw
 
 		if(state.fogActive)
 		{
+			Float4 f;
+
+			if(!state.rangeFogActive)
+			{
+				f = Abs(vertexPosition.z);
+			}
+			else
+			{
+				f = Sqrt(dot3(vertexPosition, vertexPosition));   // FIXME: f = length(vertexPosition);
+			}
+
 			switch(state.vertexFogMode)
 			{
 			case FOG_NONE:
@@ -501,25 +512,13 @@ namespace sw
 				}
 				break;
 			case FOG_LINEAR:
+				r.o[Fog].x = f * *Pointer<Float4>(r.data + OFFSET(DrawData,fog.scale)) + *Pointer<Float4>(r.data + OFFSET(DrawData,fog.offset));
+				break;
 			case FOG_EXP:
+				r.o[Fog].x = exponential2(f * *Pointer<Float4>(r.data + OFFSET(DrawData,fog.densityE)), true);
+				break;
 			case FOG_EXP2:
-				if(!state.rangeFogActive)
-				{
-					r.o[Fog].x = r.o[Pos].z;
-				}
-				else
-				{
-					Vector4f pos;
-
-					pos.x = r.o[Pos].x;
-					pos.y = r.o[Pos].y;
-					pos.z = r.o[Pos].z;
-					pos.w = r.o[Pos].w;
-
-					r.o[Fog].x = Sqrt(dot3(pos, pos));   // FIXME: oFog = length(o[Pos]);
-				}
-
-				r.o[Fog].x = r.o[Fog].x * *Pointer<Float4>(r.data + OFFSET(DrawData,fog.scale)) + *Pointer<Float4>(r.data + OFFSET(DrawData,fog.offset));
+				r.o[Fog].x = exponential2((f * f) * *Pointer<Float4>(r.data + OFFSET(DrawData,fog.density2E)), true);
 				break;
 			default:
 				ASSERT(false);
