@@ -81,6 +81,8 @@ enum
 	MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS = 4,
 	MAX_UNIFORM_BUFFER_BINDINGS = 36,
 	MAX_CLIP_PLANES = 6,
+
+	DEFAULT_THREAD_COUNT = 0,   // 0 = process affinity count
 };
 
 #endif   // sw_Config_hpp
