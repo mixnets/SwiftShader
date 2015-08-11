@@ -507,7 +507,7 @@ namespace sw
 
 			if(index == 0)
 			{
-				fogBlend(r, r.oC[index], fog, r.z[0], r.rhw);
+				fogBlend(r, r.oC[index], fog);
 			}
 
 			switch(state.targetFormat[index])

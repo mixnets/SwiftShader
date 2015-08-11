@@ -29,7 +29,6 @@ namespace sw
 
 	PixelRoutine::Registers::Registers(const PixelShader *shader) :
 		QuadRasterizer::Registers(),
-		rf(shader && shader->dynamicallyIndexedTemporaries),
 		vf(shader && shader->dynamicallyIndexedInput)
 	{
 		if(!shader || shader->getVersion() < 0x0200 || forceClearRegisters)
@@ -602,7 +601,7 @@ namespace sw
 		cMask[3] &= aMask3;
 	}
 
-	void PixelRoutine::fogBlend(Registers &r, Vector4f &c0, Float4 &fog, Float4 &z, Float4 &rhw)
+	void PixelRoutine::fogBlend(Registers &r, Vector4f &c0, Float4 &fog)
 	{
 		if(!state.fogActive)
 		{
@@ -611,7 +610,7 @@ namespace sw
 
 		if(state.pixelFogMode != FOG_NONE)
 		{
-			pixelFog(r, fog, z, rhw);
+			pixelFog(r, fog);
 
 			fog = Min(fog, Float4(1.0f));
 			fog = Max(fog, Float4(0.0f));
@@ -630,7 +629,7 @@ namespace sw
 		c0.z += *Pointer<Float4>(r.data + OFFSET(DrawData,fog.colorF[2]));
 	}
 
-	void PixelRoutine::pixelFog(Registers &r, Float4 &visibility, Float4 &z, Float4 &rhw)
+	void PixelRoutine::pixelFog(Registers &r, Float4 &visibility)
 	{
 		Float4 &zw = visibility;
 
@@ -638,17 +637,17 @@ namespace sw
 		{
 			if(state.wBasedFog)
 			{
-				zw = rhw;
+				zw = r.rhw;
 			}
 			else
 			{
 				if(complementaryDepthBuffer)
 				{
-					zw = Float4(1.0f) - z;
+					zw = Float4(1.0f) - r.z[0];
 				}
 				else
 				{
-					zw = z;
+					zw = r.z[0];
 				}
 			}
 		}
