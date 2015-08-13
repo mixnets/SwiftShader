@@ -27,7 +27,7 @@
 // 0 = process affinity count (recommended)
 // 1 = rendering on main thread (no worker threads), useful for debugging
 #ifndef DEFAULT_THREAD_COUNT
-#define DEFAULT_THREAD_COUNT 0
+#define DEFAULT_THREAD_COUNT 1
 #endif
 
 enum
