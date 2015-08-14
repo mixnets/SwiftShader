@@ -2810,11 +2810,19 @@ void Context::drawTexture(GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloa
 
 	VertexAttribute oldPositionAttribute = mState.vertexAttribute[sw::Position];
 	VertexAttribute oldTexCoord0Attribute = mState.vertexAttribute[sw::TexCoord0];
+	gl::BindingPointer<Buffer> oldArrayBuffer = mState.arrayBuffer;
+	mState.arrayBuffer = nullptr;
 
 	glVertexPointer(3, GL_FLOAT, 3 * sizeof(float), vertices);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, 2 * sizeof(float), texCoords);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	projectionStack.push();
+	projectionStack.identity();
+
+	modelViewStack.push();
+	modelViewStack.identity();
 
 	textureStack0.push();
 	textureStack0.identity();   // Disable texture coordinate transformation
@@ -2824,7 +2832,13 @@ void Context::drawTexture(GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloa
 	// Restore state
 	mState.vertexAttribute[sw::Position] = oldPositionAttribute;
 	mState.vertexAttribute[sw::TexCoord0] = oldTexCoord0Attribute;
+	mState.arrayBuffer = oldArrayBuffer;
+	oldArrayBuffer = nullptr;
+	oldPositionAttribute.mBoundBuffer = nullptr;
+	oldTexCoord0Attribute.mBoundBuffer = nullptr;
 	textureStack0.pop();
+	modelViewStack.pop();
+	projectionStack.pop();
 }
 
 void Context::finish()

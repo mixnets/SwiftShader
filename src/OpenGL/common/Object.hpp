@@ -51,6 +51,11 @@ class BindingPointer
 public:
 	BindingPointer() : object(nullptr) { }
 
+	BindingPointer(const BindingPointer<ObjectType> &other) : object(nullptr)
+    {
+        operator=(other.object);
+    }
+
 	~BindingPointer() { ASSERT(!object); }   // Objects have to be released before the resource manager is destroyed, so they must be explicitly cleaned up.
 
     ObjectType *operator=(ObjectType *newObject) 
@@ -62,6 +67,12 @@ public:
 
 		return object;
 	}
+
+	ObjectType *operator=(const BindingPointer<ObjectType> &other) 
+	{
+		return operator=(other.object);
+	}
+
     operator ObjectType*() const { return object; }
     ObjectType *operator->() const { return object; }
 	GLuint name() const { return object ? object->name : 0; }
