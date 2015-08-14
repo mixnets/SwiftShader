@@ -165,6 +165,11 @@
   <ItemGroup>
     <ResourceCompile Include="..\..\..\..\..\..\Builds\Windows\Resources\shared.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\..\..\..\src\OpenGL\libGLES_CM\libGLES_CM.vcxproj">
+      <Project>{235b1d85-e6b6-45e2-ba5d-5c60396428ff}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

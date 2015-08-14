@@ -21,6 +21,8 @@
 #import <OpenGLES/ES1/glext.h>
 #else
 #include <GLES/gl.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GLES/glext.h>
 #endif
 
 /******************************************************************************
@@ -240,6 +242,8 @@ bool OGLESBasicTnL::RenderScene()
 
 	// Draws a non-indexed triangle array
 	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	glDrawTexiOES(0, 0, 0, 100, 100);
 
 	// unbind the vertex buffer as we don't need it bound anymore
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
