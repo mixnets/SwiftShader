@@ -42,7 +42,7 @@ namespace sw
 		void computeLod(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &u, Float4 &v, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, bool bias, bool gradients, bool lodProvided);
 		void computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, bool bias, bool gradients, bool lodProvided);
 		void cubeFace(Int face[4], Float4 &U, Float4 &V, Float4 &lodU, Float4 &lodV, Float4 &x, Float4 &y, Float4 &z);
-		void computeIndices(Int index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, const Pointer<Byte> &mipmap);
+		void computeIndices(Int index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, const Pointer<Byte> &mipmap, int subsample = 0);
 		void sampleTexel(Vector4s &c, Short4 &u, Short4 &v, Short4 &s, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4]);
 		void sampleTexel(Vector4f &c, Short4 &u, Short4 &v, Short4 &s, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4]);
 		void selectMipmap(Pointer<Byte> &texture, Pointer<Byte> buffer[4], Pointer<Byte> &mipmap, Float &lod, Int face[4], bool secondLOD);

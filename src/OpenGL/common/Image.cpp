@@ -470,6 +470,10 @@ namespace egl
 			{
 				return sw::FORMAT_A8;
 			}
+			else if(format == 0x32315659)
+			{
+				return sw::FORMAT_YV12;
+			}
 			else UNREACHABLE(format);
 		}
 		else if(type == GL_UNSIGNED_SHORT || type == GL_UNSIGNED_INT)

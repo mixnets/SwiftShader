@@ -1462,11 +1462,11 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::computeIndices(Int index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, const Pointer<Byte> &mipmap)
+	void SamplerCore::computeIndices(Int index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, const Pointer<Byte> &mipmap, int subsample)
 	{
 		Short4 uuu2;
 
-		if(!state.hasNPOTTexture && !hasFloatTexture())
+		if(!state.hasNPOTTexture && !hasFloatTexture() && !subsample)
 		{
 			vvvv = As<UShort4>(vvvv) >> *Pointer<Long1>(mipmap + OFFSET(Mipmap,vFrac));
 			uuu2 = uuuu;
@@ -1493,8 +1493,8 @@ namespace sw
 		}
 		else
 		{
-			uuuu = MulHigh(As<UShort4>(uuuu), *Pointer<UShort4>(mipmap + OFFSET(Mipmap,width)));
-			vvvv = MulHigh(As<UShort4>(vvvv), *Pointer<UShort4>(mipmap + OFFSET(Mipmap,height)));
+			uuuu = MulHigh(As<UShort4>(uuuu), *Pointer<UShort4>(mipmap + OFFSET(Mipmap,width))) >> subsample;
+			vvvv = MulHigh(As<UShort4>(vvvv), *Pointer<UShort4>(mipmap + OFFSET(Mipmap,height))) >> subsample;
 			uuu2 = uuuu;
 			uuuu = As<Short4>(UnpackLow(uuuu, vvvv));
 			uuu2 = As<Short4>(UnpackHigh(uuu2, vvvv));
@@ -1531,7 +1531,39 @@ namespace sw
 		int f2 = state.textureType == TEXTURE_CUBE ? 2 : 0;
 		int f3 = state.textureType == TEXTURE_CUBE ? 3 : 0;
 
-		if(has16bitTextureFormat())
+		if(true /*yuv */)
+		{
+			Int c0 = Int(*Pointer<Byte>(buffer[0] + index[0]));
+			Int c1 = Int(*Pointer<Byte>(buffer[0] + index[1]));
+			Int c2 = Int(*Pointer<Byte>(buffer[0] + index[2]));
+			Int c3 = Int(*Pointer<Byte>(buffer[0] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			Short4 Y = Unpack(As<Byte4>(c0));
+
+			computeIndices(index, uuuu, vvvv, wwww, mipmap, 1);
+			c0 = Int(*Pointer<Byte>(buffer[1] + index[0]));
+			c1 = Int(*Pointer<Byte>(buffer[1] + index[1]));
+			c2 = Int(*Pointer<Byte>(buffer[1] + index[2]));
+			c3 = Int(*Pointer<Byte>(buffer[1] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			Short4 V = Unpack(As<Byte4>(c0)) - Short4(128 * 256);
+
+			c0 = Int(*Pointer<Byte>(buffer[2] + index[0]));
+			c1 = Int(*Pointer<Byte>(buffer[2] + index[1]));
+			c2 = Int(*Pointer<Byte>(buffer[2] + index[2]));
+			c3 = Int(*Pointer<Byte>(buffer[2] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			Short4 U = Unpack(As<Byte4>(c0)) - Short4(128 * 256);
+
+			Short4 dR = MulHigh(Short4(1.403f * 256), V) << 8;
+			Short4 dG = (MulHigh(Short4(-0.344f * 256), U) + MulHigh(Short4(-0.714f * 256), V)) << 8;
+			Short4 dB = MulHigh(Short4(1.770f * 256), U) << 8;
+
+			c.x = Y + dR;
+			c.y = Y + dG;
+			c.z = Y + dB;
+		}
+		else if(has16bitTextureFormat())
 		{
 			c.x = Insert(c.x, *Pointer<Short>(buffer[f0] + 2 * index[0]), 0);
 			c.x = Insert(c.x, *Pointer<Short>(buffer[f1] + 2 * index[1]), 1);

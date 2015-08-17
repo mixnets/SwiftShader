@@ -1148,6 +1148,7 @@ namespace sw
 		case FORMAT_DF16S8:				return 2;
 		case FORMAT_INTZ:				return 4;
 		case FORMAT_S8:					return 1;
+		case FORMAT_YV12:               return 6;
 		default:
 			ASSERT(false);
 		}
@@ -1178,6 +1179,8 @@ namespace sw
 			return 2 * ((width + 3) / 4);    // 64 bit per 4x4 block, computed per row
 		case FORMAT_ATI2:
 			return 4 * ((width + 3) / 4);    // 128 bit per 4x4 block, computed per row
+		case FORMAT_YV12:
+			return (width / 2 + 15) & ~15;
 		default:
 			return bytes(format) * width;
 		}
