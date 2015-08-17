@@ -1148,6 +1148,7 @@ namespace sw
 		case FORMAT_DF16S8:				return 2;
 		case FORMAT_INTZ:				return 4;
 		case FORMAT_S8:					return 1;
+		case FORMAT_YV12:               return 1;
 		default:
 			ASSERT(false);
 		}
@@ -1178,6 +1179,8 @@ namespace sw
 			return 2 * ((width + 3) / 4);    // 64 bit per 4x4 block, computed per row
 		case FORMAT_ATI2:
 			return 4 * ((width + 3) / 4);    // 128 bit per 4x4 block, computed per row
+		case FORMAT_YV12:
+			return (width + 15) & ~15;
 		default:
 			return bytes(format) * width;
 		}
@@ -2090,6 +2093,8 @@ namespace sw
 		#endif
 		case FORMAT_ATI2:
 			return width4 * height4 * depth;
+		case FORMAT_YV12:
+			return (width / 2) * (height / 2) * 6;
 		default:
 			return bytes(format) * width * height * depth;
 		}
@@ -2181,6 +2186,7 @@ namespace sw
 		case FORMAT_L8:
 		case FORMAT_L16:
 		case FORMAT_A8L8:
+		case FORMAT_YV12:
 			return false;
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
@@ -2224,6 +2230,7 @@ namespace sw
 		case FORMAT_L8:
 		case FORMAT_L16:
 		case FORMAT_A8L8:
+		case FORMAT_YV12:
 			return true;
 		case FORMAT_V8U8:
 		case FORMAT_X8L8V8U8:
@@ -2369,6 +2376,7 @@ namespace sw
 		case FORMAT_L8:				return 1;
 		case FORMAT_L16:			return 1;
 		case FORMAT_A8L8:			return 2;
+		case FORMAT_YV12:           return 3;
 		default:
 			ASSERT(false);
 		}
@@ -3338,6 +3346,7 @@ namespace sw
 		case FORMAT_INTZ:           return FORMAT_D32FS8_TEXTURE;
 		case FORMAT_DF24S8:         return FORMAT_D32FS8_SHADOW;
 		case FORMAT_DF16S8:         return FORMAT_D32FS8_SHADOW;
+		case FORMAT_YV12:           return FORMAT_YV12;
 		default:
 			ASSERT(false);
 		}

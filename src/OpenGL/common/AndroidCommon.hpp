@@ -12,7 +12,4 @@ GLenum getColorFormatFromAndroid(int format);
 // Used internally
 GLenum getPixelFormatFromAndroid(int format);
 
-// Used in V1 & V2 Context.cpp
-GLenum isSupportedAndroidBuffer(GLuint name);
-
 #endif  // ANDROID_COMMON

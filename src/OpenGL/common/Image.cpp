@@ -48,6 +48,7 @@ namespace
 		D24,
 		D32,
 		S8,
+		YV12,
 	};
 
 	template<DataType dataType>
@@ -322,6 +323,12 @@ namespace
 		}
 	}
 
+	template<>
+	void LoadImageRow<YV12>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		memcpy(dest + xoffset, source, width / 2 * 3);
+	}
+
 	template<DataType dataType>
 	void LoadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, int destPitch, GLsizei destHeight, const void *input, void *buffer)
 	{
@@ -470,6 +477,10 @@ namespace egl
 			{
 				return sw::FORMAT_A8;
 			}
+			else if(format == 0x32315659)
+			{
+				return sw::FORMAT_YV12;
+			}
 			else UNREACHABLE(format);
 		}
 		else if(type == GL_UNSIGNED_SHORT || type == GL_UNSIGNED_INT)
@@ -562,6 +573,11 @@ namespace egl
 	GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment)
 	{
 		ASSERT(alignment > 0 && sw::isPow2(alignment));
+
+		if(format == 0x32315659)
+		{
+			return width / 2 * 3;
+		}
 
 		GLsizei rawPitch = ComputePixelSize(format, type) * width;
 		return (rawPitch + alignment - 1) & ~(alignment - 1);
@@ -672,6 +688,9 @@ namespace egl
 					case GL_RGBA:
 					case GL_BGRA_EXT:
 						LoadImageData<UByte4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						break;
+					case 0x32315659:
+						LoadImageData<YV12>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, 3 * getPitch() / 2, getHeight(), input, buffer);
 						break;
 					default: UNREACHABLE(format);
 					}

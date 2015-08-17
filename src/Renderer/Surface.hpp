@@ -125,6 +125,8 @@ namespace sw
 		// Quad layout framebuffer
 		FORMAT_X8G8R8B8Q,
 		FORMAT_A8G8R8B8Q,
+		// YUV formats
+		FORMAT_YV12,
 
 		FORMAT_LAST = FORMAT_A8G8R8B8Q
 	};
@@ -499,11 +501,6 @@ namespace sw
 	int Surface::getStencilPitchB() const
 	{
 		return stencil.pitchB;
-	}
-
-	int Surface::getStencilPitchP() const
-	{
-		return stencil.pitchP;
 	}
 
 	int Surface::getStencilSliceB() const
