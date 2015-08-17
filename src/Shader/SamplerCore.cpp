@@ -172,6 +172,7 @@ namespace sw
 				case FORMAT_G8R8:
 				case FORMAT_G16R16:
 				case FORMAT_A16B16G16R16:
+				case FORMAT_YV12:
 					if(componentCount < 2) c.y = Short4(0x1000, 0x1000, 0x1000, 0x1000);
 					if(componentCount < 3) c.z = Short4(0x1000, 0x1000, 0x1000, 0x1000);
 					if(componentCount < 4) c.w = Short4(0x1000, 0x1000, 0x1000, 0x1000);
@@ -1531,7 +1532,50 @@ namespace sw
 		int f2 = state.textureType == TEXTURE_CUBE ? 2 : 0;
 		int f3 = state.textureType == TEXTURE_CUBE ? 3 : 0;
 
-		if(has16bitTextureFormat())
+		if(state.textureFormat == FORMAT_YV12)
+		{
+			Int c0 = Int(*Pointer<Byte>(buffer[0] + index[0]));
+			Int c1 = Int(*Pointer<Byte>(buffer[0] + index[1]));
+			Int c2 = Int(*Pointer<Byte>(buffer[0] + index[2]));
+			Int c3 = Int(*Pointer<Byte>(buffer[0] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
+
+			computeIndices(index, uuuu, vvvv, wwww, mipmap + sizeof(Mipmap));
+			c0 = Int(*Pointer<Byte>(buffer[1] + index[0]));
+			c1 = Int(*Pointer<Byte>(buffer[1] + index[1]));
+			c2 = Int(*Pointer<Byte>(buffer[1] + index[2]));
+			c3 = Int(*Pointer<Byte>(buffer[1] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
+
+			c0 = Int(*Pointer<Byte>(buffer[2] + index[0]));
+			c1 = Int(*Pointer<Byte>(buffer[2] + index[1]));
+			c2 = Int(*Pointer<Byte>(buffer[2] + index[2]));
+			c3 = Int(*Pointer<Byte>(buffer[2] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
+
+			// BT.601 YUV to RGB reference
+			//  R = (Y - 16) * 1.164                      - (V - 128) * -1.596
+			//  G = (Y - 16) * 1.164 - (U - 128) *  0.391 - (V - 128) *  0.813
+			//  B = (Y - 16) * 1.164 - (U - 128) * -2.018
+
+			// Normalized and sorted for preventing underflow when using saturating unsigned subtraction
+			//  r = y * 1.164 + v * 1.596 - 0.874165
+			//  g = y * 1.164 + 0.531325  - (u * 0.391 + v * 0.813)
+			//  b = y * 1.164 + u * 2.018 - 1.08599
+
+			UShort4 y = MulHigh(As<UShort4>(Y), UShort4(1.164 * 0x4000));
+			UShort4 r = SubSat(y + MulHigh(V, UShort4(1.596 * 0x4000)), UShort4(0.874165 * 0x4000));
+			UShort4 g = SubSat(y + UShort4(0.531325 * 0x4000), MulHigh(U, UShort4(0.391 * 0x4000)) + MulHigh(V, UShort4(0.813 * 0x4000)));
+			UShort4 b = SubSat(y + MulHigh(U, UShort4(2.018 * 0x4000)), UShort4(1.08599 * 0x4000));
+
+			c.x = Min(r, UShort4(0x3FFF)) << 2;
+			c.y = Min(g, UShort4(0x3FFF)) << 2;
+			c.z = Min(b, UShort4(0x3FFF)) << 2;
+		}
+		else if(has16bitTextureFormat())
 		{
 			c.x = Insert(c.x, *Pointer<Short>(buffer[f0] + 2 * index[0]), 0);
 			c.x = Insert(c.x, *Pointer<Short>(buffer[f1] + 2 * index[1]), 1);
@@ -1766,6 +1810,12 @@ namespace sw
 		if(state.textureType != TEXTURE_CUBE)
 		{
 			buffer[0] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[0]));
+
+			if(state.textureFormat == FORMAT_YV12)
+			{
+				buffer[1] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[1]));
+				buffer[2] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[2]));
+			}
 		}
 		else
 		{
@@ -1927,6 +1977,7 @@ namespace sw
 		case FORMAT_V16U16:
 		case FORMAT_A16W16V16U16:
 		case FORMAT_Q16W16V16U16:
+		case FORMAT_YV12:
 			return false;
 		default:
 			ASSERT(false);
@@ -1958,6 +2009,7 @@ namespace sw
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32FS8_SHADOW:
+		case FORMAT_YV12:
 			return false;
 		case FORMAT_L16:
 		case FORMAT_G16R16:
@@ -2002,6 +2054,7 @@ namespace sw
 		case FORMAT_V16U16:         return false;
 		case FORMAT_A16W16V16U16:   return false;
 		case FORMAT_Q16W16V16U16:   return false;
+		case FORMAT_YV12:           return component < 3;
 		default:
 			ASSERT(false);
 		}
