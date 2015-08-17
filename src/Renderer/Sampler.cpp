@@ -34,7 +34,7 @@ namespace sw
 	Sampler::Sampler()
 	{
 		// FIXME: Mipmap::init
-		static unsigned int zero = 0x00FF00FF;
+		static const unsigned int zero = 0x00FF00FF;
 
 		for(int level = 0; level < MIPMAP_LEVELS; level++)
 		{
@@ -140,6 +140,9 @@ namespace sw
 					texture.depthLOD[1] = depth * exp2LOD;
 					texture.depthLOD[2] = depth * exp2LOD;
 					texture.depthLOD[3] = depth * exp2LOD;
+
+					mipmap.buffer[1] = (byte*)mipmap.buffer[0] + width * height;
+					mipmap.buffer[2] = (byte*)mipmap.buffer[1] + (width / 2) * (height / 2);
 				}
 
 				if(!Surface::isFloatFormat(internalTextureFormat))
