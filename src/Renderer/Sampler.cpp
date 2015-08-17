@@ -34,7 +34,7 @@ namespace sw
 	Sampler::Sampler()
 	{
 		// FIXME: Mipmap::init
-		static unsigned int zero = 0x00FF00FF;
+		static const unsigned int zero = 0x00FF00FF;
 
 		for(int level = 0; level < MIPMAP_LEVELS; level++)
 		{
@@ -210,6 +210,27 @@ namespace sw
 
 				mipmap.sliceP[0] = sliceP;
 				mipmap.sliceP[1] = sliceP;
+
+				if(internalTextureFormat == FORMAT_YV12)
+				{
+					mipmap.buffer[1] = (byte*)mipmap.buffer[0] + width * height;
+					mipmap.buffer[2] = (byte*)mipmap.buffer[1] + (width / 2) * (height / 2);
+
+					texture.mipmap[1].uFrac = texture.mipmap[0].uFrac + 1;
+					texture.mipmap[1].vFrac = texture.mipmap[0].vFrac + 1;
+					texture.mipmap[1].width[0] = width / 2;
+					texture.mipmap[1].width[1] = width / 2;
+					texture.mipmap[1].width[2] = width / 2;
+					texture.mipmap[1].width[3] = width / 2;
+					texture.mipmap[1].height[0] = height / 2;
+					texture.mipmap[1].height[1] = height / 2;
+					texture.mipmap[1].height[2] = height / 2;
+					texture.mipmap[1].height[3] = height / 2;
+					texture.mipmap[1].onePitchP[0] = 1;
+					texture.mipmap[1].onePitchP[1] = pitchP / 2;
+					texture.mipmap[1].onePitchP[2] = 1;
+					texture.mipmap[1].onePitchP[3] = pitchP / 2;
+				}
 			}
 		}
 

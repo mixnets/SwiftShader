@@ -22,6 +22,8 @@
 #define LOGLOCK(...)
 #endif
 
+#define GL_YV12 0x32315659
+
 namespace egl
 {
 // Types common between gl.h and gl2.h
