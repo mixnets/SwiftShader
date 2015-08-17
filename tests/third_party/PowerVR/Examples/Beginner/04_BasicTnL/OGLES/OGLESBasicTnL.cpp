@@ -15,6 +15,7 @@
 ******************************************************************************/
 #include "PVRShell.h"
 #include <math.h>
+#include <stdio.h>
 
 #if defined(__APPLE__) && defined (TARGET_OS_IPHONE)
 #import <OpenGLES/ES1/gl.h>
@@ -89,6 +90,12 @@ bool OGLESBasicTnL::QuitApplication()
 				Used to initialize variables that are dependant on the rendering
 				context (e.g. textures, vertex buffers, etc.)
 ******************************************************************************/
+
+inline unsigned int align(unsigned int value, unsigned int alignment)
+{
+	return ((value + alignment - 1) / alignment) * alignment;
+}
+
 bool OGLESBasicTnL::InitView()
 {
 	// Sets the clear color
@@ -101,24 +108,37 @@ bool OGLESBasicTnL::InitView()
 		Creates the texture.
 		Please refer to the training course "Texturing" for a detailed explanation.
 	*/
+
+	volatile unsigned int width = 176;
+	volatile unsigned int height = 144;
+
+	unsigned int YStride = align(width, 16);
+	unsigned int YSize = YStride * height;
+	unsigned int CStride = align(YStride / 2, 16);
+ 	unsigned int CSize = CStride * height / 2;
+
 	glGenTextures(1, &m_ui32Texture);
 	glBindTexture(GL_TEXTURE_2D, m_ui32Texture);
-	GLuint* pTexData = new GLuint[g_i32TexSize*g_i32TexSize];
+	GLubyte* pTexData = new GLubyte[YSize + 2 * CSize];
 
-	for(int i = 0; i < g_i32TexSize; ++i)
-	{
-		for(int j = 0; j < g_i32TexSize; ++j)
-		{
-			GLuint col = (255<<24) + ((255-j*2)<<16) + ((255-i)<<8) + (255-i*2);
+	FILE *file = fopen("carphone001.yuv", "rb");
+	//fread(pTexData, 1, 176 * 144, file);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 176, 144, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pTexData);
+	//fread(pTexData, 1, 176 / 2 * 144 / 2, file);
+	//glTexImage2D(GL_TEXTURE_2D, 1, GL_LUMINANCE, 176 / 2, 144 / 2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pTexData);
+	//fread(pTexData, 1, 176 / 2 * 144 / 2, file);
+	//glTexImage2D(GL_TEXTURE_2D, 2, GL_LUMINANCE, 176 / 2, 144 / 2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pTexData);
+	for(int i = 0; i < height; i++) fread(pTexData + i * YStride, 1, width, file);
+	for(int i = 0; i < height / 2; i++) fread(pTexData + YSize + i * CStride, 1, width / 2, file);
+	for(int i = 0; i < height / 2; i++) fread(pTexData + YSize + CSize + i * CStride, 1, width / 2, file);
+	glTexImage2D(GL_TEXTURE_2D, 0, 0x32315659, 176, 144, 0, 0x32315659, GL_UNSIGNED_BYTE, pTexData);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 176, 144, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pTexData);
+	fclose(file);
 
-			if ( ((i*j)/8) % 2 )
-				col = 0xffff00ff;
+	//unsigned int HAL_PIXEL_FORMAT_YV12   = 0x32315659;
 
-			pTexData[j*g_i32TexSize+i] = col;
-		}
-	}
+	//unsigned int check = 'YV12';
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, g_i32TexSize, g_i32TexSize, 0, GL_RGBA, GL_UNSIGNED_BYTE, pTexData);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
@@ -146,19 +166,22 @@ bool OGLESBasicTnL::InitView()
 	// Create VBO for the triangle from our data
 
 	// Interleaved vertex data
-	float afVertices[] = { -0.4f,-0.4f,0.0f, // Position
-							0.0f,0.0f,			  // UV
+	float afVertices[] = { -0.5f,-0.5f,0.0f, // Position
+							0.0f,1.0f,			  // UV
 							0,0,1,			  // Normal
-							0.4f,-0.4f,0.0f,
-							1.0f,0.0f,
+							0.5f,-0.5f,0.0f,
+							1.0f,1.0f,
 							0,0,1,
-							0.0f,0.4f,0.0f,
-							0.5f,1.0f,
+							-0.5f,0.5f,0.0f,
+							0.0f,0.0f,
+							0,0,1,
+							0.5f,0.5f,0.0f,
+							1.0f,0.0f,
 							0,0,1};
 
 	glGenBuffers(1, &m_ui32Vbo);
 
-	unsigned int uiSize = 3 * (sizeof(float) * 8); // 3 vertices * stride (8 verttypes per vertex)
+	unsigned int uiSize = 4 * (sizeof(float) * 8); // 3 vertices * stride (8 verttypes per vertex)
 
 	// Bind the VBO
 	glBindBuffer(GL_ARRAY_BUFFER, m_ui32Vbo);
@@ -217,7 +240,7 @@ bool OGLESBasicTnL::RenderScene()
 	glLoadMatrixf(aModelView);
 
 	// Increments the angle of the view
-	m_fAngle += .02f;
+//	m_fAngle += .02f;
 
 	/*
 		Draw a triangle.
@@ -239,7 +262,7 @@ bool OGLESBasicTnL::RenderScene()
 	glNormalPointer(GL_FLOAT,sizeof(float) * 8, (unsigned char*) (sizeof(float) * 5));
 
 	// Draws a non-indexed triangle array
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 	// unbind the vertex buffer as we don't need it bound anymore
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
