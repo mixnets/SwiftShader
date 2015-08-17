@@ -172,6 +172,7 @@ namespace sw
 				case FORMAT_G8R8:
 				case FORMAT_G16R16:
 				case FORMAT_A16B16G16R16:
+				case FORMAT_YV12:
 					if(componentCount < 2) c.y = Short4(0x1000, 0x1000, 0x1000, 0x1000);
 					if(componentCount < 3) c.z = Short4(0x1000, 0x1000, 0x1000, 0x1000);
 					if(componentCount < 4) c.w = Short4(0x1000, 0x1000, 0x1000, 0x1000);
@@ -1531,7 +1532,67 @@ namespace sw
 		int f2 = state.textureType == TEXTURE_CUBE ? 2 : 0;
 		int f3 = state.textureType == TEXTURE_CUBE ? 3 : 0;
 
-		if(has16bitTextureFormat())
+		if(state.textureFormat == FORMAT_YV12)
+		{
+			Int c0 = Int(*Pointer<Byte>(buffer[0] + index[0]));
+			Int c1 = Int(*Pointer<Byte>(buffer[0] + index[1]));
+			Int c2 = Int(*Pointer<Byte>(buffer[0] + index[2]));
+			Int c3 = Int(*Pointer<Byte>(buffer[0] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			Short4 Y = Unpack(As<Byte4>(c0));
+
+			computeIndices(index, uuuu, vvvv, wwww, mipmap + sizeof(Mipmap));
+			c0 = Int(*Pointer<Byte>(buffer[1] + index[0]));
+			c1 = Int(*Pointer<Byte>(buffer[1] + index[1]));
+			c2 = Int(*Pointer<Byte>(buffer[1] + index[2]));
+			c3 = Int(*Pointer<Byte>(buffer[1] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			Short4 V = As<UShort4>(Unpack(As<Byte4>(c0))) >> 8;
+
+			c0 = Int(*Pointer<Byte>(buffer[2] + index[0]));
+			c1 = Int(*Pointer<Byte>(buffer[2] + index[1]));
+			c2 = Int(*Pointer<Byte>(buffer[2] + index[2]));
+			c3 = Int(*Pointer<Byte>(buffer[2] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			Short4 U = As<UShort4>(Unpack(As<Byte4>(c0))) >> 8;
+
+			// BT.601 YUV to RGB reference
+			//  R = (Y - 16) * 1.164              - V * -1.596
+			//  G = (Y - 16) * 1.164 - U *  0.391 - V *  0.813
+			//  B = (Y - 16) * 1.164 - U * -2.018
+
+			// Y contribution to R,G,B.  Scale and bias.
+			// TODO(fbarchard): Consider moving constants into a common header.
+			const int YG = 18997; /* round(1.164 * 64 * 256 * 256 / 257) */
+			const int YGB  = -1160; /* 1.164 * 64 * -16 + 64 / 2 */
+
+			// U and V contributions to R,G,B.
+			const int UB = -128; /* max(-128, round(-2.018 * 64)) */
+			const int UG = 25; /* round(0.391 * 64) */
+			const int VG = 52; /* round(0.813 * 64) */
+			const int VR = -102; /* round(-1.596 * 64) */
+
+			// Bias values to subtract 16 from Y and 128 from U and V.
+			const int BB = (UB * 128 + YGB);
+			const int BG = (UG * 128 + VG * 128 + YGB);
+			const int BR = (VR * 128 + YGB);
+
+			// *b = Clamp01((int32)(-(u * UB) + y1 + BB) >> 6);
+			// *g = Clamp01((int32)(-(v * VG + u * UG) + y1 + BG) >> 6);
+			// *r = Clamp01((int32)(-(v * VR)+ y1 + BR) >> 6);
+
+
+			UShort4 Y1 = MulHigh(As<UShort4>(Y), UShort4(YG));
+
+			Short4 R = As<UShort4>(V) * UShort4(-VR) + Y1 + UShort4(BR);
+			Short4 G = As<UShort4>(V) * UShort4(-VG) + As<UShort4>(U) * UShort4(-UG) + Y1 + UShort4(BG);
+			Short4 B = As<UShort4>(U) * UShort4(-UB) + Y1 + UShort4(BB);
+
+			c.x = Min(Max(R, Short4(0)), Short4(0x3FFF)) << 2;
+			c.y = Min(Max(G, Short4(0)), Short4(0x3FFF)) << 2;
+			c.z = Min(Max(B, Short4(0)), Short4(0x3FFF)) << 2;
+		}
+		else if(has16bitTextureFormat())
 		{
 			c.x = Insert(c.x, *Pointer<Short>(buffer[f0] + 2 * index[0]), 0);
 			c.x = Insert(c.x, *Pointer<Short>(buffer[f1] + 2 * index[1]), 1);
@@ -1766,6 +1827,12 @@ namespace sw
 		if(state.textureType != TEXTURE_CUBE)
 		{
 			buffer[0] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[0]));
+
+			if(state.textureFormat == FORMAT_YV12)
+			{
+				buffer[1] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[1]));
+				buffer[2] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[2]));
+			}
 		}
 		else
 		{
@@ -1927,6 +1994,7 @@ namespace sw
 		case FORMAT_V16U16:
 		case FORMAT_A16W16V16U16:
 		case FORMAT_Q16W16V16U16:
+		case FORMAT_YV12:
 			return false;
 		default:
 			ASSERT(false);
@@ -1958,6 +2026,7 @@ namespace sw
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32FS8_SHADOW:
+		case FORMAT_YV12:
 			return false;
 		case FORMAT_L16:
 		case FORMAT_G16R16:
@@ -2002,6 +2071,7 @@ namespace sw
 		case FORMAT_V16U16:         return false;
 		case FORMAT_A16W16V16U16:   return false;
 		case FORMAT_Q16W16V16U16:   return false;
+		case FORMAT_YV12:           return component < 3;
 		default:
 			ASSERT(false);
 		}
