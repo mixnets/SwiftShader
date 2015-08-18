@@ -20,6 +20,7 @@
 #include <EGL/eglext.h>
 
 #include <algorithm>
+#include <cstring>
 #include <vector>
 
 using namespace std;
@@ -184,7 +185,7 @@ bool CompareConfig::operator()(const Config &x, const Config &y) const
 	SORT_SMALLER(mGreenSize);
 	SORT_SMALLER(mBlueSize);
 	SORT_SMALLER(mAlphaSize);
-    
+
 	SORT_SMALLER(mBufferSize);
     SORT_SMALLER(mSampleBuffers);
     SORT_SMALLER(mSamples);
