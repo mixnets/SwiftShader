@@ -167,7 +167,7 @@ bool Texture::setMaxAnisotropy(float textureMaxAnisotropy)
     {
         return false;
     }
-    
+
 	if(mMaxAnisotropy != textureMaxAnisotropy)
     {
         mMaxAnisotropy = textureMaxAnisotropy;
@@ -470,7 +470,7 @@ void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLint zoffset, GL
 bool Texture::copy(egl::Image *source, const sw::SliceRect &sourceRect, GLenum destFormat, GLint xoffset, GLint yoffset, GLint zoffset, egl::Image *dest)
 {
     Device *device = getDevice();
-	
+
     sw::SliceRect destRect(xoffset, yoffset, xoffset + (sourceRect.x1 - sourceRect.x0), yoffset + (sourceRect.y1 - sourceRect.y0), zoffset);
     bool success = device->stretchRect(source, &sourceRect, dest, &destRect, false);
 
@@ -498,6 +498,33 @@ bool Texture::isMipmapFiltered() const
     }
 
 	return false;
+}
+
+void Texture::generateMipmaps(egl::Image **image)
+{
+	if(!image[0])
+	{
+		return;   // FIXME: error?
+	}
+
+	unsigned int q = log2(std::max(std::max(image[0]->getWidth(), image[0]->getHeight()), image[0]->getDepth()));
+
+	for(unsigned int i = 1; i <= q; i++)
+	{
+		if(image[i])
+		{
+			image[i]->unbind(this);
+		}
+
+		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), std::max(image[0]->getDepth() >> i, 1), image[0]->getFormat(), image[0]->getType());
+
+		if(!image[i])
+		{
+			return error(GL_OUT_OF_MEMORY);
+		}
+
+        stretchMipmap(image[i - 1], image[i]);
+	}
 }
 
 Texture2D::Texture2D(GLuint name) : Texture(name)
@@ -537,8 +564,8 @@ Texture2D::~Texture2D()
 	mColorbufferProxy = NULL;
 }
 
-// We need to maintain a count of references to renderbuffers acting as 
-// proxies for this texture, so that we do not attempt to use a pointer 
+// We need to maintain a count of references to renderbuffers acting as
+// proxies for this texture, so that we do not attempt to use a pointer
 // to a renderbuffer proxy which has been deleted.
 void Texture2D::addProxyRef(const Renderbuffer *proxy)
 {
@@ -858,6 +885,11 @@ bool Texture2D::isMipmapComplete() const
     return true;
 }
 
+void Texture2D::stretchMipmap(egl::Image *source, egl::Image *dest)
+{
+    getDevice()->stretchRect(source, 0, dest, 0, true);
+}
+
 bool Texture2D::isCompressed(GLenum target, GLint level) const
 {
     return IsCompressed(getFormat(target, level));
@@ -870,29 +902,7 @@ bool Texture2D::isDepth(GLenum target, GLint level) const
 
 void Texture2D::generateMipmaps()
 {
-	if(!image[0])
-	{
-		return;   // FIXME: error?
-	}
-
-    unsigned int q = log2(std::max(image[0]->getWidth(), image[0]->getHeight()));
-    
-	for(unsigned int i = 1; i <= q; i++)
-    {
-		if(image[i])
-		{
-			image[i]->unbind(this);
-		}
-
-		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType());
-
-		if(!image[i])
-		{
-			return error(GL_OUT_OF_MEMORY);
-		}
-
-		getDevice()->stretchRect(image[i - 1], 0, image[i], 0, true);
-    }
+    Texture::generateMipmaps(image);
 }
 
 egl::Image *Texture2D::getImage(unsigned int level)
@@ -987,8 +997,8 @@ TextureCubeMap::~TextureCubeMap()
     }
 }
 
-// We need to maintain a count of references to renderbuffers acting as 
-// proxies for this texture, so that the texture is not deleted while 
+// We need to maintain a count of references to renderbuffers acting as
+// proxies for this texture, so that the texture is not deleted while
 // proxy references still exist. If the reference count drops to zero,
 // we set our proxy pointer NULL, so that a new attempt at referencing
 // will cause recreation.
@@ -1146,7 +1156,7 @@ bool TextureCubeMap::isCubeComplete() const
     for(unsigned int face = 1; face < 6; face++)
     {
         if(image[face][0]->getWidth()  != image[0][0]->getWidth() ||
-           image[face][0]->getWidth()  != image[0][0]->getHeight() ||
+           image[face][0]->getHeight() != image[0][0]->getHeight() ||
            image[face][0]->getFormat() != image[0][0]->getFormat() ||
            image[face][0]->getType()   != image[0][0]->getType())
         {
@@ -1194,6 +1204,11 @@ bool TextureCubeMap::isMipmapCubeComplete() const
     }
 
     return true;
+}
+
+void TextureCubeMap::stretchMipmap(egl::Image *source, egl::Image *dest)
+{
+    getDevice()->stretchRect(source, 0, dest, 0, true);
 }
 
 bool TextureCubeMap::isCompressed(GLenum target, GLint level) const
@@ -1266,7 +1281,7 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 
 		sw::SliceRect sourceRect(x, y, x + width, y + height, 0);
 		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
-        
+
         copy(renderTarget, sourceRect, format, 0, 0, 0, image[face][level]);
     }
 
@@ -1330,26 +1345,9 @@ void TextureCubeMap::generateMipmaps()
         return error(GL_INVALID_OPERATION);
     }
 
-    unsigned int q = log2(image[0][0]->getWidth());
-
-	for(unsigned int f = 0; f < 6; f++)
+    for(unsigned int f = 0; f < 6; f++)
     {
-		for(unsigned int i = 1; i <= q; i++)
-		{
-			if(image[f][i])
-			{
-				image[f][i]->unbind(this);
-			}
-
-			image[f][i] = new egl::Image(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat(), image[0][0]->getType());
-
-			if(!image[f][i])
-			{
-				return error(GL_OUT_OF_MEMORY);
-			}
-
-			getDevice()->stretchRect(image[f][i - 1], 0, image[f][i], 0, true);
-		}
+        Texture::generateMipmaps(image[f]);
 	}
 }
 
@@ -1374,7 +1372,7 @@ egl::Image *TextureCubeMap::getRenderTarget(GLenum target, unsigned int level)
 {
     ASSERT(IsCubemapTextureTarget(target));
     ASSERT(level < IMPLEMENTATION_MAX_TEXTURE_LEVELS);
-    
+
 	int face = CubeFaceIndex(target);
 
 	if(image[face][level])
@@ -1437,8 +1435,8 @@ Texture3D::~Texture3D()
 	mColorbufferProxy = NULL;
 }
 
-// We need to maintain a count of references to renderbuffers acting as 
-// proxies for this texture, so that we do not attempt to use a pointer 
+// We need to maintain a count of references to renderbuffers acting as
+// proxies for this texture, so that we do not attempt to use a pointer
 // to a renderbuffer proxy which has been deleted.
 void Texture3D::addProxyRef(const Renderbuffer *proxy)
 {
@@ -1764,6 +1762,11 @@ bool Texture3D::isMipmapComplete() const
 	return true;
 }
 
+void Texture3D::stretchMipmap(egl::Image *source, egl::Image *dest)
+{
+    getDevice()->stretchCube(source, dest);
+}
+
 bool Texture3D::isCompressed(GLenum target, GLint level) const
 {
 	return IsCompressed(getFormat(target, level));
@@ -1776,29 +1779,7 @@ bool Texture3D::isDepth(GLenum target, GLint level) const
 
 void Texture3D::generateMipmaps()
 {
-	if(!image[0])
-	{
-		return;   // FIXME: error?
-	}
-
-	unsigned int q = log2(std::max(std::max(image[0]->getWidth(), image[0]->getHeight()), image[0]->getDepth()));
-
-	for(unsigned int i = 1; i <= q; i++)
-	{
-		if(image[i])
-		{
-			image[i]->unbind(this);
-		}
-
-		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), std::max(image[0]->getDepth() >> i, 1), image[0]->getFormat(), image[0]->getType());
-
-		if(!image[i])
-		{
-			return error(GL_OUT_OF_MEMORY);
-		}
-
-		getDevice()->stretchCube(image[i - 1], image[i]);
-	}
+    Texture::generateMipmaps(image);
 }
 
 egl::Image *Texture3D::getImage(unsigned int level)
@@ -1870,6 +1851,11 @@ void Texture2DArray::generateMipmaps()
 	UNIMPLEMENTED();
 }
 
+void Texture2DArray::stretchMipmap(egl::Image *source, egl::Image *dest)
+{
+    UNIMPLEMENTED();
+}
+
 TextureExternal::TextureExternal(GLuint name) : Texture2D(name)
 {
     mMinFilter = GL_LINEAR;
@@ -1907,7 +1893,7 @@ egl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Form
 		ERR("Invalid parameters");
 		return 0;
 	}
-		
+
 	bool lockable = true;
 
 	switch(format)

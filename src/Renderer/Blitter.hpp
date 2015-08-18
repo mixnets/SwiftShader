@@ -65,6 +65,7 @@ namespace sw
 
 	private:
 		bool read(Float4 &color, Pointer<Byte> element, Format format);
+		void blitInternal(Surface *source, const Region &sRect, Surface *dest, const Region &dRect, bool filter);
 		bool blitReactor(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter);
 		Routine *generate(BlitState &state);
 

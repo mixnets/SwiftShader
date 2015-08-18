@@ -28,6 +28,71 @@ namespace sw
 		delete blitCache;
 	}
 
+    void Blitter::blitInternal(Surface *source, const Region &sourceRegion, Surface *dest, const Region &destRegion, bool filter)
+    {
+        Region sRegion = sourceRegion;
+        Region dRegion = destRegion;
+
+        bool flipX = destRegion.x0 > destRegion.x1;
+        bool flipY = destRegion.y0 > destRegion.y1;
+        bool flipZ = destRegion.z0 > destRegion.z1;
+
+        if(flipX)
+        {
+            swap(dRegion.x0, dRegion.x1);
+            swap(sRegion.x0, sRegion.x1);
+        }
+        if(flipY)
+        {
+            swap(dRegion.y0, dRegion.y1);
+            swap(sRegion.y0, sRegion.y1);
+        }
+        if(flipZ)
+        {
+            swap(dRegion.z0, dRegion.z1);
+            swap(sRegion.z0, sRegion.z1);
+        }
+
+        source->lockInternal(sRegion.x0, sRegion.y0, sRegion.z0, sw::LOCK_READONLY, sw::PUBLIC);
+        dest->lockInternal(dRegion.x0, dRegion.y0, dRegion.z0, sw::LOCK_WRITEONLY, sw::PUBLIC);
+
+        float w = static_cast<float>(sRegion.x1 - sRegion.x0) / static_cast<float>(dRegion.x1 - dRegion.x0);
+        float h = static_cast<float>(sRegion.y1 - sRegion.y0) / static_cast<float>(dRegion.y1 - dRegion.y0);
+        float d = static_cast<float>(sRegion.z1 - sRegion.z0) / static_cast<float>(dRegion.z1 - dRegion.z0);
+
+        float z = (float)sRegion.z0 + 0.5f * d;
+        for(int k = dRegion.z0; k < sRegion.z1; k++)
+        {
+            float y = (float)sRegion.y0 + 0.5f * h;
+            for(int j = dRegion.y0; j < dRegion.y1; j++)
+            {
+                float x = (float)sRegion.x0 + 0.5f * w;
+                for(int i = dRegion.x0; i < dRegion.x1; i++)
+                {
+                    sw::Color<float> color;
+
+                    if(!filter)
+                    {
+                        color = source->readInternal((int)x, (int)y, (int)z);
+                    }
+                    else   // Bilinear filtering
+                    {
+                        color = source->sampleInternal(x, y, z);
+                    }
+
+                    dest->writeInternal(i, j, k, color);
+
+                    x += w;
+                }
+                y += h;
+            }
+            z += d;
+        }
+
+        source->unlockInternal();
+        dest->unlockInternal();
+    }
+
 	void Blitter::blit(Surface *source, const SliceRect &sourceRect, Surface *dest, const SliceRect &destRect, bool filter)
 	{
 		if(blitReactor(source, sourceRect, dest, destRect, filter))
@@ -35,89 +100,14 @@ namespace sw
 			return;
 		}
 
-		SliceRect sRect = sourceRect;
-		SliceRect dRect = destRect;
-
-		bool flipX = destRect.x0 > destRect.x1;
-		bool flipY = destRect.y0 > destRect.y1;
-
-		if(flipX)
-		{
-			swap(dRect.x0, dRect.x1);
-			swap(sRect.x0, sRect.x1);
-		}
-		if(flipY)
-		{
-			swap(dRect.y0, dRect.y1);
-			swap(sRect.y0, sRect.y1);
-		}
-
-		source->lockInternal(sRect.x0, sRect.y0, sRect.slice, sw::LOCK_READONLY, sw::PUBLIC);
-		dest->lockInternal(dRect.x0, dRect.y0, dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC);
-
-		float w = static_cast<float>(sRect.x1 - sRect.x0) / static_cast<float>(dRect.x1 - dRect.x0);
-		float h = static_cast<float>(sRect.y1 - sRect.y0) / static_cast<float>(dRect.y1 - dRect.y0);
-
-		const float xStart = (float)sRect.x0 + 0.5f * w;
-		float y = (float)sRect.y0 + 0.5f * h;
-
-		for(int j = dRect.y0; j < dRect.y1; j++)
-		{
-			float x = xStart;
-
-			for(int i = dRect.x0; i < dRect.x1; i++)
-			{
-				sw::Color<float> color;
-
-				if(!filter)
-				{
-					color = source->readInternal((int)x, (int)y);
-				}
-				else   // Bilinear filtering
-				{
-					color = source->sampleInternal(x, y);
-				}
-
-				dest->writeInternal(i, j, color);
-
-				x += w;
-			}
-
-			y += h;
-		}
-
-		source->unlockInternal();
-		dest->unlockInternal();
+		blitInternal(source, sourceRect, dest, destRect, filter);
 	}
 
 	void Blitter::blit3D(Surface *source, Surface *dest)
 	{
-		source->lockInternal(0, 0, 0, sw::LOCK_READONLY, sw::PUBLIC);
-		dest->lockInternal(0, 0, 0, sw::LOCK_WRITEONLY, sw::PUBLIC);
-
-		float w = static_cast<float>(source->getWidth())  / static_cast<float>(dest->getWidth());
-		float h = static_cast<float>(source->getHeight()) / static_cast<float>(dest->getHeight());
-		float d = static_cast<float>(source->getDepth())  / static_cast<float>(dest->getDepth());
-
-		float z = 0.5f * d;
-		for(int k = 0; k < dest->getDepth(); ++k)
-		{
-			float y = 0.5f * h;
-			for(int j = 0; j < dest->getHeight(); ++j)
-			{
-				float x = 0.5f * w;
-				for(int i = 0; i < dest->getWidth(); ++i)
-				{
-					dest->writeInternal(i, j, k, source->sampleInternal(x, y, z));
-					x += w;
-				}
-				y += h;
-			}
-			z += d;
-		}
-
-		source->unlockInternal();
-		dest->unlockInternal();
+	    Region sourceRegion(0, 0, 0, source->getWidth(), source->getHeight(), source->getDepth());
+	    Region destRegion(0, 0, 0, dest->getWidth(), dest->getHeight(), dest->getDepth());
+	    blitInternal(source, sourceRegion, dest, destRegion, true);
 	}
 
 	bool Blitter::read(Float4 &c, Pointer<Byte> element, Format format)
@@ -226,7 +216,7 @@ namespace sw
 
 						Int X0 = Max(Int(x0), 0);
 						Int Y0 = Max(Int(y0), 0);
-							
+
 						Int X1 = IfThenElse(X0 + 1 >= sWidth, X0, X0 + 1);
 						Int Y1 = IfThenElse(Y0 + 1 >= sHeight, Y0, Y0 + 1);
 
@@ -407,7 +397,7 @@ namespace sw
 
 		criticalSection.lock();
 		Routine *blitRoutine = blitCache->query(state);
-		
+
 		if(!blitRoutine)
 		{
 			blitRoutine = generate(state);
@@ -436,7 +426,7 @@ namespace sw
 		data.h = 1.0f / (dRect.y1 - dRect.y0) * (sRect.y1 - sRect.y0);
 		data.x0 = (float)sRect.x0 + 0.5f * data.w;
 		data.y0 = (float)sRect.y0 + 0.5f * data.h;
-		
+
 		data.x0d = dRect.x0;
 		data.x1d = dRect.x1;
 		data.y0d = dRect.y0;
