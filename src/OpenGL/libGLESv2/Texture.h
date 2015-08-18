@@ -116,7 +116,7 @@ public:
     virtual egl::Image *createSharedImage(GLenum target, unsigned int level);
     virtual bool isShared(GLenum target, unsigned int level) const = 0;
 
-    virtual void generateMipmaps() = 0;
+	virtual void generateMipmaps() = 0;
 	virtual void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source) = 0;
 
 protected:
@@ -128,6 +128,8 @@ protected:
 	bool copy(egl::Image *source, const sw::SliceRect &sourceRect, GLenum destFormat, GLint xoffset, GLint yoffset, GLint zoffset, egl::Image *dest);
 
 	bool isMipmapFiltered() const;
+	virtual void generateMipmaps(egl::Image **image);
+	virtual void stretchMipmap(egl::Image *source, egl::Image *dest) = 0;
 
     GLenum mMinFilter;
     GLenum mMagFilter;
@@ -194,11 +196,12 @@ public:
 
 protected:
 	bool isMipmapComplete() const;
+	virtual void stretchMipmap(egl::Image *source, egl::Image *dest);
 
 	egl::Image *image[IMPLEMENTATION_MAX_TEXTURE_LEVELS];
-    
+
     egl::Surface *mSurface;
-    
+
 	// A specific internal reference count is kept for colorbuffer proxy references,
     // because, as the renderbuffer acting as proxy will maintain a binding pointer
     // back to this texture, there would be a circular reference if we used a binding
@@ -219,7 +222,7 @@ public:
     void releaseProxy(const Renderbuffer *proxy);
 
     virtual GLenum getTarget() const;
-    
+
     virtual GLsizei getWidth(GLenum target, GLint level) const;
     virtual GLsizei getHeight(GLenum target, GLint level) const;
     virtual GLenum getFormat(GLenum target, GLint level) const;
@@ -251,12 +254,13 @@ public:
 private:
 	bool isCubeComplete() const;
 	bool isMipmapCubeComplete() const;
+	virtual void stretchMipmap(egl::Image *source, egl::Image *dest);
 
     // face is one of the GL_TEXTURE_CUBE_MAP_* enumerants. Returns NULL on failure.
 	egl::Image *getImage(GLenum face, unsigned int level);
 
 	egl::Image *image[6][IMPLEMENTATION_MAX_TEXTURE_LEVELS];
-	
+
 	// A specific internal reference count is kept for colorbuffer proxy references,
     // because, as the renderbuffer acting as proxy will maintain a binding pointer
     // back to this texture, there would be a circular reference if we used a binding
@@ -311,6 +315,7 @@ public:
 
 protected:
 	bool isMipmapComplete() const;
+	virtual void stretchMipmap(egl::Image *source, egl::Image *dest);
 
 	egl::Image *image[IMPLEMENTATION_MAX_TEXTURE_LEVELS];
 
@@ -334,6 +339,9 @@ public:
 
 	virtual GLenum getTarget() const;
 	virtual void generateMipmaps();
+
+protected:
+	virtual void stretchMipmap(egl::Image *source, egl::Image *dest);
 };
 
 class TextureExternal : public Texture2D

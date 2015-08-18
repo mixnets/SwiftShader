@@ -42,6 +42,20 @@ namespace sw
 		int slice;
 	};
 
+	struct Region
+	{
+		Region() {}
+		Region(int x0i, int y0i, int z0i, int x1i, int y1i, int z1i) : x0(x0i), y0(y0i), z0(z0i), x1(x1i), y1(y1i), z1(z1i) {}
+		Region(const SliceRect& rect) : Region(rect.x0, rect.y0, rect.slice, rect.x1, rect.y1, rect.slice + 1) {}
+
+		int x0;   // Inclusive
+		int y0;   // Inclusive
+		int z0;   // Inclusive
+		int x1;   // Exclusive
+		int y1;   // Exclusive
+		int z1;   // Exclusive
+	};
+
 	enum Format : unsigned char
 	{
 		FORMAT_NULL,
@@ -126,7 +140,7 @@ namespace sw
 		FORMAT_R32F,
 		FORMAT_G32R32F,
 		FORMAT_B32G32R32F,
-		FORMAT_A32B32G32R32F, 
+		FORMAT_A32B32G32R32F,
 		// Bump map formats
 		FORMAT_V8U8,
 		FORMAT_L6V5U5,
@@ -209,14 +223,14 @@ namespace sw
 			int sliceP;
 			Format format;
 			Lock lock;
-			
+
 			bool dirty;
 		};
 
 	public:
 		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
 		Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget);
-		
+
 		virtual ~Surface();
 
 		inline void *lock(int x, int y, int z, Lock lock, Accessor client, bool internal = false);
@@ -265,7 +279,7 @@ namespace sw
 		Color<float> sampleExternal(float x, float y) const;
 		void writeExternal(int x, int y, int z, const Color<float> &color);
 		void writeExternal(int x, int y, const Color<float> &color);
-		
+
 		Color<float> readInternal(int x, int y, int z) const;
 		Color<float> readInternal(int x, int y) const;
 		Color<float> sampleInternal(float x, float y, float z) const;

@@ -143,13 +143,13 @@ namespace es2
 	}
 
 	Device::~Device()
-	{		
+	{
 		if(depthStencil)
 		{
 			depthStencil->release();
 			depthStencil = 0;
 		}
-		
+
 		if(renderTarget)
 		{
 			renderTarget->release();
@@ -200,7 +200,7 @@ namespace es2
 
 		int x0(0), y0(0), width(0), height(0);
 		getScissoredRegion(depthStencil, x0, y0, width, height);
-			
+
 		depthStencil->clearDepthBuffer(z, x0, y0, width, height);
 	}
 
@@ -224,7 +224,7 @@ namespace es2
 			ERR("Invalid parameters: %dx%d", width, height);
 			return 0;
 		}
-		
+
 		bool lockable = true;
 
 		switch(format)
@@ -276,7 +276,7 @@ namespace es2
 			ERR("Out of memory");
 			return 0;
 		}
-		
+
 		return surface;
 	}
 
@@ -344,7 +344,7 @@ namespace es2
 		}
 
 		setIndexBuffer(0);
-		
+
 		DrawType drawType;
 
 		switch(primitiveType)
@@ -446,7 +446,7 @@ namespace es2
 			vertexShaderConstantF[startRegister + i][2] = constantData[i * 4 + 2];
 			vertexShaderConstantF[startRegister + i][3] = constantData[i * 4 + 3];
 		}
-			
+
 		vertexShaderConstantsFDirty = max(startRegister + count, vertexShaderConstantsFDirty);
 		vertexShaderDirty = true;   // Reload DEF constants
 	}
@@ -505,6 +505,59 @@ namespace es2
 		}
 	}
 
+	bool Device::stretch(sw::Surface *source, sw::Region sourceRegion, sw::Surface *dest, sw::Region destRegion, bool flipX, bool flipY)
+	{
+		bool scaling = (sourceRegion.x1 - sourceRegion.x0 != destRegion.x1 - destRegion.x0) ||
+					   (sourceRegion.y1 - sourceRegion.y0 != destRegion.y1 - destRegion.y0) ||
+					   (sourceRegion.z1 - sourceRegion.z0 != destRegion.z1 - destRegion.z0);
+		bool equalFormats = source->getInternalFormat() == dest->getInternalFormat();
+		bool alpha0xFF = false;
+
+		if((source->getInternalFormat() == FORMAT_A8R8G8B8 && dest->getInternalFormat() == FORMAT_X8R8G8B8) ||
+		   (source->getInternalFormat() == FORMAT_X8R8G8B8 && dest->getInternalFormat() == FORMAT_A8R8G8B8))
+		{
+			equalFormats = true;
+			alpha0xFF = true;
+		}
+
+		if(!scaling && equalFormats)
+		{
+			unsigned int sourcePitch = source->getInternalPitchB();
+			unsigned int destPitch = dest->getInternalPitchB();
+
+			for(int z = 0; z < destRegion.z1 - destRegion.z0; ++z)
+			{
+				unsigned char *sourceBytes = (unsigned char*)source->lockInternal(sourceRegion.x0, sourceRegion.y0, sourceRegion.z0, LOCK_READONLY, PUBLIC);
+				unsigned char *destBytes = (unsigned char*)dest->lockInternal(destRegion.x0, destRegion.y0, destRegion.z0, LOCK_READWRITE, PUBLIC);
+
+				copyBuffer(sourceBytes, destBytes,
+						   destRegion.x1 - destRegion.x0,
+						   destRegion.y1 - destRegion.y0,
+						   sourcePitch, destPitch,
+						   egl::Image::bytes(source->getInternalFormat()),
+						   flipX, flipY);
+
+				if(alpha0xFF)
+				{
+					for(int y = 0; y < destRegion.y1 - destRegion.y0; ++y, destBytes += destPitch)
+					{
+						for(int x = 0; x < destRegion.x1 - destRegion.x0; ++x)
+						{
+							destBytes[4 * x + 3] = 0xFF;
+						}
+					}
+				}
+			}
+
+			source->unlockInternal();
+			dest->unlockInternal();
+
+			return true;
+		}
+
+		return false;
+	}
+
 	bool Device::stretchRect(sw::Surface *source, const sw::SliceRect *sourceRect, sw::Surface *dest, const sw::SliceRect *destRect, bool filter)
 	{
 		if(!source || !dest)
@@ -512,7 +565,7 @@ namespace es2
 			ERR("Invalid parameters");
 			return false;
 		}
-		
+
 		int sWidth = source->getWidth();
 		int sHeight = source->getHeight();
 		int dWidth = dest->getWidth();
@@ -625,33 +678,7 @@ namespace es2
 				dest->unlockStencil();
 			}
 		}
-		else if(!scaling && equalFormats)
-		{
-			unsigned char *sourceBytes = (unsigned char*)source->lockInternal(sRect.x0, sRect.y0, sourceRect->slice, LOCK_READONLY, PUBLIC);
-			unsigned char *destBytes = (unsigned char*)dest->lockInternal(dRect.x0, dRect.y0, destRect->slice, LOCK_READWRITE, PUBLIC);
-			unsigned int sourcePitch = source->getInternalPitchB();
-			unsigned int destPitch = dest->getInternalPitchB();
-
-			unsigned int width = dRect.x1 - dRect.x0;
-			unsigned int height = dRect.y1 - dRect.y0;
-
-			copyBuffer(sourceBytes, destBytes, width, height, sourcePitch, destPitch, egl::Image::bytes(source->getInternalFormat()), flipX, flipY);
-
-			if(alpha0xFF)
-			{
-				for(unsigned int y = 0; y < height; ++y, destBytes += destPitch)
-				{
-					for(unsigned int x = 0; x < width; ++x)
-					{
-						destBytes[4 * x + 3] = 0xFF;
-					}
-				}
-			}
-
-			source->unlockInternal();
-			dest->unlockInternal();
-		}
-		else
+		else if(!stretch(source, sRect, dest, dRect, flipX, flipY))
 		{
 			if(flipX)
 			{
@@ -675,55 +702,10 @@ namespace es2
 			return false;
 		}
 
-		int sWidth  = source->getWidth();
-		int sHeight = source->getHeight();
-		int sDepth  = source->getDepth();
-		int dWidth  = dest->getWidth();
-		int dHeight = dest->getHeight();
-		int dDepth  = dest->getDepth();
+		sw::Region sourceRegion(0, source->getWidth(), 0, source->getHeight(), 0, source->getDepth());
+		sw::Region destRegion(0, dest->getWidth(), 0, dest->getHeight(), 0, dest->getDepth());
 
-		bool scaling = (sWidth != dWidth) || (sHeight != dHeight) || (sDepth != dDepth);
-		bool equalFormats = source->getInternalFormat() == dest->getInternalFormat();
-		bool alpha0xFF = false;
-
-		if((source->getInternalFormat() == FORMAT_A8R8G8B8 && dest->getInternalFormat() == FORMAT_X8R8G8B8) ||
-		   (source->getInternalFormat() == FORMAT_X8R8G8B8 && dest->getInternalFormat() == FORMAT_A8R8G8B8))
-		{
-			equalFormats = true;
-			alpha0xFF = true;
-		}
-
-		if(!scaling && equalFormats)
-		{
-			unsigned int sourcePitch = source->getInternalPitchB();
-			unsigned int destPitch = dest->getInternalPitchB();
-			unsigned int bytes = dWidth * egl::Image::bytes(source->getInternalFormat());
-
-			for(int z = 0; z < dDepth; ++z)
-			{
-				unsigned char *sourceBytes = (unsigned char*)source->lockInternal(0, 0, z, LOCK_READONLY, PUBLIC);
-				unsigned char *destBytes = (unsigned char*)dest->lockInternal(0, 0, z, LOCK_READWRITE, PUBLIC);
-				for(int y = 0; y < dHeight; ++y)
-				{
-					memcpy(destBytes, sourceBytes, bytes);
-
-					if(alpha0xFF)
-					{
-						for(int x = 0; x < dWidth; ++x)
-						{
-							destBytes[4 * x + 3] = 0xFF;
-						}
-					}
-
-					sourceBytes += sourcePitch;
-					destBytes += destPitch;
-				}
-			}
-
-			source->unlockInternal();
-			dest->unlockInternal();
-		}
-		else
+		if(!stretch(source, sourceRegion, dest, destRegion, false, false))
 		{
 			blit3D(source, dest);
 		}
@@ -773,7 +755,7 @@ namespace es2
 				{
 					Renderer::setVertexShaderConstantF(0, vertexShaderConstantF[0], vertexShaderConstantsFDirty);
 				}
-		
+
 				Renderer::setVertexShader(vertexShader);   // Loads shader constants set with DEF
 				vertexShaderConstantsFDirty = vertexShader->dirtyConstantsF;   // Shader DEF'ed constants are dirty
 			}
@@ -785,7 +767,7 @@ namespace es2
 			vertexShaderDirty = false;
 		}
 	}
-	
+
 	bool Device::bindViewport()
 	{
 		if(viewport.width <= 0 || viewport.height <= 0)
@@ -805,7 +787,7 @@ namespace es2
 			scissor.x1 = scissorRect.x1;
 			scissor.y0 = scissorRect.y0;
 			scissor.y1 = scissorRect.y1;
-			
+
 			setScissor(scissor);
 		}
 		else
@@ -815,7 +797,7 @@ namespace es2
 			scissor.x1 = viewport.x0 + viewport.width;
 			scissor.y0 = viewport.y0;
 			scissor.y1 = viewport.y0 + viewport.height;
-			
+
 			if(renderTarget)
 			{
 				scissor.x0 = max(scissor.x0, 0);
@@ -842,7 +824,7 @@ namespace es2
 		view.height = (float)viewport.height;
 		view.minZ = viewport.minZ;
 		view.maxZ = viewport.maxZ;
-		
+
 		Renderer::setViewport(view);
 
 		return true;
