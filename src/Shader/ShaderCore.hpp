@@ -105,10 +105,6 @@ namespace sw
 	Float4 arccosh(RValue<Float4> x, bool pp = false);  // Limited to x >= 1
 	Float4 arcsinh(RValue<Float4> x, bool pp = false);
 	Float4 arctanh(RValue<Float4> x, bool pp = false);  // Limited to ]-1, 1[ range
-	Int4 floatBitsToInt(RValue<Float4> x);
-	UInt4 floatBitsToUInt(RValue<Float4> x);
-	Float4 intBitsToFloat(RValue<Int4> x);
-	Float4 uintBitsToFloat(RValue<UInt4> x);
 
 	Float4 dot2(const Vector4f &v0, const Vector4f &v1);
 	Float4 dot3(const Vector4f &v0, const Vector4f &v1);
@@ -243,12 +239,25 @@ namespace sw
 
 	public:
 		void mov(Vector4f &dst, const Vector4f &src, bool floorToInteger = false);
+		void neg(Vector4f &dst, const Vector4f &src);
+		void negi(Vector4f &dst, const Vector4f &src);
+		void negu(Vector4f &dst, const Vector4f &src);
 		void f2b(Vector4f &dst, const Vector4f &src);
 		void b2f(Vector4f &dst, const Vector4f &src);
+		void f2i(Vector4f &dst, const Vector4f &src);
+		void i2f(Vector4f &dst, const Vector4f &src);
+		void f2u(Vector4f &dst, const Vector4f &src);
+		void u2f(Vector4f &dst, const Vector4f &src);
 		void add(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void addi(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void addu(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void sub(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void subi(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void subu(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void mad(Vector4f &dst, const Vector4f &src0, const Vector4f &src1, const Vector4f &src2);
 		void mul(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void muli(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void mulu(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void rcpx(Vector4f &dst, const Vector4f &src, bool pp = false);
 		void div(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void mod(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
@@ -268,7 +277,11 @@ namespace sw
 		void dp3(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void dp4(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void min(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void mini(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void minu(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void max(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void maxi(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void maxu(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void slt(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void step(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void exp2x(Vector4f &dst, const Vector4f &src, bool pp = false);
@@ -281,10 +294,6 @@ namespace sw
 		void att(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void lrp(Vector4f &dst, const Vector4f &src0, const Vector4f &src1, const Vector4f &src2);
 		void smooth(Vector4f &dst, const Vector4f &src0, const Vector4f &src1, const Vector4f &src2);
-		void floatBitsToInt(Vector4i &dst, const Vector4f &src);
-		void floatBitsToUInt(Vector4u &dst, const Vector4f &src);
-		void intBitsToFloat(Vector4f &dst, const Vector4i &src);
-		void uintBitsToFloat(Vector4f &dst, const Vector4u &src);
 		void frc(Vector4f &dst, const Vector4f &src);
 		void trunc(Vector4f &dst, const Vector4f &src);
 		void floor(Vector4f &dst, const Vector4f &src);
@@ -330,15 +339,16 @@ namespace sw
 		void cmp0(Vector4f &dst, const Vector4f &src0, const Vector4f &src1, const Vector4f &src2);
 		void cmp(Vector4f &dst, const Vector4f &src0, const Vector4f &src1, Control control);
 		void icmp(Vector4f &dst, const Vector4f &src0, const Vector4f &src1, Control control);
+		void ucmp(Vector4f &dst, const Vector4f &src0, const Vector4f &src1, Control control);
 		void select(Vector4f &dst, const Vector4f &src0, const Vector4f &src1, const Vector4f &src2);
 		void extract(Float4 &dst, const Vector4f &src0, const Float4 &src1);
 		void insert(Vector4f &dst, const Vector4f &src, const Float4 &element, const Float4 &index);
 		void all(Float4 &dst, const Vector4f &src);
 		void any(Float4 &dst, const Vector4f &src);
 		void not(Vector4f &dst, const Vector4f &src);
-		void or(Float4 &dst, const Float4 &src0, const Float4 &src1);
-		void xor(Float4 &dst, const Float4 &src0, const Float4 &src1);
-		void and(Float4 &dst, const Float4 &src0, const Float4 &src1);
+		void or(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void xor(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void and(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 
 	private:
 		void sgn(Float4 &dst, const Float4 &src);
