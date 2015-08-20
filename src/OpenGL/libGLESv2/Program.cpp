@@ -2194,9 +2194,10 @@ namespace es2
 	{
 		float vector[MAX_UNIFORM_VECTORS][4];
 
+		const float* vf = reinterpret_cast<const float*>(v);
 		for(int i = 0; i < count; i++)
 		{
-			vector[i][0] = (float)v[i];
+			vector[i][0] = vf[i];
 			vector[i][1] = 0;
 			vector[i][2] = 0;
 			vector[i][3] = 0;
@@ -2253,14 +2254,15 @@ namespace es2
 	{
 		float vector[MAX_UNIFORM_VECTORS][4];
 
+		const float* vf = reinterpret_cast<const float*>(v);
 		for(int i = 0; i < count; i++)
 		{
-			vector[i][0] = (float)v[0];
-			vector[i][1] = (float)v[1];
+			vector[i][0] = vf[0];
+			vector[i][1] = vf[1];
 			vector[i][2] = 0;
 			vector[i][3] = 0;
 
-			v += 2;
+			vf += 2;
 		}
 
 		Uniform *targetUniform = uniforms[uniformIndex[location].index];
@@ -2282,14 +2284,15 @@ namespace es2
 	{
 		float vector[MAX_UNIFORM_VECTORS][4];
 
+		const float* vf = reinterpret_cast<const float*>(v);
 		for(int i = 0; i < count; i++)
 		{
-			vector[i][0] = (float)v[0];
-			vector[i][1] = (float)v[1];
-			vector[i][2] = (float)v[2];
+			vector[i][0] = vf[0];
+			vector[i][1] = vf[1];
+			vector[i][2] = vf[2];
 			vector[i][3] = 0;
 
-			v += 3;
+			vf += 3;
 		}
 
 		Uniform *targetUniform = uniforms[uniformIndex[location].index];
@@ -2311,14 +2314,15 @@ namespace es2
 	{
 		float vector[MAX_UNIFORM_VECTORS][4];
 
+		const float* vf = reinterpret_cast<const float*>(v);
 		for(int i = 0; i < count; i++)
 		{
-			vector[i][0] = (float)v[0];
-			vector[i][1] = (float)v[1];
-			vector[i][2] = (float)v[2];
-			vector[i][3] = (float)v[3];
+			vector[i][0] = vf[0];
+			vector[i][1] = vf[1];
+			vector[i][2] = vf[2];
+			vector[i][3] = vf[3];
 
-			v += 4;
+			vf += 4;
 		}
 
 		Uniform *targetUniform = uniforms[uniformIndex[location].index];
@@ -2340,9 +2344,10 @@ namespace es2
 	{
 		float vector[MAX_UNIFORM_VECTORS][4];
 
+		const float* vf = reinterpret_cast<const float*>(v);
 		for(int i = 0; i < count; i++)
 		{
-			vector[i][0] = (float)v[i];
+			vector[i][0] = vf[i];
 			vector[i][1] = 0;
 			vector[i][2] = 0;
 			vector[i][3] = 0;
@@ -2399,14 +2404,15 @@ namespace es2
 	{
 		float vector[MAX_UNIFORM_VECTORS][4];
 
+		const float* vf = reinterpret_cast<const float*>(v);
 		for(int i = 0; i < count; i++)
 		{
-			vector[i][0] = (float)v[0];
-			vector[i][1] = (float)v[1];
+			vector[i][0] = vf[0];
+			vector[i][1] = vf[1];
 			vector[i][2] = 0;
 			vector[i][3] = 0;
 
-			v += 2;
+			vf += 2;
 		}
 
 		Uniform *targetUniform = uniforms[uniformIndex[location].index];
@@ -2428,14 +2434,15 @@ namespace es2
 	{
 		float vector[MAX_UNIFORM_VECTORS][4];
 
+		const float* vf = reinterpret_cast<const float*>(v);
 		for(int i = 0; i < count; i++)
 		{
-			vector[i][0] = (float)v[0];
-			vector[i][1] = (float)v[1];
-			vector[i][2] = (float)v[2];
+			vector[i][0] = vf[0];
+			vector[i][1] = vf[1];
+			vector[i][2] = vf[2];
 			vector[i][3] = 0;
 
-			v += 3;
+			vf += 3;
 		}
 
 		Uniform *targetUniform = uniforms[uniformIndex[location].index];
@@ -2457,14 +2464,15 @@ namespace es2
 	{
 		float vector[MAX_UNIFORM_VECTORS][4];
 
+		const float* vf = reinterpret_cast<const float*>(v);
 		for(int i = 0; i < count; i++)
 		{
-			vector[i][0] = (float)v[0];
-			vector[i][1] = (float)v[1];
-			vector[i][2] = (float)v[2];
-			vector[i][3] = (float)v[3];
+			vector[i][0] = vf[0];
+			vector[i][1] = vf[1];
+			vector[i][2] = vf[2];
+			vector[i][3] = vf[3];
 
-			v += 4;
+			vf += 4;
 		}
 
 		Uniform *targetUniform = uniforms[uniformIndex[location].index];
