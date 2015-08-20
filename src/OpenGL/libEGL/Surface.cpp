@@ -36,41 +36,8 @@
 namespace egl
 {
 
-Surface::Surface(Display *display, const Config *config, EGLNativeWindowType window)
-    : mDisplay(display), mConfig(config), mWindow(window)
+Surface::Surface(Display *display, Config *config) : display(display), config(config)
 {
-    frameBuffer = 0;
-	backBuffer = 0;
-
-    mDepthStencil = NULL;
-    mTexture = NULL;
-    mTextureFormat = EGL_NO_TEXTURE;
-    mTextureTarget = EGL_NO_TEXTURE;
-
-    mPixelAspectRatio = (EGLint)(1.0 * EGL_DISPLAY_SCALING);   // FIXME: Determine actual pixel aspect ratio
-    mRenderBuffer = EGL_BACK_BUFFER;
-    mSwapBehavior = EGL_BUFFER_PRESERVED;
-    mSwapInterval = -1;
-    setSwapInterval(1);
-}
-
-Surface::Surface(Display *display, const Config *config, EGLint width, EGLint height, EGLenum textureFormat, EGLenum textureType)
-    : mDisplay(display), mWindow(NULL), mConfig(config), mWidth(width), mHeight(height)
-{
-	frameBuffer = 0;
-	backBuffer = 0;
-
-    mDepthStencil = NULL;
-    mWindowSubclassed = false;
-    mTexture = NULL;
-    mTextureFormat = textureFormat;
-    mTextureTarget = textureType;
-
-    mPixelAspectRatio = (EGLint)(1.0 * EGL_DISPLAY_SCALING);   // FIXME: Determine actual pixel aspect ratio
-    mRenderBuffer = EGL_BACK_BUFFER;
-    mSwapBehavior = EGL_BUFFER_PRESERVED;
-    mSwapInterval = -1;
-    setSwapInterval(1);
 }
 
 Surface::~Surface()
@@ -78,25 +45,18 @@ Surface::~Surface()
     deleteResources();
 }
 
-bool Surface::initialize()
-{
-    ASSERT(!frameBuffer && !backBuffer && !mDepthStencil);
-
-    return reset();
-}
-
 void Surface::deleteResources()
 {
-    if(mDepthStencil)
+    if(depthStencil)
     {
-        mDepthStencil->release();
-        mDepthStencil = NULL;
+        depthStencil->release();
+        depthStencil = nullptr;
     }
 
-    if(mTexture)
+    if(texture)
     {
-        mTexture->releaseTexImage();
-        mTexture = NULL;
+        texture->releaseTexImage();
+        texture = nullptr;
     }
 
 	if(backBuffer)
@@ -104,47 +64,21 @@ void Surface::deleteResources()
 		backBuffer->release();
 		backBuffer = 0;
 	}
-
-	delete frameBuffer;
-	frameBuffer = 0;
-}
-
-bool Surface::reset()
-{
-    if(!mWindow)
-    {
-        return reset(mWidth, mHeight);
-    }
-
-	// FIXME: Wrap into an abstract Window class
-	#if defined(_WIN32)
-		RECT windowRect;
-		GetClientRect(mWindow, &windowRect);
-
-		return reset(windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
-	#elif defined(__ANDROID__)
-		return reset(ANativeWindow_getWidth(mWindow), ANativeWindow_getHeight(mWindow));
-	#else
-		XWindowAttributes windowAttributes;
-		libX11->XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
-
-		return reset(windowAttributes.width, windowAttributes.height);
-	#endif
 }
 
 bool Surface::reset(int backBufferWidth, int backBufferHeight)
 {
     deleteResources();
 
-    if(mWindow)
+    if(window)
     {
 		if(libGLES_CM)
 		{
-			frameBuffer = libGLES_CM->createFrameBuffer(mDisplay->getNativeDisplay(), mWindow, backBufferWidth, backBufferHeight);
+			frameBuffer = libGLES_CM->createFrameBuffer(display->getNativeDisplay(), window, backBufferWidth, backBufferHeight);
 		}
 		else if(libGLESv2)
 		{
-			frameBuffer = libGLESv2->createFrameBuffer(mDisplay->getNativeDisplay(), mWindow, backBufferWidth, backBufferHeight);
+			frameBuffer = libGLESv2->createFrameBuffer(display->getNativeDisplay(), window, backBufferWidth, backBufferHeight);
 		}
 
 		if(!frameBuffer)
@@ -157,11 +91,11 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 
 	if(libGLES_CM)
 	{
-		backBuffer = libGLES_CM->createBackBuffer(backBufferWidth, backBufferHeight, mConfig);
+		backBuffer = libGLES_CM->createBackBuffer(backBufferWidth, backBufferHeight, config);
 	}
 	else if(libGLESv2)
 	{
-		backBuffer = libGLESv2->createBackBuffer(backBufferWidth, backBufferHeight, mConfig);
+		backBuffer = libGLESv2->createBackBuffer(backBufferWidth, backBufferHeight, config);
 	}
 
     if(!backBuffer)
@@ -171,18 +105,18 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
         return error(EGL_BAD_ALLOC, false);
     }
 
-    if(mConfig->mDepthStencilFormat != sw::FORMAT_NULL)
+    if(config->mDepthStencilFormat != sw::FORMAT_NULL)
     {
 		if(libGLES_CM)
 		{
-			mDepthStencil = libGLES_CM->createDepthStencil(backBufferWidth, backBufferHeight, mConfig->mDepthStencilFormat, 1, false);
+			depthStencil = libGLES_CM->createDepthStencil(backBufferWidth, backBufferHeight, config->mDepthStencilFormat, 1, false);
 		}
 		else if(libGLESv2)
 		{
-			mDepthStencil = libGLESv2->createDepthStencil(backBufferWidth, backBufferHeight, mConfig->mDepthStencilFormat, 1, false);
+			depthStencil = libGLESv2->createDepthStencil(backBufferWidth, backBufferHeight, config->mDepthStencilFormat, 1, false);
 		}
 
-		if(!mDepthStencil)
+		if(!depthStencil)
 		{
 			ERR("Could not create depth/stencil buffer for surface");
 			deleteResources();
@@ -190,27 +124,15 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 		}
     }
 
-    mWidth = backBufferWidth;
-    mHeight = backBufferHeight;
+    width = backBufferWidth;
+    height = backBufferHeight;
 
     return true;
 }
 
 EGLNativeWindowType Surface::getWindowHandle()
 {
-    return mWindow;
-}
-
-void Surface::swap()
-{
-	if(backBuffer)
-    {
-		void *source = backBuffer->lockInternal(0, 0, 0, sw::LOCK_READONLY, sw::PUBLIC);
-		frameBuffer->flip(source, backBuffer->Surface::getInternalFormat());
-		backBuffer->unlockInternal();
-
-        checkForResize();
-	}
+    return window;
 }
 
 egl::Image *Surface::getRenderTarget()
@@ -225,96 +147,144 @@ egl::Image *Surface::getRenderTarget()
 
 egl::Image *Surface::getDepthStencil()
 {
-    if(mDepthStencil)
+    if(depthStencil)
     {
-        mDepthStencil->addRef();
+        depthStencil->addRef();
     }
 
-    return mDepthStencil;
+    return depthStencil;
 }
 
 void Surface::setSwapBehavior(EGLenum swapBehavior)
 {
-	mSwapBehavior = swapBehavior;
+	swapBehavior = swapBehavior;
 }
 
 void Surface::setSwapInterval(EGLint interval)
 {
-    if(mSwapInterval == interval)
+    if(swapInterval == interval)
     {
         return;
     }
 
-    mSwapInterval = interval;
-    mSwapInterval = std::max(mSwapInterval, mDisplay->getMinSwapInterval());
-    mSwapInterval = std::min(mSwapInterval, mDisplay->getMaxSwapInterval());
+    swapInterval = interval;
+    swapInterval = std::max(swapInterval, display->getMinSwapInterval());
+    swapInterval = std::min(swapInterval, display->getMaxSwapInterval());
 }
 
 EGLint Surface::getConfigID() const
 {
-    return mConfig->mConfigID;
+    return config->mConfigID;
 }
 
 EGLenum Surface::getSurfaceType() const
 {
-    return mConfig->mSurfaceType;
+    return config->mSurfaceType;
 }
 
 sw::Format Surface::getInternalFormat() const
 {
-    return mConfig->mRenderTargetFormat;
+    return config->mRenderTargetFormat;
 }
 
 EGLint Surface::getWidth() const
 {
-    return mWidth;
+    return width;
 }
 
 EGLint Surface::getHeight() const
 {
-    return mHeight;
+    return height;
 }
 
 EGLint Surface::getPixelAspectRatio() const
 {
-    return mPixelAspectRatio;
+    return pixelAspectRatio;
 }
 
 EGLenum Surface::getRenderBuffer() const
 {
-    return mRenderBuffer;
+    return renderBuffer;
 }
 
 EGLenum Surface::getSwapBehavior() const
 {
-    return mSwapBehavior;
+    return swapBehavior;
 }
 
 EGLenum Surface::getTextureFormat() const
 {
-    return mTextureFormat;
+    return textureFormat;
 }
 
 EGLenum Surface::getTextureTarget() const
 {
-    return mTextureTarget;
+    return textureTarget;
 }
 
 void Surface::setBoundTexture(egl::Texture *texture)
 {
-    mTexture = texture;
+    this->texture = texture;
 }
 
 egl::Texture *Surface::getBoundTexture() const
 {
-    return mTexture;
+    return texture;
 }
 
-bool Surface::checkForResize()
+WindowSurface::WindowSurface(Display *display, const Config *config, EGLNativeWindowType window)
+    : Surface(display, config), window(window)
+{
+    frameBuffer = nullptr;
+	backBuffer = nullptr;
+    depthStencil = nullptr;
+    texture = nullptr;
+    textureFormat = EGL_NO_TEXTURE;
+    textureTarget = EGL_NO_TEXTURE;
+
+    pixelAspectRatio = (EGLint)(1.0 * EGL_DISPLAY_SCALING);   // FIXME: Determine actual pixel aspect ratio
+    renderBuffer = EGL_BACK_BUFFER;
+    swapBehavior = EGL_BUFFER_PRESERVED;
+    swapInterval = -1;
+    setSwapInterval(1);
+}
+
+bool WindowSurface::initialize()
+{
+    ASSERT(!frameBuffer && !backBuffer && !depthStencil);
+
+	#if defined(_WIN32)
+		RECT windowRect;
+		GetClientRect(window, &windowRect);
+
+		return reset(windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
+	#elif defined(__ANDROID__)
+		return reset(ANativeWindow_getWidth(window), ANativeWindow_getHeight(window));
+	#else
+		XWindowAttributes windowAttributes;
+		libX11->XGetWindowAttributes(display->getNativeDisplay(), window, &windowAttributes);
+
+		return reset(windowAttributes.width, windowAttributes.height);
+	#endif
+}
+
+void WindowSurface::swap()
+{
+	if(backBuffer && frameBuffer)
+    {
+		void *source = backBuffer->lockInternal(0, 0, 0, sw::LOCK_READONLY, sw::PUBLIC);
+		frameBuffer->flip(source, backBuffer->Surface::getInternalFormat());
+		backBuffer->unlockInternal();
+
+        checkForResize();
+	}
+}
+
+bool WindowSurface::checkForResize()
 {
     #if defined(_WIN32)
 		RECT client;
-		if(!GetClientRect(mWindow, &client))
+		if(!GetClientRect(window, &client))
 		{
 			ASSERT(false);
 			return false;
@@ -323,17 +293,17 @@ bool Surface::checkForResize()
 		int clientWidth = client.right - client.left;
 		int clientHeight = client.bottom - client.top;
 	#elif defined(__ANDROID__)
-		int clientWidth = ANativeWindow_getWidth(mWindow);
-		int clientHeight = ANativeWindow_getHeight(mWindow);
+		int clientWidth = ANativeWindow_getWidth(window);
+		int clientHeight = ANativeWindow_getHeight(window);
 	#else
 		XWindowAttributes windowAttributes;
-		libX11->XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
+		libX11->XGetWindowAttributes(display->getNativeDisplay(), window, &windowAttributes);
 
 		int clientWidth = windowAttributes.width;
 		int clientHeight = windowAttributes.height;
 	#endif
 
-	bool sizeDirty = clientWidth != getWidth() || clientHeight != getHeight();
+	bool sizeDirty = (clientWidth != width) || (clientHeight != height);
 
     if(sizeDirty)
     {
@@ -349,4 +319,80 @@ bool Surface::checkForResize()
 
     return false;
 }
+
+void WindowSurface::deleteResources()
+{
+	delete frameBuffer;
+	frameBuffer = 0;
+
+	Surface::deleteResources();
+}
+
+PBufferSurface::PBufferSurface(Display *display, const Config *config, EGLint width, EGLint height, EGLenum textureFormat, EGLenum textureType, EGLBoolean largestPBuffer)
+    : Surface(display, config)
+{
+	this->width = width;
+	this->height = height;
+	this->largestPBuffer = largestPBuffer;
+
+	backBuffer = nullptr;
+    depthStencil = nullptr;
+    texture = nullptr;
+    textureFormat = textureFormat;
+    textureTarget = textureType;
+
+    pixelAspectRatio = (EGLint)(1.0 * EGL_DISPLAY_SCALING);   // FIXME: Determine actual pixel aspect ratio
+    renderBuffer = EGL_BACK_BUFFER;
+    swapBehavior = EGL_BUFFER_PRESERVED;
+    swapInterval = -1;
+    setSwapInterval(1);
+}
+
+bool PBufferSurface::initialize()
+{
+    ASSERT(!backBuffer && !depthStencil);
+
+	if(libGLES_CM)
+	{
+		backBuffer = libGLES_CM->createBackBuffer(width, height, config);
+	}
+	else if(libGLESv2)
+	{
+		backBuffer = libGLESv2->createBackBuffer(width, height, config);
+	}
+
+    if(!backBuffer)
+    {
+        ERR("Could not create back buffer");
+        deleteResources();
+        return error(EGL_BAD_ALLOC, false);
+    }
+
+    if(config->mDepthStencilFormat != sw::FORMAT_NULL)
+    {
+		if(libGLES_CM)
+		{
+			depthStencil = libGLES_CM->createDepthStencil(width, height, config->mDepthStencilFormat, 1, false);
+		}
+		else if(libGLESv2)
+		{
+			depthStencil = libGLESv2->createDepthStencil(width, height, config->mDepthStencilFormat, 1, false);
+		}
+
+		if(!depthStencil)
+		{
+			ERR("Could not create depth/stencil buffer for surface");
+			deleteResources();
+			return error(EGL_BAD_ALLOC, false);
+		}
+    }
+
+    return true;
+}
+
+void PBufferSurface::swap()
+{
+	// No effect
+}
+
 }
