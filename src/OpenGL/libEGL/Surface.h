@@ -31,9 +31,6 @@ class Image;
 class Surface : public gl::Object
 {
 public:
-    Surface(Display *display, const egl::Config *config, EGLNativeWindowType window);
-    Surface(Display *display, const egl::Config *config, EGLint width, EGLint height, EGLenum textureFormat, EGLenum textureTarget);
-
 	bool initialize();
     void swap();
 
@@ -56,45 +53,67 @@ public:
     virtual EGLenum getSwapBehavior() const;
     virtual EGLenum getTextureFormat() const;
     virtual EGLenum getTextureTarget() const;
+	virtual EGLBoolean getLargestPBuffer() const;
 
     virtual void setBoundTexture(egl::Texture *texture);
     virtual egl::Texture *getBoundTexture() const;
 
+	virtual bool isWindowSurface() const { return false; }
+	virtual bool isPBufferSurface() const { return false; }
+
 	bool checkForResize();   // Returns true if surface changed due to resize
 
-private:
+protected:
+	Surface(Display *display);
+
 	virtual ~Surface();
 
     void deleteResources();
     bool reset();
 
-    Display *const mDisplay;
-    egl::Image *mDepthStencil;
+    Display *const display;
+    egl::Image *depthStencil;
 	sw::FrameBuffer *frameBuffer;
 	egl::Image *backBuffer;
-	egl::Texture *mTexture;
+	egl::Texture *texture;
 
 	bool reset(int backbufferWidth, int backbufferHeight);
     
-    const EGLNativeWindowType mWindow;   // Window that the surface is created for.
-    bool mWindowSubclassed;              // Indicates whether we successfully subclassed mWindow for WM_RESIZE hooking
-    const egl::Config *mConfig;          // EGL config surface was created with
-    EGLint mHeight;                      // Height of surface
-    EGLint mWidth;                       // Width of surface
-//  EGLint horizontalResolution;         // Horizontal dot pitch
-//  EGLint verticalResolution;           // Vertical dot pitch
-//  EGLBoolean largestPBuffer;           // If true, create largest pbuffer possible
-//  EGLBoolean mipmapTexture;            // True if texture has mipmaps
-//  EGLint mipmapLevel;                  // Mipmap level to render to
-//  EGLenum multisampleResolve;          // Multisample resolve behavior
-    EGLint mPixelAspectRatio;            // Display aspect ratio
-    EGLenum mRenderBuffer;               // Render buffer
-    EGLenum mSwapBehavior;               // Buffer swap behavior
-    EGLenum mTextureFormat;              // Format of texture: RGB, RGBA, or no texture
-    EGLenum mTextureTarget;              // Type of texture: 2D or no texture
-//  EGLenum vgAlphaFormat;               // Alpha format for OpenVG
-//  EGLenum vgColorSpace;                // Color space for OpenVG
-    EGLint mSwapInterval;
+	const EGLNativeWindowType window;   // Window that the surface is created for.
+	bool windowSubclassed;              // Indicates whether we successfully subclassed mWindow for WM_RESIZE hooking
+	const egl::Config *config;          // EGL config surface was created with
+	EGLint height;                      // Height of surface
+	EGLint width;                       // Width of surface
+//  EGLint horizontalResolution;        // Horizontal dot pitch
+//  EGLint verticalResolution;          // Vertical dot pitch
+	EGLBoolean largestPBuffer;          // If true, create largest pbuffer possible
+//  EGLBoolean mipmapTexture;           // True if texture has mipmaps
+//  EGLint mipmapLevel;                 // Mipmap level to render to
+//  EGLenum multisampleResolve;         // Multisample resolve behavior
+	EGLint pixelAspectRatio;            // Display aspect ratio
+	EGLenum renderBuffer;               // Render buffer
+	EGLenum swapBehavior;               // Buffer swap behavior
+	EGLenum textureFormat;              // Format of texture: RGB, RGBA, or no texture
+	EGLenum textureTarget;              // Type of texture: 2D or no texture
+//  EGLenum vgAlphaFormat;              // Alpha format for OpenVG
+//  EGLenum vgColorSpace;               // Color space for OpenVG
+	EGLint swapInterval;
+};
+
+class WindowSurface : public Surface
+{
+public:
+	WindowSurface(Display *display, const egl::Config *config, EGLNativeWindowType window);
+
+	bool isWindowSurface() const override { return true; }
+};
+
+class PBufferSurface : public Surface
+{
+public:
+	PBufferSurface(Display *display, const egl::Config *config, EGLint width, EGLint height, EGLenum textureFormat, EGLenum textureTarget, EGLBoolean largestPBuffer);
+
+	bool isPBufferSurface() const override { return true; }
 };
 }
 
