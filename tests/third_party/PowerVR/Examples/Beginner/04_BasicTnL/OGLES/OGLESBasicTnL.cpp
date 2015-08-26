@@ -150,16 +150,16 @@ bool OGLESBasicTnL::InitView()
 
 	// Interleaved vertex data
 	float afVertices[] = { -0.5f,-0.5f,0.0f, // Position
-							0.0f,0.0f,			  // UV
+							0.0f,1.0f,			  // UV
 							0,0,1,			  // Normal
 							0.5f,-0.5f,0.0f,
-							1.0f,0.0f,
+							1.0f,1.0f,
 							0,0,1,
 							-0.5f,0.5f,0.0f,
-							0.0f,1.0f,
+							0.0f,0.0f,
 							0,0,1,
 							0.5f,0.5f,0.0f,
-							1.0f,1.0f,
+							1.0f,0.0f,
 							0,0,1};
 
 	glGenBuffers(1, &m_ui32Vbo);

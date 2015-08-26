@@ -1539,7 +1539,7 @@ namespace sw
 			Int c2 = Int(*Pointer<Byte>(buffer[0] + index[2]));
 			Int c3 = Int(*Pointer<Byte>(buffer[0] + index[3]));
 			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-			Short4 Y = Unpack(As<Byte4>(c0));
+			Short4 Y = Unpack(As<Byte4>(c0)) - Short4(16 * 256);
 
 			computeIndices(index, uuuu, vvvv, wwww, mipmap, 1);
 			c0 = Int(*Pointer<Byte>(buffer[1] + index[0]));
@@ -1556,13 +1556,18 @@ namespace sw
 			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
 			Short4 V = Unpack(As<Byte4>(c0)) - Short4(128 * 256);
 
-			Short4 dR = MulHigh(Short4(1.403f * 256), V) << 8;
-			Short4 dG = (MulHigh(Short4(-0.344f * 256), U) + MulHigh(Short4(-0.714f * 256), V)) << 8;
-			Short4 dB = MulHigh(Short4(1.770f * 256), U) << 8;
+			// BT.601 YUV to RGB reference
+			//  R = (Y - 16) * 1.164              - V * -1.596
+			//  G = (Y - 16) * 1.164 - U *  0.391 - V *  0.813
+			//  B = (Y - 16) * 1.164 - U * -2.018
+			Y = MulHigh(Short4(1.164 * 256), Y);
+			Short4 dR = MulHigh(Short4(1.596f * 256), V);
+			Short4 dG = MulHigh(Short4(-0.391f * 256), U) + MulHigh(Short4(-0.813f * 256), V);
+			Short4 dB = MulHigh(Short4(2.018f * 256), U);
 
-			c.x = Y + dR;
-			c.y = Y + dG;
-			c.z = Y + dB;
+			c.x = (Y + dR) << 8;
+			c.y = (Y + dG) << 8;
+			c.z = (Y + dB) << 8;
 		}
 		else if(has16bitTextureFormat())
 		{
