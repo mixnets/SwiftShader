@@ -238,7 +238,7 @@ namespace sw
 		typedef Shader::Control Control;
 
 	public:
-		void mov(Vector4f &dst, const Vector4f &src, bool floorToInteger = false);
+		void mov(Vector4f &dst, const Vector4f &src, bool integerDestination = false);
 		void neg(Vector4f &dst, const Vector4f &src);
 		void negi(Vector4f &dst, const Vector4f &src);
 		void negu(Vector4f &dst, const Vector4f &src);
