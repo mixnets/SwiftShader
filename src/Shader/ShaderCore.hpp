@@ -239,6 +239,7 @@ namespace sw
 
 	public:
 		void mov(Vector4f &dst, const Vector4f &src, bool floorToInteger = false);
+		void mova(Vector4f &dst, const Vector4f &src);
 		void neg(Vector4f &dst, const Vector4f &src);
 		void negi(Vector4f &dst, const Vector4f &src);
 		void negu(Vector4f &dst, const Vector4f &src);

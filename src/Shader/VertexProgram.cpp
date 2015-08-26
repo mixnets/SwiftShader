@@ -190,7 +190,7 @@ namespace sw
 			case Shader::OPCODE_MINI:       mini(d, s0, s1);                break;
 			case Shader::OPCODE_MINU:       minu(d, s0, s1);                break;
 			case Shader::OPCODE_MOV:		mov(d, s0, integer);			break;
-			case Shader::OPCODE_MOVA:		mov(d, s0);						break;
+			case Shader::OPCODE_MOVA:       mova(d, s0);                    break;
 			case Shader::OPCODE_NEG:        neg(d, s0);                     break;
 			case Shader::OPCODE_NEGI:       negi(d, s0);                    break;
 			case Shader::OPCODE_NEGU:       negu(d, s0);                    break;

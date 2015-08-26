@@ -593,6 +593,14 @@ namespace sw
 		}
 	}
 
+	void ShaderCore::mova(Vector4f &dst, const Vector4f &src)
+	{
+		dst.x = As<Float4>(RoundInt(src.x));
+		dst.y = As<Float4>(RoundInt(src.y));
+		dst.z = As<Float4>(RoundInt(src.z));
+		dst.w = As<Float4>(RoundInt(src.w));
+	}
+
 	void ShaderCore::neg(Vector4f &dst, const Vector4f &src)
 	{
 		dst.x = -src.x;
