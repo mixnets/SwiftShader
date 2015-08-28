@@ -470,6 +470,10 @@ namespace egl
 			{
 				return sw::FORMAT_A8;
 			}
+			else if(format == GL_YV12_ANDROID)
+			{
+				return sw::FORMAT_YV12;
+			}
 			else UNREACHABLE(format);
 		}
 		else if(type == GL_UNSIGNED_SHORT || type == GL_UNSIGNED_INT)
@@ -506,7 +510,7 @@ namespace egl
 	}
 
 	// Returns the size, in bytes, of a single texel in an Image
-	int ComputePixelSize(GLenum format, GLenum type)
+	static int ComputePixelSize(GLenum format, GLenum type)
 	{
 		switch(type)
 		{

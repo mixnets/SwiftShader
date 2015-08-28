@@ -22,6 +22,8 @@
 #define LOGLOCK(...)
 #endif
 
+#define GL_YV12_ANDROID 0x32315659   // FOURCC of YUV 4:2:0 Planar
+
 namespace egl
 {
 // Types common between gl.h and gl2.h
@@ -31,7 +33,6 @@ typedef int GLint;
 typedef int GLsizei;
 
 sw::Format SelectInternalFormat(GLenum format, GLenum type);
-int ComputePixelSize(GLenum format, GLenum type);
 GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment);
 GLsizei ComputeCompressedPitch(GLsizei width, GLenum format);
 GLsizei ComputeCompressedSize(GLsizei width, GLsizei height, GLenum format);

@@ -172,6 +172,7 @@ namespace sw
 				case FORMAT_G8R8:
 				case FORMAT_G16R16:
 				case FORMAT_A16B16G16R16:
+				case FORMAT_YV12:
 					if(componentCount < 2) c.y = Short4(0x1000, 0x1000, 0x1000, 0x1000);
 					if(componentCount < 3) c.z = Short4(0x1000, 0x1000, 0x1000, 0x1000);
 					if(componentCount < 4) c.w = Short4(0x1000, 0x1000, 0x1000, 0x1000);
@@ -466,12 +467,12 @@ namespace sw
 			if(hasUnsignedTextureComponent(1)) c.y = MulHigh(As<UShort4>(c.y), utri); else c.y = MulHigh(c.y, stri);
 			if(hasUnsignedTextureComponent(2)) c.z = MulHigh(As<UShort4>(c.z), utri); else c.z = MulHigh(c.z, stri);
 			if(hasUnsignedTextureComponent(3)) c.w = MulHigh(As<UShort4>(c.w), utri); else c.w = MulHigh(c.w, stri);
-			
+
 			c.x += cc.x;
 			c.y += cc.y;
 			c.z += cc.z;
 			c.w += cc.w;
-			
+
 			if(!hasUnsignedTextureComponent(0)) c.x += c.x;
 			if(!hasUnsignedTextureComponent(1)) c.y += c.y;
 			if(!hasUnsignedTextureComponent(2)) c.z += c.z;
@@ -483,7 +484,7 @@ namespace sw
 		if(state.addressingModeU == ADDRESSING_BORDER)
 		{
 			Short4 u0;
-			
+
 			border(u0, u);
 
 			borderMask = u0;
@@ -492,7 +493,7 @@ namespace sw
 		if(state.addressingModeV == ADDRESSING_BORDER)
 		{
 			Short4 v0;
-			
+
 			border(v0, v);
 
 			if(state.addressingModeU == ADDRESSING_BORDER)
@@ -639,13 +640,13 @@ namespace sw
 			sampleTexel(c1, uuuu1, vvvv0, vvvv0, mipmap, buffer);
 			sampleTexel(c2, uuuu0, vvvv1, vvvv1, mipmap, buffer);
 			sampleTexel(c3, uuuu1, vvvv1, vvvv1, mipmap, buffer);
-	
+
 			if(!gather)   // Blend
 			{
 				// Fractions
 				UShort4 f0u = uuuu0;
 				UShort4 f0v = vvvv0;
-			
+
 				if(!state.hasNPOTTexture)
 				{
 					f0u = f0u << *Pointer<Long1>(mipmap + OFFSET(Mipmap,uInt));   // .u
@@ -659,7 +660,7 @@ namespace sw
 
 				UShort4 f1u = ~f0u;
 				UShort4 f1v = ~f0v;
-			
+
 				UShort4 f0u0v = MulHigh(f0u, f0v);
 				UShort4 f1u0v = MulHigh(f1u, f0v);
 				UShort4 f0u1v = MulHigh(f0u, f1v);
@@ -817,7 +818,7 @@ namespace sw
 		Pointer<Byte> mipmap;
 		Pointer<Byte> buffer[4];
 		Int face[4];
-		
+
 		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
 
 		Short4 uuuu;
@@ -970,7 +971,7 @@ namespace sw
 		if(state.addressingModeU == ADDRESSING_BORDER)
 		{
 			Int4 u0;
-			
+
 			border(u0, u);
 
 			borderMask = u0;
@@ -979,7 +980,7 @@ namespace sw
 		if(state.addressingModeV == ADDRESSING_BORDER)
 		{
 			Int4 v0;
-			
+
 			border(v0, v);
 
 			if(state.addressingModeU == ADDRESSING_BORDER)
@@ -1087,7 +1088,7 @@ namespace sw
 			sampleFloat3D(texture, c, u, v, w, lod, secondLOD);
 		}
 	}
-	
+
 	void SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &z, Float &lod, Int face[4], bool secondLOD)
 	{
 		int componentCount = textureComponentCount();
@@ -1095,7 +1096,7 @@ namespace sw
 
 		Pointer<Byte> mipmap;
 		Pointer<Byte> buffer[4];
-		
+
 		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
 
 		Short4 uuuu;
@@ -1120,7 +1121,7 @@ namespace sw
 			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1);
 			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1);
 
-			sampleTexel(c0, uuuu0, vvvv0, vvvv0, z, mipmap, buffer);		
+			sampleTexel(c0, uuuu0, vvvv0, vvvv0, z, mipmap, buffer);
 			sampleTexel(c1, uuuu1, vvvv0, vvvv0, z, mipmap, buffer);
 			sampleTexel(c2, uuuu0, vvvv1, vvvv1, z, mipmap, buffer);
 			sampleTexel(c3, uuuu1, vvvv1, vvvv1, z, mipmap, buffer);
@@ -1264,7 +1265,7 @@ namespace sw
 			{
 				Float4 dudxy = Float4(dsx.x.xx, dsy.x.xx);
 				Float4 dvdxy = Float4(dsx.y.xx, dsy.y.xx);
-				
+
 				duvdxy = Float4(dudxy.xz, dvdxy.xz);
 			}
 
@@ -1434,7 +1435,7 @@ namespace sw
 
 		// M = xyz * x + yzx * y + zxy * z
 		Float4 M = As<Float4>((xyz & As<Int4>(x)) | (yzx & As<Int4>(y)) | (zxy & As<Int4>(z)));
-		
+
 		M = reciprocal(M);
 		U *= M * Float4(0.5f);
 		V *= M * Float4(0.5f);
@@ -1455,7 +1456,7 @@ namespace sw
 
 			// M = xyz * x + yzx * y + zxy * z
 			Float4 M = As<Float4>((xyz & As<Int4>(x)) | (yzx & As<Int4>(y)) | (zxy & As<Int4>(z)));
-			
+
 			M = Rcp_pp(M);
 			lodU *= M * Float4(0.5f);
 			lodV *= M * Float4(0.5f);
@@ -1531,7 +1532,50 @@ namespace sw
 		int f2 = state.textureType == TEXTURE_CUBE ? 2 : 0;
 		int f3 = state.textureType == TEXTURE_CUBE ? 3 : 0;
 
-		if(has16bitTextureFormat())
+		if(state.textureFormat == FORMAT_YV12)
+		{
+			Int c0 = Int(*Pointer<Byte>(buffer[0] + index[0]));
+			Int c1 = Int(*Pointer<Byte>(buffer[0] + index[1]));
+			Int c2 = Int(*Pointer<Byte>(buffer[0] + index[2]));
+			Int c3 = Int(*Pointer<Byte>(buffer[0] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
+
+			computeIndices(index, uuuu, vvvv, wwww, mipmap + sizeof(Mipmap));
+			c0 = Int(*Pointer<Byte>(buffer[1] + index[0]));
+			c1 = Int(*Pointer<Byte>(buffer[1] + index[1]));
+			c2 = Int(*Pointer<Byte>(buffer[1] + index[2]));
+			c3 = Int(*Pointer<Byte>(buffer[1] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
+
+			c0 = Int(*Pointer<Byte>(buffer[2] + index[0]));
+			c1 = Int(*Pointer<Byte>(buffer[2] + index[1]));
+			c2 = Int(*Pointer<Byte>(buffer[2] + index[2]));
+			c3 = Int(*Pointer<Byte>(buffer[2] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
+
+			// BT.709 YUV to RGB reference
+			//  R = (Y - 16) * 1.164                      + (V - 128) *  1.793
+			//  G = (Y - 16) * 1.164 + (U - 128) * -0.213 + (V - 128) * -0.533
+			//  B = (Y - 16) * 1.164 + (U - 128) *  2.112
+
+			// Normalized and sorted for preventing underflow when using saturating unsigned subtraction
+			//  r = y * 1.164 + v * 1.793 - 0.973051
+			//  g = y * 1.164 + 0.301427  - (u * 0.213 + v * 0.533)
+			//  b = y * 1.164 + u * 2.112 - 1.13318
+
+			UShort4 y = MulHigh(As<UShort4>(Y), UShort4(1.164 * 0x4000));
+			UShort4 r = SubSat(y + MulHigh(V, UShort4(1.793 * 0x4000)), UShort4(0.973051 * 0x4000));
+			UShort4 g = SubSat(y + UShort4(0.301427 * 0x4000), MulHigh(U, UShort4(0.213 * 0x4000)) + MulHigh(V, UShort4(0.533 * 0x4000)));
+			UShort4 b = SubSat(y + MulHigh(U, UShort4(2.112 * 0x4000)), UShort4(1.13318 * 0x4000));
+
+			c.x = Min(r, UShort4(0x3FFF)) << 2;
+			c.y = Min(g, UShort4(0x3FFF)) << 2;
+			c.z = Min(b, UShort4(0x3FFF)) << 2;
+		}
+		else if(has16bitTextureFormat())
 		{
 			c.x = Insert(c.x, *Pointer<Short>(buffer[f0] + 2 * index[0]), 0);
 			c.x = Insert(c.x, *Pointer<Short>(buffer[f1] + 2 * index[1]), 1);
@@ -1561,7 +1605,7 @@ namespace sw
 					Byte8 c3 = *Pointer<Byte8>(buffer[f3] + 4 * index[3]);
 					c.x = UnpackLow(c0, c1);
 					c.y = UnpackLow(c2, c3);
-					
+
 					switch(state.textureFormat)
 					{
 					case FORMAT_A8R8G8B8:
@@ -1766,6 +1810,12 @@ namespace sw
 		if(state.textureType != TEXTURE_CUBE)
 		{
 			buffer[0] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[0]));
+
+			if(state.textureFormat == FORMAT_YV12)
+			{
+				buffer[1] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[1]));
+				buffer[2] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[2]));
+			}
 		}
 		else
 		{
@@ -1927,11 +1977,12 @@ namespace sw
 		case FORMAT_V16U16:
 		case FORMAT_A16W16V16U16:
 		case FORMAT_Q16W16V16U16:
+		case FORMAT_YV12:
 			return false;
 		default:
 			ASSERT(false);
 		}
-		
+
 		return false;
 	}
 
@@ -1958,6 +2009,7 @@ namespace sw
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32FS8_SHADOW:
+		case FORMAT_YV12:
 			return false;
 		case FORMAT_L16:
 		case FORMAT_G16R16:
@@ -1969,7 +2021,7 @@ namespace sw
 		default:
 			ASSERT(false);
 		}
-		
+
 		return false;
 	}
 
@@ -2002,10 +2054,11 @@ namespace sw
 		case FORMAT_V16U16:         return false;
 		case FORMAT_A16W16V16U16:   return false;
 		case FORMAT_Q16W16V16U16:   return false;
+		case FORMAT_YV12:           return component < 3;
 		default:
 			ASSERT(false);
 		}
-		
+
 		return false;
 	}
 }
