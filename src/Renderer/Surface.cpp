@@ -36,6 +36,11 @@ namespace sw
 	unsigned int *Surface::palette = 0;
 	unsigned int Surface::paletteID = 0;
 
+	int roundUp(int value, int roundTo)
+	{
+		return ((value + roundTo - 1) / roundTo) * roundTo;
+	}
+
 	void Rect::clip(int minX, int minY, int maxX, int maxY)
 	{
 		x0 = clamp(x0, minX, maxX);
@@ -764,7 +769,59 @@ namespace sw
 			#endif
 			case FORMAT_ATI1:
 			case FORMAT_ETC1:
+			case FORMAT_R11_EAC:
+			case FORMAT_SIGNED_R11_EAC:
+			case FORMAT_RGB8_ETC2:
+			case FORMAT_SRGB8_ETC2:
+			case FORMAT_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+			case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
 				return (unsigned char*)buffer + 8 * (x / 4) + (y / 4) * pitchB + z * sliceB;
+			case FORMAT_RG11_EAC:
+			case FORMAT_SIGNED_RG11_EAC:
+			case FORMAT_RGBA8_ETC2_EAC:
+			case FORMAT_SRGB8_ALPHA8_ETC2_EAC:
+			case FORMAT_RGBA_ASTC_4x4_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:
+				return (unsigned char*)buffer + 16 * (x / 4) + (y / 4) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_5x4_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:
+				return (unsigned char*)buffer + 16 * (x / 5) + (y / 4) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_5x5_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:
+				return (unsigned char*)buffer + 16 * (x / 5) + (y / 5) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_6x5_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_6x5_KHR:
+				return (unsigned char*)buffer + 16 * (x / 6) + (y / 5) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_6x6_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_6x6_KHR:
+				return (unsigned char*)buffer + 16 * (x / 6) + (y / 6) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_8x5_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_8x5_KHR:
+				return (unsigned char*)buffer + 16 * (x / 8) + (y / 5) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_8x6_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_8x6_KHR:
+				return (unsigned char*)buffer + 16 * (x / 8) + (y / 6) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_8x8_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_8x8_KHR:
+				return (unsigned char*)buffer + 16 * (x / 8) + (y / 8) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_10x5_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_10x5_KHR:
+				return (unsigned char*)buffer + 16 * (x / 10) + (y / 5) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_10x6_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_10x6_KHR:
+				return (unsigned char*)buffer + 16 * (x / 10) + (y / 6) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_10x8_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_10x8_KHR:
+				return (unsigned char*)buffer + 16 * (x / 10) + (y / 8) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_10x10_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR:
+				return (unsigned char*)buffer + 16 * (x / 10) + (y / 10) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_12x10_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR:
+				return (unsigned char*)buffer + 16 * (x / 12) + (y / 10) * pitchB + z * sliceB;
+			case FORMAT_RGBA_ASTC_12x12_KHR:
+			case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR:
+				return (unsigned char*)buffer + 16 * (x / 12) + (y / 12) * pitchB + z * sliceB;
 			#if S3TC_SUPPORT
 			case FORMAT_DXT3:
 			case FORMAT_DXT5:
@@ -1104,6 +1161,44 @@ namespace sw
 		case FORMAT_ATI1:				return 2;   // Column of four pixels
 		case FORMAT_ATI2:				return 4;   // Column of four pixels
 		case FORMAT_ETC1:				return 2;   // Column of four pixels
+		case FORMAT_R11_EAC:			return 2;
+		case FORMAT_SIGNED_R11_EAC:		return 2;
+		case FORMAT_RG11_EAC:			return 4;
+		case FORMAT_SIGNED_RG11_EAC:	return 4;
+		case FORMAT_RGB8_ETC2:			return 2;
+		case FORMAT_SRGB8_ETC2:			return 2;
+		case FORMAT_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:	return 2;
+		case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:	return 2;
+		case FORMAT_RGBA8_ETC2_EAC:			return 4;
+		case FORMAT_SRGB8_ALPHA8_ETC2_EAC:	return 4;
+		case FORMAT_RGBA_ASTC_4x4_KHR:
+		case FORMAT_RGBA_ASTC_5x4_KHR:
+		case FORMAT_RGBA_ASTC_5x5_KHR:
+		case FORMAT_RGBA_ASTC_6x5_KHR:
+		case FORMAT_RGBA_ASTC_6x6_KHR:
+		case FORMAT_RGBA_ASTC_8x5_KHR:
+		case FORMAT_RGBA_ASTC_8x6_KHR:
+		case FORMAT_RGBA_ASTC_8x8_KHR:
+		case FORMAT_RGBA_ASTC_10x5_KHR:
+		case FORMAT_RGBA_ASTC_10x6_KHR:
+		case FORMAT_RGBA_ASTC_10x8_KHR:
+		case FORMAT_RGBA_ASTC_10x10_KHR:
+		case FORMAT_RGBA_ASTC_12x10_KHR:
+		case FORMAT_RGBA_ASTC_12x12_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_6x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_6x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x8_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x8_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR: return 0; // FIXME
 		// Bumpmap formats
 		case FORMAT_V8U8:				return 2;
 		case FORMAT_L6V5U5:				return 2;
@@ -1168,8 +1263,52 @@ namespace sw
 		case FORMAT_DXT1:
 		#endif
 		case FORMAT_ETC1:
+		case FORMAT_R11_EAC:
+		case FORMAT_SIGNED_R11_EAC:
+		case FORMAT_RGB8_ETC2:
+		case FORMAT_SRGB8_ETC2:
+		case FORMAT_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
 			return 8 * ((width + 3) / 4);    // 64 bit per 4x4 block, computed per 4 rows
-		#if S3TC_SUPPORT
+		case FORMAT_RG11_EAC:
+		case FORMAT_SIGNED_RG11_EAC:
+		case FORMAT_RGBA8_ETC2_EAC:
+		case FORMAT_SRGB8_ALPHA8_ETC2_EAC:
+		case FORMAT_RGBA_ASTC_4x4_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:
+			return 16 * ((width + 3) / 4);    // 128 bit per 4x4 block, computed per 4 rows
+		case FORMAT_RGBA_ASTC_5x4_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:
+		case FORMAT_RGBA_ASTC_5x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:
+			return 16 * ((width + 4) / 5);
+		case FORMAT_RGBA_ASTC_6x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_6x5_KHR:
+		case FORMAT_RGBA_ASTC_6x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_6x6_KHR:
+			return 16 * ((width + 5) / 6);
+		case FORMAT_RGBA_ASTC_8x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x5_KHR:
+		case FORMAT_RGBA_ASTC_8x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x6_KHR:
+		case FORMAT_RGBA_ASTC_8x8_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x8_KHR:
+			return 16 * ((width + 7) / 8);
+		case FORMAT_RGBA_ASTC_10x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x5_KHR:
+		case FORMAT_RGBA_ASTC_10x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x6_KHR:
+		case FORMAT_RGBA_ASTC_10x8_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x8_KHR:
+		case FORMAT_RGBA_ASTC_10x10_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR:
+			return 16 * ((width + 9) / 10);
+		case FORMAT_RGBA_ASTC_12x10_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR:
+		case FORMAT_RGBA_ASTC_12x12_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR:
+			return 16 * ((width + 11) / 12);
+#if S3TC_SUPPORT
 		case FORMAT_DXT3:
 		case FORMAT_DXT5:
 			return 16 * ((width + 3) / 4);   // 128 bit per 4x4 block, computed per 4 rows
@@ -1205,7 +1344,50 @@ namespace sw
 		case FORMAT_DXT5:
 		#endif
 		case FORMAT_ETC1:
+		case FORMAT_R11_EAC:
+		case FORMAT_SIGNED_R11_EAC:
+		case FORMAT_RG11_EAC:
+		case FORMAT_SIGNED_RG11_EAC:
+		case FORMAT_RGB8_ETC2:
+		case FORMAT_SRGB8_ETC2:
+		case FORMAT_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		case FORMAT_RGBA8_ETC2_EAC:
+		case FORMAT_SRGB8_ALPHA8_ETC2_EAC:
+		case FORMAT_RGBA_ASTC_4x4_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:
+		case FORMAT_RGBA_ASTC_5x4_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:
 			return pitchB(width, format, target) * ((height + 3) / 4);   // Pitch computed per 4 rows
+		case FORMAT_RGBA_ASTC_5x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:
+		case FORMAT_RGBA_ASTC_6x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_6x5_KHR:
+		case FORMAT_RGBA_ASTC_8x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x5_KHR:
+		case FORMAT_RGBA_ASTC_10x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x5_KHR:
+			return pitchB(width, format, target) * ((height + 4) / 5);   // Pitch computed per 5 rows
+		case FORMAT_RGBA_ASTC_6x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_6x6_KHR:
+		case FORMAT_RGBA_ASTC_8x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x6_KHR:
+		case FORMAT_RGBA_ASTC_10x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x6_KHR:
+			return pitchB(width, format, target) * ((height + 5) / 6);   // Pitch computed per 6 rows
+		case FORMAT_RGBA_ASTC_8x8_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x8_KHR:
+		case FORMAT_RGBA_ASTC_10x8_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x8_KHR:
+			return pitchB(width, format, target) * ((height + 7) / 8);   // Pitch computed per 8 rows
+		case FORMAT_RGBA_ASTC_10x10_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR:
+		case FORMAT_RGBA_ASTC_12x10_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR:
+			return pitchB(width, format, target) * ((height + 9) / 10);   // Pitch computed per 10 rows
+		case FORMAT_RGBA_ASTC_12x12_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR:
+			return pitchB(width, format, target) * ((height + 11) / 12);   // Pitch computed per 12 rows
 		case FORMAT_ATI1:
 		case FORMAT_ATI2:
 		default:
@@ -1246,6 +1428,44 @@ namespace sw
 			case FORMAT_ATI1:		decodeATI1(destination, source);		break;   // FIXME: Check destination format
 			case FORMAT_ATI2:		decodeATI2(destination, source);		break;   // FIXME: Check destination format
 			case FORMAT_ETC1:		decodeETC1(destination, source);		break;   // FIXME: Check destination format
+			case FORMAT_R11_EAC:         decodeEAC(destination, source, 1, false); break; // FIXME: Check destination format
+			case FORMAT_SIGNED_R11_EAC:  decodeEAC(destination, source, 1, true);  break; // FIXME: Check destination format
+			case FORMAT_RG11_EAC:        decodeEAC(destination, source, 2, false); break; // FIXME: Check destination format
+			case FORMAT_SIGNED_RG11_EAC: decodeEAC(destination, source, 2, true);  break; // FIXME: Check destination format
+			case FORMAT_RGB8_ETC2:                      decodeETC2(destination, source, 0, false); break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ETC2:                     decodeETC2(destination, source, 0, true);  break; // FIXME: Check destination format
+			case FORMAT_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:  decodeETC2(destination, source, 1, false); break; // FIXME: Check destination format
+			case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2: decodeETC2(destination, source, 1, true);  break; // FIXME: Check destination format
+			case FORMAT_RGBA8_ETC2_EAC:                 decodeETC2(destination, source, 8, false); break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ETC2_EAC:          decodeETC2(destination, source, 8, true);  break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_4x4_KHR:           decodeASTC(destination, source, 4,  4,  1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_5x4_KHR:           decodeASTC(destination, source, 5,  4,  1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_5x5_KHR:           decodeASTC(destination, source, 5,  5,  1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_6x5_KHR:           decodeASTC(destination, source, 6,  5,  1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_6x6_KHR:           decodeASTC(destination, source, 6,  6,  1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_8x5_KHR:           decodeASTC(destination, source, 8,  5,  1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_8x6_KHR:           decodeASTC(destination, source, 8,  6,  1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_8x8_KHR:           decodeASTC(destination, source, 8,  8,  1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_10x5_KHR:          decodeASTC(destination, source, 10, 5,  1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_10x6_KHR:          decodeASTC(destination, source, 10, 6,  1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_10x8_KHR:          decodeASTC(destination, source, 10, 8,  1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_10x10_KHR:         decodeASTC(destination, source, 10, 10, 1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_12x10_KHR:         decodeASTC(destination, source, 12, 10, 1, false); break; // FIXME: Check destination format
+			case FORMAT_RGBA_ASTC_12x12_KHR:         decodeASTC(destination, source, 12, 12, 1, false); break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:   decodeASTC(destination, source, 4,  4,  1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:   decodeASTC(destination, source, 5,  4,  1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:   decodeASTC(destination, source, 5,  5,  1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_6x5_KHR:   decodeASTC(destination, source, 6,  5,  1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_6x6_KHR:   decodeASTC(destination, source, 6,  6,  1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_8x5_KHR:   decodeASTC(destination, source, 8,  5,  1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_8x6_KHR:   decodeASTC(destination, source, 8,  6,  1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_8x8_KHR:   decodeASTC(destination, source, 8,  8,  1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_10x5_KHR:  decodeASTC(destination, source, 10, 5,  1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_10x6_KHR:  decodeASTC(destination, source, 10, 6,  1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_10x8_KHR:  decodeASTC(destination, source, 10, 8,  1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR: decodeASTC(destination, source, 10, 10, 1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR: decodeASTC(destination, source, 12, 10, 1, true);  break; // FIXME: Check destination format
+			case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR: decodeASTC(destination, source, 12, 12, 1, true);  break; // FIXME: Check destination format
 			default:				genericUpdate(destination, source);		break;
 			}
 		}
@@ -2070,6 +2290,19 @@ namespace sw
 		}
 	}
 
+	void Surface::decodeEAC(Buffer &internal, const Buffer &external, int nbChannels, bool isSigned)
+	{
+		ASSERT((nbChannels == 1) || (nbChannels == 2));
+	}
+
+	void Surface::decodeETC2(Buffer &internal, const Buffer &external, int nbAlphaBits, bool isSRGB)
+	{
+	}
+
+	void Surface::decodeASTC(Buffer &internal, const Buffer &external, int xBlockSize, int yBlockSize, int zBlockSize, bool isSRGB)
+	{
+	}
+
 	unsigned int Surface::size(int width, int height, int depth, Format format)
 	{
 		// Dimensions rounded up to multiples of 4, used for compressed formats
@@ -2083,13 +2316,64 @@ namespace sw
 		#endif
 		case FORMAT_ATI1:
 		case FORMAT_ETC1:
+		case FORMAT_R11_EAC:
+		case FORMAT_SIGNED_R11_EAC:
+		case FORMAT_RGB8_ETC2:
+		case FORMAT_SRGB8_ETC2:
+		case FORMAT_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
 			return width4 * height4 * depth / 2;
 		#if S3TC_SUPPORT
 		case FORMAT_DXT3:
 		case FORMAT_DXT5:
 		#endif
 		case FORMAT_ATI2:
+		case FORMAT_RG11_EAC:
+		case FORMAT_SIGNED_RG11_EAC:
+		case FORMAT_RGBA8_ETC2_EAC:
+		case FORMAT_SRGB8_ALPHA8_ETC2_EAC:
+		case FORMAT_RGBA_ASTC_4x4_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:
 			return width4 * height4 * depth;
+		case FORMAT_RGBA_ASTC_5x4_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:
+			return roundUp(width, 5) * height4 * depth;
+		case FORMAT_RGBA_ASTC_5x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:
+			return roundUp(width, 5) * roundUp(height, 5) * depth;
+		case FORMAT_RGBA_ASTC_6x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_6x5_KHR:
+			return roundUp(width, 6) * roundUp(height, 5) * depth;
+		case FORMAT_RGBA_ASTC_6x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_6x6_KHR:
+			return roundUp(width, 6) * roundUp(height, 6) * depth;
+		case FORMAT_RGBA_ASTC_8x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x5_KHR:
+			return roundUp(width, 8) * roundUp(height, 5) * depth;
+		case FORMAT_RGBA_ASTC_8x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x6_KHR:
+			return roundUp(width, 8) * roundUp(height, 6) * depth;
+		case FORMAT_RGBA_ASTC_8x8_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x8_KHR:
+			return roundUp(width, 8) * roundUp(height, 8) * depth;
+		case FORMAT_RGBA_ASTC_10x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x5_KHR:
+			return roundUp(width, 10) * roundUp(height, 5) * depth;
+		case FORMAT_RGBA_ASTC_10x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x6_KHR:
+			return roundUp(width, 10) * roundUp(height, 6) * depth;
+		case FORMAT_RGBA_ASTC_10x8_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x8_KHR:
+			return roundUp(width, 10) * roundUp(height, 8) * depth;
+		case FORMAT_RGBA_ASTC_10x10_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR:
+			return roundUp(width, 10) * roundUp(height, 10) * depth;
+		case FORMAT_RGBA_ASTC_12x10_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR:
+			return roundUp(width, 12) * roundUp(height, 10) * depth;
+		case FORMAT_RGBA_ASTC_12x12_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR:
+			return roundUp(width, 12) * roundUp(height, 12) * depth;
 		default:
 			return bytes(format) * width * height * depth;
 		}
@@ -2335,6 +2619,44 @@ namespace sw
 		case FORMAT_ATI1:
 		case FORMAT_ATI2:
 		case FORMAT_ETC1:
+		case FORMAT_R11_EAC:
+		case FORMAT_SIGNED_R11_EAC:
+		case FORMAT_RG11_EAC:
+		case FORMAT_SIGNED_RG11_EAC:
+		case FORMAT_RGB8_ETC2:
+		case FORMAT_SRGB8_ETC2:
+		case FORMAT_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		case FORMAT_RGBA8_ETC2_EAC:
+		case FORMAT_SRGB8_ALPHA8_ETC2_EAC:
+		case FORMAT_RGBA_ASTC_4x4_KHR:
+		case FORMAT_RGBA_ASTC_5x4_KHR:
+		case FORMAT_RGBA_ASTC_5x5_KHR:
+		case FORMAT_RGBA_ASTC_6x5_KHR:
+		case FORMAT_RGBA_ASTC_6x6_KHR:
+		case FORMAT_RGBA_ASTC_8x5_KHR:
+		case FORMAT_RGBA_ASTC_8x6_KHR:
+		case FORMAT_RGBA_ASTC_8x8_KHR:
+		case FORMAT_RGBA_ASTC_10x5_KHR:
+		case FORMAT_RGBA_ASTC_10x6_KHR:
+		case FORMAT_RGBA_ASTC_10x8_KHR:
+		case FORMAT_RGBA_ASTC_10x10_KHR:
+		case FORMAT_RGBA_ASTC_12x10_KHR:
+		case FORMAT_RGBA_ASTC_12x12_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_6x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_6x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x8_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x8_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR:
 			return true;
 		default:
 			return false;
@@ -3279,13 +3601,51 @@ namespace sw
 		case FORMAT_DXT1:
 		case FORMAT_DXT3:
 		case FORMAT_DXT5:
+		case FORMAT_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+		case FORMAT_RGBA8_ETC2_EAC:
+		case FORMAT_SRGB8_ALPHA8_ETC2_EAC:
+		case FORMAT_RGBA_ASTC_4x4_KHR:
+		case FORMAT_RGBA_ASTC_5x4_KHR:
+		case FORMAT_RGBA_ASTC_5x5_KHR:
+		case FORMAT_RGBA_ASTC_6x5_KHR:
+		case FORMAT_RGBA_ASTC_6x6_KHR:
+		case FORMAT_RGBA_ASTC_8x5_KHR:
+		case FORMAT_RGBA_ASTC_8x6_KHR:
+		case FORMAT_RGBA_ASTC_8x8_KHR:
+		case FORMAT_RGBA_ASTC_10x5_KHR:
+		case FORMAT_RGBA_ASTC_10x6_KHR:
+		case FORMAT_RGBA_ASTC_10x8_KHR:
+		case FORMAT_RGBA_ASTC_10x10_KHR:
+		case FORMAT_RGBA_ASTC_12x10_KHR:
+		case FORMAT_RGBA_ASTC_12x12_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_6x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_6x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_8x8_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x5_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x6_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x8_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR:
+		case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR:
 			return FORMAT_A8R8G8B8;
 		#endif
 		case FORMAT_ATI1:
+		case FORMAT_R11_EAC:
+		case FORMAT_SIGNED_R11_EAC:
 			return FORMAT_R8;
 		case FORMAT_ATI2:
+		case FORMAT_RG11_EAC:
+		case FORMAT_SIGNED_RG11_EAC:
 			return FORMAT_G8R8;
 		case FORMAT_ETC1:
+		case FORMAT_RGB8_ETC2:
+		case FORMAT_SRGB8_ETC2:
 			return FORMAT_X8R8G8B8;
 		// Bumpmap formats
 		case FORMAT_V8U8:			return FORMAT_V8U8;
