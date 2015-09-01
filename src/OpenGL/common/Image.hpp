@@ -22,6 +22,10 @@
 #define LOGLOCK(...)
 #endif
 
+#define GL_YV12_BT601_ANDROID 0x30305659
+#define GL_YV12_BT709_ANDROID 0x31305659
+#define GL_YV12_JFIF_ANDROID  0x32305659
+
 namespace egl
 {
 // Types common between gl.h and gl2.h
@@ -31,7 +35,6 @@ typedef int GLint;
 typedef int GLsizei;
 
 sw::Format SelectInternalFormat(GLenum format, GLenum type);
-int ComputePixelSize(GLenum format, GLenum type);
 GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment);
 GLsizei ComputeCompressedPitch(GLsizei width, GLenum format);
 GLsizei ComputeCompressedSize(GLsizei width, GLsizei height, GLenum format);

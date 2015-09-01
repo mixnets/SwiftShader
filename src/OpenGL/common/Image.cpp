@@ -470,6 +470,10 @@ namespace egl
 			{
 				return sw::FORMAT_A8;
 			}
+			else if(format == GL_YV12_BT601_ANDROID)
+			{
+				return sw::FORMAT_YV12_BT601;
+			}
 			else UNREACHABLE(format);
 		}
 		else if(type == GL_UNSIGNED_SHORT || type == GL_UNSIGNED_INT)
@@ -506,7 +510,7 @@ namespace egl
 	}
 
 	// Returns the size, in bytes, of a single texel in an Image
-	int ComputePixelSize(GLenum format, GLenum type)
+	static int ComputePixelSize(GLenum format, GLenum type)
 	{
 		switch(type)
 		{
@@ -519,6 +523,7 @@ namespace egl
 			case GL_RGB:             return sizeof(unsigned char) * 3;
 			case GL_RGBA:            return sizeof(unsigned char) * 4;
 			case GL_BGRA_EXT:        return sizeof(unsigned char) * 4;
+			case GL_YV12_BT601_ANDROID:    return sizeof(unsigned char);   // Y plane only
 			default: UNREACHABLE(format);
 			}
 			break;
@@ -672,6 +677,9 @@ namespace egl
 					case GL_RGBA:
 					case GL_BGRA_EXT:
 						LoadImageData<UByte4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						break;
+					case GL_YV12_BT601_ANDROID:
+						memcpy(buffer, input, size(width, height, 1, sw::FORMAT_YV12_BT601));
 						break;
 					default: UNREACHABLE(format);
 					}

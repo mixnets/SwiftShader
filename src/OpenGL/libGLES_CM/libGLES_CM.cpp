@@ -4269,6 +4269,8 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 			return error(GL_INVALID_ENUM);
 		}
 		break;
+	case GL_YV12_BT601_ANDROID:
+		break;
 	default:
 		return error(GL_INVALID_VALUE);
 	}
