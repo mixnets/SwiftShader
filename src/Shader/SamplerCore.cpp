@@ -172,6 +172,9 @@ namespace sw
 				case FORMAT_G8R8:
 				case FORMAT_G16R16:
 				case FORMAT_A16B16G16R16:
+				case FORMAT_YV12_BT601:
+				case FORMAT_YV12_BT709:
+				case FORMAT_YV12_JFIF:
 					if(componentCount < 2) c.y = Short4(0x1000, 0x1000, 0x1000, 0x1000);
 					if(componentCount < 3) c.z = Short4(0x1000, 0x1000, 0x1000, 0x1000);
 					if(componentCount < 4) c.w = Short4(0x1000, 0x1000, 0x1000, 0x1000);
@@ -1520,6 +1523,11 @@ namespace sw
 		index[3] = Extract(As<Int2>(uuu2), 1);
 	}
 
+	inline UShort4 UShort4f(float x)
+	{
+		return UShort4(iround(x));
+	} 
+
 	void SamplerCore::sampleTexel(Vector4s &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4])
 	{
 		Int index[4];
@@ -1689,6 +1697,91 @@ namespace sw
 				ASSERT(false);
 			}
 		}
+		else if(hasYuvFormat())
+		{
+			Int c0 = Int(*Pointer<Byte>(buffer[0] + index[0]));
+			Int c1 = Int(*Pointer<Byte>(buffer[0] + index[1]));
+			Int c2 = Int(*Pointer<Byte>(buffer[0] + index[2]));
+			Int c3 = Int(*Pointer<Byte>(buffer[0] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
+
+			computeIndices(index, uuuu, vvvv, wwww, mipmap + sizeof(Mipmap));
+			c0 = Int(*Pointer<Byte>(buffer[1] + index[0]));
+			c1 = Int(*Pointer<Byte>(buffer[1] + index[1]));
+			c2 = Int(*Pointer<Byte>(buffer[1] + index[2]));
+			c3 = Int(*Pointer<Byte>(buffer[1] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
+
+			c0 = Int(*Pointer<Byte>(buffer[2] + index[0]));
+			c1 = Int(*Pointer<Byte>(buffer[2] + index[1]));
+			c2 = Int(*Pointer<Byte>(buffer[2] + index[2]));
+			c3 = Int(*Pointer<Byte>(buffer[2] + index[3]));
+			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+			UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
+
+			// Generic YPbPr to RGB transformation
+			// R = Y                               +           2 * (1 - Kr) * Pr
+			// G = Y - 2 * Kb * (1 - Kb) / Kg * Pb - 2 * Kr * (1 - Kr) / Kg * Pr
+			// B = Y +           2 * (1 - Kb) * Pb
+
+			float Kb = 0.114f;
+			float Kr = 0.299f;
+			int studioSwing = 1;
+
+			switch(state.textureFormat)
+			{
+			case FORMAT_YV12_BT601:
+				Kb = 0.114f;
+				Kr = 0.299f;
+				studioSwing = 1;
+				break;
+			case FORMAT_YV12_BT709:
+				Kb = 0.0722f;
+				Kr = 0.2126f;
+				studioSwing = 1;
+				break;
+			case FORMAT_YV12_JFIF:
+				Kb = 0.114f;
+				Kr = 0.299f;
+				studioSwing = 0;
+				break;
+			default:
+				ASSERT(false);
+			}
+
+			const float Kg = 1.0f - Kr - Kb;
+
+			const float Rr = 2 * (1 - Kr);
+			const float Gb = -2 * Kb * (1 - Kb) / Kg;
+			const float Gr = -2 * Kr * (1 - Kr) / Kg;
+			const float Bb = 2 * (1 - Kb);
+
+			// Scaling factors for studio-swing range: Y = [16 .. 235], U/V = [16 .. 240]
+			const float Yy = studioSwing ? 255.0f / (235 - 16) : 1.0f;
+			const float Uu = studioSwing ? 255.0f / (240 - 16) : 1.0f;
+			const float Vv = studioSwing ? 255.0f / (240 - 16) : 1.0f;
+
+			const float Rv = Vv *  Rr;
+			const float Gu = Uu *  Gb;
+			const float Gv = Vv *  Gr;
+			const float Bu = Uu *  Bb;
+
+			const float R0 = (studioSwing * -16 * Yy - 128 * Rv) / 255;
+			const float G0 = (studioSwing * -16 * Yy - 128 * Gu - 128 * Gv) / 255;
+			const float B0 = (studioSwing * -16 * Yy - 128 * Bu) / 255;
+
+			UShort4 y = MulHigh(As<UShort4>(Y), UShort4f(Yy * 0x4000));
+			UShort4 r = SubSat(y + MulHigh(V, UShort4f(Rv * 0x4000)), UShort4f(-R0 * 0x4000));
+			UShort4 g = SubSat(y + UShort4f(G0 * 0x4000), MulHigh(U, UShort4f(-Gu * 0x4000)) + MulHigh(V, UShort4f(-Gv * 0x4000)));
+			UShort4 b = SubSat(y + MulHigh(U, UShort4f(Bu * 0x4000)), UShort4f(-B0 * 0x4000));
+
+			c.x = Min(r, UShort4(0x3FFF)) << 2;
+			c.y = Min(g, UShort4(0x3FFF)) << 2;
+			c.z = Min(b, UShort4(0x3FFF)) << 2;
+		}
+		else ASSERT(false);
 	}
 
 	void SamplerCore::sampleTexel(Vector4f &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4])
@@ -1766,6 +1859,12 @@ namespace sw
 		if(state.textureType != TEXTURE_CUBE)
 		{
 			buffer[0] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[0]));
+
+			if(hasYuvFormat())
+			{
+				buffer[1] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[1]));
+				buffer[2] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[2]));
+			}
 		}
 		else
 		{
@@ -1927,6 +2026,9 @@ namespace sw
 		case FORMAT_V16U16:
 		case FORMAT_A16W16V16U16:
 		case FORMAT_Q16W16V16U16:
+		case FORMAT_YV12_BT601:
+		case FORMAT_YV12_BT709:
+		case FORMAT_YV12_JFIF:
 			return false;
 		default:
 			ASSERT(false);
@@ -1939,8 +2041,6 @@ namespace sw
 	{
 		switch(state.textureFormat)
 		{
-		case FORMAT_R5G6B5:
-			return false;
 		case FORMAT_G8R8:
 		case FORMAT_X8R8G8B8:
 		case FORMAT_X8B8G8R8:
@@ -1954,6 +2054,7 @@ namespace sw
 		case FORMAT_L8:
 		case FORMAT_A8L8:
 			return true;
+		case FORMAT_R5G6B5:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
 		case FORMAT_A32B32G32R32F:
@@ -1966,6 +2067,9 @@ namespace sw
 		case FORMAT_V16U16:
 		case FORMAT_A16W16V16U16:
 		case FORMAT_Q16W16V16U16:
+		case FORMAT_YV12_BT601:
+		case FORMAT_YV12_BT709:
+		case FORMAT_YV12_JFIF:
 			return false;
 		default:
 			ASSERT(false);
@@ -1997,6 +2101,9 @@ namespace sw
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32FS8_SHADOW:
+		case FORMAT_YV12_BT601:
+		case FORMAT_YV12_BT709:
+		case FORMAT_YV12_JFIF:
 			return false;
 		case FORMAT_L16:
 		case FORMAT_G16R16:
@@ -2005,6 +2112,47 @@ namespace sw
 		case FORMAT_A16W16V16U16:
 		case FORMAT_Q16W16V16U16:
 			return true;
+		default:
+			ASSERT(false);
+		}
+		
+		return false;
+	}
+
+	bool SamplerCore::hasYuvFormat() const
+	{
+		switch(state.textureFormat)
+		{
+		case FORMAT_YV12_BT601:
+		case FORMAT_YV12_BT709:
+		case FORMAT_YV12_JFIF:
+			return true;
+		case FORMAT_R5G6B5:
+		case FORMAT_G8R8:
+		case FORMAT_X8R8G8B8:
+		case FORMAT_X8B8G8R8:
+		case FORMAT_A8R8G8B8:
+		case FORMAT_A8B8G8R8:
+		case FORMAT_V8U8:
+		case FORMAT_Q8W8V8U8:
+		case FORMAT_X8L8V8U8:
+		case FORMAT_R32F:
+		case FORMAT_G32R32F:
+		case FORMAT_A32B32G32R32F:
+		case FORMAT_A8:
+		case FORMAT_R8:
+		case FORMAT_L8:
+		case FORMAT_A8L8:
+		case FORMAT_D32F_LOCKABLE:
+		case FORMAT_D32FS8_TEXTURE:
+		case FORMAT_D32FS8_SHADOW:
+		case FORMAT_L16:
+		case FORMAT_G16R16:
+		case FORMAT_A16B16G16R16:
+		case FORMAT_V16U16:
+		case FORMAT_A16W16V16U16:
+		case FORMAT_Q16W16V16U16:
+			return false;
 		default:
 			ASSERT(false);
 		}
@@ -2041,6 +2189,9 @@ namespace sw
 		case FORMAT_V16U16:         return false;
 		case FORMAT_A16W16V16U16:   return false;
 		case FORMAT_Q16W16V16U16:   return false;
+		case FORMAT_YV12_BT601:     return component < 3;
+		case FORMAT_YV12_BT709:     return component < 3;
+		case FORMAT_YV12_JFIF:      return component < 3;
 		default:
 			ASSERT(false);
 		}
