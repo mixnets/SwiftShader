@@ -4022,34 +4022,20 @@ GL_APICALL void GL_APIENTRY glGetInternalformativ(GLenum target, GLenum internal
 		return error(GL_INVALID_ENUM);
 	}
 
-	sw::Format requestedFormat = es2sw::ConvertRenderbufferFormat(internalformat);
-	std::vector<GLint> supportedMultiSampleDepths;
-	int maxDepth = Context::getSupportedMultiSampleDepth(requestedFormat, INT_MAX);
-	for(int depth = maxDepth; depth > 1;)
-	{
-		supportedMultiSampleDepths.push_back(depth);
-		for(int nextDepth = depth - 1; nextDepth >= 0; --nextDepth)
-		{
-			int supportedDepth = Context::getSupportedMultiSampleDepth(requestedFormat, nextDepth);
-			if(supportedDepth != depth)
-			{
-				depth = supportedDepth;
-				break;
-			}
-		}
-	}
+	const int samples[] = {4, 2, 1};
+	const int numSamples = sizeof(samples) / sizeof(samples[0]);
+	ASSERT(samples[0] == IMPLEMENTATION_MAX_SAMPLES);
 
 	switch(pname)
 	{
-	case GL_SAMPLES:
-		*params = supportedMultiSampleDepths.size();
-		break;
 	case GL_NUM_SAMPLE_COUNTS:
+		*params = numSamples;
+		break;
+	case GL_SAMPLES:
 		{
-			size_t returnCount = std::min<size_t>(bufSize, supportedMultiSampleDepths.size());
-			for(size_t sampleIndex = 0; sampleIndex < returnCount; ++sampleIndex)
+			for(int i = 0; i < numSamples && i < bufSize; i++)
 			{
-				params[sampleIndex] = supportedMultiSampleDepths[sampleIndex];
+				params[i] = samples[i];
 			}
 		}
 		break;
