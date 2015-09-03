@@ -302,6 +302,12 @@ namespace sw
 		void att(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void lrp(Vector4f &dst, const Vector4f &src0, const Vector4f &src1, const Vector4f &src2);
 		void smooth(Vector4f &dst, const Vector4f &src0, const Vector4f &src1, const Vector4f &src2);
+		void packSnorm2x16(UInt4 &d, const Vector4f &s0);
+		void packUnorm2x16(UInt4 &d, const Vector4f &s0);
+		void packHalf2x16(UInt4 &d, const Vector4f &s0);
+		void unpackSnorm2x16(Vector4f &dst, const UInt4 &s0);
+		void unpackUnorm2x16(Vector4f &dst, const UInt4 &s0);
+		void unpackHalf2x16(Vector4f &dst, const UInt4 &s0);
 		void frc(Vector4f &dst, const Vector4f &src);
 		void trunc(Vector4f &dst, const Vector4f &src);
 		void floor(Vector4f &dst, const Vector4f &src);
@@ -365,6 +371,8 @@ namespace sw
 		void cmp0(Float4 &dst, const Float4 &src0, const Float4 &src1, const Float4 &src2);
 		void cmp0i(Float4 &dst, const Float4 &src0, const Float4 &src1, const Float4 &src2);
 		void select(Float4 &dst, RValue<Int4> src0, const Float4 &src1, const Float4 &src2);
+		void floatToHalfBits(UInt4& dst, const UInt4& floatBits);
+		void halfToFloatBits(UInt4& dst, const UInt4& halfBits);
 	};
 }
 

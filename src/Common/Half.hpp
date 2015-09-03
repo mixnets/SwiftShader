@@ -26,6 +26,8 @@ namespace sw
 		half &operator=(half h);
 		half &operator=(float f);
 
+		static bool TestConversionEquivalence();
+
 	private:
 		unsigned short fp16i;
 	};
