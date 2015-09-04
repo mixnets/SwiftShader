@@ -187,16 +187,9 @@ namespace
 	void LoadImageRow<RGB565>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
 		const unsigned short *source565 = reinterpret_cast<const unsigned short*>(source);
-		unsigned char *destB = dest + xoffset * 4;
+		unsigned char *destB = dest + xoffset * 2;
 
-		for(int x = 0; x < width; x++)
-		{
-			unsigned short rgba = source565[x];
-			destB[4 * x + 0] = ((rgba & 0x001F) << 3) | ((rgba & 0x001F) >> 2);
-			destB[4 * x + 1] = ((rgba & 0x07E0) >> 3) | ((rgba & 0x07E0) >> 9);
-			destB[4 * x + 2] = ((rgba & 0xF800) >> 8) | ((rgba & 0xF800) >> 13);
-			destB[4 * x + 3] = 0xFF;
-		}
+		memcpy(dest + xoffset * 2, source, width * 2);
 	}
 
 	template<>
