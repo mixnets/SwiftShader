@@ -33,6 +33,12 @@
     <Filter Include="Header Files\Common">
       <UniqueIdentifier>{499e8719-b84f-47f4-90c8-8948dee6bfb7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ASTC">
+      <UniqueIdentifier>{e37a310c-1d6b-4589-86b8-d5eba2f44992}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ASTC">
+      <UniqueIdentifier>{620a45cb-5cfa-45d5-a08e-4e6ddf4778da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Shader\Constants.cpp">
@@ -172,6 +178,87 @@
     </ClCompile>
     <ClCompile Include="..\Renderer\ETC_Decoder.cpp">
       <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_color_unquantize.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_decompress_symbolic.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_image_load_store.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_integer_sequence.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_quantization.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_symbolic_physical.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_toplevel.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_weight_align.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Renderer\ASTC_Decoder.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\softfloat.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_compress_symbolic.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_ideal_endpoints_and_weights.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_encoding_choice_error.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_find_best_partitioning.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_kmeans_partitioning.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_pick_best_endpoint_format.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_compute_variance.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_averages_and_directions.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_weight_quant_xfer_tables.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_partition_tables.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_block_sizes2.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_percentile_tables.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_stb_tga.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_ktx_dds.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_color_quantize.cpp">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\stb_image.c">
+      <Filter>Source Files\ASTC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\ASTC\Source\mathlib.cpp">
+      <Filter>Source Files\ASTC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -341,11 +428,26 @@
     <ClInclude Include="..\Shader\PixelPipeline.hpp">
       <Filter>Header Files\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Renderer\ASTC_Decoder.hpp">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="..\Renderer\ETC_Decoder.hpp">
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\Renderer\Polygon.hpp">
       <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\ASTC\Source\astc_codec_internals.h">
+      <Filter>Header Files\ASTC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\ASTC\Source\mathlib.h">
+      <Filter>Header Files\ASTC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\ASTC\Source\softfloat.h">
+      <Filter>Header Files\ASTC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\ASTC\Source\vectypes.h">
+      <Filter>Header Files\ASTC</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
