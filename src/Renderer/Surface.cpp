@@ -14,6 +14,7 @@
 
 #include "Surface.hpp"
 
+#include "ASTC_Decoder.hpp"
 #include "Color.hpp"
 #include "Context.hpp"
 #include "ETC_Decoder.hpp"
@@ -2490,6 +2491,45 @@ namespace sw
 
 	void Surface::decodeASTC(Buffer &internal, const Buffer &external, int xBlockSize, int yBlockSize, int zBlockSize, bool isSRGB)
 	{
+		int xblocks = (external.width + xBlockSize - 1) / xBlockSize;
+		int yblocks = (external.height + yBlockSize - 1) / yBlockSize;
+		int zblocks = (zBlockSize > 1) ? (external.depth + zBlockSize - 1) / zBlockSize : 1;
+
+		const byte *source = (const byte*)external.buffer;
+		byte* dest = (byte*)internal.buffer;
+
+		for(int z = 0; z < zblocks; z++)
+		{
+			for(int y = 0; y < yblocks; y++)
+			{
+				for(int x = 0; x < xblocks; x++, source += 16)
+				{
+					ASTC_Decoder::DecodeBlock(source, dest, internal.width, internal.height, internal.depth, internal.pitchB, internal.sliceB, xBlockSize, yBlockSize, zBlockSize, x, y, z);
+				}
+			}
+		}
+
+		if(isSRGB)
+		{
+			// Perform sRGB conversion in place after decoding
+			byte* src = (byte*)internal.buffer;
+			for(int z = 0; z < internal.depth; z++)
+			{
+				byte* srcSlice = src + z * internal.sliceB;
+				for(int y = 0; y < internal.height; y++)
+				{
+					byte* srcRow = srcSlice + y * internal.pitchB;
+					for(int x = 0; x < internal.width; x++)
+					{
+						float* srcPix = reinterpret_cast<float*>(srcRow + x * internal.bytes);
+						for(int i = 0; i < 3; i++)
+						{
+							srcPix[i] = sRGBtoLinear(clamp(static_cast<float>(srcPix[i]), 0.0f, 1.0f));
+						}
+					}
+				}
+			}
+		}
 	}
 
 	unsigned int Surface::size(int width, int height, int depth, Format format)
@@ -3564,6 +3604,7 @@ namespace sw
 		case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
 		case FORMAT_RGBA8_ETC2_EAC:
 		case FORMAT_SRGB8_ALPHA8_ETC2_EAC:
+			return FORMAT_A8R8G8B8;
 		case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:
@@ -3578,7 +3619,6 @@ namespace sw
 		case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR:
-			return FORMAT_A8R8G8B8;
 		case FORMAT_RGBA_ASTC_4x4_KHR:
 		case FORMAT_RGBA_ASTC_5x4_KHR:
 		case FORMAT_RGBA_ASTC_5x5_KHR:

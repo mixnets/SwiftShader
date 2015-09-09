@@ -41,6 +41,7 @@ COMMON_SRC_FILES += \
 	Reactor/RoutineManager.cpp
 
 COMMON_SRC_FILES += \
+	Renderer/ASTC_Decoder.cpp \
 	Renderer/Blitter.cpp \
 	Renderer/Clipper.cpp \
 	Renderer/Color.cpp \

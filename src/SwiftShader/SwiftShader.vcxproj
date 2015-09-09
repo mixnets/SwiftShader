@@ -318,6 +318,7 @@
     <ClCompile Include="..\Common\Thread.cpp" />
     <ClCompile Include="..\Main\Config.cpp" />
     <ClCompile Include="..\Main\FrameBufferWin.cpp" />
+    <ClCompile Include="..\Renderer\ASTC_Decoder.cpp" />
     <ClCompile Include="..\Renderer\ETC_Decoder.cpp" />
     <ClCompile Include="..\Shader\Constants.cpp" />
     <ClCompile Include="..\Shader\PixelPipeline.cpp" />
@@ -386,6 +387,7 @@
     <ClInclude Include="..\Common\Thread.hpp" />
     <ClInclude Include="..\Common\Version.h" />
     <ClInclude Include="..\Main\FrameBufferWin.hpp" />
+    <ClInclude Include="..\Renderer\ASTC_Decoder.hpp" />
     <ClInclude Include="..\Renderer\ETC_Decoder.hpp" />
     <ClInclude Include="..\Renderer\Polygon.hpp" />
     <ClInclude Include="..\Renderer\RoutineCache.hpp" />
