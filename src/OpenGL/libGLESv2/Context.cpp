@@ -3034,13 +3034,12 @@ void Context::applyShaders()
     programObject->applyUniformBuffers();
 }
 
-void Context::applyTextures()
+bool Context::applyTextures()
 {
-    applyTextures(sw::SAMPLER_PIXEL);
-	applyTextures(sw::SAMPLER_VERTEX);
+    return applyTextures(sw::SAMPLER_PIXEL) && applyTextures(sw::SAMPLER_VERTEX);
 }
 
-void Context::applyTextures(sw::SamplerType samplerType)
+bool Context::applyTextures(sw::SamplerType samplerType)
 {
     Program *programObject = getCurrentProgram();
 
@@ -3079,21 +3078,32 @@ void Context::applyTextures(sw::SamplerType samplerType)
 				device->setMipmapFilter(samplerType, samplerIndex, mipFilter);
 				device->setMaxAnisotropy(samplerType, samplerIndex, maxAnisotropy);                
 
-				applyTexture(samplerType, samplerIndex, texture);
+				if(!applyTexture(samplerType, samplerIndex, texture))
+				{
+					return false;
+				}
             }
             else
             {
-                applyTexture(samplerType, samplerIndex, nullptr);
+				if(!applyTexture(samplerType, samplerIndex, nullptr))
+				{
+					return false;
+				}
             }
         }
         else
         {
-            applyTexture(samplerType, samplerIndex, nullptr);
+			if(!applyTexture(samplerType, samplerIndex, nullptr))
+			{
+				return false;
+			}
         }
     }
+
+	return true;
 }
 
-void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture)
+bool Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture)
 {
 	Program *program = getCurrentProgram();
 	int sampler = (type == sw::SAMPLER_PIXEL) ? index : 16 + index;
@@ -3107,7 +3117,11 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 	{
 		textureUsed = program->getVertexShader()->usesSampler(index);
 	}
-	else UNREACHABLE(type);
+	else
+	{
+		UNREACHABLE(type);
+		return false;
+	}
 
 	sw::Resource *resource = 0;
 
@@ -3140,6 +3154,10 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
+				if(surface->getInternalFormat() == sw::FORMAT_NULL)
+				{
+					return false;
+				}
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D);
 			}
 		}
@@ -3161,6 +3179,10 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
+				if(surface->getInternalFormat() == sw::FORMAT_NULL)
+				{
+					return false;
+				}
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_3D);
 			}
 		}
@@ -3182,6 +3204,10 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
+				if(surface->getInternalFormat() == sw::FORMAT_NULL)
+				{
+					return false;
+				}
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D_ARRAY);
 			}
 		}
@@ -3205,16 +3231,26 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 					}
 
 					egl::Image *surface = cubeTexture->getImage(face, surfaceLevel);
+					if(surface->getInternalFormat() == sw::FORMAT_NULL)
+					{
+						return false;
+					}
 					device->setTextureLevel(sampler, face, mipmapLevel, surface, sw::TEXTURE_CUBE);
 				}
 			}
 		}
-		else UNIMPLEMENTED();
+		else
+		{
+			UNIMPLEMENTED();
+			return false;
+		}
 	}
 	else
 	{
 		device->setTextureLevel(sampler, 0, 0, 0, sw::TEXTURE_NULL);
 	}
+
+	return true;
 }
 
 void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
@@ -3689,9 +3725,8 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 		}
 
 		applyShaders();
-		applyTextures();
 
-		if(!getCurrentProgram()->validateSamplers(false))
+		if(!applyTextures() || !getCurrentProgram()->validateSamplers(false))
 		{
 			return error(GL_INVALID_OPERATION);
 		}
@@ -3752,9 +3787,8 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 		}
 
 		applyShaders();
-		applyTextures();
 
-		if(!getCurrentProgram()->validateSamplers(false))
+		if(!applyTextures() || !getCurrentProgram()->validateSamplers(false))
 		{
 			return error(GL_INVALID_OPERATION);
 		}

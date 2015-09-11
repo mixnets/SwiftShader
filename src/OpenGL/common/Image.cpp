@@ -770,13 +770,18 @@ namespace egl
 		release();
 	}
 
-	void Image::loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input)
+	bool Image::loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input)
 	{
 		GLsizei inputPitch  = (unpackInfo.rowLength == 0) ? ComputePitch(width, format, type, unpackInfo.alignment) : unpackInfo.rowLength;
 		GLsizei inputHeight = (unpackInfo.imageHeight == 0) ? height : unpackInfo.imageHeight;
 		input = ((char*)input) + (unpackInfo.skipImages * inputHeight + unpackInfo.skipRows) * inputPitch + unpackInfo.skipPixels;
+		sw::Format selectedInternalFormat = SelectInternalFormat(format, type);
+		if(selectedInternalFormat == sw::FORMAT_NULL)
+		{
+			return false;
+		}
 
-		if(SelectInternalFormat(format, type) == internalFormat)
+		if(selectedInternalFormat == internalFormat)
 		{
 			void *buffer = lock(0, 0, sw::LOCK_WRITEONLY);
 
@@ -803,7 +808,9 @@ namespace egl
 					case GL_BGRA_EXT:
 						LoadImageData<UByte4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default: 
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_SHORT_5_6_5:
@@ -812,7 +819,9 @@ namespace egl
 					case GL_RGB:
 						LoadImageData<RGB565>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_SHORT_4_4_4_4:
@@ -821,7 +830,9 @@ namespace egl
 					case GL_RGBA:
 						LoadImageData<RGBA4444>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_SHORT_5_5_5_1:
@@ -830,7 +841,9 @@ namespace egl
 					case GL_RGBA:
 						LoadImageData<RGBA5551>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_FLOAT:
@@ -852,7 +865,9 @@ namespace egl
 					case GL_RGBA:
 						LoadImageData<Float4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_HALF_FLOAT:
@@ -874,7 +889,9 @@ namespace egl
 					case GL_RGBA:
 						LoadImageData<HalfFloat4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_SHORT:
@@ -886,7 +903,9 @@ namespace egl
 				case GL_UNSIGNED_INT_24_8_OES:
 					loadD24S8ImageData(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, input, buffer);
 					break;
-				default: UNREACHABLE(type);
+				default:
+					UNREACHABLE(type);
+					return false;
 				}
 			}
 
@@ -899,6 +918,7 @@ namespace egl
 			sw::Rect destRect(xoffset, yoffset, xoffset + width, yoffset + height);
 			sw::blitter.blit(&source, sourceRect, this, destRect, false);
 		}
+		return true;
 	}
 
 	void Image::loadD24S8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer)
@@ -915,11 +935,12 @@ namespace egl
 		}
 	}
 
-	void Image::loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels)
+	bool Image::loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels)
 	{
 		if(zoffset != 0 || depth != 1)
 		{
 			UNIMPLEMENTED();   // FIXME
+			return false;
 		}
 
 		int inputPitch = ComputeCompressedPitch(width, format);
@@ -935,5 +956,6 @@ namespace egl
 		}
 
 		unlock();
+		return true;
 	}
 }
