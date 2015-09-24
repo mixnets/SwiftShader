@@ -174,7 +174,8 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 	case EGL_CLIENT_APIS:
 		return success("OpenGL_ES");
 	case EGL_EXTENSIONS:
-		return success("EGL_KHR_gl_texture_2D_image "
+		return success("EGL_EXT_buffer_age "
+		               "EGL_KHR_gl_texture_2D_image "
 		               "EGL_KHR_gl_texture_cubemap_image "
 		               "EGL_KHR_gl_renderbuffer_image "
 		               "EGL_KHR_fence_sync "
@@ -383,7 +384,7 @@ EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EG
 	case EGL_LARGEST_PBUFFER:
 		if(eglSurface->isPBufferSurface())   // For a window or pixmap surface, the contents of *value are not modified.
 		{
-			*value = eglSurface->getLargestPBuffer();	
+			*value = eglSurface->getLargestPBuffer();
 		}
 		break;
 	case EGL_MIPMAP_TEXTURE:
@@ -415,6 +416,9 @@ EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EG
 		break;
 	case EGL_WIDTH:
 		*value = eglSurface->getWidth();
+		break;
+	case EGL_BUFFER_AGE_EXT:
+		*value = 1;   // FIXME: Support multi-buffering
 		break;
 	default:
 		return error(EGL_BAD_ATTRIBUTE, EGL_FALSE);
