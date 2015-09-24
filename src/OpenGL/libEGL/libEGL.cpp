@@ -179,6 +179,7 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 		               "EGL_KHR_gl_texture_cubemap_image "
 		               "EGL_KHR_gl_renderbuffer_image "
 		               "EGL_KHR_image_base "
+		               "EGL_KHR_partial_update "
 		               "EGL_ANDROID_framebuffer_target "
 		               "EGL_ANDROID_recordable");
 	case EGL_VENDOR:
@@ -947,6 +948,11 @@ EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
 	return success(EGL_TRUE);
 }
 
+EGLBoolean SetDamageRegionKHR(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects)
+{
+	return success(EGL_TRUE);
+}
+
 EGLDisplay GetPlatformDisplayEXT(EGLenum platform, void *native_display, const EGLint *attrib_list)
 {
 	TRACE("(EGLenum platform = 0x%X, void *native_display = %p, const EGLint *attrib_list = %p)", platform, native_display, attrib_list);
@@ -980,6 +986,7 @@ __eglMustCastToProperFunctionPointerType GetProcAddress(const char *procname)
 
 		EXTENSION(eglCreateImageKHR),
 		EXTENSION(eglDestroyImageKHR),
+		EXTENSION(eglSetDamageRegionKHR),
 		EXTENSION(eglGetPlatformDisplayEXT),
 		EXTENSION(eglCreatePlatformWindowSurfaceEXT),
 		EXTENSION(eglCreatePlatformPixmapSurfaceEXT),
