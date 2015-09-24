@@ -19,10 +19,10 @@
 #include "Main/FrameBuffer.hpp"
 #include "Common/Debug.hpp"
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/extensions/XShm.h>
-
+//#include <X11/Xlib.h>
+//#include <X11/Xutil.h>
+//#include <X11/extensions/XShm.h>
+/*
 namespace sw
 {
 	class FrameBufferX11 : public FrameBuffer
@@ -52,5 +52,5 @@ namespace sw
 		char *buffer;
 	};
 }
-
+*/
 #endif   // sw_FrameBufferX11_hpp

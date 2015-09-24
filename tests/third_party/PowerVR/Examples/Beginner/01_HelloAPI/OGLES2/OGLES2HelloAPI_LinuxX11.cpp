@@ -20,8 +20,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "X11/Xlib.h"
-#include "X11/Xutil.h"
+//#include "X11/Xlib.h"
+//#include "X11/Xutil.h"
 
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
@@ -64,14 +64,14 @@ bool TestEGLError(const char* functionLastCalled)
 
 	return true;
 }
-
+/*
 /*!*****************************************************************************************************************************************
  @Function		HandleX11Errors
  @Input			nativeDisplay               Handle to the display
  @Input			error                       The error event to handle
  @Return		Result code to send to the X window system
  @Description	Processes event messages for the main window
-*******************************************************************************************************************************************/
+*******************************************************************************************************************************************
 int HandleX11Errors(Display *nativeDisplay, XErrorEvent *error)
 {
 	// Get the X Error
@@ -86,7 +86,7 @@ int HandleX11Errors(Display *nativeDisplay, XErrorEvent *error)
 
 	return 0;
 }
-
+*/
 /*!*****************************************************************************************************************************************
  @Function		TestGLError
  @Input			functionLastCalled          Function which triggered the error
@@ -119,7 +119,7 @@ bool TestGLError(const char* functionLastCalled)
  @Return		Whether the function succeeded or not.
  @Description	Creates a native isplay for the application to render into.
 *******************************************************************************************************************************************/
-bool CreateNativeDisplay(Display** nativeDisplay)
+/*bool CreateNativeDisplay(Display** nativeDisplay)
 {
 	// Check for a valid display
 	if (!nativeDisplay)
@@ -137,7 +137,7 @@ bool CreateNativeDisplay(Display** nativeDisplay)
 
 	return true;
 }
-
+*/
 /*!*****************************************************************************************************************************************
  @Function		CreateNativeWindow
  @Input			nativeDisplay				Native display used by the application
@@ -145,7 +145,7 @@ bool CreateNativeDisplay(Display** nativeDisplay)
  @Return		Whether the function succeeded or not.
  @Description	Creates a native window for the application to render into.
 *******************************************************************************************************************************************/
-bool CreateNativeWindow(Display* nativeDisplay, Window* nativeWindow)
+/*bool CreateNativeWindow(Display* nativeDisplay, Window* nativeWindow)
 {
 	// Get the default screen for the display
 	int defaultScreen = XDefaultScreen(nativeDisplay);
@@ -206,7 +206,7 @@ bool CreateNativeWindow(Display* nativeDisplay, Window* nativeWindow)
 
 	return true;
 }
-
+*/
 /*!*****************************************************************************************************************************************
  @Function		CreateEGLDisplay
  @Input			nativeDisplay               The native display used by the application
@@ -214,7 +214,7 @@ bool CreateNativeWindow(Display* nativeDisplay, Window* nativeWindow)
  @Return		Whether the function succeeded or not.
  @Description	Creates an EGLDisplay from a native native display, and initialises it.
 *******************************************************************************************************************************************/
-bool CreateEGLDisplay( Display* nativeDisplay, EGLDisplay &eglDisplay )
+bool CreateEGLDisplay( void* nativeDisplay, EGLDisplay &eglDisplay )
 {
 	/*	Get an EGL display.
 		EGL uses the concept of a "display" which in most environments corresponds to a single physical screen. After creating a native
@@ -296,7 +296,7 @@ bool ChooseEGLConfig( EGLDisplay eglDisplay, EGLConfig& eglConfig )
  @Return		Whether the function succeeds or not.
  @Description	Creates an EGLSurface from a native window
 *******************************************************************************************************************************************/
-bool CreateEGLSurface( Window nativeWindow, EGLDisplay eglDisplay, EGLConfig eglConfig, EGLSurface& eglSurface)
+bool CreateEGLSurface( void* nativeWindow, EGLDisplay eglDisplay, EGLConfig eglConfig, EGLSurface& eglSurface)
 {
 	/*	Create an EGLSurface for rendering.
 		Using a native window created earlier and a suitable eglConfig, a surface is created that can be used to render OpenGL ES calls to.
@@ -584,7 +584,7 @@ bool InitialiseShaders( GLuint &fragmentShader, GLuint &vertexShader, GLuint &sh
  @Return		Whether the function succeeds or not.
  @Description	Renders the scene to the framebuffer. Usually called within a loop.
 *******************************************************************************************************************************************/
-bool RenderScene( GLuint shaderProgram, EGLDisplay eglDisplay, EGLSurface eglSurface, Display* nativeDisplay )
+bool RenderScene( GLuint shaderProgram, EGLDisplay eglDisplay, EGLSurface eglSurface, void* nativeDisplay )
 {
 	/*	Set the clear color
 		At the start of a frame, generally you clear the image to tell OpenGL ES that you're done with whatever was there before and want to
@@ -660,7 +660,7 @@ bool RenderScene( GLuint shaderProgram, EGLDisplay eglDisplay, EGLSurface eglSur
 	}
 
 	// Check for messages from the windowing system.
-	int numberOfMessages = XPending(nativeDisplay);
+/*	int numberOfMessages = XPending(nativeDisplay);
 	for( int i = 0; i < numberOfMessages; i++ )
 	{
 		XEvent event;
@@ -677,7 +677,7 @@ bool RenderScene( GLuint shaderProgram, EGLDisplay eglDisplay, EGLSurface eglSur
 		default:
 			break;
 		}
-	}
+	}*/
 
 	return true;
 }
@@ -724,7 +724,7 @@ void ReleaseEGLState(EGLDisplay eglDisplay)
  @Input			nativeWindow                The native window to destroy
  @Description	Releases all resources allocated by the windowing system
 *******************************************************************************************************************************************/
-void ReleaseNativeResources(Display* nativeDisplay, Window nativeWindow)
+/*void ReleaseNativeResources(void* nativeDisplay, void* nativeWindow)
 {
 	// Destroy the window
 	if (nativeWindow)
@@ -738,7 +738,7 @@ void ReleaseNativeResources(Display* nativeDisplay, Window nativeWindow)
 		XCloseDisplay(nativeDisplay);
 	}
 }
-
+*/
 /*!*****************************************************************************************************************************************
  @Function		main
  @Input			argc                        Number of arguments passed to the application, ignored.
@@ -748,9 +748,10 @@ void ReleaseNativeResources(Display* nativeDisplay, Window nativeWindow)
 *******************************************************************************************************************************************/
 int main(int /*argc*/, char **/*argv*/)
 {
+    printf("hello");
 	// X11 variables
-	Display* nativeDisplay = NULL;
-	Window nativeWindow = 0;
+	void* nativeDisplay = NULL;
+	void* nativeWindow = 0;
 
 	// EGL variables
 	EGLDisplay			eglDisplay = NULL;
@@ -766,16 +767,16 @@ int main(int /*argc*/, char **/*argv*/)
 	GLuint vertexBuffer = 0;
 
 	// Get access to a native display
-	if (!CreateNativeDisplay(&nativeDisplay))
-	{
-		goto cleanup;
-	}
+//	if (!CreateNativeDisplay(&nativeDisplay))
+//	{
+//		goto cleanup;
+//	}
 
 	// Setup the windowing system, create a window
-	if (!CreateNativeWindow(nativeDisplay, &nativeWindow))
-	{
-		goto cleanup;
-	}
+//	if (!CreateNativeWindow(nativeDisplay, &nativeWindow))
+//	{
+//		goto cleanup;
+//	}
 
 	// Create and Initialise an EGLDisplay from the native display
 	if (!CreateEGLDisplay(nativeDisplay, eglDisplay))
@@ -830,7 +831,7 @@ cleanup:
 	ReleaseEGLState(eglDisplay);
 
 	// Release the windowing system resources
-	ReleaseNativeResources(nativeDisplay, nativeWindow);
+//	ReleaseNativeResources(nativeDisplay, nativeWindow);
 
 	// Destroy the eglWindow
 	return 0;

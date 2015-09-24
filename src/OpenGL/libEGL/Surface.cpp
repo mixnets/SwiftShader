@@ -82,7 +82,7 @@ bool Surface::initialize()
 }
 
 void Surface::release()
-{	
+{
     if(mDepthStencil)
     {
         mDepthStencil->release();
@@ -119,10 +119,10 @@ bool Surface::reset()
 
 		return reset(windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
 	#else
-		XWindowAttributes windowAttributes;
-		XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
-		
-		return reset(windowAttributes.width, windowAttributes.height);
+		//XWindowAttributes windowAttributes;
+		//XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
+
+		return reset(0, 0);
 	#endif
 }
 
@@ -216,7 +216,7 @@ void Surface::setSwapInterval(EGLint interval)
     {
         return;
     }
-    
+
     mSwapInterval = interval;
     mSwapInterval = std::max(mSwapInterval, mDisplay->getMinSwapInterval());
     mSwapInterval = std::min(mSwapInterval, mDisplay->getMaxSwapInterval());
@@ -290,11 +290,11 @@ bool Surface::checkForResize()
 		int clientWidth = client.right - client.left;
 		int clientHeight = client.bottom - client.top;
 	#else
-		XWindowAttributes windowAttributes;
-		XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
+		//XWindowAttributes windowAttributes;
+		//XGetWindowAttributes(mDisplay->getNativeDisplay(), mWindow, &windowAttributes);
 
-		int clientWidth = windowAttributes.width;
-		int clientHeight = windowAttributes.height;
+		int clientWidth = 0;
+		int clientHeight = 0;
 	#endif
 
 	bool sizeDirty = clientWidth != getWidth() || clientHeight != getHeight();

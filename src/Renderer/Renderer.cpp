@@ -28,7 +28,7 @@
 #include "Debug.hpp"
 #include "Reactor/Reactor.hpp"
 
-#include <malloc.h>
+//#include <malloc.h>
 #include <assert.h>
 
 #undef max
@@ -366,7 +366,7 @@ namespace sw
 					draw->psDirtyConstB = 0;
 				}
 			}
-			
+
 			if(context->pixelShaderVersion() <= 0x0104)
 			{
 				for(int stage = 0; stage < 8; stage++)
@@ -668,7 +668,7 @@ namespace sw
 				}
 			}
 		}
-	
+
 		// Find primitive tasks
 		if(currentDraw == nextDraw)
 		{
@@ -769,7 +769,7 @@ namespace sw
 		case Task::PRIMITIVES:
 			{
 				int unit = task[threadIndex].primitiveUnit;
-				
+
 				int input = primitiveProgress[unit].firstPrimitive;
 				int count = primitiveProgress[unit].primitiveCount;
 				DrawCall *draw = drawList[primitiveProgress[unit].drawCall % DRAW_COUNT];
@@ -1444,7 +1444,7 @@ namespace sw
 
 		return visible;
 	}
-	
+
 	int Renderer::setupVertexTriangle(Renderer *renderer, int unit, int count)
 	{
 		Triangle *triangle = renderer->triangleBatch[unit];
@@ -1808,7 +1808,7 @@ namespace sw
 					return false;
 				}
 			}
-			
+
 			return setupRoutine(&primitive, &triangle, &polygon, &data);
 		}
 
@@ -1876,7 +1876,7 @@ namespace sw
 				exitThreads = true;
 				resume[thread]->signal();
 				worker[thread]->join();
-				
+
 				delete worker[thread];
 				worker[thread] = 0;
 				delete resume[thread];
@@ -1884,7 +1884,7 @@ namespace sw
 				delete suspend[thread];
 				suspend[thread] = 0;
 			}
-		
+
 			deallocate(vertexTask[thread]);
 			vertexTask[thread] = 0;
 		}
@@ -2011,7 +2011,7 @@ namespace sw
 				return true;
 			}
 		}
-	
+
 		if(context->depthStencil && context->texture[sampler] == context->depthStencil->getResource())
 		{
 			return true;
@@ -2019,7 +2019,7 @@ namespace sw
 
 		return false;
 	}
-	
+
 	void Renderer::updateClipper()
 	{
 		if(updateClipPlanes)
@@ -2059,7 +2059,7 @@ namespace sw
 	void Renderer::setTextureLevel(unsigned int sampler, unsigned int face, unsigned int level, Surface *surface, TextureType type)
 	{
 		ASSERT(sampler < (16 + 4) && face < 6 && level < MIPMAP_LEVELS);
-		
+
 		context->sampler[sampler].setTextureLevel(face, level, surface, type);
 	}
 
@@ -2346,7 +2346,7 @@ namespace sw
 	{
 		queries.push_back(query);
 	}
-	
+
 	void Renderer::removeQuery(Query *query)
 	{
 		queries.remove(query);
@@ -2357,7 +2357,7 @@ namespace sw
 		{
 			return threadCount;
 		}
-		
+
 		int64_t Renderer::getVertexTime(int thread)
 		{
 			return vertexTime[thread];
@@ -2367,7 +2367,7 @@ namespace sw
 		{
 			return setupTime[thread];
 		}
-			
+
 		int64_t Renderer::getPixelTime(int thread)
 		{
 			return pixelTime[thread];

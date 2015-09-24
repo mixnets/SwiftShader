@@ -20,9 +20,9 @@
 #include <string.h>
 #include <assert.h>
 
-namespace sw
-{
-	static int (*PreviousXErrorHandler)(Display *display, XErrorEvent *event) = 0;
+//namespace sw
+//{
+/*	static int (*PreviousXErrorHandler)(Display *display, XErrorEvent *event) = 0;
 	static bool shmBadAccess = false;
 
 	// Catches BadAcces errors so we can fall back to not using MIT-SHM
@@ -144,8 +144,8 @@ namespace sw
 
 extern "C"
 {
-	sw::FrameBuffer *createFrameBuffer(void *display, Window window, int width, int height)
-	{
-		return new sw::FrameBufferX11((Display*)display, window, width, height);
-	}
-}
+//	sw::FrameBuffer *createFrameBuffer(void *display, Window window, int width, int height)
+//	{
+//		return 0;//new sw::FrameBufferX11((Display*)display, window, width, height);
+//	}
+}*/

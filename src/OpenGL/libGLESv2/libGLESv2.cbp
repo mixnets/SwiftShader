@@ -121,11 +121,7 @@
 			<Add directory="./../../Main/" />
 		</Compiler>
 		<Linker>
-			<Add option="-Wl,--version-script=./exports.map" />
-			<Add option="-Wl,--hash-style=both" />
 			<Add library="pthread" />
-			<Add library="X11" />
-			<Add library="Xext" />
 		</Linker>
 		<Unit filename="../../Common/CPUID.cpp" />
 		<Unit filename="../../Common/CPUID.hpp" />
@@ -371,6 +367,7 @@
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

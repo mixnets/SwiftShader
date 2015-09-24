@@ -19,7 +19,7 @@
 #else
 	#include <sys/time.h>
 	#include <x86intrin.h>
-	#include <features.h>
+	//#include <features.h>
 #endif
 
 #include <assert.h>
@@ -49,11 +49,10 @@ namespace sw
 	{
 		#if defined(_WIN32)
 			return __rdtsc();
-		#elif __GNUC_PREREQ(4,5)
-			return __builtin_ia32_rdtsc();
 		#else
-			assert(false);   // UNIMPLEMENTED
-			return 0;
+            int64_t result;
+            __asm volatile("rdtsc": "=A" (result));
+            return result;
 		#endif
 	}
 

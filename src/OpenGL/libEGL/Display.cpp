@@ -26,7 +26,7 @@
 
 namespace egl
 {
-typedef std::map<EGLNativeDisplayType, Display*> DisplayMap; 
+typedef std::map<EGLNativeDisplayType, Display*> DisplayMap;
 DisplayMap displays;
 
 egl::Display *Display::getPlatformDisplay(EGLenum platform, EGLNativeDisplayType displayId)
@@ -89,10 +89,10 @@ static void cpuid(int registers[4], int info)
 
 static bool detectSSE()
 {
-	#if defined(__APPLE__)
+	#if 0&&defined(__APPLE__)
 		int SSE = false;
 		size_t length = sizeof(SSE);
-		sysctlbyname("hw.optional.sse", &SSE, &length, 0, 0);
+		//sysctlbyname("hw.optional.sse", &SSE, &length, 0, 0);
 		return SSE;
 	#else
 		int registers[4];
@@ -110,9 +110,11 @@ bool Display::initialize()
 
 	if(!detectSSE())
 	{
+	    printf("SSE no\n");
         return false;
 	}
-		
+	printf("SSE yes\n");
+
     mMinSwapInterval = 0;
     mMaxSwapInterval = 4;
 
@@ -150,7 +152,7 @@ bool Display::initialize()
         for(int depthStencilIndex = 0; depthStencilIndex < sizeof(depthStencilFormats) / sizeof(sw::Format); depthStencilIndex++)
         {
             sw::Format depthStencilFormat = depthStencilFormats[depthStencilIndex];
-             
+
             // FIXME: enumerate multi-sampling
 
             configSet.add(currentDisplayMode, mMinSwapInterval, mMaxSwapInterval, renderTargetFormat, depthStencilFormat, 0);
@@ -468,14 +470,14 @@ bool Display::isValidWindow(EGLNativeWindowType window)
     #else
         if(platform == EGL_PLATFORM_X11_EXT)
         {
-            XWindowAttributes windowAttributes;
-            Status status = XGetWindowAttributes(displayId, window, &windowAttributes);
+            //XWindowAttributes windowAttributes;
+            //Status status = X11.GetWindowAttributes(displayId, window, &windowAttributes);
 
-            return status == True;
+            //return status == True;
         }
 	#endif
 
-    return false;
+    return true;
 }
 
 bool Display::hasExistingWindowSurface(EGLNativeWindowType window)
@@ -512,11 +514,11 @@ DisplayMode Display::getDisplayMode() const
 
 	#if defined(_WIN32)
 		HDC deviceContext = GetDC(0);
-	
+
 		displayMode.width = ::GetDeviceCaps(deviceContext, HORZRES);
 		displayMode.height = ::GetDeviceCaps(deviceContext, VERTRES);
 		unsigned int bpp = ::GetDeviceCaps(deviceContext, BITSPIXEL);
-	
+
 		switch(bpp)
 		{
 		case 32: displayMode.format = sw::FORMAT_X8R8G8B8; break;
@@ -525,17 +527,17 @@ DisplayMode Display::getDisplayMode() const
 		default:
 			ASSERT(false);   // Unexpected display mode color depth
 		}
-	
+
 		ReleaseDC(0, deviceContext);
 	#else
         if(platform == EGL_PLATFORM_X11_EXT)
         {
-            Screen *screen = XDefaultScreenOfDisplay(displayId);
-            displayMode.width = XWidthOfScreen(screen);
-            displayMode.height = XHeightOfScreen(screen);
-            unsigned int bpp = XPlanesOfScreen(screen);
+            //Screen *screen = XDefaultScreenOfDisplay(displayId);
+            //displayMode.width = XWidthOfScreen(screen);
+            //displayMode.height = XHeightOfScreen(screen);
+            //unsigned int bpp = XPlanesOfScreen(screen);
 
-            switch(bpp)
+            switch(0)
             {
             case 32: displayMode.format = sw::FORMAT_X8R8G8B8; break;
             case 24: displayMode.format = sw::FORMAT_R8G8B8;   break;
@@ -545,6 +547,12 @@ DisplayMode Display::getDisplayMode() const
             }
         }
         else if(platform == EGL_PLATFORM_GBM_MESA)
+        {
+            displayMode.width = 0;
+            displayMode.height = 0;
+            displayMode.format = sw::FORMAT_X8R8G8B8;
+        }
+        else if(true)
         {
             displayMode.width = 0;
             displayMode.height = 0;

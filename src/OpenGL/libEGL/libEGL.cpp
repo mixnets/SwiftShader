@@ -276,7 +276,7 @@ EGLSurface EGLAPIENTRY eglCreateWindowSurface(EGLDisplay dpy, EGLConfig config, 
 	{
 		return error(EGL_BAD_NATIVE_WINDOW, EGL_NO_SURFACE);
 	}
-
+printf("going to create a window\n");
 	return display->createWindowSurface(window, config, attrib_list);
 }
 
