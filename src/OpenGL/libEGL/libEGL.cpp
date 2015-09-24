@@ -180,6 +180,7 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 		               "EGL_KHR_gl_renderbuffer_image "
 		               "EGL_KHR_image_base "
 		               "EGL_KHR_partial_update "
+		               "EGL_KHR_swap_buffers_with_damage "
 		               "EGL_ANDROID_framebuffer_target "
 		               "EGL_ANDROID_recordable");
 	case EGL_VENDOR:
@@ -951,6 +952,11 @@ EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
 EGLBoolean SetDamageRegionKHR(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects)
 {
 	return success(EGL_TRUE);
+}
+
+EGLBoolean SwapBuffersWithDamageKHR(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects)
+{
+	return eglSwapBuffers(dpy, surface);
 }
 
 EGLDisplay GetPlatformDisplayEXT(EGLenum platform, void *native_display, const EGLint *attrib_list)
