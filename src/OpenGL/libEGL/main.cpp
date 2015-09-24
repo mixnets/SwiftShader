@@ -357,6 +357,7 @@ EGLBoolean CopyBuffers(EGLDisplay dpy, EGLSurface surface, EGLNativePixmapType t
 EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list);
 EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image);
 EGLBoolean SetDamageRegionKHR(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects);
+EGLBoolean SwapBuffersWithDamageKHR(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects);
 EGLDisplay GetPlatformDisplayEXT(EGLenum platform, void *native_display, const EGLint *attrib_list);
 EGLSurface CreatePlatformWindowSurfaceEXT(EGLDisplay dpy, EGLConfig config, void *native_window, const EGLint *attrib_list);
 EGLSurface CreatePlatformPixmapSurfaceEXT(EGLDisplay dpy, EGLConfig config, void *native_pixmap, const EGLint *attrib_list);
@@ -545,6 +546,11 @@ EGLAPI EGLBoolean eglSetDamageRegionKHR(EGLDisplay dpy, EGLSurface surface, EGLi
 	return egl::SetDamageRegionKHR(dpy, surface, rects, n_rects);
 }
 
+EGLAPI EGLBoolean eglSwapBuffersWithDamageKHR(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects)
+{
+	return egl::SwapBuffersWithDamageKHR(dpy, surface, rects, n_rects);
+}
+
 EGLAPI EGLDisplay EGLAPIENTRY eglGetPlatformDisplayEXT(EGLenum platform, void *native_display, const EGLint *attrib_list)
 {
 	return egl::GetPlatformDisplayEXT(platform, native_display, attrib_list);
@@ -604,6 +610,7 @@ LibEGLexports::LibEGLexports()
 	this->eglCreateImageKHR = egl::CreateImageKHR;
 	this->eglDestroyImageKHR = egl::DestroyImageKHR;
 	this->eglSetDamageRegionKHR = egl::SetDamageRegionKHR;
+	this->eglSwapBuffersWithDamageKHR = egl::SwapBuffersWithDamageKHR;
 	this->eglGetProcAddress = egl::GetProcAddress;
 
 	this->clientGetCurrentContext = egl::getCurrentContext;

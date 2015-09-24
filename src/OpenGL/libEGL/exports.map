@@ -42,6 +42,7 @@ global:
     eglCreatePlatformWindowSurfaceEXT;
     eglCreatePlatformPixmapSurfaceEXT;
     eglSetDamageRegionKHR;
+    eglSwapBuffersWithDamageKHR;
 
 	libEGL_swiftshader;
 
