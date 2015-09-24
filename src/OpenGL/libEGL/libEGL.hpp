@@ -47,6 +47,7 @@ public:
 	EGLImageKHR (*eglCreateImageKHR)(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list);
 	EGLBoolean (*eglDestroyImageKHR)(EGLDisplay dpy, EGLImageKHR image);
 	EGLBoolean (*eglSetDamageRegionKHR)(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects);
+	EGLBoolean (*eglSwapBuffersWithDamageKHR)(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects);
 
 	__eglMustCastToProperFunctionPointerType (*eglGetProcAddress)(const char*);
 

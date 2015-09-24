@@ -953,6 +953,11 @@ EGLBoolean SetDamageRegionKHR(EGLDisplay dpy, EGLSurface surface, EGLint *rects,
 	return success(EGL_TRUE);
 }
 
+EGLBoolean SwapBuffersWithDamageKHR(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects)
+{
+	return eglSwapBuffers(dpy, surface);
+}
+
 EGLDisplay GetPlatformDisplayEXT(EGLenum platform, void *native_display, const EGLint *attrib_list)
 {
 	TRACE("(EGLenum platform = 0x%X, void *native_display = %p, const EGLint *attrib_list = %p)", platform, native_display, attrib_list);
