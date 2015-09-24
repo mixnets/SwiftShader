@@ -541,6 +541,11 @@ EGLAPI EGLBoolean EGLAPIENTRY eglGetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR syn
 	return libEGL->eglGetSyncAttribKHR(dpy, sync, attribute, value);
 }
 
+EGLAPI EGLBoolean EGLAPIENTRY eglSwapBuffersWithDamage(EGLDisplay dpy, EGLSurface surface, EGLint *rects, EGLint n_rects)
+{
+	return libEGL->eglSwapBuffersWithDamage(dpy, surface, rects, n_rects);
+}
+
 GL_API void GL_APIENTRY glActiveTexture(GLenum texture)
 {
 	return es1::ActiveTexture(texture);
