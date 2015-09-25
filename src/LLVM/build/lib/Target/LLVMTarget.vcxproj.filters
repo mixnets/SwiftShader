@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Target\Target.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Target\TargetIntrinsicInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Target\TargetLoweringObjectFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Target\TargetMachine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Target\TargetMachineC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Target\TargetRecip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Target\TargetSubtargetInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\CostTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetCallingConv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetFrameLowering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetInstrInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetIntrinsicInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetLowering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetLoweringObjectFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetMachine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetOpcodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetOptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetRecip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetRegisterInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetSelectionDAGInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Target\TargetSubtargetInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Target\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{D2D938CC-82BE-4230-8F4E-F363F50A6F16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{58071F79-725B-4AC9-8460-EF764E0D47EC}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\build\CMakeFiles\b35ff857e0636b04426f835cd313194e\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{66C853DA-9396-4033-BA98-6C8BFF4F044A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

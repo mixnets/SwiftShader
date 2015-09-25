@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ExecutionEngine\Orc\ExecutionUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ExecutionEngine\Orc\IndirectionUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ExecutionEngine\Orc\NullResolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ExecutionEngine\Orc\OrcMCJITReplacement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ExecutionEngine\Orc\OrcTargetSupport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ExecutionEngine\Orc\OrcMCJITReplacement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\CompileOnDemandLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\CompileUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\ExecutionUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\IndirectionUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\IRCompileLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\IRTransformLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\JITSymbol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\LambdaResolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\LazyEmittingLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\LogicalDylib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\NullResolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\ObjectLinkingLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\ObjectTransformLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ExecutionEngine\Orc\OrcTargetSupport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ExecutionEngine\Orc\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{D2D938CC-82BE-4230-8F4E-F363F50A6F16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{58071F79-725B-4AC9-8460-EF764E0D47EC}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

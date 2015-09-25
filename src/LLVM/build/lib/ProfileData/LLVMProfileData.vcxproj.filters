@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ProfileData\InstrProf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ProfileData\InstrProfReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ProfileData\InstrProfWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ProfileData\CoverageMapping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ProfileData\CoverageMappingWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ProfileData\CoverageMappingReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ProfileData\SampleProf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ProfileData\SampleProfReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ProfileData\SampleProfWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ProfileData\InstrProfIndexed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ProfileData\CoverageMapping.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ProfileData\CoverageMappingReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ProfileData\CoverageMappingWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ProfileData\InstrProf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ProfileData\InstrProfReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ProfileData\InstrProfWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ProfileData\SampleProf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ProfileData\SampleProfReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\ProfileData\SampleProfWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\ProfileData\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{D2D938CC-82BE-4230-8F4E-F363F50A6F16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{58071F79-725B-4AC9-8460-EF764E0D47EC}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

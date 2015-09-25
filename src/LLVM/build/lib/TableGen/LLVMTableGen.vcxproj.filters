@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\TableGen\Error.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\TableGen\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\TableGen\Record.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\TableGen\SetTheory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\TableGen\StringMatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\TableGen\TableGenBackend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\TableGen\TGLexer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\TableGen\TGParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\TableGen\TGLexer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\TableGen\TGParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\TableGen\Error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\TableGen\Main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\TableGen\Record.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\TableGen\SetTheory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\TableGen\StringMatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\TableGen\StringToOffsetTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\TableGen\TableGenBackend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\TableGen\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{D2D938CC-82BE-4230-8F4E-F363F50A6F16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{58071F79-725B-4AC9-8460-EF764E0D47EC}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

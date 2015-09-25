@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Transforms\Instrumentation\AddressSanitizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Transforms\Instrumentation\BoundsChecking.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Transforms\Instrumentation\DataFlowSanitizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Transforms\Instrumentation\GCOVProfiling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Transforms\Instrumentation\MemorySanitizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Transforms\Instrumentation\Instrumentation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Transforms\Instrumentation\InstrProfiling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Transforms\Instrumentation\SafeStack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Transforms\Instrumentation\SanitizerCoverage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Transforms\Instrumentation\ThreadSanitizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Transforms\Instrumentation\MaximumSpanningTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Transforms\Instrumentation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Transforms\IPO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Transforms\ObjCARC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Transforms\Scalar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\include\llvm\Transforms\Vectorize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\Transforms\Instrumentation\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{D2D938CC-82BE-4230-8F4E-F363F50A6F16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{58071F79-725B-4AC9-8460-EF764E0D47EC}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

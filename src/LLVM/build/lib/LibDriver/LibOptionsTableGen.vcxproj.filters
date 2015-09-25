@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\lib\LibDriver\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\build\CMakeFiles\452312ae766cf5f2d9fcf86d46e44277\Options.inc.tmp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\build\CMakeFiles\452312ae766cf5f2d9fcf86d46e44277\Options.inc.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\build\CMakeFiles\b0f0b1c136d0c1f2c4a41c114e951e7b\LibOptionsTableGen.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\build\lib\LibDriver\CMakeFiles\LibOptionsTableGen" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{66C853DA-9396-4033-BA98-6C8BFF4F044A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
