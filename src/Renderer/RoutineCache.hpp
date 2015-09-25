@@ -35,7 +35,7 @@ namespace sw
 
 #if defined(_WIN32)
 	#include "Shader/Constants.hpp"
-	#include "Reactor/DLL.hpp"
+	//#include "Reactor/DLL.hpp"
 #endif
 
 namespace sw
@@ -43,7 +43,7 @@ namespace sw
 	template<class State>
 	RoutineCache<State>::RoutineCache(int n, const char *precache) : LRUCache<State, Routine>(n), precache(precache)
 	{
-		#if defined(_WIN32)
+	/*	#if defined(_WIN32)
 			precacheDLL = 0;
 
 			if(precache)
@@ -84,13 +84,13 @@ namespace sw
 					fclose(dir);
 				}
 			}
-		#endif
+		#endif*/
 	}
 
 	template<class State>
 	RoutineCache<State>::~RoutineCache()
 	{
-		#if defined(_WIN32)
+		/*#if defined(_WIN32)
 			char dllName[1024]; sprintf(dllName, "%s.dll", precache);
 			char dirName[1024]; sprintf(dirName, "%s.dir", precache);
 
@@ -165,7 +165,7 @@ namespace sw
 				remove(dllName);
 				remove(dirName);
 			}
-		#endif
+		#endif*/
 	}
 }
 

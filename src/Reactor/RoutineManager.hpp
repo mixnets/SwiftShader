@@ -13,13 +13,13 @@
 #define sw_RoutineManager_hpp
 
 #include "llvm/IR/GlobalValue.h"
-#include "llvm/ExecutionEngine/JITMemoryManager.h"
+#include "llvm/ExecutionEngine/SectionMemoryManager.h"
 
 namespace sw
 {
 	class Routine;
 
-	class RoutineManager : public llvm::JITMemoryManager
+	class RoutineManager : public llvm::SectionMemoryManager
 	{
 	public:
 		RoutineManager();

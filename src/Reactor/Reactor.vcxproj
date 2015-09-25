@@ -105,11 +105,14 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\Users\nicolascapens\Development\SwiftShader\src\LLVM\build\include;$(SolutionDir)\LLVM\build\include\;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\;..\LLVM\include;..\..\build\VisualStudio2013\include;..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\LLVM\include;..\..\build\include;..\Common;..\LLVM\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB; _CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -130,7 +133,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\;..\LLVM\include;..\..\build\VisualStudio2013\include;..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\LLVM\include;..\..\build\include;..\Common;..\LLVM\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB; _CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>
@@ -156,7 +159,7 @@
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\;..\LLVM\include;..\..\build\VisualStudio2013\include;..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\LLVM\include;..\..\build\include;..\Common;..\LLVM\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_SECURE_SCL=0;_HAS_EXCEPTIONS=0; _CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -183,7 +186,7 @@
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\;..\LLVM\include;..\..\build\VisualStudio2013\include;..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\LLVM\include;..\..\build\include;..\Common;..\LLVM\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_SECURE_SCL=0;_HAS_EXCEPTIONS=0; _CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -212,7 +215,7 @@
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\;..\LLVM\include;..\..\build\VisualStudio2013\include;..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\LLVM\include;..\..\build\include;..\Common;..\LLVM\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_SECURE_SCL=0;_HAS_EXCEPTIONS=0; _CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -241,7 +244,7 @@
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\;..\LLVM\include;..\..\build\VisualStudio2013\include;..\Common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\LLVM\include;..\..\build\include;..\Common;..\LLVM\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_SECURE_SCL=0;_HAS_EXCEPTIONS=0; _CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -274,11 +277,98 @@
     <ClInclude Include="x86.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LLVM\build\lib\Analysis\IPA\LLVMipa.vcxproj">
+      <Project>{29f1099c-4e33-4860-993d-d7325a2f985c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Analysis\LLVMAnalysis.vcxproj">
+      <Project>{aa348429-dd96-4720-a4eb-c3d32f2dc3ca}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\AsmParser\LLVMAsmParser.vcxproj">
+      <Project>{0e41d248-1291-43bd-97c4-6edbb9bb5290}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Bitcode\Reader\LLVMBitReader.vcxproj">
+      <Project>{620a489c-0b84-461e-a778-5f2b38212afb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\CodeGen\AsmPrinter\LLVMAsmPrinter.vcxproj">
+      <Project>{e7970ca4-f47e-469e-848d-acd5c4b29f31}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\CodeGen\LLVMCodeGen.vcxproj">
+      <Project>{1b6490f2-4e4d-47c0-be57-adc44e6e80a3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\CodeGen\MIRParser\LLVMMIRParser.vcxproj">
+      <Project>{b553a16d-d339-46bd-8a68-5b53e6e32db8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\CodeGen\SelectionDAG\LLVMSelectionDAG.vcxproj">
+      <Project>{6dba84d4-edab-4c38-989f-a7fe4692e0ac}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\ExecutionEngine\Interpreter\LLVMInterpreter.vcxproj">
+      <Project>{7a4e3e39-89bf-4d08-a925-cdf2063a4b2f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\ExecutionEngine\LLVMExecutionEngine.vcxproj">
+      <Project>{ad00568d-5774-45ce-a3ac-1969b62d9858}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\LLVM\build\lib\ExecutionEngine\MCJIT\LLVMMCJIT.vcxproj">
       <Project>{39683ebf-9717-47ca-a9ea-cef2fca972d7}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\ExecutionEngine\RuntimeDyld\LLVMRuntimeDyld.vcxproj">
+      <Project>{63a75b81-f895-4c3f-b82f-604d33d6214a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\IR\LLVMCore.vcxproj">
+      <Project>{ef539046-0cd5-4167-8fb2-0317ff1e4762}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\MC\LLVMMC.vcxproj">
+      <Project>{01d0c1fb-5918-4224-b465-bb315965b1fd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\MC\MCDisassembler\LLVMMCDisassembler.vcxproj">
+      <Project>{0d251cc9-a359-4a40-96b5-3a5cd549ad92}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\MC\MCParser\LLVMMCParser.vcxproj">
+      <Project>{15afed2e-5ecf-40de-92cd-88125b409b44}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Object\LLVMObject.vcxproj">
+      <Project>{64191abb-dfa2-41a5-b6e9-151e26bedadc}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Passes\LLVMPasses.vcxproj">
+      <Project>{1e454c27-7c34-4f66-b9c7-645d99d37913}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\ProfileData\LLVMProfileData.vcxproj">
+      <Project>{83f0a468-6b6f-48a3-9735-ce356846af8d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Support\LLVMSupport.vcxproj">
+      <Project>{3c3e9a12-3ce3-4e16-ba60-f5313a736ee3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Target\LLVMTarget.vcxproj">
+      <Project>{c4cb4e34-8bd6-4e93-9f77-92be4087694e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Target\X86\InstPrinter\LLVMX86AsmPrinter.vcxproj">
+      <Project>{b6b69813-1367-4998-97d2-5bfda82ae639}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\LLVM\build\lib\Target\X86\LLVMX86CodeGen.vcxproj">
       <Project>{c3303f48-a12d-4956-a572-d47e44898da7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Target\X86\MCTargetDesc\LLVMX86Desc.vcxproj">
+      <Project>{787bdf83-4023-4cae-8121-ed16d817f1cc}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Target\X86\TargetInfo\LLVMX86Info.vcxproj">
+      <Project>{ac4f3a16-12a6-4096-aa03-b6da7bb57b8f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Target\X86\Utils\LLVMX86Utils.vcxproj">
+      <Project>{4a179d4d-fd8c-4e52-b0ef-da679aa33ef8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Target\X86\X86CommonTableGen.vcxproj">
+      <Project>{de98e8ba-91ee-4a27-a822-60c9a5eeb802}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Transforms\InstCombine\LLVMInstCombine.vcxproj">
+      <Project>{0940dc40-4f12-4c0a-8906-707ce1a08b89}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Transforms\Instrumentation\LLVMInstrumentation.vcxproj">
+      <Project>{e369d438-79d2-480f-a447-f7e26c880489}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Transforms\Scalar\LLVMScalarOpts.vcxproj">
+      <Project>{5a545e93-a3e9-4385-b4a1-91c332a7e450}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Transforms\Utils\LLVMTransformUtils.vcxproj">
+      <Project>{845968f6-191d-4d84-b187-eb3eaf2a1a80}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

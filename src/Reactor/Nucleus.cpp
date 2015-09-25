@@ -14,10 +14,13 @@
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Intrinsics.h"
+//#include "llvm/Pass.h"
+#include "llvm/IR/PassManager.h"
+#include "llvm/IR/LegacyPassManager.h"
+#include "llvm/IR/CFG.h"
 #include "llvm/Transforms/Scalar.h"
-#include "llvm/Support/CFG.h"
 #include "llvm/Support/TargetSelect.h"
-#include "../lib/ExecutionEngine/JIT/JIT.h"
+#include "llvm/ExecutionEngine/ExecutionEngine.h"
 
 #include "Routine.hpp"
 #include "RoutineManager.hpp"
@@ -25,6 +28,7 @@
 #include "CPUID.hpp"
 #include "Thread.hpp"
 #include "Memory.hpp"
+#include "Common/MutexLock.hpp"
 
 #include <fstream>
 
@@ -48,13 +52,14 @@ namespace sw
 
 	using namespace llvm;
 
-	RoutineManager *Nucleus::routineManager = 0;
-	ExecutionEngine *Nucleus::executionEngine = 0;
-	Builder *Nucleus::builder = 0;
-	LLVMContext *Nucleus::context = 0;
-	Module *Nucleus::module = 0;
-	llvm::Function *Nucleus::function = 0;
-	BackoffLock Nucleus::codegenMutex;
+	std::unique_ptr<RoutineManager> Nucleus::routineManager = nullptr;
+	ExecutionEngine *Nucleus::executionEngine = nullptr;
+	Builder *Nucleus::builder = nullptr;
+	LLVMContext *Nucleus::context = nullptr;
+	Module *Nucleus::module = nullptr;
+	llvm::Function *Nucleus::function = nullptr;
+	llvm::EngineBuilder *Nucleus::engineBuilder = nullptr;
+	BackoffLock *Nucleus::codegenMutex = new BackoffLock();
 
 	class Builder : public IRBuilder<>
 	{
@@ -62,17 +67,19 @@ namespace sw
 
 	Nucleus::Nucleus()
 	{
-		codegenMutex.lock();   // Reactor and LLVM are currently not thread safe
+		codegenMutex->lock();   // Reactor and LLVM are currently not thread safe
 
-		InitializeNativeTarget();
+		//InitializeNativeTarget();
 
 		if(!context)
 		{
+			InitializeNativeTarget();
+			InitializeNativeTargetAsmPrinter();
 			context = new LLVMContext();
 		}
 
 		module = new Module("", *context);
-		routineManager = new RoutineManager();
+		//routineManager.reset(new RoutineManager());
 
 		#if defined(__x86_64__)
 			const char *architecture = "x86-64";
@@ -90,22 +97,22 @@ namespace sw
 		MAttrs.push_back(CPUID::supportsSSE4_1() ? "+sse41" : "-sse41");
 
 		TargetOptions targetOptions;
-		targetOptions.JITEmitDebugInfo = false;
-		targetOptions.NoFramePointerElim = true;
+	//	targetOptions.JITEmitDebugInfo = false;
+	//	targetOptions.NoFramePointerElim = true;
 		targetOptions.UnsafeFPMath = true;
 	//	targetOptions.NoInfsFPMath = true;
 	//	targetOptions.NoNaNsFPMath = true;
 
-		EngineBuilder engineBuilder(module);
-		engineBuilder.setEngineKind(EngineKind::JIT);
-		engineBuilder.setJITMemoryManager(routineManager);
-		engineBuilder.setOptLevel(CodeGenOpt::Default);
-		engineBuilder.setTargetOptions(targetOptions);
-		engineBuilder.setAllocateGVsWithCode(true);
-		engineBuilder.setUseMCJIT(false);
-		engineBuilder.setMAttrs(MAttrs);
+		engineBuilder = new EngineBuilder(std::unique_ptr<Module>(module));
+		engineBuilder->setEngineKind(EngineKind::JIT);
+		engineBuilder->setMCJITMemoryManager(std::move(routineManager));
+		engineBuilder->setOptLevel(CodeGenOpt::Default);
+		engineBuilder->setTargetOptions(targetOptions);
+		//engineBuilder.setAllocateGVsWithCode(true);
+		//engineBuilder.setUseMCJIT(false);
+		engineBuilder->setMAttrs(MAttrs);
 
-		executionEngine = engineBuilder.create();
+		executionEngine = engineBuilder->create();
 
 		if(!builder)
 		{
@@ -127,14 +134,17 @@ namespace sw
 
 	Nucleus::~Nucleus()
 	{
+		delete engineBuilder;
+		engineBuilder = nullptr;
+
 		delete executionEngine;
-		executionEngine = 0;
+		executionEngine = nullptr;
 
-		routineManager = 0;
-		function = 0;
-		module = 0;
+		routineManager = nullptr;
+		function = nullptr;
+		module = nullptr;
 
-		codegenMutex.unlock();
+		codegenMutex->unlock();
 	}
 
 	Routine *Nucleus::acquireRoutine(const wchar_t *name, bool runOptimizations)
@@ -155,8 +165,8 @@ namespace sw
 
 		if(false)
 		{
-			std::string error;
-			raw_fd_ostream file("llvm-dump-unopt.txt", error);
+			std::error_code error;
+			raw_fd_ostream file("llvm-dump-unopt.txt", error, llvm::sys::fs::F_Text);
 			module->print(file, 0);
 		}
 
@@ -167,8 +177,8 @@ namespace sw
 
 		if(false)
 		{
-			std::string error;
-			raw_fd_ostream file("llvm-dump-opt.txt", error);
+			std::error_code error;
+			raw_fd_ostream file("llvm-dump-opt.txt", error, llvm::sys::fs::F_Text);
 			module->print(file, 0);
 		}
 
@@ -185,35 +195,37 @@ namespace sw
 
 	void Nucleus::optimize()
 	{
-		static PassManager *passManager = 0;
-
+		//static PassManager<Module> *passManager = nullptr;
+		//static legacy::ModulePassManager *passManager = nullptr;
+		static legacy::FunctionPassManager *passManager = nullptr;
 		if(!passManager)
 		{
-			passManager = new PassManager();
-			passManager->add(new DataLayout(*executionEngine->getDataLayout()));
-			passManager->add(createScalarReplAggregatesPass());
+			passManager = new /*PassManager<Module>*/legacy::FunctionPassManager(module);
+		//	passManager->addPass(new DataLayout(*executionEngine->getDataLayout()));
+			module->setDataLayout(*executionEngine->getDataLayout());
+		//	passManager->addPass(createScalarReplAggregatesPass());
 
 			for(int pass = 0; pass < 10 && optimization[pass] != Disabled; pass++)
 			{
 				switch(optimization[pass])
 				{
 				case Disabled:                                                                 break;
-				case CFGSimplification:    passManager->add(createCFGSimplificationPass());    break;
-				case LICM:                 passManager->add(createLICMPass());                 break;
-				case AggressiveDCE:        passManager->add(createAggressiveDCEPass());        break;
-				case GVN:                  passManager->add(createGVNPass());                  break;
+			//	case CFGSimplification:    passManager->addPass(createCFGSimplificationPass());    break;
+			//	case LICM:                 passManager->addPass(createLICMPass());                 break;
+			//	case AggressiveDCE:        passManager->addPass(createAggressiveDCEPass());        break;
+			//	case GVN:                  passManager->addPass(createGVNPass());                  break;
 				case InstructionCombining: passManager->add(createInstructionCombiningPass()); break;
-				case Reassociate:          passManager->add(createReassociatePass());          break;
-				case DeadStoreElimination: passManager->add(createDeadStoreEliminationPass()); break;
-				case SCCP:                 passManager->add(createSCCPPass());                 break;
-				case ScalarReplAggregates: passManager->add(createScalarReplAggregatesPass()); break;
+			//	case Reassociate:          passManager->addPass(createReassociatePass());          break;
+			//	case DeadStoreElimination: passManager->addPass(createDeadStoreEliminationPass()); break;
+			//	case SCCP:                 passManager->addPass(createSCCPPass());                 break;
+			//	case ScalarReplAggregates: passManager->addPass(createScalarReplAggregatesPass()); break;
 				default:
 					assert(false);
 				}
 			}
 		}
 
-		passManager->run(*module);
+		passManager->run(*function);
 	}
 
 	void Nucleus::setFunction(llvm::Function *function)
@@ -644,22 +656,22 @@ namespace sw
 
 	Value *Nucleus::createCall(Value *callee, Value *arg)
 	{
-		return builder->CreateCall(callee, arg);
+		return builder->CreateCall(callee, {arg});
 	}
 
 	Value *Nucleus::createCall(Value *callee, Value *arg1, Value *arg2)
 	{
-		return builder->CreateCall2(callee, arg1, arg2);
+		return builder->CreateCall(callee, {arg1, arg2});
 	}
 
 	Value *Nucleus::createCall(Value *callee, Value *arg1, Value *arg2, Value *arg3)
 	{
-		return builder->CreateCall3(callee, arg1, arg2, arg3);
+		return builder->CreateCall(callee, {arg1, arg2, arg3});
 	}
 
 	Value *Nucleus::createCall(Value *callee, Value *arg1, Value *arg2, Value *arg3, Value *arg4)
 	{
-		return builder->CreateCall4(callee, arg1, arg2, arg3, arg4);
+		return builder->CreateCall(callee, {arg1, arg2, arg3, arg4});
 	}
 
 	Value *Nucleus::createExtractElement(Value *vector, int index)
@@ -742,7 +754,12 @@ namespace sw
 
 	llvm::GlobalValue *Nucleus::createGlobalValue(llvm::Type *Ty, bool isConstant, unsigned int Align)
 	{
-		llvm::GlobalValue *global = new llvm::GlobalVariable(*Nucleus::getModule(), Ty, isConstant, llvm::GlobalValue::ExternalLinkage, 0, "");
+		//llvm::GlobalValue *global = new llvm::GlobalVariable(*Nucleus::getModule(), Ty, isConstant, llvm::GlobalValue::ExternalLinkage, 0, "");
+		//global->setAlignment(Align);
+		//llvm::GlobalValue *global = new llvm::GlobalVariable(Ty, isConstant, llvm::GlobalValue::ExternalLinkage);
+		//global->setAlignment(Align);
+
+		llvm::GlobalObject *global = new llvm::GlobalVariable(Ty, isConstant, llvm::GlobalValue::ExternalLinkage);
 		global->setAlignment(Align);
 
 		return global;

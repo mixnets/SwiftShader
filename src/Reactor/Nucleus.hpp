@@ -13,12 +13,12 @@
 #define sw_Nucleus_hpp
 
 #include "Common/Types.hpp"
-#include "Common/MutexLock.hpp"
 
 #include <stdarg.h>
 #include <vector>
 #include <stdio.h>
 #include <wchar.h>
+#include <memory>
 
 #undef abs
 #undef max
@@ -39,6 +39,7 @@ namespace llvm
 	class GlobalVariable;
 	class GlobalValue;
 	class ExecutionEngine;
+	class EngineBuilder;
 	class LLVMContext;
 }
 
@@ -65,6 +66,7 @@ namespace sw
 	class Routine;
 	class RoutineManager;
 	class Builder;
+	class BackoffLock;
 
 	class Nucleus
 	{
@@ -218,9 +220,10 @@ namespace sw
 		static llvm::Function *function;
 		static llvm::LLVMContext *context;
 		static llvm::Module *module;
-		static RoutineManager *routineManager;
+		static std::unique_ptr<RoutineManager> routineManager;
+		static llvm::EngineBuilder *engineBuilder;
 
-		static BackoffLock codegenMutex;
+		static BackoffLock *codegenMutex;
 	};
 
 	class Byte;

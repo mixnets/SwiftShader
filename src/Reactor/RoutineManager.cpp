@@ -78,7 +78,7 @@ namespace sw
 
 	uint8_t *RoutineManager::getGOTBase() const
 	{
-		ASSERT(!HasGOT);
+	//	ASSERT(!HasGOT);
 		return 0;
 	}
 
