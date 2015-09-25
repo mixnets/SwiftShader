@@ -273,6 +273,14 @@
     <ClInclude Include="RoutineManager.hpp" />
     <ClInclude Include="x86.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LLVM\build\lib\ExecutionEngine\MCJIT\LLVMMCJIT.vcxproj">
+      <Project>{39683ebf-9717-47ca-a9ea-cef2fca972d7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LLVM\build\lib\Target\X86\LLVMX86CodeGen.vcxproj">
+      <Project>{c3303f48-a12d-4956-a572-d47e44898da7}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
