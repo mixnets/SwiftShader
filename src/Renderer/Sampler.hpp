@@ -113,6 +113,40 @@ namespace sw
 		ADDRESSING_LAST = ADDRESSING_BORDER
 	};
 
+	enum CompareFunc : unsigned int
+	{
+		COMPARE_FUNC_LEQUAL,
+		COMPARE_FUNC_GEQUAL,
+		COMPARE_FUNC_LESS,
+		COMPARE_FUNC_GREATER,
+		COMPARE_FUNC_EQUAL,
+		COMPARE_FUNC_NOTEQUAL,
+		COMPARE_FUNC_ALWAYS,
+		COMPARE_FUNC_NEVER,
+
+		COMPARE_FUNC_LAST = COMPARE_FUNC_NEVER
+	};
+
+	enum CompareMode : unsigned int
+	{
+		COMPARE_MODE_REF_TO_TEXTURE,
+		COMPARE_MODE_NONE,
+
+		COMPARE_MODE_LAST = COMPARE_MODE_NONE
+	};
+
+	enum SwizzleType : unsigned int
+	{
+		SWIZZLE_RED,
+		SWIZZLE_GREEN,
+		SWIZZLE_BLUE,
+		SWIZZLE_ALPHA,
+		SWIZZLE_ZERO,
+		SWIZZLE_ONE,
+
+		SWIZZLE_LAST = SWIZZLE_ONE
+	};
+
 	class Sampler
 	{
 	public:
@@ -129,6 +163,17 @@ namespace sw
 			MipmapType mipmapFilter        : BITS(FILTER_LAST);
 			bool hasNPOTTexture	           : 1;
 			bool sRGB                      : 1;
+			SwizzleType swizzleR           : BITS(SWIZZLE_LAST);
+			SwizzleType swizzleG           : BITS(SWIZZLE_LAST);
+			SwizzleType swizzleB           : BITS(SWIZZLE_LAST);
+			SwizzleType swizzleA           : BITS(SWIZZLE_LAST);
+			CompareFunc compFunc           : BITS(COMPARE_FUNC_LAST);
+			CompareMode compMode           : BITS(COMPARE_FUNC_LAST);
+
+			int baseLevel;
+			int maxLevel;
+			float minLod;
+			float maxLod;
 
 			#if PERF_PROFILE
 			bool compressedFormat          : 1;
@@ -152,6 +197,16 @@ namespace sw
 		void setReadSRGB(bool sRGB);
 		void setBorderColor(const Color<float> &borderColor);
 		void setMaxAnisotropy(float maxAnisotropy);
+		void setSwizzleR(SwizzleType swizzleR);
+		void setSwizzleG(SwizzleType swizzleG);
+		void setSwizzleB(SwizzleType swizzleB);
+		void setSwizzleA(SwizzleType swizzleA);
+		void setCompFunc(CompareFunc compFunc);
+		void setCompMode(CompareMode compMode);
+		void setBaseLevel(int baseLevel);
+		void setMaxLevel(int maxLevel);
+		void setMinLod(float minLod);
+		void setMaxLod(float maxLod);
 
 		static void setFilterQuality(FilterType maximumFilterQuality);
 		static void setMipmapQuality(MipmapType maximumFilterQuality);
@@ -184,6 +239,17 @@ namespace sw
 		MipmapType mipmapFilterState;
 		bool sRGB;
 		bool gather;
+
+		SwizzleType swizzleR;
+		SwizzleType swizzleG;
+		SwizzleType swizzleB;
+		SwizzleType swizzleA;
+		CompareFunc compFunc;
+		CompareMode compMode;
+		int baseLevel;
+		int maxLevel;
+		float minLod;
+		float maxLod;
 
 		Texture texture;
 		float exp2LOD;

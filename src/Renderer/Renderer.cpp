@@ -2231,6 +2231,126 @@ namespace sw
 		}
 	}
 
+	void Renderer::setSwizzleR(SamplerType type, int sampler, SwizzleType swizzleR)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setSwizzleR(sampler, swizzleR);
+		}
+		else
+		{
+			VertexProcessor::setSwizzleR(sampler, swizzleR);
+		}
+	}
+
+	void Renderer::setSwizzleG(SamplerType type, int sampler, SwizzleType swizzleG)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setSwizzleG(sampler, swizzleG);
+		}
+		else
+		{
+			VertexProcessor::setSwizzleG(sampler, swizzleG);
+		}
+	}
+
+	void Renderer::setSwizzleB(SamplerType type, int sampler, SwizzleType swizzleB)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setSwizzleB(sampler, swizzleB);
+		}
+		else
+		{
+			VertexProcessor::setSwizzleB(sampler, swizzleB);
+		}
+	}
+
+	void Renderer::setSwizzleA(SamplerType type, int sampler, SwizzleType swizzleA)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setSwizzleA(sampler, swizzleA);
+		}
+		else
+		{
+			VertexProcessor::setSwizzleA(sampler, swizzleA);
+		}
+	}
+
+	void Renderer::setCompFunc(SamplerType type, int sampler, CompareFunc compFunc)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setCompFunc(sampler, compFunc);
+		}
+		else
+		{
+			VertexProcessor::setCompFunc(sampler, compFunc);
+		}
+	}
+
+	void Renderer::setCompMode(SamplerType type, int sampler, CompareMode compMode)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setCompMode(sampler, compMode);
+		}
+		else
+		{
+			VertexProcessor::setCompMode(sampler, compMode);
+		}
+	}
+
+	void Renderer::setBaseLevel(SamplerType type, int sampler, int baseLevel)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setBaseLevel(sampler, baseLevel);
+		}
+		else
+		{
+			VertexProcessor::setBaseLevel(sampler, baseLevel);
+		}
+	}
+
+	void Renderer::setMaxLevel(SamplerType type, int sampler, int maxLevel)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setMaxLevel(sampler, maxLevel);
+		}
+		else
+		{
+			VertexProcessor::setMaxLevel(sampler, maxLevel);
+		}
+	}
+
+	void Renderer::setMinLod(SamplerType type, int sampler, float minLod)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setMinLod(sampler, minLod);
+		}
+		else
+		{
+			VertexProcessor::setMinLod(sampler, minLod);
+		}
+	}
+
+	void Renderer::setMaxLod(SamplerType type, int sampler, float maxLod)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setMaxLod(sampler, maxLod);
+		}
+		else
+		{
+			VertexProcessor::setMaxLod(sampler, maxLod);
+		}
+	}
+
 	void Renderer::setPointSpriteEnable(bool pointSpriteEnable)
 	{
 		context->setPointSpriteEnable(pointSpriteEnable);

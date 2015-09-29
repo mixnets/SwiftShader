@@ -822,6 +822,52 @@ namespace es2sw
 		return sw::ADDRESSING_WRAP;
 	}
 
+	sw::CompareFunc ConvertCompareFunc(GLenum compareFunc)
+	{
+		switch(compareFunc)
+		{
+		case GL_LEQUAL:   return sw::COMPARE_FUNC_LEQUAL;
+		case GL_GEQUAL:   return sw::COMPARE_FUNC_GEQUAL;
+		case GL_LESS:     return sw::COMPARE_FUNC_LESS;
+		case GL_GREATER:  return sw::COMPARE_FUNC_GREATER;
+		case GL_EQUAL:    return sw::COMPARE_FUNC_EQUAL;
+		case GL_NOTEQUAL: return sw::COMPARE_FUNC_NOTEQUAL;
+		case GL_ALWAYS:   return sw::COMPARE_FUNC_ALWAYS;
+		case GL_NEVER:    return sw::COMPARE_FUNC_NEVER;
+		default: UNREACHABLE(compareFunc);
+		}
+
+		return sw::COMPARE_FUNC_LEQUAL;
+	};
+
+	sw::CompareMode ConvertCompareMode(GLenum compareMode)
+	{
+		switch(compareMode)
+		{
+		case GL_COMPARE_REF_TO_TEXTURE: return sw::COMPARE_MODE_REF_TO_TEXTURE;
+		case GL_NONE:                   return sw::COMPARE_MODE_NONE;
+		default: UNREACHABLE(compareMode);
+		}
+
+		return sw::COMPARE_MODE_NONE;
+	};
+
+	sw::SwizzleType ConvertSwizzleType(GLenum swizzleType)
+	{
+		switch(swizzleType)
+		{
+		case GL_RED:   return sw::SWIZZLE_RED;
+		case GL_GREEN: return sw::SWIZZLE_GREEN;
+		case GL_BLUE:  return sw::SWIZZLE_BLUE;
+		case GL_ALPHA: return sw::SWIZZLE_ALPHA;
+		case GL_ZERO:  return sw::SWIZZLE_ZERO;
+		case GL_ONE:   return sw::SWIZZLE_ONE;
+		default: UNREACHABLE(swizzleType);
+		}
+
+		return sw::SWIZZLE_RED;
+	};
+
 	sw::CullMode ConvertCullMode(GLenum cullFace, GLenum frontFace)
 	{
 		switch(cullFace)

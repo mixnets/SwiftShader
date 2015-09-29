@@ -416,6 +416,96 @@ namespace sw
 		else ASSERT(false);
 	}
 
+	void PixelProcessor::setSwizzleR(unsigned int sampler, SwizzleType swizzleR)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setSwizzleR(swizzleR);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setSwizzleG(unsigned int sampler, SwizzleType swizzleG)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setSwizzleG(swizzleG);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setSwizzleB(unsigned int sampler, SwizzleType swizzleB)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setSwizzleB(swizzleB);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setSwizzleA(unsigned int sampler, SwizzleType swizzleA)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setSwizzleA(swizzleA);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setCompFunc(unsigned int sampler, CompareFunc compFunc)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setCompFunc(compFunc);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setCompMode(unsigned int sampler, CompareMode compMode)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setCompMode(compMode);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setBaseLevel(unsigned int sampler, int baseLevel)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setBaseLevel(baseLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setMaxLevel(unsigned int sampler, int maxLevel)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setMaxLevel(maxLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setMinLod(unsigned int sampler, float minLod)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setMinLod(minLod);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setMaxLod(unsigned int sampler, float maxLod)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setMaxLod(maxLod);
+		}
+		else ASSERT(false);
+	}
+
 	void PixelProcessor::setWriteSRGB(bool sRGB)
 	{
 		context->setWriteSRGB(sRGB);

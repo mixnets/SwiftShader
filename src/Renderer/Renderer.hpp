@@ -325,6 +325,16 @@ namespace sw
 		virtual void setMipmapLOD(SamplerType type, int sampler, float bias);
 		virtual void setBorderColor(SamplerType type, int sampler, const Color<float> &borderColor);
 		virtual void setMaxAnisotropy(SamplerType type, int sampler, float maxAnisotropy);
+		virtual void setSwizzleR(SamplerType type, int sampler, SwizzleType swizzleR);
+		virtual void setSwizzleG(SamplerType type, int sampler, SwizzleType swizzleG);
+		virtual void setSwizzleB(SamplerType type, int sampler, SwizzleType swizzleB);
+		virtual void setSwizzleA(SamplerType type, int sampler, SwizzleType swizzleA);
+		virtual void setCompFunc(SamplerType type, int sampler, CompareFunc compFunc);
+		virtual void setCompMode(SamplerType type, int sampler, CompareMode compMode);
+		virtual void setBaseLevel(SamplerType type, int sampler, int baseLevel);
+		virtual void setMaxLevel(SamplerType type, int sampler, int maxLevel);
+		virtual void setMinLod(SamplerType type, int sampler, float minLod);
+		virtual void setMaxLod(SamplerType type, int sampler, float maxLod);
 		
 		virtual void setPointSpriteEnable(bool pointSpriteEnable);
 		virtual void setPointScaleEnable(bool pointScaleEnable);
