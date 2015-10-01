@@ -22,6 +22,7 @@ GLenum getColorFormatFromAndroid(int format)
         case HAL_PIXEL_FORMAT_RGBX_8888:
             return GL_RGB;
         case HAL_PIXEL_FORMAT_RGB_888:
+			ALOGE("%s badness unsupported format HAL_PIXEL_FORMAT_RGB_888", __FUNCTION__, format);
             return GL_RGB;
         case HAL_PIXEL_FORMAT_BGRA_8888:
             return GL_BGRA_EXT;
