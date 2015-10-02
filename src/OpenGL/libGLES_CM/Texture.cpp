@@ -786,7 +786,7 @@ egl::Image *createBackBuffer(int width, int height, const egl::Config *config)
 {
 	if(config)
 	{
-		return new egl::Image(width, height, config->mRenderTargetFormat, config->mSamples, false, true);
+		return new egl::Image(width, height, sw::FORMAT_R5G6B5, config->mSamples, false, true);
 	}
 
 	return 0;

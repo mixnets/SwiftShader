@@ -58,8 +58,8 @@ namespace sw
 
 		this->width = width;
 		this->height = height;
-		destFormat = FORMAT_X8R8G8B8;
-		sourceFormat = FORMAT_X8R8G8B8;
+		destFormat = FORMAT_R5G6B5;
+		sourceFormat = FORMAT_R5G6B5;
 		stride = 0;
 
 		if(forceWindowed)
@@ -74,8 +74,8 @@ namespace sw
 
 		blitState.width = 0;
 		blitState.height = 0;
-		blitState.destFormat = FORMAT_X8R8G8B8;
-		blitState.sourceFormat = FORMAT_X8R8G8B8;
+		blitState.destFormat = FORMAT_R5G6B5;
+		blitState.sourceFormat = FORMAT_R5G6B5;
 		blitState.cursorWidth = 0;
 		blitState.cursorHeight = 0;
 

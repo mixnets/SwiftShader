@@ -1158,7 +1158,7 @@ namespace sw2es
 			UNREACHABLE(format);
 		}
 
-		return GL_RGBA4;
+		return GL_RGB565;
 	}
 
 	GLenum ConvertDepthStencilFormat(sw::Format format)
