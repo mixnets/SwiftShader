@@ -326,7 +326,7 @@ Renderbuffer *ResourceManager::getRenderbuffer(unsigned int handle)
     {
 		if (!renderbuffer->second)
 		{
-			Renderbuffer *renderbufferObject = new Renderbuffer(handle, new Colorbuffer(0, 0, GL_RGBA4_OES, 0));
+			Renderbuffer *renderbufferObject = new Renderbuffer(handle, new Colorbuffer(0, 0, GL_RGB565, 0));
 			mRenderbufferMap[handle] = renderbufferObject;
 			renderbufferObject->addRef();
 		}
