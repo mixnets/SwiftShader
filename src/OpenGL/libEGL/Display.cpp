@@ -594,7 +594,7 @@ sw::Format Display::getDisplayFormat() const
 		default: UNREACHABLE(bpp);   // Unexpected display mode color depth
 		}
 	#elif defined(__ANDROID__)
-		return sw::FORMAT_X8R8G8B8;
+		return sw::FORMAT_R5G6B5;
     #else
         if(platform == EGL_PLATFORM_X11_EXT)
         {
