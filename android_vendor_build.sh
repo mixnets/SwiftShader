@@ -12,7 +12,8 @@ popd > /dev/null 2>&1
 # The Android build configurations to use. There should be one representative
 # configuration per TARGET_ARCH, ideally the primary user of SwiftShader
 
-CONFIGS=gce_x86_tablet-userdebug
+#CONFIGS=gce_x86_tablet-userdebug
+CONFIGS=aosp_x86-eng
 
 SOURCE_DIR_LINKED="$(pwd)/vendor/transgaming/swiftshader-src"
 OBJECT_DIR="$(pwd)/vendor/transgaming/swiftshader"
@@ -27,7 +28,7 @@ JOBS=$(grep '^processor' /proc/cpuinfo | wc -l)
 # the branch, not the device. The config file lives in gce_x86 because
 # it's a repository that we control
 
-. device/google/gce_x86/configure_java.sh
+. device/generic/goldfish/configure_java.sh
 
 # Ensure that our source links are correct by throwing away anthing that is
 # already linked and linking again
