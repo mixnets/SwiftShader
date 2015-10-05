@@ -258,13 +258,6 @@ namespace sw
 		void clearDepthBuffer(float depth, int x0, int y0, int width, int height);
 		void clearStencilBuffer(unsigned char stencil, unsigned char mask, int x0, int y0, int width, int height);
 		void fill(const Color<float> &color, int x0, int y0, int width, int height);
-
-		Color<float> readExternal(int x, int y, int z) const;
-		Color<float> readExternal(int x, int y) const;
-		Color<float> sampleExternal(float x, float y, float z) const;
-		Color<float> sampleExternal(float x, float y) const;
-		void writeExternal(int x, int y, int z, const Color<float> &color);
-		void writeExternal(int x, int y, const Color<float> &color);
 		
 		Color<float> readInternal(int x, int y, int z) const;
 		Color<float> readInternal(int x, int y) const;

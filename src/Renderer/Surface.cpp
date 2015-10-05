@@ -3258,48 +3258,6 @@ namespace sw
 		}
 	}
 
-	Color<float> Surface::readExternal(int x, int y, int z) const
-	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
-
-		return external.read(x, y, z);
-	}
-
-	Color<float> Surface::readExternal(int x, int y) const
-	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
-
-		return external.read(x, y);
-	}
-
-	Color<float> Surface::sampleExternal(float x, float y, float z) const
-	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
-
-		return external.sample(x, y, z);
-	}
-
-	Color<float> Surface::sampleExternal(float x, float y) const
-	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
-
-		return external.sample(x, y);
-	}
-
-	void Surface::writeExternal(int x, int y, int z, const Color<float> &color)
-	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
-
-		external.write(x, y, z, color);
-	}
-
-	void Surface::writeExternal(int x, int y, const Color<float> &color)
-	{
-		ASSERT(external.lock != LOCK_UNLOCKED);
-
-		external.write(x, y, color);
-	}
-
 	Color<float> Surface::readInternal(int x, int y, int z) const
 	{
 		ASSERT(internal.lock != LOCK_UNLOCKED);
