@@ -1592,7 +1592,7 @@ void Texture3D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 
 void Texture3D::subImage(GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels)
 {
-	Texture::subImage(xoffset, yoffset, zoffset, width, height, format, depth, type, unpackInfo, pixels, image[level]);
+	Texture::subImage(xoffset, yoffset, zoffset, width, height, depth, format, type, unpackInfo, pixels, image[level]);
 }
 
 void Texture3D::subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *pixels)
