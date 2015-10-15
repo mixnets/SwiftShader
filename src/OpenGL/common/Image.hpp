@@ -154,7 +154,7 @@ public:
 		release();
 	}
 
-protected:
+private:
 	const GLsizei width;
 	const GLsizei height;
 	const GLenum format;
