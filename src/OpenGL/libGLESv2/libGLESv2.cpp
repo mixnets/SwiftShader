@@ -57,78 +57,6 @@ static bool validImageSize(GLint level, GLsizei width, GLsizei height)
 	return true;
 }
 
-static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei height, GLint xoffset, GLint yoffset, GLenum target, GLint level, GLenum format, es2::Texture *texture)
-{
-	if(!texture)
-	{
-		return error(GL_INVALID_OPERATION, false);
-	}
-
-	if(compressed != texture->isCompressed(target, level))
-	{
-		return error(GL_INVALID_OPERATION, false);
-	}
-
-	if(format != GL_NONE && format != texture->getFormat(target, level))
-	{
-		return error(GL_INVALID_OPERATION, false);
-	}
-
-	if(compressed)
-	{
-		if((width % 4 != 0 && width != texture->getWidth(target, 0)) ||
-		   (height % 4 != 0 && height != texture->getHeight(target, 0)))
-		{
-			return error(GL_INVALID_OPERATION, false);
-		}
-	}
-
-	if(xoffset + width > texture->getWidth(target, level) ||
-	   yoffset + height > texture->getHeight(target, level))
-	{
-		return error(GL_INVALID_VALUE, false);
-	}
-
-	return true;
-}
-
-static bool validateSubImageParams(bool compressed, GLsizei width, GLsizei height, GLsizei depth, GLint xoffset, GLint yoffset, GLint zoffset, GLenum target, GLint level, GLenum format, es2::Texture *texture)
-{
-	if(!texture)
-	{
-		return error(GL_INVALID_OPERATION, false);
-	}
-
-	if(compressed != texture->isCompressed(target, level))
-	{
-		return error(GL_INVALID_OPERATION, false);
-	}
-
-	if(format != GL_NONE && format != texture->getFormat(target, level))
-	{
-		return error(GL_INVALID_OPERATION, false);
-	}
-
-	if(compressed)
-	{
-		if((width % 4 != 0 && width != texture->getWidth(target, 0)) ||
-		   (height % 4 != 0 && height != texture->getHeight(target, 0)) ||
-		   (depth % 4 != 0 && depth != texture->getDepth(target, 0)))
-		{
-			return error(GL_INVALID_OPERATION, false);
-		}
-	}
-
-	if(xoffset + width > texture->getWidth(target, level) ||
-	   yoffset + height > texture->getHeight(target, level) ||
-	   zoffset + depth > texture->getDepth(target, level))
-	{
-		return error(GL_INVALID_VALUE, false);
-	}
-
-	return true;
-}
-
 static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFormat)
 {
 	GLenum formatError = ValidateCompressedFormat(textureFormat, egl::getClientVersion(), false);
@@ -1117,18 +1045,30 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 		{
 			es2::Texture2D *texture = context->getTexture2D();
 
-			if(validateSubImageParams(true, width, height, xoffset, yoffset, target, level, format, texture))
+			GLenum formatError = ValidateSubImageParams(true, width, height, xoffset, yoffset, target, level, format, GL_NONE, texture);
+
+			if(formatError == GL_NONE)
 			{
 				texture->subImageCompressed(level, xoffset, yoffset, width, height, format, imageSize, data);
+			}
+			else
+			{
+				return error(formatError);
 			}
 		}
 		else if(es2::IsCubemapTextureTarget(target))
 		{
 			es2::TextureCubeMap *texture = context->getTextureCubeMap();
 
-			if(validateSubImageParams(true, width, height, xoffset, yoffset, target, level, format, texture))
+			GLenum formatError = ValidateSubImageParams(true, width, height, xoffset, yoffset, target, level, format, GL_NONE, texture);
+
+			if(formatError == GL_NONE)
 			{
 				texture->subImageCompressed(target, level, xoffset, yoffset, width, height, format, imageSize, data);
+			}
+			else
+			{
+				return error(formatError);
 			}
 		}
 		else UNREACHABLE(target);
@@ -1293,9 +1233,10 @@ void CopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
 		}
 		else UNREACHABLE(target);
 
-		if(!validateSubImageParams(false, width, height, xoffset, yoffset, target, level, GL_NONE, texture))
+		GLenum formatError = ValidateSubImageParams(false, width, height, xoffset, yoffset, target, level, GL_NONE, GL_NONE, texture);
+		if(formatError != GL_NONE)
 		{
-			return;
+			return error(formatError);
 		}
 
 		texture->copySubImage(target, level, xoffset, yoffset, 0, x, y, width, height, framebuffer);
@@ -6285,18 +6226,30 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 		{
 			es2::Texture2D *texture = context->getTexture2D();
 
-			if(validateSubImageParams(false, width, height, xoffset, yoffset, target, level, format, texture))
+			GLenum formatError = ValidateSubImageParams(false, width, height, xoffset, yoffset, target, level, format, type, texture);
+
+			if(formatError == GL_NONE)
 			{
 				texture->subImage(level, xoffset, yoffset, width, height, format, type, context->getUnpackInfo(), pixels);
+			}
+			else
+			{
+				return error(formatError);
 			}
 		}
 		else if(es2::IsCubemapTextureTarget(target))
 		{
 			es2::TextureCubeMap *texture = context->getTextureCubeMap();
 
-			if(validateSubImageParams(false, width, height, xoffset, yoffset, target, level, format, texture))
+			GLenum formatError = ValidateSubImageParams(false, width, height, xoffset, yoffset, target, level, format, type, texture);
+
+			if(formatError == GL_NONE)
 			{
 				texture->subImage(target, level, xoffset, yoffset, width, height, format, type, context->getUnpackInfo(), pixels);
+			}
+			else
+			{
+				return error(formatError);
 			}
 		}
 		else UNREACHABLE(target);
@@ -7152,9 +7105,14 @@ void TexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
 	{
 		es2::Texture3D *texture = context->getTexture3D();
 
-		if(validateSubImageParams(false, width, height, depth, xoffset, yoffset, zoffset, target, level, format, texture))
+		GLenum formatError = ValidateSubImageParams(false, width, height, depth, xoffset, yoffset, zoffset, target, level, format, type, texture);
+		if(formatError == GL_NONE)
 		{
 			texture->subImage(level, xoffset, yoffset, zoffset, width, height, depth, format, type, context->getUnpackInfo(), pixels);
+		}
+		else
+		{
+			return error(formatError);
 		}
 	}
 }
@@ -7198,9 +7156,11 @@ void CopyTexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint yoffs
 
 		es2::Texture3D *texture = context->getTexture3D();
 
-		if(!validateSubImageParams(false, width, height, 1, xoffset, yoffset, zoffset, target, level, GL_NONE, texture))
+		GLenum formatError = ValidateSubImageParams(false, width, height, 1, xoffset, yoffset, zoffset, target, level, GL_NONE, GL_NONE, texture);
+
+		if(formatError != GL_NONE)
 		{
-			return;
+			return error(formatError);
 		}
 
 		texture->copySubImage(target, level, xoffset, yoffset, zoffset, x, y, width, height, framebuffer);
