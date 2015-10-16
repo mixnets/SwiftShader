@@ -22,6 +22,7 @@ COMMON_SRC_FILES := \
 	Framebuffer.cpp \
 	IndexDataManager.cpp \
 	libGLESv2.cpp \
+	libGLESv3.cpp \
 	main.cpp \
 	Program.cpp \
 	Query.cpp \
