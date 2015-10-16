@@ -19,6 +19,7 @@
 #include "common/Image.hpp"
 #include "common/debug.h"
 #include "Common/Version.h"
+#include "Common/MutexLock.hpp"
 
 #if defined(__ANDROID__)
 #include <system/window.h>
@@ -90,8 +91,23 @@ static bool validateSurface(egl::Display *display, egl::Surface *surface)
 
 namespace egl
 {
-EGLint GetError(void)
+
+class CriticalSection : sw::BackoffLock
 {
+public:
+	CriticalSection()
+	{
+		lock();
+	}
+
+	~CriticalSection()
+	{
+		unlock();
+	}
+};
+
+EGLint GetError(void)
+{static CriticalSection cs;
 	TRACE("()");
 
 	EGLint error = egl::getCurrentError();
@@ -105,14 +121,14 @@ EGLint GetError(void)
 }
 
 EGLDisplay GetDisplay(EGLNativeDisplayType display_id)
-{
+{static CriticalSection cs;
 	TRACE("(EGLNativeDisplayType display_id = %p)", display_id);
 
 	return egl::Display::getPlatformDisplay(EGL_UNKNOWN, display_id);
 }
 
 EGLBoolean Initialize(EGLDisplay dpy, EGLint *major, EGLint *minor)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLint *major = %p, EGLint *minor = %p)",
 		  dpy, major, minor);
 
@@ -135,7 +151,7 @@ EGLBoolean Initialize(EGLDisplay dpy, EGLint *major, EGLint *minor)
 }
 
 EGLBoolean Terminate(EGLDisplay dpy)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p)", dpy);
 
 	if(dpy == EGL_NO_DISPLAY)
@@ -151,7 +167,7 @@ EGLBoolean Terminate(EGLDisplay dpy)
 }
 
 const char *QueryString(EGLDisplay dpy, EGLint name)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLint name = %d)", dpy, name);
 
 	if(dpy == EGL_NO_DISPLAY && name == EGL_EXTENSIONS)
@@ -190,7 +206,7 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 }
 
 EGLBoolean GetConfigs(EGLDisplay dpy, EGLConfig *configs, EGLint config_size, EGLint *num_config)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLConfig *configs = %p, "
 		  "EGLint config_size = %d, EGLint *num_config = %p)",
 		  dpy, configs, config_size, num_config);
@@ -218,7 +234,7 @@ EGLBoolean GetConfigs(EGLDisplay dpy, EGLConfig *configs, EGLint config_size, EG
 }
 
 EGLBoolean ChooseConfig(EGLDisplay dpy, const EGLint *attrib_list, EGLConfig *configs, EGLint config_size, EGLint *num_config)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, const EGLint *attrib_list = %p, "
 		  "EGLConfig *configs = %p, EGLint config_size = %d, EGLint *num_config = %p)",
 		  dpy, attrib_list, configs, config_size, num_config);
@@ -251,7 +267,7 @@ EGLBoolean ChooseConfig(EGLDisplay dpy, const EGLint *attrib_list, EGLConfig *co
 }
 
 EGLBoolean GetConfigAttrib(EGLDisplay dpy, EGLConfig config, EGLint attribute, EGLint *value)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLConfig config = %p, EGLint attribute = %d, EGLint *value = %p)",
 		  dpy, config, attribute, value);
 
@@ -271,7 +287,7 @@ EGLBoolean GetConfigAttrib(EGLDisplay dpy, EGLConfig config, EGLint attribute, E
 }
 
 EGLSurface CreateWindowSurface(EGLDisplay dpy, EGLConfig config, EGLNativeWindowType window, const EGLint *attrib_list)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLConfig config = %p, EGLNativeWindowType win = %p, "
 		  "const EGLint *attrib_list = %p)", dpy, config, window, attrib_list);
 
@@ -291,7 +307,7 @@ EGLSurface CreateWindowSurface(EGLDisplay dpy, EGLConfig config, EGLNativeWindow
 }
 
 EGLSurface CreatePbufferSurface(EGLDisplay dpy, EGLConfig config, const EGLint *attrib_list)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLConfig config = %p, const EGLint *attrib_list = %p)",
 		  dpy, config, attrib_list);
 
@@ -306,7 +322,7 @@ EGLSurface CreatePbufferSurface(EGLDisplay dpy, EGLConfig config, const EGLint *
 }
 
 EGLSurface CreatePixmapSurface(EGLDisplay dpy, EGLConfig config, EGLNativePixmapType pixmap, const EGLint *attrib_list)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLConfig config = %p, EGLNativePixmapType pixmap = %p, "
 		  "const EGLint *attrib_list = %p)", dpy, config, pixmap, attrib_list);
 
@@ -323,7 +339,7 @@ EGLSurface CreatePixmapSurface(EGLDisplay dpy, EGLConfig config, EGLNativePixmap
 }
 
 EGLBoolean DestroySurface(EGLDisplay dpy, EGLSurface surface)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p)", dpy, surface);
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
@@ -345,7 +361,7 @@ EGLBoolean DestroySurface(EGLDisplay dpy, EGLSurface surface)
 }
 
 EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLint attribute = %d, EGLint *value = %p)",
 		  dpy, surface, attribute, value);
 
@@ -423,7 +439,7 @@ EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EG
 }
 
 EGLBoolean BindAPI(EGLenum api)
-{
+{static CriticalSection cs;
 	TRACE("(EGLenum api = 0x%X)", api);
 
 	switch(api)
@@ -443,7 +459,7 @@ EGLBoolean BindAPI(EGLenum api)
 }
 
 EGLenum QueryAPI(void)
-{
+{static CriticalSection cs;
 	TRACE("()");
 
 	EGLenum API = egl::getCurrentAPI();
@@ -452,7 +468,7 @@ EGLenum QueryAPI(void)
 }
 
 EGLBoolean WaitClient(void)
-{
+{static CriticalSection cs;
 	TRACE("()");
 
 	UNIMPLEMENTED();   // FIXME
@@ -461,7 +477,7 @@ EGLBoolean WaitClient(void)
 }
 
 EGLBoolean ReleaseThread(void)
-{
+{static CriticalSection cs;
 	TRACE("()");
 
 	eglMakeCurrent(EGL_NO_DISPLAY, EGL_NO_CONTEXT, EGL_NO_SURFACE, EGL_NO_SURFACE);
@@ -470,7 +486,7 @@ EGLBoolean ReleaseThread(void)
 }
 
 EGLSurface CreatePbufferFromClientBuffer(EGLDisplay dpy, EGLenum buftype, EGLClientBuffer buffer, EGLConfig config, const EGLint *attrib_list)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLenum buftype = 0x%X, EGLClientBuffer buffer = %p, "
 		  "EGLConfig config = %p, const EGLint *attrib_list = %p)",
 		  dpy, buftype, buffer, config, attrib_list);
@@ -481,7 +497,7 @@ EGLSurface CreatePbufferFromClientBuffer(EGLDisplay dpy, EGLenum buftype, EGLCli
 }
 
 EGLBoolean SurfaceAttrib(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint value)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLint attribute = %d, EGLint value = %d)",
 		  dpy, surface, attribute, value);
 
@@ -517,7 +533,7 @@ EGLBoolean SurfaceAttrib(EGLDisplay dpy, EGLSurface surface, EGLint attribute, E
 }
 
 EGLBoolean BindTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLint buffer = %d)", dpy, surface, buffer);
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
@@ -559,7 +575,7 @@ EGLBoolean BindTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
 }
 
 EGLBoolean ReleaseTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLint buffer = %d)", dpy, surface, buffer);
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
@@ -596,7 +612,7 @@ EGLBoolean ReleaseTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
 }
 
 EGLBoolean SwapInterval(EGLDisplay dpy, EGLint interval)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLint interval = %d)", dpy, interval);
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
@@ -619,7 +635,7 @@ EGLBoolean SwapInterval(EGLDisplay dpy, EGLint interval)
 }
 
 EGLContext CreateContext(EGLDisplay dpy, EGLConfig config, EGLContext share_context, const EGLint *attrib_list)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLConfig config = %p, EGLContext share_context = %p, "
 		  "const EGLint *attrib_list = %p)", dpy, config, share_context, attrib_list);
 
@@ -656,7 +672,7 @@ EGLContext CreateContext(EGLDisplay dpy, EGLConfig config, EGLContext share_cont
 }
 
 EGLBoolean DestroyContext(EGLDisplay dpy, EGLContext ctx)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLContext ctx = %p)", dpy, ctx);
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
@@ -678,7 +694,7 @@ EGLBoolean DestroyContext(EGLDisplay dpy, EGLContext ctx)
 }
 
 EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLSurface draw = %p, EGLSurface read = %p, EGLContext ctx = %p)",
 		  dpy, draw, read, ctx);
 
@@ -735,7 +751,7 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 }
 
 EGLContext GetCurrentContext(void)
-{
+{static CriticalSection cs;
 	TRACE("()");
 
 	EGLContext context = egl::getCurrentContext();
@@ -744,7 +760,7 @@ EGLContext GetCurrentContext(void)
 }
 
 EGLSurface GetCurrentSurface(EGLint readdraw)
-{
+{static CriticalSection cs;
 	TRACE("(EGLint readdraw = %d)", readdraw);
 
 	if(readdraw == EGL_READ)
@@ -764,7 +780,7 @@ EGLSurface GetCurrentSurface(EGLint readdraw)
 }
 
 EGLDisplay GetCurrentDisplay(void)
-{
+{static CriticalSection cs;
 	TRACE("()");
 
 	EGLDisplay dpy = egl::getCurrentDisplay();
@@ -773,7 +789,7 @@ EGLDisplay GetCurrentDisplay(void)
 }
 
 EGLBoolean QueryContext(EGLDisplay dpy, EGLContext ctx, EGLint attribute, EGLint *value)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLContext ctx = %p, EGLint attribute = %d, EGLint *value = %p)",
 		  dpy, ctx, attribute, value);
 
@@ -791,7 +807,7 @@ EGLBoolean QueryContext(EGLDisplay dpy, EGLContext ctx, EGLint attribute, EGLint
 }
 
 EGLBoolean WaitGL(void)
-{
+{static CriticalSection cs;
 	TRACE("()");
 
 	UNIMPLEMENTED();   // FIXME
@@ -800,7 +816,7 @@ EGLBoolean WaitGL(void)
 }
 
 EGLBoolean WaitNative(EGLint engine)
-{
+{static CriticalSection cs;
 	TRACE("(EGLint engine = %d)", engine);
 
 	UNIMPLEMENTED();   // FIXME
@@ -809,7 +825,7 @@ EGLBoolean WaitNative(EGLint engine)
 }
 
 EGLBoolean SwapBuffers(EGLDisplay dpy, EGLSurface surface)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p)", dpy, surface);
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
@@ -831,7 +847,7 @@ EGLBoolean SwapBuffers(EGLDisplay dpy, EGLSurface surface)
 }
 
 EGLBoolean CopyBuffers(EGLDisplay dpy, EGLSurface surface, EGLNativePixmapType target)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLNativePixmapType target = %p)", dpy, surface, target);
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
@@ -848,7 +864,7 @@ EGLBoolean CopyBuffers(EGLDisplay dpy, EGLSurface surface, EGLNativePixmapType t
 }
 
 EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLContext ctx = %p, EGLenum target = 0x%X, buffer = %p, const EGLint attrib_list = %p)", dpy, ctx, target, buffer, attrib_list);
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
@@ -922,7 +938,7 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 }
 
 EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
-{
+{static CriticalSection cs;
 	TRACE("(EGLDisplay dpy = %p, EGLImageKHR image = %p)", dpy, image);
 
 	egl::Display *display = static_cast<egl::Display*>(dpy);
@@ -944,24 +960,24 @@ EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
 }
 
 EGLDisplay GetPlatformDisplayEXT(EGLenum platform, void *native_display, const EGLint *attrib_list)
-{
+{static CriticalSection cs;
 	TRACE("(EGLenum platform = 0x%X, void *native_display = %p, const EGLint *attrib_list = %p)", platform, native_display, attrib_list);
 
 	return egl::Display::getPlatformDisplay(platform, (EGLNativeDisplayType)native_display);
 }
 
 EGLSurface CreatePlatformWindowSurfaceEXT(EGLDisplay dpy, EGLConfig config, void *native_window, const EGLint *attrib_list)
-{
+{static CriticalSection cs;
 	return CreateWindowSurface(dpy, config, (EGLNativeWindowType)native_window, attrib_list);
 }
 
 EGLSurface CreatePlatformPixmapSurfaceEXT(EGLDisplay dpy, EGLConfig config, void *native_pixmap, const EGLint *attrib_list)
-{
+{static CriticalSection cs;
 	return CreatePixmapSurface(dpy, config, (EGLNativePixmapType)native_pixmap, attrib_list);
 }
 
 __eglMustCastToProperFunctionPointerType GetProcAddress(const char *procname)
-{
+{static CriticalSection cs;
 	TRACE("(const char *procname = \"%s\")", procname);
 
 	struct Extension
