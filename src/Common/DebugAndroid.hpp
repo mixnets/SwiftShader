@@ -30,7 +30,6 @@ void AndroidEnterDebugger();
 		if (!(E)) { \
 			ALOGE("badness: assertion_failed %s in %s at %s:%d", #E,	\
 				  __FUNCTION__, __FILE__, __LINE__);					\
-			AndroidEnterDebugger();										\
 		}																\
 	} while(0)
 
@@ -40,26 +39,22 @@ void AndroidEnterDebugger();
 	do {																\
 		ALOGE("badness: err %s %s:%d (" format ")", __FUNCTION__, __FILE__, \
 			  __LINE__, ##__VA_ARGS__);									\
-		AndroidEnterDebugger();											\
 	} while(0)
 
 #define FIXME(format, ...)												\
 	do {																\
 		ALOGE("badness: fixme %s %s:%d (" format ")", __FUNCTION__, __FILE__, \
 			  __LINE__, ##__VA_ARGS__);									\
-		AndroidEnterDebugger();											\
 	} while(0)
 
 #define UNIMPLEMENTED() do {						\
 		ALOGE("badness: unimplemented: %s %s:%d",	\
 			  __FUNCTION__, __FILE__, __LINE__);	\
-		AndroidEnterDebugger();						\
 	} while(0)
 
 #define UNREACHABLE(value) do {                                         \
 		ALOGE("badness: unreachable case reached: %s %s:%d. %s: %d", \
 			  __FUNCTION__, __FILE__, __LINE__, #value, value);			\
-		AndroidEnterDebugger();                                         \
 	} while(0)
 
 #ifndef NDEBUG

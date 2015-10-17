@@ -86,7 +86,7 @@ class ConfigSet
 {
     friend class Display;
 
-  public:
+public:
     ConfigSet();
 
     void add(sw::Format displayFormat, EGLint minSwapInterval, EGLint maxSwapInterval, sw::Format renderTargetFormat, sw::Format depthStencilFormat, EGLint multiSample);
@@ -94,7 +94,7 @@ class ConfigSet
     bool getConfigs(EGLConfig *configs, const EGLint *attribList, EGLint configSize, EGLint *numConfig);
     const egl::Config *get(EGLConfig configHandle);
 
-  private:
+private:
     typedef std::set<Config, CompareConfig> Set;
     typedef Set::iterator Iterator;
     Set mSet;

@@ -32,61 +32,27 @@
 #include <vector>
 #include <map>
 
+namespace
+{
+egl::Display *display = nullptr;
+}
+
 namespace egl
 {
-typedef std::map<EGLNativeDisplayType, Display*> DisplayMap;
-DisplayMap displays;
 
 egl::Display *Display::getPlatformDisplay(EGLenum platform, EGLNativeDisplayType displayId)
 {
-    #ifndef __ANDROID__
-        if(platform == EGL_UNKNOWN)   // Default
-        {
-            #if defined(__unix__)
-				if(libX11)
-				{
-					platform = EGL_PLATFORM_X11_EXT;
-				}
-				else
-				{
-					platform = EGL_PLATFORM_GBM_KHR;
-				}
-            #endif
-        }
+	if(displayId != EGL_DEFAULT_DISPLAY)	
+	{
+		return nullptr;
+	}
 
-        if(displayId == EGL_DEFAULT_DISPLAY)
-        {
-            if(platform == EGL_PLATFORM_X11_EXT)
-            {
-                #if defined(__unix__)
-					if(libX11->XOpenDisplay)
-					{
-						displayId = libX11->XOpenDisplay(NULL);
-					}
-					else
-					{
-						return error(EGL_BAD_PARAMETER, (egl::Display*)EGL_NO_DISPLAY);
-					}
-                #else
-                    return error(EGL_BAD_PARAMETER, (egl::Display*)EGL_NO_DISPLAY);
-                #endif
-            }
-        }
-        else
-        {
-            // FIXME: Check if displayId is a valid display device context for <platform>
-        }
-    #endif
+    if(!::display)
+	{
+		::display = new egl::Display(platform, displayId);
+	}
 
-    if(displays.find(displayId) != displays.end())
-    {
-        return displays[displayId];
-    }
-
-    egl::Display *display = new egl::Display(platform, displayId);
-
-    displays[displayId] = display;
-    return display;
+    return ::display;
 }
 
 Display::Display(EGLenum platform, EGLNativeDisplayType displayId) : platform(platform), displayId(displayId)
@@ -97,9 +63,6 @@ Display::Display(EGLenum platform, EGLNativeDisplayType displayId) : platform(pl
 
 Display::~Display()
 {
-    terminate();
-
-	displays.erase(displayId);
 }
 
 static void cpuid(int registers[4], int info)

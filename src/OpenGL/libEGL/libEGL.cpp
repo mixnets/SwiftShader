@@ -455,16 +455,7 @@ EGLBoolean WaitClient(void)
 {
 	TRACE("()");
 
-	UNIMPLEMENTED();   // FIXME
-
-	return success(EGL_FALSE);
-}
-
-EGLBoolean ReleaseThread(void)
-{
-	TRACE("()");
-
-	eglMakeCurrent(EGL_NO_DISPLAY, EGL_NO_CONTEXT, EGL_NO_SURFACE, EGL_NO_SURFACE);
+	//UNIMPLEMENTED();   // FIXME
 
 	return success(EGL_TRUE);
 }
@@ -718,7 +709,7 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 
 	if(draw != read)
 	{
-		UNIMPLEMENTED();   // FIXME
+		//UNIMPLEMENTED();   // FIXME
 	}
 
 	egl::setCurrentDisplay(display);
@@ -730,6 +721,15 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 	{
 		context->makeCurrent(drawSurface);
 	}
+
+	return success(EGL_TRUE);
+}
+
+EGLBoolean ReleaseThread(void)
+{
+	TRACE("()");
+
+	MakeCurrent(EGL_NO_DISPLAY, EGL_NO_CONTEXT, EGL_NO_SURFACE, EGL_NO_SURFACE);
 
 	return success(EGL_TRUE);
 }
