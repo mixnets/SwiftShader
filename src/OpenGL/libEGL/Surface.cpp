@@ -230,22 +230,6 @@ WindowSurface::WindowSurface(Display *display, const Config *config, EGLNativeWi
     frameBuffer = nullptr;
 }
 
-#ifdef __ANDROID__
-static int32_t getWindowProp(ANativeWindow* window, int what) {
-    int value;
-    int res = window->query(window, what, &value);
-    return res < 0 ? res : value;
-}
-
-static int32_t ANativeWindow_getHeight(ANativeWindow* window) {
-    return getWindowProp(window, NATIVE_WINDOW_HEIGHT);
-}
-
-static int32_t ANativeWindow_getWidth(ANativeWindow* window) {
-  return getWindowProp(window, NATIVE_WINDOW_WIDTH);
-}
-#endif
-
 bool WindowSurface::initialize()
 {
     ASSERT(!frameBuffer && !backBuffer && !depthStencil);
@@ -295,8 +279,8 @@ bool WindowSurface::checkForResize()
 		int clientWidth = client.right - client.left;
 		int clientHeight = client.bottom - client.top;
 	#elif defined(__ANDROID__)
-		int clientWidth = ANativeWindow_getWidth(window);
-		int clientHeight = ANativeWindow_getHeight(window);
+		int clientWidth;  window->query(window, NATIVE_WINDOW_WIDTH, &clientWidth);
+		int clientHeight; window->query(window, NATIVE_WINDOW_HEIGHT, &clientHeight);
 	#else
 		XWindowAttributes windowAttributes;
 		libX11->XGetWindowAttributes(display->getNativeDisplay(), window, &windowAttributes);
