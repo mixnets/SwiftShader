@@ -36,10 +36,10 @@ namespace sw
 	{
 		Function<Void(Pointer<Byte>, Pointer<Byte>, Pointer<Byte>, Pointer<Byte>)> function;
 		{
-			Pointer<Byte> vertex(function.arg(0));
-			Pointer<Byte> batch(function.arg(1));
-			Pointer<Byte> task(function.arg(2));
-			Pointer<Byte> data(function.arg(3));
+			Pointer<Byte> vertex(Arg<0>(function));
+			Pointer<Byte> batch(Arg<1>(function));
+			Pointer<Byte> task(Arg<2>(function));
+			Pointer<Byte> data(Arg<3>(function));
 
 			const bool texldl = state.shaderContainsTexldl;
 

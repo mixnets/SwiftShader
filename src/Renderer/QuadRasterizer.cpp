@@ -53,10 +53,10 @@ namespace sw
 				Long pixelTime = Ticks();
 			#endif
 
-			Pointer<Byte> primitive(function.arg(0));
-			Int count(function.arg(1));
-			Int cluster(function.arg(2));
-			Pointer<Byte> data(function.arg(3));
+			Pointer<Byte> primitive(Arg<0>(function));
+			Int count(Arg<1>(function));
+			Int cluster(Arg<2>(function));
+			Pointer<Byte> data(Arg<3>(function));
 
 			Registers& r = *createRegisters(shader);
 			r.constants = *Pointer<Pointer<Byte> >(data + OFFSET(DrawData,constants));

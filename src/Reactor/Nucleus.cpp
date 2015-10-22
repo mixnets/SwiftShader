@@ -294,7 +294,7 @@ namespace sw
 		return function;
 	}
 
-	llvm::Argument *Nucleus::getArgument(llvm::Function *function, unsigned int index)
+	llvm::Value *Nucleus::getArgument(llvm::Function *function, unsigned int index)
 	{
 		llvm::Function::arg_iterator args = function->arg_begin();
 
@@ -847,9 +847,9 @@ namespace sw
 		return Type::getX86_MMXTy(*Nucleus::getContext());
 	}
 
-	Bool::Bool(Argument *argument)
+	Bool::Bool(Argument<Bool> argument)
 	{
-		storeValue(argument);
+		storeValue(argument.value);
 	}
 
 	Bool::Bool()
@@ -921,9 +921,9 @@ namespace sw
 		return Type::getInt1Ty(*Nucleus::getContext());
 	}
 
-	Byte::Byte(Argument *argument)
+	Byte::Byte(Argument<Byte> argument)
 	{
-		storeValue(argument);
+		storeValue(argument.value);
 	}
 
 	Byte::Byte(RValue<Int> cast)
@@ -1173,9 +1173,9 @@ namespace sw
 		return Type::getInt8Ty(*Nucleus::getContext());
 	}
 
-	SByte::SByte(Argument *argument)
+	SByte::SByte(Argument<SByte> argument)
 	{
-		storeValue(argument);
+		storeValue(argument.value);
 	}
 
 	SByte::SByte()
@@ -1413,9 +1413,9 @@ namespace sw
 		return Type::getInt8Ty(*Nucleus::getContext());
 	}
 
-	Short::Short(Argument *argument)
+	Short::Short(Argument<Short> argument)
 	{
-		storeValue(argument);
+		storeValue(argument.value);
 	}
 
 	Short::Short(RValue<Int> cast)
@@ -1660,9 +1660,9 @@ namespace sw
 		return Type::getInt16Ty(*Nucleus::getContext());
 	}
 
-	UShort::UShort(Argument *argument)
+	UShort::UShort(Argument<UShort> argument)
 	{
-		storeValue(argument);
+		storeValue(argument.value);
 	}
 
 	UShort::UShort()
@@ -3705,9 +3705,9 @@ namespace sw
 		return VectorType::get(UShort::getType(), 8);
 	}
 
-	Int::Int(Argument *argument)
+	Int::Int(Argument<Int> argument)
 	{
-		storeValue(argument);
+		storeValue(argument.value);
 	}
 
 	Int::Int(RValue<Byte> cast)
@@ -4132,7 +4132,7 @@ namespace sw
 		return lhs = lhs - rhs;
 	}
 
-	RValue<Long> AddAtomic(RValue<Pointer<Long> > x, RValue<Long> y)
+	RValue<Long> AddAtomic(RValue<Pointer<Long>> x, RValue<Long> y)
 	{
 		return RValue<Long>(Nucleus::createAtomicAdd(x.value, y.value));
 	}
@@ -4184,9 +4184,9 @@ namespace sw
 		return VectorType::get(Long::getType(), 2);
 	}
 
-	UInt::UInt(Argument *argument)
+	UInt::UInt(Argument<UInt> argument)
 	{
-		storeValue(argument);
+		storeValue(argument.value);
 	}
 
 	UInt::UInt(RValue<UShort> cast)
@@ -6710,62 +6710,62 @@ namespace sw
 		return VectorType::get(Float::getType(), 4);
 	}
 
-	RValue<Pointer<Byte> > operator+(RValue<Pointer<Byte> > lhs, int offset)
+	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, int offset)
 	{
-		return RValue<Pointer<Byte> >(Nucleus::createGEP(lhs.value, Nucleus::createConstantInt(offset)));
+		return RValue<Pointer<Byte>>(Nucleus::createGEP(lhs.value, Nucleus::createConstantInt(offset)));
 	}
 
-	RValue<Pointer<Byte> > operator+(RValue<Pointer<Byte> > lhs, RValue<Int> offset)
+	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, RValue<Int> offset)
 	{
-		return RValue<Pointer<Byte> >(Nucleus::createGEP(lhs.value, offset.value));
+		return RValue<Pointer<Byte>>(Nucleus::createGEP(lhs.value, offset.value));
 	}
 
-	RValue<Pointer<Byte> > operator+(RValue<Pointer<Byte> > lhs, RValue<UInt> offset)
+	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, RValue<UInt> offset)
 	{
-		return RValue<Pointer<Byte> >(Nucleus::createGEP(lhs.value, offset.value));
+		return RValue<Pointer<Byte>>(Nucleus::createGEP(lhs.value, offset.value));
 	}
 
-	RValue<Pointer<Byte> > operator+=(const Pointer<Byte> &lhs, int offset)
-	{
-		return lhs = lhs + offset;
-	}
-
-	RValue<Pointer<Byte> > operator+=(const Pointer<Byte> &lhs, RValue<Int> offset)
+	RValue<Pointer<Byte>> operator+=(const Pointer<Byte> &lhs, int offset)
 	{
 		return lhs = lhs + offset;
 	}
 
-	RValue<Pointer<Byte> > operator+=(const Pointer<Byte> &lhs, RValue<UInt> offset)
+	RValue<Pointer<Byte>> operator+=(const Pointer<Byte> &lhs, RValue<Int> offset)
 	{
 		return lhs = lhs + offset;
 	}
 
-	RValue<Pointer<Byte> > operator-(RValue<Pointer<Byte> > lhs, int offset)
+	RValue<Pointer<Byte>> operator+=(const Pointer<Byte> &lhs, RValue<UInt> offset)
+	{
+		return lhs = lhs + offset;
+	}
+
+	RValue<Pointer<Byte>> operator-(RValue<Pointer<Byte>> lhs, int offset)
 	{
 		return lhs + -offset;
 	}
 
-	RValue<Pointer<Byte> > operator-(RValue<Pointer<Byte> > lhs, RValue<Int> offset)
+	RValue<Pointer<Byte>> operator-(RValue<Pointer<Byte>> lhs, RValue<Int> offset)
 	{
 		return lhs + -offset;
 	}
 
-	RValue<Pointer<Byte> > operator-(RValue<Pointer<Byte> > lhs, RValue<UInt> offset)
+	RValue<Pointer<Byte>> operator-(RValue<Pointer<Byte>> lhs, RValue<UInt> offset)
 	{
 		return lhs + -offset;
 	}
 
-	RValue<Pointer<Byte> > operator-=(const Pointer<Byte> &lhs, int offset)
+	RValue<Pointer<Byte>> operator-=(const Pointer<Byte> &lhs, int offset)
 	{
 		return lhs = lhs - offset;
 	}
 
-	RValue<Pointer<Byte> > operator-=(const Pointer<Byte> &lhs, RValue<Int> offset)
+	RValue<Pointer<Byte>> operator-=(const Pointer<Byte> &lhs, RValue<Int> offset)
 	{
 		return lhs = lhs - offset;
 	}
 
-	RValue<Pointer<Byte> > operator-=(const Pointer<Byte> &lhs, RValue<UInt> offset)
+	RValue<Pointer<Byte>> operator-=(const Pointer<Byte> &lhs, RValue<UInt> offset)
 	{
 		return lhs = lhs - offset;
 	}
@@ -7706,7 +7706,7 @@ namespace sw
 			return RValue<Int>(Nucleus::createCall(pmovmskb, As<MMX>(x).value));
 		}
 
-		//RValue<Int2> movd(RValue<Pointer<Int> > x)
+		//RValue<Int2> movd(RValue<Pointer<Int>> x)
 		//{
 		//	Value *element = Nucleus::createLoad(x.value);
 
