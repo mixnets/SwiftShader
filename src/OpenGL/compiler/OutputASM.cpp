@@ -113,6 +113,86 @@ namespace glsl
 		return 0;
 	}
 
+	OutputASM::TextureFunction::TextureFunction(const TString& nodeName) : method(IMPLICIT), proj(false), offset(false)
+	{
+		TString name = TFunction::unmangleName(nodeName);
+
+		if(name == "texture2D" || name == "textureCube" || name == "texture" || name == "texture3D")
+		{
+			method = IMPLICIT;
+		}
+		else if(name == "texture2DProj" || name == "textureProj")
+		{
+			method = IMPLICIT;
+			proj = true;
+		}
+		else if(name == "texture2DLod" || name == "textureCubeLod" || name == "textureLod")
+		{
+			method = LOD;
+		}
+		else if(name == "texture2DProjLod" || name == "textureProjLod")
+		{
+			method = LOD;
+			proj = true;
+		}
+		else if(name == "textureSize")
+		{
+			method = SIZE;
+		}
+		else if(name == "textureOffset")
+		{
+			method = IMPLICIT;
+			offset = true;
+		}
+		else if(name == "textureProjOffset")
+		{
+			method = IMPLICIT;
+			offset = true;
+			proj = true;
+		}
+		else if(name == "textureLodOffset")
+		{
+			method = LOD;
+			offset = true;
+		}
+		else if(name == "textureProjLodOffset")
+		{
+			method = LOD;
+			proj = true;
+			offset = true;
+		}
+		else if(name == "texelFetch")
+		{
+			method = FETCH;
+		}
+		else if(name == "texelFetchOffset")
+		{
+			method = FETCH;
+			offset = true;
+		}
+		else if(name == "textureGrad")
+		{
+			method = GRAD;
+		}
+		else if(name == "textureGradOffset")
+		{
+			method = GRAD;
+			offset = true;
+		}
+		else if(name == "textureProjGrad")
+		{
+			method = GRAD;
+			proj = true;
+		}
+		else if(name == "textureProjGradOffset")
+		{
+			method = GRAD;
+			proj = true;
+			offset = true;
+		}
+		else UNREACHABLE(name);
+	}
+
 	OutputASM::OutputASM(TParseContext &context, Shader *shaderObject) : TIntermTraverser(true, true, true), mContext(context), shaderObject(shaderObject)
 	{
 		shader = 0;
@@ -1042,105 +1122,114 @@ namespace glsl
 				}
 				else
 				{
-					TString name = TFunction::unmangleName(node->getName());
-
-					if(name == "texture" || name == "texture2D" || name == "textureCube" || name == "texture3D")
+					const TextureFunction textureFunction(node->getName());
+					switch(textureFunction.method)
 					{
-						if(argumentCount == 2)
+					case TextureFunction::IMPLICIT:
+						if(textureFunction.offset)
 						{
-							emit(sw::Shader::OPCODE_TEX, result, arg[1], arg[0]);
+							UNIMPLEMENTED();
 						}
-						else if(argumentCount == 3)   // bias
+						else
 						{
-							Temporary uvwb(this);
-							emit(sw::Shader::OPCODE_MOV, &uvwb, arg[1]);
-							Instruction *bias = emit(sw::Shader::OPCODE_MOV, &uvwb, arg[2]);
-							bias->dst.mask = 0x8;
+							TIntermTyped *t = arg[1]->getAsTyped();
 
-							Instruction *tex = emit(sw::Shader::OPCODE_TEX, result, &uvwb, arg[0]);   // FIXME: Implement an efficient TEXLDB instruction
-							tex->bias = true;
-						}
-						else UNREACHABLE(argumentCount);
-					}
-					else if(name == "texture2DProj" || name == "textureProj")
-					{
-						TIntermTyped *t = arg[1]->getAsTyped();
-
-						if(argumentCount == 2)
-						{
-							Instruction *tex = emit(sw::Shader::OPCODE_TEX, result, arg[1], arg[0]);
-							tex->project = true;
-
-							if(t->getNominalSize() == 3)
+							if(argumentCount == 2)
 							{
-								tex->src[0].swizzle = 0xA4;
+								Instruction *tex = emit(sw::Shader::OPCODE_TEX, result, arg[1], arg[0]);
+								if(textureFunction.proj)
+								{
+									tex->project = true;
+
+									if(t->getNominalSize() == 3)
+									{
+										tex->src[0].swizzle = 0xA4;
+									}
+									else ASSERT(t->getNominalSize() == 4);
+								}
 							}
-							else ASSERT(t->getNominalSize() == 4);
+							else if(argumentCount == 3)   // bias
+							{
+								Temporary proj(this);
+								if(textureFunction.proj)
+								{
+									if(t->getNominalSize() == 3)
+									{
+										Instruction *div = emit(sw::Shader::OPCODE_DIV, &proj, arg[1], arg[1]);
+										div->src[1].swizzle = 0xAA;
+										div->dst.mask = 0x3;
+									}
+									else if(t->getNominalSize() == 4)
+									{
+										Instruction *div = emit(sw::Shader::OPCODE_DIV, &proj, arg[1], arg[1]);
+										div->src[1].swizzle = 0xFF;
+										div->dst.mask = 0x3;
+									}
+									else UNREACHABLE(t->getNominalSize());
+								}
+								else
+								{
+									emit(sw::Shader::OPCODE_MOV, &proj, arg[1]);
+								}
+
+								Instruction *bias = emit(sw::Shader::OPCODE_MOV, &proj, arg[2]);
+								bias->dst.mask = 0x8;
+
+								Instruction *tex = emit(sw::Shader::OPCODE_TEX, result, &proj, arg[0]);
+								tex->bias = true;
+							}
+							else UNREACHABLE(argumentCount);
 						}
-						else if(argumentCount == 3)   // bias
+						break;
+					case TextureFunction::LOD:
+						if(textureFunction.offset)
 						{
+							UNIMPLEMENTED();
+						}
+						else
+						{
+							TIntermTyped *t = arg[1]->getAsTyped();
 							Temporary proj(this);
 
-							if(t->getNominalSize() == 3)
+							if(textureFunction.proj)
 							{
-								Instruction *div = emit(sw::Shader::OPCODE_DIV, &proj, arg[1], arg[1]);
-								div->src[1].swizzle = 0xAA;
-								div->dst.mask = 0x3;
+								if(t->getNominalSize() == 3)
+								{
+									Instruction *div = emit(sw::Shader::OPCODE_DIV, &proj, arg[1], arg[1]);
+									div->src[1].swizzle = 0xAA;
+									div->dst.mask = 0x3;
+								}
+								else if(t->getNominalSize() == 4)
+								{
+									Instruction *div = emit(sw::Shader::OPCODE_DIV, &proj, arg[1], arg[1]);
+									div->src[1].swizzle = 0xFF;
+									div->dst.mask = 0x3;
+								}
+								else UNREACHABLE(t->getNominalSize());
 							}
-							else if(t->getNominalSize() == 4)
+							else
 							{
-								Instruction *div = emit(sw::Shader::OPCODE_DIV, &proj, arg[1], arg[1]);
-								div->src[1].swizzle = 0xFF;
-								div->dst.mask = 0x3;
+								emit(sw::Shader::OPCODE_MOV, &proj, arg[1]);
 							}
-							else UNREACHABLE(t->getNominalSize());
 
-							Instruction *bias = emit(sw::Shader::OPCODE_MOV, &proj, arg[2]);
-							bias->dst.mask = 0x8;
+							Instruction *lod = emit(sw::Shader::OPCODE_MOV, &proj, arg[2]);
+							lod->dst.mask = 0x8;
 
-							Instruction *tex = emit(sw::Shader::OPCODE_TEX, result, &proj, arg[0]);
-							tex->bias = true;
+							emit(sw::Shader::OPCODE_TEXLDL, result, &proj, arg[0]);
 						}
-						else UNREACHABLE(argumentCount);
-					}
-					else if(name == "texture2DLod" || name == "textureCubeLod" || name == "textureLod")
-					{
-						Temporary uvwb(this);
-						emit(sw::Shader::OPCODE_MOV, &uvwb, arg[1]);
-						Instruction *lod = emit(sw::Shader::OPCODE_MOV, &uvwb, arg[2]);
-						lod->dst.mask = 0x8;
-
-						emit(sw::Shader::OPCODE_TEXLDL, result, &uvwb, arg[0]);
-					}
-					else if(name == "texture2DProjLod" || name == "textureProjLod")
-					{
-						TIntermTyped *t = arg[1]->getAsTyped();
-						Temporary proj(this);
-
-						if(t->getNominalSize() == 3)
-						{
-							Instruction *div = emit(sw::Shader::OPCODE_DIV, &proj, arg[1], arg[1]);
-							div->src[1].swizzle = 0xAA;
-							div->dst.mask = 0x3;
-						}
-						else if(t->getNominalSize() == 4)
-						{
-							Instruction *div = emit(sw::Shader::OPCODE_DIV, &proj, arg[1], arg[1]);
-							div->src[1].swizzle = 0xFF;
-							div->dst.mask = 0x3;
-						}
-						else UNREACHABLE(t->getNominalSize());
-
-						Instruction *lod = emit(sw::Shader::OPCODE_MOV, &proj, arg[2]);
-						lod->dst.mask = 0x8;
-
-						emit(sw::Shader::OPCODE_TEXLDL, result, &proj, arg[0]);
-					}
-					else if(name == "textureSize")
-					{
+						break;
+					case TextureFunction::FETCH:
+						UNIMPLEMENTED();
+						break;
+					case TextureFunction::GRAD:
+						UNIMPLEMENTED();
+						break;
+					case TextureFunction::SIZE:
 						emit(sw::Shader::OPCODE_TEXSIZE, result, arg[1], arg[0]);
+						break;
+					default:
+						UNREACHABLE(textureFunction.method);
 					}
-					else UNREACHABLE(0);
 				}
 			}
 			break;
@@ -1483,7 +1572,7 @@ namespace glsl
 		TIntermTyped *condition = node->getCondition();
 		TIntermTyped *expression = node->getExpression();
 		TIntermNode *body = node->getBody();
-
+		
 		if(node->getType() == ELoopDoWhile)
 		{
 			Temporary iterate(this);
