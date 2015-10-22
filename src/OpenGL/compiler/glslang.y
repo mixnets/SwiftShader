@@ -38,13 +38,12 @@ WHICH GENERATES THE GLSL ES PARSER (glslang_tab.cpp AND glslang_tab.h).
 #include "ParseHelper.h"
 
 #define YYENABLE_NLS 0
-
-#define YYLEX_PARAM context->getScanner()
 %}
 
 %expect 1 /* One shift reduce conflict because of if | else */
 %pure-parser
 %parse-param {TParseContext* context}
+%lex-param {void* yyscanner}
 
 %code requires {
 #define YYLTYPE TSourceLoc
@@ -1719,7 +1718,7 @@ function_definition
         $1.intermAggregate = paramNodes;
         context->setLoopNestingLevel(0);
     }
-    compound_statement_no_new_scope {
+    compound_statement {
         //?? Check that all paths return a value if return type != void ?
         //   May be best done as post process phase on intermediate code
         if (context->getCurrentFunctionType()->getBasicType() != EbtVoid && ! context->getFunctionReturnsValue()) {
