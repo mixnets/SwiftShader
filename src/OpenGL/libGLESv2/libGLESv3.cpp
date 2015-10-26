@@ -3779,7 +3779,7 @@ GL_APICALL void GL_APIENTRY glInvalidateFramebuffer(GLenum target, GLsizei numAt
 		return error(GL_INVALID_VALUE);
 	}
 
-	UNIMPLEMENTED();
+//	UNIMPLEMENTED();
 }
 
 GL_APICALL void GL_APIENTRY glInvalidateSubFramebuffer(GLenum target, GLsizei numAttachments, const GLenum *attachments, GLint x, GLint y, GLsizei width, GLsizei height)
