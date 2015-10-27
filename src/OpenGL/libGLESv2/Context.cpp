@@ -3033,8 +3033,8 @@ void Context::applyShaders()
         mAppliedProgramSerial = programObject->getSerial();
     }
 
+    programObject->applyUniformBuffers(mState.uniformBuffers);
     programObject->applyUniforms();
-    programObject->applyUniformBuffers();
 }
 
 void Context::applyTextures()

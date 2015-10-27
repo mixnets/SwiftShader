@@ -157,6 +157,11 @@ namespace sw
 		else ASSERT(false);
 	}
 
+	void VertexProcessor::setUniformBuffers(int index, sw::Resource* uniformBuffer)
+	{
+		context->uniformBuffers[index] = uniformBuffer;
+	}
+
 	void VertexProcessor::setModelMatrix(const Matrix &M, int i)
 	{
 		if(i < 12)

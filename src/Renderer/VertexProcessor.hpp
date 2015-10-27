@@ -185,6 +185,8 @@ namespace sw
 		virtual void setIntegerConstant(unsigned int index, const int integer[4]);
 		virtual void setBooleanConstant(unsigned int index, int boolean);
 
+		virtual void setUniformBuffers(int index, sw::Resource* uniformBuffer);
+
 		// Transformations
 		virtual void setModelMatrix(const Matrix &M, int i = 0);
 		virtual void setViewMatrix(const Matrix &V);

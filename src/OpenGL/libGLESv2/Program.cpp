@@ -1138,7 +1138,7 @@ namespace es2
 		}
 	}
 
-	void Program::applyUniformBuffers()
+	void Program::applyUniformBuffers(gl::BindingPointer<Buffer>* uniformBuffers)
 	{
 		GLint vertexUniformBuffers[IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS];
 		GLint fragmentUniformBuffers[IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS];
@@ -1176,6 +1176,20 @@ namespace es2
 				unsigned int registerIndex = uniformBlock.psRegisterIndex;
 				ASSERT(fragmentUniformBuffers[registerIndex] == -1);
 				fragmentUniformBuffers[registerIndex] = blockBinding;
+			}
+		}
+
+		for(unsigned int registerIndex = 0; registerIndex < IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS; ++registerIndex)
+		{
+			int index = vertexUniformBuffers[registerIndex];
+			if(index != -1)
+			{
+				device->VertexProcessor::setUniformBuffers(index, uniformBuffers[index]->getResource());
+			}
+			index = fragmentUniformBuffers[registerIndex];
+			if(index != -1)
+			{
+				device->PixelProcessor::setUniformBuffers(index, uniformBuffers[index]->getResource());
 			}
 		}
 	}
