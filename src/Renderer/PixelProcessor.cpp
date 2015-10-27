@@ -136,6 +136,31 @@ namespace sw
 		else ASSERT(false);
 	}
 
+	void PixelProcessor::setUniformBuffers(int index, sw::Resource* uniformBuffer)
+	{
+		context->uniformBuffers[index] = uniformBuffer;
+	}
+
+	void PixelProcessor::lockUniformBuffers(byte** u)
+	{
+		for(int i = 0; i < MAX_UNIFORM_BUFFER_BINDINGS; ++i)
+		{
+			u[i] = static_cast<byte*>(context->uniformBuffers[i] ? context->uniformBuffers[i]->lock(PUBLIC, PRIVATE) : 0);
+		}
+	}
+
+	void PixelProcessor::unlockUniformBuffers()
+	{
+		for(int i = 0; i < MAX_UNIFORM_BUFFER_BINDINGS; ++i)
+		{
+			if(context->uniformBuffers[i])
+			{
+				context->uniformBuffers[i]->unlock();
+				context->uniformBuffers[i] = 0;
+			}
+		}
+	}
+
 	void PixelProcessor::setRenderTarget(int index, Surface *renderTarget)
 	{
 		context->renderTarget[index] = renderTarget;

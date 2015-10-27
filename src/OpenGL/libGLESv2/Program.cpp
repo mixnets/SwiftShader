@@ -62,9 +62,16 @@ namespace es2
 	                 const BlockInfo &blockInfo)
 	 : type(type), precision(precision), name(name), arraySize(arraySize), blockInfo(blockInfo)
 	{
-		int bytes = UniformTypeSize(type) * size();
-		data = new unsigned char[bytes];
-		memset(data, 0, bytes);
+		if(blockInfo.index == -1)
+		{
+			int bytes = UniformTypeSize(type) * size();
+			data = new unsigned char[bytes];
+			memset(data, 0, bytes);
+		}
+		else
+		{
+			data = nullptr;
+		}
 		dirty = true;
 
 		psRegisterIndex = -1;
@@ -1065,7 +1072,7 @@ namespace es2
 
 			Uniform *targetUniform = uniforms[uniformIndex[location].index];
 
-			if(targetUniform->dirty)
+			if(targetUniform->dirty && (targetUniform->blockInfo.index == -1))
 			{
 				int size = targetUniform->size();
 				GLfloat *f = (GLfloat*)targetUniform->data;
@@ -1125,19 +1132,19 @@ namespace es2
 		}
 	}
 
-	void Program::applyUniformBuffers()
+	void Program::applyUniformBuffers(gl::BindingPointer<Buffer>* uniformBuffers)
 	{
 		GLint vertexUniformBuffers[IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS];
 		GLint fragmentUniformBuffers[IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS];
 
-		for(unsigned int registerIndex = 0; registerIndex < IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS; ++registerIndex)
+		for(unsigned int bufferIndex = 0; bufferIndex < IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS; ++bufferIndex)
 		{
-			vertexUniformBuffers[registerIndex] = -1;
+			vertexUniformBuffers[bufferIndex] = -1;
 		}
 
-		for(unsigned int registerIndex = 0; registerIndex < IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS; ++registerIndex)
+		for(unsigned int bufferIndex = 0; bufferIndex < IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS; ++bufferIndex)
 		{
-			fragmentUniformBuffers[registerIndex] = -1;
+			fragmentUniformBuffers[bufferIndex] = -1;
 		}
 
 		for(unsigned int uniformBlockIndex = 0; uniformBlockIndex < uniformBlocks.size(); uniformBlockIndex++)
@@ -1153,16 +1160,30 @@ namespace es2
 
 			if(uniformBlock.isReferencedByVertexShader())
 			{
-				unsigned int registerIndex = uniformBlock.vsRegisterIndex;
-				ASSERT(vertexUniformBuffers[registerIndex] == -1);
-				vertexUniformBuffers[registerIndex] = blockBinding;
+				unsigned int bufferIndex = uniformBlock.vsRegisterIndex;
+				ASSERT(vertexUniformBuffers[bufferIndex] == -1);
+				vertexUniformBuffers[bufferIndex] = blockBinding;
 			}
 
 			if(uniformBlock.isReferencedByFragmentShader())
 			{
-				unsigned int registerIndex = uniformBlock.psRegisterIndex;
-				ASSERT(fragmentUniformBuffers[registerIndex] == -1);
-				fragmentUniformBuffers[registerIndex] = blockBinding;
+				unsigned int bufferIndex = uniformBlock.psRegisterIndex;
+				ASSERT(fragmentUniformBuffers[bufferIndex] == -1);
+				fragmentUniformBuffers[bufferIndex] = blockBinding;
+			}
+		}
+
+		for(unsigned int bufferIndex = 0; bufferIndex < IMPLEMENTATION_MAX_UNIFORM_BUFFER_BINDINGS; ++bufferIndex)
+		{
+			int index = vertexUniformBuffers[bufferIndex];
+			if(index != -1)
+			{
+				device->VertexProcessor::setUniformBuffers(index, uniformBuffers[index]->getResource());
+			}
+			index = fragmentUniformBuffers[bufferIndex];
+			if(index != -1)
+			{
+				device->PixelProcessor::setUniformBuffers(index, uniformBuffers[index]->getResource());
 			}
 		}
 	}

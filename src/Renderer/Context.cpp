@@ -280,6 +280,8 @@ namespace sw
 		emissiveMaterialSource = MATERIAL_MATERIAL;
 		colorVertexEnable = true;
 
+		for(int i = 0; i < MAX_UNIFORM_BUFFER_BINDINGS; ++i) uniformBuffers[i] = 0;
+
 		fogEnable = false;
 		pixelFogMode = FOG_NONE;
 		vertexFogMode = FOG_NONE;
