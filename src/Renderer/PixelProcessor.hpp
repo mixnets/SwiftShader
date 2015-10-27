@@ -191,6 +191,8 @@ namespace sw
 		virtual void setIntegerConstant(unsigned int index, const int value[4]);
 		virtual void setBooleanConstant(unsigned int index, int boolean);
 
+		virtual void setUniformBuffers(int index, sw::Resource* uniformBuffer);
+
 		virtual void setRenderTarget(int index, Surface *renderTarget);
 		virtual void setDepthStencil(Surface *depthStencil);
 

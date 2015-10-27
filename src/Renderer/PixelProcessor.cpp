@@ -136,6 +136,11 @@ namespace sw
 		else ASSERT(false);
 	}
 
+	void PixelProcessor::setUniformBuffers(int index, sw::Resource* uniformBuffer)
+	{
+		context->uniformBuffers[index] = uniformBuffer;
+	}
+
 	void PixelProcessor::setRenderTarget(int index, Surface *renderTarget)
 	{
 		context->renderTarget[index] = renderTarget;
