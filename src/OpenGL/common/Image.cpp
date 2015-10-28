@@ -689,11 +689,11 @@ namespace egl
 		#if S3TC_SUPPORT
 		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-				return sw::FORMAT_DXT1;
+			return sw::FORMAT_DXT1;
 		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
-				return sw::FORMAT_DXT3;
+			return sw::FORMAT_DXT3;
 		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
-				return sw::FORMAT_DXT5;
+			return sw::FORMAT_DXT5;
 		#endif
 		default:
 			break;
@@ -704,6 +704,15 @@ namespace egl
 		case GL_FLOAT:
 			switch(format)
 			{
+			case GL_ALPHA:
+			case GL_ALPHA32F_EXT:
+				return sw::FORMAT_A32F;
+			case GL_LUMINANCE:
+			case GL_LUMINANCE32F_EXT:
+				return sw::FORMAT_L32F;
+			case GL_LUMINANCE_ALPHA:
+			case GL_LUMINANCE_ALPHA32F_EXT:
+				return sw::FORMAT_A32L32F;
 			case GL_RED:
 			case GL_R32F:
 				return sw::FORMAT_R32F;
@@ -714,7 +723,7 @@ namespace egl
 			case GL_RGB32F:
 			case GL_RGBA:
 			case GL_RGBA32F:
-			return sw::FORMAT_A32B32G32R32F;
+				return sw::FORMAT_A32B32G32R32F;
 			case GL_DEPTH_COMPONENT:
 			case GL_DEPTH_COMPONENT32F:
 				return sw::FORMAT_D32F;
@@ -725,6 +734,15 @@ namespace egl
 		case GL_HALF_FLOAT_OES:
 			switch(format)
 			{
+			case GL_ALPHA:
+			case GL_ALPHA16F_EXT:
+				return sw::FORMAT_A16F;
+			case GL_LUMINANCE:
+			case GL_LUMINANCE16F_EXT:
+				return sw::FORMAT_L16F;
+			case GL_LUMINANCE_ALPHA:
+			case GL_LUMINANCE_ALPHA16F_EXT:
+				return sw::FORMAT_A16L16F;
 			case GL_RED:
 			case GL_R16F:
 				return sw::FORMAT_R16F;
@@ -735,7 +753,7 @@ namespace egl
 			case GL_RGB16F:
 			case GL_RGBA:
 			case GL_RGBA16F:
-			return sw::FORMAT_A16B16G16R16F;
+				return sw::FORMAT_A16B16G16R16F;
 			default:
 				UNREACHABLE(format);
 			}
