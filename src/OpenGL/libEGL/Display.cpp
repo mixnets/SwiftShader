@@ -26,6 +26,9 @@
 
 #ifdef __ANDROID__
 #include <system/window.h>
+#include <sys/ioctl.h>
+#include <linux/fb.h>
+#include <fcntl.h>
 #endif
 
 #include <algorithm>
@@ -594,6 +597,34 @@ sw::Format Display::getDisplayFormat() const
 		default: UNREACHABLE(bpp);   // Unexpected display mode color depth
 		}
 	#elif defined(__ANDROID__)
+		static const char *const framebuffer[] =
+		{
+			"/dev/graphics/fb0",
+			"/dev/fb0",
+			0
+		};
+
+		for(int i = 0; framebuffer[i]; i++)
+		{
+			int fd = open(framebuffer[i], O_RDONLY, 0);
+
+			if(fd != -1)
+			{
+				struct fb_var_screeninfo info;
+				if(ioctl(fd, FBIOGET_VSCREENINFO, &info) >= 0)
+				{
+					switch(info.bits_per_pixel)
+					{
+					case 16: return sw::FORMAT_R5G6B5;
+					case 32: return sw::FORMAT_X8R8G8B8;
+					}
+				}
+
+				close(fd);
+			}
+		}
+
+		UNREACHABLE(0);
 		return sw::FORMAT_X8R8G8B8;
     #else
         if(platform == EGL_PLATFORM_X11_EXT)
