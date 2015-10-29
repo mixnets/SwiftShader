@@ -18,6 +18,7 @@
 #include "common/debug.h"
 
 #include <EGL/eglext.h>
+#include <system/graphics.h>
 
 #include <algorithm>
 #include <vector>
@@ -31,8 +32,10 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
 {
     mBindToTextureRGB = EGL_FALSE;
     mBindToTextureRGBA = EGL_FALSE;
+    
+    mNativeVisualID = 0;
 
-    switch (renderTargetFormat)
+    switch(renderTargetFormat)
     {
     case sw::FORMAT_A1R5G5B5:
         mRedSize = 5;
@@ -52,12 +55,28 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
         mBlueSize = 8;
         mAlphaSize = 8;
         mBindToTextureRGBA = EGL_TRUE;
+        #ifdef __ANDROID__
+			mNativeVisualID = HAL_PIXEL_FORMAT_BGRA_8888;
+		#endif
+        break;
+	case sw::FORMAT_A8B8G8R8:
+        mRedSize = 8;
+        mGreenSize = 8;
+        mBlueSize = 8;
+        mAlphaSize = 8;
+        mBindToTextureRGBA = EGL_TRUE;
+		#ifdef __ANDROID__
+			mNativeVisualID = HAL_PIXEL_FORMAT_RGBA_8888;
+		#endif
         break;
     case sw::FORMAT_R5G6B5:
         mRedSize = 5;
         mGreenSize = 6;
         mBlueSize = 5;
         mAlphaSize = 0;
+        #ifdef __ANDROID__
+			mNativeVisualID = HAL_PIXEL_FORMAT_RGB_565;
+		#endif
         break;
     case sw::FORMAT_X8R8G8B8:
         mRedSize = 8;
@@ -65,6 +84,19 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
         mBlueSize = 8;
         mAlphaSize = 0;
         mBindToTextureRGB = EGL_TRUE;
+		#ifdef __ANDROID__
+			mNativeVisualID = HAL_PIXEL_FORMAT_BGRA_8888;
+		#endif
+        break;
+	case sw::FORMAT_X8B8G8R8:
+        mRedSize = 8;
+        mGreenSize = 8;
+        mBlueSize = 8;
+        mAlphaSize = 0;
+        mBindToTextureRGBA = EGL_TRUE;
+		#ifdef __ANDROID__
+			mNativeVisualID = HAL_PIXEL_FORMAT_RGBX_8888;
+		#endif
         break;
     default:
         UNREACHABLE(renderTargetFormat);   // Other formats should not be valid
@@ -76,13 +108,12 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
     mColorBufferType = EGL_RGB_BUFFER;
     mConfigCaveat = isSlowConfig() ? EGL_SLOW_CONFIG : EGL_NONE;
     mConfigID = 0;
-    mConformant = EGL_OPENGL_ES_BIT | EGL_OPENGL_ES2_BIT
-#ifndef __ANDROID__ // Do not allow GLES 3.0 on Android
-        | EGL_OPENGL_ES3_BIT
-#endif
-        ;
+    mConformant = EGL_OPENGL_ES_BIT | EGL_OPENGL_ES2_BIT;
+	#ifndef __ANDROID__ // Do not allow GLES 3.0 on Android
+        mConformant |= EGL_OPENGL_ES3_BIT;
+	#endif
 
-	switch (depthStencilFormat)
+	switch(depthStencilFormat)
 	{
 	case sw::FORMAT_NULL:
 		mDepthSize = 0;
@@ -136,13 +167,12 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
     mMaxSwapInterval = maxInterval;
     mMinSwapInterval = minInterval;
     mNativeRenderable = EGL_FALSE;
-    mNativeVisualID = 0;
     mNativeVisualType = 0;
-    mRenderableType = EGL_OPENGL_ES_BIT | EGL_OPENGL_ES2_BIT
-#ifndef __ANDROID__ // Do not allow GLES 3.0 on Android
-        | EGL_OPENGL_ES3_BIT
-#endif
-        ;
+    mRenderableType = EGL_OPENGL_ES_BIT | EGL_OPENGL_ES2_BIT;
+	#ifndef __ANDROID__ // Do not allow GLES 3.0 on Android
+        mRenderableType |= EGL_OPENGL_ES3_BIT;
+	#endif
+
     mSampleBuffers = (multiSample > 0) ? 1 : 0;
     mSamples = multiSample;
     mSurfaceType = EGL_PBUFFER_BIT | EGL_WINDOW_BIT | EGL_SWAP_BEHAVIOR_PRESERVED_BIT;
@@ -152,7 +182,7 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
     mTransparentBlueValue = 0;
 
 	mRecordableAndroid = EGL_TRUE;
-	mFramebufferTargetAndroid = EGL_TRUE;
+	mFramebufferTargetAndroid = (displayFormat == renderTargetFormat) ? EGL_TRUE : EGL_FALSE;
 }
 
 EGLConfig Config::getHandle() const
