@@ -76,11 +76,10 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
     mColorBufferType = EGL_RGB_BUFFER;
     mConfigCaveat = isSlowConfig() ? EGL_SLOW_CONFIG : EGL_NONE;
     mConfigID = 0;
-    mConformant = EGL_OPENGL_ES_BIT | EGL_OPENGL_ES2_BIT
-#ifndef __ANDROID__ // Do not allow GLES 3.0 on Android
-        | EGL_OPENGL_ES3_BIT
-#endif
-        ;
+    mConformant = EGL_OPENGL_ES_BIT | EGL_OPENGL_ES2_BIT;
+	#ifndef __ANDROID__ // Do not allow GLES 3.0 on Android
+        mConformant |= EGL_OPENGL_ES3_BIT;
+	#endif
 
 	switch (depthStencilFormat)
 	{
@@ -138,11 +137,11 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
     mNativeRenderable = EGL_FALSE;
     mNativeVisualID = 0;
     mNativeVisualType = 0;
-    mRenderableType = EGL_OPENGL_ES_BIT | EGL_OPENGL_ES2_BIT
-#ifndef __ANDROID__ // Do not allow GLES 3.0 on Android
-        | EGL_OPENGL_ES3_BIT
-#endif
-        ;
+    mRenderableType = EGL_OPENGL_ES_BIT | EGL_OPENGL_ES2_BIT;
+	#ifndef __ANDROID__ // Do not allow GLES 3.0 on Android
+        mRenderableType |= EGL_OPENGL_ES3_BIT;
+	#endif
+
     mSampleBuffers = (multiSample > 0) ? 1 : 0;
     mSamples = multiSample;
     mSurfaceType = EGL_PBUFFER_BIT | EGL_WINDOW_BIT | EGL_SWAP_BEHAVIOR_PRESERVED_BIT;
@@ -152,7 +151,11 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
     mTransparentBlueValue = 0;
 
 	mRecordableAndroid = EGL_TRUE;
-	mFramebufferTargetAndroid = EGL_TRUE;
+
+	if(displayFormat == renderTargetFormat)
+	{
+		mFramebufferTargetAndroid = EGL_TRUE;
+	}
 }
 
 EGLConfig Config::getHandle() const
