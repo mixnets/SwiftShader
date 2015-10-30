@@ -35,8 +35,10 @@ COMMON_SHARED_LIBRARIES := \
 	$(GCE_STLPORT_LIBS)
 
 COMMON_LDFLAGS := \
+	-Wl,--gc-sections \
 	-Wl,--version-script=$(LOCAL_PATH)/exports.map \
-	-Wl,--hash-style=sysv
+	-Wl,--hash-style=sysv \
+	-Wl,--exclude-libs=ALL
 
 include $(CLEAR_VARS)
 
