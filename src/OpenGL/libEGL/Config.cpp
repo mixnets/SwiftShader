@@ -152,7 +152,7 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
     mTransparentBlueValue = 0;
 
 	mRecordableAndroid = EGL_TRUE;
-	mFramebufferTargetAndroid = EGL_TRUE;
+	mFramebufferTargetAndroid = (displayFormat == renderTargetFormat) ? EGL_TRUE : EGL_FALSE;
 }
 
 EGLConfig Config::getHandle() const
