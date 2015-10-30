@@ -18,6 +18,9 @@
 #include "common/debug.h"
 
 #include <EGL/eglext.h>
+#ifdef __ANDROID__
+#include <system/graphics.h>
+#endif
 
 #include <algorithm>
 #include <vector>
@@ -31,6 +34,8 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
 {
     mBindToTextureRGB = EGL_FALSE;
     mBindToTextureRGBA = EGL_FALSE;
+
+    mNativeVisualID = 0;
 
     switch(renderTargetFormat)
     {
@@ -52,6 +57,9 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
         mBlueSize = 8;
         mAlphaSize = 8;
         mBindToTextureRGBA = EGL_TRUE;
+        #ifdef __ANDROID__
+			mNativeVisualID = HAL_PIXEL_FORMAT_BGRA_8888;
+		#endif
         break;
 	case sw::FORMAT_A8B8G8R8:
         mRedSize = 8;
@@ -59,12 +67,18 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
         mBlueSize = 8;
         mAlphaSize = 8;
         mBindToTextureRGBA = EGL_TRUE;
+		#ifdef __ANDROID__
+			mNativeVisualID = HAL_PIXEL_FORMAT_RGBA_8888;
+		#endif
         break;
     case sw::FORMAT_R5G6B5:
         mRedSize = 5;
         mGreenSize = 6;
         mBlueSize = 5;
         mAlphaSize = 0;
+        #ifdef __ANDROID__
+			mNativeVisualID = HAL_PIXEL_FORMAT_RGB_565;
+		#endif
         break;
     case sw::FORMAT_X8R8G8B8:
         mRedSize = 8;
@@ -72,6 +86,9 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
         mBlueSize = 8;
         mAlphaSize = 0;
         mBindToTextureRGB = EGL_TRUE;
+		#ifdef __ANDROID__
+			mNativeVisualID = HAL_PIXEL_FORMAT_BGRA_8888;
+		#endif
         break;
 	case sw::FORMAT_X8B8G8R8:
         mRedSize = 8;
@@ -79,6 +96,9 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
         mBlueSize = 8;
         mAlphaSize = 0;
         mBindToTextureRGBA = EGL_TRUE;
+		#ifdef __ANDROID__
+			mNativeVisualID = HAL_PIXEL_FORMAT_RGBX_8888;
+		#endif
         break;
     default:
         UNREACHABLE(renderTargetFormat);   // Other formats should not be valid
@@ -150,7 +170,6 @@ Config::Config(sw::Format displayFormat, EGLint minInterval, EGLint maxInterval,
     mMaxSwapInterval = maxInterval;
     mMinSwapInterval = minInterval;
     mNativeRenderable = EGL_FALSE;
-    mNativeVisualID = 0;
     mNativeVisualType = 0;
     mRenderableType = EGL_OPENGL_ES_BIT | EGL_OPENGL_ES2_BIT
 #ifndef __ANDROID__ // Do not allow GLES 3.0 on Android
