@@ -1030,7 +1030,7 @@ EGLBoolean DestroySyncKHR(EGLDisplay dpy, EGLSyncKHR sync)
 
 	delete eglSync;
 
-	return EGL_TRUE;
+	return success(EGL_TRUE);
 }
 
 EGLint ClientWaitSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint flags, EGLTimeKHR timeout)
@@ -1053,7 +1053,7 @@ EGLint ClientWaitSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint flags, EGLTimeK
 		eglSync->wait();
 	}
 
-	return EGL_CONDITION_SATISFIED_KHR;
+	return success(EGL_CONDITION_SATISFIED_KHR);
 }
 
 EGLBoolean GetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, EGLint *value)
@@ -1073,17 +1073,19 @@ EGLBoolean GetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, E
 	{
 	case EGL_SYNC_TYPE_KHR:
 		*value = EGL_SYNC_FENCE_KHR;
-		return EGL_TRUE;
+		break;
 	case EGL_SYNC_STATUS_KHR:
 		eglSync->wait();   // TODO: Don't block. Just poll based on sw::Query.
 		*value = eglSync->isSignaled() ? EGL_SIGNALED_KHR : EGL_UNSIGNALED_KHR;
-		return EGL_TRUE;
+		break;
 	case EGL_SYNC_CONDITION_KHR:
 		*value = EGL_SYNC_PRIOR_COMMANDS_COMPLETE_KHR;
-		return EGL_TRUE;
+		break;
 	default:
 		return error(EGL_BAD_ATTRIBUTE, EGL_FALSE);
 	}
+
+    return success(EGL_TRUE);
 }
 
 __eglMustCastToProperFunctionPointerType GetProcAddress(const char *procname)
