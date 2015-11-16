@@ -180,7 +180,8 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 		               "EGL_KHR_fence_sync "
 		               "EGL_KHR_image_base "
 		               "EGL_ANDROID_framebuffer_target "
-		               "EGL_ANDROID_recordable");
+		               "EGL_ANDROID_recordable "
+		               "EGL_ANDROID_image_native_buffer");
 	case EGL_VENDOR:
 		return success("TransGaming Inc.");
 	case EGL_VERSION:
