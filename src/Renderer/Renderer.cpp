@@ -189,9 +189,14 @@ namespace sw
 		delete swiftConfig;
 	}
 
-	void Renderer::blit(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter)
+	void Renderer::clear(void *pixel, Format format, Surface *dest, const SliceRect &dRect, const BlitterOptions& options)
 	{
-		blitter.blit(source, sRect, dest, dRect, filter);
+		blitter.clear(pixel, format, dest, dRect, options);
+	}
+
+	void Renderer::blit(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, const BlitterOptions& options)
+	{
+		blitter.blit(source, sRect, dest, dRect, options);
 	}
 
 	void Renderer::blit3D(Surface *source, Surface *dest)
