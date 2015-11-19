@@ -180,6 +180,17 @@ namespace es2
 
 	void Device::clearColor(float red, float green, float blue, float alpha, unsigned int rgbaMask)
 	{
+		if(!rgbaMask)
+		{
+			return;
+		}
+
+		float rgba[4];
+		rgba[0] = red;
+		rgba[1] = green;
+		rgba[2] = blue;
+		rgba[3] = alpha;
+
 		for(int i = 0; i < RENDERTARGETS; ++i)
 		{
 			if(renderTarget[i])
@@ -187,7 +198,12 @@ namespace es2
 				int x0(0), y0(0), width(0), height(0);
 				getScissoredRegion(renderTarget[i], x0, y0, width, height);
 
-				renderTarget[i]->clearColorBuffer(red, green, blue, alpha, rgbaMask, x0, y0, width, height);
+				sw::SliceRect sliceRect;
+				if(renderTarget[i]->getClearRect(x0, y0, width, height, sliceRect))
+				{
+					sw::BlitterOptions options = static_cast<sw::BlitterOptions>(rgbaMask & 0xF);
+					clear(rgba, FORMAT_A32B32G32R32F, renderTarget[i], sliceRect, options);
+				}
 			}
 		}
 	}
@@ -665,7 +681,12 @@ namespace es2
 			{
 				swap(dRect.y0, dRect.y1);
 			}
-			blit(source, sRect, dest, dRect, scaling && filter);
+			BlitterOptions options = USE_RGBA;
+			if(scaling && filter)
+			{
+				options = static_cast<BlitterOptions>(options | USE_FILTER);
+			}
+			blit(source, sRect, dest, dRect, options);
 		}
 
 		return true;

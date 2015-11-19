@@ -1563,7 +1563,8 @@ namespace egl
 			sw::Surface source(width, height, depth, ConvertFormatType(format, type), const_cast<void*>(input), inputPitch, inputPitch * inputHeight);
 			sw::Rect sourceRect(0, 0, width, height);
 			sw::Rect destRect(xoffset, yoffset, xoffset + width, yoffset + height);
-			sw::blitter.blit(&source, sourceRect, this, destRect, false);
+			sw::BlitterOptions options = sw::USE_RGBA;
+			sw::blitter.blit(&source, sourceRect, this, destRect, options);
 		}
 	}
 
