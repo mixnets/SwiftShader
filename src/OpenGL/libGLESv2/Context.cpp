@@ -3587,7 +3587,7 @@ void Context::clear(GLbitfield mask)
 	}
 }
 
-void Context::clearColorBuffer(GLint drawbuffer, const GLint *value)
+void Context::clearColorBuffer(GLint drawbuffer, void *value, sw::Format format)
 {
 	unsigned int rgbaMask = getColorMask();
 	if(device && rgbaMask)
@@ -3595,47 +3595,28 @@ void Context::clearColorBuffer(GLint drawbuffer, const GLint *value)
 		int x0(0), y0(0), width(0), height(0);
 		egl::Image* image = getScissoredImage(drawbuffer, x0, y0, width, height, false);
 
-		float red = clamp01((float)value[0] / 0x7FFFFFFF);
-		float green = clamp01((float)value[1] / 0x7FFFFFFF);
-		float blue = clamp01((float)value[2] / 0x7FFFFFFF);
-		float alpha = clamp01((float)value[3] / 0x7FFFFFFF);
-
-		image->clearColorBuffer(red, green, blue, alpha, rgbaMask, x0, y0, width, height);
+		sw::SliceRect sliceRect;
+		if(image->getClearRect(x0, y0, width, height, sliceRect))
+		{
+			sw::BlitterOptions options = static_cast<sw::BlitterOptions>(rgbaMask & 0xF);
+			device->clear(value, format, image, sliceRect, options);
+		}
 	}
+}
+
+void Context::clearColorBuffer(GLint drawbuffer, const GLint *value)
+{
+	clearColorBuffer(drawbuffer, (void*)value, sw::FORMAT_A32B32G32R32I);
 }
 
 void Context::clearColorBuffer(GLint drawbuffer, const GLuint *value)
 {
-	unsigned int rgbaMask = getColorMask();
-	if(device && rgbaMask)
-	{
-		int x0(0), y0(0), width(0), height(0);
-		egl::Image* image = getScissoredImage(drawbuffer, x0, y0, width, height, false);
-
-		float red = (float)value[0] / 0xFFFFFFFF;
-		float green = (float)value[1] / 0xFFFFFFFF;
-		float blue = (float)value[2] / 0xFFFFFFFF;
-		float alpha = (float)value[3] / 0xFFFFFFFF;
-
-		image->clearColorBuffer(red, green, blue, alpha, rgbaMask, x0, y0, width, height);
-	}
+	clearColorBuffer(drawbuffer, (void*)value, sw::FORMAT_A32B32G32R32UI);
 }
 
 void Context::clearColorBuffer(GLint drawbuffer, const GLfloat *value)
 {
-	unsigned int rgbaMask = getColorMask();
-	if(device && rgbaMask)
-	{
-		int x0(0), y0(0), width(0), height(0);
-		egl::Image* image = getScissoredImage(drawbuffer, x0, y0, width, height, false);
-
-		float red = clamp01(value[0]);
-		float green = clamp01(value[1]);
-		float blue = clamp01(value[2]);
-		float alpha = clamp01(value[3]);
-
-		image->clearColorBuffer(red, green, blue, alpha, rgbaMask, x0, y0, width, height);
-	}
+	clearColorBuffer(drawbuffer, (void*)value, sw::FORMAT_A32B32G32R32F);
 }
 
 void Context::clearDepthBuffer(GLint drawbuffer, const GLfloat *value)
