@@ -180,7 +180,7 @@ namespace gl
 
 	void Device::clearColor(float red, float green, float blue, float alpha, unsigned int rgbaMask)
 	{
-		if(!renderTarget)
+		if(!renderTarget || !rgbaMask)
 		{
 			return;
 		}
@@ -198,7 +198,18 @@ namespace gl
 			if(height > scissorRect.y1 - scissorRect.y0) height = scissorRect.y1 - scissorRect.y0;
 		}
 
-		renderTarget->clearColorBuffer(red, green, blue, alpha, rgbaMask, x0, y0, width, height);
+		float rgba[4];
+		rgba[0] = red;
+		rgba[1] = green;
+		rgba[2] = blue;
+		rgba[3] = alpha;
+
+		sw::SliceRect sliceRect;
+		if(renderTarget->getClearRect(x0, y0, width, height, sliceRect))
+		{
+			sw::BlitterOptions options = static_cast<sw::BlitterOptions>(rgbaMask & 0xF);
+			clear(rgba, FORMAT_A32B32G32R32F, renderTarget, sliceRect, options);
+		}
 	}
 
 	void Device::clearDepth(float z)
@@ -618,7 +629,12 @@ namespace gl
 		}
 		else
 		{
-			blit(source, sRect, dest, dRect, scaling && filter);
+			BlitterOptions options = USE_RGBA;
+			if(scaling && filter)
+			{
+				options = static_cast<BlitterOptions>(options | USE_FILTER);
+			}
+			blit(source, sRect, dest, dRect, options);
 		}
 
 		return true;
