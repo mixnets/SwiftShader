@@ -739,6 +739,16 @@ namespace sw
 							        c11 * fx * fy;
 						}
 
+						if(Surface::isFloatFormat(state.sourceFormat) && !Surface::isFloatFormat(state.destFormat))
+						{
+							color = Min(color, Float4(1.0f, 1.0f, 1.0f, 1.0f));
+
+							color = Max(color, Float4(Surface::isUnsignedComponent(state.destFormat, 0) ? 0.0f : -1.0f,
+							                          Surface::isUnsignedComponent(state.destFormat, 1) ? 0.0f : -1.0f,
+							                          Surface::isUnsignedComponent(state.destFormat, 2) ? 0.0f : -1.0f,
+							                          Surface::isUnsignedComponent(state.destFormat, 3) ? 0.0f : -1.0f));
+						}
+
 						float4 scale, unscale;
 						if(!GetScale(unscale, state.sourceFormat) || !GetScale(scale, state.destFormat))
 						{
@@ -748,16 +758,6 @@ namespace sw
 						if(unscale != scale)
 						{
 							color *= Float4(scale.x / unscale.x, scale.y / unscale.y, scale.z / unscale.z, scale.w / unscale.w);
-						}
-
-						if(Surface::isFloatFormat(state.sourceFormat) && !Surface::isFloatFormat(state.destFormat))
-						{
-							color = Min(color, Float4(1.0f, 1.0f, 1.0f, 1.0f));
-
-							color = Max(color, Float4(Surface::isUnsignedComponent(state.destFormat, 0) ? 0.0f : -1.0f,
-							                          Surface::isUnsignedComponent(state.destFormat, 1) ? 0.0f : -1.0f,
-							                          Surface::isUnsignedComponent(state.destFormat, 2) ? 0.0f : -1.0f,
-							                          Surface::isUnsignedComponent(state.destFormat, 3) ? 0.0f : -1.0f));
 						}
 
 						Pointer<Byte> d = destLine + i * Surface::bytes(state.destFormat);
