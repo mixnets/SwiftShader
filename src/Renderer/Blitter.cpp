@@ -180,6 +180,16 @@ namespace sw
 			c = Float4(*Pointer<Byte4>(element)).zyxw;
 			c.w = 1.0f;
 			break;
+		case FORMAT_R8G8B8:
+			c.z = Float(Int(*Pointer<Byte>(element + 0)));
+			c.y = Float(Int(*Pointer<Byte>(element + 1)));
+			c.x = Float(Int(*Pointer<Byte>(element + 2)));
+			break;
+		case FORMAT_B8G8R8:
+			c.x = Float(Int(*Pointer<Byte>(element + 0)));
+			c.y = Float(Int(*Pointer<Byte>(element + 1)));
+			c.z = Float(Int(*Pointer<Byte>(element + 2)));
+			break;
 		case FORMAT_X8B8G8R8I:
 			c = Float4(*Pointer<SByte4>(element));
 			c.w = 1.0f;
@@ -355,6 +365,16 @@ namespace sw
 				if(useB) { *Pointer<Byte>(element + 2) = Byte(RoundInt(Float(c.z))); }
 				if(useA) { *Pointer<Byte>(element + 3) = Byte(0xFF); }
 			}
+			break;
+		case FORMAT_R8G8B8:
+			if(useR) { *Pointer<Byte>(element + 2) = As<Byte>(UInt(Float(c.x) + Float(0.5f))); }
+			if(useG) { *Pointer<Byte>(element + 1) = As<Byte>(UInt(Float(c.y) + Float(0.5f))); }
+			if(useB) { *Pointer<Byte>(element) = As<Byte>(UInt(Float(c.z) + Float(0.5f))); }
+			break;
+		case FORMAT_B8G8R8:
+			if(useR) { *Pointer<Byte>(element) = As<Byte>(UInt(Float(c.x) + Float(0.5f))); }
+			if(useG) { *Pointer<Byte>(element + 1) = As<Byte>(UInt(Float(c.y) + Float(0.5f))); }
+			if(useB) { *Pointer<Byte>(element + 2) = As<Byte>(UInt(Float(c.z) + Float(0.5f))); }
 			break;
 		case FORMAT_A32B32G32R32F:
 			if(useRGBA)
@@ -835,6 +855,8 @@ namespace sw
 		case FORMAT_X8R8G8B8:
 		case FORMAT_R8:
 		case FORMAT_G8R8:
+		case FORMAT_R8G8B8:
+		case FORMAT_B8G8R8:
 		case FORMAT_X8B8G8R8:
 		case FORMAT_A8B8G8R8:
 			scale = vector(0xFF, 0xFF, 0xFF, 0xFF);
