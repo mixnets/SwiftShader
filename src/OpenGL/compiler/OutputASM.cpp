@@ -2199,7 +2199,7 @@ namespace glsl
 		case EvqVaryingIn:           return varyingRegister(operand);
 		case EvqVaryingOut:          return varyingRegister(operand);
 		case EvqVertexIn:            return attributeRegister(operand);
-		case EvqFragmentOut:         return 0;
+		case EvqFragmentOut:         return allocate(fragmentOutputs, operand);
 		case EvqVertexOut:           return varyingRegister(operand);
 		case EvqFragmentIn:          return varyingRegister(operand);
 		case EvqInvariantVaryingIn:  return varyingRegister(operand);

@@ -228,6 +228,7 @@ namespace glsl
 		VariableArray varyings;
 		VariableArray attributes;
 		VariableArray samplers;
+		VariableArray fragmentOutputs;
 
 		Scope emitScope;
 		Scope currentScope;
