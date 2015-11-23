@@ -401,6 +401,8 @@ namespace sw
 		explicit Byte(llvm::Argument *argument);
 
 		explicit Byte(RValue<Int> cast);
+		explicit Byte(RValue<UInt> cast);
+		explicit Byte(RValue<UShort> cast);
 
 		Byte();
 		Byte(int x);
@@ -455,6 +457,9 @@ namespace sw
 	{
 	public:
 		explicit SByte(llvm::Argument *argument);
+
+		explicit SByte(RValue<Int> cast);
+		explicit SByte(RValue<Short> cast);
 
 		SByte();
 		SByte(signed char x);
@@ -563,6 +568,8 @@ namespace sw
 	{
 	public:
 		explicit UShort(llvm::Argument *argument);
+
+		explicit UShort(RValue<UInt> cast);
 
 		UShort();
 		UShort(unsigned short x);
@@ -1493,7 +1500,7 @@ namespace sw
 	RValue<UInt> Max(RValue<UInt> x, RValue<UInt> y);
 	RValue<UInt> Min(RValue<UInt> x, RValue<UInt> y);
 	RValue<UInt> Clamp(RValue<UInt> x, RValue<UInt> min, RValue<UInt> max);
-//	RValue<UInt> RoundUInt(RValue<Float> cast);
+	RValue<UInt> RoundUInt(RValue<Float> cast);
 
 	class Int2 : public Variable<Int2>
 	{
