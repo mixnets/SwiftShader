@@ -118,7 +118,7 @@ void *loadLibrary(const char *(&names)[n], const char *mustContainSymbol = nullp
 
 		if(!symbol)
 		{
-			const char *reason = dlerror();   // Silence the error
+			dlerror();   // Silence the error
 		}
 
 		return symbol;

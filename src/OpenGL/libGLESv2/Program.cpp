@@ -148,11 +148,11 @@ namespace es2
 	}
 
 	LinkedVarying::LinkedVarying(const std::string &name, GLenum type, GLsizei sizet)
-	 : name(name), type(type), size(size)
+	 : name(name), type(type), size(sizet)
 	{
 	}
 
-	Program::Program(ResourceManager *manager, GLuint handle) : resourceManager(manager), handle(handle), serial(issueSerial())
+	Program::Program(ResourceManager *manager, GLuint handle) : serial(issueSerial()), resourceManager(manager), handle(handle)
 	{
 		device = getDevice();
 
@@ -320,7 +320,7 @@ namespace es2
 		default: UNREACHABLE(type);
 		}
 
-		if(logicalTextureUnit >= 0 && logicalTextureUnit < MAX_COMBINED_TEXTURE_IMAGE_UNITS)
+		if(logicalTextureUnit < MAX_COMBINED_TEXTURE_IMAGE_UNITS)
 		{
 			return logicalTextureUnit;
 		}
@@ -1700,7 +1700,6 @@ namespace es2
 
 		if(blockIndex == GL_INVALID_INDEX)
 		{
-			const glsl::ActiveUniforms &activeUniforms = shader->activeUniforms;
 			const std::vector<int>& fields = block.fields;
 			std::vector<unsigned int> memberUniformIndexes;
 			for(size_t i = 0; i < fields.size(); ++i)

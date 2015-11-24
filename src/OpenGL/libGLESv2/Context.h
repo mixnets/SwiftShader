@@ -404,7 +404,7 @@ struct State
 class Context : public egl::Context
 {
 public:
-    Context(const egl::Config *config, const Context *shareContext, EGLint clientVersion);
+    Context(const Context *shareContext, EGLint clientVersion);
 
 	virtual void makeCurrent(egl::Surface *surface);
 	virtual EGLint getClientVersion() const;
@@ -695,7 +695,6 @@ private:
 	Query *createQuery(GLuint handle, GLenum type);
 
 	const EGLint clientVersion;
-    const egl::Config *const mConfig;
 
     State mState;
 
@@ -742,7 +741,6 @@ private:
     // state caching flags
     bool mDepthStateDirty;
     bool mMaskStateDirty;
-    bool mPixelPackingStateDirty;
     bool mBlendStateDirty;
     bool mStencilStateDirty;
     bool mPolygonOffsetStateDirty;

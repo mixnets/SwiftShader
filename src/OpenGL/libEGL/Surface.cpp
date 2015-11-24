@@ -142,9 +142,9 @@ egl::Image *Surface::getDepthStencil()
     return depthStencil;
 }
 
-void Surface::setSwapBehavior(EGLenum swapBehavior)
+void Surface::setSwapBehavior(EGLenum sb)
 {
-	swapBehavior = swapBehavior;
+	swapBehavior = sb;
 }
 
 void Surface::setSwapInterval(EGLint interval)

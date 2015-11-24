@@ -210,7 +210,7 @@ public:
 	void (*glEGLImageTargetTexture2DOES)(GLenum target, GLeglImageOES image);
 	void (*glEGLImageTargetRenderbufferStorageOES)(GLenum target, GLeglImageOES image);
 
-	egl::Context *(*es2CreateContext)(const egl::Config *config, const egl::Context *shareContext, int clientVersion);
+	egl::Context *(*es2CreateContext)(const egl::Context *shareContext, int clientVersion);
 	__eglMustCastToProperFunctionPointerType (*es2GetProcAddress)(const char *procname);
 	egl::Image *(*createBackBuffer)(int width, int height, const egl::Config *config);
 	egl::Image *(*createDepthStencil)(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);

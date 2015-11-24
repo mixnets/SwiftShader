@@ -473,7 +473,7 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 	{
 		if(libGLESv2)
 		{
-			context = libGLESv2->es2CreateContext(config, shareContext, clientVersion);
+			context = libGLESv2->es2CreateContext(shareContext, clientVersion);
 		}
 	}
 	else
