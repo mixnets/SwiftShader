@@ -14,8 +14,12 @@
 # limitations under the License.
 #
 
-ifneq ($(filter gce_x86 gce calypso, $(TARGET_DEVICE)),)
 LOCAL_PATH:= $(call my-dir)
 
+ifndef SWIFTSHADER_OPTIM
+SWIFTSHADER_OPTIM := release
+endif
+
+ifneq ($(filter gce_x86 gce calypso, $(TARGET_DEVICE))$(filter sdk_google_phone_x86 sdk_google_phone_x86_64, $(TARGET_PRODUCT)),)
 include $(call all-makefiles-under,$(LOCAL_PATH))
 endif
