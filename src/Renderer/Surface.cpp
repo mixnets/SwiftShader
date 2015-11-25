@@ -3540,6 +3540,8 @@ namespace sw
 
 	void Surface::clearStencilBuffer(unsigned char s, unsigned char mask, int x0, int y0, int width, int height)
 	{
+		if(mask == 0) return;
+
 		// Not overlapping
 		if(x0 > internal.width) return;
 		if(y0 > internal.height) return;
@@ -3562,38 +3564,8 @@ namespace sw
 		unsigned int fill = maskedS;
 		fill = fill | (fill << 8) | (fill << 16) + (fill << 24);
 
-		if(false)
-		{
-			char *target = (char*)lockStencil(0, PUBLIC) + x0 + width2 * y0;
-
-			for(int z = 0; z < stencil.depth; z++)
-			{
-				for(int y = y0; y < y0 + height; y++)
-				{
-					if(mask == 0xFF)
-					{
-						memfill4(target, fill, width);
-					}
-					else
-					{
-						for(int x = 0; x < width; x++)
-						{
-							target[x] = maskedS | (target[x] & invMask);
-						}
-					}
-
-					target += width2;
-				}
-			}
-
-			unlockStencil();
-		}
-		else   // Quad layout
-		{
 			char *buffer = (char*)lockStencil(0, PUBLIC);
 
-			if(mask == 0xFF)
-			{
 				for(int z = 0; z < stencil.depth; z++)
 				{
 					for(int y = y0; y < y1; y++)
@@ -3629,11 +3601,9 @@ namespace sw
 
 					buffer += stencil.sliceP;
 				}
-			}
 
 			unlockStencil();
 		}
-	}
 
 	void Surface::fill(const Color<float> &color, int x0, int y0, int width, int height)
 	{
