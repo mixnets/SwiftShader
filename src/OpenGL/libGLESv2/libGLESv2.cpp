@@ -2409,10 +2409,9 @@ void GenerateMipmap(GLenum target)
 			}
 			else
 			{
-				UNIMPLEMENTED();
-				texture = context->getTexture3D();
-				break;
+				texture = context->getTexture2DArray();
 			}
+			break;
 		case GL_TEXTURE_3D_OES:
 			texture = context->getTexture3D();
 			break;
@@ -3674,10 +3673,9 @@ void GetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
 			}
 			else
 			{
-				UNIMPLEMENTED();
-				texture = context->getTexture3D();
-				break;
+				texture = context->getTexture2DArray();
 			}
+			break;
 		case GL_TEXTURE_3D_OES:
 			texture = context->getTexture3D();
 			break;
@@ -3821,10 +3819,9 @@ void GetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 			}
 			else
 			{
-				UNIMPLEMENTED();
-				texture = context->getTexture3D();
-				break;
+				texture = context->getTexture2DArray();
 			}
+			break;
 		case GL_TEXTURE_3D_OES:
 			texture = context->getTexture3D();
 			break;
@@ -5913,10 +5910,9 @@ void TexParameterf(GLenum target, GLenum pname, GLfloat param)
 			}
 			else
 			{
-				UNIMPLEMENTED();
-				texture = context->getTexture3D();
-				break;
+				texture = context->getTexture2DArray();
 			}
+			break;
 		case GL_TEXTURE_3D_OES:
 			texture = context->getTexture3D();
 			break;
@@ -6069,10 +6065,9 @@ void TexParameteri(GLenum target, GLenum pname, GLint param)
 			}
 			else
 			{
-				UNIMPLEMENTED();
-				texture = context->getTexture3D();
-				break;
+				texture = context->getTexture2DArray();
 			}
+			break;
 		case GL_TEXTURE_3D_OES:
 			texture = context->getTexture3D();
 			break;
