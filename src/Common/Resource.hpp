@@ -27,8 +27,7 @@ namespace sw
 	class Resource
 	{
 	public:
-		Resource(size_t bytes);
-
+		static Resource *create(size_t bytes);
 		void destruct();   // Asynchronous destructor
 
 		void *lock(Accessor claimer);
@@ -40,6 +39,7 @@ namespace sw
 		const size_t size;
 
 	private:
+		Resource(size_t bytes);
 		~Resource();   // Always call destruct() instead
 
 		BackoffLock criticalSection;

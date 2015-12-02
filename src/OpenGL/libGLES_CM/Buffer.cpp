@@ -51,7 +51,7 @@ void Buffer::bufferData(const void *data, GLsizeiptr size, GLenum usage)
 	if(size > 0)
 	{
 		const int padding = 1024;   // For SIMD processing of vertices
-		mContents = new sw::Resource(size + padding);
+		mContents = sw::Resource::create(size + padding);
 
 		if(!mContents)
 		{

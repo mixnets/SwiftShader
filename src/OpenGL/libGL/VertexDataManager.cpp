@@ -213,7 +213,7 @@ VertexBuffer::VertexBuffer(unsigned int size) : mVertexBuffer(NULL)
 {
     if(size > 0)
     {
-        mVertexBuffer = new sw::Resource(size + 1024);
+        mVertexBuffer = sw::Resource::create(size + 1024);
         
         if(!mVertexBuffer)
         {
@@ -306,7 +306,7 @@ void StreamingVertexBuffer::reserveRequiredSpace()
 
         mBufferSize = std::max(mRequiredSpace, 3 * mBufferSize / 2);   // 1.5 x mBufferSize is arbitrary and should be checked to see we don't have too many reallocations.
 
-		mVertexBuffer = new sw::Resource(mBufferSize);
+		mVertexBuffer = sw::Resource::create(mBufferSize);
     
         if(!mVertexBuffer)
         {
@@ -320,7 +320,7 @@ void StreamingVertexBuffer::reserveRequiredSpace()
         if(mVertexBuffer)
         {
             mVertexBuffer->destruct();
-			mVertexBuffer = new sw::Resource(mBufferSize);
+			mVertexBuffer = sw::Resource::create(mBufferSize);
         }
 
         mWritePosition = 0;
