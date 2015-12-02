@@ -41,7 +41,7 @@ Texture::Texture(GLuint name) : egl::Texture(name)
 	cropRectW = 0;
 	cropRectH = 0;
 
-	resource = new sw::Resource(0);
+	resource = sw::Resource::create(0);
 }
 
 Texture::~Texture()

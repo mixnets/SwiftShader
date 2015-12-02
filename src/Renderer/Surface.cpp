@@ -1157,7 +1157,7 @@ namespace sw
 
 	Surface::Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice) : lockable(true), renderTarget(false)
 	{
-		resource = new Resource(0);
+		resource = Resource::create(0);
 		hasParent = false;
 		ownExternal = false;
 		depth = max(1, depth);
@@ -1207,7 +1207,7 @@ namespace sw
 
 	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget) : lockable(lockable), renderTarget(renderTarget)
 	{
-		resource = texture ? texture : new Resource(0);
+		resource = texture ? texture : Resource::create(0);
 		hasParent = texture != 0;
 		ownExternal = true;
 		depth = max(1, depth);

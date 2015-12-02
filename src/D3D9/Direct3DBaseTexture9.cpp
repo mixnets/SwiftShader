@@ -24,7 +24,7 @@ namespace D3D9
 		filterType = D3DTEXF_LINEAR;
 		LOD = 0;
 
-		resource = new sw::Resource(0);
+		resource = sw::Resource::create(0);
 	}
 
 	Direct3DBaseTexture9::~Direct3DBaseTexture9()

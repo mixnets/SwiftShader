@@ -36,7 +36,7 @@ Texture::Texture(GLuint name) : NamedObject(name)
 	mMaxAnisotropy = 1.0f;
 	mMaxLevel = 1000;
 
-	resource = new sw::Resource(0);
+	resource = sw::Resource::create(0);
 }
 
 Texture::~Texture()

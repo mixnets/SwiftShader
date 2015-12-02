@@ -60,7 +60,7 @@ namespace D3D9
 			ASSERT(length >= stride);       // FIXME
 		}
 
-		vertexBuffer = new sw::Resource(length + 192 + 1024);   // NOTE: Applications can 'overshoot' while writing vertices
+		vertexBuffer = sw::Resource::create(length + 192 + 1024);   // NOTE: Applications can 'overshoot' while writing vertices
 		lockCount = 0;
 	}
 
@@ -197,7 +197,7 @@ namespace D3D9
 		if(flags & D3DLOCK_DISCARD/* && usage & D3DUSAGE_DYNAMIC*/)
 		{
 			vertexBuffer->destruct();
-			vertexBuffer = new sw::Resource(length + 192 + 1024);   // NOTE: Applications can 'overshoot' while writing vertices
+			vertexBuffer = sw::Resource::create(length + 192 + 1024);   // NOTE: Applications can 'overshoot' while writing vertices
 			
 			buffer = (void*)vertexBuffer->data();
 		}

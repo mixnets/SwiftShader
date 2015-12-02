@@ -21,7 +21,7 @@ namespace D3D9
 {
 	Direct3DIndexBuffer9::Direct3DIndexBuffer9(Direct3DDevice9 *device, unsigned int length, unsigned long usage, D3DFORMAT format, D3DPOOL pool) : Direct3DResource9(device, D3DRTYPE_INDEXBUFFER, pool, length), length(length), usage(usage), format(format)
 	{
-		indexBuffer = new sw::Resource(length + 16);
+		indexBuffer = sw::Resource::create(length + 16);
 		lockCount = 0;
 	}
 
@@ -178,7 +178,7 @@ namespace D3D9
 		if(flags & D3DLOCK_DISCARD/* && usage & D3DUSAGE_DYNAMIC*/)
 		{
 			indexBuffer->destruct();
-			indexBuffer = new sw::Resource(length + 16);
+			indexBuffer = sw::Resource::create(length + 16);
 
 			buffer = (void*)indexBuffer->data();
 		}

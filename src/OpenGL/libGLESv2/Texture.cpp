@@ -48,7 +48,7 @@ Texture::Texture(GLuint name) : egl::Texture(name)
 	mSwizzleB = GL_BLUE;
 	mSwizzleA = GL_ALPHA;
 
-	resource = new sw::Resource(0);
+	resource = sw::Resource::create(0);
 }
 
 Texture::~Texture()

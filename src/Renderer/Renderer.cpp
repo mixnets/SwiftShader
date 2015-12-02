@@ -168,7 +168,7 @@ namespace sw
 		swiftConfig = new SwiftConfig(disableServer);
 		updateConfiguration(true);
 
-		sync = new Resource(0);
+		sync = Resource::create(0);
 	}
 
 	Renderer::~Renderer()

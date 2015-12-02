@@ -15,6 +15,25 @@
 
 namespace sw
 {
+	Resource *Resource::create(size_t bytes)
+	{
+		Resource *resource = new Resource(bytes);
+		
+		if(!resource)
+		{
+			return nullptr;
+		}
+
+		if(!resource->buffer)
+		{
+			delete resource;
+
+			return nullptr;
+		}
+
+		return resource;
+	}
+
 	Resource::Resource(size_t bytes) : size(bytes)
 	{
 		blocked = 0;
