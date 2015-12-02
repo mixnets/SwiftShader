@@ -80,8 +80,10 @@ class ResourceManager
 
     void checkBufferAllocation(unsigned int buffer);
     void checkTextureAllocation(GLuint texture, TextureType type);
+    void checkRenderbufferAllocation(GLuint handle);
     void checkSamplerAllocation(GLuint sampler);
 
+    bool isRenderbuffer(GLuint handle);
     bool isSampler(GLuint sampler);
 
   private:

@@ -324,12 +324,6 @@ Renderbuffer *ResourceManager::getRenderbuffer(unsigned int handle)
     }
     else
     {
-		if (!renderbuffer->second)
-		{
-			Renderbuffer *renderbufferObject = new Renderbuffer(handle, new Colorbuffer(0, 0, GL_RGBA4_OES, 0));
-			mRenderbufferMap[handle] = renderbufferObject;
-			renderbufferObject->addRef();
-		}
         return renderbuffer->second;
     }
 }
@@ -412,6 +406,21 @@ void ResourceManager::checkTextureAllocation(GLuint texture, TextureType type)
         mTextureMap[texture] = textureObject;
         textureObject->addRef();
     }
+}
+
+void ResourceManager::checkRenderbufferAllocation(GLuint handle)
+{
+	if(handle != 0 && !getRenderbuffer(handle))
+	{
+		Renderbuffer *renderbufferObject = new Renderbuffer(handle, new Colorbuffer(0, 0, GL_RGBA4_OES, 0));
+		mRenderbufferMap[handle] = renderbufferObject;
+		renderbufferObject->addRef();
+	}
+}
+
+bool ResourceManager::isRenderbuffer(GLuint handle)
+{
+	return mRenderbufferMap.find(handle) != mRenderbufferMap.end();
 }
 
 void ResourceManager::checkSamplerAllocation(GLuint sampler)
