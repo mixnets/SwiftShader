@@ -1,7 +1,18 @@
 #include "FrameBufferAndroid.hpp"
 
 #include <cutils/log.h>
+#include <utils/Errors.h>
+
+#if !defined(GCE_PLATFORM_SDK_VERSION) || (GCE_PLATFORM_SDK_VERSION > 16)
 #include <ui/Fence.h>
+#define CANCEL_BUFFER(A, B, C) A->cancelBuffer(A, B, C)
+#define DEQUEUE_BUFFER(A, B, C) A->dequeueBuffer(A, B, C)
+#define QUEUE_BUFFER(A, B, C) A->queueBuffer(A, B, C)
+#else
+#define CANCEL_BUFFER(A, B, C) A->cancelBuffer(A, B)
+#define DEQUEUE_BUFFER(A, B, C) A->dequeueBuffer(A, B)
+#define QUEUE_BUFFER(A, B, C) A->queueBuffer(A, B)
+#endif
 
 namespace sw
 {
@@ -22,7 +33,7 @@ namespace sw
         if (buffer)
         {
             // Probably doesn't have to cancel assuming a success queueing earlier
-            nativeWindow->cancelBuffer(nativeWindow, buffer, -1);
+            CANCEL_BUFFER(nativeWindow, buffer, -1);
             buffer = 0;
         }
         nativeWindow->common.decRef(&nativeWindow->common);
@@ -33,7 +44,7 @@ namespace sw
         copy(source, sourceFormat, sourceStride);
 		if (buffer)
 		{
-			nativeWindow->queueBuffer(nativeWindow, buffer, -1);
+			QUEUE_BUFFER(nativeWindow, buffer, -1);
 			if (locked)
 			{
 				locked = 0;
@@ -46,17 +57,19 @@ namespace sw
     void* FrameBufferAndroid::lock()
     {
         int fenceFd = -1;
-        if (nativeWindow->dequeueBuffer(nativeWindow, &buffer, &fenceFd) != android::NO_ERROR)
+        if (DEQUEUE_BUFFER(nativeWindow, &buffer, &fenceFd) != android::NO_ERROR)
         {
             return NULL;
         }
 
+#if !defined(GCE_PLATFORM_SDK_VERSION) || (GCE_PLATFORM_SDK_VERSION > 16)
         android::sp<android::Fence> fence(new android::Fence(fenceFd));
         if (fence->wait(android::Fence::TIMEOUT_NEVER) != android::NO_ERROR)
         {
-            nativeWindow->cancelBuffer(nativeWindow, buffer, fenceFd);
+            CANCEL_BUFFER(nativeWindow, buffer, fenceFd);
             return NULL;
         }
+#endif
 
         buffer->common.incRef(&buffer->common);
 
