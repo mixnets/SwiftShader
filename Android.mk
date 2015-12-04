@@ -20,6 +20,8 @@ ifndef SWIFTSHADER_OPTIM
 SWIFTSHADER_OPTIM := release
 endif
 
+ifeq ($(TARGET_ARCH),x86)
 ifneq ($(filter gce_x86 gce calypso, $(TARGET_DEVICE))$(filter sdk_google_%, $(TARGET_PRODUCT)),)
 include $(call all-makefiles-under,$(LOCAL_PATH))
+endif
 endif
