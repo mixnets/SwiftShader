@@ -191,6 +191,11 @@ GLsizei RenderbufferTexture3D::getHeight() const
 	return mTexture3D->getHeight(mTexture3D->getTarget(), mLevel);
 }
 
+bool RenderbufferTexture3D::validateLayer() const
+{
+	return mTexture3D->getDepth(mTexture3D->getTarget(), mLevel) > mLayer;
+}
+
 GLenum RenderbufferTexture3D::getFormat() const
 {
 	return mTexture3D->getFormat(mTexture3D->getTarget(), mLevel);
@@ -330,6 +335,11 @@ GLsizei Renderbuffer::getWidth() const
 GLsizei Renderbuffer::getHeight() const
 {
 	return mInstance->getHeight();
+}
+
+bool Renderbuffer::validateLayer() const
+{
+	return mInstance->validateLayer();
 }
 
 GLint Renderbuffer::getLayer() const

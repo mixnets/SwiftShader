@@ -48,6 +48,7 @@ public:
 	virtual GLsizei getWidth() const = 0;
 	virtual GLsizei getHeight() const = 0;
 	virtual GLint getLayer() const { return 0; }
+	virtual bool validateLayer() const { return true; }
 	virtual GLenum getFormat() const = 0;
 	virtual sw::Format getInternalFormat() const = 0;
 	virtual GLsizei getSamples() const = 0;
@@ -102,6 +103,7 @@ public:
 	virtual GLsizei getWidth() const;
 	virtual GLsizei getHeight() const;
 	virtual GLint getLayer() const { return mLayer; }
+	virtual bool validateLayer() const;
 	virtual GLenum getFormat() const;
 	virtual sw::Format getInternalFormat() const;
 	virtual GLsizei getSamples() const;
@@ -190,6 +192,7 @@ public:
 	GLsizei getWidth() const;
 	GLsizei getHeight() const;
 	GLint getLayer() const;
+	bool validateLayer() const;
 	GLenum getFormat() const;
 	sw::Format getInternalFormat() const;
 	GLuint getRedSize() const;
