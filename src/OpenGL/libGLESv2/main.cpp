@@ -371,7 +371,17 @@ GL_APICALL void GL_APIENTRY glBindFramebuffer(GLenum target, GLuint framebuffer)
 	return es2::BindFramebuffer(target, framebuffer);
 }
 
+GL_APICALL void GL_APIENTRY glBindFramebufferOES(GLenum target, GLuint framebuffer)
+{
+	return es2::BindFramebuffer(target, framebuffer);
+}
+
 GL_APICALL void GL_APIENTRY glBindRenderbuffer(GLenum target, GLuint renderbuffer)
+{
+	return es2::BindRenderbuffer(target, renderbuffer);
+}
+
+GL_APICALL void GL_APIENTRY glBindRenderbufferOES(GLenum target, GLuint renderbuffer)
 {
 	return es2::BindRenderbuffer(target, renderbuffer);
 }
@@ -417,6 +427,11 @@ GL_APICALL void GL_APIENTRY glBufferSubData(GLenum target, GLintptr offset, GLsi
 }
 
 GL_APICALL GLenum GL_APIENTRY glCheckFramebufferStatus(GLenum target)
+{
+	return es2::CheckFramebufferStatus(target);
+}
+
+GL_APICALL GLenum GL_APIENTRY glCheckFramebufferStatusOES(GLenum target)
 {
 	return es2::CheckFramebufferStatus(target);
 }
@@ -503,6 +518,11 @@ GL_APICALL void GL_APIENTRY glDeleteFramebuffers(GLsizei n, const GLuint* frameb
 	return es2::DeleteFramebuffers(n, framebuffers);
 }
 
+GL_APICALL void GL_APIENTRY glDeleteFramebuffersOES(GLsizei n, const GLuint* framebuffers)
+{
+	return es2::DeleteFramebuffers(n, framebuffers);
+}
+
 GL_APICALL void GL_APIENTRY glDeleteProgram(GLuint program)
 {
 	return es2::DeleteProgram(program);
@@ -514,6 +534,11 @@ GL_APICALL void GL_APIENTRY glDeleteQueriesEXT(GLsizei n, const GLuint *ids)
 }
 
 GL_APICALL void GL_APIENTRY glDeleteRenderbuffers(GLsizei n, const GLuint* renderbuffers)
+{
+	return es2::DeleteRenderbuffers(n, renderbuffers);
+}
+
+GL_APICALL void GL_APIENTRY glDeleteRenderbuffersOES(GLsizei n, const GLuint* renderbuffers)
 {
 	return es2::DeleteRenderbuffers(n, renderbuffers);
 }
@@ -633,7 +658,17 @@ GL_APICALL void GL_APIENTRY glFramebufferRenderbuffer(GLenum target, GLenum atta
 	return es2::FramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
 }
 
+GL_APICALL void GL_APIENTRY glFramebufferRenderbufferOES(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer)
+{
+	return es2::FramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+}
+
 GL_APICALL void GL_APIENTRY glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
+{
+	return es2::FramebufferTexture2D(target, attachment, textarget, texture, level);
+}
+
+GL_APICALL void GL_APIENTRY glFramebufferTexture2DOES(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
 {
 	return es2::FramebufferTexture2D(target, attachment, textarget, texture, level);
 }
@@ -653,6 +688,11 @@ GL_APICALL void GL_APIENTRY glGenerateMipmap(GLenum target)
 	return es2::GenerateMipmap(target);
 }
 
+GL_APICALL void GL_APIENTRY glGenerateMipmapOES(GLenum target)
+{
+	return es2::GenerateMipmap(target);
+}
+
 GL_APICALL void GL_APIENTRY glGenFencesNV(GLsizei n, GLuint* fences)
 {
 	return es2::GenFencesNV(n, fences);
@@ -663,12 +703,22 @@ GL_APICALL void GL_APIENTRY glGenFramebuffers(GLsizei n, GLuint* framebuffers)
 	return es2::GenFramebuffers(n, framebuffers);
 }
 
+GL_APICALL void GL_APIENTRY glGenFramebuffersOES(GLsizei n, GLuint* framebuffers)
+{
+	return es2::GenFramebuffers(n, framebuffers);
+}
+
 GL_APICALL void GL_APIENTRY glGenQueriesEXT(GLsizei n, GLuint* ids)
 {
 	return es2::GenQueriesEXT(n, ids);
 }
 
 GL_APICALL void GL_APIENTRY glGenRenderbuffers(GLsizei n, GLuint* renderbuffers)
+{
+	return es2::GenRenderbuffers(n, renderbuffers);
+}
+
+GL_APICALL void GL_APIENTRY glGenRenderbuffersOES(GLsizei n, GLuint* renderbuffers)
 {
 	return es2::GenRenderbuffers(n, renderbuffers);
 }
@@ -728,6 +778,11 @@ GL_APICALL void GL_APIENTRY glGetFramebufferAttachmentParameteriv(GLenum target,
 	return es2::GetFramebufferAttachmentParameteriv(target, attachment, pname, params);
 }
 
+GL_APICALL void GL_APIENTRY glGetFramebufferAttachmentParameterivOES(GLenum target, GLenum attachment, GLenum pname, GLint* params)
+{
+	return es2::GetFramebufferAttachmentParameteriv(target, attachment, pname, params);
+}
+
 GL_APICALL GLenum GL_APIENTRY glGetGraphicsResetStatusEXT(void)
 {
 	return es2::GetGraphicsResetStatusEXT();
@@ -759,6 +814,11 @@ GL_APICALL void GL_APIENTRY glGetQueryObjectuivEXT(GLuint name, GLenum pname, GL
 }
 
 GL_APICALL void GL_APIENTRY glGetRenderbufferParameteriv(GLenum target, GLenum pname, GLint* params)
+{
+	return es2::GetRenderbufferParameteriv(target, pname, params);
+}
+
+GL_APICALL void GL_APIENTRY glGetRenderbufferParameterivOES(GLenum target, GLenum pname, GLint* params)
 {
 	return es2::GetRenderbufferParameteriv(target, pname, params);
 }
@@ -863,6 +923,11 @@ GL_APICALL GLboolean GL_APIENTRY glIsFramebuffer(GLuint framebuffer)
 	return es2::IsFramebuffer(framebuffer);
 }
 
+GL_APICALL GLboolean GL_APIENTRY glIsFramebufferOES(GLuint framebuffer)
+{
+	return es2::IsFramebuffer(framebuffer);
+}
+
 GL_APICALL GLboolean GL_APIENTRY glIsProgram(GLuint program)
 {
 	return es2::IsProgram(program);
@@ -874,6 +939,11 @@ GL_APICALL GLboolean GL_APIENTRY glIsQueryEXT(GLuint name)
 }
 
 GL_APICALL GLboolean GL_APIENTRY glIsRenderbuffer(GLuint renderbuffer)
+{
+	return es2::IsRenderbuffer(renderbuffer);
+}
+
+GL_APICALL GLboolean GL_APIENTRY glIsRenderbufferOES(GLuint renderbuffer)
 {
 	return es2::IsRenderbuffer(renderbuffer);
 }
@@ -930,6 +1000,11 @@ GL_APICALL void GL_APIENTRY glRenderbufferStorageMultisampleANGLE(GLenum target,
 }
 
 GL_APICALL void GL_APIENTRY glRenderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height)
+{
+	return es2::RenderbufferStorage(target, internalformat, width, height);
+}
+
+GL_APICALL void GL_APIENTRY glRenderbufferStorageOES(GLenum target, GLenum internalformat, GLsizei width, GLsizei height)
 {
 	return es2::RenderbufferStorage(target, internalformat, width, height);
 }
