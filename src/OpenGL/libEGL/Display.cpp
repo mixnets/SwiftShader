@@ -459,22 +459,24 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 	egl::Context *context = 0;
 
 	if(clientVersion == 1 && config->mRenderableType & EGL_OPENGL_ES_BIT)
-	{
+    {ALOGE("??? createContext es1");
 		if(libGLES_CM)
-		{
+		{ALOGE("??? createContext es1 do it");
 			context = libGLES_CM->es1CreateContext(config, shareContext);
 		}
+        ALOGE("??? createContext es1 done");
 	}
 	else if((clientVersion == 2 && config->mRenderableType & EGL_OPENGL_ES2_BIT)
 #ifndef __ANDROID__ // Do not allow GLES 3.0 on Android
 	     || (clientVersion == 3 && config->mRenderableType & EGL_OPENGL_ES3_BIT)
 #endif
 	        )
-	{
+	{ALOGE("??? createContext es2");
 		if(libGLESv2)
-		{
+		{ALOGE("??? createContext es2 do it");
 			context = libGLESv2->es2CreateContext(config, shareContext, clientVersion);
 		}
+        ALOGE("??? createContext es1 done");
 	}
 	else
 	{
@@ -482,7 +484,7 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 	}
 
 	if(!context)
-	{
+	{ALOGE("??? createContext cry");
 		return error(EGL_BAD_ALLOC, EGL_NO_CONTEXT);
 	}
 
