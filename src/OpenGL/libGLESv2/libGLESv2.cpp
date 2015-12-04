@@ -4803,7 +4803,6 @@ void RenderbufferStorageMultisampleANGLE(GLenum target, GLsizei samples, GLenum 
 		egl::GLint clientVersion = context->getClientVersion();
 		switch(internalformat)
 		{
-		case GL_DEPTH_COMPONENT24:
 		case GL_DEPTH_COMPONENT32F:
 			if(clientVersion < 3)
 			{
@@ -4811,6 +4810,8 @@ void RenderbufferStorageMultisampleANGLE(GLenum target, GLsizei samples, GLenum 
 			}
 			// fall through
 		case GL_DEPTH_COMPONENT16:
+		case GL_DEPTH_COMPONENT24:
+		case GL_DEPTH_COMPONENT32_OES:
 			context->setRenderbufferStorage(new es2::Depthbuffer(width, height, samples));
 			break;
 		case GL_R8:
@@ -4860,7 +4861,6 @@ void RenderbufferStorageMultisampleANGLE(GLenum target, GLsizei samples, GLenum 
 			context->setRenderbufferStorage(new es2::Stencilbuffer(width, height, samples));
 			break;
 		case GL_DEPTH32F_STENCIL8:
-		case GL_DEPTH_COMPONENT32_OES:
 			if(clientVersion < 3)
 			{
 				return error(GL_INVALID_ENUM);
@@ -5820,6 +5820,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				}
 				break;
 			case GL_DEPTH_COMPONENT24:
+			case GL_DEPTH_COMPONENT32_OES:
 				switch(type)
 				{
 				case GL_UNSIGNED_INT:
