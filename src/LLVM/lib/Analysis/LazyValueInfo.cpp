@@ -988,8 +988,13 @@ void LazyValueInfoCache::threadEdge(BasicBlock *PredBB, BasicBlock *OldSucc,
     }
 
     if (!changed) continue;
-    
-    worklist.insert(worklist.end(), succ_begin(ToUpdate), succ_end(ToUpdate));
+
+    succ_iterator it = succ_begin(ToUpdate);
+    succ_iterator end = succ_end(ToUpdate);
+    while (it != end) {
+      worklist.push_back(*it);
+      it ++;
+    }
   }
 }
 
