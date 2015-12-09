@@ -79,7 +79,7 @@ typedef HWND    EGLNativeWindowType;
 
 #elif defined(__APPLE__) || defined(__WINSCW__) || defined(__SYMBIAN32__)  /* Symbian */
 
-typedef int   EGLNativeDisplayType;
+typedef void *EGLNativeDisplayType;
 typedef void *EGLNativeWindowType;
 typedef void *EGLNativePixmapType;
 
