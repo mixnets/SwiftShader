@@ -15,7 +15,7 @@
 #include "Renderer.hpp"
 #include "Debug.hpp"
 
-#include <malloc.h>
+#include <stdlib.h>
 
 namespace sw
 {

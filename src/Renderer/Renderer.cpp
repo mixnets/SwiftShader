@@ -28,7 +28,7 @@
 #include "Debug.hpp"
 #include "Reactor/Reactor.hpp"
 
-#include <malloc.h>
+#include <stdlib.h>
 
 #undef max
 
