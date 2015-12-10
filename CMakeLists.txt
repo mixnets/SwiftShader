@@ -218,11 +218,11 @@ set(COMMON_INCLUDE_DIR
     ${SOURCE_DIR}/Reactor
     ${SOURCE_DIR}/Renderer
     ${SOURCE_DIR}/Shader
+    ${OPENGL_DIR}/include
     ${LLVM_INCLUDE_DIR}
 )
 set(OPENGL_INCLUDE_DIR
     ${OPENGL_DIR}
-    ${OPENGL_DIR}/include
     ${COMMON_INCLUDE_DIR}
 )
 
@@ -359,6 +359,10 @@ elseif(APPLE)
         ${SOURCE_DIR}/Main/FrameBufferOSX.mm
         ${SOURCE_DIR}/Main/FrameBufferOSX.hpp
     )
+    list(APPEND EGL_LIST
+        ${OPENGL_DIR}/libEGL/OSXUtils.mm
+        ${OPENGL_DIR}/libEGL/OSXUtils.hpp
+    )
     list(APPEND OPENGL_COMPILER_LIST
         ${OPENGL_COMPILER_DIR}/ossource_posix.cpp
     )
@@ -368,6 +372,10 @@ if(WIN32)
     set(OS_LIBS odbc32 odbccp32 WS2_32 dxguid)
 elseif(LINUX)
     set(OS_LIBS dl X11 Xext pthread)
+elseif(APPLE)
+    find_library(COCOA_FRAMEWORK Cocoa)
+    find_library(QUARTZ_FRAMEWORK Quartz)
+    set(OS_LIBS "${COCOA_FRAMEWORK}" "${QUARTZ_FRAMEWORK}")
 endif()
 
 ###########################################################
@@ -461,4 +469,11 @@ endif()
 if (LINUX)
     add_executable(OGLES2HelloAPI tests/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2/OGLES2HelloAPI_LinuxX11.cpp)
     target_link_libraries(OGLES2HelloAPI dl X11 EGL GLESv2)
+elseif(APPLE)
+    add_executable(OGLES2HelloAPI tests/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2/OGLES2HelloAPI_OSX.mm)
+    set_target_properties(OGLES2HelloAPI PROPERTIES
+        INCLUDE_DIRECTORIES "${OPENGL_DIR}/include"
+        COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
+    )
+    target_link_libraries(OGLES2HelloAPI dl libEGL libGLESv2)
 endif()
