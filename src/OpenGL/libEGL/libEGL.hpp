@@ -82,17 +82,23 @@ private:
 		if(!libEGL)
 		{
 			#if defined(_WIN32)
-			const char *libEGL_lib[] = {"libEGL.dll", "libEGL_translator.dll"};
+				const char *libEGL_lib[] = {"libEGL.dll", "libEGL_translator.dll"};
 			#elif defined(__ANDROID__)
-			#if defined(__LP64__)
-			const char *libEGL_lib[] = {"/vendor/lib64/egl/libEGL_swiftshader.so"};
+				#if defined(__LP64__)
+					const char *libEGL_lib[] = {"/vendor/lib64/egl/libEGL_swiftshader.so"};
+				#else
+					const char *libEGL_lib[] = {"/vendor/lib/egl/libEGL_swiftshader.so"};
+				#endif
+			#elif defined(__linux__)
+				#if defined(__LP64__)
+					const char *libEGL_lib[] = {"lib64EGL_translator.so", "libEGL.so.1", "libEGL.so"};
+				#else
+					const char *libEGL_lib[] = {"libEGL_translator.so", "libEGL.so.1", "libEGL.so"};
+				#endif
+			#elif defined(__APPLE__)
+				const char *libEGL_lib[] = {"libEGL_translator.dylib", "libEGL.so", "libEGL.dylib"};
 			#else
-			const char *libEGL_lib[] = {"/vendor/lib/egl/libEGL_swiftshader.so"};
-			#endif
-			#elif defined(__LP64__)
-			const char *libEGL_lib[] = {"lib64EGL_translator.so", "libEGL.so.1", "libEGL.so"};
-			#else
-			const char *libEGL_lib[] = {"libEGL_translator.so", "libEGL.so.1", "libEGL.so"};
+				#error "libEGL::loadExports unimplemented for this platform"
 			#endif
 
 			libEGL = loadLibrary(libEGL_lib, "libEGL_swiftshader");
