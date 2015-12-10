@@ -2118,13 +2118,31 @@ namespace sw
 
 	void Renderer::setTextureFilter(SamplerType type, int sampler, FilterType textureFilter)
 	{
+		setTextureMinFilter(type, sampler, textureFilter);
+		setTextureMagFilter(type, sampler, textureFilter);
+	}
+
+	void Renderer::setTextureMinFilter(SamplerType type, int sampler, FilterType textureFilter)
+	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setTextureFilter(sampler, textureFilter);
+			PixelProcessor::setTextureMinFilter(sampler, textureFilter);
 		}
 		else
 		{
-			VertexProcessor::setTextureFilter(sampler, textureFilter);
+			VertexProcessor::setTextureMinFilter(sampler, textureFilter);
+		}
+	}
+
+	void Renderer::setTextureMagFilter(SamplerType type, int sampler, FilterType textureFilter)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setTextureMagFilter(sampler, textureFilter);
+		}
+		else
+		{
+			VertexProcessor::setTextureMagFilter(sampler, textureFilter);
 		}
 	}
 

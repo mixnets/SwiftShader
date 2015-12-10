@@ -56,7 +56,8 @@ namespace sw
 		internalTextureFormat = FORMAT_NULL;
 		textureType = TEXTURE_NULL;
 
-		textureFilter = FILTER_LINEAR;
+		textureMinFilter = FILTER_LINEAR;
+		textureMagFilter = FILTER_LINEAR;
 		addressingModeU = ADDRESSING_WRAP;
 		addressingModeV = ADDRESSING_WRAP;
 		addressingModeW = ADDRESSING_WRAP;
@@ -85,7 +86,8 @@ namespace sw
 		{
 			state.textureType = textureType;
 			state.textureFormat = internalTextureFormat;
-			state.textureFilter = getTextureFilter();
+			state.textureMinFilter = getTextureMinFilter();
+			state.textureMagFilter = getTextureMagFilter();
 			state.addressingModeU = getAddressingModeU();
 			state.addressingModeV = getAddressingModeV();
 			state.addressingModeW = getAddressingModeW();
@@ -253,9 +255,14 @@ namespace sw
 		textureType = type;
 	}
 
-	void Sampler::setTextureFilter(FilterType textureFilter)
+	void Sampler::setTextureMinFilter(FilterType textureFilter)
 	{
-		this->textureFilter = (FilterType)min(textureFilter, maximumTextureFilterQuality);
+		this->textureMinFilter = (FilterType)min(textureFilter, maximumTextureFilterQuality);
+	}
+
+	void Sampler::setTextureMagFilter(FilterType textureFilter)
+	{
+		this->textureMagFilter = (FilterType)min(textureFilter, maximumTextureFilterQuality);
 	}
 
 	void Sampler::setMipmapFilter(MipmapType mipmapFilter)
@@ -413,9 +420,14 @@ namespace sw
 		return textureType;
 	}
 
-	FilterType Sampler::getTextureFilter() const
+	FilterType Sampler::getTextureMagFilter() const
 	{
-		FilterType filter = textureFilter;
+		return textureMagFilter;
+	}
+
+	FilterType Sampler::getTextureMinFilter() const
+	{
+		FilterType filter = textureMinFilter;
 
 		if(gather && Surface::componentCount(internalTextureFormat) == 1)
 		{

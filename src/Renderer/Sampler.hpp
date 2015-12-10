@@ -134,7 +134,8 @@ namespace sw
 
 			TextureType textureType        : BITS(TEXTURE_LAST);
 			Format textureFormat           : BITS(FORMAT_LAST);
-			FilterType textureFilter       : BITS(FILTER_LAST);
+			FilterType textureMinFilter    : BITS(FILTER_LAST);
+			FilterType textureMagFilter    : BITS(FILTER_LAST);
 			AddressingMode addressingModeU : BITS(ADDRESSING_LAST);
 			AddressingMode addressingModeV : BITS(ADDRESSING_LAST);
 			AddressingMode addressingModeW : BITS(ADDRESSING_LAST);
@@ -159,7 +160,8 @@ namespace sw
 
 		void setTextureLevel(int face, int level, Surface *surface, TextureType type);
 
-		void setTextureFilter(FilterType textureFilter);
+		void setTextureMinFilter(FilterType textureFilter);
+		void setTextureMagFilter(FilterType textureFilter);
 		void setMipmapFilter(MipmapType mipmapFilter);
 		void setGatherEnable(bool enable);
 		void setAddressingModeU(AddressingMode addressingMode);
@@ -188,7 +190,8 @@ namespace sw
 		MipmapType mipmapFilter() const;
 		bool hasNPOTTexture() const;
 		TextureType getTextureType() const;
-		FilterType getTextureFilter() const;
+		FilterType getTextureMinFilter() const;
+		FilterType getTextureMagFilter() const;
 		AddressingMode getAddressingModeU() const;
 		AddressingMode getAddressingModeV() const;
 		AddressingMode getAddressingModeW() const;
@@ -197,7 +200,8 @@ namespace sw
 		Format internalTextureFormat;
 		TextureType textureType;
 
-		FilterType textureFilter;
+		FilterType textureMinFilter;
+		FilterType textureMagFilter;
 		AddressingMode addressingModeU;
 		AddressingMode addressingModeV;
 		AddressingMode addressingModeW;

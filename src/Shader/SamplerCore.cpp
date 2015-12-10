@@ -182,7 +182,7 @@ namespace sw
 				}
 			}
 
-			if(fixed12 && state.textureFilter != FILTER_GATHER)
+			if(fixed12 && state.textureMinFilter != FILTER_GATHER)
 			{
 				int componentCount = textureComponentCount();
 
@@ -445,7 +445,7 @@ namespace sw
 
 			int componentCount = textureComponentCount();
 
-			if(state.textureFilter != FILTER_GATHER)
+			if(state.textureMinFilter != FILTER_GATHER)
 			{
 				switch(state.textureFormat)
 				{
@@ -688,7 +688,7 @@ namespace sw
 
 	void SamplerCore::sampleAniso(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, bool lodProvided)
 	{
-		if(state.textureFilter != FILTER_ANISOTROPIC || lodProvided)
+		if(state.textureMinFilter != FILTER_ANISOTROPIC || lodProvided)
 		{
 			sampleQuad(texture, c, u, v, w, lod, face, secondLOD);
 		}
@@ -757,7 +757,7 @@ namespace sw
 	void SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float &lod, Int face[4], bool secondLOD)
 	{
 		int componentCount = textureComponentCount();
-		bool gather = state.textureFilter == FILTER_GATHER;
+		bool gather = state.textureMinFilter == FILTER_GATHER;
 
 		Pointer<Byte> mipmap;
 		Pointer<Byte> buffer[4];
@@ -770,7 +770,7 @@ namespace sw
 		address(uuuu, u, state.addressingModeU);
 		address(vvvv, v, state.addressingModeV);
 
-		if(state.textureFilter == FILTER_POINT)
+		if(state.textureMinFilter == FILTER_POINT)
 		{
 			sampleTexel(c, uuuu, vvvv, vvvv, mipmap, buffer);
 		}
@@ -979,7 +979,7 @@ namespace sw
 		address(vvvv, v_, state.addressingModeV);
 		addressW(wwww, w_, mipmap);
 
-		if(state.textureFilter <= FILTER_POINT)
+		if(state.textureMinFilter <= FILTER_POINT)
 		{
 			sampleTexel(c_, uuuu, vvvv, wwww, mipmap, buffer);
 		}
@@ -1175,7 +1175,7 @@ namespace sw
 
 	void SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, bool lodProvided)
 	{
-		if(state.textureFilter != FILTER_ANISOTROPIC || lodProvided)
+		if(state.textureMinFilter != FILTER_ANISOTROPIC || lodProvided)
 		{
 			sampleFloat(texture, c, u, v, w, lod, face, secondLOD);
 		}
@@ -1242,7 +1242,7 @@ namespace sw
 	void SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &z, Float &lod, Int face[4], bool secondLOD)
 	{
 		int componentCount = textureComponentCount();
-		bool gather = state.textureFilter == FILTER_GATHER;
+		bool gather = state.textureMinFilter == FILTER_GATHER;
 
 		Pointer<Byte> mipmap;
 		Pointer<Byte> buffer[4];
@@ -1255,7 +1255,7 @@ namespace sw
 		address(uuuu, u, state.addressingModeU);
 		address(vvvv, v, state.addressingModeV);
 
-		if(state.textureFilter == FILTER_POINT)
+		if(state.textureMinFilter == FILTER_POINT)
 		{
 			sampleTexel(c, uuuu, vvvv, vvvv, z, mipmap, buffer);
 		}
@@ -1325,7 +1325,7 @@ namespace sw
 		address(vvvv, v, state.addressingModeV);
 		addressW(wwww, w, mipmap);
 
-		if(state.textureFilter <= FILTER_POINT)
+		if(state.textureMinFilter <= FILTER_POINT)
 		{
 			sampleTexel(c, uuuu, vvvv, wwww, w, mipmap, buffer);
 		}
@@ -1427,7 +1427,7 @@ namespace sw
 
 			lod = Max(Float(dUV2.x), Float(dUV2.y));   // Square length of major axis
 
-			if(state.textureFilter == FILTER_ANISOTROPIC)
+			if(state.textureMinFilter == FILTER_ANISOTROPIC)
 			{
 				Float det = Abs(Float(dUVdxy.x) * Float(dUVdxy.w) - Float(dUVdxy.y) * Float(dUVdxy.z));
 
@@ -1971,7 +1971,7 @@ namespace sw
 			c.x.z = *Pointer<Float>(buffer[f2] + index[2] * 4);
 			c.x.w = *Pointer<Float>(buffer[f3] + index[3] * 4);
 
-			if(state.textureFormat == FORMAT_D32FS8_SHADOW && state.textureFilter != FILTER_GATHER)
+			if(state.textureFormat == FORMAT_D32FS8_SHADOW && state.textureMinFilter != FILTER_GATHER)
 			{
 				Float4 d = Min(Max(z, Float4(0.0f)), Float4(1.0f));
 

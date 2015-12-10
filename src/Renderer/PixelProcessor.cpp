@@ -326,11 +326,20 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setTextureFilter(unsigned int sampler, FilterType textureFilter)
+	void PixelProcessor::setTextureMinFilter(unsigned int sampler, FilterType textureFilter)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
-			context->sampler[sampler].setTextureFilter(textureFilter);
+			context->sampler[sampler].setTextureMinFilter(textureFilter);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setTextureMagFilter(unsigned int sampler, FilterType textureFilter)
+	{
+		if(sampler < TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[sampler].setTextureMagFilter(textureFilter);
 		}
 		else ASSERT(false);
 	}

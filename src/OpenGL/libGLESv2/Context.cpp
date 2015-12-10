@@ -3115,10 +3115,9 @@ void Context::applyTextures(sw::SamplerType samplerType)
 				sw::FilterType minFilter;
 				sw::MipmapType mipFilter;
                 es2sw::ConvertMinFilter(texFilter, &minFilter, &mipFilter, maxAnisotropy);
-			//	ASSERT(minFilter == es2sw::ConvertMagFilter(magFilter));
 
-				device->setTextureFilter(samplerType, samplerIndex, minFilter);
-			//	device->setTextureFilter(samplerType, samplerIndex, es2sw::ConvertMagFilter(magFilter));
+				device->setTextureMinFilter(samplerType, samplerIndex, minFilter);
+				device->setTextureMagFilter(samplerType, samplerIndex, es2sw::ConvertMagFilter(magFilter));
 				device->setMipmapFilter(samplerType, samplerIndex, mipFilter);
 				device->setMaxAnisotropy(samplerType, samplerIndex, maxAnisotropy);                
 

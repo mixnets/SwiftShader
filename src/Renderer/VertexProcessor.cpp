@@ -455,11 +455,20 @@ namespace sw
 		context->textureTransformProject[stage] = project;
 	}
 
-	void VertexProcessor::setTextureFilter(unsigned int sampler, FilterType textureFilter)
+	void VertexProcessor::setTextureMinFilter(unsigned int sampler, FilterType textureFilter)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
-			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setTextureFilter(textureFilter);
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setTextureMinFilter(textureFilter);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setTextureMagFilter(unsigned int sampler, FilterType textureFilter)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setTextureMagFilter(textureFilter);
 		}
 		else ASSERT(false);
 	}

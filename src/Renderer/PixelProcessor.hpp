@@ -215,7 +215,8 @@ namespace sw
 		virtual void setLuminanceScale(unsigned int stage, float value);
 		virtual void setLuminanceOffset(unsigned int stage, float value);
 
-		virtual void setTextureFilter(unsigned int sampler, FilterType textureFilter);
+		virtual void setTextureMinFilter(unsigned int sampler, FilterType textureFilter);
+		virtual void setTextureMagFilter(unsigned int sampler, FilterType textureFilter);
 		virtual void setMipmapFilter(unsigned int sampler, MipmapType mipmapFilter);
 		virtual void setGatherEnable(unsigned int sampler, bool enable);
 		virtual void setAddressingModeU(unsigned int sampler, AddressingMode addressingMode);

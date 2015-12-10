@@ -317,6 +317,8 @@ namespace sw
 		virtual void setTextureLevel(unsigned int sampler, unsigned int face, unsigned int level, Surface *surface, TextureType type);
 
 		virtual void setTextureFilter(SamplerType type, int sampler, FilterType textureFilter);
+		virtual void setTextureMinFilter(SamplerType type, int sampler, FilterType textureFilter);
+		virtual void setTextureMagFilter(SamplerType type, int sampler, FilterType textureFilter);
 		virtual void setMipmapFilter(SamplerType type, int sampler, MipmapType mipmapFilter);
 		virtual void setGatherEnable(SamplerType type, int sampler, bool enable);
 		virtual void setAddressingModeU(SamplerType type, int sampler, AddressingMode addressingMode);

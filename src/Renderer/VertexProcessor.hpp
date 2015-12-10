@@ -233,7 +233,8 @@ namespace sw
 		virtual void setTextureMatrix(int stage, const Matrix &T);
 		virtual void setTextureTransform(int stage, int count, bool project);
 
-		virtual void setTextureFilter(unsigned int sampler, FilterType textureFilter);
+		virtual void setTextureMinFilter(unsigned int sampler, FilterType textureFilter);
+		virtual void setTextureMagFilter(unsigned int sampler, FilterType textureFilter);
 		virtual void setMipmapFilter(unsigned int sampler, MipmapType mipmapFilter);
 		virtual void setGatherEnable(unsigned int sampler, bool enable);
 		virtual void setAddressingModeU(unsigned int sampler, AddressingMode addressingMode);
