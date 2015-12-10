@@ -72,8 +72,7 @@ namespace es2sw
 	sw::SwizzleType ConvertSwizzleType(GLenum swizzleType);
 	sw::CullMode ConvertCullMode(GLenum cullFace, GLenum frontFace);
 	unsigned int ConvertColorMask(bool red, bool green, bool blue, bool alpha);
-	sw::FilterType ConvertMagFilter(GLenum magFilter);
-	void ConvertMinFilter(GLenum texFilter, sw::FilterType *minFilter, sw::MipmapType *mipFilter, float maxAnisotropy);
+	void ConvertTextureFilter(GLenum minFilter, GLenum magFilter, sw::FilterType *textureFilter, sw::MipmapType *mipFilter, float maxAnisotropy);
 	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount,  es2::PrimitiveType &swPrimitiveType, int &primitiveCount);
 	sw::Format ConvertRenderbufferFormat(GLenum format);
 }
