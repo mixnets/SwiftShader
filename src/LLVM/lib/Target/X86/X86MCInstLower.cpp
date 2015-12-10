@@ -370,8 +370,11 @@ ReSimplify:
   case X86::MOV32r0:      LowerUnaryToTwoAddr(OutMI, X86::XOR32rr); break;
   case X86::FsFLD0SS:      LowerUnaryToTwoAddr(OutMI, X86::PXORrr); break;
   case X86::FsFLD0SD:      LowerUnaryToTwoAddr(OutMI, X86::PXORrr); break;
-  case X86::VFsFLD0SS:     LowerUnaryToTwoAddr(OutMI, X86::VPXORrr); break;
-  case X86::VFsFLD0SD:     LowerUnaryToTwoAddr(OutMI, X86::VPXORrr); break;
+  // HACK(cwallez) disabled these cases as part of the port to a CMake build
+  // of SwiftShader: our local copy of LLVM doesn't have these symbols
+  // anywhere.
+  //case X86::VFsFLD0SS:     LowerUnaryToTwoAddr(OutMI, X86::VPXORrr); break;
+  //case X86::VFsFLD0SD:     LowerUnaryToTwoAddr(OutMI, X86::VPXORrr); break;
   case X86::V_SETALLONES:  LowerUnaryToTwoAddr(OutMI, X86::PCMPEQDrr); break;
   case X86::AVX_SET0PSY:   LowerUnaryToTwoAddr(OutMI, X86::VXORPSYrr); break;
   case X86::AVX_SET0PDY:   LowerUnaryToTwoAddr(OutMI, X86::VXORPDYrr); break;
