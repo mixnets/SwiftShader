@@ -38,7 +38,7 @@
 
 namespace egl
 {
-typedef std::map<EGLNativeDisplayType, Display*> DisplayMap;
+typedef std::map<void*, Display*> DisplayMap;
 
 // Protects the global displays map.
 sw::BackoffLock displays_lock;
@@ -46,12 +46,13 @@ sw::BackoffLock displays_lock;
 // The order of construction of globals is undefined in C++.
 // This function ensures that construction has completed before we attempt
 // to access displays.
-DisplayMap* getDisplays() {
-  static DisplayMap displays;
-  return &displays;
+DisplayMap* getDisplays()
+{
+	static DisplayMap displays;
+	return &displays;
 }
 
-egl::Display *Display::getPlatformDisplay(EGLenum platform, EGLNativeDisplayType displayId)
+egl::Display *Display::getPlatformDisplay(EGLenum platform, void *displayId)
 {
     #ifndef __ANDROID__
         if(platform == EGL_UNKNOWN)   // Default
@@ -95,19 +96,23 @@ egl::Display *Display::getPlatformDisplay(EGLenum platform, EGLNativeDisplayType
     egl::Display *rval;
     displays_lock.lock();
     DisplayMap* displays = getDisplays();
-    if (displays->find(displayId) != displays->end())
+
+    if(displays->find(displayId) != displays->end())
     {
         rval = (*displays)[displayId];
-    } else {
+    }
+	else
+	{
         rval = new egl::Display(platform, displayId);
-
         (*displays)[displayId] = rval;
     }
+
     displays_lock.unlock();
+
     return rval;
 }
 
-Display::Display(EGLenum platform, EGLNativeDisplayType displayId) : platform(platform), displayId(displayId)
+Display::Display(EGLenum platform, void *displayId) : platform(platform), displayId(displayId)
 {
     mMinSwapInterval = 1;
     mMaxSwapInterval = 1;
@@ -596,7 +601,7 @@ EGLint Display::getMaxSwapInterval() const
     return mMaxSwapInterval;
 }
 
-EGLNativeDisplayType Display::getNativeDisplay() const
+void *Display::getNativeDisplay() const
 {
 	return displayId;
 }
