@@ -948,7 +948,7 @@ EGLDisplay GetPlatformDisplayEXT(EGLenum platform, void *native_display, const E
 {
 	TRACE("(EGLenum platform = 0x%X, void *native_display = %p, const EGLint *attrib_list = %p)", platform, native_display, attrib_list);
 
-	return egl::Display::getPlatformDisplay(platform, (EGLNativeDisplayType)native_display);
+	return egl::Display::getPlatformDisplay(platform, native_display);
 }
 
 EGLSurface CreatePlatformWindowSurfaceEXT(EGLDisplay dpy, EGLConfig config, void *native_window, const EGLint *attrib_list)
