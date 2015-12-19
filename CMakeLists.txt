@@ -98,6 +98,7 @@ set(OPENGL_DIR ${SOURCE_DIR}/OpenGL)
 set(OPENGL_COMPILER_DIR ${OPENGL_DIR}/compiler)
 set(LLVM_DIR ${SOURCE_DIR}/LLVM)
 set(TESTS_DIR ${CMAKE_SOURCE_DIR}/tests)
+set(HELLO2_DIR ${TESTS_DIR}/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2)
 
 ###########################################################
 # Compile flags
@@ -466,24 +467,21 @@ endif()
 # Extra programs
 ###########################################################
 
-if (LINUX)
-    add_executable(OGLES2HelloAPI tests/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2/OGLES2HelloAPI_LinuxX11.cpp)
+if(LINUX)
+    add_executable(OGLES2HelloAPI HELLO2_DIR/OGLES2HelloAPI_LinuxX11.cpp)
     target_link_libraries(OGLES2HelloAPI dl X11 EGL GLESv2)
 elseif(APPLE)
     add_executable(OGLES2HelloAPI MACOSX_BUNDLE
-        tests/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2/OGLES2HelloAPI_OSX.mm
-        tests/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2/Build/OSX/en.lproj/MainMenu.xib
+        ${HELLO2_DIR}/OGLES2HelloAPI_OSX.mm
+        ${HELLO2_DIR}/Build/OSX/en.lproj/MainMenu.xib
     )
     set_target_properties(OGLES2HelloAPI PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_DIR}/include"
         COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
-        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/tests/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2/Build/OSX/Info.plist
+        MACOSX_BUNDLE_INFO_PLIST "${HELLO2_DIR}/Build/OSX/Info.plist"
     )
-    target_link_libraries(OGLES2HelloAPI libEGL libGLESv2)
-    set_source_files_properties(
-        tests/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2/Build/OSX/en.lproj/MainMenu.xib
-        PROPERTIES
-        MACOSX_PACKAGE_LOCATION
-        Resources
+    target_link_libraries(OGLES2HelloAPI libEGL libGLESv2 ${OS_LIBS})
+    set_source_files_properties(${HELLO2_DIR}/Build/OSX/en.lproj/MainMenu.xib PROPERTIES
+        MACOSX_PACKAGE_LOCATION "Resources"
     )
 endif()
