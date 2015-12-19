@@ -96,7 +96,11 @@ private:
 					const char *libEGL_lib[] = {"libEGL_translator.so", "libEGL.so.1", "libEGL.so"};
 				#endif
 			#elif defined(__APPLE__)
-				const char *libEGL_lib[] = {"libEGL_translator.dylib", "libEGL.so", "libEGL.dylib"};
+				#if defined(__LP64__)
+					const char *libEGL_lib[] = {"lib64EGL_translator.dylib", "libEGL.so", "libEGL.dylib"};
+				#else
+					const char *libEGL_lib[] = {"libEGL_translator.dylib", "libEGL.so", "libEGL.dylib"};
+				#endif
 			#else
 				#error "libEGL::loadExports unimplemented for this platform"
 			#endif

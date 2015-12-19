@@ -98,6 +98,7 @@ set(OPENGL_DIR ${SOURCE_DIR}/OpenGL)
 set(OPENGL_COMPILER_DIR ${OPENGL_DIR}/compiler)
 set(LLVM_DIR ${SOURCE_DIR}/LLVM)
 set(TESTS_DIR ${CMAKE_SOURCE_DIR}/tests)
+set(HELLO2_DIR ${TESTS_DIR}/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2)
 
 ###########################################################
 # Compile flags
@@ -414,17 +415,22 @@ set_target_properties(GLCompiler PROPERTIES
 )
 target_link_libraries(GLCompiler ${OS_LIBS})
 
+foreach(EGL_NAME libEGL lib64EGL_translator)
 if(BUILD_EGL)
-    add_library(libEGL SHARED ${EGL_LIST})
-    set_target_properties(libEGL PROPERTIES
+add_library(${EGL_NAME} SHARED ${EGL_LIST})
+    set_target_properties(${EGL_NAME} PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
         FOLDER "OpenGL"
         COMPILE_DEFINITIONS "EGL_EGLEXT_PROTOTYPES"
         PREFIX ""
     )
-    set_target_export_map(libEGL ${SOURCE_DIR}/OpenGL/libEGL)
-    target_link_libraries(libEGL ${OS_LIBS})
+    set_target_export_map(${EGL_NAME} ${SOURCE_DIR}/OpenGL/libEGL)
+    target_link_libraries(${EGL_NAME} ${OS_LIBS})
+#add_custom_command(TARGET libEGL POST_BUILD
+#        COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:libEGL> ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/translator/lib64EGL_translator.dylib
+#    )
 endif()
+endforeach(EGL_NAME)
 
 if(BUILD_GL32)
     add_library(libGL SHARED ${GL32_LIST})
@@ -439,51 +445,48 @@ if(BUILD_GL32)
 endif()
 
 if(BUILD_GLESv2)
-    add_library(libGLESv2 SHARED ${GLES2_LIST})
-    set_target_properties(libGLESv2 PROPERTIES
+    add_library(lib64GLES_V2_translator SHARED ${GLES2_LIST})
+    set_target_properties(lib64GLES_V2_translator PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
         FOLDER "OpenGL"
         COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
         PREFIX ""
     )
-    set_target_export_map(libGLESv2 ${SOURCE_DIR}/OpenGL/libGLESv2)
-    target_link_libraries(libGLESv2 SwiftShader Reactor GLCommon GLCompiler ${OS_LIBS})
+    set_target_export_map(lib64GLES_V2_translator ${SOURCE_DIR}/OpenGL/libGLESv2)
+    target_link_libraries(lib64GLES_V2_translator SwiftShader Reactor GLCommon GLCompiler ${OS_LIBS})
 endif()
 
 if(BUILD_GLES_CM)
-    add_library(libGLES_CM SHARED ${GLES_CM_LIST})
-    set_target_properties(libGLES_CM PROPERTIES
+    add_library(lib64GLES_CM_translator SHARED ${GLES_CM_LIST})
+    set_target_properties(lib64GLES_CM_translator PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
         FOLDER "OpenGL"
         COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
         PREFIX ""
     )
-    set_target_export_map(libGLES_CM ${SOURCE_DIR}/OpenGL/libGLES_CM)
-    target_link_libraries(libGLES_CM SwiftShader Reactor GLCommon GLCompiler ${OS_LIBS})
+    set_target_export_map(lib64GLES_CM_translator ${SOURCE_DIR}/OpenGL/libGLES_CM)
+    target_link_libraries(lib64GLES_CM_translator SwiftShader Reactor GLCommon GLCompiler ${OS_LIBS})
 endif()
 
 ###########################################################
 # Extra programs
 ###########################################################
 
-if (LINUX)
-    add_executable(OGLES2HelloAPI tests/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2/OGLES2HelloAPI_LinuxX11.cpp)
+if(LINUX)
+    add_executable(OGLES2HelloAPI HELLO2_DIR/OGLES2HelloAPI_LinuxX11.cpp)
     target_link_libraries(OGLES2HelloAPI dl X11 EGL GLESv2)
 elseif(APPLE)
     add_executable(OGLES2HelloAPI MACOSX_BUNDLE
-        tests/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2/OGLES2HelloAPI_OSX.mm
-        tests/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2/Build/OSX/en.lproj/MainMenu.xib
+        ${HELLO2_DIR}/OGLES2HelloAPI_OSX.mm
+        ${HELLO2_DIR}/Build/OSX/en.lproj/MainMenu.xib
     )
     set_target_properties(OGLES2HelloAPI PROPERTIES
         INCLUDE_DIRECTORIES "${OPENGL_DIR}/include"
         COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
-        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/tests/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2/Build/OSX/Info.plist
+        MACOSX_BUNDLE_INFO_PLIST "${HELLO2_DIR}/Build/OSX/Info.plist"
     )
-    target_link_libraries(OGLES2HelloAPI libEGL libGLESv2)
-    set_source_files_properties(
-        tests/third_party/PowerVR/Examples/Beginner/01_HelloAPI/OGLES2/Build/OSX/en.lproj/MainMenu.xib
-        PROPERTIES
-        MACOSX_PACKAGE_LOCATION
-        Resources
+    target_link_libraries(OGLES2HelloAPI lib64EGL_translator lib64GLES_V2_translator ${OS_LIBS})
+    set_source_files_properties(${HELLO2_DIR}/Build/OSX/en.lproj/MainMenu.xib PROPERTIES
+        MACOSX_PACKAGE_LOCATION "Resources"
     )
 endif()

@@ -3229,7 +3229,7 @@ void GetIntegerv(GLenum pname, GLint* params)
 		#ifdef __ANDROID__
 			ALOGI("expected_badness glGetIntegerv() called without current context.");
 		#else
-			ERR("glGetIntegerv() called without current context.");
+			//ERR("glGetIntegerv() called without current context.");
 		#endif
 
 		// This is not spec compliant! When there is no current GL context, functions should
@@ -7003,6 +7003,7 @@ void Viewport(GLint x, GLint y, GLsizei width, GLsizei height)
 	{
 		context->setViewportParams(x, y, width, height);
 	}
+	else fprintf(stderr, "!!! glViewport no context\n");
 }
 
 void BlitFramebufferNV(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)

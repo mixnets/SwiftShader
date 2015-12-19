@@ -12,7 +12,7 @@ namespace sw
     class FrameBufferOSX : public FrameBuffer
     {
     public:
-        FrameBufferOSX(CALayer* layer, int width, int height);
+        FrameBufferOSX(CALayer *layer, int width, int height);
         ~FrameBufferOSX() override;
 
         void flip(void *source, Format sourceFormat, size_t sourceStride) override;
@@ -24,8 +24,8 @@ namespace sw
     private:
         int width;
         int height;
-        CALayer* layer;
-        uint8_t* buffer;
+        CALayer *layer;
+        uint8_t *buffer;
         CGDataProviderRef provider;
         CGColorSpaceRef colorspace;
         CGImageRef currentImage;

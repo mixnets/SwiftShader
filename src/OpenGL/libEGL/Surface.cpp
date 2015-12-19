@@ -256,7 +256,7 @@ bool WindowSurface::initialize()
 	#elif defined(__APPLE__)
 		int width;
 		int height;
-		sw::OSX::GetNativeWindowSize(window, &width, &height);
+		sw::OSX::GetNativeWindowSize(window, width, height);
 
 		return reset(width, height);
 	#else
@@ -305,7 +305,7 @@ bool WindowSurface::checkForResize()
 	#elif defined(__APPLE__)
 		int clientWidth;
 		int clientHeight;
-		sw::OSX::GetNativeWindowSize(window, &clientWidth, &clientHeight);
+		sw::OSX::GetNativeWindowSize(window, clientWidth, clientHeight);
 		return true;
 	#else
 		#error "WindowSurface::checkForResize unimplemented for this platform"
@@ -337,7 +337,7 @@ void WindowSurface::deleteResources()
 }
 
 bool WindowSurface::reset(int backBufferWidth, int backBufferHeight)
-{
+{fprintf(stderr, "%d x %d\n", backBufferWidth, backBufferHeight);
 	width = backBufferWidth;
     height = backBufferHeight;
 

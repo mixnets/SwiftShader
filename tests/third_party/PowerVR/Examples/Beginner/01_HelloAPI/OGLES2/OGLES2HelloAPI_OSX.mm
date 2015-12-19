@@ -209,7 +209,9 @@
 	 surface used will be a window surface as performed below. For NULL window systems, there are no actual windows, so NULL is passed
 	 to this function.
 	 */
-	eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, (EGLNativeWindowType)view, NULL);
+	[view setWantsLayer:TRUE];
+	
+	eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, (EGLNativeWindowType)[view layer], NULL);
 	if (![self testEGLError:"eglCreateWindowSurface"])
 	{
 		return FALSE;

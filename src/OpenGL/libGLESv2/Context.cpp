@@ -279,9 +279,10 @@ void Context::makeCurrent(egl::Surface *surface)
 
         mState.viewportX = 0;
         mState.viewportY = 0;
+fprintf(stderr, "es2 old viewport %d x %d\n", mState.viewportWidth, mState.viewportHeight);
         mState.viewportWidth = surface->getWidth();
         mState.viewportHeight = surface->getHeight();
-
+fprintf(stderr, "es2 new viewport %d x %d\n", mState.viewportWidth, mState.viewportHeight);
         mState.scissorX = 0;
         mState.scissorY = 0;
         mState.scissorWidth = surface->getWidth();

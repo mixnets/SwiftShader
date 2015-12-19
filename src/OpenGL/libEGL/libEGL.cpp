@@ -275,7 +275,7 @@ EGLSurface CreateWindowSurface(EGLDisplay dpy, EGLConfig config, EGLNativeWindow
 {
 	TRACE("(EGLDisplay dpy = %p, EGLConfig config = %p, EGLNativeWindowType win = %p, "
 		  "const EGLint *attrib_list = %p)", dpy, config, window, attrib_list);
-
+	//sleep(60);
 	egl::Display *display = static_cast<egl::Display*>(dpy);
 
 	if(!validateConfig(display, config))
