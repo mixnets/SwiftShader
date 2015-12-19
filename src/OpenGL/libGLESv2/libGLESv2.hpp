@@ -262,7 +262,11 @@ private:
 		if(!libGLESv2)
 		{
 			#if defined(_WIN32)
-				const char *libGLESv2_lib[] = {"libGLESv2.dll", "libGLES_V2_translator.dll"};
+				#if defined(__LP64__)
+					const char *libGLESv2_lib[] = {"libGLESv2.dll", "lib64GLES_V2_translator.dll"};
+				#else
+					const char *libGLESv2_lib[] = {"libGLESv2.dll", "libGLES_V2_translator.dll"};
+				#endif
 			#elif defined(__ANDROID__)
 				#if defined(__LP64__)
 					const char *libGLESv2_lib[] = {"/vendor/lib64/egl/libGLESv2_swiftshader.so"};
@@ -276,7 +280,11 @@ private:
 					const char *libGLESv2_lib[] = {"libGLES_V2_translator.so", "libGLESv2.so.2", "libGLESv2.so"};
 				#endif
 			#elif defined(__APPLE__)
-				const char *libGLESv2_lib[] = {"libGLES_V2_translator.dylib", "libGLESv2.dylib"};
+				#if defined(__LP64__)
+					const char *libGLESv2_lib[] = {"lib64GLES_V2_translator.dylib", "libGLESv2.dylib"};
+				#else
+					const char *libGLESv2_lib[] = {"libGLES_V2_translator.dylib", "libGLESv2.dylib"};
+				#endif
 			#else
 				#error "libGLESv2::loadExports unimplemented for this platform"
 			#endif
