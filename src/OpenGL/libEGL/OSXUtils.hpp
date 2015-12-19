@@ -3,12 +3,12 @@
 
 #include <EGL/egl.h>
 
-namespace sw {
-namespace OSX {
-
-    bool IsValidWindow(EGLNativeWindowType window);
-    void GetNativeWindowSize(EGLNativeWindowType window, int* width, int* height);
-
+namespace sw
+{
+namespace OSX
+{
+	bool IsValidWindow(EGLNativeWindowType window);
+	void GetNativeWindowSize(EGLNativeWindowType window, int &width, int &height);
 }
 }
 
