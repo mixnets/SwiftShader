@@ -14,7 +14,7 @@
 
 #include "Types.hpp"
 
-#include <math.h>
+#include <cmath>
 #if defined(_MSC_VER)
 	#include <intrin.h>
 #endif

@@ -7,7 +7,7 @@
 #ifndef _INFOSINK_INCLUDED_
 #define _INFOSINK_INCLUDED_
 
-#include <math.h>
+#include <cmath>
 #include "Common.h"
 
 // Returns the fractional part of the given floating-point number.
