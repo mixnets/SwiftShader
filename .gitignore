@@ -25,6 +25,10 @@
 /src/OpenGL/compiler/preprocessor/Debug/
 /src/OpenGL/compiler/preprocessor/Release/
 /src/OpenGL/compiler/preprocessor/x64/
+/tests/unit_tests/bin/
+/tests/unit_tests/obj/
+/third_party/gtest/bin/
+/third_party/gtest/obj/
 
 # Ignored files #
 *.obj

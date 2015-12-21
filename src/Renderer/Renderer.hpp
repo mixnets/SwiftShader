@@ -235,6 +235,8 @@ namespace sw
 		volatile int count;        // Number of primitives to render
 		volatile int references;   // Remaining references to this draw call, 0 when done drawing, -1 when resources unlocked and slot is free
 
+		int maxIndex;
+
 		DrawData *data;
 	};
 
@@ -305,7 +307,7 @@ namespace sw
 
 		virtual void blit(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter);
 		virtual void blit3D(Surface *source, Surface *dest);
-		virtual void draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update = true);
+		virtual void draw(DrawType drawType, unsigned int indexOffset, unsigned int count, int maxVertexIndex = 0, bool update = true);
 
 		virtual void setIndexBuffer(Resource *indexBuffer);
 
@@ -325,7 +327,7 @@ namespace sw
 		virtual void setMipmapLOD(SamplerType type, int sampler, float bias);
 		virtual void setBorderColor(SamplerType type, int sampler, const Color<float> &borderColor);
 		virtual void setMaxAnisotropy(SamplerType type, int sampler, float maxAnisotropy);
-		
+
 		virtual void setPointSpriteEnable(bool pointSpriteEnable);
 		virtual void setPointScaleEnable(bool pointScaleEnable);
 		virtual void setLineWidth(float width);

@@ -199,7 +199,7 @@ namespace sw
 		blitter.blit3D(source, dest);
 	}
 
-	void Renderer::draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update)
+	void Renderer::draw(DrawType drawType, unsigned int indexOffset, unsigned int count, int maxVertexIndex, bool update)
 	{
 		#ifndef NDEBUG
 			if(count < minPrimitives || count > maxPrimitives)
@@ -308,6 +308,8 @@ namespace sw
 				draw->queries = new std::list<Query*>(queries);
 			}
 
+            draw->maxIndex = maxVertexIndex;
+
 			draw->drawType = drawType;
 			draw->batchSize = batch;
 
@@ -380,7 +382,7 @@ namespace sw
 					draw->psDirtyConstB = 0;
 				}
 			}
-			
+
 			if(context->pixelShaderVersion() <= 0x0104)
 			{
 				for(int stage = 0; stage < 8; stage++)
@@ -699,7 +701,7 @@ namespace sw
 				}
 			}
 		}
-	
+
 		// Find primitive tasks
 		if(currentDraw == nextDraw)
 		{
@@ -800,7 +802,7 @@ namespace sw
 		case Task::PRIMITIVES:
 			{
 				int unit = task[threadIndex].primitiveUnit;
-				
+
 				int input = primitiveProgress[unit].firstPrimitive;
 				int count = primitiveProgress[unit].primitiveCount;
 				DrawCall *draw = drawList[primitiveProgress[unit].drawCall % DRAW_COUNT];
@@ -975,6 +977,8 @@ namespace sw
 		const void *indices = data->indices;
 		VertexProcessor::RoutinePointer vertexRoutine = draw->vertexPointer;
 
+		int mod = draw->maxIndex + 1;
+
 		if(task->vertexCache.drawCall != primitiveProgress[unit].drawCall)
 		{
 			task->vertexCache.clear();
@@ -1047,9 +1051,9 @@ namespace sw
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
-					batch[i][0] = index + 0;
-					batch[i][1] = index + 1;
-					batch[i][2] = index + 2;
+					batch[i][0] = (index + 0) % mod;
+					batch[i][1] = (index + 1) % mod;
+					batch[i][2] = (index + 2) % mod;
 
 					index += 3;
 				}
@@ -1493,7 +1497,7 @@ namespace sw
 
 		return visible;
 	}
-	
+
 	int Renderer::setupVertexTriangle(Renderer *renderer, int unit, int count)
 	{
 		Triangle *triangle = renderer->triangleBatch[unit];
@@ -1859,7 +1863,7 @@ namespace sw
 					return false;
 				}
 			}
-			
+
 			return setupRoutine(&primitive, &triangle, &polygon, &data);
 		}
 
@@ -1924,7 +1928,7 @@ namespace sw
 				exitThreads = true;
 				resume[thread]->signal();
 				worker[thread]->join();
-				
+
 				delete worker[thread];
 				worker[thread] = 0;
 				delete resume[thread];
@@ -1932,7 +1936,7 @@ namespace sw
 				delete suspend[thread];
 				suspend[thread] = 0;
 			}
-		
+
 			deallocate(vertexTask[thread]);
 			vertexTask[thread] = 0;
 		}
@@ -2059,7 +2063,7 @@ namespace sw
 				return true;
 			}
 		}
-	
+
 		if(context->depthStencil && context->texture[sampler] == context->depthStencil->getResource())
 		{
 			return true;
@@ -2067,7 +2071,7 @@ namespace sw
 
 		return false;
 	}
-	
+
 	void Renderer::updateClipper()
 	{
 		if(updateClipPlanes)
@@ -2107,7 +2111,7 @@ namespace sw
 	void Renderer::setTextureLevel(unsigned int sampler, unsigned int face, unsigned int level, Surface *surface, TextureType type)
 	{
 		ASSERT(sampler < TOTAL_IMAGE_UNITS && face < 6 && level < MIPMAP_LEVELS);
-		
+
 		context->sampler[sampler].setTextureLevel(face, level, surface, type);
 	}
 
@@ -2399,7 +2403,7 @@ namespace sw
 	{
 		queries.push_back(query);
 	}
-	
+
 	void Renderer::removeQuery(Query *query)
 	{
 		queries.remove(query);
@@ -2410,7 +2414,7 @@ namespace sw
 		{
 			return threadCount;
 		}
-		
+
 		int64_t Renderer::getVertexTime(int thread)
 		{
 			return vertexTime[thread];
@@ -2420,7 +2424,7 @@ namespace sw
 		{
 			return setupTime[thread];
 		}
-			
+
 		int64_t Renderer::getPixelTime(int thread)
 		{
 			return pixelTime[thread];

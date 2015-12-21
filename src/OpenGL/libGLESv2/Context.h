@@ -425,7 +425,7 @@ public:
     bool isDepthTestEnabled() const;
     void setDepthFunc(GLenum depthFunc);
     void setDepthRange(float zNear, float zFar);
-    
+
     void setBlendEnabled(bool enabled);
     bool isBlendEnabled() const;
     void setBlendFactors(GLenum sourceRGB, GLenum destRGB, GLenum sourceAlpha, GLenum destAlpha);
@@ -500,6 +500,7 @@ public:
 	const VertexAttributeArray &getVertexArrayAttributes();
 	// Context attribute current values can be queried independently from VAO current values
 	const VertexAttributeArray &getCurrentVertexAttributes();
+	int getMaxIndexForVertexArrayAttributes();
 
     void setUnpackAlignment(GLint alignment);
 	void setUnpackRowLength(GLint rowLength);
@@ -514,7 +515,7 @@ public:
 	void setPackSkipPixels(GLint skipPixels);
 	void setPackSkipRows(GLint skipRows);
 
-    // These create  and destroy methods are merely pass-throughs to 
+    // These create  and destroy methods are merely pass-throughs to
     // ResourceManager, which owns these object types
     GLuint createBuffer();
     GLuint createShader(GLenum type);
@@ -656,8 +657,8 @@ public:
     GLenum getError();
 
     static int getSupportedMultisampleCount(int requested);
-    
-    void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, 
+
+    void blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1,
                          GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1,
                          GLbitfield mask);
 
@@ -738,7 +739,7 @@ private:
     bool mHasBeenCurrent;
 
     unsigned int mAppliedProgramSerial;
-    
+
     // state caching flags
     bool mDepthStateDirty;
     bool mMaskStateDirty;

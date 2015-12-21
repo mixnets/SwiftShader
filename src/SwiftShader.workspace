@@ -13,5 +13,11 @@
 			<Depends filename="OpenGL/libEGL/libEGL.cbp" />
 			<Depends filename="OpenGL/libGLESv2/libGLESv2.cbp" />
 		</Project>
+		<Project filename="../third_party/gtest/gtest.cbp" />
+		<Project filename="../tests/unit_tests/unit_tests.cbp">
+			<Depends filename="OpenGL/libEGL/libEGL.cbp" />
+			<Depends filename="OpenGL/libGLESv2/libGLESv2.cbp" />
+			<Depends filename="../third_party/gtest/gtest.cbp" />
+		</Project>
 	</Workspace>
 </CodeBlocks_workspace_file>

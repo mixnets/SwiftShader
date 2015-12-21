@@ -56,8 +56,8 @@ namespace es2
 		virtual void clearStencil(unsigned int stencil, unsigned int mask);
 		virtual egl::Image *createDepthStencilSurface(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);
 		virtual egl::Image *createRenderTarget(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool lockable);
-		virtual void drawIndexedPrimitive(PrimitiveType type, unsigned int indexOffset, unsigned int primitiveCount, int indexSize);
-		virtual void drawPrimitive(PrimitiveType primitiveType, unsigned int primiveCount);
+		virtual void drawIndexedPrimitive(PrimitiveType type, unsigned int indexOffset, unsigned int primitiveCount, int indexSize, int maxVertexIndex);
+		virtual void drawPrimitive(PrimitiveType primitiveType, unsigned int primiveCount, int maxVertexIndex);
 		virtual void setDepthStencilSurface(egl::Image *newDepthStencil);
 		virtual void setPixelShader(sw::PixelShader *shader);
 		virtual void setPixelShaderConstantF(unsigned int startRegister, const float *constantData, unsigned int count);

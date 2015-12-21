@@ -143,13 +143,13 @@ namespace es2
 	}
 
 	Device::~Device()
-	{		
+	{
 		if(depthStencil)
 		{
 			depthStencil->release();
 			depthStencil = 0;
 		}
-		
+
 		if(renderTarget)
 		{
 			renderTarget->release();
@@ -200,7 +200,7 @@ namespace es2
 
 		int x0(0), y0(0), width(0), height(0);
 		getScissoredRegion(depthStencil, x0, y0, width, height);
-			
+
 		depthStencil->clearDepthBuffer(z, x0, y0, width, height);
 	}
 
@@ -224,7 +224,7 @@ namespace es2
 			ERR("Invalid parameters: %dx%d", width, height);
 			return 0;
 		}
-		
+
 		bool lockable = true;
 
 		switch(format)
@@ -276,11 +276,11 @@ namespace es2
 			ERR("Out of memory");
 			return 0;
 		}
-		
+
 		return surface;
 	}
 
-	void Device::drawIndexedPrimitive(PrimitiveType type, unsigned int indexOffset, unsigned int primitiveCount, int indexSize)
+	void Device::drawIndexedPrimitive(PrimitiveType type, unsigned int indexOffset, unsigned int primitiveCount, int indexSize, int maxVertexIndex)
 	{
 		if(!bindResources() || !primitiveCount)
 		{
@@ -333,10 +333,10 @@ namespace es2
 		}
 		else UNREACHABLE(indexSize);
 
-		draw(drawType, indexOffset, primitiveCount);
+		draw(drawType, indexOffset, primitiveCount, maxVertexIndex);
 	}
 
-	void Device::drawPrimitive(PrimitiveType primitiveType, unsigned int primitiveCount)
+	void Device::drawPrimitive(PrimitiveType primitiveType, unsigned int primitiveCount, int maxVertexIndex)
 	{
 		if(!bindResources() || !primitiveCount)
 		{
@@ -344,7 +344,7 @@ namespace es2
 		}
 
 		setIndexBuffer(0);
-		
+
 		DrawType drawType;
 
 		switch(primitiveType)
@@ -359,7 +359,7 @@ namespace es2
 		default: UNREACHABLE(primitiveType);
 		}
 
-		draw(drawType, 0, primitiveCount);
+		draw(drawType, 0, primitiveCount, maxVertexIndex);
 	}
 
 	void Device::setDepthStencilSurface(egl::Image *depthStencil)
@@ -446,7 +446,7 @@ namespace es2
 			vertexShaderConstantF[startRegister + i][2] = constantData[i * 4 + 2];
 			vertexShaderConstantF[startRegister + i][3] = constantData[i * 4 + 3];
 		}
-			
+
 		vertexShaderConstantsFDirty = max(startRegister + count, vertexShaderConstantsFDirty);
 		vertexShaderDirty = true;   // Reload DEF constants
 	}
@@ -512,7 +512,7 @@ namespace es2
 			ERR("Invalid parameters");
 			return false;
 		}
-		
+
 		int sWidth = source->getWidth();
 		int sHeight = source->getHeight();
 		int dWidth = dest->getWidth();
@@ -773,7 +773,7 @@ namespace es2
 				{
 					Renderer::setVertexShaderConstantF(0, vertexShaderConstantF[0], vertexShaderConstantsFDirty);
 				}
-		
+
 				Renderer::setVertexShader(vertexShader);   // Loads shader constants set with DEF
 				vertexShaderConstantsFDirty = vertexShader->dirtyConstantsF;   // Shader DEF'ed constants are dirty
 			}
@@ -785,7 +785,7 @@ namespace es2
 			vertexShaderDirty = false;
 		}
 	}
-	
+
 	bool Device::bindViewport()
 	{
 		if(viewport.width <= 0 || viewport.height <= 0)
@@ -805,7 +805,7 @@ namespace es2
 			scissor.x1 = scissorRect.x1;
 			scissor.y0 = scissorRect.y0;
 			scissor.y1 = scissorRect.y1;
-			
+
 			setScissor(scissor);
 		}
 		else
@@ -815,7 +815,7 @@ namespace es2
 			scissor.x1 = viewport.x0 + viewport.width;
 			scissor.y0 = viewport.y0;
 			scissor.y1 = viewport.y0 + viewport.height;
-			
+
 			if(renderTarget)
 			{
 				scissor.x0 = max(scissor.x0, 0);
@@ -842,7 +842,7 @@ namespace es2
 		view.height = (float)viewport.height;
 		view.minZ = viewport.minZ;
 		view.maxZ = viewport.maxZ;
-		
+
 		Renderer::setViewport(view);
 
 		return true;
