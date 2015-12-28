@@ -163,6 +163,7 @@ namespace sw
 		}
 
 		sourceFormat = format;
+		sourceStride = stride;
 
 		if(topLeftOrigin)
 		{
@@ -199,7 +200,8 @@ namespace sw
 		update.height = height;
 		update.destFormat = destFormat;
 		update.sourceFormat = sourceFormat;
-		update.stride = stride;
+		update.destStride = stride;
+		update.sourceStride = topLeftOrigin ? sourceStride : -sourceStride;
 		update.cursorWidth = cursorWidth;
 		update.cursorHeight = cursorHeight;
 
@@ -221,11 +223,10 @@ namespace sw
 
 		const int width = state.width;
 		const int height = state.height;
-		const int width2 = (state.width + 1) & ~1;
 		const int dBytes = Surface::bytes(state.destFormat);
-		const int dStride = state.stride;
+		const int dStride = state.destStride;
 		const int sBytes = Surface::bytes(state.sourceFormat);
-		const int sStride = topLeftOrigin ? (sBytes * width2) : -(sBytes * width2);
+		const int sStride = state.sourceStride;
 
 		#ifdef __ANDROID__
 			char ro_product_model[PROPERTY_VALUE_MAX] = "";

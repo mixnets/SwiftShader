@@ -26,7 +26,8 @@ namespace sw
 		int height;
 		Format destFormat;
 		Format sourceFormat;
-		int stride;
+		int destStride;
+		int sourceStride;
 		int cursorWidth;
 		int cursorHeight;
 	};
@@ -56,14 +57,17 @@ namespace sw
 
 	protected:
 		void copy(void *source, Format format, size_t stride);
-		int width;
-		int height;
-		Format sourceFormat;
-		Format destFormat;
-		int stride;
+
 		bool windowed;
 
 		void *locked;   // Video memory back buffer
+		int width;
+		int height;
+		int stride;
+		Format destFormat;
+
+		int sourceStride;
+		Format sourceFormat;
 
 	private:
 		void copyLocked();
