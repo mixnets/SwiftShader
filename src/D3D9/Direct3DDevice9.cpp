@@ -1860,7 +1860,8 @@ namespace D3D9
 			update.height = sourceDescription.Height;
 			update.sourceFormat = sw::FORMAT_A8R8G8B8;
 			update.destFormat = sw::FORMAT_A8R8G8B8;
-			update.stride = dest->getExternalPitchB();
+			update.destStride = dest->getExternalPitchB();
+			update.sourceStride = source->getExternalPitchB();
 			update.cursorHeight = 0;
 			update.cursorWidth = 0;
 		
