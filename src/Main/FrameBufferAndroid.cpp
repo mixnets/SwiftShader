@@ -66,9 +66,9 @@ namespace sw
 
 		if(buffer)
 		{
-			if(locked)
+			if(framebuffer)
 			{
-				locked = nullptr;
+				framebuffer = nullptr;
 				unlock();
 			}
 
@@ -85,7 +85,7 @@ namespace sw
 
 		if(GrallocModule::getInstance()->lock(buffer->handle,
 		                 GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN,
-		                 0, 0, buffer->width, buffer->height, &locked) != 0)
+		                 0, 0, buffer->width, buffer->height, &framebuffer) != 0)
 		{
 			ALOGE("%s failed to lock buffer %p", __FUNCTION__, buffer);
 			return nullptr;
@@ -112,7 +112,7 @@ namespace sw
 		}
 
 		stride = buffer->stride * Surface::bytes(destFormat);
-		return locked;
+		return framebuffer;
 	}
 
 	void FrameBufferAndroid::unlock()
@@ -123,7 +123,7 @@ namespace sw
 			return;
 		}
 
-		locked = nullptr;
+		framebuffer = nullptr;
 
 		if(GrallocModule::getInstance()->unlock(buffer->handle) != 0)
 		{

@@ -72,13 +72,13 @@ namespace sw {
 	void *FrameBufferOSX::lock()
 	{
 		stride = width * 4 * sizeof(uint8_t);
-		locked = buffer;
-		return locked;
+		framebuffer = buffer;
+		return framebuffer;
 	};
 
 	void FrameBufferOSX::unlock()
 	{
-		locked = nullptr;
+		framebuffer = nullptr;
 	};
 }
 
