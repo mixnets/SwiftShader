@@ -267,6 +267,8 @@
 		<Unit filename="../common/NameSpace.hpp" />
 		<Unit filename="../common/Object.cpp" />
 		<Unit filename="../common/Object.hpp" />
+    <Unit filename="../common/TextureImage.cpp" />
+    <Unit filename="../common/TextureImage.hpp" />
 		<Unit filename="../common/debug.cpp" />
 		<Unit filename="../common/debug.h" />
 		<Unit filename="../include/EGL/egl.h" />

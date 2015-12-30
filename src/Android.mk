@@ -85,6 +85,7 @@ COMMON_SRC_FILES += \
 	OpenGL/common/NameSpace.cpp \
 	OpenGL/common/Object.cpp \
 	OpenGL/common/MatrixStack.cpp \
+	OpenGL/common/TextureImage.cpp
 
 COMMON_CFLAGS := \
 	-DLOG_TAG=\"swiftshader\" \

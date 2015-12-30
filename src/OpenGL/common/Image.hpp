@@ -140,8 +140,8 @@ public:
 		GLint skipImages;
 	};
 
-	void loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input);
-	void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
+	virtual void loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input);
+	virtual void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
 
 	virtual void addRef();
 	virtual void release();
@@ -184,10 +184,10 @@ public:
 		             GLPixelFormatFromAndroid(nativeBuffer->format),
 		             GLPixelTypeFromAndroid(nativeBuffer->format)),
 		  nativeBuffer(nativeBuffer)
-{
-    nativeBuffer->common.incRef(&nativeBuffer->common);
-    markShared();
-}
+	{
+		nativeBuffer->common.incRef(&nativeBuffer->common);
+		markShared();
+	}
 
 private:
 	ANativeWindowBuffer *nativeBuffer;

@@ -325,6 +325,7 @@ copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Pla
     <ClCompile Include="..\common\MatrixStack.cpp" />
     <ClCompile Include="..\common\NameSpace.cpp" />
     <ClCompile Include="..\common\Object.cpp" />
+    <ClCompile Include="..\common\TextureImage.cpp" />
     <ClCompile Include="Buffer.cpp" />
     <ClCompile Include="Context.cpp" />
     <ClCompile Include="..\common\debug.cpp" />
@@ -345,6 +346,7 @@ copy "$(OutDir)libGLES_CM.dll" "$(ProjectDir)..\..\..\lib\$(Configuration)_$(Pla
     <ClInclude Include="..\common\MatrixStack.hpp" />
     <ClInclude Include="..\common\NameSpace.hpp" />
     <ClInclude Include="..\common\Object.hpp" />
+    <ClInclude Include="..\common\TextureImage.hpp" />
     <ClInclude Include="..\include\GLES\egl.h" />
     <ClInclude Include="..\include\GLES\gl.h" />
     <ClInclude Include="..\include\GLES\glext.h" />

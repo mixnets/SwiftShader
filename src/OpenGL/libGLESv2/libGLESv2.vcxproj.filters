@@ -80,6 +80,9 @@
     <ClCompile Include="..\common\Image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\TextureImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Buffer.h">
@@ -164,6 +167,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common\Image.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\TextureImage.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
