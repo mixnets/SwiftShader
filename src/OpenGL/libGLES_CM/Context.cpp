@@ -2390,7 +2390,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 		}
 	}
 
-	GLsizei outputPitch = egl::ComputePitch(width, format, type, mState.packAlignment);
+	GLsizei outputPitch = ComputePitch(width, format, type, mState.packAlignment);
 
 	// Sized query sanity check
     if(bufSize)

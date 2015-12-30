@@ -15,7 +15,7 @@
 #define LIBGLESV2_UTILITIES_H
 
 #include "Device.hpp"
-#include "common/Image.hpp"
+#include "common/TextureImage.hpp"
 #include "Texture.h"
 
 #include <GLES2/gl2.h>
@@ -25,6 +25,8 @@
 
 namespace es2
 {
+	using namespace gl;
+
 	struct Color;
 
 	unsigned int UniformComponentCount(GLenum type);
