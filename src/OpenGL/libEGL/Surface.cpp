@@ -238,30 +238,7 @@ bool WindowSurface::initialize()
 {
     ASSERT(!frameBuffer && !backBuffer && !depthStencil);
 
-	#if defined(_WIN32)
-		RECT windowRect;
-		GetClientRect(window, &windowRect);
-
-		return reset(windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
-	#elif defined(__ANDROID__)
-		int width;  window->query(window, NATIVE_WINDOW_WIDTH, &width);
-		int height; window->query(window, NATIVE_WINDOW_HEIGHT, &height);
-
-		return reset(width, height);
-	#elif defined(__linux__)
-		XWindowAttributes windowAttributes;
-		libX11->XGetWindowAttributes((::Display*)display->getNativeDisplay(), window, &windowAttributes);
-
-		return reset(windowAttributes.width, windowAttributes.height);
-	#elif defined(__APPLE__)
-		int width;
-		int height;
-		sw::OSX::GetNativeWindowSize(window, width, height);
-
-		return reset(width, height);
-	#else
-		#error "WindowSurface::initialize unimplemented for this platform"
-	#endif
+	return checkForResize();
 }
 
 void WindowSurface::swap()
@@ -313,17 +290,17 @@ bool WindowSurface::checkForResize()
 
     if(sizeDirty)
     {
-        reset(clientWidth, clientHeight);
+        bool success = reset(clientWidth, clientHeight);
 
-        if(static_cast<egl::Surface*>(getCurrentDrawSurface()) == this)
+        if(getCurrentDrawSurface() == this)
         {
-			static_cast<egl::Context*>(getCurrentContext())->makeCurrent(this);
+			getCurrentContext()->makeCurrent(this);
         }
 
-        return true;
+        return success;
     }
 
-    return false;
+    return true;   // Success
 }
 
 void WindowSurface::deleteResources()
