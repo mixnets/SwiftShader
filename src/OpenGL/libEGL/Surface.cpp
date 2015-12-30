@@ -38,7 +38,6 @@ namespace egl
 
 Surface::Surface(const Display *display, const Config *config) : display(display), config(config)
 {
-	backBuffer = nullptr;
     depthStencil = nullptr;
     texture = nullptr;
 
@@ -61,23 +60,7 @@ Surface::~Surface()
 
 bool Surface::initialize()
 {
-	ASSERT(!backBuffer && !depthStencil);
-
-	if(libGLES_CM)
-	{
-		backBuffer = libGLES_CM->createBackBuffer(width, height, config);
-	}
-	else if(libGLESv2)
-	{
-		backBuffer = libGLESv2->createBackBuffer(width, height, config);
-	}
-
-    if(!backBuffer)
-    {
-        ERR("Could not create back buffer");
-        deleteResources();
-        return error(EGL_BAD_ALLOC, false);
-    }
+	ASSERT(!depthStencil);
 
     if(config->mDepthStencilFormat != sw::FORMAT_NULL)
     {
@@ -114,22 +97,6 @@ void Surface::deleteResources()
         texture->releaseTexImage();
         texture = nullptr;
     }
-
-	if(backBuffer)
-	{
-		backBuffer->release();
-		backBuffer = nullptr;
-	}
-}
-
-egl::Image *Surface::getRenderTarget()
-{
-    if(backBuffer)
-    {
-        backBuffer->addRef();
-    }
-
-    return backBuffer;
 }
 
 egl::Image *Surface::getDepthStencil()
@@ -228,6 +195,7 @@ WindowSurface::WindowSurface(Display *display, const Config *config, EGLNativeWi
     : Surface(display, config), window(window)
 {
     frameBuffer = nullptr;
+	backBuffer = nullptr;
 }
 
 bool WindowSurface::initialize()
@@ -250,6 +218,16 @@ void WindowSurface::swap()
 EGLNativeWindowType WindowSurface::getWindowHandle() const
 {
     return window;
+}
+
+egl::Image *WindowSurface::getRenderTarget()
+{
+    if(backBuffer)
+    {
+        backBuffer->addRef();
+    }
+
+    return backBuffer;
 }
 
 bool WindowSurface::checkForResize()
@@ -301,6 +279,12 @@ void WindowSurface::deleteResources()
 	delete frameBuffer;
 	frameBuffer = nullptr;
 
+	if(backBuffer)
+	{
+		backBuffer->release();
+		backBuffer = nullptr;
+	}
+
 	Surface::deleteResources();
 }
 
@@ -328,6 +312,15 @@ bool WindowSurface::reset(int backBufferWidth, int backBufferHeight)
 			deleteResources();
 			return error(EGL_BAD_ALLOC, false);
 		}
+
+		if(libGLES_CM)
+		{
+			backBuffer = libGLES_CM->createBackBuffer(width, height, config);
+		}
+		else if(libGLESv2)
+		{
+			backBuffer = libGLESv2->createBackBuffer(width, height, config);
+		}
     }
 
 	return Surface::initialize();
@@ -339,6 +332,31 @@ PBufferSurface::PBufferSurface(Display *display, const Config *config, EGLint wi
 	this->width = width;
 	this->height = height;
 	this->largestPBuffer = largestPBuffer;
+
+	offscreenBuffer = nullptr;
+}
+
+bool PBufferSurface::initialize()
+{
+	ASSERT(!offscreenBuffer && !depthStencil);
+
+	if(libGLES_CM)
+	{
+		offscreenBuffer = libGLES_CM->createBackBuffer(width, height, config);
+	}
+	else if(libGLESv2)
+	{
+		offscreenBuffer = libGLESv2->createBackBuffer(width, height, config);
+	}
+
+    if(!offscreenBuffer)
+    {
+        ERR("Could not create back buffer");
+        deleteResources();
+        return error(EGL_BAD_ALLOC, false);
+    }
+
+	return Surface::initialize();
 }
 
 void PBufferSurface::swap()
@@ -351,6 +369,27 @@ EGLNativeWindowType PBufferSurface::getWindowHandle() const
 	UNREACHABLE(-1);   // Should not be called. Only WindowSurface has a window handle.
 
     return 0;
+}
+
+egl::Image *PBufferSurface::getRenderTarget()
+{
+    if(offscreenBuffer)
+    {
+        offscreenBuffer->addRef();
+    }
+
+    return offscreenBuffer;
+}
+
+void PBufferSurface::deleteResources()
+{
+	if(offscreenBuffer)
+	{
+		offscreenBuffer->release();
+		offscreenBuffer = nullptr;
+	}
+
+	Surface::deleteResources();
 }
 
 }

@@ -34,7 +34,7 @@ public:
 	virtual bool initialize();
     virtual void swap() = 0;
     
-    virtual egl::Image *getRenderTarget();
+    virtual egl::Image *getRenderTarget() = 0;
     virtual egl::Image *getDepthStencil();
 
 	void setSwapBehavior(EGLenum swapBehavior);
@@ -69,7 +69,6 @@ protected:
 
     const Display *const display;
     Image *depthStencil;
-	Image *backBuffer;
 	Texture *texture;
 
 	bool reset(int backbufferWidth, int backbufferHeight);
@@ -104,6 +103,7 @@ public:
 	void swap() override;
 
 	EGLNativeWindowType getWindowHandle() const override;
+	egl::Image *getRenderTarget() override;
 
 private:
 	void deleteResources() override;
@@ -112,6 +112,7 @@ private:
 
 	const EGLNativeWindowType window;
 	sw::FrameBuffer *frameBuffer;
+	Image *backBuffer;
 };
 
 class PBufferSurface : public Surface
@@ -119,10 +120,18 @@ class PBufferSurface : public Surface
 public:
 	PBufferSurface(Display *display, const egl::Config *config, EGLint width, EGLint height, EGLenum textureFormat, EGLenum textureTarget, EGLBoolean largestPBuffer);
 
+	bool initialize() override;
+
 	bool isPBufferSurface() const override { return true; }
 	void swap() override;
 
 	EGLNativeWindowType getWindowHandle() const override;
+	egl::Image *getRenderTarget() override;
+
+private:
+	void deleteResources() override;
+
+	Image *offscreenBuffer;
 };
 }
 
