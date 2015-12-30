@@ -3275,7 +3275,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 		return error(GL_INVALID_OPERATION);
 	}
 
-	GLsizei outputPitch = egl::ComputePitch((mState.packRowLength > 0) ? mState.packRowLength : width, format, type, mState.packAlignment);
+	GLsizei outputPitch = ComputePitch((mState.packRowLength > 0) ? mState.packRowLength : width, format, type, mState.packAlignment);
 	GLsizei outputHeight = (mState.packImageHeight == 0) ? height : mState.packImageHeight;
 	pixels = getPixelPackBuffer() ? (unsigned char*)getPixelPackBuffer()->data() + (ptrdiff_t)pixels : (unsigned char*)pixels;
 	pixels = ((char*)pixels) + (mState.packSkipImages * outputHeight + mState.packSkipRows) * outputPitch + mState.packSkipPixels;

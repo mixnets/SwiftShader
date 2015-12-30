@@ -951,7 +951,7 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 			return error(GL_INVALID_ENUM);
 		}
 
-		if(imageSize != egl::ComputeCompressedSize(width, height, internalformat))
+		if(imageSize != ComputeCompressedSize(width, height, internalformat))
 		{
 			return error(GL_INVALID_VALUE);
 		}
@@ -1030,7 +1030,7 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 			return error(GL_INVALID_VALUE);
 		}
 
-		if(imageSize != egl::ComputeCompressedSize(width, height, format))
+		if(imageSize != ComputeCompressedSize(width, height, format))
 		{
 			return error(GL_INVALID_VALUE);
 		}
@@ -7218,7 +7218,7 @@ void CompressedTexImage3DOES(GLenum target, GLint level, GLenum internalformat, 
 		}
 	}
 
-	if(imageSize != egl::ComputeCompressedSize(width, height, internalformat) * depth)
+	if(imageSize != ComputeCompressedSize(width, height, internalformat) * depth)
 	{
 		return error(GL_INVALID_VALUE);
 	}

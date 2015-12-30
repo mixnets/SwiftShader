@@ -15,7 +15,7 @@
 #define LIBGLES_CM_UTILITIES_H
 
 #include "Device.hpp"
-#include "common/Image.hpp"
+#include "common/TextureImage.hpp"
 #include "Texture.h"
 
 #include <GLES/gl.h>
@@ -25,6 +25,8 @@
 
 namespace es1
 {
+	using namespace gl;
+
 	struct Color;
 
 	bool IsCompressed(GLenum format);
