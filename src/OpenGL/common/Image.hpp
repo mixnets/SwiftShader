@@ -33,9 +33,6 @@ typedef int GLint;
 typedef int GLsizei;
 
 sw::Format SelectInternalFormat(GLenum format, GLenum type);
-GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment);
-GLsizei ComputeCompressedPitch(GLsizei width, GLenum format);
-GLsizei ComputeCompressedSize(GLsizei width, GLsizei height, GLenum format);
 
 static inline sw::Resource *getParentResource(egl::Texture *texture)
 {
@@ -45,15 +42,6 @@ static inline sw::Resource *getParentResource(egl::Texture *texture)
 class Image : public sw::Surface
 {
 public:
-	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
-		: sw::Surface(getParentResource(parentTexture), width, height, 1, SelectInternalFormat(format, type), true, true),
-		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
-		  parentTexture(parentTexture)
-	{
-		shared = false;
-		referenceCount = 1;
-	}
-
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
 		: sw::Surface(getParentResource(parentTexture), width, height, depth, SelectInternalFormat(format, type), true, true),
 		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(depth),
@@ -169,9 +157,6 @@ protected:
 	volatile int referenceCount;
 
 	virtual ~Image();
-
-	void loadD24S8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer);
-	void loadD32FS8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer);
 };
 
 #ifdef __ANDROID__
