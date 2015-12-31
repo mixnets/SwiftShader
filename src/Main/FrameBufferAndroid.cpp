@@ -33,11 +33,11 @@ namespace sw
 
     FrameBufferAndroid::FrameBufferAndroid(ANativeWindow* window, int width, int height)
 			: FrameBuffer(width, height, false, false),
-			  nativeWindow(window), buffer(0), gralloc(0)
+			  nativeWindow(window), buffer(nullptr), gralloc(nullptr)
     {
-        hw_module_t const* pModule;
-        hw_get_module(GRALLOC_HARDWARE_MODULE_ID, &pModule);
-        gralloc = reinterpret_cast<gralloc_module_t const*>(pModule);
+        hw_module_t const *module = nullptr;
+        hw_get_module(GRALLOC_HARDWARE_MODULE_ID, &module);
+        gralloc = reinterpret_cast<gralloc_module_t const*>(module);
 
         nativeWindow->common.incRef(&nativeWindow->common);
         native_window_set_usage(nativeWindow, GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN);
@@ -45,78 +45,86 @@ namespace sw
 
     FrameBufferAndroid::~FrameBufferAndroid()
     {
-        if (buffer)
+        if(buffer)
         {
             // Probably doesn't have to cancel assuming a success queueing earlier
             cancelBuffer(nativeWindow, buffer, -1);
-            buffer = 0;
+            buffer = nullptr;
         }
+
         nativeWindow->common.decRef(&nativeWindow->common);
     }
 
-    void FrameBufferAndroid::blit(void *source, const Rect *sourceRect, const Rect *destRect, Format sourceFormat, size_t sourceStride)
+    void FrameBufferAndroid::blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect)
     {
-        copy(source, sourceFormat, sourceStride);
-		if (buffer)
+        copy(source);
+		
+		if(buffer)
 		{
 			queueBuffer(nativeWindow, buffer, -1);
-			if (locked)
+		
+			if(locked)
 			{
 				locked = 0;
 				unlock();
 			}
+
 			buffer->common.decRef(&buffer->common);
 		}
     }
 
-    void* FrameBufferAndroid::lock()
+    void *FrameBufferAndroid::lock()
     {
-        if (dequeueBuffer(nativeWindow, &buffer) != 0)
+        if(dequeueBuffer(nativeWindow, &buffer) != 0)
         {
-            return NULL;
+            return nullptr;
         }
 
         buffer->common.incRef(&buffer->common);
 
-        if (gralloc->lock(
-				gralloc, buffer->handle,
-				GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN,
-				0, 0, buffer->width, buffer->height, &locked) != 0)
+        if(gralloc->lock(gralloc, buffer->handle,
+		                 GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN,
+		                 0, 0, buffer->width, buffer->height, &locked) != 0)
         {
             ALOGE("%s failed to lock buffer %p", __FUNCTION__, buffer);
-            return NULL;
+
+			return nullptr;
         }
 
-		if ((buffer->width < width) || (buffer->height < height))
+		if((buffer->width < width) || (buffer->height < height))
 		{
-			ALOGI("lock failed: buffer of %dx%d too small for window of %dx%d",
-				  buffer->width, buffer->height, width, height);
-			return NULL;
+			ALOGI("lock failed: buffer of %dx%d too small for window of %dx%d", buffer->width, buffer->height, width, height);
+
+			return nullptr;
 		}
 
 		switch(buffer->format)
 		{
 		default: ALOGE("Unsupported buffer format %d", buffer->format); ASSERT(false);
-		case HAL_PIXEL_FORMAT_RGB_565: destFormat = FORMAT_R5G6B5; break;
-		case HAL_PIXEL_FORMAT_RGB_888: destFormat = FORMAT_R8G8B8; break;
+		case HAL_PIXEL_FORMAT_RGB_565:   destFormat = FORMAT_R5G6B5;   break;
+		case HAL_PIXEL_FORMAT_RGB_888:   destFormat = FORMAT_R8G8B8;   break;
 		case HAL_PIXEL_FORMAT_RGBA_8888: destFormat = FORMAT_A8B8G8R8; break;
 		case HAL_PIXEL_FORMAT_RGBX_8888: destFormat = FORMAT_X8B8G8R8; break;
 		case HAL_PIXEL_FORMAT_BGRA_8888: destFormat = FORMAT_A8R8G8B8; break;
 		}
 
         stride = buffer->stride * Surface::bytes(destFormat);
+
         return locked;
     }
 
     void FrameBufferAndroid::unlock()
     {
-        if (!buffer)
+        if(!buffer)
 		{
 			ALOGE("%s: badness unlock with no active buffer", __FUNCTION__);
+
 			return;
 		}
-		locked = 0;
-        if (gralloc->unlock(gralloc, buffer->handle) != 0)
+
+		locked = nullptr;
+
+		if(gralloc->unlock(gralloc, buffer->handle) != 0)
 		{
 			ALOGE("%s: badness unlock failed", __FUNCTION__);
 		}

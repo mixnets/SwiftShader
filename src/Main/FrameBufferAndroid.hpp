@@ -16,8 +16,8 @@ namespace sw
 
         ~FrameBufferAndroid();
 
-        void flip(void *source, Format sourceFormat, size_t sourceStride) override {blit(source, 0, 0, sourceFormat, sourceStride);};
-		void blit(void *source, const Rect *sourceRect, const Rect *destRect, Format sourceFormat, size_t sourceStride) override;
+        void flip(sw::Surface *source) override {blit(source, nullptr, nullptr);};
+		void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
 
 		void *lock() override;
 		void unlock() override;
@@ -25,9 +25,9 @@ namespace sw
         bool setSwapRectangle(int l, int t, int w, int h);
 
     private:
-        ANativeWindow* nativeWindow;
-        ANativeWindowBuffer* buffer;
-        gralloc_module_t const* gralloc;
+        ANativeWindow *nativeWindow;
+        ANativeWindowBuffer *buffer;
+        gralloc_module_t const *gralloc;
     };
 }
 

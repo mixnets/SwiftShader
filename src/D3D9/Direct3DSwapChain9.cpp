@@ -146,9 +146,6 @@ namespace D3D9
 		#endif
 
 		HWND window = destWindowOverride ? destWindowOverride : presentParameters.hDeviceWindow;
-		void *source = backBuffer[0]->lockInternal(0, 0, 0, sw::LOCK_READONLY, sw::PUBLIC);   // FIXME: External
-		sw::Format format = backBuffer[0]->getInternalFormat();
-		int stride = backBuffer[0]->getInternalPitchB();
 
 		POINT point;
 		GetCursorPos(&point);
@@ -158,7 +155,7 @@ namespace D3D9
 
 		if(!sourceRect && !destRect)   // FIXME: More cases?
 		{
-			frameBuffer->flip(window, source, format, stride);
+			frameBuffer->flip(window, backBuffer[0]);
 		}
 		else   // FIXME: Check for SWAPEFFECT_COPY
 		{
@@ -181,10 +178,8 @@ namespace D3D9
 				dRect.y1 = destRect->bottom;
 			}
 
-			frameBuffer->blit(window, source, sourceRect ? &sRect : 0, destRect ? &dRect : 0, format, stride);
+			frameBuffer->blit(window, backBuffer[0], sourceRect ? &sRect : nullptr, destRect ? &dRect : nullptr);
 		}
-
-		backBuffer[0]->unlockInternal();   // FIXME: External
 
 		return D3D_OK;
 	}
