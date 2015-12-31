@@ -32,9 +32,9 @@ typedef unsigned int GLenum;
 typedef int GLint;
 typedef int GLsizei;
 
+sw::Format ConvertFormatType(GLenum format, GLenum type);
 sw::Format SelectInternalFormat(GLenum format, GLenum type);
 GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment);
-GLsizei ComputeCompressedPitch(GLsizei width, GLenum format);
 GLsizei ComputeCompressedSize(GLsizei width, GLsizei height, GLenum format);
 
 static inline sw::Resource *getParentResource(egl::Texture *texture)
