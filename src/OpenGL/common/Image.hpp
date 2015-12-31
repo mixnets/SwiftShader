@@ -26,11 +26,6 @@
 
 namespace egl
 {
-// Types common between gl.h and gl2.h
-// We can't include either header in EGL
-typedef unsigned int GLenum;
-typedef int GLint;
-typedef int GLsizei;
 
 sw::Format SelectInternalFormat(GLenum format, GLenum type);
 GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment);
