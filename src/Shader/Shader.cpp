@@ -1806,7 +1806,7 @@ namespace sw
 	// This is used to know what basic block to return to.
 	void Shader::analyzeCallSites()
 	{
-		int callSiteIndex[2048] = {0};
+		int callSiteIndex[2048] = {};
 
 		for(unsigned int i = 0; i < instruction.size(); i++)
 		{

@@ -1853,7 +1853,7 @@ namespace D3D9
 
 			static void (__cdecl *blitFunction)(void *dst, void *src);
 			static sw::Routine *blitRoutine;
-			static sw::BlitState blitState = {0};
+			static sw::BlitState blitState = {};
 
 			sw::BlitState update;
 			update.width = sourceDescription.Width;

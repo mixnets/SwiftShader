@@ -260,7 +260,7 @@ namespace D3D9
 			return INVALIDCALL();
 		}
 
-		D3DDISPLAYMODEEX fullscreenDisplayMode = {0};
+		D3DDISPLAYMODEEX fullscreenDisplayMode = {};
 		fullscreenDisplayMode.Size = sizeof(D3DDISPLAYMODEEX);
 		fullscreenDisplayMode.Format = presentParameters->BackBufferFormat;
 		fullscreenDisplayMode.Width = presentParameters->BackBufferWidth;

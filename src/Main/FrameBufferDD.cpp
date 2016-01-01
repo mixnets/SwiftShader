@@ -17,7 +17,7 @@ namespace sw
 {
 	extern bool forceWindowed;
 
-	GUID secondaryDisplay = {0};
+	GUID secondaryDisplay = {};
 
 	int __stdcall enumDisplayCallback(GUID* guid, char *driverDescription, char *driverName, void *context, HMONITOR monitor)
 	{
@@ -74,7 +74,7 @@ namespace sw
 
 		if(!windowed)
 		{
-			DDSURFACEDESC surfaceDescription = {0};
+			DDSURFACEDESC surfaceDescription = {};
 			surfaceDescription.dwSize = sizeof(surfaceDescription);
 			surfaceDescription.dwFlags = DDSD_CAPS | DDSD_BACKBUFFERCOUNT;
 			surfaceDescription.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE | DDSCAPS_FLIP | DDSCAPS_COMPLEX;
@@ -83,7 +83,7 @@ namespace sw
 
 			if(frontBuffer)
 			{
-				DDSCAPS surfaceCapabilties = {0};
+				DDSCAPS surfaceCapabilties = {};
 				surfaceCapabilties.dwCaps = DDSCAPS_BACKBUFFER;
 				frontBuffer->GetAttachedSurface(&surfaceCapabilties, &backBuffer);
 				backBuffer->AddRef();
@@ -93,7 +93,7 @@ namespace sw
 		{
 			IDirectDrawClipper *clipper;
 			
-			DDSURFACEDESC ddsd = {0};
+			DDSURFACEDESC ddsd = {};
 			ddsd.dwSize = sizeof(ddsd);
 			ddsd.dwFlags = DDSD_CAPS;
 			ddsd.ddsCaps.dwCaps	= DDSCAPS_PRIMARYSURFACE;

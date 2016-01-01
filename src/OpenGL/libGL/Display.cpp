@@ -206,7 +206,7 @@ NativeDisplayType Display::getNativeDisplay() const
 
 DisplayMode Display::getDisplayMode() const
 {
-	DisplayMode displayMode = {0};
+	DisplayMode displayMode = {};
 
 	#if defined(_WIN32)
 		HDC deviceContext = GetDC(0);

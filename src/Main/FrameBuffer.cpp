@@ -193,7 +193,7 @@ namespace sw
 
 	void FrameBuffer::copyLocked()
 	{
-		BlitState update = {0};
+		BlitState update = {};
 
 		update.width = width;
 		update.height = height;

@@ -1017,7 +1017,7 @@ namespace gl
 			}
 			else if(m == 1)
 			{
-				int space[4] = {0};
+				int space[4] = {};
 
 				for(int y = 0; y < MAX_VARYING_VECTORS; y++)
 				{
