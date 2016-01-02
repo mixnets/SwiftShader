@@ -211,7 +211,7 @@ VertexBuffer::VertexBuffer(unsigned int size) : mVertexBuffer(NULL)
         
         if(!mVertexBuffer)
         {
-            ERR("Out of memory allocating a vertex buffer of size %lu.", size);
+            ERR("Out of memory allocating a vertex buffer of size %u.", size);
         }
     }
 }
@@ -304,7 +304,7 @@ void StreamingVertexBuffer::reserveRequiredSpace()
     
         if(!mVertexBuffer)
         {
-            ERR("Out of memory allocating a vertex buffer of size %lu.", mBufferSize);
+            ERR("Out of memory allocating a vertex buffer of size %u.", mBufferSize);
         }
 
         mWritePosition = 0;

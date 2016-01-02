@@ -170,7 +170,7 @@ StreamingIndexBuffer::StreamingIndexBuffer(unsigned int initialSize) : mIndexBuf
 
         if(!mIndexBuffer)
         {
-            ERR("Out of memory allocating an index buffer of size %lu.", initialSize);
+            ERR("Out of memory allocating an index buffer of size %u.", initialSize);
         }
     }
 
@@ -230,7 +230,7 @@ void StreamingIndexBuffer::reserveSpace(unsigned int requiredSpace, GLenum type)
     
         if(!mIndexBuffer)
         {
-            ERR("Out of memory allocating an index buffer of size %lu.", mBufferSize);
+            ERR("Out of memory allocating an index buffer of size %u.", mBufferSize);
         }
 
         mWritePosition = 0;
