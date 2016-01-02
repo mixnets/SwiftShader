@@ -4747,7 +4747,7 @@ extern "C" __eglMustCastToProperFunctionPointerType es1GetProcAddress(const char
 		#undef EXTENSION
 	};
 
-	for(int ext = 0; ext < sizeof(glExtensions) / sizeof(Extension); ext++)
+	for(unsigned int ext = 0; ext < sizeof(glExtensions) / sizeof(Extension); ext++)
 	{
 		if(strcmp(procname, glExtensions[ext].name) == 0)
 		{
