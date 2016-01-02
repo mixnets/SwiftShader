@@ -193,7 +193,7 @@ namespace glsl
 		else UNREACHABLE(0);
 	}
 
-	OutputASM::OutputASM(TParseContext &context, Shader *shaderObject) : TIntermTraverser(true, true, true), mContext(context), shaderObject(shaderObject)
+	OutputASM::OutputASM(TParseContext &context, Shader *shaderObject) : TIntermTraverser(true, true, true), shaderObject(shaderObject), mContext(context)
 	{
 		shader = 0;
 		pixelShader = 0;
@@ -2320,7 +2320,7 @@ namespace glsl
 		return sw::Shader::PARAMETER_VOID;
 	}
 
-	int OutputASM::registerIndex(TIntermTyped *operand)
+	unsigned int OutputASM::registerIndex(TIntermTyped *operand)
 	{
 		if(isSamplerRegister(operand))
 		{

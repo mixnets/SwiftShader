@@ -4198,7 +4198,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 		return error(GL_INVALID_VALUE);
 	}
 
-	if(internalformat != format)
+	if(internalformat != (GLint)format)
 	{
 		return error(GL_INVALID_OPERATION);
 	}
