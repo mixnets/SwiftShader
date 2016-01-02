@@ -301,7 +301,7 @@ namespace es1
 			case DRAW_TRIANGLELIST:  drawType = sw::DRAW_INDEXEDTRIANGLELIST32;  break;
 			case DRAW_TRIANGLESTRIP: drawType = sw::DRAW_INDEXEDTRIANGLESTRIP32; break;
 			case DRAW_TRIANGLEFAN:   drawType = sw::DRAW_INDEXEDTRIANGLEFAN32;	  break;
-			default: UNREACHABLE(type);
+			default: UNREACHABLE(type); return;
 			}
 		}
 		else if(indexSize == 2)
@@ -315,7 +315,7 @@ namespace es1
 			case DRAW_TRIANGLELIST:  drawType = sw::DRAW_INDEXEDTRIANGLELIST16;  break;
 			case DRAW_TRIANGLESTRIP: drawType = sw::DRAW_INDEXEDTRIANGLESTRIP16; break;
 			case DRAW_TRIANGLEFAN:   drawType = sw::DRAW_INDEXEDTRIANGLEFAN16;   break;
-			default: UNREACHABLE(type);
+			default: UNREACHABLE(type); return;
 			}
 		}
 		else if(indexSize == 1)
@@ -329,7 +329,7 @@ namespace es1
 			case DRAW_TRIANGLELIST:  drawType = sw::DRAW_INDEXEDTRIANGLELIST8;  break;
 			case DRAW_TRIANGLESTRIP: drawType = sw::DRAW_INDEXEDTRIANGLESTRIP8; break;
 			case DRAW_TRIANGLEFAN:   drawType = sw::DRAW_INDEXEDTRIANGLEFAN8;   break;
-			default: UNREACHABLE(type);
+			default: UNREACHABLE(type); return;
 			}
 		}
 		else UNREACHABLE(indexSize);
