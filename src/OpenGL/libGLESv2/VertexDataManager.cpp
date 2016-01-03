@@ -61,20 +61,20 @@ unsigned int VertexDataManager::writeAttributeData(StreamingVertexBuffer *vertex
     int elementSize = attribute.typeSize();
     unsigned int streamOffset = 0;
 
-    char *output = NULL;
+    char *output = nullptr;
     
     if(vertexBuffer)
     {
         output = (char*)vertexBuffer->map(attribute, attribute.typeSize() * count, &streamOffset);
     }
 
-    if(output == NULL)
+    if(!output)
     {
         ERR("Failed to map vertex buffer.");
         return -1;
     }
 
-    const char *input = NULL;
+    const char *input = nullptr;
 
     if(buffer)
     {
