@@ -3433,10 +3433,10 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
         return error(GL_INVALID_OPERATION);
     }
 
-    PrimitiveType primitiveType;
+    sw::DrawType primitiveType;
     int primitiveCount;
 
-    if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
+    if(!es2sw::ConvertPrimitiveType(mode, count, GL_NONE, primitiveType, primitiveCount))
         return error(GL_INVALID_ENUM);
 
     if(primitiveCount <= 0)
@@ -3488,10 +3488,10 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
         return error(GL_INVALID_OPERATION);
     }
 
-    PrimitiveType primitiveType;
+    sw::DrawType primitiveType;
     int primitiveCount;
 
-    if(!es2sw::ConvertPrimitiveType(mode, count, primitiveType, primitiveCount))
+    if(!es2sw::ConvertPrimitiveType(mode, count, type, primitiveType, primitiveCount))
         return error(GL_INVALID_ENUM);
 
     if(primitiveCount <= 0)
@@ -3534,7 +3534,7 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 
 		if(!cullSkipsDraw(mode))
 		{
-			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, IndexDataManager::typeSize(type));
+			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount);
 		}
 	}
 }
