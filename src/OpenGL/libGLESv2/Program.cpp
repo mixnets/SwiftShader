@@ -320,7 +320,7 @@ namespace es2
 		default: UNREACHABLE(type);
 		}
 
-		if(logicalTextureUnit >= 0 && logicalTextureUnit < MAX_COMBINED_TEXTURE_IMAGE_UNITS)
+		if(logicalTextureUnit < MAX_COMBINED_TEXTURE_IMAGE_UNITS)
 		{
 			return logicalTextureUnit;
 		}
@@ -1444,7 +1444,7 @@ namespace es2
 		{
 			const glsl::Uniform &uniform = activeUniforms[uniformIndex];
 
-			int blockIndex = -1;
+			unsigned int blockIndex = GL_INVALID_INDEX;
 			bool isRowMajorMatrix = false;
 			if(uniform.blockId >= 0)
 			{

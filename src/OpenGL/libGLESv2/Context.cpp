@@ -40,7 +40,7 @@
 namespace es2
 {
 Context::Context(const egl::Config *config, const Context *shareContext, EGLint clientVersion)
-	: mConfig(config), clientVersion(clientVersion)
+	: clientVersion(clientVersion), mConfig(config)
 {
 	sw::Context *context = new sw::Context();
 	device = new es2::Device(context);
@@ -2105,7 +2105,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
         break;
     case GL_TEXTURE_BINDING_2D:
         {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+            if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
             {
                 error(GL_INVALID_OPERATION);
                 return false;
@@ -2116,7 +2116,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
         break;
     case GL_TEXTURE_BINDING_CUBE_MAP:
         {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+            if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
             {
                 error(GL_INVALID_OPERATION);
                 return false;
@@ -2127,7 +2127,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
         break;
     case GL_TEXTURE_BINDING_EXTERNAL_OES:
         {
-            if(mState.activeSampler < 0 || mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+            if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
             {
                 error(GL_INVALID_OPERATION);
                 return false;
@@ -2139,7 +2139,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_TEXTURE_BINDING_3D_OES:
 	case GL_TEXTURE_BINDING_2D_ARRAY: // GLES 3.0
 	    {
-			if(mState.activeSampler < 0 || mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
+			if(mState.activeSampler > MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
 			{
 				error(GL_INVALID_OPERATION);
 				return false;
@@ -4274,13 +4274,13 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 		if((extensionsCat == nullptr) && (numExtensions > 0))
 		{
 			int totalLength = numExtensions; // 1 space between each extension name + terminating null
-			for(int i = 0; i < numExtensions; ++i)
+			for(unsigned int i = 0; i < numExtensions; i++)
 			{
 				totalLength += strlen(reinterpret_cast<const char*>(extensions[i]));
 			}
 			extensionsCat = new GLubyte[totalLength];
 			extensionsCat[0] = '\0';
-			for(int i = 0; i < numExtensions; ++i)
+			for(unsigned int i = 0; i < numExtensions; i++)
 			{
 				if(i != 0)
 				{

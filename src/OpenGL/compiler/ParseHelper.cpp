@@ -509,7 +509,7 @@ bool TParseContext::constructorErrorCheck(const TSourceLoc &line, TIntermNode* n
     if(type->isArray()) {
         if(type->getArraySize() == 0) {
             type->setArraySize(function.getParamCount());
-        } else if(type->getArraySize() != function.getParamCount()) {
+        } else if(type->getArraySize() != (int)function.getParamCount()) {
             error(line, "array constructor needs one argument per array element", "constructor");
             return true;
         }
