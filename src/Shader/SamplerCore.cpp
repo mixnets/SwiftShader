@@ -221,6 +221,7 @@ namespace sw
 				case FORMAT_X32B32G32R32UI:
 				case FORMAT_A32B32G32R32I:
 				case FORMAT_A32B32G32R32UI:
+				case FORMAT_B8G8R8:
 				case FORMAT_X8R8G8B8:
 				case FORMAT_X8B8G8R8:
 				case FORMAT_A8R8G8B8:
@@ -486,6 +487,7 @@ namespace sw
 				case FORMAT_G8R8:
 				case FORMAT_G16R16:
 				case FORMAT_A16B16G16R16:
+				case FORMAT_B8G8R8:
 				case FORMAT_X8R8G8B8:
 				case FORMAT_X8B8G8R8:
 				case FORMAT_A8R8G8B8:
@@ -1735,10 +1737,11 @@ namespace sw
 				break;
 			case 3:
 				{
-					Byte8 c0 = *Pointer<Byte8>(buffer[f0] + 4 * index[0]);
-					Byte8 c1 = *Pointer<Byte8>(buffer[f1] + 4 * index[1]);
-					Byte8 c2 = *Pointer<Byte8>(buffer[f2] + 4 * index[2]);
-					Byte8 c3 = *Pointer<Byte8>(buffer[f3] + 4 * index[3]);
+					int pixelSize = state.textureFormat == FORMAT_B8G8R8 ? 3 : 4;
+					Byte8 c0 = *Pointer<Byte8>(buffer[f0] + pixelSize * index[0]);
+					Byte8 c1 = *Pointer<Byte8>(buffer[f1] + pixelSize * index[1]);
+					Byte8 c2 = *Pointer<Byte8>(buffer[f2] + pixelSize * index[2]);
+					Byte8 c3 = *Pointer<Byte8>(buffer[f3] + pixelSize * index[3]);
 					c.x = UnpackLow(c0, c1);
 					c.y = UnpackLow(c2, c3);
 
@@ -1756,6 +1759,7 @@ namespace sw
 					case FORMAT_X8B8G8R8I_SNORM:
 					case FORMAT_X8B8G8R8UI:
 					case FORMAT_X8B8G8R8I:
+					case FORMAT_B8G8R8:
 					case FORMAT_X8B8G8R8:
 					case FORMAT_X8L8V8U8:
 						c.z = c.x;
@@ -2184,6 +2188,7 @@ namespace sw
 		case FORMAT_A32B32G32R32I:
 		case FORMAT_A32B32G32R32UI:
 		case FORMAT_G8R8:
+		case FORMAT_B8G8R8:
 		case FORMAT_X8R8G8B8:
 		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:
@@ -2232,6 +2237,7 @@ namespace sw
 		switch(state.textureFormat)
 		{
 		case FORMAT_G8R8:
+		case FORMAT_B8G8R8:
 		case FORMAT_X8R8G8B8:
 		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:
@@ -2323,6 +2329,7 @@ namespace sw
 		case FORMAT_A32B32G32R32I:
 		case FORMAT_A32B32G32R32UI:
 		case FORMAT_G8R8:
+		case FORMAT_B8G8R8:
 		case FORMAT_X8R8G8B8:
 		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:
@@ -2397,6 +2404,7 @@ namespace sw
 		case FORMAT_A32B32G32R32I:
 		case FORMAT_A32B32G32R32UI:
 		case FORMAT_G8R8:
+		case FORMAT_B8G8R8:
 		case FORMAT_X8R8G8B8:
 		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:
@@ -2463,6 +2471,7 @@ namespace sw
 		case FORMAT_A32B32G32R32I:  return component < 3;
 		case FORMAT_A32B32G32R32UI: return component < 3;
 		case FORMAT_G8R8:           return component < 2;
+		case FORMAT_B8G8R8:         return component < 3;
 		case FORMAT_X8R8G8B8:       return component < 3;
 		case FORMAT_X8B8G8R8:       return component < 3;
 		case FORMAT_A8R8G8B8:       return component < 3;

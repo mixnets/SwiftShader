@@ -1112,6 +1112,43 @@ namespace sw
 			pixel.z = UnpackLow(As<Byte8>(pixel.w), As<Byte8>(pixel.w));
 			pixel.w = Short4(0xFFFFu);
 			break;
+		case FORMAT_R8G8B8:
+			buffer = cBuffer + 3 * x;
+			c01 = *Pointer<Short4>(buffer);
+			buffer += *Pointer<Int>(r.data + OFFSET(DrawData, colorPitchB[index]));
+			c23 = *Pointer<Short4>(buffer);
+			pixel.z = c01;
+			pixel.y = c01;
+			pixel.z = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(c23));
+			pixel.y = UnpackHigh(As<Byte8>(pixel.y), As<Byte8>(c23));
+			pixel.x = pixel.z;
+			pixel.z = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(pixel.y));
+			pixel.x = UnpackHigh(As<Byte8>(pixel.x), As<Byte8>(pixel.y));
+			pixel.y = pixel.z;
+			pixel.x = UnpackLow(As<Byte8>(pixel.x), As<Byte8>(pixel.x));
+			pixel.y = UnpackHigh(As<Byte8>(pixel.y), As<Byte8>(pixel.y));
+			pixel.z = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(pixel.z));
+			pixel.w = Short4(0xFFFFu);
+			break;
+		case FORMAT_B8G8R8:
+			buffer = cBuffer + 3 * x;
+			c01 = *Pointer<Short4>(buffer);
+			buffer += *Pointer<Int>(r.data + OFFSET(DrawData, colorPitchB[index]));
+			c23 = *Pointer<Short4>(buffer);
+			pixel.z = c01;
+			pixel.y = c01;
+			pixel.z = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(c23));
+			pixel.y = UnpackHigh(As<Byte8>(pixel.y), As<Byte8>(c23));
+			pixel.x = pixel.z;
+			pixel.z = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(pixel.y));
+			pixel.x = UnpackHigh(As<Byte8>(pixel.x), As<Byte8>(pixel.y));
+			pixel.y = pixel.z;
+			pixel.w = pixel.x;
+			pixel.x = UnpackLow(As<Byte8>(pixel.z), As<Byte8>(pixel.z));
+			pixel.y = UnpackHigh(As<Byte8>(pixel.y), As<Byte8>(pixel.y));
+			pixel.z = UnpackLow(As<Byte8>(pixel.w), As<Byte8>(pixel.w));
+			pixel.w = Short4(0xFFFFu);
+			break;
 		case FORMAT_A8G8R8B8Q:
 			UNIMPLEMENTED();
 		//	pixel.z = UnpackLow(As<Byte8>(pixel.z), *Pointer<Byte8>(cBuffer + 8 * x + 0));
@@ -1391,6 +1428,8 @@ namespace sw
 				break;
 			case FORMAT_X8G8R8B8Q:
 			case FORMAT_A8G8R8B8Q:
+			case FORMAT_R8G8B8:
+			case FORMAT_B8G8R8:
 			case FORMAT_X8R8G8B8:
 			case FORMAT_X8B8G8R8:
 			case FORMAT_A8R8G8B8:
@@ -1437,9 +1476,10 @@ namespace sw
 		//	current.z = As<Short4>(Pack(As<UShort4>(current.z), As<UShort4>(current.x)));
 		//	current.y = As<Short4>(Pack(As<UShort4>(current.y), As<UShort4>(current.w)));
 			break;
+		case FORMAT_R8G8B8:
 		case FORMAT_X8R8G8B8:
 		case FORMAT_A8R8G8B8:
-			if(state.targetFormat[index] == FORMAT_X8R8G8B8 || rgbaWriteMask == 0x7)
+			if(state.targetFormat[index] == FORMAT_R8G8B8 || state.targetFormat[index] == FORMAT_X8R8G8B8 || rgbaWriteMask == 0x7)
 			{
 				current.x = As<Short4>(As<UShort4>(current.x) >> 8);
 				current.y = As<Short4>(As<UShort4>(current.y) >> 8);
@@ -1473,9 +1513,10 @@ namespace sw
 				current.y = As<Short4>(UnpackHigh(current.y, current.x));
 			}
 			break;
+		case FORMAT_B8G8R8:
 		case FORMAT_X8B8G8R8:
 		case FORMAT_A8B8G8R8:
-			if(state.targetFormat[index] == FORMAT_X8B8G8R8 || rgbaWriteMask == 0x7)
+			if(state.targetFormat[index] == FORMAT_B8G8R8 || state.targetFormat[index] == FORMAT_X8B8G8R8 || rgbaWriteMask == 0x7)
 			{
 				current.x = As<Short4>(As<UShort4>(current.x) >> 8);
 				current.y = As<Short4>(As<UShort4>(current.y) >> 8);
@@ -1665,13 +1706,28 @@ namespace sw
 			break;
 		case FORMAT_A8B8G8R8:
 		case FORMAT_X8B8G8R8:   // FIXME: Don't touch alpha?
+		case FORMAT_B8G8R8:
 			{
-				Pointer<Byte> buffer = cBuffer + x * 4;
-				Short4 value = *Pointer<Short4>(buffer);
+				Pointer<Byte> buffer;
+				Short4 value;
 
-				if((state.targetFormat[index] == FORMAT_A8B8G8R8 && rgbaWriteMask != 0x0000000F) ||
-				   ((state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask != 0x00000007) &&
-					(state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask != 0x0000000F)))   // FIXME: Need for masking when XBGR && Fh?
+				if(state.targetFormat[index] == FORMAT_A8B8G8R8 || state.targetFormat[index] == FORMAT_X8B8G8R8)
+				{
+					buffer = cBuffer + x * 4;
+					value = *Pointer<Short4>(buffer);
+				}
+				else   // FORMAT_B8R8G8
+				{
+					buffer = cBuffer + x * 3;
+					value = Insert(value, *Pointer<Short>(buffer + 0), 0);
+					value = Insert(value, *Pointer<Short>(buffer + 2), 1);
+					value = Insert(value, *Pointer<Short>(buffer + 4), 2);
+					value = As<Short4>(Swizzle(As<Byte8>(value), 0x0005040300020100));
+				}
+
+				if((state.targetFormat[index] == FORMAT_A8B8G8R8 && rgbaWriteMask < 0xF) ||
+				   (state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask < 0x7) ||   // FIXME: Need for masking when XBGR && Fh?
+				   (state.targetFormat[index] == FORMAT_B8G8R8   && rgbaWriteMask < 0x7))
 				{
 					Short4 masked = value;
 					c01 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskB4Q[rgbaWriteMask][0]));
@@ -1682,14 +1738,36 @@ namespace sw
 				c01 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD01Q) + xMask * 8);
 				value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD01Q) + xMask * 8);
 				c01 |= value;
-				*Pointer<Short4>(buffer) = c01;
+
+				if(state.targetFormat[index] == FORMAT_A8B8G8R8 || state.targetFormat[index] == FORMAT_X8B8G8R8)
+				{
+					*Pointer<Short4>(buffer) = c01;
+				}
+				else   // FORMAT_B8R8G8
+				{
+					c01 = As<Short4>(Swizzle(As<Byte8>(c01), 0x0000060504020100));
+					*Pointer<Short>(buffer + 0) = Extract(c01, 0);
+					*Pointer<Short>(buffer + 2) = Extract(c01, 1);
+					*Pointer<Short>(buffer + 4) = Extract(c01, 2);
+				}
 
 				buffer += *Pointer<Int>(r.data + OFFSET(DrawData,colorPitchB[index]));
-				value = *Pointer<Short4>(buffer);
+				
+				if(state.targetFormat[index] == FORMAT_A8B8G8R8 || state.targetFormat[index] == FORMAT_X8B8G8R8)
+				{
+					value = *Pointer<Short4>(buffer);
+				}
+				else   // FORMAT_B8R8G8
+				{
+					value = Insert(value, *Pointer<Short>(buffer + 0), 0);
+					value = Insert(value, *Pointer<Short>(buffer + 2), 1);
+					value = Insert(value, *Pointer<Short>(buffer + 4), 2);
+					value = As<Short4>(Swizzle(As<Byte8>(value), 0x0005040300020100));
+				}
 
-				if((state.targetFormat[index] == FORMAT_A8B8G8R8 && rgbaWriteMask != 0x0000000F) ||
-				   ((state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask != 0x00000007) &&
-					(state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask != 0x0000000F)))   // FIXME: Need for masking when XBGR && Fh?
+				if((state.targetFormat[index] == FORMAT_A8B8G8R8 && rgbaWriteMask < 0xF) ||
+				   (state.targetFormat[index] == FORMAT_X8B8G8R8 && rgbaWriteMask < 0x7) ||   // FIXME: Need for masking when XBGR && Fh?
+				   (state.targetFormat[index] == FORMAT_B8G8R8   && rgbaWriteMask < 0x7))
 				{
 					Short4 masked = value;
 					c23 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskB4Q[rgbaWriteMask][0]));
@@ -1700,7 +1778,18 @@ namespace sw
 				c23 &= *Pointer<Short4>(r.constants + OFFSET(Constants,maskD23Q) + xMask * 8);
 				value &= *Pointer<Short4>(r.constants + OFFSET(Constants,invMaskD23Q) + xMask * 8);
 				c23 |= value;
-				*Pointer<Short4>(buffer) = c23;
+				
+				if(state.targetFormat[index] == FORMAT_A8B8G8R8 || state.targetFormat[index] == FORMAT_X8B8G8R8)
+				{	
+					*Pointer<Short4>(buffer) = c23;
+				}
+				else   // FORMAT_B8R8G8
+				{
+					c23 = As<Short4>(Swizzle(As<Byte8>(c23), 0x0000060504020100));
+					*Pointer<Short>(buffer + 0) = Extract(c23, 0);
+					*Pointer<Short>(buffer + 2) = Extract(c23, 1);
+					*Pointer<Short>(buffer + 4) = Extract(c23, 2);
+				}
 			}
 			break;
 		case FORMAT_A8:
