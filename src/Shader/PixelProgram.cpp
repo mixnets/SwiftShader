@@ -580,6 +580,8 @@ namespace sw
 			switch(state.targetFormat[index])
 			{
 			case FORMAT_R5G6B5:
+			case FORMAT_R8G8B8:
+			case FORMAT_B8G8R8:
 			case FORMAT_X8R8G8B8:
 			case FORMAT_X8B8G8R8:
 			case FORMAT_A8R8G8B8:
@@ -692,6 +694,8 @@ namespace sw
 			case FORMAT_NULL:
 				break;
 			case FORMAT_R5G6B5:
+			case FORMAT_R8G8B8:
+			case FORMAT_B8G8R8:
 			case FORMAT_A8R8G8B8:
 			case FORMAT_A8B8G8R8:
 			case FORMAT_X8R8G8B8:

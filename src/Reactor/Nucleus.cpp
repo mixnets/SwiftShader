@@ -2270,6 +2270,23 @@ namespace sw
 		}
 	}
 
+	RValue<Byte8> Swizzle(RValue<Byte8> x, int64_t select)
+	{
+		Constant *shuffle[8];
+		shuffle[0] = Nucleus::createConstantInt((int)(select >> 0)  & 0x7);
+		shuffle[1] = Nucleus::createConstantInt((int)(select >> 8)  & 0x7);
+		shuffle[2] = Nucleus::createConstantInt((int)(select >> 16) & 0x7);
+		shuffle[3] = Nucleus::createConstantInt((int)(select >> 24) & 0x7);
+		shuffle[4] = Nucleus::createConstantInt((int)(select >> 32) & 0x7);
+		shuffle[5] = Nucleus::createConstantInt((int)(select >> 40) & 0x7);
+		shuffle[6] = Nucleus::createConstantInt((int)(select >> 48) & 0x7);
+		shuffle[7] = Nucleus::createConstantInt((int)(select >> 56) & 0x7);
+
+		return RValue<Byte8>(Nucleus::createBitCast(
+			Nucleus::createShuffleVector(Nucleus::createBitCast(x.value, VectorType::get(Byte::getType(), 8)), UndefValue::get(VectorType::get(Byte::getType(), 8)), Nucleus::createConstantVector(shuffle, 8)),
+			Byte8::getType()));
+	}
+
 	RValue<Int> SignMask(RValue<Byte8> x)
 	{
 		return x86::pmovmskb(x);

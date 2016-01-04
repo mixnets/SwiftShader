@@ -116,7 +116,7 @@ namespace sw
 			if(face == 0)
 			{
 				externalTextureFormat = surface->getExternalFormat();
-				internalTextureFormat = surface->getInternalFormat();
+				internalTextureFormat = FORMAT_B8G8R8;//surface->getInternalFormat();
 
 				int width = surface->getWidth();
 				int height = surface->getHeight();

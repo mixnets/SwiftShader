@@ -758,6 +758,7 @@ namespace sw
 	RValue<Short4> Unpack(RValue<Byte4> x);
 	RValue<Short4> UnpackLow(RValue<Byte8> x, RValue<Byte8> y);
 	RValue<Short4> UnpackHigh(RValue<Byte8> x, RValue<Byte8> y);
+	RValue<Byte8> Swizzle(RValue<Byte8> x, int64_t select);
 	RValue<Int> SignMask(RValue<Byte8> x);
 //	RValue<Byte8> CmpGT(RValue<Byte8> x, RValue<Byte8> y);
 	RValue<Byte8> CmpEQ(RValue<Byte8> x, RValue<Byte8> y);

@@ -390,7 +390,7 @@ EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EG
 	case EGL_LARGEST_PBUFFER:
 		if(eglSurface->isPBufferSurface())   // For a window or pixmap surface, the contents of *value are not modified.
 		{
-			*value = eglSurface->getLargestPBuffer();	
+			*value = eglSurface->getLargestPBuffer();
 		}
 		break;
 	case EGL_MIPMAP_TEXTURE:

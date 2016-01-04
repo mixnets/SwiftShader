@@ -681,6 +681,7 @@ namespace sw2es
 		case sw::FORMAT_A1R5G5B5: return GL_RGB5_A1_OES;
 		case sw::FORMAT_R5G6B5:   return GL_RGB565_OES;
 		case sw::FORMAT_X8R8G8B8: return GL_RGB8_OES;
+			case sw::FORMAT_B8G8R8: return GL_RGB8_OES;
 		case sw::FORMAT_X8B8G8R8: return GL_RGB8_OES;
 		default:
 			UNREACHABLE(format);

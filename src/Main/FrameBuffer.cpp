@@ -272,7 +272,7 @@ namespace sw
 						case FORMAT_A8R8G8B8:
 							For(, x < width - 3, x += 4)
 							{
-								*Pointer<Int4>(d, 1) = *Pointer<Int4>(s, width % 4 ? 1 : 16);
+								*Pointer<Int4>(d, 1) = *Pointer<Int4>(s);
 
 								s += 4 * sBytes;
 								d += 4 * dBytes;
@@ -280,9 +280,10 @@ namespace sw
 							break;
 						case FORMAT_X8B8G8R8:
 						case FORMAT_A8B8G8R8:
+						case FORMAT_B8G8R8:
 							For(, x < width - 3, x += 4)
 							{
-								Int4 bgra = *Pointer<Int4>(s, width % 4 ? 1 : 16);
+								Int4 bgra = *Pointer<Int4>(s);
 
 								*Pointer<Int4>(d, 1) = ((bgra & Int4(0x00FF0000)) >> 16) |
 								                       ((bgra & Int4(0x000000FF)) << 16) |
@@ -333,6 +334,7 @@ namespace sw
 								break;
 							case FORMAT_X8B8G8R8:
 							case FORMAT_A8B8G8R8:
+							case FORMAT_B8G8R8:
 								{
 									Int rgba = *Pointer<Int>(s);
 
@@ -379,7 +381,7 @@ namespace sw
 						case FORMAT_A8B8G8R8:
 							For(, x < width - 3, x += 4)
 							{
-								*Pointer<Int4>(d, 1) = *Pointer<Int4>(s, width % 4 ? 1 : 16);
+								*Pointer<Int4>(d, 1) = *Pointer<Int4>(s);
 
 								s += 4 * sBytes;
 								d += 4 * dBytes;
@@ -389,7 +391,7 @@ namespace sw
 						case FORMAT_A8R8G8B8:
 							For(, x < width - 3, x += 4)
 							{
-								Int4 bgra = *Pointer<Int4>(s, width % 4 ? 1 : 16);
+								Int4 bgra = *Pointer<Int4>(s);
 
 								*Pointer<Int4>(d, 1) = ((bgra & Int4(0x00FF0000)) >> 16) |
 								                       ((bgra & Int4(0x000000FF)) << 16) |
@@ -652,6 +654,7 @@ namespace sw
 			break;
 		case FORMAT_X8B8G8R8:
 		case FORMAT_A8B8G8R8:
+		case FORMAT_B8G8R8:
 			c2 = Swizzle(UnpackLow(As<Byte8>(c2), *Pointer<Byte8>(s)), 0xC6);
 			break;
 		case FORMAT_A16B16G16R16:

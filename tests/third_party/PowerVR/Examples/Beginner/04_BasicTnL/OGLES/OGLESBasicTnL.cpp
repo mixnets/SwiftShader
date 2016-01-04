@@ -103,7 +103,7 @@ bool OGLESBasicTnL::InitView()
 	*/
 	glGenTextures(1, &m_ui32Texture);
 	glBindTexture(GL_TEXTURE_2D, m_ui32Texture);
-	GLuint* pTexData = new GLuint[g_i32TexSize*g_i32TexSize];
+	GLbyte (*pTexData)[3] = new GLbyte[g_i32TexSize*g_i32TexSize*2][3];
 
 	for(int i = 0; i < g_i32TexSize; ++i)
 	{
@@ -114,7 +114,10 @@ bool OGLESBasicTnL::InitView()
 			if ( ((i*j)/8) % 2 )
 				col = 0xffff00ff;
 
-			pTexData[j*g_i32TexSize+i] = col;
+			pTexData[j*g_i32TexSize+i][0] = col >> 0;
+			pTexData[j*g_i32TexSize+i][1] = col >> 8;
+			pTexData[j*g_i32TexSize+i][2] = col >> 16;
+			//pTexData[j*g_i32TexSize+i][3] = col >> 24;
 		}
 	}
 
