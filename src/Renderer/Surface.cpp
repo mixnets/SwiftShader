@@ -2929,6 +2929,7 @@ namespace sw
 		switch(format)
 		{
 		case FORMAT_R5G6B5:         return 3;
+		case FORMAT_B8G8R8:         return 3;
 		case FORMAT_X8R8G8B8:       return 3;
 		case FORMAT_X8B8G8R8I:      return 3;
 		case FORMAT_X8B8G8R8:       return 3;
