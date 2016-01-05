@@ -4867,13 +4867,23 @@ namespace sw
 
 	RValue<Int2> Concatenate(RValue<Int> lo, RValue<Int> hi)
 	{
-		Constant *shuffle[2];
-		shuffle[0] = Nucleus::createConstantInt(0);
-		shuffle[1] = Nucleus::createConstantInt(1);
+		if(CPUID::supportsMMX2())
+		{
+			// movd mm0, lo
+			// movd mm1, hi
+			// punpckldq mm0, mm1
+			return As<Int2>(UnpackLow(As<Int2>(Long1(RValue<UInt>(lo))), As<Int2>(Long1(RValue<UInt>(hi)))));
+		}
+		else
+		{
+			Constant *shuffle[2];
+			shuffle[0] = Nucleus::createConstantInt(0);
+			shuffle[1] = Nucleus::createConstantInt(1);
 
-		Value *packed = Nucleus::createShuffleVector(Nucleus::createBitCast(lo.value, VectorType::get(Int::getType(), 1)), Nucleus::createBitCast(hi.value, VectorType::get(Int::getType(), 1)), Nucleus::createConstantVector(shuffle, 2));
+			Value *packed = Nucleus::createShuffleVector(Nucleus::createBitCast(lo.value, VectorType::get(Int::getType(), 1)), Nucleus::createBitCast(hi.value, VectorType::get(Int::getType(), 1)), Nucleus::createConstantVector(shuffle, 2));
 
-		return RValue<Int2>(Nucleus::createBitCast(packed, Int2::getType()));
+			return RValue<Int2>(Nucleus::createBitCast(packed, Int2::getType()));
+		}
 	}
 
 	RValue<Int> Extract(RValue<Int2> val, int i)
