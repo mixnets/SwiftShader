@@ -26,7 +26,7 @@
 #include <sys/ioctl.h>
 #include <linux/fb.h>
 #include <fcntl.h>
-#elif defined(__unix__)
+#elif defined(__linux__)
 #include "Main/libX11.hpp"
 #elif defined(__APPLE__)
 #include "OSXUtils.hpp"
@@ -39,12 +39,34 @@
 namespace egl
 {
 
-egl::Display *Display::getPlatformDisplay(EGLenum platform, void *nativeDisplay)
+Display *Display::get(EGLDisplay dpy)
+{
+	if(dpy != (EGLDisplay)1)   // We only support one default display
+	{
+		return nullptr;
+	}
+
+	static void *nativeDisplay = nullptr;
+
+	#if defined(__linux__)
+		// Even if the application provides a native display handle, we open (and close) our own connection
+		if(!nativeDisplay && libX11->XOpenDisplay)
+		{
+			nativeDisplay = libX11->XOpenDisplay(NULL);
+		}
+	#endif
+
+	static Display display(nativeDisplay);
+
+	return &display;
+}
+
+EGLDisplay Display::getPlatformDisplay(EGLenum platform, void *nativeDisplay)
 {
     #ifndef __ANDROID__
         if(platform == EGL_UNKNOWN)   // Default platform
         {
-            #if defined(__unix__)
+            #if defined(__linux__)
 				if(libX11)
 				{
 					platform = EGL_PLATFORM_X11_EXT;
@@ -56,49 +78,30 @@ egl::Display *Display::getPlatformDisplay(EGLenum platform, void *nativeDisplay)
             #endif
         }
 
-        if(!nativeDisplay)   // Default display
+        if(nativeDisplay == (void*)EGL_DEFAULT_DISPLAY)
         {
             if(platform == EGL_PLATFORM_X11_EXT)
             {
-                #if defined(__unix__)
-					if(libX11->XOpenDisplay)
-					{
-						nativeDisplay = libX11->XOpenDisplay(NULL);
-					}
-					else
+                #if defined(__linux__)
+					if(!libX11)
 					{
 						return error(EGL_BAD_PARAMETER, (egl::Display*)EGL_NO_DISPLAY);
 					}
                 #else
-                    return error(EGL_BAD_PARAMETER, (egl::Display*)EGL_NO_DISPLAY);
+                    return error(EGL_BAD_PARAMETER, EGL_NO_DISPLAY);
                 #endif
             }
         }
         else
         {
-            // FIXME: Check if nativeDisplay is a valid display device context for <platform>
+            // FIXME: Check if nativeDisplay is the default display for <platform>
         }
     #endif
 
-	static std::map<void*, Display*> displays;
-	static sw::BackoffLock displaysMutex;
-
-	displaysMutex.lock();
-
-    egl::Display *display = displays[nativeDisplay];
-
-    if(!display)
-	{
-        display = new egl::Display(platform, nativeDisplay);
-        displays[nativeDisplay] = display;
-    }
-
-    displaysMutex.unlock();
-
-    return display;
+    return (EGLDisplay)1;   // We only support one default display
 }
 
-Display::Display(EGLenum platform, void *nativeDisplay) : platform(platform), nativeDisplay(nativeDisplay)
+Display::Display(void *nativeDisplay) : nativeDisplay(nativeDisplay)
 {
     mMinSwapInterval = 1;
     mMaxSwapInterval = 1;
@@ -107,6 +110,13 @@ Display::Display(EGLenum platform, void *nativeDisplay) : platform(platform), na
 Display::~Display()
 {
     terminate();
+
+	#if defined(__linux__)
+		if(nativeDisplay && libX11->XCloseDisplay)
+		{
+			libX11->XCloseDisplay((::Display*)nativeDisplay);
+		}
+	#endif
 }
 
 static void cpuid(int registers[4], int info)
@@ -545,7 +555,7 @@ bool Display::isValidWindow(EGLNativeWindowType window)
 		}
 		return true;
     #elif defined(__linux__)
-        if(platform == EGL_PLATFORM_X11_EXT)
+        if(nativeDisplay)
         {
             XWindowAttributes windowAttributes;
             Status status = libX11->XGetWindowAttributes((::Display*)nativeDisplay, window, &windowAttributes);
@@ -669,7 +679,7 @@ sw::Format Display::getDisplayFormat() const
 		// No framebuffer device found, or we're in user space
 		return sw::FORMAT_X8B8G8R8;
     #elif defined(__linux__)
-        if(platform == EGL_PLATFORM_X11_EXT)
+        if(nativeDisplay)
         {
             Screen *screen = libX11->XDefaultScreenOfDisplay((::Display*)nativeDisplay);
             unsigned int bpp = libX11->XPlanesOfScreen(screen);
@@ -682,11 +692,10 @@ sw::Format Display::getDisplayFormat() const
             default: UNREACHABLE(bpp);   // Unexpected display mode color depth
             }
         }
-        else if(platform == EGL_PLATFORM_GBM_MESA)
+        else
         {
             return sw::FORMAT_X8R8G8B8;
         }
-        else UNREACHABLE(platform);
     #elif defined(__APPLE__)
         return sw::FORMAT_A8B8G8R8;
     #else
