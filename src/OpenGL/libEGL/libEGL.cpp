@@ -128,7 +128,7 @@ EGLBoolean Initialize(EGLDisplay dpy, EGLint *major, EGLint *minor)
 		return error(EGL_BAD_DISPLAY, EGL_FALSE);
 	}
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	if(!display->initialize())
 	{
@@ -150,7 +150,7 @@ EGLBoolean Terminate(EGLDisplay dpy)
 		return error(EGL_BAD_DISPLAY, EGL_FALSE);
 	}
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	display->terminate();
 
@@ -169,7 +169,7 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 		               "EGL_EXT_platform_base");
 	}
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	if(!validateDisplay(display))
 	{
@@ -203,7 +203,7 @@ EGLBoolean GetConfigs(EGLDisplay dpy, EGLConfig *configs, EGLint config_size, EG
 		  "EGLint config_size = %d, EGLint *num_config = %p)",
 		  dpy, configs, config_size, num_config);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	if(!validateDisplay(display))
 	{
@@ -231,7 +231,7 @@ EGLBoolean ChooseConfig(EGLDisplay dpy, const EGLint *attrib_list, EGLConfig *co
 		  "EGLConfig *configs = %p, EGLint config_size = %d, EGLint *num_config = %p)",
 		  dpy, attrib_list, configs, config_size, num_config);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	if(!validateDisplay(display))
 	{
@@ -263,7 +263,7 @@ EGLBoolean GetConfigAttrib(EGLDisplay dpy, EGLConfig config, EGLint attribute, E
 	TRACE("(EGLDisplay dpy = %p, EGLConfig config = %p, EGLint attribute = %d, EGLint *value = %p)",
 		  dpy, config, attribute, value);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	if(!validateConfig(display, config))
 	{
@@ -283,7 +283,7 @@ EGLSurface CreateWindowSurface(EGLDisplay dpy, EGLConfig config, EGLNativeWindow
 	TRACE("(EGLDisplay dpy = %p, EGLConfig config = %p, EGLNativeWindowType win = %p, "
 		  "const EGLint *attrib_list = %p)", dpy, config, window, attrib_list);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	if(!validateConfig(display, config))
 	{
@@ -303,7 +303,7 @@ EGLSurface CreatePbufferSurface(EGLDisplay dpy, EGLConfig config, const EGLint *
 	TRACE("(EGLDisplay dpy = %p, EGLConfig config = %p, const EGLint *attrib_list = %p)",
 		  dpy, config, attrib_list);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	if(!validateConfig(display, config))
 	{
@@ -318,7 +318,7 @@ EGLSurface CreatePixmapSurface(EGLDisplay dpy, EGLConfig config, EGLNativePixmap
 	TRACE("(EGLDisplay dpy = %p, EGLConfig config = %p, EGLNativePixmapType pixmap = %p, "
 		  "const EGLint *attrib_list = %p)", dpy, config, pixmap, attrib_list);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	if(!validateConfig(display, config))
 	{
@@ -334,7 +334,7 @@ EGLBoolean DestroySurface(EGLDisplay dpy, EGLSurface surface)
 {
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p)", dpy, surface);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	egl::Surface *eglSurface = static_cast<egl::Surface*>(surface);
 
 	if(!validateSurface(display, eglSurface))
@@ -357,7 +357,7 @@ EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EG
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLint attribute = %d, EGLint *value = %p)",
 		  dpy, surface, attribute, value);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	egl::Surface *eglSurface = (egl::Surface*)surface;
 
 	if(!validateSurface(display, eglSurface))
@@ -390,7 +390,7 @@ EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EG
 	case EGL_LARGEST_PBUFFER:
 		if(eglSurface->isPBufferSurface())   // For a window or pixmap surface, the contents of *value are not modified.
 		{
-			*value = eglSurface->getLargestPBuffer();	
+			*value = eglSurface->getLargestPBuffer();
 		}
 		break;
 	case EGL_MIPMAP_TEXTURE:
@@ -493,7 +493,7 @@ EGLBoolean SurfaceAttrib(EGLDisplay dpy, EGLSurface surface, EGLint attribute, E
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLint attribute = %d, EGLint value = %d)",
 		  dpy, surface, attribute, value);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	egl::Surface *eglSurface = static_cast<egl::Surface*>(surface);
 
 	if(!validateSurface(display, eglSurface))
@@ -528,7 +528,7 @@ EGLBoolean BindTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
 {
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLint buffer = %d)", dpy, surface, buffer);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	egl::Surface *eglSurface = static_cast<egl::Surface*>(surface);
 
 	if(!validateSurface(display, eglSurface))
@@ -570,7 +570,7 @@ EGLBoolean ReleaseTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
 {
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLint buffer = %d)", dpy, surface, buffer);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	egl::Surface *eglSurface = static_cast<egl::Surface*>(surface);
 
 	if(!validateSurface(display, eglSurface))
@@ -607,7 +607,7 @@ EGLBoolean SwapInterval(EGLDisplay dpy, EGLint interval)
 {
 	TRACE("(EGLDisplay dpy = %p, EGLint interval = %d)", dpy, interval);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	if(!validateDisplay(display))
 	{
@@ -647,7 +647,7 @@ EGLContext CreateContext(EGLDisplay dpy, EGLConfig config, EGLContext share_cont
 		}
 	}
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	egl::Context *shareContext = static_cast<egl::Context*>(share_context);
 
 	if(!validateConfig(display, config))
@@ -667,7 +667,7 @@ EGLBoolean DestroyContext(EGLDisplay dpy, EGLContext ctx)
 {
 	TRACE("(EGLDisplay dpy = %p, EGLContext ctx = %p)", dpy, ctx);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	egl::Context *context = static_cast<egl::Context*>(ctx);
 
 	if(!validateContext(display, context))
@@ -690,7 +690,7 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 	TRACE("(EGLDisplay dpy = %p, EGLSurface draw = %p, EGLSurface read = %p, EGLContext ctx = %p)",
 		  dpy, draw, read, ctx);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	egl::Context *context = static_cast<egl::Context*>(ctx);
 	egl::Surface *drawSurface = static_cast<egl::Surface*>(draw);
 	egl::Surface *readSurface = static_cast<egl::Surface*>(read);
@@ -785,7 +785,7 @@ EGLBoolean QueryContext(EGLDisplay dpy, EGLContext ctx, EGLint attribute, EGLint
 	TRACE("(EGLDisplay dpy = %p, EGLContext ctx = %p, EGLint attribute = %d, EGLint *value = %p)",
 		  dpy, ctx, attribute, value);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	egl::Context *context = static_cast<egl::Context*>(ctx);
 
 	if(!validateContext(display, context))
@@ -820,7 +820,7 @@ EGLBoolean SwapBuffers(EGLDisplay dpy, EGLSurface surface)
 {
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p)", dpy, surface);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	egl::Surface *eglSurface = (egl::Surface*)surface;
 
 	if(!validateSurface(display, eglSurface))
@@ -842,7 +842,7 @@ EGLBoolean CopyBuffers(EGLDisplay dpy, EGLSurface surface, EGLNativePixmapType t
 {
 	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLNativePixmapType target = %p)", dpy, surface, target);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	egl::Surface *eglSurface = static_cast<egl::Surface*>(surface);
 
 	if(!validateSurface(display, eglSurface))
@@ -859,7 +859,7 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 {
 	TRACE("(EGLDisplay dpy = %p, EGLContext ctx = %p, EGLenum target = 0x%X, buffer = %p, const EGLint attrib_list = %p)", dpy, ctx, target, buffer, attrib_list);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	egl::Context *context = static_cast<egl::Context*>(ctx);
 
 	if(!validateDisplay(display))
@@ -941,7 +941,7 @@ EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
 {
 	TRACE("(EGLDisplay dpy = %p, EGLImageKHR image = %p)", dpy, image);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	if(!validateDisplay(display))
 	{
@@ -1004,7 +1004,7 @@ EGLSyncKHR CreateSyncKHR(EGLDisplay dpy, EGLenum type, const EGLint *attrib_list
 {
 	TRACE("(EGLDisplay dpy = %p, EGLunum type = %x, EGLint *attrib_list=%p)", dpy, type, attrib_list);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	if(!validateDisplay(display))
 	{
@@ -1035,7 +1035,7 @@ EGLBoolean DestroySyncKHR(EGLDisplay dpy, EGLSyncKHR sync)
 {
 	TRACE("(EGLDisplay dpy = %p, EGLSyncKHR sync = %p)", dpy, sync);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	FenceSync *eglSync = static_cast<FenceSync*>(sync);
 
 	if(!validateDisplay(display))
@@ -1052,7 +1052,7 @@ EGLint ClientWaitSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint flags, EGLTimeK
 {
 	TRACE("(EGLDisplay dpy = %p, EGLSyncKHR sync = %p, EGLint flags = %x, EGLTimeKHR value = %llx)", dpy, sync, flags, timeout);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 	FenceSync *eglSync = static_cast<FenceSync*>(sync);
 
 	if(!validateDisplay(display))
@@ -1075,7 +1075,7 @@ EGLBoolean GetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, E
 {
 	TRACE("(EGLDisplay dpy = %p, EGLSyncKHR sync = %p, EGLint attribute = %x, EGLint *value = %p)", dpy, sync, attribute, value);
 
-	egl::Display *display = static_cast<egl::Display*>(dpy);
+	egl::Display *display = egl::Display::get(dpy);
 
 	if(!validateDisplay(display))
 	{

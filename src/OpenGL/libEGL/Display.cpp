@@ -39,7 +39,29 @@
 namespace egl
 {
 
-egl::Display *Display::getPlatformDisplay(EGLenum platform, void *nativeDisplay)
+Display *Display::get(EGLDisplay dpy)
+{
+	if(dpy != (EGLDisplay)1)   // We only support the default display
+	{
+		return nullptr;
+	}
+
+	static void *nativeDisplay = nullptr;
+
+	#if defined(__unix__)
+		// Even if the application provides a native display handle, we open (and close) our own connection
+		if(!nativeDisplay && libX11->XOpenDisplay)
+		{
+			nativeDisplay = libX11->XOpenDisplay(NULL);
+		}
+	#endif
+
+	static Display display(nativeDisplay);
+
+	return &display;
+}
+
+EGLDisplay Display::getPlatformDisplay(EGLenum platform, void *nativeDisplay)
 {
     #ifndef __ANDROID__
         if(platform == EGL_UNKNOWN)   // Default platform
@@ -56,49 +78,30 @@ egl::Display *Display::getPlatformDisplay(EGLenum platform, void *nativeDisplay)
             #endif
         }
 
-        if(!nativeDisplay)   // Default display
+        if(nativeDisplay == (void*)EGL_DEFAULT_DISPLAY)
         {
             if(platform == EGL_PLATFORM_X11_EXT)
             {
                 #if defined(__unix__)
-					if(libX11->XOpenDisplay)
-					{
-						nativeDisplay = libX11->XOpenDisplay(NULL);
-					}
-					else
+					if(!libX11)
 					{
 						return error(EGL_BAD_PARAMETER, (egl::Display*)EGL_NO_DISPLAY);
 					}
                 #else
-                    return error(EGL_BAD_PARAMETER, (egl::Display*)EGL_NO_DISPLAY);
+                    return error(EGL_BAD_PARAMETER, EGL_NO_DISPLAY);
                 #endif
             }
         }
         else
         {
-            // FIXME: Check if nativeDisplay is a valid display device context for <platform>
+            // FIXME: Check if nativeDisplay is the default display for <platform>
         }
     #endif
 
-	static std::map<void*, Display*> displays;
-	static sw::BackoffLock displaysMutex;
-
-	displaysMutex.lock();
-
-    egl::Display *display = displays[nativeDisplay];
-
-    if(!display)
-	{
-        display = new egl::Display(platform, nativeDisplay);
-        displays[nativeDisplay] = display;
-    }
-
-    displaysMutex.unlock();
-
-    return display;
+    return (EGLDisplay)1;   // We only support the default display
 }
 
-Display::Display(EGLenum platform, void *nativeDisplay) : platform(platform), nativeDisplay(nativeDisplay)
+Display::Display(void *nativeDisplay) : nativeDisplay(nativeDisplay)
 {
     mMinSwapInterval = 1;
     mMaxSwapInterval = 1;
@@ -107,6 +110,13 @@ Display::Display(EGLenum platform, void *nativeDisplay) : platform(platform), na
 Display::~Display()
 {
     terminate();
+
+	#if defined(__unix__)
+		if(nativeDisplay && libX11->XCloseDisplay)
+		{
+			libX11->XCloseDisplay(nativeDisplay);
+		}
+	#endif
 }
 
 static void cpuid(int registers[4], int info)
