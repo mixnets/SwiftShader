@@ -10,6 +10,7 @@
 //
 
 #include "OutputASM.h"
+#include "Common/Math.hpp"
 
 #include "common/debug.h"
 #include "InfoSink.h"
@@ -75,8 +76,8 @@ namespace glsl
 		ConstantUnion constants[4];
 	};
 
-	Uniform::Uniform(GLenum type, GLenum precision, const std::string &name, int arraySize, int registerIndex, int offset, int blockId) :
-		type(type), precision(precision), name(name), arraySize(arraySize), registerIndex(registerIndex), offset(offset), blockId(blockId)
+	Uniform::Uniform(GLenum type, GLenum precision, const std::string &name, int arraySize, int registerIndex, int blockId, const BlockMemberInfo& blockMemberInfo) :
+		type(type), precision(precision), name(name), arraySize(arraySize), registerIndex(registerIndex), blockId(blockId), blockInfo(blockMemberInfo)
 	{
 	}
 
@@ -85,6 +86,111 @@ namespace glsl
 		name(name), instanceName(instanceName), dataSize(dataSize), arraySize(arraySize), layout(layout),
 		isRowMajorLayout(isRowMajorLayout), registerIndex(registerIndex), blockId(blockId)
 	{
+	}
+
+	BlockLayoutEncoder::BlockLayoutEncoder(bool rowMajor)
+		: mCurrentOffset(0), isRowMajor(rowMajor)
+	{
+	}
+
+	BlockMemberInfo BlockLayoutEncoder::encodeType(const TType &type)
+	{
+		int arrayStride;
+		int matrixStride;
+
+		getBlockLayoutInfo(type, type.getArraySize(), isRowMajor, &arrayStride, &matrixStride);
+
+		const BlockMemberInfo memberInfo(static_cast<int>(mCurrentOffset * BytesPerComponent),
+			static_cast<int>(arrayStride * BytesPerComponent),
+			static_cast<int>(matrixStride * BytesPerComponent),
+			isRowMajor);
+
+		advanceOffset(type, type.getArraySize(), isRowMajor, arrayStride, matrixStride);
+
+		return memberInfo;
+	}
+
+	// static
+	size_t BlockLayoutEncoder::getBlockRegister(const BlockMemberInfo &info)
+	{
+		return (info.offset / BytesPerComponent) / ComponentsPerRegister;
+	}
+
+	// static
+	size_t BlockLayoutEncoder::getBlockRegisterElement(const BlockMemberInfo &info)
+	{
+		return (info.offset / BytesPerComponent) % ComponentsPerRegister;
+	}
+
+	void BlockLayoutEncoder::nextRegister()
+	{
+		mCurrentOffset = sw::align(mCurrentOffset, ComponentsPerRegister);
+	}
+
+	Std140BlockEncoder::Std140BlockEncoder(bool rowMajor) : BlockLayoutEncoder(rowMajor)
+	{
+	}
+
+	void Std140BlockEncoder::enterAggregateType()
+	{
+		nextRegister();
+	}
+
+	void Std140BlockEncoder::exitAggregateType()
+	{
+		nextRegister();
+	}
+
+	void Std140BlockEncoder::getBlockLayoutInfo(const TType &type, unsigned int arraySize, bool isRowMajorMatrix, int *arrayStrideOut, int *matrixStrideOut)
+	{
+		size_t baseAlignment = 0;
+		int matrixStride = 0;
+		int arrayStride = 0;
+
+		if(type.isMatrix())
+		{
+			baseAlignment = ComponentsPerRegister;
+			matrixStride = ComponentsPerRegister;
+
+			if(arraySize > 0)
+			{
+				const int numRegisters = isRowMajorMatrix ? type.getSecondarySize() : type.getNominalSize();
+				arrayStride = ComponentsPerRegister * numRegisters;
+			}
+		}
+		else if(arraySize > 0)
+		{
+			baseAlignment = ComponentsPerRegister;
+			arrayStride = ComponentsPerRegister;
+		}
+		else
+		{
+			const int numComponents = type.getElementSize();
+			baseAlignment = (numComponents == 3 ? 4u : static_cast<size_t>(numComponents));
+		}
+
+		mCurrentOffset = sw::align(mCurrentOffset, baseAlignment);
+
+		*matrixStrideOut = matrixStride;
+		*arrayStrideOut = arrayStride;
+	}
+
+	void Std140BlockEncoder::advanceOffset(const TType &type, unsigned int arraySize, bool isRowMajorMatrix, int arrayStride, int matrixStride)
+	{
+		if(arraySize > 0)
+		{
+			mCurrentOffset += arrayStride * arraySize;
+		}
+		else if(type.isMatrix())
+		{
+			ASSERT(matrixStride == ComponentsPerRegister);
+			const int numRegisters = isRowMajorMatrix ? type.getSecondarySize() : type.getNominalSize();
+			mCurrentOffset += ComponentsPerRegister * numRegisters;
+		}
+		else
+		{
+			mCurrentOffset += type.getElementSize();
+		}
 	}
 
 	Attribute::Attribute()
@@ -2828,20 +2934,11 @@ namespace glsl
 		}
 	}
 
-	void OutputASM::declareUniform(const TType &type, const TString &name, int registerIndex, int offset, int blockId)
+	void OutputASM::declareUniform(const TType &type, const TString &name, int registerIndex, int blockId, BlockLayoutEncoder* encoder)
 	{
 		const TStructure *structure = type.getStruct();
 		const TInterfaceBlock *block = (type.isInterfaceBlock() || (blockId == -1)) ? type.getInterfaceBlock() : nullptr;
 		ActiveUniforms &activeUniforms = shaderObject->activeUniforms;
-
-		if(block)
-		{
-			ActiveUniformBlocks &activeUniformBlocks = shaderObject->activeUniformBlocks;
-			blockId = activeUniformBlocks.size();
-			unsigned int dataSize = block->objectSize() * 4; // FIXME: assuming 4 bytes per element
-			activeUniformBlocks.push_back(UniformBlock(block->name().c_str(), block->hasInstanceName() ? block->instanceName().c_str() : std::string(), dataSize,
-			                                           block->arraySize(), block->blockStorage(), block->matrixPacking() == EmpRowMajor, registerIndex, blockId));
-		}
 
 		if(!structure && !block)
 		{
@@ -2849,7 +2946,8 @@ namespace glsl
 			{
 				shaderObject->activeUniformBlocks[blockId].fields.push_back(activeUniforms.size());
 			}
-			activeUniforms.push_back(Uniform(glVariableType(type), glVariablePrecision(type), name.c_str(), type.getArraySize(), registerIndex, offset, blockId));
+			activeUniforms.push_back(Uniform(glVariableType(type), glVariablePrecision(type), name.c_str(), type.getArraySize(), registerIndex,
+			                                 blockId, encoder ? encoder->encodeType(type) : BlockMemberInfo::getDefaultBlockInfo()));
 
 			if(isSamplerRegister(type))
 			{
@@ -2859,48 +2957,111 @@ namespace glsl
 				}
 			}
 		}
-		else
+		else if(block)
 		{
-			const TFieldList& fields = structure ? structure->fields() : block->fields();
-			const bool containerHasName = structure || block->hasInstanceName();
-			const TString &containerName = structure ? name : (containerHasName ? block->instanceName() : TString());
-			if(type.isArray() && (structure || type.isInterfaceBlock()))
-			{
-				int fieldRegisterIndex = (blockId == -1) ? registerIndex : 0;
-				int fieldOffset = 0;
+			ActiveUniformBlocks &activeUniformBlocks = shaderObject->activeUniformBlocks;
+			blockId = activeUniformBlocks.size();
+			bool isRowMajor = block->matrixPacking() == EmpRowMajor;
+			activeUniformBlocks.push_back(UniformBlock(block->name().c_str(), block->hasInstanceName() ? block->instanceName().c_str() : std::string(), 0,
+			                                           block->arraySize(), block->blockStorage(), isRowMajor, registerIndex, blockId));
 
+			const TFieldList& fields = block->fields();
+			const bool containerHasName = block->hasInstanceName();
+			const TString &containerName = containerHasName ? block->instanceName() : TString();
+			if(type.isArray() && type.isInterfaceBlock())
+			{
 				for(int i = 0; i < type.getArraySize(); i++)
 				{
+					Std140BlockEncoder currentBlockEncoder(isRowMajor);
 					for(size_t j = 0; j < fields.size(); j++)
 					{
 						const TType &fieldType = *(fields[j]->type());
 						const TString &fieldName = fields[j]->name();
-
 						const TString uniformName = containerHasName ? containerName + "[" + str(i) + "]." + fieldName : fieldName;
-						declareUniform(fieldType, uniformName, fieldRegisterIndex, fieldOffset, blockId);
+
+						declareUniform(fieldType, uniformName, currentBlockEncoder.getCurrentRegister(), blockId, &currentBlockEncoder);
+					}
+					activeUniformBlocks[blockId].dataSize = currentBlockEncoder.getBlockSize();
+				}
+			}
+		else
+		{
+				Std140BlockEncoder currentBlockEncoder(isRowMajor);
+				for(size_t i = 0; i < fields.size(); i++)
+			{
+					const TType &fieldType = *(fields[i]->type());
+					const TString &fieldName = fields[i]->name();
+					const TString uniformName = containerHasName ? containerName + "." + fieldName : fieldName;
+
+					declareUniform(fieldType, uniformName, currentBlockEncoder.getCurrentRegister(), blockId, &currentBlockEncoder);
+				}
+				activeUniformBlocks[blockId].dataSize = currentBlockEncoder.getBlockSize();
+			}
+		}
+		else
+		{
+				int fieldRegisterIndex = (blockId == -1) ? registerIndex : 0;
+
+			const TFieldList& fields = structure->fields();
+			if(type.isArray() && (structure || type.isInterfaceBlock()))
+			{
+				for(int i = 0; i < type.getArraySize(); i++)
+				{
+					if(encoder)
+					{
+						encoder->enterAggregateType();
+					}
+					for(size_t j = 0; j < fields.size(); j++)
+					{
+						const TType &fieldType = *(fields[j]->type());
+						const TString &fieldName = fields[j]->name();
+						const TString uniformName = name + "[" + str(i) + "]." + fieldName;
+
+						if(encoder)
+						{
+							fieldRegisterIndex = encoder->getCurrentRegister();
+						}
+						declareUniform(fieldType, uniformName, fieldRegisterIndex, blockId, encoder);
+						if(!encoder)
+						{
 						int registerCount = fieldType.totalRegisterCount();
 						fieldRegisterIndex += registerCount;
-						fieldOffset += registerCount * fieldType.registerSize();
 					}
+				}
+					if(encoder)
+					{
+						encoder->exitAggregateType();
+			}
 				}
 			}
 			else
 			{
-				int fieldRegisterIndex = (blockId == -1) ? registerIndex : 0;
-				int fieldOffset = 0;
-
+				if(encoder)
+				{
+					encoder->enterAggregateType();
+				}
 				for(size_t i = 0; i < fields.size(); i++)
 				{
 					const TType &fieldType = *(fields[i]->type());
 					const TString &fieldName = fields[i]->name();
+					const TString uniformName = name + "." + fieldName;
 
-					const TString uniformName = containerHasName ? containerName + "." + fieldName : fieldName;
-					declareUniform(fieldType, uniformName, fieldRegisterIndex, fieldOffset, blockId);
+					if(encoder)
+					{
+						fieldRegisterIndex = encoder->getCurrentRegister();
+					}
+					declareUniform(fieldType, uniformName, fieldRegisterIndex, blockId, encoder);
+					if(!encoder)
+					{
 					int registerCount = fieldType.totalRegisterCount();
 					fieldRegisterIndex += registerCount;
-					fieldOffset += registerCount * fieldType.registerSize();
 				}
 			}
+				if(encoder)
+				{
+					encoder->exitAggregateType();
+		}
+	}
 		}
 	}
 
