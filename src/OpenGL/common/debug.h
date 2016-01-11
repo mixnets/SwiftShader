@@ -45,11 +45,13 @@ namespace es
 #endif
 
 // A macro to output a function call and its arguments to the debugging log, in case of error.
-#if defined(ANGLE_DISABLE_TRACE)
-#define ERR(message, ...) (void(0))
-#else
-#define ERR(message, ...) do {es::trace("err: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); assert(false);} while(false)
-#endif
+//#if defined(ANGLE_DISABLE_TRACE)
+//#define ERR(message, ...) (void(0))
+//#else
+//#define ERR(message, ...) do {es::trace("err: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); assert(false);} while(false)
+//#endif
+
+#define ERR(message, ...) fprintf(stderr, message, ##__VA_ARGS__)
 
 // A macro asserting a condition and outputting failures to the debug log
 #undef ASSERT

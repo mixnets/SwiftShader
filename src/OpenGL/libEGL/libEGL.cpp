@@ -528,7 +528,7 @@ EGLBoolean SurfaceAttrib(EGLDisplay dpy, EGLSurface surface, EGLint attribute, E
 
 EGLBoolean BindTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
 {
-	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLint buffer = %d)", dpy, surface, buffer);
+	fprintf(stderr, "eglBindTexImage(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLint buffer = %d)\n", dpy, surface, buffer);
 
 	egl::Display *display = egl::Display::get(dpy);
 	egl::Surface *eglSurface = static_cast<egl::Surface*>(surface);
@@ -570,7 +570,7 @@ EGLBoolean BindTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
 
 EGLBoolean ReleaseTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
 {
-	TRACE("(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLint buffer = %d)", dpy, surface, buffer);
+	fprintf(stderr, "eglReleaseTexImage(EGLDisplay dpy = %p, EGLSurface surface = %p, EGLint buffer = %d)\n", dpy, surface, buffer);
 
 	egl::Display *display = egl::Display::get(dpy);
 	egl::Surface *eglSurface = static_cast<egl::Surface*>(surface);

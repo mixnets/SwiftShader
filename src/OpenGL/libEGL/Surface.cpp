@@ -71,7 +71,7 @@ bool Surface::initialize()
 	{
 		backBuffer = libGLESv2->createBackBuffer(width, height, config);
 	}
-
+fprintf(stderr, "img:%p ref:%d createBackBuffer\n", backBuffer, 1);
     if(!backBuffer)
     {
         ERR("Could not create back buffer");
@@ -117,7 +117,8 @@ void Surface::deleteResources()
 
 	if(backBuffer)
 	{
-		backBuffer->release();
+		int ref = backBuffer->release();
+									fprintf(stderr, "img:%p ref:%d backBuffer->release()\n", backBuffer, ref);
 		backBuffer = nullptr;
 	}
 }
@@ -126,7 +127,8 @@ egl::Image *Surface::getRenderTarget()
 {
     if(backBuffer)
     {
-        backBuffer->addRef();
+        int ref = backBuffer->addRef();
+        fprintf(stderr, "img:%p ref:%d Surface::getRenderTarget()\n", backBuffer, ref);
     }
 
     return backBuffer;
@@ -367,6 +369,7 @@ EGLNativeWindowType PBufferSurface::getWindowHandle() const
 
 void PBufferSurface::deleteResources()
 {
+	Surface::deleteResources();
 }
 
 }

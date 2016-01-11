@@ -137,8 +137,8 @@ public:
 	void loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input);
 	void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
 
-	virtual void addRef();
-	virtual void release();
+	virtual int addRef();
+	virtual int release();
 	virtual void unbind(const Texture *parent);   // Break parent ownership and release
 
 	virtual void destroyShared()   // Release a shared image

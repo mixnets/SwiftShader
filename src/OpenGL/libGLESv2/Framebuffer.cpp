@@ -138,6 +138,7 @@ egl::Image *Framebuffer::getRenderTarget(GLuint index)
 
 	if(colorbuffer)
 	{
+	fprintf(stderr, "Framebuffer::getRenderTarget()\n");
 		return colorbuffer->getRenderTarget();
 	}
 
@@ -155,7 +156,7 @@ egl::Image *Framebuffer::getReadRenderTarget()
 egl::Image *Framebuffer::getDepthStencil()
 {
 	Renderbuffer *depthstencilbuffer = mDepthbufferPointer;
-	
+
 	if(!depthstencilbuffer)
 	{
 		depthstencilbuffer = mStencilbufferPointer;
@@ -451,7 +452,7 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 GLenum Framebuffer::getImplementationColorReadFormat()
 {
 	Renderbuffer *colorbuffer = getReadColorbuffer();
-	
+
 	if(colorbuffer)
 	{
 		// Don't return GL_RGBA since that's always supported. Provide a second option here.
@@ -512,7 +513,7 @@ GLenum Framebuffer::getImplementationColorReadFormat()
 GLenum Framebuffer::getImplementationColorReadType()
 {
 	Renderbuffer *colorbuffer = getReadColorbuffer();
-	
+
 	if(colorbuffer)
 	{
 		switch(colorbuffer->getInternalFormat())
