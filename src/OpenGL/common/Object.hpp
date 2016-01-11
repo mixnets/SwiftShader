@@ -32,7 +32,7 @@ public:
     virtual void addRef();
 	virtual void release();
 
-private:
+protected:
     volatile int referenceCount;
 
 #ifndef NDEBUG
@@ -66,7 +66,7 @@ public:
 		ASSERT(!object);   // Objects have to be released before the resource manager is destroyed, so they must be explicitly cleaned up. Assign null to all binding pointers to make the reference count go to zero.
 	}
 
-    ObjectType *operator=(ObjectType *newObject) 
+    ObjectType *operator=(ObjectType *newObject)
 	{
 		if(newObject) newObject->addRef();
 		if(object) object->release();
@@ -76,7 +76,7 @@ public:
 		return object;
 	}
 
-	ObjectType *operator=(const BindingPointer<ObjectType> &other) 
+	ObjectType *operator=(const BindingPointer<ObjectType> &other)
 	{
 		return operator=(other.object);
 	}
