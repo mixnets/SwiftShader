@@ -19,7 +19,7 @@
 
 namespace sw
 {
-	class Rasterizer
+	class Rasterizer : public Function<Void, Pointer<Byte>, Int, Int, Pointer<Byte>>
 	{
 	public:
 		Rasterizer(const PixelProcessor::State &state);
