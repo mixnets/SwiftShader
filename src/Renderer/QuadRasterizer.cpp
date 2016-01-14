@@ -25,7 +25,7 @@ namespace sw
 
 	extern int clusterCount;
 
-	QuadRasterizer::QuadRasterizer(const PixelProcessor::State &state, const PixelShader *pixelShader) : Rasterizer(state), shader(pixelShader)
+	QuadRasterizer::QuadRasterizer(const PixelProcessor::State &state, const PixelShader *pixelShader) : state(state), shader(pixelShader)
 	{
 	}
 
@@ -45,8 +45,8 @@ namespace sw
 		#endif
 
 		primitive = Arg<0>();
-		Int count = Arg<1>();
-		Int cluster = Arg<2>();
+		count = Arg<1>();
+		cluster = Arg<2>();
 		data = Arg<3>();
 
 		constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,constants));

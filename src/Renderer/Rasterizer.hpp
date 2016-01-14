@@ -22,14 +22,17 @@ namespace sw
 	class Rasterizer : public Function<Void(Pointer<Byte>, Int, Int, Pointer<Byte>)>
 	{
 	public:
-		Rasterizer(const PixelProcessor::State &state);
+		Rasterizer();
 
 		virtual ~Rasterizer();
 
 		virtual void generate() = 0;
 
 	protected:
-		const PixelProcessor::State &state;
+		Pointer<Byte> primitive;
+		Int count;
+		Int cluster;
+		Pointer<Byte> data;
 	};
 }
 

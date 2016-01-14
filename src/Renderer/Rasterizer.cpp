@@ -13,7 +13,7 @@
 
 namespace sw
 {
-	Rasterizer::Rasterizer(const PixelProcessor::State &state) : state(state)
+	Rasterizer::Rasterizer()
 	{
 	}
 

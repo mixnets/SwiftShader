@@ -28,8 +28,6 @@ namespace sw
 		virtual ~QuadRasterizer();
 
 		Pointer<Byte> constants;
-		Pointer<Byte> primitive;
-		Pointer<Byte> data;
 
 		Float4 Dz[4];
 		Float4 Dw;
@@ -48,6 +46,7 @@ namespace sw
 		bool interpolateW() const;
 		Float4 interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective);
 
+		const PixelProcessor::State &state;
 		const PixelShader *const shader;
 
 	private:
