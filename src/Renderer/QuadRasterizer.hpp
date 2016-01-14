@@ -27,9 +27,12 @@ namespace sw
 
 		virtual ~QuadRasterizer();
 
-		Pointer<Byte> constants;
 		Pointer<Byte> primitive;
+		Int count;
+		Int cluster;
 		Pointer<Byte> data;
+
+		Pointer<Byte> constants;
 
 		Float4 Dz[4];
 		Float4 Dw;

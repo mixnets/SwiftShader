@@ -45,8 +45,8 @@ namespace sw
 		#endif
 
 		primitive = Arg<0>();
-		Int count = Arg<1>();
-		Int cluster = Arg<2>();
+		count = Arg<1>();
+		cluster = Arg<2>();
 		data = Arg<3>();
 
 		constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,constants));
