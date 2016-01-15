@@ -33,11 +33,6 @@ namespace sw
 
 	void VertexRoutine::generate()
 	{
-		Pointer<Byte> vertex(Arg<0>());
-		Pointer<Byte> batch(Arg<1>());
-		Pointer<Byte> task(Arg<2>());
-		Pointer<Byte> data(Arg<3>());
-
 		const bool texldl = state.shaderContainsTexldl;
 
 		Pointer<Byte> cache = task + OFFSET(VertexTask,vertexCache);
@@ -573,7 +568,7 @@ namespace sw
 		*Pointer<Float4>(cacheLine + OFFSET(Vertex,X) + sizeof(Vertex) * 3, 16) = v.w;
 	}
 
-	void VertexRoutine::writeVertex(Pointer<Byte> &vertex, Pointer<Byte> &cache)
+	void VertexRoutine::writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cache)
 	{
 		for(int i = 0; i < 12; i++)
 		{
