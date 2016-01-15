@@ -41,56 +41,32 @@ namespace sw
 		void generate();
 
 	protected:
-		struct Registers
-		{
-			Registers(const VertexShader *shader) :
-				v(shader && shader->dynamicallyIndexedInput),
-				r(shader && shader->dynamicallyIndexedTemporaries),
-				o(shader && shader->dynamicallyIndexedOutput)
-			{
-				loopDepth = -1;
-				enableStack[0] = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+		Pointer<Byte> data;
+		Pointer<Byte> constants;
 
-				if(shader && shader->containsBreakInstruction())
-				{
-					enableBreak = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
-				}
+		Int clipFlags;
 
-				if(shader && shader->containsContinueInstruction())
-				{
-					enableContinue = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
-				}
-			}
+		RegisterArray<16> v;
+		RegisterArray<4096> r;
+		RegisterArray<12> o;
+		Vector4f a0;
+		Array<Int, 4> aL;
+		Vector4f p0;
 
-			Pointer<Byte> data;
-			Pointer<Byte> constants;
+		Array<Int, 4> increment;
+		Array<Int, 4> iteration;
 
-			Int clipFlags;
+		Int loopDepth;
+		Int stackIndex;   // FIXME: Inc/decrement callStack
+		Array<UInt, 16> callStack;
 
-			RegisterArray<16> v;
-			RegisterArray<4096> r;
-			RegisterArray<12> o;
-			Vector4f a0;
-			Array<Int, 4> aL;
-			Vector4f p0;
+		Int enableIndex;
+		Array<Int4, 1 + 24> enableStack;
+		Int4 enableBreak;
+		Int4 enableContinue;
+		Int4 enableLeave;
 
-			Array<Int, 4> increment;
-			Array<Int, 4> iteration;
-
-			Int loopDepth;
-			Int stackIndex;   // FIXME: Inc/decrement callStack
-			Array<UInt, 16> callStack;
-
-			Int enableIndex;
-			Array<Int4, 1 + 24> enableStack;
-			Int4 enableBreak;
-			Int4 enableContinue;
-			Int4 enableLeave;
-
-			Int instanceID;
-		};
-
-		Registers r;
+		Int instanceID;
 
 		const VertexProcessor::State &state;
 		const VertexShader *const shader;
