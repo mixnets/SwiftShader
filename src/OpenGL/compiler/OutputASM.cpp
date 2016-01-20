@@ -487,9 +487,8 @@ namespace glsl
 			{
 				for(int i = 0; i < leftType.getNominalSize(); i++)
 				{
-					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, left, right);
+					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, 0, left, i, right);
 					mul->dst.index += i;
-					argument(mul->src[0], left, i);
 				}
 
 				assignLvalue(left, result);
@@ -502,9 +501,8 @@ namespace glsl
 
 				for(int i = 0; i < size; i++)
 				{
-					Instruction *dot = emit(sw::Shader::OPCODE_DP(size), result, left, right);
+					Instruction *dot = emit(sw::Shader::OPCODE_DP(size), result, 0, left, 0, right, i);
 					dot->dst.mask = 1 << i;
-					argument(dot->src[1], right, i);
 				}
 
 				assignLvalue(left, result);
@@ -517,19 +515,15 @@ namespace glsl
 
 				for(int i = 0; i < dim; i++)
 				{
-					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, left, right);
+					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, 0, left, 0, right, i);
 					mul->dst.index += i;
-					argument(mul->src[1], right, i);
 					mul->src[1].swizzle = 0x00;
 
 					for(int j = 1; j < dim; j++)
 					{
-						Instruction *mad = emit(sw::Shader::OPCODE_MAD, result, left, right, result);
+						Instruction *mad = emit(sw::Shader::OPCODE_MAD, result, 0, left, j, right, i, result, i);
 						mad->dst.index += i;
-						argument(mad->src[0], left, j);
-						argument(mad->src[1], right, i);
 						mad->src[1].swizzle = j * 0x55;
-						argument(mad->src[2], result, i);
 					}
 				}
 
@@ -548,22 +542,28 @@ namespace glsl
  				}
 				else if(result->isRegister())
  				{
-					Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, left);
+					int srcIndex = 0;
+					if(left->isRegister())
+					{
+						srcIndex = 0;
+					}
+					else if(left->isArray())
+					{
+						srcIndex = index * left->elementRegisterCount();
+					}
+					else if(left->isMatrix())
+					{
+						ASSERT(index < left->getNominalSize());   // FIXME: Report semantic error
+						srcIndex = index;
+					}
+					else UNREACHABLE(0);
+
+					Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, 0, left, srcIndex);
 
 					if(left->isRegister())
 					{
 						mov->src[0].swizzle = index;
 					}
-					else if(left->isArray())
-					{
-						argument(mov->src[0], left, index * left->elementRegisterCount());
-					}
-					else if(left->isMatrix())
-					{
-						ASSERT(index < left->getNominalSize());   // FIXME: Report semantic error
-						argument(mov->src[0], left, index);
-					}
-					else UNREACHABLE(0);
  				}
 				else UNREACHABLE(0);
 			}
@@ -575,10 +575,9 @@ namespace glsl
 				{
 					for(int index = 0; index < result->totalRegisterCount(); index++)
 					{
-						Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, left);
+						Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, 0, left, index);
 						mov->dst.index += index;
 						mov->dst.mask = writeMask(result, index);
-						argument(mov->src[0], left, index);
 
 						if(left->totalRegisterCount() > 1)
 						{
@@ -677,9 +676,7 @@ namespace glsl
 				for(int index = 1; index < left->totalRegisterCount(); index++)
 				{
 					Temporary equal(this);
-					Instruction *eq = emit(sw::Shader::OPCODE_EQ, &equal, left, right);
-					argument(eq->src[0], left, index);
-					argument(eq->src[1], right, index);
+					emit(sw::Shader::OPCODE_EQ, &equal, 0, left, index, right, index);
 					emit(sw::Shader::OPCODE_AND, result, result, &equal);
 				}
 			}
@@ -692,9 +689,7 @@ namespace glsl
 				for(int index = 1; index < left->totalRegisterCount(); index++)
 				{
 					Temporary notEqual(this);
-					Instruction *eq = emit(sw::Shader::OPCODE_NE, &notEqual, left, right);
-					argument(eq->src[0], left, index);
-					argument(eq->src[1], right, index);
+					emit(sw::Shader::OPCODE_NE, &notEqual, 0, left, index, right, index);
 					emit(sw::Shader::OPCODE_OR, result, result, &notEqual);
 				}
 			}
@@ -710,9 +705,8 @@ namespace glsl
 			{
 				for(int i = 0; i < leftType.getNominalSize(); i++)
 				{
-					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, left, right);
+					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, 0, left, i, right);
 					mul->dst.index += i;
-					argument(mul->src[0], left, i);
 				}
 			}
 			break;
@@ -724,9 +718,8 @@ namespace glsl
 				int size = rightType.getNominalSize();
 				for(int i = 0; i < size; i++)
 				{
-					Instruction *dot = emit(dpOpcode, result, left, right);
+					Instruction *dot = emit(dpOpcode, result, 0, left, 0, right, i);
 					dot->dst.mask = 1 << i;
-					argument(dot->src[1], right, i);
 				}
 			}
 			break;
@@ -739,8 +732,7 @@ namespace glsl
 				int size = rightType.getNominalSize();
 				for(int i = 1; i < size; i++)
 				{
-					Instruction *mad = emit(sw::Shader::OPCODE_MAD, result, left, right, result);
-					argument(mad->src[0], left, i);
+					Instruction *mad = emit(sw::Shader::OPCODE_MAD, result, 0, left, i, right, 0, result);
 					mad->src[1].swizzle = i * 0x55;
 				}
 			}
@@ -753,19 +745,15 @@ namespace glsl
 				int size = rightType.getNominalSize();
 				for(int i = 0; i < size; i++)
 				{
-					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, left, right);
+					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, 0, left, 0, right, i);
 					mul->dst.index += i;
-					argument(mul->src[1], right, i);
 					mul->src[1].swizzle = 0x00;
 
 					for(int j = 1; j < dim; j++)
 					{
-						Instruction *mad = emit(sw::Shader::OPCODE_MAD, result, left, right, result);
+						Instruction *mad = emit(sw::Shader::OPCODE_MAD, result, 0, left, j, right, i, result, i);
 						mad->dst.index += i;
-						argument(mad->src[0], left, j);
-						argument(mad->src[1], right, i);
 						mad->src[1].swizzle = j * 0x55;
-						argument(mad->src[2], result, i);
 					}
 				}
 			}
@@ -928,9 +916,8 @@ namespace glsl
 				sw::Shader::Opcode negOpcode = getOpcode(sw::Shader::OPCODE_NEG, arg);
 				for(int index = 0; index < arg->totalRegisterCount(); index++)
 				{
-					Instruction *neg = emit(negOpcode, result, arg);
+					Instruction *neg = emit(negOpcode, result, 0, arg, index);
 					neg->dst.index += index;
-					argument(neg->src[0], arg, index);
 				}
 			}
 			break;
@@ -944,9 +931,8 @@ namespace glsl
 				sw::Shader::Opcode addOpcode = getOpcode(sw::Shader::OPCODE_ADD, arg);
 				for(int index = 0; index < arg->totalRegisterCount(); index++)
 				{
-					Instruction *add = emit(addOpcode, arg, arg, &one);
+					Instruction *add = emit(addOpcode, arg, 0, arg, index, &one);
 					add->dst.index += index;
-					argument(add->src[0], arg, index);
 				}
 
 				assignLvalue(arg, arg);
@@ -960,9 +946,8 @@ namespace glsl
 				sw::Shader::Opcode subOpcode = getOpcode(sw::Shader::OPCODE_SUB, arg);
 				for(int index = 0; index < arg->totalRegisterCount(); index++)
 				{
-					Instruction *sub = emit(subOpcode, arg, arg, &one);
+					Instruction *sub = emit(subOpcode, arg, 0, arg, index, &one);
 					sub->dst.index += index;
-					argument(sub->src[0], arg, index);
 				}
 
 				assignLvalue(arg, arg);
@@ -974,9 +959,8 @@ namespace glsl
 				sw::Shader::Opcode addOpcode = getOpcode(sw::Shader::OPCODE_ADD, arg);
 				for(int index = 0; index < arg->totalRegisterCount(); index++)
 				{
-					Instruction *add = emit(addOpcode, result, arg, &one);
+					Instruction *add = emit(addOpcode, result, 0, arg, index, &one);
 					add->dst.index += index;
-					argument(add->src[0], arg, index);
 				}
 
 				assignLvalue(arg, result);
@@ -988,9 +972,8 @@ namespace glsl
 				sw::Shader::Opcode subOpcode = getOpcode(sw::Shader::OPCODE_SUB, arg);
 				for(int index = 0; index < arg->totalRegisterCount(); index++)
 				{
-					Instruction *sub = emit(subOpcode, result, arg, &one);
+					Instruction *sub = emit(subOpcode, result, 0, arg, index, &one);
 					sub->dst.index += index;
-					argument(sub->src[0], arg, index);
 				}
 
 				assignLvalue(arg, result);
@@ -1483,10 +1466,9 @@ namespace glsl
 
 						if(i < inCols)
 						{
-							Instruction *mov = emitCast(result, arg0);
+							Instruction *mov = emitCast(result, 0, arg0, i);
 							mov->dst.index += i;
 							mov->dst.mask = 0xF >> (4 - inRows);
-							argument(mov->src[0], arg0, i);
 						}
 					}
 				}
@@ -1528,10 +1510,9 @@ namespace glsl
 
 					for(int index = 0; index < size; index++)
 					{
-						Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, argi);
+						Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, 0, argi, index);
 						mov->dst.index += index + offset;
 						mov->dst.mask = writeMask(result, offset + index);
-						argument(mov->src[0], argi, index);
 					}
 
 					offset += size;
@@ -1575,10 +1556,8 @@ namespace glsl
 				int size = arg0->getNominalSize();
 				for(int i = 0; i < size; i++)
 				{
-					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, arg[0], arg[1]);
+					Instruction *mul = emit(sw::Shader::OPCODE_MUL, result, 0, arg[0], i, arg[1], i);
 					mul->dst.index += i;
-					argument(mul->src[0], arg[0], i);
-					argument(mul->src[1], arg[1], i);
 				}
 			}
 			break;
@@ -1849,7 +1828,13 @@ namespace glsl
 		return IsSampler(type.getBasicType()) && (type.getQualifier() == EvqUniform || type.getQualifier() == EvqTemporary);
 	}
 
-	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2, TIntermNode *src3, TIntermNode *src4, int index)
+	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2, TIntermNode *src3, TIntermNode *src4)
+	{
+		return emit(op, dst, 0, src0, 0, src1, 0, src2, 0, src3, 0, src4, 0);
+	}
+
+	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, int dstIndex, TIntermNode *src0, int index0, TIntermNode *src1, int index1,
+	                             TIntermNode *src2, int index2, TIntermNode *src3, int index3, TIntermNode *src4, int index4)
 	{
 		if(isSamplerRegister(dst))
 		{
@@ -1861,16 +1846,16 @@ namespace glsl
 		if(dst)
 		{
 			instruction->dst.type = registerType(dst);
-			instruction->dst.index = registerIndex(dst) + index;
+			instruction->dst.index = registerIndex(dst) + dstIndex;
 			instruction->dst.mask = writeMask(dst);
 			instruction->dst.integer = (dst->getBasicType() == EbtInt);
 		}
 
-		argument(instruction->src[0], src0, index);
-		argument(instruction->src[1], src1, index);
-		argument(instruction->src[2], src2, index);
-		argument(instruction->src[3], src3, index);
-		argument(instruction->src[4], src4, index);
+		argument(instruction->src[0], src0, index0);
+		argument(instruction->src[1], src1, index1);
+		argument(instruction->src[2], src2, index2);
+		argument(instruction->src[3], src3, index3);
+		argument(instruction->src[4], src4, index4);
 
 		shader->append(instruction);
 
@@ -1879,39 +1864,44 @@ namespace glsl
 
 	Instruction *OutputASM::emitCast(TIntermTyped *dst, TIntermTyped *src)
 	{
+		return emitCast(dst, 0, src, 0);
+	}
+
+	Instruction *OutputASM::emitCast(TIntermTyped *dst, int dstIndex, TIntermTyped *src, int srcIndex)
+	{
 		switch(src->getBasicType())
 		{
 		case EbtBool:
 			switch(dst->getBasicType())
 			{
-			case EbtInt:   return emit(sw::Shader::OPCODE_B2I, dst, src);
-			case EbtUInt:  return emit(sw::Shader::OPCODE_B2I, dst, src);
-			case EbtFloat: return emit(sw::Shader::OPCODE_B2F, dst, src);
+			case EbtInt:   return emit(sw::Shader::OPCODE_B2I, dst, dstIndex, src, srcIndex);
+			case EbtUInt:  return emit(sw::Shader::OPCODE_B2I, dst, dstIndex, src, srcIndex);
+			case EbtFloat: return emit(sw::Shader::OPCODE_B2F, dst, dstIndex, src, srcIndex);
 			default:       break;
 			}
 			break;
 		case EbtInt:
 			switch(dst->getBasicType())
 			{
-			case EbtBool:  return emit(sw::Shader::OPCODE_I2B, dst, src);
-			case EbtFloat: return emit(sw::Shader::OPCODE_I2F, dst, src);
+			case EbtBool:  return emit(sw::Shader::OPCODE_I2B, dst, dstIndex, src, srcIndex);
+			case EbtFloat: return emit(sw::Shader::OPCODE_I2F, dst, dstIndex, src, srcIndex);
 			default:       break;
 			}
 			break;
 		case EbtUInt:
 			switch(dst->getBasicType())
 			{
-			case EbtBool:  return emit(sw::Shader::OPCODE_I2B, dst, src);
-			case EbtFloat: return emit(sw::Shader::OPCODE_U2F, dst, src);
+			case EbtBool:  return emit(sw::Shader::OPCODE_I2B, dst, dstIndex, src, srcIndex);
+			case EbtFloat: return emit(sw::Shader::OPCODE_U2F, dst, dstIndex, src, srcIndex);
 			default:       break;
 			}
 			break;
 		case EbtFloat:
 			switch(dst->getBasicType())
 			{
-			case EbtBool: return emit(sw::Shader::OPCODE_F2B, dst, src);
-			case EbtInt:  return emit(sw::Shader::OPCODE_F2I, dst, src);
-			case EbtUInt: return emit(sw::Shader::OPCODE_F2U, dst, src);
+			case EbtBool: return emit(sw::Shader::OPCODE_F2B, dst, dstIndex, src, srcIndex);
+			case EbtInt:  return emit(sw::Shader::OPCODE_F2I, dst, dstIndex, src, srcIndex);
+			case EbtUInt: return emit(sw::Shader::OPCODE_F2U, dst, dstIndex, src, srcIndex);
 			default:      break;
 			}
 			break;
@@ -1921,14 +1911,14 @@ namespace glsl
 
 		ASSERT(src->getBasicType() == dst->getBasicType());
 
-		return emit(sw::Shader::OPCODE_MOV, dst, src);
+		return emit(sw::Shader::OPCODE_MOV, dst, dstIndex, src, srcIndex);
 	}
 
 	void OutputASM::emitBinary(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2)
 	{
 		for(int index = 0; index < dst->elementRegisterCount(); index++)
 		{
-			emit(op, dst, src0, src1, src2, 0, 0, index);
+			emit(op, dst, index, src0, index, src1, index, src2, index);
 		}
 	}
 
@@ -1955,10 +1945,8 @@ namespace glsl
 			break;
 		}
 
-		Instruction *cmp = emit(opcode, dst, left, right);
+		Instruction *cmp = emit(opcode, dst, 0, left, index, right, index);
 		cmp->control = cmpOp;
-		argument(cmp->src[0], left, index);
-		argument(cmp->src[1], right, index);
 	}
 
 	int componentCount(const TType &type, int registers)
@@ -2134,10 +2122,9 @@ namespace glsl
 	{
 		for(int index = 0; index < dst->totalRegisterCount(); index++)
 		{
-			Instruction *mov = emit(sw::Shader::OPCODE_MOV, dst, src);
+			Instruction *mov = emit(sw::Shader::OPCODE_MOV, dst, 0, src, offset + index);
 			mov->dst.index += index;
 			mov->dst.mask = writeMask(dst, index);
-			argument(mov->src[0], src, offset + index);
 		}
 	}
 
