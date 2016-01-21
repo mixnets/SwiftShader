@@ -154,7 +154,7 @@ namespace sw
 		FORMAT_R32F,
 		FORMAT_G32R32F,
 		FORMAT_B32G32R32F,
-		FORMAT_A32B32G32R32F, 
+		FORMAT_A32B32G32R32F,
 		// Bump map formats
 		FORMAT_V8U8,
 		FORMAT_L6V5U5,
@@ -244,7 +244,9 @@ namespace sw
 	public:
 		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
 		Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, int pitchP = 0);
-
+		bool traced = false;
+		static unsigned int id;
+		unsigned int myid;
 		virtual ~Surface();
 
 		inline void *lock(int x, int y, int z, Lock lock, Accessor client, bool internal = false);
@@ -294,7 +296,7 @@ namespace sw
 		Color<float> sampleExternal(float x, float y) const;
 		void writeExternal(int x, int y, int z, const Color<float> &color);
 		void writeExternal(int x, int y, const Color<float> &color);
-		
+
 		void copyInternal(const Surface* src, int x, int y, float srcX, float srcY, bool filter);
 		void copyInternal(const Surface* src, int x, int y, int z, float srcX, float srcY, float srcZ, bool filter);
 
