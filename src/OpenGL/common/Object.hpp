@@ -85,6 +85,29 @@ private:
     ObjectType *object;
 };
 
+template <class ObjectType>
+class OffsetBindingPointer
+{
+public:
+	OffsetBindingPointer() : offset(0), size(0) { }
+
+	void set(ObjectType *newObject, int newOffset = 0, int newSize = 0)
+	{
+		object = newObject;
+		offset = newOffset;
+		size = newSize;
+	}
+
+	int getOffset() const { return offset; }
+	int getSize() const { return size; }
+	const BindingPointer<ObjectType>& get() const { return object; }
+
+private:
+	BindingPointer<ObjectType> object;
+	int offset;
+	int size;
+};
+
 }
 
 #endif   // gl_Object_hpp
