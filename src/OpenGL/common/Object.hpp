@@ -85,6 +85,44 @@ private:
     ObjectType *object;
 };
 
+template <class ObjectType>
+class OffsetBindingPointer : public BindingPointer<ObjectType>
+{
+public:
+	OffsetBindingPointer() : mOffset(0), mSize(0) { }
+
+	void set(ObjectType *newObject)
+	{
+		BindingPointer<ObjectType>::operator=(newObject);
+		mOffset = 0;
+		mSize = 0;
+	}
+
+	void set(ObjectType *newObject, int offset, int size)
+	{
+		BindingPointer<ObjectType>::operator=(newObject);
+		mOffset = offset;
+		mSize = size;
+	}
+
+	int getOffset() const { return mOffset; }
+	int getSize() const { return mSize; }
+
+	bool operator==(const OffsetBindingPointer<ObjectType> &other) const
+	{
+		return this->get() == other.get() && mOffset == other.mOffset && mSize == other.mSize;
+	}
+
+	bool operator!=(const OffsetBindingPointer<ObjectType> &other) const
+	{
+		return !(*this == other);
+	}
+
+private:
+	int mOffset;
+	int mSize;
+};
+
 }
 
 #endif   // gl_Object_hpp
