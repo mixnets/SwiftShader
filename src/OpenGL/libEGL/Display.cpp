@@ -41,7 +41,7 @@ namespace egl
 
 Display *Display::get(EGLDisplay dpy)
 {
-	if(dpy != (EGLDisplay)1)   // We only support the default display
+	if(dpy != PRIMARY_DISPLAY && dpy != HEADLESS_DISPLAY)   // We only support the default display
 	{
 		return nullptr;
 	}
@@ -50,7 +50,7 @@ Display *Display::get(EGLDisplay dpy)
 
 	#if defined(__linux__) && !defined(__ANDROID__)
 		// Even if the application provides a native display handle, we open (and close) our own connection
-		if(!nativeDisplay && libX11->XOpenDisplay)
+		if(!nativeDisplay && dpy != HEADLESS_DISPLAY && libX11->XOpenDisplay)
 		{
 			nativeDisplay = libX11->XOpenDisplay(NULL);
 		}
