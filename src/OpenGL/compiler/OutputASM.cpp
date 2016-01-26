@@ -1713,6 +1713,12 @@ namespace glsl
 			return false;
 		}
 
+		/*if(iterations == ~0u)
+		{
+			mContext.error(node->getLine(), "Could not determine the maximum number of loop iterations at compile time", "");
+			return false;
+		}*/
+
 		bool unroll = (iterations <= 4);
 
 		if(unroll)

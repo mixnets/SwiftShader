@@ -61,7 +61,7 @@ namespace sw
 
 	void VertexProgram::program(Registers &r)
 	{
-	//	shader->print("VertexShader-%0.8X.txt", state.shaderID);
+		shader->print("VertexShader-%0.8X.txt", state.shaderID);
 
 		unsigned short version = shader->getVersion();
 

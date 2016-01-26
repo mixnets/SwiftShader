@@ -4,7 +4,7 @@
 
  @Title        OpenGL ES 2.0 HelloAPI Tutorial
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -33,6 +33,7 @@
 
 // Index to bind the attributes to vertex shaders
 #define VERTEX_ARRAY	0
+#define VERTEX_ONE	1
 
 /******************************************************************************
  Global variables
@@ -142,17 +143,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// Fragment and vertex shaders code
 	char* pszFragShader = "\
+						  varying mediump vec3 v_color;\
 		void main (void)\
 		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+			gl_FragColor = vec4(v_color ,1.0);\
 		}";
-	char* pszVertShader = "\
-		attribute highp vec4	myVertex;\
-		uniform mediump mat4	myPMVMatrix;\
-		void main(void)\
-		{\
-			gl_Position = myPMVMatrix * myVertex;\
-		}";
+	char* pszVertShader = R"END(
+attribute highp vec4	myVertex;
+uniform mediump mat4	myPMVMatrix;
+
+attribute highp vec4 a_coords;
+attribute mediump float a_one;
+varying mediump vec3 v_color;
+uniform mediump int ui_zero, ui_one, ui_two, ui_three, ui_four, ui_five, ui_six;
+
+void main()
+{
+	gl_Position = myPMVMatrix * myVertex;
+	mediump int one = int(a_one + 0.5);
+	mediump vec4 coords = myVertex;//a_coords;
+	mediump vec4 res = coords;
+	mediump int i = 0;
+	for (;;) { res = res.yzwx; if (i == one*ui_one) break; i++; }
+	v_color = res.rgb;
+}
+
+	)END";
 
 	/*
 		Step 0 - Create a EGLNativeWindowType that we can use for OpenGL ES output
@@ -326,37 +342,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	GLuint uiFragShader, uiVertShader;		/* Used to hold the fragment and vertex shader handles */
 	GLuint uiProgramObject;					/* Used to hold the program handle (made out of the two previous shaders */
-
-	// Create the fragment shader object
-	uiFragShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-	// Load the source code into it
-	glShaderSource(uiFragShader, 1, (const char**)&pszFragShader, NULL);
-
-	// Compile the source code
-	glCompileShader(uiFragShader);
-
-	// Check if compilation succeeded
 	GLint bShaderCompiled;
-    glGetShaderiv(uiFragShader, GL_COMPILE_STATUS, &bShaderCompiled);
-
-	if (!bShaderCompiled)
-	{
-
-		// An error happened, first retrieve the length of the log message
-		int i32InfoLogLength, i32CharsWritten;
-		glGetShaderiv(uiFragShader, GL_INFO_LOG_LENGTH, &i32InfoLogLength);
-
-		// Allocate enough space for the message and retrieve it
-		char* pszInfoLog = new char[i32InfoLogLength];
-        glGetShaderInfoLog(uiFragShader, i32InfoLogLength, &i32CharsWritten, pszInfoLog);
-
-		// Displays the error in a dialog box
-		MessageBox(hWnd, i32InfoLogLength ? pszInfoLog : _T(""), _T("Failed to compile fragment shader"), MB_OK|MB_ICONEXCLAMATION);
-		delete[] pszInfoLog;
-
-		goto cleanup;
-	}
 
 	// Loads the vertex shader in the same way
 	uiVertShader = glCreateShader(GL_VERTEX_SHADER);
@@ -378,6 +364,37 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		goto cleanup;
 	}
 
+	// Create the fragment shader object
+	uiFragShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+	// Load the source code into it
+	glShaderSource(uiFragShader, 1, (const char**)&pszFragShader, NULL);
+
+	// Compile the source code
+	glCompileShader(uiFragShader);
+
+	// Check if compilation succeeded
+
+    glGetShaderiv(uiFragShader, GL_COMPILE_STATUS, &bShaderCompiled);
+
+	if (!bShaderCompiled)
+	{
+
+		// An error happened, first retrieve the length of the log message
+		int i32InfoLogLength, i32CharsWritten;
+		glGetShaderiv(uiFragShader, GL_INFO_LOG_LENGTH, &i32InfoLogLength);
+
+		// Allocate enough space for the message and retrieve it
+		char* pszInfoLog = new char[i32InfoLogLength];
+        glGetShaderInfoLog(uiFragShader, i32InfoLogLength, &i32CharsWritten, pszInfoLog);
+
+		// Displays the error in a dialog box
+		MessageBox(hWnd, i32InfoLogLength ? pszInfoLog : _T(""), _T("Failed to compile fragment shader"), MB_OK|MB_ICONEXCLAMATION);
+		delete[] pszInfoLog;
+
+		goto cleanup;
+	}
+
 	// Create the shader program
     uiProgramObject = glCreateProgram();
 
@@ -387,6 +404,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// Bind the custom vertex attribute "myVertex" to location VERTEX_ARRAY
     glBindAttribLocation(uiProgramObject, VERTEX_ARRAY, "myVertex");
+
+	glBindAttribLocation(uiProgramObject, VERTEX_ONE, "a_one");
 
 	// Link the program
     glLinkProgram(uiProgramObject);
@@ -419,11 +438,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// We're going to draw a triangle to the screen so create a vertex buffer object for our triangle
 	GLuint	ui32Vbo; // Vertex buffer object handle
-	
+
 	// Interleaved vertex data
-	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
-								0.4f ,-0.4f,0.0f,
-								0.0f ,0.4f ,0.0f};
+	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, 1.0f, // Position
+								0.4f ,-0.4f,0.0f, 1.0f,
+								0.0f ,0.4f ,0.0f, 1.0f};
+
+	GLfloat a_one = 1.0f;
 
 	// Generate the vertex buffer object (VBO)
 	glGenBuffers(1, &ui32Vbo);
@@ -432,7 +453,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 	glBindBuffer(GL_ARRAY_BUFFER, ui32Vbo);
 
 	// Set the buffer's data
-	unsigned int uiSize = 3 * (sizeof(GLfloat) * 3); // Calc afVertices size (3 vertices * stride (3 GLfloats per vertex))
+	unsigned int uiSize = 3 * (sizeof(GLfloat) * 4); // Calc afVertices size (3 vertices * stride (3 GLfloats per vertex))
 	glBufferData(GL_ARRAY_BUFFER, uiSize, afVertices, GL_STATIC_DRAW);
 
 	// Draws a triangle for 800 frames
@@ -455,18 +476,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 		// First gets the location of that variable in the shader using its name
 		int i32Location = glGetUniformLocation(uiProgramObject, "myPMVMatrix");
+		int ui_oneLocation = glGetUniformLocation(uiProgramObject, "ui_one");
 
 		// Then passes the matrix to that variable
 		glUniformMatrix4fv( i32Location, 1, GL_FALSE, pfIdentity);
+		GLint ui_one = 1;
+		glUniform1iv( ui_oneLocation, 1, &ui_one);
 
 		/*
 			Enable the custom vertex attribute at index VERTEX_ARRAY.
 			We previously binded that index to the variable in our shader "vec4 MyVertex;"
 		*/
 		glEnableVertexAttribArray(VERTEX_ARRAY);
+		glEnableVertexAttribArray(VERTEX_ONE);
 
 		// Sets the vertex data to this attribute index
-		glVertexAttribPointer(VERTEX_ARRAY, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glVertexAttribPointer(VERTEX_ARRAY, 3, GL_FLOAT, GL_FALSE, 16, (GLvoid*)0);
+		glVertexAttribPointer(VERTEX_ONE, 1, GL_FLOAT, GL_FALSE, 16, (GLvoid*)12);
 
 		/*
 			Draws a non-indexed triangle array from the pointers previously given.
