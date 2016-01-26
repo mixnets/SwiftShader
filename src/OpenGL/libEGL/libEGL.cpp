@@ -115,7 +115,7 @@ EGLDisplay GetDisplay(EGLNativeDisplayType display_id)
 		// FIXME: Check if display_id is the default display
 	}
 
-	return success((EGLDisplay)1);   // We only support the default display
+	return success(PRIMARY_DISPLAY);   // We only support the default display
 }
 
 EGLBoolean Initialize(EGLDisplay dpy, EGLint *major, EGLint *minor)
@@ -995,10 +995,12 @@ EGLDisplay GetPlatformDisplayEXT(EGLenum platform, void *native_display, const E
 			{
 				return error(EGL_BAD_ATTRIBUTE, EGL_NO_DISPLAY);   // Unimplemented
 			}
+
+			return success(HEADLESS_DISPLAY);
 		}
 	#endif
 
-	return success((EGLDisplay)1);   // We only support the default display
+	return success(PRIMARY_DISPLAY);   // We only support the default display
 }
 
 EGLSurface CreatePlatformWindowSurfaceEXT(EGLDisplay dpy, EGLConfig config, void *native_window, const EGLint *attrib_list)
