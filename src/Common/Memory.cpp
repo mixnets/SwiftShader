@@ -23,6 +23,21 @@
 	#include <sys/mman.h>
 	#include <unistd.h>
 #endif
+#ifdef __ANDROID__
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+#include <sys/prctl.h>
+
+// It's a bit disturbing to to this here, but it's done most places where
+// this is used in Android. The only header seems to be in
+// bionic/libc/private/bionic_prctl.h, and that's not available outside of
+// bionic.
+
+#define ANDROID_PR_SET_VMA		0x53564d41
+#define ANDROID_PR_SET_VMA_ANON_NAME	0
+#endif
 
 #include <memory.h>
 
@@ -100,8 +115,22 @@ void deallocate(void *memory)
 void *allocateExecutable(size_t bytes)
 {
 	size_t pageSize = memoryPageSize();
-
-	return allocate((bytes + pageSize - 1) & ~(pageSize - 1), pageSize);
+	size_t roundedSize = (bytes + pageSize - 1) & ~(pageSize - 1);
+	void* rval = allocate(roundedSize, pageSize);
+	char* name = NULL;
+#ifdef __ANDROID__
+	if (rval)
+	{
+		asprintf(&name, "ss_x_%p", rval);
+		if (prctl(ANDROID_PR_SET_VMA, ANDROID_PR_SET_VMA_ANON_NAME,
+				rval, roundedSize, name) == -1) {
+		ALOGE("prctl failed %p 0x%zx (%s)", rval, roundedSize, strerror(errno));
+		free(name);
+	}
+	// The kernel retains a reference to name, so don't free it.
+	}
+#endif
+	return rval;
 }
 
 void markExecutable(void *memory, size_t bytes)
