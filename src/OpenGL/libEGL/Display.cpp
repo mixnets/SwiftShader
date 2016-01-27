@@ -193,11 +193,6 @@ void Display::terminate()
     {
         destroyContext(*mContextSet.begin());
     }
-
-	if(this == getCurrentDisplay())
-	{
-		setCurrentDisplay(nullptr);
-	}
 }
 
 bool Display::getConfigs(EGLConfig *configs, const EGLint *attribList, EGLint configSize, EGLint *numConfig)
