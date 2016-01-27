@@ -115,6 +115,13 @@ EGLDisplay GetDisplay(EGLNativeDisplayType display_id)
 		// FIXME: Check if display_id is the default display
 	}
 
+	#if defined(__linux__) && !defined(__ANDROID__)
+		if(!libX11)
+		{
+			return success(HEADLESS_DISPLAY);
+		}
+	#endif
+
 	return success(PRIMARY_DISPLAY);   // We only support the default display
 }
 
@@ -731,7 +738,7 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 		UNIMPLEMENTED();   // FIXME
 	}
 
-	egl::setCurrentDisplay(display);
+	egl::setCurrentDisplay(dpy);
 	egl::setCurrentDrawSurface(drawSurface);
 	egl::setCurrentReadSurface(readSurface);
 	egl::setCurrentContext(context);
@@ -777,10 +784,7 @@ EGLDisplay GetCurrentDisplay(void)
 {
 	TRACE("()");
 
-	egl::Display *display = egl::getCurrentDisplay();
-
-	// We don't return the actual object pointer. We only support the default display, represented by '1'
-	return success(display ? (EGLDisplay)1 : EGL_NO_DISPLAY);
+	return success(egl::getCurrentDisplay());
 }
 
 EGLBoolean QueryContext(EGLDisplay dpy, EGLContext ctx, EGLint attribute, EGLint *value)
