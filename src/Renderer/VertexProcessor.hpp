@@ -34,6 +34,8 @@ namespace sw
 	{
 		unsigned int vertexCount;
 		VertexCache vertexCache;
+
+		unsigned int miss;
 	};
 
 	class VertexProcessor

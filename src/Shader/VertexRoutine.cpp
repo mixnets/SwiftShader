@@ -50,10 +50,13 @@ namespace sw
 		{
 			UInt index = *Pointer<UInt>(batch);
 			UInt tagIndex = index & 0x0000003C;
-			UInt indexQ = !textureSampling ? UInt(index & 0xFFFFFFFC) : index;   // FIXME: TEXLDL hack to have independent LODs, hurts performance.
+			UInt indexQ = index;//!textureSampling ? UInt(index & 0xFFFFFFFC) : index;   // FIXME: TEXLDL hack to have independent LODs, hurts performance.
 
 			If(*Pointer<UInt>(tagCache + tagIndex) != indexQ)
 			{
+				UInt misses = *Pointer<UInt>(task + OFFSET(VertexTask,miss));
+				*Pointer<UInt>(task + OFFSET(VertexTask,miss)) = misses + 1;
+
 				*Pointer<UInt>(tagCache + tagIndex) = indexQ;
 
 				readInput(indexQ);
