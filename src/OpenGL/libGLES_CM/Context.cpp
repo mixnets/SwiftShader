@@ -1395,6 +1395,27 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
     return true;
 }
 
+bool Context::getPointerv(GLenum pname, const GLvoid **params)
+{
+	switch(pname)
+	{
+	case GL_VERTEX_ARRAY_POINTER:         *params = mState.vertexAttribute[sw::Position].mPointer;  break;
+	case GL_NORMAL_ARRAY_POINTER:         *params = mState.vertexAttribute[sw::Normal].mPointer;    break;
+	case GL_COLOR_ARRAY_POINTER:          *params = mState.vertexAttribute[sw::Color0].mPointer;    break;
+	case GL_POINT_SIZE_ARRAY_POINTER_OES: *params = mState.vertexAttribute[sw::PointSize].mPointer; break;
+	case GL_TEXTURE_COORD_ARRAY_POINTER:
+		for(int i = 0; i < MAX_TEXTURE_UNITS; i++)
+		{
+			params[i] = mState.vertexAttribute[sw::TexCoord0].mPointer;
+		}
+		break;
+	default:
+		return false;
+	}
+
+	return true;
+}
+
 int Context::getQueryParameterNum(GLenum pname)
 {
     // Please note: the query type returned for DEPTH_CLEAR_VALUE in this implementation
