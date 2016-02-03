@@ -46,6 +46,7 @@ public:
 	{
 		shared = false;
 		Object::addRef();
+		if(parentTexture)parentTexture->addRef();
 	}
 
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, int pitchP = 0)
@@ -55,6 +56,7 @@ public:
 	{
 		shared = false;
 		Object::addRef();
+		if(parentTexture)parentTexture->addRef();
 	}
 
 	Image(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable, bool renderTarget)
@@ -63,6 +65,7 @@ public:
 	{
 		shared = false;
 		Object::addRef();
+		if(parentTexture)parentTexture->addRef();
 	}
 
 	GLsizei getWidth() const
@@ -138,8 +141,7 @@ public:
 	void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
 
 	void addRef() override;
-	void release() override;
-	virtual void unbind(const Texture *parent);   // Break parent ownership and release
+	bool release() override;
 
 	virtual void destroyShared()   // Release a shared image
 	{

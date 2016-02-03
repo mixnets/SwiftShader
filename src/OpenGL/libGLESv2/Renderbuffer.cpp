@@ -27,7 +27,7 @@ RenderbufferInterface::RenderbufferInterface()
 
 // The default case for classes inherited from RenderbufferInterface is not to
 // need to do anything upon the reference count to the parent Renderbuffer incrementing
-// or decrementing. 
+// or decrementing.
 void RenderbufferInterface::addProxyRef(const Renderbuffer *proxy)
 {
 }
@@ -283,7 +283,7 @@ GLsizei RenderbufferTextureCubeMap::getSamples() const
 
 Renderbuffer::Renderbuffer(GLuint name, RenderbufferInterface *instance) : NamedObject(name)
 {
-	ASSERT(instance != NULL);
+	ASSERT(instance);
 	mInstance = instance;
 }
 
@@ -301,11 +301,11 @@ void Renderbuffer::addRef()
     Object::addRef();
 }
 
-void Renderbuffer::release()
+bool Renderbuffer::release()
 {
     mInstance->releaseProxy(this);
 
-    Object::release();
+    return Object::release();
 }
 
 // Increments refcount on image.
@@ -443,7 +443,7 @@ Colorbuffer::Colorbuffer(egl::Image *renderTarget) : mRenderTarget(renderTarget)
 	if(renderTarget)
 	{
 		renderTarget->addRef();
-		
+
 		mWidth = renderTarget->getWidth();
 		mHeight = renderTarget->getHeight();
 		internalFormat = renderTarget->getInternalFormat();
@@ -596,7 +596,7 @@ Depthbuffer::Depthbuffer(egl::Image *depthStencil) : DepthStencilbuffer(depthSte
 	if(depthStencil)
 	{
 		format = GL_DEPTH_COMPONENT16;   // If the renderbuffer parameters are queried, the calling function
-		                                 // will expect one of the valid renderbuffer formats for use in 
+		                                 // will expect one of the valid renderbuffer formats for use in
 		                                 // glRenderbufferStorage
 	}
 }
@@ -606,7 +606,7 @@ Depthbuffer::Depthbuffer(int width, int height, GLsizei samples) : DepthStencilb
 	if(mDepthStencil)
 	{
 		format = GL_DEPTH_COMPONENT16;   // If the renderbuffer parameters are queried, the calling function
-		                                 // will expect one of the valid renderbuffer formats for use in 
+		                                 // will expect one of the valid renderbuffer formats for use in
 		                                 // glRenderbufferStorage
 	}
 }
@@ -620,7 +620,7 @@ Stencilbuffer::Stencilbuffer(egl::Image *depthStencil) : DepthStencilbuffer(dept
 	if(depthStencil)
 	{
 		format = GL_STENCIL_INDEX8;   // If the renderbuffer parameters are queried, the calling function
-		                              // will expect one of the valid renderbuffer formats for use in 
+		                              // will expect one of the valid renderbuffer formats for use in
 		                              // glRenderbufferStorage
 	}
 }
@@ -630,7 +630,7 @@ Stencilbuffer::Stencilbuffer(int width, int height, GLsizei samples) : DepthSten
 	if(mDepthStencil)
 	{
 		format = GL_STENCIL_INDEX8;   // If the renderbuffer parameters are queried, the calling function
-		                              // will expect one of the valid renderbuffer formats for use in 
+		                              // will expect one of the valid renderbuffer formats for use in
 		                              // glRenderbufferStorage
 	}
 }
