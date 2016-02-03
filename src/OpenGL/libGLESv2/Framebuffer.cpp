@@ -155,7 +155,7 @@ egl::Image *Framebuffer::getReadRenderTarget()
 egl::Image *Framebuffer::getDepthStencil()
 {
 	Renderbuffer *depthstencilbuffer = mDepthbufferPointer;
-	
+
 	if(!depthstencilbuffer)
 	{
 		depthstencilbuffer = mStencilbufferPointer;

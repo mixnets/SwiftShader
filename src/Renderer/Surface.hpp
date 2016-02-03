@@ -154,7 +154,7 @@ namespace sw
 		FORMAT_R32F,
 		FORMAT_G32R32F,
 		FORMAT_B32G32R32F,
-		FORMAT_A32B32G32R32F, 
+		FORMAT_A32B32G32R32F,
 		// Bump map formats
 		FORMAT_V8U8,
 		FORMAT_L6V5U5,
@@ -294,7 +294,7 @@ namespace sw
 		Color<float> sampleExternal(float x, float y) const;
 		void writeExternal(int x, int y, int z, const Color<float> &color);
 		void writeExternal(int x, int y, const Color<float> &color);
-		
+
 		void copyInternal(const Surface* src, int x, int y, float srcX, float srcY, bool filter);
 		void copyInternal(const Surface* src, int x, int y, int z, float srcX, float srcY, float srcZ, bool filter);
 
@@ -329,10 +329,11 @@ namespace sw
 
 		static void setTexturePalette(unsigned int *palette);
 
-	protected:
-		sw::Resource *resource;
+		inline void orphan();
 
 	private:
+		sw::Resource *resource;
+
 		typedef unsigned char byte;
 		typedef unsigned short word;
 		typedef unsigned int dword;
@@ -587,6 +588,12 @@ namespace sw
 	bool Surface::isExternalDirty() const
 	{
 		return external.buffer && external.buffer != internal.buffer && external.dirty;
+	}
+
+	void Surface::orphan()
+	{
+		hasParent = false;
+		resource = nullptr;
 	}
 }
 

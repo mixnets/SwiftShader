@@ -32,13 +32,16 @@ public:
     virtual ~Object();
 
     virtual void addRef();
-	virtual void release();
+	virtual bool release();
+	void destroy();
 
-private:
+public:
     volatile int referenceCount;
 
 #ifndef NDEBUG
 public:
+	const unsigned int serialID;
+	static unsigned int lastSerial;
 	static std::set<Object*> instances;   // For leak checking
 #endif
 };

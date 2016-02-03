@@ -138,7 +138,7 @@ GLsizei RenderbufferTexture2D::getSamples() const
 
 Renderbuffer::Renderbuffer(GLuint name, RenderbufferInterface *instance) : NamedObject(name)
 {
-	ASSERT(instance != NULL);
+	ASSERT(instance);
 	mInstance = instance;
 }
 
@@ -156,11 +156,11 @@ void Renderbuffer::addRef()
     Object::addRef();
 }
 
-void Renderbuffer::release()
+bool Renderbuffer::release()
 {
     mInstance->releaseProxy(this);
 
-    Object::release();
+    return Object::release();
 }
 
 // Increments refcount on image.

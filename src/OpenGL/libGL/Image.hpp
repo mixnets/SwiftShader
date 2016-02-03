@@ -13,6 +13,7 @@
 #define gl_Image_hpp
 
 #include "Renderer/Surface.hpp"
+#include "common/Object.hpp"
 
 #define _GDI32_
 #include <windows.h>
@@ -23,7 +24,7 @@ namespace gl
 {
 	class Texture;
 
-	class Image : public sw::Surface
+	class Image : public sw::Surface, public gl::Object
 	{
 	public:
 		Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type);
@@ -35,7 +36,7 @@ namespace gl
 		void *lock(unsigned int left, unsigned int top, sw::Lock lock);
 		unsigned int getPitch() const;
 		void unlock();
-		
+
 		int getWidth();
 		int getHeight();
 		GLenum getFormat();
@@ -43,8 +44,8 @@ namespace gl
 		virtual sw::Format getInternalFormat();
 		int getMultiSampleDepth();
 
-		virtual void addRef();
-		virtual void release();
+		void addRef() override;
+		bool release() override;
 		void unbind();   // Break parent ownership and release
 
 		static sw::Format selectInternalFormat(GLenum format, GLenum type);
@@ -83,8 +84,6 @@ namespace gl
 		const GLenum type;
 		const sw::Format internalFormat;
 		const int multiSampleDepth;
-
-		volatile int referenceCount;
 	};
 }
 

@@ -144,8 +144,8 @@ public:
     // Textures need to maintain their own count of references to them via
     // Renderbuffers/RenderbufferTextures. These functions invoke those
     // reference counting functions on the RenderbufferInterface.
-    virtual void addRef();
-    virtual void release();
+    void addRef() override;
+    bool release() override;
 
 	Image *getRenderTarget();
 
