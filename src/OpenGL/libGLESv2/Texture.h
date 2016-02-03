@@ -56,6 +56,8 @@ public:
 
     virtual ~Texture();
 
+	//void release() override;
+
 	virtual sw::Resource *getResource() const;
 
 	virtual void addProxyRef(const Renderbuffer *proxy) = 0;
@@ -157,8 +159,9 @@ public:
 
     virtual ~Texture2D();
 
-	void addProxyRef(const Renderbuffer *proxy);
-    void releaseProxy(const Renderbuffer *proxy);
+	void addProxyRef(const Renderbuffer *proxy) override;
+    void releaseProxy(const Renderbuffer *proxy) override;
+	bool release() override;
 
     virtual GLenum getTarget() const;
 
@@ -196,9 +199,9 @@ protected:
 	bool isMipmapComplete() const;
 
 	egl::Image *image[IMPLEMENTATION_MAX_TEXTURE_LEVELS];
-    
+
     egl::Surface *mSurface;
-    
+
 	// A specific internal reference count is kept for colorbuffer proxy references,
     // because, as the renderbuffer acting as proxy will maintain a binding pointer
     // back to this texture, there would be a circular reference if we used a binding
@@ -215,11 +218,12 @@ public:
 
     virtual ~TextureCubeMap();
 
-	void addProxyRef(const Renderbuffer *proxy);
-    void releaseProxy(const Renderbuffer *proxy);
+	void addProxyRef(const Renderbuffer *proxy) override;
+    void releaseProxy(const Renderbuffer *proxy) override;
+
 
     virtual GLenum getTarget() const;
-    
+
     virtual GLsizei getWidth(GLenum target, GLint level) const;
     virtual GLsizei getHeight(GLenum target, GLint level) const;
     virtual GLenum getFormat(GLenum target, GLint level) const;
@@ -256,7 +260,7 @@ private:
 	egl::Image *getImage(GLenum face, unsigned int level);
 
 	egl::Image *image[6][IMPLEMENTATION_MAX_TEXTURE_LEVELS];
-	
+
 	// A specific internal reference count is kept for colorbuffer proxy references,
     // because, as the renderbuffer acting as proxy will maintain a binding pointer
     // back to this texture, there would be a circular reference if we used a binding
@@ -273,8 +277,9 @@ public:
 
 	virtual ~Texture3D();
 
-	void addProxyRef(const Renderbuffer *proxy);
-	void releaseProxy(const Renderbuffer *proxy);
+	void addProxyRef(const Renderbuffer *proxy) override;
+    void releaseProxy(const Renderbuffer *proxy) override;
+
 
 	virtual GLenum getTarget() const;
 
