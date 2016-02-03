@@ -1165,7 +1165,7 @@ namespace egl
 	{
 		if(parentTexture == parent)
 		{
-			parentTexture = 0;
+			parentTexture = nullptr;
 		}
 
 		release();
