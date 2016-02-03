@@ -46,6 +46,7 @@ public:
 	{
 		shared = false;
 		Object::addRef();
+		if(parentTexture)parentTexture->addRef();
 	}
 
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, int pitchP = 0)
@@ -55,6 +56,7 @@ public:
 	{
 		shared = false;
 		Object::addRef();
+		if(parentTexture)parentTexture->addRef();
 	}
 
 	Image(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable, bool renderTarget)
@@ -63,6 +65,7 @@ public:
 	{
 		shared = false;
 		Object::addRef();
+		if(parentTexture)parentTexture->addRef();
 	}
 
 	GLsizei getWidth() const

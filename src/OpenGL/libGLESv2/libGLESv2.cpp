@@ -403,7 +403,7 @@ void BindFramebuffer(GLenum target, GLuint framebuffer)
 {
 	TRACE("(GLenum target = 0x%X, GLuint framebuffer = %d)", target, framebuffer);
 
-	if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER_ANGLE && target != GL_READ_FRAMEBUFFER_ANGLE)
+	if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER && target != GL_READ_FRAMEBUFFER)
 	{
 		return error(GL_INVALID_ENUM);
 	}
@@ -412,12 +412,12 @@ void BindFramebuffer(GLenum target, GLuint framebuffer)
 
 	if(context)
 	{
-		if(target == GL_READ_FRAMEBUFFER_ANGLE || target == GL_FRAMEBUFFER)
+		if(target == GL_READ_FRAMEBUFFER || target == GL_FRAMEBUFFER)
 		{
 			context->bindReadFramebuffer(framebuffer);
 		}
 
-		if(target == GL_DRAW_FRAMEBUFFER_ANGLE || target == GL_FRAMEBUFFER)
+		if(target == GL_DRAW_FRAMEBUFFER || target == GL_FRAMEBUFFER)
 		{
 			context->bindDrawFramebuffer(framebuffer);
 		}
@@ -758,7 +758,7 @@ GLenum CheckFramebufferStatus(GLenum target)
 {
 	TRACE("(GLenum target = 0x%X)", target);
 
-	if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER_ANGLE && target != GL_READ_FRAMEBUFFER_ANGLE)
+	if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER && target != GL_READ_FRAMEBUFFER)
 	{
 		return error(GL_INVALID_ENUM, 0);
 	}
@@ -768,7 +768,7 @@ GLenum CheckFramebufferStatus(GLenum target)
 	if(context)
 	{
 		es2::Framebuffer *framebuffer = NULL;
-		if(target == GL_READ_FRAMEBUFFER_ANGLE)
+		if(target == GL_READ_FRAMEBUFFER)
 		{
 			framebuffer = context->getReadFramebuffer();
 		}
@@ -2042,7 +2042,7 @@ void FramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuff
 	TRACE("(GLenum target = 0x%X, GLenum attachment = 0x%X, GLenum renderbuffertarget = 0x%X, "
 	      "GLuint renderbuffer = %d)", target, attachment, renderbuffertarget, renderbuffer);
 
-	if((target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER_ANGLE && target != GL_READ_FRAMEBUFFER_ANGLE) ||
+	if((target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER && target != GL_READ_FRAMEBUFFER) ||
 	   (renderbuffertarget != GL_RENDERBUFFER && renderbuffer != 0))
 	{
 		return error(GL_INVALID_ENUM);
@@ -2054,7 +2054,7 @@ void FramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuff
 	{
 		es2::Framebuffer *framebuffer = NULL;
 		GLuint framebufferName = 0;
-		if(target == GL_READ_FRAMEBUFFER_ANGLE)
+		if(target == GL_READ_FRAMEBUFFER)
 		{
 			framebuffer = context->getReadFramebuffer();
 			framebufferName = context->getReadFramebufferName();
@@ -2154,7 +2154,7 @@ void FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GL
 	TRACE("(GLenum target = 0x%X, GLenum attachment = 0x%X, GLenum textarget = 0x%X, "
 	      "GLuint texture = %d, GLint level = %d)", target, attachment, textarget, texture, level);
 
-	if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER_ANGLE && target != GL_READ_FRAMEBUFFER_ANGLE)
+	if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER && target != GL_READ_FRAMEBUFFER)
 	{
 		return error(GL_INVALID_ENUM);
 	}
@@ -2217,7 +2217,7 @@ void FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GL
 
 		es2::Framebuffer *framebuffer = NULL;
 		GLuint framebufferName = 0;
-		if(target == GL_READ_FRAMEBUFFER_ANGLE)
+		if(target == GL_READ_FRAMEBUFFER)
 		{
 			framebuffer = context->getReadFramebuffer();
 			framebufferName = context->getReadFramebufferName();
@@ -2833,7 +2833,7 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 
 	if(context)
 	{
-		if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER_ANGLE && target != GL_READ_FRAMEBUFFER_ANGLE)
+		if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER && target != GL_READ_FRAMEBUFFER)
 		{
 			return error(GL_INVALID_ENUM);
 		}
@@ -2841,7 +2841,7 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 		GLint clientVersion = context->getClientVersion();
 
 		es2::Framebuffer *framebuffer = NULL;
-		if(target == GL_READ_FRAMEBUFFER_ANGLE)
+		if(target == GL_READ_FRAMEBUFFER)
 		{
 			if(context->getReadFramebufferName() == 0)
 			{
@@ -7289,7 +7289,7 @@ void FramebufferTexture3DOES(GLenum target, GLenum attachment, GLenum textarget,
 	TRACE("(GLenum target = 0x%X, GLenum attachment = 0x%X, GLenum textarget = 0x%X, "
 	      "GLuint texture = %d, GLint level = %d, GLint zoffset = %d)", target, attachment, textarget, texture, level, zoffset);
 
-	if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER_ANGLE && target != GL_READ_FRAMEBUFFER_ANGLE)
+	if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER && target != GL_READ_FRAMEBUFFER)
 	{
 		return error(GL_INVALID_ENUM);
 	}
@@ -7336,7 +7336,7 @@ void FramebufferTexture3DOES(GLenum target, GLenum attachment, GLenum textarget,
 
 		es2::Framebuffer *framebuffer = NULL;
 		GLuint framebufferName = 0;
-		if(target == GL_READ_FRAMEBUFFER_ANGLE)
+		if(target == GL_READ_FRAMEBUFFER)
 		{
 			framebuffer = context->getReadFramebuffer();
 			framebufferName = context->getReadFramebufferName();

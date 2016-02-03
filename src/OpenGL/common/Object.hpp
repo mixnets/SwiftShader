@@ -18,6 +18,8 @@
 
 #include "common/debug.h"
 
+#include <set>
+
 typedef unsigned int GLuint;
 
 namespace gl
@@ -37,7 +39,7 @@ private:
 
 #ifndef NDEBUG
 public:
-	static unsigned int instanceCount;
+	static std::set<Object*> instances;
 #endif
 };
 
