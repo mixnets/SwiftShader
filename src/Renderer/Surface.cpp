@@ -1257,13 +1257,16 @@ namespace sw
 
 	Surface::~Surface()
 	{
-		// Synchronize so we can deallocate the buffers below
-		resource->lock(DESTRUCT);
-		resource->unlock();
-
-		if(!hasParent)
+		if(resource)
 		{
-			resource->destruct();
+			// Synchronize so we can deallocate the buffers below
+			resource->lock(DESTRUCT);
+			resource->unlock();
+
+			if(!hasParent)
+			{
+				resource->destruct();
+			}
 		}
 
 		if(ownExternal)

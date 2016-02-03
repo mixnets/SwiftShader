@@ -10,12 +10,20 @@ namespace sw
 
 namespace egl
 {
+class Image;
+
 class Texture : public gl::NamedObject
 {
 public:
 	Texture(GLuint name) : NamedObject(name) {};
 	virtual void releaseTexImage() = 0;
 	virtual sw::Resource *getResource() const = 0;
+	//virtual bool releaseImage(Image *child) {assert(false);return false;};   // FIXME: pure virtual!!!!!!!!!!
+
+	virtual void checkDestroy()
+	{
+		ASSERT(false);
+	}
 };
 }
 

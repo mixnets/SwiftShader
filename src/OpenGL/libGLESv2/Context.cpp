@@ -117,7 +117,7 @@ Context::Context(const egl::Config *config, const Context *shareContext, EGLint 
     mState.colorMaskAlpha = true;
     mState.depthMask = true;
 
-    if(shareContext != NULL)
+    if(shareContext)
     {
         mResourceManager = shareContext->mResourceManager;
         mResourceManager->addRef();
@@ -172,8 +172,8 @@ Context::Context(const egl::Config *config, const Context *shareContext, EGLint 
 	mState.unpackInfo.skipRows = 0;
 	mState.unpackInfo.skipImages = 0;
 
-    mVertexDataManager = NULL;
-    mIndexDataManager = NULL;
+    mVertexDataManager = nullptr;
+    mIndexDataManager = nullptr;
 
     mInvalidEnum = false;
     mInvalidValue = false;
@@ -227,38 +227,38 @@ Context::~Context()
 	{
 		for(int sampler = 0; sampler < MAX_COMBINED_TEXTURE_IMAGE_UNITS; sampler++)
 		{
-			mState.samplerTexture[type][sampler] = NULL;
+			mState.samplerTexture[type][sampler] = nullptr;
 		}
 	}
 
 	for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
 	{
-		mState.vertexAttribute[i].mBoundBuffer = NULL;
+		mState.vertexAttribute[i].mBoundBuffer = nullptr;
 	}
 
 	for(int i = 0; i < QUERY_TYPE_COUNT; i++)
 	{
-		mState.activeQuery[i] = NULL;
+		mState.activeQuery[i] = nullptr;
 	}
 
-	mState.arrayBuffer = NULL;
-	mState.copyReadBuffer = NULL;
-	mState.copyWriteBuffer = NULL;
-	mState.pixelPackBuffer = NULL;
-	mState.pixelUnpackBuffer = NULL;
-	mState.genericUniformBuffer = NULL;
-	mState.renderbuffer = NULL;
+	mState.arrayBuffer = nullptr;
+	mState.copyReadBuffer = nullptr;
+	mState.copyWriteBuffer = nullptr;
+	mState.pixelPackBuffer = nullptr;
+	mState.pixelUnpackBuffer = nullptr;
+	mState.genericUniformBuffer = nullptr;
+	mState.renderbuffer = nullptr;
 
 	for(int i = 0; i < MAX_COMBINED_TEXTURE_IMAGE_UNITS; ++i)
 	{
-		mState.sampler[i] = NULL;
+		mState.sampler[i] = nullptr;
 	}
 
-    mTexture2DZero = NULL;
-	mTexture3DZero = NULL;
-	mTexture2DArrayZero = NULL;
-    mTextureCubeMapZero = NULL;
-    mTextureExternalZero = NULL;
+    mTexture2DZero = nullptr;
+	mTexture3DZero = nullptr;
+	mTexture2DArrayZero = nullptr;
+    mTextureCubeMapZero = nullptr;
+    mTextureExternalZero = nullptr;
 
     delete mVertexDataManager;
     delete mIndexDataManager;
@@ -766,7 +766,7 @@ GLuint Context::getElementArrayBufferName() const
 
 GLuint Context::getActiveQuery(GLenum target) const
 {
-    Query *queryObject = NULL;
+    Query *queryObject = nullptr;
 
     switch(target)
     {
@@ -922,7 +922,7 @@ GLuint Context::createFramebuffer()
 {
     GLuint handle = mFramebufferNameSpace.allocate();
 
-    mFramebufferMap[handle] = NULL;
+    mFramebufferMap[handle] = nullptr;
 
     return handle;
 }
@@ -941,7 +941,7 @@ GLuint Context::createQuery()
 {
     GLuint handle = mQueryNameSpace.allocate();
 
-    mQueryMap[handle] = NULL;
+    mQueryMap[handle] = nullptr;
 
     return handle;
 }
@@ -968,7 +968,7 @@ GLuint Context::createTransformFeedback()
 {
 	GLuint handle = mTransformFeedbackNameSpace.allocate();
 
-	mTransformFeedbackMap[handle] = NULL;
+	mTransformFeedbackMap[handle] = nullptr;
 
 	return handle;
 }
@@ -1378,7 +1378,7 @@ void Context::beginQuery(GLenum target, GLuint query)
     //       no query may be active for either if glBeginQuery targets either.
     for(int i = 0; i < QUERY_TYPE_COUNT; i++)
     {
-        if(mState.activeQuery[i] != NULL)
+        if(mState.activeQuery[i])
         {
             return error(GL_INVALID_OPERATION);
         }
@@ -1435,14 +1435,14 @@ void Context::endQuery(GLenum target)
 
     Query *queryObject = mState.activeQuery[qType];
 
-    if(queryObject == NULL)
+    if(queryObject == nullptr)
     {
         return error(GL_INVALID_OPERATION);
     }
 
     queryObject->end();
 
-    mState.activeQuery[qType] = NULL;
+    mState.activeQuery[qType] = nullptr;
 }
 
 void Context::setFramebufferZero(Framebuffer *buffer)
@@ -1463,7 +1463,7 @@ Framebuffer *Context::getFramebuffer(unsigned int handle) const
 
     if(framebuffer == mFramebufferMap.end())
     {
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -1477,7 +1477,7 @@ Fence *Context::getFence(unsigned int handle) const
 
     if(fence == mFenceMap.end())
     {
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -1496,7 +1496,7 @@ Query *Context::getQuery(unsigned int handle) const
 
 	if(query == mQueryMap.end())
 	{
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -1510,7 +1510,7 @@ Query *Context::createQuery(unsigned int handle, GLenum type)
 
 	if(query == mQueryMap.end())
 	{
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
@@ -1556,7 +1556,7 @@ TransformFeedback *Context::getTransformFeedback(GLuint transformFeedback) const
 {
 	TransformFeedbackMap::const_iterator transformFeedbackObject = mTransformFeedbackMap.find(transformFeedback);
 
-	return (transformFeedbackObject == mTransformFeedbackMap.end()) ? NULL : transformFeedbackObject->second;
+	return (transformFeedbackObject == mTransformFeedbackMap.end()) ? nullptr : transformFeedbackObject->second;
 }
 
 Sampler *Context::getSampler(GLuint sampler) const
@@ -3632,7 +3632,7 @@ void Context::detachBuffer(GLuint buffer)
 
     if(getArrayBufferName() == buffer)
     {
-        mState.arrayBuffer = NULL;
+        mState.arrayBuffer = nullptr;
     }
 
 	for(auto tfIt = mTransformFeedbackMap.begin(); tfIt != mTransformFeedbackMap.end(); tfIt++)
@@ -3649,7 +3649,7 @@ void Context::detachBuffer(GLuint buffer)
     {
         if(mState.vertexAttribute[attribute].mBoundBuffer.name() == buffer)
         {
-            mState.vertexAttribute[attribute].mBoundBuffer = NULL;
+            mState.vertexAttribute[attribute].mBoundBuffer = nullptr;
         }
     }
 }
@@ -3666,7 +3666,7 @@ void Context::detachTexture(GLuint texture)
         {
             if(mState.samplerTexture[type][sampler].name() == texture)
             {
-                mState.samplerTexture[type][sampler] = NULL;
+                mState.samplerTexture[type][sampler] = nullptr;
             }
         }
     }
@@ -3748,7 +3748,7 @@ void Context::detachSampler(GLuint sampler)
 		gl::BindingPointer<Sampler> &samplerBinding = mState.sampler[textureUnit];
 		if(samplerBinding.name() == sampler)
 		{
-			samplerBinding = NULL;
+			samplerBinding = nullptr;
 		}
 	}
 }
@@ -4004,8 +4004,8 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
     if(mask & (GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT))
     {
-        Renderbuffer *readDSBuffer = NULL;
-        Renderbuffer *drawDSBuffer = NULL;
+        Renderbuffer *readDSBuffer = nullptr;
+        Renderbuffer *drawDSBuffer = nullptr;
 
         // We support OES_packed_depth_stencil, and do not support a separately attached depth and stencil buffer, so if we have
         // both a depth and stencil buffer, it will be the same buffer.
@@ -4083,7 +4083,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
         if(blitDepthStencil)
         {
-            bool success = device->stretchRect(readFramebuffer->getDepthStencil(), NULL, drawFramebuffer->getDepthStencil(), NULL, false);
+            bool success = device->stretchRect(readFramebuffer->getDepthStencil(), nullptr, drawFramebuffer->getDepthStencil(), nullptr, false);
 
             if(!success)
             {
