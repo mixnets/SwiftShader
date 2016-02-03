@@ -613,7 +613,9 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 		image[level]->unbind(this);
 	}
 
+	egl::Image *dummy = new egl::Image(nullptr, width, height, format, type);
 	image[level] = new egl::Image(this, width, height, format, type);
+	dummy->release();
 
 	if(!image[level])
 	{
