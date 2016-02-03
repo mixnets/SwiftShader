@@ -16,6 +16,12 @@ public:
 	Texture(GLuint name) : NamedObject(name) {};
 	virtual void releaseTexImage() = 0;
 	virtual sw::Resource *getResource() const = 0;
+
+	virtual bool checkDestroy()
+	{
+		ASSERT(false);
+		return false;
+	}
 };
 }
 

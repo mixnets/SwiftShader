@@ -167,7 +167,7 @@ bool Texture::setMaxAnisotropy(float textureMaxAnisotropy)
     {
         return false;
     }
-    
+
 	if(mMaxAnisotropy != textureMaxAnisotropy)
     {
         mMaxAnisotropy = textureMaxAnisotropy;
@@ -470,7 +470,7 @@ void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLint zoffset, GL
 bool Texture::copy(egl::Image *source, const sw::SliceRect &sourceRect, GLenum destFormat, GLint xoffset, GLint yoffset, GLint zoffset, egl::Image *dest)
 {
     Device *device = getDevice();
-	
+
     sw::SliceRect destRect(xoffset, yoffset, xoffset + (sourceRect.x1 - sourceRect.x0), yoffset + (sourceRect.y1 - sourceRect.y0), zoffset);
     bool success = device->stretchRect(source, &sourceRect, dest, &destRect, false);
 
@@ -537,8 +537,8 @@ Texture2D::~Texture2D()
 	mColorbufferProxy = NULL;
 }
 
-// We need to maintain a count of references to renderbuffers acting as 
-// proxies for this texture, so that we do not attempt to use a pointer 
+// We need to maintain a count of references to renderbuffers acting as
+// proxies for this texture, so that we do not attempt to use a pointer
 // to a renderbuffer proxy which has been deleted.
 void Texture2D::addProxyRef(const Renderbuffer *proxy)
 {
@@ -556,6 +556,46 @@ void Texture2D::releaseProxy(const Renderbuffer *proxy)
 	{
 		mColorbufferProxy = NULL;
 	}
+}
+
+void Texture2D::release()
+{
+	checkDestroy();
+
+	//Object::release();
+}
+
+bool Texture2D::checkDestroy()
+{
+	int imageReferenceCountSum = 0;
+	int imageCount = 0;
+
+	for(int i = 0; i < MIPMAP_LEVELS; i++)
+	{
+		if(image[i])
+		{
+			imageReferenceCountSum += image[i]->referenceCount;
+			imageCount++;
+		}
+	}
+
+	bool deleteImages = (imageReferenceCountSum == referenceCount-1 && imageCount == referenceCount-1);
+	if(deleteImages && imageCount > 0)
+	{
+		for(int i = 0; i < MIPMAP_LEVELS; i++)
+		{
+			if(image[i])
+			{
+				egl::Image *img = image[i];
+				image[i] = nullptr;
+				img->destroy();
+			}
+		}
+	}
+
+	Object::release();
+
+	return deleteImages;
 }
 
 GLenum Texture2D::getTarget() const
@@ -613,7 +653,9 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 		image[level]->unbind(this);
 	}
 
+	//egl::Image *dummy = new egl::Image(nullptr, width, height, format, type);
 	image[level] = new egl::Image(this, width, height, format, type);
+	//dummy->release();
 
 	if(!image[level])
 	{
@@ -878,7 +920,7 @@ void Texture2D::generateMipmaps()
 	}
 
     unsigned int q = log2(std::max(image[0]->getWidth(), image[0]->getHeight()));
-    
+
 	for(unsigned int i = 1; i <= q; i++)
     {
 		if(image[i])
@@ -989,8 +1031,8 @@ TextureCubeMap::~TextureCubeMap()
     }
 }
 
-// We need to maintain a count of references to renderbuffers acting as 
-// proxies for this texture, so that the texture is not deleted while 
+// We need to maintain a count of references to renderbuffers acting as
+// proxies for this texture, so that the texture is not deleted while
 // proxy references still exist. If the reference count drops to zero,
 // we set our proxy pointer NULL, so that a new attempt at referencing
 // will cause recreation.
@@ -1270,7 +1312,7 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 
 		sw::SliceRect sourceRect(x, y, x + width, y + height, 0);
 		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
-        
+
 		copy(renderTarget, sourceRect, sizedInternalFormat, 0, 0, 0, image[face][level]);
     }
 
@@ -1378,7 +1420,7 @@ egl::Image *TextureCubeMap::getRenderTarget(GLenum target, unsigned int level)
 {
     ASSERT(IsCubemapTextureTarget(target));
     ASSERT(level < IMPLEMENTATION_MAX_TEXTURE_LEVELS);
-    
+
 	int face = CubeFaceIndex(target);
 
 	if(image[face][level])
@@ -1441,8 +1483,8 @@ Texture3D::~Texture3D()
 	mColorbufferProxy = NULL;
 }
 
-// We need to maintain a count of references to renderbuffers acting as 
-// proxies for this texture, so that we do not attempt to use a pointer 
+// We need to maintain a count of references to renderbuffers acting as
+// proxies for this texture, so that we do not attempt to use a pointer
 // to a renderbuffer proxy which has been deleted.
 void Texture3D::addProxyRef(const Renderbuffer *proxy)
 {
@@ -1948,7 +1990,7 @@ egl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Form
 		ERR("Invalid parameters: %dx%d", width, height);
 		return 0;
 	}
-		
+
 	bool lockable = true;
 
 	switch(format)

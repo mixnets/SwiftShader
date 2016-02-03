@@ -1132,16 +1132,15 @@ namespace egl
 
 	Image::~Image()
 	{
-		ASSERT(!parentTexture && !shared);
+		ASSERT(/*!parentTexture && */!shared);
 	}
 
 	void Image::addRef()
 	{
 		if(parentTexture)
 		{
-			return parentTexture->addRef();
+			parentTexture->addRef();
 		}
-
 		Object::addRef();
 	}
 
@@ -1149,20 +1148,33 @@ namespace egl
 	{
 		if(parentTexture)
 		{
-			return parentTexture->release();
+			if(!parentTexture->checkDestroy())
+			{
+				Object::release();
+			}
 		}
-
-		Object::release();
+		else
+		{
+			Object::release();
+		}
 	}
 
 	void Image::unbind(const egl::Texture *parent)
 	{
-		if(parentTexture == parent)
+		release();
+	}
+
+	void Image::destroy()
+	{
+		ASSERT(referenceCount == 1 && parentTexture);
+		if(parentTexture)
 		{
+			egl::Texture *parent = parentTexture;
 			parentTexture = nullptr;
+			parent->Object::release();
 		}
 
-		release();
+		Object::release();
 	}
 
 	void Image::loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input)
