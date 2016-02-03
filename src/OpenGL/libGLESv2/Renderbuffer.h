@@ -183,7 +183,7 @@ public:
     // Renderbuffers/RenderbufferTextures. These functions invoke those
     // reference counting functions on the RenderbufferInterface.
     virtual void addRef();
-    virtual void release();
+    virtual int release();
 
 	egl::Image *getRenderTarget();
     virtual egl::Image *createSharedImage();

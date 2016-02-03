@@ -1132,35 +1132,60 @@ namespace egl
 
 	Image::~Image()
 	{
-		ASSERT(!parentTexture && !shared);
+		if(parentTexture)
+		{
+			int ref = parentTexture->release();
+
+			if(ref == 0)
+			{
+				this->sw::Surface::resource = nullptr;
+			}
+		}
+
+		ASSERT(/*!parentTexture && */!shared);
 	}
 
 	void Image::addRef()
 	{
 		if(parentTexture)
 		{
-			return parentTexture->addRef();
+			parentTexture->addRef();
 		}
-
 		Object::addRef();
 	}
 
-	void Image::release()
+	int Image::release()
 	{
-		if(parentTexture)
+		egl::Texture *tex = parentTexture;
+
+		int ref = Object::release();
+
+		if(tex && ref)
 		{
-			return parentTexture->release();
+			tex->release();
+			//tex->checkDestroy();
 		}
 
-		Object::release();
+		return ref;
 	}
 
 	void Image::unbind(const egl::Texture *parent)
 	{
-		if(parentTexture == parent)
+		release();
+	}
+
+	void Image::destroy()
+	{
+		/*ASSERT(referenceCount == 1 && parentTexture);
+		if(parentTexture)
 		{
+			egl::Texture *parent = parentTexture;
 			parentTexture = nullptr;
+			this->sw::Surface::resource = nullptr;
+			parent->Object::release();
 		}
+
+		Object::release();*/
 
 		release();
 	}

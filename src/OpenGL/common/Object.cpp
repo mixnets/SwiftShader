@@ -20,10 +20,14 @@
 namespace gl
 {
 #ifndef NDEBUG
+unsigned int Object::lastSerial = 1;
 std::set<Object*> Object::instances;
 #endif
 
 Object::Object()
+	#ifndef NDEBUG
+	: serialID(Object::lastSerial++)
+	#endif
 {
 	referenceCount = 0;
 
@@ -37,7 +41,6 @@ Object::~Object()
     ASSERT(referenceCount == 0);
 
 	#ifndef NDEBUG
-		ASSERT(instances.find(this) != instances.end());   // Check for double deletion
 		instances.erase(this);
 	#endif
 }
@@ -47,7 +50,7 @@ void Object::addRef()
 	sw::atomicIncrement(&referenceCount);
 }
 
-void Object::release()
+int Object::release()
 {
     ASSERT(referenceCount > 0);
 
@@ -59,7 +62,10 @@ void Object::release()
 	if(referenceCount == 0)
 	{
 		delete this;
+		return 0;
 	}
+
+	return referenceCount;
 }
 
 NamedObject::NamedObject(GLuint name) : name(name)
@@ -75,7 +81,10 @@ struct ObjectLeakCheck
 {
 	~ObjectLeakCheck()
 	{
-		ASSERT(Object::instances.empty());   // Check for GL object leak at termination
+		if(!Object::instances.empty())
+		{
+			Object::instances.clear();   // GL object leak!
+		}
 	}
 };
 

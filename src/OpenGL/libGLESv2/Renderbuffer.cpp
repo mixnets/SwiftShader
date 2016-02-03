@@ -301,11 +301,11 @@ void Renderbuffer::addRef()
     Object::addRef();
 }
 
-void Renderbuffer::release()
+int Renderbuffer::release()
 {
     mInstance->releaseProxy(this);
 
-    Object::release();
+    return Object::release();
 }
 
 // Increments refcount on image.
