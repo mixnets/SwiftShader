@@ -72,7 +72,7 @@ namespace gl
 	{
 		return width;
 	}
-	
+
 	int Image::getHeight()
 	{
 		return height;
@@ -82,17 +82,17 @@ namespace gl
 	{
 		return format;
 	}
-	
+
 	GLenum Image::getType()
 	{
 		return type;
 	}
-	
+
 	sw::Format Image::getInternalFormat()
 	{
 		return internalFormat;
 	}
-	
+
 	int Image::getMultiSampleDepth()
 	{
 		return multiSampleDepth;
@@ -108,7 +108,7 @@ namespace gl
 		sw::atomicIncrement(&referenceCount);
 	}
 
-	void Image::release()
+	bool Image::release()
 	{
 		if(parentTexture)
 		{
@@ -230,7 +230,7 @@ namespace gl
 	{
 		GLsizei inputPitch = ComputePitch(width, format, type, unpackAlignment);
 		void *buffer = lock(0, 0, sw::LOCK_WRITEONLY);
-		
+
 		if(buffer)
 		{
 			switch(type)
@@ -364,7 +364,7 @@ namespace gl
 		{
 			const float *source = reinterpret_cast<const float*>(static_cast<const unsigned char*>(input) + y * inputPitch);
 			float *dest = reinterpret_cast<float*>(static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 16);
-			
+
 			for(int x = 0; x < width; x++)
 			{
 				dest[4 * x + 0] = 0;
@@ -381,7 +381,7 @@ namespace gl
 		{
 			const unsigned short *source = reinterpret_cast<const unsigned short*>(static_cast<const unsigned char*>(input) + y * inputPitch);
 			unsigned short *dest = reinterpret_cast<unsigned short*>(static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 8);
-			
+
 			for(int x = 0; x < width; x++)
 			{
 				dest[4 * x + 0] = 0;
@@ -409,7 +409,7 @@ namespace gl
 		{
 			const float *source = reinterpret_cast<const float*>(static_cast<const unsigned char*>(input) + y * inputPitch);
 			float *dest = reinterpret_cast<float*>(static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 16);
-			
+
 			for(int x = 0; x < width; x++)
 			{
 				dest[4 * x + 0] = source[x];
@@ -426,7 +426,7 @@ namespace gl
 		{
 			const unsigned short *source = reinterpret_cast<const unsigned short*>(static_cast<const unsigned char*>(input) + y * inputPitch);
 			unsigned short *dest = reinterpret_cast<unsigned short*>(static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 8);
-			
+
 			for(int x = 0; x < width; x++)
 			{
 				dest[4 * x + 0] = source[x];
@@ -443,7 +443,7 @@ namespace gl
 		{
 			const unsigned char *source = static_cast<const unsigned char*>(input) + y * inputPitch;
 			unsigned char *dest = static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 2;
-        
+
 			memcpy(dest, source, width * 2);
 		}
 	}
@@ -454,7 +454,7 @@ namespace gl
 		{
 			const float *source = reinterpret_cast<const float*>(static_cast<const unsigned char*>(input) + y * inputPitch);
 			float *dest = reinterpret_cast<float*>(static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 16);
-			
+
 			for(int x = 0; x < width; x++)
 			{
 				dest[4 * x + 0] = source[2*x+0];
@@ -471,7 +471,7 @@ namespace gl
 		{
 			const unsigned short *source = reinterpret_cast<const unsigned short*>(static_cast<const unsigned char*>(input) + y * inputPitch);
 			unsigned short *dest = reinterpret_cast<unsigned short*>(static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 8);
-			
+
 			for(int x = 0; x < width; x++)
 			{
 				dest[4 * x + 0] = source[2*x+0];
@@ -488,7 +488,7 @@ namespace gl
 		{
 			const unsigned char *source = static_cast<const unsigned char*>(input) + y * inputPitch;
 			unsigned char *dest = static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 4;
-			
+
 			for(int x = 0; x < width; x++)
 			{
 				dest[4 * x + 0] = source[x * 3 + 2];
@@ -505,7 +505,7 @@ namespace gl
 		{
 			const unsigned short *source = reinterpret_cast<const unsigned short*>(static_cast<const unsigned char*>(input) + y * inputPitch);
 			unsigned char *dest = static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 2;
-			
+
 			memcpy(dest, source, width * 2);
 		}
 	}
@@ -516,7 +516,7 @@ namespace gl
 		{
 			const float *source = reinterpret_cast<const float*>(static_cast<const unsigned char*>(input) + y * inputPitch);
 			float *dest = reinterpret_cast<float*>(static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 16);
-			
+
 			for(int x = 0; x < width; x++)
 			{
 				dest[4 * x + 0] = source[x * 3 + 0];
@@ -533,7 +533,7 @@ namespace gl
 		{
 			const unsigned short *source = reinterpret_cast<const unsigned short*>(static_cast<const unsigned char*>(input) + y * inputPitch);
 			unsigned short *dest = reinterpret_cast<unsigned short*>(static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 8);
-			
+
 			for(int x = 0; x < width; x++)
 			{
 				dest[4 * x + 0] = source[x * 3 + 0];
@@ -565,7 +565,7 @@ namespace gl
 		{
 			const unsigned short *source = reinterpret_cast<const unsigned short*>(static_cast<const unsigned char*>(input) + y * inputPitch);
 			unsigned char *dest = static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 4;
-			
+
 			for(int x = 0; x < width; x++)
 			{
 				unsigned short rgba = source[x];
@@ -583,7 +583,7 @@ namespace gl
 		{
 			const unsigned short *source = reinterpret_cast<const unsigned short*>(static_cast<const unsigned char*>(input) + y * inputPitch);
 			unsigned char *dest = static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 4;
-			
+
 			for(int x = 0; x < width; x++)
 			{
 				unsigned short rgba = source[x];
@@ -601,7 +601,7 @@ namespace gl
 		{
 			const float *source = reinterpret_cast<const float*>(static_cast<const unsigned char*>(input) + y * inputPitch);
 			float *dest = reinterpret_cast<float*>(static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 16);
-			
+
 			memcpy(dest, source, width * 16);
 		}
 	}
@@ -612,7 +612,7 @@ namespace gl
 		{
 			const unsigned char *source = static_cast<const unsigned char*>(input) + y * inputPitch;
 			unsigned char *dest = static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 8;
-			
+
 			memcpy(dest, source, width * 8);
 		}
 	}
@@ -623,7 +623,7 @@ namespace gl
 		{
 			const unsigned char *source = static_cast<const unsigned char*>(input) + y * inputPitch;
 			unsigned char *dest = static_cast<unsigned char*>(buffer) + (y + yoffset) * getPitch() + xoffset * 4;
-			
+
 			memcpy(dest, source, width*4);
 		}
 	}
