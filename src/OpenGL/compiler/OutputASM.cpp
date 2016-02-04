@@ -2016,21 +2016,107 @@ namespace glsl
 		return 0;
 	}
 
+	int OutputASM::getBlockId(TIntermTyped *arg)
+	{
+		if(arg)
+		{
+			const TType &type = arg->getType();
+			TInterfaceBlock* block = type.getInterfaceBlock();
+			if(block && (type.getQualifier() == EvqUniform))
+			{
+				// Make sure the uniform block is declared
+				uniformRegister(arg);
+
+				const std::string blockName = block->name().c_str();
+
+				// Fetch uniform block index from array of blocks
+				for(ActiveUniformBlocks::const_iterator it = shaderObject->activeUniformBlocks.begin(); it != shaderObject->activeUniformBlocks.end(); ++it)
+				{
+					const std::string currentBlockName = it->name;
+					if(blockName.compare(currentBlockName) == 0)
+					{
+						return it->blockId;
+					}
+				}
+
+				ASSERT(false);
+			}
+		}
+
+		return -1;
+	}
+
+	OutputASM::ArgumentInfo OutputASM::getArgumentInfo(TIntermNode *argument, int index)
+	{
+		TIntermTyped *arg = argument->getAsTyped();
+		const TType &type = arg->getType();
+		int blockId = getBlockId(arg);
+		ArgumentInfo argumentInfo(BlockMemberInfo::getDefaultBlockInfo(), type, -1, -1);
+		if(blockId != -1)
+		{
+			argumentInfo.bufferIndex = 0;
+			for(int i = 0; i < blockId; ++i)
+			{
+				int blockArraySize = shaderObject->activeUniformBlocks[i].arraySize;
+				argumentInfo.bufferIndex += blockArraySize > 0 ? blockArraySize : 1;
+			}
+
+			const BlockDefinition& blockDefinition = blockDefinitions[blockId];
+
+			BlockDefinition::IndexMap::const_iterator itEnd = blockDefinition.indexMap.end();
+			BlockDefinition::IndexMap::const_iterator it = itEnd;
+
+			argumentInfo.clampedIndex = index;
+			if(type.isInterfaceBlock())
+			{
+				// Offset index to the beginning of the selected instance
+				size_t blockRegisters = type.elementRegisterCount();
+				size_t bufferOffset = argumentInfo.clampedIndex / blockRegisters;
+				argumentInfo.bufferIndex += bufferOffset;
+				argumentInfo.clampedIndex -= bufferOffset * blockRegisters;
+			}
+
+			int regIndex = registerIndex(arg);
+			for(int i = regIndex + argumentInfo.clampedIndex; i >= regIndex; --i)
+			{
+				it = blockDefinition.indexMap.find(i);
+				if(it != itEnd)
+				{
+					argumentInfo.clampedIndex -= (i - regIndex);
+					break;
+				}
+			}
+			ASSERT(it != itEnd);
+
+			argumentInfo.typedMemberInfo = it->second;
+
+			int registerCount = argumentInfo.typedMemberInfo.type.totalRegisterCount();
+			argumentInfo.clampedIndex = (argumentInfo.clampedIndex >= registerCount) ? registerCount - 1 : argumentInfo.clampedIndex;
+		}
+		else
+		{
+			argumentInfo.clampedIndex = (index >= arg->totalRegisterCount()) ? arg->totalRegisterCount() - 1 : index;
+		}
+
+		return argumentInfo;
+	}
+
 	void OutputASM::argument(sw::Shader::SourceParameter &parameter, TIntermNode *argument, int index)
 	{
 		if(argument)
 		{
+			const ArgumentInfo argumentInfo = getArgumentInfo(argument, index);
+			const TType &type = argumentInfo.typedMemberInfo.type;
+
+			int size = registerSize(type, argumentInfo.clampedIndex);
+
 			TIntermTyped *arg = argument->getAsTyped();
-			const TType &type = arg->getType();
-			index = (index >= arg->totalRegisterCount()) ? arg->totalRegisterCount() - 1 : index;
-
-			int size = registerSize(type, index);
-
 			parameter.type = registerType(arg);
+			parameter.bufferIndex = argumentInfo.bufferIndex;
 
 			if(arg->getQualifier() == EvqConstExpr)
 			{
-				int component = componentCount(type, index);
+				int component = componentCount(type, argumentInfo.clampedIndex);
 				ConstantUnion *constants = arg->getAsConstantUnion()->getUnionArrayPointer();
 
 				for(int i = 0; i < 4; i++)
@@ -2051,7 +2137,7 @@ namespace glsl
 			}
 			else
 			{
-				parameter.index = registerIndex(arg) + index;
+				parameter.index = registerIndex(arg) + argumentInfo.clampedIndex;
 
 				if(isSamplerRegister(arg))
 				{
@@ -2084,6 +2170,11 @@ namespace glsl
 							UNREACHABLE(binary->getOp());
 						}
 					}
+				}
+				else if(parameter.bufferIndex != -1)
+				{
+					int stride = (argumentInfo.typedMemberInfo.matrixStride > 0) ? argumentInfo.typedMemberInfo.matrixStride : argumentInfo.typedMemberInfo.arrayStride;
+					parameter.index = argumentInfo.typedMemberInfo.offset + argumentInfo.clampedIndex * stride;
 				}
 			}
 
