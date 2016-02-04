@@ -21,6 +21,7 @@ namespace gl
 {
 #ifndef NDEBUG
 unsigned int Object::instanceCount = 0;
+std::set<Object*> Object::instances;
 #endif
 
 Object::Object()
@@ -29,6 +30,7 @@ Object::Object()
 
 	#ifndef NDEBUG
 		instanceCount++;
+		instances.insert(this);
 	#endif
 }
 
@@ -38,6 +40,7 @@ Object::~Object()
 
 	#ifndef NDEBUG
 		instanceCount--;
+		instances.erase(this);
 	#endif
 }
 
@@ -74,7 +77,8 @@ struct ObjectLeakCheck
 {
 	~ObjectLeakCheck()
 	{
-		ASSERT(gl::Object::instanceCount == 0);
+		//ASSERT(gl::Object::instanceCount == 0);
+		ASSERT(Object::instances.empty());
 	}
 };
 

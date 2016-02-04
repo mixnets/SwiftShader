@@ -521,8 +521,9 @@ Texture2D::~Texture2D()
 	{
 		if(image[i])
 		{
-			image[i]->unbind(this);
-			image[i] = 0;
+			egl::Image *img = image[i];
+			image[i] = nullptr;
+			img->unbind(this);
 		}
 	}
 
@@ -613,7 +614,9 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 		image[level]->unbind(this);
 	}
 
+	egl::Image *dummy = new egl::Image(nullptr, width, height, format, type);
 	image[level] = new egl::Image(this, width, height, format, type);
+	dummy->release();
 
 	if(!image[level])
 	{

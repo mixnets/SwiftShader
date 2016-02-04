@@ -17,6 +17,7 @@
 #define gl_Object_hpp
 
 #include "common/debug.h"
+#include <set>
 
 typedef unsigned int GLuint;
 
@@ -31,13 +32,14 @@ public:
 
     virtual void addRef();
 	virtual void release();
-    
+
 private:
     volatile int referenceCount;
 
 #ifndef NDEBUG
 public:
 	static unsigned int instanceCount;
+	static std::set<Object*> instances;
 #endif
 };
 
@@ -66,7 +68,7 @@ public:
 		ASSERT(!object);   // Objects have to be released before the resource manager is destroyed, so they must be explicitly cleaned up. Assign null to all binding pointers to make the reference count go to zero.
 	}
 
-    ObjectType *operator=(ObjectType *newObject) 
+    ObjectType *operator=(ObjectType *newObject)
 	{
 		if(newObject) newObject->addRef();
 		if(object) object->release();
@@ -76,7 +78,7 @@ public:
 		return object;
 	}
 
-	ObjectType *operator=(const BindingPointer<ObjectType> &other) 
+	ObjectType *operator=(const BindingPointer<ObjectType> &other)
 	{
 		return operator=(other.object);
 	}
