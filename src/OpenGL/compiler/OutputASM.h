@@ -286,6 +286,7 @@ namespace glsl
 		int fragmentOutputRegister(TIntermTyped *fragmentOutput);
 		int samplerRegister(TIntermTyped *sampler);
 		int samplerRegister(TIntermSymbol *sampler);
+		int getBlockId(TIntermTyped *);
 
 		typedef std::vector<TIntermTyped*> VariableArray;
 
@@ -321,6 +322,7 @@ namespace glsl
 			TypedMemberInfo(const BlockMemberInfo& b, const TType& t) : BlockMemberInfo(b), type(t) {}
 			TType type;
 		};
+		TypedMemberInfo getTypedMemberInfo(TIntermNode *argument, int index, int& clampedIndex, int& blockId);
 
 		struct BlockDefinition
 		{

@@ -2016,21 +2016,109 @@ namespace glsl
 		return 0;
 	}
 
+	int OutputASM::getBlockId(TIntermTyped *arg)
+	{
+		if(arg)
+		{
+			const TType &type = arg->getType();
+			TInterfaceBlock* block = type.getInterfaceBlock();
+			if(block && (type.getQualifier() == EvqUniform))
+			{
+				// Make sure the uniform block is declared
+				uniformRegister(arg);
+
+				const std::string blockName = block->name().c_str();
+
+				// Fetch uniform block index from array of blocks
+				for(ActiveUniformBlocks::const_iterator it = shaderObject->activeUniformBlocks.begin(); it != shaderObject->activeUniformBlocks.end(); ++it)
+				{
+					const std::string currentBlockName = it->name;
+					if(blockName.compare(currentBlockName) == 0)
+					{
+						return it->blockId;
+					}
+				}
+
+				ASSERT(false);
+			}
+		}
+
+		return -1;
+	}
+
+	OutputASM::TypedMemberInfo OutputASM::getTypedMemberInfo(TIntermNode *argument, int index, int& clampedIndex, int& bufferIndex)
+	{
+		TIntermTyped *arg = argument->getAsTyped();
+		const TType &type = arg->getType();
+		int blockId = getBlockId(arg);
+		TypedMemberInfo typedMemberInfo(BlockMemberInfo::getDefaultBlockInfo(), type);
+		if(blockId != -1)
+		{
+			bufferIndex = 0;
+			for(int i = 0; i < blockId; ++i)
+			{
+				int blockArraySize = shaderObject->activeUniformBlocks[i].arraySize;
+				bufferIndex += blockArraySize > 0 ? blockArraySize : 1;
+			}
+
+			const BlockDefinition& blockDefinition = blockDefinitions[blockId];
+
+			BlockDefinition::IndexMap::const_iterator itEnd = blockDefinition.indexMap.end();
+			BlockDefinition::IndexMap::const_iterator it = itEnd;
+
+			clampedIndex = index;
+			if(type.isInterfaceBlock())
+			{
+				// Offset index to the beginning of the selected instance
+				size_t blockRegisters = type.elementRegisterCount();
+				size_t bufferOffset = clampedIndex / blockRegisters;
+				bufferIndex += bufferOffset;
+				clampedIndex -= bufferOffset * blockRegisters;
+			}
+
+			int regIndex = registerIndex(arg);
+			for(int i = regIndex + clampedIndex; i >= regIndex; --i)
+			{
+				it = blockDefinition.indexMap.find(i);
+				if(it != itEnd)
+				{
+					clampedIndex -= (i - regIndex);
+					break;
+				}
+			}
+			ASSERT(it != itEnd);
+
+			typedMemberInfo = it->second;
+
+			clampedIndex = (clampedIndex >= typedMemberInfo.type.totalRegisterCount()) ? typedMemberInfo.type.totalRegisterCount() - 1 : clampedIndex;
+		}
+		else
+		{
+			clampedIndex = (index >= arg->totalRegisterCount()) ? arg->totalRegisterCount() - 1 : index;
+			bufferIndex = -1;
+		}
+
+		return typedMemberInfo;
+	}
+
 	void OutputASM::argument(sw::Shader::SourceParameter &parameter, TIntermNode *argument, int index)
 	{
 		if(argument)
 		{
+			int clampedIndex = index;
+			int bufferIndex = -1;
+			TypedMemberInfo typedMemberInfo = getTypedMemberInfo(argument, index, clampedIndex, bufferIndex);
+			const TType &type = typedMemberInfo.type;
+
+			int size = registerSize(type, clampedIndex);
+
 			TIntermTyped *arg = argument->getAsTyped();
-			const TType &type = arg->getType();
-			index = (index >= arg->totalRegisterCount()) ? arg->totalRegisterCount() - 1 : index;
-
-			int size = registerSize(type, index);
-
 			parameter.type = registerType(arg);
+			parameter.bufferIndex = bufferIndex;
 
 			if(arg->getQualifier() == EvqConstExpr)
 			{
-				int component = componentCount(type, index);
+				int component = componentCount(type, clampedIndex);
 				ConstantUnion *constants = arg->getAsConstantUnion()->getUnionArrayPointer();
 
 				for(int i = 0; i < 4; i++)
@@ -2084,6 +2172,11 @@ namespace glsl
 							UNREACHABLE(binary->getOp());
 						}
 					}
+				}
+				else if(parameter.bufferIndex != -1)
+				{
+					int stride = (typedMemberInfo.matrixStride > 0) ? typedMemberInfo.matrixStride : typedMemberInfo.arrayStride;
+					parameter.index = typedMemberInfo.offset + clampedIndex * stride;
 				}
 			}
 
