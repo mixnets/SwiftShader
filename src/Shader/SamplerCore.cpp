@@ -617,12 +617,12 @@ namespace sw
 			if(hasUnsignedTextureComponent(1)) c.y = MulHigh(As<UShort4>(c.y), utri); else c.y = MulHigh(c.y, stri);
 			if(hasUnsignedTextureComponent(2)) c.z = MulHigh(As<UShort4>(c.z), utri); else c.z = MulHigh(c.z, stri);
 			if(hasUnsignedTextureComponent(3)) c.w = MulHigh(As<UShort4>(c.w), utri); else c.w = MulHigh(c.w, stri);
-			
+
 			c.x += cc.x;
 			c.y += cc.y;
 			c.z += cc.z;
 			c.w += cc.w;
-			
+
 			if(!hasUnsignedTextureComponent(0)) c.x += c.x;
 			if(!hasUnsignedTextureComponent(1)) c.y += c.y;
 			if(!hasUnsignedTextureComponent(2)) c.z += c.z;
@@ -634,7 +634,7 @@ namespace sw
 		if(state.addressingModeU == ADDRESSING_BORDER)
 		{
 			Short4 u0;
-			
+
 			border(u0, u);
 
 			borderMask = u0;
@@ -643,7 +643,7 @@ namespace sw
 		if(state.addressingModeV == ADDRESSING_BORDER)
 		{
 			Short4 v0;
-			
+
 			border(v0, v);
 
 			if(state.addressingModeU == ADDRESSING_BORDER)
@@ -744,9 +744,9 @@ namespace sw
 
 	void SamplerCore::sampleQuad(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, Int face[4], bool secondLOD)
 	{
-		if(state.textureType != TEXTURE_3D && state.textureType != TEXTURE_2D_ARRAY)
+		if(state.textureType != TEXTURE_3D)
 		{
-			sampleQuad2D(texture, c, u, v, lod, face, secondLOD);
+			sampleQuad2D(texture, c, u, v, w, lod, face, secondLOD);
 		}
 		else
 		{
@@ -754,7 +754,7 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float &lod, Int face[4], bool secondLOD)
+	void SamplerCore::sampleQuad2D(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, Int face[4], bool secondLOD)
 	{
 		int componentCount = textureComponentCount();
 		bool gather = state.textureFilter == FILTER_GATHER;
@@ -764,15 +764,13 @@ namespace sw
 
 		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
 
-		Short4 uuuu;
-		Short4 vvvv;
-
-		address(uuuu, u, state.addressingModeU);
-		address(vvvv, v, state.addressingModeV);
+		Short4 uuuu = address(u, state.addressingModeU, mipmap);
+		Short4 vvvv = address(v, state.addressingModeV, mipmap);
+		Short4 wwww = address(w, state.addressingModeW, mipmap);
 
 		if(state.textureFilter == FILTER_POINT || state.textureFilter == FILTER_MIN_POINT_MAG_LINEAR)
 		{
-			sampleTexel(c, uuuu, vvvv, vvvv, mipmap, buffer);
+			sampleTexel(c, uuuu, vvvv, wwww, mipmap, buffer);
 		}
 		else
 		{
@@ -786,17 +784,17 @@ namespace sw
 			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1);
 			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1);
 
-			sampleTexel(c0, uuuu0, vvvv0, vvvv0, mipmap, buffer);
-			sampleTexel(c1, uuuu1, vvvv0, vvvv0, mipmap, buffer);
-			sampleTexel(c2, uuuu0, vvvv1, vvvv1, mipmap, buffer);
-			sampleTexel(c3, uuuu1, vvvv1, vvvv1, mipmap, buffer);
-	
+			sampleTexel(c0, uuuu0, vvvv0, wwww, mipmap, buffer);
+			sampleTexel(c1, uuuu1, vvvv0, wwww, mipmap, buffer);
+			sampleTexel(c2, uuuu0, vvvv1, wwww, mipmap, buffer);
+			sampleTexel(c3, uuuu1, vvvv1, wwww, mipmap, buffer);
+
 			if(!gather)   // Blend
 			{
 				// Fractions
 				UShort4 f0u = uuuu0;
 				UShort4 f0v = vvvv0;
-			
+
 				if(!state.hasNPOTTexture)
 				{
 					f0u = f0u << *Pointer<Long1>(mipmap + OFFSET(Mipmap,uInt));   // .u
@@ -810,7 +808,7 @@ namespace sw
 
 				UShort4 f1u = ~f0u;
 				UShort4 f1v = ~f0v;
-			
+
 				UShort4 f0u0v = MulHigh(f0u, f0v);
 				UShort4 f1u0v = MulHigh(f1u, f0v);
 				UShort4 f0u1v = MulHigh(f0u, f1v);
@@ -968,16 +966,12 @@ namespace sw
 		Pointer<Byte> mipmap;
 		Pointer<Byte> buffer[4];
 		Int face[4];
-		
+
 		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
 
-		Short4 uuuu;
-		Short4 vvvv;
-		Short4 wwww;
-
-		address(uuuu, u_, state.addressingModeU);
-		address(vvvv, v_, state.addressingModeV);
-		addressW(wwww, w_, mipmap);
+		Short4 uuuu = address(u_, state.addressingModeU, mipmap);
+		Short4 vvvv = address(v_, state.addressingModeV, mipmap);
+		Short4 wwww = address(w_, state.addressingModeW, mipmap);
 
 		if(state.textureFilter <= FILTER_POINT || state.textureFilter == FILTER_MIN_POINT_MAG_LINEAR)
 		{
@@ -1121,7 +1115,7 @@ namespace sw
 		if(state.addressingModeU == ADDRESSING_BORDER)
 		{
 			Int4 u0;
-			
+
 			border(u0, u);
 
 			borderMask = u0;
@@ -1130,7 +1124,7 @@ namespace sw
 		if(state.addressingModeV == ADDRESSING_BORDER)
 		{
 			Int4 v0;
-			
+
 			border(v0, v);
 
 			if(state.addressingModeU == ADDRESSING_BORDER)
@@ -1229,7 +1223,7 @@ namespace sw
 
 	void SamplerCore::sampleFloat(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, Int face[4], bool secondLOD)
 	{
-		if(state.textureType != TEXTURE_3D && state.textureType != TEXTURE_2D_ARRAY)
+		if(state.textureType != TEXTURE_3D)
 		{
 			sampleFloat2D(texture, c, u, v, w, lod, face, secondLOD);
 		}
@@ -1238,26 +1232,24 @@ namespace sw
 			sampleFloat3D(texture, c, u, v, w, lod, secondLOD);
 		}
 	}
-	
-	void SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &z, Float &lod, Int face[4], bool secondLOD)
+
+	void SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float &lod, Int face[4], bool secondLOD)
 	{
 		int componentCount = textureComponentCount();
 		bool gather = state.textureFilter == FILTER_GATHER;
 
 		Pointer<Byte> mipmap;
 		Pointer<Byte> buffer[4];
-		
+
 		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
 
-		Short4 uuuu;
-		Short4 vvvv;
-
-		address(uuuu, u, state.addressingModeU);
-		address(vvvv, v, state.addressingModeV);
+		Short4 uuuu = address(u, state.addressingModeU, mipmap);
+		Short4 vvvv = address(v, state.addressingModeV, mipmap);
+		Short4 wwww = address(w, state.addressingModeW, mipmap);
 
 		if(state.textureFilter == FILTER_POINT || state.textureFilter == FILTER_MIN_POINT_MAG_LINEAR)
 		{
-			sampleTexel(c, uuuu, vvvv, vvvv, z, mipmap, buffer);
+			sampleTexel(c, uuuu, vvvv, wwww, w, mipmap, buffer);
 		}
 		else
 		{
@@ -1271,10 +1263,10 @@ namespace sw
 			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1);
 			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1);
 
-			sampleTexel(c0, uuuu0, vvvv0, vvvv0, z, mipmap, buffer);		
-			sampleTexel(c1, uuuu1, vvvv0, vvvv0, z, mipmap, buffer);
-			sampleTexel(c2, uuuu0, vvvv1, vvvv1, z, mipmap, buffer);
-			sampleTexel(c3, uuuu1, vvvv1, vvvv1, z, mipmap, buffer);
+			sampleTexel(c0, uuuu0, vvvv0, wwww, w, mipmap, buffer);
+			sampleTexel(c1, uuuu1, vvvv0, wwww, w, mipmap, buffer);
+			sampleTexel(c2, uuuu0, vvvv1, wwww, w, mipmap, buffer);
+			sampleTexel(c3, uuuu1, vvvv1, wwww, w, mipmap, buffer);
 
 			if(!gather)   // Blend
 			{
@@ -1317,13 +1309,9 @@ namespace sw
 
 		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
 
-		Short4 uuuu;
-		Short4 vvvv;
-		Short4 wwww;
-
-		address(uuuu, u, state.addressingModeU);
-		address(vvvv, v, state.addressingModeV);
-		addressW(wwww, w, mipmap);
+		Short4 uuuu = address(u, state.addressingModeU, mipmap);
+		Short4 vvvv = address(v, state.addressingModeV, mipmap);
+		Short4 wwww = address(w, state.addressingModeW, mipmap);
 
 		if(state.textureFilter <= FILTER_POINT || state.textureFilter == FILTER_MIN_POINT_MAG_LINEAR)
 		{
@@ -1415,7 +1403,7 @@ namespace sw
 			{
 				Float4 dudxy = Float4(dsx.x.xx, dsy.x.xx);
 				Float4 dvdxy = Float4(dsx.y.xx, dsy.y.xx);
-				
+
 				duvdxy = Float4(dudxy.xz, dvdxy.xz);
 			}
 
@@ -1585,7 +1573,7 @@ namespace sw
 
 		// M = xyz * x + yzx * y + zxy * z
 		Float4 M = As<Float4>((xyz & As<Int4>(x)) | (yzx & As<Int4>(y)) | (zxy & As<Int4>(z)));
-		
+
 		M = reciprocal(M);
 		U *= M * Float4(0.5f);
 		V *= M * Float4(0.5f);
@@ -1606,7 +1594,7 @@ namespace sw
 
 			// M = xyz * x + yzx * y + zxy * z
 			Float4 M = As<Float4>((xyz & As<Int4>(x)) | (yzx & As<Int4>(y)) | (zxy & As<Int4>(z)));
-			
+
 			M = Rcp_pp(M);
 			lodU *= M * Float4(0.5f);
 			lodV *= M * Float4(0.5f);
@@ -1699,7 +1687,7 @@ namespace sw
 					Byte8 c3 = *Pointer<Byte8>(buffer[f3] + 4 * index[3]);
 					c.x = UnpackLow(c0, c1);
 					c.y = UnpackLow(c2, c3);
-					
+
 					switch(state.textureFormat)
 					{
 					case FORMAT_A8R8G8B8:
@@ -2024,13 +2012,17 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::address(Short4 &uuuu, Float4 &uw, AddressingMode addressingMode)
+	Short4 SamplerCore::address(Float4 &uw, AddressingMode addressingMode, Pointer<Byte>& mipmap)
 	{
-		if(addressingMode == ADDRESSING_CLAMP)
+		if(addressingMode == ADDRESSING_)
+		{
+			return Min(Max(Short4(RoundInt(uw)), Short4(0)), *Pointer<Short4>(mipmap + OFFSET(Mipmap, depth)) - Short4(1));
+		}
+		else if(addressingMode == ADDRESSING_CLAMP)
 		{
 			Float4 clamp = Min(Max(uw, Float4(0.0f)), Float4(65535.0f / 65536.0f));
 
-			uuuu = Short4(Int4(clamp * Float4(1 << 16)));
+			return Short4(Int4(clamp * Float4(1 << 16)));
 		}
 		else if(addressingMode == ADDRESSING_MIRROR)
 		{
@@ -2039,7 +2031,7 @@ namespace sw
 
 			convert ^= mirror;
 
-			uuuu = Short4(convert);
+			return Short4(convert);
 		}
 		else if(addressingMode == ADDRESSING_MIRRORONCE)
 		{
@@ -2050,23 +2042,11 @@ namespace sw
 			convert -= Int4(0x00008000, 0x00008000, 0x00008000, 0x00008000);
 			convert = As<Int4>(Pack(convert, convert));
 
-			uuuu = As<Short4>(Int2(convert)) + Short4((short)0x8000, (short)0x8000, (short)0x8000, (short)0x8000);
+			return As<Short4>(Int2(convert)) + Short4((short)0x8000, (short)0x8000, (short)0x8000, (short)0x8000);
 		}
 		else   // Wrap (or border)
 		{
-			uuuu = Short4(Int4(uw * Float4(1 << 16)));
-		}
-	}
-
-	void SamplerCore::addressW(Short4 &wwww, Float4 &w, Pointer<Byte>& mipmap)
-	{
-		if(state.textureType == TEXTURE_2D_ARRAY)
-		{
-			wwww = Min(Max(Short4(RoundInt(w)), Short4(0)), *Pointer<Short4>(mipmap + OFFSET(Mipmap, depth)) - Short4(1));
-		}
-		else
-		{
-			address(wwww, w, state.addressingModeW);
+			return Short4(Int4(uw * Float4(1 << 16)));
 		}
 	}
 
@@ -2223,7 +2203,7 @@ namespace sw
 		default:
 			ASSERT(false);
 		}
-		
+
 		return false;
 	}
 
@@ -2293,7 +2273,7 @@ namespace sw
 		default:
 			ASSERT(false);
 		}
-		
+
 		return false;
 	}
 
@@ -2363,7 +2343,7 @@ namespace sw
 		default:
 			ASSERT(false);
 		}
-		
+
 		return false;
 	}
 
@@ -2433,7 +2413,7 @@ namespace sw
 		default:
 			ASSERT(false);
 		}
-		
+
 		return false;
 	}
 
@@ -2501,7 +2481,7 @@ namespace sw
 		default:
 			ASSERT(false);
 		}
-		
+
 		return false;
 	}
 }
