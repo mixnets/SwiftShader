@@ -2290,6 +2290,30 @@ namespace sw
 		}
 	}
 
+	void Renderer::setCompFunc(SamplerType type, int sampler, CompareFunc compFunc)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setCompFunc(sampler, compFunc);
+		}
+		else
+		{
+			VertexProcessor::setCompFunc(sampler, compFunc);
+		}
+	}
+
+	void Renderer::setCompMode(SamplerType type, int sampler, CompareMode compMode)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setCompMode(sampler, compMode);
+		}
+		else
+		{
+			VertexProcessor::setCompMode(sampler, compMode);
+		}
+	}
+
 	void Renderer::setPointSpriteEnable(bool pointSpriteEnable)
 	{
 		context->setPointSpriteEnable(pointSpriteEnable);
