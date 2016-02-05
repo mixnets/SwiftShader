@@ -345,7 +345,9 @@ namespace sw
 		virtual void setSwizzleG(SamplerType type, int sampler, SwizzleType swizzleG);
 		virtual void setSwizzleB(SamplerType type, int sampler, SwizzleType swizzleB);
 		virtual void setSwizzleA(SamplerType type, int sampler, SwizzleType swizzleA);
-		
+		virtual void setCompFunc(SamplerType type, int sampler, CompareFunc compFunc);
+		virtual void setCompMode(SamplerType type, int sampler, CompareMode compMode);
+
 		virtual void setPointSpriteEnable(bool pointSpriteEnable);
 		virtual void setPointScaleEnable(bool pointScaleEnable);
 		virtual void setLineWidth(float width);

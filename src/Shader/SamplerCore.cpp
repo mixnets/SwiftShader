@@ -74,20 +74,25 @@ namespace sw
 		Float4 vvvv = v;
 		Float4 wwww = w;
 
+		// FIXME: Convert to fixed12 at higher level, when required
+		const short one = fixed12 ? 0x1000 : (short)0xFFFF;
+
 		if(state.textureType == TEXTURE_NULL)
 		{
 			c.x = Short4(0x0000, 0x0000, 0x0000, 0x0000);
 			c.y = Short4(0x0000, 0x0000, 0x0000, 0x0000);
 			c.z = Short4(0x0000, 0x0000, 0x0000, 0x0000);
-
-			if(fixed12)   // FIXME: Convert to fixed12 at higher level, when required
-			{
-				c.w = Short4(0x1000, 0x1000, 0x1000, 0x1000);
-			}
-			else
-			{
-				c.w = Short4((short)0xFFFF, (short)0xFFFF, (short)0xFFFF, (short)0xFFFF);   // FIXME
-			}
+			c.w = Short4(one, one, one, one);
+		}
+		else if(state.compMode == COMPARE_MODE_REF_TO_TEXTURE &&
+		        ((state.compFunc == COMPARE_FUNC_ALWAYS) || (state.compFunc == COMPARE_FUNC_NEVER)))
+		{
+			c.x = (state.compFunc == COMPARE_FUNC_ALWAYS) ?
+			      Short4(one, one, one, one) :
+			      Short4(0x0000, 0x0000, 0x0000, 0x0000);
+			c.y = Short4(0x0000, 0x0000, 0x0000, 0x0000);
+			c.z = Short4(0x0000, 0x0000, 0x0000, 0x0000);
+			c.w = Short4(one, one, one, one);
 		}
 		else
 		{
@@ -277,6 +282,45 @@ namespace sw
 					ASSERT(false);
 				}
 			}
+
+			// Depth comparison
+			if(state.compMode == COMPARE_MODE_REF_TO_TEXTURE)
+			{
+				Short4 depth(one / 2); // FIXME: FOR TEST PURPOSES ONLY
+
+				Int4 condition;
+				switch(state.compFunc)
+				{
+				case COMPARE_FUNC_LEQUAL:
+					condition = CmpLE(Int4(depth), Int4(c.x));
+					break;
+				case COMPARE_FUNC_GEQUAL:
+					condition = CmpNLT(Int4(depth), Int4(c.x));
+					break;
+				case COMPARE_FUNC_LESS:
+					condition = CmpLT(Int4(depth), Int4(c.x));
+					break;
+				case COMPARE_FUNC_GREATER:
+					condition = CmpNLE(Int4(depth), Int4(c.x));
+					break;
+				case COMPARE_FUNC_EQUAL:
+					condition = CmpEQ(Int4(depth), Int4(c.x));
+					break;
+				case COMPARE_FUNC_NOTEQUAL:
+					condition = CmpNEQ(Int4(depth), Int4(c.x));
+					break;
+				case COMPARE_FUNC_ALWAYS:
+				case COMPARE_FUNC_NEVER:
+					// These 2 cases should have been handled earlier
+				default:
+					ASSERT(false);
+				}
+
+				c.x = Short4(condition & Int4(one));
+				c.y = Short4(0x0000);
+				c.z = Short4(0x0000);
+				c.w = Short4(one);
+			}
 		}
 
 		if(fixed12 &&
@@ -307,6 +351,14 @@ namespace sw
 		if(state.textureType == TEXTURE_NULL)
 		{
 			c.x = Float4(0.0f);
+			c.y = Float4(0.0f);
+			c.z = Float4(0.0f);
+			c.w = Float4(1.0f);
+		}
+		else if(state.compMode == COMPARE_MODE_REF_TO_TEXTURE &&
+		        ((state.compFunc == COMPARE_FUNC_ALWAYS) || (state.compFunc == COMPARE_FUNC_NEVER)))
+		{
+			c.x = (state.compFunc == COMPARE_FUNC_ALWAYS) ? Float4(1.0f) : Float4(0.0f);
 			c.y = Float4(0.0f);
 			c.z = Float4(0.0f);
 			c.w = Float4(1.0f);
@@ -533,6 +585,45 @@ namespace sw
 				default:
 					ASSERT(false);
 				}
+			}
+
+			// Depth comparison
+			if(state.compMode == COMPARE_MODE_REF_TO_TEXTURE)
+			{
+				Float4 depth(0.5f); // FIXME: FOR TEST PURPOSES ONLY
+				Int4 condition;
+
+				switch(state.compFunc)
+				{
+				case COMPARE_FUNC_LEQUAL:
+					condition = CmpLE(depth, c.x);
+					break;
+				case COMPARE_FUNC_GEQUAL:
+					condition = CmpNLT(depth, c.x);
+					break;
+				case COMPARE_FUNC_LESS:
+					condition = CmpLT(depth, c.x);
+					break;
+				case COMPARE_FUNC_GREATER:
+					condition = CmpNLE(depth, c.x);
+					break;
+				case COMPARE_FUNC_EQUAL:
+					condition = CmpEQ(depth, c.x);
+					break;
+				case COMPARE_FUNC_NOTEQUAL:
+					condition = CmpNEQ(depth, c.x);
+					break;
+				case COMPARE_FUNC_ALWAYS:
+				case COMPARE_FUNC_NEVER:
+					// These 2 cases should have been handled earlier
+				default:
+					ASSERT(false);
+				}
+
+				c.x = As<Float4>(condition & As<Int4>(Float4(1.0f)));
+				c.y = Float4(0.0f);
+				c.z = Float4(0.0f);
+				c.w = Float4(1.0f);
 			}
 		}
 

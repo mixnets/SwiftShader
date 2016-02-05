@@ -236,6 +236,8 @@ namespace sw
 		virtual void setSwizzleG(unsigned int sampler, SwizzleType swizzleG);
 		virtual void setSwizzleB(unsigned int sampler, SwizzleType swizzleB);
 		virtual void setSwizzleA(unsigned int sampler, SwizzleType swizzleA);
+		virtual void setCompFunc(unsigned int sampler, CompareFunc compFunc);
+		virtual void setCompMode(unsigned int sampler, CompareMode compMode);
 
 		virtual void setWriteSRGB(bool sRGB);
 		virtual void setDepthBufferEnable(bool depthBufferEnable);

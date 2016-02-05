@@ -99,6 +99,8 @@ namespace sw
 			state.swizzleG = swizzleG;
 			state.swizzleB = swizzleB;
 			state.swizzleA = swizzleA;
+			state.compFunc = compFunc;
+			state.compMode = compMode;
 
 			#if PERF_PROFILE
 				state.compressedFormat = Surface::isCompressed(externalTextureFormat);
@@ -333,6 +335,16 @@ namespace sw
 	void Sampler::setSwizzleA(SwizzleType swizzleA)
 	{
 		this->swizzleA = swizzleA;
+	}
+
+	void Sampler::setCompFunc(CompareFunc compFunc)
+	{
+		this->compFunc = compFunc;
+	}
+
+	void Sampler::setCompMode(CompareMode compMode)
+	{
+		this->compMode = compMode;
 	}
 
 	void Sampler::setFilterQuality(FilterType maximumFilterQuality)
