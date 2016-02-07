@@ -42,6 +42,7 @@ public:
 	{
 		shared = false;
 		Object::addRef();
+		parentTexture->addRef();
 	}
 
 	// 3D texture image
@@ -52,6 +53,7 @@ public:
 	{
 		shared = false;
 		Object::addRef();
+		parentTexture->addRef();
 	}
 
 	// Native EGL image
@@ -148,7 +150,7 @@ public:
 
 	void addRef() override;
 	void release() override;
-	virtual void unbind(const Texture *parent);   // Break parent ownership and release
+	void unbind(const Texture *parent);   // Break parent ownership and release
 
 	virtual void destroyShared()   // Release a shared image
 	{
@@ -156,6 +158,9 @@ public:
 		shared = false;
 		release();
 	}
+
+public:
+	egl::Texture *parentTexture;
 
 protected:
 	const GLsizei width;
@@ -166,8 +171,6 @@ protected:
 	const int depth;
 
 	bool shared;   // Used as an EGLImage
-
-	egl::Texture *parentTexture;
 
 	virtual ~Image();
 

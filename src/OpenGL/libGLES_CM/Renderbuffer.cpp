@@ -138,7 +138,7 @@ GLsizei RenderbufferTexture2D::getSamples() const
 
 Renderbuffer::Renderbuffer(GLuint name, RenderbufferInterface *instance) : NamedObject(name)
 {
-	ASSERT(instance != NULL);
+	ASSERT(instance);
 	mInstance = instance;
 }
 

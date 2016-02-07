@@ -68,18 +68,18 @@ public:
 
 	virtual ~RenderbufferTexture2D();
 
-	virtual void addProxyRef(const Renderbuffer *proxy);
-    virtual void releaseProxy(const Renderbuffer *proxy);
+	void addProxyRef(const Renderbuffer *proxy) override;
+    void releaseProxy(const Renderbuffer *proxy) override;
 
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	egl::Image *getRenderTarget() override;
+    egl::Image *createSharedImage() override;
+    bool isShared() const;
 
-	virtual GLsizei getWidth() const;
-	virtual GLsizei getHeight() const;
-	virtual GLenum getFormat() const;
-	virtual sw::Format getInternalFormat() const;
-	virtual GLsizei getSamples() const;
+	GLsizei getWidth() const override;
+	GLsizei getHeight() const override;
+	GLenum getFormat() const override;
+	sw::Format getInternalFormat() const override;
+	GLsizei getSamples() const override;
 
 private:
 	gl::BindingPointer<Texture2D> mTexture2D;
@@ -93,20 +93,20 @@ public:
 
 	virtual ~RenderbufferTexture3D();
 
-	virtual void addProxyRef(const Renderbuffer *proxy);
-	virtual void releaseProxy(const Renderbuffer *proxy);
+	void addProxyRef(const Renderbuffer *proxy) override;
+	void releaseProxy(const Renderbuffer *proxy) override;
 
-	virtual egl::Image *getRenderTarget();
-	virtual egl::Image *createSharedImage();
-	virtual bool isShared() const;
+	egl::Image *getRenderTarget() override;
+	egl::Image *createSharedImage() override;
+	bool isShared() const override;
 
-	virtual GLsizei getWidth() const;
-	virtual GLsizei getHeight() const;
-	virtual GLsizei getDepth() const;
-	virtual GLint getLayer() const { return mLayer; }
-	virtual GLenum getFormat() const;
-	virtual sw::Format getInternalFormat() const;
-	virtual GLsizei getSamples() const;
+	GLsizei getWidth() const override;
+	GLsizei getHeight() const override;
+	GLsizei getDepth() const override;
+	GLint getLayer() const override { return mLayer; }
+	GLenum getFormat() const override;
+	sw::Format getInternalFormat() const override;
+	GLsizei getSamples() const override;
 
 private:
 	gl::BindingPointer<Texture3D> mTexture3D;
@@ -121,18 +121,18 @@ public:
 
 	virtual ~RenderbufferTextureCubeMap();
 
-	virtual void addProxyRef(const Renderbuffer *proxy);
-    virtual void releaseProxy(const Renderbuffer *proxy);
+	void addProxyRef(const Renderbuffer *proxy) override;
+    void releaseProxy(const Renderbuffer *proxy) override;
 
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	egl::Image *getRenderTarget() override;
+    egl::Image *createSharedImage() override;
+    bool isShared() const override;
 
-	virtual GLsizei getWidth() const;
-	virtual GLsizei getHeight() const;
-	virtual GLenum getFormat() const;
-	virtual sw::Format getInternalFormat() const;
-	virtual GLsizei getSamples() const;
+	GLsizei getWidth() const override;
+	GLsizei getHeight() const override;
+	GLenum getFormat() const override;
+	sw::Format getInternalFormat() const override;
+	GLsizei getSamples() const override;
 
 private:
 	gl::BindingPointer<TextureCubeMap> mTextureCubeMap;
@@ -150,15 +150,15 @@ public:
 
 	virtual ~RenderbufferStorage() = 0;
 
-	virtual egl::Image *getRenderTarget() = 0;
-    virtual egl::Image *createSharedImage() = 0;
-    virtual bool isShared() const = 0;
+	egl::Image *getRenderTarget() override = 0;
+    egl::Image *createSharedImage() override = 0;
+    bool isShared() const override = 0;
 
-	virtual GLsizei getWidth() const;
-	virtual GLsizei getHeight() const;
-	virtual GLenum getFormat() const;
-	virtual sw::Format getInternalFormat() const;
-	virtual GLsizei getSamples() const;
+	GLsizei getWidth() const override;
+	GLsizei getHeight() const override;
+	GLenum getFormat() const override;
+	sw::Format getInternalFormat() const override;
+	GLsizei getSamples() const override;
 
 protected:
 	GLsizei mWidth;
@@ -182,8 +182,8 @@ public:
     // Textures need to maintain their own count of references to them via
     // Renderbuffers/RenderbufferTextures. These functions invoke those
     // reference counting functions on the RenderbufferInterface.
-    virtual void addRef();
-    virtual void release();
+    void addRef() override;
+    void release() override;
 
 	egl::Image *getRenderTarget();
     virtual egl::Image *createSharedImage();
@@ -217,9 +217,9 @@ public:
 
 	virtual ~Colorbuffer();
 
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	egl::Image *getRenderTarget() override;
+    egl::Image *createSharedImage() override;
+    bool isShared() const override;
 
 private:
 	egl::Image *mRenderTarget;
@@ -231,11 +231,11 @@ public:
 	explicit DepthStencilbuffer(egl::Image *depthStencil);
 	DepthStencilbuffer(GLsizei width, GLsizei height, GLsizei samples);
 
-	~DepthStencilbuffer();
+	virtual ~DepthStencilbuffer();
 
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	egl::Image *getRenderTarget() override;
+    egl::Image *createSharedImage() override;
+    bool isShared() const override;
 
 protected:
 	egl::Image *mDepthStencil;

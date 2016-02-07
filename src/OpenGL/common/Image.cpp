@@ -1132,27 +1132,34 @@ namespace egl
 
 	Image::~Image()
 	{
+		if(parentTexture)
+		{
+			parentTexture->release();
+		}
+
 		ASSERT(!shared);
 	}
 
 	void Image::addRef()
 	{
-		if(parentTexture)
-		{
-			return parentTexture->addRef();
-		}
-
 		Object::addRef();
 	}
 
 	void Image::release()
 	{
-		if(parentTexture)
-		{
-			return parentTexture->release();
-		}
+		int refs = Object::dereference();
 
-		Object::release();
+		if(refs > 0)
+		{
+			if(parentTexture)
+			{
+				parentTexture->sweep();
+			}
+		}
+		else
+		{
+			delete this;
+		}
 	}
 
 	void Image::unbind(const egl::Texture *parent)
