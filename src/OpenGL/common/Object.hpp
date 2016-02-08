@@ -22,6 +22,11 @@
 
 typedef unsigned int GLuint;
 
+namespace egl
+{
+class Texture;
+}
+
 namespace gl
 {
 

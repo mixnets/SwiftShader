@@ -159,6 +159,9 @@ public:
 		release();
 	}
 
+public:
+	egl::Texture *parentTexture;
+
 protected:
 	const GLsizei width;
 	const GLsizei height;
@@ -168,8 +171,6 @@ protected:
 	const int depth;
 
 	bool shared;   // Used as an EGLImage
-
-	egl::Texture *parentTexture;
 
 	virtual ~Image();
 
