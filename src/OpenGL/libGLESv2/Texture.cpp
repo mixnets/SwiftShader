@@ -40,6 +40,7 @@ Texture::Texture(GLuint name) : egl::Texture(name)
 	mCompareFunc = GL_LEQUAL;
 	mCompareMode = GL_NONE;
 	mImmutableFormat = GL_FALSE;
+	mImmutableLevels = 0;
 	mMaxLevel = 1000;
 	mMaxLOD = 1000;
 	mMinLOD = -1000;
@@ -220,6 +221,12 @@ bool Texture::setImmutableFormat(GLboolean immutableFormat)
 	return true;
 }
 
+bool Texture::setImmutableLevels(GLsizei levels)
+{
+	mImmutableLevels = levels;
+	return true;
+}
+
 bool Texture::setMaxLevel(GLint maxLevel)
 {
 	mMaxLevel = maxLevel;
@@ -351,6 +358,10 @@ GLenum Texture::getCompareMode() const
 GLboolean Texture::getImmutableFormat() const
 {
 	return mImmutableFormat;
+}
+GLsizei Texture::getImmutableLevels() const
+{
+	return mImmutableLevels;
 }
 GLint Texture::getMaxLevel() const
 {
