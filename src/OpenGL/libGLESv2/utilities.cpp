@@ -460,9 +460,9 @@ namespace es2
 		return -1;
 	}
 
-	GLint floatToInt(GLfloat value)
+	GLint64 floatToInt(GLfloat value)
 	{
-		return static_cast<GLint>((static_cast<GLfloat>(0xFFFFFFFF) * value - 1.0f) * 0.5f);
+		return static_cast<GLint64>((static_cast<GLfloat>(0xFFFFFFFF) * value - 1.0f) * 0.5f);
 	}
 
 	bool IsCompressed(GLenum format, GLint clientVersion)

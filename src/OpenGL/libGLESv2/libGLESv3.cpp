@@ -1863,7 +1863,7 @@ GL_APICALL void GL_APIENTRY glGetIntegeri_v(GLenum target, GLuint index, GLint *
 				{
 					if(target == GL_DEPTH_RANGE || target == GL_COLOR_CLEAR_VALUE || target == GL_DEPTH_CLEAR_VALUE || target == GL_BLEND_COLOR)
 					{
-						data[i] = es2::floatToInt(floatParams[i]);
+						data[i] = (GLint)sw::clamp(es2::floatToInt(floatParams[i]), static_cast<GLint64>(INT_MIN), static_cast<GLint64>(INT_MAX));
 					}
 					else
 					{
@@ -3200,7 +3200,7 @@ GL_APICALL void GL_APIENTRY glGetInteger64v(GLenum pname, GLint64 *data)
 				{
 					if(pname == GL_DEPTH_RANGE || pname == GL_COLOR_CLEAR_VALUE || pname == GL_DEPTH_CLEAR_VALUE || pname == GL_BLEND_COLOR)
 					{
-						data[i] = (GLint64)(es2::floatToInt(floatParams[i]));
+						data[i] = es2::floatToInt(floatParams[i]);
 					}
 					else
 					{
@@ -3272,7 +3272,7 @@ GL_APICALL void GL_APIENTRY glGetInteger64i_v(GLenum target, GLuint index, GLint
 				{
 					if(target == GL_DEPTH_RANGE || target == GL_COLOR_CLEAR_VALUE || target == GL_DEPTH_CLEAR_VALUE || target == GL_BLEND_COLOR)
 					{
-						data[i] = (GLint64)(es2::floatToInt(floatParams[i]));
+						data[i] = es2::floatToInt(floatParams[i]);
 					}
 					else
 					{
