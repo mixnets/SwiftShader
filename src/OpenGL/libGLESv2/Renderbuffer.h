@@ -229,7 +229,7 @@ class DepthStencilbuffer : public RenderbufferStorage
 {
 public:
 	explicit DepthStencilbuffer(egl::Image *depthStencil);
-	DepthStencilbuffer(GLsizei width, GLsizei height, GLsizei samples);
+	DepthStencilbuffer(GLsizei width, GLsizei height, GLenum format, GLsizei samples);
 
 	~DepthStencilbuffer();
 
@@ -245,7 +245,7 @@ class Depthbuffer : public DepthStencilbuffer
 {
 public:
 	explicit Depthbuffer(egl::Image *depthStencil);
-	Depthbuffer(GLsizei width, GLsizei height, GLsizei samples);
+	Depthbuffer(GLsizei width, GLsizei height, GLenum format, GLsizei samples);
 
 	virtual ~Depthbuffer();
 };
