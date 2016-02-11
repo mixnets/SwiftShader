@@ -466,7 +466,9 @@ namespace es2
 
 	GLint floatToInt(GLfloat value)
 	{
-		return static_cast<GLint>((static_cast<GLfloat>(0xFFFFFFFF) * value - 1.0f) * 0.5f);
+		// Note, the use of the nexafterf function is to find the largest floating point value lower than 1.0f (so towards 0.0f)
+		// Without this, using 1.0f exactly would unfortunately be rounded to 0x80000000 due to a floating point precision issue
+		return static_cast<GLint>((static_cast<GLfloat>(0xFFFFFFFF) * clamp(value, -1.0f, nextafterf(1.0f, 0.0f)) - 1.0f) * 0.5f);
 	}
 
 	bool IsCompressed(GLenum format, GLint clientVersion)
