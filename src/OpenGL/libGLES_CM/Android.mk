@@ -72,8 +72,8 @@ COMMON_LDFLAGS := \
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := libGLESv1_CM_swiftshader_vendor_debug
-LOCAL_MODULE_PATH := vendor/transgaming/swiftshader/$(TARGET_ARCH)/debug/obj
-LOCAL_UNSTRIPPED_PATH := vendor/transgaming/swiftshader/$(TARGET_ARCH)/debug/sym
+LOCAL_MODULE_RELATIVE_PATH := vendor/transgaming/swiftshader/$(TARGET_ARCH)/debug/obj
+LOCAL_UNSTRIPPED_RELATIVE_PATH := vendor/transgaming/swiftshader/$(TARGET_ARCH)/debug/sym
 LOCAL_MODULE_TAGS := optional
 LOCAL_INSTALLED_MODULE_STEM := libGLESv1_CM_swiftshader.so
 LOCAL_CFLAGS += $(COMMON_CFLAGS) -UNDEBUG -g -O0
@@ -88,8 +88,8 @@ include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := libGLESv1_CM_swiftshader_vendor_release
-LOCAL_MODULE_PATH := vendor/transgaming/swiftshader/$(TARGET_ARCH)/release/obj
-LOCAL_UNSTRIPPED_PATH := vendor/transgaming/swiftshader/$(TARGET_ARCH)/release/sym
+LOCAL_MODULE_RELATIVE_PATH := vendor/transgaming/swiftshader/$(TARGET_ARCH)/release/obj
+LOCAL_UNSTRIPPED_RELATIVE_PATH := vendor/transgaming/swiftshader/$(TARGET_ARCH)/release/sym
 LOCAL_MODULE_TAGS := optional
 LOCAL_INSTALLED_MODULE_STEM := libGLESv1_CM_swiftshader.so
 LOCAL_CFLAGS += \
