@@ -334,7 +334,7 @@ enum TQualifier : unsigned char
 {
     EvqTemporary,     // For temporaries (within a function), read/write
     EvqGlobal,        // For globals read/write
-    EvqConstExpr,     // User defined constants
+    EvqConstExpr,     // Constant expressions
     EvqAttribute,     // Readonly
     EvqVaryingIn,     // readonly, fragment shaders only
     EvqVaryingOut,    // vertex shaders only  read/write
