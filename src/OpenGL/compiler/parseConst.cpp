@@ -7,7 +7,7 @@
 #include "ParseHelper.h"
 
 //
-// Use this class to carry along data from node to node in 
+// Use this class to carry along data from node to node in
 // the traversal
 //
 class TConstTraverser : public TIntermTraverser {
@@ -93,7 +93,7 @@ bool TConstTraverser::visitUnary(Visit visit, TIntermUnary* node)
 
 bool TConstTraverser::visitAggregate(Visit visit, TIntermAggregate* node)
 {
-    if (!node->isConstructor() && node->getOp() != EOpComma) {
+    if (!IsConstructor(node->getOp()) && node->getOp() != EOpComma) {
         TString buf;
         buf.append("'constructor' : assigning non-constant to ");
         buf.append(type.getCompleteString());
