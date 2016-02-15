@@ -389,6 +389,30 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     return node;
 }
 
+void TIntermAggregate::setType(const TType &t)
+{
+	type = t;
+
+	if(IsIntrinsic(op) || IsConstructor(op))
+	{
+		bool constant = true;
+
+		for(TIntermSequence::iterator sit = sequence.begin(); sit != sequence.end(); sit++)
+		{
+			if(!(*sit)->getAsTyped()->isConstant())
+			{
+				constant = false;
+				break;
+			}
+		}
+
+		if(constant)
+		{
+			type.setQualifier(EvqConstExpr);
+		}
+	}
+}
+
 //
 // This is the safe way to change the operator on an aggregate, as it
 // does lots of error checking and fixing.  Especially for establishing
@@ -651,6 +675,32 @@ bool TIntermediate::postProcess(TIntermNode* root)
 //
 ////////////////////////////////////////////////////////////////
 
+void TIntermBinary::setType(const TType &t)
+{
+	type = t;
+
+	if(IsIntrinsic(op) || IsConstructor(op))
+	{
+		if(left->isConstant() && right->isConstant())
+		{
+			type.setQualifier(EvqConstExpr);
+		}
+	}
+}
+
+void TIntermUnary::setType(const TType &t)
+{
+	type = t;
+
+	if(IsIntrinsic(op) || IsConstructor(op))
+	{
+		if(operand->isConstant())
+		{
+			type.setQualifier(EvqConstExpr);
+		}
+	}
+}
+
 //
 // Say whether or not an operation node changes the value of a variable.
 //
@@ -678,44 +728,6 @@ bool TIntermOperator::modifiesState() const
         case EOpBitwiseAndAssign:
         case EOpBitwiseXorAssign:
         case EOpBitwiseOrAssign:
-            return true;
-        default:
-            return false;
-    }
-}
-
-//
-// returns true if the operator is for one of the constructors
-//
-bool TIntermOperator::isConstructor() const
-{
-    switch (op) {
-        case EOpConstructVec2:
-        case EOpConstructVec3:
-        case EOpConstructVec4:
-        case EOpConstructMat2:
-        case EOpConstructMat2x3:
-        case EOpConstructMat2x4:
-        case EOpConstructMat3x2:
-        case EOpConstructMat3:
-        case EOpConstructMat3x4:
-        case EOpConstructMat4x2:
-        case EOpConstructMat4x3:
-        case EOpConstructMat4:
-        case EOpConstructFloat:
-        case EOpConstructIVec2:
-        case EOpConstructIVec3:
-        case EOpConstructIVec4:
-        case EOpConstructInt:
-        case EOpConstructUVec2:
-        case EOpConstructUVec3:
-        case EOpConstructUVec4:
-        case EOpConstructUInt:
-        case EOpConstructBVec2:
-        case EOpConstructBVec3:
-        case EOpConstructBVec4:
-        case EOpConstructBool:
-        case EOpConstructStruct:
             return true;
         default:
             return false;
@@ -1029,7 +1041,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
         default:
             return false;
     }
-    
+
     return true;
 }
 
