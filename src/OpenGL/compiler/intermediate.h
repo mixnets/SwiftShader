@@ -8,7 +8,7 @@
 // Definition of the in-memory high-level intermediate representation
 // of shaders.  This is a tree that parser creates.
 //
-// Nodes in the tree are defined as a hierarchy of classes derived from 
+// Nodes in the tree are defined as a hierarchy of classes derived from
 // TIntermNode. Each is a node in a tree.  There is no preset branching factor;
 // each node can have it's own type of list of children.
 //
@@ -26,7 +26,7 @@
 enum TOperator {
     EOpNull,            // if in a node, should only mean a node is still being built
     EOpSequence,        // denotes a list of statements, or parameters, etc.
-    EOpFunctionCall,    
+    EOpFunctionCall,
     EOpFunction,        // For function definition
     EOpParameters,      // an aggregate listing the parameters to a function
 
@@ -75,6 +75,7 @@ enum TOperator {
     EOpVectorTimesMatrix,
     EOpMatrixTimesVector,
     EOpMatrixTimesScalar,
+	EOpMatrixTimesMatrix,
 
     EOpLogicalOr,
     EOpLogicalXor,
@@ -98,7 +99,8 @@ enum TOperator {
     // Built-in functions potentially mapped to operators
     //
 
-    EOpRadians,
+	EOpGuardIntrinsicBegin,   // Non-operator, see IsIntrinsic()
+    EOpRadians = EOpGuardIntrinsicBegin,
     EOpDegrees,
     EOpSin,
     EOpCos,
@@ -162,10 +164,9 @@ enum TOperator {
     EOpDFdy,            // Fragment only, OES_standard_derivatives extension
     EOpFwidth,          // Fragment only, OES_standard_derivatives extension
 
-    EOpMatrixTimesMatrix,
-
     EOpAny,
-    EOpAll,
+	EOpAll,
+	EOpGuardIntrinsicEnd = EOpAll,   // Non-operator, see IsIntrinsic()
 
     //
     // Branch
@@ -180,7 +181,8 @@ enum TOperator {
     // Constructors
     //
 
-    EOpConstructInt,
+	EOpGuardConstructorBegin,   // Non-operator, see IsConstructor()
+    EOpConstructInt = EOpGuardConstructorBegin,
     EOpConstructUInt,
     EOpConstructBool,
     EOpConstructFloat,
@@ -206,6 +208,7 @@ enum TOperator {
     EOpConstructMat4x3,
     EOpConstructMat4,
     EOpConstructStruct,
+	EOpGuardConstructorEnd = EOpConstructStruct,   // Non-operator, see IsConstructor()
 
     //
     // moves
@@ -228,6 +231,16 @@ enum TOperator {
     EOpBitwiseXorAssign,
     EOpBitwiseOrAssign
 };
+
+inline bool IsIntrinsic(TOperator op)
+{
+    return op >= EOpGuardIntrinsicBegin && op <= EOpGuardIntrinsicEnd;
+}
+
+inline bool IsConstructor(TOperator op)
+{
+    return op >= EOpGuardConstructorBegin && op <= EOpGuardConstructorEnd;
+}
 
 extern const char* getOperatorString(TOperator op);
 
@@ -306,7 +319,7 @@ public:
     TPrecision getPrecision() const { return type.getPrecision(); }
     int getNominalSize() const { return type.getNominalSize(); }
 	int getSecondarySize() const { return type.getSecondarySize(); }
-    
+
 	bool isInterfaceBlock() const { return type.isInterfaceBlock(); }
     bool isMatrix() const { return type.isMatrix(); }
     bool isArray()  const { return type.isArray(); }
@@ -399,14 +412,14 @@ public:
     // if symbol is initialized as symbol(sym), the memory comes from the poolallocator of sym. If sym comes from
     // per process globalpoolallocator, then it causes increased memory usage per compile
     // it is essential to use "symbol = sym" to assign to symbol
-    TIntermSymbol(int i, const TString& sym, const TType& t) : 
-            TIntermTyped(t), id(i)  { symbol = sym; } 
+    TIntermSymbol(int i, const TString& sym, const TType& t) :
+            TIntermTyped(t), id(i)  { symbol = sym; }
 
     int getId() const { return id; }
     const TString& getSymbol() const { return symbol; }
 
     void setId(int newId) { id = newId; }
-    
+
     virtual void traverse(TIntermTraverser*);
     virtual TIntermSymbol* getAsSymbolNode() { return this; }
 
@@ -420,7 +433,7 @@ public:
     TIntermConstantUnion(ConstantUnion *unionPointer, const TType& t) : TIntermTyped(t), unionArrayPointer(unionPointer) { }
 
     ConstantUnion* getUnionArrayPointer() const { return unionArrayPointer; }
-    
+
     int getIConst(int index) const { return unionArrayPointer ? unionArrayPointer[index].getIConst() : 0; }
     int getUConst(int index) const { return unionArrayPointer ? unionArrayPointer[index].getUConst() : 0; }
     float getFConst(int index) const { return unionArrayPointer ? unionArrayPointer[index].getFConst() : 0.0f; }
@@ -447,11 +460,10 @@ public:
     void setOp(TOperator o) { op = o; }
 
     bool modifiesState() const;
-    bool isConstructor() const;
 
 protected:
     TIntermOperator(TOperator o) : TIntermTyped(TType(EbtFloat, EbpUndefined)), op(o) {}
-    TIntermOperator(TOperator o, TType& t) : TIntermTyped(t), op(o) {}   
+    TIntermOperator(TOperator o, TType& t) : TIntermTyped(t), op(o) {}
     TOperator op;
 };
 
@@ -488,7 +500,7 @@ public:
     virtual TIntermUnary* getAsUnaryNode() { return this; }
 
     void setOperand(TIntermTyped* o) { operand = o; }
-    TIntermTyped* getOperand() { return operand; }    
+    TIntermTyped* getOperand() { return operand; }
     bool promote(TInfoSink&);
 
 protected:
@@ -616,7 +628,7 @@ enum Visit
 };
 
 //
-// For traversing the tree.  User should derive from this, 
+// For traversing the tree.  User should derive from this,
 // put their traversal specific data in it, and then pass
 // it to a Traverse method.
 //
@@ -627,7 +639,7 @@ class TIntermTraverser
 {
 public:
     POOL_ALLOCATOR_NEW_DELETE();
-    TIntermTraverser(bool preVisit = true, bool inVisit = false, bool postVisit = false, bool rightToLeft = false) : 
+    TIntermTraverser(bool preVisit = true, bool inVisit = false, bool postVisit = false, bool rightToLeft = false) :
             preVisit(preVisit),
             inVisit(inVisit),
             postVisit(postVisit),

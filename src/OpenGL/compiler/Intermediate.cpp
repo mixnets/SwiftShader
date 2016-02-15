@@ -685,44 +685,6 @@ bool TIntermOperator::modifiesState() const
 }
 
 //
-// returns true if the operator is for one of the constructors
-//
-bool TIntermOperator::isConstructor() const
-{
-    switch (op) {
-        case EOpConstructVec2:
-        case EOpConstructVec3:
-        case EOpConstructVec4:
-        case EOpConstructMat2:
-        case EOpConstructMat2x3:
-        case EOpConstructMat2x4:
-        case EOpConstructMat3x2:
-        case EOpConstructMat3:
-        case EOpConstructMat3x4:
-        case EOpConstructMat4x2:
-        case EOpConstructMat4x3:
-        case EOpConstructMat4:
-        case EOpConstructFloat:
-        case EOpConstructIVec2:
-        case EOpConstructIVec3:
-        case EOpConstructIVec4:
-        case EOpConstructInt:
-        case EOpConstructUVec2:
-        case EOpConstructUVec3:
-        case EOpConstructUVec4:
-        case EOpConstructUInt:
-        case EOpConstructBVec2:
-        case EOpConstructBVec3:
-        case EOpConstructBVec4:
-        case EOpConstructBool:
-        case EOpConstructStruct:
-            return true;
-        default:
-            return false;
-    }
-}
-
-//
 // Make sure the type of a unary operator is appropriate for its
 // combination of operation and operand type.
 //
@@ -1029,7 +991,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
         default:
             return false;
     }
-    
+
     return true;
 }
 
