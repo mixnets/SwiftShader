@@ -140,11 +140,17 @@ namespace sw
 			if(interpolateW())
 			{
 				w = interpolate(xxxx, Dw, rhw, primitive + OFFSET(Primitive,w), false, false);
-				rhw = reciprocal(w);
 
 				if(state.centroid)
 				{
+					rhw = reciprocal(w);
 					rhwCentroid = reciprocal(interpolateCentroid(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive,w), false, false));
+				}
+				else
+				{
+					// Using full precision, instead of the reciprocal approximation, for non centroid interpolation
+					// where the simplicity of the computation makes the approximation noticeable
+					rhw = Float4(1.0f) / w;
 				}
 			}
 
