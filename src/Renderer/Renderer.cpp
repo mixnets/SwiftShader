@@ -2315,6 +2315,11 @@ namespace sw
 		slopeDepthBias = slopeBias;
 	}
 
+	void Renderer::setRasterizerDiscard(bool rasterizerDiscard)
+	{
+		context->rasterizerDiscard = rasterizerDiscard;
+	}
+
 	void Renderer::setPixelShader(const PixelShader *shader)
 	{
 		context->pixelShader = shader;

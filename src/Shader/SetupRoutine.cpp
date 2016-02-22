@@ -36,6 +36,11 @@ namespace sw
 	{
 		Function<Bool(Pointer<Byte>, Pointer<Byte>, Pointer<Byte>, Pointer<Byte>)> function;
 		{
+			if(state.rasterizerDiscard)
+			{
+				Return(false);
+			}
+
 			Pointer<Byte> primitive(function.Arg<0>());
 			Pointer<Byte> tri(function.Arg<1>());
 			Pointer<Byte> polygon(function.Arg<2>());
