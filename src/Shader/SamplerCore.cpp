@@ -560,11 +560,11 @@ namespace sw
 	{
 		Short4 offset = *Pointer<Short4>(mipmap + halfOffset);
 
-		if(state.textureFilter == FILTER_MIN_LINEAR_MAG_POINT)
+		if(state.textureFilter == FILTER_MAG_POINT_MIN_LINEAR)
 		{
 			offset &= Short4(CmpNLE(Float4(lod), Float4(0.0f)));
 		}
-		else if(state.textureFilter == FILTER_MIN_POINT_MAG_LINEAR)
+		else if(state.textureFilter == FILTER_MAG_LINEAR_MIN_POINT)
 		{
 			offset &= Short4(CmpLE(Float4(lod), Float4(0.0f)));
 		}
