@@ -427,6 +427,16 @@ namespace sw
 			return (FilterType)min(filter, FILTER_LINEAR);
 		}
 
+		if(filter == FILTER_MIN_LINEAR_MAG_POINT && mipmapFilter() == MIPMAP_NONE)
+		{
+			return FILTER_LINEAR;
+		}
+
+		if(filter == FILTER_MIN_POINT_MAG_LINEAR && mipmapFilter() == MIPMAP_NONE)
+		{
+			return FILTER_POINT;
+		}
+
 		return filter;
 	}
 
