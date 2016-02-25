@@ -49,24 +49,27 @@ namespace sw
 		Do
 		{
 			UInt index = *Pointer<UInt>(batch);
-			UInt tagIndex = index & 0x0000003C;
-			UInt indexQ = !textureSampling ? UInt(index & 0xFFFFFFFC) : index;   // FIXME: TEXLDL hack to have independent LODs, hurts performance.
+			UInt tagIndex = index & 0x0000003F;
 
-			If(*Pointer<UInt>(tagCache + tagIndex) != indexQ)
+			If(*Pointer<UInt>(tagCache + tagIndex * 4) != index)
 			{
-				*Pointer<UInt>(tagCache + tagIndex) = indexQ;
-
-				readInput(indexQ);
+				readInput(batch);
 				pipeline();
 				postTransform();
 				computeClipFlags();
 
-				Pointer<Byte> cacheLine0 = vertexCache + tagIndex * UInt((int)sizeof(Vertex));
-				writeCache(cacheLine0);
+				writeCache(vertexCache, batch);
+				UInt index0 = *Pointer<UInt>(batch + 0);
+				UInt index1 = *Pointer<UInt>(batch + 4);
+				UInt index2 = *Pointer<UInt>(batch + 8);
+				UInt index3 = *Pointer<UInt>(batch + 12);
+				*Pointer<UInt>(tagCache + (index3 & 0x3F) * 4) = index3;
+				*Pointer<UInt>(tagCache + (index2 & 0x3F) * 4) = index2;
+				*Pointer<UInt>(tagCache + (index1 & 0x3F) * 4) = index1;
+				*Pointer<UInt>(tagCache + (index0 & 0x3F) * 4) = index0;
 			}
 
-			UInt cacheIndex = index & 0x0000003F;
-			Pointer<Byte> cacheLine = vertexCache + cacheIndex * UInt((int)sizeof(Vertex));
+			Pointer<Byte> cacheLine = vertexCache + tagIndex * sizeof(Vertex);
 			writeVertex(vertex, cacheLine);
 
 			vertex += sizeof(Vertex);
@@ -78,7 +81,7 @@ namespace sw
 		Return();
 	}
 
-	void VertexRoutine::readInput(UInt &index)
+	void VertexRoutine::readInput(Pointer<UInt> index)
 	{
 		for(int i = 0; i < VERTEX_ATTRIBUTES; i++)
 		{
@@ -129,16 +132,16 @@ namespace sw
 		}
 	}
 
-	Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, const UInt &index)
+	Vector4f VertexRoutine::readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, Pointer<UInt> index)
 	{
 		const bool textureSampling = state.textureSampling;
 
 		Vector4f v;
 
-		Pointer<Byte> source0 = buffer + index * stride;
-		Pointer<Byte> source1 = source0 + (!textureSampling ? stride : 0);
-		Pointer<Byte> source2 = source1 + (!textureSampling ? stride : 0);
-		Pointer<Byte> source3 = source2 + (!textureSampling ? stride : 0);
+		Pointer<Byte> source0 = buffer + *Pointer<UInt>(Pointer<Byte>(index) + 0) * stride;
+		Pointer<Byte> source1 = buffer + *Pointer<UInt>(Pointer<Byte>(index) + 4) * stride;
+		Pointer<Byte> source2 = buffer + *Pointer<UInt>(Pointer<Byte>(index) + 8) * stride;
+		Pointer<Byte> source3 = buffer + *Pointer<UInt>(Pointer<Byte>(index) + 12) * stride;
 
 		switch(stream.type)
 		{
@@ -475,8 +478,13 @@ namespace sw
 		}
 	}
 
-	void VertexRoutine::writeCache(Pointer<Byte> &cacheLine)
+	void VertexRoutine::writeCache(Pointer<Byte> cache, Pointer<UInt> index)
 	{
+		UInt index0 = *Pointer<UInt>(Pointer<Byte>(index) + 0) & 0x3F;
+		UInt index1 = *Pointer<UInt>(Pointer<Byte>(index) + 4) & 0x3F;
+		UInt index2 = *Pointer<UInt>(Pointer<Byte>(index) + 8) & 0x3F;
+		UInt index3 = *Pointer<UInt>(Pointer<Byte>(index) + 12) & 0x3F;
+
 		Vector4f v;
 
 		for(int i = 0; i < 12; i++)
@@ -514,10 +522,10 @@ namespace sw
 
 				if(state.output[i].write == 0x01)
 				{
-					*Pointer<Float>(cacheLine + OFFSET(Vertex,v[i]) + sizeof(Vertex) * 0) = v.x.x;
-					*Pointer<Float>(cacheLine + OFFSET(Vertex,v[i]) + sizeof(Vertex) * 1) = v.x.y;
-					*Pointer<Float>(cacheLine + OFFSET(Vertex,v[i]) + sizeof(Vertex) * 2) = v.x.z;
-					*Pointer<Float>(cacheLine + OFFSET(Vertex,v[i]) + sizeof(Vertex) * 3) = v.x.w;
+					*Pointer<Float>(cache + OFFSET(Vertex,v[i]) + sizeof(Vertex) * index3) = v.x.w;
+					*Pointer<Float>(cache + OFFSET(Vertex,v[i]) + sizeof(Vertex) * index2) = v.x.z;
+					*Pointer<Float>(cache + OFFSET(Vertex,v[i]) + sizeof(Vertex) * index1) = v.x.y;
+					*Pointer<Float>(cache + OFFSET(Vertex,v[i]) + sizeof(Vertex) * index0) = v.x.x;
 				}
 				else
 				{
@@ -530,18 +538,18 @@ namespace sw
 						transpose4x4(v.x, v.y, v.z, v.w);
 					}
 
-					*Pointer<Float4>(cacheLine + OFFSET(Vertex,v[i]) + sizeof(Vertex) * 0, 16) = v.x;
-					*Pointer<Float4>(cacheLine + OFFSET(Vertex,v[i]) + sizeof(Vertex) * 1, 16) = v.y;
-					*Pointer<Float4>(cacheLine + OFFSET(Vertex,v[i]) + sizeof(Vertex) * 2, 16) = v.z;
-					*Pointer<Float4>(cacheLine + OFFSET(Vertex,v[i]) + sizeof(Vertex) * 3, 16) = v.w;
+					*Pointer<Float4>(cache + OFFSET(Vertex,v[i]) + sizeof(Vertex) * index3, 16) = v.w;
+					*Pointer<Float4>(cache + OFFSET(Vertex,v[i]) + sizeof(Vertex) * index2, 16) = v.z;
+					*Pointer<Float4>(cache + OFFSET(Vertex,v[i]) + sizeof(Vertex) * index1, 16) = v.y;
+					*Pointer<Float4>(cache + OFFSET(Vertex,v[i]) + sizeof(Vertex) * index0, 16) = v.x;
 				}
 			}
 		}
 
-		*Pointer<Int>(cacheLine + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * 0) = (clipFlags >> 0)  & 0x0000000FF;   // FIXME: unsigned char Vertex::clipFlags
-		*Pointer<Int>(cacheLine + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * 1) = (clipFlags >> 8)  & 0x0000000FF;
-		*Pointer<Int>(cacheLine + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * 2) = (clipFlags >> 16) & 0x0000000FF;
-		*Pointer<Int>(cacheLine + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * 3) = (clipFlags >> 24) & 0x0000000FF;
+		*Pointer<Int>(cache + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * index3) = (clipFlags >> 24) & 0x0000000FF;
+		*Pointer<Int>(cache + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * index2) = (clipFlags >> 16) & 0x0000000FF;   // FIXME: unsigned char Vertex::clipFlags
+		*Pointer<Int>(cache + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * index1) = (clipFlags >> 8)  & 0x0000000FF;
+		*Pointer<Int>(cache + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * index0) = (clipFlags >> 0)  & 0x0000000FF;
 
 		int pos = state.positionRegister;
 
@@ -560,10 +568,10 @@ namespace sw
 
 		transpose4x4(v.x, v.y, v.z, v.w);
 
-		*Pointer<Float4>(cacheLine + OFFSET(Vertex,X) + sizeof(Vertex) * 0, 16) = v.x;
-		*Pointer<Float4>(cacheLine + OFFSET(Vertex,X) + sizeof(Vertex) * 1, 16) = v.y;
-		*Pointer<Float4>(cacheLine + OFFSET(Vertex,X) + sizeof(Vertex) * 2, 16) = v.z;
-		*Pointer<Float4>(cacheLine + OFFSET(Vertex,X) + sizeof(Vertex) * 3, 16) = v.w;
+		*Pointer<Float4>(cache + OFFSET(Vertex,X) + sizeof(Vertex) * index3, 16) = v.w;
+		*Pointer<Float4>(cache + OFFSET(Vertex,X) + sizeof(Vertex) * index2, 16) = v.z;
+		*Pointer<Float4>(cache + OFFSET(Vertex,X) + sizeof(Vertex) * index1, 16) = v.y;
+		*Pointer<Float4>(cache + OFFSET(Vertex,X) + sizeof(Vertex) * index0, 16) = v.x;
 	}
 
 	void VertexRoutine::writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cache)
