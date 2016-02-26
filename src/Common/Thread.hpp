@@ -47,10 +47,34 @@ namespace sw
 			typedef pthread_key_t LocalStorageKey;
 		#endif
 
+
+		struct TID
+		{
+			#if defined(_WIN32)
+				HANDLE handle;
+
+				TID() : handle(INVALID_HANDLE) {}
+				TID(HANDLE h) : handle(h) {}
+			#else
+				pthread_t handle;
+				bool valid;
+
+				TID() : valid(false) {}
+				TID(pthread_t h) : handle(h), valid(true) {}
+			#endif
+
+			bool isValid() const;
+			bool operator!=(const TID& rhs) const;
+		};
+
+
 		static LocalStorageKey allocateLocalStorageKey();
 		static void freeLocalStorageKey(LocalStorageKey key);
 		static void setLocalStorage(LocalStorageKey key, void *value);
 		static void *getLocalStorage(LocalStorageKey key);
+
+		// There is no guarantee that there exists a matching Thread object.
+		static TID getCurrentId();
 
 	private:
 		struct Entry
@@ -159,6 +183,34 @@ namespace sw
 			return TlsGetValue(key);
 		#else
 			return pthread_getspecific(key);
+		#endif
+	}
+
+	
+	inline bool Thread::TID::operator!=(const TID& rhs) const
+	{
+		#if defined(_WIN32)
+			return handle != rhs.handle;
+		#else
+			return !pthread_equal(handle, rhs.handle);
+		#endif
+	}
+
+	inline bool Thread::TID::isValid() const
+	{
+		#if defined(_WIN32)
+			return handle != INVALID_HANDLE;
+		#else
+			return valid;
+		#endif
+	}
+
+	inline Thread::TID Thread::getCurrentId() {
+		#if defined(_WIN32)
+			return GetCurrentThread();
+		#else
+			pthread_t handle = pthread_self();
+			return TID{handle};
 		#endif
 	}
 
