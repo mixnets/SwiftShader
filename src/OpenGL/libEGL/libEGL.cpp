@@ -703,6 +703,7 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 	egl::Context *context = static_cast<egl::Context*>(ctx);
 	egl::Surface *drawSurface = static_cast<egl::Surface*>(draw);
 	egl::Surface *readSurface = static_cast<egl::Surface*>(read);
+	egl::Context *currentContext = egl::getCurrentContext();
 
 	if(ctx != EGL_NO_CONTEXT || draw != EGL_NO_SURFACE || read != EGL_NO_SURFACE)
 	{
@@ -717,6 +718,25 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 		return error(EGL_BAD_MATCH, EGL_FALSE);
 	}
 
+	if(context)
+	{
+		sw::Thread::TID boundThread;
+		if(context->isBound(&boundThread)) {
+			sw::Thread::TID currentThread = sw::Thread::getCurrentId();
+			if(currentThread != boundThread) {
+				return error(EGL_BAD_ACCESS, EGL_FALSE);
+			}
+		}
+	}
+
+	if(drawSurface && drawSurface->getContext() && drawSurface->getContext() != currentContext) {
+		return error(EGL_BAD_ACCESS, EGL_FALSE);
+	}
+
+	if(readSurface && readSurface->getContext() && readSurface->getContext() != currentContext) {
+		return error(EGL_BAD_ACCESS, EGL_FALSE);
+	}
+	
 	if(ctx != EGL_NO_CONTEXT && !validateContext(display, context))
 	{
 		return EGL_FALSE;
@@ -738,6 +758,11 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 		UNIMPLEMENTED();   // FIXME
 	}
 
+	if(currentContext)
+	{
+		currentContext->unbind();
+	}
+
 	egl::setCurrentDisplay(dpy);
 	egl::setCurrentDrawSurface(drawSurface);
 	egl::setCurrentReadSurface(readSurface);
@@ -745,6 +770,7 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 
 	if(context)
 	{
+		context->bindToThread(sw::Thread::getCurrentId());
 		context->makeCurrent(drawSurface);
 	}
 
