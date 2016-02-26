@@ -43,14 +43,23 @@ namespace sw
 
 		#if defined(_WIN32)
 			typedef DWORD LocalStorageKey;
+			typedef HANDLE TID;
 		#else
 			typedef pthread_key_t LocalStorageKey;
+			struct TID
+			{
+				pthread_t handle;
+				bool operator!=(const TID& rhs) const;
+			};
 		#endif
 
 		static LocalStorageKey allocateLocalStorageKey();
 		static void freeLocalStorageKey(LocalStorageKey key);
 		static void setLocalStorage(LocalStorageKey key, void *value);
 		static void *getLocalStorage(LocalStorageKey key);
+
+		// There is no guarantee that there exists a matching Thread object.
+		static TID getCurrentId();
 
 	private:
 		struct Entry
@@ -159,6 +168,19 @@ namespace sw
 			return TlsGetValue(key);
 		#else
 			return pthread_getspecific(key);
+		#endif
+	}
+
+	inline bool Thread::TID::operator!=(const TID& rhs) const {
+		return !pthread_equal(handle, rhs.handle);
+	}
+
+	inline Thread::TID Thread::getCurrentId() {
+		#if defined(_WIN32)
+			return GetCurrentThread();
+		#else
+			pthread_t handle = pthread_self();
+			return TID{handle};
 		#endif
 	}
 

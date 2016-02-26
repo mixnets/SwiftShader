@@ -27,6 +27,7 @@ class Display;
 class Config;
 class Texture;
 class Image;
+class Context;
 
 class Surface : public gl::Object
 {
@@ -60,6 +61,9 @@ public:
 	virtual bool isWindowSurface() const { return false; }
 	virtual bool isPBufferSurface() const { return false; }
 
+	Context *getContext() const { return boundContext; }
+	void setContext(Context *ctx) { boundContext = ctx; }
+	
 protected:
 	Surface(const Display *display, const Config *config);
 
@@ -71,7 +75,8 @@ protected:
     Image *depthStencil;
 	Image *backBuffer;
 	Texture *texture;
-
+	Context *boundContext;
+	
 	bool reset(int backbufferWidth, int backbufferHeight);
 
 	const Config *const config;    // EGL config surface was created with
