@@ -41,6 +41,7 @@ Surface::Surface(const Display *display, const Config *config) : display(display
 	backBuffer = nullptr;
     depthStencil = nullptr;
     texture = nullptr;
+	boundContext = nullptr;
 
 	width = 0;
 	height = 0;
