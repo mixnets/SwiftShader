@@ -41,6 +41,7 @@ Surface::Surface(const Display *display, const Config *config) : display(display
 	backBuffer = nullptr;
     depthStencil = nullptr;
     texture = nullptr;
+	boundContext = nullptr;
 
 	width = 0;
 	height = 0;
@@ -294,7 +295,7 @@ bool WindowSurface::checkForResize()
 
         if(getCurrentDrawSurface() == this)
         {
-			getCurrentContext()->makeCurrent(this);
+			boundContext->makeCurrent(this);
         }
 
         return success;
