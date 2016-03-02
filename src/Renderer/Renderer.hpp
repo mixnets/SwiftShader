@@ -86,11 +86,10 @@ namespace sw
 
 	struct Query
 	{
-		Query()
+		enum Type { ANY_SAMPLES_PASSED, ANY_SAMPLES_PASSED_CONSERVATIVE, TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN };
+
+		Query(Type type) : building(false), reference(0), data(0), type(type)
 		{
-			building = false;
-			reference = 0;
-			data = 0;
 		}
 
 		void begin()
@@ -107,6 +106,8 @@ namespace sw
 		bool building;
 		volatile int reference;
 		volatile unsigned int data;
+
+		Type type;
 	};
 
 	struct DrawData
@@ -153,6 +154,7 @@ namespace sw
 		PixelProcessor::Fog fog;
 		PixelProcessor::Factor factor;
 		unsigned int occlusion[16];   // Number of pixels passing depth test
+		unsigned int primitivesWritten[16]; // Number of primitives written in transform feedback buffers
 
 		#if PERF_PROFILE
 			int64_t cycles[PERF_TIMERS][16];

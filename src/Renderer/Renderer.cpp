@@ -464,6 +464,14 @@ namespace sw
 				data->point = point;
 			}
 
+			if(setupState.transformFeedbackQueryEnabled)
+			{
+				for(int thread = 0; thread < threadCount; thread++)
+				{
+					data->primitivesWritten[thread] = 0;
+				}
+			}
+
 			data->lineWidth = context->lineWidth;
 
 			data->factor = factor;
@@ -822,6 +830,10 @@ namespace sw
 				#endif
 
 				int visible = setupPrimitives(this, unit, count);
+				if(setupState.transformFeedbackQueryEnabled)
+				{
+					draw->data->primitivesWritten[threadIndex] += count;
+				}
 
 				primitiveProgress[unit].visible = visible;
 				primitiveProgress[unit].references = clusterCount;
@@ -911,9 +923,23 @@ namespace sw
 					{
 						Query *query = *q;
 
-						for(int cluster = 0; cluster < clusterCount; cluster++)
+						switch(query->type)
 						{
-							atomicAdd((volatile int*)&query->data, data.occlusion[cluster]);
+						case Query::ANY_SAMPLES_PASSED:
+						case Query::ANY_SAMPLES_PASSED_CONSERVATIVE:
+							for(int cluster = 0; cluster < clusterCount; cluster++)
+							{
+								atomicAdd((volatile int*)&query->data, data.occlusion[cluster]);
+							}
+							break;
+						case Query::TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN:
+							for(int thread = 0; thread < threadCount; thread++)
+							{
+								atomicAdd((volatile int*)&query->data, data.primitivesWritten[thread]);
+							}
+							break;
+						default:
+							break;
 						}
 
 						atomicDecrement(&query->reference);
