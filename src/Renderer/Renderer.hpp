@@ -86,11 +86,10 @@ namespace sw
 
 	struct Query
 	{
-		Query()
+		enum Type { ANY_SAMPLES_PASSED, ANY_SAMPLES_PASSED_CONSERVATIVE, TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN };
+
+		Query(Type type) : building(false), reference(0), data(0), type(type)
 		{
-			building = false;
-			reference = 0;
-			data = 0;
 		}
 
 		void begin()
@@ -107,6 +106,8 @@ namespace sw
 		bool building;
 		volatile int reference;
 		volatile unsigned int data;
+
+		Type type;
 	};
 
 	struct DrawData
@@ -212,6 +213,7 @@ namespace sw
 		SetupProcessor::RoutinePointer setupPointer;
 		PixelProcessor::RoutinePointer pixelPointer;
 
+		VertexProcessor::State vertexState;
 		int (*setupPrimitives)(Renderer *renderer, int batch, int count);
 		SetupProcessor::State setupState;
 
