@@ -66,6 +66,16 @@ namespace sw
 		routineCache = 0;
 	}
 
+	void SetupProcessor::setTransformFeedbackQueryEnabled(bool enable)
+	{
+		context->transformFeedbackQueryEnabled = enable;
+	}
+
+	void SetupProcessor::enableTransformFeedback(bool enable)
+	{
+		context->transformFeedbackEnabled = enable;
+	}
+
 	SetupProcessor::State SetupProcessor::update() const
 	{
 		State state;
@@ -89,6 +99,8 @@ namespace sw
 		state.pointSizeRegister = 0xF;   // No vertex point size
 
 		state.multiSample = context->getMultiSampleCount();
+		state.transformFeedbackQueryEnabled = context->transformFeedbackQueryEnabled;
+		state.transformFeedbackEnabled = context->transformFeedbackEnabled;
 
 		if(context->vertexShader)
 		{

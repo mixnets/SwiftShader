@@ -881,12 +881,6 @@ namespace sw
 
 		pixelProgress[cluster].processedPrimitives = primitive + count;
 
-		if(pixelProgress[cluster].processedPrimitives >= draw.count)
-		{
-			pixelProgress[cluster].drawCall++;
-			pixelProgress[cluster].processedPrimitives = 0;
-		}
-
 		int ref = atomicDecrement(&primitiveProgress[unit].references);
 
 		if(ref == 0)
@@ -911,9 +905,23 @@ namespace sw
 					{
 						Query *query = *q;
 
-						for(int cluster = 0; cluster < clusterCount; cluster++)
+						switch(query->type)
 						{
-							atomicAdd((volatile int*)&query->data, data.occlusion[cluster]);
+						case Query::ANY_SAMPLES_PASSED:
+						case Query::ANY_SAMPLES_PASSED_CONSERVATIVE:
+							for(int cluster = 0; cluster < clusterCount; cluster++)
+							{
+								atomicAdd((volatile int*)&query->data, data.occlusion[cluster]);
+							}
+							break;
+						case Query::TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN:
+							if(draw.setupState.transformFeedbackQueryEnabled && draw.setupState.transformFeedbackEnabled)
+							{
+								atomicAdd((volatile int*)&query->data, pixelProgress[cluster].processedPrimitives);
+							}
+							break;
+						default:
+							break;
 						}
 
 						atomicDecrement(&query->reference);
@@ -970,6 +978,12 @@ namespace sw
 				draw.references = -1;
 				resumeApp->signal();
 			}
+		}
+
+		if(pixelProgress[cluster].processedPrimitives >= draw.count)
+		{
+			pixelProgress[cluster].drawCall++;
+			pixelProgress[cluster].processedPrimitives = 0;
 		}
 
 		pixelProgress[cluster].executing = false;
