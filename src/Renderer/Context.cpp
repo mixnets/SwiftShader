@@ -295,6 +295,8 @@ namespace sw
 		instanceID = 0;
 
 		occlusionEnabled = false;
+		transformFeedbackQueryEnabled = false;
+		transformFeedbackEnabled = false;
 
 		pointSpriteEnable = false;
 		pointScaleEnable = false;
