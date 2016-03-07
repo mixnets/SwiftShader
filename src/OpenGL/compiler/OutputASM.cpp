@@ -1091,6 +1091,7 @@ namespace glsl
 		{
 		case EOpSequence:           break;
 		case EOpDeclaration:        break;
+		case EOpInvariantDeclaration:        break;
 		case EOpPrototype:          break;
 		case EOpComma:
 			if(visit == PostVisit)
