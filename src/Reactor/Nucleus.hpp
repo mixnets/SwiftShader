@@ -74,6 +74,7 @@ namespace sw
 		virtual ~Nucleus();
 
 		Routine *acquireRoutine(const wchar_t *name, bool runOptimizations = true);
+		Routine *acquireRoutine2(const wchar_t *name, bool runOptimizations = true);
 
 		static void setFunction(llvm::Function *function);
 

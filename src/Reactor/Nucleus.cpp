@@ -137,7 +137,30 @@ namespace sw
 		codegenMutex.unlock();
 	}
 
+	struct Data
+	{
+		Nucleus *nucleus;
+		const wchar_t *name;
+		bool runOptimizations;
+		Routine *routine;
+	};
+
+	static void threadFunction(void *parameters)
+	{
+		Data *data = (Data*)parameters;
+
+		data->routine = data->nucleus->acquireRoutine2(data->name, data->runOptimizations);
+	}
+
 	Routine *Nucleus::acquireRoutine(const wchar_t *name, bool runOptimizations)
+	{
+		Data data = {this, name, runOptimizations, nullptr};
+		sw::Thread *thread = new sw::Thread(threadFunction, &data);
+		delete thread;
+		return data.routine;
+	}
+
+	Routine *Nucleus::acquireRoutine2(const wchar_t *name, bool runOptimizations)
 	{
 		if(builder->GetInsertBlock()->empty() || !builder->GetInsertBlock()->back().isTerminator())
 		{
