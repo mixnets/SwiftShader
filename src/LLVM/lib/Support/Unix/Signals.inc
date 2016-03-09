@@ -196,8 +196,8 @@ void llvm::sys::DontRemoveFileOnSignal(const sys::Path &Filename) {
 /// to the process.  The handler can have a cookie passed to it to identify
 /// what instance of the handler it is.
 void llvm::sys::AddSignalHandler(void (*FnPtr)(void *), void *Cookie) {
-  CallBacksToRun.push_back(std::make_pair(FnPtr, Cookie));
-  RegisterHandlers();
+  //CallBacksToRun.push_back(std::make_pair(FnPtr, Cookie));
+  //RegisterHandlers();
 }
 
 
