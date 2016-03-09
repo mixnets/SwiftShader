@@ -232,7 +232,7 @@ namespace glsl
 			method = IMPLICIT;
 			proj = true;
 		}
-		else if(name == "texture2DLod" || name == "textureCubeLod" || name == "textureLod")
+		else if(name == "texture2DLod" || name == "textureCubeLod" || name == "textureLod" || "texture2DLodExt")
 		{
 			method = LOD;
 		}

@@ -258,6 +258,11 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
 		symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture3DLod", sampler3D, float3, float1);
 	}
 
+    if(type == GL_FRAGMENT_SHADER)
+    {
+        symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture2DLodEXT", sampler2D, float2, float1);
+    }
+
     TType *gvec4 = new TType(EbtGVec4);
 
     TType *gsampler2D = new TType(EbtGSampler2D);
@@ -481,4 +486,6 @@ void InitExtensionBehavior(const ShBuiltInResources& resources,
         extBehavior["GL_FRAGMENT_PRECISION_HIGH"] = EBhUndefined;
     if(resources.OES_EGL_image_external)
         extBehavior["GL_OES_EGL_image_external"] = EBhUndefined;
+    if(resources.EXT_shader_texture_lod)
+        extBehavior["GL_EXT_shader_texture_lod"] = EBhUndefined;
 }
