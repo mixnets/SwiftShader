@@ -247,6 +247,11 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
 			symbolTable.insertBuiltIn(ESSL1_BUILTINS, EOpDFdy, "GL_OES_standard_derivatives", genType, "dFdy", genType);
 			symbolTable.insertBuiltIn(ESSL1_BUILTINS, EOpFwidth,"GL_OES_standard_derivatives", genType, "fwidth", genType);
 		}
+
+                if (resources.EXT_shader_texture_lod)
+                {
+                  symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture2DLodEXT", sampler2D, float2, float1);
+                }
 	}
 
 	if(type == GL_VERTEX_SHADER)
@@ -256,6 +261,12 @@ void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TS
 		symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture2DProjLod", sampler2D, float4, float1);
 		symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "textureCubeLod", samplerCube, float3, float1);
 		symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture3DLod", sampler3D, float3, float1);
+
+                if (resources.EXT_shader_texture_lod)
+                {
+                  symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture2DProjLodEXT", sampler2D, float3, float1);
+                  symbolTable.insertBuiltIn(ESSL1_BUILTINS, float4, "texture2DProjLodEXT", sampler2D, float4, float1);
+                }
 	}
 
     TType *gvec4 = new TType(EbtGVec4);
@@ -481,4 +492,6 @@ void InitExtensionBehavior(const ShBuiltInResources& resources,
         extBehavior["GL_FRAGMENT_PRECISION_HIGH"] = EBhUndefined;
     if(resources.OES_EGL_image_external)
         extBehavior["GL_OES_EGL_image_external"] = EBhUndefined;
+    if(resources.EXT_shader_texture_lod)
+        extBehavior["GL_EXT_shader_texture_lod"] = EBhUndefined;
 }
