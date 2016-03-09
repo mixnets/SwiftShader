@@ -52,12 +52,17 @@ static const int *const IntSigsEnd =
 // KillSigs - Signals that are synchronous with the program that will cause it
 // to die.
 static const int KillSigs[] = {
-  SIGILL, SIGTRAP, SIGABRT, SIGFPE, SIGBUS, SIGSEGV
+  SIGILL,
+SIGTRAP,
+SIGABRT,
+SIGFPE,
+SIGBUS,
+SIGSEGV
 #ifdef SIGSYS
   , SIGSYS
 #endif
 #ifdef SIGXCPU
-  , SIGXCPU
+  //, SIGXCPU
 #endif
 #ifdef SIGXFSZ
   , SIGXFSZ
