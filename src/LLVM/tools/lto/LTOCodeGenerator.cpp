@@ -40,7 +40,7 @@
 #include "llvm/Support/ToolOutputFile.h"
 #include "llvm/Support/Host.h"
 #include "llvm/Support/Program.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include "llvm/Support/TargetRegistry.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Support/system_error.h"
@@ -187,7 +187,7 @@ bool LTOCodeGenerator::compile_to_file(const char** name, std::string& errMsg)
     uniqueObjPath.eraseFromDisk();
     return true;
   }
-  sys::RemoveFileOnSignal(uniqueObjPath);
+  //sys::RemoveFileOnSignal(uniqueObjPath);
 
   // generate object file
   bool genResult = false;

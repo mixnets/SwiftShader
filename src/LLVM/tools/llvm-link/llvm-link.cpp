@@ -23,7 +23,7 @@
 #include "llvm/Support/ToolOutputFile.h"
 #include "llvm/Support/SystemUtils.h"
 #include "llvm/Support/IRReader.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include "llvm/Support/Path.h"
 #include <memory>
 using namespace llvm;

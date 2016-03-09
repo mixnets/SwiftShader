@@ -15,7 +15,7 @@
 #include "llvm/Config/config.h"     // Get autoconf configuration settings
 #include "llvm/Support/PrettyStackTrace.h"
 #include "llvm/Support/raw_ostream.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include "llvm/Support/ThreadLocal.h"
 #include "llvm/ADT/SmallString.h"
 
@@ -99,8 +99,8 @@ static void CrashHandler(void *) {
 }
 
 static bool RegisterCrashPrinter() {
-  if (!DisablePrettyStackTrace)
-    sys::AddSignalHandler(CrashHandler, 0);
+  //if (!DisablePrettyStackTrace)
+    //sys::AddSignalHandler(CrashHandler, 0);
   return false;
 }
 

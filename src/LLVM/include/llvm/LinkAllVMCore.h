@@ -28,7 +28,7 @@
 #include "llvm/Support/Path.h"
 #include "llvm/Support/Process.h"
 #include "llvm/Support/Program.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include "llvm/Support/TimeValue.h"
 #include "llvm/Support/Dwarf.h"
 #include "llvm/Support/MathExtras.h"

@@ -26,7 +26,7 @@
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/circular_raw_ostream.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 
 using namespace llvm;
 
@@ -106,10 +106,10 @@ raw_ostream &llvm::dbgs() {
     dbgstream() :
         strm(errs(), "*** Debug Log Output ***\n",
              (!EnableDebugBuffering || !DebugFlag) ? 0 : DebugBufferSize) {
-      if (EnableDebugBuffering && DebugFlag && DebugBufferSize != 0)
+      //if (EnableDebugBuffering && DebugFlag && DebugBufferSize != 0)
         // TODO: Add a handler for SIGUSER1-type signals so the user can
         // force a debug dump.
-        sys::AddSignalHandler(&debug_user_sig_handler, 0);
+        //sys::AddSignalHandler(&debug_user_sig_handler, 0);
       // Otherwise we've already set the debug stream buffer size to
       // zero, disabling buffering so it will output directly to errs().
     }

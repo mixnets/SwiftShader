@@ -31,7 +31,7 @@
 #include "llvm/Support/FileUtilities.h"
 #include "llvm/Support/ToolOutputFile.h"
 #include "llvm/Support/Path.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include <set>
 using namespace llvm;
 
@@ -323,7 +323,7 @@ Module *BugDriver::ExtractMappedBlocksFromModule(const
     EmitProgressBitcode(M, "basicblockextractfail", true);
     return 0;
   }
-  sys::RemoveFileOnSignal(uniqueFilename);
+  //sys::RemoveFileOnSignal(uniqueFilename);
 
   std::string ErrorInfo;
   tool_output_file BlocksToNotExtractFile(uniqueFilename.c_str(), ErrorInfo);

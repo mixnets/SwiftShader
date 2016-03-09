@@ -31,7 +31,7 @@
 #include "llvm/Support/PrettyStackTrace.h"
 #include "llvm/Support/ToolOutputFile.h"
 #include "llvm/Support/Host.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include "llvm/Support/TargetRegistry.h"
 #include "llvm/Support/TargetSelect.h"
 #include "llvm/Target/TargetData.h"

@@ -25,7 +25,7 @@
 #include "llvm/Support/PrettyStackTrace.h"
 #include "llvm/Support/ToolOutputFile.h"
 #include "llvm/Support/SystemUtils.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include "llvm/Support/Regex.h"
 #include "llvm/ADT/SmallPtrSet.h"
 #include "llvm/ADT/SetVector.h"

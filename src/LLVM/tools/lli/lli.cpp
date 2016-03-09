@@ -32,7 +32,7 @@
 #include "llvm/Support/PrettyStackTrace.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Support/Process.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include "llvm/Support/TargetSelect.h"
 #include <cerrno>
 

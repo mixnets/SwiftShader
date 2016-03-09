@@ -18,7 +18,7 @@
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/MemoryBuffer.h"
 #include "llvm/Support/Process.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include "llvm/Support/system_error.h"
 #include <fstream>
 #include <ostream>
@@ -366,7 +366,7 @@ Archive::writeToDisk(bool CreateSymbolTable, bool TruncateNames, bool Compress,
     return true;
 
   // Make sure the temporary gets removed if we crash
-  sys::RemoveFileOnSignal(TmpArchive);
+  //sys::RemoveFileOnSignal(TmpArchive);
 
   // Create archive file for output.
   std::ios::openmode io_mode = std::ios::out | std::ios::trunc |
@@ -427,7 +427,7 @@ Archive::writeToDisk(bool CreateSymbolTable, bool TruncateNames, bool Compress,
     // mmapped data
     if (FinalFilePath.createTemporaryFileOnDisk(ErrMsg))
       return true;
-    sys::RemoveFileOnSignal(FinalFilePath);
+    //sys::RemoveFileOnSignal(FinalFilePath);
 
     std::ofstream FinalFile(FinalFilePath.c_str(), io_mode);
     if (!FinalFile.is_open() || FinalFile.bad()) {

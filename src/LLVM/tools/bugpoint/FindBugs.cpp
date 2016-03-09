@@ -103,7 +103,7 @@ bool BugDriver::runManyPasses(const std::vector<std::string> &AllPasses,
     }
     outs() << "\n*** diff'd output matches!\n";
     
-    sys::Path(Filename).eraseFromDisk();
+    //sys::Path(Filename).eraseFromDisk();
     
     outs() << "\n\n";
     num++;

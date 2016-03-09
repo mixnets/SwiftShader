@@ -23,7 +23,7 @@
 #include "llvm/Support/Regex.h"
 #include "llvm/Support/SourceMgr.h"
 #include "llvm/Support/raw_ostream.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include "llvm/Support/system_error.h"
 #include "llvm/ADT/SmallString.h"
 #include "llvm/ADT/StringMap.h"

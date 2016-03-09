@@ -29,7 +29,7 @@
 #include "llvm/ADT/StringSet.h"
 #include "llvm/ADT/Triple.h"
 #include "llvm/Support/PassNameParser.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/IRReader.h"
 #include "llvm/Support/ManagedStatic.h"

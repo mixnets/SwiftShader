@@ -36,7 +36,7 @@
 #include "llvm/Support/PrettyStackTrace.h"
 #include "llvm/Support/SystemUtils.h"
 #include "llvm/Support/ToolOutputFile.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include "llvm/Config/config.h"
 #include <memory>
 #include <cstring>
@@ -553,12 +553,12 @@ int main(int argc, char **argv, char **envp) {
 
   // Arrange for the bitcode output file to be deleted on any errors.
   BitcodeOutputRemover.setFile(BitcodeOutputFilename);
-  sys::RemoveFileOnSignal(sys::Path(BitcodeOutputFilename));
+  //sys::RemoveFileOnSignal(sys::Path(BitcodeOutputFilename));
 
   // Arrange for the output file to be deleted on any errors.
   if (!LinkAsLibrary) {
     OutputRemover.setFile(OutputFilename);
-    sys::RemoveFileOnSignal(sys::Path(OutputFilename));
+    //sys::RemoveFileOnSignal(sys::Path(OutputFilename));
   }
 
   // Construct a Linker (now that Verbose is set)
@@ -658,7 +658,7 @@ int main(int argc, char **argv, char **envp) {
 
       // Mark the output files for removal.
       FileRemover AssemblyFileRemover(AssemblyFile.str());
-      sys::RemoveFileOnSignal(AssemblyFile);
+      //sys::RemoveFileOnSignal(AssemblyFile);
 
       // Determine the locations of the llc and gcc programs.
       sys::Path llc = PrependMainExecutablePath("llc", argv[0],

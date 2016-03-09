@@ -8,7 +8,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/Config/config.h"
-#include "llvm/Support/Signals.h"
+//#include "llvm/Support/Signals.h"
 #include "gtest/gtest.h"
 
 
