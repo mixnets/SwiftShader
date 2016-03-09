@@ -56,6 +56,7 @@ ShBuiltInResources::ShBuiltInResources()
     OES_standard_derivatives = 0;
 	OES_fragment_precision_high = 0;
     OES_EGL_image_external = 0;
+    EXT_shader_texture_lod = 0;
 
 	MaxCallStackDepth = UINT_MAX;
 }
