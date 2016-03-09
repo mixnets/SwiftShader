@@ -53,6 +53,7 @@ extern "C"
 namespace llvm
 {
 	extern bool JITEmitDebugInfo;
+	extern bool DisablePrettyStackTrace;
 }
 
 namespace sw
@@ -79,6 +80,7 @@ namespace sw
 
 		InitializeNativeTarget();
 		JITEmitDebugInfo = false;
+		DisablePrettyStackTrace = true;
 
 		if(!context)
 		{
