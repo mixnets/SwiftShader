@@ -4342,6 +4342,7 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 #if (S3TC_SUPPORT)
 		(const GLubyte*)"GL_EXT_texture_compression_dxt1",
 #endif
+		(const GLubyte*)"GL_EXT_shader_texture_lod",
 		(const GLubyte*)"GL_EXT_texture_filter_anisotropic",
 		(const GLubyte*)"GL_EXT_texture_format_BGRA8888",
 		(const GLubyte*)"GL_ANGLE_framebuffer_blit",
