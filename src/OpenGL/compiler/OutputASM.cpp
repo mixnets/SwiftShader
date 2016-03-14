@@ -223,7 +223,6 @@ namespace glsl
 	{
 		TString name = TFunction::unmangleName(nodeName);
 
-		fprintf(stderr, "name: [%s]\n", name.c_str());
 		if(name == "texture2D" || name == "textureCube" || name == "texture" || name == "texture3D")
 		{
 			method = IMPLICIT;
