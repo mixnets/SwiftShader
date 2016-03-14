@@ -492,8 +492,11 @@ namespace sw
 		bool colorVertexEnable;
 
 		bool occlusionEnabled;
+		bool transformFeedbackQueryEnabled;
+		bool transformFeedbackEnabled;
 
 		// Pixel processor states
+		bool rasterizerDiscard;
 		bool depthBufferEnable;
 		DepthCompareMode depthCompareMode;
 		bool depthWriteEnable;

@@ -303,12 +303,17 @@ namespace sw
 
 			if(queries.size() != 0)
 			{
+				draw->queries = new std::list<Query*>();
+				bool includePrimitivesWrittenQueries = vertexState.transformFeedbackQueryEnabled && vertexState.transformFeedbackEnabled;
 				for(std::list<Query*>::iterator query = queries.begin(); query != queries.end(); query++)
 				{
-					atomicIncrement(&(*query)->reference);
+					Query* q = *query;
+					if(includePrimitivesWrittenQueries || (q->type != Query::TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN))
+					{
+						atomicIncrement(&(q->reference));
+						draw->queries->push_back(q);
+					}
 				}
-
-				draw->queries = new std::list<Query*>(queries);
 			}
 
 			draw->drawType = drawType;
@@ -821,7 +826,7 @@ namespace sw
 					startTick = time;
 				#endif
 
-				int visible = setupPrimitives(this, unit, count);
+				int visible = draw->setupState.rasterizerDiscard ? 0 : setupPrimitives(this, unit, count);
 
 				primitiveProgress[unit].visible = visible;
 				primitiveProgress[unit].references = clusterCount;
@@ -911,9 +916,19 @@ namespace sw
 					{
 						Query *query = *q;
 
-						for(int cluster = 0; cluster < clusterCount; cluster++)
+						switch(query->type)
 						{
-							atomicAdd((volatile int*)&query->data, data.occlusion[cluster]);
+						case Query::FRAGMENTS_PASSED:
+							for(int cluster = 0; cluster < clusterCount; cluster++)
+							{
+								atomicAdd((volatile int*)&query->data, data.occlusion[cluster]);
+							}
+							break;
+						case Query::TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN:
+							atomicAdd((volatile int*)&query->data, pixelProgress[cluster].processedPrimitives);
+							break;
+						default:
+							break;
 						}
 
 						atomicDecrement(&query->reference);
@@ -2313,6 +2328,11 @@ namespace sw
 	void Renderer::setSlopeDepthBias(float slopeBias)
 	{
 		slopeDepthBias = slopeBias;
+	}
+
+	void Renderer::setRasterizerDiscard(bool rasterizerDiscard)
+	{
+		context->rasterizerDiscard = rasterizerDiscard;
 	}
 
 	void Renderer::setPixelShader(const PixelShader *shader)
