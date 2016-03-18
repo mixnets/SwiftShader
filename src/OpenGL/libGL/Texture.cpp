@@ -372,16 +372,17 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 	if(image[level])
 	{
 		image[level]->unbind();
+        image[level] = nullptr;
 	}
 
-	image[level] = new Image(this, width, height, format, type);
-
-	if(!image[level])
-	{
-		return error(GL_OUT_OF_MEMORY);
-	}
-
-    Texture::setImage(format, type, unpackAlignment, pixels, image[level]);
+    if(widht > 0 && height > 0 ) {
+		image[level] = new Image(this, width, height, format, type);
+        if(!image[level])
+        {
+            return error(GL_OUT_OF_MEMORY);
+        }
+		Texture::setImage(format, type, unpackAlignment, pixels, image[level]);
+    }
 }
 
 void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels)
@@ -389,16 +390,19 @@ void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 	if(image[level])
 	{
 		image[level]->unbind();
+		image[level] = nullptr;
 	}
 
-	image[level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
+	if(widht > 0 && height > 0 ) {
+		image[level] = new Image(this, width, height, format, GL_UNSIGNED_BYTE);
 
-	if(!image[level])
-	{
-		return error(GL_OUT_OF_MEMORY);
+		if(!image[level])
+		{
+			return error(GL_OUT_OF_MEMORY);
+		}
+
+		Texture::setCompressedImage(imageSize, pixels, image[level]);
 	}
-
-    Texture::setCompressedImage(imageSize, pixels, image[level]);
 }
 
 void Texture2D::subImage(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels)
@@ -887,16 +891,19 @@ void TextureCubeMap::setImage(GLenum target, GLint level, GLsizei width, GLsizei
 	if(image[face][level])
 	{
 		image[face][level]->unbind();
+		image[face][level] = nullptr;
 	}
 
-	image[face][level] = new Image(this, width, height, format, type);
+	if(width > 0 && height > 0) {
+		image[face][level] = new Image(this, width, height, format, type);
 
-	if(!image[face][level])
-	{
-		return error(GL_OUT_OF_MEMORY);
+		if(!image[face][level])
+		{
+			return error(GL_OUT_OF_MEMORY);
+		}
+
+		Texture::setImage(format, type, unpackAlignment, pixels, image[face][level]);
 	}
-
-    Texture::setImage(format, type, unpackAlignment, pixels, image[face][level]);
 }
 
 void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source)

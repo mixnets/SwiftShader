@@ -639,16 +639,19 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 	if(image[level])
 	{
 		image[level]->release();
+		image[level] = nullptr;
 	}
 
-	image[level] = new egl::Image(this, width, height, format, type);
+	if(width > 0 && height > 0) {
+		image[level] = new egl::Image(this, width, height, format, type);
 
-	if(!image[level])
-	{
-		return error(GL_OUT_OF_MEMORY);
+		if(!image[level])
+		{
+			return error(GL_OUT_OF_MEMORY);
+		}
+
+		Texture::setImage(format, type, unpackInfo, pixels, image[level]);
 	}
-
-	Texture::setImage(format, type, unpackInfo, pixels, image[level]);
 }
 
 void Texture2D::bindTexImage(egl::Surface *surface)
@@ -1279,16 +1282,19 @@ void TextureCubeMap::setImage(GLenum target, GLint level, GLsizei width, GLsizei
 	if(image[face][level])
 	{
 		image[face][level]->release();
+		image[face][level] = nullptr
 	}
 
-	image[face][level] = new egl::Image(this, width, height, format, type);
+	if(width > 0 && height > 0) {
+		image[face][level] = new egl::Image(this, width, height, format, type);
 
-	if(!image[face][level])
-	{
-		return error(GL_OUT_OF_MEMORY);
+		if(!image[face][level])
+		{
+			return error(GL_OUT_OF_MEMORY);
+		}
+
+		Texture::setImage(format, type, unpackInfo, pixels, image[face][level]);
 	}
-
-	Texture::setImage(format, type, unpackInfo, pixels, image[face][level]);
 }
 
 void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source)
@@ -1606,16 +1612,19 @@ void Texture3D::setImage(GLint level, GLsizei width, GLsizei height, GLsizei dep
 	if(image[level])
 	{
 		image[level]->release();
+		image[level] = nullptr;
 	}
 
-	image[level] = new egl::Image(this, width, height, depth, format, type);
+	if(width > 0 && height > 0) {
+		image[level] = new egl::Image(this, width, height, depth, format, type);
 
-	if(!image[level])
-	{
-		return error(GL_OUT_OF_MEMORY);
+		if(!image[level])
+		{
+			return error(GL_OUT_OF_MEMORY);
+		}
+
+		Texture::setImage(format, type, unpackInfo, pixels, image[level]);
 	}
-
-	Texture::setImage(format, type, unpackInfo, pixels, image[level]);
 }
 
 void Texture3D::bindTexImage(egl::Surface *surface)
