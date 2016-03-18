@@ -16,6 +16,46 @@
 
 namespace sw
 {
+	// A Simple RAII wrapper around the locking/unlocking of a mutex.
+	template<typename MUTEX_T>
+	class ScopedLock
+	{
+	public:
+		ScopedLock(MUTEX_T &mutex) : mutex_(&mutex)
+		{
+			mutex_->lock();
+		}
+
+		ScopedLock(ScopedLock&& rhs) : mutex_(rhs.mutex_)
+		{
+			rhs.mutex_ = nullptr;
+		}
+
+		ScopedLock(ScopedLock const&) = delete;
+
+		~ScopedLock()
+		{
+			if(mutex_) {
+				mutex_->unlock();
+			}
+		}
+
+
+		ScopedLock& operator=(ScopedLock const&) = delete;
+		ScopedLock& operator=(ScopedLock && rhs) = delete;
+
+	private:
+		MUTEX_T * mutex_;
+	};
+
+	// Utility function to use ScopedLock without having to deal with template
+	// parameters.
+	template<typename MUTEX_T>
+	ScopedLock<MUTEX_T> make_scoped_lock(MUTEX_T& mutex) {
+		return ScopedLock<MUTEX_T>(mutex);
+	}
+
+
 	class BackoffLock
 	{
 	public:
