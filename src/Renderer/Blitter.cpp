@@ -1145,23 +1145,24 @@ namespace sw
 		state.destFormat = dest->getFormat(useDestInternal);
 		state.options = options;
 
-		criticalSection.lock();
-		Routine *blitRoutine = blitCache->query(state);
-
-		if(!blitRoutine)
+		Routine *blitRoutine = nullptr;
 		{
-			blitRoutine = generate(state);
+			auto lock = make_scoped_lock(criticalSection);
+
+			blitRoutine = blitCache->query(state);
 
 			if(!blitRoutine)
 			{
-				criticalSection.unlock();
-				return false;
+				blitRoutine = generate(state);
+
+				if(!blitRoutine)
+				{
+					return false;
+				}
+
+				blitCache->add(state, blitRoutine);
 			}
-
-			blitCache->add(state, blitRoutine);
 		}
-
-		criticalSection.unlock();
 
 		void (*blitFunction)(const BlitData *data) = (void(*)(const BlitData*))blitRoutine->getEntry();
 
