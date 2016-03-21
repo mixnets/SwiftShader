@@ -677,7 +677,6 @@ public:
 private:
 	virtual ~Context();
 
-	egl::Image *getScissoredImage(GLint drawbuffer, int &x0, int &y0, int &width, int &height, bool depthStencil);
 	void applyScissor(int width, int height);
     bool applyRenderTarget();
     void applyState(GLenum drawMode);
