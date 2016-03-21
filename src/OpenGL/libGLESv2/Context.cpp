@@ -2772,10 +2772,13 @@ bool Context::applyRenderTarget()
 		if(renderTarget) renderTarget->release();
 	}
 
-    egl::Image *depthStencil = framebuffer->getDepthStencil();
-    device->setDepthBuffer(depthStencil);
-	device->setStencilBuffer(depthStencil);
-	if(depthStencil) depthStencil->release();
+    egl::Image *depthBuffer = framebuffer->getDepthBuffer();
+    device->setDepthBuffer(depthBuffer);
+	if(depthBuffer) depthBuffer->release();
+
+	egl::Image *stencilBuffer = framebuffer->getDepthBuffer();
+	device->setStencilBuffer(stencilBuffer);
+	if(stencilBuffer) stencilBuffer->release();
 
     Viewport viewport;
     float zNear = clamp01(mState.zNear);
@@ -3433,19 +3436,25 @@ void Context::clearDepthBuffer(GLint drawbuffer, const GLfloat *value)
 	if(device && mState.depthMask && !mState.rasterizerDiscardEnabled)
 	{
 		Framebuffer *framebuffer = getDrawFramebuffer();
-		egl::Image *depthbuffer = framebuffer->getDepthStencil();
+		egl::Image *depthbuffer = framebuffer->getDepthBuffer();
 
-		float depth = clamp01(value[0]);
-		sw::SliceRect clearRect = depthbuffer->getRect();
-
-		if(mState.scissorTestEnabled)
+		if(depthbuffer)
 		{
-			clearRect.clip(mState.scissorX, mState.scissorY, mState.scissorX + mState.scissorWidth, mState.scissorY + mState.scissorHeight);
+			float depth = clamp01(value[0]);
+			sw::SliceRect clearRect = depthbuffer->getRect();
+
+			if(mState.scissorTestEnabled)
+			{
+				clearRect.clip(mState.scissorX, mState.scissorY, mState.scissorX + mState.scissorWidth, mState.scissorY + mState.scissorHeight);
+			}
+
+			if(mState.depthMask)
+			{
+				depthbuffer->clearDepth(depth, clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
+			}
+
+			depthbuffer->release();
 		}
-
-		depthbuffer->clearDepth(depth, clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
-
-		depthbuffer->release();
 	}
 }
 
@@ -3454,7 +3463,7 @@ void Context::clearStencilBuffer(GLint drawbuffer, const GLint *value)
 	if(device && mState.stencilWritemask && !mState.rasterizerDiscardEnabled)
 	{
 		Framebuffer *framebuffer = getDrawFramebuffer();
-		egl::Image *stencilbuffer = framebuffer->getDepthStencil();
+		egl::Image *stencilbuffer = framebuffer->getStencilBuffer();
 
 		unsigned char stencil = value[0] < 0 ? 0 : static_cast<unsigned char>(value[0] & 0x000000FF);
 		sw::SliceRect clearRect = stencilbuffer->getRect();
@@ -3475,28 +3484,34 @@ void Context::clearDepthStencilBuffer(GLint drawbuffer, GLfloat depth, GLint ste
 	if(device && (mState.depthMask || mState.stencilWritemask) && !mState.rasterizerDiscardEnabled)
 	{
 		Framebuffer *framebuffer = getDrawFramebuffer();
-		egl::Image *depthstencil = framebuffer->getDepthStencil();
+		egl::Image *depthbuffer = framebuffer->getDepthBuffer();
+		egl::Image *stencilbuffer = framebuffer->getStencilBuffer();
 
 		depth = clamp01(depth);
 		unsigned char stencil = stencil < 0 ? 0 : static_cast<unsigned char>(stencil & 0x000000FF);
-		sw::SliceRect clearRect = depthstencil->getRect();
+		sw::SliceRect clearRect = depthbuffer->getRect();
 
 		if(mState.scissorTestEnabled)
 		{
 			clearRect.clip(mState.scissorX, mState.scissorY, mState.scissorX + mState.scissorWidth, mState.scissorY + mState.scissorHeight);
 		}
 
-		if(mState.stencilWritemask)
+		if(depthbuffer)
 		{
-			depthstencil->clearStencil(stencil, static_cast<unsigned char>(mState.stencilWritemask), clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
+			if(mState.depthMask)
+			{
+				depthbuffer->clearDepth(depth, clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
+			}
+
+			depthbuffer->release();
 		}
 
-		if(mState.depthMask)
-		{
-			depthstencil->clearDepth(depth, clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
-		}
+		stencilbuffer->clearStencil(stencil, static_cast<unsigned char>(mState.stencilWritemask), clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
 
-		depthstencil->release();
+		if(stencilbuffer)
+		{
+			stencilbuffer->release();
+		}
 	}
 }
 
@@ -4195,7 +4210,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
         if(blitDepthStencil)
         {
-            bool success = device->stretchRect(readFramebuffer->getDepthStencil(), NULL, drawFramebuffer->getDepthStencil(), NULL, false);
+            bool success = device->stretchRect(readFramebuffer->getDepthBuffer(), nullptr, drawFramebuffer->getDepthBuffer(), nullptr, false);
 
             if(!success)
             {
