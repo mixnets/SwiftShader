@@ -2757,7 +2757,7 @@ void Context::applyScissor(int width, int height)
 egl::Image *Context::getScissoredImage(GLint drawbuffer, int &x0, int &y0, int &width, int &height, bool depthStencil)
 {
 	Framebuffer* framebuffer = getDrawFramebuffer();
-	egl::Image* image = depthStencil ? framebuffer->getDepthStencil() : framebuffer->getRenderTarget(drawbuffer);
+	egl::Image* image = depthStencil ? framebuffer->getDepthBuffer() : framebuffer->getRenderTarget(drawbuffer);
 
 	applyScissor(image->getWidth(), image->getHeight());
 
@@ -2784,9 +2784,13 @@ bool Context::applyRenderTarget()
 		if(renderTarget) renderTarget->release();
 	}
 
-    egl::Image *depthStencil = framebuffer->getDepthStencil();
-    device->setDepthStencilSurface(depthStencil);
-	if(depthStencil) depthStencil->release();
+    egl::Image *depthTarget = framebuffer->getDepthBuffer();
+    device->setDepthSurface(depthTarget);
+	if(depthTarget) depthTarget->release();
+
+	egl::Image *stencilTarget = framebuffer->getStencilBuffer();
+	device->setStencilSurface(stencilTarget);
+	if(stencilTarget) stencilTarget->release();
 
     Viewport viewport;
     float zNear = clamp01(mState.zNear);
@@ -4066,19 +4070,9 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
         sourceTrimmedRect.y1 -= yDiff;
     }
 
-    bool partialBufferCopy = false;
-
-    if(sourceTrimmedRect.y1 - sourceTrimmedRect.y0 < readBufferHeight ||
-       sourceTrimmedRect.x1 - sourceTrimmedRect.x0 < readBufferWidth ||
-       destTrimmedRect.y1 - destTrimmedRect.y0 < drawBufferHeight ||
-       destTrimmedRect.x1 - destTrimmedRect.x0 < drawBufferWidth ||
-       sourceTrimmedRect.y0 != 0 || destTrimmedRect.y0 != 0 || sourceTrimmedRect.x0 != 0 || destTrimmedRect.x0 != 0)
-    {
-        partialBufferCopy = true;
-    }
-
 	bool blitRenderTarget = false;
-    bool blitDepthStencil = false;
+    bool blitDepthBuffer = false;
+	bool blitStencilBuffer = false;
 
     if(mask & GL_COLOR_BUFFER_BIT)
     {
@@ -4091,104 +4085,104 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
             return error(GL_INVALID_OPERATION);
         }
 
-        if(partialBufferCopy && readBufferSamples > 1)
-        {
-            return error(GL_INVALID_OPERATION);
-        }
-
         blitRenderTarget = true;
     }
 
-    if(mask & (GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT))
+    if(mask & GL_DEPTH_BUFFER_BIT)
     {
-        Renderbuffer *readDSBuffer = NULL;
-        Renderbuffer *drawDSBuffer = NULL;
+        Renderbuffer *readDepthBuffer = nullptr;
+        Renderbuffer *drawDepthBuffer = nullptr;
 
-        // We support OES_packed_depth_stencil, and do not support a separately attached depth and stencil buffer, so if we have
-        // both a depth and stencil buffer, it will be the same buffer.
-
-        if(mask & GL_DEPTH_BUFFER_BIT)
+        if(readFramebuffer->getDepthbuffer() && drawFramebuffer->getDepthbuffer())
         {
-            if(readFramebuffer->getDepthbuffer() && drawFramebuffer->getDepthbuffer())
+            if(readFramebuffer->getDepthbufferType() != drawFramebuffer->getDepthbufferType())
             {
-                if(readFramebuffer->getDepthbufferType() != drawFramebuffer->getDepthbufferType())
-                {
-                    return error(GL_INVALID_OPERATION);
-                }
-
-                blitDepthStencil = true;
-                readDSBuffer = readFramebuffer->getDepthbuffer();
-                drawDSBuffer = drawFramebuffer->getDepthbuffer();
+                return error(GL_INVALID_OPERATION);
             }
+
+            blitDepthBuffer = true;
+            readDepthBuffer = readFramebuffer->getDepthbuffer();
+            drawDepthBuffer = drawFramebuffer->getDepthbuffer();
         }
 
-        if(mask & GL_STENCIL_BUFFER_BIT)
-        {
-            if(readFramebuffer->getStencilbuffer() && drawFramebuffer->getStencilbuffer())
-            {
-                if(readFramebuffer->getStencilbufferType() != drawFramebuffer->getStencilbufferType())
-                {
-                    return error(GL_INVALID_OPERATION);
-                }
-
-                blitDepthStencil = true;
-                readDSBuffer = readFramebuffer->getStencilbuffer();
-                drawDSBuffer = drawFramebuffer->getStencilbuffer();
-            }
-        }
-
-        if(partialBufferCopy)
-        {
-            ERR("Only whole-buffer depth and stencil blits are supported by this implementation.");
-            return error(GL_INVALID_OPERATION);   // Only whole-buffer copies are permitted
-        }
-
-        if((drawDSBuffer && drawDSBuffer->getSamples() > 1) ||
-           (readDSBuffer && readDSBuffer->getSamples() > 1))
+        if((drawDepthBuffer && drawDepthBuffer->getSamples() > 1) ||
+           (readDepthBuffer && readDepthBuffer->getSamples() > 1))
         {
             return error(GL_INVALID_OPERATION);
         }
     }
 
-    if(blitRenderTarget || blitDepthStencil)
-    {
-        if(blitRenderTarget)
-        {
-            egl::Image *readRenderTarget = readFramebuffer->getReadRenderTarget();
-            egl::Image *drawRenderTarget = drawFramebuffer->getRenderTarget(0);
+	if(mask & GL_STENCIL_BUFFER_BIT)
+	{
+		Renderbuffer *readStencilBuffer = nullptr;
+		Renderbuffer *drawStencilBuffer = nullptr;
 
-			if(flipX)
+		if(readFramebuffer->getStencilbuffer() && drawFramebuffer->getStencilbuffer())
+		{
+			if(readFramebuffer->getStencilbufferType() != drawFramebuffer->getStencilbufferType())
 			{
-				swap(destRect.x0, destRect.x1);
-			}
-			if(flipy)
-			{
-				swap(destRect.y0, destRect.y1);
+				return error(GL_INVALID_OPERATION);
 			}
 
-            bool success = device->stretchRect(readRenderTarget, &sourceRect, drawRenderTarget, &destRect, false);
+			blitStencilBuffer = true;
+			readStencilBuffer = readFramebuffer->getStencilbuffer();
+			drawStencilBuffer = drawFramebuffer->getStencilbuffer();
+		}
 
-            readRenderTarget->release();
-            drawRenderTarget->release();
+		if((drawStencilBuffer && drawStencilBuffer->getSamples() > 1) ||
+		   (readStencilBuffer && readStencilBuffer->getSamples() > 1))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+	}
 
-            if(!success)
-            {
-                ERR("BlitFramebuffer failed.");
-                return;
-            }
-        }
+	if(blitRenderTarget)
+	{
+		egl::Image *readRenderTarget = readFramebuffer->getReadRenderTarget();
+		egl::Image *drawRenderTarget = drawFramebuffer->getRenderTarget(0);
 
-        if(blitDepthStencil)
-        {
-            bool success = device->stretchRect(readFramebuffer->getDepthStencil(), NULL, drawFramebuffer->getDepthStencil(), NULL, false);
+		if(flipX)
+		{
+			swap(destRect.x0, destRect.x1);
+		}
+		if(flipy)
+		{
+			swap(destRect.y0, destRect.y1);
+		}
 
-            if(!success)
-            {
-                ERR("BlitFramebuffer failed.");
-                return;
-            }
-        }
-    }
+		bool success = device->stretchRect(readRenderTarget, &sourceRect, drawRenderTarget, &destRect, false);
+
+		readRenderTarget->release();
+		drawRenderTarget->release();
+
+		if(!success)
+		{
+			ERR("BlitFramebuffer failed.");
+			return;
+		}
+	}
+
+	if(blitDepthBuffer)
+	{
+		bool success = device->stretchRect(readFramebuffer->getDepthBuffer(), nullptr, drawFramebuffer->getDepthBuffer(), nullptr, false);
+
+		if(!success)
+		{
+			ERR("BlitFramebuffer failed.");
+			return;
+		}
+	}
+
+	if(blitStencilBuffer)
+	{
+		bool success = device->stretchRect(readFramebuffer->getStencilBuffer(), nullptr, drawFramebuffer->getStencilBuffer(), nullptr, false);
+
+		if(!success)
+		{
+			ERR("BlitFramebuffer failed.");
+			return;
+		}
+	}
 }
 
 void Context::bindTexImage(egl::Surface *surface)

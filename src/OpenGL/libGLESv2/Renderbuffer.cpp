@@ -317,6 +317,13 @@ egl::Image *Renderbuffer::getRenderTarget()
 
 // Increments refcount on image.
 // caller must Release() the returned image
+egl::Image *Renderbuffer::getStencilBuffer()
+{
+	return mInstance->getStencilBuffer();
+}
+
+// Increments refcount on image.
+// caller must Release() the returned image
 egl::Image *Renderbuffer::createSharedImage()
 {
     return mInstance->createSharedImage();
@@ -579,6 +586,18 @@ DepthStencilbuffer::~DepthStencilbuffer()
 // Increments refcount on image.
 // caller must release() the returned image
 egl::Image *DepthStencilbuffer::getRenderTarget()
+{
+	if(mDepthStencil)
+	{
+		mDepthStencil->addRef();
+	}
+
+	return mDepthStencil;
+}
+
+// Increments refcount on image.
+// caller must release() the returned image
+egl::Image *DepthStencilbuffer::getStencilBuffer()
 {
 	if(mDepthStencil)
 	{
