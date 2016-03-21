@@ -137,7 +137,7 @@ egl::Image *Framebuffer::getRenderTarget()
 egl::Image *Framebuffer::getDepthStencil()
 {
 	Renderbuffer *depthstencilbuffer = mDepthbufferPointer;
-	
+
 	if(!depthstencilbuffer)
 	{
 		depthstencilbuffer = mStencilbufferPointer;
@@ -381,13 +381,6 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		}
 	}
 
-	// If we have both a depth and stencil buffer, they must refer to the same object
-	// since we only support packed_depth_stencil and not separate depth and stencil
-	if(depthbuffer && stencilbuffer && (depthbuffer != stencilbuffer))
-	{
-		return GL_FRAMEBUFFER_UNSUPPORTED_OES;
-	}
-
 	// We need to have at least one attachment to be complete
 	if(width == -1 || height == -1)
 	{
@@ -400,7 +393,7 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 GLenum Framebuffer::getImplementationColorReadFormat()
 {
 	Renderbuffer *colorbuffer = mColorbufferPointer;
-	
+
 	if(colorbuffer)
 	{
 		// Don't return GL_RGBA since that's always supported. Provide a second option here.
@@ -423,7 +416,7 @@ GLenum Framebuffer::getImplementationColorReadFormat()
 GLenum Framebuffer::getImplementationColorReadType()
 {
 	Renderbuffer *colorbuffer = mColorbufferPointer;
-	
+
 	if(colorbuffer)
 	{
 		switch(colorbuffer->getInternalFormat())
