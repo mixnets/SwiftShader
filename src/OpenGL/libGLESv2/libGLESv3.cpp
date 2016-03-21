@@ -2586,7 +2586,7 @@ GL_APICALL void GL_APIENTRY glClearBufferiv(GLenum buffer, GLint drawbuffer, con
 			}
 			else
 			{
-				context->clearStencilBuffer(drawbuffer, value);
+				context->clearStencilBuffer(drawbuffer, value[0]);
 			}
 			break;
 		default:
@@ -2650,7 +2650,7 @@ GL_APICALL void GL_APIENTRY glClearBufferfv(GLenum buffer, GLint drawbuffer, con
 			}
 			else
 			{
-				context->clearDepthBuffer(drawbuffer, value);
+				context->clearDepthBuffer(drawbuffer, value[0]);
 			}
 			break;
 		default:
@@ -2677,7 +2677,8 @@ GL_APICALL void GL_APIENTRY glClearBufferfi(GLenum buffer, GLint drawbuffer, GLf
 			}
 			else
 			{
-				context->clearDepthStencilBuffer(drawbuffer, depth, stencil);
+				context->clearDepthBuffer(drawbuffer, depth);
+				context->clearStencilBuffer(drawbuffer, stencil);
 			}
 			break;
 		default:
