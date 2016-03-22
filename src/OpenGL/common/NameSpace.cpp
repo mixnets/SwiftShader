@@ -16,6 +16,8 @@
 
 #include "debug.h"
 
+#include <algorithm>
+
 namespace gl
 {
 
@@ -45,6 +47,16 @@ GLuint NameSpace::allocate()
     }
 
     return nextValue++;
+}
+
+void NameSpace::insert(GLuint handle)
+{
+	freeValues.erase(std::remove(freeValues.begin(), freeValues.end(), handle), freeValues.end());
+
+	if(nextValue == handle)
+	{
+		nextValue++;
+	}
 }
 
 void NameSpace::release(GLuint handle)

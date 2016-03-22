@@ -9,7 +9,7 @@
 // or implied, including but not limited to any patent rights, are granted to you.
 //
 
-// ResourceManager.cpp: Implements the ResourceManager class, which tracks and 
+// ResourceManager.cpp: Implements the ResourceManager class, which tracks and
 // retrieves objects which may be shared by multiple Contexts.
 
 #include "ResourceManager.h"
@@ -204,7 +204,7 @@ void ResourceManager::deleteProgram(GLuint program)
             mProgramMap.erase(programObject);
         }
         else
-        { 
+        {
             programObject->second->flagForDeletion();
         }
     }
@@ -405,6 +405,7 @@ void ResourceManager::checkTextureAllocation(GLuint texture, TextureType type)
             return;
         }
 
+		mTextureNameSpace.insert(texture);
         mTextureMap[texture] = textureObject;
         textureObject->addRef();
     }

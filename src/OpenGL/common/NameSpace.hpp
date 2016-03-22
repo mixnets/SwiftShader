@@ -24,13 +24,14 @@ namespace gl
 
 class NameSpace
 {
-  public:
+public:
     NameSpace();
     virtual ~NameSpace();
 
     void setBaseHandle(GLuint value);
 
     GLuint allocate();
+	void insert(GLuint handle);
     void release(GLuint handle);
 
 private:
