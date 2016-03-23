@@ -92,8 +92,8 @@ void ResourceManager::deleteBuffer(GLuint buffer)
 
     if(bufferObject != mBufferMap.end())
     {
-        mBufferNameSpace.release(bufferObject->first);
-        if(bufferObject->second) bufferObject->second->release();
+		if(bufferObject->second) bufferObject->second->release();
+		mBufferNameSpace.remove(bufferObject->first);
         mBufferMap.erase(bufferObject);
     }
 }
@@ -104,8 +104,8 @@ void ResourceManager::deleteTexture(GLuint texture)
 
     if(textureObject != mTextureMap.end())
     {
-        mTextureNameSpace.release(textureObject->first);
-        if(textureObject->second) textureObject->second->release();
+		if(textureObject->second) textureObject->second->release();
+		mTextureNameSpace.remove(textureObject->first);
         mTextureMap.erase(textureObject);
     }
 }
@@ -116,8 +116,8 @@ void ResourceManager::deleteRenderbuffer(GLuint renderbuffer)
 
     if(renderbufferObject != mRenderbufferMap.end())
     {
-        mRenderbufferNameSpace.release(renderbufferObject->first);
-        if(renderbufferObject->second) renderbufferObject->second->release();
+		if(renderbufferObject->second) renderbufferObject->second->release();
+		mRenderbufferNameSpace.remove(renderbufferObject->first);
         mRenderbufferMap.erase(renderbufferObject);
     }
 }

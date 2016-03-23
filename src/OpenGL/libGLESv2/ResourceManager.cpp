@@ -31,9 +31,9 @@ ResourceManager::ResourceManager()
 
 ResourceManager::~ResourceManager()
 {
-    while(!mBufferMap.empty())
+    while(!mBufferNameSpace.empty())
     {
-        deleteBuffer(mBufferMap.begin()->first);
+        deleteBuffer(mBufferNameSpace.firstName());
     }
 
     while(!mProgramMap.empty())
@@ -83,11 +83,7 @@ void ResourceManager::release()
 // Returns an unused buffer name
 GLuint ResourceManager::createBuffer()
 {
-    GLuint handle = mBufferNameSpace.allocate();
-
-    mBufferMap[handle] = nullptr;
-
-    return handle;
+    return mBufferNameSpace.allocate();
 }
 
 // Returns an unused shader/program name
@@ -162,13 +158,11 @@ GLuint ResourceManager::createFenceSync(GLenum condition, GLbitfield flags)
 
 void ResourceManager::deleteBuffer(GLuint buffer)
 {
-    BufferMap::iterator bufferObject = mBufferMap.find(buffer);
+	Buffer *bufferObject = mBufferNameSpace.remove(buffer);
 
-    if(bufferObject != mBufferMap.end())
+    if(bufferObject)
     {
-        mBufferNameSpace.release(bufferObject->first);
-        if(bufferObject->second) bufferObject->second->release();
-        mBufferMap.erase(bufferObject);
+		bufferObject->release();
     }
 }
 
@@ -180,8 +174,8 @@ void ResourceManager::deleteShader(GLuint shader)
     {
         if(shaderObject->second->getRefCount() == 0)
         {
-            mProgramShaderNameSpace.release(shaderObject->first);
-            delete shaderObject->second;
+			delete shaderObject->second;
+			mProgramShaderNameSpace.remove(shaderObject->first);
             mShaderMap.erase(shaderObject);
         }
         else
@@ -199,8 +193,8 @@ void ResourceManager::deleteProgram(GLuint program)
     {
         if(programObject->second->getRefCount() == 0)
         {
-            mProgramShaderNameSpace.release(programObject->first);
-            delete programObject->second;
+			delete programObject->second;
+			mProgramShaderNameSpace.remove(programObject->first);
             mProgramMap.erase(programObject);
         }
         else
@@ -216,8 +210,8 @@ void ResourceManager::deleteTexture(GLuint texture)
 
     if(textureObject != mTextureMap.end())
     {
-        mTextureNameSpace.release(textureObject->first);
-        if(textureObject->second) textureObject->second->release();
+		if(textureObject->second) textureObject->second->release();
+		mTextureNameSpace.remove(textureObject->first);
         mTextureMap.erase(textureObject);
     }
 }
@@ -228,8 +222,8 @@ void ResourceManager::deleteRenderbuffer(GLuint renderbuffer)
 
     if(renderbufferObject != mRenderbufferMap.end())
     {
-        mRenderbufferNameSpace.release(renderbufferObject->first);
-        if(renderbufferObject->second) renderbufferObject->second->release();
+		if(renderbufferObject->second) renderbufferObject->second->release();
+		mRenderbufferNameSpace.remove(renderbufferObject->first);
         mRenderbufferMap.erase(renderbufferObject);
     }
 }
@@ -240,8 +234,8 @@ void ResourceManager::deleteSampler(GLuint sampler)
 
 	if(samplerObject != mSamplerMap.end())
 	{
-		mSamplerNameSpace.release(samplerObject->first);
 		if(samplerObject->second) samplerObject->second->release();
+		mSamplerNameSpace.remove(samplerObject->first);
 		mSamplerMap.erase(samplerObject);
 	}
 }
@@ -252,24 +246,15 @@ void ResourceManager::deleteFenceSync(GLuint fenceSync)
 
 	if(fenceObjectIt != mFenceSyncMap.end())
 	{
-		mFenceSyncNameSpace.release(fenceObjectIt->first);
 		if(fenceObjectIt->second) fenceObjectIt->second->release();
+		mFenceSyncNameSpace.remove(fenceObjectIt->first);
 		mFenceSyncMap.erase(fenceObjectIt);
 	}
 }
 
 Buffer *ResourceManager::getBuffer(unsigned int handle)
 {
-    BufferMap::iterator buffer = mBufferMap.find(handle);
-
-    if(buffer == mBufferMap.end())
-    {
-        return nullptr;
-    }
-    else
-    {
-        return buffer->second;
-    }
+    return mBufferNameSpace.find(handle);
 }
 
 Shader *ResourceManager::getShader(unsigned int handle)
@@ -370,8 +355,7 @@ void ResourceManager::checkBufferAllocation(unsigned int buffer)
         Buffer *bufferObject = new Buffer(buffer);
 		bufferObject->addRef();
 
-		mBufferNameSpace.insert(buffer);
-        mBufferMap[buffer] = bufferObject;
+		mBufferNameSpace.insert(buffer, bufferObject);
     }
 }
 
