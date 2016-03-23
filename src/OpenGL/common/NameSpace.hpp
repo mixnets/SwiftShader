@@ -17,40 +17,53 @@
 
 #include "Object.hpp"
 
-#include <unordered_set>
-#include <algorithm>
-
-typedef unsigned int GLuint;
+#include <unordered_map>
 
 namespace gl
 {
 
 template<class ObjectType, GLuint baseName = 1>
-class NameSpace : std::unordered_set<GLuint>
+class NameSpace
 {
 public:
     NameSpace() : freeName(baseName)
 	{
 	}
 
+	bool empty()
+	{
+		return map.empty();
+	}
+
+	GLuint firstName()
+	{
+		return map.begin()->first;
+	}
+
+	// Reserve the lowest available name
     GLuint allocate()
 	{
 		GLuint name = freeName;
 
-		while(find(name) != end())
+		while(isReserved(name))
 		{
 			name++;
 		}
 
-		insert(name);
+		map.insert({name, nullptr});
 		freeName = name + 1;
 
 		return name;
 	}
 
-	void insert(GLuint name)
+	bool isReserved(GLuint name)
 	{
-		std::unordered_set<GLuint>::insert(name);
+		return map.find(name) != map.end();
+	}
+
+	void insert(GLuint name, ObjectType *object)
+	{
+		map[name] = object;
 
 		if(name == freeName)
 		{
@@ -58,13 +71,47 @@ public:
 		}
 	}
 
-    void release(GLuint name)
+    ObjectType *remove(GLuint name)
 	{
-		erase(name);
-		freeName = std::min(name, freeName);
+		if(name < freeName)
+		{
+			freeName = name;
+		}
+
+		auto element = map.find(name);
+
+		if(element != map.end())
+		{
+			ObjectType *object = element->second;
+			map.erase(element);
+
+			return object;
+		}
+
+		return nullptr;
 	}
 
-private:
+	ObjectType *find(GLuint name)
+	{
+		if(name < baseName)
+		{
+			return nullptr;
+		}
+
+		auto element = map.find(name);
+
+		if(element == map.end())
+		{
+			return nullptr;
+		}
+
+		return element->second;
+	}
+
+protected:
+	typedef std::unordered_map<GLuint, ObjectType*> Map;
+	Map map;
+
 	GLuint freeName;   // Lowest known potentially free name
 };
 
