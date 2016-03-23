@@ -17,7 +17,7 @@
 
 #include "Object.hpp"
 
-#include <unordered_set>
+#include <unordered_map>
 #include <algorithm>
 
 typedef unsigned int GLuint;
@@ -26,7 +26,7 @@ namespace gl
 {
 
 template<class ObjectType, GLuint baseName = 1>
-class NameSpace : std::unordered_set<GLuint>
+class NameSpace : public std::unordered_map<GLuint, ObjectType*>
 {
 public:
     NameSpace() : freeName(baseName)
@@ -37,20 +37,20 @@ public:
 	{
 		GLuint name = freeName;
 
-		while(find(name) != end())
+		while(find(name))
 		{
 			name++;
 		}
 
-		insert(name);
+		Map::insert({name, nullptr});
 		freeName = name + 1;
 
 		return name;
 	}
 
-	void insert(GLuint name)
+	void insert(GLuint name, ObjectType *object = nullptr)
 	{
-		std::unordered_set<GLuint>::insert(name);
+		Map::operator[](name) = object;
 
 		if(name == freeName)
 		{
@@ -58,13 +58,38 @@ public:
 		}
 	}
 
-    void release(GLuint name)
+    ObjectType *erase(GLuint name)
 	{
-		erase(name);
 		freeName = std::min(name, freeName);
+
+		auto iterator = Map::find(name);
+
+		if(iterator != end())
+		{
+			ObjectType *object = iterator->second;
+			Map::erase(iterator);
+
+			return object;
+		}
+
+		return nullptr;
 	}
 
-private:
+	ObjectType *find(GLuint name)
+	{
+		auto object = Map::find(name);
+
+		if(object == end())
+		{
+			return nullptr;
+		}
+
+		return object->second;
+	}
+
+protected:
+	typedef std::unordered_map<GLuint, ObjectType*> Map;
+
 	GLuint freeName;   // Lowest known potentially free name
 };
 

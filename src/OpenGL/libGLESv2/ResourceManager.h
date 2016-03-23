@@ -88,8 +88,8 @@ class ResourceManager
   private:
     std::size_t mRefCount;
 
-    typedef std::map<GLint, Buffer*> BufferMap;
-    BufferMap mBufferMap;
+    //typedef std::map<GLint, Buffer*> BufferMap;
+    //BufferMap mBufferMap;
     gl::NameSpace<Buffer> mBufferNameSpace;
 
     typedef std::map<GLint, Shader*> ShaderMap;
