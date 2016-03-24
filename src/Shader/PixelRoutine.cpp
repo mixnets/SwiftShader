@@ -31,7 +31,7 @@ namespace sw
 	{
 		if(!shader || shader->getVersion() < 0x0200 || forceClearRegisters)
 		{
-			for(int i = 0; i < 10; i++)
+			for(int i = 0; i < MAX_INPUT_VARYINGS; i++)
 			{
 				v[i].x = Float4(0.0f);
 				v[i].y = Float4(0.0f);
@@ -148,7 +148,7 @@ namespace sw
 				}
 			}
 
-			for(int interpolant = 0; interpolant < 10; interpolant++)
+			for(int interpolant = 0; interpolant < MAX_INPUT_VARYINGS; interpolant++)
 			{
 				for(int component = 0; component < 4; component++)
 				{

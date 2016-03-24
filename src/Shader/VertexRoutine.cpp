@@ -533,7 +533,7 @@ namespace sw
 	{
 		Vector4f v;
 
-		for(int i = 0; i < 12; i++)
+		for(int i = 0; i < MAX_OUTPUT_VARYINGS; i++)
 		{
 			if(state.output[i].write)
 			{
@@ -622,7 +622,7 @@ namespace sw
 
 	void VertexRoutine::writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cache)
 	{
-		for(int i = 0; i < 12; i++)
+		for(int i = 0; i < MAX_OUTPUT_VARYINGS; i++)
 		{
 			if(state.output[i].write)
 			{

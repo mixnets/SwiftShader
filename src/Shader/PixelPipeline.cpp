@@ -35,7 +35,7 @@ namespace sw
 		current = diffuse;
 		Vector4s temp(0x0000, 0x0000, 0x0000, 0x0000);
 
-		for(int stage = 0; stage < 8; stage++)
+		for(int stage = 0; stage < TEXTURE_STAGES; stage++)
 		{
 			if(state.textureStage[stage].stageOperation == TextureStage::STAGE_DISABLE)
 			{

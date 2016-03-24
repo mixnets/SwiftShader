@@ -583,7 +583,7 @@ namespace sw
 	{
 		if(shader)
 		{
-			for(int i = 0; i < 12; i++)
+			for(int i = 0; i < MAX_OUTPUT_VARYINGS; i++)
 			{
 				unsigned char usage = shader->output[i][0].usage;
 
@@ -635,7 +635,7 @@ namespace sw
 				o[D0 + i].w = v[Color0 + i].w;
 			}
 
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < TEXTURE_STAGES; i++)
 			{
 				o[T0 + i].x = v[TexCoord0 + i].x;
 				o[T0 + i].y = v[TexCoord0 + i].y;
