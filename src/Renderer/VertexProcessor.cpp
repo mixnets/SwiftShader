@@ -968,7 +968,7 @@ namespace sw
 				}
 			}
 
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < VERTEX_TEXTURE_IMAGE_UNITS; i++)
 			{
 				if(context->input[TexCoord0 + i])
 				{

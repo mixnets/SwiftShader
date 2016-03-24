@@ -13,6 +13,7 @@
 #define sw_VertexShader_hpp
 
 #include "Shader.hpp"
+#include "Renderer/Vertex.hpp"
 
 namespace sw
 {
@@ -37,7 +38,6 @@ namespace sw
 		enum {MAX_INPUT_ATTRIBUTES = 16};
 		Semantic input[MAX_INPUT_ATTRIBUTES];       // FIXME: Private
 
-		enum {MAX_OUTPUT_VARYINGS = 12};
 		Semantic output[MAX_OUTPUT_VARYINGS][4];   // FIXME: Private
 
 	private:

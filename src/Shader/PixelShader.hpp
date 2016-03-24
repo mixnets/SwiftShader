@@ -13,9 +13,12 @@
 #define sw_PixelShader_hpp
 
 #include "Shader.hpp"
+#include "Main/Config.hpp"
 
 namespace sw
 {
+	enum { MAX_INPUT_VARYINGS = TEXTURE_IMAGE_UNITS + 2 };
+
 	class PixelShader : public Shader
 	{
 	public:
@@ -34,7 +37,6 @@ namespace sw
 
 		virtual void analyze();
 
-		enum {MAX_INPUT_VARYINGS = 11};
 		Semantic semantic[MAX_INPUT_VARYINGS][4];   // FIXME: Private
 
 		bool vPosDeclared;

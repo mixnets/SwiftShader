@@ -129,7 +129,7 @@ namespace sw
 			};
 
 			Input input[VERTEX_ATTRIBUTES];
-			Output output[12];
+			Output output[MAX_OUTPUT_VARYINGS];
 		};
 
 		struct State : States

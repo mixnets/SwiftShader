@@ -14,6 +14,7 @@
 
 #include "Context.hpp"
 #include "RoutineCache.hpp"
+#include "Shader\PixelShader.hpp"
 
 namespace sw
 {
@@ -98,10 +99,10 @@ namespace sw
 				struct
 				{
 					Interpolant color[2];
-					Interpolant texture[8];
+					Interpolant texture[TEXTURE_IMAGE_UNITS];
 				};
 
-				Interpolant interpolant[10];
+				Interpolant interpolant[MAX_INPUT_VARYINGS];
 			};
 
 			Interpolant fog;
