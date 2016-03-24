@@ -129,7 +129,7 @@ namespace sw
 
 	void TextureStage::setTexCoordIndex(unsigned int texCoordIndex)
 	{
-		ASSERT(texCoordIndex < 8);
+		ASSERT(texCoordIndex < TEXTURE_STAGES);
 
 		this->texCoordIndex = texCoordIndex;
 	}

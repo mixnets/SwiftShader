@@ -195,7 +195,7 @@ namespace sw
 
 	void Context::init()
 	{
-		for(int i = 0; i < 8; i++)
+		for(int i = 0; i < TEXTURE_STAGES; i++)
 		{
 			textureStage[i].init(i, &sampler[i], (i >= 1) ? &textureStage[i - 1] : 0);
 		}
@@ -210,9 +210,9 @@ namespace sw
 		fogEnd = 1.0f;
 
 		for(int i = 0; i < TEXTURE_IMAGE_UNITS; i++) textureWrap[i] = 0;
-		for(int i = 0; i < 8; i++) texGen[i] = TEXGEN_PASSTHRU;
-		for(int i = 0; i < 8; i++) textureTransformCount[i] = 0;
-		for(int i = 0; i < 8; i++) textureTransformProject[i] = false;
+		for(int i = 0; i < TEXTURE_STAGES; i++) texGen[i] = TEXGEN_PASSTHRU;
+		for(int i = 0; i < TEXTURE_STAGES; i++) textureTransformCount[i] = 0;
+		for(int i = 0; i < TEXTURE_STAGES; i++) textureTransformProject[i] = false;
 		textureWrapActive = false;
 		localViewer = true;
 		normalizeNormals = false;
@@ -1209,7 +1209,7 @@ namespace sw
 		}
 
 		// Directly using the diffuse input color
-		for(int i = 0; i < 8; i++)
+		for(int i = 0; i < TEXTURE_STAGES; i++)
 		{
 			if(textureStage[i].isStageDisabled())
 			{
@@ -1223,7 +1223,7 @@ namespace sw
 		}
 
 		// Using the current color (initialized to diffuse) before it's overwritten
-		for(int i = 0; i < 8; i++)
+		for(int i = 0; i < TEXTURE_STAGES; i++)
 		{
 			if(textureStage[i].usesCurrent() || textureStage[i].isStageDisabled())   // Current color contains diffuse before being overwritten
 			{
@@ -1292,7 +1292,7 @@ namespace sw
 
 		bool pixelSpecular = specularEnable;
 
-		for(int i = 0; i < 8; i++)
+		for(int i = 0; i < TEXTURE_STAGES; i++)
 		{
 			if(textureStage[i].isStageDisabled()) break;
 
@@ -1346,7 +1346,7 @@ namespace sw
 
 	bool Context::textureActive()
 	{
-		for(int i = 0; i < 8; i++)
+		for(int i = 0; i < TEXTURE_STAGES; i++)
 		{
 			if(textureActive(i))
 			{

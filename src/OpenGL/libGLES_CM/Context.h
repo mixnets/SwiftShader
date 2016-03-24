@@ -20,6 +20,7 @@
 #include "common/NameSpace.hpp"
 #include "common/Object.hpp"
 #include "common/Image.hpp"
+#include "Renderer/Context.hpp"
 #include "Renderer/Sampler.hpp"
 #include "common/MatrixStack.hpp"
 
@@ -60,7 +61,7 @@ class IndexDataManager;
 
 enum
 {
-    MAX_VERTEX_ATTRIBS = VERTEX_ATTRIBUTES,
+	MAX_VERTEX_ATTRIBS = sw::VERTEX_ATTRIBUTES,
     MAX_VARYING_VECTORS = 10,
     MAX_TEXTURE_UNITS = 2,
     MAX_DRAW_BUFFERS = 1,

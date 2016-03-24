@@ -63,10 +63,10 @@ namespace sw
 				struct
 				{
 					Gradient color[2][4];
-					Gradient texture[8][4];
+					Gradient texture[TEXTURE_STAGES][4];
 				};
 
-				Gradient gradient[10][4];
+				Gradient gradient[MAX_INPUT_VARYINGS][4];
 			};
 
 			Gradient fog;

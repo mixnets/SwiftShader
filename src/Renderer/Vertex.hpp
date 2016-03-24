@@ -15,6 +15,7 @@
 #include "Color.hpp"
 #include "Common/MetaMacro.hpp"
 #include "Common/Types.hpp"
+#include "Main/Config.hpp"
 
 namespace sw
 {
@@ -24,16 +25,10 @@ namespace sw
 		D0 = 1,   // Diffuse
 		D1 = 2,   // Specular
 		T0 = 3,
-		T1 = 4,
-		T2 = 5,
-		T3 = 6,
-		T4 = 7,
-		T5 = 8,
-		T6 = 9,
-		T7 = 10,
-		Fog = 11,    // x component
+		Fog = T0 + TEXTURE_STAGES,    // x component
 		Pts = Fog,   // y component
-		Unused
+		Unused,
+		MAX_OUTPUT_VARYINGS = Unused
 	};
 
 	struct UVWQ
@@ -82,7 +77,7 @@ namespace sw
 				unsigned char padding1[3];
 			};
 
-			float4 v[12];   // Generic components using semantic declaration
+			float4 v[MAX_OUTPUT_VARYINGS];   // Generic components using semantic declaration
 		};
 
 		struct   // Projected coordinates
