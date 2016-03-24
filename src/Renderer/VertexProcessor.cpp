@@ -921,7 +921,7 @@ namespace sw
 
 		if(!context->vertexShader)
 		{
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < TEXTURE_STAGES; i++)
 			{
 			//	state.textureState[i].vertexTextureActive = context->vertexTextureActive(i, 0);
 				state.textureState[i].texGenActive = context->texGenActive(i);
@@ -942,7 +942,7 @@ namespace sw
 
 		if(context->vertexShader)   // FIXME: Also when pre-transformed?
 		{
-			for(int i = 0; i < 12; i++)
+			for(int i = 0; i < MAX_OUTPUT_VARYINGS; i++)
 			{
 				state.output[i].xWrite = context->vertexShader->output[i][0].active();
 				state.output[i].yWrite = context->vertexShader->output[i][1].active();
@@ -964,7 +964,7 @@ namespace sw
 				state.output[D1].write = 0xF;
 			}
 
-			for(int stage = 0; stage < 8; stage++)
+			for(int stage = 0; stage < TEXTURE_STAGES; stage++)
 			{
 				if(context->texCoordActive(stage, 0)) state.output[T0 + stage].write |= 0x01;
 				if(context->texCoordActive(stage, 1)) state.output[T0 + stage].write |= 0x02;
@@ -994,7 +994,7 @@ namespace sw
 				}
 			}
 
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < TEXTURE_STAGES; i++)
 			{
 				if(context->input[TexCoord0 + i])
 				{

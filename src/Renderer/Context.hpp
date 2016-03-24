@@ -42,14 +42,8 @@ namespace sw
 		Color0 = 5,
 		Color1 = 6,
 		TexCoord0 = 7,
-		TexCoord1 = 8,
-		TexCoord2 = 9,
-		TexCoord3 = 10,
-		TexCoord4 = 11,
-		TexCoord5 = 12,
-		TexCoord6 = 13,
-		TexCoord7 = 14,
-		PositionT = 15
+		TexCoord1 = TexCoord0 + 1,
+		PositionT = TexCoord0 + TEXTURE_STAGES
 	};
 
 	enum DrawType : unsigned int
@@ -433,7 +427,7 @@ namespace sw
 		CullMode cullMode;
 		float alphaReference;
 
-		TextureStage textureStage[8];
+		TextureStage textureStage[TEXTURE_STAGES];
 		Sampler sampler[TOTAL_IMAGE_UNITS];
 
 		Format renderTargetInternalFormat(int index);
@@ -454,11 +448,11 @@ namespace sw
 
 		bool textureWrapActive;
 		unsigned char textureWrap[TEXTURE_IMAGE_UNITS];
-		TexGen texGen[8];
+		TexGen texGen[TEXTURE_STAGES];
 		bool localViewer;
 		bool normalizeNormals;
-		int textureTransformCount[8];
-		bool textureTransformProject[8];
+		int textureTransformCount[TEXTURE_STAGES];
+		bool textureTransformProject[TEXTURE_STAGES];
 
 		Surface *renderTarget[RENDERTARGETS];
 		Surface *depthBuffer;

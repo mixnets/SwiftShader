@@ -82,6 +82,7 @@ namespace sw
 		OUTLINE_RESOLUTION = 4096,   // Maximum vertical resolution of the render target
 		MIPMAP_LEVELS = 14,
 		VERTEX_ATTRIBUTES = 16,
+		TEXTURE_STAGES = 8, // Fixed function texture stages
 		TEXTURE_IMAGE_UNITS = 16,
 		VERTEX_TEXTURE_IMAGE_UNITS = 16,
 		TOTAL_IMAGE_UNITS = TEXTURE_IMAGE_UNITS + VERTEX_TEXTURE_IMAGE_UNITS,

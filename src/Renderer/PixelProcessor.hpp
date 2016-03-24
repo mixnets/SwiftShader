@@ -17,6 +17,7 @@
 
 #include "Context.hpp"
 #include "RoutineCache.hpp"
+#include "Shader\PixelShader.hpp"
 
 namespace sw
 {
@@ -86,7 +87,7 @@ namespace sw
 			LogicalOperation logicalOperation : BITS(LOGICALOP_LAST);
 
 			Sampler::State sampler[TEXTURE_IMAGE_UNITS];
-			TextureStage::State textureStage[8];
+			TextureStage::State textureStage[TEXTURE_STAGES];
 
 			struct Interpolant
 			{
@@ -101,10 +102,10 @@ namespace sw
 				struct
 				{
 					Interpolant color[2];
-					Interpolant texture[8];
+					Interpolant texture[TEXTURE_STAGES];
 				};
 
-				Interpolant interpolant[10];
+				Interpolant interpolant[MAX_INPUT_VARYINGS];
 			};
 
 			Interpolant fog;
@@ -271,7 +272,7 @@ namespace sw
 
 		virtual void setFillMode(FillMode fillMode);
 		virtual void setShadingMode(ShadingMode shadingMode);
-	
+
 		virtual void setAlphaBlendEnable(bool alphaBlendEnable);
 		virtual void setSourceBlendFactor(BlendFactor sourceBlendFactor);
 		virtual void setDestBlendFactor(BlendFactor destBlendFactor);

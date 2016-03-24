@@ -48,8 +48,8 @@ namespace sw
 
 		Int clipFlags;
 
-		RegisterArray<16> v;   // Varying registers
-		RegisterArray<12> o;   // Output registers
+		RegisterArray<VERTEX_ATTRIBUTES> v;   // Input registers
+		RegisterArray<MAX_OUTPUT_VARYINGS> o; // Output registers
 
 		const VertexProcessor::State &state;
 

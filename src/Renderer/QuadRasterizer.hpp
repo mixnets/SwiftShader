@@ -36,7 +36,7 @@ namespace sw
 
 		Float4 Dz[4];
 		Float4 Dw;
-		Float4 Dv[10][4];
+		Float4 Dv[MAX_INPUT_VARYINGS][4];
 		Float4 Df;
 
 		UInt occlusion;

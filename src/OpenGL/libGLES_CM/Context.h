@@ -23,6 +23,7 @@
 #include "common/NameSpace.hpp"
 #include "common/Object.hpp"
 #include "common/Image.hpp"
+#include "Renderer/Context.hpp"
 #include "Renderer/Sampler.hpp"
 #include "common/MatrixStack.hpp"
 

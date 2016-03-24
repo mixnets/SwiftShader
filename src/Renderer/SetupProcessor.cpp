@@ -104,7 +104,7 @@ namespace sw
 			state.pointSizeRegister = Pts;
 		}
 
-		for(int interpolant = 0; interpolant < 10; interpolant++)
+		for(int interpolant = 0; interpolant < MAX_INPUT_VARYINGS; interpolant++)
 		{
 			for(int component = 0; component < 4; component++)
 			{
@@ -124,7 +124,7 @@ namespace sw
 
 		if(context->vertexShader && context->pixelShader)
 		{
-			for(int interpolant = 0; interpolant < 10; interpolant++)
+			for(int interpolant = 0; interpolant < MAX_INPUT_VARYINGS; interpolant++)
 			{
 				for(int component = 0; component < 4; component++)
 				{
@@ -133,7 +133,7 @@ namespace sw
 					if(context->pixelShader->semantic[interpolant][component - project].active())
 					{
 						int input = interpolant;
-						for(int i = 0; i < 12; i++)
+						for(int i = 0; i < MAX_OUTPUT_VARYINGS; i++)
 						{
 							if(context->pixelShader->semantic[interpolant][component - project] == context->vertexShader->output[i][component - project])
 							{
@@ -158,7 +158,7 @@ namespace sw
 		}
 		else if(context->preTransformed && context->pixelShader)
 		{
-			for(int interpolant = 0; interpolant < 10; interpolant++)
+			for(int interpolant = 0; interpolant < MAX_INPUT_VARYINGS; interpolant++)
 			{
 				for(int component = 0; component < 4; component++)
 				{

@@ -167,7 +167,7 @@ namespace sw
 			int64_t cycles[PERF_TIMERS][16];
 		#endif
 
-		TextureStage::Uniforms textureStage[8];
+		TextureStage::Uniforms textureStage[TEXTURE_STAGES];
 
 		float4 Wx16;
 		float4 Hx16;

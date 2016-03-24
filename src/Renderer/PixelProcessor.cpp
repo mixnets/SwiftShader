@@ -177,7 +177,7 @@ namespace sw
 
 	void PixelProcessor::setTexCoordIndex(unsigned int stage, int texCoordIndex)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setTexCoordIndex(texCoordIndex);
 		}
@@ -186,7 +186,7 @@ namespace sw
 
 	void PixelProcessor::setStageOperation(unsigned int stage, TextureStage::StageOperation stageOperation)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setStageOperation(stageOperation);
 		}
@@ -195,7 +195,7 @@ namespace sw
 
 	void PixelProcessor::setFirstArgument(unsigned int stage, TextureStage::SourceArgument firstArgument)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setFirstArgument(firstArgument);
 		}
@@ -204,7 +204,7 @@ namespace sw
 
 	void PixelProcessor::setSecondArgument(unsigned int stage, TextureStage::SourceArgument secondArgument)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setSecondArgument(secondArgument);
 		}
@@ -213,7 +213,7 @@ namespace sw
 
 	void PixelProcessor::setThirdArgument(unsigned int stage, TextureStage::SourceArgument thirdArgument)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setThirdArgument(thirdArgument);
 		}
@@ -222,7 +222,7 @@ namespace sw
 
 	void PixelProcessor::setStageOperationAlpha(unsigned int stage, TextureStage::StageOperation stageOperationAlpha)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setStageOperationAlpha(stageOperationAlpha);
 		}
@@ -231,7 +231,7 @@ namespace sw
 
 	void PixelProcessor::setFirstArgumentAlpha(unsigned int stage, TextureStage::SourceArgument firstArgumentAlpha)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setFirstArgumentAlpha(firstArgumentAlpha);
 		}
@@ -240,7 +240,7 @@ namespace sw
 
 	void PixelProcessor::setSecondArgumentAlpha(unsigned int stage, TextureStage::SourceArgument secondArgumentAlpha)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setSecondArgumentAlpha(secondArgumentAlpha);
 		}
@@ -249,7 +249,7 @@ namespace sw
 
 	void PixelProcessor::setThirdArgumentAlpha(unsigned int stage, TextureStage::SourceArgument thirdArgumentAlpha)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setThirdArgumentAlpha(thirdArgumentAlpha);
 		}
@@ -258,7 +258,7 @@ namespace sw
 
 	void PixelProcessor::setFirstModifier(unsigned int stage, TextureStage::ArgumentModifier firstModifier)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setFirstModifier(firstModifier);
 		}
@@ -267,7 +267,7 @@ namespace sw
 
 	void PixelProcessor::setSecondModifier(unsigned int stage, TextureStage::ArgumentModifier secondModifier)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setSecondModifier(secondModifier);
 		}
@@ -276,7 +276,7 @@ namespace sw
 
 	void PixelProcessor::setThirdModifier(unsigned int stage, TextureStage::ArgumentModifier thirdModifier)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setThirdModifier(thirdModifier);
 		}
@@ -285,7 +285,7 @@ namespace sw
 
 	void PixelProcessor::setFirstModifierAlpha(unsigned int stage, TextureStage::ArgumentModifier firstModifierAlpha)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setFirstModifierAlpha(firstModifierAlpha);
 		}
@@ -294,7 +294,7 @@ namespace sw
 
 	void PixelProcessor::setSecondModifierAlpha(unsigned int stage, TextureStage::ArgumentModifier secondModifierAlpha)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setSecondModifierAlpha(secondModifierAlpha);
 		}
@@ -303,7 +303,7 @@ namespace sw
 
 	void PixelProcessor::setThirdModifierAlpha(unsigned int stage, TextureStage::ArgumentModifier thirdModifierAlpha)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setThirdModifierAlpha(thirdModifierAlpha);
 		}
@@ -312,7 +312,7 @@ namespace sw
 
 	void PixelProcessor::setDestinationArgument(unsigned int stage, TextureStage::DestinationArgument destinationArgument)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setDestinationArgument(destinationArgument);
 		}
@@ -321,7 +321,7 @@ namespace sw
 
 	void PixelProcessor::setConstantColor(unsigned int stage, const Color<float> &constantColor)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setConstantColor(constantColor);
 		}
@@ -330,7 +330,7 @@ namespace sw
 
 	void PixelProcessor::setBumpmapMatrix(unsigned int stage, int element, float value)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setBumpmapMatrix(element, value);
 		}
@@ -339,7 +339,7 @@ namespace sw
 
 	void PixelProcessor::setLuminanceScale(unsigned int stage, float value)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setLuminanceScale(value);
 		}
@@ -348,7 +348,7 @@ namespace sw
 
 	void PixelProcessor::setLuminanceOffset(unsigned int stage, float value)
 	{
-		if(stage < 8)
+		if(stage < TEXTURE_STAGES)
 		{
 			context->textureStage[stage].setLuminanceOffset(value);
 		}
@@ -979,7 +979,7 @@ namespace sw
 
 		if(!context->pixelShader)
 		{
-			for(unsigned int i = 0; i < 8; i++)
+			for(unsigned int i = 0; i < TEXTURE_STAGES; i++)
 			{
 				state.textureStage[i] = context->textureStage[i].textureStageState();
 			}
@@ -987,7 +987,7 @@ namespace sw
 			state.specularAdd = context->specularActive() && context->specularEnable;
 		}
 
-		for(unsigned int i = 0; i < 16; i++)
+		for(unsigned int i = 0; i < TEXTURE_IMAGE_UNITS; i++)
 		{
 			if(context->pixelShader)
 			{
@@ -998,7 +998,7 @@ namespace sw
 			}
 			else
 			{
-				if(i < 8 && state.textureStage[i].stageOperation != TextureStage::STAGE_DISABLE)
+				if(i < TEXTURE_STAGES && state.textureStage[i].stageOperation != TextureStage::STAGE_DISABLE)
 				{
 					state.sampler[i] = context->sampler[i].samplerState();
 				}
@@ -1012,7 +1012,7 @@ namespace sw
 
 		if(context->pixelShaderVersion() < 0x0300)
 		{
-			for(int coordinate = 0; coordinate < 8; coordinate++)
+			for(int coordinate = 0; coordinate < TEXTURE_STAGES; coordinate++)
 			{
 				for(int component = 0; component < 4; component++)
 				{
@@ -1072,7 +1072,7 @@ namespace sw
 		}
 		else
 		{
-			for(int interpolant = 0; interpolant < 10; interpolant++)
+			for(int interpolant = 0; interpolant < MAX_INPUT_VARYINGS; interpolant++)
 			{
 				for(int component = 0; component < 4; component++)
 				{
@@ -1099,7 +1099,7 @@ namespace sw
 
 		if(state.centroid)
 		{
-			for(int interpolant = 0; interpolant < 10; interpolant++)
+			for(int interpolant = 0; interpolant < MAX_INPUT_VARYINGS; interpolant++)
 			{
 				for(int component = 0; component < 4; component++)
 				{
