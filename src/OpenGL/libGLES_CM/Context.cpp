@@ -245,9 +245,9 @@ Context::Context(const egl::Config *config, const Context *shareContext)
 
 Context::~Context()
 {
-    while(!mFramebufferMap.empty())
+    while(!mFramebufferNameSpace.empty())
     {
-        deleteFramebuffer(mFramebufferMap.begin()->first);
+        deleteFramebuffer(mFramebufferNameSpace.firstName());
     }
 
     for(int type = 0; type < TEXTURE_TYPE_COUNT; type++)
@@ -933,11 +933,7 @@ GLuint Context::createRenderbuffer()
 // Returns an unused framebuffer name
 GLuint Context::createFramebuffer()
 {
-    GLuint handle = mFramebufferNameSpace.allocate();
-
-    mFramebufferMap[handle] = nullptr;
-
-    return handle;
+	return mFramebufferNameSpace.allocate();
 }
 
 void Context::deleteBuffer(GLuint buffer)
@@ -972,15 +968,13 @@ void Context::deleteRenderbuffer(GLuint renderbuffer)
 
 void Context::deleteFramebuffer(GLuint framebuffer)
 {
-    FramebufferMap::iterator framebufferObject = mFramebufferMap.find(framebuffer);
+    Framebuffer *framebufferObject = mFramebufferNameSpace.remove(framebuffer);
 
-    if(framebufferObject != mFramebufferMap.end())
+    if(framebufferObject)
     {
         detachFramebuffer(framebuffer);
 
-		delete framebufferObject->second;
-        mFramebufferNameSpace.remove(framebufferObject->first);
-        mFramebufferMap.erase(framebufferObject);
+		delete framebufferObject;
     }
 }
 
@@ -1036,7 +1030,7 @@ void Context::bindFramebuffer(GLuint framebuffer)
 {
     if(!getFramebuffer(framebuffer))
     {
-        mFramebufferMap[framebuffer] = new Framebuffer();
+		mFramebufferNameSpace.insert(framebuffer, new Framebuffer());
     }
 
     mState.framebuffer = framebuffer;
@@ -1051,8 +1045,8 @@ void Context::bindRenderbuffer(GLuint renderbuffer)
 
 void Context::setFramebufferZero(Framebuffer *buffer)
 {
-    delete mFramebufferMap[0];
-    mFramebufferMap[0] = buffer;
+	delete mFramebufferNameSpace.remove(0);
+    mFramebufferNameSpace.insert(0, buffer);
 }
 
 void Context::setRenderbufferStorage(RenderbufferStorage *renderbuffer)
@@ -1063,16 +1057,7 @@ void Context::setRenderbufferStorage(RenderbufferStorage *renderbuffer)
 
 Framebuffer *Context::getFramebuffer(unsigned int handle)
 {
-    FramebufferMap::iterator framebuffer = mFramebufferMap.find(handle);
-
-    if(framebuffer == mFramebufferMap.end())
-    {
-        return nullptr;
-    }
-    else
-    {
-        return framebuffer->second;
-    }
+	return mFramebufferNameSpace.find(handle);
 }
 
 Buffer *Context::getArrayBuffer()
