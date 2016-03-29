@@ -1762,6 +1762,11 @@ int yylex(YYSTYPE* lvalp, Context* context)
         type = TOK_CONST_INT;
         break;
       }
+      case pp::Token::IDENTIFIER:
+        // Remaining identifier after macro expansion, replace with number 0
+        *lvalp = 0;
+        type = TOK_CONST_INT;
+        break;
       case pp::Token::OP_OR: type = TOK_OP_OR; break;
       case pp::Token::OP_AND: type = TOK_OP_AND; break;
       case pp::Token::OP_NE: type = TOK_OP_NE; break;
