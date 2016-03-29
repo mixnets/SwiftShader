@@ -22,12 +22,22 @@ WHICH GENERATES THE GLSL ES preprocessor expression parser.
 
 #if defined(__GNUC__)
 // Triggered by the auto-generated pplval variable.
+#if !defined(__clang__) && ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 7))
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#else
 #pragma GCC diagnostic ignored "-Wuninitialized"
+#endif
 #elif defined(_MSC_VER)
-#pragma warning(disable: 4065 4701)
+#pragma warning(disable: 4065 4244 4701 4702)
 #endif
 
 #include "ExpressionParser.h"
+
+#if defined(_MSC_VER)
+#include <malloc.h>
+#else
+#include <stdlib.h>
+#endif
 
 #include <cassert>
 #include <sstream>
@@ -42,6 +52,8 @@ typedef __int64 YYSTYPE;
 #include <stdint.h>
 typedef intmax_t YYSTYPE;
 #endif  // _MSC_VER
+#define YYENABLE_NLS 0
+#define YYLTYPE_IS_TRIVIAL 1
 #define YYSTYPE_IS_TRIVIAL 1
 #define YYSTYPE_IS_DECLARED 1
 
@@ -52,6 +64,13 @@ struct Context
     pp::Lexer* lexer;
     pp::Token* token;
     int* result;
+
+    void startIgnoreErrors() { ++ignoreErrors; }
+    void endIgnoreErrors() { --ignoreErrors; }
+
+    bool isIgnoringErrors() { return ignoreErrors > 0; }
+
+    int ignoreErrors;
 };
 }  // namespace
 %}
@@ -67,6 +86,7 @@ static void yyerror(Context* context, const char* reason);
 %}
 
 %token TOK_CONST_INT
+%token TOK_IDENTIFIER
 %left TOK_OP_OR
 %left TOK_OP_AND
 %left '|'
@@ -84,17 +104,58 @@ static void yyerror(Context* context, const char* reason);
 input
     : expression {
         *(context->result) = static_cast<int>($1);
-        YYACCEPT;
     }
 ;
 
 expression
     : TOK_CONST_INT
-    | expression TOK_OP_OR expression {
-        $$ = $1 || $3;
+    | TOK_IDENTIFIER {
+        if (!context->isIgnoringErrors())
+        {
+            YYABORT;
+        }
     }
-    | expression TOK_OP_AND expression {
-        $$ = $1 && $3;
+    | expression TOK_OP_OR {
+        if ($1 != 0)
+        {
+            // Ignore errors in the short-circuited part of the expression.
+            // ESSL3.00 section 3.4:
+            // If an operand is not evaluated, the presence of undefined identifiers
+            // in the operand will not cause an error.
+            // Unevaluated division by zero should not cause an error either.
+            context->startIgnoreErrors();
+        }
+    } expression {
+        if ($1 != 0)
+        {
+            context->endIgnoreErrors();
+            $$ = static_cast<YYSTYPE>(1);
+        }
+        else
+        {
+            $$ = $1 || $4;
+        }
+    }
+    | expression TOK_OP_AND {
+        if ($1 == 0)
+        {
+            // Ignore errors in the short-circuited part of the expression.
+            // ESSL3.00 section 3.4:
+            // If an operand is not evaluated, the presence of undefined identifiers
+            // in the operand will not cause an error.
+            // Unevaluated division by zero should not cause an error either.
+            context->startIgnoreErrors();
+        }
+    } expression {
+        if ($1 == 0)
+        {
+            context->endIgnoreErrors();
+            $$ = static_cast<YYSTYPE>(0);
+        }
+        else
+        {
+            $$ = $1 && $4;
+        }
     }
     | expression '|' expression {
         $$ = $1 | $3;
@@ -136,20 +197,48 @@ expression
         $$ = $1 + $3;
     }
     | expression '%' expression {
-        if ($3 == 0) {
-            context->diagnostics->report(pp::Diagnostics::DIVISION_BY_ZERO,
-                                         context->token->location, "");
-            YYABORT;
-        } else {
+        if ($3 == 0)
+        {
+            if (context->isIgnoringErrors())
+            {
+                $$ = static_cast<YYSTYPE>(0);
+            }
+            else
+            {
+                std::ostringstream stream;
+                stream << $1 << " % " << $3;
+                std::string text = stream.str();
+                context->diagnostics->report(pp::Diagnostics::DIVISION_BY_ZERO,
+                                             context->token->location,
+                                             text.c_str());
+                YYABORT;
+            }
+        }
+        else
+        {
             $$ = $1 % $3;
         }
     }
     | expression '/' expression {
-        if ($3 == 0) {
-            context->diagnostics->report(pp::Diagnostics::DIVISION_BY_ZERO,
-                                         context->token->location, "");
-            YYABORT;
-        } else {
+        if ($3 == 0)
+        {
+            if (context->isIgnoringErrors())
+            {
+                $$ = static_cast<YYSTYPE>(0);
+            }
+            else
+            {
+                std::ostringstream stream;
+                stream << $1 << " / " << $3;
+                std::string text = stream.str();
+                context->diagnostics->report(pp::Diagnostics::DIVISION_BY_ZERO,
+                                            context->token->location,
+                                            text.c_str());
+                YYABORT;
+            }
+        }
+        else
+        {
             $$ = $1 / $3;
         }
     }
@@ -175,15 +264,14 @@ expression
 
 %%
 
-int yylex(YYSTYPE* lvalp, Context* context)
+int yylex(YYSTYPE *lvalp, Context *context)
 {
     int type = 0;
 
-    pp::Token* token = context->token;
+    pp::Token *token = context->token;
     switch (token->type)
     {
-      case pp::Token::CONST_INT:
-      {
+      case pp::Token::CONST_INT: {
         unsigned int val = 0;
         if (!token->uValue(&val))
         {
@@ -194,39 +282,68 @@ int yylex(YYSTYPE* lvalp, Context* context)
         type = TOK_CONST_INT;
         break;
       }
-      case pp::Token::OP_OR: type = TOK_OP_OR; break;
-      case pp::Token::OP_AND: type = TOK_OP_AND; break;
-      case pp::Token::OP_NE: type = TOK_OP_NE; break;
-      case pp::Token::OP_EQ: type = TOK_OP_EQ; break;
-      case pp::Token::OP_GE: type = TOK_OP_GE; break;
-      case pp::Token::OP_LE: type = TOK_OP_LE; break;
-      case pp::Token::OP_RIGHT: type = TOK_OP_RIGHT; break;
-      case pp::Token::OP_LEFT: type = TOK_OP_LEFT; break;
-      case '|': type = '|'; break;
-      case '^': type = '^'; break;
-      case '&': type = '&'; break;
-      case '>': type = '>'; break;
-      case '<': type = '<'; break;
-      case '-': type = '-'; break;
-      case '+': type = '+'; break;
-      case '%': type = '%'; break;
-      case '/': type = '/'; break;
-      case '*': type = '*'; break;
-      case '!': type = '!'; break;
-      case '~': type = '~'; break;
-      case '(': type = '('; break;
-      case ')': type = ')'; break;
+      case pp::Token::IDENTIFIER:
+        if (!context->isIgnoringErrors())
+        {
+            context->diagnostics->report(pp::Diagnostics::CONDITIONAL_UNEXPECTED_TOKEN,
+                                         token->location, token->text);
+        }
+        *lvalp = static_cast<YYSTYPE>(-1);
+        type = TOK_IDENTIFIER;
+        break;
+      case pp::Token::OP_OR:
+        type = TOK_OP_OR;
+        break;
+      case pp::Token::OP_AND:
+        type = TOK_OP_AND;
+        break;
+      case pp::Token::OP_NE:
+        type = TOK_OP_NE;
+        break;
+      case pp::Token::OP_EQ:
+        type = TOK_OP_EQ;
+        break;
+      case pp::Token::OP_GE:
+        type = TOK_OP_GE;
+        break;
+      case pp::Token::OP_LE:
+        type = TOK_OP_LE;
+        break;
+      case pp::Token::OP_RIGHT:
+        type = TOK_OP_RIGHT;
+        break;
+      case pp::Token::OP_LEFT:
+        type = TOK_OP_LEFT;
+        break;
+      case '|':
+      case '^':
+      case '&':
+      case '>':
+      case '<':
+      case '-':
+      case '+':
+      case '%':
+      case '/':
+      case '*':
+      case '!':
+      case '~':
+      case '(':
+      case ')':
+        type = token->type;
+        break;
 
-      default: break;
+      default:
+        break;
     }
 
     // Advance to the next token if the current one is valid.
-    if (type != 0) context->lexer->lex(token);
+    if (type != 0)
+        context->lexer->lex(token);
 
     return type;
 }
 
-void yyerror(Context* context, const char* reason)
+void yyerror(Context *context, const char *reason)
 {
     context->diagnostics->report(pp::Diagnostics::INVALID_EXPRESSION,
                                  context->token->location,
@@ -235,19 +352,20 @@ void yyerror(Context* context, const char* reason)
 
 namespace pp {
 
-ExpressionParser::ExpressionParser(Lexer* lexer, Diagnostics* diagnostics) :
-    mLexer(lexer),
-    mDiagnostics(diagnostics)
+ExpressionParser::ExpressionParser(Lexer *lexer, Diagnostics *diagnostics)
+    : mLexer(lexer),
+      mDiagnostics(diagnostics)
 {
 }
 
-bool ExpressionParser::parse(Token* token, int* result)
+bool ExpressionParser::parse(Token *token, int *result)
 {
     Context context;
     context.diagnostics = mDiagnostics;
     context.lexer = mLexer;
     context.token = token;
     context.result = result;
+    context.ignoreErrors = 0;
     int ret = yyparse(&context);
     switch (ret)
     {
