@@ -142,6 +142,14 @@ namespace sw
 			if(src3.type != Shader::PARAMETER_VOID) s3 = fetchRegisterF(src3);
 			if(src4.type != Shader::PARAMETER_VOID) s4 = fetchRegisterF(src4);
 
+			if(instruction->project)
+			{
+				Float4 rcp = reciprocal(s0.w);
+
+				s0.x *= rcp;
+				s0.y *= rcp;
+			}
+
 			switch(opcode)
 			{
 			case Shader::OPCODE_VS_1_0:                                     break;
