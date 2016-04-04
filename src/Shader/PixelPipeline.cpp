@@ -1221,25 +1221,20 @@ namespace sw
 		sampleTexture(c, stage, x, y, z, w, project);
 	}
 
-	void PixelPipeline::sampleTexture(Vector4s &c, int stage, Float4 &u, Float4 &v, Float4 &w, Float4 &q, bool project, bool bias)
+	void PixelPipeline::sampleTexture(Vector4s &c, int stage, Float4 &u, Float4 &v, Float4 &w, Float4 &q, bool project)
 	{
+		#if PERF_PROFILE
+			Long texTime = Ticks();
+		#endif
+
 		Vector4f dsx;
 		Vector4f dsy;
-
-		sampleTexture(c, stage, u, v, w, q, dsx, dsy, project, bias, false);
-	}
-
-	void PixelPipeline::sampleTexture(Vector4s &c, int stage, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project, bool bias, bool gradients, bool lodProvided)
-	{
-#if PERF_PROFILE
-		Long texTime = Ticks();
-#endif
 
 		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap) + stage * sizeof(Texture);
 
 		if(!project)
 		{
-			sampler[stage]->sampleTexture(texture, c, u, v, w, q, dsx, dsy, bias, gradients, lodProvided);
+			sampler[stage]->sampleTexture(texture, c, u, v, w, q, dsx, dsy, Implicit);
 		}
 		else
 		{
@@ -1249,12 +1244,12 @@ namespace sw
 			Float4 v_q = v * rq;
 			Float4 w_q = w * rq;
 
-			sampler[stage]->sampleTexture(texture, c, u_q, v_q, w_q, q, dsx, dsy, bias, gradients, lodProvided);
+			sampler[stage]->sampleTexture(texture, c, u_q, v_q, w_q, q, dsx, dsy, Implicit);
 		}
 
-#if PERF_PROFILE
-		cycles[PERF_TEX] += Ticks() - texTime;
-#endif
+		#if PERF_PROFILE
+			cycles[PERF_TEX] += Ticks() - texTime;
+		#endif
 	}
 
 	Short4 PixelPipeline::convertFixed12(RValue<Float4> cf)

@@ -13,6 +13,7 @@
 #define sw_PixelProgram_hpp
 
 #include "PixelRoutine.hpp"
+#include "SamplerCore.hpp"
 
 namespace sw
 {
@@ -78,8 +79,8 @@ namespace sw
 		Int4 enableContinue;
 		Int4 enableLeave;
 
-		void sampleTexture(Vector4f &c, const Src &sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project = false, bool bias = false, bool gradients = false, bool lodProvided = false);
-		void sampleTexture(Vector4f &c, int sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project = false, bool bias = false, bool gradients = false, bool lodProvided = false);
+		void sampleTexture(Vector4f &c, const Src &sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project, SamplerMethod method);
+		void sampleTexture(Vector4f &c, int sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project, SamplerMethod method);
 
 		// Raster operations
 		void clampColor(Vector4f oC[RENDERTARGETS]);
@@ -103,8 +104,8 @@ namespace sw
 		void M4X3(Vector4f &dst, Vector4f &src0, const Src &src1);
 		void M4X4(Vector4f &dst, Vector4f &src0, const Src &src1);
 		void TEXLD(Vector4f &dst, Vector4f &src0, const Src &src1, bool project, bool bias);
-		void TEXLDD(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, Vector4f &src3, bool project, bool bias);
-		void TEXLDL(Vector4f &dst, Vector4f &src0, const Src &src1, bool project, bool bias);
+		void TEXLDD(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, Vector4f &src3, bool project);
+		void TEXLDL(Vector4f &dst, Vector4f &src0, const Src &src1, bool project);
 		void TEXSIZE(Vector4f &dst, Float4 &lod, const Src &src1);
 		void TEXKILL(Int cMask[4], Vector4f &src, unsigned char mask);
 		void TEXOFFSET(Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2, Vector4f &src3, bool project, bool bias);
