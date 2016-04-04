@@ -51,6 +51,24 @@ namespace sw
 	{
 	}
 
+	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, SamplerMethod method, bool fixed12)
+	{
+		bool bias = (method == Bias);
+		bool gradients = (method == Grad);
+		bool lodProvided = (method == Lod);
+
+		sampleTexture(texture, c, u, v, w, q, dsx, dsy, bias, gradients, lodProvided, fixed12);
+	}
+
+	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, SamplerMethod method)
+	{
+		bool bias = (method == Bias);
+		bool gradients = (method == Grad);
+		bool lodProvided = (method == Lod);
+
+		sampleTexture(texture, c, u, v, w, q, dsx, dsy, bias, gradients, lodProvided);
+	}
+
 	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool bias, bool gradients, bool lodProvided, bool fixed12)
 	{
 		#if PERF_PROFILE
