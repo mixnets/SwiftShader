@@ -2138,6 +2138,73 @@ namespace glsl
 		if(argument)
 		{
 			TIntermTyped *arg = argument->getAsTyped();
+			Temporary* blockTemporary = nullptr;
+			if(arg)
+			{
+				TInterfaceBlock* srcBlock = arg->getType().getInterfaceBlock();
+				const TType& srcType = arg->getType();
+				if(srcBlock && (srcType.getQualifier() == EvqUniform))
+				{
+					const ArgumentInfo argumentInfo = getArgumentInfo(arg, index);
+					const TType &memberType = argumentInfo.typedMemberInfo.type;
+
+					if(memberType.getBasicType() == EbtBool)
+					{
+						int arraySize = (memberType.isArray() ? memberType.getArraySize() : 1);
+						ASSERT(argumentInfo.clampedIndex < arraySize);
+
+						blockTemporary = new Temporary(this);
+
+						// Convert the packed bool, which is currently an int, to a true bool
+						Instruction *instruction = new Instruction(sw::Shader::OPCODE_I2B);
+						instruction->dst.type = registerType(blockTemporary);
+						instruction->dst.index = registerIndex(blockTemporary);
+						instruction->src[0].type = sw::Shader::PARAMETER_CONST;
+						instruction->src[0].bufferIndex = argumentInfo.bufferIndex;
+						instruction->src[0].index = argumentInfo.typedMemberInfo.offset + argumentInfo.clampedIndex * argumentInfo.typedMemberInfo.arrayStride;
+
+						shader->append(instruction);
+
+						arg = blockTemporary;
+						index = 0;
+					}
+					else if((srcBlock->matrixPacking() == EmpRowMajor) && memberType.isMatrix())
+					{
+						blockTemporary = new Temporary(this);
+
+						int numCols = memberType.getNominalSize();
+						int numRows = memberType.getSecondarySize();
+						int arraySize = (memberType.isArray() ? memberType.getArraySize() : 1);
+
+						ASSERT(argumentInfo.clampedIndex < (numCols * arraySize));
+
+						sw::Shader::ParameterType dstType = registerType(blockTemporary);
+						unsigned int dstIndex = registerIndex(blockTemporary);
+						unsigned int srcSwizzle = (argumentInfo.clampedIndex % numCols) * 0x55;
+						int arrayIndex = argumentInfo.clampedIndex / numCols;
+						int matrixStartOffset = argumentInfo.typedMemberInfo.offset + arrayIndex * argumentInfo.typedMemberInfo.arrayStride;
+
+						for(int j = 0; j < numRows; ++j)
+						{
+							// Transpose the row major matrix
+							Instruction *instruction = new Instruction(sw::Shader::OPCODE_MOV);
+							instruction->dst.type = dstType;
+							instruction->dst.index = dstIndex;
+							instruction->dst.mask = 1 << j;
+							instruction->src[0].type = sw::Shader::PARAMETER_CONST;
+							instruction->src[0].bufferIndex = argumentInfo.bufferIndex;
+							instruction->src[0].index = matrixStartOffset + j * argumentInfo.typedMemberInfo.matrixStride;
+							instruction->src[0].swizzle = srcSwizzle;
+
+							shader->append(instruction);
+						}
+
+						arg = blockTemporary;
+						index = 0;
+					}
+				}
+			}
+
 			const ArgumentInfo argumentInfo = getArgumentInfo(arg, index);
 			const TType &type = argumentInfo.typedMemberInfo.type;
 
@@ -2214,6 +2281,8 @@ namespace glsl
 			{
 				parameter.swizzle = readSwizzle(arg, size);
 			}
+
+			delete blockTemporary;
 		}
 	}
 
