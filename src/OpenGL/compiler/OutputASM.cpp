@@ -1839,6 +1839,79 @@ namespace glsl
 		return emit(op, dst, 0, src0, 0, src1, 0, src2, 0, src3, 0, src4, 0);
 	}
 
+	void OutputASM::emitBlockUnpacking(sw::Shader::Opcode op, Temporary** blockTemporaries, TIntermNode** src, int* index)
+	{
+		for(int i = 0; i < 5; ++i)
+		{
+			TIntermTyped* srcIntermTyped = src[i] ? src[i]->getAsTyped() : nullptr;
+			if(srcIntermTyped)
+			{
+				TInterfaceBlock* srcBlock = srcIntermTyped->getType().getInterfaceBlock();
+				const TType& srcType = srcIntermTyped->getType();
+				if(srcBlock && (srcType.getQualifier() == EvqUniform))
+				{
+					const ArgumentInfo argumentInfo = getArgumentInfo(srcIntermTyped, index[i]);
+					const TType &memberType = argumentInfo.typedMemberInfo.type;
+
+					if(memberType.getBasicType() == EbtBool && (op != sw::Shader::OPCODE_I2B))
+					{
+						int arraySize = (memberType.isArray() ? memberType.getArraySize() : 1);
+						ASSERT(argumentInfo.clampedIndex < arraySize);
+
+						blockTemporaries[i] = new Temporary(this);
+
+						// Convert the packed bool, which is currently an int, to a true bool
+						Instruction *instruction = new Instruction(sw::Shader::OPCODE_I2B);
+						instruction->dst.type = registerType(blockTemporaries[i]);
+						instruction->dst.index = registerIndex(blockTemporaries[i]);
+						instruction->src[0].type = sw::Shader::PARAMETER_CONST;
+						instruction->src[0].bufferIndex = argumentInfo.bufferIndex;
+						instruction->src[0].index = argumentInfo.typedMemberInfo.offset + argumentInfo.clampedIndex * argumentInfo.typedMemberInfo.arrayStride;
+
+						shader->append(instruction);
+
+						src[i] = blockTemporaries[i];
+						index[i] = 0;
+					}
+					else if((srcBlock->matrixPacking() == EmpRowMajor) && memberType.isMatrix())
+					{
+						blockTemporaries[i] = new Temporary(this);
+
+						int numCols = memberType.getNominalSize();
+						int numRows = memberType.getSecondarySize();
+						int arraySize = (memberType.isArray() ? memberType.getArraySize() : 1);
+
+						ASSERT(argumentInfo.clampedIndex < (numCols * arraySize));
+
+						sw::Shader::ParameterType dstType = registerType(blockTemporaries[i]);
+						unsigned int dstIndex = registerIndex(blockTemporaries[i]);
+						unsigned int srcSwizzle = (argumentInfo.clampedIndex % numCols) * 0x55;
+						int arrayIndex = argumentInfo.clampedIndex / numCols;
+						int matrixStartOffset = argumentInfo.typedMemberInfo.offset + arrayIndex * argumentInfo.typedMemberInfo.arrayStride;
+
+						for(int j = 0; j < numRows; ++j)
+						{
+							// Transpose the row major matrix
+							Instruction *instruction = new Instruction(sw::Shader::OPCODE_MOV);
+							instruction->dst.type = dstType;
+							instruction->dst.index = dstIndex;
+							instruction->dst.mask = 1 << j;
+							instruction->src[0].type = sw::Shader::PARAMETER_CONST;
+							instruction->src[0].bufferIndex = argumentInfo.bufferIndex;
+							instruction->src[0].index = matrixStartOffset + j * argumentInfo.typedMemberInfo.matrixStride;
+							instruction->src[0].swizzle = srcSwizzle;
+
+							shader->append(instruction);
+						}
+
+						src[i] = blockTemporaries[i];
+						index[i] = 0;
+					}
+				}
+			}
+		}
+	}
+
 	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, int dstIndex, TIntermNode *src0, int index0, TIntermNode *src1, int index1,
 	                             TIntermNode *src2, int index2, TIntermNode *src3, int index3, TIntermNode *src4, int index4)
 	{
@@ -1846,6 +1919,11 @@ namespace glsl
 		{
 			op = sw::Shader::OPCODE_NULL;   // Can't assign to a sampler, but this is hit when indexing sampler arrays
 		}
+
+		Temporary* blockTemporaries[5] = { 0 };
+		TIntermNode* src[5] = { src0, src1, src2, src3, src4 };
+		int index[5] = { index0, index1, index2, index3, index4 };
+		emitBlockUnpacking(op, blockTemporaries, src, index);
 
 		Instruction *instruction = new Instruction(op);
 
@@ -1857,11 +1935,11 @@ namespace glsl
 			instruction->dst.integer = (dst->getBasicType() == EbtInt);
 		}
 
-		argument(instruction->src[0], src0, index0);
-		argument(instruction->src[1], src1, index1);
-		argument(instruction->src[2], src2, index2);
-		argument(instruction->src[3], src3, index3);
-		argument(instruction->src[4], src4, index4);
+		for(int i = 0; i < 5; ++i)
+		{
+			argument(instruction->src[i], src[i], index[i]);
+			delete blockTemporaries[i];
+		}
 
 		shader->append(instruction);
 
