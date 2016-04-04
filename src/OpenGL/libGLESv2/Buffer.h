@@ -60,10 +60,10 @@ class Buffer : public gl::NamedObject
 	GLbitfield mAccess;
 };
 
-class UniformBufferBinding
+class BufferBinding
 {
 public:
-	UniformBufferBinding() : offset(0), size(0) { }
+	BufferBinding() : offset(0), size(0) { }
 
 	void set(Buffer *newUniformBuffer, int newOffset = 0, int newSize = 0)
 	{
