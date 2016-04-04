@@ -53,24 +53,15 @@ namespace sw
 
 	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, SamplerMethod method)
 	{
-		bool bias = (method == Bias);
-		bool gradients = (method == Grad);
-		bool lodProvided = (method == Lod);
-
-		sampleTexture(texture, c, u, v, w, q, dsx, dsy, bias, gradients, lodProvided, true);
+		sampleTexture(texture, c, u, v, w, q, dsx, dsy, method, true);
 	}
 
-	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, SamplerMethod method)
+	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, SamplerMethod method, bool fixed12)
 	{
 		bool bias = (method == Bias);
 		bool gradients = (method == Grad);
 		bool lodProvided = (method == Lod);
 
-		sampleTexture(texture, c, u, v, w, q, dsx, dsy, bias, gradients, lodProvided);
-	}
-
-	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool bias, bool gradients, bool lodProvided, bool fixed12)
-	{
 		#if PERF_PROFILE
 			AddAtomic(Pointer<Long>(&profiler.texOperations), 4);
 
@@ -305,8 +296,12 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool bias, bool gradients, bool lodProvided)
+	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, SamplerMethod method)
 	{
+		bool bias = (method == Bias);
+		bool gradients = (method == Grad);
+		bool lodProvided = (method == Lod);
+
 		#if PERF_PROFILE
 			AddAtomic(Pointer<Long>(&profiler.texOperations), 4);
 
@@ -373,7 +368,7 @@ namespace sw
 			{
 				Vector4s cs;
 
-				sampleTexture(texture, cs, u, v, w, q, dsx, dsy, bias, gradients, lodProvided, false);
+				sampleTexture(texture, cs, u, v, w, q, dsx, dsy, method, false);
 
 				for(int component = 0; component < textureComponentCount(); component++)
 				{
