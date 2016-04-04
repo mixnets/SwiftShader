@@ -1509,10 +1509,6 @@ namespace sw
 		Vector4f tmp;
 		sampleTexture(tmp, src1, src0.x, src0.y, src0.z, lod);
 
-		dst.x = tmp[(src1.swizzle >> 0) & 0x3];
-		dst.y = tmp[(src1.swizzle >> 2) & 0x3];
-		dst.z = tmp[(src1.swizzle >> 4) & 0x3];
-		dst.w = tmp[(src1.swizzle >> 6) & 0x3];
 	}
 
 	void VertexProgram::TEXOFFSET(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3)
@@ -1559,10 +1555,12 @@ namespace sw
 
 	void VertexProgram::sampleTexture(Vector4f &c, const Src &s, Float4 &u, Float4 &v, Float4 &w, Float4 &q)
 	{
+		Vector4f tmp;
+
 		if(s.type == Shader::PARAMETER_SAMPLER && s.rel.type == Shader::PARAMETER_VOID)
 		{
 			Pointer<Byte> texture = data + OFFSET(DrawData,mipmap[TEXTURE_IMAGE_UNITS]) + s.index * sizeof(Texture);
-			sampler[s.index]->sampleTexture(texture, c, u, v, w, q, a0, a0, Lod);
+			sampler[s.index]->sampleTexture(texture, tmp, u, v, w, q, a0, a0, Lod);
 		}
 		else
 		{
@@ -1575,11 +1573,16 @@ namespace sw
 					If(index == i)
 					{
 						Pointer<Byte> texture = data + OFFSET(DrawData,mipmap[TEXTURE_IMAGE_UNITS]) + i * sizeof(Texture);
-						sampler[i]->sampleTexture(texture, c, u, v, w, q, a0, a0, Lod);
+						sampler[i]->sampleTexture(texture, tmp, u, v, w, q, a0, a0, Lod);
 						// FIXME: When the sampler states are the same, we could use one sampler and just index the texture
 					}
 				}
 			}
 		}
+
+		c.x = tmp[(s.swizzle >> 0) & 0x3];
+		c.y = tmp[(s.swizzle >> 2) & 0x3];
+		c.z = tmp[(s.swizzle >> 4) & 0x3];
+		c.w = tmp[(s.swizzle >> 6) & 0x3];
 	}
 }

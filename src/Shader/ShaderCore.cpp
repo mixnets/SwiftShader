@@ -200,7 +200,7 @@ namespace sw
 		Float4 x0;
 		Float4 x1;
 		Int4 x2;
-	
+
 		x0 = x;
 
 		x0 = Min(x0, As<Float4>(Int4(0x43010000)));   // 129.00000e+0f
@@ -224,7 +224,7 @@ namespace sw
 		x1 *= x0;
 		x1 += As<Float4>(Int4(0x3F7FFFFF));   // 9.9999994e-1f
 		x1 *= As<Float4>(x2);
-			
+
 		return x1;
 	}
 
@@ -234,9 +234,9 @@ namespace sw
 		Float4 x1;
 		Float4 x2;
 		Float4 x3;
-		
+
 		x0 = x;
-		
+
 		x1 = As<Float4>(As<Int4>(x0) & Int4(0x7F800000));
 		x1 = As<Float4>(As<UInt4>(x1) >> 8);
 		x1 = As<Float4>(As<Int4>(x1) | As<Int4>(Float4(1.0f)));
@@ -248,7 +248,7 @@ namespace sw
 		x2 /= x3;
 
 		x1 += (x0 - Float4(1.0f)) * x2;
-				
+
 		return x1;
 	}
 
@@ -357,7 +357,7 @@ namespace sw
 	{
 		// cos(x) = sin(x + pi/2)
 		Float4 y = x + Float4(1.57079632e+0f);
-		
+
 		// Wrap around
 		y -= As<Float4>(CmpNLT(y, Float4(3.14159265e+0f)) & As<Int4>(Float4(6.28318530e+0f)));
 
@@ -418,7 +418,7 @@ namespace sw
 
 		// Approximation of atan in [-1..1]
 		Float4 theta = y * (Float4(-0.27f) * Abs(y) + Float4(1.05539816f));
-		
+
 		// +/-pi/2 depending on sign of x
 		Float4 sgnPi_2 = As<Float4>(As<Int4>(Float4(1.57079632e+0f)) ^ (As<Int4>(x) & Int4(0x80000000)));
 
@@ -1029,7 +1029,7 @@ namespace sw
 	}
 
 	void ShaderCore::exp2x(Vector4f &dst, const Vector4f &src, bool pp)
-	{ 
+	{
 		Float4 exp = exponential2(src.x, pp);
 
 		dst.x = exp;
@@ -1268,7 +1268,7 @@ namespace sw
 		dst.z =  As<Float4>(flip ^ As<Int4>(N.z));
 		dst.w =  As<Float4>(flip ^ As<Int4>(N.w));
 	}
-	
+
 	void ShaderCore::reflect1(Vector4f &dst, const Vector4f &I, const Vector4f &N)
 	{
 		Float4 d = N.x * I.x;
@@ -1413,7 +1413,7 @@ namespace sw
 		dst.z = src.z * rsq;
 		dst.w = src.w * rsq;
 	}
-	
+
 	void ShaderCore::sincos(Vector4f &dst, const Vector4f &src, bool pp)
 	{
 		dst.x = cosine_pi(src.x, pp);
@@ -1541,7 +1541,7 @@ namespace sw
 			exp2x(dst, src, true);   // FIXME: 10-bit precision suffices
 		}
 	}
-	
+
 	void ShaderCore::logp(Vector4f &dst, const Vector4f &src, unsigned short version)
 	{
 		if(version < 0x0200)
@@ -1572,7 +1572,7 @@ namespace sw
 			log2x(dst, src, true);
 		}
 	}
-	
+
 	void ShaderCore::cmp0(Vector4f &dst, const Vector4f &src0, const Vector4f &src1, const Vector4f &src2)
 	{
 		cmp0(dst.x, src0.x, src1.x, src2.x);
