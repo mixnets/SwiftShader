@@ -1226,31 +1226,12 @@ namespace sw
 		Vector4f dsx;
 		Vector4f dsy;
 
-		sampleTexture(c, stage, u, v, w, q, dsx, dsy, project);
-	}
-
-	void PixelPipeline::sampleTexture(Vector4s &c, int stage, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project)
-	{
 #if PERF_PROFILE
 		Long texTime = Ticks();
 #endif
 
 		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap) + stage * sizeof(Texture);
-
-		if(!project)
-		{
-			sampler[stage]->sampleTexture(texture, c, u, v, w, q, dsx, dsy, Implicit);
-		}
-		else
-		{
-			Float4 rq = reciprocal(q);
-
-			Float4 u_q = u * rq;
-			Float4 v_q = v * rq;
-			Float4 w_q = w * rq;
-
-			sampler[stage]->sampleTexture(texture, c, u_q, v_q, w_q, q, dsx, dsy, Implicit);
-		}
+		sampler[stage]->sampleTexture(texture, c, u, v, w, q, dsx, dsy, project, Implicit);
 
 #if PERF_PROFILE
 		cycles[PERF_TEX] += Ticks() - texTime;

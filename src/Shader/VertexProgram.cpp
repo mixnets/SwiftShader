@@ -1562,7 +1562,7 @@ namespace sw
 		if(s.type == Shader::PARAMETER_SAMPLER && s.rel.type == Shader::PARAMETER_VOID)
 		{
 			Pointer<Byte> texture = data + OFFSET(DrawData,mipmap[16]) + s.index * sizeof(Texture);
-			sampler[s.index]->sampleTexture(texture, c, u, v, w, q, a0, a0, Lod);
+			sampler[s.index]->sampleTexture(texture, c, u, v, w, q, a0, a0, false, Lod);
 		}
 		else
 		{
@@ -1575,7 +1575,7 @@ namespace sw
 					If(index == i)
 					{
 						Pointer<Byte> texture = data + OFFSET(DrawData,mipmap[16]) + i * sizeof(Texture);
-						sampler[i]->sampleTexture(texture, c, u, v, w, q, a0, a0, Lod);
+						sampler[i]->sampleTexture(texture, c, u, v, w, q, a0, a0, false, Lod);
 						// FIXME: When the sampler states are the same, we could use one sampler and just index the texture
 					}
 				}

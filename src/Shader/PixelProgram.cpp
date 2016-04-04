@@ -640,7 +640,7 @@ namespace sw
 				{
 					If(index == i)
 					{
-						sampleTexture(c, i, u, v, w, q, dsx, dsy, project, method);
+						sampleTexture(c, i, u, v, w, q, dsx, dsy, method);
 						// FIXME: When the sampler states are the same, we could use one sampler and just index the texture
 					}
 				}
@@ -655,21 +655,7 @@ namespace sw
 #endif
 
 		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap) + stage * sizeof(Texture);
-
-		if(!project)
-		{
-			sampler[stage]->sampleTexture(texture, c, u, v, w, q, dsx, dsy, method);
-		}
-		else
-		{
-			Float4 rq = reciprocal(q);
-
-			Float4 u_q = u * rq;
-			Float4 v_q = v * rq;
-			Float4 w_q = w * rq;
-
-			sampler[stage]->sampleTexture(texture, c, u_q, v_q, w_q, q, dsx, dsy, method);
-		}
+		sampler[stage]->sampleTexture(texture, c, u, v, w, q, dsx, dsy, project, method);
 
 #if PERF_PROFILE
 		cycles[PERF_TEX] += Ticks() - texTime;

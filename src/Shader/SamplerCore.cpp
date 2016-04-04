@@ -51,12 +51,12 @@ namespace sw
 	{
 	}
 
-	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, SamplerMethod method)
+	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project, SamplerMethod method)
 	{
-		sampleTexture(texture, c, u, v, w, q, dsx, dsy, method, true);
+		sampleTexture(texture, c, u, v, w, q, dsx, dsy, project, method, true);
 	}
 
-	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, SamplerMethod method, bool fixed12)
+	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project, SamplerMethod method, bool fixed12)
 	{
 		#if PERF_PROFILE
 			AddAtomic(Pointer<Long>(&profiler.texOperations), 4);
@@ -66,10 +66,6 @@ namespace sw
 				AddAtomic(Pointer<Long>(&profiler.compressedTex), 4);
 			}
 		#endif
-
-		Float4 uuuu = u;
-		Float4 vvvv = v;
-		Float4 wwww = w;
 
 		if(state.textureType == TEXTURE_NULL)
 		{
@@ -88,6 +84,18 @@ namespace sw
 		}
 		else
 		{
+			Float4 uuuu = u;
+			Float4 vvvv = v;
+			Float4 wwww = w;
+
+			if(project)
+			{
+				Float4 rq = reciprocal(q);
+
+				uuuu *= rq;
+				vvvv *= rq;
+			}
+
 			Int face[4];
 			Float4 lodU;
 			Float4 lodV;
@@ -292,7 +300,7 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, SamplerMethod method)
+	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, bool project, SamplerMethod method)
 	{
 		#if PERF_PROFILE
 			AddAtomic(Pointer<Long>(&profiler.texOperations), 4);
@@ -317,6 +325,14 @@ namespace sw
 				Float4 uuuu = u;
 				Float4 vvvv = v;
 				Float4 wwww = w;
+
+				if(project)
+				{
+					Float4 rq = reciprocal(q);
+
+					uuuu *= rq;
+					vvvv *= rq;
+				}
 
 				Int face[4];
 				Float4 lodU;
@@ -360,7 +376,7 @@ namespace sw
 			{
 				Vector4s cs;
 
-				sampleTexture(texture, cs, u, v, w, q, dsx, dsy, method, false);
+				sampleTexture(texture, cs, u, v, w, q, dsx, dsy, project, method, false);
 
 				for(int component = 0; component < textureComponentCount(); component++)
 				{
