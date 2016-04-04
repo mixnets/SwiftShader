@@ -1878,7 +1878,7 @@ namespace sw
 
 		int pts = state.pointSizeRegister;
 
-		if(state.pointSizeRegister != 0xF)
+		if(state.pointSizeRegister != VertexShader::NO_VERTEX_POINT_SIZE)
 		{
 			pSize = v.v[pts].y;
 		}

@@ -22,6 +22,8 @@ namespace sw
 	class VertexShader : public Shader
 	{
 	public:
+		enum { NO_VERTEX_POINT_SIZE = 0xF };
+
 		explicit VertexShader(const VertexShader *vs = 0);
 		explicit VertexShader(const unsigned long *token);
 

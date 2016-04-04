@@ -46,7 +46,7 @@ namespace sw
 			bool perspective               : 1;
 			bool pointSprite               : 1;
 			unsigned int positionRegister  : 4;
-			unsigned int pointSizeRegister : 4;
+			unsigned int pointSizeRegister : BITS(VertexShader::NO_VERTEX_POINT_SIZE);
 			CullMode cullMode              : BITS(CULL_LAST);
 			bool twoSidedStencil           : 1;
 			bool slopeDepthBias            : 1;
