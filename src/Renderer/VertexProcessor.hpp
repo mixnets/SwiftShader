@@ -15,6 +15,7 @@
 #include "Matrix.hpp"
 #include "Context.hpp"
 #include "RoutineCache.hpp"
+#include "Shader/VertexShader.hpp"
 
 namespace sw
 {
@@ -48,7 +49,7 @@ namespace sw
 			bool fixedFunction             : 1;
 			bool textureSampling           : 1;
 			unsigned int positionRegister  : 4;
-			unsigned int pointSizeRegister : 4;   // 0xF signifies no vertex point size
+			unsigned int pointSizeRegister : BITS(VertexShader::NO_VERTEX_POINT_SIZE);
 
 			unsigned int vertexBlendMatrixCount               : 3;
 			bool indexedVertexBlendEnable                     : 1;

@@ -22,7 +22,7 @@ namespace sw
 	{
 		version = 0x0300;
 		positionRegister = Pos;
-		pointSizeRegister = -1;   // No vertex point size
+		pointSizeRegister = NO_VERTEX_POINT_SIZE;
 		instanceIdDeclared = false;
 
 		for(int i = 0; i < MAX_INPUT_ATTRIBUTES; i++)
@@ -54,7 +54,7 @@ namespace sw
 		parse(token);
 
 		positionRegister = Pos;
-		pointSizeRegister = -1;   // No vertex point size
+		pointSizeRegister = NO_VERTEX_POINT_SIZE;
 		instanceIdDeclared = false;
 
 		for(int i = 0; i < MAX_INPUT_ATTRIBUTES; i++)

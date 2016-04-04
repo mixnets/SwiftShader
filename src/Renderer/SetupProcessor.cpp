@@ -86,7 +86,7 @@ namespace sw
 		state.vFace = context->pixelShader && context->pixelShader->vFaceDeclared;
 
 		state.positionRegister = Pos;
-		state.pointSizeRegister = 0xF;   // No vertex point size
+		state.pointSizeRegister = VertexShader::NO_VERTEX_POINT_SIZE;
 
 		state.multiSample = context->getMultiSampleCount();
 		state.rasterizerDiscard = context->rasterizerDiscard;
