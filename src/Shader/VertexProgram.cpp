@@ -830,7 +830,7 @@ namespace sw
 			if(src.rel.deterministic)
 			{
 				Int a = relativeAddress(src, src.bufferIndex);
-			
+
 				c.x = c.y = c.z = c.w = *Pointer<Float4>(uniformAddress(src.bufferIndex, i, a));
 
 				c.x = c.x.xxxx;
@@ -1494,25 +1494,13 @@ namespace sw
 
 	void VertexProgram::TEXLDL(Vector4f &dst, Vector4f &src0, const Src &src1)
 	{
-		Vector4f tmp;
-		sampleTexture(tmp, src1, src0.x, src0.y, src0.z, src0.w);
-
-		dst.x = tmp[(src1.swizzle >> 0) & 0x3];
-		dst.y = tmp[(src1.swizzle >> 2) & 0x3];
-		dst.z = tmp[(src1.swizzle >> 4) & 0x3];
-		dst.w = tmp[(src1.swizzle >> 6) & 0x3];
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, Lod);
 	}
 
 	void VertexProgram::TEX(Vector4f &dst, Vector4f &src0, const Src &src1)
 	{
 		Float4 lod = Float4(0.0f);
-		Vector4f tmp;
-		sampleTexture(tmp, src1, src0.x, src0.y, src0.z, lod);
-
-		dst.x = tmp[(src1.swizzle >> 0) & 0x3];
-		dst.y = tmp[(src1.swizzle >> 2) & 0x3];
-		dst.z = tmp[(src1.swizzle >> 4) & 0x3];
-		dst.w = tmp[(src1.swizzle >> 6) & 0x3];
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, lod, Lod);
 	}
 
 	void VertexProgram::TEXOFFSET(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3)
@@ -1557,29 +1545,36 @@ namespace sw
 		}
 	}
 
-	void VertexProgram::sampleTexture(Vector4f &c, const Src &s, Float4 &u, Float4 &v, Float4 &w, Float4 &q)
+	void VertexProgram::sampleTexture(Vector4f &c, const Src &s, Float4 &u, Float4 &v, Float4 &w, Float4 &q, SamplerMethod method)
 	{
+		Vector4f tmp;
+
 		if(s.type == Shader::PARAMETER_SAMPLER && s.rel.type == Shader::PARAMETER_VOID)
 		{
-			Pointer<Byte> texture = data + OFFSET(DrawData,mipmap[16]) + s.index * sizeof(Texture);
-			sampler[s.index]->sampleTexture(texture, c, u, v, w, q, a0, a0, false, false, true);
+			Pointer<Byte> texture = data + OFFSET(DrawData,mipmap[TEXTURE_IMAGE_UNITS]) + s.index * sizeof(Texture);
+			sampler[s.index]->sampleTexture(texture, tmp, u, v, w, q, a0, a0, method);
 		}
 		else
 		{
 			Int index = As<Int>(Float(fetchRegisterF(s).x.x));
 
-			for(int i = 0; i < 16; i++)
+			for(int i = 0; i < VERTEX_TEXTURE_IMAGE_UNITS; i++)
 			{
 				if(shader->usesSampler(i))
 				{
 					If(index == i)
 					{
-						Pointer<Byte> texture = data + OFFSET(DrawData,mipmap[16]) + i * sizeof(Texture);
-						sampler[i]->sampleTexture(texture, c, u, v, w, q, a0, a0, false, false, true);
+						Pointer<Byte> texture = data + OFFSET(DrawData,mipmap[TEXTURE_IMAGE_UNITS]) + i * sizeof(Texture);
+						sampler[i]->sampleTexture(texture, tmp, u, v, w, q, a0, a0, method);
 						// FIXME: When the sampler states are the same, we could use one sampler and just index the texture
 					}
 				}
 			}
 		}
+
+		c.x = tmp[(s.swizzle >> 0) & 0x3];
+		c.y = tmp[(s.swizzle >> 2) & 0x3];
+		c.z = tmp[(s.swizzle >> 4) & 0x3];
+		c.w = tmp[(s.swizzle >> 6) & 0x3];
 	}
 }
