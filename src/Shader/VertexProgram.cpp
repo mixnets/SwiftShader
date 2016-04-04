@@ -830,7 +830,7 @@ namespace sw
 			if(src.rel.deterministic)
 			{
 				Int a = relativeAddress(src, src.bufferIndex);
-			
+
 				c.x = c.y = c.z = c.w = *Pointer<Float4>(uniformAddress(src.bufferIndex, i, a));
 
 				c.x = c.x.xxxx;
@@ -1561,21 +1561,21 @@ namespace sw
 	{
 		if(s.type == Shader::PARAMETER_SAMPLER && s.rel.type == Shader::PARAMETER_VOID)
 		{
-			Pointer<Byte> texture = data + OFFSET(DrawData,mipmap[16]) + s.index * sizeof(Texture);
-			sampler[s.index]->sampleTexture(texture, c, u, v, w, q, a0, a0, false, false, true);
+			Pointer<Byte> texture = data + OFFSET(DrawData,mipmap[TEXTURE_IMAGE_UNITS]) + s.index * sizeof(Texture);
+			sampler[s.index]->sampleTexture(texture, c, u, v, w, q, a0, a0, Lod);
 		}
 		else
 		{
 			Int index = As<Int>(Float(fetchRegisterF(s).x.x));
 
-			for(int i = 0; i < 16; i++)
+			for(int i = 0; i < VERTEX_TEXTURE_IMAGE_UNITS; i++)
 			{
 				if(shader->usesSampler(i))
 				{
 					If(index == i)
 					{
-						Pointer<Byte> texture = data + OFFSET(DrawData,mipmap[16]) + i * sizeof(Texture);
-						sampler[i]->sampleTexture(texture, c, u, v, w, q, a0, a0, false, false, true);
+						Pointer<Byte> texture = data + OFFSET(DrawData,mipmap[TEXTURE_IMAGE_UNITS]) + i * sizeof(Texture);
+						sampler[i]->sampleTexture(texture, c, u, v, w, q, a0, a0, Lod);
 						// FIXME: When the sampler states are the same, we could use one sampler and just index the texture
 					}
 				}
