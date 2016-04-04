@@ -379,7 +379,7 @@ struct State
 	gl::BindingPointer<Buffer> pixelPackBuffer;
 	gl::BindingPointer<Buffer> pixelUnpackBuffer;
 	gl::BindingPointer<Buffer> genericUniformBuffer;
-	UniformBufferBinding uniformBuffers[MAX_UNIFORM_BUFFER_BINDINGS];
+	OffsetBindingPointer uniformBuffers[MAX_UNIFORM_BUFFER_BINDINGS];
 
     GLuint readFramebuffer;
     GLuint drawFramebuffer;

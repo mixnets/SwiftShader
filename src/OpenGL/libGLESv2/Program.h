@@ -167,7 +167,7 @@ namespace es2
 
 		void dirtyAllUniforms();
 		void applyUniforms();
-		void applyUniformBuffers(UniformBufferBinding* uniformBuffers);
+		void applyUniformBuffers(OffsetBindingPointer* uniformBuffers);
 
 		void link();
 		bool isLinked() const;
