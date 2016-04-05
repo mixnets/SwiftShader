@@ -4,7 +4,7 @@
 
  @Title        OpenGL ES 2.0 HelloAPI Tutorial
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -144,7 +144,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 	char* pszFragShader = "\
 		void main (void)\
 		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+					const highp float x = pow(1.0, 1.0);\
+			gl_FragColor = vec4(1.0, 1.0, x ,1.0);\
 		}";
 	char* pszVertShader = "\
 		attribute highp vec4	myVertex;\
@@ -419,7 +420,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// We're going to draw a triangle to the screen so create a vertex buffer object for our triangle
 	GLuint	ui32Vbo; // Vertex buffer object handle
-	
+
 	// Interleaved vertex data
 	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
 								0.4f ,-0.4f,0.0f,
