@@ -217,8 +217,8 @@ variable_identifier
         // don't delete $1.string, it's used by error recovery, and the pool
         // pop will reclaim the memory
 
-        if (variable->getConstPointer()) {
-            ConstantUnion* constArray = variable->getConstPointer();
+		ConstantUnion *constArray = variable->getConstPointer();
+        if (constArray) {
             TType t(variable->getType());
             $$ = context->intermediate.addConstantUnion(constArray, t, @1);
         } else

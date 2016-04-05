@@ -2600,7 +2600,7 @@ TIntermTyped *TParseContext::addFieldSelectionExpression(TIntermTyped *baseExpre
 			recover();
 		}
 
-		if(baseExpression->getType().getQualifier() == EvqConstExpr)
+		if(baseExpression->getAsConstantUnion())
 		{
 			// constant folding for vector fields
 			indexedExpression = addConstVectorNode(fields, baseExpression, fieldLocation);
@@ -2621,7 +2621,7 @@ TIntermTyped *TParseContext::addFieldSelectionExpression(TIntermTyped *baseExpre
 			TIntermTyped *index = intermediate.addSwizzle(fields, fieldLocation);
 			indexedExpression = intermediate.addIndex(EOpVectorSwizzle, baseExpression, index, dotLocation);
 			indexedExpression->setType(TType(baseExpression->getBasicType(), baseExpression->getPrecision(),
-				EvqTemporary, (unsigned char)vectorString.size()));
+				baseExpression->getQualifier() == EvqConstExpr ? EvqConstExpr : EvqTemporary, (unsigned char)vectorString.size()));
 		}
 	}
 	else if(baseExpression->isMatrix())
