@@ -60,7 +60,7 @@ namespace glsl
 		GLenum precision;
 		std::string name;
 		int arraySize;
-	
+
 		int registerIndex;
 
 		int blockId;
@@ -141,7 +141,7 @@ namespace glsl
 		std::string name;
 		int arraySize;
 		int location;
-	
+
 		int registerIndex;
 	};
 
@@ -205,7 +205,7 @@ namespace glsl
 		TIntermSequence *arg;
 		TIntermTyped *ret;
 	};
-	
+
 	typedef sw::Shader::Instruction Instruction;
 
 	class Temporary;

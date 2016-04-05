@@ -4,7 +4,7 @@
 
  @Title        OpenGL ES 2.0 HelloAPI Tutorial
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -140,19 +140,54 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		0.0f,0.0f,0.0f,1.0f
 	};
 
+#define SHADER(x) #x
+
 	// Fragment and vertex shaders code
-	char* pszFragShader = "\
-		void main (void)\
-		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
-		}";
-	char* pszVertShader = "\
-		attribute highp vec4	myVertex;\
-		uniform mediump mat4	myPMVMatrix;\
-		void main(void)\
-		{\
-			gl_Position = myPMVMatrix * myVertex;\
-		}";
+	char* pszFragShader = SHADER(
+		precision highp float;
+
+		const int a = int(-2.0) * 1 - -2 * 1;
+		const float c = cos(asin(0.0));
+		const bool d = ((bool(1)));
+		const int e = ivec4(c, d, -5.0, true).b - -6;
+
+		void main (void)
+		{
+			const int a = 0;
+			const float b = sin(float(a)) * cos(float(true));
+			const bool cval = lessThan(vec2 (1.0), vec2 (2.0)).y;
+			highp float arr[int(max(-1.0 + 0.0, 2.0))];
+			for (int i = 0; i < 1; i++)
+			highp float l = length(gl_FragColor);
+			const highp float x = pow(1.0, 1.0);
+			const highp float c = abs(float (-42.0));
+			gl_FragColor = vec4(1.0, 1.0, x ,1.0);
+		}
+	);
+
+	char* pszVertShader = SHADER(
+		attribute vec4 dEQP_Position;
+const int a = 0;
+const float b = sin(float(a)) * cos(float(true));
+const bool d = true;
+int e = 1 * 1 * 1;
+const float f = float(7.0 + -6.0);
+vec4 g;
+attribute vec4 h;
+uniform mediump vec4 i;
+varying mediump vec4 v_color;
+
+void main()
+{
+	gl_Position = dEQP_Position;
+	bvec3 c = bvec3(sin(float(d)), d, int(a) * int(e));
+	(vec3(a, -10, 8.4)).grb - vec3(float(-7), float(-0.75), 3) * (vec3(d, -1.25, -1.25));
+	g = (i);
+	g = h;
+	c = bvec3(bvec3(f, e, b).x, int(bool(d)), 1.0);
+	v_color = tan(tan(vec4(b, b, a, 0)));
+}
+	);
 
 	/*
 		Step 0 - Create a EGLNativeWindowType that we can use for OpenGL ES output
@@ -419,7 +454,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// We're going to draw a triangle to the screen so create a vertex buffer object for our triangle
 	GLuint	ui32Vbo; // Vertex buffer object handle
-	
+
 	// Interleaved vertex data
 	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
 								0.4f ,-0.4f,0.0f,
