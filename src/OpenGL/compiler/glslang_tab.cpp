@@ -2365,7 +2365,7 @@ yyreduce:
         // don't delete $1.string, it's used by error recovery, and the pool
         // pop will reclaim the memory
 
-        if (variable->getType().getQualifier() == EvqConstExpr ) {
+        if (variable->getType().getQualifier() == EvqConstExpr && variable->getConstPointer()) {
             ConstantUnion* constArray = variable->getConstPointer();
             TType t(variable->getType());
             (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(constArray, t, (yylsp[0]));
