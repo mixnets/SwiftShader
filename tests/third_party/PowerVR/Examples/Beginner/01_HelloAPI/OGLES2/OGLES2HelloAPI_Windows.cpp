@@ -4,7 +4,7 @@
 
  @Title        OpenGL ES 2.0 HelloAPI Tutorial
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -140,19 +140,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		0.0f,0.0f,0.0f,1.0f
 	};
 
+#define SHADER(x) #x
+
 	// Fragment and vertex shaders code
 	char* pszFragShader = "\
 		void main (void)\
 		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+					const highp float x = pow(1.0, 1.0);\
+			gl_FragColor = vec4(1.0, 1.0, x ,1.0);\
 		}";
-	char* pszVertShader = "\
-		attribute highp vec4	myVertex;\
-		uniform mediump mat4	myPMVMatrix;\
-		void main(void)\
-		{\
-			gl_Position = myPMVMatrix * myVertex;\
-		}";
+	char* pszVertShader = SHADER(
+		precision highp float;
+attribute highp vec4 dEQP_Position;
+varying float out0;
+
+
+struct S
+{
+	vec4 a;
+	int  b;
+};
+
+void main()
+{
+	const S s = S(vec4(1.5), 123);
+	out0 = length(s.a.xy)*float(s.b);
+	gl_Position = dEQP_Position;
+
+}
+	);
 
 	/*
 		Step 0 - Create a EGLNativeWindowType that we can use for OpenGL ES output
@@ -419,7 +435,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// We're going to draw a triangle to the screen so create a vertex buffer object for our triangle
 	GLuint	ui32Vbo; // Vertex buffer object handle
-	
+
 	// Interleaved vertex data
 	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
 								0.4f ,-0.4f,0.0f,

@@ -332,59 +332,61 @@ TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermT
 //
 // Returns the added node.
 //
-TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, const TSourceLoc &line)
+TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* operand, const TSourceLoc &line, const TType *funcReturnType)
 {
-    TIntermUnary* node;
-    TIntermTyped* child = childNode->getAsTyped();
-
-    if (child == 0) {
+    if(!operand)
+	{
         infoSink.info.message(EPrefixInternalError, "Bad type in AddUnaryMath", line);
-        return 0;
+        return nullptr;
     }
 
-    switch (op) {
-        case EOpBitwiseNot:
-            if (!IsInteger(child->getType().getBasicType()) || child->getType().isMatrix() || child->getType().isArray()) {
-                return 0;
-            }
-            break;
-
-        case EOpLogicalNot:
-            if (child->getType().getBasicType() != EbtBool || child->getType().isMatrix() || child->getType().isArray() || child->getType().isVector()) {
-                return 0;
-            }
-            break;
-
-        case EOpPostIncrement:
-        case EOpPreIncrement:
-        case EOpPostDecrement:
-        case EOpPreDecrement:
-        case EOpNegative:
-            if (child->getType().getBasicType() == EbtStruct || child->getType().isArray())
-                return 0;
-        default: break;
+    switch(op)
+	{
+    case EOpBitwiseNot:
+        if(!IsInteger(operand->getType().getBasicType()) || operand->getType().isMatrix() || operand->getType().isArray())
+		{
+            return nullptr;
+        }
+        break;
+    case EOpLogicalNot:
+        if(operand->getType().getBasicType() != EbtBool || operand->getType().isMatrix() || operand->getType().isArray() || operand->getType().isVector())
+		{
+            return nullptr;
+        }
+        break;
+    case EOpPostIncrement:
+    case EOpPreIncrement:
+    case EOpPostDecrement:
+    case EOpPreDecrement:
+    case EOpNegative:
+        if(operand->getType().getBasicType() == EbtStruct || operand->getType().isArray())
+		{
+            return nullptr;
+		}
+    default:
+		break;
     }
 
-    TIntermConstantUnion *childTempConstant = 0;
-    if (child->getAsConstantUnion())
-        childTempConstant = child->getAsConstantUnion();
+    TIntermConstantUnion *constant = operand->getAsConstantUnion();
 
-    //
-    // Make a new node for the operator.
-    //
-    node = new TIntermUnary(op);
+	if(constant)
+	{
+        TIntermTyped *folded = constant->fold(op, nullptr, infoSink);
+
+        if(folded)
+		{
+            return folded;
+		}
+    }
+
+    TIntermUnary *node = new TIntermUnary(op);
     node->setLine(line);
-    node->setOperand(child);
+    node->setOperand(operand);
 
-    if (! node->promote(infoSink))
-        return 0;
-
-    if (childTempConstant)  {
-        TIntermTyped* newChild = childTempConstant->fold(op, 0, infoSink);
-
-        if (newChild)
-            return newChild;
-    }
+    if(!node->promote(infoSink, funcReturnType))
+	{
+        return nullptr;
+	}
 
     return node;
 }
@@ -575,6 +577,7 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(ConstantUnion* unionArrayP
 {
     TIntermConstantUnion* node = new TIntermConstantUnion(unionArrayPointer, t);
     node->setLine(line);
+	node->getTypePointer()->setQualifier(EvqConstExpr);
 
     return node;
 }
@@ -728,7 +731,7 @@ bool TIntermOperator::isConstructor() const
 //
 // Returns false in nothing makes sense.
 //
-bool TIntermUnary::promote(TInfoSink&)
+bool TIntermUnary::promote(TInfoSink&, const TType *funcReturnType)
 {
     switch (op) {
         case EOpLogicalNot:
@@ -773,12 +776,17 @@ bool TIntermUnary::promote(TInfoSink&)
                 return false;
     }
 
-    setType(operand->getType());
+    setType(*funcReturnType);
 
 	// Unary operations results in temporary variables unless const.
-    if (operand->getQualifier() != EvqConstExpr) {
-        getTypePointer()->setQualifier(EvqTemporary);
-    }
+    if(operand->getQualifier() != EvqConstExpr)
+	{
+		getTypePointer()->setQualifier(EvqTemporary);
+	}
+	else
+	{
+		getTypePointer()->setQualifier(EvqConstExpr);
+	}
 
     return true;
 }
@@ -1043,7 +1051,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
         default:
             return false;
     }
-    
+
     return true;
 }
 
