@@ -27,7 +27,7 @@ public:
     TIntermTyped* addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, const TSourceLoc&);
     TIntermTyped* addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, const TSourceLoc&);
     TIntermTyped* addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index, const TSourceLoc&);
-    TIntermTyped* addUnaryMath(TOperator op, TIntermNode* child, const TSourceLoc&);
+    TIntermTyped* addUnaryMath(TOperator op, TIntermTyped* child, const TSourceLoc&);
     TIntermAggregate* growAggregate(TIntermNode* left, TIntermNode* right, const TSourceLoc&);
     TIntermAggregate* makeAggregate(TIntermNode* node, const TSourceLoc&);
     TIntermAggregate* setAggregateOperator(TIntermNode*, TOperator, const TSourceLoc&);
