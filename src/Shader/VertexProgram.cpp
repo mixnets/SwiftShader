@@ -136,11 +136,11 @@ namespace sw
 			Vector4f s3;
 			Vector4f s4;
 
-			if(src0.type != Shader::PARAMETER_VOID) s0 = fetchRegisterF(src0);
-			if(src1.type != Shader::PARAMETER_VOID) s1 = fetchRegisterF(src1);
-			if(src2.type != Shader::PARAMETER_VOID) s2 = fetchRegisterF(src2);
-			if(src3.type != Shader::PARAMETER_VOID) s3 = fetchRegisterF(src3);
-			if(src4.type != Shader::PARAMETER_VOID) s4 = fetchRegisterF(src4);
+			if(src0.type != Shader::PARAMETER_VOID) s0 = fetchRegister(src0);
+			if(src1.type != Shader::PARAMETER_VOID) s1 = fetchRegister(src1);
+			if(src2.type != Shader::PARAMETER_VOID) s2 = fetchRegister(src2);
+			if(src3.type != Shader::PARAMETER_VOID) s3 = fetchRegister(src3);
+			if(src4.type != Shader::PARAMETER_VOID) s4 = fetchRegister(src4);
 
 			switch(opcode)
 			{
@@ -647,7 +647,7 @@ namespace sw
 		}
 	}
 
-	Vector4f VertexProgram::fetchRegisterF(const Src &src, unsigned int offset)
+	Vector4f VertexProgram::fetchRegister(const Src &src, unsigned int offset)
 	{
 		Vector4f reg;
 		unsigned int i = src.index + offset;
@@ -930,8 +930,8 @@ namespace sw
 
 	void VertexProgram::M3X2(Vector4f &dst, Vector4f &src0, Src &src1)
 	{
-		Vector4f row0 = fetchRegisterF(src1, 0);
-		Vector4f row1 = fetchRegisterF(src1, 1);
+		Vector4f row0 = fetchRegister(src1, 0);
+		Vector4f row1 = fetchRegister(src1, 1);
 
 		dst.x = dot3(src0, row0);
 		dst.y = dot3(src0, row1);
@@ -939,9 +939,9 @@ namespace sw
 
 	void VertexProgram::M3X3(Vector4f &dst, Vector4f &src0, Src &src1)
 	{
-		Vector4f row0 = fetchRegisterF(src1, 0);
-		Vector4f row1 = fetchRegisterF(src1, 1);
-		Vector4f row2 = fetchRegisterF(src1, 2);
+		Vector4f row0 = fetchRegister(src1, 0);
+		Vector4f row1 = fetchRegister(src1, 1);
+		Vector4f row2 = fetchRegister(src1, 2);
 
 		dst.x = dot3(src0, row0);
 		dst.y = dot3(src0, row1);
@@ -950,10 +950,10 @@ namespace sw
 
 	void VertexProgram::M3X4(Vector4f &dst, Vector4f &src0, Src &src1)
 	{
-		Vector4f row0 = fetchRegisterF(src1, 0);
-		Vector4f row1 = fetchRegisterF(src1, 1);
-		Vector4f row2 = fetchRegisterF(src1, 2);
-		Vector4f row3 = fetchRegisterF(src1, 3);
+		Vector4f row0 = fetchRegister(src1, 0);
+		Vector4f row1 = fetchRegister(src1, 1);
+		Vector4f row2 = fetchRegister(src1, 2);
+		Vector4f row3 = fetchRegister(src1, 3);
 
 		dst.x = dot3(src0, row0);
 		dst.y = dot3(src0, row1);
@@ -963,9 +963,9 @@ namespace sw
 
 	void VertexProgram::M4X3(Vector4f &dst, Vector4f &src0, Src &src1)
 	{
-		Vector4f row0 = fetchRegisterF(src1, 0);
-		Vector4f row1 = fetchRegisterF(src1, 1);
-		Vector4f row2 = fetchRegisterF(src1, 2);
+		Vector4f row0 = fetchRegister(src1, 0);
+		Vector4f row1 = fetchRegister(src1, 1);
+		Vector4f row2 = fetchRegister(src1, 2);
 
 		dst.x = dot4(src0, row0);
 		dst.y = dot4(src0, row1);
@@ -974,10 +974,10 @@ namespace sw
 
 	void VertexProgram::M4X4(Vector4f &dst, Vector4f &src0, Src &src1)
 	{
-		Vector4f row0 = fetchRegisterF(src1, 0);
-		Vector4f row1 = fetchRegisterF(src1, 1);
-		Vector4f row2 = fetchRegisterF(src1, 2);
-		Vector4f row3 = fetchRegisterF(src1, 3);
+		Vector4f row0 = fetchRegister(src1, 0);
+		Vector4f row1 = fetchRegister(src1, 1);
+		Vector4f row2 = fetchRegister(src1, 2);
+		Vector4f row3 = fetchRegister(src1, 3);
 
 		dst.x = dot4(src0, row0);
 		dst.y = dot4(src0, row1);
@@ -1259,7 +1259,7 @@ namespace sw
 		}
 		else
 		{
-			Int4 condition = As<Int4>(fetchRegisterF(src).x);
+			Int4 condition = As<Int4>(fetchRegister(src).x);
 			IF(condition);
 		}
 	}
@@ -1429,7 +1429,7 @@ namespace sw
 		Nucleus::setInsertBlock(testBlock);
 		enableContinue = restoreContinue;
 
-		const Vector4f &src = fetchRegisterF(temporaryRegister);
+		const Vector4f &src = fetchRegister(temporaryRegister);
 		Int4 condition = As<Int4>(src.x);
 		condition &= enableStack[enableIndex - 1];
 		enableStack[enableIndex] = condition;
@@ -1556,7 +1556,7 @@ namespace sw
 		}
 		else
 		{
-			Int index = As<Int>(Float(fetchRegisterF(s).x.x));
+			Int index = As<Int>(Float(fetchRegister(s).x.x));
 
 			for(int i = 0; i < VERTEX_TEXTURE_IMAGE_UNITS; i++)
 			{

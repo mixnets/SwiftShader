@@ -94,9 +94,9 @@ namespace sw
 			Vector4s s1;
 			Vector4s s2;
 
-			if(src0.type != Shader::PARAMETER_VOID) s0 = fetchRegisterS(src0);
-			if(src1.type != Shader::PARAMETER_VOID) s1 = fetchRegisterS(src1);
-			if(src2.type != Shader::PARAMETER_VOID) s2 = fetchRegisterS(src2);
+			if(src0.type != Shader::PARAMETER_VOID) s0 = fetchRegister(src0);
+			if(src1.type != Shader::PARAMETER_VOID) s1 = fetchRegister(src1);
+			if(src2.type != Shader::PARAMETER_VOID) s2 = fetchRegister(src2);
 
 			Float4 x = version < 0x0104 ? v[2 + dst.index].x : v[2 + src0.index].x;
 			Float4 y = version < 0x0104 ? v[2 + dst.index].y : v[2 + src0.index].y;
@@ -1312,7 +1312,7 @@ namespace sw
 		}
 	}
 
-	Vector4s PixelPipeline::fetchRegisterS(const Src &src)
+	Vector4s PixelPipeline::fetchRegister(const Src &src)
 	{
 		Vector4s *reg;
 		int i = src.index;

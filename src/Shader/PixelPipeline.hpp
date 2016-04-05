@@ -65,7 +65,7 @@ namespace sw
 		void convertSigned12(Vector4f &cf, Vector4s &cs);
 
 		void writeDestination(Vector4s &d, const Dst &dst);
-		Vector4s fetchRegisterS(const Src &src);
+		Vector4s fetchRegister(const Src &src);
 
 		// Instructions
 		void MOV(Vector4s &dst, Vector4s &src0);
