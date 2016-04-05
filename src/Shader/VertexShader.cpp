@@ -238,8 +238,7 @@ namespace sw
 		{
 			for(unsigned int i = 0; i < instruction.size(); i++)
 			{
-				if(instruction[i]->opcode == Shader::OPCODE_DCL &&
-				   instruction[i]->dst.type == Shader::PARAMETER_OUTPUT)
+				if(instruction[i]->dst.type == Shader::PARAMETER_OUTPUT)
 				{
 					unsigned char usage = instruction[i]->usage;
 					unsigned char usageIndex = instruction[i]->usageIndex;
@@ -251,14 +250,17 @@ namespace sw
 					if(dst.z) output[dst.index][2] = Semantic(usage, usageIndex);
 					if(dst.w) output[dst.index][3] = Semantic(usage, usageIndex);
 
-					if(usage == Shader::USAGE_POSITION && usageIndex == 0)
+					if(instruction[i]->opcode == Shader::OPCODE_DCL)
 					{
-						positionRegister = dst.index;
-					}
+						if(usage == Shader::USAGE_POSITION && usageIndex == 0)
+						{
+							positionRegister = dst.index;
+						}
 
-					if(usage == Shader::USAGE_PSIZE && usageIndex == 0)
-					{
-						pointSizeRegister = dst.index;
+						if(usage == Shader::USAGE_PSIZE && usageIndex == 0)
+						{
+							pointSizeRegister = dst.index;
+						}
 					}
 				}
 			}
