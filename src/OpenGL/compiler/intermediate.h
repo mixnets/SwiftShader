@@ -417,7 +417,10 @@ protected:
 
 class TIntermConstantUnion : public TIntermTyped {
 public:
-    TIntermConstantUnion(ConstantUnion *unionPointer, const TType& t) : TIntermTyped(t), unionArrayPointer(unionPointer) { }
+    TIntermConstantUnion(ConstantUnion *unionPointer, const TType& t) : TIntermTyped(t), unionArrayPointer(unionPointer)
+	{
+		unionPointer = unionPointer;
+	}
 
     ConstantUnion* getUnionArrayPointer() const { return unionArrayPointer; }
     

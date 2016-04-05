@@ -160,7 +160,7 @@ TranslatorASM *Shader::createCompiler(GLenum shaderType)
 
 	TranslatorASM *assembler = new TranslatorASM(this, shaderType);
 
-	ShBuiltInResources resources;   
+	ShBuiltInResources resources;
 	resources.MaxVertexAttribs = MAX_VERTEX_ATTRIBS;
 	resources.MaxVertexUniformVectors = MAX_VERTEX_UNIFORM_VECTORS;
 	resources.MaxVaryingVectors = MAX_VARYING_VECTORS;
