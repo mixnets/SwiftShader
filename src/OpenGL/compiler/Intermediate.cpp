@@ -1613,7 +1613,20 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                 tempNode->setLine(getLine());
 
                 return tempNode;
-
+			case EOpMax:
+                tempConstArray = new ConstantUnion[objectSize];
+                {// support MSVC++6.0
+                    for (int i = 0; i < objectSize; i++)
+                        tempConstArray[i] = unionArray[i] > rightUnionArray[i] ? unionArray[i] : rightUnionArray[i];
+                }
+                break;
+            case EOpMin:
+                tempConstArray = new ConstantUnion[objectSize];
+                {// support MSVC++6.0
+                    for (int i = 0; i < objectSize; i++)
+                        tempConstArray[i] = unionArray[i] < rightUnionArray[i] ? unionArray[i] : rightUnionArray[i];
+                }
+                break;
             default:
                 infoSink.info.message(EPrefixInternalError, "Invalid operator for constant folding", getLine());
                 return 0;
