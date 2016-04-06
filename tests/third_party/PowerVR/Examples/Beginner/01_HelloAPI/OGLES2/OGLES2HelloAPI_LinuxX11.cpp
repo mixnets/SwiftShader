@@ -449,9 +449,11 @@ bool InitialiseShaders( GLuint &fragmentShader, GLuint &vertexShader, GLuint &sh
 		performing blending, where multiple fragments can contribute to the final pixel colour.
 	*/
 	const char* const fragmentShaderSource = "\
+                                             highp float func (highp float inp, highp float x) { highp float x = 5.0; return inp + x - 5.0; }\
 											 void main (void)\
 											 {\
 											 gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+                                             highp float out0 = func(0.0, 42.0);\
 											 }";
 
 	// Create a fragment shader object
@@ -491,11 +493,14 @@ bool InitialiseShaders( GLuint &fragmentShader, GLuint &vertexShader, GLuint &sh
 	*/
 	// Vertex shader code
 	const char* const vertexShaderSource = "\
+                                           float func (float inp, float x) { float x = 5.0; return inp + x - 5.0; }\
 										   attribute highp vec4	myVertex;\
 										   uniform mediump mat4	transformationMatrix;\
+                                           varying highp float out0;\
 										   void main(void)\
 										   {\
 										   gl_Position = transformationMatrix * myVertex;\
+                                           out0 = func(0.0, 42.0);\
 										   }";
 
 	// Create a vertex shader object
@@ -790,11 +795,11 @@ int main(int /*argc*/, char **/*argv*/)
 	}
 
 	// Create an EGLSurface for rendering from the native window
-//	if (!CreateEGLSurface(nativeWindow, eglDisplay, eglConfig, eglSurface))
-//	{
-//		goto cleanup;
-//	}
-    eglSurface = EGL_NO_SURFACE;
+	if (!CreateEGLSurface(nativeWindow, eglDisplay, eglConfig, eglSurface))
+	{
+		goto cleanup;
+	}
+//    eglSurface = EGL_NO_SURFACE;
 
 	// Setup the EGL Context from the other EGL constructs created so far, so that the application is ready to submit OpenGL ES commands
 	if (!SetupEGLContext(eglDisplay, eglConfig, eglSurface, eglContext))
