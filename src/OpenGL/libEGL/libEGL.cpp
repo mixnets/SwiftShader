@@ -728,7 +728,9 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 		return EGL_FALSE;
 	}
 
-	if((draw != EGL_NO_SURFACE) ^ (read != EGL_NO_SURFACE))
+	if(validateDisplay(display) &&
+       ((display->isValidSurface(readSurface) && draw == EGL_NO_SURFACE) ||
+	    (display->isValidSurface(drawSurface) && read == EGL_NO_SURFACE)))
 	{
 		return error(EGL_BAD_MATCH, EGL_FALSE);
 	}

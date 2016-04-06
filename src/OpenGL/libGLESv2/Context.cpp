@@ -268,37 +268,50 @@ void Context::makeCurrent(egl::Surface *surface)
 
         mState.viewportX = 0;
         mState.viewportY = 0;
-        mState.viewportWidth = surface->getWidth();
-        mState.viewportHeight = surface->getHeight();
+        if (surface)
+        {
+            mState.viewportWidth = surface->getWidth();
+            mState.viewportHeight = surface->getHeight();
+        } else {
+            mState.viewportWidth = 0;
+            mState.viewportHeight = 0;
+        }
 
         mState.scissorX = 0;
         mState.scissorY = 0;
-        mState.scissorWidth = surface->getWidth();
-        mState.scissorHeight = surface->getHeight();
+        if (surface)
+        {
+            mState.scissorWidth = surface->getWidth();
+            mState.scissorHeight = surface->getHeight();
+        } else {
+            mState.scissorWidth = 0;
+            mState.scissorHeight = 0;
+        }
 
         mHasBeenCurrent = true;
     }
 
-    // Wrap the existing resources into GL objects and assign them to the '0' names
-    egl::Image *defaultRenderTarget = surface->getRenderTarget();
-    egl::Image *depthStencil = surface->getDepthStencil();
+    if (surface) {
+        // Wrap the existing resources into GL objects and assign them to the '0' names
+        egl::Image *defaultRenderTarget = surface->getRenderTarget();
+        egl::Image *depthStencil = surface->getDepthStencil();
 
-    Colorbuffer *colorbufferZero = new Colorbuffer(defaultRenderTarget);
-    DepthStencilbuffer *depthStencilbufferZero = new DepthStencilbuffer(depthStencil);
-    Framebuffer *framebufferZero = new DefaultFramebuffer(colorbufferZero, depthStencilbufferZero);
+        Colorbuffer *colorbufferZero = new Colorbuffer(defaultRenderTarget);
+        DepthStencilbuffer *depthStencilbufferZero = new DepthStencilbuffer(depthStencil);
+        Framebuffer *framebufferZero = new DefaultFramebuffer(colorbufferZero, depthStencilbufferZero);
 
-    setFramebufferZero(framebufferZero);
+        setFramebufferZero(framebufferZero);
 
-    if(defaultRenderTarget)
-    {
-        defaultRenderTarget->release();
+        if(defaultRenderTarget)
+        {
+            defaultRenderTarget->release();
+        }
+
+        if(depthStencil)
+        {
+            depthStencil->release();
+        }
     }
-
-    if(depthStencil)
-    {
-        depthStencil->release();
-    }
-
     markAllStateDirty();
 }
 

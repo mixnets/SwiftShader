@@ -4,7 +4,7 @@
 
  @Title        Shows basic transformations and lighting
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -228,11 +228,11 @@ bool OGLESBasicTnL::RenderScene()
 	glBindBuffer(GL_ARRAY_BUFFER, m_ui32Vbo);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,sizeof(float) * 8, 0);
+	glVertexPointer(3, GL_FLOAT, sizeof(float) * 8, 0);
 
 	// Pass the texture coordinates data
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,sizeof(float) * 8, (unsigned char*) (sizeof(float) * 3));
+	glTexCoordPointer(2, GL_FLOAT, sizeof(float) * 8, (unsigned char*) (sizeof(float) * 3));
 
 	// Pass the normals data
 	glEnableClientState(GL_NORMAL_ARRAY);

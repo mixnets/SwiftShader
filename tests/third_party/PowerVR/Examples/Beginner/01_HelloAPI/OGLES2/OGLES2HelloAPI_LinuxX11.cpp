@@ -790,10 +790,11 @@ int main(int /*argc*/, char **/*argv*/)
 	}
 
 	// Create an EGLSurface for rendering from the native window
-	if (!CreateEGLSurface(nativeWindow, eglDisplay, eglConfig, eglSurface))
-	{
-		goto cleanup;
-	}
+//	if (!CreateEGLSurface(nativeWindow, eglDisplay, eglConfig, eglSurface))
+//	{
+//		goto cleanup;
+//	}
+    eglSurface = EGL_NO_SURFACE;
 
 	// Setup the EGL Context from the other EGL constructs created so far, so that the application is ready to submit OpenGL ES commands
 	if (!SetupEGLContext(eglDisplay, eglConfig, eglSurface, eglContext))
