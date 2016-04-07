@@ -290,7 +290,8 @@ namespace glsl
 		typedef std::vector<TIntermTyped*> VariableArray;
 
 		int lookup(VariableArray &list, TIntermTyped *variable);
-		int allocate(VariableArray &list, TIntermTyped *variable);
+		int lookup(VariableArray &list, TInterfaceBlock *block);
+		int allocate(VariableArray &list, TIntermTyped *variable, int variableRegisterCount = -1);
 		void free(VariableArray &list, TIntermTyped *variable);
 
 		int declareUniform(const TType &type, const TString &name, int registerIndex, int blockId = -1, BlockLayoutEncoder* encoder = nullptr);

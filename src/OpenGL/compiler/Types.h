@@ -333,6 +333,18 @@ public:
 		}
 	}
 
+	static int TotalRegisterCount(TInterfaceBlock* block)
+	{
+		int registerCount = 0;
+		const TFieldList& fieldList = block->fields();
+		for(size_t i = 0; i < fieldList.size(); i++)
+		{
+			const TType &fieldType = *(fieldList[i]->type());
+			registerCount += fieldType.totalRegisterCount();
+		}
+		return registerCount;
+	}
+
 	int totalRegisterCount() const
 	{
 		if(array)
