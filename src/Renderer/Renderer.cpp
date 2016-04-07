@@ -443,6 +443,7 @@ namespace sw
 				}
 
 				VertexProcessor::lockUniformBuffers(data->vs.u);
+				VertexProcessor::lockTransformFeedbackBuffers(data->vs.t, data->vs.reg, data->vs.row, data->vs.col, data->vs.str);
 			}
 			else
 			{
@@ -983,6 +984,7 @@ namespace sw
 
 				PixelProcessor::unlockUniformBuffers();
 				VertexProcessor::unlockUniformBuffers();
+				VertexProcessor::unlockTransformFeedbackBuffers();
 
 				draw.vertexRoutine->unbind();
 				draw.setupRoutine->unbind();
