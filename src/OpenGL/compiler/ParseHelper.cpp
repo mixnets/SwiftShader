@@ -228,7 +228,7 @@ void TParseContext::unaryOpError(const TSourceLoc &line, const char* op, TString
 void TParseContext::binaryOpError(const TSourceLoc &line, const char* op, TString left, TString right)
 {
     std::stringstream extraInfoStream;
-    extraInfoStream << "no operation '" << op << "' exists that takes a left-hand operand of type '" << left 
+    extraInfoStream << "no operation '" << op << "' exists that takes a left-hand operand of type '" << left
                     << "' and a right operand of type '" << right << "' (or there is no acceptable conversion)";
     std::string extraInfo = extraInfoStream.str();
     error(line, " wrong operand types ", op, extraInfo.c_str());
@@ -1273,25 +1273,6 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
     return false;
 }
 
-bool TParseContext::areAllChildConst(TIntermAggregate* aggrNode)
-{
-    ASSERT(aggrNode != NULL);
-    if (!aggrNode->isConstructor())
-        return false;
-
-    bool allConstant = true;
-
-    // check if all the child nodes are constants so that they can be inserted into
-    // the parent node
-    TIntermSequence &sequence = aggrNode->getSequence() ;
-    for (TIntermSequence::iterator p = sequence.begin(); p != sequence.end(); ++p) {
-        if (!(*p)->getAsTyped()->getAsConstantUnion())
-            return false;
-    }
-
-    return allConstant;
-}
-
 TPublicType TParseContext::addFullySpecifiedType(TQualifier qualifier, bool invariant, TLayoutQualifier layoutQualifier, const TPublicType &typeSpecifier)
 {
 	TPublicType returnType = typeSpecifier;
@@ -2129,9 +2110,8 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* arguments, const TType*
 
 TIntermTyped* TParseContext::foldConstConstructor(TIntermAggregate* aggrNode, const TType& type)
 {
-    bool canBeFolded = areAllChildConst(aggrNode);
     aggrNode->setType(type);
-    if (canBeFolded) {
+    if (aggrNode->isConstantFoldable()) {
         bool returnVal = false;
         ConstantUnion* unionArray = new ConstantUnion[type.getObjectSize()];
         if (aggrNode->getSequence().size() == 1)  {
@@ -2153,7 +2133,7 @@ TIntermTyped* TParseContext::foldConstConstructor(TIntermAggregate* aggrNode, co
 // This function returns the tree representation for the vector field(s) being accessed from contant vector.
 // If only one component of vector is accessed (v.x or v[0] where v is a contant vector), then a contant node is
 // returned, else an aggregate node is returned (for v.xy). The input to this function could either be the symbol
-// node or it could be the intermediate tree representation of accessing fields in a constant structure or column of 
+// node or it could be the intermediate tree representation of accessing fields in a constant structure or column of
 // a constant matrix.
 //
 TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTyped* node, const TSourceLoc &line)
