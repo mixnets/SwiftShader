@@ -58,6 +58,12 @@ namespace sw
 		return memcmp(static_cast<const States*>(this), static_cast<const States*>(&state), sizeof(States)) == 0;
 	}
 
+	PixelProcessor::UniformBufferInfo::UniformBufferInfo()
+	{
+		buffer = nullptr;
+		offset = 0;
+	}
+
 	PixelProcessor::PixelProcessor(Context *context) : context(context)
 	{
 		setGlobalMipmapBias(0.0f);   // Round to highest LOD [0.5, 1.0]: -0.5
@@ -66,11 +72,6 @@ namespace sw
 
 		routineCache = 0;
 		setRoutineCacheSize(1024);
-
-		for(int i = 0; i < MAX_UNIFORM_BUFFER_BINDINGS; i++)
-		{
-			uniformBuffer[i] = nullptr;
-		}
 	}
 
 	PixelProcessor::~PixelProcessor()
@@ -143,26 +144,22 @@ namespace sw
 
 	void PixelProcessor::setUniformBuffer(int index, sw::Resource* buffer, int offset)
 	{
-		uniformBuffer[index] = buffer;
-		uniformBufferOffset[index] = offset;
+		uniformBufferInfo[index].buffer = buffer;
+		uniformBufferInfo[index].offset = offset;
 	}
 
-	void PixelProcessor::lockUniformBuffers(byte** u)
+	void PixelProcessor::lockUniformBuffers(byte** u, std::vector<Resource*>& lockedResources)
 	{
 		for(int i = 0; i < MAX_UNIFORM_BUFFER_BINDINGS; ++i)
 		{
-			u[i] = uniformBuffer[i] ? static_cast<byte*>(uniformBuffer[i]->lock(PUBLIC, PRIVATE)) + uniformBufferOffset[i] : nullptr;
-		}
-	}
-
-	void PixelProcessor::unlockUniformBuffers()
-	{
-		for(int i = 0; i < MAX_UNIFORM_BUFFER_BINDINGS; ++i)
-		{
-			if(uniformBuffer[i])
+			if(uniformBufferInfo[i].buffer)
 			{
-				uniformBuffer[i]->unlock();
-				uniformBuffer[i] = nullptr;
+				u[i] = static_cast<byte*>(uniformBufferInfo[i].buffer->lock(PUBLIC, PRIVATE)) + uniformBufferInfo[i].offset;
+				lockedResources.push_back(uniformBufferInfo[i].buffer);
+			}
+			else
+			{
+				u[i] = nullptr;
 			}
 		}
 	}

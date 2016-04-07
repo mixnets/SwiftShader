@@ -334,34 +334,28 @@ namespace sw
 
 			for(int i = 0; i < VERTEX_ATTRIBUTES; i++)
 			{
-				draw->vertexStream[i] = context->input[i].resource;
 				data->input[i] = context->input[i].buffer;
 				data->stride[i] = context->input[i].stride;
 
-				if(draw->vertexStream[i])
+				if(context->input[i].resource)
 				{
-					draw->vertexStream[i]->lock(PUBLIC, PRIVATE);
+					context->input[i].resource->lock(PUBLIC, PRIVATE);
+					draw->lockedResources.push_back(context->input[i].resource);
 				}
 			}
 
 			if(context->indexBuffer)
 			{
 				data->indices = (unsigned char*)context->indexBuffer->lock(PUBLIC, PRIVATE) + indexOffset;
-			}
-
-			draw->indexBuffer = context->indexBuffer;
-
-			for(int sampler = 0; sampler < TOTAL_IMAGE_UNITS; sampler++)
-			{
-				draw->texture[sampler] = 0;
+				draw->lockedResources.push_back(context->indexBuffer);
 			}
 
 			for(int sampler = 0; sampler < TEXTURE_IMAGE_UNITS; sampler++)
 			{
 				if(pixelState.sampler[sampler].textureType != TEXTURE_NULL)
 				{
-					draw->texture[sampler] = context->texture[sampler];
-					draw->texture[sampler]->lock(PUBLIC, isReadWriteTexture(sampler) ? MANAGED : PRIVATE);   // If the texure is both read and written, use the same read/write lock as render targets
+					context->texture[sampler]->lock(PUBLIC, isReadWriteTexture(sampler) ? MANAGED : PRIVATE);   // If the texure is both read and written, use the same read/write lock as render targets
+					draw->lockedResources.push_back(context->texture[sampler]);
 
 					data->mipmap[sampler] = context->sampler[sampler].getTextureData();
 				}
@@ -388,7 +382,7 @@ namespace sw
 					draw->psDirtyConstB = 0;
 				}
 
-				PixelProcessor::lockUniformBuffers(data->ps.u);
+				PixelProcessor::lockUniformBuffers(data->ps.u, draw->lockedResources);
 			}
 			
 			if(context->pixelShaderVersion() <= 0x0104)
@@ -411,8 +405,8 @@ namespace sw
 					{
 						if(vertexState.samplerState[sampler].textureType != TEXTURE_NULL)
 						{
-							draw->texture[TEXTURE_IMAGE_UNITS + sampler] = context->texture[TEXTURE_IMAGE_UNITS + sampler];
-							draw->texture[TEXTURE_IMAGE_UNITS + sampler]->lock(PUBLIC, PRIVATE);
+							context->texture[TEXTURE_IMAGE_UNITS + sampler]->lock(PUBLIC, PRIVATE);
+							draw->lockedResources.push_back(context->texture[TEXTURE_IMAGE_UNITS + sampler]);
 
 							data->mipmap[TEXTURE_IMAGE_UNITS + sampler] = context->sampler[TEXTURE_IMAGE_UNITS + sampler].getTextureData();
 						}
@@ -442,7 +436,8 @@ namespace sw
 					data->instanceID = context->instanceID;
 				}
 
-				VertexProcessor::lockUniformBuffers(data->vs.u);
+				VertexProcessor::lockUniformBuffers(data->vs.u, draw->lockedResources);
+				VertexProcessor::lockTransformFeedbackBuffers(data->vs.t, data->vs.reg, data->vs.row, data->vs.col, data->vs.str, draw->lockedResources);
 			}
 			else
 			{
@@ -960,29 +955,12 @@ namespace sw
 					draw.stencilBuffer->unlockStencil();
 				}
 
-				for(int i = 0; i < TOTAL_IMAGE_UNITS; i++)
+				// Vertex streams, textures, index buffer, uniform buffers and transform feedback buffers
+				for(std::vector<Resource*>::iterator it = draw.lockedResources.begin(); it != draw.lockedResources.end(); ++it)
 				{
-					if(draw.texture[i])
-					{
-						draw.texture[i]->unlock();
-					}
+					(*it)->unlock();
 				}
-
-				for(int i = 0; i < VERTEX_ATTRIBUTES; i++)
-				{
-					if(draw.vertexStream[i])
-					{
-						draw.vertexStream[i]->unlock();
-					}
-				}
-
-				if(draw.indexBuffer)
-				{
-					draw.indexBuffer->unlock();
-				}
-
-				PixelProcessor::unlockUniformBuffers();
-				VertexProcessor::unlockUniformBuffers();
+				draw.lockedResources.clear();
 
 				draw.vertexRoutine->unbind();
 				draw.setupRoutine->unbind();
