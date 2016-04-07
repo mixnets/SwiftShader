@@ -1004,6 +1004,15 @@ namespace sw
 		DrawCall *draw = drawList[primitiveProgress[unit].drawCall % DRAW_COUNT];
 		DrawData *data = draw->data;
 		VertexTask *task = vertexTask[thread];
+		task->vertexStart = start * 3;
+		// Note: Quads aren't handled for verticesPerPrimitive, but verticesPerPrimitive is used for transform feedback,
+		//       which is an OpenGL ES 3.0 feature, and OpenGL ES 3.0 doesn't support quads as a primitive type.
+		task->verticesPerPrimitive = (((draw->drawType & DRAW_TRIANGLEFAN) == DRAW_TRIANGLEFAN) ||
+		                              ((draw->drawType & DRAW_TRIANGLESTRIP) == DRAW_TRIANGLESTRIP) ||
+		                              ((draw->drawType & DRAW_TRIANGLELIST) == DRAW_TRIANGLELIST)) ? 3 :
+		                            ((((draw->drawType & DRAW_LINELOOP) == DRAW_LINELOOP) ||
+		                              ((draw->drawType & DRAW_LINESTRIP) == DRAW_LINESTRIP) ||
+		                              ((draw->drawType & DRAW_LINELIST) == DRAW_LINELIST)) ? 2 : 1);
 
 		const void *indices = data->indices;
 		VertexProcessor::RoutinePointer vertexRoutine = draw->vertexPointer;
