@@ -290,6 +290,7 @@ namespace glsl
 		typedef std::vector<TIntermTyped*> VariableArray;
 
 		int lookup(VariableArray &list, TIntermTyped *variable);
+		int lookup(VariableArray &list, TInterfaceBlock *block);
 		int allocate(VariableArray &list, TIntermTyped *variable);
 		void free(VariableArray &list, TIntermTyped *variable);
 

@@ -2792,14 +2792,21 @@ namespace glsl
 
 		if(symbol || block)
 		{
-			int index = lookup(uniforms, uniform);
+			TInterfaceBlock* parentBlock = type.getInterfaceBlock();
+			bool isBlockMember = (!block && parentBlock);
+			int index = isBlockMember ? lookup(uniforms, parentBlock) : lookup(uniforms, uniform);
+			bool doAllocate = (index == -1);
 
-			if(index == -1)
+			if(doAllocate)
 			{
 				index = allocate(uniforms, uniform);
+			}
+
+			if(doAllocate || isBlockMember)
+			{
 				const TString &name = symbol ? symbol->getSymbol() : block->name();
 
-				declareUniform(type, name, index);
+				index = declareUniform(type, name, index);
 			}
 
 			return index;
@@ -2953,13 +2960,25 @@ namespace glsl
 		return -1;
 	}
 
+	int OutputASM::lookup(VariableArray &list, TInterfaceBlock *block)
+	{
+		for(unsigned int i = 0; i < list.size(); i++)
+		{
+			if(list[i] && (list[i]->getType().getInterfaceBlock() == block))
+			{
+				return i;   // Pointer match
+			}
+		}
+		return -1;
+	}
+
 	int OutputASM::allocate(VariableArray &list, TIntermTyped *variable)
 	{
 		int index = lookup(list, variable);
 
 		if(index == -1)
 		{
-			unsigned int registerCount = variable->totalRegisterCount();
+			unsigned int registerCount = variable->blockRegisterCount();
 
 			for(unsigned int i = 0; i < list.size(); i++)
 			{
