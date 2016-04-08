@@ -2365,7 +2365,7 @@ yyreduce:
         // don't delete $1.string, it's used by error recovery, and the pool
         // pop will reclaim the memory
 
-        if (variable->getType().getQualifier() == EvqConstExpr ) {
+        if (variable->getConstPointer()) {
             ConstantUnion* constArray = variable->getConstPointer();
             TType t(variable->getType());
             (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(constArray, t, (yylsp[0]));
@@ -3207,7 +3207,7 @@ yyreduce:
         TType type((yyvsp[-2].interm.type));
         function = new TFunction((yyvsp[-1].lex).string, type);
         (yyval.interm.function) = function;
-        
+
         context->symbolTable.push();
     }
 
@@ -3568,7 +3568,7 @@ yyreduce:
     {
         context->error((yylsp[0]), "interpolation qualifier requires a fragment 'in' or vertex 'out' storage qualifier", getQualifierString((yyvsp[0].interm.type).qualifier));
         context->recover();
-        
+
         TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtVoid, qual, (yylsp[0]));
     }
