@@ -1228,7 +1228,7 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
     //
 
     if (qualifier == EvqConstExpr) {
-        if (qualifier != initializer->getType().getQualifier()) {
+        if (qualifier != initializer->getQualifier()) {
             std::stringstream extraInfoStream;
             extraInfoStream << "'" << variable->getType().getCompleteString() << "'";
             std::string extraInfo = extraInfoStream.str();
@@ -1250,13 +1250,6 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
 
             ConstantUnion* constArray = tVar->getConstPointer();
             variable->shareConstPointer(constArray);
-        } else {
-            std::stringstream extraInfoStream;
-            extraInfoStream << "'" << variable->getType().getCompleteString() << "'";
-            std::string extraInfo = extraInfoStream.str();
-            error(line, " cannot assign to", "=", extraInfo.c_str());
-            variable->getType().setQualifier(EvqTemporary);
-            return true;
         }
     }
 
@@ -2098,8 +2091,8 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* arguments, const TType*
     }
 
     // Turn the argument list itself into a constructor
-    TIntermTyped *constructor = intermediate.setAggregateOperator(aggregateArguments, op, line);
-    TIntermTyped *constConstructor = foldConstConstructor(constructor->getAsAggregate(), *type);
+    TIntermAggregate *constructor = intermediate.setAggregateOperator(aggregateArguments, op, line);
+    TIntermTyped *constConstructor = foldConstConstructor(constructor, *type);
     if(constConstructor)
     {
         return constConstructor;
@@ -3096,12 +3089,12 @@ TIntermTyped *TParseContext::createUnaryMath(TOperator op, TIntermTyped *child, 
 		break;
 	}
 
-	return intermediate.addUnaryMath(op, child, loc); // FIXME , funcReturnType);
+	return intermediate.addUnaryMath(op, child, loc, funcReturnType);
 }
 
 TIntermTyped *TParseContext::addUnaryMath(TOperator op, TIntermTyped *child, const TSourceLoc &loc)
 {
-	TIntermTyped *node = createUnaryMath(op, child, loc, nullptr);
+	TIntermTyped *node = createUnaryMath(op, child, loc, &child->getType());
 	if(node == nullptr)
 	{
 		unaryOpError(loc, getOperatorString(op), child->getCompleteString());
@@ -3540,7 +3533,6 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 			recover();
 			callNode = intermediate.setAggregateOperator(nullptr, op, loc);
 		}
-		callNode->setType(type);
 	}
 	else
 	{
@@ -3612,7 +3604,6 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 
 				functionCallLValueErrorCheck(fnCandidate, aggregate);
 			}
-			callNode->setType(fnCandidate->getReturnType());
 		}
 		else
 		{
