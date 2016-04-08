@@ -1252,17 +1252,10 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
 
             ConstantUnion* constArray = tVar->getConstPointer();
             variable->shareConstPointer(constArray);
-        } else {
-            std::stringstream extraInfoStream;
-            extraInfoStream << "'" << variable->getType().getCompleteString() << "'";
-            std::string extraInfo = extraInfoStream.str();
-            error(line, " cannot assign to", "=", extraInfo.c_str());
-            variable->getType().setQualifier(EvqTemporary);
-            return true;
         }
     }
 
-    if (qualifier != EvqConstExpr) {
+    if (!initializer->getAsConstantUnion()) {
         TIntermSymbol* intermSymbol = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), line);
         *intermNode = createAssign(EOpInitialize, intermSymbol, initializer, line);
         if(*intermNode == nullptr) {
@@ -3542,7 +3535,6 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 			recover();
 			callNode = intermediate.setAggregateOperator(nullptr, op, loc);
 		}
-		callNode->setType(type);
 	}
 	else
 	{
@@ -3614,7 +3606,6 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 
 				functionCallLValueErrorCheck(fnCandidate, aggregate);
 			}
-			callNode->setType(fnCandidate->getReturnType());
 		}
 		else
 		{
