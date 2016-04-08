@@ -1191,11 +1191,12 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
 	ASSERT(intermNode != nullptr);
 	TType type = TType(pType);
 
-	TVariable *variable = nullptr;
 	if(type.isArray() && (type.getArraySize() == 0))
 	{
 		type.setArraySize(initializer->getArraySize());
 	}
+
+	TVariable *variable = nullptr;
 	if(!declareVariable(line, identifier, type, &variable))
 	{
 		return true;
@@ -1218,7 +1219,7 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
     //
     // identifier must be of type constant, a global, or a temporary
     //
-    TQualifier qualifier = variable->getType().getQualifier();
+    TQualifier qualifier = type.getQualifier();
     if ((qualifier != EvqTemporary) && (qualifier != EvqGlobal) && (qualifier != EvqConstExpr)) {
         error(line, " cannot initialize this type of qualifier ", variable->getType().getQualifierString());
         return true;
@@ -1252,13 +1253,6 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
 
             ConstantUnion* constArray = tVar->getConstPointer();
             variable->shareConstPointer(constArray);
-        } else {
-            std::stringstream extraInfoStream;
-            extraInfoStream << "'" << variable->getType().getCompleteString() << "'";
-            std::string extraInfo = extraInfoStream.str();
-            error(line, " cannot assign to", "=", extraInfo.c_str());
-            variable->getType().setQualifier(EvqTemporary);
-            return true;
         }
     }
 
@@ -3542,7 +3536,6 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 			recover();
 			callNode = intermediate.setAggregateOperator(nullptr, op, loc);
 		}
-		callNode->setType(type);
 	}
 	else
 	{
@@ -3614,7 +3607,6 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 
 				functionCallLValueErrorCheck(fnCandidate, aggregate);
 			}
-			callNode->setType(fnCandidate->getReturnType());
 		}
 		else
 		{
