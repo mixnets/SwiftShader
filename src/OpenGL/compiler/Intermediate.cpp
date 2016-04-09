@@ -372,8 +372,9 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, con
     TIntermUnary *node = new TIntermUnary(op);
     node->setLine(line);
     node->setOperand(child);
+	node->setType(*funcReturnType);
 
-    if (! node->promote(infoSink, funcReturnType))
+    if (! node->promote(infoSink))
         return 0;
 
     if (childTempConstant)  {
@@ -725,7 +726,7 @@ bool TIntermOperator::isConstructor() const
 //
 // Returns false in nothing makes sense.
 //
-bool TIntermUnary::promote(TInfoSink&, const TType *funcReturnType)
+bool TIntermUnary::promote(TInfoSink&)
 {
     switch (op) {
         case EOpLogicalNot:
@@ -770,7 +771,6 @@ bool TIntermUnary::promote(TInfoSink&, const TType *funcReturnType)
                 return false;
     }
 
-	setType(*funcReturnType);
     return true;
 }
 
@@ -1619,7 +1619,6 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                 }
                 break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Invalid operator for constant folding", getLine());
                 return 0;
         }
         tempNode = new TIntermConstantUnion(tempConstArray, returnType);

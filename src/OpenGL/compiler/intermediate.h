@@ -512,7 +512,7 @@ public:
 
     void setOperand(TIntermTyped* o) { operand = o; }
     TIntermTyped* getOperand() { return operand; }
-    bool promote(TInfoSink&, const TType *funcReturnType);
+    bool promote(TInfoSink&);
 
 protected:
     TIntermTyped* operand;
