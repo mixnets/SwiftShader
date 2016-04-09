@@ -1191,11 +1191,12 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
 	ASSERT(intermNode != nullptr);
 	TType type = TType(pType);
 
-	TVariable *variable = nullptr;
 	if(type.isArray() && (type.getArraySize() == 0))
 	{
 		type.setArraySize(initializer->getArraySize());
 	}
+
+	TVariable *variable = nullptr;
 	if(!declareVariable(line, identifier, type, &variable))
 	{
 		return true;
@@ -1218,7 +1219,7 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
     //
     // identifier must be of type constant, a global, or a temporary
     //
-    TQualifier qualifier = variable->getType().getQualifier();
+    TQualifier qualifier = type.getQualifier();
     if ((qualifier != EvqTemporary) && (qualifier != EvqGlobal) && (qualifier != EvqConstExpr)) {
         error(line, " cannot initialize this type of qualifier ", variable->getType().getQualifierString());
         return true;
@@ -1255,7 +1256,7 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
         }
     }
 
-    if (!initializer->getAsConstantUnion()) {
+    if (qualifier != EvqConstExpr) {
         TIntermSymbol* intermSymbol = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), line);
         *intermNode = createAssign(EOpInitialize, intermSymbol, initializer, line);
         if(*intermNode == nullptr) {
