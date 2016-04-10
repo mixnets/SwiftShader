@@ -3530,7 +3530,6 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 			recover();
 			callNode = intermediate.setAggregateOperator(nullptr, op, loc);
 		}
-		callNode->setType(type);
 	}
 	else
 	{
@@ -3602,7 +3601,6 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 
 				functionCallLValueErrorCheck(fnCandidate, aggregate);
 			}
-			callNode->setType(fnCandidate->getReturnType());
 		}
 		else
 		{
