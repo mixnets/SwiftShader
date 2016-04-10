@@ -228,7 +228,7 @@ void TParseContext::unaryOpError(const TSourceLoc &line, const char* op, TString
 void TParseContext::binaryOpError(const TSourceLoc &line, const char* op, TString left, TString right)
 {
     std::stringstream extraInfoStream;
-    extraInfoStream << "no operation '" << op << "' exists that takes a left-hand operand of type '" << left 
+    extraInfoStream << "no operation '" << op << "' exists that takes a left-hand operand of type '" << left
                     << "' and a right operand of type '" << right << "' (or there is no acceptable conversion)";
     std::string extraInfo = extraInfoStream.str();
     error(line, " wrong operand types ", op, extraInfo.c_str());
@@ -502,9 +502,6 @@ bool TParseContext::constructorErrorCheck(const TSourceLoc &line, TIntermNode* n
         if (param.type->isArray())
             arrayArg = true;
     }
-
-    if (constType)
-        type->setQualifier(EvqConstExpr);
 
     if(type->isArray()) {
         if(type->getArraySize() == 0) {
@@ -1191,11 +1188,12 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
 	ASSERT(intermNode != nullptr);
 	TType type = TType(pType);
 
-	TVariable *variable = nullptr;
 	if(type.isArray() && (type.getArraySize() == 0))
 	{
 		type.setArraySize(initializer->getArraySize());
 	}
+
+	TVariable *variable = nullptr;
 	if(!declareVariable(line, identifier, type, &variable))
 	{
 		return true;
@@ -1218,7 +1216,7 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
     //
     // identifier must be of type constant, a global, or a temporary
     //
-    TQualifier qualifier = variable->getType().getQualifier();
+    TQualifier qualifier = type.getQualifier();
     if ((qualifier != EvqTemporary) && (qualifier != EvqGlobal) && (qualifier != EvqConstExpr)) {
         error(line, " cannot initialize this type of qualifier ", variable->getType().getQualifierString());
         return true;
@@ -1228,7 +1226,7 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
     //
 
     if (qualifier == EvqConstExpr) {
-        if (qualifier != initializer->getType().getQualifier()) {
+        if (qualifier != initializer->getQualifier()) {
             std::stringstream extraInfoStream;
             extraInfoStream << "'" << variable->getType().getCompleteString() << "'";
             std::string extraInfo = extraInfoStream.str();
@@ -1236,12 +1234,14 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
             variable->getType().setQualifier(EvqTemporary);
             return true;
         }
+
         if (type != initializer->getType()) {
             error(line, " non-matching types for const initializer ",
                 variable->getType().getQualifierString());
             variable->getType().setQualifier(EvqTemporary);
             return true;
         }
+
         if (initializer->getAsConstantUnion()) {
             variable->shareConstPointer(initializer->getAsConstantUnion()->getUnionArrayPointer());
         } else if (initializer->getAsSymbolNode()) {
@@ -1250,17 +1250,10 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
 
             ConstantUnion* constArray = tVar->getConstPointer();
             variable->shareConstPointer(constArray);
-        } else {
-            std::stringstream extraInfoStream;
-            extraInfoStream << "'" << variable->getType().getCompleteString() << "'";
-            std::string extraInfo = extraInfoStream.str();
-            error(line, " cannot assign to", "=", extraInfo.c_str());
-            variable->getType().setQualifier(EvqTemporary);
-            return true;
         }
     }
 
-    if (qualifier != EvqConstExpr) {
+    if (!variable->isConstant()) {
         TIntermSymbol* intermSymbol = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), line);
         *intermNode = createAssign(EOpInitialize, intermSymbol, initializer, line);
         if(*intermNode == nullptr) {
@@ -1271,25 +1264,6 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
         *intermNode = nullptr;
 
     return false;
-}
-
-bool TParseContext::areAllChildConst(TIntermAggregate* aggrNode)
-{
-    ASSERT(aggrNode != NULL);
-    if (!aggrNode->isConstructor())
-        return false;
-
-    bool allConstant = true;
-
-    // check if all the child nodes are constants so that they can be inserted into
-    // the parent node
-    TIntermSequence &sequence = aggrNode->getSequence() ;
-    for (TIntermSequence::iterator p = sequence.begin(); p != sequence.end(); ++p) {
-        if (!(*p)->getAsTyped()->getAsConstantUnion())
-            return false;
-    }
-
-    return allConstant;
 }
 
 TPublicType TParseContext::addFullySpecifiedType(TQualifier qualifier, bool invariant, TLayoutQualifier layoutQualifier, const TPublicType &typeSpecifier)
@@ -2117,8 +2091,8 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* arguments, const TType*
     }
 
     // Turn the argument list itself into a constructor
-    TIntermTyped *constructor = intermediate.setAggregateOperator(aggregateArguments, op, line);
-    TIntermTyped *constConstructor = foldConstConstructor(constructor->getAsAggregate(), *type);
+    TIntermAggregate *constructor = intermediate.setAggregateOperator(aggregateArguments, op, line);
+    TIntermTyped *constConstructor = foldConstConstructor(constructor, *type);
     if(constConstructor)
     {
         return constConstructor;
@@ -2129,9 +2103,8 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* arguments, const TType*
 
 TIntermTyped* TParseContext::foldConstConstructor(TIntermAggregate* aggrNode, const TType& type)
 {
-    bool canBeFolded = areAllChildConst(aggrNode);
     aggrNode->setType(type);
-    if (canBeFolded) {
+    if (aggrNode->isConstantFoldable()) {
         bool returnVal = false;
         ConstantUnion* unionArray = new ConstantUnion[type.getObjectSize()];
         if (aggrNode->getSequence().size() == 1)  {
@@ -2153,7 +2126,7 @@ TIntermTyped* TParseContext::foldConstConstructor(TIntermAggregate* aggrNode, co
 // This function returns the tree representation for the vector field(s) being accessed from contant vector.
 // If only one component of vector is accessed (v.x or v[0] where v is a contant vector), then a contant node is
 // returned, else an aggregate node is returned (for v.xy). The input to this function could either be the symbol
-// node or it could be the intermediate tree representation of accessing fields in a constant structure or column of 
+// node or it could be the intermediate tree representation of accessing fields in a constant structure or column of
 // a constant matrix.
 //
 TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTyped* node, const TSourceLoc &line)
@@ -2625,7 +2598,7 @@ TIntermTyped *TParseContext::addFieldSelectionExpression(TIntermTyped *baseExpre
 			recover();
 		}
 
-		if(baseExpression->getType().getQualifier() == EvqConstExpr)
+		if(baseExpression->getAsConstantUnion())
 		{
 			// constant folding for vector fields
 			indexedExpression = addConstVectorNode(fields, baseExpression, fieldLocation);
@@ -2646,7 +2619,7 @@ TIntermTyped *TParseContext::addFieldSelectionExpression(TIntermTyped *baseExpre
 			TIntermTyped *index = intermediate.addSwizzle(fields, fieldLocation);
 			indexedExpression = intermediate.addIndex(EOpVectorSwizzle, baseExpression, index, dotLocation);
 			indexedExpression->setType(TType(baseExpression->getBasicType(), baseExpression->getPrecision(),
-				EvqTemporary, (unsigned char)vectorString.size()));
+				baseExpression->getQualifier() == EvqConstExpr ? EvqConstExpr : EvqTemporary, (unsigned char)vectorString.size()));
 		}
 	}
 	else if(baseExpression->isMatrix())
@@ -3116,7 +3089,7 @@ TIntermTyped *TParseContext::createUnaryMath(TOperator op, TIntermTyped *child, 
 		break;
 	}
 
-	return intermediate.addUnaryMath(op, child, loc); // FIXME , funcReturnType);
+	return intermediate.addUnaryMath(op, child, loc, funcReturnType);
 }
 
 TIntermTyped *TParseContext::addUnaryMath(TOperator op, TIntermTyped *child, const TSourceLoc &loc)
@@ -3560,7 +3533,6 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 			recover();
 			callNode = intermediate.setAggregateOperator(nullptr, op, loc);
 		}
-		callNode->setType(type);
 	}
 	else
 	{
@@ -3612,6 +3584,25 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 					functionCallLValueErrorCheck(fnCandidate, aggregate);
 
 					callNode = aggregate;
+
+					if(fnCandidate->getParamCount() == 2)
+					{
+						TIntermSequence &parameters = paramNode->getAsAggregate()->getSequence();
+						TIntermTyped *left = parameters[0]->getAsTyped();
+						TIntermTyped *right = parameters[1]->getAsTyped();
+
+						TIntermConstantUnion *leftTempConstant = left->getAsConstantUnion();
+						TIntermConstantUnion *rightTempConstant = right->getAsConstantUnion();
+						if (leftTempConstant && rightTempConstant)
+						{
+							TIntermTyped *typedReturnNode = leftTempConstant->fold(op, rightTempConstant, infoSink());
+
+							if(typedReturnNode)
+							{
+								callNode = typedReturnNode;
+							}
+						}
+					}
 				}
 			}
 			else
@@ -3632,7 +3623,6 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 
 				functionCallLValueErrorCheck(fnCandidate, aggregate);
 			}
-			callNode->setType(fnCandidate->getReturnType());
 		}
 		else
 		{

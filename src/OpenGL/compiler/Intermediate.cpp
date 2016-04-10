@@ -332,11 +332,8 @@ TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermT
 //
 // Returns the added node.
 //
-TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, const TSourceLoc &line)
+TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermTyped* child, const TSourceLoc &line, const TType *funcReturnType)
 {
-    TIntermUnary* node;
-    TIntermTyped* child = childNode->getAsTyped();
-
     if (child == 0) {
         infoSink.info.message(EPrefixInternalError, "Bad type in AddUnaryMath", line);
         return 0;
@@ -372,11 +369,11 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     //
     // Make a new node for the operator.
     //
-    node = new TIntermUnary(op);
+    TIntermUnary *node = new TIntermUnary(op);
     node->setLine(line);
     node->setOperand(child);
 
-    if (! node->promote(infoSink))
+    if (! node->promote(infoSink, funcReturnType))
         return 0;
 
     if (childTempConstant)  {
@@ -728,8 +725,10 @@ bool TIntermOperator::isConstructor() const
 //
 // Returns false in nothing makes sense.
 //
-bool TIntermUnary::promote(TInfoSink&)
+bool TIntermUnary::promote(TInfoSink&, const TType *funcReturnType)
 {
+	setType(funcReturnType ? *funcReturnType : operand->getType());
+
     switch (op) {
         case EOpLogicalNot:
             if (operand->getBasicType() != EbtBool)
@@ -771,13 +770,6 @@ bool TIntermUnary::promote(TInfoSink&)
         default:
             if (operand->getBasicType() != EbtFloat)
                 return false;
-    }
-
-    setType(operand->getType());
-
-	// Unary operations results in temporary variables unless const.
-    if (operand->getQualifier() != EvqConstExpr) {
-        getTypePointer()->setQualifier(EvqTemporary);
     }
 
     return true;
@@ -1043,7 +1035,7 @@ bool TIntermBinary::promote(TInfoSink& infoSink)
         default:
             return false;
     }
-    
+
     return true;
 }
 
@@ -1539,38 +1531,29 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                 break;
 
             case EOpLessThan:
-                assert(objectSize == 1);
-                tempConstArray = new ConstantUnion[1];
-                tempConstArray->setBConst(*unionArray < *rightUnionArray);
-                returnType = TType(EbtBool, EbpUndefined, EvqConstExpr);
+                tempConstArray = new ConstantUnion[objectSize];
+                for(int i = 0; i < objectSize; i++)
+					tempConstArray[i].setBConst(unionArray[i] < rightUnionArray[i]);
+                returnType = TType(EbtBool, EbpUndefined, EvqConstExpr, objectSize);
                 break;
             case EOpGreaterThan:
-                assert(objectSize == 1);
-                tempConstArray = new ConstantUnion[1];
-                tempConstArray->setBConst(*unionArray > *rightUnionArray);
-                returnType = TType(EbtBool, EbpUndefined, EvqConstExpr);
+				tempConstArray = new ConstantUnion[objectSize];
+                for(int i = 0; i < objectSize; i++)
+					tempConstArray[i].setBConst(unionArray[i] > rightUnionArray[i]);
+                returnType = TType(EbtBool, EbpUndefined, EvqConstExpr, objectSize);
                 break;
             case EOpLessThanEqual:
-                {
-                    assert(objectSize == 1);
-                    ConstantUnion constant;
-                    constant.setBConst(*unionArray > *rightUnionArray);
-                    tempConstArray = new ConstantUnion[1];
-                    tempConstArray->setBConst(!constant.getBConst());
-                    returnType = TType(EbtBool, EbpUndefined, EvqConstExpr);
-                    break;
-                }
+                tempConstArray = new ConstantUnion[objectSize];
+                for(int i = 0; i < objectSize; i++)
+					tempConstArray[i].setBConst(unionArray[i] <= rightUnionArray[i]);
+                returnType = TType(EbtBool, EbpUndefined, EvqConstExpr, objectSize);
+                break;
             case EOpGreaterThanEqual:
-                {
-                    assert(objectSize == 1);
-                    ConstantUnion constant;
-                    constant.setBConst(*unionArray < *rightUnionArray);
-                    tempConstArray = new ConstantUnion[1];
-                    tempConstArray->setBConst(!constant.getBConst());
-                    returnType = TType(EbtBool, EbpUndefined, EvqConstExpr);
-                    break;
-                }
-
+                tempConstArray = new ConstantUnion[objectSize];
+                for(int i = 0; i < objectSize; i++)
+					tempConstArray[i].setBConst(unionArray[i] >= rightUnionArray[i]);
+                returnType = TType(EbtBool, EbpUndefined, EvqConstExpr, objectSize);
+                break;
             case EOpEqual:
                 if (getType().getBasicType() == EbtStruct) {
                     if (!CompareStructure(node->getType(), node->getUnionArrayPointer(), unionArray))
@@ -1622,9 +1605,21 @@ TIntermTyped* TIntermConstantUnion::fold(TOperator op, TIntermTyped* constantNod
                 tempNode->setLine(getLine());
 
                 return tempNode;
-
+			case EOpMax:
+                tempConstArray = new ConstantUnion[objectSize];
+                {// support MSVC++6.0
+                    for (int i = 0; i < objectSize; i++)
+                        tempConstArray[i] = unionArray[i] > rightUnionArray[i] ? unionArray[i] : rightUnionArray[i];
+                }
+                break;
+            case EOpMin:
+                tempConstArray = new ConstantUnion[objectSize];
+                {// support MSVC++6.0
+                    for (int i = 0; i < objectSize; i++)
+                        tempConstArray[i] = unionArray[i] < rightUnionArray[i] ? unionArray[i] : rightUnionArray[i];
+                }
+                break;
             default:
-                infoSink.info.message(EPrefixInternalError, "Invalid operator for constant folding", getLine());
                 return 0;
         }
         tempNode = new TIntermConstantUnion(tempConstArray, returnType);
