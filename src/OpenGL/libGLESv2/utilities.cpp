@@ -466,7 +466,7 @@ namespace es2
 
 	GLint floatToInt(GLfloat value)
 	{
-		return static_cast<GLint>((static_cast<GLfloat>(0xFFFFFFFF) * value - 1.0f) * 0.5f);
+		return convert_float_int(value);
 	}
 
 	bool IsCompressed(GLenum format, GLint clientVersion)
