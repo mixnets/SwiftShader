@@ -3262,7 +3262,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum
 
 	if(!renderTarget)
 	{
-		return error(GL_OUT_OF_MEMORY);
+		return error(GL_INVALID_OPERATION);
 	}
 
 	sw::Rect rect = {x, y, x + width, y + height};
