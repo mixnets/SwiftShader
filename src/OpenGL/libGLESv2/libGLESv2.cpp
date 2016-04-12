@@ -5147,6 +5147,35 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 			return error(validationError);
 		}
 
+		switch(type)
+		{
+		case GL_UNSIGNED_BYTE:
+		case GL_FLOAT:
+		case GL_HALF_FLOAT_OES:
+		case GL_BYTE:
+		case GL_UNSIGNED_SHORT:
+		case GL_SHORT:
+		case GL_UNSIGNED_INT:
+		case GL_INT:
+		case GL_UNSIGNED_INT_2_10_10_10_REV:
+		case GL_UNSIGNED_SHORT_5_6_5:
+		case GL_UNSIGNED_INT_10F_11F_11F_REV:
+		case GL_UNSIGNED_INT_5_9_9_9_REV:
+		case GL_UNSIGNED_SHORT_4_4_4_4:
+		case GL_UNSIGNED_SHORT_5_5_5_1:
+		case GL_UNSIGNED_INT_24_8_OES:
+		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
+			break;
+		case GL_HALF_FLOAT:
+			if(clientVersion < 3)
+			{
+				return error(GL_INVALID_ENUM);
+			}
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
+		}
+
 		switch(format)
 		{
 		case GL_ALPHA:
@@ -5155,17 +5184,12 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 			switch(type)
 			{
 			case GL_HALF_FLOAT:
-				if(clientVersion < 3)
-				{
-					return error(GL_INVALID_ENUM);
-				}
-				break;
 			case GL_UNSIGNED_BYTE:
 			case GL_FLOAT:
 			case GL_HALF_FLOAT_OES:
 				break;
 			default:
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_OPERATION);
 			}
 			break;
 		case GL_RED:
@@ -5177,7 +5201,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_R8_SNORM:
@@ -5186,23 +5210,18 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_R16F:
 				switch(type)
 				{
 				case GL_HALF_FLOAT:
-					if(clientVersion < 3)
-					{
-						return error(GL_INVALID_ENUM);
-					}
-					break;
 				case GL_FLOAT:
 				case GL_HALF_FLOAT_OES:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_R32F:
@@ -5211,7 +5230,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_FLOAT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			default:
@@ -5227,7 +5246,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_R8I:
@@ -5236,7 +5255,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_R16UI:
@@ -5245,7 +5264,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_SHORT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_R16I:
@@ -5254,7 +5273,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_SHORT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_R32UI:
@@ -5263,7 +5282,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_INT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_R32I:
@@ -5272,7 +5291,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_INT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			default:
@@ -5288,7 +5307,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RG8I:
@@ -5297,7 +5316,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RG16UI:
@@ -5306,7 +5325,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_SHORT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RG16I:
@@ -5315,7 +5334,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_SHORT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RG32UI:
@@ -5324,7 +5343,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_INT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RG32I:
@@ -5333,7 +5352,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_INT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			default:
@@ -5349,7 +5368,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB8I:
@@ -5358,7 +5377,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB16UI:
@@ -5367,7 +5386,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_SHORT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB16I:
@@ -5376,7 +5395,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_SHORT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB32UI:
@@ -5385,7 +5404,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_INT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB32I:
@@ -5394,7 +5413,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_INT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			default:
@@ -5410,7 +5429,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGBA8I:
@@ -5419,7 +5438,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB10_A2UI:
@@ -5428,7 +5447,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_INT_2_10_10_10_REV:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGBA16UI:
@@ -5437,7 +5456,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_SHORT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGBA16I:
@@ -5446,7 +5465,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_SHORT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGBA32UI:
@@ -5455,7 +5474,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_INT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGBA32I:
@@ -5464,7 +5483,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_INT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			default:
@@ -5480,7 +5499,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RG8_SNORM:
@@ -5489,23 +5508,18 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RG16F:
 				switch(type)
 				{
 				case GL_HALF_FLOAT:
-					if(clientVersion < 3)
-					{
-						return error(GL_INVALID_ENUM);
-					}
-					break;
 				case GL_FLOAT:
 				case GL_HALF_FLOAT_OES:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RG32F:
@@ -5514,7 +5528,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_FLOAT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			default:
@@ -5528,18 +5542,13 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				switch(type)
 				{
 				case GL_HALF_FLOAT:
-					if(clientVersion < 3)
-					{
-						return error(GL_INVALID_ENUM);
-					}
-					break;
 				case GL_UNSIGNED_BYTE:
 				case GL_UNSIGNED_SHORT_5_6_5:
 				case GL_FLOAT:
 				case GL_HALF_FLOAT_OES:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB8:
@@ -5548,7 +5557,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_SRGB8:
@@ -5557,7 +5566,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB565:
@@ -5567,7 +5576,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_SHORT_5_6_5:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB8_SNORM:
@@ -5576,57 +5585,42 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_R11F_G11F_B10F:
 				switch(type)
 				{
 				case GL_HALF_FLOAT:
-					if(clientVersion < 3)
-					{
-						return error(GL_INVALID_ENUM);
-					}
-					break;
 				case GL_UNSIGNED_INT_10F_11F_11F_REV:
 				case GL_FLOAT:
 				case GL_HALF_FLOAT_OES:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB9_E5:
 				switch(type)
 				{
 				case GL_HALF_FLOAT:
-					if(clientVersion < 3)
-					{
-						return error(GL_INVALID_ENUM);
-					}
-					break;
 				case GL_UNSIGNED_INT_5_9_9_9_REV:
 				case GL_FLOAT:
 				case GL_HALF_FLOAT_OES:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB16F:
 				switch(type)
 				{
 				case GL_HALF_FLOAT:
-					if(clientVersion < 3)
-					{
-						return error(GL_INVALID_ENUM);
-					}
-					break;
 				case GL_FLOAT:
 				case GL_HALF_FLOAT_OES:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB32F:
@@ -5635,7 +5629,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_FLOAT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			default:
@@ -5649,11 +5643,6 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				switch(type)
 				{
 				case GL_HALF_FLOAT:
-					if(clientVersion < 3)
-					{
-						return error(GL_INVALID_ENUM);
-					}
-					break;
 				case GL_UNSIGNED_BYTE:
 				case GL_UNSIGNED_SHORT_4_4_4_4:
 				case GL_UNSIGNED_SHORT_5_5_5_1:
@@ -5661,7 +5650,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_HALF_FLOAT_OES:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGBA8:
@@ -5670,7 +5659,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_SRGB8_ALPHA8:
@@ -5679,7 +5668,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB5_A1:
@@ -5690,7 +5679,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_INT_2_10_10_10_REV:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGBA8_SNORM:
@@ -5699,7 +5688,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_BYTE:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGBA4:
@@ -5709,7 +5698,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_SHORT_4_4_4_4:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGB10_A2:
@@ -5718,23 +5707,18 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_INT_2_10_10_10_REV:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGBA16F:
 				switch(type)
 				{
 				case GL_HALF_FLOAT:
-					if(clientVersion < 3)
-					{
-						return error(GL_INVALID_ENUM);
-					}
-					break;
 				case GL_FLOAT:
 				case GL_HALF_FLOAT_OES:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_RGBA32F:
@@ -5743,7 +5727,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_FLOAT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			default:
@@ -5756,7 +5740,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 			case GL_UNSIGNED_BYTE:
 				break;
 			default:
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_OPERATION);
 			}
 			break;
 		case GL_DEPTH_COMPONENT:
@@ -5770,7 +5754,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_INT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_DEPTH_COMPONENT24:
@@ -5780,7 +5764,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_INT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_DEPTH_COMPONENT32F:
@@ -5789,7 +5773,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_FLOAT:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			default:
@@ -5806,7 +5790,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_UNSIGNED_INT_24_8_OES:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			case GL_DEPTH32F_STENCIL8:
@@ -5815,7 +5799,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
 					break;
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 				break;
 			default:
