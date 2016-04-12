@@ -62,6 +62,8 @@ public:
     void checkTextureAllocation(GLuint texture, TextureType type);
 	void checkRenderbufferAllocation(GLuint handle);
 
+	bool isRenderbuffer(GLuint name) const;
+
 private:
     std::size_t mRefCount;
 

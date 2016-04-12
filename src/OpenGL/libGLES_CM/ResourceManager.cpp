@@ -167,4 +167,9 @@ void ResourceManager::checkRenderbufferAllocation(GLuint handle)
 	}
 }
 
+bool ResourceManager::isRenderbuffer(GLuint name) const
+{
+	return mRenderbufferNameSpace.isReserved(name);
+}
+
 }

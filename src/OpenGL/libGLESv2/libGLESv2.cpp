@@ -2076,7 +2076,7 @@ void FramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuff
 		// type 'renderbuffertarget', otherwise an INVALID_OPERATION error is generated.
 		if(renderbuffer != 0)
 		{
-			if(!context->getRenderbuffer(renderbuffer))
+			if(!context->isRenderbuffer(renderbuffer))
 			{
 				return error(GL_INVALID_OPERATION);
 			}

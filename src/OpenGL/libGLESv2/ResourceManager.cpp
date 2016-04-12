@@ -339,9 +339,14 @@ void ResourceManager::checkSamplerAllocation(GLuint sampler)
 	}
 }
 
-bool ResourceManager::isSampler(GLuint sampler)
+bool ResourceManager::isSampler(GLuint sampler) const
 {
 	return mSamplerNameSpace.find(sampler) != nullptr;
+}
+
+bool ResourceManager::isRenderbuffer(GLuint name) const
+{
+	return mRenderbufferNameSpace.isReserved(name);
 }
 
 }

@@ -984,6 +984,11 @@ Renderbuffer *Context::getRenderbuffer(GLuint handle)
     return mResourceManager->getRenderbuffer(handle);
 }
 
+bool Context::isRenderbuffer(GLuint handle) const
+{
+    return mResourceManager->isRenderbuffer(handle);
+}
+
 Framebuffer *Context::getFramebuffer()
 {
     return getFramebuffer(mState.framebuffer);

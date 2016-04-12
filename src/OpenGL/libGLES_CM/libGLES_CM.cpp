@@ -1467,6 +1467,14 @@ void FramebufferRenderbufferOES(GLenum target, GLenum attachment, GLenum renderb
 			return error(GL_INVALID_OPERATION);
 		}
 
+		if(renderbuffer != 0)
+		{
+			if(!context->isRenderbuffer(renderbuffer))
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+
 		switch(attachment)
 		{
 		case GL_COLOR_ATTACHMENT0_OES:

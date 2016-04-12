@@ -598,7 +598,8 @@ public:
 	virtual Texture *getTexture(GLuint handle) const;
 	Framebuffer *getFramebuffer(GLuint handle) const;
 	virtual Renderbuffer *getRenderbuffer(GLuint handle) const;
-	Query *getQuery(GLuint handle) const;
+	bool isRenderbuffer(GLuint handle) const;
+ 	Query *getQuery(GLuint handle) const;
 	VertexArray *getVertexArray(GLuint array) const;
 	VertexArray *getCurrentVertexArray() const;
 	bool isVertexArray(GLuint array) const;

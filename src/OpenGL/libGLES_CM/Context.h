@@ -464,6 +464,7 @@ public:
     virtual Texture *getTexture(GLuint handle);
     Framebuffer *getFramebuffer(GLuint handle);
     virtual Renderbuffer *getRenderbuffer(GLuint handle);
+	bool isRenderbuffer(GLuint handle) const;
 
     Buffer *getArrayBuffer();
     Buffer *getElementArrayBuffer();

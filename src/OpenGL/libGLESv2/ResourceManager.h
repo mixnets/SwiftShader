@@ -81,7 +81,8 @@ public:
     void checkRenderbufferAllocation(GLuint handle);
     void checkSamplerAllocation(GLuint sampler);
 
-    bool isSampler(GLuint sampler);
+    bool isSampler(GLuint sampler) const;
+	bool isRenderbuffer(GLuint renderbuffer) const;
 
 private:
     std::size_t mRefCount;
