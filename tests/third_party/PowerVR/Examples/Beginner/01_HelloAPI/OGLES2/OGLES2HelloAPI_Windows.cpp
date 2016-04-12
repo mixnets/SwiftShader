@@ -318,6 +318,41 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		goto cleanup;
 	}
 
+
+
+
+
+	GLuint framebuffer;
+	glGenFramebuffers(1, &framebuffer);
+// param 1 = { 1 }
+	GLuint renderbuffer;
+glGenRenderbuffers(1, &renderbuffer);
+// param 1 = { 1 }
+// Drew to renderbuffer 1 with seed 0.
+glBindFramebuffer(GL_FRAMEBUFFER, 1);
+glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, 1);
+glBindFramebuffer(GL_FRAMEBUFFER, 0);
+// Result of query for renderbuffer attached to framebuffer 1: 1.
+glDeleteRenderbuffers(1, &renderbuffer);
+// Result of query for renderbuffer attached to framebuffer 1: 1.
+glIsRenderbuffer(1);
+// GL_FALSE returned
+glBindFramebuffer(GL_FRAMEBUFFER, 1);
+glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, 0);
+glBindFramebuffer(GL_FRAMEBUFFER, 0);
+glDeleteFramebuffers(1, &framebuffer);
+GLint name;
+glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME, &name);
+
+
+
+
+
+
+
+
+
+
 	/*
 		Step 9 - Draw something with OpenGL ES.
 		At this point everything is initialized and we're ready to use
