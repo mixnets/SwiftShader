@@ -2117,7 +2117,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = IMPLEMENTATION_MAX_TEXTURE_SIZE;
 		break;
 	case GL_MAX_COLOR_ATTACHMENTS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_COLOR_ATTACHMENTS;
 		break;
 	case GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS: // integer, at least 50048
@@ -3200,24 +3199,34 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 	}
 }
 
-void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
-                         GLenum format, GLenum type, GLsizei *bufSize, void* pixels)
+void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLsizei *bufSize, void* pixels)
 {
-    Framebuffer *framebuffer = getReadFramebuffer();
+	Framebuffer *framebuffer = getReadFramebuffer();
 	int framebufferWidth, framebufferHeight, framebufferSamples;
 
-    if(framebuffer->completeness(framebufferWidth, framebufferHeight, framebufferSamples) != GL_FRAMEBUFFER_COMPLETE)
-    {
-        return error(GL_INVALID_FRAMEBUFFER_OPERATION);
-    }
+	if(framebuffer->completeness(framebufferWidth, framebufferHeight, framebufferSamples) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		return error(GL_INVALID_FRAMEBUFFER_OPERATION);
+	}
 
-    if(getReadFramebufferName() != 0 && framebufferSamples != 0)
-    {
-        return error(GL_INVALID_OPERATION);
-    }
+	if(getReadFramebufferName() != 0 && framebufferSamples != 0)
+	{
+		return error(GL_INVALID_OPERATION);
+	}
 
-	GLenum readFormat = framebuffer->getImplementationColorReadFormat();
-	GLenum readType = framebuffer->getImplementationColorReadType();
+	GLenum readFormat = GL_INVALID_ENUM;
+	GLenum readType = GL_INVALID_ENUM;
+	switch(format)
+	{
+	case GL_DEPTH_COMPONENT:
+		readFormat = framebuffer->getImplementationDepthReadFormat();
+		readType = framebuffer->getImplementationDepthReadType();
+		break;
+	default:
+		readFormat = framebuffer->getImplementationColorReadFormat();
+		readType = framebuffer->getImplementationColorReadType();
+		break;
+	}
 
 	if(!(readFormat == format && readType == type) && !ValidReadPixelsFormatType(readFormat, readType, format, type, clientVersion))
 	{
@@ -3231,21 +3240,30 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 	pixels = ((char*)pixels) + egl::ComputePackingOffset(format, type, outputWidth, outputHeight, mState.packAlignment, mState.packSkipImages, mState.packSkipRows, mState.packSkipPixels);
 
 	// Sized query sanity check
-    if(bufSize)
-    {
-        int requiredSize = outputPitch * height;
-        if(requiredSize > *bufSize)
-        {
-            return error(GL_INVALID_OPERATION);
-        }
-    }
+	if(bufSize)
+	{
+		int requiredSize = outputPitch * height;
+		if(requiredSize > *bufSize)
+		{
+			return error(GL_INVALID_OPERATION);
+		}
+	}
 
-    egl::Image *renderTarget = framebuffer->getReadRenderTarget();
+	egl::Image *renderTarget = nullptr;
+	switch(format)
+	{
+	case GL_DEPTH_COMPONENT:
+		renderTarget = framebuffer->getDepthBuffer();
+		break;
+	default:
+		renderTarget = framebuffer->getReadRenderTarget();
+		break;
+	}
 
-    if(!renderTarget)
-    {
-        return error(GL_OUT_OF_MEMORY);
-    }
+	if(!renderTarget)
+	{
+		return error(GL_OUT_OF_MEMORY);
+	}
 
 	sw::Rect rect = {x, y, x + width, y + height};
 	sw::Rect dstRect = { 0, 0, width, height };
@@ -4257,7 +4275,9 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 		(const GLubyte*)"GL_ANGLE_texture_compression_dxt3",
 		(const GLubyte*)"GL_ANGLE_texture_compression_dxt5",
 #endif
+		(const GLubyte*)"GL_NV_fbo_color_attachments",
 		(const GLubyte*)"GL_NV_fence",
+		(const GLubyte*)"GL_NV_read_depth",
 		(const GLubyte*)"GL_EXT_instanced_arrays",
 		(const GLubyte*)"GL_ANGLE_instanced_arrays",
 	};
