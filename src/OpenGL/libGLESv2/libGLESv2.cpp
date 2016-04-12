@@ -5150,23 +5150,23 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 		switch(type)
 		{
 		case GL_UNSIGNED_BYTE:
-		case GL_FLOAT:
-		case GL_HALF_FLOAT_OES:
-		case GL_BYTE:
-		case GL_UNSIGNED_SHORT:
-		case GL_SHORT:
-		case GL_UNSIGNED_INT:
-		case GL_INT:
-		case GL_UNSIGNED_INT_2_10_10_10_REV:
-		case GL_UNSIGNED_SHORT_5_6_5:
-		case GL_UNSIGNED_INT_10F_11F_11F_REV:
-		case GL_UNSIGNED_INT_5_9_9_9_REV:
 		case GL_UNSIGNED_SHORT_4_4_4_4:
 		case GL_UNSIGNED_SHORT_5_5_5_1:
-		case GL_UNSIGNED_INT_24_8_OES:
-		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
+		case GL_UNSIGNED_SHORT_5_6_5:
+		case GL_FLOAT:                   // GL_OES_texture_float
+		case GL_HALF_FLOAT_OES:          // GL_OES_texture_half_float
+		case GL_UNSIGNED_INT_24_8_OES:   // GL_OES_packed_depth_stencil
 			break;
+		case GL_BYTE:
+		case GL_SHORT:
+		case GL_UNSIGNED_SHORT:
+		case GL_UNSIGNED_INT:
+		case GL_INT:
 		case GL_HALF_FLOAT:
+		case GL_UNSIGNED_INT_2_10_10_10_REV:
+		case GL_UNSIGNED_INT_10F_11F_11F_REV:
+		case GL_UNSIGNED_INT_5_9_9_9_REV:
+		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
 			if(clientVersion < 3)
 			{
 				return error(GL_INVALID_ENUM);
@@ -6193,9 +6193,9 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 		return error(GL_INVALID_VALUE);
 	}
 
-	if(!es2::CheckTextureFormatType(format, type, egl::getClientVersion()))
+	if(!es2::ValidateTextureFormatType(format, type, egl::getClientVersion()))
 	{
-		return error(GL_INVALID_ENUM);
+		return;
 	}
 
 	if(width == 0 || height == 0 || pixels == NULL)
