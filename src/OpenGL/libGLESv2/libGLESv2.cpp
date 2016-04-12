@@ -1016,7 +1016,7 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 		return error(validationError);
 	}
 
-	if(width == 0 || height == 0 || data == NULL)
+	if(!data)
 	{
 		return;
 	}
@@ -1195,11 +1195,6 @@ void CopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
 		return error(GL_INVALID_VALUE);
 	}
 
-	if(width == 0 || height == 0)
-	{
-		return;
-	}
-
 	es2::Context *context = es2::getContext();
 
 	if(context)
@@ -1223,7 +1218,7 @@ void CopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
 			return error(GL_INVALID_OPERATION);
 		}
 
-		es2::Texture *texture = NULL;
+		es2::Texture *texture = nullptr;
 
 		if(target == GL_TEXTURE_2D)
 		{
@@ -6214,7 +6209,7 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 		return error(GL_INVALID_ENUM);
 	}
 
-	if(width == 0 || height == 0 || pixels == NULL)
+	if(!pixels)
 	{
 		return;
 	}
@@ -7266,7 +7261,7 @@ void CompressedTexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint
 		return error(validationError);
 	}
 
-	if(width == 0 || height == 0 || depth == 0 || data == NULL)
+	if(!data)
 	{
 		return;
 	}
