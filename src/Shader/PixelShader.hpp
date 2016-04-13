@@ -20,6 +20,8 @@
 
 namespace sw
 {
+	enum { MAX_INPUT_VARYINGS = 30 };
+
 	class PixelShader : public Shader
 	{
 	public:

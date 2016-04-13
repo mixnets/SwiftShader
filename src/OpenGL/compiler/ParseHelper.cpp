@@ -32,7 +32,7 @@
 // Look at a '.' field selector string and change it into offsets
 // for a vector.
 //
-bool TParseContext::parseVectorFields(const TString& compString, int vecSize, TVectorFields& fields, const TSourceLoc &line)
+bool TParseContext::parseVectorFields(const TString& compString, unsigned int vecSize, TVectorFields& fields, const TSourceLoc &line)
 {
 	fields.num = (int) compString.size();
 	if (fields.num > 4) {
@@ -2153,7 +2153,7 @@ TIntermTyped* TParseContext::addConstVectorNode(TVectorFields& fields, TIntermTy
 
 	ConstantUnion* constArray = new ConstantUnion[fields.num];
 
-	int objSize = static_cast<int>(node->getType().getObjectSize());
+	unsigned int objSize = static_cast<unsigned int>(node->getType().getObjectSize());
 	for (int i = 0; i < fields.num; i++) {
 		if (fields.offsets[i] >= objSize) {
 			std::stringstream extraInfoStream;

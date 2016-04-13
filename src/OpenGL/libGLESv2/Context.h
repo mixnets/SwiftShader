@@ -25,6 +25,7 @@
 #include "common/Object.hpp"
 #include "common/Image.hpp"
 #include "Renderer/Sampler.hpp"
+#include "Shader/PixelShader.hpp"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -45,6 +46,7 @@ namespace es2
 {
 struct TranslatedAttribute;
 struct TranslatedIndexData;
+struct PrimitiveRestartData;
 
 class Device;
 class Shader;
@@ -77,7 +79,7 @@ enum
 	MAX_VERTEX_ATTRIBS = sw::MAX_VERTEX_INPUTS,
 	MAX_UNIFORM_VECTORS = 256,   // Device limit
 	MAX_VERTEX_UNIFORM_VECTORS = sw::VERTEX_UNIFORM_VECTORS - 3,   // Reserve space for gl_DepthRange
-	MAX_VARYING_VECTORS = 10,
+	MAX_VARYING_VECTORS = sw::MAX_INPUT_VARYINGS /*es2: 10*/,
 	MAX_TEXTURE_IMAGE_UNITS = sw::TEXTURE_IMAGE_UNITS,
 	MAX_VERTEX_TEXTURE_IMAGE_UNITS = sw::VERTEX_TEXTURE_IMAGE_UNITS,
 	MAX_COMBINED_TEXTURE_IMAGE_UNITS = MAX_TEXTURE_IMAGE_UNITS + MAX_VERTEX_TEXTURE_IMAGE_UNITS,
@@ -636,6 +638,7 @@ public:
 	Buffer *getGenericUniformBuffer() const;
 	const GLvoid* getPixels(const GLvoid* data) const;
 	bool getBuffer(GLenum target, es2::Buffer **buffer) const;
+	bool getBufferMapping(GLenum target, int& offset, int& size) const;
 	Program *getCurrentProgram() const;
 	Texture2D *getTexture2D() const;
 	Texture3D *getTexture3D() const;
@@ -702,7 +705,8 @@ private:
 	bool applyRenderTarget();
 	void applyState(GLenum drawMode);
 	GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsizei instanceId);
-	GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo);
+	GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum type, TranslatedIndexData *indexInfo);
+	GLenum computePrimitiveRestart(const void *indices, GLsizei count, GLenum type, PrimitiveRestartData* restartInfo);
 	void applyShaders();
 	void applyTextures();
 	void applyTextures(sw::SamplerType type);

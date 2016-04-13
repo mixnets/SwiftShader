@@ -9,6 +9,7 @@ COMMON_C_INCLUDES += \
 	$(LOCAL_PATH)/Common/ \
 	$(LOCAL_PATH)/Shader/ \
 	$(LOCAL_PATH)/../third_party/LLVM/include \
+	$(LOCAL_PATH)/../third_party/ASTC/Source \
 	$(LOCAL_PATH)/Main/
 
 # Marshmallow does not have stlport, but comes with libc++ by default
@@ -41,6 +42,7 @@ COMMON_SRC_FILES += \
 	Reactor/RoutineManager.cpp
 
 COMMON_SRC_FILES += \
+	Renderer/ASTC_Decoder.cpp \
 	Renderer/Blitter.cpp \
 	Renderer/Clipper.cpp \
 	Renderer/Color.cpp \
@@ -57,7 +59,35 @@ COMMON_SRC_FILES += \
 	Renderer/Surface.cpp \
 	Renderer/TextureStage.cpp \
 	Renderer/Vector.cpp \
-	Renderer/VertexProcessor.cpp \
+	Renderer/VertexProcessor.cpp
+
+COMMON_SRC_FILES += \
+	../third_party/ASTC/Source/astc_averages_and_directions.cpp \
+	../third_party/ASTC/Source/astc_block_sizes2.cpp \
+	../third_party/ASTC/Source/astc_color_quantize.cpp \
+	../third_party/ASTC/Source/astc_color_unquantize.cpp \
+	../third_party/ASTC/Source/astc_compress_symbolic.cpp \
+	../third_party/ASTC/Source/astc_compute_variance.cpp \
+	../third_party/ASTC/Source/astc_decompress_symbolic.cpp \
+	../third_party/ASTC/Source/astc_encoding_choice_error.cpp \
+	../third_party/ASTC/Source/astc_find_best_partitioning.cpp \
+	../third_party/ASTC/Source/astc_ideal_endpoints_and_weights.cpp \
+	../third_party/ASTC/Source/astc_image_load_store.cpp \
+	../third_party/ASTC/Source/astc_integer_sequence.cpp \
+	../third_party/ASTC/Source/astc_kmeans_partitioning.cpp \
+	../third_party/ASTC/Source/astc_ktx_dds.cpp \
+	../third_party/ASTC/Source/astc_partition_tables.cpp \
+	../third_party/ASTC/Source/astc_percentile_tables.cpp \
+	../third_party/ASTC/Source/astc_pick_best_endpoint_format.cpp \
+	../third_party/ASTC/Source/astc_quantization.cpp \
+	../third_party/ASTC/Source/astc_stb_tga.cpp \
+	../third_party/ASTC/Source/astc_symbolic_physical.cpp \
+	../third_party/ASTC/Source/astc_toplevel.cpp \
+	../third_party/ASTC/Source/astc_weight_align.cpp \
+	../third_party/ASTC/Source/astc_weight_quant_xfer_tables.cpp \
+	../third_party/ASTC/Source/mathlib.cpp \
+	../third_party/ASTC/Source/softfloat.cpp \
+	../third_party/ASTC/Source/stb_image.c
 
 COMMON_SRC_FILES += \
 	Shader/Constants.cpp \

@@ -14,6 +14,7 @@
 
 #include "Surface.hpp"
 
+#include "ASTC_Decoder.hpp"
 #include "Color.hpp"
 #include "Context.hpp"
 #include "ETC_Decoder.hpp"
@@ -2428,17 +2429,6 @@ namespace sw
 
 		if(isSRGB)
 		{
-			static byte sRGBtoLinearTable[256];
-			static bool sRGBtoLinearTableDirty = true;
-			if(sRGBtoLinearTableDirty)
-			{
-				for(int i = 0; i < 256; i++)
-				{
-					sRGBtoLinearTable[i] = static_cast<byte>(sRGBtoLinear(static_cast<float>(i) / 255.0f) * 255.0f + 0.5f);
-				}
-				sRGBtoLinearTableDirty = false;
-			}
-
 			// Perform sRGB conversion in place after decoding
 			byte* src = (byte*)internal.buffer;
 			for(int y = 0; y < internal.height; y++)
@@ -2449,7 +2439,7 @@ namespace sw
 					byte* srcPix = srcRow + x * internal.bytes;
 					for(int i = 0; i < 3; i++)
 					{
-						srcPix[i] = sRGBtoLinearTable[srcPix[i]];
+						srcPix[i] = sw::sRGB8toLinear8(srcPix[i]);
 					}
 				}
 			}
@@ -2490,6 +2480,44 @@ namespace sw
 
 	void Surface::decodeASTC(Buffer &internal, const Buffer &external, int xBlockSize, int yBlockSize, int zBlockSize, bool isSRGB)
 	{
+		int xblocks = (external.width + xBlockSize - 1) / xBlockSize;
+		int yblocks = (external.height + yBlockSize - 1) / yBlockSize;
+		int zblocks = (zBlockSize > 1) ? (external.depth + zBlockSize - 1) / zBlockSize : 1;
+
+		const byte *source = (const byte*)external.buffer;
+		byte* dest = (byte*)internal.buffer;
+
+		if(xblocks > 0 && yblocks > 0 && zblocks > 0)
+		{
+			for(int z = 0; z < zblocks; z++)
+			{
+				for(int y = 0; y < yblocks; y++)
+				{
+					for(int x = 0; x < xblocks; x++, source += 16)
+					{
+						ASTC_Decoder::DecodeBlock(source, dest, internal.width, internal.height, internal.depth, internal.pitchB, internal.sliceB, xBlockSize, yBlockSize, zBlockSize, x, y, z);
+					}
+				}
+			}
+		}
+
+		if(isSRGB)
+		{
+			// Perform sRGB conversion in place after decoding
+			byte* src = (byte*)internal.buffer;
+			for(int y = 0; y < internal.height; y++)
+			{
+				byte* srcRow = src + y * internal.pitchB;
+				for(int x = 0; x < internal.width; x++)
+				{
+					float* srcPix = reinterpret_cast<float*>(srcRow + x * internal.bytes);
+					for(int i = 0; i < 3; i++)
+					{
+						srcPix[i] = sRGBtoLinear(clamp(static_cast<float>(srcPix[i]), 0.0f, 1.0f));
+					}
+				}
+			}
+		}
 	}
 
 	unsigned int Surface::size(int width, int height, int depth, Format format)
@@ -2641,6 +2669,86 @@ namespace sw
 		}
 	}
 
+	bool Surface::isFloatOr32BitFormat(Format format)
+	{
+		switch(format)
+		{
+		case FORMAT_R5G6B5:
+		case FORMAT_X8R8G8B8:
+		case FORMAT_X8B8G8R8I:
+		case FORMAT_X8B8G8R8:
+		case FORMAT_A8R8G8B8:
+		case FORMAT_SRGB8_X8:
+		case FORMAT_SRGB8_A8:
+		case FORMAT_A8B8G8R8I:
+		case FORMAT_R8UI:
+		case FORMAT_G8R8UI:
+		case FORMAT_X8B8G8R8UI:
+		case FORMAT_A8B8G8R8UI:
+		case FORMAT_A8B8G8R8:
+		case FORMAT_G8R8I:
+		case FORMAT_G8R8:
+		case FORMAT_R8I_SNORM:
+		case FORMAT_G8R8I_SNORM:
+		case FORMAT_X8B8G8R8I_SNORM:
+		case FORMAT_A8B8G8R8I_SNORM:
+		case FORMAT_A2B10G10R10:
+		case FORMAT_R16I:
+		case FORMAT_R16UI:
+		case FORMAT_G16R16I:
+		case FORMAT_G16R16UI:
+		case FORMAT_G16R16:
+		case FORMAT_X16B16G16R16I:
+		case FORMAT_X16B16G16R16UI:
+		case FORMAT_A16B16G16R16I:
+		case FORMAT_A16B16G16R16UI:
+		case FORMAT_A16B16G16R16:
+		case FORMAT_V8U8:
+		case FORMAT_Q8W8V8U8:
+		case FORMAT_X8L8V8U8:
+		case FORMAT_V16U16:
+		case FORMAT_A16W16V16U16:
+		case FORMAT_Q16W16V16U16:
+		case FORMAT_A8:
+		case FORMAT_R8I:
+		case FORMAT_R8:
+		case FORMAT_L8:
+		case FORMAT_L16:
+		case FORMAT_A8L8:
+		case FORMAT_YV12_BT601:
+		case FORMAT_YV12_BT709:
+		case FORMAT_YV12_JFIF:
+			return false;
+		case FORMAT_R32I:
+		case FORMAT_R32UI:
+		case FORMAT_G32R32I:
+		case FORMAT_G32R32UI:
+		case FORMAT_X32B32G32R32I:
+		case FORMAT_X32B32G32R32UI:
+		case FORMAT_A32B32G32R32I:
+		case FORMAT_A32B32G32R32UI:
+		case FORMAT_R32F:
+		case FORMAT_G32R32F:
+		case FORMAT_B32G32R32F:
+		case FORMAT_X32B32G32R32F:
+		case FORMAT_A32B32G32R32F:
+		case FORMAT_D32F:
+		case FORMAT_D32F_COMPLEMENTARY:
+		case FORMAT_D32F_LOCKABLE:
+		case FORMAT_D32FS8_TEXTURE:
+		case FORMAT_D32FS8_SHADOW:
+		case FORMAT_L16F:
+		case FORMAT_A16L16F:
+		case FORMAT_L32F:
+		case FORMAT_A32L32F:
+			return true;
+		default:
+			ASSERT(false);
+		}
+		
+		return false;
+	}
+
 	bool Surface::isFloatFormat(Format format)
 	{
 		switch(format)
@@ -2703,6 +2811,7 @@ namespace sw
 			return false;
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
+		case FORMAT_B32G32R32F:
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_D32F:
@@ -2790,6 +2899,7 @@ namespace sw
 		case FORMAT_G8R8I_SNORM:
 			return component >= 2;
 		case FORMAT_A16W16V16U16:
+		case FORMAT_B32G32R32F:
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_X8B8G8R8I:
 		case FORMAT_X16B16G16R16I:
@@ -2989,6 +3099,7 @@ namespace sw
 		case FORMAT_Q16W16V16U16:   return 4;
 		case FORMAT_R32F:           return 1;
 		case FORMAT_G32R32F:        return 2;
+		case FORMAT_B32G32R32F:     return 3;
 		case FORMAT_X32B32G32R32F:  return 3;
 		case FORMAT_A32B32G32R32F:  return 4;
 		case FORMAT_D32F:           return 1;
@@ -3560,6 +3671,7 @@ namespace sw
 		case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
 		case FORMAT_RGBA8_ETC2_EAC:
 		case FORMAT_SRGB8_ALPHA8_ETC2_EAC:
+			return FORMAT_A8R8G8B8;
 		case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:
@@ -3574,7 +3686,6 @@ namespace sw
 		case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR:
-			return FORMAT_A8R8G8B8;
 		case FORMAT_RGBA_ASTC_4x4_KHR:
 		case FORMAT_RGBA_ASTC_5x4_KHR:
 		case FORMAT_RGBA_ASTC_5x5_KHR:

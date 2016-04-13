@@ -74,20 +74,25 @@ namespace sw
 		Float4 vvvv = v;
 		Float4 wwww = w;
 
+		// FIXME: Convert to fixed12 at higher level, when required
+		const short one = fixed12 ? 0x1000 : 0xFFFFu;
+
 		if(state.textureType == TEXTURE_NULL)
 		{
 			c.x = Short4(0x0000);
 			c.y = Short4(0x0000);
 			c.z = Short4(0x0000);
-
-			if(fixed12)   // FIXME: Convert to fixed12 at higher level, when required
-			{
-				c.w = Short4(0x1000);
-			}
-			else
-			{
-				c.w = Short4(0xFFFFu);   // FIXME
-			}
+			c.w = Short4(one, one, one, one);
+		}
+		else if(state.compMode == COMPARE_MODE_REF_TO_TEXTURE &&
+		        ((state.compFunc == COMPARE_FUNC_ALWAYS) || (state.compFunc == COMPARE_FUNC_NEVER)))
+		{
+			c.x = (state.compFunc == COMPARE_FUNC_ALWAYS) ?
+			      Short4(one, one, one, one) :
+			      Short4(0x0000);
+			c.y = Short4(0x0000);
+			c.z = Short4(0x0000);
+			c.w = Short4(one, one, one, one);
 		}
 		else
 		{
@@ -123,7 +128,7 @@ namespace sw
 				computeLod3D(texture, lod, uuuu, vvvv, wwww, lodBias, dsx, dsy, function);
 			}
 
-			if(!hasFloatTexture())
+			if(!hasFloatOr32BitTexture())
 			{
 				sampleFilter(texture, c, uuuu, vvvv, wwww, offset, lod, anisotropy, uDelta, vDelta, face, function);
 			}
@@ -136,7 +141,7 @@ namespace sw
 				convertFixed12(c, cf);
 			}
 
-			if(fixed12 && !hasFloatTexture())
+			if(fixed12 && !hasFloatOr32BitTexture())
 			{
 				if(has16bitTextureFormat())
 				{
@@ -237,8 +242,8 @@ namespace sw
 				case FORMAT_YV12_BT601:
 				case FORMAT_YV12_BT709:
 				case FORMAT_YV12_JFIF:
-					if(componentCount < 2) c.y = Short4(0x1000);
-					if(componentCount < 3) c.z = Short4(0x1000);
+					if(componentCount < 2) c.y = Short4(0x0000);
+					if(componentCount < 3) c.z = Short4(0x0000);
 					if(componentCount < 4) c.w = Short4(0x1000);
 					break;
 				case FORMAT_A8:
@@ -259,9 +264,10 @@ namespace sw
 					c.z = c.x;
 					break;
 				case FORMAT_R32F:
-					c.y = Short4(0x1000);
+					c.y = Short4(0x0000);
 				case FORMAT_G32R32F:
-					c.z = Short4(0x1000);
+					c.z = Short4(0x0000);
+				case FORMAT_B32G32R32F:
 				case FORMAT_X32B32G32R32F:
 					c.w = Short4(0x1000);
 				case FORMAT_A32B32G32R32F:
@@ -270,9 +276,9 @@ namespace sw
 				case FORMAT_D32F_LOCKABLE:
 				case FORMAT_D32FS8_TEXTURE:
 				case FORMAT_D32FS8_SHADOW:
-					c.y = c.x;
-					c.z = c.x;
-					c.w = c.x;
+					c.y = Short4(0x0000);
+					c.z = Short4(0x0000);
+					c.w = Short4(0x1000);
 					break;
 				default:
 					ASSERT(false);
@@ -312,9 +318,17 @@ namespace sw
 			c.z = Float4(0.0f);
 			c.w = Float4(1.0f);
 		}
+		else if(state.compMode == COMPARE_MODE_REF_TO_TEXTURE &&
+		        ((state.compFunc == COMPARE_FUNC_ALWAYS) || (state.compFunc == COMPARE_FUNC_NEVER)))
+		{
+			c.x = (state.compFunc == COMPARE_FUNC_ALWAYS) ? Float4(1.0f) : Float4(0.0f);
+			c.y = Float4(0.0f);
+			c.z = Float4(0.0f);
+			c.w = Float4(1.0f);
+		}
 		else
 		{
-			if(hasFloatTexture())   // FIXME: Mostly identical to integer sampling
+			if(hasFloatOr32BitTexture())   // FIXME: Mostly identical to integer sampling
 			{
 				Float4 uuuu = u;
 				Float4 vvvv = v;
@@ -495,8 +509,8 @@ namespace sw
 				case FORMAT_V16U16:
 				case FORMAT_A16W16V16U16:
 				case FORMAT_Q16W16V16U16:
-					if(componentCount < 2) c.y = Float4(1.0f);
-					if(componentCount < 3) c.z = Float4(1.0f);
+					if(componentCount < 2) c.y = Float4(0.0f);
+					if(componentCount < 3) c.z = Float4(0.0f);
 					if(componentCount < 4) c.w = Float4(1.0f);
 					break;
 				case FORMAT_A8:
@@ -517,9 +531,10 @@ namespace sw
 					c.z = c.x;
 					break;
 				case FORMAT_R32F:
-					c.y = Float4(1.0f);
+					c.y = Float4(0.0f);
 				case FORMAT_G32R32F:
-					c.z = Float4(1.0f);
+					c.z = Float4(0.0f);
+				case FORMAT_B32G32R32F:
 				case FORMAT_X32B32G32R32F:
 					c.w = Float4(1.0f);
 				case FORMAT_A32B32G32R32F:
@@ -528,9 +543,9 @@ namespace sw
 				case FORMAT_D32F_LOCKABLE:
 				case FORMAT_D32FS8_TEXTURE:
 				case FORMAT_D32FS8_SHADOW:
-					c.y = c.x;
-					c.z = c.x;
-					c.w = c.x;
+					c.y = Float4(0.0f);
+					c.z = Float4(0.0f);
+					c.w = Float4(1.0f);
 					break;
 				default:
 					ASSERT(false);
@@ -1704,7 +1719,7 @@ namespace sw
 		bool texelFetch = (function == Fetch);
 		bool hasOffset = (function.option == Offset);
 
-		if(!state.hasNPOTTexture && !hasFloatTexture() && !hasOffset)
+		if(!state.hasNPOTTexture && !hasFloatOr32BitTexture() && !hasOffset)
 		{
 			if(!texelFetch)
 			{
@@ -1754,8 +1769,8 @@ namespace sw
 			Short4 www2 = wwww;
 			wwww = As<Short4>(UnpackLow(wwww, Short4(0x0000)));
 			www2 = As<Short4>(UnpackHigh(www2, Short4(0x0000)));
-			wwww = As<Short4>(MulAdd(wwww, *Pointer<Short4>(mipmap + OFFSET(Mipmap,sliceP))));
-			www2 = As<Short4>(MulAdd(www2, *Pointer<Short4>(mipmap + OFFSET(Mipmap,sliceP))));
+			wwww = As<Short4>(MulAdd(wwww, *Pointer<Short4>(mipmap + OFFSET(Mipmap, sliceP))));
+			www2 = As<Short4>(MulAdd(www2, *Pointer<Short4>(mipmap + OFFSET(Mipmap, sliceP))));
 			uuuu = As<Short4>(As<Int2>(uuuu) + As<Int2>(wwww));
 			uuu2 = As<Short4>(As<Int2>(uuu2) + As<Int2>(www2));
 		}
@@ -2070,6 +2085,8 @@ namespace sw
 		int f2 = state.textureType == TEXTURE_CUBE ? 2 : 0;
 		int f3 = state.textureType == TEXTURE_CUBE ? 3 : 0;
 
+		bool shadowTexture = (state.compMode == COMPARE_MODE_REF_TO_TEXTURE);
+
 		// Read texels
 		switch(textureComponentCount())
 		{
@@ -2106,15 +2123,49 @@ namespace sw
 			c.x.z = *Pointer<Float>(buffer[f2] + index[2] * 4);
 			c.x.w = *Pointer<Float>(buffer[f3] + index[3] * 4);
 
-			if(state.textureFormat == FORMAT_D32FS8_SHADOW && state.textureFilter != FILTER_GATHER)
-			{
-				Float4 d = Min(Max(z, Float4(0.0f)), Float4(1.0f));
-
-				c.x = As<Float4>(As<Int4>(CmpNLT(c.x, d)) & As<Int4>(Float4(1.0f)));   // FIXME: Only less-equal?
-			}
+			shadowTexture |= (state.textureFormat == FORMAT_D32FS8_SHADOW && state.textureFilter != FILTER_GATHER);
 			break;
 		default:
 			ASSERT(false);
+		}
+
+		if(shadowTexture)
+		{
+			Float4 depth = Min(Max(z, Float4(0.0f)), Float4(1.0f));
+
+			Int4 condition;
+
+			switch(state.compFunc)
+			{
+			case COMPARE_FUNC_LEQUAL:
+				condition = CmpLE(depth, c.x);
+				break;
+			case COMPARE_FUNC_GEQUAL:
+				condition = CmpNLT(depth, c.x);
+				break;
+			case COMPARE_FUNC_LESS:
+				condition = CmpLT(depth, c.x);
+				break;
+			case COMPARE_FUNC_GREATER:
+				condition = CmpNLE(depth, c.x);
+				break;
+			case COMPARE_FUNC_EQUAL:
+				condition = CmpEQ(depth, c.x);
+				break;
+			case COMPARE_FUNC_NOTEQUAL:
+				condition = CmpNEQ(depth, c.x);
+				break;
+			case COMPARE_FUNC_ALWAYS:
+			case COMPARE_FUNC_NEVER:
+				// These 2 cases should have been handled earlier
+			default:
+				ASSERT(false);
+			}
+
+			c.x = As<Float4>(condition & As<Int4>(Float4(1.0f)));
+			c.y = Float4(0.0f);
+			c.z = Float4(0.0f);
+			c.w = Float4(1.0f);
 		}
 	}
 
@@ -2273,9 +2324,9 @@ namespace sw
 		c = Insert(c, *Pointer<Short>(LUT + 2 * Int(Extract(c, 3))), 3);
 	}
 
-	bool SamplerCore::hasFloatTexture() const
+	bool SamplerCore::hasFloatOr32BitTexture() const
 	{
-		return Surface::isFloatFormat(state.textureFormat);
+		return Surface::isFloatOr32BitFormat(state.textureFormat);
 	}
 
 	bool SamplerCore::hasUnsignedTextureComponent(int component) const
@@ -2326,6 +2377,7 @@ namespace sw
 		case FORMAT_X8L8V8U8:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
+		case FORMAT_B32G32R32F:
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_A8:
@@ -2395,6 +2447,7 @@ namespace sw
 		case FORMAT_R5G6B5:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
+		case FORMAT_B32G32R32F:
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_D32F:
@@ -2471,6 +2524,7 @@ namespace sw
 		case FORMAT_X8L8V8U8:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
+		case FORMAT_B32G32R32F:
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_A8:
@@ -2548,6 +2602,7 @@ namespace sw
 		case FORMAT_X8L8V8U8:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
+		case FORMAT_B32G32R32F:
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_A8:
@@ -2617,6 +2672,7 @@ namespace sw
 		case FORMAT_X8L8V8U8:       return false;
 		case FORMAT_R32F:           return component < 1;
 		case FORMAT_G32R32F:        return component < 2;
+		case FORMAT_B32G32R32F:     return component < 3;
 		case FORMAT_X32B32G32R32F:  return component < 3;
 		case FORMAT_A32B32G32R32F:  return component < 3;
 		case FORMAT_A8:             return false;

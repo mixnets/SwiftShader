@@ -280,9 +280,7 @@ namespace sw
 		case FORMAT_B32G32R32F:
 			c.z = *Pointer<Float>(element + 8);
 		case FORMAT_G32R32F:
-			c.x = *Pointer<Float>(element + 0);
 			c.y = *Pointer<Float>(element + 4);
-			break;
 		case FORMAT_R32F:
 			c.x = *Pointer<Float>(element);
 			break;
