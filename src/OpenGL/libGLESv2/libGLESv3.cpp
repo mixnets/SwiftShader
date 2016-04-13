@@ -1524,6 +1524,13 @@ GL_APICALL void GL_APIENTRY glRenderbufferStorageMultisample(GLenum target, GLsi
 		case GL_RG8:
 		case GL_RGB8:
 		case GL_RGBA8:
+		case GL_R16F:
+		case GL_RG16F:
+		case GL_RGBA16F:
+		case GL_R32F:
+		case GL_RG32F:
+		case GL_RGBA32F:
+		case GL_R11F_G11F_B10F:
 			context->setRenderbufferStorage(new es2::Colorbuffer(width, height, internalformat, samples));
 			break;
 		case GL_STENCIL_INDEX8:
