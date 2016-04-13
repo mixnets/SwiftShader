@@ -625,7 +625,6 @@ bool Context::isDitherEnabled() const
 
 void Context::setPrimitiveRestartFixedIndexEnabled(bool enabled)
 {
-	UNIMPLEMENTED();
 	mState.primitiveRestartFixedIndexEnabled = enabled;
 }
 
@@ -2171,16 +2170,13 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = 2;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS: // integer, at least 64
-		UNIMPLEMENTED();
-		*params = 64;
+		*params = sw::MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS: // integer, at least 4
-		UNIMPLEMENTED();
 		*params = MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS: // integer, at least 4
-		UNIMPLEMENTED();
-		*params = 4;
+		*params = sw::MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS;
 		break;
 	case GL_MAX_UNIFORM_BLOCK_SIZE: // integer, at least 16384
 		*params = MAX_UNIFORM_BLOCK_SIZE;
@@ -2983,10 +2979,15 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsize
 	return GL_NO_ERROR;
 }
 
-// Applies the indices and element array bindings
-GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo)
+GLenum Context::computePrimitiveRestart(const void *indices, GLsizei count, GLenum type, PrimitiveRestartData* restartData)
 {
-	GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, indexInfo);
+	return mIndexDataManager->computePrimitiveRestart(type, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, restartData);
+}
+
+// Applies the indices and element array bindings
+GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum type, TranslatedIndexData *indexInfo)
+{
+	GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, indexInfo, isPrimitiveRestartFixedIndexEnabled());
 
 	if(err == GL_NO_ERROR)
 	{
@@ -3012,17 +3013,17 @@ void Context::applyShaders()
 		mAppliedProgramSerial = programObject->getSerial();
 	}
 
+	programObject->applyTransformFeedback(getTransformFeedback());
 	programObject->applyUniformBuffers(mState.uniformBuffers);
 	programObject->applyUniforms();
 }
 
-void Context::applyTextures()
+bool Context::applyTextures()
 {
-	applyTextures(sw::SAMPLER_PIXEL);
-	applyTextures(sw::SAMPLER_VERTEX);
+	return applyTextures(sw::SAMPLER_PIXEL) && applyTextures(sw::SAMPLER_VERTEX);
 }
 
-void Context::applyTextures(sw::SamplerType samplerType)
+bool Context::applyTextures(sw::SamplerType samplerType)
 {
 	Program *programObject = getCurrentProgram();
 
@@ -3040,7 +3041,8 @@ void Context::applyTextures(sw::SamplerType samplerType)
 
 			if(texture->isSamplerComplete())
 			{
-				GLenum wrapS, wrapT, wrapR, minFilter, magFilter;
+				GLenum wrapS, wrapT, wrapR, minFilter, magFilter, compFunc, compMode;
+				GLfloat minLOD, maxLOD;
 
 				Sampler *samplerObject = mState.sampler[textureUnit];
 				if(samplerObject)
@@ -3050,6 +3052,10 @@ void Context::applyTextures(sw::SamplerType samplerType)
 					wrapR = samplerObject->getWrapR();
 					minFilter = samplerObject->getMinFilter();
 					magFilter = samplerObject->getMagFilter();
+					minLOD = samplerObject->getMinLod();
+					maxLOD = samplerObject->getMaxLod();
+					compFunc = samplerObject->getComparisonFunc();
+					compMode = samplerObject->getComparisonMode();
 				}
 				else
 				{
@@ -3058,9 +3064,15 @@ void Context::applyTextures(sw::SamplerType samplerType)
 					wrapR = texture->getWrapR();
 					minFilter = texture->getMinFilter();
 					magFilter = texture->getMagFilter();
+					minLOD = texture->getMinLOD();
+					maxLOD = texture->getMaxLOD();
+					compFunc = texture->getCompareFunc();
+					compMode = texture->getCompareMode();
 				}
 				GLfloat maxAnisotropy = texture->getMaxAnisotropy();
 
+				GLint baseLevel = texture->getBaseLevel();
+				GLint maxLevel = texture->getMaxLevel();
 				GLenum swizzleR = texture->getSwizzleR();
 				GLenum swizzleG = texture->getSwizzleG();
 				GLenum swizzleB = texture->getSwizzleB();
@@ -3069,10 +3081,16 @@ void Context::applyTextures(sw::SamplerType samplerType)
 				device->setAddressingModeU(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapS));
 				device->setAddressingModeV(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapT));
 				device->setAddressingModeW(samplerType, samplerIndex, es2sw::ConvertTextureWrap(wrapR));
+				device->setCompFunc(samplerType, samplerIndex, es2sw::ConvertCompareFunc(compFunc));
+				device->setCompMode(samplerType, samplerIndex, es2sw::ConvertCompareMode(compMode));
 				device->setSwizzleR(samplerType, samplerIndex, es2sw::ConvertSwizzleType(swizzleR));
 				device->setSwizzleG(samplerType, samplerIndex, es2sw::ConvertSwizzleType(swizzleG));
 				device->setSwizzleB(samplerType, samplerIndex, es2sw::ConvertSwizzleType(swizzleB));
 				device->setSwizzleA(samplerType, samplerIndex, es2sw::ConvertSwizzleType(swizzleA));
+				device->setMinLod(samplerType, samplerIndex, minLOD);
+				device->setMaxLod(samplerType, samplerIndex, maxLOD);
+				device->setBaseLevel(samplerType, samplerIndex, baseLevel);
+				device->setMaxLevel(samplerType, samplerIndex, maxLevel);
 
 				device->setTextureFilter(samplerType, samplerIndex, es2sw::ConvertTextureFilter(minFilter, magFilter, maxAnisotropy));
 				device->setMipmapFilter(samplerType, samplerIndex, es2sw::ConvertMipMapFilter(minFilter));
@@ -3082,17 +3100,25 @@ void Context::applyTextures(sw::SamplerType samplerType)
 			}
 			else
 			{
-				applyTexture(samplerType, samplerIndex, nullptr);
+				if(!applyTexture(samplerType, samplerIndex, nullptr))
+				{
+					return false;
+				}
 			}
 		}
 		else
 		{
-			applyTexture(samplerType, samplerIndex, nullptr);
+			if(!applyTexture(samplerType, samplerIndex, nullptr))
+			{
+				return false;
+			}
 		}
 	}
+
+	return true;
 }
 
-void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture)
+bool Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture)
 {
 	Program *program = getCurrentProgram();
 	int sampler = (type == sw::SAMPLER_PIXEL) ? index : 16 + index;
@@ -3106,7 +3132,11 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 	{
 		textureUsed = program->getVertexShader()->usesSampler(index);
 	}
-	else UNREACHABLE(type);
+	else
+	{
+		UNREACHABLE(type);
+		return false;
+	}
 
 	sw::Resource *resource = 0;
 
@@ -3139,6 +3169,10 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
+				if(surface->getInternalFormat() == sw::FORMAT_NULL)
+				{
+					return false;
+				}
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D);
 			}
 		}
@@ -3160,6 +3194,10 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
+				if(surface->getInternalFormat() == sw::FORMAT_NULL)
+				{
+					return false;
+				}
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_3D);
 			}
 		}
@@ -3181,6 +3219,10 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *surface = texture->getImage(surfaceLevel);
+				if(surface->getInternalFormat() == sw::FORMAT_NULL)
+				{
+					return false;
+				}
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D_ARRAY);
 			}
 		}
@@ -3204,16 +3246,26 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 					}
 
 					egl::Image *surface = cubeTexture->getImage(face, surfaceLevel);
+					if(surface->getInternalFormat() == sw::FORMAT_NULL)
+					{
+						return false;
+					}
 					device->setTextureLevel(sampler, face, mipmapLevel, surface, sw::TEXTURE_CUBE);
 				}
 			}
 		}
-		else UNIMPLEMENTED();
+		else
+		{
+			UNIMPLEMENTED();
+			return false;
+		}
 	}
 	else
 	{
 		device->setTextureLevel(sampler, 0, 0, 0, sw::TEXTURE_NULL);
 	}
+
+	return true;
 }
 
 void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLsizei *bufSize, void* pixels)
@@ -3438,8 +3490,9 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 
 	sw::DrawType primitiveType;
 	int primitiveCount;
+	int verticesPerPrimitive;
 
-	if(!es2sw::ConvertPrimitiveType(mode, count, GL_NONE, primitiveType, primitiveCount))
+	if(!es2sw::ConvertPrimitiveType(mode, count, GL_NONE, primitiveType, primitiveCount, verticesPerPrimitive))
 		return error(GL_INVALID_ENUM);
 
 	if(primitiveCount <= 0)
@@ -3465,16 +3518,20 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 		}
 
 		applyShaders();
-		applyTextures();
 
-		if(!getCurrentProgram()->validateSamplers(false))
+		if(!applyTextures() || !getCurrentProgram()->validateSamplers(false))
 		{
 			return error(GL_INVALID_OPERATION);
 		}
 
-		if(!cullSkipsDraw(mode))
+		TransformFeedback* transformFeedback = getTransformFeedback();
+		if(!cullSkipsDraw(mode) || (transformFeedback->isActive() && !transformFeedback->isPaused()))
 		{
 			device->drawPrimitive(primitiveType, primitiveCount);
+		}
+		if(transformFeedback)
+		{
+			transformFeedback->addVertexOffset(primitiveCount * verticesPerPrimitive);
 		}
 	}
 }
@@ -3493,8 +3550,9 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 
 	sw::DrawType primitiveType;
 	int primitiveCount;
+	int verticesPerPrimitive;
 
-	if(!es2sw::ConvertPrimitiveType(mode, count, type, primitiveType, primitiveCount))
+	if(!es2sw::ConvertPrimitiveType(mode, count, type, primitiveType, primitiveCount, verticesPerPrimitive))
 		return error(GL_INVALID_ENUM);
 
 	if(primitiveCount <= 0)
@@ -3509,35 +3567,62 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 
 	applyState(mode);
 
+	PrimitiveRestartData restartData;
+	if(isPrimitiveRestartFixedIndexEnabled())
+	{
+		GLenum err = computePrimitiveRestart(indices, count, type, &restartData);
+		if(err != GL_NO_ERROR)
+		{
+			return error(err);
+		}
+	}
+	else
+	{
+		restartData.data.push_back(PrimitiveRestartData::Datum::Datum(indices, count));
+	}
+
 	for(int i = 0; i < instanceCount; ++i)
 	{
 		device->setInstanceID(i);
 
-		TranslatedIndexData indexInfo;
-		GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
-		if(err != GL_NO_ERROR)
+		for(std::vector<PrimitiveRestartData::Datum>::iterator it = restartData.data.begin(); it != restartData.data.end(); ++it)
 		{
-			return error(err);
-		}
+			es2sw::ConvertPrimitiveType(mode, it->count, type, primitiveType, primitiveCount, verticesPerPrimitive);
+			if(primitiveCount <= 0)
+			{
+				continue;
+			}
 
-		GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
-		err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount, i);
-		if(err != GL_NO_ERROR)
-		{
-			return error(err);
-		}
+			TranslatedIndexData indexInfo;
+			GLenum err = applyIndexBuffer(it->indices, start, end, it->count, type, &indexInfo);
+			if(err != GL_NO_ERROR)
+			{
+				return error(err);
+			}
 
-		applyShaders();
-		applyTextures();
+			GLsizei vertexCount = indexInfo.maxIndex - indexInfo.minIndex + 1;
+			err = applyVertexBuffer(-(int)indexInfo.minIndex, indexInfo.minIndex, vertexCount, i);
+			if(err != GL_NO_ERROR)
+			{
+				return error(err);
+			}
 
-		if(!getCurrentProgram()->validateSamplers(false))
-		{
-			return error(GL_INVALID_OPERATION);
-		}
+			applyShaders();
 
-		if(!cullSkipsDraw(mode))
-		{
-			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount);
+			if(!applyTextures() || !getCurrentProgram()->validateSamplers(false))
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+
+			TransformFeedback* transformFeedback = getTransformFeedback();
+			if(!cullSkipsDraw(mode) || (transformFeedback->isActive() && !transformFeedback->isPaused()))
+			{
+				device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount);
+			}
+			if(transformFeedback)
+			{
+				transformFeedback->addVertexOffset(primitiveCount * verticesPerPrimitive);
+			}
 		}
 	}
 }
@@ -4258,6 +4343,8 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 	// Vendor extensions
 	static const GLubyte* extensions[] = {
 		(const GLubyte*)"GL_OES_compressed_ETC1_RGB8_texture",
+		(const GLubyte*)"GL_KHR_texture_compression_astc_ldr",
+		(const GLubyte*)"GL_KHR_texture_compression_astc_hdr",
 		(const GLubyte*)"GL_OES_depth24",
 		(const GLubyte*)"GL_OES_depth32",
 		(const GLubyte*)"GL_OES_depth_texture",
@@ -4277,6 +4364,7 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 		(const GLubyte*)"GL_OES_texture_npot",
 		(const GLubyte*)"GL_OES_texture_3D",
 		(const GLubyte*)"GL_EXT_blend_minmax",
+		(const GLubyte*)"GL_EXT_color_buffer_float",
 		(const GLubyte*)"GL_EXT_color_buffer_half_float",
 		(const GLubyte*)"GL_EXT_draw_buffers",
 		(const GLubyte*)"GL_EXT_occlusion_query_boolean",
@@ -4286,6 +4374,8 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 #endif
 		(const GLubyte*)"GL_EXT_texture_filter_anisotropic",
 		(const GLubyte*)"GL_EXT_texture_format_BGRA8888",
+		(const GLubyte*)"GL_EXT_texture_rg",
+		(const GLubyte*)"GL_EXT_texture_type_2_10_10_10_REV",
 		(const GLubyte*)"GL_ANGLE_framebuffer_blit",
 		(const GLubyte*)"GL_NV_framebuffer_blit",
 		(const GLubyte*)"GL_ANGLE_framebuffer_multisample",

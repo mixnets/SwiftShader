@@ -240,7 +240,7 @@ namespace sw
 
 			if(update || oldMultiSampleMask != context->multiSampleMask)
 			{
-				vertexState = VertexProcessor::update();
+				vertexState = VertexProcessor::update(drawType);
 				setupState = SetupProcessor::update();
 				pixelState = PixelProcessor::update();
 
@@ -837,7 +837,7 @@ namespace sw
 		case Task::PRIMITIVES:
 			{
 				int unit = task[threadIndex].primitiveUnit;
-			
+
 				int input = primitiveProgress[unit].firstPrimitive;
 				int count = primitiveProgress[unit].primitiveCount;
 				DrawCall *draw = drawList[primitiveProgress[unit].drawCall % DRAW_COUNT];
@@ -1460,12 +1460,8 @@ namespace sw
 			return;
 		}
 
-		task->vertexStart = start * 3;
+		task->primitiveStart = start;
 		task->vertexCount = triangleCount * 3;
-		// Note: Quads aren't handled for verticesPerPrimitive, but verticesPerPrimitive is used for transform feedback,
-		//       which is an OpenGL ES 3.0 feature, and OpenGL ES 3.0 doesn't support quads as a primitive type.
-		DrawType type = static_cast<DrawType>(static_cast<unsigned int>(draw->drawType) & 0xF);
-		task->verticesPerPrimitive = 1 + (type >= DRAW_LINELIST) + (type >= DRAW_TRIANGLELIST);
 		vertexRoutine(&triangle->v0, (unsigned int*)&batch, task, data);
 	}
 
@@ -1878,7 +1874,7 @@ namespace sw
 
 		int pts = state.pointSizeRegister;
 
-		if(state.pointSizeRegister != 0xF)
+		if(state.pointSizeRegister != VertexShader::NO_VERTEX_POINT_SIZE)
 		{
 			pSize = v.v[pts].y;
 		}
@@ -2354,6 +2350,78 @@ namespace sw
 		else
 		{
 			VertexProcessor::setSwizzleA(sampler, swizzleA);
+		}
+	}
+
+	void Renderer::setCompFunc(SamplerType type, int sampler, CompareFunc compFunc)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setCompFunc(sampler, compFunc);
+		}
+		else
+		{
+			VertexProcessor::setCompFunc(sampler, compFunc);
+		}
+	}
+
+	void Renderer::setCompMode(SamplerType type, int sampler, CompareMode compMode)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setCompMode(sampler, compMode);
+		}
+		else
+		{
+			VertexProcessor::setCompMode(sampler, compMode);
+		}
+	}
+
+	void Renderer::setBaseLevel(SamplerType type, int sampler, int baseLevel)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setBaseLevel(sampler, baseLevel);
+		}
+		else
+		{
+			VertexProcessor::setBaseLevel(sampler, baseLevel);
+		}
+	}
+
+	void Renderer::setMaxLevel(SamplerType type, int sampler, int maxLevel)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setMaxLevel(sampler, maxLevel);
+		}
+		else
+		{
+			VertexProcessor::setMaxLevel(sampler, maxLevel);
+		}
+	}
+
+	void Renderer::setMinLod(SamplerType type, int sampler, float minLod)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setMinLod(sampler, minLod);
+		}
+		else
+		{
+			VertexProcessor::setMinLod(sampler, minLod);
+		}
+	}
+
+	void Renderer::setMaxLod(SamplerType type, int sampler, float maxLod)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setMaxLod(sampler, maxLod);
+		}
+		else
+		{
+			VertexProcessor::setMaxLod(sampler, maxLod);
 		}
 	}
 

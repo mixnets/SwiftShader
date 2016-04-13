@@ -17,7 +17,6 @@
 #include "Math.hpp"
 #include "VertexPipeline.hpp"
 #include "VertexProgram.hpp"
-#include "VertexShader.hpp"
 #include "PixelShader.hpp"
 #include "Constants.hpp"
 #include "Debug.hpp"
@@ -638,6 +637,60 @@ namespace sw
 		else ASSERT(false);
 	}
 
+	void VertexProcessor::setCompFunc(unsigned int sampler, CompareFunc compFunc)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setCompFunc(compFunc);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setCompMode(unsigned int sampler, CompareMode compMode)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setCompMode(compMode);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setBaseLevel(unsigned int sampler, int baseLevel)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setBaseLevel(baseLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setMaxLevel(unsigned int sampler, int maxLevel)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMaxLevel(maxLevel);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setMinLod(unsigned int sampler, float minLod)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMinLod(minLod);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setMaxLod(unsigned int sampler, float maxLod)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setMaxLod(maxLod);
+		}
+		else ASSERT(false);
+	}
+
 	void VertexProcessor::setPointSize(float pointSize)
 	{
 		point.pointSize = replicate(pointSize);
@@ -839,7 +892,7 @@ namespace sw
 		routineCache = new RoutineCache<State>(clamp(cacheSize, 1, 65536), precacheVertex ? "sw-vertex" : 0);
 	}
 
-	const VertexProcessor::State VertexProcessor::update()
+	const VertexProcessor::State VertexProcessor::update(DrawType drawType)
 	{
 		if(isFixedFunction())
 		{
@@ -912,6 +965,11 @@ namespace sw
 		state.transformFeedbackQueryEnabled = context->transformFeedbackQueryEnabled;
 		state.transformFeedbackEnabled = context->transformFeedbackEnabled;
 
+		// Note: Quads aren't handled for verticesPerPrimitive, but verticesPerPrimitive is used for transform feedback,
+		//       which is an OpenGL ES 3.0 feature, and OpenGL ES 3.0 doesn't support quads as a primitive type.
+		DrawType type = static_cast<DrawType>(static_cast<unsigned int>(drawType) & 0xF);
+		state.verticesPerPrimitive = 1 + (type >= DRAW_LINELIST) + (type >= DRAW_TRIANGLELIST);
+
 		for(int i = 0; i < VERTEX_ATTRIBUTES; i++)
 		{
 			state.input[i].type = context->input[i].type;
@@ -921,7 +979,7 @@ namespace sw
 
 		if(!context->vertexShader)
 		{
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < TEXTURE_STAGES; i++)
 			{
 			//	state.textureState[i].vertexTextureActive = context->vertexTextureActive(i, 0);
 				state.textureState[i].texGenActive = context->texGenActive(i);
@@ -942,7 +1000,7 @@ namespace sw
 
 		if(context->vertexShader)   // FIXME: Also when pre-transformed?
 		{
-			for(int i = 0; i < 12; i++)
+			for(int i = 0; i < MAX_OUTPUT_VARYINGS; i++)
 			{
 				state.output[i].xWrite = context->vertexShader->output[i][0].active();
 				state.output[i].yWrite = context->vertexShader->output[i][1].active();
@@ -964,7 +1022,7 @@ namespace sw
 				state.output[D1].write = 0xF;
 			}
 
-			for(int stage = 0; stage < 8; stage++)
+			for(int stage = 0; stage < TEXTURE_STAGES; stage++)
 			{
 				if(context->texCoordActive(stage, 0)) state.output[T0 + stage].write |= 0x01;
 				if(context->texCoordActive(stage, 1)) state.output[T0 + stage].write |= 0x02;
@@ -994,7 +1052,7 @@ namespace sw
 				}
 			}
 
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < TEXTURE_STAGES; i++)
 			{
 				if(context->input[TexCoord0 + i])
 				{

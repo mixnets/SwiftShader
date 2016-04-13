@@ -18,6 +18,7 @@
 #include "Matrix.hpp"
 #include "Context.hpp"
 #include "RoutineCache.hpp"
+#include "Shader/VertexShader.hpp"
 
 namespace sw
 {
@@ -35,9 +36,8 @@ namespace sw
 
 	struct VertexTask
 	{
-		unsigned int vertexStart;
 		unsigned int vertexCount;
-		unsigned int verticesPerPrimitive;
+		unsigned int primitiveStart;
 		VertexCache vertexCache;
 	};
 
@@ -53,7 +53,7 @@ namespace sw
 			bool fixedFunction             : 1;
 			bool textureSampling           : 1;
 			unsigned int positionRegister  : 4;
-			unsigned int pointSizeRegister : 4;   // 0xF signifies no vertex point size
+			unsigned int pointSizeRegister : BITS(VertexShader::NO_VERTEX_POINT_SIZE);
 
 			unsigned int vertexBlendMatrixCount               : 3;
 			bool indexedVertexBlendEnable                     : 1;
@@ -76,6 +76,7 @@ namespace sw
 			bool pointScaleActive                             : 1;
 			bool transformFeedbackQueryEnabled                : 1;
 			uint64_t transformFeedbackEnabled                 : 64;
+			unsigned char verticesPerPrimitive                : 2; // 1 (points), 2 (lines) or 3 (triangles)
 
 			bool preTransformed : 1;
 			bool superSampling  : 1;
@@ -88,7 +89,7 @@ namespace sw
 				unsigned char texCoordIndexActive         : 3;
 			};
 
-			TextureState textureState[8];
+			TextureState textureState[TEXTURE_STAGES];
 
 			Sampler::State samplerState[VERTEX_TEXTURE_IMAGE_UNITS];
 
@@ -134,7 +135,7 @@ namespace sw
 			};
 
 			Input input[VERTEX_ATTRIBUTES];
-			Output output[12];
+			Output output[MAX_OUTPUT_VARYINGS];
 		};
 
 		struct State : States
@@ -151,7 +152,7 @@ namespace sw
 			float4 transformT[12][4];
 			float4 cameraTransformT[12][4];
 			float4 normalTransformT[12][4];
-			float4 textureTransform[8][4];
+			float4 textureTransform[TEXTURE_STAGES][4];
 
 			float4 lightPosition[8];
 			float4 lightAmbient[8];
@@ -260,6 +261,12 @@ namespace sw
 		virtual void setSwizzleG(unsigned int sampler, SwizzleType swizzleG);
 		virtual void setSwizzleB(unsigned int sampler, SwizzleType swizzleB);
 		virtual void setSwizzleA(unsigned int sampler, SwizzleType swizzleA);
+		virtual void setCompFunc(unsigned int sampler, CompareFunc compFunc);
+		virtual void setCompMode(unsigned int sampler, CompareMode compMode);
+		virtual void setBaseLevel(unsigned int sampler, int baseLevel);
+		virtual void setMaxLevel(unsigned int sampler, int maxLevel);
+		virtual void setMinLod(unsigned int sampler, float minLod);
+		virtual void setMaxLod(unsigned int sampler, float maxLod);
 
 		virtual void setPointSize(float pointSize);
 		virtual void setPointSizeMin(float pointSizeMin);
@@ -275,7 +282,7 @@ namespace sw
 		const Matrix &getModelTransform(int i);
 		const Matrix &getViewTransform();
 
-		const State update();
+		const State update(DrawType drawType);
 		Routine *routine(const State &state);
 
 		bool isFixedFunction();

@@ -1220,7 +1220,7 @@ namespace egl
 		return parentTexture == parent;
 	}
 
-	void Image::loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input)
+	bool Image::loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input)
 	{
 		GLsizei inputWidth = (unpackInfo.rowLength == 0) ? width : unpackInfo.rowLength;
 		GLsizei inputPitch = ComputePitch(inputWidth, format, type, unpackInfo.alignment);
@@ -1229,7 +1229,7 @@ namespace egl
 		sw::Format selectedInternalFormat = SelectInternalFormat(format, type);
 		if(selectedInternalFormat == sw::FORMAT_NULL)
 		{
-			return;
+			return false;
 		}
 
 		if(selectedInternalFormat == internalFormat)
@@ -1279,7 +1279,9 @@ namespace egl
 					case GL_BGRA8_EXT:
 						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_BYTE:
@@ -1327,7 +1329,9 @@ namespace egl
 					case GL_SRGB8_ALPHA8:
 						LoadImageData<SRGBA>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_SHORT_5_6_5:
@@ -1337,7 +1341,9 @@ namespace egl
 					case GL_RGB:
 						LoadImageData<RGB565>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_SHORT_4_4_4_4:
@@ -1347,7 +1353,9 @@ namespace egl
 					case GL_RGBA:
 						LoadImageData<RGBA4444>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_SHORT_5_5_5_1:
@@ -1357,7 +1365,9 @@ namespace egl
 					case GL_RGBA:
 						LoadImageData<RGBA5551>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_INT_10F_11F_11F_REV:
@@ -1367,7 +1377,9 @@ namespace egl
 					case GL_RGB:
 						LoadImageData<R11G11B10F>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_INT_5_9_9_9_REV:
@@ -1377,7 +1389,9 @@ namespace egl
 					case GL_RGB:
 						LoadImageData<RGB9E5>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_INT_2_10_10_10_REV:
@@ -1391,7 +1405,9 @@ namespace egl
 					case GL_RGBA_INTEGER:
 						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_FLOAT:
@@ -1430,7 +1446,9 @@ namespace egl
 					case GL_DEPTH_COMPONENT32F:
 						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_HALF_FLOAT:
@@ -1465,7 +1483,9 @@ namespace egl
 					case GL_RGBA16F:
 						LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_SHORT:
@@ -1496,7 +1516,9 @@ namespace egl
 					case GL_BGRA8_EXT:
 						LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_SHORT:
@@ -1531,7 +1553,9 @@ namespace egl
 					case GL_DEPTH_COMPONENT16:
 						LoadImageData<D16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_INT:
@@ -1562,7 +1586,9 @@ namespace egl
 					case GL_BGRA8_EXT:
 						LoadImageData<Bytes_16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_INT:
@@ -1599,7 +1625,9 @@ namespace egl
 					case GL_DEPTH_COMPONENT:
 						LoadImageData<D32>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					default:
+						UNREACHABLE(format);
+						return false;
 					}
 					break;
 				case GL_UNSIGNED_INT_24_8_OES:
@@ -1608,7 +1636,9 @@ namespace egl
 				case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
 					loadD32FS8ImageData(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, input, buffer);
 					break;
-				default: UNREACHABLE(type);
+				default:
+					UNREACHABLE(type);
+					return false;
 				}
 			}
 
@@ -1619,8 +1649,9 @@ namespace egl
 			sw::Surface source(width, height, depth, ConvertFormatType(format, type), const_cast<void*>(input), inputPitch, inputPitch * inputHeight);
 			sw::Rect sourceRect(0, 0, width, height);
 			sw::Rect destRect(xoffset, yoffset, xoffset + width, yoffset + height);
-			sw::blitter.blit(&source, sourceRect, this, destRect, false);
+			sw::blitter.blit(&source, sourceRect, this, destRect, 0xF);
 		}
+		return true;
 	}
 
 	void Image::loadD24S8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer)
@@ -1651,11 +1682,12 @@ namespace egl
 		}
 	}
 
-	void Image::loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels)
+	bool Image::loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels)
 	{
 		if(zoffset != 0 || depth != 1)
 		{
 			UNIMPLEMENTED();   // FIXME
+			return false;
 		}
 
 		int inputPitch = ComputeCompressedPitch(width, format);
@@ -1671,5 +1703,6 @@ namespace egl
 		}
 
 		unlock();
+		return true;
 	}
 }

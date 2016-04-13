@@ -484,6 +484,83 @@ namespace glsl
 		}
 	}
 
+	bool OutputASM::rvalue(TIntermTyped* node, TIntermTyped** leftRootNode, int& offset)
+	{
+		TIntermBinary* binary = node->getAsBinaryNode();
+		TIntermTyped* left = nullptr;
+		if(binary)
+		{
+			left = binary->getLeft();
+			TIntermTyped* right = binary->getRight();
+			const TType &leftType = left->getType();
+
+			switch(binary->getOp())
+			{
+			case EOpIndexDirect:
+				{
+					int index = right->getAsConstantUnion()->getIConst(0);
+
+					if(binary->isMatrix() || binary->isStruct() || binary->isInterfaceBlock())
+					{
+						offset += index * left->elementRegisterCount();
+					}
+					else if(binary->isRegister())
+					{
+						if(left->isArray())
+						{
+							offset += index * left->elementRegisterCount();
+						}
+						else if(left->isMatrix())
+						{
+							ASSERT(index < left->getNominalSize());   // FIXME: Report semantic error
+							offset += index;
+						}
+						else
+						{
+							offset = 0;
+							return false;
+						}
+					}
+					else
+					{
+						offset = 0;
+						return false;
+					}
+				}
+				break;
+			case EOpIndexDirectStruct:
+			case EOpIndexDirectInterfaceBlock:
+				{
+					int index = right->getAsConstantUnion()->getIConst(0);
+					const TFieldList& fields = (binary->getOp() == EOpIndexDirectStruct) ?
+					                           leftType.getStruct()->fields() :
+					                           leftType.getInterfaceBlock()->fields();
+
+					for(int i = 0; i < index; i++)
+					{
+						offset += fields[i]->type()->totalRegisterCount();
+					}
+				}
+				break;
+			default:
+				offset = 0;
+				return false;
+			}
+		}
+		else if(node->getAsSymbolNode())
+		{
+			*leftRootNode = node;
+			return true;
+		}
+		else
+		{
+			offset = 0;
+			return false;
+		}
+
+		return rvalue(left, leftRootNode, offset);
+	}
+
 	bool OutputASM::visitBinary(Visit visit, TIntermBinary *node)
 	{
 		if(currentScope != emitScope)
@@ -564,17 +641,31 @@ namespace glsl
 			}
 			break;
 		case EOpIndexDirect:
-			if(visit == PostVisit)
+			if(visit == PreVisit || visit == PostVisit)
 			{
+				int offset = 0;
+				TIntermTyped *leftRootNode = left;
+				bool traversed = false;
+				if(visit == PreVisit)
+				{
+					// Try to concatenate indexing operations
+					traversed = rvalue(left, &leftRootNode, offset);
+					// If that's not possible, continue traversing the tree as usual
+					if(!traversed)
+					{
+						return true;
+					}
+				}
+
 				int index = right->getAsConstantUnion()->getIConst(0);
 
 				if(result->isMatrix() || result->isStruct() || result->isInterfaceBlock())
-				{
+ 				{
 					ASSERT(left->isArray());
-					copy(result, left, index * left->elementRegisterCount());
-				}
+					copy(result, leftRootNode, index * left->elementRegisterCount() + offset);
+ 				}
 				else if(result->isRegister())
-				{
+ 				{
 					int srcIndex = 0;
 					if(left->isRegister())
 					{
@@ -591,14 +682,20 @@ namespace glsl
 					}
 					else UNREACHABLE(0);
 
-					Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, 0, left, srcIndex);
+					Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, 0, leftRootNode, srcIndex + offset);
 
 					if(left->isRegister())
 					{
 						mov->src[0].swizzle = index;
 					}
-				}
+ 				}
 				else UNREACHABLE(0);
+
+				if(traversed)
+				{
+					// Done concatenating, don't traverse the rest of the tree
+					return false;
+				}
 			}
 			break;
 		case EOpIndexIndirect:
@@ -632,22 +729,41 @@ namespace glsl
 			break;
 		case EOpIndexDirectStruct:
 		case EOpIndexDirectInterfaceBlock:
-			if(visit == PostVisit)
+			if(visit == PreVisit || visit == PostVisit)
 			{
 				ASSERT(leftType.isStruct() || (leftType.isInterfaceBlock()));
+
+				int fieldOffset = 0;
+				TIntermTyped *leftRootNode = left;
+				bool traversed = false;
+				if(visit == PreVisit)
+				{
+					// Try to concatenate indexing operations
+					traversed = rvalue(left, &leftRootNode, fieldOffset);
+					// If that's not possible, continue traversing the tree as usual
+					if(!traversed)
+					{
+						return true;
+					}
+				}
 
 				const TFieldList& fields = (node->getOp() == EOpIndexDirectStruct) ?
 				                           leftType.getStruct()->fields() :
 				                           leftType.getInterfaceBlock()->fields();
 				int index = right->getAsConstantUnion()->getIConst(0);
-				int fieldOffset = 0;
 
 				for(int i = 0; i < index; i++)
 				{
 					fieldOffset += fields[i]->type()->totalRegisterCount();
 				}
 
-				copy(result, left, fieldOffset);
+				copy(result, leftRootNode, fieldOffset);
+
+				if(traversed)
+				{
+					// Done concatenating, don't traverse the rest of the tree
+					return false;
+				}
 			}
 			break;
 		case EOpVectorSwizzle:
@@ -949,6 +1065,7 @@ namespace glsl
 			break;
 		case EOpVectorLogicalNot: if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpLogicalNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
+		case EOpBitwiseNot:       if(visit == PostVisit) emit(sw::Shader::OPCODE_NOT, result, arg); break;
 		case EOpPostIncrement:
 			if(visit == PostVisit)
 			{
@@ -1775,6 +1892,90 @@ namespace glsl
 		return true;
 	}
 
+	bool OutputASM::visitSwitch(Visit visit, TIntermSwitch *node)
+	{
+		if(currentScope != emitScope)
+		{
+			return false;
+		}
+
+		TIntermTyped* switchValue = node->getInit();
+		TIntermAggregate* opList = node->getStatementList();
+
+		if(!switchValue || !opList)
+		{
+			return false;
+		}
+
+		switchValue->traverse(this);
+
+		emit(sw::Shader::OPCODE_SWITCH);
+
+		TIntermSequence& sequence = opList->getSequence();
+		TIntermSequence::iterator it = sequence.begin();
+		TIntermSequence::iterator defaultIt = sequence.end();
+		int nbCases = 0;
+		for(; it != sequence.end(); ++it)
+		{
+			TIntermCase* currentCase = (*it)->getAsCaseNode();
+			if(currentCase)
+			{
+				TIntermSequence::iterator caseIt = it;
+
+				TIntermTyped* condition = currentCase->getCondition();
+				if(condition) // non default case
+				{
+					if(nbCases != 0)
+					{
+						emit(sw::Shader::OPCODE_ELSE);
+					}
+
+					condition->traverse(this);
+					Temporary result(this);
+					emitBinary(sw::Shader::OPCODE_EQ, &result, switchValue, condition);
+					emit(sw::Shader::OPCODE_IF, 0, &result);
+					nbCases++;
+
+					for(++caseIt; caseIt != sequence.end(); ++caseIt)
+					{
+						(*caseIt)->traverse(this);
+						if((*caseIt)->getAsBranchNode()) // Kill, Break, Continue or Return
+						{
+							break;
+						}
+					}
+				}
+				else
+				{
+					defaultIt = it; // The default case might not be the last case, keep it for last
+				}
+			}
+		}
+
+		// If there's a default case, traverse it here
+		if(defaultIt != sequence.end())
+		{
+			emit(sw::Shader::OPCODE_ELSE);
+			for(++defaultIt; defaultIt != sequence.end(); ++defaultIt)
+			{
+				(*defaultIt)->traverse(this);
+				if((*defaultIt)->getAsBranchNode()) // Kill, Break, Continue or Return
+				{
+					break;
+				}
+			}
+		}
+
+		for(int i = 0; i < nbCases; ++i)
+		{
+			emit(sw::Shader::OPCODE_ENDIF);
+		}
+
+		emit(sw::Shader::OPCODE_ENDSWITCH);
+
+		return false;
+	}
+
 	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2, TIntermNode *src3, TIntermNode *src4)
 	{
 		return emit(op, dst, 0, src0, 0, src1, 0, src2, 0, src3, 0, src4, 0);
@@ -2363,8 +2564,8 @@ namespace glsl
 			case EOpIndexDirectInterfaceBlock:
 				{
 					const TFieldList& fields = (binary->getOp() == EOpIndexDirectStruct) ?
-					                           left->getType().getStruct()->fields() :
-					                           left->getType().getInterfaceBlock()->fields();
+				                               left->getType().getStruct()->fields() :
+				                               left->getType().getInterfaceBlock()->fields();
 					int index = right->getAsConstantUnion()->getIConst(0);
 					int fieldOffset = 0;
 
@@ -2676,7 +2877,7 @@ namespace glsl
 
 			if(pixelShader)
 			{
-				if((var + registerCount) > sw::PixelShader::MAX_INPUT_VARYINGS)
+				if((var + registerCount) > sw::MAX_INPUT_VARYINGS)
 				{
 					mContext.error(varying->getLine(), "Varyings packing failed: Too many varyings", "fragment shader");
 					return 0;
@@ -2703,7 +2904,7 @@ namespace glsl
 			}
 			else if(vertexShader)
 			{
-				if((var + registerCount) > sw::VertexShader::MAX_OUTPUT_VARYINGS)
+				if((var + registerCount) > sw::MAX_OUTPUT_VARYINGS)
 				{
 					mContext.error(varying->getLine(), "Varyings packing failed: Too many varyings", "vertex shader");
 					return 0;
@@ -3444,8 +3645,9 @@ namespace glsl
 		if(index && node->getCondition())
 		{
 			TIntermBinary *test = node->getCondition()->getAsBinaryNode();
+			TIntermSymbol *left = test ? test->getLeft()->getAsSymbolNode() : nullptr;
 
-			if(test && test->getLeft()->getAsSymbolNode()->getId() == index->getId())
+			if(left && (left->getId() == index->getId()))
 			{
 				TIntermConstantUnion *constant = test->getRight()->getAsConstantUnion();
 

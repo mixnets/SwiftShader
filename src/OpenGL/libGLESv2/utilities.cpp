@@ -74,6 +74,7 @@ namespace es2
 		InsertFormatMapping(&map, GL_RGB, GL_FLOAT, GL_RGB32F);
 		InsertFormatMapping(&map, GL_RGB, GL_HALF_FLOAT, GL_RGB16F);
 		InsertFormatMapping(&map, GL_RGB, GL_HALF_FLOAT_OES, GL_RGB16F);
+		InsertFormatMapping(&map, GL_RGB, GL_UNSIGNED_INT_2_10_10_10_REV, GL_RGB10_EXT);
 
 		InsertFormatMapping(&map, GL_RGB_INTEGER, GL_UNSIGNED_BYTE, GL_RGB8UI);
 		InsertFormatMapping(&map, GL_RGB_INTEGER, GL_BYTE, GL_RGB8I);
@@ -466,7 +467,9 @@ namespace es2
 
 	GLint floatToInt(GLfloat value)
 	{
-		return static_cast<GLint>((static_cast<GLfloat>(0xFFFFFFFF) * value - 1.0f) * 0.5f);
+		// Note, the use of the nexafterf function is to find the largest floating point value lower than 1.0f (so towards 0.0f)
+		// Without this, using 1.0f exactly would unfortunately be rounded to 0x80000000 due to a floating point precision issue
+		return static_cast<GLint>((static_cast<GLfloat>(0xFFFFFFFF) * clamp(value, -1.0f, nextafterf(1.0f, 0.0f)) - 1.0f) * 0.5f);
 	}
 
 	bool IsCompressed(GLenum format, GLint clientVersion)
@@ -695,6 +698,7 @@ namespace es2
 	{
 		return format == GL_STENCIL_INDEX_OES ||
 		       format == GL_DEPTH_STENCIL_OES ||
+		       format == GL_STENCIL_INDEX8 ||
 		       format == GL_DEPTH24_STENCIL8 ||
 		       format == GL_DEPTH32F_STENCIL8;
 	}
@@ -737,12 +741,12 @@ namespace es2
 		case GL_UNSIGNED_INT_24_8:   // GL_OES_packed_depth_stencil (GL_UNSIGNED_INT_24_8_EXT)
 		case GL_UNSIGNED_SHORT:      // GL_OES_depth_texture
 		case GL_UNSIGNED_INT:        // GL_OES_depth_texture
+		case GL_UNSIGNED_INT_2_10_10_10_REV_EXT: // GL_EXT_texture_type_2_10_10_10_REV
 			break;
 		case GL_BYTE:
 		case GL_SHORT:
 		case GL_INT:
 		case GL_HALF_FLOAT:
-		case GL_UNSIGNED_INT_2_10_10_10_REV:
 		case GL_UNSIGNED_INT_10F_11F_11F_REV:
 		case GL_UNSIGNED_INT_5_9_9_9_REV:
 		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
@@ -765,10 +769,10 @@ namespace es2
 		case GL_BGRA_EXT:          // GL_EXT_texture_format_BGRA8888
 		case GL_DEPTH_STENCIL:     // GL_OES_packed_depth_stencil (GL_DEPTH_STENCIL_OES)
 		case GL_DEPTH_COMPONENT:   // GL_OES_depth_texture
+		case GL_RED_EXT:           // GL_EXT_texture_rg
+		case GL_RG_EXT:            // GL_EXT_texture_rg
 			break;
-		case GL_RED:
 		case GL_RED_INTEGER:
-		case GL_RG:
 		case GL_RG_INTEGER:
 		case GL_RGB_INTEGER:
 		case GL_RGBA_INTEGER:
@@ -863,10 +867,10 @@ namespace es2
 			{
 			case GL_UNSIGNED_BYTE:               VALIDATE_INTERNALFORMAT(GL_RGBA8, GL_RGB5_A1, GL_RGBA4, GL_SRGB8_ALPHA8)
 			case GL_BYTE:                        VALIDATE_INTERNALFORMAT(GL_RGBA8_SNORM)
-			case GL_HALF_FLOAT_OES:              break;
 			case GL_UNSIGNED_SHORT_4_4_4_4:      VALIDATE_INTERNALFORMAT(GL_RGBA4)
 			case GL_UNSIGNED_SHORT_5_5_5_1:      VALIDATE_INTERNALFORMAT(GL_RGB5_A1)
-			case GL_UNSIGNED_INT_2_10_10_10_REV: VALIDATE_INTERNALFORMAT(GL_RGB10_A2, GL_RGB5_A1)
+			case GL_UNSIGNED_INT_2_10_10_10_REV: VALIDATE_INTERNALFORMAT(GL_RGB10_A2, GL_RGB5_A1, GL_RGBA)
+			case GL_HALF_FLOAT_OES:
 			case GL_HALF_FLOAT:                  VALIDATE_INTERNALFORMAT(GL_RGBA16F)
 			case GL_FLOAT:                       VALIDATE_INTERNALFORMAT(GL_RGBA32F, GL_RGBA16F)
 			default:                             return error(GL_INVALID_OPERATION, false);
@@ -890,10 +894,11 @@ namespace es2
 			{
 			case GL_UNSIGNED_BYTE:                VALIDATE_INTERNALFORMAT(GL_RGB8, GL_RGB565, GL_SRGB8)
 			case GL_BYTE:                         VALIDATE_INTERNALFORMAT(GL_RGB8_SNORM)
-			case GL_HALF_FLOAT_OES:               break;
 			case GL_UNSIGNED_SHORT_5_6_5:         VALIDATE_INTERNALFORMAT(GL_RGB565)
 			case GL_UNSIGNED_INT_10F_11F_11F_REV: VALIDATE_INTERNALFORMAT(GL_R11F_G11F_B10F)
 			case GL_UNSIGNED_INT_5_9_9_9_REV:     VALIDATE_INTERNALFORMAT(GL_RGB9_E5)
+			case GL_UNSIGNED_INT_2_10_10_10_REV:  VALIDATE_INTERNALFORMAT(GL_RGB)
+			case GL_HALF_FLOAT_OES:
 			case GL_HALF_FLOAT:                   VALIDATE_INTERNALFORMAT(GL_RGB16F, GL_R11F_G11F_B10F, GL_RGB9_E5)
 			case GL_FLOAT:                        VALIDATE_INTERNALFORMAT(GL_RGB32F, GL_RGB16F, GL_R11F_G11F_B10F, GL_RGB9_E5)
 			default:                              return error(GL_INVALID_OPERATION, false);
@@ -916,6 +921,7 @@ namespace es2
 			{
 			case GL_UNSIGNED_BYTE: VALIDATE_INTERNALFORMAT(GL_RG8)
 			case GL_BYTE:          VALIDATE_INTERNALFORMAT(GL_RG8_SNORM)
+			case GL_HALF_FLOAT_OES:
 			case GL_HALF_FLOAT:    VALIDATE_INTERNALFORMAT(GL_RG16F)
 			case GL_FLOAT:         VALIDATE_INTERNALFORMAT(GL_RG32F, GL_RG16F)
 			default:               return error(GL_INVALID_OPERATION, false);
@@ -938,6 +944,7 @@ namespace es2
 			{
 			case GL_UNSIGNED_BYTE: VALIDATE_INTERNALFORMAT(GL_R8)
 			case GL_BYTE:          VALIDATE_INTERNALFORMAT(GL_R8_SNORM)
+			case GL_HALF_FLOAT_OES:
 			case GL_HALF_FLOAT:    VALIDATE_INTERNALFORMAT(GL_R16F)
 			case GL_FLOAT:         VALIDATE_INTERNALFORMAT(GL_R32F, GL_R16F)
 			default:               return error(GL_INVALID_OPERATION, false);
@@ -979,6 +986,7 @@ namespace es2
 			{
 			case GL_UNSIGNED_BYTE:
 			case GL_HALF_FLOAT_OES:
+			case GL_HALF_FLOAT:
 			case GL_FLOAT:
 				break;
 			default:
@@ -1015,6 +1023,7 @@ namespace es2
 		case GL_RGB565:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
+		case GL_R11F_G11F_B10F:
 		case GL_R16F:
 		case GL_RG16F:
 		case GL_RGB16F:
@@ -1044,12 +1053,12 @@ namespace es2
 		case GL_RGBA16I:
 		case GL_RGBA32I:
 		case GL_RGBA32UI:
-		case GL_R11F_G11F_B10F:
 		case GL_R32F:
 		case GL_RG32F:
 		case GL_RGB32F:
 		case GL_RGBA32F:
 			return clientVersion >= 3;
+		case GL_RGB10_EXT: // requires GL_OES_required_internalformat
 		case GL_DEPTH_COMPONENT24:
 		case GL_DEPTH_COMPONENT32_OES:
 		case GL_DEPTH_COMPONENT32F:
@@ -1092,6 +1101,7 @@ namespace es2
 		case GL_RG32UI:
 		case GL_RG32I:
 		case GL_SRGB8_ALPHA8:
+		case GL_RGB10_EXT:
 		case GL_RGB10_A2:
 		case GL_RGBA8UI:
 		case GL_RGBA8I:
@@ -1147,6 +1157,7 @@ namespace es2
 		case GL_RG32UI:
 		case GL_RG32I:
 		case GL_SRGB8_ALPHA8:
+		case GL_RGB10_EXT:
 		case GL_RGB10_A2:
 		case GL_RGBA8UI:
 		case GL_RGBA8I:
@@ -1329,6 +1340,36 @@ namespace es2sw
 		return sw::ADDRESSING_WRAP;
 	}
 
+	sw::CompareFunc ConvertCompareFunc(GLenum compareFunc)
+	{
+		switch(compareFunc)
+		{
+		case GL_LEQUAL:   return sw::COMPARE_FUNC_LEQUAL;
+		case GL_GEQUAL:   return sw::COMPARE_FUNC_GEQUAL;
+		case GL_LESS:     return sw::COMPARE_FUNC_LESS;
+		case GL_GREATER:  return sw::COMPARE_FUNC_GREATER;
+		case GL_EQUAL:    return sw::COMPARE_FUNC_EQUAL;
+		case GL_NOTEQUAL: return sw::COMPARE_FUNC_NOTEQUAL;
+		case GL_ALWAYS:   return sw::COMPARE_FUNC_ALWAYS;
+		case GL_NEVER:    return sw::COMPARE_FUNC_NEVER;
+		default: UNREACHABLE(compareFunc);
+		}
+
+		return sw::COMPARE_FUNC_LEQUAL;
+	};
+
+	sw::CompareMode ConvertCompareMode(GLenum compareMode)
+	{
+		switch(compareMode)
+		{
+		case GL_COMPARE_REF_TO_TEXTURE: return sw::COMPARE_MODE_REF_TO_TEXTURE;
+		case GL_NONE:                   return sw::COMPARE_MODE_NONE;
+		default: UNREACHABLE(compareMode);
+		}
+
+		return sw::COMPARE_MODE_NONE;
+	};
+
 	sw::SwizzleType ConvertSwizzleType(GLenum swizzleType)
 	{
 		switch(swizzleType)
@@ -1422,37 +1463,44 @@ namespace es2sw
 		}
 	}
 
-	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount, GLenum elementType,  sw::DrawType &drawType, int &primitiveCount)
+	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount, GLenum elementType, sw::DrawType &drawType, int &primitiveCount, int &verticesPerPrimitive)
 	{
 		switch(primitiveType)
 		{
 		case GL_POINTS:
 			drawType = sw::DRAW_POINTLIST;
 			primitiveCount = elementCount;
+			verticesPerPrimitive = 1;
 			break;
 		case GL_LINES:
 			drawType = sw::DRAW_LINELIST;
 			primitiveCount = elementCount / 2;
+			verticesPerPrimitive = 2;
 			break;
 		case GL_LINE_LOOP:
 			drawType = sw::DRAW_LINELOOP;
 			primitiveCount = elementCount;
+			verticesPerPrimitive = 2;
 			break;
 		case GL_LINE_STRIP:
 			drawType = sw::DRAW_LINESTRIP;
 			primitiveCount = elementCount - 1;
+			verticesPerPrimitive = 2;
 			break;
 		case GL_TRIANGLES:
 			drawType = sw::DRAW_TRIANGLELIST;
 			primitiveCount = elementCount / 3;
+			verticesPerPrimitive = 3;
 			break;
 		case GL_TRIANGLE_STRIP:
 			drawType = sw::DRAW_TRIANGLESTRIP;
 			primitiveCount = elementCount - 2;
+			verticesPerPrimitive = 3;
 			break;
 		case GL_TRIANGLE_FAN:
 			drawType = sw::DRAW_TRIANGLEFAN;
 			primitiveCount = elementCount - 2;
+			verticesPerPrimitive = 3;
 			break;
 		default:
 			return false;
@@ -1920,8 +1968,8 @@ namespace sw2es
 		case sw::FORMAT_D32F_COMPLEMENTARY:
 		case sw::FORMAT_D32F_LOCKABLE:
 			return GL_DEPTH_COMPONENT32F;
-		case sw::FORMAT_D32FS8_TEXTURE:
-		case sw::FORMAT_D32FS8_SHADOW:
+		case sw::FORMAT_D32FS8_TEXTURE:       // Linear layout, no PCF
+		case sw::FORMAT_D32FS8_SHADOW:        // Linear layout, PCF
 			return GL_DEPTH32F_STENCIL8;
 		case sw::FORMAT_S8:
 			return GL_STENCIL_INDEX8;

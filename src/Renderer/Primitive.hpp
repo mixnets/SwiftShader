@@ -17,6 +17,7 @@
 
 #include "Vertex.hpp"
 #include "Config.hpp"
+#include "PixelShader.hpp"
 
 namespace sw
 {
@@ -50,10 +51,10 @@ namespace sw
 			struct
 			{
 				PlaneEquation C[2][4];
-				PlaneEquation T[8][4];
+				PlaneEquation T[TEXTURE_STAGES][4];
 			};
 
-			PlaneEquation V[10][4];
+			PlaneEquation V[MAX_INPUT_VARYINGS][4];
 		};
 
 		PlaneEquation f;

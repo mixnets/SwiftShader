@@ -15,6 +15,7 @@
 #include "PixelShader.hpp"
 
 #include "Debug.hpp"
+#include "Main/Config.hpp"
 
 #include <string.h>
 
@@ -26,6 +27,7 @@ namespace sw
 		vPosDeclared = false;
 		vFaceDeclared = false;
 		centroid = false;
+		smooth = true;
 
 		if(ps)   // Make a copy
 		{
@@ -51,6 +53,7 @@ namespace sw
 		vPosDeclared = false;
 		vFaceDeclared = false;
 		centroid = false;
+		smooth = true;
 
 		optimize();
 		analyze();
@@ -121,6 +124,11 @@ namespace sw
 	bool PixelShader::containsCentroid() const
 	{
 		return centroid;
+	}
+
+	bool PixelShader::containsNonSmooth() const
+	{
+		return !smooth;
 	}
 
 	bool PixelShader::usesDiffuse(int component) const
@@ -198,7 +206,7 @@ namespace sw
 			semantic[1][2] = Semantic(Shader::USAGE_COLOR, 1);
 			semantic[1][3] = Semantic(Shader::USAGE_COLOR, 1);
 
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < TEXTURE_STAGES; i++)
 			{
 				semantic[2 + i][0] = Semantic(Shader::USAGE_TEXCOORD, i);
 				semantic[2 + i][1] = Semantic(Shader::USAGE_TEXCOORD, i);
@@ -724,6 +732,30 @@ namespace sw
 					}
 
 					this->centroid = this->centroid || centroid;
+				}
+			}
+		}
+
+		if(version >= 0x0300)
+		{
+			for(unsigned int i = 0; i < instruction.size(); i++)
+			{
+				if(instruction[i]->opcode == Shader::OPCODE_DCL)
+				{
+					bool smooth = instruction[i]->dst.smooth;
+					unsigned char reg = instruction[i]->dst.index;
+
+					switch(instruction[i]->dst.type)
+					{
+					case Shader::PARAMETER_INPUT:
+						semantic[reg][0].smooth = smooth;
+						break;
+					case Shader::PARAMETER_TEXTURE:
+						semantic[2 + reg][0].smooth = smooth;
+						break;
+					}
+
+					this->smooth = this->smooth && smooth;
 				}
 			}
 		}

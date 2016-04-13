@@ -258,6 +258,7 @@ namespace glsl
 		virtual bool visitAggregate(Visit visit, TIntermAggregate*);
 		virtual bool visitLoop(Visit visit, TIntermLoop*);
 		virtual bool visitBranch(Visit visit, TIntermBranch*);
+		virtual bool visitSwitch(Visit, TIntermSwitch*);
 
 		sw::Shader::Opcode getOpcode(sw::Shader::Opcode op, TIntermTyped *in) const;
 		Instruction *emit(sw::Shader::Opcode op, TIntermTyped *dst = 0, TIntermNode *src0 = 0, TIntermNode *src1 = 0, TIntermNode *src2 = 0, TIntermNode *src3 = 0, TIntermNode *src4 = 0);
@@ -273,6 +274,7 @@ namespace glsl
 		void copy(TIntermTyped *dst, TIntermNode *src, int offset = 0);
 		void assignLvalue(TIntermTyped *dst, TIntermTyped *src);
 		int lvalue(sw::Shader::DestinationParameter &dst, Temporary &address, TIntermTyped *node);
+		bool rvalue(TIntermTyped* node, TIntermTyped** leftRootNode, int& offset);
 		sw::Shader::ParameterType registerType(TIntermTyped *operand);
 		unsigned int registerIndex(TIntermTyped *operand);
 		int writeMask(TIntermTyped *destination, int index = 0);

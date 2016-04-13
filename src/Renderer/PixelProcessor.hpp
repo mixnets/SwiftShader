@@ -17,6 +17,7 @@
 
 #include "Context.hpp"
 #include "RoutineCache.hpp"
+#include "Shader\PixelShader.hpp"
 
 namespace sw
 {
@@ -82,11 +83,12 @@ namespace sw
 			unsigned int multiSampleMask                      : 4;
 			TransparencyAntialiasing transparencyAntialiasing : BITS(TRANSPARENCY_LAST);
 			bool centroid                                     : 1;
+			bool smooth                                       : 1;
 
 			LogicalOperation logicalOperation : BITS(LOGICALOP_LAST);
 
 			Sampler::State sampler[TEXTURE_IMAGE_UNITS];
-			TextureStage::State textureStage[8];
+			TextureStage::State textureStage[TEXTURE_STAGES];
 
 			struct Interpolant
 			{
@@ -94,6 +96,7 @@ namespace sw
 				unsigned char flat : 4;
 				unsigned char project : 2;
 				bool centroid : 1;
+				bool smooth : 1;
 			};
 
 			union
@@ -101,10 +104,10 @@ namespace sw
 				struct
 				{
 					Interpolant color[2];
-					Interpolant texture[8];
+					Interpolant texture[TEXTURE_STAGES];
 				};
 
-				Interpolant interpolant[10];
+				Interpolant interpolant[MAX_INPUT_VARYINGS];
 			};
 
 			Interpolant fog;
@@ -236,6 +239,12 @@ namespace sw
 		virtual void setSwizzleG(unsigned int sampler, SwizzleType swizzleG);
 		virtual void setSwizzleB(unsigned int sampler, SwizzleType swizzleB);
 		virtual void setSwizzleA(unsigned int sampler, SwizzleType swizzleA);
+		virtual void setCompFunc(unsigned int sampler, CompareFunc compFunc);
+		virtual void setCompMode(unsigned int sampler, CompareMode compMode);
+		virtual void setBaseLevel(unsigned int sampler, int baseLevel);
+		virtual void setMaxLevel(unsigned int sampler, int maxLevel);
+		virtual void setMinLod(unsigned int sampler, float minLod);
+		virtual void setMaxLod(unsigned int sampler, float maxLod);
 
 		virtual void setWriteSRGB(bool sRGB);
 		virtual void setDepthBufferEnable(bool depthBufferEnable);
@@ -271,7 +280,7 @@ namespace sw
 
 		virtual void setFillMode(FillMode fillMode);
 		virtual void setShadingMode(ShadingMode shadingMode);
-	
+
 		virtual void setAlphaBlendEnable(bool alphaBlendEnable);
 		virtual void setSourceBlendFactor(BlendFactor sourceBlendFactor);
 		virtual void setDestBlendFactor(BlendFactor destBlendFactor);

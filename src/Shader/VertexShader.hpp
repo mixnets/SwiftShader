@@ -16,12 +16,15 @@
 #define sw_VertexShader_hpp
 
 #include "Shader.hpp"
+#include "Renderer/Context.hpp"
 
 namespace sw
 {
 	class VertexShader : public Shader
 	{
 	public:
+		enum { NO_VERTEX_POINT_SIZE = MAX_OUTPUT_VARYINGS };
+
 		explicit VertexShader(const VertexShader *vs = 0);
 		explicit VertexShader(const unsigned long *token);
 
@@ -37,10 +40,9 @@ namespace sw
 
 		bool instanceIdDeclared;
 
-		enum {MAX_INPUT_ATTRIBUTES = 16};
+		enum {MAX_INPUT_ATTRIBUTES = VERTEX_ATTRIBUTES};
 		Semantic input[MAX_INPUT_ATTRIBUTES];       // FIXME: Private
 
-		enum {MAX_OUTPUT_VARYINGS = 12};
 		Semantic output[MAX_OUTPUT_VARYINGS][4];   // FIXME: Private
 
 	private:

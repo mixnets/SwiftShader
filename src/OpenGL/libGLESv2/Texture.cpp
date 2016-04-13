@@ -224,6 +224,12 @@ void Texture::makeImmutable(GLsizei levels)
 	mImmutableLevels = levels;
 }
 
+bool Texture::setImmutableLevels(GLsizei levels)
+{
+	mImmutableLevels = levels;
+	return true;
+}
+
 bool Texture::setMaxLevel(GLint maxLevel)
 {
 	mMaxLevel = maxLevel;
@@ -411,7 +417,10 @@ void Texture::setImage(GLenum format, GLenum type, const egl::Image::UnpackInfo&
 	if(pixels && image)
 	{
 		GLsizei depth = (getTarget() == GL_TEXTURE_3D_OES || getTarget() == GL_TEXTURE_2D_ARRAY) ? image->getDepth() : 1;
-		image->loadImageData(0, 0, 0, image->getWidth(), image->getHeight(), depth, format, type, unpackInfo, pixels);
+		if(!image->loadImageData(0, 0, 0, image->getWidth(), image->getHeight(), depth, GetSizedInternalFormat(format, type), type, unpackInfo, pixels))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
 	}
 }
 
@@ -420,7 +429,10 @@ void Texture::setCompressedImage(GLsizei imageSize, const void *pixels, egl::Ima
 	if(pixels && image)
 	{
 		GLsizei depth = (getTarget() == GL_TEXTURE_3D_OES || getTarget() == GL_TEXTURE_2D_ARRAY) ? image->getDepth() : 1;
-		image->loadCompressedData(0, 0, 0, image->getWidth(), image->getHeight(), depth, imageSize, pixels);
+		if(!image->loadCompressedData(0, 0, 0, image->getWidth(), image->getHeight(), depth, imageSize, pixels))
+		{
+			return error(GL_INVALID_OPERATION);
+		}
 	}
 }
 
@@ -441,14 +453,15 @@ void Texture::subImage(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei widt
 		return error(GL_INVALID_OPERATION);
 	}
 
+	format = GetSizedInternalFormat(format, type);
 	if(format != image->getFormat())
 	{
 		return error(GL_INVALID_OPERATION);
 	}
 
-	if(pixels)
+	if(pixels && !image->loadImageData(xoffset, yoffset, zoffset, width, height, depth, format, type, unpackInfo, pixels))
 	{
-		image->loadImageData(xoffset, yoffset, zoffset, width, height, depth, format, type, unpackInfo, pixels);
+		return error(GL_INVALID_OPERATION);
 	}
 }
 
@@ -469,9 +482,9 @@ void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLint zoffset, GL
 		return error(GL_INVALID_OPERATION);
 	}
 
-	if(pixels)
+	if(pixels && !image->loadCompressedData(xoffset, yoffset, zoffset, width, height, depth, imageSize, pixels))
 	{
-		image->loadCompressedData(xoffset, yoffset, zoffset, width, height, depth, imageSize, pixels);
+		return error(GL_INVALID_OPERATION);
 	}
 }
 
@@ -644,6 +657,7 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 		image[level]->release();
 	}
 
+	format = GetSizedInternalFormat(format, type);
 	image[level] = new egl::Image(this, width, height, format, type);
 
 	if(!image[level])
@@ -724,7 +738,7 @@ void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 
 void Texture2D::subImage(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels)
 {
-	Texture::subImage(xoffset, yoffset, 0, width, height, 1, format, type, unpackInfo, pixels, image[level]);
+	Texture::subImage(xoffset, yoffset, 0, width, height, 1, GetSizedInternalFormat(format, type), type, unpackInfo, pixels, image[level]);
 }
 
 void Texture2D::subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels)
@@ -1157,7 +1171,7 @@ void TextureCubeMap::setCompressedImage(GLenum target, GLint level, GLenum forma
 
 void TextureCubeMap::subImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels)
 {
-	Texture::subImage(xoffset, yoffset, 0, width, height, 1, format, type, unpackInfo, pixels, image[CubeFaceIndex(target)][level]);
+	Texture::subImage(xoffset, yoffset, 0, width, height, 1, GetSizedInternalFormat(format, type), type, unpackInfo, pixels, image[CubeFaceIndex(target)][level]);
 }
 
 void TextureCubeMap::subImageCompressed(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels)
@@ -1286,6 +1300,7 @@ void TextureCubeMap::setImage(GLenum target, GLint level, GLsizei width, GLsizei
 		image[face][level]->release();
 	}
 
+	format = GetSizedInternalFormat(format, type);
 	image[face][level] = new egl::Image(this, width, height, format, type);
 
 	if(!image[face][level])
@@ -1613,6 +1628,7 @@ void Texture3D::setImage(GLint level, GLsizei width, GLsizei height, GLsizei dep
 		image[level]->release();
 	}
 
+	format = GetSizedInternalFormat(format, type);
 	image[level] = new egl::Image(this, width, height, depth, format, type);
 
 	if(!image[level])

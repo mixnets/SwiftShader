@@ -140,7 +140,7 @@ namespace es2
 
 		GLuint getUniformIndex(const std::string &name) const;
 		GLuint getUniformBlockIndex(const std::string &name) const;
-		void bindUniformBlock(GLuint uniformBlockIndex, GLuint uniformBlockBinding);
+		bool bindUniformBlock(GLuint uniformBlockIndex, GLuint uniformBlockBinding);
 		GLuint getUniformBlockBinding(GLuint uniformBlockIndex) const;
 		void getActiveUniformBlockiv(GLuint uniformBlockIndex, GLenum pname, GLint *params) const;
 

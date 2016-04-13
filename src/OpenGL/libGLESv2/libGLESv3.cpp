@@ -1532,6 +1532,13 @@ GL_APICALL void GL_APIENTRY glRenderbufferStorageMultisample(GLenum target, GLsi
 		case GL_RG8:
 		case GL_RGB8:
 		case GL_RGBA8:
+		case GL_R16F:
+		case GL_RG16F:
+		case GL_RGBA16F:
+		case GL_R32F:
+		case GL_RG32F:
+		case GL_RGBA32F:
+		case GL_R11F_G11F_B10F:
 			context->setRenderbufferStorage(new es2::Colorbuffer(width, height, internalformat, samples));
 			break;
 		case GL_STENCIL_INDEX8:
@@ -3210,7 +3217,7 @@ GL_APICALL void GL_APIENTRY glGetInteger64v(GLenum pname, GLint64 *data)
 				{
 					if(pname == GL_DEPTH_RANGE || pname == GL_COLOR_CLEAR_VALUE || pname == GL_DEPTH_CLEAR_VALUE || pname == GL_BLEND_COLOR)
 					{
-						data[i] = (GLint64)(es2::floatToInt(floatParams[i]));
+						data[i] = (GLint64)es2::floatToInt(floatParams[i]);
 					}
 					else
 					{
@@ -3282,7 +3289,7 @@ GL_APICALL void GL_APIENTRY glGetInteger64i_v(GLenum target, GLuint index, GLint
 				{
 					if(target == GL_DEPTH_RANGE || target == GL_COLOR_CLEAR_VALUE || target == GL_DEPTH_CLEAR_VALUE || target == GL_BLEND_COLOR)
 					{
-						data[i] = (GLint64)(es2::floatToInt(floatParams[i]));
+						data[i] = (GLint64)es2::floatToInt(floatParams[i]);
 					}
 					else
 					{
@@ -3865,6 +3872,7 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 				height = std::max(1, (height / 2));
 			}
 			texture->makeImmutable(levels);
+			texture->setImmutableLevels(levels);
 		}
 			break;
 		case GL_TEXTURE_CUBE_MAP:
@@ -3885,6 +3893,7 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 				height = std::max(1, (height / 2));
 			}
 			texture->makeImmutable(levels);
+			texture->setImmutableLevels(levels);
 		}
 			break;
 		default:
@@ -3936,6 +3945,7 @@ GL_APICALL void GL_APIENTRY glTexStorage3D(GLenum target, GLsizei levels, GLenum
 				depth = std::max(1, (depth / 2));
 			}
 			texture->makeImmutable(levels);
+			texture->setImmutableLevels(levels);
 		}
 			break;
 		case GL_TEXTURE_2D_ARRAY:
@@ -3961,6 +3971,7 @@ GL_APICALL void GL_APIENTRY glTexStorage3D(GLenum target, GLsizei levels, GLenum
 				height = std::max(1, (height / 2));
 			}
 			texture->makeImmutable(levels);
+			texture->setImmutableLevels(levels);
 		}
 			break;
 		default:

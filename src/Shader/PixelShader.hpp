@@ -19,6 +19,8 @@
 
 namespace sw
 {
+	enum { MAX_INPUT_VARYINGS = 30 };
+
 	class PixelShader : public Shader
 	{
 	public:
@@ -31,13 +33,13 @@ namespace sw
 		bool depthOverride() const;
 		bool containsKill() const;
 		bool containsCentroid() const;
+		bool containsNonSmooth() const;
 		bool usesDiffuse(int component) const;
 		bool usesSpecular(int component) const;
 		bool usesTexture(int coordinate, int component) const;
 
 		virtual void analyze();
 
-		enum {MAX_INPUT_VARYINGS = 10};
 		Semantic semantic[MAX_INPUT_VARYINGS][4];   // FIXME: Private
 
 		bool vPosDeclared;
@@ -51,6 +53,7 @@ namespace sw
 		bool zOverride;
 		bool kill;
 		bool centroid;
+		bool smooth;
 	};
 }
 
