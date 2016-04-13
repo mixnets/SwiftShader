@@ -6201,7 +6201,7 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 		return error(GL_INVALID_VALUE);
 	}
 
-	if(!es2::ValidateTextureFormatType(format, type, egl::getClientVersion()))
+	if(!es2::ValidateTextureFormatType(format, type, format, egl::getClientVersion()))
 	{
 		return;
 	}
