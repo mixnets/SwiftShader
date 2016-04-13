@@ -17,7 +17,6 @@
 #include "Math.hpp"
 #include "VertexPipeline.hpp"
 #include "VertexProgram.hpp"
-#include "VertexShader.hpp"
 #include "PixelShader.hpp"
 #include "Constants.hpp"
 #include "Debug.hpp"
@@ -638,6 +637,24 @@ namespace sw
 		else ASSERT(false);
 	}
 
+	void VertexProcessor::setCompFunc(unsigned int sampler, CompareFunc compFunc)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setCompFunc(compFunc);
+		}
+		else ASSERT(false);
+	}
+
+	void VertexProcessor::setCompMode(unsigned int sampler, CompareMode compMode)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setCompMode(compMode);
+		}
+		else ASSERT(false);
+	}
+
 	void VertexProcessor::setBaseLevel(unsigned int sampler, int baseLevel)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
@@ -962,7 +979,7 @@ namespace sw
 
 		if(!context->vertexShader)
 		{
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < TEXTURE_STAGES; i++)
 			{
 			//	state.textureState[i].vertexTextureActive = context->vertexTextureActive(i, 0);
 				state.textureState[i].texGenActive = context->texGenActive(i);
@@ -1005,7 +1022,7 @@ namespace sw
 				state.output[C1].write = 0xF;
 			}
 
-			for(int stage = 0; stage < 8; stage++)
+			for(int stage = 0; stage < TEXTURE_STAGES; stage++)
 			{
 				if(context->texCoordActive(stage, 0)) state.output[T0 + stage].write |= 0x01;
 				if(context->texCoordActive(stage, 1)) state.output[T0 + stage].write |= 0x02;
@@ -1035,7 +1052,7 @@ namespace sw
 				}
 			}
 
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < TEXTURE_STAGES; i++)
 			{
 				if(context->input[TexCoord0 + i])
 				{

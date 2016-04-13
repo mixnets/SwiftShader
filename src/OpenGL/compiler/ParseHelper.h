@@ -111,7 +111,7 @@ public:
 	// This method is guaranteed to succeed, even if no variable with 'name' exists.
 	const TVariable *getNamedVariable(const TSourceLoc &location, const TString *name, const TSymbol *symbol);
 
-	bool parseVectorFields(const TString&, int vecSize, TVectorFields&, const TSourceLoc &line);
+	bool parseVectorFields(const TString&, unsigned int vecSize, TVectorFields&, const TSourceLoc &line);
 	bool parseMatrixFields(const TString&, int matCols, int matRows, TMatrixFields&, const TSourceLoc &line);
 
 	bool reservedErrorCheck(const TSourceLoc &line, const TString& identifier);

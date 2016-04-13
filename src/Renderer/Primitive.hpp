@@ -50,7 +50,7 @@ namespace sw
 			struct
 			{
 				PlaneEquation C[2][4];
-				PlaneEquation T[8][4];
+				PlaneEquation T[TEXTURE_STAGES][4];
 				PlaneEquation f;
 			};
 

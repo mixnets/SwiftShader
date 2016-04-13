@@ -3479,7 +3479,7 @@ namespace sw
 	{
 		if(CPUID::supportsMMX2())
 		{
-			return As<UShort4>(As<Short4>(val) ^ Short4(0xFFFFu, 0xFFFFu, 0xFFFFu, 0xFFFFu));
+			return As<UShort4>(As<Short4>(val) ^ Short4(0xFFFFu));
 		}
 		else
 		{
@@ -3489,12 +3489,12 @@ namespace sw
 
 	RValue<UShort4> Max(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		return RValue<UShort4>(Max(As<Short4>(x) - Short4(0x8000u, 0x8000u, 0x8000u, 0x8000u), As<Short4>(y) - Short4(0x8000u, 0x8000u, 0x8000u, 0x8000u)) + Short4(0x8000u, 0x8000u, 0x8000u, 0x8000u));
+		return RValue<UShort4>(Max(As<Short4>(x) - Short4(0x8000u), As<Short4>(y) - Short4(0x8000u)) + Short4(0x8000u));
 	}
 
 	RValue<UShort4> Min(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		return RValue<UShort4>(Min(As<Short4>(x) - Short4(0x8000u, 0x8000u, 0x8000u, 0x8000u), As<Short4>(y) - Short4(0x8000u, 0x8000u, 0x8000u, 0x8000u)) + Short4(0x8000u, 0x8000u, 0x8000u, 0x8000u));
+		return RValue<UShort4>(Min(As<Short4>(x) - Short4(0x8000u), As<Short4>(y) - Short4(0x8000u)) + Short4(0x8000u));
 	}
 
 	RValue<UShort4> AddSat(RValue<UShort4> x, RValue<UShort4> y)

@@ -28,14 +28,7 @@ namespace sw
 		C0 = 1,   // Diffuse
 		C1 = 2,   // Specular
 		T0 = 3,
-		T1 = 4,
-		T2 = 5,
-		T3 = 6,
-		T4 = 7,
-		T5 = 8,
-		T6 = 9,
-		T7 = 10,
-		Fog = 11,    // x component
+		Fog = T0 + TEXTURE_STAGES,    // x component
 		Pts = Fog,   // y component
 
 		// Variable semantics

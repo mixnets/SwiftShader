@@ -86,7 +86,7 @@ namespace sw
 			LogicalOperation logicalOperation : BITS(LOGICALOP_LAST);
 
 			Sampler::State sampler[TEXTURE_IMAGE_UNITS];
-			TextureStage::State textureStage[8];
+			TextureStage::State textureStage[TEXTURE_STAGES];
 
 			struct Interpolant
 			{
@@ -101,7 +101,7 @@ namespace sw
 				struct
 				{
 					Interpolant color[2];
-					Interpolant texture[8];
+					Interpolant texture[TEXTURE_STAGES];
 					Interpolant fog;
 				};
 
@@ -235,6 +235,8 @@ namespace sw
 		void setSwizzleG(unsigned int sampler, SwizzleType swizzleG);
 		void setSwizzleB(unsigned int sampler, SwizzleType swizzleB);
 		void setSwizzleA(unsigned int sampler, SwizzleType swizzleA);
+		void setCompFunc(unsigned int sampler, CompareFunc compFunc);
+		void setCompMode(unsigned int sampler, CompareMode compMode);
 		void setBaseLevel(unsigned int sampler, int baseLevel);
 		void setMaxLevel(unsigned int sampler, int maxLevel);
 		void setMinLod(unsigned int sampler, float minLod);
