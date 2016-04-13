@@ -4277,6 +4277,7 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 		(const GLubyte*)"GL_OES_texture_npot",
 		(const GLubyte*)"GL_OES_texture_3D",
 		(const GLubyte*)"GL_EXT_blend_minmax",
+		(const GLubyte*)"GL_EXT_color_buffer_float",
 		(const GLubyte*)"GL_EXT_color_buffer_half_float",
 		(const GLubyte*)"GL_EXT_draw_buffers",
 		(const GLubyte*)"GL_EXT_occlusion_query_boolean",
