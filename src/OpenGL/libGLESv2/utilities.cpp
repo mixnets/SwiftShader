@@ -1429,6 +1429,7 @@ namespace sw2es
 		case sw::FORMAT_R32F:
 		case sw::FORMAT_G32R32F:
 		case sw::FORMAT_B32G32R32F:
+		case sw::FORMAT_X32B32G32R32F:
 		case sw::FORMAT_A32B32G32R32F:
 		case sw::FORMAT_R32I:
 		case sw::FORMAT_G32R32I:
@@ -1485,6 +1486,7 @@ namespace sw2es
 			return 16;
 		case sw::FORMAT_G32R32F:
 		case sw::FORMAT_B32G32R32F:
+		case sw::FORMAT_X32B32G32R32F:
 		case sw::FORMAT_A32B32G32R32F:
 		case sw::FORMAT_G32R32I:
 		case sw::FORMAT_X32B32G32R32I:
@@ -1532,6 +1534,7 @@ namespace sw2es
 		case sw::FORMAT_A16B16G16R16UI:
 			return 16;
 		case sw::FORMAT_B32G32R32F:
+		case sw::FORMAT_X32B32G32R32F:
 		case sw::FORMAT_A32B32G32R32F:
 		case sw::FORMAT_X32B32G32R32I:
 		case sw::FORMAT_A32B32G32R32I:
@@ -1657,6 +1660,7 @@ namespace sw2es
 			case sw::FORMAT_R32F:
 			case sw::FORMAT_G32R32F:
 			case sw::FORMAT_B32G32R32F:
+			case sw::FORMAT_X32B32G32R32F:
 			case sw::FORMAT_A32B32G32R32F:
 				return GL_FLOAT;
 			case sw::FORMAT_R8:
