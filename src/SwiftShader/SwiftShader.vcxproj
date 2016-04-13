@@ -117,7 +117,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;..\..\third_party\ASTC\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>false</ExceptionHandling>
@@ -151,7 +151,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;..\..\third_party\ASTC\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>false</ExceptionHandling>
@@ -183,7 +183,7 @@
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;..\..\third_party\ASTC\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -217,7 +217,7 @@
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;..\..\third_party\ASTC\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -253,7 +253,7 @@
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;..\..\third_party\ASTC\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -290,7 +290,7 @@
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\Main;..\Renderer;..\Shader;..\Common;..\SwiftAsm;..\libjpeg;..\SwiftShader;..\D3D9;..\Reactor;..\..\third_party\ASTC\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;_SECURE_SCL=0;_HAS_EXCEPTIONS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -316,10 +316,37 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_averages_and_directions.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_block_sizes2.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_color_quantize.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_color_unquantize.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_compress_symbolic.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_compute_variance.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_decompress_symbolic.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_encoding_choice_error.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_find_best_partitioning.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_ideal_endpoints_and_weights.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_image_load_store.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_integer_sequence.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_kmeans_partitioning.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_ktx_dds.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_partition_tables.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_percentile_tables.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_pick_best_endpoint_format.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_quantization.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_stb_tga.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_symbolic_physical.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_toplevel.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_weight_align.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\astc_weight_quant_xfer_tables.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\mathlib.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\softfloat.cpp" />
+    <ClCompile Include="..\..\third_party\ASTC\Source\stb_image.c" />
     <ClCompile Include="..\Common\Socket.cpp" />
     <ClCompile Include="..\Common\Thread.cpp" />
     <ClCompile Include="..\Main\Config.cpp" />
     <ClCompile Include="..\Main\FrameBufferWin.cpp" />
+    <ClCompile Include="..\Renderer\ASTC_Decoder.cpp" />
     <ClCompile Include="..\Renderer\ETC_Decoder.cpp" />
     <ClCompile Include="..\Shader\Constants.cpp" />
     <ClCompile Include="..\Shader\PixelPipeline.cpp" />
@@ -383,11 +410,16 @@
     <ClCompile Include="..\Common\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\third_party\ASTC\Source\astc_codec_internals.h" />
+    <ClInclude Include="..\..\third_party\ASTC\Source\mathlib.h" />
+    <ClInclude Include="..\..\third_party\ASTC\Source\softfloat.h" />
+    <ClInclude Include="..\..\third_party\ASTC\Source\vectypes.h" />
     <ClInclude Include="..\Common\SharedLibrary.hpp" />
     <ClInclude Include="..\Common\Socket.hpp" />
     <ClInclude Include="..\Common\Thread.hpp" />
     <ClInclude Include="..\Common\Version.h" />
     <ClInclude Include="..\Main\FrameBufferWin.hpp" />
+    <ClInclude Include="..\Renderer\ASTC_Decoder.hpp" />
     <ClInclude Include="..\Renderer\ETC_Decoder.hpp" />
     <ClInclude Include="..\Renderer\Polygon.hpp" />
     <ClInclude Include="..\Renderer\RoutineCache.hpp" />

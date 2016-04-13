@@ -18,7 +18,7 @@
 #include "intermediate.h"
 
 struct TVectorFields {
-	int offsets[4];
+	unsigned int offsets[4];
 	int num;
 };
 

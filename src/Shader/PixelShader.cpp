@@ -198,7 +198,7 @@ namespace sw
 			semantic[1][2] = Semantic(Shader::USAGE_COLOR, 1);
 			semantic[1][3] = Semantic(Shader::USAGE_COLOR, 1);
 
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < TEXTURE_STAGES; i++)
 			{
 				semantic[2 + i][0] = Semantic(Shader::USAGE_TEXCOORD, i);
 				semantic[2 + i][1] = Semantic(Shader::USAGE_TEXCOORD, i);

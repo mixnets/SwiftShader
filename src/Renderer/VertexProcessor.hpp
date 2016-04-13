@@ -88,7 +88,7 @@ namespace sw
 				unsigned char texCoordIndexActive         : 3;
 			};
 
-			TextureState textureState[8];
+			TextureState textureState[TEXTURE_STAGES];
 
 			Sampler::State samplerState[VERTEX_TEXTURE_IMAGE_UNITS];
 
@@ -151,7 +151,7 @@ namespace sw
 			float4 transformT[12][4];
 			float4 cameraTransformT[12][4];
 			float4 normalTransformT[12][4];
-			float4 textureTransform[8][4];
+			float4 textureTransform[TEXTURE_STAGES][4];
 
 			float4 lightPosition[8];
 			float4 lightAmbient[8];
@@ -260,6 +260,8 @@ namespace sw
 		void setSwizzleG(unsigned int sampler, SwizzleType swizzleG);
 		void setSwizzleB(unsigned int sampler, SwizzleType swizzleB);
 		void setSwizzleA(unsigned int sampler, SwizzleType swizzleA);
+		void setCompFunc(unsigned int sampler, CompareFunc compFunc);
+		void setCompMode(unsigned int sampler, CompareMode compMode);
 		void setBaseLevel(unsigned int sampler, int baseLevel);
 		void setMaxLevel(unsigned int sampler, int maxLevel);
 		void setMinLod(unsigned int sampler, float minLod);

@@ -54,6 +54,14 @@ namespace sw
 
 	void PixelRoutine::quad(Pointer<Byte> cBuffer[RENDERTARGETS], Pointer<Byte> &zBuffer, Pointer<Byte> &sBuffer, Int cMask[4], Int &x, Int &y)
 	{
+		// shader->print("FragmentShader-%0.8X.txt", state.shaderID);
+		{
+			std::string shaderString;
+			for(unsigned int i = 0; i < (shader ? shader->getLength() : 0); i++)
+				shaderString += shader->getInstruction(i)->string(shader->getShaderType(), shader->getVersion()) + "\n";
+			shaderString += "\n";
+		}
+
 		#if PERF_PROFILE
 			Long pipeTime = Ticks();
 		#endif

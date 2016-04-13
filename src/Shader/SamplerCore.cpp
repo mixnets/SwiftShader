@@ -73,21 +73,27 @@ namespace sw
 		Float4 uuuu = u;
 		Float4 vvvv = v;
 		Float4 wwww = w;
+		Float4 qqqq;
+
+		// FIXME: Convert to fixed12 at higher level, when required
+		const short one = fixed12 ? 0x1000 : 0xFFFFu;
 
 		if(state.textureType == TEXTURE_NULL)
 		{
 			c.x = Short4(0x0000);
 			c.y = Short4(0x0000);
 			c.z = Short4(0x0000);
-
-			if(fixed12)   // FIXME: Convert to fixed12 at higher level, when required
-			{
-				c.w = Short4(0x1000);
-			}
-			else
-			{
-				c.w = Short4(0xFFFFu);   // FIXME
-			}
+			c.w = Short4(one, one, one, one);
+		}
+		else if(state.compMode == COMPARE_MODE_REF_TO_TEXTURE &&
+		        ((state.compFunc == COMPARE_FUNC_ALWAYS) || (state.compFunc == COMPARE_FUNC_NEVER)))
+		{
+			c.x = (state.compFunc == COMPARE_FUNC_ALWAYS) ?
+			      Short4(one, one, one, one) :
+			      Short4(0x0000);
+			c.y = Short4(0x0000);
+			c.z = Short4(0x0000);
+			c.w = Short4(one, one, one, one);
 		}
 		else
 		{
@@ -105,7 +111,24 @@ namespace sw
 			Float anisotropy;
 			Float4 uDelta;
 			Float4 vDelta;
-			Float lodBias = (function == Fetch) ? Float4(As<Int4>(q)).x : q.x;
+			Float lodBias;
+
+			switch(function)
+			{
+			case Fetch:
+				lodBias = Float4(As<Int4>(q)).x;
+				qqqq = Float4(0.0f);
+				break;
+			case Bias:
+			case Lod:
+				lodBias = q.x;
+				qqqq = Float4(0.0f);
+				break;
+			default:
+				lodBias = Float(0.0f);
+				qqqq = q;
+				break;
+			}
 
 			if(state.textureType != TEXTURE_3D)
 			{
@@ -123,7 +146,7 @@ namespace sw
 				computeLod3D(texture, lod, uuuu, vvvv, wwww, lodBias, dsx, dsy, function);
 			}
 
-			if(!hasFloatTexture())
+			if(!hasFloatOr32BitTexture())
 			{
 				sampleFilter(texture, c, uuuu, vvvv, wwww, offset, lod, anisotropy, uDelta, vDelta, face, function);
 			}
@@ -131,12 +154,12 @@ namespace sw
 			{
 				Vector4f cf;
 
-				sampleFloatFilter(texture, cf, uuuu, vvvv, wwww, offset, lod, anisotropy, uDelta, vDelta, face, function);
+				sampleFloatFilter(texture, cf, uuuu, vvvv, wwww, qqqq, offset, lod, anisotropy, uDelta, vDelta, face, function);
 
 				convertFixed12(c, cf);
 			}
 
-			if(fixed12 && !hasFloatTexture())
+			if(fixed12 && !hasFloatOr32BitTexture())
 			{
 				if(has16bitTextureFormat())
 				{
@@ -237,8 +260,8 @@ namespace sw
 				case FORMAT_YV12_BT601:
 				case FORMAT_YV12_BT709:
 				case FORMAT_YV12_JFIF:
-					if(componentCount < 2) c.y = Short4(0x1000);
-					if(componentCount < 3) c.z = Short4(0x1000);
+					if(componentCount < 2) c.y = Short4(0x0000);
+					if(componentCount < 3) c.z = Short4(0x0000);
 					if(componentCount < 4) c.w = Short4(0x1000);
 					break;
 				case FORMAT_A8:
@@ -259,9 +282,10 @@ namespace sw
 					c.z = c.x;
 					break;
 				case FORMAT_R32F:
-					c.y = Short4(0x1000);
+					c.y = Short4(0x0000);
 				case FORMAT_G32R32F:
-					c.z = Short4(0x1000);
+					c.z = Short4(0x0000);
+				case FORMAT_B32G32R32F:
 				case FORMAT_X32B32G32R32F:
 					c.w = Short4(0x1000);
 				case FORMAT_A32B32G32R32F:
@@ -270,9 +294,9 @@ namespace sw
 				case FORMAT_D32F_LOCKABLE:
 				case FORMAT_D32FS8_TEXTURE:
 				case FORMAT_D32FS8_SHADOW:
-					c.y = c.x;
-					c.z = c.x;
-					c.w = c.x;
+					c.y = Short4(0x0000);
+					c.z = Short4(0x0000);
+					c.w = Short4(0x1000);
 					break;
 				default:
 					ASSERT(false);
@@ -294,7 +318,7 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerFunction function)
+	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Float4 &q2, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerFunction function)
 	{
 		#if PERF_PROFILE
 			AddAtomic(Pointer<Long>(&profiler.texOperations), 4);
@@ -312,13 +336,22 @@ namespace sw
 			c.z = Float4(0.0f);
 			c.w = Float4(1.0f);
 		}
+		else if(state.compMode == COMPARE_MODE_REF_TO_TEXTURE &&
+		        ((state.compFunc == COMPARE_FUNC_ALWAYS) || (state.compFunc == COMPARE_FUNC_NEVER)))
+		{
+			c.x = (state.compFunc == COMPARE_FUNC_ALWAYS) ? Float4(1.0f) : Float4(0.0f);
+			c.y = Float4(0.0f);
+			c.z = Float4(0.0f);
+			c.w = Float4(1.0f);
+		}
 		else
 		{
-			if(hasFloatTexture())   // FIXME: Mostly identical to integer sampling
+			if(hasFloatOr32BitTexture())   // FIXME: Mostly identical to integer sampling
 			{
 				Float4 uuuu = u;
 				Float4 vvvv = v;
 				Float4 wwww = w;
+				Float4 qqqq;
 
 				Int face[4];
 				Float4 lodX;
@@ -334,7 +367,37 @@ namespace sw
 				Float anisotropy;
 				Float4 uDelta;
 				Float4 vDelta;
-				Float lodBias = (function == Fetch) ? Float4(As<Int4>(q)).x : q.x;
+				Float lodBias;
+
+				if(state.compMode == COMPARE_MODE_REF_TO_TEXTURE && state.textureType == TEXTURE_CUBE && function == Bias)
+				{
+					lodBias = q2.x;
+					qqqq = q;
+				}
+				else if(state.compMode == COMPARE_MODE_REF_TO_TEXTURE && state.textureType == TEXTURE_2D_ARRAY && function == Lod)
+				{
+					lodBias = Float(0.0f);
+					qqqq = q;
+				}
+				else
+				{
+					switch(function)
+					{
+					case Fetch:
+						lodBias = Float4(As<Int4>(q)).x;
+						qqqq = Float4(0.0f);
+						break;
+					case Bias:
+					case Lod:
+						lodBias = q.x;
+						qqqq = Float4(0.0f);
+						break;
+					default:
+						lodBias = Float(0.0f);
+						qqqq = q;
+						break;
+					}
+				}
 
 				if(state.textureType != TEXTURE_3D)
 				{
@@ -352,7 +415,7 @@ namespace sw
 					computeLod3D(texture, lod, uuuu, vvvv, wwww, lodBias, dsx, dsy, function);
 				}
 
-				sampleFloatFilter(texture, c, uuuu, vvvv, wwww, offset, lod, anisotropy, uDelta, vDelta, face, function);
+				sampleFloatFilter(texture, c, uuuu, vvvv, wwww, qqqq, offset, lod, anisotropy, uDelta, vDelta, face, function);
 			}
 			else
 			{
@@ -495,8 +558,8 @@ namespace sw
 				case FORMAT_V16U16:
 				case FORMAT_A16W16V16U16:
 				case FORMAT_Q16W16V16U16:
-					if(componentCount < 2) c.y = Float4(1.0f);
-					if(componentCount < 3) c.z = Float4(1.0f);
+					if(componentCount < 2) c.y = Float4(0.0f);
+					if(componentCount < 3) c.z = Float4(0.0f);
 					if(componentCount < 4) c.w = Float4(1.0f);
 					break;
 				case FORMAT_A8:
@@ -517,9 +580,10 @@ namespace sw
 					c.z = c.x;
 					break;
 				case FORMAT_R32F:
-					c.y = Float4(1.0f);
+					c.y = Float4(0.0f);
 				case FORMAT_G32R32F:
-					c.z = Float4(1.0f);
+					c.z = Float4(0.0f);
+				case FORMAT_B32G32R32F:
 				case FORMAT_X32B32G32R32F:
 					c.w = Float4(1.0f);
 				case FORMAT_A32B32G32R32F:
@@ -528,9 +592,9 @@ namespace sw
 				case FORMAT_D32F_LOCKABLE:
 				case FORMAT_D32FS8_TEXTURE:
 				case FORMAT_D32FS8_SHADOW:
-					c.y = c.x;
-					c.z = c.x;
-					c.w = c.x;
+					c.y = Float4(0.0f);
+					c.z = Float4(0.0f);
+					c.w = Float4(1.0f);
 					break;
 				default:
 					ASSERT(false);
@@ -1120,9 +1184,9 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], SamplerFunction function)
+	void SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], SamplerFunction function)
 	{
-		sampleFloatAniso(texture, c, u, v, w, offset, lod, anisotropy, uDelta, vDelta, face, false, function);
+		sampleFloatAniso(texture, c, u, v, w, q, offset, lod, anisotropy, uDelta, vDelta, face, false, function);
 
 		if(function == Fetch)
 		{
@@ -1133,7 +1197,7 @@ namespace sw
 		{
 			Vector4f cc;
 
-			sampleFloatAniso(texture, cc, u, v, w, offset, lod, anisotropy, uDelta, vDelta, face, true, function);
+			sampleFloatAniso(texture, cc, u, v, w, q, offset, lod, anisotropy, uDelta, vDelta, face, true, function);
 
 			Float4 lod4 = Float4(Frac(lod));
 
@@ -1200,11 +1264,11 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, SamplerFunction function)
+	void SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, SamplerFunction function)
 	{
 		if(state.textureFilter != FILTER_ANISOTROPIC || function == Lod || function == Fetch)
 		{
-			sampleFloat(texture, c, u, v, w, offset, lod, face, secondLOD, function);
+			sampleFloat(texture, c, u, v, w, q, offset, lod, face, secondLOD, function);
 		}
 		else
 		{
@@ -1233,7 +1297,7 @@ namespace sw
 
 			Do
 			{
-				sampleFloat(texture, c, u0, v0, w, offset, lod, face, secondLOD, function);
+				sampleFloat(texture, c, u0, v0, w, q, offset, lod, face, secondLOD, function);
 
 				u0 += du;
 				v0 += dv;
@@ -1254,19 +1318,26 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleFloat(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
+	void SamplerCore::sampleFloat(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
 	{
-		if(state.textureType != TEXTURE_3D)
+		switch(state.textureType)
 		{
-			sampleFloat2D(texture, c, u, v, w, offset, lod, face, secondLOD, function);
-		}
-		else
-		{
+		case TEXTURE_2D:
+			sampleFloat2D(texture, c, u, v, w, offset, w, lod, face, secondLOD, function);
+			break;
+		case TEXTURE_CUBE:
+		case TEXTURE_2D_ARRAY:
+			sampleFloat2D(texture, c, u, v, w, offset, q, lod, face, secondLOD, function);
+			break;
+		case TEXTURE_3D:
 			sampleFloat3D(texture, c, u, v, w, offset, lod, secondLOD, function);
+			break;
+		default:
+			ASSERT(false);
 		}
 	}
 
-	void SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
+	void SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float4 &dRef, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
 	{
 		int componentCount = textureComponentCount();
 		bool gather = state.textureFilter == FILTER_GATHER;
@@ -1284,7 +1355,7 @@ namespace sw
 
 		if(state.textureFilter == FILTER_POINT || texelFetch)
 		{
-			sampleTexel(c, uuuu, vvvv, wwww, offset, w, mipmap, buffer, function);
+			sampleTexel(c, uuuu, vvvv, wwww, offset, dRef, mipmap, buffer, function);
 		}
 		else
 		{
@@ -1298,10 +1369,10 @@ namespace sw
 			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1, lod);
 			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1, lod);
 
-			sampleTexel(c0, uuuu0, vvvv0, wwww, offset, w, mipmap, buffer, function);
-			sampleTexel(c1, uuuu1, vvvv0, wwww, offset, w, mipmap, buffer, function);
-			sampleTexel(c2, uuuu0, vvvv1, wwww, offset, w, mipmap, buffer, function);
-			sampleTexel(c3, uuuu1, vvvv1, wwww, offset, w, mipmap, buffer, function);
+			sampleTexel(c0, uuuu0, vvvv0, wwww, offset, dRef, mipmap, buffer, function);
+			sampleTexel(c1, uuuu1, vvvv0, wwww, offset, dRef, mipmap, buffer, function);
+			sampleTexel(c2, uuuu0, vvvv1, wwww, offset, dRef, mipmap, buffer, function);
+			sampleTexel(c3, uuuu1, vvvv1, wwww, offset, dRef, mipmap, buffer, function);
 
 			if(!gather)   // Blend
 			{
@@ -1522,7 +1593,9 @@ namespace sw
 				Float4 duvdxy = Float4(dudxy.xz, dvdxy.xz);
 
 				// Scale by texture dimensions and LOD
-				Float4 dUVdxy = duvdxy * *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
+				// Scale by half because x and y go from -1 to 1 for inputs dsx and dsy,
+				// whereas sampling coord u and v go from 0 to 1.
+				Float4 dUVdxy = duvdxy * *Pointer<Float4>(texture + OFFSET(Texture,widthLOD)) * Float4(0.5f);
 
 				Float4 dUV2dxy = dUVdxy * dUVdxy;
 				Float4 dUV2 = dUV2dxy.xy + dUV2dxy.zw;
@@ -1704,7 +1777,7 @@ namespace sw
 		bool texelFetch = (function == Fetch);
 		bool hasOffset = (function.option == Offset);
 
-		if(!state.hasNPOTTexture && !hasFloatTexture() && !hasOffset)
+		if(!state.hasNPOTTexture && !hasFloatOr32BitTexture() && !hasOffset)
 		{
 			if(!texelFetch)
 			{
@@ -1754,8 +1827,8 @@ namespace sw
 			Short4 www2 = wwww;
 			wwww = As<Short4>(UnpackLow(wwww, Short4(0x0000)));
 			www2 = As<Short4>(UnpackHigh(www2, Short4(0x0000)));
-			wwww = As<Short4>(MulAdd(wwww, *Pointer<Short4>(mipmap + OFFSET(Mipmap,sliceP))));
-			www2 = As<Short4>(MulAdd(www2, *Pointer<Short4>(mipmap + OFFSET(Mipmap,sliceP))));
+			wwww = As<Short4>(MulAdd(wwww, *Pointer<Short4>(mipmap + OFFSET(Mipmap, sliceP))));
+			www2 = As<Short4>(MulAdd(www2, *Pointer<Short4>(mipmap + OFFSET(Mipmap, sliceP))));
 			uuuu = As<Short4>(As<Int2>(uuuu) + As<Int2>(wwww));
 			uuu2 = As<Short4>(As<Int2>(uuu2) + As<Int2>(www2));
 		}
@@ -2059,7 +2132,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void SamplerCore::sampleTexel(Vector4f &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Vector4f &offset, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
+	void SamplerCore::sampleTexel(Vector4f &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Vector4f &offset, Float4 &dRef, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
 	{
 		Int index[4];
 
@@ -2069,6 +2142,8 @@ namespace sw
 		int f1 = state.textureType == TEXTURE_CUBE ? 1 : 0;
 		int f2 = state.textureType == TEXTURE_CUBE ? 2 : 0;
 		int f3 = state.textureType == TEXTURE_CUBE ? 3 : 0;
+
+		bool shadowTexture = (state.compMode == COMPARE_MODE_REF_TO_TEXTURE);
 
 		// Read texels
 		switch(textureComponentCount())
@@ -2106,15 +2181,52 @@ namespace sw
 			c.x.z = *Pointer<Float>(buffer[f2] + index[2] * 4);
 			c.x.w = *Pointer<Float>(buffer[f3] + index[3] * 4);
 
-			if(state.textureFormat == FORMAT_D32FS8_SHADOW && state.textureFilter != FILTER_GATHER)
-			{
-				Float4 d = Min(Max(z, Float4(0.0f)), Float4(1.0f));
-
-				c.x = As<Float4>(As<Int4>(CmpNLT(c.x, d)) & As<Int4>(Float4(1.0f)));   // FIXME: Only less-equal?
-			}
+			shadowTexture |= (state.textureFormat == FORMAT_D32FS8_SHADOW && state.textureFilter != FILTER_GATHER);
 			break;
 		default:
 			ASSERT(false);
+		}
+
+		if(shadowTexture)
+		{
+			// FIXME: OpenGL ES 3.0.4 spec, page 163:
+			// "If the texture's internal format indicates a fixed-point depth texture, then Dt
+			// and Dref are clamped to the range[0, 1]; otherwise no clamping is performed."
+			Float4 depth = Min(Max(dRef, Float4(0.0f)), Float4(1.0f));
+
+			Int4 condition;
+
+			switch(state.compFunc)
+			{
+			case COMPARE_FUNC_LEQUAL:
+				condition = CmpLE(depth, c.x);
+				break;
+			case COMPARE_FUNC_GEQUAL:
+				condition = CmpNLT(depth, c.x);
+				break;
+			case COMPARE_FUNC_LESS:
+				condition = CmpLT(depth, c.x);
+				break;
+			case COMPARE_FUNC_GREATER:
+				condition = CmpNLE(depth, c.x);
+				break;
+			case COMPARE_FUNC_EQUAL:
+				condition = CmpEQ(depth, c.x);
+				break;
+			case COMPARE_FUNC_NOTEQUAL:
+				condition = CmpNEQ(depth, c.x);
+				break;
+			case COMPARE_FUNC_ALWAYS:
+			case COMPARE_FUNC_NEVER:
+				// These 2 cases should have been handled earlier
+			default:
+				ASSERT(false);
+			}
+
+			c.x = As<Float4>(condition & As<Int4>(Float4(1.0f)));
+			c.y = Float4(0.0f);
+			c.z = Float4(0.0f);
+			c.w = Float4(1.0f);
 		}
 	}
 
@@ -2273,9 +2385,9 @@ namespace sw
 		c = Insert(c, *Pointer<Short>(LUT + 2 * Int(Extract(c, 3))), 3);
 	}
 
-	bool SamplerCore::hasFloatTexture() const
+	bool SamplerCore::hasFloatOr32BitTexture() const
 	{
-		return Surface::isFloatFormat(state.textureFormat);
+		return Surface::isFloatOr32BitFormat(state.textureFormat);
 	}
 
 	bool SamplerCore::hasUnsignedTextureComponent(int component) const
@@ -2326,6 +2438,7 @@ namespace sw
 		case FORMAT_X8L8V8U8:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
+		case FORMAT_B32G32R32F:
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_A8:
@@ -2395,6 +2508,7 @@ namespace sw
 		case FORMAT_R5G6B5:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
+		case FORMAT_B32G32R32F:
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_D32F:
@@ -2471,6 +2585,7 @@ namespace sw
 		case FORMAT_X8L8V8U8:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
+		case FORMAT_B32G32R32F:
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_A8:
@@ -2548,6 +2663,7 @@ namespace sw
 		case FORMAT_X8L8V8U8:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
+		case FORMAT_B32G32R32F:
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_A8:
@@ -2617,6 +2733,7 @@ namespace sw
 		case FORMAT_X8L8V8U8:       return false;
 		case FORMAT_R32F:           return component < 1;
 		case FORMAT_G32R32F:        return component < 2;
+		case FORMAT_B32G32R32F:     return component < 3;
 		case FORMAT_X32B32G32R32F:  return component < 3;
 		case FORMAT_A32B32G32R32F:  return component < 3;
 		case FORMAT_A8:             return false;
