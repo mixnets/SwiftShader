@@ -314,7 +314,7 @@ namespace glsl
 
 		functionArray.push_back(Function(0, "main(", 0, 0));
 		currentFunction = 0;
-		outputQualifier = EvqOutput; // Set outputQualifier to any value other than EvqFragColor or EvqFragData
+		outputQualifier = EvqOutput;   // Set outputQualifier to any value other than EvqFragColor or EvqFragData
 	}
 
 	OutputASM::~OutputASM()

@@ -677,7 +677,7 @@ private:
 	virtual ~Context();
 
 	void applyScissor(int width, int height);
-    bool applyRenderTarget();
+    bool applyRenderTarget(bool all);
     void applyState(GLenum drawMode);
 	GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsizei instanceId);
     GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo);
