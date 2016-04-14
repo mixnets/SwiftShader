@@ -767,7 +767,7 @@ namespace es2
 				return error(GL_INVALID_OPERATION, false);
 			}
 
-			switch(format)
+			switch(internalformat)
 			{
 			case GL_R8:
 			case GL_R8UI:
@@ -784,6 +784,14 @@ namespace es2
 			case GL_RG32UI:
 			case GL_RG32I:
 			case GL_SRGB8_ALPHA8:
+			case GL_RGB8UI:
+			case GL_RGB8I:
+			case GL_RGB16UI:
+			case GL_RGB16I:
+			case GL_RGB32UI:
+			case GL_RGB32I:
+			case GL_RG8_SNORM:
+			case GL_R8_SNORM:
 			case GL_RGB10_A2:
 			case GL_RGBA8UI:
 			case GL_RGBA8I:
@@ -797,8 +805,6 @@ namespace es2
 			case GL_RGB565:
 			case GL_RGB8_OES:
 			case GL_RGBA8_OES:
-			case GL_RGB:
-			case GL_RGBA:
 			case GL_R16F:
 			case GL_RG16F:
 			case GL_R11F_G11F_B10F:
@@ -819,14 +825,6 @@ namespace es2
 			case GL_SRGB8:
 			case GL_RGB8_SNORM:
 			case GL_RGB9_E5:
-			case GL_RGB8UI:
-			case GL_RGB8I:
-			case GL_RGB16UI:
-			case GL_RGB16I:
-			case GL_RGB32UI:
-			case GL_RGB32I:
-			case GL_RG8_SNORM:
-			case GL_R8_SNORM:
 				break;
 			default:
 				return error(GL_INVALID_ENUM, false);
@@ -835,21 +833,21 @@ namespace es2
 
 		// Validate format, type, and sized internalformat combinations [OpenGL ES 3.0 Table 3.2]
 		bool validSizedInternalformat = false;
-		#define VALIDATE_INTERNALFORMAT(validInternalformatCases) switch(type) { case validInternalformatCases: validSizedInternalformat = true; } break;
+		#define VALIDATE_INTERNALFORMAT(...) { GLenum validInternalformats[] = {##__VA_ARGS__}; for(GLenum f : validInternalformats) {if(internalformat == f) validSizedInternalformat = true;} } break;
 
 		switch(format)
 		{
 		case GL_RGBA:
 			switch(type)
 			{
-			case GL_UNSIGNED_BYTE:               VALIDATE_INTERNALFORMAT(GL_RGBA8: case GL_RGB5_A1: case GL_RGBA4: case GL_SRGB8_ALPHA8)
+			case GL_UNSIGNED_BYTE:               VALIDATE_INTERNALFORMAT(GL_RGBA8, GL_RGB5_A1, GL_RGBA4, GL_SRGB8_ALPHA8)
 			case GL_BYTE:                        VALIDATE_INTERNALFORMAT(GL_RGBA8_SNORM)
 			case GL_HALF_FLOAT_OES:              break;
 			case GL_UNSIGNED_SHORT_4_4_4_4:      VALIDATE_INTERNALFORMAT(GL_RGBA4)
 			case GL_UNSIGNED_SHORT_5_5_5_1:      VALIDATE_INTERNALFORMAT(GL_RGB5_A1)
-			case GL_UNSIGNED_INT_2_10_10_10_REV: VALIDATE_INTERNALFORMAT(GL_RGB10_A2: case GL_RGB5_A1)
+			case GL_UNSIGNED_INT_2_10_10_10_REV: VALIDATE_INTERNALFORMAT(GL_RGB10_A2, GL_RGB5_A1)
 			case GL_HALF_FLOAT:                  VALIDATE_INTERNALFORMAT(GL_RGBA16F)
-			case GL_FLOAT:                       VALIDATE_INTERNALFORMAT(GL_RGBA32F: case GL_RGBA16F)
+			case GL_FLOAT:                       VALIDATE_INTERNALFORMAT(GL_RGBA32F, GL_RGBA16F)
 			default:                             return error(GL_INVALID_OPERATION, false);
 			}
 			break;
@@ -869,14 +867,14 @@ namespace es2
 		case GL_RGB:
 			switch(type)
 			{
-			case GL_UNSIGNED_BYTE:                VALIDATE_INTERNALFORMAT(GL_RGB8: case GL_RGB565: case GL_SRGB8)
+			case GL_UNSIGNED_BYTE:                VALIDATE_INTERNALFORMAT(GL_RGB8, GL_RGB565, GL_SRGB8)
 			case GL_BYTE:                         VALIDATE_INTERNALFORMAT(GL_RGB8_SNORM)
 			case GL_HALF_FLOAT_OES:               break;
 			case GL_UNSIGNED_SHORT_5_6_5:         VALIDATE_INTERNALFORMAT(GL_RGB565)
 			case GL_UNSIGNED_INT_10F_11F_11F_REV: VALIDATE_INTERNALFORMAT(GL_R11F_G11F_B10F)
 			case GL_UNSIGNED_INT_5_9_9_9_REV:     VALIDATE_INTERNALFORMAT(GL_RGB9_E5)
-			case GL_HALF_FLOAT:                   VALIDATE_INTERNALFORMAT(GL_RGB16F: case GL_R11F_G11F_B10F: case GL_RGB9_E5)
-			case GL_FLOAT:                        VALIDATE_INTERNALFORMAT(GL_RGB32F: case GL_RGB16F: case GL_R11F_G11F_B10F: case GL_RGB9_E5)
+			case GL_HALF_FLOAT:                   VALIDATE_INTERNALFORMAT(GL_RGB16F, GL_R11F_G11F_B10F, GL_RGB9_E5)
+			case GL_FLOAT:                        VALIDATE_INTERNALFORMAT(GL_RGB32F, GL_RGB16F, GL_R11F_G11F_B10F, GL_RGB9_E5)
 			default:                              return error(GL_INVALID_OPERATION, false);
 			}
 			break;
@@ -898,7 +896,7 @@ namespace es2
 			case GL_UNSIGNED_BYTE: VALIDATE_INTERNALFORMAT(GL_RG8)
 			case GL_BYTE:          VALIDATE_INTERNALFORMAT(GL_RG8_SNORM)
 			case GL_HALF_FLOAT:    VALIDATE_INTERNALFORMAT(GL_RG16F)
-			case GL_FLOAT:         VALIDATE_INTERNALFORMAT(GL_RG32F: case GL_RG16F)
+			case GL_FLOAT:         VALIDATE_INTERNALFORMAT(GL_RG32F, GL_RG16F)
 			default:               return error(GL_INVALID_OPERATION, false);
 			}
 			break;
@@ -920,7 +918,7 @@ namespace es2
 			case GL_UNSIGNED_BYTE: VALIDATE_INTERNALFORMAT(GL_R8)
 			case GL_BYTE:          VALIDATE_INTERNALFORMAT(GL_R8_SNORM)
 			case GL_HALF_FLOAT:    VALIDATE_INTERNALFORMAT(GL_R16F)
-			case GL_FLOAT:         VALIDATE_INTERNALFORMAT(GL_R32F: case GL_R16F)
+			case GL_FLOAT:         VALIDATE_INTERNALFORMAT(GL_R32F, GL_R16F)
 			default:               return error(GL_INVALID_OPERATION, false);
 			}
 			break;
@@ -940,7 +938,7 @@ namespace es2
 			switch(type)
 			{
 			case GL_UNSIGNED_SHORT: VALIDATE_INTERNALFORMAT(GL_DEPTH_COMPONENT16)
-			case GL_UNSIGNED_INT:   VALIDATE_INTERNALFORMAT(GL_DEPTH_COMPONENT24: case GL_DEPTH_COMPONENT16)
+			case GL_UNSIGNED_INT:   VALIDATE_INTERNALFORMAT(GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT16)
 			case GL_FLOAT:          VALIDATE_INTERNALFORMAT(GL_DEPTH_COMPONENT32F)
 			default:                return error(GL_INVALID_OPERATION, false);
 			}
