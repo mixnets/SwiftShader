@@ -260,12 +260,9 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		{
 			GLenum format = colorbuffer->getFormat();
 
-			if(IsCompressed(format) ||
-			   format == GL_ALPHA ||
-			   format == GL_LUMINANCE ||
-			   format == GL_LUMINANCE_ALPHA)
+			if(!es1::IsColorRenderable(format))
 			{
-				return GL_FRAMEBUFFER_UNSUPPORTED_OES;
+				return GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_OES;
 			}
 
 			if(es1::IsDepthTexture(format) || es1::IsStencilTexture(format))
