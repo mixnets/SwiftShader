@@ -2117,7 +2117,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = IMPLEMENTATION_MAX_TEXTURE_SIZE;
 		break;
 	case GL_MAX_COLOR_ATTACHMENTS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_COLOR_ATTACHMENTS;
 		break;
 	case GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS: // integer, at least 50048
@@ -2131,7 +2130,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS;
 		break;
 	case GL_MAX_DRAW_BUFFERS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_DRAW_BUFFERS;
 		break;
 	case GL_MAX_ELEMENT_INDEX:
@@ -4243,6 +4241,7 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 		(const GLubyte*)"GL_OES_texture_3D",
 		(const GLubyte*)"GL_EXT_blend_minmax",
 		(const GLubyte*)"GL_EXT_color_buffer_half_float",
+		(const GLubyte*)"GL_EXT_draw_buffers",
 		(const GLubyte*)"GL_EXT_occlusion_query_boolean",
 		(const GLubyte*)"GL_EXT_read_format_bgra",
 #if (S3TC_SUPPORT)
