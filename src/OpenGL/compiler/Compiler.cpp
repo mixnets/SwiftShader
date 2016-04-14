@@ -13,7 +13,7 @@
 #include "ParseHelper.h"
 #include "ValidateLimitations.h"
 
-namespace 
+namespace
 {
 class TScopedPoolAllocator {
 public:
@@ -199,9 +199,9 @@ void TCompiler::clearResults()
 bool TCompiler::validateCallDepth(TIntermNode *root, TInfoSink &infoSink)
 {
     AnalyzeCallDepth validator(root);
-    
+
 	unsigned int depth = validator.analyzeCallDepth();
-	
+
 	if(depth == 0)
 	{
         infoSink.info.prefix(EPrefixError);

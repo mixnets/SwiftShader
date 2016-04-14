@@ -314,7 +314,7 @@ namespace glsl
 
 		functionArray.push_back(Function(0, "main(", 0, 0));
 		currentFunction = 0;
-		outputQualifier = EvqOutput; // Set outputQualifier to any value other than EvqFragColor or EvqFragData
+		outputQualifier = EvqOutput;   // Set outputQualifier to any value other than EvqFragColor or EvqFragData
 	}
 
 	OutputASM::~OutputASM()
@@ -337,6 +337,19 @@ namespace glsl
 			}
 
 			emitShader(FUNCTION);
+
+			if(outputQualifier == EvqFragColor)
+			{
+				for(int i = 1; i < 8
+					; i++)
+				{
+					Instruction *broadcast = new Instruction(sw::Shader::OPCODE_MOV);
+					broadcast->src[0].type = sw::Shader::PARAMETER_COLOROUT;
+					broadcast->dst.type = sw::Shader::PARAMETER_COLOROUT;
+					broadcast->dst.index = i;
+					shader->append(broadcast);
+				}
+			}
 		}
 	}
 
@@ -2449,10 +2462,10 @@ namespace glsl
 		}
 
 		const TQualifier qualifier = operand->getQualifier();
-		if((EvqFragColor == qualifier) || (EvqFragData == qualifier))
+		if((qualifier == EvqFragColor) || (qualifier == EvqFragData))
 		{
-			if(((EvqFragData == qualifier) && (EvqFragColor == outputQualifier)) ||
-			   ((EvqFragColor == qualifier) && (EvqFragData == outputQualifier)))
+			if(((qualifier == EvqFragData) && (outputQualifier == EvqFragColor)) ||
+			   ((qualifier == EvqFragColor) && (outputQualifier == EvqFragData)))
 			{
 				mContext.error(operand->getLine(), "static assignment to both gl_FragData and gl_FragColor", "");
 			}

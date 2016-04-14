@@ -733,10 +733,11 @@ void Context::setFramebufferReadBuffer(GLuint buf)
 
 void Context::setFramebufferDrawBuffers(GLsizei n, const GLenum *bufs)
 {
-	Framebuffer* drawFramebuffer = getDrawFramebuffer();
-	for(int i = 0; i < n; ++i)
+	Framebuffer *drawFramebuffer = getDrawFramebuffer();
+
+	for(int i = 0; i < MAX_COLOR_ATTACHMENTS; i++)
 	{
-		drawFramebuffer->setDrawBuffer(i, bufs[i]);
+		drawFramebuffer->setDrawBuffer(i, (i < n) ? bufs[i] : GL_NONE);
 	}
 }
 
@@ -2082,25 +2083,25 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 			return false;
 		}
 		break;
-	case GL_DRAW_BUFFER0: // symbolic constant, initial value is GL_BACK​
-	case GL_DRAW_BUFFER1: // symbolic constant, initial value is GL_NONE
+	case GL_DRAW_BUFFER0:
+	case GL_DRAW_BUFFER1:
 	case GL_DRAW_BUFFER2:
 	case GL_DRAW_BUFFER3:
 	case GL_DRAW_BUFFER4:
 	case GL_DRAW_BUFFER5:
 	case GL_DRAW_BUFFER6:
 	case GL_DRAW_BUFFER7:
-	case GL_DRAW_BUFFER8:
+	/*case GL_DRAW_BUFFER8:
 	case GL_DRAW_BUFFER9:
 	case GL_DRAW_BUFFER10:
 	case GL_DRAW_BUFFER11:
 	case GL_DRAW_BUFFER12:
 	case GL_DRAW_BUFFER13:
 	case GL_DRAW_BUFFER14:
-	case GL_DRAW_BUFFER15:
+	case GL_DRAW_BUFFER15:*/
 		*params = getDrawFramebuffer()->getDrawBuffer(pname - GL_DRAW_BUFFER0);
 		break;
-	case GL_MAJOR_VERSION: // integer, at least 3
+	case GL_MAJOR_VERSION:
 		if(clientVersion >= 3)
 		{
 			*params = clientVersion;
@@ -2117,7 +2118,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = IMPLEMENTATION_MAX_TEXTURE_SIZE;
 		break;
 	case GL_MAX_COLOR_ATTACHMENTS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_COLOR_ATTACHMENTS;
 		break;
 	case GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS: // integer, at least 50048
@@ -2131,7 +2131,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS;
 		break;
 	case GL_MAX_DRAW_BUFFERS: // integer, at least 8
-		UNIMPLEMENTED();
 		*params = IMPLEMENTATION_MAX_DRAW_BUFFERS;
 		break;
 	case GL_MAX_ELEMENT_INDEX:
@@ -2677,11 +2676,18 @@ bool Context::applyRenderTarget()
         return error(GL_INVALID_FRAMEBUFFER_OPERATION, false);
     }
 
-	for(int i = 0; i < MAX_DRAW_BUFFERS; ++i)
+	for(int i = 0; i < MAX_DRAW_BUFFERS; i++)
 	{
-		egl::Image *renderTarget = framebuffer->getRenderTarget(i);
-		device->setRenderTarget(i, renderTarget);
-		if(renderTarget) renderTarget->release();
+		if(framebuffer->getDrawBuffer(i) != GL_NONE)
+		{
+			egl::Image *renderTarget = framebuffer->getRenderTarget(i);
+			device->setRenderTarget(i, renderTarget);
+			if(renderTarget) renderTarget->release();
+		}
+		else
+		{
+			device->setRenderTarget(i, nullptr);
+		}
 	}
 
     egl::Image *depthBuffer = framebuffer->getDepthBuffer();
@@ -2841,7 +2847,11 @@ void Context::applyState(GLenum drawMode)
 
     if(mMaskStateDirty)
     {
-		device->setColorWriteMask(0, es2sw::ConvertColorMask(mState.colorMaskRed, mState.colorMaskGreen, mState.colorMaskBlue, mState.colorMaskAlpha));
+		for(int i = 0; i < RENDERTARGETS; i++)
+		{
+			device->setColorWriteMask(0, es2sw::ConvertColorMask(mState.colorMaskRed, mState.colorMaskGreen, mState.colorMaskBlue, mState.colorMaskAlpha));
+		}
+
 		device->setDepthWriteEnable(mState.depthMask);
 
         mMaskStateDirty = false;
@@ -4243,6 +4253,7 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 		(const GLubyte*)"GL_OES_texture_3D",
 		(const GLubyte*)"GL_EXT_blend_minmax",
 		(const GLubyte*)"GL_EXT_color_buffer_half_float",
+		(const GLubyte*)"GL_EXT_draw_buffers",
 		(const GLubyte*)"GL_EXT_occlusion_query_boolean",
 		(const GLubyte*)"GL_EXT_read_format_bgra",
 #if (S3TC_SUPPORT)

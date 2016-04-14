@@ -565,7 +565,7 @@ namespace es2
 	{
 		if(!texture)
 		{
-			return GL_INVALID_OPERATION;
+			return GL_INVALID_OPERATION;   // error()
 		}
 
 		if(compressed != texture->isCompressed(target, level))
