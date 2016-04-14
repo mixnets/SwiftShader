@@ -2737,7 +2737,7 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 
 		GLint clientVersion = context->getClientVersion();
 
-		es2::Framebuffer *framebuffer = NULL;
+		es2::Framebuffer *framebuffer = nullptr;
 		if(target == GL_READ_FRAMEBUFFER_ANGLE)
 		{
 			if(context->getReadFramebufferName() == 0)
@@ -2753,7 +2753,7 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 					}
 					// fall through
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 			}
 
@@ -2774,7 +2774,7 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 					}
 					// fall through
 				default:
-					return error(GL_INVALID_ENUM);
+					return error(GL_INVALID_OPERATION);
 				}
 			}
 
