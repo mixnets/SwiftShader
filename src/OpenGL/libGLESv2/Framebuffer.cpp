@@ -80,11 +80,6 @@ void Framebuffer::setColorbuffer(GLenum type, GLuint colorbuffer, GLuint index, 
 {
 	mColorbufferType[index] = (colorbuffer != 0) ? type : GL_NONE;
 	mColorbufferPointer[index] = lookupRenderbuffer(type, colorbuffer, level, layer);
-	drawBuffer[index] = (colorbuffer != 0) ? GL_COLOR_ATTACHMENT0 + index : GL_NONE;
-	if(index == 0)
-	{
-		readBuffer = drawBuffer[0];
-	}
 }
 
 void Framebuffer::setDepthbuffer(GLenum type, GLuint depthbuffer, GLint level, GLint layer)
@@ -171,6 +166,11 @@ void Framebuffer::detachRenderbuffer(GLuint renderbuffer)
 // caller must Release() the returned surface
 egl::Image *Framebuffer::getRenderTarget(GLuint index)
 {
+	if(drawBuffer[index] == GL_NONE)
+	{
+		//return nullptr;
+	}
+
 	Renderbuffer *colorbuffer = mColorbufferPointer[index];
 
 	if(colorbuffer)
