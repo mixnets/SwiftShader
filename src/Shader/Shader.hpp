@@ -598,6 +598,8 @@ namespace sw
 		bool dynamicallyIndexedInput;
 		bool dynamicallyIndexedOutput;
 
+		bool broadcastColor;
+
 	protected:
 		void parse(const unsigned long *token);
 

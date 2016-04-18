@@ -510,9 +510,19 @@ namespace sw
 			Nucleus::setInsertBlock(returnBlock);
 		}
 
-		for(int i = 0; i < RENDERTARGETS; i++)
+		if(shader->broadcastColor)
 		{
-			c[i] = oC[i];
+			for(int i = 0; i < RENDERTARGETS; i++)
+			{
+				c[i] = oC[0];
+			}
+		}
+		else
+		{
+			for(int i = 0; i < RENDERTARGETS; i++)
+			{
+				c[i] = oC[i];
+			}
 		}
 	}
 

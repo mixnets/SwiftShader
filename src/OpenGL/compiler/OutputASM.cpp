@@ -337,6 +337,8 @@ namespace glsl
 			}
 
 			emitShader(FUNCTION);
+
+			shader->broadcastColor = (outputQualifier == EvqFragColor);
 		}
 	}
 
@@ -2542,8 +2544,8 @@ namespace glsl
 		case EvqFragCoord:           pixelShader->vPosDeclared = true;  return 0;
 		case EvqFrontFacing:         pixelShader->vFaceDeclared = true; return 1;
 		case EvqPointCoord:          return varyingRegister(operand);
-		case EvqFragColor:           return 0;
-		case EvqFragData:            return 0;
+		case EvqFragColor:           return 0;   // Broadcast
+		case EvqFragData:            return fragmentOutputRegister(operand);
 		case EvqFragDepth:           return 0;
 		default: UNREACHABLE(operand->getQualifier());
 		}
