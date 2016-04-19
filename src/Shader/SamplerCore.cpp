@@ -118,12 +118,6 @@ namespace sw
 				computeLod3D(texture, lod, uuuu, vvvv, wwww, q.x, dsx, dsy, method);
 			}
 
-			if(state.textureType == TEXTURE_CUBE)
-			{
-				uuuu += Float4(0.5f);
-				vvvv += Float4(0.5f);
-			}
-
 			if(!hasFloatTexture())
 			{
 				sampleFilter(texture, c, uuuu, vvvv, wwww, lod, anisotropy, uDelta, vDelta, face, method);
@@ -1451,12 +1445,6 @@ namespace sw
 			{
 				lod += lodBias;
 			}
-
-			// FIXME: Hack to satisfy WHQL
-			if(state.textureType == TEXTURE_CUBE)
-			{
-				lod += Float(-0.15f);
-			}
 		}
 		else
 		{
@@ -1537,20 +1525,20 @@ namespace sw
 
 	void SamplerCore::cubeFace(Int face[4], Float4 &U, Float4 &V, Float4 &lodU, Float4 &lodV, Float4 &x, Float4 &y, Float4 &z)
 	{
-		Int4 xp = CmpNLE(x, Float4(0.0f));   // x > 0
-		Int4 yp = CmpNLE(y, Float4(0.0f));   // y > 0
-		Int4 zp = CmpNLE(z, Float4(0.0f));   // z > 0
+		Int4 xn = CmpLT(x, Float4(0.0f));   // x < 0
+		Int4 yn = CmpLT(y, Float4(0.0f));   // y < 0
+		Int4 zn = CmpLT(z, Float4(0.0f));   // z < 0
 
 		Float4 absX = Abs(x);
 		Float4 absY = Abs(y);
 		Float4 absZ = Abs(z);
+
 		Int4 xy = CmpNLE(absX, absY);   // abs(x) > abs(y)
 		Int4 yz = CmpNLE(absY, absZ);   // abs(y) > abs(z)
 		Int4 zx = CmpNLE(absZ, absX);   // abs(z) > abs(x)
-
-		Int4 xyz = ~zx & xy;   // abs(x) > abs(y) && abs(x) > abs(z)
-		Int4 yzx = ~xy & yz;   // abs(y) > abs(z) && abs(y) > abs(x)
-		Int4 zxy = ~yz & zx;   // abs(z) > abs(x) && abs(z) > abs(y)
+		Int4 xMajor = xy & ~zx;   // abs(x) > abs(y) && abs(x) > abs(z)
+		Int4 yMajor = yz & ~xy;   // abs(y) > abs(z) && abs(y) > abs(x)
+		Int4 zMajor = zx & ~yz;   // abs(z) > abs(x) && abs(z) > abs(y)
 
 		// FACE_POSITIVE_X = 000b
 		// FACE_NEGATIVE_X = 001b
@@ -1559,10 +1547,10 @@ namespace sw
 		// FACE_POSITIVE_Z = 100b
 		// FACE_NEGATIVE_Z = 101b
 
-		Int yAxis = SignMask(yzx);
-		Int zAxis = SignMask(zxy);
+		Int yAxis = SignMask(yMajor);
+		Int zAxis = SignMask(zMajor);
 
-		Int4 n = (~xp & xyz) | (~yp & yzx) | (~zp & zxy);
+		Int4 n = ((xn & xMajor) | (yn & yMajor) | (zn & zMajor)) & Int4(0x80000000);
 		Int negative = SignMask(n);
 
 		face[0] = *Pointer<Int>(constants + OFFSET(Constants,transposeBit0) + negative * 4);
@@ -1573,35 +1561,34 @@ namespace sw
 		face[3] = (face[0] >> 12) & 0x7;
 		face[0] &= 0x7;
 
-		// U = xyz * -z + ~xyz * (yzx * ~yp * -x + (yzx * ~yp) * x)
-		U = As<Float4>((xyz & As<Int4>(-z)) | (~xyz & (((yzx & ~yp) & Int4(0x80000000, 0x80000000, 0x80000000, 0x80000000)) ^ As<Int4>(x))));
+		Float4 M = Max(Max(absX, absY), absZ);
 
-		// V = yzx * z + ~yzx * (~neg * -y + neg * y)
-		V = As<Float4>((~yzx & ((~n & Int4(0x80000000, 0x80000000, 0x80000000, 0x80000000)) ^ As<Int4>(y))) | (yzx & As<Int4>(z)));
+		// U = xMajor ? (neg ^ -z) : (zMajor & neg) ^ x)
+		U = As<Float4>((xMajor & As<Int4>(-z)) | (~xMajor & ((zMajor & n) ^ As<Int4>(x))));
 
-		// M = xyz * x + yzx * y + zxy * z
-		Float4 M = As<Float4>((xyz & As<Int4>(x)) | (yzx & As<Int4>(y)) | (zxy & As<Int4>(z)));
+		// V = !yMajor ? y : (yp ^ -z)
+		V = As<Float4>((~yMajor & As<Int4>(-y)) | (yMajor & (n ^ As<Int4>(z))));
 
-		M = reciprocal(M);
-		U *= M * Float4(0.5f);
-		V *= M * Float4(0.5f);
+		M = reciprocal(M) * Float4(0.5f);
+		U = U * M + Float4(0.5f);
+		V = V * M + Float4(0.5f);
 
 		// Project coordinates onto one face for consistent LOD calculation
 		{
-			yp = Swizzle(yp, 0);
+			yn = Swizzle(yn, 0);
 			n = Swizzle(n, 0);
-			xyz = Swizzle(xyz, 0);
-			yzx = Swizzle(yzx, 0);
-			zxy = Swizzle(zxy, 0);
+			xMajor = Swizzle(xMajor, 0);
+			yMajor = Swizzle(yMajor, 0);
+			zMajor = Swizzle(zMajor, 0);
 
-			// U = xyz * -z + ~xyz * (yzx * ~yp * -x + (yzx * ~yp) * x)
-			lodU = As<Float4>((xyz & As<Int4>(-z)) | (~xyz & (((yzx & ~yp) & Int4(0x80000000, 0x80000000, 0x80000000, 0x80000000)) ^ As<Int4>(x))));
+			// U = xMajor * -z + ~xMajor * (yMajor * ~yp * -x + (yMajor * ~yp) * x)
+			lodU = As<Float4>((xMajor & As<Int4>(-z)) | (~xMajor & (((yMajor & yn) & Int4(0x80000000, 0x80000000, 0x80000000, 0x80000000)) ^ As<Int4>(x))));
 
-			// V = yzx * z + ~yzx * (~neg * -y + neg * y)
-			lodV = As<Float4>((~yzx & ((~n & Int4(0x80000000, 0x80000000, 0x80000000, 0x80000000)) ^ As<Int4>(y))) | (yzx & As<Int4>(z)));
+			// V = yMajor * z + ~yMajor * (~neg * -y + neg * y)
+			lodV = As<Float4>((~yMajor & ((~n & Int4(0x80000000, 0x80000000, 0x80000000, 0x80000000)) ^ As<Int4>(y))) | (yMajor & As<Int4>(z)));
 
-			// M = xyz * x + yzx * y + zxy * z
-			Float4 M = As<Float4>((xyz & As<Int4>(x)) | (yzx & As<Int4>(y)) | (zxy & As<Int4>(z)));
+			// M = xMajor * x + yMajor * y + zMajor * z
+			Float4 M = As<Float4>((xMajor & As<Int4>(x)) | (yMajor & As<Int4>(y)) | (zMajor & As<Int4>(z)));
 
 			M = Rcp_pp(M);
 			lodU *= M * Float4(0.5f);
