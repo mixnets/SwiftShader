@@ -1457,23 +1457,18 @@ namespace sw
 		{
 			if(method != Grad)
 			{
-				Float4 dudxy = u.ywyw - u;
-				Float4 dvdxy = v.ywyw - v;
-				Float4 dsdxy = s.ywyw - s;
+				Float4 dudxy = u.yz - u.xx;
+				Float4 dvdxy = v.yz - v.xx;
+				Float4 dsdxy = s.yz - s.xx;
 
-				// Scale by texture dimensions and LOD
+// Scale by texture dimensions and LOD
 				dudxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
 				dvdxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
 				dsdxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
 
-				dudxy *= dudxy;
-				dvdxy *= dvdxy;
-				dsdxy *= dsdxy;
-
-				dudxy += dvdxy;
-				dudxy += dsdxy;
-
-				lod = Max(Float(dudxy.x), Float(dudxy.y));   // FIXME: Max(dudxy.x, dudxy.y);
+				lod = Max(Float(dudxy.x), Float(dudxy.y)) + 
+				      Max(Float(dvdxy.x), Float(dvdxy.y)) + 
+				      Max(Float(dsdxy.x), Float(dsdxy.y));
 			}
 			else
 			{
@@ -1494,7 +1489,7 @@ namespace sw
 			// log2(sqrt(lod))
 			lod = Float(As<Int>(lod));
 			lod -= Float(0x3F800000);
-			lod *= As<Float>(Int(0x33800000));
+			lod *= As<Float>(Int(0x34000000));
 
 			if(method == Bias)
 			{
