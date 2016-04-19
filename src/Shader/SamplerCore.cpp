@@ -1451,12 +1451,6 @@ namespace sw
 			{
 				lod += lodBias;
 			}
-
-			// FIXME: Hack to satisfy WHQL
-			if(state.textureType == TEXTURE_CUBE)
-			{
-				lod += Float(-0.15f);
-			}
 		}
 		else
 		{
@@ -1581,6 +1575,17 @@ namespace sw
 
 		// M = xyz * x + yzx * y + zxy * z
 		Float4 M = As<Float4>((xyz & As<Int4>(x)) | (yzx & As<Int4>(y)) | (zxy & As<Int4>(z)));
+
+		M = Max(Max(absX, absY), absZ);
+		U = As<Float4>((n & Int4(0x80000000, 0x80000000, 0x80000000, 0x80000000)) ^ As<Int4>(U));
+		//V = As<Float4>((n & Int4(0x80000000, 0x80000000, 0x80000000, 0x80000000)) ^ As<Int4>(V));
+
+		
+		//U = (xMajor & (neg ^ -z)) | (~xMajor & (zMajor & neg) ^ x)
+		U = As<Float4>((xyz & As<Int4>(-z)) | (~xyz & (((zxy & n) & Int4(0x80000000)) ^ As<Int4>(x))));
+
+		//V = (xMajor | zMajor) & y + yMajor & (yp ^ -z)
+		V = As<Float4>((~yzx & As<Int4>(-y)) | (yzx & ((n & Int4(0x80000000)) ^ As<Int4>(z))));
 
 		M = reciprocal(M);
 		U *= M * Float4(0.5f);
