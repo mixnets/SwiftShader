@@ -43,6 +43,7 @@ namespace sw
 		Pointer<Byte> tagCache = cache + OFFSET(VertexCache,tag);
 
 		UInt vertexCount = *Pointer<UInt>(task + OFFSET(VertexTask,vertexCount));
+		UInt vertexIndex = *Pointer<UInt>(task + OFFSET(VertexTask,vertexStart));
 
 		constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,constants));
 
@@ -67,11 +68,12 @@ namespace sw
 
 			UInt cacheIndex = index & 0x0000003F;
 			Pointer<Byte> cacheLine = vertexCache + cacheIndex * UInt((int)sizeof(Vertex));
-			writeVertex(vertex, cacheLine);
+			writeVertex(vertex, cacheLine, vertexIndex);
 
 			vertex += sizeof(Vertex);
 			batch += sizeof(unsigned int);
 			vertexCount--;
+			vertexIndex++;
 		}
 		Until(vertexCount == 0)
 
@@ -93,13 +95,19 @@ namespace sw
 	{
 		int pos = state.positionRegister;
 
+		Float4 outPosZ = o[pos].z;
+		if(state.transformFeedbackEnabled && symmetricNormalizedDepth && !state.fixedFunction)
+		{
+			outPosZ = (outPosZ + o[pos].w) * Float4(0.5f);
+		}
+
 		Int4 maxX = CmpLT(o[pos].w, o[pos].x);
 		Int4 maxY = CmpLT(o[pos].w, o[pos].y);
-		Int4 maxZ = CmpLT(o[pos].w, o[pos].z);
+		Int4 maxZ = CmpLT(o[pos].w, outPosZ);
 
 		Int4 minX = CmpNLE(-o[pos].w, o[pos].x);
 		Int4 minY = CmpNLE(-o[pos].w, o[pos].y);
-		Int4 minZ = CmpNLE(Float4(0.0f), o[pos].z);
+		Int4 minZ = CmpNLE(Float4(0.0f), outPosZ);
 
 		Int flags;
 
@@ -118,7 +126,7 @@ namespace sw
 
 		Int4 finiteX = CmpLE(Abs(o[pos].x), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
 		Int4 finiteY = CmpLE(Abs(o[pos].y), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
-		Int4 finiteZ = CmpLE(Abs(o[pos].z), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
+		Int4 finiteZ = CmpLE(Abs(outPosZ), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
 
 		flags = SignMask(finiteX & finiteY & finiteZ);
 		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,fini) + flags * 4);
@@ -523,7 +531,7 @@ namespace sw
 			o[pos].y = o[pos].y + *Pointer<Float4>(data + OFFSET(DrawData,YYYY)) * o[pos].w;
 		}
 
-		if(symmetricNormalizedDepth && !state.fixedFunction)
+		if(!state.transformFeedbackEnabled && symmetricNormalizedDepth && !state.fixedFunction)
 		{
 			o[pos].z = (o[pos].z + o[pos].w) * Float4(0.5f);
 		}
@@ -620,13 +628,56 @@ namespace sw
 		*Pointer<Float4>(cacheLine + OFFSET(Vertex,X) + sizeof(Vertex) * 3, 16) = v.w;
 	}
 
-	void VertexRoutine::writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cache)
+	void VertexRoutine::writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cache, const UInt &index)
 	{
 		for(int i = 0; i < 12; i++)
 		{
 			if(state.output[i].write)
 			{
 				*Pointer<Float4>(vertex + OFFSET(Vertex,v[i])) = *Pointer<Float4>(cache + OFFSET(Vertex,v[i]));
+			}
+		}
+
+		if(state.transformFeedbackEnabled != 0)
+		{
+			UInt verticesPerPrimitive = *Pointer<UInt>(task + OFFSET(VertexTask, verticesPerPrimitive));
+			UInt primitiveNumber = index / 3;
+			UInt indexInPrimitive = index - (primitiveNumber * 3);
+			If(indexInPrimitive < verticesPerPrimitive)
+			{
+				UInt tOffset = primitiveNumber * verticesPerPrimitive + indexInPrimitive;
+				for(int i = 0; i < MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS; ++i)
+				{
+					if(state.transformFeedbackEnabled & (1ULL << i))
+					{
+						UInt reg = *Pointer<UInt>(data + OFFSET(DrawData, vs.reg[i]));
+						UInt row = *Pointer<UInt>(data + OFFSET(DrawData, vs.row[i]));
+						UInt col = *Pointer<UInt>(data + OFFSET(DrawData, vs.col[i]));
+						UInt str = *Pointer<UInt>(data + OFFSET(DrawData, vs.str[i]));
+
+						Pointer<Byte> t = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, vs.t[i])) + (tOffset * str * sizeof(float));
+						Pointer<Byte> v = vertex + OFFSET(Vertex, v) + reg * sizeof(float);
+
+						For(UInt r = 0, r < row, r++)
+						{
+							UInt rOffsetX = r * col * sizeof(float);
+							UInt rOffset4 = r * sizeof(float4);
+							For(UInt c = 0, c < col, c++)
+							{
+								UInt cOffset = c * sizeof(float);
+								*Pointer<Float>(t + rOffsetX + cOffset) = *Pointer<Float>(v + rOffset4 + cOffset);
+							}
+						}
+					}
+				}
+			}
+
+			// Make this correction after transform feedback has been outputted
+			if(symmetricNormalizedDepth && !state.fixedFunction && state.output[state.positionRegister].write)
+			{
+				Float z = *Pointer<Float>(vertex + OFFSET(Vertex, v[state.positionRegister]) + 2 * sizeof(float));
+				Float w = *Pointer<Float>(vertex + OFFSET(Vertex, v[state.positionRegister]) + 3 * sizeof(float));
+				*Pointer<Float>(vertex + OFFSET(Vertex, v[state.positionRegister]) + 2 * sizeof(float)) = (z + w) * Float(0.5f);
 			}
 		}
 
