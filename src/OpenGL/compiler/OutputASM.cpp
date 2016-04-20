@@ -481,6 +481,78 @@ namespace glsl
 		}
 	}
 
+	bool OutputASM::rvalue(TIntermTyped* node, TIntermTyped** srcNode, int* offset)
+	{
+		TIntermBinary* binary = node->getAsBinaryNode();
+		TIntermTyped* left = binary ? binary->getLeft() : nullptr;
+		bool isValidDirectIndexing = false;
+		if(binary)
+		{
+			TIntermTyped* right = binary->getRight();
+			const TType &leftType = left->getType();
+
+			switch(binary->getOp())
+			{
+			case EOpIndexDirect:
+				{
+					int index = right->getAsConstantUnion()->getIConst(0);
+
+					if(binary->isMatrix() || binary->isStruct() || binary->isInterfaceBlock())
+					{
+						*offset += index * left->elementRegisterCount();
+						isValidDirectIndexing = true;
+					}
+					else if(binary->isRegister())
+					{
+						if(left->isArray())
+						{
+							*offset += index * left->elementRegisterCount();
+							isValidDirectIndexing = true;
+						}
+						else if(left->isMatrix())
+						{
+							ASSERT(index < left->getNominalSize());   // FIXME: Report semantic error
+							*offset += index;
+							isValidDirectIndexing = true;
+						}
+					}
+				}
+				break;
+			case EOpIndexDirectStruct:
+			case EOpIndexDirectInterfaceBlock:
+				{
+					int index = right->getAsConstantUnion()->getIConst(0);
+					const TFieldList& fields = (binary->getOp() == EOpIndexDirectStruct) ?
+					                           leftType.getStruct()->fields() :
+					                           leftType.getInterfaceBlock()->fields();
+
+					for(int i = 0; i < index; i++)
+					{
+						*offset += fields[i]->type()->totalRegisterCount();
+					}
+
+					isValidDirectIndexing = true;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		else if(node->getAsSymbolNode())
+		{
+			*srcNode = node;
+			return true;
+		}
+
+		if(!isValidDirectIndexing || !rvalue(left, srcNode, offset))
+		{
+			*offset = 0;
+			return false;
+		}
+
+		return true;
+	}
+
 	bool OutputASM::visitBinary(Visit visit, TIntermBinary *node)
 	{
 		if(currentScope != emitScope)
@@ -556,14 +628,28 @@ namespace glsl
 			}
 			break;
 		case EOpIndexDirect:
-			if(visit == PostVisit)
+			if(visit == PostVisit || visit == PreVisit)
 			{
+				int offset = 0;
+				TIntermTyped *srcNode = left;
+				bool traversed = false;
+				if(visit == PreVisit)
+				{
+					// Try to concatenate indexing operations
+					traversed = rvalue(left, &srcNode, &offset);
+					// If that's not possible, continue traversing the tree as usual
+					if(!traversed)
+					{
+						return true;
+					}
+				}
+
 				int index = right->getAsConstantUnion()->getIConst(0);
 
 				if(result->isMatrix() || result->isStruct() || result->isInterfaceBlock())
  				{
 					ASSERT(left->isArray());
-					copy(result, left, index * left->elementRegisterCount());
+					copy(result, srcNode, index * left->elementRegisterCount() + offset);
  				}
 				else if(result->isRegister())
  				{
@@ -583,7 +669,7 @@ namespace glsl
 					}
 					else UNREACHABLE(0);
 
-					Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, 0, left, srcIndex);
+					Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, 0, srcNode, srcIndex + offset);
 
 					if(left->isRegister())
 					{
@@ -591,6 +677,12 @@ namespace glsl
 					}
  				}
 				else UNREACHABLE(0);
+
+				if(traversed)
+				{
+					// Done concatenating, don't traverse the rest of the tree
+					return false;
+				}
 			}
 			break;
 		case EOpIndexIndirect:
@@ -624,22 +716,41 @@ namespace glsl
 			break;
 		case EOpIndexDirectStruct:
 		case EOpIndexDirectInterfaceBlock:
-			if(visit == PostVisit)
+			if(visit == PostVisit || visit == PreVisit)
 			{
 				ASSERT(leftType.isStruct() || (leftType.isInterfaceBlock()));
+
+				int fieldOffset = 0;
+				TIntermTyped *srcNode = left;
+				bool traversed = false;
+				if(visit == PreVisit)
+				{
+					// Try to concatenate indexing operations
+					traversed = rvalue(left, &srcNode, &fieldOffset);
+					// If that's not possible, continue traversing the tree as usual
+					if(!traversed)
+					{
+						return true;
+					}
+				}
 
 				const TFieldList& fields = (node->getOp() == EOpIndexDirectStruct) ?
 				                           leftType.getStruct()->fields() :
 				                           leftType.getInterfaceBlock()->fields();
 				int index = right->getAsConstantUnion()->getIConst(0);
-				int fieldOffset = 0;
 
 				for(int i = 0; i < index; i++)
 				{
 					fieldOffset += fields[i]->type()->totalRegisterCount();
 				}
 
-				copy(result, left, fieldOffset);
+				copy(result, srcNode, fieldOffset);
+
+				if(traversed)
+				{
+					// Done concatenating, don't traverse the rest of the tree
+					return false;
+				}
 			}
 			break;
 		case EOpVectorSwizzle:

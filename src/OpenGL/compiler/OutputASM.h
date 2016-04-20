@@ -270,6 +270,7 @@ namespace glsl
 		void copy(TIntermTyped *dst, TIntermNode *src, int offset = 0);
 		void assignLvalue(TIntermTyped *dst, TIntermTyped *src);
 		int lvalue(sw::Shader::DestinationParameter &dst, Temporary &address, TIntermTyped *node);
+		bool rvalue(TIntermTyped* node, TIntermTyped** srcNode, int* offset);
 		sw::Shader::ParameterType registerType(TIntermTyped *operand);
 		unsigned int registerIndex(TIntermTyped *operand);
 		int writeMask(TIntermTyped *destination, int index = 0);
