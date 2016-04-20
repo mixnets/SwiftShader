@@ -33,7 +33,6 @@
 #include "Thread.hpp"
 #include "Memory.hpp"
 
-#include <xmmintrin.h>
 #include <fstream>
 
 #if defined(__x86_64__) && defined(_WIN32)
@@ -4649,9 +4648,9 @@ namespace sw
 			Constant *shuffle[2];
 			shuffle[0] = Nucleus::createConstantInt(0);
 			shuffle[1] = Nucleus::createConstantInt(1);
-
+	
 			Value *packed = Nucleus::createShuffleVector(Nucleus::createBitCast(lo.value, VectorType::get(Int::getType(), 1)), Nucleus::createBitCast(hi.value, VectorType::get(Int::getType(), 1)), Nucleus::createConstantVector(shuffle, 2));
-
+	
 			storeValue(Nucleus::createBitCast(packed, Int2::getType()));
 		}
 	}
@@ -5213,7 +5212,7 @@ namespace sw
 		Value *element = Nucleus::createBitCast(cast.value, Long::getType());
 		long2 = Nucleus::createInsertElement(long2, element, 0);
 		RValue<Int4> vector = RValue<Int4>(Nucleus::createBitCast(long2, Int4::getType()));
-
+		
 		if(CPUID::supportsSSE4_1())
 		{
 			storeValue(x86::pmovsxwd(vector).value);
@@ -6083,18 +6082,9 @@ namespace sw
 		return IfThenElse(x < y, x, y);
 	}
 
-	RValue<Float> Rcp_pp(RValue<Float> x, bool exactAtPow2)
+	RValue<Float> Rcp_pp(RValue<Float> x)
 	{
-		if(exactAtPow2)
-		{
-			// rcpss uses a piecewise-linear approximation which minimizes the relative error
-			// but is not exact at power-of-two values. Rectify by multiplying by the inverse.
-			return x86::rcpss(x) * Float(1.0f / _mm_cvtss_f32(_mm_rcp_ss(_mm_set_ps1(1.0f))));
-		}
-		else
-		{
-			return x86::rcpss(x);
-		}
+		return x86::rcpss(x);
 	}
 
 	RValue<Float> RcpSqrt_pp(RValue<Float> x)
@@ -6603,18 +6593,9 @@ namespace sw
 		return x86::minps(x, y);
 	}
 
-	RValue<Float4> Rcp_pp(RValue<Float4> x, bool exactAtPow2)
+	RValue<Float4> Rcp_pp(RValue<Float4> x)
 	{
-		if(exactAtPow2)
-		{
-			// rcpps uses a piecewise-linear approximation which minimizes the relative error
-			// but is not exact at power-of-two values. Rectify by multiplying by the inverse.
-			return x86::rcpps(x) * Float4(1.0f / _mm_cvtss_f32(_mm_rcp_ss(_mm_set_ps1(1.0f))));
-		}
-		else
-		{
-			return x86::rcpps(x);
-		}
+		return x86::rcpps(x);
 	}
 
 	RValue<Float4> RcpSqrt_pp(RValue<Float4> x)
