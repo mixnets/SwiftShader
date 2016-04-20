@@ -32,9 +32,8 @@ namespace sw
 
 	struct VertexTask
 	{
-		unsigned int vertexStart;
 		unsigned int vertexCount;
-		unsigned int verticesPerPrimitive;
+		unsigned int primitiveStart;
 		VertexCache vertexCache;
 	};
 
@@ -73,6 +72,7 @@ namespace sw
 			bool pointScaleActive                             : 1;
 			bool transformFeedbackQueryEnabled                : 1;
 			uint64_t transformFeedbackEnabled                 : 64;
+			unsigned char verticesPerPrimitive                : 2; // 1 (points), 2 (lines) or 3 (triangles)
 
 			bool preTransformed : 1;
 			bool superSampling  : 1;
@@ -272,7 +272,7 @@ namespace sw
 		const Matrix &getModelTransform(int i);
 		const Matrix &getViewTransform();
 
-		const State update();
+		const State update(DrawType drawType);
 		Routine *routine(const State &state);
 
 		bool isFixedFunction();

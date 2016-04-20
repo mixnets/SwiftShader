@@ -836,7 +836,7 @@ namespace sw
 		routineCache = new RoutineCache<State>(clamp(cacheSize, 1, 65536), precacheVertex ? "sw-vertex" : 0);
 	}
 
-	const VertexProcessor::State VertexProcessor::update()
+	const VertexProcessor::State VertexProcessor::update(DrawType drawType)
 	{
 		if(isFixedFunction())
 		{
@@ -908,6 +908,11 @@ namespace sw
 
 		state.transformFeedbackQueryEnabled = context->transformFeedbackQueryEnabled;
 		state.transformFeedbackEnabled = context->transformFeedbackEnabled;
+
+		// Note: Quads aren't handled for verticesPerPrimitive, but verticesPerPrimitive is used for transform feedback,
+		//       which is an OpenGL ES 3.0 feature, and OpenGL ES 3.0 doesn't support quads as a primitive type.
+		DrawType type = static_cast<DrawType>(static_cast<unsigned int>(drawType) & 0xF);
+		state.verticesPerPrimitive = 1 + (type >= DRAW_LINELIST) + (type >= DRAW_TRIANGLELIST);
 
 		for(int i = 0; i < VERTEX_ATTRIBUTES; i++)
 		{
