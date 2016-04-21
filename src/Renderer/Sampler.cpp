@@ -124,10 +124,6 @@ namespace sw
 				int pitchP = surface->getInternalPitchP();
 				int sliceP = surface->getInternalSliceP();
 
-				int logWidth = log2(width);
-				int logHeight = log2(height);
-				int logDepth = log2(depth);
-
 				if(level == 0)
 				{
 					texture.widthHeightLOD[0] = width * exp2LOD;
@@ -150,6 +146,10 @@ namespace sw
 					texture.depthLOD[2] = depth * exp2LOD;
 					texture.depthLOD[3] = depth * exp2LOD;
 				}
+
+				unsigned int logWidth = log2(width);
+				unsigned int logHeight = log2(height);
+				unsigned int logDepth = log2(depth);
 
 				if(!Surface::isFloatFormat(internalTextureFormat))
 				{
@@ -178,9 +178,9 @@ namespace sw
 					mipmap.fDepth[3] = (float)depth / 65536.0f;
 				}
 
-				short halfTexelU = isPow2(width)  ? 0x8000 >> logWidth  : 0x8000 / width;
-				short halfTexelV = isPow2(height) ? 0x8000 >> logHeight : 0x8000 / height;
-				short halfTexelW = isPow2(depth)  ? 0x8000 >> logDepth  : 0x8000 / depth;
+				unsigned short halfTexelU = 0x8000 / width;
+				unsigned short halfTexelV = 0x8000 / height;
+				unsigned short halfTexelW = 0x8000 / depth;
 
 				mipmap.uHalf[0] = halfTexelU;
 				mipmap.uHalf[1] = halfTexelU;

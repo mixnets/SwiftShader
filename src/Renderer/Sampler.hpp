@@ -25,12 +25,12 @@ namespace sw
 		{
 			struct
 			{
-				int64_t uInt;
-				int64_t vInt;
-				int64_t wInt;
-				int64_t uFrac;
-				int64_t vFrac;
-				int64_t wFrac;
+				uint64_t uInt;
+				uint64_t vInt;
+				uint64_t wInt;
+				uint64_t uFrac;
+				uint64_t vFrac;
+				uint64_t wFrac;
 			};
 
 			struct
@@ -41,14 +41,14 @@ namespace sw
 			};
 		};
 
-		short uHalf[4];
-		short vHalf[4];
-		short wHalf[4];
-		short width[4];
-		short height[4];
-		short depth[4];
-		short onePitchP[4];
-		int sliceP[2];
+		unsigned short uHalf[4];
+		unsigned short vHalf[4];
+		unsigned short wHalf[4];
+		unsigned short width[4];
+		unsigned short height[4];
+		unsigned short depth[4];
+		unsigned short onePitchP[4];
+		unsigned int sliceP[2];
 	};
 
 	struct Texture
