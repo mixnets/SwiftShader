@@ -108,7 +108,7 @@ bool TestEGLError(HWND hWnd, char* pszLocation)
 
 	return true;
 }
-
+#include <math.h>
 /*!****************************************************************************
  @Function		WinMain
  @Input			hInstance		Application instance from OS
@@ -120,6 +120,16 @@ bool TestEGLError(HWND hWnd, char* pszLocation)
 ******************************************************************************/
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLine, int nCmdShow)
 {
+	float lod = 8.0f;
+	int u = 0x3f800000;
+	float l = float((int&)lod) - (float)u;
+	int x = 0x34000000;
+	float y = (float&)x;
+	l *= y;
+	float xxx = 1.0f / (25165824.0f / 3.0f);
+	float e = log2(sqrt(lod));
+	float c = log2((lod));
+
 	// Windows variables
 	HWND				hWnd	= 0;
 	HDC					hDC		= 0;
