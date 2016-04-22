@@ -3549,6 +3549,7 @@ namespace glsl
 		case EOpBreak:
 		case EOpContinue:
 		case EOpReturn:
+		//case EOpReturn:
 			loopDiscontinuity = true;
 			break;
 		default: UNREACHABLE(node->getFlowOp());
