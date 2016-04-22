@@ -200,7 +200,7 @@ namespace sw
 		Float4 x0;
 		Float4 x1;
 		Int4 x2;
-	
+
 		x0 = x;
 
 		x0 = Min(x0, As<Float4>(Int4(0x43010000)));   // 129.00000e+0f
@@ -224,7 +224,7 @@ namespace sw
 		x1 *= x0;
 		x1 += As<Float4>(Int4(0x3F7FFFFF));   // 9.9999994e-1f
 		x1 *= As<Float4>(x2);
-			
+
 		return x1;
 	}
 
@@ -234,9 +234,9 @@ namespace sw
 		Float4 x1;
 		Float4 x2;
 		Float4 x3;
-		
+
 		x0 = x;
-		
+
 		x1 = As<Float4>(As<Int4>(x0) & Int4(0x7F800000));
 		x1 = As<Float4>(As<UInt4>(x1) >> 8);
 		x1 = As<Float4>(As<Int4>(x1) | As<Int4>(Float4(1.0f)));
@@ -248,7 +248,7 @@ namespace sw
 		x2 /= x3;
 
 		x1 += (x0 - Float4(1.0f)) * x2;
-				
+
 		return x1;
 	}
 
@@ -357,7 +357,7 @@ namespace sw
 	{
 		// cos(x) = sin(x + pi/2)
 		Float4 y = x + Float4(1.57079632e+0f);
-		
+
 		// Wrap around
 		y -= As<Float4>(CmpNLT(y, Float4(3.14159265e+0f)) & As<Int4>(Float4(6.28318530e+0f)));
 
@@ -418,7 +418,7 @@ namespace sw
 
 		// Approximation of atan in [-1..1]
 		Float4 theta = y * (Float4(-0.27f) * Abs(y) + Float4(1.05539816f));
-		
+
 		// +/-pi/2 depending on sign of x
 		Float4 sgnPi_2 = As<Float4>(As<Int4>(Float4(1.57079632e+0f)) ^ (As<Int4>(x) & Int4(0x80000000)));
 
@@ -1029,7 +1029,7 @@ namespace sw
 	}
 
 	void ShaderCore::exp2x(Vector4f &dst, const Vector4f &src, bool pp)
-	{ 
+	{
 		Float4 exp = exponential2(src.x, pp);
 
 		dst.x = exp;
@@ -1132,7 +1132,7 @@ namespace sw
 		static const uint32_t c_nanbit = 0x200;
 		static const uint32_t c_infty_as_fp16 = 0x7c00;
 		static const uint32_t c_clamp = (31 << 23) - 0x1000;
-		
+
 		UInt4 justsign = UInt4(mask_sign) & As<UInt4>(floatBits);
 		UInt4 absf = As<UInt4>(floatBits) ^ justsign;
 		UInt4 b_isnormal = CmpNLE(UInt4(c_f32infty), absf);
@@ -1347,7 +1347,7 @@ namespace sw
 		dst.z =  As<Float4>(flip ^ As<Int4>(N.z));
 		dst.w =  As<Float4>(flip ^ As<Int4>(N.w));
 	}
-	
+
 	void ShaderCore::reflect1(Vector4f &dst, const Vector4f &I, const Vector4f &N)
 	{
 		Float4 d = N.x * I.x;
@@ -1492,7 +1492,7 @@ namespace sw
 		dst.z = src.z * rsq;
 		dst.w = src.w * rsq;
 	}
-	
+
 	void ShaderCore::sincos(Vector4f &dst, const Vector4f &src, bool pp)
 	{
 		dst.x = cosine_pi(src.x, pp);
@@ -1620,7 +1620,7 @@ namespace sw
 			exp2x(dst, src, true);   // FIXME: 10-bit precision suffices
 		}
 	}
-	
+
 	void ShaderCore::logp(Vector4f &dst, const Vector4f &src, unsigned short version)
 	{
 		if(version < 0x0200)
@@ -1651,7 +1651,7 @@ namespace sw
 			log2x(dst, src, true);
 		}
 	}
-	
+
 	void ShaderCore::cmp0(Vector4f &dst, const Vector4f &src0, const Vector4f &src1, const Vector4f &src2)
 	{
 		cmp0(dst.x, src0.x, src1.x, src2.x);
@@ -1892,23 +1892,45 @@ namespace sw
 		dst.w = As<Float4>(As<Int4>(src0.w) & As<Int4>(src1.w));
 	}
 
-	void ShaderCore::equal(Vector4f &dst, const Vector4f &src0, const Vector4f &src1)
+	void ShaderCore::eq(Vector4f &dst, const Vector4f &src0, const Vector4f &src1)
 	{
-		dst.x = As<Float4>(CmpEQ(As<UInt4>(src0.x), As<UInt4>(src1.x)) &
-		                   CmpEQ(As<UInt4>(src0.y), As<UInt4>(src1.y)) &
-		                   CmpEQ(As<UInt4>(src0.z), As<UInt4>(src1.z)) &
-		                   CmpEQ(As<UInt4>(src0.w), As<UInt4>(src1.w)));
+		dst.x = As<Float4>(CmpEQ(src0.x, src1.x) &
+		                   CmpEQ(src0.y, src1.y) &
+		                   CmpEQ(src0.z, src1.z) &
+		                   CmpEQ(src0.w, src1.w));
 		dst.y = dst.x;
 		dst.z = dst.x;
 		dst.w = dst.x;
 	}
 
-	void ShaderCore::notEqual(Vector4f &dst, const Vector4f &src0, const Vector4f &src1)
+	void ShaderCore::ne(Vector4f &dst, const Vector4f &src0, const Vector4f &src1)
 	{
-		dst.x = As<Float4>(CmpNEQ(As<UInt4>(src0.x), As<UInt4>(src1.x)) |
-		                   CmpNEQ(As<UInt4>(src0.y), As<UInt4>(src1.y)) |
-		                   CmpNEQ(As<UInt4>(src0.z), As<UInt4>(src1.z)) |
-		                   CmpNEQ(As<UInt4>(src0.w), As<UInt4>(src1.w)));
+		dst.x = As<Float4>(CmpNEQ(src0.x, src1.x) |
+		                   CmpNEQ(src0.y, src1.y) |
+		                   CmpNEQ(src0.z, src1.z) |
+		                   CmpNEQ(src0.w, src1.w));
+		dst.y = dst.x;
+		dst.z = dst.x;
+		dst.w = dst.x;
+	}
+
+	void ShaderCore::ieq(Vector4f &dst, const Vector4f &src0, const Vector4f &src1)
+	{
+		dst.x = As<Float4>(CmpEQ(As<Int4>(src0.x), As<Int4>(src1.x)) &
+		                   CmpEQ(As<Int4>(src0.y), As<Int4>(src1.y)) &
+		                   CmpEQ(As<Int4>(src0.z), As<Int4>(src1.z)) &
+		                   CmpEQ(As<Int4>(src0.w), As<Int4>(src1.w)));
+		dst.y = dst.x;
+		dst.z = dst.x;
+		dst.w = dst.x;
+	}
+
+	void ShaderCore::ine(Vector4f &dst, const Vector4f &src0, const Vector4f &src1)
+	{
+		dst.x = As<Float4>(CmpNEQ(As<Int4>(src0.x), As<Int4>(src1.x)) |
+		                   CmpNEQ(As<Int4>(src0.y), As<Int4>(src1.y)) |
+		                   CmpNEQ(As<Int4>(src0.z), As<Int4>(src1.z)) |
+		                   CmpNEQ(As<Int4>(src0.w), As<Int4>(src1.w)));
 		dst.y = dst.x;
 		dst.z = dst.x;
 		dst.w = dst.x;
