@@ -313,8 +313,6 @@ namespace sw
 			case Shader::OPCODE_OR:         or(d, s0, s1);                  break;
 			case Shader::OPCODE_XOR:        xor(d, s0, s1);                 break;
 			case Shader::OPCODE_AND:        and(d, s0, s1);                 break;
-			case Shader::OPCODE_EQ:         equal(d, s0, s1);               break;
-			case Shader::OPCODE_NE:         notEqual(d, s0, s1);            break;
 			case Shader::OPCODE_TEXLDL:     TEXLDL(d, s0, src1);            break;
 			case Shader::OPCODE_TEX:        TEX(d, s0, src1);               break;
 			case Shader::OPCODE_TEXOFFSET:  TEXOFFSET(d, s0, src1, s2, s3); break;
