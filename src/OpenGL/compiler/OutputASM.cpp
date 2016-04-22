@@ -692,32 +692,8 @@ namespace glsl
 		case EOpBitwiseXor:          if(visit == PostVisit) emitBinary(sw::Shader::OPCODE_XOR, result, left, right);       break;
 		case EOpBitwiseOrAssign:     if(visit == PostVisit) emitAssign(sw::Shader::OPCODE_OR, result, left, left, right);  break;
 		case EOpBitwiseOr:           if(visit == PostVisit) emitBinary(sw::Shader::OPCODE_OR, result, left, right);        break;
-		case EOpEqual:
-			if(visit == PostVisit)
-			{
-				emitBinary(sw::Shader::OPCODE_EQ, result, left, right);
-
-				for(int index = 1; index < left->totalRegisterCount(); index++)
-				{
-					Temporary equal(this);
-					emit(sw::Shader::OPCODE_EQ, &equal, 0, left, index, right, index);
-					emit(sw::Shader::OPCODE_AND, result, result, &equal);
-				}
-			}
-			break;
-		case EOpNotEqual:
-			if(visit == PostVisit)
-			{
-				emitBinary(sw::Shader::OPCODE_NE, result, left, right);
-
-				for(int index = 1; index < left->totalRegisterCount(); index++)
-				{
-					Temporary notEqual(this);
-					emit(sw::Shader::OPCODE_NE, &notEqual, 0, left, index, right, index);
-					emit(sw::Shader::OPCODE_OR, result, result, &notEqual);
-				}
-			}
-			break;
+		case EOpEqual:                   if(visit == PostVisit) emitCmp(sw::Shader::CONTROL_EQ, result, left, right); break;
+		case EOpNotEqual:                if(visit == PostVisit) emitCmp(sw::Shader::CONTROL_NE, result, left, right); break;
 		case EOpLessThan:                if(visit == PostVisit) emitCmp(sw::Shader::CONTROL_LT, result, left, right); break;
 		case EOpGreaterThan:             if(visit == PostVisit) emitCmp(sw::Shader::CONTROL_GT, result, left, right); break;
 		case EOpLessThanEqual:           if(visit == PostVisit) emitCmp(sw::Shader::CONTROL_LE, result, left, right); break;
@@ -1862,25 +1838,80 @@ namespace glsl
 		assignLvalue(lhs, result);
 	}
 
-	void OutputASM::emitCmp(sw::Shader::Control cmpOp, TIntermTyped *dst, TIntermNode *left, TIntermNode *right, int index)
+	void OutputASM::emitCmp(sw::Shader::Control cmpOp, TIntermTyped *dst, TIntermNode *left, TIntermNode *right)
 	{
-		sw::Shader::Opcode opcode;
-		switch(left->getAsTyped()->getBasicType())
-		{
-		case EbtBool:
-		case EbtInt:
-			opcode = sw::Shader::OPCODE_ICMP;
-			break;
-		case EbtUInt:
-			opcode = sw::Shader::OPCODE_UCMP;
-			break;
-		default:
-			opcode = sw::Shader::OPCODE_CMP;
-			break;
-		}
+		TIntermTyped *typedLeft = left->getAsTyped();
+		emitCmp(cmpOp, dst, typedLeft, right->getAsTyped(), typedLeft->getType(), 0);
+	}
 
-		Instruction *cmp = emit(opcode, dst, 0, left, index, right, index);
-		cmp->control = cmpOp;
+	void OutputASM::emitCmp(sw::Shader::Control cmpOp, TIntermTyped *dst, TIntermTyped *left, TIntermTyped *right, const TType &type, int index)
+	{
+		if(type.isStruct())
+		{
+			const TFieldList &fields = left->getType().getStruct()->fields();
+
+			for(const TField *field : fields)
+			{
+				if(field == *fields.begin())
+				{
+					emitCmp(cmpOp, dst, left, right, *field->type(), index);
+				}
+				else
+				{
+					Temporary result(this);
+					emitCmp(cmpOp, &result, left, right, *field->type(), index);
+
+					if(cmpOp == sw::Shader::CONTROL_EQ)
+					{
+						emit(sw::Shader::OPCODE_AND, dst, dst, &result);
+					}
+					else if(cmpOp == sw::Shader::CONTROL_NE)
+					{
+						emit(sw::Shader::OPCODE_OR, dst, dst, &result);
+					}
+					else UNREACHABLE(cmpOp);   // Structs can only be compared for (in)equality
+				}
+
+				index += field->type()->totalRegisterCount();
+			}
+		}
+		else
+		{
+			sw::Shader::Opcode opcode;
+			switch(type.getBasicType())
+			{
+			case EbtBool:
+			case EbtInt:
+				opcode = sw::Shader::OPCODE_ICMP;
+				break;
+			case EbtUInt:
+				opcode = sw::Shader::OPCODE_UCMP;
+				break;
+			default:
+				opcode = sw::Shader::OPCODE_CMP;
+				break;
+			}
+
+			Instruction *cmp = emit(opcode, dst, 0, left, index, right, index);
+			cmp->control = cmpOp;
+
+			for(int i = 1; i < type.totalRegisterCount(); i++)
+			{
+				Temporary result(this);
+				cmp = emit(opcode, &result, 0, left, index + i, right, index + i);
+				cmp->control = cmpOp;
+
+				if(cmpOp == sw::Shader::CONTROL_EQ)
+				{
+					emit(sw::Shader::OPCODE_AND, dst, dst, &result);
+				}
+				else if(cmpOp == sw::Shader::CONTROL_NE)
+				{
+					emit(sw::Shader::OPCODE_OR, dst, dst, &result);
+				}
+				else UNREACHABLE(cmpOp);   // Matrices can only be compared for (in)equality
+			}
+		}
 	}
 
 	int componentCount(const TType &type, int registers)
