@@ -376,8 +376,10 @@ namespace sw
 		void or(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void xor(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 		void and(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
-		void equal(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
-		void notEqual(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void eq(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void ne(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void ieq(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
+		void ine(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 
 	private:
 		void sgn(Float4 &dst, const Float4 &src);

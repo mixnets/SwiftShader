@@ -4,7 +4,7 @@
 
  @Title        OpenGL ES 2.0 HelloAPI Tutorial
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -140,18 +140,64 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		0.0f,0.0f,0.0f,1.0f
 	};
 
+#define SHADER(x) #x
+
 	// Fragment and vertex shaders code
-	char* pszFragShader = "\
-		void main (void)\
-		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
-		}";
+	char* pszFragShader = SHADER(
+		varying mediump vec4 v_coords;
+uniform int ui_one;
+uniform int ui_two;
+
+struct S {
+	mediump float	a;
+	mediump vec3	b;
+	int				c;
+};
+
+void main (void)
+{
+	S a = S(floor(v_coords.x), vec3(0.0, floor(v_coords.y), 2.3), 1);
+	S b = S(floor(v_coords.x+0.5), vec3(0.0, floor(v_coords.y), 2.3), 1);
+	S c = S(floor(v_coords.x), vec3(0.0, floor(v_coords.y+0.5), 2.3), 1);
+	S d = S(floor(v_coords.x), vec3(0.0, floor(v_coords.y), 2.3), 2);
+	gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+	if (a == b) gl_FragColor.x = 1.0;
+	if (a == c) gl_FragColor.y = 1.0;
+	if (a == d) gl_FragColor.z = 1.0;
+	
+}
+	);
+
+	char* pszFragShader2 = SHADER(
+		varying mediump vec4 v_coords;
+
+		struct S {
+			mediump float	a;
+			mediump vec3	b;
+			int				c;
+		};
+
+		void main (void)
+		{
+			S a = S(floor(v_coords.x), vec3(0.0, floor(v_coords.y), 2.3), 1);
+			S b = S(floor(v_coords.x+0.5), vec3(0.0, floor(v_coords.y), 2.3), 1);
+			S c = S(floor(v_coords.x), vec3(0.0, floor(v_coords.y+0.5), 2.3), 1);
+			S d = S(floor(v_coords.x), vec3(0.0, floor(v_coords.y), 2.3), 2);
+			gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+			if (a == b) gl_FragColor.x = 1.0;
+			if (a == c) gl_FragColor.y = 1.0;
+			if (a == d) gl_FragColor.z = 1.0;
+		}
+	);
+
 	char* pszVertShader = "\
 		attribute highp vec4	myVertex;\
 		uniform mediump mat4	myPMVMatrix;\
+		varying highp vec4 v_coords;\
 		void main(void)\
 		{\
 			gl_Position = myPMVMatrix * myVertex;\
+			v_coords = myVertex * 4.0;\
 		}";
 
 	/*
@@ -419,11 +465,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// We're going to draw a triangle to the screen so create a vertex buffer object for our triangle
 	GLuint	ui32Vbo; // Vertex buffer object handle
-	
+
 	// Interleaved vertex data
-	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
-								0.4f ,-0.4f,0.0f,
-								0.0f ,0.4f ,0.0f};
+	GLfloat afVertices[] = {	-0.5f,-0.5f,0.0f, // Position
+								0.5f ,-0.5f ,0.0f,
+								-0.5f, 0.5f,0.0f,};
 
 	// Generate the vertex buffer object (VBO)
 	glGenBuffers(1, &ui32Vbo);

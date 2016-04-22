@@ -264,7 +264,8 @@ namespace glsl
 		Instruction *emitCast(TIntermTyped *dst, int dstIndex, TIntermTyped *src, int srcIndex);
 		void emitBinary(sw::Shader::Opcode op, TIntermTyped *dst = 0, TIntermNode *src0 = 0, TIntermNode *src1 = 0, TIntermNode *src2 = 0);
 		void emitAssign(sw::Shader::Opcode op, TIntermTyped *result, TIntermTyped *lhs, TIntermTyped *src0, TIntermTyped *src1 = 0);
-		void emitCmp(sw::Shader::Control cmpOp, TIntermTyped *dst, TIntermNode *left, TIntermNode *right, int index = 0);
+		void emitCmp(sw::Shader::Control cmpOp, TIntermTyped *dst, TIntermNode *left, TIntermNode *right);
+		void emitCmp(sw::Shader::Control cmpOp, TIntermTyped *dst, TIntermTyped *left, TIntermTyped *right, const TType &type, int index);
 		void emitDeterminant(TIntermTyped *result, TIntermTyped *arg, int size, int col = -1, int row = -1, int outCol = 0, int outRow = 0);
 		void argument(sw::Shader::SourceParameter &parameter, TIntermNode *argument, int index = 0);
 		void copy(TIntermTyped *dst, TIntermNode *src, int offset = 0);
