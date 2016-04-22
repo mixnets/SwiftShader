@@ -695,12 +695,12 @@ namespace glsl
 		case EOpEqual:
 			if(visit == PostVisit)
 			{
-				emitBinary(sw::Shader::OPCODE_EQ, result, left, right);
+				emitBinary(sw::Shader::OPCODE_IEQ, result, left, right);
 
 				for(int index = 1; index < left->totalRegisterCount(); index++)
 				{
 					Temporary equal(this);
-					emit(sw::Shader::OPCODE_EQ, &equal, 0, left, index, right, index);
+					emit(sw::Shader::OPCODE_IEQ, &equal, 0, left, index, right, index);
 					emit(sw::Shader::OPCODE_AND, result, result, &equal);
 				}
 			}
@@ -708,12 +708,12 @@ namespace glsl
 		case EOpNotEqual:
 			if(visit == PostVisit)
 			{
-				emitBinary(sw::Shader::OPCODE_NE, result, left, right);
+				emitBinary(sw::Shader::OPCODE_INE, result, left, right);
 
 				for(int index = 1; index < left->totalRegisterCount(); index++)
 				{
 					Temporary notEqual(this);
-					emit(sw::Shader::OPCODE_NE, &notEqual, 0, left, index, right, index);
+					emit(sw::Shader::OPCODE_INE, &notEqual, 0, left, index, right, index);
 					emit(sw::Shader::OPCODE_OR, result, result, &notEqual);
 				}
 			}

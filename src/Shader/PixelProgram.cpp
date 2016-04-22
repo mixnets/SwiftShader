@@ -319,8 +319,10 @@ namespace sw
 			case Shader::OPCODE_OR:         or(d, s0, s1);                                 break;
 			case Shader::OPCODE_XOR:        xor(d, s0, s1);                                break;
 			case Shader::OPCODE_AND:        and(d, s0, s1);                                break;
-			case Shader::OPCODE_EQ:         equal(d, s0, s1);                              break;
-			case Shader::OPCODE_NE:         notEqual(d, s0, s1);                           break;
+			case Shader::OPCODE_EQ:         eq(d, s0, s1);                                 break;
+			case Shader::OPCODE_NE:         ne(d, s0, s1);                                 break;
+			case Shader::OPCODE_IEQ:        ieq(d, s0, s1);                                break;
+			case Shader::OPCODE_INE:        ine(d, s0, s1);                                break;
 			case Shader::OPCODE_END:                                                       break;
 			default:
 				ASSERT(false);
