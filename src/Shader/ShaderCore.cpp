@@ -1891,26 +1891,4 @@ namespace sw
 		dst.z = As<Float4>(As<Int4>(src0.z) & As<Int4>(src1.z));
 		dst.w = As<Float4>(As<Int4>(src0.w) & As<Int4>(src1.w));
 	}
-
-	void ShaderCore::equal(Vector4f &dst, const Vector4f &src0, const Vector4f &src1)
-	{
-		dst.x = As<Float4>(CmpEQ(As<UInt4>(src0.x), As<UInt4>(src1.x)) &
-		                   CmpEQ(As<UInt4>(src0.y), As<UInt4>(src1.y)) &
-		                   CmpEQ(As<UInt4>(src0.z), As<UInt4>(src1.z)) &
-		                   CmpEQ(As<UInt4>(src0.w), As<UInt4>(src1.w)));
-		dst.y = dst.x;
-		dst.z = dst.x;
-		dst.w = dst.x;
-	}
-
-	void ShaderCore::notEqual(Vector4f &dst, const Vector4f &src0, const Vector4f &src1)
-	{
-		dst.x = As<Float4>(CmpNEQ(As<UInt4>(src0.x), As<UInt4>(src1.x)) |
-		                   CmpNEQ(As<UInt4>(src0.y), As<UInt4>(src1.y)) |
-		                   CmpNEQ(As<UInt4>(src0.z), As<UInt4>(src1.z)) |
-		                   CmpNEQ(As<UInt4>(src0.w), As<UInt4>(src1.w)));
-		dst.y = dst.x;
-		dst.z = dst.x;
-		dst.w = dst.x;
-	}
 }

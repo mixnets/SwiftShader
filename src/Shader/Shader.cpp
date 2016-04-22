@@ -951,8 +951,6 @@ namespace sw
 		case OPCODE_OR:             return "or";
 		case OPCODE_XOR:            return "xor";
 		case OPCODE_AND:            return "and";
-		case OPCODE_EQ:             return "eq";
-		case OPCODE_NE:             return "neq";
 		case OPCODE_FORWARD1:       return "forward1";
 		case OPCODE_FORWARD2:       return "forward2";
 		case OPCODE_FORWARD3:       return "forward3";
