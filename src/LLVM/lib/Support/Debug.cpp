@@ -27,6 +27,7 @@
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/circular_raw_ostream.h"
 #include "llvm/Support/Signals.h"
+#include <fstream>
 
 using namespace llvm;
 
@@ -114,6 +115,12 @@ raw_ostream &llvm::dbgs() {
       // zero, disabling buffering so it will output directly to errs().
     }
   } thestrm;
+
+  std::string errorInfo;
+  static raw_fd_ostream a("debug-stream.txt", errorInfo);
+
+  thestrm.strm.setStream(a);
+  a.flush();
 
   return thestrm.strm;
 }

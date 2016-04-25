@@ -1,0 +1,153 @@
+Initial selection DAG: BB#0 ':'
+SelectionDAG has 20 nodes:
+  0x370fb5c: ch = EntryToken [ORD=1]
+
+  0x365dfe0: i32 = undef [ORD=1]
+
+  0x365e200: i32 = Constant<0>
+
+    0x370fb5c: <multiple use>
+      0x370fb5c: <multiple use>
+      0x365e0f0: i32 = FrameIndex<-2> [ORD=1]
+
+      0x365dfe0: <multiple use>
+    0x365e178: i32,ch = load 0x370fb5c, 0x365e0f0, 0x365dfe0<LD4[FixedStack-2]> [ORD=1]
+
+    0x365dfe0: <multiple use>
+  0x365e288: v4f32,ch = load 0x370fb5c, 0x365e178, 0x365dfe0<LD16[%3](align=1)> [ORD=2]
+
+      0x365e310: i32 = Constant<424> [ORD=3]
+
+      0x365e288: <multiple use>
+      0x365e398: i32 = Constant<1> [ORD=3]
+
+    0x365e420: v4f32 = llvm.x86.sse41.round.ps 0x365e310, 0x365e288, 0x365e398 [ORD=3]
+
+  0x365e4a8: v4i32 = bitcast 0x365e420 [ORD=4]
+
+        0x365e288: <multiple use>
+            0x365e4a8: <multiple use>
+            0x365e4a8: <multiple use>
+            0x365e530: ch = seteq [ORD=7]
+
+          0x365e5b8: v4i1 = setcc 0x365e4a8, 0x365e4a8, 0x365e530 [ORD=7]
+
+        0x365e640: v4i32 = sign_extend 0x365e5b8 [ORD=8]
+
+          0x370fb5c: <multiple use>
+          0x365df58: i32 = FrameIndex<-1> [ORD=9]
+
+          0x365dfe0: <multiple use>
+        0x365e068: i32,ch = load 0x370fb5c, 0x365df58, 0x365dfe0<LD4[FixedStack-1]> [ORD=9]
+
+        0x365dfe0: <multiple use>
+      0x365e6c8: ch = store 0x365e288:1, 0x365e640, 0x365e068, 0x365dfe0<ST16[%11](align=1)> [ORD=10]
+
+      0x365e750: i32 = Constant<204>
+
+    0x365e7d8: ch = llvm.x86.mmx.emms 0x365e6c8, 0x365e750
+
+    0x365e860: i16 = TargetConstant<0>
+
+  0x365e8e8: ch = X86ISD::RET_FLAG 0x365e7d8, 0x365e860
+
+
+Optimized lowered selection DAG: BB#0 ':'
+SelectionDAG has 11 nodes:
+  0x370fb5c: ch = EntryToken [ORD=1]
+
+  0x365dfe0: i32 = undef [ORD=1]
+
+  0x365e398: i32 = Constant<1> [ORD=3]
+
+        0x370fb5c: <multiple use>
+          0x365e398: <multiple use>
+          0x365e398: <multiple use>
+          0x365e398: <multiple use>
+          0x365e398: <multiple use>
+        0x365e5b8: v4i32 = BUILD_VECTOR 0x365e398, 0x365e398, 0x365e398, 0x365e398
+
+          0x370fb5c: <multiple use>
+          0x365df58: i32 = FrameIndex<-1> [ORD=9]
+
+          0x365dfe0: <multiple use>
+        0x365e068: i32,ch = load 0x370fb5c, 0x365df58, 0x365dfe0<LD4[FixedStack-1](align=8)> [ORD=9]
+
+        0x365dfe0: <multiple use>
+      0x365e6c8: ch = store 0x370fb5c, 0x365e5b8, 0x365e068, 0x365dfe0<ST16[%11](align=1)> [ORD=10]
+
+      0x365e750: i32 = Constant<204>
+
+    0x365e7d8: ch = llvm.x86.mmx.emms 0x365e6c8, 0x365e750
+
+    0x365e860: i16 = TargetConstant<0>
+
+  0x365e8e8: ch = X86ISD::RET_FLAG 0x365e7d8, 0x365e860
+
+
+Type-legalized selection DAG: BB#0 ':'
+SelectionDAG has 11 nodes:
+  0x370fb5c: ch = EntryToken [ORD=1] [ID=-3]
+
+  0x365dfe0: i32 = undef [ORD=1] [ID=-3]
+
+  0x365e398: i32 = Constant<1> [ORD=3] [ID=-3]
+
+        0x370fb5c: <multiple use>
+          0x365e398: <multiple use>
+          0x365e398: <multiple use>
+          0x365e398: <multiple use>
+          0x365e398: <multiple use>
+        0x365e5b8: v4i32 = BUILD_VECTOR 0x365e398, 0x365e398, 0x365e398, 0x365e398 [ID=-3]
+
+          0x370fb5c: <multiple use>
+          0x365df58: i32 = FrameIndex<-1> [ORD=9] [ID=-3]
+
+          0x365dfe0: <multiple use>
+        0x365e068: i32,ch = load 0x370fb5c, 0x365df58, 0x365dfe0<LD4[FixedStack-1](align=8)> [ORD=9] [ID=-3]
+
+        0x365dfe0: <multiple use>
+      0x365e6c8: ch = store 0x370fb5c, 0x365e5b8, 0x365e068, 0x365dfe0<ST16[%11](align=1)> [ORD=10] [ID=-3]
+
+      0x365e750: i32 = Constant<204> [ID=-3]
+
+    0x365e7d8: ch = llvm.x86.mmx.emms 0x365e6c8, 0x365e750 [ID=-3]
+
+    0x365e860: i16 = TargetConstant<0> [ID=-3]
+
+  0x365e8e8: ch = X86ISD::RET_FLAG 0x365e7d8, 0x365e860 [ID=-3]
+
+
+Legalized selection DAG: BB#0 ':'
+SelectionDAG has 13 nodes:
+  0x370fb5c: ch = EntryToken [ORD=1] [ID=0]
+
+  0x365dfe0: i32 = undef [ORD=1] [ID=2]
+
+        0x370fb5c: <multiple use>
+            0x370fb5c: <multiple use>
+              0x365e200: i32 = TargetConstantPool<<4 x i32> <i32 1, i32 1, i32 1, i32 1>> 0
+
+            0x365e310: i32 = X86ISD::Wrapper 0x365e200
+
+            0x365dfe0: <multiple use>
+          0x365e288: v2i64,ch = load 0x370fb5c, 0x365e310, 0x365dfe0<LD16[ConstantPool]>
+
+        0x365e420: v4i32 = bitcast 0x365e288
+
+          0x370fb5c: <multiple use>
+          0x365df58: i32 = FrameIndex<-1> [ORD=9] [ID=1]
+
+          0x365dfe0: <multiple use>
+        0x365e068: i32,ch = load 0x370fb5c, 0x365df58, 0x365dfe0<LD4[FixedStack-1](align=8)> [ORD=9] [ID=6]
+
+        0x365dfe0: <multiple use>
+      0x365e6c8: ch = store 0x370fb5c, 0x365e420, 0x365e068, 0x365dfe0<ST16[%11](align=1)> [ORD=10] [ID=8]
+
+      0x365e750: i32 = Constant<204> [ID=4]
+
+    0x365e7d8: ch = llvm.x86.mmx.emms 0x365e6c8, 0x365e750 [ID=9]
+
+    0x365e860: i16 = TargetConstant<0> [ID=5]
+
+  0x365e8e8: ch = X86ISD::RET_FLAG 0x365e7d8, 0x365e860 [ID=10]

@@ -63,6 +63,8 @@ namespace sw
 		enableIndex = 0;
 		stackIndex = 0;
 
+
+
 		if(shader->containsLeaveInstruction())
 		{
 			enableLeave = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
