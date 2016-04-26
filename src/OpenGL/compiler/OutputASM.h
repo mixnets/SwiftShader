@@ -302,8 +302,9 @@ namespace glsl
 		static int dim(TIntermNode *v);
 		static int dim2(TIntermNode *m);
 		static unsigned int loopCount(TIntermLoop *node);
-		static bool isSamplerRegister(TIntermTyped *operand);
-		static bool isSamplerRegister(const TType &type);
+		bool isSamplerRegister(TIntermTyped *operand);
+		//static int isSamplerRegister(TIntermTyped *operand);
+		//static bool isSamplerRegister(const TType &type);
 
 		Shader *const shaderObject;
 		sw::Shader *shader;

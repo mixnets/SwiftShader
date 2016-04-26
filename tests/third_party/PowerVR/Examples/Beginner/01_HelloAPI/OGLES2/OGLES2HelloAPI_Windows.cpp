@@ -142,16 +142,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// Fragment and vertex shaders code
 	char* pszFragShader = "\
+		varying highp vec4 v_coords;\
+				struct S{\
+				mediump float a;\
+				mediump vec3 b;\
+				int c;\
+								};\
 		void main (void)\
 		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+			S s =S(v_coords.x, vec3(0.0), 1);\
+			s.b =v_coords.yzw;\
+			gl_FragColor = vec4(s.a, s.b.x, s.b.y, s.c);\
 		}";
 	char* pszVertShader = "\
 		attribute highp vec4	myVertex;\
 		uniform mediump mat4	myPMVMatrix;\
+		varying highp vec4 v_coords;\
 		void main(void)\
 		{\
 			gl_Position = myPMVMatrix * myVertex;\
+			v_coords = myVertex;\
 		}";
 
 	/*
