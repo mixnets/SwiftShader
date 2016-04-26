@@ -495,6 +495,11 @@ namespace glsl
 		const TType &rightType = right->getType();
 		const TType &resultType = node->getType();
 
+		if(isSamplerRegister(result))
+		{
+			return false;
+		}
+
 		switch(node->getOp())
 		{
 		case EOpAssign:
@@ -1745,21 +1750,6 @@ namespace glsl
 		return true;
 	}
 
-	bool OutputASM::isSamplerRegister(TIntermTyped *operand)
-	{
-		return operand && isSamplerRegister(operand->getType());
-	}
-
-	bool OutputASM::isSamplerRegister(const TType &type)
-	{
-		// A sampler register's qualifiers can be:
-		// - EvqUniform: The sampler uniform is used as is in the code (default case).
-		// - EvqTemporary: The sampler is indexed. It's still a sampler register.
-		// - EvqIn (and other similar types): The sampler has been passed as a function argument. At this point,
-		//                                    the sampler has been copied and is no longer a sampler register.
-		return IsSampler(type.getBasicType()) && (type.getQualifier() == EvqUniform || type.getQualifier() == EvqTemporary);
-	}
-
 	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2, TIntermNode *src3, TIntermNode *src4)
 	{
 		return emit(op, dst, 0, src0, 0, src1, 0, src2, 0, src3, 0, src4, 0);
@@ -1768,11 +1758,6 @@ namespace glsl
 	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, int dstIndex, TIntermNode *src0, int index0, TIntermNode *src1, int index1,
 	                             TIntermNode *src2, int index2, TIntermNode *src3, int index3, TIntermNode *src4, int index4)
 	{
-		if(isSamplerRegister(dst))
-		{
-			op = sw::Shader::OPCODE_NULL;   // Can't assign to a sampler, but this is hit when indexing sampler arrays
-		}
-
 		Instruction *instruction = new Instruction(op);
 
 		if(dst)
@@ -2159,39 +2144,7 @@ namespace glsl
 			{
 				parameter.index = registerIndex(arg) + argumentInfo.clampedIndex;
 
-				if(isSamplerRegister(arg))
-				{
-					TIntermBinary *binary = argument->getAsBinaryNode();
-
-					if(binary)
-					{
-						TIntermTyped *left = binary->getLeft();
-						TIntermTyped *right = binary->getRight();
-
-						switch(binary->getOp())
-						{
-						case EOpIndexDirect:
-							parameter.index += right->getAsConstantUnion()->getIConst(0);
-							break;
-						case EOpIndexIndirect:
-							if(left->getArraySize() > 1)
-							{
-								parameter.rel.type = registerType(binary->getRight());
-								parameter.rel.index = registerIndex(binary->getRight());
-								parameter.rel.scale = 1;
-								parameter.rel.deterministic = true;
-							}
-							break;
-						case EOpIndexDirectStruct:
-						case EOpIndexDirectInterfaceBlock:
-							parameter.index += right->getAsConstantUnion()->getIConst(0);
-							break;
-						default:
-							UNREACHABLE(binary->getOp());
-						}
-					}
-				}
-				else if(parameter.bufferIndex != -1)
+				if(parameter.bufferIndex != -1)
 				{
 					int stride = (argumentInfo.typedMemberInfo.matrixStride > 0) ? argumentInfo.typedMemberInfo.matrixStride : argumentInfo.typedMemberInfo.arrayStride;
 					parameter.index = argumentInfo.typedMemberInfo.offset + argumentInfo.clampedIndex * stride;
@@ -2871,7 +2824,9 @@ namespace glsl
 
 	int OutputASM::samplerRegister(TIntermTyped *sampler)
 	{
-		ASSERT(IsSampler(sampler->getType().getBasicType()));
+		const TType &type = sampler->getType();
+		ASSERT(IsSampler(type.getBasicType()) || type.isStruct());   // Structures can contain samplers
+
 		TIntermSymbol *symbol = sampler->getAsSymbolNode();
 		TIntermBinary *binary = sampler->getAsBinaryNode();
 
@@ -2881,20 +2836,29 @@ namespace glsl
 		}
 		else if(binary)
 		{
-			ASSERT(binary->getOp() == EOpIndexDirect || binary->getOp() == EOpIndexIndirect ||
-				   binary->getOp() == EOpIndexDirectStruct || binary->getOp() == EOpIndexDirectInterfaceBlock);
+			TIntermTyped *left = binary->getLeft();
+			TIntermTyped *right = binary->getRight();
 
-			return samplerRegister(binary->getLeft());   // Index added later
+			switch(binary->getOp())
+			{
+			case EOpIndexDirect:
+			case EOpIndexDirectStruct:
+			case EOpIndexDirectInterfaceBlock:
+				return samplerRegister(binary->getLeft()) + right->getAsConstantUnion()->getIConst(0);
+			case EOpIndexIndirect:
+				return -1;   // Temporary register
+			default:
+				UNREACHABLE(binary->getOp());
+			}
 		}
-		else UNREACHABLE(0);
 
-		return 0;
+		return -1;   // Not a sampler register
 	}
 
 	int OutputASM::samplerRegister(TIntermSymbol *sampler)
 	{
 		const TType &type = sampler->getType();
-		ASSERT(IsSampler(type.getBasicType()) || type.getStruct());   // Structures can contain samplers
+		ASSERT(IsSampler(type.getBasicType()) || type.isStruct());   // Structures can contain samplers
 
 		int index = lookup(samplers, sampler);
 
@@ -2910,6 +2874,11 @@ namespace glsl
 		}
 
 		return index;
+	}
+
+	bool OutputASM::isSamplerRegister(TIntermTyped *operand)
+	{
+		return operand && IsSampler(operand->getBasicType()) && samplerRegister(operand) >= 0;
 	}
 
 	int OutputASM::lookup(VariableArray &list, TIntermTyped *variable)
@@ -3097,7 +3066,7 @@ namespace glsl
 			int fieldRegisterIndex = encoder ? shaderObject->activeUniformBlocks[blockId].registerIndex + BlockLayoutEncoder::getBlockRegister(blockInfo) : registerIndex;
 			activeUniforms.push_back(Uniform(glVariableType(type), glVariablePrecision(type), name.c_str(), type.getArraySize(),
 			                                 fieldRegisterIndex, blockId, blockInfo));
-			if(isSamplerRegister(type))
+			if(IsSampler(type.getBasicType()))
 			{
 				for(int i = 0; i < type.totalRegisterCount(); i++)
 				{
