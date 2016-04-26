@@ -1757,7 +1757,7 @@ namespace glsl
 		// - EvqTemporary: The sampler is indexed. It's still a sampler register.
 		// - EvqIn (and other similar types): The sampler has been passed as a function argument. At this point,
 		//                                    the sampler has been copied and is no longer a sampler register.
-		return IsSampler(type.getBasicType()) && (type.getQualifier() == EvqUniform || type.getQualifier() == EvqTemporary);
+		return IsSampler(type.getBasicType()) && (type.getQualifier() == EvqUniform || type.getQualifier() == EvqTemporary || type.getQualifier() == EvqGlobal);
 	}
 
 	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2, TIntermNode *src3, TIntermNode *src4)
