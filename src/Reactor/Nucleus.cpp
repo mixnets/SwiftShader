@@ -5867,7 +5867,10 @@ namespace sw
 
 	RValue<UInt4> CmpEQ(RValue<UInt4> x, RValue<UInt4> y)
 	{
-		return RValue<UInt4>(Nucleus::createSExt(Nucleus::createICmpEQ(x.value, y.value), Int4::getType()));
+		// FIXME: An LLVM bug prevents us from using createICmpEQ currently.
+		//        Restore the following line when LLVM is updated to a version where this issue is fixed.
+		// return RValue<UInt4>(Nucleus::createSExt(Nucleus::createICmpEQ(x.value, y.value), Int4::getType()));
+		return RValue<UInt4>(Nucleus::createSExt(Nucleus::createICmpNE(x.value, y.value), Int4::getType())) ^ UInt4(0xFFFFFFFF);
 	}
 
 	RValue<UInt4> CmpLT(RValue<UInt4> x, RValue<UInt4> y)
