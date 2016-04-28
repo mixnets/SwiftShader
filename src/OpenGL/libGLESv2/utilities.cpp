@@ -734,12 +734,12 @@ namespace es2
 		case GL_UNSIGNED_INT_24_8:   // GL_OES_packed_depth_stencil (GL_UNSIGNED_INT_24_8_EXT)
 		case GL_UNSIGNED_SHORT:      // GL_OES_depth_texture
 		case GL_UNSIGNED_INT:        // GL_OES_depth_texture
+		case GL_UNSIGNED_INT_2_10_10_10_REV_EXT: // GL_EXT_texture_type_2_10_10_10_REV
 			break;
 		case GL_BYTE:
 		case GL_SHORT:
 		case GL_INT:
 		case GL_HALF_FLOAT:
-		case GL_UNSIGNED_INT_2_10_10_10_REV:
 		case GL_UNSIGNED_INT_10F_11F_11F_REV:
 		case GL_UNSIGNED_INT_5_9_9_9_REV:
 		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
@@ -762,10 +762,10 @@ namespace es2
 		case GL_BGRA_EXT:          // GL_EXT_texture_format_BGRA8888
 		case GL_DEPTH_STENCIL:     // GL_OES_packed_depth_stencil (GL_DEPTH_STENCIL_OES)
 		case GL_DEPTH_COMPONENT:   // GL_OES_depth_texture
+		case GL_RED_EXT:           // GL_EXT_texture_rg
+		case GL_RG_EXT:            // GL_EXT_texture_rg
 			break;
-		case GL_RED:
 		case GL_RED_INTEGER:
-		case GL_RG:
 		case GL_RG_INTEGER:
 		case GL_RGB_INTEGER:
 		case GL_RGBA_INTEGER:
@@ -1012,6 +1012,7 @@ namespace es2
 		case GL_RGB565:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
+		case GL_R11F_G11F_B10F: // GL_EXT_packed_float
 		case GL_R16F:
 		case GL_RG16F:
 		case GL_RGB16F:
@@ -1041,7 +1042,6 @@ namespace es2
 		case GL_RGBA16I:
 		case GL_RGBA32I:
 		case GL_RGBA32UI:
-		case GL_R11F_G11F_B10F:
 		case GL_R32F:
 		case GL_RG32F:
 		case GL_RGB32F:

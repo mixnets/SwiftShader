@@ -4277,12 +4277,15 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 		(const GLubyte*)"GL_EXT_color_buffer_half_float",
 		(const GLubyte*)"GL_EXT_draw_buffers",
 		(const GLubyte*)"GL_EXT_occlusion_query_boolean",
+		(const GLubyte*)"GL_EXT_packed_float",
 		(const GLubyte*)"GL_EXT_read_format_bgra",
 #if (S3TC_SUPPORT)
 		(const GLubyte*)"GL_EXT_texture_compression_dxt1",
 #endif
 		(const GLubyte*)"GL_EXT_texture_filter_anisotropic",
 		(const GLubyte*)"GL_EXT_texture_format_BGRA8888",
+		(const GLubyte*)"GL_EXT_texture_rg",
+		(const GLubyte*)"GL_EXT_texture_type_2_10_10_10_REV",
 		(const GLubyte*)"GL_ANGLE_framebuffer_blit",
 		(const GLubyte*)"GL_NV_framebuffer_blit",
 		(const GLubyte*)"GL_ANGLE_framebuffer_multisample",
