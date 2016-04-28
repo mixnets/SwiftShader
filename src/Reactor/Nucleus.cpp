@@ -5535,7 +5535,10 @@ namespace sw
 
 	RValue<Int4> CmpLE(RValue<Int4> x, RValue<Int4> y)
 	{
-		return RValue<Int4>(Nucleus::createSExt(Nucleus::createICmpSLE(x.value, y.value), Int4::getType()));
+		// FIXME: An LLVM bug prevents us from using createICmpLE currently.
+		//        Restore the following line when LLVM is updated to a version where this issue is fixed.
+		// return RValue<Int4>(Nucleus::createSExt(Nucleus::createICmpLE(x.value, y.value), Int4::getType()));
+		return RValue<Int4>(Nucleus::createSExt(Nucleus::createICmpSGT(x.value, y.value), Int4::getType())) ^ Int4(0xFFFFFFFF);
 	}
 
 	RValue<Int4> CmpNEQ(RValue<Int4> x, RValue<Int4> y)
