@@ -115,13 +115,28 @@ bool TStructure::containsArrays() const
 
 bool TStructure::containsSamplers() const
 {
-	for(size_t i = 0; i < mFields->size(); ++i)
+	for(size_t i = 0; i < mFields->size(); i++)
 	{
 		const TType *fieldType = (*mFields)[i]->type();
-		if(IsSampler(fieldType->getBasicType()) || fieldType->isStructureContainingSamplers())
+		if(fieldType->containsSamplers())
+		{
 			return true;
+		}
 	}
+
 	return false;
+}
+
+int TStructure::samplerCount() const
+{
+	int samplerCount = 0;
+	for(size_t i = 0; i < mFields->size(); i++)
+	{
+		const TType *fieldType = (*mFields)[i]->type();
+		samplerCount += fieldType->samplerCount();
+	}
+
+	return samplerCount;
 }
 
 TString TFieldListCollection::buildMangledName() const

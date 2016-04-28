@@ -82,7 +82,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BUILD_OGLES2;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\Builds\Include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\Builds\Include;..\..\..\..\..\..\Shell;..\..\..\..\..\..\Shell\API\KEGL;..\..\..\..\..\..\Shell\OS\Windows;..\..\..\..\..\..\Builds\Include;..\..\..\..\..\..\Tools\OGLES2;..\..\..\..\..\..\Tools\OGLES3;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -157,6 +157,11 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\..\..\..\Builds\Windows\Resources\shared.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\Tools\OGLES3\Build\WindowsVC2010\OGLES3Tools.vcxproj">
+      <Project>{9088fc9e-9843-4e0d-85d0-1b657afc480a}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -125,6 +125,7 @@ public:
 	}
 	bool containsArrays() const;
 	bool containsSamplers() const;
+	int samplerCount() const;
 
 	bool equals(const TStructure &other) const;
 
@@ -460,10 +461,29 @@ public:
         return structure ? structure->containsArrays() : false;
     }
 
-    bool isStructureContainingSamplers() const
+    bool containsSamplers() const
     {
+		if(IsSampler(type))
+		{
+			return true;
+		}
+
         return structure ? structure->containsSamplers() : false;
     }
+
+	int samplerCount() const
+	{
+		if(structure)
+		{
+			return structure->samplerCount() * (array ? arraySize : 1);
+		}
+		else if(IsSampler(type))
+		{
+			return (array ? arraySize : 1);
+		}
+
+		return 0;
+	}
 
 protected:
     void buildMangledName(TString&);

@@ -601,7 +601,7 @@ bool TParseContext::boolErrorCheck(const TSourceLoc &line, const TPublicType& pT
 bool TParseContext::samplerErrorCheck(const TSourceLoc &line, const TPublicType& pType, const char* reason)
 {
     if (pType.type == EbtStruct) {
-        if (containsSampler(*pType.userDef)) {
+        if (pType.userDef->containsSamplers()) {
             error(line, reason, getBasicString(pType.type), "(structure contains a sampler)");
 
             return true;
@@ -740,22 +740,6 @@ bool TParseContext::parameterSamplerErrorCheck(const TSourceLoc &line, TQualifie
              type.getBasicType() != EbtStruct && IsSampler(type.getBasicType())) {
         error(line, "samplers cannot be output parameters", type.getBasicString());
         return true;
-    }
-
-    return false;
-}
-
-bool TParseContext::containsSampler(TType& type)
-{
-    if (IsSampler(type.getBasicType()))
-        return true;
-
-    if (type.getBasicType() == EbtStruct) {
-        const TFieldList& fields = type.getStruct()->fields();
-        for(unsigned int i = 0; i < fields.size(); ++i) {
-            if (containsSampler(*fields[i]->type()))
-                return true;
-        }
     }
 
     return false;
@@ -3200,7 +3184,7 @@ bool TParseContext::binaryOpCommonCheck(TOperator op, TIntermTyped *left, TInter
 		// we interpret the spec so that this extends to structs containing samplers,
 		// similarly to ESSL 1.00 spec.
 		if((mShaderVersion < 300 || op == EOpAssign || op == EOpInitialize) &&
-			left->getType().isStructureContainingSamplers())
+			left->isStruct() && left->containsSamplers())
 		{
 			error(loc, "undefined operation for structs containing samplers", getOperatorString(op));
 			return false;

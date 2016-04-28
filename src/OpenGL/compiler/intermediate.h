@@ -322,6 +322,8 @@ public:
 	int totalRegisterCount() const { return type.totalRegisterCount(); }
 	int blockRegisterCount() const { return type.blockRegisterCount(); }
 	int elementRegisterCount() const { return type.elementRegisterCount(); }
+	bool containsSamplers() const { return type.containsSamplers(); }
+	int samplerCount() const { return type.samplerCount(); }
 	int registerSize() const { return type.registerSize(); }
 	int getArraySize() const { return type.getArraySize(); }
 

@@ -4,7 +4,7 @@
 
  @Title        OpenGL ES 2.0 HelloAPI Tutorial
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -142,16 +142,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// Fragment and vertex shaders code
 	char* pszFragShader = "\
+		varying highp vec4 v_coords;\
+				struct S{\
+				mediump float a;\
+				sampler2D s;\
+				};\
+				uniform S s;\
 		void main (void)\
 		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+			gl_FragColor = texture2D(s.s, vec2(0.0, 0.0));\
 		}";
 	char* pszVertShader = "\
 		attribute highp vec4	myVertex;\
 		uniform mediump mat4	myPMVMatrix;\
+		varying highp vec4 v_coords;\
 		void main(void)\
 		{\
 			gl_Position = myPMVMatrix * myVertex;\
+			v_coords = myVertex;\
 		}";
 
 	/*
@@ -410,6 +418,29 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 	// Actually use the created program
     glUseProgram(uiProgramObject);
 
+	int g_i32TexSize = 1;
+	GLuint m_ui32Texture;
+	glGenTextures(1, &m_ui32Texture);
+	glBindTexture(GL_TEXTURE_2D, m_ui32Texture);
+	GLuint* pTexData = new GLuint[g_i32TexSize*g_i32TexSize];
+
+	for(int i = 0; i < g_i32TexSize; ++i)
+	{
+		for(int j = 0; j < g_i32TexSize; ++j)
+		{
+			GLuint col = (255<<24) + ((255-j*2)<<16) + ((255-i)<<8) + (255-i*2);
+
+			if ( ((i*j)/8) % 2 )
+				col = 0xffff00ff;
+
+			pTexData[j*g_i32TexSize+i] = col;
+		}
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, g_i32TexSize, g_i32TexSize, 0, GL_RGBA, GL_UNSIGNED_BYTE, pTexData);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+
 	// Sets the clear color.
 	// The colours are passed per channel (red,green,blue,alpha) as float values from 0.0 to 1.0
 	glClearColor(0.6f, 0.8f, 1.0f, 1.0f);
@@ -419,7 +450,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// We're going to draw a triangle to the screen so create a vertex buffer object for our triangle
 	GLuint	ui32Vbo; // Vertex buffer object handle
-	
+
 	// Interleaved vertex data
 	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
 								0.4f ,-0.4f,0.0f,

@@ -1239,7 +1239,7 @@ namespace glsl
 						{
 							float projFactor = 1.0f / constant->getFConst(t->getNominalSize() - 1);
 							Constant projCoord(constant->getFConst(0) * projFactor,
-							                   constant->getFConst(1) * projFactor, 
+							                   constant->getFConst(1) * projFactor,
 							                   constant->getFConst(2) * projFactor,
 							                   0.0f);
 							emit(sw::Shader::OPCODE_MOV, &coord, &projCoord);
@@ -2838,7 +2838,7 @@ namespace glsl
 	int OutputASM::samplerRegister(TIntermTyped *sampler)
 	{
 		const TType &type = sampler->getType();
-		ASSERT(IsSampler(type.getBasicType()) || type.isStruct());   // Structures can contain samplers
+		ASSERT(type.containsSamplers());
 
 		TIntermSymbol *symbol = sampler->getAsSymbolNode();
 		TIntermBinary *binary = sampler->getAsBinaryNode();
@@ -2887,22 +2887,45 @@ namespace glsl
 	int OutputASM::samplerRegister(TIntermSymbol *sampler)
 	{
 		const TType &type = sampler->getType();
-		ASSERT(IsSampler(type.getBasicType()) || type.isStruct());   // Structures can contain samplers
+		ASSERT(type.containsSamplers());
 
 		int index = lookup(samplers, sampler);
 
 		if(index == -1)
 		{
-			index = allocate(samplers, sampler);
+			index = allocateSampler(sampler);
 
-			if(sampler->getQualifier() == EvqUniform)
-			{
-				const char *name = sampler->getSymbol().c_str();
-				declareUniform(type, name, index);
-			}
+			declareSampler(type, index);
 		}
 
 		return index;
+	}
+
+	void OutputASM::declareSampler(const TType &type, int index)
+	{
+		int elementCount = type.isArray() ? type.getArraySize() : 1;
+
+		if(type.isStruct())
+		{
+			const TFieldList &fields = type.getStruct()->fields();
+
+			for(int i = 0; i < elementCount; i++)
+			{
+				for(size_t i = 0; i < fields.size(); i++)
+				{
+					const TType &fieldType = *fields[i]->type();
+					declareSampler(fieldType, index);
+					index += fieldType.samplerCount();
+				}
+			}
+		}
+		else if(IsSampler(type.getBasicType()))
+		{
+			for(int i = 0; i < elementCount; i++)
+			{
+				shader->declareSampler(index + i);
+			}
+		}
 	}
 
 	bool OutputASM::isSamplerRegister(TIntermTyped *operand)
@@ -3028,6 +3051,26 @@ namespace glsl
 		return index;
 	}
 
+	int OutputASM::allocateSampler(TIntermTyped *sampler)
+	{
+		ASSERT(sampler->containsSamplers());
+		int index = lookup(samplers, sampler);
+
+		if(index == -1)
+		{
+			index = samplers.size();
+
+			unsigned int registerCount = sampler->samplerCount();
+
+			for(unsigned int i = 0; i < registerCount; i++)
+			{
+				samplers.push_back(sampler);
+			}
+		}
+
+		return index;
+	}
+
 	void OutputASM::free(VariableArray &list, TIntermTyped *variable)
 	{
 		int index = lookup(list, variable);
@@ -3095,13 +3138,6 @@ namespace glsl
 			int fieldRegisterIndex = encoder ? shaderObject->activeUniformBlocks[blockId].registerIndex + BlockLayoutEncoder::getBlockRegister(blockInfo) : registerIndex;
 			activeUniforms.push_back(Uniform(glVariableType(type), glVariablePrecision(type), name.c_str(), type.getArraySize(),
 			                                 fieldRegisterIndex, blockId, blockInfo));
-			if(IsSampler(type.getBasicType()))
-			{
-				for(int i = 0; i < type.totalRegisterCount(); i++)
-				{
-					shader->declareSampler(fieldRegisterIndex + i);
-				}
-			}
 		}
 		else if(block)
 		{
