@@ -12,8 +12,6 @@
 #ifndef _SWIFTSHADER_H_
 #define _SWIFTSHADER_H_
 
-#include "Register.hpp"
-
 #include <objbase.h>
 #include <stdlib.h>
 
@@ -60,7 +58,7 @@ extern "C" {
 /*
  * SwiftShader Private interface
  */
- 
+
 typedef enum _SWSETTINGTYPE {
 	SWS_MAXIMUMFILTERQUALITY	= 1, /* SWFILTER texture filtering quality */
 	SWS_MAXIMUMMIPMAPQUALITY	= 2, /* SWFILTER mipmap filtering quality */
@@ -103,7 +101,7 @@ DECLARE_INTERFACE_(ISwiftShaderPrivateV1, IUnknown)
     STDMETHOD(RegisterLicenseKey)(THIS_ char* pLicenseKey) PURE;
 	STDMETHOD(SetControlSetting)(THIS_ SWSETTINGTYPE Setting,DWORD Value) PURE;
 };
-    
+
 typedef struct ISwiftShaderPrivateV1 *LPSWIFTSHADERPRIVATEV1, *LPSWIFTSHADERPRIVATEV1;
 
 #if !defined(__cplusplus) || defined(CINTERFACE)
@@ -121,7 +119,7 @@ typedef struct ISwiftShaderPrivateV1 *LPSWIFTSHADERPRIVATEV1, *LPSWIFTSHADERPRIV
 
 
 /****************************************************************************
- * Flags for SwiftShader 
+ * Flags for SwiftShader
  ****************************************************************************/
 #define SWIFTSHADER_SOME_RANDOM_FLAG 0x00000001L
 
