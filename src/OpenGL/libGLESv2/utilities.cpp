@@ -1,16 +1,13 @@
-// Copyright 2016 The SwiftShader Authors. All Rights Reserved.
+// SwiftShader Software Renderer
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Copyright(c) 2005-2013 TransGaming Inc.
 //
-//    http://www.apache.org/licenses/LICENSE-2.0
+// All rights reserved. No part of this software may be copied, distributed, transmitted,
+// transcribed, stored in a retrieval system, translated into any human or computer
+// language by any means, or disclosed to third parties without the explicit written
+// agreement of TransGaming Inc. Without such an agreement, no rights or licenses, express
+// or implied, including but not limited to any patent rights, are granted to you.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 
 // utilities.cpp: Conversion functions and other utility routines.
 
@@ -74,6 +71,7 @@ namespace es2
 		InsertFormatMapping(&map, GL_RGB, GL_FLOAT, GL_RGB32F);
 		InsertFormatMapping(&map, GL_RGB, GL_HALF_FLOAT, GL_RGB16F);
 		InsertFormatMapping(&map, GL_RGB, GL_HALF_FLOAT_OES, GL_RGB16F);
+		InsertFormatMapping(&map, GL_RGB, GL_UNSIGNED_INT_2_10_10_10_REV, GL_RGB10_EXT);
 
 		InsertFormatMapping(&map, GL_RGB_INTEGER, GL_UNSIGNED_BYTE, GL_RGB8UI);
 		InsertFormatMapping(&map, GL_RGB_INTEGER, GL_BYTE, GL_RGB8I);
@@ -185,7 +183,7 @@ namespace es2
 		case GL_UNSIGNED_INT:
 		case GL_SAMPLER_2D:
 		case GL_SAMPLER_CUBE:
-		case GL_SAMPLER_EXTERNAL_OES:
+        case GL_SAMPLER_EXTERNAL_OES:
 		case GL_SAMPLER_3D_OES:
 		case GL_SAMPLER_2D_ARRAY:
 		case GL_SAMPLER_2D_SHADOW:
@@ -355,7 +353,7 @@ namespace es2
 		case GL_UNSIGNED_INT_VEC4:
 		case GL_SAMPLER_2D:
 		case GL_SAMPLER_CUBE:
-		case GL_SAMPLER_EXTERNAL_OES:
+        case GL_SAMPLER_EXTERNAL_OES:
 		case GL_SAMPLER_3D_OES:
 		case GL_SAMPLER_2D_ARRAY:
 		case GL_SAMPLER_2D_SHADOW:
@@ -656,7 +654,7 @@ namespace es2
 		case GL_RED_EXT:
 			return (clientVersion >= 3) && (type == GL_UNSIGNED_BYTE);
 		case GL_DEPTH_COMPONENT:
-			if(internalFormat != format)
+			if (internalFormat != format)
 			{
 				return false;
 			}
@@ -664,7 +662,7 @@ namespace es2
 			{
 			case GL_UNSIGNED_SHORT:
 			case GL_FLOAT:
-				if(internalType != type)
+				if (internalType != type)
 				{
 					return false;
 				}
@@ -737,12 +735,12 @@ namespace es2
 		case GL_UNSIGNED_INT_24_8:   // GL_OES_packed_depth_stencil (GL_UNSIGNED_INT_24_8_EXT)
 		case GL_UNSIGNED_SHORT:      // GL_OES_depth_texture
 		case GL_UNSIGNED_INT:        // GL_OES_depth_texture
+		case GL_UNSIGNED_INT_2_10_10_10_REV_EXT: // GL_EXT_texture_type_2_10_10_10_REV
 			break;
 		case GL_BYTE:
 		case GL_SHORT:
 		case GL_INT:
 		case GL_HALF_FLOAT:
-		case GL_UNSIGNED_INT_2_10_10_10_REV:
 		case GL_UNSIGNED_INT_10F_11F_11F_REV:
 		case GL_UNSIGNED_INT_5_9_9_9_REV:
 		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
@@ -765,10 +763,10 @@ namespace es2
 		case GL_BGRA_EXT:          // GL_EXT_texture_format_BGRA8888
 		case GL_DEPTH_STENCIL:     // GL_OES_packed_depth_stencil (GL_DEPTH_STENCIL_OES)
 		case GL_DEPTH_COMPONENT:   // GL_OES_depth_texture
+		case GL_RED_EXT:           // GL_EXT_texture_rg
+		case GL_RG_EXT:            // GL_EXT_texture_rg
 			break;
-		case GL_RED:
 		case GL_RED_INTEGER:
-		case GL_RG:
 		case GL_RG_INTEGER:
 		case GL_RGB_INTEGER:
 		case GL_RGBA_INTEGER:
@@ -863,10 +861,10 @@ namespace es2
 			{
 			case GL_UNSIGNED_BYTE:               VALIDATE_INTERNALFORMAT(GL_RGBA8, GL_RGB5_A1, GL_RGBA4, GL_SRGB8_ALPHA8)
 			case GL_BYTE:                        VALIDATE_INTERNALFORMAT(GL_RGBA8_SNORM)
-			case GL_HALF_FLOAT_OES:              break;
 			case GL_UNSIGNED_SHORT_4_4_4_4:      VALIDATE_INTERNALFORMAT(GL_RGBA4)
 			case GL_UNSIGNED_SHORT_5_5_5_1:      VALIDATE_INTERNALFORMAT(GL_RGB5_A1)
-			case GL_UNSIGNED_INT_2_10_10_10_REV: VALIDATE_INTERNALFORMAT(GL_RGB10_A2, GL_RGB5_A1)
+			case GL_UNSIGNED_INT_2_10_10_10_REV: VALIDATE_INTERNALFORMAT(GL_RGB10_A2, GL_RGB5_A1, GL_RGBA)
+			case GL_HALF_FLOAT_OES:
 			case GL_HALF_FLOAT:                  VALIDATE_INTERNALFORMAT(GL_RGBA16F)
 			case GL_FLOAT:                       VALIDATE_INTERNALFORMAT(GL_RGBA32F, GL_RGBA16F)
 			default:                             return error(GL_INVALID_OPERATION, false);
@@ -890,10 +888,11 @@ namespace es2
 			{
 			case GL_UNSIGNED_BYTE:                VALIDATE_INTERNALFORMAT(GL_RGB8, GL_RGB565, GL_SRGB8)
 			case GL_BYTE:                         VALIDATE_INTERNALFORMAT(GL_RGB8_SNORM)
-			case GL_HALF_FLOAT_OES:               break;
 			case GL_UNSIGNED_SHORT_5_6_5:         VALIDATE_INTERNALFORMAT(GL_RGB565)
 			case GL_UNSIGNED_INT_10F_11F_11F_REV: VALIDATE_INTERNALFORMAT(GL_R11F_G11F_B10F)
 			case GL_UNSIGNED_INT_5_9_9_9_REV:     VALIDATE_INTERNALFORMAT(GL_RGB9_E5)
+			case GL_UNSIGNED_INT_2_10_10_10_REV:  VALIDATE_INTERNALFORMAT(GL_RGB)
+			case GL_HALF_FLOAT_OES:
 			case GL_HALF_FLOAT:                   VALIDATE_INTERNALFORMAT(GL_RGB16F, GL_R11F_G11F_B10F, GL_RGB9_E5)
 			case GL_FLOAT:                        VALIDATE_INTERNALFORMAT(GL_RGB32F, GL_RGB16F, GL_R11F_G11F_B10F, GL_RGB9_E5)
 			default:                              return error(GL_INVALID_OPERATION, false);
@@ -916,6 +915,7 @@ namespace es2
 			{
 			case GL_UNSIGNED_BYTE: VALIDATE_INTERNALFORMAT(GL_RG8)
 			case GL_BYTE:          VALIDATE_INTERNALFORMAT(GL_RG8_SNORM)
+			case GL_HALF_FLOAT_OES:
 			case GL_HALF_FLOAT:    VALIDATE_INTERNALFORMAT(GL_RG16F)
 			case GL_FLOAT:         VALIDATE_INTERNALFORMAT(GL_RG32F, GL_RG16F)
 			default:               return error(GL_INVALID_OPERATION, false);
@@ -938,6 +938,7 @@ namespace es2
 			{
 			case GL_UNSIGNED_BYTE: VALIDATE_INTERNALFORMAT(GL_R8)
 			case GL_BYTE:          VALIDATE_INTERNALFORMAT(GL_R8_SNORM)
+			case GL_HALF_FLOAT_OES:
 			case GL_HALF_FLOAT:    VALIDATE_INTERNALFORMAT(GL_R16F)
 			case GL_FLOAT:         VALIDATE_INTERNALFORMAT(GL_R32F, GL_R16F)
 			default:               return error(GL_INVALID_OPERATION, false);
@@ -979,6 +980,7 @@ namespace es2
 			{
 			case GL_UNSIGNED_BYTE:
 			case GL_HALF_FLOAT_OES:
+			case GL_HALF_FLOAT:
 			case GL_FLOAT:
 				break;
 			default:
@@ -1015,6 +1017,7 @@ namespace es2
 		case GL_RGB565:
 		case GL_RGB8_OES:
 		case GL_RGBA8_OES:
+		case GL_R11F_G11F_B10F:
 		case GL_R16F:
 		case GL_RG16F:
 		case GL_RGB16F:
@@ -1044,12 +1047,12 @@ namespace es2
 		case GL_RGBA16I:
 		case GL_RGBA32I:
 		case GL_RGBA32UI:
-		case GL_R11F_G11F_B10F:
 		case GL_R32F:
 		case GL_RG32F:
 		case GL_RGB32F:
 		case GL_RGBA32F:
 			return clientVersion >= 3;
+		case GL_RGB10_EXT: // requires GL_OES_required_internalformat
 		case GL_DEPTH_COMPONENT24:
 		case GL_DEPTH_COMPONENT32_OES:
 		case GL_DEPTH_COMPONENT32F:
@@ -1092,6 +1095,7 @@ namespace es2
 		case GL_RG32UI:
 		case GL_RG32I:
 		case GL_SRGB8_ALPHA8:
+		case GL_RGB10_EXT:
 		case GL_RGB10_A2:
 		case GL_RGBA8UI:
 		case GL_RGBA8I:
@@ -1147,6 +1151,7 @@ namespace es2
 		case GL_RG32UI:
 		case GL_RG32I:
 		case GL_SRGB8_ALPHA8:
+		case GL_RGB10_EXT:
 		case GL_RGB10_A2:
 		case GL_RGBA8UI:
 		case GL_RGBA8I:

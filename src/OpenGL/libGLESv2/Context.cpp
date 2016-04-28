@@ -4286,6 +4286,8 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 #endif
 		(const GLubyte*)"GL_EXT_texture_filter_anisotropic",
 		(const GLubyte*)"GL_EXT_texture_format_BGRA8888",
+		(const GLubyte*)"GL_EXT_texture_rg",
+		(const GLubyte*)"GL_EXT_texture_type_2_10_10_10_REV",
 		(const GLubyte*)"GL_ANGLE_framebuffer_blit",
 		(const GLubyte*)"GL_NV_framebuffer_blit",
 		(const GLubyte*)"GL_ANGLE_framebuffer_multisample",
