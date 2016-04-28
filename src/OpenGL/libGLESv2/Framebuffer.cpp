@@ -361,6 +361,11 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 			{
 				return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE;
 			}
+
+			if(colorbuffer->getFormat() == GL_RGB5_A1)
+			{
+				return GL_FRAMEBUFFER_UNSUPPORTED;
+			}
 		}
 	}
 
