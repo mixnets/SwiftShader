@@ -1239,7 +1239,7 @@ namespace glsl
 						{
 							float projFactor = 1.0f / constant->getFConst(t->getNominalSize() - 1);
 							Constant projCoord(constant->getFConst(0) * projFactor,
-							                   constant->getFConst(1) * projFactor, 
+							                   constant->getFConst(1) * projFactor,
 							                   constant->getFConst(2) * projFactor,
 							                   0.0f);
 							emit(sw::Shader::OPCODE_MOV, &coord, &projCoord);
@@ -2875,13 +2875,12 @@ namespace glsl
 			case EOpIndexDirectInterfaceBlock:   // Interface blocks can't contain samplers
 			case EOpIndexIndirect:               // Indirect indexing produces a temporary, not a sampler register
 			default:
-				UNREACHABLE(binary->getOp());
-				return 0;
+				return -1;
 			}
 		}
 
 		UNREACHABLE(0);
-		return 0;   // Not a sampler register
+		return -1;   // Not a sampler register
 	}
 
 	int OutputASM::samplerRegister(TIntermSymbol *sampler)
