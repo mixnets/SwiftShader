@@ -241,6 +241,8 @@ namespace sw
 			OPCODE_LEAVE,   // Return before the end of the function
 			OPCODE_CONTINUE,
 			OPCODE_TEST,   // Marks the end of the code that can be skipped by 'continue'
+			OPCODE_SWITCH,
+			OPCODE_ENDSWITCH,
 
 			// Integer opcodes
 			OPCODE_INEG,

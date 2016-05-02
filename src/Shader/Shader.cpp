@@ -968,6 +968,8 @@ namespace sw
 		case OPCODE_LEAVE:          return "leave";
 		case OPCODE_CONTINUE:       return "continue";
 		case OPCODE_TEST:           return "test";
+		case OPCODE_SWITCH:         return "switch";
+		case OPCODE_ENDSWITCH:      return "endswitch";
 		default:
 			ASSERT(false);
 		}
@@ -1087,12 +1089,12 @@ namespace sw
 
 	bool Shader::Instruction::isLoop() const
 	{
-		return opcode == OPCODE_LOOP || opcode == OPCODE_REP || opcode == OPCODE_WHILE;
+		return opcode == OPCODE_LOOP || opcode == OPCODE_REP || opcode == OPCODE_WHILE || opcode == OPCODE_SWITCH;
 	}
 
 	bool Shader::Instruction::isEndLoop() const
 	{
-		return opcode == OPCODE_ENDLOOP || opcode == OPCODE_ENDREP || opcode == OPCODE_ENDWHILE;
+		return opcode == OPCODE_ENDLOOP || opcode == OPCODE_ENDREP || opcode == OPCODE_ENDWHILE || opcode == OPCODE_ENDSWITCH;;
 	}
 
 	bool Shader::Instruction::isPredicated() const
