@@ -634,6 +634,7 @@ public:
 
 	TIntermSwitch *getAsSwitchNode() { return this; }
 
+	TIntermTyped *getInit() { return mInit; }
 	TIntermAggregate *getStatementList() { return mStatementList; }
 	void setStatementList(TIntermAggregate *statementList) { mStatementList = statementList; }
 
