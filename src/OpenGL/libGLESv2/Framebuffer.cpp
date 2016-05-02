@@ -433,6 +433,11 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 
 		if(IsRenderbuffer(mStencilbufferType))
 		{
+			if(depthbuffer && (!IsRenderbuffer(mDepthbufferType) || (depthbuffer != stencilbuffer)))
+			{
+				return GL_FRAMEBUFFER_UNSUPPORTED;
+			}
+
 			if(!es2::IsStencilRenderable(stencilbuffer->getFormat()))
 			{
 				return GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
@@ -440,6 +445,11 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		}
 		else if(IsTextureTarget(mStencilbufferType))
 		{
+			if(IsRenderbuffer(mDepthbufferType))
+			{
+				return GL_FRAMEBUFFER_UNSUPPORTED;
+			}
+
 			GLenum internalformat = stencilbuffer->getFormat();
 
 			if(!es2::IsStencilTexture(internalformat))
