@@ -34,7 +34,7 @@ namespace glsl
 	class Temporary : public TIntermSymbol
 	{
 	public:
-		Temporary(OutputASM *assembler) : TIntermSymbol(TSymbolTableLevel::nextUniqueId(), "tmp", TType(EbtFloat, EbpHigh, EvqTemporary, 4, 1, false)), assembler(assembler)
+		Temporary(OutputASM *assembler, int s0 = 4, int s1 = 1) : TIntermSymbol(TSymbolTableLevel::nextUniqueId(), "tmp", TType(EbtFloat, EbpHigh, EvqTemporary, s0, s1, false)), assembler(assembler)
 		{
 		}
 
@@ -1474,6 +1474,15 @@ namespace glsl
 		case EOpVectorEqual:      if(visit == PostVisit) emitCmp(sw::Shader::CONTROL_EQ, result, arg[0], arg[1]); break;
 		case EOpVectorNotEqual:   if(visit == PostVisit) emitCmp(sw::Shader::CONTROL_NE, result, arg[0], arg[1]); break;
 		case EOpMod:              if(visit == PostVisit) emit(sw::Shader::OPCODE_MOD, result, arg[0], arg[1]); break;
+		case EOpModf:
+			if(visit == PostVisit)
+			{
+				Temporary truncatedValue(this, arg[0]->getAsTyped()->getNominalSize());
+				emit(sw::Shader::OPCODE_TRUNC, &truncatedValue, arg[0]);
+				assignLvalue(arg[1]->getAsTyped(), &truncatedValue);
+				emitBinary(sw::Shader::OPCODE_SUB, result, arg[0], arg[1]);
+			}
+			break;
 		case EOpPow:              if(visit == PostVisit) emit(sw::Shader::OPCODE_POW, result, arg[0], arg[1]); break;
 		case EOpAtan:             if(visit == PostVisit) emit(sw::Shader::OPCODE_ATAN2, result, arg[0], arg[1]); break;
 		case EOpMin:              if(visit == PostVisit) emit(getOpcode(sw::Shader::OPCODE_MIN, result), result, arg[0], arg[1]); break;
@@ -2196,7 +2205,7 @@ namespace glsl
 	void OutputASM::assignLvalue(TIntermTyped *dst, TIntermTyped *src)
 	{
 		if(src &&
-			((src->isVector() && (!dst->isVector() || (dst->getNominalSize() != dst->getNominalSize()))) ||
+			((src->isVector() && (!dst->isVector() || (src->getNominalSize() != dst->getNominalSize()))) ||
 			 (src->isMatrix() && (!dst->isMatrix() || (src->getNominalSize() != dst->getNominalSize()) || (src->getSecondarySize() != dst->getSecondarySize())))))
 		{
 			return mContext.error(src->getLine(), "Result type should match the l-value type in compound assignment", src->isVector() ? "vector" : "matrix");
