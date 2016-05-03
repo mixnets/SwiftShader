@@ -1474,6 +1474,13 @@ namespace glsl
 		case EOpVectorEqual:      if(visit == PostVisit) emitCmp(sw::Shader::CONTROL_EQ, result, arg[0], arg[1]); break;
 		case EOpVectorNotEqual:   if(visit == PostVisit) emitCmp(sw::Shader::CONTROL_NE, result, arg[0], arg[1]); break;
 		case EOpMod:              if(visit == PostVisit) emit(sw::Shader::OPCODE_MOD, result, arg[0], arg[1]); break;
+		case EOpModf:
+			if(visit == PostVisit)
+			{
+				emit(sw::Shader::OPCODE_TRUNC, arg[1]->getAsTyped(), arg[0]);
+				emitBinary(sw::Shader::OPCODE_SUB, result, arg[0], arg[1]);
+			}
+			break;
 		case EOpPow:              if(visit == PostVisit) emit(sw::Shader::OPCODE_POW, result, arg[0], arg[1]); break;
 		case EOpAtan:             if(visit == PostVisit) emit(sw::Shader::OPCODE_ATAN2, result, arg[0], arg[1]); break;
 		case EOpMin:              if(visit == PostVisit) emit(getOpcode(sw::Shader::OPCODE_MIN, result), result, arg[0], arg[1]); break;
