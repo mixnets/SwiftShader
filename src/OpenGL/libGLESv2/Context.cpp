@@ -2168,16 +2168,14 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = 2;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS: // integer, at least 64
-		UNIMPLEMENTED();
-		*params = 64;
+		*params = sw::MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS: // integer, at least 4
 		UNIMPLEMENTED();
 		*params = MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS: // integer, at least 4
-		UNIMPLEMENTED();
-		*params = 4;
+		*params = sw::MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS;
 		break;
 	case GL_MAX_UNIFORM_BLOCK_SIZE: // integer, at least 16384
 		*params = MAX_UNIFORM_BLOCK_SIZE;
@@ -2994,7 +2992,7 @@ GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, 
 }
 
 // Applies the shaders and shader constants
-void Context::applyShaders()
+void Context::applyShaders(int count)
 {
     Program *programObject = getCurrentProgram();
     sw::VertexShader *vertexShader = programObject->getVertexShader();
@@ -3009,7 +3007,14 @@ void Context::applyShaders()
         mAppliedProgramSerial = programObject->getSerial();
     }
 
-    programObject->applyUniformBuffers(mState.uniformBuffers);
+	TransformFeedback* transformFeedback = getTransformFeedback();
+	programObject->applyTransformFeedback(transformFeedback);
+	if(transformFeedback)
+	{
+		transformFeedback->addVertexOffset(count);
+	}
+
+	programObject->applyUniformBuffers(mState.uniformBuffers);
     programObject->applyUniforms();
 }
 
@@ -3435,8 +3440,9 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 
     sw::DrawType primitiveType;
     int primitiveCount;
+    int verticesPerPrimitive;
 
-    if(!es2sw::ConvertPrimitiveType(mode, count, GL_NONE, primitiveType, primitiveCount))
+    if(!es2sw::ConvertPrimitiveType(mode, count, GL_NONE, primitiveType, primitiveCount, verticesPerPrimitive))
         return error(GL_INVALID_ENUM);
 
     if(primitiveCount <= 0)
@@ -3461,7 +3467,7 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 			return error(err);
 		}
 
-		applyShaders();
+		applyShaders(primitiveCount * verticesPerPrimitive);
 		applyTextures();
 
 		if(!getCurrentProgram()->validateSamplers(false))
@@ -3490,8 +3496,9 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 
     sw::DrawType primitiveType;
     int primitiveCount;
+    int verticesPerPrimitive;
 
-    if(!es2sw::ConvertPrimitiveType(mode, count, type, primitiveType, primitiveCount))
+    if(!es2sw::ConvertPrimitiveType(mode, count, type, primitiveType, primitiveCount, verticesPerPrimitive))
         return error(GL_INVALID_ENUM);
 
     if(primitiveCount <= 0)
@@ -3524,7 +3531,7 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 			return error(err);
 		}
 
-		applyShaders();
+		applyShaders(primitiveCount * verticesPerPrimitive);
 		applyTextures();
 
 		if(!getCurrentProgram()->validateSamplers(false))

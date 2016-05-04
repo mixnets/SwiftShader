@@ -695,7 +695,7 @@ private:
     void applyState(GLenum drawMode);
 	GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsizei instanceId);
     GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo);
-    void applyShaders();
+    void applyShaders(int count);
     void applyTextures();
     void applyTextures(sw::SamplerType type);
 	void applyTexture(sw::SamplerType type, int sampler, Texture *texture);
