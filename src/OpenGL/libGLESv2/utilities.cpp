@@ -185,7 +185,7 @@ namespace es2
 		case GL_UNSIGNED_INT:
 		case GL_SAMPLER_2D:
 		case GL_SAMPLER_CUBE:
-		case GL_SAMPLER_EXTERNAL_OES:
+        case GL_SAMPLER_EXTERNAL_OES:
 		case GL_SAMPLER_3D_OES:
 		case GL_SAMPLER_2D_ARRAY:
 		case GL_SAMPLER_2D_SHADOW:
@@ -355,7 +355,7 @@ namespace es2
 		case GL_UNSIGNED_INT_VEC4:
 		case GL_SAMPLER_2D:
 		case GL_SAMPLER_CUBE:
-		case GL_SAMPLER_EXTERNAL_OES:
+        case GL_SAMPLER_EXTERNAL_OES:
 		case GL_SAMPLER_3D_OES:
 		case GL_SAMPLER_2D_ARRAY:
 		case GL_SAMPLER_2D_SHADOW:
@@ -656,7 +656,7 @@ namespace es2
 		case GL_RED_EXT:
 			return (clientVersion >= 3) && (type == GL_UNSIGNED_BYTE);
 		case GL_DEPTH_COMPONENT:
-			if(internalFormat != format)
+			if (internalFormat != format)
 			{
 				return false;
 			}
@@ -664,7 +664,7 @@ namespace es2
 			{
 			case GL_UNSIGNED_SHORT:
 			case GL_FLOAT:
-				if(internalType != type)
+				if (internalType != type)
 				{
 					return false;
 				}
@@ -1422,37 +1422,44 @@ namespace es2sw
 		}
 	}
 
-	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount, GLenum elementType,  sw::DrawType &drawType, int &primitiveCount)
+	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount, GLenum elementType, sw::DrawType &drawType, int &primitiveCount, int &verticesPerPrimitive)
 	{
 		switch(primitiveType)
 		{
 		case GL_POINTS:
 			drawType = sw::DRAW_POINTLIST;
 			primitiveCount = elementCount;
+			verticesPerPrimitive = 1;
 			break;
 		case GL_LINES:
 			drawType = sw::DRAW_LINELIST;
 			primitiveCount = elementCount / 2;
+			verticesPerPrimitive = 2;
 			break;
 		case GL_LINE_LOOP:
 			drawType = sw::DRAW_LINELOOP;
 			primitiveCount = elementCount;
+			verticesPerPrimitive = 2;
 			break;
 		case GL_LINE_STRIP:
 			drawType = sw::DRAW_LINESTRIP;
 			primitiveCount = elementCount - 1;
+			verticesPerPrimitive = 2;
 			break;
 		case GL_TRIANGLES:
 			drawType = sw::DRAW_TRIANGLELIST;
 			primitiveCount = elementCount / 3;
+			verticesPerPrimitive = 3;
 			break;
 		case GL_TRIANGLE_STRIP:
 			drawType = sw::DRAW_TRIANGLESTRIP;
 			primitiveCount = elementCount - 2;
+			verticesPerPrimitive = 3;
 			break;
 		case GL_TRIANGLE_FAN:
 			drawType = sw::DRAW_TRIANGLEFAN;
 			primitiveCount = elementCount - 2;
+			verticesPerPrimitive = 3;
 			break;
 		default:
 			return false;
