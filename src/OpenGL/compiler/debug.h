@@ -41,21 +41,21 @@ void Trace(const char* format, ...);
 // A macro asserting a condition and outputting failures to the debug log
 #undef ASSERT
 #define ASSERT(expression) do { \
-    if(!(expression)) \
-        Trace("Assert failed: %s(%d): "#expression"\n", __FUNCTION__, __LINE__); \
-    assert(expression); \
+	if(!(expression)) \
+		Trace("Assert failed: %s(%d): "#expression"\n", __FUNCTION__, __LINE__); \
+	assert(expression); \
 } while(0)
 
 #undef UNIMPLEMENTED
 #define UNIMPLEMENTED() do { \
-    Trace("Unimplemented invoked: %s(%d)\n", __FUNCTION__, __LINE__); \
-    assert(false); \
+	Trace("Unimplemented invoked: %s(%d)\n", __FUNCTION__, __LINE__); \
+	assert(false); \
 } while(0)
 
 #undef UNREACHABLE
 #define UNREACHABLE(value) do { \
-    Trace("Unreachable reached: %s(%d). %s: %d\n", __FUNCTION__, __LINE__, #value, value); \
-    assert(false); \
+	Trace("Unreachable reached: %s(%d). %s: %d\n", __FUNCTION__, __LINE__, #value, value); \
+	assert(false); \
 } while(0)
 
 #endif   // __ANDROID__

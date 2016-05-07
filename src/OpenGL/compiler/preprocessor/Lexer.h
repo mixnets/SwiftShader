@@ -14,10 +14,10 @@ struct Token;
 
 class Lexer
 {
-  public:
-    virtual ~Lexer();
+public:
+	virtual ~Lexer();
 
-    virtual void lex(Token* token) = 0;
+	virtual void lex(Token* token) = 0;
 };
 
 }  // namespace pp
