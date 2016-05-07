@@ -12,23 +12,23 @@
 
 typedef enum
 {
-    EBhRequire,
-    EBhEnable,
-    EBhWarn,
-    EBhDisable,
-    EBhUndefined
+	EBhRequire,
+	EBhEnable,
+	EBhWarn,
+	EBhDisable,
+	EBhUndefined
 } TBehavior;
 
 inline const char *getBehaviorString(TBehavior b)
 {
-    switch(b)
-    {
-      case EBhRequire: return "require";
-      case EBhEnable:  return "enable";
-      case EBhWarn:    return "warn";
-      case EBhDisable: return "disable";
-      default: return NULL;
-    }
+	switch(b)
+	{
+	case EBhRequire: return "require";
+	case EBhEnable:  return "enable";
+	case EBhWarn:    return "warn";
+	case EBhDisable: return "disable";
+	default:         return nullptr;
+	}
 }
 
 // Mapping between extension name and behavior.

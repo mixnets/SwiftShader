@@ -13,37 +13,37 @@ class TInfoSink;
 
 class TDiagnostics : public pp::Diagnostics
 {
-  public:
-    TDiagnostics(TInfoSink& infoSink);
-    virtual ~TDiagnostics();
+public:
+	TDiagnostics(TInfoSink& infoSink);
+	virtual ~TDiagnostics();
 
-    int shaderVersion() const { return mShaderVersion; }
-    TInfoSink& infoSink() { return mInfoSink; }
+	int shaderVersion() const { return mShaderVersion; }
+	TInfoSink& infoSink() { return mInfoSink; }
 
-    int numErrors() const { return mNumErrors; }
-    int numWarnings() const { return mNumWarnings; }
+	int numErrors() const { return mNumErrors; }
+	int numWarnings() const { return mNumWarnings; }
 
-    void setShaderVersion(int version);
+	void setShaderVersion(int version);
 
-    void writeInfo(Severity severity,
-                   const pp::SourceLocation& loc,
-                   const std::string& reason,
-                   const std::string& token,
-                   const std::string& extra);
+	void writeInfo(Severity severity,
+				   const pp::SourceLocation& loc,
+				   const std::string& reason,
+				   const std::string& token,
+				   const std::string& extra);
 
-    void writeDebug(const std::string& str);
+	void writeDebug(const std::string& str);
 
-  protected:
-    virtual void print(ID id,
-                       const pp::SourceLocation& loc,
-                       const std::string& text);
+protected:
+	virtual void print(ID id,
+					   const pp::SourceLocation& loc,
+					   const std::string& text);
 
-  private:
-    int mShaderVersion;
+private:
+	int mShaderVersion;
 
-    TInfoSink& mInfoSink;
-    int mNumErrors;
-    int mNumWarnings;
+	TInfoSink& mInfoSink;
+	int mNumErrors;
+	int mNumWarnings;
 };
 
 #endif  // COMPILER_DIAGNOSTICS_H_

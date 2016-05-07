@@ -30,28 +30,28 @@ struct ShBuiltInResources
 {
 	ShBuiltInResources();
 
-    // Constants.
-    int MaxVertexAttribs;
-    int MaxVertexUniformVectors;
-    int MaxVaryingVectors;
-    int MaxVertexTextureImageUnits;
-    int MaxCombinedTextureImageUnits;
-    int MaxTextureImageUnits;
-    int MaxFragmentUniformVectors;
-    int MaxDrawBuffers;
-    int MaxVertexOutputVectors;
-    int MaxFragmentInputVectors;
-    int MinProgramTexelOffset;
-    int MaxProgramTexelOffset;
+	// Constants.
+	int MaxVertexAttribs;
+	int MaxVertexUniformVectors;
+	int MaxVaryingVectors;
+	int MaxVertexTextureImageUnits;
+	int MaxCombinedTextureImageUnits;
+	int MaxTextureImageUnits;
+	int MaxFragmentUniformVectors;
+	int MaxDrawBuffers;
+	int MaxVertexOutputVectors;
+	int MaxFragmentInputVectors;
+	int MinProgramTexelOffset;
+	int MaxProgramTexelOffset;
 
-    // Extensions.
-    // Set to 1 to enable the extension, else 0.
-    int OES_standard_derivatives;
+	// Extensions.
+	// Set to 1 to enable the extension, else 0.
+	int OES_standard_derivatives;
 	int OES_fragment_precision_high;
-    int OES_EGL_image_external;
+	int OES_EGL_image_external;
 	int EXT_draw_buffers;
 
-    unsigned int MaxCallStackDepth;
+	unsigned int MaxCallStackDepth;
 };
 
 typedef unsigned int GLenum;
@@ -65,53 +65,53 @@ typedef unsigned int GLenum;
 class TCompiler
 {
 public:
-    TCompiler(GLenum shaderType);
-    virtual ~TCompiler();
-    virtual TCompiler* getAsCompiler() { return this; }
+	TCompiler(GLenum shaderType);
+	virtual ~TCompiler();
+	virtual TCompiler* getAsCompiler() { return this; }
 
-    bool Init(const ShBuiltInResources& resources);
-    bool compile(const char* const shaderStrings[],
-                 const int numStrings,
-                 int compileOptions);
+	bool Init(const ShBuiltInResources& resources);
+	bool compile(const char* const shaderStrings[],
+	             const int numStrings,
+	             int compileOptions);
 
-    // Get results of the last compilation.
-    int getShaderVersion() const { return shaderVersion; }
-    TInfoSink& getInfoSink() { return infoSink; }
+	// Get results of the last compilation.
+	int getShaderVersion() const { return shaderVersion; }
+	TInfoSink& getInfoSink() { return infoSink; }
 
 protected:
-    GLenum getShaderType() const { return shaderType; }
-    // Initialize symbol-table with built-in symbols.
-    bool InitBuiltInSymbolTable(const ShBuiltInResources& resources);
-    // Clears the results from the previous compilation.
-    void clearResults();
-    // Return true if function recursion is detected or call depth exceeded.
-    bool validateCallDepth(TIntermNode *root, TInfoSink &infoSink);
-    // Returns true if the given shader does not exceed the minimum
-    // functionality mandated in GLSL 1.0 spec Appendix A.
-    bool validateLimitations(TIntermNode *root);
-    // Translate to object code.
-    virtual bool translate(TIntermNode *root) = 0;
-    // Get built-in extensions with default behavior.
-    const TExtensionBehavior& getExtensionBehavior() const;
+	GLenum getShaderType() const { return shaderType; }
+	// Initialize symbol-table with built-in symbols.
+	bool InitBuiltInSymbolTable(const ShBuiltInResources& resources);
+	// Clears the results from the previous compilation.
+	void clearResults();
+	// Return true if function recursion is detected or call depth exceeded.
+	bool validateCallDepth(TIntermNode *root, TInfoSink &infoSink);
+	// Returns true if the given shader does not exceed the minimum
+	// functionality mandated in GLSL 1.0 spec Appendix A.
+	bool validateLimitations(TIntermNode *root);
+	// Translate to object code.
+	virtual bool translate(TIntermNode *root) = 0;
+	// Get built-in extensions with default behavior.
+	const TExtensionBehavior& getExtensionBehavior() const;
 
 private:
-    GLenum shaderType;
+	GLenum shaderType;
 
-    unsigned int maxCallStackDepth;
+	unsigned int maxCallStackDepth;
 
-    // Built-in symbol table for the given language, spec, and resources.
-    // It is preserved from compile-to-compile.
-    TSymbolTable symbolTable;
-    // Built-in extensions with default behavior.
-    TExtensionBehavior extensionBehavior;
+	// Built-in symbol table for the given language, spec, and resources.
+	// It is preserved from compile-to-compile.
+	TSymbolTable symbolTable;
+	// Built-in extensions with default behavior.
+	TExtensionBehavior extensionBehavior;
 
-    // Results of compilation.
-    int shaderVersion;
-    TInfoSink infoSink;  // Output sink.
+	// Results of compilation.
+	int shaderVersion;
+	TInfoSink infoSink;  // Output sink.
 
-    // Memory allocator. Allocates and tracks memory required by the compiler.
-    // Deallocates all memory when compiler is destructed.
-    TPoolAllocator allocator;
+	// Memory allocator. Allocates and tracks memory required by the compiler.
+	// Deallocates all memory when compiler is destructed.
+	TPoolAllocator allocator;
 };
 
 bool InitCompilerGlobals();
