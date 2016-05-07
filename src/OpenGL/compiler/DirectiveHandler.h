@@ -16,33 +16,33 @@ class TDiagnostics;
 class TDirectiveHandler : public pp::DirectiveHandler
 {
 public:
-    TDirectiveHandler(TExtensionBehavior& extBehavior,
-                      TDiagnostics& diagnostics,
-                      int& shaderVersion);
-    virtual ~TDirectiveHandler();
+	TDirectiveHandler(TExtensionBehavior& extBehavior,
+	                  TDiagnostics& diagnostics,
+	                  int& shaderVersion);
+	virtual ~TDirectiveHandler();
 
-    const TPragma& pragma() const { return mPragma; }
-    const TExtensionBehavior& extensionBehavior() const { return mExtensionBehavior; }
+	const TPragma& pragma() const { return mPragma; }
+	const TExtensionBehavior& extensionBehavior() const { return mExtensionBehavior; }
 
-    virtual void handleError(const pp::SourceLocation& loc,
-                             const std::string& msg);
+	virtual void handleError(const pp::SourceLocation& loc,
+	                         const std::string& msg);
 
-    virtual void handlePragma(const pp::SourceLocation& loc,
-                              const std::string& name,
-                              const std::string& value);
+	virtual void handlePragma(const pp::SourceLocation& loc,
+	                          const std::string& name,
+	                          const std::string& value);
 
-    virtual void handleExtension(const pp::SourceLocation& loc,
-                                 const std::string& name,
-                                 const std::string& behavior);
+	virtual void handleExtension(const pp::SourceLocation& loc,
+	                             const std::string& name,
+	                             const std::string& behavior);
 
-    virtual void handleVersion(const pp::SourceLocation& loc,
-                               int version);
+	virtual void handleVersion(const pp::SourceLocation& loc,
+	                           int version);
 
 private:
-    TPragma mPragma;
-    TExtensionBehavior& mExtensionBehavior;
-    TDiagnostics& mDiagnostics;
-    int& mShaderVersion;
+	TPragma mPragma;
+	TExtensionBehavior& mExtensionBehavior;
+	TDiagnostics& mDiagnostics;
+	int& mShaderVersion;
 };
 
 #endif  // COMPILER_DIRECTIVE_HANDLER_H_

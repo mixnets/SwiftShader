@@ -13,57 +13,57 @@ namespace
 
 class ValidateGlobalInitializerTraverser : public TIntermTraverser
 {
-  public:
-    ValidateGlobalInitializerTraverser(const TParseContext *context);
+public:
+	ValidateGlobalInitializerTraverser(const TParseContext *context);
 
-    void visitSymbol(TIntermSymbol *node) override;
+	void visitSymbol(TIntermSymbol *node) override;
 
-    bool isValid() const { return mIsValid; }
-    bool issueWarning() const { return mIssueWarning; }
+	bool isValid() const { return mIsValid; }
+	bool issueWarning() const { return mIssueWarning; }
 
-  private:
-    const TParseContext *mContext;
-    bool mIsValid;
-    bool mIssueWarning;
+private:
+	const TParseContext *mContext;
+	bool mIsValid;
+	bool mIssueWarning;
 };
 
 void ValidateGlobalInitializerTraverser::visitSymbol(TIntermSymbol *node)
 {
-    const TSymbol *sym = mContext->symbolTable.find(node->getSymbol(), mContext->getShaderVersion());
-    if (sym->isVariable())
-    {
-        // ESSL 1.00 section 4.3 (or ESSL 3.00 section 4.3):
-        // Global initializers must be constant expressions.
-        const TVariable *var = static_cast<const TVariable *>(sym);
-        switch (var->getType().getQualifier())
-        {
-          case EvqConstExpr:
-            break;
-          case EvqGlobal:
-          case EvqTemporary:
-          case EvqUniform:
-            // We allow these cases to be compatible with legacy ESSL 1.00 content.
-            // Implement stricter rules for ESSL 3.00 since there's no legacy content to deal with.
-            if (mContext->getShaderVersion() >= 300)
-            {
-                mIsValid = false;
-            }
-            else
-            {
-                mIssueWarning = true;
-            }
-            break;
-          default:
-            mIsValid = false;
-        }
-    }
+	const TSymbol *sym = mContext->symbolTable.find(node->getSymbol(), mContext->getShaderVersion());
+	if (sym->isVariable())
+	{
+		// ESSL 1.00 section 4.3 (or ESSL 3.00 section 4.3):
+		// Global initializers must be constant expressions.
+		const TVariable *var = static_cast<const TVariable *>(sym);
+		switch (var->getType().getQualifier())
+		{
+		case EvqConstExpr:
+			break;
+		case EvqGlobal:
+		case EvqTemporary:
+		case EvqUniform:
+			// We allow these cases to be compatible with legacy ESSL 1.00 content.
+			// Implement stricter rules for ESSL 3.00 since there's no legacy content to deal with.
+			if (mContext->getShaderVersion() >= 300)
+			{
+				mIsValid = false;
+			}
+			else
+			{
+				mIssueWarning = true;
+			}
+			break;
+		default:
+			mIsValid = false;
+		}
+	}
 }
 
 ValidateGlobalInitializerTraverser::ValidateGlobalInitializerTraverser(const TParseContext *context)
-    : TIntermTraverser(true, false, false),
-      mContext(context),
-      mIsValid(true),
-      mIssueWarning(false)
+	: TIntermTraverser(true, false, false),
+	  mContext(context),
+	  mIsValid(true),
+	  mIssueWarning(false)
 {
 }
 
@@ -71,10 +71,10 @@ ValidateGlobalInitializerTraverser::ValidateGlobalInitializerTraverser(const TPa
 
 bool ValidateGlobalInitializer(TIntermTyped *initializer, const TParseContext *context, bool *warning)
 {
-    ValidateGlobalInitializerTraverser validate(context);
-    initializer->traverse(&validate);
-    ASSERT(warning != nullptr);
-    *warning = validate.issueWarning();
-    return validate.isValid();
+	ValidateGlobalInitializerTraverser validate(context);
+	initializer->traverse(&validate);
+	ASSERT(warning != nullptr);
+	*warning = validate.issueWarning();
+	return validate.isValid();
 }
 
