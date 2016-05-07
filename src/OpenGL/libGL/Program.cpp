@@ -1,13 +1,16 @@
-// SwiftShader Software Renderer
+// Copyright 2016 The SwiftShader Authors. All Rights Reserved.
 //
-// Copyright(c) 2005-2013 TransGaming Inc.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
 //
-// All rights reserved. No part of this software may be copied, distributed, transmitted,
-// transcribed, stored in a retrieval system, translated into any human or computer
-// language by any means, or disclosed to third parties without the explicit written
-// agreement of TransGaming Inc. Without such an agreement, no rights or licenses, express
-// or implied, including but not limited to any patent rights, are granted to you.
+//    http://www.apache.org/licenses/LICENSE-2.0
 //
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 // Program.cpp: Implements the Program class. Implements GL program objects
 // and related functionality.
@@ -204,7 +207,7 @@ namespace gl
 	int Program::getAttributeStream(int attributeIndex)
 	{
 		ASSERT(attributeIndex >= 0 && attributeIndex < MAX_VERTEX_ATTRIBS);
-    
+
 		return attributeStream[attributeIndex];
 	}
 
@@ -1314,7 +1317,7 @@ namespace gl
 	bool Program::defineUniform(GLenum shader, GLenum type, GLenum precision, const std::string &name, unsigned int arraySize, int registerIndex)
 	{
 		if(type == GL_SAMPLER_2D || type == GL_SAMPLER_CUBE)
-	    {
+		{
 			int index = registerIndex;
 			
 			do
@@ -1352,7 +1355,7 @@ namespace gl
 				index++;
 			}
 			while(index < registerIndex + static_cast<int>(arraySize));
-	    }
+		}
 
 		Uniform *uniform = 0;
 		GLint location = getUniformLocation(name);
@@ -1733,8 +1736,8 @@ namespace gl
 
 		if(targetUniform->psRegisterIndex != -1)
 		{
-            if(targetUniform->type == GL_SAMPLER_2D ||
-               targetUniform->type == GL_SAMPLER_CUBE)
+			if(targetUniform->type == GL_SAMPLER_2D ||
+			   targetUniform->type == GL_SAMPLER_CUBE)
 			{
 				for(int i = 0; i < count; i++)
 				{
@@ -1756,7 +1759,7 @@ namespace gl
 		if(targetUniform->vsRegisterIndex != -1)
 		{
 			if(targetUniform->type == GL_SAMPLER_2D ||
-               targetUniform->type == GL_SAMPLER_CUBE)
+			   targetUniform->type == GL_SAMPLER_CUBE)
 			{
 				for(int i = 0; i < count; i++)
 				{
@@ -2220,7 +2223,7 @@ namespace gl
 			if(samplersPS[i].active)
 			{
 				unsigned int unit = samplersPS[i].logicalTextureUnit;
-            
+
 				if(unit >= MAX_COMBINED_TEXTURE_IMAGE_UNITS)
 				{
 					if(logErrors)
@@ -2255,7 +2258,7 @@ namespace gl
 			if(samplersVS[i].active)
 			{
 				unsigned int unit = samplersVS[i].logicalTextureUnit;
-            
+
 				if(unit >= MAX_COMBINED_TEXTURE_IMAGE_UNITS)
 				{
 					if(logErrors)
