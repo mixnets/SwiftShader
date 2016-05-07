@@ -13,9 +13,9 @@
 
 class TMMap {
 public:
-    TMMap(const char* fileName) : 
+    TMMap(const char* fileName) :
         fSize(-1), // -1 is the error value returned by GetFileSize()
-        fp(NULL),
+        fp(nullptr),
         fBuff(0)   // 0 is the error value returned by MapViewOfFile()
     {
         if ((fp = fopen(fileName, "r")) == NULL)
@@ -46,7 +46,7 @@ public:
         if (fp != NULL)
             fclose(fp);
     }
-    
+
 private:
     int             fSize;      // size of file to map in
     FILE *fp;
