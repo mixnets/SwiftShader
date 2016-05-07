@@ -16,40 +16,40 @@
 class AnalyzeCallDepth : public TIntermTraverser
 {
 public:
-    AnalyzeCallDepth(TIntermNode *root);
-    ~AnalyzeCallDepth();
+	AnalyzeCallDepth(TIntermNode *root);
+	~AnalyzeCallDepth();
 
-    virtual bool visitAggregate(Visit, TIntermAggregate*);
+	virtual bool visitAggregate(Visit, TIntermAggregate*);
 
-    unsigned int analyzeCallDepth();
+	unsigned int analyzeCallDepth();
 
 private:
-    class FunctionNode
+	class FunctionNode
 	{
-    public:
-        FunctionNode(TIntermAggregate *node);
+	public:
+		FunctionNode(TIntermAggregate *node);
 
-        const TString &getName() const;
-        void addCallee(FunctionNode *callee);
+		const TString &getName() const;
+		void addCallee(FunctionNode *callee);
 		unsigned int analyzeCallDepth(AnalyzeCallDepth *analyzeCallDepth);
 		unsigned int getLastDepth() const;
 
 		void removeIfUnreachable();
 
-    private:
-        TIntermAggregate *const node;
-        TVector<FunctionNode*> callees;
+	private:
+		TIntermAggregate *const node;
+		TVector<FunctionNode*> callees;
 
-        Visit visit;
+		Visit visit;
 		unsigned int callDepth;
-    };
+	};
 
-    FunctionNode *findFunctionByName(const TString &name);
-	
-    std::vector<FunctionNode*> functions;
+	FunctionNode *findFunctionByName(const TString &name);
+
+	std::vector<FunctionNode*> functions;
 	typedef std::set<FunctionNode*> FunctionSet;
 	FunctionSet globalFunctionCalls;
-    FunctionNode *currentFunction;
+	FunctionNode *currentFunction;
 };
 
 #endif  // COMPILER_ANALYZE_CALL_DEPTH_H_
