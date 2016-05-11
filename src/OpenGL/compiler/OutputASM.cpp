@@ -3441,8 +3441,9 @@ namespace glsl
 		if(index && node->getCondition())
 		{
 			TIntermBinary *test = node->getCondition()->getAsBinaryNode();
+			TIntermSymbol *left = test ? test->getLeft()->getAsSymbolNode() : nullptr;
 
-			if(test && test->getLeft()->getAsSymbolNode()->getId() == index->getId())
+			if(left && (left->getId() == index->getId()))
 			{
 				TIntermConstantUnion *constant = test->getRight()->getAsConstantUnion();
 
