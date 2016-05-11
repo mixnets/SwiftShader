@@ -274,9 +274,11 @@ void CrashRecoveryContext::Enable() {
   Handler.sa_flags = 0;
   sigemptyset(&Handler.sa_mask);
 
+#ifndef ANDROID
   for (unsigned i = 0; i != NumSignals; ++i) {
     sigaction(Signals[i], &Handler, &PrevActions[i]);
   }
+#endif
 }
 
 void CrashRecoveryContext::Disable() {
@@ -287,9 +289,11 @@ void CrashRecoveryContext::Disable() {
 
   gCrashRecoveryEnabled = false;
 
+#ifndef ANDROID
   // Restore the previous signal handlers.
   for (unsigned i = 0; i != NumSignals; ++i)
     sigaction(Signals[i], &PrevActions[i], 0);
+#endif
 }
 
 #endif

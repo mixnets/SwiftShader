@@ -315,8 +315,10 @@ Program::Wait(const sys::Path &path,
     memset(&Act, 0, sizeof(Act));
     Act.sa_handler = TimeOutHandler;
     sigemptyset(&Act.sa_mask);
+#ifndef ANDROID
     sigaction(SIGALRM, &Act, &Old);
     alarm(secondsToWait);
+#endif
   }
 
   // Parent process: Wait for the child process to terminate.
@@ -328,9 +330,11 @@ Program::Wait(const sys::Path &path,
       // Kill the child.
       kill(child, SIGKILL);
 
+#ifndef ANDROID
       // Turn off the alarm and restore the signal handler
       alarm(0);
       sigaction(SIGALRM, &Old, 0);
+#endif
 
       // Wait for child to die
       if (wait(&status) != child)
@@ -346,8 +350,10 @@ Program::Wait(const sys::Path &path,
 
   // We exited normally without timeout, so turn off the timer.
   if (secondsToWait) {
+#ifndef ANDROID
     alarm(0);
     sigaction(SIGALRM, &Old, 0);
+#endif
   }
 
   // Return the proper exit status. Detect error conditions
