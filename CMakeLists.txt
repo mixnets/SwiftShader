@@ -363,7 +363,6 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Support/BranchProbability.cpp
     ${LLVM_DIR}/lib/Support/CommandLine.cpp
     ${LLVM_DIR}/lib/Support/ConstantRange.cpp
-    ${LLVM_DIR}/lib/Support/CrashRecoveryContext.cpp
     ${LLVM_DIR}/lib/Support/DAGDeltaAlgorithm.cpp
     ${LLVM_DIR}/lib/Support/DataExtractor.cpp
     ${LLVM_DIR}/lib/Support/Debug.cpp

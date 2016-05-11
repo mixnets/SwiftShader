@@ -577,7 +577,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="Support\Compiler.h" />
     <ClInclude Include="Support\ConstantFolder.h" />
     <ClInclude Include="Support\ConstantRange.h" />
-    <ClInclude Include="Support\CrashRecoveryContext.h" />
     <ClInclude Include="Support\DataExtractor.h" />
     <ClInclude Include="Support\DataFlow.h" />
     <ClInclude Include="Support\DataTypes.h" />

@@ -969,9 +969,6 @@
     <ClInclude Include="Support\ConstantRange.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Support\CrashRecoveryContext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Support\DataExtractor.h">
       <Filter>Header Files</Filter>
     </ClInclude>

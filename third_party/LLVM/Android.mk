@@ -221,7 +221,6 @@ LOCAL_SRC_FILES += \
 	lib/Support/circular_raw_ostream.cpp \
 	lib/Support/CommandLine.cpp \
 	lib/Support/ConstantRange.cpp \
-	lib/Support/CrashRecoveryContext.cpp \
 	lib/Support/DAGDeltaAlgorithm.cpp \
 	lib/Support/DataExtractor.cpp \
 	lib/Support/Debug.cpp \

@@ -432,7 +432,6 @@
 		<Unit filename="include/llvm/Support/Compiler.h" />
 		<Unit filename="include/llvm/Support/ConstantFolder.h" />
 		<Unit filename="include/llvm/Support/ConstantRange.h" />
-		<Unit filename="include/llvm/Support/CrashRecoveryContext.h" />
 		<Unit filename="include/llvm/Support/DOTGraphTraits.h" />
 		<Unit filename="include/llvm/Support/DataExtractor.h" />
 		<Unit filename="include/llvm/Support/DataFlow.h" />
@@ -784,7 +783,6 @@
 		<Unit filename="lib/Support/BranchProbability.cpp" />
 		<Unit filename="lib/Support/CommandLine.cpp" />
 		<Unit filename="lib/Support/ConstantRange.cpp" />
-		<Unit filename="lib/Support/CrashRecoveryContext.cpp" />
 		<Unit filename="lib/Support/DAGDeltaAlgorithm.cpp" />
 		<Unit filename="lib/Support/DataExtractor.cpp" />
 		<Unit filename="lib/Support/Debug.cpp" />

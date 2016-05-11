@@ -329,47 +329,6 @@ Program::Execute(const Path& path,
   return true;
 }
 
-int
-Program::Wait(const Path &path,
-              unsigned secondsToWait,
-              std::string* ErrMsg) {
-  if (Data_ == 0) {
-    MakeErrMsg(ErrMsg, "Process not started!");
-    return -1;
-  }
-
-  Win32ProcessInfo* wpi = reinterpret_cast<Win32ProcessInfo*>(Data_);
-  HANDLE hProcess = wpi->hProcess;
-
-  // Wait for the process to terminate.
-  DWORD millisecondsToWait = INFINITE;
-  if (secondsToWait > 0)
-    millisecondsToWait = secondsToWait * 1000;
-
-  if (WaitForSingleObject(hProcess, millisecondsToWait) == WAIT_TIMEOUT) {
-    if (!TerminateProcess(hProcess, 1)) {
-      MakeErrMsg(ErrMsg, "Failed to terminate timed-out program.");
-      // -2 indicates a crash or timeout as opposed to failure to execute.
-      return -2;
-    }
-    WaitForSingleObject(hProcess, INFINITE);
-  }
-
-  // Get its exit status.
-  DWORD status;
-  BOOL rc = GetExitCodeProcess(hProcess, &status);
-  DWORD err = GetLastError();
-
-  if (!rc) {
-    SetLastError(err);
-    MakeErrMsg(ErrMsg, "Failed getting status for program.");
-    // -2 indicates a crash or timeout as opposed to failure to execute.
-    return -2;
-  }
-
-  return status;
-}
-
 bool
 Program::Kill(std::string* ErrMsg) {
   if (Data_ == 0) {

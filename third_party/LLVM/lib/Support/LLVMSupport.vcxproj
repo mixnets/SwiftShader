@@ -348,7 +348,6 @@
     <ClCompile Include="circular_raw_ostream.cpp" />
     <ClCompile Include="CommandLine.cpp" />
     <ClCompile Include="ConstantRange.cpp" />
-    <ClCompile Include="CrashRecoveryContext.cpp" />
     <ClCompile Include="DataExtractor.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="DeltaAlgorithm.cpp" />

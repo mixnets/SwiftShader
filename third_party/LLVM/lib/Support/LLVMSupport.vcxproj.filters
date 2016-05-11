@@ -25,9 +25,6 @@
     <ClCompile Include="ConstantRange.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CrashRecoveryContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DataExtractor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
