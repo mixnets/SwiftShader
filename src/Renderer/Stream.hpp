@@ -36,6 +36,8 @@ namespace sw
 		STREAMTYPE_UINT,
 		STREAMTYPE_FIXED,     // Normalization ignored (16.16 format)
 		STREAMTYPE_HALF,      // Normalization ignored
+		STREAMTYPE_RGB10A2I,
+		STREAMTYPE_RGB10A2UI,
 
 		STREAMTYPE_LAST = STREAMTYPE_HALF
 	};
