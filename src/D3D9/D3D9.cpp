@@ -206,6 +206,8 @@ extern "C"
 
 	HRESULT __stdcall Direct3DCreate9Ex(unsigned int version, IDirect3D9Ex **device)
 	{
+		GTRACE("");
+
 		// D3D_SDK_VERSION check
 		if(version != (31 | 0x80000000) && // 9.0a/b DEBUG_INFO
 		   version != 31 &&                // 9.0a/b

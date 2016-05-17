@@ -53,8 +53,8 @@ namespace D3D9
 
 	class Direct3DDevice9 : public IDirect3DDevice9, public Unknown
 	{
-		friend CriticalSection;
-		friend Direct3DSwapChain9;
+		friend class CriticalSection;
+		friend class Direct3DSwapChain9;
 
 	public:
 		Direct3DDevice9(const HINSTANCE instance, Direct3D9 *d3d9, unsigned int adapter, D3DDEVTYPE deviceType, HWND focusWindow, unsigned long behaviourFlags, D3DPRESENT_PARAMETERS *presentParameters);
@@ -202,6 +202,7 @@ namespace D3D9
 		void bindLights();
 		bool bindViewport();   // Also adjusts for scissoring
 		void bindTextures();
+		void bindCursor();
 
 		long updateVolume(IDirect3DVolume9 *sourceVolume, IDirect3DVolume9 *destinationVolume);
 		bool validRectangle(const RECT *rect, IDirect3DSurface9 *surface);
@@ -315,6 +316,8 @@ namespace D3D9
 
 		sw::Surface *cursor;
 		bool showCursor;
+		HCURSOR nullCursor;
+		HCURSOR win32Cursor;
 
 		CRITICAL_SECTION criticalSection;
 	};

@@ -1112,7 +1112,7 @@ namespace D3D9
 			pixelShader->Release();
 		}
 
-		device->GetPixelShaderConstantF(0, pixelShaderConstantF[0], 32);
+		device->GetPixelShaderConstantF(0, pixelShaderConstantF[0], MAX_PIXEL_SHADER_CONST);
 		device->GetPixelShaderConstantI(0, pixelShaderConstantI[0], 16);
 		device->GetPixelShaderConstantB(0, pixelShaderConstantB, 16);
 	}

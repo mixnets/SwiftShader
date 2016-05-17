@@ -28,54 +28,44 @@
 #define MACRO_APPEND(x, y) APPEND(x, y)
 #define UNIQUE_IDENTIFIER(prefix) MACRO_APPEND(prefix, __COUNTER__)
 
-struct Trace
+class Trace
 {
-	Trace(const char *format, ...)
-	{
-		if(false)
-		{
-			FILE *file = fopen("debug.txt", "a");
+public:
+	Trace(const char *function, const void *object, const char *format, ...);
 
-			if(file)
-			{
-				for(int i = 0; i < indent; i++) fprintf(file, " ");
+	~Trace();
 
-				va_list vararg;
-				va_start(vararg, format);
-				vfprintf(file, format, vararg);
-				va_end(vararg);
+	static void nextFrame();
 
-				fclose(file);
-			}
-		}
+private:
+	static void log(char type, const char *function, const void *object, const char *arguments);
 
-		indent++;
-	}
+	bool tracing;
 
-	~Trace()
-	{
-		indent--;
-	}
-
+	static FILE *trace;
 	static int indent;
+	static bool comma;
+
+	static int frame;
+	static double frequency;
 };
 
 #ifndef NDEBUG
-	#define TRACE(format, ...) Trace UNIQUE_IDENTIFIER(_tracer_)("[0x%0.8X]%s("format")\n", this, __FUNCTION__, __VA_ARGS__)
-	#define GTRACE(format, ...) Trace("%s("format")\n", __FUNCTION__, __VA_ARGS__)
+	#define TRACE(format, ...) Trace UNIQUE_IDENTIFIER(_tracer_)(__FUNCTION__, this, format, ##__VA_ARGS__)
+	#define GTRACE(format, ...) Trace(__FUNCTION__, 0, format, ##__VA_ARGS__)
 #else
 	#define TRACE(...) ((void)0)
 	#define GTRACE(...) ((void)0)
 #endif
 
 #ifndef NDEBUG
-	#define ASSERT(expression) {if(!(expression)) Trace("\t! Assert failed in %s(%d): "#expression"\n", __FUNCTION__, __LINE__); assert(expression);}
+	#define ASSERT(expression) {if(!(expression)) Trace(__FUNCTION__, "! Assert failed at %s(%d): "#expression, __FILE__, __LINE__); assert(expression);}
 #else
 	#define ASSERT assert
 #endif
 
 #ifndef NDEBUG
-	#define UNIMPLEMENTED() {Trace("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__); ASSERT(false);}
+	#define UNIMPLEMENTED() {Trace(__FUNCTION__, "! Unimplemented: %s(%d)", __FILE__, __LINE__); ASSERT(false);}
 #else
 	#define UNIMPLEMENTED() ((void)0)
 #endif
@@ -85,7 +75,7 @@ struct Trace
 
 	inline long _NOINTERFACE(const char *function, const IID &iid)
 	{
-		Trace("\t! No interface {0x%0.8X, 0x%0.4X, 0x%0.4X, 0x%0.2X, 0x%0.2X, 0x%0.2X, 0x%0.2X, 0x%0.2X, 0x%0.2X, 0x%0.2X, 0x%0.2X} for %s\n", iid.Data1, iid.Data2, iid.Data3, iid.Data4[0], iid.Data4[1], iid.Data4[2], iid.Data4[3], iid.Data4[4], iid.Data4[5], iid.Data4[6], iid.Data4[7], function);
+		Trace(__FUNCTION__, 0, "! No interface {0x%0.8X, 0x%0.4X, 0x%0.4X, 0x%0.2X, 0x%0.2X, 0x%0.2X, 0x%0.2X, 0x%0.2X, 0x%0.2X, 0x%0.2X, 0x%0.2X} for %s", iid.Data1, iid.Data2, iid.Data3, iid.Data4[0], iid.Data4[1], iid.Data4[2], iid.Data4[3], iid.Data4[4], iid.Data4[5], iid.Data4[6], iid.Data4[7], function);
 
 		return E_NOINTERFACE;
 	}
@@ -96,7 +86,7 @@ struct Trace
 #ifndef NDEBUG
 	inline long INVALIDCALL()
 	{
-		Trace("\t! D3DERR_INVALIDCALL\n");
+		Trace(__FUNCTION__, 0, "! D3DERR_INVALIDCALL");
 
 		return D3DERR_INVALIDCALL;
 	}
@@ -107,7 +97,7 @@ struct Trace
 #ifndef NDEBUG
 	inline long OUTOFMEMORY()
 	{
-		Trace("\t! E_OUTOFMEMORY\n");
+		Trace(__FUNCTION__, 0, "! E_OUTOFMEMORY");
 
 		return E_OUTOFMEMORY;
 	}
@@ -118,7 +108,7 @@ struct Trace
 #ifndef NDEBUG
 	inline long OUTOFVIDEOMEMORY()
 	{
-		Trace("\t! D3DERR_OUTOFVIDEOMEMORY\n");
+		Trace(__FUNCTION__, 0, "! D3DERR_OUTOFVIDEOMEMORY");
 
 		return D3DERR_OUTOFVIDEOMEMORY;
 	}
@@ -129,7 +119,7 @@ struct Trace
 #ifndef NDEBUG
 	inline long NOTAVAILABLE()
 	{
-		Trace("\t! D3DERR_NOTAVAILABLE\n");
+		Trace(__FUNCTION__, 0, "! D3DERR_NOTAVAILABLE");
 
 		return D3DERR_NOTAVAILABLE;
 	}
@@ -140,7 +130,7 @@ struct Trace
 #ifndef NDEBUG
 	inline long NOTFOUND()
 	{
-		Trace("\t! D3DERR_NOTFOUND\n");
+		Trace(__FUNCTION__, 0, "! D3DERR_NOTFOUND");
 
 		return D3DERR_NOTFOUND;
 	}
@@ -151,7 +141,7 @@ struct Trace
 #ifndef NDEBUG
 	inline long MOREDATA()
 	{
-		Trace("\t! D3DERR_MOREDATA\n");
+		Trace(__FUNCTION__, 0, "! D3DERR_MOREDATA");
 
 		return D3DERR_MOREDATA;
 	}
@@ -162,7 +152,7 @@ struct Trace
 #ifndef NDEBUG
 	inline long FAIL()
 	{
-		Trace("\t! E_FAIL\n");
+		Trace(__FUNCTION__, 0, "! E_FAIL");
 
 		return E_FAIL;
 	}

@@ -56,6 +56,9 @@ namespace D3D9
 		long __stdcall GetDesc(D3DSURFACE_DESC *desc);
 
 		// Internal methods
+		virtual void bind();
+		virtual void unbind();
+
 		static sw::Format translateFormat(D3DFORMAT format);
 		static int bytes(D3DFORMAT format);
 

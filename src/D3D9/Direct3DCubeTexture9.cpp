@@ -40,7 +40,7 @@ namespace D3D9
 				if(level < this->levels)
 				{
 					surfaceLevel[face][level] = new Direct3DSurface9(device, this, width, height, format, pool, D3DMULTISAMPLE_NONE, 0, false, usage);
-					surfaceLevel[face][level]->bind();
+					surfaceLevel[face][level]->Direct3DResource9::bind();   // Call the base class method, because Direct3DSurface9 would bind this parent texture
 				}
 				else
 				{
@@ -63,7 +63,7 @@ namespace D3D9
 			{
 				if(surfaceLevel[face][level])
 				{
-					surfaceLevel[face][level]->unbind();
+					surfaceLevel[face][level]->Direct3DResource9::unbind();   // Call the base class method, because Direct3DSurface9 would unbind this parent texture
 					surfaceLevel[face][level] = 0;
 				}
 			}

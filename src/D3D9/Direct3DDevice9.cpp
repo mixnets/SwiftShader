@@ -63,6 +63,21 @@ namespace D3D9
 		context = new sw::Context();
 		renderer = new sw::Renderer(context, sw::Direct3D, false);
 
+		const char *commandLine = GetCommandLine();
+		bool whql = (strstr(commandLine, "-WHQL") != 0) || (strstr(commandLine, "-THQL") != 0);
+
+		if(whql)
+		{
+			sw::Sampler::setFilterQuality(sw::FILTER_ANISOTROPIC);
+			sw::Sampler::setMipmapQuality(sw::MIPMAP_LINEAR);
+
+			sw::logPrecision = sw::WHQL;
+			sw::expPrecision = sw::WHQL;
+			sw::rcpPrecision = sw::WHQL;
+			sw::rsqPrecision = sw::WHQL;
+			sw::perspectiveCorrection = true;
+		}
+
 		swapChain = 0;
 		depthStencil = 0;
 		autoDepthStencil = 0;
@@ -77,6 +92,11 @@ namespace D3D9
 		}
 
 		cursor = 0;
+		unsigned char one[32 * 32 / sizeof(unsigned char)];
+		memset(one, 0xFFFFFFFF, sizeof(one));
+		unsigned char zero[32 * 32 / sizeof(unsigned char)] = {0};
+		nullCursor = CreateCursor(instance, 0, 0, 32, 32, one, zero);
+		win32Cursor = GetCursor();
 
 		Reset(presentParameters);
 
@@ -267,6 +287,7 @@ namespace D3D9
 		palette.clear();
 
 		delete cursor;
+		DestroyCursor(nullCursor);
 
 		DeleteCriticalSection(&criticalSection);
 	}
@@ -1994,6 +2015,11 @@ namespace D3D9
 			return INVALIDCALL();
 		}
 
+		if(sampler >= D3DVERTEXTEXTURESAMPLER0)
+		{
+			sampler = 16 + (sampler - D3DVERTEXTEXTURESAMPLER0);
+		}
+
 		*texture = this->texture[sampler];
 
 		if(this->texture[sampler])
@@ -2667,16 +2693,9 @@ namespace D3D9
 
 		cursorSurface->unlockExternal();
 
-		if(showCursor)
-		{
-			sw::FrameBuffer::setCursorImage(cursor);
-		}
-		else
-		{
-			sw::FrameBuffer::setCursorImage(0);
-		}
-
 		sw::FrameBuffer::setCursorOrigin(x0, y0);
+
+		bindCursor();
 
 		return D3D_OK;
 	}
@@ -5305,9 +5324,18 @@ namespace D3D9
 
 		TRACE("const D3DVIEWPORT9 *viewport = 0x%0.8p", viewport);
 
-		if(!viewport)   // FIXME: Check if valid
+		if(!viewport)
 		{
 			return INVALIDCALL();
+		}
+
+		if(renderTarget[0]->getExternalFormat() != sw::FORMAT_NULL)   // FIXME: Check against the depth buffer?
+		{
+			if(viewport->X + viewport->Width > renderTarget[0]->getExternalWidth() ||
+			   viewport->Y + viewport->Height > renderTarget[0]->getExternalHeight())
+			{
+				return INVALIDCALL();
+			}
 		}
 
 		if(!stateRecorder)
@@ -5331,14 +5359,7 @@ namespace D3D9
 		int oldValue = showCursor ? TRUE : FALSE;
 		showCursor = show != FALSE;
 
-		if(showCursor)
-		{
-			sw::FrameBuffer::setCursorImage(cursor);
-		}
-		else
-		{
-			sw::FrameBuffer::setCursorImage(0);
-		}
+		bindCursor();
 
 		return oldValue;
 	}
@@ -6177,6 +6198,30 @@ namespace D3D9
 			else
 			{
 				renderer->setTextureLevel(sampler, 0, 0, 0, sw::TEXTURE_NULL);
+			}
+		}
+	}
+
+	void Direct3DDevice9::bindCursor()
+	{
+		if(showCursor)
+		{
+			sw::FrameBuffer::setCursorImage(cursor);
+
+			HCURSOR oldCursor = SetCursor(nullCursor);
+			
+			if(oldCursor != nullCursor)
+			{
+				win32Cursor = oldCursor;
+			}
+		}
+		else
+		{
+			sw::FrameBuffer::setCursorImage(0);
+
+			if(GetCursor() == nullCursor)
+			{
+				SetCursor(win32Cursor);
 			}
 		}
 	}

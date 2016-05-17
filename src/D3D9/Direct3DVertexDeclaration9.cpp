@@ -345,16 +345,14 @@ namespace D3D9
 
 		TRACE("");
 
-		if(!declaration || !numElements)
-		{
-			return INVALIDCALL();
-		}
-
 		*numElements = this->numElements;
 
-		for(int i = 0; i < this->numElements; i++)
+		if(declaration)
 		{
-			declaration[i] = vertexElement[i];
+			for(int i = 0; i < this->numElements; i++)
+			{
+				declaration[i] = vertexElement[i];
+			}
 		}
 
 		return D3D_OK;

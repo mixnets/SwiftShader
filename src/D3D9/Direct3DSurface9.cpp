@@ -27,7 +27,7 @@ extern bool quadLayoutEnabled;
 
 namespace D3D9
 {
-	sw::Resource *getParentResource(Unknown *container)
+	static sw::Resource *getParentResource(Unknown *container)
 	{
 		Direct3DBaseTexture9 *baseTexture = dynamic_cast<Direct3DBaseTexture9*>(container);
 
@@ -128,6 +128,30 @@ namespace D3D9
 		}
 
 		return Direct3DResource9::Release();
+	}
+
+	void Direct3DSurface9::bind()
+	{
+		TRACE("");
+
+		if(parentTexture)
+		{
+			parentTexture->bind();
+		}
+
+		Direct3DResource9::bind();
+	}
+
+	void Direct3DSurface9::unbind()
+	{
+		TRACE("");
+
+		if(parentTexture)
+		{
+			parentTexture->unbind();
+		}
+
+		Direct3DResource9::unbind();
 	}
 
 	long Direct3DSurface9::FreePrivateData(const GUID &guid)

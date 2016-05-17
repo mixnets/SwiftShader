@@ -924,6 +924,11 @@ namespace D3D9
 			return INVALIDCALL();
 		}
 
+		if(!sw::CPUID::supportsSSE())
+		{
+			return NOTAVAILABLE();
+		}
+
 		*returnedDeviceInterface = new Direct3DDevice9(instance, this, adapter, deviceType, focusWindow, behaviorFlags, presentParameters);
 
 		if(*returnedDeviceInterface)
