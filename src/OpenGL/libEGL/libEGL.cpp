@@ -193,7 +193,8 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 	case EGL_CLIENT_APIS:
 		return success("OpenGL_ES");
 	case EGL_EXTENSIONS:
-		return success("EGL_KHR_gl_texture_2D_image "
+		return success("EGL_KHR_create_context "
+		               "EGL_KHR_gl_texture_2D_image "
 		               "EGL_KHR_gl_texture_cubemap_image "
 		               "EGL_KHR_gl_renderbuffer_image "
 		               "EGL_KHR_fence_sync "
@@ -645,19 +646,84 @@ EGLContext CreateContext(EGLDisplay dpy, EGLConfig config, EGLContext share_cont
 	      "const EGLint *attrib_list = %p)", dpy, config, share_context, attrib_list);
 
 	EGLint clientVersion = 1;
+	EGLint clientMinorVersion = 0;
 	if(attrib_list)
 	{
 		for(const EGLint* attribute = attrib_list; attribute[0] != EGL_NONE; attribute += 2)
 		{
-			if(attribute[0] == EGL_CONTEXT_CLIENT_VERSION)
+			switch(attribute[0])
 			{
+			case EGL_CONTEXT_MAJOR_VERSION_KHR: // this token is an alias for EGL_CONTEXT_CLIENT_VERSION
 				clientVersion = attribute[1];
-			}
-			else
-			{
+				break;
+			case EGL_CONTEXT_MINOR_VERSION_KHR:
+				clientMinorVersion = attribute[1];
+				break;
+			case EGL_CONTEXT_FLAGS_KHR:
+				switch(attribute[1])
+				{
+				case EGL_CONTEXT_OPENGL_DEBUG_BIT_KHR:
+					// According to https://www.khronos.org/registry/egl/extensions/KHR/EGL_KHR_create_context.txt
+					// "Khronos is still defining the expected and required features of debug contexts, so
+					//  implementations are currently free to implement "debug contexts" with little or no debug
+					//  functionality. However, OpenGL and OpenGL ES implementations supporting the GL_KHR_debug
+					//  extension should enable it when this bit is set."
+					break;
+				case EGL_CONTEXT_OPENGL_FORWARD_COMPATIBLE_BIT_KHR:
+				case EGL_CONTEXT_OPENGL_ROBUST_ACCESS_BIT_KHR:
+					// These bits are for OpenGL contexts only, not OpenGL ES contexts
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_CONTEXT);
+				default:
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_CONTEXT);
+				}
+				break;
+			case EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR:
+				switch(attribute[1])
+				{
+				case EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT_KHR:
+				case EGL_CONTEXT_OPENGL_COMPATIBILITY_PROFILE_BIT_KHR:
+					// These bits are for OpenGL contexts only, not OpenGL ES contexts
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_CONTEXT);
+				default:
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_CONTEXT);
+				}
+				break;
+			case EGL_CONTEXT_OPENGL_RESET_NOTIFICATION_STRATEGY_KHR:
+				switch(attribute[1])
+				{
+				case EGL_NO_RESET_NOTIFICATION_KHR:
+				case EGL_LOSE_CONTEXT_ON_RESET_KHR:
+					// These bits are for OpenGL contexts only, not OpenGL ES contexts
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_CONTEXT);
+				default:
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_CONTEXT);
+				}
+				break;
+			default:
 				return error(EGL_BAD_ATTRIBUTE, EGL_NO_CONTEXT);
 			}
 		}
+	}
+
+	switch(clientVersion)
+	{
+	case 1:
+		if(clientMinorVersion != 0 || clientMinorVersion != 1)
+		{
+			// 1.X: Only OpenGL ES 1.0 or 1.1 contexts are supported
+			return error(EGL_BAD_MATCH, EGL_NO_CONTEXT);
+		}
+		break;
+	case 2:
+	case 3:
+		if(clientMinorVersion != 0)
+		{
+			// 2.X and 3.X: Only OpenGL ES 2.0 or 3.0 contexts are supported
+			return error(EGL_BAD_MATCH, EGL_NO_CONTEXT);
+		}
+		break;
+	default:
+		return error(EGL_BAD_MATCH, EGL_NO_CONTEXT);
 	}
 
 	egl::Display *display = egl::Display::get(dpy);
