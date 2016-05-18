@@ -133,7 +133,7 @@ namespace sw
 					if(context->pixelShader->semantic[interpolant][component - project].active())
 					{
 						int input = interpolant;
-						for(int i = 0; i < 12; i++)
+						for(int i = 0; i < MAX_VERTEX_OUTPUTS; i++)
 						{
 							if(context->pixelShader->semantic[interpolant][component - project] == context->vertexShader->output[i][component - project])
 							{

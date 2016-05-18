@@ -134,7 +134,7 @@ namespace sw
 			};
 
 			Input input[VERTEX_ATTRIBUTES];
-			Output output[12];
+			Output output[MAX_VERTEX_OUTPUTS];
 		};
 
 		struct State : States
