@@ -28,7 +28,7 @@ namespace sw
 		pointSizeRegister = -1;   // No vertex point size
 		instanceIdDeclared = false;
 
-		for(int i = 0; i < MAX_INPUT_ATTRIBUTES; i++)
+		for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
 		{
 			input[i] = Semantic(-1, -1);
 		}
@@ -60,7 +60,7 @@ namespace sw
 		pointSizeRegister = -1;   // No vertex point size
 		instanceIdDeclared = false;
 
-		for(int i = 0; i < MAX_INPUT_ATTRIBUTES; i++)
+		for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
 		{
 			input[i] = Semantic(-1, -1);
 		}
