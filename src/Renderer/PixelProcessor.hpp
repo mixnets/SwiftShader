@@ -86,7 +86,7 @@ namespace sw
 			LogicalOperation logicalOperation : BITS(LOGICALOP_LAST);
 
 			Sampler::State sampler[TEXTURE_IMAGE_UNITS];
-			TextureStage::State textureStage[8];
+			TextureStage::State textureStage[TEXTURE_STAGES];
 
 			struct Interpolant
 			{
@@ -101,7 +101,7 @@ namespace sw
 				struct
 				{
 					Interpolant color[2];
-					Interpolant texture[8];
+					Interpolant texture[TEXTURE_STAGES];
 					Interpolant fog;
 				};
 

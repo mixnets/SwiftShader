@@ -433,7 +433,7 @@ namespace sw
 		CullMode cullMode;
 		float alphaReference;
 
-		TextureStage textureStage[8];
+		TextureStage textureStage[TEXTURE_STAGES];
 		Sampler sampler[TOTAL_IMAGE_UNITS];
 
 		Format renderTargetInternalFormat(int index);
@@ -454,11 +454,11 @@ namespace sw
 
 		bool textureWrapActive;
 		unsigned char textureWrap[TEXTURE_IMAGE_UNITS];
-		TexGen texGen[8];
+		TexGen texGen[TEXTURE_STAGES];
 		bool localViewer;
 		bool normalizeNormals;
-		int textureTransformCount[8];
-		bool textureTransformProject[8];
+		int textureTransformCount[TEXTURE_STAGES];
+		bool textureTransformProject[TEXTURE_STAGES];
 
 		Surface *renderTarget[RENDERTARGETS];
 		Surface *depthBuffer;

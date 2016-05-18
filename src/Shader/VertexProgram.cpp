@@ -646,7 +646,7 @@ namespace sw
 				o[C0 + i].w = v[Color0 + i].w;
 			}
 
-			for(int i = 0; i < 8; i++)
+			for(int i = 0; i < TEXTURE_STAGES; i++)
 			{
 				o[T0 + i].x = v[TexCoord0 + i].x;
 				o[T0 + i].y = v[TexCoord0 + i].y;
