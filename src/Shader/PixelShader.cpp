@@ -725,6 +725,17 @@ namespace sw
 
 					this->centroid = this->centroid || centroid;
 				}
+				/***for(int j = 0; j < 5; ++j)
+				{
+					const Shader::SourceParameter& src = instruction[i]->src[j];
+					if(src.type == Shader::PARAMETER_INPUT)
+					{
+						semantic[src.index][0].smooth =
+						semantic[src.index][1].smooth =
+						semantic[src.index][2].smooth =
+						semantic[src.index][3].smooth = src.smooth;
+					}
+				}***/
 			}
 		}
 	}

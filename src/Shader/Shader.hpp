@@ -462,7 +462,7 @@ namespace sw
 
 		struct SourceParameter : Parameter
 		{
-			SourceParameter() : swizzle(0xE4), modifier(MODIFIER_NONE), bufferIndex(-1)
+			SourceParameter() : swizzle(0xE4), modifier(MODIFIER_NONE), bufferIndex(-1)///, smooth(true)
 			{
 			}
 
@@ -473,6 +473,7 @@ namespace sw
 			unsigned int swizzle : 8;
 			Modifier modifier : 8;
 			int bufferIndex : 8;
+			///bool smooth : 1;
 		};
 
 		struct Instruction
@@ -572,7 +573,7 @@ namespace sw
 
 		struct Semantic
 		{
-			Semantic(unsigned char usage = 0xFF, unsigned char index = 0xFF) : usage(usage), index(index), centroid(false)
+			Semantic(unsigned char usage = 0xFF, unsigned char index = 0xFF, bool flat = false) : usage(usage), index(index), centroid(false), flat(flat)
 			{
 			}
 
@@ -589,6 +590,7 @@ namespace sw
 			unsigned char usage;
 			unsigned char index;
 			bool centroid;
+			bool flat;
 		};
 
 		void optimize();
