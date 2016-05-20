@@ -2227,6 +2227,7 @@ namespace glsl
 
 			parameter.type = registerType(arg);
 			parameter.bufferIndex = argumentInfo.bufferIndex;
+			parameter.smooth = isSmooth(arg);
 
 			if(arg->getAsConstantUnion() && arg->getAsConstantUnion()->getUnionArrayPointer())
 			{
@@ -2566,6 +2567,17 @@ namespace glsl
 		}
 
 		return sw::Shader::PARAMETER_VOID;
+	}
+
+	bool OutputASM::isSmooth(TIntermTyped *operand)
+	{
+		if(isSamplerRegister(operand))
+		{
+			return false;
+		}
+
+		const TQualifier qualifier = operand->getQualifier();
+		return qualifier != EvqFlat && qualifier != EvqFlatOut && qualifier != EvqFlatIn;
 	}
 
 	unsigned int OutputASM::registerIndex(TIntermTyped *operand)
