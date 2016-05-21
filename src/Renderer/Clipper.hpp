@@ -29,14 +29,18 @@ namespace sw
 	public:
 		enum ClipFlags
 		{
+			// Indicates the vertex is outside the respective frustum plane
 			CLIP_RIGHT  = 1 << 0,
 			CLIP_TOP    = 1 << 1,
 			CLIP_FAR    = 1 << 2,
 			CLIP_LEFT   = 1 << 3,
 			CLIP_BOTTOM = 1 << 4,
-			CLIP_NEAR   = 1 << 5,
+			CLIP_NEAR0  = 1 << 5,   // z = 0 plane
+			CLIP_NEAR1  = 1 << 6,   // z = -w plane, implies z < 0 but only one bit is set
 
-			CLIP_FINITE = 1 << 7,
+			CLIP_FRUSTUM = 0x007F,
+
+			CLIP_FINITE = 1 << 7,   // All position coordinates finite
 
 			// User-defined clipping planes
 			CLIP_PLANE0	= 1 << 8,
@@ -44,7 +48,9 @@ namespace sw
 			CLIP_PLANE2	= 1 << 10,
 			CLIP_PLANE3	= 1 << 11,
 			CLIP_PLANE4	= 1 << 12,
-			CLIP_PLANE5	= 1 << 13
+			CLIP_PLANE5	= 1 << 13,
+
+			CLIP_USER = 0x3F00
 		};
 
 		Clipper();
@@ -54,12 +60,13 @@ namespace sw
 		bool clip(Polygon &polygon, int clipFlagsOr, const DrawCall &draw);
 
 	private:
-		void clipNear(Polygon &polygon);
+		void clipNear0(Polygon &polygon);   // Clip against z = 0
+		void clipNear1(Polygon &polygon);   // Clip against z = -w
 		void clipFar(Polygon &polygon);
-		void clipLeft(Polygon &polygon, const DrawData &data);
-		void clipRight(Polygon &polygon, const DrawData &data);
-		void clipTop(Polygon &polygon, const DrawData &data);
-		void clipBottom(Polygon &polygon, const DrawData &data);
+		void clipLeft(Polygon &polygon);
+		void clipRight(Polygon &polygon);
+		void clipTop(Polygon &polygon);
+		void clipBottom(Polygon &polygon);
 		void clipPlane(Polygon &polygon, const Plane &plane);
 
 		void clipEdge(float4 &Vo, const float4 &Vi, const float4 &Vj, float di, float dj) const;

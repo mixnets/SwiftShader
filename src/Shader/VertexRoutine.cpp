@@ -72,11 +72,13 @@ namespace sw
 
 			UInt cacheIndex = index & 0x0000003F;
 			Pointer<Byte> cacheLine = vertexCache + cacheIndex * UInt((int)sizeof(Vertex));
-			writeVertex(vertex, cacheLine, primitiveNumber, indexInPrimitive);
+			writeVertex(vertex, cacheLine);
+			transformFeedback(vertex, primitiveNumber, indexInPrimitive);
 
 			vertex += sizeof(Vertex);
 			batch += sizeof(unsigned int);
 			vertexCount--;
+
 			if(state.transformFeedbackEnabled != 0)
 			{
 				indexInPrimitive++;
@@ -107,41 +109,35 @@ namespace sw
 	{
 		int pos = state.positionRegister;
 
-		Float4 outPosZ = o[pos].z;
-		if(state.transformFeedbackEnabled && symmetricNormalizedDepth && !state.fixedFunction)
-		{
-			outPosZ = (outPosZ + o[pos].w) * Float4(0.5f);
-		}
-
 		Int4 maxX = CmpLT(o[pos].w, o[pos].x);
 		Int4 maxY = CmpLT(o[pos].w, o[pos].y);
-		Int4 maxZ = CmpLT(o[pos].w, outPosZ);
-
+		Int4 maxZ = CmpLT(o[pos].w, o[pos].z);
 		Int4 minX = CmpNLE(-o[pos].w, o[pos].x);
 		Int4 minY = CmpNLE(-o[pos].w, o[pos].y);
-		Int4 minZ = CmpNLE(Float4(0.0f), outPosZ);
 
-		Int flags;
+		clipFlags = *Pointer<Int>(constants + OFFSET(Constants,maxX) + SignMask(maxX) * 4);   // FIXME: Array indexing
+		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,maxY) + SignMask(maxY) * 4);
+		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,maxZ) + SignMask(maxZ) * 4);
+		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,minX) + SignMask(minX) * 4);
+		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,minY) + SignMask(minY) * 4);
 
-		flags = SignMask(maxX);
-		clipFlags = *Pointer<Int>(constants + OFFSET(Constants,maxX) + flags * 4);   // FIXME: Array indexing
-		flags = SignMask(maxY);
-		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,maxY) + flags * 4);
-		flags = SignMask(maxZ);
-		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,maxZ) + flags * 4);
-		flags = SignMask(minX);
-		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,minX) + flags * 4);
-		flags = SignMask(minY);
-		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,minY) + flags * 4);
-		flags = SignMask(minZ);
-		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,minZ) + flags * 4);
+		if(symmetricNormalizedDepth)
+		{
+			Int4 min1 = CmpNLE(-o[pos].w, o[pos].z);
+			clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,min1) + SignMask(min1) * 4);
+		}
+		else
+		{
+			Int4 min0 = CmpNLE(Float4(0.0f), o[pos].z);
+			clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,min0) + SignMask(min0) * 4);
+		}
 
 		Int4 finiteX = CmpLE(Abs(o[pos].x), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
 		Int4 finiteY = CmpLE(Abs(o[pos].y), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
-		Int4 finiteZ = CmpLE(Abs(outPosZ), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
+		Int4 finiteZ = CmpLE(Abs(o[pos].z), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
 
-		flags = SignMask(finiteX & finiteY & finiteZ);
-		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,fini) + flags * 4);
+		Int4 finiteXYZ = finiteX & finiteY & finiteZ;
+		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,fini) + SignMask(finiteXYZ) * 4);
 
 		if(state.preTransformed)
 		{
@@ -586,11 +582,6 @@ namespace sw
 			o[pos].x = o[pos].x + *Pointer<Float4>(data + OFFSET(DrawData,XXXX)) * o[pos].w;
 			o[pos].y = o[pos].y + *Pointer<Float4>(data + OFFSET(DrawData,YYYY)) * o[pos].w;
 		}
-
-		if(!state.transformFeedbackEnabled && symmetricNormalizedDepth && !state.fixedFunction)
-		{
-			o[pos].z = (o[pos].z + o[pos].w) * Float4(0.5f);
-		}
 	}
 
 	void VertexRoutine::writeCache(Pointer<Byte> &cacheLine)
@@ -661,12 +652,18 @@ namespace sw
 		*Pointer<Int>(cacheLine + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * 2) = (clipFlags >> 16) & 0x0000000FF;
 		*Pointer<Int>(cacheLine + OFFSET(Vertex,clipFlags) + sizeof(Vertex) * 3) = (clipFlags >> 24) & 0x0000000FF;
 
+		// Viewport transform
 		int pos = state.positionRegister;
 
 		v.x = o[pos].x;
 		v.y = o[pos].y;
 		v.z = o[pos].z;
 		v.w = o[pos].w;
+
+		if(symmetricNormalizedDepth)
+		{
+			v.z = (v.z + v.w) * Float4(0.5f);   // [-1, 1] -> [0, 1]
+		}
 
 		Float4 w = As<Float4>(As<Int4>(v.w) | (As<Int4>(CmpEQ(v.w, Float4(0.0f))) & As<Int4>(Float4(1.0f))));
 		Float4 rhw = Float4(1.0f) / w;
@@ -684,7 +681,7 @@ namespace sw
 		*Pointer<Float4>(cacheLine + OFFSET(Vertex,X) + sizeof(Vertex) * 3, 16) = v.w;
 	}
 
-	void VertexRoutine::writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cache, const UInt &primitiveNumber, const UInt &indexInPrimitive)
+	void VertexRoutine::writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cache)
 	{
 		for(int i = 0; i < MAX_VERTEX_OUTPUTS; i++)
 		{
@@ -696,13 +693,17 @@ namespace sw
 
 		*Pointer<Int4>(vertex + OFFSET(Vertex,X)) = *Pointer<Int4>(cache + OFFSET(Vertex,X));
 		*Pointer<Int>(vertex + OFFSET(Vertex,clipFlags)) = *Pointer<Int>(cache + OFFSET(Vertex,clipFlags));
+	}
 
+	void VertexRoutine::transformFeedback(const Pointer<Byte> &vertex, const UInt &primitiveNumber, const UInt &indexInPrimitive)
+	{
 		if(state.transformFeedbackEnabled != 0)
 		{
 			If(indexInPrimitive < state.verticesPerPrimitive)
 			{
 				UInt tOffset = primitiveNumber * state.verticesPerPrimitive + indexInPrimitive;
-				for(int i = 0; i < MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS; ++i)
+
+				for(int i = 0; i < MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS; i++)
 				{
 					if(state.transformFeedbackEnabled & (1ULL << i))
 					{
@@ -718,6 +719,7 @@ namespace sw
 						{
 							UInt rOffsetX = r * col * sizeof(float);
 							UInt rOffset4 = r * sizeof(float4);
+
 							For(UInt c = 0, c < col, c++)
 							{
 								UInt cOffset = c * sizeof(float);
@@ -726,14 +728,6 @@ namespace sw
 						}
 					}
 				}
-			}
-
-			// Make this correction after transform feedback has been outputted
-			if(symmetricNormalizedDepth && !state.fixedFunction && state.output[state.positionRegister].write)
-			{
-				Float z = *Pointer<Float>(vertex + OFFSET(Vertex, v[state.positionRegister]) + 2 * sizeof(float));
-				Float w = *Pointer<Float>(vertex + OFFSET(Vertex, v[state.positionRegister]) + 3 * sizeof(float));
-				*Pointer<Float>(vertex + OFFSET(Vertex, v[state.positionRegister]) + 2 * sizeof(float)) = (z + w) * Float(0.5f);
 			}
 		}
 	}

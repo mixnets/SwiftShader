@@ -22,7 +22,7 @@ namespace sw
 	struct Constants
 	{
 		Constants();
-	
+
 		unsigned int transposeBit0[16];
 		unsigned int transposeBit1[16];
 		unsigned int transposeBit2[16];
@@ -94,7 +94,8 @@ namespace sw
 		dword maxZ[16];
 		dword minX[16];
 		dword minY[16];
-		dword minZ[16];
+		dword min0[16];
+		dword min1[16];
 		dword fini[16];
 
 		dword4 maxPos;
