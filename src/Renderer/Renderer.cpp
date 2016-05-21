@@ -113,7 +113,7 @@ namespace sw
 		sw::exactColorRounding = exactColorRounding;
 
 		setRenderTarget(0, 0);
-		clipper = new Clipper();
+		clipper = new Clipper(symmetricNormalizedDepth);
 
 		updateViewMatrix = true;
 		updateBaseMatrix = true;
@@ -1940,14 +1940,14 @@ namespace sw
 		return false;
 	}
 
-	unsigned int Renderer::computeClipFlags(const float4 &v, const DrawData &data)
+	unsigned int Renderer::computeClipFlags(const float4 &v)
 	{
 		return ((v.x > v.w)  << 0) |
 		       ((v.y > v.w)  << 1) |
 		       ((v.z > v.w)  << 2) |
 		       ((v.x < -v.w) << 3) |
 		       ((v.y < -v.w) << 4) |
-		       ((v.z < 0)    << 5) |
+		       ((symmetricNormalizedDepth ? (v.z < -v.w) : (v.z < 0)) << 5) |
 		       Clipper::CLIP_FINITE;   // FIXME: xyz finite
 	}
 
