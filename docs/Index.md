@@ -21,4 +21,35 @@ The Renderer layer generates specialized processing routines for draw calls and 
 
 Reactor is an embedded language for C++ to dynamically generate code in a WYSIWYG fashion. It allows to specialize the processing routines for the state and shaders used by each draw call. Its syntax closely resembles C and shading languages, to make the code generation easily readable.
 
-The JIT layer is a run-time compiler, such as LLVM. Reactor records its operations in an in-memory intermediate form which can be materialized by the JIT into a function which can be called directly.
+The JIT layer is a run-time compiler, such as LLVM's JIT. Reactor records its operations in an in-memory intermediate form which can be materialized by the JIT into a function which can be called directly.
+
+Design
+------
+
+### Reactor
+
+To generate code for an expression such as `float y = 1 - x;` directly with LLVM, we'd need code like `Value *valueY = BinaryOperator::CreateSub(ConstantInt::get(Type::getInt32Ty(Context), 1), valueX, "y", basicBlock);`. This is very verbose and becomes hard to read for longer expressions. Using C++ operator overloading, [Reactor](../src/Reactor/) simplifies this to `Float y = 1 - x;`. Note that Reactor types have the same names as C types, but starting with a capital letter. Likewise `If()`, `Else`, and `For(,,)` implement their C counterparts.
+
+While making Reactor's syntax so similiar to the C++ in which it is written might cause some confusion at first, it provides a powerful abstraction for code specialization. For example to produce the code for an addition or a subtraction, one could write `x = addOrSub ? x + y : x - y;`. Note that only one operation ends up in the generated code.
+
+We refer to the functions generate by Reactor code as [Routine](../src/Reactor/Routine.hpp)s.
+
+### Renderer
+
+The [Renderer](../src/Renderer/) is implemented in three main parts: the [VertexProcessor](../src/Renderer/VertexProcessor.cpp), [SetupProcessor](../src/Renderer/SetupProcessor.cpp), and [PixelProcessor](../src/Renderer/PixelProcessor.cpp). Each "processor" produces a corresponding Reactor routine, and manages the relevant graphics state. They also keep a cache of already generated routines, so that when a combination of states is encountered again it will reuse the routine that performs the desired processing.
+
+The [VertexRoutine](../src/Shader/VertexRoutine.cpp) produces a function for processing a batch of vertices. The fixed-function T&L pipeline is implemented by [VertexPipeline](../src/Shader/VertexPipeline.cpp), while programmable vertex processing with a shader is implemented by [VertexProgram](../src/Shader/VertexProgram.cpp). Note that the vertex routine also performs vertex attribute reading, vertex caching, viewport transform, and clip flag calculation all in the same function.
+
+The [SetupRoutine](../src/Shader/SetupRoutine.cpp) performs primitive setup. This constitutes back-face culling, computing gradients, and rasterization.
+
+The [PixelRoutine](../src/Shader/PixelRoutine.cpp) takes a batch of primitives and performs per-pixel operations. The fixed-function texture stages and legacy integer shaders are implemented by [PixelPipeline](../src/Shader/PixelPipeline.cpp), while programmable pixel processing with a shader is implemented by [PixelProgram](../src/Shader/PixelProgram.cpp). All other per-pixel operations such as the depth test, alpha test, stenciling, and alpha blending are also performed in the pixel routine. Together with the traversal of the pixels in [QuadRasterizer](../src/Renderer/QuadRasterizer.cpp), it forms one function.
+
+The PixelProgram and VertexProgram share some common functionality in [ShaderCore](../src/Shader/ShaderCore.cpp). Likewise, texture sampling is implemented by [SamplerCore](../src/Shader/SamplerCore.cpp).
+
+### OpenGL
+
+The OpenGL (ES) and EGL APIs are implemented in [src/OpenGL/](../src/OpenGL/).
+
+The GLSL compiler is implemented in [src/OpenGL/compiler/](../src/OpenGL/compiler/). It uses [Flex](http://flex.sourceforge.net/) and [Bison](https://www.gnu.org/software/bison/) to tokenize and parse GLSL shader source. It produces an [abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST), which is then traversed to output assembly-level instructions in [OutputASM.cpp](../src/OpenGL/compiler/OutputASM.cpp).
+
+The [EGL](https://www.khronos.org/registry/egl/specs/eglspec.1.4.20110406.pdf) API is implemented in [src/OpenGL/libEGL/](../src/OpenGL/libEGL/). Its entry functions are listed in [libEGL.def](../src/OpenGL/libEGL/libEGL.def) (for Windows) and [exports.map](../src/OpenGL/libEGL/exports.map) (for Linux), and defined in [main.cpp](../src/OpenGL/libEGL/main.cpp) and implemented in [libEGL.cpp](../src/OpenGL/libEGL/libEGL.cpp).
