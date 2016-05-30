@@ -21,4 +21,23 @@ The Renderer layer generates specialized processing routines for draw calls and 
 
 Reactor is an embedded language for C++ to dynamically generate code in a WYSIWYG fashion. It allows to specialize the processing routines for the state and shaders used by each draw call. Its syntax closely resembles C and shading languages, to make the code generation easily readable.
 
-The JIT layer is a run-time compiler, such as LLVM. Reactor records its operations in an in-memory intermediate form which can be materialized by the JIT into a function which can be called directly.
+The JIT layer is a run-time compiler, such as LLVM's JIT. Reactor records its operations in an in-memory intermediate form which can be materialized by the JIT into a function which can be called directly.
+
+Design
+------
+
+### Reactor Routines
+
+Executing Reactor code produces a function called a [Routine](../src/Reactor/Routine.hpp).
+
+### Renderer
+
+The Renderer is implemented in three main parts: the VertexProcessor, SetupProcessor, and PixelProcessor. Each processor produces a corresponding Routine, and 
+
+### OpenGL
+
+The OpenGL (ES) and EGL APIs are implemented in [src/OpenGL/](https://swiftshader.googlesource.com/SwiftShader/+/master/src/OpenGL/).
+
+The GLSL compiler is implemented in [src/OpenGL/compiler/](https://swiftshader.googlesource.com/SwiftShader/+/master/src/OpenGL/compiler/). It uses [Flex](http://flex.sourceforge.net/) and [Bison](https://www.gnu.org/software/bison/) to tokenize and parse GLSL shader source. It produces an [abstract syntax tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST), which is then traversed to output assembly-level instructions in [OutputASM.cpp](https://swiftshader.googlesource.com/SwiftShader/+/master/src/OpenGL/compiler/OutputASM.cpp).
+
+The [EGL](https://www.khronos.org/registry/egl/specs/eglspec.1.4.20110406.pdf) API is implemented in [src/OpenGL/libEGL/](https://swiftshader.googlesource.com/SwiftShader/+/master/src/OpenGL/libEGL/). Its entry functions are listed in [libEGL.def](https://swiftshader.googlesource.com/SwiftShader/+/master/src/OpenGL/libEGL/libEGL.def) (for Windows) and [exports.map](https://swiftshader.googlesource.com/SwiftShader/+/master/src/OpenGL/libEGL/exports.map) (for Linux), and defined in [main.cpp](https://swiftshader.googlesource.com/SwiftShader/+/master/src/OpenGL/libEGL/main.cpp) and implemented in [libEGL.cpp](https://swiftshader.googlesource.com/SwiftShader/+/master/src/OpenGL/libEGL/libEGL.cpp).
