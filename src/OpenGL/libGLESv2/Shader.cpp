@@ -20,6 +20,7 @@
 
 #include "main.h"
 #include "utilities.h"
+#include "Main/Config.hpp"
 
 #include <string>
 
@@ -174,8 +175,8 @@ TranslatorASM *Shader::createCompiler(GLenum shaderType)
 	resources.MaxDrawBuffers = MAX_DRAW_BUFFERS;
 	resources.MaxVertexOutputVectors = MAX_VERTEX_OUTPUT_VECTORS;
 	resources.MaxFragmentInputVectors = MAX_FRAGMENT_INPUT_VECTORS;
-	resources.MinProgramTexelOffset = MIN_PROGRAM_TEXEL_OFFSET;
-	resources.MaxProgramTexelOffset = MAX_PROGRAM_TEXEL_OFFSET;
+	resources.MinProgramTexelOffset = sw::MIN_PROGRAM_TEXEL_OFFSET;
+	resources.MaxProgramTexelOffset = sw::MAX_PROGRAM_TEXEL_OFFSET;
 	resources.OES_standard_derivatives = 1;
 	resources.OES_fragment_precision_high = 1;
 	resources.OES_EGL_image_external = 1;
