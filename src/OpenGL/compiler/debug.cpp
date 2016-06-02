@@ -22,11 +22,11 @@
 #include "InitializeParseContext.h"
 #include "ParseHelper.h"
 
-static const int kTraceBufferLen = 1024;
-
 #ifdef TRACE_ENABLED
 extern "C" {
 void Trace(const char *format, ...) {
+	static const int kTraceBufferLen = 1024;
+
 	if (!format) return;
 
 	TParseContext* parseContext = GetGlobalParseContext();
