@@ -2438,9 +2438,9 @@ namespace sw
 		loadConstants(shader);
 	}
 
-	void Renderer::setPixelShaderConstantF(int index, const float value[4], int count)
+	void Renderer::setPixelShaderConstantF(unsigned int index, const float value[4], unsigned int count)
 	{
-		for(int i = 0; i < DRAW_COUNT; i++)
+		for(unsigned int i = 0; i < DRAW_COUNT; i++)
 		{
 			if(drawCall[i]->psDirtyConstF < index + count)
 			{
@@ -2448,16 +2448,16 @@ namespace sw
 			}
 		}
 
-		for(int i = 0; i < count; i++)
+		for(unsigned int i = 0; i < count; i++)
 		{
 			PixelProcessor::setFloatConstant(index + i, value);
 			value += 4;
 		}
 	}
 
-	void Renderer::setPixelShaderConstantI(int index, const int value[4], int count)
+	void Renderer::setPixelShaderConstantI(unsigned int index, const int value[4], unsigned int count)
 	{
-		for(int i = 0; i < DRAW_COUNT; i++)
+		for(unsigned int i = 0; i < DRAW_COUNT; i++)
 		{
 			if(drawCall[i]->psDirtyConstI < index + count)
 			{
@@ -2465,16 +2465,16 @@ namespace sw
 			}
 		}
 
-		for(int i = 0; i < count; i++)
+		for(unsigned int i = 0; i < count; i++)
 		{
 			PixelProcessor::setIntegerConstant(index + i, value);
 			value += 4;
 		}
 	}
 
-	void Renderer::setPixelShaderConstantB(int index, const int *boolean, int count)
+	void Renderer::setPixelShaderConstantB(unsigned int index, const int *boolean, unsigned int count)
 	{
-		for(int i = 0; i < DRAW_COUNT; i++)
+		for(unsigned int i = 0; i < DRAW_COUNT; i++)
 		{
 			if(drawCall[i]->psDirtyConstB < index + count)
 			{
@@ -2482,16 +2482,16 @@ namespace sw
 			}
 		}
 
-		for(int i = 0; i < count; i++)
+		for(unsigned int i = 0; i < count; i++)
 		{
 			PixelProcessor::setBooleanConstant(index + i, *boolean);
 			boolean++;
 		}
 	}
 
-	void Renderer::setVertexShaderConstantF(int index, const float value[4], int count)
+	void Renderer::setVertexShaderConstantF(unsigned int index, const float value[4], unsigned int count)
 	{
-		for(int i = 0; i < DRAW_COUNT; i++)
+		for(unsigned int i = 0; i < DRAW_COUNT; i++)
 		{
 			if(drawCall[i]->vsDirtyConstF < index + count)
 			{
@@ -2499,16 +2499,16 @@ namespace sw
 			}
 		}
 
-		for(int i = 0; i < count; i++)
+		for(unsigned int i = 0; i < count; i++)
 		{
 			VertexProcessor::setFloatConstant(index + i, value);
 			value += 4;
 		}
 	}
 
-	void Renderer::setVertexShaderConstantI(int index, const int value[4], int count)
+	void Renderer::setVertexShaderConstantI(unsigned int index, const int value[4], unsigned int count)
 	{
-		for(int i = 0; i < DRAW_COUNT; i++)
+		for(unsigned int i = 0; i < DRAW_COUNT; i++)
 		{
 			if(drawCall[i]->vsDirtyConstI < index + count)
 			{
@@ -2516,16 +2516,16 @@ namespace sw
 			}
 		}
 
-		for(int i = 0; i < count; i++)
+		for(unsigned int i = 0; i < count; i++)
 		{
 			VertexProcessor::setIntegerConstant(index + i, value);
 			value += 4;
 		}
 	}
 
-	void Renderer::setVertexShaderConstantB(int index, const int *boolean, int count)
+	void Renderer::setVertexShaderConstantB(unsigned int index, const int *boolean, unsigned int count)
 	{
-		for(int i = 0; i < DRAW_COUNT; i++)
+		for(unsigned int i = 0; i < DRAW_COUNT; i++)
 		{
 			if(drawCall[i]->vsDirtyConstB < index + count)
 			{
@@ -2533,7 +2533,7 @@ namespace sw
 			}
 		}
 
-		for(int i = 0; i < count; i++)
+		for(unsigned int i = 0; i < count; i++)
 		{
 			VertexProcessor::setBooleanConstant(index + i, *boolean);
 			boolean++;

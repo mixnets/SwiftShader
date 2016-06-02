@@ -329,7 +329,7 @@ namespace es2
 		draw(type, 0, primitiveCount);
 	}
 
-	void Device::setPixelShader(PixelShader *pixelShader)
+	void Device::setPixelShader(const PixelShader *pixelShader)
 	{
 		this->pixelShader = pixelShader;
 		pixelShaderDirty = true;
@@ -420,7 +420,7 @@ namespace es2
 		scissorRect = rect;
 	}
 
-	void Device::setVertexShader(VertexShader *vertexShader)
+	void Device::setVertexShader(const VertexShader *vertexShader)
 	{
 		this->vertexShader = vertexShader;
 		vertexShaderDirty = true;
