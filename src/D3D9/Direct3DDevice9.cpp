@@ -6027,7 +6027,7 @@ namespace D3D9
 		view.minZ = viewport.MinZ;
 		view.maxZ = viewport.MaxZ;
 
-		renderer->setViewport(view);
+		renderer->setViewportf(view);
 
 		return true;
 	}

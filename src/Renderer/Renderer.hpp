@@ -234,13 +234,13 @@ namespace sw
 		Resource* vUniformBuffers[MAX_UNIFORM_BUFFER_BINDINGS];
 		Resource* transformFeedbackBuffers[MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS];
 
-		int vsDirtyConstF;
-		int vsDirtyConstI;
-		int vsDirtyConstB;
+		unsigned int vsDirtyConstF;
+		unsigned int vsDirtyConstI;
+		unsigned int vsDirtyConstB;
 
-		int psDirtyConstF;
-		int psDirtyConstI;
-		int psDirtyConstB;
+		unsigned int psDirtyConstF;
+		unsigned int psDirtyConstI;
+		unsigned int psDirtyConstB;
 
 		std::list<Query*> *queries;
 
@@ -359,16 +359,16 @@ namespace sw
 		virtual void setPixelShader(const PixelShader *shader);
 		virtual void setVertexShader(const VertexShader *shader);
 
-		virtual void setPixelShaderConstantF(int index, const float value[4], int count = 1);
-		virtual void setPixelShaderConstantI(int index, const int value[4], int count = 1);
-		virtual void setPixelShaderConstantB(int index, const int *boolean, int count = 1);
+		virtual void setPixelShaderConstantF(unsigned int index, const float value[4], unsigned int count = 1);
+		virtual void setPixelShaderConstantI(unsigned int index, const int value[4], unsigned int count = 1);
+		virtual void setPixelShaderConstantB(unsigned int index, const int *boolean, unsigned int count = 1);
 
-		virtual void setVertexShaderConstantF(int index, const float value[4], int count = 1);
-		virtual void setVertexShaderConstantI(int index, const int value[4], int count = 1);
-		virtual void setVertexShaderConstantB(int index, const int *boolean, int count = 1);
+		virtual void setVertexShaderConstantF(unsigned int index, const float value[4], unsigned int count = 1);
+		virtual void setVertexShaderConstantI(unsigned int index, const int value[4], unsigned int count = 1);
+		virtual void setVertexShaderConstantB(unsigned int index, const int *boolean, unsigned int count = 1);
 
 		// Viewport & Clipper
-		virtual void setViewport(const Viewport &viewport);
+		virtual void setViewportf(const Viewport &viewport);
 		virtual void setScissor(const Rect &scissor);
 		virtual void setClipFlags(int flags);
 		virtual void setClipPlane(unsigned int index, const float plane[4]);

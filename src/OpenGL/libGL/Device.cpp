@@ -726,7 +726,7 @@ namespace gl
 		view.minZ = viewport.minZ;
 		view.maxZ = viewport.maxZ;
 
-		Renderer::setViewport(view);
+		Renderer::setViewportf(view);
 
 		return true;
 	}
