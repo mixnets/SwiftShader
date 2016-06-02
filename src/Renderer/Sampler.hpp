@@ -152,6 +152,8 @@ namespace sw
 			SwizzleType swizzleB           : BITS(SWIZZLE_LAST);
 			SwizzleType swizzleA           : BITS(SWIZZLE_LAST);
 
+			int baseLevel;
+
 			#if PERF_PROFILE
 			bool compressedFormat          : 1;
 			#endif
