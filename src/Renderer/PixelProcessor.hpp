@@ -196,9 +196,9 @@ namespace sw
 		virtual void setUniformBuffer(int index, sw::Resource* buffer, int offset);
 		virtual void lockUniformBuffers(byte** u, sw::Resource* uniformBuffers[]);
 
-		virtual void setRenderTarget(int index, Surface *renderTarget);
-		virtual void setDepthBuffer(Surface *depthBuffer);
-		virtual void setStencilBuffer(Surface *stencilBuffer);
+		virtual void setRenderTargetSurface(int index, Surface *renderTarget);
+		virtual void setDepthBufferSurface(Surface *depthBuffer);
+		virtual void setStencilBufferSurface(Surface *stencilBuffer);
 
 		virtual void setTexCoordIndex(unsigned int stage, int texCoordIndex);
 		virtual void setStageOperation(unsigned int stage, TextureStage::StageOperation stageOperation);
@@ -221,20 +221,20 @@ namespace sw
 		virtual void setLuminanceScale(unsigned int stage, float value);
 		virtual void setLuminanceOffset(unsigned int stage, float value);
 
-		virtual void setTextureFilter(unsigned int sampler, FilterType textureFilter);
-		virtual void setMipmapFilter(unsigned int sampler, MipmapType mipmapFilter);
-		virtual void setGatherEnable(unsigned int sampler, bool enable);
-		virtual void setAddressingModeU(unsigned int sampler, AddressingMode addressingMode);
-		virtual void setAddressingModeV(unsigned int sampler, AddressingMode addressingMode);
-		virtual void setAddressingModeW(unsigned int sampler, AddressingMode addressingMode);
-		virtual void setReadSRGB(unsigned int sampler, bool sRGB);
-		virtual void setMipmapLOD(unsigned int sampler, float bias);
-		virtual void setBorderColor(unsigned int sampler, const Color<float> &borderColor);
-		virtual void setMaxAnisotropy(unsigned int sampler, float maxAnisotropy);
-		virtual void setSwizzleR(unsigned int sampler, SwizzleType swizzleR);
-		virtual void setSwizzleG(unsigned int sampler, SwizzleType swizzleG);
-		virtual void setSwizzleB(unsigned int sampler, SwizzleType swizzleB);
-		virtual void setSwizzleA(unsigned int sampler, SwizzleType swizzleA);
+		virtual void setProcTextureFilter(unsigned int sampler, FilterType textureFilter);
+		virtual void setProcMipmapFilter(unsigned int sampler, MipmapType mipmapFilter);
+		virtual void setProcGatherEnable(unsigned int sampler, bool enable);
+		virtual void setProcAddressingModeU(unsigned int sampler, AddressingMode addressingMode);
+		virtual void setProcAddressingModeV(unsigned int sampler, AddressingMode addressingMode);
+		virtual void setProcAddressingModeW(unsigned int sampler, AddressingMode addressingMode);
+		virtual void setProcReadSRGB(unsigned int sampler, bool sRGB);
+		virtual void setProcMipmapLOD(unsigned int sampler, float bias);
+		virtual void setProcBorderColor(unsigned int sampler, const Color<float> &borderColor);
+		virtual void setProcMaxAnisotropy(unsigned int sampler, float maxAnisotropy);
+		virtual void setProcSwizzleR(unsigned int sampler, SwizzleType swizzleR);
+		virtual void setProcSwizzleG(unsigned int sampler, SwizzleType swizzleG);
+		virtual void setProcSwizzleB(unsigned int sampler, SwizzleType swizzleB);
+		virtual void setProcSwizzleA(unsigned int sampler, SwizzleType swizzleA);
 
 		virtual void setWriteSRGB(bool sRGB);
 		virtual void setDepthBufferEnable(bool depthBufferEnable);

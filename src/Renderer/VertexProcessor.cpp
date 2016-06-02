@@ -512,7 +512,7 @@ namespace sw
 		context->textureTransformProject[stage] = project;
 	}
 
-	void VertexProcessor::setTextureFilter(unsigned int sampler, FilterType textureFilter)
+	void VertexProcessor::setProcTextureFilter(unsigned int sampler, FilterType textureFilter)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -521,7 +521,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setMipmapFilter(unsigned int sampler, MipmapType mipmapFilter)
+	void VertexProcessor::setProcMipmapFilter(unsigned int sampler, MipmapType mipmapFilter)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -530,7 +530,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setGatherEnable(unsigned int sampler, bool enable)
+	void VertexProcessor::setProcGatherEnable(unsigned int sampler, bool enable)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -539,7 +539,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setAddressingModeU(unsigned int sampler, AddressingMode addressMode)
+	void VertexProcessor::setProcAddressingModeU(unsigned int sampler, AddressingMode addressMode)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -548,7 +548,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setAddressingModeV(unsigned int sampler, AddressingMode addressMode)
+	void VertexProcessor::setProcAddressingModeV(unsigned int sampler, AddressingMode addressMode)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -557,7 +557,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setAddressingModeW(unsigned int sampler, AddressingMode addressMode)
+	void VertexProcessor::setProcAddressingModeW(unsigned int sampler, AddressingMode addressMode)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -566,7 +566,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setReadSRGB(unsigned int sampler, bool sRGB)
+	void VertexProcessor::setProcReadSRGB(unsigned int sampler, bool sRGB)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -575,7 +575,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setMipmapLOD(unsigned int sampler, float bias)
+	void VertexProcessor::setProcMipmapLOD(unsigned int sampler, float bias)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -584,7 +584,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setBorderColor(unsigned int sampler, const Color<float> &borderColor)
+	void VertexProcessor::setProcBorderColor(unsigned int sampler, const Color<float> &borderColor)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -593,7 +593,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setMaxAnisotropy(unsigned int sampler, float maxAnisotropy)
+	void VertexProcessor::setProcMaxAnisotropy(unsigned int sampler, float maxAnisotropy)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -602,7 +602,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setSwizzleR(unsigned int sampler, SwizzleType swizzleR)
+	void VertexProcessor::setProcSwizzleR(unsigned int sampler, SwizzleType swizzleR)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -611,7 +611,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setSwizzleG(unsigned int sampler, SwizzleType swizzleG)
+	void VertexProcessor::setProcSwizzleG(unsigned int sampler, SwizzleType swizzleG)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -620,7 +620,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setSwizzleB(unsigned int sampler, SwizzleType swizzleB)
+	void VertexProcessor::setProcSwizzleB(unsigned int sampler, SwizzleType swizzleB)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{
@@ -629,7 +629,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void VertexProcessor::setSwizzleA(unsigned int sampler, SwizzleType swizzleA)
+	void VertexProcessor::setProcSwizzleA(unsigned int sampler, SwizzleType swizzleA)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
 		{

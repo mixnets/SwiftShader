@@ -112,7 +112,7 @@ namespace sw
 		sw::secondaryColor = conventions.secondaryColor;
 		sw::exactColorRounding = exactColorRounding;
 
-		setRenderTarget(0, 0);
+		setRenderTargetSurface(0, 0);
 		clipper = new Clipper(symmetricNormalizedDepth);
 
 		updateViewMatrix = true;
@@ -2183,11 +2183,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setTextureFilter(sampler, textureFilter);
+			PixelProcessor::setProcTextureFilter(sampler, textureFilter);
 		}
 		else
 		{
-			VertexProcessor::setTextureFilter(sampler, textureFilter);
+			VertexProcessor::setProcTextureFilter(sampler, textureFilter);
 		}
 	}
 
@@ -2195,11 +2195,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setMipmapFilter(sampler, mipmapFilter);
+			PixelProcessor::setProcMipmapFilter(sampler, mipmapFilter);
 		}
 		else
 		{
-			VertexProcessor::setMipmapFilter(sampler, mipmapFilter);
+			VertexProcessor::setProcMipmapFilter(sampler, mipmapFilter);
 		}
 	}
 
@@ -2207,11 +2207,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setGatherEnable(sampler, enable);
+			PixelProcessor::setProcGatherEnable(sampler, enable);
 		}
 		else
 		{
-			VertexProcessor::setGatherEnable(sampler, enable);
+			VertexProcessor::setProcGatherEnable(sampler, enable);
 		}
 	}
 
@@ -2219,11 +2219,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setAddressingModeU(sampler, addressMode);
+			PixelProcessor::setProcAddressingModeU(sampler, addressMode);
 		}
 		else
 		{
-			VertexProcessor::setAddressingModeU(sampler, addressMode);
+			VertexProcessor::setProcAddressingModeU(sampler, addressMode);
 		}
 	}
 
@@ -2231,11 +2231,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setAddressingModeV(sampler, addressMode);
+			PixelProcessor::setProcAddressingModeV(sampler, addressMode);
 		}
 		else
 		{
-			VertexProcessor::setAddressingModeV(sampler, addressMode);
+			VertexProcessor::setProcAddressingModeV(sampler, addressMode);
 		}
 	}
 
@@ -2243,11 +2243,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setAddressingModeW(sampler, addressMode);
+			PixelProcessor::setProcAddressingModeW(sampler, addressMode);
 		}
 		else
 		{
-			VertexProcessor::setAddressingModeW(sampler, addressMode);
+			VertexProcessor::setProcAddressingModeW(sampler, addressMode);
 		}
 	}
 
@@ -2255,11 +2255,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setReadSRGB(sampler, sRGB);
+			PixelProcessor::setProcReadSRGB(sampler, sRGB);
 		}
 		else
 		{
-			VertexProcessor::setReadSRGB(sampler, sRGB);
+			VertexProcessor::setProcReadSRGB(sampler, sRGB);
 		}
 	}
 
@@ -2267,11 +2267,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setMipmapLOD(sampler, bias);
+			PixelProcessor::setProcMipmapLOD(sampler, bias);
 		}
 		else
 		{
-			VertexProcessor::setMipmapLOD(sampler, bias);
+			VertexProcessor::setProcMipmapLOD(sampler, bias);
 		}
 	}
 
@@ -2279,11 +2279,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setBorderColor(sampler, borderColor);
+			PixelProcessor::setProcBorderColor(sampler, borderColor);
 		}
 		else
 		{
-			VertexProcessor::setBorderColor(sampler, borderColor);
+			VertexProcessor::setProcBorderColor(sampler, borderColor);
 		}
 	}
 
@@ -2291,11 +2291,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setMaxAnisotropy(sampler, maxAnisotropy);
+			PixelProcessor::setProcMaxAnisotropy(sampler, maxAnisotropy);
 		}
 		else
 		{
-			VertexProcessor::setMaxAnisotropy(sampler, maxAnisotropy);
+			VertexProcessor::setProcMaxAnisotropy(sampler, maxAnisotropy);
 		}
 	}
 
@@ -2303,11 +2303,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setSwizzleR(sampler, swizzleR);
+			PixelProcessor::setProcSwizzleR(sampler, swizzleR);
 		}
 		else
 		{
-			VertexProcessor::setSwizzleR(sampler, swizzleR);
+			VertexProcessor::setProcSwizzleR(sampler, swizzleR);
 		}
 	}
 
@@ -2315,11 +2315,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setSwizzleG(sampler, swizzleG);
+			PixelProcessor::setProcSwizzleG(sampler, swizzleG);
 		}
 		else
 		{
-			VertexProcessor::setSwizzleG(sampler, swizzleG);
+			VertexProcessor::setProcSwizzleG(sampler, swizzleG);
 		}
 	}
 
@@ -2327,11 +2327,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setSwizzleB(sampler, swizzleB);
+			PixelProcessor::setProcSwizzleB(sampler, swizzleB);
 		}
 		else
 		{
-			VertexProcessor::setSwizzleB(sampler, swizzleB);
+			VertexProcessor::setProcSwizzleB(sampler, swizzleB);
 		}
 	}
 
@@ -2339,11 +2339,11 @@ namespace sw
 	{
 		if(type == SAMPLER_PIXEL)
 		{
-			PixelProcessor::setSwizzleA(sampler, swizzleA);
+			PixelProcessor::setProcSwizzleA(sampler, swizzleA);
 		}
 		else
 		{
-			VertexProcessor::setSwizzleA(sampler, swizzleA);
+			VertexProcessor::setProcSwizzleA(sampler, swizzleA);
 		}
 	}
 

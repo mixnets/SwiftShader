@@ -404,8 +404,8 @@ namespace gl
 
 		this->depthStencil = depthStencil;
 
-		setDepthBuffer(depthStencil);
-		setStencilBuffer(depthStencil);
+		setDepthBufferSurface(depthStencil);
+		setStencilBufferSurface(depthStencil);
 	}
 
 	void Device::setPixelShader(PixelShader *pixelShader)
@@ -447,7 +447,7 @@ namespace gl
 
 		this->renderTarget = renderTarget;
 
-		Renderer::setRenderTarget(index, renderTarget);
+		Renderer::setRenderTargetSurface(index, renderTarget);
 	}
 
 	void Device::setScissorRect(const sw::Rect &rect)

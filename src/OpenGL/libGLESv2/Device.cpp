@@ -368,7 +368,7 @@ namespace es2
 
 		this->renderTarget[index] = renderTarget;
 
-		Renderer::setRenderTarget(index, renderTarget);
+		Renderer::setRenderTargetSurface(index, renderTarget);
 	}
 
 	void Device::setDepthBuffer(egl::Image *depthBuffer)
@@ -390,7 +390,7 @@ namespace es2
 
 		this->depthBuffer = depthBuffer;
 
-		Renderer::setDepthBuffer(depthBuffer);
+		Renderer::setDepthBufferSurface(depthBuffer);
 	}
 
 	void Device::setStencilBuffer(egl::Image *stencilBuffer)
@@ -412,7 +412,7 @@ namespace es2
 
 		this->stencilBuffer = stencilBuffer;
 
-		Renderer::setStencilBuffer(stencilBuffer);
+		Renderer::setStencilBufferSurface(stencilBuffer);
 	}
 
 	void Device::setScissorRect(const sw::Rect &rect)

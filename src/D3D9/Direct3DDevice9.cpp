@@ -2706,8 +2706,8 @@ namespace D3D9
 
 		this->depthStencil = depthStencil;
 
-		renderer->setDepthBuffer(depthStencil);
-		renderer->setStencilBuffer(depthStencil);
+		renderer->setDepthBufferSurface(depthStencil);
+		renderer->setStencilBufferSurface(depthStencil);
 
 		return D3D_OK;
 	}
@@ -4127,7 +4127,7 @@ namespace D3D9
 			}
 		}
 
-		renderer->setRenderTarget(index, renderTarget);
+		renderer->setRenderTargetSurface(index, renderTarget);
 
 		return D3D_OK;
 	}

@@ -246,20 +246,20 @@ namespace sw
 		virtual void setTextureMatrix(int stage, const Matrix &T);
 		virtual void setTextureTransform(int stage, int count, bool project);
 
-		virtual void setTextureFilter(unsigned int sampler, FilterType textureFilter);
-		virtual void setMipmapFilter(unsigned int sampler, MipmapType mipmapFilter);
-		virtual void setGatherEnable(unsigned int sampler, bool enable);
-		virtual void setAddressingModeU(unsigned int sampler, AddressingMode addressingMode);
-		virtual void setAddressingModeV(unsigned int sampler, AddressingMode addressingMode);
-		virtual void setAddressingModeW(unsigned int sampler, AddressingMode addressingMode);
-		virtual void setReadSRGB(unsigned int sampler, bool sRGB);
-		virtual void setMipmapLOD(unsigned int sampler, float bias);
-		virtual void setBorderColor(unsigned int sampler, const Color<float> &borderColor);
-		virtual void setMaxAnisotropy(unsigned int stage, float maxAnisotropy);
-		virtual void setSwizzleR(unsigned int sampler, SwizzleType swizzleR);
-		virtual void setSwizzleG(unsigned int sampler, SwizzleType swizzleG);
-		virtual void setSwizzleB(unsigned int sampler, SwizzleType swizzleB);
-		virtual void setSwizzleA(unsigned int sampler, SwizzleType swizzleA);
+		virtual void setProcTextureFilter(unsigned int sampler, FilterType textureFilter);
+		virtual void setProcMipmapFilter(unsigned int sampler, MipmapType mipmapFilter);
+		virtual void setProcGatherEnable(unsigned int sampler, bool enable);
+		virtual void setProcAddressingModeU(unsigned int sampler, AddressingMode addressingMode);
+		virtual void setProcAddressingModeV(unsigned int sampler, AddressingMode addressingMode);
+		virtual void setProcAddressingModeW(unsigned int sampler, AddressingMode addressingMode);
+		virtual void setProcReadSRGB(unsigned int sampler, bool sRGB);
+		virtual void setProcMipmapLOD(unsigned int sampler, float bias);
+		virtual void setProcBorderColor(unsigned int sampler, const Color<float> &borderColor);
+		virtual void setProcMaxAnisotropy(unsigned int stage, float maxAnisotropy);
+		virtual void setProcSwizzleR(unsigned int sampler, SwizzleType swizzleR);
+		virtual void setProcSwizzleG(unsigned int sampler, SwizzleType swizzleG);
+		virtual void setProcSwizzleB(unsigned int sampler, SwizzleType swizzleB);
+		virtual void setProcSwizzleA(unsigned int sampler, SwizzleType swizzleA);
 
 		virtual void setPointSize(float pointSize);
 		virtual void setPointSizeMin(float pointSizeMin);

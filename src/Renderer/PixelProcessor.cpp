@@ -159,17 +159,17 @@ namespace sw
 		}
 	}
 
-	void PixelProcessor::setRenderTarget(int index, Surface *renderTarget)
+	void PixelProcessor::setRenderTargetSurface(int index, Surface *renderTarget)
 	{
 		context->renderTarget[index] = renderTarget;
 	}
 
-	void PixelProcessor::setDepthBuffer(Surface *depthBuffer)
+	void PixelProcessor::setDepthBufferSurface(Surface *depthBuffer)
 	{
 		context->depthBuffer = depthBuffer;
 	}
 
-	void PixelProcessor::setStencilBuffer(Surface *stencilBuffer)
+	void PixelProcessor::setStencilBufferSurface(Surface *stencilBuffer)
 	{
 		context->stencilBuffer = stencilBuffer;
 	}
@@ -354,7 +354,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setTextureFilter(unsigned int sampler, FilterType textureFilter)
+	void PixelProcessor::setProcTextureFilter(unsigned int sampler, FilterType textureFilter)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -363,7 +363,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setMipmapFilter(unsigned int sampler, MipmapType mipmapFilter)
+	void PixelProcessor::setProcMipmapFilter(unsigned int sampler, MipmapType mipmapFilter)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -372,7 +372,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setGatherEnable(unsigned int sampler, bool enable)
+	void PixelProcessor::setProcGatherEnable(unsigned int sampler, bool enable)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -381,7 +381,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setAddressingModeU(unsigned int sampler, AddressingMode addressMode)
+	void PixelProcessor::setProcAddressingModeU(unsigned int sampler, AddressingMode addressMode)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -390,7 +390,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setAddressingModeV(unsigned int sampler, AddressingMode addressMode)
+	void PixelProcessor::setProcAddressingModeV(unsigned int sampler, AddressingMode addressMode)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -399,7 +399,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setAddressingModeW(unsigned int sampler, AddressingMode addressMode)
+	void PixelProcessor::setProcAddressingModeW(unsigned int sampler, AddressingMode addressMode)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -408,7 +408,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setReadSRGB(unsigned int sampler, bool sRGB)
+	void PixelProcessor::setProcReadSRGB(unsigned int sampler, bool sRGB)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -417,7 +417,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setMipmapLOD(unsigned int sampler, float bias)
+	void PixelProcessor::setProcMipmapLOD(unsigned int sampler, float bias)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -426,7 +426,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setBorderColor(unsigned int sampler, const Color<float> &borderColor)
+	void PixelProcessor::setProcBorderColor(unsigned int sampler, const Color<float> &borderColor)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -435,7 +435,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setMaxAnisotropy(unsigned int sampler, float maxAnisotropy)
+	void PixelProcessor::setProcMaxAnisotropy(unsigned int sampler, float maxAnisotropy)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -444,7 +444,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setSwizzleR(unsigned int sampler, SwizzleType swizzleR)
+	void PixelProcessor::setProcSwizzleR(unsigned int sampler, SwizzleType swizzleR)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -453,7 +453,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setSwizzleG(unsigned int sampler, SwizzleType swizzleG)
+	void PixelProcessor::setProcSwizzleG(unsigned int sampler, SwizzleType swizzleG)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -462,7 +462,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setSwizzleB(unsigned int sampler, SwizzleType swizzleB)
+	void PixelProcessor::setProcSwizzleB(unsigned int sampler, SwizzleType swizzleB)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
@@ -471,7 +471,7 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void PixelProcessor::setSwizzleA(unsigned int sampler, SwizzleType swizzleA)
+	void PixelProcessor::setProcSwizzleA(unsigned int sampler, SwizzleType swizzleA)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)
 		{
