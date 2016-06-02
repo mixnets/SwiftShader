@@ -496,7 +496,6 @@ namespace glsl
 		TIntermTyped *right = node->getRight();
 		const TType &leftType = left->getType();
 		const TType &rightType = right->getType();
-		const TType &resultType = node->getType();
 
 		if(isSamplerRegister(result))
 		{
@@ -1270,8 +1269,8 @@ namespace glsl
 
 							if(argumentCount == 2 || (textureFunction.offset && argumentCount == 3))
 							{
-								Instruction *tex = emit(textureFunction.offset ? sw::Shader::OPCODE_TEXOFFSET : sw::Shader::OPCODE_TEX,
-								                        result, &coord, arg[0], offset);
+								emit(textureFunction.offset ? sw::Shader::OPCODE_TEXOFFSET : sw::Shader::OPCODE_TEX,
+								     result, &coord, arg[0], offset);
 							}
 							else if(argumentCount == 3 || (textureFunction.offset && argumentCount == 4))   // bias
 							{
@@ -1398,7 +1397,7 @@ namespace glsl
 				{
 					for(int i = 0; i < outCols; i++)
 					{
-						Instruction *init = emit(sw::Shader::OPCODE_MOV, result, i, &zero);
+						emit(sw::Shader::OPCODE_MOV, result, i, &zero);
 						Instruction *mov = emitCast(result, i, arg0, 0);
 						mov->dst.mask = 1 << i;
 						ASSERT(mov->src[0].swizzle == 0x00);
@@ -1415,7 +1414,7 @@ namespace glsl
 						{
 							// Initialize to identity matrix
 							Constant col((i == 0 ? 1.0f : 0.0f), (i == 1 ? 1.0f : 0.0f), (i == 2 ? 1.0f : 0.0f), (i == 3 ? 1.0f : 0.0f));
-							Instruction *mov = emitCast(result, i, &col, 0);
+							emitCast(result, i, &col, 0);
 						}
 
 						if(i < inCols)
@@ -2171,8 +2170,7 @@ namespace glsl
 
 				if(memberType.getBasicType() == EbtBool)
 				{
-					int arraySize = (memberType.isArray() ? memberType.getArraySize() : 1);
-					ASSERT(argumentInfo.clampedIndex < arraySize);
+					ASSERT(argumentInfo.clampedIndex < (memberType.isArray() ? memberType.getArraySize() : 1));
 
 					// Convert the packed bool, which is currently an int, to a true bool
 					Instruction *instruction = new Instruction(sw::Shader::OPCODE_I2B);
@@ -2191,9 +2189,8 @@ namespace glsl
 				{
 					int numCols = memberType.getNominalSize();
 					int numRows = memberType.getSecondarySize();
-					int arraySize = (memberType.isArray() ? memberType.getArraySize() : 1);
 
-					ASSERT(argumentInfo.clampedIndex < (numCols * arraySize));
+					ASSERT(argumentInfo.clampedIndex < (numCols * (memberType.isArray() ? memberType.getArraySize() : 1)));
 
 					unsigned int dstIndex = registerIndex(&unpackedUniform);
 					unsigned int srcSwizzle = (argumentInfo.clampedIndex % numCols) * 0x55;
