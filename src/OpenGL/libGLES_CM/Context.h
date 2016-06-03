@@ -600,6 +600,9 @@ private:
 
 	gl::NameSpace<Framebuffer> mFramebufferNameSpace;
 
+public:
+	gl::NameSpace<egl::Image> mEGLImageNameSpace;
+
 	VertexDataManager *mVertexDataManager;
 	IndexDataManager *mIndexDataManager;
 

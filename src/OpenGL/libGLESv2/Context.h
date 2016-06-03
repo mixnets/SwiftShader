@@ -734,6 +734,8 @@ private:
 	gl::NameSpace<Query> mQueryNameSpace;
 	gl::NameSpace<VertexArray> mVertexArrayNameSpace;
 	gl::NameSpace<TransformFeedback> mTransformFeedbackNameSpace;
+public:
+	gl::NameSpace<egl::Image> mEGLImageNameSpace;
 
 	VertexDataManager *mVertexDataManager;
 	IndexDataManager *mIndexDataManager;

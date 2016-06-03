@@ -17,20 +17,35 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include <mutex>
+
+static std::mutex m2;
+
 void trace(const char *format, ...)
 {
-	if(false)
+	if(true)
 	{
-		FILE *file = fopen("debug.txt", "a");
-
-		if(file)
+		if(true)
 		{
-			va_list vararg;
-			va_start(vararg, format);
-			vfprintf(file, format, vararg);
-			va_end(vararg);
+			m2.lock();
+			static FILE* file = nullptr;
+			if(!file)
+			{
+				file = fopen("/usr/local/google/home/nicolascapens/tmp/debug2.txt", "a");
+				if(!file)printf("Noooo, cannot open debug.txt!!!!\n");
+			}
 
-			fclose(file);
+			if(file)
+			{
+				va_list vararg;
+                       va_start(vararg, format);
+                       vfprintf(file, format, vararg);
+                       va_end(vararg);
+
+
+				fflush(file);
+			}
+			m2.unlock();
 		}
 	}
 }

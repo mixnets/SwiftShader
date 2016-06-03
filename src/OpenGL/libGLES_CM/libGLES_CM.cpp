@@ -4612,7 +4612,7 @@ void Viewport(GLint x, GLint y, GLsizei width, GLsizei height)
 
 void EGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image)
 {
-	TRACE("(GLenum target = 0x%X, GLeglImageOES image = %p)", target, image);
+	TRACE("libGLES_CM (GLenum target = 0x%X, GLeglImageOES image = %p)", target, image);
 
 	switch(target)
 	{
@@ -4646,7 +4646,7 @@ void EGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image)
 			return error(GL_INVALID_OPERATION);
 		}
 
-		egl::Image *glImage = static_cast<egl::Image*>(image);
+		egl::Image *glImage = context->mEGLImageNameSpace.find((GLuint)reinterpret_cast<intptr_t>(image));
 
 		texture->setImage(glImage);
 	}

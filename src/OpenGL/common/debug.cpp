@@ -21,34 +21,45 @@
 #include <cutils/log.h>
 #endif
 
+ #include <sys/types.h>
+       #include <unistd.h>
+
 #include <stdio.h>
 #include <stdarg.h>
+#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
+
+
+
+
+#include <mutex>
+
+
 
 namespace es
 {
-#ifdef __ANDROID__
-	void output(const char *format, va_list vararg)
-	{
-		ALOGI("%s", android::String8::formatV(format, vararg).string());
-	}
-#else
+	static std::mutex m;
+
 	static void output(const char *format, va_list vararg)
 	{
-		if(false)
+		if(true)
 		{
+			m.lock();
 			static FILE* file = nullptr;
 			if(!file)
 			{
-				file = fopen(TRACE_OUTPUT_FILE, "w");
+				file = fopen("/usr/local/google/home/nicolascapens/tmp/debug.txt", "a");
+				if(!file)printf("Noooo, cannot open debug.txt!!!!\n");
 			}
 
 			if(file)
 			{
 				vfprintf(file, format, vararg);
+
+				fflush(file);
 			}
+			m.unlock();
 		}
 	}
-#endif
 
 	void trace(const char *format, ...)
 	{

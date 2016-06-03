@@ -3147,13 +3147,15 @@ egl::Image *Context::createSharedImage(EGLenum target, GLuint name, GLuint textu
 	{
 		es1::Texture *texture = getTexture(name);
 
-		return texture->createSharedImage(GL_TEXTURE_2D, textureLevel);
+		egl::Image *image = texture->createSharedImage(GL_TEXTURE_2D, textureLevel);
+		return (egl::Image*)mEGLImageNameSpace.allocate(image);
 	}
 	else if(target == EGL_GL_RENDERBUFFER_KHR)
 	{
 		es1::Renderbuffer *renderbuffer = getRenderbuffer(name);
 
-		return renderbuffer->createSharedImage();
+		egl::Image *image = renderbuffer->createSharedImage();
+		return (egl::Image*)mEGLImageNameSpace.allocate(image);
 	}
 	else UNREACHABLE(target);
 

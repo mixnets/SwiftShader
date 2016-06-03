@@ -34,59 +34,36 @@ namespace es
 }
 
 // A macro to output a trace of a function call and its arguments to the debugging log
-#if defined(ANGLE_DISABLE_TRACE)
-#define TRACE(message, ...) (void(0))
-#else
 #define TRACE(message, ...) es::trace("trace: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#endif
 
 // A macro to output a function call and its arguments to the debugging log, to denote an item in need of fixing.
-#if defined(ANGLE_DISABLE_TRACE)
-#define FIXME(message, ...) (void(0))
-#else
+
 #define FIXME(message, ...) do {es::trace("fixme: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); assert(false);} while(false)
-#endif
 
 // A macro to output a function call and its arguments to the debugging log, in case of error.
-#if defined(ANGLE_DISABLE_TRACE)
-#define ERR(message, ...) (void(0))
-#else
 #define ERR(message, ...) do {es::trace("err: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__); assert(false);} while(false)
-#endif
 
 // A macro asserting a condition and outputting failures to the debug log
 #undef ASSERT
-#if !defined(NDEBUG)
 #define ASSERT(expression) do { \
 	if(!(expression)) \
 		ERR("\t! Assert failed in %s(%d): "#expression"\n", __FUNCTION__, __LINE__); \
 		assert(expression); \
 	} while(0)
-#else
-#define ASSERT(expression) (void(0))
-#endif
 
 // A macro to indicate unimplemented functionality
 #undef UNIMPLEMENTED
-#if !defined(NDEBUG)
 #define UNIMPLEMENTED() do { \
 	FIXME("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__); \
 	assert(false); \
 	} while(0)
-#else
-	#define UNIMPLEMENTED() FIXME("\t! Unimplemented: %s(%d)\n", __FUNCTION__, __LINE__)
-#endif
 
 // A macro for code which is not expected to be reached under valid assumptions
 #undef UNREACHABLE
-#if !defined(NDEBUG)
 #define UNREACHABLE(value) do { \
 	ERR("\t! Unreachable case reached: %s(%d). %s: %d\n", __FUNCTION__, __LINE__, #value, value); \
 	assert(false); \
 	} while(0)
-#else
-	#define UNREACHABLE(value) ERR("\t! Unreachable reached: %s(%d). %s: %d\n", __FUNCTION__, __LINE__, #value, value)
-#endif
 
 #endif   // __ANDROID__
 

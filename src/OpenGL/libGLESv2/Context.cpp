@@ -4243,13 +4243,15 @@ egl::Image *Context::createSharedImage(EGLenum target, GLuint name, GLuint textu
 	{
 		es2::Texture *texture = getTexture(name);
 
-		return texture->createSharedImage(textureTarget, textureLevel);
+		egl::Image *image = texture->createSharedImage(textureTarget, textureLevel);
+		return (egl::Image*)mEGLImageNameSpace.allocate(image);
 	}
 	else if(target == EGL_GL_RENDERBUFFER_KHR)
 	{
 		es2::Renderbuffer *renderbuffer = getRenderbuffer(name);
 
-		return renderbuffer->createSharedImage();
+		egl::Image *image = renderbuffer->createSharedImage();
+		return (egl::Image*)mEGLImageNameSpace.allocate(image);
 	}
 	else UNREACHABLE(target);
 
