@@ -986,7 +986,7 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 		}
 	#endif
 
-	GLuint name = reinterpret_cast<intptr_t>(buffer);
+	GLuint name = (GLuint)reinterpret_cast<intptr_t>(buffer);
 
 	if(name == 0)
 	{
@@ -1012,7 +1012,9 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 		return error(EGL_BAD_PARAMETER, EGL_NO_IMAGE_KHR);
 	}
 
-	return success((EGLImageKHR)image);
+	GLuint eglImage = set(image);
+
+	return success((EGLImageKHR)eglImage);
 }
 
 EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
@@ -1026,13 +1028,16 @@ EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
 		return error(EGL_BAD_DISPLAY, EGL_FALSE);
 	}
 
-	if(!image)
+	GLuint name = (GLuint)reinterpret_cast<intptr_t>(image);
+	Image *eglImage = get(name);
+
+	if(!eglImage)
 	{
 		return error(EGL_BAD_PARAMETER, EGL_FALSE);
 	}
 
-	egl::Image *glImage = static_cast<egl::Image*>(image);
-	glImage->destroyShared();
+	eglImage->destroyShared();
+	forget(name);
 
 	return success(EGL_TRUE);
 }

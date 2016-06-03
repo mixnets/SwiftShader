@@ -17,6 +17,7 @@
 #include "main.h"
 
 #include "libEGL.hpp"
+#include "Display.h"
 #include "Context.hpp"
 #include "Surface.h"
 
@@ -244,6 +245,27 @@ egl::Context *getCurrentContext()
 	Current *current = eglGetCurrent();
 
 	return current->context;
+}
+
+GLuint set(egl::Image *image)
+{
+	Display *display = egl::Display::get(getCurrentDisplay());
+
+	return display->mEGLImageNameSpace.allocate(image);
+}
+
+egl::Image *get(GLuint name)
+{
+	Display *display = egl::Display::get(getCurrentDisplay());
+
+	return display->mEGLImageNameSpace.find(name);
+}
+
+void forget(GLuint name)
+{
+	Display *display = egl::Display::get(getCurrentDisplay());
+
+	display->mEGLImageNameSpace.remove(name);
 }
 
 void setCurrentDrawSurface(egl::Surface *surface)
@@ -631,6 +653,9 @@ LibEGLexports::LibEGLexports()
 	this->eglGetSyncAttribKHR = egl::GetSyncAttribKHR;
 
 	this->clientGetCurrentContext = egl::getCurrentContext;
+
+	this->set = egl::set;
+	this->get = egl::get;
 }
 
 extern "C" EGLAPI LibEGLexports *libEGL_swiftshader()

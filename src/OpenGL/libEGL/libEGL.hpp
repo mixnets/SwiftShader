@@ -68,6 +68,9 @@ public:
 
 	// Functions that don't change the error code, for use by client APIs
 	egl::Context *(*clientGetCurrentContext)();
+
+	GLuint (*set)(egl::Image*);
+	egl::Image *(*get)(GLuint);
 };
 
 class LibEGL

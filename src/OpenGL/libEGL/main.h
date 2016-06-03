@@ -57,6 +57,10 @@ namespace egl
 	void setCurrentReadSurface(Surface *surface);
 	Surface *getCurrentReadSurface();
 
+	GLuint set(egl::Image *image);
+	egl::Image *get(GLuint name);
+	void forget(GLuint name);
+
 	void error(EGLint errorCode);
 
 	template<class T>
