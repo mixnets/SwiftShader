@@ -425,7 +425,7 @@ struct State
 class Context : public egl::Context
 {
 public:
-	Context(const egl::Config *config, const Context *shareContext, EGLint clientVersion);
+	Context(egl::Display *display, const egl::Config *config, const Context *shareContext, EGLint clientVersion);
 
 	virtual void makeCurrent(egl::Surface *surface);
 	virtual EGLint getClientVersion() const;
@@ -688,6 +688,7 @@ public:
 	virtual void bindTexImage(egl::Surface *surface);
 	virtual EGLenum validateSharedImage(EGLenum target, GLuint name, GLuint textureLevel);
 	virtual egl::Image *createSharedImage(EGLenum target, GLuint name, GLuint textureLevel);
+	egl::Image *getSharedImage(GLeglImageOES image);
 
 	Device *getDevice();
 
@@ -759,6 +760,7 @@ private:
 	bool mFrontFaceDirty;
 	bool mDitherStateDirty;
 
+	egl::Display *const display;
 	Device *device;
 	ResourceManager *mResourceManager;
 };

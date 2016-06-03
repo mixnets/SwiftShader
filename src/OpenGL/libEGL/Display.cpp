@@ -21,6 +21,7 @@
 #include "main.h"
 #include "libEGL/Surface.h"
 #include "libEGL/Context.hpp"
+#include "common/Image.hpp"
 #include "common/debug.h"
 #include "Common/MutexLock.hpp"
 
@@ -195,6 +196,11 @@ void Display::terminate()
 	while(!mContextSet.empty())
 	{
 		destroyContext(*mContextSet.begin());
+	}
+
+	while(!mSharedImageNameSpace.empty())
+	{
+		destroySharedImage((EGLImageKHR)mSharedImageNameSpace.firstName());
 	}
 }
 
@@ -417,7 +423,7 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 	{
 		if(libGLES_CM)
 		{
-			context = libGLES_CM->es1CreateContext(config, shareContext);
+			context = libGLES_CM->es1CreateContext(this, config, shareContext);
 		}
 	}
 	else if((clientVersion == 2 && config->mRenderableType & EGL_OPENGL_ES2_BIT)
@@ -428,7 +434,7 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 	{
 		if(libGLESv2)
 		{
-			context = libGLESv2->es2CreateContext(config, shareContext, clientVersion);
+			context = libGLESv2->es2CreateContext(this, config, shareContext, clientVersion);
 		}
 	}
 	else
@@ -579,6 +585,33 @@ EGLint Display::getMaxSwapInterval() const
 void *Display::getNativeDisplay() const
 {
 	return nativeDisplay;
+}
+
+EGLImageKHR Display::createSharedImage(egl::Image *image)
+{
+	return (EGLImageKHR)mSharedImageNameSpace.allocate(image);
+}
+
+bool Display::destroySharedImage(EGLImageKHR image)
+{
+	GLuint name = (GLuint)reinterpret_cast<intptr_t>(image);
+	egl::Image *eglImage = mSharedImageNameSpace.find(name);
+
+	if(!eglImage)
+	{
+		return false;
+	}
+
+	eglImage->destroyShared();
+	mSharedImageNameSpace.remove(name);
+
+	return true;
+}
+
+Image *Display::getSharedImage(EGLImageKHR image)
+{
+	GLuint name = (GLuint)reinterpret_cast<intptr_t>(image);
+	return mSharedImageNameSpace.find(name);
 }
 
 sw::Format Display::getDisplayFormat() const
