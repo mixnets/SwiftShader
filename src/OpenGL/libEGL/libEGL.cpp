@@ -1007,9 +1007,9 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 		return error(EGL_BAD_MATCH, EGL_NO_IMAGE_KHR);
 	}
 
-	if(image->getDepth() > 1)
+	//if(image->getDepth() > 1)
 	{
-		return error(EGL_BAD_PARAMETER, EGL_NO_IMAGE_KHR);
+		//return error(EGL_BAD_PARAMETER, EGL_NO_IMAGE_KHR);
 	}
 
 	return success((EGLImageKHR)image);
@@ -1031,8 +1031,8 @@ EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
 		return error(EGL_BAD_PARAMETER, EGL_FALSE);
 	}
 
-	egl::Image *glImage = static_cast<egl::Image*>(image);
-	glImage->destroyShared();
+	//egl::Image *glImage = static_cast<egl::Image*>(image);
+	//glImage->destroyShared();
 
 	return success(EGL_TRUE);
 }

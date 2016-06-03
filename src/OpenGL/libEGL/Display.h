@@ -21,6 +21,7 @@
 
 #include "Config.h"
 #include "Sync.hpp"
+#include "common/NameSpace.hpp"
 
 #include <set>
 
@@ -65,6 +66,8 @@ namespace egl
 
 		void *getNativeDisplay() const;
 		const char *getExtensionString() const;
+
+		gl::NameSpace<Image> mEGLImageNameSpace;
 
 	private:
 		explicit Display(void *nativeDisplay);
