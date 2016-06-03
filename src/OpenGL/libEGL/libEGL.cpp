@@ -1031,8 +1031,8 @@ EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
 		return error(EGL_BAD_PARAMETER, EGL_FALSE);
 	}
 
-	egl::Image *glImage = static_cast<egl::Image*>(image);
-	glImage->destroyShared();
+	//egl::Image *glImage = static_cast<egl::Image*>(image);
+	//glImage->destroyShared();
 
 	return success(EGL_TRUE);
 }

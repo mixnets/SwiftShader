@@ -6705,7 +6705,7 @@ void EGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image)
 			return error(GL_INVALID_OPERATION);
 		}
 
-		egl::Image *glImage = static_cast<egl::Image*>(image);
+		egl::Image *glImage = context->mEGLImageNameSpace.find((GLuint)image);
 
 		texture->setImage(glImage);
 	}
