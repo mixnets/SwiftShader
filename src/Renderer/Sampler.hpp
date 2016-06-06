@@ -153,6 +153,7 @@ namespace sw
 			SwizzleType swizzleA           : BITS(SWIZZLE_LAST);
 
 			int baseLevel;
+			int maxLevel;
 
 			#if PERF_PROFILE
 			bool compressedFormat          : 1;
@@ -180,6 +181,8 @@ namespace sw
 		void setSwizzleG(SwizzleType swizzleG);
 		void setSwizzleB(SwizzleType swizzleB);
 		void setSwizzleA(SwizzleType swizzleA);
+		void setBaseLevel(int baseLevel);
+		void setMaxLevel(int maxLevel);
 
 		static void setFilterQuality(FilterType maximumFilterQuality);
 		static void setMipmapQuality(MipmapType maximumFilterQuality);
@@ -217,6 +220,10 @@ namespace sw
 		SwizzleType swizzleG;
 		SwizzleType swizzleB;
 		SwizzleType swizzleA;
+
+		int baseLevel;
+		int maxLevel;
+
 		Texture texture;
 		float exp2LOD;
 

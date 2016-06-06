@@ -98,6 +98,8 @@ namespace sw
 			state.swizzleG = swizzleG;
 			state.swizzleB = swizzleB;
 			state.swizzleA = swizzleA;
+			state.baseLevel = baseLevel;
+			state.maxLevel = maxLevel;
 
 			#if PERF_PROFILE
 				state.compressedFormat = Surface::isCompressed(externalTextureFormat);
@@ -332,6 +334,16 @@ namespace sw
 	void Sampler::setSwizzleA(SwizzleType swizzleA)
 	{
 		this->swizzleA = swizzleA;
+	}
+
+	void Sampler::setBaseLevel(int baseLevel)
+	{
+		this->baseLevel = baseLevel;
+	}
+
+	void Sampler::setMaxLevel(int maxLevel)
+	{
+		this->maxLevel = maxLevel;
 	}
 
 	void Sampler::setFilterQuality(FilterType maximumFilterQuality)
