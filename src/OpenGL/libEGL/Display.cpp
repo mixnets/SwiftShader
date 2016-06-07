@@ -417,7 +417,7 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 	{
 		if(libGLES_CM)
 		{
-			context = libGLES_CM->es1CreateContext(config, shareContext);
+			context = libGLES_CM->es1CreateContext(this, config, shareContext);
 		}
 	}
 	else if((clientVersion == 2 && config->mRenderableType & EGL_OPENGL_ES2_BIT)
@@ -428,7 +428,7 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 	{
 		if(libGLESv2)
 		{
-			context = libGLESv2->es2CreateContext(config, shareContext, clientVersion);
+			context = libGLESv2->es2CreateContext(this, config, shareContext, clientVersion);
 		}
 	}
 	else
