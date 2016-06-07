@@ -344,6 +344,16 @@ namespace sw
 		texture.maxLevel = maxLevel;
 	}
 
+	void Sampler::setMinLod(float minLod)
+	{
+		texture.minLod = minLod;
+	}
+
+	void Sampler::setMaxLod(float maxLod)
+	{
+		texture.maxLod = maxLod;
+	}
+
 	void Sampler::setFilterQuality(FilterType maximumFilterQuality)
 	{
 		Sampler::maximumTextureFilterQuality = maximumFilterQuality;
