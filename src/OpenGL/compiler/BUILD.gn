@@ -1,0 +1,72 @@
+# Copyright 2016 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# Need a separate config to ensure the warnings are added to the end.
+config("swiftshader_opengl_compiler_private_config") {
+  if (is_clang) {
+    cflags = [
+      "-DLOG_TAG=\"swiftshader_opengl_compiler\"",
+      "-Wno-sign-compare",
+    ]
+
+    if (!is_debug) {
+      cflags += [
+        "-DNDEBUG",
+        "-DANGLE_DISABLE_TRACE",
+      ]
+    }
+  }
+}
+
+source_set("swiftshader_opengl_compiler") {
+  deps = [
+    "//third_party/swiftshader/src/OpenGL/compiler/preprocessor:swiftshader_opengl_preprocessor",
+  ]
+
+  sources = [
+    "AnalyzeCallDepth.cpp",
+    "Compiler.cpp",
+    "debug.cpp",
+    "Diagnostics.cpp",
+    "DirectiveHandler.cpp",
+    "glslang_lex.cpp",
+    "glslang_tab.cpp",
+    "InfoSink.cpp",
+    "Initialize.cpp",
+    "InitializeParseContext.cpp",
+    "IntermTraverse.cpp",
+    "Intermediate.cpp",
+    "intermOut.cpp",
+    "OutputASM.cpp",
+    "parseConst.cpp",
+    "ParseHelper.cpp",
+    "PoolAlloc.cpp",
+    "SymbolTable.cpp",
+    "TranslatorASM.cpp",
+    "util.cpp",
+    "ValidateGlobalInitializer.cpp",
+    "ValidateLimitations.cpp",
+    "ValidateSwitch.cpp",
+  ]
+
+  if ((host_os == "linux") || (host_os == "mac")) {
+    sources += [
+      "ossource_posix.cpp",
+    ]
+  } else if (host_os == "win") {
+    sources += [
+      "ossource_win.cpp",
+    ]
+  }
+
+  configs += [
+    ":swiftshader_opengl_compiler_private_config",
+  ]
+
+  include_dirs = [
+    "..",
+    "../..",
+    "../../../include",
+  ]
+}
