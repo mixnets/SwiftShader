@@ -17,6 +17,7 @@
 #include "main.h"
 
 #include "libEGL.hpp"
+#include "Display.h"
 #include "Context.hpp"
 #include "Surface.h"
 
