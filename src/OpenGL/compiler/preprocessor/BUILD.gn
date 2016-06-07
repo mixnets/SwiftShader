@@ -1,0 +1,39 @@
+# Copyright 2016 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# Need a separate config to ensure the warnings are added to the end.
+config("swiftshader_opengl_preprocessor_private_config") {
+  if (is_clang) {
+    cflags = [
+      "-DLOG_TAG=\"swiftshader_opengl_compiler\"",
+    ]
+
+    if (!is_debug) {
+      cflags += [
+        "-DNDEBUG",
+        "-DANGLE_DISABLE_TRACE",
+      ]
+    }
+  }
+}
+
+source_set("swiftshader_opengl_preprocessor") {
+  sources = [
+    "Diagnostics.cpp",
+    "DirectiveHandler.cpp",
+    "DirectiveParser.cpp",
+    "ExpressionParser.cpp",
+    "Input.cpp",
+    "Lexer.cpp",
+    "Macro.cpp",
+    "MacroExpander.cpp",
+    "Preprocessor.cpp",
+    "Token.cpp",
+    "Tokenizer.cpp",
+  ]
+
+  configs += [
+    ":swiftshader_opengl_preprocessor_private_config",
+  ]
+}

@@ -1,0 +1,46 @@
+# Copyright 2016 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# Need a separate config to ensure the warnings are added to the end.
+config("swiftshader_reactor_private_config") {
+  if (is_clang) {
+    cflags = [
+      "-DLOG_TAG=\"swiftshader_reactor\"",
+      "-Wno-unused-local-typedef",
+      "-msse2",
+      "-D__STDC_CONSTANT_MACROS",
+      "-D__STDC_LIMIT_MACROS",
+    ]
+
+    if (!is_debug) {
+      cflags += [
+        "-DNDEBUG",
+        "-DANGLE_DISABLE_TRACE",
+      ]
+    }
+  }
+}
+
+source_set("swiftshader_reactor") {
+  deps = [
+    "//third_party/swiftshader/src/Common:swiftshader_common",
+    "//third_party/swiftshader/third_party/LLVM:swiftshader_llvm",
+  ]
+
+  sources = [
+    "Nucleus.cpp",
+    "Routine.cpp",
+    "RoutineManager.cpp",
+  ]
+
+  configs += [
+    ":swiftshader_reactor_private_config",
+  ]
+
+  include_dirs = [
+    "..",
+    "../Common",
+    "../../third_party/LLVM/include/",
+  ]
+}

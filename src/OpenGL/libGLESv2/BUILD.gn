@@ -1,0 +1,71 @@
+# Copyright 2016 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# Need a separate config to ensure the warnings are added to the end.
+config("swiftshader_libGLESv2_private_config") {
+  if (is_clang) {
+    cflags = [
+      "-DLOG_TAG=\"swiftshader_libGLESv2\"",
+      "-fno-operator-names",
+      "-D__STDC_CONSTANT_MACROS",
+      "-D__STDC_LIMIT_MACROS",
+      "-DGL_API=",
+      "-DGL_APICALL=",
+      "-DGL_GLEXT_PROTOTYPES",
+      "-Wno-sign-compare",
+    ]
+
+    if (!is_debug) {
+      cflags += [
+        "-DNDEBUG",
+        "-DANGLE_DISABLE_TRACE",
+      ]
+    }
+  }
+}
+
+shared_library("swiftshader_libGLESv2") {
+  deps = [
+    "//third_party/swiftshader/src/Common:swiftshader_common",
+    "//third_party/swiftshader/src/Reactor:swiftshader_reactor",
+    "//third_party/swiftshader/src/Renderer:swiftshader_renderer",
+    "//third_party/swiftshader/src/OpenGL/common:swiftshader_opengl_common",
+    "//third_party/swiftshader/src/OpenGL/compiler:swiftshader_opengl_compiler",
+    "//third_party/swiftshader/src/Shader:swiftshader_shader",
+    "//third_party/swiftshader/src/Main:swiftshader_main",
+    "//third_party/swiftshader/third_party/LLVM:swiftshader_llvm",
+  ]
+
+  sources = [
+    "Buffer.cpp",
+    "Context.cpp",
+    "Device.cpp",
+    "Fence.cpp",
+    "Framebuffer.cpp",
+    "IndexDataManager.cpp",
+    "libGLESv2.cpp",
+    "libGLESv3.cpp",
+    "main.cpp",
+    "Program.cpp",
+    "Query.cpp",
+    "Renderbuffer.cpp",
+    "ResourceManager.cpp",
+    "Shader.cpp",
+    "Texture.cpp",
+    "TransformFeedback.cpp",
+    "utilities.cpp",
+    "VertexArray.cpp",
+    "VertexDataManager.cpp",
+  ]
+
+  configs += [
+    ":swiftshader_libGLESv2_private_config",
+  ]
+
+  include_dirs = [
+    "../../../include",
+    "../..",
+    "..",
+  ]
+}

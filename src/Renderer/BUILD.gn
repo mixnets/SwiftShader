@@ -1,0 +1,62 @@
+# Copyright 2016 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+# Need a separate config to ensure the warnings are added to the end.
+config("swiftshader_renderer_private_config") {
+  if (is_clang) {
+    cflags = [
+      "-DLOG_TAG=\"swiftshader_renderer\"",
+      "-fno-operator-names",
+      "-msse2",
+      "-Wno-sign-compare",
+    ]
+
+    if (!is_debug) {
+      cflags += [
+        "-DNDEBUG",
+        "-DANGLE_DISABLE_TRACE",
+      ]
+    }
+  }
+}
+
+source_set("swiftshader_renderer") {
+  deps = [
+    "//third_party/swiftshader/src/Common:swiftshader_common",
+    "//third_party/swiftshader/src/Shader:swiftshader_shader",
+    "//third_party/swiftshader/src/Main:swiftshader_main",
+  ]
+
+  sources = [
+    "Blitter.cpp",
+    "Clipper.cpp",
+    "Color.cpp",
+    "Context.cpp",
+    "ETC_Decoder.cpp",
+    "Matrix.cpp",
+    "PixelProcessor.cpp",
+    "Plane.cpp",
+    "Point.cpp",
+    "QuadRasterizer.cpp",
+    "Renderer.cpp",
+    "Sampler.cpp",
+    "SetupProcessor.cpp",
+    "Surface.cpp",
+    "TextureStage.cpp",
+    "Vector.cpp",
+    "VertexProcessor.cpp",
+  ]
+
+  configs += [
+    ":swiftshader_renderer_private_config",
+  ]
+
+  include_dirs = [
+    ".",
+    "..",
+    "../Common",
+    "../Main",
+    "../Shader",
+  ]
+}

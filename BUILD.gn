@@ -1,0 +1,62 @@
+# Copyright 2016 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+config("swiftshader_config") {
+if (is_clang) {
+    cflags = [
+      "-std=c++11",
+    ]
+
+    if (is_debug) {
+        cflags += [
+        "-g",
+      ]
+    } else { # Release
+      # All Release builds use function/data sections to make the shared libraries smaller
+      cflags += [
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-Wl",
+        "--gc-sections",
+        "-s",
+        "-fomit-frame-pointer",
+      ]
+
+      # Choose the right Release architecture
+      if (target_cpu == "x64") {
+        cflags += [
+          "-march=core2",
+        ]
+      } else { # 32
+        cflags += [
+          "-march=i686",
+        ]
+      }
+    }
+
+    if (target_cpu == "x64") { # 64 bit version
+      cflags += [
+        "-m64",
+        "-fPIC",
+      ]
+    } else { # 32 bit version
+      cflags += [
+        "-m32",
+      ]
+    }
+  }
+}
+
+component("swiftshader") {
+  configs -= [ "//build/config/compiler:chromium_code" ]
+  configs += [
+    "//build/config/compiler:no_chromium_code",
+    ":swiftshader_config",
+  ]
+
+  deps = [
+    "//third_party/swiftshader/src/OpenGL/libEGL:swiftshader_libEGL",
+    "//third_party/swiftshader/src/OpenGL/libGLESv2:swiftshader_libGLESv2",
+  ]
+}
