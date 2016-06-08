@@ -45,6 +45,7 @@ namespace es2
 Context::Context(egl::Display *display, const egl::Config *config, const Context *shareContext, EGLint clientVersion)
 	: egl::Context(display), clientVersion(clientVersion), mConfig(config)
 {
+	(void)mConfig; // Silence unused private member warning
 	sw::Context *context = new sw::Context();
 	device = new es2::Device(context);
 
