@@ -160,12 +160,16 @@ void detachThread()
 {
 	TRACE("()");
 
-	egl::Current *current = (egl::Current*)sw::Thread::getLocalStorage(currentTLS);
+	eglMakeCurrent(EGL_NO_DISPLAY, EGL_NO_CONTEXT, EGL_NO_SURFACE, EGL_NO_SURFACE);
+
+	Current *current = (Current*)sw::Thread::getLocalStorage(currentTLS);
 
 	if(current)
 	{
 		delete current;
 	}
+
+	sw::Thread::setLocalStorage(currentTLS, nullptr);
 }
 
 Current *eglGetCurrent(void)
