@@ -37,70 +37,6 @@ static sw::Thread::LocalStorageKey currentTLS = TLS_OUT_OF_INDEXES;
 #define DESTRUCTOR
 #endif
 
-static void eglAttachThread()
-{
-	TRACE("()");
-
-	egl::Current *current = new egl::Current;
-
-	if(current)
-	{
-		sw::Thread::setLocalStorage(currentTLS, current);
-
-		current->error = EGL_SUCCESS;
-		current->API = EGL_OPENGL_ES_API;
-		current->display = EGL_NO_DISPLAY;
-		current->context = nullptr;
-		current->drawSurface = nullptr;
-		current->readSurface = nullptr;
-	}
-}
-
-static void eglDetachThread()
-{
-	TRACE("()");
-
-	egl::Current *current = (egl::Current*)sw::Thread::getLocalStorage(currentTLS);
-
-	if(current)
-	{
-		delete current;
-	}
-}
-
-CONSTRUCTOR static void eglAttachProcess()
-{
-	TRACE("()");
-
-	#if !defined(ANGLE_DISABLE_TRACE) && defined(TRACE_OUTPUT_FILE)
-		FILE *debug = fopen(TRACE_OUTPUT_FILE, "rt");
-
-		if(debug)
-		{
-			fclose(debug);
-			debug = fopen(TRACE_OUTPUT_FILE, "wt");   // Erase
-			fclose(debug);
-		}
-	#endif
-
-	currentTLS = sw::Thread::allocateLocalStorageKey();
-
-	if(currentTLS == TLS_OUT_OF_INDEXES)
-	{
-		return;
-	}
-
-	eglAttachThread();
-}
-
-DESTRUCTOR static void eglDetachProcess()
-{
-	TRACE("()");
-
-	eglDetachThread();
-	sw::Thread::freeLocalStorageKey(currentTLS);
-}
-
 #if defined(_WIN32)
 static INT_PTR CALLBACK DebuggerWaitDialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -147,16 +83,16 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
 		#ifndef NDEBUG
 			WaitForDebugger(instance);
 		#endif
-		eglAttachProcess();
+		egl::attachProcess();
 		break;
 	case DLL_THREAD_ATTACH:
-		eglAttachThread();
+		egl::attachThread();
 		break;
 	case DLL_THREAD_DETACH:
-		eglDetachThread();
+		egl::detachThread();
 		break;
 	case DLL_PROCESS_DETACH:
-		eglDetachProcess();
+		egl::detachProcess();
 		break;
 	default:
 		break;
@@ -168,13 +104,77 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
 
 namespace egl
 {
-static Current *eglGetCurrent(void)
+CONSTRUCTOR void attachProcess()
+{
+	TRACE("()");
+
+	#if !defined(ANGLE_DISABLE_TRACE) && defined(TRACE_OUTPUT_FILE)
+		FILE *debug = fopen(TRACE_OUTPUT_FILE, "rt");
+
+		if(debug)
+		{
+			fclose(debug);
+			debug = fopen(TRACE_OUTPUT_FILE, "wt");   // Erase
+			fclose(debug);
+		}
+	#endif
+
+	currentTLS = sw::Thread::allocateLocalStorageKey();
+
+	if(currentTLS == TLS_OUT_OF_INDEXES)
+	{
+		return;
+	}
+
+	attachThread();
+}
+
+DESTRUCTOR void detachProcess()
+{
+	TRACE("()");
+
+	detachThread();
+	sw::Thread::freeLocalStorageKey(currentTLS);
+}
+
+void attachThread()
+{
+	TRACE("()");
+
+	Current *current = new Current;
+
+	if(current)
+	{
+		sw::Thread::setLocalStorage(currentTLS, current);
+
+		current->error = EGL_SUCCESS;
+		current->API = EGL_OPENGL_ES_API;
+		current->display = EGL_NO_DISPLAY;
+		current->context = nullptr;
+		current->drawSurface = nullptr;
+		current->readSurface = nullptr;
+	}
+}
+
+void detachThread()
+{
+	TRACE("()");
+
+	egl::Current *current = (egl::Current*)sw::Thread::getLocalStorage(currentTLS);
+
+	if(current)
+	{
+		delete current;
+	}
+}
+
+Current *eglGetCurrent(void)
 {
 	Current *current = (Current*)sw::Thread::getLocalStorage(currentTLS);
 
 	if(!current)
 	{
-		eglAttachThread();
+		attachThread();
 	}
 
 	return (Current*)sw::Thread::getLocalStorage(currentTLS);

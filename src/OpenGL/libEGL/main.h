@@ -39,6 +39,11 @@ namespace egl
 		Surface *readSurface;
 	};
 
+	void attachProcess();
+	void detachProcess();
+	void attachThread();
+	void detachThread();
+
 	void setCurrentError(EGLint error);
 	EGLint getCurrentError();
 
