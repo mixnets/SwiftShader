@@ -50,7 +50,7 @@ namespace sw
 		constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,constants));
 		occlusion = 0;
 
-		Do
+		For(, count > 0, count--)
 		{
 			Int yMin = *Pointer<Int>(primitive + OFFSET(Primitive,yMin));
 			Int yMax = *Pointer<Int>(primitive + OFFSET(Primitive,yMax));
@@ -66,9 +66,7 @@ namespace sw
 			}
 
 			primitive += sizeof(Primitive) * state.multiSample;
-			count--;
 		}
-		Until(count == 0)
 
 		if(state.occlusionEnabled)
 		{
@@ -113,9 +111,7 @@ namespace sw
 			sBuffer = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,stencilBuffer)) + yMin * *Pointer<Int>(data + OFFSET(DrawData,stencilPitchB));
 		}
 
-		Int y = yMin;
-
-		Do
+		For(Int y = yMin, y < yMax, y += 2 * clusterCount)
 		{
 			Int x0a = Int(*Pointer<Short>(primitive + OFFSET(Primitive,outline->left) + (y + 0) * sizeof(Primitive::Span)));
 			Int x0b = Int(*Pointer<Short>(primitive + OFFSET(Primitive,outline->left) + (y + 1) * sizeof(Primitive::Span)));
@@ -307,10 +303,7 @@ namespace sw
 			{
 				sBuffer += *Pointer<Int>(data + OFFSET(DrawData,stencilPitchB)) << (1 + sw::log2(clusterCount));   // FIXME: Precompute
 			}
-
-			y += 2 * clusterCount;
 		}
-		Until(y >= yMax)
 	}
 
 	Float4 QuadRasterizer::interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective)

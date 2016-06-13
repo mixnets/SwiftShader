@@ -45,13 +45,12 @@ namespace sw
 		Pointer<Byte> vertexCache = cache + OFFSET(VertexCache,vertex);
 		Pointer<Byte> tagCache = cache + OFFSET(VertexCache,tag);
 
-		UInt vertexCount = *Pointer<UInt>(task + OFFSET(VertexTask,vertexCount));
 		UInt primitiveNumber = *Pointer<UInt>(task + OFFSET(VertexTask, primitiveStart));
 		UInt indexInPrimitive = 0;
 
 		constants = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,constants));
 
-		Do
+		For(UInt vertexCount = *Pointer<UInt>(task + OFFSET(VertexTask, vertexCount)), vertexCount > 0, vertexCount--)
 		{
 			UInt index = *Pointer<UInt>(batch);
 			UInt tagIndex = index & 0x0000003C;
@@ -88,9 +87,7 @@ namespace sw
 
 			vertex += sizeof(Vertex);
 			batch += sizeof(unsigned int);
-			vertexCount--;
 		}
-		Until(vertexCount == 0)
 
 		Return();
 	}

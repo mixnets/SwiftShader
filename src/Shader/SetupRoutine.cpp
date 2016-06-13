@@ -145,9 +145,7 @@ namespace sw
 			{
 				Pointer<Byte> V = polygon + OFFSET(Polygon,P) + m * sizeof(void*) * 16;
 
-				Int i = 0;
-
-				Do
+				For(Int i = 0, i < n, i++)
 				{
 					Pointer<Float4> p = *Pointer<Pointer<Float4> >(V + i * sizeof(void*));
 					Float4 v = *Pointer<Float4>(p, 16);
@@ -157,26 +155,18 @@ namespace sw
 
 					X[i] = RoundInt(*Pointer<Float>(data + OFFSET(DrawData,X0x16)) + v.x * rhw * *Pointer<Float>(data + OFFSET(DrawData,Wx16)));
 					Y[i] = RoundInt(*Pointer<Float>(data + OFFSET(DrawData,Y0x16)) + v.y * rhw * *Pointer<Float>(data + OFFSET(DrawData,Hx16)));
-
-					i++;
 				}
-				Until(i >= n)
 			}
 
 			// Vertical range
 			Int yMin = Y[0];
 			Int yMax = Y[0];
 
-			Int i = 1;
-
-			Do
+			For(Int i = 1, i < n, i++)
 			{
 				yMin = Min(Y[i], yMin);
 				yMax = Max(Y[i], yMax);
-
-				i++;
 			}
-			Until(i >= n)
 
 			if(state.multiSample > 1)
 			{
@@ -202,9 +192,7 @@ namespace sw
 				Array<Int> Xq(16);
 				Array<Int> Yq(16);
 
-				Int i = 0;
-
-				Do
+				For(Int i = 0, i < n, i++)
 				{
 					Xq[i] = X[i];
 					Yq[i] = Y[i];
@@ -214,10 +202,7 @@ namespace sw
 						Xq[i] = Xq[i] + *Pointer<Int>(constants + OFFSET(Constants,Xf) + q * sizeof(int));
 						Yq[i] = Yq[i] + *Pointer<Int>(constants + OFFSET(Constants,Yf) + q * sizeof(int));
 					}
-
-					i++;
 				}
-				Until(i >= n)
 
 				Pointer<Byte> leftEdge = Pointer<Byte>(primitive + OFFSET(Primitive,outline->left)) + q * sizeof(Primitive);
 				Pointer<Byte> rightEdge = Pointer<Byte>(primitive + OFFSET(Primitive,outline->right)) + q * sizeof(Primitive);
@@ -238,15 +223,10 @@ namespace sw
 
 				// Rasterize
 				{
-					Int i = 0;
-
-					Do
+					For(Int i = 0, i < n, i++)
 					{
 						edge(primitive, data, Xq[i + 1 - d], Yq[i + 1 - d], Xq[i + d], Yq[i + d], q);
-
-						i++;
 					}
-					Until(i >= n)
 				}
 
 				if(state.multiSample == 1)
@@ -601,9 +581,8 @@ namespace sw
 				R += floor & FDY12;
 
 				Int D = FDY12;   // Error-overflow
-				Int y = y1;
 
-				Do
+				For(Int y = y1, y < y2, y++)
 				{
 					*Pointer<Short>(edge + y * sizeof(Primitive::Span)) = Short(Clamp(x, xMin, xMax));
 
@@ -614,10 +593,7 @@ namespace sw
 
 					d -= D & overflow;
 					x -= overflow;
-
-					y++;
 				}
-				Until(y >= y2)
 			}
 		}
 	}

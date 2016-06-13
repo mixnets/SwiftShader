@@ -736,9 +736,7 @@ namespace sw
 			du *= A;
 			dv *= A;
 
-			Int i = 0;
-
-			Do
+			For(Int i = 0, i < a, i++)
 			{
 				sampleQuad(texture, c, u0, v0, w, offset, hasOffset, lod, face, secondLOD);
 
@@ -749,10 +747,7 @@ namespace sw
 				if(hasUnsignedTextureComponent(1)) cSum.y += As<Short4>(MulHigh(As<UShort4>(c.y), cw)); else cSum.y += MulHigh(c.y, sw);
 				if(hasUnsignedTextureComponent(2)) cSum.z += As<Short4>(MulHigh(As<UShort4>(c.z), cw)); else cSum.z += MulHigh(c.z, sw);
 				if(hasUnsignedTextureComponent(3)) cSum.w += As<Short4>(MulHigh(As<UShort4>(c.w), cw)); else cSum.w += MulHigh(c.w, sw);
-
-				i++;
 			}
-			Until(i >= a)
 
 			if(hasUnsignedTextureComponent(0)) c.x = cSum.x; else c.x = AddSat(cSum.x, cSum.x);
 			if(hasUnsignedTextureComponent(1)) c.y = cSum.y; else c.y = AddSat(cSum.y, cSum.y);
@@ -1213,9 +1208,7 @@ namespace sw
 			du *= A;
 			dv *= A;
 
-			Int i = 0;
-
-			Do
+			For(Int i = 0, i < a, i++)
 			{
 				sampleFloat(texture, c, u0, v0, w, offset, hasOffset, lod, face, secondLOD);
 
@@ -1226,10 +1219,7 @@ namespace sw
 				cSum.y += c.y * A;
 				cSum.z += c.z * A;
 				cSum.w += c.w * A;
-
-				i++;
 			}
-			Until(i >= a)
 
 			c.x = cSum.x;
 			c.y = cSum.y;
