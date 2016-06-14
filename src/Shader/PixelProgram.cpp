@@ -116,7 +116,6 @@ namespace sw
 			bool predicate = instruction->predicate;
 			Control control = instruction->control;
 			bool pp = dst.partialPrecision;
-			bool project = instruction->project;
 			bool bias = instruction->bias;
 
 			Vector4f d;
@@ -146,6 +145,15 @@ namespace sw
 			if(src2.type != Shader::PARAMETER_VOID) s2 = fetchRegister(src2);
 			if(src3.type != Shader::PARAMETER_VOID) s3 = fetchRegister(src3);
 			if(src4.type != Shader::PARAMETER_VOID) s4 = fetchRegister(src4);
+
+			if(instruction->project)
+			{
+				Float4 rw = reciprocal(s0.w);
+
+				s0.x *= rw;
+				s0.y *= rw;
+				s0.z *= rw;
+			}
 
 			switch(opcode)
 			{
@@ -280,13 +288,13 @@ namespace sw
 			case Shader::OPCODE_M3X4:       M3X4(d, s0, src1);                             break;
 			case Shader::OPCODE_M3X3:       M3X3(d, s0, src1);                             break;
 			case Shader::OPCODE_M3X2:       M3X2(d, s0, src1);                             break;
-			case Shader::OPCODE_TEX:        TEXLD(d, s0, src1, project, bias);             break;
-			case Shader::OPCODE_TEXLDD:     TEXLDD(d, s0, src1, s2, s3, project);          break;
-			case Shader::OPCODE_TEXLDL:     TEXLDL(d, s0, src1, project);                  break;
+			case Shader::OPCODE_TEX:        TEXLD(d, s0, src1, bias);                      break;
+			case Shader::OPCODE_TEXLDD:     TEXLDD(d, s0, src1, s2, s3);                   break;
+			case Shader::OPCODE_TEXLDL:     TEXLDL(d, s0, src1);                           break;
 			case Shader::OPCODE_TEXSIZE:    TEXSIZE(d, s0.x, src1);                        break;
 			case Shader::OPCODE_TEXKILL:    TEXKILL(cMask, d, dst.mask);                   break;
-			case Shader::OPCODE_TEXOFFSET:  TEXOFFSET(d, s0, src1, s2, project, bias);     break;
-			case Shader::OPCODE_TEXLDLOFFSET: TEXLDL(d, s0, src1, s2, project, bias);      break;
+			case Shader::OPCODE_TEXOFFSET:  TEXOFFSET(d, s0, src1, s2, bias);              break;
+			case Shader::OPCODE_TEXLDLOFFSET: TEXLDL(d, s0, src1, s2, bias);               break;
 			case Shader::OPCODE_TEXELFETCH: TEXELFETCH(d, s0, src1, s2);                   break;
 			case Shader::OPCODE_TEXELFETCHOFFSET: TEXELFETCH(d, s0, src1, s2, s3);         break;
 			case Shader::OPCODE_TEXGRAD:    TEXGRAD(d, s0, src1, s2, s3);                  break;
@@ -714,21 +722,7 @@ namespace sw
 		#endif
 
 		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap) + samplerIndex * sizeof(Texture);
-
-		if(!(options & Project))
-		{
-			sampler[samplerIndex]->sampleTexture(texture, c, u, v, w, q, dsx, dsy, offset, options, method);
-		}
-		else
-		{
-			Float4 rq = reciprocal(q);
-
-			Float4 u_q = u * rq;
-			Float4 v_q = v * rq;
-			Float4 w_q = w * rq;
-
-			sampler[samplerIndex]->sampleTexture(texture, c, u_q, v_q, w_q, q, dsx, dsy, offset, options, method);
-		}
+		sampler[samplerIndex]->sampleTexture(texture, c, u, v, w, q, dsx, dsy, offset, options, method);
 
 		#if PERF_PROFILE
 			cycles[PERF_TEX] += Ticks() - texTime;
@@ -1107,19 +1101,19 @@ namespace sw
 		dst.w = dot4(src0, row3);
 	}
 
-	void PixelProgram::TEXLD(Vector4f &dst, Vector4f &src0, const Src &src1, bool project, bool bias)
+	void PixelProgram::TEXLD(Vector4f &dst, Vector4f &src0, const Src &src1, bool bias)
 	{
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, src0, bias ? Bias : Implicit, project ? Project : None);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, src0, bias ? Bias : Implicit, None);
 	}
 
-	void PixelProgram::TEXOFFSET(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, bool project, bool bias)
+	void PixelProgram::TEXOFFSET(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, bool bias)
 	{
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, src2, bias ? Bias : Implicit, project ? (Project | Offset) : Offset);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, src2, bias ? Bias : Implicit, Offset);
 	}
 
-	void PixelProgram::TEXLDL(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &offset, bool project, bool bias)
+	void PixelProgram::TEXLDL(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &offset, bool bias)
 	{
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, offset, Lod, project ? (Project | Offset) : Offset);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, offset, Lod, Offset);
 	}
 
 	void PixelProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2)
@@ -1142,14 +1136,14 @@ namespace sw
 		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src2, src3, offset, Grad, Offset);
 	}
 
-	void PixelProgram::TEXLDD(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, Vector4f &src3, bool project)
+	void PixelProgram::TEXLDD(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, Vector4f &src3)
 	{
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src2, src3, src0, Grad, project ? Project : None);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src2, src3, src0, Grad, None);
 	}
 
-	void PixelProgram::TEXLDL(Vector4f &dst, Vector4f &src0, const Src &src1, bool project)
+	void PixelProgram::TEXLDL(Vector4f &dst, Vector4f &src0, const Src &src1)
 	{
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, src0, Lod, project ? Project : None);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, src0, Lod, None);
 	}
 
 	void PixelProgram::TEXSIZE(Vector4f &dst, Float4 &lod, const Src &src1)
