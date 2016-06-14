@@ -684,13 +684,13 @@ namespace sw
 		}
 	}
 
-	void PixelProgram::sampleTexture(Vector4f &c, const Src &sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerMethod method, unsigned int options)
+	void PixelProgram::sampleTexture(Vector4f &c, const Src &sampler, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerMethod method, SamplerOption option)
 	{
 		Vector4f tmp;
 
 		if(sampler.type == Shader::PARAMETER_SAMPLER && sampler.rel.type == Shader::PARAMETER_VOID)
 		{
-			sampleTexture(tmp, sampler.index, u, v, w, q, dsx, dsy, offset, method, options);
+			sampleTexture(tmp, sampler.index, u, v, w, q, dsx, dsy, offset, method, option);
 		}
 		else
 		{
@@ -702,7 +702,7 @@ namespace sw
 				{
 					If(index == i)
 					{
-						sampleTexture(tmp, i, u, v, w, q, dsx, dsy, offset, method, options);
+						sampleTexture(tmp, i, u, v, w, q, dsx, dsy, offset, method, option);
 						// FIXME: When the sampler states are the same, we could use one sampler and just index the texture
 					}
 				}
@@ -715,14 +715,14 @@ namespace sw
 		c.w = tmp[(sampler.swizzle >> 6) & 0x3];
 	}
 
-	void PixelProgram::sampleTexture(Vector4f &c, int samplerIndex, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerMethod method, unsigned int options)
+	void PixelProgram::sampleTexture(Vector4f &c, int samplerIndex, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerMethod method, SamplerOption option)
 	{
 		#if PERF_PROFILE
 			Long texTime = Ticks();
 		#endif
 
 		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap) + samplerIndex * sizeof(Texture);
-		sampler[samplerIndex]->sampleTexture(texture, c, u, v, w, q, dsx, dsy, offset, options, method);
+		sampler[samplerIndex]->sampleTexture(texture, c, u, v, w, q, dsx, dsy, offset, method, option);
 
 		#if PERF_PROFILE
 			cycles[PERF_TEX] += Ticks() - texTime;
@@ -1103,7 +1103,7 @@ namespace sw
 
 	void PixelProgram::TEXLD(Vector4f &dst, Vector4f &src0, const Src &src1, bool bias)
 	{
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, src0, bias ? Bias : Implicit, None);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, src0, bias ? Bias : Implicit);
 	}
 
 	void PixelProgram::TEXOFFSET(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, bool bias)
@@ -1118,17 +1118,17 @@ namespace sw
 
 	void PixelProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2)
 	{
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, Float4(As<Int4>(src2.x)), src0, src0, src0, Lod, Fetch);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, Float4(As<Int4>(src2.x)), src0, src0, src0, Fetch);
 	}
 
 	void PixelProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &offset)
 	{
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, Float4(As<Int4>(src2.x)), src0, src0, offset, Lod, Fetch | Offset);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, Float4(As<Int4>(src2.x)), src0, src0, offset, Fetch, Offset);
 	}
 
 	void PixelProgram::TEXGRAD(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3)
 	{
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src2, src3, src0, Grad, None);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src2, src3, src0, Grad);
 	}
 
 	void PixelProgram::TEXGRAD(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3, Vector4f &offset)
@@ -1138,12 +1138,12 @@ namespace sw
 
 	void PixelProgram::TEXLDD(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, Vector4f &src3)
 	{
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src2, src3, src0, Grad, None);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src2, src3, src0, Grad);
 	}
 
 	void PixelProgram::TEXLDL(Vector4f &dst, Vector4f &src0, const Src &src1)
 	{
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, src0, Lod, None);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, src0, Lod);
 	}
 
 	void PixelProgram::TEXSIZE(Vector4f &dst, Float4 &lod, const Src &src1)
