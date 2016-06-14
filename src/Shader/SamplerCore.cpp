@@ -56,10 +56,15 @@ namespace sw
 
 	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy)
 	{
-		sampleTexture(texture, c, u, v, w, q, dsx, dsy, dsx, None, Implicit, true);
+		Vector4f uvwq;
+		uvwq.x = u;
+		uvwq.y = v;
+		uvwq.z = w;
+		uvwq.w = q;
+		sampleTexture(texture, c, uvwq, dsx, dsy, dsx, None, Implicit, true);
 	}
 
-	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, unsigned int options, SamplerMethod method, bool fixed12)
+	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4s &c, Vector4f &uvwq, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, unsigned int options, SamplerMethod method, bool fixed12)
 	{
 		#if PERF_PROFILE
 			AddAtomic(Pointer<Long>(&profiler.texOperations), 4);
@@ -70,9 +75,9 @@ namespace sw
 			}
 		#endif
 
-		Float4 uuuu = u;
-		Float4 vvvv = v;
-		Float4 wwww = w;
+		Float4 uuuu = uvwq.x;
+		Float4 vvvv = uvwq.y;
+		Float4 wwww = uvwq.z;
 
 		if(state.textureType == TEXTURE_NULL)
 		{
@@ -98,28 +103,29 @@ namespace sw
 
 			if(state.textureType == TEXTURE_CUBE)
 			{
-				cubeFace(face, uuuu, vvvv, lodX, lodY, lodZ, u, v, w);
+				cubeFace(face, uuuu, vvvv, lodX, lodY, lodZ, uvwq.x, uvwq.y, uvwq.z);
 			}
 
 			Float lod;
 			Float anisotropy;
 			Float4 uDelta;
 			Float4 vDelta;
+			Float lodBias = (options & Fetch) ? Float4(As<Int4>(uvwq.w)).x : uvwq.w.x;
 
 			if(state.textureType != TEXTURE_3D)
 			{
 				if(state.textureType != TEXTURE_CUBE)
 				{
-					computeLod(texture, lod, anisotropy, uDelta, vDelta, uuuu, vvvv, q.x, dsx, dsy, method);
+					computeLod(texture, lod, anisotropy, uDelta, vDelta, uuuu, vvvv, lodBias, dsx, dsy, method);
 				}
 				else
 				{
-					computeLodCube(texture, lod, lodX, lodY, lodZ, q.x, dsx, dsy, method);
+					computeLodCube(texture, lod, lodX, lodY, lodZ, lodBias, dsx, dsy, method);
 				}
 			}
 			else
 			{
-				computeLod3D(texture, lod, uuuu, vvvv, wwww, q.x, dsx, dsy, method);
+				computeLod3D(texture, lod, uuuu, vvvv, wwww, lodBias, dsx, dsy, method);
 			}
 
 			if(!hasFloatTexture())
@@ -293,7 +299,7 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, unsigned int options, SamplerMethod method)
+	void SamplerCore::sampleTexture(Pointer<Byte> &texture, Vector4f &c, Vector4f &uvwq, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, unsigned int options, SamplerMethod method)
 	{
 		#if PERF_PROFILE
 			AddAtomic(Pointer<Long>(&profiler.texOperations), 4);
@@ -315,9 +321,9 @@ namespace sw
 		{
 			if(hasFloatTexture())   // FIXME: Mostly identical to integer sampling
 			{
-				Float4 uuuu = u;
-				Float4 vvvv = v;
-				Float4 wwww = w;
+				Float4 uuuu = uvwq.x;
+				Float4 vvvv = uvwq.y;
+				Float4 wwww = uvwq.z;
 
 				Int face[4];
 				Float4 lodX;
@@ -326,28 +332,29 @@ namespace sw
 
 				if(state.textureType == TEXTURE_CUBE)
 				{
-					cubeFace(face, uuuu, vvvv, lodX, lodY, lodZ, u, v, w);
+					cubeFace(face, uuuu, vvvv, lodX, lodY, lodZ, uvwq.x, uvwq.y, uvwq.z);
 				}
 
 				Float lod;
 				Float anisotropy;
 				Float4 uDelta;
 				Float4 vDelta;
+				Float lodBias = (options & Fetch) ? Float4(As<Int4>(uvwq.w)).x : uvwq.w.x;
 
 				if(state.textureType != TEXTURE_3D)
 				{
 					if(state.textureType != TEXTURE_CUBE)
 					{
-						computeLod(texture, lod, anisotropy, uDelta, vDelta, uuuu, vvvv, q.x, dsx, dsy, method);
+						computeLod(texture, lod, anisotropy, uDelta, vDelta, uuuu, vvvv, lodBias, dsx, dsy, method);
 					}
 					else
 					{
-						computeLodCube(texture, lod, lodX, lodY, lodZ, q.x, dsx, dsy, method);
+						computeLodCube(texture, lod, lodX, lodY, lodZ, lodBias, dsx, dsy, method);
 					}
 				}
 				else
 				{
-					computeLod3D(texture, lod, uuuu, vvvv, wwww, q.x, dsx, dsy, method);
+					computeLod3D(texture, lod, uuuu, vvvv, wwww, lodBias, dsx, dsy, method);
 				}
 
 				sampleFloatFilter(texture, c, uuuu, vvvv, wwww, offset, lod, anisotropy, uDelta, vDelta, face, options, method);
@@ -356,7 +363,7 @@ namespace sw
 			{
 				Vector4s cs;
 
-				sampleTexture(texture, cs, u, v, w, q, dsx, dsy, offset, options, method, false);
+				sampleTexture(texture, cs, uvwq, dsx, dsy, offset, options, method, false);
 
 				for(int component = 0; component < textureComponentCount(); component++)
 				{

@@ -42,11 +42,11 @@ namespace sw
 		SamplerCore(Pointer<Byte> &r, const Sampler::State &state);
 
 		void sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy);
-		void sampleTexture(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, unsigned int options, SamplerMethod method);
+		void sampleTexture(Pointer<Byte> &texture, Vector4f &c, Vector4f &uvwq, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, unsigned int options, SamplerMethod method);
 		void textureSize(Pointer<Byte> &mipmap, Vector4f &size, Float4 &lod);
 
 	private:
-		void sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, unsigned int options, SamplerMethod method, bool fixed12);
+		void sampleTexture(Pointer<Byte> &texture, Vector4s &c, Vector4f &uvwq, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, unsigned int options, SamplerMethod method, bool fixed12);
 
 		void border(Short4 &mask, Float4 &coordinates);
 		void border(Int4 &mask, Float4 &coordinates);
