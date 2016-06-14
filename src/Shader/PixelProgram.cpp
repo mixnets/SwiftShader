@@ -287,8 +287,8 @@ namespace sw
 			case Shader::OPCODE_TEXKILL:    TEXKILL(cMask, d, dst.mask);                   break;
 			case Shader::OPCODE_TEXOFFSET:  TEXOFFSET(d, s0, src1, s2, project, bias);     break;
 			case Shader::OPCODE_TEXLDLOFFSET: TEXLDL(d, s0, src1, s2, project, bias);      break;
-			case Shader::OPCODE_TEXELFETCH: TEXELFETCH(d, s0, src1, s2);                   break;
-			case Shader::OPCODE_TEXELFETCHOFFSET: TEXELFETCH(d, s0, src1, s2, s3);         break;
+			case Shader::OPCODE_TEXELFETCH: TEXELFETCH(d, s0, src1);                       break;
+			case Shader::OPCODE_TEXELFETCHOFFSET: TEXELFETCH(d, s0, src1, s2);             break;
 			case Shader::OPCODE_TEXGRAD:    TEXGRAD(d, s0, src1, s2, s3);                  break;
 			case Shader::OPCODE_TEXGRADOFFSET: TEXGRAD(d, s0, src1, s2, s3, s4);           break;
 			case Shader::OPCODE_DISCARD:    DISCARD(cMask, instruction);                   break;
@@ -1122,16 +1122,14 @@ namespace sw
 		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, src0, src0, offset, Lod, project ? (Project | Offset) : Offset);
 	}
 
-	void PixelProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2)
+	void PixelProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1)
 	{
-		Float4 lod(As<Int4>(src2.x));
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, lod, src0, src0, src0, Lod, Fetch);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, Float4(As<Int4>(src0.w)), src0, src0, src0, Lod, Fetch);
 	}
 
-	void PixelProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &offset)
+	void PixelProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &offset)
 	{
-		Float4 lod(As<Int4>(src2.x));
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, lod, src0, src0, offset, Lod, Fetch | Offset);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, Float4(As<Int4>(src0.w)), src0, src0, offset, Lod, Fetch | Offset);
 	}
 
 	void PixelProgram::TEXGRAD(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3)

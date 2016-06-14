@@ -110,8 +110,8 @@ namespace sw
 		void TEX(Vector4f &dst, Vector4f &src, const Src&);
 		void TEXOFFSET(Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2);
 		void TEXLDL(Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2);
+		void TEXELFETCH(Vector4f &dst, Vector4f &src, const Src&);
 		void TEXELFETCH(Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2);
-		void TEXELFETCH(Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2, Vector4f &src3);
 		void TEXGRAD(Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2, Vector4f &src3);
 		void TEXGRAD(Vector4f &dst, Vector4f &src, const Src&, Vector4f &src2, Vector4f &src3, Vector4f &src4);
 		void TEXSIZE(Vector4f &dst, Float4 &lod, const Src&);

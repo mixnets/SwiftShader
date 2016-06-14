@@ -324,8 +324,8 @@ namespace sw
 			case Shader::OPCODE_TEX:        TEX(d, s0, src1);               break;
 			case Shader::OPCODE_TEXOFFSET:  TEXOFFSET(d, s0, src1, s2);     break;
 			case Shader::OPCODE_TEXLDLOFFSET: TEXLDL(d, s0, src1, s2);      break;
-			case Shader::OPCODE_TEXELFETCH: TEXELFETCH(d, s0, src1, s2);    break;
-			case Shader::OPCODE_TEXELFETCHOFFSET: TEXELFETCH(d, s0, src1, s2, s3); break;
+			case Shader::OPCODE_TEXELFETCH: TEXELFETCH(d, s0, src1);        break;
+			case Shader::OPCODE_TEXELFETCHOFFSET: TEXELFETCH(d, s0, src1, s2); break;
 			case Shader::OPCODE_TEXGRAD:    TEXGRAD(d, s0, src1, s2, s3);   break;
 			case Shader::OPCODE_TEXGRADOFFSET: TEXGRAD(d, s0, src1, s2, s3, s4); break;
 			case Shader::OPCODE_TEXSIZE:    TEXSIZE(d, s0.x, src1);         break;
@@ -1553,16 +1553,14 @@ namespace sw
 		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, a0, a0, offset, Lod, Offset);
 	}
 
-	void VertexProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2)
+	void VertexProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1)
 	{
-		Float4 lod(As<Int4>(src2.x));
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, lod, src0, src0, src0, Lod, Fetch);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, Float4(As<Int4>(src0.w)), src0, src0, src0, Lod, Fetch);
 	}
 
-	void VertexProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &offset)
+	void VertexProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &offset)
 	{
-		Float4 lod(As<Int4>(src2.x));
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, lod, src0, src0, offset, Lod, Fetch | Offset);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, Float4(As<Int4>(src0.w)), src0, src0, offset, Lod, Fetch | Offset);
 	}
 
 	void VertexProgram::TEXGRAD(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3)
