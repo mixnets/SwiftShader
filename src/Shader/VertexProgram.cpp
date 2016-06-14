@@ -1545,12 +1545,12 @@ namespace sw
 	void VertexProgram::TEXOFFSET(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2)
 	{
 		Float4 lod0 = Float4(0.0f);
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, lod0, a0, a0, src2, Lod, Offset);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, lod0, a0, a0, src2, {Lod, Offset});
 	}
 
 	void VertexProgram::TEXLDL(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &offset)
 	{
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, a0, a0, offset, Lod, Offset);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, src0.w, a0, a0, offset, {Lod, Offset});
 	}
 
 	void VertexProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2)
@@ -1562,7 +1562,7 @@ namespace sw
 	void VertexProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &offset)
 	{
 		Float4 lod(As<Int4>(src2.x));
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, lod, src0, src0, offset, Fetch, Offset);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, lod, src0, src0, offset, {Fetch, Offset});
 	}
 
 	void VertexProgram::TEXGRAD(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3)
@@ -1574,7 +1574,7 @@ namespace sw
 	void VertexProgram::TEXGRAD(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2, Vector4f &src3, Vector4f &offset)
 	{
 		Float4 lod0 = Float4(0.0f);
-		sampleTexture(dst, src1, src0.x, src0.y, src0.z, lod0, src2, src3, offset, Grad, Offset);
+		sampleTexture(dst, src1, src0.x, src0.y, src0.z, lod0, src2, src3, offset, {Grad, Offset});
 	}
 
 	void VertexProgram::TEXSIZE(Vector4f &dst, Float4 &lod, const Src &src1)
@@ -1583,14 +1583,14 @@ namespace sw
 		sampler[src1.index]->textureSize(texture, dst, lod);
 	}
 
-	void VertexProgram::sampleTexture(Vector4f &c, const Src &s, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerMethod method, SamplerOption option)
+	void VertexProgram::sampleTexture(Vector4f &c, const Src &s, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerFunction function)
 	{
 		Vector4f tmp;
 
 		if(s.type == Shader::PARAMETER_SAMPLER && s.rel.type == Shader::PARAMETER_VOID)
 		{
 			Pointer<Byte> texture = data + OFFSET(DrawData, mipmap[TEXTURE_IMAGE_UNITS]) + s.index * sizeof(Texture);
-			sampler[s.index]->sampleTexture(texture, tmp, u, v, w, q, dsx, dsy, offset, method, option);
+			sampler[s.index]->sampleTexture(texture, tmp, u, v, w, q, dsx, dsy, offset, function);
 		}
 		else
 		{
@@ -1603,7 +1603,7 @@ namespace sw
 					If(index == i)
 					{
 						Pointer<Byte> texture = data + OFFSET(DrawData, mipmap[TEXTURE_IMAGE_UNITS]) + i * sizeof(Texture);
-						sampler[i]->sampleTexture(texture, tmp, u, v, w, q, dsx, dsy, offset, method, option);
+						sampler[i]->sampleTexture(texture, tmp, u, v, w, q, dsx, dsy, offset, function);
 						// FIXME: When the sampler states are the same, we could use one sampler and just index the texture
 					}
 				}
