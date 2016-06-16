@@ -2294,7 +2294,34 @@ namespace sw
 			break;
 		case FORMAT_R8I:
 		case FORMAT_R8UI:
-			ASSERT(false);
+			if(rgbaWriteMask & 0x00000001)
+			{
+				buffer = cBuffer + x;
+
+				UInt xyzw;
+				xyzw = UInt(*Pointer<UShort>(buffer)) << 16;
+
+				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+				
+				xyzw |= UInt(*Pointer<UShort>(buffer));
+				value = As<Float4>(Int4(As<Byte4>(xyzw)));
+
+				oC.x = As<Float4>(As<Int4>(oC.x) & *Pointer<Int4>(constants + OFFSET(Constants, maskD4X) + xMask * 16, 16));
+				value = As<Float4>(As<Int4>(value) & *Pointer<Int4>(constants + OFFSET(Constants, invMaskD4X) + xMask * 16, 16));
+				oC.x = As<Float4>(As<Int4>(oC.x) | As<Int4>(value));
+
+				Float component = oC.x.z;
+				*Pointer<Byte>(buffer + 0) = Byte(As<Int>(component));
+				component = oC.x.w;
+				*Pointer<Byte>(buffer + 1) = Byte(As<Int>(component));
+
+				buffer -= *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+
+				component = oC.x.x;
+				*Pointer<Byte>(buffer + 0) = Byte(As<Int>(component));
+				component = oC.x.y;
+				*Pointer<Byte>(buffer + 1) = Byte(As<Int>(component));
+			}
 			break;
 		case FORMAT_G32R32F:
 		case FORMAT_G32R32I:
@@ -2341,7 +2368,50 @@ namespace sw
 			break;
 		case FORMAT_G8R8I:
 		case FORMAT_G8R8UI:
-			ASSERT(false);
+			if((rgbaWriteMask & 0x00000003) != 0x0)
+			{
+				buffer = cBuffer + 2 * x;
+
+				Short4 xyzw;
+				xyzw = As<Short4>(Insert(As<Int2>(xyzw), *Pointer<Int>(buffer), 0));
+				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+				xyzw = As<Short4>(Insert(As<Int2>(xyzw), *Pointer<Int>(buffer), 1));
+
+				Short4 packedCol;
+				Int4 col = As<Int4>(oC.x) & Int4(0xFF);
+				packedCol = As<Short4>(Insert(As<Int2>(packedCol), Extract(col, 0) | (Extract(col, 1) << 8) | (Extract(col, 2) << 16) | (Extract(col, 3) << 24), 0));
+				col = As<Int4>(oC.y) & Int4(0xFF);
+				packedCol = As<Short4>(Insert(As<Int2>(packedCol), Extract(col, 0) | (Extract(col, 1) << 8) | (Extract(col, 2) << 16) | (Extract(col, 3) << 24), 1));
+
+				packedCol = (packedCol & *Pointer<Short4>(constants + OFFSET(Constants, maskW4Q) + xMask * 8, 8)) |
+					        (xyzw & *Pointer<Short4>(constants + OFFSET(Constants, invMaskW4Q) + xMask * 8, 8));
+
+				Int rg0rg1 = Extract(As<Int2>(packedCol), 0);
+				Int rg2rg3 = Extract(As<Int2>(packedCol), 1);
+				if((rgbaWriteMask & 0x00000001) == 0x00000001)
+				{
+					*Pointer<Byte>(buffer + 0) = Byte(rg2rg3);
+					*Pointer<Byte>(buffer + 2) = Byte(rg2rg3 >> 16);
+				}
+				if((rgbaWriteMask & 0x00000002) == 0x00000002)
+				{
+					*Pointer<Byte>(buffer + 1) = Byte(rg2rg3 >> 8);
+					*Pointer<Byte>(buffer + 3) = Byte(rg2rg3 >> 24);
+				}
+
+				buffer -= *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+
+				if((rgbaWriteMask & 0x00000001) == 0x00000001)
+				{
+					*Pointer<Byte>(buffer + 0) = Byte(rg0rg1);
+					*Pointer<Byte>(buffer + 2) = Byte(rg0rg1 >> 16);
+				}
+				if((rgbaWriteMask & 0x00000002) == 0x00000002)
+				{
+					*Pointer<Byte>(buffer + 1) = Byte(rg0rg1 >> 8);
+					*Pointer<Byte>(buffer + 3) = Byte(rg0rg1 >> 24);
+				}
+			}
 			break;
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
@@ -2425,7 +2495,59 @@ namespace sw
 			break;
 		case FORMAT_A8B8G8R8I:
 		case FORMAT_A8B8G8R8UI:
-			ASSERT(false);
+			if((rgbaWriteMask & 0x0000000F) != 0x0)
+			{
+				UInt2 value01, value23, packedCol01, packedCol23;
+				Int4 col;
+				UInt xyzw;
+
+				buffer = cBuffer + 4 * x;
+				value01 = *Pointer<UInt2>(buffer, 16);
+
+				col = As<Int4>(oC.x) & Int4(0xFF);
+				xyzw = Extract(col, 0) | Extract(col, 1) << 8 | Extract(col, 2) << 16 | Extract(col, 3) << 24;
+				packedCol01 = As<UInt2>(Insert(As<Int2>(packedCol01), As<Int>(xyzw), 0));
+
+				col = As<Int4>(oC.y) & Int4(0xFF);
+				xyzw = Extract(col, 0) | Extract(col, 1) << 8 | Extract(col, 2) << 16 | Extract(col, 3) << 24;
+				packedCol01 = As<UInt2>(Insert(As<Int2>(packedCol01), As<Int>(xyzw), 1));
+
+				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+				value23 = *Pointer<UInt2>(buffer, 16);
+
+				col = As<Int4>(oC.z) & Int4(0xFF);
+				xyzw = Extract(col, 0) | Extract(col, 1) << 8 | Extract(col, 2) << 16 | Extract(col, 3) << 24;
+				packedCol23 = As<UInt2>(Insert(As<Int2>(packedCol23), As<Int>(xyzw), 0));
+
+				col = As<Int4>(oC.w) & Int4(0xFF);
+				xyzw = Extract(col, 0) | Extract(col, 1) << 8 | Extract(col, 2) << 16 | Extract(col, 3) << 24;
+				packedCol23 = As<UInt2>(Insert(As<Int2>(packedCol23), As<Int>(xyzw), 1));
+
+				packedCol01 = (packedCol01 & *Pointer<UInt2>(constants + OFFSET(Constants, maskD01Q) + xMask * 8)) |
+					(value01 & *Pointer<UInt2>(constants + OFFSET(Constants, invMaskD01Q) + xMask * 8));
+				packedCol23 = (packedCol23 & *Pointer<UInt2>(constants + OFFSET(Constants, maskD23Q) + xMask * 8)) |
+					(value23 & *Pointer<UInt2>(constants + OFFSET(Constants, invMaskD23Q) + xMask * 8));
+
+				UInt byteMask = UInt(0x0);
+				if((rgbaWriteMask & 0x00000001) == 0x00000001)
+					byteMask |= UInt(0xFF);
+				if((rgbaWriteMask & 0x00000002) == 0x00000002)
+					byteMask |= UInt(0xFF00);
+				if((rgbaWriteMask & 0x00000004) == 0x00000004)
+					byteMask |= UInt(0xFF0000);
+				if((rgbaWriteMask & 0x00000008) == 0x00000008)
+					byteMask |= UInt(0xFF000000);
+
+				UInt2 byteMask2 = As<UInt2>(Insert(As<Int2>(byteMask2), As<Int>(byteMask), 0));
+				byteMask2 = As<UInt2>(Insert(As<Int2>(byteMask2), As<Int>(byteMask), 1));
+
+				packedCol23 = (packedCol23 & byteMask2) | (*Pointer<UInt2>(buffer) & ~byteMask2);
+				packedCol01 = (packedCol01 & byteMask2) | (*Pointer<UInt2>(buffer) & ~byteMask2);
+				
+				*Pointer<UInt2>(buffer) = packedCol23;
+				buffer -= *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+				*Pointer<UInt2>(buffer) = packedCol01;
+			}
 			break;
 		default:
 			ASSERT(false);
