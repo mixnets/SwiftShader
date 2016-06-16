@@ -2294,7 +2294,28 @@ namespace sw
 			break;
 		case FORMAT_R8I:
 		case FORMAT_R8UI:
-			ASSERT(false);
+			if(rgbaWriteMask & 0x00000001)
+			{
+				buffer = cBuffer + x;
+
+				UInt packedCol;
+				packedCol = As<UInt>(Float(oC.x.x)) & 0xFF;
+				packedCol |= (As<UInt>(Float(oC.x.y)) & 0xFF) << 8;
+				packedCol |= (As<UInt>(Float(oC.x.z)) & 0xFF) << 16;
+				packedCol |= (As<UInt>(Float(oC.x.w)) & 0xFF) << 24;
+
+				UInt xyzw;
+				xyzw = UInt(*Pointer<UShort>(buffer)) << 16;
+				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+				xyzw |= UInt(*Pointer<UShort>(buffer));
+
+				packedCol = (packedCol & *Pointer<UInt>(constants + OFFSET(Constants, maskB4Q) + 8 * xMask)) |
+							(xyzw & *Pointer<UInt>(constants + OFFSET(Constants, invMaskB4Q) + 8 * xMask));
+
+				*Pointer<UShort>(buffer) = UShort(packedCol>>16);
+				buffer -= *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+				*Pointer<UShort>(buffer) = UShort(packedCol);
+			}
 			break;
 		case FORMAT_G32R32F:
 		case FORMAT_G32R32I:
@@ -2341,7 +2362,35 @@ namespace sw
 			break;
 		case FORMAT_G8R8I:
 		case FORMAT_G8R8UI:
-			ASSERT(false);
+			if((rgbaWriteMask & 0x00000003) != 0x0)
+			{
+				buffer = cBuffer + 2 * x;
+
+				Int2 xyzw;
+				xyzw = Insert(xyzw, *Pointer<Int>(buffer), 0);
+				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+				xyzw = Insert(xyzw, *Pointer<Int>(buffer), 1);
+
+				Int2 packedCol;
+				Int4 col = As<Int4>(oC.x) & Int4(0xFF);
+				packedCol = Insert(packedCol, Extract(col, 0) | (Extract(col, 1) << 8) | (Extract(col, 2) << 16) | (Extract(col, 3) << 24), 0);
+				col = As<Int4>(oC.y) & Int4(0xFF);
+				packedCol = Insert(packedCol, Extract(col, 0) | (Extract(col, 1) << 8) | (Extract(col, 2) << 16) | (Extract(col, 3) << 24), 1);
+
+				packedCol = (packedCol & *Pointer<Int2>(constants + OFFSET(Constants, maskW4Q) + xMask * 8, 8)) |
+					        (xyzw & *Pointer<Int2>(constants + OFFSET(Constants, invMaskW4Q) + xMask * 8, 8));
+
+				unsigned int tmpMask = 0x0;
+				if((rgbaWriteMask & 0x00000001) == 0x00000001)
+					tmpMask |= 0x00FF00FF;
+				if((rgbaWriteMask & 0x00000002) == 0x00000002)
+					tmpMask |= 0xFF00FF00;
+				UInt byteMask(tmpMask);
+
+				*Pointer<UInt>(buffer) = (As<UInt>(Extract(packedCol, 1)) & byteMask) | (*Pointer<UInt>(buffer) & ~byteMask);
+				buffer -= *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+				*Pointer<UInt>(buffer) = (As<UInt>(Extract(packedCol, 0)) & byteMask) | (*Pointer<UInt>(buffer) & ~byteMask);
+			}
 			break;
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
@@ -2425,7 +2474,45 @@ namespace sw
 			break;
 		case FORMAT_A8B8G8R8I:
 		case FORMAT_A8B8G8R8UI:
-			ASSERT(false);
+			if((rgbaWriteMask & 0x0000000F) != 0x0)
+			{
+				UInt2 value, packedCol;
+				Int4 col;
+				UInt xyzw;
+				UInt2 rgbaMask = UInt2(*Pointer<UInt2>(constants + OFFSET(Constants, maskB4Q[rgbaWriteMask][0])));
+
+				buffer = cBuffer + 4 * x;
+
+				col = As<Int4>(oC.x) & Int4(0xFF);
+				xyzw = Extract(col, 0) | Extract(col, 1) << 8 | Extract(col, 2) << 16 | Extract(col, 3) << 24;
+				packedCol = As<UInt2>(Insert(As<Int2>(packedCol), As<Int>(xyzw), 0));
+
+				col = As<Int4>(oC.y) & Int4(0xFF);
+				xyzw = Extract(col, 0) | Extract(col, 1) << 8 | Extract(col, 2) << 16 | Extract(col, 3) << 24;
+				packedCol = As<UInt2>(Insert(As<Int2>(packedCol), As<Int>(xyzw), 1));
+
+				value = *Pointer<UInt2>(buffer, 16);
+				packedCol = (packedCol & *Pointer<UInt2>(constants + OFFSET(Constants, maskD01Q) + xMask * 8)) |
+					(value & *Pointer<UInt2>(constants + OFFSET(Constants, invMaskD01Q) + xMask * 8));
+				
+				*Pointer<UInt2>(buffer) = (packedCol & rgbaMask) | (*Pointer<UInt2>(buffer) & ~rgbaMask);
+				
+				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+
+				col = As<Int4>(oC.z) & Int4(0xFF);
+				xyzw = Extract(col, 0) | Extract(col, 1) << 8 | Extract(col, 2) << 16 | Extract(col, 3) << 24;
+				packedCol = As<UInt2>(Insert(As<Int2>(packedCol), As<Int>(xyzw), 0));
+
+				col = As<Int4>(oC.w) & Int4(0xFF);
+				xyzw = Extract(col, 0) | Extract(col, 1) << 8 | Extract(col, 2) << 16 | Extract(col, 3) << 24;
+				packedCol = As<UInt2>(Insert(As<Int2>(packedCol), As<Int>(xyzw), 1));
+
+				value = *Pointer<UInt2>(buffer, 16);
+				packedCol = (packedCol & *Pointer<UInt2>(constants + OFFSET(Constants, maskD23Q) + xMask * 8)) |
+					(value & *Pointer<UInt2>(constants + OFFSET(Constants, invMaskD23Q) + xMask * 8));
+
+				*Pointer<UInt2>(buffer) = (packedCol & rgbaMask) | (*Pointer<UInt2>(buffer) & ~rgbaMask);
+			}
 			break;
 		default:
 			ASSERT(false);
