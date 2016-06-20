@@ -2358,7 +2358,36 @@ namespace sw
 			break;
 		case FORMAT_G16R16I:
 		case FORMAT_G16R16UI:
-			ASSERT(false);
+			if((rgbaWriteMask & 0x00000003) != 0x0)
+			{
+				UInt2 value, packedCol;
+				Int4 col;
+
+				buffer = cBuffer + 4 * x;
+
+				Int tmpMask = *Pointer<Int>(constants + OFFSET(Constants, maskW4Q[rgbaWriteMask & 0x3][0]));
+				UInt2 rgbaMask = As<UInt2>(Int2(tmpMask, tmpMask));
+
+				col = As<Int4>(oC.x) & Int4(0xFFFF);
+				packedCol = As<UInt2>(Int2(Extract(col, 0) | (Extract(col, 1) << 16), Extract(col, 2) | (Extract(col, 3) << 16)));
+
+				value = *Pointer<UInt2>(buffer);
+				packedCol = (packedCol & *Pointer<UInt2>(constants + OFFSET(Constants, maskD01Q) + xMask * 8)) |
+				            (value & *Pointer<UInt2>(constants + OFFSET(Constants, invMaskD01Q) + xMask * 8));
+
+				*Pointer<UInt2>(buffer) = (packedCol & rgbaMask) | (value & ~rgbaMask);
+
+				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+
+				col = As<Int4>(oC.y) & Int4(0xFFFF);
+				packedCol = As<UInt2>(Int2(Extract(col, 0) | (Extract(col, 1) << 16), Extract(col, 2) | (Extract(col, 3) << 16)));
+
+				value = *Pointer<UInt2>(buffer);
+				packedCol = (packedCol & *Pointer<UInt2>(constants + OFFSET(Constants, maskD23Q) + xMask * 8)) |
+				            (value & *Pointer<UInt2>(constants + OFFSET(Constants, invMaskD23Q) + xMask * 8));
+
+				*Pointer<UInt2>(buffer) = (packedCol & rgbaMask) | (value & ~rgbaMask);
+			}
 			break;
 		case FORMAT_G8R8I:
 		case FORMAT_G8R8UI:
@@ -2470,7 +2499,32 @@ namespace sw
 			break;
 		case FORMAT_A16B16G16R16I:
 		case FORMAT_A16B16G16R16UI:
-			ASSERT(false);
+			if((rgbaWriteMask & 0x0000000F) != 0x0)
+			{
+				buffer = cBuffer + 8 * x;
+
+				UInt4 value, packedCol;
+				UInt2 tmpMask = *Pointer<UInt2>(constants + OFFSET(Constants, maskW4Q[rgbaWriteMask][0]));
+				UInt4 rgbaMask = UInt4(tmpMask, tmpMask);
+
+				value = *Pointer<UInt4>(buffer);
+
+				packedCol = As<UInt4>(UShort8(UShort4(As<Int4>(oC.x)), UShort4(As<Int4>(oC.y))));
+				packedCol = (packedCol & *Pointer<UInt4>(constants + OFFSET(Constants, maskQ01X) + xMask * 16)) |
+				            (value & *Pointer<UInt4>(constants + OFFSET(Constants, invMaskQ01X) + xMask * 16));
+
+				*Pointer<UInt4>(buffer) = (packedCol & rgbaMask) | (value & ~rgbaMask);
+
+				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+
+				value = *Pointer<UInt4>(buffer);
+
+				packedCol = As<UInt4>(UShort8(UShort4(As<Int4>(oC.z)), UShort4(As<Int4>(oC.w))));
+				packedCol = (packedCol & *Pointer<UInt4>(constants + OFFSET(Constants, maskQ23X) + xMask * 16)) |
+				            (value & *Pointer<UInt4>(constants + OFFSET(Constants, invMaskQ23X) + xMask * 16));
+
+				*Pointer<UInt4>(buffer) = (packedCol & rgbaMask) | (value & ~rgbaMask);
+			}
 			break;
 		case FORMAT_A8B8G8R8I:
 		case FORMAT_A8B8G8R8UI:
