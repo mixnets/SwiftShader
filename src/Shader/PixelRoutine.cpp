@@ -2358,7 +2358,25 @@ namespace sw
 			break;
 		case FORMAT_G16R16I:
 		case FORMAT_G16R16UI:
-			ASSERT(false);
+			if((rgbaWriteMask & 0x00000003) != 0x0)
+			{
+				buffer = cBuffer + 4 * x;
+
+				Int tmpMask = *Pointer<Int>(constants + OFFSET(Constants, maskW4Q[rgbaWriteMask & 0x3][0]));
+				UInt2 rgbaMask = As<UInt2>(Int2(tmpMask, tmpMask));
+
+				UShort4 packedCol = UShort4(As<Int4>(oC.x));
+				UShort4 value = *Pointer<UShort4>(buffer);
+				UInt2 mergedMask = rgbaMask & *Pointer<UInt2>(constants + OFFSET(Constants, maskD01Q) + xMask * 8);
+				*Pointer<UInt2>(buffer) = (As<UInt2>(packedCol) & mergedMask) | (As<UInt2>(value) & ~mergedMask);
+
+				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+
+				packedCol = UShort4(As<Int4>(oC.y));
+				value = *Pointer<UShort4>(buffer);
+				mergedMask = rgbaMask & *Pointer<UInt2>(constants + OFFSET(Constants, maskD23Q) + xMask * 8);
+				*Pointer<UInt2>(buffer) = (As<UInt2>(packedCol) & mergedMask) | (As<UInt2>(value) & ~mergedMask);
+			}
 			break;
 		case FORMAT_G8R8I:
 		case FORMAT_G8R8UI:
@@ -2470,7 +2488,25 @@ namespace sw
 			break;
 		case FORMAT_A16B16G16R16I:
 		case FORMAT_A16B16G16R16UI:
-			ASSERT(false);
+			if((rgbaWriteMask & 0x0000000F) != 0x0)
+			{
+				buffer = cBuffer + 8 * x;
+
+				UInt2 tmpMask = *Pointer<UInt2>(constants + OFFSET(Constants, maskW4Q[rgbaWriteMask][0]));
+				UInt4 rgbaMask = UInt4(tmpMask, tmpMask);
+
+				UShort8 value = *Pointer<UShort8>(buffer);
+				UShort8 packedCol = UShort8(UShort4(As<Int4>(oC.x)), UShort4(As<Int4>(oC.y)));
+				UInt4 mergedMask = rgbaMask & *Pointer<UInt4>(constants + OFFSET(Constants, maskQ01X) + xMask * 16);
+				*Pointer<UInt4>(buffer) = (As<UInt4>(packedCol) & mergedMask) | (As<UInt4>(value) & ~mergedMask);
+
+				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
+
+				value = *Pointer<UShort8>(buffer);
+				packedCol = UShort8(UShort4(As<Int4>(oC.z)), UShort4(As<Int4>(oC.w)));
+				mergedMask = rgbaMask & *Pointer<UInt4>(constants + OFFSET(Constants, maskQ23X) + xMask * 16);
+				*Pointer<UInt4>(buffer) = (As<UInt4>(packedCol) & mergedMask) | (As<UInt4>(value) & ~mergedMask);
+			}
 			break;
 		case FORMAT_A8B8G8R8I:
 		case FORMAT_A8B8G8R8UI:
