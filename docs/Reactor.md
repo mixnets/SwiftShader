@@ -58,13 +58,13 @@ Function<Int(Void)> function;
 
 The braces are superfluous. They just make the syntax look more like regular C++, and they offer a new scope for Reactor variables.
 
-The Routine is obtained and materialized by "calling" the Function<> object to give it a name:
+The Routine is obtained and materialized by "calling" the ```Function<>``` object to give it a name:
 
 ```C++
 Routine *routine = function(L"one");
 ```
 
-Next we can obtain the function pointer to the entry point of the routine, and call it:
+Finally, we can obtain the function pointer to the entry point of the routine, and call it:
 
 ```C++
 int (*callable)() = (int(*)())function.getEntry();
@@ -73,9 +73,11 @@ int result = callable();
 assert(result == 1);
 ```
 
+Note that ```Function<>``` objects are relatively heavyweight, since they have the entire JIT-compiler behind them, while ```Routine``` objects are lightweight and merely provide storage and lifetime management of generated routines. So we typically allow the ```Function<>``` object to be destroyed (by going out of scope), while the ```Routine``` object is retained until we no longer need to call the routine. Hence the distinction between then and the need for a couple of lines of boilerplate code.
+
 ### Arguments and Expressions
 
-Routines can take various arguments that can be accessed using the following syntax:
+Routines can take various arguments. The following example illustrates the syntax for accessing the arguments of a routine which takes two integer arguments and returns their sum:
 
 ```C++
 Function<Int(Int, Int)> function;
@@ -88,8 +90,6 @@ Function<Int(Int, Int)> function;
     Return(sum);
 }
 ```
-
-This generates a routine which takes two integer arguments and returns their sum.
 
 Reactor supports various types which correspond to C++ types:
 
