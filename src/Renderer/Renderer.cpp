@@ -2055,6 +2055,15 @@ namespace sw
 
 				setVertexShaderConstantB(index, &boolean);
 			}
+			else if(instruction->opcode == Shader::OPCODE_DCL ||
+			        (instruction->opcode & 0xFFFF0000) == 0xFFFF0000)
+			{
+				// Skip
+			}
+			else
+			{
+				break;   // DEF must appear before the first arithmetic or addressing instruction
+			}
 		}
 	}
 
@@ -2098,6 +2107,15 @@ namespace sw
 				int boolean = instruction->src[0].boolean[0];
 
 				setPixelShaderConstantB(index, &boolean);
+			}
+			else if(instruction->opcode == Shader::OPCODE_DCL ||
+			        (instruction->opcode & 0xFFFF0000) == 0xFFFE0000)
+			{
+				// Skip
+			}
+			else
+			{
+				break;   // DEF must appear before the first arithmetic or addressing instruction
 			}
 		}
 	}
