@@ -52,7 +52,7 @@ namespace es2
 	bool IsCubemapTextureTarget(GLenum target);
 	int CubeFaceIndex(GLenum cubeTarget);
 	bool IsTextureTarget(GLenum target);
-	bool ValidateTextureFormatType(GLenum format, GLenum type, GLint internalformat, GLint clientVersion);
+	bool ValidateTextureFormatType(GLenum format, GLenum type, GLenum internalformat, GLint clientVersion);
 
 	bool IsColorRenderable(GLenum internalformat, GLint clientVersion);
 	bool IsDepthRenderable(GLenum internalformat);

@@ -719,7 +719,7 @@ namespace es2
 		return target == GL_TEXTURE_2D || IsCubemapTextureTarget(target) || target == GL_TEXTURE_3D || target == GL_TEXTURE_2D_ARRAY;
 	}
 
-	bool ValidateTextureFormatType(GLenum format, GLenum type, GLint internalformat, GLint clientVersion)
+	bool ValidateTextureFormatType(GLenum format, GLenum type, GLenum internalformat, GLint clientVersion)
 	{
 		switch(type)
 		{
@@ -849,7 +849,7 @@ namespace es2
 
 		// Validate format, type, and sized internalformat combinations [OpenGL ES 3.0 Table 3.2]
 		bool validSizedInternalformat = false;
-		#define VALIDATE_INTERNALFORMAT(...) { GLint validInternalformats[] = {__VA_ARGS__}; for(GLint v : validInternalformats) {if(internalformat == v) validSizedInternalformat = true;} } break;
+		#define VALIDATE_INTERNALFORMAT(...) { GLenum validInternalformats[] = {__VA_ARGS__}; for(GLenum v : validInternalformats) {if(internalformat == v) validSizedInternalformat = true;} } break;
 
 		switch(format)
 		{
