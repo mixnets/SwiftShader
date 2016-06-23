@@ -72,12 +72,12 @@ Context::Context(egl::Display *display, const Context *shareContext, EGLint clie
 	mState.stencilTestEnabled = false;
 	mState.stencilFunc = GL_ALWAYS;
 	mState.stencilRef = 0;
-	mState.stencilMask = -1;
-	mState.stencilWritemask = -1;
+	mState.stencilMask = 0xFFFFFFFFu;
+	mState.stencilWritemask = 0xFFFFFFFFu;
 	mState.stencilBackFunc = GL_ALWAYS;
 	mState.stencilBackRef = 0;
-	mState.stencilBackMask = - 1;
-	mState.stencilBackWritemask = -1;
+	mState.stencilBackMask = 0xFFFFFFFFu;
+	mState.stencilBackWritemask = 0xFFFFFFFFu;
 	mState.stencilFail = GL_KEEP;
 	mState.stencilPassDepthFail = GL_KEEP;
 	mState.stencilPassDepthPass = GL_KEEP;
@@ -1342,6 +1342,8 @@ void Context::beginQuery(GLenum target, GLuint query)
 	QueryType qType;
 	switch(target)
 	{
+	default:
+		ASSERT(false);
 	case GL_ANY_SAMPLES_PASSED_EXT:
 		qType = QUERY_ANY_SAMPLES_PASSED;
 		break;
@@ -1351,8 +1353,6 @@ void Context::beginQuery(GLenum target, GLuint query)
 	case GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN:
 		qType = QUERY_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN;
 		break;
-	default:
-		ASSERT(false);
 	}
 
 	Query *queryObject = createQuery(query, target);
@@ -2278,7 +2278,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_UNIFORM_BUFFER_SIZE: // indexed[n] 64-bit integer, initially 0
 		if(clientVersion >= 3)
 		{
-			*params = mState.genericUniformBuffer->size();
+			*params = static_cast<T>(mState.genericUniformBuffer->size());
 		}
 		else
 		{

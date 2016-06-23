@@ -86,7 +86,7 @@ namespace sw
 			}
 			else
 			{
-				c.w = Short4((short)0xFFFF, (short)0xFFFF, (short)0xFFFF, (short)0xFFFF);   // FIXME
+				c.w = Short4(-1 /*0xFFFF*/);   // FIXME
 			}
 		}
 		else
@@ -2193,7 +2193,7 @@ namespace sw
 			convert -= Int4(0x00008000, 0x00008000, 0x00008000, 0x00008000);
 			convert = As<Int4>(Pack(convert, convert));
 
-			return As<Short4>(Int2(convert)) + Short4((short)0x8000, (short)0x8000, (short)0x8000, (short)0x8000);
+			return As<Short4>(Int2(convert)) + Short4(-32768 /*0x8000*/);
 		}
 		else   // Wrap (or border)
 		{

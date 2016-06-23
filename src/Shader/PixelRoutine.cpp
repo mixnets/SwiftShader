@@ -548,7 +548,7 @@ namespace sw
 			aMask = SignMask(Pack(cmp, Short4(0x0000, 0x0000, 0x0000, 0x0000)));
 			break;
 		case ALPHA_NOTEQUAL:		// a != b ~ !(a == b)
-			cmp = CmpEQ(alpha, *Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4))) ^ Short4((short)0xFFFF, (short)0xFFFF, (short)0xFFFF, (short)0xFFFF);   // FIXME
+			cmp = CmpEQ(alpha, *Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4))) ^ Short4(-1 /*0xFFFF*/);   // FIXME
 			aMask = SignMask(Pack(cmp, Short4(0x0000, 0x0000, 0x0000, 0x0000)));
 			break;
 		case ALPHA_LESS:			// a < b ~ b > a
@@ -562,7 +562,7 @@ namespace sw
 			aMask = SignMask(Pack(cmp, Short4(0x0000, 0x0000, 0x0000, 0x0000)));
 			break;
 		case ALPHA_LESSEQUAL:		// a <= b ~ !(a > b)
-			cmp = CmpGT(alpha, *Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4))) ^ Short4((short)0xFFFF, (short)0xFFFF, (short)0xFFFF, (short)0xFFFF);   // FIXME
+			cmp = CmpGT(alpha, *Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4))) ^ Short4(-1 /*0xFFFF*/);   // FIXME
 			aMask = SignMask(Pack(cmp, Short4(0x0000, 0x0000, 0x0000, 0x0000)));
 			break;
 		case ALPHA_GREATER:			// a > b

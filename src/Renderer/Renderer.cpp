@@ -234,20 +234,16 @@ namespace sw
 
 			sync->lock(sw::PRIVATE);
 
-			Routine *vertexRoutine;
-			Routine *setupRoutine;
-			Routine *pixelRoutine;
-
 			if(update || oldMultiSampleMask != context->multiSampleMask)
 			{
 				vertexState = VertexProcessor::update(drawType);
 				setupState = SetupProcessor::update();
 				pixelState = PixelProcessor::update();
-
-				vertexRoutine = VertexProcessor::routine(vertexState);
-				setupRoutine = SetupProcessor::routine(setupState);
-				pixelRoutine = PixelProcessor::routine(pixelState);
 			}
+
+			Routine *vertexRoutine = VertexProcessor::routine(vertexState);
+			Routine *setupRoutine = SetupProcessor::routine(setupState);
+			Routine *pixelRoutine = PixelProcessor::routine(pixelState);
 
 			int batch = batchSize / ms;
 
@@ -257,6 +253,8 @@ namespace sw
 			{
 				switch(context->fillMode)
 				{
+				default:
+					ASSERT(false);
 				case FILL_SOLID:
 					setupPrimitives = &Renderer::setupSolidTriangles;
 					break;
@@ -268,7 +266,6 @@ namespace sw
 					setupPrimitives = &Renderer::setupVertexTriangle;
 					batch = 1;
 					break;
-				default: ASSERT(false);
 				}
 			}
 			else if(context->isDrawLine())
