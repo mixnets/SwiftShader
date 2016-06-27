@@ -925,8 +925,8 @@ namespace sw
 		explicit Short4(RValue<Float4> cast);
 
 		Short4();
-		Short4(short xyzw);
-		Short4(short x, short y, short z, short w);
+		Short4(unsigned short xyzw);
+		Short4(unsigned short x, unsigned short y, unsigned short z, unsigned short w);
 		Short4(RValue<Short4> rhs);
 		Short4(const Short4 &rhs);
 		Short4(const Reference<Short4> &rhs);

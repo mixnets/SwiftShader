@@ -2770,7 +2770,7 @@ namespace sw
 	//	xyzw.parent = this;
 	}
 
-	Short4::Short4(short xyzw)
+	Short4::Short4(unsigned short xyzw)
 	{
 		//	xyzw.parent = this;
 
@@ -2784,7 +2784,7 @@ namespace sw
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
 
-	Short4::Short4(short x, short y, short z, short w)
+	Short4::Short4(unsigned short x, unsigned short y, unsigned short z, unsigned short w)
 	{
 	//	xyzw.parent = this;
 

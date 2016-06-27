@@ -545,29 +545,29 @@ namespace sw
 			break;
 		case ALPHA_EQUAL:
 			cmp = CmpEQ(alpha, *Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4)));
-			aMask = SignMask(Pack(cmp, Short4(0x0000, 0x0000, 0x0000, 0x0000)));
+			aMask = SignMask(Pack(cmp, Short4(0x0000)));
 			break;
 		case ALPHA_NOTEQUAL:		// a != b ~ !(a == b)
-			cmp = CmpEQ(alpha, *Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4))) ^ Short4((short)0xFFFF, (short)0xFFFF, (short)0xFFFF, (short)0xFFFF);   // FIXME
-			aMask = SignMask(Pack(cmp, Short4(0x0000, 0x0000, 0x0000, 0x0000)));
+			cmp = CmpEQ(alpha, *Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4))) ^ Short4(0xFFFF);   // FIXME
+			aMask = SignMask(Pack(cmp, Short4(0x0000)));
 			break;
 		case ALPHA_LESS:			// a < b ~ b > a
 			cmp = CmpGT(*Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4)), alpha);
-			aMask = SignMask(Pack(cmp, Short4(0x0000, 0x0000, 0x0000, 0x0000)));
+			aMask = SignMask(Pack(cmp, Short4(0x0000)));
 			break;
 		case ALPHA_GREATEREQUAL:	// a >= b ~ (a > b) || (a == b) ~ !(b > a)   // TODO: Approximate
 			equal = CmpEQ(alpha, *Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4)));
 			cmp = CmpGT(alpha, *Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4)));
 			cmp |= equal;
-			aMask = SignMask(Pack(cmp, Short4(0x0000, 0x0000, 0x0000, 0x0000)));
+			aMask = SignMask(Pack(cmp, Short4(0x0000)));
 			break;
 		case ALPHA_LESSEQUAL:		// a <= b ~ !(a > b)
-			cmp = CmpGT(alpha, *Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4))) ^ Short4((short)0xFFFF, (short)0xFFFF, (short)0xFFFF, (short)0xFFFF);   // FIXME
-			aMask = SignMask(Pack(cmp, Short4(0x0000, 0x0000, 0x0000, 0x0000)));
+			cmp = CmpGT(alpha, *Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4))) ^ Short4(0xFFFF);   // FIXME
+			aMask = SignMask(Pack(cmp, Short4(0x0000)));
 			break;
 		case ALPHA_GREATER:			// a > b
 			cmp = CmpGT(alpha, *Pointer<Short4>(data + OFFSET(DrawData,factor.alphaReference4)));
-			aMask = SignMask(Pack(cmp, Short4(0x0000, 0x0000, 0x0000, 0x0000)));
+			aMask = SignMask(Pack(cmp, Short4(0x0000)));
 			break;
 		default:
 			ASSERT(false);
@@ -1224,9 +1224,9 @@ namespace sw
 			current.z = pixel.z;
 			break;
 		case BLENDOP_NULL:
-			current.x = Short4(0x0000, 0x0000, 0x0000, 0x0000);
-			current.y = Short4(0x0000, 0x0000, 0x0000, 0x0000);
-			current.z = Short4(0x0000, 0x0000, 0x0000, 0x0000);
+			current.x = Short4(0x0000);
+			current.y = Short4(0x0000);
+			current.z = Short4(0x0000);
 			break;
 		default:
 			ASSERT(false);
@@ -1269,7 +1269,7 @@ namespace sw
 			current.w = pixel.w;
 			break;
 		case BLENDOP_NULL:
-			current.w = Short4(0x0000, 0x0000, 0x0000, 0x0000);
+			current.w = Short4(0x0000);
 			break;
 		default:
 			ASSERT(false);
@@ -1396,10 +1396,10 @@ namespace sw
 			case FORMAT_SRGB8_X8:
 			case FORMAT_SRGB8_A8:
 			case FORMAT_R8:
-				current.x = current.x - As<Short4>(As<UShort4>(current.x) >> 8) + Short4(0x0080, 0x0080, 0x0080, 0x0080);
-				current.y = current.y - As<Short4>(As<UShort4>(current.y) >> 8) + Short4(0x0080, 0x0080, 0x0080, 0x0080);
-				current.z = current.z - As<Short4>(As<UShort4>(current.z) >> 8) + Short4(0x0080, 0x0080, 0x0080, 0x0080);
-				current.w = current.w - As<Short4>(As<UShort4>(current.w) >> 8) + Short4(0x0080, 0x0080, 0x0080, 0x0080);
+				current.x = current.x - As<Short4>(As<UShort4>(current.x) >> 8) + Short4(0x0080);
+				current.y = current.y - As<Short4>(As<UShort4>(current.y) >> 8) + Short4(0x0080);
+				current.z = current.z - As<Short4>(As<UShort4>(current.z) >> 8) + Short4(0x0080);
+				current.w = current.w - As<Short4>(As<UShort4>(current.w) >> 8) + Short4(0x0080);
 				break;
 			default:
 				break;
