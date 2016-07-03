@@ -18,11 +18,14 @@ Contributing
 
 See CONTRIBUTING.txt for important contributing requirements.
 
-The canonical repository for SwiftShader is hosted at
+The canonical repository for SwiftShader is hosted at:
 https://swiftshader.googlesource.com/SwiftShader
 
-All changes must be reviewed and approved in the Gerrit review tool at
+All changes must be reviewed and approved in the [https://www.gerritcodereview.com/](Gerrit) review tool at:
 https://swiftshader-review.googlesource.com
+
+Authenticate your account here:
+https://swiftshader-review.googlesource.com/new-password
 
 All changes require a Change-ID tag in the commit message. A commit hook may be used to add this tag automatically, and can be found at:
 https://gerrit-review.googlesource.com/tools/hooks/commit-msg. To clone the repository and install the commit hook in one go: 
@@ -43,7 +46,7 @@ Contact
 
 Public mailing list: swiftshader@googlegroups.com
 
-Bug tracker: bugs.chromium.org/p/swiftshader
+Bug tracker: https://bugs.chromium.org/p/swiftshader
 
 License
 ----------
