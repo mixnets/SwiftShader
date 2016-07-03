@@ -73,7 +73,7 @@ int result = callable();
 assert(result == 1);
 ```
 
-Note that ```Function<>``` objects are relatively heavyweight, since they have the entire JIT-compiler behind them, while ```Routine``` objects are lightweight and merely provide storage and lifetime management of generated routines. So we typically allow the ```Function<>``` object to be destroyed (by going out of scope), while the ```Routine``` object is retained until we no longer need to call the routine. Hence the distinction between then and the need for a couple of lines of boilerplate code.
+Note that ```Function<>``` objects are relatively heavyweight, since they have the entire JIT-compiler behind them, while ```Routine``` objects are lightweight and merely provide storage and lifetime management of generated routines. So we typically allow the ```Function<>``` object to be destroyed (by going out of scope), while the ```Routine``` object is retained until we no longer need to call the routine. Hence the distinction between them and the need for a couple of lines of boilerplate code.
 
 ### Arguments and Expressions
 
