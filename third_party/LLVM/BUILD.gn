@@ -47,6 +47,12 @@ config("swiftshader_llvm_private_config") {
         "/wd4706",
         "/wd4800",
       ]
+
+      if (!is_debug) {
+        cflags += [
+          "/wd4324",
+        ]
+      }
     }
   }
 }
@@ -437,7 +443,6 @@ source_set("swiftshader_llvm") {
   ]
 
   include_dirs = [
-    "include",
     "lib/Target/X86",
   ]
 
@@ -446,4 +451,8 @@ source_set("swiftshader_llvm") {
       "include-linux",
     ]
   }
+
+  include_dirs += [
+    "include",
+  ]
 }
