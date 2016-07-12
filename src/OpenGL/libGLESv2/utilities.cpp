@@ -1419,7 +1419,23 @@ namespace es2sw
 		}
 	}
 
-	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount, GLenum elementType, sw::DrawType &drawType, int &primitiveCount, int &verticesPerPrimitive)
+	bool isPrimitiveRestartIndex(const void *indices, GLsizei i, GLenum type)
+	{
+		switch(type)
+		{
+		case GL_UNSIGNED_BYTE:
+			return ((const GLubyte*)indices)[i] == GLubyte(-1);
+		case GL_UNSIGNED_SHORT:
+			return ((const GLushort*)indices)[i] == GLushort(-1);
+		case GL_UNSIGNED_INT:
+			return ((const GLuint*)indices)[i] == GLuint(-1);
+		default:
+			UNREACHABLE(type);
+			return false;
+		}
+	}
+
+	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount, GLenum elementType, const void *indices, bool primitiveRestart, sw::DrawType &drawType, int &primitiveCount, int &verticesPerPrimitive)
 	{
 		switch(primitiveType)
 		{
@@ -1460,6 +1476,123 @@ namespace es2sw
 			break;
 		default:
 			return false;
+		}
+
+		if(primitiveRestart)
+		{
+			primitiveCount = 0;
+			bool isStartingPrimitive = true;
+
+			switch(primitiveType)
+			{
+			case GL_POINTS:
+				for(int i = 0; i < elementCount; i++)
+				{
+					if(!isPrimitiveRestartIndex(indices, i, elementType))
+					{
+						primitiveCount++;
+					}
+				}
+				break;
+			case GL_LINES:
+				for(int i = 0; i < elementCount - 1; i++)
+				{
+					if(!isPrimitiveRestartIndex(indices, i + 1, elementType))
+					{
+						if(!isPrimitiveRestartIndex(indices, i, elementType))
+						{
+							primitiveCount++;
+							i += 1;
+						}
+					}
+					else
+					{
+						i += 1;
+					}
+				}
+				break;
+			case GL_LINE_LOOP:
+				for(int i = 0; i < elementCount - 1; i++)
+				{
+					bool idx0 = !isPrimitiveRestartIndex(indices, i, elementType);
+					bool idx1 = !isPrimitiveRestartIndex(indices, i + 1, elementType);
+
+					if(idx0 && idx1)
+					{
+						primitiveCount++;
+						isStartingPrimitive = false;
+						if(i + 1 == elementCount - 1)
+						{
+							primitiveCount++;
+						}
+					}
+					else if(idx0 && !idx1 && !isStartingPrimitive)
+					{
+						primitiveCount++;
+						isStartingPrimitive = true;
+					}
+				}
+				break;
+			case GL_LINE_STRIP:
+				for(int i = 0; i < elementCount - 1; i++)
+				{
+					if(!isPrimitiveRestartIndex(indices, i, elementType) && !isPrimitiveRestartIndex(indices, i + 1, elementType))
+					{
+						primitiveCount++;
+					}
+				}
+				break;
+			case GL_TRIANGLES:
+				for(int i = 0; i < elementCount - 2; i++)
+				{
+					bool idx0 = !isPrimitiveRestartIndex(indices, i, elementType);
+					bool idx1 = !isPrimitiveRestartIndex(indices, i + 1, elementType);
+					bool idx2 = !isPrimitiveRestartIndex(indices, i + 2, elementType);
+
+					if(idx0 && idx1 && idx2)
+					{
+						primitiveCount++;
+						i += 2;
+					}
+					else if(!idx2)
+					{
+						i += 2;
+					}
+					else if(!idx1)
+					{
+						i += 1;
+					}
+				}
+				break;
+			case GL_TRIANGLE_STRIP:
+			case GL_TRIANGLE_FAN:
+				for(int i = 0; i < elementCount - 2; i++)
+				{
+					bool idx2 = !isPrimitiveRestartIndex(indices, i + 2, elementType);
+					if(isStartingPrimitive)
+					{
+						bool idx0 = !isPrimitiveRestartIndex(indices, i, elementType);
+						bool idx1 = !isPrimitiveRestartIndex(indices, i + 1, elementType);
+
+						if(idx0 && idx1 && idx2)
+						{
+							primitiveCount++;
+							isStartingPrimitive = false;
+						}
+					}
+					else if(idx2)
+					{
+						primitiveCount++;
+					}
+					else
+					{
+						isStartingPrimitive = true;
+					}
+				}
+				break;
+			default:
+				return false;
+			}
 		}
 
 		sw::DrawType elementSize;

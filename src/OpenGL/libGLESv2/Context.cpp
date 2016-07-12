@@ -625,7 +625,6 @@ bool Context::isDitherEnabled() const
 
 void Context::setPrimitiveRestartFixedIndexEnabled(bool enabled)
 {
-	UNIMPLEMENTED();
 	mState.primitiveRestartFixedIndexEnabled = enabled;
 }
 
@@ -2990,7 +2989,7 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsize
 // Applies the indices and element array bindings
 GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo)
 {
-	GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, indexInfo);
+	GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, indexInfo, isPrimitiveRestartFixedIndexEnabled());
 
 	if(err == GL_NO_ERROR)
 	{
@@ -3456,7 +3455,7 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 	int primitiveCount;
 	int verticesPerPrimitive;
 
-	if(!es2sw::ConvertPrimitiveType(mode, count, GL_NONE, primitiveType, primitiveCount, verticesPerPrimitive))
+	if(!es2sw::ConvertPrimitiveType(mode, count, GL_NONE, 0, false, primitiveType, primitiveCount, verticesPerPrimitive))
 		return error(GL_INVALID_ENUM);
 
 	if(primitiveCount <= 0)
@@ -3517,7 +3516,7 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 	int primitiveCount;
 	int verticesPerPrimitive;
 
-	if(!es2sw::ConvertPrimitiveType(mode, count, type, primitiveType, primitiveCount, verticesPerPrimitive))
+	if(!es2sw::ConvertPrimitiveType(mode, count, type, indices, isPrimitiveRestartFixedIndexEnabled(), primitiveType, primitiveCount, verticesPerPrimitive))
 		return error(GL_INVALID_ENUM);
 
 	if(primitiveCount <= 0)
@@ -3561,7 +3560,7 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 		TransformFeedback* transformFeedback = getTransformFeedback();
 		if(!cullSkipsDraw(mode) || (transformFeedback->isActive() && !transformFeedback->isPaused()))
 		{
-			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount);
+			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, isPrimitiveRestartFixedIndexEnabled());
 		}
 		if(transformFeedback)
 		{
