@@ -78,7 +78,8 @@ namespace es2sw
 	unsigned int ConvertColorMask(bool red, bool green, bool blue, bool alpha);
 	sw::MipmapType ConvertMipMapFilter(GLenum minFilter);
 	sw::FilterType ConvertTextureFilter(GLenum minFilter, GLenum magFilter, float maxAnisotropy);
-	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount,  GLenum elementType, sw::DrawType &swPrimitiveType, int &primitiveCount, int &verticesPerPrimitive);
+	bool isPrimitiveRestartIndex(const void *indices, GLsizei i, GLenum type);
+	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount, GLenum elementType, const void *indices, bool primitiveRestart, sw::DrawType &swPrimitiveType, int &primitiveCount, int &verticesPerPrimitive);
 	sw::Format ConvertRenderbufferFormat(GLenum format);
 }
 

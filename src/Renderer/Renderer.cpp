@@ -205,7 +205,7 @@ namespace sw
 		blitter.blit3D(source, dest);
 	}
 
-	void Renderer::draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update)
+	void Renderer::draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update, bool primitiveRestart)
 	{
 		#ifndef NDEBUG
 			if(count < minPrimitives || count > maxPrimitives)
@@ -320,7 +320,10 @@ namespace sw
 			}
 
 			draw->drawType = drawType;
+			draw->primitiveRestart = primitiveRestart;
+			draw->index = 0;
 			draw->batchSize = batch;
+			draw->anchorIndex = 0;
 
 			vertexRoutine->bind();
 			setupRoutine->bind();
@@ -703,6 +706,158 @@ namespace sw
 		}
 	}
 
+	bool Renderer::isPrimitiveRestartIndex(const void *indicesArray, int index, DrawType type)
+	{
+		switch(type & 0xF0)
+		{
+		case DRAW_INDEXED8:
+			return isPrimitiveRestartIndex(((const unsigned char*)indicesArray)[index]);
+		case DRAW_INDEXED16:
+			return isPrimitiveRestartIndex(((const unsigned short*)indicesArray)[index]);
+		case DRAW_INDEXED32:
+			return isPrimitiveRestartIndex(((const unsigned int*)indicesArray)[index]);
+		default:
+			return false;
+		}
+	}
+
+	std::pair<int, int> Renderer::advanceToNextBatch(const void *indicesArray, int index, int anchorIndex, DrawType type, int primitiveCount)
+	{
+		switch(type){
+		case DRAW_INDEXEDPOINTLIST8:
+		case DRAW_INDEXEDPOINTLIST16:
+		case DRAW_INDEXEDPOINTLIST32:
+			while(primitiveCount > 0)
+			{
+				if(!isPrimitiveRestartIndex(indicesArray, index, type))
+				{
+					primitiveCount--;
+				}
+				index++;
+			}
+			break;
+		case DRAW_INDEXEDLINELIST8:
+		case DRAW_INDEXEDLINELIST16:
+		case DRAW_INDEXEDLINELIST32:
+			while(primitiveCount > 0)
+			{
+				if(!isPrimitiveRestartIndex(indicesArray, index, type) && !isPrimitiveRestartIndex(indicesArray, index + 1, type))
+				{
+					primitiveCount--;
+					index += 2;
+				}
+				else
+				{
+					index += 1;
+				}
+			}
+			break;
+		case DRAW_INDEXEDLINESTRIP8:
+		case DRAW_INDEXEDLINESTRIP16:
+		case DRAW_INDEXEDLINESTRIP32:
+			while(primitiveCount > 0)
+			{
+				bool idx0 = !isPrimitiveRestartIndex(indicesArray, index, type);
+				bool idx1 = !isPrimitiveRestartIndex(indicesArray, index + 1, type);
+				if(idx0 && idx1)
+				{
+					primitiveCount--;
+					index += 1;
+				}
+				else if(!idx1)
+				{
+					index += 2;
+				}
+				else
+				{
+					index += 1;
+				}
+			}
+			break;
+		case DRAW_INDEXEDLINELOOP8:
+		case DRAW_INDEXEDLINELOOP16:
+		case DRAW_INDEXEDLINELOOP32:
+			while(primitiveCount > 0)
+			{
+				bool idx0 = !isPrimitiveRestartIndex(indicesArray, index, type);
+				bool idx1 = !isPrimitiveRestartIndex(indicesArray, index + 1, type);
+
+				if(!idx0 && idx1)
+				{
+					anchorIndex = index + 1;
+				}
+				else if(idx0 && idx1)
+				{
+					primitiveCount--;
+				}
+				else if(idx0 && !idx1 && index != anchorIndex)
+				{
+					primitiveCount--;
+				}
+				index += 1;
+			}
+			break;
+		case DRAW_INDEXEDTRIANGLELIST8:
+		case DRAW_INDEXEDTRIANGLELIST16:
+		case DRAW_INDEXEDTRIANGLELIST32:
+			while(primitiveCount > 0)
+			{
+				bool idx0 = !isPrimitiveRestartIndex(indicesArray, index, type);
+				bool idx1 = !isPrimitiveRestartIndex(indicesArray, index + 1, type);
+				bool idx2 = !isPrimitiveRestartIndex(indicesArray, index + 2, type);
+				if(idx0 && idx1 && idx2)
+				{
+					primitiveCount--;
+					index += 3;
+				}
+				else
+				{
+					index += 1;
+				}
+			}
+			break;
+		case DRAW_INDEXEDTRIANGLESTRIP8:
+		case DRAW_INDEXEDTRIANGLESTRIP16:
+		case DRAW_INDEXEDTRIANGLESTRIP32:
+		case DRAW_INDEXEDTRIANGLEFAN8:
+		case DRAW_INDEXEDTRIANGLEFAN16:
+		case DRAW_INDEXEDTRIANGLEFAN32:
+			while(primitiveCount > 0)
+			{
+				bool idx0 = !isPrimitiveRestartIndex(indicesArray, index, type);
+				bool idx1 = !isPrimitiveRestartIndex(indicesArray, index + 1, type);
+				bool idx2 = !isPrimitiveRestartIndex(indicesArray, index + 2, type);
+
+				if(!idx0 && idx1)
+				{
+					index += 1; 
+					anchorIndex = index;
+				}
+				else if(idx0 && idx1 && idx2)
+				{
+					primitiveCount--;
+					index += 1;
+				}
+				else if(!idx2)
+				{
+					index += 3;
+					if(!isPrimitiveRestartIndex(indicesArray, index, type))
+					{
+						anchorIndex = index;
+					}
+				}
+				else
+				{
+					index += 1;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+		return std::pair<int, int>(index, anchorIndex);
+	}
+
 	void Renderer::findAvailableTasks()
 	{
 		// Find pixel tasks
@@ -742,7 +897,7 @@ namespace sw
 		{
 			return;   // No more primitives to process
 		}
-
+		
 		for(int unit = 0; unit < unitCount; unit++)
 		{
 			DrawCall *draw = drawList[currentDraw % DRAW_COUNT];
@@ -762,12 +917,24 @@ namespace sw
 			if(!primitiveProgress[unit].references)   // Task not already being executed and not still in use by a pixel unit
 			{
 				int primitive = draw->primitive;
+				int index = draw->index;
+				int anchorIndex = draw->anchorIndex;
 				int count = draw->count;
 				int batch = draw->batchSize;
+				bool lastBatch = count - primitive <= batch;
 
 				primitiveProgress[unit].drawCall = currentDraw;
 				primitiveProgress[unit].firstPrimitive = primitive;
-				primitiveProgress[unit].primitiveCount = count - primitive >= batch ? batch : count - primitive;
+				primitiveProgress[unit].firstIndex = index;
+				primitiveProgress[unit].anchorIndex = anchorIndex; 
+				primitiveProgress[unit].primitiveCount = lastBatch ? count - primitive : batch;
+
+				if(draw->primitiveRestart && !lastBatch)
+				{
+					std::pair<int, int> n = advanceToNextBatch(draw->data->indices, draw->index, draw->anchorIndex, draw->drawType, primitiveProgress[unit].primitiveCount);
+					draw->index = n.first;
+					draw->anchorIndex = n.second;
+				}
 
 				draw->primitive += batch;
 
@@ -838,12 +1005,14 @@ namespace sw
 			{
 				int unit = task[threadIndex].primitiveUnit;
 
-				int input = primitiveProgress[unit].firstPrimitive;
+				int firstPrimitive = primitiveProgress[unit].firstPrimitive;
+				int firstIndex = primitiveProgress[unit].firstIndex;
+				int anchorIndex = primitiveProgress[unit].anchorIndex; 
 				int count = primitiveProgress[unit].primitiveCount;
 				DrawCall *draw = drawList[primitiveProgress[unit].drawCall % DRAW_COUNT];
 				int (Renderer::*setupPrimitives)(int batch, int count) = draw->setupPrimitives;
 
-				processPrimitiveVertices(unit, input, count, draw->count, threadIndex);
+				processPrimitiveVertices(unit, firstPrimitive, firstIndex, anchorIndex, count, draw->count, threadIndex);
 
 				#if PERF_HUD
 					int64_t time = Timer::ticks();
@@ -1042,7 +1211,286 @@ namespace sw
 		pixelProgress[cluster].executing = false;
 	}
 
-	void Renderer::processPrimitiveVertices(int unit, unsigned int start, unsigned int triangleCount, unsigned int loop, int thread)
+	template <typename T> void Renderer::processINDEXEDPOINTLIST(T *index, unsigned int batch[][3], unsigned int triangleCount, bool primitiveRestart)
+	{
+		if(!primitiveRestart)
+		{
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = *index;
+				batch[i][1] = *index;
+				batch[i][2] = *index;
+
+				index += 1;
+			}
+		}
+		else
+		{
+			unsigned int i = 0;
+			while(i < triangleCount)
+			{
+				if(!isPrimitiveRestartIndex(*index))
+				{
+					batch[i][0] = *index;
+					batch[i][1] = *index;
+					batch[i][2] = *index;
+
+					i++;
+				}
+				index += 1;
+			}
+		}
+	}
+
+	template <typename T> void Renderer::processINDEXEDLINELIST(T *index, unsigned int batch[][3], unsigned int triangleCount, bool primitiveRestart)
+	{
+		if(!primitiveRestart)
+		{
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = index[0];
+				batch[i][1] = index[1];
+				batch[i][2] = index[1];
+
+				index += 2;
+			}
+		}
+		else
+		{
+			unsigned int i = 0;
+			while(i < triangleCount)
+			{
+				if(!isPrimitiveRestartIndex(index[0]) && !isPrimitiveRestartIndex(index[1]))
+				{
+					batch[i][0] = index[0];
+					batch[i][1] = index[1];
+					batch[i][2] = index[1];
+
+					i++;
+					index += 2;
+				}
+				else
+				{
+					index += 1;
+				}
+			}
+		}
+	}
+
+	template <typename T> void Renderer::processINDEXEDLINESTRIP(T *index, unsigned int batch[][3], unsigned int triangleCount, bool primitiveRestart)
+	{
+		if(!primitiveRestart)
+		{
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = index[0];
+				batch[i][1] = index[1];
+				batch[i][2] = index[1];
+
+				index += 1;
+			}
+		}
+		else
+		{
+			unsigned int i = 0;
+			while(i < triangleCount)
+			{
+				bool idx0 = !isPrimitiveRestartIndex(index[0]);
+				bool idx1 = !isPrimitiveRestartIndex(index[1]);
+				if(idx0 && idx1)
+				{
+					batch[i][0] = index[0];
+					batch[i][1] = index[1];
+					batch[i][2] = index[1];
+
+					i++;
+					index += 1;
+				}
+				else if(!idx1)
+				{
+					index += 2;
+				}
+				else
+				{
+					index += 1;
+				}
+			}
+		}
+	}
+
+	//remove T *indices when not needed anymore - replace with anchor
+	template <typename T> void Renderer::processINDEXEDLINELOOP(T *indices, T *index, unsigned int batch[][3], unsigned int triangleCount, unsigned int startPrimitive, unsigned int loop, unsigned int loopHeadIndex, bool primitiveRestart)
+	{
+		if(!primitiveRestart)
+		{
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = index[(startPrimitive + i + 0) % loop];
+				batch[i][1] = index[(startPrimitive + i + 1) % loop];
+				batch[i][2] = index[(startPrimitive + i + 1) % loop];
+			}
+		}
+		else
+		{
+			unsigned int loopHead = indices[loopHeadIndex];
+
+			unsigned int i = 0;
+			while(i < triangleCount)
+			{
+				bool idx0 = !isPrimitiveRestartIndex(index[0]);
+				bool idx1 = startPrimitive + i == loop - 1? false : !isPrimitiveRestartIndex(index[1]);
+
+				if(!idx0 && idx1)
+				{
+					loopHead = index[1];
+				}
+				else if(idx0 && idx1)
+				{
+					batch[i][0] = index[0];
+					batch[i][1] = index[1];
+					batch[i][2] = index[1];
+
+					i++;
+				}
+				else if(idx0 && !idx1 && loopHead != index[0])
+				{
+					batch[i][0] = index[0];
+					batch[i][1] = loopHead;
+					batch[i][2] = loopHead;
+
+					i++;
+				}
+				index += 1;
+			}
+		}
+	}
+
+	template <typename T> void Renderer::processINDEXEDTRIANGLELIST(T *index, unsigned int batch[][3], unsigned int triangleCount, bool primitiveRestart)
+	{
+		if(!primitiveRestart)
+		{
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = index[0];
+				batch[i][1] = index[1];
+				batch[i][2] = index[2];
+
+				index += 3;
+			}
+		}
+		else
+		{
+			unsigned int i = 0;
+			while(i < triangleCount)
+			{
+				bool idx0 = !isPrimitiveRestartIndex(index[0]);
+				bool idx1 = !isPrimitiveRestartIndex(index[1]);
+				bool idx2 = !isPrimitiveRestartIndex(index[2]);
+
+				if(idx0 && idx1 && idx2)
+				{
+					batch[i][0] = index[0];
+					batch[i][1] = index[1];
+					batch[i][2] = index[2];
+
+					i++;
+					index += 3;
+				}
+				else
+				{
+					index += 1;
+				}
+			}
+		}
+	}
+
+	template <typename T> void Renderer::processINDEXEDTRIANGLESTRIP(T *indices, T *index, unsigned int batch[][3], unsigned int triangleCount, unsigned int startPrimitive, unsigned int anchorPosition, bool primitiveRestart)
+	{
+		if(!primitiveRestart)
+		{
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = index[0];
+				batch[i][1] = index[((startPrimitive + i) & 1) + 1];
+				batch[i][2] = index[(~(startPrimitive + i) & 1) + 1];
+
+				index += 1;
+			}
+		}
+		else
+		{
+			unsigned int i = 0;
+			while(i < triangleCount)
+			{
+				bool idx0 = !isPrimitiveRestartIndex(index[0]);
+				bool idx1 = !isPrimitiveRestartIndex(index[1]);
+				bool idx2 = !isPrimitiveRestartIndex(index[2]);
+
+				if(!idx0 && idx1)
+				{
+					anchorPosition = index + 1 - indices;
+				}
+
+				bool reverseWinding = ((index - indices) - anchorPosition) & 1;
+
+				if(idx0 && idx1 && idx2)
+				{
+					batch[i][0] = index[0];
+					batch[i][1] = index[reverseWinding ? 2 : 1];
+					batch[i][2] = index[reverseWinding ? 1 : 2];
+
+					i++;
+				}
+				index += 1;
+			}
+		}
+	}
+
+	template <typename T> void Renderer::processINDEXEDTRIANGLEFAN(T *indices, T *index, unsigned int batch[][3], unsigned int triangleCount, unsigned int startPrimitive, unsigned int anchorPosition, bool primitiveRestart)
+	{
+		if(!primitiveRestart)
+		{
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = index[startPrimitive + i + 1];
+				batch[i][1] = index[startPrimitive + i + 2];
+				batch[i][2] = index[0];
+			}
+		}
+		else
+		{
+			unsigned int anchorValue = indices[anchorPosition];
+
+			unsigned int i = 0;
+			while(i < triangleCount)
+			{
+				bool idx0 = !isPrimitiveRestartIndex(index[0]);
+				bool idx1 = !isPrimitiveRestartIndex(index[1]); //these can't go out-of-bounds... but triangleCount should limit them if correct... ASSERT it
+				bool idx2 = !isPrimitiveRestartIndex(index[2]);
+
+				if(!idx0 && idx1)
+				{
+					anchorValue = index[1];
+				}
+				else if(!idx1 && idx2) //why the heck....
+				{
+					anchorValue = index[2];
+				}
+
+				if(idx0 && idx1 && idx2)
+				{
+					batch[i][0] = index[1];
+					batch[i][1] = index[2];
+					batch[i][2] = anchorValue;
+
+					i++;
+				}
+				index += 1;
+			}
+		}
+	}
+
+	void Renderer::processPrimitiveVertices(int unit, unsigned int startPrimitive, unsigned int startIndex, unsigned int anchorPosition, unsigned int triangleCount, unsigned int loop, int thread)
 	{
 		Triangle *triangle = triangleBatch[unit];
 		DrawCall *draw = drawList[primitiveProgress[unit].drawCall % DRAW_COUNT];
@@ -1059,12 +1507,11 @@ namespace sw
 		}
 
 		unsigned int batch[128][3];   // FIXME: Adjust to dynamic batch size
-
 		switch(draw->drawType)
 		{
 		case DRAW_POINTLIST:
 			{
-				unsigned int index = start;
+				unsigned int index = startPrimitive;
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
@@ -1078,7 +1525,7 @@ namespace sw
 			break;
 		case DRAW_LINELIST:
 			{
-				unsigned int index = 2 * start;
+				unsigned int index = 2 * startPrimitive;
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
@@ -1092,7 +1539,7 @@ namespace sw
 			break;
 		case DRAW_LINESTRIP:
 			{
-				unsigned int index = start;
+				unsigned int index = startPrimitive;
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
@@ -1106,7 +1553,7 @@ namespace sw
 			break;
 		case DRAW_LINELOOP:
 			{
-				unsigned int index = start;
+				unsigned int index = startPrimitive;
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
@@ -1120,7 +1567,7 @@ namespace sw
 			break;
 		case DRAW_TRIANGLELIST:
 			{
-				unsigned int index = 3 * start;
+				unsigned int index = 3 * startPrimitive;
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
@@ -1134,7 +1581,7 @@ namespace sw
 			break;
 		case DRAW_TRIANGLESTRIP:
 			{
-				unsigned int index = start;
+				unsigned int index = startPrimitive;
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
@@ -1148,7 +1595,7 @@ namespace sw
 			break;
 		case DRAW_TRIANGLEFAN:
 			{
-				unsigned int index = start;
+				unsigned int index = startPrimitive;
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
@@ -1162,289 +1609,133 @@ namespace sw
 			break;
 		case DRAW_INDEXEDPOINTLIST8:
 			{
-				const unsigned char *index = (const unsigned char*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = *index;
-					batch[i][1] = *index;
-					batch[i][2] = *index;
-
-					index += 1;
-				}
+				const unsigned char *index = (const unsigned char*)indices + (draw->primitiveRestart ? startIndex : startPrimitive);
+				processINDEXEDPOINTLIST(index, batch, triangleCount, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDPOINTLIST16:
 			{
-				const unsigned short *index = (const unsigned short*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = *index;
-					batch[i][1] = *index;
-					batch[i][2] = *index;
-
-					index += 1;
-				}
+				const unsigned short *index = (const unsigned short*)indices + (draw->primitiveRestart ? startIndex : startPrimitive);
+				processINDEXEDPOINTLIST(index, batch, triangleCount, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDPOINTLIST32:
 			{
-				const unsigned int *index = (const unsigned int*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = *index;
-					batch[i][1] = *index;
-					batch[i][2] = *index;
-
-					index += 1;
-				}
+				const unsigned int *index = (const unsigned int*)indices + (draw->primitiveRestart ? startIndex : startPrimitive);
+				processINDEXEDPOINTLIST(index, batch, triangleCount, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDLINELIST8:
 			{
-				const unsigned char *index = (const unsigned char*)indices + 2 * start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[1];
-
-					index += 2;
-				}
+				const unsigned char *index = (const unsigned char*)indices + (draw->primitiveRestart ? startIndex : 2 * startPrimitive);
+				processINDEXEDLINELIST(index, batch, triangleCount, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDLINELIST16:
 			{
-				const unsigned short *index = (const unsigned short*)indices + 2 * start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[1];
-
-					index += 2;
-				}
+				const unsigned short *index = (const unsigned short*)indices + (draw->primitiveRestart ? startIndex : 2 * startPrimitive);
+				processINDEXEDLINELIST(index, batch, triangleCount, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDLINELIST32:
 			{
-				const unsigned int *index = (const unsigned int*)indices + 2 * start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[1];
-
-					index += 2;
-				}
+				const unsigned int *index = (const unsigned int*)indices + (draw->primitiveRestart ? startIndex : 2 * startPrimitive);
+				processINDEXEDLINELIST(index, batch, triangleCount, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDLINESTRIP8:
 			{
-				const unsigned char *index = (const unsigned char*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[1];
-
-					index += 1;
-				}
+				const unsigned char *index = (const unsigned char*)indices + (draw->primitiveRestart ? startIndex : startPrimitive);
+				processINDEXEDLINESTRIP(index, batch, triangleCount, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDLINESTRIP16:
 			{
-				const unsigned short *index = (const unsigned short*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[1];
-
-					index += 1;
-				}
+				const unsigned short *index = (const unsigned short*)indices + (draw->primitiveRestart ? startIndex : startPrimitive);
+				processINDEXEDLINESTRIP(index, batch, triangleCount, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDLINESTRIP32:
 			{
-				const unsigned int *index = (const unsigned int*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[1];
-
-					index += 1;
-				}
+				const unsigned int *index = (const unsigned int*)indices + (draw->primitiveRestart ? startIndex : startPrimitive);
+				processINDEXEDLINESTRIP(index, batch, triangleCount, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDLINELOOP8:
 			{
-				const unsigned char *index = (const unsigned char*)indices;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[(start + i + 0) % loop];
-					batch[i][1] = index[(start + i + 1) % loop];
-					batch[i][2] = index[(start + i + 1) % loop];
-				}
+				const unsigned char *index = (const unsigned char*)indices + (draw->primitiveRestart ? startIndex : 0);
+				processINDEXEDLINELOOP((const unsigned char*)indices, index, batch, triangleCount, startPrimitive, loop, anchorPosition, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDLINELOOP16:
 			{
-				const unsigned short *index = (const unsigned short*)indices;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[(start + i + 0) % loop];
-					batch[i][1] = index[(start + i + 1) % loop];
-					batch[i][2] = index[(start + i + 1) % loop];
-				}
+				const unsigned short *index = (const unsigned short*)indices + (draw->primitiveRestart ? startIndex : 0);
+				processINDEXEDLINELOOP((const unsigned short*)indices, index, batch, triangleCount, startPrimitive, loop, anchorPosition, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDLINELOOP32:
 			{
-				const unsigned int *index = (const unsigned int*)indices;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[(start + i + 0) % loop];
-					batch[i][1] = index[(start + i + 1) % loop];
-					batch[i][2] = index[(start + i + 1) % loop];
-				}
+				const unsigned int *index = (const unsigned int*)indices + (draw->primitiveRestart ? startIndex : 0);
+				processINDEXEDLINELOOP((const unsigned int*)indices, index, batch, triangleCount, startPrimitive, loop, anchorPosition, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDTRIANGLELIST8:
 			{
-				const unsigned char *index = (const unsigned char*)indices + 3 * start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[2];
-
-					index += 3;
-				}
+				const unsigned char *index = (const unsigned char*)indices + (draw->primitiveRestart ? startIndex : 3 * startPrimitive);
+				processINDEXEDTRIANGLELIST(index, batch, triangleCount, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDTRIANGLELIST16:
 			{
-				const unsigned short *index = (const unsigned short*)indices + 3 * start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[2];
-
-					index += 3;
-				}
+				const unsigned short *index = (const unsigned short*)indices + (draw->primitiveRestart ? startIndex : 3 * startPrimitive);
+				processINDEXEDTRIANGLELIST(index, batch, triangleCount, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDTRIANGLELIST32:
 			{
-				const unsigned int *index = (const unsigned int*)indices + 3 * start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[2];
-
-					index += 3;
-				}
+				const unsigned int *index = (const unsigned int*)indices + (draw->primitiveRestart ? startIndex : 3 * startPrimitive);
+				processINDEXEDTRIANGLELIST(index, batch, triangleCount, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDTRIANGLESTRIP8:
 			{
-				const unsigned char *index = (const unsigned char*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[((start + i) & 1) + 1];
-					batch[i][2] = index[(~(start + i) & 1) + 1];
-
-					index += 1;
-				}
+				const unsigned char *index = (const unsigned char*)indices + (draw->primitiveRestart ? startIndex : startPrimitive);
+				processINDEXEDTRIANGLESTRIP((const unsigned char*)indices, index, batch, triangleCount, startPrimitive, anchorPosition, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDTRIANGLESTRIP16:
 			{
-				const unsigned short *index = (const unsigned short*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[((start + i) & 1) + 1];
-					batch[i][2] = index[(~(start + i) & 1) + 1];
-
-					index += 1;
-				}
+				const unsigned short *index = (const unsigned short*)indices + (draw->primitiveRestart ? startIndex : startPrimitive);
+				processINDEXEDTRIANGLESTRIP((const unsigned short*)indices, index, batch, triangleCount, startPrimitive, anchorPosition, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDTRIANGLESTRIP32:
 			{
-				const unsigned int *index = (const unsigned int*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[((start + i) & 1) + 1];
-					batch[i][2] = index[(~(start + i) & 1) + 1];
-
-					index += 1;
-				}
+				const unsigned int *index = (const unsigned int*)indices + (draw->primitiveRestart ? startIndex : startPrimitive);
+				processINDEXEDTRIANGLESTRIP((const unsigned int*)indices, index, batch, triangleCount, startPrimitive, anchorPosition, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDTRIANGLEFAN8:
 			{
-				const unsigned char *index = (const unsigned char*)indices;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[start + i + 1];
-					batch[i][1] = index[start + i + 2];
-					batch[i][2] = index[0];
-				}
+				const unsigned char *index = (const unsigned char*)indices + (draw->primitiveRestart ? startIndex : 0);
+				processINDEXEDTRIANGLEFAN((const unsigned char*)indices, index, batch, triangleCount, startPrimitive, anchorPosition, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDTRIANGLEFAN16:
 			{
-				const unsigned short *index = (const unsigned short*)indices;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[start + i + 1];
-					batch[i][1] = index[start + i + 2];
-					batch[i][2] = index[0];
-				}
+				const unsigned short *index = (const unsigned short*)indices + (draw->primitiveRestart ? startIndex : 0);
+				processINDEXEDTRIANGLEFAN((const unsigned short*)indices, index, batch, triangleCount, startPrimitive, anchorPosition, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_INDEXEDTRIANGLEFAN32:
 			{
-				const unsigned int *index = (const unsigned int*)indices;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[start + i + 1];
-					batch[i][1] = index[start + i + 2];
-					batch[i][2] = index[0];
-				}
+				const unsigned int *index = (const unsigned int*)indices + (draw->primitiveRestart ? startIndex : 0);
+				processINDEXEDTRIANGLEFAN((const unsigned int*)indices, index, batch, triangleCount, startPrimitive, anchorPosition, draw->primitiveRestart);
 			}
 			break;
 		case DRAW_QUADLIST:
 			{
-				unsigned int index = 4 * start / 2;
+				unsigned int index = 4 * startPrimitive / 2;
 
 				for(unsigned int i = 0; i < triangleCount; i += 2)
 				{
@@ -1465,7 +1756,7 @@ namespace sw
 			return;
 		}
 
-		task->primitiveStart = start;
+		task->primitiveStart = startPrimitive;
 		task->vertexCount = triangleCount * 3;
 		vertexRoutine(&triangle->v0, (unsigned int*)&batch, task, data);
 	}

@@ -307,14 +307,14 @@ namespace es2
 		return surface;
 	}
 
-	void Device::drawIndexedPrimitive(sw::DrawType type, unsigned int indexOffset, unsigned int primitiveCount)
+	void Device::drawIndexedPrimitive(sw::DrawType type, unsigned int indexOffset, unsigned int primitiveCount, bool primitiveRestart)
 	{
 		if(!bindResources() || !primitiveCount)
 		{
 			return;
 		}
 
-		draw(type, indexOffset, primitiveCount);
+		draw(type, indexOffset, primitiveCount, true, primitiveRestart);
 	}
 
 	void Device::drawPrimitive(sw::DrawType type, unsigned int primitiveCount)

@@ -211,6 +211,7 @@ namespace sw
 		~DrawCall();
 
 		DrawType drawType;
+		bool primitiveRestart;
 		int batchSize;
 
 		Routine *vertexRoutine;
@@ -247,8 +248,10 @@ namespace sw
 		int clipFlags;
 
 		volatile int primitive;    // Current primitive to enter pipeline
+		volatile int index;        // First index for current primitive
 		volatile int count;        // Number of primitives to render
 		volatile int references;   // Remaining references to this draw call, 0 when done drawing, -1 when resources unlocked and slot is free
+		volatile int anchorIndex;  // Primitive restart: First index for current restarted primitive of type INDEXEDLINELOOP, INDEXEDTRIANGLESTRIP, INDEXEDTRIANGLEFAN
 
 		DrawData *data;
 	};
@@ -287,14 +290,18 @@ namespace sw
 			{
 				drawCall = 0;
 				firstPrimitive = 0;
+				firstIndex = 0;
 				primitiveCount = 0;
+				anchorIndex = 0;
 				visible = 0;
 				references = 0;
 			}
 
 			volatile int drawCall;
 			volatile int firstPrimitive;
+			volatile int firstIndex;
 			volatile int primitiveCount;
+			volatile int anchorIndex;
 			volatile int visible;
 			volatile int references;
 		};
@@ -321,7 +328,7 @@ namespace sw
 		void clear(void* pixel, Format format, Surface *dest, const SliceRect &dRect, unsigned int rgbaMask);
 		void blit(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter);
 		void blit3D(Surface *source, Surface *dest);
-		void draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update = true);
+		void draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update = true, bool primitiveRestart = false);
 
 		void setIndexBuffer(Resource *indexBuffer);
 
@@ -401,12 +408,28 @@ namespace sw
 		static void threadFunction(void *parameters);
 		void threadLoop(int threadIndex);
 		void taskLoop(int threadIndex);
+
+		template <typename T> inline bool isPrimitiveRestartIndex(T n)
+		{
+			return n == T(-1);
+		}
+
+		bool isPrimitiveRestartIndex(const void *indicesArray, int index, DrawType type);
+		std::pair<int, int> advanceToNextBatch(const void *indicesArray, int index, int anchorIndex, DrawType type, int primitiveCount);
+		
 		void findAvailableTasks();
 		void scheduleTask(int threadIndex);
 		void executeTask(int threadIndex);
 		void finishRendering(Task &pixelTask);
 
-		void processPrimitiveVertices(int unit, unsigned int start, unsigned int count, unsigned int loop, int thread);
+		void processPrimitiveVertices(int unit, unsigned int start, unsigned int startIndex, unsigned int anchorPosition, unsigned int count, unsigned int loop, int thread);
+		template <typename T> void processINDEXEDPOINTLIST(T *index, unsigned int batch[][3], unsigned int triangleCount, bool primitiveRestart);
+		template <typename T> void processINDEXEDLINELIST(T *index, unsigned int batch[][3], unsigned int triangleCount, bool primitiveRestart);
+		template <typename T> void processINDEXEDLINESTRIP(T *index, unsigned int batch[][3], unsigned int triangleCount, bool primitiveRestart);
+		template <typename T> void processINDEXEDLINELOOP(T *indices, T *index, unsigned int batch[][3], unsigned int triangleCount, unsigned int startPrimitive, unsigned int loop, unsigned int loopHeadIndex, bool primitiveRestart);
+		template <typename T> void processINDEXEDTRIANGLELIST(T *index, unsigned int batch[][3], unsigned int triangleCount, bool primitiveRestart);
+		template <typename T> void processINDEXEDTRIANGLESTRIP(T *indices, T *index, unsigned int batch[][3], unsigned int triangleCount, unsigned int startPrimitive, unsigned int anchorPosition, bool primitiveRestart);
+		template <typename T> void processINDEXEDTRIANGLEFAN(T *indices, T *index, unsigned int batch[][3], unsigned int triangleCount, unsigned int startPrimitive, unsigned int anchorPosition, bool primitiveRestart);
 
 		int setupSolidTriangles(int batch, int count);
 		int setupWireframeTriangle(int batch, int count);
