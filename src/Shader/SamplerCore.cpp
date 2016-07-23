@@ -136,7 +136,7 @@ namespace sw
 			{
 				Vector4f cf;
 
-				sampleFloatFilter(texture, cf, uuuu, vvvv, wwww, offset, lod, anisotropy, uDelta, vDelta, face, function);
+				sampleFloatFilter(texture, cf, uuuu, vvvv, wwww, q, offset, lod, anisotropy, uDelta, vDelta, face, function);
 
 				convertFixed12(c, cf);
 			}
@@ -365,7 +365,7 @@ namespace sw
 					computeLod3D(texture, lod, uuuu, vvvv, wwww, lodBias, dsx, dsy, function);
 				}
 
-				sampleFloatFilter(texture, c, uuuu, vvvv, wwww, offset, lod, anisotropy, uDelta, vDelta, face, function);
+				sampleFloatFilter(texture, c, uuuu, vvvv, wwww, q, offset, lod, anisotropy, uDelta, vDelta, face, function);
 			}
 			else
 			{
@@ -1133,9 +1133,9 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], SamplerFunction function)
+	void SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], SamplerFunction function)
 	{
-		sampleFloatAniso(texture, c, u, v, w, offset, lod, anisotropy, uDelta, vDelta, face, false, function);
+		sampleFloatAniso(texture, c, u, v, w, q, offset, lod, anisotropy, uDelta, vDelta, face, false, function);
 
 		if(function == Fetch)
 		{
@@ -1146,7 +1146,7 @@ namespace sw
 		{
 			Vector4f cc;
 
-			sampleFloatAniso(texture, cc, u, v, w, offset, lod, anisotropy, uDelta, vDelta, face, true, function);
+			sampleFloatAniso(texture, cc, u, v, w, q, offset, lod, anisotropy, uDelta, vDelta, face, true, function);
 
 			Float4 lod4 = Float4(Frac(lod));
 
@@ -1213,11 +1213,11 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, SamplerFunction function)
+	void SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, SamplerFunction function)
 	{
 		if(state.textureFilter != FILTER_ANISOTROPIC || function == Lod || function == Fetch)
 		{
-			sampleFloat(texture, c, u, v, w, offset, lod, face, secondLOD, function);
+			sampleFloat(texture, c, u, v, w, q, offset, lod, face, secondLOD, function);
 		}
 		else
 		{
@@ -1246,7 +1246,7 @@ namespace sw
 
 			Do
 			{
-				sampleFloat(texture, c, u0, v0, w, offset, lod, face, secondLOD, function);
+				sampleFloat(texture, c, u0, v0, w, q, offset, lod, face, secondLOD, function);
 
 				u0 += du;
 				v0 += dv;
@@ -1267,11 +1267,11 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleFloat(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
+	void SamplerCore::sampleFloat(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
 	{
 		if(state.textureType != TEXTURE_3D)
 		{
-			sampleFloat2D(texture, c, u, v, w, offset, lod, face, secondLOD, function);
+			sampleFloat2D(texture, c, u, v, w, q, offset, lod, face, secondLOD, function);
 		}
 		else
 		{
@@ -1279,7 +1279,7 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
+	void SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
 	{
 		int componentCount = textureComponentCount();
 		bool gather = state.textureFilter == FILTER_GATHER;
@@ -1297,7 +1297,7 @@ namespace sw
 
 		if(state.textureFilter == FILTER_POINT || texelFetch)
 		{
-			sampleTexel(c, uuuu, vvvv, wwww, offset, w, mipmap, buffer, function);
+			sampleTexel(c, uuuu, vvvv, wwww, offset, q, mipmap, buffer, function);
 		}
 		else
 		{
@@ -1311,10 +1311,10 @@ namespace sw
 			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1, lod);
 			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1, lod);
 
-			sampleTexel(c0, uuuu0, vvvv0, wwww, offset, w, mipmap, buffer, function);
-			sampleTexel(c1, uuuu1, vvvv0, wwww, offset, w, mipmap, buffer, function);
-			sampleTexel(c2, uuuu0, vvvv1, wwww, offset, w, mipmap, buffer, function);
-			sampleTexel(c3, uuuu1, vvvv1, wwww, offset, w, mipmap, buffer, function);
+			sampleTexel(c0, uuuu0, vvvv0, wwww, offset, q, mipmap, buffer, function);
+			sampleTexel(c1, uuuu1, vvvv0, wwww, offset, q, mipmap, buffer, function);
+			sampleTexel(c2, uuuu0, vvvv1, wwww, offset, q, mipmap, buffer, function);
+			sampleTexel(c3, uuuu1, vvvv1, wwww, offset, q, mipmap, buffer, function);
 
 			if(!gather)   // Blend
 			{
@@ -2130,6 +2130,8 @@ namespace sw
 		if(shadowTexture)
 		{
 			Float4 depth = Min(Max(z, Float4(0.0f)), Float4(1.0f));
+			// OpenGL ES 3.0.4 spec, page 163:
+			// "If the texture’s internal format indicates a fixed-point depth texture, then Dt	and Dref are clamped to the range[0, 1]; otherwise no clamping is performed."
 
 			Int4 condition;
 
