@@ -1538,14 +1538,12 @@ namespace sw
 
 	void VertexProgram::TEX(Vector4f &dst, Vector4f &src0, const Src &src1)
 	{
-		src0.w = Float(0.0f);
-		sampleTexture(dst, src1, src0, a0, a0, src0, Lod);
+		sampleTexture(dst, src1, src0, a0, a0, src0, LodZero);
 	}
 
 	void VertexProgram::TEXOFFSET(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &src2)
 	{
-		src0.w = Float(0.0f);
-		sampleTexture(dst, src1, src0, a0, a0, src2, {Lod, Offset});
+		sampleTexture(dst, src1, src0, a0, a0, src2, {LodZero, Offset});
 	}
 
 	void VertexProgram::TEXLDL(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &offset)

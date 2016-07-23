@@ -291,6 +291,7 @@ namespace sw
 			case Shader::OPCODE_TEXELFETCHOFFSET: TEXELFETCH(d, s0, src1, s2);             break;
 			case Shader::OPCODE_TEXGRAD:    TEXGRAD(d, s0, src1, s2, s3);                  break;
 			case Shader::OPCODE_TEXGRADOFFSET: TEXGRAD(d, s0, src1, s2, s3, s4);           break;
+			case Shader::OPCODE_TEXCUBESHADOWBIAS: TEXCUBESHADOWBIAS(d, s0, src1, s2);     break;
 			case Shader::OPCODE_DISCARD:    DISCARD(cMask, instruction);                   break;
 			case Shader::OPCODE_DFDX:       DFDX(d, s0);                                   break;
 			case Shader::OPCODE_DFDY:       DFDY(d, s0);                                   break;
@@ -1095,7 +1096,7 @@ namespace sw
 
 	void PixelProgram::TEXLD(Vector4f &dst, Vector4f &src0, const Src &src1, bool project, bool bias)
 	{
-		if(project)
+		if(project) // FIXME: project is never set to true. The division had been done in OutputASM.
 		{
 			Vector4f proj;
 			Float4 rw = reciprocal(src0.w);
@@ -1119,6 +1120,11 @@ namespace sw
 	void PixelProgram::TEXLDL(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &offset, bool bias)
 	{
 		sampleTexture(dst, src1, src0, src0, src0, offset, {Lod, Offset});
+	}
+
+	void PixelProgram::TEXCUBESHADOWBIAS(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2)
+	{
+		sampleTexture(dst, src1, src0, src2, src0, src0, Bias);
 	}
 
 	void PixelProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1)

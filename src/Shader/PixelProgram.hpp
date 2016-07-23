@@ -109,6 +109,7 @@ namespace sw
 		void TEXLD(Vector4f &dst, Vector4f &src0, const Src &src1, bool project, bool bias);
 		void TEXLDD(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, Vector4f &src3);
 		void TEXLDL(Vector4f &dst, Vector4f &src0, const Src &src1);
+		void TEXCUBESHADOWBIAS(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2);
 		void TEXSIZE(Vector4f &dst, Float4 &lod, const Src &src1);
 		void TEXKILL(Int cMask[4], Vector4f &src, unsigned char mask);
 		void TEXOFFSET(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &src2, bool bias);
