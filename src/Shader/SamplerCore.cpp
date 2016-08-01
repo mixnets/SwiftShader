@@ -1552,7 +1552,7 @@ namespace sw
 		}
 		else
 		{
-			lod = lodBias + Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
+			lod = lodBias;
 		}
 
 		lod = Max(lod, *Pointer<Float>(texture + OFFSET(Texture, minLod)));
@@ -1613,7 +1613,7 @@ namespace sw
 		}
 		else
 		{
-			lod = lodBias + Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
+			lod = lodBias;
 		}
 
 		lod = Max(lod, *Pointer<Float>(texture + OFFSET(Texture, minLod)));
@@ -1680,7 +1680,7 @@ namespace sw
 			}
 			else
 			{
-				lod = lodBias + Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
+				lod = lodBias;
 			}
 
 			lod = Max(lod, *Pointer<Float>(texture + OFFSET(Texture, minLod)));
@@ -2230,9 +2230,11 @@ namespace sw
 
 	void SamplerCore::selectMipmap(Pointer<Byte> &texture, Pointer<Byte> buffer[4], Pointer<Byte> &mipmap, Float &lod, Int face[4], bool secondLOD)
 	{
+		Int base = *Pointer<Int>(texture + OFFSET(Texture, baseLevel));
+
 		if(state.mipmapFilter < MIPMAP_POINT)
 		{
-			mipmap = texture + OFFSET(Texture,mipmap[0]);
+			mipmap = texture + OFFSET(Texture, mipmap) + base * sizeof(Mipmap);
 		}
 		else
 		{
@@ -2246,6 +2248,9 @@ namespace sw
 			{
 				ilod = Int(lod);
 			}
+
+			ilod += base;
+			ilod = Min(Max(ilod, base), MIPMAP_LEVELS - 1);
 
 			mipmap = texture + OFFSET(Texture,mipmap) + ilod * sizeof(Mipmap) + secondLOD * sizeof(Mipmap);
 		}
