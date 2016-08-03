@@ -638,6 +638,15 @@ namespace sw
 		else ASSERT(false);
 	}
 
+	void VertexProcessor::setCompareFunc(unsigned int sampler, CompareFunc compFunc)
+	{
+		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)
+		{
+			context->sampler[TEXTURE_IMAGE_UNITS + sampler].setCompareFunc(compFunc);
+		}
+		else ASSERT(false);
+	}
+
 	void VertexProcessor::setBaseLevel(unsigned int sampler, int baseLevel)
 	{
 		if(sampler < VERTEX_TEXTURE_IMAGE_UNITS)

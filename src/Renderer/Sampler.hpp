@@ -124,6 +124,21 @@ namespace sw
 		ADDRESSING_LAST = ADDRESSING_TEXELFETCH
 	};
 
+	enum CompareFunc : unsigned int
+	{
+		COMPARE_BYPASS,
+		COMPARE_LESSEQUAL,
+		COMPARE_GREATEREQUAL,
+		COMPARE_LESS,
+		COMPARE_GREATER,
+		COMPARE_EQUAL,
+		COMPARE_NOTEQUAL,
+		COMPARE_ALWAYS,
+		COMPARE_NEVER,
+
+		COMPARE_LAST = COMPARE_NEVER
+	};
+
 	enum SwizzleType : unsigned int
 	{
 		SWIZZLE_RED,
@@ -156,6 +171,7 @@ namespace sw
 			SwizzleType swizzleG           : BITS(SWIZZLE_LAST);
 			SwizzleType swizzleB           : BITS(SWIZZLE_LAST);
 			SwizzleType swizzleA           : BITS(SWIZZLE_LAST);
+			CompareFunc compare            : BITS(COMPARE_LAST);
 
 			#if PERF_PROFILE
 			bool compressedFormat          : 1;
@@ -183,6 +199,7 @@ namespace sw
 		void setSwizzleG(SwizzleType swizzleG);
 		void setSwizzleB(SwizzleType swizzleB);
 		void setSwizzleA(SwizzleType swizzleA);
+		void setCompareFunc(CompareFunc compare);
 		void setBaseLevel(int baseLevel);
 		void setMaxLevel(int maxLevel);
 		void setMinLod(float minLod);
@@ -207,6 +224,7 @@ namespace sw
 		AddressingMode getAddressingModeU() const;
 		AddressingMode getAddressingModeV() const;
 		AddressingMode getAddressingModeW() const;
+		CompareFunc getCompareFunc() const;
 
 		Format externalTextureFormat;
 		Format internalTextureFormat;
@@ -224,6 +242,8 @@ namespace sw
 		SwizzleType swizzleG;
 		SwizzleType swizzleB;
 		SwizzleType swizzleA;
+		CompareFunc compare;
+
 		Texture texture;
 		float exp2LOD;
 
