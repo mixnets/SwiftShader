@@ -312,12 +312,24 @@ private:
 		sw::Surface::unlockExternal();
 	}
 
-	void* lockNativeBuffer(int usage)
+	void *lockNativeBuffer(int usage)
 	{
-		void *buffer = nullptr;
-		GrallocModule::getInstance()->lock(nativeBuffer->handle, usage, 0, 0, nativeBuffer->width, nativeBuffer->height, &buffer);
+		if(format == SW_YV12_BT601 ||
+		   format == SW_YV12_BT709 ||
+		   format == SW_YV12_JFIF)
+		{
+			android_ycbcr ycbcr = {};
+			GrallocModule::getInstance()->lock_ycbcr(nativeBuffer->handle, usage, 0, 0, nativeBuffer->width, nativeBuffer->height, &ycbcr);
 
-		return buffer;
+			return ycbcr.y;
+		}
+		else
+		{
+			void *buffer = nullptr;
+			GrallocModule::getInstance()->lock(nativeBuffer->handle, usage, 0, 0, nativeBuffer->width, nativeBuffer->height, &buffer);
+
+			return buffer;
+		}
 	}
 
 	void unlockNativeBuffer()
