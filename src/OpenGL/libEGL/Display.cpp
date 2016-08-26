@@ -40,6 +40,19 @@
 #include <vector>
 #include <map>
 
+class Guard {
+ public:
+  explicit Guard(sw::BackoffLock* in) : mMutex(in) {
+    mMutex->lock();
+  }
+
+  ~Guard() {
+    mMutex->unlock();
+  }
+ protected:
+  sw::BackoffLock* mMutex;
+};
+
 namespace egl
 {
 
@@ -456,9 +469,8 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 EGLSyncKHR Display::createSync(Context *context)
 {
 	FenceSync *fenceSync = new egl::FenceSync(context);
-
+	Guard lk(&mSyncSetMutex);
 	mSyncSet.insert(fenceSync);
-
 	return fenceSync;
 }
 
@@ -493,8 +505,10 @@ void Display::destroyContext(egl::Context *context)
 
 void Display::destroySync(FenceSync *sync)
 {
-	mSyncSet.erase(sync);
-
+	{
+		Guard lk(&mSyncSetMutex);
+		mSyncSet.erase(sync);
+	}
 	delete sync;
 }
 
@@ -569,6 +583,7 @@ bool Display::hasExistingWindowSurface(EGLNativeWindowType window)
 
 bool Display::isValidSync(FenceSync *sync)
 {
+	Guard lk(&mSyncSetMutex);
 	return mSyncSet.find(sync) != mSyncSet.end();
 }
 
