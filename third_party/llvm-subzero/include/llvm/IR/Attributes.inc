@@ -47,6 +47,7 @@ StackProtectReq,
 StackProtectStrong,
 StructRet,
 UWTable,
+WriteOnly,
 ZExt,
 #endif
 #ifdef GET_ATTR_COMPAT_FUNC
