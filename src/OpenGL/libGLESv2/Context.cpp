@@ -37,6 +37,7 @@
 #include "libEGL/Display.h"
 #include "libEGL/Surface.h"
 #include "Common/Half.hpp"
+#include "Common/Memory.hpp"
 
 #include <EGL/eglext.h>
 
@@ -46,7 +47,7 @@ Context::Context(egl::Display *display, const Context *shareContext, EGLint clie
 	: egl::Context(display), clientVersion(clientVersion)
 {
 	sw::Context *context = new sw::Context();
-	device = new es2::Device(context);
+	device = new (sw::allocate(sizeof(es2::Device), 16)) es2::Device(context);
 
 	setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -259,7 +260,7 @@ Context::~Context()
 	delete mIndexDataManager;
 
 	mResourceManager->release();
-	delete device;
+	sw::deallocate(device);
 }
 
 void Context::makeCurrent(egl::Surface *surface)

@@ -39,6 +39,7 @@
 #include "Configurator.hpp"
 #include "Timer.hpp"
 #include "Resource.hpp"
+#include "Common/Memory.hpp"
 
 #include <assert.h>
 
@@ -61,7 +62,7 @@ namespace D3D9
 		d3d9->AddRef();
 
 		context = new sw::Context();
-		renderer = new sw::Renderer(context, sw::Direct3D, false);
+		renderer = new (sw::allocate(sizeof(sw::Renderer), 16)) sw::Renderer(context, sw::Direct3D, false);
 
 		swapChain = 0;
 		depthStencil = 0;
@@ -184,7 +185,7 @@ namespace D3D9
 
 	Direct3DDevice9::~Direct3DDevice9()
 	{
-		delete renderer;
+		sw::deallocate(renderer);
 		renderer = 0;
 		delete context;
 		context = 0;

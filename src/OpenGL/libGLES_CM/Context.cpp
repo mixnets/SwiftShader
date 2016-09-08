@@ -30,6 +30,7 @@
 #include "libEGL/Display.h"
 #include "libEGL/Surface.h"
 #include "Common/Half.hpp"
+#include "Common/Memory.hpp"
 
 #include <EGL/eglext.h>
 
@@ -45,7 +46,7 @@ Context::Context(egl::Display *const display, const Context *shareContext)
 	  textureStack1(MAX_TEXTURE_STACK_DEPTH)
 {
 	sw::Context *context = new sw::Context();
-	device = new es1::Device(context);
+	device = new (sw::allocate(sizeof(es1::Device), 16)) es1::Device(context);
 
 	mVertexDataManager = new VertexDataManager(this);
 	mIndexDataManager = new IndexDataManager();
@@ -278,7 +279,7 @@ Context::~Context()
 	delete mIndexDataManager;
 
 	mResourceManager->release();
-	delete device;
+	sw::deallocate(device);
 }
 
 void Context::makeCurrent(egl::Surface *surface)

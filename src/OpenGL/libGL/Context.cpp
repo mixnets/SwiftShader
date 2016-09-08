@@ -34,6 +34,7 @@
 #include "Display.h"
 #include "Surface.h"
 #include "Common/Half.hpp"
+#include "Common/Memory.hpp"
 
 #define _GDI32_
 #include <windows.h>
@@ -47,7 +48,7 @@ Context::Context(const Context *shareContext)
 	  projection(2)
 {
 	sw::Context *context = new sw::Context();
-	device = new gl::Device(context);
+	device = new (sw::allocate(sizeof(gl::Device), 16)) gl::Device(context);
 
 	setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -258,7 +259,7 @@ Context::~Context()
 	delete mIndexDataManager;
 
 	mResourceManager->release();
-	delete device;
+	sw::deallocate(device);
 }
 
 void Context::makeCurrent(Surface *surface)
