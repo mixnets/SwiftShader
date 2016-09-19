@@ -27,12 +27,12 @@ namespace sw
 		Routine(int bufferSize);
 		Routine(void *memory, int bufferSize, int offset);
 
-		~Routine();
+		virtual ~Routine();
 
 		void setFunctionSize(int functionSize);
 
 		const void *getBuffer();
-		const void *getEntry();
+		virtual const void *getEntry();
 		int getBufferSize();
 		int getFunctionSize();   // Includes constants before the entry point
 		int getCodeSize();       // Executable code only
