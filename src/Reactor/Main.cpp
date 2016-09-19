@@ -7,6 +7,8 @@
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/raw_os_ostream.h"
 
+#include "Reactor.hpp"
+
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include "Windows.h"
@@ -18,6 +20,8 @@
 #include <cstdint>
 #include <limits>
 #include <cstring>
+
+using namespace sw;
 
 template<typename T>
 struct ExecutableAllocator
@@ -172,6 +176,19 @@ int main()
 	int x = add(1, 2);
 
 	//out->close();
+
+	{
+		Function<Int(Void)> function;
+		{
+			Return(1);
+		}
+
+		Routine *routine = function(L"one");
+		int(*callable)() = (int(*)())routine->getEntry();
+
+		int result = callable();
+		assert(result == 1);
+	}
 
 	return 0;
 }
