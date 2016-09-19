@@ -28,20 +28,20 @@
 #undef min
 #undef Bool
 
-namespace llvm
+namespace Ice
 {
-	class Type;
-	class Value;
-	class Constant;
-	class BasicBlock;
+	enum Type;
+	class Variable;
+	class Operand;
+	class CfgNode;
 }
 
 namespace sw
 {
-	using Type = llvm::Type*;
-	using Value = llvm::Value;
-	using Constant = llvm::Constant;
-	using BasicBlock = llvm::BasicBlock;
+	using Type = Ice::Type;
+	using Value = Ice::Variable;
+	using Constant = Ice::Operand;
+	using BasicBlock = Ice::CfgNode;
 }
 
 namespace sw

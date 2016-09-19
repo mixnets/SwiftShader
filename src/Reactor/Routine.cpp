@@ -22,7 +22,7 @@ namespace sw
 {
 	Routine::Routine(int bufferSize) : bufferSize(bufferSize), dynamic(true)
 	{
-		void *memory = allocateExecutable(bufferSize);
+		void *memory = nullptr;//// allocateExecutable(bufferSize);
 
 		buffer = memory;
 		entry = memory;
@@ -43,7 +43,7 @@ namespace sw
 	{
 		if(dynamic)
 		{
-			deallocateExecutable(buffer, bufferSize);
+			////deallocateExecutable(buffer, bufferSize);
 		}
 	}
 
