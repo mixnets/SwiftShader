@@ -85,7 +85,6 @@ namespace sw
 		static void setFunction(llvm::Function *function);
 
 		static llvm::Module *getModule();
-		static llvm::Function *getFunction();
 		static llvm::LLVMContext *getContext();
 
 		static Value *allocateStackVariable(Type type, int arraySize = 0);

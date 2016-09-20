@@ -236,11 +236,6 @@ namespace sw
 		return module;
 	}
 
-	llvm::Function *Nucleus::getFunction()
-	{
-		return function;
-	}
-
 	llvm::LLVMContext *Nucleus::getContext()
 	{
 		return context;
@@ -249,7 +244,6 @@ namespace sw
 	Value *Nucleus::allocateStackVariable(Type type, int arraySize)
 	{
 		// Need to allocate it in the entry block for mem2reg to work
-		llvm::Function *function = getFunction();
 		BasicBlock &entryBlock = function->getEntryBlock();
 
 		Instruction *declaration;
@@ -270,7 +264,7 @@ namespace sw
 
 	BasicBlock *Nucleus::createBasicBlock()
 	{
-		return BasicBlock::Create(*context, "", Nucleus::getFunction());
+		return BasicBlock::Create(*context, "", function);
 	}
 
 	BasicBlock *Nucleus::getInsertBlock()
