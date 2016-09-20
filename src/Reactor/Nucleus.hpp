@@ -82,7 +82,6 @@ namespace sw
 
 		Routine *acquireRoutine(const wchar_t *name, bool runOptimizations = true);
 
-		static llvm::Module *getModule();
 		static llvm::LLVMContext *getContext();
 
 		static Value *allocateStackVariable(Type type, int arraySize = 0);
@@ -216,13 +215,6 @@ namespace sw
 
 	private:
 		void optimize();
-
-		static llvm::ExecutionEngine *executionEngine;
-		static Builder *builder;
-		static llvm::Function *function;
-		static llvm::LLVMContext *context;
-		static llvm::Module *module;
-		static RoutineManager *routineManager;
 
 		static BackoffLock codegenMutex;
 	};
@@ -2976,7 +2968,7 @@ namespace sw
 	template<typename Return, typename... Arguments>
 	Function<Return(Arguments...)>::Function()
 	{
-		core = new Nucleus();
+		core = Nucleus::create();
 
 		Type types[] = {Arguments::getType()...};
 		for(Type type : types)
