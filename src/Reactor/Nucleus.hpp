@@ -80,8 +80,8 @@ namespace sw
 		static void setInsertBlock(BasicBlock *basicBlock);
 		static BasicBlock *getPredecessor(BasicBlock *basicBlock);
 
-		static llvm::Function *createFunction(Type ReturnType, std::vector<Type> &Params);
-		static Value *getArgument(llvm::Function *function, unsigned int index);
+		static void createFunction(Type returnType, std::vector<Type> &parameters);
+		static Value *getArgument(unsigned int index);
 
 		// Terminators
 		static Value *createRetVoid();
@@ -183,25 +183,13 @@ namespace sw
 		static Value *createSwizzle(Value *val, unsigned char select);
 		static Value *createMask(Value *lhs, Value *rhs, unsigned char select);
 
-		// Global values
-		static const llvm::GlobalValue *getGlobalValueAtAddress(void *Addr);
-		static void addGlobalMapping(const llvm::GlobalValue *GV, void *Addr);
-		static llvm::GlobalValue *createGlobalValue(Type Ty, bool isConstant, unsigned int Align);
 		static Type getPointerType(Type ElementType);
-
 		// Constant values
-		static llvm::Constant *createNullValue(Type Ty);
-		static llvm::ConstantInt *createConstantInt(int64_t i);
-		static llvm::ConstantInt *createConstantInt(int i);
-		static llvm::ConstantInt *createConstantInt(unsigned int i);
-		static llvm::ConstantInt *createConstantBool(bool b);
-		static llvm::ConstantInt *createConstantByte(signed char i);
-		static llvm::ConstantInt *createConstantByte(unsigned char i);
-		static llvm::ConstantInt *createConstantShort(short i);
-		static llvm::ConstantInt *createConstantShort(unsigned short i);
+		static llvm::Constant *createConstantInt(int64_t i);
+		static llvm::Constant *createConstantInt(int i);
+		static llvm::Constant *createConstantInt(unsigned int i);
 		static llvm::Constant *createConstantFloat(float x);
 		static Value *createNullPointer(Type Ty);
-		static Value *createConstantVector(llvm::Constant *const *Vals, unsigned NumVals);
 
 	private:
 		void optimize();
@@ -2500,7 +2488,7 @@ namespace sw
 		template<int index>
 		Argument<typename ArgI<index, Arguments...>::Type> Arg() const
 		{
-			Value *arg = Nucleus::getArgument(function, index);
+			Value *arg = Nucleus::getArgument(index);
 			return Argument<typename ArgI<index, Arguments...>::Type>(arg);
 		}
 
@@ -2508,7 +2496,6 @@ namespace sw
 
 	protected:
 		Nucleus *core;
-		llvm::Function *function;
 		std::vector<Type> arguments;
 	};
 
@@ -2969,7 +2956,7 @@ namespace sw
 			}
 		}
 
-		function = Nucleus::createFunction(Return::getType(), arguments);
+		Nucleus::createFunction(Return::getType(), arguments);
 	}
 
 	template<typename Return, typename... Arguments>
