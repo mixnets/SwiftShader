@@ -102,6 +102,7 @@ namespace sw
 				StreamType type    : BITS(STREAMTYPE_LAST);
 				unsigned int count : 3;
 				bool normalized    : 1;
+				unsigned int attribType : 3;
 			};
 
 			struct Output
