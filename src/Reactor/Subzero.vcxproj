@@ -87,7 +87,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>SZTARGET=X8632;ALLOW_DUMP=0;ALLOW_TIMERS=0;ALLOW_LLVM_CL=0;ALLOW_LLVM_IR=0;ALLOW_LLVM_IR_AS_INPUT=0;ALLOW_MINIMAL_BUILD=0;ALLOW_WASM=0;ICE_THREAD_LOCAL_HACK=0;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\third_party\pnacl-subzero;$(SolutionDir)..\..\third_party\llvm-subzero\include;$(SolutionDir)..\..\third_party\pnacl-subzero\pnacl-llvm\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;$(SolutionDir)..\..\third_party\pnacl-subzero;$(SolutionDir)..\..\third_party\llvm-subzero\include;$(SolutionDir)..\..\third_party\pnacl-subzero\pnacl-llvm\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -103,7 +103,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>SZTARGET=X8664;ALLOW_DUMP=0;ALLOW_TIMERS=0;ALLOW_LLVM_CL=0;ALLOW_LLVM_IR=0;ALLOW_LLVM_IR_AS_INPUT=0;ALLOW_MINIMAL_BUILD=0;ALLOW_WASM=0;ICE_THREAD_LOCAL_HACK=0;WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\third_party\pnacl-subzero;$(SolutionDir)..\..\third_party\llvm-subzero\include;$(SolutionDir)..\..\third_party\pnacl-subzero\pnacl-llvm\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;$(SolutionDir)..\..\third_party\pnacl-subzero;$(SolutionDir)..\..\third_party\llvm-subzero\include;$(SolutionDir)..\..\third_party\pnacl-subzero\pnacl-llvm\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -121,7 +121,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>SZTARGET=X8632;ALLOW_DUMP=0;ALLOW_TIMERS=0;ALLOW_LLVM_CL=0;ALLOW_LLVM_IR=0;ALLOW_LLVM_IR_AS_INPUT=0;ALLOW_MINIMAL_BUILD=0;ALLOW_WASM=0;ICE_THREAD_LOCAL_HACK=0;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\third_party\pnacl-subzero;$(SolutionDir)..\..\third_party\llvm-subzero\include;$(SolutionDir)..\..\third_party\pnacl-subzero\pnacl-llvm\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;$(SolutionDir)..\..\third_party\pnacl-subzero;$(SolutionDir)..\..\third_party\llvm-subzero\include;$(SolutionDir)..\..\third_party\pnacl-subzero\pnacl-llvm\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,12 +135,16 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>SZTARGET=X8664;ALLOW_DUMP=0;ALLOW_TIMERS=0;ALLOW_LLVM_CL=0;ALLOW_LLVM_IR=0;ALLOW_LLVM_IR_AS_INPUT=0;ALLOW_MINIMAL_BUILD=0;ALLOW_WASM=0;ICE_THREAD_LOCAL_HACK=0;WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\third_party\pnacl-subzero;$(SolutionDir)..\..\third_party\llvm-subzero\include;$(SolutionDir)..\..\third_party\pnacl-subzero\pnacl-llvm\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;$(SolutionDir)..\..\third_party\pnacl-subzero;$(SolutionDir)..\..\third_party\llvm-subzero\include;$(SolutionDir)..\..\third_party\pnacl-subzero\pnacl-llvm\include</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -287,6 +291,11 @@
     <None Include="..\..\third_party\pnacl-subzero\src\IceInstX8664.def" />
     <None Include="..\..\third_party\pnacl-subzero\src\IceTargetLoweringX8632.def" />
     <None Include="..\..\third_party\pnacl-subzero\src\IceTargetLoweringX8664.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Reactor.vcxproj">
+      <Project>{28fd076d-10b5-4bd8-a4cf-f44c7002a803}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
