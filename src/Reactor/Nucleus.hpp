@@ -30,19 +30,12 @@
 
 namespace llvm
 {
-	class Function;
-	class Module;
 	class BasicBlock;
 	class Value;
 	class Constant;
 	class ConstantInt;
-	class ConstantFP;
 	class Type;
-	class Argument;
-	class GlobalVariable;
 	class GlobalValue;
-	class ExecutionEngine;
-	class LLVMContext;
 }
 
 namespace sw
@@ -78,20 +71,14 @@ namespace sw
 
 		Routine *acquireRoutine(const wchar_t *name, bool runOptimizations = true);
 
-		static void setFunction(llvm::Function *function);
-
-		static llvm::Module *getModule();
-		static llvm::Function *getFunction();
-		static llvm::LLVMContext *getContext();
-
 		static llvm::Value *allocateStackVariable(llvm::Type *type, int arraySize = 0);
 		static llvm::BasicBlock *createBasicBlock();
 		static llvm::BasicBlock *getInsertBlock();
 		static void setInsertBlock(llvm::BasicBlock *basicBlock);
 		static llvm::BasicBlock *getPredecessor(llvm::BasicBlock *basicBlock);
 
-		static llvm::Function *createFunction(llvm::Type *ReturnType, std::vector<llvm::Type*> &Params);
-		static llvm::Value *getArgument(llvm::Function *function, unsigned int index);
+		static void createFunction(llvm::Type *ReturnType, std::vector<llvm::Type*> &Params);
+		static llvm::Value *getArgument(unsigned int index);
 
 		// Terminators
 		static llvm::Value *createRetVoid();
@@ -215,13 +202,6 @@ namespace sw
 
 	private:
 		void optimize();
-
-		static llvm::ExecutionEngine *executionEngine;
-		static Builder *builder;
-		static llvm::Function *function;
-		static llvm::LLVMContext *context;
-		static llvm::Module *module;
-		static RoutineManager *routineManager;
 
 		static BackoffLock codegenMutex;
 	};
@@ -2519,7 +2499,7 @@ namespace sw
 		template<int index>
 		Argument<typename ArgI<index, Arguments...>::Type> Arg() const
 		{
-			llvm::Value *arg = Nucleus::getArgument(function, index);
+			llvm::Value *arg = Nucleus::getArgument(index);
 			return Argument<typename ArgI<index, Arguments...>::Type>(arg);
 		}
 
@@ -2527,7 +2507,6 @@ namespace sw
 
 	protected:
 		Nucleus *core;
-		llvm::Function *function;
 		std::vector<llvm::Type*> arguments;
 	};
 
@@ -2988,8 +2967,7 @@ namespace sw
 			}
 		}
 
-		function = Nucleus::createFunction(Return::getType(), arguments);
-		Nucleus::setFunction(function);
+		Nucleus::createFunction(Return::getType(), arguments);
 	}
 
 	template<typename Return, typename... Arguments>
