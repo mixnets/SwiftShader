@@ -91,7 +91,7 @@ namespace sw
 		static Value *createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse);
 
 		// Binary operators
-		static Value *createAdd(Value *lhs, Value *rhs);
+		/*static Value *createAdd(Value *lhs, Value *rhs);
 		static Value *createSub(Value *lhs, Value *rhs);
 		static Value *createMul(Value *lhs, Value *rhs);
 		static Value *createUDiv(Value *lhs, Value *rhs);
@@ -111,7 +111,7 @@ namespace sw
 		static Value *createXor(Value *lhs, Value *rhs);
 		static Value *createNeg(Value *V);
 		static Value *createFNeg(Value *V);
-		static Value *createNot(Value *V);
+		static Value *createNot(Value *V);*/
 
 		// Memory instructions
 		static Value *createLoad(Value *ptr, bool isVolatile = false, unsigned int align = 0);
