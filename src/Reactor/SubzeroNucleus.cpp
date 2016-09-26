@@ -27,8 +27,15 @@
 #include "Reactor.hpp"
 #include "Routine.hpp"
 
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+
+#include <limits>
+#include <cstddef>
 #include <iostream>
 #include <cassert>
+#include <mutex>
 
 namespace
 {
@@ -37,6 +44,8 @@ namespace
 	Ice::CfgNode *basicBlock = nullptr;
 	Ice::CfgLocalAllocatorScope *allocator = nullptr;
 	sw::Routine *routine = nullptr;
+
+	std::mutex codegenMutex;
 
 	Ice::ELFFileStreamer *elfFile = nullptr;
 	Ice::Fdstream *out = nullptr;
@@ -61,8 +70,6 @@ namespace sw
 	{
 		return reinterpret_cast<Value*>(v);
 	}
-
-	BackoffLock Nucleus::codegenMutex;
 
 	Optimization optimization[10] = {InstructionCombining, Disabled};
 
@@ -1892,7 +1899,7 @@ namespace sw
 	//	xyzw.parent = this;
 	}
 
-	Byte8::Byte8(byte x0, byte x1, byte x2, byte x3, byte x4, byte x5, byte x6, byte x7)
+	Byte8::Byte8(uint8_t x0, uint8_t x1, uint8_t x2, uint8_t x3, uint8_t x4, uint8_t x5, uint8_t x6, uint8_t x7)
 	{
 	//	xyzw.parent = this;
 	}
@@ -2113,7 +2120,7 @@ namespace sw
 	//	xyzw.parent = this;
 	}
 
-	SByte8::SByte8(byte x0, byte x1, byte x2, byte x3, byte x4, byte x5, byte x6, byte x7)
+	SByte8::SByte8(uint8_t x0, uint8_t x1, uint8_t x2, uint8_t x3, uint8_t x4, uint8_t x5, uint8_t x6, uint8_t x7)
 	{
 	//	xyzw.parent = this;
 
@@ -4439,6 +4446,27 @@ namespace sw
 	Int4::Int4(RValue<Int2> lo, RValue<Int2> hi)
 	{
 		assert(false && "UNIMPLEMENTED");
+	}
+
+	Int4::Int4(RValue<Int> rhs)
+	{
+	//	xyzw.parent = this;
+
+		assert(false && "UNIMPLEMENTED");
+	}
+
+	Int4::Int4(const Int &rhs)
+	{
+	//	xyzw.parent = this;
+
+		*this = RValue<Int>(rhs.loadValue());
+	}
+
+	Int4::Int4(const Reference<Int> &rhs)
+	{
+	//	xyzw.parent = this;
+
+		*this = RValue<Int>(rhs.loadValue());
 	}
 
 	RValue<Int4> Int4::operator=(RValue<Int4> rhs) const
