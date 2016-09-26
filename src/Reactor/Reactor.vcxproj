@@ -268,7 +268,7 @@
   <ItemGroup>
     <ClCompile Include="LLVMRoutine.cpp" />
     <ClCompile Include="LLVMRoutineManager.cpp" />
-    <ClCompile Include="Nucleus.cpp" />
+    <ClCompile Include="LLVMNucleus.cpp" />
     <ClCompile Include="Routine.cpp" />
   </ItemGroup>
   <ItemGroup>

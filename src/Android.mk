@@ -36,7 +36,7 @@ COMMON_SRC_FILES += \
 	Main/SwiftConfig.cpp
 
 COMMON_SRC_FILES += \
-	Reactor/Nucleus.cpp \
+	Reactor/LLVMNucleus.cpp \
 	Reactor/Routine.cpp \
 	Reactor/LLVMRoutine.cpp \
 	Reactor/LLVMRoutineManager.cpp
