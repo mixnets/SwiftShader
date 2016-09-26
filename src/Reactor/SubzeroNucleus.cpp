@@ -4441,6 +4441,27 @@ namespace sw
 		assert(false && "UNIMPLEMENTED");
 	}
 
+	Int4::Int4(RValue<Int> rhs)
+	{
+	//	xyzw.parent = this;
+
+		assert(false && "UNIMPLEMENTED");
+	}
+
+	Int4::Int4(const Int &rhs)
+	{
+	//	xyzw.parent = this;
+
+		*this = RValue<Int>(rhs.loadValue());
+	}
+
+	Int4::Int4(const Reference<Int> &rhs)
+	{
+	//	xyzw.parent = this;
+
+		*this = RValue<Int>(rhs.loadValue());
+	}
+
 	RValue<Int4> Int4::operator=(RValue<Int4> rhs) const
 	{
 		storeValue(rhs.value);

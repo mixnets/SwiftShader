@@ -257,6 +257,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OGLES3Tools", "third_party\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3D8", "src\D3D8\D3D8.vcxproj", "{F18D5ABF-CA3A-4B74-BDB2-4A1956C86F18}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Subzero", "src\Reactor\Subzero.vcxproj", "{0EB31AEC-B020-46AB-BA05-730F6D01C29B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -732,6 +734,18 @@ Global
 		{F18D5ABF-CA3A-4B74-BDB2-4A1956C86F18}.Release|Win32.ActiveCfg = Release|Win32
 		{F18D5ABF-CA3A-4B74-BDB2-4A1956C86F18}.Release|Win32.Build.0 = Release|Win32
 		{F18D5ABF-CA3A-4B74-BDB2-4A1956C86F18}.Release|x64.ActiveCfg = Release|Win32
+		{0EB31AEC-B020-46AB-BA05-730F6D01C29B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0EB31AEC-B020-46AB-BA05-730F6D01C29B}.Debug|Win32.Build.0 = Debug|Win32
+		{0EB31AEC-B020-46AB-BA05-730F6D01C29B}.Debug|x64.ActiveCfg = Debug|x64
+		{0EB31AEC-B020-46AB-BA05-730F6D01C29B}.Debug|x64.Build.0 = Debug|x64
+		{0EB31AEC-B020-46AB-BA05-730F6D01C29B}.Profile|Win32.ActiveCfg = Release|Win32
+		{0EB31AEC-B020-46AB-BA05-730F6D01C29B}.Profile|Win32.Build.0 = Release|Win32
+		{0EB31AEC-B020-46AB-BA05-730F6D01C29B}.Profile|x64.ActiveCfg = Release|x64
+		{0EB31AEC-B020-46AB-BA05-730F6D01C29B}.Profile|x64.Build.0 = Release|x64
+		{0EB31AEC-B020-46AB-BA05-730F6D01C29B}.Release|Win32.ActiveCfg = Release|Win32
+		{0EB31AEC-B020-46AB-BA05-730F6D01C29B}.Release|Win32.Build.0 = Release|Win32
+		{0EB31AEC-B020-46AB-BA05-730F6D01C29B}.Release|x64.ActiveCfg = Release|x64
+		{0EB31AEC-B020-46AB-BA05-730F6D01C29B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
