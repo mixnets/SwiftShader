@@ -28,14 +28,10 @@
 #undef min
 #undef Bool
 
-namespace llvm
-{
-	class Value;
-}
-
 namespace sw
 {
 	class Type;
+	class Value;
 	class Constant;
 	class BasicBlock;
 
@@ -70,115 +66,115 @@ namespace sw
 
 		Routine *acquireRoutine(const wchar_t *name, bool runOptimizations = true);
 
-		static llvm::Value *allocateStackVariable(Type *type, int arraySize = 0);
+		static Value *allocateStackVariable(Type *type, int arraySize = 0);
 		static BasicBlock *createBasicBlock();
 		static BasicBlock *getInsertBlock();
 		static void setInsertBlock(BasicBlock *basicBlock);
 		static BasicBlock *getPredecessor(BasicBlock *basicBlock);
 
 		static void createFunction(Type *ReturnType, std::vector<Type*> &Params);
-		static llvm::Value *getArgument(unsigned int index);
+		static Value *getArgument(unsigned int index);
 
 		// Terminators
-		static llvm::Value *createRetVoid();
-		static llvm::Value *createRet(llvm::Value *V);
-		static llvm::Value *createBr(BasicBlock *dest);
-		static llvm::Value *createCondBr(llvm::Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse);
+		static Value *createRetVoid();
+		static Value *createRet(Value *V);
+		static Value *createBr(BasicBlock *dest);
+		static Value *createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse);
 
 		// Binary operators
-		static llvm::Value *createAdd(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createSub(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createMul(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createUDiv(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createSDiv(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFAdd(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFSub(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFMul(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFDiv(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createURem(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createSRem(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFRem(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createShl(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createLShr(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createAShr(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createAnd(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createOr(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createXor(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createNeg(llvm::Value *V);
-		static llvm::Value *createFNeg(llvm::Value *V);
-		static llvm::Value *createNot(llvm::Value *V);
+		static Value *createAdd(Value *lhs, Value *rhs);
+		static Value *createSub(Value *lhs, Value *rhs);
+		static Value *createMul(Value *lhs, Value *rhs);
+		static Value *createUDiv(Value *lhs, Value *rhs);
+		static Value *createSDiv(Value *lhs, Value *rhs);
+		static Value *createFAdd(Value *lhs, Value *rhs);
+		static Value *createFSub(Value *lhs, Value *rhs);
+		static Value *createFMul(Value *lhs, Value *rhs);
+		static Value *createFDiv(Value *lhs, Value *rhs);
+		static Value *createURem(Value *lhs, Value *rhs);
+		static Value *createSRem(Value *lhs, Value *rhs);
+		static Value *createFRem(Value *lhs, Value *rhs);
+		static Value *createShl(Value *lhs, Value *rhs);
+		static Value *createLShr(Value *lhs, Value *rhs);
+		static Value *createAShr(Value *lhs, Value *rhs);
+		static Value *createAnd(Value *lhs, Value *rhs);
+		static Value *createOr(Value *lhs, Value *rhs);
+		static Value *createXor(Value *lhs, Value *rhs);
+		static Value *createNeg(Value *V);
+		static Value *createFNeg(Value *V);
+		static Value *createNot(Value *V);
 
 		// Memory instructions
-		static llvm::Value *createLoad(llvm::Value *ptr, bool isVolatile = false, unsigned int align = 0);
-		static llvm::Value *createStore(llvm::Value *value, llvm::Value *ptr, bool isVolatile = false, unsigned int align = 0);
-		static llvm::Value *createStore(Constant *constant, llvm::Value *ptr, bool isVolatile = false, unsigned int align = 0);
-		static llvm::Value *createGEP(llvm::Value *ptr, llvm::Value *index);
+		static Value *createLoad(Value *ptr, bool isVolatile = false, unsigned int align = 0);
+		static Value *createStore(Value *value, Value *ptr, bool isVolatile = false, unsigned int align = 0);
+		static Value *createStore(Constant *constant, Value *ptr, bool isVolatile = false, unsigned int align = 0);
+		static Value *createGEP(Value *ptr, Value *index);
 
 		// Atomic instructions
-		static llvm::Value *createAtomicAdd(llvm::Value *ptr, llvm::Value *value);
+		static Value *createAtomicAdd(Value *ptr, Value *value);
 
 		// Cast/Conversion Operators
-		static llvm::Value *createTrunc(llvm::Value *V, Type *destType);
-		static llvm::Value *createZExt(llvm::Value *V, Type *destType);
-		static llvm::Value *createSExt(llvm::Value *V, Type *destType);
-		static llvm::Value *createFPToUI(llvm::Value *V, Type *destType);
-		static llvm::Value *createFPToSI(llvm::Value *V, Type *destType);
-		static llvm::Value *createUIToFP(llvm::Value *V, Type *destType);
-		static llvm::Value *createSIToFP(llvm::Value *V, Type *destType);
-		static llvm::Value *createFPTrunc(llvm::Value *V, Type *destType);
-		static llvm::Value *createFPExt(llvm::Value *V, Type *destType);
-		static llvm::Value *createPtrToInt(llvm::Value *V, Type *destType);
-		static llvm::Value *createIntToPtr(llvm::Value *V, Type *destType);
-		static llvm::Value *createBitCast(llvm::Value *V, Type *destType);
-		static llvm::Value *createIntCast(llvm::Value *V, Type *destType, bool isSigned);
+		static Value *createTrunc(Value *V, Type *destType);
+		static Value *createZExt(Value *V, Type *destType);
+		static Value *createSExt(Value *V, Type *destType);
+		static Value *createFPToUI(Value *V, Type *destType);
+		static Value *createFPToSI(Value *V, Type *destType);
+		static Value *createUIToFP(Value *V, Type *destType);
+		static Value *createSIToFP(Value *V, Type *destType);
+		static Value *createFPTrunc(Value *V, Type *destType);
+		static Value *createFPExt(Value *V, Type *destType);
+		static Value *createPtrToInt(Value *V, Type *destType);
+		static Value *createIntToPtr(Value *V, Type *destType);
+		static Value *createBitCast(Value *V, Type *destType);
+		static Value *createIntCast(Value *V, Type *destType, bool isSigned);
 
 		// Compare instructions
-		static llvm::Value *createICmpEQ(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createICmpNE(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createICmpUGT(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createICmpUGE(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createICmpULT(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createICmpULE(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createICmpSGT(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createICmpSGE(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createICmpSLT(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createICmpSLE(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpOEQ(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpOGT(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpOGE(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpOLT(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpOLE(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpONE(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpORD(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpUNO(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpUEQ(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpUGT(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpUGE(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpULT(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpULE(llvm::Value *lhs, llvm::Value *rhs);
-		static llvm::Value *createFCmpUNE(llvm::Value *lhs, llvm::Value *rhs);
+		static Value *createICmpEQ(Value *lhs, Value *rhs);
+		static Value *createICmpNE(Value *lhs, Value *rhs);
+		static Value *createICmpUGT(Value *lhs, Value *rhs);
+		static Value *createICmpUGE(Value *lhs, Value *rhs);
+		static Value *createICmpULT(Value *lhs, Value *rhs);
+		static Value *createICmpULE(Value *lhs, Value *rhs);
+		static Value *createICmpSGT(Value *lhs, Value *rhs);
+		static Value *createICmpSGE(Value *lhs, Value *rhs);
+		static Value *createICmpSLT(Value *lhs, Value *rhs);
+		static Value *createICmpSLE(Value *lhs, Value *rhs);
+		static Value *createFCmpOEQ(Value *lhs, Value *rhs);
+		static Value *createFCmpOGT(Value *lhs, Value *rhs);
+		static Value *createFCmpOGE(Value *lhs, Value *rhs);
+		static Value *createFCmpOLT(Value *lhs, Value *rhs);
+		static Value *createFCmpOLE(Value *lhs, Value *rhs);
+		static Value *createFCmpONE(Value *lhs, Value *rhs);
+		static Value *createFCmpORD(Value *lhs, Value *rhs);
+		static Value *createFCmpUNO(Value *lhs, Value *rhs);
+		static Value *createFCmpUEQ(Value *lhs, Value *rhs);
+		static Value *createFCmpUGT(Value *lhs, Value *rhs);
+		static Value *createFCmpUGE(Value *lhs, Value *rhs);
+		static Value *createFCmpULT(Value *lhs, Value *rhs);
+		static Value *createFCmpULE(Value *lhs, Value *rhs);
+		static Value *createFCmpUNE(Value *lhs, Value *rhs);
 
 		// Call instructions
-		static llvm::Value *createCall(llvm::Value *callee);
-		static llvm::Value *createCall(llvm::Value *callee, llvm::Value *Arg);
-		static llvm::Value *createCall(llvm::Value *callee, llvm::Value *Arg1, llvm::Value *Arg2);
-		static llvm::Value *createCall(llvm::Value *callee, llvm::Value *Arg1, llvm::Value *Arg2, llvm::Value *Arg3);
-		static llvm::Value *createCall(llvm::Value *callee, llvm::Value *Arg1, llvm::Value *Arg2, llvm::Value *Arg3,llvm::Value *Arg4);
+		static Value *createCall(Value *callee);
+		static Value *createCall(Value *callee, Value *Arg);
+		static Value *createCall(Value *callee, Value *Arg1, Value *Arg2);
+		static Value *createCall(Value *callee, Value *Arg1, Value *Arg2, Value *Arg3);
+		static Value *createCall(Value *callee, Value *Arg1, Value *Arg2, Value *Arg3,Value *Arg4);
 
 		// Vector instructions
-		static llvm::Value *createExtractElement(llvm::Value *vector, int index);
-		static llvm::Value *createInsertElement(llvm::Value *vector, llvm::Value *element, int index);
-		static llvm::Value *createShuffleVector(llvm::Value *V1, llvm::Value *V2, llvm::Value *mask);
+		static Value *createExtractElement(Value *vector, int index);
+		static Value *createInsertElement(Value *vector, Value *element, int index);
+		static Value *createShuffleVector(Value *V1, Value *V2, Value *mask);
 
 		// Other instructions
-		static llvm::Value *createSelect(llvm::Value *C, llvm::Value *ifTrue, llvm::Value *ifFalse);
-		static llvm::Value *createSwitch(llvm::Value *V, BasicBlock *Dest, unsigned NumCases);
-		static void addSwitchCase(llvm::Value *Switch, int Case, BasicBlock *Branch);
-		static llvm::Value *createUnreachable();
+		static Value *createSelect(Value *C, Value *ifTrue, Value *ifFalse);
+		static Value *createSwitch(Value *V, BasicBlock *Dest, unsigned NumCases);
+		static void addSwitchCase(Value *Switch, int Case, BasicBlock *Branch);
+		static Value *createUnreachable();
 
 		// Derived instructions
-		static llvm::Value *createSwizzle(llvm::Value *val, unsigned char select);
-		static llvm::Value *createMask(llvm::Value *lhs, llvm::Value *rhs, unsigned char select);
+		static Value *createSwizzle(Value *val, unsigned char select);
+		static Value *createMask(Value *lhs, Value *rhs, unsigned char select);
 
 		// Constant values
 		static Constant *createNullValue(Type *Ty);
@@ -259,13 +255,13 @@ namespace sw
 			return false;
 		}
 
-		llvm::Value *loadValue(unsigned int alignment = 0) const;
-		llvm::Value *storeValue(llvm::Value *value, unsigned int alignment = 0) const;
-		llvm::Value *storeValue(Constant *constant, unsigned int alignment = 0) const;
-		llvm::Value *getAddress(llvm::Value *index) const;
+		Value *loadValue(unsigned int alignment = 0) const;
+		Value *storeValue(Value *value, unsigned int alignment = 0) const;
+		Value *storeValue(Constant *constant, unsigned int alignment = 0) const;
+		Value *getAddress(Value *index) const;
 
 	protected:
-		llvm::Value *address;
+		Value *address;
 	};
 
 	template<class T>
@@ -281,18 +277,18 @@ namespace sw
 	class Reference
 	{
 	public:
-		explicit Reference(llvm::Value *pointer, int alignment = 1);
+		explicit Reference(Value *pointer, int alignment = 1);
 
 		RValue<T> operator=(RValue<T> rhs) const;
 		RValue<T> operator=(const Reference<T> &ref) const;
 
 		RValue<T> operator+=(RValue<T> rhs) const;
 
-		llvm::Value *loadValue() const;
+		Value *loadValue() const;
 		int getAlignment() const;
 
 	private:
-		llvm::Value *address;
+		Value *address;
 
 		const int alignment;
 	};
@@ -337,7 +333,7 @@ namespace sw
 	class RValue
 	{
 	public:
-		explicit RValue(llvm::Value *rvalue);
+		explicit RValue(Value *rvalue);
 
 		RValue(const T &lvalue);
 		RValue(typename IntLiteral<T>::type i);
@@ -346,15 +342,15 @@ namespace sw
 
 		RValue<T> &operator=(const RValue<T>&) = delete;
 
-		llvm::Value *value;   // FIXME: Make private
+		Value *value;   // FIXME: Make private
 	};
 
 	template<typename T>
 	struct Argument
 	{
-		explicit Argument(llvm::Value *value) : value(value) {}
+		explicit Argument(Value *value) : value(value) {}
 
-		llvm::Value *value;
+		Value *value;
 	};
 
 	class Bool : public Variable<Bool>
@@ -2389,15 +2385,15 @@ namespace sw
 		template<class S>
 		Pointer(RValue<Pointer<S>> pointerS, int alignment = 1) : alignment(alignment)
 		{
-			llvm::Value *pointerT = Nucleus::createBitCast(pointerS.value, Nucleus::getPointerType(T::getType()));
+			Value *pointerT = Nucleus::createBitCast(pointerS.value, Nucleus::getPointerType(T::getType()));
 			LValue::storeValue(pointerT);
 		}
 
 		template<class S>
 		Pointer(const Pointer<S> &pointer, int alignment = 1) : alignment(alignment)
 		{
-			llvm::Value *pointerS = pointer.loadValue(alignment);
-			llvm::Value *pointerT = Nucleus::createBitCast(pointerS, Nucleus::getPointerType(T::getType()));
+			Value *pointerS = pointer.loadValue(alignment);
+			Value *pointerT = Nucleus::createBitCast(pointerS, Nucleus::getPointerType(T::getType()));
 			LValue::storeValue(pointerT);
 		}
 
@@ -2497,7 +2493,7 @@ namespace sw
 		template<int index>
 		Argument<typename ArgI<index, Arguments...>::Type> Arg() const
 		{
-			llvm::Value *arg = Nucleus::getArgument(index);
+			Value *arg = Nucleus::getArgument(index);
 			return Argument<typename ArgI<index, Arguments...>::Type>(arg);
 		}
 
@@ -2536,7 +2532,7 @@ namespace sw
 	}
 
 	template<class T>
-	Reference<T>::Reference(llvm::Value *pointer, int alignment) : alignment(alignment)
+	Reference<T>::Reference(Value *pointer, int alignment) : alignment(alignment)
 	{
 		address = pointer;
 	}
@@ -2552,7 +2548,7 @@ namespace sw
 	template<class T>
 	RValue<T> Reference<T>::operator=(const Reference<T> &ref) const
 	{
-		llvm::Value *tmp = Nucleus::createLoad(ref.address, false, ref.alignment);
+		Value *tmp = Nucleus::createLoad(ref.address, false, ref.alignment);
 		Nucleus::createStore(tmp, address, false, alignment);
 
 		return RValue<T>(tmp);
@@ -2565,7 +2561,7 @@ namespace sw
 	}
 
 	template<class T>
-	llvm::Value *Reference<T>::loadValue() const
+	Value *Reference<T>::loadValue() const
 	{
 		return Nucleus::createLoad(address, false, alignment);
 	}
@@ -2577,7 +2573,7 @@ namespace sw
 	}
 
 	template<class T>
-	RValue<T>::RValue(llvm::Value *rvalue)
+	RValue<T>::RValue(Value *rvalue)
 	{
 		value = rvalue;
 	}
@@ -2591,13 +2587,13 @@ namespace sw
 	template<class T>
 	RValue<T>::RValue(typename IntLiteral<T>::type i)
 	{
-		value = (llvm::Value*)Nucleus::createConstantInt(i);
+		value = (Value*)Nucleus::createConstantInt(i);
 	}
 
 	template<class T>
 	RValue<T>::RValue(typename FloatLiteral<T>::type f)
 	{
-		value = (llvm::Value*)Nucleus::createConstantFloat(f);
+		value = (Value*)Nucleus::createConstantFloat(f);
 	}
 
 	template<class T>
@@ -2609,7 +2605,7 @@ namespace sw
 	template<int T>
 	Swizzle2Float4<T>::operator RValue<Float4>() const
 	{
-		llvm::Value *vector = parent->loadValue();
+		Value *vector = parent->loadValue();
 
 		return RValue<Float4>(Nucleus::createSwizzle(vector, T));
 	}
@@ -2617,7 +2613,7 @@ namespace sw
 	template<int T>
 	SwizzleFloat4<T>::operator RValue<Float4>() const
 	{
-		llvm::Value *vector = parent->loadValue();
+		Value *vector = parent->loadValue();
 
 		return RValue<Float4>(Nucleus::createSwizzle(vector, T));
 	}
@@ -2625,7 +2621,7 @@ namespace sw
 	template<int T>
 	SwizzleMaskFloat4<T>::operator RValue<Float4>() const
 	{
-		llvm::Value *vector = parent->loadValue();
+		Value *vector = parent->loadValue();
 
 		return RValue<Float4>(Nucleus::createSwizzle(vector, T));
 	}
@@ -2651,7 +2647,7 @@ namespace sw
 	template<int T>
 	SwizzleMask1Float4<T>::operator RValue<Float4>() const
 	{
-		llvm::Value *vector = parent->loadValue();
+		Value *vector = parent->loadValue();
 
 		return RValue<Float4>(Nucleus::createSwizzle(vector, T));
 	}
@@ -2677,7 +2673,7 @@ namespace sw
 	template<int T>
 	SwizzleMask2Float4<T>::operator RValue<Float4>() const
 	{
-		llvm::Value *vector = parent->loadValue();
+		Value *vector = parent->loadValue();
 
 		return RValue<Float4>(Nucleus::createSwizzle(vector, T));
 	}
@@ -2789,14 +2785,14 @@ namespace sw
 	template<class T>
 	Pointer<T>::Pointer(const Pointer<T> &rhs) : alignment(rhs.alignment)
 	{
-		llvm::Value *value = rhs.loadValue();
+		Value *value = rhs.loadValue();
 		LValue::storeValue(value);
 	}
 
 	template<class T>
 	Pointer<T>::Pointer(const Reference<Pointer<T>> &rhs) : alignment(rhs.getAlignment())
 	{
-		llvm::Value *value = rhs.loadValue();
+		Value *value = rhs.loadValue();
 		LValue::storeValue(value);
 	}
 
@@ -2811,7 +2807,7 @@ namespace sw
 	template<class T>
 	RValue<Pointer<T>> Pointer<T>::operator=(const Pointer<T> &rhs) const
 	{
-		llvm::Value *value = rhs.loadValue();
+		Value *value = rhs.loadValue();
 		LValue::storeValue(value);
 
 		return RValue<Pointer<T>>(value);
@@ -2820,7 +2816,7 @@ namespace sw
 	template<class T>
 	RValue<Pointer<T>> Pointer<T>::operator=(const Reference<Pointer<T>> &rhs) const
 	{
-		llvm::Value *value = rhs.loadValue();
+		Value *value = rhs.loadValue();
 		LValue::storeValue(value);
 
 		return RValue<Pointer<T>>(value);
@@ -2835,7 +2831,7 @@ namespace sw
 	template<class T>
 	Reference<T> Pointer<T>::operator[](int index)
 	{
-		llvm::Value *element = Nucleus::createGEP(LValue::loadValue(), (llvm::Value*)Nucleus::createConstantInt(index));
+		Value *element = Nucleus::createGEP(LValue::loadValue(), (Value*)Nucleus::createConstantInt(index));
 
 		return Reference<T>(element, alignment);
 	}
@@ -2843,7 +2839,7 @@ namespace sw
 	template<class T>
 	Reference<T> Pointer<T>::operator[](RValue<Int> index)
 	{
-		llvm::Value *element = Nucleus::createGEP(LValue::loadValue(), index.value);
+		Value *element = Nucleus::createGEP(LValue::loadValue(), index.value);
 
 		return Reference<T>(element, alignment);
 	}
@@ -2862,7 +2858,7 @@ namespace sw
 	template<class T, int S>
 	Reference<T> Array<T, S>::operator[](int index)
 	{
-		llvm::Value *element = LValue::getAddress((llvm::Value*)Nucleus::createConstantInt(index));
+		Value *element = LValue::getAddress((Value*)Nucleus::createConstantInt(index));
 
 		return Reference<T>(element);
 	}
@@ -2870,7 +2866,7 @@ namespace sw
 	template<class T, int S>
 	Reference<T> Array<T, S>::operator[](RValue<Int> index)
 	{
-		llvm::Value *element = LValue::getAddress(index.value);
+		Value *element = LValue::getAddress(index.value);
 
 		return Reference<T>(element);
 	}
@@ -2908,7 +2904,7 @@ namespace sw
 	template<class T>
 	RValue<T> IfThenElse(RValue<Bool> condition, const T &ifTrue, RValue<T> ifFalse)
 	{
-		llvm::Value *trueValue = ifTrue.loadValue();
+		Value *trueValue = ifTrue.loadValue();
 
 		return RValue<T>(Nucleus::createSelect(condition.value, trueValue, ifFalse.value));
 	}
@@ -2916,7 +2912,7 @@ namespace sw
 	template<class T>
 	RValue<T> IfThenElse(RValue<Bool> condition, RValue<T> ifTrue, const T &ifFalse)
 	{
-		llvm::Value *falseValue = ifFalse.loadValue();
+		Value *falseValue = ifFalse.loadValue();
 
 		return RValue<T>(Nucleus::createSelect(condition.value, ifTrue.value, falseValue));
 	}
@@ -2924,8 +2920,8 @@ namespace sw
 	template<class T>
 	RValue<T> IfThenElse(RValue<Bool> condition, const T &ifTrue, const T &ifFalse)
 	{
-		llvm::Value *trueValue = ifTrue.loadValue();
-		llvm::Value *falseValue = ifFalse.loadValue();
+		Value *trueValue = ifTrue.loadValue();
+		Value *falseValue = ifFalse.loadValue();
 
 		return RValue<T>(Nucleus::createSelect(condition.value, trueValue, falseValue));
 	}
@@ -2989,7 +2985,7 @@ namespace sw
 	template<class T>
 	RValue<T> ReinterpretCast(const LValue &var)
 	{
-		llvm::Value *val = var.loadValue();
+		Value *val = var.loadValue();
 
 		return RValue<T>(Nucleus::createBitCast(val, T::getType()));
 	}

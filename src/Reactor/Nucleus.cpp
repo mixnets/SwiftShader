@@ -76,12 +76,18 @@ namespace sw
 	Optimization optimization[10] = {InstructionCombining, Disabled};
 
 	class Type : public llvm::Type {};
+	class Value : public llvm::Value {};
 	class Constant : public llvm::Constant {};
 	class BasicBlock : public llvm::BasicBlock {};
 
 	inline Type *T(llvm::Type *t)
 	{
 		return reinterpret_cast<Type*>(t);
+	}
+
+	inline Value *V(llvm::Value *t)
+	{
+		return reinterpret_cast<Value*>(t);
 	}
 
 	inline std::vector<llvm::Type*> &T(std::vector<Type*> &t)
@@ -298,7 +304,7 @@ namespace sw
 		::builder->SetInsertPoint(BasicBlock::Create(*::context, "", ::function));
 	}
 
-	llvm::Value *Nucleus::getArgument(unsigned int index)
+	Value *Nucleus::getArgument(unsigned int index)
 	{
 		llvm::Function::arg_iterator args = ::function->arg_begin();
 
@@ -315,129 +321,129 @@ namespace sw
 	{
 		x86::emms();
 
-		return ::builder->CreateRetVoid();
+		return V(::builder->CreateRetVoid());
 	}
 
-	Value *Nucleus::createRet(Value *V)
+	Value *Nucleus::createRet(Value *v)
 	{
 		x86::emms();
 
-		return ::builder->CreateRet(V);
+		return V(::builder->CreateRet(V));
 	}
 
 	Value *Nucleus::createBr(BasicBlock *dest)
 	{
-		return ::builder->CreateBr(dest);
+		return V(::builder->CreateBr(dest));
 	}
 
 	Value *Nucleus::createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse)
 	{
-		return ::builder->CreateCondBr(cond, ifTrue, ifFalse);
+		return V(::builder->CreateCondBr(cond, ifTrue, ifFalse));
 	}
 
 	Value *Nucleus::createAdd(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateAdd(lhs, rhs);
+		return V(::builder->CreateAdd(lhs, rhs));
 	}
 
 	Value *Nucleus::createSub(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateSub(lhs, rhs);
+		return V(::builder->CreateSub(lhs, rhs));
 	}
 
 	Value *Nucleus::createMul(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateMul(lhs, rhs);
+		return V(::builder->CreateMul(lhs, rhs));
 	}
 
 	Value *Nucleus::createUDiv(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateUDiv(lhs, rhs);
+		return V(::builder->CreateUDiv(lhs, rhs));
 	}
 
 	Value *Nucleus::createSDiv(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateSDiv(lhs, rhs);
+		return V(::builder->CreateSDiv(lhs, rhs));
 	}
 
 	Value *Nucleus::createFAdd(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFAdd(lhs, rhs);
+		return V(::builder->CreateFAdd(lhs, rhs));
 	}
 
 	Value *Nucleus::createFSub(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFSub(lhs, rhs);
+		return V(::builder->CreateFSub(lhs, rhs));
 	}
 
 	Value *Nucleus::createFMul(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFMul(lhs, rhs);
+		return V(::builder->CreateFMul(lhs, rhs));
 	}
 
 	Value *Nucleus::createFDiv(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFDiv(lhs, rhs);
+		return V(::builder->CreateFDiv(lhs, rhs));
 	}
 
 	Value *Nucleus::createURem(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateURem(lhs, rhs);
+		return V(::builder->CreateURem(lhs, rhs));
 	}
 
 	Value *Nucleus::createSRem(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateSRem(lhs, rhs);
+		return V(::builder->CreateSRem(lhs, rhs));
 	}
 
 	Value *Nucleus::createFRem(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFRem(lhs, rhs);
+		return V(::builder->CreateFRem(lhs, rhs));
 	}
 
 	Value *Nucleus::createShl(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateShl(lhs, rhs);
+		return V(::builder->CreateShl(lhs, rhs));
 	}
 
 	Value *Nucleus::createLShr(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateLShr(lhs, rhs);
+		return V(::builder->CreateLShr(lhs, rhs));
 	}
 
 	Value *Nucleus::createAShr(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateAShr(lhs, rhs);
+		return V(::builder->CreateAShr(lhs, rhs));
 	}
 
 	Value *Nucleus::createAnd(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateAnd(lhs, rhs);
+		return V(::builder->CreateAnd(lhs, rhs));
 	}
 
 	Value *Nucleus::createOr(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateOr(lhs, rhs);
+		return V(::builder->CreateOr(lhs, rhs));
 	}
 
 	Value *Nucleus::createXor(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateXor(lhs, rhs);
+		return V(::builder->CreateXor(lhs, rhs));
 	}
 
-	Value *Nucleus::createNeg(Value *V)
+	Value *Nucleus::createNeg(Value *v)
 	{
-		return ::builder->CreateNeg(V);
+		return V(::builder->CreateNeg(v));
 	}
 
-	Value *Nucleus::createFNeg(Value *V)
+	Value *Nucleus::createFNeg(Value *v)
 	{
-		return ::builder->CreateFNeg(V);
+		return V(::builder->CreateFNeg(v));
 	}
 
-	Value *Nucleus::createNot(Value *V)
+	Value *Nucleus::createNot(Value *v)
 	{
-		return ::builder->CreateNot(V);
+		return V(::builder->CreateNot(v));
 	}
 
 	Value *Nucleus::createLoad(Value *ptr, bool isVolatile, unsigned int align)
@@ -457,257 +463,257 @@ namespace sw
 
 	Value *Nucleus::createGEP(Value *ptr, Value *index)
 	{
-		return ::builder->CreateGEP(ptr, index);
+		return V(::builder->CreateGEP(ptr, index));
 	}
 
 	Value *Nucleus::createAtomicAdd(Value *ptr, Value *value)
 	{
-		return ::builder->CreateAtomicRMW(AtomicRMWInst::Add, ptr, value, SequentiallyConsistent);
+		return V(::builder->CreateAtomicRMW(AtomicRMWInst::Add, ptr, value, SequentiallyConsistent));
 	}
 
-	Value *Nucleus::createTrunc(Value *V, Type *destType)
+	Value *Nucleus::createTrunc(Value *v, Type *destType)
 	{
-		return ::builder->CreateTrunc(V, destType);
+		return V(::builder->CreateTrunc(v, destType));
 	}
 
-	Value *Nucleus::createZExt(Value *V, Type *destType)
+	Value *Nucleus::createZExt(Value *v, Type *destType)
 	{
-		return ::builder->CreateZExt(V, destType);
+		return V(::builder->CreateZExt(v, destType));
 	}
 
-	Value *Nucleus::createSExt(Value *V, Type *destType)
+	Value *Nucleus::createSExt(Value *v, Type *destType)
 	{
-		return ::builder->CreateSExt(V, destType);
+		return V(::builder->CreateSExt(v, destType));
 	}
 
-	Value *Nucleus::createFPToUI(Value *V, Type *destType)
+	Value *Nucleus::createFPToUI(Value *v, Type *destType)
 	{
-		return ::builder->CreateFPToUI(V, destType);
+		return V(::builder->CreateFPToUI(v, destType));
 	}
 
-	Value *Nucleus::createFPToSI(Value *V, Type *destType)
+	Value *Nucleus::createFPToSI(Value *v, Type *destType)
 	{
-		return ::builder->CreateFPToSI(V, destType);
+		return V(::builder->CreateFPToSI(v, destType));
 	}
 
-	Value *Nucleus::createUIToFP(Value *V, Type *destType)
+	Value *Nucleus::createUIToFP(Value *v, Type *destType)
 	{
-		return ::builder->CreateUIToFP(V, destType);
+		return V(::builder->CreateUIToFP(v, destType));
 	}
 
-	Value *Nucleus::createSIToFP(Value *V, Type *destType)
+	Value *Nucleus::createSIToFP(Value *v, Type *destType)
 	{
-		return ::builder->CreateSIToFP(V, destType);
+		return V(::builder->CreateSIToFP(v, destType));
 	}
 
-	Value *Nucleus::createFPTrunc(Value *V, Type *destType)
+	Value *Nucleus::createFPTrunc(Value *v, Type *destType)
 	{
-		return ::builder->CreateFPTrunc(V, destType);
+		return V(::builder->CreateFPTrunc(v, destType));
 	}
 
-	Value *Nucleus::createFPExt(Value *V, Type *destType)
+	Value *Nucleus::createFPExt(Value *v, Type *destType)
 	{
-		return ::builder->CreateFPExt(V, destType);
+		return V(::builder->CreateFPExt(v, destType));
 	}
 
-	Value *Nucleus::createPtrToInt(Value *V, Type *destType)
+	Value *Nucleus::createPtrToInt(Value *v, Type *destType)
 	{
-		return ::builder->CreatePtrToInt(V, destType);
+		return V(::builder->CreatePtrToInt(v, destType));
 	}
 
-	Value *Nucleus::createIntToPtr(Value *V, Type *destType)
+	Value *Nucleus::createIntToPtr(Value *v, Type *destType)
 	{
-		return ::builder->CreateIntToPtr(V, destType);
+		return V(::builder->CreateIntToPtr(v, destType));
 	}
 
-	Value *Nucleus::createBitCast(Value *V, Type *destType)
+	Value *Nucleus::createBitCast(Value *v, Type *destType)
 	{
-		return ::builder->CreateBitCast(V, destType);
+		return V(::builder->CreateBitCast(v, destType));
 	}
 
-	Value *Nucleus::createIntCast(Value *V, Type *destType, bool isSigned)
+	Value *Nucleus::createIntCast(Value *v, Type *destType, bool isSigned)
 	{
-		return ::builder->CreateIntCast(V, destType, isSigned);
+		return V(::builder->CreateIntCast(v, destType, isSigned));
 	}
 
 	Value *Nucleus::createICmpEQ(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateICmpEQ(lhs, rhs);
+		return V(::builder->CreateICmpEQ(lhs, rhs));
 	}
 
 	Value *Nucleus::createICmpNE(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateICmpNE(lhs, rhs);
+		return V(::builder->CreateICmpNE(lhs, rhs));
 	}
 
 	Value *Nucleus::createICmpUGT(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateICmpUGT(lhs, rhs);
+		return V(::builder->CreateICmpUGT(lhs, rhs));
 	}
 
 	Value *Nucleus::createICmpUGE(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateICmpUGE(lhs, rhs);
+		return V(::builder->CreateICmpUGE(lhs, rhs));
 	}
 
 	Value *Nucleus::createICmpULT(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateICmpULT(lhs, rhs);
+		return V(::builder->CreateICmpULT(lhs, rhs));
 	}
 
 	Value *Nucleus::createICmpULE(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateICmpULE(lhs, rhs);
+		return V(::builder->CreateICmpULE(lhs, rhs));
 	}
 
 	Value *Nucleus::createICmpSGT(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateICmpSGT(lhs, rhs);
+		return V(::builder->CreateICmpSGT(lhs, rhs));
 	}
 
 	Value *Nucleus::createICmpSGE(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateICmpSGE(lhs, rhs);
+		return V(::builder->CreateICmpSGE(lhs, rhs));
 	}
 
 	Value *Nucleus::createICmpSLT(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateICmpSLT(lhs, rhs);
+		return V(::builder->CreateICmpSLT(lhs, rhs));
 	}
 
 	Value *Nucleus::createICmpSLE(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateICmpSLE(lhs, rhs);
+		return V(::builder->CreateICmpSLE(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpOEQ(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpOEQ(lhs, rhs);
+		return V(::builder->CreateFCmpOEQ(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpOGT(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpOGT(lhs, rhs);
+		return V(::builder->CreateFCmpOGT(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpOGE(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpOGE(lhs, rhs);
+		return V(::builder->CreateFCmpOGE(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpOLT(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpOLT(lhs, rhs);
+		return V(::builder->CreateFCmpOLT(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpOLE(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpOLE(lhs, rhs);
+		return V(::builder->CreateFCmpOLE(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpONE(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpONE(lhs, rhs);
+		return V(::builder->CreateFCmpONE(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpORD(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpORD(lhs, rhs);
+		return V(::builder->CreateFCmpORD(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpUNO(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpUNO(lhs, rhs);
+		return V(::builder->CreateFCmpUNO(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpUEQ(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpUEQ(lhs, rhs);
+		return V(::builder->CreateFCmpUEQ(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpUGT(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpUGT(lhs, rhs);
+		return V(::builder->CreateFCmpUGT(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpUGE(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpUGE(lhs, rhs);
+		return V(::builder->CreateFCmpUGE(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpULT(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpULT(lhs, rhs);
+		return V(::builder->CreateFCmpULT(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpULE(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpULE(lhs, rhs);
+		return V(::builder->CreateFCmpULE(lhs, rhs));
 	}
 
 	Value *Nucleus::createFCmpUNE(Value *lhs, Value *rhs)
 	{
-		return ::builder->CreateFCmpULE(lhs, rhs);
+		return V(::builder->CreateFCmpULE(lhs, rhs));
 	}
 
 	Value *Nucleus::createCall(Value *callee)
 	{
-		return ::builder->CreateCall(callee);
+		return V(::builder->CreateCall(callee));
 	}
 
 	Value *Nucleus::createCall(Value *callee, Value *arg)
 	{
-		return ::builder->CreateCall(callee, arg);
+		return V(::builder->CreateCall(callee, arg));
 	}
 
 	Value *Nucleus::createCall(Value *callee, Value *arg1, Value *arg2)
 	{
-		return ::builder->CreateCall2(callee, arg1, arg2);
+		return V(::builder->CreateCall2(callee, arg1, arg2));
 	}
 
 	Value *Nucleus::createCall(Value *callee, Value *arg1, Value *arg2, Value *arg3)
 	{
-		return ::builder->CreateCall3(callee, arg1, arg2, arg3);
+		return V(::builder->CreateCall3(callee, arg1, arg2, arg3));
 	}
 
 	Value *Nucleus::createCall(Value *callee, Value *arg1, Value *arg2, Value *arg3, Value *arg4)
 	{
-		return ::builder->CreateCall4(callee, arg1, arg2, arg3, arg4);
+		return V(::builder->CreateCall4(callee, arg1, arg2, arg3, arg4));
 	}
 
 	Value *Nucleus::createExtractElement(Value *vector, int index)
 	{
-		return ::builder->CreateExtractElement(vector, createConstantInt(index));
+		return V(::builder->CreateExtractElement(vector, createConstantInt(index)));
 	}
 
 	Value *Nucleus::createInsertElement(Value *vector, Value *element, int index)
 	{
-		return ::builder->CreateInsertElement(vector, element, createConstantInt(index));
+		return V(::builder->CreateInsertElement(vector, element, createConstantInt(index)));
 	}
 
 	Value *Nucleus::createShuffleVector(Value *V1, Value *V2, Value *mask)
 	{
-		return ::builder->CreateShuffleVector(V1, V2, mask);
+		return V(::builder->CreateShuffleVector(V1, V2, mask));
 	}
 
 	Value *Nucleus::createSelect(Value *C, Value *ifTrue, Value *ifFalse)
 	{
-		return ::builder->CreateSelect(C, ifTrue, ifFalse);
+		return V(::builder->CreateSelect(C, ifTrue, ifFalse));
 	}
 
-	Value *Nucleus::createSwitch(llvm::Value *V, BasicBlock *Dest, unsigned NumCases)
+	Value *Nucleus::createSwitch(Value *v, BasicBlock *Dest, unsigned NumCases)
 	{
-		return ::builder->CreateSwitch(V, Dest, NumCases);
+		return V(::builder->CreateSwitch(v, Dest, NumCases));
 	}
 
-	void Nucleus::addSwitchCase(llvm::Value *Switch, int Case, BasicBlock *Branch)
+	void Nucleus::addSwitchCase(Value *Switch, int Case, BasicBlock *Branch)
 	{
 		static_cast<SwitchInst*>(Switch)->addCase(llvm::ConstantInt::get(Type::getInt32Ty(*::context), Case, true), Branch);
 	}
 
 	Value *Nucleus::createUnreachable()
 	{
-		return ::builder->CreateUnreachable();
+		return V(::builder->CreateUnreachable());
 	}
 
 	Value *Nucleus::createSwizzle(Value *val, unsigned char select)
@@ -836,22 +842,22 @@ namespace sw
 		address = Nucleus::allocateStackVariable(type, arraySize);
 	}
 
-	llvm::Value *LValue::loadValue(unsigned int alignment) const
+	Value *LValue::loadValue(unsigned int alignment) const
 	{
 		return Nucleus::createLoad(address, false, alignment);
 	}
 
-	llvm::Value *LValue::storeValue(llvm::Value *value, unsigned int alignment) const
+	Value *LValue::storeValue(Value *value, unsigned int alignment) const
 	{
 		return Nucleus::createStore(value, address, false, alignment);
 	}
 
-	llvm::Value *LValue::storeValue(Constant *constant, unsigned int alignment) const
+	Value *LValue::storeValue(Constant *constant, unsigned int alignment) const
 	{
 		return Nucleus::createStore(constant, address, false, alignment);
 	}
 
-	llvm::Value *LValue::getAddress(llvm::Value *index) const
+	Value *LValue::getAddress(Value *index) const
 	{
 		return Nucleus::createGEP(address, index);
 	}
