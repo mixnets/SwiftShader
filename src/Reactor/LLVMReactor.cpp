@@ -455,12 +455,14 @@ namespace sw
 
 	Value *Nucleus::createStore(Value *value, Value *ptr, bool isVolatile, unsigned int align)
 	{
-		return V(::builder->Insert(new StoreInst(value, ptr, isVolatile, align)));
+		::builder->Insert(new StoreInst(value, ptr, isVolatile, align));
+		return value;
 	}
 
-	Value *Nucleus::createStore(Constant *constant, Value *ptr, bool isVolatile, unsigned int align)
+	Constant *Nucleus::createStore(Constant *constant, Value *ptr, bool isVolatile, unsigned int align)
 	{
-		return V(::builder->Insert(new StoreInst(constant, ptr, isVolatile, align)));
+		::builder->Insert(new StoreInst(constant, ptr, isVolatile, align));
+		return constant;
 	}
 
 	Value *Nucleus::createGEP(Value *ptr, Value *index)
@@ -824,7 +826,7 @@ namespace sw
 		return Nucleus::createStore(value, address, false, alignment);
 	}
 
-	Value *LValue::storeValue(Constant *constant, unsigned int alignment) const
+	Constant *LValue::storeValue(Constant *constant, unsigned int alignment) const
 	{
 		return Nucleus::createStore(constant, address, false, alignment);
 	}
