@@ -247,9 +247,16 @@ namespace sw
 	{
 		Ice::Type type = T(t);
 		Ice::Variable *value = ::function->makeVariable(type);
-		assert(type == Ice::IceType_i32 && arraySize == 0 && "UNIMPLEMENTED");
-		auto bytes = Ice::ConstantInteger32::create(::context, type, 4);
-		auto alloca = Ice::InstAlloca::create(::function, value, bytes, 4);
+		assert(arraySize == 0 && "UNIMPLEMENTED");
+		int32_t size = 0;
+		switch(type)
+		{
+		case Ice::IceType_i32: size = 4; break;
+		case Ice::IceType_i64: size = 8; break;
+		default: assert(false && "UNIMPLEMENTED" && type);
+		}
+		auto bytes = Ice::ConstantInteger32::create(::context, type, size);
+		auto alloca = Ice::InstAlloca::create(::function, value, bytes, size);
 		::function->getEntryNode()->appendInst(alloca);
 		return V(value);
 	}
@@ -692,7 +699,14 @@ namespace sw
 
 	Type *Nucleus::getPointerType(Type *ElementType)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		if(sizeof(void*) == 8)
+		{
+			return T(Ice::IceType_i64);
+		}
+		else
+		{
+			return T(Ice::IceType_i32);
+		}
 	}
 
 	Constant *Nucleus::createNullValue(Type *Ty)

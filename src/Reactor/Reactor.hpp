@@ -60,8 +60,6 @@ namespace sw
 		{
 			return true;
 		}
-
-		typedef void ctype;
 	};
 
 	template<class T>
