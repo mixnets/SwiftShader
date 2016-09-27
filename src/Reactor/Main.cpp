@@ -29,7 +29,17 @@ int main()
 			Int x = *p;
 			Int y = function.Arg<1>();
    
-			Int sum = x + y;
+			Int z = 0;
+			Bool b = true;
+
+			For(Int i = 0, i < 10 && b, i++)
+			{
+				z += 2;
+				b = !b;
+				b = i < 10;
+			}
+
+			Int sum = x + y + z;
    
 			Return(sum);
 		}
@@ -41,7 +51,7 @@ int main()
 			int (*add)(int*, int) = (int(*)(int*,int))routine->getEntry();
 			int one = 1;
 			int result = add(&one, 2);
-			assert(result == 3);
+			assert(result == 23);
 		}
 	}
 

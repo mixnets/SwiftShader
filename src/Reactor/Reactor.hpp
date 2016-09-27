@@ -80,10 +80,11 @@ namespace sw
 
 		Value *loadValue(unsigned int alignment = 0) const;
 		Value *storeValue(Value *value, unsigned int alignment = 0) const;
-		Value *storeValue(Constant *constant, unsigned int alignment = 0) const;
+		Constant *storeValue(Constant *constant, unsigned int alignment = 0) const;
 		Value *getAddress(Value *index) const;
 
 	protected:
+		Type *const type;
 		Value *address;
 	};
 
@@ -156,7 +157,9 @@ namespace sw
 	class RValue
 	{
 	public:
+		RValue();
 		explicit RValue(Value *rvalue);
+		explicit RValue(Constant *rvalue);
 
 		RValue(const T &lvalue);
 		RValue(typename IntLiteral<T>::type i);
@@ -2371,7 +2374,7 @@ namespace sw
 	template<class T>
 	RValue<T> Reference<T>::operator=(const Reference<T> &ref) const
 	{
-		Value *tmp = Nucleus::createLoad(ref.address, false, ref.alignment);
+		Value *tmp = Nucleus::createLoad(ref.address, T::getType(), false, ref.alignment);
 		Nucleus::createStore(tmp, address, false, alignment);
 
 		return RValue<T>(tmp);
@@ -2386,7 +2389,7 @@ namespace sw
 	template<class T>
 	Value *Reference<T>::loadValue() const
 	{
-		return Nucleus::createLoad(address, false, alignment);
+		return Nucleus::createLoad(address, T::getType(), false, alignment);
 	}
 
 	template<class T>
@@ -2396,9 +2399,24 @@ namespace sw
 	}
 
 	template<class T>
+	RValue<T>::RValue()
+	{
+		Value *ptr = Nucleus::allocateStackVariable(T::getType());
+		value = Nucleus::createLoad(ptr, T::getType());
+	}
+
+	template<class T>
 	RValue<T>::RValue(Value *rvalue)
 	{
 		value = rvalue;
+	}
+
+	template<class T>
+	RValue<T>::RValue(Constant *rvalue)
+	{
+		Value *ptr = Nucleus::allocateStackVariable(T::getType());
+		Nucleus::createStore(rvalue, ptr);
+		value = Nucleus::createLoad(ptr, T::getType());
 	}
 
 	template<class T>
@@ -2752,7 +2770,7 @@ namespace sw
 	template<class T>
 	void Return(const Pointer<T> &ret)
 	{
-		Nucleus::createRet(Nucleus::createLoad(ret.address));
+		Nucleus::createRet(Nucleus::createLoad(ret.address, Pointer<T>::getType()));
 		Nucleus::setInsertBlock(Nucleus::createBasicBlock());
 	}
 

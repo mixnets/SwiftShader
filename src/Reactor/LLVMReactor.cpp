@@ -448,19 +448,22 @@ namespace sw
 		return V(::builder->CreateNot(v));
 	}
 
-	Value *Nucleus::createLoad(Value *ptr, bool isVolatile, unsigned int align)
+	Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
+		assert(ptr->getType()->getContainedType(0) == type);
 		return V(::builder->Insert(new LoadInst(ptr, "", isVolatile, align)));
 	}
 
 	Value *Nucleus::createStore(Value *value, Value *ptr, bool isVolatile, unsigned int align)
 	{
-		return V(::builder->Insert(new StoreInst(value, ptr, isVolatile, align)));
+		::builder->Insert(new StoreInst(value, ptr, isVolatile, align));
+		return value;
 	}
 
-	Value *Nucleus::createStore(Constant *constant, Value *ptr, bool isVolatile, unsigned int align)
+	Constant *Nucleus::createStore(Constant *constant, Value *ptr, bool isVolatile, unsigned int align)
 	{
-		return V(::builder->Insert(new StoreInst(constant, ptr, isVolatile, align)));
+		::builder->Insert(new StoreInst(constant, ptr, isVolatile, align));
+		return constant;
 	}
 
 	Value *Nucleus::createGEP(Value *ptr, Value *index)
@@ -683,9 +686,9 @@ namespace sw
 		reinterpret_cast<SwitchInst*>(Switch)->addCase(llvm::ConstantInt::get(Type::getInt32Ty(*::context), Case, true), Branch);
 	}
 
-	Value *Nucleus::createUnreachable()
+	void Nucleus::createUnreachable()
 	{
-		return V(::builder->CreateUnreachable());
+		::builder->CreateUnreachable();
 	}
 
 	Value *Nucleus::createSwizzle(Value *val, unsigned char select)
@@ -809,14 +812,14 @@ namespace sw
 		return T(llvm::Type::getVoidTy(*::context));
 	}
 
-	LValue::LValue(Type *type, int arraySize)
+	LValue::LValue(Type *type, int arraySize) : type(type)
 	{
 		address = Nucleus::allocateStackVariable(type, arraySize);
 	}
 
 	Value *LValue::loadValue(unsigned int alignment) const
 	{
-		return Nucleus::createLoad(address, false, alignment);
+		return Nucleus::createLoad(address, type, false, alignment);
 	}
 
 	Value *LValue::storeValue(Value *value, unsigned int alignment) const
@@ -824,7 +827,7 @@ namespace sw
 		return Nucleus::createStore(value, address, false, alignment);
 	}
 
-	Value *LValue::storeValue(Constant *constant, unsigned int alignment) const
+	Constant *LValue::storeValue(Constant *constant, unsigned int alignment) const
 	{
 		return Nucleus::createStore(constant, address, false, alignment);
 	}

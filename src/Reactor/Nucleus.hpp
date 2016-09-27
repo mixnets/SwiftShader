@@ -93,9 +93,9 @@ namespace sw
 		static Value *createNot(Value *V);
 
 		// Memory instructions
-		static Value *createLoad(Value *ptr, bool isVolatile = false, unsigned int align = 0);
+		static Value *createLoad(Value *ptr, Type *type, bool isVolatile = false, unsigned int align = 0);
 		static Value *createStore(Value *value, Value *ptr, bool isVolatile = false, unsigned int align = 0);
-		static Value *createStore(Constant *constant, Value *ptr, bool isVolatile = false, unsigned int align = 0);
+		static Constant *createStore(Constant *constant, Value *ptr, bool isVolatile = false, unsigned int align = 0);
 		static Value *createGEP(Value *ptr, Value *index);
 
 		// Atomic instructions
@@ -150,7 +150,7 @@ namespace sw
 		static Value *createSelect(Value *C, Value *ifTrue, Value *ifFalse);
 		static Value *createSwitch(Value *V, BasicBlock *Dest, unsigned NumCases);
 		static void addSwitchCase(Value *Switch, int Case, BasicBlock *Branch);
-		static Value *createUnreachable();
+		static void createUnreachable();
 
 		// Derived instructions
 		static Value *createSwizzle(Value *val, unsigned char select);
