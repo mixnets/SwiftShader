@@ -64,10 +64,10 @@ namespace sw
 		static Value *getArgument(unsigned int index);
 
 		// Terminators
-		static Value *createRetVoid();
-		static Value *createRet(Value *V);
-		static Value *createBr(BasicBlock *dest);
-		static Value *createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse);
+		static void createRetVoid();
+		static void createRet(Value *V);
+		static void createBr(BasicBlock *dest);
+		static void createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse);
 
 		// Binary operators
 		static Value *createAdd(Value *lhs, Value *rhs);
@@ -95,7 +95,7 @@ namespace sw
 		// Memory instructions
 		static Value *createLoad(Value *ptr, bool isVolatile = false, unsigned int align = 0);
 		static Value *createStore(Value *value, Value *ptr, bool isVolatile = false, unsigned int align = 0);
-		static Value *createStore(Constant *constant, Value *ptr, bool isVolatile = false, unsigned int align = 0);
+		static Constant *createStore(Constant *constant, Value *ptr, bool isVolatile = false, unsigned int align = 0);
 		static Value *createGEP(Value *ptr, Value *index);
 
 		// Atomic instructions
