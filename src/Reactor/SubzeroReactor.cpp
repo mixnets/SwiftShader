@@ -245,13 +245,24 @@ namespace sw
 
 	Value *Nucleus::allocateStackVariable(Type *t, int arraySize)
 	{
+		assert(arraySize == 0 && "UNIMPLEMENTED");
+
 		Ice::Type type = T(t);
-		Ice::Variable *value = ::function->makeVariable(type);
-		assert(type == Ice::IceType_i32 && arraySize == 0 && "UNIMPLEMENTED");
-		auto bytes = Ice::ConstantInteger32::create(::context, type, 4);
-		auto alloca = Ice::InstAlloca::create(::function, value, bytes, 4);
+		
+		int32_t size = 0;
+		switch(type)
+		{
+		case Ice::IceType_i32: size = 4; break;
+		case Ice::IceType_i64: size = 8; break;
+		default: assert(false && "UNIMPLEMENTED" && type);
+		}
+
+		auto bytes = Ice::ConstantInteger32::create(::context, type, size);
+		auto address = ::function->makeVariable(T(getPointerType(t)));
+		auto alloca = Ice::InstAlloca::create(::function, address, bytes, size);
 		::function->getEntryNode()->appendInst(alloca);
-		return V(value);
+
+		return V(address);
 	}
 
 	BasicBlock *Nucleus::createBasicBlock()
@@ -687,7 +698,14 @@ namespace sw
 
 	Type *Nucleus::getPointerType(Type *ElementType)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		if(sizeof(void*) == 8)
+		{
+			return T(Ice::IceType_i64);
+		}
+		else
+		{
+			return T(Ice::IceType_i32);
+		}
 	}
 
 	Constant *Nucleus::createNullValue(Type *Ty)
