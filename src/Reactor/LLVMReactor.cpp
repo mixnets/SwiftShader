@@ -319,28 +319,28 @@ namespace sw
 		return V(&*args);
 	}
 
-	Value *Nucleus::createRetVoid()
+	void Nucleus::createRetVoid()
 	{
 		x86::emms();
 
-		return V(::builder->CreateRetVoid());
+		::builder->CreateRetVoid();
 	}
 
-	Value *Nucleus::createRet(Value *v)
+	void Nucleus::createRet(Value *v)
 	{
 		x86::emms();
 
-		return V(::builder->CreateRet(v));
+		::builder->CreateRet(v);
 	}
 
-	Value *Nucleus::createBr(BasicBlock *dest)
+	void Nucleus::createBr(BasicBlock *dest)
 	{
-		return V(::builder->CreateBr(dest));
+		::builder->CreateBr(dest);
 	}
 
-	Value *Nucleus::createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse)
+	void Nucleus::createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse)
 	{
-		return V(::builder->CreateCondBr(cond, ifTrue, ifFalse));
+		::builder->CreateCondBr(cond, ifTrue, ifFalse);
 	}
 
 	Value *Nucleus::createAdd(Value *lhs, Value *rhs)
@@ -455,12 +455,14 @@ namespace sw
 
 	Value *Nucleus::createStore(Value *value, Value *ptr, bool isVolatile, unsigned int align)
 	{
-		return V(::builder->Insert(new StoreInst(value, ptr, isVolatile, align)));
+		::builder->Insert(new StoreInst(value, ptr, isVolatile, align));
+		return value;
 	}
 
-	Value *Nucleus::createStore(Constant *constant, Value *ptr, bool isVolatile, unsigned int align)
+	Constant *Nucleus::createStore(Constant *constant, Value *ptr, bool isVolatile, unsigned int align)
 	{
-		return V(::builder->Insert(new StoreInst(constant, ptr, isVolatile, align)));
+		::builder->Insert(new StoreInst(constant, ptr, isVolatile, align));
+		return constant;
 	}
 
 	Value *Nucleus::createGEP(Value *ptr, Value *index)
@@ -829,7 +831,7 @@ namespace sw
 		return Nucleus::createStore(value, address, false, alignment);
 	}
 
-	Value *LValue::storeValue(Constant *constant, unsigned int alignment) const
+	Constant *LValue::storeValue(Constant *constant, unsigned int alignment) const
 	{
 		return Nucleus::createStore(constant, address, false, alignment);
 	}

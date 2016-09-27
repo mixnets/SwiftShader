@@ -80,7 +80,7 @@ namespace sw
 
 		Value *loadValue(unsigned int alignment = 0) const;
 		Value *storeValue(Value *value, unsigned int alignment = 0) const;
-		Value *storeValue(Constant *constant, unsigned int alignment = 0) const;
+		Constant *storeValue(Constant *constant, unsigned int alignment = 0) const;
 		Value *getAddress(Value *index) const;
 
 	protected:
@@ -156,7 +156,9 @@ namespace sw
 	class RValue
 	{
 	public:
+		RValue();
 		explicit RValue(Value *rvalue);
+		explicit RValue(Constant *rvalue);
 
 		RValue(const T &lvalue);
 		RValue(typename IntLiteral<T>::type i);
@@ -2396,9 +2398,24 @@ namespace sw
 	}
 
 	template<class T>
+	RValue<T>::RValue()
+	{
+		Value *ptr = Nucleus::allocateStackVariable(T::getType());
+		value = Nucleus::createLoad(ptr);
+	}
+
+	template<class T>
 	RValue<T>::RValue(Value *rvalue)
 	{
 		value = rvalue;
+	}
+
+	template<class T>
+	RValue<T>::RValue(Constant *rvalue)
+	{
+		Value *ptr = Nucleus::allocateStackVariable(T::getType());
+		Nucleus::createStore(rvalue, ptr);
+		value = Nucleus::createLoad(ptr);
 	}
 
 	template<class T>

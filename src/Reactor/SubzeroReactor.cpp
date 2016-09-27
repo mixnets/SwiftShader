@@ -40,7 +40,7 @@ namespace
 {
 	Ice::GlobalContext *context = nullptr;
 	Ice::Cfg *function = nullptr;
-	Ice::CfgNode *basicBlock = nullptr;
+	sw::BasicBlock *basicBlock = nullptr;
 	Ice::CfgLocalAllocatorScope *allocator = nullptr;
 	sw::Routine *routine = nullptr;
 
@@ -53,6 +53,7 @@ namespace
 namespace sw
 {
 	class Value : public Ice::Variable {};
+	class Constant : public Ice::Constant {};
 	class BasicBlock : public Ice::CfgNode {};
 
 	Ice::Type T(Type *t)
@@ -68,6 +69,16 @@ namespace sw
 	Value *V(Ice::Variable *v)
 	{
 		return reinterpret_cast<Value*>(v);
+	}
+
+	Constant *C(Ice::Constant *c)
+	{
+		return reinterpret_cast<Constant*>(c);
+	}
+
+	BasicBlock *B(Ice::CfgNode *b)
+	{
+		return reinterpret_cast<BasicBlock*>(b);
 	}
 
 	Optimization optimization[10] = {InstructionCombining, Disabled};
@@ -185,7 +196,7 @@ namespace sw
 
 		Ice::ClFlags::Flags.setTargetArch(sizeof(void*) == 8 ? Ice::Target_X8664 : Ice::Target_X8632);
 		Ice::ClFlags::Flags.setOutFileType(Ice::FT_Elf);
-		Ice::ClFlags::Flags.setOptLevel(Ice::Opt_2);
+		Ice::ClFlags::Flags.setOptLevel(Ice::Opt_m1);
 		Ice::ClFlags::Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
 
 		std::unique_ptr<Ice::Ostream> cout(new llvm::raw_os_ostream(std::cout));
@@ -251,30 +262,31 @@ namespace sw
 		int32_t size = 0;
 		switch(type)
 		{
+		case Ice::IceType_i1:  size = 1; break;
 		case Ice::IceType_i32: size = 4; break;
 		case Ice::IceType_i64: size = 8; break;
 		default: assert(false && "UNIMPLEMENTED" && type);
 		}
 		auto bytes = Ice::ConstantInteger32::create(::context, type, size);
 		auto alloca = Ice::InstAlloca::create(::function, value, bytes, size);
-		::function->getEntryNode()->appendInst(alloca);
+		::function->getEntryNode()->getInsts().push_front(alloca);
 		return V(value);
 	}
 
 	BasicBlock *Nucleus::createBasicBlock()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return B(::function->makeNode());
 	}
 
 	BasicBlock *Nucleus::getInsertBlock()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return ::basicBlock;
 	}
 
 	void Nucleus::setInsertBlock(BasicBlock *basicBlock)
 	{
-		assert(!basicBlock->getInsts().back().getTerminatorEdges().empty() && "Previous basic block must have a terminator");
-		assert(false && "UNIMPLEMENTED"); return;
+		assert(!::basicBlock->getInsts().back().getTerminatorEdges().empty() && "Previous basic block must have a terminator");
+		::basicBlock = basicBlock;
 	}
 
 	BasicBlock *Nucleus::getPredecessor(BasicBlock *basicBlock)
@@ -296,7 +308,7 @@ namespace sw
 
 		Ice::CfgNode *node = ::function->makeNode();
 		::function->setEntryNode(node);
-		::basicBlock = node;
+		::basicBlock = B(node);
 	}
 
 	Value *Nucleus::getArgument(unsigned int index)
@@ -304,24 +316,26 @@ namespace sw
 		return V(::function->getArgs()[index]);
 	}
 
-	Value *Nucleus::createRetVoid()
+	void Nucleus::createRetVoid()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(false && "UNIMPLEMENTED");
 	}
 
-	Value *Nucleus::createRet(Value *V)
+	void Nucleus::createRet(Value *V)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(false && "UNIMPLEMENTED");
 	}
 
-	Value *Nucleus::createBr(BasicBlock *dest)
+	void Nucleus::createBr(BasicBlock *dest)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		auto br = Ice::InstBr::create(::function, dest);
+		::basicBlock->appendInst(br);
 	}
 
-	Value *Nucleus::createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse)
+	void Nucleus::createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		auto br = Ice::InstBr::create(::function, cond, ifTrue, ifFalse);
+		::basicBlock->appendInst(br);
 	}
 
 	Value *Nucleus::createAdd(Value *lhs, Value *rhs)
@@ -447,9 +461,11 @@ namespace sw
 		return value;
 	}
 
-	Value *Nucleus::createStore(Constant *constant, Value *ptr, bool isVolatile, unsigned int align)
+	Constant *Nucleus::createStore(Constant *constant, Value *ptr, bool isVolatile, unsigned int align)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		auto store = Ice::InstStore::create(::function, constant, ptr, align);
+		::basicBlock->appendInst(store);
+		return constant;
 	}
 
 	Value *Nucleus::createGEP(Value *ptr, Value *index)
@@ -569,7 +585,11 @@ namespace sw
 
 	Value *Nucleus::createICmpSLT(Value *lhs, Value *rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(lhs->getType() == rhs->getType());
+		Value *result = Nucleus::allocateStackVariable(Bool::getType());
+		auto cmp = Ice::InstIcmp::create(::function, Ice::InstIcmp::Slt, result, lhs, rhs);
+		::basicBlock->appendInst(cmp);
+		return result;
 	}
 
 	Value *Nucleus::createICmpSLE(Value *lhs, Value *rhs)
@@ -721,7 +741,7 @@ namespace sw
 
 	Constant *Nucleus::createConstantInt(int i)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return C(Ice::ConstantInteger32::create(::context, Ice::IceType_i32, i));
 	}
 
 	Constant *Nucleus::createConstantInt(unsigned int i)
@@ -789,7 +809,7 @@ namespace sw
 		return Nucleus::createStore(value, address, false, alignment);
 	}
 
-	Value *LValue::storeValue(Constant *constant, unsigned int alignment) const
+	Constant *LValue::storeValue(Constant *constant, unsigned int alignment) const
 	{
 		return Nucleus::createStore(constant, address, false, alignment);
 	}
@@ -870,7 +890,7 @@ namespace sw
 
 	Type *Bool::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i1);
 	}
 
 	Byte::Byte(Argument<Byte> argument)
@@ -1970,12 +1990,12 @@ namespace sw
 
 	RValue<Byte8> operator+(RValue<Byte8> lhs, RValue<Byte8> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>();
 	}
 
 	RValue<Byte8> operator-(RValue<Byte8> lhs, RValue<Byte8> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>();
 	}
 
 //	RValue<Byte8> operator*(RValue<Byte8> lhs, RValue<Byte8> rhs)
@@ -1995,17 +2015,17 @@ namespace sw
 
 	RValue<Byte8> operator&(RValue<Byte8> lhs, RValue<Byte8> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>();
 	}
 
 	RValue<Byte8> operator|(RValue<Byte8> lhs, RValue<Byte8> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>();
 	}
 
 	RValue<Byte8> operator^(RValue<Byte8> lhs, RValue<Byte8> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>();
 	}
 
 //	RValue<Byte8> operator<<(RValue<Byte8> lhs, unsigned char rhs)
@@ -2085,42 +2105,42 @@ namespace sw
 
 	RValue<Byte8> AddSat(RValue<Byte8> x, RValue<Byte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>();
 	}
 
 	RValue<Byte8> SubSat(RValue<Byte8> x, RValue<Byte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>();
 	}
 
 	RValue<Short4> Unpack(RValue<Byte4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> UnpackLow(RValue<Byte8> x, RValue<Byte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> UnpackHigh(RValue<Byte8> x, RValue<Byte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Int> SignMask(RValue<Byte8> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int>();
 	}
 
 //	RValue<Byte8> CmpGT(RValue<Byte8> x, RValue<Byte8> y)
 //	{
-//		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(nullptr);
+//		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>();
 //	}
 
 	RValue<Byte8> CmpEQ(RValue<Byte8> x, RValue<Byte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>();
 	}
 
 	Type *Byte8::getType()
@@ -2195,12 +2215,12 @@ namespace sw
 
 	RValue<SByte8> operator+(RValue<SByte8> lhs, RValue<SByte8> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<SByte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<SByte8>();
 	}
 
 	RValue<SByte8> operator-(RValue<SByte8> lhs, RValue<SByte8> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<SByte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<SByte8>();
 	}
 
 //	RValue<SByte8> operator*(RValue<SByte8> lhs, RValue<SByte8> rhs)
@@ -2310,37 +2330,37 @@ namespace sw
 
 	RValue<SByte8> AddSat(RValue<SByte8> x, RValue<SByte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<SByte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<SByte8>();
 	}
 
 	RValue<SByte8> SubSat(RValue<SByte8> x, RValue<SByte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<SByte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<SByte8>();
 	}
 
 	RValue<Short4> UnpackLow(RValue<SByte8> x, RValue<SByte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> UnpackHigh(RValue<SByte8> x, RValue<SByte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Int> SignMask(RValue<SByte8> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int>();
 	}
 
 	RValue<Byte8> CmpGT(RValue<SByte8> x, RValue<SByte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>();
 	}
 
 	RValue<Byte8> CmpEQ(RValue<SByte8> x, RValue<SByte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>();
 	}
 
 	Type *SByte8::getType()
@@ -2537,17 +2557,17 @@ namespace sw
 
 	RValue<Short4> operator+(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> operator-(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> operator*(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 //	RValue<Short4> operator/(RValue<Short4> lhs, RValue<Short4> rhs)
@@ -2562,45 +2582,45 @@ namespace sw
 
 	RValue<Short4> operator&(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> operator|(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> operator^(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> operator<<(RValue<Short4> lhs, unsigned char rhs)
 	{
 	//	return RValue<Short4>(Nucleus::createShl(lhs.value, rhs.value));
 
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> operator>>(RValue<Short4> lhs, unsigned char rhs)
 	{
 	//	return RValue<Short4>(Nucleus::createAShr(lhs.value, rhs.value));
 
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> operator<<(RValue<Short4> lhs, RValue<Long1> rhs)
 	{
 	//	return RValue<Short4>(Nucleus::createShl(lhs.value, rhs.value));
 
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> operator>>(RValue<Short4> lhs, RValue<Long1> rhs)
 	{
 	//	return RValue<Short4>(Nucleus::createAShr(lhs.value, rhs.value));
 
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> operator+=(const Short4 &lhs, RValue<Short4> rhs)
@@ -2670,87 +2690,87 @@ namespace sw
 
 	RValue<Short4> operator-(RValue<Short4> val)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> operator~(RValue<Short4> val)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> RoundShort4(RValue<Float4> cast)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> Max(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> Min(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> AddSat(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> SubSat(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> MulHigh(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Int2> MulAdd(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	RValue<SByte8> Pack(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<SByte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<SByte8>();
 	}
 
 	RValue<Int2> UnpackLow(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	RValue<Int2> UnpackHigh(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	RValue<Short4> Swizzle(RValue<Short4> x, unsigned char select)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> Insert(RValue<Short4> val, RValue<Short> element, int i)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short> Extract(RValue<Short4> val, int i)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short>();
 	}
 
 	RValue<Short4> CmpGT(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	RValue<Short4> CmpEQ(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short4>();
 	}
 
 	Type *Short4::getType()
@@ -2881,37 +2901,37 @@ namespace sw
 
 	RValue<UShort4> operator+(RValue<UShort4> lhs, RValue<UShort4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> operator-(RValue<UShort4> lhs, RValue<UShort4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> operator*(RValue<UShort4> lhs, RValue<UShort4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> operator<<(RValue<UShort4> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> operator>>(RValue<UShort4> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> operator<<(RValue<UShort4> lhs, RValue<Long1> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> operator>>(RValue<UShort4> lhs, RValue<Long1> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> operator<<=(const UShort4 &lhs, unsigned char rhs)
@@ -2936,42 +2956,42 @@ namespace sw
 
 	RValue<UShort4> operator~(RValue<UShort4> val)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> Max(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> Min(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> AddSat(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> SubSat(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> MulHigh(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<UShort4> Average(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>();
 	}
 
 	RValue<Byte8> Pack(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>();
 	}
 
 	Type *UShort4::getType()
@@ -3018,27 +3038,27 @@ namespace sw
 
 	RValue<Short8> operator<<(RValue<Short8> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short8>();
 	}
 
 	RValue<Short8> operator>>(RValue<Short8> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short8>();
 	}
 
 	RValue<Int4> MulAdd(RValue<Short8> x, RValue<Short8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int4>();
 	}
 
 	RValue<Int4> Abs(RValue<Int4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int4>();
 	}
 
 	RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short8>();
 	}
 
 	Type *Short8::getType()
@@ -3103,12 +3123,12 @@ namespace sw
 
 	RValue<UShort8> operator<<(RValue<UShort8> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>();
 	}
 
 	RValue<UShort8> operator>>(RValue<UShort8> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>();
 	}
 
 	RValue<UShort8> operator+(RValue<UShort8> lhs, RValue<UShort8> rhs)
@@ -3133,18 +3153,18 @@ namespace sw
 
 	RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>();
 	}
 
 	RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>();
 	}
 
 	// FIXME: Implement as Shuffle(x, y, Select(i0, ..., i16)) and Shuffle(x, y, SELECT_PACK_REPEAT(element))
 //	RValue<UShort8> PackRepeat(RValue<Byte16> x, RValue<Byte16> y, int element)
 //	{
-//		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(nullptr);
+//		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>();
 //	}
 
 	Type *UShort8::getType()
@@ -3415,7 +3435,12 @@ namespace sw
 
 	RValue<Int> operator++(const Int &val, int)   // Post-increment
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int>(nullptr);
+		auto value = val.loadValue();
+		auto value2 = val.loadValue();
+		auto inc = Ice::InstArithmetic::create(::function, Ice::InstArithmetic::Add, value2, value, Ice::ConstantInteger32::create(::context, Ice::IceType_i32, 1));
+		::basicBlock->appendInst(inc);
+		val.storeValue(value2);
+		return RValue<Int>(value);
 	}
 
 	const Int &operator++(const Int &val)   // Pre-increment
@@ -3425,7 +3450,7 @@ namespace sw
 
 	RValue<Int> operator--(const Int &val, int)   // Post-decrement
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int>();
 	}
 
 	const Int &operator--(const Int &val)   // Pre-decrement
@@ -3480,7 +3505,7 @@ namespace sw
 
 	RValue<Int> RoundInt(RValue<Float> cast)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int>();
 	}
 
 	Type *Int::getType()
@@ -3586,7 +3611,7 @@ namespace sw
 
 	RValue<Long2> UnpackHigh(RValue<Long2> x, RValue<Long2> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Long2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Long2>();
 	}
 
 	Type *Long2::getType()
@@ -3836,7 +3861,7 @@ namespace sw
 
 	RValue<UInt> operator++(const UInt &val, int)   // Post-increment
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt>();
 	}
 
 	const UInt &operator++(const UInt &val)   // Pre-increment
@@ -3846,7 +3871,7 @@ namespace sw
 
 	RValue<UInt> operator--(const UInt &val, int)   // Post-decrement
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt>();
 	}
 
 	const UInt &operator--(const UInt &val)   // Pre-decrement
@@ -3901,7 +3926,7 @@ namespace sw
 
 //	RValue<UInt> RoundUInt(RValue<Float> cast)
 //	{
-//		assert(false && "UNIMPLEMENTED"); return RValue<UInt>(nullptr);
+//		assert(false && "UNIMPLEMENTED"); return RValue<UInt>();
 //	}
 
 	Type *UInt::getType()
@@ -3997,12 +4022,12 @@ namespace sw
 
 	RValue<Int2> operator+(RValue<Int2> lhs, RValue<Int2> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	RValue<Int2> operator-(RValue<Int2> lhs, RValue<Int2> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 //	RValue<Int2> operator*(RValue<Int2> lhs, RValue<Int2> rhs)
@@ -4022,37 +4047,37 @@ namespace sw
 
 	RValue<Int2> operator&(RValue<Int2> lhs, RValue<Int2> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	RValue<Int2> operator|(RValue<Int2> lhs, RValue<Int2> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	RValue<Int2> operator^(RValue<Int2> lhs, RValue<Int2> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	RValue<Int2> operator<<(RValue<Int2> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	RValue<Int2> operator>>(RValue<Int2> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	RValue<Int2> operator<<(RValue<Int2> lhs, RValue<Long1> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	RValue<Int2> operator>>(RValue<Int2> lhs, RValue<Long1> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	RValue<Int2> operator+=(const Int2 &lhs, RValue<Int2> rhs)
@@ -4127,27 +4152,27 @@ namespace sw
 
 	RValue<Int2> operator~(RValue<Int2> val)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	RValue<Long1> UnpackLow(RValue<Int2> x, RValue<Int2> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Long1>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Long1>();
 	}
 
 	RValue<Long1> UnpackHigh(RValue<Int2> x, RValue<Int2> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Long1>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Long1>();
 	}
 
 	RValue<Int> Extract(RValue<Int2> val, int i)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int>();
 	}
 
 	RValue<Int2> Insert(RValue<Int2> val, RValue<Int> element, int i)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int2>();
 	}
 
 	Type *Int2::getType()
@@ -4215,12 +4240,12 @@ namespace sw
 
 	RValue<UInt2> operator+(RValue<UInt2> lhs, RValue<UInt2> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>();
 	}
 
 	RValue<UInt2> operator-(RValue<UInt2> lhs, RValue<UInt2> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>();
 	}
 
 //	RValue<UInt2> operator*(RValue<UInt2> lhs, RValue<UInt2> rhs)
@@ -4240,37 +4265,37 @@ namespace sw
 
 	RValue<UInt2> operator&(RValue<UInt2> lhs, RValue<UInt2> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>();
 	}
 
 	RValue<UInt2> operator|(RValue<UInt2> lhs, RValue<UInt2> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>();
 	}
 
 	RValue<UInt2> operator^(RValue<UInt2> lhs, RValue<UInt2> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>();
 	}
 
 	RValue<UInt2> operator<<(RValue<UInt2> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>();
 	}
 
 	RValue<UInt2> operator>>(RValue<UInt2> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>();
 	}
 
 	RValue<UInt2> operator<<(RValue<UInt2> lhs, RValue<Long1> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>();
 	}
 
 	RValue<UInt2> operator>>(RValue<UInt2> lhs, RValue<Long1> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>();
 	}
 
 	RValue<UInt2> operator+=(const UInt2 &lhs, RValue<UInt2> rhs)
@@ -4547,12 +4572,12 @@ namespace sw
 
 	RValue<Int4> operator<<(RValue<Int4> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int4>();
 	}
 
 	RValue<Int4> operator>>(RValue<Int4> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int4>();
 	}
 
 	RValue<Int4> operator<<(RValue<Int4> lhs, RValue<Int4> rhs)
@@ -4662,22 +4687,22 @@ namespace sw
 
 	RValue<Int4> Max(RValue<Int4> x, RValue<Int4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int4>();
 	}
 
 	RValue<Int4> Min(RValue<Int4> x, RValue<Int4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int4>();
 	}
 
 	RValue<Int4> RoundInt(RValue<Float4> cast)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int4>();
 	}
 
 	RValue<Short8> Pack(RValue<Int4> x, RValue<Int4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Short8>();
 	}
 
 	RValue<Int> Extract(RValue<Int4> x, int i)
@@ -4692,7 +4717,7 @@ namespace sw
 
 	RValue<Int> SignMask(RValue<Int4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int>();
 	}
 
 	RValue<Int4> Swizzle(RValue<Int4> x, unsigned char select)
@@ -4868,12 +4893,12 @@ namespace sw
 
 	RValue<UInt4> operator<<(RValue<UInt4> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt4>();
 	}
 
 	RValue<UInt4> operator>>(RValue<UInt4> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt4>();
 	}
 
 	RValue<UInt4> operator<<(RValue<UInt4> lhs, RValue<UInt4> rhs)
@@ -4983,17 +5008,17 @@ namespace sw
 
 	RValue<UInt4> Max(RValue<UInt4> x, RValue<UInt4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt4>();
 	}
 
 	RValue<UInt4> Min(RValue<UInt4> x, RValue<UInt4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt4>();
 	}
 
 	RValue<UShort8> Pack(RValue<UInt4> x, RValue<UInt4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>();
 	}
 
 	Type *UInt4::getType()
@@ -5154,42 +5179,42 @@ namespace sw
 
 	RValue<Float> Rcp_pp(RValue<Float> x, bool exactAtPow2)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float>();
 	}
 
 	RValue<Float> RcpSqrt_pp(RValue<Float> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float>();
 	}
 
 	RValue<Float> Sqrt(RValue<Float> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float>();
 	}
 
 	RValue<Float> Round(RValue<Float> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float>();
 	}
 
 	RValue<Float> Trunc(RValue<Float> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float>();
 	}
 
 	RValue<Float> Frac(RValue<Float> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float>();
 	}
 
 	RValue<Float> Floor(RValue<Float> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float>();
 	}
 
 	RValue<Float> Ceil(RValue<Float> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float>();
 	}
 
 	Type *Float::getType()
@@ -5448,32 +5473,32 @@ namespace sw
 
 	RValue<Float4> Abs(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> Max(RValue<Float4> x, RValue<Float4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> Rcp_pp(RValue<Float4> x, bool exactAtPow2)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> RcpSqrt_pp(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> Sqrt(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> Insert(const Float4 &val, RValue<Float> element, int i)
@@ -5498,17 +5523,17 @@ namespace sw
 
 	RValue<Float4> ShuffleLowHigh(RValue<Float4> x, RValue<Float4> y, unsigned char imm)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> UnpackLow(RValue<Float4> x, RValue<Float4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> UnpackHigh(RValue<Float4> x, RValue<Float4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> Mask(Float4 &lhs, RValue<Float4> rhs, unsigned char select)
@@ -5522,7 +5547,7 @@ namespace sw
 
 	RValue<Int> SignMask(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Int>();
 	}
 
 	RValue<Int4> CmpEQ(RValue<Float4> x, RValue<Float4> y)
@@ -5557,27 +5582,27 @@ namespace sw
 
 	RValue<Float4> Round(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> Trunc(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> Frac(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> Floor(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	RValue<Float4> Ceil(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Float4>();
 	}
 
 	Type *Float4::getType()
@@ -5587,7 +5612,7 @@ namespace sw
 
 	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, int offset)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Pointer<Byte>>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Pointer<Byte>>();
 	}
 
 	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, RValue<Int> offset)
@@ -5694,7 +5719,7 @@ namespace sw
 
 	RValue<Long> Ticks()
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Long>(nullptr);
+		assert(false && "UNIMPLEMENTED"); return RValue<Long>();
 	}
 }
 
