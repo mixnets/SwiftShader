@@ -1,4 +1,4 @@
-#line 17 "./glslang.l"
+#line 25 "./glslang.l"
 // Copyright 2016 The SwiftShader Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@
 
 
 
-#line 25 "./glslang_lex.cpp"
+#line 33 "./glslang_lex.cpp"
 
 #define  YY_INT_ALIGNED short int
 

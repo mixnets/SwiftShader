@@ -65,6 +65,7 @@ struct ShBuiltInResources
 typedef unsigned int GLenum;
 #define GL_FRAGMENT_SHADER                0x8B30
 #define GL_VERTEX_SHADER                  0x8B31
+#define GL_COMPUTE_SHADER                 0x91B9
 
 //
 // The base class for the machine dependent compiler to derive from
