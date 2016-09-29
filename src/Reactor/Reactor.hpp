@@ -68,10 +68,11 @@ namespace sw
 	template<class T>
 	class Pointer;
 
+	template<class T>
 	class LValue
 	{
 	public:
-		LValue(Type *type, int arraySize = 0);
+		LValue(int arraySize = 0);
 
 		static bool isVoid()
 		{
@@ -80,16 +81,15 @@ namespace sw
 
 		Value *loadValue(unsigned int alignment = 0) const;
 		Value *storeValue(Value *value, unsigned int alignment = 0) const;
-		Value *storeValue(Constant *constant, unsigned int alignment = 0) const;
+		Constant *storeValue(Constant *constant, unsigned int alignment = 0) const;
 		Value *getAddress(Value *index) const;
 
 	protected:
-		Type *const type;
 		Value *address;
 	};
 
 	template<class T>
-	class Variable : public LValue
+	class Variable : public LValue<T>
 	{
 	public:
 		Variable(int arraySize = 0);
@@ -2345,7 +2345,37 @@ namespace sw
 namespace sw
 {
 	template<class T>
-	Variable<T>::Variable(int arraySize) : LValue(T::getType(), arraySize)
+	LValue<T>::LValue(int arraySize)
+	{
+		address = Nucleus::allocateStackVariable(T::getType(), arraySize);
+	}
+
+	template<class T>
+	Value *LValue<T>::loadValue(unsigned int alignment) const
+	{
+		return Nucleus::createLoad(address, T::getType(), false, alignment);
+	}
+
+	template<class T>
+	Value *LValue<T>::storeValue(Value *value, unsigned int alignment) const
+	{
+		return Nucleus::createStore(value, address, false, alignment);
+	}
+
+	template<class T>
+	Constant *LValue<T>::storeValue(Constant *constant, unsigned int alignment) const
+	{
+		return Nucleus::createStore(constant, address, false, alignment);
+	}
+
+	template<class T>
+	Value *LValue<T>::getAddress(Value *index) const
+	{
+		return Nucleus::createGEP(address, index);
+	}
+
+	template<class T>
+	Variable<T>::Variable(int arraySize) : LValue<T>(arraySize)
 	{
 	}
 
@@ -2806,8 +2836,8 @@ namespace sw
 		return RValue<T>(Nucleus::createBitCast(val.value, T::getType()));
 	}
 
-	template<class T>
-	RValue<T> ReinterpretCast(const LValue &var)
+	template<class T, class S>
+	RValue<T> ReinterpretCast(const LValue<S> &var)
 	{
 		Value *val = var.loadValue();
 
@@ -2826,8 +2856,8 @@ namespace sw
 		return ReinterpretCast<T>(val);
 	}
 
-	template<class T>
-	RValue<T> As(const LValue &var)
+	template<class T, class S>
+	RValue<T> As(const LValue<S> &var)
 	{
 		return ReinterpretCast<T>(var);
 	}
