@@ -158,6 +158,7 @@ namespace sw
 	{
 	public:
 		explicit RValue(Value *rvalue);
+		explicit RValue(Constant *constant);
 
 		RValue(const T &lvalue);
 		RValue(typename IntLiteral<T>::type i);
@@ -2430,6 +2431,12 @@ namespace sw
 	RValue<T>::RValue(Value *rvalue)
 	{
 		value = rvalue;
+	}
+
+	template<class T>
+	RValue<T>::RValue(Constant *constant)
+	{
+		value = Nucleus::createAssign(constant);
 	}
 
 	template<class T>
