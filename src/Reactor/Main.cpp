@@ -45,6 +45,9 @@ int main()
 			Int y = function.Arg<1>();
 			Int z = 4;
 
+			Pointer<Short4> w = As<Pointer<Short4>>(p);
+			Short4 q = *w;
+
 			For(Int i = 0, i < 10, i++)
 			{
 				z += (2 << i) - (i / 3);
@@ -52,7 +55,7 @@ int main()
 
 			Float4 v;
 			v.z = As<Float>(z);
-			z = As<Int>(Float(Float4(v.xzxx).y));
+			z = As<Int>(Float(Float4(Abs(v.xzxx)).y));
 
 			Int sum = x + y + z;
    
