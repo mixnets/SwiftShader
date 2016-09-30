@@ -254,33 +254,12 @@ namespace sw
 	{
 	}
 
-	static int SizeOf(Type *t)
-	{
-		Ice::Type type = T(t);
-
-		switch(type)
-		{
-		case Ice::IceType_i1:    return 1;
-		case Ice::IceType_i8:    return 1;
-		case Ice::IceType_i16:   return 2;
-		case Ice::IceType_i32:   return 4;
-		case Ice::IceType_i64:   return 8;
-		case Ice::IceType_f32:   return 4;
-		case Ice::IceType_f64:   return 8;
-		case Ice::IceType_v16i8: return 16;
-		case Ice::IceType_v8i16: return 16;
-		case Ice::IceType_v4i32: return 16;
-		case Ice::IceType_v4f32: return 16;
-		default: assert(false && "UNIMPLEMENTED" && type);
-		}
-	}
-
 	Value *Nucleus::allocateStackVariable(Type *t, int arraySize)
 	{
 		assert(arraySize == 0 && "UNIMPLEMENTED");
 
 		Ice::Type type = T(t);
-		int size = SizeOf(t);
+		int size = Ice::typeWidthInBytes(type);
 
 		auto bytes = Ice::ConstantInteger32::create(::context, type, size);
 		auto address = ::function->makeVariable(T(getPointerType(t)));
@@ -506,12 +485,12 @@ namespace sw
 	{
 		assert(index->getType() == Ice::IceType_i32);
 
-		if(T(type) != Ice::IceType_i8)
+		if(!Ice::isByteSizedType(T(type)))
 		{
-			index = createMul(index, createAssign(createConstantInt((int)SizeOf(type))));
+			index = createMul(index, createAssign(createConstantInt((int)Ice::typeWidthInBytes(T(type)))));
 		}
 
-		if(sizeof(void*) == 8 && index->getType() != Ice::IceType_i64)
+		if(sizeof(void*) == 8)
 		{
 			index = createSExt(index, T(Ice::IceType_i64));
 		}
@@ -734,7 +713,20 @@ namespace sw
 
 	Value *Nucleus::createShuffleVector(Value *V1, Value *V2, const int *select)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(V1->getType() == V2->getType());
+
+		int size = Ice::typeNumElements(V1->getType());
+		auto result = ::function->makeVariable(V1->getType());
+		auto shuffle = Ice::InstShuffleVector::create(::function, result, V1, V2);
+
+		for(int i = 0; i < size; i++)
+		{
+			shuffle->addIndex(llvm::cast<Ice::ConstantInteger32>(::context->getConstantInt32(select[i])));
+		}
+
+		::basicBlock->appendInst(shuffle);
+
+		return V(result);
 	}
 
 	Value *Nucleus::createSelect(Value *C, Value *ifTrue, Value *ifFalse)
@@ -759,15 +751,15 @@ namespace sw
 
 	static Value *createSwizzle4(Value *val, unsigned char select)
 	{
-		auto result = ::function->makeVariable(val->getType());
-		auto shuffle = Ice::InstShuffleVector::create(::function, result, val, val);
-		shuffle->addIndex(Ice::ConstantInteger32::create(::context, Ice::IceType_i32, (select >> 0) & 0x03));
-		shuffle->addIndex(Ice::ConstantInteger32::create(::context, Ice::IceType_i32, (select >> 2) & 0x03));
-		shuffle->addIndex(Ice::ConstantInteger32::create(::context, Ice::IceType_i32, (select >> 4) & 0x03));
-		shuffle->addIndex(Ice::ConstantInteger32::create(::context, Ice::IceType_i32, (select >> 6) & 0x03));
-		::basicBlock->appendInst(shuffle);
+		int swizzle[4] =
+		{
+			(select >> 0) & 0x03,
+			(select >> 2) & 0x03,
+			(select >> 4) & 0x03,
+			(select >> 6) & 0x03,
+		};
 
-		return V(result);
+		return Nucleus::createShuffleVector(val, val, swizzle);
 	}
 
 	static Value *createMask4(Value *lhs, Value *rhs, unsigned char select)
