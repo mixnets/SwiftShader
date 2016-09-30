@@ -490,7 +490,15 @@ namespace sw
 
 	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(index->getType() == Ice::IceType_i32);
+		assert(T(type) == Ice::IceType_i8 && "UNIMPLEMENTED");
+
+		if(sizeof(void*) == 8 && index->getType() != Ice::IceType_i64)
+		{
+			index = createSExt(index, T(Ice::IceType_i64));
+		}
+
+		return createAdd(ptr, index);
 	}
 
 	Value *Nucleus::createAtomicAdd(Value *ptr, Value *value)
@@ -5611,7 +5619,7 @@ namespace sw
 
 	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, int offset)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Pointer<Byte>>(V(nullptr));
+		return lhs + RValue<Int>(Nucleus::createConstantInt(offset));
 	}
 
 	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, RValue<Int> offset)
