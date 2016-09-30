@@ -254,19 +254,33 @@ namespace sw
 	{
 	}
 
+	static int SizeOf(Type *t)
+	{
+		Ice::Type type = T(t);
+
+		switch(type)
+		{
+		case Ice::IceType_i1:    return 1;
+		case Ice::IceType_i8:    return 1;
+		case Ice::IceType_i16:   return 2;
+		case Ice::IceType_i32:   return 4;
+		case Ice::IceType_i64:   return 8;
+		case Ice::IceType_f32:   return 4;
+		case Ice::IceType_f64:   return 8;
+		case Ice::IceType_v16i8: return 16;
+		case Ice::IceType_v8i16: return 16;
+		case Ice::IceType_v4i32: return 16;
+		case Ice::IceType_v4f32: return 16;
+		default: assert(false && "UNIMPLEMENTED" && type);
+		}
+	}
+
 	Value *Nucleus::allocateStackVariable(Type *t, int arraySize)
 	{
 		assert(arraySize == 0 && "UNIMPLEMENTED");
 
 		Ice::Type type = T(t);
-		
-		int32_t size = 0;
-		switch(type)
-		{
-		case Ice::IceType_i32: size = 4; break;
-		case Ice::IceType_i64: size = 8; break;
-		default: assert(false && "UNIMPLEMENTED" && type);
-		}
+		int size = SizeOf(t);
 
 		auto bytes = Ice::ConstantInteger32::create(::context, type, size);
 		auto address = ::function->makeVariable(T(getPointerType(t)));
@@ -490,7 +504,19 @@ namespace sw
 
 	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(index->getType() == Ice::IceType_i32);
+
+		if(T(type) != Ice::IceType_i8)
+		{
+			index = createMul(index, createAssign(createConstantInt((int)SizeOf(type))));
+		}
+
+		if(sizeof(void*) == 8 && index->getType() != Ice::IceType_i64)
+		{
+			index = createSExt(index, T(Ice::IceType_i64));
+		}
+
+		return createAdd(ptr, index);
 	}
 
 	Value *Nucleus::createAtomicAdd(Value *ptr, Value *value)
@@ -5615,7 +5641,7 @@ namespace sw
 
 	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, int offset)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Pointer<Byte>>(V(nullptr));
+		return lhs + RValue<Int>(Nucleus::createConstantInt(offset));
 	}
 
 	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, RValue<Int> offset)
