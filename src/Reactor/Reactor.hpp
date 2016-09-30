@@ -433,7 +433,7 @@ namespace sw
 	//	Byte4(int x, int y, int z, int w);
 	//	Byte4(RValue<Byte4> rhs);
 	//	Byte4(const Byte4 &rhs);
-	//	Byte4(const Reference<Byte4> &rhs);
+		Byte4(const Reference<Byte4> &rhs);
 
 	//	RValue<Byte4> operator=(RValue<Byte4> rhs) const;
 	//	RValue<Byte4> operator=(const Byte4 &rhs) const;

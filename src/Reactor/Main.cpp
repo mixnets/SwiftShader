@@ -41,22 +41,25 @@ int main()
 		Function<Int(Pointer<Int>, Int)> function;
 		{
 			Pointer<Int> p = function.Arg<0>();
-			Int x = p[-1];
-			Int y = function.Arg<1>();
-			Int z = 4;
+			//Int x = p[-1];
+			//Int y = function.Arg<1>();
+			//Int z = 4;
 
-			For(Int i = 0, i < 10, i++)
-			{
-				z += (2 << i) - (i / 3);
-			}
+			Pointer<Short4> w = As<Pointer<Short4>>(p);
+			Short4 q = *w;
 
-			Float4 v;
-			v.z = As<Float>(z);
-			z = As<Int>(Float(Float4(v.xzxx).y));
+			//For(Int i = 0, i < 10, i++)
+			//{
+			//	z += (2 << i) - (i / 3);
+			//}
 
-			Int sum = x + y + z;
+			//Float4 v;
+			//v.z = As<Float>(z);
+			//z = As<Int>(Float(Float4(Abs(v.xzxx)).y));
+
+			//Int sum = x + y + z;
    
-			Return(sum);
+			Return();
 		}
 
 		routine = function(L"one");
