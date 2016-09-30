@@ -459,13 +459,13 @@ namespace sw
 		return V(::builder->Insert(new LoadInst(ptr, "", isVolatile, align)));
 	}
 
-	Value *Nucleus::createStore(Value *value, Value *ptr, bool isVolatile, unsigned int align)
+	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
 		::builder->Insert(new StoreInst(value, ptr, isVolatile, align));
 		return value;
 	}
 
-	Constant *Nucleus::createStore(Constant *constant, Value *ptr, bool isVolatile, unsigned int align)
+	Constant *Nucleus::createStore(Constant *constant, Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
 		::builder->Insert(new StoreInst(constant, ptr, isVolatile, align));
 		return constant;
