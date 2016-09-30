@@ -52,16 +52,36 @@ namespace
 
 namespace sw
 {
+	enum EmulatedType
+	{
+		EmulatedShift = 16,
+		EmulatedV2 = 2 << EmulatedShift,
+		EmulatedV4 = 4 << EmulatedShift,
+		EmulatedV8 = 8 << EmulatedShift,
+		EmulatedBits = EmulatedV2 | EmulatedV4 | EmulatedV8,
+
+		Type_v4i16 = Ice::IceType_v8i16 | EmulatedV4,
+		Type_v2i16 = Ice::IceType_v8i16 | EmulatedV2,
+		Type_v8i8 =  Ice::IceType_v16i8 | EmulatedV8,
+		Type_v4i8 =  Ice::IceType_v16i8 | EmulatedV4,
+	};
+
 	class Value : public Ice::Variable {};
 	class Constant : public Ice::Constant {};
 	class BasicBlock : public Ice::CfgNode {};
 
 	Ice::Type T(Type *t)
 	{
-		return (Ice::Type)reinterpret_cast<std::intptr_t>(t);
+		static_assert(Ice::IceType_NUM < EmulatedBits, "Ice::Type overlaps with our emulated types!");
+		return (Ice::Type)(reinterpret_cast<std::intptr_t>(t) & ~EmulatedBits);
 	}
 
 	Type *T(Ice::Type t)
+	{
+		return reinterpret_cast<Type*>(t);
+	}
+
+	Type *T(EmulatedType t)
 	{
 		return reinterpret_cast<Type*>(t);
 	}
@@ -461,16 +481,87 @@ namespace sw
 
 	Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
-		Ice::Variable *value = ::function->makeVariable(T(type));
-		auto load = Ice::InstLoad::create(::function, value, ptr, align);
+		int t = (int)reinterpret_cast<intptr_t>(type);
+		Ice::Variable *result = ::function->makeVariable(T(type));
+
+		if(t & EmulatedBits)
+		{
+			switch(t)
+			{
+			case Type_v4i8:
+			case Type_v2i16:
+				{
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+					auto target = ::context->getConstantUndef(Ice::IceType_i32);
+					auto load = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+					load->addArg(::context->getConstantInt32(4));
+					load->addArg(ptr);
+					::basicBlock->appendInst(load);
+					return V(result);
+				}
+			case Type_v8i8:
+			case Type_v4i16:
+				{
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+					auto target = ::context->getConstantUndef(Ice::IceType_i32);
+					auto load = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+					load->addArg(::context->getConstantInt32(8));
+					load->addArg(ptr);
+					::basicBlock->appendInst(load);
+					return V(result);
+				}
+			default: assert(false && "UNIMPLEMENTED");
+			}
+		}
+
+		auto load = Ice::InstLoad::create(::function, result, ptr, align);
 		::basicBlock->appendInst(load);
-		return V(value);
+		return V(result);
 	}
 
 	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
-		auto store = Ice::InstStore::create(::function, value, ptr, align);
-		::basicBlock->appendInst(store);
+		int t = (int)reinterpret_cast<intptr_t>(type);
+
+		if(t & EmulatedBits)
+		{
+			switch(t)
+			{
+			case Type_v4i8:
+			case Type_v2i16:
+				{
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
+					auto target = ::context->getConstantUndef(Ice::IceType_i32);
+					auto store = Ice::InstIntrinsicCall::create(::function, 3, nullptr, target, intrinsic);
+					store->addArg(::context->getConstantInt32(4));
+					store->addArg(value);
+					store->addArg(ptr);
+					::basicBlock->appendInst(store);
+					return V(value);
+				}
+			case Type_v8i8:
+			case Type_v4i16:
+				{
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
+					auto target = ::context->getConstantUndef(Ice::IceType_i32);
+					auto store = Ice::InstIntrinsicCall::create(::function, 3, nullptr, target, intrinsic);
+					store->addArg(::context->getConstantInt32(8));
+					store->addArg(value);
+					store->addArg(ptr);
+					::basicBlock->appendInst(store);
+					return V(value);
+				}
+			default: assert(false && "UNIMPLEMENTED");
+			}
+		}
+		else
+		{
+			assert(T(value->getType()) == type);
+
+			auto store = Ice::InstStore::create(::function, value, ptr, align);
+			::basicBlock->appendInst(store);
+		}
+
 		return value;
 	}
 
@@ -505,7 +596,7 @@ namespace sw
 
 	static Value *createCast(Ice::InstCast::OpKind op, Value *v, Type *destType)
 	{
-		if(T(v->getType()) == destType)
+		if(v->getType() == T(destType))
 		{
 			return v;
 		}
@@ -1955,7 +2046,7 @@ namespace sw
 
 	Type *Byte4::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Type_v4i8);
 	}
 
 	Type *SByte4::getType()
@@ -2178,7 +2269,7 @@ namespace sw
 
 	Type *Byte8::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Type_v8i8);
 	}
 
 	SByte8::SByte8()
@@ -2442,12 +2533,12 @@ namespace sw
 
 	Type *Byte16::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_v16i8);
 	}
 
 	Type *SByte16::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_v16i8);
 	}
 
 	Short2::Short2(RValue<Short4> cast)
@@ -2457,7 +2548,7 @@ namespace sw
 
 	Type *Short2::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Type_v2i16);
 	}
 
 	UShort2::UShort2(RValue<UShort4> cast)
@@ -2467,7 +2558,7 @@ namespace sw
 
 	Type *UShort2::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Type_v2i16);
 	}
 
 	Short4::Short4(RValue<Int> cast)
@@ -2821,7 +2912,7 @@ namespace sw
 
 	Type *Short4::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Type_v4i16);
 	}
 
 	UShort4::UShort4(RValue<Int4> cast)
@@ -3042,7 +3133,7 @@ namespace sw
 
 	Type *UShort4::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Type_v4i16);
 	}
 
 	Short8::Short8(short c0, short c1, short c2, short c3, short c4, short c5, short c6, short c7)
@@ -4782,7 +4873,7 @@ namespace sw
 
 	Type *Int4::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_v4i32);
 	}
 
 	UInt4::UInt4(RValue<Float4> cast)
