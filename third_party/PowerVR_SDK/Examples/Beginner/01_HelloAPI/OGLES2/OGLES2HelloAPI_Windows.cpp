@@ -446,7 +446,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 			glClear() can also be used to clear the depth or stencil buffer
 			(GL_DEPTH_BUFFER_BIT or GL_STENCIL_BUFFER_BIT)
 		*/
-		glClear(GL_COLOR_BUFFER_BIT);
+	//	glClear(GL_COLOR_BUFFER_BIT);
 
 		/*
 			Bind the projection model view matrix (PMVMatrix) to
@@ -473,7 +473,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 			This function allows the use of other primitive types : triangle strips, lines, ...
 			For indexed geometry, use the function glDrawElements() with an index list.
 		*/
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+	//	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		/*
 			Swap Buffers.
