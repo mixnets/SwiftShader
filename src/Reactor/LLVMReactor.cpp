@@ -654,8 +654,9 @@ namespace sw
 		return V(::builder->CreateFCmpULE(lhs, rhs));
 	}
 
-	Value *Nucleus::createExtractElement(Value *vector, int index)
+	Value *Nucleus::createExtractElement(Value *vector, Type *type, int index)
 	{
+		assert(vector->getType()->getContainedType(0) == type);
 		return V(::builder->CreateExtractElement(vector, createConstantInt(index)));
 	}
 
@@ -664,7 +665,7 @@ namespace sw
 		return V(::builder->CreateInsertElement(vector, element, createConstantInt(index)));
 	}
 
-	Value *Nucleus::createShuffleVector(Value *V1, Value *V2, Value *mask)
+	Value *Nucleus::createShuffleVector(Value *V1, Value *V2, Constant *mask)
 	{
 		return V(::builder->CreateShuffleVector(V1, V2, mask));
 	}
@@ -689,7 +690,7 @@ namespace sw
 		::builder->CreateUnreachable();
 	}
 
-	Value *Nucleus::createSwizzle(Value *val, unsigned char select)
+	static Value *createSwizzle(Value *val, unsigned char select)
 	{
 		Constant *swizzle[4];
 		swizzle[0] = Nucleus::createConstantInt((select >> 0) & 0x03);
@@ -697,12 +698,12 @@ namespace sw
 		swizzle[2] = Nucleus::createConstantInt((select >> 4) & 0x03);
 		swizzle[3] = Nucleus::createConstantInt((select >> 6) & 0x03);
 
-		Value *shuffle = Nucleus::createShuffleVector(val, V(UndefValue::get(val->getType())), V(Nucleus::createConstantVector(swizzle, 4)));
+		Value *shuffle = Nucleus::createShuffleVector(val, V(UndefValue::get(val->getType())), C(Nucleus::createConstantVector(swizzle, 4)));
 
 		return shuffle;
 	}
 
-	Value *Nucleus::createMask(Value *lhs, Value *rhs, unsigned char select)
+	static Value *createMask(Value *lhs, Value *rhs, unsigned char select)
 	{
 		bool mask[4] = {false, false, false, false};
 
@@ -717,7 +718,7 @@ namespace sw
 		swizzle[2] = Nucleus::createConstantInt(mask[2] ? 6 : 2);
 		swizzle[3] = Nucleus::createConstantInt(mask[3] ? 7 : 3);
 
-		Value *shuffle = Nucleus::createShuffleVector(lhs, rhs, V(Nucleus::createConstantVector(swizzle, 4)));
+		Value *shuffle = Nucleus::createShuffleVector(lhs, rhs, C(Nucleus::createConstantVector(swizzle, 4)));
 
 		return shuffle;
 	}
@@ -2214,7 +2215,7 @@ namespace sw
 			shuffle[6] = Nucleus::createConstantInt(3);
 			shuffle[7] = Nucleus::createConstantInt(11);
 
-			Value *packed = Nucleus::createShuffleVector(x.value, y.value, V(Nucleus::createConstantVector(shuffle, 8)));
+			Value *packed = Nucleus::createShuffleVector(x.value, y.value, C(Nucleus::createConstantVector(shuffle, 8)));
 
 			return RValue<Short4>(Nucleus::createBitCast(packed, Short4::getType()));
 		}
@@ -2238,7 +2239,7 @@ namespace sw
 			shuffle[6] = Nucleus::createConstantInt(7);
 			shuffle[7] = Nucleus::createConstantInt(15);
 
-			Value *packed = Nucleus::createShuffleVector(x.value, y.value, V(Nucleus::createConstantVector(shuffle, 8)));
+			Value *packed = Nucleus::createShuffleVector(x.value, y.value, C(Nucleus::createConstantVector(shuffle, 8)));
 
 			return RValue<Short4>(Nucleus::createBitCast(packed, Short4::getType()));
 		}
@@ -2522,7 +2523,7 @@ namespace sw
 			shuffle[6] = Nucleus::createConstantInt(3);
 			shuffle[7] = Nucleus::createConstantInt(11);
 
-			Value *packed = Nucleus::createShuffleVector(x.value, y.value, V(Nucleus::createConstantVector(shuffle, 8)));
+			Value *packed = Nucleus::createShuffleVector(x.value, y.value, C(Nucleus::createConstantVector(shuffle, 8)));
 
 			return RValue<Short4>(Nucleus::createBitCast(packed, Short4::getType()));
 		}
@@ -2546,7 +2547,7 @@ namespace sw
 			shuffle[6] = Nucleus::createConstantInt(7);
 			shuffle[7] = Nucleus::createConstantInt(15);
 
-			Value *packed = Nucleus::createShuffleVector(x.value, y.value, V(Nucleus::createConstantVector(shuffle, 8)));
+			Value *packed = Nucleus::createShuffleVector(x.value, y.value, C(Nucleus::createConstantVector(shuffle, 8)));
 
 			return RValue<Short4>(Nucleus::createBitCast(packed, Short4::getType()));
 		}
@@ -2681,10 +2682,10 @@ namespace sw
 				pshufhw[6] = Nucleus::createConstantInt(4);
 				pshufhw[7] = Nucleus::createConstantInt(6);
 
-				Value *shuffle1 = Nucleus::createShuffleVector(short8, V(UndefValue::get(Short8::getType())), V(Nucleus::createConstantVector(pshuflw, 8)));
-				Value *shuffle2 = Nucleus::createShuffleVector(shuffle1, V(UndefValue::get(Short8::getType())), V(Nucleus::createConstantVector(pshufhw, 8)));
+				Value *shuffle1 = Nucleus::createShuffleVector(short8, V(UndefValue::get(Short8::getType())), C(Nucleus::createConstantVector(pshuflw, 8)));
+				Value *shuffle2 = Nucleus::createShuffleVector(shuffle1, V(UndefValue::get(Short8::getType())), C(Nucleus::createConstantVector(pshufhw, 8)));
 				Value *int4 = Nucleus::createBitCast(shuffle2, Int4::getType());
-				packed = Nucleus::createSwizzle(int4, 0x88);
+				packed = createSwizzle(int4, 0x88);
 			}
 			else
 			{
@@ -2707,7 +2708,7 @@ namespace sw
 				pshufb[15] = Nucleus::createConstantInt(13);
 
 				Value *byte16 = Nucleus::createBitCast(cast.value, Byte16::getType());
-				packed = Nucleus::createShuffleVector(byte16, V(UndefValue::get(Byte16::getType())), V(Nucleus::createConstantVector(pshufb, 16)));
+				packed = Nucleus::createShuffleVector(byte16, V(UndefValue::get(Byte16::getType())), C(Nucleus::createConstantVector(pshufb, 16)));
 			}
 
 			#if 0   // FIXME: No optimal instruction selection
@@ -3114,7 +3115,7 @@ namespace sw
 			shuffle[2] = Nucleus::createConstantInt(1);
 			shuffle[3] = Nucleus::createConstantInt(5);
 
-			Value *packed = Nucleus::createShuffleVector(x.value, y.value, V(Nucleus::createConstantVector(shuffle, 4)));
+			Value *packed = Nucleus::createShuffleVector(x.value, y.value, C(Nucleus::createConstantVector(shuffle, 4)));
 
 			return RValue<Int2>(Nucleus::createBitCast(packed, Int2::getType()));
 		}
@@ -3134,7 +3135,7 @@ namespace sw
 			shuffle[2] = Nucleus::createConstantInt(3);
 			shuffle[3] = Nucleus::createConstantInt(7);
 
-			Value *packed = Nucleus::createShuffleVector(x.value, y.value, V(Nucleus::createConstantVector(shuffle, 4)));
+			Value *packed = Nucleus::createShuffleVector(x.value, y.value, C(Nucleus::createConstantVector(shuffle, 4)));
 
 			return RValue<Int2>(Nucleus::createBitCast(packed, Int2::getType()));
 		}
@@ -3148,7 +3149,7 @@ namespace sw
 		}
 		else
 		{
-			return RValue<Short4>(Nucleus::createSwizzle(x.value, select));
+			return RValue<Short4>(createSwizzle(x.value, select));
 		}
 	}
 
@@ -3172,7 +3173,7 @@ namespace sw
 		}
 		else
 		{
-			return RValue<Short>(Nucleus::createExtractElement(val.value, i));
+			return RValue<Short>(Nucleus::createExtractElement(val.value, Short::getType(), i));
 		}
 	}
 
@@ -3720,7 +3721,7 @@ namespace sw
 		pshufb[15] = Nucleus::createConstantInt(select7 + 1);
 
 		Value *byte16 = Nucleus::createBitCast(x.value, Byte16::getType());
-		Value *shuffle = Nucleus::createShuffleVector(byte16, V(UndefValue::get(Byte16::getType())), V(Nucleus::createConstantVector(pshufb, 16)));
+		Value *shuffle = Nucleus::createShuffleVector(byte16, V(UndefValue::get(Byte16::getType())), C(Nucleus::createConstantVector(pshufb, 16)));
 		Value *short8 = Nucleus::createBitCast(shuffle, UShort8::getType());
 
 		return RValue<UShort8>(short8);
@@ -4229,7 +4230,7 @@ namespace sw
 		shuffle[0] = Nucleus::createConstantInt(1);
 		shuffle[1] = Nucleus::createConstantInt(3);
 
-		Value *packed = Nucleus::createShuffleVector(x.value, y.value, V(Nucleus::createConstantVector(shuffle, 2)));
+		Value *packed = Nucleus::createShuffleVector(x.value, y.value, C(Nucleus::createConstantVector(shuffle, 2)));
 
 		return RValue<Long2>(packed);
 	}
@@ -4601,7 +4602,7 @@ namespace sw
 	Int2::Int2(RValue<Int4> cast)
 	{
 		Value *long2 = Nucleus::createBitCast(cast.value, Long2::getType());
-		Value *element = Nucleus::createExtractElement(long2, 0);
+		Value *element = Nucleus::createExtractElement(long2, Long::getType(), 0);
 		Value *int2 = Nucleus::createBitCast(element, Int2::getType());
 
 		storeValue(int2);
@@ -4662,7 +4663,7 @@ namespace sw
 			shuffle[0] = Nucleus::createConstantInt(0);
 			shuffle[1] = Nucleus::createConstantInt(1);
 
-			Value *packed = Nucleus::createShuffleVector(Nucleus::createBitCast(lo.value, T(VectorType::get(Int::getType(), 1))), Nucleus::createBitCast(hi.value, T(VectorType::get(Int::getType(), 1))), V(Nucleus::createConstantVector(shuffle, 2)));
+			Value *packed = Nucleus::createShuffleVector(Nucleus::createBitCast(lo.value, T(VectorType::get(Int::getType(), 1))), Nucleus::createBitCast(hi.value, T(VectorType::get(Int::getType(), 1))), C(Nucleus::createConstantVector(shuffle, 2)));
 
 			storeValue(Nucleus::createBitCast(packed, Int2::getType()));
 		}
@@ -4888,7 +4889,7 @@ namespace sw
 			shuffle[0] = Nucleus::createConstantInt(0);
 			shuffle[1] = Nucleus::createConstantInt(2);
 
-			Value *packed = Nucleus::createShuffleVector(x.value, y.value, V(Nucleus::createConstantVector(shuffle, 2)));
+			Value *packed = Nucleus::createShuffleVector(x.value, y.value, C(Nucleus::createConstantVector(shuffle, 2)));
 
 			return RValue<Long1>(Nucleus::createBitCast(packed, Long1::getType()));
 		}
@@ -4906,7 +4907,7 @@ namespace sw
 			shuffle[0] = Nucleus::createConstantInt(1);
 			shuffle[1] = Nucleus::createConstantInt(3);
 
-			Value *packed = Nucleus::createShuffleVector(x.value, y.value, V(Nucleus::createConstantVector(shuffle, 2)));
+			Value *packed = Nucleus::createShuffleVector(x.value, y.value, C(Nucleus::createConstantVector(shuffle, 2)));
 
 			return RValue<Long1>(Nucleus::createBitCast(packed, Long1::getType()));
 		}
@@ -4916,13 +4917,13 @@ namespace sw
 	{
 		if(false)   // FIXME: LLVM does not generate optimal code
 		{
-			return RValue<Int>(Nucleus::createExtractElement(val.value, i));
+			return RValue<Int>(Nucleus::createExtractElement(val.value, Int::getType(), i));
 		}
 		else
 		{
 			if(i == 0)
 			{
-				return RValue<Int>(Nucleus::createExtractElement(Nucleus::createBitCast(val.value, T(VectorType::get(Int::getType(), 2))), 0));
+				return RValue<Int>(Nucleus::createExtractElement(Nucleus::createBitCast(val.value, T(VectorType::get(Int::getType(), 2))), Int::getType(), 0));
 			}
 			else
 			{
@@ -5242,7 +5243,7 @@ namespace sw
 			swizzle[15] = Nucleus::createConstantInt(23);
 
 			Value *b = Nucleus::createBitCast(a, Byte16::getType());
-			Value *c = Nucleus::createShuffleVector(b, V(Nucleus::createNullValue(Byte16::getType())), V(Nucleus::createConstantVector(swizzle, 16)));
+			Value *c = Nucleus::createShuffleVector(b, V(Nucleus::createNullValue(Byte16::getType())), C(Nucleus::createConstantVector(swizzle, 16)));
 
 			Constant *swizzle2[8];
 			swizzle2[0] = Nucleus::createConstantInt(0);
@@ -5255,7 +5256,7 @@ namespace sw
 			swizzle2[7] = Nucleus::createConstantInt(11);
 
 			Value *d = Nucleus::createBitCast(c, Short8::getType());
-			e = Nucleus::createShuffleVector(d, V(Nucleus::createNullValue(Short8::getType())), V(Nucleus::createConstantVector(swizzle2, 8)));
+			e = Nucleus::createShuffleVector(d, V(Nucleus::createNullValue(Short8::getType())), C(Nucleus::createConstantVector(swizzle2, 8)));
 		}
 
 		Value *f = Nucleus::createBitCast(e, Int4::getType());
@@ -5294,7 +5295,7 @@ namespace sw
 			swizzle[15] = Nucleus::createConstantInt(7);
 
 			Value *b = Nucleus::createBitCast(a, Byte16::getType());
-			Value *c = Nucleus::createShuffleVector(b, b, V(Nucleus::createConstantVector(swizzle, 16)));
+			Value *c = Nucleus::createShuffleVector(b, b, C(Nucleus::createConstantVector(swizzle, 16)));
 
 			Constant *swizzle2[8];
 			swizzle2[0] = Nucleus::createConstantInt(0);
@@ -5307,7 +5308,7 @@ namespace sw
 			swizzle2[7] = Nucleus::createConstantInt(3);
 
 			Value *d = Nucleus::createBitCast(c, Short8::getType());
-			Value *e = Nucleus::createShuffleVector(d, d, V(Nucleus::createConstantVector(swizzle2, 8)));
+			Value *e = Nucleus::createShuffleVector(d, d, C(Nucleus::createConstantVector(swizzle2, 8)));
 
 			Value *f = Nucleus::createBitCast(e, Int4::getType());
 			//	g = Nucleus::createAShr(f, Nucleus::createConstantInt(24));
@@ -5351,7 +5352,7 @@ namespace sw
 			swizzle[6] = Nucleus::createConstantInt(3);
 			swizzle[7] = Nucleus::createConstantInt(3);
 
-			Value *c = Nucleus::createShuffleVector(b, b, V(Nucleus::createConstantVector(swizzle, 8)));
+			Value *c = Nucleus::createShuffleVector(b, b, C(Nucleus::createConstantVector(swizzle, 8)));
 			Value *d = Nucleus::createBitCast(c, Int4::getType());
 			storeValue(d);
 
@@ -5388,7 +5389,7 @@ namespace sw
 			swizzle[6] = Nucleus::createConstantInt(3);
 			swizzle[7] = Nucleus::createConstantInt(11);
 
-			Value *c = Nucleus::createShuffleVector(b, V(Nucleus::createNullValue(Short8::getType())), V(Nucleus::createConstantVector(swizzle, 8)));
+			Value *c = Nucleus::createShuffleVector(b, V(Nucleus::createNullValue(Short8::getType())), C(Nucleus::createConstantVector(swizzle, 8)));
 			Value *d = Nucleus::createBitCast(c, Int4::getType());
 			storeValue(d);
 		}
@@ -5506,7 +5507,7 @@ namespace sw
 		swizzle[2] = Nucleus::createConstantInt(0);
 		swizzle[3] = Nucleus::createConstantInt(0);
 
-		Value *replicate = Nucleus::createShuffleVector(insert, V(UndefValue::get(Int4::getType())), V(Nucleus::createConstantVector(swizzle, 4)));
+		Value *replicate = Nucleus::createShuffleVector(insert, V(UndefValue::get(Int4::getType())), C(Nucleus::createConstantVector(swizzle, 4)));
 
 		storeValue(replicate);
 	}
@@ -5750,7 +5751,7 @@ namespace sw
 
 	RValue<Int> Extract(RValue<Int4> x, int i)
 	{
-		return RValue<Int>(Nucleus::createExtractElement(x.value, i));
+		return RValue<Int>(Nucleus::createExtractElement(x.value, Int::getType(), i));
 	}
 
 	RValue<Int4> Insert(RValue<Int4> x, RValue<Int> element, int i)
@@ -5765,7 +5766,7 @@ namespace sw
 
 	RValue<Int4> Swizzle(RValue<Int4> x, unsigned char select)
 	{
-		return RValue<Int4>(Nucleus::createSwizzle(x.value, select));
+		return RValue<Int4>(createSwizzle(x.value, select));
 	}
 
 	Type *Int4::getType()
@@ -6360,7 +6361,7 @@ namespace sw
 	//	xyzw.parent = this;
 
 		Value *int64x2 = Nucleus::createBitCast(cast.value, Long2::getType());
-		Value *int64 = Nucleus::createExtractElement(int64x2, 0);
+		Value *int64 = Nucleus::createExtractElement(int64x2, Long::getType(), 0);
 		Value *float2 = Nucleus::createBitCast(int64, Float2::getType());
 
 		storeValue(float2);
@@ -6543,7 +6544,7 @@ namespace sw
 		swizzle[2] = Nucleus::createConstantInt(0);
 		swizzle[3] = Nucleus::createConstantInt(0);
 
-		Value *replicate = Nucleus::createShuffleVector(insert, V(UndefValue::get(Float4::getType())), V(Nucleus::createConstantVector(swizzle, 4)));
+		Value *replicate = Nucleus::createShuffleVector(insert, V(UndefValue::get(Float4::getType())), C(Nucleus::createConstantVector(swizzle, 4)));
 
 		storeValue(replicate);
 	}
@@ -6726,12 +6727,12 @@ namespace sw
 
 	RValue<Float> Extract(RValue<Float4> x, int i)
 	{
-		return RValue<Float>(Nucleus::createExtractElement(x.value, i));
+		return RValue<Float>(Nucleus::createExtractElement(x.value, Float::getType(), i));
 	}
 
 	RValue<Float4> Swizzle(RValue<Float4> x, unsigned char select)
 	{
-		return RValue<Float4>(Nucleus::createSwizzle(x.value, select));
+		return RValue<Float4>(createSwizzle(x.value, select));
 	}
 
 	RValue<Float4> ShuffleLowHigh(RValue<Float4> x, RValue<Float4> y, unsigned char imm)
@@ -6742,7 +6743,7 @@ namespace sw
 		shuffle[2] = Nucleus::createConstantInt(((imm >> 4) & 0x03) + 4);
 		shuffle[3] = Nucleus::createConstantInt(((imm >> 6) & 0x03) + 4);
 
-		return RValue<Float4>(Nucleus::createShuffleVector(x.value, y.value, V(Nucleus::createConstantVector(shuffle, 4))));
+		return RValue<Float4>(Nucleus::createShuffleVector(x.value, y.value, C(Nucleus::createConstantVector(shuffle, 4))));
 	}
 
 	RValue<Float4> UnpackLow(RValue<Float4> x, RValue<Float4> y)
@@ -6753,7 +6754,7 @@ namespace sw
 		shuffle[2] = Nucleus::createConstantInt(1);
 		shuffle[3] = Nucleus::createConstantInt(5);
 
-		return RValue<Float4>(Nucleus::createShuffleVector(x.value, y.value, V(Nucleus::createConstantVector(shuffle, 4))));
+		return RValue<Float4>(Nucleus::createShuffleVector(x.value, y.value, C(Nucleus::createConstantVector(shuffle, 4))));
 	}
 
 	RValue<Float4> UnpackHigh(RValue<Float4> x, RValue<Float4> y)
@@ -6764,13 +6765,13 @@ namespace sw
 		shuffle[2] = Nucleus::createConstantInt(3);
 		shuffle[3] = Nucleus::createConstantInt(7);
 
-		return RValue<Float4>(Nucleus::createShuffleVector(x.value, y.value, V(Nucleus::createConstantVector(shuffle, 4))));
+		return RValue<Float4>(Nucleus::createShuffleVector(x.value, y.value, C(Nucleus::createConstantVector(shuffle, 4))));
 	}
 
 	RValue<Float4> Mask(Float4 &lhs, RValue<Float4> rhs, unsigned char select)
 	{
 		Value *vector = lhs.loadValue();
-		Value *shuffle = Nucleus::createMask(vector, rhs.value, select);
+		Value *shuffle = createMask(vector, rhs.value, select);
 		lhs.storeValue(shuffle);
 
 		return RValue<Float4>(shuffle);
@@ -7050,7 +7051,7 @@ namespace sw
 
 			Value *vector = Nucleus::createInsertElement(V(UndefValue::get(Float4::getType())), val.value, 0);
 
-			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall(rcpss, vector)), 0));
+			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall(rcpss, vector)), Float::getType(), 0));
 		}
 
 		RValue<Float> sqrtss(RValue<Float> val)
@@ -7059,7 +7060,7 @@ namespace sw
 
 			Value *vector = Nucleus::createInsertElement(V(UndefValue::get(Float4::getType())), val.value, 0);
 
-			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall(sqrtss, vector)), 0));
+			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall(sqrtss, vector)), Float::getType(), 0));
 		}
 
 		RValue<Float> rsqrtss(RValue<Float> val)
@@ -7068,7 +7069,7 @@ namespace sw
 
 			Value *vector = Nucleus::createInsertElement(V(UndefValue::get(Float4::getType())), val.value, 0);
 
-			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall(rsqrtss, vector)), 0));
+			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall(rsqrtss, vector)), Float::getType(), 0));
 		}
 
 		RValue<Float4> rcpps(RValue<Float4> val)
@@ -7113,7 +7114,7 @@ namespace sw
 			Value *undef = V(UndefValue::get(Float4::getType()));
 			Value *vector = Nucleus::createInsertElement(undef, val.value, 0);
 
-			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall3(roundss, undef, vector, V(Nucleus::createConstantInt(imm)))), 0));
+			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall3(roundss, undef, vector, V(Nucleus::createConstantInt(imm)))), Float::getType(), 0));
 		}
 
 		RValue<Float> floorss(RValue<Float> val)
@@ -7197,7 +7198,7 @@ namespace sw
 			Value *vector1 = Nucleus::createInsertElement(V(UndefValue::get(Float4::getType())), x.value, 0);
 			Value *vector2 = Nucleus::createInsertElement(V(UndefValue::get(Float4::getType())), y.value, 0);
 
-			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall3(cmpss, vector1, vector2, V(Nucleus::createConstantByte(imm)))), 0));
+			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall3(cmpss, vector1, vector2, V(Nucleus::createConstantByte(imm)))), Float::getType(), 0));
 		}
 
 		RValue<Float> cmpeqss(RValue<Float> x, RValue<Float> y)

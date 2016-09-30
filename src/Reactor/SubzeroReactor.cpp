@@ -24,6 +24,8 @@
 #include "src/IceCfgNode.h"
 #include "src/IceELFObjectWriter.h"
 
+//#include "src/IceTargetLoweringX8664.h"
+
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/raw_os_ostream.h"
 
@@ -52,16 +54,30 @@ namespace
 
 namespace sw
 {
+	constexpr int EmulatedBit = 0x10000000;
+	enum EmulatedType
+	{
+		v4i16 = Ice::IceType_v8i16 | EmulatedBit,
+		v8i8 =  Ice::IceType_v16i8 | EmulatedBit,
+		v4i8 =  Ice::IceType_v16i8 | EmulatedBit,
+	};
+
 	class Value : public Ice::Variable {};
 	class Constant : public Ice::Constant {};
 	class BasicBlock : public Ice::CfgNode {};
 
 	Ice::Type T(Type *t)
 	{
-		return (Ice::Type)reinterpret_cast<std::intptr_t>(t);
+		static_assert(Ice::IceType_NUM < EmulatedBit, "Ice::Type overlaps with our emulated types!");
+		return (Ice::Type)(reinterpret_cast<std::intptr_t>(t) & ~EmulatedBit);
 	}
 
 	Type *T(Ice::Type t)
+	{
+		return reinterpret_cast<Type*>(t);
+	}
+
+	Type *T(EmulatedType t)
 	{
 		return reinterpret_cast<Type*>(t);
 	}
@@ -335,7 +351,8 @@ namespace sw
 
 	void Nucleus::createRetVoid()
 	{
-		assert(false && "UNIMPLEMENTED");
+		Ice::InstRet *ret = Ice::InstRet::create(::function);
+		::basicBlock->appendInst(ret);
 	}
 
 	void Nucleus::createRet(Value *v)
@@ -482,6 +499,11 @@ namespace sw
 
 	Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
+		if(reinterpret_cast<intptr_t>(type) == v4i16)
+		{
+			assert(false && "UNIMPLEMENTED"); return nullptr;
+		}
+
 		Ice::Variable *value = ::function->makeVariable(T(type));
 		auto load = Ice::InstLoad::create(::function, value, ptr, align);
 		::basicBlock->appendInst(load);
@@ -490,6 +512,12 @@ namespace sw
 
 	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
+		if(reinterpret_cast<intptr_t>(type) == v4i16)
+		{
+			assert(false && "UNIMPLEMENTED"); return nullptr;
+		}
+		else assert(T(value->getType()) == type);
+
 		auto store = Ice::InstStore::create(::function, value, ptr, align);
 		::basicBlock->appendInst(store);
 		return value;
@@ -497,6 +525,12 @@ namespace sw
 
 	Constant *Nucleus::createStore(Constant *constant, Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
+		if(reinterpret_cast<intptr_t>(type) == v4i16)
+		{
+			assert(false && "UNIMPLEMENTED"); return nullptr;
+		}
+		else assert(T(constant->getType()) == type);
+
 		auto store = Ice::InstStore::create(::function, constant, ptr, align);
 		::basicBlock->appendInst(store);
 		return constant;
@@ -625,7 +659,13 @@ namespace sw
 
 	Value *Nucleus::createICmpSGE(Value *lhs, Value *rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(lhs->getType() == rhs->getType());
+
+		auto result = ::function->makeVariable(Ice::IceType_i1);
+		auto cmp = Ice::InstIcmp::create(::function, Ice::InstIcmp::Sge, result, lhs, rhs);
+		::basicBlock->appendInst(cmp);
+
+		return V(result);
 	}
 
 	Value *Nucleus::createICmpSLT(Value *lhs, Value *rhs)
@@ -714,19 +754,37 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Value *Nucleus::createExtractElement(Value *vector, int index)
+	Value *Nucleus::createExtractElement(Value *vector, Type *type, int index)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		auto result = ::function->makeVariable(T(type));
+		auto extract = Ice::InstExtractElement::create(::function, result, vector, ::context->getConstantInt32(index));
+		::basicBlock->appendInst(extract);
+
+		return V(result);
 	}
 
 	Value *Nucleus::createInsertElement(Value *vector, Value *element, int index)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		auto result = ::function->makeVariable(vector->getType());
+		auto insert = Ice::InstInsertElement::create(::function, result, vector, element, ::context->getConstantInt32(index));
+		::basicBlock->appendInst(insert);
+
+		return V(result);
 	}
 
-	Value *Nucleus::createShuffleVector(Value *V1, Value *V2, Value *mask)
+	Value *Nucleus::createShuffleVector(Value *V1, Value *V2, Constant *mask)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(V1->getType() == V2->getType());
+		//assert(mask->get == V1->getType());
+
+		auto result = ::function->makeVariable(V1->getType());
+		auto assign = Ice::InstAssign::create(::function, result, V1);
+		::basicBlock->appendInst(assign);
+		auto shuffle = Ice::InstShuffleVector::create(::function, result, V1, V2);
+		//shuffle->addIndex();
+		::basicBlock->appendInst(shuffle);
+
+		return V(result);
 	}
 
 	Value *Nucleus::createSelect(Value *C, Value *ifTrue, Value *ifFalse)
@@ -749,19 +807,28 @@ namespace sw
 		assert(false && "UNIMPLEMENTED");
 	}
 
-	Value *Nucleus::createSwizzle(Value *val, unsigned char select)
+	static Value *createSwizzle4(Value *val, unsigned char select)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		auto result = ::function->makeVariable(val->getType());
+		auto shuffle = Ice::InstShuffleVector::create(::function, result, val, val);
+		shuffle->addIndex(Ice::ConstantInteger32::create(::context, Ice::IceType_i32, (select >> 0) & 0x03));
+		shuffle->addIndex(Ice::ConstantInteger32::create(::context, Ice::IceType_i32, (select >> 2) & 0x03));
+		shuffle->addIndex(Ice::ConstantInteger32::create(::context, Ice::IceType_i32, (select >> 4) & 0x03));
+		shuffle->addIndex(Ice::ConstantInteger32::create(::context, Ice::IceType_i32, (select >> 6) & 0x03));
+		::basicBlock->appendInst(shuffle);
+
+		return V(result);
 	}
 
-	Value *Nucleus::createMask(Value *lhs, Value *rhs, unsigned char select)
+	static Value *createMask4(Value *lhs, Value *rhs, unsigned char select)
 	{
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
 	Constant *Nucleus::createConstantPointer(const void *address, Type *Ty, bool isConstant, unsigned int Align)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(sizeof(void*) == 8);
+		return C(::context->getConstantInt64(reinterpret_cast<intptr_t>(address)));
 	}
 
 	Type *Nucleus::getPointerType(Type *ElementType)
@@ -823,7 +890,7 @@ namespace sw
 
 	Constant *Nucleus::createConstantFloat(float x)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return C(::context->getConstantFloat(x));
 	}
 
 	Constant *Nucleus::createNullPointer(Type *Ty)
@@ -1674,7 +1741,7 @@ namespace sw
 
 	Type *Short::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i16);
 	}
 
 	UShort::UShort(Argument<UShort> argument)
@@ -1933,11 +2000,7 @@ namespace sw
 
 	Type *Byte4::getType()
 	{
-		#if 0
-			return VectorType::get(Byte::getType(), 4);
-		#else
-			return UInt::getType();   // FIXME
-		#endif
+		return T(v4i8);
 	}
 
 	Type *SByte4::getType()
@@ -2142,7 +2205,14 @@ namespace sw
 
 	RValue<Short4> UnpackLow(RValue<Byte8> x, RValue<Byte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		//Ice::InstIntrinsicCall::create();
+		auto result = ::function->makeVariable(Ice::IceType_v8i16);
+		auto assign = Ice::InstAssign::create(::function, result, x.value);
+		::basicBlock->appendInst(assign);
+	//	auto punpckl = Ice::X8664::Insts<Ice::X8664::TargetX8664Traits>::Punpckl::create(::function, result, y.value);
+	//	::basicBlock->appendInst(punpckl);
+
+		return RValue<Short4>(V(result));
 	}
 
 	RValue<Short4> UnpackHigh(RValue<Byte8> x, RValue<Byte8> y)
@@ -2167,7 +2237,7 @@ namespace sw
 
 	Type *Byte8::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(v8i8);
 	}
 
 	SByte8::SByte8()
@@ -2797,7 +2867,7 @@ namespace sw
 
 	Type *Short4::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_v8i16);
 	}
 
 	UShort4::UShort4(RValue<Int4> cast)
@@ -3972,7 +4042,7 @@ namespace sw
 	Int2::Int2(RValue<Int4> cast)
 	{
 		Value *long2 = Nucleus::createBitCast(cast.value, Long2::getType());
-		Value *element = Nucleus::createExtractElement(long2, 0);
+		Value *element = Nucleus::createExtractElement(long2, Long2::getType(), 0);
 		Value *int2 = Nucleus::createBitCast(element, Int2::getType());
 
 		storeValue(int2);
@@ -4738,7 +4808,7 @@ namespace sw
 
 	RValue<Int> Extract(RValue<Int4> x, int i)
 	{
-		return RValue<Int>(Nucleus::createExtractElement(x.value, i));
+		return RValue<Int>(Nucleus::createExtractElement(x.value, Int::getType(), i));
 	}
 
 	RValue<Int4> Insert(RValue<Int4> x, RValue<Int> element, int i)
@@ -4753,12 +4823,12 @@ namespace sw
 
 	RValue<Int4> Swizzle(RValue<Int4> x, unsigned char select)
 	{
-		return RValue<Int4>(Nucleus::createSwizzle(x.value, select));
+		return RValue<Int4>(createSwizzle4(x.value, select));
 	}
 
 	Type *Int4::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_v4i32);
 	}
 
 	UInt4::UInt4(RValue<Float4> cast)
@@ -5248,7 +5318,7 @@ namespace sw
 
 	Type *Float::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_f32);
 	}
 
 	Float2::Float2(RValue<Float4> cast)
@@ -5256,7 +5326,7 @@ namespace sw
 	//	xyzw.parent = this;
 
 		Value *int64x2 = Nucleus::createBitCast(cast.value, Long2::getType());
-		Value *int64 = Nucleus::createExtractElement(int64x2, 0);
+		Value *int64 = Nucleus::createExtractElement(int64x2, Long::getType(), 0);
 		Value *float2 = Nucleus::createBitCast(int64, Float2::getType());
 
 		storeValue(float2);
@@ -5542,12 +5612,12 @@ namespace sw
 
 	RValue<Float> Extract(RValue<Float4> x, int i)
 	{
-		return RValue<Float>(Nucleus::createExtractElement(x.value, i));
+		return RValue<Float>(Nucleus::createExtractElement(x.value, Float::getType(), i));
 	}
 
 	RValue<Float4> Swizzle(RValue<Float4> x, unsigned char select)
 	{
-		return RValue<Float4>(Nucleus::createSwizzle(x.value, select));
+		return RValue<Float4>(createSwizzle4(x.value, select));
 	}
 
 	RValue<Float4> ShuffleLowHigh(RValue<Float4> x, RValue<Float4> y, unsigned char imm)
@@ -5568,7 +5638,7 @@ namespace sw
 	RValue<Float4> Mask(Float4 &lhs, RValue<Float4> rhs, unsigned char select)
 	{
 		Value *vector = lhs.loadValue();
-		Value *shuffle = Nucleus::createMask(vector, rhs.value, select);
+		Value *shuffle = createMask4(vector, rhs.value, select);
 		lhs.storeValue(shuffle);
 
 		return RValue<Float4>(shuffle);
@@ -5636,7 +5706,7 @@ namespace sw
 
 	Type *Float4::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_v4f32);
 	}
 
 	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, int offset)
