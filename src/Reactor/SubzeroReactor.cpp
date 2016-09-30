@@ -52,16 +52,34 @@ namespace
 
 namespace sw
 {
+	enum EmulatedType
+	{
+		EmulatedShift = 16,
+		EmulatedV4 = 4 << EmulatedShift,
+		EmulatedV8 = 8 << EmulatedShift,
+		EmulatedBits = EmulatedV4 | EmulatedV8,
+
+		v4i16 = Ice::IceType_v8i16 | EmulatedV4,
+		v8i8 =  Ice::IceType_v16i8 | EmulatedV8,
+		v4i8 =  Ice::IceType_v16i8 | EmulatedV4,
+	};
+
 	class Value : public Ice::Variable {};
 	class Constant : public Ice::Constant {};
 	class BasicBlock : public Ice::CfgNode {};
 
 	Ice::Type T(Type *t)
 	{
-		return (Ice::Type)reinterpret_cast<std::intptr_t>(t);
+		static_assert(Ice::IceType_NUM < EmulatedBits, "Ice::Type overlaps with our emulated types!");
+		return (Ice::Type)(reinterpret_cast<std::intptr_t>(t) & ~EmulatedBits);
 	}
 
 	Type *T(Ice::Type t)
+	{
+		return reinterpret_cast<Type*>(t);
+	}
+
+	Type *T(EmulatedType t)
 	{
 		return reinterpret_cast<Type*>(t);
 	}
@@ -314,7 +332,8 @@ namespace sw
 
 	void Nucleus::createRetVoid()
 	{
-		assert(false && "UNIMPLEMENTED");
+		Ice::InstRet *ret = Ice::InstRet::create(::function);
+		::basicBlock->appendInst(ret);
 	}
 
 	void Nucleus::createRet(Value *v)
@@ -461,21 +480,92 @@ namespace sw
 
 	Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
-		Ice::Variable *value = ::function->makeVariable(T(type));
-		auto load = Ice::InstLoad::create(::function, value, ptr, align);
+		int t = (int)reinterpret_cast<intptr_t>(type);
+		Ice::Variable *result = ::function->makeVariable(T(type));
+
+		if(t & EmulatedBits)
+		{
+			switch(t)
+			{
+			case v4i8:
+				{
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector32, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+					auto target = ::context->getConstantUndef(Ice::IceType_i32);
+					auto load = Ice::InstIntrinsicCall::create(::function, 1, result, target, intrinsic);
+					load->addArg(ptr);
+					::basicBlock->appendInst(load);
+					return V(result);
+				}
+			case v8i8:
+			case v4i16:
+				{
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector64, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+					auto target = ::context->getConstantUndef(Ice::IceType_i32);
+					auto load = Ice::InstIntrinsicCall::create(::function, 1, result, target, intrinsic);
+					load->addArg(ptr);
+					::basicBlock->appendInst(load);
+					return V(result);
+				}
+			default: assert(false && "UNIMPLEMENTED");
+			}
+		}
+
+		auto load = Ice::InstLoad::create(::function, result, ptr, align);
 		::basicBlock->appendInst(load);
-		return V(value);
+		return V(result);
 	}
 
 	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
-		auto store = Ice::InstStore::create(::function, value, ptr, align);
-		::basicBlock->appendInst(store);
+		int t = (int)reinterpret_cast<intptr_t>(type);
+
+		if(t & EmulatedBits)
+		{
+			switch(t)
+			{
+			case v4i8:
+				{
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector32, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
+					auto target = ::context->getConstantUndef(Ice::IceType_i32);
+					auto store = Ice::InstIntrinsicCall::create(::function, 2, nullptr, target, intrinsic);
+					store->addArg(value);
+					store->addArg(ptr);
+					::basicBlock->appendInst(store);
+					return V(value);
+				}
+			case v8i8:
+			case v4i16:
+				{
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector64, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
+					auto target = ::context->getConstantUndef(Ice::IceType_i32);
+					auto store = Ice::InstIntrinsicCall::create(::function, 2, nullptr, target, intrinsic);
+					store->addArg(value);
+					store->addArg(ptr);
+					::basicBlock->appendInst(store);
+					return V(value);
+				}
+			default: assert(false && "UNIMPLEMENTED");
+			}
+		}
+		else
+		{
+			assert(T(value->getType()) == type);
+
+			auto store = Ice::InstStore::create(::function, value, ptr, align);
+			::basicBlock->appendInst(store);
+		}
+
 		return value;
 	}
 
 	Constant *Nucleus::createStore(Constant *constant, Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
+		if(reinterpret_cast<intptr_t>(type) == v4i16)
+		{
+			assert(false && "UNIMPLEMENTED"); return nullptr;
+		}
+		else assert(T(constant->getType()) == type);
+
 		auto store = Ice::InstStore::create(::function, constant, ptr, align);
 		::basicBlock->appendInst(store);
 		return constant;
@@ -604,7 +694,13 @@ namespace sw
 
 	Value *Nucleus::createICmpSGE(Value *lhs, Value *rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(lhs->getType() == rhs->getType());
+
+		auto result = ::function->makeVariable(Ice::IceType_i1);
+		auto cmp = Ice::InstIcmp::create(::function, Ice::InstIcmp::Sge, result, lhs, rhs);
+		::basicBlock->appendInst(cmp);
+
+		return V(result);
 	}
 
 	Value *Nucleus::createICmpSLT(Value *lhs, Value *rhs)
@@ -746,7 +842,7 @@ namespace sw
 
 	void Nucleus::createUnreachable()
 	{
-		assert(false && "UNIMPLEMENTED");
+		//assert(false && "UNIMPLEMENTED");
 	}
 
 	static Value *createSwizzle4(Value *val, unsigned char select)
@@ -769,7 +865,8 @@ namespace sw
 
 	Constant *Nucleus::createConstantPointer(const void *address, Type *Ty, bool isConstant, unsigned int Align)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(sizeof(void*) == 8);
+		return C(::context->getConstantInt64(reinterpret_cast<intptr_t>(address)));
 	}
 
 	Type *Nucleus::getPointerType(Type *ElementType)
@@ -831,7 +928,7 @@ namespace sw
 
 	Constant *Nucleus::createConstantFloat(float x)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return C(::context->getConstantFloat(x));
 	}
 
 	Constant *Nucleus::createNullPointer(Type *Ty)
@@ -1682,7 +1779,7 @@ namespace sw
 
 	Type *Short::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i16);
 	}
 
 	UShort::UShort(Argument<UShort> argument)
@@ -1941,11 +2038,7 @@ namespace sw
 
 	Type *Byte4::getType()
 	{
-		#if 0
-			return VectorType::get(Byte::getType(), 4);
-		#else
-			return UInt::getType();   // FIXME
-		#endif
+		return T(v4i8);
 	}
 
 	Type *SByte4::getType()
@@ -1980,6 +2073,14 @@ namespace sw
 	}
 
 	Byte8::Byte8(const Byte8 &rhs)
+	{
+	//	xyzw.parent = this;
+
+		Value *value = rhs.loadValue();
+		storeValue(value);
+	}
+
+	Byte4::Byte4(const Reference<Byte4> &rhs)
 	{
 	//	xyzw.parent = this;
 
@@ -2175,7 +2276,7 @@ namespace sw
 
 	Type *Byte8::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(v8i8);
 	}
 
 	SByte8::SByte8()
@@ -2805,7 +2906,7 @@ namespace sw
 
 	Type *Short4::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(v4i16);
 	}
 
 	UShort4::UShort4(RValue<Int4> cast)
@@ -4766,7 +4867,7 @@ namespace sw
 
 	Type *Int4::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_v4i32);
 	}
 
 	UInt4::UInt4(RValue<Float4> cast)
@@ -5510,7 +5611,21 @@ namespace sw
 
 	RValue<Float4> Abs(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+		const auto FnName = ::context->getGlobalString("llvm.fabs.f32");
+		bool BadInstrinsic;
+		  const auto *Info = ::context->getIntrinsicsInfo().find(FnName, BadInstrinsic);
+		  assert(!BadInstrinsic);
+		  assert(Info);
+
+      //auto target = ::context->getConstantExternSym(FnName);
+		  auto target = ::context->getConstantUndef(Ice::IceType_i32);
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Fabs, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		auto fabs = Ice::InstIntrinsicCall::create(::function, 1, result, target, intrinsic);
+		fabs->addArg(x.value);
+		::basicBlock->appendInst(fabs);
+		return RValue<Float4>(V(result));
 	}
 
 	RValue<Float4> Max(RValue<Float4> x, RValue<Float4> y)

@@ -239,7 +239,7 @@ bool OGLESBasicTnL::RenderScene()
 	glNormalPointer(GL_FLOAT,sizeof(float) * 8, (unsigned char*) (sizeof(float) * 5));
 
 	// Draws a non-indexed triangle array
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+//	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 	// unbind the vertex buffer as we don't need it bound anymore
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
