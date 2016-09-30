@@ -538,7 +538,7 @@ namespace sw
 					break;
 				}
 			}
-
+			/*
 			Int x0 = *Pointer<Int>(&cursorX);
 			Int y0 = *Pointer<Int>(&cursorY);
 
@@ -566,7 +566,7 @@ namespace sw
 						d += dBytes;
 					}
 				}
-			}
+			}*/
 		}
 
 		return function(L"FrameBuffer");
