@@ -27,6 +27,11 @@
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/raw_os_ostream.h"
 
+//#include "src/IceAssemblerX86Base.h"
+#include "src/IceAssemblerX8664.h"
+#include "src/IceTargetLoweringX8664.h"
+#include "src/IceTargetLoweringX8664Traits.h"
+
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
@@ -213,6 +218,7 @@ namespace sw
 		::codegenMutex.lock();   // Reactor is currently not thread safe
 
 		Ice::ClFlags::Flags.setTargetArch(sizeof(void*) == 8 ? Ice::Target_X8664 : Ice::Target_X8632);
+		Ice::ClFlags::Flags.setTargetInstructionSet(Ice::X86InstructionSet_SSE4_1);
 		Ice::ClFlags::Flags.setOutFileType(Ice::FT_Elf);
 		Ice::ClFlags::Flags.setOptLevel(Ice::Opt_2);
 		Ice::ClFlags::Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
@@ -865,8 +871,14 @@ namespace sw
 
 	Constant *Nucleus::createConstantPointer(const void *address, Type *Ty, bool isConstant, unsigned int Align)
 	{
-		assert(sizeof(void*) == 8);
-		return C(::context->getConstantInt64(reinterpret_cast<intptr_t>(address)));
+		if(sizeof(void*) == 8)
+		{
+			return C(::context->getConstantInt64(reinterpret_cast<intptr_t>(address)));
+		}
+		else
+		{
+			return C(::context->getConstantInt32(reinterpret_cast<intptr_t>(address)));
+		}
 	}
 
 	Type *Nucleus::getPointerType(Type *ElementType)
@@ -2251,7 +2263,18 @@ namespace sw
 
 	RValue<Short4> UnpackLow(RValue<Byte8> x, RValue<Byte8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		int swizzle[16] = {0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7};
+
+		return RValue<Short4>(Nucleus::createShuffleVector(x.value, y.value, swizzle));
+
+		auto result = ::function->makeVariable(Ice::IceType_v16i8);
+		auto assign = Ice::InstAssign::create(::function, result, x.value);
+		::basicBlock->appendInst(assign);
+		using Insts = ::Ice::X8664::Insts<Ice::X8664::TargetX8664Traits>;
+		auto punpckl = Insts::Punpckl::create(::function, result, y.value);
+		::basicBlock->appendInst(punpckl);
+
+		return RValue<Short4>(V(result));
 	}
 
 	RValue<Short4> UnpackHigh(RValue<Byte8> x, RValue<Byte8> y)
