@@ -2258,7 +2258,9 @@ namespace sw
 
 	RValue<Short4> Unpack(RValue<Byte4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		int swizzle[16] = { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7 };
+
+		return RValue<Short4>(Nucleus::createShuffleVector(x.value, x.value, swizzle));
 	}
 
 	RValue<Short4> UnpackLow(RValue<Byte8> x, RValue<Byte8> y)
@@ -2267,14 +2269,14 @@ namespace sw
 
 		return RValue<Short4>(Nucleus::createShuffleVector(x.value, y.value, swizzle));
 
-		auto result = ::function->makeVariable(Ice::IceType_v16i8);
+		/*auto result = ::function->makeVariable(Ice::IceType_v16i8);
 		auto assign = Ice::InstAssign::create(::function, result, x.value);
 		::basicBlock->appendInst(assign);
 		using Insts = ::Ice::X8664::Insts<Ice::X8664::TargetX8664Traits>;
 		auto punpckl = Insts::Punpckl::create(::function, result, y.value);
 		::basicBlock->appendInst(punpckl);
 
-		return RValue<Short4>(V(result));
+		return RValue<Short4>(V(result));*/
 	}
 
 	RValue<Short4> UnpackHigh(RValue<Byte8> x, RValue<Byte8> y)
@@ -2758,9 +2760,11 @@ namespace sw
 
 	RValue<Short4> operator>>(RValue<Short4> lhs, unsigned char rhs)
 	{
-	//	return RValue<Short4>(Nucleus::createAShr(lhs.value, rhs.value));
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v8i16);
+		Ice::InstArithmetic *ashr = Ice::InstArithmetic::create(::function, Ice::InstArithmetic::Ashr, result, lhs.value, ::context->getConstantInt32(rhs));
+		::basicBlock->appendInst(ashr);
 
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		return RValue<UShort4>(V(result));
 	}
 
 	RValue<Short4> operator<<(RValue<Short4> lhs, RValue<Long1> rhs)
@@ -3075,7 +3079,11 @@ namespace sw
 
 	RValue<UShort4> operator>>(RValue<UShort4> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(V(nullptr));
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v8i16);
+		Ice::InstArithmetic *lshr = Ice::InstArithmetic::create(::function, Ice::InstArithmetic::Lshr, result, lhs.value, ::context->getConstantInt32(rhs));
+		::basicBlock->appendInst(lshr);
+
+		return RValue<UShort4>(V(result));
 	}
 
 	RValue<UShort4> operator<<(RValue<UShort4> lhs, RValue<Long1> rhs)
@@ -3150,7 +3158,7 @@ namespace sw
 
 	Type *UShort4::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(v4i16);
 	}
 
 	Short8::Short8(short c0, short c1, short c2, short c3, short c4, short c5, short c6, short c7)
