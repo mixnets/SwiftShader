@@ -46,7 +46,7 @@ int main()
 			Int z = 4;
 
 			Pointer<Byte8> w = As<Pointer<Byte8>>(p);
-			Short4 q = UnpackLow(*w, *w);
+			Short4 q = UnpackLow(*w, *w) >> 4;
 
 			For(Int i = 0, i < 10, i++)
 			{
