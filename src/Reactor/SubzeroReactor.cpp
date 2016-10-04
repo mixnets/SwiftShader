@@ -106,6 +106,118 @@ namespace sw
 
 	Optimization optimization[10] = {InstructionCombining, Disabled};
 
+	static inline Elf32_Shdr *elf_sheader(Elf32_Ehdr *hdr)
+	{
+		return (Elf32_Shdr *)((int)hdr + hdr->e_shoff);
+	}
+ 
+	static inline Elf32_Shdr *elf_section(Elf32_Ehdr *hdr, int idx)
+	{
+		return &elf_sheader(hdr)[idx];
+	}
+
+	#define ELF_RELOC_ERR -1
+	#define DO_386_32(S, A)	((S) + (A))
+	#define DO_386_PC32(S, A, P)	((S) + (A) - (P))
+
+	void *elf_lookup_symbol(const char *name)
+	{
+		return nullptr;
+	}
+
+	static int elf_get_symval(Elf32_Ehdr *hdr, int table, uint32_t idx)
+	{
+		if(table == SHN_UNDEF || idx == SHN_UNDEF) return 0;
+		Elf32_Shdr *symtab = elf_section(hdr, table);
+ 
+		uint32_t symtab_entries = symtab->sh_size / symtab->sh_entsize;
+		if(idx >= symtab_entries)
+		{
+			ERROR("Symbol Index out of Range (%d:%u).\n", table, idx);
+			return ELF_RELOC_ERR;
+		}
+ 
+		int symaddr = (int)hdr + symtab->sh_offset;
+		Elf32_Sym *symbol = &((Elf32_Sym *)symaddr)[idx];
+
+		if(symbol->st_shndx == SHN_UNDEF)
+		{
+			// External symbol, lookup value
+			Elf32_Shdr *strtab = elf_section(hdr, symtab->sh_link);
+			const char *name = (const char *)hdr + strtab->sh_offset + symbol->st_name;
+ 
+			extern void *elf_lookup_symbol(const char *name);
+			void *target = elf_lookup_symbol(name);
+ 
+			if(target == NULL) {
+				// Extern symbol not found
+				if(symbol->getBinding() & STB_WEAK)
+				{
+					// Weak symbol initialized as 0
+					return 0;
+				}
+				else
+				{
+					ERROR("Undefined External Symbol : %s.\n", name);
+					return ELF_RELOC_ERR;
+				}
+			}
+			else
+			{
+				return (int)target;
+			}
+		}
+		else if(symbol->st_shndx == SHN_ABS)
+		{
+			// Absolute symbol
+			return symbol->st_value;
+		}
+		else
+		{
+			// Internally defined symbol
+			Elf32_Shdr *target = elf_section(hdr, symbol->st_shndx);
+			return (int)hdr + symbol->st_value + target->sh_offset;
+		}
+	}
+
+	static int elf_do_reloc(Elf32_Ehdr *hdr, Elf32_Rel *rel, Elf32_Shdr *reltab)
+	{
+		Elf32_Shdr *target = elf_section(hdr, reltab->sh_info);
+ 
+		int addr = (intptr_t)hdr + target->sh_offset;
+		int *ref = (int *)(addr + rel->r_offset);
+
+		// Symbol value
+		int symval = 0;
+		if(rel->getSymbol() != SHN_UNDEF)
+		{
+			symval = elf_get_symval(hdr, reltab->sh_link, rel->getSymbol());
+			if(symval == ELF_RELOC_ERR) return ELF_RELOC_ERR;
+		}
+
+		// Relocate based on type
+		switch(rel->getType())
+		{
+		case R_386_NONE:
+			// No relocation
+			break;
+		case R_386_32:
+			// Symbol + Offset
+			*ref = DO_386_32(symval, *ref);
+			break;
+		case R_386_PC32:
+			// Symbol + Offset - Section Offset
+			*ref = DO_386_PC32(symval, *ref, (int)ref);
+			break;
+		default:
+			// Relocation type not supported, display error and return
+			ERROR("Unsupported Relocation Type (%d).\n", rel->getType());
+			return ELF_RELOC_ERR;
+		}
+
+		return symval;
+	}
+
 	void *loadImage(uint8_t *const elfImage)
 	{
 		using ElfHeader = std::conditional<sizeof(void*) == 8, Elf64_Ehdr, Elf32_Ehdr>::type;
@@ -119,12 +231,30 @@ namespace sw
 		using SectionHeader = std::conditional<sizeof(void*) == 8, Elf64_Shdr, Elf32_Shdr>::type;
 		SectionHeader *sectionHeader = (SectionHeader*)(elfImage + elfHeader->e_shoff);
 		void *entry = nullptr;
+		SectionHeader *relocations = nullptr;
+		SectionHeader *symbols = nullptr;
 
 		for(int i = 0; i < elfHeader->e_shnum; i++)
 		{
 			if(sectionHeader[i].sh_type == SHT_PROGBITS && sectionHeader[i].sh_flags & SHF_EXECINSTR)
 			{
 				entry = elfImage + sectionHeader[i].sh_offset;
+			}
+
+			if(sectionHeader[i].sh_type == SHT_REL && sectionHeader[i].sh_size > 0)
+			{
+				relocations = &sectionHeader[i];
+
+				for(int idx = 0; idx < relocations->sh_size / relocations->sh_entsize; idx++)
+				{
+					Elf32_Rel *reltab = &((Elf32_Rel *)(elfImage + relocations->sh_offset))[idx];
+					int result = elf_do_reloc(elfHeader, reltab, relocations);
+				}
+			}
+
+			if(sectionHeader[i].sh_type == SHT_SYMTAB)
+			{
+				symbols = &sectionHeader[i];
 			}
 		}
 
@@ -201,8 +331,8 @@ namespace sw
 
 		const void *getEntry() override
 		{
-			VirtualProtect(&buffer[0], buffer.size(), PAGE_EXECUTE_READ, &oldProtection);
-			position = std::numeric_limits<std::size_t>::max();  // Can't write more data after this
+			VirtualProtect(&buffer[0], buffer.size(), PAGE_EXECUTE_READWRITE, &oldProtection);
+			position = std::numeric_limits<std::size_t>::max();  // Can't stream more data after this
 
 			return loadImage(&buffer[0]);
 		}
@@ -217,11 +347,14 @@ namespace sw
 	{
 		::codegenMutex.lock();   // Reactor is currently not thread safe
 
-		Ice::ClFlags::Flags.setTargetArch(sizeof(void*) == 8 ? Ice::Target_X8664 : Ice::Target_X8632);
-		Ice::ClFlags::Flags.setTargetInstructionSet(Ice::X86InstructionSet_SSE4_1);
-		Ice::ClFlags::Flags.setOutFileType(Ice::FT_Elf);
-		Ice::ClFlags::Flags.setOptLevel(Ice::Opt_2);
-		Ice::ClFlags::Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
+		Ice::ClFlags &Flags = Ice::ClFlags::Flags;
+		Ice::ClFlags::getParsedClFlags(Flags);
+
+		Flags.setTargetArch(sizeof(void*) == 8 ? Ice::Target_X8664 : Ice::Target_X8632);
+		Flags.setTargetInstructionSet(Ice::X86InstructionSet_SSE4_1);
+		Flags.setOutFileType(Ice::FT_Elf);
+		Flags.setOptLevel(Ice::Opt_2);
+		Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
 
 		std::unique_ptr<Ice::Ostream> cout(new llvm::raw_os_ostream(std::cout));
 
@@ -264,12 +397,22 @@ namespace sw
 		::function->setFunctionName(Ice::GlobalString::createWithString(::context, asciiName));
 
 		::function->translate();
+		::context->accumulateGlobals(::function->getGlobalInits());
+		//::context->emitItems();
+		//::function->emit();
 
 		::context->emitFileHeader();
 		::function->emitIAS();
 		auto assembler = ::function->releaseAssembler();
-		::context->getObjectWriter()->writeFunctionCode(::function->getFunctionName(), false, assembler.get());
-		::context->getObjectWriter()->writeNonUserSections();
+		auto objectWriter = ::context->getObjectWriter();
+		assembler->alignFunction();
+		objectWriter->writeFunctionCode(::function->getFunctionName(), false, assembler.get());
+		//objectWriter->writeConstantPool<Ice::ConstantInteger32>(Ice::IceType_i32);
+		::context->lowerGlobals("last");
+		//::context->lowerConstants();
+		//::context->lowerJumpTables();
+		objectWriter->setUndefinedSyms(::context->getConstantExternSyms());
+		objectWriter->writeNonUserSections();
 
 		return ::routine;
 	}
@@ -495,7 +638,7 @@ namespace sw
 			{
 			case v4i8:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector32, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector32, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
 					auto load = Ice::InstIntrinsicCall::create(::function, 1, result, target, intrinsic);
 					load->addArg(ptr);
@@ -505,7 +648,7 @@ namespace sw
 			case v8i8:
 			case v4i16:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector64, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector64, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
 					auto load = Ice::InstIntrinsicCall::create(::function, 1, result, target, intrinsic);
 					load->addArg(ptr);
@@ -930,7 +1073,7 @@ namespace sw
 
 	Constant *Nucleus::createConstantShort(short i)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return C(::context->getConstantInt16(i));
 	}
 
 	Constant *Nucleus::createConstantShort(unsigned short i)
@@ -2616,9 +2759,13 @@ namespace sw
 
 	Short4::Short4(short x, short y, short z, short w)
 	{
-	//	xyzw.parent = this;
+		Constant *constantVector[4];
+		constantVector[0] = Nucleus::createConstantShort(x);
+		constantVector[1] = Nucleus::createConstantShort(y);
+		constantVector[2] = Nucleus::createConstantShort(z);
+		constantVector[3] = Nucleus::createConstantShort(w);
 
-		assert(false && "UNIMPLEMENTED");
+		storeValue(Nucleus::createConstantVector(constantVector, 4));
 	}
 
 	Short4::Short4(RValue<Short4> rhs)
