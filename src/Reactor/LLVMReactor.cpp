@@ -759,7 +759,7 @@ namespace sw
 		return V(llvm::Constant::getNullValue(Ty));
 	}
 
-	Value *Nucleus::createConstantInt(int64_t i)
+	Value *Nucleus::createConstantLong(int64_t i)
 	{
 		return V(llvm::ConstantInt::get(Type::getInt64Ty(*::context), i, true));
 	}
@@ -801,7 +801,7 @@ namespace sw
 
 	Value *Nucleus::createConstantFloat(float x)
 	{
-		return V(ConstantFP::get(Float::getType(), x));
+		return V(llvm::ConstantFP::get(Float::getType(), x));
 	}
 
 	Value *Nucleus::createNullPointer(Type *Ty)
@@ -809,9 +809,30 @@ namespace sw
 		return V(llvm::ConstantPointerNull::get(llvm::PointerType::get(Ty, 0)));
 	}
 
-	Value *Nucleus::createConstantVector(Value *const *Vals, unsigned NumVals)
+	Value *Nucleus::createConstantVector(const int64_t *constants, Type *type, unsigned int numConstants)
 	{
-		return V(llvm::ConstantVector::get(llvm::ArrayRef<llvm::Constant*>(reinterpret_cast<llvm::Constant *const*>(Vals), NumVals)));
+		assert(numConstants <= 16);
+		llvm::Constant *constantVector[16];
+
+		for(unsigned int i = 0; i < numConstants; i++)
+		{
+			constantVector[i] = llvm::ConstantInt::get(type, constants[i]);
+		}
+
+		return V(llvm::ConstantVector::get(llvm::ArrayRef<llvm::Constant*>(constantVector, numConstants)));
+	}
+
+	Value *Nucleus::createConstantVector(const double *constants, Type *type, unsigned int numConstants)
+	{
+		assert(numConstants <= 8);
+		llvm::Constant *constantVector[8];
+
+		for(unsigned int i = 0; i < numConstants; i++)
+		{
+			constantVector[i] = llvm::ConstantFP::get(type, constants[i]);
+		}
+
+		return V(llvm::ConstantVector::get(llvm::ArrayRef<llvm::Constant*>(constantVector, numConstants)));
 	}
 
 	Type *Void::getType()
@@ -1952,16 +1973,8 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[8];
-		constantVector[0] = Nucleus::createConstantByte(x0);
-		constantVector[1] = Nucleus::createConstantByte(x1);
-		constantVector[2] = Nucleus::createConstantByte(x2);
-		constantVector[3] = Nucleus::createConstantByte(x3);
-		constantVector[4] = Nucleus::createConstantByte(x4);
-		constantVector[5] = Nucleus::createConstantByte(x5);
-		constantVector[6] = Nucleus::createConstantByte(x6);
-		constantVector[7] = Nucleus::createConstantByte(x7);
-		Value *vector = V(Nucleus::createConstantVector(constantVector, 8));
+		int64_t constantVector[8] = {x0, x1, x2, x3, x4, x5, x6, x7};
+		Value *vector = V(Nucleus::createConstantVector(constantVector, Byte::getType(), 8));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -1970,16 +1983,19 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[8];
-		constantVector[0] = Nucleus::createConstantByte((unsigned char)(x >>  0));
-		constantVector[1] = Nucleus::createConstantByte((unsigned char)(x >>  8));
-		constantVector[2] = Nucleus::createConstantByte((unsigned char)(x >> 16));
-		constantVector[3] = Nucleus::createConstantByte((unsigned char)(x >> 24));
-		constantVector[4] = Nucleus::createConstantByte((unsigned char)(x >> 32));
-		constantVector[5] = Nucleus::createConstantByte((unsigned char)(x >> 40));
-		constantVector[6] = Nucleus::createConstantByte((unsigned char)(x >> 48));
-		constantVector[7] = Nucleus::createConstantByte((unsigned char)(x >> 56));
-		Value *vector = V(Nucleus::createConstantVector(constantVector, 8));
+		int64_t constantVector[8] =
+		{
+			(unsigned char)(x >>  0),
+			(unsigned char)(x >>  8),
+			(unsigned char)(x >> 16),
+			(unsigned char)(x >> 24),
+			(unsigned char)(x >> 32),
+			(unsigned char)(x >> 40),
+			(unsigned char)(x >> 48),
+			(unsigned char)(x >> 56)
+		};
+
+		Value *vector = V(Nucleus::createConstantVector(constantVector, Byte::getType(), 8));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -2271,16 +2287,8 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[8];
-		constantVector[0] = Nucleus::createConstantByte(x0);
-		constantVector[1] = Nucleus::createConstantByte(x1);
-		constantVector[2] = Nucleus::createConstantByte(x2);
-		constantVector[3] = Nucleus::createConstantByte(x3);
-		constantVector[4] = Nucleus::createConstantByte(x4);
-		constantVector[5] = Nucleus::createConstantByte(x5);
-		constantVector[6] = Nucleus::createConstantByte(x6);
-		constantVector[7] = Nucleus::createConstantByte(x7);
-		Value *vector = V(Nucleus::createConstantVector(constantVector, 8));
+		int64_t constantVector[8] = {x0, x1, x2, x3, x4, x5, x6, x7};
+		Value *vector = V(Nucleus::createConstantVector(constantVector, Byte::getType(), 8));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -2289,16 +2297,19 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[8];
-		constantVector[0] = Nucleus::createConstantByte((unsigned char)(x >>  0));
-		constantVector[1] = Nucleus::createConstantByte((unsigned char)(x >>  8));
-		constantVector[2] = Nucleus::createConstantByte((unsigned char)(x >> 16));
-		constantVector[3] = Nucleus::createConstantByte((unsigned char)(x >> 24));
-		constantVector[4] = Nucleus::createConstantByte((unsigned char)(x >> 32));
-		constantVector[5] = Nucleus::createConstantByte((unsigned char)(x >> 40));
-		constantVector[6] = Nucleus::createConstantByte((unsigned char)(x >> 48));
-		constantVector[7] = Nucleus::createConstantByte((unsigned char)(x >> 56));
-		Value *vector = V(Nucleus::createConstantVector(constantVector, 8));
+		int64_t constantVector[8] =
+		{
+			(unsigned char)(x >>  0),
+			(unsigned char)(x >>  8),
+			(unsigned char)(x >> 16),
+			(unsigned char)(x >> 24),
+			(unsigned char)(x >> 32),
+			(unsigned char)(x >> 40),
+			(unsigned char)(x >> 48),
+			(unsigned char)(x >> 56)
+		};
+
+		Value *vector = V(Nucleus::createConstantVector(constantVector, Byte::getType(), 8));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -2683,12 +2694,8 @@ namespace sw
 	{
 		//	xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantShort(xyzw);
-		constantVector[1] = Nucleus::createConstantShort(xyzw);
-		constantVector[2] = Nucleus::createConstantShort(xyzw);
-		constantVector[3] = Nucleus::createConstantShort(xyzw);
-		Value *vector = V(Nucleus::createConstantVector(constantVector, 4));
+		int64_t constantVector[4] = {xyzw, xyzw, xyzw, xyzw};
+		Value *vector = V(Nucleus::createConstantVector(constantVector, Short::getType(), 4));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -2697,12 +2704,8 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantShort(x);
-		constantVector[1] = Nucleus::createConstantShort(y);
-		constantVector[2] = Nucleus::createConstantShort(z);
-		constantVector[3] = Nucleus::createConstantShort(w);
-		Value *vector = V(Nucleus::createConstantVector(constantVector, 4));
+		int64_t constantVector[4] = {x, y, z, w};
+		Value *vector = V(Nucleus::createConstantVector(constantVector, Short::getType(), 4));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -3173,12 +3176,8 @@ namespace sw
 	{
 		//	xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantShort(xyzw);
-		constantVector[1] = Nucleus::createConstantShort(xyzw);
-		constantVector[2] = Nucleus::createConstantShort(xyzw);
-		constantVector[3] = Nucleus::createConstantShort(xyzw);
-		Value *vector = V(Nucleus::createConstantVector(constantVector, 4));
+		int64_t constantVector[4] = {xyzw, xyzw, xyzw, xyzw};
+		Value *vector = V(Nucleus::createConstantVector(constantVector, UShort::getType(), 4));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -3187,12 +3186,8 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantShort(x);
-		constantVector[1] = Nucleus::createConstantShort(y);
-		constantVector[2] = Nucleus::createConstantShort(z);
-		constantVector[3] = Nucleus::createConstantShort(w);
-		Value *vector = V(Nucleus::createConstantVector(constantVector, 4));
+		int64_t constantVector[4] = {x, y, z, w};
+		Value *vector = V(Nucleus::createConstantVector(constantVector, UShort::getType(), 4));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -3436,17 +3431,8 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[8];
-		constantVector[0] = Nucleus::createConstantShort(c0);
-		constantVector[1] = Nucleus::createConstantShort(c1);
-		constantVector[2] = Nucleus::createConstantShort(c2);
-		constantVector[3] = Nucleus::createConstantShort(c3);
-		constantVector[4] = Nucleus::createConstantShort(c4);
-		constantVector[5] = Nucleus::createConstantShort(c5);
-		constantVector[6] = Nucleus::createConstantShort(c6);
-		constantVector[7] = Nucleus::createConstantShort(c7);
-
-		storeValue(Nucleus::createConstantVector(constantVector, 8));
+		int64_t constantVector[8] = {c0, c1, c2, c3, c4, c5, c6, c7};
+		storeValue(Nucleus::createConstantVector(constantVector, Short::getType(), 8));
 	}
 
 	Short8::Short8(RValue<Short8> rhs)
@@ -3529,17 +3515,8 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[8];
-		constantVector[0] = Nucleus::createConstantShort(c0);
-		constantVector[1] = Nucleus::createConstantShort(c1);
-		constantVector[2] = Nucleus::createConstantShort(c2);
-		constantVector[3] = Nucleus::createConstantShort(c3);
-		constantVector[4] = Nucleus::createConstantShort(c4);
-		constantVector[5] = Nucleus::createConstantShort(c5);
-		constantVector[6] = Nucleus::createConstantShort(c6);
-		constantVector[7] = Nucleus::createConstantShort(c7);
-
-		storeValue(Nucleus::createConstantVector(constantVector, 8));
+		int64_t constantVector[8] = {c0, c1, c2, c3, c4, c5, c6, c7};
+		storeValue(Nucleus::createConstantVector(constantVector, UShort::getType(), 8));
 	}
 
 	UShort8::UShort8(RValue<UShort8> rhs)
@@ -4046,7 +4023,7 @@ namespace sw
 
 	RValue<Long> Long::operator=(int64_t rhs) const
 	{
-		return RValue<Long>(storeValue(Nucleus::createConstantInt(rhs)));
+		return RValue<Long>(storeValue(Nucleus::createConstantLong(rhs)));
 	}
 
 	RValue<Long> Long::operator=(RValue<Long> rhs) const
@@ -4514,10 +4491,8 @@ namespace sw
 	{
 	//	xy.parent = this;
 
-		Value *constantVector[2];
-		constantVector[0] = Nucleus::createConstantInt(x);
-		constantVector[1] = Nucleus::createConstantInt(y);
-		Value *vector = V(Nucleus::createConstantVector(constantVector, 2));
+		int64_t constantVector[2] = {x, y};
+		Value *vector = V(Nucleus::createConstantVector(constantVector, Int::getType(), 2));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -4848,10 +4823,8 @@ namespace sw
 	{
 	//	xy.parent = this;
 
-		Value *constantVector[2];
-		constantVector[0] = Nucleus::createConstantInt(x);
-		constantVector[1] = Nucleus::createConstantInt(y);
-		Value *vector = V(Nucleus::createConstantVector(constantVector, 2));
+		int64_t constantVector[2] = {x, y};
+		Value *vector = V(Nucleus::createConstantVector(constantVector, UInt::getType(), 2));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -5242,13 +5215,8 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantInt(x);
-		constantVector[1] = Nucleus::createConstantInt(y);
-		constantVector[2] = Nucleus::createConstantInt(z);
-		constantVector[3] = Nucleus::createConstantInt(w);
-
-		storeValue(Nucleus::createConstantVector(constantVector, 4));
+		int64_t constantVector[4] = {x, y, z, w};
+		storeValue(Nucleus::createConstantVector(constantVector, Int::getType(), 4));
 	}
 
 	Int4::Int4(RValue<Int4> rhs)
@@ -5637,13 +5605,8 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantInt(x);
-		constantVector[1] = Nucleus::createConstantInt(y);
-		constantVector[2] = Nucleus::createConstantInt(z);
-		constantVector[3] = Nucleus::createConstantInt(w);
-
-		storeValue(Nucleus::createConstantVector(constantVector, 4));
+		int64_t constantVector[4] = {x, y, z, w};
+		storeValue(Nucleus::createConstantVector(constantVector, UInt::getType(), 4));
 	}
 
 	UInt4::UInt4(RValue<UInt4> rhs)
@@ -6312,13 +6275,8 @@ namespace sw
 	{
 		xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantFloat(x);
-		constantVector[1] = Nucleus::createConstantFloat(y);
-		constantVector[2] = Nucleus::createConstantFloat(z);
-		constantVector[3] = Nucleus::createConstantFloat(w);
-
-		storeValue(Nucleus::createConstantVector(constantVector, 4));
+		double constantVector[4] = {x, y, z, w};
+		storeValue(Nucleus::createConstantVector(constantVector, Float::getType(), 4));
 	}
 
 	Float4::Float4(RValue<Float4> rhs)
@@ -6477,14 +6435,8 @@ namespace sw
 	RValue<Float4> Abs(RValue<Float4> x)
 	{
 		Value *vector = Nucleus::createBitCast(x.value, Int4::getType());
-
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantInt(0x7FFFFFFF);
-		constantVector[1] = Nucleus::createConstantInt(0x7FFFFFFF);
-		constantVector[2] = Nucleus::createConstantInt(0x7FFFFFFF);
-		constantVector[3] = Nucleus::createConstantInt(0x7FFFFFFF);
-
-		Value *result = Nucleus::createAnd(vector, V(Nucleus::createConstantVector(constantVector, 4)));
+		int64_t constantVector[4] = {0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF};
+		Value *result = Nucleus::createAnd(vector, V(Nucleus::createConstantVector(constantVector, Int::getType(), 4)));
 
 		return RValue<Float4>(Nucleus::createBitCast(result, Float4::getType()));
 	}

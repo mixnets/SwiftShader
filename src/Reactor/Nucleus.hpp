@@ -151,8 +151,8 @@ namespace sw
 		static void createUnreachable();
 
 		// Constant values
-		static Value *createNullValue(Type *Ty);
-		static Value *createConstantInt(int64_t i);
+		static Value *createNullValue(Type *type);
+		static Value *createConstantLong(int64_t i);
 		static Value *createConstantInt(int i);
 		static Value *createConstantInt(unsigned int i);
 		static Value *createConstantBool(bool b);
@@ -161,11 +161,12 @@ namespace sw
 		static Value *createConstantShort(short i);
 		static Value *createConstantShort(unsigned short i);
 		static Value *createConstantFloat(float x);
-		static Value *createNullPointer(Type *Ty);
-		static Value *createConstantVector(Value *const *Vals, unsigned NumVals);
-		static Value *createConstantPointer(const void *external, Type *Ty, bool isConstant, unsigned int Align);
+		static Value *createNullPointer(Type *type);
+		static Value *createConstantVector(const int64_t *constants, Type *type);
+		static Value *createConstantVector(const double *constants, Type *type);
+		static Value *createConstantPointer(const void *external, Type *type, bool isConstant, unsigned int align);
 
-		static Type *getPointerType(Type *ElementType);
+		static Type *getPointerType(Type *elementType);
 
 	private:
 		void optimize();
