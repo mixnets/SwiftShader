@@ -423,20 +423,15 @@ namespace sw
 		::function->setFunctionName(Ice::GlobalString::createWithString(::context, asciiName));
 
 		::function->translate();
-		::context->accumulateGlobals(::function->getGlobalInits());
-		//::context->emitItems();
-		//::function->emit();
+		::context->getGlobals()->merge(::function->getGlobalInits().get());
 
 		::context->emitFileHeader();
 		::function->emitIAS();
 		auto assembler = ::function->releaseAssembler();
 		auto objectWriter = ::context->getObjectWriter();
-		//assembler->alignFunction();
+		assembler->alignFunction();
 		objectWriter->writeFunctionCode(::function->getFunctionName(), false, assembler.get());
-		//objectWriter->writeConstantPool<Ice::ConstantInteger32>(Ice::IceType_i32);
 		::context->lowerGlobals("last");
-		//::context->lowerConstants();
-		//::context->lowerJumpTables();
 		objectWriter->setUndefinedSyms(::context->getConstantExternSyms());
 		objectWriter->writeNonUserSections();
 
@@ -664,9 +659,10 @@ namespace sw
 			{
 			case v4i8:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector32, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
-					auto load = Ice::InstIntrinsicCall::create(::function, 1, result, target, intrinsic);
+					auto load = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+					load->addArg(::context->getConstantInt32(4));
 					load->addArg(ptr);
 					::basicBlock->appendInst(load);
 					return V(result);
@@ -674,9 +670,10 @@ namespace sw
 			case v8i8:
 			case v4i16:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector64, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
-					auto load = Ice::InstIntrinsicCall::create(::function, 1, result, target, intrinsic);
+					auto load = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+					load->addArg(::context->getConstantInt32(8));
 					load->addArg(ptr);
 					::basicBlock->appendInst(load);
 					return V(result);
@@ -700,9 +697,10 @@ namespace sw
 			{
 			case v4i8:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector32, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
-					auto store = Ice::InstIntrinsicCall::create(::function, 2, nullptr, target, intrinsic);
+					auto store = Ice::InstIntrinsicCall::create(::function, 3, nullptr, target, intrinsic);
+					store->addArg(::context->getConstantInt32(4));
 					store->addArg(value);
 					store->addArg(ptr);
 					::basicBlock->appendInst(store);
@@ -711,9 +709,10 @@ namespace sw
 			case v8i8:
 			case v4i16:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector64, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
+					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
-					auto store = Ice::InstIntrinsicCall::create(::function, 2, nullptr, target, intrinsic);
+					auto store = Ice::InstIntrinsicCall::create(::function, 3, nullptr, target, intrinsic);
+					store->addArg(::context->getConstantInt32(8));
 					store->addArg(value);
 					store->addArg(ptr);
 					::basicBlock->appendInst(store);
@@ -1054,7 +1053,7 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Value *Nucleus::createConstantInt(int64_t i)
+	Value *Nucleus::createConstantLong(int64_t i)
 	{
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
@@ -1104,36 +1103,85 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Value *Nucleus::createConstantVector(Value *const *Vals, unsigned NumVals)
+	Value *Nucleus::createConstantVector(const int64_t *c, Type *type)
 	{
-		//auto globals = ::function->getGlobalPool();
+		const int vectorSize = 16;
+		assert(Ice::typeWidthInBytes(T(type)) == vectorSize);
+		const int alignment = vectorSize;
+		auto globalPool = ::function->getGlobalPool();
 
-		static constexpr uint8_t NumElements = 16;
-		const char Initializer[NumElements] = {
-			0, 1, 2,  3,  4,  5,  6,  7,
-			8, 9, 10, 11, 12, 13, 14, 15,
-		};
+		Ice::VariableDeclaration::DataInitializer *dataInitializer = nullptr;
+		switch((int)reinterpret_cast<intptr_t>(type))
+		{
+		case Ice::IceType_v4i32:
+		case Ice::IceType_v4f32:
+			{
+				const int initializer[4] = {(int)c[0], (int)c[1], (int)c[2], (int)c[3]};
+				static_assert(sizeof(initializer) == vectorSize, "!");
+				dataInitializer = Ice::VariableDeclaration::DataInitializer::create(globalPool, (const char*)initializer, vectorSize);
+			}
+			break;
+		case Ice::IceType_v8i16:
+			{
+				const short initializer[8] = {(short)c[0], (short)c[1], (short)c[2], (short)c[3], (short)c[4], (short)c[5], (short)c[6], (short)c[7]};
+				static_assert(sizeof(initializer) == vectorSize, "!");
+				dataInitializer = Ice::VariableDeclaration::DataInitializer::create(globalPool, (const char*)initializer, vectorSize);
+			}
+			break;
+		case Ice::IceType_v16i8:
+			{
+				const char initializer[16] = {(char)c[0], (char)c[1], (char)c[2], (char)c[3], (char)c[4], (char)c[5], (char)c[6], (char)c[7], (char)c[8], (char)c[9], (char)c[10], (char)c[11], (char)c[12], (char)c[13], (char)c[14], (char)c[15]};
+				static_assert(sizeof(initializer) == vectorSize, "!");
+				dataInitializer = Ice::VariableDeclaration::DataInitializer::create(globalPool, (const char*)initializer, vectorSize);
+			}
+			break;
+		case v4i16:
+			{
+				const short initializer[8] = {(short)c[0], (short)c[1], (short)c[2], (short)c[3], 0, 0, 0, 0};
+				static_assert(sizeof(initializer) == vectorSize, "!");
+				dataInitializer = Ice::VariableDeclaration::DataInitializer::create(globalPool, (const char*)initializer, vectorSize);
+			}
+			break;
+		case v8i8:
+			{
+				const char initializer[16] = {(char)c[0], (char)c[1], (char)c[2], (char)c[3], (char)c[4], (char)c[5], (char)c[6], (char)c[7], 0, 0, 0, 0, 0, 0, 0, 0};
+				static_assert(sizeof(initializer) == vectorSize, "!");
+				dataInitializer = Ice::VariableDeclaration::DataInitializer::create(globalPool, (const char*)initializer, vectorSize);
+			}
+			break;
+		case v4i8:
+			{
+				const char initializer[16] = {(char)c[0], (char)c[1], (char)c[2], (char)c[3], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+				static_assert(sizeof(initializer) == vectorSize, "!");
+				dataInitializer = Ice::VariableDeclaration::DataInitializer::create(globalPool, (const char*)initializer, vectorSize);
+			}
+			break;
+		default:
+			assert(false && "Unknown constant vector type" && type);
+		}
 
-		static constexpr Ice::Type V4VectorType = Ice::IceType_v4i32;
-		const uint32_t MaskAlignment = Ice::typeWidthInBytes(V4VectorType);
-		auto *Mask = Ice::VariableDeclaration::create(function->getGlobalPool());
+		auto name = Ice::GlobalString::createWithoutString(::context);
+		auto *variableDeclaration = Ice::VariableDeclaration::create(globalPool);
+		variableDeclaration->setName(name);
+		variableDeclaration->setAlignment(alignment);
+		variableDeclaration->setIsConstant(true);
+		variableDeclaration->addInitializer(dataInitializer);
 		
-		static int c = 0;
-		c++;
-		auto string = Ice::GlobalString::createWithString(::context, 
-			"CV" + std::to_string(c));
-		Ice::GlobalString MaskName = string;
+		::function->addGlobal(variableDeclaration);
 
-		Mask->setIsConstant(true);
-		Mask->addInitializer(Ice::VariableDeclaration::DataInitializer::create(
-			::function->getGlobalPool(), Initializer, NumElements));
-		Mask->setName(MaskName);
-		// Mask needs to be 16-byte aligned, or pshufb will seg fault.
-		Mask->setAlignment(MaskAlignment);
-		::function->addGlobal(Mask);
+		constexpr int32_t offset = 0;
+		Ice::Operand *ptr = ::context->getConstantSym(offset, name);
 
-		constexpr int32_t Offset = 0;
-		return createAssign(::context->getConstantSym(Offset, MaskName));
+		Ice::Variable *result = ::function->makeVariable(T(type));
+		auto load = Ice::InstLoad::create(::function, result, ptr, alignment);
+		::basicBlock->appendInst(load);
+
+		return V(result);
+	}
+
+	Value *Nucleus::createConstantVector(const double *constants, Type *type)
+	{
+		return createConstantVector((const int64_t*)constants, type);
 	}
 
 	Type *Void::getType()
@@ -2799,13 +2847,8 @@ namespace sw
 
 	Short4::Short4(short x, short y, short z, short w)
 	{
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantShort(x);
-		constantVector[1] = Nucleus::createConstantShort(y);
-		constantVector[2] = Nucleus::createConstantShort(z);
-		constantVector[3] = Nucleus::createConstantShort(w);
-
-		storeValue(Nucleus::createConstantVector(constantVector, 4));
+		int64_t constantVector[4] = {x, y, z, w};
+		storeValue(Nucleus::createConstantVector(constantVector, Short4::getType()));
 	}
 
 	Short4::Short4(RValue<Short4> rhs)
@@ -3888,7 +3931,7 @@ namespace sw
 
 	RValue<Long> Long::operator=(int64_t rhs) const
 	{
-		return RValue<Long>(storeValue(Nucleus::createConstantInt(rhs)));
+		return RValue<Long>(storeValue(Nucleus::createConstantLong(rhs)));
 	}
 
 	RValue<Long> Long::operator=(RValue<Long> rhs) const
@@ -4784,18 +4827,10 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantInt(x);
-		constantVector[1] = Nucleus::createConstantInt(y);
-		constantVector[2] = Nucleus::createConstantInt(z);
-		constantVector[3] = Nucleus::createConstantInt(w);
-
-		Value *ptr = Nucleus::createConstantVector(constantVector, 4);
-		//Nucleus::createLoad(c, T(Ice::IceType_v4i32));
-		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4i32);
-		auto load = Ice::InstLoad::create(::function, result, ptr, 16);
-		::basicBlock->appendInst(load);
-		storeValue(V(result));
+		int64_t constantVector[4] = {x, y, z, w};
+		Value *value = Nucleus::createConstantVector(constantVector, Int4::getType());
+		
+		storeValue(value);
 	}
 
 	Int4::Int4(RValue<Int4> rhs)
@@ -5129,13 +5164,8 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantInt(x);
-		constantVector[1] = Nucleus::createConstantInt(y);
-		constantVector[2] = Nucleus::createConstantInt(z);
-		constantVector[3] = Nucleus::createConstantInt(w);
-
-		storeValue(Nucleus::createConstantVector(constantVector, 4));
+		int64_t constantVector[4] = {x, y, z, w};
+		storeValue(Nucleus::createConstantVector(constantVector, UInt4::getType()));
 	}
 
 	UInt4::UInt4(RValue<UInt4> rhs)
@@ -5676,13 +5706,8 @@ namespace sw
 	{
 		xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantFloat(x);
-		constantVector[1] = Nucleus::createConstantFloat(y);
-		constantVector[2] = Nucleus::createConstantFloat(z);
-		constantVector[3] = Nucleus::createConstantFloat(w);
-
-		storeValue(Nucleus::createConstantVector(constantVector, 4));
+		double constantVector[4] = {x, y, z, w};
+		storeValue(Nucleus::createConstantVector(constantVector, Float4::getType()));
 	}
 
 	Float4::Float4(RValue<Float4> rhs)
