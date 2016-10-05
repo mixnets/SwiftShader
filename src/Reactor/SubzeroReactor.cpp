@@ -70,7 +70,6 @@ namespace sw
 	};
 
 	class Value : public Ice::Variable {};
-	class Constant : public Ice::Constant {};
 	class BasicBlock : public Ice::CfgNode {};
 
 	Ice::Type T(Type *t)
@@ -92,11 +91,6 @@ namespace sw
 	Value *V(Ice::Variable *v)
 	{
 		return reinterpret_cast<Value*>(v);
-	}
-
-	Constant *C(Ice::Constant *c)
-	{
-		return reinterpret_cast<Constant*>(c);
 	}
 
 	BasicBlock *B(Ice::CfgNode *b)
@@ -635,7 +629,7 @@ namespace sw
 		return createArithmetic(Ice::InstArithmetic::Xor, lhs, rhs);
 	}
 
-	Value *Nucleus::createAssign(Constant *constant)
+	static Value *createAssign(Ice::Constant *constant)
 	{
 		Ice::Variable *value = ::function->makeVariable(constant->getType());
 		auto assign = Ice::InstAssign::create(::function, value, constant);
@@ -739,26 +733,13 @@ namespace sw
 		return value;
 	}
 
-	Constant *Nucleus::createStore(Constant *constant, Value *ptr, Type *type, bool isVolatile, unsigned int align)
-	{
-		if(reinterpret_cast<intptr_t>(type) == v4i16)
-		{
-			assert(false && "UNIMPLEMENTED"); return nullptr;
-		}
-	//	else assert(T(constant->getType()) == type);
-
-		auto store = Ice::InstStore::create(::function, constant, ptr, align);
-		::basicBlock->appendInst(store);
-		return constant;
-	}
-
 	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index)
 	{
 		assert(index->getType() == Ice::IceType_i32);
 
 		if(!Ice::isByteSizedType(T(type)))
 		{
-			index = createMul(index, createAssign(createConstantInt((int)Ice::typeWidthInBytes(T(type)))));
+			index = createMul(index, createConstantInt((int)Ice::typeWidthInBytes(T(type))));
 		}
 
 		if(sizeof(void*) == 8)
@@ -1044,15 +1025,15 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Constant *Nucleus::createConstantPointer(const void *address, Type *Ty, bool isConstant, unsigned int Align)
+	Value *Nucleus::createConstantPointer(const void *address, Type *Ty, bool isConstant, unsigned int Align)
 	{
 		if(sizeof(void*) == 8)
 		{
-			return C(::context->getConstantInt64(reinterpret_cast<intptr_t>(address)));
+			return createAssign(::context->getConstantInt64(reinterpret_cast<intptr_t>(address)));
 		}
 		else
 		{
-			return C(::context->getConstantInt32(reinterpret_cast<intptr_t>(address)));
+			return createAssign(::context->getConstantInt32(reinterpret_cast<intptr_t>(address)));
 		}
 	}
 
@@ -1068,62 +1049,62 @@ namespace sw
 		}
 	}
 
-	Constant *Nucleus::createNullValue(Type *Ty)
+	Value *Nucleus::createNullValue(Type *Ty)
 	{
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Constant *Nucleus::createConstantInt(int64_t i)
+	Value *Nucleus::createConstantInt(int64_t i)
 	{
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Constant *Nucleus::createConstantInt(int i)
+	Value *Nucleus::createConstantInt(int i)
 	{
-		return C(::context->getConstantInt32(i));
+		return createAssign(::context->getConstantInt32(i));
 	}
 
-	Constant *Nucleus::createConstantInt(unsigned int i)
-	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
-	}
-
-	Constant *Nucleus::createConstantBool(bool b)
+	Value *Nucleus::createConstantInt(unsigned int i)
 	{
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Constant *Nucleus::createConstantByte(signed char i)
+	Value *Nucleus::createConstantBool(bool b)
 	{
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Constant *Nucleus::createConstantByte(unsigned char i)
+	Value *Nucleus::createConstantByte(signed char i)
 	{
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Constant *Nucleus::createConstantShort(short i)
-	{
-		return C(::context->getConstantInt16(i));
-	}
-
-	Constant *Nucleus::createConstantShort(unsigned short i)
+	Value *Nucleus::createConstantByte(unsigned char i)
 	{
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Constant *Nucleus::createConstantFloat(float x)
+	Value *Nucleus::createConstantShort(short i)
 	{
-		return C(::context->getConstantFloat(x));
+		return createAssign(::context->getConstantInt16(i));
 	}
 
-	Constant *Nucleus::createNullPointer(Type *Ty)
+	Value *Nucleus::createConstantShort(unsigned short i)
 	{
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Constant *Nucleus::createConstantVector(Constant *const *Vals, unsigned NumVals)
+	Value *Nucleus::createConstantFloat(float x)
+	{
+		return createAssign(::context->getConstantFloat(x));
+	}
+
+	Value *Nucleus::createNullPointer(Type *Ty)
+	{
+		assert(false && "UNIMPLEMENTED"); return nullptr;
+	}
+
+	Value *Nucleus::createConstantVector(Value *const *Vals, unsigned NumVals)
 	{
 		//auto globals = ::function->getGlobalPool();
 
@@ -1152,7 +1133,7 @@ namespace sw
 		::function->addGlobal(Mask);
 
 		constexpr int32_t Offset = 0;
-		return C(::context->getConstantSym(Offset, MaskName));
+		return createAssign(::context->getConstantSym(Offset, MaskName));
 	}
 
 	Type *Void::getType()
@@ -2818,7 +2799,7 @@ namespace sw
 
 	Short4::Short4(short x, short y, short z, short w)
 	{
-		Constant *constantVector[4];
+		Value *constantVector[4];
 		constantVector[0] = Nucleus::createConstantShort(x);
 		constantVector[1] = Nucleus::createConstantShort(y);
 		constantVector[2] = Nucleus::createConstantShort(z);
@@ -4803,13 +4784,13 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Constant *constantVector[4];
+		Value *constantVector[4];
 		constantVector[0] = Nucleus::createConstantInt(x);
 		constantVector[1] = Nucleus::createConstantInt(y);
 		constantVector[2] = Nucleus::createConstantInt(z);
 		constantVector[3] = Nucleus::createConstantInt(w);
 
-		Constant *ptr = Nucleus::createConstantVector(constantVector, 4);
+		Value *ptr = Nucleus::createConstantVector(constantVector, 4);
 		//Nucleus::createLoad(c, T(Ice::IceType_v4i32));
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4i32);
 		auto load = Ice::InstLoad::create(::function, result, ptr, 16);
@@ -5148,7 +5129,7 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Constant *constantVector[4];
+		Value *constantVector[4];
 		constantVector[0] = Nucleus::createConstantInt(x);
 		constantVector[1] = Nucleus::createConstantInt(y);
 		constantVector[2] = Nucleus::createConstantInt(z);
@@ -5695,7 +5676,7 @@ namespace sw
 	{
 		xyzw.parent = this;
 
-		Constant *constantVector[4];
+		Value *constantVector[4];
 		constantVector[0] = Nucleus::createConstantFloat(x);
 		constantVector[1] = Nucleus::createConstantFloat(y);
 		constantVector[2] = Nucleus::createConstantFloat(z);
