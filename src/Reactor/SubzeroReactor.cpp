@@ -1054,7 +1054,7 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Value *Nucleus::createConstantInt(int64_t i)
+	Value *Nucleus::createConstantLong(int64_t i)
 	{
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
@@ -3888,7 +3888,7 @@ namespace sw
 
 	RValue<Long> Long::operator=(int64_t rhs) const
 	{
-		return RValue<Long>(storeValue(Nucleus::createConstantInt(rhs)));
+		return RValue<Long>(storeValue(Nucleus::createConstantLong(rhs)));
 	}
 
 	RValue<Long> Long::operator=(RValue<Long> rhs) const
