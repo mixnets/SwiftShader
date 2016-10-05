@@ -1054,7 +1054,7 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Value *Nucleus::createConstantInt(int64_t i)
+	Value *Nucleus::createConstantLong(int64_t i)
 	{
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
@@ -1104,7 +1104,7 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Value *Nucleus::createConstantVector(Value *const *Vals, unsigned NumVals)
+	Value *Nucleus::createConstantVector(const int64_t *constants, Type *type, unsigned int numConstants)
 	{
 		//auto globals = ::function->getGlobalPool();
 
@@ -1134,6 +1134,11 @@ namespace sw
 
 		constexpr int32_t Offset = 0;
 		return createAssign(::context->getConstantSym(Offset, MaskName));
+	}
+
+	Value *Nucleus::createConstantVector(const double *constants, Type *type, unsigned int numConstants)
+	{
+		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
 	Type *Void::getType()
@@ -2799,13 +2804,8 @@ namespace sw
 
 	Short4::Short4(short x, short y, short z, short w)
 	{
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantShort(x);
-		constantVector[1] = Nucleus::createConstantShort(y);
-		constantVector[2] = Nucleus::createConstantShort(z);
-		constantVector[3] = Nucleus::createConstantShort(w);
-
-		storeValue(Nucleus::createConstantVector(constantVector, 4));
+		int64_t constantVector[4] = {x, y, z, w};
+		storeValue(Nucleus::createConstantVector(constantVector, Short::getType(), 4));
 	}
 
 	Short4::Short4(RValue<Short4> rhs)
@@ -3888,7 +3888,7 @@ namespace sw
 
 	RValue<Long> Long::operator=(int64_t rhs) const
 	{
-		return RValue<Long>(storeValue(Nucleus::createConstantInt(rhs)));
+		return RValue<Long>(storeValue(Nucleus::createConstantLong(rhs)));
 	}
 
 	RValue<Long> Long::operator=(RValue<Long> rhs) const
@@ -4784,13 +4784,8 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantInt(x);
-		constantVector[1] = Nucleus::createConstantInt(y);
-		constantVector[2] = Nucleus::createConstantInt(z);
-		constantVector[3] = Nucleus::createConstantInt(w);
-
-		Value *ptr = Nucleus::createConstantVector(constantVector, 4);
+		int64_t constantVector[4] = {x, y, z, w};
+		Value *ptr = Nucleus::createConstantVector(constantVector, Int::getType(), 4);
 		//Nucleus::createLoad(c, T(Ice::IceType_v4i32));
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4i32);
 		auto load = Ice::InstLoad::create(::function, result, ptr, 16);
@@ -5129,13 +5124,8 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantInt(x);
-		constantVector[1] = Nucleus::createConstantInt(y);
-		constantVector[2] = Nucleus::createConstantInt(z);
-		constantVector[3] = Nucleus::createConstantInt(w);
-
-		storeValue(Nucleus::createConstantVector(constantVector, 4));
+		int64_t constantVector[4] = {x, y, z, w};
+		storeValue(Nucleus::createConstantVector(constantVector, UInt::getType(), 4));
 	}
 
 	UInt4::UInt4(RValue<UInt4> rhs)
@@ -5676,13 +5666,8 @@ namespace sw
 	{
 		xyzw.parent = this;
 
-		Value *constantVector[4];
-		constantVector[0] = Nucleus::createConstantFloat(x);
-		constantVector[1] = Nucleus::createConstantFloat(y);
-		constantVector[2] = Nucleus::createConstantFloat(z);
-		constantVector[3] = Nucleus::createConstantFloat(w);
-
-		storeValue(Nucleus::createConstantVector(constantVector, 4));
+		double constantVector[4] = {x, y, z, w};
+		storeValue(Nucleus::createConstantVector(constantVector, Float::getType(), 4));
 	}
 
 	Float4::Float4(RValue<Float4> rhs)
