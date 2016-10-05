@@ -237,20 +237,24 @@ namespace sw
 		// Relocate based on type
 		switch(rela->getType())
 		{
-		case R_386_NONE:
+		case R_X86_64_NONE:
 			// No relocation
 			break;
-		case R_386_32:
-			// Symbol + Offset
-			*patchSite = *patchSite = (int32_t)((intptr_t)symval + *patchSite) + rela->r_addend;
-			break;
-		case R_386_PC32:
+	//	case R_X86_64_64:
+	//		// Symbol + Offset
+	//		*patchSite = *patchSite = (int32_t)((intptr_t)symval + *patchSite) + rela->r_addend;
+	//		break;
+		case R_X86_64_PC32:
 			// Symbol + Offset - Section Offset
 			*patchSite = (int32_t)((intptr_t)symval + *patchSite - (intptr_t)patchSite) + rela->r_addend;
 			break;
+		case R_X86_64_32S:
+			// Symbol + Offset
+			*patchSite = *patchSite = (int32_t)((intptr_t)symval + *patchSite) + rela->r_addend;
+			break;
 		default:
 			// Relocation type not supported, display error and return
-			assert(false && "Unsupported relocation type");
+			//assert(false && "Unsupported relocation type");
 			return nullptr;
 		}
 
@@ -741,7 +745,7 @@ namespace sw
 		{
 			assert(false && "UNIMPLEMENTED"); return nullptr;
 		}
-		else assert(T(constant->getType()) == type);
+	//	else assert(T(constant->getType()) == type);
 
 		auto store = Ice::InstStore::create(::function, constant, ptr, align);
 		::basicBlock->appendInst(store);
@@ -1121,7 +1125,34 @@ namespace sw
 
 	Constant *Nucleus::createConstantVector(Constant *const *Vals, unsigned NumVals)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		//auto globals = ::function->getGlobalPool();
+
+		static constexpr uint8_t NumElements = 16;
+		const char Initializer[NumElements] = {
+			0, 1, 2,  3,  4,  5,  6,  7,
+			8, 9, 10, 11, 12, 13, 14, 15,
+		};
+
+		static constexpr Ice::Type V4VectorType = Ice::IceType_v4i32;
+		const uint32_t MaskAlignment = Ice::typeWidthInBytes(V4VectorType);
+		auto *Mask = Ice::VariableDeclaration::create(function->getGlobalPool());
+		
+		static int c = 0;
+		c++;
+		auto string = Ice::GlobalString::createWithString(::context, 
+			"CV" + std::to_string(c));
+		Ice::GlobalString MaskName = string;
+
+		Mask->setIsConstant(true);
+		Mask->addInitializer(Ice::VariableDeclaration::DataInitializer::create(
+			::function->getGlobalPool(), Initializer, NumElements));
+		Mask->setName(MaskName);
+		// Mask needs to be 16-byte aligned, or pshufb will seg fault.
+		Mask->setAlignment(MaskAlignment);
+		::function->addGlobal(Mask);
+
+		constexpr int32_t Offset = 0;
+		return C(::context->getConstantSym(Offset, MaskName));
 	}
 
 	Type *Void::getType()
@@ -4778,7 +4809,12 @@ namespace sw
 		constantVector[2] = Nucleus::createConstantInt(z);
 		constantVector[3] = Nucleus::createConstantInt(w);
 
-		storeValue(Nucleus::createConstantVector(constantVector, 4));
+		Constant *ptr = Nucleus::createConstantVector(constantVector, 4);
+		//Nucleus::createLoad(c, T(Ice::IceType_v4i32));
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4i32);
+		auto load = Ice::InstLoad::create(::function, result, ptr, 16);
+		::basicBlock->appendInst(load);
+		storeValue(V(result));
 	}
 
 	Int4::Int4(RValue<Int4> rhs)
