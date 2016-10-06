@@ -1950,6 +1950,21 @@ namespace sw
 		return T(llvm::Type::getInt16Ty(*::context));
 	}
 
+	Byte4::Byte4(RValue<Byte8> cast)
+	{
+	//	xyzw.parent = this;
+
+		storeValue(Nucleus::createTrunc(Nucleus::createBitCast(cast.value, Long::getType()), Int::getType()));
+	}
+
+	Byte4::Byte4(const Reference<Byte4> &rhs)
+	{
+	//	xyzw.parent = this;
+
+		Value *value = rhs.loadValue();
+		storeValue(value);
+	}
+
 	Type *Byte4::getType()
 	{
 		#if 0
@@ -2621,6 +2636,34 @@ namespace sw
 	Type *SByte16::getType()
 	{
 		return T( VectorType::get(SByte::getType(), 16));
+	}
+
+	Short2::Short2(RValue<Short4> cast)
+	{
+		storeValue(Nucleus::createTrunc(Nucleus::createBitCast(cast.value, Long::getType()), UInt::getType()));
+	}
+
+	Type *Short2::getType()
+	{
+		#if 0
+			return T(VectorType::get(Short::getType(), 2));
+		#else
+			return UInt::getType();   // FIXME: LLVM doesn't manipulate it as one 32-bit block
+		#endif
+	}
+
+	UShort2::UShort2(RValue<UShort4> cast)
+	{
+		storeValue(Nucleus::createTrunc(Nucleus::createBitCast(cast.value, Long::getType()), UInt::getType()));
+	}
+
+	Type *UShort2::getType()
+	{
+		#if 0
+			return T(VectorType::get(UShort::getType(), 2));
+		#else
+			return UInt::getType();   // FIXME: LLVM doesn't manipulate it as one 32-bit block
+		#endif
 	}
 
 	Short4::Short4(RValue<Int> cast)

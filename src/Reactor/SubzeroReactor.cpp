@@ -60,11 +60,13 @@ namespace sw
 	enum EmulatedType
 	{
 		EmulatedShift = 16,
+		EmulatedV4 = 2 << EmulatedShift,
 		EmulatedV4 = 4 << EmulatedShift,
 		EmulatedV8 = 8 << EmulatedShift,
 		EmulatedBits = EmulatedV4 | EmulatedV8,
 
 		v4i16 = Ice::IceType_v8i16 | EmulatedV4,
+		v2i16 = Ice::IceType_v8i16 | EmulatedV2,
 		v8i8 =  Ice::IceType_v16i8 | EmulatedV8,
 		v4i8 =  Ice::IceType_v16i8 | EmulatedV4,
 	};
@@ -423,7 +425,12 @@ namespace sw
 		::function->setFunctionName(Ice::GlobalString::createWithString(::context, asciiName));
 
 		::function->translate();
-		::context->getGlobals()->merge(::function->getGlobalInits().get());
+		auto *globals = ::function->getGlobalInits().get();
+
+		if(globals)
+		{
+			::context->getGlobals()->merge(globals);
+		}
 
 		::context->emitFileHeader();
 		::function->emitIAS();
@@ -658,6 +665,7 @@ namespace sw
 			switch(t)
 			{
 			case v4i8:
+			case v2i16:
 				{
 					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
@@ -696,6 +704,7 @@ namespace sw
 			switch(t)
 			{
 			case v4i8:
+			case v2i16:
 				{
 					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
@@ -2279,6 +2288,21 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
+	Byte4::Byte4(RValue<Byte8> cast)
+	{
+	//	xyzw.parent = this;
+
+		storeValue(Nucleus::createBitCast(cast.value, getType()));
+	}
+
+	Byte4::Byte4(const Reference<Byte4> &rhs)
+	{
+	//	xyzw.parent = this;
+
+		Value *value = rhs.loadValue();
+		storeValue(value);
+	}
+
 	Type *Byte4::getType()
 	{
 		return T(v4i8);
@@ -2316,14 +2340,6 @@ namespace sw
 	}
 
 	Byte8::Byte8(const Byte8 &rhs)
-	{
-	//	xyzw.parent = this;
-
-		Value *value = rhs.loadValue();
-		storeValue(value);
-	}
-
-	Byte4::Byte4(const Reference<Byte4> &rhs)
 	{
 	//	xyzw.parent = this;
 
@@ -2811,6 +2827,26 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
+	Short2::Short2(RValue<Short4> cast)
+	{
+		storeValue(Nucleus::createBitCast(cast.value, getType()));
+	}
+
+	Type *Short2::getType()
+	{
+		return T(v2i16);
+	}
+
+	UShort2::UShort2(RValue<UShort4> cast)
+	{
+		storeValue(Nucleus::createBitCast(cast.value, getType()));
+	}
+
+	Type *UShort2::getType()
+	{
+		return T(v2i16);
+	}
+
 	Short4::Short4(RValue<Int> cast)
 	{
 		Value *extend = Nucleus::createZExt(cast.value, Long::getType());
@@ -2943,17 +2979,17 @@ namespace sw
 
 	RValue<Short4> operator+(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		return RValue<Short4>(Nucleus::createAdd(lhs.value, rhs.value));
 	}
 
 	RValue<Short4> operator-(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		return RValue<Short4>(Nucleus::createSub(lhs.value, rhs.value));
 	}
 
 	RValue<Short4> operator*(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		return RValue<Short4>(Nucleus::createMul(lhs.value, rhs.value));
 	}
 
 //	RValue<Short4> operator/(RValue<Short4> lhs, RValue<Short4> rhs)
@@ -2968,7 +3004,7 @@ namespace sw
 
 	RValue<Short4> operator&(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		return RValue<Short4>(Nucleus::createAnd(lhs.value, rhs.value));
 	}
 
 	RValue<Short4> operator|(RValue<Short4> lhs, RValue<Short4> rhs)
@@ -3138,7 +3174,7 @@ namespace sw
 
 	RValue<Short4> Swizzle(RValue<Short4> x, unsigned char select)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		return RValue<Short4>(createSwizzle4(x.value, select));
 	}
 
 	RValue<Short4> Insert(RValue<Short4> val, RValue<Short> element, int i)
@@ -3383,7 +3419,9 @@ namespace sw
 
 	RValue<Byte8> Pack(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(V(nullptr));
+		int swizzle[16] = {0, 16, 2, 18, 4, 20, 6, 22, 8, 24, 10, 26, 12, 28, 14, 30};
+
+		return RValue<Byte8>(Nucleus::createShuffleVector(As<Byte8>(x).value, As<Byte8>(y).value, swizzle));
 	}
 
 	Type *UShort4::getType()
@@ -3984,7 +4022,7 @@ namespace sw
 
 	Type *Long::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i64);
 	}
 
 	Long1::Long1(const RValue<UInt> cast)
@@ -4322,7 +4360,7 @@ namespace sw
 
 	Type *UInt::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i32);
 	}
 
 //	Int2::Int2(RValue<Int> cast)

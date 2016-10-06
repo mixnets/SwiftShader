@@ -349,7 +349,7 @@ namespace sw
 			{
 				UShort4 c0 = As<UShort4>(RoundShort4(c.zyxw));
 				Byte8 c1 = Pack(c0, c0);
-				*Pointer<UInt>(element) = UInt(As<Long>(c1));
+				*Pointer<Byte4>(element) = Byte4(c1);
 			}
 			else
 			{
@@ -365,7 +365,7 @@ namespace sw
 			{
 				UShort4 c0 = As<UShort4>(RoundShort4(c));
 				Byte8 c1 = Pack(c0, c0);
-				*Pointer<UInt>(element) = UInt(As<Long>(c1));
+				*Pointer<Byte4>(element) = Byte4(c1);
 			}
 			else
 			{
@@ -379,8 +379,9 @@ namespace sw
 			if(writeRGBA)
 			{
 				UShort4 c0 = As<UShort4>(RoundShort4(c.zyxw));
+				c0 |= Short4(0x0000, 0x0000, 0x0000, 0xFFFFu);
 				Byte8 c1 = Pack(c0, c0);
-				*Pointer<UInt>(element) = UInt(As<Long>(c1)) | 0xFF000000;
+				*Pointer<Byte4>(element) = Byte4(c1);
 			}
 			else
 			{
@@ -395,8 +396,9 @@ namespace sw
 			if(writeRGBA)
 			{
 				UShort4 c0 = As<UShort4>(RoundShort4(c));
+				c0 |= Short4(0x0000, 0x0000, 0x0000, 0xFFFFu);
 				Byte8 c1 = Pack(c0, c0);
-				*Pointer<UInt>(element) = UInt(As<Long>(c1)) | 0xFF000000;
+				*Pointer<Byte4>(element) = Byte4(c1);
 			}
 			else
 			{
@@ -511,7 +513,7 @@ namespace sw
 		case FORMAT_G16R16I:
 			if(writeR && writeG)
 			{
-				*Pointer<UInt>(element) = UInt(As<Long>(Short4(RoundInt(c))));
+				*Pointer<Short2>(element) = Short2(Short4(RoundInt(c)));
 			}
 			else
 			{
@@ -553,7 +555,7 @@ namespace sw
 		case FORMAT_G16R16:
 			if(writeR && writeG)
 			{
-				*Pointer<UInt>(element) = UInt(As<Long>(UShort4(RoundInt(c))));
+				*Pointer<UShort2>(element) = UShort2(UShort4(RoundInt(c)));
 			}
 			else
 			{

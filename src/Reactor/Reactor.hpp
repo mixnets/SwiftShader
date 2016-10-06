@@ -34,6 +34,8 @@ namespace sw
 	class SByte16;
 	class Short;
 	class UShort;
+	class Short2;
+	class UShort2;
 	class Short4;
 	class UShort4;
 	class Short8;
@@ -427,6 +429,8 @@ namespace sw
 	class Byte4 : public Variable<Byte4>
 	{
 	public:
+		explicit Byte4(RValue<Byte8> cast);
+
 	//	Byte4();
 	//	Byte4(int x, int y, int z, int w);
 	//	Byte4(RValue<Byte4> rhs);
@@ -706,6 +710,22 @@ namespace sw
 //	const SByte16 &operator++(const SByte16 &val);   // Pre-increment
 //	RValue<SByte16> operator--(const SByte16 &val, int);   // Post-decrement
 //	const SByte16 &operator--(const SByte16 &val);   // Pre-decrement
+
+	class Short2 : public Variable<Short2>
+	{
+	public:
+		explicit Short2(RValue<Short4> cast);
+
+		static Type *getType();
+	};
+
+	class UShort2 : public Variable<UShort2>
+	{
+	public:
+		explicit UShort2(RValue<UShort4> cast);
+
+		static Type *getType();
+	};
 
 	class Short4 : public Variable<Short4>
 	{
