@@ -91,8 +91,9 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SZTARGET=X8664;ALLOW_DUMP=0;ALLOW_TIMERS=0;ALLOW_LLVM_CL=0;ALLOW_LLVM_IR=0;ALLOW_LLVM_IR_AS_INPUT=0;ALLOW_MINIMAL_BUILD=0;ALLOW_WASM=0;ICE_THREAD_LOCAL_HACK=0;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(SolutionDir)third_party\llvm-subzero\include;D:\SwiftShader-master\third_party\pnacl-subzero\src;D:\SwiftShader-master\third_party\pnacl-subzero\unittest</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -106,8 +107,9 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SZTARGET=X8664;ALLOW_DUMP=0;ALLOW_TIMERS=0;ALLOW_LLVM_CL=0;ALLOW_LLVM_IR=0;ALLOW_LLVM_IR_AS_INPUT=0;ALLOW_MINIMAL_BUILD=0;ALLOW_WASM=0;ICE_THREAD_LOCAL_HACK=0;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(SolutionDir)third_party\llvm-subzero\include;D:\SwiftShader-master\third_party\pnacl-subzero\src;D:\SwiftShader-master\third_party\pnacl-subzero\unittest</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,6 +159,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\AssemblerX8632\XmmArith.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\AssemblerX8664\XmmArith.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\src\gtest-all.cc" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -16,6 +16,8 @@
 
 #include <cassert>
 
+#include "gtest/gtest.h"
+
 using namespace sw;
 
 int reference(int *p, int y)
@@ -33,7 +35,7 @@ int reference(int *p, int y)
 	return sum;
 }
 
-int main()
+int main(int argc, char **argv)
 {
 	Routine *routine = nullptr;
 
@@ -45,9 +47,9 @@ int main()
 			Int y = function.Arg<1>();
 			Int z = 4;
 
-			Pointer<UShort4> w = As<Pointer<UShort4>>(p);
-			UShort4 a = *w;
-			Byte8 b = Pack(a, a);
+			Pointer<Byte8> w = As<Pointer<Byte8>>(p);
+			Byte8 a = *w;
+			Short4 b = UnpackLow(a, a);
 
 			//Pointer<Int4> b = As<Pointer<Int4>>(p);
 			//*b = s;
@@ -78,6 +80,9 @@ int main()
 	}
 
 	delete routine;
+
+	::testing::InitGoogleTest(&argc, argv);
+	RUN_ALL_TESTS();
 
 	return 0;
 }
