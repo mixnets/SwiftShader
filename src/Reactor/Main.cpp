@@ -45,12 +45,9 @@ int main()
 			Int y = function.Arg<1>();
 			Int z = 4;
 
-		//	Pointer<Byte8> w = As<Pointer<Byte8>>(p);
-		//	Byte8 a = *w;
-		//	Short4 q = UnpackLow(*w, *w) >> 4;
-		//	Short4 r = UnpackLow(*w, *w) >> 4;
-			Short4 s(0, 1, 2, 3);
-			Short4 t(10, 11, 12, 13);
+			Pointer<UShort4> w = As<Pointer<UShort4>>(p);
+			UShort4 a = *w;
+			Byte8 b = Pack(a, a);
 
 			//Pointer<Int4> b = As<Pointer<Int4>>(p);
 			//*b = s;

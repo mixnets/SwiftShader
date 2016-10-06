@@ -1925,7 +1925,7 @@ namespace sw
 					Int c2 = Int(*Pointer<Byte>(buffer[f2] + index[2]));
 					Int c3 = Int(*Pointer<Byte>(buffer[f3] + index[3]));
 					c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-					c.x = Unpack(As<Byte4>(c0));
+					c.x = Unpack(Byte4(c0));
 				}
 				break;
 			default:
@@ -2020,7 +2020,7 @@ namespace sw
 			Int c2 = Int(*Pointer<Byte>(buffer[0] + index[2]));
 			Int c3 = Int(*Pointer<Byte>(buffer[0] + index[3]));
 			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-			UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
+			UShort4 Y = As<UShort4>(Unpack(Byte4(c0)));
 
 			computeIndices(index, uuuu, vvvv, wwww, offset, mipmap + sizeof(Mipmap), function);
 			c0 = Int(*Pointer<Byte>(buffer[1] + index[0]));
@@ -2028,14 +2028,14 @@ namespace sw
 			c2 = Int(*Pointer<Byte>(buffer[1] + index[2]));
 			c3 = Int(*Pointer<Byte>(buffer[1] + index[3]));
 			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-			UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
+			UShort4 V = As<UShort4>(Unpack(Byte4(c0)));
 
 			c0 = Int(*Pointer<Byte>(buffer[2] + index[0]));
 			c1 = Int(*Pointer<Byte>(buffer[2] + index[1]));
 			c2 = Int(*Pointer<Byte>(buffer[2] + index[2]));
 			c3 = Int(*Pointer<Byte>(buffer[2] + index[3]));
 			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-			UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
+			UShort4 U = As<UShort4>(Unpack(Byte4(c0)));
 
 			const UShort4 yY = UShort4(iround(Yy * 0x4000));
 			const UShort4 rV = UShort4(iround(Rv * 0x4000));

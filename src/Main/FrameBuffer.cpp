@@ -599,7 +599,7 @@ namespace sw
 				      ((rgb & 0xF800) << 8) | ((rgb & 0xE01F) << 3) |
 				      ((rgb & 0x07E0) << 5) | ((rgb & 0x0600) >> 1) |
 				      ((rgb & 0x001C) >> 2);
-				c2 = Unpack(As<Byte4>(rgb));
+				c2 = Unpack(Byte4(rgb));
 			}
 			break;
 		default:
@@ -621,7 +621,7 @@ namespace sw
 		{
 		case FORMAT_X8R8G8B8:
 		case FORMAT_A8R8G8B8:
-			*Pointer<UInt>(d) = UInt(As<Long>(Pack(As<UShort4>(c1), As<UShort4>(c1))));
+			*Pointer<Byte4>(d) = Byte4(Pack(As<UShort4>(c1), As<UShort4>(c1)));
 			break;
 		case FORMAT_X8B8G8R8:
 		case FORMAT_A8B8G8R8:
@@ -630,7 +630,7 @@ namespace sw
 			{
 				c1 = Swizzle(c1, 0xC6);
 
-				*Pointer<UInt>(d) = UInt(As<Long>(Pack(As<UShort4>(c1), As<UShort4>(c1))));
+				*Pointer<Byte4>(d) = Byte4(Pack(As<UShort4>(c1), As<UShort4>(c1)));
 			}
 			break;
 		case FORMAT_R8G8B8:

@@ -799,7 +799,7 @@ namespace sw
 		bufferValue &= *Pointer<Byte8>(constants + OFFSET(Constants,invMaskB4Q) + 8 * cMask);
 		newValue |= bufferValue;
 
-		*Pointer<UInt>(buffer) = UInt(As<Long>(newValue));
+		*Pointer<Byte4>(buffer) = Byte4(newValue);
 	}
 
 	void PixelRoutine::stencilOperation(Byte8 &newValue, Byte8 &bufferValue, StencilOperation stencilPassOperation, StencilOperation stencilZFailOperation, StencilOperation stencilFailOperation, bool CCW, Int &zMask, Int &sMask)
