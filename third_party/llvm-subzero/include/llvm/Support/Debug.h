@@ -45,12 +45,6 @@ extern bool DebugFlag;
 ///
 bool isCurrentDebugType(const char *Type);
 
-/// setCurrentDebugType - Set the current debug type, as if the -debug-only=X
-/// option were specified.  Note that DebugFlag also needs to be set to true for
-/// debug output to be produced.
-///
-void setCurrentDebugType(const char *Type);
-
 /// DEBUG_WITH_TYPE macro - This macro should be used by passes to emit debug
 /// information.  In the '-debug' option is specified on the commandline, and if
 /// this is a debug build, then the code specified as the option to the macro
@@ -69,14 +63,6 @@ void setCurrentDebugType(const char *Type);
 #define setCurrentDebugType(X)
 #define DEBUG_WITH_TYPE(TYPE, X) do { } while (false)
 #endif
-
-/// EnableDebugBuffering - This defaults to false.  If true, the debug
-/// stream will install signal handlers to dump any buffered debug
-/// output.  It allows clients to selectively allow the debug stream
-/// to install signal handlers if they are certain there will be no
-/// conflict.
-///
-extern bool EnableDebugBuffering;
 
 /// dbgs() - This returns a reference to a raw_ostream for debugging
 /// messages.  If debugging is disabled it returns errs().  Use it

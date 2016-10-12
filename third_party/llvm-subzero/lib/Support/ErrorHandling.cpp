@@ -39,7 +39,7 @@
 #endif
 
 using namespace llvm;
-
+/*
 static fatal_error_handler_t ErrorHandler = nullptr;
 static void *ErrorHandlerUserData = nullptr;
 
@@ -58,7 +58,7 @@ void llvm::remove_fatal_error_handler() {
   ErrorHandler = nullptr;
   ErrorHandlerUserData = nullptr;
 }
-
+*/
 void llvm::report_fatal_error(const char *Reason, bool GenCrashDiag) {
   report_fatal_error(Twine(Reason), GenCrashDiag);
 }
@@ -72,19 +72,20 @@ void llvm::report_fatal_error(StringRef Reason, bool GenCrashDiag) {
 }
 
 void llvm::report_fatal_error(const Twine &Reason, bool GenCrashDiag) {
-  llvm::fatal_error_handler_t handler = nullptr;
-  void* handlerData = nullptr;
-  {
-    // Only acquire the mutex while reading the handler, so as not to invoke a
-    // user-supplied callback under a lock.
-    llvm::MutexGuard Lock(*ErrorHandlerMutex);
-    handler = ErrorHandler;
-    handlerData = ErrorHandlerUserData;
-  }
+  //llvm::fatal_error_handler_t handler = nullptr;
+  //void* handlerData = nullptr;
+  //{
+  //  // Only acquire the mutex while reading the handler, so as not to invoke a
+  //  // user-supplied callback under a lock.
+  //  llvm::MutexGuard Lock(*ErrorHandlerMutex);
+  //  handler = ErrorHandler;
+  //  handlerData = ErrorHandlerUserData;
+  //}
 
-  if (handler) {
-    handler(handlerData, Reason.str(), GenCrashDiag);
-  } else {
+  //if (handler) {
+  //  handler(handlerData, Reason.str(), GenCrashDiag);
+  //} else
+  {
     // Blast the result out to stderr.  We don't try hard to make sure this
     // succeeds (e.g. handling EINTR) and we can't use errs() here because
     // raw ostreams can call report_fatal_error.
@@ -99,7 +100,7 @@ void llvm::report_fatal_error(const Twine &Reason, bool GenCrashDiag) {
   // If we reached here, we are failing ungracefully. Run the interrupt handlers
   // to make sure any special cleanups get done, in particular that we remove
   // files registered with RemoveFileOnSignal.
-  sys::RunInterruptHandlers();
+  //sys::RunInterruptHandlers();
 
   exit(1);
 }
@@ -122,7 +123,7 @@ void llvm::llvm_unreachable_internal(const char *msg, const char *file,
   LLVM_BUILTIN_UNREACHABLE;
 #endif
 }
-
+/*
 static void bindingsErrorHandler(void *user_data, const std::string& reason,
                                  bool gen_crash_diag) {
   LLVMFatalErrorHandler handler =
@@ -138,7 +139,7 @@ void LLVMInstallFatalErrorHandler(LLVMFatalErrorHandler Handler) {
 void LLVMResetFatalErrorHandler() {
   remove_fatal_error_handler();
 }
-
+*/
 #ifdef LLVM_ON_WIN32
 
 #include <winerror.h>

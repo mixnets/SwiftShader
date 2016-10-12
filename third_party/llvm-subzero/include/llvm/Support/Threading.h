@@ -37,9 +37,6 @@
 #endif
 
 namespace llvm {
-  /// Returns true if LLVM is compiled with support for multi-threading, and
-  /// false otherwise.
-  bool llvm_is_multithreaded();
 
   /// llvm_execute_on_thread - Execute the given \p UserFn on a separate
   /// thread, passing it the provided \p UserData and waits for thread

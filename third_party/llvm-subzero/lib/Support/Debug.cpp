@@ -31,7 +31,6 @@
 #include "llvm/Support/raw_ostream.h"
 
 #undef isCurrentDebugType
-#undef setCurrentDebugType
 
 using namespace llvm;
 
@@ -56,15 +55,6 @@ bool isCurrentDebugType(const char *DebugType) {
       return true;
   }
   return false;
-}
-
-/// Set the current debug type, as if the -debug-only=X
-/// option were specified.  Note that DebugFlag also needs to be set to true for
-/// debug output to be produced.
-///
-void setCurrentDebugType(const char *Type) {
-  CurrentDebugType->clear();
-  CurrentDebugType->push_back(Type);
 }
 
 } // namespace llvm
@@ -128,14 +118,7 @@ raw_ostream &llvm::dbgs() {
     circular_raw_ostream strm;
 
     dbgstream() :
-        strm(errs(), "*** Debug Log Output ***\n",
-             (!EnableDebugBuffering || !DebugFlag) ? 0 : DebugBufferSize) {
-      if (EnableDebugBuffering && DebugFlag && DebugBufferSize != 0)
-        // TODO: Add a handler for SIGUSER1-type signals so the user can
-        // force a debug dump.
-        sys::AddSignalHandler(&debug_user_sig_handler, nullptr);
-      // Otherwise we've already set the debug stream buffer size to
-      // zero, disabling buffering so it will output directly to errs().
+        strm(errs(), "*** Debug Log Output ***\n", 0) {
     }
   } thestrm;
 
@@ -152,7 +135,3 @@ namespace llvm {
 }
 
 #endif
-
-/// EnableDebugBuffering - Turn on signal handler installation.
-///
-bool llvm::EnableDebugBuffering = false;

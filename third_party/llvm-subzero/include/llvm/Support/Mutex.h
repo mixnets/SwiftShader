@@ -97,7 +97,7 @@ namespace llvm
         impl(rec), acquired(0), recursive(rec) { }
 
       bool lock() {
-        if (!mt_only || llvm_is_multithreaded()) {
+        if (!mt_only) {
           return impl.acquire();
         } else {
           // Single-threaded debugging code.  This would be racy in
@@ -110,7 +110,7 @@ namespace llvm
       }
 
       bool unlock() {
-        if (!mt_only || llvm_is_multithreaded()) {
+        if (!mt_only) {
           return impl.release();
         } else {
           // Single-threaded debugging code.  This would be racy in
@@ -124,7 +124,7 @@ namespace llvm
       }
 
       bool try_lock() {
-        if (!mt_only || llvm_is_multithreaded())
+        if (!mt_only)
           return impl.tryacquire();
         else return true;
       }
