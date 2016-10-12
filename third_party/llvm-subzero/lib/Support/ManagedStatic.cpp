@@ -38,21 +38,7 @@ static sys::Mutex* getManagedStaticMutex() {
 void ManagedStaticBase::RegisterManagedStatic(void *(*Creator)(),
                                               void (*Deleter)(void*)) const {
   assert(Creator);
-  if (llvm_is_multithreaded()) {
-    MutexGuard Lock(*getManagedStaticMutex());
-
-    if (!Ptr.load(std::memory_order_relaxed)) {
-      void *Tmp = Creator();
-
-      Ptr.store(Tmp, std::memory_order_release);
-      DeleterFn = Deleter;
-      
-      // Add to list of managed statics.
-      Next = StaticList;
-      StaticList = this;
-    }
-  } else {
-    assert(!Ptr && !DeleterFn && !Next &&
+     assert(!Ptr && !DeleterFn && !Next &&
            "Partially initialized ManagedStatic!?");
     Ptr = Creator();
     DeleterFn = Deleter;
@@ -60,7 +46,7 @@ void ManagedStaticBase::RegisterManagedStatic(void *(*Creator)(),
     // Add to list of managed statics.
     Next = StaticList;
     StaticList = this;
-  }
+  
 }
 
 void ManagedStaticBase::destroy() const {

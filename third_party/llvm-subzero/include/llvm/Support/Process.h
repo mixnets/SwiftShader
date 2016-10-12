@@ -63,15 +63,6 @@ public:
   static void GetTimeUsage(TimeValue &elapsed, TimeValue &user_time,
                            TimeValue &sys_time);
 
-  /// This function makes the necessary calls to the operating system to
-  /// prevent core files or any other kind of large memory dumps that can
-  /// occur when a program fails.
-  /// @brief Prevent core file generation.
-  static void PreventCoreFiles();
-
-  /// \brief true if PreventCoreFiles has been called, false otherwise.
-  static bool AreCoreFilesPrevented();
-
   // This function returns the environment variable \arg name's value as a UTF-8
   // string. \arg Name is assumed to be in UTF-8 encoding too.
   static Optional<std::string> GetEnv(StringRef name);

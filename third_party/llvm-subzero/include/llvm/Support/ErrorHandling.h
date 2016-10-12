@@ -21,7 +21,7 @@
 namespace llvm {
 class StringRef;
   class Twine;
-
+  /*
   /// An error handler callback.
   typedef void (*fatal_error_handler_t)(void *user_data,
                                         const std::string& reason,
@@ -60,7 +60,7 @@ class StringRef;
 
     ~ScopedFatalErrorHandler() { remove_fatal_error_handler(); }
   };
-
+  */
 /// Reports a serious error, calling any installed error handler. These
 /// functions are intended to be used for error conditions which are outside
 /// the control of the compiler (I/O errors, invalid user input, etc.)

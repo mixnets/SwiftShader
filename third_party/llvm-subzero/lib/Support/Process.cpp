@@ -21,40 +21,6 @@
 using namespace llvm;
 using namespace sys;
 
-//===----------------------------------------------------------------------===//
-//=== WARNING: Implementation here must contain only TRULY operating system
-//===          independent code.
-//===----------------------------------------------------------------------===//
-
-Optional<std::string> Process::FindInEnvPath(const std::string& EnvName,
-                                             const std::string& FileName)
-{
-  assert(!path::is_absolute(FileName));
-  Optional<std::string> FoundPath;
-  Optional<std::string> OptPath = Process::GetEnv(EnvName);
-  if (!OptPath.hasValue())
-    return FoundPath;
-
-  const char EnvPathSeparatorStr[] = {EnvPathSeparator, '\0'};
-  SmallVector<StringRef, 8> Dirs;
-  SplitString(OptPath.getValue(), Dirs, EnvPathSeparatorStr);
-
-  for (const auto &Dir : Dirs) {
-    if (Dir.empty())
-      continue;
-
-    SmallString<128> FilePath(Dir);
-    path::append(FilePath, FileName);
-    if (fs::exists(Twine(FilePath))) {
-      FoundPath = FilePath.str();
-      break;
-    }
-  }
-
-  return FoundPath;
-}
-
-
 #define COLOR(FGBG, CODE, BOLD) "\033[0;" BOLD FGBG CODE "m"
 
 #define ALLCOLORS(FGBG,BOLD) {\
@@ -73,12 +39,6 @@ static const char colorcodes[2][2][8][10] = {
  { ALLCOLORS("4",""), ALLCOLORS("4","1;") }
 };
 
-// This is set to true when Process::PreventCoreFiles() is called.
-static bool coreFilesPrevented = false;
-
-bool Process::AreCoreFilesPrevented() {
-  return coreFilesPrevented;
-}
 
 // Include the platform-specific parts of this class.
 #ifdef LLVM_ON_UNIX
