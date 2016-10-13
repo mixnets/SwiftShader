@@ -133,6 +133,39 @@ TEST(SubzeroReactorTest, SubVectorLoadStore)
 	delete routine;
 }
 
+TEST(SubzeroReactorTest, VectorConstant)
+{
+	Routine *routine = nullptr;
+
+	{
+		Function<Int(Pointer<Int4>)> function;
+		{
+			Pointer<Int4> p = function.Arg<0>();
+   
+			*p = Int4(1, 2, 3, 4);
+
+			Return(0);
+		}
+
+		routine = function(L"one");
+
+		if(routine)
+		{
+			int out[4] = {-1, -1, -1, -1};
+
+			int (*callable)(int*) = (int(*)(int*))routine->getEntry();
+			int result = callable(out);
+
+			EXPECT_EQ(out[0], 1);
+			EXPECT_EQ(out[1], 2);
+			EXPECT_EQ(out[2], 3);
+			EXPECT_EQ(out[3], 4);
+		}
+	}
+
+	delete routine;
+}
+
 int main(int argc, char **argv)
 {
 	::testing::InitGoogleTest(&argc, argv);
