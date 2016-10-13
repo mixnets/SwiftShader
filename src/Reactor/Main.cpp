@@ -133,28 +133,33 @@ TEST(SubzeroReactorTest, SubVectorLoadStore)
 	delete routine;
 }
 
-TEST(SubzeroReactorTest, GlobalPointer)
+TEST(SubzeroReactorTest, VectorConstant)
 {
 	Routine *routine = nullptr;
 
 	{
-		int localGlobal = 1234;
-
-		Function<Int(Void)> function;
+		Function<Int(Pointer<Int4>)> function;
 		{
-			Pointer<Int> p(&localGlobal);
+			Pointer<Int4> p = function.Arg<0>();
    
-			Return(*p);
+			*p = Int4(1, 2, 3, 4);
+
+			Return(0);
 		}
 
 		routine = function(L"one");
 
 		if(routine)
 		{
-			int (*callable)() = (int(*)())routine->getEntry();
-			int result = callable();
+			int out[4] = {-1, -1, -1, -1};
 
-			EXPECT_EQ(result, localGlobal);
+			int (*callable)(int*) = (int(*)(int*))routine->getEntry();
+			int result = callable(out);
+
+			EXPECT_EQ(out[0], 1);
+			EXPECT_EQ(out[1], 2);
+			EXPECT_EQ(out[2], 3);
+			EXPECT_EQ(out[3], 4);
 		}
 	}
 
