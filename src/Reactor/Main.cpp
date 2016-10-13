@@ -133,6 +133,34 @@ TEST(SubzeroReactorTest, SubVectorLoadStore)
 	delete routine;
 }
 
+TEST(SubzeroReactorTest, GlobalPointer)
+{
+	Routine *routine = nullptr;
+
+	{
+		int localGlobal = 1234;
+
+		Function<Int(Void)> function;
+		{
+			Pointer<Int> p(&localGlobal);
+   
+			Return(*p);
+		}
+
+		routine = function(L"one");
+
+		if(routine)
+		{
+			int (*callable)() = (int(*)())routine->getEntry();
+			int result = callable();
+
+			EXPECT_EQ(result, localGlobal);
+		}
+	}
+
+	delete routine;
+}
+
 int main(int argc, char **argv)
 {
 	::testing::InitGoogleTest(&argc, argv);
