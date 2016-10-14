@@ -1127,6 +1127,7 @@ bool Context::getFloatv(GLenum pname, GLfloat *params)
 	// because it is stored as a float, despite the fact that the GL ES 2.0 spec names
 	// GetIntegerv as its native query function. As it would require conversion in any
 	// case, this should make no difference to the calling application.
+	const VertexAttributeArray &attribs = getVertexAttributes();
 	switch(pname)
 	{
 	case GL_LINE_WIDTH:               *params = mState.lineWidth;            break;
@@ -1173,6 +1174,11 @@ bool Context::getFloatv(GLenum pname, GLfloat *params)
 		for(int i = 0; i < 16; i++)
 		{
 			params[i] = projectionStack.current()[i % 4][i / 4];
+		}
+		break;
+	case GL_CURRENT_COLOR:
+		for(int i = 0; i < 4; i++) {
+			params[i] = attribs[sw::Color0].mCurrentValue[i];
 		}
 		break;
 	default:
