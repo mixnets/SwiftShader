@@ -15,11 +15,10 @@
 #ifndef sw_Nucleus_hpp
 #define sw_Nucleus_hpp
 
-#include "Common/Types.hpp"
-#include "Common/MutexLock.hpp"
-
-#include <stdarg.h>
+#include <cstdarg>
+#include <cstdint>
 #include <vector>
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 #include <stdio.h>
 #include <wchar.h>
 
@@ -43,9 +42,17 @@ namespace sw
 	using Constant = llvm::Constant;
 	using BasicBlock = llvm::BasicBlock;
 }
+=======
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 
 namespace sw
 {
+	class Type;
+	class Value;
+	class Constant;
+	class BasicBlock;
+	class Routine;
+
 	enum Optimization
 	{
 		Disabled             = 0,
@@ -64,8 +71,11 @@ namespace sw
 
 	extern Optimization optimization[10];
 
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 	class Routine;
 
+=======
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 	class Nucleus
 	{
 	public:
@@ -75,20 +85,35 @@ namespace sw
 
 		Routine *acquireRoutine(const wchar_t *name, bool runOptimizations = true);
 
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 		static Value *allocateStackVariable(Type type, int arraySize = 0);
+=======
+		static Value *allocateStackVariable(Type *type, int arraySize = 0);
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 		static BasicBlock *createBasicBlock();
 		static BasicBlock *getInsertBlock();
 		static void setInsertBlock(BasicBlock *basicBlock);
 		static BasicBlock *getPredecessor(BasicBlock *basicBlock);
 
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 		static void createFunction(Type returnType, std::vector<Type> &parameters);
+=======
+		static void createFunction(Type *ReturnType, std::vector<Type*> &Params);
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 		static Value *getArgument(unsigned int index);
 
 		// Terminators
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 		static Value *createRetVoid();
 		static Value *createRet(Value *V);
 		static Value *createBr(BasicBlock *dest);
 		static Value *createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse);
+=======
+		static void createRetVoid();
+		static void createRet(Value *V);
+		static void createBr(BasicBlock *dest);
+		static void createCondBr(Value *cond, BasicBlock *ifTrue, BasicBlock *ifFalse);
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 
 		// Binary operators
 		static Value *createAdd(Value *lhs, Value *rhs);
@@ -109,20 +134,34 @@ namespace sw
 		static Value *createAnd(Value *lhs, Value *rhs);
 		static Value *createOr(Value *lhs, Value *rhs);
 		static Value *createXor(Value *lhs, Value *rhs);
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
+=======
+
+		// Unary operators
+		static Value *createAssign(Constant *c);
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 		static Value *createNeg(Value *V);
 		static Value *createFNeg(Value *V);
 		static Value *createNot(Value *V);
 
 		// Memory instructions
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 		static Value *createLoad(Value *ptr, bool isVolatile = false, unsigned int align = 0);
 		static Value *createStore(Value *value, Value *ptr, bool isVolatile = false, unsigned int align = 0);
 		static Value *createStore(Constant *constant, Value *ptr, bool isVolatile = false, unsigned int align = 0);
 		static Value *createGEP(Value *ptr, Value *index);
+=======
+		static Value *createLoad(Value *ptr, Type *type, bool isVolatile = false, unsigned int align = 0);
+		static Value *createStore(Value *value, Value *ptr, Type *type, bool isVolatile = false, unsigned int align = 0);
+		static Constant *createStore(Constant *constant, Value *ptr, Type *type, bool isVolatile = false, unsigned int align = 0);
+		static Value *createGEP(Value *ptr, Type *type, Value *index);
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 
 		// Atomic instructions
 		static Value *createAtomicAdd(Value *ptr, Value *value);
 
 		// Cast/Conversion Operators
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 		static Value *createTrunc(Value *V, Type destType);
 		static Value *createZExt(Value *V, Type destType);
 		static Value *createSExt(Value *V, Type destType);
@@ -136,6 +175,18 @@ namespace sw
 		static Value *createIntToPtr(Value *V, Type destType);
 		static Value *createBitCast(Value *V, Type destType);
 		static Value *createIntCast(Value *V, Type destType, bool isSigned);
+=======
+		static Value *createTrunc(Value *V, Type *destType);
+		static Value *createZExt(Value *V, Type *destType);
+		static Value *createSExt(Value *V, Type *destType);
+		static Value *createFPToSI(Value *V, Type *destType);
+		static Value *createUIToFP(Value *V, Type *destType);
+		static Value *createSIToFP(Value *V, Type *destType);
+		static Value *createFPTrunc(Value *V, Type *destType);
+		static Value *createFPExt(Value *V, Type *destType);
+		static Value *createBitCast(Value *V, Type *destType);
+		static Value *createIntCast(Value *V, Type *destType, bool isSigned);
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 
 		// Compare instructions
 		static Value *createICmpEQ(Value *lhs, Value *rhs);
@@ -162,6 +213,7 @@ namespace sw
 		static Value *createFCmpULT(Value *lhs, Value *rhs);
 		static Value *createFCmpULE(Value *lhs, Value *rhs);
 		static Value *createFCmpUNE(Value *lhs, Value *rhs);
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 
 		// Call instructions
 		static Value *createCall(Value *callee);
@@ -169,16 +221,25 @@ namespace sw
 		static Value *createCall(Value *callee, Value *Arg1, Value *Arg2);
 		static Value *createCall(Value *callee, Value *Arg1, Value *Arg2, Value *Arg3);
 		static Value *createCall(Value *callee, Value *Arg1, Value *Arg2, Value *Arg3,Value *Arg4);
+=======
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 
 		// Vector instructions
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 		static Value *createExtractElement(Value *vector, int index);
 		static Value *createInsertElement(Value *vector, Value *element, int index);
 		static Value *createShuffleVector(Value *V1, Value *V2, Value *mask);
+=======
+		static Value *createExtractElement(Value *vector, Type *type, int index);
+		static Value *createInsertElement(Value *vector, Value *element, int index);
+		static Value *createShuffleVector(Value *V1, Value *V2, const int *select);
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 
 		// Other instructions
 		static Value *createSelect(Value *C, Value *ifTrue, Value *ifFalse);
 		static Value *createSwitch(Value *V, BasicBlock *Dest, unsigned NumCases);
 		static void addSwitchCase(Value *Switch, int Case, BasicBlock *Branch);
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 		static Value *createUnreachable();
 
 		// Derived instructions
@@ -188,8 +249,12 @@ namespace sw
 		// Global values
 		static Value *createGlobalValue(const void *external, Type Ty, bool isConstant, unsigned int Align);
 		static Type getPointerType(Type ElementType);
+=======
+		static void createUnreachable();
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 
 		// Constant values
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 		static Constant *createNullValue(Type Ty);
 		static Constant *createConstantInt(int64_t i);
 		static Constant *createConstantInt(int i);
@@ -202,12 +267,33 @@ namespace sw
 		static Constant *createConstantFloat(float x);
 		static Constant *createNullPointer(Type Ty);
 		static Constant *createConstantVector(Constant *const *Vals, unsigned NumVals);
+=======
+		static Constant *createNullValue(Type *Ty);
+		static Constant *createConstantInt(int64_t i);
+		static Constant *createConstantInt(int i);
+		static Constant *createConstantInt(unsigned int i);
+		static Constant *createConstantBool(bool b);
+		static Constant *createConstantByte(signed char i);
+		static Constant *createConstantByte(unsigned char i);
+		static Constant *createConstantShort(short i);
+		static Constant *createConstantShort(unsigned short i);
+		static Constant *createConstantFloat(float x);
+		static Constant *createNullPointer(Type *Ty);
+		static Constant *createConstantVector(Constant *const *Vals, unsigned NumVals);
+		static Constant *createConstantPointer(const void *external, Type *Ty, bool isConstant, unsigned int Align);
+
+		static Type *getPointerType(Type *ElementType);
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 
 	private:
 		void optimize();
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 
 		static BackoffLock codegenMutex;
+=======
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 	};
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 
 	class Byte;
 	class SByte;
@@ -3018,6 +3104,8 @@ namespace sw
 	{
 		return ReinterpretCast<T>(val);
 	}
+=======
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
 }
 
 #endif   // sw_Nucleus_hpp

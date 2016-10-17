@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (5116af Abstract llvm::Constant usage.)
 // Copyright 2016 The SwiftShader Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -7805,3 +7806,5 @@ namespace sw
 		}
 	}
 }
+=======
+>>>>>>> BRANCH (15b8b2 Add Subzero vector arithmetic tests.)
