@@ -647,7 +647,7 @@ namespace sw
 	Value *Nucleus::createFNeg(Value *v)
 	{
 		// FIXME: Optimize using intrinsic
-		return createSub(createNullValue(T(v->getType())), v);
+		return createFSub(createNullValue(T(v->getType())), v);
 	}
 
 	Value *Nucleus::createNot(Value *v)
@@ -1012,7 +1012,13 @@ namespace sw
 
 	Value *Nucleus::createSelect(Value *C, Value *ifTrue, Value *ifFalse)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(ifTrue->getType() == ifFalse->getType());
+
+		auto result = ::function->makeVariable(ifTrue->getType());
+		auto *select = Ice::InstSelect::create(::function, result, C, ifTrue, ifFalse);
+		::basicBlock->appendInst(select);
+
+		return V(result);
 	}
 
 	Value *Nucleus::createSwitch(Value *v, BasicBlock *Dest, unsigned NumCases)
@@ -1103,7 +1109,7 @@ namespace sw
 
 	Value *Nucleus::createConstantBool(bool b)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return createAssign(::context->getConstantInt1(b));
 	}
 
 	Value *Nucleus::createConstantByte(signed char i)
@@ -1128,7 +1134,29 @@ namespace sw
 
 	Value *Nucleus::createConstantFloat(float x)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+	//	return createAssign(::context->getConstantFloat(x));
+
+		auto globalPool = ::function->getGlobalPool();
+
+		auto *dataInitializer = Ice::VariableDeclaration::DataInitializer::create(globalPool, (const char*)&x, sizeof(float));
+
+		auto name = Ice::GlobalString::createWithoutString(::context);
+		auto *variableDeclaration = Ice::VariableDeclaration::create(globalPool);
+		variableDeclaration->setName(name);
+		variableDeclaration->setAlignment(sizeof(float));
+		variableDeclaration->setIsConstant(true);
+		variableDeclaration->addInitializer(dataInitializer);
+		
+		::function->addGlobal(variableDeclaration);
+
+		constexpr int32_t offset = 0;
+		Ice::Operand *ptr = ::context->getConstantSym(offset, name);
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_f32);
+		auto load = Ice::InstLoad::create(::function, result, ptr, sizeof(float));
+		::basicBlock->appendInst(load);
+
+		return V(result);
 	}
 
 	Value *Nucleus::createNullPointer(Type *Ty)
@@ -1313,7 +1341,7 @@ namespace sw
 
 	Type *Bool::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i1);
 	}
 
 	Byte::Byte(Argument<Byte> argument)
@@ -3922,7 +3950,12 @@ namespace sw
 
 	RValue<Int> operator--(const Int &val, int)   // Post-decrement
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int>(V(nullptr));
+		RValue<Int> res = val;
+
+		Value *inc = Nucleus::createSub(res.value, Nucleus::createConstantInt(1));
+		val.storeValue(inc);
+
+		return res;
 	}
 
 	const Int &operator--(const Int &val)   // Pre-decrement
@@ -5842,7 +5875,13 @@ namespace sw
 	{
 		xyzw.parent = this;
 
-		assert(false && "UNIMPLEMENTED");
+		Value *vector = loadValue();
+		Value *insert = Nucleus::createInsertElement(vector, rhs.value, 0);
+
+		int swizzle[4] = {0, 0, 0, 0};
+		Value *replicate = Nucleus::createShuffleVector(insert, insert, swizzle);
+
+		storeValue(replicate);
 	}
 
 	Float4::Float4(const Float &rhs)

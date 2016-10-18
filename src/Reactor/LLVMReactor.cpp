@@ -3943,7 +3943,7 @@ namespace sw
 	{
 		RValue<Int> res = val;
 
-		Value *inc = Nucleus::createSub(res.value, V(Nucleus::createConstantInt(1)));
+		Value *inc = Nucleus::createSub(res.value, Nucleus::createConstantInt(1));
 		val.storeValue(inc);
 
 		return res;
