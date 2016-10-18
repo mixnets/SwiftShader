@@ -253,8 +253,8 @@ namespace sw
 				pixelState = PixelProcessor::update();
 
 				vertexRoutine = VertexProcessor::routine(vertexState);
-				setupRoutine = SetupProcessor::routine(setupState);
-				pixelRoutine = PixelProcessor::routine(pixelState);
+			//	setupRoutine = SetupProcessor::routine(setupState);
+			//	pixelRoutine = PixelProcessor::routine(pixelState);
 			}
 
 			int batch = batchSize / ms;
@@ -333,15 +333,15 @@ namespace sw
 			draw->batchSize = batch;
 
 			vertexRoutine->bind();
-			setupRoutine->bind();
-			pixelRoutine->bind();
+			//setupRoutine->bind();
+			//pixelRoutine->bind();
 
 			draw->vertexRoutine = vertexRoutine;
 			draw->setupRoutine = setupRoutine;
 			draw->pixelRoutine = pixelRoutine;
 			draw->vertexPointer = (VertexProcessor::RoutinePointer)vertexRoutine->getEntry();
-			draw->setupPointer = (SetupProcessor::RoutinePointer)setupRoutine->getEntry();
-			draw->pixelPointer = (PixelProcessor::RoutinePointer)pixelRoutine->getEntry();
+			//draw->setupPointer = (SetupProcessor::RoutinePointer)setupRoutine->getEntry();
+			//draw->pixelPointer = (PixelProcessor::RoutinePointer)pixelRoutine->getEntry();
 			draw->setupPrimitives = setupPrimitives;
 			draw->setupState = setupState;
 
