@@ -92,6 +92,11 @@ namespace sw
 		return reinterpret_cast<Value*>(v);
 	}
 
+	Value *C(Ice::Constant *c)
+	{
+		return reinterpret_cast<Value*>(c);
+	}
+
 	BasicBlock *B(Ice::CfgNode *b)
 	{
 		return reinterpret_cast<BasicBlock*>(b);
@@ -302,7 +307,7 @@ namespace sw
 		ELFMemoryStreamer &operator=(const ELFMemoryStreamer &) = delete;
 
 	public:
-		ELFMemoryStreamer() : Routine()
+		ELFMemoryStreamer() : Routine(), entry(nullptr)
 		{
 			position = 0;
 			buffer.reserve(0x1000);
@@ -346,13 +351,19 @@ namespace sw
 
 		const void *getEntry() override
 		{
-			VirtualProtect(&buffer[0], buffer.size(), PAGE_EXECUTE_READWRITE, &oldProtection);
-			position = std::numeric_limits<std::size_t>::max();  // Can't stream more data after this
+			if(!entry)
+			{
+				VirtualProtect(&buffer[0], buffer.size(), PAGE_EXECUTE_READWRITE, &oldProtection);
+				position = std::numeric_limits<std::size_t>::max();  // Can't stream more data after this
 
-			return loadImage(&buffer[0]);
+				entry = loadImage(&buffer[0]);
+			}
+
+			return entry;
 		}
 
 	private:
+		void *entry;
 		std::vector<uint8_t, ExecutableAllocator<uint8_t>> buffer;
 		std::size_t position;
 		DWORD oldProtection;
@@ -495,7 +506,8 @@ namespace sw
 
 	void Nucleus::createRetVoid()
 	{
-		assert(false && "UNIMPLEMENTED");
+		Ice::InstRet *ret = Ice::InstRet::create(::function);
+		::basicBlock->appendInst(ret);
 	}
 
 	void Nucleus::createRet(Value *v)
@@ -517,7 +529,7 @@ namespace sw
 
 	static Value *createArithmetic(Ice::InstArithmetic::OpKind op, Value *lhs, Value *rhs)
 	{
-		assert(lhs->getType() == rhs->getType());
+	//	assert(lhs->getType() == rhs->getType());
 
 		Ice::Variable *result = ::function->makeVariable(lhs->getType());
 		Ice::InstArithmetic *arithmetic = Ice::InstArithmetic::create(::function, op, result, lhs, rhs);
@@ -854,7 +866,13 @@ namespace sw
 
 	Value *Nucleus::createICmpSGE(Value *lhs, Value *rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(lhs->getType() == rhs->getType());
+
+		auto result = ::function->makeVariable(Ice::IceType_i1);
+		auto cmp = Ice::InstIcmp::create(::function, Ice::InstIcmp::Sge, result, lhs, rhs);
+		::basicBlock->appendInst(cmp);
+
+		return V(result);
 	}
 
 	Value *Nucleus::createICmpSLT(Value *lhs, Value *rhs)
@@ -1106,8 +1124,14 @@ namespace sw
 		Ice::VariableDeclaration::DataInitializer *dataInitializer = nullptr;
 		switch((int)reinterpret_cast<intptr_t>(type))
 		{
-		case Ice::IceType_v4i32:
 		case Ice::IceType_v4f32:
+			{
+				const float initializer[4] = {reinterpret_cast<const double&>(c[0]), reinterpret_cast<const double&>(c[1]), reinterpret_cast<const double&>(c[2]), reinterpret_cast<const double&>(c[3])};
+				static_assert(sizeof(initializer) == vectorSize, "!");
+				dataInitializer = Ice::VariableDeclaration::DataInitializer::create(globalPool, (const char*)initializer, vectorSize);
+			}
+			break;
+		case Ice::IceType_v4i32:
 			{
 				const int initializer[4] = {(int)c[0], (int)c[1], (int)c[2], (int)c[3]};
 				static_assert(sizeof(initializer) == vectorSize, "!");
@@ -2022,7 +2046,7 @@ namespace sw
 
 	Type *Short::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i16);
 	}
 
 	UShort::UShort(Argument<UShort> argument)
@@ -2276,7 +2300,7 @@ namespace sw
 
 	Type *UShort::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i16);
 	}
 
 	Byte4::Byte4(RValue<Byte8> cast)
@@ -2943,17 +2967,17 @@ namespace sw
 
 	RValue<Short4> operator+(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		return RValue<Short4>(Nucleus::createAdd(lhs.value, rhs.value));
 	}
 
 	RValue<Short4> operator-(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		return RValue<Short4>(Nucleus::createSub(lhs.value, rhs.value));
 	}
 
 	RValue<Short4> operator*(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		return RValue<Short4>(Nucleus::createMul(lhs.value, rhs.value));
 	}
 
 //	RValue<Short4> operator/(RValue<Short4> lhs, RValue<Short4> rhs)
@@ -2968,12 +2992,12 @@ namespace sw
 
 	RValue<Short4> operator&(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		return RValue<Short4>(Nucleus::createAnd(lhs.value, rhs.value));
 	}
 
 	RValue<Short4> operator|(RValue<Short4> lhs, RValue<Short4> rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		return RValue<Short4>(Nucleus::createOr(lhs.value, rhs.value));
 	}
 
 	RValue<Short4> operator^(RValue<Short4> lhs, RValue<Short4> rhs)
@@ -2990,9 +3014,7 @@ namespace sw
 
 	RValue<Short4> operator>>(RValue<Short4> lhs, unsigned char rhs)
 	{
-	//	return RValue<Short4>(Nucleus::createAShr(lhs.value, rhs.value));
-
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		return RValue<Short4>(Nucleus::createAShr(lhs.value, C(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<Short4> operator<<(RValue<Short4> lhs, RValue<Long1> rhs)
@@ -3137,7 +3159,19 @@ namespace sw
 
 	RValue<Short4> Swizzle(RValue<Short4> x, unsigned char select)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		int shuffle[8] =
+		{
+			(select >> 0) & 0x03,
+			(select >> 2) & 0x03,
+			(select >> 4) & 0x03,
+			(select >> 6) & 0x03,
+			(select >> 0) & 0x03,
+			(select >> 2) & 0x03,
+			(select >> 4) & 0x03,
+			(select >> 6) & 0x03,
+		};
+
+		return RValue<Short4>(Nucleus::createShuffleVector(x.value, x.value, shuffle));
 	}
 
 	RValue<Short4> Insert(RValue<Short4> val, RValue<Short> element, int i)
@@ -3325,7 +3359,7 @@ namespace sw
 
 	RValue<UShort4> operator>>(RValue<UShort4> lhs, unsigned char rhs)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(V(nullptr));
+		return RValue<UShort4>(Nucleus::createLShr(lhs.value, C(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<UShort4> operator<<(RValue<UShort4> lhs, RValue<Long1> rhs)
@@ -3395,7 +3429,15 @@ namespace sw
 
 	RValue<Byte8> Pack(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(V(nullptr));
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v16i8);
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::AtomicAdd, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		auto target = ::context->getConstantUndef(Ice::IceType_i32);
+		auto pack = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+		pack->addArg(x.value);
+		pack->addArg(y.value);
+		::basicBlock->appendInst(pack);
+
+		return RValue<Byte8>(V(result));
 	}
 
 	Type *UShort4::getType()
@@ -3906,7 +3948,11 @@ namespace sw
 
 	RValue<Int> RoundInt(RValue<Float> cast)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int>(V(nullptr));
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_i32);
+		auto round = Ice::InstCast::create(::function, Ice::InstCast::Fptosi, result, cast.value);
+		::basicBlock->appendInst(round);
+
+		return RValue<Int>(V(result));
 	}
 
 	Type *Int::getType()
@@ -5872,12 +5918,28 @@ namespace sw
 
 	RValue<Float4> Max(RValue<Float4> x, RValue<Float4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::AtomicAdd, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		auto target = ::context->getConstantUndef(Ice::IceType_i32);
+		auto max = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+		max->addArg(x.value);
+		max->addArg(y.value);
+		::basicBlock->appendInst(max);
+
+		return RValue<Float4>(V(result));
 	}
 
 	RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::AtomicAdd, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		auto target = ::context->getConstantUndef(Ice::IceType_i32);
+		auto min = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+		min->addArg(x.value);
+		min->addArg(y.value);
+		::basicBlock->appendInst(min);
+
+		return RValue<Float4>(V(result));
 	}
 
 	RValue<Float4> Rcp_pp(RValue<Float4> x, bool exactAtPow2)
