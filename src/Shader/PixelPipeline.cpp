@@ -995,6 +995,24 @@ namespace sw
 			}
 		}
 
+		switch(textureStage.stageOperation)
+		{
+		case TextureStage::STAGE_SELECTARG1:
+		case TextureStage::STAGE_MODULATE:
+		case TextureStage::STAGE_ADD:
+		case TextureStage::STAGE_ADDSIGNED:
+		case TextureStage::STAGE_LERP:
+		case TextureStage::STAGE_SUBTRACT:
+		case TextureStage::STAGE_DOT3:
+			res.x = MulHigh(res.x, *Pointer<Short4>(data + OFFSET(DrawData, textureStage[stage].scaleRGB4))) << 4;
+			res.y = MulHigh(res.y, *Pointer<Short4>(data + OFFSET(DrawData, textureStage[stage].scaleRGB4))) << 4;
+			res.z = MulHigh(res.z, *Pointer<Short4>(data + OFFSET(DrawData, textureStage[stage].scaleRGB4))) << 4;
+			res.w = MulHigh(res.w, *Pointer<Short4>(data + OFFSET(DrawData, textureStage[stage].scaleAlpha4))) << 4;
+			break;
+		default:
+			ASSERT(false);
+		}
+
 		// Clamp result to [0, 1]
 
 		switch(textureStage.stageOperation)

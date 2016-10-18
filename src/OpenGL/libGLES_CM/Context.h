@@ -212,6 +212,8 @@ struct TextureUnit
 	GLenum operand1Alpha;
 	GLenum operand2RGB;
 	GLenum operand2Alpha;
+	GLenum scaleRGB;
+	GLenum scaleAlpha;
 };
 
 // Helper structure to store all raw state
@@ -400,6 +402,8 @@ public:
 	void setSrc0Alpha(GLenum src);
 	void setSrc1Alpha(GLenum src);
 	void setSrc2Alpha(GLenum src);
+	void setScaleRGB(GLenum value);
+	void setScaleAlpha(GLenum value);
 
 	void setLineWidth(GLfloat width);
 

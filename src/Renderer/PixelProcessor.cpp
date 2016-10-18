@@ -354,6 +354,24 @@ namespace sw
 		else ASSERT(false);
 	}
 
+	void PixelProcessor::setScale(unsigned int stage, float value)
+	{
+		if(stage < 8)
+		{
+			context->textureStage[stage].setScaleRGB(value);
+		}
+		else ASSERT(false);
+	}
+
+	void PixelProcessor::setScaleAlpha(unsigned int stage, float value)
+	{
+		if(stage < 8)
+		{
+			context->textureStage[stage].setScaleAlpha(value);
+		}
+		else ASSERT(false);
+	}
+
 	void PixelProcessor::setTextureFilter(unsigned int sampler, FilterType textureFilter)
 	{
 		if(sampler < TEXTURE_IMAGE_UNITS)

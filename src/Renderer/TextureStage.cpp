@@ -53,6 +53,8 @@ namespace sw
 		secondModifierAlpha = MODIFIER_COLOR;
 		thirdModifierAlpha = MODIFIER_COLOR;
 		destinationArgument = DESTINATION_CURRENT;
+		uniforms.scaleRGB4[0] = uniforms.scaleRGB4[1] = uniforms.scaleRGB4[2] = uniforms.scaleRGB4[3] = 0x1000;
+		uniforms.scaleAlpha4[0] = uniforms.scaleAlpha4[1] = uniforms.scaleAlpha4[2] = uniforms.scaleAlpha4[3] = 0x1000;
 
 		texCoordIndex = stage;
 		this->sampler = sampler;
@@ -128,6 +130,20 @@ namespace sw
 		short offset = iround(4095 * value);
 
 		uniforms.luminanceOffset4[0] = uniforms.luminanceOffset4[1] = uniforms.luminanceOffset4[2] = uniforms.luminanceOffset4[3] = offset;
+	}
+
+	void TextureStage::setScaleRGB(int value)
+	{
+		short scale = iround(4095 * value);
+
+		uniforms.scaleRGB4[0] = uniforms.scaleRGB4[1] = uniforms.scaleRGB4[2] = uniforms.scaleRGB4[3] = scale;
+	}
+
+	void TextureStage::setScaleAlpha(int value)
+	{
+		short scale = iround(4095 * value);
+
+		uniforms.scaleAlpha4[0] = uniforms.scaleAlpha4[1] = uniforms.scaleAlpha4[2] = uniforms.scaleAlpha4[3] = scale;
 	}
 
 	void TextureStage::setTexCoordIndex(unsigned int texCoordIndex)

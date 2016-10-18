@@ -126,6 +126,8 @@ namespace sw
 			word4 bumpmapMatrix4W[2][2];
 			word4 luminanceScale4;
 			word4 luminanceOffset4;
+			word4 scaleRGB4;
+			word4 scaleAlpha4;
 		};
 
 		TextureStage();
@@ -140,6 +142,8 @@ namespace sw
 		void setBumpmapMatrix(int element, float value);
 		void setLuminanceScale(float value);
 		void setLuminanceOffset(float value);
+		void setScaleRGB(int value);
+		void setScaleAlpha(int value);
 
 		void setTexCoordIndex(unsigned int texCoordIndex);
 		void setStageOperation(StageOperation stageOperation);
