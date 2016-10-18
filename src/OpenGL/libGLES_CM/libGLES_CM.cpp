@@ -3750,14 +3750,14 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				{
 					return error(GL_INVALID_VALUE);
 				}
-				if(iParam != 1) UNIMPLEMENTED();
+				context->setScaleRGB(iParam);
 				break;
 			case GL_ALPHA_SCALE:
 				if(iParam != 1 && iParam != 2 && iParam != 4)
 				{
 					return error(GL_INVALID_VALUE);
 				}
-				if(iParam != 1) UNIMPLEMENTED();
+				context->setScaleAlpha(iParam);
 				break;
 			case GL_OPERAND0_RGB:
 				switch(iParam)
@@ -4005,14 +4005,14 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				{
 					return error(GL_INVALID_VALUE);
 				}
-				if(param != 1) UNIMPLEMENTED();
+				context->setScaleRGB((GLenum)param);
 				break;
 			case GL_ALPHA_SCALE:
 				if(param != 1 && param != 2 && param != 4)
 				{
 					return error(GL_INVALID_VALUE);
 				}
-				if(param != 1) UNIMPLEMENTED();
+				context->setScaleAlpha((GLenum)param);
 				break;
 			case GL_OPERAND0_RGB:
 				switch((GLenum)param)

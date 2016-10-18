@@ -2214,6 +2214,7 @@ void Context::applyTextures()
 				device->setSecondModifier(unit, es2sw::ConvertSourceOperand(mState.textureUnit[unit].operand1RGB));
 				device->setThirdArgument(unit, es2sw::ConvertSourceArgument(mState.textureUnit[unit].src2RGB));
 				device->setThirdModifier(unit, es2sw::ConvertSourceOperand(mState.textureUnit[unit].operand2RGB));
+				device->setScale(unit, mState.textureUnit[unit].scaleRGB);
 
 				device->setStageOperation(unit, es2sw::ConvertCombineOperation(mState.textureUnit[unit].combineRGB));
 
@@ -2223,6 +2224,7 @@ void Context::applyTextures()
 				device->setSecondModifierAlpha(unit, es2sw::ConvertSourceOperand(mState.textureUnit[unit].operand1Alpha));
 				device->setThirdArgumentAlpha(unit, es2sw::ConvertSourceArgument(mState.textureUnit[unit].src2Alpha));
 				device->setThirdModifierAlpha(unit, es2sw::ConvertSourceOperand(mState.textureUnit[unit].operand2Alpha));
+				device->setScaleAlpha(unit, mState.textureUnit[unit].scaleAlpha);
 
 				device->setStageOperationAlpha(unit, es2sw::ConvertCombineOperation(mState.textureUnit[unit].combineAlpha));
 			}
@@ -2320,6 +2322,16 @@ void Context::setSrc1Alpha(GLenum src)
 void Context::setSrc2Alpha(GLenum src)
 {
 	mState.textureUnit[mState.activeSampler].src2Alpha = src;
+}
+
+void Context::setScaleRGB(GLenum value)
+{
+	mState.textureUnit[mState.activeSampler].scaleRGB = value;
+}
+
+void Context::setScaleAlpha(GLenum value)
+{
+	mState.textureUnit[mState.activeSampler].scaleAlpha = value;
 }
 
 void Context::applyTexture(int index, Texture *baseTexture)

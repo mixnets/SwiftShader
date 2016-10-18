@@ -220,6 +220,8 @@ namespace sw
 		void setBumpmapMatrix(unsigned int stage, int element, float value);
 		void setLuminanceScale(unsigned int stage, float value);
 		void setLuminanceOffset(unsigned int stage, float value);
+		virtual void setScale(unsigned int stage, float value);
+		virtual void setScaleAlpha(unsigned int stage, float value);
 
 		void setTextureFilter(unsigned int sampler, FilterType textureFilter);
 		void setMipmapFilter(unsigned int sampler, MipmapType mipmapFilter);
