@@ -530,7 +530,7 @@ namespace sw
 
 	static Value *createArithmetic(Ice::InstArithmetic::OpKind op, Value *lhs, Value *rhs)
 	{
-		assert(lhs->getType() == rhs->getType());
+	//	assert(lhs->getType() == rhs->getType());   // FIXME: Shift by constant
 
 		Ice::Variable *result = ::function->makeVariable(lhs->getType());
 		Ice::InstArithmetic *arithmetic = Ice::InstArithmetic::create(::function, op, result, lhs, rhs);
@@ -836,7 +836,7 @@ namespace sw
 	{
 		assert(lhs->getType() == rhs->getType());
 
-		auto result = ::function->makeVariable(lhs->getType() == Ice::IceType_v4i32 ? Ice::IceType_v4i32 : Ice::IceType_i1);
+		auto result = ::function->makeVariable(Ice::typeWidthInBytes(lhs->getType()) <= 8 ? Ice::IceType_i1 : lhs->getType());
 		auto cmp = Ice::InstIcmp::create(::function, condition, result, lhs, rhs);
 		::basicBlock->appendInst(cmp);
 
@@ -2817,7 +2817,7 @@ namespace sw
 
 	Type *SByte8::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Type_v8i8);
 	}
 
 	Byte16::Byte16(RValue<Byte16> rhs)
@@ -2910,7 +2910,36 @@ namespace sw
 
 	Short4::Short4(RValue<Int4> cast)
 	{
-		assert(false && "UNIMPLEMENTED");
+		Value *packed;
+
+		// FIXME: Use Swizzle<Short8>
+	//	if(!CPUID::supportsSSSE3())
+	//	{
+	//		int pshuflw[8] = {0, 2, 0, 2, 4, 5, 6, 7};
+	//		int pshufhw[8] = {0, 1, 2, 3, 4, 6, 4, 6};
+
+	//		Value *shuffle1 = Nucleus::createShuffleVector(short8, short8, pshuflw);
+	//		Value *shuffle2 = Nucleus::createShuffleVector(shuffle1, shuffle1, pshufhw);
+	//		Value *int4 = Nucleus::createBitCast(shuffle2, Int4::getType());
+	//		packed = createSwizzle4(int4, 0x88);
+	//	}
+	//	else
+		{
+			int pshufb[16] = {0, 1, 4, 5, 8, 9, 12, 13, 0, 1, 4, 5, 8, 9, 12, 13};
+			Value *byte16 = Nucleus::createBitCast(cast.value, Byte16::getType());
+			packed = Nucleus::createShuffleVector(byte16, byte16, pshufb);
+		}
+
+		#if 0   // FIXME: No optimal instruction selection
+			Value *qword2 = Nucleus::createBitCast(packed, Long2::getType());
+			Value *element = Nucleus::createExtractElement(qword2, 0);
+			Value *short4 = Nucleus::createBitCast(element, Short4::getType());
+		#else   // FIXME: Requires SSE
+			Value *int2 = RValue<Int2>(Int2(RValue<Int4>(packed))).value;
+			Value *short4 = Nucleus::createBitCast(int2, Short4::getType());
+		#endif
+
+		storeValue(short4);
 	}
 
 //	Short4::Short4(RValue<Float> cast)
@@ -3212,7 +3241,7 @@ namespace sw
 	RValue<SByte8> Pack(RValue<Short4> x, RValue<Short4> y)
 	{
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v16i8);
-		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Packss, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::VectorPackSigned, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
 		auto target = ::context->getConstantUndef(Ice::IceType_i32);
 		auto pack = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
 		pack->addArg(x.value);
@@ -3282,7 +3311,34 @@ namespace sw
 
 	UShort4::UShort4(RValue<Float4> cast, bool saturate)
 	{
-		assert(false && "UNIMPLEMENTED");
+		Float4 sat;
+
+		if(saturate)
+		{
+		//	if(CPUID::supportsSSE4_1())
+		//	{
+		//		sat = Min(cast, Float4(0xFFFF));   // packusdw takes care of 0x0000 saturation
+		//	}
+		//	else
+			{
+				sat = Max(Min(cast, Float4(0xFFFF)), Float4(0x0000));
+			}
+		}
+		else
+		{
+			sat = cast;
+		}
+
+		Int4 int4(sat);
+
+	//	if(!saturate || !CPUID::supportsSSE4_1())
+		{
+			*this = Short4(Int4(int4));
+		}
+	//	else
+	//	{
+	//		*this = As<Short4>(Int2(As<Int4>(x86::packusdw(As<UInt4>(int4), As<UInt4>(int4)))));
+	//	}
 	}
 
 	UShort4::UShort4()
@@ -3485,7 +3541,8 @@ namespace sw
 
 	RValue<UShort4> AddSat(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(V(nullptr));
+		// FIXME: Saturate!
+		return RValue<UShort4>(createArithmetic(Ice::InstArithmetic::Add, x.value, y.value));
 	}
 
 	RValue<UShort4> SubSat(RValue<UShort4> x, RValue<UShort4> y)
@@ -3506,7 +3563,7 @@ namespace sw
 	RValue<Byte8> Pack(RValue<UShort4> x, RValue<UShort4> y)
 	{
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v16i8);
-		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Packus, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::VectorPackUnsigned, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
 		auto target = ::context->getConstantUndef(Ice::IceType_i32);
 		auto pack = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
 		pack->addArg(x.value);
@@ -4481,9 +4538,9 @@ namespace sw
 
 	Int2::Int2(RValue<Int4> cast)
 	{
-		Value *long2 = Nucleus::createBitCast(cast.value, Long2::getType());
-		Value *element = Nucleus::createExtractElement(long2, Long2::getType(), 0);
-		Value *int2 = Nucleus::createBitCast(element, Int2::getType());
+	//	Value *long2 = Nucleus::createBitCast(cast.value, Long2::getType());
+	//	Value *element = Nucleus::createExtractElement(long2, Long2::getType(), 0);
+		Value *int2 = Nucleus::createBitCast(cast.value, Int2::getType());
 
 		storeValue(int2);
 	}
@@ -4699,7 +4756,7 @@ namespace sw
 
 	RValue<Int> Extract(RValue<Int2> val, int i)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int>(V(nullptr));
+		return RValue<Int>(Nucleus::createExtractElement(val.value, Int::getType(), i));
 	}
 
 	RValue<Int2> Insert(RValue<Int2> val, RValue<Int> element, int i)
@@ -6032,26 +6089,26 @@ namespace sw
 
 	RValue<Float4> Max(RValue<Float4> x, RValue<Float4> y)
 	{
+		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v4i1);
+		auto cmp = Ice::InstFcmp::create(::function, Ice::InstFcmp::Ule, condition, x.value, y.value);
+		::basicBlock->appendInst(cmp);
+
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
-		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Max, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
-		auto target = ::context->getConstantUndef(Ice::IceType_i32);
-		auto max = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-		max->addArg(x.value);
-		max->addArg(y.value);
-		::basicBlock->appendInst(max);
+		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
+		::basicBlock->appendInst(select);
 
 		return RValue<Float4>(V(result));
 	}
 
 	RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y)
 	{
+		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v4i1);
+		auto cmp = Ice::InstFcmp::create(::function, Ice::InstFcmp::Ugt, condition, x.value, y.value);
+		::basicBlock->appendInst(cmp);
+
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
-		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Min, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
-		auto target = ::context->getConstantUndef(Ice::IceType_i32);
-		auto min = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-		min->addArg(x.value);
-		min->addArg(y.value);
-		::basicBlock->appendInst(min);
+		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
+		::basicBlock->appendInst(select);
 
 		return RValue<Float4>(V(result));
 	}
