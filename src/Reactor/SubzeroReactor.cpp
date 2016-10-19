@@ -422,6 +422,8 @@ namespace sw
 		::function->setFunctionName(Ice::GlobalString::createWithString(::context, asciiName));
 
 		::function->translate();
+		assert(!::function->hasError());
+
 		auto *globals = ::function->getGlobalInits().release();
 
 		if(globals && !globals->empty())
