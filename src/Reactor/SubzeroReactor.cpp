@@ -66,6 +66,7 @@ namespace sw
 		Type_v2i16 = Ice::IceType_v8i16 | EmulatedV2,
 		Type_v8i8 =  Ice::IceType_v16i8 | EmulatedV8,
 		Type_v4i8 =  Ice::IceType_v16i8 | EmulatedV4,
+		Type_v2f32 = Ice::IceType_v4f32 | EmulatedV2,
 	};
 
 	class Value : public Ice::Variable {};
@@ -669,6 +670,7 @@ namespace sw
 			case Type_v2i32:
 			case Type_v8i8:
 			case Type_v4i16:
+			case Type_v2f32:
 				{
 					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
@@ -713,6 +715,7 @@ namespace sw
 			case Type_v2i32:
 			case Type_v8i8:
 			case Type_v4i16:
+			case Type_v2f32:
 				{
 					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
@@ -1152,6 +1155,7 @@ namespace sw
 			}
 			break;
 		case Type_v2i32:
+		case Type_v2f32:
 			{
 				const int initializer[4] = {(int)c[0], (int)c[1], (int)c[0], (int)c[1]};
 				static_assert(sizeof(initializer) == vectorSize, "!");
@@ -1283,7 +1287,7 @@ namespace sw
 
 	Type *Bool::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i1);
 	}
 
 	Byte::Byte(Argument<Byte> argument)
@@ -1798,7 +1802,7 @@ namespace sw
 
 	Type *SByte::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i8);
 	}
 
 	Short::Short(Argument<Short> argument)
@@ -2045,7 +2049,7 @@ namespace sw
 
 	Type *Short::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i16);
 	}
 
 	UShort::UShort(Argument<UShort> argument)
@@ -2299,7 +2303,7 @@ namespace sw
 
 	Type *UShort::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i16);
 	}
 
 	Byte4::Byte4(RValue<Byte8> cast)
@@ -2323,7 +2327,7 @@ namespace sw
 
 	Type *SByte4::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Type_v4i8);
 	}
 
 	Byte8::Byte8()
@@ -2749,7 +2753,7 @@ namespace sw
 
 	Type *SByte8::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Type_v8i8);
 	}
 
 	Byte16::Byte16(RValue<Byte16> rhs)
@@ -3487,7 +3491,7 @@ namespace sw
 
 	Type *Short8::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_v8i16);
 	}
 
 	UShort8::UShort8(unsigned short c0, unsigned short c1, unsigned short c2, unsigned short c3, unsigned short c4, unsigned short c5, unsigned short c6, unsigned short c7)
@@ -3588,7 +3592,7 @@ namespace sw
 
 	Type *UShort8::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_v8i16);
 	}
 
 	Int::Int(Argument<Int> argument)
@@ -4011,7 +4015,7 @@ namespace sw
 
 	Type *Long::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i64);
 	}
 
 	Long1::Long1(const RValue<UInt> cast)
@@ -4025,16 +4029,6 @@ namespace sw
 	}
 
 	Type *Long1::getType()
-	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
-	}
-
-	RValue<Long2> UnpackHigh(RValue<Long2> x, RValue<Long2> y)
-	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Long2>(V(nullptr));
-	}
-
-	Type *Long2::getType()
 	{
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
@@ -4349,7 +4343,7 @@ namespace sw
 
 	Type *UInt::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_i32);
 	}
 
 //	Int2::Int2(RValue<Int> cast)
@@ -4368,11 +4362,7 @@ namespace sw
 
 	Int2::Int2(RValue<Int4> cast)
 	{
-		Value *long2 = Nucleus::createBitCast(cast.value, Long2::getType());
-		Value *element = Nucleus::createExtractElement(long2, Long2::getType(), 0);
-		Value *int2 = Nucleus::createBitCast(element, Int2::getType());
-
-		storeValue(int2);
+		storeValue(Nucleus::createBitCast(cast.value, getType()));
 	}
 
 	Int2::Int2()
@@ -4795,7 +4785,7 @@ namespace sw
 
 	Type *UInt2::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Type_v2i32);
 	}
 
 	Int4::Int4(RValue<Byte4> cast)
@@ -5441,7 +5431,7 @@ namespace sw
 
 	Type *UInt4::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Ice::IceType_v4i32);
 	}
 
 	Float::Float(RValue<Int> cast)
@@ -5642,18 +5632,12 @@ namespace sw
 
 	Float2::Float2(RValue<Float4> cast)
 	{
-	//	xyzw.parent = this;
-
-		Value *int64x2 = Nucleus::createBitCast(cast.value, Long2::getType());
-		Value *int64 = Nucleus::createExtractElement(int64x2, Long::getType(), 0);
-		Value *float2 = Nucleus::createBitCast(int64, Float2::getType());
-
-		storeValue(float2);
+		storeValue(Nucleus::createBitCast(cast.value, getType()));
 	}
 
 	Type *Float2::getType()
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return T(Type_v2f32);
 	}
 
 	Float4::Float4(RValue<Byte4> cast)
