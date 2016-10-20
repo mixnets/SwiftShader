@@ -1047,7 +1047,7 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
-	Value *Nucleus::createConstantPointer(const void *address, Type *Ty, bool isConstant, unsigned int Align)
+	Value *Nucleus::createConstantPointer(const void *address, Type *Ty, unsigned int align)
 	{
 		if(sizeof(void*) == 8)
 		{
@@ -1073,12 +1073,20 @@ namespace sw
 
 	Value *Nucleus::createNullValue(Type *Ty)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		if(Ice::isVectorType(T(Ty)))
+		{
+			int64_t c[4] = {0, 0, 0, 0};
+			return createConstantVector(c, Ty);
+		}
+		else
+		{
+			return createAssign(::context->getConstantZero(T(Ty)));
+		}
 	}
 
 	Value *Nucleus::createConstantLong(int64_t i)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return createAssign(::context->getConstantInt64(i));
 	}
 
 	Value *Nucleus::createConstantInt(int i)
@@ -1088,22 +1096,22 @@ namespace sw
 
 	Value *Nucleus::createConstantInt(unsigned int i)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return createAssign(::context->getConstantInt32(i));
 	}
 
 	Value *Nucleus::createConstantBool(bool b)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return createAssign(::context->getConstantInt1(b));
 	}
 
 	Value *Nucleus::createConstantByte(signed char i)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return createAssign(::context->getConstantInt8(i));
 	}
 
 	Value *Nucleus::createConstantByte(unsigned char i)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return createAssign(::context->getConstantInt8(i));
 	}
 
 	Value *Nucleus::createConstantShort(short i)
@@ -1113,17 +1121,51 @@ namespace sw
 
 	Value *Nucleus::createConstantShort(unsigned short i)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return createAssign(::context->getConstantInt16(i));
 	}
 
 	Value *Nucleus::createConstantFloat(float x)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		if(false)
+		{
+			return createAssign(::context->getConstantFloat(x));
+		}
+		else
+		{
+			auto globalPool = ::function->getGlobalPool();
+
+			auto *dataInitializer = Ice::VariableDeclaration::DataInitializer::create(globalPool, (const char*)&x, sizeof(float));
+
+			auto name = Ice::GlobalString::createWithoutString(::context);
+			auto *variableDeclaration = Ice::VariableDeclaration::create(globalPool);
+			variableDeclaration->setName(name);
+			variableDeclaration->setAlignment(sizeof(float));
+			variableDeclaration->setIsConstant(true);
+			variableDeclaration->addInitializer(dataInitializer);
+		
+			::function->addGlobal(variableDeclaration);
+
+			constexpr int32_t offset = 0;
+			Ice::Operand *ptr = ::context->getConstantSym(offset, name);
+
+			Ice::Variable *result = ::function->makeVariable(Ice::IceType_f32);
+			auto load = Ice::InstLoad::create(::function, result, ptr, sizeof(float));
+			::basicBlock->appendInst(load);
+
+			return V(result);
+		}
 	}
 
 	Value *Nucleus::createNullPointer(Type *Ty)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		if(true)
+		{
+			return createNullValue(T(sizeof(void*) == 8 ? Ice::IceType_i64 : Ice::IceType_i32));
+		}
+		else
+		{
+			return createConstantPointer(nullptr, Ty);
+		}
 	}
 
 	Value *Nucleus::createConstantVector(const int64_t *constants, Type *type)
