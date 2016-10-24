@@ -2838,20 +2838,31 @@ namespace sw
 		Nucleus::setInsertBlock(end);                   \
 	}
 
+	extern BasicBlock *falseBB__;
+
 	#define If(cond)                                        \
 	for(BasicBlock *trueBB__ = Nucleus::createBasicBlock(), \
 		*falseBB__ = Nucleus::createBasicBlock(),           \
 		*endBB__ = Nucleus::createBasicBlock(),             \
 		*onceBB__ = endBB__;                                \
 		onceBB__ && branch(cond, trueBB__, falseBB__);      \
-		onceBB__ = 0, Nucleus::createBr(endBB__), Nucleus::setInsertBlock(falseBB__), Nucleus::createBr(endBB__), Nucleus::setInsertBlock(endBB__))
+		onceBB__ = nullptr,                                 \
+	    Nucleus::createBr(endBB__),                         \
+	    Nucleus::setInsertBlock(falseBB__),                 \
+	    Nucleus::createBr(endBB__),                         \
+	    Nucleus::setInsertBlock(endBB__),                   \
+        sw::falseBB__ = falseBB__)
 
 	#define Else                                         \
-	for(BasicBlock *endBB__ = Nucleus::getInsertBlock(), \
-		*falseBB__ = Nucleus::getPredecessor(endBB__),   \
+	for(BasicBlock *elseBB__ = sw::falseBB__,            \
+		*endBB__ = (                                     \
+	    sw::falseBB__ = nullptr,                         \
+        Nucleus::getInsertBlock()),                      \
 		*onceBB__ = endBB__;                             \
-		onceBB__ && elseBlock(falseBB__);                \
-		onceBB__ = 0, Nucleus::createBr(endBB__), Nucleus::setInsertBlock(endBB__))
+		onceBB__ && elseBlock(elseBB__);                 \
+		onceBB__ = nullptr,                              \
+	    Nucleus::createBr(endBB__),                      \
+	    Nucleus::setInsertBlock(endBB__))
 }
 
 #endif   // sw_Reactor_hpp
