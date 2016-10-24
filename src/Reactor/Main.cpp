@@ -193,12 +193,16 @@ TEST(SubzeroReactorTest, Swizzle)
 
 			for(int i = 0; i < 256; i++)
 			{
+				If(0 == Int(1)){}
+				Else
 				*Pointer<Float4>(out + 16 * i) = Swizzle(Float4(1.0f, 2.0f, 3.0f, 4.0f), i);
 			}
 
 			for(int i = 0; i < 256; i++)
 			{
+				If(1 == Int(1))
 				*Pointer<Float4>(out + 16 * (256 + i)) = ShuffleLowHigh(Float4(1.0f, 2.0f, 3.0f, 4.0f), Float4(5.0f, 6.0f, 7.0f, 8.0f), i);
+				Else {}
 			}
 
 			*Pointer<Float4>(out + 16 * (512 + 0)) = UnpackLow(Float4(1.0f, 2.0f, 3.0f, 4.0f), Float4(5.0f, 6.0f, 7.0f, 8.0f));

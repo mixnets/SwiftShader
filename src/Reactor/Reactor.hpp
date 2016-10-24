@@ -2838,9 +2838,11 @@ namespace sw
 		Nucleus::setInsertBlock(end);                   \
 	}
 
+	extern BasicBlock *elseBlock__;
+
 	#define If(cond)                                        \
 	for(BasicBlock *trueBB__ = Nucleus::createBasicBlock(), \
-		*falseBB__ = Nucleus::createBasicBlock(),           \
+		*falseBB__ = elseBlock__ = Nucleus::createBasicBlock(),           \
 		*endBB__ = Nucleus::createBasicBlock(),             \
 		*onceBB__ = endBB__;                                \
 		onceBB__ && branch(cond, trueBB__, falseBB__);      \
@@ -2848,8 +2850,8 @@ namespace sw
 
 	#define Else                                         \
 	for(BasicBlock *endBB__ = Nucleus::getInsertBlock(), \
-		*falseBB__ = Nucleus::getPredecessor(endBB__),   \
-		*onceBB__ = endBB__;                             \
+		*falseBB__ = elseBlock__,   \
+		*onceBB__ = elseBlock__ = endBB__;                             \
 		onceBB__ && elseBlock(falseBB__);                \
 		onceBB__ = 0, Nucleus::createBr(endBB__), Nucleus::setInsertBlock(endBB__))
 }
