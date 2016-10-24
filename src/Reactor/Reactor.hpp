@@ -2225,7 +2225,30 @@ namespace sw
 //	RValue<Array<T>> operator--(const Array<T> &val, int);   // Post-decrement
 //	const Array<T> &operator--(const Array<T> &val);   // Pre-decrement
 
-	BasicBlock *beginLoop();
+	struct Loop
+	{
+		Loop(bool init) : loopOnce(init)
+		{
+		}
+
+		operator bool()
+		{
+			return loopOnce;
+		}
+
+		bool operator=(bool value)
+		{
+			return loopOnce = value;
+		}
+
+		sw::BasicBlock *testBB = nullptr;
+		sw::BasicBlock *endBB = nullptr;
+		bool loopOnce = true;
+	};
+
+	bool loopSetup(Loop &loop);
+	bool loopTest(Loop &loop, RValue<Bool> cmp);
+	void endLoop(const Loop &loop);
 	bool branch(RValue<Bool> cmp, BasicBlock *bodyBB, BasicBlock *endBB);
 	bool elseBlock(BasicBlock *falseBB);
 
@@ -2815,14 +2838,11 @@ namespace sw
 		return ReinterpretCast<T>(val);
 	}
 
-	#define For(init, cond, inc)                     \
-	init;                                            \
-	for(BasicBlock *loopBB__ = beginLoop(),          \
-		*bodyBB__ = Nucleus::createBasicBlock(),     \
-		*endBB__ = Nucleus::createBasicBlock(),      \
-		*onceBB__ = endBB__;                         \
-		onceBB__ && branch(cond, bodyBB__, endBB__); \
-		inc, onceBB__ = 0, Nucleus::createBr(loopBB__), Nucleus::setInsertBlock(endBB__))
+	extern BasicBlock *falseBB__;
+
+	#define For(init, cond, inc) \
+	for(Loop loop__ = true; loop__; loop__ = false) \
+	for(init; loopSetup(loop__) && loopTest(loop__, cond); inc, endLoop(loop__))
 
 	#define While(cond) For(((void*)0), cond, ((void*)0))
 
