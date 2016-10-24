@@ -53,6 +53,9 @@ namespace
 
 namespace sw
 {
+	BasicBlock *loopBB__ = nullptr;
+	BasicBlock *bodyBB__ = nullptr;
+	BasicBlock *endBB__ = nullptr;
 	BasicBlock *falseBB__ = nullptr;
 
 	enum EmulatedType

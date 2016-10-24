@@ -2815,14 +2815,19 @@ namespace sw
 		return ReinterpretCast<T>(val);
 	}
 
+	extern BasicBlock *loopBB__;
+	extern BasicBlock *bodyBB__;
+	extern BasicBlock *endBB__;
+	extern BasicBlock *falseBB__;
+
 	#define For(init, cond, inc)                     \
-	init;                                            \
-	for(BasicBlock *loopBB__ = beginLoop(),          \
-		*bodyBB__ = Nucleus::createBasicBlock(),     \
-		*endBB__ = Nucleus::createBasicBlock(),      \
-		*onceBB__ = endBB__;                         \
-		onceBB__ && branch(cond, bodyBB__, endBB__); \
-		inc, onceBB__ = 0, Nucleus::createBr(loopBB__), Nucleus::setInsertBlock(endBB__))
+	for(init;                                        \
+	    (Nucleus::getInsertBlock() != endBB__) &&    \
+	    (loopBB__ = beginLoop()) &&                  \
+		(bodyBB__ = Nucleus::createBasicBlock()) &&  \
+		(endBB__ = Nucleus::createBasicBlock()) &&   \
+		branch(cond, bodyBB__, endBB__);             \
+		inc, Nucleus::createBr(loopBB__), Nucleus::setInsertBlock(endBB__))
 
 	#define While(cond) For(((void*)0), cond, ((void*)0))
 
@@ -2837,8 +2842,6 @@ namespace sw
 		Nucleus::createCondBr((cond).value, end, body); \
 		Nucleus::setInsertBlock(end);                   \
 	}
-
-	extern BasicBlock *falseBB__;
 
 	#define If(cond)                                        \
 	for(BasicBlock *trueBB__ = Nucleus::createBasicBlock(), \
