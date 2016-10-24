@@ -68,6 +68,9 @@ namespace
 	llvm::Module *module = nullptr;
 	llvm::Function *function = nullptr;
 
+	sw::BasicBlock *testBB = nullptr;
+	sw::BasicBlock *endBB = nullptr;
+
 	sw::BackoffLock codegenMutex;
 }
 
@@ -6718,14 +6721,36 @@ namespace sw
 		Nucleus::createUnreachable();
 	}
 
-	BasicBlock *beginLoop()
+	bool loopSetup()
 	{
-		BasicBlock *loopBB = Nucleus::createBasicBlock();
+		if(Nucleus::getInsertBlock() != endBB)
+		{
+			::testBB = Nucleus::createBasicBlock();
 
-		Nucleus::createBr(loopBB);
-		Nucleus::setInsertBlock(loopBB);
+			Nucleus::createBr(::testBB);
+			Nucleus::setInsertBlock(::testBB);
 
-		return loopBB;
+			return true;
+		}
+
+		return false;
+	}
+
+	bool loopTest(RValue<Bool> cmp)
+	{
+		BasicBlock *bodyBB = Nucleus::createBasicBlock();
+		::endBB = Nucleus::createBasicBlock();
+
+		Nucleus::createCondBr(cmp.value, bodyBB, ::endBB);
+		Nucleus::setInsertBlock(bodyBB);
+
+		return true;
+	}
+
+	void endLoop()
+	{
+		Nucleus::createBr(::testBB);
+		Nucleus::setInsertBlock(::endBB);
 	}
 
 	bool branch(RValue<Bool> cmp, BasicBlock *bodyBB, BasicBlock *endBB)

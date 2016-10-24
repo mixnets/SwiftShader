@@ -24,6 +24,11 @@
 
 namespace sw
 {
+	class BasicBlock;
+}
+
+namespace sw
+{
 	class Byte;
 	class SByte;
 	class Byte4;
@@ -2225,7 +2230,27 @@ namespace sw
 //	RValue<Array<T>> operator--(const Array<T> &val, int);   // Post-decrement
 //	const Array<T> &operator--(const Array<T> &val);   // Pre-decrement
 
-	BasicBlock *beginLoop();
+	struct Loop
+	{
+		Loop(bool test) : test(test)
+		{
+		}
+
+		operator bool()
+		{
+			bool value = test;
+			test = false;
+			return value;
+		}
+
+		sw::BasicBlock *testBB = nullptr;
+		sw::BasicBlock *endBB = nullptr;
+		bool test = true;
+	};
+
+	bool loopSetup(Loop &loop);
+	bool loopTest(Loop &loop, RValue<Bool> cmp);
+	void endLoop(const Loop &loop);
 	bool branch(RValue<Bool> cmp, BasicBlock *bodyBB, BasicBlock *endBB);
 	bool elseBlock(BasicBlock *falseBB);
 
@@ -2815,14 +2840,10 @@ namespace sw
 		return ReinterpretCast<T>(val);
 	}
 
-	#define For(init, cond, inc)                     \
-	init;                                            \
-	for(BasicBlock *loopBB__ = beginLoop(),          \
-		*bodyBB__ = Nucleus::createBasicBlock(),     \
-		*endBB__ = Nucleus::createBasicBlock(),      \
-		*onceBB__ = endBB__;                         \
-		onceBB__ && branch(cond, bodyBB__, endBB__); \
-		inc, onceBB__ = 0, Nucleus::createBr(loopBB__), Nucleus::setInsertBlock(endBB__))
+	extern BasicBlock *falseBB__;
+
+	#define For(init, cond, inc) \
+		for(init; static Loop q = loopSetup(q) && loopTest(q, cond); inc, endLoop(q))
 
 	#define While(cond) For(((void*)0), cond, ((void*)0))
 
@@ -2837,8 +2858,6 @@ namespace sw
 		Nucleus::createCondBr((cond).value, end, body); \
 		Nucleus::setInsertBlock(end);                   \
 	}
-
-	extern BasicBlock *falseBB__;
 
 	#define If(cond)                                        \
 	for(BasicBlock *trueBB__ = Nucleus::createBasicBlock(), \

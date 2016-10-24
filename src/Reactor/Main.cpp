@@ -45,7 +45,8 @@ TEST(SubzeroReactorTest, Sample)
 			Int y = function.Arg<1>();
 			Int z = 4;
 
-			For(Int i = 0, i < 10, i++)
+			//For(Int i = 0, i < 10, i++)
+			for(Int i = 0; static Loop q = loopSetup(q) && loopTest(q, i < 10); i++, endLoop(q))
 			{
 				z += (2 << i) - (i / 3);
 			}

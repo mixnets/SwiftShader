@@ -6147,14 +6147,36 @@ namespace sw
 		Nucleus::createUnreachable();
 	}
 
-	BasicBlock *beginLoop()
+	bool loopSetup(Loop &loop)
 	{
-		BasicBlock *loopBB = Nucleus::createBasicBlock();
+		if(Nucleus::getInsertBlock() != loop.endBB)
+		{
+			loop.testBB = Nucleus::createBasicBlock();
 
-		Nucleus::createBr(loopBB);
-		Nucleus::setInsertBlock(loopBB);
+			Nucleus::createBr(loop.testBB);
+			Nucleus::setInsertBlock(loop.testBB);
 
-		return loopBB;
+			return true;
+		}
+
+		return false;
+	}
+
+	bool loopTest(Loop &loop, RValue<Bool> cmp)
+	{
+		BasicBlock *bodyBB = Nucleus::createBasicBlock();
+		loop.endBB = Nucleus::createBasicBlock();
+
+		Nucleus::createCondBr(cmp.value, bodyBB, loop.endBB);
+		Nucleus::setInsertBlock(bodyBB);
+
+		return true;
+	}
+
+	void endLoop(const Loop &loop)
+	{
+		Nucleus::createBr(loop.testBB);
+		Nucleus::setInsertBlock(loop.endBB);
 	}
 
 	bool branch(RValue<Bool> cmp, BasicBlock *bodyBB, BasicBlock *endBB)
