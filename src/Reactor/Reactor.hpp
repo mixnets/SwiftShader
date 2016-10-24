@@ -24,6 +24,11 @@
 
 namespace sw
 {
+	class BasicBlock;
+}
+
+namespace sw
+{
 	class Byte;
 	class SByte;
 	class Byte4;
@@ -2225,7 +2230,9 @@ namespace sw
 //	RValue<Array<T>> operator--(const Array<T> &val, int);   // Post-decrement
 //	const Array<T> &operator--(const Array<T> &val);   // Pre-decrement
 
-	BasicBlock *beginLoop();
+	bool loopSetup();
+	bool loopTest(RValue<Bool> cmp);
+	void endLoop();
 	bool branch(RValue<Bool> cmp, BasicBlock *bodyBB, BasicBlock *endBB);
 	bool elseBlock(BasicBlock *falseBB);
 
@@ -2815,19 +2822,9 @@ namespace sw
 		return ReinterpretCast<T>(val);
 	}
 
-	extern BasicBlock *loopBB__;
-	extern BasicBlock *bodyBB__;
-	extern BasicBlock *endBB__;
 	extern BasicBlock *falseBB__;
 
-	#define For(init, cond, inc)                     \
-	for(init;                                        \
-	    (Nucleus::getInsertBlock() != endBB__) &&    \
-	    (loopBB__ = beginLoop()) &&                  \
-		(bodyBB__ = Nucleus::createBasicBlock()) &&  \
-		(endBB__ = Nucleus::createBasicBlock()) &&   \
-		branch(cond, bodyBB__, endBB__);             \
-		inc, Nucleus::createBr(loopBB__), Nucleus::setInsertBlock(endBB__))
+	#define For(init, cond, inc) for(init; loopSetup() && loopTest(cond); inc, endLoop())
 
 	#define While(cond) For(((void*)0), cond, ((void*)0))
 
