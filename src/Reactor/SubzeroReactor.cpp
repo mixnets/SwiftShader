@@ -53,6 +53,8 @@ namespace
 
 namespace sw
 {
+	BasicBlock *falseBB__ = nullptr;
+
 	enum EmulatedType
 	{
 		EmulatedShift = 16,
@@ -471,13 +473,10 @@ namespace sw
 
 	void Nucleus::setInsertBlock(BasicBlock *basicBlock)
 	{
-		assert(::basicBlock->getInsts().back().getTerminatorEdges().size() >= 0 && "Previous basic block must have a terminator");
+	//	auto &inst = ::basicBlock->getInsts();
+	//	auto back = inst.back();
+	//	assert(::basicBlock->getInsts().back().getTerminatorEdges().size() >= 0 && "Previous basic block must have a terminator");
 		::basicBlock = basicBlock;
-	}
-
-	BasicBlock *Nucleus::getPredecessor(BasicBlock *basicBlock)
-	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
 	}
 
 	void Nucleus::createFunction(Type *ReturnType, std::vector<Type*> &Params)
@@ -6143,6 +6142,8 @@ namespace sw
 
 	bool elseBlock(BasicBlock *falseBB)
 	{
+		assert(falseBB && "Else not preceded by If");
+		falseBB->getInsts().back().setDeleted();
 		Nucleus::setInsertBlock(falseBB);
 
 		return true;

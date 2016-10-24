@@ -286,11 +286,6 @@ namespace sw
 		return ::builder->SetInsertPoint(basicBlock);
 	}
 
-	BasicBlock *Nucleus::getPredecessor(BasicBlock *basicBlock)
-	{
-		return B(*pred_begin(basicBlock));
-	}
-
 	void Nucleus::createFunction(Type *ReturnType, std::vector<Type*> &Params)
 	{
 		llvm::FunctionType *functionType = llvm::FunctionType::get(ReturnType, T(Params), false);
@@ -6741,6 +6736,7 @@ namespace sw
 
 	bool elseBlock(BasicBlock *falseBB)
 	{
+		assert(falseBB && "Else not preceded by If");
 		falseBB->back().eraseFromParent();
 		Nucleus::setInsertBlock(falseBB);
 
