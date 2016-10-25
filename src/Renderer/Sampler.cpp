@@ -421,7 +421,7 @@ namespace sw
 	}
 
 	bool Sampler::hasNPOTTexture() const
-	{
+	{return true;
 		if(textureType == TEXTURE_NULL)
 		{
 			return false;
