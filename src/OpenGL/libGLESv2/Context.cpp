@@ -2154,7 +2154,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_ELEMENTS_VERTICES;
 		break;
 	case GL_MAX_FRAGMENT_INPUT_COMPONENTS: // integer, at least 128
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = 128;
 		break;
 	case GL_MAX_FRAGMENT_UNIFORM_BLOCKS: // integer, at least 12
@@ -2164,7 +2164,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_FRAGMENT_UNIFORM_COMPONENTS;
 		break;
 	case GL_MAX_PROGRAM_TEXEL_OFFSET: // integer, minimum is 7
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = 7;
 		break;
 	case GL_MAX_SERVER_WAIT_TIMEOUT: // integer
@@ -2195,7 +2195,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = 60;
 		break;
 	case GL_MAX_VERTEX_OUTPUT_COMPONENTS: // integer,  at least 64
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = 64;
 		break;
 	case GL_MAX_VERTEX_UNIFORM_BLOCKS: // integer,  at least 12
@@ -2205,7 +2205,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_VERTEX_UNIFORM_COMPONENTS;
 		break;
 	case GL_MIN_PROGRAM_TEXEL_OFFSET: // integer, maximum is -8
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = -8;
 		break;
 	case GL_MINOR_VERSION: // integer
@@ -2218,7 +2218,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = numExtensions;
 		break;
 	case GL_NUM_PROGRAM_BINARY_FORMATS: // integer, at least 0
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = 0;
 		break;
 	case GL_PACK_ROW_LENGTH: // integer, initially 0

@@ -140,20 +140,55 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		0.0f,0.0f,0.0f,1.0f
 	};
 
-	// Fragment and vertex shaders code
-	char* pszFragShader = "\
-		void main (void)\
-		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
-		}";
-	char* pszVertShader = "\
-		attribute highp vec4	myVertex;\
-		uniform mediump mat4	myPMVMatrix;\
-		void main(void)\
-		{\
-			gl_Position = myPMVMatrix * myVertex;\
-		}";
+#define SHADER(X) #X
 
+	// Fragment and vertex shaders code
+	char* pszFragShader = SHADER(
+
+varying mediump vec2 v_tex_coords;
+uniform lowp sampler2D u_data;
+
+
+void main()
+{
+	gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+
+	mediump vec2 addr = vec2(v_tex_coords.x, 0.00390625);
+
+	for(mediump float i = 0.0; i < 256.0; i++)
+	{
+		mediump vec4 entry = texture2D(u_data, addr);
+		mediump vec4 unpack = vec4(0.0, 0.0, (abs(entry.x) - 1.0), 0.0);
+
+		if(unpack.z == -1.0)
+		{
+			discard;
+		}
+
+		(addr.y += (unpack.z * 0.00390625));
+	}
+}
+
+);
+	char* pszVertShader = SHADER(
+	
+		varying mediump vec2 v_tex_coords;
+
+	attribute vec4 aPosition;
+varying vec4 vColor;
+void main()
+{
+   gl_Position = aPosition;
+   vec2 texcoord = vec2(aPosition.xy * 0.5 + vec2(0.5, 0.5));
+   vec4 color = vec4(
+       texcoord,
+       texcoord.x * texcoord.y,
+       (1.0 - texcoord.x) * texcoord.y * 0.5 + 0.5);
+   vColor = vec4(0, abs(color.xy * 2.0 - vec2(1, 1)), 1);
+}
+	
+	
+	);
 	/*
 		Step 0 - Create a EGLNativeWindowType that we can use for OpenGL ES output
 	*/
