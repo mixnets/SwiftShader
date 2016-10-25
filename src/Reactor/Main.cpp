@@ -28,6 +28,8 @@ int reference(int *p, int y)
 		z += (2 << i) - (i / 3);
 	}
 
+	For(Int x = 1, x > 0, --x);
+
 	int sum = x + y + z;
 
 	return sum;
