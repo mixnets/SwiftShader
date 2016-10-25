@@ -136,8 +136,7 @@ copy "$(OutDir)d3d8.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\"</Comm
       </PrecompiledHeader>
       <ExpandAttributedSource>false</ExpandAttributedSource>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>
-      </DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <StringPooling>true</StringPooling>
