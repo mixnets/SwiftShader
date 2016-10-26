@@ -1013,7 +1013,13 @@ namespace sw
 
 	Value *Nucleus::createSelect(Value *C, Value *ifTrue, Value *ifFalse)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		assert(ifTrue->getType() == ifFalse->getType());
+
+		auto result = ::function->makeVariable(ifTrue->getType());
+		auto *select = Ice::InstSelect::create(::function, result, C, ifTrue, ifFalse);
+		::basicBlock->appendInst(select);
+
+		return V(result);
 	}
 
 	Value *Nucleus::createSwitch(Value *v, BasicBlock *Dest, unsigned NumCases)
@@ -3158,12 +3164,28 @@ namespace sw
 
 	RValue<Short4> Max(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v8i1);
+		auto cmp = Ice::InstIcmp::create(::function, Ice::InstIcmp::Sle, condition, x.value, y.value);
+		::basicBlock->appendInst(cmp);
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v8i16);
+		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
+		::basicBlock->appendInst(select);
+
+		return RValue<Short4>(V(result));
 	}
 
 	RValue<Short4> Min(RValue<Short4> x, RValue<Short4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v8i1);
+		auto cmp = Ice::InstIcmp::create(::function, Ice::InstIcmp::Sgt, condition, x.value, y.value);
+		::basicBlock->appendInst(cmp);
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v8i16);
+		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
+		::basicBlock->appendInst(select);
+
+		return RValue<Short4>(V(result));
 	}
 
 	RValue<Short4> AddSat(RValue<Short4> x, RValue<Short4> y)
@@ -3445,12 +3467,28 @@ namespace sw
 
 	RValue<UShort4> Max(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(V(nullptr));
+		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v8i1);
+		auto cmp = Ice::InstIcmp::create(::function, Ice::InstIcmp::Ule, condition, x.value, y.value);
+		::basicBlock->appendInst(cmp);
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v8i16);
+		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
+		::basicBlock->appendInst(select);
+
+		return RValue<UShort4>(V(result));
 	}
 
 	RValue<UShort4> Min(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(V(nullptr));
+		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v8i1);
+		auto cmp = Ice::InstIcmp::create(::function, Ice::InstIcmp::Ugt, condition, x.value, y.value);
+		::basicBlock->appendInst(cmp);
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v8i16);
+		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
+		::basicBlock->appendInst(select);
+
+		return RValue<UShort4>(V(result));
 	}
 
 	RValue<UShort4> AddSat(RValue<UShort4> x, RValue<UShort4> y)
@@ -5159,12 +5197,28 @@ namespace sw
 
 	RValue<Int4> Max(RValue<Int4> x, RValue<Int4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int4>(V(nullptr));
+		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v4i1);
+		auto cmp = Ice::InstIcmp::create(::function, Ice::InstIcmp::Sle, condition, x.value, y.value);
+		::basicBlock->appendInst(cmp);
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4i32);
+		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
+		::basicBlock->appendInst(select);
+
+		return RValue<Int4>(V(result));
 	}
 
 	RValue<Int4> Min(RValue<Int4> x, RValue<Int4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int4>(V(nullptr));
+		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v4i1);
+		auto cmp = Ice::InstIcmp::create(::function, Ice::InstIcmp::Sgt, condition, x.value, y.value);
+		::basicBlock->appendInst(cmp);
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4i32);
+		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
+		::basicBlock->appendInst(select);
+
+		return RValue<Int4>(V(result));
 	}
 
 	RValue<Int4> RoundInt(RValue<Float4> cast)
@@ -5480,12 +5534,28 @@ namespace sw
 
 	RValue<UInt4> Max(RValue<UInt4> x, RValue<UInt4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt4>(V(nullptr));
+		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v4i1);
+		auto cmp = Ice::InstIcmp::create(::function, Ice::InstIcmp::Ule, condition, x.value, y.value);
+		::basicBlock->appendInst(cmp);
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4i32);
+		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
+		::basicBlock->appendInst(select);
+
+		return RValue<UInt4>(V(result));
 	}
 
 	RValue<UInt4> Min(RValue<UInt4> x, RValue<UInt4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UInt4>(V(nullptr));
+		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v4i1);
+		auto cmp = Ice::InstIcmp::create(::function, Ice::InstIcmp::Ugt, condition, x.value, y.value);
+		::basicBlock->appendInst(cmp);
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4i32);
+		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
+		::basicBlock->appendInst(select);
+
+		return RValue<UInt4>(V(result));
 	}
 
 	RValue<UShort8> Pack(RValue<UInt4> x, RValue<UInt4> y)
@@ -5939,12 +6009,28 @@ namespace sw
 
 	RValue<Float4> Max(RValue<Float4> x, RValue<Float4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v4i1);
+		auto cmp = Ice::InstFcmp::create(::function, Ice::InstFcmp::Ule, condition, x.value, y.value);
+		::basicBlock->appendInst(cmp);
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
+		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
+		::basicBlock->appendInst(select);
+
+		return RValue<Float4>(V(result));
 	}
 
 	RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v4i1);
+		auto cmp = Ice::InstFcmp::create(::function, Ice::InstFcmp::Ugt, condition, x.value, y.value);
+		::basicBlock->appendInst(cmp);
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
+		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
+		::basicBlock->appendInst(select);
+
+		return RValue<Float4>(V(result));
 	}
 
 	RValue<Float4> Rcp_pp(RValue<Float4> x, bool exactAtPow2)
