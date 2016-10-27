@@ -21,34 +21,19 @@
     <ClCompile Include="..\..\third_party\googletest\googletest\src\gtest-all.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\AssemblerX8632\XmmArith.cpp">
+    <ClCompile Include="..\Common\CPUID.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\AssemblerX8664\XmmArith.cpp">
+    <ClCompile Include="..\Common\Memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\AssemblerX8664\DataMov.cpp">
+    <ClCompile Include="LLVMRoutine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\AssemblerX8632\DataMov.cpp">
+    <ClCompile Include="LLVMRoutineManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\AssemblerX8664\ControlFlow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\AssemblerX8632\ControlFlow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\AssemblerX8664\LowLevel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\AssemblerX8664\Other.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\AssemblerX8632\LowLevel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\third_party\pnacl-subzero\unittest\AssemblerX8632\Other.cpp">
+    <ClCompile Include="..\Common\Debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

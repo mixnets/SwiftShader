@@ -1312,7 +1312,7 @@ namespace sw
 
 	RValue<Bool> operator!(RValue<Bool> val)
 	{
-		return RValue<Bool>(Nucleus::createNot(val.value));
+		assert(false && "UNIMPLEMENTED"); return RValue<Bool>(V(nullptr));
 	}
 
 	RValue<Bool> operator&&(RValue<Bool> lhs, RValue<Bool> rhs)
@@ -1522,7 +1522,7 @@ namespace sw
 
 	RValue<Byte> operator~(RValue<Byte> val)
 	{
-		return RValue<Byte>(Nucleus::createNot(val.value));
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte>(V(nullptr));
 	}
 
 	RValue<Byte> operator++(const Byte &val, int)   // Post-increment
@@ -1772,7 +1772,7 @@ namespace sw
 
 	RValue<SByte> operator~(RValue<SByte> val)
 	{
-		return RValue<SByte>(Nucleus::createNot(val.value));
+		assert(false && "UNIMPLEMENTED"); return RValue<SByte>(V(nullptr));
 	}
 
 	RValue<SByte> operator++(const SByte &val, int)   // Post-increment
@@ -2018,7 +2018,7 @@ namespace sw
 
 	RValue<Short> operator~(RValue<Short> val)
 	{
-		return RValue<Short>(Nucleus::createNot(val.value));
+		assert(false && "UNIMPLEMENTED"); return RValue<Short>(V(nullptr));
 	}
 
 	RValue<Short> operator++(const Short &val, int)   // Post-increment
@@ -2272,7 +2272,7 @@ namespace sw
 
 	RValue<UShort> operator~(RValue<UShort> val)
 	{
-		return RValue<UShort>(Nucleus::createNot(val.value));
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort>(V(nullptr));
 	}
 
 	RValue<UShort> operator++(const UShort &val, int)   // Post-increment
@@ -2533,7 +2533,7 @@ namespace sw
 
 	RValue<Byte8> operator~(RValue<Byte8> val)
 	{
-		return RValue<Byte8>(Nucleus::createNot(val.value));
+		assert(false && "UNIMPLEMENTED"); return RValue<Byte8>(V(nullptr));
 	}
 
 	RValue<Byte8> AddSat(RValue<Byte8> x, RValue<Byte8> y)
@@ -2774,7 +2774,7 @@ namespace sw
 
 	RValue<SByte8> operator~(RValue<SByte8> val)
 	{
-		return RValue<SByte8>(Nucleus::createNot(val.value));
+		assert(false && "UNIMPLEMENTED"); return RValue<SByte8>(V(nullptr));
 	}
 
 	RValue<SByte8> AddSat(RValue<SByte8> x, RValue<SByte8> y)
@@ -3835,7 +3835,7 @@ namespace sw
 
 	RValue<UShort8> operator~(RValue<UShort8> val)
 	{
-		return RValue<UShort8>(Nucleus::createNot(val.value));
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(V(nullptr));
 	}
 
 	RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7)
@@ -4117,7 +4117,7 @@ namespace sw
 
 	RValue<Int> operator~(RValue<Int> val)
 	{
-		return RValue<Int>(Nucleus::createNot(val.value));
+		return val ^ 0xFFFFFFFF;
 	}
 
 	RValue<Int> operator++(const Int &val, int)   // Post-increment
@@ -4541,7 +4541,7 @@ namespace sw
 
 	RValue<UInt> operator~(RValue<UInt> val)
 	{
-		return RValue<UInt>(Nucleus::createNot(val.value));
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt>(V(nullptr));
 	}
 
 	RValue<UInt> operator++(const UInt &val, int)   // Post-increment
@@ -5061,7 +5061,7 @@ namespace sw
 
 	RValue<UInt2> operator~(RValue<UInt2> val)
 	{
-		return RValue<UInt2>(Nucleus::createNot(val.value));
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>(V(nullptr));
 	}
 
 	Type *UInt2::getType()
@@ -5723,7 +5723,7 @@ namespace sw
 
 	RValue<UInt4> operator~(RValue<UInt4> val)
 	{
-		return RValue<UInt4>(Nucleus::createNot(val.value));
+		assert(false && "UNIMPLEMENTED"); return RValue<UInt4>(V(nullptr));
 	}
 
 	RValue<UInt4> CmpEQ(RValue<UInt4> x, RValue<UInt4> y)
@@ -6298,7 +6298,14 @@ namespace sw
 
 	RValue<Float4> Sqrt(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Sqrt, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		auto target = ::context->getConstantUndef(Ice::IceType_i32);
+		auto sqrt = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+		sqrt->addArg(x.value);
+		::basicBlock->appendInst(sqrt);
+
+		return RValue<Float4>(V(result));
 	}
 
 	RValue<Float4> Insert(const Float4 &val, RValue<Float> element, int i)
@@ -6399,27 +6406,34 @@ namespace sw
 
 	RValue<Float4> Round(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+	//	assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+		return Float4(Int4(x));
 	}
 
 	RValue<Float4> Trunc(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+	//	assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+		return Float4(Int4(x));
 	}
 
 	RValue<Float4> Frac(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+	//	assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+		Float4 frc = x - Float4(Int4(x));   // Signed fractional part
+
+		return frc + As<Float4>(As<Int4>(CmpNLE(Float4(0.0f), frc)) & As<Int4>(Float4(1, 1, 1, 1)));
 	}
 
 	RValue<Float4> Floor(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+	//	assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+		return Float4(Int4(x));
 	}
 
 	RValue<Float4> Ceil(RValue<Float4> x)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+	//	assert(false && "UNIMPLEMENTED"); return RValue<Float4>(V(nullptr));
+		return Float4(Int4(x));
 	}
 
 	Type *Float4::getType()
