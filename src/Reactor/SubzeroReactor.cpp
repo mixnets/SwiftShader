@@ -53,6 +53,11 @@ namespace
 	Ice::Fdstream *out = nullptr;
 }
 
+extern "C"
+{
+	void __chkstk();
+}
+
 namespace sw
 {
 	enum EmulatedType
@@ -209,7 +214,7 @@ namespace sw
 			}
 			else
 			{
-				return nullptr;
+				symbolValue = __chkstk;
 			}
 		}
 
@@ -279,6 +284,26 @@ namespace sw
 					void *symbol = relocateSymbol(elfHeader, relocation, sectionHeader[i]);
 				}
 			}
+			//else if(sectionHeader[i].sh_type == SHT_SYMTAB)
+			//{
+			//	assert(sizeof(void*) == 8 && "UNIMPLEMENTED");   // Only expected/implemented for 64-bit code
+
+			//	for(int index = 0; index < sectionHeader[i].sh_size / sectionHeader[i].sh_entsize; index++)
+			//	{
+			//		const Elf64_Rela &relocation = ((const Elf64_Rela*)(elfImage + sectionHeader[i].sh_offset))[index];
+			//		void *symbol = relocateSymbol(elfHeader, relocation, sectionHeader[i]);
+			//	}
+			//}
+			//else if(sectionHeader[i].sh_type == SHT_STRTAB)
+			//{
+			//	assert(sizeof(void*) == 8 && "UNIMPLEMENTED");   // Only expected/implemented for 64-bit code
+
+			//	for(int index = 0; index < sectionHeader[i].sh_size / sectionHeader[i].sh_entsize; index++)
+			//	{
+			//		const Elf64_Rela &relocation = ((const Elf64_Rela*)(elfImage + sectionHeader[i].sh_offset))[index];
+			//		void *symbol = relocateSymbol(elfHeader, relocation, sectionHeader[i]);
+			//	}
+			//}
 		}
 
 		return entry;
