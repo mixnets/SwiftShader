@@ -53,6 +53,12 @@ namespace
 	Ice::Fdstream *out = nullptr;
 }
 
+extern "C"
+{
+	//void _chkstk();
+	void __chkstk();
+}
+
 namespace sw
 {
 	enum EmulatedType
@@ -153,7 +159,7 @@ namespace sw
 			}
 			else
 			{
-				return nullptr;
+		//		symbolValue = _chkstk;
 			}
 		}
 
@@ -165,9 +171,9 @@ namespace sw
 		case R_386_32:
 			*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite);
 			break;
-	//	case R_386_PC32:
-	//		*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite);
-	//		break;
+		case R_386_PC32:
+			*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite);
+			break;
 		default:
 			assert(false && "Unsupported relocation type");
 			return nullptr;
@@ -209,7 +215,7 @@ namespace sw
 			}
 			else
 			{
-				return nullptr;
+				symbolValue = __chkstk;
 			}
 		}
 
@@ -237,6 +243,10 @@ namespace sw
 
 	void *loadImage(uint8_t *const elfImage)
 	{
+		volatile int huge[2048];
+
+		huge[2047] |= 0;
+
 		ElfHeader *elfHeader = (ElfHeader*)elfImage;
 
 		if(!elfHeader->checkMagic())
@@ -279,6 +289,26 @@ namespace sw
 					void *symbol = relocateSymbol(elfHeader, relocation, sectionHeader[i]);
 				}
 			}
+			//else if(sectionHeader[i].sh_type == SHT_SYMTAB)
+			//{
+			//	assert(sizeof(void*) == 8 && "UNIMPLEMENTED");   // Only expected/implemented for 64-bit code
+
+			//	for(int index = 0; index < sectionHeader[i].sh_size / sectionHeader[i].sh_entsize; index++)
+			//	{
+			//		const Elf64_Rela &relocation = ((const Elf64_Rela*)(elfImage + sectionHeader[i].sh_offset))[index];
+			//		void *symbol = relocateSymbol(elfHeader, relocation, sectionHeader[i]);
+			//	}
+			//}
+			//else if(sectionHeader[i].sh_type == SHT_STRTAB)
+			//{
+			//	assert(sizeof(void*) == 8 && "UNIMPLEMENTED");   // Only expected/implemented for 64-bit code
+
+			//	for(int index = 0; index < sectionHeader[i].sh_size / sectionHeader[i].sh_entsize; index++)
+			//	{
+			//		const Elf64_Rela &relocation = ((const Elf64_Rela*)(elfImage + sectionHeader[i].sh_offset))[index];
+			//		void *symbol = relocateSymbol(elfHeader, relocation, sectionHeader[i]);
+			//	}
+			//}
 		}
 
 		return entry;
@@ -645,7 +675,7 @@ namespace sw
 
 	Value *Nucleus::createFNeg(Value *v)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		return createSub(createNullValue(T(v->getType())), v);
 	}
 
 	Value *Nucleus::createNot(Value *v)
@@ -4046,7 +4076,7 @@ namespace sw
 
 	RValue<Int> RoundInt(RValue<Float> cast)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int>(V(nullptr));
+		return Int(cast);
 	}
 
 	Type *Int::getType()
