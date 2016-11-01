@@ -452,7 +452,7 @@ namespace sw
 		Ice::ClFlags &Flags = Ice::ClFlags::Flags;
 		Ice::ClFlags::getParsedClFlags(Flags);
 
-		Flags.setTargetArch(sizeof(void*) == 8 ? Ice::Target_X8664 : Ice::Target_X8632);
+		Flags.setTargetArch(sizeof(void*) == 8 ? Ice::Target_ARM32 : Ice::Target_X8632);
 		Flags.setOutFileType(Ice::FT_Elf);
 		Flags.setOptLevel(Ice::Opt_2);
 		Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
