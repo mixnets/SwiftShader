@@ -136,7 +136,7 @@ else()
 
     # Remove xor, and, or and friends from the list of keywords, they are used
     # by Reactor
-    set_cpp_flag("-fno-operator-names")
+    set_cpp_flag("-fno-operator-names -fno-elide-constructors")
 
     # LLVM headers requires these flags to be set
     set_cpp_flag("-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS")
@@ -184,6 +184,7 @@ endif()
 # LLVM
 ###########################################################
 
+if(${REACTOR_BACKEND} STREQUAL "LLVM")
 set(LLVM_LIST
     ${LLVM_DIR}/lib/Analysis/AliasAnalysis.cpp
     ${LLVM_DIR}/lib/Analysis/AliasSetTracker.cpp
@@ -560,6 +561,7 @@ set_target_properties(llvm PROPERTIES
     COMPILE_DEFINITIONS "__STDC_CONSTANT_MACROS; __STDC_LIMIT_MACROS;"
     FOLDER "LLVM"
 )
+endif()
 
 ###########################################################
 # Subzero
@@ -590,7 +592,6 @@ if(${REACTOR_BACKEND} STREQUAL "Subzero")
         ${SUBZERO_DIR}/src/IceRNG.cpp
         ${SUBZERO_DIR}/src/IceSwitchLowering.cpp
         ${SUBZERO_DIR}/src/IceTargetLowering.cpp
-        ${SUBZERO_DIR}/src/IceTargetLoweringX86.cpp
         ${SUBZERO_DIR}/src/IceThreading.cpp
         ${SUBZERO_DIR}/src/IceTimerTree.cpp
         ${SUBZERO_DIR}/src/IceTypes.cpp
@@ -605,10 +606,11 @@ if(${REACTOR_BACKEND} STREQUAL "Subzero")
         set(SUBZERO_TARGET X8664)
     else()
         list(APPEND SUBZERO_LIST
-            ${SUBZERO_DIR}/src/IceInstX8632.cpp
-            ${SUBZERO_DIR}/src/IceTargetLoweringX8632.cpp
+            ${SUBZERO_DIR}/src/IceAssemblerARM32.cpp
+            ${SUBZERO_DIR}/src/IceInstARM32.cpp
+            ${SUBZERO_DIR}/src/IceTargetLoweringARM32.cpp
         )
-        set(SUBZERO_TARGET X8632)
+        set(SUBZERO_TARGET ARM32)
     endif()
 
     file(GLOB_RECURSE SUBZERO_DEPENDENCIES_LIST
@@ -649,7 +651,7 @@ if(${REACTOR_BACKEND} STREQUAL "Subzero")
     set_target_properties(ReactorSubzero PROPERTIES
         POSITION_INDEPENDENT_CODE 1
         INCLUDE_DIRECTORIES "${SUBZERO_INCLUDE_DIR}"
-        COMPILE_DEFINITIONS "SZTARGET=${SUBZERO_TARGET}; ALLOW_DUMP=0; ALLOW_TIMERS=0; ALLOW_LLVM_CL=0; ALLOW_LLVM_IR=0; ALLOW_LLVM_IR_AS_INPUT=0; ALLOW_MINIMAL_BUILD=0; ALLOW_WASM=0; ICE_THREAD_LOCAL_HACK=0;"
+        COMPILE_DEFINITIONS "SZTARGET=${SUBZERO_TARGET}; ALLOW_DUMP=1; ALLOW_TIMERS=0; ALLOW_LLVM_CL=0; ALLOW_LLVM_IR=0; ALLOW_LLVM_IR_AS_INPUT=0; ALLOW_MINIMAL_BUILD=0; ALLOW_WASM=0; ICE_THREAD_LOCAL_HACK=0;"
         FOLDER "Subzero"
     )
 
@@ -707,6 +709,7 @@ list(REMOVE_ITEM SWIFTSHADER_LIST
     ${SOURCE_DIR}/Common/GrallocAndroid.hpp
 )
 
+if(${REACTOR_BACKEND} STREQUAL "LLVM")
 set(REACTOR_LLVM_LIST
     ${SOURCE_DIR}/Reactor/LLVMReactor.cpp
     ${SOURCE_DIR}/Reactor/Nucleus.hpp
@@ -717,6 +720,7 @@ set(REACTOR_LLVM_LIST
     ${SOURCE_DIR}/Reactor/LLVMRoutineManager.cpp
     ${SOURCE_DIR}/Reactor/LLVMRoutineManager.hpp
 )
+endif()
 
 file(GLOB_RECURSE EGL_LIST
     ${OPENGL_DIR}/libEGL/*.cpp
@@ -844,6 +848,7 @@ set_target_properties(SwiftShader PROPERTIES
 )
 target_link_libraries(SwiftShader ${OS_LIBS})
 
+if(${REACTOR_BACKEND} STREQUAL "LLVM")
 add_library(ReactorLLVM STATIC ${REACTOR_LLVM_LIST})
 set_target_properties(ReactorLLVM PROPERTIES
     INCLUDE_DIRECTORIES "${COMMON_INCLUDE_DIR}"
@@ -851,6 +856,7 @@ set_target_properties(ReactorLLVM PROPERTIES
     FOLDER "Core"
 )
 target_link_libraries(ReactorLLVM llvm ${OS_LIBS})
+endif()
 
 if(${REACTOR_BACKEND} STREQUAL "LLVM")
     set(Reactor ReactorLLVM)

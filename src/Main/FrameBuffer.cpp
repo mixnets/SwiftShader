@@ -33,7 +33,7 @@ namespace sw
 {
 	extern bool forceWindowed;
 
-	FrameBuffer::Cursor FrameBuffer::cursor = {0};
+	FrameBuffer::Cursor FrameBuffer::cursor = {};
 	bool FrameBuffer::topLeftOrigin = false;
 	void FrameBuffer::typeinfo() {}
 

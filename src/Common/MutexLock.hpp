@@ -17,7 +17,7 @@
 
 #include "Thread.hpp"
 
-#ifdef __ANDROID__
+#ifdef __linux__
 // Use an actual mutex on Android. Since many processes may use SwiftShader
 // at the same time it's best to just have the scheduler overhead.
 #include <pthread.h>
