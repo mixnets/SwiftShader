@@ -77,7 +77,7 @@ namespace
 			#if defined(_WIN32)
 				__cpuid(registers, info);
 			#else
-				__asm volatile("cpuid": "=a" (registers[0]), "=b" (registers[1]), "=c" (registers[2]), "=d" (registers[3]): "a" (info));
+			//	__asm volatile("cpuid": "=a" (registers[0]), "=b" (registers[1]), "=c" (registers[2]), "=d" (registers[3]): "a" (info));
 			#endif
 		}
 
@@ -452,11 +452,16 @@ namespace sw
 		Ice::ClFlags &Flags = Ice::ClFlags::Flags;
 		Ice::ClFlags::getParsedClFlags(Flags);
 
-		Flags.setTargetArch(sizeof(void*) == 8 ? Ice::Target_X8664 : Ice::Target_X8632);
+		#if defined(__arm__)
+			Flags.setTargetArch(Ice::Target_ARM32);
+			Flags.setTargetInstructionSet(Ice::ARM32InstructionSet_Neon);
+		#else // x86
+			Flags.setTargetArch(sizeof(void*) == 8 ? Ice::Target_X8664 : Ice::Target_X8632);
+			Flags.setTargetInstructionSet(CPUID::SSE4_1 ? Ice::X86InstructionSet_SSE4_1 : Ice::X86InstructionSet_SSE2);
+		#endif
 		Flags.setOutFileType(Ice::FT_Elf);
 		Flags.setOptLevel(Ice::Opt_2);
 		Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
-		Flags.setTargetInstructionSet(CPUID::SSE4_1 ? Ice::X86InstructionSet_SSE4_1 : Ice::X86InstructionSet_SSE2);
 		Flags.setVerbose(false ? Ice::IceV_All : Ice::IceV_None);
 
 		static llvm::raw_os_ostream cout(std::cout);
