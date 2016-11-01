@@ -207,8 +207,8 @@ namespace sw
 		#if defined(_WIN32)
 			return InterlockedExchange((volatile long*)target, (long)value);
 		#else
-			int ret;
-			__asm__ __volatile__("lock; xchgl %0,(%1)" : "=r" (ret) :"r" (target), "0" (value) : "memory" );
+			int ret = 0;
+			//__asm__ __volatile__("lock; xchgl %0,(%1)" : "=r" (ret) :"r" (target), "0" (value) : "memory" );
 			return ret;
 		#endif
 	}
@@ -245,7 +245,7 @@ namespace sw
 		#if defined(_WIN32)
 			__nop();
 		#else
-			__asm__ __volatile__ ("nop");
+			//__asm__ __volatile__ ("nop");
 		#endif
 	}
 }

@@ -68,10 +68,10 @@
 #define LLVM_NATIVE_TARGETMC LLVMInitializeX86TargetMC
 
 /* Define if this is Unixish platform */
-/* #undef LLVM_ON_UNIX */
+#define LLVM_ON_UNIX 1
 
 /* Define if this is Win32ish platform */
-#define LLVM_ON_WIN32 1
+/* #define LLVM_ON_WIN32 */
 
 /* Define to path to circo program if found or 'echo circo' otherwise */
 /* #undef LLVM_PATH_CIRCO */

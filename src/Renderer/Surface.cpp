@@ -25,8 +25,10 @@
 #include "Common/Debug.hpp"
 #include "Reactor/Reactor.hpp"
 
+#if defined(__i386) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
 #include <xmmintrin.h>
 #include <emmintrin.h>
+#endif
 
 #undef min
 #undef max
@@ -3042,7 +3044,7 @@ namespace sw
 			bytes -= 2;
 		}
 
-		if(CPUID::supportsSSE())
+		/*if(CPUID::supportsSSE())
 		{
 			while((size_t)buffer & 0xF && bytes >= 4)
 			{
@@ -3068,7 +3070,7 @@ namespace sw
 			}
 
 			buffer = pointer;
-		}
+		}*/
 
 		while(bytes >= 4)
 		{
@@ -3256,7 +3258,7 @@ namespace sw
 		unsigned char maskedS = s & mask;
 		unsigned char invMask = ~mask;
 		unsigned int fill = maskedS;
-		fill = fill | (fill << 8) | (fill << 16) + (fill << 24);
+		fill = fill | (fill << 8) | (fill << 16) | (fill << 24);
 
 		char *buffer = (char*)lockStencil(0, 0, 0, PUBLIC);
 
@@ -3709,6 +3711,7 @@ namespace sw
 		   internal.format == FORMAT_X8B8G8R8 || internal.format == FORMAT_A8B8G8R8 ||
 		   internal.format == FORMAT_SRGB8_X8 || internal.format == FORMAT_SRGB8_A8)
 		{
+#if 0
 			if(CPUID::supportsSSE2() && (width % 4) == 0)
 			{
 				if(internal.depth == 2)
@@ -3852,6 +3855,7 @@ namespace sw
 				else ASSERT(false);
 			}
 			else
+#endif
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7F7F7F7F) + (((x) ^ (y)) & 0x01010101))
 
@@ -4000,6 +4004,7 @@ namespace sw
 		}
 		else if(internal.format == FORMAT_G16R16)
 		{
+#if 0
 			if(CPUID::supportsSSE2() && (width % 4) == 0)
 			{
 				if(internal.depth == 2)
@@ -4143,6 +4148,7 @@ namespace sw
 				else ASSERT(false);
 			}
 			else
+#endif
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7FFF7FFF) + (((x) ^ (y)) & 0x00010001))
 
@@ -4289,188 +4295,182 @@ namespace sw
 				#undef AVERAGE
 			}
 		}
-		else if(internal.format == FORMAT_A16B16G16R16)
-		{
-			if(CPUID::supportsSSE2() && (width % 2) == 0)
+		else if(internal.format == FORMAT_A16B16G16R16) {
+#if 0
+            if(CPUID::supportsSSE2() && (width % 2) == 0)
+            {
+                if(internal.depth == 2)
+                {
+                    for(int y = 0; y < height; y++)
+                    {
+                        for(int x = 0; x < width; x += 2)
+                        {
+                            __m128i c0 = _mm_load_si128((__m128i*)(source0 + 8 * x));
+                            __m128i c1 = _mm_load_si128((__m128i*)(source1 + 8 * x));
+
+                            c0 = _mm_avg_epu16(c0, c1);
+
+                            _mm_store_si128((__m128i*)(source0 + 8 * x), c0);
+                        }
+
+                        source0 += pitch;
+                        source1 += pitch;
+                    }
+                }
+                else if(internal.depth == 4)
+                {
+                    for(int y = 0; y < height; y++)
+                    {
+                        for(int x = 0; x < width; x += 2)
+                        {
+                            __m128i c0 = _mm_load_si128((__m128i*)(source0 + 8 * x));
+                            __m128i c1 = _mm_load_si128((__m128i*)(source1 + 8 * x));
+                            __m128i c2 = _mm_load_si128((__m128i*)(source2 + 8 * x));
+                            __m128i c3 = _mm_load_si128((__m128i*)(source3 + 8 * x));
+
+                            c0 = _mm_avg_epu16(c0, c1);
+                            c2 = _mm_avg_epu16(c2, c3);
+                            c0 = _mm_avg_epu16(c0, c2);
+
+                            _mm_store_si128((__m128i*)(source0 + 8 * x), c0);
+                        }
+
+                        source0 += pitch;
+                        source1 += pitch;
+                        source2 += pitch;
+                        source3 += pitch;
+                    }
+                }
+                else if(internal.depth == 8)
+                {
+                    for(int y = 0; y < height; y++)
+                    {
+                        for(int x = 0; x < width; x += 2)
+                        {
+                            __m128i c0 = _mm_load_si128((__m128i*)(source0 + 8 * x));
+                            __m128i c1 = _mm_load_si128((__m128i*)(source1 + 8 * x));
+                            __m128i c2 = _mm_load_si128((__m128i*)(source2 + 8 * x));
+                            __m128i c3 = _mm_load_si128((__m128i*)(source3 + 8 * x));
+                            __m128i c4 = _mm_load_si128((__m128i*)(source4 + 8 * x));
+                            __m128i c5 = _mm_load_si128((__m128i*)(source5 + 8 * x));
+                            __m128i c6 = _mm_load_si128((__m128i*)(source6 + 8 * x));
+                            __m128i c7 = _mm_load_si128((__m128i*)(source7 + 8 * x));
+
+                            c0 = _mm_avg_epu16(c0, c1);
+                            c2 = _mm_avg_epu16(c2, c3);
+                            c4 = _mm_avg_epu16(c4, c5);
+                            c6 = _mm_avg_epu16(c6, c7);
+                            c0 = _mm_avg_epu16(c0, c2);
+                            c4 = _mm_avg_epu16(c4, c6);
+                            c0 = _mm_avg_epu16(c0, c4);
+
+                            _mm_store_si128((__m128i*)(source0 + 8 * x), c0);
+                        }
+
+                        source0 += pitch;
+                        source1 += pitch;
+                        source2 += pitch;
+                        source3 += pitch;
+                        source4 += pitch;
+                        source5 += pitch;
+                        source6 += pitch;
+                        source7 += pitch;
+                    }
+                }
+                else if(internal.depth == 16)
+                {
+                    for(int y = 0; y < height; y++)
+                    {
+                        for(int x = 0; x < width; x += 2)
+                        {
+                            __m128i c0 = _mm_load_si128((__m128i*)(source0 + 8 * x));
+                            __m128i c1 = _mm_load_si128((__m128i*)(source1 + 8 * x));
+                            __m128i c2 = _mm_load_si128((__m128i*)(source2 + 8 * x));
+                            __m128i c3 = _mm_load_si128((__m128i*)(source3 + 8 * x));
+                            __m128i c4 = _mm_load_si128((__m128i*)(source4 + 8 * x));
+                            __m128i c5 = _mm_load_si128((__m128i*)(source5 + 8 * x));
+                            __m128i c6 = _mm_load_si128((__m128i*)(source6 + 8 * x));
+                            __m128i c7 = _mm_load_si128((__m128i*)(source7 + 8 * x));
+                            __m128i c8 = _mm_load_si128((__m128i*)(source8 + 8 * x));
+                            __m128i c9 = _mm_load_si128((__m128i*)(source9 + 8 * x));
+                            __m128i cA = _mm_load_si128((__m128i*)(sourceA + 8 * x));
+                            __m128i cB = _mm_load_si128((__m128i*)(sourceB + 8 * x));
+                            __m128i cC = _mm_load_si128((__m128i*)(sourceC + 8 * x));
+                            __m128i cD = _mm_load_si128((__m128i*)(sourceD + 8 * x));
+                            __m128i cE = _mm_load_si128((__m128i*)(sourceE + 8 * x));
+                            __m128i cF = _mm_load_si128((__m128i*)(sourceF + 8 * x));
+
+                            c0 = _mm_avg_epu16(c0, c1);
+                            c2 = _mm_avg_epu16(c2, c3);
+                            c4 = _mm_avg_epu16(c4, c5);
+                            c6 = _mm_avg_epu16(c6, c7);
+                            c8 = _mm_avg_epu16(c8, c9);
+                            cA = _mm_avg_epu16(cA, cB);
+                            cC = _mm_avg_epu16(cC, cD);
+                            cE = _mm_avg_epu16(cE, cF);
+                            c0 = _mm_avg_epu16(c0, c2);
+                            c4 = _mm_avg_epu16(c4, c6);
+                            c8 = _mm_avg_epu16(c8, cA);
+                            cC = _mm_avg_epu16(cC, cE);
+                            c0 = _mm_avg_epu16(c0, c4);
+                            c8 = _mm_avg_epu16(c8, cC);
+                            c0 = _mm_avg_epu16(c0, c8);
+
+                            _mm_store_si128((__m128i*)(source0 + 8 * x), c0);
+                        }
+
+                        source0 += pitch;
+                        source1 += pitch;
+                        source2 += pitch;
+                        source3 += pitch;
+                        source4 += pitch;
+                        source5 += pitch;
+                        source6 += pitch;
+                        source7 += pitch;
+                        source8 += pitch;
+                        source9 += pitch;
+                        sourceA += pitch;
+                        sourceB += pitch;
+                        sourceC += pitch;
+                        sourceD += pitch;
+                        sourceE += pitch;
+                        sourceF += pitch;
+                    }
+                }
+                else ASSERT(false);
+            }
+            else
+#endif
 			{
-				if(internal.depth == 2)
-				{
-					for(int y = 0; y < height; y++)
-					{
-						for(int x = 0; x < width; x += 2)
-						{
-							__m128i c0 = _mm_load_si128((__m128i*)(source0 + 8 * x));
-							__m128i c1 = _mm_load_si128((__m128i*)(source1 + 8 * x));
+#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7FFF7FFF) + (((x) ^ (y)) & 0x00010001))
 
-							c0 = _mm_avg_epu16(c0, c1);
-
-							_mm_store_si128((__m128i*)(source0 + 8 * x), c0);
-						}
-
-						source0 += pitch;
-						source1 += pitch;
-					}
-				}
-				else if(internal.depth == 4)
-				{
-					for(int y = 0; y < height; y++)
-					{
-						for(int x = 0; x < width; x += 2)
-						{
-							__m128i c0 = _mm_load_si128((__m128i*)(source0 + 8 * x));
-							__m128i c1 = _mm_load_si128((__m128i*)(source1 + 8 * x));
-							__m128i c2 = _mm_load_si128((__m128i*)(source2 + 8 * x));
-							__m128i c3 = _mm_load_si128((__m128i*)(source3 + 8 * x));
-
-							c0 = _mm_avg_epu16(c0, c1);
-							c2 = _mm_avg_epu16(c2, c3);
-							c0 = _mm_avg_epu16(c0, c2);
-
-							_mm_store_si128((__m128i*)(source0 + 8 * x), c0);
-						}
-
-						source0 += pitch;
-						source1 += pitch;
-						source2 += pitch;
-						source3 += pitch;
-					}
-				}
-				else if(internal.depth == 8)
-				{
-					for(int y = 0; y < height; y++)
-					{
-						for(int x = 0; x < width; x += 2)
-						{
-							__m128i c0 = _mm_load_si128((__m128i*)(source0 + 8 * x));
-							__m128i c1 = _mm_load_si128((__m128i*)(source1 + 8 * x));
-							__m128i c2 = _mm_load_si128((__m128i*)(source2 + 8 * x));
-							__m128i c3 = _mm_load_si128((__m128i*)(source3 + 8 * x));
-							__m128i c4 = _mm_load_si128((__m128i*)(source4 + 8 * x));
-							__m128i c5 = _mm_load_si128((__m128i*)(source5 + 8 * x));
-							__m128i c6 = _mm_load_si128((__m128i*)(source6 + 8 * x));
-							__m128i c7 = _mm_load_si128((__m128i*)(source7 + 8 * x));
-
-							c0 = _mm_avg_epu16(c0, c1);
-							c2 = _mm_avg_epu16(c2, c3);
-							c4 = _mm_avg_epu16(c4, c5);
-							c6 = _mm_avg_epu16(c6, c7);
-							c0 = _mm_avg_epu16(c0, c2);
-							c4 = _mm_avg_epu16(c4, c6);
-							c0 = _mm_avg_epu16(c0, c4);
-
-							_mm_store_si128((__m128i*)(source0 + 8 * x), c0);
-						}
-
-						source0 += pitch;
-						source1 += pitch;
-						source2 += pitch;
-						source3 += pitch;
-						source4 += pitch;
-						source5 += pitch;
-						source6 += pitch;
-						source7 += pitch;
-					}
-				}
-				else if(internal.depth == 16)
-				{
-					for(int y = 0; y < height; y++)
-					{
-						for(int x = 0; x < width; x += 2)
-						{
-							__m128i c0 = _mm_load_si128((__m128i*)(source0 + 8 * x));
-							__m128i c1 = _mm_load_si128((__m128i*)(source1 + 8 * x));
-							__m128i c2 = _mm_load_si128((__m128i*)(source2 + 8 * x));
-							__m128i c3 = _mm_load_si128((__m128i*)(source3 + 8 * x));
-							__m128i c4 = _mm_load_si128((__m128i*)(source4 + 8 * x));
-							__m128i c5 = _mm_load_si128((__m128i*)(source5 + 8 * x));
-							__m128i c6 = _mm_load_si128((__m128i*)(source6 + 8 * x));
-							__m128i c7 = _mm_load_si128((__m128i*)(source7 + 8 * x));
-							__m128i c8 = _mm_load_si128((__m128i*)(source8 + 8 * x));
-							__m128i c9 = _mm_load_si128((__m128i*)(source9 + 8 * x));
-							__m128i cA = _mm_load_si128((__m128i*)(sourceA + 8 * x));
-							__m128i cB = _mm_load_si128((__m128i*)(sourceB + 8 * x));
-							__m128i cC = _mm_load_si128((__m128i*)(sourceC + 8 * x));
-							__m128i cD = _mm_load_si128((__m128i*)(sourceD + 8 * x));
-							__m128i cE = _mm_load_si128((__m128i*)(sourceE + 8 * x));
-							__m128i cF = _mm_load_si128((__m128i*)(sourceF + 8 * x));
-
-							c0 = _mm_avg_epu16(c0, c1);
-							c2 = _mm_avg_epu16(c2, c3);
-							c4 = _mm_avg_epu16(c4, c5);
-							c6 = _mm_avg_epu16(c6, c7);
-							c8 = _mm_avg_epu16(c8, c9);
-							cA = _mm_avg_epu16(cA, cB);
-							cC = _mm_avg_epu16(cC, cD);
-							cE = _mm_avg_epu16(cE, cF);
-							c0 = _mm_avg_epu16(c0, c2);
-							c4 = _mm_avg_epu16(c4, c6);
-							c8 = _mm_avg_epu16(c8, cA);
-							cC = _mm_avg_epu16(cC, cE);
-							c0 = _mm_avg_epu16(c0, c4);
-							c8 = _mm_avg_epu16(c8, cC);
-							c0 = _mm_avg_epu16(c0, c8);
-
-							_mm_store_si128((__m128i*)(source0 + 8 * x), c0);
-						}
-
-						source0 += pitch;
-						source1 += pitch;
-						source2 += pitch;
-						source3 += pitch;
-						source4 += pitch;
-						source5 += pitch;
-						source6 += pitch;
-						source7 += pitch;
-						source8 += pitch;
-						source9 += pitch;
-						sourceA += pitch;
-						sourceB += pitch;
-						sourceC += pitch;
-						sourceD += pitch;
-						sourceE += pitch;
-						sourceF += pitch;
-					}
-				}
-				else ASSERT(false);
-			}
-			else
-			{
-				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7FFF7FFF) + (((x) ^ (y)) & 0x00010001))
-
-				if(internal.depth == 2)
-				{
-					for(int y = 0; y < height; y++)
-					{
-						for(int x = 0; x < 2 * width; x++)
-						{
-							unsigned int c0 = *(unsigned int*)(source0 + 4 * x);
-							unsigned int c1 = *(unsigned int*)(source1 + 4 * x);
+				if (internal.depth == 2) {
+					for (int y = 0; y < height; y++) {
+						for (int x = 0; x < 2 * width; x++) {
+							unsigned int c0 = *(unsigned int *) (source0 + 4 * x);
+							unsigned int c1 = *(unsigned int *) (source1 + 4 * x);
 
 							c0 = AVERAGE(c0, c1);
 
-							*(unsigned int*)(source0 + 4 * x) = c0;
+							*(unsigned int *) (source0 + 4 * x) = c0;
 						}
 
 						source0 += pitch;
 						source1 += pitch;
 					}
-				}
-				else if(internal.depth == 4)
-				{
-					for(int y = 0; y < height; y++)
-					{
-						for(int x = 0; x < 2 * width; x++)
-						{
-							unsigned int c0 = *(unsigned int*)(source0 + 4 * x);
-							unsigned int c1 = *(unsigned int*)(source1 + 4 * x);
-							unsigned int c2 = *(unsigned int*)(source2 + 4 * x);
-							unsigned int c3 = *(unsigned int*)(source3 + 4 * x);
+				} else if (internal.depth == 4) {
+					for (int y = 0; y < height; y++) {
+						for (int x = 0; x < 2 * width; x++) {
+							unsigned int c0 = *(unsigned int *) (source0 + 4 * x);
+							unsigned int c1 = *(unsigned int *) (source1 + 4 * x);
+							unsigned int c2 = *(unsigned int *) (source2 + 4 * x);
+							unsigned int c3 = *(unsigned int *) (source3 + 4 * x);
 
 							c0 = AVERAGE(c0, c1);
 							c2 = AVERAGE(c2, c3);
 							c0 = AVERAGE(c0, c2);
 
-							*(unsigned int*)(source0 + 4 * x) = c0;
+							*(unsigned int *) (source0 + 4 * x) = c0;
 						}
 
 						source0 += pitch;
@@ -4478,21 +4478,17 @@ namespace sw
 						source2 += pitch;
 						source3 += pitch;
 					}
-				}
-				else if(internal.depth == 8)
-				{
-					for(int y = 0; y < height; y++)
-					{
-						for(int x = 0; x < 2 * width; x++)
-						{
-							unsigned int c0 = *(unsigned int*)(source0 + 4 * x);
-							unsigned int c1 = *(unsigned int*)(source1 + 4 * x);
-							unsigned int c2 = *(unsigned int*)(source2 + 4 * x);
-							unsigned int c3 = *(unsigned int*)(source3 + 4 * x);
-							unsigned int c4 = *(unsigned int*)(source4 + 4 * x);
-							unsigned int c5 = *(unsigned int*)(source5 + 4 * x);
-							unsigned int c6 = *(unsigned int*)(source6 + 4 * x);
-							unsigned int c7 = *(unsigned int*)(source7 + 4 * x);
+				} else if (internal.depth == 8) {
+					for (int y = 0; y < height; y++) {
+						for (int x = 0; x < 2 * width; x++) {
+							unsigned int c0 = *(unsigned int *) (source0 + 4 * x);
+							unsigned int c1 = *(unsigned int *) (source1 + 4 * x);
+							unsigned int c2 = *(unsigned int *) (source2 + 4 * x);
+							unsigned int c3 = *(unsigned int *) (source3 + 4 * x);
+							unsigned int c4 = *(unsigned int *) (source4 + 4 * x);
+							unsigned int c5 = *(unsigned int *) (source5 + 4 * x);
+							unsigned int c6 = *(unsigned int *) (source6 + 4 * x);
+							unsigned int c7 = *(unsigned int *) (source7 + 4 * x);
 
 							c0 = AVERAGE(c0, c1);
 							c2 = AVERAGE(c2, c3);
@@ -4502,7 +4498,7 @@ namespace sw
 							c4 = AVERAGE(c4, c6);
 							c0 = AVERAGE(c0, c4);
 
-							*(unsigned int*)(source0 + 4 * x) = c0;
+							*(unsigned int *) (source0 + 4 * x) = c0;
 						}
 
 						source0 += pitch;
@@ -4514,29 +4510,25 @@ namespace sw
 						source6 += pitch;
 						source7 += pitch;
 					}
-				}
-				else if(internal.depth == 16)
-				{
-					for(int y = 0; y < height; y++)
-					{
-						for(int x = 0; x < 2 * width; x++)
-						{
-							unsigned int c0 = *(unsigned int*)(source0 + 4 * x);
-							unsigned int c1 = *(unsigned int*)(source1 + 4 * x);
-							unsigned int c2 = *(unsigned int*)(source2 + 4 * x);
-							unsigned int c3 = *(unsigned int*)(source3 + 4 * x);
-							unsigned int c4 = *(unsigned int*)(source4 + 4 * x);
-							unsigned int c5 = *(unsigned int*)(source5 + 4 * x);
-							unsigned int c6 = *(unsigned int*)(source6 + 4 * x);
-							unsigned int c7 = *(unsigned int*)(source7 + 4 * x);
-							unsigned int c8 = *(unsigned int*)(source8 + 4 * x);
-							unsigned int c9 = *(unsigned int*)(source9 + 4 * x);
-							unsigned int cA = *(unsigned int*)(sourceA + 4 * x);
-							unsigned int cB = *(unsigned int*)(sourceB + 4 * x);
-							unsigned int cC = *(unsigned int*)(sourceC + 4 * x);
-							unsigned int cD = *(unsigned int*)(sourceD + 4 * x);
-							unsigned int cE = *(unsigned int*)(sourceE + 4 * x);
-							unsigned int cF = *(unsigned int*)(sourceF + 4 * x);
+				} else if (internal.depth == 16) {
+					for (int y = 0; y < height; y++) {
+						for (int x = 0; x < 2 * width; x++) {
+							unsigned int c0 = *(unsigned int *) (source0 + 4 * x);
+							unsigned int c1 = *(unsigned int *) (source1 + 4 * x);
+							unsigned int c2 = *(unsigned int *) (source2 + 4 * x);
+							unsigned int c3 = *(unsigned int *) (source3 + 4 * x);
+							unsigned int c4 = *(unsigned int *) (source4 + 4 * x);
+							unsigned int c5 = *(unsigned int *) (source5 + 4 * x);
+							unsigned int c6 = *(unsigned int *) (source6 + 4 * x);
+							unsigned int c7 = *(unsigned int *) (source7 + 4 * x);
+							unsigned int c8 = *(unsigned int *) (source8 + 4 * x);
+							unsigned int c9 = *(unsigned int *) (source9 + 4 * x);
+							unsigned int cA = *(unsigned int *) (sourceA + 4 * x);
+							unsigned int cB = *(unsigned int *) (sourceB + 4 * x);
+							unsigned int cC = *(unsigned int *) (sourceC + 4 * x);
+							unsigned int cD = *(unsigned int *) (sourceD + 4 * x);
+							unsigned int cE = *(unsigned int *) (sourceE + 4 * x);
+							unsigned int cF = *(unsigned int *) (sourceF + 4 * x);
 
 							c0 = AVERAGE(c0, c1);
 							c2 = AVERAGE(c2, c3);
@@ -4554,7 +4546,7 @@ namespace sw
 							c8 = AVERAGE(c8, cC);
 							c0 = AVERAGE(c0, c8);
 
-							*(unsigned int*)(source0 + 4 * x) = c0;
+							*(unsigned int *) (source0 + 4 * x) = c0;
 						}
 
 						source0 += pitch;
@@ -4574,14 +4566,14 @@ namespace sw
 						sourceE += pitch;
 						sourceF += pitch;
 					}
-				}
-				else ASSERT(false);
+				} else ASSERT(false);
 
-				#undef AVERAGE
+#undef AVERAGE
 			}
 		}
+#if 0
 		else if(internal.format == FORMAT_R32F)
-		{
+
 			if(CPUID::supportsSSE() && (width % 4) == 0)
 			{
 				if(internal.depth == 2)
@@ -5465,8 +5457,10 @@ namespace sw
 				else ASSERT(false);
 			}
 		}
+#endif
 		else if(internal.format == FORMAT_R5G6B5)
 		{
+#if 0
 			if(CPUID::supportsSSE2() && (width % 8) == 0)
 			{
 				if(internal.depth == 2)
@@ -5720,6 +5714,7 @@ namespace sw
 				else ASSERT(false);
 			}
 			else
+#endif
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7BEF) + (((x) ^ (y)) & 0x0821))
 

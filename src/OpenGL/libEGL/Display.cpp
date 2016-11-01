@@ -85,15 +85,24 @@ Display::~Display()
 
 static void cpuid(int registers[4], int info)
 {
-	#if defined(_WIN32)
-		__cpuid(registers, info);
+	#if defined(__i386) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
+		#if defined(_WIN32)
+			__cpuid(registers, info);
+		#else
+			__asm volatile("cpuid": "=a" (registers[0]), "=b" (registers[1]), "=c" (registers[2]), "=d" (registers[3]): "a" (info));
+        #endif
+	#elif defined(__aarch64__)
+		registers[0] = 0;
+		registers[1] = 0;
+		registers[2] = 0;
+		registers[3] = 0;
 	#else
-		__asm volatile("cpuid": "=a" (registers[0]), "=b" (registers[1]), "=c" (registers[2]), "=d" (registers[3]): "a" (info));
+		#error "Unknown CPU architecture"
 	#endif
 }
 
 static bool detectSSE()
-{
+{return true;
 	int registers[4];
 	cpuid(registers, 1);
 	return (registers[3] & 0x02000000) != 0;

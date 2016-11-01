@@ -99,6 +99,8 @@ set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 set(OPENGL_DIR ${SOURCE_DIR}/OpenGL)
 set(OPENGL_COMPILER_DIR ${OPENGL_DIR}/compiler)
 set(LLVM_DIR ${CMAKE_SOURCE_DIR}/third_party/LLVM)
+set(SUBZERO_DIR ${CMAKE_SOURCE_DIR}/third_party/pnacl-subzero)
+set(DEPENDENCIES_DIR ${CMAKE_SOURCE_DIR}/third_party/llvm-subzero)
 set(TESTS_DIR ${CMAKE_SOURCE_DIR}/tests)
 set(HELLO2_DIR ${CMAKE_SOURCE_DIR}/third_party/PowerVR_SDK/Examples/Beginner/01_HelloAPI/OGLES2)
 
@@ -551,6 +553,66 @@ set_target_properties(llvm PROPERTIES
     FOLDER "LLVM"
 )
 
+set(SUBZERO_LIST
+    ${SUBZERO_DIR}/src/IceAssembler.cpp
+    ${SUBZERO_DIR}/src/IceAssemblerARM32.cpp
+    ${SUBZERO_DIR}/src/IceCfg.cpp
+    ${SUBZERO_DIR}/src/IceCfgNode.cpp
+    ${SUBZERO_DIR}/src/IceClFlags.cpp
+    ${SUBZERO_DIR}/src/IceELFObjectWriter.cpp
+    ${SUBZERO_DIR}/src/IceELFSection.cpp
+    ${SUBZERO_DIR}/src/IceFixups.cpp
+    ${SUBZERO_DIR}/src/IceGlobalContext.cpp
+    ${SUBZERO_DIR}/src/IceGlobalInits.cpp
+    ${SUBZERO_DIR}/src/IceInst.cpp
+    ${SUBZERO_DIR}/src/IceInstARM32.cpp
+    ${SUBZERO_DIR}/src/IceInstrumentation.cpp
+    ${SUBZERO_DIR}/src/IceIntrinsics.cpp
+    ${SUBZERO_DIR}/src/IceLiveness.cpp
+    ${SUBZERO_DIR}/src/IceLoopAnalyzer.cpp
+    ${SUBZERO_DIR}/src/IceMangling.cpp
+    ${SUBZERO_DIR}/src/IceMemory.cpp
+    ${SUBZERO_DIR}/src/IceOperand.cpp
+    ${SUBZERO_DIR}/src/IceRangeSpec.cpp
+    ${SUBZERO_DIR}/src/IceRegAlloc.cpp
+    ${SUBZERO_DIR}/src/IceRevision.cpp
+    ${SUBZERO_DIR}/src/IceRNG.cpp
+    ${SUBZERO_DIR}/src/IceSwitchLowering.cpp
+    ${SUBZERO_DIR}/src/IceTargetLowering.cpp
+    ${SUBZERO_DIR}/src/IceTargetLoweringARM32.cpp
+    ${SUBZERO_DIR}/src/IceThreading.cpp
+    ${SUBZERO_DIR}/src/IceTimerTree.cpp
+    ${SUBZERO_DIR}/src/IceTypes.cpp
+    ${SUBZERO_DIR}/src/IceVariableSplitting.cpp
+)
+
+file(GLOB_RECURSE DEPENDENCIES_LIST
+    ${DEPENDENCIES_DIR}/lib/Support/*.cpp
+    ${DEPENDENCIES_DIR}/lib/Support/*.c
+)
+
+if(LINUX)
+    set(SUBZERO_INCLUDE_DIR ${DEPENDENCIES_DIR}/include-linux)
+elseif(APPLE)
+    set(SUBZERO_INCLUDE_DIR ${DEPENDENCIES_DIR}/include-osx)
+endif()
+
+list(APPEND SUBZERO_INCLUDE_DIR
+    ${SUBZERO_DIR}
+    ${SUBZERO_DIR}/pnacl-llvm/include
+)
+
+list(APPEND SUBZERO_INCLUDE_DIR
+    ${DEPENDENCIES_DIR}/include
+)
+add_library(subzero STATIC ${SUBZERO_LIST} ${DEPENDENCIES_LIST})
+set_target_properties(subzero PROPERTIES
+    POSITION_INDEPENDENT_CODE 1
+    INCLUDE_DIRECTORIES "${SUBZERO_INCLUDE_DIR}"
+    COMPILE_DEFINITIONS "SZTARGET=ARM32;ALLOW_DUMP=0;ALLOW_TIMERS=0;ALLOW_LLVM_CL=0;ALLOW_LLVM_IR=0;ALLOW_LLVM_IR_AS_INPUT=0;ALLOW_MINIMAL_BUILD=0;ALLOW_WASM=0;ICE_THREAD_LOCAL_HACK=0;__STDC_CONSTANT_MACROS;__STDC_LIMIT_MACROS"
+    FOLDER "LLVM"
+)
+
 ###########################################################
 # Include Directories
 ###########################################################
@@ -563,7 +625,6 @@ set(COMMON_INCLUDE_DIR
     ${SOURCE_DIR}/Renderer
     ${SOURCE_DIR}/Shader
     ${CMAKE_SOURCE_DIR}/include
-    ${LLVM_INCLUDE_DIR}
 )
 set(OPENGL_INCLUDE_DIR
     ${OPENGL_DIR}
@@ -601,14 +662,10 @@ list(REMOVE_ITEM SWIFTSHADER_LIST
 )
 
 set(REACTOR_LIST
-    ${SOURCE_DIR}/Reactor/LLVMReactor.cpp
+    ${SOURCE_DIR}/Reactor/SubzeroReactor.cpp
     ${SOURCE_DIR}/Reactor/Nucleus.hpp
     ${SOURCE_DIR}/Reactor/Routine.cpp
     ${SOURCE_DIR}/Reactor/Routine.hpp
-    ${SOURCE_DIR}/Reactor/LLVMRoutine.cpp
-    ${SOURCE_DIR}/Reactor/LLVMRoutine.hpp
-    ${SOURCE_DIR}/Reactor/LLVMRoutineManager.cpp
-    ${SOURCE_DIR}/Reactor/LLVMRoutineManager.hpp
 )
 
 file(GLOB_RECURSE EGL_LIST
@@ -739,11 +796,12 @@ target_link_libraries(SwiftShader ${OS_LIBS})
 
 add_library(Reactor STATIC ${REACTOR_LIST})
 set_target_properties(Reactor PROPERTIES
-    INCLUDE_DIRECTORIES "${COMMON_INCLUDE_DIR}"
+    INCLUDE_DIRECTORIES "${SUBZERO_INCLUDE_DIR}"
     POSITION_INDEPENDENT_CODE 1
+        COMPILE_DEFINITIONS "SZTARGET=ARM;ALLOW_DUMP=0;ALLOW_TIMERS=0;ALLOW_LLVM_CL=0;ALLOW_LLVM_IR=0;ALLOW_LLVM_IR_AS_INPUT=0;ALLOW_MINIMAL_BUILD=0;ALLOW_WASM=0;ICE_THREAD_LOCAL_HACK=0"
     FOLDER "Core"
 )
-target_link_libraries(Reactor llvm ${OS_LIBS})
+target_link_libraries(Reactor subzero ${OS_LIBS})
 
 add_library(GLCompiler STATIC ${OPENGL_COMPILER_LIST})
 set_target_properties(GLCompiler PROPERTIES
@@ -832,7 +890,11 @@ endif()
 if(BUILD_EXTRA_PROGRAMS)
     if(LINUX)
         add_executable(OGLES2HelloAPI ${HELLO2_DIR}/OGLES2HelloAPI_LinuxX11.cpp)
-        target_link_libraries(OGLES2HelloAPI dl X11 EGL GLESv2)
+        set_target_properties(OGLES2HelloAPI PROPERTIES
+            INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include"
+            COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
+        )
+        target_link_libraries(OGLES2HelloAPI dl X11 libEGL libGLESv2)
     elseif(APPLE)
         add_executable(OGLES2HelloAPI MACOSX_BUNDLE
             ${HELLO2_DIR}/OGLES2HelloAPI_OSX.mm

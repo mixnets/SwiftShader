@@ -22,7 +22,9 @@
 	#include <intrin.h>
 #else
 	#include <sys/time.h>
-	#include <x86intrin.h>
+	#if defined(__i386) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
+		#include <x86intrin.h>
+    #endif
 #endif
 
 namespace sw
@@ -51,8 +53,8 @@ namespace sw
 		#if defined(_WIN32)
 			return __rdtsc();
 		#else
-			int64_t tsc;
-			__asm volatile("rdtsc": "=A" (tsc));
+			int64_t tsc=0;
+			//__asm volatile("rdtsc": "=A" (tsc));
 			return tsc;
 		#endif
 	}

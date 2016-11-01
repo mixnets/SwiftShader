@@ -54,7 +54,7 @@ don't. */
 
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
 */
-/* #undef HAVE_DIRENT_H */
+#define HAVE_DIRENT_H 1
 
 /* Define if you have the GNU dld library. */
 #undef HAVE_DLD
@@ -102,7 +102,7 @@ don't. */
 /* #undef HAVE_GETCWD */
 
 /* Define to 1 if you have the `getpagesize' function. */
-/* #undef HAVE_GETPAGESIZE */
+#define HAVE_GETPAGESIZE 1
 
 /* Define to 1 if you have the `getrlimit' function. */
 /* #undef HAVE_GETRLIMIT */
@@ -135,7 +135,7 @@ don't. */
 /* #undef HAVE_LIBPSAPI */
 
 /* Define to 1 if you have the `pthread' library (-lpthread). */
-/* #undef HAVE_LIBPTHREAD */
+#define HAVE_LIBPTHREAD 1
 
 /* Define to 1 if you have the `shell32' library (-lshell32). */
 /* #undef HAVE_LIBSHELL32 */
@@ -275,13 +275,13 @@ it uses MAP_ANON */
 #undef HAVE_STD_ISNAN_IN_CMATH
 
 /* Define to 1 if you have the `strdup' function. */
-/* #undef HAVE_STRDUP */
+#define HAVE_STRDUP 1
 
 /* Define to 1 if you have the `strerror' function. */
 #define HAVE_STRERROR 1
 
 /* Define to 1 if you have the `strerror_r' function. */
-/* #undef HAVE_STRERROR_R */
+#define HAVE_STRERROR_R 1
 
 /* Define to 1 if you have the `strtoll' function. */
 #define HAVE_STRTOLL 1
@@ -290,7 +290,7 @@ it uses MAP_ANON */
 /* #undef HAVE_STRTOQ */
 
 /* Define to 1 if you have the `sysconf' function. */
-#undef HAVE_SYSCONF
+#define HAVE_SYSCONF 1
 
 /* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
 */
@@ -300,14 +300,14 @@ it uses MAP_ANON */
 /* #undef HAVE_SYS_IOCTL_H */
 
 /* Define to 1 if you have the <sys/mman.h> header file. */
-/* #undef HAVE_SYS_MMAN_H */
+#define HAVE_SYS_MMAN_H 1
 
 /* Define to 1 if you have the <sys/ndir.h> header file, and it defines `DIR'.
 */
 /* #undef HAVE_SYS_NDIR_H */
 
 /* Define to 1 if you have the <sys/param.h> header file. */
-/* #undef HAVE_SYS_PARAM_H */
+#define HAVE_SYS_PARAM_H 1
 
 /* Define to 1 if you have the <sys/resource.h> header file. */
 /* #undef HAVE_SYS_RESOURCE_H */
@@ -319,7 +319,7 @@ it uses MAP_ANON */
 /* #undef HAVE_SYS_TIME_H */
 
 /* Define to 1 if you have the <sys/types.h> header file. */
-/* #undef HAVE_SYS_TYPES_H */
+#define HAVE_SYS_TYPES_H 1
 
 /* Define to 1 if you have the <sys/uio.h> header file. */
 /* #undef HAVE_SYS_UIO_H */
@@ -334,7 +334,7 @@ it uses MAP_ANON */
 #define HAVE_UINT64_T 1
 
 /* Define to 1 if you have the <unistd.h> header file. */
-/* #undef HAVE_UNISTD_H */
+#define HAVE_UNISTD_H 1
 
 /* Define to 1 if you have the <utime.h> header file. */
 /* #undef HAVE_UTIME_H */
@@ -433,7 +433,7 @@ client-visible data structures.  */
 #define LLVM_ENABLE_ABI_BREAKING_CHECKS
 
 /* Define if threads enabled */
-#define LLVM_ENABLE_THREADS 1
+/* #undef LLVM_ENABLE_THREADS */
 
 /* Define if zlib compression is available */
 #define LLVM_ENABLE_ZLIB 0
@@ -478,10 +478,10 @@ client-visible data structures.  */
 #define LLVM_NATIVE_TARGETMC LLVMInitializeX86TargetMC
 
 /* Define if this is Unixish platform */
-/* #undef LLVM_ON_UNIX */
+#define LLVM_ON_UNIX 1
 
 /* Define if this is Win32ish platform */
-#define LLVM_ON_WIN32 1
+/* #undef LLVM_ON_WIN32 */
 
 /* Installation prefix directory */
 #define LLVM_PREFIX "C:/Program Files (x86)/LLVM"
@@ -576,7 +576,7 @@ its not necessary */
 #define stricmp _stricmp
 
 /* Define to a function implementing strdup */
-#define strdup _strdup
+/* #undef strdup */
 
 /* Define to 1 if you have the `_chsize_s' function. */
 #define HAVE__CHSIZE_S 1

@@ -164,11 +164,20 @@ namespace sw
 
 	static void cpuid(int registers[4], int info)
 	{
-		#if defined(_WIN32)
-			__cpuid(registers, info);
-		#else
-			__asm volatile("cpuid": "=a" (registers[0]), "=b" (registers[1]), "=c" (registers[2]), "=d" (registers[3]): "a" (info));
-		#endif
+        #if defined(__i386) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
+            #if defined(_WIN32)
+                __cpuid(registers, info);
+            #else
+                __asm volatile("cpuid": "=a" (registers[0]), "=b" (registers[1]), "=c" (registers[2]), "=d" (registers[3]): "a" (info));
+            #endif
+        #elif defined(__aarch64__)
+            registers[0] = 0;
+            registers[1] = 0;
+            registers[2] = 0;
+            registers[3] = 0;
+        #else
+            #error "Unknown CPU architecture"
+        #endif
 	}
 
 	bool CPUID::detectMMX()
