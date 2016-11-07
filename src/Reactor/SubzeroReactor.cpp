@@ -245,6 +245,7 @@ namespace sw
 		}
 
 		// Expect ELF bitness to match platform
+		assert(sizeof(void*) == 8 ? elfHeader->getFileClass() == ELFCLASS64 : elfHeader->getFileClass() == ELFCLASS32);
 		assert(sizeof(void*) == 8 ? elfHeader->e_machine == EM_X86_64 : elfHeader->e_machine == EM_386);
 
 		SectionHeader *sectionHeader = (SectionHeader*)(elfImage + elfHeader->e_shoff);
@@ -384,19 +385,20 @@ namespace sw
 		Flags.setOptLevel(Ice::Opt_2);
 		Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
 
-		std::unique_ptr<Ice::Ostream> cout(new llvm::raw_os_ostream(std::cout));
+		static llvm::raw_os_ostream cout(std::cout);
+		static llvm::raw_os_ostream cerr(std::cerr);
 
 		if(false)   // Write out to a file
 		{
 			std::error_code errorCode;
 			::out = new Ice::Fdstream("out.o", errorCode, llvm::sys::fs::F_None);
 			::elfFile = new Ice::ELFFileStreamer(*out);
-			::context = new Ice::GlobalContext(cout.get(), cout.get(), cout.get(), elfFile);
+			::context = new Ice::GlobalContext(&cout, &cout, &cerr, elfFile);
 		}
 		else
 		{
 			ELFMemoryStreamer *elfMemory = new ELFMemoryStreamer();
-			::context = new Ice::GlobalContext(cout.get(), cout.get(), cout.get(), elfMemory);
+			::context = new Ice::GlobalContext(&cout, &cout, &cerr, elfMemory);
 			::routine = elfMemory;
 		}
 	}
