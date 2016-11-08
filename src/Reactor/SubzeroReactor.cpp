@@ -1065,7 +1065,24 @@ namespace sw
 
 	static Value *createMask4(Value *lhs, Value *rhs, unsigned char select)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		bool mask[4] = {false, false, false, false};
+
+		mask[(select >> 0) & 0x03] = true;
+		mask[(select >> 2) & 0x03] = true;
+		mask[(select >> 4) & 0x03] = true;
+		mask[(select >> 6) & 0x03] = true;
+
+		int swizzle[4] =
+		{
+			mask[0] ? 4 : 0,
+			mask[1] ? 5 : 1,
+			mask[2] ? 6 : 2,
+			mask[3] ? 7 : 3,
+		};
+
+		Value *shuffle = Nucleus::createShuffleVector(lhs, rhs, swizzle);
+
+		return shuffle;
 	}
 
 	Value *Nucleus::createConstantPointer(const void *address, Type *Ty, unsigned int align)
