@@ -1065,7 +1065,17 @@ namespace sw
 
 	static Value *createMask4(Value *lhs, Value *rhs, unsigned char select)
 	{
-		assert(false && "UNIMPLEMENTED"); return nullptr;
+		int64_t mask[4] = {0, 0, 0, 0};
+
+		mask[(select >> 0) & 0x03] = -1;
+		mask[(select >> 2) & 0x03] = -1;
+		mask[(select >> 4) & 0x03] = -1;
+		mask[(select >> 6) & 0x03] = -1;
+
+		Value *condition = Nucleus::createConstantVector(mask, Int4::getType());
+		Value *result = Nucleus::createSelect(condition, lhs, rhs);
+
+		return result;
 	}
 
 	Value *Nucleus::createConstantPointer(const void *address, Type *Ty, unsigned int align)
@@ -6230,10 +6240,10 @@ namespace sw
 	RValue<Float4> Mask(Float4 &lhs, RValue<Float4> rhs, unsigned char select)
 	{
 		Value *vector = lhs.loadValue();
-		Value *shuffle = createMask4(vector, rhs.value, select);
-		lhs.storeValue(shuffle);
+		Value *result = createMask4(vector, rhs.value, select);
+		lhs.storeValue(result);
 
-		return RValue<Float4>(shuffle);
+		return RValue<Float4>(result);
 	}
 
 	RValue<Int> SignMask(RValue<Float4> x)
