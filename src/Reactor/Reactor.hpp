@@ -82,6 +82,7 @@ namespace sw
 
 		Value *loadValue(unsigned int alignment = 0) const;
 		Value *storeValue(Value *value, unsigned int alignment = 0) const;
+		Value *getAddress(int index) const;
 		Value *getAddress(Value *index) const;
 
 	protected:
@@ -2285,8 +2286,7 @@ namespace sw
 	BasicBlock *beginElse();
 
 	void Return();
-	void Return(bool ret);
-	void Return(const Int &ret);
+	void Return(RValue<Int> ret);
 
 	template<class T>
 	void Return(const Pointer<T> &ret);
@@ -2368,6 +2368,12 @@ namespace sw
 	Value *LValue<T>::storeValue(Value *value, unsigned int alignment) const
 	{
 		return Nucleus::createStore(value, address, T::getType(), false, alignment);
+	}
+
+	template<class T>
+	Value *LValue<T>::getAddress(int index) const
+	{
+		return Nucleus::createGEP(address, T::getType(), index);
 	}
 
 	template<class T>
@@ -2714,7 +2720,7 @@ namespace sw
 	template<class T, int S>
 	Reference<T> Array<T, S>::operator[](int index)
 	{
-		Value *element = LValue<T>::getAddress(Nucleus::createConstantInt(index));
+		Value *element = LValue<T>::getAddress(index);
 
 		return Reference<T>(element);
 	}
