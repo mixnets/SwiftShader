@@ -31,8 +31,8 @@ namespace sw
 		void flip(void *source, Format sourceFormat, size_t sourceStride) override;
 		void blit(void *source, const Rect *sourceRect, const Rect *destRect, Format sourceFormat, size_t sourceStride) override;
 
-		void flip(HWND windowOverride, void *source, Format sourceFormat, size_t sourceStride) override;
-		void blit(HWND windowOverride, void *source, const Rect *sourceRect, const Rect *destRect, Format sourceFormat, size_t sourceStride) override;
+		void flipWin(HWND windowOverride, void *source, Format sourceFormat, size_t sourceStride) override;
+		void blitWin(HWND windowOverride, void *source, const Rect *sourceRect, const Rect *destRect, Format sourceFormat, size_t sourceStride) override;
 
 		void *lock() override;
 		void unlock() override;

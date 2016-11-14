@@ -87,7 +87,7 @@ namespace D3D8
 
 		if(!sourceRect && !destRect)   // FIXME: More cases?
 		{
-			frameBuffer->flip(destWindowOverride, source, format, stride);
+			frameBuffer->flipWin(destWindowOverride, source, format, stride);
 		}
 		else   // TODO: Check for SWAPEFFECT_COPY
 		{
@@ -110,7 +110,7 @@ namespace D3D8
 				dRect.y1 = destRect->bottom;
 			}
 
-			frameBuffer->blit(destWindowOverride, source, sourceRect ? &sRect : nullptr, destRect ? &dRect : nullptr, format, stride);
+			frameBuffer->blitWin(destWindowOverride, source, sourceRect ? &sRect : nullptr, destRect ? &dRect : nullptr, format, stride);
 		}
 
 		backBuffer[0]->unlockInternal();   // FIXME: External

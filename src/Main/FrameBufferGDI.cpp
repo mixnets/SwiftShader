@@ -92,12 +92,12 @@ namespace sw
 		StretchBlt(windowContext, destLeft, destTop, destWidth, destHeight, bitmapContext, sourceLeft, sourceTop, sourceWidth, sourceHeight, SRCCOPY);
 	}
 
-	void FrameBufferGDI::flip(HWND windowOverride, void *source, Format sourceFormat, size_t sourceStride)
+	void FrameBufferGDI::flipWin(HWND windowOverride, void *source, Format sourceFormat, size_t sourceStride)
 	{
-		blit(windowOverride, source, 0, 0, sourceFormat, sourceStride);
+		blitWin(windowOverride, source, 0, 0, sourceFormat, sourceStride);
 	}
 
-	void FrameBufferGDI::blit(HWND windowOverride, void *source, const Rect *sourceRect, const Rect *destRect, Format sourceFormat, size_t sourceStride)
+	void FrameBufferGDI::blitWin(HWND windowOverride, void *source, const Rect *sourceRect, const Rect *destRect, Format sourceFormat, size_t sourceStride)
 	{
 		if(windowed && windowOverride != 0 && windowOverride != bitmapWindow)
 		{

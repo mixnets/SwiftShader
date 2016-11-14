@@ -33,8 +33,8 @@ namespace sw
 
 		virtual ~FrameBufferWin();
 
-		virtual void flip(HWND windowOverride, void *source, Format sourceFormat, size_t sourceStride) = 0;
-		virtual void blit(HWND windowOverride, void *source, const Rect *sourceRect, const Rect *destRect, Format sourceFormat, size_t sourceStride) = 0;
+		virtual void flipWin(HWND windowOverride, void *source, Format sourceFormat, size_t sourceStride) = 0;
+		virtual void blitWin(HWND windowOverride, void *source, const Rect *sourceRect, const Rect *destRect, Format sourceFormat, size_t sourceStride) = 0;
 
 		virtual void setGammaRamp(GammaRamp *gammaRamp, bool calibrate) = 0;
 		virtual void getGammaRamp(GammaRamp *gammaRamp) = 0;

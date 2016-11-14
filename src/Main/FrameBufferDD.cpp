@@ -320,7 +320,7 @@ namespace sw
 		}
 	}
 
-	void FrameBufferDD::flip(HWND windowOverride, void *source, Format sourceFormat, size_t sourceStride)
+	void FrameBufferDD::flipWin(HWND windowOverride, void *source, Format sourceFormat, size_t sourceStride)
 	{
 		updateClipper(windowOverride);
 		updateBounds(windowOverride);
@@ -328,7 +328,7 @@ namespace sw
 		flip(source, sourceFormat, sourceStride);
 	}
 
-	void FrameBufferDD::blit(HWND windowOverride, void *source, const Rect *sourceRect, const Rect *destRect, Format sourceFormat, size_t sourceStride)
+	void FrameBufferDD::blitWin(HWND windowOverride, void *source, const Rect *sourceRect, const Rect *destRect, Format sourceFormat, size_t sourceStride)
 	{
 		updateClipper(windowOverride);
 		updateBounds(windowOverride);
