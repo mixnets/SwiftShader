@@ -6717,28 +6717,6 @@ namespace sw
 		return true;
 	}
 
-	void endIf(BasicBlock *falseBB)
-	{
-		::falseBB = falseBB;
-	}
-
-	bool elseBlock(BasicBlock *falseBB)
-	{
-		assert(falseBB && "Else not preceded by If");
-		falseBB->back().eraseFromParent();
-		Nucleus::setInsertBlock(falseBB);
-
-		return true;
-	}
-
-	BasicBlock *beginElse()
-	{
-		BasicBlock *falseBB = ::falseBB;
-		::falseBB = nullptr;
-
-		return falseBB;
-	}
-
 	RValue<Long> Ticks()
 	{
 		llvm::Function *rdtsc = Intrinsic::getDeclaration(::module, Intrinsic::readcyclecounter);
