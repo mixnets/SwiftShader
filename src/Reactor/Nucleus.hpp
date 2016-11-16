@@ -18,6 +18,7 @@
 #include <cstdarg>
 #include <cstdint>
 #include <vector>
+#include <map>
 
 namespace sw
 {
@@ -45,6 +46,14 @@ namespace sw
 
 	extern Optimization optimization[10];
 
+	class Typeless
+	{
+	public:
+		Value *value;
+	};
+
+	using ValuePair = std::map<Typeless*,Value*>;
+
 	class Nucleus
 	{
 	public:
@@ -54,7 +63,12 @@ namespace sw
 
 		Routine *acquireRoutine(const wchar_t *name, bool runOptimizations = true);
 
-		static Value *allocateStackVariable(Type *type, int arraySize = 0);
+		static void reg(ValuePair*);
+		static void unreg(ValuePair*);
+		static void changeValue(Typeless *);
+
+		static Value *allocateStackVariable(Typeless*,Type *type, int arraySize = 0);
+		static void deallocateStackVariable(Typeless*);
 		static BasicBlock *createBasicBlock();
 		static BasicBlock *getInsertBlock();
 		static void setInsertBlock(BasicBlock *basicBlock);
