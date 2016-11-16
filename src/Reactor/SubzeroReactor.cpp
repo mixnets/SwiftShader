@@ -47,8 +47,6 @@ namespace
 
 	std::mutex codegenMutex;
 
-	sw::BasicBlock *falseBB = nullptr;
-
 	Ice::ELFFileStreamer *elfFile = nullptr;
 	Ice::Fdstream *out = nullptr;
 }
@@ -386,8 +384,9 @@ namespace sw
 		Flags.setOptLevel(Ice::Opt_2);
 		Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
 		Flags.setTargetInstructionSet(Ice::X86InstructionSet_SSE4_1);
-		Flags.setVerbose(false ? Ice::IceV_All : Ice::IceV_None);
+		Flags.setVerbose(true ? Ice::IceV_All : Ice::IceV_None);
 
+		std::cout.setf(std::ios::unitbuf);
 		static llvm::raw_os_ostream cout(std::cout);
 		static llvm::raw_os_ostream cerr(std::cerr);
 
@@ -429,6 +428,12 @@ namespace sw
 		std::string asciiName(wideName.begin(), wideName.end());
 		::function->setFunctionName(Ice::GlobalString::createWithString(::context, asciiName));
 
+
+
+		for(int i = 0; i < 2; i++)
+			::function->dump("Reactor output");
+		::function->computeInOutEdges();
+
 		::function->translate();
 		assert(!::function->hasError());
 
@@ -458,9 +463,34 @@ namespace sw
 	{
 	}
 
-	Value *Nucleus::allocateStackVariable(Type *t, int arraySize)
+	std::set<ValuePair*> branches;
+
+	void Nucleus::reg(ValuePair *vp)
 	{
-		Ice::Type type = T(t);
+		branches.insert(vp);
+	}
+
+	void Nucleus::unreg(ValuePair *vp)
+	{
+		branches.erase(vp);
+	}
+
+	void Nucleus::changeValue(Typeless *var)
+	{
+		for(auto branch : branches)
+		{
+			if(branch->find(var) == branch->end())
+			{
+				(*branch)[var] = var->value;
+			}
+		}
+	}
+
+	std::map<Typeless*,Value*> vars;
+
+	Value *Nucleus::allocateStackVariable(Typeless *value,Type *t, int arraySize)
+	{
+		/*Ice::Type type = T(t);
 		int typeSize = Ice::typeWidthInBytes(type);
 		int totalSize = typeSize * (arraySize ? arraySize : 1);
 
@@ -469,7 +499,17 @@ namespace sw
 		auto alloca = Ice::InstAlloca::create(::function, address, bytes, typeSize);
 		::function->getEntryNode()->getInsts().push_front(alloca);
 
-		return V(address);
+		return V(address);*/
+
+		assert(value && value->value);
+		vars[value] = value->value;
+
+		return nullptr;
+	}
+
+	void Nucleus::deallocateStackVariable(Typeless *value)
+	{
+		vars.erase(value);
 	}
 
 	BasicBlock *Nucleus::createBasicBlock()
@@ -1127,7 +1167,7 @@ namespace sw
 
 	Value *Nucleus::createConstantInt(int i)
 	{
-		return createAssign(::context->getConstantInt32(i));
+		return C(::context->getConstantInt32(i));
 	}
 
 	Value *Nucleus::createConstantInt(unsigned int i)
@@ -1320,14 +1360,14 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<Bool> Bool::operator=(RValue<Bool> rhs) const
+	RValue<Bool> Bool::operator=(RValue<Bool> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<Bool> Bool::operator=(const Bool &rhs) const
+	RValue<Bool> Bool::operator=(Bool &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -1335,7 +1375,7 @@ namespace sw
 		return RValue<Bool>(value);
 	}
 
-	RValue<Bool> Bool::operator=(const Reference<Bool> &rhs) const
+	RValue<Bool> Bool::operator=(Reference<Bool> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -1420,14 +1460,14 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<Byte> Byte::operator=(RValue<Byte> rhs) const
+	RValue<Byte> Byte::operator=(RValue<Byte> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<Byte> Byte::operator=(const Byte &rhs) const
+	RValue<Byte> Byte::operator=(Byte &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -1435,7 +1475,7 @@ namespace sw
 		return RValue<Byte>(value);
 	}
 
-	RValue<Byte> Byte::operator=(const Reference<Byte> &rhs) const
+	RValue<Byte> Byte::operator=(Reference<Byte> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -1493,52 +1533,52 @@ namespace sw
 		return RValue<Byte>(Nucleus::createLShr(lhs.value, rhs.value));
 	}
 
-	RValue<Byte> operator+=(const Byte &lhs, RValue<Byte> rhs)
+	RValue<Byte> operator+=(Byte &lhs, RValue<Byte> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<Byte> operator-=(const Byte &lhs, RValue<Byte> rhs)
+	RValue<Byte> operator-=(Byte &lhs, RValue<Byte> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-	RValue<Byte> operator*=(const Byte &lhs, RValue<Byte> rhs)
+	RValue<Byte> operator*=(Byte &lhs, RValue<Byte> rhs)
 	{
 		return lhs = lhs * rhs;
 	}
 
-	RValue<Byte> operator/=(const Byte &lhs, RValue<Byte> rhs)
+	RValue<Byte> operator/=(Byte &lhs, RValue<Byte> rhs)
 	{
 		return lhs = lhs / rhs;
 	}
 
-	RValue<Byte> operator%=(const Byte &lhs, RValue<Byte> rhs)
+	RValue<Byte> operator%=(Byte &lhs, RValue<Byte> rhs)
 	{
 		return lhs = lhs % rhs;
 	}
 
-	RValue<Byte> operator&=(const Byte &lhs, RValue<Byte> rhs)
+	RValue<Byte> operator&=(Byte &lhs, RValue<Byte> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<Byte> operator|=(const Byte &lhs, RValue<Byte> rhs)
+	RValue<Byte> operator|=(Byte &lhs, RValue<Byte> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<Byte> operator^=(const Byte &lhs, RValue<Byte> rhs)
+	RValue<Byte> operator^=(Byte &lhs, RValue<Byte> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-	RValue<Byte> operator<<=(const Byte &lhs, RValue<Byte> rhs)
+	RValue<Byte> operator<<=(Byte &lhs, RValue<Byte> rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<Byte> operator>>=(const Byte &lhs, RValue<Byte> rhs)
+	RValue<Byte> operator>>=(Byte &lhs, RValue<Byte> rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
@@ -1558,27 +1598,27 @@ namespace sw
 		return RValue<Byte>(Nucleus::createNot(val.value));
 	}
 
-	RValue<Byte> operator++(const Byte &val, int)   // Post-increment
+	RValue<Byte> operator++(Byte &val, int)   // Post-increment
 	{
 		RValue<Byte> res = val;
 		val += Byte(1);
 		return res;
 	}
 
-	const Byte &operator++(const Byte &val)   // Pre-increment
+	const Byte &operator++(Byte &val)   // Pre-increment
 	{
 		val += Byte(1);
 		return val;
 	}
 
-	RValue<Byte> operator--(const Byte &val, int)   // Post-decrement
+	RValue<Byte> operator--(Byte &val, int)   // Post-decrement
 	{
 		RValue<Byte> res = val;
 		val -= Byte(1);
 		return res;
 	}
 
-	const Byte &operator--(const Byte &val)   // Pre-decrement
+	const Byte &operator--(Byte &val)   // Pre-decrement
 	{
 		val -= Byte(1);
 		return val;
@@ -1664,14 +1704,14 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<SByte> SByte::operator=(RValue<SByte> rhs) const
+	RValue<SByte> SByte::operator=(RValue<SByte> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<SByte> SByte::operator=(const SByte &rhs) const
+	RValue<SByte> SByte::operator=(SByte &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -1679,7 +1719,7 @@ namespace sw
 		return RValue<SByte>(value);
 	}
 
-	RValue<SByte> SByte::operator=(const Reference<SByte> &rhs) const
+	RValue<SByte> SByte::operator=(Reference<SByte> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -1737,52 +1777,52 @@ namespace sw
 		return RValue<SByte>(Nucleus::createAShr(lhs.value, rhs.value));
 	}
 
-	RValue<SByte> operator+=(const SByte &lhs, RValue<SByte> rhs)
+	RValue<SByte> operator+=(SByte &lhs, RValue<SByte> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<SByte> operator-=(const SByte &lhs, RValue<SByte> rhs)
+	RValue<SByte> operator-=(SByte &lhs, RValue<SByte> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-	RValue<SByte> operator*=(const SByte &lhs, RValue<SByte> rhs)
+	RValue<SByte> operator*=(SByte &lhs, RValue<SByte> rhs)
 	{
 		return lhs = lhs * rhs;
 	}
 
-	RValue<SByte> operator/=(const SByte &lhs, RValue<SByte> rhs)
+	RValue<SByte> operator/=(SByte &lhs, RValue<SByte> rhs)
 	{
 		return lhs = lhs / rhs;
 	}
 
-	RValue<SByte> operator%=(const SByte &lhs, RValue<SByte> rhs)
+	RValue<SByte> operator%=(SByte &lhs, RValue<SByte> rhs)
 	{
 		return lhs = lhs % rhs;
 	}
 
-	RValue<SByte> operator&=(const SByte &lhs, RValue<SByte> rhs)
+	RValue<SByte> operator&=(SByte &lhs, RValue<SByte> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<SByte> operator|=(const SByte &lhs, RValue<SByte> rhs)
+	RValue<SByte> operator|=(SByte &lhs, RValue<SByte> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<SByte> operator^=(const SByte &lhs, RValue<SByte> rhs)
+	RValue<SByte> operator^=(SByte &lhs, RValue<SByte> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-	RValue<SByte> operator<<=(const SByte &lhs, RValue<SByte> rhs)
+	RValue<SByte> operator<<=(SByte &lhs, RValue<SByte> rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<SByte> operator>>=(const SByte &lhs, RValue<SByte> rhs)
+	RValue<SByte> operator>>=(SByte &lhs, RValue<SByte> rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
@@ -1802,27 +1842,27 @@ namespace sw
 		return RValue<SByte>(Nucleus::createNot(val.value));
 	}
 
-	RValue<SByte> operator++(const SByte &val, int)   // Post-increment
+	RValue<SByte> operator++(SByte &val, int)   // Post-increment
 	{
 		RValue<SByte> res = val;
 		val += SByte(1);
 		return res;
 	}
 
-	const SByte &operator++(const SByte &val)   // Pre-increment
+	const SByte &operator++(SByte &val)   // Pre-increment
 	{
 		val += SByte(1);
 		return val;
 	}
 
-	RValue<SByte> operator--(const SByte &val, int)   // Post-decrement
+	RValue<SByte> operator--(SByte &val, int)   // Post-decrement
 	{
 		RValue<SByte> res = val;
 		val -= SByte(1);
 		return res;
 	}
 
-	const SByte &operator--(const SByte &val)   // Pre-decrement
+	const SByte &operator--(SByte &val)   // Pre-decrement
 	{
 		val -= SByte(1);
 		return val;
@@ -1901,14 +1941,14 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<Short> Short::operator=(RValue<Short> rhs) const
+	RValue<Short> Short::operator=(RValue<Short> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<Short> Short::operator=(const Short &rhs) const
+	RValue<Short> Short::operator=(Short &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -1916,7 +1956,7 @@ namespace sw
 		return RValue<Short>(value);
 	}
 
-	RValue<Short> Short::operator=(const Reference<Short> &rhs) const
+	RValue<Short> Short::operator=(Reference<Short> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -1974,52 +2014,52 @@ namespace sw
 		return RValue<Short>(Nucleus::createAShr(lhs.value, rhs.value));
 	}
 
-	RValue<Short> operator+=(const Short &lhs, RValue<Short> rhs)
+	RValue<Short> operator+=(Short &lhs, RValue<Short> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<Short> operator-=(const Short &lhs, RValue<Short> rhs)
+	RValue<Short> operator-=(Short &lhs, RValue<Short> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-	RValue<Short> operator*=(const Short &lhs, RValue<Short> rhs)
+	RValue<Short> operator*=(Short &lhs, RValue<Short> rhs)
 	{
 		return lhs = lhs * rhs;
 	}
 
-	RValue<Short> operator/=(const Short &lhs, RValue<Short> rhs)
+	RValue<Short> operator/=(Short &lhs, RValue<Short> rhs)
 	{
 		return lhs = lhs / rhs;
 	}
 
-	RValue<Short> operator%=(const Short &lhs, RValue<Short> rhs)
+	RValue<Short> operator%=(Short &lhs, RValue<Short> rhs)
 	{
 		return lhs = lhs % rhs;
 	}
 
-	RValue<Short> operator&=(const Short &lhs, RValue<Short> rhs)
+	RValue<Short> operator&=(Short &lhs, RValue<Short> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<Short> operator|=(const Short &lhs, RValue<Short> rhs)
+	RValue<Short> operator|=(Short &lhs, RValue<Short> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<Short> operator^=(const Short &lhs, RValue<Short> rhs)
+	RValue<Short> operator^=(Short &lhs, RValue<Short> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-	RValue<Short> operator<<=(const Short &lhs, RValue<Short> rhs)
+	RValue<Short> operator<<=(Short &lhs, RValue<Short> rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<Short> operator>>=(const Short &lhs, RValue<Short> rhs)
+	RValue<Short> operator>>=(Short &lhs, RValue<Short> rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
@@ -2039,27 +2079,27 @@ namespace sw
 		return RValue<Short>(Nucleus::createNot(val.value));
 	}
 
-	RValue<Short> operator++(const Short &val, int)   // Post-increment
+	RValue<Short> operator++(Short &val, int)   // Post-increment
 	{
 		RValue<Short> res = val;
 		val += Short(1);
 		return res;
 	}
 
-	const Short &operator++(const Short &val)   // Pre-increment
+	const Short &operator++(Short &val)   // Pre-increment
 	{
 		val += Short(1);
 		return val;
 	}
 
-	RValue<Short> operator--(const Short &val, int)   // Post-decrement
+	RValue<Short> operator--(Short &val, int)   // Post-decrement
 	{
 		RValue<Short> res = val;
 		val -= Short(1);
 		return res;
 	}
 
-	const Short &operator--(const Short &val)   // Pre-decrement
+	const Short &operator--(Short &val)   // Pre-decrement
 	{
 		val -= Short(1);
 		return val;
@@ -2145,14 +2185,14 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<UShort> UShort::operator=(RValue<UShort> rhs) const
+	RValue<UShort> UShort::operator=(RValue<UShort> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<UShort> UShort::operator=(const UShort &rhs) const
+	RValue<UShort> UShort::operator=(UShort &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -2160,7 +2200,7 @@ namespace sw
 		return RValue<UShort>(value);
 	}
 
-	RValue<UShort> UShort::operator=(const Reference<UShort> &rhs) const
+	RValue<UShort> UShort::operator=(Reference<UShort> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -2218,52 +2258,52 @@ namespace sw
 		return RValue<UShort>(Nucleus::createLShr(lhs.value, rhs.value));
 	}
 
-	RValue<UShort> operator+=(const UShort &lhs, RValue<UShort> rhs)
+	RValue<UShort> operator+=(UShort &lhs, RValue<UShort> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<UShort> operator-=(const UShort &lhs, RValue<UShort> rhs)
+	RValue<UShort> operator-=(UShort &lhs, RValue<UShort> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-	RValue<UShort> operator*=(const UShort &lhs, RValue<UShort> rhs)
+	RValue<UShort> operator*=(UShort &lhs, RValue<UShort> rhs)
 	{
 		return lhs = lhs * rhs;
 	}
 
-	RValue<UShort> operator/=(const UShort &lhs, RValue<UShort> rhs)
+	RValue<UShort> operator/=(UShort &lhs, RValue<UShort> rhs)
 	{
 		return lhs = lhs / rhs;
 	}
 
-	RValue<UShort> operator%=(const UShort &lhs, RValue<UShort> rhs)
+	RValue<UShort> operator%=(UShort &lhs, RValue<UShort> rhs)
 	{
 		return lhs = lhs % rhs;
 	}
 
-	RValue<UShort> operator&=(const UShort &lhs, RValue<UShort> rhs)
+	RValue<UShort> operator&=(UShort &lhs, RValue<UShort> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<UShort> operator|=(const UShort &lhs, RValue<UShort> rhs)
+	RValue<UShort> operator|=(UShort &lhs, RValue<UShort> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<UShort> operator^=(const UShort &lhs, RValue<UShort> rhs)
+	RValue<UShort> operator^=(UShort &lhs, RValue<UShort> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-	RValue<UShort> operator<<=(const UShort &lhs, RValue<UShort> rhs)
+	RValue<UShort> operator<<=(UShort &lhs, RValue<UShort> rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<UShort> operator>>=(const UShort &lhs, RValue<UShort> rhs)
+	RValue<UShort> operator>>=(UShort &lhs, RValue<UShort> rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
@@ -2283,27 +2323,27 @@ namespace sw
 		return RValue<UShort>(Nucleus::createNot(val.value));
 	}
 
-	RValue<UShort> operator++(const UShort &val, int)   // Post-increment
+	RValue<UShort> operator++(UShort &val, int)   // Post-increment
 	{
 		RValue<UShort> res = val;
 		val += UShort(1);
 		return res;
 	}
 
-	const UShort &operator++(const UShort &val)   // Pre-increment
+	const UShort &operator++(UShort &val)   // Pre-increment
 	{
 		val += UShort(1);
 		return val;
 	}
 
-	RValue<UShort> operator--(const UShort &val, int)   // Post-decrement
+	RValue<UShort> operator--(UShort &val, int)   // Post-decrement
 	{
 		RValue<UShort> res = val;
 		val -= UShort(1);
 		return res;
 	}
 
-	const UShort &operator--(const UShort &val)   // Pre-decrement
+	const UShort &operator--(UShort &val)   // Pre-decrement
 	{
 		val -= UShort(1);
 		return val;
@@ -2396,14 +2436,14 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<Byte8> Byte8::operator=(RValue<Byte8> rhs) const
+	RValue<Byte8> Byte8::operator=(RValue<Byte8> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<Byte8> Byte8::operator=(const Byte8 &rhs) const
+	RValue<Byte8> Byte8::operator=(Byte8 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -2411,7 +2451,7 @@ namespace sw
 		return RValue<Byte8>(value);
 	}
 
-	RValue<Byte8> Byte8::operator=(const Reference<Byte8> &rhs) const
+	RValue<Byte8> Byte8::operator=(Reference<Byte8> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -2469,52 +2509,52 @@ namespace sw
 //		return RValue<Byte8>(Nucleus::createLShr(lhs.value, C(::context->getConstantInt32(rhs))));
 //	}
 
-	RValue<Byte8> operator+=(const Byte8 &lhs, RValue<Byte8> rhs)
+	RValue<Byte8> operator+=(Byte8 &lhs, RValue<Byte8> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<Byte8> operator-=(const Byte8 &lhs, RValue<Byte8> rhs)
+	RValue<Byte8> operator-=(Byte8 &lhs, RValue<Byte8> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-//	RValue<Byte8> operator*=(const Byte8 &lhs, RValue<Byte8> rhs)
+//	RValue<Byte8> operator*=(Byte8 &lhs, RValue<Byte8> rhs)
 //	{
 //		return lhs = lhs * rhs;
 //	}
 
-//	RValue<Byte8> operator/=(const Byte8 &lhs, RValue<Byte8> rhs)
+//	RValue<Byte8> operator/=(Byte8 &lhs, RValue<Byte8> rhs)
 //	{
 //		return lhs = lhs / rhs;
 //	}
 
-//	RValue<Byte8> operator%=(const Byte8 &lhs, RValue<Byte8> rhs)
+//	RValue<Byte8> operator%=(Byte8 &lhs, RValue<Byte8> rhs)
 //	{
 //		return lhs = lhs % rhs;
 //	}
 
-	RValue<Byte8> operator&=(const Byte8 &lhs, RValue<Byte8> rhs)
+	RValue<Byte8> operator&=(Byte8 &lhs, RValue<Byte8> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<Byte8> operator|=(const Byte8 &lhs, RValue<Byte8> rhs)
+	RValue<Byte8> operator|=(Byte8 &lhs, RValue<Byte8> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<Byte8> operator^=(const Byte8 &lhs, RValue<Byte8> rhs)
+	RValue<Byte8> operator^=(Byte8 &lhs, RValue<Byte8> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-//	RValue<Byte8> operator<<=(const Byte8 &lhs, RValue<Byte8> rhs)
+//	RValue<Byte8> operator<<=(Byte8 &lhs, RValue<Byte8> rhs)
 //	{
 //		return lhs = lhs << rhs;
 //	}
 
-//	RValue<Byte8> operator>>=(const Byte8 &lhs, RValue<Byte8> rhs)
+//	RValue<Byte8> operator>>=(Byte8 &lhs, RValue<Byte8> rhs)
 //	{
 //		return lhs = lhs >> rhs;
 //	}
@@ -2644,14 +2684,14 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<SByte8> SByte8::operator=(RValue<SByte8> rhs) const
+	RValue<SByte8> SByte8::operator=(RValue<SByte8> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<SByte8> SByte8::operator=(const SByte8 &rhs) const
+	RValue<SByte8> SByte8::operator=(SByte8 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -2659,7 +2699,7 @@ namespace sw
 		return RValue<SByte8>(value);
 	}
 
-	RValue<SByte8> SByte8::operator=(const Reference<SByte8> &rhs) const
+	RValue<SByte8> SByte8::operator=(Reference<SByte8> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -2717,52 +2757,52 @@ namespace sw
 //		return RValue<SByte8>(Nucleus::createAShr(lhs.value, C(::context->getConstantInt32(rhs))));
 //	}
 
-	RValue<SByte8> operator+=(const SByte8 &lhs, RValue<SByte8> rhs)
+	RValue<SByte8> operator+=(SByte8 &lhs, RValue<SByte8> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<SByte8> operator-=(const SByte8 &lhs, RValue<SByte8> rhs)
+	RValue<SByte8> operator-=(SByte8 &lhs, RValue<SByte8> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-//	RValue<SByte8> operator*=(const SByte8 &lhs, RValue<SByte8> rhs)
+//	RValue<SByte8> operator*=(SByte8 &lhs, RValue<SByte8> rhs)
 //	{
 //		return lhs = lhs * rhs;
 //	}
 
-//	RValue<SByte8> operator/=(const SByte8 &lhs, RValue<SByte8> rhs)
+//	RValue<SByte8> operator/=(SByte8 &lhs, RValue<SByte8> rhs)
 //	{
 //		return lhs = lhs / rhs;
 //	}
 
-//	RValue<SByte8> operator%=(const SByte8 &lhs, RValue<SByte8> rhs)
+//	RValue<SByte8> operator%=(SByte8 &lhs, RValue<SByte8> rhs)
 //	{
 //		return lhs = lhs % rhs;
 //	}
 
-	RValue<SByte8> operator&=(const SByte8 &lhs, RValue<SByte8> rhs)
+	RValue<SByte8> operator&=(SByte8 &lhs, RValue<SByte8> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<SByte8> operator|=(const SByte8 &lhs, RValue<SByte8> rhs)
+	RValue<SByte8> operator|=(SByte8 &lhs, RValue<SByte8> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<SByte8> operator^=(const SByte8 &lhs, RValue<SByte8> rhs)
+	RValue<SByte8> operator^=(SByte8 &lhs, RValue<SByte8> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-//	RValue<SByte8> operator<<=(const SByte8 &lhs, RValue<SByte8> rhs)
+//	RValue<SByte8> operator<<=(SByte8 &lhs, RValue<SByte8> rhs)
 //	{
 //		return lhs = lhs << rhs;
 //	}
 
-//	RValue<SByte8> operator>>=(const SByte8 &lhs, RValue<SByte8> rhs)
+//	RValue<SByte8> operator>>=(SByte8 &lhs, RValue<SByte8> rhs)
 //	{
 //		return lhs = lhs >> rhs;
 //	}
@@ -2871,14 +2911,14 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<Byte16> Byte16::operator=(RValue<Byte16> rhs) const
+	RValue<Byte16> Byte16::operator=(RValue<Byte16> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<Byte16> Byte16::operator=(const Byte16 &rhs) const
+	RValue<Byte16> Byte16::operator=(Byte16 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -2886,7 +2926,7 @@ namespace sw
 		return RValue<Byte16>(value);
 	}
 
-	RValue<Byte16> Byte16::operator=(const Reference<Byte16> &rhs) const
+	RValue<Byte16> Byte16::operator=(Reference<Byte16> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3019,14 +3059,14 @@ namespace sw
 		storeValue(rhs.loadValue());
 	}
 
-	RValue<Short4> Short4::operator=(RValue<Short4> rhs) const
+	RValue<Short4> Short4::operator=(RValue<Short4> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<Short4> Short4::operator=(const Short4 &rhs) const
+	RValue<Short4> Short4::operator=(Short4 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3034,7 +3074,7 @@ namespace sw
 		return RValue<Short4>(value);
 	}
 
-	RValue<Short4> Short4::operator=(const Reference<Short4> &rhs) const
+	RValue<Short4> Short4::operator=(Reference<Short4> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3042,14 +3082,14 @@ namespace sw
 		return RValue<Short4>(value);
 	}
 
-	RValue<Short4> Short4::operator=(RValue<UShort4> rhs) const
+	RValue<Short4> Short4::operator=(RValue<UShort4> rhs)
 	{
 		storeValue(rhs.value);
 
 		return RValue<Short4>(rhs);
 	}
 
-	RValue<Short4> Short4::operator=(const UShort4 &rhs) const
+	RValue<Short4> Short4::operator=(UShort4 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3057,7 +3097,7 @@ namespace sw
 		return RValue<Short4>(value);
 	}
 
-	RValue<Short4> Short4::operator=(const Reference<UShort4> &rhs) const
+	RValue<Short4> Short4::operator=(Reference<UShort4> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3129,62 +3169,62 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
 	}
 
-	RValue<Short4> operator+=(const Short4 &lhs, RValue<Short4> rhs)
+	RValue<Short4> operator+=(Short4 &lhs, RValue<Short4> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<Short4> operator-=(const Short4 &lhs, RValue<Short4> rhs)
+	RValue<Short4> operator-=(Short4 &lhs, RValue<Short4> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-	RValue<Short4> operator*=(const Short4 &lhs, RValue<Short4> rhs)
+	RValue<Short4> operator*=(Short4 &lhs, RValue<Short4> rhs)
 	{
 		return lhs = lhs * rhs;
 	}
 
-//	RValue<Short4> operator/=(const Short4 &lhs, RValue<Short4> rhs)
+//	RValue<Short4> operator/=(Short4 &lhs, RValue<Short4> rhs)
 //	{
 //		return lhs = lhs / rhs;
 //	}
 
-//	RValue<Short4> operator%=(const Short4 &lhs, RValue<Short4> rhs)
+//	RValue<Short4> operator%=(Short4 &lhs, RValue<Short4> rhs)
 //	{
 //		return lhs = lhs % rhs;
 //	}
 
-	RValue<Short4> operator&=(const Short4 &lhs, RValue<Short4> rhs)
+	RValue<Short4> operator&=(Short4 &lhs, RValue<Short4> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<Short4> operator|=(const Short4 &lhs, RValue<Short4> rhs)
+	RValue<Short4> operator|=(Short4 &lhs, RValue<Short4> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<Short4> operator^=(const Short4 &lhs, RValue<Short4> rhs)
+	RValue<Short4> operator^=(Short4 &lhs, RValue<Short4> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-	RValue<Short4> operator<<=(const Short4 &lhs, unsigned char rhs)
+	RValue<Short4> operator<<=(Short4 &lhs, unsigned char rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<Short4> operator>>=(const Short4 &lhs, unsigned char rhs)
+	RValue<Short4> operator>>=(Short4 &lhs, unsigned char rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
 
-	RValue<Short4> operator<<=(const Short4 &lhs, RValue<Long1> rhs)
+	RValue<Short4> operator<<=(Short4 &lhs, RValue<Long1> rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<Short4> operator>>=(const Short4 &lhs, RValue<Long1> rhs)
+	RValue<Short4> operator>>=(Short4 &lhs, RValue<Long1> rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
@@ -3449,14 +3489,14 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<UShort4> UShort4::operator=(RValue<UShort4> rhs) const
+	RValue<UShort4> UShort4::operator=(RValue<UShort4> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<UShort4> UShort4::operator=(const UShort4 &rhs) const
+	RValue<UShort4> UShort4::operator=(UShort4 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3464,7 +3504,7 @@ namespace sw
 		return RValue<UShort4>(value);
 	}
 
-	RValue<UShort4> UShort4::operator=(const Reference<UShort4> &rhs) const
+	RValue<UShort4> UShort4::operator=(Reference<UShort4> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3472,14 +3512,14 @@ namespace sw
 		return RValue<UShort4>(value);
 	}
 
-	RValue<UShort4> UShort4::operator=(RValue<Short4> rhs) const
+	RValue<UShort4> UShort4::operator=(RValue<Short4> rhs)
 	{
 		storeValue(rhs.value);
 
 		return RValue<UShort4>(rhs);
 	}
 
-	RValue<UShort4> UShort4::operator=(const Short4 &rhs) const
+	RValue<UShort4> UShort4::operator=(Short4 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3487,7 +3527,7 @@ namespace sw
 		return RValue<UShort4>(value);
 	}
 
-	RValue<UShort4> UShort4::operator=(const Reference<Short4> &rhs) const
+	RValue<UShort4> UShort4::operator=(Reference<Short4> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3545,22 +3585,22 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(V(nullptr));
 	}
 
-	RValue<UShort4> operator<<=(const UShort4 &lhs, unsigned char rhs)
+	RValue<UShort4> operator<<=(UShort4 &lhs, unsigned char rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<UShort4> operator>>=(const UShort4 &lhs, unsigned char rhs)
+	RValue<UShort4> operator>>=(UShort4 &lhs, unsigned char rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
 
-	RValue<UShort4> operator<<=(const UShort4 &lhs, RValue<Long1> rhs)
+	RValue<UShort4> operator<<=(UShort4 &lhs, RValue<Long1> rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<UShort4> operator>>=(const UShort4 &lhs, RValue<Long1> rhs)
+	RValue<UShort4> operator>>=(UShort4 &lhs, RValue<Long1> rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
@@ -3749,14 +3789,14 @@ namespace sw
 		assert(false && "UNIMPLEMENTED");
 	}
 
-	RValue<UShort8> UShort8::operator=(RValue<UShort8> rhs) const
+	RValue<UShort8> UShort8::operator=(RValue<UShort8> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<UShort8> UShort8::operator=(const UShort8 &rhs) const
+	RValue<UShort8> UShort8::operator=(UShort8 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3764,7 +3804,7 @@ namespace sw
 		return RValue<UShort8>(value);
 	}
 
-	RValue<UShort8> UShort8::operator=(const Reference<UShort8> &rhs) const
+	RValue<UShort8> UShort8::operator=(Reference<UShort8> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3797,7 +3837,7 @@ namespace sw
 		return RValue<UShort8>(Nucleus::createMul(lhs.value, rhs.value));
 	}
 
-	RValue<UShort8> operator+=(const UShort8 &lhs, RValue<UShort8> rhs)
+	RValue<UShort8> operator+=(UShort8 &lhs, RValue<UShort8> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
@@ -3923,26 +3963,26 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<Int> Int::operator=(int rhs) const
+	RValue<Int> Int::operator=(int rhs)
 	{
 		return RValue<Int>(storeValue(Nucleus::createConstantInt(rhs)));
 	}
 
-	RValue<Int> Int::operator=(RValue<Int> rhs) const
+	RValue<Int> Int::operator=(RValue<Int> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<Int> Int::operator=(RValue<UInt> rhs) const
+	RValue<Int> Int::operator=(RValue<UInt> rhs)
 	{
 		storeValue(rhs.value);
 
 		return RValue<Int>(rhs);
 	}
 
-	RValue<Int> Int::operator=(const Int &rhs) const
+	RValue<Int> Int::operator=(Int &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3950,7 +3990,7 @@ namespace sw
 		return RValue<Int>(value);
 	}
 
-	RValue<Int> Int::operator=(const Reference<Int> &rhs) const
+	RValue<Int> Int::operator=(Reference<Int> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3958,7 +3998,7 @@ namespace sw
 		return RValue<Int>(value);
 	}
 
-	RValue<Int> Int::operator=(const UInt &rhs) const
+	RValue<Int> Int::operator=(UInt &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -3966,7 +4006,7 @@ namespace sw
 		return RValue<Int>(value);
 	}
 
-	RValue<Int> Int::operator=(const Reference<UInt> &rhs) const
+	RValue<Int> Int::operator=(Reference<UInt> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -4024,52 +4064,52 @@ namespace sw
 		return RValue<Int>(Nucleus::createAShr(lhs.value, rhs.value));
 	}
 
-	RValue<Int> operator+=(const Int &lhs, RValue<Int> rhs)
+	RValue<Int> operator+=(Int &lhs, RValue<Int> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<Int> operator-=(const Int &lhs, RValue<Int> rhs)
+	RValue<Int> operator-=(Int &lhs, RValue<Int> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-	RValue<Int> operator*=(const Int &lhs, RValue<Int> rhs)
+	RValue<Int> operator*=(Int &lhs, RValue<Int> rhs)
 	{
 		return lhs = lhs * rhs;
 	}
 
-	RValue<Int> operator/=(const Int &lhs, RValue<Int> rhs)
+	RValue<Int> operator/=(Int &lhs, RValue<Int> rhs)
 	{
 		return lhs = lhs / rhs;
 	}
 
-	RValue<Int> operator%=(const Int &lhs, RValue<Int> rhs)
+	RValue<Int> operator%=(Int &lhs, RValue<Int> rhs)
 	{
 		return lhs = lhs % rhs;
 	}
 
-	RValue<Int> operator&=(const Int &lhs, RValue<Int> rhs)
+	RValue<Int> operator&=(Int &lhs, RValue<Int> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<Int> operator|=(const Int &lhs, RValue<Int> rhs)
+	RValue<Int> operator|=(Int &lhs, RValue<Int> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<Int> operator^=(const Int &lhs, RValue<Int> rhs)
+	RValue<Int> operator^=(Int &lhs, RValue<Int> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-	RValue<Int> operator<<=(const Int &lhs, RValue<Int> rhs)
+	RValue<Int> operator<<=(Int &lhs, RValue<Int> rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<Int> operator>>=(const Int &lhs, RValue<Int> rhs)
+	RValue<Int> operator>>=(Int &lhs, RValue<Int> rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
@@ -4089,27 +4129,27 @@ namespace sw
 		return RValue<Int>(Nucleus::createNot(val.value));
 	}
 
-	RValue<Int> operator++(const Int &val, int)   // Post-increment
+	RValue<Int> operator++(Int &val, int)   // Post-increment
 	{
 		RValue<UInt> res = val;
 		val += 1;
 		return res;
 	}
 
-	const Int &operator++(const Int &val)   // Pre-increment
+	const Int &operator++(Int &val)   // Pre-increment
 	{
 		val += 1;
 		return val;
 	}
 
-	RValue<Int> operator--(const Int &val, int)   // Post-decrement
+	RValue<Int> operator--(Int &val, int)   // Post-decrement
 	{
 		RValue<Int> res = val;
 		val -= 1;
 		return res;
 	}
 
-	const Int &operator--(const Int &val)   // Pre-decrement
+	const Int &operator--(Int &val)   // Pre-decrement
 	{
 		val -= 1;
 		return val;
@@ -4197,19 +4237,19 @@ namespace sw
 		storeValue(rhs.value);
 	}
 
-	RValue<Long> Long::operator=(int64_t rhs) const
+	RValue<Long> Long::operator=(int64_t rhs)
 	{
 		return RValue<Long>(storeValue(Nucleus::createConstantLong(rhs)));
 	}
 
-	RValue<Long> Long::operator=(RValue<Long> rhs) const
+	RValue<Long> Long::operator=(RValue<Long> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<Long> Long::operator=(const Long &rhs) const
+	RValue<Long> Long::operator=(Long &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -4217,7 +4257,7 @@ namespace sw
 		return RValue<Long>(value);
 	}
 
-	RValue<Long> Long::operator=(const Reference<Long> &rhs) const
+	RValue<Long> Long::operator=(Reference<Long> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -4235,12 +4275,12 @@ namespace sw
 		return RValue<Long>(Nucleus::createSub(lhs.value, rhs.value));
 	}
 
-	RValue<Long> operator+=(const Long &lhs, RValue<Long> rhs)
+	RValue<Long> operator+=(Long &lhs, RValue<Long> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<Long> operator-=(const Long &lhs, RValue<Long> rhs)
+	RValue<Long> operator-=(Long &lhs, RValue<Long> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
@@ -4342,26 +4382,26 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<UInt> UInt::operator=(unsigned int rhs) const
+	RValue<UInt> UInt::operator=(unsigned int rhs)
 	{
 		return RValue<UInt>(storeValue(Nucleus::createConstantInt(rhs)));
 	}
 
-	RValue<UInt> UInt::operator=(RValue<UInt> rhs) const
+	RValue<UInt> UInt::operator=(RValue<UInt> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<UInt> UInt::operator=(RValue<Int> rhs) const
+	RValue<UInt> UInt::operator=(RValue<Int> rhs)
 	{
 		storeValue(rhs.value);
 
 		return RValue<UInt>(rhs);
 	}
 
-	RValue<UInt> UInt::operator=(const UInt &rhs) const
+	RValue<UInt> UInt::operator=(UInt &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -4369,7 +4409,7 @@ namespace sw
 		return RValue<UInt>(value);
 	}
 
-	RValue<UInt> UInt::operator=(const Reference<UInt> &rhs) const
+	RValue<UInt> UInt::operator=(Reference<UInt> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -4377,7 +4417,7 @@ namespace sw
 		return RValue<UInt>(value);
 	}
 
-	RValue<UInt> UInt::operator=(const Int &rhs) const
+	RValue<UInt> UInt::operator=(Int &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -4385,7 +4425,7 @@ namespace sw
 		return RValue<UInt>(value);
 	}
 
-	RValue<UInt> UInt::operator=(const Reference<Int> &rhs) const
+	RValue<UInt> UInt::operator=(Reference<Int> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -4443,52 +4483,52 @@ namespace sw
 		return RValue<UInt>(Nucleus::createLShr(lhs.value, rhs.value));
 	}
 
-	RValue<UInt> operator+=(const UInt &lhs, RValue<UInt> rhs)
+	RValue<UInt> operator+=(UInt &lhs, RValue<UInt> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<UInt> operator-=(const UInt &lhs, RValue<UInt> rhs)
+	RValue<UInt> operator-=(UInt &lhs, RValue<UInt> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-	RValue<UInt> operator*=(const UInt &lhs, RValue<UInt> rhs)
+	RValue<UInt> operator*=(UInt &lhs, RValue<UInt> rhs)
 	{
 		return lhs = lhs * rhs;
 	}
 
-	RValue<UInt> operator/=(const UInt &lhs, RValue<UInt> rhs)
+	RValue<UInt> operator/=(UInt &lhs, RValue<UInt> rhs)
 	{
 		return lhs = lhs / rhs;
 	}
 
-	RValue<UInt> operator%=(const UInt &lhs, RValue<UInt> rhs)
+	RValue<UInt> operator%=(UInt &lhs, RValue<UInt> rhs)
 	{
 		return lhs = lhs % rhs;
 	}
 
-	RValue<UInt> operator&=(const UInt &lhs, RValue<UInt> rhs)
+	RValue<UInt> operator&=(UInt &lhs, RValue<UInt> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<UInt> operator|=(const UInt &lhs, RValue<UInt> rhs)
+	RValue<UInt> operator|=(UInt &lhs, RValue<UInt> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<UInt> operator^=(const UInt &lhs, RValue<UInt> rhs)
+	RValue<UInt> operator^=(UInt &lhs, RValue<UInt> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-	RValue<UInt> operator<<=(const UInt &lhs, RValue<UInt> rhs)
+	RValue<UInt> operator<<=(UInt &lhs, RValue<UInt> rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<UInt> operator>>=(const UInt &lhs, RValue<UInt> rhs)
+	RValue<UInt> operator>>=(UInt &lhs, RValue<UInt> rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
@@ -4508,27 +4548,27 @@ namespace sw
 		return RValue<UInt>(Nucleus::createNot(val.value));
 	}
 
-	RValue<UInt> operator++(const UInt &val, int)   // Post-increment
+	RValue<UInt> operator++(UInt &val, int)   // Post-increment
 	{
 		RValue<UInt> res = val;
 		val += 1;
 		return res;
 	}
 
-	const UInt &operator++(const UInt &val)   // Pre-increment
+	const UInt &operator++(UInt &val)   // Pre-increment
 	{
 		val += 1;
 		return val;
 	}
 
-	RValue<UInt> operator--(const UInt &val, int)   // Post-decrement
+	RValue<UInt> operator--(UInt &val, int)   // Post-decrement
 	{
 		RValue<UInt> res = val;
 		val -= 1;
 		return res;
 	}
 
-	const UInt &operator--(const UInt &val)   // Pre-decrement
+	const UInt &operator--(UInt &val)   // Pre-decrement
 	{
 		val -= 1;
 		return val;
@@ -4652,14 +4692,14 @@ namespace sw
 		storeValue(Nucleus::createBitCast(packed, Int2::getType()));
 	}
 
-	RValue<Int2> Int2::operator=(RValue<Int2> rhs) const
+	RValue<Int2> Int2::operator=(RValue<Int2> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<Int2> Int2::operator=(const Int2 &rhs) const
+	RValue<Int2> Int2::operator=(Int2 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -4667,7 +4707,7 @@ namespace sw
 		return RValue<Int2>(value);
 	}
 
-	RValue<Int2> Int2::operator=(const Reference<Int2> &rhs) const
+	RValue<Int2> Int2::operator=(Reference<Int2> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -4735,62 +4775,62 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return RValue<Int2>(V(nullptr));
 	}
 
-	RValue<Int2> operator+=(const Int2 &lhs, RValue<Int2> rhs)
+	RValue<Int2> operator+=(Int2 &lhs, RValue<Int2> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<Int2> operator-=(const Int2 &lhs, RValue<Int2> rhs)
+	RValue<Int2> operator-=(Int2 &lhs, RValue<Int2> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-//	RValue<Int2> operator*=(const Int2 &lhs, RValue<Int2> rhs)
+//	RValue<Int2> operator*=(Int2 &lhs, RValue<Int2> rhs)
 //	{
 //		return lhs = lhs * rhs;
 //	}
 
-//	RValue<Int2> operator/=(const Int2 &lhs, RValue<Int2> rhs)
+//	RValue<Int2> operator/=(Int2 &lhs, RValue<Int2> rhs)
 //	{
 //		return lhs = lhs / rhs;
 //	}
 
-//	RValue<Int2> operator%=(const Int2 &lhs, RValue<Int2> rhs)
+//	RValue<Int2> operator%=(Int2 &lhs, RValue<Int2> rhs)
 //	{
 //		return lhs = lhs % rhs;
 //	}
 
-	RValue<Int2> operator&=(const Int2 &lhs, RValue<Int2> rhs)
+	RValue<Int2> operator&=(Int2 &lhs, RValue<Int2> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<Int2> operator|=(const Int2 &lhs, RValue<Int2> rhs)
+	RValue<Int2> operator|=(Int2 &lhs, RValue<Int2> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<Int2> operator^=(const Int2 &lhs, RValue<Int2> rhs)
+	RValue<Int2> operator^=(Int2 &lhs, RValue<Int2> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-	RValue<Int2> operator<<=(const Int2 &lhs, unsigned char rhs)
+	RValue<Int2> operator<<=(Int2 &lhs, unsigned char rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<Int2> operator>>=(const Int2 &lhs, unsigned char rhs)
+	RValue<Int2> operator>>=(Int2 &lhs, unsigned char rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
 
-	RValue<Int2> operator<<=(const Int2 &lhs, RValue<Long1> rhs)
+	RValue<Int2> operator<<=(Int2 &lhs, RValue<Long1> rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<Int2> operator>>=(const Int2 &lhs, RValue<Long1> rhs)
+	RValue<Int2> operator>>=(Int2 &lhs, RValue<Long1> rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
@@ -4871,14 +4911,14 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<UInt2> UInt2::operator=(RValue<UInt2> rhs) const
+	RValue<UInt2> UInt2::operator=(RValue<UInt2> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<UInt2> UInt2::operator=(const UInt2 &rhs) const
+	RValue<UInt2> UInt2::operator=(UInt2 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -4886,7 +4926,7 @@ namespace sw
 		return RValue<UInt2>(value);
 	}
 
-	RValue<UInt2> UInt2::operator=(const Reference<UInt2> &rhs) const
+	RValue<UInt2> UInt2::operator=(Reference<UInt2> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -4954,62 +4994,62 @@ namespace sw
 		assert(false && "UNIMPLEMENTED"); return RValue<UInt2>(V(nullptr));
 	}
 
-	RValue<UInt2> operator+=(const UInt2 &lhs, RValue<UInt2> rhs)
+	RValue<UInt2> operator+=(UInt2 &lhs, RValue<UInt2> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<UInt2> operator-=(const UInt2 &lhs, RValue<UInt2> rhs)
+	RValue<UInt2> operator-=(UInt2 &lhs, RValue<UInt2> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-//	RValue<UInt2> operator*=(const UInt2 &lhs, RValue<UInt2> rhs)
+//	RValue<UInt2> operator*=(UInt2 &lhs, RValue<UInt2> rhs)
 //	{
 //		return lhs = lhs * rhs;
 //	}
 
-//	RValue<UInt2> operator/=(const UInt2 &lhs, RValue<UInt2> rhs)
+//	RValue<UInt2> operator/=(UInt2 &lhs, RValue<UInt2> rhs)
 //	{
 //		return lhs = lhs / rhs;
 //	}
 
-//	RValue<UInt2> operator%=(const UInt2 &lhs, RValue<UInt2> rhs)
+//	RValue<UInt2> operator%=(UInt2 &lhs, RValue<UInt2> rhs)
 //	{
 //		return lhs = lhs % rhs;
 //	}
 
-	RValue<UInt2> operator&=(const UInt2 &lhs, RValue<UInt2> rhs)
+	RValue<UInt2> operator&=(UInt2 &lhs, RValue<UInt2> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<UInt2> operator|=(const UInt2 &lhs, RValue<UInt2> rhs)
+	RValue<UInt2> operator|=(UInt2 &lhs, RValue<UInt2> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<UInt2> operator^=(const UInt2 &lhs, RValue<UInt2> rhs)
+	RValue<UInt2> operator^=(UInt2 &lhs, RValue<UInt2> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-	RValue<UInt2> operator<<=(const UInt2 &lhs, unsigned char rhs)
+	RValue<UInt2> operator<<=(UInt2 &lhs, unsigned char rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<UInt2> operator>>=(const UInt2 &lhs, unsigned char rhs)
+	RValue<UInt2> operator>>=(UInt2 &lhs, unsigned char rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
 
-	RValue<UInt2> operator<<=(const UInt2 &lhs, RValue<Long1> rhs)
+	RValue<UInt2> operator<<=(UInt2 &lhs, RValue<Long1> rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<UInt2> operator>>=(const UInt2 &lhs, RValue<Long1> rhs)
+	RValue<UInt2> operator>>=(UInt2 &lhs, RValue<Long1> rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
@@ -5198,24 +5238,24 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		*this = RValue<Int>(rhs.loadValue());
+		*this = Int4(RValue<Int>(rhs.loadValue()));
 	}
 
 	Int4::Int4(const Reference<Int> &rhs)
 	{
 	//	xyzw.parent = this;
 
-		*this = RValue<Int>(rhs.loadValue());
+		*this = Int4(RValue<Int>(rhs.loadValue()));
 	}
 
-	RValue<Int4> Int4::operator=(RValue<Int4> rhs) const
+	RValue<Int4> Int4::operator=(RValue<Int4> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<Int4> Int4::operator=(const Int4 &rhs) const
+	RValue<Int4> Int4::operator=(Int4 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -5223,7 +5263,7 @@ namespace sw
 		return RValue<Int4>(value);
 	}
 
-	RValue<Int4> Int4::operator=(const Reference<Int4> &rhs) const
+	RValue<Int4> Int4::operator=(Reference<Int4> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -5291,52 +5331,52 @@ namespace sw
 		return RValue<Int4>(Nucleus::createAShr(lhs.value, rhs.value));
 	}
 
-	RValue<Int4> operator+=(const Int4 &lhs, RValue<Int4> rhs)
+	RValue<Int4> operator+=(Int4 &lhs, RValue<Int4> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<Int4> operator-=(const Int4 &lhs, RValue<Int4> rhs)
+	RValue<Int4> operator-=(Int4 &lhs, RValue<Int4> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-	RValue<Int4> operator*=(const Int4 &lhs, RValue<Int4> rhs)
+	RValue<Int4> operator*=(Int4 &lhs, RValue<Int4> rhs)
 	{
 		return lhs = lhs * rhs;
 	}
 
-//	RValue<Int4> operator/=(const Int4 &lhs, RValue<Int4> rhs)
+//	RValue<Int4> operator/=(Int4 &lhs, RValue<Int4> rhs)
 //	{
 //		return lhs = lhs / rhs;
 //	}
 
-//	RValue<Int4> operator%=(const Int4 &lhs, RValue<Int4> rhs)
+//	RValue<Int4> operator%=(Int4 &lhs, RValue<Int4> rhs)
 //	{
 //		return lhs = lhs % rhs;
 //	}
 
-	RValue<Int4> operator&=(const Int4 &lhs, RValue<Int4> rhs)
+	RValue<Int4> operator&=(Int4 &lhs, RValue<Int4> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<Int4> operator|=(const Int4 &lhs, RValue<Int4> rhs)
+	RValue<Int4> operator|=(Int4 &lhs, RValue<Int4> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<Int4> operator^=(const Int4 &lhs, RValue<Int4> rhs)
+	RValue<Int4> operator^=(Int4 &lhs, RValue<Int4> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-	RValue<Int4> operator<<=(const Int4 &lhs, unsigned char rhs)
+	RValue<Int4> operator<<=(Int4 &lhs, unsigned char rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<Int4> operator>>=(const Int4 &lhs, unsigned char rhs)
+	RValue<Int4> operator>>=(Int4 &lhs, unsigned char rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
@@ -5557,14 +5597,14 @@ namespace sw
 		assert(false && "UNIMPLEMENTED");
 	}
 
-	RValue<UInt4> UInt4::operator=(RValue<UInt4> rhs) const
+	RValue<UInt4> UInt4::operator=(RValue<UInt4> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<UInt4> UInt4::operator=(const UInt4 &rhs) const
+	RValue<UInt4> UInt4::operator=(UInt4 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -5572,7 +5612,7 @@ namespace sw
 		return RValue<UInt4>(value);
 	}
 
-	RValue<UInt4> UInt4::operator=(const Reference<UInt4> &rhs) const
+	RValue<UInt4> UInt4::operator=(Reference<UInt4> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -5640,52 +5680,52 @@ namespace sw
 		return RValue<UInt4>(Nucleus::createLShr(lhs.value, rhs.value));
 	}
 
-	RValue<UInt4> operator+=(const UInt4 &lhs, RValue<UInt4> rhs)
+	RValue<UInt4> operator+=(UInt4 &lhs, RValue<UInt4> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<UInt4> operator-=(const UInt4 &lhs, RValue<UInt4> rhs)
+	RValue<UInt4> operator-=(UInt4 &lhs, RValue<UInt4> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-	RValue<UInt4> operator*=(const UInt4 &lhs, RValue<UInt4> rhs)
+	RValue<UInt4> operator*=(UInt4 &lhs, RValue<UInt4> rhs)
 	{
 		return lhs = lhs * rhs;
 	}
 
-//	RValue<UInt4> operator/=(const UInt4 &lhs, RValue<UInt4> rhs)
+//	RValue<UInt4> operator/=(UInt4 &lhs, RValue<UInt4> rhs)
 //	{
 //		return lhs = lhs / rhs;
 //	}
 
-//	RValue<UInt4> operator%=(const UInt4 &lhs, RValue<UInt4> rhs)
+//	RValue<UInt4> operator%=(UInt4 &lhs, RValue<UInt4> rhs)
 //	{
 //		return lhs = lhs % rhs;
 //	}
 
-	RValue<UInt4> operator&=(const UInt4 &lhs, RValue<UInt4> rhs)
+	RValue<UInt4> operator&=(UInt4 &lhs, RValue<UInt4> rhs)
 	{
 		return lhs = lhs & rhs;
 	}
 
-	RValue<UInt4> operator|=(const UInt4 &lhs, RValue<UInt4> rhs)
+	RValue<UInt4> operator|=(UInt4 &lhs, RValue<UInt4> rhs)
 	{
 		return lhs = lhs | rhs;
 	}
 
-	RValue<UInt4> operator^=(const UInt4 &lhs, RValue<UInt4> rhs)
+	RValue<UInt4> operator^=(UInt4 &lhs, RValue<UInt4> rhs)
 	{
 		return lhs = lhs ^ rhs;
 	}
 
-	RValue<UInt4> operator<<=(const UInt4 &lhs, unsigned char rhs)
+	RValue<UInt4> operator<<=(UInt4 &lhs, unsigned char rhs)
 	{
 		return lhs = lhs << rhs;
 	}
 
-	RValue<UInt4> operator>>=(const UInt4 &lhs, unsigned char rhs)
+	RValue<UInt4> operator>>=(UInt4 &lhs, unsigned char rhs)
 	{
 		return lhs = lhs >> rhs;
 	}
@@ -5812,14 +5852,14 @@ namespace sw
 		storeValue(value);
 	}
 
-	RValue<Float> Float::operator=(RValue<Float> rhs) const
+	RValue<Float> Float::operator=(RValue<Float> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<Float> Float::operator=(const Float &rhs) const
+	RValue<Float> Float::operator=(Float &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -5827,7 +5867,7 @@ namespace sw
 		return RValue<Float>(value);
 	}
 
-	RValue<Float> Float::operator=(const Reference<Float> &rhs) const
+	RValue<Float> Float::operator=(Reference<Float> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -5855,22 +5895,22 @@ namespace sw
 		return RValue<Float>(Nucleus::createFDiv(lhs.value, rhs.value));
 	}
 
-	RValue<Float> operator+=(const Float &lhs, RValue<Float> rhs)
+	RValue<Float> operator+=(Float &lhs, RValue<Float> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<Float> operator-=(const Float &lhs, RValue<Float> rhs)
+	RValue<Float> operator-=(Float &lhs, RValue<Float> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-	RValue<Float> operator*=(const Float &lhs, RValue<Float> rhs)
+	RValue<Float> operator*=(Float &lhs, RValue<Float> rhs)
 	{
 		return lhs = lhs * rhs;
 	}
 
-	RValue<Float> operator/=(const Float &lhs, RValue<Float> rhs)
+	RValue<Float> operator/=(Float &lhs, RValue<Float> rhs)
 	{
 		return lhs = lhs / rhs;
 	}
@@ -6129,19 +6169,19 @@ namespace sw
 		*this = RValue<Float>(rhs.loadValue());
 	}
 
-	RValue<Float4> Float4::operator=(float x) const
+	RValue<Float4> Float4::operator=(float x)
 	{
 		return *this = Float4(x, x, x, x);
 	}
 
-	RValue<Float4> Float4::operator=(RValue<Float4> rhs) const
+	RValue<Float4> Float4::operator=(RValue<Float4> rhs)
 	{
 		storeValue(rhs.value);
 
 		return rhs;
 	}
 
-	RValue<Float4> Float4::operator=(const Float4 &rhs) const
+	RValue<Float4> Float4::operator=(Float4 &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -6149,7 +6189,7 @@ namespace sw
 		return RValue<Float4>(value);
 	}
 
-	RValue<Float4> Float4::operator=(const Reference<Float4> &rhs) const
+	RValue<Float4> Float4::operator=(Reference<Float4> &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -6157,17 +6197,17 @@ namespace sw
 		return RValue<Float4>(value);
 	}
 
-	RValue<Float4> Float4::operator=(RValue<Float> rhs) const
+	RValue<Float4> Float4::operator=(RValue<Float> rhs)
 	{
 		return *this = Float4(rhs);
 	}
 
-	RValue<Float4> Float4::operator=(const Float &rhs) const
+	RValue<Float4> Float4::operator=(Float &rhs)
 	{
 		return *this = Float4(rhs);
 	}
 
-	RValue<Float4> Float4::operator=(const Reference<Float> &rhs) const
+	RValue<Float4> Float4::operator=(Reference<Float> &rhs)
 	{
 		return *this = Float4(rhs);
 	}
@@ -6197,27 +6237,27 @@ namespace sw
 		return RValue<Float4>(Nucleus::createFRem(lhs.value, rhs.value));
 	}
 
-	RValue<Float4> operator+=(const Float4 &lhs, RValue<Float4> rhs)
+	RValue<Float4> operator+=(Float4 &lhs, RValue<Float4> rhs)
 	{
 		return lhs = lhs + rhs;
 	}
 
-	RValue<Float4> operator-=(const Float4 &lhs, RValue<Float4> rhs)
+	RValue<Float4> operator-=(Float4 &lhs, RValue<Float4> rhs)
 	{
 		return lhs = lhs - rhs;
 	}
 
-	RValue<Float4> operator*=(const Float4 &lhs, RValue<Float4> rhs)
+	RValue<Float4> operator*=(Float4 &lhs, RValue<Float4> rhs)
 	{
 		return lhs = lhs * rhs;
 	}
 
-	RValue<Float4> operator/=(const Float4 &lhs, RValue<Float4> rhs)
+	RValue<Float4> operator/=(Float4 &lhs, RValue<Float4> rhs)
 	{
 		return lhs = lhs / rhs;
 	}
 
-	RValue<Float4> operator%=(const Float4 &lhs, RValue<Float4> rhs)
+	RValue<Float4> operator%=(Float4 &lhs, RValue<Float4> rhs)
 	{
 		return lhs = lhs % rhs;
 	}
@@ -6457,17 +6497,17 @@ namespace sw
 		return RValue<Pointer<Byte>>(Nucleus::createGEP(lhs.value, Byte::getType(), offset.value));
 	}
 
-	RValue<Pointer<Byte>> operator+=(const Pointer<Byte> &lhs, int offset)
+	RValue<Pointer<Byte>> operator+=(Pointer<Byte> &lhs, int offset)
 	{
 		return lhs = lhs + offset;
 	}
 
-	RValue<Pointer<Byte>> operator+=(const Pointer<Byte> &lhs, RValue<Int> offset)
+	RValue<Pointer<Byte>> operator+=(Pointer<Byte> &lhs, RValue<Int> offset)
 	{
 		return lhs = lhs + offset;
 	}
 
-	RValue<Pointer<Byte>> operator+=(const Pointer<Byte> &lhs, RValue<UInt> offset)
+	RValue<Pointer<Byte>> operator+=(Pointer<Byte> &lhs, RValue<UInt> offset)
 	{
 		return lhs = lhs + offset;
 	}
@@ -6487,17 +6527,17 @@ namespace sw
 		return lhs + -offset;
 	}
 
-	RValue<Pointer<Byte>> operator-=(const Pointer<Byte> &lhs, int offset)
+	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, int offset)
 	{
 		return lhs = lhs - offset;
 	}
 
-	RValue<Pointer<Byte>> operator-=(const Pointer<Byte> &lhs, RValue<Int> offset)
+	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<Int> offset)
 	{
 		return lhs = lhs - offset;
 	}
 
-	RValue<Pointer<Byte>> operator-=(const Pointer<Byte> &lhs, RValue<UInt> offset)
+	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, RValue<UInt> offset)
 	{
 		return lhs = lhs - offset;
 	}
@@ -6531,31 +6571,88 @@ namespace sw
 		return true;
 	}
 
-	void endIf(BasicBlock *falseBB)
+	void IfData::endIf()
 	{
-		::falseBB = falseBB;
+		Nucleus::unreg(&vals);
+
+		for(auto val : vals)
+		{
+			auto result = ::function->makeVariable(val.second->getType());
+			auto phi = Ice::InstPhi::create(::function, 2, result);
+			phi->addArgument(val.first->value, trueDom);
+			phi->addArgument(val.second, falseDom);
+			::basicBlock->appendInst(phi);
+
+			val.first->value = V(result);
+			val.second = V(result);
+		}
 	}
 
-	bool elseBlock(BasicBlock *falseBB)
-	{
-		assert(falseBB && "Else not preceded by If");
-		falseBB->getInsts().back().setDeleted();
-		Nucleus::setInsertBlock(falseBB);
+	//bool elseBlock(BasicBlock *falseBB)
+	//{
+	//	assert(falseBB && "Else not preceded by If");
+	//	falseBB->getInsts().back().setDeleted();
+	//	Nucleus::setInsertBlock(falseBB);
 
-		return true;
-	}
+	//	return true;
+	//}
 
-	BasicBlock *beginElse()
-	{
-		BasicBlock *falseBB = ::falseBB;
-		::falseBB = nullptr;
+	//BasicBlock *beginElse()
+	//{
+	//	BasicBlock *falseBB = ::falseBB;
+	//	::falseBB = nullptr;
 
-		return falseBB;
-	}
+	//	return falseBB;
+	//}
+
+	//void ElseData::endElse(BasicBlock *dom)
+	//{
+	//	Nucleus::unreg(&vals);
+
+	//	if(elseBB != dom)
+	//	{
+	//		for(Ice::Inst &inst : ::basicBlock->getPhis())
+	//		{
+	//			auto &phi = llvm::cast<Ice::InstPhi>(inst);
+
+	//			//for(int i = 0; i < phi.getSrcSize(); i++)
+	//			int i = 1;   // "false" edge
+	//			{
+	//				//if(phi.getLabel(i) == elseBB)
+	//				{
+	//					phi.setLabel(i, dom);
+	//				}
+	//			}
+	//		}
+	//	}
+
+	//	for(auto val : ::vals)
+	//	{
+	//	//	auto result = ::function->makeVariable(val.second->getType());
+	//	//	auto phi = Ice::InstPhi::create(::function, 2, result);
+	//	//	phi->addArgument(val.first->value, dom);
+	//	//	phi->addArgument(val.second, falseBB);
+	//	//	::basicBlock->appendInst(phi);
+
+	//	//	val.first->value = V(result);
+
+	//		/*for(Ice::Inst &inst : ::basicBlock->getPhis())
+	//		{
+	//			auto &phi = llvm::cast<Ice::InstPhi>(inst);
+
+	//			if(phi.getSrc(0) == val.second ||
+	//			   phi.getSrc(1) == val.second)
+	//			{
+	//				val.first->value = V(phi.getDest());
+	//			}
+	//		}*/
+
+	//		val.first->value = val.second;
+	//	}
+	//}
 
 	RValue<Long> Ticks()
 	{
 		assert(false && "UNIMPLEMENTED"); return RValue<Long>(V(nullptr));
 	}
 }
-
