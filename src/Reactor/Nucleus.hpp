@@ -18,6 +18,7 @@
 #include <cstdarg>
 #include <cstdint>
 #include <vector>
+#include <map>
 
 namespace sw
 {
@@ -25,7 +26,9 @@ namespace sw
 	class Value;
 	class SwitchCases;
 	class BasicBlock;
+
 	class Routine;
+	class Variable;
 
 	enum Optimization
 	{
@@ -45,6 +48,8 @@ namespace sw
 
 	extern Optimization optimization[10];
 
+	using ValuePair = std::map<Variable*, Value*>;
+
 	class Nucleus
 	{
 	public:
@@ -54,7 +59,12 @@ namespace sw
 
 		Routine *acquireRoutine(const wchar_t *name, bool runOptimizations = true);
 
-		static Value *allocateStackVariable(Type *type, int arraySize = 0);
+		static void reg(ValuePair*);
+		static void unreg(ValuePair*);
+		static void changeValue(Variable *);
+
+		static Value *allocateStackVariable(Variable*,Type *type, int arraySize = 0);
+		static void deallocateStackVariable(Variable*);
 		static BasicBlock *createBasicBlock();
 		static BasicBlock *getInsertBlock();
 		static void setInsertBlock(BasicBlock *basicBlock);
