@@ -384,8 +384,9 @@ namespace sw
 		Flags.setOptLevel(Ice::Opt_2);
 		Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
 		Flags.setTargetInstructionSet(Ice::X86InstructionSet_SSE4_1);
-		Flags.setVerbose(false ? Ice::IceV_All : Ice::IceV_None);
+		Flags.setVerbose(true ? Ice::IceV_All : Ice::IceV_None);
 
+		std::cout.setf(std::ios::unitbuf);
 		static llvm::raw_os_ostream cout(std::cout);
 		static llvm::raw_os_ostream cerr(std::cerr);
 
@@ -427,6 +428,12 @@ namespace sw
 		std::string asciiName(wideName.begin(), wideName.end());
 		::function->setFunctionName(Ice::GlobalString::createWithString(::context, asciiName));
 
+
+
+		for(int i = 0; i < 2; i++)
+			::function->dump("Reactor output");
+		::function->computeInOutEdges();
+
 		::function->translate();
 		assert(!::function->hasError());
 
@@ -456,9 +463,34 @@ namespace sw
 	{
 	}
 
-	Value *Nucleus::allocateStackVariable(Type *t, int arraySize)
+	std::set<ValuePair*> branches;
+
+	void Nucleus::reg(ValuePair *vp)
 	{
-		Ice::Type type = T(t);
+		branches.insert(vp);
+	}
+
+	void Nucleus::unreg(ValuePair *vp)
+	{
+		branches.erase(vp);
+	}
+
+	void Nucleus::changeValue(Variable *var)
+	{
+		for(auto branch : branches)
+		{
+			if(branch->find(var) == branch->end())
+			{
+				(*branch)[var] = var->value;
+			}
+		}
+	}
+
+	std::map<Variable*,Value*> vars;
+
+	Value *Nucleus::allocateStackVariable(Variable *value,Type *t, int arraySize)
+	{
+		/*Ice::Type type = T(t);
 		int typeSize = Ice::typeWidthInBytes(type);
 		int totalSize = typeSize * (arraySize ? arraySize : 1);
 
@@ -467,7 +499,17 @@ namespace sw
 		auto alloca = Ice::InstAlloca::create(::function, address, bytes, typeSize);
 		::function->getEntryNode()->getInsts().push_front(alloca);
 
-		return V(address);
+		return V(address);*/
+
+		assert(value && value->value);
+		vars[value] = value->value;
+
+		return nullptr;
+	}
+
+	void Nucleus::deallocateStackVariable(Variable *value)
+	{
+		vars.erase(value);
 	}
 
 	BasicBlock *Nucleus::createBasicBlock()
@@ -1125,7 +1167,7 @@ namespace sw
 
 	Value *Nucleus::createConstantInt(int i)
 	{
-		return createAssign(::context->getConstantInt32(i));
+		return C(::context->getConstantInt32(i));
 	}
 
 	Value *Nucleus::createConstantInt(unsigned int i)
@@ -5196,14 +5238,14 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		*this = RValue<Int>(rhs.loadValue());
+		*this = Int4(RValue<Int>(rhs.loadValue()));
 	}
 
 	Int4::Int4(const Reference<Int> &rhs)
 	{
 	//	xyzw.parent = this;
 
-		*this = RValue<Int>(rhs.loadValue());
+		*this = Int4(RValue<Int>(rhs.loadValue()));
 	}
 
 	RValue<Int4> Int4::operator=(RValue<Int4> rhs)
@@ -6520,6 +6562,40 @@ namespace sw
 		Nucleus::setInsertBlock(bodyBB);
 
 		return true;
+	}
+
+	void IfElseData::elseIf()
+	{
+		for(auto &val : vals)
+		{
+			val.second = val.first->value;
+		}
+	}
+
+	void IfElseData::endIf()
+	{
+		Nucleus::unreg(&vals);
+
+		for(auto val : vals)
+		{
+			auto result = ::function->makeVariable(val.second->getType());
+			auto phi = Ice::InstPhi::create(::function, 2, result);
+
+			if(!falseBB)
+			{
+				phi->addArgument(val.first->value, trueDom);
+				phi->addArgument(val.second, falseDom);
+			}
+			else
+			{
+				phi->addArgument(val.second, trueDom);
+				phi->addArgument(val.first->value, falseDom);
+			}
+
+			::basicBlock->appendInst(phi);
+
+			val.first->value = V(result);
+		}
 	}
 
 	RValue<Long> Ticks()
