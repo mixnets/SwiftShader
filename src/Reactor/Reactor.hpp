@@ -24,6 +24,7 @@
 
 namespace sw
 {
+	class Bool;
 	class Byte;
 	class SByte;
 	class Byte4;
@@ -71,6 +72,9 @@ namespace sw
 
 	class Variable
 	{
+	public:
+		Value *value;
+
 	protected:
 		Value *address;
 	};
@@ -81,6 +85,8 @@ namespace sw
 	public:
 		LValue(int arraySize = 0);
 
+		~LValue();
+
 		RValue<Pointer<T>> operator&();
 
 		static bool isVoid()
@@ -89,7 +95,7 @@ namespace sw
 		}
 
 		Value *loadValue(unsigned int alignment = 0) const;
-		Value *storeValue(Value *value, unsigned int alignment = 0) const;
+		Value *storeValue(Value *value, unsigned int alignment = 0);
 		Value *getAddress(Value *index) const;
 	};
 
@@ -123,6 +129,12 @@ namespace sw
 	IntLiteral<Int>
 	{
 		typedef int type;
+	};
+
+	template<> struct
+	IntLiteral<Bool>
+	{
+		typedef bool type;
 	};
 
 	template<> struct
@@ -2294,19 +2306,32 @@ namespace sw
 	template<class T>
 	LValue<T>::LValue(int arraySize)
 	{
-		address = Nucleus::allocateStackVariable(T::getType(), arraySize);
+		address = Nucleus::allocateStackVariable(this, T::getType(), arraySize);
+	}
+
+	template<class T>
+	LValue<T>::~LValue()
+	{
+		Nucleus::deallocateStackVariable(this);
 	}
 
 	template<class T>
 	Value *LValue<T>::loadValue(unsigned int alignment) const
 	{
-		return Nucleus::createLoad(address, T::getType(), false, alignment);
+		//return Nucleus::createLoad(address, T::getType(), false, alignment);
+		assert(value);
+		return value;
 	}
 
 	template<class T>
-	Value *LValue<T>::storeValue(Value *value, unsigned int alignment) const
+	Value *LValue<T>::storeValue(Value *value, unsigned int alignment)
 	{
-		return Nucleus::createStore(value, address, T::getType(), false, alignment);
+		//return Nucleus::createStore(value, address, T::getType(), false, alignment);
+		
+		Nucleus::changeValue(this/*, value*/);
+		
+		this->value = value;
+		return value;
 	}
 
 	template<class T>
@@ -2878,16 +2903,23 @@ namespace sw
 			endBB = Nucleus::createBasicBlock();
 
 			Nucleus::setInsertBlock(trueBB);
+
+			Nucleus::reg(&vals);
 		}
 
 		~IfElseData()
 		{
 			Nucleus::createBr(endBB);
 
+			trueDom = falseBB ? trueDom : Nucleus::getInsertBlock();
+			falseDom = falseBB ? Nucleus::getInsertBlock() : beginBB;
+
 			Nucleus::setInsertBlock(beginBB);
 			Nucleus::createCondBr(condition, trueBB, falseBB ? falseBB : endBB);
 
 			Nucleus::setInsertBlock(endBB);
+
+			endIf();
 		}
 
 		operator int()
@@ -2904,19 +2936,30 @@ namespace sw
 
 		void elseClause()
 		{
+			elseIf();
+
 			Nucleus::createBr(endBB);
+
+			trueDom = Nucleus::getInsertBlock();
 
 			falseBB = Nucleus::createBasicBlock();
 			Nucleus::setInsertBlock(falseBB);
 		}
+
+		void elseIf();
+		void endIf();
 
 	private:
 		Value *condition;
 		BasicBlock *beginBB;
 		BasicBlock *trueBB;
 		BasicBlock *falseBB;
+		BasicBlock *trueDom;
+		BasicBlock *falseDom;
 		BasicBlock *endBB;
 		int iteration;
+
+		ValuePair vals;
 	};
 
 	#define For(init, cond, inc) \
