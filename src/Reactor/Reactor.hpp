@@ -24,6 +24,7 @@
 
 namespace sw
 {
+	class Bool;
 	class Byte;
 	class SByte;
 	class Byte4;
@@ -2224,8 +2225,7 @@ namespace sw
 	bool branch(RValue<Bool> cmp, BasicBlock *bodyBB, BasicBlock *endBB);
 
 	void Return();
-	void Return(bool ret);
-	void Return(const Int &ret);
+	void Return(RValue<Int> ret);
 
 	template<class T>
 	void Return(const Pointer<T> &ret);
