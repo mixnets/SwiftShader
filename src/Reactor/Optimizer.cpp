@@ -55,9 +55,18 @@ namespace
 				
 				auto &addressUses = addressEntry->second;
 
-				if(addressUses.stores.empty() && addressUses.allUsesAreLoads())
+				if(!addressUses.areOnlyLoadStore())
 				{
-					for(Ice::Inst *load : addressUses.loads)
+					continue;
+				}
+
+				auto &loads = addressUses.loads;
+				auto &stores = addressUses.stores;
+				auto &usesuses = addressUses.stores;
+
+				if(stores.size() == 0)
+				{
+					for(Ice::Inst *load : loads)
 					{
 						Ice::Variable *loadData = load->getDest();
 
@@ -84,6 +93,80 @@ namespace
 
 					continue;
 				}
+
+				if(stores.size() == 1)
+				{
+					Ice::Inst *store = stores[0];
+					Ice::Operand *storeValue = store->getSrc(0);
+
+					for(Ice::Inst *load = &node[store]->getInsts().back(); load != store; load = &*(--(*load).getIterator()))
+					{
+						if(load->isDeleted() || !isLoad(*load))
+						{
+							continue;
+						}
+
+						Ice::Operand *loadAddress = load->getSrc(0);
+
+						if(loadAddress != address)
+						{
+							continue;
+						}
+
+						replace(load->getDest(), storeValue);
+						deleteInstruction(load);
+
+						for(int i = 0; i < loads.size(); i++)
+						{
+							if(loads[i] == load)
+							{
+								loads[i] = loads.back();
+								loads.pop_back();
+								break;
+							}
+						}
+
+						for(int i = 0; i < usesuses.size(); i++)
+						{
+							if(usesuses[i] == load)
+							{
+								usesuses[i] = usesuses.back();
+								usesuses.pop_back();
+								break;
+							}
+						}
+
+						if(usesuses.size() == 1)
+						{
+							assert(usesuses[0] == store);
+
+							alloca.setDeleted();
+							store->setDeleted();
+							this->uses.erase(address);
+
+							auto &valueUses = this->uses[storeValue].operands;
+
+							for(int i = 0; i < valueUses.size(); i++)
+							{
+								if(valueUses[i] == store)
+								{
+									valueUses[i] = valueUses.back();
+									valueUses.pop_back();
+									break;
+								}
+							}
+
+							if(valueUses.size() == 0)
+							{
+								this->uses.erase(storeValue);
+							}
+
+							break;
+						}
+					}
+
+					continue;
+				}
 			}
 		}
 
@@ -91,6 +174,8 @@ namespace
 		void analyzeUses(Ice::Cfg *function)
 		{
 			uses.clear();
+			node.clear();
+			definition.clear();
 
 			for(Ice::CfgNode *basicBlock : function->getNodes())
 			{
@@ -100,6 +185,9 @@ namespace
 					{
 						continue;
 					}
+
+					node[&instruction] = basicBlock;
+					definition[instruction.getDest()] = &instruction;
 
 					for(int i = 0; i < instruction.getSrcSize(); i++)
 					{
@@ -162,19 +250,133 @@ namespace
 			return false;
 		}
 
+		void replace(Ice::Operand *oldValue, Ice::Operand *newValue)
+		{
+			for(Ice::Inst *use : uses[oldValue].operands)
+			{
+				if(use->isDeleted())
+				{
+					continue;
+				}
+
+				bool hit = false;
+				for(int i = 0; i < use->getSrcSize(); i++)
+				{
+					if(use->getSrc(i) == oldValue)
+					{
+						use->replaceSource(i, newValue);
+						hit = true;
+					}
+				}
+
+				if(hit)
+				{
+					uses[newValue].operands.push_back(use);
+
+					if(llvm::isa<Ice::InstLoad>(use) || (llvm::isa<Ice::InstIntrinsicCall>(use) && llvm::cast<Ice::InstIntrinsicCall>(use)->getIntrinsicInfo().ID == Ice::Intrinsics::LoadSubVector))
+					{
+						if(newValue == use->getSrc(0))
+						{
+							uses[newValue].loads.push_back(use);
+						}
+					}
+					else if(llvm::isa<Ice::InstStore>(use) || (llvm::isa<Ice::InstIntrinsicCall>(use) && llvm::cast<Ice::InstIntrinsicCall>(use)->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector))
+					{
+						if(newValue == use->getSrc(1))
+						{
+							uses[newValue].stores.push_back(use);
+						}
+					}
+				}
+			}
+
+			uses.erase(oldValue);
+
+			if(Ice::Variable *var = llvm::dyn_cast<Ice::Variable>(oldValue))
+			{
+				deleteInstruction(definition[var]);
+			}
+		}
+
+		void deleteInstruction(Ice::Inst *instruction)
+		{
+			if(instruction->isDeleted())
+			{
+				return;
+			}
+
+			instruction->setDeleted();
+
+			for(int i = 0; i < instruction->getSrcSize(); i++)
+			{
+				Ice::Operand *src = instruction->getSrc(i);
+
+				{
+					auto &uses = this->uses[src].operands;
+					for(int u = 0; u < uses.size(); u++)
+					{
+						if(uses[u] == instruction)
+						{
+							uses[u] = uses.back();
+							uses.pop_back();
+							break;
+						}
+					}
+
+					
+				}
+				{
+					auto &loads = uses[src].loads;
+					for(int u = 0; u < loads.size(); u++)
+					{
+						if(loads[u] == instruction)
+						{
+							loads[u] = loads.back();
+							loads.pop_back();
+							break;
+						}
+					}
+				}
+				{
+					auto &stores = uses[src].stores;
+					for(int u = 0; u < stores.size(); u++)
+					{
+						if(stores[u] == instruction)
+						{
+							stores[u] = stores.back();
+							stores.pop_back();
+							break;
+						}
+					}
+				}
+
+				if(this->uses[src].operands.size() == 0)
+				{
+					this->uses.erase(src);   // FIXME: Use iterator
+
+					if(Ice::Variable *var = llvm::dyn_cast<Ice::Variable>(src))
+					{
+						deleteInstruction(definition[var]);
+					}
+				}
+			}
+		}
+
 		struct Uses
 		{
 			std::vector<Ice::Inst*> operands;
 			std::vector<Ice::Inst*> loads;
 			std::vector<Ice::Inst*> stores;
 
-			bool allUsesAreLoads()
+			bool areOnlyLoadStore()
 			{
-				return operands.size() == loads.size();
+				return operands.size() == (loads.size() + stores.size());
 			}
 		};
 
 		std::map<Ice::Operand*, Uses> uses;
+		std::map<Ice::Inst*, Ice::CfgNode*> node;
+		std::map<Ice::Variable*, Ice::Inst*> definition;
 	};
 }
 
