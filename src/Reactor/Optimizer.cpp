@@ -33,16 +33,56 @@ namespace
 
 			for(Ice::Inst &alloca : entryBlock->getInsts())
 			{
+				if(alloca.isDeleted())
+				{
+					continue;
+				}
+
 				if(!llvm::isa<Ice::InstAlloca>(alloca))
 				{
 					break;   // Allocas are all at the top
 				}
 
 				Ice::Operand *address = alloca.getDest();
+				auto addressEntry = uses.find(address);
 
-				if(uses[address].empty())
+				if(addressEntry == uses.end())
 				{
 					alloca.setDeleted();
+
+					continue;
+				}
+				
+				auto &addressUses = addressEntry->second;
+
+				if(addressUses.stores.empty() && addressUses.allUsesAreLoads())
+				{
+					for(Ice::Inst *load : addressUses.loads)
+					{
+						Ice::Variable *loadData = load->getDest();
+
+						for(Ice::Inst *use : uses[loadData].operands)
+						{
+							for(int i = 0; i < use->getSrcSize(); i++)
+							{
+								if(use->getSrc(i) == loadData)
+								{
+									auto *undef = function->getContext()->getConstantUndef(loadData->getType());
+									
+									use->replaceSource(i, undef);
+								}
+							}
+						}
+
+						uses.erase(loadData);
+
+						load->setDeleted();
+					}
+
+					alloca.setDeleted();
+					uses.erase(addressEntry);
+
+					continue;
 				}
 			}
 		}
@@ -74,14 +114,67 @@ namespace
 
 						if(i == unique)
 						{
-							uses[instruction.getSrc(i)].push_back(&instruction);
+							auto &valueUses = uses[instruction.getSrc(i)];
+
+							valueUses.operands.push_back(&instruction);
+
+							if(i == 0 && isLoad(instruction))   // Load address is first operand
+							{
+								valueUses.loads.push_back(&instruction);
+							}
+							else if(i == 1 && isStore(instruction))   // Store address is second operand
+							{
+								valueUses.stores.push_back(&instruction);
+							}
 						}
 					}
 				}
 			}
 		}
 
-		std::map<Ice::Operand*, std::vector<Ice::Inst*>> uses;
+		bool isLoad(const Ice::Inst &instruction)
+		{
+			if(llvm::isa<Ice::InstLoad>(&instruction))
+			{
+				return true;
+			}
+
+			if(auto intrinsicCall = llvm::dyn_cast<Ice::InstIntrinsicCall>(&instruction))
+			{
+				return intrinsicCall->getIntrinsicInfo().ID == Ice::Intrinsics::LoadSubVector;
+			}
+
+			return false;
+		}
+
+		bool isStore(const Ice::Inst &instruction)
+		{
+			if(llvm::isa<Ice::InstStore>(&instruction))
+			{
+				return true;
+			}
+
+			if(auto intrinsicCall = llvm::dyn_cast<Ice::InstIntrinsicCall>(&instruction))
+			{
+				return intrinsicCall->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector;
+			}
+
+			return false;
+		}
+
+		struct Uses
+		{
+			std::vector<Ice::Inst*> operands;
+			std::vector<Ice::Inst*> loads;
+			std::vector<Ice::Inst*> stores;
+
+			bool allUsesAreLoads()
+			{
+				return operands.size() == loads.size();
+			}
+		};
+
+		std::map<Ice::Operand*, Uses> uses;
 	};
 }
 
