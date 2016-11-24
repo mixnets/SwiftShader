@@ -17,6 +17,8 @@
 #include "Reactor.hpp"
 #include "Routine.hpp"
 
+#include "Optimizer.hpp"
+
 #include "src/IceTypes.h"
 #include "src/IceCfg.h"
 #include "src/IceELFStreamer.h"
@@ -429,6 +431,8 @@ namespace sw
 		std::string asciiName(wideName.begin(), wideName.end());
 		::function->setFunctionName(Ice::GlobalString::createWithString(::context, asciiName));
 
+		optimize();
+
 		::function->translate();
 		assert(!::function->hasError());
 
@@ -456,6 +460,7 @@ namespace sw
 
 	void Nucleus::optimize()
 	{
+		sw::optimize(::function);
 	}
 
 	Value *Nucleus::allocateStackVariable(Type *t, int arraySize)
