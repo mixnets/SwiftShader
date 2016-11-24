@@ -690,8 +690,8 @@ namespace sw
 					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
 					auto load = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-					load->addArg(::context->getConstantInt32(4));
 					load->addArg(ptr);
+					load->addArg(::context->getConstantInt32(4));
 					::basicBlock->appendInst(load);
 				}
 				break;
@@ -703,8 +703,8 @@ namespace sw
 					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
 					auto load = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-					load->addArg(::context->getConstantInt32(8));
 					load->addArg(ptr);
+					load->addArg(::context->getConstantInt32(8));
 					::basicBlock->appendInst(load);
 				}
 				break;
@@ -734,9 +734,9 @@ namespace sw
 					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
 					auto store = Ice::InstIntrinsicCall::create(::function, 3, nullptr, target, intrinsic);
-					store->addArg(::context->getConstantInt32(4));
 					store->addArg(value);
 					store->addArg(ptr);
+					store->addArg(::context->getConstantInt32(4));
 					::basicBlock->appendInst(store);
 				}
 				break;
@@ -748,9 +748,9 @@ namespace sw
 					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
 					auto target = ::context->getConstantUndef(Ice::IceType_i32);
 					auto store = Ice::InstIntrinsicCall::create(::function, 3, nullptr, target, intrinsic);
-					store->addArg(::context->getConstantInt32(8));
 					store->addArg(value);
 					store->addArg(ptr);
+					store->addArg(::context->getConstantInt32(8));
 					::basicBlock->appendInst(store);
 				}
 				break;
