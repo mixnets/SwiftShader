@@ -27,6 +27,7 @@ namespace
 	public:
 		void optimize(Ice::Cfg *function)
 		{
+			context = function->getContext();
 			analyzeUses(function);
 
 			Ice::CfgNode *entryBlock = function->getEntryNode();
@@ -98,7 +99,7 @@ namespace
 					Ice::Inst *store = stores[0];
 					Ice::Operand *storeValue = store->getSrc(0);
 
-					for(Ice::Inst *load = &node[store]->getInsts().back(); load != store; load = &*(--(*load).getIterator()))
+					for(Ice::Inst *load = &*++store->getIterator(), *next = nullptr; load != next; next = load, load = &*++store->getIterator())
 					{
 						if(load->isDeleted() || !isLoad(*load))
 						{
@@ -112,8 +113,7 @@ namespace
 							continue;
 						}
 
-						replace(load->getDest(), storeValue);
-						deleteInstruction(load);
+						replace(load, storeValue);
 
 						for(int i = 0; i < loads.size(); i++)
 						{
@@ -166,6 +166,106 @@ namespace
 
 					continue;
 				}
+
+				Ice::CfgNode *singleBasicBlock = node[stores[0]];
+
+				for(int i = 1; i < stores.size(); i++)
+				{
+					Ice::Inst *store = stores[i];
+					if(node[store] != singleBasicBlock)
+					{
+						singleBasicBlock = nullptr;
+						break;
+					}
+				}
+
+				if(singleBasicBlock)
+				{
+					auto &insts = singleBasicBlock->getInsts();
+					Ice::Inst *store = nullptr;
+					Ice::Operand *storeValue = nullptr;
+
+					for(Ice::Inst &inst : insts)
+					{
+						if(inst.isDeleted())
+						{
+							continue;
+						}
+
+						if(isStore(inst))
+						{
+							if(inst.getSrc(1) != address)
+							{
+								continue;
+							}
+
+							// New store found. If we had a previous one, eliminate it.
+							if(store)
+							{
+								deleteInstruction(store);
+							}
+
+							store = &inst;
+							storeValue = store->getSrc(0);
+						}
+						else if(isLoad(inst))
+						{
+							Ice::Inst *load = &inst;
+
+							if(load->getSrc(0) != address)
+							{
+								continue;
+							}
+
+							replace(load, storeValue);
+						}
+					}
+
+					if(loads.size() != 0)
+					{
+
+					}
+				}
+			}
+
+			for(Ice::CfgNode *basicBlock : function->getNodes())
+			{
+				std::map<Ice::Operand*, Ice::Inst*> stores;
+
+				for(Ice::Inst &inst : basicBlock->getInsts())
+				{
+					if(inst.isDeleted())
+					{
+						continue;
+					}
+
+					if(isStore(inst))
+					{
+						if(!uses[inst.getSrc(1)].areOnlyLoadStore())
+						{
+							continue;
+						}
+
+						// New store found. If we had a previous one, eliminate it.
+						if(stores.find(inst.getSrc(1)) != stores.end())
+						{
+							deleteInstruction(stores[inst.getSrc(1)]);
+						}
+
+						stores[inst.getSrc(1)] = &inst;
+					}
+					else if(isLoad(inst))
+					{
+						Ice::Inst *load = &inst;
+
+						if(stores.find(inst.getSrc(0)) == stores.end())
+						{
+							continue;
+						}
+
+						replace(load, stores[inst.getSrc(0)]->getSrc(0));
+					}
+				}
 			}
 		}
 
@@ -201,25 +301,15 @@ namespace
 
 						if(i == unique)
 						{
-							auto &valueUses = uses[instruction.getSrc(i)];
-
-							valueUses.push_back(&instruction);
-
-							if(i == 0 && isLoad(instruction))   // Load address is first operand
-							{
-								valueUses.loads.push_back(&instruction);
-							}
-							else if(i == 1 && isStore(instruction))   // Store address is second operand
-							{
-								valueUses.stores.push_back(&instruction);
-							}
+							Ice::Operand *src = instruction.getSrc(i);
+							uses[src].insert(src, &instruction);
 						}
 					}
 				}
 			}
 		}
 
-		bool isLoad(const Ice::Inst &instruction)
+		static bool isLoad(const Ice::Inst &instruction)
 		{
 			if(llvm::isa<Ice::InstLoad>(&instruction))
 			{
@@ -234,7 +324,7 @@ namespace
 			return false;
 		}
 
-		bool isStore(const Ice::Inst &instruction)
+		static bool isStore(const Ice::Inst &instruction)
 		{
 			if(llvm::isa<Ice::InstStore>(&instruction))
 			{
@@ -249,52 +339,33 @@ namespace
 			return false;
 		}
 
-		void replace(Ice::Operand *oldValue, Ice::Operand *newValue)
+		void replace(Ice::Inst *instruction, Ice::Operand *newValue)
 		{
+			Ice::Variable *oldValue = instruction->getDest();
+
+			if(!newValue)
+			{
+				newValue = context->getConstantUndef(oldValue->getType());
+			}
+
 			for(Ice::Inst *use : uses[oldValue])
 			{
-				if(use->isDeleted())
-				{
-					continue;
-				}
+				assert(!use->isDeleted());   // Should have been removed from uses already
 
-				bool hit = false;
 				for(int i = 0; i < use->getSrcSize(); i++)
 				{
 					if(use->getSrc(i) == oldValue)
 					{
 						use->replaceSource(i, newValue);
-						hit = true;
 					}
 				}
 
-				if(hit)
-				{
-					uses[newValue].push_back(use);
-
-					if(llvm::isa<Ice::InstLoad>(use) || (llvm::isa<Ice::InstIntrinsicCall>(use) && llvm::cast<Ice::InstIntrinsicCall>(use)->getIntrinsicInfo().ID == Ice::Intrinsics::LoadSubVector))
-					{
-						if(newValue == use->getSrc(0))
-						{
-							uses[newValue].loads.push_back(use);
-						}
-					}
-					else if(llvm::isa<Ice::InstStore>(use) || (llvm::isa<Ice::InstIntrinsicCall>(use) && llvm::cast<Ice::InstIntrinsicCall>(use)->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector))
-					{
-						if(newValue == use->getSrc(1))
-						{
-							uses[newValue].stores.push_back(use);
-						}
-					}
-				}
+				uses[newValue].insert(newValue, use);
 			}
 
 			uses.erase(oldValue);
 
-			if(Ice::Variable *var = llvm::dyn_cast<Ice::Variable>(oldValue))
-			{
-				deleteInstruction(definition[var]);
-			}
+			deleteInstruction(instruction);
 		}
 
 		void deleteInstruction(Ice::Inst *instruction)
@@ -341,6 +412,26 @@ namespace
 				return size() == (loads.size() + stores.size());
 			}
 
+			void insert(Ice::Operand *value, Ice::Inst *instruction)
+			{
+				push_back(instruction);
+
+				if(isLoad(*instruction))
+				{
+					if(value == instruction->getSrc(0))   // Load address is first operand
+					{
+						loads.push_back(instruction);
+					}
+				}
+				else if(isStore(*instruction))
+				{
+					if(value == instruction->getSrc(1))   // Store address is second operand
+					{
+						stores.push_back(instruction);
+					}
+				}
+			}
+
 			void erase(Ice::Inst *instruction)
 			{
 				auto &uses = *this;
@@ -377,6 +468,8 @@ namespace
 				}
 			}
 		};
+
+		Ice::GlobalContext *context;
 
 		std::map<Ice::Operand*, Uses> uses;
 		std::map<Ice::Inst*, Ice::CfgNode*> node;
