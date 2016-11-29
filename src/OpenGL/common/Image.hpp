@@ -191,6 +191,9 @@ public:
 		release();
 	}
 
+	enum Edge { TOP, BOTTOM, RIGHT, LEFT };
+	static void CopyCubeEdge(Image* src, Edge srcEdge, Image* dst, Edge dstEdge);
+
 protected:
 	const GLsizei width;
 	const GLsizei height;
