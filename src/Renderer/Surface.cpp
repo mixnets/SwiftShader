@@ -50,14 +50,14 @@ namespace sw
 
 	void Surface::Buffer::write(int x, int y, int z, const Color<float> &color)
 	{
-		void *element = (unsigned char*)buffer + x * bytes + y * pitchB + z * sliceB;
+		void *element = (unsigned char*)buffer + (x + border) * bytes + (y + border) * pitchB + z * sliceB;
 
 		write(element, color);
 	}
 
 	void Surface::Buffer::write(int x, int y, const Color<float> &color)
 	{
-		void *element = (unsigned char*)buffer + x * bytes + y * pitchB;
+		void *element = (unsigned char*)buffer + (x + border) * bytes + (y + border) * pitchB;
 
 		write(element, color);
 	}
@@ -368,14 +368,14 @@ namespace sw
 
 	Color<float> Surface::Buffer::read(int x, int y, int z) const
 	{
-		void *element = (unsigned char*)buffer + x * bytes + y * pitchB + z * sliceB;
+		void *element = (unsigned char*)buffer + (x + border) * bytes + (y + border) * pitchB + z * sliceB;
 
 		return read(element);
 	}
 
 	Color<float> Surface::Buffer::read(int x, int y) const
 	{
-		void *element = (unsigned char*)buffer + x * bytes + y * pitchB;
+		void *element = (unsigned char*)buffer + (x + border) * bytes + (y + border) * pitchB;
 
 		return read(element);
 	}
@@ -1086,6 +1086,9 @@ namespace sw
 
 		if(buffer)
 		{
+			x += border;
+			y += border;
+
 			switch(format)
 			{
 			#if S3TC_SUPPORT
@@ -1182,6 +1185,7 @@ namespace sw
 		external.pitchP = external.bytes ? pitch / external.bytes : 0;
 		external.sliceB = slice;
 		external.sliceP = external.bytes ? slice / external.bytes : 0;
+		external.border = 0;
 		external.lock = LOCK_UNLOCKED;
 		external.dirty = true;
 
@@ -1191,10 +1195,11 @@ namespace sw
 		internal.depth = depth;
 		internal.format = selectInternalFormat(format);
 		internal.bytes = bytes(internal.format);
-		internal.pitchB = pitchB(internal.width, internal.format, false);
-		internal.pitchP = pitchP(internal.width, internal.format, false);
-		internal.sliceB = sliceB(internal.width, internal.height, internal.format, false);
-		internal.sliceP = sliceP(internal.width, internal.height, internal.format, false);
+		internal.pitchB = pitchB(internal.width, 0, internal.format, false);
+		internal.pitchP = pitchP(internal.width, 0, internal.format, false);
+		internal.sliceB = sliceB(internal.width, internal.height, 0, internal.format, false);
+		internal.sliceP = sliceP(internal.width, internal.height, 0, internal.format, false);
+		internal.border = 0;
 		internal.lock = LOCK_UNLOCKED;
 		internal.dirty = false;
 
@@ -1204,10 +1209,11 @@ namespace sw
 		stencil.depth = depth;
 		stencil.format = FORMAT_S8;
 		stencil.bytes = bytes(stencil.format);
-		stencil.pitchB = pitchB(stencil.width, stencil.format, false);
-		stencil.pitchP = pitchP(stencil.width, stencil.format, false);
-		stencil.sliceB = sliceB(stencil.width, stencil.height, stencil.format, false);
-		stencil.sliceP = sliceP(stencil.width, stencil.height, stencil.format, false);
+		stencil.pitchB = pitchB(stencil.width, 0, stencil.format, false);
+		stencil.pitchP = pitchP(stencil.width, 0, stencil.format, false);
+		stencil.sliceB = sliceB(stencil.width, stencil.height, 0, stencil.format, false);
+		stencil.sliceP = sliceP(stencil.width, stencil.height, 0, stencil.format, false);
+		stencil.border = 0;
 		stencil.lock = LOCK_UNLOCKED;
 		stencil.dirty = false;
 
@@ -1215,7 +1221,7 @@ namespace sw
 		paletteUsed = 0;
 	}
 
-	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, int pitchPprovided) : lockable(lockable), renderTarget(renderTarget)
+	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, int pitchPprovided, int border) : lockable(lockable), renderTarget(renderTarget)
 	{
 		resource = texture ? texture : new Resource(0);
 		hasParent = texture != 0;
@@ -1228,10 +1234,11 @@ namespace sw
 		external.depth = depth;
 		external.format = format;
 		external.bytes = bytes(external.format);
-		external.pitchB = pitchB(external.width, external.format, renderTarget && !texture);
-		external.pitchP = pitchP(external.width, external.format, renderTarget && !texture);
-		external.sliceB = sliceB(external.width, external.height, external.format, renderTarget && !texture);
-		external.sliceP = sliceP(external.width, external.height, external.format, renderTarget && !texture);
+		external.pitchB = pitchB(external.width, 0, external.format, renderTarget && !texture);
+		external.pitchP = pitchP(external.width, 0, external.format, renderTarget && !texture);
+		external.sliceB = sliceB(external.width, external.height, 0, external.format, renderTarget && !texture);
+		external.sliceP = sliceP(external.width, external.height, 0, external.format, renderTarget && !texture);
+		external.border = 0;
 		external.lock = LOCK_UNLOCKED;
 		external.dirty = false;
 
@@ -1241,10 +1248,11 @@ namespace sw
 		internal.depth = depth;
 		internal.format = selectInternalFormat(format);
 		internal.bytes = bytes(internal.format);
-		internal.pitchB = !pitchPprovided ? pitchB(internal.width, internal.format, renderTarget) : pitchPprovided * internal.bytes;
-		internal.pitchP = !pitchPprovided ? pitchP(internal.width, internal.format, renderTarget) : pitchPprovided;
-		internal.sliceB = sliceB(internal.width, internal.height, internal.format, renderTarget);
-		internal.sliceP = sliceP(internal.width, internal.height, internal.format, renderTarget);
+		internal.pitchB = !pitchPprovided ? pitchB(internal.width, border, internal.format, renderTarget) : pitchPprovided * internal.bytes;
+		internal.pitchP = !pitchPprovided ? pitchP(internal.width, border, internal.format, renderTarget) : pitchPprovided;
+		internal.sliceB = sliceB(internal.width, internal.height, border, internal.format, renderTarget);
+		internal.sliceP = sliceP(internal.width, internal.height, border, internal.format, renderTarget);
+		internal.border = border;
 		internal.lock = LOCK_UNLOCKED;
 		internal.dirty = false;
 
@@ -1254,10 +1262,11 @@ namespace sw
 		stencil.depth = depth;
 		stencil.format = FORMAT_S8;
 		stencil.bytes = bytes(stencil.format);
-		stencil.pitchB = pitchB(stencil.width, stencil.format, renderTarget);
-		stencil.pitchP = pitchP(stencil.width, stencil.format, renderTarget);
-		stencil.sliceB = sliceB(stencil.width, stencil.height, stencil.format, renderTarget);
-		stencil.sliceP = sliceP(stencil.width, stencil.height, stencil.format, renderTarget);
+		stencil.pitchB = pitchB(stencil.width, 0, stencil.format, renderTarget);
+		stencil.pitchP = pitchP(stencil.width, 0, stencil.format, renderTarget);
+		stencil.sliceB = sliceB(stencil.width, stencil.height, 0, stencil.format, renderTarget);
+		stencil.sliceP = sliceP(stencil.width, stencil.height, 0, stencil.format, renderTarget);
+		stencil.border = 0;
 		stencil.lock = LOCK_UNLOCKED;
 		stencil.dirty = false;
 
@@ -1305,7 +1314,7 @@ namespace sw
 			}
 			else
 			{
-				external.buffer = allocateBuffer(external.width, external.height, external.depth, external.format);
+				external.buffer = allocateBuffer(external.width, external.height, external.depth, external.border, external.format);
 			}
 		}
 
@@ -1357,7 +1366,7 @@ namespace sw
 			}
 			else
 			{
-				internal.buffer = allocateBuffer(internal.width, internal.height, internal.depth, internal.format);
+				internal.buffer = allocateBuffer(internal.width, internal.height, internal.depth, internal.border, internal.format);
 			}
 		}
 
@@ -1432,7 +1441,7 @@ namespace sw
 
 		if(!stencil.buffer)
 		{
-			stencil.buffer = allocateBuffer(stencil.width, stencil.height, stencil.depth, stencil.format);
+			stencil.buffer = allocateBuffer(stencil.width, stencil.height, stencil.depth, stencil.border, stencil.format);
 		}
 
 		return stencil.lockRect(x, y, front, LOCK_READWRITE);   // FIXME
@@ -1608,8 +1617,10 @@ namespace sw
 		return 0;
 	}
 
-	int Surface::pitchB(int width, Format format, bool target)
+	int Surface::pitchB(int width, int border, Format format, bool target)
 	{
+		width += 2 * border;
+
 		if(target || isDepth(format) || isStencil(format))
 		{
 			width = align(width, 2);
@@ -1684,15 +1695,17 @@ namespace sw
 		}
 	}
 
-	int Surface::pitchP(int width, Format format, bool target)
+	int Surface::pitchP(int width, int border, Format format, bool target)
 	{
 		int B = bytes(format);
 
-		return B > 0 ? pitchB(width, format, target) / B : 0;
+		return B > 0 ? pitchB(width, border, format, target) / B : 0;
 	}
 
-	int Surface::sliceB(int width, int height, Format format, bool target)
+	int Surface::sliceB(int width, int height, int border, Format format, bool target)
 	{
+		height += 2 * border;
+
 		if(target || isDepth(format) || isStencil(format))
 		{
 			height = ((height + 1) & ~1);
@@ -1720,7 +1733,7 @@ namespace sw
 		case FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR:
 		case FORMAT_RGBA_ASTC_5x4_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR:
-			return pitchB(width, format, target) * ((height + 3) / 4);   // Pitch computed per 4 rows
+			return pitchB(width, border, format, target) * ((height + 3) / 4);   // Pitch computed per 4 rows
 		case FORMAT_RGBA_ASTC_5x5_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR:
 		case FORMAT_RGBA_ASTC_6x5_KHR:
@@ -1729,39 +1742,39 @@ namespace sw
 		case FORMAT_SRGB8_ALPHA8_ASTC_8x5_KHR:
 		case FORMAT_RGBA_ASTC_10x5_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_10x5_KHR:
-			return pitchB(width, format, target) * ((height + 4) / 5);   // Pitch computed per 5 rows
+			return pitchB(width, border, format, target) * ((height + 4) / 5);   // Pitch computed per 5 rows
 		case FORMAT_RGBA_ASTC_6x6_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_6x6_KHR:
 		case FORMAT_RGBA_ASTC_8x6_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_8x6_KHR:
 		case FORMAT_RGBA_ASTC_10x6_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_10x6_KHR:
-			return pitchB(width, format, target) * ((height + 5) / 6);   // Pitch computed per 6 rows
+			return pitchB(width, border, format, target) * ((height + 5) / 6);   // Pitch computed per 6 rows
 		case FORMAT_RGBA_ASTC_8x8_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_8x8_KHR:
 		case FORMAT_RGBA_ASTC_10x8_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_10x8_KHR:
-			return pitchB(width, format, target) * ((height + 7) / 8);   // Pitch computed per 8 rows
+			return pitchB(width, border, format, target) * ((height + 7) / 8);   // Pitch computed per 8 rows
 		case FORMAT_RGBA_ASTC_10x10_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR:
 		case FORMAT_RGBA_ASTC_12x10_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR:
-			return pitchB(width, format, target) * ((height + 9) / 10);   // Pitch computed per 10 rows
+			return pitchB(width, border, format, target) * ((height + 9) / 10);   // Pitch computed per 10 rows
 		case FORMAT_RGBA_ASTC_12x12_KHR:
 		case FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR:
-			return pitchB(width, format, target) * ((height + 11) / 12);   // Pitch computed per 12 rows
+			return pitchB(width, border, format, target) * ((height + 11) / 12);   // Pitch computed per 12 rows
 		case FORMAT_ATI1:
 		case FORMAT_ATI2:
 		default:
-			return pitchB(width, format, target) * height;   // Pitch computed per row
+			return pitchB(width, border, format, target) * height;   // Pitch computed per row
 		}
 	}
 
-	int Surface::sliceP(int width, int height, Format format, bool target)
+	int Surface::sliceP(int width, int height, int border, Format format, bool target)
 	{
 		int B = bytes(format);
 
-		return B > 0 ? sliceB(width, height, format, target) / B : 0;
+		return B > 0 ? sliceB(width, height, border, format, target) / B : 0;
 	}
 
 	void Surface::update(Buffer &destination, Buffer &source)
@@ -1834,8 +1847,8 @@ namespace sw
 
 	void Surface::genericUpdate(Buffer &destination, Buffer &source)
 	{
-		unsigned char *sourceSlice = (unsigned char*)source.buffer;
-		unsigned char *destinationSlice = (unsigned char*)destination.buffer;
+		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
+		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
 		int depth = min(destination.depth, source.depth);
 		int height = min(destination.height, source.height);
@@ -1877,10 +1890,10 @@ namespace sw
 		}
 	}
 
-	void Surface::decodeR8G8B8(Buffer &destination, const Buffer &source)
+	void Surface::decodeR8G8B8(Buffer &destination, Buffer &source)
 	{
-		unsigned char *sourceSlice = (unsigned char*)source.buffer;
-		unsigned char *destinationSlice = (unsigned char*)destination.buffer;
+		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
+		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
 		for(int z = 0; z < destination.depth && z < source.depth; z++)
 		{
@@ -1911,12 +1924,15 @@ namespace sw
 			sourceSlice += source.sliceB;
 			destinationSlice += destination.sliceB;
 		}
+
+		source.unlockRect();
+		destination.unlockRect();
 	}
 
-	void Surface::decodeX1R5G5B5(Buffer &destination, const Buffer &source)
+	void Surface::decodeX1R5G5B5(Buffer &destination, Buffer &source)
 	{
-		unsigned char *sourceSlice = (unsigned char*)source.buffer;
-		unsigned char *destinationSlice = (unsigned char*)destination.buffer;
+		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
+		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
 		for(int z = 0; z < destination.depth && z < source.depth; z++)
 		{
@@ -1949,12 +1965,15 @@ namespace sw
 			sourceSlice += source.sliceB;
 			destinationSlice += destination.sliceB;
 		}
+
+		source.unlockRect();
+		destination.unlockRect();
 	}
 
-	void Surface::decodeA1R5G5B5(Buffer &destination, const Buffer &source)
+	void Surface::decodeA1R5G5B5(Buffer &destination, Buffer &source)
 	{
-		unsigned char *sourceSlice = (unsigned char*)source.buffer;
-		unsigned char *destinationSlice = (unsigned char*)destination.buffer;
+		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
+		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
 		for(int z = 0; z < destination.depth && z < source.depth; z++)
 		{
@@ -1988,12 +2007,15 @@ namespace sw
 			sourceSlice += source.sliceB;
 			destinationSlice += destination.sliceB;
 		}
+
+		source.unlockRect();
+		destination.unlockRect();
 	}
 
-	void Surface::decodeX4R4G4B4(Buffer &destination, const Buffer &source)
+	void Surface::decodeX4R4G4B4(Buffer &destination, Buffer &source)
 	{
-		unsigned char *sourceSlice = (unsigned char*)source.buffer;
-		unsigned char *destinationSlice = (unsigned char*)destination.buffer;
+		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
+		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
 		for(int z = 0; z < destination.depth && z < source.depth; z++)
 		{
@@ -2026,12 +2048,15 @@ namespace sw
 			sourceSlice += source.sliceB;
 			destinationSlice += destination.sliceB;
 		}
+
+		source.unlockRect();
+		destination.unlockRect();
 	}
 
-	void Surface::decodeA4R4G4B4(Buffer &destination, const Buffer &source)
+	void Surface::decodeA4R4G4B4(Buffer &destination, Buffer &source)
 	{
-		unsigned char *sourceSlice = (unsigned char*)source.buffer;
-		unsigned char *destinationSlice = (unsigned char*)destination.buffer;
+		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
+		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
 		for(int z = 0; z < destination.depth && z < source.depth; z++)
 		{
@@ -2065,12 +2090,15 @@ namespace sw
 			sourceSlice += source.sliceB;
 			destinationSlice += destination.sliceB;
 		}
+
+		source.unlockRect();
+		destination.unlockRect();
 	}
 
-	void Surface::decodeP8(Buffer &destination, const Buffer &source)
+	void Surface::decodeP8(Buffer &destination, Buffer &source)
 	{
-		unsigned char *sourceSlice = (unsigned char*)source.buffer;
-		unsigned char *destinationSlice = (unsigned char*)destination.buffer;
+		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
+		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
 		for(int z = 0; z < destination.depth && z < source.depth; z++)
 		{
@@ -2104,13 +2132,16 @@ namespace sw
 			sourceSlice += source.sliceB;
 			destinationSlice += destination.sliceB;
 		}
+
+		source.unlockRect();
+		destination.unlockRect();
 	}
 
 #if S3TC_SUPPORT
-	void Surface::decodeDXT1(Buffer &internal, const Buffer &external)
+	void Surface::decodeDXT1(Buffer &internal, Buffer &external)
 	{
-		unsigned int *destSlice = (unsigned int*)internal.buffer;
-		const DXT1 *source = (const DXT1*)external.buffer;
+		unsigned int *destSlice = (unsigned int*)internal.lockRect(0, 0, 0, LOCK_WRITEONLY);
+		const DXT1 *source = (const DXT1*)external.lockRect(0, 0, 0, LOCK_READONLY);
 
 		for(int z = 0; z < external.depth; z++)
 		{
@@ -2167,12 +2198,15 @@ namespace sw
 
 			(byte*&)destSlice += internal.sliceB;
 		}
+
+		external.unlockRect();
+		internal.unlockRect();
 	}
 
-	void Surface::decodeDXT3(Buffer &internal, const Buffer &external)
+	void Surface::decodeDXT3(Buffer &internal, Buffer &external)
 	{
-		unsigned int *destSlice = (unsigned int*)internal.buffer;
-		const DXT3 *source = (const DXT3*)external.buffer;
+		unsigned int *destSlice = (unsigned int*)internal.lockRect(0, 0, 0, LOCK_WRITEONLY);
+		const DXT3 *source = (const DXT3*)external.lockRect(0, 0, 0, LOCK_READONLY);
 
 		for(int z = 0; z < external.depth; z++)
 		{
@@ -2214,12 +2248,15 @@ namespace sw
 
 			(byte*&)destSlice += internal.sliceB;
 		}
+
+		external.unlockRect();
+		internal.unlockRect();
 	}
 
-	void Surface::decodeDXT5(Buffer &internal, const Buffer &external)
+	void Surface::decodeDXT5(Buffer &internal, Buffer &external)
 	{
-		unsigned int *destSlice = (unsigned int*)internal.buffer;
-		const DXT5 *source = (const DXT5*)external.buffer;
+		unsigned int *destSlice = (unsigned int*)internal.lockRect(0, 0, 0, LOCK_WRITEONLY);
+		const DXT5 *source = (const DXT5*)external.lockRect(0, 0, 0, LOCK_READONLY);
 
 		for(int z = 0; z < external.depth; z++)
 		{
@@ -2285,13 +2322,16 @@ namespace sw
 
 			(byte*&)destSlice += internal.sliceB;
 		}
+
+		external.unlockRect();
+		internal.unlockRect();
 	}
 #endif
 
-	void Surface::decodeATI1(Buffer &internal, const Buffer &external)
+	void Surface::decodeATI1(Buffer &internal, Buffer &external)
 	{
-		byte *destSlice = (byte*)internal.buffer;
-		const ATI1 *source = (const ATI1*)external.buffer;
+		byte *destSlice = (byte*)internal.lockRect(0, 0, 0, LOCK_WRITEONLY);
+		const ATI1 *source = (const ATI1*)external.lockRect(0, 0, 0, LOCK_READONLY);
 
 		for(int z = 0; z < external.depth; z++)
 		{
@@ -2339,12 +2379,15 @@ namespace sw
 
 			destSlice += internal.sliceB;
 		}
+
+		external.unlockRect();
+		internal.unlockRect();
 	}
 
-	void Surface::decodeATI2(Buffer &internal, const Buffer &external)
+	void Surface::decodeATI2(Buffer &internal, Buffer &external)
 	{
-		word *destSlice = (word*)internal.buffer;
-		const ATI2 *source = (const ATI2*)external.buffer;
+		word *destSlice = (word*)internal.lockRect(0, 0, 0, LOCK_WRITEONLY);
+		const ATI2 *source = (const ATI2*)external.lockRect(0, 0, 0, LOCK_READONLY);
 
 		for(int z = 0; z < external.depth; z++)
 		{
@@ -2419,12 +2462,17 @@ namespace sw
 
 			(byte*&)destSlice += internal.sliceB;
 		}
+
+		external.unlockRect();
+		internal.unlockRect();
 	}
 
-	void Surface::decodeETC2(Buffer &internal, const Buffer &external, int nbAlphaBits, bool isSRGB)
+	void Surface::decodeETC2(Buffer &internal, Buffer &external, int nbAlphaBits, bool isSRGB)
 	{
-		ETC_Decoder::Decode((const byte*)external.buffer, (byte*)internal.buffer, external.width, external.height, internal.width, internal.height, internal.pitchB, internal.bytes,
+		ETC_Decoder::Decode((const byte*)external.lockRect(0, 0, 0, LOCK_READONLY), (byte*)internal.lockRect(0, 0, 0, LOCK_WRITEONLY), external.width, external.height, internal.width, internal.height, internal.pitchB, internal.bytes,
 		                    (nbAlphaBits == 8) ? ETC_Decoder::ETC_RGBA : ((nbAlphaBits == 1) ? ETC_Decoder::ETC_RGB_PUNCHTHROUGH_ALPHA : ETC_Decoder::ETC_RGB));
+		external.unlockRect();
+		internal.unlockRect();
 
 		if(isSRGB)
 		{
@@ -2440,7 +2488,7 @@ namespace sw
 			}
 
 			// Perform sRGB conversion in place after decoding
-			byte* src = (byte*)internal.buffer;
+			byte* src = (byte*)internal.lockRect(0, 0, 0, LOCK_READWRITE);
 			for(int y = 0; y < internal.height; y++)
 			{
 				byte* srcRow = src + y * internal.pitchB;
@@ -2453,21 +2501,24 @@ namespace sw
 					}
 				}
 			}
+			internal.unlockRect();
 		}
 	}
 
-	void Surface::decodeEAC(Buffer &internal, const Buffer &external, int nbChannels, bool isSigned)
+	void Surface::decodeEAC(Buffer &internal, Buffer &external, int nbChannels, bool isSigned)
 	{
 		ASSERT(nbChannels == 1 || nbChannels == 2);
 
-		ETC_Decoder::Decode((const byte*)external.buffer, (byte*)internal.buffer, external.width, external.height, internal.width, internal.height, internal.pitchB, internal.bytes,
+		ETC_Decoder::Decode((const byte*)external.lockRect(0, 0, 0, LOCK_READONLY), (byte*)internal.lockRect(0, 0, 0, LOCK_WRITEONLY), external.width, external.height, internal.width, internal.height, internal.pitchB, internal.bytes,
 		                    (nbChannels == 1) ? (isSigned ? ETC_Decoder::ETC_R_SIGNED : ETC_Decoder::ETC_R_UNSIGNED) : (isSigned ? ETC_Decoder::ETC_RG_SIGNED : ETC_Decoder::ETC_RG_UNSIGNED));
+		external.unlockRect();
+		internal.unlockRect();
 
 		// FIXME: We convert signed data to float, until signed integer internal formats are supported
 		//        This code can be removed if signed ETC2 images are decoded to internal 8 bit signed R/RG formats
 		if(isSigned)
 		{
-			sbyte* src = (sbyte*)internal.buffer;
+			sbyte* src = (sbyte*)internal.lockRect(0, 0, 0, LOCK_READWRITE);
 
 			for(int y = 0; y < internal.height; y++)
 			{
@@ -2485,15 +2536,20 @@ namespace sw
 					}
 				}
 			}
+
+			internal.unlockRect();
 		}
 	}
 
-	void Surface::decodeASTC(Buffer &internal, const Buffer &external, int xBlockSize, int yBlockSize, int zBlockSize, bool isSRGB)
+	void Surface::decodeASTC(Buffer &internal, Buffer &external, int xBlockSize, int yBlockSize, int zBlockSize, bool isSRGB)
 	{
 	}
 
-	unsigned int Surface::size(int width, int height, int depth, Format format)
+	unsigned int Surface::size(int width, int height, int border, int depth, Format format)
 	{
+		width += 2 * border;
+		height += 2 * border;
+
 		// Dimensions rounded up to multiples of 4, used for compressed formats
 		int width4 = align(width, 4);
 		int height4 = align(height, 4);
@@ -3044,7 +3100,7 @@ namespace sw
 		return 1;
 	}
 
-	void *Surface::allocateBuffer(int width, int height, int depth, Format format)
+	void *Surface::allocateBuffer(int width, int height, int depth, int border, Format format)
 	{
 		// Render targets require 2x2 quads
 		int width2 = (width + 1) & ~1;
@@ -3053,7 +3109,7 @@ namespace sw
 		// FIXME: Unpacking byte4 to short4 in the sampler currently involves reading 8 bytes,
 		// and stencil operations also read 8 bytes per four 8-bit stencil values,
 		// so we have to allocate 4 extra bytes to avoid buffer overruns.
-		return allocateZero(size(width2, height2, depth, format) + 4);
+		return allocateZero(size(width2, height2, border, depth, format) + 4);
 	}
 
 	void Surface::memfill4(void *buffer, int pattern, int bytes)
@@ -3466,7 +3522,8 @@ namespace sw
 		       external.height == internal.height &&
 		       external.depth  == internal.depth &&
 		       external.pitchB == internal.pitchB &&
-		       external.sliceB == internal.sliceB;
+		       external.sliceB == internal.sliceB &&
+		       external.border == internal.border;
 	}
 
 	Format Surface::selectInternalFormat(Format format) const

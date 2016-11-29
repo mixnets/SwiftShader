@@ -219,6 +219,6 @@ namespace D3D9
 
 	unsigned int Direct3DVolume9::memoryUsage(int width, int height, int depth, D3DFORMAT format)
 	{
-		return Surface::size(width, height, depth, translateFormat(format));
+		return Surface::size(width, height, 0, depth, translateFormat(format));
 	}
 }

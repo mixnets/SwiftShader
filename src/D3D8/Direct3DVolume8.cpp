@@ -134,8 +134,8 @@ namespace D3D8
 			return INVALIDCALL();
 		}
 
-		lockedVolume->RowPitch = pitchB(getWidth(), getExternalFormat(), false);
-		lockedVolume->SlicePitch = sliceB(getWidth(), getHeight(), getExternalFormat(), false);
+		lockedVolume->RowPitch = pitchB(getWidth(), 0, getExternalFormat(), false);
+		lockedVolume->SlicePitch = sliceB(getWidth(), getHeight(), 0, getExternalFormat(), false);
 
 		sw::Lock lock = sw::LOCK_READWRITE;
 
@@ -184,6 +184,6 @@ namespace D3D8
 
 	unsigned int Direct3DVolume8::memoryUsage(int width, int height, int depth, D3DFORMAT format)
 	{
-		return Surface::size(width, height, depth, translateFormat(format));
+		return Surface::size(width, height, 0, depth, translateFormat(format));
 	}
 }
