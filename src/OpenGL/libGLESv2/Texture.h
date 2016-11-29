@@ -254,6 +254,7 @@ protected:
 private:
 	bool isCubeComplete() const;
 	bool isMipmapCubeComplete() const;
+	void updateBorders(int level);
 
 	// face is one of the GL_TEXTURE_CUBE_MAP_* enumerants. Returns nullptr on failure.
 	egl::Image *getImage(GLenum face, unsigned int level);

@@ -3423,6 +3423,17 @@ namespace sw
 		internal.write(x, y, z, color);
 	}
 
+	void Surface::averageInternal(const Surface* src, int x, int y, int srcX, int srcY)
+	{
+		ASSERT(internal.lock != LOCK_UNLOCKED && src && src->internal.lock != LOCK_UNLOCKED);
+
+		sw::Color<float> color = src->internal.read(srcX, srcY);
+		color += internal.read(x, y);
+		color *= 0.5f;
+
+		internal.write(x, y, color);
+	}
+
 	bool Surface::hasStencil() const
 	{
 		return isStencil(external.format);

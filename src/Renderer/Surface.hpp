@@ -308,6 +308,8 @@ namespace sw
 		void copyInternal(const Surface* src, int x, int y, float srcX, float srcY, bool filter);
 		void copyInternal(const Surface* src, int x, int y, int z, float srcX, float srcY, float srcZ, bool filter);
 
+		void averageInternal(const Surface* src, int x, int y, int srcX, int srcY);
+
 		bool hasStencil() const;
 		bool hasDepth() const;
 		bool hasPalette() const;

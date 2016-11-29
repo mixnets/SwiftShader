@@ -1623,6 +1623,155 @@ namespace egl
 		}
 	}
 
+	void Image::CopyCubeEdge(Image* src, Edge srcEdge, Image* dst, Edge dstEdge)
+	{
+		// Figure out if the edges to be copied in reverse order respectively from one another
+		// The copy should be reversed whenever the same edges are contiguous or if we're
+		// copying top <-> right or bottom <-> left. This is explained by the layout, which is:
+		//
+		//      | +y |
+		// | -x | +z | +x | -z |
+		//      | -y |
+
+		bool reverse = (srcEdge == dstEdge) ||
+		               ((srcEdge == TOP) && (dstEdge == RIGHT)) ||
+		               ((srcEdge == RIGHT) && (dstEdge == TOP)) ||
+		               ((srcEdge == BOTTOM) && (dstEdge == LEFT)) ||
+		               ((srcEdge == LEFT) && (dstEdge == BOTTOM));
+
+		int srcBytes = src->bytes(src->Surface::getInternalFormat());
+		int srcPitch = src->getInternalPitchB();
+		int dstBytes = dst->bytes(dst->Surface::getInternalFormat());
+		int dstPitch = dst->getInternalPitchB();
+
+		int srcW = src->getWidth();
+		int srcH = src->getHeight();
+		int dstW = dst->getWidth();
+		int dstH = dst->getHeight();
+
+		ASSERT(srcW == srcH && dstW == dstH && srcW == dstW && srcBytes == dstBytes);
+
+		int srcStart = 0, srcDelta = 0;
+		sw::Lock srcLock = sw::LOCK_READONLY;
+
+		// Src is expressed in the regular [0, width-1], [0, height-1] space
+		switch(srcEdge)
+		{
+		case TOP:
+			srcStart = 0;
+			srcDelta = srcBytes;
+			break;
+		case LEFT:
+			srcStart = 0;
+			srcDelta = srcPitch;
+			break;
+		case BOTTOM:
+			srcStart = srcPitch * (srcH - 1);
+			srcDelta = srcBytes;
+			break;
+		case RIGHT:
+			srcStart = srcBytes * (srcW - 1);
+			srcDelta = srcPitch;
+			break;
+		default:
+			UNREACHABLE(srcEdge);
+		}
+
+		int dstStart = 0, dstDelta = 0;
+		sw::Lock dstLock = sw::LOCK_WRITEONLY;
+
+		// Dst contains borders, so it is expressed in the [-1, width+1], [-1, height+1] space
+		switch(dstEdge)
+		{
+		case TOP:
+			dstStart = 0;
+			dstDelta = dstBytes;
+			break;
+		case LEFT:
+			dstStart = 0;
+			dstDelta = dstPitch;
+			dstLock = sw::LOCK_READWRITE;
+			break;
+		case BOTTOM:
+			dstStart = dstPitch * (dstH + 1);
+			dstDelta = dstBytes;
+			break;
+		case RIGHT:
+			dstStart = dstBytes * (dstW + 1);
+			dstDelta = dstPitch;
+			dstLock = sw::LOCK_READWRITE;
+			break;
+		default:
+			UNREACHABLE(dstEdge);
+		}
+
+		char *srcBuf = (char*)src->lockInternal(0, 0, 0, srcLock, sw::PRIVATE) + srcStart;
+		char *dstBuf = (char*)dst->lockInternal(-1, -1, 0, dstLock, sw::PRIVATE) + dstStart;
+
+		if(reverse)
+		{
+			dstBuf += (dstW + 1) * dstDelta;
+			memcpy(dstBuf, srcBuf, srcBytes);
+			dstBuf -= dstDelta;
+			for(int i = 0; i < srcW; ++i, dstBuf -= dstDelta, srcBuf += srcDelta)
+			{
+				memcpy(dstBuf, srcBuf, srcBytes);
+			}
+			memcpy(dstBuf, srcBuf - srcDelta, srcBytes);
+		}
+
+		switch(dstEdge)
+		{
+		case TOP:
+		case BOTTOM:
+			if(!reverse)
+			{
+				switch(srcEdge)
+				{
+				case TOP:
+				case BOTTOM:
+					memcpy(dstBuf, srcBuf, srcBytes);
+					memcpy(dstBuf + dstBytes, srcBuf, srcW * srcBytes);
+					memcpy(dstBuf + (dstW + 1) * dstBytes, srcBuf + (srcW - 1) * srcBytes, srcBytes);
+					break;
+				case LEFT:
+				case RIGHT:
+					memcpy(dstBuf, srcBuf, srcBytes);
+					dstBuf += dstDelta;
+					for(int i = 0; i < srcW; ++i, dstBuf += dstDelta, srcBuf += srcDelta)
+					{
+						memcpy(dstBuf, srcBuf, srcBytes);
+					}
+					memcpy(dstBuf, srcBuf - srcDelta, srcBytes);
+					break;
+				default:
+					break;
+				}
+			}
+			break;
+		case LEFT:
+		case RIGHT:
+			// Top/Bottom are already set, let's average out the corners
+			dst->averageInternal(src, (dstEdge == RIGHT) ? dstW : -1, reverse ? dstH : -1, (srcEdge == RIGHT) ? srcW - 1 : 0, (srcEdge == BOTTOM) ? srcH - 1 : 0);
+			dst->averageInternal(src, (dstEdge == RIGHT) ? dstW : -1, reverse ? -1 : dstH, (srcEdge != LEFT) ? srcW - 1 : 0, (srcEdge != TOP) ? srcH - 1 : 0);
+
+			if(!reverse)
+			{
+				dstBuf += dstDelta;
+				for(int i = 0; i < srcW; ++i, dstBuf += dstDelta, srcBuf += srcDelta)
+				{
+					memcpy(dstBuf, srcBuf, srcBytes);
+				}
+			}
+			break;
+		default:
+			break;
+		}
+
+		src->unlockInternal();
+		dst->unlockInternal();
+	}
+
 	void Image::loadD24S8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer)
 	{
 		LoadImageData<D24>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
