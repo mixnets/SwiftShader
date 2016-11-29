@@ -217,7 +217,7 @@ namespace D3D8
 		desc->Type = D3DRTYPE_SURFACE;
 		desc->Height = height;
 		desc->Width = width;
-		desc->Size = size(getWidth(), getHeight(), getDepth(), getExternalFormat());
+		desc->Size = size(getWidth(), getHeight(), 0, getDepth(), getExternalFormat());
 		desc->MultiSampleType = multiSample;
 		desc->Usage = usage;
 
@@ -275,6 +275,6 @@ namespace D3D8
 
 	unsigned int Direct3DSurface8::memoryUsage(int width, int height, D3DFORMAT format)
 	{
-		return Surface::size(width, height, 1, translateFormat(format));
+		return Surface::size(width, height, 0, 1, translateFormat(format));
 	}
 }

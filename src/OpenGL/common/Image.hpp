@@ -60,9 +60,9 @@ public:
 		parentTexture->addRef();
 	}
 
-	// 3D texture image
-	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
-		: sw::Surface(parentTexture->getResource(), width, height, depth, SelectInternalFormat(format, type), true, true),
+	// 3D/Cube texture image
+	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, int border = 0)
+		: sw::Surface(parentTexture->getResource(), width, height, depth, SelectInternalFormat(format, type), true, true, 0, border),
 		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(depth),
 		  parentTexture(parentTexture)
 	{
