@@ -1128,7 +1128,7 @@ void TextureCubeMap::setCompressedImage(GLenum target, GLint level, GLenum forma
 	}
 
 	GLenum sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[face][level] = egl::Image::create(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[face][level] = egl::Image::create(this, width, height, 1, sizedInternalFormat, GL_UNSIGNED_BYTE, 1);
 
 	if(!image[face][level])
 	{
@@ -1269,7 +1269,7 @@ void TextureCubeMap::setImage(egl::Context *context, GLenum target, GLint level,
 		image[face][level]->release();
 	}
 
-	image[face][level] = egl::Image::create(this, width, height, format, type);
+	image[face][level] = egl::Image::create(this, width, height, 1, format, type, 1);
 
 	if(!image[face][level])
 	{
@@ -1297,7 +1297,7 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 	}
 
 	GLenum sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[face][level] = egl::Image::create(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[face][level] = egl::Image::create(this, width, height, 1, sizedInternalFormat, GL_UNSIGNED_BYTE, 1);
 
 	if(!image[face][level])
 	{
@@ -1391,7 +1391,7 @@ void TextureCubeMap::generateMipmaps()
 				image[f][i]->release();
 			}
 
-			image[f][i] = egl::Image::create(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat(), image[0][0]->getType());
+			image[f][i] = egl::Image::create(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), 1, image[0][0]->getFormat(), image[0][0]->getType(), 1);
 
 			if(!image[f][i])
 			{

@@ -1199,8 +1199,8 @@ namespace egl
 	public:
 		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
 			: Image(parentTexture, width, height, format, type) {}
-		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
-			: Image(parentTexture, width, height, depth, format, type) {}
+		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, int border)
+			: Image(parentTexture, width, height, depth, format, type, border) {}
 		ImageImplementation(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
 			: Image(width, height, format, type, pitchP) {}
 		ImageImplementation(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
@@ -1232,9 +1232,9 @@ namespace egl
 		return new ImageImplementation(parentTexture, width, height, format, type);
 	}
 
-	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
+	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, int border)
 	{
-		return new ImageImplementation(parentTexture, width, height, depth, format, type);
+		return new ImageImplementation(parentTexture, width, height, depth, format, type, border);
 	}
 
 	Image *Image::create(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
