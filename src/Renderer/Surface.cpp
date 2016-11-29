@@ -3423,6 +3423,18 @@ namespace sw
 		internal.write(x, y, z, color);
 	}
 
+	void Surface::computeCornerInternal(int x0, int y0, int x1, int y1)
+	{
+		ASSERT(internal.lock != LOCK_UNLOCKED);
+
+		sw::Color<float> color = internal.read(x0, y1);
+		color += internal.read(x1, y0);
+		color += internal.read(x1, y1);
+		color *= (1.0f / 3.0f);
+
+		internal.write(x0, y0, color);
+	}
+
 	bool Surface::hasStencil() const
 	{
 		return isStencil(external.format);
