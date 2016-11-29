@@ -1258,6 +1258,7 @@ namespace sw
 		data.sWidth = source->getWidth();
 		data.sHeight = source->getHeight();
 
+		volatile __declspec(align(16)) char x = 0;
 		blitFunction(&data);
 
 		source->unlock(useSourceInternal);

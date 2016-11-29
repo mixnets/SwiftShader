@@ -97,7 +97,7 @@ namespace
 				if(stores.size() == 1)
 				{
 					Ice::Inst *store = stores[0];
-					Ice::Operand *storeValue = store->getSrc(0);
+					Ice::Operand *storeValue = getData(store);
 
 					for(Ice::Inst *load = &*++store->getIterator(), *next = nullptr; load != next; next = load, load = &*++store->getIterator())
 					{
@@ -106,7 +106,7 @@ namespace
 							continue;
 						}
 
-						Ice::Operand *loadAddress = load->getSrc(0);
+						Ice::Operand *loadAddress = getLoadAddr(load);
 
 						if(loadAddress != address)
 						{
@@ -165,6 +165,109 @@ namespace
 					}
 
 					continue;
+				}
+
+				Ice::CfgNode *singleBasicBlock = node[stores[0]];
+
+				for(int i = 1; i < stores.size(); i++)
+				{
+					Ice::Inst *store = stores[i];
+					if(node[store] != singleBasicBlock)
+					{
+						singleBasicBlock = nullptr;
+						break;
+					}
+				}
+
+				if(singleBasicBlock)
+				{
+					auto &insts = singleBasicBlock->getInsts();
+					Ice::Inst *store = nullptr;
+					Ice::Operand *storeValue = nullptr;
+
+					for(Ice::Inst &inst : insts)
+					{
+						if(inst.isDeleted())
+						{
+							continue;
+						}
+
+						if(isStore(inst))
+						{
+							if(getStoreAddr(&inst) != address)
+							{
+								continue;
+							}
+
+							// New store found. If we had a previous one, eliminate it.
+							if(store)
+							{
+								deleteInstruction(store);
+							}
+
+							store = &inst;
+							storeValue = getData(store);
+						}
+						else if(isLoad(inst))
+						{
+							Ice::Inst *load = &inst;
+
+							if(getLoadAddr(load) != address)
+							{
+								continue;
+							}
+
+							replace(load, storeValue);
+						}
+					}
+
+					if(loads.size() != 0)
+					{
+
+					}
+				}
+			}
+
+			for(Ice::CfgNode *basicBlock : function->getNodes())
+			{
+				std::map<Ice::Operand*, Ice::Inst*> stores;
+
+				for(Ice::Inst &inst : basicBlock->getInsts())
+				{
+					if(inst.isDeleted())
+					{
+						continue;
+					}
+
+					if(isStore(inst))
+					{
+						auto *address = getStoreAddr(&inst);
+
+						if(!uses[address].areOnlyLoadStore())
+						{
+							continue;
+						}
+
+						// New store found. If we had a previous one, eliminate it.
+						if(stores.find(address) != stores.end())
+						{
+							deleteInstruction(stores[address]);
+						}
+
+						stores[address] = &inst;
+					}
+					else if(isLoad(inst))
+					{
+						auto *address = getLoadAddr(&inst);
+						auto store = stores.find(address);
+
+						if(store == stores.end())
+						{
+							continue;
+						}
+
+						replace(&inst, getData(store->second));
+					}
 				}
 			}
 		}
@@ -237,6 +340,63 @@ namespace
 			}
 
 			return false;
+		}
+
+		static Ice::Operand *getStoreAddr(Ice::Inst *instruction)
+		{
+			if(auto *store = llvm::dyn_cast<Ice::InstStore>(instruction))
+			{
+				return store->getAddr();
+			}
+
+			if(auto *instrinsic = llvm::dyn_cast<Ice::InstIntrinsicCall>(instruction))
+			{
+				if(instrinsic->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector)
+				{
+					return instrinsic->getSrc(2);
+				}
+			}
+
+			assert(false && "UNREACHABLE");   // Shouldn't have been called unless isStore() returned true.
+			return nullptr;
+		}
+
+		static Ice::Operand *getLoadAddr(Ice::Inst *instruction)
+		{
+			if(auto *load = llvm::dyn_cast<Ice::InstLoad>(instruction))
+			{
+				return load->getSourceAddress();
+			}
+
+			if(auto *instrinsic = llvm::dyn_cast<Ice::InstIntrinsicCall>(instruction))
+			{
+				if(instrinsic->getIntrinsicInfo().ID == Ice::Intrinsics::LoadSubVector)
+				{
+					return instrinsic->getSrc(1);
+				}
+			}
+
+			assert(false && "UNREACHABLE");   // Shouldn't have been called unless isStore() or isLoad() returned true.
+			return nullptr;
+		}
+
+		static Ice::Operand *getData(Ice::Inst *instruction)
+		{
+			if(auto *store = llvm::dyn_cast<Ice::InstStore>(instruction))
+			{
+				return store->getData();
+			}
+
+			if(auto *instrinsic = llvm::dyn_cast<Ice::InstIntrinsicCall>(instruction))
+			{
+				if(instrinsic->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector)
+				{
+					return instrinsic->getSrc(1);
+				}
+			}
+
+			assert(false && "UNREACHABLE");   // Shouldn't have been called unless isStore() returned true.
+			return nullptr;
 		}
 
 		void replace(Ice::Inst *instruction, Ice::Operand *newValue)
@@ -318,14 +478,14 @@ namespace
 
 				if(isLoad(*instruction))
 				{
-					if(value == instruction->getSrc(0))   // Load address is first operand
+					if(value == getLoadAddr(instruction))
 					{
 						loads.push_back(instruction);
 					}
 				}
 				else if(isStore(*instruction))
 				{
-					if(value == instruction->getSrc(1))   // Store address is second operand
+					if(value == getStoreAddr(instruction))
 					{
 						stores.push_back(instruction);
 					}

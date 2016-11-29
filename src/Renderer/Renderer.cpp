@@ -888,7 +888,7 @@ namespace sw
 					DrawCall *draw = drawList[pixelProgress[cluster].drawCall % DRAW_COUNT];
 					DrawData *data = draw->data;
 					PixelProcessor::RoutinePointer pixelRoutine = draw->pixelPointer;
-
+					volatile __declspec(align(16)) char x = 0;
 					pixelRoutine(primitive, visible, cluster, data);
 				}
 
@@ -1477,6 +1477,7 @@ namespace sw
 
 		task->primitiveStart = start;
 		task->vertexCount = triangleCount * 3;
+		volatile __declspec(align(16)) char x = 0;
 		vertexRoutine(&triangle->v0, (unsigned int*)&batch, task, data);
 	}
 
@@ -1513,7 +1514,7 @@ namespace sw
 						continue;
 					}
 				}
-
+				volatile __declspec(align(16)) char x = 0;
 				if(setupRoutine(primitive, triangle, &polygon, data))
 				{
 					primitive += ms;
