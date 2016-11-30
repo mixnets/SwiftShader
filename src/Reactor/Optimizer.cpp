@@ -222,6 +222,49 @@ namespace
 					}
 				}
 			}
+
+			for(Ice::CfgNode *basicBlock : function->getNodes())
+			{
+				std::map<Ice::Operand*, Ice::Inst*> stores;
+
+				for(Ice::Inst &inst : basicBlock->getInsts())
+				{
+					if(inst.isDeleted())
+					{
+						continue;
+					}
+
+					if(isStore(inst))
+					{
+						auto *address = getStoreAddr(&inst);
+
+						if(!uses[address].areOnlyLoadStore())
+						{
+							continue;
+						}
+
+						// New store found. If we had a previous one, eliminate it.
+						if(stores.find(address) != stores.end())
+						{
+							deleteInstruction(stores[address]);
+						}
+
+						stores[address] = &inst;
+					}
+					else if(isLoad(inst))
+					{
+						auto *address = getLoadAddr(&inst);
+						auto store = stores.find(address);
+
+						if(store == stores.end())
+						{
+							continue;
+						}
+
+						replace(&inst, getData(store->second));
+					}
+				}
+			}
 		}
 
 	private:
