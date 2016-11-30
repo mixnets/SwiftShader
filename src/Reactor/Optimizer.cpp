@@ -162,7 +162,64 @@ namespace
 						}
 					}
 
-					continue;
+					if(alloca.isDeleted())
+					{
+						continue;
+					}
+				}
+
+				Ice::CfgNode *singleBasicBlock = node[stores[0]];
+
+				for(int i = 1; i < stores.size(); i++)
+				{
+					Ice::Inst *store = stores[i];
+					if(node[store] != singleBasicBlock)
+					{
+						singleBasicBlock = nullptr;
+						break;
+					}
+				}
+
+				if(singleBasicBlock)
+				{
+					auto &insts = singleBasicBlock->getInsts();
+					Ice::Inst *store = nullptr;
+					Ice::Operand *storeValue = nullptr;
+
+					for(Ice::Inst &inst : insts)
+					{
+						if(inst.isDeleted())
+						{
+							continue;
+						}
+
+						if(isStore(inst))
+						{
+							if(storeAddress(&inst) != address)
+							{
+								continue;
+							}
+
+							// New store found. If we had a previous one, eliminate it.
+							if(store)
+							{
+								deleteInstruction(store);
+							}
+
+							store = &inst;
+						}
+						else if(isLoad(inst))
+						{
+							Ice::Inst *load = &inst;
+
+							if(loadAddress(load) != address)
+							{
+								continue;
+							}
+
+							replace(load, storeValue);
+						}
+					}
 				}
 			}
 		}
