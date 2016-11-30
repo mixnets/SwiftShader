@@ -16,6 +16,8 @@
 #include "PVRShell.h"
 #include "OGLES3Tools.h"
 
+#include <string>
+
 /******************************************************************************
  Constants
  ******************************************************************************/
@@ -809,8 +811,36 @@ bool OGLES3ColourGrading::RenderScene()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Render title
-	m_Print3D.DisplayDefaultTitle("Colour grading using 3D textures", c_pszLUTNames[m_iCurrentLUT], ePVRTPrint3DSDKLogo);
-	m_Print3D.Flush();
+	//m_Print3D.DisplayDefaultTitle("Colour grading using 3D textures", c_pszLUTNames[m_iCurrentLUT], ePVRTPrint3DSDKLogo);
+	//m_Print3D.Flush();
+
+	{
+		static int m_i32FpsFrameCnt, m_i32FpsTimePrev;
+		static float fFPS;
+
+		unsigned int ui32TimeDelta, ui32Time;
+
+		ui32Time = PVRShellGetTime();
+		++m_i32FpsFrameCnt;
+		ui32TimeDelta = ui32Time - m_i32FpsTimePrev;
+
+		if(ui32TimeDelta >= 1000)
+		{
+			fFPS = 1000.0f * (float) m_i32FpsFrameCnt / (float) ui32TimeDelta;
+
+			//m_pShell->PVRShellOutputDebug("PVRShell: frame %d, FPS %.1f.\n",
+			//	m_pShell->m_pShellData->nShellCurFrameNum, fFPS);
+
+			m_i32FpsFrameCnt = 0;
+			m_i32FpsTimePrev = ui32Time;
+		}
+
+		std::string title = "FPS: ";
+		title += std::to_string(fFPS);
+
+		m_Print3D.DisplayDefaultTitle(title.c_str(), "whatever", ePVRTPrint3DSDKLogo); 
+		m_Print3D.Flush();
+	}
 	
 	return true;
 }
