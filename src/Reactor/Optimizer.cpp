@@ -27,6 +27,7 @@ namespace
 	public:
 		void optimize(Ice::Cfg *function)
 		{
+			context = function->getContext();
 			analyzeUses(function);
 
 			Ice::CfgNode *entryBlock = function->getEntryNode();
@@ -92,6 +93,77 @@ namespace
 
 					continue;
 				}
+
+				if(stores.size() == 1)
+				{
+					Ice::Inst *store = stores[0];
+					Ice::Operand *storeValue = storeData(store);
+
+					for(Ice::Inst *load = &*++store->getIterator(), *next = nullptr; load != next; next = load, load = &*++store->getIterator())
+					{
+						if(load->isDeleted() || !isLoad(*load))
+						{
+							continue;
+						}
+
+						if(loadAddress(load) != address)
+						{
+							continue;
+						}
+
+						replace(load, storeValue);
+
+						for(int i = 0; i < loads.size(); i++)
+						{
+							if(loads[i] == load)
+							{
+								loads[i] = loads.back();
+								loads.pop_back();
+								break;
+							}
+						}
+
+						for(int i = 0; i < addressUses.size(); i++)
+						{
+							if(addressUses[i] == load)
+							{
+								addressUses[i] = addressUses.back();
+								addressUses.pop_back();
+								break;
+							}
+						}
+
+						if(addressUses.size() == 1)
+						{
+							assert(addressUses[0] == store);
+
+							alloca.setDeleted();
+							store->setDeleted();
+							this->uses.erase(address);
+
+							auto &valueUses = this->uses[storeValue];
+
+							for(int i = 0; i < valueUses.size(); i++)
+							{
+								if(valueUses[i] == store)
+								{
+									valueUses[i] = valueUses.back();
+									valueUses.pop_back();
+									break;
+								}
+							}
+
+							if(valueUses.size() == 0)
+							{
+								this->uses.erase(storeValue);
+							}
+
+							break;
+						}
+					}
+
+					continue;
+				}
 			}
 		}
 
@@ -99,6 +171,8 @@ namespace
 		void analyzeUses(Ice::Cfg *function)
 		{
 			uses.clear();
+			node.clear();
+			definition.clear();
 
 			for(Ice::CfgNode *basicBlock : function->getNodes())
 			{
@@ -108,6 +182,9 @@ namespace
 					{
 						continue;
 					}
+
+					node[&instruction] = basicBlock;
+					definition[instruction.getDest()] = &instruction;
 
 					for(int i = 0; i < instruction.getSrcSize(); i++)
 					{
@@ -200,6 +277,89 @@ namespace
 			return nullptr;
 		}
 
+		static Ice::Operand *storeData(const Ice::Inst *instruction)
+		{
+			assert(isStore(*instruction));
+
+			if(auto *store = llvm::dyn_cast<Ice::InstStore>(instruction))
+			{
+				return store->getData();
+			}
+
+			if(auto *instrinsic = llvm::dyn_cast<Ice::InstIntrinsicCall>(instruction))
+			{
+				if(instrinsic->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector)
+				{
+					return instrinsic->getSrc(1);
+				}
+			}
+
+			return nullptr;
+		}
+
+		void replace(Ice::Inst *instruction, Ice::Operand *newValue)
+		{
+			Ice::Variable *oldValue = instruction->getDest();
+
+			if(!newValue)
+			{
+				newValue = context->getConstantUndef(oldValue->getType());
+			}
+
+			for(Ice::Inst *use : uses[oldValue])
+			{
+				assert(!use->isDeleted());   // Should have been removed from uses already
+
+				for(int i = 0; i < use->getSrcSize(); i++)
+				{
+					if(use->getSrc(i) == oldValue)
+					{
+						use->replaceSource(i, newValue);
+					}
+				}
+
+				uses[newValue].insert(newValue, use);
+			}
+
+			uses.erase(oldValue);
+
+			deleteInstruction(instruction);
+		}
+
+		void deleteInstruction(Ice::Inst *instruction)
+		{
+			if(instruction->isDeleted())
+			{
+				return;
+			}
+
+			instruction->setDeleted();
+
+			for(int i = 0; i < instruction->getSrcSize(); i++)
+			{
+				Ice::Operand *src = instruction->getSrc(i);
+
+				auto &srcEntry = uses.find(src);
+
+				if(srcEntry != uses.end())
+				{
+					auto &srcUses = srcEntry->second;
+
+					srcUses.erase(instruction);
+
+					if(srcUses.size() == 0)
+					{
+						uses.erase(srcEntry);
+
+						if(Ice::Variable *var = llvm::dyn_cast<Ice::Variable>(src))
+						{
+							deleteInstruction(definition[var]);
+						}
+					}
+				}
+			}
+		}
+
 		struct Uses : std::vector<Ice::Inst*>
 		{
 			std::vector<Ice::Inst*> loads;
@@ -267,7 +427,11 @@ namespace
 			}
 		};
 
+		Ice::GlobalContext *context;
+
 		std::map<Ice::Operand*, Uses> uses;
+		std::map<Ice::Inst*, Ice::CfgNode*> node;
+		std::map<Ice::Variable*, Ice::Inst*> definition;
 	};
 }
 
