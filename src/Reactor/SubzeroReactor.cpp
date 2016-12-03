@@ -2904,7 +2904,7 @@ namespace sw
 
 	Short2::Short2(RValue<Short4> cast)
 	{
-		assert(false && "UNIMPLEMENTED");
+		storeValue(Nucleus::createBitCast(cast.value, getType()));
 	}
 
 	Type *Short2::getType()
@@ -2914,7 +2914,7 @@ namespace sw
 
 	UShort2::UShort2(RValue<UShort4> cast)
 	{
-		assert(false && "UNIMPLEMENTED");
+		storeValue(Nucleus::createBitCast(cast.value, getType()));
 	}
 
 	Type *UShort2::getType()
@@ -3700,7 +3700,10 @@ namespace sw
 
 	UShort8::UShort8(RValue<UShort4> lo, RValue<UShort4> hi)
 	{
-		assert(false && "UNIMPLEMENTED");
+		int shuffle[8] = {0, 1, 2, 3, 8, 9, 10, 11};   // Real type is v8i16
+		Value *packed = Nucleus::createShuffleVector(lo.value, hi.value, shuffle);
+
+		storeValue(packed);
 	}
 
 	RValue<UShort8> UShort8::operator=(RValue<UShort8> rhs)
@@ -4731,12 +4734,15 @@ namespace sw
 
 	RValue<Short4> UnpackLow(RValue<Int2> x, RValue<Int2> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		int shuffle[4] = {0, 4, 1, 5};   // Real type is v4i32
+		return As<Short4>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
 	}
 
 	RValue<Short4> UnpackHigh(RValue<Int2> x, RValue<Int2> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short4>(V(nullptr));
+		int shuffle[16] = {0, 4, 1, 5};   // Real type is v4i32
+		auto lowHigh = RValue<Int4>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
+		return As<Short4>(Swizzle(lowHigh, 0xEE));
 	}
 
 	RValue<Int> Extract(RValue<Int2> val, int i)
@@ -5369,7 +5375,18 @@ namespace sw
 	{
 	//	xyzw.parent = this;
 
-		assert(false && "UNIMPLEMENTED");
+		// Smallest positive value representable in UInt, but not in Int
+		const unsigned int ustart = 0x80000000u;
+		const float ustartf = float(ustart);
+
+		// Check if the value can be represented as an Int
+		Int4 uiValue = CmpNLT(cast, Float4(ustartf));
+		// If the value is too large, subtract ustart and re-add it after conversion.
+		uiValue = (uiValue & As<Int4>(As<UInt4>(Int4(cast - Float4(ustartf))) + UInt4(ustart))) |
+		// Otherwise, just convert normally
+		          (~uiValue & Int4(cast));
+		// If the value is negative, store 0, otherwise store the result of the conversion
+		storeValue((~(As<Int4>(cast) >> 31) & uiValue).value);
 	}
 
 	UInt4::UInt4()
@@ -5453,7 +5470,10 @@ namespace sw
 
 	UInt4::UInt4(RValue<UInt2> lo, RValue<UInt2> hi)
 	{
-		assert(false && "UNIMPLEMENTED");
+		int shuffle[4] = {0, 1, 4, 5};   // Real type is v4i32
+		Value *packed = Nucleus::createShuffleVector(lo.value, hi.value, shuffle);
+
+		storeValue(packed);
 	}
 
 	RValue<UInt4> UInt4::operator=(RValue<UInt4> rhs)
