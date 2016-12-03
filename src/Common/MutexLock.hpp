@@ -17,6 +17,48 @@
 
 #include "Thread.hpp"
 
+#ifdef __ANDROID__
+/* Use an actual mutex on Android. Since many processes may use switchshader
+   at the same time it's best to just have the scheduler overhead. */
+#include <pthread.h>
+
+namespace sw
+{
+	class MutexLock
+	{
+	public:
+		MutexLock()
+		{
+			pthread_mutex_init(&mutex, NULL);
+		}
+		~MutexLock()
+		{
+			pthread_mutex_destroy(&mutex);
+		}
+
+		bool attemptLock()
+		{
+                	return pthread_mutex_trylock(&mutex) == 0;
+		}
+
+		void lock()
+		{
+			pthread_mutex_lock(&mutex);
+		}
+
+		void unlock()
+		{
+			pthread_mutex_unlock(&mutex);
+		}
+
+	private:
+		pthread_mutex_t mutex;
+	};
+	using BackoffLock = MutexLock;
+}
+
+#else
+
 namespace sw
 {
 	class BackoffLock
@@ -125,5 +167,6 @@ namespace sw
 		};
 	};
 }
+#endif   // __android
 
 #endif   // sw_MutexLock_hpp
