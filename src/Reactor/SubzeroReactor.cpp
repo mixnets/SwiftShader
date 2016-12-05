@@ -28,9 +28,11 @@
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/raw_os_ostream.h"
 
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <Windows.h>
+//#define WIN32_LEAN_AND_MEAN
+//#define NOMINMAX
+//#include <Windows.h>
+
+#include <sys/mman.h>
 
 #include <mutex>
 #include <limits>
@@ -295,12 +297,14 @@ namespace sw
 
 		T *allocate(size_type n)
 		{
-			return (T*)VirtualAlloc(NULL, sizeof(T) * n, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+			//return (T*)VirtualAlloc(NULL, sizeof(T) * n, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+			return (T*)mmap(nullptr, sizeof(T) * n, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
 		}
 
 		void deallocate(T *p, size_type n)
 		{
-			VirtualFree(p, 0, MEM_RELEASE);
+			//VirtualFree(p, 0, MEM_RELEASE);
+			munmap(p, sizeof(T) * n);
 		}
 	};
 
@@ -320,8 +324,8 @@ namespace sw
 		{
 			if(buffer.size() != 0)
 			{
-				DWORD exeProtection;
-				VirtualProtect(&buffer[0], buffer.size(), oldProtection, &exeProtection);
+				//DWORD exeProtection;
+				//VirtualProtect(&buffer[0], buffer.size(), oldProtection, &exeProtection);
 			}
 		}
 
@@ -356,7 +360,8 @@ namespace sw
 		{
 			if(!entry)
 			{
-				VirtualProtect(&buffer[0], buffer.size(), PAGE_EXECUTE_READWRITE, &oldProtection);
+				//VirtualProtect(&buffer[0], buffer.size(), PAGE_EXECUTE_READWRITE, &oldProtection);
+				mprotect(&buffer[0], buffer.size(), PROT_READ | PROT_WRITE | PROT_EXEC);
 				position = std::numeric_limits<std::size_t>::max();  // Can't stream more data after this
 
 				entry = loadImage(&buffer[0]);
@@ -369,7 +374,7 @@ namespace sw
 		void *entry;
 		std::vector<uint8_t, ExecutableAllocator<uint8_t>> buffer;
 		std::size_t position;
-		DWORD oldProtection;
+		//DWORD oldProtection;
 	};
 
 	Nucleus::Nucleus()
@@ -3246,7 +3251,7 @@ namespace sw
 		pmulhw->addArg(y.value);
 		::basicBlock->appendInst(pmulhw);
 
-		return RValue<UShort4>(V(result));
+		return RValue<Short4>(V(result));
 	}
 
 	RValue<Int2> MulAdd(RValue<Short4> x, RValue<Short4> y)
@@ -3471,7 +3476,7 @@ namespace sw
 
 	RValue<UShort4> operator+(RValue<UShort4> lhs, RValue<UShort4> rhs)
 	{
-		return RValue<Short4>(Nucleus::createAdd(lhs.value, rhs.value));
+		return RValue<UShort4>(Nucleus::createAdd(lhs.value, rhs.value));
 	}
 
 	RValue<UShort4> operator-(RValue<UShort4> lhs, RValue<UShort4> rhs)
@@ -4051,7 +4056,7 @@ namespace sw
 
 	RValue<Int> operator++(Int &val, int)   // Post-increment
 	{
-		RValue<UInt> res = val;
+		RValue<Int> res = val;
 		val += 1;
 		return res;
 	}
