@@ -27,7 +27,7 @@
 #define SUPPORT_DATATYPES_H
 
 #define HAVE_SYS_TYPES_H 1
-/* #undef HAVE_INTTYPES_H */
+#define HAVE_INTTYPES_H 1
 #define HAVE_STDINT_H 1
 #define HAVE_UINT64_T 1
 /* #undef HAVE_U_INT64_T */
