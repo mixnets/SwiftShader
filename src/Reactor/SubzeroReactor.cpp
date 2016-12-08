@@ -4127,8 +4127,10 @@ namespace sw
 
 	RValue<Int> RoundInt(RValue<Float> cast)
 	{
+		RValue<Float> rounded = Round(cast);
+
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_i32);
-		auto round = Ice::InstCast::create(::function, Ice::InstCast::Fptosi, result, cast.value);
+		auto round = Ice::InstCast::create(::function, Ice::InstCast::Fptosi, result, rounded.value);
 		::basicBlock->appendInst(round);
 
 		return RValue<Int>(V(result));
@@ -5341,8 +5343,10 @@ namespace sw
 
 	RValue<Int4> RoundInt(RValue<Float4> cast)
 	{
+		RValue<Float4> rounded = Round(cast);
+
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4i32);
-		auto round = Ice::InstCast::create(::function, Ice::InstCast::Fptosi, result, cast.value);
+		auto round = Ice::InstCast::create(::function, Ice::InstCast::Fptosi, result, rounded.value);
 		::basicBlock->appendInst(round);
 
 		return RValue<Int4>(V(result));
