@@ -156,7 +156,7 @@ Function<Int(Pointer<Int>)> function;
 }
 ```
 
-Pointer arithmetic is only supported on Pointer<Byte>, and can be used to address structure fields:
+Pointer arithmetic is only supported on ```Pointer<Byte>```, and can be used to address structure fields:
 
 ```C++
 struct S
