@@ -625,7 +625,7 @@ bool Context::isDitherEnabled() const
 
 void Context::setPrimitiveRestartFixedIndexEnabled(bool enabled)
 {
-	UNIMPLEMENTED();
+	//UNIMPLEMENTED();
 	mState.primitiveRestartFixedIndexEnabled = enabled;
 }
 
@@ -2135,7 +2135,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS;
 		break;
 	case GL_MAX_COMBINED_UNIFORM_BLOCKS: // integer, at least 70
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = 70;
 		break;
 	case GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS: // integer, at least 50176
@@ -2154,7 +2154,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_ELEMENTS_VERTICES;
 		break;
 	case GL_MAX_FRAGMENT_INPUT_COMPONENTS: // integer, at least 128
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = 128;
 		break;
 	case GL_MAX_FRAGMENT_UNIFORM_BLOCKS: // integer, at least 12
@@ -2164,15 +2164,15 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_FRAGMENT_UNIFORM_COMPONENTS;
 		break;
 	case GL_MAX_PROGRAM_TEXEL_OFFSET: // integer, minimum is 7
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = 7;
 		break;
 	case GL_MAX_SERVER_WAIT_TIMEOUT: // integer
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = 0;
 		break;
 	case GL_MAX_TEXTURE_LOD_BIAS: // integer,  at least 2.0
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = 2;
 		break;
 	case GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS: // integer, at least 64
@@ -2191,11 +2191,11 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_UNIFORM_BUFFER_BINDINGS;
 		break;
 	case GL_MAX_VARYING_COMPONENTS: // integer, at least 60
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = 60;
 		break;
 	case GL_MAX_VERTEX_OUTPUT_COMPONENTS: // integer,  at least 64
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = 64;
 		break;
 	case GL_MAX_VERTEX_UNIFORM_BLOCKS: // integer,  at least 12
@@ -2205,7 +2205,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = MAX_VERTEX_UNIFORM_COMPONENTS;
 		break;
 	case GL_MIN_PROGRAM_TEXEL_OFFSET: // integer, maximum is -8
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = -8;
 		break;
 	case GL_MINOR_VERSION: // integer
@@ -2218,7 +2218,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = numExtensions;
 		break;
 	case GL_NUM_PROGRAM_BINARY_FORMATS: // integer, at least 0
-		UNIMPLEMENTED();
+		//UNIMPLEMENTED();
 		*params = 0;
 		break;
 	case GL_PACK_ROW_LENGTH: // integer, initially 0

@@ -36,6 +36,7 @@ namespace
 
 		void replace(Ice::Inst *instruction, Ice::Operand *newValue);
 		void deleteInstruction(Ice::Inst *instruction);
+		bool isDead(Ice::Inst *instruction);
 
 		static bool isLoad(const Ice::Inst &instruction);
 		static bool isStore(const Ice::Inst &instruction);
@@ -70,28 +71,39 @@ namespace
 
 		eliminateUnusedAllocas();
 		eliminateUnitializedLoads();
+		eliminateUnusedAllocas();
 		eliminateLoadsFollowingSingleStore();
+		eliminateUnusedAllocas();
 		optimizeStoresInSingleBasicBlock();
+		eliminateUnusedAllocas();
 	}
 
 	void Optimizer::eliminateUnusedAllocas()
 	{
-		Ice::CfgNode *entryBlock = function->getEntryNode();
-
-		for(Ice::Inst &alloca : entryBlock->getInsts())
+		bool change;
+	int it = 0;
+		do
 		{
-			if(!llvm::isa<Ice::InstAlloca>(alloca))
+			change = false;
+			for(Ice::CfgNode *basicBlock : function->getNodes())
 			{
-				return;   // Allocas are all at the top
-			}
+				for(Ice::Inst &inst : basicBlock->getInsts())
+				{
+					if(inst.isDeleted())
+					{
+						continue;
+					}
 
-			Ice::Operand *address = alloca.getDest();
-
-			if(uses[address].empty())
-			{
-				alloca.setDeleted();
+					if(isDead(&inst))
+					{
+						deleteInstruction(&inst);
+						change = true;
+					}
+				}
 			}
+			it++;
 		}
+		while(change);
 	}
 
 	void Optimizer::eliminateUnitializedLoads()
@@ -397,7 +409,7 @@ namespace
 
 	void Optimizer::deleteInstruction(Ice::Inst *instruction)
 	{
-		if(instruction->isDeleted())
+		if(!instruction || instruction->isDeleted())
 		{
 			return;
 		}
@@ -427,6 +439,28 @@ namespace
 				}
 			}
 		}
+	}
+
+	bool Optimizer::isDead(Ice::Inst *instruction)
+	{
+		Ice::Variable *dest = instruction->getDest();
+
+		if(dest)
+		{
+			return uses[dest].empty();
+		}
+		else if(isStore(*instruction))
+		{
+			if(Ice::Variable *address = llvm::dyn_cast<Ice::Variable>(storeAddress(instruction)))
+			{
+				if(llvm::isa<Ice::InstAlloca>(definition[address]))
+				{
+					return uses[address].size() == 1;   // This store is the only use
+				}
+			}
+		}
+
+		return false;
 	}
 
 	bool Optimizer::isLoad(const Ice::Inst &instruction)
