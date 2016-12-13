@@ -98,7 +98,7 @@ namespace sw
 
 			for(int i = dRect.x0; i < dRect.x1; i++)
 			{
-				// FIXME: Support RGBA mask
+				assert((options & WRITE_RGBA) == WRITE_RGBA); // FIXME: Support RGBA mask
 				dest->copyInternal(source, i, j, x, y, (options & FILTER_LINEAR) == FILTER_LINEAR);
 
 				x += w;
@@ -339,7 +339,7 @@ namespace sw
 		return true;
 	}
 
-	bool Blitter::write(Float4 &c, Pointer<Byte> element, Format format, const Blitter::Options& options)
+	bool Blitter::write(UShort &xxx, Byte4 &yyy, Float4 &c, Pointer<Byte> element, Format format, const Blitter::Options& options)
 	{
 		bool writeR = (options & WRITE_RED) == WRITE_RED;
 		bool writeG = (options & WRITE_GREEN) == WRITE_GREEN;
@@ -402,8 +402,8 @@ namespace sw
 		case FORMAT_SRGB8_X8:
 			if(writeRGBA)
 			{
-				UShort4 c0 = As<UShort4>(RoundShort4(c)) | UShort4(0x0000, 0x0000, 0x0000, 0xFFFFu);
-				*Pointer<Byte4>(element) = Byte4(Pack(c0, c0));
+				//UShort4 c0 = As<UShort4>(RoundShort4(c)) | UShort4(0x0000, 0x0000, 0x0000, 0xFFFFu);
+				*Pointer<Byte4>(element) = yyy;//Byte4(Pack(c0, c0));
 			}
 			else
 			{
@@ -636,9 +636,7 @@ namespace sw
 		case FORMAT_R5G6B5:
 			if(writeR && writeG && writeB)
 			{
-				*Pointer<UShort>(element) = UShort(RoundInt(Float(c.z)) |
-				                                  (RoundInt(Float(c.y)) << Int(5)) |
-				                                  (RoundInt(Float(c.x)) << Int(11)));
+				*Pointer<UShort>(element) = xxx;
 			}
 			else
 			{
@@ -1113,6 +1111,13 @@ namespace sw
 					}
 				}
 			}
+			auto &c = constantColorF;
+			UShort xxx = UShort(RoundInt(Float(c.z)) |
+				                                  (RoundInt(Float(c.y)) << Int(5)) |
+				                                  (RoundInt(Float(c.x)) << Int(11)));
+
+			UShort4 c0 = As<UShort4>(RoundShort4(c)) | UShort4(0x0000, 0x0000, 0x0000, 0xFFFFu);
+			Byte4 yyy = Byte4(Pack(c0, c0));
 
 			Float y = y0;
 
@@ -1133,7 +1138,7 @@ namespace sw
 					}
 					else if(hasConstantColorF)
 					{
-						if(!write(constantColorF, d, state.destFormat, state.options))
+						if(!write(xxx, yyy,constantColorF, d, state.destFormat, state.options))
 						{
 							return nullptr;
 						}
@@ -1202,7 +1207,7 @@ namespace sw
 							        c11 * fx * fy;
 						}
 
-						if(!ApplyScaleAndClamp(color, state) || !write(color, d, state.destFormat, state.options))
+						if(!ApplyScaleAndClamp(color, state) || !write(xxx,yyy,color, d, state.destFormat, state.options))
 						{
 							return nullptr;
 						}

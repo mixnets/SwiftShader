@@ -82,7 +82,7 @@ namespace sw
 
 	private:
 		bool read(Float4 &color, Pointer<Byte> element, Format format);
-		bool write(Float4 &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
+		bool write(UShort &xxx, Byte4 &yyy, Float4 &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
 		bool read(Int4 &color, Pointer<Byte> element, Format format);
 		bool write(Int4 &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
 		static bool GetScale(float4& scale, Format format);

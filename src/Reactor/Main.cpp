@@ -55,7 +55,7 @@ TEST(SubzeroReactorTest, Sample)
 			z = As<Int>(Float(Float4(v.xzxx).y));
 
 			Int sum = x + y + z;
-   
+
 			Return(sum);
 		}
 
@@ -93,7 +93,7 @@ TEST(SubzeroReactorTest, Uninitialized)
 			{
 				c = p;
 			}
-   
+
 			Return(a + z + q + c);
 		}
 
@@ -125,7 +125,7 @@ TEST(SubzeroReactorTest, SubVectorLoadStore)
 			*Pointer<Byte8>(out + 16 * 2)  = *Pointer<Byte8>(in + 16 * 2);
 			*Pointer<Byte4>(out + 16 * 3)  = *Pointer<Byte4>(in + 16 * 3);
 			*Pointer<Short2>(out + 16 * 4) = *Pointer<Short2>(in + 16 * 4);
-   
+
 			Return(0);
 		}
 
@@ -144,7 +144,7 @@ TEST(SubzeroReactorTest, SubVectorLoadStore)
 			                      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 			                      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 			                      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-		
+
 			int (*callable)(void*, void*) = (int(*)(void*,void*))routine->getEntry();
 			callable(in, out);
 
@@ -243,7 +243,7 @@ TEST(SubzeroReactorTest, Concatenate)
 
 			int8_t out[16 * 5] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 			                      -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-		
+
 			int (*callable)(void*) = (int(*)(void*))routine->getEntry();
 			callable(out);
 
@@ -583,7 +583,7 @@ TEST(SubzeroReactorTest, NotNeg)
 			EXPECT_EQ(out[6][1], 0x55555556);
 			EXPECT_EQ(out[6][2], 0x00000000);
 			EXPECT_EQ(out[6][3], 0x00000001);
-			
+
 			EXPECT_EQ(out[7][0], 0x5556AAAB);
 			EXPECT_EQ(out[7][1], 0x00010000);
 			EXPECT_EQ(out[7][2], 0x00000000);
