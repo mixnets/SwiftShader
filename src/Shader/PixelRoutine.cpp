@@ -576,10 +576,10 @@ namespace sw
 
 	void PixelRoutine::alphaToCoverage(Int cMask[4], Float4 &alpha)
 	{
-		Int4 coverage0 = CmpNLT(alpha, *Pointer<Float4>(data + OFFSET(DrawData,a2c0)));
-		Int4 coverage1 = CmpNLT(alpha, *Pointer<Float4>(data + OFFSET(DrawData,a2c1)));
-		Int4 coverage2 = CmpNLT(alpha, *Pointer<Float4>(data + OFFSET(DrawData,a2c2)));
-		Int4 coverage3 = CmpNLT(alpha, *Pointer<Float4>(data + OFFSET(DrawData,a2c3)));
+		Int4 coverage0 = CmpNLE(alpha, *Pointer<Float4>(data + OFFSET(DrawData,a2c0)));
+		Int4 coverage1 = CmpNLE(alpha, *Pointer<Float4>(data + OFFSET(DrawData,a2c1)));
+		Int4 coverage2 = CmpNLE(alpha, *Pointer<Float4>(data + OFFSET(DrawData,a2c2)));
+		Int4 coverage3 = CmpNLE(alpha, *Pointer<Float4>(data + OFFSET(DrawData,a2c3)));
 
 		Int aMask0 = SignMask(coverage0);
 		Int aMask1 = SignMask(coverage1);
