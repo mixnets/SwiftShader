@@ -192,6 +192,7 @@ namespace sw
 			blitFunction = (void(*)(void*, void*, Cursor*))blitRoutine->getEntry();
 		}
 
+		volatile dword4 force16ByteStackAlignment = {0};
 		blitFunction(locked, target, &cursor);
 	}
 

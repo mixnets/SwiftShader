@@ -1290,6 +1290,7 @@ namespace sw
 		data.sWidth = source->getWidth();
 		data.sHeight = source->getHeight();
 
+		volatile dword4 force16ByteStackAlignment = {0};
 		blitFunction(&data);
 
 		if(isStencil)

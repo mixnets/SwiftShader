@@ -889,6 +889,7 @@ namespace sw
 					DrawData *data = draw->data;
 					PixelProcessor::RoutinePointer pixelRoutine = draw->pixelPointer;
 
+					volatile dword4 force16ByteStackAlignment = {0};
 					pixelRoutine(primitive, visible, cluster, data);
 				}
 
@@ -1477,6 +1478,7 @@ namespace sw
 
 		task->primitiveStart = start;
 		task->vertexCount = triangleCount * 3;
+		volatile dword4 force16ByteStackAlignment = {0};
 		vertexRoutine(&triangle->v0, (unsigned int*)&batch, task, data);
 	}
 
@@ -1514,6 +1516,7 @@ namespace sw
 					}
 				}
 
+				volatile dword4 force16ByteStackAlignment = {0};
 				if(setupRoutine(primitive, triangle, &polygon, data))
 				{
 					primitive += ms;
@@ -1869,6 +1872,7 @@ namespace sw
 					}
 				}
 
+				volatile dword4 force16ByteStackAlignment = {0};
 				return setupRoutine(&primitive, &triangle, &polygon, &data);
 			}
 		}
@@ -1948,6 +1952,7 @@ namespace sw
 				}
 			}
 
+			volatile dword4 force16ByteStackAlignment = {0};
 			return setupRoutine(&primitive, &triangle, &polygon, &data);
 		}
 

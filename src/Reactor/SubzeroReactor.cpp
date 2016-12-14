@@ -245,7 +245,7 @@ namespace sw
 		assert(sizeof(void*) == 8 ? elfHeader->e_machine == EM_X86_64 : elfHeader->e_machine == EM_386);
 
 		SectionHeader *sectionHeader = (SectionHeader*)(elfImage + elfHeader->e_shoff);
-		void *entry = nullptr;
+		uint8_t *entry = nullptr;
 
 		for(int i = 0; i < elfHeader->e_shnum; i++)
 		{
