@@ -81,8 +81,14 @@ namespace sw
 		void blit3D(Surface *source, Surface *dest);
 
 	private:
+		struct NativeColor
+		{
+			Float4 f4;
+		};
+
 		bool read(Float4 &color, Pointer<Byte> element, Format format);
-		bool write(Float4 &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
+		void convert(NativeColor &out, Float4 &in);
+		bool write(NativeColor &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
 		bool read(Int4 &color, Pointer<Byte> element, Format format);
 		bool write(Int4 &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
 		static bool GetScale(float4& scale, Format format);
