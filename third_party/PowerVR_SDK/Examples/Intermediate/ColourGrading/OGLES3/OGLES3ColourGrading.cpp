@@ -1,17 +1,17 @@
 /******************************************************************************
- 
+
  @File         OGLES3ColourGrading.cpp
- 
+
  @Title        Colour grading
- 
+
  @Version
- 
+
  @Copyright    Copyright (c) Imagination Technologies Limited.
- 
+
  @Platform     Independent
- 
+
  @Description  Demonstrates how to colour grade your render.
- 
+
  ******************************************************************************/
 #include "PVRShell.h"
 #include "OGLES3Tools.h"
@@ -23,8 +23,8 @@ const char* const c_pszMaskTexture = "MaskTexture.pvr";
 const char* const c_pszBackgroundTexture = "Background.pvr";
 
 // Our colour lookup tables
-const char* const c_pszLUTs[] = 
-{ 
+const char* const c_pszLUTs[] =
+{
 	"identity.pvr",
 	"bw.pvr",
 	"cooler.pvr",
@@ -92,7 +92,7 @@ class OGLES3ColourGrading : public PVRShell
 {
 	// Print3D object
 	CPVRTPrint3D			m_Print3D;
-	
+
 	// Texture handle
 	GLuint					m_uiMaskTexture;
 	GLuint					m_uiBackgroundTexture;
@@ -101,10 +101,10 @@ class OGLES3ColourGrading : public PVRShell
 
 	// VBO handle
 	GLuint					m_ui32FullScreenRectVBO;
-	
+
 	// Stride for vertex data
 	unsigned int			m_ui32VertexStride;
-	
+
 	// 3D Model
 	CPVRTModelPOD	m_Mask;
 	GLuint* m_puiMaskVBO;
@@ -158,7 +158,7 @@ class OGLES3ColourGrading : public PVRShell
 	// Handle for our multi-sampled FBO and the depth buffer that it requires
 	GLuint m_uiFBOMultisampled;
 	GLuint m_uiDepthBufferMultisampled;
-	GLuint m_uiColourBufferMultisampled;	
+	GLuint m_uiColourBufferMultisampled;
 
 	// Start time
 	unsigned long m_ulStartTime;
@@ -189,11 +189,19 @@ private:
                 If the rendering context is lost, InitApplication() will
                 not be called again.
  ******************************************************************************/
+
+#include <malloc.h>
+
 bool OGLES3ColourGrading::InitApplication()
 {
+	//volatile __declspec(align(16)) char x = 0;
+	//volatile int q = 23;
+	//void *a = alloca(q);
+	//*(int*)a = 0;
+
 	// Get and set the read path for content files
 	CPVRTResourceFile::SetReadPath((char*)PVRShellGet(prefReadPath));
-	
+
 	// Get and set the load/release functions for loading external files.
 	// In the majority of cases the PVRShell will return NULL function pointers implying that
 	// nothing special is required to load external files.
@@ -327,10 +335,10 @@ bool OGLES3ColourGrading::LoadShaders(CPVRTString& ErrorStr)
 ******************************************************************************/
 void OGLES3ColourGrading::LoadVbos(const bool bRotated)
 {
-	if(!m_puiMaskVBO)      
+	if(!m_puiMaskVBO)
 		m_puiMaskVBO = new GLuint[m_Mask.nNumMesh];
 
-	if(!m_puiMaskIBO) 
+	if(!m_puiMaskIBO)
 		m_puiMaskIBO = new GLuint[m_Mask.nNumMesh];
 
 	/*
@@ -470,7 +478,7 @@ bool OGLES3ColourGrading::CreateFBO()
 	// Create the object that will allow us to render to the aforementioned texture
 	glGenFramebuffers(1, &m_uiFBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_uiFBO);
-	
+
 	glDrawBuffers(1, drawBuffers);
 	glReadBuffer(GL_COLOR_ATTACHMENT0);
 
@@ -490,17 +498,17 @@ bool OGLES3ColourGrading::CreateFBO()
 	// Create the object that will allow us to render to the aforementioned texture
 	glGenFramebuffers(1, &m_uiFBOMultisampled);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_uiFBOMultisampled);
-	
+
 	glDrawBuffers(1, drawBuffers);
-	glReadBuffer(GL_COLOR_ATTACHMENT0);			
+	glReadBuffer(GL_COLOR_ATTACHMENT0);
 
 	// Generate and bind a render buffer which will become a multisampled depth buffer shared between our two FBOs
 	glGenRenderbuffers(1, &m_uiDepthBufferMultisampled);
-	glBindRenderbuffer(GL_RENDERBUFFER, m_uiDepthBufferMultisampled);	
+	glBindRenderbuffer(GL_RENDERBUFFER, m_uiDepthBufferMultisampled);
 	glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_DEPTH_COMPONENT24, PVRShellGet(prefWidth), PVRShellGet(prefHeight));
 
 	glGenRenderbuffers(1, &m_uiColourBufferMultisampled);
-	glBindRenderbuffer(GL_RENDERBUFFER, m_uiColourBufferMultisampled);	
+	glBindRenderbuffer(GL_RENDERBUFFER, m_uiColourBufferMultisampled);
 	glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGB8, PVRShellGet(prefWidth), PVRShellGet(prefHeight));
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
@@ -516,7 +524,7 @@ bool OGLES3ColourGrading::CreateFBO()
 	{
 		PVRShellSet(prefExitMessage, "ERROR: Failed to initialise multisampled FBO");
 		return false;
-	}		
+	}
 
 	// Unbind the frame buffer object so rendering returns back to the backbuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, m_i32OriginalFbo);
@@ -536,26 +544,26 @@ bool OGLES3ColourGrading::InitView()
 {
 	// Initialize the textures used by Print3D.
 	bool bRotate = PVRShellGet(prefIsRotated) && PVRShellGet(prefFullScreen);
-	
+
 	if(m_Print3D.SetTextures(0, PVRShellGet(prefWidth), PVRShellGet(prefHeight), bRotate) != PVR_SUCCESS)
 	{
 		PVRShellSet(prefExitMessage, "ERROR: Cannot initialise Print3D\n");
 		return false;
-	}	
-		
+	}
+
 	// Create the texture
 	if(PVRTTextureLoadFromPVR(c_pszMaskTexture, &m_uiMaskTexture) != PVR_SUCCESS)
 	{
 		PVRShellSet(prefExitMessage, "ERROR: Failed to load mask texture\n");
 		return false;
 	}
-	
+
 	if(PVRTTextureLoadFromPVR(c_pszBackgroundTexture, &m_uiBackgroundTexture) != PVR_SUCCESS)
 	{
 		PVRShellSet(prefExitMessage, "ERROR: Failed to load background texture\n");
 		return false;
 	}
-	
+
 	// Load our 3D texture look up tables
 	for(unsigned int i = 0; i < eLast; ++i)
 	{
@@ -580,7 +588,7 @@ bool OGLES3ColourGrading::InitView()
 		PVRShellSet(prefExitMessage, ErrorStr.c_str());
 		return false;
 	}
-	
+
 	// Create FBOs
 	if(!CreateFBO())
 	{
@@ -672,7 +680,7 @@ bool OGLES3ColourGrading::RenderScene()
 {
 	// Clears the colour buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 	unsigned long ulTime = PVRShellGetTime() - m_ulStartTime;
 
 	// Process input to switch between tone mapping operators
@@ -690,7 +698,7 @@ bool OGLES3ColourGrading::RenderScene()
 		if(m_iCurrentLUT < eA)
 			m_iCurrentLUT = eB;
 	}
-	
+
 	// Render to our texture
 	{
 		// Bind our FBO
@@ -757,7 +765,7 @@ bool OGLES3ColourGrading::RenderScene()
 
 		//	Give the drivers a hint that we don't want the depth and stencil information stored for future use.
 		const GLenum attachments[] = { GL_DEPTH_ATTACHMENT, GL_STENCIL_ATTACHMENT };
-		glInvalidateFramebuffer(GL_FRAMEBUFFER, 2, attachments);	
+		glInvalidateFramebuffer(GL_FRAMEBUFFER, 2, attachments);
 
 		// Blit and resolve the multisampled render buffer to the non-multisampled FBO
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_uiFBOMultisampled);
@@ -773,10 +781,10 @@ bool OGLES3ColourGrading::RenderScene()
 
 	// Use shader program
 	glUseProgram(m_PostShaderProgram.uiId);
-	
+
 	// Bind the VBO
 	glBindBuffer(GL_ARRAY_BUFFER, m_ui32FullScreenRectVBO);
-	
+
 	// Enable the vertex attribute arrays
 	glEnableVertexAttribArray(VERTEX_ARRAY);
 	glEnableVertexAttribArray(TEXCOORD_ARRAY);
@@ -784,7 +792,7 @@ bool OGLES3ColourGrading::RenderScene()
 	// Set the vertex attribute offsets
 	glVertexAttribPointer(VERTEX_ARRAY, 4, GL_FLOAT, GL_FALSE, m_ui32VertexStride, 0);
 	glVertexAttribPointer(TEXCOORD_ARRAY, 2, GL_FLOAT, GL_FALSE, m_ui32VertexStride, (void*) (4 * sizeof(GLfloat)));
-	
+
 	// Bind texture
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_uiTextureToRenderTo);
@@ -796,7 +804,7 @@ bool OGLES3ColourGrading::RenderScene()
 
 	// Draw the left-hand side that shows the scene with the colour grading applied
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	
+
 	// Draw the right-hande side showing the scene how it looks without
 	glBindTexture(GL_TEXTURE_3D, m_uiLUTs[eIdentity]);
 	glDrawArrays(GL_TRIANGLE_STRIP, 2, 4);
@@ -804,14 +812,14 @@ bool OGLES3ColourGrading::RenderScene()
 	// Safely disable the vertex attribute arrays
 	glDisableVertexAttribArray(VERTEX_ARRAY);
 	glDisableVertexAttribArray(TEXCOORD_ARRAY);
-	
+
 	// Unbind the VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Render title
 	m_Print3D.DisplayDefaultTitle("Colour grading using 3D textures", c_pszLUTNames[m_iCurrentLUT], ePVRTPrint3DSDKLogo);
 	m_Print3D.Flush();
-	
+
 	return true;
 }
 
@@ -843,7 +851,7 @@ void OGLES3ColourGrading::DrawMesh(const int i32NodeIndex)
 
 	// Indexed Triangle list
 	glDrawElements(GL_TRIANGLES, pMesh->nNumFaces*3, GL_UNSIGNED_SHORT, 0);
-	
+
 	// Safely disable the vertex attribute arrays
 	glDisableVertexAttribArray(VERTEX_ARRAY);
 	glDisableVertexAttribArray(NORMAL_ARRAY);
