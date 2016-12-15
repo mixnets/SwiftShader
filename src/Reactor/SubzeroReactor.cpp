@@ -43,6 +43,7 @@ namespace
 {
 	Ice::GlobalContext *context = nullptr;
 	Ice::Cfg *function = nullptr;
+	Ice::Cfg *trampoline = nullptr;
 	Ice::CfgNode *basicBlock = nullptr;
 	Ice::CfgLocalAllocatorScope *allocator = nullptr;
 	sw::Routine *routine = nullptr;
@@ -405,6 +406,7 @@ namespace sw
 	{
 		delete ::allocator;
 		delete ::function;
+		delete ::trampoline;
 		delete ::context;
 
 		delete ::elfFile;
@@ -442,6 +444,15 @@ namespace sw
 		auto objectWriter = ::context->getObjectWriter();
 		assembler->alignFunction();
 		objectWriter->writeFunctionCode(::function->getFunctionName(), false, assembler.get());
+
+	//	if(trampoline)
+		{
+			auto assembler = ::trampoline->releaseAssembler();
+		auto objectWriter = ::context->getObjectWriter();
+		assembler->alignFunction();
+			objectWriter->writeFunctionCode(::trampoline->getFunctionName(), false, assembler.get());
+		}
+
 		::context->lowerGlobals("last");
 		::context->lowerConstants();
 		::context->lowerJumpTables();
@@ -488,7 +499,34 @@ namespace sw
 
 	void Nucleus::createFunction(Type *ReturnType, std::vector<Type*> &Params)
 	{
-		uint32_t sequenceNumber = 0;
+		{
+			uint32_t sequenceNumber = 0;
+			::trampoline = Ice::Cfg::create(::context, sequenceNumber).release();
+			auto alloc = new Ice::CfgLocalAllocatorScope(::trampoline);
+
+			for(Type *type : Params)
+			{
+				Ice::Variable *arg = ::trampoline->makeVariable(T(type));
+				::trampoline->addArg(arg);
+			}
+
+			Ice::CfgNode *node2 = ::trampoline->makeNode();
+			::trampoline->setEntryNode(node2);
+
+			Ice::Variable *retvalue = ReturnType != Void::getType() ? ::trampoline->makeVariable(T(ReturnType)) : nullptr;
+			auto call = Ice::InstCall::create(::trampoline, Params.size(), retvalue, ::context->getConstantInt32(1), false);
+			node2->appendInst(call);
+			auto ret = Ice::InstRet::create(::trampoline, retvalue);
+			node2->appendInst(ret);
+
+						::trampoline->setFunctionName(Ice::GlobalString::createWithString(::context, "trampoline"));
+			::trampoline->translate();
+			::trampoline->emitIAS();
+
+			delete alloc;
+		}
+
+		uint32_t sequenceNumber = 1;
 		::function = Ice::Cfg::create(::context, sequenceNumber).release();
 		::allocator = new Ice::CfgLocalAllocatorScope(::function);
 
