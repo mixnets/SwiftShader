@@ -150,9 +150,9 @@ namespace sw
 
 		// Constant values
 		static Value *createNullValue(Type *type);
-		static Value *createConstantLong(int64_t i);
 		static Value *createConstantInt(int i);
 		static Value *createConstantInt(unsigned int i);
+		static Value *createConstantInt(int64_t i);
 		static Value *createConstantBool(bool b);
 		static Value *createConstantByte(signed char i);
 		static Value *createConstantByte(unsigned char i);

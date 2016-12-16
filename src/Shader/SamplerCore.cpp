@@ -1690,7 +1690,7 @@ namespace sw
 			uuuu = applyOffset(uuuu, offset.x, Int4(*Pointer<UShort4>(mipmap + OFFSET(Mipmap, width))), texelFetch ? ADDRESSING_TEXELFETCH : state.addressingModeU);
 			vvvv = applyOffset(vvvv, offset.y, Int4(*Pointer<UShort4>(mipmap + OFFSET(Mipmap, height))), texelFetch ? ADDRESSING_TEXELFETCH : state.addressingModeV);
 		}
-		
+
 		Short4 uuu2 = uuuu;
 		uuuu = As<Short4>(UnpackLow(uuuu, vvvv));
 		uuu2 = As<Short4>(UnpackHigh(uuu2, vvvv));
@@ -1776,10 +1776,10 @@ namespace sw
 			{
 			case 4:
 				{
-					Byte8 c0 = *Pointer<Byte8>(buffer[f0] + 4 * index[0]);
-					Byte8 c1 = *Pointer<Byte8>(buffer[f1] + 4 * index[1]);
-					Byte8 c2 = *Pointer<Byte8>(buffer[f2] + 4 * index[2]);
-					Byte8 c3 = *Pointer<Byte8>(buffer[f3] + 4 * index[3]);
+					Byte8 c0 = *Pointer<Byte8>(buffer[f0] + 4 * Long(index[0]));
+					Byte8 c1 = *Pointer<Byte8>(buffer[f1] + 4 * Long(index[1]));
+					Byte8 c2 = *Pointer<Byte8>(buffer[f2] + 4 * Long(index[2]));
+					Byte8 c3 = *Pointer<Byte8>(buffer[f3] + 4 * Long(index[3]));
 					c.x = UnpackLow(c0, c1);
 					c.y = UnpackLow(c2, c3);
 
@@ -1819,10 +1819,10 @@ namespace sw
 				break;
 			case 3:
 				{
-					Byte8 c0 = *Pointer<Byte8>(buffer[f0] + 4 * index[0]);
-					Byte8 c1 = *Pointer<Byte8>(buffer[f1] + 4 * index[1]);
-					Byte8 c2 = *Pointer<Byte8>(buffer[f2] + 4 * index[2]);
-					Byte8 c3 = *Pointer<Byte8>(buffer[f3] + 4 * index[3]);
+					Byte8 c0 = *Pointer<Byte8>(buffer[f0] + 4 * Long(index[0]));
+					Byte8 c1 = *Pointer<Byte8>(buffer[f1] + 4 * Long(index[1]));
+					Byte8 c2 = *Pointer<Byte8>(buffer[f2] + 4 * Long(index[2]));
+					Byte8 c3 = *Pointer<Byte8>(buffer[f3] + 4 * Long(index[3]));
 					c.x = UnpackLow(c0, c1);
 					c.y = UnpackLow(c2, c3);
 

@@ -599,6 +599,11 @@ namespace sw
 
 	Value *Nucleus::createAdd(Value *lhs, Value *rhs)
 	{
+		if(llvm::isa<Ice::Constant>(lhs))
+		{
+			return createArithmetic(Ice::InstArithmetic::Add, rhs, lhs);
+		}
+
 		return createArithmetic(Ice::InstArithmetic::Add, lhs, rhs);
 	}
 
@@ -609,6 +614,11 @@ namespace sw
 
 	Value *Nucleus::createMul(Value *lhs, Value *rhs)
 	{
+		if(llvm::isa<Ice::Constant>(lhs))
+		{
+			return createArithmetic(Ice::InstArithmetic::Mul, rhs, lhs);
+		}
+
 		return createArithmetic(Ice::InstArithmetic::Mul, lhs, rhs);
 	}
 
@@ -727,11 +737,7 @@ namespace sw
 			case Type_v4i8:
 			case Type_v2i16:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
-					auto target = ::context->getConstantUndef(Ice::IceType_i32);
-					auto load = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-					load->addArg(ptr);
-					load->addArg(::context->getConstantInt32(4));
+					auto load = Ice::InstLoadSubVector::create(::function, result, ptr, 4, align);
 					::basicBlock->appendInst(load);
 				}
 				break;
@@ -740,11 +746,7 @@ namespace sw
 			case Type_v4i16:
 			case Type_v2f32:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
-					auto target = ::context->getConstantUndef(Ice::IceType_i32);
-					auto load = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-					load->addArg(ptr);
-					load->addArg(::context->getConstantInt32(8));
+					auto load = Ice::InstLoadSubVector::create(::function, result, ptr, 8, align);
 					::basicBlock->appendInst(load);
 				}
 				break;
@@ -771,12 +773,7 @@ namespace sw
 			case Type_v4i8:
 			case Type_v2i16:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
-					auto target = ::context->getConstantUndef(Ice::IceType_i32);
-					auto store = Ice::InstIntrinsicCall::create(::function, 3, nullptr, target, intrinsic);
-					store->addArg(value);
-					store->addArg(ptr);
-					store->addArg(::context->getConstantInt32(4));
+					auto store = Ice::InstStoreSubVector::create(::function, value, ptr, 4, align);
 					::basicBlock->appendInst(store);
 				}
 				break;
@@ -785,12 +782,7 @@ namespace sw
 			case Type_v4i16:
 			case Type_v2f32:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
-					auto target = ::context->getConstantUndef(Ice::IceType_i32);
-					auto store = Ice::InstIntrinsicCall::create(::function, 3, nullptr, target, intrinsic);
-					store->addArg(value);
-					store->addArg(ptr);
-					store->addArg(::context->getConstantInt32(8));
+					auto store = Ice::InstStoreSubVector::create(::function, value, ptr, 8, align);
 					::basicBlock->appendInst(store);
 				}
 				break;
@@ -810,7 +802,8 @@ namespace sw
 
 	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index)
 	{
-		assert(index->getType() == Ice::IceType_i32);
+		assert(index->getType() == Ice::IceType_i32 ||
+		       index->getType() == Ice::IceType_i64);
 
 		if(auto *constant = llvm::dyn_cast<Ice::ConstantInteger32>(index))
 		{
@@ -829,7 +822,7 @@ namespace sw
 			index = createMul(index, createConstantInt((int)Ice::typeWidthInBytes(T(type))));
 		}
 
-		if(sizeof(void*) == 8)
+		if(sizeof(void*) == 8 && index->getType() == Ice::IceType_i32)
 		{
 			index = createSExt(index, T(Ice::IceType_i64));
 		}
@@ -1158,11 +1151,6 @@ namespace sw
 		}
 	}
 
-	Value *Nucleus::createConstantLong(int64_t i)
-	{
-		return V(::context->getConstantInt64(i));
-	}
-
 	Value *Nucleus::createConstantInt(int i)
 	{
 		return V(::context->getConstantInt32(i));
@@ -1171,6 +1159,11 @@ namespace sw
 	Value *Nucleus::createConstantInt(unsigned int i)
 	{
 		return V(::context->getConstantInt32(i));
+	}
+
+	Value *Nucleus::createConstantInt(int64_t i)
+	{
+		return V(::context->getConstantInt64(i));
 	}
 
 	Value *Nucleus::createConstantBool(bool b)
@@ -2855,6 +2848,17 @@ namespace sw
 		storeValue(value);
 	}
 
+	Byte16::Byte16(RValue<Byte4> x, RValue<Byte4> y, RValue<Byte4> z, RValue<Byte4> w)
+	{
+	Value *v = Nucleus::createBitCast(loadValue(), Int4::getType());
+		Value *a = Nucleus::createInsertElement(v, Nucleus::createBitCast(x.value, Int::getType()), 0);
+		Value *b = Nucleus::createInsertElement(a, Nucleus::createBitCast(x.value, Int::getType()), 1);
+		Value *c = Nucleus::createInsertElement(b, Nucleus::createBitCast(x.value, Int::getType()), 2);
+		Value *d = Nucleus::createInsertElement(c, Nucleus::createBitCast(x.value, Int::getType()), 3);
+
+		storeValue(Nucleus::createBitCast(d, Byte16::getType()));
+	}
+
 	RValue<Byte16> Byte16::operator=(RValue<Byte16> rhs)
 	{
 		storeValue(rhs.value);
@@ -2912,7 +2916,7 @@ namespace sw
 	{
 		Value *vector = loadValue();
 		Value *element = Nucleus::createTrunc(cast.value, Short::getType());
-		Value *insert = Nucleus::createInsertElement(vector, element, 0);
+	Value *insert = Nucleus::createInsertElement(vector, element, 0);
 		Value *swizzle = Swizzle(RValue<Short4>(insert), 0x00).value;
 
 		storeValue(swizzle);
@@ -2920,9 +2924,9 @@ namespace sw
 
 	Short4::Short4(RValue<Int4> cast)
 	{
-		int pshufb[16] = {0, 1, 4, 5, 8, 9, 12, 13, 0, 1, 4, 5, 8, 9, 12, 13};
-		Value *byte16 = Nucleus::createBitCast(cast.value, Byte16::getType());
-		Value *packed = Nucleus::createShuffleVector(byte16, byte16, pshufb);
+		int select[8] = {0, 2, 4, 6, 0, 2, 4, 6};
+		Value *short8 = Nucleus::createBitCast(cast.value, Short8::getType());
+		Value *packed = Nucleus::createShuffleVector(short8, short8, select);
 
 		Value *int2 = RValue<Int2>(Int2(RValue<Int4>(packed))).value;
 		Value *short4 = Nucleus::createBitCast(int2, Short4::getType());
@@ -3619,6 +3623,11 @@ namespace sw
 		return (x ^ negative) - negative;
 	}
 
+	RValue<Short> Extract(RValue<Short8> val, int i)
+	{
+		return RValue<Short>(Nucleus::createExtractElement(val.value, Short::getType(), i));
+	}
+
 	RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y)
 	{
 		assert(false && "UNIMPLEMENTED"); return RValue<Short8>(V(nullptr));
@@ -3720,12 +3729,19 @@ namespace sw
 
 	RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(V(nullptr));
+		int select[8] = {select0, select1, select2, select3, select4, select5, select6, select7};
+
+		return RValue<UShort8>(Nucleus::createShuffleVector(x.value, x.value, select));
 	}
 
 	RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)
 	{
 		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(V(nullptr));
+	}
+
+	RValue<UShort> Extract(RValue<UShort8> val, int i)
+	{
+		return RValue<UShort>(Nucleus::createExtractElement(val.value, UShort::getType(), i));
 	}
 
 	// FIXME: Implement as Shuffle(x, y, Select(i0, ..., i16)) and Shuffle(x, y, SELECT_PACK_REPEAT(element))
@@ -4105,7 +4121,7 @@ namespace sw
 
 	RValue<Long> Long::operator=(int64_t rhs)
 	{
-		return RValue<Long>(storeValue(Nucleus::createConstantLong(rhs)));
+		return RValue<Long>(storeValue(Nucleus::createConstantInt(rhs)));
 	}
 
 	RValue<Long> Long::operator=(RValue<Long> rhs)
@@ -4139,6 +4155,11 @@ namespace sw
 	RValue<Long> operator-(RValue<Long> lhs, RValue<Long> rhs)
 	{
 		return RValue<Long>(Nucleus::createSub(lhs.value, rhs.value));
+	}
+
+	RValue<Long> operator*(RValue<Long> lhs, RValue<Long> rhs)
+	{
+		return RValue<Long>(Nucleus::createMul(lhs.value, rhs.value));
 	}
 
 	RValue<Long> operator+=(Long &lhs, RValue<Long> rhs)
@@ -4683,7 +4704,7 @@ namespace sw
 
 	RValue<Short4> UnpackHigh(RValue<Int2> x, RValue<Int2> y)
 	{
-		int shuffle[16] = {0, 4, 1, 5};   // Real type is v4i32
+		int shuffle[4] = {0, 4, 1, 5};   // Real type is v4i32
 		auto lowHigh = RValue<Int4>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
 		return As<Short4>(Swizzle(lowHigh, 0xEE));
 	}
@@ -5900,11 +5921,11 @@ namespace sw
 
 	Float4::Float4(RValue<Float> rhs) : FloatXYZW(this)
 	{
-		Value *vector = loadValue();
-		Value *insert = Nucleus::createInsertElement(vector, rhs.value, 0);
+		Value *vector = Nucleus::createBitCast(rhs.value, Float4::getType());//V(::function->makeVariable(Ice::IceType_v4f32));
+	//	Value *insert = Nucleus::createInsertElement(vector, rhs.value, 0);
 
 		int swizzle[4] = {0, 0, 0, 0};
-		Value *replicate = Nucleus::createShuffleVector(insert, insert, swizzle);
+		Value *replicate = Nucleus::createShuffleVector(vector, vector, swizzle);
 
 		storeValue(replicate);
 	}
@@ -6033,26 +6054,26 @@ namespace sw
 
 	RValue<Float4> Max(RValue<Float4> x, RValue<Float4> y)
 	{
-		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v4i1);
-		auto cmp = Ice::InstFcmp::create(::function, Ice::InstFcmp::Ule, condition, x.value, y.value);
-		::basicBlock->appendInst(cmp);
-
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
-		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
-		::basicBlock->appendInst(select);
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Maximum, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		auto target = ::context->getConstantUndef(Ice::IceType_i32);
+		auto max = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+		max->addArg(x.value);
+		max->addArg(y.value);
+		::basicBlock->appendInst(max);
 
 		return RValue<Float4>(V(result));
 	}
 
 	RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y)
 	{
-		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v4i1);
-		auto cmp = Ice::InstFcmp::create(::function, Ice::InstFcmp::Ugt, condition, x.value, y.value);
-		::basicBlock->appendInst(cmp);
-
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
-		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
-		::basicBlock->appendInst(select);
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Minimum, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		auto target = ::context->getConstantUndef(Ice::IceType_i32);
+		auto max = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+		max->addArg(x.value);
+		max->addArg(y.value);
+		::basicBlock->appendInst(max);
 
 		return RValue<Float4>(V(result));
 	}
@@ -6280,6 +6301,11 @@ namespace sw
 	}
 
 	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, RValue<UInt> offset)
+	{
+		return RValue<Pointer<Byte>>(Nucleus::createGEP(lhs.value, Byte::getType(), offset.value));
+	}
+
+	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, RValue<Long> offset)
 	{
 		return RValue<Pointer<Byte>>(Nucleus::createGEP(lhs.value, Byte::getType(), offset.value));
 	}

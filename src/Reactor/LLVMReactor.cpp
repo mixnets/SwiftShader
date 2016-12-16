@@ -3900,6 +3900,11 @@ namespace sw
 		return RValue<Long>(Nucleus::createSub(lhs.value, rhs.value));
 	}
 
+	RValue<Long> operator*(RValue<Long> lhs, RValue<Long> rhs)
+	{
+		return RValue<Long>(Nucleus::createMul(lhs.value, rhs.value));
+	}
+
 	RValue<Long> operator+=(Long &lhs, RValue<Long> rhs)
 	{
 		return lhs = lhs + rhs;
