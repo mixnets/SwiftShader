@@ -682,11 +682,7 @@ namespace sw
 			case Type_v4i8:
 			case Type_v2i16:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
-					auto target = ::context->getConstantUndef(Ice::IceType_i32);
-					auto load = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-					load->addArg(ptr);
-					load->addArg(::context->getConstantInt32(4));
+					auto load = Ice::InstLoadSubVector::create(::function, result, ptr, 4);
 					::basicBlock->appendInst(load);
 				}
 				break;
@@ -695,11 +691,7 @@ namespace sw
 			case Type_v4i16:
 			case Type_v2f32:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::LoadSubVector, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
-					auto target = ::context->getConstantUndef(Ice::IceType_i32);
-					auto load = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-					load->addArg(ptr);
-					load->addArg(::context->getConstantInt32(8));
+					auto load = Ice::InstLoadSubVector::create(::function, result, ptr, 8);
 					::basicBlock->appendInst(load);
 				}
 				break;
@@ -726,12 +718,7 @@ namespace sw
 			case Type_v4i8:
 			case Type_v2i16:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
-					auto target = ::context->getConstantUndef(Ice::IceType_i32);
-					auto store = Ice::InstIntrinsicCall::create(::function, 3, nullptr, target, intrinsic);
-					store->addArg(value);
-					store->addArg(ptr);
-					store->addArg(::context->getConstantInt32(4));
+					auto store = Ice::InstStoreSubVector::create(::function, value, ptr, 4);
 					::basicBlock->appendInst(store);
 				}
 				break;
@@ -740,12 +727,7 @@ namespace sw
 			case Type_v4i16:
 			case Type_v2f32:
 				{
-					const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::StoreSubVector, Ice::Intrinsics::SideEffects_T, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_T};
-					auto target = ::context->getConstantUndef(Ice::IceType_i32);
-					auto store = Ice::InstIntrinsicCall::create(::function, 3, nullptr, target, intrinsic);
-					store->addArg(value);
-					store->addArg(ptr);
-					store->addArg(::context->getConstantInt32(8));
+					auto store = Ice::InstStoreSubVector::create(::function, value, ptr, 8);
 					::basicBlock->appendInst(store);
 				}
 				break;
@@ -2340,6 +2322,11 @@ namespace sw
 	//	xyzw.parent = this;
 
 		storeValue(Nucleus::createBitCast(cast.value, getType()));
+	}
+
+	Byte4::Byte4()
+	{
+	//	xyzw.parent = this;
 	}
 
 	Byte4::Byte4(const Reference<Byte4> &rhs)

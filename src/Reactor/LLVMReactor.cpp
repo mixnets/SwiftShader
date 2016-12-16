@@ -952,7 +952,7 @@ namespace sw
 		return rhs;
 	}
 
-	RValue<Byte> Byte::operator=(const Byte &rhs) 
+	RValue<Byte> Byte::operator=(const Byte &rhs)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
@@ -1914,6 +1914,11 @@ namespace sw
 	//	xyzw.parent = this;
 
 		storeValue(Nucleus::createTrunc(Nucleus::createBitCast(cast.value, Long::getType()), Int::getType()));
+	}
+
+	Byte4::Byte4()
+	{
+	//	xyzw.parent = this;
 	}
 
 	Byte4::Byte4(const Reference<Byte4> &rhs)

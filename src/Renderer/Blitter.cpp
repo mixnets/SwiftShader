@@ -339,9 +339,46 @@ namespace sw
 		return true;
 	}
 
-	void Blitter::convert(NativeColor &out, Float4 &in)
+	void Blitter::convert(NativeColor &out, Float4 &c, Format format)
 	{
-		out.f4 = in;
+		out.f4 = c;
+
+		switch(format)
+		{
+		case FORMAT_R5G6B5:
+			out.r5g6b5 = UShort(RoundInt(Float(c.z)) |
+			                    (RoundInt(Float(c.y)) << Int(5)) |
+			                    (RoundInt(Float(c.x)) << Int(11)));
+			break;
+		case FORMAT_X8B8G8R8:
+		case FORMAT_SRGB8_X8:
+			{
+				UShort4 x16b16g16r16 = As<UShort4>(RoundShort4(c)) | UShort4(0x0000, 0x0000, 0x0000, 0xFFFFu);
+				out.x8b8g8r8 = Byte4(Pack(x16b16g16r16, x16b16g16r16));
+			}
+			break;
+		case FORMAT_A8B8G8R8:
+		case FORMAT_SRGB8_A8:
+			{
+				UShort4 a16b16g16r16 = As<UShort4>(RoundShort4(c));
+				out.a8b8g8r8 = Byte4(Pack(a16b16g16r16, a16b16g16r16));
+			}
+			break;
+		case FORMAT_X8R8G8B8:
+			{
+				UShort4 x16r16g16b16 = As<UShort4>(RoundShort4(c.zyxw)) | UShort4(0x0000, 0x0000, 0x0000, 0xFFFFu);
+				out.x8r8g8b8 = Byte4(Pack(x16r16g16b16, x16r16g16b16));
+			}
+			break;
+		case FORMAT_A8R8G8B8:
+			{
+				UShort4 a16r16g16b16 = As<UShort4>(RoundShort4(c.zyxw));
+				out.a8r8g8b8 = Byte4(Pack(a16r16g16b16, a16r16g16b16));
+			}
+			break;
+		default:
+			break;
+		}
 	}
 
 	bool Blitter::write(NativeColor &c, Pointer<Byte> element, Format format, const Blitter::Options& options)
@@ -363,8 +400,7 @@ namespace sw
 		case FORMAT_A8R8G8B8:
 			if(writeRGBA)
 			{
-				UShort4 c0 = As<UShort4>(RoundShort4(c.f4.zyxw));
-				*Pointer<Byte4>(element) = Byte4(Pack(c0, c0));
+				*Pointer<Byte4>(element) = c.a8r8g8b8;
 			}
 			else
 			{
@@ -378,8 +414,7 @@ namespace sw
 		case FORMAT_SRGB8_A8:
 			if(writeRGBA)
 			{
-				UShort4 c0 = As<UShort4>(RoundShort4(c.f4));
-				*Pointer<Byte4>(element) = Byte4(Pack(c0, c0));
+				*Pointer<Byte4>(element) = c.a8b8g8r8;
 			}
 			else
 			{
@@ -392,8 +427,7 @@ namespace sw
 		case FORMAT_X8R8G8B8:
 			if(writeRGBA)
 			{
-				UShort4 c0 = As<UShort4>(RoundShort4(c.f4.zyxw)) | UShort4(0x0000, 0x0000, 0x0000, 0xFFFFu);
-				*Pointer<Byte4>(element) = Byte4(Pack(c0, c0));
+				*Pointer<Byte4>(element) = c.x8r8g8b8;
 			}
 			else
 			{
@@ -407,8 +441,7 @@ namespace sw
 		case FORMAT_SRGB8_X8:
 			if(writeRGBA)
 			{
-				UShort4 c0 = As<UShort4>(RoundShort4(c.f4)) | UShort4(0x0000, 0x0000, 0x0000, 0xFFFFu);
-				*Pointer<Byte4>(element) = Byte4(Pack(c0, c0));
+				*Pointer<Byte4>(element) = c.x8b8g8r8;
 			}
 			else
 			{
@@ -641,18 +674,14 @@ namespace sw
 		case FORMAT_R5G6B5:
 			if(writeR && writeG && writeB)
 			{
-				*Pointer<UShort>(element) = UShort(RoundInt(Float(c.f4.z)) |
-				                                  (RoundInt(Float(c.f4.y)) << Int(5)) |
-				                                  (RoundInt(Float(c.f4.x)) << Int(11)));
+				*Pointer<UShort>(element) = c.r5g6b5;
 			}
 			else
 			{
 				unsigned short mask = (writeB ? 0x001F : 0x0000) | (writeG ? 0x07E0 : 0x0000) | (writeR ? 0xF800 : 0x0000);
 				unsigned short unmask = ~mask;
 				*Pointer<UShort>(element) = (*Pointer<UShort>(element) & UShort(unmask)) |
-				                            (UShort(RoundInt(Float(c.f4.z)) |
-				                                   (RoundInt(Float(c.f4.y)) << Int(5)) |
-				                                   (RoundInt(Float(c.f4.x)) << Int(11))) & UShort(mask));
+				                            (c.r5g6b5 & UShort(mask));
 			}
 			break;
 		case FORMAT_A2B10G10R10:
@@ -1120,7 +1149,7 @@ namespace sw
 						return nullptr;
 					}
 
-					convert(constantColorF, color);
+					convert(constantColorF, color, state.destFormat);
 				}
 			}
 
@@ -1218,7 +1247,7 @@ namespace sw
 						}
 
 						NativeColor native;
-						convert(native, color);
+						convert(native, color, state.destFormat);
 
 						if(!write(native, d, state.destFormat, state.options))
 						{

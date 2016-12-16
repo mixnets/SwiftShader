@@ -84,10 +84,16 @@ namespace sw
 		struct NativeColor
 		{
 			Float4 f4;
+
+			UShort r5g6b5;
+			Byte4 x8b8g8r8;
+			Byte4 a8b8g8r8;
+			Byte4 x8r8g8b8;
+			Byte4 a8r8g8b8;
 		};
 
 		bool read(Float4 &color, Pointer<Byte> element, Format format);
-		void convert(NativeColor &out, Float4 &in);
+		void convert(NativeColor &out, Float4 &in, Format format);
 		bool write(NativeColor &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
 		bool read(Int4 &color, Pointer<Byte> element, Format format);
 		bool write(Int4 &color, Pointer<Byte> element, Format format, const Blitter::Options& options);

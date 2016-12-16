@@ -432,7 +432,7 @@ namespace sw
 	public:
 		explicit Byte4(RValue<Byte8> cast);
 
-	//	Byte4();
+		Byte4();
 	//	Byte4(int x, int y, int z, int w);
 	//	Byte4(RValue<Byte4> rhs);
 	//	Byte4(const Byte4 &rhs);
