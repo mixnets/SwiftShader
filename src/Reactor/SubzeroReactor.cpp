@@ -2863,6 +2863,16 @@ namespace sw
 		storeValue(value);
 	}
 
+	Byte16::Byte16(RValue<Byte4> x, RValue<Byte4> y, RValue<Byte4> z, RValue<Byte4> w)
+	{
+		Value *v = Nucleus::createBitCast(x.value, Int4::getType());
+		Value *a = Nucleus::createInsertElement(v, Nucleus::createBitCast(y.value, Int::getType()), 1);
+		Value *b = Nucleus::createInsertElement(a, Nucleus::createBitCast(z.value, Int::getType()), 2);
+		Value *c = Nucleus::createInsertElement(b, Nucleus::createBitCast(w.value, Int::getType()), 3);
+
+		storeValue(Nucleus::createBitCast(c, Byte16::getType()));
+	}
+
 	RValue<Byte16> Byte16::operator=(RValue<Byte16> rhs)
 	{
 		storeValue(rhs.value);
@@ -3627,9 +3637,22 @@ namespace sw
 		return (x ^ negative) - negative;
 	}
 
+	RValue<Short> Extract(RValue<Short8> val, int i)
+	{
+		return RValue<Short>(Nucleus::createExtractElement(val.value, Short::getType(), i));
+	}
+
 	RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short8>(V(nullptr));
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v8i16);
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::MultiplyHighSigned, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		auto target = ::context->getConstantUndef(Ice::IceType_i32);
+		auto pmulhw = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+		pmulhw->addArg(x.value);
+		pmulhw->addArg(y.value);
+		::basicBlock->appendInst(pmulhw);
+
+		return RValue<Short4>(V(result));
 	}
 
 	Type *Short8::getType()
@@ -3728,12 +3751,27 @@ namespace sw
 
 	RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(V(nullptr));
+		int select[8] = {select0, select1, select2, select3, select4, select5, select6, select7};
+
+		return RValue<UShort8>(Nucleus::createShuffleVector(x.value, x.value, select));
 	}
 
 	RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(V(nullptr));
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v8i16);
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::MultiplyHighUnsigned, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		auto target = ::context->getConstantUndef(Ice::IceType_i32);
+		auto pmulhuw = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+		pmulhuw->addArg(x.value);
+		pmulhuw->addArg(y.value);
+		::basicBlock->appendInst(pmulhuw);
+
+		return RValue<UShort4>(V(result));
+	}
+
+	RValue<UShort> Extract(RValue<UShort8> val, int i)
+	{
+		return RValue<UShort>(Nucleus::createExtractElement(val.value, UShort::getType(), i));
 	}
 
 	// FIXME: Implement as Shuffle(x, y, Select(i0, ..., i16)) and Shuffle(x, y, SELECT_PACK_REPEAT(element))

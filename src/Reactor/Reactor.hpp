@@ -631,6 +631,7 @@ namespace sw
 		Byte16(RValue<Byte16> rhs);
 		Byte16(const Byte16 &rhs);
 		Byte16(const Reference<Byte16> &rhs);
+		Byte16(RValue<Byte4> x, RValue<Byte4> y, RValue<Byte4> z, RValue<Byte4> w);
 
 		RValue<Byte16> operator=(RValue<Byte16> rhs);
 		RValue<Byte16> operator=(const Byte16 &rhs);
@@ -924,6 +925,7 @@ namespace sw
 	RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y);
 	RValue<Int4> MulAdd(RValue<Short8> x, RValue<Short8> y);
 	RValue<Int4> Abs(RValue<Int4> x);
+	RValue<Short> Extract(RValue<Short8> val, int i);
 
 	class UShort8 : public LValue<UShort8>
 	{
@@ -981,6 +983,7 @@ namespace sw
 
 	RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7);
 	RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y);
+	RValue<UShort> Extract(RValue<UShort8> val, int i);
 
 	class Int : public LValue<Int>
 	{

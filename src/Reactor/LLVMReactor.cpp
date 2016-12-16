@@ -2474,6 +2474,17 @@ namespace sw
 		storeValue(value);
 	}
 
+	Byte16::Byte16(RValue<Byte4> x, RValue<Byte4> y, RValue<Byte4> z, RValue<Byte4> w)
+	{
+		Value *v = Nucleus::createBitCast(loadValue(), Int4::getType());
+		Value *a = Nucleus::createInsertElement(v, Nucleus::createBitCast(x.value, Int::getType()), 0);
+		Value *b = Nucleus::createInsertElement(a, Nucleus::createBitCast(x.value, Int::getType()), 1);
+		Value *c = Nucleus::createInsertElement(b, Nucleus::createBitCast(x.value, Int::getType()), 2);
+		Value *d = Nucleus::createInsertElement(c, Nucleus::createBitCast(x.value, Int::getType()), 3);
+
+		storeValue(Nucleus::createBitCast(d, Byte16::getType()));
+	}
+
 	RValue<Byte16> Byte16::operator=(RValue<Byte16> rhs)
 	{
 		storeValue(rhs.value);
@@ -3363,6 +3374,11 @@ namespace sw
 		}
 	}
 
+	RValue<Short> Extract(RValue<Short8> val, int i)
+	{
+		return RValue<Short>(Nucleus::createExtractElement(val.value, Short::getType(), i));
+	}
+
 	RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y)
 	{
 		return x86::pmulhw(x, y);   // FIXME: Fallback required
@@ -3499,6 +3515,11 @@ namespace sw
 	RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)
 	{
 		return x86::pmulhuw(x, y);   // FIXME: Fallback required
+	}
+
+	RValue<UShort> Extract(RValue<UShort8> val, int i)
+	{
+		return RValue<Short>(Nucleus::createExtractElement(val.value, Short::getType(), i));
 	}
 
 	Type *UShort8::getType()
