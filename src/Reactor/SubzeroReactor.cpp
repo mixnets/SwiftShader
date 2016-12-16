@@ -2855,6 +2855,17 @@ namespace sw
 		storeValue(value);
 	}
 
+	Byte16::Byte16(RValue<Byte4> x, RValue<Byte4> y, RValue<Byte4> z, RValue<Byte4> w)
+	{
+		Value *v = Nucleus::createBitCast(loadValue(), Int4::getType());
+		Value *a = Nucleus::createInsertElement(v, Nucleus::createBitCast(x.value, Int::getType()), 0);
+		Value *b = Nucleus::createInsertElement(a, Nucleus::createBitCast(x.value, Int::getType()), 1);
+		Value *c = Nucleus::createInsertElement(b, Nucleus::createBitCast(x.value, Int::getType()), 2);
+		Value *d = Nucleus::createInsertElement(c, Nucleus::createBitCast(x.value, Int::getType()), 3);
+
+		storeValue(Nucleus::createBitCast(d, Byte16::getType()));
+	}
+
 	RValue<Byte16> Byte16::operator=(RValue<Byte16> rhs)
 	{
 		storeValue(rhs.value);
@@ -3619,6 +3630,11 @@ namespace sw
 		return (x ^ negative) - negative;
 	}
 
+	RValue<Short> Extract(RValue<Short8> val, int i)
+	{
+		return RValue<Short>(Nucleus::createExtractElement(val.value, Short::getType(), i));
+	}
+
 	RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y)
 	{
 		assert(false && "UNIMPLEMENTED"); return RValue<Short8>(V(nullptr));
@@ -3720,12 +3736,41 @@ namespace sw
 
 	RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(V(nullptr));
+		int pshufb[16] =
+		{
+			select0 + 0,
+			select0 + 1,
+			select1 + 0,
+			select1 + 1,
+			select2 + 0,
+			select2 + 1,
+			select3 + 0,
+			select3 + 1,
+			select4 + 0,
+			select4 + 1,
+			select5 + 0,
+			select5 + 1,
+			select6 + 0,
+			select6 + 1,
+			select7 + 0,
+			select7 + 1,
+		};
+
+		Value *byte16 = Nucleus::createBitCast(x.value, Byte16::getType());
+		Value *shuffle = Nucleus::createShuffleVector(byte16, byte16, pshufb);
+		Value *short8 = Nucleus::createBitCast(shuffle, UShort8::getType());
+
+		return RValue<UShort8>(short8);
 	}
 
 	RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)
 	{
 		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(V(nullptr));
+	}
+
+	RValue<UShort> Extract(RValue<UShort8> val, int i)
+	{
+		return RValue<UShort>(Nucleus::createExtractElement(val.value, UShort::getType(), i));
 	}
 
 	// FIXME: Implement as Shuffle(x, y, Select(i0, ..., i16)) and Shuffle(x, y, SELECT_PACK_REPEAT(element))
