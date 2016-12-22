@@ -124,7 +124,7 @@ else()
 
     # Don't allow symbols to be overridden by another module.
     # This enables libGLES_CM and libGLESv2 to statically link LLVM.
-    set_cpp_flag("-fvisibility=protected")
+    set_cpp_flag("-fvisibility=hidden")
 
     # Remove xor, and, or and friends from the list of keywords, they are used
     # by Reactor
