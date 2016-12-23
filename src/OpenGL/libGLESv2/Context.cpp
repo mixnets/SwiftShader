@@ -183,6 +183,7 @@ Context::Context(egl::Display *display, const Context *shareContext, EGLint clie
 
 Context::~Context()
 {
+
 	if(mState.currentProgram != 0)
 	{
 		Program *programObject = mResourceManager->getProgram(mState.currentProgram);
@@ -210,7 +211,7 @@ Context::~Context()
 
 	while(!mVertexArrayNameSpace.empty())
 	{
-		deleteVertexArray(mVertexArrayNameSpace.firstName());
+		deleteVertexArray(mVertexArrayNameSpace.lastName());
 	}
 
 	while(!mTransformFeedbackNameSpace.empty())
