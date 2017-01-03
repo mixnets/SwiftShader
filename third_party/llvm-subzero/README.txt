@@ -1,11 +1,3 @@
-llvm-subzero
-============
-
-This directory and its subdirectories contain a subset of the source code for
-LLVM, required by Subzero.
-
-The original README.txt content follows:
-
 Low Level Virtual Machine (LLVM)
 ================================
 
