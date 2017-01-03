@@ -51,9 +51,6 @@
     <ClCompile Include="..\..\third_party\llvm-subzero\lib\Support\CommandLine.cpp">
       <Filter>Source Files\Support</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\third_party\llvm-subzero\lib\Support\ConvertUTF.c">
-      <Filter>Source Files\Support</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\third_party\llvm-subzero\lib\Support\ConvertUTFWrapper.cpp">
       <Filter>Source Files\Support</Filter>
     </ClCompile>
@@ -133,6 +130,30 @@
       <Filter>Source Files\Support</Filter>
     </ClCompile>
     <ClCompile Include="..\..\third_party\llvm-subzero\lib\Support\Twine.cpp">
+      <Filter>Source Files\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\llvm-subzero\lib\Support\ConvertUTF.cpp">
+      <Filter>Source Files\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\llvm-subzero\lib\Support\Regex.cpp">
+      <Filter>Source Files\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\llvm-subzero\lib\Support\NativeFormatting.cpp">
+      <Filter>Source Files\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\llvm-subzero\lib\Support\regerror.c">
+      <Filter>Source Files\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\llvm-subzero\lib\Support\regfree.c">
+      <Filter>Source Files\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\llvm-subzero\lib\Support\regstrlcpy.c">
+      <Filter>Source Files\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\llvm-subzero\lib\Support\regcomp.c">
+      <Filter>Source Files\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\llvm-subzero\lib\Support\regexec.c">
       <Filter>Source Files\Support</Filter>
     </ClCompile>
   </ItemGroup>
