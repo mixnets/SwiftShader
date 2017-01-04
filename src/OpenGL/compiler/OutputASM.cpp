@@ -2455,7 +2455,7 @@ namespace glsl
 
 					dst.type = registerType(left);
 					dst.index += fieldOffset;
-					dst.mask = writeMask(right);
+					dst.mask = writeMask(*fields[index]->type());
 
 					return 0xE4;
 				}
@@ -2619,12 +2619,17 @@ namespace glsl
 
 	int OutputASM::writeMask(TIntermTyped *destination, int index)
 	{
-		if(destination->getQualifier() == EvqPointSize)
+		return writeMask(destination->getType(), index);
+	}
+
+	int OutputASM::writeMask(const TType &type, int index)
+	{
+		if(type.getQualifier() == EvqPointSize)
 		{
 			return 0x2;   // Point size stored in the y component
 		}
 
-		return 0xF >> (4 - registerSize(destination->getType(), index));
+		return 0xF >> (4 - registerSize(type, index));
 	}
 
 	int OutputASM::readSwizzle(TIntermTyped *argument, int size)
