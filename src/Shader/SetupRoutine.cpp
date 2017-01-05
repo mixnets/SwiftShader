@@ -578,7 +578,6 @@ namespace sw
 				Pointer<Byte> rightEdge = primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->right);
 				Pointer<Byte> edge = IfThenElse(swap, rightEdge, leftEdge);
 
-				// Deltas
 				Int DX12 = X2 - X1;
 				Int DY12 = Y2 - Y1;
 
@@ -586,10 +585,10 @@ namespace sw
 				Int FDY12 = DY12 << 4;
 
 				Int X = DX12 * ((y1 << 4) - Y1) + X1 * DY12;
-				Int x = X / FDY12;     // Edge
+				Int x_true = X / FDY12;     // Edge
 				Int d = X % FDY12;     // Error-term
 				Int ceil = -d >> 31;   // Ceiling division: remainder <= 0
-				x -= ceil;
+				x_true -= ceil;
 				d -= ceil & FDY12;
 
 				Int Q = FDX12 / FDY12;   // Edge-step
@@ -599,20 +598,30 @@ namespace sw
 				R += floor & FDY12;
 
 				Int D = FDY12;   // Error-overflow
-				Int y = y1;
+
+				Float slope = Float(DX12) / Float(DY12);
+ 				Int y = y1;
+				Float dy = Float(y) - (1.0f / 16.0f) * Float(Y1);
+				Float x0 = (1.0f / 16.0f) * Float(X1) + (0.5f / 16.0f);   // Subtract half a subpixel to prevent the Ceil() below to round to the next pixel on a positive slope error
 
 				Do
 				{
+					Int x = Int(Ceil(x0 + dy * slope));
+
+					If(x != x_true)
+					{
+						x /= 0;   // Abort
+					}
+
 					*Pointer<Short>(edge + y * sizeof(Primitive::Span)) = Short(Clamp(x, xMin, xMax));
 
-					x += Q;
+					x_true += Q;
 					d += R;
-
 					Int overflow = -d >> 31;
-
 					d -= D & overflow;
-					x -= overflow;
+					x_true -= overflow;
 
+					dy += 1.0f;
 					y++;
 				}
 				Until(y >= y2)
