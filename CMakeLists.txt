@@ -650,6 +650,10 @@ set_target_properties(ReactorSubzero PROPERTIES
     FOLDER "Subzero"
 )
 
+if(WIN32)
+    target_compile_definitions(ReactorSubzero PRIVATE SUBZERO_USE_MICROSOFT_ABI)
+endif()
+
 ###########################################################
 # Include Directories
 ###########################################################
