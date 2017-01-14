@@ -57,6 +57,34 @@ namespace
 	Ice::Fdstream *out = nullptr;
 }
 
+namespace
+{
+	class CPUID
+	{
+	public:
+		const static bool SSE4_1;
+
+	private:
+		static void cpuid(int registers[4], int info)
+		{
+			#if defined(_WIN32)
+				__cpuid(registers, info);
+			#else
+				__asm volatile("cpuid": "=a" (registers[0]), "=b" (registers[1]), "=c" (registers[2]), "=d" (registers[3]): "a" (info));
+			#endif
+		}
+
+		static bool detectSSE4_1()
+		{
+			int registers[4];
+			cpuid(registers, 1);
+			return (registers[2] & 0x00080000) != 0;
+		}
+	};
+
+	const bool CPUID::SSE4_1 = CPUID::detectSSE4_1();
+}
+
 namespace sw
 {
 	enum EmulatedType
@@ -402,7 +430,7 @@ namespace sw
 		Flags.setOutFileType(Ice::FT_Elf);
 		Flags.setOptLevel(Ice::Opt_2);
 		Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
-		Flags.setTargetInstructionSet(Ice::X86InstructionSet_SSE4_1);
+		Flags.setTargetInstructionSet(CPUID::SSE4_1 ? Ice::X86InstructionSet_SSE4_1 : Ice::X86InstructionSet_SSE2);
 		Flags.setVerbose(false ? Ice::IceV_All : Ice::IceV_None);
 
 		static llvm::raw_os_ostream cout(std::cout);
@@ -3355,7 +3383,7 @@ namespace sw
 	{
 		if(saturate)
 		{
-			if(true)   // SSE 4.1
+			if(CPUID::SSE4_1)
 			{
 				Int4 int4(Min(cast, Float4(0xFFFF)));   // packusdw takes care of 0x0000 saturation
 				*this = As<Short4>(Pack(As<UInt4>(int4), As<UInt4>(int4)));
@@ -3627,6 +3655,12 @@ namespace sw
 		return T(Type_v4i16);
 	}
 
+	Short8::Short8(short c)
+	{
+		int64_t constantVector[8] = {c, c, c, c, c, c, c, c};
+		storeValue(Nucleus::createConstantVector(constantVector, getType()));
+	}
+
 	Short8::Short8(short c0, short c1, short c2, short c3, short c4, short c5, short c6, short c7)
 	{
 	//	xyzw.parent = this;
@@ -3697,6 +3731,12 @@ namespace sw
 	Type *Short8::getType()
 	{
 		return T(Ice::IceType_v8i16);
+	}
+
+	UShort8::UShort8(unsigned short c)
+	{
+		int64_t constantVector[8] = {c, c, c, c, c, c, c, c};
+		storeValue(Nucleus::createConstantVector(constantVector, getType()));
 	}
 
 	UShort8::UShort8(unsigned short c0, unsigned short c1, unsigned short c2, unsigned short c3, unsigned short c4, unsigned short c5, unsigned short c6, unsigned short c7)
@@ -4137,10 +4177,8 @@ namespace sw
 
 	RValue<Int> RoundInt(RValue<Float> cast)
 	{
-		RValue<Float> rounded = Round(cast);
-
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_i32);
-		auto round = Ice::InstCast::create(::function, Ice::InstCast::Fptosi, result, rounded.value);
+		auto round = Ice::InstCast::create(::function, Ice::InstCast::Nearbyint, result, cast.value);
 		::basicBlock->appendInst(round);
 
 		return RValue<Int>(V(result));
@@ -5353,10 +5391,8 @@ namespace sw
 
 	RValue<Int4> RoundInt(RValue<Float4> cast)
 	{
-		RValue<Float4> rounded = Round(cast);
-
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4i32);
-		auto round = Ice::InstCast::create(::function, Ice::InstCast::Fptosi, result, rounded.value);
+		auto round = Ice::InstCast::create(::function, Ice::InstCast::Nearbyint, result, cast.value);
 		::basicBlock->appendInst(round);
 
 		return RValue<Int4>(V(result));
@@ -5718,15 +5754,22 @@ namespace sw
 
 	RValue<UShort8> Pack(RValue<UInt4> x, RValue<UInt4> y)
 	{
-		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v8i16);
-		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::VectorPackUnsigned, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
-		auto target = ::context->getConstantUndef(Ice::IceType_i32);
-		auto pack = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-		pack->addArg(x.value);
-		pack->addArg(y.value);
-		::basicBlock->appendInst(pack);
+		if(CPUID::SSE4_1)
+		{
+			Ice::Variable *result = ::function->makeVariable(Ice::IceType_v8i16);
+			const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::VectorPackUnsigned, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+			auto target = ::context->getConstantUndef(Ice::IceType_i32);
+			auto pack = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+			pack->addArg(x.value);
+			pack->addArg(y.value);
+			::basicBlock->appendInst(pack);
 
-		return RValue<UShort8>(V(result));
+			return RValue<UShort8>(V(result));
+		}
+		else
+		{
+			return As<UShort8>(Pack(As<Int4>(x - UInt4(0x00008000)), As<Int4>(y - UInt4(0x00008000))) + Short8(0x8000u));
+		}
 	}
 
 	Type *UInt4::getType()
@@ -6337,59 +6380,96 @@ namespace sw
 
 	RValue<Float4> Round(RValue<Float4> x)
 	{
-		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
-		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Round, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
-		auto target = ::context->getConstantUndef(Ice::IceType_i32);
-		auto round = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-		round->addArg(x.value);
-		round->addArg(::context->getConstantInt32(0));
-		::basicBlock->appendInst(round);
+		if(CPUID::SSE4_1)
+		{
+			Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
+			const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Round, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+			auto target = ::context->getConstantUndef(Ice::IceType_i32);
+			auto round = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+			round->addArg(x.value);
+			round->addArg(::context->getConstantInt32(0));
+			::basicBlock->appendInst(round);
 
-		return RValue<Float4>(V(result));
+			return RValue<Float4>(V(result));
+		}
+		else
+		{
+			return Float4(RoundInt(x));
+		}
 	}
 
 	RValue<Float4> Trunc(RValue<Float4> x)
 	{
-		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
-		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Round, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
-		auto target = ::context->getConstantUndef(Ice::IceType_i32);
-		auto round = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-		round->addArg(x.value);
-		round->addArg(::context->getConstantInt32(3));
-		::basicBlock->appendInst(round);
+		if(CPUID::SSE4_1)
+		{
+			Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
+			const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Round, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+			auto target = ::context->getConstantUndef(Ice::IceType_i32);
+			auto round = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+			round->addArg(x.value);
+			round->addArg(::context->getConstantInt32(3));
+			::basicBlock->appendInst(round);
 
-		return RValue<Float4>(V(result));
+			return RValue<Float4>(V(result));
+		}
+		else
+		{
+			return Float4(Int4(x));
+		}
 	}
 
 	RValue<Float4> Frac(RValue<Float4> x)
 	{
-		return x - Floor(x);
+		if(CPUID::SSE4_1)
+		{
+			return x - Floor(x);
+		}
+		else
+		{
+			Float4 frc = x - Float4(Int4(x));   // Signed fractional part
+
+			return frc + As<Float4>(As<Int4>(CmpNLE(Float4(0.0f), frc)) & As<Int4>(Float4(1, 1, 1, 1)));
+		}
 	}
 
 	RValue<Float4> Floor(RValue<Float4> x)
 	{
-		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
-		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Round, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
-		auto target = ::context->getConstantUndef(Ice::IceType_i32);
-		auto round = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-		round->addArg(x.value);
-		round->addArg(::context->getConstantInt32(1));
-		::basicBlock->appendInst(round);
+		if(CPUID::SSE4_1)
+		{
+			Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
+			const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Round, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+			auto target = ::context->getConstantUndef(Ice::IceType_i32);
+			auto round = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+			round->addArg(x.value);
+			round->addArg(::context->getConstantInt32(1));
+			::basicBlock->appendInst(round);
 
-		return RValue<Float4>(V(result));
+			return RValue<Float4>(V(result));
+		}
+		else
+		{
+			return x - Frac(x);
+		}
 	}
 
 	RValue<Float4> Ceil(RValue<Float4> x)
 	{
-		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
-		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Round, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
-		auto target = ::context->getConstantUndef(Ice::IceType_i32);
-		auto round = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
-		round->addArg(x.value);
-		round->addArg(::context->getConstantInt32(2));
-		::basicBlock->appendInst(round);
+		if(CPUID::SSE4_1)
+		{
+			Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
+			const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Round, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+			auto target = ::context->getConstantUndef(Ice::IceType_i32);
+			auto round = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+			round->addArg(x.value);
+			round->addArg(::context->getConstantInt32(2));
+			::basicBlock->appendInst(round);
 
-		return RValue<Float4>(V(result));
+			return RValue<Float4>(V(result));
+		}
+		else
+		{
+			return -Floor(-x);
+		}
 	}
 
 	Type *Float4::getType()
