@@ -4,7 +4,7 @@
 
  @Title        OpenGL ES 2.0 HelloAPI Tutorial
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -140,19 +140,37 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		0.0f,0.0f,0.0f,1.0f
 	};
 
+#define SHADER(x) #x
+
 	// Fragment and vertex shaders code
-	char* pszFragShader = "\
-		void main (void)\
-		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
-		}";
-	char* pszVertShader = "\
-		attribute highp vec4	myVertex;\
-		uniform mediump mat4	myPMVMatrix;\
-		void main(void)\
-		{\
-			gl_Position = myPMVMatrix * myVertex;\
-		}";
+	char* pszFragShader = SHADER(
+		varying mediump vec3 v_color;
+
+		void main()
+		{
+			gl_FragColor = vec4(v_color, 1.0);
+		}
+	);
+	char* pszVertShader = SHADER(
+		attribute highp vec4 myVertex;
+		varying mediump vec3 v_color;
+		uniform mediump int ui_two;
+
+		void main()
+		{
+			gl_Position = myVertex;
+			mediump vec2 coords = vec2(myVertex) * 5.0;
+			mediump vec2 tmp;
+			for (int i = 0; i < ui_two; i++)
+			{
+				tmp[i] = coords.x;
+				coords = coords.yx * 0.5;
+			}
+			mediump float res = 0.0;
+			res = dot(tmp, vec2(1.0));
+			v_color = vec3(res);
+		}
+	);
 
 	/*
 		Step 0 - Create a EGLNativeWindowType that we can use for OpenGL ES output
@@ -419,7 +437,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// We're going to draw a triangle to the screen so create a vertex buffer object for our triangle
 	GLuint	ui32Vbo; // Vertex buffer object handle
-	
+
 	// Interleaved vertex data
 	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
 								0.4f ,-0.4f,0.0f,
@@ -458,6 +476,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 		// Then passes the matrix to that variable
 		glUniformMatrix4fv( i32Location, 1, GL_FALSE, pfIdentity);
+
+		glUniform1i(glGetUniformLocation(uiProgramObject, "ui_two"), 2);
 
 		/*
 			Enable the custom vertex attribute at index VERTEX_ARRAY.
