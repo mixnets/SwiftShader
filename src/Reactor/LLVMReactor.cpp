@@ -5822,7 +5822,7 @@ namespace sw
 		return T(VectorType::get(Float::getType(), 2));
 	}
 
-	Float4::Float4(RValue<Byte4> cast) : FloatXYZW(this)
+	Float4::Float4(RValue<Byte4> cast) : XYZW(this)
 	{
 		#if 0
 			Value *xyzw = Nucleus::createUIToFP(cast.value, Float4::getType());   // FIXME: Crashes
@@ -5852,7 +5852,7 @@ namespace sw
 		storeValue(xyzw);
 	}
 
-	Float4::Float4(RValue<SByte4> cast) : FloatXYZW(this)
+	Float4::Float4(RValue<SByte4> cast) : XYZW(this)
 	{
 		#if 0
 			Value *xyzw = Nucleus::createSIToFP(cast.value, Float4::getType());   // FIXME: Crashes
@@ -5882,26 +5882,26 @@ namespace sw
 		storeValue(xyzw);
 	}
 
-	Float4::Float4(RValue<Short4> cast) : FloatXYZW(this)
+	Float4::Float4(RValue<Short4> cast) : XYZW(this)
 	{
 		Int4 c(cast);
 		storeValue(Nucleus::createSIToFP(RValue<Int4>(c).value, Float4::getType()));
 	}
 
-	Float4::Float4(RValue<UShort4> cast) : FloatXYZW(this)
+	Float4::Float4(RValue<UShort4> cast) : XYZW(this)
 	{
 		Int4 c(cast);
 		storeValue(Nucleus::createSIToFP(RValue<Int4>(c).value, Float4::getType()));
 	}
 
-	Float4::Float4(RValue<Int4> cast) : FloatXYZW(this)
+	Float4::Float4(RValue<Int4> cast) : XYZW(this)
 	{
 		Value *xyzw = Nucleus::createSIToFP(cast.value, Float4::getType());
 
 		storeValue(xyzw);
 	}
 
-	Float4::Float4(RValue<UInt4> cast) : FloatXYZW(this)
+	Float4::Float4(RValue<UInt4> cast) : XYZW(this)
 	{
 		RValue<Float4> result = Float4(Int4(cast & UInt4(0x7FFFFFFF))) +
 		                        As<Float4>((As<Int4>(cast) >> 31) & As<Int4>(Float4(0x80000000u)));
@@ -5909,26 +5909,26 @@ namespace sw
 		storeValue(result.value);
 	}
 
-	Float4::Float4() : FloatXYZW(this)
+	Float4::Float4() : XYZW(this)
 	{
 	}
 
-	Float4::Float4(float xyzw) : FloatXYZW(this)
+	Float4::Float4(float xyzw) : XYZW(this)
 	{
 		constant(xyzw, xyzw, xyzw, xyzw);
 	}
 
-	Float4::Float4(float x, float yzw) : FloatXYZW(this)
+	Float4::Float4(float x, float yzw) : XYZW(this)
 	{
 		constant(x, yzw, yzw, yzw);
 	}
 
-	Float4::Float4(float x, float y, float zw) : FloatXYZW(this)
+	Float4::Float4(float x, float y, float zw) : XYZW(this)
 	{
 		constant(x, y, zw, zw);
 	}
 
-	Float4::Float4(float x, float y, float z, float w) : FloatXYZW(this)
+	Float4::Float4(float x, float y, float z, float w) : XYZW(this)
 	{
 		constant(x, y, z, w);
 	}
@@ -5939,24 +5939,24 @@ namespace sw
 		storeValue(Nucleus::createConstantVector(constantVector, getType()));
 	}
 
-	Float4::Float4(RValue<Float4> rhs) : FloatXYZW(this)
+	Float4::Float4(RValue<Float4> rhs) : XYZW(this)
 	{
 		storeValue(rhs.value);
 	}
 
-	Float4::Float4(const Float4 &rhs) : FloatXYZW(this)
+	Float4::Float4(const Float4 &rhs) : XYZW(this)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
 	}
 
-	Float4::Float4(const Reference<Float4> &rhs) : FloatXYZW(this)
+	Float4::Float4(const Reference<Float4> &rhs) : XYZW(this)
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
 	}
 
-	Float4::Float4(RValue<Float> rhs) : FloatXYZW(this)
+	Float4::Float4(RValue<Float> rhs) : XYZW(this)
 	{
 		Value *vector = loadValue();
 		Value *insert = Nucleus::createInsertElement(vector, rhs.value, 0);
@@ -5967,12 +5967,12 @@ namespace sw
 		storeValue(replicate);
 	}
 
-	Float4::Float4(const Float &rhs) : FloatXYZW(this)
+	Float4::Float4(const Float &rhs) : XYZW(this)
 	{
 		*this = RValue<Float>(rhs.loadValue());
 	}
 
-	Float4::Float4(const Reference<Float> &rhs) : FloatXYZW(this)
+	Float4::Float4(const Reference<Float> &rhs) : XYZW(this)
 	{
 		*this = RValue<Float>(rhs.loadValue());
 	}
