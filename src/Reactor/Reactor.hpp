@@ -1464,67 +1464,79 @@ namespace sw
 //	RValue<UInt4> RoundInt(RValue<Float4> cast);
 	RValue<UShort8> Pack(RValue<UInt4> x, RValue<UInt4> y);
 
-	template<int T>
+	template<class T>
+	struct Scalar;
+
+	template<class Vector4>
+	struct FloatXYZW;
+
+	template<int T, class Vector4>
 	class Swizzle2Float4
 	{
-		friend class Float4;
+		friend Vector4;
 
 	public:
-		operator RValue<Float4>() const;
+		operator RValue<Vector4>() const;
 
 	private:
-		Float4 *parent;
+		Vector4 *parent;
 	};
 
-	template<int T>
+	template<int T, class Vector4>
 	class SwizzleFloat4
 	{
 	public:
-		operator RValue<Float4>() const;
+		operator RValue<Vector4>() const;
 
 	private:
-		Float4 *parent;
+		Vector4 *parent;
 	};
 
-	template<int T>
+	template<int T, class Vector4>
 	class SwizzleMaskFloat4
 	{
-		friend struct FloatXYZW;
+		friend FloatXYZW<Vector4>;
 
 	public:
-		operator RValue<Float4>() const;
+		operator RValue<Vector4>() const;
 
-		RValue<Float4> operator=(RValue<Float4> rhs);
-		RValue<Float4> operator=(RValue<Float> rhs);
+		RValue<Vector4> operator=(RValue<Vector4> rhs);
+		RValue<Vector4> operator=(RValue<typename Scalar<Vector4>::Type> rhs);
 
 	private:
-		Float4 *parent;
+		Vector4 *parent;
 	};
 
-	template<int T>
+	template<>
+	struct Scalar<Float4>
+	{
+		using Type = Float;
+	};
+
+	template<int T, class Vector4>
 	class SwizzleMask1Float4
 	{
 	public:
-		operator RValue<Float>() const;
-		operator RValue<Float4>() const;
+		operator RValue<typename Scalar<Vector4>::Type>() const;
+		operator RValue<Vector4>() const;
 
-		RValue<Float4> operator=(float x);
-		RValue<Float4> operator=(RValue<Float4> rhs);
-		RValue<Float4> operator=(RValue<Float> rhs);
+		RValue<Vector4> operator=(float x);
+		RValue<Vector4> operator=(RValue<Vector4> rhs);
+		RValue<Vector4> operator=(RValue<typename Scalar<Vector4>::Type> rhs);
 
 	private:
 		Float4 *parent;
 	};
 
-	template<int T>
+	template<int T, class Vector4>
 	class SwizzleMask2Float4
 	{
 		friend class Float4;
 
 	public:
-		operator RValue<Float4>() const;
+		operator RValue<Vector4>() const;
 
-		RValue<Float4> operator=(RValue<Float4> rhs);
+		RValue<Vector4> operator=(RValue<Vector4> rhs);
 
 	private:
 		Float4 *parent;
@@ -1542,7 +1554,7 @@ namespace sw
 		Float(const Reference<Float> &rhs);
 
 		template<int T>
-		Float(const SwizzleMask1Float4<T> &rhs);
+		Float(const SwizzleMask1Float4<T, Float4> &rhs);
 
 	//	RValue<Float> operator=(float rhs);   // FIXME: Implement
 		RValue<Float> operator=(RValue<Float> rhs);
@@ -1550,7 +1562,7 @@ namespace sw
 		RValue<Float> operator=(const Reference<Float> &rhs);
 
 		template<int T>
-		RValue<Float> operator=(const SwizzleMask1Float4<T> &rhs);
+		RValue<Float> operator=(const SwizzleMask1Float4<T, Float4> &rhs);
 
 		static Type *getType();
 	};
@@ -1639,12 +1651,13 @@ namespace sw
 //	RValue<Float2> Swizzle(RValue<Float2> x, unsigned char select);
 //	RValue<Float2> Mask(Float2 &lhs, RValue<Float2> rhs, unsigned char select);
 
+	template<class Vector4>
 	struct FloatXYZW
 	{
-		friend class Float4;
+		friend Vector4;
 
 	private:
-		FloatXYZW(Float4 *parent)
+		FloatXYZW(Vector4 *parent)
 		{
 			xyzw.parent = parent;
 		}
@@ -1652,350 +1665,350 @@ namespace sw
 	public:
 		union
 		{
-			SwizzleMask1Float4<0x00> x;
-			SwizzleMask1Float4<0x55> y;
-			SwizzleMask1Float4<0xAA> z;
-			SwizzleMask1Float4<0xFF> w;
-			Swizzle2Float4<0x00>     xx;
-			Swizzle2Float4<0x01>     yx;
-			Swizzle2Float4<0x02>     zx;
-			Swizzle2Float4<0x03>     wx;
-			SwizzleMask2Float4<0x54> xy;
-			Swizzle2Float4<0x55>     yy;
-			Swizzle2Float4<0x56>     zy;
-			Swizzle2Float4<0x57>     wy;
-			SwizzleMask2Float4<0xA8> xz;
-			SwizzleMask2Float4<0xA9> yz;
-			Swizzle2Float4<0xAA>     zz;
-			Swizzle2Float4<0xAB>     wz;
-			SwizzleMask2Float4<0xFC> xw;
-			SwizzleMask2Float4<0xFD> yw;
-			SwizzleMask2Float4<0xFE> zw;
-			Swizzle2Float4<0xFF>     ww;
-			SwizzleFloat4<0x00>      xxx;
-			SwizzleFloat4<0x01>      yxx;
-			SwizzleFloat4<0x02>      zxx;
-			SwizzleFloat4<0x03>      wxx;
-			SwizzleFloat4<0x04>      xyx;
-			SwizzleFloat4<0x05>      yyx;
-			SwizzleFloat4<0x06>      zyx;
-			SwizzleFloat4<0x07>      wyx;
-			SwizzleFloat4<0x08>      xzx;
-			SwizzleFloat4<0x09>      yzx;
-			SwizzleFloat4<0x0A>      zzx;
-			SwizzleFloat4<0x0B>      wzx;
-			SwizzleFloat4<0x0C>      xwx;
-			SwizzleFloat4<0x0D>      ywx;
-			SwizzleFloat4<0x0E>      zwx;
-			SwizzleFloat4<0x0F>      wwx;
-			SwizzleFloat4<0x50>      xxy;
-			SwizzleFloat4<0x51>      yxy;
-			SwizzleFloat4<0x52>      zxy;
-			SwizzleFloat4<0x53>      wxy;
-			SwizzleFloat4<0x54>      xyy;
-			SwizzleFloat4<0x55>      yyy;
-			SwizzleFloat4<0x56>      zyy;
-			SwizzleFloat4<0x57>      wyy;
-			SwizzleFloat4<0x58>      xzy;
-			SwizzleFloat4<0x59>      yzy;
-			SwizzleFloat4<0x5A>      zzy;
-			SwizzleFloat4<0x5B>      wzy;
-			SwizzleFloat4<0x5C>      xwy;
-			SwizzleFloat4<0x5D>      ywy;
-			SwizzleFloat4<0x5E>      zwy;
-			SwizzleFloat4<0x5F>      wwy;
-			SwizzleFloat4<0xA0>      xxz;
-			SwizzleFloat4<0xA1>      yxz;
-			SwizzleFloat4<0xA2>      zxz;
-			SwizzleFloat4<0xA3>      wxz;
-			SwizzleMaskFloat4<0xA4>  xyz;
-			SwizzleFloat4<0xA5>      yyz;
-			SwizzleFloat4<0xA6>      zyz;
-			SwizzleFloat4<0xA7>      wyz;
-			SwizzleFloat4<0xA8>      xzz;
-			SwizzleFloat4<0xA9>      yzz;
-			SwizzleFloat4<0xAA>      zzz;
-			SwizzleFloat4<0xAB>      wzz;
-			SwizzleFloat4<0xAC>      xwz;
-			SwizzleFloat4<0xAD>      ywz;
-			SwizzleFloat4<0xAE>      zwz;
-			SwizzleFloat4<0xAF>      wwz;
-			SwizzleFloat4<0xF0>      xxw;
-			SwizzleFloat4<0xF1>      yxw;
-			SwizzleFloat4<0xF2>      zxw;
-			SwizzleFloat4<0xF3>      wxw;
-			SwizzleMaskFloat4<0xF4>  xyw;
-			SwizzleFloat4<0xF5>      yyw;
-			SwizzleFloat4<0xF6>      zyw;
-			SwizzleFloat4<0xF7>      wyw;
-			SwizzleMaskFloat4<0xF8>  xzw;
-			SwizzleMaskFloat4<0xF9>  yzw;
-			SwizzleFloat4<0xFA>      zzw;
-			SwizzleFloat4<0xFB>      wzw;
-			SwizzleFloat4<0xFC>      xww;
-			SwizzleFloat4<0xFD>      yww;
-			SwizzleFloat4<0xFE>      zww;
-			SwizzleFloat4<0xFF>      www;
-			SwizzleFloat4<0x00>      xxxx;
-			SwizzleFloat4<0x01>      yxxx;
-			SwizzleFloat4<0x02>      zxxx;
-			SwizzleFloat4<0x03>      wxxx;
-			SwizzleFloat4<0x04>      xyxx;
-			SwizzleFloat4<0x05>      yyxx;
-			SwizzleFloat4<0x06>      zyxx;
-			SwizzleFloat4<0x07>      wyxx;
-			SwizzleFloat4<0x08>      xzxx;
-			SwizzleFloat4<0x09>      yzxx;
-			SwizzleFloat4<0x0A>      zzxx;
-			SwizzleFloat4<0x0B>      wzxx;
-			SwizzleFloat4<0x0C>      xwxx;
-			SwizzleFloat4<0x0D>      ywxx;
-			SwizzleFloat4<0x0E>      zwxx;
-			SwizzleFloat4<0x0F>      wwxx;
-			SwizzleFloat4<0x10>      xxyx;
-			SwizzleFloat4<0x11>      yxyx;
-			SwizzleFloat4<0x12>      zxyx;
-			SwizzleFloat4<0x13>      wxyx;
-			SwizzleFloat4<0x14>      xyyx;
-			SwizzleFloat4<0x15>      yyyx;
-			SwizzleFloat4<0x16>      zyyx;
-			SwizzleFloat4<0x17>      wyyx;
-			SwizzleFloat4<0x18>      xzyx;
-			SwizzleFloat4<0x19>      yzyx;
-			SwizzleFloat4<0x1A>      zzyx;
-			SwizzleFloat4<0x1B>      wzyx;
-			SwizzleFloat4<0x1C>      xwyx;
-			SwizzleFloat4<0x1D>      ywyx;
-			SwizzleFloat4<0x1E>      zwyx;
-			SwizzleFloat4<0x1F>      wwyx;
-			SwizzleFloat4<0x20>      xxzx;
-			SwizzleFloat4<0x21>      yxzx;
-			SwizzleFloat4<0x22>      zxzx;
-			SwizzleFloat4<0x23>      wxzx;
-			SwizzleFloat4<0x24>      xyzx;
-			SwizzleFloat4<0x25>      yyzx;
-			SwizzleFloat4<0x26>      zyzx;
-			SwizzleFloat4<0x27>      wyzx;
-			SwizzleFloat4<0x28>      xzzx;
-			SwizzleFloat4<0x29>      yzzx;
-			SwizzleFloat4<0x2A>      zzzx;
-			SwizzleFloat4<0x2B>      wzzx;
-			SwizzleFloat4<0x2C>      xwzx;
-			SwizzleFloat4<0x2D>      ywzx;
-			SwizzleFloat4<0x2E>      zwzx;
-			SwizzleFloat4<0x2F>      wwzx;
-			SwizzleFloat4<0x30>      xxwx;
-			SwizzleFloat4<0x31>      yxwx;
-			SwizzleFloat4<0x32>      zxwx;
-			SwizzleFloat4<0x33>      wxwx;
-			SwizzleFloat4<0x34>      xywx;
-			SwizzleFloat4<0x35>      yywx;
-			SwizzleFloat4<0x36>      zywx;
-			SwizzleFloat4<0x37>      wywx;
-			SwizzleFloat4<0x38>      xzwx;
-			SwizzleFloat4<0x39>      yzwx;
-			SwizzleFloat4<0x3A>      zzwx;
-			SwizzleFloat4<0x3B>      wzwx;
-			SwizzleFloat4<0x3C>      xwwx;
-			SwizzleFloat4<0x3D>      ywwx;
-			SwizzleFloat4<0x3E>      zwwx;
-			SwizzleFloat4<0x3F>      wwwx;
-			SwizzleFloat4<0x40>      xxxy;
-			SwizzleFloat4<0x41>      yxxy;
-			SwizzleFloat4<0x42>      zxxy;
-			SwizzleFloat4<0x43>      wxxy;
-			SwizzleFloat4<0x44>      xyxy;
-			SwizzleFloat4<0x45>      yyxy;
-			SwizzleFloat4<0x46>      zyxy;
-			SwizzleFloat4<0x47>      wyxy;
-			SwizzleFloat4<0x48>      xzxy;
-			SwizzleFloat4<0x49>      yzxy;
-			SwizzleFloat4<0x4A>      zzxy;
-			SwizzleFloat4<0x4B>      wzxy;
-			SwizzleFloat4<0x4C>      xwxy;
-			SwizzleFloat4<0x4D>      ywxy;
-			SwizzleFloat4<0x4E>      zwxy;
-			SwizzleFloat4<0x4F>      wwxy;
-			SwizzleFloat4<0x50>      xxyy;
-			SwizzleFloat4<0x51>      yxyy;
-			SwizzleFloat4<0x52>      zxyy;
-			SwizzleFloat4<0x53>      wxyy;
-			SwizzleFloat4<0x54>      xyyy;
-			SwizzleFloat4<0x55>      yyyy;
-			SwizzleFloat4<0x56>      zyyy;
-			SwizzleFloat4<0x57>      wyyy;
-			SwizzleFloat4<0x58>      xzyy;
-			SwizzleFloat4<0x59>      yzyy;
-			SwizzleFloat4<0x5A>      zzyy;
-			SwizzleFloat4<0x5B>      wzyy;
-			SwizzleFloat4<0x5C>      xwyy;
-			SwizzleFloat4<0x5D>      ywyy;
-			SwizzleFloat4<0x5E>      zwyy;
-			SwizzleFloat4<0x5F>      wwyy;
-			SwizzleFloat4<0x60>      xxzy;
-			SwizzleFloat4<0x61>      yxzy;
-			SwizzleFloat4<0x62>      zxzy;
-			SwizzleFloat4<0x63>      wxzy;
-			SwizzleFloat4<0x64>      xyzy;
-			SwizzleFloat4<0x65>      yyzy;
-			SwizzleFloat4<0x66>      zyzy;
-			SwizzleFloat4<0x67>      wyzy;
-			SwizzleFloat4<0x68>      xzzy;
-			SwizzleFloat4<0x69>      yzzy;
-			SwizzleFloat4<0x6A>      zzzy;
-			SwizzleFloat4<0x6B>      wzzy;
-			SwizzleFloat4<0x6C>      xwzy;
-			SwizzleFloat4<0x6D>      ywzy;
-			SwizzleFloat4<0x6E>      zwzy;
-			SwizzleFloat4<0x6F>      wwzy;
-			SwizzleFloat4<0x70>      xxwy;
-			SwizzleFloat4<0x71>      yxwy;
-			SwizzleFloat4<0x72>      zxwy;
-			SwizzleFloat4<0x73>      wxwy;
-			SwizzleFloat4<0x74>      xywy;
-			SwizzleFloat4<0x75>      yywy;
-			SwizzleFloat4<0x76>      zywy;
-			SwizzleFloat4<0x77>      wywy;
-			SwizzleFloat4<0x78>      xzwy;
-			SwizzleFloat4<0x79>      yzwy;
-			SwizzleFloat4<0x7A>      zzwy;
-			SwizzleFloat4<0x7B>      wzwy;
-			SwizzleFloat4<0x7C>      xwwy;
-			SwizzleFloat4<0x7D>      ywwy;
-			SwizzleFloat4<0x7E>      zwwy;
-			SwizzleFloat4<0x7F>      wwwy;
-			SwizzleFloat4<0x80>      xxxz;
-			SwizzleFloat4<0x81>      yxxz;
-			SwizzleFloat4<0x82>      zxxz;
-			SwizzleFloat4<0x83>      wxxz;
-			SwizzleFloat4<0x84>      xyxz;
-			SwizzleFloat4<0x85>      yyxz;
-			SwizzleFloat4<0x86>      zyxz;
-			SwizzleFloat4<0x87>      wyxz;
-			SwizzleFloat4<0x88>      xzxz;
-			SwizzleFloat4<0x89>      yzxz;
-			SwizzleFloat4<0x8A>      zzxz;
-			SwizzleFloat4<0x8B>      wzxz;
-			SwizzleFloat4<0x8C>      xwxz;
-			SwizzleFloat4<0x8D>      ywxz;
-			SwizzleFloat4<0x8E>      zwxz;
-			SwizzleFloat4<0x8F>      wwxz;
-			SwizzleFloat4<0x90>      xxyz;
-			SwizzleFloat4<0x91>      yxyz;
-			SwizzleFloat4<0x92>      zxyz;
-			SwizzleFloat4<0x93>      wxyz;
-			SwizzleFloat4<0x94>      xyyz;
-			SwizzleFloat4<0x95>      yyyz;
-			SwizzleFloat4<0x96>      zyyz;
-			SwizzleFloat4<0x97>      wyyz;
-			SwizzleFloat4<0x98>      xzyz;
-			SwizzleFloat4<0x99>      yzyz;
-			SwizzleFloat4<0x9A>      zzyz;
-			SwizzleFloat4<0x9B>      wzyz;
-			SwizzleFloat4<0x9C>      xwyz;
-			SwizzleFloat4<0x9D>      ywyz;
-			SwizzleFloat4<0x9E>      zwyz;
-			SwizzleFloat4<0x9F>      wwyz;
-			SwizzleFloat4<0xA0>      xxzz;
-			SwizzleFloat4<0xA1>      yxzz;
-			SwizzleFloat4<0xA2>      zxzz;
-			SwizzleFloat4<0xA3>      wxzz;
-			SwizzleFloat4<0xA4>      xyzz;
-			SwizzleFloat4<0xA5>      yyzz;
-			SwizzleFloat4<0xA6>      zyzz;
-			SwizzleFloat4<0xA7>      wyzz;
-			SwizzleFloat4<0xA8>      xzzz;
-			SwizzleFloat4<0xA9>      yzzz;
-			SwizzleFloat4<0xAA>      zzzz;
-			SwizzleFloat4<0xAB>      wzzz;
-			SwizzleFloat4<0xAC>      xwzz;
-			SwizzleFloat4<0xAD>      ywzz;
-			SwizzleFloat4<0xAE>      zwzz;
-			SwizzleFloat4<0xAF>      wwzz;
-			SwizzleFloat4<0xB0>      xxwz;
-			SwizzleFloat4<0xB1>      yxwz;
-			SwizzleFloat4<0xB2>      zxwz;
-			SwizzleFloat4<0xB3>      wxwz;
-			SwizzleFloat4<0xB4>      xywz;
-			SwizzleFloat4<0xB5>      yywz;
-			SwizzleFloat4<0xB6>      zywz;
-			SwizzleFloat4<0xB7>      wywz;
-			SwizzleFloat4<0xB8>      xzwz;
-			SwizzleFloat4<0xB9>      yzwz;
-			SwizzleFloat4<0xBA>      zzwz;
-			SwizzleFloat4<0xBB>      wzwz;
-			SwizzleFloat4<0xBC>      xwwz;
-			SwizzleFloat4<0xBD>      ywwz;
-			SwizzleFloat4<0xBE>      zwwz;
-			SwizzleFloat4<0xBF>      wwwz;
-			SwizzleFloat4<0xC0>      xxxw;
-			SwizzleFloat4<0xC1>      yxxw;
-			SwizzleFloat4<0xC2>      zxxw;
-			SwizzleFloat4<0xC3>      wxxw;
-			SwizzleFloat4<0xC4>      xyxw;
-			SwizzleFloat4<0xC5>      yyxw;
-			SwizzleFloat4<0xC6>      zyxw;
-			SwizzleFloat4<0xC7>      wyxw;
-			SwizzleFloat4<0xC8>      xzxw;
-			SwizzleFloat4<0xC9>      yzxw;
-			SwizzleFloat4<0xCA>      zzxw;
-			SwizzleFloat4<0xCB>      wzxw;
-			SwizzleFloat4<0xCC>      xwxw;
-			SwizzleFloat4<0xCD>      ywxw;
-			SwizzleFloat4<0xCE>      zwxw;
-			SwizzleFloat4<0xCF>      wwxw;
-			SwizzleFloat4<0xD0>      xxyw;
-			SwizzleFloat4<0xD1>      yxyw;
-			SwizzleFloat4<0xD2>      zxyw;
-			SwizzleFloat4<0xD3>      wxyw;
-			SwizzleFloat4<0xD4>      xyyw;
-			SwizzleFloat4<0xD5>      yyyw;
-			SwizzleFloat4<0xD6>      zyyw;
-			SwizzleFloat4<0xD7>      wyyw;
-			SwizzleFloat4<0xD8>      xzyw;
-			SwizzleFloat4<0xD9>      yzyw;
-			SwizzleFloat4<0xDA>      zzyw;
-			SwizzleFloat4<0xDB>      wzyw;
-			SwizzleFloat4<0xDC>      xwyw;
-			SwizzleFloat4<0xDD>      ywyw;
-			SwizzleFloat4<0xDE>      zwyw;
-			SwizzleFloat4<0xDF>      wwyw;
-			SwizzleFloat4<0xE0>      xxzw;
-			SwizzleFloat4<0xE1>      yxzw;
-			SwizzleFloat4<0xE2>      zxzw;
-			SwizzleFloat4<0xE3>      wxzw;
-			SwizzleMaskFloat4<0xE4>  xyzw;
-			SwizzleFloat4<0xE5>      yyzw;
-			SwizzleFloat4<0xE6>      zyzw;
-			SwizzleFloat4<0xE7>      wyzw;
-			SwizzleFloat4<0xE8>      xzzw;
-			SwizzleFloat4<0xE9>      yzzw;
-			SwizzleFloat4<0xEA>      zzzw;
-			SwizzleFloat4<0xEB>      wzzw;
-			SwizzleFloat4<0xEC>      xwzw;
-			SwizzleFloat4<0xED>      ywzw;
-			SwizzleFloat4<0xEE>      zwzw;
-			SwizzleFloat4<0xEF>      wwzw;
-			SwizzleFloat4<0xF0>      xxww;
-			SwizzleFloat4<0xF1>      yxww;
-			SwizzleFloat4<0xF2>      zxww;
-			SwizzleFloat4<0xF3>      wxww;
-			SwizzleFloat4<0xF4>      xyww;
-			SwizzleFloat4<0xF5>      yyww;
-			SwizzleFloat4<0xF6>      zyww;
-			SwizzleFloat4<0xF7>      wyww;
-			SwizzleFloat4<0xF8>      xzww;
-			SwizzleFloat4<0xF9>      yzww;
-			SwizzleFloat4<0xFA>      zzww;
-			SwizzleFloat4<0xFB>      wzww;
-			SwizzleFloat4<0xFC>      xwww;
-			SwizzleFloat4<0xFD>      ywww;
-			SwizzleFloat4<0xFE>      zwww;
-			SwizzleFloat4<0xFF>      wwww;
+			SwizzleMask1Float4<0x00, Vector4> x;
+			SwizzleMask1Float4<0x55, Vector4> y;
+			SwizzleMask1Float4<0xAA, Vector4> z;
+			SwizzleMask1Float4<0xFF, Vector4> w;
+			Swizzle2Float4<0x00, Vector4>     xx;
+			Swizzle2Float4<0x01, Vector4>     yx;
+			Swizzle2Float4<0x02, Vector4>     zx;
+			Swizzle2Float4<0x03, Vector4>     wx;
+			SwizzleMask2Float4<0x54, Vector4> xy;
+			Swizzle2Float4<0x55, Vector4>     yy;
+			Swizzle2Float4<0x56, Vector4>     zy;
+			Swizzle2Float4<0x57, Vector4>     wy;
+			SwizzleMask2Float4<0xA8, Vector4> xz;
+			SwizzleMask2Float4<0xA9, Vector4> yz;
+			Swizzle2Float4<0xAA, Vector4>     zz;
+			Swizzle2Float4<0xAB, Vector4>     wz;
+			SwizzleMask2Float4<0xFC, Vector4> xw;
+			SwizzleMask2Float4<0xFD, Vector4> yw;
+			SwizzleMask2Float4<0xFE, Vector4> zw;
+			Swizzle2Float4<0xFF, Vector4>     ww;
+			SwizzleFloat4<0x00, Vector4>      xxx;
+			SwizzleFloat4<0x01, Vector4>      yxx;
+			SwizzleFloat4<0x02, Vector4>      zxx;
+			SwizzleFloat4<0x03, Vector4>      wxx;
+			SwizzleFloat4<0x04, Vector4>      xyx;
+			SwizzleFloat4<0x05, Vector4>      yyx;
+			SwizzleFloat4<0x06, Vector4>      zyx;
+			SwizzleFloat4<0x07, Vector4>      wyx;
+			SwizzleFloat4<0x08, Vector4>      xzx;
+			SwizzleFloat4<0x09, Vector4>      yzx;
+			SwizzleFloat4<0x0A, Vector4>      zzx;
+			SwizzleFloat4<0x0B, Vector4>      wzx;
+			SwizzleFloat4<0x0C, Vector4>      xwx;
+			SwizzleFloat4<0x0D, Vector4>      ywx;
+			SwizzleFloat4<0x0E, Vector4>      zwx;
+			SwizzleFloat4<0x0F, Vector4>      wwx;
+			SwizzleFloat4<0x50, Vector4>      xxy;
+			SwizzleFloat4<0x51, Vector4>      yxy;
+			SwizzleFloat4<0x52, Vector4>      zxy;
+			SwizzleFloat4<0x53, Vector4>      wxy;
+			SwizzleFloat4<0x54, Vector4>      xyy;
+			SwizzleFloat4<0x55, Vector4>      yyy;
+			SwizzleFloat4<0x56, Vector4>      zyy;
+			SwizzleFloat4<0x57, Vector4>      wyy;
+			SwizzleFloat4<0x58, Vector4>      xzy;
+			SwizzleFloat4<0x59, Vector4>      yzy;
+			SwizzleFloat4<0x5A, Vector4>      zzy;
+			SwizzleFloat4<0x5B, Vector4>      wzy;
+			SwizzleFloat4<0x5C, Vector4>      xwy;
+			SwizzleFloat4<0x5D, Vector4>      ywy;
+			SwizzleFloat4<0x5E, Vector4>      zwy;
+			SwizzleFloat4<0x5F, Vector4>      wwy;
+			SwizzleFloat4<0xA0, Vector4>      xxz;
+			SwizzleFloat4<0xA1, Vector4>      yxz;
+			SwizzleFloat4<0xA2, Vector4>      zxz;
+			SwizzleFloat4<0xA3, Vector4>      wxz;
+			SwizzleMaskFloat4<0xA4, Vector4>  xyz;
+			SwizzleFloat4<0xA5, Vector4>      yyz;
+			SwizzleFloat4<0xA6, Vector4>      zyz;
+			SwizzleFloat4<0xA7, Vector4>      wyz;
+			SwizzleFloat4<0xA8, Vector4>      xzz;
+			SwizzleFloat4<0xA9, Vector4>      yzz;
+			SwizzleFloat4<0xAA, Vector4>      zzz;
+			SwizzleFloat4<0xAB, Vector4>      wzz;
+			SwizzleFloat4<0xAC, Vector4>      xwz;
+			SwizzleFloat4<0xAD, Vector4>      ywz;
+			SwizzleFloat4<0xAE, Vector4>      zwz;
+			SwizzleFloat4<0xAF, Vector4>      wwz;
+			SwizzleFloat4<0xF0, Vector4>      xxw;
+			SwizzleFloat4<0xF1, Vector4>      yxw;
+			SwizzleFloat4<0xF2, Vector4>      zxw;
+			SwizzleFloat4<0xF3, Vector4>      wxw;
+			SwizzleMaskFloat4<0xF4, Vector4>  xyw;
+			SwizzleFloat4<0xF5, Vector4>      yyw;
+			SwizzleFloat4<0xF6, Vector4>      zyw;
+			SwizzleFloat4<0xF7, Vector4>      wyw;
+			SwizzleMaskFloat4<0xF8, Vector4>  xzw;
+			SwizzleMaskFloat4<0xF9, Vector4>  yzw;
+			SwizzleFloat4<0xFA, Vector4>      zzw;
+			SwizzleFloat4<0xFB, Vector4>      wzw;
+			SwizzleFloat4<0xFC, Vector4>      xww;
+			SwizzleFloat4<0xFD, Vector4>      yww;
+			SwizzleFloat4<0xFE, Vector4>      zww;
+			SwizzleFloat4<0xFF, Vector4>      www;
+			SwizzleFloat4<0x00, Vector4>      xxxx;
+			SwizzleFloat4<0x01, Vector4>      yxxx;
+			SwizzleFloat4<0x02, Vector4>      zxxx;
+			SwizzleFloat4<0x03, Vector4>      wxxx;
+			SwizzleFloat4<0x04, Vector4>      xyxx;
+			SwizzleFloat4<0x05, Vector4>      yyxx;
+			SwizzleFloat4<0x06, Vector4>      zyxx;
+			SwizzleFloat4<0x07, Vector4>      wyxx;
+			SwizzleFloat4<0x08, Vector4>      xzxx;
+			SwizzleFloat4<0x09, Vector4>      yzxx;
+			SwizzleFloat4<0x0A, Vector4>      zzxx;
+			SwizzleFloat4<0x0B, Vector4>      wzxx;
+			SwizzleFloat4<0x0C, Vector4>      xwxx;
+			SwizzleFloat4<0x0D, Vector4>      ywxx;
+			SwizzleFloat4<0x0E, Vector4>      zwxx;
+			SwizzleFloat4<0x0F, Vector4>      wwxx;
+			SwizzleFloat4<0x10, Vector4>      xxyx;
+			SwizzleFloat4<0x11, Vector4>      yxyx;
+			SwizzleFloat4<0x12, Vector4>      zxyx;
+			SwizzleFloat4<0x13, Vector4>      wxyx;
+			SwizzleFloat4<0x14, Vector4>      xyyx;
+			SwizzleFloat4<0x15, Vector4>      yyyx;
+			SwizzleFloat4<0x16, Vector4>      zyyx;
+			SwizzleFloat4<0x17, Vector4>      wyyx;
+			SwizzleFloat4<0x18, Vector4>      xzyx;
+			SwizzleFloat4<0x19, Vector4>      yzyx;
+			SwizzleFloat4<0x1A, Vector4>      zzyx;
+			SwizzleFloat4<0x1B, Vector4>      wzyx;
+			SwizzleFloat4<0x1C, Vector4>      xwyx;
+			SwizzleFloat4<0x1D, Vector4>      ywyx;
+			SwizzleFloat4<0x1E, Vector4>      zwyx;
+			SwizzleFloat4<0x1F, Vector4>      wwyx;
+			SwizzleFloat4<0x20, Vector4>      xxzx;
+			SwizzleFloat4<0x21, Vector4>      yxzx;
+			SwizzleFloat4<0x22, Vector4>      zxzx;
+			SwizzleFloat4<0x23, Vector4>      wxzx;
+			SwizzleFloat4<0x24, Vector4>      xyzx;
+			SwizzleFloat4<0x25, Vector4>      yyzx;
+			SwizzleFloat4<0x26, Vector4>      zyzx;
+			SwizzleFloat4<0x27, Vector4>      wyzx;
+			SwizzleFloat4<0x28, Vector4>      xzzx;
+			SwizzleFloat4<0x29, Vector4>      yzzx;
+			SwizzleFloat4<0x2A, Vector4>      zzzx;
+			SwizzleFloat4<0x2B, Vector4>      wzzx;
+			SwizzleFloat4<0x2C, Vector4>      xwzx;
+			SwizzleFloat4<0x2D, Vector4>      ywzx;
+			SwizzleFloat4<0x2E, Vector4>      zwzx;
+			SwizzleFloat4<0x2F, Vector4>      wwzx;
+			SwizzleFloat4<0x30, Vector4>      xxwx;
+			SwizzleFloat4<0x31, Vector4>      yxwx;
+			SwizzleFloat4<0x32, Vector4>      zxwx;
+			SwizzleFloat4<0x33, Vector4>      wxwx;
+			SwizzleFloat4<0x34, Vector4>      xywx;
+			SwizzleFloat4<0x35, Vector4>      yywx;
+			SwizzleFloat4<0x36, Vector4>      zywx;
+			SwizzleFloat4<0x37, Vector4>      wywx;
+			SwizzleFloat4<0x38, Vector4>      xzwx;
+			SwizzleFloat4<0x39, Vector4>      yzwx;
+			SwizzleFloat4<0x3A, Vector4>      zzwx;
+			SwizzleFloat4<0x3B, Vector4>      wzwx;
+			SwizzleFloat4<0x3C, Vector4>      xwwx;
+			SwizzleFloat4<0x3D, Vector4>      ywwx;
+			SwizzleFloat4<0x3E, Vector4>      zwwx;
+			SwizzleFloat4<0x3F, Vector4>      wwwx;
+			SwizzleFloat4<0x40, Vector4>      xxxy;
+			SwizzleFloat4<0x41, Vector4>      yxxy;
+			SwizzleFloat4<0x42, Vector4>      zxxy;
+			SwizzleFloat4<0x43, Vector4>      wxxy;
+			SwizzleFloat4<0x44, Vector4>      xyxy;
+			SwizzleFloat4<0x45, Vector4>      yyxy;
+			SwizzleFloat4<0x46, Vector4>      zyxy;
+			SwizzleFloat4<0x47, Vector4>      wyxy;
+			SwizzleFloat4<0x48, Vector4>      xzxy;
+			SwizzleFloat4<0x49, Vector4>      yzxy;
+			SwizzleFloat4<0x4A, Vector4>      zzxy;
+			SwizzleFloat4<0x4B, Vector4>      wzxy;
+			SwizzleFloat4<0x4C, Vector4>      xwxy;
+			SwizzleFloat4<0x4D, Vector4>      ywxy;
+			SwizzleFloat4<0x4E, Vector4>      zwxy;
+			SwizzleFloat4<0x4F, Vector4>      wwxy;
+			SwizzleFloat4<0x50, Vector4>      xxyy;
+			SwizzleFloat4<0x51, Vector4>      yxyy;
+			SwizzleFloat4<0x52, Vector4>      zxyy;
+			SwizzleFloat4<0x53, Vector4>      wxyy;
+			SwizzleFloat4<0x54, Vector4>      xyyy;
+			SwizzleFloat4<0x55, Vector4>      yyyy;
+			SwizzleFloat4<0x56, Vector4>      zyyy;
+			SwizzleFloat4<0x57, Vector4>      wyyy;
+			SwizzleFloat4<0x58, Vector4>      xzyy;
+			SwizzleFloat4<0x59, Vector4>      yzyy;
+			SwizzleFloat4<0x5A, Vector4>      zzyy;
+			SwizzleFloat4<0x5B, Vector4>      wzyy;
+			SwizzleFloat4<0x5C, Vector4>      xwyy;
+			SwizzleFloat4<0x5D, Vector4>      ywyy;
+			SwizzleFloat4<0x5E, Vector4>      zwyy;
+			SwizzleFloat4<0x5F, Vector4>      wwyy;
+			SwizzleFloat4<0x60, Vector4>      xxzy;
+			SwizzleFloat4<0x61, Vector4>      yxzy;
+			SwizzleFloat4<0x62, Vector4>      zxzy;
+			SwizzleFloat4<0x63, Vector4>      wxzy;
+			SwizzleFloat4<0x64, Vector4>      xyzy;
+			SwizzleFloat4<0x65, Vector4>      yyzy;
+			SwizzleFloat4<0x66, Vector4>      zyzy;
+			SwizzleFloat4<0x67, Vector4>      wyzy;
+			SwizzleFloat4<0x68, Vector4>      xzzy;
+			SwizzleFloat4<0x69, Vector4>      yzzy;
+			SwizzleFloat4<0x6A, Vector4>      zzzy;
+			SwizzleFloat4<0x6B, Vector4>      wzzy;
+			SwizzleFloat4<0x6C, Vector4>      xwzy;
+			SwizzleFloat4<0x6D, Vector4>      ywzy;
+			SwizzleFloat4<0x6E, Vector4>      zwzy;
+			SwizzleFloat4<0x6F, Vector4>      wwzy;
+			SwizzleFloat4<0x70, Vector4>      xxwy;
+			SwizzleFloat4<0x71, Vector4>      yxwy;
+			SwizzleFloat4<0x72, Vector4>      zxwy;
+			SwizzleFloat4<0x73, Vector4>      wxwy;
+			SwizzleFloat4<0x74, Vector4>      xywy;
+			SwizzleFloat4<0x75, Vector4>      yywy;
+			SwizzleFloat4<0x76, Vector4>      zywy;
+			SwizzleFloat4<0x77, Vector4>      wywy;
+			SwizzleFloat4<0x78, Vector4>      xzwy;
+			SwizzleFloat4<0x79, Vector4>      yzwy;
+			SwizzleFloat4<0x7A, Vector4>      zzwy;
+			SwizzleFloat4<0x7B, Vector4>      wzwy;
+			SwizzleFloat4<0x7C, Vector4>      xwwy;
+			SwizzleFloat4<0x7D, Vector4>      ywwy;
+			SwizzleFloat4<0x7E, Vector4>      zwwy;
+			SwizzleFloat4<0x7F, Vector4>      wwwy;
+			SwizzleFloat4<0x80, Vector4>      xxxz;
+			SwizzleFloat4<0x81, Vector4>      yxxz;
+			SwizzleFloat4<0x82, Vector4>      zxxz;
+			SwizzleFloat4<0x83, Vector4>      wxxz;
+			SwizzleFloat4<0x84, Vector4>      xyxz;
+			SwizzleFloat4<0x85, Vector4>      yyxz;
+			SwizzleFloat4<0x86, Vector4>      zyxz;
+			SwizzleFloat4<0x87, Vector4>      wyxz;
+			SwizzleFloat4<0x88, Vector4>      xzxz;
+			SwizzleFloat4<0x89, Vector4>      yzxz;
+			SwizzleFloat4<0x8A, Vector4>      zzxz;
+			SwizzleFloat4<0x8B, Vector4>      wzxz;
+			SwizzleFloat4<0x8C, Vector4>      xwxz;
+			SwizzleFloat4<0x8D, Vector4>      ywxz;
+			SwizzleFloat4<0x8E, Vector4>      zwxz;
+			SwizzleFloat4<0x8F, Vector4>      wwxz;
+			SwizzleFloat4<0x90, Vector4>      xxyz;
+			SwizzleFloat4<0x91, Vector4>      yxyz;
+			SwizzleFloat4<0x92, Vector4>      zxyz;
+			SwizzleFloat4<0x93, Vector4>      wxyz;
+			SwizzleFloat4<0x94, Vector4>      xyyz;
+			SwizzleFloat4<0x95, Vector4>      yyyz;
+			SwizzleFloat4<0x96, Vector4>      zyyz;
+			SwizzleFloat4<0x97, Vector4>      wyyz;
+			SwizzleFloat4<0x98, Vector4>      xzyz;
+			SwizzleFloat4<0x99, Vector4>      yzyz;
+			SwizzleFloat4<0x9A, Vector4>      zzyz;
+			SwizzleFloat4<0x9B, Vector4>      wzyz;
+			SwizzleFloat4<0x9C, Vector4>      xwyz;
+			SwizzleFloat4<0x9D, Vector4>      ywyz;
+			SwizzleFloat4<0x9E, Vector4>      zwyz;
+			SwizzleFloat4<0x9F, Vector4>      wwyz;
+			SwizzleFloat4<0xA0, Vector4>      xxzz;
+			SwizzleFloat4<0xA1, Vector4>      yxzz;
+			SwizzleFloat4<0xA2, Vector4>      zxzz;
+			SwizzleFloat4<0xA3, Vector4>      wxzz;
+			SwizzleFloat4<0xA4, Vector4>      xyzz;
+			SwizzleFloat4<0xA5, Vector4>      yyzz;
+			SwizzleFloat4<0xA6, Vector4>      zyzz;
+			SwizzleFloat4<0xA7, Vector4>      wyzz;
+			SwizzleFloat4<0xA8, Vector4>      xzzz;
+			SwizzleFloat4<0xA9, Vector4>      yzzz;
+			SwizzleFloat4<0xAA, Vector4>      zzzz;
+			SwizzleFloat4<0xAB, Vector4>      wzzz;
+			SwizzleFloat4<0xAC, Vector4>      xwzz;
+			SwizzleFloat4<0xAD, Vector4>      ywzz;
+			SwizzleFloat4<0xAE, Vector4>      zwzz;
+			SwizzleFloat4<0xAF, Vector4>      wwzz;
+			SwizzleFloat4<0xB0, Vector4>      xxwz;
+			SwizzleFloat4<0xB1, Vector4>      yxwz;
+			SwizzleFloat4<0xB2, Vector4>      zxwz;
+			SwizzleFloat4<0xB3, Vector4>      wxwz;
+			SwizzleFloat4<0xB4, Vector4>      xywz;
+			SwizzleFloat4<0xB5, Vector4>      yywz;
+			SwizzleFloat4<0xB6, Vector4>      zywz;
+			SwizzleFloat4<0xB7, Vector4>      wywz;
+			SwizzleFloat4<0xB8, Vector4>      xzwz;
+			SwizzleFloat4<0xB9, Vector4>      yzwz;
+			SwizzleFloat4<0xBA, Vector4>      zzwz;
+			SwizzleFloat4<0xBB, Vector4>      wzwz;
+			SwizzleFloat4<0xBC, Vector4>      xwwz;
+			SwizzleFloat4<0xBD, Vector4>      ywwz;
+			SwizzleFloat4<0xBE, Vector4>      zwwz;
+			SwizzleFloat4<0xBF, Vector4>      wwwz;
+			SwizzleFloat4<0xC0, Vector4>      xxxw;
+			SwizzleFloat4<0xC1, Vector4>      yxxw;
+			SwizzleFloat4<0xC2, Vector4>      zxxw;
+			SwizzleFloat4<0xC3, Vector4>      wxxw;
+			SwizzleFloat4<0xC4, Vector4>      xyxw;
+			SwizzleFloat4<0xC5, Vector4>      yyxw;
+			SwizzleFloat4<0xC6, Vector4>      zyxw;
+			SwizzleFloat4<0xC7, Vector4>      wyxw;
+			SwizzleFloat4<0xC8, Vector4>      xzxw;
+			SwizzleFloat4<0xC9, Vector4>      yzxw;
+			SwizzleFloat4<0xCA, Vector4>      zzxw;
+			SwizzleFloat4<0xCB, Vector4>      wzxw;
+			SwizzleFloat4<0xCC, Vector4>      xwxw;
+			SwizzleFloat4<0xCD, Vector4>      ywxw;
+			SwizzleFloat4<0xCE, Vector4>      zwxw;
+			SwizzleFloat4<0xCF, Vector4>      wwxw;
+			SwizzleFloat4<0xD0, Vector4>      xxyw;
+			SwizzleFloat4<0xD1, Vector4>      yxyw;
+			SwizzleFloat4<0xD2, Vector4>      zxyw;
+			SwizzleFloat4<0xD3, Vector4>      wxyw;
+			SwizzleFloat4<0xD4, Vector4>      xyyw;
+			SwizzleFloat4<0xD5, Vector4>      yyyw;
+			SwizzleFloat4<0xD6, Vector4>      zyyw;
+			SwizzleFloat4<0xD7, Vector4>      wyyw;
+			SwizzleFloat4<0xD8, Vector4>      xzyw;
+			SwizzleFloat4<0xD9, Vector4>      yzyw;
+			SwizzleFloat4<0xDA, Vector4>      zzyw;
+			SwizzleFloat4<0xDB, Vector4>      wzyw;
+			SwizzleFloat4<0xDC, Vector4>      xwyw;
+			SwizzleFloat4<0xDD, Vector4>      ywyw;
+			SwizzleFloat4<0xDE, Vector4>      zwyw;
+			SwizzleFloat4<0xDF, Vector4>      wwyw;
+			SwizzleFloat4<0xE0, Vector4>      xxzw;
+			SwizzleFloat4<0xE1, Vector4>      yxzw;
+			SwizzleFloat4<0xE2, Vector4>      zxzw;
+			SwizzleFloat4<0xE3, Vector4>      wxzw;
+			SwizzleMaskFloat4<0xE4, Vector4>  xyzw;
+			SwizzleFloat4<0xE5, Vector4>      yyzw;
+			SwizzleFloat4<0xE6, Vector4>      zyzw;
+			SwizzleFloat4<0xE7, Vector4>      wyzw;
+			SwizzleFloat4<0xE8, Vector4>      xzzw;
+			SwizzleFloat4<0xE9, Vector4>      yzzw;
+			SwizzleFloat4<0xEA, Vector4>      zzzw;
+			SwizzleFloat4<0xEB, Vector4>      wzzw;
+			SwizzleFloat4<0xEC, Vector4>      xwzw;
+			SwizzleFloat4<0xED, Vector4>      ywzw;
+			SwizzleFloat4<0xEE, Vector4>      zwzw;
+			SwizzleFloat4<0xEF, Vector4>      wwzw;
+			SwizzleFloat4<0xF0, Vector4>      xxww;
+			SwizzleFloat4<0xF1, Vector4>      yxww;
+			SwizzleFloat4<0xF2, Vector4>      zxww;
+			SwizzleFloat4<0xF3, Vector4>      wxww;
+			SwizzleFloat4<0xF4, Vector4>      xyww;
+			SwizzleFloat4<0xF5, Vector4>      yyww;
+			SwizzleFloat4<0xF6, Vector4>      zyww;
+			SwizzleFloat4<0xF7, Vector4>      wyww;
+			SwizzleFloat4<0xF8, Vector4>      xzww;
+			SwizzleFloat4<0xF9, Vector4>      yzww;
+			SwizzleFloat4<0xFA, Vector4>      zzww;
+			SwizzleFloat4<0xFB, Vector4>      wzww;
+			SwizzleFloat4<0xFC, Vector4>      xwww;
+			SwizzleFloat4<0xFD, Vector4>      ywww;
+			SwizzleFloat4<0xFE, Vector4>      zwww;
+			SwizzleFloat4<0xFF, Vector4>      wwww;
 		};
 	};
 
-	class Float4 : public LValue<Float4>, public FloatXYZW
+	class Float4 : public LValue<Float4>, public FloatXYZW<Float4>
 	{
 	public:
 		explicit Float4(RValue<Byte4> cast);
@@ -2018,17 +2031,17 @@ namespace sw
 		Float4(const Reference<Float> &rhs);
 
 		template<int T>
-		Float4(const SwizzleMask1Float4<T> &rhs);
+		Float4(const SwizzleMask1Float4<T, Float4> &rhs);
 		template<int T>
-		Float4(const SwizzleFloat4<T> &rhs);
+		Float4(const SwizzleFloat4<T, Float4> &rhs);
 		template<int X, int Y>
-		Float4(const Swizzle2Float4<X> &x, const Swizzle2Float4<Y> &y);
+		Float4(const Swizzle2Float4<X, Float4> &x, const Swizzle2Float4<Y, Float4> &y);
 		template<int X, int Y>
-		Float4(const SwizzleMask2Float4<X> &x, const Swizzle2Float4<Y> &y);
+		Float4(const SwizzleMask2Float4<X, Float4> &x, const Swizzle2Float4<Y, Float4> &y);
 		template<int X, int Y>
-		Float4(const Swizzle2Float4<X> &x, const SwizzleMask2Float4<Y> &y);
+		Float4(const Swizzle2Float4<X, Float4> &x, const SwizzleMask2Float4<Y, Float4> &y);
 		template<int X, int Y>
-		Float4(const SwizzleMask2Float4<X> &x, const SwizzleMask2Float4<Y> &y);
+		Float4(const SwizzleMask2Float4<X, Float4> &x, const SwizzleMask2Float4<Y, Float4> &y);
 
 		RValue<Float4> operator=(float replicate);
 		RValue<Float4> operator=(RValue<Float4> rhs);
@@ -2039,9 +2052,9 @@ namespace sw
 		RValue<Float4> operator=(const Reference<Float> &rhs);
 
 		template<int T>
-		RValue<Float4> operator=(const SwizzleMask1Float4<T> &rhs);
+		RValue<Float4> operator=(const SwizzleMask1Float4<T, Float4> &rhs);
 		template<int T>
-		RValue<Float4> operator=(const SwizzleFloat4<T> &rhs);
+		RValue<Float4> operator=(const SwizzleFloat4<T, Float4> &rhs);
 
 		static Type *getType();
 
@@ -2327,144 +2340,144 @@ namespace sw
 		value = ref.loadValue();
 	}
 
-	template<int T>
-	Swizzle2Float4<T>::operator RValue<Float4>() const
+	template<int T, class Vector4>
+	Swizzle2Float4<T, Vector4>::operator RValue<Vector4>() const
 	{
 		Value *vector = parent->loadValue();
 
-		return Swizzle(RValue<Float4>(vector), T);
+		return Swizzle(RValue<Vector4>(vector), T);
 	}
 
-	template<int T>
-	SwizzleFloat4<T>::operator RValue<Float4>() const
+	template<int T, class Vector4>
+	SwizzleFloat4<T, Vector4>::operator RValue<Vector4>() const
 	{
 		Value *vector = parent->loadValue();
 
-		return Swizzle(RValue<Float4>(vector), T);
+		return Swizzle(RValue<Vector4>(vector), T);
 	}
 
-	template<int T>
-	SwizzleMaskFloat4<T>::operator RValue<Float4>() const
+	template<int T, class Vector4>
+	SwizzleMaskFloat4<T, Vector4>::operator RValue<Vector4>() const
 	{
 		Value *vector = parent->loadValue();
 
-		return Swizzle(RValue<Float4>(vector), T);
+		return Swizzle(RValue<Vector4>(vector), T);
 	}
 
-	template<int T>
-	RValue<Float4> SwizzleMaskFloat4<T>::operator=(RValue<Float4> rhs)
+	template<int T, class Vector4>
+	RValue<Vector4> SwizzleMaskFloat4<T, Vector4>::operator=(RValue<Vector4> rhs)
 	{
 		return Mask(*parent, rhs, T);
 	}
 
-	template<int T>
-	RValue<Float4> SwizzleMaskFloat4<T>::operator=(RValue<Float> rhs)
+	template<int T, class Vector4>
+	RValue<Vector4> SwizzleMaskFloat4<T, Vector4>::operator=(RValue<typename Scalar<Vector4>::Type> rhs)
 	{
-		return Mask(*parent, Float4(rhs), T);
+		return Mask(*parent, Vector4(rhs), T);
 	}
 
-	template<int T>
-	SwizzleMask1Float4<T>::operator RValue<Float>() const   // FIXME: Call a non-template function
+	template<int T, class Vector4>
+	SwizzleMask1Float4<T, Vector4>::operator RValue<typename Scalar<Vector4>::Type>() const   // FIXME: Call a non-template function
 	{
 		return Extract(*parent, T & 0x3);
 	}
 
-	template<int T>
-	SwizzleMask1Float4<T>::operator RValue<Float4>() const
+	template<int T, class Vector4>
+	SwizzleMask1Float4<T, Vector4>::operator RValue<Vector4>() const
 	{
 		Value *vector = parent->loadValue();
 
-		return Swizzle(RValue<Float4>(vector), T);
+		return Swizzle(RValue<Vector4>(vector), T);
 	}
 
-	template<int T>
-	RValue<Float4> SwizzleMask1Float4<T>::operator=(float x)
+	template<int T, class Vector4>
+	RValue<Vector4> SwizzleMask1Float4<T, Vector4>::operator=(float x)
 	{
 		return *parent = Insert(*parent, Float(x), T & 0x3);
 	}
 
-	template<int T>
-	RValue<Float4> SwizzleMask1Float4<T>::operator=(RValue<Float4> rhs)
+	template<int T, class Vector4>
+	RValue<Vector4> SwizzleMask1Float4<T, Vector4>::operator=(RValue<Vector4> rhs)
 	{
 		return Mask(*parent, Float4(rhs), T);
 	}
 
-	template<int T>
-	RValue<Float4> SwizzleMask1Float4<T>::operator=(RValue<Float> rhs)   // FIXME: Call a non-template function
+	template<int T, class Vector4>
+	RValue<Vector4> SwizzleMask1Float4<T, Vector4>::operator=(RValue<typename Scalar<Vector4>::Type> rhs)   // FIXME: Call a non-template function
 	{
 		return *parent = Insert(*parent, rhs, T & 0x3);
 	}
 
-	template<int T>
-	SwizzleMask2Float4<T>::operator RValue<Float4>() const
+	template<int T, class Vector4>
+	SwizzleMask2Float4<T, Vector4>::operator RValue<Vector4>() const
 	{
 		Value *vector = parent->loadValue();
 
 		return Swizzle(RValue<Float4>(vector), T);
 	}
 
-	template<int T>
-	RValue<Float4> SwizzleMask2Float4<T>::operator=(RValue<Float4> rhs)
+	template<int T, class Vector4>
+	RValue<Vector4> SwizzleMask2Float4<T, Vector4>::operator=(RValue<Vector4> rhs)
 	{
 		return Mask(*parent, Float4(rhs), T);
 	}
 
 	template<int T>
-	Float::Float(const SwizzleMask1Float4<T> &rhs)
+	Float::Float(const SwizzleMask1Float4<T, Float4> &rhs)
 	{
 		*this = rhs.operator RValue<Float>();
 	}
 
 	template<int T>
-	RValue<Float> Float::operator=(const SwizzleMask1Float4<T> &rhs)
+	RValue<Float> Float::operator=(const SwizzleMask1Float4<T, Float4> &rhs)
 	{
 		return *this = rhs.operator RValue<Float>();
 	}
 
 	template<int T>
-	Float4::Float4(const SwizzleMask1Float4<T> &rhs) : FloatXYZW(this)
+	Float4::Float4(const SwizzleMask1Float4<T, Float4> &rhs) : FloatXYZW(this)
 	{
 		*this = rhs.operator RValue<Float4>();
 	}
 
 	template<int T>
-	Float4::Float4(const SwizzleFloat4<T> &rhs) : FloatXYZW(this)
+	Float4::Float4(const SwizzleFloat4<T, Float4> &rhs) : FloatXYZW(this)
 	{
 		*this = rhs.operator RValue<Float4>();
 	}
 
 	template<int X, int Y>
-	Float4::Float4(const Swizzle2Float4<X> &x, const Swizzle2Float4<Y> &y) : FloatXYZW(this)
+	Float4::Float4(const Swizzle2Float4<X, Float4> &x, const Swizzle2Float4<Y, Float4> &y) : FloatXYZW(this)
 	{
 		*this = ShuffleLowHigh(*x.parent, *y.parent, (X & 0xF) | (Y & 0xF) << 4);
 	}
 
 	template<int X, int Y>
-	Float4::Float4(const SwizzleMask2Float4<X> &x, const Swizzle2Float4<Y> &y) : FloatXYZW(this)
+	Float4::Float4(const SwizzleMask2Float4<X, Float4> &x, const Swizzle2Float4<Y, Float4> &y) : FloatXYZW(this)
 	{
 		*this = ShuffleLowHigh(*x.parent, *y.parent, (X & 0xF) | (Y & 0xF) << 4);
 	}
 
 	template<int X, int Y>
-	Float4::Float4(const Swizzle2Float4<X> &x, const SwizzleMask2Float4<Y> &y) : FloatXYZW(this)
+	Float4::Float4(const Swizzle2Float4<X, Float4> &x, const SwizzleMask2Float4<Y, Float4> &y) : FloatXYZW(this)
 	{
 		*this = ShuffleLowHigh(*x.parent, *y.parent, (X & 0xF) | (Y & 0xF) << 4);
 	}
 
 	template<int X, int Y>
-	Float4::Float4(const SwizzleMask2Float4<X> &x, const SwizzleMask2Float4<Y> &y) : FloatXYZW(this)
+	Float4::Float4(const SwizzleMask2Float4<X, Float4> &x, const SwizzleMask2Float4<Y, Float4> &y) : FloatXYZW(this)
 	{
 		*this = ShuffleLowHigh(*x.parent, *y.parent, (X & 0xF) | (Y & 0xF) << 4);
 	}
 
 	template<int T>
-	RValue<Float4> Float4::operator=(const SwizzleMask1Float4<T> &rhs)
+	RValue<Float4> Float4::operator=(const SwizzleMask1Float4<T, Float4> &rhs)
 	{
 		return *this = rhs.operator RValue<Float4>();
 	}
 
 	template<int T>
-	RValue<Float4> Float4::operator=(const SwizzleFloat4<T> &rhs)
+	RValue<Float4> Float4::operator=(const SwizzleFloat4<T, Float4> &rhs)
 	{
 		return *this = rhs.operator RValue<Float4>();
 	}
