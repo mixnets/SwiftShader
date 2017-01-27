@@ -40,7 +40,11 @@
 #include <xmmintrin.h>
 #include <fstream>
 
-#if defined(__x86_64__) && defined(_WIN32)
+#if defined (__x86_64__) || defined (_M_AMD64) || defined (_M_X64)
+# define X86_64_JIT
+#endif
+
+#if defined(X86_64_JIT) && defined(_MSC_VER)
 extern "C" void X86CompilationCallback()
 {
 	assert(false);   // UNIMPLEMENTED
