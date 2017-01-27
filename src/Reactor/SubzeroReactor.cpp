@@ -6041,26 +6041,26 @@ namespace sw
 
 	RValue<Float4> Max(RValue<Float4> x, RValue<Float4> y)
 	{
-		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v4i1);
-		auto cmp = Ice::InstFcmp::create(::function, Ice::InstFcmp::Ule, condition, x.value, y.value);
-		::basicBlock->appendInst(cmp);
-
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
-		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
-		::basicBlock->appendInst(select);
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Maximum, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		auto target = ::context->getConstantUndef(Ice::IceType_i32);
+		auto max = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+		max->addArg(x.value);
+		max->addArg(y.value);
+		::basicBlock->appendInst(max);
 
 		return RValue<Float4>(V(result));
 	}
 
 	RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y)
 	{
-		Ice::Variable *condition = ::function->makeVariable(Ice::IceType_v4i1);
-		auto cmp = Ice::InstFcmp::create(::function, Ice::InstFcmp::Ugt, condition, x.value, y.value);
-		::basicBlock->appendInst(cmp);
-
 		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
-		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
-		::basicBlock->appendInst(select);
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Minimum, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		auto target = ::context->getConstantUndef(Ice::IceType_i32);
+		auto max = Ice::InstIntrinsicCall::create(::function, 2, result, target, intrinsic);
+		max->addArg(x.value);
+		max->addArg(y.value);
+		::basicBlock->appendInst(max);
 
 		return RValue<Float4>(V(result));
 	}
