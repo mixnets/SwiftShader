@@ -2122,6 +2122,7 @@ namespace sw
 		Reference<T> operator*();
 		Reference<T> operator[](int index);
 		Reference<T> operator[](RValue<Int> index);
+		Reference<T> operator[](RValue<UInt> index);
 
 		static Type *getType();
 
@@ -2544,6 +2545,14 @@ namespace sw
 
 	template<class T>
 	Reference<T> Pointer<T>::operator[](RValue<Int> index)
+	{
+		Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::getType(), index.value);
+
+		return Reference<T>(element, alignment);
+	}
+
+	template<class T>
+	Reference<T> Pointer<T>::operator[](RValue<UInt> index)
 	{
 		Value *element = Nucleus::createGEP(LValue<Pointer<T>>::loadValue(), T::getType(), index.value);
 
