@@ -451,8 +451,13 @@ namespace sw
 		return value;
 	}
 
-	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index)
+	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index, bool unsignedIndex)
 	{
+		if(unsignedIndex && sizeof(void*) == 8)
+		{
+			index = createZExt(index, Long::getType());
+		}
+
 		assert(ptr->getType()->getContainedType(0) == type);
 		return V(::builder->CreateGEP(ptr, index));
 	}
@@ -6300,7 +6305,7 @@ namespace sw
 
 	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, RValue<UInt> offset)
 	{
-		return RValue<Pointer<Byte>>(Nucleus::createGEP(lhs.value, Byte::getType(), offset.value));
+		return RValue<Pointer<Byte>>(Nucleus::createGEP(lhs.value, Byte::getType(), offset.value, true));
 	}
 
 	RValue<Pointer<Byte>> operator+=(Pointer<Byte> &lhs, int offset)
@@ -6330,7 +6335,7 @@ namespace sw
 
 	RValue<Pointer<Byte>> operator-(RValue<Pointer<Byte>> lhs, RValue<UInt> offset)
 	{
-		return lhs + -offset;
+		return lhs + -Int(offset);
 	}
 
 	RValue<Pointer<Byte>> operator-=(Pointer<Byte> &lhs, int offset)
