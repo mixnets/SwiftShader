@@ -41,7 +41,7 @@ namespace egl
 {
 
 sw::Format ConvertFormatType(GLenum format, GLenum type);
-sw::Format SelectInternalFormat(GLenum format, GLenum type);
+sw::Format SelectInternalFormat(GLenum format);
 GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment);
 GLsizei ComputeCompressedSize(GLsizei width, GLsizei height, GLenum format);
 size_t ComputePackingOffset(GLenum format, GLenum type, GLsizei width, GLsizei height, GLint alignment, GLint skipImages, GLint skipRows, GLint skipPixels);
@@ -50,9 +50,9 @@ class Image : public sw::Surface, public gl::Object
 {
 public:
 	// 2D texture image
-	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
-		: sw::Surface(parentTexture->getResource(), width, height, 1, SelectInternalFormat(format, type), true, true),
-		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
+	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format)
+		: sw::Surface(parentTexture->getResource(), width, height, 1, SelectInternalFormat(format), true, true),
+		  width(width), height(height), format(format), internalFormat(SelectInternalFormat(format)), depth(1),
 		  parentTexture(parentTexture)
 	{
 		shared = false;
@@ -61,9 +61,9 @@ public:
 	}
 
 	// 3D texture image
-	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
-		: sw::Surface(parentTexture->getResource(), width, height, depth, SelectInternalFormat(format, type), true, true),
-		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(depth),
+	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format)
+		: sw::Surface(parentTexture->getResource(), width, height, depth, SelectInternalFormat(format), true, true),
+		  width(width), height(height), format(format), internalFormat(SelectInternalFormat(format)), depth(depth),
 		  parentTexture(parentTexture)
 	{
 		shared = false;
@@ -72,9 +72,9 @@ public:
 	}
 
 	// Native EGL image
-	Image(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
-		: sw::Surface(nullptr, width, height, 1, SelectInternalFormat(format, type), true, true, pitchP),
-		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
+	Image(GLsizei width, GLsizei height, GLenum format, int pitchP)
+		: sw::Surface(nullptr, width, height, 1, SelectInternalFormat(format), true, true, pitchP),
+		  width(width), height(height), format(format), internalFormat(SelectInternalFormat(format)), depth(1),
 		  parentTexture(nullptr)
 	{
 		shared = true;
@@ -84,7 +84,7 @@ public:
 	// Render target
 	Image(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
 		: sw::Surface(nullptr, width, height, multiSampleDepth, internalFormat, lockable, true),
-		  width(width), height(height), format(0 /*GL_NONE*/), type(0 /*GL_NONE*/), internalFormat(internalFormat), depth(multiSampleDepth),
+		  width(width), height(height), format(0 /*GL_NONE*/), internalFormat(internalFormat), depth(multiSampleDepth),
 		  parentTexture(nullptr)
 	{
 		shared = false;
@@ -111,11 +111,6 @@ public:
 	GLenum getFormat() const
 	{
 		return format;
-	}
-
-	GLenum getType() const
-	{
-		return type;
 	}
 
 	sw::Format getInternalFormat() const
@@ -178,7 +173,6 @@ protected:
 	const GLsizei width;
 	const GLsizei height;
 	const GLenum format;
-	const GLenum type;
 	const sw::Format internalFormat;
 	const int depth;
 
@@ -211,30 +205,12 @@ inline GLenum GLPixelFormatFromAndroid(int halFormat)
 	}
 }
 
-inline GLenum GLPixelTypeFromAndroid(int halFormat)
-{
-	switch(halFormat)
-	{
-	case HAL_PIXEL_FORMAT_RGBA_8888: return GL_UNSIGNED_BYTE;
-	case HAL_PIXEL_FORMAT_RGBX_8888: return GL_UNSIGNED_BYTE;
-	case HAL_PIXEL_FORMAT_RGB_888:   return GL_NONE;   // Unsupported
-	case HAL_PIXEL_FORMAT_BGRA_8888: return GL_UNSIGNED_BYTE;
-	case HAL_PIXEL_FORMAT_RGB_565:   return GL_UNSIGNED_SHORT_5_6_5;
-	case HAL_PIXEL_FORMAT_YV12:      return GL_UNSIGNED_BYTE;
-#ifdef GRALLOC_MODULE_API_VERSION_0_2
-	case HAL_PIXEL_FORMAT_YCbCr_420_888: return GL_UNSIGNED_BYTE;
-#endif
-	default:                         return GL_NONE;
-	}
-}
-
 class AndroidNativeImage : public egl::Image
 {
 public:
 	explicit AndroidNativeImage(ANativeWindowBuffer *nativeBuffer)
 		: egl::Image(nativeBuffer->width, nativeBuffer->height,
 		             GLPixelFormatFromAndroid(nativeBuffer->format),
-		             GLPixelTypeFromAndroid(nativeBuffer->format),
 		             nativeBuffer->stride),
 		  nativeBuffer(nativeBuffer)
 	{

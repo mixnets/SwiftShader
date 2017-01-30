@@ -100,7 +100,6 @@ public:
 	virtual GLsizei getHeight(GLenum target, GLint level) const = 0;
 	virtual GLsizei getDepth(GLenum target, GLint level) const;
 	virtual GLenum getFormat(GLenum target, GLint level) const = 0;
-	virtual GLenum getType(GLenum target, GLint level) const = 0;
 	virtual sw::Format getInternalFormat(GLenum target, GLint level) const = 0;
 	virtual int getLevelCount() const = 0;
 
@@ -164,7 +163,6 @@ public:
 	virtual GLsizei getWidth(GLenum target, GLint level) const;
 	virtual GLsizei getHeight(GLenum target, GLint level) const;
 	virtual GLenum getFormat(GLenum target, GLint level) const;
-	virtual GLenum getType(GLenum target, GLint level) const;
 	virtual sw::Format getInternalFormat(GLenum target, GLint level) const;
 	virtual int getLevelCount() const;
 
@@ -223,7 +221,6 @@ public:
 	virtual GLsizei getWidth(GLenum target, GLint level) const;
 	virtual GLsizei getHeight(GLenum target, GLint level) const;
 	virtual GLenum getFormat(GLenum target, GLint level) const;
-	virtual GLenum getType(GLenum target, GLint level) const;
 	virtual sw::Format getInternalFormat(GLenum target, GLint level) const;
 	virtual int getLevelCount() const;
 
@@ -284,7 +281,6 @@ public:
 	virtual GLsizei getHeight(GLenum target, GLint level) const;
 	virtual GLsizei getDepth(GLenum target, GLint level) const;
 	virtual GLenum getFormat(GLenum target, GLint level) const;
-	virtual GLenum getType(GLenum target, GLint level) const;
 	virtual sw::Format getInternalFormat(GLenum target, GLint level) const;
 	virtual int getLevelCount() const;
 

@@ -546,7 +546,7 @@ namespace egl
 		return sw::FORMAT_NULL;
 	}
 
-	sw::Format SelectInternalFormat(GLenum format, GLenum type)
+	sw::Format SelectInternalFormat(GLenum format)
 	{
 		switch(format)
 		{
@@ -637,269 +637,134 @@ namespace egl
 		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
 			return sw::FORMAT_DXT5;
 		#endif
-		default:
-			break;
-		}
-
-		switch(type)
-		{
-		case GL_FLOAT:
-			switch(format)
-			{
-			case GL_ALPHA:
-			case GL_ALPHA32F_EXT:
-				return sw::FORMAT_A32F;
-			case GL_LUMINANCE:
-			case GL_LUMINANCE32F_EXT:
-				return sw::FORMAT_L32F;
-			case GL_LUMINANCE_ALPHA:
-			case GL_LUMINANCE_ALPHA32F_EXT:
-				return sw::FORMAT_A32L32F;
-			case GL_RED:
-			case GL_R32F:
-				return sw::FORMAT_R32F;
-			case GL_RG:
-			case GL_RG32F:
-				return sw::FORMAT_G32R32F;
-			case GL_RGB:
-			case GL_RGB32F:
-				return sw::FORMAT_X32B32G32R32F;
-			case GL_RGBA:
-			case GL_RGBA32F:
-				return sw::FORMAT_A32B32G32R32F;
-			case GL_DEPTH_COMPONENT:
-			case GL_DEPTH_COMPONENT32F:
-				return sw::FORMAT_D32F;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_HALF_FLOAT:
-		case GL_HALF_FLOAT_OES:
-			switch(format)
-			{
-			case GL_ALPHA:
-			case GL_ALPHA16F_EXT:
-				return sw::FORMAT_A16F;
-			case GL_LUMINANCE:
-			case GL_LUMINANCE16F_EXT:
-				return sw::FORMAT_L16F;
-			case GL_LUMINANCE_ALPHA:
-			case GL_LUMINANCE_ALPHA16F_EXT:
-				return sw::FORMAT_A16L16F;
-			case GL_RED:
-			case GL_R16F:
-				return sw::FORMAT_R16F;
-			case GL_RG:
-			case GL_RG16F:
-				return sw::FORMAT_G16R16F;
-			case GL_RGB:
-			case GL_RGB16F:
-			case GL_RGBA:
-			case GL_RGBA16F:
-				return sw::FORMAT_A16B16G16R16F;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_BYTE:
-			switch(format)
-			{
-			case GL_R8_SNORM:
-			case GL_R8:
-			case GL_RED:
-				return sw::FORMAT_R8I_SNORM;
-			case GL_R8I:
-			case GL_RED_INTEGER:
-				return sw::FORMAT_R8I;
-			case GL_RG8_SNORM:
-			case GL_RG8:
-			case GL_RG:
-				return sw::FORMAT_G8R8I_SNORM;
-			case GL_RG8I:
-			case GL_RG_INTEGER:
-				return sw::FORMAT_G8R8I;
-			case GL_RGB8_SNORM:
-			case GL_RGB8:
-			case GL_RGB:
-				return sw::FORMAT_X8B8G8R8I_SNORM;
-			case GL_RGB8I:
-			case GL_RGB_INTEGER:
-				return sw::FORMAT_X8B8G8R8I;
-			case GL_RGBA8_SNORM:
-			case GL_RGBA8:
-			case GL_RGBA:
-				return sw::FORMAT_A8B8G8R8I_SNORM;
-			case GL_RGBA8I:
-			case GL_RGBA_INTEGER:
-				return sw::FORMAT_A8B8G8R8I;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_UNSIGNED_BYTE:
-			switch(format)
-			{
-			case GL_LUMINANCE:
-			case GL_LUMINANCE8_EXT:
-				return sw::FORMAT_L8;
-			case GL_LUMINANCE_ALPHA:
-			case GL_LUMINANCE8_ALPHA8_EXT:
-				return sw::FORMAT_A8L8;
-			case GL_R8_SNORM:
-			case GL_R8:
-			case GL_RED:
-				return sw::FORMAT_R8;
-			case GL_R8UI:
-			case GL_RED_INTEGER:
-				return sw::FORMAT_R8UI;
-			case GL_RG8_SNORM:
-			case GL_RG8:
-			case GL_RG:
-				return sw::FORMAT_G8R8;
-			case GL_RG8UI:
-			case GL_RG_INTEGER:
-				return sw::FORMAT_G8R8UI;
-			case GL_RGB8_SNORM:
-			case GL_RGB8:
-			case GL_RGB:
-			case GL_SRGB8:
-				return sw::FORMAT_X8B8G8R8;
-			case GL_RGB8UI:
-			case GL_RGB_INTEGER:
-				return sw::FORMAT_X8B8G8R8UI;
-			case GL_RGBA8_SNORM:
-			case GL_RGBA8:
-			case GL_RGBA:
-			case GL_SRGB8_ALPHA8:
-				return sw::FORMAT_A8B8G8R8;
-			case GL_RGBA8UI:
-			case GL_RGBA_INTEGER:
-				return sw::FORMAT_A8B8G8R8UI;
-			case GL_BGRA_EXT:
-			case GL_BGRA8_EXT:
-				return sw::FORMAT_A8R8G8B8;
-			case GL_ALPHA:
-			case GL_ALPHA8_EXT:
-				return sw::FORMAT_A8;
-			case SW_YV12_BT601:
-				return sw::FORMAT_YV12_BT601;
-			case SW_YV12_BT709:
-				return sw::FORMAT_YV12_BT709;
-			case SW_YV12_JFIF:
-				return sw::FORMAT_YV12_JFIF;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_SHORT:
-			switch(format)
-			{
-			case GL_R16I:
-			case GL_RED_INTEGER:
-				return sw::FORMAT_R16I;
-			case GL_RG16I:
-			case GL_RG_INTEGER:
-				return sw::FORMAT_G16R16I;
-			case GL_RGB16I:
-			case GL_RGB_INTEGER:
-				return sw::FORMAT_X16B16G16R16I;
-			case GL_RGBA16I:
-			case GL_RGBA_INTEGER:
-				return sw::FORMAT_A16B16G16R16I;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_UNSIGNED_SHORT:
-			switch(format)
-			{
-			case GL_R16UI:
-			case GL_RED_INTEGER:
-				return sw::FORMAT_R16UI;
-			case GL_RG16UI:
-			case GL_RG_INTEGER:
-				return sw::FORMAT_G16R16UI;
-			case GL_RGB16UI:
-			case GL_RGB_INTEGER:
-				return sw::FORMAT_X16B16G16R16UI;
-			case GL_RGBA16UI:
-			case GL_RGBA_INTEGER:
-				return sw::FORMAT_A16B16G16R16UI;
-			case GL_DEPTH_COMPONENT:
-			case GL_DEPTH_COMPONENT16:
-				return sw::FORMAT_D32FS8_TEXTURE;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_INT:
-			switch(format)
-			{
-			case GL_RED_INTEGER:
-			case GL_R32I:
-				return sw::FORMAT_R32I;
-			case GL_RG_INTEGER:
-			case GL_RG32I:
-				return sw::FORMAT_G32R32I;
-			case GL_RGB_INTEGER:
-			case GL_RGB32I:
-				return sw::FORMAT_X32B32G32R32I;
-			case GL_RGBA_INTEGER:
-			case GL_RGBA32I:
-				return sw::FORMAT_A32B32G32R32I;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_UNSIGNED_INT:
-			switch(format)
-			{
-			case GL_RED_INTEGER:
-			case GL_R32UI:
-				return sw::FORMAT_R32UI;
-			case GL_RG_INTEGER:
-			case GL_RG32UI:
-				return sw::FORMAT_G32R32UI;
-			case GL_RGB_INTEGER:
-			case GL_RGB32UI:
-				return sw::FORMAT_X32B32G32R32UI;
-			case GL_RGBA_INTEGER:
-			case GL_RGBA32UI:
-				return sw::FORMAT_A32B32G32R32UI;
-			case GL_DEPTH_COMPONENT:
-			case GL_DEPTH_COMPONENT16:
-			case GL_DEPTH_COMPONENT24:
-			case GL_DEPTH_COMPONENT32_OES:
-				return sw::FORMAT_D32FS8_TEXTURE;
-			default:
-				UNREACHABLE(format);
-			}
+		case GL_ALPHA32F_EXT:
+			return sw::FORMAT_A32F;
+		case GL_LUMINANCE32F_EXT:
+			return sw::FORMAT_L32F;
+		case GL_LUMINANCE_ALPHA32F_EXT:
+			return sw::FORMAT_A32L32F;
+		case GL_R32F:
+			return sw::FORMAT_R32F;
+		case GL_RG32F:
+			return sw::FORMAT_G32R32F;
+		case GL_RGB32F:
+			return sw::FORMAT_X32B32G32R32F;
+		case GL_RGBA32F:
+			return sw::FORMAT_A32B32G32R32F;
+		case GL_DEPTH_COMPONENT32F:
+			return sw::FORMAT_D32F;
+		case GL_ALPHA16F_EXT:
+			return sw::FORMAT_A16F;
+		case GL_LUMINANCE16F_EXT:
+			return sw::FORMAT_L16F;
+		case GL_LUMINANCE_ALPHA16F_EXT:
+			return sw::FORMAT_A16L16F;
+		case GL_R16F:
+			return sw::FORMAT_R16F;
+		case GL_RG16F:
+			return sw::FORMAT_G16R16F;
+		case GL_RGB16F:
+			return sw::FORMAT_B16G16R16F;
+		case GL_RGBA16F:
+			return sw::FORMAT_A16B16G16R16F;
+		case GL_R8_SNORM:
+			return sw::FORMAT_R8I_SNORM;
+		case GL_R8:
+			return sw::FORMAT_R8;
+		case GL_R8I:
+			return sw::FORMAT_R8I;
+		case GL_RG8_SNORM:
+			return sw::FORMAT_G8R8I_SNORM;
+		case GL_RG8I:
+			return sw::FORMAT_G8R8I;
+		case GL_RGB8_SNORM:
+			return sw::FORMAT_X8B8G8R8I_SNORM;
+		case GL_RGB8I:
+			return sw::FORMAT_X8B8G8R8I;
+		case GL_RGBA8_SNORM:
+			return sw::FORMAT_A8B8G8R8I_SNORM;
+		case GL_RGBA8I:
+			return sw::FORMAT_A8B8G8R8I;
+		case GL_LUMINANCE8_EXT:
+			return sw::FORMAT_L8;
+		case GL_LUMINANCE8_ALPHA8_EXT:
+			return sw::FORMAT_A8L8;
+		case GL_R8UI:
+			return sw::FORMAT_R8UI;
+		case GL_RG8:
+			return sw::FORMAT_G8R8;
+		case GL_RG8UI:
+			return sw::FORMAT_G8R8UI;
+		case GL_RGB8:
+			return sw::FORMAT_X8B8G8R8;
+		case GL_RGB8UI:
+			return sw::FORMAT_X8B8G8R8UI;
+		case GL_RGBA8:
+			return sw::FORMAT_A8B8G8R8;
+		case GL_RGBA8UI:
+			return sw::FORMAT_A8B8G8R8UI;
+		case GL_BGRA8_EXT:
+			return sw::FORMAT_A8R8G8B8;
+		case GL_ALPHA8_EXT:
+			return sw::FORMAT_A8;
+		case SW_YV12_BT601:
+			return sw::FORMAT_YV12_BT601;
+		case SW_YV12_BT709:
+			return sw::FORMAT_YV12_BT709;
+		case SW_YV12_JFIF:
+			return sw::FORMAT_YV12_JFIF;
+		case GL_R16I:
+			return sw::FORMAT_R16I;
+		case GL_RG16I:
+			return sw::FORMAT_G16R16I;
+		case GL_RGB16I:
+			return sw::FORMAT_X16B16G16R16I;
+		case GL_RGBA16I:
+			return sw::FORMAT_A16B16G16R16I;
+		case GL_R16UI:
+			return sw::FORMAT_R16UI;
+		case GL_RG16UI:
+			return sw::FORMAT_G16R16UI;
+		case GL_RGB16UI:
+			return sw::FORMAT_X16B16G16R16UI;
+		case GL_RGBA16UI:
+			return sw::FORMAT_A16B16G16R16UI;
+		case GL_R32I:
+			return sw::FORMAT_R32I;
+		case GL_RG32I:
+			return sw::FORMAT_G32R32I;
+		case GL_RGB32I:
+			return sw::FORMAT_X32B32G32R32I;
+		case GL_RGBA32I:
+			return sw::FORMAT_A32B32G32R32I;
+		case GL_R32UI:
+			return sw::FORMAT_R32UI;
+		case GL_RG32UI:
+			return sw::FORMAT_G32R32UI;
+		case GL_RGB32UI:
+			return sw::FORMAT_X32B32G32R32UI;
+		case GL_RGBA32UI:
+			return sw::FORMAT_A32B32G32R32UI;
+		case GL_DEPTH_COMPONENT16:
+		case GL_DEPTH_COMPONENT24:
+		case GL_DEPTH_COMPONENT32_OES:
 		case GL_UNSIGNED_INT_24_8_OES:
-			if(format == GL_DEPTH_STENCIL || format == GL_DEPTH24_STENCIL8)
-			{
-				return sw::FORMAT_D32FS8_TEXTURE;
-			}
-			else UNREACHABLE(format);
-		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
-			if(format == GL_DEPTH_STENCIL || format == GL_DEPTH32F_STENCIL8)
-			{
-				return sw::FORMAT_D32FS8_TEXTURE;
-			}
-			else UNREACHABLE(format);
-		case GL_UNSIGNED_SHORT_4_4_4_4:
+		case GL_DEPTH24_STENCIL8:
+		case GL_DEPTH32F_STENCIL8:
+			return sw::FORMAT_D32FS8_TEXTURE;
+		case GL_RGBA4:
 			return sw::FORMAT_A8R8G8B8;
-		case GL_UNSIGNED_SHORT_5_5_5_1:
+		case GL_RGB5_A1:
 			return sw::FORMAT_A8R8G8B8;
-		case GL_UNSIGNED_SHORT_5_6_5:
+		case GL_RGB565:
 			return sw::FORMAT_R5G6B5;
-		case GL_UNSIGNED_INT_2_10_10_10_REV:
-			if(format == GL_RGB10_A2UI)
-			{
-				return sw::FORMAT_A16B16G16R16UI;
-			}
-			else
-			{
-				return sw::FORMAT_A2B10G10R10;
-			}
-		case GL_UNSIGNED_INT_10F_11F_11F_REV:
-		case GL_UNSIGNED_INT_5_9_9_9_REV:
+		case GL_RGB10_A2UI:
+			return sw::FORMAT_A16B16G16R16UI;
+		//	return sw::FORMAT_A2B10G10R10;
+		case GL_R11F_G11F_B10F:
 			return sw::FORMAT_A32B32G32R32F;
 		default:
-			UNREACHABLE(type);
+			UNREACHABLE(format);
 		}
 
 		return sw::FORMAT_NULL;
@@ -1226,7 +1091,7 @@ namespace egl
 		GLsizei inputPitch = ComputePitch(inputWidth, format, type, unpackInfo.alignment);
 		GLsizei inputHeight = (unpackInfo.imageHeight == 0) ? height : unpackInfo.imageHeight;
 		input = ((char*)input) + ComputePackingOffset(format, type, inputWidth, inputHeight, unpackInfo.alignment, unpackInfo.skipImages, unpackInfo.skipRows, unpackInfo.skipPixels);
-		sw::Format selectedInternalFormat = SelectInternalFormat(format, type);
+		sw::Format selectedInternalFormat = SelectInternalFormat(format);
 		if(selectedInternalFormat == sw::FORMAT_NULL)
 		{
 			return;
