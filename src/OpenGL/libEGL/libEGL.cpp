@@ -971,23 +971,23 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 		}
 	}
 
-	#if defined(__ANDROID__)
+	//#if defined(__ANDROID__)
 		if(target == EGL_NATIVE_BUFFER_ANDROID)
 		{
-			ANativeWindowBuffer *nativeBuffer = reinterpret_cast<ANativeWindowBuffer*>(buffer);
+		/*	ANativeWindowBuffer *nativeBuffer = reinterpret_cast<ANativeWindowBuffer*>(buffer);
 
 			if(!nativeBuffer || GLPixelFormatFromAndroid(nativeBuffer->format) == GL_NONE)
 			{
 				ALOGW("%s badness unsupported HAL format=%x", __FUNCTION__, nativeBuffer ? nativeBuffer->format : 0);
 				return error(EGL_BAD_ATTRIBUTE, EGL_NO_IMAGE_KHR);
-			}
+			}*/
 
-			Image *image = new AndroidNativeImage(nativeBuffer);
+			Image *image = new AndroidNativeImage(nullptr);
 			EGLImageKHR eglImage = display->createSharedImage(image);
 
 			return success(eglImage);
 		}
-	#endif
+	//#endif
 
 	GLuint name = static_cast<GLuint>(reinterpret_cast<uintptr_t>(buffer));
 

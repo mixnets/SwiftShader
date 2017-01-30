@@ -132,7 +132,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>WS2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>libEGL.def</ModuleDefinitionFile>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -193,7 +193,7 @@ copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\trans
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>WS2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>libEGL.def</ModuleDefinitionFile>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -257,7 +257,7 @@ copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\trans
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>WS2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>libEGL.def</ModuleDefinitionFile>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -307,6 +307,9 @@ copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\trans
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Common\Resource.cpp" />
+    <ClCompile Include="..\..\Renderer\Surface.cpp" />
+    <ClCompile Include="..\common\Image.cpp" />
     <ClCompile Include="..\common\Object.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="..\Common\debug.cpp" />
@@ -338,6 +341,11 @@ copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\trans
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="libEGL.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SwiftShader\SwiftShader.vcxproj">
+      <Project>{7b02cb19-4cdf-4f79-bc9b-7f3f6164a003}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

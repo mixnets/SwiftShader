@@ -4,7 +4,7 @@
 
  @Title        OpenGL ES 2.0 HelloAPI Tutorial
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -20,6 +20,10 @@
 
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GLES2/gl2ext.h>
+#define EGL_EGLEXT_PROTOTYPES
+#include <EGL/eglext.h>
 
 /******************************************************************************
  Defines
@@ -318,6 +322,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		goto cleanup;
 	}
 
+
+
+
+	void *graphicBuffer = nullptr;
+	EGLint attrib_list[] = {EGL_NONE};
+	EGLImageKHR image = eglCreateImageKHR(eglDisplay, eglContext, EGL_NATIVE_BUFFER_ANDROID, (EGLClientBuffer)graphicBuffer, attrib_list);
+
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, image);
+	GLint pixels[16][16] = {1};
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 16, 16, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+
+
+
+
+
 	/*
 		Step 9 - Draw something with OpenGL ES.
 		At this point everything is initialized and we're ready to use
@@ -419,7 +442,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// We're going to draw a triangle to the screen so create a vertex buffer object for our triangle
 	GLuint	ui32Vbo; // Vertex buffer object handle
-	
+
 	// Interleaved vertex data
 	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
 								0.4f ,-0.4f,0.0f,

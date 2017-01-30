@@ -1864,9 +1864,9 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_SHADER_BINARY_FORMATS:      /* no shader binary formats are supported */          break;
 	case GL_ARRAY_BUFFER_BINDING:             *params = getArrayBufferName();                 break;
 	case GL_ELEMENT_ARRAY_BUFFER_BINDING:     *params = getElementArrayBufferName();          break;
-//	case GL_FRAMEBUFFER_BINDING:            // now equivalent to GL_DRAW_FRAMEBUFFER_BINDING_ANGLE
-	case GL_DRAW_FRAMEBUFFER_BINDING_ANGLE:   *params = mState.drawFramebuffer;               break;
-	case GL_READ_FRAMEBUFFER_BINDING_ANGLE:   *params = mState.readFramebuffer;               break;
+//	case GL_FRAMEBUFFER_BINDING:            // now equivalent to GL_DRAW_FRAMEBUFFER_BINDING
+	case GL_DRAW_FRAMEBUFFER_BINDING:         *params = mState.drawFramebuffer;               break;
+	case GL_READ_FRAMEBUFFER_BINDING:         *params = mState.readFramebuffer;               break;
 	case GL_RENDERBUFFER_BINDING:             *params = mState.renderbuffer.name();           break;
 	case GL_CURRENT_PROGRAM:                  *params = mState.currentProgram;                break;
 	case GL_PACK_ALIGNMENT:                   *params = mState.packAlignment;                 break;
@@ -1900,7 +1900,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_MAX_TEXTURE_SIZE:                 *params = IMPLEMENTATION_MAX_TEXTURE_SIZE;          break;
 	case GL_MAX_CUBE_MAP_TEXTURE_SIZE:        *params = IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE; break;
 	case GL_NUM_COMPRESSED_TEXTURE_FORMATS:   *params = NUM_COMPRESSED_TEXTURE_FORMATS;           break;
-	case GL_MAX_SAMPLES_ANGLE:                *params = IMPLEMENTATION_MAX_SAMPLES;               break;
+	case GL_MAX_SAMPLES:                      *params = IMPLEMENTATION_MAX_SAMPLES;               break;
 	case GL_SAMPLE_BUFFERS:
 	case GL_SAMPLES:
 		{
@@ -2452,8 +2452,8 @@ bool Context::getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *nu
 	case GL_NUM_SHADER_BINARY_FORMATS:
 	case GL_NUM_COMPRESSED_TEXTURE_FORMATS:
 	case GL_ARRAY_BUFFER_BINDING:
-	case GL_FRAMEBUFFER_BINDING: // Same as GL_DRAW_FRAMEBUFFER_BINDING_ANGLE
-	case GL_READ_FRAMEBUFFER_BINDING_ANGLE:
+	case GL_FRAMEBUFFER_BINDING: // Same as GL_DRAW_FRAMEBUFFER_BINDING
+	case GL_READ_FRAMEBUFFER_BINDING:
 	case GL_RENDERBUFFER_BINDING:
 	case GL_CURRENT_PROGRAM:
 	case GL_PACK_ALIGNMENT:
@@ -2577,7 +2577,7 @@ bool Context::getQueryParameterInfo(GLenum pname, GLenum *type, unsigned int *nu
 			*numParams = 1;
 		}
 		break;
-	case GL_MAX_SAMPLES_ANGLE:
+	case GL_MAX_SAMPLES:
 		{
 			*type = GL_INT;
 			*numParams = 1;
@@ -4122,7 +4122,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
 		// OpenGL ES 3.0.4 spec, p.199:
 		// ...an INVALID_OPERATION error is generated if the formats of the read
-		// and draw framebuffers are not identical or if the source and destination 
+		// and draw framebuffers are not identical or if the source and destination
 		// rectangles are not defined with the same(X0, Y 0) and (X1, Y 1) bounds.
 		// If SAMPLE_BUFFERS for the draw framebuffer is greater than zero, an
 		// INVALID_OPERATION error is generated.
