@@ -571,7 +571,7 @@ namespace es2
 			return GL_INVALID_OPERATION;
 		}
 
-		if(sizedInternalFormat != GL_NONE && sizedInternalFormat != GetSizedInternalFormat(texture->getFormat(target, level), texture->getType(target, level)))
+		if(sizedInternalFormat != GL_NONE && sizedInternalFormat != texture->getFormat(target, level))
 		{
 			return GL_INVALID_OPERATION;
 		}

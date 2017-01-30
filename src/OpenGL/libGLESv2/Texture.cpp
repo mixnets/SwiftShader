@@ -612,12 +612,6 @@ GLenum Texture2D::getFormat(GLenum target, GLint level) const
 	return image[level] ? image[level]->getFormat() : GL_NONE;
 }
 
-GLenum Texture2D::getType(GLenum target, GLint level) const
-{
-	ASSERT(target == GL_TEXTURE_2D);
-	return image[level] ? image[level]->getType() : GL_NONE;
-}
-
 sw::Format Texture2D::getInternalFormat(GLenum target, GLint level) const
 {
 	ASSERT(target == GL_TEXTURE_2D);
@@ -874,11 +868,6 @@ bool Texture2D::isMipmapComplete() const
 			return false;
 		}
 
-		if(image[level]->getType() != image[0]->getType())
-		{
-			return false;
-		}
-
 		if(image[level]->getWidth() != std::max(1, width >> level))
 		{
 			return false;
@@ -919,7 +908,7 @@ void Texture2D::generateMipmaps()
 			image[i]->release();
 		}
 
-		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType());
+		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat());
 
 		if(!image[i])
 		{
@@ -1110,12 +1099,6 @@ GLenum TextureCubeMap::getFormat(GLenum target, GLint level) const
 	return image[face][level] ? image[face][level]->getFormat() : 0;
 }
 
-GLenum TextureCubeMap::getType(GLenum target, GLint level) const
-{
-	int face = CubeFaceIndex(target);
-	return image[face][level] ? image[face][level]->getType() : 0;
-}
-
 sw::Format TextureCubeMap::getInternalFormat(GLenum target, GLint level) const
 {
 	int face = CubeFaceIndex(target);
@@ -1213,8 +1196,7 @@ bool TextureCubeMap::isCubeComplete() const
 	{
 		if(image[face][mBaseLevel]->getWidth()  != image[0][mBaseLevel]->getWidth() ||
 		   image[face][mBaseLevel]->getWidth()  != image[0][mBaseLevel]->getHeight() ||
-		   image[face][mBaseLevel]->getFormat() != image[0][mBaseLevel]->getFormat() ||
-		   image[face][mBaseLevel]->getType()   != image[0][mBaseLevel]->getType())
+		   image[face][mBaseLevel]->getFormat() != image[0][mBaseLevel]->getFormat())
 		{
 			return false;
 		}
@@ -1243,11 +1225,6 @@ bool TextureCubeMap::isMipmapCubeComplete() const
 			}
 
 			if(image[face][level]->getFormat() != image[0][mBaseLevel]->getFormat())
-			{
-				return false;
-			}
-
-			if(image[face][level]->getType() != image[0][mBaseLevel]->getType())
 			{
 				return false;
 			}
@@ -1408,7 +1385,7 @@ void TextureCubeMap::generateMipmaps()
 				image[f][i]->release();
 			}
 
-			image[f][i] = new egl::Image(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat(), image[0][0]->getType());
+			image[f][i] = new egl::Image(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat());
 
 			if(!image[f][i])
 			{
@@ -1581,12 +1558,6 @@ GLenum Texture3D::getFormat(GLenum target, GLint level) const
 	return image[level] ? image[level]->getFormat() : GL_NONE;
 }
 
-GLenum Texture3D::getType(GLenum target, GLint level) const
-{
-	ASSERT(target == getTarget());
-	return image[level] ? image[level]->getType() : GL_NONE;
-}
-
 sw::Format Texture3D::getInternalFormat(GLenum target, GLint level) const
 {
 	ASSERT(target == getTarget());
@@ -1613,7 +1584,7 @@ void Texture3D::setImage(GLint level, GLsizei width, GLsizei height, GLsizei dep
 		image[level]->release();
 	}
 
-	image[level] = new egl::Image(this, width, height, depth, format, type);
+	image[level] = new egl::Image(this, width, height, depth, format);
 
 	if(!image[level])
 	{
@@ -1838,11 +1809,6 @@ bool Texture3D::isMipmapComplete() const
 			return false;
 		}
 
-		if(image[level]->getType() != image[0]->getType())
-		{
-			return false;
-		}
-
 		if(image[level]->getWidth() != std::max(1, width >> level))
 		{
 			return false;
@@ -1889,7 +1855,7 @@ void Texture3D::generateMipmaps()
 			image[i]->release();
 		}
 
-		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), std::max(image[0]->getDepth() >> i, 1), image[0]->getFormat(), image[0]->getType());
+		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), std::max(image[0]->getDepth() >> i, 1), image[0]->getFormat());
 
 		if(!image[i])
 		{
@@ -1988,7 +1954,7 @@ void Texture2DArray::generateMipmaps()
 
 		GLsizei w = std::max(image[0]->getWidth() >> i, 1);
 		GLsizei h = std::max(image[0]->getHeight() >> i, 1);
-		image[i] = new egl::Image(this, w, h, depth, image[0]->getFormat(), image[0]->getType());
+		image[i] = new egl::Image(this, w, h, depth, image[0]->getFormat());
 
 		if(!image[i])
 		{
