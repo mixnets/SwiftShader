@@ -623,12 +623,6 @@ bool Display::destroySharedImage(EGLImageKHR image)
 	return true;
 }
 
-Image *Display::getSharedImage(EGLImageKHR image)
-{
-	GLuint name = (GLuint)reinterpret_cast<intptr_t>(image);
-	return mSharedImageNameSpace.find(name);
-}
-
 sw::Format Display::getDisplayFormat() const
 {
 	#if defined(_WIN32)

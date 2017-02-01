@@ -254,7 +254,7 @@ namespace sw
 		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
 		Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, int pitchP = 0);
 
-		virtual ~Surface();
+		virtual ~Surface() { release(); }
 
 		inline void *lock(int x, int y, int z, Lock lock, Accessor client, bool internal = false);
 		inline void unlock(bool internal = false);
@@ -275,8 +275,8 @@ namespace sw
 		inline int getExternalSliceB() const;
 		inline int getExternalSliceP() const;
 
-		virtual void *lockInternal(int x, int y, int z, Lock lock, Accessor client);
-		virtual void unlockInternal();
+		virtual void *lockInternal(int x, int y, int z, Lock lock, Accessor client) { return lockInternalImpl(x, y, z, lock, client); }
+		virtual void unlockInternal() { unlockInternalImpl(); }
 		inline Format getInternalFormat() const;
 		inline int getInternalPitchB() const;
 		inline int getInternalPitchP() const;
@@ -344,6 +344,10 @@ namespace sw
 		sw::Resource *resource;
 
 	private:
+		void release();
+		void *lockInternalImpl(int x, int y, int z, Lock lock, Accessor client);
+		void unlockInternalImpl();
+
 		typedef unsigned char byte;
 		typedef unsigned short word;
 		typedef unsigned int dword;

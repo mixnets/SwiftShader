@@ -1178,33 +1178,6 @@ namespace egl
 		}
 	}
 
-	Image::~Image()
-	{
-		if(parentTexture)
-		{
-			parentTexture->release();
-		}
-
-		ASSERT(!shared);
-	}
-
-	void Image::release()
-	{
-		int refs = dereference();
-
-		if(refs > 0)
-		{
-			if(parentTexture)
-			{
-				parentTexture->sweep();
-			}
-		}
-		else
-		{
-			delete this;
-		}
-	}
-
 	void Image::unbind(const egl::Texture *parent)
 	{
 		if(parentTexture == parent)

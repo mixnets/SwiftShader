@@ -40,24 +40,25 @@ class Display;
 
 class Surface
 {
+	static Image *ref(Image *image);
 public:
 	Surface(Display *display, NativeWindowType window);
 	Surface(Display *display, GLint width, GLint height, GLenum textureFormat, GLenum textureTarget);
 
-	virtual ~Surface();
+	virtual ~Surface() { release(); }
 
 	bool initialize();
 	void swap();
 
-	virtual Image *getRenderTarget();
-	virtual Image *getDepthStencil();
+	virtual Image *getRenderTarget() { return ref(backBuffer); }
+	virtual Image *getDepthStencil() { return ref(mDepthStencil); }
 
 	void setSwapInterval(GLint interval);
 
-	virtual GLint getWidth() const;
-	virtual GLint getHeight() const;
-	virtual GLenum getTextureFormat() const;
-	virtual GLenum getTextureTarget() const;
+	virtual GLint getWidth() const { return mWidth; }
+	virtual GLint getHeight() const { return mHeight; }
+	virtual GLenum getTextureFormat() const { return mTextureFormat; }
+	virtual GLenum getTextureTarget() const { return mTextureTarget; }
 
 	bool checkForResize();   // Returns true if surface changed due to resize
 

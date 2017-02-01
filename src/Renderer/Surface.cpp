@@ -1265,7 +1265,7 @@ namespace sw
 		paletteUsed = 0;
 	}
 
-	Surface::~Surface()
+	void Surface::release()
 	{
 		// Synchronize so we can deallocate the buffers below
 		resource->lock(DESTRUCT);
@@ -1342,7 +1342,7 @@ namespace sw
 		external.unlockRect();
 	}
 
-	void *Surface::lockInternal(int x, int y, int z, Lock lock, Accessor client)
+	void *Surface::lockInternalImpl(int x, int y, int z, Lock lock, Accessor client)
 	{
 		if(lock != LOCK_UNLOCKED)
 		{
@@ -1419,7 +1419,7 @@ namespace sw
 		return internal.lockRect(x, y, z, lock);
 	}
 
-	void Surface::unlockInternal()
+	void Surface::unlockInternalImpl()
 	{
 		resource->unlock();
 

@@ -163,7 +163,23 @@ public:
 	void loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input);
 	void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
 
-	void release() override;
+	void release() override
+	{
+		int refs = dereference();
+
+		if(refs > 0)
+		{
+			if(parentTexture)
+			{
+				parentTexture->sweep();
+			}
+		}
+		else
+		{
+			delete this;
+		}
+	}
+
 	void unbind(const Texture *parent);   // Break parent ownership and release
 	bool isChildOf(const Texture *parent) const;
 
@@ -186,7 +202,15 @@ protected:
 
 	egl::Texture *parentTexture;
 
-	virtual ~Image();
+	virtual ~Image()
+	{
+		if(parentTexture)
+		{
+			parentTexture->release();
+		}
+
+		ASSERT(!shared);
+	}
 
 	void loadD24S8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer);
 	void loadD32FS8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer);

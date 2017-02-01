@@ -39,7 +39,7 @@ namespace sw
 	public:
 		FrameBuffer(int width, int height, bool fullscreen, bool topLeftOrigin);
 
-		virtual ~FrameBuffer();
+		virtual ~FrameBuffer() = 0;
 
 		int getWidth() const;
 		int getHeight() const;

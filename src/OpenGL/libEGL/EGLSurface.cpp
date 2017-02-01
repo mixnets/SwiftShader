@@ -62,7 +62,7 @@ Surface::~Surface()
 	Surface::deleteResources();
 }
 
-bool Surface::initialize()
+bool Surface::initializeImpl()
 {
 	ASSERT(!backBuffer && !depthStencil);
 
@@ -104,7 +104,7 @@ bool Surface::initialize()
 	return true;
 }
 
-void Surface::deleteResources()
+void Surface::deleteResourcesImpl()
 {
 	if(depthStencil)
 	{
@@ -125,24 +125,14 @@ void Surface::deleteResources()
 	}
 }
 
-egl::Image *Surface::getRenderTarget()
+egl::Image *Surface::ref(egl::Image *image)
 {
-	if(backBuffer)
+	if(image)
 	{
-		backBuffer->addRef();
+		image->addRef();
 	}
 
-	return backBuffer;
-}
-
-egl::Image *Surface::getDepthStencil()
-{
-	if(depthStencil)
-	{
-		depthStencil->addRef();
-	}
-
-	return depthStencil;
+	return image;
 }
 
 void Surface::setSwapBehavior(EGLenum swapBehavior)
@@ -172,59 +162,9 @@ EGLenum Surface::getSurfaceType() const
 	return config->mSurfaceType;
 }
 
-sw::Format Surface::getInternalFormat() const
+sw::Format Surface::getInternalFormatImpl() const
 {
 	return config->mRenderTargetFormat;
-}
-
-EGLint Surface::getWidth() const
-{
-	return width;
-}
-
-EGLint Surface::getHeight() const
-{
-	return height;
-}
-
-EGLint Surface::getPixelAspectRatio() const
-{
-	return pixelAspectRatio;
-}
-
-EGLenum Surface::getRenderBuffer() const
-{
-	return renderBuffer;
-}
-
-EGLenum Surface::getSwapBehavior() const
-{
-	return swapBehavior;
-}
-
-EGLenum Surface::getTextureFormat() const
-{
-	return textureFormat;
-}
-
-EGLenum Surface::getTextureTarget() const
-{
-	return textureTarget;
-}
-
-EGLBoolean Surface::getLargestPBuffer() const
-{
-	return largestPBuffer;
-}
-
-void Surface::setBoundTexture(egl::Texture *texture)
-{
-	this->texture = texture;
-}
-
-egl::Texture *Surface::getBoundTexture() const
-{
-	return texture;
 }
 
 WindowSurface::WindowSurface(Display *display, const Config *config, EGLNativeWindowType window)

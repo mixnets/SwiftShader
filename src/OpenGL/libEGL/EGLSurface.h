@@ -33,32 +33,33 @@ class Image;
 
 class Surface : public gl::Object
 {
+	static egl::Image *ref(egl::Image *image);
 public:
-	virtual bool initialize();
+	virtual bool initialize() { return initializeImpl(); }
 	virtual void swap() = 0;
 
-	virtual egl::Image *getRenderTarget();
-	virtual egl::Image *getDepthStencil();
+	virtual egl::Image *getRenderTarget() { return ref(backBuffer); }
+	virtual egl::Image *getDepthStencil() { return ref(depthStencil); }
 
 	void setSwapBehavior(EGLenum swapBehavior);
 	void setSwapInterval(EGLint interval);
 
-	virtual EGLint getConfigID() const;
-	virtual EGLenum getSurfaceType() const;
-	virtual sw::Format getInternalFormat() const;
+	EGLint getConfigID() const;
+	EGLenum getSurfaceType() const;
+	virtual sw::Format getInternalFormat() const { return getInternalFormatImpl(); }
 
-	virtual EGLint getWidth() const;
-	virtual EGLint getHeight() const;
-	virtual EGLint getPixelAspectRatio() const;
-	virtual EGLenum getRenderBuffer() const;
-	virtual EGLenum getSwapBehavior() const;
-	virtual EGLenum getTextureFormat() const;
-	virtual EGLenum getTextureTarget() const;
-	virtual EGLBoolean getLargestPBuffer() const;
+	virtual EGLint getWidth() const { return width; }
+	virtual EGLint getHeight() const { return height; }
+	virtual EGLint getPixelAspectRatio() const { return pixelAspectRatio; }
+	virtual EGLenum getRenderBuffer() const { return renderBuffer; }
+	virtual EGLenum getSwapBehavior() const { return swapBehavior; }
+	virtual EGLenum getTextureFormat() const { return textureFormat; }
+	virtual EGLenum getTextureTarget() const { return textureTarget; }
+	virtual EGLBoolean getLargestPBuffer() const { return largestPBuffer; }
 	virtual EGLNativeWindowType getWindowHandle() const = 0;
 
-	virtual void setBoundTexture(egl::Texture *texture);
-	virtual egl::Texture *getBoundTexture() const;
+	virtual void setBoundTexture(egl::Texture *tex) { texture = tex; }
+	virtual egl::Texture *getBoundTexture() const { return texture; }
 
 	virtual bool isWindowSurface() const { return false; }
 	virtual bool isPBufferSurface() const { return false; }
@@ -66,9 +67,9 @@ public:
 protected:
 	Surface(const Display *display, const Config *config);
 
-	virtual ~Surface();
+	virtual ~Surface() = 0;
 
-	virtual void deleteResources();
+	virtual void deleteResources() { deleteResourcesImpl(); }
 
 	const Display *const display;
 	Image *depthStencil;
@@ -94,6 +95,11 @@ protected:
 //  EGLenum vgAlphaFormat;         // Alpha format for OpenVG
 //  EGLenum vgColorSpace;          // Color space for OpenVG
 	EGLint swapInterval;
+
+private:
+	bool initializeImpl();
+	void deleteResourcesImpl();
+	sw::Format getInternalFormatImpl() const;
 };
 
 class WindowSurface : public Surface

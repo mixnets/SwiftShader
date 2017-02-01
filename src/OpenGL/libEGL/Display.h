@@ -70,7 +70,11 @@ namespace egl
 
 		EGLImageKHR createSharedImage(Image *image);
 		bool destroySharedImage(EGLImageKHR);
-		virtual Image *getSharedImage(EGLImageKHR name);
+		virtual Image *getSharedImage(EGLImageKHR image)
+		{
+			GLuint name = (GLuint)reinterpret_cast<intptr_t>(image);
+			return mSharedImageNameSpace.find(name);
+		}
 
 	private:
 		explicit Display(void *nativeDisplay);

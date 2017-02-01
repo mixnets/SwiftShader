@@ -62,11 +62,6 @@ Surface::Surface(Display *display, GLint width, GLint height, GLenum textureForm
 	setSwapInterval(1);
 }
 
-Surface::~Surface()
-{
-	release();
-}
-
 bool Surface::initialize()
 {
 	ASSERT(!frameBuffer && !backBuffer && !mDepthStencil);
@@ -168,24 +163,15 @@ void Surface::swap()
 	}
 }
 
-Image *Surface::getRenderTarget()
+
+Image *Surface::ref(Image *image)
 {
-	if(backBuffer)
+	if(image)
 	{
-		backBuffer->addRef();
+		image->addRef();
 	}
 
-	return backBuffer;
-}
-
-Image *Surface::getDepthStencil()
-{
-	if(mDepthStencil)
-	{
-		mDepthStencil->addRef();
-	}
-
-	return mDepthStencil;
+	return image;
 }
 
 void Surface::setSwapInterval(GLint interval)
@@ -198,26 +184,6 @@ void Surface::setSwapInterval(GLint interval)
 	mSwapInterval = interval;
 	mSwapInterval = std::max(mSwapInterval, mDisplay->getMinSwapInterval());
 	mSwapInterval = std::min(mSwapInterval, mDisplay->getMaxSwapInterval());
-}
-
-GLint Surface::getWidth() const
-{
-	return mWidth;
-}
-
-GLint Surface::getHeight() const
-{
-	return mHeight;
-}
-
-GLenum Surface::getTextureFormat() const
-{
-	return mTextureFormat;
-}
-
-GLenum Surface::getTextureTarget() const
-{
-	return mTextureTarget;
 }
 
 bool Surface::checkForResize()
