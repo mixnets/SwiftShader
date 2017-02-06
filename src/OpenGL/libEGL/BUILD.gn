@@ -58,6 +58,11 @@ shared_library("swiftshader_libEGL") {
   if (is_debug) {
     sources += [ "../common/debug.cpp" ]
   } else if (is_linux) {
+    # UBSan builds require RTTI, for which GCC/Clang requires each class' first
+	# non-inline virtual method (the "key method") to have a known definition
+	# so that its address can be used as a unique type identifier:
+	# https://gcc.gnu.org/onlinedocs/gcc/Vague-Linkage.html
+	# To comply with this we need some additional source files:
     sources += [
       "../../Renderer/Surface.cpp",
       "../common/Image.cpp",
