@@ -36,7 +36,7 @@
 
 namespace egl
 {
-class Display;
+class DisplayInterface;
 class Surface;
 class Config;
 }
@@ -428,7 +428,7 @@ struct State
 class Context : public egl::Context
 {
 public:
-	Context(egl::Display *display, const Context *shareContext, EGLint clientVersion);
+	Context(egl::DisplayInterface *display, const Context *shareContext, EGLint clientVersion);
 
 	virtual void makeCurrent(egl::Surface *surface);
 	virtual EGLint getClientVersion() const;

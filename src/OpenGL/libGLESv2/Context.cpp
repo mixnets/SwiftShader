@@ -34,7 +34,6 @@
 #include "VertexArray.h"
 #include "VertexDataManager.h"
 #include "IndexDataManager.h"
-#include "libEGL/Display.h"
 #include "libEGL/EGLSurface.h"
 #include "Common/Half.hpp"
 
@@ -42,9 +41,18 @@
 
 #include <algorithm>
 
+namespace egl
+{
+	class DisplayInterface
+	{
+	public:
+		virtual Image *getSharedImage(EGLImageKHR name) = 0;
+	};
+}
+
 namespace es2
 {
-Context::Context(egl::Display *display, const Context *shareContext, EGLint clientVersion)
+Context::Context(egl::DisplayInterface *display, const Context *shareContext, EGLint clientVersion)
 	: egl::Context(display), clientVersion(clientVersion)
 {
 	sw::Context *context = new sw::Context();
@@ -4122,7 +4130,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
 		// OpenGL ES 3.0.4 spec, p.199:
 		// ...an INVALID_OPERATION error is generated if the formats of the read
-		// and draw framebuffers are not identical or if the source and destination 
+		// and draw framebuffers are not identical or if the source and destination
 		// rectangles are not defined with the same(X0, Y 0) and (X1, Y 1) bounds.
 		// If SAMPLE_BUFFERS for the draw framebuffer is greater than zero, an
 		// INVALID_OPERATION error is generated.
@@ -4411,7 +4419,7 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 
 }
 
-egl::Context *es2CreateContext(egl::Display *display, const egl::Context *shareContext, int clientVersion)
+egl::Context *es2CreateContext(egl::DisplayInterface *display, const egl::Context *shareContext, int clientVersion)
 {
 	ASSERT(!shareContext || shareContext->getClientVersion() == clientVersion);   // Should be checked by eglCreateContext
 	return new es2::Context(display, static_cast<const es2::Context*>(shareContext), clientVersion);

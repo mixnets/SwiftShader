@@ -22,14 +22,14 @@
 
 namespace egl
 {
-class Display;
+class DisplayInterface;
 class Surface;
 class Image;
 
 class Context : public gl::Object
 {
 public:
-	Context(egl::Display *display) : display(display) {}
+	Context(egl::DisplayInterface *display) : display(display) {}
 
 	virtual void makeCurrent(Surface *surface) = 0;
 	virtual void bindTexImage(Surface *surface) = 0;
@@ -41,7 +41,7 @@ public:
 protected:
 	virtual ~Context() {};
 
-	egl::Display *const display;
+	egl::DisplayInterface *const display;
 };
 }
 

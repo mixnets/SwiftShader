@@ -21,7 +21,6 @@
 #include "Device.hpp"
 #include "common/debug.h"
 #include "libEGL/libEGL.hpp"
-#include "libEGL/Display.h"
 #include "libGLES_CM/libGLES_CM.hpp"
 
 #include <GLES2/gl2.h>

@@ -22,7 +22,7 @@
 #include "mathutil.h"
 #include "Framebuffer.h"
 #include "Device.hpp"
-#include "libEGL/Display.h"
+#include "libEGL/Config.h"
 #include "libEGL/EGLSurface.h"
 #include "common/debug.h"
 
