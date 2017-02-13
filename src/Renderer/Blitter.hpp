@@ -81,19 +81,20 @@ namespace sw
 		void blit3D(Surface *source, Surface *dest);
 
 	private:
-		bool read(Float4 &color, Pointer<Byte> element, Format format);
-		bool write(Float4 &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
-		bool read(Int4 &color, Pointer<Byte> element, Format format);
-		bool write(Int4 &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
-		static bool GetScale(float4& scale, Format format);
-		static bool ApplyScaleAndClamp(Float4& value, const BlitState& state);
-		static Int ComputeOffset(Int& x, Int& y, Int& pitchB, int bytes, bool quadLayout);
-		void blit(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, const Blitter::Options& options);
-		bool blitReactor(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, const Blitter::Options& options);
+		Float4 readF(Pointer<Byte> element, Format format);
+		void write(const Float4 &color, Pointer<Byte> element, Format format, const Blitter::Options &options);
+		Int4 readI(Pointer<Byte> element, Format format);
+		void write(const Int4 &color, Pointer<Byte> element, Format format, const Blitter::Options &options);
+		float4 getScale(Format format);
+		void applyScaleAndClamp(Float4 &value, const BlitState &state);
+		static Int ComputeOffset(Int &x, Int &y, Int &pitchB, int bytes, bool quadLayout);
+		void blit(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, const Blitter::Options &options);
+		bool blitReactor(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, const Blitter::Options &options);
 		Routine *generate(BlitState &state);
 
 		RoutineCache<BlitState> *blitCache;
 		MutexLock criticalSection;
+		bool valid;
 	};
 
 	extern Blitter blitter;

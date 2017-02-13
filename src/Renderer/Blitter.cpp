@@ -54,7 +54,7 @@ namespace sw
 		blit(source, sRect, dest, dRect, options);
 	}
 
-	void Blitter::blit(Surface *source, const SliceRect &sourceRect, Surface *dest, const SliceRect &destRect, const Blitter::Options& options)
+	void Blitter::blit(Surface *source, const SliceRect &sourceRect, Surface *dest, const SliceRect &destRect, const Blitter::Options &options)
 	{
 		if(dest->getInternalFormat() == FORMAT_NULL)
 		{
@@ -141,9 +141,9 @@ namespace sw
 		dest->unlockInternal();
 	}
 
-	bool Blitter::read(Float4 &c, Pointer<Byte> element, Format format)
+	Float4 Blitter::readF(Pointer<Byte> element, Format format)
 	{
-		c = Float4(0.0f, 0.0f, 0.0f, 1.0f);
+		Float4 c(0.0f, 0.0f, 0.0f, 1.0f);
 
 		switch(format)
 		{
@@ -333,13 +333,13 @@ namespace sw
 			c.x = Float(Int(*Pointer<Byte>(element)));
 			break;
 		default:
-			return false;
+			valid = false;
 		}
 
-		return true;
+		return c;
 	}
 
-	bool Blitter::write(Float4 &c, Pointer<Byte> element, Format format, const Blitter::Options& options)
+	void Blitter::write(const Float4 &c, Pointer<Byte> element, Format format, const Blitter::Options &options)
 	{
 		bool writeR = (options & WRITE_RED) == WRITE_RED;
 		bool writeG = (options & WRITE_GREEN) == WRITE_GREEN;
@@ -700,14 +700,13 @@ namespace sw
 			*Pointer<Byte>(element) = Byte(RoundInt(Float(c.x)));
 			break;
 		default:
-			return false;
+			valid = false;
 		}
-		return true;
 	}
 
-	bool Blitter::read(Int4 &c, Pointer<Byte> element, Format format)
+	Int4 Blitter::readI(Pointer<Byte> element, Format format)
 	{
-		c = Int4(0, 0, 0, 1);
+		Int4 c(0, 0, 0, 1);
 
 		switch(format)
 		{
@@ -768,13 +767,13 @@ namespace sw
 			c = Insert(c, Int(*Pointer<UInt>(element)), 0);
 			break;
 		default:
-			return false;
+			valid = false;
 		}
 
-		return true;
+		return c;
 	}
 
-	bool Blitter::write(Int4 &c, Pointer<Byte> element, Format format, const Blitter::Options& options)
+	void Blitter::write(const Int4 &c, Pointer<Byte> element, Format format, const Blitter::Options &options)
 	{
 		bool writeR = (options & WRITE_RED) == WRITE_RED;
 		bool writeG = (options & WRITE_GREEN) == WRITE_GREEN;
@@ -903,13 +902,11 @@ namespace sw
 			if(writeR) { *Pointer<UInt>(element) = As<UInt>(Extract(c, 0)); }
 			break;
 		default:
-			return false;
+			valid = false;
 		}
-
-		return true;
 	}
 
-	bool Blitter::GetScale(float4& scale, Format format)
+	float4 Blitter::getScale(Format format)
 	{
 		switch(format)
 		{
@@ -925,17 +922,14 @@ namespace sw
 		case FORMAT_A8B8G8R8:
 		case FORMAT_SRGB8_X8:
 		case FORMAT_SRGB8_A8:
-			scale = vector(0xFF, 0xFF, 0xFF, 0xFF);
-			break;
+			return vector(0xFF, 0xFF, 0xFF, 0xFF);
 		case FORMAT_R8I_SNORM:
 		case FORMAT_G8R8I_SNORM:
 		case FORMAT_X8B8G8R8I_SNORM:
 		case FORMAT_A8B8G8R8I_SNORM:
-			scale = vector(0x7F, 0x7F, 0x7F, 0x7F);
-			break;
+			return vector(0x7F, 0x7F, 0x7F, 0x7F);
 		case FORMAT_A16B16G16R16:
-			scale = vector(0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF);
-			break;
+			return vector(0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF);
 		case FORMAT_R8I:
 		case FORMAT_R8UI:
 		case FORMAT_G8R8I:
@@ -966,39 +960,31 @@ namespace sw
 		case FORMAT_B32G32R32F:
 		case FORMAT_G32R32F:
 		case FORMAT_R32F:
-			scale = vector(1.0f, 1.0f, 1.0f, 1.0f);
-			break;
+			return vector(1.0f, 1.0f, 1.0f, 1.0f);
 		case FORMAT_R5G6B5:
-			scale = vector(0x1F, 0x3F, 0x1F, 1.0f);
-			break;
+			return vector(0x1F, 0x3F, 0x1F, 1.0f);
 		case FORMAT_A2B10G10R10:
-			scale = vector(0x3FF, 0x3FF, 0x3FF, 0x03);
-			break;
+			return vector(0x3FF, 0x3FF, 0x3FF, 0x03);
 		case FORMAT_D16:
-			scale = vector(0xFFFF, 0.0f, 0.0f, 0.0f);
-			break;
+			return vector(0xFFFF, 0.0f, 0.0f, 0.0f);
 		case FORMAT_D24S8:
-			scale = vector(0xFFFFFF, 0.0f, 0.0f, 0.0f);
-			break;
+			return vector(0xFFFFFF, 0.0f, 0.0f, 0.0f);
 		case FORMAT_D32:
-			scale = vector(static_cast<float>(0xFFFFFFFF), 0.0f, 0.0f, 0.0f);
-			break;
+			return vector(static_cast<float>(0xFFFFFFFF), 0.0f, 0.0f, 0.0f);
 		case FORMAT_D32F:
 		case FORMAT_D32F_COMPLEMENTARY:
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32FS8_SHADOW:
 		case FORMAT_S8:
-			scale = vector(1.0f, 1.0f, 1.0f, 1.0f);
-			break;
+			return vector(1.0f, 1.0f, 1.0f, 1.0f);
 		default:
-			return false;
+			valid = false;
+			return vector(1, 1, 1, 1);
 		}
-
-		return true;
 	}
 
-	bool Blitter::ApplyScaleAndClamp(Float4& value, const BlitState& state)
+	void Blitter::applyScaleAndClamp(Float4 &value, const BlitState &state)
 	{
 		float4 scale, unscale;
 		if(Surface::isNonNormalizedInteger(state.sourceFormat) &&
@@ -1016,18 +1002,15 @@ namespace sw
 				unscale = replicate(static_cast<float>(0xFFFFFFFF));
 				break;
 			default:
-				return false;
+				valid = false;
 			}
 		}
-		else if(!GetScale(unscale, state.sourceFormat))
+		else
 		{
-			return false;
+			unscale = getScale(state.sourceFormat);
 		}
 
-		if(!GetScale(scale, state.destFormat))
-		{
-			return false;
-		}
+		scale = getScale(state.destFormat);
 
 		if(unscale != scale)
 		{
@@ -1043,11 +1026,9 @@ namespace sw
 			                          Surface::isUnsignedComponent(state.destFormat, 2) ? 0.0f : -scale.z,
 			                          Surface::isUnsignedComponent(state.destFormat, 3) ? 0.0f : -scale.w));
 		}
-
-		return true;
 	}
 
-	Int Blitter::ComputeOffset(Int& x, Int& y, Int& pitchB, int bytes, bool quadLayout)
+	Int Blitter::ComputeOffset(Int &x, Int &y, Int &pitchB, int bytes, bool quadLayout)
 	{
 		return (quadLayout ? (y & Int(~1)) : RValue<Int>(y)) * pitchB +
 		       (quadLayout ? ((y & Int(1)) << 1) + (x * 2) - (x & Int(1)) : RValue<Int>(x)) * bytes;
@@ -1055,6 +1036,8 @@ namespace sw
 
 	Routine *Blitter::generate(BlitState &state)
 	{
+		valid = true;
+
 		Function<Void(Pointer<Byte>)> function;
 		{
 			Pointer<Byte> blit(function.Arg<0>());
@@ -1093,24 +1076,15 @@ namespace sw
 			{
 				if(intBoth) // Integer types
 				{
-					if(!read(constantColorI, source, state.sourceFormat))
-					{
-						return nullptr;
-					}
+					constantColorI = readI(source, state.sourceFormat);
 					hasConstantColorI = true;
 				}
 				else
 				{
-					if(!read(constantColorF, source, state.sourceFormat))
-					{
-						return nullptr;
-					}
+					constantColorF = readF(source, state.sourceFormat);
 					hasConstantColorF = true;
 
-					if(!ApplyScaleAndClamp(constantColorF, state))
-					{
-						return nullptr;
-					}
+					applyScaleAndClamp(constantColorF, state);
 				}
 			}
 
@@ -1126,35 +1100,22 @@ namespace sw
 					Pointer<Byte> d = destLine + (dstQuadLayout ? (((j & Int(1)) << 1) + (i * 2) - (i & Int(1))) : RValue<Int>(i)) * dstBytes;
 					if(hasConstantColorI)
 					{
-						if(!write(constantColorI, d, state.destFormat, state.options))
-						{
-							return nullptr;
-						}
+						write(constantColorI, d, state.destFormat, state.options);
 					}
 					else if(hasConstantColorF)
 					{
-						if(!write(constantColorF, d, state.destFormat, state.options))
-						{
-							return nullptr;
-						}
+						write(constantColorF, d, state.destFormat, state.options);
 					}
 					else if(intBoth) // Integer types do not support filtering
 					{
-						Int4 color; // When both formats are true integer types, we don't go to float to avoid losing precision
 						Int X = Int(x);
 						Int Y = Int(y);
 
 						Pointer<Byte> s = source + ComputeOffset(X, Y, sPitchB, srcBytes, srcQuadLayout);
 
-						if(!read(color, s, state.sourceFormat))
-						{
-							return nullptr;
-						}
-
-						if(!write(color, d, state.destFormat, state.options))
-						{
-							return nullptr;
-						}
+						// When both formats are true integer types, we don't go to float to avoid losing precision
+						Int4 color = readI(s, state.sourceFormat);
+						write(color, d, state.destFormat, state.options);
 					}
 					else
 					{
@@ -1167,10 +1128,7 @@ namespace sw
 
 							Pointer<Byte> s = source + ComputeOffset(X, Y, sPitchB, srcBytes, srcQuadLayout);
 
-							if(!read(color, s, state.sourceFormat))
-							{
-								return nullptr;
-							}
+							color = readF(s, state.sourceFormat);
 						}
 						else   // Bilinear filtering
 						{
@@ -1188,10 +1146,10 @@ namespace sw
 							Pointer<Byte> s10 = source + ComputeOffset(X0, Y1, sPitchB, srcBytes, srcQuadLayout);
 							Pointer<Byte> s11 = source + ComputeOffset(X1, Y1, sPitchB, srcBytes, srcQuadLayout);
 
-							Float4 c00; if(!read(c00, s00, state.sourceFormat)) return nullptr;
-							Float4 c01; if(!read(c01, s01, state.sourceFormat)) return nullptr;
-							Float4 c10; if(!read(c10, s10, state.sourceFormat)) return nullptr;
-							Float4 c11; if(!read(c11, s11, state.sourceFormat)) return nullptr;
+							Float4 c00 = readF(s00, state.sourceFormat);
+							Float4 c01 = readF(s01, state.sourceFormat);
+							Float4 c10 = readF(s10, state.sourceFormat);
+							Float4 c11 = readF(s11, state.sourceFormat);
 
 							Float4 fx = Float4(x0 - Float(X0));
 							Float4 fy = Float4(y0 - Float(Y0));
@@ -1202,10 +1160,8 @@ namespace sw
 							        c11 * fx * fy;
 						}
 
-						if(!ApplyScaleAndClamp(color, state) || !write(color, d, state.destFormat, state.options))
-						{
-							return nullptr;
-						}
+						applyScaleAndClamp(color, state);
+						write(color, d, state.destFormat, state.options);
 					}
 
 					if(!hasConstantColorI && !hasConstantColorF) { x += w; }
@@ -1215,10 +1171,15 @@ namespace sw
 			}
 		}
 
+		if(!valid)
+		{
+			return nullptr;
+		}
+
 		return function(L"BlitRoutine");
 	}
 
-	bool Blitter::blitReactor(Surface *source, const SliceRect &sourceRect, Surface *dest, const SliceRect &destRect, const Blitter::Options& options)
+	bool Blitter::blitReactor(Surface *source, const SliceRect &sourceRect, Surface *dest, const SliceRect &destRect, const Blitter::Options &options)
 	{
 		ASSERT(!(options & CLEAR_OPERATION) || ((source->getWidth() == 1) && (source->getHeight() == 1) && (source->getDepth() == 1)));
 
