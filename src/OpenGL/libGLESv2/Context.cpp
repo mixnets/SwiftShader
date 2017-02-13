@@ -627,7 +627,6 @@ bool Context::isDitherEnabled() const
 
 void Context::setPrimitiveRestartFixedIndexEnabled(bool enabled)
 {
-	UNIMPLEMENTED();
 	mState.primitiveRestartFixedIndexEnabled = enabled;
 }
 
@@ -2136,9 +2135,8 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS: // integer, at least 50048
 		*params = MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS;
 		break;
-	case GL_MAX_COMBINED_UNIFORM_BLOCKS: // integer, at least 70
-		UNIMPLEMENTED();
-		*params = 70;
+	case GL_MAX_COMBINED_UNIFORM_BLOCKS: // integer, at least 24
+		*params = MAX_VERTEX_UNIFORM_BLOCKS + MAX_FRAGMENT_UNIFORM_BLOCKS;
 		break;
 	case GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS: // integer, at least 50176
 		*params = MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS;
@@ -2155,9 +2153,8 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_MAX_ELEMENTS_VERTICES:
 		*params = MAX_ELEMENTS_VERTICES;
 		break;
-	case GL_MAX_FRAGMENT_INPUT_COMPONENTS: // integer, at least 128
-		UNIMPLEMENTED();
-		*params = 128;
+	case GL_MAX_FRAGMENT_INPUT_COMPONENTS: // integer, at least 60
+		*params = MAX_FRAGMENT_INPUT_VECTORS * 4;
 		break;
 	case GL_MAX_FRAGMENT_UNIFORM_BLOCKS: // integer, at least 12
 		*params = MAX_FRAGMENT_UNIFORM_BLOCKS;
@@ -2167,7 +2164,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		break;
 	case GL_MAX_PROGRAM_TEXEL_OFFSET: // integer, minimum is 7
 		UNIMPLEMENTED();
-		*params = 7;
+		*params = MAX_PROGRAM_TEXEL_OFFSET;
 		break;
 	case GL_MAX_SERVER_WAIT_TIMEOUT: // integer
 		UNIMPLEMENTED();
@@ -2194,11 +2191,12 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		break;
 	case GL_MAX_VARYING_COMPONENTS: // integer, at least 60
 		UNIMPLEMENTED();
+		// FIXME: should be MAX_VARYING_VECTORS * 4, but MAX_VARYING_VECTORS
+		// must be increased (see MAX_VERTEX_OUTPUTS and MAX_FRAGMENT_INPUTS)
 		*params = 60;
 		break;
 	case GL_MAX_VERTEX_OUTPUT_COMPONENTS: // integer,  at least 64
-		UNIMPLEMENTED();
-		*params = 64;
+		*params = MAX_VERTEX_OUTPUT_VECTORS * 4;
 		break;
 	case GL_MAX_VERTEX_UNIFORM_BLOCKS: // integer,  at least 12
 		*params = MAX_VERTEX_UNIFORM_BLOCKS;
@@ -2208,11 +2206,17 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		break;
 	case GL_MIN_PROGRAM_TEXEL_OFFSET: // integer, maximum is -8
 		UNIMPLEMENTED();
-		*params = -8;
+		*params = MIN_PROGRAM_TEXEL_OFFSET;
 		break;
 	case GL_MINOR_VERSION: // integer
-		UNIMPLEMENTED();
-		*params = 0;
+		if (clientVersion >= 3)
+		{
+			*params = 0; // FIXME: Update once support for OpenGL ES 3.1 or more is implemented
+		}
+		else
+		{
+			return false;
+		}
 		break;
 	case GL_NUM_EXTENSIONS: // integer
 		GLuint numExtensions;
@@ -2220,7 +2224,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		*params = numExtensions;
 		break;
 	case GL_NUM_PROGRAM_BINARY_FORMATS: // integer, at least 0
-		UNIMPLEMENTED();
 		*params = 0;
 		break;
 	case GL_PACK_ROW_LENGTH: // integer, initially 0
@@ -2253,8 +2256,8 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		}
 		break;
 	case GL_PROGRAM_BINARY_FORMATS: // integer[GL_NUM_PROGRAM_BINARY_FORMATS​]
-		UNIMPLEMENTED();
-		*params = 0;
+		// Since GL_NUM_PROGRAM_BINARY_FORMATS is 0, the input
+		// should be a 0 sized array, so don't write to params
 		break;
 	case GL_READ_BUFFER: // symbolic constant,  initial value is GL_BACK​
 		*params = getReadFramebuffer()->getReadBuffer();
