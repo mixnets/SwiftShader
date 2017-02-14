@@ -83,6 +83,8 @@ namespace sw
 	private:
 		Float4 readF(Pointer<Byte> element, Format format);
 		void write(const Float4 &color, Pointer<Byte> element, Format format, const Blitter::Options &options);
+		bool convert(Byte16 &packedColor, const Float4 &color, Format format, const Blitter::Options &options);
+		void write(const Byte16 &packedColor, Pointer<Byte> element, Format format);
 		Int4 readI(Pointer<Byte> element, Format format);
 		void write(const Int4 &color, Pointer<Byte> element, Format format, const Blitter::Options &options);
 		float4 getScale(Format format);

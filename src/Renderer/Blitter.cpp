@@ -704,6 +704,77 @@ namespace sw
 		}
 	}
 
+	bool Blitter::convert(Byte16 &packed, const Float4 &c, Format format, const Blitter::Options &options)
+	{
+		if((options & WRITE_RGBA) != WRITE_RGBA)
+		{
+			return false;
+		}
+
+		switch(format)
+		{
+		case FORMAT_R5G6B5:
+			{
+				UShort element = UShort(RoundInt(Float(c.z)) |
+				                        (RoundInt(Float(c.y)) << Int(5)) |
+				                        (RoundInt(Float(c.x)) << Int(11)));
+				packed = As<Byte16>(Insert(As<UShort8>(packed), element, 0));
+				packed = As<Byte16>(Swizzle(As<UShort8>(packed), 0, 0, 0, 0, 0, 0, 0, 0));
+			}
+			break;
+		case FORMAT_X8B8G8R8:
+			{
+				UShort4 c0 = As<UShort4>(RoundShort4(c)) | UShort4(0x0000, 0x0000, 0x0000, 0xFFFFu);
+				Byte4 element = Byte4(Pack(c0, c0));
+				packed = Byte16(element, element, element, element);
+			}
+			break;
+		case FORMAT_X8R8G8B8:
+			{
+				UShort4 c0 = As<UShort4>(RoundShort4(c.zyxw)) | UShort4(0x0000, 0x0000, 0x0000, 0xFFFFu);
+				Byte4 element = Byte4(Pack(c0, c0));
+				packed = Byte16(element, element, element, element);
+			}
+			break;
+		case FORMAT_A8B8G8R8:
+			{
+				UShort4 c0 = As<UShort4>(RoundShort4(c));
+				Byte4 element = Byte4(Pack(c0, c0));
+				packed = Byte16(element, element, element, element);
+			}
+			break;
+		case FORMAT_A8R8G8B8:
+			{
+				UShort4 c0 = As<UShort4>(RoundShort4(c.zyxw));
+				Byte4 element = Byte4(Pack(c0, c0));
+				packed = Byte16(element, element, element, element);
+			}
+			break;
+		default:
+			return false;
+		}
+
+		return true;
+	}
+
+	void Blitter::write(const Byte16 &packedColor, Pointer<Byte> element, Format format)
+	{
+		switch(format)
+		{
+		case FORMAT_R5G6B5:
+			*Pointer<UShort>(element) = Extract(As<UShort8>(packedColor), 0);
+			break;
+		case FORMAT_X8B8G8R8:
+		case FORMAT_X8R8G8B8:
+		case FORMAT_A8B8G8R8:
+		case FORMAT_A8R8G8B8:
+			*Pointer<UInt>(element) = Extract(As<UInt4>(packedColor), 0);
+			break;
+		default:
+			assert(false);
+		}
+	}
+
 	Int4 Blitter::readI(Pointer<Byte> element, Format format)
 	{
 		Int4 c(0, 0, 0, 1);
@@ -1072,6 +1143,8 @@ namespace sw
 			Int4 constantColorI;
 			bool hasConstantColorF = false;
 			Float4 constantColorF;
+			Byte16 packedColor;
+			bool packed = false;
 			if(state.options & CLEAR_OPERATION)
 			{
 				if(intBoth) // Integer types
@@ -1085,6 +1158,8 @@ namespace sw
 					hasConstantColorF = true;
 
 					applyScaleAndClamp(constantColorF, state);
+
+					packed = convert(packedColor, constantColorF, state.destFormat, state.options);
 				}
 			}
 
@@ -1095,76 +1170,87 @@ namespace sw
 				Float x = x0;
 				Pointer<Byte> destLine = dest + (dstQuadLayout ? j & Int(~1) : RValue<Int>(j)) * dPitchB;
 
-				For(Int i = x0d, i < x1d, i++)
+				if(packed)
 				{
-					Pointer<Byte> d = destLine + (dstQuadLayout ? (((j & Int(1)) << 1) + (i * 2) - (i & Int(1))) : RValue<Int>(i)) * dstBytes;
-					if(hasConstantColorI)
+					For(Int i = x0d, i < x1d, i++)
 					{
-						write(constantColorI, d, state.destFormat, state.options);
+						Pointer<Byte> d = destLine + i * dstBytes;
+						write(packedColor, d, state.destFormat);
 					}
-					else if(hasConstantColorF)
+				}
+				else
+				{
+					For(Int i = x0d, i < x1d, i++)
 					{
-						write(constantColorF, d, state.destFormat, state.options);
-					}
-					else if(intBoth) // Integer types do not support filtering
-					{
-						Int X = Int(x);
-						Int Y = Int(y);
-
-						Pointer<Byte> s = source + ComputeOffset(X, Y, sPitchB, srcBytes, srcQuadLayout);
-
-						// When both formats are true integer types, we don't go to float to avoid losing precision
-						Int4 color = readI(s, state.sourceFormat);
-						write(color, d, state.destFormat, state.options);
-					}
-					else
-					{
-						Float4 color;
-
-						if(!(state.options & FILTER_LINEAR) || intSrc)
+						Pointer<Byte> d = destLine + (dstQuadLayout ? (((j & Int(1)) << 1) + (i * 2) - (i & Int(1))) : RValue<Int>(i)) * dstBytes;
+						if(hasConstantColorI)
+						{
+							write(constantColorI, d, state.destFormat, state.options);
+						}
+						else if(hasConstantColorF)
+						{
+							write(constantColorF, d, state.destFormat, state.options);
+						}
+						else if(intBoth) // Integer types do not support filtering
 						{
 							Int X = Int(x);
 							Int Y = Int(y);
 
 							Pointer<Byte> s = source + ComputeOffset(X, Y, sPitchB, srcBytes, srcQuadLayout);
 
-							color = readF(s, state.sourceFormat);
+							// When both formats are true integer types, we don't go to float to avoid losing precision
+							Int4 color = readI(s, state.sourceFormat);
+							write(color, d, state.destFormat, state.options);
 						}
-						else   // Bilinear filtering
+						else
 						{
-							Float x0 = x - 0.5f;
-							Float y0 = y - 0.5f;
+							Float4 color;
 
-							Int X0 = Max(Int(x0), 0);
-							Int Y0 = Max(Int(y0), 0);
+							if(!(state.options & FILTER_LINEAR) || intSrc)
+							{
+								Int X = Int(x);
+								Int Y = Int(y);
 
-							Int X1 = IfThenElse(X0 + 1 >= sWidth, X0, X0 + 1);
-							Int Y1 = IfThenElse(Y0 + 1 >= sHeight, Y0, Y0 + 1);
+								Pointer<Byte> s = source + ComputeOffset(X, Y, sPitchB, srcBytes, srcQuadLayout);
 
-							Pointer<Byte> s00 = source + ComputeOffset(X0, Y0, sPitchB, srcBytes, srcQuadLayout);
-							Pointer<Byte> s01 = source + ComputeOffset(X1, Y0, sPitchB, srcBytes, srcQuadLayout);
-							Pointer<Byte> s10 = source + ComputeOffset(X0, Y1, sPitchB, srcBytes, srcQuadLayout);
-							Pointer<Byte> s11 = source + ComputeOffset(X1, Y1, sPitchB, srcBytes, srcQuadLayout);
+								color = readF(s, state.sourceFormat);
+							}
+							else   // Bilinear filtering
+							{
+								Float x0 = x - 0.5f;
+								Float y0 = y - 0.5f;
 
-							Float4 c00 = readF(s00, state.sourceFormat);
-							Float4 c01 = readF(s01, state.sourceFormat);
-							Float4 c10 = readF(s10, state.sourceFormat);
-							Float4 c11 = readF(s11, state.sourceFormat);
+								Int X0 = Max(Int(x0), 0);
+								Int Y0 = Max(Int(y0), 0);
 
-							Float4 fx = Float4(x0 - Float(X0));
-							Float4 fy = Float4(y0 - Float(Y0));
+								Int X1 = IfThenElse(X0 + 1 >= sWidth, X0, X0 + 1);
+								Int Y1 = IfThenElse(Y0 + 1 >= sHeight, Y0, Y0 + 1);
 
-							color = c00 * (Float4(1.0f) - fx) * (Float4(1.0f) - fy) +
-							        c01 * fx * (Float4(1.0f) - fy) +
-							        c10 * (Float4(1.0f) - fx) * fy +
-							        c11 * fx * fy;
+								Pointer<Byte> s00 = source + ComputeOffset(X0, Y0, sPitchB, srcBytes, srcQuadLayout);
+								Pointer<Byte> s01 = source + ComputeOffset(X1, Y0, sPitchB, srcBytes, srcQuadLayout);
+								Pointer<Byte> s10 = source + ComputeOffset(X0, Y1, sPitchB, srcBytes, srcQuadLayout);
+								Pointer<Byte> s11 = source + ComputeOffset(X1, Y1, sPitchB, srcBytes, srcQuadLayout);
+
+								Float4 c00 = readF(s00, state.sourceFormat);
+								Float4 c01 = readF(s01, state.sourceFormat);
+								Float4 c10 = readF(s10, state.sourceFormat);
+								Float4 c11 = readF(s11, state.sourceFormat);
+
+								Float4 fx = Float4(x0 - Float(X0));
+								Float4 fy = Float4(y0 - Float(Y0));
+
+								color = c00 * (Float4(1.0f) - fx) * (Float4(1.0f) - fy) +
+										c01 * fx * (Float4(1.0f) - fy) +
+										c10 * (Float4(1.0f) - fx) * fy +
+										c11 * fx * fy;
+							}
+
+							applyScaleAndClamp(color, state);
+							write(color, d, state.destFormat, state.options);
 						}
 
-						applyScaleAndClamp(color, state);
-						write(color, d, state.destFormat, state.options);
+						if(!hasConstantColorI && !hasConstantColorF) { x += w; }
 					}
-
-					if(!hasConstantColorI && !hasConstantColorF) { x += w; }
 				}
 
 				if(!hasConstantColorI && !hasConstantColorF) { y += h; }
