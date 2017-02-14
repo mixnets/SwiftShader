@@ -14,8 +14,9 @@
 
 #include "Blitter.hpp"
 
-#include "Common/Debug.hpp"
 #include "Reactor/Reactor.hpp"
+#include "Common/Memory.hpp"
+#include "Common/Debug.hpp"
 
 namespace sw
 {
@@ -33,11 +34,71 @@ namespace sw
 
 	void Blitter::clear(void* pixel, sw::Format format, Surface *dest, const SliceRect &dRect, unsigned int rgbaMask)
 	{
-		sw::Surface color(1, 1, 1, format, pixel, sw::Surface::bytes(format), sw::Surface::bytes(format));
-		Blitter::Options clearOptions = static_cast<sw::Blitter::Options>((rgbaMask & 0xF) | CLEAR_OPERATION);
-		SliceRect sRect(dRect);
-		sRect.slice = 0;
-		blit(&color, sRect, dest, dRect, clearOptions);
+		bool fastClear = false;
+		uint32_t packed;
+
+		if(format == FORMAT_A32B32G32R32F && rgbaMask == 0xF)
+		{
+			float *color = (float*)pixel;
+			float r = color[0];
+			float g = color[1];
+			float b = color[2];
+			float a = color[3];
+
+			switch(dest->getFormat())
+			{
+			case FORMAT_R5G6B5:
+				fastClear = true;
+				packed = ((uint16_t)(31 * b + 0.5f) << 0) |
+				         ((uint16_t)(63 * g + 0.5f) << 5) |
+				         ((uint16_t)(31 * r + 0.5f) << 11);
+				break;
+			case FORMAT_X8B8G8R8:
+				fastClear = true;
+				packed = ((uint32_t)(255) << 24) |
+				         ((uint32_t)(255 * b + 0.5f) << 16) |
+				         ((uint32_t)(255 * g + 0.5f) << 8) |
+				         ((uint32_t)(255 * r + 0.5f) << 0);
+				break;
+			default:
+				break;
+			}
+		}
+
+		if(fastClear)
+		{
+			uint8_t *d = (uint8_t*)dest->lockInternal(dRect.x0, dRect.y0, dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC);
+
+			switch(dest->getFormat())
+			{
+			case FORMAT_R5G6B5:
+				for(int i = dRect.y0; i < dRect.y1; i++)
+				{
+					sw::clear((uint16_t*)d, packed, dRect.x1 - dRect.x0);
+					d += dest->getInternalPitchB();
+				}
+				break;
+			case FORMAT_X8B8G8R8:
+				for(int i = dRect.y0; i < dRect.y1; i++)
+				{
+					sw::clear((uint32_t*)d, packed, dRect.x1 - dRect.x0);
+					d += dest->getInternalPitchB();
+				}
+				break;
+			default:
+				assert(false);
+			}
+
+			dest->unlockInternal();
+		}
+		else
+		{
+			sw::Surface color(1, 1, 1, format, pixel, sw::Surface::bytes(format), sw::Surface::bytes(format));
+			Blitter::Options clearOptions = static_cast<sw::Blitter::Options>((rgbaMask & 0xF) | CLEAR_OPERATION);
+			SliceRect sRect(dRect);
+			sRect.slice = 0;
+			blit(&color, sRect, dest, dRect, clearOptions);
+		}
 	}
 
 	void Blitter::blit(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter, bool isStencil)
