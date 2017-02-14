@@ -722,6 +722,11 @@ namespace sw
 		case 4:
 			packed = As<Byte16>(Swizzle(As<UInt4>(packed), 0x00));
 			break;
+		case 8:
+			packed = As<Byte16>(Swizzle(As<UInt4>(packed), 0x44));
+			break;
+		case 16:
+			break;
 		default:
 			return false;
 		}
@@ -738,6 +743,12 @@ namespace sw
 			break;
 		case 4:
 			*Pointer<UInt>(element) = Extract(As<UInt4>(packedColor), 0);
+			break;
+		case 8:
+			*Pointer<Int2>(element) = Int2(As<Int4>(packedColor));
+			break;
+		case 16:
+			*Pointer<Byte16>(element) = packedColor;
 			break;
 		default:
 			assert(false);
