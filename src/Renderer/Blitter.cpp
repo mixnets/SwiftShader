@@ -711,16 +711,20 @@ namespace sw
 			return false;
 		}
 
+		write(c, &packed, format, options);
+
+		// Replicate
 		switch(Surface::bytes(format))
 		{
 		case 2:
+			packed = As<Byte16>(Swizzle(As<UShort8>(packed), 0, 0, 0, 0, 0, 0, 0, 0));
+			break;
 		case 4:
+			packed = As<Byte16>(Swizzle(As<UInt4>(packed), 0x00));
 			break;
 		default:
 			return false;
 		}
-
-		write(c, &packed, format, options);
 
 		return true;
 	}
@@ -1137,7 +1141,23 @@ namespace sw
 
 				if(packed)
 				{
-					For(Int i = x0d, i < x1d, i++)
+					const int unroll = 4;
+					const int vectorSize = 16;
+					int step = unroll * vectorSize / dstBytes;
+
+					Int i = x0d;
+
+					For(, i < x1d - (step - 1), i += step)
+					{
+						Pointer<Byte> d = destLine + i * dstBytes;
+
+						for(int k = 0; k < unroll; k++)
+						{
+							*Pointer<Byte16>(d + k * vectorSize) = packedColor;
+						}
+					}
+
+					For(, i < x1d, i++)
 					{
 						Pointer<Byte> d = destLine + i * dstBytes;
 						write(packedColor, d, state.destFormat);
