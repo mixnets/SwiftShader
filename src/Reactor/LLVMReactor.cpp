@@ -2474,6 +2474,17 @@ namespace sw
 		storeValue(value);
 	}
 
+	Byte16::Byte16(RValue<Byte4> x, RValue<Byte4> y, RValue<Byte4> z, RValue<Byte4> w)
+	{
+		Value *v = Nucleus::createBitCast(loadValue(), Int4::getType());
+		Value *a = Nucleus::createInsertElement(v, Nucleus::createBitCast(x.value, Int::getType()), 0);
+		Value *b = Nucleus::createInsertElement(a, Nucleus::createBitCast(x.value, Int::getType()), 1);
+		Value *c = Nucleus::createInsertElement(b, Nucleus::createBitCast(x.value, Int::getType()), 2);
+		Value *d = Nucleus::createInsertElement(c, Nucleus::createBitCast(x.value, Int::getType()), 3);
+
+		storeValue(Nucleus::createBitCast(d, Byte16::getType()));
+	}
+
 	RValue<Byte16> Byte16::operator=(RValue<Byte16> rhs)
 	{
 		storeValue(rhs.value);
@@ -3363,6 +3374,16 @@ namespace sw
 		}
 	}
 
+	RValue<Short> Extract(RValue<Short8> val, int i)
+	{
+		return RValue<Short>(Nucleus::createExtractElement(val.value, Short::getType(), i));
+	}
+
+	RValue<Short8> Insert(RValue<Short8> val, RValue<Short> element, int i)
+	{
+		return RValue<Short8>(Nucleus::createInsertElement(val.value, element.value, i));
+	}
+
 	RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y)
 	{
 		return x86::pmulhw(x, y);   // FIXME: Fallback required
@@ -3499,6 +3520,16 @@ namespace sw
 	RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)
 	{
 		return x86::pmulhuw(x, y);   // FIXME: Fallback required
+	}
+
+	RValue<UShort> Extract(RValue<UShort8> val, int i)
+	{
+		return RValue<UShort>(Nucleus::createExtractElement(val.value, Short::getType(), i));
+	}
+
+	RValue<UShort8> Insert(RValue<UShort8> val, RValue<UShort> element, int i)
+	{
+		return RValue<UShort8>(Nucleus::createInsertElement(val.value, element.value, i));
 	}
 
 	Type *UShort8::getType()
@@ -5578,6 +5609,21 @@ namespace sw
 	RValue<UShort8> Pack(RValue<UInt4> x, RValue<UInt4> y)
 	{
 		return x86::packusdw(As<Int4>(x), As<Int4>(y));
+	}
+
+	RValue<UInt> Extract(RValue<UInt4> x, int i)
+	{
+		return RValue<UInt>(Nucleus::createExtractElement(x.value, Int::getType(), i));
+	}
+
+	RValue<UInt4> Insert(RValue<UInt4> x, RValue<UInt> element, int i)
+	{
+		return RValue<UInt4>(Nucleus::createInsertElement(x.value, element.value, i));
+	}
+
+	RValue<UInt4> Swizzle(RValue<UInt4> x, unsigned char select)
+	{
+		return RValue<UInt4>(createSwizzle4(x.value, select));
 	}
 
 	Type *UInt4::getType()
