@@ -1172,7 +1172,23 @@ namespace sw
 
 				if(packed)
 				{
-					For(Int i = x0d, i < x1d, i++)
+					const int unroll = 4;
+					const int vectorSize = 16;
+					int step = unroll * vectorSize / dstBytes;
+
+					Int i = x0d;
+
+					For(, i < x1d - (step - 1), i += step)
+					{
+						Pointer<Byte> d = destLine + i * dstBytes;
+
+						for(int k = 0; k < unroll; k++)
+						{
+							*Pointer<Byte16>(d + k * vectorSize) = packedColor;
+						}
+					}
+
+					For(, i < x1d, i++)
 					{
 						Pointer<Byte> d = destLine + i * dstBytes;
 						write(packedColor, d, state.destFormat);
