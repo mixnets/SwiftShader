@@ -545,12 +545,12 @@ namespace sw
 
 	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index, bool unsignedIndex)
 	{
-		index = createMul(index, createConstantInt((int)typeSize(type)));
-
 		if(unsignedIndex && sizeof(void*) == 8)
 		{
 			index = createZExt(index, Long::getType());
 		}
+
+		index = createMul(index, createConstantInt((int)typeSize(type)));
 
 		assert(ptr->getType()->getContainedType(0) == T(type));
 		return createBitCast(V(::builder->CreateGEP(createBitCast(ptr, T(PointerType::get(T(Byte::getType()), 0))), index)), T(PointerType::get(T(type), 0)));
@@ -2150,7 +2150,7 @@ namespace sw
 
 	RValue<Int> SignMask(RValue<Byte8> x)
 	{
-		return x86::pmovmskb(x);
+		return x86::pmovmskb(x) & 0xFF;
 	}
 
 //	RValue<Byte8> CmpGT(RValue<Byte8> x, RValue<Byte8> y)
@@ -2356,7 +2356,7 @@ namespace sw
 
 	RValue<Int> SignMask(RValue<SByte8> x)
 	{
-		return x86::pmovmskb(As<Byte8>(x));
+		return x86::pmovmskb(As<Byte8>(x)) & 0xFF;
 	}
 
 	RValue<Byte8> CmpGT(RValue<SByte8> x, RValue<SByte8> y)
@@ -2722,7 +2722,9 @@ namespace sw
 
 	RValue<SByte8> Pack(RValue<Short4> x, RValue<Short4> y)
 	{
-		return x86::packsswb(x, y);
+		auto result = x86::packsswb(x, y);
+
+		return As<SByte8>(Swizzle(As<Int4>(result), 0x88));
 	}
 
 	RValue<Int2> UnpackLow(RValue<Short4> x, RValue<Short4> y)
@@ -2989,7 +2991,9 @@ namespace sw
 
 	RValue<Byte8> Pack(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		return x86::packuswb(x, y);
+		auto result = x86::packuswb(x, y);
+
+		return As<Byte8>(Swizzle(As<Int4>(result), 0x88));
 	}
 
 	Type *UShort4::getType()
@@ -3617,6 +3621,9 @@ namespace sw
 
 	UInt::UInt(RValue<Float> cast)
 	{
+		// Note: createFPToUI is broken, must perform conversion using createFPtoSI
+		// Value *integer = Nucleus::createFPToUI(cast.value, UInt::getType());
+
 		// Smallest positive value representable in UInt, but not in Int
 		const unsigned int ustart = 0x80000000u;
 		const float ustartf = float(ustart);
@@ -5171,12 +5178,21 @@ namespace sw
 
 	RValue<Float> Rcp_pp(RValue<Float> x, bool exactAtPow2)
 	{
-		return 1.0f / x;
+		if(exactAtPow2)
+		{
+			// rcpss uses a piecewise-linear approximation which minimizes the relative error
+			// but is not exact at power-of-two values. Rectify by multiplying by the inverse.
+			return x86::rcpss(x) * Float(1.0f / _mm_cvtss_f32(_mm_rcp_ss(_mm_set_ps1(1.0f))));
+		}
+		else
+		{
+			return x86::rcpss(x);
+		}
 	}
 
 	RValue<Float> RcpSqrt_pp(RValue<Float> x)
 	{
-		return Rcp_pp(Sqrt(x));
+		return x86::rsqrtss(x);
 	}
 
 	RValue<Float> Sqrt(RValue<Float> x)
@@ -5459,12 +5475,21 @@ namespace sw
 
 	RValue<Float4> Rcp_pp(RValue<Float4> x, bool exactAtPow2)
 	{
-		return Float4(1.0f) / x;
+		if(exactAtPow2)
+		{
+			// rcpss uses a piecewise-linear approximation which minimizes the relative error
+			// but is not exact at power-of-two values. Rectify by multiplying by the inverse.
+			return x86::rcpps(x) * Float4(1.0f / _mm_cvtss_f32(_mm_rcp_ss(_mm_set_ps1(1.0f))));
+		}
+		else
+		{
+			return x86::rcpps(x);
+		}
 	}
 
 	RValue<Float4> RcpSqrt_pp(RValue<Float4> x)
 	{
-		return Rcp_pp(Sqrt(x));
+		return x86::rsqrtps(x);
 	}
 
 	RValue<Float4> Sqrt(RValue<Float4> x)
