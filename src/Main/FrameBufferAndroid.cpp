@@ -74,8 +74,6 @@ namespace sw
 			}
 
 			queueBuffer(nativeWindow, buffer, -1);
-
-			buffer->common.decRef(&buffer->common);
 		}
 	}
 
@@ -85,8 +83,6 @@ namespace sw
 		{
 			return nullptr;
 		}
-
-		buffer->common.incRef(&buffer->common);
 
 		if(gralloc->lock(gralloc, buffer->handle,
 		                 GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN,
