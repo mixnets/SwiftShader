@@ -2679,7 +2679,7 @@ namespace sw
 		movmsk->addArg(x.value);
 		::basicBlock->appendInst(movmsk);
 
-		return RValue<Int>(V(result));
+		return RValue<Int>(V(result)) & 0xFF;
 	}
 
 //	RValue<Byte8> CmpGT(RValue<Byte8> x, RValue<Byte8> y)
@@ -2908,7 +2908,7 @@ namespace sw
 		movmsk->addArg(x.value);
 		::basicBlock->appendInst(movmsk);
 
-		return RValue<Int>(V(result));
+		return RValue<Int>(V(result)) & 0xFF;
 	}
 
 	RValue<Byte8> CmpGT(RValue<SByte8> x, RValue<SByte8> y)
