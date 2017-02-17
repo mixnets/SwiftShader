@@ -1884,7 +1884,7 @@ namespace sw
 					Int c2 = Int(*Pointer<Byte>(buffer[f2] + index[2]));
 					Int c3 = Int(*Pointer<Byte>(buffer[f3] + index[3]));
 					c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-					c.x = Unpack(As<Byte4>(c0));
+					c.x =  Unpack(As<Byte4>(c0));
 				}
 				break;
 			default:

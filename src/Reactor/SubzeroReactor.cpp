@@ -4879,8 +4879,7 @@ namespace sw
 
 	Int4::Int4(RValue<Byte4> cast)
 	{
-		Value *x = Nucleus::createBitCast(cast.value, Int::getType());
-		Value *a = Nucleus::createInsertElement(loadValue(), x, 0);
+		Value *a = Nucleus::createBitCast(cast.value, Int4::getType());
 
 		Value *e;
 		int swizzle[16] = {0, 16, 1, 17, 2, 18, 3, 19, 4, 20, 5, 21, 6, 22, 7, 23};
@@ -4897,8 +4896,7 @@ namespace sw
 
 	Int4::Int4(RValue<SByte4> cast)
 	{
-		Value *x = Nucleus::createBitCast(cast.value, Int::getType());
-		Value *a = Nucleus::createInsertElement(loadValue(), x, 0);
+		Value *a = Nucleus::createBitCast(cast.value, Int4::getType());
 
 		Value *e;
 		int swizzle[16] = {0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7};
