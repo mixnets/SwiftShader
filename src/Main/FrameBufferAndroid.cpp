@@ -64,17 +64,16 @@ namespace sw
 
 	void FrameBufferAndroid::blit(void *source, const Rect *sourceRect, const Rect *destRect, Format sourceFormat, size_t sourceStride)
 	{
-		copy(source, sourceFormat, sourceStride);
-
 		if(buffer)
 		{
-			queueBuffer(nativeWindow, buffer, -1);
-
 			if(locked)
 			{
-				locked = nullptr;
+				copy(source, sourceFormat, sourceStride);
+
 				unlock();
 			}
+
+			queueBuffer(nativeWindow, buffer, -1);
 
 			buffer->common.decRef(&buffer->common);
 		}
