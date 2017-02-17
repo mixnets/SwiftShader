@@ -2150,7 +2150,7 @@ namespace sw
 
 	RValue<Int> SignMask(RValue<Byte8> x)
 	{
-		return x86::pmovmskb(x);
+		return x86::pmovmskb(x) & 0xFF;
 	}
 
 //	RValue<Byte8> CmpGT(RValue<Byte8> x, RValue<Byte8> y)
@@ -2356,7 +2356,7 @@ namespace sw
 
 	RValue<Int> SignMask(RValue<SByte8> x)
 	{
-		return x86::pmovmskb(As<Byte8>(x));
+		return x86::pmovmskb(As<Byte8>(x)) & 0xFF;
 	}
 
 	RValue<Byte8> CmpGT(RValue<SByte8> x, RValue<SByte8> y)
@@ -3617,6 +3617,9 @@ namespace sw
 
 	UInt::UInt(RValue<Float> cast)
 	{
+		// Note: createFPToUI is broken, must perform conversion using createFPtoSI
+		// Value *integer = Nucleus::createFPToUI(cast.value, UInt::getType());
+
 		// Smallest positive value representable in UInt, but not in Int
 		const unsigned int ustart = 0x80000000u;
 		const float ustartf = float(ustart);
