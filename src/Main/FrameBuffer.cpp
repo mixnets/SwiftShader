@@ -550,7 +550,7 @@ namespace sw
 
 						If(x >= 0 && x < width)
 						{
-							blend(state, d, s, c);
+						//	blend(state, d, s, c);
 						}
 
 						c += 4;

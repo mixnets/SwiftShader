@@ -41,6 +41,11 @@ namespace sw
 				v[i].w = Float4(0.0f);
 			}
 		}
+
+		for(int i = 0; i < TEXTURE_IMAGE_UNITS; i++)
+		{
+			sampler[i] = new SamplerCore(constants, state.sampler[i]);
+		}
 	}
 
 	PixelRoutine::~PixelRoutine()
@@ -56,11 +61,6 @@ namespace sw
 		#if PERF_PROFILE
 			Long pipeTime = Ticks();
 		#endif
-
-		for(int i = 0; i < TEXTURE_IMAGE_UNITS; i++)
-		{
-			sampler[i] = new SamplerCore(constants, state.sampler[i]);
-		}
 
 		const bool earlyDepthTest = !state.depthOverride && !state.alphaTestActive();
 
