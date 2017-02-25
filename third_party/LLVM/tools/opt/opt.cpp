@@ -496,12 +496,12 @@ int main(int argc, char **argv) {
 
   // Allocate a full target machine description only if necessary.
   // FIXME: The choice of target should be controllable on the command line.
-  std::auto_ptr<TargetMachine> target;
+  std::unique_ptr<TargetMachine> target;
 
   SMDiagnostic Err;
 
   // Load the input module...
-  std::auto_ptr<Module> M;
+  std::unique_ptr<Module> M;
   M.reset(ParseIRFile(InputFilename, Err, Context));
 
   if (M.get() == 0) {

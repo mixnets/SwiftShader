@@ -243,7 +243,7 @@ int main(int argc, char **argv) {
 
   // Load the module to be compiled...
   SMDiagnostic Err;
-  std::auto_ptr<Module> M;
+  std::unique_ptr<Module> M;
 
   M.reset(ParseIRFile(InputFilename, Err, Context));
   if (M.get() == 0) {
@@ -303,7 +303,7 @@ int main(int argc, char **argv) {
     FeaturesStr = Features.getString();
   }
 
-  std::auto_ptr<TargetMachine>
+  std::unique_ptr<TargetMachine>
     target(TheTarget->createTargetMachine(TheTriple.getTriple(),
                                           MCPU, FeaturesStr,
                                           RelocModel, CMModel));

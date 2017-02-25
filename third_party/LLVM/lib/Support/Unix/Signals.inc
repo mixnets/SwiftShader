@@ -32,7 +32,9 @@
 #endif
 using namespace llvm;
 
+#ifdef ENABLE_SIGNAL_OVERRIDES
 static RETSIGTYPE SignalHandler(int Sig);  // defined below.
+#endif
 
 static SmartMutex<true> SignalsMutex;
 
@@ -69,12 +71,21 @@ static const int KillSigs[] = {
 static const int *const KillSigsEnd =
   KillSigs + sizeof(KillSigs) / sizeof(KillSigs[0]);
 
+/// RemoveFilesToRemove - Process the FilesToRemove list. This function
+/// should be called with the SignalsMutex lock held.
+static void RemoveFilesToRemove() {
+  while (!FilesToRemove.empty()) {
+    FilesToRemove.back().eraseFromDisk(true);
+    FilesToRemove.pop_back();
+  }
+}
+
+#ifdef ENABLE_SIGNAL_OVERRIDES
 static unsigned NumRegisteredSignals = 0;
 static struct {
   struct sigaction SA;
   int SigNo;
 } RegisteredSignalInfo[(sizeof(IntSigs)+sizeof(KillSigs))/sizeof(KillSigs[0])];
-
 
 static void RegisterHandler(int Signal) {
   assert(NumRegisteredSignals <
@@ -95,13 +106,11 @@ static void RegisterHandler(int Signal) {
 }
 
 static void RegisterHandlers() {
-#ifdef ENABLE_SIGNAL_OVERRIDES
   // If the handlers are already registered, we're done.
   if (NumRegisteredSignals != 0) return;
 
   std::for_each(IntSigs, IntSigsEnd, RegisterHandler);
   std::for_each(KillSigs, KillSigsEnd, RegisterHandler);
-#endif
 }
 
 static void UnregisterHandlers() {
@@ -110,16 +119,6 @@ static void UnregisterHandlers() {
     sigaction(RegisteredSignalInfo[i].SigNo,
               &RegisteredSignalInfo[i].SA, 0);
   NumRegisteredSignals = 0;
-}
-
-
-/// RemoveFilesToRemove - Process the FilesToRemove list. This function
-/// should be called with the SignalsMutex lock held.
-static void RemoveFilesToRemove() {
-  while (!FilesToRemove.empty()) {
-    FilesToRemove.back().eraseFromDisk(true);
-    FilesToRemove.pop_back();
-  }
 }
 
 // SignalHandler - The signal handler that runs.
@@ -158,6 +157,7 @@ static RETSIGTYPE SignalHandler(int Sig) {
   for (unsigned i = 0, e = CallBacksToRun.size(); i != e; ++i)
     CallBacksToRun[i].first(CallBacksToRun[i].second);
 }
+#endif  // ENABLE_SIGNAL_OVERRIDES
 
 void llvm::sys::RunInterruptHandlers() {
   SignalsMutex.acquire();
@@ -169,7 +169,9 @@ void llvm::sys::SetInterruptFunction(void (*IF)()) {
   SignalsMutex.acquire();
   InterruptFunction = IF;
   SignalsMutex.release();
+#ifdef ENABLE_SIGNAL_OVERRIDES
   RegisterHandlers();
+#endif
 }
 
 // RemoveFileOnSignal - The public API
@@ -180,7 +182,9 @@ bool llvm::sys::RemoveFileOnSignal(const sys::Path &Filename,
 
   SignalsMutex.release();
 
+#ifdef ENABLE_SIGNAL_OVERRIDES
   RegisterHandlers();
+#endif
   return false;
 }
 
@@ -199,7 +203,9 @@ void llvm::sys::DontRemoveFileOnSignal(const sys::Path &Filename) {
 /// what instance of the handler it is.
 void llvm::sys::AddSignalHandler(void (*FnPtr)(void *), void *Cookie) {
   CallBacksToRun.push_back(std::make_pair(FnPtr, Cookie));
+#ifdef ENABLE_SIGNAL_OVERRIDES
   RegisterHandlers();
+#endif
 }
 
 

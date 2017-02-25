@@ -160,7 +160,7 @@ bool Linker::LinkInFile(const sys::Path &File, bool &is_native) {
   
   // Check for a file of name "-", which means "read standard input"
   if (File.str() == "-") {
-    std::auto_ptr<Module> M;
+    std::unique_ptr<Module> M;
     OwningPtr<MemoryBuffer> Buffer;
     error_code ec;
     if (!(ec = MemoryBuffer::getSTDIN(Buffer))) {
@@ -196,7 +196,7 @@ bool Linker::LinkInFile(const sys::Path &File, bool &is_native) {
 
     case sys::Bitcode_FileType: {
       verbose("Linking bitcode file '" + File.str() + "'");
-      std::auto_ptr<Module> M(LoadObject(File));
+      std::unique_ptr<Module> M(LoadObject(File));
       if (M.get() == 0)
         return error("Cannot load file '" + File.str() + "': " + Error);
       if (LinkInModule(M.get(), &Error))

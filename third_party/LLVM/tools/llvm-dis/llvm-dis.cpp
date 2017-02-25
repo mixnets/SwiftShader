@@ -124,7 +124,7 @@ int main(int argc, char **argv) {
   cl::ParseCommandLineOptions(argc, argv, "llvm .bc -> .ll disassembler\n");
 
   std::string ErrorMessage;
-  std::auto_ptr<Module> M;
+  std::unique_ptr<Module> M;
 
   {
     OwningPtr<MemoryBuffer> BufferPtr;

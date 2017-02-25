@@ -294,6 +294,6 @@ const char *Process::ResetColor() {
   return "\033[0m";
 }
 
-void Process::SetWorkingDirectory(std::string Path) {
-  ::chdir(Path.c_str());
+int Process::SetWorkingDirectory(std::string Path) {
+  return ::chdir(Path.c_str());
 }

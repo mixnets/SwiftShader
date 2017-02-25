@@ -140,7 +140,7 @@ namespace sys {
       static const char *ResetColor();
 
       /// Change the program working directory to that given by \arg Path.
-      static void SetWorkingDirectory(std::string Path);
+      static int SetWorkingDirectory(std::string Path);
     /// @}
   };
 }

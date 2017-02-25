@@ -112,7 +112,7 @@ Linker::LinkInArchive(const sys::Path &Filename, bool &is_native) {
   }
 
   std::string ErrMsg;
-  std::auto_ptr<Archive> AutoArch (
+  std::unique_ptr<Archive> AutoArch (
     Archive::OpenAndLoadSymbols(Filename, Context, &ErrMsg));
 
   Archive* arch = AutoArch.get();

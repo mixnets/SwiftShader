@@ -149,8 +149,10 @@ static bool RedirectIO_PS(const Path *Path, int FD, std::string *ErrMsg,
 }
 #endif
 
+#ifdef ENABLE_SIGNAL_OVERRIDES
 static void TimeOutHandler(int Sig) {
 }
+#endif
 
 static void SetMemoryLimits (unsigned size)
 {
@@ -301,14 +303,13 @@ Program::Wait(const sys::Path &path,
               std::string* ErrMsg)
 {
 #ifdef HAVE_SYS_WAIT_H
-  struct sigaction Act, Old;
-
   if (Data_ == 0) {
     MakeErrMsg(ErrMsg, "Process not started!");
     return -1;
   }
 
 #ifdef ENABLE_SIGNAL_OVERRIDES
+  struct sigaction Act, Old;
   // Install a timeout handler.  The handler itself does nothing, but the simple
   // fact of having a handler at all causes the wait below to return with EINTR,
   // unlike if we used SIG_IGN.

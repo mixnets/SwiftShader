@@ -92,9 +92,9 @@ Linker::releaseModule() {
 }
 
 // LoadObject - Read in and parse the bitcode file named by FN and return the
-// module it contains (wrapped in an auto_ptr), or auto_ptr<Module>() and set
+// module it contains (wrapped in an unique_ptr), or unique_ptr<Module>() and set
 // Error if an error occurs.
-std::auto_ptr<Module>
+std::unique_ptr<Module>
 Linker::LoadObject(const sys::Path &FN) {
   std::string ParseErrorMessage;
   Module *Result = 0;
@@ -107,11 +107,11 @@ Linker::LoadObject(const sys::Path &FN) {
     Result = ParseBitcodeFile(Buffer.get(), Context, &ParseErrorMessage);
 
   if (Result)
-    return std::auto_ptr<Module>(Result);
+    return std::unique_ptr<Module>(Result);
   Error = "Bitcode file '" + FN.str() + "' could not be loaded";
   if (ParseErrorMessage.size())
     Error += ": " + ParseErrorMessage;
-  return std::auto_ptr<Module>();
+  return std::unique_ptr<Module>();
 }
 
 // IsLibrary - Determine if "Name" is a library in "Directory". Return

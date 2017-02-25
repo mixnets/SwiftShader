@@ -224,6 +224,7 @@ void CrashRecoveryContext::Disable() {
 
 #include <signal.h>
 
+#ifdef ENABLE_SIGNAL_OVERRIDES
 static int Signals[] = { SIGABRT, SIGBUS, SIGFPE, SIGILL, SIGSEGV, SIGTRAP };
 static const unsigned NumSignals = sizeof(Signals) / sizeof(Signals[0]);
 static struct sigaction PrevActions[NumSignals];
@@ -259,6 +260,7 @@ static void CrashRecoverySignalHandler(int Signal) {
   if (CRCI)
     const_cast<CrashRecoveryContextImpl*>(CRCI)->HandleCrash();
 }
+#endif
 
 void CrashRecoveryContext::Enable() {
   sys::ScopedLock L(gCrashRecoveryContexMutex);

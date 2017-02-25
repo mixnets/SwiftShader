@@ -1500,7 +1500,7 @@ SDNode *SelectionDAGISel::Select_UNDEF(SDNode *N) {
 }
 
 /// GetVBR - decode a vbr encoding whose top bit is set.
-LLVM_ATTRIBUTE_ALWAYS_INLINE static uint64_t
+inline static uint64_t
 GetVBR(uint64_t Val, const unsigned char *MatcherTable, unsigned &Idx) {
   assert(Val >= 128 && "Not a VBR");
   Val &= 127;  // Remove first vbr bit.
@@ -1826,7 +1826,7 @@ MorphNode(SDNode *Node, unsigned TargetOpc, SDVTList VTList,
 }
 
 /// CheckPatternPredicate - Implements OP_CheckPatternPredicate.
-LLVM_ATTRIBUTE_ALWAYS_INLINE static bool
+inline static bool
 CheckSame(const unsigned char *MatcherTable, unsigned &MatcherIndex,
           SDValue N,
           const SmallVectorImpl<std::pair<SDValue, SDNode*> > &RecordedNodes) {
@@ -1837,20 +1837,20 @@ CheckSame(const unsigned char *MatcherTable, unsigned &MatcherIndex,
 }
 
 /// CheckPatternPredicate - Implements OP_CheckPatternPredicate.
-LLVM_ATTRIBUTE_ALWAYS_INLINE static bool
+inline static bool
 CheckPatternPredicate(const unsigned char *MatcherTable, unsigned &MatcherIndex,
                       SelectionDAGISel &SDISel) {
   return SDISel.CheckPatternPredicate(MatcherTable[MatcherIndex++]);
 }
 
 /// CheckNodePredicate - Implements OP_CheckNodePredicate.
-LLVM_ATTRIBUTE_ALWAYS_INLINE static bool
+inline static bool
 CheckNodePredicate(const unsigned char *MatcherTable, unsigned &MatcherIndex,
                    SelectionDAGISel &SDISel, SDNode *N) {
   return SDISel.CheckNodePredicate(N, MatcherTable[MatcherIndex++]);
 }
 
-LLVM_ATTRIBUTE_ALWAYS_INLINE static bool
+inline static bool
 CheckOpcode(const unsigned char *MatcherTable, unsigned &MatcherIndex,
             SDNode *N) {
   uint16_t Opc = MatcherTable[MatcherIndex++];
@@ -1858,7 +1858,7 @@ CheckOpcode(const unsigned char *MatcherTable, unsigned &MatcherIndex,
   return N->getOpcode() == Opc;
 }
 
-LLVM_ATTRIBUTE_ALWAYS_INLINE static bool
+inline static bool
 CheckType(const unsigned char *MatcherTable, unsigned &MatcherIndex,
           SDValue N, const TargetLowering &TLI) {
   MVT::SimpleValueType VT = (MVT::SimpleValueType)MatcherTable[MatcherIndex++];
@@ -1868,7 +1868,7 @@ CheckType(const unsigned char *MatcherTable, unsigned &MatcherIndex,
   return VT == MVT::iPTR && N.getValueType() == TLI.getPointerTy();
 }
 
-LLVM_ATTRIBUTE_ALWAYS_INLINE static bool
+inline static bool
 CheckChildType(const unsigned char *MatcherTable, unsigned &MatcherIndex,
                SDValue N, const TargetLowering &TLI,
                unsigned ChildNo) {
@@ -1878,14 +1878,14 @@ CheckChildType(const unsigned char *MatcherTable, unsigned &MatcherIndex,
 }
 
 
-LLVM_ATTRIBUTE_ALWAYS_INLINE static bool
+inline static bool
 CheckCondCode(const unsigned char *MatcherTable, unsigned &MatcherIndex,
               SDValue N) {
   return cast<CondCodeSDNode>(N)->get() ==
       (ISD::CondCode)MatcherTable[MatcherIndex++];
 }
 
-LLVM_ATTRIBUTE_ALWAYS_INLINE static bool
+inline static bool
 CheckValueType(const unsigned char *MatcherTable, unsigned &MatcherIndex,
                SDValue N, const TargetLowering &TLI) {
   MVT::SimpleValueType VT = (MVT::SimpleValueType)MatcherTable[MatcherIndex++];
@@ -1896,7 +1896,7 @@ CheckValueType(const unsigned char *MatcherTable, unsigned &MatcherIndex,
   return VT == MVT::iPTR && cast<VTSDNode>(N)->getVT() == TLI.getPointerTy();
 }
 
-LLVM_ATTRIBUTE_ALWAYS_INLINE static bool
+inline static bool
 CheckInteger(const unsigned char *MatcherTable, unsigned &MatcherIndex,
              SDValue N) {
   int64_t Val = MatcherTable[MatcherIndex++];
@@ -1907,7 +1907,7 @@ CheckInteger(const unsigned char *MatcherTable, unsigned &MatcherIndex,
   return C != 0 && C->getSExtValue() == Val;
 }
 
-LLVM_ATTRIBUTE_ALWAYS_INLINE static bool
+inline static bool
 CheckAndImm(const unsigned char *MatcherTable, unsigned &MatcherIndex,
             SDValue N, SelectionDAGISel &SDISel) {
   int64_t Val = MatcherTable[MatcherIndex++];
@@ -1920,7 +1920,7 @@ CheckAndImm(const unsigned char *MatcherTable, unsigned &MatcherIndex,
   return C != 0 && SDISel.CheckAndMask(N.getOperand(0), C, Val);
 }
 
-LLVM_ATTRIBUTE_ALWAYS_INLINE static bool
+inline static bool
 CheckOrImm(const unsigned char *MatcherTable, unsigned &MatcherIndex,
            SDValue N, SelectionDAGISel &SDISel) {
   int64_t Val = MatcherTable[MatcherIndex++];

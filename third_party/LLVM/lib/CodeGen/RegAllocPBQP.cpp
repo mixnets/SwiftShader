@@ -84,8 +84,8 @@ public:
   static char ID;
 
   /// Construct a PBQP register allocator.
-  RegAllocPBQP(std::auto_ptr<PBQPBuilder> b, char *cPassID=0)
-      : MachineFunctionPass(ID), builder(b), customPassID(cPassID) {
+  RegAllocPBQP(std::unique_ptr<PBQPBuilder> b, char *cPassID=0)
+      : MachineFunctionPass(ID), builder(std::move(b)), customPassID(cPassID) {
     initializeSlotIndexesPass(*PassRegistry::getPassRegistry());
     initializeLiveIntervalsPass(*PassRegistry::getPassRegistry());
     initializeRegisterCoalescerPass(*PassRegistry::getPassRegistry());
@@ -120,7 +120,7 @@ private:
   typedef std::set<unsigned> RegSet;
 
 
-  std::auto_ptr<PBQPBuilder> builder;
+  std::unique_ptr<PBQPBuilder> builder;
 
   char *customPassID;
 
@@ -189,7 +189,7 @@ unsigned PBQPRAProblem::getPRegForOption(unsigned vreg, unsigned option) const {
   return allowedSet[option - 1];
 }
 
-std::auto_ptr<PBQPRAProblem> PBQPBuilder::build(MachineFunction *mf,
+std::unique_ptr<PBQPRAProblem> PBQPBuilder::build(MachineFunction *mf,
                                                 const LiveIntervals *lis,
                                                 const MachineLoopInfo *loopInfo,
                                                 const RegSet &vregs) {
@@ -199,7 +199,7 @@ std::auto_ptr<PBQPRAProblem> PBQPBuilder::build(MachineFunction *mf,
   MachineRegisterInfo *mri = &mf->getRegInfo();
   const TargetRegisterInfo *tri = mf->getTarget().getRegisterInfo();  
 
-  std::auto_ptr<PBQPRAProblem> p(new PBQPRAProblem());
+  std::unique_ptr<PBQPRAProblem> p(new PBQPRAProblem());
   PBQP::Graph &g = p->getGraph();
   RegSet pregs;
 
@@ -334,13 +334,13 @@ void PBQPBuilder::addInterferenceCosts(
   }
 }
 
-std::auto_ptr<PBQPRAProblem> PBQPBuilderWithCoalescing::build(
+std::unique_ptr<PBQPRAProblem> PBQPBuilderWithCoalescing::build(
                                                 MachineFunction *mf,
                                                 const LiveIntervals *lis,
                                                 const MachineLoopInfo *loopInfo,
                                                 const RegSet &vregs) {
 
-  std::auto_ptr<PBQPRAProblem> p = PBQPBuilder::build(mf, lis, loopInfo, vregs);
+  std::unique_ptr<PBQPRAProblem> p = PBQPBuilder::build(mf, lis, loopInfo, vregs);
   PBQP::Graph &g = p->getGraph();
 
   const TargetMachine &tm = mf->getTarget();
@@ -675,7 +675,7 @@ bool RegAllocPBQP::runOnMachineFunction(MachineFunction &MF) {
     while (!pbqpAllocComplete) {
       DEBUG(dbgs() << "  PBQP Regalloc round " << round << ":\n");
 
-      std::auto_ptr<PBQPRAProblem> problem =
+      std::unique_ptr<PBQPRAProblem> problem =
         builder->build(mf, lis, loopInfo, vregsToAlloc);
       PBQP::Solution solution =
         PBQP::HeuristicSolver<PBQP::Heuristics::Briggs>::solve(
@@ -698,7 +698,7 @@ bool RegAllocPBQP::runOnMachineFunction(MachineFunction &MF) {
   DEBUG(dbgs() << "Post alloc VirtRegMap:\n" << *vrm << "\n");
 
   // Run rewriter
-  std::auto_ptr<VirtRegRewriter> rewriter(createVirtRegRewriter());
+  std::unique_ptr<VirtRegRewriter> rewriter(createVirtRegRewriter());
 
   rewriter->runOnMachineFunction(*mf, *vrm, lis);
 
@@ -706,18 +706,18 @@ bool RegAllocPBQP::runOnMachineFunction(MachineFunction &MF) {
 }
 
 FunctionPass* llvm::createPBQPRegisterAllocator(
-                                           std::auto_ptr<PBQPBuilder> builder,
+                                           std::unique_ptr<PBQPBuilder> builder,
                                            char *customPassID) {
-  return new RegAllocPBQP(builder, customPassID);
+  return new RegAllocPBQP(std::move(builder), customPassID);
 }
 
 FunctionPass* llvm::createDefaultPBQPRegisterAllocator() {
   if (pbqpCoalescing) {
     return createPBQPRegisterAllocator(
-             std::auto_ptr<PBQPBuilder>(new PBQPBuilderWithCoalescing()));
+             std::unique_ptr<PBQPBuilder>(new PBQPBuilderWithCoalescing()));
   } // else
   return createPBQPRegisterAllocator(
-           std::auto_ptr<PBQPBuilder>(new PBQPBuilder()));
+           std::unique_ptr<PBQPBuilder>(new PBQPBuilder()));
 }
 
 #undef DEBUG_TYPE

@@ -738,7 +738,7 @@ int main(int argc, char **argv) {
     assert(TheArchive && "Unable to instantiate the archive");
 
     // Make sure we clean up the archive even on failure.
-    std::auto_ptr<Archive> AutoArchive(TheArchive);
+    std::unique_ptr<Archive> AutoArchive(TheArchive);
 
     // Perform the operation
     std::string ErrMsg;

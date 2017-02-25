@@ -123,7 +123,7 @@ namespace llvm {
 
     /// Build a PBQP instance to represent the register allocation problem for
     /// the given MachineFunction.
-    virtual std::auto_ptr<PBQPRAProblem> build(
+    virtual std::unique_ptr<PBQPRAProblem> build(
                                               MachineFunction *mf,
                                               const LiveIntervals *lis,
                                               const MachineLoopInfo *loopInfo,
@@ -144,7 +144,7 @@ namespace llvm {
  
     /// Build a PBQP instance to represent the register allocation problem for
     /// the given MachineFunction.
-    virtual std::auto_ptr<PBQPRAProblem> build(
+    virtual std::unique_ptr<PBQPRAProblem> build(
                                               MachineFunction *mf,
                                               const LiveIntervals *lis,
                                               const MachineLoopInfo *loopInfo,
@@ -161,7 +161,7 @@ namespace llvm {
                             PBQP::PBQPNum benefit);
   };
 
-  FunctionPass* createPBQPRegisterAllocator(std::auto_ptr<PBQPBuilder> builder,
+  FunctionPass* createPBQPRegisterAllocator(std::unique_ptr<PBQPBuilder> builder,
                                             char *customPassID=0);
 }
 

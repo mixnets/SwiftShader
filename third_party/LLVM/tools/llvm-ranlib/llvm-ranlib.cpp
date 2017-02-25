@@ -75,7 +75,7 @@ int main(int argc, char **argv) {
       throw std::string("Archive file does not exist");
 
     std::string err_msg;
-    std::auto_ptr<Archive>
+    std::unique_ptr<Archive>
       AutoArchive(Archive::OpenAndLoad(ArchivePath, Context, &err_msg));
     Archive* TheArchive = AutoArchive.get();
     if (!TheArchive)

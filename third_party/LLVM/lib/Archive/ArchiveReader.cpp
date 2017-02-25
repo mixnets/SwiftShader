@@ -330,7 +330,7 @@ Archive::loadArchive(std::string* error) {
 Archive*
 Archive::OpenAndLoad(const sys::Path& file, LLVMContext& C, 
                      std::string* ErrorMessage) {
-  std::auto_ptr<Archive> result ( new Archive(file, C));
+  std::unique_ptr<Archive> result ( new Archive(file, C));
   if (result->mapToMemory(ErrorMessage))
     return 0;
   if (!result->loadArchive(ErrorMessage))
@@ -445,7 +445,7 @@ Archive::loadSymbolTable(std::string* ErrorMsg) {
 Archive* Archive::OpenAndLoadSymbols(const sys::Path& file,
                                      LLVMContext& C,
                                      std::string* ErrorMessage) {
-  std::auto_ptr<Archive> result ( new Archive(file, C) );
+  std::unique_ptr<Archive> result ( new Archive(file, C) );
   if (result->mapToMemory(ErrorMessage))
     return 0;
   if (!result->loadSymbolTable(ErrorMessage))

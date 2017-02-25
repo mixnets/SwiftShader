@@ -598,7 +598,7 @@ int main(int argc, char **argv, char **envp) {
       return 1; // Error already printed
   }
 
-  std::auto_ptr<Module> Composite(TheLinker.releaseModule());
+  std::unique_ptr<Module> Composite(TheLinker.releaseModule());
 
   // Optimize the module
   Optimize(Composite.get());

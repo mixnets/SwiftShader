@@ -172,9 +172,9 @@ namespace {
     /// vrm_ - Tracks register assignments.
     VirtRegMap* vrm_;
 
-    std::auto_ptr<VirtRegRewriter> rewriter_;
+    std::unique_ptr<VirtRegRewriter> rewriter_;
 
-    std::auto_ptr<Spiller> spiller_;
+    std::unique_ptr<Spiller> spiller_;
 
     // The queue of recently-used registers.
     SmallVector<unsigned, 4> RecentRegs;

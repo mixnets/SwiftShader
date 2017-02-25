@@ -90,7 +90,7 @@ class RABasic : public MachineFunctionPass, public RegAllocBase
   RenderMachineFunction *RMF;
 
   // state
-  std::auto_ptr<Spiller> SpillerInstance;
+  std::unique_ptr<Spiller> SpillerInstance;
   std::priority_queue<LiveInterval*, std::vector<LiveInterval*>,
                       CompSpillWeight> Queue;
 public:
