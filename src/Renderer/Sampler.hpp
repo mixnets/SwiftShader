@@ -63,7 +63,7 @@ namespace sw
 		SAMPLER_VERTEX
 	};
 
-	enum TextureType : unsigned int
+	enum TextureType
 	{
 		TEXTURE_NULL,
 		TEXTURE_2D,
@@ -74,7 +74,7 @@ namespace sw
 		TEXTURE_LAST = TEXTURE_2D_ARRAY
 	};
 
-	enum FilterType : unsigned int
+	enum FilterType
 	{
 		FILTER_POINT,
 		FILTER_GATHER,
@@ -86,7 +86,7 @@ namespace sw
 		FILTER_LAST = FILTER_ANISOTROPIC
 	};
 
-	enum MipmapType : unsigned int
+	enum MipmapType
 	{
 		MIPMAP_NONE,
 		MIPMAP_POINT,
@@ -95,7 +95,7 @@ namespace sw
 		MIPMAP_LAST = MIPMAP_LINEAR
 	};
 
-	enum AddressingMode : unsigned int
+	enum AddressingMode
 	{
 		ADDRESSING_WRAP,
 		ADDRESSING_CLAMP,
@@ -108,7 +108,7 @@ namespace sw
 		ADDRESSING_LAST = ADDRESSING_TEXELFETCH
 	};
 
-	enum SwizzleType : unsigned int
+	enum SwizzleType
 	{
 		SWIZZLE_RED,
 		SWIZZLE_GREEN,
