@@ -4,7 +4,7 @@
 
  @Title        OGLES2ChameleonMan
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -391,6 +391,10 @@ void OGLES2ChameleonMan::LoadVbos()
 ******************************************************************************/
 bool OGLES2ChameleonMan::InitApplication()
 {
+	volatile char xxx[8075];
+
+	xxx[8000] = 0;
+
 	// Get and set the read path for content files
 	CPVRTResourceFile::SetReadPath((char*)PVRShellGet(prefReadPath));
 
