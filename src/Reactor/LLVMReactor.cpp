@@ -497,7 +497,7 @@ namespace sw
 		return V(::builder->CreateNot(v));
 	}
 
-	Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int align)
+	Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int alignment)
 	{
 		std::uintptr_t t = reinterpret_cast<std::uintptr_t>(type);
 		if(t < EmulatedTypeCount)
@@ -507,20 +507,32 @@ namespace sw
 			case Type_v2i32:
 			case Type_v4i16:
 			case Type_v8i8:
-				return createBitCast(createInsertElement(V(UndefValue::get(VectorType::get(T(Long::getType()), 2))), createLoad(createBitCast(ptr, Pointer<Long>::getType()), Long::getType(), isVolatile, align), 0), T(T(type)));
+				return createBitCast(createInsertElement(V(UndefValue::get(VectorType::get(T(Long::getType()), 2))), createLoad(createBitCast(ptr, Pointer<Long>::getType()), Long::getType(), isVolatile, alignment), 0), T(T(type)));
 			case Type_v2i16:
 			case Type_v4i8:
-				return createBitCast(createInsertElement(V(UndefValue::get(VectorType::get(T(Int::getType()), 4))), createLoad(createBitCast(ptr, Pointer<Int>::getType()), Int::getType(), isVolatile, align), 0), T(T(type)));
+			{
+				if(alignment != 0)
+				{
+			//	Value *x = createLoad(allocateStackVariable(Int4::getType()), Int4::getType());
+			//	Value *u = V(UndefValue::get(T(Int4::getType())));
+				Value *u = V(UndefValue::get(VectorType::get(T(Long::getType()), 2)));
+				Value *i = V(createLoad(createBitCast(ptr, Pointer<Int>::getType()), Int::getType(), isVolatile, alignment));
+				i = createZExt(i, Long::getType());
+				Value *v = V(createInsertElement(u, i, 0));
+				return createBitCast(v, T(T(type)));
+				}
+				break;
+			}
 		//	case Type_v2f32:
 			default: assert(false);
 			}
 		}
 
 		assert(ptr->getType()->getContainedType(0) == T(type));
-		return V(::builder->Insert(new LoadInst(ptr, "", isVolatile, align)));
+		return V(::builder->Insert(new LoadInst(ptr, "", isVolatile, alignment)));
 	}
 
-	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int align)
+	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int alignment)
 	{
 		std::uintptr_t t = reinterpret_cast<std::uintptr_t>(type);
 		if(t < EmulatedTypeCount)
@@ -530,30 +542,44 @@ namespace sw
 			case Type_v2i32:
 			case Type_v4i16:
 			case Type_v8i8:
-				createStore(createExtractElement(createBitCast(value, T(VectorType::get(T(Long::getType()), 2))), Long::getType(), 0), createBitCast(ptr, Pointer<Long>::getType()), Long::getType(), isVolatile, align);
+				createStore(createExtractElement(createBitCast(value, T(VectorType::get(T(Long::getType()), 2))), Long::getType(), 0), createBitCast(ptr, Pointer<Long>::getType()), Long::getType(), isVolatile, alignment);
 				return value;
 			case Type_v2i16:
 			case Type_v4i8:
-				createStore(createExtractElement(createBitCast(value, Int4::getType()), Int::getType(), 0), createBitCast(ptr, Pointer<Int>::getType()), Int::getType(), isVolatile, align);
+				if(alignment != 0)
+				{
+				createStore(createExtractElement(createBitCast(value, Int4::getType()), Int::getType(), 0), createBitCast(ptr, Pointer<Int>::getType()), Int::getType(), isVolatile, alignment);
 				return value;
+				}break;
 		//	case Type_v2f32:
 			default: assert(false);
 			}
 		}
 
 		assert(ptr->getType()->getContainedType(0) == T(type));
-		::builder->Insert(new StoreInst(value, ptr, isVolatile, align));
+		::builder->Insert(new StoreInst(value, ptr, isVolatile, alignment));
 		return value;
 	}
 
 	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index, bool unsignedIndex)
 	{
-		if(unsignedIndex && sizeof(void*) == 8)
+		if(sizeof(void*) == 8)
 		{
-			index = createZExt(index, Long::getType());
-		}
+			if(unsignedIndex)
+			{
+				index = createZExt(index, Long::getType());
+			}
+			else
+			{
+				index = createSExt(index, Long::getType());
+			}
 
-		index = createMul(index, createConstantInt((int)typeSize(type)));
+			index = createMul(index, createConstantLong((int64_t)typeSize(type)));
+		}
+		else
+		{
+			index = createMul(index, createConstantInt((int)typeSize(type)));
+		}
 
 		assert(ptr->getType()->getContainedType(0) == T(type));
 		return createBitCast(V(::builder->CreateGEP(createBitCast(ptr, T(PointerType::get(T(Byte::getType()), 0))), index)), T(PointerType::get(T(type), 0)));
@@ -1938,6 +1964,11 @@ namespace sw
 	Byte4::Byte4(RValue<Byte8> cast)
 	{
 		storeValue(Nucleus::createBitCast(cast.value, getType()));
+	}
+
+	Byte4::Byte4(RValue<Byte4> rhs)
+	{
+		storeValue(rhs.value);
 	}
 
 	Byte4::Byte4(const Reference<Byte4> &rhs)
