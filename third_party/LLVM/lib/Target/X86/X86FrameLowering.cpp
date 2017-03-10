@@ -851,7 +851,7 @@ void X86FrameLowering::emitPrologue(MachineFunction &MF) const {
     }
 
     BuildMI(MBB, MBBI, DL,
-            TII.get(Is64Bit ? X86::W64ALLOCA : X86::CALLpcrel32))
+            TII.get(Is64Bit ? X86::CALL64m : X86::CALLpcrel32))
       .addExternalSymbol(StackProbeSymbol)
       .addReg(StackPtr,    RegState::Define | RegState::Implicit)
       .addReg(X86::EFLAGS, RegState::Define | RegState::Implicit)
