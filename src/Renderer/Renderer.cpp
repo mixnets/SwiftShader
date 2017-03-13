@@ -660,6 +660,8 @@ namespace sw
 			#ifndef NDEBUG
 			if(threadCount == 1)   // Use main thread for draw execution
 			{
+				commitStack();
+
 				threadsAwake = 1;
 				task[0].type = Task::RESUME;
 
@@ -2024,6 +2026,13 @@ namespace sw
 			deallocate(primitiveBatch[i]);
 			primitiveBatch[i] = 0;
 		}
+	}
+
+	void Renderer::commitStack()
+	{
+		#ifdef _WIN32
+			_alloca(0x80000);
+		#endif
 	}
 
 	void Renderer::loadConstants(const VertexShader *vertexShader)

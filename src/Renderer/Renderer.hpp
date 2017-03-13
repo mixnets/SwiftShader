@@ -429,6 +429,8 @@ namespace sw
 		void loadConstants(const VertexShader *vertexShader);
 		void loadConstants(const PixelShader *pixelShader);
 
+		static void commitStack();
+
 		Context *context;
 		Clipper *clipper;
 		Viewport viewport;
