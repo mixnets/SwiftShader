@@ -146,6 +146,7 @@ EXPORTS
     ; Extensions
     glTexImage3DOES
     glBlitFramebufferANGLE
+    glBlitFramebufferNV
     glRenderbufferStorageMultisampleANGLE
     glDeleteFencesNV
     glFinishFenceNV

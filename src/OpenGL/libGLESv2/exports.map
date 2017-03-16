@@ -146,6 +146,7 @@ global:
     # Extensions
     glTexImage3DOES;
     glBlitFramebufferANGLE;
+	glBlitFramebufferNV;
     glRenderbufferStorageMultisampleANGLE;
     glDeleteFencesNV;
     glFinishFenceNV;
