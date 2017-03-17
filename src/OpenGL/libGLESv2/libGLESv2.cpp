@@ -4778,6 +4778,11 @@ void RenderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GL
 	glRenderbufferStorageMultisampleANGLE(target, 0, internalformat, width, height);
 }
 
+void RenderbufferStorageMultisampleEXT(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height)
+{
+	return RenderbufferStorageMultisampleANGLE(target, samples, internalformat, width, height);
+}
+
 void SampleCoverage(GLclampf value, GLboolean invert)
 {
 	TRACE("(GLclampf value = %f, GLboolean invert = %d)", value, invert);
@@ -6275,6 +6280,11 @@ void BlitFramebufferNV(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint
 	BlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter, true);
 }
 
+void BlitFramebufferEXT(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
+{
+	BlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter, true);
+}
+
 void BlitFramebufferANGLE(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1,
                           GLbitfield mask, GLenum filter)
 {
@@ -6803,6 +6813,11 @@ void FramebufferTexture2DOES(GLenum target, GLenum attachment, GLenum textarget,
 	FramebufferTexture2D(target, attachment, textarget, texture, level);
 }
 
+void FramebufferTexture2DMultisampleEXT(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples)
+{
+	FramebufferTexture2D(target, attachment, textarget, texture, level);
+}
+
 void GetFramebufferAttachmentParameterivOES(GLenum target, GLenum attachment, GLenum pname, GLint* params)
 {
 	GetFramebufferAttachmentParameteriv(target, attachment, pname, params);
@@ -6891,6 +6906,8 @@ void DrawBuffersEXT(GLsizei n, const GLenum *bufs)
 
 }
 
+extern "C" GL_APICALL void GL_APIENTRY glBlitFramebufferEXT(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
+
 extern "C" __eglMustCastToProperFunctionPointerType es2GetProcAddress(const char *procname)
 {
 	struct Extension
@@ -6906,7 +6923,9 @@ extern "C" __eglMustCastToProperFunctionPointerType es2GetProcAddress(const char
 		EXTENSION(glTexImage3DOES),
 		EXTENSION(glBlitFramebufferANGLE),
 		EXTENSION(glBlitFramebufferNV),
+		EXTENSION(glBlitFramebufferEXT),
 		EXTENSION(glRenderbufferStorageMultisampleANGLE),
+		EXTENSION(glRenderbufferStorageMultisampleEXT),
 		EXTENSION(glDeleteFencesNV),
 		EXTENSION(glGenFencesNV),
 		EXTENSION(glIsFenceNV),
@@ -6946,6 +6965,7 @@ extern "C" __eglMustCastToProperFunctionPointerType es2GetProcAddress(const char
 		EXTENSION(glCheckFramebufferStatusOES),
 		EXTENSION(glFramebufferRenderbufferOES),
 		EXTENSION(glFramebufferTexture2DOES),
+		EXTENSION(glFramebufferTexture2DMultisampleEXT),
 		EXTENSION(glGetFramebufferAttachmentParameterivOES),
 		EXTENSION(glGenerateMipmapOES),
 		EXTENSION(glDrawBuffersEXT),

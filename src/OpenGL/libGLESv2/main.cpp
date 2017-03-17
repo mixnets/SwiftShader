@@ -211,6 +211,7 @@ void Finish(void);
 void Flush(void);
 void FramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
 void FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
+void FramebufferTexture2DMultisampleEXT(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples);
 void FrontFace(GLenum mode);
 void GenBuffers(GLsizei n, GLuint* buffers);
 void GenerateMipmap(GLenum target);
@@ -270,6 +271,7 @@ void ReadnPixelsEXT(GLint x, GLint y, GLsizei width, GLsizei height,
 void ReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid* pixels);
 void ReleaseShaderCompiler(void);
 void RenderbufferStorageMultisampleANGLE(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
+void RenderbufferStorageMultisampleEXT(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height);
 void RenderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height);
 void SampleCoverage(GLclampf value, GLboolean invert);
 void SetFenceNV(GLuint fence, GLenum condition);
@@ -323,6 +325,7 @@ void VertexAttrib4fv(GLuint index, const GLfloat* values);
 GL_APICALL void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* ptr);
 GL_APICALL void Viewport(GLint x, GLint y, GLsizei width, GLsizei height);
 GL_APICALL void BlitFramebufferNV(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
+GL_APICALL void BlitFramebufferEXT(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter);
 GL_APICALL void BlitFramebufferANGLE(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1,
                                      GLbitfield mask, GLenum filter);
 GL_APICALL void TexImage3DOES(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth,
@@ -347,6 +350,7 @@ GL_APICALL void GenFramebuffersOES(GLsizei n, GLuint* framebuffers);
 GL_APICALL GLenum CheckFramebufferStatusOES(GLenum target);
 GL_APICALL void FramebufferRenderbufferOES(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer);
 GL_APICALL void FramebufferTexture2DOES(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
+GL_APICALL void FramebufferTexture2DMultisampleEXT(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples);
 GL_APICALL void GetFramebufferAttachmentParameterivOES(GLenum target, GLenum attachment, GLenum pname, GLint* params);
 GL_APICALL void GenerateMipmapOES(GLenum target);
 GL_APICALL void DrawBuffersEXT(GLsizei n, const GLenum *bufs);
@@ -681,6 +685,11 @@ GL_APICALL void GL_APIENTRY glFramebufferTexture2D(GLenum target, GLenum attachm
 	return es2::FramebufferTexture2D(target, attachment, textarget, texture, level);
 }
 
+GL_APICALL void GL_APIENTRY glFramebufferTexture2DMultisampleEXT(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples)
+{
+	return es2::FramebufferTexture2DMultisampleEXT(target, attachment, textarget, texture, level, samples);
+}
+
 GL_APICALL void GL_APIENTRY glFramebufferTexture2DOES(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
 {
 	return es2::FramebufferTexture2D(target, attachment, textarget, texture, level);
@@ -1012,6 +1021,11 @@ GL_APICALL void GL_APIENTRY glRenderbufferStorageMultisampleANGLE(GLenum target,
 	return es2::RenderbufferStorageMultisampleANGLE(target, samples, internalformat, width, height);
 }
 
+GL_APICALL void GL_APIENTRY glRenderbufferStorageMultisampleEXT(GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei height)
+{
+	return es2::RenderbufferStorageMultisampleEXT(target, samples, internalformat, width, height);
+}
+
 GL_APICALL void GL_APIENTRY glRenderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height)
 {
 	return es2::RenderbufferStorage(target, internalformat, width, height);
@@ -1274,6 +1288,11 @@ GL_APICALL void GL_APIENTRY glBlitFramebufferNV(GLint srcX0, GLint srcY0, GLint 
 	return es2::BlitFramebufferNV(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }
 
+GL_APICALL void GL_APIENTRY glBlitFramebufferEXT(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1, GLbitfield mask, GLenum filter)
+{
+	return es2::BlitFramebufferEXT(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+}
+
 GL_APICALL void GL_APIENTRY glBlitFramebufferANGLE(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1,
                                                    GLbitfield mask, GLenum filter)
 {
@@ -1399,6 +1418,7 @@ LibGLESv2exports::LibGLESv2exports()
 	this->glFlush = es2::Flush;
 	this->glFramebufferRenderbuffer = es2::FramebufferRenderbuffer;
 	this->glFramebufferTexture2D = es2::FramebufferTexture2D;
+	this->glFramebufferTexture2DMultisampleEXT = es2::FramebufferTexture2DMultisampleEXT;
 	this->glFrontFace = es2::FrontFace;
 	this->glGenBuffers = es2::GenBuffers;
 	this->glGenerateMipmap = es2::GenerateMipmap;
@@ -1457,6 +1477,7 @@ LibGLESv2exports::LibGLESv2exports()
 	this->glReadPixels = es2::ReadPixels;
 	this->glReleaseShaderCompiler = es2::ReleaseShaderCompiler;
 	this->glRenderbufferStorageMultisampleANGLE = es2::RenderbufferStorageMultisampleANGLE;
+	this->glRenderbufferStorageMultisampleEXT = es2::RenderbufferStorageMultisampleEXT;
 	this->glRenderbufferStorage = es2::RenderbufferStorage;
 	this->glSampleCoverage = es2::SampleCoverage;
 	this->glSetFenceNV = es2::SetFenceNV;
@@ -1508,6 +1529,7 @@ LibGLESv2exports::LibGLESv2exports()
 	this->glVertexAttribPointer = es2::VertexAttribPointer;
 	this->glViewport = es2::Viewport;
 	this->glBlitFramebufferNV = es2::BlitFramebufferNV;
+	this->glBlitFramebufferEXT = es2::BlitFramebufferEXT;
 	this->glBlitFramebufferANGLE = es2::BlitFramebufferANGLE;
 	this->glTexImage3DOES = es2::TexImage3DOES;
 	this->glTexSubImage3DOES = es2::TexSubImage3DOES;

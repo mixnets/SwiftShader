@@ -4072,7 +4072,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
 		// OpenGL ES 3.0.4 spec, p.199:
 		// ...an INVALID_OPERATION error is generated if the formats of the read
-		// and draw framebuffers are not identical or if the source and destination 
+		// and draw framebuffers are not identical or if the source and destination
 		// rectangles are not defined with the same(X0, Y 0) and (X1, Y 1) bounds.
 		// If SAMPLE_BUFFERS for the draw framebuffer is greater than zero, an
 		// INVALID_OPERATION error is generated.
@@ -4300,6 +4300,7 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 		(const GLubyte*)"GL_EXT_blend_minmax",
 		(const GLubyte*)"GL_EXT_color_buffer_half_float",
 		(const GLubyte*)"GL_EXT_draw_buffers",
+		(const GLubyte*)"GL_EXT_framebuffer_blit",
 		(const GLubyte*)"GL_EXT_occlusion_query_boolean",
 		(const GLubyte*)"GL_EXT_read_format_bgra",
 #if (S3TC_SUPPORT)
@@ -4310,6 +4311,7 @@ const GLubyte* Context::getExtensions(GLuint index, GLuint* numExt) const
 		(const GLubyte*)"GL_ANGLE_framebuffer_blit",
 		(const GLubyte*)"GL_NV_framebuffer_blit",
 		(const GLubyte*)"GL_ANGLE_framebuffer_multisample",
+		(const GLubyte*)"GL_EXT_multisampled_render_to_texture",
 #if (S3TC_SUPPORT)
 		(const GLubyte*)"GL_ANGLE_texture_compression_dxt3",
 		(const GLubyte*)"GL_ANGLE_texture_compression_dxt5",

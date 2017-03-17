@@ -362,7 +362,7 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 			}
 			else if(samples != colorbuffer->getSamples())
 			{
-				return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE;
+			//	return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE;
 			}
 		}
 	}
@@ -416,7 +416,7 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		}
 		else if(samples != depthbuffer->getSamples())
 		{
-			return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE;
+		//	return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE;
 		}
 	}
 
@@ -468,7 +468,7 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		}
 		else if(samples != stencilbuffer->getSamples())
 		{
-			return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE;
+		//	return GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_ANGLE;
 		}
 	}
 

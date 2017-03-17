@@ -146,7 +146,9 @@ EXPORTS
     ; Extensions
     glTexImage3DOES
     glBlitFramebufferANGLE
+    glBlitFramebufferEXT
     glRenderbufferStorageMultisampleANGLE
+    glRenderbufferStorageMultisampleEXT
     glDeleteFencesNV
     glFinishFenceNV
     glGenFencesNV
@@ -180,6 +182,7 @@ EXPORTS
 	glCheckFramebufferStatusOES
 	glFramebufferRenderbufferOES
 	glFramebufferTexture2DOES
+	glFramebufferTexture2DMultisampleEXT
 	glGetFramebufferAttachmentParameterivOES
 	glGenerateMipmapOES
 	glDrawBuffersEXT
