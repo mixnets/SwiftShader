@@ -2467,7 +2467,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 			memcpy(dest, source, (rect.x1 - rect.x0) * 2);
 		}
 		else if(renderTarget->getInternalFormat() == sw::FORMAT_R5G6B5 &&
-				format == 0x80E0 && type == GL_UNSIGNED_SHORT_5_6_5)   // GL_BGR_EXT
+				format == GL_RGB && type == GL_UNSIGNED_SHORT_5_6_5)
 		{
 			memcpy(dest, source, (rect.x1 - rect.x0) * 2);
 		}

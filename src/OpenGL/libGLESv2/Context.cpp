@@ -3252,7 +3252,9 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum
 	sw::Rect dstRect = { 0, 0, width, height };
 	rect.clip(0, 0, renderTarget->getWidth(), renderTarget->getHeight());
 
-	sw::Surface externalSurface(width, height, 1, egl::ConvertFormatType(format, type), pixels, outputPitch, outputPitch * outputHeight);
+	sw::Format internalformat = egl::ConvertFormatType(format, type);
+	ASSERT(internalformat != sw::FORMAT_NULL);
+	sw::Surface externalSurface(width, height, 1, internalformat, pixels, outputPitch, outputPitch * outputHeight);
 	sw::SliceRect sliceRect(rect);
 	sw::SliceRect dstSliceRect(dstRect);
 	device->blit(renderTarget, sliceRect, &externalSurface, dstSliceRect, false);
@@ -4072,7 +4074,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
 		// OpenGL ES 3.0.4 spec, p.199:
 		// ...an INVALID_OPERATION error is generated if the formats of the read
-		// and draw framebuffers are not identical or if the source and destination 
+		// and draw framebuffers are not identical or if the source and destination
 		// rectangles are not defined with the same(X0, Y 0) and (X1, Y 1) bounds.
 		// If SAMPLE_BUFFERS for the draw framebuffer is greater than zero, an
 		// INVALID_OPERATION error is generated.

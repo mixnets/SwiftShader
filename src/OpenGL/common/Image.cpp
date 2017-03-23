@@ -472,9 +472,9 @@ namespace egl
 		case GL_BGRA8_EXT:
 			switch(type)
 			{
-			case GL_UNSIGNED_BYTE:                  return sw::FORMAT_A8R8G8B8;
-			case GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT: return sw::FORMAT_A4R4G4B4;
-			case GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT: return sw::FORMAT_A1R5G5B5;
+			case GL_UNSIGNED_BYTE:                   return sw::FORMAT_A8R8G8B8;
+			 case GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT: return sw::FORMAT_A4R4G4B4;
+			 case GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT: return sw::FORMAT_A1R5G5B5;
 			default: UNREACHABLE(type);
 			}
 			break;
@@ -663,7 +663,7 @@ namespace egl
 				return sw::FORMAT_G32R32F;
 			case GL_RGB:
 			case GL_RGB32F:
-				return sw::FORMAT_X32B32G32R32F;
+				return sw::FORMAT_B32G32R32F;
 			case GL_RGBA:
 			case GL_RGBA32F:
 				return sw::FORMAT_A32B32G32R32F;
@@ -694,6 +694,7 @@ namespace egl
 				return sw::FORMAT_G16R16F;
 			case GL_RGB:
 			case GL_RGB16F:
+				return sw::FORMAT_B16G16R16F;
 			case GL_RGBA:
 			case GL_RGBA16F:
 				return sw::FORMAT_A16B16G16R16F;
@@ -887,14 +888,11 @@ namespace egl
 		case GL_UNSIGNED_SHORT_5_6_5:
 			return sw::FORMAT_R5G6B5;
 		case GL_UNSIGNED_INT_2_10_10_10_REV:
-			if(format == GL_RGB10_A2UI)
-			{
-				return sw::FORMAT_A16B16G16R16UI;
-			}
-			else
+			if(format == GL_RGBA)
 			{
 				return sw::FORMAT_A2B10G10R10;
 			}
+			else UNREACHABLE(format);
 		case GL_UNSIGNED_INT_10F_11F_11F_REV:
 		case GL_UNSIGNED_INT_5_9_9_9_REV:
 			return sw::FORMAT_A32B32G32R32F;
