@@ -4734,7 +4734,6 @@ void RenderbufferStorageMultisampleANGLE(GLenum target, GLsizei samples, GLenum 
 		case GL_RGBA16I:
 		case GL_RGBA32I:
 		case GL_RGBA32UI:
-		case GL_R11F_G11F_B10F:
 		case GL_R32F:
 		case GL_RG32F:
 		case GL_RGB32F:
