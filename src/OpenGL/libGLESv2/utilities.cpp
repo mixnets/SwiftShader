@@ -135,7 +135,6 @@ namespace es2
 		InsertFormatMapping(&map, GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE, GL_UNSIGNED_BYTE, GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE);
 
 		InsertFormatMapping(&map, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, GL_DEPTH_COMPONENT16);
-		InsertFormatMapping(&map, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, GL_DEPTH_COMPONENT32_OES);
 		InsertFormatMapping(&map, GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_COMPONENT32F);
 
 		InsertFormatMapping(&map, GL_STENCIL, GL_UNSIGNED_BYTE, GL_STENCIL_INDEX8);
@@ -717,7 +716,6 @@ namespace es2
 		       format == GL_DEPTH_STENCIL_OES ||
 		       format == GL_DEPTH_COMPONENT16 ||
 		       format == GL_DEPTH_COMPONENT24 ||
-		       format == GL_DEPTH_COMPONENT32_OES ||
 		       format == GL_DEPTH_COMPONENT32F ||
 		       format == GL_DEPTH24_STENCIL8 ||
 		       format == GL_DEPTH32F_STENCIL8;
@@ -868,7 +866,6 @@ namespace es2
 			case GL_RGB32F:
 			case GL_RGBA32F:
 			case GL_DEPTH_COMPONENT24:
-			case GL_DEPTH_COMPONENT32_OES:
 			case GL_DEPTH_COMPONENT32F:
 			case GL_DEPTH32F_STENCIL8:
 			case GL_DEPTH_COMPONENT16:
@@ -1053,6 +1050,10 @@ namespace es2
 		case GL_RG16F:
 		case GL_RGB16F:
 		case GL_RGBA16F:
+		case GL_R32F:
+		case GL_RG32F:
+		case GL_RGB32F:
+		case GL_RGBA32F:
 		case GL_BGRA8_EXT:
 			return true;
 		case GL_R8:
@@ -1078,14 +1079,8 @@ namespace es2
 		case GL_RGBA16I:
 		case GL_RGBA32I:
 		case GL_RGBA32UI:
-		case GL_R11F_G11F_B10F:
-		case GL_R32F:
-		case GL_RG32F:
-		case GL_RGB32F:
-		case GL_RGBA32F:
 			return clientVersion >= 3;
 		case GL_DEPTH_COMPONENT24:
-		case GL_DEPTH_COMPONENT32_OES:
 		case GL_DEPTH_COMPONENT32F:
 		case GL_DEPTH32F_STENCIL8:
 		case GL_DEPTH_COMPONENT16:
@@ -1099,17 +1094,17 @@ namespace es2
 		return false;
 	}
 
-	bool IsDepthRenderable(GLenum internalformat)
+	bool IsDepthRenderable(GLenum internalformat, GLint clientVersion)
 	{
 		switch(internalformat)
 		{
 		case GL_DEPTH_COMPONENT24:
-		case GL_DEPTH_COMPONENT32_OES:
-		case GL_DEPTH_COMPONENT32F:
-		case GL_DEPTH32F_STENCIL8:
 		case GL_DEPTH_COMPONENT16:
-		case GL_DEPTH24_STENCIL8_OES:
+		case GL_DEPTH24_STENCIL8_OES:    // GL_OES_packed_depth_stencil
 			return true;
+		case GL_DEPTH32F_STENCIL8:
+		case GL_DEPTH_COMPONENT32F:
+			return clientVersion >= 3;
 		case GL_STENCIL_INDEX8:
 		case GL_R8:
 		case GL_R8UI:
@@ -1158,14 +1153,15 @@ namespace es2
 		return false;
 	}
 
-	bool IsStencilRenderable(GLenum internalformat)
+	bool IsStencilRenderable(GLenum internalformat, GLint clientVersion)
 	{
 		switch(internalformat)
 		{
-		case GL_DEPTH32F_STENCIL8:
 		case GL_STENCIL_INDEX8:
 		case GL_DEPTH24_STENCIL8_OES:
 			return true;
+		case GL_DEPTH32F_STENCIL8:
+			return clientVersion >= 3;
 		case GL_R8:
 		case GL_R8UI:
 		case GL_R8I:
@@ -1207,7 +1203,6 @@ namespace es2
 		case GL_RGBA32F:
 		case GL_DEPTH_COMPONENT16:
 		case GL_DEPTH_COMPONENT24:
-		case GL_DEPTH_COMPONENT32_OES:
 		case GL_DEPTH_COMPONENT32F:
 			return false;
 		default:
@@ -1526,7 +1521,6 @@ namespace es2sw
 		case GL_DEPTH_COMPONENT16:
 		case GL_STENCIL_INDEX8:
 		case GL_DEPTH24_STENCIL8_OES: return sw::FORMAT_D24S8;
-		case GL_DEPTH_COMPONENT32_OES:return sw::FORMAT_D32;
 		case GL_R8:                   return sw::FORMAT_R8;
 		case GL_RG8:                  return sw::FORMAT_G8R8;
 		case GL_R8I:                  return sw::FORMAT_R8I;

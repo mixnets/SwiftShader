@@ -729,7 +729,6 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 		}
 		break;
 	case GL_DEPTH_COMPONENT16_OES:
-	case GL_DEPTH_COMPONENT32_OES:
 	case GL_DEPTH_STENCIL_OES:
 	case GL_DEPTH24_STENCIL8_OES:
 		return error(GL_INVALID_OPERATION);

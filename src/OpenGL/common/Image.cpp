@@ -863,7 +863,6 @@ namespace egl
 			case GL_DEPTH_COMPONENT:
 			case GL_DEPTH_COMPONENT16:
 			case GL_DEPTH_COMPONENT24:
-			case GL_DEPTH_COMPONENT32_OES:
 				return sw::FORMAT_D32FS8_TEXTURE;
 			default:
 				UNREACHABLE(format);
@@ -1017,7 +1016,6 @@ namespace egl
 			{
 			case GL_DEPTH_COMPONENT16:
 			case GL_DEPTH_COMPONENT24:
-			case GL_DEPTH_COMPONENT32_OES:
 			case GL_DEPTH_COMPONENT: return sizeof(unsigned int);
 			case GL_R32UI:
 			case GL_RED_INTEGER:     return sizeof(unsigned int);
@@ -1597,7 +1595,6 @@ namespace egl
 						break;
 					case GL_DEPTH_COMPONENT16:
 					case GL_DEPTH_COMPONENT24:
-					case GL_DEPTH_COMPONENT32_OES:
 					case GL_DEPTH_COMPONENT:
 						LoadImageData<D32>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 						break;
