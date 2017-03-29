@@ -563,9 +563,6 @@ DepthStencilbuffer::DepthStencilbuffer(int width, int height, GLenum requestedFo
 	case GL_DEPTH_COMPONENT16:
 		internalFormat = sw::FORMAT_D16;
 		break;
-	case GL_DEPTH_COMPONENT32_OES:
-		internalFormat = sw::FORMAT_D32;
-		break;
 	case GL_DEPTH_COMPONENT32F:
 		internalFormat = sw::FORMAT_D32F;
 		break;
