@@ -2048,12 +2048,22 @@ void FramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuff
 	}
 }
 
-void FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
+void FramebufferTexture2DMultisample(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples)
 {
 	TRACE("(GLenum target = 0x%X, GLenum attachment = 0x%X, GLenum textarget = 0x%X, "
-	      "GLuint texture = %d, GLint level = %d)", target, attachment, textarget, texture, level);
+	      "GLuint texture = %d, GLint level = %d, GLsizei samples = %d)", target, attachment, textarget, texture, level, samples);
 
 	if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER_ANGLE && target != GL_READ_FRAMEBUFFER_ANGLE)
+	{
+		return error(GL_INVALID_ENUM);
+	}
+
+	if(samples < 0)
+	{
+		return error(GL_INVALID_VALUE);
+	}
+
+	if(samples > 0 && attachment != GL_COLOR_ATTACHMENT0)
 	{
 		return error(GL_INVALID_ENUM);
 	}
@@ -2062,6 +2072,11 @@ void FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GL
 
 	if(context)
 	{
+		if(samples > es2::IMPLEMENTATION_MAX_SAMPLES)
+		{
+			return error(GL_INVALID_VALUE);
+		}
+
 		if(texture == 0)
 		{
 			textarget = GL_NONE;
@@ -6808,14 +6823,19 @@ void FramebufferRenderbufferOES(GLenum target, GLenum attachment, GLenum renderb
 	FramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
 }
 
+void FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
+{
+	FramebufferTexture2DMultisample(target, attachment, textarget, texture, level, 0);
+}
+
 void FramebufferTexture2DOES(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
 {
-	FramebufferTexture2D(target, attachment, textarget, texture, level);
+	FramebufferTexture2DMultisample(target, attachment, textarget, texture, level, 0);
 }
 
 void FramebufferTexture2DMultisampleEXT(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level, GLsizei samples)
 {
-	FramebufferTexture2D(target, attachment, textarget, texture, level);
+	FramebufferTexture2DMultisample(target, attachment, textarget, texture, level, 0);
 }
 
 void GetFramebufferAttachmentParameterivOES(GLenum target, GLenum attachment, GLenum pname, GLint* params)

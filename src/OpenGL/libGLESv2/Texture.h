@@ -185,7 +185,7 @@ public:
 
 	virtual void generateMipmaps();
 
-	virtual Renderbuffer *getRenderbuffer(GLenum target, GLint level, GLint layer);
+	virtual Renderbuffer *getRenderbuffer(GLenum target, GLint level, GLint layer, GLsizei samples);
 	virtual egl::Image *getRenderTarget(GLenum target, unsigned int level);
 	virtual bool isShared(GLenum target, unsigned int level) const;
 

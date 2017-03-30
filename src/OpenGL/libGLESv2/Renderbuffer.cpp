@@ -134,7 +134,7 @@ sw::Format RenderbufferTexture2D::getInternalFormat() const
 
 GLsizei RenderbufferTexture2D::getSamples() const
 {
-	return 0;
+	return mTexture2D->getSamples();
 }
 
 ///// RenderbufferTexture3D Implementation ////////

@@ -71,7 +71,7 @@ public:
 class RenderbufferTexture2D : public RenderbufferInterface
 {
 public:
-	RenderbufferTexture2D(Texture2D *texture, GLint level);
+	RenderbufferTexture2D(Texture2D *texture, GLint level, GLsizei samples);
 
 	virtual ~RenderbufferTexture2D();
 
@@ -94,6 +94,7 @@ public:
 private:
 	gl::BindingPointer<Texture2D> mTexture2D;
 	GLint mLevel;
+	GLsizei samples;
 };
 
 class RenderbufferTexture3D : public RenderbufferInterface
