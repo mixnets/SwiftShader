@@ -390,6 +390,7 @@ namespace sw
 					}
 					else
 					{
+						bool is8bitNormalized = false;
 						switch(state.textureFormat)
 						{
 						case FORMAT_R8I:
@@ -416,6 +417,22 @@ namespace sw
 						case FORMAT_A16B16G16R16UI:
 							c[component] = As<Float4>(Int4(As<UShort4>(cs[component])));
 							break;
+						case FORMAT_A8:
+						case FORMAT_R8:
+						case FORMAT_R8G8B8:
+						case FORMAT_B8G8R8:
+						case FORMAT_X8R8G8B8:
+						case FORMAT_A8R8G8B8:
+						case FORMAT_X8B8G8R8I_SNORM:
+						case FORMAT_X8B8G8R8:
+						case FORMAT_A8B8G8R8I_SNORM:
+						case FORMAT_A8B8G8R8:
+						case FORMAT_SRGB8_X8:
+						case FORMAT_SRGB8_A8:
+						case FORMAT_G8R8I_SNORM:
+						case FORMAT_G8R8:
+							is8bitNormalized = true;
+							// fall through
 						default:
 							// Normalized integer formats
 							if(state.sRGB && isRGBComponent(component))
@@ -427,11 +444,11 @@ namespace sw
 							{
 								if(hasUnsignedTextureComponent(component))
 								{
-									convertUnsigned16(c[component], cs[component]);
+									convertUnsigned16(c[component], cs[component], is8bitNormalized);
 								}
 								else
 								{
-									convertSigned15(c[component], cs[component]);
+									convertSigned15(c[component], cs[component], is8bitNormalized);
 								}
 							}
 							break;
@@ -2186,14 +2203,18 @@ namespace sw
 //		convertSigned12(cf.w, cs.w);
 //	}
 
-	void SamplerCore::convertSigned15(Float4 &cf, Short4 &cs)
+	void SamplerCore::convertSigned15(Float4 &cf, Short4 &cs, bool is8BitNormalized)
 	{
-		cf = Float4(cs) * Float4(1.0f / 0x7FFF);
+		cf = is8BitNormalized ?
+		     Float4(cs & Short4(0xFF80u)) * Float4(1.0f / 0x7F80) : // Keep 8 bits + 1 bit for rounding
+		     Float4(cs) * Float4(1.0f / 0x7FFF);
 	}
 
-	void SamplerCore::convertUnsigned16(Float4 &cf, Short4 &cs)
+	void SamplerCore::convertUnsigned16(Float4 &cf, Short4 &cs, bool is8BitNormalized)
 	{
-		cf = Float4(As<UShort4>(cs)) * Float4(1.0f / 0xFFFF);
+		cf = is8BitNormalized ?
+		     Float4(As<UShort4>(cs) & UShort4(0xFF80u)) * Float4(1.0f / 0xFF80) : // Keep 8 bits + 1 bit for rounding
+		     Float4(As<UShort4>(cs)) * Float4(1.0f / 0xFFFF);
 	}
 
 	void SamplerCore::sRGBtoLinear16_8_12(Short4 &c)
