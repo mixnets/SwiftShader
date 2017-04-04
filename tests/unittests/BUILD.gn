@@ -16,8 +16,8 @@ import("//testing/test.gni")
 
 test("swiftshader_unittests") {
   deps = [
-    "../../src/OpenGL/libEGL:swiftshader_libEGL",
-    "../../src/OpenGL/libGLESv2:swiftshader_libGLESv2",
+    "//third_party/swiftshader/src/OpenGL/libEGL:swiftshader_libEGL",
+    "//third_party/swiftshader/src/OpenGL/libGLESv2:swiftshader_libGLESv2",
     "//base",
     "//base/test:test_support",
     "//testing/gmock",
@@ -27,5 +27,16 @@ test("swiftshader_unittests") {
   sources = [
     "//gpu/swiftshader_tests_main.cc",
     "unittests.cpp",
+  ]
+
+  include_dirs = [
+    "../../include",
+  ]
+
+  output_dir = "$root_out_dir/swiftshader"
+
+  ldflags = [
+    "-Wl,-rpath=\$ORIGIN",
+    "-Wl,-rpath=\$ORIGIN/..",
   ]
 }
