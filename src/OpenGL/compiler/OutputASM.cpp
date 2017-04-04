@@ -2760,16 +2760,9 @@ namespace glsl
 		{
 			var = allocate(varyings, varying);
 			int componentCount = varying->registerSize();
-			int registerCount = varying->totalRegisterCount();
 
 			if(pixelShader)
 			{
-				if((var + registerCount) > sw::MAX_FRAGMENT_INPUTS)
-				{
-					mContext.error(varying->getLine(), "Varyings packing failed: Too many varyings", "fragment shader");
-					return 0;
-				}
-
 				if(varying->getQualifier() == EvqPointCoord)
 				{
 					ASSERT(varying->isRegister());
@@ -2787,12 +2780,6 @@ namespace glsl
 			}
 			else if(vertexShader)
 			{
-				if((var + registerCount) > sw::MAX_VERTEX_OUTPUTS)
-				{
-					mContext.error(varying->getLine(), "Varyings packing failed: Too many varyings", "vertex shader");
-					return 0;
-				}
-
 				if(varying->getQualifier() == EvqPosition)
 				{
 					ASSERT(varying->isRegister());
