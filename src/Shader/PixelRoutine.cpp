@@ -2199,6 +2199,9 @@ namespace sw
 			oC.y = oC.z;
 			break;
 		case FORMAT_X32B32G32R32F:
+			oC.w = Float4(1.0f);
+			transpose4x4(oC.x, oC.y, oC.z, oC.w);
+			break;
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_A32B32G32R32I:
 		case FORMAT_A32B32G32R32UI:
@@ -2511,7 +2514,7 @@ namespace sw
 			}
 
 			{
-				value = (state.targetFormat[index] == FORMAT_X32B32G32R32F) ? Float4(1.0f) : *Pointer<Float4>(buffer + 16, 16);
+				value = *Pointer<Float4>(buffer + 16, 16);
 
 				if(rgbaWriteMask != 0x0000000F)
 				{
