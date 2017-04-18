@@ -84,9 +84,6 @@
     <ClCompile Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLowering.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLoweringX86.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="$(SolutionDir)third_party\pnacl-subzero\src\IceThreading.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -105,33 +102,21 @@
     <ClCompile Include="Routine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(SolutionDir)third_party\pnacl-subzero\src\IceInstX8632.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SolutionDir)third_party\pnacl-subzero\src\IceInstX8664.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLoweringX8632.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLoweringX8664.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Optimizer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\pnacl-subzero\src\IceAssemblerARM32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\pnacl-subzero\src\IceInstARM32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\pnacl-subzero\src\IceTargetLoweringARM32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceAssembler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceAssemblerX8632.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceAssemblerX86Base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceAssemblerX86BaseImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceBitVector.h">
@@ -147,9 +132,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceClFlags.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceConditionCodesX8632.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceDefs.h">
@@ -239,21 +221,6 @@
     <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLowering.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLoweringX8632.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLoweringX8632Traits.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLoweringX86Base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\icetargetloweringx86baseimpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLoweringX86RegClass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceThreading.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -272,18 +239,6 @@
     <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceVariableSplitting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLoweringX8664Traits.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLoweringX8664.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceAssemblerX8664.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceConditionCodesX8664.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SolutionDir)third_party\pnacl-subzero\src\IceInstX8664.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -291,6 +246,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Optimizer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\pnacl-subzero\src\IceAssemblerARM32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\pnacl-subzero\src\IceConditionCodesARM32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\pnacl-subzero\src\IceInstARM32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\pnacl-subzero\src\IceRegistersARM32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\pnacl-subzero\src\IceTargetLoweringARM32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -313,16 +283,13 @@
     <None Include="$(SolutionDir)third_party\pnacl-subzero\src\SZTargets.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="$(SolutionDir)third_party\pnacl-subzero\src\IceInstX8632.def">
+    <None Include="..\..\third_party\pnacl-subzero\src\IceInstARM32.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="$(SolutionDir)third_party\pnacl-subzero\src\IceInstX8664.def">
+    <None Include="..\..\third_party\pnacl-subzero\src\IceRegistersARM32.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLoweringX8632.def">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="$(SolutionDir)third_party\pnacl-subzero\src\IceTargetLoweringX8664.def">
+    <None Include="..\..\third_party\pnacl-subzero\src\IceTargetLoweringARM32.def">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
