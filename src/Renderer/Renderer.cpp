@@ -867,7 +867,7 @@ namespace sw
 
 				if(!draw->setupState.rasterizerDiscard)
 				{
-					visible = (this->*setupPrimitives)(unit, count);
+				//	visible = (this->*setupPrimitives)(unit, count);
 				}
 
 				primitiveProgress[unit].visible = visible;
@@ -891,7 +891,7 @@ namespace sw
 					DrawData *data = draw->data;
 					PixelProcessor::RoutinePointer pixelRoutine = draw->pixelPointer;
 
-					pixelRoutine(primitive, visible, cluster, data);
+				//	pixelRoutine(primitive, visible, cluster, data);
 				}
 
 				finishRendering(task[threadIndex]);
@@ -1479,7 +1479,7 @@ namespace sw
 
 		task->primitiveStart = start;
 		task->vertexCount = triangleCount * 3;
-		vertexRoutine(&triangle->v0, (unsigned int*)&batch, task, data);
+	//	vertexRoutine(&triangle->v0, (unsigned int*)&batch, task, data);
 	}
 
 	int Renderer::setupSolidTriangles(int unit, int count)

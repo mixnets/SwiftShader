@@ -192,7 +192,7 @@ namespace sw
 			blitFunction = (void(*)(void*, void*, Cursor*))blitRoutine->getEntry();
 		}
 
-		blitFunction(locked, target, &cursor);
+	//	blitFunction(locked, target, &cursor);
 	}
 
 	Routine *FrameBuffer::copyRoutine(const BlitState &state)

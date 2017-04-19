@@ -211,7 +211,7 @@ namespace sw
 			}
 		}
 
-		switch(relocation.getType())
+		switch(unsigned char type = relocation.getType())
 		{
 		case R_386_NONE:
 			// No relocation
@@ -222,6 +222,9 @@ namespace sw
 	//	case R_386_PC32:
 	//		*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite);
 	//		break;
+		case R_ARM_MOVT_ABS:
+		case R_ARM_MOVW_ABS_NC:
+			break;
 		default:
 			assert(false && "Unsupported relocation type");
 			return nullptr;
@@ -300,7 +303,7 @@ namespace sw
 
 		// Expect ELF bitness to match platform
 		assert(sizeof(void*) == 8 ? elfHeader->getFileClass() == ELFCLASS64 : elfHeader->getFileClass() == ELFCLASS32);
-		assert(sizeof(void*) == 8 ? elfHeader->e_machine == EM_X86_64 : elfHeader->e_machine == EM_386);
+		assert(sizeof(void*) == 8 ? elfHeader->e_machine == EM_AARCH64 : elfHeader->e_machine == EM_ARM);
 
 		SectionHeader *sectionHeader = (SectionHeader*)(elfImage + elfHeader->e_shoff);
 		void *entry = nullptr;
@@ -5911,7 +5914,9 @@ namespace sw
 
 	Float4::Float4(RValue<Float> rhs) : FloatXYZW(this)
 	{
-		Value *vector = Nucleus::createBitCast(rhs.value, Float4::getType());
+		//Value *vector = Nucleus::createBitCast(rhs.value, Float4::getType());
+		Value *vector = loadValue();
+		vector = Nucleus::createInsertElement(vector, rhs.value, 0);
 
 		int swizzle[4] = {0, 0, 0, 0};
 		Value *replicate = Nucleus::createShuffleVector(vector, vector, swizzle);
