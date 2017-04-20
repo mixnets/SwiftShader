@@ -66,19 +66,20 @@ namespace sw
 	class BackoffLock
 	{
 	public:
-		BackoffLock()
+		BackoffLock() : mutex(false)
 		{
-			mutex = 0;
 		}
 
 		bool attemptLock()
 		{
 			if(!isLocked())
 			{
-				if(mutex.exchange(true) == false)
-				{
-					return true;
-				}
+				// The mutex *might* be unlocked at this point, so try to set it from false to true.
+				// We need to observe other threads having successfully locked the mutex, and other threads need to observe our success,
+				// so both acquire and release on the read-modify-write. We don't care what the old value was on failure. Just try again.
+				// Note that compare_exchange_weak can fail spuriously if the mutex was not locked.
+				bool expected = false;
+				return mutex.compare_exchange_weak(expected, true, std::memory_order_acq_rel, std::memory_order_relaxed);
 			}
 
 			return false;
@@ -155,7 +156,10 @@ namespace sw
 
 		bool isLocked()
 		{
-			return mutex.load(std::memory_order_acquire);
+			// This function is only meant to be a cheap check if *maybe* the mutex is unlocked.
+			// If so, then eventually a thread is going to observe it and attempt to lock it.
+			// Therefore relaxed memory order suffices.
+			return mutex.load(std::memory_order_relaxed);
 		}
 
 	private:
