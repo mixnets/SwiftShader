@@ -947,18 +947,26 @@ if(BUILD_GLES_CM)
 endif()
 
 ###########################################################
-# Sample programs
+# Sample programs and tests
 ###########################################################
 
+if(${REACTOR_BACKEND} STREQUAL "Subzero")
     set(SUBZERO_TEST_LIST
         ${SOURCE_DIR}/Reactor/Main.cpp
         ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
     )
 
     set(SUBZERO_TEST_INCLUDE_DIR
-    ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/include
-    ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/
-)
+        ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/include
+        ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/
+    )
+
+    add_executable(SubzeroTest ${SUBZERO_TEST_LIST})
+    set_target_properties(SubzeroTest PROPERTIES
+        INCLUDE_DIRECTORIES "${SUBZERO_TEST_INCLUDE_DIR}"
+    )
+    target_link_libraries(SubzeroTest ReactorSubzero pthread dl)
+endif()
 
 if(BUILD_SAMPLES)
     if(WIN32)
@@ -978,12 +986,6 @@ if(BUILD_SAMPLES)
             COMPILE_DEFINITIONS "GL_GLEXT_PROTOTYPES"
         )
         target_link_libraries(OGLES2HelloAPI dl X11 libEGL libGLESv2)   # Explicitly link our "lib*" targets, not the platform provided "EGL" and "GLESv2"
-
-        add_executable(SubzeroTest ${SUBZERO_TEST_LIST})
-        set_target_properties(SubzeroTest PROPERTIES
-            INCLUDE_DIRECTORIES "${SUBZERO_TEST_INCLUDE_DIR}"
-        )
-        target_link_libraries(SubzeroTest ${Reactor} pthread dl)
     elseif(APPLE)
         add_executable(OGLES2HelloAPI MACOSX_BUNDLE
             ${HELLO2_DIR}/OGLES2HelloAPI_OSX.mm

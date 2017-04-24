@@ -596,7 +596,7 @@ namespace sw
 	RValue<SByte8> operator|(RValue<SByte8> lhs, RValue<SByte8> rhs);
 	RValue<SByte8> operator^(RValue<SByte8> lhs, RValue<SByte8> rhs);
 //	RValue<SByte8> operator<<(RValue<SByte8> lhs, RValue<SByte8> rhs);
-//	RValue<SByte8> operator>>(RValue<SByte8> lhs, RValue<SByte8> rhs);
+	RValue<SByte8> operator>>(RValue<SByte8> lhs, RValue<SByte8> rhs);
 	RValue<SByte8> operator+=(SByte8 &lhs, RValue<SByte8> rhs);
 	RValue<SByte8> operator-=(SByte8 &lhs, RValue<SByte8> rhs);
 //	RValue<SByte8> operator*=(SByte8 &lhs, RValue<SByte8> rhs);

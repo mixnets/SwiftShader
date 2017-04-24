@@ -533,32 +533,6 @@ namespace sw
 
 			Int x0 = *Pointer<Int>(cursor + OFFSET(Cursor,x));
 			Int y0 = *Pointer<Int>(cursor + OFFSET(Cursor,y));
-
-			For(Int y1 = 0, y1 < state.cursorHeight, y1++)
-			{
-				Int y = y0 + y1;
-
-				If(y >= 0 && y < height)
-				{
-					Pointer<Byte> d = dst + y * dStride + x0 * dBytes;
-					Pointer<Byte> s = src + y * sStride + x0 * sBytes;
-					Pointer<Byte> c = *Pointer<Pointer<Byte>>(cursor + OFFSET(Cursor,image)) + y1 * state.cursorWidth * 4;
-
-					For(Int x1 = 0, x1 < state.cursorWidth, x1++)
-					{
-						Int x = x0 + x1;
-
-						If(x >= 0 && x < width)
-						{
-							blend(state, d, s, c);
-						}
-
-						c += 4;
-						s += sBytes;
-						d += dBytes;
-					}
-				}
-			}
 		}
 
 		return function(L"FrameBuffer");
