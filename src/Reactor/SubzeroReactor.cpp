@@ -82,7 +82,7 @@ namespace
 		}
 
 		static bool detectSSE4_1()
-		{return true;
+		{
 			int registers[4];
 			cpuid(registers, 1);
 			return (registers[2] & 0x00080000) != 0;
@@ -211,17 +211,31 @@ namespace sw
 			}
 		}
 
-		switch(relocation.getType())
+		switch(unsigned char type = relocation.getType())
 		{
 		case R_386_NONE:
 			// No relocation
 			break;
 		case R_386_32:
-			*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite);
+			*patchSite = (uint32_t)((uintptr_t)symbolValue + *patchSite);
 			break;
 	//	case R_386_PC32:
-	//		*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite);
+	//		*patchSite = (uint32_t)((uintptr_t)symbolValue + *patchSite - (uintptr_t)patchSite);
 	//		break;
+		case R_ARM_MOVW_ABS_NC:
+			{
+				uint32_t x = (uint32_t)symbolValue;
+				*patchSite = *patchSite & 0xFFF0F000;
+				*patchSite = *patchSite | ((x & 0xF000) << 4) | (x & 0x0FFF);
+			}
+			break;
+		case R_ARM_MOVT_ABS:
+			{
+				uint32_t x = (uint32_t)(symbolValue) >> 16;
+				*patchSite = *patchSite & 0xFFF0F000;
+				*patchSite = *patchSite | ((x & 0xF000) << 4) | (x & 0x0FFF);
+			}
+			break;
 		default:
 			assert(false && "Unsupported relocation type");
 			return nullptr;
@@ -300,7 +314,7 @@ namespace sw
 
 		// Expect ELF bitness to match platform
 		assert(sizeof(void*) == 8 ? elfHeader->getFileClass() == ELFCLASS64 : elfHeader->getFileClass() == ELFCLASS32);
-		assert(sizeof(void*) == 8 ? elfHeader->e_machine == EM_X86_64 : elfHeader->e_machine == EM_386);
+		assert(sizeof(void*) == 8 ? elfHeader->e_machine == EM_X86_64 : elfHeader->e_machine == EM_ARM);
 
 		SectionHeader *sectionHeader = (SectionHeader*)(elfImage + elfHeader->e_shoff);
 		void *entry = nullptr;
@@ -454,7 +468,7 @@ namespace sw
 
 		#if defined(__arm__)
 			Flags.setTargetArch(Ice::Target_ARM32);
-			Flags.setTargetInstructionSet(Ice::ARM32InstructionSet_Neon);
+			Flags.setTargetInstructionSet(Ice::ARM32InstructionSet_HWDivArm);
 		#else // x86
 			Flags.setTargetArch(sizeof(void*) == 8 ? Ice::Target_X8664 : Ice::Target_X8632);
 			Flags.setTargetInstructionSet(CPUID::SSE4_1 ? Ice::X86InstructionSet_SSE4_1 : Ice::X86InstructionSet_SSE2);
@@ -462,8 +476,9 @@ namespace sw
 		Flags.setOutFileType(Ice::FT_Elf);
 		Flags.setOptLevel(Ice::Opt_2);
 		Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
-		Flags.setVerbose(true ? Ice::IceV_Most : Ice::IceV_None);
+		Flags.setVerbose(false ? Ice::IceV_Most : Ice::IceV_None);
 		Flags.setSkipUnimplemented(true);
+		Flags.setDisableHybridAssembly(true);
 
 		static llvm::raw_os_ostream cout(std::cout);
 		static llvm::raw_os_ostream cerr(std::cerr);

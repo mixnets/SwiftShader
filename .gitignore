@@ -2,6 +2,7 @@
 /lib/
 /obj/
 /bin/
+/build/
 .vs
 
 # Ignored files #
