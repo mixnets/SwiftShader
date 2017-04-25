@@ -164,10 +164,12 @@ namespace sw
 
 	static void cpuid(int registers[4], int info)
 	{
-		#if defined(_WIN32)
-			__cpuid(registers, info);
-		#else
-			__asm volatile("cpuid": "=a" (registers[0]), "=b" (registers[1]), "=c" (registers[2]), "=d" (registers[3]): "a" (info));
+		#if defined(__i386__) || defined(__x86_64__)
+			#if defined(_WIN32)
+				__cpuid(registers, info);
+			#else
+				__asm volatile("cpuid": "=a" (registers[0]), "=b" (registers[1]), "=c" (registers[2]), "=d" (registers[3]): "a" (info));
+			#endif
 		#endif
 	}
 
