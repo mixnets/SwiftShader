@@ -66,6 +66,14 @@ namespace
 
 namespace
 {
+	#if !defined(__i386__) && defined(_M_IX86)
+		#define __i386__ 1
+	#endif
+
+	#if !defined(__x86_64__) && (defined(_M_AMD64) || defined (_M_X64))
+		#define __x86_64__ 1
+	#endif
+
 	class CPUID
 	{
 	public:
@@ -74,18 +82,24 @@ namespace
 	private:
 		static void cpuid(int registers[4], int info)
 		{
-			#if defined(_WIN32)
-				__cpuid(registers, info);
-			#else
-				__asm volatile("cpuid": "=a" (registers[0]), "=b" (registers[1]), "=c" (registers[2]), "=d" (registers[3]): "a" (info));
+			#if defined(__i386__) || defined(__x86_64__)
+				#if defined(_WIN32)
+					__cpuid(registers, info);
+				#else
+					__asm volatile("cpuid": "=a" (registers[0]), "=b" (registers[1]), "=c" (registers[2]), "=d" (registers[3]): "a" (info));
+				#endif
 			#endif
 		}
 
 		static bool detectSSE4_1()
 		{
-			int registers[4];
-			cpuid(registers, 1);
-			return (registers[2] & 0x00080000) != 0;
+			#if defined(__i386__) || defined(__x86_64__)
+				int registers[4];
+				cpuid(registers, 1);
+				return (registers[2] & 0x00080000) != 0;
+			#else
+				return false;
+			#endif
 		}
 	};
 
@@ -211,21 +225,46 @@ namespace sw
 			}
 		}
 
-		switch(relocation.getType())
-		{
-		case R_386_NONE:
-			// No relocation
-			break;
-		case R_386_32:
-			*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite);
-			break;
-	//	case R_386_PC32:
-	//		*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite);
-	//		break;
-		default:
-			assert(false && "Unsupported relocation type");
-			return nullptr;
-		}
+		#if defined(__i386__)
+			switch(relocation.getType())
+			{
+			case R_386_NONE:
+				// No relocation
+				break;
+			case R_386_32:
+				*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite);
+				break;
+		//	case R_386_PC32:
+		//		*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite);
+		//		break;
+			default:
+				assert(false && "Unsupported relocation type");
+				return nullptr;
+			}
+		#elif defined(__arm__)
+			switch(relocation.getType())
+			{
+			case R_ARM_NONE:
+				// No relocation
+				break;
+			case R_ARM_MOVW_ABS_NC:
+				{
+					uint32_t thumb = 0;   // Calls to Thumb code not supported.
+					uint32_t lo = (uint32_t)symbolValue | thumb;
+					*patchSite = (*patchSite & 0xFFF0F000) | ((lo & 0xF000) << 4) | (lo & 0x0FFF);
+				}
+				break;
+			case R_ARM_MOVT_ABS:
+				{
+					uint32_t hi = (uint32_t)(symbolValue) >> 16;
+					*patchSite = (*patchSite & 0xFFF0F000) | ((hi & 0xF000) << 4) | (hi & 0x0FFF);
+				}
+				break;
+			default:
+				assert(false && "Unsupported relocation type");
+				return nullptr;
+			}
+		#endif
 
 		return symbolValue;
 	}
@@ -267,24 +306,26 @@ namespace sw
 			}
 		}
 
-		switch(relocation.getType())
-		{
-		case R_X86_64_NONE:
-			// No relocation
-			break;
-		case R_X86_64_64:
-			*(int64_t*)patchSite = (int64_t)((intptr_t)symbolValue + *(int64_t*)patchSite) + relocation.r_addend;
-			break;
-		case R_X86_64_PC32:
-			*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite) + relocation.r_addend;
-			break;
-		case R_X86_64_32S:
-			*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite) + relocation.r_addend;
-			break;
-		default:
-			assert(false && "Unsupported relocation type");
-			return nullptr;
-		}
+		#if defined(__x86_64__)
+			switch(relocation.getType())
+			{
+			case R_X86_64_NONE:
+				// No relocation
+				break;
+			case R_X86_64_64:
+				*(int64_t*)patchSite = (int64_t)((intptr_t)symbolValue + *(int64_t*)patchSite) + relocation.r_addend;
+				break;
+			case R_X86_64_PC32:
+				*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite) + relocation.r_addend;
+				break;
+			case R_X86_64_32S:
+				*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite) + relocation.r_addend;
+				break;
+			default:
+				assert(false && "Unsupported relocation type");
+				return nullptr;
+			}
+		#endif
 
 		return symbolValue;
 	}
@@ -300,7 +341,15 @@ namespace sw
 
 		// Expect ELF bitness to match platform
 		assert(sizeof(void*) == 8 ? elfHeader->getFileClass() == ELFCLASS64 : elfHeader->getFileClass() == ELFCLASS32);
-		assert(sizeof(void*) == 8 ? elfHeader->e_machine == EM_X86_64 : elfHeader->e_machine == EM_386);
+		#if defined(__i386__)
+			assert(sizeof(void*) == 4 && elfHeader->e_machine == EM_386);
+		#elif defined(__x86_64__)
+			assert(sizeof(void*) == 8 && elfHeader->e_machine == EM_X86_64);
+		#elif defined(__arm__)
+			assert(sizeof(void*) == 4 && elfHeader->e_machine == EM_ARM);
+		#else
+			#error "Unsupported platform"
+		#endif
 
 		SectionHeader *sectionHeader = (SectionHeader*)(elfImage + elfHeader->e_shoff);
 		void *entry = nullptr;
@@ -460,12 +509,18 @@ namespace sw
 		Ice::ClFlags &Flags = Ice::ClFlags::Flags;
 		Ice::ClFlags::getParsedClFlags(Flags);
 
-		Flags.setTargetArch(sizeof(void*) == 8 ? Ice::Target_X8664 : Ice::Target_X8632);
+		#if defined(__arm__)
+			Flags.setTargetArch(Ice::Target_ARM32);
+			Flags.setTargetInstructionSet(Ice::ARM32InstructionSet_HWDivArm);
+		#else   // x86
+			Flags.setTargetArch(sizeof(void*) == 8 ? Ice::Target_X8664 : Ice::Target_X8632);
+			Flags.setTargetInstructionSet(CPUID::SSE4_1 ? Ice::X86InstructionSet_SSE4_1 : Ice::X86InstructionSet_SSE2);
+		#endif
 		Flags.setOutFileType(Ice::FT_Elf);
 		Flags.setOptLevel(Ice::Opt_2);
 		Flags.setApplicationBinaryInterface(Ice::ABI_Platform);
-		Flags.setTargetInstructionSet(CPUID::SSE4_1 ? Ice::X86InstructionSet_SSE4_1 : Ice::X86InstructionSet_SSE2);
-		Flags.setVerbose(false ? Ice::IceV_All : Ice::IceV_None);
+		Flags.setVerbose(false ? Ice::IceV_Most : Ice::IceV_None);
+		Flags.setDisableHybridAssembly(true);
 
 		static llvm::raw_os_ostream cout(std::cout);
 		static llvm::raw_os_ostream cerr(std::cerr);
