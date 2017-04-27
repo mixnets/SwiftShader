@@ -49,19 +49,21 @@ LOCAL_SRC_FILES := \
     $(SUBZERO_PATH)/src/IceRNG.cpp \
     $(SUBZERO_PATH)/src/IceSwitchLowering.cpp \
     $(SUBZERO_PATH)/src/IceTargetLowering.cpp \
-    $(SUBZERO_PATH)/src/IceTargetLoweringX86.cpp \
+    $(SUBZERO_PATH)/src/IceTargetLoweringARM32.cpp \
     $(SUBZERO_PATH)/src/IceThreading.cpp \
     $(SUBZERO_PATH)/src/IceTimerTree.cpp \
     $(SUBZERO_PATH)/src/IceTypes.cpp \
-    $(SUBZERO_PATH)/src/IceVariableSplitting.cpp
+    $(SUBZERO_PATH)/src/IceVariableSplitting.cpp \
+    $(SUBZERO_PATH)/src/IceInstARM32.cpp \
+    $(SUBZERO_PATH)/src/IceAssemblerARM32.cpp
 
-LOCAL_SRC_FILES_x86 += \
-    $(SUBZERO_PATH)/src/IceInstX8632.cpp \
-    $(SUBZERO_PATH)/src/IceTargetLoweringX8632.cpp
-
-LOCAL_SRC_FILES_x86_64 += \
-    $(SUBZERO_PATH)/src/IceInstX8664.cpp \
-    $(SUBZERO_PATH)/src/IceTargetLoweringX8664.cpp
+#LOCAL_SRC_FILES_x86 += \
+#    $(SUBZERO_PATH)/src/IceInstX8632.cpp \
+#    $(SUBZERO_PATH)/src/IceTargetLoweringX8632.cpp
+#
+#LOCAL_SRC_FILES_x86_64 += \
+#    $(SUBZERO_PATH)/src/IceInstX8664.cpp \
+#    $(SUBZERO_PATH)/src/IceTargetLoweringX8664.cpp
 
 LOCAL_SRC_FILES += \
     $(LLVMDEPENDENCIES_PATH)/lib/Support/APInt.cpp \
@@ -121,8 +123,9 @@ LOCAL_CFLAGS += -fomit-frame-pointer -Os -ffunction-sections -fdata-sections
 LOCAL_CFLAGS += -fno-operator-names -msse2 -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS
 LOCAL_CFLAGS += -DALLOW_DUMP=0 -DALLOW_TIMERS=0 -DALLOW_LLVM_CL=0 -DALLOW_LLVM_IR=0 -DALLOW_LLVM_IR_AS_INPUT=0 -DALLOW_MINIMAL_BUILD=0 -DALLOW_WASM=0 -DICE_THREAD_LOCAL_HACK=1
 
-LOCAL_CFLAGS_x86 += -DSZTARGET=X8632
-LOCAL_CFLAGS_x86_64 += -DSZTARGET=X8664
+#LOCAL_CFLAGS_x86 += -DSZTARGET=X8632
+#LOCAL_CFLAGS_x86_64 += -DSZTARGET=X8664
+LOCAL_CFLAGS += -DSZTARGET=ARM32
 
 # Android's make system also uses NDEBUG, so we need to set/unset it forcefully
 # Uncomment for debug ON:

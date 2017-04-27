@@ -5546,8 +5546,9 @@ namespace sw
 		e = Nucleus::createShuffleVector(d, d, swizzle2);
 
 		Value *f = Nucleus::createBitCast(e, Int4::getType());
-		Value *g = Nucleus::createAShr(f, V(::context->getConstantInt32(24)));
-		storeValue(g);
+	//	Value *g = Nucleus::createAShr(f, V(::context->getConstantInt32(24)));
+		storeValue(f);
+		*this >>= 24;
 	}
 
 	Int4::Int4(RValue<Float4> cast)
@@ -5562,7 +5563,7 @@ namespace sw
 		int swizzle[8] = {0, 0, 1, 1, 2, 2, 3, 3};
 		Value *c = Nucleus::createShuffleVector(cast.value, cast.value, swizzle);
 		Value *d = Nucleus::createBitCast(c, Int4::getType());
-		//Value *e = Nucleus::createAShr(d, V(::context->getConstantInt32(16)));
+	//	Value *e = Nucleus::createAShr(d, V(::context->getConstantInt32(16)));
 		storeValue(d);
 		*this >>= 16;
 	}
