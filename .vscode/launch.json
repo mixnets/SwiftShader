@@ -1,7 +1,40 @@
 {
     "version": "0.2.0",
     "configurations": [
-
+        {
+            "name": "Glass",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/ubuntu/Development/PowerVR_SDK/Examples/Advanced/Glass/OGLES/Build/armv7hf/ReleaseX11/OGLESGlass",
+            "args": ["LD_LIBRARY_PATH=./"],
+            "stopAtEntry": false,
+            "cwd": "/home/ubuntu/Development/PowerVR_SDK/Examples/Advanced/Glass/OGLES/Build/armv7hf/ReleaseX11/",
+            "environment": [],
+            "externalConsole": true,
+            "linux": {
+                "MIMode": "gdb",
+                "setupCommands": [
+                    {
+                        "description": "Enable pretty-printing for gdb",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
+                ]
+            },
+            "osx": {
+                "MIMode": "lldb"
+            },
+            "windows": {
+                "MIMode": "gdb",
+                "setupCommands": [
+                    {
+                        "description": "Enable pretty-printing for gdb",
+                        "text": "-enable-pretty-printing",
+                        "ignoreFailures": true
+                    }
+                ]
+            }
+        },
         {
             "name": "SubzeroTest",
             "type": "cppdbg",

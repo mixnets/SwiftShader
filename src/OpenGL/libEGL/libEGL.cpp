@@ -720,7 +720,7 @@ EGLContext CreateContext(EGLDisplay dpy, EGLConfig config, EGLContext share_cont
 		if(minorVersion != 0)
 		{
 			// 2.X and 3.X: Only OpenGL ES 2.0 and 3.0 contexts are currently supported
-			return error(EGL_BAD_MATCH, EGL_NO_CONTEXT);
+			//return error(EGL_BAD_MATCH, EGL_NO_CONTEXT);
 		}
 		break;
 	default:

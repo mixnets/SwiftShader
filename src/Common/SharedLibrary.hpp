@@ -103,7 +103,7 @@ void *loadLibrary(const char *(&names)[n], const char *mustContainSymbol = nullp
 				return dlopen(path, RTLD_LAZY | RTLD_LOCAL);   // Increment reference count
 			}
 
-			return 0;
+			return nullptr;
 		#endif
 	}
 

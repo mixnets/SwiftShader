@@ -37,7 +37,7 @@ namespace egl
 // OpenGL ES 3.0 support is not conformant yet, but can be used for testing purposes. Expose it as conformant configs
 // if strict conformance advertisement isn't required. If strict conformance advertisement is required, expose them
 // as non-conformant configs, but only when EGL_CONFIG_CAVEAT is EGL_NON_CONFORMANT_CONFIG or EGL_DONT_CARE.
-#if defined(__ANDROID__) || defined(STRICT_CONFORMANCE)
+#if defined(__ANDROID__) || defined(STRICT_CONFORMANCE) // || true
 const bool strictConformance = true;
 #else
 const bool strictConformance = false;
