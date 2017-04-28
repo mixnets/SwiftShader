@@ -40,6 +40,32 @@ unsigned int minPrimitives = 1;
 unsigned int maxPrimitives = 1 << 21;
 #endif
 
+void disallowUnaligned()
+{
+	#if defined(__GNUC__)
+	# if defined(__i386__)
+		/* Enable Alignment Checking on x86 */
+		__asm__("pushf\norl $0x00040000,(%esp)\npopf");
+	# elif defined(__x86_64__) 
+		/* Enable Alignment Checking on x86_64 */
+		__asm__("pushf\norl $0x00040000,(%rsp)\npopf");
+	# endif
+	#endif
+}
+
+void allowUnaligned()
+{
+	#if defined(__GNUC__)
+	# if defined(__i386__)
+		/* Disable Alignment Checking on x86 */
+		__asm__("pushf\nandl $0xFFFBFFFF,(%esp)\npopf");
+	# elif defined(__x86_64__) 
+		/* Disable Alignment Checking on x86_64 */
+		__asm__("pushf\nandl $0xFFFBFFFF,(%rsp)\npopf");
+	# endif
+	#endif
+}
+
 namespace sw
 {
 	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
@@ -891,7 +917,9 @@ namespace sw
 					DrawData *data = draw->data;
 					PixelProcessor::RoutinePointer pixelRoutine = draw->pixelPointer;
 
+disallowUnaligned();
 					pixelRoutine(primitive, visible, cluster, data);
+allowUnaligned();
 				}
 
 				finishRendering(task[threadIndex]);
@@ -1479,7 +1507,9 @@ namespace sw
 
 		task->primitiveStart = start;
 		task->vertexCount = triangleCount * 3;
+disallowUnaligned();
 		vertexRoutine(&triangle->v0, (unsigned int*)&batch, task, data);
+allowUnaligned();
 	}
 
 	int Renderer::setupSolidTriangles(int unit, int count)
@@ -1515,12 +1545,13 @@ namespace sw
 						continue;
 					}
 				}
-
+disallowUnaligned();
 				if(setupRoutine(primitive, triangle, &polygon, data))
 				{
 					primitive += ms;
 					visible++;
 				}
+allowUnaligned();
 			}
 		}
 
@@ -2732,7 +2763,7 @@ namespace sw
 			case 0:  threadCount = CPUID::processAffinity();  break;
 			default: threadCount = configuration.threadCount; break;
 			}
-
+//threadCount = 1;
 			CPUID::setEnableSSE4_1(configuration.enableSSE4_1);
 			CPUID::setEnableSSSE3(configuration.enableSSSE3);
 			CPUID::setEnableSSE3(configuration.enableSSE3);
