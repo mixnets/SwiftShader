@@ -1883,8 +1883,16 @@ namespace sw
 					Int c1 = Int(*Pointer<Byte>(buffer[f1] + index[1]));
 					Int c2 = Int(*Pointer<Byte>(buffer[f2] + index[2]));
 					Int c3 = Int(*Pointer<Byte>(buffer[f3] + index[3]));
-					c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-					c.x = Unpack(As<Byte4>(c0));
+				//	c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+				//	c.x = Unpack(As<Byte4>(c0));
+					c0 = c0 | (c0 << 8);
+					c1 = c1 | (c1 << 8);
+					c2 = c2 | (c2 << 8);
+					c3 = c3 | (c3 << 8);
+					c.x = Insert(c.x, Short(c0), 0);
+					c.x = Insert(c.x, Short(c1), 1);
+					c.x = Insert(c.x, Short(c2), 2);
+					c.x = Insert(c.x, Short(c3), 3);
 				}
 				break;
 			default:
