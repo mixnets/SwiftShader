@@ -79,7 +79,7 @@ void AndroidEnterDebugger();
 
 #ifndef NDEBUG
 	#define TRACE(format, ...)								   \
-		ALOGV("%s %s:%d (" format ")", __FUNCTION__, __FILE__, \
+		ALOGE("%s %s:%d (" format ")", __FUNCTION__, __FILE__, \
 			  __LINE__, ##__VA_ARGS__)
 #else
 	#define TRACE(...) ((void)0)
