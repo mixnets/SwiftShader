@@ -244,23 +244,8 @@ namespace sw
 			}
 		}
 
-		#if defined(__i386__)
-			switch(relocation.getType())
-			{
-			case R_386_NONE:
-				// No relocation
-				break;
-			case R_386_32:
-				*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite);
-				break;
-		//	case R_386_PC32:
-		//		*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite);
-		//		break;
-			default:
-				assert(false && "Unsupported relocation type");
-				return nullptr;
-			}
-		#elif defined(__arm__)
+		if(CPUID::ARM)
+		{
 			switch(relocation.getType())
 			{
 			case R_ARM_NONE:
@@ -283,7 +268,26 @@ namespace sw
 				assert(false && "Unsupported relocation type");
 				return nullptr;
 			}
-		#endif
+		}
+		else
+		{
+			switch(relocation.getType())
+			{
+			case R_386_NONE:
+				// No relocation
+				break;
+			case R_386_32:
+				*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite);
+				break;
+		//	case R_386_PC32:
+		//		*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite);
+		//		break;
+			default:
+				assert(false && "Unsupported relocation type");
+				return nullptr;
+			}
+		}
+
 
 		return symbolValue;
 	}
@@ -325,26 +329,24 @@ namespace sw
 			}
 		}
 
-		#if defined(__x86_64__)
-			switch(relocation.getType())
-			{
-			case R_X86_64_NONE:
-				// No relocation
-				break;
-			case R_X86_64_64:
-				*(int64_t*)patchSite = (int64_t)((intptr_t)symbolValue + *(int64_t*)patchSite) + relocation.r_addend;
-				break;
-			case R_X86_64_PC32:
-				*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite) + relocation.r_addend;
-				break;
-			case R_X86_64_32S:
-				*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite) + relocation.r_addend;
-				break;
-			default:
-				assert(false && "Unsupported relocation type");
-				return nullptr;
-			}
-		#endif
+		switch(relocation.getType())
+		{
+		case R_X86_64_NONE:
+			// No relocation
+			break;
+		case R_X86_64_64:
+			*(int64_t*)patchSite = (int64_t)((intptr_t)symbolValue + *(int64_t*)patchSite) + relocation.r_addend;
+			break;
+		case R_X86_64_PC32:
+			*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite) + relocation.r_addend;
+			break;
+		case R_X86_64_32S:
+			*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite) + relocation.r_addend;
+			break;
+		default:
+			assert(false && "Unsupported relocation type");
+			return nullptr;
+		}
 
 		return symbolValue;
 	}
