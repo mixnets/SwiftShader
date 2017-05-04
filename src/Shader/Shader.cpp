@@ -1173,7 +1173,7 @@ namespace sw
 			ASSERT(false);
 		}
 
-		static const char size[] =
+		static const sized char size[] =
 		{
 			0,   // NOP = 0
 			2,   // MOV
