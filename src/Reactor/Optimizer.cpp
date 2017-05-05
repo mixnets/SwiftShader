@@ -43,6 +43,8 @@ namespace
 		static Ice::Operand *storeAddress(const Ice::Inst *instruction);
 		static Ice::Operand *loadAddress(const Ice::Inst *instruction);
 		static Ice::Operand *storeData(const Ice::Inst *instruction);
+		static Ice::Type storeType(const Ice::Inst *instruction);
+		static Ice::Type loadType(const Ice::Inst *instruction);
 
 		Ice::Cfg *function;
 		Ice::GlobalContext *context;
@@ -199,6 +201,11 @@ namespace
 						continue;
 					}
 
+					if(loadType(load) != storeType(store))
+					{
+						continue;
+					}
+
 					replace(load, storeValue);
 
 					for(size_t i = 0; i < addressUses.loads.size(); i++)
@@ -326,6 +333,11 @@ namespace
 						if(loadAddress(load) != address)
 						{
 							continue;
+						}
+
+						if(store && loadType(load) != storeType(store))
+						{
+						//	continue;
 						}
 
 						if(storeValue)
@@ -552,6 +564,33 @@ namespace
 		}
 
 		return nullptr;
+	}
+
+	Ice::Type Optimizer::storeType(const Ice::Inst *instruction)
+	{
+		assert(isStore(*instruction));
+
+		if(auto *store = llvm::dyn_cast<Ice::InstStore>(instruction))
+		{
+			return store->getData()->getType();
+		}
+
+		if(auto *instrinsic = llvm::dyn_cast<Ice::InstIntrinsicCall>(instruction))
+		{
+			if(instrinsic->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector)
+			{
+				return instrinsic->getSrc(1)->getType();
+			}
+		}
+
+		return Ice::IceType_void;
+	}
+
+	Ice::Type Optimizer::loadType(const Ice::Inst *instruction)
+	{
+		assert(isLoad(*instruction));
+
+		return instruction->getDest()->getType();
 	}
 
 	bool Optimizer::Uses::areOnlyLoadStore() const
