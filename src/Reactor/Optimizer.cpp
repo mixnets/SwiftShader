@@ -43,6 +43,7 @@ namespace
 		static Ice::Operand *storeAddress(const Ice::Inst *instruction);
 		static Ice::Operand *loadAddress(const Ice::Inst *instruction);
 		static Ice::Operand *storeData(const Ice::Inst *instruction);
+		static bool loadTypeMatchesStore(const Ice::Inst *load, const Ice::Inst *store);
 
 		Ice::Cfg *function;
 		Ice::GlobalContext *context;
@@ -199,6 +200,11 @@ namespace
 						continue;
 					}
 
+					if(!loadTypeMatchesStore(load, store))
+					{
+						continue;
+					}
+
 					replace(load, storeValue);
 
 					for(size_t i = 0; i < addressUses.loads.size(); i++)
@@ -310,12 +316,6 @@ namespace
 							continue;
 						}
 
-						// New store found. If we had a previous one, eliminate it.
-						if(store)
-						{
-							deleteInstruction(store);
-						}
-
 						store = &inst;
 						storeValue = storeData(store);
 					}
@@ -324,6 +324,11 @@ namespace
 						Ice::Inst *load = &inst;
 
 						if(loadAddress(load) != address)
+						{
+							continue;
+						}
+
+						if(!loadTypeMatchesStore(load, store))
 						{
 							continue;
 						}
@@ -552,6 +557,39 @@ namespace
 		}
 
 		return nullptr;
+	}
+
+	bool Optimizer::loadTypeMatchesStore(const Ice::Inst *load, const Ice::Inst *store)
+	{
+		if(!load || !store)
+		{
+			return false;
+		}
+
+		assert(isLoad(*load) && isStore(*store));
+
+		if(auto *instStore = llvm::dyn_cast<Ice::InstStore>(store))
+		{
+			if(auto *instLoad = llvm::dyn_cast<Ice::InstLoad>(load))
+			{
+				return instStore->getData()->getType() == instLoad->getDest()->getType();
+			}
+		}
+
+		if(auto *storeSubVector = llvm::dyn_cast<Ice::InstIntrinsicCall>(store))
+		if(storeSubVector->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector)
+		{
+			if(auto *loadSubVector = llvm::dyn_cast<Ice::InstIntrinsicCall>(load))
+			if(loadSubVector->getIntrinsicInfo().ID == Ice::Intrinsics::LoadSubVector)
+			{
+				// Check for matching type and sub-vector width.
+				return storeSubVector->getSrc(1)->getType() == loadSubVector->getDest()->getType() &&
+				       llvm::cast<Ice::ConstantInteger32>(storeSubVector->getSrc(3))->getValue() ==
+				       llvm::cast<Ice::ConstantInteger32>(loadSubVector->getSrc(2))->getValue();
+			}
+		}
+
+		return false;
 	}
 
 	bool Optimizer::Uses::areOnlyLoadStore() const
