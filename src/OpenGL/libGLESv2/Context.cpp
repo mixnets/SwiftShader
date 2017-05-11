@@ -1592,6 +1592,19 @@ bool Context::getBuffer(GLenum target, es2::Buffer **buffer) const
 	return true;
 }
 
+const void* Context::getDataFromBufferIfBound(GLenum target, const void* dataOrOffset) const {
+    es2::Buffer *buffer = nullptr;
+    getBuffer(target, &buffer);
+
+    if (buffer) {
+        // buffer is bound, treat as offset.
+        return ((char*)buffer->data()) + (uintptr_t)dataOrOffset;
+    } else {
+        // buffer is not bound, treat as data.
+        return dataOrOffset;
+    }
+}
+
 TransformFeedback *Context::getTransformFeedback() const
 {
 	return getTransformFeedback(mState.transformFeedback);
