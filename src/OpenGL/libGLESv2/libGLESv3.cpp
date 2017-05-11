@@ -670,6 +670,8 @@ GL_APICALL void GL_APIENTRY glTexImage3D(GLenum target, GLint level, GLint inter
 
 	if(context)
 	{
+        pixels = context->getDataFromBufferIfBound(GL_PIXEL_UNPACK_BUFFER, pixels);
+
 		es2::Texture3D *texture = (target == GL_TEXTURE_3D) ? context->getTexture3D() : context->getTexture2DArray();
 
 		if(!texture)
@@ -712,10 +714,16 @@ GL_APICALL void GL_APIENTRY glTexSubImage3D(GLenum target, GLint level, GLint xo
 		return error(GL_INVALID_VALUE);
 	}
 
+    if (!pixels && egl::getClientVersion() < 3) {
+        return;
+    }
+
 	es2::Context *context = es2::getContext();
 
 	if(context)
 	{
+        pixels = context->getDataFromBufferIfBound(GL_PIXEL_UNPACK_BUFFER, pixels);
+
 		es2::Texture3D *texture = (target == GL_TEXTURE_3D) ? context->getTexture3D() : context->getTexture2DArray();
 
 		GLenum sizedInternalFormat = GetSizedInternalFormat(format, type);
@@ -848,6 +856,8 @@ GL_APICALL void GL_APIENTRY glCompressedTexImage3D(GLenum target, GLint level, G
 
 	if(context)
 	{
+        data = context->getDataFromBufferIfBound(GL_PIXEL_UNPACK_BUFFER, data);
+
 		es2::Texture3D *texture = (target == GL_TEXTURE_3D) ? context->getTexture3D() : context->getTexture2DArray();
 
 		if(!texture)
@@ -891,7 +901,8 @@ GL_APICALL void GL_APIENTRY glCompressedTexSubImage3D(GLenum target, GLint level
 		return error(validationError);
 	}
 
-	if(width == 0 || height == 0 || depth == 0 || !data)
+	if(width == 0 || height == 0 || depth == 0 ||
+       (!data && egl::getClientVersion() < 3))
 	{
 		return;
 	}
@@ -900,6 +911,8 @@ GL_APICALL void GL_APIENTRY glCompressedTexSubImage3D(GLenum target, GLint level
 
 	if(context)
 	{
+        data = context->getDataFromBufferIfBound(GL_PIXEL_UNPACK_BUFFER, data);
+
 		es2::Texture3D *texture = (target == GL_TEXTURE_3D) ? context->getTexture3D() : context->getTexture2DArray();
 
 		if(!texture)
