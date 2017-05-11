@@ -426,12 +426,12 @@ struct State
 	GLint packSkipImages;
 };
 
-class Context : public egl::Context
+class [[clang::lto_visibility_public]] Context : public egl::Context
 {
 public:
 	Context(egl::Display *display, const Context *shareContext, EGLint clientVersion);
 
-	virtual void makeCurrent(egl::Surface *surface);
+	void makeCurrent(egl::Surface *surface) override;
 	virtual EGLint getClientVersion() const;
 
 	void markAllStateDirty();
