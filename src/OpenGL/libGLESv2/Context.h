@@ -640,6 +640,7 @@ public:
 	Buffer *getGenericUniformBuffer() const;
 	const GLvoid* getPixels(const GLvoid* data) const;
 	bool getBuffer(GLenum target, es2::Buffer **buffer) const;
+	const void* getDataFromBufferIfBound(GLenum target, const void* dataOrOffset) const;
 	Program *getCurrentProgram() const;
 	Texture2D *getTexture2D() const;
 	Texture3D *getTexture3D() const;
