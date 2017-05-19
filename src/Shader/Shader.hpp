@@ -17,6 +17,7 @@
 
 #include "Common/Types.hpp"
 
+#include <set>
 #include <string>
 #include <vector>
 
@@ -643,6 +644,7 @@ namespace sw
 		bool containsContinue;
 		bool containsLeave;
 		bool containsDefine;
+		std::set<unsigned int> analyzedLabels;
 	};
 }
 

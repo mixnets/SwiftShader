@@ -19,9 +19,9 @@
 #include "Math.hpp"
 #include "Debug.hpp"
 
-#include <set>
 #include <fstream>
 #include <sstream>
+
 #include <stdarg.h>
 
 namespace sw
@@ -1609,6 +1609,7 @@ namespace sw
 		containsBreak = false;
 		containsContinue = false;
 		containsDefine = false;
+        analyzedLabels.clear();
 
 		// Determine global presence of branching instructions
 		for(unsigned int i = 0; i < instruction.size(); i++)
@@ -1789,8 +1790,9 @@ namespace sw
 				{
 					break;
 				}
-				else if(instruction[i]->isCall())
+				else if(instruction[i]->isCall() && analyzedLabels.find(functionLabel) == analyzedLabels.end())
 				{
+					analyzedLabels.insert(functionLabel);
 					markFunctionAnalysis(instruction[i]->dst.label, flag);
 				}
 
