@@ -39,7 +39,6 @@ config("swiftshader_config") {
     cflags = [
       "-std=c++11",
       "-Wall",
-      "-fexceptions",
       "-fno-operator-names",
     ]
 
@@ -59,7 +58,6 @@ config("swiftshader_config") {
         "-ffunction-sections",
         "-fdata-sections",
         "-fomit-frame-pointer",
-        "-O2",
         "-Os",
       ]
 
