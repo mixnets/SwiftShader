@@ -140,6 +140,11 @@ EGLBoolean Initialize(EGLDisplay dpy, EGLint *major, EGLint *minor)
 
 	egl::Display *display = egl::Display::get(dpy);
 
+	if(!display)
+	{
+		return error(EGL_BAD_DISPLAY, EGL_FALSE);
+	}
+
 	if(!display->initialize())
 	{
 		return error(EGL_NOT_INITIALIZED, EGL_FALSE);
