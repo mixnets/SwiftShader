@@ -212,7 +212,7 @@ namespace es2
 				int depth = sw::max(renderTarget[i]->getDepth(), 1);
 				for(clearRect.slice = 0; clearRect.slice < depth; clearRect.slice++)
 				{
-					clear(rgba, FORMAT_A32B32G32R32F, renderTarget[i], clearRect, rgbaMask);
+					clear(rgba, FORMAT_A32B32G32R32F, renderTarget[i]->get(), clearRect, rgbaMask);
 				}
 			}
 		}
@@ -290,7 +290,7 @@ namespace es2
 			UNREACHABLE(format);
 		}
 
-		egl::Image *surface = new egl::Image(width, height, format, multiSampleDepth, lockable);
+		egl::Image *surface = 0;//new egl::Image(width, height, format, multiSampleDepth, lockable);
 
 		if(!surface)
 		{
@@ -309,7 +309,7 @@ namespace es2
 			return nullptr;
 		}
 
-		egl::Image *surface = new egl::Image(width, height, format, multiSampleDepth, lockable);
+		egl::Image *surface = 0;//new egl::Image(width, height, format, multiSampleDepth, lockable);
 
 		if(!surface)
 		{
@@ -381,7 +381,7 @@ namespace es2
 
 		this->renderTarget[index] = renderTarget;
 
-		Renderer::setRenderTarget(index, renderTarget);
+		Renderer::setRenderTarget(index, renderTarget->get());
 	}
 
 	void Device::setDepthBuffer(egl::Image *depthBuffer)
@@ -403,7 +403,7 @@ namespace es2
 
 		this->depthBuffer = depthBuffer;
 
-		Renderer::setDepthBuffer(depthBuffer);
+		Renderer::setDepthBuffer(depthBuffer->get());
 	}
 
 	void Device::setStencilBuffer(egl::Image *stencilBuffer)
@@ -425,7 +425,7 @@ namespace es2
 
 		this->stencilBuffer = stencilBuffer;
 
-		Renderer::setStencilBuffer(stencilBuffer);
+		Renderer::setStencilBuffer(stencilBuffer->get());
 	}
 
 	void Device::setScissorRect(const sw::Rect &rect)
@@ -599,8 +599,8 @@ namespace es2
 		bool hasQuadLayout = Surface::hasQuadLayout(source->getInternalFormat()) || Surface::hasQuadLayout(dest->getInternalFormat());
 		bool fullCopy = (sRect.x0 == 0) && (sRect.y0 == 0) && (dRect.x0 == 0) && (dRect.y0 == 0) &&
 		                (sRect.x1 == sWidth) && (sRect.y1 == sHeight) && (dRect.x1 == dWidth) && (dRect.y0 == dHeight);
-		bool isDepth = (flags & Device::DEPTH_BUFFER) && egl::Image::isDepth(source->getInternalFormat());
-		bool isStencil = (flags & Device::STENCIL_BUFFER) && (egl::Image::isDepth(source->getInternalFormat()) || egl::Image::isStencil(source->getInternalFormat()));
+		bool isDepth = (flags & Device::DEPTH_BUFFER) && Surface::isDepth(source->getInternalFormat());
+		bool isStencil = (flags & Device::STENCIL_BUFFER) && (Surface::isDepth(source->getInternalFormat()) || Surface::isStencil(source->getInternalFormat()));
 		bool isColor = (flags & Device::COLOR_BUFFER) == Device::COLOR_BUFFER;
 		bool alpha0xFF = false;
 
@@ -618,7 +618,7 @@ namespace es2
 				sw::byte *sourceBuffer = (sw::byte*)source->lockInternal(sRect.x0, sRect.y0, 0, LOCK_READONLY, PUBLIC);
 				sw::byte *destBuffer = (sw::byte*)dest->lockInternal(dRect.x0, dRect.y0, 0, LOCK_DISCARD, PUBLIC);
 
-				copyBuffer(sourceBuffer, destBuffer, dRect.width(), dRect.height(), source->getInternalPitchB(), dest->getInternalPitchB(), egl::Image::bytes(source->getInternalFormat()), flipX, flipY);
+				copyBuffer(sourceBuffer, destBuffer, dRect.width(), dRect.height(), source->getInternalPitchB(), dest->getInternalPitchB(), Surface::bytes(source->getInternalFormat()), flipX, flipY);
 
 				source->unlockInternal();
 				dest->unlockInternal();
@@ -629,7 +629,7 @@ namespace es2
 				sw::byte *sourceBuffer = (sw::byte*)source->lockStencil(sRect.x0, sRect.y0, 0, PUBLIC);
 				sw::byte *destBuffer = (sw::byte*)dest->lockStencil(dRect.x0, dRect.y0, 0, PUBLIC);
 
-				copyBuffer(sourceBuffer, destBuffer, source->getWidth(), source->getHeight(), source->getStencilPitchB(), dest->getStencilPitchB(), egl::Image::bytes(source->getStencilFormat()), flipX, flipY);
+				copyBuffer(sourceBuffer, destBuffer, source->getWidth(), source->getHeight(), source->getStencilPitchB(), dest->getStencilPitchB(), Surface::bytes(source->getStencilFormat()), flipX, flipY);
 
 				source->unlockStencil();
 				dest->unlockStencil();
@@ -645,7 +645,7 @@ namespace es2
 			unsigned int width = dRect.x1 - dRect.x0;
 			unsigned int height = dRect.y1 - dRect.y0;
 
-			copyBuffer(sourceBytes, destBytes, width, height, sourcePitch, destPitch, egl::Image::bytes(source->getInternalFormat()), flipX, flipY);
+			copyBuffer(sourceBytes, destBytes, width, height, sourcePitch, destPitch, Surface::bytes(source->getInternalFormat()), flipX, flipY);
 
 			if(alpha0xFF)
 			{
@@ -683,7 +683,7 @@ namespace es2
 
 	bool Device::stretchCube(sw::Surface *source, sw::Surface *dest)
 	{
-		if(!source || !dest || egl::Image::isDepth(source->getInternalFormat()) || egl::Image::isStencil(source->getInternalFormat()))
+		if(!source || !dest || Surface::isDepth(source->getInternalFormat()) || Surface::isStencil(source->getInternalFormat()))
 		{
 			ERR("Invalid parameters");
 			return false;
@@ -711,7 +711,7 @@ namespace es2
 		{
 			unsigned int sourcePitch = source->getInternalPitchB();
 			unsigned int destPitch = dest->getInternalPitchB();
-			unsigned int bytes = dWidth * egl::Image::bytes(source->getInternalFormat());
+			unsigned int bytes = dWidth * Surface::bytes(source->getInternalFormat());
 
 			for(int z = 0; z < dDepth; ++z)
 			{

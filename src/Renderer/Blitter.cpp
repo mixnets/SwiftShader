@@ -44,6 +44,7 @@ namespace sw
 		SliceRect sRect(dRect);
 		sRect.slice = 0;
 		blit(&color, sRect, dest, dRect, clearOptions);
+	//	color->destruct();
 	}
 
 	bool Blitter::fastClear(void* pixel, sw::Format format, Surface *dest, const SliceRect &dRect, unsigned int rgbaMask)
