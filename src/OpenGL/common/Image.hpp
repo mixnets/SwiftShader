@@ -46,17 +46,17 @@ GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment)
 GLsizei ComputeCompressedSize(GLsizei width, GLsizei height, GLenum format);
 size_t ComputePackingOffset(GLenum format, GLenum type, GLsizei width, GLsizei height, GLint alignment, GLint skipImages, GLint skipRows, GLint skipPixels);
 
-class [[clang::lto_visibility_public]] Image : public sw::Surface, public gl::Object
+class [[clang::lto_visibility_public]] Image : /*public sw::Surface,*/ public gl::Object
 {
 	virtual void typeinfo();   // Dummy key method (https://gcc.gnu.org/onlinedocs/gcc/Vague-Linkage.html)
 
 public:
 	// 2D texture image
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
-		: sw::Surface(parentTexture->getResource(), width, height, 1, SelectInternalFormat(format, type), true, true),
-		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
+		: width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
 		  parentTexture(parentTexture)
 	{
+		surface = new sw::Surface(parentTexture->getResource(), width, height, 1, SelectInternalFormat(format, type), true, true);
 		shared = false;
 		Object::addRef();
 		parentTexture->addRef();
@@ -64,10 +64,10 @@ public:
 
 	// 3D texture image
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
-		: sw::Surface(parentTexture->getResource(), width, height, depth, SelectInternalFormat(format, type), true, true),
-		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(depth),
+		: width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(depth),
 		  parentTexture(parentTexture)
 	{
+		surface = new sw::Surface(parentTexture->getResource(), width, height, depth, SelectInternalFormat(format, type), true, true);
 		shared = false;
 		Object::addRef();
 		parentTexture->addRef();
@@ -75,20 +75,20 @@ public:
 
 	// Native EGL image
 	Image(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
-		: sw::Surface(nullptr, width, height, 1, SelectInternalFormat(format, type), true, true, pitchP),
-		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
+		: width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
 		  parentTexture(nullptr)
 	{
+		surface = new sw::Surface(nullptr, width, height, 1, SelectInternalFormat(format, type), true, true, pitchP);
 		shared = true;
 		Object::addRef();
 	}
 
 	// Render target
 	Image(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
-		: sw::Surface(nullptr, width, height, multiSampleDepth, internalFormat, lockable, true),
-		  width(width), height(height), format(0 /*GL_NONE*/), type(0 /*GL_NONE*/), internalFormat(internalFormat), depth(multiSampleDepth),
+		: width(width), height(height), format(0), type(0), internalFormat(internalFormat), depth(multiSampleDepth),
 		  parentTexture(nullptr)
 	{
+		surface = new sw::Surface(nullptr, width, height, multiSampleDepth, internalFormat, lockable, true);
 		shared = false;
 		Object::addRef();
 	}
@@ -125,6 +125,31 @@ public:
 		return internalFormat;
 	}
 
+	int getInternalPitch() const
+	{
+		return surface->getExternalPitchB();
+	}
+
+	sw::SliceRect getRect() const
+	{
+		return sw::SliceRect(0, 0, width, height, 0);
+	}
+
+	sw::Surface *get()
+	{
+		return surface->get();
+	}
+
+	void clearDepth(float depth, int x0, int y0, int width, int height)
+	{
+		surface->clearDepth(depth, x0, y0, width, height);
+	}
+
+	void clearStencil(unsigned char stencil, unsigned char mask, int x0, int y0, int width, int height)
+	{
+		surface->clearStencil(stencil, mask, x0, y0, width, height);
+	}
+
 	bool isShared() const
 	{
 		return shared;
@@ -136,19 +161,27 @@ public:
 	}
 
 	virtual void *lock(unsigned int left, unsigned int top, sw::Lock lock)
-	{
+	;/*{
 		return lockExternal(left, top, 0, lock, sw::PUBLIC);
-	}
+	}*/
+
+	virtual void *lockX(unsigned int left, unsigned int top, sw::Lock lock)
+	;
 
 	unsigned int getPitch() const
 	{
-		return getExternalPitchB();
+		return surface->getExternalPitchB();
 	}
 
 	virtual void unlock()
-	{
+	;/*{
 		unlockExternal();
-	}
+	}*/
+
+	virtual void unlockX()
+	;/*{
+		unlockExternal();
+	}*/
 
 	struct UnpackInfo
 	{
@@ -177,6 +210,8 @@ public:
 	}
 
 protected:
+	sw::SurfaceInterface *surface;
+
 	const GLsizei width;
 	const GLsizei height;
 	const GLenum format;
@@ -259,7 +294,7 @@ private:
 		nativeBuffer->common.decRef(&nativeBuffer->common);
 	}
 
-	virtual void *lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client)
+	void *lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client) override
 	{
 		LOGLOCK("image=%p op=%s.swsurface lock=%d", this, __FUNCTION__, lock);
 
@@ -289,7 +324,7 @@ private:
 		return data;
 	}
 
-	virtual void unlockInternal()
+	void unlockInternal() override
 	{
 		if(nativeBuffer)   // Unlock the buffer from ANativeWindowBuffer
 		{
@@ -301,7 +336,7 @@ private:
 		sw::Surface::unlockInternal();
 	}
 
-	virtual void *lock(unsigned int left, unsigned int top, sw::Lock lock)
+	void *lock(unsigned int left, unsigned int top, sw::Lock lock) override
 	{
 		LOGLOCK("image=%p op=%s lock=%d", this, __FUNCTION__, lock);
 		(void)sw::Surface::lockExternal(left, top, 0, lock, sw::PUBLIC);
@@ -309,7 +344,7 @@ private:
 		return lockNativeBuffer(GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN);
 	}
 
-	virtual void unlock()
+	void unlock() override
 	{
 		LOGLOCK("image=%p op=%s.ani", this, __FUNCTION__);
 		unlockNativeBuffer();

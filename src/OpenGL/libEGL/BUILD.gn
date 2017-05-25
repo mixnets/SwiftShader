@@ -59,6 +59,8 @@ shared_library("swiftshader_libEGL") {
     "../common/Object.cpp",
     "Config.cpp",
     "Display.cpp",
+   # "../common/Image.cpp",
+   # "../../Renderer/Surface.cpp",
     "EGLSurface.cpp",
     "libEGL.cpp",
     "libEGL.def",
@@ -83,22 +85,10 @@ shared_library("swiftshader_libEGL") {
   } else if (is_linux) {
     sources += [
       "../../Main/libX11.cpp",
-      "TypeInfo.cpp",
+    #  "TypeInfo.cpp",
     ]
     ldflags =
         [ "-Wl,--version-script=" + rebase_path("exports.map", root_build_dir) ]
-  }
-
-  if (use_thin_lto) {
-    # https://crbug.com/686980
-    # This target relies on the linker to be smart and garbage collect unused symbols.
-    # It is not the case for LLD + ThinLTO, so we have to use this ugly workaround.
-    cflags = [
-      "-Xclang",
-      "-fno-lto-unit",
-      "-fno-whole-program-vtables",
-      "-fno-sanitize=cfi",
-    ]
   }
 
   configs -= [ "//build/config/compiler:chromium_code" ]

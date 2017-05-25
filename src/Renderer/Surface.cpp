@@ -43,6 +43,13 @@ namespace sw
 	unsigned int Surface::paletteID = 0;
 	void Surface::typeinfo() {}
 
+	SurfaceInterface::~SurfaceInterface() {}
+
+//	void SurfaceInterface::destruct()
+//	{
+//		delete this;
+//	}
+
 	void Rect::clip(int minX, int minY, int maxX, int maxY)
 	{
 		x0 = clamp(x0, minX, maxX);

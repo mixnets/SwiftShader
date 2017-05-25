@@ -217,7 +217,28 @@ namespace sw
 		LOCK_DISCARD
 	};
 
-	class [[clang::lto_visibility_public]] Surface
+	class Surface;
+
+	class SurfaceInterface
+	{
+	public:
+		virtual ~SurfaceInterface() = 0;
+		virtual int getExternalPitchB() const = 0;
+		virtual int getStencilPitchB() const = 0;
+		virtual void *lockExternal(int x, int y, int z, Lock lock, Accessor client) = 0;
+		virtual void unlockExternal() = 0;
+		virtual void *lockInternal(int x, int y, int z, Lock lock, Accessor client) = 0;
+		virtual void unlockInternal() = 0;
+		virtual void *lockStencil(int x, int y, int front, Accessor client) = 0;
+		virtual void unlockStencil() = 0;
+		virtual void sync() = 0;
+		virtual void clearDepth(float depth, int x0, int y0, int width, int height) = 0;
+		virtual void clearStencil(unsigned char stencil, unsigned char mask, int x0, int y0, int width, int height) = 0;
+
+		virtual Surface *get() = 0;
+	};
+
+	class [[clang::lto_visibility_public]] Surface : public SurfaceInterface
 	{
 	private:
 		struct Buffer
@@ -256,7 +277,7 @@ namespace sw
 		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
 		Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, int pitchP = 0);
 
-		virtual ~Surface();
+		~Surface() override;
 
 		inline void *lock(int x, int y, int z, Lock lock, Accessor client, bool internal = false);
 		inline void unlock(bool internal = false);
@@ -298,8 +319,8 @@ namespace sw
 
 		bool isEntire(const SliceRect& rect) const;
 		SliceRect getRect() const;
-		void clearDepth(float depth, int x0, int y0, int width, int height);
-		void clearStencil(unsigned char stencil, unsigned char mask, int x0, int y0, int width, int height);
+		void clearDepth(float depth, int x0, int y0, int width, int height) override;
+		void clearStencil(unsigned char stencil, unsigned char mask, int x0, int y0, int width, int height) override;
 		void fill(const Color<float> &color, int x0, int y0, int width, int height);
 
 		Color<float> readExternal(int x, int y, int z) const;
@@ -346,6 +367,11 @@ namespace sw
 		static int componentCount(Format format);
 
 		static void setTexturePalette(unsigned int *palette);
+
+		Surface *get() override
+		{
+			return this;
+		}
 
 	private:
 		sw::Resource *resource;
