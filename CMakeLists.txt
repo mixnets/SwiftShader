@@ -771,9 +771,6 @@ file(GLOB_RECURSE GLES2_LIST
     ${CMAKE_SOURCE_DIR}/include/GLES2/*.h
     ${CMAKE_SOURCE_DIR}/include/GLES3/*.h
 )
-# Key method definitions are only required to appease the gold linker,
-# and cause vtable linking issues with other linkers.
-list(REMOVE_ITEM GLES2_LIST ${OPENGL_DIR}/libGLESv2/TypeInfo.cpp)
 
 file(GLOB_RECURSE GLES_CM_LIST
     ${OPENGL_DIR}/libGLES_CM/*.cpp
