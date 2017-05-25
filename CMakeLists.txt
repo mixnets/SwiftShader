@@ -137,7 +137,6 @@ if(MSVC)
 else()
     set_cpp_flag("--std=c++11")
     set_cpp_flag("-Wall")
-    set_cpp_flag("-fno-exceptions")
 
     # Don't allow symbols to be overridden by another module.
     # This enables libGLES_CM and libGLESv2 to statically link LLVM.
