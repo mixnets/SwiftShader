@@ -36,8 +36,8 @@
 
 namespace egl
 {
-class Display;
-class Surface;
+class DisplayInterface;
+class SurfaceInterface;
 class Config;
 }
 
@@ -429,9 +429,9 @@ struct State
 class [[clang::lto_visibility_public]] Context : public egl::Context
 {
 public:
-	Context(egl::Display *display, const Context *shareContext, EGLint clientVersion, const egl::Config *config);
+	Context(egl::DisplayInterface *display, const Context *shareContext, EGLint clientVersion, const egl::Config *config);
 
-	void makeCurrent(egl::Surface *surface) override;
+	void makeCurrent(egl::SurfaceInterface *surface) override;
 	EGLint getClientVersion() const override;
 	EGLint getConfigID() const override;
 
@@ -691,7 +691,7 @@ public:
 	                     GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1,
 	                     GLbitfield mask, bool filter, bool allowPartialDepthStencilBlit);
 
-	void bindTexImage(egl::Surface *surface) override;
+	void bindTexImage(egl::SurfaceInterface *surface) override;
 	EGLenum validateSharedImage(EGLenum target, GLuint name, GLuint textureLevel) override;
 	egl::Image *createSharedImage(EGLenum target, GLuint name, GLuint textureLevel) override;
 	egl::Image *getSharedImage(GLeglImageOES image);

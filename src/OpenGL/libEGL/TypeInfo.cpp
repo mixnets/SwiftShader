@@ -13,12 +13,10 @@
 // limitations under the License.
 
 #include "common/Image.hpp"
-#include "Main/FrameBuffer.hpp"
 #include "Renderer/Surface.hpp"
 
 namespace sw
 {
-void FrameBuffer::typeinfo() {}
 void Surface::typeinfo() {}
 }
 
