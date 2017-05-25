@@ -45,7 +45,7 @@
 
 namespace es2
 {
-Context::Context(egl::Display *display, const Context *shareContext, EGLint clientVersion, const egl::Config *config)
+Context::Context(egl::DisplayInterface *display, const Context *shareContext, EGLint clientVersion, const egl::Config *config)
 	: egl::Context(display), clientVersion(clientVersion), config(config)
 {
 	sw::Context *context = new sw::Context();
@@ -265,7 +265,7 @@ Context::~Context()
 	delete device;
 }
 
-void Context::makeCurrent(egl::Surface *surface)
+void Context::makeCurrent(egl::SurfaceInterface *surface)
 {
 	if(!mHasBeenCurrent)
 	{
@@ -4137,7 +4137,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 	}
 }
 
-void Context::bindTexImage(egl::Surface *surface)
+void Context::bindTexImage(egl::SurfaceInterface *surface)
 {
 	es2::Texture2D *textureObject = getTexture2D();
 
@@ -4363,7 +4363,7 @@ const GLubyte *Context::getExtensions(GLuint index, GLuint *numExt) const
 
 }
 
-egl::Context *es2CreateContext(egl::Display *display, const egl::Context *shareContext, int clientVersion, const egl::Config *config)
+egl::Context *es2CreateContext(egl::DisplayInterface *display, const egl::Context *shareContext, int clientVersion, const egl::Config *config)
 {
 	ASSERT(!shareContext || shareContext->getClientVersion() == clientVersion);   // Should be checked by eglCreateContext
 	return new es2::Context(display, static_cast<const es2::Context*>(shareContext), clientVersion, config);

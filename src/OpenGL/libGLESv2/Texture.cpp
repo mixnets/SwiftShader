@@ -650,7 +650,7 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 	Texture::setImage(format, type, unpackInfo, pixels, image[level]);
 }
 
-void Texture2D::bindTexImage(egl::Surface *surface)
+void Texture2D::bindTexImage(egl::SurfaceInterface *surface)
 {
 	GLenum format;
 
@@ -1611,7 +1611,7 @@ void Texture3D::setImage(GLint level, GLsizei width, GLsizei height, GLsizei dep
 	Texture::setImage(format, type, unpackInfo, pixels, image[level]);
 }
 
-void Texture3D::bindTexImage(egl::Surface *surface)
+void Texture3D::bindTexImage(egl::SurfaceInterface *surface)
 {
 	GLenum format;
 

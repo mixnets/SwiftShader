@@ -31,26 +31,35 @@ class Config;
 class Texture;
 class Image;
 
-class [[clang::lto_visibility_public]] Surface : public gl::Object
+class SurfaceInterface
 {
-	virtual void typeinfo();   // Dummy key method (https://gcc.gnu.org/onlinedocs/gcc/Vague-Linkage.html)
+public:
+	virtual void setBoundTexture(egl::Texture *texture) = 0;
+	virtual sw::Format getInternalFormat() const = 0;
+	virtual egl::Image *getRenderTarget() = 0;
+	virtual egl::Image *getDepthStencil() = 0;
+	virtual EGLint getWidth() const = 0;
+	virtual EGLint getHeight() const = 0;
+};
 
+class Surface : public gl::Object, public SurfaceInterface
+{
 public:
 	virtual bool initialize();
 	virtual void swap() = 0;
 
-	virtual egl::Image *getRenderTarget();
-	virtual egl::Image *getDepthStencil();
+	egl::Image *getRenderTarget() override;
+	egl::Image *getDepthStencil() override;
 
 	void setSwapBehavior(EGLenum swapBehavior);
 	void setSwapInterval(EGLint interval);
 
 	virtual EGLint getConfigID() const;
 	virtual EGLenum getSurfaceType() const;
-	virtual sw::Format getInternalFormat() const;
+	sw::Format getInternalFormat() const override;
 
-	virtual EGLint getWidth() const;
-	virtual EGLint getHeight() const;
+	EGLint getWidth() const override;
+	EGLint getHeight() const override;
 	virtual EGLint getPixelAspectRatio() const;
 	virtual EGLenum getRenderBuffer() const;
 	virtual EGLenum getSwapBehavior() const;
@@ -59,7 +68,7 @@ public:
 	virtual EGLBoolean getLargestPBuffer() const;
 	virtual EGLNativeWindowType getWindowHandle() const = 0;
 
-	virtual void setBoundTexture(egl::Texture *texture);
+	void setBoundTexture(egl::Texture *texture) override;
 	virtual egl::Texture *getBoundTexture() const;
 
 	virtual bool isWindowSurface() const { return false; }
