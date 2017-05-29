@@ -43,12 +43,15 @@ namespace sw
 	unsigned int Surface::paletteID = 0;
 	void Surface::typeinfo() {}
 
-	SurfaceInterface::~SurfaceInterface() {}
+	class SurfaceX : public Surface
+	{
+	public:
+		SurfaceX(int width, int height, int depth, Format format, void *pixels, int pitch, int slice)
+			: Surface(width, height, depth, format, pixels, pitch, slice) {}
+		SurfaceX(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, int pitchP = 0)
+			: Surface(texture, width, height, depth, format, lockable, renderTarget, pitchP) {}
 
-//	void SurfaceInterface::destruct()
-//	{
-//		delete this;
-//	}
+	};
 
 	void Rect::clip(int minX, int minY, int maxX, int maxY)
 	{
@@ -1175,6 +1178,11 @@ namespace sw
 		lock = LOCK_UNLOCKED;
 	}
 
+	Surface *Surface::create(int width, int height, int depth, Format format, void *pixels, int pitch, int slice)
+	{
+		return new SurfaceX(width, height, depth, format, pixels, pitch, slice);
+	}
+
 	Surface::Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice) : lockable(true), renderTarget(false)
 	{
 		resource = new Resource(0);
@@ -1223,6 +1231,11 @@ namespace sw
 
 		dirtyMipmaps = true;
 		paletteUsed = 0;
+	}
+
+	Surface *Surface::create(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, int pitchPprovided)
+	{
+		return new SurfaceX(texture, width, height, depth, format, lockable, renderTarget, pitchPprovided);
 	}
 
 	Surface::Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, int pitchPprovided) : lockable(lockable), renderTarget(renderTarget)

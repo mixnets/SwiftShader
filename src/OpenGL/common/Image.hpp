@@ -56,7 +56,7 @@ public:
 		: width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
 		  parentTexture(parentTexture)
 	{
-		surface = new sw::Surface(parentTexture->getResource(), width, height, 1, SelectInternalFormat(format, type), true, true);
+		surface = sw::Surface::create(parentTexture->getResource(), width, height, 1, SelectInternalFormat(format, type), true, true);
 		shared = false;
 		Object::addRef();
 		parentTexture->addRef();
@@ -67,7 +67,7 @@ public:
 		: width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(depth),
 		  parentTexture(parentTexture)
 	{
-		surface = new sw::Surface(parentTexture->getResource(), width, height, depth, SelectInternalFormat(format, type), true, true);
+		surface = sw::Surface::create(parentTexture->getResource(), width, height, depth, SelectInternalFormat(format, type), true, true);
 		shared = false;
 		Object::addRef();
 		parentTexture->addRef();
@@ -78,7 +78,7 @@ public:
 		: width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
 		  parentTexture(nullptr)
 	{
-		surface = new sw::Surface(nullptr, width, height, 1, SelectInternalFormat(format, type), true, true, pitchP);
+		surface = sw::Surface::create(nullptr, width, height, 1, SelectInternalFormat(format, type), true, true, pitchP);
 		shared = true;
 		Object::addRef();
 	}
@@ -88,7 +88,7 @@ public:
 		: width(width), height(height), format(0), type(0), internalFormat(internalFormat), depth(multiSampleDepth),
 		  parentTexture(nullptr)
 	{
-		surface = new sw::Surface(nullptr, width, height, multiSampleDepth, internalFormat, lockable, true);
+		surface = sw::Surface::create(nullptr, width, height, multiSampleDepth, internalFormat, lockable, true);
 		shared = false;
 		Object::addRef();
 	}
@@ -210,7 +210,7 @@ public:
 	}
 
 protected:
-	sw::SurfaceInterface *surface;
+	sw::Surface *surface;
 
 	const GLsizei width;
 	const GLsizei height;

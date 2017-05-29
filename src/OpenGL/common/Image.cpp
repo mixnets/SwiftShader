@@ -1642,11 +1642,11 @@ namespace egl
 		}
 		else
 		{
-			sw::Surface source(width, height, depth, ConvertFormatType(format, type), const_cast<void*>(input), inputPitch, inputPitch * inputHeight);
+			sw::Surface *source = sw::Surface::create(width, height, depth, ConvertFormatType(format, type), const_cast<void*>(input), inputPitch, inputPitch * inputHeight);
 			sw::Rect sourceRect(0, 0, width, height);
 			sw::Rect destRect(xoffset, yoffset, xoffset + width, yoffset + height);
-			sw::blitter.blit(&source, sourceRect, surface->get(), destRect, false);
-			//source->destruct();
+			sw::blitter.blit(source, sourceRect, surface->get(), destRect, false);
+			delete source;//->destruct();
 		}
 	}
 
