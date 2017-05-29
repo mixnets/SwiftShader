@@ -347,11 +347,6 @@ namespace sw
 
 		static void setTexturePalette(unsigned int *palette);
 
-		Surface *get()// override
-		{
-			return this;
-		}
-
 	protected:
 		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
 		Surface(Resource *texture, int width, int height, int depth, Format format, bool lockable, bool renderTarget, int pitchP = 0);

@@ -91,9 +91,9 @@ shared_library("swiftshader_libEGL") {
         [ "-Wl,--version-script=" + rebase_path("exports.map", root_build_dir) ]
   }
 
-  configs -= [ "//build/config/compiler:chromium_code" ]
+  #configs -= [ "//build/config/compiler:chromium_code" ]
   configs += [
-    "//build/config/compiler:no_chromium_code",
+  #  "//build/config/compiler:no_chromium_code",
     "//third_party/swiftshader:swiftshader_config",
     ":swiftshader_libEGL_private_config",
   ]

@@ -249,9 +249,9 @@ void WindowSurface::swap()
 {
 	if(backBuffer && frameBuffer)
 	{
-		void *source = backBuffer->lockX(0, 0, sw::LOCK_READONLY);
-		frameBuffer->flip(source, backBuffer->getInternalFormat(), backBuffer->getInternalPitch());
-		backBuffer->unlockX();
+		void *source = backBuffer->lockInternal(0, 0, 0, sw::LOCK_READONLY, sw::PUBLIC);
+		frameBuffer->flip(source, backBuffer->sw::Surface::getInternalFormat(), backBuffer->getInternalPitchB());
+		backBuffer->unlockInternal();
 
 		checkForResize();
 	}

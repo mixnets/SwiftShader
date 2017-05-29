@@ -1182,14 +1182,12 @@ namespace egl
 
 	Image::~Image()
 	{
-		surface->sync();   // Wait for any threads that use this image to finish.
+		sync();   // Wait for any threads that use this image to finish.
 
 		if(parentTexture)
 		{
 			parentTexture->release();
 		}
-
-		delete surface;
 
 		ASSERT(!shared);
 	}
@@ -1224,26 +1222,6 @@ namespace egl
 	bool Image::isChildOf(const egl::Texture *parent) const
 	{
 		return parentTexture == parent;
-	}
-
-	void *Image::lock(unsigned int left, unsigned int top, sw::Lock lock)
-	{
-		return surface->lockExternal(left, top, 0, lock, sw::PUBLIC);
-	}
-
-	void *Image::lockX(unsigned int left, unsigned int top, sw::Lock lock)
-	{
-		return surface->lockExternal(left, top, 0, lock, sw::PUBLIC);
-	}
-
-	void Image::unlock()
-	{
-		surface->unlockExternal();
-	}
-
-	void Image::unlockX()
-	{
-		surface->unlockExternal();
 	}
 
 	void Image::loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input)
@@ -1645,8 +1623,8 @@ namespace egl
 			sw::Surface *source = sw::Surface::create(width, height, depth, ConvertFormatType(format, type), const_cast<void*>(input), inputPitch, inputPitch * inputHeight);
 			sw::Rect sourceRect(0, 0, width, height);
 			sw::Rect destRect(xoffset, yoffset, xoffset + width, yoffset + height);
-			sw::blitter.blit(source, sourceRect, surface->get(), destRect, false);
-			delete source;//->destruct();
+			sw::blitter.blit(source, sourceRect, this, destRect, false);
+			delete source;
 		}
 	}
 
@@ -1654,13 +1632,13 @@ namespace egl
 	{
 		LoadImageData<D24>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 
-		unsigned char *stencil = reinterpret_cast<unsigned char*>(surface->lockStencil(0, 0, 0, sw::PUBLIC));
+		unsigned char *stencil = reinterpret_cast<unsigned char*>(lockStencil(0, 0, 0, sw::PUBLIC));
 
 		if(stencil)
 		{
-			LoadImageData<S8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, surface->getStencilPitchB(), getHeight(), input, stencil);
+			LoadImageData<S8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getStencilPitchB(), getHeight(), input, stencil);
 
-			surface->unlockStencil();
+			unlockStencil();
 		}
 	}
 
@@ -1668,13 +1646,13 @@ namespace egl
 	{
 		LoadImageData<D32F>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 
-		unsigned char *stencil = reinterpret_cast<unsigned char*>(surface->lockStencil(0, 0, 0, sw::PUBLIC));
+		unsigned char *stencil = reinterpret_cast<unsigned char*>(lockStencil(0, 0, 0, sw::PUBLIC));
 
 		if(stencil)
 		{
-			LoadImageData<S24_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, surface->getStencilPitchB(), getHeight(), input, stencil);
+			LoadImageData<S24_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getStencilPitchB(), getHeight(), input, stencil);
 
-			surface->unlockStencil();
+			unlockStencil();
 		}
 	}
 

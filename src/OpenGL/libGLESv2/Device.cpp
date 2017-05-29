@@ -212,7 +212,7 @@ namespace es2
 				int depth = sw::max(renderTarget[i]->getDepth(), 1);
 				for(clearRect.slice = 0; clearRect.slice < depth; clearRect.slice++)
 				{
-					clear(rgba, FORMAT_A32B32G32R32F, renderTarget[i]->get(), clearRect, rgbaMask);
+					clear(rgba, FORMAT_A32B32G32R32F, renderTarget[i], clearRect, rgbaMask);
 				}
 			}
 		}
@@ -381,7 +381,7 @@ namespace es2
 
 		this->renderTarget[index] = renderTarget;
 
-		Renderer::setRenderTarget(index, renderTarget ? renderTarget->get() : nullptr);
+		Renderer::setRenderTarget(index, renderTarget);
 	}
 
 	void Device::setDepthBuffer(egl::Image *depthBuffer)
@@ -403,7 +403,7 @@ namespace es2
 
 		this->depthBuffer = depthBuffer;
 
-		Renderer::setDepthBuffer(depthBuffer->get());
+		Renderer::setDepthBuffer(depthBuffer);
 	}
 
 	void Device::setStencilBuffer(egl::Image *stencilBuffer)
@@ -425,7 +425,7 @@ namespace es2
 
 		this->stencilBuffer = stencilBuffer;
 
-		Renderer::setStencilBuffer(stencilBuffer->get());
+		Renderer::setStencilBuffer(stencilBuffer);
 	}
 
 	void Device::setScissorRect(const sw::Rect &rect)

@@ -3108,7 +3108,7 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *image = texture->getImage(surfaceLevel);
-				device->setTextureLevel(sampler, 0, mipmapLevel, image->get(), sw::TEXTURE_2D);
+				device->setTextureLevel(sampler, 0, mipmapLevel, image, sw::TEXTURE_2D);
 			}
 		}
 		else if(baseTexture->getTarget() == GL_TEXTURE_3D_OES)
@@ -3129,7 +3129,7 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *image = texture->getImage(surfaceLevel);
-				device->setTextureLevel(sampler, 0, mipmapLevel, image->get(), sw::TEXTURE_3D);
+				device->setTextureLevel(sampler, 0, mipmapLevel, image, sw::TEXTURE_3D);
 			}
 		}
 		else if(baseTexture->getTarget() == GL_TEXTURE_2D_ARRAY)
@@ -3150,7 +3150,7 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				}
 
 				egl::Image *image = texture->getImage(surfaceLevel);
-				device->setTextureLevel(sampler, 0, mipmapLevel, image->get(), sw::TEXTURE_2D_ARRAY);
+				device->setTextureLevel(sampler, 0, mipmapLevel, image, sw::TEXTURE_2D_ARRAY);
 			}
 		}
 		else if(baseTexture->getTarget() == GL_TEXTURE_CUBE_MAP)
@@ -3173,7 +3173,7 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 					}
 
 					egl::Image *image = cubeTexture->getImage(face, surfaceLevel);
-					device->setTextureLevel(sampler, face, mipmapLevel, image->get(), sw::TEXTURE_CUBE);
+					device->setTextureLevel(sampler, face, mipmapLevel, image, sw::TEXTURE_CUBE);
 				}
 			}
 		}
@@ -3244,7 +3244,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum
 	sw::Surface *externalSurface = sw::Surface::create(width, height, 1, egl::ConvertFormatType(format, type), pixels, outputPitch, outputPitch * outputHeight);
 	sw::SliceRect sliceRect(rect);
 	sw::SliceRect dstSliceRect(dstRect);
-	device->blit(renderTarget->get(), sliceRect, externalSurface, dstSliceRect, false);
+	device->blit(renderTarget, sliceRect, externalSurface, dstSliceRect, false);
 	delete externalSurface;//->destruct();
 
 	renderTarget->release();
@@ -3315,7 +3315,7 @@ void Context::clearColorBuffer(GLint drawbuffer, void *value, sw::Format format)
 				clearRect.clip(mState.scissorX, mState.scissorY, mState.scissorX + mState.scissorWidth, mState.scissorY + mState.scissorHeight);
 			}
 
-			device->clear(value, format, colorbuffer->get(), clearRect, rgbaMask);
+			device->clear(value, format, colorbuffer, clearRect, rgbaMask);
 
 			colorbuffer->release();
 		}
@@ -4090,7 +4090,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 				swap(destRect.y0, destRect.y1);
 			}
 
-			bool success = device->stretchRect(readRenderTarget->get(), &sourceRect, drawRenderTarget->get(), &destRect, (filter ? Device::USE_FILTER : 0) | Device::COLOR_BUFFER);
+			bool success = device->stretchRect(readRenderTarget, &sourceRect, drawRenderTarget, &destRect, (filter ? Device::USE_FILTER : 0) | Device::COLOR_BUFFER);
 
 			readRenderTarget->release();
 			drawRenderTarget->release();
@@ -4107,7 +4107,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 			egl::Image *readRenderTarget = readFramebuffer->getDepthBuffer();
 			egl::Image *drawRenderTarget = drawFramebuffer->getDepthBuffer();
 
-			bool success = device->stretchRect(readRenderTarget->get(), &sourceRect, drawRenderTarget->get(), &destRect, (filter ? Device::USE_FILTER : 0) | Device::DEPTH_BUFFER);
+			bool success = device->stretchRect(readRenderTarget, &sourceRect, drawRenderTarget, &destRect, (filter ? Device::USE_FILTER : 0) | Device::DEPTH_BUFFER);
 
 			readRenderTarget->release();
 			drawRenderTarget->release();
@@ -4124,7 +4124,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 			egl::Image *readRenderTarget = readFramebuffer->getStencilBuffer();
 			egl::Image *drawRenderTarget = drawFramebuffer->getStencilBuffer();
 
-			bool success = device->stretchRect(readRenderTarget->get(), &sourceRect, drawRenderTarget->get(), &destRect, (filter ? Device::USE_FILTER : 0) | Device::STENCIL_BUFFER);
+			bool success = device->stretchRect(readRenderTarget, &sourceRect, drawRenderTarget, &destRect, (filter ? Device::USE_FILTER : 0) | Device::STENCIL_BUFFER);
 
 			readRenderTarget->release();
 			drawRenderTarget->release();

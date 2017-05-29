@@ -38,10 +38,13 @@ config("swiftshader_config") {
   } else {
     cflags = [
       "-std=c++11",
+     # "-stdlib=libc++",
       "-Wall",
       "-fexceptions",
       "-fno-operator-names",
     ]
+
+  #  cflags_cc = [ "-stdlib=libc++" ]
 
     defines += [
       "__STDC_CONSTANT_MACROS",
