@@ -13,10 +13,8 @@
 // limitations under the License.
 
 #include "libEGL/Display.h"
-#include "libEGL/EGLSurface.h"
 
 namespace egl
 {
-void Surface::typeinfo() {}
 void Display::typeinfo() {}
 }
