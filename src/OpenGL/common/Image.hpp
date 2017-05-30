@@ -48,8 +48,6 @@ size_t ComputePackingOffset(GLenum format, GLenum type, GLsizei width, GLsizei h
 
 class [[clang::lto_visibility_public]] Image : public sw::Surface, public gl::Object
 {
-	virtual void typeinfo();   // Dummy key method (https://gcc.gnu.org/onlinedocs/gcc/Vague-Linkage.html)
-
 public:
 	// 2D texture image
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
@@ -150,6 +148,9 @@ public:
 		unlockExternal();
 	}
 
+	void *lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client) override;
+	void unlockInternal() override;
+
 	struct UnpackInfo
 	{
 		UnpackInfo() : alignment(4), rowLength(0), imageHeight(0), skipPixels(0), skipRows(0), skipImages(0) {}
@@ -188,7 +189,7 @@ protected:
 
 	egl::Texture *parentTexture;
 
-	virtual ~Image();
+	~Image() override;
 
 	void loadD24S8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer);
 	void loadD32FS8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer);
@@ -252,14 +253,14 @@ public:
 private:
 	ANativeWindowBuffer *nativeBuffer;
 
-	virtual ~AndroidNativeImage()
+	~AndroidNativeImage() override
 	{
 		sync();   // Wait for any threads that use this image to finish.
 
 		nativeBuffer->common.decRef(&nativeBuffer->common);
 	}
 
-	virtual void *lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client)
+	void *lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client) override
 	{
 		LOGLOCK("image=%p op=%s.swsurface lock=%d", this, __FUNCTION__, lock);
 
@@ -289,7 +290,7 @@ private:
 		return data;
 	}
 
-	virtual void unlockInternal()
+	void unlockInternal() override
 	{
 		if(nativeBuffer)   // Unlock the buffer from ANativeWindowBuffer
 		{
@@ -301,7 +302,7 @@ private:
 		sw::Surface::unlockInternal();
 	}
 
-	virtual void *lock(unsigned int left, unsigned int top, sw::Lock lock)
+	void *lock(unsigned int left, unsigned int top, sw::Lock lock) override
 	{
 		LOGLOCK("image=%p op=%s lock=%d", this, __FUNCTION__, lock);
 		(void)sw::Surface::lockExternal(left, top, 0, lock, sw::PUBLIC);
@@ -309,7 +310,7 @@ private:
 		return lockNativeBuffer(GRALLOC_USAGE_SW_READ_OFTEN | GRALLOC_USAGE_SW_WRITE_OFTEN);
 	}
 
-	virtual void unlock()
+	void unlock() override
 	{
 		LOGLOCK("image=%p op=%s.ani", this, __FUNCTION__);
 		unlockNativeBuffer();
@@ -318,7 +319,7 @@ private:
 		sw::Surface::unlockExternal();
 	}
 
-	void* lockNativeBuffer(int usage)
+	void *lockNativeBuffer(int usage)
 	{
 		void *buffer = nullptr;
 		GrallocModule::getInstance()->lock(nativeBuffer->handle, usage, 0, 0, nativeBuffer->width, nativeBuffer->height, &buffer);

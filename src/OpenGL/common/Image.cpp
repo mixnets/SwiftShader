@@ -1178,8 +1178,6 @@ namespace egl
 		}
 	}
 
-	void Image::typeinfo() {}
-
 	Image::~Image()
 	{
 		sync();   // Wait for any threads that use this image to finish.
@@ -1190,6 +1188,16 @@ namespace egl
 		}
 
 		ASSERT(!shared);
+	}
+
+	void *Image::lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client)
+	{
+		return Surface::lockInternal(x, y, z, lock, client);
+	}
+
+	void Image::unlockInternal()
+	{
+		Surface::unlockInternal();
 	}
 
 	void Image::release()
@@ -1620,10 +1628,11 @@ namespace egl
 		}
 		else
 		{
-			sw::Surface source(width, height, depth, ConvertFormatType(format, type), const_cast<void*>(input), inputPitch, inputPitch * inputHeight);
+			sw::Surface *source = sw::Surface::create(width, height, depth, ConvertFormatType(format, type), const_cast<void*>(input), inputPitch, inputPitch * inputHeight);
 			sw::Rect sourceRect(0, 0, width, height);
 			sw::Rect destRect(xoffset, yoffset, xoffset + width, yoffset + height);
-			sw::blitter.blit(&source, sourceRect, this, destRect, false);
+			sw::blitter.blit(source, sourceRect, this, destRect, false);
+			delete source;
 		}
 	}
 
