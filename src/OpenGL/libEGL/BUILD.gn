@@ -51,6 +51,13 @@ shared_library("swiftshader_libEGL") {
     output_dir = "$root_out_dir/swiftshader"
   }
 
+  deps = [
+    # TODO(capn): Replace this with "//build/config:exe_and_shlib_deps
+    # once https://bugs.chromium.org/p/swiftshader/issues/detail?id=31
+    # is fixed.
+    "//buildtools/third_party/libc++:libcxx_proxy",
+  ]
+
   sources = [
     "../common/Object.cpp",
     "Config.cpp",
