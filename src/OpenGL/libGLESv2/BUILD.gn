@@ -69,6 +69,11 @@ shared_library("swiftshader_libGLESv2") {
     "../../OpenGL/compiler:swiftshader_opengl_compiler",
     "../../Reactor:swiftshader_reactor",
     "../../Renderer:swiftshader_renderer",
+
+    # TODO(capn): Replace this with "//build/config:exe_and_shlib_deps
+    # once https://bugs.chromium.org/p/swiftshader/issues/detail?id=31
+    # is fixed.
+    "//buildtools/third_party/libc++:libcxx_proxy",
   ]
 
   sources = [
