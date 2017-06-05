@@ -171,21 +171,15 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 {
 	TRACE("(EGLDisplay dpy = %p, EGLint name = %d)", dpy, name);
 
-	#if defined(__linux__) && !defined(__ANDROID__)
-		if(dpy == EGL_NO_DISPLAY && name == EGL_EXTENSIONS)
-		{
-			return success("EGL_KHR_platform_gbm "
-			               "EGL_KHR_platform_x11 "
-			               "EGL_EXT_client_extensions "
-			               "EGL_EXT_platform_base");
-		}
-	#endif
-
-	egl::Display *display = egl::Display::get(dpy);
-
-	if(!validateDisplay(display))
+	// EGL_NO_DISPLAY with EGL_EXTENSIONS allowed by EGL_EXT_client_extensions
+	if((dpy != EGL_NO_DISPLAY) || (name != EGL_EXTENSIONS))
 	{
-		return nullptr;
+		egl::Display *display = egl::Display::get(dpy);
+
+		if(!validateDisplay(display))
+		{
+			return nullptr;
+		}
 	}
 
 	switch(name)
@@ -193,7 +187,16 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 	case EGL_CLIENT_APIS:
 		return success("OpenGL_ES");
 	case EGL_EXTENSIONS:
-		return success("EGL_KHR_create_context "
+		return success((dpy == EGL_NO_DISPLAY) ?
+		               // Client extensions
+#if defined(__linux__) && !defined(__ANDROID__)
+		               "EGL_KHR_platform_gbm "
+		               "EGL_KHR_platform_x11 "
+		               "EGL_EXT_platform_base "
+#endif
+		               "EGL_EXT_client_extensions" :
+		               // Display extensions
+		               "EGL_KHR_create_context "
 		               "EGL_KHR_gl_texture_2D_image "
 		               "EGL_KHR_gl_texture_cubemap_image "
 		               "EGL_KHR_gl_renderbuffer_image "
