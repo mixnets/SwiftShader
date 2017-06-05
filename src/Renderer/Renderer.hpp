@@ -212,6 +212,8 @@ namespace sw
 
 		DrawType drawType;
 		int batchSize;
+		Primitive *primitiveBatch[16];
+		int primitiveOutlineHeight;
 
 		Routine *vertexRoutine;
 		Routine *setupRoutine;
@@ -251,6 +253,9 @@ namespace sw
 		volatile int references;   // Remaining references to this draw call, 0 when done drawing, -1 when resources unlocked and slot is free
 
 		DrawData *data;
+
+		void allocatePrimitiveOutlines(int height);
+		void deallocatePrimitiveOutlines();
 	};
 
 	struct Viewport
@@ -436,7 +441,6 @@ namespace sw
 		int clipFlags;
 
 		Triangle *triangleBatch[16];
-		Primitive *primitiveBatch[16];
 
 		// User-defined clipping planes
 		Plane userPlane[MAX_CLIP_PLANES];

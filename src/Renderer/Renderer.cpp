@@ -79,6 +79,14 @@ namespace sw
 
 	DrawCall::DrawCall()
 	{
+		primitiveOutlineHeight = 0;
+
+		Primitive* primitiveBatches = (Primitive*)allocate(batchSize * sizeof(Primitive) * unitCount);
+		for(int i = 0; i < unitCount; i++)
+		{
+			primitiveBatch[i] = &(primitiveBatches[i * batchSize * sizeof(Primitive)]);
+		}
+
 		queries = 0;
 
 		vsDirtyConstF = VERTEX_UNIFORM_VECTORS + 1;
@@ -97,9 +105,45 @@ namespace sw
 
 	DrawCall::~DrawCall()
 	{
+		deallocatePrimitiveOutlines();
+		deallocate(&(primitiveBatch[0]));
+
 		delete queries;
 
 		deallocate(data);
+	}
+
+	void DrawCall::allocatePrimitiveOutlines(int height)
+	{
+		// The rasterizer adds a zero length span to the top and bottom of the polygon to allow
+		// for 2x2 pixel processing. We need an even number of spans to keep accesses aligned.
+		int outlineHeight = ceilPow2(height) + 4;
+		if(primitiveOutlineHeight != outlineHeight)
+		{
+			deallocatePrimitiveOutlines();
+
+			size_t outlineSize = outlineHeight * sizeof(Primitive::Span);
+			Primitive::Span* outlines = (Primitive::Span*)allocate(unitCount * batchSize * outlineSize);
+			outlines += 2; // Offset initial 2 pixel border
+			for(int i = 0; i < unitCount; i++)
+			{
+				for(int j = 0; j < batchSize; j++, outlines += outlineSize)
+				{
+					primitiveBatch[i][j].outline = outlines;
+				}
+			}
+
+			primitiveOutlineHeight = outlineHeight;
+		}
+	}
+
+	void DrawCall::deallocatePrimitiveOutlines()
+	{
+		if(primitiveOutlineHeight > 0)
+		{
+			deallocate(primitiveBatch[0][0].outline - 2);
+			primitiveOutlineHeight = 0;
+		}
 	}
 
 	Renderer::Renderer(Context *context, Conventions conventions, bool exactColorRounding) : VertexProcessor(context), PixelProcessor(context), SetupProcessor(context), context(context), viewport()
@@ -145,7 +189,6 @@ namespace sw
 		for(int i = 0; i < 16; i++)
 		{
 			triangleBatch[i] = 0;
-			primitiveBatch[i] = 0;
 		}
 
 		for(int draw = 0; draw < DRAW_COUNT; draw++)
@@ -331,6 +374,15 @@ namespace sw
 
 			draw->drawType = drawType;
 			draw->batchSize = batch;
+
+			for(int index = 0; index < RENDERTARGETS; index++)
+			{
+				if(context->renderTarget[index])
+				{
+					draw->allocatePrimitiveOutlines(context->renderTarget[index]->getHeight());
+					break;
+				}
+			}
 
 			vertexRoutine->bind();
 			setupRoutine->bind();
@@ -886,9 +938,9 @@ namespace sw
 				if(visible > 0)
 				{
 					int cluster = task[threadIndex].pixelCluster;
-					Primitive *primitive = primitiveBatch[unit];
 					DrawCall *draw = drawList[pixelProgress[cluster].drawCall % DRAW_COUNT];
 					DrawData *data = draw->data;
+					Primitive *primitive = draw->primitiveBatch[unit];
 					PixelProcessor::RoutinePointer pixelRoutine = draw->pixelPointer;
 
 					pixelRoutine(primitive, visible, cluster, data);
@@ -1484,12 +1536,12 @@ namespace sw
 
 	int Renderer::setupSolidTriangles(int unit, int count)
 	{
-		Triangle *triangle = triangleBatch[unit];
-		Primitive *primitive = primitiveBatch[unit];
-
 		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall % DRAW_COUNT];
 		SetupProcessor::State &state = draw.setupState;
 		const SetupProcessor::RoutinePointer &setupRoutine = draw.setupPointer;
+
+		Triangle *triangle = triangleBatch[unit];
+		Primitive *primitive = draw.primitiveBatch[unit];
 
 		int ms = state.multiSample;
 		int pos = state.positionRegister;
@@ -1529,12 +1581,12 @@ namespace sw
 
 	int Renderer::setupWireframeTriangle(int unit, int count)
 	{
-		Triangle *triangle = triangleBatch[unit];
-		Primitive *primitive = primitiveBatch[unit];
-		int visible = 0;
-
 		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall % DRAW_COUNT];
 		SetupProcessor::State &state = draw.setupState;
+
+		Triangle *triangle = triangleBatch[unit];
+		Primitive *primitive = draw.primitiveBatch[unit];
+		int visible = 0;
 
 		const Vertex &v0 = triangle[0].v0;
 		const Vertex &v1 = triangle[0].v1;
@@ -1586,12 +1638,12 @@ namespace sw
 
 	int Renderer::setupVertexTriangle(int unit, int count)
 	{
-		Triangle *triangle = triangleBatch[unit];
-		Primitive *primitive = primitiveBatch[unit];
-		int visible = 0;
-
 		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall % DRAW_COUNT];
 		SetupProcessor::State &state = draw.setupState;
+
+		Triangle *triangle = triangleBatch[unit];
+		Primitive *primitive = draw.primitiveBatch[unit];
+		int visible = 0;
 
 		const Vertex &v0 = triangle[0].v0;
 		const Vertex &v1 = triangle[0].v1;
@@ -1630,12 +1682,12 @@ namespace sw
 
 	int Renderer::setupLines(int unit, int count)
 	{
-		Triangle *triangle = triangleBatch[unit];
-		Primitive *primitive = primitiveBatch[unit];
-		int visible = 0;
-
 		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall % DRAW_COUNT];
 		SetupProcessor::State &state = draw.setupState;
+
+		Triangle *triangle = triangleBatch[unit];
+		Primitive *primitive = draw.primitiveBatch[unit];
+		int visible = 0;
 
 		int ms = state.multiSample;
 
@@ -1655,12 +1707,12 @@ namespace sw
 
 	int Renderer::setupPoints(int unit, int count)
 	{
-		Triangle *triangle = triangleBatch[unit];
-		Primitive *primitive = primitiveBatch[unit];
-		int visible = 0;
-
 		DrawCall &draw = *drawList[primitiveProgress[unit].drawCall % DRAW_COUNT];
 		SetupProcessor::State &state = draw.setupState;
+
+		Triangle *triangle = triangleBatch[unit];
+		Primitive *primitive = draw.primitiveBatch[unit];
+		int visible = 0;
 
 		int ms = state.multiSample;
 
@@ -1964,7 +2016,6 @@ namespace sw
 		for(int i = 0; i < unitCount; i++)
 		{
 			triangleBatch[i] = (Triangle*)allocate(batchSize * sizeof(Triangle));
-			primitiveBatch[i] = (Primitive*)allocate(batchSize * sizeof(Primitive));
 		}
 
 		for(int i = 0; i < threadCount; i++)
@@ -2020,9 +2071,6 @@ namespace sw
 		{
 			deallocate(triangleBatch[i]);
 			triangleBatch[i] = 0;
-
-			deallocate(primitiveBatch[i]);
-			primitiveBatch[i] = 0;
 		}
 	}
 
