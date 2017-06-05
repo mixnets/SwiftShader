@@ -181,11 +181,17 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 		}
 	#endif
 
-	egl::Display *display = egl::Display::get(dpy);
-
-	if(!validateDisplay(display))
+	// From EGL Specification 1.5, Section 3.3 EGL Queries
+	// "An EGL_BAD_DISPLAY error is generated if dpy is not a valid display,
+	//  unless dpy is EGL_NO_DISPLAY and name is EGL_EXTENSIONS or EGL_VERSION."
+	if((dpy != EGL_NO_DISPLAY) || ((name != EGL_EXTENSIONS) && (name != EGL_VERSION)))
 	{
-		return nullptr;
+		egl::Display *display = egl::Display::get(dpy);
+
+		if(!validateDisplay(display))
+		{
+			return nullptr;
+		}
 	}
 
 	switch(name)
@@ -193,7 +199,11 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 	case EGL_CLIENT_APIS:
 		return success("OpenGL_ES");
 	case EGL_EXTENSIONS:
-		return success("EGL_KHR_create_context "
+		return success((dpy == EGL_NO_DISPLAY) ?
+		               // Client extensions
+		               "" :
+		               // Display extensions
+		               "EGL_KHR_create_context "
 		               "EGL_KHR_gl_texture_2D_image "
 		               "EGL_KHR_gl_texture_cubemap_image "
 		               "EGL_KHR_gl_renderbuffer_image "
