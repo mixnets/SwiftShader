@@ -197,6 +197,7 @@ namespace sw
 			yMin = Max(yMin, *Pointer<Int>(data + OFFSET(DrawData,scissorY0)));
 			yMax = Min(yMax, *Pointer<Int>(data + OFFSET(DrawData,scissorY1)));
 
+			Pointer<Byte> outline = *Pointer<Pointer<Byte>>(primitive + OFFSET(Primitive,outline));
 			For(Int q = 0, q < state.multiSample, q++)
 			{
 				Array<Int> Xq(16);
@@ -219,8 +220,8 @@ namespace sw
 				}
 				Until(i >= n)
 
-				Pointer<Byte> leftEdge = Pointer<Byte>(primitive + OFFSET(Primitive,outline->left)) + q * sizeof(Primitive);
-				Pointer<Byte> rightEdge = Pointer<Byte>(primitive + OFFSET(Primitive,outline->right)) + q * sizeof(Primitive);
+				Pointer<Byte> leftEdge = Pointer<Byte>(outline + OFFSET(Primitive::Span,left)) + q * sizeof(Primitive);
+				Pointer<Byte> rightEdge = Pointer<Byte>(outline + OFFSET(Primitive::Span,right)) + q * sizeof(Primitive);
 
 				if(state.multiSample > 1)
 				{
@@ -242,7 +243,7 @@ namespace sw
 
 					Do
 					{
-						edge(primitive, data, Xq[i + 1 - d], Yq[i + 1 - d], Xq[i + d], Yq[i + d], q);
+						edge(leftEdge, rightEdge, data, Xq[i + 1 - d], Yq[i + 1 - d], Xq[i + d], Yq[i + d]);
 
 						i++;
 					}
@@ -555,7 +556,7 @@ namespace sw
 		}
 	}
 
-	void SetupRoutine::edge(Pointer<Byte> &primitive, Pointer<Byte> &data, const Int &Xa, const Int &Ya, const Int &Xb, const Int &Yb, Int &q)
+	void SetupRoutine::edge(Pointer<Byte> &leftEdge, Pointer<Byte> &rightEdge, Pointer<Byte> &data, const Int &Xa, const Int &Ya, const Int &Xb, const Int &Yb)
 	{
 		If(Ya != Yb)
 		{
@@ -574,8 +575,6 @@ namespace sw
 				Int xMin = *Pointer<Int>(data + OFFSET(DrawData,scissorX0));
 				Int xMax = *Pointer<Int>(data + OFFSET(DrawData,scissorX1));
 
-				Pointer<Byte> leftEdge = primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->left);
-				Pointer<Byte> rightEdge = primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->right);
 				Pointer<Byte> edge = IfThenElse(swap, rightEdge, leftEdge);
 
 				// Deltas
