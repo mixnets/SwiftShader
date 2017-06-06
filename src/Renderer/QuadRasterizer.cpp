@@ -115,29 +115,34 @@ namespace sw
 
 		Int y = yMin;
 
+		Pointer<Byte> outline = *Pointer<Pointer<Byte>>(primitive + OFFSET(Primitive, outline));
 		Do
 		{
-			Int x0a = Int(*Pointer<Short>(primitive + OFFSET(Primitive,outline->left) + (y + 0) * sizeof(Primitive::Span)));
-			Int x0b = Int(*Pointer<Short>(primitive + OFFSET(Primitive,outline->left) + (y + 1) * sizeof(Primitive::Span)));
+			Pointer<Byte> outlineY0 = outline + (OFFSET(Primitive::Span, left) + y * sizeof(Primitive::Span));
+			Pointer<Byte> outlineY1 = outlineY0 + sizeof(Primitive::Span);
+			Int x0a = Int(*Pointer<Short>(outlineY0));
+			Int x0b = Int(*Pointer<Short>(outlineY1));
 			Int x0 = Min(x0a, x0b);
 
 			for(unsigned int q = 1; q < state.multiSample; q++)
 			{
-				x0a = Int(*Pointer<Short>(primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->left) + (y + 0) * sizeof(Primitive::Span)));
-				x0b = Int(*Pointer<Short>(primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->left) + (y + 1) * sizeof(Primitive::Span)));
+				x0a = Int(*Pointer<Short>(outlineY0 + (q * sizeof(Primitive))));
+				x0b = Int(*Pointer<Short>(outlineY1 + (q * sizeof(Primitive))));
 				x0 = Min(x0, Min(x0a, x0b));
 			}
 
 			x0 &= 0xFFFFFFFE;
 
-			Int x1a = Int(*Pointer<Short>(primitive + OFFSET(Primitive,outline->right) + (y + 0) * sizeof(Primitive::Span)));
-			Int x1b = Int(*Pointer<Short>(primitive + OFFSET(Primitive,outline->right) + (y + 1) * sizeof(Primitive::Span)));
+			outlineY0 = outlineY0 + (OFFSET(Primitive::Span, right) - OFFSET(Primitive::Span, left));
+			outlineY1 = outlineY0 + sizeof(Primitive::Span);
+			Int x1a = Int(*Pointer<Short>(outlineY0));
+			Int x1b = Int(*Pointer<Short>(outlineY1));
 			Int x1 = Max(x1a, x1b);
 
 			for(unsigned int q = 1; q < state.multiSample; q++)
 			{
-				x1a = Int(*Pointer<Short>(primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->right) + (y + 0) * sizeof(Primitive::Span)));
-				x1b = Int(*Pointer<Short>(primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->right) + (y + 1) * sizeof(Primitive::Span)));
+				x1a = Int(*Pointer<Short>(outlineY0 + (q * sizeof(Primitive))));
+				x1b = Int(*Pointer<Short>(outlineY1 + (q * sizeof(Primitive))));
 				x1 = Max(x1, Max(x1a, x1b));
 			}
 
@@ -266,9 +271,10 @@ namespace sw
 				Short4 xLeft[4];
 				Short4 xRight[4];
 
+				outlineY0 = outline + (y * sizeof(Primitive::Span));
 				for(unsigned int q = 0; q < state.multiSample; q++)
 				{
-					xLeft[q] = *Pointer<Short4>(primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline) + y * sizeof(Primitive::Span));
+					xLeft[q] = *Pointer<Short4>(outlineY0 + q * sizeof(Primitive));
 					xRight[q] = xLeft[q];
 
 					xLeft[q] = Swizzle(xLeft[q], 0xA0) - Short4(1, 2, 1, 2);
