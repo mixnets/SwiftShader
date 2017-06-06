@@ -610,6 +610,7 @@ namespace sw
 
 			// Target
 			{
+				draw->renderTargetMaxHeight = 0;
 				for(int index = 0; index < RENDERTARGETS; index++)
 				{
 					draw->renderTarget[index] = context->renderTarget[index];
@@ -619,6 +620,10 @@ namespace sw
 						data->colorBuffer[index] = (unsigned int*)context->renderTarget[index]->lockInternal(0, 0, q * ms, LOCK_READWRITE, MANAGED);
 						data->colorPitchB[index] = context->renderTarget[index]->getInternalPitchB();
 						data->colorSliceB[index] = context->renderTarget[index]->getInternalSliceB();
+						if(draw->renderTargetMaxHeight < context->renderTarget[index]->getHeight())
+						{
+							draw->renderTargetMaxHeight = ceilPow2(context->renderTarget[index]->getHeight());
+						}
 					}
 				}
 
@@ -867,6 +872,21 @@ namespace sw
 
 				if(!draw->setupState.rasterizerDiscard)
 				{
+					if(primitiveBatchMaxHeight[unit] < draw->renderTargetMaxHeight)
+					{
+						deallocate(primitiveBatch[unit]->outline - 2); // Remove 2 pixel offset from outline
+
+						// The rasterizer adds a zero length span to the top and bottom of the polygon to allow
+						// for 2x2 pixel processing. We need an even number of spans to keep accesses aligned.
+						size_t outlineSize = (draw->renderTargetMaxHeight + 4) * sizeof(Primitive::Span);
+						Primitive::Span* outlinesPtr = (Primitive::Span*)allocate(batchSize * outlineSize);
+						outlinesPtr += 2; // Offset initial 2 pixels
+						for(int j = 0; j < batchSize; j++, outlinesPtr += outlineSize)
+						{
+							primitiveBatch[unit][j].outline = outlinesPtr;
+						}
+						primitiveBatchMaxHeight[unit] = draw->renderTargetMaxHeight;
+					}
 					visible = (this->*setupPrimitives)(unit, count);
 				}
 
@@ -1965,6 +1985,12 @@ namespace sw
 		{
 			triangleBatch[i] = (Triangle*)allocate(batchSize * sizeof(Triangle));
 			primitiveBatch[i] = (Primitive*)allocate(batchSize * sizeof(Primitive));
+			primitiveBatchMaxHeight[i] = 0;
+			for(int j = 0; j < batchSize; j++)
+			{
+				primitiveBatch[i][j].outline = nullptr;
+				primitiveBatch[i][j].outline += 2; // Default to 2 pixel offset
+			}
 		}
 
 		for(int i = 0; i < threadCount; i++)
@@ -2020,6 +2046,11 @@ namespace sw
 		{
 			deallocate(triangleBatch[i]);
 			triangleBatch[i] = 0;
+
+			if(primitiveBatch[i])
+			{
+				deallocate(primitiveBatch[i]->outline - 2); // Remove 2 pixel offset from outline
+			}
 
 			deallocate(primitiveBatch[i]);
 			primitiveBatch[i] = 0;

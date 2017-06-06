@@ -212,6 +212,7 @@ namespace sw
 
 		DrawType drawType;
 		int batchSize;
+		int renderTargetMaxHeight;
 
 		Routine *vertexRoutine;
 		Routine *setupRoutine;
@@ -437,6 +438,7 @@ namespace sw
 
 		Triangle *triangleBatch[16];
 		Primitive *primitiveBatch[16];
+		int primitiveBatchMaxHeight[16];
 
 		// User-defined clipping planes
 		Plane userPlane[MAX_CLIP_PLANES];

@@ -219,8 +219,9 @@ namespace sw
 				}
 				Until(i >= n)
 
-				Pointer<Byte> leftEdge = Pointer<Byte>(primitive + OFFSET(Primitive,outline->left)) + q * sizeof(Primitive);
-				Pointer<Byte> rightEdge = Pointer<Byte>(primitive + OFFSET(Primitive,outline->right)) + q * sizeof(Primitive);
+				Pointer<Byte> outlinePtr = *Pointer<Pointer<Byte>>(primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline));
+				Pointer<Byte> leftEdge = Pointer<Byte>(outlinePtr + OFFSET(Primitive::Span,left));
+				Pointer<Byte> rightEdge = Pointer<Byte>(outlinePtr + OFFSET(Primitive::Span,right));
 
 				if(state.multiSample > 1)
 				{
@@ -574,8 +575,9 @@ namespace sw
 				Int xMin = *Pointer<Int>(data + OFFSET(DrawData,scissorX0));
 				Int xMax = *Pointer<Int>(data + OFFSET(DrawData,scissorX1));
 
-				Pointer<Byte> leftEdge = primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->left);
-				Pointer<Byte> rightEdge = primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline->right);
+				Pointer<Byte> outlinePtr = *Pointer<Pointer<Byte>>(primitive + q * sizeof(Primitive) + OFFSET(Primitive,outline));
+				Pointer<Byte> leftEdge = outlinePtr + OFFSET(Primitive::Span,left);
+				Pointer<Byte> rightEdge = outlinePtr + OFFSET(Primitive::Span,right);
 				Pointer<Byte> edge = IfThenElse(swap, rightEdge, leftEdge);
 
 				// Deltas
