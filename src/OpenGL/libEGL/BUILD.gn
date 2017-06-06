@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import("//build/config/sanitizers/sanitizers.gni")
 import("//build/toolchain/toolchain.gni")
 
 # Need a separate config to ensure the warnings are added to the end.
@@ -49,6 +50,16 @@ shared_library("swiftshader_libEGL") {
   if (!is_mac) {
     output_name = "libEGL"
     output_dir = "$root_out_dir/swiftshader"
+  }
+
+  # TODO(capn): Unconditionally add //build/config:exe_and_shlib_deps
+  # to deps and remove libcxx_proxy from deps once
+  # https://bugs.chromium.org/p/swiftshader/issues/detail?id=31 is
+  # fixed.
+  if (use_custom_libcxx) {
+    deps = [
+      "//buildtools/third_party/libc++:libcxx_proxy",
+    ]
   }
 
   sources = [
