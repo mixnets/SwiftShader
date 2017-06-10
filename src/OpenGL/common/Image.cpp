@@ -1189,7 +1189,7 @@ namespace egl
 			: Image(width, height, format, type, pitchP) {}
 		ImageImplementation(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
 			: Image(width, height, internalFormat, multiSampleDepth, lockable) {}
-		~ImageImplementation() override {}
+		~ImageImplementation() override { sync(); }
 
 		void *lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client) override
 		{
