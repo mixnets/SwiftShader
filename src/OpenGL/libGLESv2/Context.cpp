@@ -35,7 +35,7 @@
 #include "VertexDataManager.h"
 #include "IndexDataManager.h"
 #include "libEGL/Display.h"
-#include "libEGL/EGLSurface.h"
+#include "libEGL/Surface.hpp"
 #include "Common/Half.hpp"
 
 #include <EGL/eglext.h>
@@ -265,7 +265,7 @@ Context::~Context()
 	delete device;
 }
 
-void Context::makeCurrent(egl::Surface *surface)
+void Context::makeCurrent(gl::Surface *surface)
 {
 	if(!mHasBeenCurrent)
 	{
@@ -4138,7 +4138,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 	}
 }
 
-void Context::bindTexImage(egl::Surface *surface)
+void Context::bindTexImage(gl::Surface *surface)
 {
 	es2::Texture2D *textureObject = getTexture2D();
 
@@ -4185,7 +4185,7 @@ EGLenum Context::validateSharedImage(EGLenum target, GLuint name, GLuint texture
 			return EGL_BAD_PARAMETER;
 		}
 
-		if(texture->isShared(textureTarget, textureLevel))   // Bound to an EGLSurface or already an EGLImage sibling
+		if(texture->isShared(textureTarget, textureLevel))   // Bound to an Surface or already an EGLImage sibling
 		{
 			return EGL_BAD_ACCESS;
 		}

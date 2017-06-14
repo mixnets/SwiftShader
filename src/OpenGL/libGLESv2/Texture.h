@@ -29,9 +29,13 @@
 
 #include <vector>
 
-namespace egl
+namespace gl
 {
 class Surface;
+}
+
+namespace egl
+{
 class Config;
 }
 
@@ -115,7 +119,7 @@ public:
 
 	virtual void generateMipmaps() = 0;
 	virtual void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source) = 0;
-	
+
 protected:
 	virtual ~Texture();
 
@@ -180,7 +184,7 @@ public:
 	virtual bool isSamplerComplete() const;
 	virtual bool isCompressed(GLenum target, GLint level) const;
 	virtual bool isDepth(GLenum target, GLint level) const;
-	virtual void bindTexImage(egl::Surface *surface);
+	virtual void bindTexImage(gl::Surface *surface);
 	virtual void releaseTexImage();
 
 	virtual void generateMipmaps();
@@ -198,7 +202,7 @@ protected:
 
 	egl::Image *image[IMPLEMENTATION_MAX_TEXTURE_LEVELS];
 
-	egl::Surface *mSurface;
+	gl::Surface *mSurface;
 
 	// A specific internal reference count is kept for colorbuffer proxy references,
 	// because, as the renderbuffer acting as proxy will maintain a binding pointer
@@ -300,7 +304,7 @@ public:
 	virtual bool isSamplerComplete() const;
 	virtual bool isCompressed(GLenum target, GLint level) const;
 	virtual bool isDepth(GLenum target, GLint level) const;
-	virtual void bindTexImage(egl::Surface *surface);
+	virtual void bindTexImage(gl::Surface *surface);
 	virtual void releaseTexImage();
 
 	virtual void generateMipmaps();
@@ -318,7 +322,7 @@ protected:
 
 	egl::Image *image[IMPLEMENTATION_MAX_TEXTURE_LEVELS];
 
-	egl::Surface *mSurface;
+	gl::Surface *mSurface;
 
 	// A specific internal reference count is kept for colorbuffer proxy references,
 	// because, as the renderbuffer acting as proxy will maintain a binding pointer
