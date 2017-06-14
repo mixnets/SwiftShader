@@ -23,16 +23,14 @@
 namespace egl
 {
 class Display;
-class Surface;
+class SurfaceX;
 class Image;
 
 class [[clang::lto_visibility_public]] Context : public gl::Object
 {
 public:
-	Context(egl::Display *display) : display(display) {}
-
-	virtual void makeCurrent(Surface *surface) = 0;
-	virtual void bindTexImage(Surface *surface) = 0;
+	virtual void makeCurrent(SurfaceX *surface) = 0;
+	virtual void bindTexImage(SurfaceX *surface) = 0;
 	virtual EGLenum validateSharedImage(EGLenum target, GLuint name, GLuint textureLevel) = 0;
 	virtual Image *createSharedImage(EGLenum target, GLuint name, GLuint textureLevel) = 0;
 	virtual EGLint getClientVersion() const = 0;
@@ -40,6 +38,7 @@ public:
 	virtual void finish() = 0;
 
 protected:
+	Context(egl::Display *display) : display(display) {}
 	virtual ~Context() {};
 
 	egl::Display *const display;

@@ -650,7 +650,7 @@ void Texture2D::setImage(sw::Blitter *blitter, GLint level, GLsizei width, GLsiz
 	Texture::setImage(blitter, format, type, unpackInfo, pixels, image[level]);
 }
 
-void Texture2D::bindTexImage(egl::Surface *surface)
+void Texture2D::bindTexImage(egl::SurfaceX *surface)
 {
 	GLenum format;
 
@@ -1611,7 +1611,7 @@ void Texture3D::setImage(sw::Blitter *blitter, GLint level, GLsizei width, GLsiz
 	Texture::setImage(blitter, format, type, unpackInfo, pixels, image[level]);
 }
 
-void Texture3D::bindTexImage(egl::Surface *surface)
+void Texture3D::bindTexImage(egl::SurfaceX *surface)
 {
 	GLenum format;
 

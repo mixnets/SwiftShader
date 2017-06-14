@@ -31,24 +31,42 @@ class Config;
 class Texture;
 class Image;
 
-class [[clang::lto_visibility_public]] Surface : public gl::Object
+class SurfaceX
+{
+public:
+	virtual egl::Image *getRenderTarget() = 0;
+	virtual egl::Image *getDepthStencil() = 0;
+
+	virtual sw::Format getInternalFormat() const = 0;
+
+	virtual EGLint getWidth() const = 0;
+	virtual EGLint getHeight() const = 0;
+
+	virtual void setBoundTexture(egl::Texture *texture) = 0;
+
+protected:
+	SurfaceX();
+	virtual ~SurfaceX() = 0;
+};
+
+class [[clang::lto_visibility_public]] Surface : public gl::Object, public SurfaceX
 {
 public:
 	virtual bool initialize();
 	virtual void swap() = 0;
 
-	virtual egl::Image *getRenderTarget();
-	virtual egl::Image *getDepthStencil();
+	egl::Image *getRenderTarget() override;
+	egl::Image *getDepthStencil() override;
 
 	void setSwapBehavior(EGLenum swapBehavior);
 	void setSwapInterval(EGLint interval);
 
 	virtual EGLint getConfigID() const;
 	virtual EGLenum getSurfaceType() const;
-	virtual sw::Format getInternalFormat() const;
+	sw::Format getInternalFormat() const override;
 
-	virtual EGLint getWidth() const;
-	virtual EGLint getHeight() const;
+	EGLint getWidth() const override;
+	EGLint getHeight() const override;
 	virtual EGLint getPixelAspectRatio() const;
 	virtual EGLenum getRenderBuffer() const;
 	virtual EGLenum getSwapBehavior() const;
@@ -57,7 +75,7 @@ public:
 	virtual EGLBoolean getLargestPBuffer() const;
 	virtual EGLNativeWindowType getWindowHandle() const = 0;
 
-	virtual void setBoundTexture(egl::Texture *texture);
+	void setBoundTexture(egl::Texture *texture) override;
 	virtual egl::Texture *getBoundTexture() const;
 
 	virtual bool isWindowSurface() const { return false; }
@@ -66,7 +84,7 @@ public:
 protected:
 	Surface(const Display *display, const Config *config);
 
-	virtual ~Surface();
+	~Surface() override;
 
 	virtual void deleteResources();
 

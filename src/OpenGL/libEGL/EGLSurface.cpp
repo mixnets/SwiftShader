@@ -39,6 +39,14 @@
 namespace egl
 {
 
+SurfaceX::SurfaceX()
+{
+}
+
+SurfaceX::~SurfaceX()
+{
+}
+
 Surface::Surface(const Display *display, const Config *config) : display(display), config(config)
 {
 	backBuffer = nullptr;

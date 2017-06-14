@@ -265,7 +265,7 @@ Context::~Context()
 	delete device;
 }
 
-void Context::makeCurrent(egl::Surface *surface)
+void Context::makeCurrent(egl::SurfaceX *surface)
 {
 	if(!mHasBeenCurrent)
 	{
@@ -4138,7 +4138,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 	}
 }
 
-void Context::bindTexImage(egl::Surface *surface)
+void Context::bindTexImage(egl::SurfaceX *surface)
 {
 	es2::Texture2D *textureObject = getTexture2D();
 
