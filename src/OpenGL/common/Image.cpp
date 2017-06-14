@@ -1287,7 +1287,7 @@ namespace egl
 		return parentTexture == parent;
 	}
 
-	void Image::loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input)
+	void Image::loadImageData(sw::Blitter *blitter, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input)
 	{
 		GLsizei inputWidth = (unpackInfo.rowLength == 0) ? width : unpackInfo.rowLength;
 		GLsizei inputPitch = ComputePitch(inputWidth, format, type, unpackInfo.alignment);
@@ -1686,7 +1686,7 @@ namespace egl
 			sw::Surface *source = sw::Surface::create(width, height, depth, ConvertFormatType(format, type), const_cast<void*>(input), inputPitch, inputPitch * inputHeight);
 			sw::Rect sourceRect(0, 0, width, height);
 			sw::Rect destRect(xoffset, yoffset, xoffset + width, yoffset + height);
-			sw::blitter.blit(source, sourceRect, this, destRect, false);
+			blitter->blit(source, sourceRect, this, destRect, false);
 			delete source;
 		}
 	}
