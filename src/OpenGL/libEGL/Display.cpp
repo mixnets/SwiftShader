@@ -19,7 +19,7 @@
 #include "Display.h"
 
 #include "main.h"
-#include "libEGL/EGLSurface.h"
+#include "libEGL/Surface.hpp"
 #include "libEGL/Context.hpp"
 #include "common/Image.hpp"
 #include "common/debug.h"
@@ -324,7 +324,7 @@ EGLSurface Display::createWindowSurface(EGLNativeWindowType window, EGLConfig co
 		return error(EGL_BAD_ALLOC, EGL_NO_SURFACE);
 	}
 
-	Surface *surface = new WindowSurface(this, configuration, window);
+	WindowSurface *surface = new WindowSurface(this, configuration, window);
 
 	if(!surface->initialize())
 	{
@@ -429,7 +429,7 @@ EGLSurface Display::createPBufferSurface(EGLConfig config, const EGLint *attribL
 		return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
 	}
 
-	Surface *surface = new PBufferSurface(this, configuration, width, height, textureFormat, textureTarget, largestPBuffer);
+	PBufferSurface *surface = new PBufferSurface(this, configuration, width, height, textureFormat, textureTarget, largestPBuffer);
 
 	if(!surface->initialize())
 	{

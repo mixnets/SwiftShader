@@ -23,7 +23,7 @@
 #include "Framebuffer.h"
 #include "Device.hpp"
 #include "libEGL/Display.h"
-#include "libEGL/EGLSurface.h"
+#include "libEGL/Surface.hpp"
 #include "common/debug.h"
 
 #include <algorithm>
@@ -650,7 +650,7 @@ void Texture2D::setImage(sw::Blitter *blitter, GLint level, GLsizei width, GLsiz
 	Texture::setImage(blitter, format, type, unpackInfo, pixels, image[level]);
 }
 
-void Texture2D::bindTexImage(egl::Surface *surface)
+void Texture2D::bindTexImage(gl::Surface *surface)
 {
 	GLenum format;
 
@@ -968,7 +968,7 @@ bool Texture2D::isShared(GLenum target, unsigned int level) const
 	ASSERT(target == GL_TEXTURE_2D);
 	ASSERT(level < IMPLEMENTATION_MAX_TEXTURE_LEVELS);
 
-	if(mSurface)   // Bound to an EGLSurface
+	if(mSurface)   // Bound to an Surface
 	{
 		return true;
 	}
@@ -1611,7 +1611,7 @@ void Texture3D::setImage(sw::Blitter *blitter, GLint level, GLsizei width, GLsiz
 	Texture::setImage(blitter, format, type, unpackInfo, pixels, image[level]);
 }
 
-void Texture3D::bindTexImage(egl::Surface *surface)
+void Texture3D::bindTexImage(gl::Surface *surface)
 {
 	GLenum format;
 
@@ -1931,7 +1931,7 @@ bool Texture3D::isShared(GLenum target, unsigned int level) const
 	ASSERT(target == getTarget());
 	ASSERT(level < IMPLEMENTATION_MAX_TEXTURE_LEVELS);
 
-	if(mSurface)   // Bound to an EGLSurface
+	if(mSurface)   // Bound to an Surface
 	{
 		return true;
 	}
