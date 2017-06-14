@@ -17,6 +17,7 @@
 
 #include "libEGL/Texture.hpp"
 #include "Renderer/Surface.hpp"
+#include "Renderer/Blitter.hpp"
 
 #include <GLES3/gl3.h>
 #include <GLES2/gl2ext.h>
@@ -176,7 +177,7 @@ public:
 		GLint skipImages;
 	};
 
-	void loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input);
+	void loadImageData(sw::Blitter *blitter, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input);
 	void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
 
 	void release() override = 0;

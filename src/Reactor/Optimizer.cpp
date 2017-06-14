@@ -71,8 +71,8 @@ namespace
 
 		eliminateDeadCode();
 		eliminateUnitializedLoads();
-		eliminateLoadsFollowingSingleStore();
-		optimizeStoresInSingleBasicBlock();
+	//	eliminateLoadsFollowingSingleStore();
+	//	optimizeStoresInSingleBasicBlock();
 		eliminateDeadCode();
 	}
 

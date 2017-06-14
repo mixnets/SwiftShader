@@ -431,7 +431,10 @@ namespace sw
 
 		Context *context;
 		Clipper *clipper;
-		Viewport viewport;
+protected:
+		Blitter *blitter;
+private:
+	Viewport viewport;
 		Rect scissor;
 		int clipFlags;
 

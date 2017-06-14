@@ -77,6 +77,11 @@ namespace es2
 		bool stretchCube(sw::Surface *sourceSurface, sw::Surface *destSurface);
 		void finish();
 
+		sw::Blitter *getBlitter()
+		{
+			return blitter;
+		}
+
 	private:
 		sw::Context *const context;
 

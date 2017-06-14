@@ -5093,6 +5093,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 		}
 
 		GLenum sizedInternalFormat = GetSizedInternalFormat(format, type);
+		sw::Blitter *blitter = context->getDevice()->getBlitter();
 
 		if(target == GL_TEXTURE_2D)
 		{
@@ -5103,7 +5104,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				return error(GL_INVALID_OPERATION);
 			}
 
-			texture->setImage(level, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
+			texture->setImage(blitter, level, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
 		}
 		else
 		{
@@ -5114,7 +5115,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				return error(GL_INVALID_OPERATION);
 			}
 
-			texture->setImage(target, level, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
+			texture->setImage(blitter, target, level, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
 		}
 	}
 }
@@ -5460,6 +5461,7 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 	if(context)
 	{
 		GLenum sizedInternalFormat = GetSizedInternalFormat(format, type);
+		sw::Blitter *blitter = context->getDevice()->getBlitter();
 
 		if(target == GL_TEXTURE_2D)
 		{
@@ -5469,7 +5471,7 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 
 			if(validationError == GL_NONE)
 			{
-				texture->subImage(level, xoffset, yoffset, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
+				texture->subImage(blitter, level, xoffset, yoffset, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
 			}
 			else
 			{
@@ -5484,7 +5486,7 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 
 			if(validationError == GL_NONE)
 			{
-				texture->subImage(target, level, xoffset, yoffset, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
+				texture->subImage(blitter, target, level, xoffset, yoffset, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
 			}
 			else
 			{
@@ -6298,13 +6300,14 @@ void TexImage3DOES(GLenum target, GLint level, GLenum internalformat, GLsizei wi
 	if(context)
 	{
 		es2::Texture3D *texture = context->getTexture3D();
+		sw::Blitter *blitter = context->getDevice()->getBlitter();
 
 		if(!texture)
 		{
 			return error(GL_INVALID_OPERATION);
 		}
 
-		texture->setImage(level, width, height, depth, GetSizedInternalFormat(internalformat, type), type, context->getUnpackInfo(), context->getPixels(data));
+		texture->setImage(blitter, level, width, height, depth, GetSizedInternalFormat(internalformat, type), type, context->getUnpackInfo(), context->getPixels(data));
 	}
 }
 
@@ -6343,13 +6346,13 @@ void TexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
 	if(context)
 	{
 		es2::Texture3D *texture = context->getTexture3D();
-
+		sw::Blitter *blitter = context->getDevice()->getBlitter();
 		GLenum sizedInternalFormat = GetSizedInternalFormat(format, type);
 
 		GLenum validationError = ValidateSubImageParams(false, width, height, depth, xoffset, yoffset, zoffset, target, level, sizedInternalFormat, texture);
 		if(validationError == GL_NONE)
 		{
-			texture->subImage(level, xoffset, yoffset, zoffset, width, height, depth, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
+			texture->subImage(blitter, level, xoffset, yoffset, zoffset, width, height, depth, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
 		}
 		else
 		{
