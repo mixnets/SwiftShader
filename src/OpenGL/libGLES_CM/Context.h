@@ -33,10 +33,11 @@
 #include <map>
 #include <string>
 
+namespace gl { class Surface; }
+
 namespace egl
 {
 class Display;
-class Surface;
 class Config;
 }
 
@@ -296,7 +297,7 @@ class [[clang::lto_visibility_public]] Context : public egl::Context
 public:
 	Context(egl::Display *display, const Context *shareContext, const egl::Config *config);
 
-	void makeCurrent(egl::Surface *surface) override;
+	void makeCurrent(gl::Surface *surface) override;
 	EGLint getClientVersion() const override;
 	EGLint getConfigID() const override;
 
@@ -508,7 +509,7 @@ public:
 
 	static int getSupportedMultisampleCount(int requested);
 
-	virtual void bindTexImage(egl::Surface *surface);
+	virtual void bindTexImage(gl::Surface *surface);
 	virtual EGLenum validateSharedImage(EGLenum target, GLuint name, GLuint textureLevel);
 	virtual egl::Image *createSharedImage(EGLenum target, GLuint name, GLuint textureLevel);
 	egl::Image *getSharedImage(GLeglImageOES image);
