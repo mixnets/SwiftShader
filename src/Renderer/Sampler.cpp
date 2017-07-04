@@ -166,9 +166,9 @@ namespace sw
 					mipmap.fDepth[3] = (float)depth / 65536.0f;
 				}
 
-				short halfTexelU = 0x8000 / width;
-				short halfTexelV = 0x8000 / height;
-				short halfTexelW = 0x8000 / depth;
+				short halfTexelU = 0x7999 / width;
+				short halfTexelV = 0x7999 / height;
+				short halfTexelW = 0x7999 / depth;
 
 				mipmap.uHalf[0] = halfTexelU;
 				mipmap.uHalf[1] = halfTexelU;
