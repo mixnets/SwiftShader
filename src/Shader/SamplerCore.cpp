@@ -46,6 +46,14 @@ namespace
 		default: ASSERT(false);
 		}
 	}
+
+	sw::Float fast_log2(const sw::Float& x)
+	{
+		sw::Int val = sw::As<sw::Int>(x);
+		sw::Float log_2 = sw::Float(((val >> 23) & 0xFF) - 0x80);
+		val = (val & ~(0xFF << 23)) + (0x7F << 23);
+		return (log_2 + (((-0.34484843f) * sw::As<sw::Float>(val) + 2.02466578f) * sw::As<sw::Float>(val) - 0.67487759f));
+	}
 }
 
 namespace sw
@@ -1452,9 +1460,7 @@ namespace sw
 			}
 
 			// log2(sqrt(lod))
-			lod = Float(As<Int>(lod));
-			lod -= Float(0x3F800000);
-			lod *= As<Float>(Int(0x33800000));
+			lod = fast_log2(lod) * 0.5f;
 
 			if(function == Bias)
 			{
@@ -1511,9 +1517,7 @@ namespace sw
 			}
 
 			// log2(sqrt(lod))
-			lod = Float(As<Int>(lod));
-			lod -= Float(0x3F800000);
-			lod *= As<Float>(Int(0x33800000));
+			lod = fast_log2(lod) * 0.5f;
 
 			if(function == Bias)
 			{
@@ -1578,9 +1582,7 @@ namespace sw
 				lod = Max(Float(dudxy.x), Float(dudxy.y));   // FIXME: Max(dudxy.x, dudxy.y);
 
 				// log2(sqrt(lod))
-				lod = Float(As<Int>(lod));
-				lod -= Float(0x3F800000);
-				lod *= As<Float>(Int(0x33800000));
+				lod = fast_log2(lod) * 0.5f;
 
 				if(function == Bias)
 				{
