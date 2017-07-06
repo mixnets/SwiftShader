@@ -795,13 +795,13 @@ namespace sw
 
 		bool texelFetch = (function == Fetch);
 
-		Short4 uuuu = texelFetch ? Short4(As<Int4>(u)) : address(u, state.addressingModeU, mipmap);
-		Short4 vvvv = texelFetch ? Short4(As<Int4>(v)) : address(v, state.addressingModeV, mipmap);
-		Short4 wwww = texelFetch ? Short4(As<Int4>(w)) : address(w, state.addressingModeW, mipmap);
+		Short4 uuuu = address(u, state.addressingModeU, mipmap, offset.x, function, OFFSET(Mipmap, width));
+		Short4 vvvv = address(v, state.addressingModeV, mipmap, offset.y, function, OFFSET(Mipmap, height));
+		Short4 wwww = address(w, state.addressingModeW, mipmap, offset.z, function, OFFSET(Mipmap, depth));
 
 		if(state.textureFilter == FILTER_POINT || texelFetch)
 		{
-			sampleTexel(c, uuuu, vvvv, wwww, offset, mipmap, buffer, function);
+			sampleTexel(c, uuuu, vvvv, wwww, mipmap, buffer, function);
 		}
 		else
 		{
@@ -815,10 +815,10 @@ namespace sw
 			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1, lod);
 			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1, lod);
 
-			sampleTexel(c0, uuuu0, vvvv0, wwww, offset, mipmap, buffer, function);
-			sampleTexel(c1, uuuu1, vvvv0, wwww, offset, mipmap, buffer, function);
-			sampleTexel(c2, uuuu0, vvvv1, wwww, offset, mipmap, buffer, function);
-			sampleTexel(c3, uuuu1, vvvv1, wwww, offset, mipmap, buffer, function);
+			sampleTexel(c0, uuuu0, vvvv0, wwww, mipmap, buffer, function);
+			sampleTexel(c1, uuuu1, vvvv0, wwww, mipmap, buffer, function);
+			sampleTexel(c2, uuuu0, vvvv1, wwww, mipmap, buffer, function);
+			sampleTexel(c3, uuuu1, vvvv1, wwww, mipmap, buffer, function);
 
 			if(!gather)   // Blend
 			{
@@ -991,13 +991,13 @@ namespace sw
 
 		bool texelFetch = (function == Fetch);
 
-		Short4 uuuu = texelFetch ? Short4(As<Int4>(u_)) : address(u_, state.addressingModeU, mipmap);
-		Short4 vvvv = texelFetch ? Short4(As<Int4>(v_)) : address(v_, state.addressingModeV, mipmap);
-		Short4 wwww = texelFetch ? Short4(As<Int4>(w_)) : address(w_, state.addressingModeW, mipmap);
+		Short4 uuuu = address(u_, state.addressingModeU, mipmap, offset.x, function, OFFSET(Mipmap, width));
+		Short4 vvvv = address(v_, state.addressingModeV, mipmap, offset.y, function, OFFSET(Mipmap, height));
+		Short4 wwww = address(w_, state.addressingModeW, mipmap, offset.z, function, OFFSET(Mipmap, depth));
 
 		if(state.textureFilter == FILTER_POINT || texelFetch)
 		{
-			sampleTexel(c_, uuuu, vvvv, wwww, offset, mipmap, buffer, function);
+			sampleTexel(c_, uuuu, vvvv, wwww, mipmap, buffer, function);
 		}
 		else
 		{
@@ -1069,7 +1069,7 @@ namespace sw
 				{
 					for(int k = 0; k < 2; k++)
 					{
-						sampleTexel(c[i][j][k], u[i][j][k], v[i][j][k], s[i][j][k], offset, mipmap, buffer, function);
+						sampleTexel(c[i][j][k], u[i][j][k], v[i][j][k], s[i][j][k], mipmap, buffer, function);
 
 						if(componentCount >= 1) { if(hasUnsignedTextureComponent(0)) c[i][j][k].x = MulHigh(As<UShort4>(c[i][j][k].x), f[1 - i][1 - j][1 - k]); else c[i][j][k].x = MulHigh(c[i][j][k].x, fs[1 - i][1 - j][1 - k]); }
 						if(componentCount >= 2) { if(hasUnsignedTextureComponent(1)) c[i][j][k].y = MulHigh(As<UShort4>(c[i][j][k].y), f[1 - i][1 - j][1 - k]); else c[i][j][k].y = MulHigh(c[i][j][k].y, fs[1 - i][1 - j][1 - k]); }
@@ -1258,13 +1258,13 @@ namespace sw
 
 		bool texelFetch = (function == Fetch);
 
-		Short4 uuuu = texelFetch ? Short4(As<Int4>(u)) : address(u, state.addressingModeU, mipmap);
-		Short4 vvvv = texelFetch ? Short4(As<Int4>(v)) : address(v, state.addressingModeV, mipmap);
-		Short4 wwww = texelFetch ? Short4(As<Int4>(w)) : address(w, state.addressingModeW, mipmap);
+		Short4 uuuu = address(u, state.addressingModeU, mipmap, offset.x, function, OFFSET(Mipmap, width));
+		Short4 vvvv = address(v, state.addressingModeV, mipmap, offset.y, function, OFFSET(Mipmap, height));
+		Short4 wwww = address(w, state.addressingModeW, mipmap, offset.z, function, OFFSET(Mipmap, depth));
 
 		if(state.textureFilter == FILTER_POINT || texelFetch)
 		{
-			sampleTexel(c, uuuu, vvvv, wwww, offset, w, mipmap, buffer, function);
+			sampleTexel(c, uuuu, vvvv, wwww, w, mipmap, buffer, function);
 		}
 		else
 		{
@@ -1278,10 +1278,10 @@ namespace sw
 			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1, lod);
 			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1, lod);
 
-			sampleTexel(c0, uuuu0, vvvv0, wwww, offset, w, mipmap, buffer, function);
-			sampleTexel(c1, uuuu1, vvvv0, wwww, offset, w, mipmap, buffer, function);
-			sampleTexel(c2, uuuu0, vvvv1, wwww, offset, w, mipmap, buffer, function);
-			sampleTexel(c3, uuuu1, vvvv1, wwww, offset, w, mipmap, buffer, function);
+			sampleTexel(c0, uuuu0, vvvv0, wwww, w, mipmap, buffer, function);
+			sampleTexel(c1, uuuu1, vvvv0, wwww, w, mipmap, buffer, function);
+			sampleTexel(c2, uuuu0, vvvv1, wwww, w, mipmap, buffer, function);
+			sampleTexel(c3, uuuu1, vvvv1, wwww, w, mipmap, buffer, function);
 
 			if(!gather)   // Blend
 			{
@@ -1326,13 +1326,13 @@ namespace sw
 
 		bool texelFetch = (function == Fetch);
 
-		Short4 uuuu = texelFetch ? Short4(As<Int4>(u)) : address(u, state.addressingModeU, mipmap);
-		Short4 vvvv = texelFetch ? Short4(As<Int4>(v)) : address(v, state.addressingModeV, mipmap);
-		Short4 wwww = texelFetch ? Short4(As<Int4>(w)) : address(w, state.addressingModeW, mipmap);
+		Short4 uuuu = address(u, state.addressingModeU, mipmap, offset.x, function, OFFSET(Mipmap, width));
+		Short4 vvvv = address(v, state.addressingModeV, mipmap, offset.y, function, OFFSET(Mipmap, height));
+		Short4 wwww = address(w, state.addressingModeW, mipmap, offset.z, function, OFFSET(Mipmap, depth));
 
 		if(state.textureFilter == FILTER_POINT || texelFetch)
 		{
-			sampleTexel(c, uuuu, vvvv, wwww, offset, w, mipmap, buffer, function);
+			sampleTexel(c, uuuu, vvvv, wwww, w, mipmap, buffer, function);
 		}
 		else
 		{
@@ -1352,14 +1352,14 @@ namespace sw
 			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, +1, lod);
 			Short4 wwww1 = offsetSample(wwww, mipmap, OFFSET(Mipmap,wHalf), state.addressingModeW == ADDRESSING_WRAP, +1, lod);
 
-			sampleTexel(c0, uuuu0, vvvv0, wwww0, offset, w, mipmap, buffer, function);
-			sampleTexel(c1, uuuu1, vvvv0, wwww0, offset, w, mipmap, buffer, function);
-			sampleTexel(c2, uuuu0, vvvv1, wwww0, offset, w, mipmap, buffer, function);
-			sampleTexel(c3, uuuu1, vvvv1, wwww0, offset, w, mipmap, buffer, function);
-			sampleTexel(c4, uuuu0, vvvv0, wwww1, offset, w, mipmap, buffer, function);
-			sampleTexel(c5, uuuu1, vvvv0, wwww1, offset, w, mipmap, buffer, function);
-			sampleTexel(c6, uuuu0, vvvv1, wwww1, offset, w, mipmap, buffer, function);
-			sampleTexel(c7, uuuu1, vvvv1, wwww1, offset, w, mipmap, buffer, function);
+			sampleTexel(c0, uuuu0, vvvv0, wwww0, w, mipmap, buffer, function);
+			sampleTexel(c1, uuuu1, vvvv0, wwww0, w, mipmap, buffer, function);
+			sampleTexel(c2, uuuu0, vvvv1, wwww0, w, mipmap, buffer, function);
+			sampleTexel(c3, uuuu1, vvvv1, wwww0, w, mipmap, buffer, function);
+			sampleTexel(c4, uuuu0, vvvv0, wwww1, w, mipmap, buffer, function);
+			sampleTexel(c5, uuuu1, vvvv0, wwww1, w, mipmap, buffer, function);
+			sampleTexel(c6, uuuu0, vvvv1, wwww1, w, mipmap, buffer, function);
+			sampleTexel(c7, uuuu1, vvvv1, wwww1, w, mipmap, buffer, function);
 
 			// Fractions
 			Float4 fu = Frac(Float4(As<UShort4>(uuuu0)) * *Pointer<Float4>(mipmap + OFFSET(Mipmap,fWidth)));
@@ -1652,46 +1652,14 @@ namespace sw
 		lodZ = z * M;
 	}
 
-	Short4 SamplerCore::applyOffset(Short4 &uvw, Float4 &offset, const Int4 &whd, AddressingMode mode)
-	{
-		Int4 tmp = Int4(As<UShort4>(uvw));
-		tmp = tmp + As<Int4>(offset);
-
-		switch (mode)
-		{
-		case AddressingMode::ADDRESSING_WRAP:
-			tmp = (tmp + whd * Int4(-MIN_PROGRAM_TEXEL_OFFSET)) % whd;
-			break;
-		case AddressingMode::ADDRESSING_CLAMP:
-		case AddressingMode::ADDRESSING_MIRROR:
-		case AddressingMode::ADDRESSING_MIRRORONCE:
-		case AddressingMode::ADDRESSING_BORDER: // FIXME: Implement and test ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE, ADDRESSING_BORDER
-			tmp = Min(Max(tmp, Int4(0)), whd - Int4(1));
-			break;
-		case ADDRESSING_TEXELFETCH:
-			break;
-		default:
-			ASSERT(false);
-		}
-
-		return As<Short4>(UShort4(tmp));
-	}
-
-	void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, Vector4f &offset, const Pointer<Byte> &mipmap, SamplerFunction function)
+	void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, const Pointer<Byte> &mipmap, SamplerFunction function)
 	{
 		bool texelFetch = (function == Fetch);
-		bool hasOffset = (function.option == Offset);
 
 		if(!texelFetch)
 		{
 			uuuu = MulHigh(As<UShort4>(uuuu), *Pointer<UShort4>(mipmap + OFFSET(Mipmap, width)));
 			vvvv = MulHigh(As<UShort4>(vvvv), *Pointer<UShort4>(mipmap + OFFSET(Mipmap, height)));
-		}
-
-		if(hasOffset)
-		{
-			uuuu = applyOffset(uuuu, offset.x, Int4(*Pointer<UShort4>(mipmap + OFFSET(Mipmap, width))), texelFetch ? ADDRESSING_TEXELFETCH : state.addressingModeU);
-			vvvv = applyOffset(vvvv, offset.y, Int4(*Pointer<UShort4>(mipmap + OFFSET(Mipmap, height))), texelFetch ? ADDRESSING_TEXELFETCH : state.addressingModeV);
 		}
 
 		Short4 uuu2 = uuuu;
@@ -1707,10 +1675,6 @@ namespace sw
 				if(!texelFetch)
 				{
 					wwww = MulHigh(As<UShort4>(wwww), *Pointer<UShort4>(mipmap + OFFSET(Mipmap, depth)));
-				}
-				if(hasOffset)
-				{
-					wwww = applyOffset(wwww, offset.z, Int4(*Pointer<UShort4>(mipmap + OFFSET(Mipmap, depth))), texelFetch ? ADDRESSING_TEXELFETCH : state.addressingModeW);
 				}
 			}
 			Short4 www2 = wwww;
@@ -1744,11 +1708,11 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleTexel(Vector4s &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Vector4f &offset, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
+	void SamplerCore::sampleTexel(Vector4s &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
 	{
 		UInt index[4];
 
-		computeIndices(index, uuuu, vvvv, wwww, offset, mipmap, function);
+		computeIndices(index, uuuu, vvvv, wwww, mipmap, function);
 
 		int f0 = state.textureType == TEXTURE_CUBE ? 0 : 0;
 		int f1 = state.textureType == TEXTURE_CUBE ? 1 : 0;
@@ -1984,7 +1948,7 @@ namespace sw
 			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
 			UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
 
-			computeIndices(index, uuuu, vvvv, wwww, offset, mipmap + sizeof(Mipmap), function);
+			computeIndices(index, uuuu, vvvv, wwww, mipmap + sizeof(Mipmap), function);
 			c0 = Int(buffer[1][index[0]]);
 			c1 = Int(buffer[1][index[1]]);
 			c2 = Int(buffer[1][index[2]]);
@@ -2021,11 +1985,11 @@ namespace sw
 		else ASSERT(false);
 	}
 
-	void SamplerCore::sampleTexel(Vector4f &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Vector4f &offset, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
+	void SamplerCore::sampleTexel(Vector4f &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
 	{
 		UInt index[4];
 
-		computeIndices(index, uuuu, vvvv, wwww, offset, mipmap, function);
+		computeIndices(index, uuuu, vvvv, wwww, mipmap, function);
 
 		int f0 = state.textureType == TEXTURE_CUBE ? 0 : 0;
 		int f1 = state.textureType == TEXTURE_CUBE ? 1 : 0;
@@ -2121,45 +2085,42 @@ namespace sw
 		}
 	}
 
-	Short4 SamplerCore::address(Float4 &uw, AddressingMode addressingMode, Pointer<Byte>& mipmap)
+	Short4 SamplerCore::address(Float4 &uw, AddressingMode addressingMode, Pointer<Byte>& mipmap, Float4 &offset, SamplerFunction function, int dimOffset)
 	{
-		if(addressingMode == ADDRESSING_LAYER && state.textureType != TEXTURE_2D_ARRAY)
+		if(function == Fetch)
+		{
+			return ((function.option == Offset) && (addressingMode != ADDRESSING_LAYER)) ? Short4(As<Int4>(uw) + As<Int4>(offset)) : Short4(As<Int4>(uw));
+		}
+		else if(addressingMode == ADDRESSING_LAYER && state.textureType != TEXTURE_2D_ARRAY)
 		{
 			return Short4();   // Unused
 		}
-		else if(addressingMode == ADDRESSING_LAYER && state.textureType == TEXTURE_2D_ARRAY)
+		else if(addressingMode == ADDRESSING_LAYER && state.textureType == TEXTURE_2D_ARRAY) // Note: Offset does not apply to array layers
 		{
-			return Min(Max(Short4(RoundInt(uw)), Short4(0)), *Pointer<Short4>(mipmap + OFFSET(Mipmap, depth)) - Short4(1));
+			return Short4(Int4(Min(Max(Round(uw), Float4(0.0f)), Float4(*Pointer<Short4>(mipmap + OFFSET(Mipmap, depth)) - Short4(1))) + Float4(0.5f)));
 		}
-		else if(addressingMode == ADDRESSING_CLAMP)
+		else
 		{
-			Float4 clamp = Min(Max(uw, Float4(0.0f)), Float4(65535.0f / 65536.0f));
+			Float4 tmp = (function.option == Offset) ? uw + Float4(As<Int4>(offset)) / Float4(*Pointer<Short4>(mipmap + dimOffset)) : uw;
 
-			return Short4(Int4(clamp * Float4(1 << 16)));
-		}
-		else if(addressingMode == ADDRESSING_MIRROR)
-		{
-			Int4 convert = Int4(uw * Float4(1 << 16));
-			Int4 mirror = (convert << 15) >> 31;
+			if(addressingMode == ADDRESSING_CLAMP)
+			{
+				tmp = Min(Max(tmp, Float4(0.0f)), Float4(0.99999f));
+			}
+			else if(addressingMode == ADDRESSING_MIRROR)
+			{
+				tmp = Float4(0.99999f) - Abs(Float4(1.99998f) * Frac(tmp * Float4(0.5f)) - Float4(0.99999f));
+			}
+			else if(addressingMode == ADDRESSING_MIRRORONCE)
+			{
+				tmp = Float4(0.99999f) - Abs(Float4(1.99998f) * Frac(Min(Max(tmp, Float4(-1.0f)), Float4(2.0f)) * Float4(0.5f)) - Float4(0.99999f));
+			}
+			else   // Wrap (or border)
+			{
+				tmp = Frac(tmp);
+			}
 
-			convert ^= mirror;
-
-			return Short4(convert);
-		}
-		else if(addressingMode == ADDRESSING_MIRRORONCE)
-		{
-			// Absolute value
-			Int4 convert = Int4(Abs(uw * Float4(1 << 16)));
-
-			// Clamp
-			convert -= Int4(0x00008000, 0x00008000, 0x00008000, 0x00008000);
-			convert = As<Int4>(Pack(convert, convert));
-
-			return As<Short4>(Int2(convert)) + Short4(0x8000u);
-		}
-		else   // Wrap (or border)
-		{
-			return Short4(Int4(uw * Float4(1 << 16)));
+			return Short4(Int4(tmp * Float4(1 << 16)));
 		}
 	}
 
