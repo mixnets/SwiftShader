@@ -1,7 +1,7 @@
-void Print();
+#include <stdio.h>
 
 int main(void)
 {
-	Print();
+	printf("Quick fix for build.");
 	return 0;
 }
