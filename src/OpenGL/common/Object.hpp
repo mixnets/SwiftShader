@@ -21,6 +21,7 @@
 
 #include "common/debug.h"
 
+#include <mutex>
 #include <set>
 
 typedef unsigned int GLuint;
@@ -51,6 +52,7 @@ protected:
 
 #ifndef NDEBUG
 public:
+	static std::mutex instances_mutex;
 	static std::set<Object*> instances;   // For leak checking
 #endif
 };
