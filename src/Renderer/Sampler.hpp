@@ -25,18 +25,11 @@ namespace sw
 	{
 		const void *buffer[6];
 
-		float4 fWidth;
-		float4 fHeight;
-		float4 fDepth;
-
-		short uHalf[4];
-		short vHalf[4];
-		short wHalf[4];
-		short width[4];
-		short height[4];
-		short depth[4];
-		short onePitchP[4];
-		int sliceP[2];
+		int width[4];
+		int height[4];
+		int depth[4];
+		int pitchP[4];
+		int sliceP[4];
 	};
 
 	struct Texture
