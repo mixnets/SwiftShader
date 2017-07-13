@@ -23,7 +23,7 @@
 namespace gl
 {
 #ifndef NDEBUG
-sw::MutexLock Object::instances_mutex;
+sw::MutexLock Object::instancesMutex;
 std::set<Object*> Object::instances;
 #endif
 
@@ -32,7 +32,7 @@ Object::Object()
 	referenceCount = 0;
 
 	#ifndef NDEBUG
-		LockGuard instances_lock(instances_mutex);
+		LockGuard instancesLock(instancesMutex);
 		instances.insert(this);
 	#endif
 }
@@ -42,7 +42,7 @@ Object::~Object()
 	ASSERT(referenceCount == 0);
 
 	#ifndef NDEBUG
-		LockGuard instances_lock(instances_mutex);
+		LockGuard instancesLock(instancesMutex);
 		ASSERT(instances.find(this) != instances.end());   // Check for double deletion
 		instances.erase(this);
 	#endif
@@ -92,8 +92,12 @@ struct ObjectLeakCheck
 {
 	~ObjectLeakCheck()
 	{
-		LockGuard instances_lock(Object::instances_mutex);
-		ASSERT(Object::instances.empty());   // Check for GL object leak at termination
+		LockGuard instancesLock(Object::instancesMutex);
+
+		// Check for GL object leak at termination.
+		// Failing this can be an application bug for not performing cleanup,
+		// or an implementation bug with incorrect reference counting.
+		ASSERT(Object::instances.empty());
 	}
 };
 
