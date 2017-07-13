@@ -29,13 +29,16 @@ namespace sw
 		float4 fHeight;
 		float4 fDepth;
 
-		short uHalf[4];
-		short vHalf[4];
-		short wHalf[4];
+		int4 uHalf[4];
+		int4 vHalf[4];
+		int4 wHalf[4];
 		short width[4];
 		short height[4];
-		short depth[4];
-		short onePitchP[4];
+		int4 depthi[4];
+		short8 width8;
+		short8 height8;
+		short widthHeight[8];
+		short onePitchP8[8];
 		int sliceP[2];
 	};
 
