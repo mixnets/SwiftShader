@@ -58,23 +58,17 @@ namespace sw
 
 		void border(Short4 &mask, Float4 &coordinates);
 		void border(Int4 &mask, Float4 &coordinates);
-		void sampleFilter(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], SamplerFunction function);
-		void sampleAniso(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, SamplerFunction function);
-		void sampleQuad(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function);
-		void sampleQuad2D(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function);
-		void sample3D(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, bool secondLOD, SamplerFunction function);
-		void sampleFloatFilter(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], SamplerFunction function);
-		void sampleFloatAniso(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, SamplerFunction function);
-		void sampleFloat(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function);
-		void sampleFloat2D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function);
-		void sampleFloat3D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, bool secondLOD, SamplerFunction function);
+		void sampleFilter(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], SamplerFunction function);
+		void sampleAniso(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, SamplerFunction function);
+		void sampleQuad(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function);
+		void sampleQuad2D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function);
+		void sample3D(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, bool secondLOD, SamplerFunction function);
 		void computeLod(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &u, Float4 &v, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, SamplerFunction function);
 		void computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &x, Float4 &y, Float4 &z, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, SamplerFunction function);
 		void computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, SamplerFunction function);
 		void cubeFace(Int face[4], Float4 &U, Float4 &V, Float4 &lodX, Float4 &lodY, Float4 &lodZ, Float4 &x, Float4 &y, Float4 &z);
 		void computeTextureCoordinates(Int4* x, Int4* y, Int4* z, Float4* fu, Float4* fv, Float4* fw, Pointer<Byte> &mipmap, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, SamplerFunction function);
 		void computeIndices(UInt index[4], Int4 uuuu, Int4 vvvv, Int4 wwww, const Pointer<Byte> &mipmap, SamplerFunction function);
-		void sampleTexel(Vector4s &c, Int4 &u, Int4 &v, Int4 &s, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function);
 		void sampleTexel(Vector4f &c, Int4 &u, Int4 &v, Int4 &s, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function);
 		void selectMipmap(Pointer<Byte> &texture, Pointer<Byte> buffer[4], Pointer<Byte> &mipmap, Float &lod, Int face[4], bool secondLOD);
 		void address(Float4 &uw, Int4* xyz, Float4* ratio, Pointer<Byte>& mipmap, Float4 &texOffset, Int4 &filter, int whd, AddressingMode addressingMode, SamplerFunction function);
@@ -89,12 +83,12 @@ namespace sw
 		void sRGBtoLinear16_6_12(Short4 &c);
 		void sRGBtoLinear16_5_12(Short4 &c);
 
-		bool hasFloatTexture() const;
 		bool hasUnsignedTextureComponent(int component) const;
 		int textureComponentCount() const;
 		bool has16bitTextureFormat() const;
 		bool has8bitTextureComponents() const;
 		bool has16bitTextureComponents() const;
+		bool hasFloatOr32bitTextureComponents() const;
 		bool hasYuvFormat() const;
 		bool isRGBComponent(int component) const;
 
