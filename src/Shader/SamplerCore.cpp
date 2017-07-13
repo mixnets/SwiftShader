@@ -623,6 +623,8 @@ namespace sw
 			return;
 		}
 
+		int componentCount = textureComponentCount();
+
 		if(state.mipmapFilter > MIPMAP_POINT)
 		{
 			Vector4s cc;
@@ -633,29 +635,21 @@ namespace sw
 
 			UShort4 utri = UShort4(Float4(lod));   // FIXME: Optimize
 			Short4 stri = utri >> 1;   // FIXME: Optimize
+			UShort4 utri2 = ~utri;
+			Short4 stri2 = Short4(0x7FFF) - stri;
 
-			if(hasUnsignedTextureComponent(0)) cc.x = MulHigh(As<UShort4>(cc.x), utri); else cc.x = MulHigh(cc.x, stri);
-			if(hasUnsignedTextureComponent(1)) cc.y = MulHigh(As<UShort4>(cc.y), utri); else cc.y = MulHigh(cc.y, stri);
-			if(hasUnsignedTextureComponent(2)) cc.z = MulHigh(As<UShort4>(cc.z), utri); else cc.z = MulHigh(cc.z, stri);
-			if(hasUnsignedTextureComponent(3)) cc.w = MulHigh(As<UShort4>(cc.w), utri); else cc.w = MulHigh(cc.w, stri);
-
-			utri = ~utri;
-			stri = Short4(0x7FFF) - stri;
-
-			if(hasUnsignedTextureComponent(0)) c.x = MulHigh(As<UShort4>(c.x), utri); else c.x = MulHigh(c.x, stri);
-			if(hasUnsignedTextureComponent(1)) c.y = MulHigh(As<UShort4>(c.y), utri); else c.y = MulHigh(c.y, stri);
-			if(hasUnsignedTextureComponent(2)) c.z = MulHigh(As<UShort4>(c.z), utri); else c.z = MulHigh(c.z, stri);
-			if(hasUnsignedTextureComponent(3)) c.w = MulHigh(As<UShort4>(c.w), utri); else c.w = MulHigh(c.w, stri);
-
-			c.x += cc.x;
-			c.y += cc.y;
-			c.z += cc.z;
-			c.w += cc.w;
-
-			if(!hasUnsignedTextureComponent(0)) c.x += c.x;
-			if(!hasUnsignedTextureComponent(1)) c.y += c.y;
-			if(!hasUnsignedTextureComponent(2)) c.z += c.z;
-			if(!hasUnsignedTextureComponent(3)) c.w += c.w;
+			for(int n = 0; n < componentCount; ++n)
+			{
+				if(hasUnsignedTextureComponent(n))
+				{
+					c[n] = As<Short4>(MulHigh(As<UShort4>(cc[n]), utri) + MulHigh(As<UShort4>(c[n]), utri2));
+				}
+				else
+				{
+					c[n] = (MulHigh(cc[n], stri) + MulHigh(c[n], stri2));
+					c[n] += c[n];
+				}
+			}
 		}
 
 		Short4 borderMask;
@@ -706,12 +700,10 @@ namespace sw
 		   state.addressingModeV == ADDRESSING_BORDER ||
 		   (state.addressingModeW == ADDRESSING_BORDER && state.textureType == TEXTURE_3D))
 		{
-			Short4 b;
-
-			c.x = (borderMask & c.x) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture,borderColor4[0])) >> (hasUnsignedTextureComponent(0) ? 0 : 1)));
-			c.y = (borderMask & c.y) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture,borderColor4[1])) >> (hasUnsignedTextureComponent(1) ? 0 : 1)));
-			c.z = (borderMask & c.z) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture,borderColor4[2])) >> (hasUnsignedTextureComponent(2) ? 0 : 1)));
-			c.w = (borderMask & c.w) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture,borderColor4[3])) >> (hasUnsignedTextureComponent(3) ? 0 : 1)));
+			for(int n = 0; n < componentCount; ++n)
+			{
+				c[n] = (borderMask & c[n]) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture, borderColor4[n])) >> (hasUnsignedTextureComponent(n) ? 0 : 1)));
+			}
 		}
 	}
 
@@ -748,6 +740,8 @@ namespace sw
 
 			Int i = 0;
 
+			int componentCount = textureComponentCount();
+
 			Do
 			{
 				sampleQuad(texture, c, u0, v0, w, offset, lod, face, secondLOD, function);
@@ -755,19 +749,19 @@ namespace sw
 				u0 += du;
 				v0 += dv;
 
-				if(hasUnsignedTextureComponent(0)) cSum.x += As<Short4>(MulHigh(As<UShort4>(c.x), cw)); else cSum.x += MulHigh(c.x, sw);
-				if(hasUnsignedTextureComponent(1)) cSum.y += As<Short4>(MulHigh(As<UShort4>(c.y), cw)); else cSum.y += MulHigh(c.y, sw);
-				if(hasUnsignedTextureComponent(2)) cSum.z += As<Short4>(MulHigh(As<UShort4>(c.z), cw)); else cSum.z += MulHigh(c.z, sw);
-				if(hasUnsignedTextureComponent(3)) cSum.w += As<Short4>(MulHigh(As<UShort4>(c.w), cw)); else cSum.w += MulHigh(c.w, sw);
+				for(int n = 0; n < componentCount; ++n)
+				{
+					cSum[n] += hasUnsignedTextureComponent(n) ? As<Short4>(MulHigh(As<UShort4>(c[n]), cw)) : MulHigh(c[n], sw);
+				}
 
 				i++;
 			}
 			Until(i >= a)
 
-			if(hasUnsignedTextureComponent(0)) c.x = cSum.x; else c.x = AddSat(cSum.x, cSum.x);
-			if(hasUnsignedTextureComponent(1)) c.y = cSum.y; else c.y = AddSat(cSum.y, cSum.y);
-			if(hasUnsignedTextureComponent(2)) c.z = cSum.z; else c.z = AddSat(cSum.z, cSum.z);
-			if(hasUnsignedTextureComponent(3)) c.w = cSum.w; else c.w = AddSat(cSum.w, cSum.w);
+			for(int n = 0; n < componentCount; ++n)
+			{
+				c[n] = hasUnsignedTextureComponent(n) ? cSum[n] : AddSat(cSum[n], cSum[n]);
+			}
 		}
 	}
 
@@ -805,26 +799,25 @@ namespace sw
 		}
 		else
 		{
-			Vector4s c0;
-			Vector4s c1;
-			Vector4s c2;
-			Vector4s c3;
+			Vector4s cs[4];
+			Short4 uv[2][2];
 
-			Short4 uuuu0 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 0 : -1, lod);
-			Short4 vvvv0 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 0 : -1, lod);
-			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1, lod);
-			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1, lod);
+			for(int i = 0; i < 2; ++i)
+			{
+				uv[i][0] = offsetSample(uuuu, mipmap, OFFSET(Mipmap, uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 * i : 2 * i - 1, lod);
+				uv[i][1] = offsetSample(vvvv, mipmap, OFFSET(Mipmap, vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 * i : 2 * i - 1, lod);
+			}
 
-			sampleTexel(c0, uuuu0, vvvv0, wwww, offset, mipmap, buffer, function);
-			sampleTexel(c1, uuuu1, vvvv0, wwww, offset, mipmap, buffer, function);
-			sampleTexel(c2, uuuu0, vvvv1, wwww, offset, mipmap, buffer, function);
-			sampleTexel(c3, uuuu1, vvvv1, wwww, offset, mipmap, buffer, function);
+			for(int n = 0; n < 4; ++n)
+			{
+				sampleTexel(cs[n], uv[n & 1][0], uv[(n & 2) >> 1][1], wwww, offset, mipmap, buffer, function);
+			}
 
 			if(!gather)   // Blend
 			{
 				// Fractions
-				UShort4 f0u = As<UShort4>(uuuu0) * *Pointer<UShort4>(mipmap + OFFSET(Mipmap,width));
-				UShort4 f0v = As<UShort4>(vvvv0) * *Pointer<UShort4>(mipmap + OFFSET(Mipmap,height));
+				UShort4 f0u = As<UShort4>(uv[0][0]) * *Pointer<UShort4>(mipmap + OFFSET(Mipmap,width));
+				UShort4 f0v = As<UShort4>(uv[0][1]) * *Pointer<UShort4>(mipmap + OFFSET(Mipmap,height));
 
 				UShort4 f1u = ~f0u;
 				UShort4 f1v = ~f0v;
@@ -849,132 +842,43 @@ namespace sw
 				}
 
 				// Bilinear interpolation
-				if(componentCount >= 1)
+				int componentCount = textureComponentCount();
+				for(int n = 0; n < componentCount; ++n)
 				{
-					if(has16bitTextureComponents() && hasUnsignedTextureComponent(0))
+					if(has16bitTextureComponents() && hasUnsignedTextureComponent(n))
 					{
-						c0.x = As<UShort4>(c0.x) - MulHigh(As<UShort4>(c0.x), f0u) + MulHigh(As<UShort4>(c1.x), f0u);
-						c2.x = As<UShort4>(c2.x) - MulHigh(As<UShort4>(c2.x), f0u) + MulHigh(As<UShort4>(c3.x), f0u);
-						c.x  = As<UShort4>(c0.x) - MulHigh(As<UShort4>(c0.x), f0v) + MulHigh(As<UShort4>(c2.x), f0v);
+						cs[0][n] = As<UShort4>(cs[0][n]) - MulHigh(As<UShort4>(cs[0][n]), f0u) + MulHigh(As<UShort4>(cs[1][n]), f0u);
+						cs[2][n] = As<UShort4>(cs[2][n]) - MulHigh(As<UShort4>(cs[2][n]), f0u) + MulHigh(As<UShort4>(cs[3][n]), f0u);
+						c[n] = As<UShort4>(cs[0][n]) - MulHigh(As<UShort4>(cs[0][n]), f0v) + MulHigh(As<UShort4>(cs[2][n]), f0v);
 					}
 					else
 					{
-						if(hasUnsignedTextureComponent(0))
+						if(hasUnsignedTextureComponent(n))
 						{
-							c0.x = MulHigh(As<UShort4>(c0.x), f1u1v);
-							c1.x = MulHigh(As<UShort4>(c1.x), f0u1v);
-							c2.x = MulHigh(As<UShort4>(c2.x), f1u0v);
-							c3.x = MulHigh(As<UShort4>(c3.x), f0u0v);
+							cs[0][n] = MulHigh(As<UShort4>(cs[0][n]), f1u1v);
+							cs[1][n] = MulHigh(As<UShort4>(cs[1][n]), f0u1v);
+							cs[2][n] = MulHigh(As<UShort4>(cs[2][n]), f1u0v);
+							cs[3][n] = MulHigh(As<UShort4>(cs[3][n]), f0u0v);
 						}
 						else
 						{
-							c0.x = MulHigh(c0.x, f1u1vs);
-							c1.x = MulHigh(c1.x, f0u1vs);
-							c2.x = MulHigh(c2.x, f1u0vs);
-							c3.x = MulHigh(c3.x, f0u0vs);
+							cs[0][n] = MulHigh(cs[0][n], f1u1vs);
+							cs[1][n] = MulHigh(cs[1][n], f0u1vs);
+							cs[2][n] = MulHigh(cs[2][n], f1u0vs);
+							cs[3][n] = MulHigh(cs[3][n], f0u0vs);
 						}
 
-						c.x = (c0.x + c1.x) + (c2.x + c3.x);
-						if(!hasUnsignedTextureComponent(0)) c.x = AddSat(c.x, c.x);   // Correct for signed fractions
-					}
-				}
-
-				if(componentCount >= 2)
-				{
-					if(has16bitTextureComponents() && hasUnsignedTextureComponent(1))
-					{
-						c0.y = As<UShort4>(c0.y) - MulHigh(As<UShort4>(c0.y), f0u) + MulHigh(As<UShort4>(c1.y), f0u);
-						c2.y = As<UShort4>(c2.y) - MulHigh(As<UShort4>(c2.y), f0u) + MulHigh(As<UShort4>(c3.y), f0u);
-						c.y  = As<UShort4>(c0.y) - MulHigh(As<UShort4>(c0.y), f0v) + MulHigh(As<UShort4>(c2.y), f0v);
-					}
-					else
-					{
-						if(hasUnsignedTextureComponent(1))
-						{
-							c0.y = MulHigh(As<UShort4>(c0.y), f1u1v);
-							c1.y = MulHigh(As<UShort4>(c1.y), f0u1v);
-							c2.y = MulHigh(As<UShort4>(c2.y), f1u0v);
-							c3.y = MulHigh(As<UShort4>(c3.y), f0u0v);
-						}
-						else
-						{
-							c0.y = MulHigh(c0.y, f1u1vs);
-							c1.y = MulHigh(c1.y, f0u1vs);
-							c2.y = MulHigh(c2.y, f1u0vs);
-							c3.y = MulHigh(c3.y, f0u0vs);
-						}
-
-						c.y = (c0.y + c1.y) + (c2.y + c3.y);
-						if(!hasUnsignedTextureComponent(1)) c.y = AddSat(c.y, c.y);   // Correct for signed fractions
-					}
-				}
-
-				if(componentCount >= 3)
-				{
-					if(has16bitTextureComponents() && hasUnsignedTextureComponent(2))
-					{
-						c0.z = As<UShort4>(c0.z) - MulHigh(As<UShort4>(c0.z), f0u) + MulHigh(As<UShort4>(c1.z), f0u);
-						c2.z = As<UShort4>(c2.z) - MulHigh(As<UShort4>(c2.z), f0u) + MulHigh(As<UShort4>(c3.z), f0u);
-						c.z  = As<UShort4>(c0.z) - MulHigh(As<UShort4>(c0.z), f0v) + MulHigh(As<UShort4>(c2.z), f0v);
-					}
-					else
-					{
-						if(hasUnsignedTextureComponent(2))
-						{
-							c0.z = MulHigh(As<UShort4>(c0.z), f1u1v);
-							c1.z = MulHigh(As<UShort4>(c1.z), f0u1v);
-							c2.z = MulHigh(As<UShort4>(c2.z), f1u0v);
-							c3.z = MulHigh(As<UShort4>(c3.z), f0u0v);
-						}
-						else
-						{
-							c0.z = MulHigh(c0.z, f1u1vs);
-							c1.z = MulHigh(c1.z, f0u1vs);
-							c2.z = MulHigh(c2.z, f1u0vs);
-							c3.z = MulHigh(c3.z, f0u0vs);
-						}
-
-						c.z = (c0.z + c1.z) + (c2.z + c3.z);
-						if(!hasUnsignedTextureComponent(2)) c.z = AddSat(c.z, c.z);   // Correct for signed fractions
-					}
-				}
-
-				if(componentCount >= 4)
-				{
-					if(has16bitTextureComponents() && hasUnsignedTextureComponent(3))
-					{
-						c0.w = As<UShort4>(c0.w) - MulHigh(As<UShort4>(c0.w), f0u) + MulHigh(As<UShort4>(c1.w), f0u);
-						c2.w = As<UShort4>(c2.w) - MulHigh(As<UShort4>(c2.w), f0u) + MulHigh(As<UShort4>(c3.w), f0u);
-						c.w  = As<UShort4>(c0.w) - MulHigh(As<UShort4>(c0.w), f0v) + MulHigh(As<UShort4>(c2.w), f0v);
-					}
-					else
-					{
-						if(hasUnsignedTextureComponent(3))
-						{
-							c0.w = MulHigh(As<UShort4>(c0.w), f1u1v);
-							c1.w = MulHigh(As<UShort4>(c1.w), f0u1v);
-							c2.w = MulHigh(As<UShort4>(c2.w), f1u0v);
-							c3.w = MulHigh(As<UShort4>(c3.w), f0u0v);
-						}
-						else
-						{
-							c0.w = MulHigh(c0.w, f1u1vs);
-							c1.w = MulHigh(c1.w, f0u1vs);
-							c2.w = MulHigh(c2.w, f1u0vs);
-							c3.w = MulHigh(c3.w, f0u0vs);
-						}
-
-						c.w = (c0.w + c1.w) + (c2.w + c3.w);
-						if(!hasUnsignedTextureComponent(3)) c.w = AddSat(c.w, c.w);   // Correct for signed fractions
+						c[n] = (cs[0][n] + cs[1][n]) + (cs[2][n] + cs[3][n]);
+						if(!hasUnsignedTextureComponent(n)) c[n] = AddSat(c[n], c[n]);   // Correct for signed fractions
 					}
 				}
 			}
 			else
 			{
-				c.x = c1.x;
-				c.y = c2.x;
-				c.z = c3.x;
-				c.w = c0.x;
+				c.x = cs[1].x;
+				c.y = cs[2].x;
+				c.z = cs[3].x;
+				c.w = cs[0].x;
 			}
 		}
 	}
@@ -1063,6 +967,7 @@ namespace sw
 				fs[1][1][1] = f[1][1][1] >> 1;
 			}
 
+			int componentCount = textureComponentCount();
 			for(int i = 0; i < 2; i++)
 			{
 				for(int j = 0; j < 2; j++)
@@ -1071,32 +976,25 @@ namespace sw
 					{
 						sampleTexel(c[i][j][k], u[i][j][k], v[i][j][k], s[i][j][k], offset, mipmap, buffer, function);
 
-						if(componentCount >= 1) { if(hasUnsignedTextureComponent(0)) c[i][j][k].x = MulHigh(As<UShort4>(c[i][j][k].x), f[1 - i][1 - j][1 - k]); else c[i][j][k].x = MulHigh(c[i][j][k].x, fs[1 - i][1 - j][1 - k]); }
-						if(componentCount >= 2) { if(hasUnsignedTextureComponent(1)) c[i][j][k].y = MulHigh(As<UShort4>(c[i][j][k].y), f[1 - i][1 - j][1 - k]); else c[i][j][k].y = MulHigh(c[i][j][k].y, fs[1 - i][1 - j][1 - k]); }
-						if(componentCount >= 3) { if(hasUnsignedTextureComponent(2)) c[i][j][k].z = MulHigh(As<UShort4>(c[i][j][k].z), f[1 - i][1 - j][1 - k]); else c[i][j][k].z = MulHigh(c[i][j][k].z, fs[1 - i][1 - j][1 - k]); }
-						if(componentCount >= 4) { if(hasUnsignedTextureComponent(3)) c[i][j][k].w = MulHigh(As<UShort4>(c[i][j][k].w), f[1 - i][1 - j][1 - k]); else c[i][j][k].w = MulHigh(c[i][j][k].w, fs[1 - i][1 - j][1 - k]); }
-
-						if(i != 0 || j != 0 || k != 0)
+						for(int n = 0; n < componentCount; ++n)
 						{
-							if(componentCount >= 1) c[0][0][0].x += c[i][j][k].x;
-							if(componentCount >= 2) c[0][0][0].y += c[i][j][k].y;
-							if(componentCount >= 3) c[0][0][0].z += c[i][j][k].z;
-							if(componentCount >= 4) c[0][0][0].w += c[i][j][k].w;
+							c[i][j][k][n] = hasUnsignedTextureComponent(n) ?
+							                As<Short4>(MulHigh(As<UShort4>(c[i][j][k][n]), f[1 - i][1 - j][1 - k])) :
+							                MulHigh(c[i][j][k][n], fs[1 - i][1 - j][1 - k]);
+							if(i != 0 || j != 0 || k != 0)
+							{
+								c[0][0][0][n] += c[i][j][k][n];
+							}
 						}
 					}
 				}
 			}
 
-			if(componentCount >= 1) c_.x = c[0][0][0].x;
-			if(componentCount >= 2) c_.y = c[0][0][0].y;
-			if(componentCount >= 3) c_.z = c[0][0][0].z;
-			if(componentCount >= 4) c_.w = c[0][0][0].w;
-
-			// Correct for signed fractions
-			if(componentCount >= 1) if(!hasUnsignedTextureComponent(0)) c_.x = AddSat(c_.x, c_.x);
-			if(componentCount >= 2) if(!hasUnsignedTextureComponent(1)) c_.y = AddSat(c_.y, c_.y);
-			if(componentCount >= 3) if(!hasUnsignedTextureComponent(2)) c_.z = AddSat(c_.z, c_.z);
-			if(componentCount >= 4) if(!hasUnsignedTextureComponent(3)) c_.w = AddSat(c_.w, c_.w);
+			for(int n = 0; n < componentCount; ++n)
+			{
+				c_[n] = c[0][0][0][n];
+				if(!hasUnsignedTextureComponent(n)) c_[n] = AddSat(c_[n], c_[n]);
+			}
 		}
 	}
 
@@ -1171,12 +1069,11 @@ namespace sw
 		   state.addressingModeV == ADDRESSING_BORDER ||
 		   (state.addressingModeW == ADDRESSING_BORDER && state.textureType == TEXTURE_3D))
 		{
-			Int4 b;
-
-			c.x = As<Float4>((borderMask & As<Int4>(c.x)) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture,borderColorF[0]))));
-			c.y = As<Float4>((borderMask & As<Int4>(c.y)) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture,borderColorF[1]))));
-			c.z = As<Float4>((borderMask & As<Int4>(c.z)) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture,borderColorF[2]))));
-			c.w = As<Float4>((borderMask & As<Int4>(c.w)) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture,borderColorF[3]))));
+			int componentCount = textureComponentCount();
+			for(int n = 0; n < componentCount; ++n)
+			{
+				c[n] = As<Float4>((borderMask & As<Int4>(c[n])) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture, borderColorF[n]))));
+			}
 		}
 	}
 
@@ -1268,48 +1165,37 @@ namespace sw
 		}
 		else
 		{
-			Vector4f c0;
-			Vector4f c1;
-			Vector4f c2;
-			Vector4f c3;
+			Vector4f cf[4];
+			Short4 uv[2][2];
 
-			Short4 uuuu0 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 0 : -1, lod);
-			Short4 vvvv0 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 0 : -1, lod);
-			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1, lod);
-			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1, lod);
+			for(int i = 0; i < 2; ++i)
+			{
+				uv[i][0] = offsetSample(uuuu, mipmap, OFFSET(Mipmap, uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 * i : 2 * i - 1, lod);
+				uv[i][1] = offsetSample(vvvv, mipmap, OFFSET(Mipmap, vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 * i : 2 * i - 1, lod);
+			}
 
-			sampleTexel(c0, uuuu0, vvvv0, wwww, offset, w, mipmap, buffer, function);
-			sampleTexel(c1, uuuu1, vvvv0, wwww, offset, w, mipmap, buffer, function);
-			sampleTexel(c2, uuuu0, vvvv1, wwww, offset, w, mipmap, buffer, function);
-			sampleTexel(c3, uuuu1, vvvv1, wwww, offset, w, mipmap, buffer, function);
+			for(int n = 0; n < 4; ++n)
+			{
+				sampleTexel(cf[n], uv[n & 1][0], uv[(n & 2) >> 1][1], wwww, offset, w, mipmap, buffer, function);
+				cf[n].nbComponents = textureComponentCount();
+			}
 
 			if(!gather)   // Blend
 			{
 				// Fractions
-				Float4 fu = Frac(Float4(As<UShort4>(uuuu0)) * *Pointer<Float4>(mipmap + OFFSET(Mipmap,fWidth)));
-				Float4 fv = Frac(Float4(As<UShort4>(vvvv0)) * *Pointer<Float4>(mipmap + OFFSET(Mipmap,fHeight)));
+				Float4 fu = Frac(Float4(As<UShort4>(uv[0][0])) * *Pointer<Float4>(mipmap + OFFSET(Mipmap,fWidth)));
+				Float4 fv = Frac(Float4(As<UShort4>(uv[0][1])) * *Pointer<Float4>(mipmap + OFFSET(Mipmap,fHeight)));
 
-				if(componentCount >= 1) c0.x = c0.x + fu * (c1.x - c0.x);
-				if(componentCount >= 2) c0.y = c0.y + fu * (c1.y - c0.y);
-				if(componentCount >= 3) c0.z = c0.z + fu * (c1.z - c0.z);
-				if(componentCount >= 4) c0.w = c0.w + fu * (c1.w - c0.w);
-
-				if(componentCount >= 1) c2.x = c2.x + fu * (c3.x - c2.x);
-				if(componentCount >= 2) c2.y = c2.y + fu * (c3.y - c2.y);
-				if(componentCount >= 3) c2.z = c2.z + fu * (c3.z - c2.z);
-				if(componentCount >= 4) c2.w = c2.w + fu * (c3.w - c2.w);
-
-				if(componentCount >= 1) c.x = c0.x + fv * (c2.x - c0.x);
-				if(componentCount >= 2) c.y = c0.y + fv * (c2.y - c0.y);
-				if(componentCount >= 3) c.z = c0.z + fv * (c2.z - c0.z);
-				if(componentCount >= 4) c.w = c0.w + fv * (c2.w - c0.w);
+				cf[0] = cf[0] + (fu * (cf[1] - cf[0]));
+				cf[2] = cf[2] + (fu * (cf[3] - cf[2]));
+				c = cf[0] + (fv * (cf[2] - cf[0]));
 			}
 			else
 			{
-				c.x = c1.x;
-				c.y = c2.x;
-				c.z = c3.x;
-				c.w = c0.x;
+				c.x = cf[1].x;
+				c.y = cf[2].x;
+				c.z = cf[3].x;
+				c.w = cf[0].x;
 			}
 		}
 	}
@@ -1336,73 +1222,37 @@ namespace sw
 		}
 		else
 		{
-			Vector4f &c0 = c;
-			Vector4f c1;
-			Vector4f c2;
-			Vector4f c3;
-			Vector4f c4;
-			Vector4f c5;
-			Vector4f c6;
-			Vector4f c7;
+			Vector4f cf[8];
+			Short4 uvw[2][3];
 
-			Short4 uuuu0 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, -1, lod);
-			Short4 vvvv0 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, -1, lod);
-			Short4 wwww0 = offsetSample(wwww, mipmap, OFFSET(Mipmap,wHalf), state.addressingModeW == ADDRESSING_WRAP, -1, lod);
-			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, +1, lod);
-			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, +1, lod);
-			Short4 wwww1 = offsetSample(wwww, mipmap, OFFSET(Mipmap,wHalf), state.addressingModeW == ADDRESSING_WRAP, +1, lod);
+			for(int i = 0; i < 2; ++i)
+			{
+				uvw[i][0] = offsetSample(uuuu, mipmap, OFFSET(Mipmap, uHalf), state.addressingModeU == ADDRESSING_WRAP, 2 * i - 1, lod);
+				uvw[i][1] = offsetSample(vvvv, mipmap, OFFSET(Mipmap, vHalf), state.addressingModeV == ADDRESSING_WRAP, 2 * i - 1, lod);
+				uvw[i][2] = offsetSample(wwww, mipmap, OFFSET(Mipmap, vHalf), state.addressingModeV == ADDRESSING_WRAP, 2 * i - 1, lod);
+			}
 
-			sampleTexel(c0, uuuu0, vvvv0, wwww0, offset, w, mipmap, buffer, function);
-			sampleTexel(c1, uuuu1, vvvv0, wwww0, offset, w, mipmap, buffer, function);
-			sampleTexel(c2, uuuu0, vvvv1, wwww0, offset, w, mipmap, buffer, function);
-			sampleTexel(c3, uuuu1, vvvv1, wwww0, offset, w, mipmap, buffer, function);
-			sampleTexel(c4, uuuu0, vvvv0, wwww1, offset, w, mipmap, buffer, function);
-			sampleTexel(c5, uuuu1, vvvv0, wwww1, offset, w, mipmap, buffer, function);
-			sampleTexel(c6, uuuu0, vvvv1, wwww1, offset, w, mipmap, buffer, function);
-			sampleTexel(c7, uuuu1, vvvv1, wwww1, offset, w, mipmap, buffer, function);
+			for(int t = 0; t < 8; ++t)
+			{
+				sampleTexel(cf[t], uvw[t & 1][0], uvw[(t & 2) >> 1][1], uvw[(t & 4) >> 2][2], offset, w, mipmap, buffer, function);
+				cf[t].nbComponents = textureComponentCount();
+			}
 
 			// Fractions
-			Float4 fu = Frac(Float4(As<UShort4>(uuuu0)) * *Pointer<Float4>(mipmap + OFFSET(Mipmap,fWidth)));
-			Float4 fv = Frac(Float4(As<UShort4>(vvvv0)) * *Pointer<Float4>(mipmap + OFFSET(Mipmap,fHeight)));
-			Float4 fw = Frac(Float4(As<UShort4>(wwww0)) * *Pointer<Float4>(mipmap + OFFSET(Mipmap,fDepth)));
+			Float4 fu = Frac(Float4(As<UShort4>(uvw[0][0])) * *Pointer<Float4>(mipmap + OFFSET(Mipmap, fWidth)));
+			Float4 fv = Frac(Float4(As<UShort4>(uvw[0][1])) * *Pointer<Float4>(mipmap + OFFSET(Mipmap, fHeight)));
+			Float4 fw = Frac(Float4(As<UShort4>(uvw[0][2])) * *Pointer<Float4>(mipmap + OFFSET(Mipmap, fDepth)));
 
-			// Blend first slice
-			if(componentCount >= 1) c0.x = c0.x + fu * (c1.x - c0.x);
-			if(componentCount >= 2) c0.y = c0.y + fu * (c1.y - c0.y);
-			if(componentCount >= 3) c0.z = c0.z + fu * (c1.z - c0.z);
-			if(componentCount >= 4) c0.w = c0.w + fu * (c1.w - c0.w);
-
-			if(componentCount >= 1) c2.x = c2.x + fu * (c3.x - c2.x);
-			if(componentCount >= 2) c2.y = c2.y + fu * (c3.y - c2.y);
-			if(componentCount >= 3) c2.z = c2.z + fu * (c3.z - c2.z);
-			if(componentCount >= 4) c2.w = c2.w + fu * (c3.w - c2.w);
-
-			if(componentCount >= 1) c0.x = c0.x + fv * (c2.x - c0.x);
-			if(componentCount >= 2) c0.y = c0.y + fv * (c2.y - c0.y);
-			if(componentCount >= 3) c0.z = c0.z + fv * (c2.z - c0.z);
-			if(componentCount >= 4) c0.w = c0.w + fv * (c2.w - c0.w);
-
-			// Blend second slice
-			if(componentCount >= 1) c4.x = c4.x + fu * (c5.x - c4.x);
-			if(componentCount >= 2) c4.y = c4.y + fu * (c5.y - c4.y);
-			if(componentCount >= 3) c4.z = c4.z + fu * (c5.z - c4.z);
-			if(componentCount >= 4) c4.w = c4.w + fu * (c5.w - c4.w);
-
-			if(componentCount >= 1) c6.x = c6.x + fu * (c7.x - c6.x);
-			if(componentCount >= 2) c6.y = c6.y + fu * (c7.y - c6.y);
-			if(componentCount >= 3) c6.z = c6.z + fu * (c7.z - c6.z);
-			if(componentCount >= 4) c6.w = c6.w + fu * (c7.w - c6.w);
-
-			if(componentCount >= 1) c4.x = c4.x + fv * (c6.x - c4.x);
-			if(componentCount >= 2) c4.y = c4.y + fv * (c6.y - c4.y);
-			if(componentCount >= 3) c4.z = c4.z + fv * (c6.z - c4.z);
-			if(componentCount >= 4) c4.w = c4.w + fv * (c6.w - c4.w);
+			for(int i = 0; i < 2; ++i) // Blend first and second slices
+			{
+				int s = i * 4; // Compute slice offset
+				cf[0 + s] = cf[0 + s] + fu * (cf[1 + s] - cf[0 + s]);
+				cf[2 + s] = cf[2 + s] + fu * (cf[3 + s] - cf[2 + s]);
+				cf[0 + s] = cf[0 + s] + fv * (cf[2 + s] - cf[0 + s]);
+			}
 
 			// Blend slices
-			if(componentCount >= 1) c0.x = c0.x + fw * (c4.x - c0.x);
-			if(componentCount >= 2) c0.y = c0.y + fw * (c4.y - c0.y);
-			if(componentCount >= 3) c0.z = c0.z + fw * (c4.z - c0.z);
-			if(componentCount >= 4) c0.w = c0.w + fw * (c4.w - c0.w);
+			c = cf[0] + fw * (cf[4] - cf[0]);
 		}
 	}
 
