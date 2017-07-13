@@ -148,43 +148,6 @@ namespace sw
 					texture.depthLOD[3] = depth * exp2LOD;
 				}
 
-				if(Surface::isFloatFormat(internalTextureFormat))
-				{
-					mipmap.fWidth[0] = (float)width / 65536.0f;
-					mipmap.fWidth[1] = (float)width / 65536.0f;
-					mipmap.fWidth[2] = (float)width / 65536.0f;
-					mipmap.fWidth[3] = (float)width / 65536.0f;
-
-					mipmap.fHeight[0] = (float)height / 65536.0f;
-					mipmap.fHeight[1] = (float)height / 65536.0f;
-					mipmap.fHeight[2] = (float)height / 65536.0f;
-					mipmap.fHeight[3] = (float)height / 65536.0f;
-
-					mipmap.fDepth[0] = (float)depth / 65536.0f;
-					mipmap.fDepth[1] = (float)depth / 65536.0f;
-					mipmap.fDepth[2] = (float)depth / 65536.0f;
-					mipmap.fDepth[3] = (float)depth / 65536.0f;
-				}
-
-				short halfTexelU = 0x8000 / width;
-				short halfTexelV = 0x8000 / height;
-				short halfTexelW = 0x8000 / depth;
-
-				mipmap.uHalf[0] = halfTexelU;
-				mipmap.uHalf[1] = halfTexelU;
-				mipmap.uHalf[2] = halfTexelU;
-				mipmap.uHalf[3] = halfTexelU;
-
-				mipmap.vHalf[0] = halfTexelV;
-				mipmap.vHalf[1] = halfTexelV;
-				mipmap.vHalf[2] = halfTexelV;
-				mipmap.vHalf[3] = halfTexelV;
-
-				mipmap.wHalf[0] = halfTexelW;
-				mipmap.wHalf[1] = halfTexelW;
-				mipmap.wHalf[2] = halfTexelW;
-				mipmap.wHalf[3] = halfTexelW;
-
 				mipmap.width[0] = width;
 				mipmap.width[1] = width;
 				mipmap.width[2] = width;
@@ -200,13 +163,15 @@ namespace sw
 				mipmap.depth[2] = depth;
 				mipmap.depth[3] = depth;
 
-				mipmap.onePitchP[0] = 1;
-				mipmap.onePitchP[1] = pitchP;
-				mipmap.onePitchP[2] = 1;
-				mipmap.onePitchP[3] = pitchP;
+				mipmap.pitchP[0] = pitchP;
+				mipmap.pitchP[1] = pitchP;
+				mipmap.pitchP[2] = pitchP;
+				mipmap.pitchP[3] = pitchP;
 
 				mipmap.sliceP[0] = sliceP;
 				mipmap.sliceP[1] = sliceP;
+				mipmap.sliceP[2] = sliceP;
+				mipmap.sliceP[3] = sliceP;
 
 				if(internalTextureFormat == FORMAT_YV12_BT601 ||
 				   internalTextureFormat == FORMAT_YV12_BT709 ||
@@ -228,10 +193,10 @@ namespace sw
 					texture.mipmap[1].height[1] = height / 2;
 					texture.mipmap[1].height[2] = height / 2;
 					texture.mipmap[1].height[3] = height / 2;
-					texture.mipmap[1].onePitchP[0] = 1;
-					texture.mipmap[1].onePitchP[1] = CStride;
-					texture.mipmap[1].onePitchP[2] = 1;
-					texture.mipmap[1].onePitchP[3] = CStride;
+					texture.mipmap[1].pitchP[0] = CStride;
+					texture.mipmap[1].pitchP[1] = CStride;
+					texture.mipmap[1].pitchP[2] = CStride;
+					texture.mipmap[1].pitchP[3] = CStride;
 				}
 			}
 		}
