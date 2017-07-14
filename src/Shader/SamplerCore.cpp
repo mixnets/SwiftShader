@@ -633,29 +633,21 @@ namespace sw
 
 			UShort4 utri = UShort4(Float4(lod));   // FIXME: Optimize
 			Short4 stri = utri >> 1;   // FIXME: Optimize
+			UShort4 utri2 = ~utri;
+			Short4 stri2 = Short4(0x7FFF) - stri;
 
-			if(hasUnsignedTextureComponent(0)) cc.x = MulHigh(As<UShort4>(cc.x), utri); else cc.x = MulHigh(cc.x, stri);
-			if(hasUnsignedTextureComponent(1)) cc.y = MulHigh(As<UShort4>(cc.y), utri); else cc.y = MulHigh(cc.y, stri);
-			if(hasUnsignedTextureComponent(2)) cc.z = MulHigh(As<UShort4>(cc.z), utri); else cc.z = MulHigh(cc.z, stri);
-			if(hasUnsignedTextureComponent(3)) cc.w = MulHigh(As<UShort4>(cc.w), utri); else cc.w = MulHigh(cc.w, stri);
-
-			utri = ~utri;
-			stri = Short4(0x7FFF) - stri;
-
-			if(hasUnsignedTextureComponent(0)) c.x = MulHigh(As<UShort4>(c.x), utri); else c.x = MulHigh(c.x, stri);
-			if(hasUnsignedTextureComponent(1)) c.y = MulHigh(As<UShort4>(c.y), utri); else c.y = MulHigh(c.y, stri);
-			if(hasUnsignedTextureComponent(2)) c.z = MulHigh(As<UShort4>(c.z), utri); else c.z = MulHigh(c.z, stri);
-			if(hasUnsignedTextureComponent(3)) c.w = MulHigh(As<UShort4>(c.w), utri); else c.w = MulHigh(c.w, stri);
-
-			c.x += cc.x;
-			c.y += cc.y;
-			c.z += cc.z;
-			c.w += cc.w;
-
-			if(!hasUnsignedTextureComponent(0)) c.x += c.x;
-			if(!hasUnsignedTextureComponent(1)) c.y += c.y;
-			if(!hasUnsignedTextureComponent(2)) c.z += c.z;
-			if(!hasUnsignedTextureComponent(3)) c.w += c.w;
+			for(int n = 0; n < textureComponentCount(); ++n)
+			{
+				if(hasUnsignedTextureComponent(n))
+				{
+					c[n] = As<Short4>(MulHigh(As<UShort4>(cc[n]), utri) + MulHigh(As<UShort4>(c[n]), utri2));
+				}
+				else
+				{
+					c[n] = (MulHigh(cc[n], stri) + MulHigh(c[n], stri2));
+					c[n] += c[n];
+				}
+			}
 		}
 
 		Short4 borderMask;
@@ -748,6 +740,8 @@ namespace sw
 
 			Int i = 0;
 
+			int componentCount = textureComponentCount();
+
 			Do
 			{
 				sampleQuad(texture, c, u0, v0, w, offset, lod, face, secondLOD, function);
@@ -755,19 +749,19 @@ namespace sw
 				u0 += du;
 				v0 += dv;
 
-				if(hasUnsignedTextureComponent(0)) cSum.x += As<Short4>(MulHigh(As<UShort4>(c.x), cw)); else cSum.x += MulHigh(c.x, sw);
-				if(hasUnsignedTextureComponent(1)) cSum.y += As<Short4>(MulHigh(As<UShort4>(c.y), cw)); else cSum.y += MulHigh(c.y, sw);
-				if(hasUnsignedTextureComponent(2)) cSum.z += As<Short4>(MulHigh(As<UShort4>(c.z), cw)); else cSum.z += MulHigh(c.z, sw);
-				if(hasUnsignedTextureComponent(3)) cSum.w += As<Short4>(MulHigh(As<UShort4>(c.w), cw)); else cSum.w += MulHigh(c.w, sw);
+				for(int n = 0; n < componentCount; ++n)
+				{
+					cSum[n] += hasUnsignedTextureComponent(n) ? As<Short4>(MulHigh(As<UShort4>(c[n]), cw)) : MulHigh(c[n], sw);
+				}
 
 				i++;
 			}
 			Until(i >= a)
 
-			if(hasUnsignedTextureComponent(0)) c.x = cSum.x; else c.x = AddSat(cSum.x, cSum.x);
-			if(hasUnsignedTextureComponent(1)) c.y = cSum.y; else c.y = AddSat(cSum.y, cSum.y);
-			if(hasUnsignedTextureComponent(2)) c.z = cSum.z; else c.z = AddSat(cSum.z, cSum.z);
-			if(hasUnsignedTextureComponent(3)) c.w = cSum.w; else c.w = AddSat(cSum.w, cSum.w);
+			for(int n = 0; n < componentCount; ++n)
+			{
+				c[n] = hasUnsignedTextureComponent(n) ? cSum[n] : AddSat(cSum[n], cSum[n]);
+			}
 		}
 	}
 
