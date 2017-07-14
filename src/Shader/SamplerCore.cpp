@@ -706,12 +706,10 @@ namespace sw
 		   state.addressingModeV == ADDRESSING_BORDER ||
 		   (state.addressingModeW == ADDRESSING_BORDER && state.textureType == TEXTURE_3D))
 		{
-			Short4 b;
-
-			c.x = (borderMask & c.x) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture,borderColor4[0])) >> (hasUnsignedTextureComponent(0) ? 0 : 1)));
-			c.y = (borderMask & c.y) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture,borderColor4[1])) >> (hasUnsignedTextureComponent(1) ? 0 : 1)));
-			c.z = (borderMask & c.z) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture,borderColor4[2])) >> (hasUnsignedTextureComponent(2) ? 0 : 1)));
-			c.w = (borderMask & c.w) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture,borderColor4[3])) >> (hasUnsignedTextureComponent(3) ? 0 : 1)));
+			for(int n = 0; n < textureComponentCount(); ++n)
+			{
+				c[n] = (borderMask & c[n]) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture,borderColor4[n])) >> (hasUnsignedTextureComponent(n) ? 0 : 1)));
+			}
 		}
 	}
 
@@ -1171,12 +1169,10 @@ namespace sw
 		   state.addressingModeV == ADDRESSING_BORDER ||
 		   (state.addressingModeW == ADDRESSING_BORDER && state.textureType == TEXTURE_3D))
 		{
-			Int4 b;
-
-			c.x = As<Float4>((borderMask & As<Int4>(c.x)) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture,borderColorF[0]))));
-			c.y = As<Float4>((borderMask & As<Int4>(c.y)) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture,borderColorF[1]))));
-			c.z = As<Float4>((borderMask & As<Int4>(c.z)) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture,borderColorF[2]))));
-			c.w = As<Float4>((borderMask & As<Int4>(c.w)) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture,borderColorF[3]))));
+			for(int n = 0; n < textureComponentCount(); ++n)
+			{
+				c[n] = As<Float4>((borderMask & As<Int4>(c[n])) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture,borderColorF[n]))));
+			}
 		}
 	}
 
@@ -2170,10 +2166,10 @@ namespace sw
 
 	void SamplerCore::convertFixed12(Vector4s &cs, Vector4f &cf)
 	{
-		convertFixed12(cs.x, cf.x);
-		convertFixed12(cs.y, cf.y);
-		convertFixed12(cs.z, cf.z);
-		convertFixed12(cs.w, cf.w);
+		for(int n = 0; n < textureComponentCount(); ++n)
+		{
+			convertFixed12(cs[n], cf[n]);
+		}
 	}
 
 	void SamplerCore::convertSigned12(Float4 &cf, Short4 &cs)
@@ -2183,10 +2179,10 @@ namespace sw
 
 //	void SamplerCore::convertSigned12(Vector4f &cf, Vector4s &cs)
 //	{
-//		convertSigned12(cf.x, cs.x);
-//		convertSigned12(cf.y, cs.y);
-//		convertSigned12(cf.z, cs.z);
-//		convertSigned12(cf.w, cs.w);
+//		for(int n = 0; n < textureComponentCount(); ++n)
+//		{
+//			convertSigned12(cf[n], cs[n]);
+//		}
 //	}
 
 	void SamplerCore::convertSigned15(Float4 &cf, Short4 &cs)
