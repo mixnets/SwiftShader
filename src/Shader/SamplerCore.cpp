@@ -1115,12 +1115,7 @@ namespace sw
 
 			sampleFloatAniso(texture, cc, u, v, w, offset, lod, anisotropy, uDelta, vDelta, face, true, function);
 
-			Float4 lod4 = Float4(Frac(lod));
-
-			c.x = (cc.x - c.x) * lod4 + c.x;
-			c.y = (cc.y - c.y) * lod4 + c.y;
-			c.z = (cc.z - c.z) * lod4 + c.z;
-			c.w = (cc.w - c.w) * lod4 + c.w;
+			c = (cc - c) * Float4(Frac(lod)) + c;
 		}
 
 		Int4 borderMask;
@@ -1196,6 +1191,7 @@ namespace sw
 			cSum.y = Float4(0.0f);
 			cSum.z = Float4(0.0f);
 			cSum.w = Float4(0.0f);
+			cSum.nbComponents = textureComponentCount();
 
 			Float4 A = *Pointer<Float4>(constants + OFFSET(Constants,uvWeight) + 16 * a);
 			Float4 B = *Pointer<Float4>(constants + OFFSET(Constants,uvStart) + 16 * a);
@@ -1218,19 +1214,13 @@ namespace sw
 				u0 += du;
 				v0 += dv;
 
-				cSum.x += c.x * A;
-				cSum.y += c.y * A;
-				cSum.z += c.z * A;
-				cSum.w += c.w * A;
+				cSum += c * A;
 
 				i++;
 			}
 			Until(i >= a)
 
-			c.x = cSum.x;
-			c.y = cSum.y;
-			c.z = cSum.z;
-			c.w = cSum.w;
+			c = cSum;
 		}
 	}
 
@@ -1289,20 +1279,9 @@ namespace sw
 				Float4 fu = Frac(Float4(As<UShort4>(uuuu0)) * *Pointer<Float4>(mipmap + OFFSET(Mipmap,fWidth)));
 				Float4 fv = Frac(Float4(As<UShort4>(vvvv0)) * *Pointer<Float4>(mipmap + OFFSET(Mipmap,fHeight)));
 
-				if(componentCount >= 1) c0.x = c0.x + fu * (c1.x - c0.x);
-				if(componentCount >= 2) c0.y = c0.y + fu * (c1.y - c0.y);
-				if(componentCount >= 3) c0.z = c0.z + fu * (c1.z - c0.z);
-				if(componentCount >= 4) c0.w = c0.w + fu * (c1.w - c0.w);
-
-				if(componentCount >= 1) c2.x = c2.x + fu * (c3.x - c2.x);
-				if(componentCount >= 2) c2.y = c2.y + fu * (c3.y - c2.y);
-				if(componentCount >= 3) c2.z = c2.z + fu * (c3.z - c2.z);
-				if(componentCount >= 4) c2.w = c2.w + fu * (c3.w - c2.w);
-
-				if(componentCount >= 1) c.x = c0.x + fv * (c2.x - c0.x);
-				if(componentCount >= 2) c.y = c0.y + fv * (c2.y - c0.y);
-				if(componentCount >= 3) c.z = c0.z + fv * (c2.z - c0.z);
-				if(componentCount >= 4) c.w = c0.w + fv * (c2.w - c0.w);
+				c0 = c0 + (fu * (c1 - c0));
+				c2 = c2 + (fu * (c3 - c2));
+				c = c0 + (fv * (c2 - c0));
 			}
 			else
 			{
@@ -1367,42 +1346,17 @@ namespace sw
 			Float4 fw = Frac(Float4(As<UShort4>(wwww0)) * *Pointer<Float4>(mipmap + OFFSET(Mipmap,fDepth)));
 
 			// Blend first slice
-			if(componentCount >= 1) c0.x = c0.x + fu * (c1.x - c0.x);
-			if(componentCount >= 2) c0.y = c0.y + fu * (c1.y - c0.y);
-			if(componentCount >= 3) c0.z = c0.z + fu * (c1.z - c0.z);
-			if(componentCount >= 4) c0.w = c0.w + fu * (c1.w - c0.w);
-
-			if(componentCount >= 1) c2.x = c2.x + fu * (c3.x - c2.x);
-			if(componentCount >= 2) c2.y = c2.y + fu * (c3.y - c2.y);
-			if(componentCount >= 3) c2.z = c2.z + fu * (c3.z - c2.z);
-			if(componentCount >= 4) c2.w = c2.w + fu * (c3.w - c2.w);
-
-			if(componentCount >= 1) c0.x = c0.x + fv * (c2.x - c0.x);
-			if(componentCount >= 2) c0.y = c0.y + fv * (c2.y - c0.y);
-			if(componentCount >= 3) c0.z = c0.z + fv * (c2.z - c0.z);
-			if(componentCount >= 4) c0.w = c0.w + fv * (c2.w - c0.w);
+			c0 = c0 + (fu * (c1 - c0));
+			c2 = c2 + (fu * (c3 - c2));
+			c0 = c0 + (fv * (c2 - c0));
 
 			// Blend second slice
-			if(componentCount >= 1) c4.x = c4.x + fu * (c5.x - c4.x);
-			if(componentCount >= 2) c4.y = c4.y + fu * (c5.y - c4.y);
-			if(componentCount >= 3) c4.z = c4.z + fu * (c5.z - c4.z);
-			if(componentCount >= 4) c4.w = c4.w + fu * (c5.w - c4.w);
-
-			if(componentCount >= 1) c6.x = c6.x + fu * (c7.x - c6.x);
-			if(componentCount >= 2) c6.y = c6.y + fu * (c7.y - c6.y);
-			if(componentCount >= 3) c6.z = c6.z + fu * (c7.z - c6.z);
-			if(componentCount >= 4) c6.w = c6.w + fu * (c7.w - c6.w);
-
-			if(componentCount >= 1) c4.x = c4.x + fv * (c6.x - c4.x);
-			if(componentCount >= 2) c4.y = c4.y + fv * (c6.y - c4.y);
-			if(componentCount >= 3) c4.z = c4.z + fv * (c6.z - c4.z);
-			if(componentCount >= 4) c4.w = c4.w + fv * (c6.w - c4.w);
+			c4 = c4 + (fu * (c5 - c4));
+			c6 = c6 + (fu * (c7 - c6));
+			c4 = c4 + (fv * (c6 - c4));
 
 			// Blend slices
-			if(componentCount >= 1) c0.x = c0.x + fw * (c4.x - c0.x);
-			if(componentCount >= 2) c0.y = c0.y + fw * (c4.y - c0.y);
-			if(componentCount >= 3) c0.z = c0.z + fw * (c4.z - c0.z);
-			if(componentCount >= 4) c0.w = c0.w + fw * (c4.w - c0.w);
+			c = c0 + (fw * (c4 - c0));
 		}
 	}
 
@@ -2033,7 +1987,8 @@ namespace sw
 		int f3 = state.textureType == TEXTURE_CUBE ? 3 : 0;
 
 		// Read texels
-		switch(textureComponentCount())
+		c.nbComponents = textureComponentCount();
+		switch(c.nbComponents)
 		{
 		case 4:
 			c.x = *Pointer<Float4>(buffer[f0] + index[0] * 16, 16);

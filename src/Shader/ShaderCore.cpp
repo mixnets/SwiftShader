@@ -69,11 +69,11 @@ namespace sw
 		return x;
 	}
 
-	Vector4f::Vector4f()
+	Vector4f::Vector4f() : nbComponents(4)
 	{
 	}
 
-	Vector4f::Vector4f(float x, float y, float z, float w)
+	Vector4f::Vector4f(float x, float y, float z, float w) : nbComponents(4)
 	{
 		this->x = Float4(x);
 		this->y = Float4(y);
@@ -83,18 +83,14 @@ namespace sw
 
 	Vector4f::Vector4f(const Vector4f &rhs)
 	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
+		nbComponents = rhs.nbComponents;
+		for(int i = 0; i < nbComponents; ++i) { (*this)[i] = rhs[i]; }
 	}
 
 	Vector4f &Vector4f::operator=(const Vector4f &rhs)
 	{
-		x = rhs.x;
-		y = rhs.y;
-		z = rhs.z;
-		w = rhs.w;
+		nbComponents = rhs.nbComponents;
+		for(int i = 0; i < nbComponents; ++i) { (*this)[i] = rhs[i]; }
 
 		return *this;
 	}
@@ -110,6 +106,118 @@ namespace sw
 		}
 
 		return x;
+	}
+
+	const Float4 &Vector4f::operator[](int i) const
+	{
+		switch(i)
+		{
+		case 0: return x;
+		case 1: return y;
+		case 2: return z;
+		case 3: return w;
+		}
+
+		return x;
+	}
+
+	Vector4f Vector4f::operator+(const Vector4f &rhs)
+	{
+		Vector4f op(*this);
+		for(int i = 0; i < nbComponents; ++i) { op[i] += rhs[i]; }
+		return op;
+	}
+
+	Vector4f Vector4f::operator-(const Vector4f &rhs)
+	{
+		Vector4f op(*this);
+		for(int i = 0; i < nbComponents; ++i) { op[i] -= rhs[i]; }
+		return op;
+	}
+
+	Vector4f Vector4f::operator*(const Vector4f &rhs)
+	{
+		Vector4f op(*this);
+		for(int i = 0; i < nbComponents; ++i) { op[i] *= rhs[i]; }
+		return op;
+	}
+
+	Vector4f Vector4f::operator+(const Float4 &rhs)
+	{
+		Vector4f op(*this);
+		for(int i = 0; i < nbComponents; ++i) { op[i] += rhs; }
+		return op;
+	}
+
+	Vector4f Vector4f::operator-(const Float4 &rhs)
+	{
+		Vector4f op(*this);
+		for(int i = 0; i < nbComponents; ++i) { op[i] -= rhs; }
+		return op;
+	}
+
+	Vector4f Vector4f::operator*(const Float4 &rhs)
+	{
+		Vector4f op(*this);
+		for(int i = 0; i < nbComponents; ++i) { op[i] *= rhs; }
+		return op;
+	}
+
+	Vector4f &Vector4f::operator+=(const Vector4f &rhs)
+	{
+		for(int i = 0; i < nbComponents; ++i) { (*this)[i] += rhs[i]; }
+		return (*this);
+	}
+
+	Vector4f &Vector4f::operator-=(const Vector4f &rhs)
+	{
+		for(int i = 0; i < nbComponents; ++i) { (*this)[i] -= rhs[i]; }
+		return (*this);
+	}
+
+	Vector4f &Vector4f::operator*=(const Vector4f &rhs)
+	{
+		for(int i = 0; i < nbComponents; ++i) { (*this)[i] *= rhs[i]; }
+		return (*this);
+	}
+
+	Vector4f &Vector4f::operator+=(const Float4 &rhs)
+	{
+		for(int i = 0; i < nbComponents; ++i) { (*this)[i] += rhs; }
+		return (*this);
+	}
+
+	Vector4f &Vector4f::operator-=(const Float4 &rhs)
+	{
+		for(int i = 0; i < nbComponents; ++i) { (*this)[i] -= rhs; }
+		return (*this);
+	}
+
+	Vector4f &Vector4f::operator*=(const Float4 &rhs)
+	{
+		for(int i = 0; i < nbComponents; ++i) { (*this)[i] *= rhs; }
+		return (*this);
+	}
+
+	Vector4f operator+(RValue<Float4> lhs, const Vector4f& rhs)
+	{
+		Vector4f op(rhs);
+		for(int i = 0; i < rhs.nbComponents; ++i) { op[i] += lhs; }
+		return op;
+	}
+
+	Vector4f operator-(RValue<Float4> lhs, const Vector4f& rhs)
+	{
+		Vector4f op(rhs);
+		for(int i = 0; i < rhs.nbComponents; ++i) { op[i] -= lhs; }
+		return op;
+	}
+
+	Vector4f operator*(RValue<Float4> lhs, const Vector4f& rhs)
+	{
+		Vector4f op(rhs);
+		for(int i = 0; i < rhs.nbComponents; ++i) { op[i] *= lhs; }
+		return op;
 	}
 
 	Float4 exponential2(RValue<Float4> x, bool pp)

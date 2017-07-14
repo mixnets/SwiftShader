@@ -45,13 +45,31 @@ namespace sw
 		Vector4f(const Vector4f &rhs);
 
 		Float4 &operator[](int i);
+		const Float4 &operator[](int i) const;
 		Vector4f &operator=(const Vector4f &rhs);
+		Vector4f operator+(const Vector4f &rhs);
+		Vector4f operator-(const Vector4f &rhs);
+		Vector4f operator*(const Vector4f &rhs);
+		Vector4f operator+(const Float4 &rhs);
+		Vector4f operator-(const Float4 &rhs);
+		Vector4f operator*(const Float4 &rhs);
+		Vector4f &operator+=(const Vector4f &rhs);
+		Vector4f &operator-=(const Vector4f &rhs);
+		Vector4f &operator*=(const Vector4f &rhs);
+		Vector4f &operator+=(const Float4 &rhs);
+		Vector4f &operator-=(const Float4 &rhs);
+		Vector4f &operator*=(const Float4 &rhs);
 
 		Float4 x;
 		Float4 y;
 		Float4 z;
 		Float4 w;
+		int nbComponents;
 	};
+
+	Vector4f operator+(RValue<Float4> lhs, const Vector4f& rhs);
+	Vector4f operator-(RValue<Float4> lhs, const Vector4f& rhs);
+	Vector4f operator*(RValue<Float4> lhs, const Vector4f& rhs);
 
 	Float4 exponential2(RValue<Float4> x, bool pp = false);
 	Float4 logarithm2(RValue<Float4> x, bool abs, bool pp = false);
