@@ -2131,35 +2131,27 @@ namespace sw
 		{
 			return Min(Max(Short4(RoundInt(uw)), Short4(0)), *Pointer<Short4>(mipmap + OFFSET(Mipmap, depth)) - Short4(1));
 		}
-		else if(addressingMode == ADDRESSING_CLAMP)
+		else
 		{
-			Float4 clamp = Min(Max(uw, Float4(0.0f)), Float4(65535.0f / 65536.0f));
+			Float4 tmp;
 
-			return Short4(Int4(clamp * Float4(1 << 16)));
-		}
-		else if(addressingMode == ADDRESSING_MIRROR)
-		{
-			Int4 convert = Int4(uw * Float4(1 << 16));
-			Int4 mirror = (convert << 15) >> 31;
+			switch(addressingMode)
+			{
+			case ADDRESSING_CLAMP:
+				tmp = Min(Max(uw, Float4(0.0f)), Float4(1.0f));
+				break;
+			case ADDRESSING_MIRROR:
+				tmp = Float4(1.0f) - Abs(Float4(2.0f) * Frac(uw * Float4(0.5f)) - Float4(1.0f));
+				break;
+			case ADDRESSING_MIRRORONCE:
+				tmp = Float4(1.0f) - Abs(Float4(2.0f) * Frac(Min(Max(uw, Float4(-1.0f)), Float4(2.0f)) * Float4(0.5f)) - Float4(1.0f));
+				break;
+			default:   // Wrap (or border)
+				tmp = Frac(uw);
+				break;
+			}
 
-			convert ^= mirror;
-
-			return Short4(convert);
-		}
-		else if(addressingMode == ADDRESSING_MIRRORONCE)
-		{
-			// Absolute value
-			Int4 convert = Int4(Abs(uw * Float4(1 << 16)));
-
-			// Clamp
-			convert -= Int4(0x00008000, 0x00008000, 0x00008000, 0x00008000);
-			convert = As<Int4>(Pack(convert, convert));
-
-			return As<Short4>(Int2(convert)) + Short4(0x8000u);
-		}
-		else   // Wrap (or border)
-		{
-			return Short4(Int4(uw * Float4(1 << 16)));
+			return UShort4(Min(tmp * Float4(0x10000u), Float4(0xFFFFu)));
 		}
 	}
 
