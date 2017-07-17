@@ -1744,12 +1744,8 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::sampleTexel(Vector4s &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Vector4f &offset, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
+	void SamplerCore::sampleTexel(Vector4s &c, UInt index[4], Pointer<Byte> buffer[4])
 	{
-		UInt index[4];
-
-		computeIndices(index, uuuu, vvvv, wwww, offset, mipmap, function);
-
 		int f0 = state.textureType == TEXTURE_CUBE ? 0 : 0;
 		int f1 = state.textureType == TEXTURE_CUBE ? 1 : 0;
 		int f2 = state.textureType == TEXTURE_CUBE ? 2 : 0;
@@ -1778,87 +1774,87 @@ namespace sw
 			switch(textureComponentCount())
 			{
 			case 4:
-				{
-					Byte4 c0 = Pointer<Byte4>(buffer[f0])[index[0]];
-					Byte4 c1 = Pointer<Byte4>(buffer[f1])[index[1]];
-					Byte4 c2 = Pointer<Byte4>(buffer[f2])[index[2]];
-					Byte4 c3 = Pointer<Byte4>(buffer[f3])[index[3]];
-					c.x = Unpack(c0, c1);
-					c.y = Unpack(c2, c3);
+			{
+				Byte4 c0 = Pointer<Byte4>(buffer[f0])[index[0]];
+				Byte4 c1 = Pointer<Byte4>(buffer[f1])[index[1]];
+				Byte4 c2 = Pointer<Byte4>(buffer[f2])[index[2]];
+				Byte4 c3 = Pointer<Byte4>(buffer[f3])[index[3]];
+				c.x = Unpack(c0, c1);
+				c.y = Unpack(c2, c3);
 
-					switch(state.textureFormat)
-					{
-					case FORMAT_A8R8G8B8:
-						c.z = c.x;
-						c.z = As<Short4>(UnpackLow(c.z, c.y));
-						c.x = As<Short4>(UnpackHigh(c.x, c.y));
-						c.y = c.z;
-						c.w = c.x;
-						c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
-						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
-						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
-						c.w = UnpackHigh(As<Byte8>(c.w), As<Byte8>(c.w));
-						break;
-					case FORMAT_A8B8G8R8:
-					case FORMAT_A8B8G8R8I:
-					case FORMAT_A8B8G8R8UI:
-					case FORMAT_A8B8G8R8I_SNORM:
-					case FORMAT_Q8W8V8U8:
-					case FORMAT_SRGB8_A8:
-						c.z = c.x;
-						c.x = As<Short4>(UnpackLow(c.x, c.y));
-						c.z = As<Short4>(UnpackHigh(c.z, c.y));
-						c.y = c.x;
-						c.w = c.z;
-						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
-						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
-						c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
-						c.w = UnpackHigh(As<Byte8>(c.w), As<Byte8>(c.w));
-						break;
-					default:
-						ASSERT(false);
-					}
+				switch(state.textureFormat)
+				{
+				case FORMAT_A8R8G8B8:
+					c.z = c.x;
+					c.z = As<Short4>(UnpackLow(c.z, c.y));
+					c.x = As<Short4>(UnpackHigh(c.x, c.y));
+					c.y = c.z;
+					c.w = c.x;
+					c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
+					c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
+					c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
+					c.w = UnpackHigh(As<Byte8>(c.w), As<Byte8>(c.w));
+					break;
+				case FORMAT_A8B8G8R8:
+				case FORMAT_A8B8G8R8I:
+				case FORMAT_A8B8G8R8UI:
+				case FORMAT_A8B8G8R8I_SNORM:
+				case FORMAT_Q8W8V8U8:
+				case FORMAT_SRGB8_A8:
+					c.z = c.x;
+					c.x = As<Short4>(UnpackLow(c.x, c.y));
+					c.z = As<Short4>(UnpackHigh(c.z, c.y));
+					c.y = c.x;
+					c.w = c.z;
+					c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
+					c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
+					c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
+					c.w = UnpackHigh(As<Byte8>(c.w), As<Byte8>(c.w));
+					break;
+				default:
+					ASSERT(false);
 				}
-				break;
+			}
+			break;
 			case 3:
-				{
-					Byte4 c0 = Pointer<Byte4>(buffer[f0])[index[0]];
-					Byte4 c1 = Pointer<Byte4>(buffer[f1])[index[1]];
-					Byte4 c2 = Pointer<Byte4>(buffer[f2])[index[2]];
-					Byte4 c3 = Pointer<Byte4>(buffer[f3])[index[3]];
-					c.x = Unpack(c0, c1);
-					c.y = Unpack(c2, c3);
+			{
+				Byte4 c0 = Pointer<Byte4>(buffer[f0])[index[0]];
+				Byte4 c1 = Pointer<Byte4>(buffer[f1])[index[1]];
+				Byte4 c2 = Pointer<Byte4>(buffer[f2])[index[2]];
+				Byte4 c3 = Pointer<Byte4>(buffer[f3])[index[3]];
+				c.x = Unpack(c0, c1);
+				c.y = Unpack(c2, c3);
 
-					switch(state.textureFormat)
-					{
-					case FORMAT_X8R8G8B8:
-						c.z = c.x;
-						c.z = As<Short4>(UnpackLow(c.z, c.y));
-						c.x = As<Short4>(UnpackHigh(c.x, c.y));
-						c.y = c.z;
-						c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
-						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
-						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
-						break;
-					case FORMAT_X8B8G8R8I_SNORM:
-					case FORMAT_X8B8G8R8UI:
-					case FORMAT_X8B8G8R8I:
-					case FORMAT_X8B8G8R8:
-					case FORMAT_X8L8V8U8:
-					case FORMAT_SRGB8_X8:
-						c.z = c.x;
-						c.x = As<Short4>(UnpackLow(c.x, c.y));
-						c.z = As<Short4>(UnpackHigh(c.z, c.y));
-						c.y = c.x;
-						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
-						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
-						c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
-						break;
-					default:
-						ASSERT(false);
-					}
+				switch(state.textureFormat)
+				{
+				case FORMAT_X8R8G8B8:
+					c.z = c.x;
+					c.z = As<Short4>(UnpackLow(c.z, c.y));
+					c.x = As<Short4>(UnpackHigh(c.x, c.y));
+					c.y = c.z;
+					c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
+					c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
+					c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
+					break;
+				case FORMAT_X8B8G8R8I_SNORM:
+				case FORMAT_X8B8G8R8UI:
+				case FORMAT_X8B8G8R8I:
+				case FORMAT_X8B8G8R8:
+				case FORMAT_X8L8V8U8:
+				case FORMAT_SRGB8_X8:
+					c.z = c.x;
+					c.x = As<Short4>(UnpackLow(c.x, c.y));
+					c.z = As<Short4>(UnpackHigh(c.z, c.y));
+					c.y = c.x;
+					c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
+					c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
+					c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
+					break;
+				default:
+					ASSERT(false);
 				}
-				break;
+			}
+			break;
 			case 2:
 				c.x = Insert(c.x, Pointer<Short>(buffer[f0])[index[0]], 0);
 				c.x = Insert(c.x, Pointer<Short>(buffer[f1])[index[1]], 1);
@@ -1881,15 +1877,15 @@ namespace sw
 				}
 				break;
 			case 1:
-				{
-					Int c0 = Int(*Pointer<Byte>(buffer[f0] + index[0]));
-					Int c1 = Int(*Pointer<Byte>(buffer[f1] + index[1]));
-					Int c2 = Int(*Pointer<Byte>(buffer[f2] + index[2]));
-					Int c3 = Int(*Pointer<Byte>(buffer[f3] + index[3]));
-					c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-					c.x = Unpack(As<Byte4>(c0));
-				}
-				break;
+			{
+				Int c0 = Int(*Pointer<Byte>(buffer[f0] + index[0]));
+				Int c1 = Int(*Pointer<Byte>(buffer[f1] + index[1]));
+				Int c2 = Int(*Pointer<Byte>(buffer[f2] + index[2]));
+				Int c3 = Int(*Pointer<Byte>(buffer[f3] + index[3]));
+				c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
+				c.x = Unpack(As<Byte4>(c0));
+			}
+			break;
 			default:
 				ASSERT(false);
 			}
@@ -1924,8 +1920,18 @@ namespace sw
 				ASSERT(false);
 			}
 		}
-		else if(hasYuvFormat())
+		else ASSERT(false);
+	}
+
+	void SamplerCore::sampleTexel(Vector4s &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Vector4f &offset, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
+	{
+		UInt index[4];
+
+		computeIndices(index, uuuu, vvvv, wwww, offset, mipmap, function);
+
+		if(hasYuvFormat())
 		{
+
 			// Generic YPbPr to RGB transformation
 			// R = Y                               +           2 * (1 - Kr) * Pr
 			// G = Y - 2 * Kb * (1 - Kb) / Kg * Pb - 2 * Kr * (1 - Kr) / Kg * Pr
@@ -2018,7 +2024,10 @@ namespace sw
 			c.y = Min(g, UShort4(0x3FFF)) << 2;
 			c.z = Min(b, UShort4(0x3FFF)) << 2;
 		}
-		else ASSERT(false);
+		else
+		{
+			sampleTexel(c, index, buffer);
+		}
 	}
 
 	void SamplerCore::sampleTexel(Vector4f &c, Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Vector4f &offset, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
@@ -2027,56 +2036,80 @@ namespace sw
 
 		computeIndices(index, uuuu, vvvv, wwww, offset, mipmap, function);
 
-		int f0 = state.textureType == TEXTURE_CUBE ? 0 : 0;
-		int f1 = state.textureType == TEXTURE_CUBE ? 1 : 0;
-		int f2 = state.textureType == TEXTURE_CUBE ? 2 : 0;
-		int f3 = state.textureType == TEXTURE_CUBE ? 3 : 0;
-
-		// Read texels
-		switch(textureComponentCount())
+		if(hasFloatTexture())
 		{
-		case 4:
-			c.x = *Pointer<Float4>(buffer[f0] + index[0] * 16, 16);
-			c.y = *Pointer<Float4>(buffer[f1] + index[1] * 16, 16);
-			c.z = *Pointer<Float4>(buffer[f2] + index[2] * 16, 16);
-			c.w = *Pointer<Float4>(buffer[f3] + index[3] * 16, 16);
-			transpose4x4(c.x, c.y, c.z, c.w);
-			break;
-		case 3:
-			ASSERT(state.textureFormat == FORMAT_X32B32G32R32F);
-			c.x = *Pointer<Float4>(buffer[f0] + index[0] * 16, 16);
-			c.y = *Pointer<Float4>(buffer[f1] + index[1] * 16, 16);
-			c.z = *Pointer<Float4>(buffer[f2] + index[2] * 16, 16);
-			c.w = *Pointer<Float4>(buffer[f3] + index[3] * 16, 16);
-			transpose4x3(c.x, c.y, c.z, c.w);
-			c.w = Float4(1.0f);
-			break;
-		case 2:
-			// FIXME: Optimal shuffling?
-			c.x.xy = *Pointer<Float4>(buffer[f0] + index[0] * 8);
-			c.x.zw = *Pointer<Float4>(buffer[f1] + index[1] * 8 - 8);
-			c.z.xy = *Pointer<Float4>(buffer[f2] + index[2] * 8);
-			c.z.zw = *Pointer<Float4>(buffer[f3] + index[3] * 8 - 8);
-			c.y = c.x;
-			c.x = Float4(c.x.xz, c.z.xz);
-			c.y = Float4(c.y.yw, c.z.yw);
-			break;
-		case 1:
-			// FIXME: Optimal shuffling?
-			c.x.x = *Pointer<Float>(buffer[f0] + index[0] * 4);
-			c.x.y = *Pointer<Float>(buffer[f1] + index[1] * 4);
-			c.x.z = *Pointer<Float>(buffer[f2] + index[2] * 4);
-			c.x.w = *Pointer<Float>(buffer[f3] + index[3] * 4);
+			int f0 = state.textureType == TEXTURE_CUBE ? 0 : 0;
+			int f1 = state.textureType == TEXTURE_CUBE ? 1 : 0;
+			int f2 = state.textureType == TEXTURE_CUBE ? 2 : 0;
+			int f3 = state.textureType == TEXTURE_CUBE ? 3 : 0;
 
-			if(state.textureFormat == FORMAT_D32FS8_SHADOW && state.textureFilter != FILTER_GATHER)
+			// Read texels
+			switch(textureComponentCount())
 			{
-				Float4 d = Min(Max(z, Float4(0.0f)), Float4(1.0f));
+			case 4:
+				c.x = *Pointer<Float4>(buffer[f0] + index[0] * 16, 16);
+				c.y = *Pointer<Float4>(buffer[f1] + index[1] * 16, 16);
+				c.z = *Pointer<Float4>(buffer[f2] + index[2] * 16, 16);
+				c.w = *Pointer<Float4>(buffer[f3] + index[3] * 16, 16);
+				transpose4x4(c.x, c.y, c.z, c.w);
+				break;
+			case 3:
+				ASSERT(state.textureFormat == FORMAT_X32B32G32R32F);
+				c.x = *Pointer<Float4>(buffer[f0] + index[0] * 16, 16);
+				c.y = *Pointer<Float4>(buffer[f1] + index[1] * 16, 16);
+				c.z = *Pointer<Float4>(buffer[f2] + index[2] * 16, 16);
+				c.w = *Pointer<Float4>(buffer[f3] + index[3] * 16, 16);
+				transpose4x3(c.x, c.y, c.z, c.w);
+				c.w = Float4(1.0f);
+				break;
+			case 2:
+				// FIXME: Optimal shuffling?
+				c.x.xy = *Pointer<Float4>(buffer[f0] + index[0] * 8);
+				c.x.zw = *Pointer<Float4>(buffer[f1] + index[1] * 8 - 8);
+				c.z.xy = *Pointer<Float4>(buffer[f2] + index[2] * 8);
+				c.z.zw = *Pointer<Float4>(buffer[f3] + index[3] * 8 - 8);
+				c.y = c.x;
+				c.x = Float4(c.x.xz, c.z.xz);
+				c.y = Float4(c.y.yw, c.z.yw);
+				break;
+			case 1:
+				// FIXME: Optimal shuffling?
+				c.x.x = *Pointer<Float>(buffer[f0] + index[0] * 4);
+				c.x.y = *Pointer<Float>(buffer[f1] + index[1] * 4);
+				c.x.z = *Pointer<Float>(buffer[f2] + index[2] * 4);
+				c.x.w = *Pointer<Float>(buffer[f3] + index[3] * 4);
 
-				c.x = As<Float4>(As<Int4>(CmpNLT(c.x, d)) & As<Int4>(Float4(1.0f)));   // FIXME: Only less-equal?
+				if(state.textureFormat == FORMAT_D32FS8_SHADOW && state.textureFilter != FILTER_GATHER)
+				{
+					Float4 d = Min(Max(z, Float4(0.0f)), Float4(1.0f));
+
+					c.x = As<Float4>(As<Int4>(CmpNLT(c.x, d)) & As<Int4>(Float4(1.0f)));   // FIXME: Only less-equal?
+				}
+				break;
+			default:
+				ASSERT(false);
 			}
-			break;
-		default:
-			ASSERT(false);
+		}
+		else
+		{
+			ASSERT(!hasYuvFormat());
+
+			Vector4s cs;
+			sampleTexel(cs, index, buffer);
+
+			bool isInteger = Surface::isNonNormalizedInteger(state.textureFormat);
+			int componentCount = textureComponentCount();
+			for(int n = 0; n < componentCount; ++n)
+			{
+				if(hasUnsignedTextureComponent(n))
+				{
+					c[n] = isInteger ? As<Float4>(Int4(As<UShort4>(cs[n]))) : Float4(As<UShort4>(cs[n]));
+				}
+				else
+				{
+					c[n] = isInteger ? As<Float4>(Int4(cs[n])) : Float4(cs[n]);
+				}
+			}
 		}
 	}
 
