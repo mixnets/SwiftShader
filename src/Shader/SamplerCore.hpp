@@ -91,6 +91,7 @@ namespace sw
 		void sRGBtoLinear16_5_12(Short4 &c);
 
 		bool hasFloatTexture() const;
+		bool hasIntegerTexture() const;
 		bool hasUnsignedTextureComponent(int component) const;
 		int textureComponentCount() const;
 		bool has16bitTextureFormat() const;
