@@ -1,0 +1,53 @@
+Name
+
+    CHROMIUM_texture_filtering_hint
+
+Name Strings
+
+    GL_ CHROMIUM_texture_filtering_hint
+
+Version
+
+    Last Modifed Date: July 18, 2017
+
+Dependencies
+
+    This extension is written against the OpenGL ES 2.0 specification.
+
+    OpenGL ES 2.0 is required.
+
+Overview
+
+    This extension defines a way to request high precision texture filtering using a
+    new value to Hint.
+
+    When this extension is enabled, GL_TEXTURE_FILTERING_HINT_CHROMIUM
+    can be used by the implementation as a means to distinguish between a
+    performance focused implementation, using GL_FASTEST, or a precision focused
+    implementation, using GL_NICEST.
+
+    The default state of the GL_TEXTURE_FILTERING_HINT hint is
+    GL_DONT_CARE and it behaves as GL_FASTEST.
+
+New Tokens
+
+    Accepted by the <pname> parameter of GetIntegerv, GetFloatv and
+    GetBooleanv and by the <target> parameter of Hint:
+
+    GL_TEXTURE_FILTERING_HINT_CHROMIUM      0x8AF0
+
+New Procedures and Functions
+
+    None.
+
+Errors
+
+    None.
+
+New State
+
+    None.
+
+Revision History
+
+    2/7/2014    Documented the extension
