@@ -67,6 +67,8 @@ namespace sw
 		swizzleB = SWIZZLE_BLUE;
 		swizzleA = SWIZZLE_ALPHA;
 
+		compare = COMPARE_BYPASS;
+
 		texture.LOD = 0.0f;
 		exp2LOD = 1.0f;
 
@@ -99,6 +101,7 @@ namespace sw
 			state.swizzleB = swizzleB;
 			state.swizzleA = swizzleA;
 			state.highPrecisionFiltering = highPrecisionFiltering;
+			state.compare = getCompareFunc();
 
 			#if PERF_PROFILE
 				state.compressedFormat = Surface::isCompressed(externalTextureFormat);
@@ -325,6 +328,11 @@ namespace sw
 		this->swizzleA = swizzleA;
 	}
 
+	void Sampler::setCompareFunc(CompareFunc compare)
+	{
+		this->compare = compare;
+	}
+
 	void Sampler::setBaseLevel(int baseLevel)
 	{
 		texture.baseLevel = baseLevel;
@@ -470,5 +478,20 @@ namespace sw
 		}
 
 		return addressingModeW;
+	}
+
+	CompareFunc Sampler::getCompareFunc() const
+	{
+		if(getTextureFilter() == FILTER_GATHER)
+		{
+			return COMPARE_BYPASS;
+		}
+
+		if(internalTextureFormat == FORMAT_D32FS8_SHADOW)
+		{
+			return COMPARE_LESSEQUAL;
+		}
+
+		return compare;
 	}
 }
