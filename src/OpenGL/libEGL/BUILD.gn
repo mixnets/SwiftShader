@@ -25,13 +25,16 @@ config("swiftshader_libEGL_private_config") {
 
     defines += [
       "EGLAPI=",
-      "LIBEGL_EXPORTS",
     ]
   } else {
     cflags = [ "-Wno-sign-compare" ]
     if (!is_clang) {
       cflags += [ "-Wno-unused-but-set-variable" ]
     }
+
+    # Suppress UBSan false positives. Function pointers from exported functions
+    # are wrongly flagged as being of incorrect type.
+    cflags += [ "-fno-sanitize=function" ]
 
     defines += [
       "LOG_TAG=\"swiftshader_libEGL\"",

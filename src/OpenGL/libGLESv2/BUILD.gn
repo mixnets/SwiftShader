@@ -28,7 +28,6 @@ config("swiftshader_libGLESv2_private_config") {
 
     defines += [
       "GL_APICALL=",
-      "LIBGLESV2_EXPORTS",
     ]
 
     if (is_clang) {
@@ -42,6 +41,10 @@ config("swiftshader_libGLESv2_private_config") {
     if (!is_clang) {
       cflags += [ "-Wno-unused-but-set-variable" ]
     }
+
+    # Suppress UBSan false positives. Function pointers from exported functions
+    # are wrongly flagged as being of incorrect type.
+    cflags += [ "-fno-sanitize=function" ]
 
     defines += [
       "LOG_TAG=\"swiftshader_libGLESv2\"",
