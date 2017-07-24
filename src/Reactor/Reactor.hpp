@@ -18,6 +18,7 @@
 #include "Nucleus.hpp"
 #include "Routine.hpp"
 
+#include <assert.h>
 #include <cstddef>
 #include <cwchar>
 #undef Bool
@@ -2306,6 +2307,8 @@ namespace sw
 	template<class T>
 	RValue<T>::RValue(Value *rvalue)
 	{
+		assert(Nucleus::sameType(rvalue, T::getType()));
+
 		value = rvalue;
 	}
 
