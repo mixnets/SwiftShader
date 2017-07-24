@@ -77,7 +77,7 @@ const struct InstIcmpAttributes_ {
 } // end of anonymous namespace
 
 Inst::Inst(Cfg *Func, InstKind Kind, SizeT MaxSrcs, Variable *Dest)
-    : Kind(Kind), Number(Func->newInstNumber()), Dest(Dest), MaxSrcs(MaxSrcs),
+    : Kind(Kind), Number(Func->newInstNumber()), Serial(Number), Dest(Dest), MaxSrcs(MaxSrcs),
       LiveRangesEnded(0) {
   Srcs.reserve(MaxSrcs);
 }

@@ -1404,6 +1404,11 @@ namespace sw
 		return createConstantVector((const int64_t*)constants, type);
 	}
 
+	bool Nucleus::sameType(Value *value, Type *type)
+	{
+		return value->getType() == T(type);
+	}
+
 	Type *Void::getType()
 	{
 		return T(Ice::IceType_void);
@@ -2666,7 +2671,7 @@ namespace sw
 	RValue<Short4> UnpackLow(RValue<Byte8> x, RValue<Byte8> y)
 	{
 		int shuffle[16] = {0, 16, 1, 17, 2, 18, 3, 19, 4, 20, 5, 21, 6, 22, 7, 23};   // Real type is v16i8
-		return RValue<Short4>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
+		return As<Short4>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
 	}
 
 	RValue<Short4> UnpackHigh(RValue<Byte8> x, RValue<Byte8> y)
@@ -3018,7 +3023,7 @@ namespace sw
 		Value *short8 = Nucleus::createBitCast(cast.value, Short8::getType());
 		Value *packed = Nucleus::createShuffleVector(short8, short8, select);
 
-		Value *int2 = RValue<Int2>(Int2(RValue<Int4>(packed))).value;
+		Value *int2 = RValue<Int2>(Int2(As<Int4>(packed))).value;
 		Value *short4 = Nucleus::createBitCast(int2, Short4::getType());
 
 		storeValue(short4);
@@ -3338,7 +3343,7 @@ namespace sw
 	RValue<Int2> UnpackLow(RValue<Short4> x, RValue<Short4> y)
 	{
 		int shuffle[8] = {0, 8, 1, 9, 2, 10, 3, 11};   // Real type is v8i16
-		return RValue<Int2>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
+		return As<Int2>(Nucleus::createShuffleVector(x.value, y.value, shuffle));
 	}
 
 	RValue<Int2> UnpackHigh(RValue<Short4> x, RValue<Short4> y)

@@ -217,6 +217,7 @@ protected:
   const InstKind Kind;
   /// Number is the instruction number for describing live ranges.
   InstNumberT Number;
+  InstNumberT Serial;
   /// Deleted means irrevocably deleted.
   bool Deleted = false;
   /// Dead means one of two things depending on context: (1) pending deletion

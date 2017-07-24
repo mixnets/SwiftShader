@@ -165,6 +165,8 @@ namespace sw
 
 		static Type *getPointerType(Type *elementType);
 
+		static bool sameType(Value *value, Type *type);
+
 	private:
 		void optimize();
 	};
