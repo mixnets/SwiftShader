@@ -156,6 +156,7 @@ namespace sw
 		PS ps;
 
 		int instanceID;
+		bool vertexIDEnabled;
 
 		VertexProcessor::PointSprite point;
 		float lineWidth;

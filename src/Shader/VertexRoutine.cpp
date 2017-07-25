@@ -57,6 +57,11 @@ namespace sw
 			UInt tagIndex = index & 0x0000003C;
 			UInt indexQ = !textureSampling ? UInt(index & 0xFFFFFFFC) : index;   // FIXME: TEXLDL hack to have independent LODs, hurts performance.
 
+			if(state.vertexIDEnabled)
+			{
+				vertexID = index;
+			}
+
 			If(*Pointer<UInt>(tagCache + tagIndex) != indexQ)
 			{
 				*Pointer<UInt>(tagCache + tagIndex) = indexQ;

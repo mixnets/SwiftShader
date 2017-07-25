@@ -721,7 +721,15 @@ namespace sw
 			}
 			break;
 		case Shader::PARAMETER_MISCTYPE:
-			reg.x = As<Float>(Int(instanceID));
+			if(src.index == Shader::InstIDIndex)
+			{
+				reg.x = As<Float>(Int(instanceID));
+			}
+			else if(src.index == Shader::VertexIDIndex)
+			{
+				reg.x = As<Float>(Int(vertexID));
+			}
+			else ASSERT(false);
 			return reg;
 		default:
 			ASSERT(false);
@@ -861,7 +869,17 @@ namespace sw
 				case Shader::PARAMETER_INPUT:    a = v[src.rel.index][component]; break;
 				case Shader::PARAMETER_OUTPUT:   a = o[src.rel.index][component]; break;
 				case Shader::PARAMETER_CONST:    a = *Pointer<Float>(uniformAddress(src.bufferIndex, src.rel.index) + component * sizeof(float)); break;
-				case Shader::PARAMETER_MISCTYPE: a = As<Float4>(Int4(instanceID)); break;
+				case Shader::PARAMETER_MISCTYPE:
+					if(src.rel.index == Shader::InstIDIndex)
+					{
+						a = As<Float4>(Int4(instanceID)); break;
+					}
+					else if(src.rel.index == Shader::VertexIDIndex)
+					{
+						a = As<Float4>(Int4(vertexID)); break;
+					}
+					else ASSERT(false);
+					break;
 				default: ASSERT(false);
 				}
 

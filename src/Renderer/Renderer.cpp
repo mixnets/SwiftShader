@@ -453,6 +453,8 @@ namespace sw
 					data->instanceID = context->instanceID;
 				}
 
+				data->vertexIDEnabled = context->vertexShader->isVertexIdDeclared();
+
 				VertexProcessor::lockUniformBuffers(data->vs.u, draw->vUniformBuffers);
 				VertexProcessor::lockTransformFeedbackBuffers(data->vs.t, data->vs.reg, data->vs.row, data->vs.col, data->vs.str, draw->transformFeedbackBuffers);
 			}
