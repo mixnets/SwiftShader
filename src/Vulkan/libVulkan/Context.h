@@ -78,7 +78,13 @@ namespace vulkan
 
 	struct Sampler
 	{
-		uint32_t state[1];
+	};
+
+	struct ShaderModule
+	{
+		std::vector<uint32_t> data;
+
+		ShaderModule() {}
 	};
 }
 #endif
