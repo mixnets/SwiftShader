@@ -122,7 +122,7 @@ namespace
 
 	const bool CPUID::ARM = CPUID::detectARM();
 	const bool CPUID::SSE4_1 = CPUID::detectSSE4_1();
-	const bool emulateIntrinsics = CPUID::ARM;
+	const bool emulateIntrinsics = true ||CPUID::ARM;
 }
 
 namespace sw
