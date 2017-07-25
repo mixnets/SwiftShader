@@ -43,6 +43,9 @@ namespace
 		static Ice::Operand *storeAddress(const Ice::Inst *instruction);
 		static Ice::Operand *loadAddress(const Ice::Inst *instruction);
 		static Ice::Operand *storeData(const Ice::Inst *instruction);
+		static std::size_t storeSize(const Ice::Inst *instruction);
+		static std::size_t loadSize(const Ice::Inst *instruction);
+		static bool loadTypeMatchesStore(const Ice::Inst *load, const Ice::Inst *store);
 
 		Ice::Cfg *function;
 		Ice::GlobalContext *context;
@@ -60,6 +63,8 @@ namespace
 		std::map<Ice::Operand*, Uses> uses;
 		std::map<Ice::Inst*, Ice::CfgNode*> node;
 		std::map<Ice::Variable*, Ice::Inst*> definition;
+
+		std::set<Ice::Inst *> check;
 	};
 
 	void Optimizer::run(Ice::Cfg *function)
@@ -74,6 +79,8 @@ namespace
 		eliminateLoadsFollowingSingleStore();
 		optimizeStoresInSingleBasicBlock();
 		eliminateDeadCode();
+
+
 	}
 
 	void Optimizer::eliminateDeadCode()
@@ -93,6 +100,7 @@ namespace
 
 					if(isDead(&inst))
 					{
+						int erased = check.erase(&inst);
 						deleteInstruction(&inst);
 						modified = true;
 					}
@@ -195,6 +203,11 @@ namespace
 					}
 
 					if(loadAddress(load) != address)
+					{
+						continue;
+					}
+
+					if(!loadTypeMatchesStore(load, store))
 					{
 						continue;
 					}
@@ -313,7 +326,16 @@ namespace
 						// New store found. If we had a previous one, eliminate it.
 						if(store)
 						{
-							deleteInstruction(store);
+							check.insert(store);
+
+							if(storeSize(&inst) >= storeSize(store))
+							{
+								deleteInstruction(store);
+							}
+							else
+							{
+								check.insert(store);
+							}
 						}
 
 						store = &inst;
@@ -324,6 +346,11 @@ namespace
 						Ice::Inst *load = &inst;
 
 						if(loadAddress(load) != address)
+						{
+							continue;
+						}
+
+						if(!loadTypeMatchesStore(load, store))
 						{
 							continue;
 						}
@@ -552,6 +579,75 @@ namespace
 		}
 
 		return nullptr;
+	}
+
+	std::size_t Optimizer::storeSize(const Ice::Inst *store)
+	{
+		assert(isStore(*store));
+
+		if(auto *instStore = llvm::dyn_cast<Ice::InstStore>(store))
+		{
+			return Ice::typeWidthInBytes(instStore->getData()->getType());
+		}
+
+		if(auto *storeSubVector = llvm::dyn_cast<Ice::InstIntrinsicCall>(store))
+		if(storeSubVector->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector)
+		{
+			return llvm::cast<Ice::ConstantInteger32>(storeSubVector->getSrc(3))->getValue();
+		}
+	}
+
+	std::size_t Optimizer::loadSize(const Ice::Inst *load)
+	{
+		assert(isLoad(*load));
+
+		if(auto *instLoad = llvm::dyn_cast<Ice::InstLoad>(load))
+		{
+			return Ice::typeWidthInBytes(instLoad->getDest()->getType());
+		}
+
+		if(auto *loadSubVector = llvm::dyn_cast<Ice::InstIntrinsicCall>(load))
+		if(loadSubVector->getIntrinsicInfo().ID == Ice::Intrinsics::LoadSubVector)
+		{
+			return llvm::cast<Ice::ConstantInteger32>(loadSubVector->getSrc(2))->getValue();
+		}
+	}
+
+	bool Optimizer::loadTypeMatchesStore(const Ice::Inst *load, const Ice::Inst *store)
+	{
+		if(!load || !store)
+		{
+			return false;
+		}
+
+		assert(isLoad(*load) && isStore(*store));
+		assert(loadAddress(load) == storeAddress(store));
+
+		if(auto *instStore = llvm::dyn_cast<Ice::InstStore>(store))
+		{
+			if(auto *instLoad = llvm::dyn_cast<Ice::InstLoad>(load))
+			{
+				bool match = instStore->getData()->getType() == instLoad->getDest()->getType();
+				return match;
+			}
+		}
+
+		if(auto *storeSubVector = llvm::dyn_cast<Ice::InstIntrinsicCall>(store))
+		if(storeSubVector->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector)
+		{
+			if(auto *loadSubVector = llvm::dyn_cast<Ice::InstIntrinsicCall>(load))
+			if(loadSubVector->getIntrinsicInfo().ID == Ice::Intrinsics::LoadSubVector)
+			{
+				// Check for matching type and sub-vector width.
+				bool matchType = storeSubVector->getSrc(1)->getType() == loadSubVector->getDest()->getType();
+				bool matchSize = llvm::cast<Ice::ConstantInteger32>(storeSubVector->getSrc(3))->getValue() ==
+				                 llvm::cast<Ice::ConstantInteger32>(loadSubVector->getSrc(2))->getValue();
+				bool match = matchType && matchSize;
+				return match;
+			}
+		}
+
+		return false;
 	}
 
 	bool Optimizer::Uses::areOnlyLoadStore() const

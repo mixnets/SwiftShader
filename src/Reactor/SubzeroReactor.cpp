@@ -981,6 +981,22 @@ namespace sw
 
 	Value *Nucleus::createBitCast(Value *v, Type *destType)
 	{
+		if(emulateIntrinsics)
+		{
+			if(Ice::isScalarIntegerType(v->getType()) && Ice::isVectorType(T(destType)))
+			{
+				Value *address = allocateStackVariable(destType);
+				createStore(v, address, T(v->getType()));
+				return createLoad(address, destType);
+			}
+			else if(Ice::isVectorType(v->getType()) && Ice::isScalarIntegerType(T(destType)))
+			{
+				Value *address = allocateStackVariable(T(v->getType()));
+				createStore(v, address, T(v->getType()));
+				return createLoad(address, destType);
+			}
+		}
+
 		return createCast(Ice::InstCast::Bitcast, v, destType);
 	}
 
