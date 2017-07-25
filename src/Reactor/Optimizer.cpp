@@ -38,6 +38,8 @@ namespace
 		void deleteInstruction(Ice::Inst *instruction);
 		bool isDead(Ice::Inst *instruction);
 
+		static const Ice::InstIntrinsicCall *asLoadSubVector(const Ice::Inst *instruction);
+		static const Ice::InstIntrinsicCall *asStoreSubVector(const Ice::Inst *instruction);
 		static bool isLoad(const Ice::Inst &instruction);
 		static bool isStore(const Ice::Inst &instruction);
 		static Ice::Operand *storeAddress(const Ice::Inst *instruction);
@@ -470,6 +472,32 @@ namespace
 		return false;
 	}
 
+	const Ice::InstIntrinsicCall *Optimizer::asLoadSubVector(const Ice::Inst *instruction)
+	{
+		if(auto *instrinsic = llvm::dyn_cast<Ice::InstIntrinsicCall>(instruction))
+		{
+			if(instrinsic->getIntrinsicInfo().ID == Ice::Intrinsics::LoadSubVector)
+			{
+				return instrinsic;
+			}
+		}
+
+		return nullptr;
+	}
+
+	const Ice::InstIntrinsicCall *Optimizer::asStoreSubVector(const Ice::Inst *instruction)
+	{
+		if(auto *instrinsic = llvm::dyn_cast<Ice::InstIntrinsicCall>(instruction))
+		{
+			if(instrinsic->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector)
+			{
+				return instrinsic;
+			}
+		}
+
+		return nullptr;
+	}
+
 	bool Optimizer::isLoad(const Ice::Inst &instruction)
 	{
 		if(llvm::isa<Ice::InstLoad>(&instruction))
@@ -477,12 +505,7 @@ namespace
 			return true;
 		}
 
-		if(auto intrinsicCall = llvm::dyn_cast<Ice::InstIntrinsicCall>(&instruction))
-		{
-			return intrinsicCall->getIntrinsicInfo().ID == Ice::Intrinsics::LoadSubVector;
-		}
-
-		return false;
+		return asLoadSubVector(&instruction) != nullptr;
 	}
 
 	bool Optimizer::isStore(const Ice::Inst &instruction)
@@ -492,12 +515,7 @@ namespace
 			return true;
 		}
 
-		if(auto intrinsicCall = llvm::dyn_cast<Ice::InstIntrinsicCall>(&instruction))
-		{
-			return intrinsicCall->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector;
-		}
-
-		return false;
+		return asStoreSubVector(&instruction) != nullptr;
 	}
 
 	Ice::Operand *Optimizer::storeAddress(const Ice::Inst *instruction)
@@ -509,12 +527,9 @@ namespace
 			return store->getAddr();
 		}
 
-		if(auto *instrinsic = llvm::dyn_cast<Ice::InstIntrinsicCall>(instruction))
+		if(auto *storeSubVector = asStoreSubVector(instruction))
 		{
-			if(instrinsic->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector)
-			{
-				return instrinsic->getSrc(2);
-			}
+			return storeSubVector->getSrc(2);
 		}
 
 		return nullptr;
@@ -529,12 +544,9 @@ namespace
 			return load->getSourceAddress();
 		}
 
-		if(auto *instrinsic = llvm::dyn_cast<Ice::InstIntrinsicCall>(instruction))
+		if(auto *loadSubVector = asLoadSubVector(instruction))
 		{
-			if(instrinsic->getIntrinsicInfo().ID == Ice::Intrinsics::LoadSubVector)
-			{
-				return instrinsic->getSrc(1);
-			}
+			return loadSubVector->getSrc(1);
 		}
 
 		return nullptr;
@@ -549,12 +561,9 @@ namespace
 			return store->getData();
 		}
 
-		if(auto *instrinsic = llvm::dyn_cast<Ice::InstIntrinsicCall>(instruction))
+		if(auto *storeSubVector = asStoreSubVector(instruction))
 		{
-			if(instrinsic->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector)
-			{
-				return instrinsic->getSrc(1);
-			}
+			return storeSubVector->getSrc(1);
 		}
 
 		return nullptr;
@@ -569,8 +578,7 @@ namespace
 			return Ice::typeWidthInBytes(instStore->getData()->getType());
 		}
 
-		if(auto *storeSubVector = llvm::dyn_cast<Ice::InstIntrinsicCall>(store))
-		if(storeSubVector->getIntrinsicInfo().ID == Ice::Intrinsics::StoreSubVector)
+		if(auto *storeSubVector = asStoreSubVector(store))
 		{
 			return llvm::cast<Ice::ConstantInteger32>(storeSubVector->getSrc(3))->getValue();
 		}
