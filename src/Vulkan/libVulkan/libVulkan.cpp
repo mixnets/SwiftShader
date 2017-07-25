@@ -491,4 +491,51 @@ namespace vulkan
 		}
 	}
 
+	VkResult CreateShaderModule(VkDevice device, const VkShaderModuleCreateInfo * pCreateInfo, const VkAllocationCallbacks * pAllocator, VkShaderModule * pShaderModule)
+	{
+		GET_FROM_HANDLE(Device, myDevice, device);
+		assert(pCreateInfo->sType == VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO);
+		assert(pCreateInfo->flags == 0);
+
+		ShaderModule *module = nullptr;
+
+		if (pAllocator == NULL)
+		{
+			module = reinterpret_cast<ShaderModule *>(vkutils::Alloc(&myDevice->alloc, pAllocator, sizeof(*module) + pCreateInfo->codeSize, ALIGNMENT, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT));
+		}
+		else
+		{
+			module = reinterpret_cast<ShaderModule *>(pAllocator->pfnAllocation(device, sizeof(*module) + pCreateInfo->codeSize, ALIGNMENT, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT));
+		}
+
+		if (module == NULL)
+		{
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+
+		module->size = pCreateInfo->codeSize;
+		memcpy(module->data, pCreateInfo->pCode, pCreateInfo->codeSize);
+
+		*pShaderModule = ShaderModule_to_handle(module);
+
+		return VK_SUCCESS;
+	}
+
+	void DestroyShaderModule(VkDevice device, VkShaderModule shaderModule, const VkAllocationCallbacks * pAllocator)
+	{
+		assert(shaderModule != NULL);
+
+		GET_FROM_HANDLE(Device, myDevice, device);
+		GET_FROM_HANDLE(ShaderModule, myShaderModule, shaderModule);
+
+		if (pAllocator == NULL)
+		{
+			vkutils::Free(&myDevice->alloc, myShaderModule);
+		}
+		else
+		{
+			pAllocator->pfnFree(nullptr, myShaderModule);
+		}
+	}
+
 }

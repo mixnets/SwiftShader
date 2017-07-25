@@ -80,6 +80,12 @@ namespace vulkan
 	{
 		uint32_t state[1];
 	};
+
+	struct ShaderModule
+	{
+		uint32_t size;
+		char data[];
+	};
 }
 #endif
 
