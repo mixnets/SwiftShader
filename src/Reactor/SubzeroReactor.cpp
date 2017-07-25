@@ -122,8 +122,8 @@ namespace
 
 	const bool CPUID::ARM = CPUID::detectARM();
 	const bool CPUID::SSE4_1 = CPUID::detectSSE4_1();
-	const bool emulateIntrinsics = CPUID::ARM;
-	const bool emulateMismatchedBitCast = CPUID::ARM;
+	const bool emulateIntrinsics = CPUID::ARM || true;
+	const bool emulateMismatchedBitCast = CPUID::ARM || true;
 }
 
 namespace sw
@@ -713,7 +713,7 @@ namespace sw
 
 	static Value *createArithmetic(Ice::InstArithmetic::OpKind op, Value *lhs, Value *rhs)
 	{
-		assert(lhs->getType() == rhs->getType() || (llvm::isa<Ice::Constant>(rhs) && (op == Ice::InstArithmetic::Shl || Ice::InstArithmetic::Lshr || Ice::InstArithmetic::Ashr)));
+	//	assert(lhs->getType() == rhs->getType());
 
 		bool swapOperands = llvm::isa<Ice::Constant>(lhs) && isCommutative(op);
 
@@ -5669,7 +5669,8 @@ namespace sw
 
 	Int4::Int4(RValue<Int> rhs)
 	{
-		Value *vector = Nucleus::createBitCast(rhs.value, Int4::getType());
+		Value *vector = loadValue();
+		vector = Nucleus::createInsertElement(vector, rhs.value, 0);
 
 		int swizzle[4] = {0, 0, 0, 0};
 		Value *replicate = Nucleus::createShuffleVector(vector, vector, swizzle);
@@ -6663,7 +6664,8 @@ namespace sw
 
 	Float4::Float4(RValue<Float> rhs) : FloatXYZW(this)
 	{
-		Value *vector = Nucleus::createBitCast(rhs.value, Float4::getType());
+		Value *vector = loadValue();
+		vector = Nucleus::createInsertElement(vector, rhs.value, 0);
 
 		int swizzle[4] = {0, 0, 0, 0};
 		Value *replicate = Nucleus::createShuffleVector(vector, vector, swizzle);
@@ -6831,14 +6833,27 @@ namespace sw
 
 	RValue<Float4> Sqrt(RValue<Float4> x)
 	{
-		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
-		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Sqrt, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
-		auto target = ::context->getConstantUndef(Ice::IceType_i32);
-		auto sqrt = Ice::InstIntrinsicCall::create(::function, 1, result, target, intrinsic);
-		sqrt->addArg(x.value);
-		::basicBlock->appendInst(sqrt);
+		if(emulateIntrinsics)
+		{
+			Float4 result;
+			result.x = Sqrt(Float(Float4(x).x));
+			result.y = Sqrt(Float(Float4(x).y));
+			result.z = Sqrt(Float(Float4(x).z));
+			result.w = Sqrt(Float(Float4(x).w));
 
-		return RValue<Float4>(V(result));
+			return result;
+		}
+		else
+		{
+			Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
+			const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::Sqrt, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+			auto target = ::context->getConstantUndef(Ice::IceType_i32);
+			auto sqrt = Ice::InstIntrinsicCall::create(::function, 1, result, target, intrinsic);
+			sqrt->addArg(x.value);
+			::basicBlock->appendInst(sqrt);
+
+			return RValue<Float4>(V(result));
+		}
 	}
 
 	RValue<Float4> Insert(RValue<Float4> x, RValue<Float> element, int i)
