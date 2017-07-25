@@ -962,6 +962,8 @@ namespace sw
 		DrawType type = static_cast<DrawType>(static_cast<unsigned int>(drawType) & 0xF);
 		state.verticesPerPrimitive = 1 + (type >= DRAW_LINELIST) + (type >= DRAW_TRIANGLELIST);
 
+		state.vertexIDEnabled = context->vertexShader && context->vertexShader->isVertexIdDeclared();
+
 		for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
 		{
 			state.input[i].type = context->input[i].type;

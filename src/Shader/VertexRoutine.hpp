@@ -47,6 +47,7 @@ namespace sw
 		Pointer<Byte> constants;
 
 		Int clipFlags;
+		Int4 vertexID;
 
 		RegisterArray<MAX_VERTEX_INPUTS> v;    // Input registers
 		RegisterArray<MAX_VERTEX_OUTPUTS> o;   // Output registers

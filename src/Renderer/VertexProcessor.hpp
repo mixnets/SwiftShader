@@ -77,6 +77,7 @@ namespace sw
 			bool transformFeedbackQueryEnabled                : 1;
 			uint64_t transformFeedbackEnabled                 : 64;
 			unsigned char verticesPerPrimitive                : 2; // 1 (points), 2 (lines) or 3 (triangles)
+			bool vertexIDEnabled                              : 1;
 
 			bool preTransformed : 1;
 			bool superSampling  : 1;
@@ -221,6 +222,7 @@ namespace sw
 		void setLightRange(unsigned int light, float lightRange);
 
 		void setInstanceID(int instanceID);
+		void setVertexIDEnabled(bool enable);
 
 		void setFogEnable(bool fogEnable);
 		void setVertexFogMode(FogMode fogMode);
