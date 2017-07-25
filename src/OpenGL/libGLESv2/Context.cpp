@@ -2963,7 +2963,7 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsize
 // Applies the indices and element array bindings
 GLenum Context::applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo)
 {
-	GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, indexInfo);
+	GLenum err = mIndexDataManager->prepareIndexData(type, start, end, count, getCurrentVertexArray()->getElementArrayBuffer(), indices, indexInfo, isPrimitiveRestartFixedIndexEnabled());
 
 	if(err == GL_NO_ERROR)
 	{
@@ -3522,7 +3522,7 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 		TransformFeedback* transformFeedback = getTransformFeedback();
 		if(!cullSkipsDraw(mode) || (transformFeedback->isActive() && !transformFeedback->isPaused()))
 		{
-			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount);
+			device->drawIndexedPrimitive(primitiveType, indexInfo.indexOffset, primitiveCount, isPrimitiveRestartFixedIndexEnabled(), count);
 		}
 		if(transformFeedback)
 		{
