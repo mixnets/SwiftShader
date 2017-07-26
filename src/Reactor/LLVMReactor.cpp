@@ -80,12 +80,47 @@ namespace sw
 
 	Optimization optimization[10] = {InstructionCombining, Disabled};
 
-	class Type : public llvm::Type {};
+	enum EmulatedType
+	{
+		Type_v2i32,
+		Type_v4i16,
+		Type_v2i16,
+		Type_v8i8,
+		Type_v4i8,
+		Type_v2f32,
+		EmulatedTypeCount
+	};
+
 	class Value : public llvm::Value {};
 	class SwitchCases : public llvm::SwitchInst {};
 	class BasicBlock : public llvm::BasicBlock {};
 
+	llvm::Type *T(Type *t)
+	{
+		std::uintptr_t type = reinterpret_cast<std::uintptr_t>(t);
+		if(type < EmulatedTypeCount)
+		{
+			switch(type)
+			{
+			case Type_v2i32: return llvm::Type::getX86_MMXTy(*::context);
+			case Type_v4i16: return llvm::Type::getX86_MMXTy(*::context);
+			case Type_v2i16: return llvm::Type::getInt32Ty(*::context);
+			case Type_v8i8:  return llvm::Type::getX86_MMXTy(*::context);
+			case Type_v4i8:  return llvm::Type::getInt32Ty(*::context);
+			case Type_v2f32: return llvm::VectorType::get(T(Float::getType()), 2);
+			default: assert(false);
+			}
+		}
+
+		return reinterpret_cast<llvm::Type*>(t);
+	}
+
 	inline Type *T(llvm::Type *t)
+	{
+		return reinterpret_cast<Type*>(t);
+	}
+
+	Type *T(EmulatedType t)
 	{
 		return reinterpret_cast<Type*>(t);
 	}
@@ -262,11 +297,11 @@ namespace sw
 
 		if(arraySize)
 		{
-			declaration = new AllocaInst(type, Nucleus::createConstantInt(arraySize));
+			declaration = new AllocaInst(T(type), Nucleus::createConstantInt(arraySize));
 		}
 		else
 		{
-			declaration = new AllocaInst(type, (Value*)0);
+			declaration = new AllocaInst(T(type), (Value*)nullptr);
 		}
 
 		entryBlock.getInstList().push_front(declaration);
@@ -292,7 +327,7 @@ namespace sw
 
 	void Nucleus::createFunction(Type *ReturnType, std::vector<Type*> &Params)
 	{
-		llvm::FunctionType *functionType = llvm::FunctionType::get(ReturnType, T(Params), false);
+		llvm::FunctionType *functionType = llvm::FunctionType::get(T(ReturnType), T(Params), false);
 		::function = llvm::Function::Create(functionType, llvm::GlobalValue::InternalLinkage, "", ::module);
 		::function->setCallingConv(llvm::CallingConv::C);
 
@@ -443,13 +478,13 @@ namespace sw
 
 	Value *Nucleus::createLoad(Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
-		assert(ptr->getType()->getContainedType(0) == type);
+		assert(ptr->getType()->getContainedType(0) == T(type));
 		return V(::builder->Insert(new LoadInst(ptr, "", isVolatile, align)));
 	}
 
 	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
-		assert(ptr->getType()->getContainedType(0) == type);
+		assert(ptr->getType()->getContainedType(0) == T(type));
 		::builder->Insert(new StoreInst(value, ptr, isVolatile, align));
 		return value;
 	}
@@ -461,7 +496,7 @@ namespace sw
 			index = createZExt(index, Long::getType());
 		}
 
-		assert(ptr->getType()->getContainedType(0) == type);
+		assert(ptr->getType()->getContainedType(0) == T(type));
 		return V(::builder->CreateGEP(ptr, index));
 	}
 
@@ -472,42 +507,42 @@ namespace sw
 
 	Value *Nucleus::createTrunc(Value *v, Type *destType)
 	{
-		return V(::builder->CreateTrunc(v, destType));
+		return V(::builder->CreateTrunc(v, T(destType)));
 	}
 
 	Value *Nucleus::createZExt(Value *v, Type *destType)
 	{
-		return V(::builder->CreateZExt(v, destType));
+		return V(::builder->CreateZExt(v, T(destType)));
 	}
 
 	Value *Nucleus::createSExt(Value *v, Type *destType)
 	{
-		return V(::builder->CreateSExt(v, destType));
+		return V(::builder->CreateSExt(v, T(destType)));
 	}
 
 	Value *Nucleus::createFPToSI(Value *v, Type *destType)
 	{
-		return V(::builder->CreateFPToSI(v, destType));
+		return V(::builder->CreateFPToSI(v, T(destType)));
 	}
 
 	Value *Nucleus::createSIToFP(Value *v, Type *destType)
 	{
-		return V(::builder->CreateSIToFP(v, destType));
+		return V(::builder->CreateSIToFP(v, T(destType)));
 	}
 
 	Value *Nucleus::createFPTrunc(Value *v, Type *destType)
 	{
-		return V(::builder->CreateFPTrunc(v, destType));
+		return V(::builder->CreateFPTrunc(v, T(destType)));
 	}
 
 	Value *Nucleus::createFPExt(Value *v, Type *destType)
 	{
-		return V(::builder->CreateFPExt(v, destType));
+		return V(::builder->CreateFPExt(v, T(destType)));
 	}
 
 	Value *Nucleus::createBitCast(Value *v, Type *destType)
 	{
-		return V(::builder->CreateBitCast(v, destType));
+		return V(::builder->CreateBitCast(v, T(destType)));
 	}
 
 	Value *Nucleus::createICmpEQ(Value *lhs, Value *rhs)
@@ -632,7 +667,7 @@ namespace sw
 
 	Value *Nucleus::createExtractElement(Value *vector, Type *type, int index)
 	{
-		assert(vector->getType()->getContainedType(0) == type);
+		assert(vector->getType()->getContainedType(0) == T(type));
 		return V(::builder->CreateExtractElement(vector, createConstantInt(index)));
 	}
 
@@ -650,7 +685,7 @@ namespace sw
 
 		for(int i = 0; i < size; i++)
 		{
-			swizzle[i] = llvm::ConstantInt::get(Type::getInt32Ty(*::context), select[i]);
+			swizzle[i] = llvm::ConstantInt::get(llvm::Type::getInt32Ty(*::context), select[i]);
 		}
 
 		llvm::Value *shuffle = llvm::ConstantVector::get(llvm::ArrayRef<llvm::Constant*>(swizzle, size));
@@ -670,7 +705,7 @@ namespace sw
 
 	void Nucleus::addSwitchCase(SwitchCases *switchCases, int label, BasicBlock *branch)
 	{
-		switchCases->addCase(llvm::ConstantInt::get(Type::getInt32Ty(*::context), label, true), branch);
+		switchCases->addCase(llvm::ConstantInt::get(llvm::Type::getInt32Ty(*::context), label, true), branch);
 	}
 
 	void Nucleus::createUnreachable()
@@ -713,74 +748,74 @@ namespace sw
 
 	Type *Nucleus::getPointerType(Type *ElementType)
 	{
-		return T(llvm::PointerType::get(ElementType, 0));
+		return T(llvm::PointerType::get(T(ElementType), 0));
 	}
 
 	Value *Nucleus::createNullValue(Type *Ty)
 	{
-		return V(llvm::Constant::getNullValue(Ty));
+		return V(llvm::Constant::getNullValue(T(Ty)));
 	}
 
 	Value *Nucleus::createConstantLong(int64_t i)
 	{
-		return V(llvm::ConstantInt::get(Type::getInt64Ty(*::context), i, true));
+		return V(llvm::ConstantInt::get(llvm::Type::getInt64Ty(*::context), i, true));
 	}
 
 	Value *Nucleus::createConstantInt(int i)
 	{
-		return V(llvm::ConstantInt::get(Type::getInt32Ty(*::context), i, true));
+		return V(llvm::ConstantInt::get(llvm::Type::getInt32Ty(*::context), i, true));
 	}
 
 	Value *Nucleus::createConstantInt(unsigned int i)
 	{
-		return V(llvm::ConstantInt::get(Type::getInt32Ty(*::context), i, false));
+		return V(llvm::ConstantInt::get(llvm::Type::getInt32Ty(*::context), i, false));
 	}
 
 	Value *Nucleus::createConstantBool(bool b)
 	{
-		return V(llvm::ConstantInt::get(Type::getInt1Ty(*::context), b));
+		return V(llvm::ConstantInt::get(llvm::Type::getInt1Ty(*::context), b));
 	}
 
 	Value *Nucleus::createConstantByte(signed char i)
 	{
-		return V(llvm::ConstantInt::get(Type::getInt8Ty(*::context), i, true));
+		return V(llvm::ConstantInt::get(llvm::Type::getInt8Ty(*::context), i, true));
 	}
 
 	Value *Nucleus::createConstantByte(unsigned char i)
 	{
-		return V(llvm::ConstantInt::get(Type::getInt8Ty(*::context), i, false));
+		return V(llvm::ConstantInt::get(llvm::Type::getInt8Ty(*::context), i, false));
 	}
 
 	Value *Nucleus::createConstantShort(short i)
 	{
-		return V(llvm::ConstantInt::get(Type::getInt16Ty(*::context), i, true));
+		return V(llvm::ConstantInt::get(llvm::Type::getInt16Ty(*::context), i, true));
 	}
 
 	Value *Nucleus::createConstantShort(unsigned short i)
 	{
-		return V(llvm::ConstantInt::get(Type::getInt16Ty(*::context), i, false));
+		return V(llvm::ConstantInt::get(llvm::Type::getInt16Ty(*::context), i, false));
 	}
 
 	Value *Nucleus::createConstantFloat(float x)
 	{
-		return V(llvm::ConstantFP::get(Float::getType(), x));
+		return V(llvm::ConstantFP::get(T(Float::getType()), x));
 	}
 
 	Value *Nucleus::createNullPointer(Type *Ty)
 	{
-		return V(llvm::ConstantPointerNull::get(llvm::PointerType::get(Ty, 0)));
+		return V(llvm::ConstantPointerNull::get(llvm::PointerType::get(T(Ty), 0)));
 	}
 
 	Value *Nucleus::createConstantVector(const int64_t *constants, Type *type)
 	{
-		assert(llvm::isa<VectorType>(type));
-		const int numConstants = llvm::cast<VectorType>(type)->getNumElements();
+		assert(llvm::isa<VectorType>(T(type)));
+		const int numConstants = llvm::cast<VectorType>(T(type))->getNumElements();
 		assert(numConstants <= 16);
 		llvm::Constant *constantVector[16];
 
 		for(int i = 0; i < numConstants; i++)
 		{
-			constantVector[i] = llvm::ConstantInt::get(type->getContainedType(0), constants[i]);
+			constantVector[i] = llvm::ConstantInt::get(T(type)->getContainedType(0), constants[i]);
 		}
 
 		return V(llvm::ConstantVector::get(llvm::ArrayRef<llvm::Constant*>(constantVector, numConstants)));
@@ -788,14 +823,14 @@ namespace sw
 
 	Value *Nucleus::createConstantVector(const double *constants, Type *type)
 	{
-		assert(llvm::isa<VectorType>(type));
-		const int numConstants = llvm::cast<VectorType>(type)->getNumElements();
+		assert(llvm::isa<VectorType>(T(type)));
+		const int numConstants = llvm::cast<VectorType>(T(type))->getNumElements();
 		assert(numConstants <= 8);
 		llvm::Constant *constantVector[8];
 
 		for(int i = 0; i < numConstants; i++)
 		{
-			constantVector[i] = llvm::ConstantFP::get(type->getContainedType(0), constants[i]);
+			constantVector[i] = llvm::ConstantFP::get(T(type)->getContainedType(0), constants[i]);
 		}
 
 		return V(llvm::ConstantVector::get(llvm::ArrayRef<llvm::Constant*>(constantVector, numConstants)));
@@ -1905,26 +1940,18 @@ namespace sw
 
 	Type *Byte4::getType()
 	{
-		#if 0
-			return T(VectorType::get(Byte::getType(), 4));
-		#else
-			return UInt::getType();   // FIXME: LLVM doesn't manipulate it as one 32-bit block
-		#endif
+		return T(Type_v4i8);
 	}
 
 	Type *SByte4::getType()
 	{
-		#if 0
-			return T(VectorType::get(SByte::getType(), 4));
-		#else
-			return Int::getType();   // FIXME: LLVM doesn't manipulate it as one 32-bit block
-		#endif
+		return T(Type_v4i8);
 	}
 
 	Byte8::Byte8(uint8_t x0, uint8_t x1, uint8_t x2, uint8_t x3, uint8_t x4, uint8_t x5, uint8_t x6, uint8_t x7)
 	{
 		int64_t constantVector[8] = {x0, x1, x2, x3, x4, x5, x6, x7};
-		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(Byte::getType(), 8))));
+		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(T(Byte::getType()), 8))));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -2138,7 +2165,7 @@ namespace sw
 
 	RValue<Short4> Unpack(RValue<Byte4> x)
 	{
-		Value *int2 = Nucleus::createInsertElement(V(UndefValue::get(VectorType::get(Int::getType(), 2))), x.value, 0);
+		Value *int2 = Nucleus::createInsertElement(V(UndefValue::get(VectorType::get(T(Int::getType()), 2))), x.value, 0);
 		Value *byte8 = Nucleus::createBitCast(int2, Byte8::getType());
 
 		return UnpackLow(RValue<Byte8>(byte8), RValue<Byte8>(byte8));
@@ -2146,8 +2173,8 @@ namespace sw
 
 	RValue<Short4> Unpack(RValue<Byte4> x, RValue<Byte4> y)
 	{
-		Value *xx = Nucleus::createInsertElement(V(UndefValue::get(VectorType::get(Int::getType(), 2))), x.value, 0);
-		Value *yy = Nucleus::createInsertElement(V(UndefValue::get(VectorType::get(Int::getType(), 2))), y.value, 0);
+		Value *xx = Nucleus::createInsertElement(V(UndefValue::get(VectorType::get(T(Int::getType()), 2))), x.value, 0);
+		Value *yy = Nucleus::createInsertElement(V(UndefValue::get(VectorType::get(T(Int::getType()), 2))), y.value, 0);
 
 		return UnpackLow(As<Byte8>(xx), As<Byte8>(yy));
 	}
@@ -2199,20 +2226,13 @@ namespace sw
 
 	Type *Byte8::getType()
 	{
-		if(CPUID::supportsMMX2())
-		{
-			return MMX::getType();
-		}
-		else
-		{
-			return T(VectorType::get(Byte::getType(), 8));
-		}
+		return T(Type_v8i8);
 	}
 
 	SByte8::SByte8(uint8_t x0, uint8_t x1, uint8_t x2, uint8_t x3, uint8_t x4, uint8_t x5, uint8_t x6, uint8_t x7)
 	{
 		int64_t constantVector[8] = {x0, x1, x2, x3, x4, x5, x6, x7};
-		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(SByte::getType(), 8))));
+		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(T(SByte::getType()), 8))));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -2450,14 +2470,7 @@ namespace sw
 
 	Type *SByte8::getType()
 	{
-		if(CPUID::supportsMMX2())
-		{
-			return MMX::getType();
-		}
-		else
-		{
-			return T(VectorType::get(SByte::getType(), 8));
-		}
+		return T(Type_v8i8);
 	}
 
 	Byte16::Byte16(RValue<Byte16> rhs)
@@ -2502,12 +2515,12 @@ namespace sw
 
 	Type *Byte16::getType()
 	{
-		return T(VectorType::get(Byte::getType(), 16));
+		return T(VectorType::get(T(Byte::getType()), 16));
 	}
 
 	Type *SByte16::getType()
 	{
-		return T( VectorType::get(SByte::getType(), 16));
+		return T(VectorType::get(T(SByte::getType()), 16));
 	}
 
 	Short2::Short2(RValue<Short4> cast)
@@ -2517,11 +2530,7 @@ namespace sw
 
 	Type *Short2::getType()
 	{
-		#if 0
-			return T(VectorType::get(Short::getType(), 2));
-		#else
-			return UInt::getType();   // FIXME: LLVM doesn't manipulate it as one 32-bit block
-		#endif
+		return T(Type_v2i16);
 	}
 
 	UShort2::UShort2(RValue<UShort4> cast)
@@ -2531,11 +2540,7 @@ namespace sw
 
 	Type *UShort2::getType()
 	{
-		#if 0
-			return T(VectorType::get(UShort::getType(), 2));
-		#else
-			return UInt::getType();   // FIXME: LLVM doesn't manipulate it as one 32-bit block
-		#endif
+		return T(Type_v2i16);
 	}
 
 	Short4::Short4(RValue<Int> cast)
@@ -2580,7 +2585,7 @@ namespace sw
 			}
 
 			#if 0   // FIXME: No optimal instruction selection
-				Value *qword2 = Nucleus::createBitCast(packed, T(VectorType::get(Long::getType(), 2)));
+				Value *qword2 = Nucleus::createBitCast(packed, T(VectorType::get(T(Long::getType()), 2)));
 				Value *element = Nucleus::createExtractElement(qword2, 0);
 				Value *short4 = Nucleus::createBitCast(element, Short4::getType());
 			#else   // FIXME: Requires SSE
@@ -2607,7 +2612,7 @@ namespace sw
 	Short4::Short4(short xyzw)
 	{
 		int64_t constantVector[4] = {xyzw, xyzw, xyzw, xyzw};
-		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(Short::getType(), 4))));
+		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(T(Short::getType()), 4))));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -2615,7 +2620,7 @@ namespace sw
 	Short4::Short4(short x, short y, short z, short w)
 	{
 		int64_t constantVector[4] = {x, y, z, w};
-		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(Short::getType(), 4))));
+		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(T(Short::getType()), 4))));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -2994,14 +2999,7 @@ namespace sw
 
 	Type *Short4::getType()
 	{
-		if(CPUID::supportsMMX2())
-		{
-			return MMX::getType();
-		}
-		else
-		{
-			return T(VectorType::get(Short::getType(), 4));
-		}
+		return T(Type_v4i16);
 	}
 
 	UShort4::UShort4(RValue<Int4> cast)
@@ -3044,7 +3042,7 @@ namespace sw
 	UShort4::UShort4(unsigned short xyzw)
 	{
 		int64_t constantVector[4] = {xyzw, xyzw, xyzw, xyzw};
-		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(UShort::getType(), 4))));
+		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(T(UShort::getType()), 4))));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -3052,7 +3050,7 @@ namespace sw
 	UShort4::UShort4(unsigned short x, unsigned short y, unsigned short z, unsigned short w)
 	{
 		int64_t constantVector[4] = {x, y, z, w};
-		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(UShort::getType(), 4))));
+		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(T(UShort::getType()), 4))));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -3282,14 +3280,7 @@ namespace sw
 
 	Type *UShort4::getType()
 	{
-		if(CPUID::supportsMMX2())
-		{
-			return MMX::getType();
-		}
-		else
-		{
-			return T(VectorType::get(UShort::getType(), 4));
-		}
+		return T(Type_v4i16);
 	}
 
 	Short8::Short8(short c)
@@ -3320,7 +3311,7 @@ namespace sw
 		Value *loLong = Nucleus::createBitCast(lo.value, Long::getType());
 		Value *hiLong = Nucleus::createBitCast(hi.value, Long::getType());
 
-		Value *long2 = V(UndefValue::get(VectorType::get(Long::getType(), 2)));
+		Value *long2 = V(UndefValue::get(VectorType::get(T(Long::getType()), 2)));
 		long2 = Nucleus::createInsertElement(long2, loLong, 0);
 		long2 = Nucleus::createInsertElement(long2, hiLong, 1);
 		Value *short8 = Nucleus::createBitCast(long2, Short8::getType());
@@ -3373,7 +3364,7 @@ namespace sw
 
 	Type *Short8::getType()
 	{
-		return T(VectorType::get(Short::getType(), 8));
+		return T(VectorType::get(T(Short::getType()), 8));
 	}
 
 	UShort8::UShort8(unsigned short c)
@@ -3404,7 +3395,7 @@ namespace sw
 		Value *loLong = Nucleus::createBitCast(lo.value, Long::getType());
 		Value *hiLong = Nucleus::createBitCast(hi.value, Long::getType());
 
-		Value *long2 = V(UndefValue::get(VectorType::get(Long::getType(), 2)));
+		Value *long2 = V(UndefValue::get(VectorType::get(T(Long::getType()), 2)));
 		long2 = Nucleus::createInsertElement(long2, loLong, 0);
 		long2 = Nucleus::createInsertElement(long2, hiLong, 1);
 		Value *short8 = Nucleus::createBitCast(long2, Short8::getType());
@@ -3506,7 +3497,7 @@ namespace sw
 
 	Type *UShort8::getType()
 	{
-		return T(VectorType::get(UShort::getType(), 8));
+		return T(VectorType::get(T(UShort::getType()), 8));
 	}
 
 	Int::Int(Argument<Int> argument)
@@ -4290,7 +4281,7 @@ namespace sw
 
 	Int2::Int2(RValue<Int4> cast)
 	{
-		Value *long2 = Nucleus::createBitCast(cast.value, T(VectorType::get(Long::getType(), 2)));
+		Value *long2 = Nucleus::createBitCast(cast.value, T(VectorType::get(T(Long::getType()), 2)));
 		Value *element = Nucleus::createExtractElement(long2, Long::getType(), 0);
 		Value *int2 = Nucleus::createBitCast(element, Int2::getType());
 
@@ -4300,7 +4291,7 @@ namespace sw
 	Int2::Int2(int x, int y)
 	{
 		int64_t constantVector[2] = {x, y};
-		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(Int::getType(), 2))));
+		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(T(Int::getType()), 2))));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -4330,17 +4321,17 @@ namespace sw
 			// movd mm1, hi
 			// punpckldq mm0, mm1
 
-			Value *loLong = Nucleus::createInsertElement(V(UndefValue::get(VectorType::get(Int::getType(), 2))), lo.value, 0);
-			loLong = Nucleus::createInsertElement(loLong, V(ConstantInt::get(Int::getType(), 0)), 1);
-			Value *hiLong = Nucleus::createInsertElement(V(UndefValue::get(VectorType::get(Int::getType(), 2))), hi.value, 0);
-			hiLong = Nucleus::createInsertElement(hiLong, V(ConstantInt::get(Int::getType(), 0)), 1);
+			Value *loLong = Nucleus::createInsertElement(V(UndefValue::get(VectorType::get(T(Int::getType()), 2))), lo.value, 0);
+			loLong = Nucleus::createInsertElement(loLong, V(ConstantInt::get(T(Int::getType()), 0)), 1);
+			Value *hiLong = Nucleus::createInsertElement(V(UndefValue::get(VectorType::get(T(Int::getType()), 2))), hi.value, 0);
+			hiLong = Nucleus::createInsertElement(hiLong, V(ConstantInt::get(T(Int::getType()), 0)), 1);
 
 			storeValue(As<Int2>(UnpackLow(As<Int2>(loLong), As<Int2>(hiLong))).value);
 		}
 		else
 		{
 			int shuffle[2] = {0, 1};
-			Value *packed = Nucleus::createShuffleVector(Nucleus::createBitCast(lo.value, T(VectorType::get(Int::getType(), 1))), Nucleus::createBitCast(hi.value, T(VectorType::get(Int::getType(), 1))), shuffle);
+			Value *packed = Nucleus::createShuffleVector(Nucleus::createBitCast(lo.value, T(VectorType::get(T(Int::getType()), 1))), Nucleus::createBitCast(hi.value, T(VectorType::get(T(Int::getType()), 1))), shuffle);
 
 			storeValue(Nucleus::createBitCast(packed, Int2::getType()));
 		}
@@ -4570,7 +4561,7 @@ namespace sw
 		{
 			if(i == 0)
 			{
-				return RValue<Int>(Nucleus::createExtractElement(Nucleus::createBitCast(val.value, T(VectorType::get(Int::getType(), 2))), Int::getType(), 0));
+				return RValue<Int>(Nucleus::createExtractElement(Nucleus::createBitCast(val.value, T(VectorType::get(T(Int::getType()), 2))), Int::getType(), 0));
 			}
 			else
 			{
@@ -4583,25 +4574,18 @@ namespace sw
 
 	RValue<Int2> Insert(RValue<Int2> val, RValue<Int> element, int i)
 	{
-		return RValue<Int2>(Nucleus::createBitCast(Nucleus::createInsertElement(Nucleus::createBitCast(val.value, T(VectorType::get(Int::getType(), 2))), element.value, i), Int2::getType()));
+		return RValue<Int2>(Nucleus::createBitCast(Nucleus::createInsertElement(Nucleus::createBitCast(val.value, T(VectorType::get(T(Int::getType()), 2))), element.value, i), Int2::getType()));
 	}
 
 	Type *Int2::getType()
 	{
-		if(CPUID::supportsMMX2())
-		{
-			return MMX::getType();
-		}
-		else
-		{
-			return T(VectorType::get(Int::getType(), 2));
-		}
+		return T(Type_v2i32);
 	}
 
 	UInt2::UInt2(unsigned int x, unsigned int y)
 	{
 		int64_t constantVector[2] = {x, y};
-		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(UInt::getType(), 2))));
+		Value *vector = V(Nucleus::createConstantVector(constantVector, T(VectorType::get(T(UInt::getType()), 2))));
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -4809,20 +4793,13 @@ namespace sw
 
 	Type *UInt2::getType()
 	{
-		if(CPUID::supportsMMX2())
-		{
-			return MMX::getType();
-		}
-		else
-		{
-			return T(VectorType::get(UInt::getType(), 2));
-		}
+		return T(Type_v2i32);
 	}
 
 	Int4::Int4(RValue<Byte4> cast)
 	{
 		Value *x = Nucleus::createBitCast(cast.value, Int::getType());
-		Value *a = Nucleus::createInsertElement(V(UndefValue::get(Int4::getType())), x, 0);
+		Value *a = Nucleus::createInsertElement(V(UndefValue::get(T(Int4::getType()))), x, 0);
 
 		Value *e;
 
@@ -4848,7 +4825,7 @@ namespace sw
 	Int4::Int4(RValue<SByte4> cast)
 	{
 		Value *x = Nucleus::createBitCast(cast.value, Int::getType());
-		Value *a = Nucleus::createInsertElement(V(UndefValue::get(Int4::getType())), x, 0);
+		Value *a = Nucleus::createInsertElement(V(UndefValue::get(T(Int4::getType()))), x, 0);
 
 		Value *g;
 
@@ -4883,7 +4860,7 @@ namespace sw
 
 	Int4::Int4(RValue<Short4> cast)
 	{
-		Value *long2 = V(UndefValue::get(VectorType::get(Long::getType(), 2)));
+		Value *long2 = V(UndefValue::get(VectorType::get(T(Long::getType()), 2)));
 		Value *element = Nucleus::createBitCast(cast.value, Long::getType());
 		long2 = Nucleus::createInsertElement(long2, element, 0);
 		RValue<Int4> vector = RValue<Int4>(Nucleus::createBitCast(long2, Int4::getType()));
@@ -4911,7 +4888,7 @@ namespace sw
 
 	Int4::Int4(RValue<UShort4> cast)
 	{
-		Value *long2 = V(UndefValue::get(VectorType::get(Long::getType(), 2)));
+		Value *long2 = V(UndefValue::get(VectorType::get(T(Long::getType()), 2)));
 		Value *element = Nucleus::createBitCast(cast.value, Long::getType());
 		long2 = Nucleus::createInsertElement(long2, element, 0);
 		RValue<Int4> vector = RValue<Int4>(Nucleus::createBitCast(long2, Int4::getType()));
@@ -4996,7 +4973,7 @@ namespace sw
 		Value *loLong = Nucleus::createBitCast(lo.value, Long::getType());
 		Value *hiLong = Nucleus::createBitCast(hi.value, Long::getType());
 
-		Value *long2 = V(UndefValue::get(VectorType::get(Long::getType(), 2)));
+		Value *long2 = V(UndefValue::get(VectorType::get(T(Long::getType()), 2)));
 		long2 = Nucleus::createInsertElement(long2, loLong, 0);
 		long2 = Nucleus::createInsertElement(long2, hiLong, 1);
 		Value *int4 = Nucleus::createBitCast(long2, Int4::getType());
@@ -5270,7 +5247,7 @@ namespace sw
 
 	Type *Int4::getType()
 	{
-		return T(VectorType::get(Int::getType(), 4));
+		return T(VectorType::get(T(Int::getType()), 4));
 	}
 
 	UInt4::UInt4(RValue<Float4> cast)
@@ -5357,7 +5334,7 @@ namespace sw
 		Value *loLong = Nucleus::createBitCast(lo.value, Long::getType());
 		Value *hiLong = Nucleus::createBitCast(hi.value, Long::getType());
 
-		Value *long2 = V(UndefValue::get(VectorType::get(Long::getType(), 2)));
+		Value *long2 = V(UndefValue::get(VectorType::get(T(Long::getType()), 2)));
 		long2 = Nucleus::createInsertElement(long2, loLong, 0);
 		long2 = Nucleus::createInsertElement(long2, hiLong, 1);
 		Value *uint4 = Nucleus::createBitCast(long2, Int4::getType());
@@ -5585,7 +5562,7 @@ namespace sw
 
 	Type *UInt4::getType()
 	{
-		return T(VectorType::get(UInt::getType(), 4));
+		return T(VectorType::get(T(UInt::getType()), 4));
 	}
 
 	Float::Float(RValue<Int> cast)
@@ -5834,7 +5811,7 @@ namespace sw
 
 	Float2::Float2(RValue<Float4> cast)
 	{
-		Value *int64x2 = Nucleus::createBitCast(cast.value, T(VectorType::get(Long::getType(), 2)));
+		Value *int64x2 = Nucleus::createBitCast(cast.value, T(VectorType::get(T(Long::getType()), 2)));
 		Value *int64 = Nucleus::createExtractElement(int64x2, Long::getType(), 0);
 		Value *float2 = Nucleus::createBitCast(int64, Float2::getType());
 
@@ -5843,7 +5820,7 @@ namespace sw
 
 	Type *Float2::getType()
 	{
-		return T(VectorType::get(Float::getType(), 2));
+		return T(Type_v2f32);
 	}
 
 	Float4::Float4(RValue<Byte4> cast) : FloatXYZW(this)
@@ -6307,7 +6284,7 @@ namespace sw
 
 	Type *Float4::getType()
 	{
-		return T(VectorType::get(Float::getType(), 4));
+		return T(VectorType::get(T(Float::getType()), 4));
 	}
 
 	RValue<Pointer<Byte>> operator+(RValue<Pointer<Byte>> lhs, int offset)
@@ -6447,7 +6424,7 @@ namespace sw
 		{
 			llvm::Function *rcpss = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse_rcp_ss);
 
-			Value *vector = Nucleus::createInsertElement(V(UndefValue::get(Float4::getType())), val.value, 0);
+			Value *vector = Nucleus::createInsertElement(V(UndefValue::get(T(Float4::getType()))), val.value, 0);
 
 			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall(rcpss, vector)), Float::getType(), 0));
 		}
@@ -6456,7 +6433,7 @@ namespace sw
 		{
 			llvm::Function *sqrtss = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse_sqrt_ss);
 
-			Value *vector = Nucleus::createInsertElement(V(UndefValue::get(Float4::getType())), val.value, 0);
+			Value *vector = Nucleus::createInsertElement(V(UndefValue::get(T(Float4::getType()))), val.value, 0);
 
 			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall(sqrtss, vector)), Float::getType(), 0));
 		}
@@ -6465,7 +6442,7 @@ namespace sw
 		{
 			llvm::Function *rsqrtss = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse_rsqrt_ss);
 
-			Value *vector = Nucleus::createInsertElement(V(UndefValue::get(Float4::getType())), val.value, 0);
+			Value *vector = Nucleus::createInsertElement(V(UndefValue::get(T(Float4::getType()))), val.value, 0);
 
 			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall(rsqrtss, vector)), Float::getType(), 0));
 		}
@@ -6509,7 +6486,7 @@ namespace sw
 		{
 			llvm::Function *roundss = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse41_round_ss);
 
-			Value *undef = V(UndefValue::get(Float4::getType()));
+			Value *undef = V(UndefValue::get(T(Float4::getType())));
 			Value *vector = Nucleus::createInsertElement(undef, val.value, 0);
 
 			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall3(roundss, undef, vector, V(Nucleus::createConstantInt(imm)))), Float::getType(), 0));
@@ -6593,8 +6570,8 @@ namespace sw
 		{
 			llvm::Function *cmpss = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse_cmp_ss);
 
-			Value *vector1 = Nucleus::createInsertElement(V(UndefValue::get(Float4::getType())), x.value, 0);
-			Value *vector2 = Nucleus::createInsertElement(V(UndefValue::get(Float4::getType())), y.value, 0);
+			Value *vector1 = Nucleus::createInsertElement(V(UndefValue::get(T(Float4::getType()))), x.value, 0);
+			Value *vector2 = Nucleus::createInsertElement(V(UndefValue::get(T(Float4::getType()))), y.value, 0);
 
 			return RValue<Float>(Nucleus::createExtractElement(V(::builder->CreateCall3(cmpss, vector1, vector2, V(Nucleus::createConstantByte(imm)))), Float::getType(), 0));
 		}
@@ -7157,7 +7134,7 @@ namespace sw
 		//	Value *element = Nucleus::createLoad(x.value);
 
 		////	Value *int2 = UndefValue::get(Int2::getType());
-		////	int2 = Nucleus::createInsertElement(int2, element, ConstantInt::get(Int::getType(), 0));
+		////	int2 = Nucleus::createInsertElement(int2, element, ConstantInt::get(T(Int::getType()), 0));
 
 		//	Value *int2 = Nucleus::createBitCast(Nucleus::createZExt(element, Long::getType()), Int2::getType());
 
@@ -7166,8 +7143,8 @@ namespace sw
 
 		//RValue<Int2> movdq2q(RValue<Int4> x)
 		//{
-		//	Value *long2 = Nucleus::createBitCast(x.value, T(VectorType::get(Long::getType(), 2)));
-		//	Value *element = Nucleus::createExtractElement(long2, ConstantInt::get(Int::getType(), 0));
+		//	Value *long2 = Nucleus::createBitCast(x.value, T(VectorType::get(T(Long::getType()), 2)));
+		//	Value *element = Nucleus::createExtractElement(long2, ConstantInt::get(T(Int::getType()), 0));
 
 		//	return RValue<Int2>(Nucleus::createBitCast(element, Int2::getType()));
 		//}
