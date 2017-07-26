@@ -207,9 +207,14 @@ copy "$(OutDir)libVulkan.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\tr
     <None Include="libVulkan.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Buffer.h" />
     <ClInclude Include="Context.h" />
     <ClInclude Include="Device.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="Pipeline.h" />
+    <ClInclude Include="Queue.h" />
+    <ClInclude Include="RenderPass.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
