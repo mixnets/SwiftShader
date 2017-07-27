@@ -6403,19 +6403,9 @@ namespace sw
 
 		RValue<Int4> cvtps2dq(RValue<Float4> val)
 		{
-			if(CPUID::supportsSSE2())
-			{
-				llvm::Function *cvtps2dq = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse2_cvtps2dq);
+			llvm::Function *cvtps2dq = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse2_cvtps2dq);
 
-				return RValue<Int4>(V(::builder->CreateCall(cvtps2dq, val.value)));
-			}
-			else
-			{
-				Int2 lo = x86::cvtps2pi(val);
-				Int2 hi = x86::cvtps2pi(Swizzle(val, 0xEE));
-
-				return Int4(lo, hi);
-			}
+			return RValue<Int4>(V(::builder->CreateCall(cvtps2dq, val.value)));
 		}
 
 		RValue<Float> rcpss(RValue<Float> val)
@@ -6868,25 +6858,9 @@ namespace sw
 
 		RValue<Short8> packssdw(RValue<Int4> x, RValue<Int4> y)
 		{
-			if(CPUID::supportsSSE2())
-			{
-				llvm::Function *packssdw = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse2_packssdw_128);
+			llvm::Function *packssdw = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse2_packssdw_128);
 
-				return RValue<Short8>(V(::builder->CreateCall2(packssdw, x.value, y.value)));
-			}
-			else
-			{
-				Int2 loX = Int2(x);
-				Int2 hiX = Int2(Swizzle(x, 0xEE));
-
-				Int2 loY = Int2(y);
-				Int2 hiY = Int2(Swizzle(y, 0xEE));
-
-				Short4 lo = x86::packssdw(loX, hiX);
-				Short4 hi = x86::packssdw(loY, hiY);
-
-				return Short8(lo, hi);
-			}
+			return RValue<Short8>(V(::builder->CreateCall2(packssdw, x.value, y.value)));
 		}
 
 		RValue<SByte8> packsswb(RValue<Short4> x, RValue<Short4> y)
@@ -6971,22 +6945,9 @@ namespace sw
 
 		RValue<Int4> pslld(RValue<Int4> x, unsigned char y)
 		{
-			if(CPUID::supportsSSE2())
-			{
-				llvm::Function *pslld = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse2_pslli_d);
+			llvm::Function *pslld = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse2_pslli_d);
 
-				return RValue<Int4>(V(::builder->CreateCall2(pslld, x.value, V(Nucleus::createConstantInt(y)))));
-			}
-			else
-			{
-				Int2 lo = Int2(x);
-				Int2 hi = Int2(Swizzle(x, 0xEE));
-
-				lo = x86::pslld(lo, y);
-				hi = x86::pslld(hi, y);
-
-				return Int4(lo, hi);
-			}
+			return RValue<Int4>(V(::builder->CreateCall2(pslld, x.value, V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<Int2> psrad(RValue<Int2> x, unsigned char y)
@@ -6998,22 +6959,9 @@ namespace sw
 
 		RValue<Int4> psrad(RValue<Int4> x, unsigned char y)
 		{
-			if(CPUID::supportsSSE2())
-			{
-				llvm::Function *psrad = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse2_psrai_d);
+			llvm::Function *psrad = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse2_psrai_d);
 
-				return RValue<Int4>(V(::builder->CreateCall2(psrad, x.value, V(Nucleus::createConstantInt(y)))));
-			}
-			else
-			{
-				Int2 lo = Int2(x);
-				Int2 hi = Int2(Swizzle(x, 0xEE));
-
-				lo = x86::psrad(lo, y);
-				hi = x86::psrad(hi, y);
-
-				return Int4(lo, hi);
-			}
+			return RValue<Int4>(V(::builder->CreateCall2(psrad, x.value, V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<UInt2> psrld(RValue<UInt2> x, unsigned char y)
@@ -7025,22 +6973,9 @@ namespace sw
 
 		RValue<UInt4> psrld(RValue<UInt4> x, unsigned char y)
 		{
-			if(CPUID::supportsSSE2())
-			{
-				llvm::Function *psrld = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse2_psrli_d);
+			llvm::Function *psrld = Intrinsic::getDeclaration(::module, Intrinsic::x86_sse2_psrli_d);
 
-				return RValue<UInt4>(V(::builder->CreateCall2(psrld, x.value, V(Nucleus::createConstantInt(y)))));
-			}
-			else
-			{
-				UInt2 lo = As<UInt2>(Int2(As<Int4>(x)));
-				UInt2 hi = As<UInt2>(Int2(Swizzle(As<Int4>(x), 0xEE)));
-
-				lo = x86::psrld(lo, y);
-				hi = x86::psrld(hi, y);
-
-				return UInt4(lo, hi);
-			}
+			return RValue<UInt4>(V(::builder->CreateCall2(psrld, x.value, V(Nucleus::createConstantInt(y)))));
 		}
 
 		RValue<Int4> pmaxsd(RValue<Int4> x, RValue<Int4> y)
