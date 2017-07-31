@@ -58,6 +58,10 @@ namespace
 		D32FS8,
 		S8,
 		S24_8,
+		float16_to_float32_x1,
+		float16_to_float32_x2,
+		float16_to_float32_x4,
+		float16_to_FloatRGB,
 	};
 
 	template<DataType dataType>
@@ -377,6 +381,215 @@ namespace
 				unsigned char *dest = destStart + (y + yoffset) * destPitch;
 
 				LoadImageRow<dataType>(source, dest, xoffset, width);
+			}
+		}
+	}
+
+	template<DataType dataType>
+	void SaveImageRow(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		UNIMPLEMENTED();
+	}
+
+	template<>
+	void SaveImageRow<Bytes_1>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		memcpy(dest, source + xoffset, width);
+	}
+
+	template<>
+	void SaveImageRow<Bytes_2>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		memcpy(dest, source + xoffset * 2, width * 2);
+	}
+
+	template<>
+	void SaveImageRow<Bytes_4>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		memcpy(dest, source + xoffset * 4, width * 4);
+	}
+
+	template<>
+	void SaveImageRow<Bytes_8>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		memcpy(dest, source + xoffset * 8, width * 8);
+	}
+
+	template<>
+	void SaveImageRow<Bytes_16>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		memcpy(dest, source + xoffset * 16, width * 16);
+	}
+
+	template<>
+	void SaveImageRow<ByteRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const unsigned char *sourceB = source + xoffset * 4;
+
+		for(int x = 0; x < width; x++)
+		{
+			dest[3 * x + 0] = sourceB[x * 4 + 0];
+			dest[3 * x + 1] = sourceB[x * 4 + 1];
+			dest[3 * x + 2] = sourceB[x * 4 + 2];
+		}
+	}
+
+	template<>
+	void SaveImageRow<RGB565>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		memcpy(dest, source + xoffset * 2, width * 2);
+	}
+
+	template<>
+	void SaveImageRow<UByteRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const unsigned char *sourceB = source + xoffset * 4;
+
+		for(int x = 0; x < width; x++)
+		{
+			dest[3 * x + 0] = sourceB[x * 4 + 0];
+			dest[3 * x + 1] = sourceB[x * 4 + 1];
+			dest[3 * x + 2] = sourceB[x * 4 + 2];
+		}
+	}
+
+	template<>
+	void SaveImageRow<ShortRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const unsigned short *sourceS = reinterpret_cast<const unsigned short*>(source + xoffset * 8);
+		unsigned short *destS = reinterpret_cast<unsigned short*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			destS[3 * x + 0] = sourceS[x * 4 + 0];
+			destS[3 * x + 1] = sourceS[x * 4 + 1];
+			destS[3 * x + 2] = sourceS[x * 4 + 2];
+		}
+	}
+
+	template<>
+	void SaveImageRow<UShortRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const unsigned short *sourceS = reinterpret_cast<const unsigned short*>(source + xoffset * 8);
+		unsigned short *destS = reinterpret_cast<unsigned short*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			destS[3 * x + 0] = sourceS[x * 4 + 0];
+			destS[3 * x + 1] = sourceS[x * 4 + 1];
+			destS[3 * x + 2] = sourceS[x * 4 + 2];
+		}
+	}
+
+	template<>
+	void SaveImageRow<IntRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source + xoffset * 16);
+		unsigned int *destI = reinterpret_cast<unsigned int*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			destI[3 * x + 0] = sourceI[x * 4 + 0];
+			destI[3 * x + 1] = sourceI[x * 4 + 1];
+			destI[3 * x + 2] = sourceI[x * 4 + 2];
+		}
+	}
+
+	template<>
+	void SaveImageRow<UIntRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source + xoffset * 16);
+		unsigned int *destI = reinterpret_cast<unsigned int*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			destI[3 * x + 0] = sourceI[x * 4 + 0];
+			destI[3 * x + 1] = sourceI[x * 4 + 1];
+			destI[3 * x + 2] = sourceI[x * 4 + 2];
+		}
+	}
+
+	template<>
+	void SaveImageRow<FloatRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const float *sourceF = reinterpret_cast<const float*>(source + xoffset * 16);
+		float *destF = reinterpret_cast<float*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			destF[3 * x + 0] = sourceF[x * 4 + 0];
+			destF[3 * x + 1] = sourceF[x * 4 + 1];
+			destF[3 * x + 2] = sourceF[x * 4 + 2];
+		}
+	}
+
+	template<>
+	void SaveImageRow<float16_to_float32_x1>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const sw::half *sourceHF = reinterpret_cast<const sw::half*>(source + xoffset * 2);
+		float *destF = reinterpret_cast<float*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			destF[x] = (float)sourceHF[x];
+		}
+	}
+
+	template<>
+	void SaveImageRow<float16_to_float32_x2>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const sw::half* sourceHF = reinterpret_cast<const sw::half*>(source + xoffset * 4);
+		float *destF = reinterpret_cast<float*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			destF[x * 2 + 0] = (float)sourceHF[x * 2 + 0];
+			destF[x * 2 + 1] = (float)sourceHF[x * 2 + 1];
+		}
+	}
+
+	template<>
+	void SaveImageRow<float16_to_float32_x4>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const sw::half* sourceHF = reinterpret_cast<const sw::half*>(source + xoffset * 8);
+		float *destF = reinterpret_cast<float*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			destF[4 * x + 0] = (float)sourceHF[x * 4 + 0];
+			destF[4 * x + 1] = (float)sourceHF[x * 4 + 1];
+			destF[4 * x + 2] = (float)sourceHF[x * 4 + 2];
+			destF[4 * x + 3] = (float)sourceHF[x * 4 + 3];
+		}
+	}
+
+	template<>
+	void SaveImageRow<float16_to_FloatRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const sw::half* sourceHF = reinterpret_cast<const sw::half*>(source + xoffset * 8);
+		float *destF = reinterpret_cast<float*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			destF[3 * x + 0] = (float)sourceHF[x * 4 + 0];
+			destF[3 * x + 1] = (float)sourceHF[x * 4 + 1];
+			destF[3 * x + 2] = (float)sourceHF[x * 4 + 2];
+		}
+	}
+
+	template<DataType dataType>
+	void SaveImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, int destPitch, GLsizei destHeight, const void *input, void *output)
+	{
+		for(int z = 0; z < depth; ++z)
+		{
+			const unsigned char *inputStart = static_cast<const unsigned char*>(input) + ((z + zoffset) * inputPitch * inputHeight);
+			unsigned char *destStart = static_cast<unsigned char*>(output) + (z * destPitch * destHeight);
+			for(int y = 0; y < height; ++y)
+			{
+				const unsigned char *source = inputStart + (y + yoffset) * inputPitch;
+				unsigned char *dest = destStart + y * destPitch;
+
+				SaveImageRow<dataType>(source, dest, xoffset, width);
 			}
 		}
 	}
@@ -1705,6 +1918,481 @@ namespace egl
 			sw::Rect destRect(xoffset, yoffset, xoffset + width, yoffset + height);
 			context->blit(source, sourceRect, this, destRect);
 			delete source;
+		}
+	}
+
+	bool isFloat1632NeededAndSupported(GLenum outputGLFormat, GLenum outputGLType, sw::Format internal, sw::Format output) {
+		(void)outputGLFormat;
+
+		if (outputGLType != GL_FLOAT) return false;
+
+#define Float1632SupportedCase(x, y) \
+		if (internal == sw::x && output == sw::y) return true; \
+
+		Float1632SupportedCase(FORMAT_A16F, FORMAT_A32F)
+		Float1632SupportedCase(FORMAT_L16F, FORMAT_L32F)
+		Float1632SupportedCase(FORMAT_A16L16F, FORMAT_A32L32F)
+		Float1632SupportedCase(FORMAT_R16F, FORMAT_R32F)
+		Float1632SupportedCase(FORMAT_G16R16F, FORMAT_G32R32F)
+		Float1632SupportedCase(FORMAT_B16G16R16F, FORMAT_B32G32R32F)
+		Float1632SupportedCase(FORMAT_X16B16G16R16F, FORMAT_X32B32G32R32F)
+		Float1632SupportedCase(FORMAT_A16B16G16R16F, FORMAT_A32B32G32R32F)
+
+#undef Float1632SupportedCase
+	}
+
+	void Image::saveImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const PackInfo& packInfo, void *outputBuffer)
+	{
+		sw::Format downloadFormat = SelectInternalFormat(format, type);
+		if(downloadFormat == sw::FORMAT_NULL)
+		{
+			return;
+		}
+
+		// Check for the cases where we need float16 to float32 conversion;
+		// that is, if the internal format of the image is half precision
+		// float, but we want the data to be output as single precision float:
+		// TODO: Perhaps there are other up-conversion cases as well or even
+		// down-conversion, but we will treat such cases as not supported for
+		// now due to glGetTexImage not being in wide use.
+		bool doFloat1632Conversion =
+			isFloat1632NeededAndSupported(format, type, internalFormat, downloadFormat);
+
+		GLsizei inputWidth = (packInfo.rowLength == 0) ? width : packInfo.rowLength;
+		GLsizei inputHeight = (packInfo.imageHeight == 0) ? height : packInfo.imageHeight;
+		// Input pitch when in the float16to32 case cannot actually be trusted from the current calculation based on
+		// |format| and |type|. But if we are doing float16to32, the type clearly needs to be GL_HALF_FLOAT.
+		GLsizei inputPitch = ComputePitch(inputWidth, format, doFloat1632Conversion ? GL_HALF_FLOAT : type, packInfo.alignment);
+
+		// In the float16to32 case, we may need a separate outputOffset / outputPitch that is calculated from |format| / |type| directly.
+		GLsizei outputOffset = ComputePackingOffset(format, type, inputWidth, inputHeight, packInfo.alignment, packInfo.skipImages, packInfo.skipRows, packInfo.skipPixels);
+		GLsizei outputPitch = ComputePitch(inputWidth, format, type, packInfo.alignment);
+
+		outputBuffer = ((char*)outputBuffer) + outputOffset;
+
+		if(downloadFormat == internalFormat ||
+		   (downloadFormat == sw::FORMAT_A8B8G8R8 && internalFormat == sw::FORMAT_SRGB8_A8) ||
+		   (downloadFormat == sw::FORMAT_X8B8G8R8 && internalFormat == sw::FORMAT_SRGB8_X8) ||
+		   (downloadFormat == sw::FORMAT_A2B10G10R10 && internalFormat == sw::FORMAT_A2B10G10R10UI) ||
+		   doFloat1632Conversion)
+		{
+			void *buffer = lock(0, 0, sw::LOCK_READONLY);
+
+			if(buffer)
+			{
+				switch(type)
+				{
+				case GL_BYTE:
+					switch(format)
+					{
+					case GL_R8:
+					case GL_R8I:
+					case GL_R8_SNORM:
+					case GL_RED:
+					case GL_RED_INTEGER:
+					case GL_ALPHA:
+					case GL_ALPHA8_EXT:
+					case GL_LUMINANCE:
+					case GL_LUMINANCE8_EXT:
+						SaveImageData<Bytes_1>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RG8:
+					case GL_RG8I:
+					case GL_RG8_SNORM:
+					case GL_RG:
+					case GL_RG_INTEGER:
+					case GL_LUMINANCE_ALPHA:
+					case GL_LUMINANCE8_ALPHA8_EXT:
+						SaveImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGB8:
+					case GL_RGB8I:
+					case GL_RGB8_SNORM:
+					case GL_RGB:
+					case GL_RGB_INTEGER:
+						SaveImageData<ByteRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGBA8:
+					case GL_RGBA8I:
+					case GL_RGBA8_SNORM:
+					case GL_RGBA:
+					case GL_RGBA_INTEGER:
+					case GL_BGRA_EXT:
+					case GL_BGRA8_EXT:
+						SaveImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_UNSIGNED_BYTE:
+					switch(format)
+					{
+					case GL_R8:
+					case GL_R8UI:
+					case GL_R8_SNORM:
+					case GL_RED:
+					case GL_RED_INTEGER:
+					case GL_ALPHA:
+					case GL_ALPHA8_EXT:
+					case GL_LUMINANCE:
+					case GL_LUMINANCE8_EXT:
+						SaveImageData<Bytes_1>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RG8:
+					case GL_RG8UI:
+					case GL_RG8_SNORM:
+					case GL_RG:
+					case GL_RG_INTEGER:
+					case GL_LUMINANCE_ALPHA:
+					case GL_LUMINANCE8_ALPHA8_EXT:
+						SaveImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGB8:
+					case GL_RGB8UI:
+					case GL_RGB8_SNORM:
+					case GL_RGB:
+					case GL_RGB_INTEGER:
+					case GL_SRGB8:
+						SaveImageData<UByteRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGBA8:
+					case GL_RGBA8UI:
+					case GL_RGBA8_SNORM:
+					case GL_RGBA:
+					case GL_RGBA_INTEGER:
+					case GL_BGRA_EXT:
+					case GL_BGRA8_EXT:
+					case GL_SRGB8_ALPHA8:
+						SaveImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_UNSIGNED_SHORT_5_6_5:
+					switch(format)
+					{
+					case GL_RGB565:
+					case GL_RGB:
+						SaveImageData<RGB565>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_UNSIGNED_SHORT_4_4_4_4:
+					switch(format)
+					{
+					case GL_RGBA4:
+					case GL_RGBA:
+						SaveImageData<RGBA4444>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_UNSIGNED_SHORT_5_5_5_1:
+					switch(format)
+					{
+					case GL_RGB5_A1:
+					case GL_RGBA:
+						SaveImageData<RGBA5551>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_UNSIGNED_INT_10F_11F_11F_REV:
+					switch(format)
+					{
+					case GL_R11F_G11F_B10F:
+					case GL_RGB:
+						SaveImageData<R11G11B10F>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_UNSIGNED_INT_5_9_9_9_REV:
+					switch(format)
+					{
+					case GL_RGB9_E5:
+					case GL_RGB:
+						SaveImageData<RGB9E5>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_UNSIGNED_INT_2_10_10_10_REV:
+					switch(format)
+					{
+					case GL_RGB10_A2UI:
+					case GL_RGB10_A2:
+					case GL_RGBA:
+					case GL_RGBA_INTEGER:
+						SaveImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_FLOAT:
+					// float textures are converted to RGBA, not BGRA
+					if (doFloat1632Conversion) {
+						switch(format)
+						{
+							case GL_ALPHA:
+							case GL_ALPHA16F_EXT:
+							case GL_LUMINANCE:
+							case GL_LUMINANCE16F_EXT:
+							case GL_RED:
+							case GL_R16F:
+							case GL_DEPTH_COMPONENT:
+								SaveImageData<float16_to_float32_x1>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, getSlice(), buffer, outputBuffer);
+								break;
+							case GL_LUMINANCE_ALPHA:
+							case GL_LUMINANCE_ALPHA16F_EXT:
+							case GL_RG:
+							case GL_RG16F:
+								SaveImageData<float16_to_float32_x2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, getSlice(), buffer, outputBuffer);
+								break;
+							case GL_RGB:
+							case GL_RGB16F:
+								SaveImageData<float16_to_FloatRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, getSlice(), buffer, outputBuffer);
+								break;
+							case GL_RGBA:
+							case GL_RGBA16F:
+								SaveImageData<float16_to_float32_x4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, getSlice(), buffer, outputBuffer);
+								break;
+							default: UNREACHABLE(format);
+						}
+					} else {
+						switch(format)
+						{
+							case GL_ALPHA:
+							case GL_ALPHA32F_EXT:
+								SaveImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+								break;
+							case GL_LUMINANCE:
+							case GL_LUMINANCE32F_EXT:
+								SaveImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+								break;
+							case GL_LUMINANCE_ALPHA:
+							case GL_LUMINANCE_ALPHA32F_EXT:
+								SaveImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+								break;
+							case GL_RED:
+							case GL_R32F:
+								SaveImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+								break;
+							case GL_RG:
+							case GL_RG32F:
+								SaveImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+								break;
+							case GL_RGB:
+							case GL_RGB32F:
+								SaveImageData<FloatRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+								break;
+							case GL_RGBA:
+							case GL_RGBA32F:
+								SaveImageData<Bytes_16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+								break;
+							case GL_R11F_G11F_B10F:
+								SaveImageData<R11G11B10F>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+								break;
+							case GL_RGB9_E5:
+								SaveImageData<RGB9E5>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+								break;
+							case GL_DEPTH_COMPONENT:
+							case GL_DEPTH_COMPONENT32F:
+								SaveImageData<D32F>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+								break;
+							default: UNREACHABLE(format);
+						}
+					}
+					break;
+				case GL_HALF_FLOAT:
+				case GL_HALF_FLOAT_OES:
+					switch(format)
+					{
+					case GL_ALPHA:
+					case GL_ALPHA16F_EXT:
+						SaveImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_LUMINANCE:
+					case GL_LUMINANCE16F_EXT:
+						SaveImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_LUMINANCE_ALPHA:
+					case GL_LUMINANCE_ALPHA16F_EXT:
+						SaveImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RED:
+					case GL_R16F:
+						SaveImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RG:
+					case GL_RG16F:
+						SaveImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGB:
+					case GL_RGB16F:
+						SaveImageData<HalfFloatRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGBA:
+					case GL_RGBA16F:
+						SaveImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_R11F_G11F_B10F:
+						SaveImageData<R11G11B10F>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGB9_E5:
+						SaveImageData<RGB9E5>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_SHORT:
+					switch(format)
+					{
+					case GL_R16I:
+					case GL_RED:
+					case GL_RED_INTEGER:
+					case GL_ALPHA:
+					case GL_LUMINANCE:
+						SaveImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RG16I:
+					case GL_RG:
+					case GL_RG_INTEGER:
+					case GL_LUMINANCE_ALPHA:
+						SaveImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGB16I:
+					case GL_RGB:
+					case GL_RGB_INTEGER:
+						SaveImageData<ShortRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGBA16I:
+					case GL_RGBA:
+					case GL_RGBA_INTEGER:
+					case GL_BGRA_EXT:
+					case GL_BGRA8_EXT:
+						SaveImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_UNSIGNED_SHORT:
+					switch(format)
+					{
+					case GL_R16UI:
+					case GL_RED:
+					case GL_RED_INTEGER:
+					case GL_ALPHA:
+					case GL_LUMINANCE:
+						SaveImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RG16UI:
+					case GL_RG:
+					case GL_RG_INTEGER:
+					case GL_LUMINANCE_ALPHA:
+						SaveImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGB16UI:
+					case GL_RGB:
+					case GL_RGB_INTEGER:
+						SaveImageData<UShortRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGBA16UI:
+					case GL_RGBA:
+					case GL_RGBA_INTEGER:
+					case GL_BGRA_EXT:
+					case GL_BGRA8_EXT:
+						SaveImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_DEPTH_COMPONENT:
+					case GL_DEPTH_COMPONENT16:
+						SaveImageData<D16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_INT:
+					switch(format)
+					{
+					case GL_R32I:
+					case GL_RED:
+					case GL_RED_INTEGER:
+					case GL_ALPHA:
+					case GL_LUMINANCE:
+						SaveImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RG32I:
+					case GL_RG:
+					case GL_RG_INTEGER:
+					case GL_LUMINANCE_ALPHA:
+						SaveImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGB32I:
+					case GL_RGB:
+					case GL_RGB_INTEGER:
+						SaveImageData<IntRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGBA32I:
+					case GL_RGBA:
+					case GL_RGBA_INTEGER:
+					case GL_BGRA_EXT:
+					case GL_BGRA8_EXT:
+						SaveImageData<Bytes_16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_UNSIGNED_INT:
+					switch(format)
+					{
+					case GL_R32UI:
+					case GL_RED:
+					case GL_RED_INTEGER:
+					case GL_ALPHA:
+					case GL_LUMINANCE:
+						SaveImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RG32UI:
+					case GL_RG:
+					case GL_RG_INTEGER:
+					case GL_LUMINANCE_ALPHA:
+						SaveImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGB32UI:
+					case GL_RGB:
+					case GL_RGB_INTEGER:
+						SaveImageData<UIntRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_RGBA32UI:
+					case GL_RGBA:
+					case GL_RGBA_INTEGER:
+					case GL_BGRA_EXT:
+					case GL_BGRA8_EXT:
+						SaveImageData<Bytes_16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					case GL_DEPTH_COMPONENT16:
+					case GL_DEPTH_COMPONENT24:
+					case GL_DEPTH_COMPONENT32_OES:
+					case GL_DEPTH_COMPONENT:
+						SaveImageData<D32>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), buffer, outputBuffer);
+						break;
+					default: UNREACHABLE(format);
+					}
+					break;
+				case GL_UNSIGNED_INT_24_8_OES:
+				case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
+					UNIMPLEMENTED();
+					break;
+				default: UNREACHABLE(type);
+				}
+			}
+
+			unlock();
+		}
+		else
+		{
+			UNIMPLEMENTED();
 		}
 	}
 
