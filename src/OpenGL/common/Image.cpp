@@ -63,168 +63,184 @@ namespace
 	};
 
 	template<DataType dataType>
-	void LoadImageRow(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
 		UNIMPLEMENTED();
 	}
 
 	template<>
-	void LoadImageRow<Bytes_1>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<Bytes_1>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
-		memcpy(dest + xoffset, source, width);
+		if (transfer == egl::Image::TransferType::WriteTex)
+		{
+		    dest += xoffset;
+		}
+		else
+		{
+		    source += xoffset;
+		}
+		memcpy(dest, source, width);
 	}
 
 	template<>
-	void LoadImageRow<Bytes_2>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<Bytes_2>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
-		memcpy(dest + xoffset * 2, source, width * 2);
+		if (transfer == egl::Image::TransferType::WriteTex)
+		{
+		    dest += xoffset * 2;
+		}
+		else
+		{
+		    source += xoffset * 2;
+		}
+		memcpy(dest, source, width * 2);
 	}
 
 	template<>
-	void LoadImageRow<Bytes_4>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<Bytes_4>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
-		memcpy(dest + xoffset * 4, source, width * 4);
+		if (transfer == egl::Image::TransferType::WriteTex)
+		{
+		    dest += xoffset * 4;
+		}
+		else
+		{
+		    source += xoffset * 4;
+		}
+		memcpy(dest, source, width * 4);
 	}
 
 	template<>
-	void LoadImageRow<Bytes_8>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<Bytes_8>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
-		memcpy(dest + xoffset * 8, source, width * 8);
+		if (transfer == egl::Image::TransferType::WriteTex)
+		{
+		    dest += xoffset * 8;
+		}
+		else
+		{
+		    source += xoffset * 8;
+		}
+		memcpy(dest, source, width * 8);
 	}
 
 	template<>
-	void LoadImageRow<Bytes_16>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<Bytes_16>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
-		memcpy(dest + xoffset * 16, source, width * 16);
+		if (transfer == egl::Image::TransferType::WriteTex)
+		{
+		    dest += xoffset * 16;
+		}
+		else
+		{
+		    source += xoffset * 16;
+		}
+		memcpy(dest, source, width * 16);
 	}
 
-	template<>
-	void LoadImageRow<ByteRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	template <typename DataType>
+	void TransferImageRowRGB(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width, DataType defaultAlpha)
 	{
-		unsigned char *destB = dest + xoffset * 4;
+		const bool isWrite = transfer == egl::Image::TransferType::WriteTex;
+		const DataType *sourceT = reinterpret_cast<const DataType*>(source);
+		DataType *destT = reinterpret_cast<DataType*>(dest);
+		unsigned int sourceChannels;
+		unsigned int destChannels;
+		if (isWrite)
+		{
+			destT += xoffset * 4;
+			sourceChannels = 3;
+			destChannels = 4;
+		}
+		else
+		{
+			sourceT += xoffset * 4;
+			sourceChannels = 4;
+			destChannels = 3;
+		}
 
 		for(int x = 0; x < width; x++)
 		{
-			destB[4 * x + 0] = source[x * 3 + 0];
-			destB[4 * x + 1] = source[x * 3 + 1];
-			destB[4 * x + 2] = source[x * 3 + 2];
-			destB[4 * x + 3] = 0x7F;
+			destT[destChannels * x + 0] = sourceT[x * sourceChannels + 0];
+			destT[destChannels * x + 1] = sourceT[x * sourceChannels + 1];
+			destT[destChannels * x + 2] = sourceT[x * sourceChannels + 2];
+			if (isWrite)
+			{
+				destT[destChannels * x + 3] = defaultAlpha;
+			}
 		}
 	}
 
 	template<>
-	void LoadImageRow<UByteRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<ByteRGB>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
-		unsigned char *destB = dest + xoffset * 4;
+		TransferImageRowRGB<char>(transfer, source, dest, xoffset, width, 0x7F);
+	}
 
-		for(int x = 0; x < width; x++)
+	template<>
+	void TransferImageRow<UByteRGB>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		TransferImageRowRGB<unsigned char>(transfer, source, dest, xoffset, width, 0xFF);
+	}
+
+	template<>
+	void TransferImageRow<ShortRGB>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		TransferImageRowRGB<short>(transfer, source, dest, xoffset, width, 0x7FFF);
+	}
+
+	template<>
+	void TransferImageRow<UShortRGB>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		TransferImageRowRGB<unsigned short>(transfer, source, dest, xoffset, width, 0xFFFF);
+	}
+
+	template<>
+	void TransferImageRow<IntRGB>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		TransferImageRowRGB<int>(transfer, source, dest, xoffset, width, 0x7FFFFFFF);
+	}
+
+	template<>
+	void TransferImageRow<UIntRGB>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		TransferImageRowRGB<unsigned int>(transfer, source, dest, xoffset, width, 0xFFFFFFFF);
+	}
+
+	template<>
+	void TransferImageRow<RGB565>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		if (transfer == egl::Image::TransferType::WriteTex)
 		{
-			destB[4 * x + 0] = source[x * 3 + 0];
-			destB[4 * x + 1] = source[x * 3 + 1];
-			destB[4 * x + 2] = source[x * 3 + 2];
-			destB[4 * x + 3] = 0xFF;
+		    dest += xoffset * 2;
 		}
-	}
-
-	template<>
-	void LoadImageRow<ShortRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		const unsigned short *sourceS = reinterpret_cast<const unsigned short*>(source);
-		unsigned short *destS = reinterpret_cast<unsigned short*>(dest + xoffset * 8);
-
-		for(int x = 0; x < width; x++)
+		else
 		{
-			destS[4 * x + 0] = sourceS[x * 3 + 0];
-			destS[4 * x + 1] = sourceS[x * 3 + 1];
-			destS[4 * x + 2] = sourceS[x * 3 + 2];
-			destS[4 * x + 3] = 0x7FFF;
+		    source += xoffset * 2;
 		}
+		memcpy(dest, source, width * 2);
 	}
 
 	template<>
-	void LoadImageRow<UShortRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<FloatRGB>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
-		const unsigned short *sourceS = reinterpret_cast<const unsigned short*>(source);
-		unsigned short *destS = reinterpret_cast<unsigned short*>(dest + xoffset * 8);
+		TransferImageRowRGB<float>(transfer, source, dest, xoffset, width, 1.0f);
+	}
 
-		for(int x = 0; x < width; x++)
+	template<>
+	void TransferImageRow<HalfFloatRGB>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		TransferImageRowRGB<unsigned short>(transfer, source, dest, xoffset, width, 0x3C00); // SEEEEEMMMMMMMMMM, S = 0, E = 15, M = 0: 16bit flpt representation of 1
+	}
+
+	template<>
+	void TransferImageRow<RGBA4444>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		if (transfer == egl::Image::TransferType::ReadTex)
 		{
-			destS[4 * x + 0] = sourceS[x * 3 + 0];
-			destS[4 * x + 1] = sourceS[x * 3 + 1];
-			destS[4 * x + 2] = sourceS[x * 3 + 2];
-			destS[4 * x + 3] = 0xFFFF;
+		    UNIMPLEMENTED();
+		    return;
 		}
-	}
-
-	template<>
-	void LoadImageRow<IntRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source);
-		unsigned int *destI = reinterpret_cast<unsigned int*>(dest + xoffset * 16);
-
-		for(int x = 0; x < width; x++)
-		{
-			destI[4 * x + 0] = sourceI[x * 3 + 0];
-			destI[4 * x + 1] = sourceI[x * 3 + 1];
-			destI[4 * x + 2] = sourceI[x * 3 + 2];
-			destI[4 * x + 3] = 0x7FFFFFFF;
-		}
-	}
-
-	template<>
-	void LoadImageRow<UIntRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source);
-		unsigned int *destI = reinterpret_cast<unsigned int*>(dest + xoffset * 16);
-
-		for(int x = 0; x < width; x++)
-		{
-			destI[4 * x + 0] = sourceI[x * 3 + 0];
-			destI[4 * x + 1] = sourceI[x * 3 + 1];
-			destI[4 * x + 2] = sourceI[x * 3 + 2];
-			destI[4 * x + 3] = 0xFFFFFFFF;
-		}
-	}
-
-	template<>
-	void LoadImageRow<RGB565>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		memcpy(dest + xoffset * 2, source, width * 2);
-	}
-
-	template<>
-	void LoadImageRow<FloatRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		const float *sourceF = reinterpret_cast<const float*>(source);
-		float *destF = reinterpret_cast<float*>(dest + xoffset * 16);
-
-		for(int x = 0; x < width; x++)
-		{
-			destF[4 * x + 0] = sourceF[x * 3 + 0];
-			destF[4 * x + 1] = sourceF[x * 3 + 1];
-			destF[4 * x + 2] = sourceF[x * 3 + 2];
-			destF[4 * x + 3] = 1.0f;
-		}
-	}
-
-	template<>
-	void LoadImageRow<HalfFloatRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		const unsigned short *sourceH = reinterpret_cast<const unsigned short*>(source);
-		unsigned short *destH = reinterpret_cast<unsigned short*>(dest + xoffset * 8);
-
-		for(int x = 0; x < width; x++)
-		{
-			destH[4 * x + 0] = sourceH[x * 3 + 0];
-			destH[4 * x + 1] = sourceH[x * 3 + 1];
-			destH[4 * x + 2] = sourceH[x * 3 + 2];
-			destH[4 * x + 3] = 0x3C00; // SEEEEEMMMMMMMMMM, S = 0, E = 15, M = 0: 16bit flpt representation of 1
-		}
-	}
-
-	template<>
-	void LoadImageRow<RGBA4444>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
 		const unsigned short *source4444 = reinterpret_cast<const unsigned short*>(source);
 		unsigned char *dest4444 = dest + xoffset * 4;
 
@@ -239,8 +255,13 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<RGBA5551>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<RGBA5551>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
+		if (transfer == egl::Image::TransferType::ReadTex)
+		{
+		    UNIMPLEMENTED();
+		    return;
+		}
 		const unsigned short *source5551 = reinterpret_cast<const unsigned short*>(source);
 		unsigned char *dest5551 = dest + xoffset * 4;
 
@@ -255,8 +276,13 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<RGB10A2UI>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<RGB10A2UI>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
+		if (transfer == egl::Image::TransferType::ReadTex)
+		{
+		    UNIMPLEMENTED();
+		    return;
+		}
 		const unsigned int *source1010102U = reinterpret_cast<const unsigned int*>(source);
 		unsigned short *dest16U = reinterpret_cast<unsigned short*>(dest + xoffset * 8);
 
@@ -271,8 +297,13 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<R11G11B10F>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<R11G11B10F>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
+		if (transfer == egl::Image::TransferType::ReadTex)
+		{
+		    UNIMPLEMENTED();
+		    return;
+		}
 		const sw::R11G11B10FData *sourceRGB = reinterpret_cast<const sw::R11G11B10FData*>(source);
 		float *destF = reinterpret_cast<float*>(dest + xoffset * 16);
 
@@ -284,8 +315,13 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<RGB9E5>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<RGB9E5>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
+		if (transfer == egl::Image::TransferType::ReadTex)
+		{
+		    UNIMPLEMENTED();
+		    return;
+		}
 		const sw::RGB9E5Data *sourceRGB = reinterpret_cast<const sw::RGB9E5Data*>(source);
 		float *destF = reinterpret_cast<float*>(dest + xoffset * 16);
 
@@ -297,8 +333,13 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<SRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<SRGB>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
+		if (transfer == egl::Image::TransferType::ReadTex)
+		{
+		    UNIMPLEMENTED();
+		    return;
+		}
 		dest += xoffset * 4;
 
 		for(int x = 0; x < width; x++)
@@ -312,8 +353,13 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<SRGBA>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<SRGBA>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
+		if (transfer == egl::Image::TransferType::ReadTex)
+		{
+		    UNIMPLEMENTED();
+		    return;
+		}
 		dest += xoffset * 4;
 
 		for(int x = 0; x < width; x++)
@@ -327,8 +373,13 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<D16>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<D16>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
+		if (transfer == egl::Image::TransferType::ReadTex)
+		{
+		    UNIMPLEMENTED();
+		    return;
+		}
 		const unsigned short *sourceD16 = reinterpret_cast<const unsigned short*>(source);
 		float *destF = reinterpret_cast<float*>(dest + xoffset * 4);
 
@@ -339,8 +390,13 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<D24>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<D24>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
+		if (transfer == egl::Image::TransferType::ReadTex)
+		{
+		    UNIMPLEMENTED();
+		    return;
+		}
 		const unsigned int *sourceD24 = reinterpret_cast<const unsigned int*>(source);
 		float *destF = reinterpret_cast<float*>(dest + xoffset * 4);
 
@@ -351,8 +407,13 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<D32>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<D32>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
+		if (transfer == egl::Image::TransferType::ReadTex)
+		{
+		    UNIMPLEMENTED();
+		    return;
+		}
 		const unsigned int *sourceD32 = reinterpret_cast<const unsigned int*>(source);
 		float *destF = reinterpret_cast<float*>(dest + xoffset * 4);
 
@@ -363,8 +424,13 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<S8>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<S8>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
+		if (transfer == egl::Image::TransferType::ReadTex)
+		{
+		    UNIMPLEMENTED();
+		    return;
+		}
 		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source);
 		unsigned char *destI = dest + xoffset;
 
@@ -375,8 +441,13 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<D32F>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<D32F>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
+		if (transfer == egl::Image::TransferType::ReadTex)
+		{
+		    UNIMPLEMENTED();
+		    return;
+		}
 		struct D32FS8 { float depth32f; unsigned int stencil24_8; };
 		const D32FS8 *sourceD32FS8 = reinterpret_cast<const D32FS8*>(source);
 		float *destF = reinterpret_cast<float*>(dest + xoffset * 4);
@@ -388,8 +459,13 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<S24_8>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	void TransferImageRow<S24_8>(egl::Image::TransferType transfer, const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
+		if (transfer == egl::Image::TransferType::ReadTex)
+		{
+		    UNIMPLEMENTED();
+		    return;
+		}
 		struct D32FS8 { float depth32f; unsigned int stencil24_8; };
 		const D32FS8 *sourceD32FS8 = reinterpret_cast<const D32FS8*>(source);
 		unsigned char *destI = dest + xoffset;
@@ -401,18 +477,28 @@ namespace
 	}
 
 	template<DataType dataType>
-	void LoadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, int destPitch, GLsizei destHeight, const void *input, void *buffer)
+	void TransferImageData(egl::Image::TransferType transfer, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, int destPitch, GLsizei destHeight, const void *input, void *output)
 	{
+		const bool isWrite = transfer == egl::Image::TransferType::WriteTex;
 		for(int z = 0; z < depth; ++z)
 		{
-			const unsigned char *inputStart = static_cast<const unsigned char*>(input) + (z * inputPitch * inputHeight);
-			unsigned char *destStart = static_cast<unsigned char*>(buffer) + ((zoffset + z) * destPitch * destHeight);
+			const unsigned char *inputStart = static_cast<const unsigned char*>(input) + ((z + (isWrite ? 0 : zoffset)) * inputPitch * inputHeight);
+			unsigned char *destStart = static_cast<unsigned char*>(output) + ((z + (isWrite ? zoffset : 0)) * destPitch * destHeight);
 			for(int y = 0; y < height; ++y)
 			{
-				const unsigned char *source = inputStart + y * inputPitch;
-				unsigned char *dest = destStart + (y + yoffset) * destPitch;
-
-				LoadImageRow<dataType>(source, dest, xoffset, width);
+				const unsigned char *source;
+				unsigned char *dest;
+				if (isWrite)
+				{
+					source = inputStart + y * inputPitch;
+					dest = destStart + (y + yoffset) * destPitch;
+				}
+				else
+				{
+					source = inputStart + (y + yoffset) * inputPitch;
+					dest = destStart + y * destPitch;
+				}
+				TransferImageRow<dataType>(transfer, source, dest, xoffset, width);
 			}
 		}
 	}
@@ -1287,7 +1373,17 @@ namespace egl
 		return parentTexture == parent;
 	}
 
-	void Image::loadImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input)
+	void Image::loadImageData(Context* context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void* pixels)
+	{
+	    transferImageData(TransferType::WriteTex, context, xoffset, yoffset, zoffset, width, height, depth, format, type, unpackInfo, const_cast<void*>(pixels));
+	}
+
+	void Image::saveImageData(Context* context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, void* pixels)
+	{
+	    transferImageData(TransferType::ReadTex, context, xoffset, yoffset, zoffset, width, height, depth, format, type, unpackInfo, pixels);
+	}
+
+	void Image::transferImageData(TransferType transferType, Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, void *pixels)
 	{
 		sw::Format selectedInternalFormat = SelectInternalFormat(format, type);
 		if(selectedInternalFormat == sw::FORMAT_NULL)
@@ -1295,17 +1391,40 @@ namespace egl
 			return;
 		}
 
-		GLsizei inputWidth = (unpackInfo.rowLength == 0) ? width : unpackInfo.rowLength;
-		GLsizei inputPitch = ComputePitch(inputWidth, format, type, unpackInfo.alignment);
-		GLsizei inputHeight = (unpackInfo.imageHeight == 0) ? height : unpackInfo.imageHeight;
-		input = ((char*)input) + ComputePackingOffset(format, type, inputWidth, inputHeight, unpackInfo.alignment, unpackInfo.skipImages, unpackInfo.skipRows, unpackInfo.skipPixels);
+		GLsizei pixelWidth = (unpackInfo.rowLength == 0) ? width : unpackInfo.rowLength;
+		GLsizei pixelPitch = ComputePitch(pixelWidth, format, type, unpackInfo.alignment);
+		GLsizei pixelHeight = (unpackInfo.imageHeight == 0) ? height : unpackInfo.imageHeight;
+		pixels = ((char*)pixels) + ComputePackingOffset(format, type, pixelWidth, pixelHeight, unpackInfo.alignment, unpackInfo.skipImages, unpackInfo.skipRows, unpackInfo.skipPixels);
 
 		if(selectedInternalFormat == internalFormat)
 		{
-			void *buffer = lock(0, 0, sw::LOCK_WRITEONLY);
+			bool isWrite = transferType == TransferType::WriteTex;
+			void *buffer =  lock(0, 0, isWrite ? sw::LOCK_WRITEONLY : sw::LOCK_READONLY);
 
 			if(buffer)
 			{
+				const void* input;
+				void* output;
+				GLsizei inputPitch;
+				GLsizei inputHeight;
+				GLsizei outputPitch;
+				GLsizei outputHeight;
+				if (isWrite) {
+				    input = pixels;
+				    output = buffer;
+				    inputPitch = pixelPitch;
+				    inputHeight = pixelHeight;
+				    outputPitch = getPitch();
+				    outputHeight = getHeight();
+				} else {
+				    input = buffer;
+				    output = pixels;
+				    inputPitch = getPitch();
+				    inputHeight = getHeight();
+				    outputPitch = pixelPitch;
+				    outputHeight = pixelHeight;
+				}
+
 				switch(type)
 				{
 				case GL_BYTE:
@@ -1320,7 +1439,7 @@ namespace egl
 					case GL_ALPHA8_EXT:
 					case GL_LUMINANCE:
 					case GL_LUMINANCE8_EXT:
-						LoadImageData<Bytes_1>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_1>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RG8:
 					case GL_RG8I:
@@ -1329,14 +1448,14 @@ namespace egl
 					case GL_RG_INTEGER:
 					case GL_LUMINANCE_ALPHA:
 					case GL_LUMINANCE8_ALPHA8_EXT:
-						LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_2>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGB8:
 					case GL_RGB8I:
 					case GL_RGB8_SNORM:
 					case GL_RGB:
 					case GL_RGB_INTEGER:
-						LoadImageData<ByteRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<ByteRGB>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGBA8:
 					case GL_RGBA8I:
@@ -1345,7 +1464,7 @@ namespace egl
 					case GL_RGBA_INTEGER:
 					case GL_BGRA_EXT:
 					case GL_BGRA8_EXT:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1362,7 +1481,7 @@ namespace egl
 					case GL_ALPHA8_EXT:
 					case GL_LUMINANCE:
 					case GL_LUMINANCE8_EXT:
-						LoadImageData<Bytes_1>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_1>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RG8:
 					case GL_RG8UI:
@@ -1371,14 +1490,14 @@ namespace egl
 					case GL_RG_INTEGER:
 					case GL_LUMINANCE_ALPHA:
 					case GL_LUMINANCE8_ALPHA8_EXT:
-						LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_2>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGB8:
 					case GL_RGB8UI:
 					case GL_RGB8_SNORM:
 					case GL_RGB:
 					case GL_RGB_INTEGER:
-						LoadImageData<UByteRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<UByteRGB>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGBA8:
 					case GL_RGBA8UI:
@@ -1387,13 +1506,13 @@ namespace egl
 					case GL_RGBA_INTEGER:
 					case GL_BGRA_EXT:
 					case GL_BGRA8_EXT:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_SRGB8:
-						LoadImageData<SRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<SRGB>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_SRGB8_ALPHA8:
-						LoadImageData<SRGBA>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<SRGBA>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1403,7 +1522,7 @@ namespace egl
 					{
 					case GL_RGB565:
 					case GL_RGB:
-						LoadImageData<RGB565>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<RGB565>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1413,7 +1532,7 @@ namespace egl
 					{
 					case GL_RGBA4:
 					case GL_RGBA:
-						LoadImageData<RGBA4444>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<RGBA4444>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1423,7 +1542,7 @@ namespace egl
 					{
 					case GL_RGB5_A1:
 					case GL_RGBA:
-						LoadImageData<RGBA5551>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<RGBA5551>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1433,7 +1552,7 @@ namespace egl
 					{
 					case GL_R11F_G11F_B10F:
 					case GL_RGB:
-						LoadImageData<R11G11B10F>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<R11G11B10F>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1443,7 +1562,7 @@ namespace egl
 					{
 					case GL_RGB9_E5:
 					case GL_RGB:
-						LoadImageData<RGB9E5>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<RGB9E5>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1452,12 +1571,12 @@ namespace egl
 					switch(format)
 					{
 					case GL_RGB10_A2UI:
-						LoadImageData<RGB10A2UI>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<RGB10A2UI>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGB10_A2:
 					case GL_RGBA:
 					case GL_RGBA_INTEGER:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1468,35 +1587,35 @@ namespace egl
 					// float textures are converted to RGBA, not BGRA
 					case GL_ALPHA:
 					case GL_ALPHA32F_EXT:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_LUMINANCE:
 					case GL_LUMINANCE32F_EXT:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_LUMINANCE_ALPHA:
 					case GL_LUMINANCE_ALPHA32F_EXT:
-						LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_8>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RED:
 					case GL_R32F:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RG:
 					case GL_RG32F:
-						LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_8>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGB:
 					case GL_RGB32F:
-						LoadImageData<FloatRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<FloatRGB>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGBA:
 					case GL_RGBA32F:
-						LoadImageData<Bytes_16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_16>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_DEPTH_COMPONENT:
 					case GL_DEPTH_COMPONENT32F:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1507,31 +1626,31 @@ namespace egl
 					{
 					case GL_ALPHA:
 					case GL_ALPHA16F_EXT:
-						LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_2>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_LUMINANCE:
 					case GL_LUMINANCE16F_EXT:
-						LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_2>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_LUMINANCE_ALPHA:
 					case GL_LUMINANCE_ALPHA16F_EXT:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RED:
 					case GL_R16F:
-						LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_2>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RG:
 					case GL_RG16F:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGB:
 					case GL_RGB16F:
-						LoadImageData<HalfFloatRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<HalfFloatRGB>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGBA:
 					case GL_RGBA16F:
-						LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_8>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1544,25 +1663,25 @@ namespace egl
 					case GL_RED_INTEGER:
 					case GL_ALPHA:
 					case GL_LUMINANCE:
-						LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_2>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RG16I:
 					case GL_RG:
 					case GL_RG_INTEGER:
 					case GL_LUMINANCE_ALPHA:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGB16I:
 					case GL_RGB:
 					case GL_RGB_INTEGER:
-						LoadImageData<ShortRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<ShortRGB>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGBA16I:
 					case GL_RGBA:
 					case GL_RGBA_INTEGER:
 					case GL_BGRA_EXT:
 					case GL_BGRA8_EXT:
-						LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_8>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1575,29 +1694,29 @@ namespace egl
 					case GL_RED_INTEGER:
 					case GL_ALPHA:
 					case GL_LUMINANCE:
-						LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_2>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RG16UI:
 					case GL_RG:
 					case GL_RG_INTEGER:
 					case GL_LUMINANCE_ALPHA:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGB16UI:
 					case GL_RGB:
 					case GL_RGB_INTEGER:
-						LoadImageData<UShortRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<UShortRGB>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGBA16UI:
 					case GL_RGBA:
 					case GL_RGBA_INTEGER:
 					case GL_BGRA_EXT:
 					case GL_BGRA8_EXT:
-						LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_8>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_DEPTH_COMPONENT:
 					case GL_DEPTH_COMPONENT16:
-						LoadImageData<D16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<D16>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1610,25 +1729,25 @@ namespace egl
 					case GL_RED_INTEGER:
 					case GL_ALPHA:
 					case GL_LUMINANCE:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RG32I:
 					case GL_RG:
 					case GL_RG_INTEGER:
 					case GL_LUMINANCE_ALPHA:
-						LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_8>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGB32I:
 					case GL_RGB:
 					case GL_RGB_INTEGER:
-						LoadImageData<IntRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<IntRGB>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGBA32I:
 					case GL_RGBA:
 					case GL_RGBA_INTEGER:
 					case GL_BGRA_EXT:
 					case GL_BGRA8_EXT:
-						LoadImageData<Bytes_16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_16>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
@@ -1641,40 +1760,40 @@ namespace egl
 					case GL_RED_INTEGER:
 					case GL_ALPHA:
 					case GL_LUMINANCE:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_4>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RG32UI:
 					case GL_RG:
 					case GL_RG_INTEGER:
 					case GL_LUMINANCE_ALPHA:
-						LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_8>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGB32UI:
 					case GL_RGB:
 					case GL_RGB_INTEGER:
-						LoadImageData<UIntRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<UIntRGB>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_RGBA32UI:
 					case GL_RGBA:
 					case GL_RGBA_INTEGER:
 					case GL_BGRA_EXT:
 					case GL_BGRA8_EXT:
-						LoadImageData<Bytes_16>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<Bytes_16>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					case GL_DEPTH_COMPONENT16:
 					case GL_DEPTH_COMPONENT24:
 					case GL_DEPTH_COMPONENT32_OES:
 					case GL_DEPTH_COMPONENT:
-						LoadImageData<D32>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+						TransferImageData<D32>(transferType, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, outputPitch, outputHeight, input, output);
 						break;
 					default: UNREACHABLE(format);
 					}
 					break;
 				case GL_UNSIGNED_INT_24_8_OES:
-					loadD24S8ImageData(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, input, buffer);
+					transferD24S8ImageData(transferType, xoffset, yoffset, zoffset, width, height, depth, pixelPitch, pixelHeight, input, output);
 					break;
 				case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
-					loadD32FS8ImageData(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, input, buffer);
+					transferD32FS8ImageData(transferType, xoffset, yoffset, zoffset, width, height, depth, pixelPitch, pixelHeight, input, output);
 					break;
 				default: UNREACHABLE(type);
 				}
@@ -1684,7 +1803,7 @@ namespace egl
 		}
 		else
 		{
-			sw::Surface *source = sw::Surface::create(width, height, depth, ConvertFormatType(format, type), const_cast<void*>(input), inputPitch, inputPitch * inputHeight);
+			sw::Surface *source = sw::Surface::create(width, height, depth, ConvertFormatType(format, type), const_cast<void*>(pixels), pixelPitch, pixelPitch * pixelHeight);
 			sw::Rect sourceRect(0, 0, width, height);
 			sw::Rect destRect(xoffset, yoffset, xoffset + width, yoffset + height);
 			context->blit(source, sourceRect, this, destRect);
@@ -1692,29 +1811,39 @@ namespace egl
 		}
 	}
 
-	void Image::loadD24S8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer)
+	void Image::transferD24S8ImageData(TransferType transfer, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer)
 	{
-		LoadImageData<D24>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+		if (transfer == TransferType::ReadTex)
+		{
+			UNIMPLEMENTED();
+			return;
+		}
+		TransferImageData<D24>(transfer, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 
 		unsigned char *stencil = reinterpret_cast<unsigned char*>(lockStencil(0, 0, 0, sw::PUBLIC));
 
 		if(stencil)
 		{
-			LoadImageData<S8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getStencilPitchB(), getHeight(), input, stencil);
+			TransferImageData<S8>(transfer, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getStencilPitchB(), getHeight(), input, stencil);
 
 			unlockStencil();
 		}
 	}
 
-	void Image::loadD32FS8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer)
+	void Image::transferD32FS8ImageData(TransferType transfer, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer)
 	{
-		LoadImageData<D32F>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
+		if (transfer == TransferType::ReadTex)
+		{
+			UNIMPLEMENTED();
+			return;
+		}
+		TransferImageData<D32F>(transfer, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getHeight(), input, buffer);
 
 		unsigned char *stencil = reinterpret_cast<unsigned char*>(lockStencil(0, 0, 0, sw::PUBLIC));
 
 		if(stencil)
 		{
-			LoadImageData<S24_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getStencilPitchB(), getHeight(), input, stencil);
+			TransferImageData<S24_8>(transfer, xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getStencilPitchB(), getHeight(), input, stencil);
 
 			unlockStencil();
 		}
