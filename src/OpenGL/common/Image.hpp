@@ -182,8 +182,12 @@ public:
 		GLint skipImages;
 	};
 
+	typedef struct UnpackInfo PackInfo;
+
 	void loadImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input);
 	void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
+
+	void saveImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const PackInfo& packInfo, void *outputBuffer);
 
 	void release() override = 0;
 	void unbind(const Texture *parent);   // Break parent ownership and release
