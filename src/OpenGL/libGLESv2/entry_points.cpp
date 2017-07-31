@@ -113,6 +113,7 @@ void GetShaderSource(GLuint shader, GLsizei bufsize, GLsizei* length, GLchar* so
 const GLubyte* GetString(GLenum name);
 void GetTexParameterfv(GLenum target, GLenum pname, GLfloat* params);
 void GetTexParameteriv(GLenum target, GLenum pname, GLint* params);
+void GetTexImage(GLenum target, GLint level, GLenum format, GLenum type, GLvoid *pixels);
 void GetnUniformfvEXT(GLuint program, GLint location, GLsizei bufSize, GLfloat* params);
 void GetUniformfv(GLuint program, GLint location, GLfloat* params);
 void GetnUniformivEXT(GLuint program, GLint location, GLsizei bufSize, GLint* params);
@@ -740,6 +741,11 @@ GL_APICALL void GL_APIENTRY glGetTexParameterfv(GLenum target, GLenum pname, GLf
 GL_APICALL void GL_APIENTRY glGetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 {
 	return es2::GetTexParameteriv(target, pname, params);
+}
+
+GL_APICALL void GL_APIENTRY glGetTexImage(GLenum target, GLint level, GLenum format, GLenum type, void* pixels)
+{
+    return es2::GetTexImage(target, level, format, type, pixels);
 }
 
 GL_APICALL void GL_APIENTRY glGetnUniformfvEXT(GLuint program, GLint location, GLsizei bufSize, GLfloat* params)
