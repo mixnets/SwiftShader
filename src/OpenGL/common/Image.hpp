@@ -166,6 +166,18 @@ public:
 	void *lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client) override = 0;
 	void unlockInternal() override = 0;
 
+	struct PackInfo
+	{
+		PackInfo() : alignment(4), rowLength(0), imageHeight(0), skipPixels(0), skipRows(0), skipImages(0) {}
+
+		GLint alignment;
+		GLint rowLength;
+		GLint imageHeight;
+		GLint skipPixels;
+		GLint skipRows;
+		GLint skipImages;
+	};
+
 	struct UnpackInfo
 	{
 		UnpackInfo() : alignment(4), rowLength(0), imageHeight(0), skipPixels(0), skipRows(0), skipImages(0) {}
@@ -178,6 +190,7 @@ public:
 		GLint skipImages;
 	};
 
+	void saveImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const PackInfo& packInfo, void *output);
 	void loadImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input);
 	void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
 
