@@ -3657,6 +3657,11 @@ GL_APICALL void GL_APIENTRY glDeleteTransformFeedbacks(GLsizei n, const GLuint *
 					return error(GL_INVALID_OPERATION);
 				}
 
+				if (transformFeedbackObject &&
+					transformFeedbackObject == context->getTransformFeedback()) {
+					context->bindTransformFeedback(0);
+				}
+
 				context->deleteTransformFeedback(ids[i]);
 			}
 		}
