@@ -52,6 +52,9 @@ else
 COMMON_STATIC_LIBRARIES := libLLVM_swiftshader
 endif
 
+COMMON_STATIC_LIBRARIES += \
+	libnativewindow
+
 COMMON_SHARED_LIBRARIES := \
 	libdl \
 	liblog \

@@ -31,6 +31,9 @@ COMMON_C_INCLUDES := \
 	$(LOCAL_PATH)/../ \
 	$(LOCAL_PATH)/../../
 
+COMMON_STATIC_LIBRARIES := \
+	libnativewindow
+
 COMMON_SHARED_LIBRARIES := \
 	libdl \
 	liblog \
