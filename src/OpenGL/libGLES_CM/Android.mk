@@ -52,6 +52,11 @@ else
 COMMON_STATIC_LIBRARIES := libLLVM_swiftshader
 endif
 
+# treble is introduced from O
+ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo O),O)
+COMMON_STATIC_LIBRARIES += libnativewindow
+endif
+
 COMMON_SHARED_LIBRARIES := \
 	libdl \
 	liblog \

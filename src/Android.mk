@@ -26,6 +26,11 @@ COMMON_C_INCLUDES += \
 	$(LOCAL_PATH)/../third_party/LLVM/include
 endif
 
+# treble is introduced from O
+ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 26 && echo O),O)
+COMMON_STATIC_LIBRARIES := libnativewindow
+endif
+
 # Marshmallow does not have stlport, but comes with libc++ by default
 ifeq ($(shell test $(PLATFORM_SDK_VERSION) -lt 23 && echo PreMarshmallow),PreMarshmallow)
 COMMON_C_INCLUDES += external/stlport/stlport
@@ -145,6 +150,7 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_SRC_FILES := $(COMMON_SRC_FILES)
 LOCAL_CFLAGS := $(COMMON_CFLAGS) -fomit-frame-pointer -ffunction-sections -fdata-sections -DANGLE_DISABLE_TRACE
 LOCAL_C_INCLUDES := $(COMMON_C_INCLUDES)
+LOCAL_STATIC_LIBRARIES := $(COMMON_STATIC_LIBRARIES)
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -154,6 +160,7 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_SRC_FILES := $(COMMON_SRC_FILES)
 LOCAL_CFLAGS := $(COMMON_CFLAGS) -UNDEBUG -g -O0 -DDEFAULT_THREAD_COUNT=1
 LOCAL_C_INCLUDES := $(COMMON_C_INCLUDES)
+LOCAL_STATIC_LIBRARIES := $(COMMON_STATIC_LIBRARIES)
 include $(BUILD_STATIC_LIBRARY)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
