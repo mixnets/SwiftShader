@@ -1,7 +1,6 @@
 #include <stdio.h>
-#include "Context.h"
+#include "Instance.h"
 #include "utils.h"
-#include "Device.h"
 #include "CommandAllocator.h"
 #include <assert.h>
 #include <windows.h>
@@ -1307,7 +1306,7 @@ namespace vulkan
 		}
 		else
 		{
-			fence = new (pAllocator->pfnAllocation(myDevice, sizeof(*fence), ALIGNMENT, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT)) Fence;
+			fence = new (pAllocator->pfnAllocation(myDevice, sizeof(*fence), ALIGNMENT, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT)) Fence ;
 		}
 
 		fence->submitted = false;
