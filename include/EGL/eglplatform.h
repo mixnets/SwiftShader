@@ -2,7 +2,7 @@
 #define __eglplatform_h_
 
 /*
-** Copyright (c) 2007-2013 The Khronos Group Inc.
+** Copyright (c) 2007-2016 The Khronos Group Inc.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a
 ** copy of this software and/or associated documentation files (the
@@ -75,9 +75,16 @@
 
 typedef HDC     EGLNativeDisplayType;
 typedef HBITMAP EGLNativePixmapType;
-typedef HWND    EGLNativeWindowType;
 
-#elif defined(__APPLE__) || defined(__WINSCW__) || defined(__SYMBIAN32__)  /* Symbian */
+#if !defined(WINAPI_FAMILY) || (WINAPI_FAMILY == WINAPI_FAMILY_DESKTOP_APP) /* Windows Desktop */
+typedef HWND    EGLNativeWindowType;
+#else /* Windows Store */
+#include <inspectable.h>
+typedef IInspectable* EGLNativeWindowType;
+#endif
+
+#elif defined(__APPLE__) || defined(__WINSCW__) || defined(__SYMBIAN32__) || \
+      defined(__Fuchsia__) || defined(__HAIKU__)
 
 typedef int   EGLNativeDisplayType;
 typedef void *EGLNativeWindowType;
@@ -92,6 +99,18 @@ struct egl_native_pixmap_t;
 typedef struct ANativeWindow*           EGLNativeWindowType;
 typedef struct egl_native_pixmap_t*     EGLNativePixmapType;
 typedef void*                           EGLNativeDisplayType;
+
+#elif defined(USE_OZONE)
+
+typedef intptr_t EGLNativeDisplayType;
+typedef intptr_t EGLNativeWindowType;
+typedef intptr_t EGLNativePixmapType;
+
+#elif defined(WL_EGL_PLATFORM)
+
+typedef struct wl_display    *EGLNativeDisplayType;
+typedef struct wl_egl_pixmap *EGLNativePixmapType;
+typedef struct wl_egl_window *EGLNativeWindowType;
 
 #elif defined(__unix__)
 
@@ -121,5 +140,13 @@ typedef EGLNativeWindowType  NativeWindowType;
  * integer type.
  */
 typedef khronos_int32_t EGLint;
+
+
+/* C++ / C typecast macros for special EGL handle values */
+#if defined(__cplusplus)
+#define EGL_CAST(type, value) (static_cast<type>(value))
+#else
+#define EGL_CAST(type, value) ((type) (value))
+#endif
 
 #endif /* __eglplatform_h */
