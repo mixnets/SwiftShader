@@ -57,7 +57,7 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 	GLenum validationError = ValidateCompressedFormat(textureFormat, egl::getClientVersion(), false);
 	if(validationError != GL_NONE)
 	{
-		return error(validationError, false);
+		return error(validationError), false;
 	}
 
 	// [OpenGL ES 2.0.24] table 3.9
@@ -73,7 +73,7 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 		   colorbufferFormat != GL_RGBA16F_EXT &&
 		   colorbufferFormat != GL_RGBA32F_EXT)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 		break;
 	case GL_LUMINANCE:
@@ -91,7 +91,7 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 		   colorbufferFormat != GL_RGBA16F_EXT &&
 		   colorbufferFormat != GL_RGBA32F_EXT)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 		break;
 	case GL_LUMINANCE_ALPHA:
@@ -104,14 +104,14 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 		   colorbufferFormat != GL_RGBA16F_EXT &&
 		   colorbufferFormat != GL_RGBA32F_EXT)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 		break;
 	case GL_DEPTH_COMPONENT:
 	case GL_DEPTH_STENCIL_OES:
-		return error(GL_INVALID_OPERATION, false);
+		return error(GL_INVALID_OPERATION), false;
 	default:
-		return error(GL_INVALID_ENUM, false);
+		return error(GL_INVALID_ENUM), false;
 	}
 	return true;
 }
@@ -664,7 +664,7 @@ GLenum CheckFramebufferStatus(GLenum target)
 
 	if(target != GL_FRAMEBUFFER && target != GL_DRAW_FRAMEBUFFER_ANGLE && target != GL_READ_FRAMEBUFFER_ANGLE)
 	{
-		return error(GL_INVALID_ENUM, 0);
+		return error(GL_INVALID_ENUM), 0;
 	}
 
 	es2::Context *context = es2::getContext();
@@ -1177,7 +1177,7 @@ GLuint CreateShader(GLenum type)
 		case GL_VERTEX_SHADER:
 			return context->createShader(type);
 		default:
-			return error(GL_INVALID_ENUM, 0);
+			return error(GL_INVALID_ENUM), 0;
 		}
 	}
 
@@ -2501,17 +2501,17 @@ int GetAttribLocation(GLuint program, const GLchar* name)
 		{
 			if(context->getShader(program))
 			{
-				return error(GL_INVALID_OPERATION, -1);
+				return error(GL_INVALID_OPERATION), -1;
 			}
 			else
 			{
-				return error(GL_INVALID_VALUE, -1);
+				return error(GL_INVALID_VALUE), -1;
 			}
 		}
 
 		if(!programObject->isLinked())
 		{
-			return error(GL_INVALID_OPERATION, -1);
+			return error(GL_INVALID_OPERATION), -1;
 		}
 
 		return programObject->getAttributeLocation(name);
@@ -3559,7 +3559,7 @@ const GLubyte* GetString(GLenum name)
 		return context ? context->getExtensions(GL_INVALID_INDEX) : (GLubyte*)nullptr;
 	}
 	default:
-		return error(GL_INVALID_ENUM, (GLubyte*)nullptr);
+		return error(GL_INVALID_ENUM), (GLubyte*)nullptr;
 	}
 }
 
@@ -4036,17 +4036,17 @@ int GetUniformLocation(GLuint program, const GLchar* name)
 		{
 			if(context->getShader(program))
 			{
-				return error(GL_INVALID_OPERATION, -1);
+				return error(GL_INVALID_OPERATION), -1;
 			}
 			else
 			{
-				return error(GL_INVALID_VALUE, -1);
+				return error(GL_INVALID_VALUE), -1;
 			}
 		}
 
 		if(!programObject->isLinked())
 		{
-			return error(GL_INVALID_OPERATION, -1);
+			return error(GL_INVALID_OPERATION), -1;
 		}
 
 		return programObject->getUniformLocation(name);
@@ -4300,15 +4300,15 @@ GLboolean IsEnabled(GLenum cap)
 			{
 				return context->isPrimitiveRestartFixedIndexEnabled();
 			}
-			else return error(GL_INVALID_ENUM, false);
+			else return error(GL_INVALID_ENUM), false;
 		case GL_RASTERIZER_DISCARD:
 			if(clientVersion >= 3)
 			{
 				return context->isRasterizerDiscardEnabled();
 			}
-			else return error(GL_INVALID_ENUM, false);
+			else return error(GL_INVALID_ENUM), false;
 		default:
-			return error(GL_INVALID_ENUM, false);
+			return error(GL_INVALID_ENUM), false;
 		}
 	}
 
@@ -5015,7 +5015,7 @@ GLboolean TestFenceNV(GLuint fence)
 
 		if(!fenceObject)
 		{
-			return error(GL_INVALID_OPERATION, GL_TRUE);
+			return error(GL_INVALID_OPERATION), GL_TRUE;
 		}
 
 		return fenceObject->testFence();

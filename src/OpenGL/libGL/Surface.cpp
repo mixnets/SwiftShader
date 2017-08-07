@@ -125,7 +125,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 		{
 			ERR("Could not create frame buffer");
 			release();
-			return error(GL_OUT_OF_MEMORY, false);
+			return error(GL_OUT_OF_MEMORY), false;
 		}
 	}
 
@@ -135,7 +135,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 	{
 		ERR("Could not create back buffer");
 		release();
-		return error(GL_OUT_OF_MEMORY, false);
+		return error(GL_OUT_OF_MEMORY), false;
 	}
 
 	if(true)   // Always provide a depth/stencil buffer
@@ -146,7 +146,7 @@ bool Surface::reset(int backBufferWidth, int backBufferHeight)
 		{
 			ERR("Could not create depth/stencil buffer for surface");
 			release();
-			return error(GL_OUT_OF_MEMORY, false);
+			return error(GL_OUT_OF_MEMORY), false;
 		}
 	}
 

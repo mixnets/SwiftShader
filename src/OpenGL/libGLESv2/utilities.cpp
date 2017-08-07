@@ -780,11 +780,11 @@ namespace es2
 		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
 			if(clientVersion < 3)
 			{
-				return error(GL_INVALID_ENUM, false);
+				return error(GL_INVALID_ENUM), false;
 			}
 			break;
 		default:
-			return error(GL_INVALID_ENUM, false);
+			return error(GL_INVALID_ENUM), false;
 		}
 
 		switch(format)
@@ -806,18 +806,18 @@ namespace es2
 		case GL_RGBA_INTEGER:
 			if(clientVersion < 3)
 			{
-				return error(GL_INVALID_ENUM, false);
+				return error(GL_INVALID_ENUM), false;
 			}
 			break;
 		default:
-			return error(GL_INVALID_ENUM, false);
+			return error(GL_INVALID_ENUM), false;
 		}
 
 		if((GLenum)internalformat != format)
 		{
 			if(clientVersion < 3)
 			{
-				return error(GL_INVALID_OPERATION, false);
+				return error(GL_INVALID_OPERATION), false;
 			}
 
 			switch(internalformat)
@@ -880,7 +880,7 @@ namespace es2
 			case GL_RGB9_E5:
 				break;
 			default:
-				return error(GL_INVALID_ENUM, false);
+				return error(GL_INVALID_ENUM), false;
 			}
 		}
 
@@ -901,7 +901,7 @@ namespace es2
 			case GL_UNSIGNED_INT_2_10_10_10_REV: VALIDATE_INTERNALFORMAT(GL_RGB10_A2, GL_RGB5_A1)
 			case GL_HALF_FLOAT:                  VALIDATE_INTERNALFORMAT(GL_RGBA16F)
 			case GL_FLOAT:                       VALIDATE_INTERNALFORMAT(GL_RGBA32F, GL_RGBA16F)
-			default:                             return error(GL_INVALID_OPERATION, false);
+			default:                             return error(GL_INVALID_OPERATION), false;
 			}
 			break;
 		case GL_RGBA_INTEGER:
@@ -914,7 +914,7 @@ namespace es2
 			case GL_UNSIGNED_INT:                VALIDATE_INTERNALFORMAT(GL_RGBA32UI)
 			case GL_INT:                         VALIDATE_INTERNALFORMAT(GL_RGBA32I)
 			case GL_UNSIGNED_INT_2_10_10_10_REV: VALIDATE_INTERNALFORMAT(GL_RGB10_A2UI)
-			default:                             return error(GL_INVALID_OPERATION, false);
+			default:                             return error(GL_INVALID_OPERATION), false;
 			}
 			break;
 		case GL_RGB:
@@ -928,7 +928,7 @@ namespace es2
 			case GL_UNSIGNED_INT_5_9_9_9_REV:     VALIDATE_INTERNALFORMAT(GL_RGB9_E5)
 			case GL_HALF_FLOAT:                   VALIDATE_INTERNALFORMAT(GL_RGB16F, GL_R11F_G11F_B10F, GL_RGB9_E5)
 			case GL_FLOAT:                        VALIDATE_INTERNALFORMAT(GL_RGB32F, GL_RGB16F, GL_R11F_G11F_B10F, GL_RGB9_E5)
-			default:                              return error(GL_INVALID_OPERATION, false);
+			default:                              return error(GL_INVALID_OPERATION), false;
 			}
 			break;
 		case GL_RGB_INTEGER:
@@ -940,7 +940,7 @@ namespace es2
 			case GL_SHORT:                       VALIDATE_INTERNALFORMAT(GL_RGB16I)
 			case GL_UNSIGNED_INT:                VALIDATE_INTERNALFORMAT(GL_RGB32UI)
 			case GL_INT:                         VALIDATE_INTERNALFORMAT(GL_RGB32I)
-			default:                             return error(GL_INVALID_OPERATION, false);
+			default:                             return error(GL_INVALID_OPERATION), false;
 			}
 			break;
 		case GL_RG:
@@ -951,7 +951,7 @@ namespace es2
 			case GL_HALF_FLOAT_OES: break;
 			case GL_HALF_FLOAT:    VALIDATE_INTERNALFORMAT(GL_RG16F)
 			case GL_FLOAT:         VALIDATE_INTERNALFORMAT(GL_RG32F, GL_RG16F)
-			default:               return error(GL_INVALID_OPERATION, false);
+			default:               return error(GL_INVALID_OPERATION), false;
 			}
 			break;
 		case GL_RG_INTEGER:
@@ -963,7 +963,7 @@ namespace es2
 			case GL_SHORT:          VALIDATE_INTERNALFORMAT(GL_RG16I)
 			case GL_UNSIGNED_INT:   VALIDATE_INTERNALFORMAT(GL_RG32UI)
 			case GL_INT:            VALIDATE_INTERNALFORMAT(GL_RG32I)
-			default:                return error(GL_INVALID_OPERATION, false);
+			default:                return error(GL_INVALID_OPERATION), false;
 			}
 			break;
 		case GL_RED:
@@ -974,7 +974,7 @@ namespace es2
 			case GL_HALF_FLOAT_OES: break;
 			case GL_HALF_FLOAT:    VALIDATE_INTERNALFORMAT(GL_R16F)
 			case GL_FLOAT:         VALIDATE_INTERNALFORMAT(GL_R32F, GL_R16F)
-			default:               return error(GL_INVALID_OPERATION, false);
+			default:               return error(GL_INVALID_OPERATION), false;
 			}
 			break;
 		case GL_RED_INTEGER:
@@ -986,7 +986,7 @@ namespace es2
 			case GL_SHORT:          VALIDATE_INTERNALFORMAT(GL_R16I)
 			case GL_UNSIGNED_INT:   VALIDATE_INTERNALFORMAT(GL_R32UI)
 			case GL_INT:            VALIDATE_INTERNALFORMAT(GL_R32I)
-			default:                return error(GL_INVALID_OPERATION, false);
+			default:                return error(GL_INVALID_OPERATION), false;
 			}
 			break;
 		case GL_DEPTH_COMPONENT:
@@ -995,7 +995,7 @@ namespace es2
 			case GL_UNSIGNED_SHORT: VALIDATE_INTERNALFORMAT(GL_DEPTH_COMPONENT16)
 			case GL_UNSIGNED_INT:   VALIDATE_INTERNALFORMAT(GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT16)
 			case GL_FLOAT:          VALIDATE_INTERNALFORMAT(GL_DEPTH_COMPONENT32F)
-			default:                return error(GL_INVALID_OPERATION, false);
+			default:                return error(GL_INVALID_OPERATION), false;
 			}
 			break;
 		case GL_DEPTH_STENCIL:
@@ -1003,7 +1003,7 @@ namespace es2
 			{
 			case GL_UNSIGNED_INT_24_8:              VALIDATE_INTERNALFORMAT(GL_DEPTH24_STENCIL8)
 			case GL_FLOAT_32_UNSIGNED_INT_24_8_REV: VALIDATE_INTERNALFORMAT(GL_DEPTH32F_STENCIL8)
-			default:                                return error(GL_INVALID_OPERATION, false);
+			default:                                return error(GL_INVALID_OPERATION), false;
 			}
 			break;
 		case GL_LUMINANCE_ALPHA:
@@ -1016,25 +1016,25 @@ namespace es2
 			case GL_FLOAT:
 				break;
 			default:
-				return error(GL_INVALID_OPERATION, false);
+				return error(GL_INVALID_OPERATION), false;
 			}
 			break;
 		case GL_BGRA_EXT:
 			if(type != GL_UNSIGNED_BYTE)
 			{
-				return error(GL_INVALID_OPERATION, false);
+				return error(GL_INVALID_OPERATION), false;
 			}
 			break;
 		default:
 			UNREACHABLE(format);
-			return error(GL_INVALID_ENUM, false);
+			return error(GL_INVALID_ENUM), false;
 		}
 
 		#undef VALIDATE_INTERNALFORMAT
 
 		if((GLenum)internalformat != format && !validSizedInternalformat)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return error(GL_INVALID_OPERATION), false;
 		}
 
 		return true;

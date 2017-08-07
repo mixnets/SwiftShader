@@ -484,7 +484,7 @@ bool Texture::copy(egl::Image *source, const sw::SliceRect &sourceRect, GLenum d
 
 	if(!success)
 	{
-		return error(GL_OUT_OF_MEMORY, false);
+		return error(GL_OUT_OF_MEMORY), false;
 	}
 
 	return true;
@@ -926,7 +926,7 @@ Renderbuffer *Texture2D::getRenderbuffer(GLenum target, GLint level, GLint layer
 {
 	if(target != GL_TEXTURE_2D)
 	{
-		return error(GL_INVALID_OPERATION, (Renderbuffer*)nullptr);
+		return error(GL_INVALID_OPERATION), (Renderbuffer*)nullptr;
 	}
 
 	if(!mColorbufferProxy)
@@ -1407,7 +1407,7 @@ Renderbuffer *TextureCubeMap::getRenderbuffer(GLenum target, GLint level, GLint 
 {
 	if(!IsCubemapTextureTarget(target))
 	{
-		return error(GL_INVALID_OPERATION, (Renderbuffer*)nullptr);
+		return error(GL_INVALID_OPERATION), (Renderbuffer*)nullptr;
 	}
 
 	int face = CubeFaceIndex(target);
@@ -1849,7 +1849,7 @@ Renderbuffer *Texture3D::getRenderbuffer(GLenum target, GLint level, GLint layer
 {
 	if(target != getTarget())
 	{
-		return error(GL_INVALID_OPERATION, (Renderbuffer*)nullptr);
+		return error(GL_INVALID_OPERATION), (Renderbuffer*)nullptr;
 	}
 
 	if(!mColorbufferProxy)

@@ -2656,7 +2656,7 @@ bool Context::applyRenderTarget()
 
 	if(!framebuffer || framebuffer->completeness(width, height, samples) != GL_FRAMEBUFFER_COMPLETE)
 	{
-		return error(GL_INVALID_FRAMEBUFFER_OPERATION, false);
+		return error(GL_INVALID_FRAMEBUFFER_OPERATION), false;
 	}
 
 	for(int i = 0; i < MAX_DRAW_BUFFERS; i++)

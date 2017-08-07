@@ -53,22 +53,6 @@ namespace gl
 
 void error(GLenum errorCode);
 
-template<class T>
-T &error(GLenum errorCode, T &returnValue)
-{
-	error(errorCode);
-
-	return returnValue;
-}
-
-template<class T>
-const T &error(GLenum errorCode, const T &returnValue)
-{
-	error(errorCode);
-
-	return returnValue;
-}
-
 extern sw::FrameBuffer *createFrameBuffer(void *display, NativeWindowType window, int width, int height);
 
 #endif   // LIBGL_MAIN_H_
