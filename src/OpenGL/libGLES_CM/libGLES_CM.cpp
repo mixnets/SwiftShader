@@ -92,7 +92,7 @@ void ActiveTexture(GLenum texture)
 	{
 		if(texture < GL_TEXTURE0 || texture > GL_TEXTURE0 + es1::MAX_TEXTURE_UNITS - 1)
 		{
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, texture);
 		}
 
 		context->setActiveSampler(texture - GL_TEXTURE0);
@@ -115,7 +115,7 @@ void AlphaFunc(GLenum func, GLclampf ref)
 	case GL_NOTEQUAL:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, func);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -148,7 +148,7 @@ void BindBuffer(GLenum target, GLuint buffer)
 			context->bindElementArrayBuffer(buffer);
 			return;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 	}
 }
@@ -159,7 +159,7 @@ void BindFramebuffer(GLenum target, GLuint framebuffer)
 
 	if(target != GL_FRAMEBUFFER_OES)
 	{
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, target);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -176,7 +176,7 @@ void BindFramebufferOES(GLenum target, GLuint framebuffer)
 
 	if(target != GL_FRAMEBUFFER_OES)
 	{
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, target);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -193,7 +193,7 @@ void BindRenderbufferOES(GLenum target, GLuint renderbuffer)
 
 	if(target != GL_RENDERBUFFER_OES)
 	{
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, target);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -237,7 +237,7 @@ void BindTexture(GLenum target, GLuint texture)
 			context->bindTextureExternal(texture);
 			return;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 	}
 }
@@ -262,7 +262,7 @@ void BlendEquationSeparateOES(GLenum modeRGB, GLenum modeAlpha)
 	case GL_MAX_EXT:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, modeRGB);
 	}
 
 	switch(modeAlpha)
@@ -274,7 +274,7 @@ void BlendEquationSeparateOES(GLenum modeRGB, GLenum modeAlpha)
 	case GL_MAX_EXT:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, modeAlpha);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -312,7 +312,7 @@ void BlendFuncSeparateOES(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum 
 	case GL_SRC_ALPHA_SATURATE:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, srcRGB);
 	}
 
 	switch(dstRGB)
@@ -329,7 +329,7 @@ void BlendFuncSeparateOES(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum 
 	case GL_ONE_MINUS_DST_ALPHA:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, dstRGB);
 	}
 
 	switch(srcAlpha)
@@ -347,7 +347,7 @@ void BlendFuncSeparateOES(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum 
 	case GL_SRC_ALPHA_SATURATE:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, srcAlpha);
 	}
 
 	switch(dstAlpha)
@@ -364,7 +364,7 @@ void BlendFuncSeparateOES(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum 
 	case GL_ONE_MINUS_DST_ALPHA:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, dstAlpha);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -384,7 +384,7 @@ void BufferData(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage
 
 	if(size < 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, size);
 	}
 
 	switch(usage)
@@ -393,7 +393,7 @@ void BufferData(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage
 	case GL_DYNAMIC_DRAW:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, usage);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -411,7 +411,7 @@ void BufferData(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage
 			buffer = context->getElementArrayBuffer();
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		if(!buffer)
@@ -456,7 +456,7 @@ void BufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid
 			buffer = context->getElementArrayBuffer();
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		if(!buffer)
@@ -479,7 +479,7 @@ GLenum CheckFramebufferStatusOES(GLenum target)
 
 	if(target != GL_FRAMEBUFFER_OES)
 	{
-		return error(GL_INVALID_ENUM), 0;
+		return error(GL_INVALID_ENUM, target), 0;
 	}
 
 	es1::Context *context = es1::getContext();
@@ -500,7 +500,7 @@ void Clear(GLbitfield mask)
 
 	if((mask & ~(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)) != 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, mask);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -568,7 +568,7 @@ void ClientActiveTexture(GLenum texture)
 	case GL_TEXTURE1:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, texture);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -587,7 +587,7 @@ void ClipPlanef(GLenum plane, const GLfloat *equation)
 
 	if(index < 0 || index >= MAX_CLIP_PLANES)
 	{
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, index);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -654,12 +654,12 @@ void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normal
 
 	if(index >= es1::MAX_VERTEX_ATTRIBS)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, index);
 	}
 
 	if(size < 1 || size > 4)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, size);
 	}
 
 	switch(type)
@@ -672,12 +672,12 @@ void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normal
 	case GL_FLOAT:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, type);
 	}
 
 	if(stride < 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, stride);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -694,7 +694,7 @@ void ColorPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer
 
 	if(size != 4)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, size);
 	}
 
 	VertexAttribPointer(sw::Color0, size, type, true, stride, pointer);
@@ -709,7 +709,7 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 
 	if(level < 0 || level >= es1::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, level);
 	}
 
 	if(!validImageSize(level, width, height) || imageSize < 0)
@@ -725,7 +725,7 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 		if(!S3TC_SUPPORT)
 		{
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, internalformat);
 		}
 		break;
 	case GL_DEPTH_COMPONENT16_OES:
@@ -734,12 +734,12 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 	case GL_DEPTH24_STENCIL8_OES:
 		return error(GL_INVALID_OPERATION);
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, internalformat);
 	}
 
 	if(border != 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, border);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -756,7 +756,7 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 			}
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		if(imageSize != egl::ComputeCompressedSize(width, height, internalformat))
@@ -789,12 +789,12 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 
 	if(!es1::IsTextureTarget(target))
 	{
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, target);
 	}
 
 	if(level < 0 || level >= es1::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, level);
 	}
 
 	if(xoffset < 0 || yoffset < 0 || !validImageSize(level, width, height) || imageSize < 0)
@@ -810,11 +810,11 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 		if(!S3TC_SUPPORT)
 		{
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, format);
 		}
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, format);
 	}
 
 	if(width == 0 || height == 0 || !data)
@@ -863,7 +863,7 @@ void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, 
 
 	if(border != 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, border);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -880,7 +880,7 @@ void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, 
 			}
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		es1::Framebuffer *framebuffer = context->getFramebuffer();
@@ -944,10 +944,10 @@ void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, 
 			}
 			else
 			{
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, internalformat);
 			}
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, internalformat);
 		}
 
 		if(target == GL_TEXTURE_2D)
@@ -973,12 +973,12 @@ void CopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
 
 	if(!es1::IsTextureTarget(target))
 	{
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, target);
 	}
 
 	if(level < 0 || level >= es1::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, level);
 	}
 
 	if(xoffset < 0 || yoffset < 0 || width < 0 || height < 0)
@@ -1051,7 +1051,7 @@ void CullFace(GLenum mode)
 		}
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, mode);
 	}
 }
 
@@ -1061,7 +1061,7 @@ void DeleteBuffers(GLsizei n, const GLuint* buffers)
 
 	if(n < 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, n);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1081,7 +1081,7 @@ void DeleteFramebuffersOES(GLsizei n, const GLuint* framebuffers)
 
 	if(n < 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, n);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1104,7 +1104,7 @@ void DeleteRenderbuffersOES(GLsizei n, const GLuint* renderbuffers)
 
 	if(n < 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, n);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1124,7 +1124,7 @@ void DeleteTextures(GLsizei n, const GLuint* textures)
 
 	if(n < 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, n);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1157,7 +1157,7 @@ void DepthFunc(GLenum func)
 	case GL_NOTEQUAL:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, func);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1250,7 +1250,7 @@ void Disable(GLenum cap)
 		case GL_CLIP_PLANE5:              context->setClipPlaneEnabled(5, false);          break;
 		case GL_POINT_SPRITE_OES:         context->setPointSpriteEnabled(false);           break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, cap);
 		}
 	}
 }
@@ -1268,7 +1268,7 @@ void DisableClientState(GLenum array)
 	case GL_TEXTURE_COORD_ARRAY:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, array);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1313,7 +1313,7 @@ void DrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices
 
 	if(count < 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, count);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1327,7 +1327,7 @@ void DrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices
 		case GL_UNSIGNED_INT:
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, type);
 		}
 
 		context->drawElements(mode, count, type, indices);
@@ -1387,7 +1387,7 @@ void Enable(GLenum cap)
 		case GL_CLIP_PLANE5:              context->setClipPlaneEnabled(5, true);          break;
 		case GL_POINT_SPRITE_OES:         context->setPointSpriteEnabled(true);           break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, cap);
 		}
 	}
 }
@@ -1405,7 +1405,7 @@ void EnableClientState(GLenum array)
 	case GL_TEXTURE_COORD_ARRAY:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, array);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1484,7 +1484,7 @@ void FramebufferRenderbufferOES(GLenum target, GLenum attachment, GLenum renderb
 			framebuffer->setStencilbuffer(GL_RENDERBUFFER_OES, renderbuffer);
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, attachment);
 		}
 	}
 }
@@ -1496,7 +1496,7 @@ void FramebufferTexture2DOES(GLenum target, GLenum attachment, GLenum textarget,
 
 	if(target != GL_FRAMEBUFFER_OES)
 	{
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, target);
 	}
 
 	switch(attachment)
@@ -1506,7 +1506,7 @@ void FramebufferTexture2DOES(GLenum target, GLenum attachment, GLenum textarget,
 	case GL_STENCIL_ATTACHMENT_OES:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, attachment);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1535,12 +1535,12 @@ void FramebufferTexture2DOES(GLenum target, GLenum attachment, GLenum textarget,
 				}
 				break;
 			default:
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, textarget);
 			}
 
 			if(level != 0)
 			{
-				return error(GL_INVALID_VALUE);
+				return error(GL_INVALID_VALUE, level);
 			}
 
 			if(tex->isCompressed(textarget, level))
@@ -1719,7 +1719,7 @@ void FrontFace(GLenum mode)
 		}
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, mode);
 	}
 }
 
@@ -1761,7 +1761,7 @@ void GenerateMipmapOES(GLenum target)
 			texture = context->getTexture2D();
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		if(texture->isCompressed(target, 0) || texture->isDepth(target, 0))
@@ -1779,7 +1779,7 @@ void GenBuffers(GLsizei n, GLuint* buffers)
 
 	if(n < 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, n);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1799,7 +1799,7 @@ void GenFramebuffersOES(GLsizei n, GLuint* framebuffers)
 
 	if(n < 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, n);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1819,7 +1819,7 @@ void GenRenderbuffersOES(GLsizei n, GLuint* renderbuffers)
 
 	if(n < 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, n);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1839,7 +1839,7 @@ void GenTextures(GLsizei n, GLuint* textures)
 
 	if(n < 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, n);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -1863,7 +1863,7 @@ void GetRenderbufferParameterivOES(GLenum target, GLenum pname, GLint* params)
 	{
 		if(target != GL_RENDERBUFFER_OES)
 		{
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		if(context->getRenderbufferName() == 0)
@@ -1885,7 +1885,7 @@ void GetRenderbufferParameterivOES(GLenum target, GLenum pname, GLint* params)
 		case GL_RENDERBUFFER_DEPTH_SIZE_OES:      *params = renderbuffer->getDepthSize();   break;
 		case GL_RENDERBUFFER_STENCIL_SIZE_OES:    *params = renderbuffer->getStencilSize(); break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -1904,7 +1904,7 @@ void GetBooleanv(GLenum pname, GLboolean* params)
 
 			if(numParams < 0)
 			{
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, pname);
 			}
 
 			if(numParams == 0)
@@ -1970,7 +1970,7 @@ void GetBufferParameteriv(GLenum target, GLenum pname, GLint* params)
 			buffer = context->getElementArrayBuffer();
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		if(!buffer)
@@ -1988,7 +1988,7 @@ void GetBufferParameteriv(GLenum target, GLenum pname, GLint* params)
 			*params = (GLint)buffer->size();
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -2036,7 +2036,7 @@ void GetFloatv(GLenum pname, GLfloat* params)
 
 			if(numParams < 0)
 			{
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, pname);
 			}
 
 			if(numParams == 0)
@@ -2091,7 +2091,7 @@ void GetFramebufferAttachmentParameterivOES(GLenum target, GLenum attachment, GL
 	{
 		if(target != GL_FRAMEBUFFER_OES)
 		{
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		if(context->getFramebufferName() == 0)
@@ -2118,7 +2118,7 @@ void GetFramebufferAttachmentParameterivOES(GLenum target, GLenum attachment, GL
 			attachmentHandle = framebuffer->getStencilbufferName();
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, attachment);
 		}
 
 		GLenum attachmentObjectType;   // Type category
@@ -2144,7 +2144,7 @@ void GetFramebufferAttachmentParameterivOES(GLenum target, GLenum attachment, GL
 			}
 			else
 			{
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, attachmentObjectType);
 			}
 			break;
 		case GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL_OES:
@@ -2154,11 +2154,11 @@ void GetFramebufferAttachmentParameterivOES(GLenum target, GLenum attachment, GL
 			}
 			else
 			{
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, attachmentObjectType);
 			}
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -2177,7 +2177,7 @@ void GetIntegerv(GLenum pname, GLint* params)
 
 			if(numParams < 0)
 			{
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, pname);
 			}
 
 			if(numParams == 0)
@@ -2258,7 +2258,7 @@ void GetPointerv(GLenum pname, GLvoid **params)
 	{
 		if(!(context->getPointerv(pname, const_cast<const GLvoid**>(params))))
 		{
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -2308,7 +2308,7 @@ const GLubyte* GetString(GLenum name)
 			"GL_EXT_texture_filter_anisotropic "
 			"GL_EXT_texture_format_BGRA8888";
 	default:
-		return error(GL_INVALID_ENUM), (GLubyte*)nullptr;
+		return error(GL_INVALID_ENUM, name), (GLubyte*)nullptr;
 	}
 }
 
@@ -2331,7 +2331,7 @@ void GetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
 			texture = context->getTextureExternal();
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		switch(pname)
@@ -2358,7 +2358,7 @@ void GetTexParameterfv(GLenum target, GLenum pname, GLfloat* params)
 			*params = (GLfloat)1;
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -2382,7 +2382,7 @@ void GetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 			texture = context->getTextureExternal();
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		switch(pname)
@@ -2409,7 +2409,7 @@ void GetTexParameteriv(GLenum target, GLenum pname, GLint* params)
 			*params = 1;
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -2445,7 +2445,7 @@ void Hint(GLenum target, GLenum mode)
 	case GL_DONT_CARE:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, mode);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -2464,7 +2464,7 @@ void Hint(GLenum target, GLenum mode)
 			context->setFogHint(mode);
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 	}
 }
@@ -2541,7 +2541,7 @@ GLboolean IsEnabled(GLenum cap)
 		case GL_CLIP_PLANE5:              return context->isClipPlaneEnabled(5);            break;
 		case GL_POINT_SPRITE_OES:         return context->isPointSpriteEnabled();           break;
 		default:
-			return error(GL_INVALID_ENUM), GL_FALSE;
+			return error(GL_INVALID_ENUM, cap), GL_FALSE;
 		}
 	}
 
@@ -2619,9 +2619,9 @@ void LightModelf(GLenum pname, GLfloat param)
 			context->setLightModelTwoSide(param != 0.0f);
 			break;
 		case GL_LIGHT_MODEL_AMBIENT:
-			return error(GL_INVALID_ENUM);   // Need four values, should call glLightModelfv() instead
+			return error(GL_INVALID_ENUM, pname);   // Need four values, should call glLightModelfv() instead
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -2643,7 +2643,7 @@ void LightModelfv(GLenum pname, const GLfloat *params)
 			context->setLightModelTwoSide(params[0] != 0.0f);
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -2662,9 +2662,9 @@ void LightModelx(GLenum pname, GLfixed param)
 			context->setLightModelTwoSide(param != 0);
 			break;
 		case GL_LIGHT_MODEL_AMBIENT:
-			return error(GL_INVALID_ENUM);   // Need four values, should call glLightModelxv() instead
+			return error(GL_INVALID_ENUM, pname);   // Need four values, should call glLightModelxv() instead
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -2686,7 +2686,7 @@ void LightModelxv(GLenum pname, const GLfixed *params)
 			context->setLightModelTwoSide(params[0] != 0);
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -2699,7 +2699,7 @@ void Lightf(GLenum light, GLenum pname, GLfloat param)
 
 	if(index < 0 || index >= es1::MAX_LIGHTS)
 	{
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, index);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -2748,9 +2748,9 @@ void Lightf(GLenum light, GLenum pname, GLfloat param)
 		case GL_SPECULAR:
 		case GL_POSITION:
 		case GL_SPOT_DIRECTION:
-			return error(GL_INVALID_ENUM);   // Need four values, should call glLightfv() instead
+			return error(GL_INVALID_ENUM, pname);   // Need four values, should call glLightfv() instead
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -2767,7 +2767,7 @@ void Lightfv(GLenum light, GLenum pname, const GLfloat *params)
 
 		if(index < 0 || index > es1::MAX_LIGHTS)
 		{
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, index);
 		}
 
 		switch(pname)
@@ -2813,7 +2813,7 @@ void Lightfv(GLenum light, GLenum pname, const GLfloat *params)
 			context->setLightAttenuationQuadratic(index, params[0]);
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -2911,7 +2911,7 @@ void LogicOp(GLenum opcode)
 	case GL_OR_INVERTED:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, opcode);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -2928,7 +2928,7 @@ void Materialf(GLenum face, GLenum pname, GLfloat param)
 
 	if(face != GL_FRONT_AND_BACK)
 	{
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, face);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -2949,9 +2949,9 @@ void Materialf(GLenum face, GLenum pname, GLfloat param)
 		case GL_AMBIENT_AND_DIFFUSE:
 		case GL_SPECULAR:
 		case GL_EMISSION:
-			return error(GL_INVALID_ENUM);   // Need four values, should call glMaterialfv() instead
+			return error(GL_INVALID_ENUM, pname);   // Need four values, should call glMaterialfv() instead
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -2962,7 +2962,7 @@ void Materialfv(GLenum face, GLenum pname, const GLfloat *params)
 
 	if(face != GL_FRONT_AND_BACK)
 	{
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, face);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -2991,7 +2991,7 @@ void Materialfv(GLenum face, GLenum pname, const GLfloat *params)
 			context->setMaterialShininess(params[0]);
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -3053,7 +3053,7 @@ void MultiTexCoord4f(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q)
 	case GL_TEXTURE1:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, target);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -3128,7 +3128,7 @@ void PixelStorei(GLenum pname, GLint param)
 		case GL_UNPACK_ALIGNMENT:
 			if(param != 1 && param != 2 && param != 4 && param != 8)
 			{
-				return error(GL_INVALID_VALUE);
+				return error(GL_INVALID_VALUE, param);
 			}
 
 			context->setUnpackAlignment(param);
@@ -3136,13 +3136,13 @@ void PixelStorei(GLenum pname, GLint param)
 		case GL_PACK_ALIGNMENT:
 			if(param != 1 && param != 2 && param != 4 && param != 8)
 			{
-				return error(GL_INVALID_VALUE);
+				return error(GL_INVALID_VALUE, param);
 			}
 
 			context->setPackAlignment(param);
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -3179,9 +3179,9 @@ void PointParameterf(GLenum pname, GLfloat param)
 			context->setPointFadeThresholdSize(param);
 			break;
 		case GL_POINT_DISTANCE_ATTENUATION:
-			return error(GL_INVALID_ENUM);   // Needs three values, should call glPointParameterfv() instead
+			return error(GL_INVALID_ENUM, pname);   // Needs three values, should call glPointParameterfv() instead
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -3221,7 +3221,7 @@ void PointParameterfv(GLenum pname, const GLfloat *params)
 			context->setPointFadeThresholdSize(params[0]);
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -3258,9 +3258,9 @@ void PointParameterx(GLenum pname, GLfixed param)
 			context->setPointFadeThresholdSize((float)param / 0x10000);
 			break;
 		case GL_POINT_DISTANCE_ATTENUATION:
-			return error(GL_INVALID_ENUM);   // Needs three parameters, should call glPointParameterxv() instead
+			return error(GL_INVALID_ENUM, pname);   // Needs three parameters, should call glPointParameterxv() instead
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -3300,7 +3300,7 @@ void PointParameterxv(GLenum pname, const GLfixed *params)
 			context->setPointFadeThresholdSize((float)params[0] / 0x10000);
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -3332,7 +3332,7 @@ void PointSizePointerOES(GLenum type, GLsizei stride, const GLvoid *pointer)
 	case GL_FLOAT:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, type);
 	}
 
 	VertexAttribPointer(sw::PointSize, 1, type, true, stride, pointer);
@@ -3413,12 +3413,12 @@ void RenderbufferStorageOES(GLenum target, GLenum internalformat, GLsizei width,
 	case GL_RENDERBUFFER_OES:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, target);
 	}
 
 	if(!es1::IsColorRenderable(internalformat) && !es1::IsDepthRenderable(internalformat) && !es1::IsStencilRenderable(internalformat))
 	{
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, internalformat);
 	}
 
 	if(width < 0 || height < 0)
@@ -3461,7 +3461,7 @@ void RenderbufferStorageOES(GLenum target, GLenum internalformat, GLsizei width,
 			context->setRenderbufferStorage(new es1::DepthStencilbuffer(width, height, 0));
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, internalformat);
 		}
 	}
 }
@@ -3542,7 +3542,7 @@ void ShadeModel(GLenum mode)
 	case GL_SMOOTH:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, mode);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -3569,7 +3569,7 @@ void StencilFunc(GLenum func, GLint ref, GLuint mask)
 	case GL_NOTEQUAL:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, func);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -3608,7 +3608,7 @@ void StencilOp(GLenum fail, GLenum zfail, GLenum zpass)
 	case GL_DECR_WRAP_OES:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, fail);
 	}
 
 	switch(zfail)
@@ -3623,7 +3623,7 @@ void StencilOp(GLenum fail, GLenum zfail, GLenum zpass)
 	case GL_DECR_WRAP_OES:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, zfail);
 	}
 
 	switch(zpass)
@@ -3638,7 +3638,7 @@ void StencilOp(GLenum fail, GLenum zfail, GLenum zpass)
 	case GL_DECR_WRAP_OES:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, zpass);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -3655,7 +3655,7 @@ void TexCoordPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *poin
 
 	if(size < 2 || size > 4)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, size);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -3703,7 +3703,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_COMBINE:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setTextureEnvMode(iParam);
@@ -3724,7 +3724,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_DOT3_RGBA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setCombineRGB(iParam);
@@ -3740,7 +3740,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_SUBTRACT:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setCombineAlpha(iParam);
@@ -3748,14 +3748,14 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 			case GL_RGB_SCALE:
 				if(iParam != 1 && iParam != 2 && iParam != 4)
 				{
-					return error(GL_INVALID_VALUE);
+					return error(GL_INVALID_VALUE, iParam);
 				}
 				if(iParam != 1) UNIMPLEMENTED();
 				break;
 			case GL_ALPHA_SCALE:
 				if(iParam != 1 && iParam != 2 && iParam != 4)
 				{
-					return error(GL_INVALID_VALUE);
+					return error(GL_INVALID_VALUE, iParam);
 				}
 				if(iParam != 1) UNIMPLEMENTED();
 				break;
@@ -3768,7 +3768,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_ONE_MINUS_SRC_ALPHA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setOperand0RGB(iParam);
@@ -3782,7 +3782,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_ONE_MINUS_SRC_ALPHA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setOperand1RGB(iParam);
@@ -3796,7 +3796,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_ONE_MINUS_SRC_ALPHA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setOperand2RGB(iParam);
@@ -3808,7 +3808,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_ONE_MINUS_SRC_ALPHA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setOperand0Alpha(iParam);
@@ -3820,7 +3820,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_ONE_MINUS_SRC_ALPHA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setOperand1Alpha(iParam);
@@ -3832,7 +3832,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_ONE_MINUS_SRC_ALPHA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setOperand2Alpha(iParam);
@@ -3846,7 +3846,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_PREVIOUS:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setSrc0RGB(iParam);
@@ -3860,7 +3860,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_PREVIOUS:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setSrc1RGB(iParam);
@@ -3874,7 +3874,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_PREVIOUS:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setSrc2RGB(iParam);
@@ -3888,7 +3888,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_PREVIOUS:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setSrc0Alpha(iParam);
@@ -3902,7 +3902,7 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_PREVIOUS:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setSrc1Alpha(iParam);
@@ -3916,17 +3916,17 @@ void TexEnvfv(GLenum target, GLenum pname, const GLfloat *params)
 				case GL_PREVIOUS:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, iParam);
 				}
 
 				context->setSrc2Alpha(iParam);
 				break;
 			default:
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, pname);
 			}
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 	}
 }
@@ -3958,13 +3958,13 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_COMBINE:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setTextureEnvMode((GLenum)param);
 				break;
 			case GL_TEXTURE_ENV_COLOR:
-				return error(GL_INVALID_ENUM);   // Needs four values, should call glTexEnviv() instead
+				return error(GL_INVALID_ENUM, pname);   // Needs four values, should call glTexEnviv() instead
 				break;
 			case GL_COMBINE_RGB:
 				switch((GLenum)param)
@@ -3979,7 +3979,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_DOT3_RGBA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setCombineRGB((GLenum)param);
@@ -3995,7 +3995,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_SUBTRACT:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setCombineAlpha((GLenum)param);
@@ -4003,14 +4003,14 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 			case GL_RGB_SCALE:
 				if(param != 1 && param != 2 && param != 4)
 				{
-					return error(GL_INVALID_VALUE);
+					return error(GL_INVALID_VALUE, param);
 				}
 				if(param != 1) UNIMPLEMENTED();
 				break;
 			case GL_ALPHA_SCALE:
 				if(param != 1 && param != 2 && param != 4)
 				{
-					return error(GL_INVALID_VALUE);
+					return error(GL_INVALID_VALUE, param);
 				}
 				if(param != 1) UNIMPLEMENTED();
 				break;
@@ -4023,7 +4023,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_ONE_MINUS_SRC_ALPHA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setOperand0RGB((GLenum)param);
@@ -4037,7 +4037,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_ONE_MINUS_SRC_ALPHA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setOperand1RGB((GLenum)param);
@@ -4051,7 +4051,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_ONE_MINUS_SRC_ALPHA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setOperand2RGB((GLenum)param);
@@ -4063,7 +4063,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_ONE_MINUS_SRC_ALPHA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setOperand0Alpha((GLenum)param);
@@ -4075,7 +4075,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_ONE_MINUS_SRC_ALPHA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setOperand1Alpha((GLenum)param);
@@ -4087,7 +4087,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_ONE_MINUS_SRC_ALPHA:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setOperand2Alpha((GLenum)param);
@@ -4101,7 +4101,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_PREVIOUS:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setSrc0RGB((GLenum)param);
@@ -4115,7 +4115,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_PREVIOUS:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setSrc1RGB((GLenum)param);
@@ -4129,7 +4129,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_PREVIOUS:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setSrc2RGB((GLenum)param);
@@ -4143,7 +4143,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_PREVIOUS:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setSrc0Alpha((GLenum)param);
@@ -4157,7 +4157,7 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_PREVIOUS:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setSrc1Alpha((GLenum)param);
@@ -4171,17 +4171,17 @@ void TexEnvi(GLenum target, GLenum pname, GLint param)
 				case GL_PREVIOUS:
 					break;
 				default:
-					error(GL_INVALID_ENUM);
+					error(GL_INVALID_ENUM, param);
 				}
 
 				context->setSrc2Alpha((GLenum)param);
 				break;
 			default:
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, pname);
 			}
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 	}
 }
@@ -4229,7 +4229,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 		case GL_FLOAT:
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, type);
 		}
 		break;
 	case GL_RGB:
@@ -4240,7 +4240,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 		case GL_FLOAT:
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, type);
 		}
 		break;
 	case GL_RGBA:
@@ -4252,7 +4252,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 		case GL_FLOAT:
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, type);
 		}
 		break;
 	case GL_BGRA_EXT:
@@ -4261,7 +4261,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 		case GL_UNSIGNED_BYTE:
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, type);
 		}
 		break;
 	case GL_ETC1_RGB8_OES:
@@ -4274,7 +4274,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 		}
 		else
 		{
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, format);
 		}
 	case GL_DEPTH_STENCIL_OES:
 		switch(type)
@@ -4282,16 +4282,16 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 		case GL_UNSIGNED_INT_24_8_OES:
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, type);
 		}
 		break;
 	default:
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_ENUM, format);
 	}
 
 	if(border != 0)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, border);
 	}
 
 	es1::Context *context = es1::getContext();
@@ -4308,7 +4308,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 			}
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		if(target == GL_TEXTURE_2D)
@@ -4345,7 +4345,7 @@ void TexParameterf(GLenum target, GLenum pname, GLfloat param)
 			texture = context->getTextureExternal();
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		switch(pname)
@@ -4384,9 +4384,9 @@ void TexParameterf(GLenum target, GLenum pname, GLfloat param)
 			texture->setGenerateMipmap((GLboolean)param);
 			break;
 		case GL_TEXTURE_CROP_RECT_OES:
-			return error(GL_INVALID_ENUM);   // Needs four values, should call glTexParameterfv() instead
+			return error(GL_INVALID_ENUM, pname);   // Needs four values, should call glTexParameterfv() instead
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -4415,7 +4415,7 @@ void TexParameteri(GLenum target, GLenum pname, GLint param)
 			texture = context->getTextureExternal();
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		switch(pname)
@@ -4423,40 +4423,40 @@ void TexParameteri(GLenum target, GLenum pname, GLint param)
 		case GL_TEXTURE_WRAP_S:
 			if(!texture->setWrapS((GLenum)param))
 			{
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, param);
 			}
 			break;
 		case GL_TEXTURE_WRAP_T:
 			if(!texture->setWrapT((GLenum)param))
 			{
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, param);
 			}
 			break;
 		case GL_TEXTURE_MIN_FILTER:
 			if(!texture->setMinFilter((GLenum)param))
 			{
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, param);
 			}
 			break;
 		case GL_TEXTURE_MAG_FILTER:
 			if(!texture->setMagFilter((GLenum)param))
 			{
-				return error(GL_INVALID_ENUM);
+				return error(GL_INVALID_ENUM, param);
 			}
 			break;
 		case GL_TEXTURE_MAX_ANISOTROPY_EXT:
 			if(!texture->setMaxAnisotropy((GLfloat)param))
 			{
-				return error(GL_INVALID_VALUE);
+				return error(GL_INVALID_VALUE, param);
 			}
 			break;
 		case GL_GENERATE_MIPMAP:
 			texture->setGenerateMipmap((GLboolean)param);
 			break;
 		case GL_TEXTURE_CROP_RECT_OES:
-			return error(GL_INVALID_ENUM);   // Needs four values, should call glTexParameteriv() instead
+			return error(GL_INVALID_ENUM, pname);   // Needs four values, should call glTexParameteriv() instead
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -4485,7 +4485,7 @@ void TexParameteriv(GLenum target, GLenum pname, const GLint* params)
 			texture = context->getTexture2D();
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, target);
 		}
 
 		switch(pname)
@@ -4494,7 +4494,7 @@ void TexParameteriv(GLenum target, GLenum pname, const GLint* params)
 			texture->setCropRect(params[0], params[1], params[2], params[3]);
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			return error(GL_INVALID_ENUM, pname);
 		}
 	}
 }
@@ -4519,12 +4519,12 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 
 	if(!es1::IsTextureTarget(target))
 	{
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, target);
 	}
 
 	if(level < 0 || level >= es1::IMPLEMENTATION_MAX_TEXTURE_LEVELS)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, level);
 	}
 
 	if(xoffset < 0 || yoffset < 0 || width < 0 || height < 0)
@@ -4587,7 +4587,7 @@ void VertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointe
 
 	if(size < 2 || size > 4)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, size);
 	}
 
 	VertexAttribPointer(sw::Position, size, type, false, stride, pointer);
@@ -4620,7 +4620,7 @@ void EGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image)
 	case GL_TEXTURE_EXTERNAL_OES:
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, target);
 	}
 
 	es1::Context *context = es1::getContext();

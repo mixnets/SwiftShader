@@ -780,11 +780,11 @@ namespace es2
 		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
 			if(clientVersion < 3)
 			{
-				return error(GL_INVALID_ENUM), false;
+				return error(GL_INVALID_ENUM, type), false;
 			}
 			break;
 		default:
-			return error(GL_INVALID_ENUM), false;
+			return error(GL_INVALID_ENUM, type), false;
 		}
 
 		switch(format)
@@ -806,11 +806,11 @@ namespace es2
 		case GL_RGBA_INTEGER:
 			if(clientVersion < 3)
 			{
-				return error(GL_INVALID_ENUM), false;
+				return error(GL_INVALID_ENUM, format), false;
 			}
 			break;
 		default:
-			return error(GL_INVALID_ENUM), false;
+			return error(GL_INVALID_ENUM, format), false;
 		}
 
 		if((GLenum)internalformat != format)
@@ -880,7 +880,7 @@ namespace es2
 			case GL_RGB9_E5:
 				break;
 			default:
-				return error(GL_INVALID_ENUM), false;
+				return error(GL_INVALID_ENUM, internalformat), false;
 			}
 		}
 
@@ -1027,7 +1027,7 @@ namespace es2
 			break;
 		default:
 			UNREACHABLE(format);
-			return error(GL_INVALID_ENUM), false;
+			return error(GL_INVALID_ENUM, format), false;
 		}
 
 		#undef VALIDATE_INTERNALFORMAT

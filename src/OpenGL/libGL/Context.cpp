@@ -3227,7 +3227,7 @@ void Context::setShadeModel(GLenum mode)
 	{
 	case GL_FLAT:   device->setShadingMode(sw::SHADING_FLAT);    break;
 	case GL_SMOOTH: device->setShadingMode(sw::SHADING_GOURAUD); break;
-	default: return error(GL_INVALID_ENUM);
+	default: return error(GL_INVALID_ENUM, mode);
 	}
 }
 

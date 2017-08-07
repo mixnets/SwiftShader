@@ -45,7 +45,7 @@ void Fence::setFence(GLenum condition)
 {
 	if(condition != GL_ALL_COMPLETED_NV)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, condition);
 	}
 
 	mQuery = true;

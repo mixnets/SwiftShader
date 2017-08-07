@@ -23,7 +23,7 @@ namespace gl
 {
 
 Fence::Fence()
-{ 
+{
 	mQuery = false;
 	mCondition = GL_NONE;
 	mStatus = GL_FALSE;
@@ -45,7 +45,7 @@ void Fence::setFence(GLenum condition)
 {
 	if(condition != GL_ALL_COMPLETED_NV)
 	{
-		return error(GL_INVALID_VALUE);
+		return error(GL_INVALID_VALUE, condition);
 	}
 
 	mQuery = true;
@@ -103,14 +103,14 @@ void Fence::getFenceiv(GLenum pname, GLint *params)
 
 			mStatus = testFence();
 
-			params[0] = mStatus;            
+			params[0] = mStatus;
 			break;
 		}
 	case GL_FENCE_CONDITION_NV:
 		params[0] = mCondition;
 		break;
 	default:
-		return error(GL_INVALID_ENUM);
+		return error(GL_INVALID_ENUM, pname);
 		break;
 	}
 }
