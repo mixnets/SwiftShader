@@ -262,6 +262,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libVulkan", "src\Vulkan\libVulkan\libVulkan.vcxproj", "{BFA28BC7-6C6B-40E5-9DBE-76B591EEED20}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VulkanHelloTriangle", "tests\VulkanHelloTriangle\VulkanHelloTriangle.vcxproj", "{1BB3E164-4CE0-42B8-A11F-555FAB8256C9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BFA28BC7-6C6B-40E5-9DBE-76B591EEED20} = {BFA28BC7-6C6B-40E5-9DBE-76B591EEED20}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
