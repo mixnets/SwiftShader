@@ -67,7 +67,7 @@ namespace vulkan
 		void setScissorRect(const sw::Rect &rect);
 		void setVertexShader(sw::VertexShader *shader);
 		void setVertexShaderConstantF(unsigned int startRegister, const float *constantData, unsigned int count);
-		void setViewport(const Viewport &viewport);
+		void setViewport(const sw::Viewport &viewport);
 
 		bool stretchRect(sw::Surface *sourceSurface, const sw::SliceRect *sourceRect, sw::Surface *destSurface, const sw::SliceRect *destRect, unsigned char flags);
 		bool stretchCube(sw::Surface *sourceSurface, sw::Surface *destSurface);
@@ -84,7 +84,7 @@ namespace vulkan
 
 		void copyBuffer(sw::byte *sourceBuffer, sw::byte *destBuffer, unsigned int width, unsigned int height, unsigned int sourcePitch, unsigned int destPitch, unsigned int bytes, bool flipX, bool flipY);
 
-		Viewport viewport;
+		sw::Viewport viewport;
 		sw::Rect scissorRect;
 		bool scissorEnable;
 

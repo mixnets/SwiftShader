@@ -419,7 +419,7 @@ namespace vulkan
 		vertexShaderDirty = true;   // Reload DEF constants
 	}
 
-	void SwDevice::setViewport(const Viewport &viewport)
+	void SwDevice::setViewport(const sw::Viewport &viewport)
 	{
 		this->viewport = viewport;
 	}

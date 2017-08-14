@@ -44,7 +44,7 @@ namespace vulkan
    struct __type *__name = __type ## _from_handle(__handle)
 
 
-	DEFINE_HANDLE_CASTS(Instance, VkInstance)
+		DEFINE_HANDLE_CASTS(Instance, VkInstance)
 		DEFINE_HANDLE_CASTS(PhysicalDevice, VkPhysicalDevice)
 		DEFINE_HANDLE_CASTS(Device, VkDevice)
 		DEFINE_HANDLE_CASTS(Queue, VkQueue)
