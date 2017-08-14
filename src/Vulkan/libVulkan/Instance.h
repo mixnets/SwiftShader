@@ -23,6 +23,7 @@
 #include "RenderPass.h"
 #include "Pipeline.h"
 #include "Commands.h"
+#include "Device.hpp"
 
 namespace vulkan
 {
@@ -79,6 +80,7 @@ namespace vulkan
 		struct Instance *instance;
 		VkAllocationCallbacks alloc;
 		struct Queue queue;
+		SwDevice *swiftshaderDevice;
 	};
 
 	struct Sampler
