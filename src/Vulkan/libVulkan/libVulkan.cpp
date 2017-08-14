@@ -694,6 +694,9 @@ namespace vulkan
 		{
 			myBuf->offset = 0;
 		}
+
+		myBuf->mem = devMem;
+
 		return VK_SUCCESS;
 	}
 
@@ -799,6 +802,9 @@ namespace vulkan
 		{
 			myImage->offset = 0;
 		}
+
+		myImage->mem = mem;
+
 		return VK_SUCCESS;
 	}
 
@@ -1200,6 +1206,57 @@ namespace vulkan
 
 		// Get our command buffer to get access to our iterator to iterate over the commands
 		GET_FROM_HANDLE(CommandBuffer, cmdBuf, *pSubmits->pCommandBuffers);
+
+		Device *device = myQueue->device;
+
+		backend::Command type;
+		while (cmdBuf->cmdIterator->NextCommandId(&type)) {
+			switch (type) {
+
+			case backend::Command::BeginRenderPass:
+			{
+				backend::BeginRenderPassCmd* cmd = cmdBuf->cmdIterator->NextCommand<backend::BeginRenderPassCmd>();
+			}
+			break;
+
+			case backend::Command::CopyImageBuffer:
+			{
+				backend::CopyImageToBufferCmd *cpy = cmdBuf->cmdIterator->NextCommand<backend::CopyImageToBufferCmd>();
+				void *pixelBuf = cpy->dstBuffer->mem->map;
+
+				sw::Surface surface(256, 256, 1, sw::Format::FORMAT_A8B8G8R8, pixelBuf, 256 * 4, 256 * 256 * 4);
+				sw::SliceRect rect(0, 0, 256, 256, 0);
+				int color = 0xFFFF00FF;
+
+				device->swiftshaderDevice.clear(&color, sw::Format::FORMAT_A8B8G8R8, &surface, rect, 0xF);
+			}
+			break;
+
+			case backend::Command::DrawArrays:
+			{
+				cmdBuf->cmdIterator->NextCommand<backend::DrawArraysCmd>();
+			}
+			break;
+
+			case backend::Command::EndRenderPass:
+			{
+				cmdBuf->cmdIterator->NextCommand<backend::EndRenderPassCmd>();
+			}
+			break;
+
+			case backend::Command::SetPipeline:
+			{
+				cmdBuf->cmdIterator->NextCommand<backend::SetRenderPipelineCmd>();
+			}
+			break;
+
+			case backend::Command::SetVertex:
+			{
+				cmdBuf->cmdIterator->NextCommand<backend::SetVertexBufferCmd>();
+			}
+			break;
+			}
+		}
 
 		return VK_SUCCESS;
 	}

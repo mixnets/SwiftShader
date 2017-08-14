@@ -12,6 +12,7 @@ namespace vulkan
 		VkDeviceSize size;
 		VkBufferUsageFlags usage;
 		VkDeviceSize offset;
+		struct DeviceMemory *mem;
 	};
 
 	struct VertexBinding
