@@ -44,7 +44,7 @@ namespace vulkan
    struct __type *__name = __type ## _from_handle(__handle)
 
 
-	DEFINE_HANDLE_CASTS(Instance, VkInstance)
+		DEFINE_HANDLE_CASTS(Instance, VkInstance)
 		DEFINE_HANDLE_CASTS(PhysicalDevice, VkPhysicalDevice)
 		DEFINE_HANDLE_CASTS(Device, VkDevice)
 		DEFINE_HANDLE_CASTS(Queue, VkQueue)
@@ -64,6 +64,12 @@ namespace vulkan
 		DEFINE_NONDISP_HANDLE_CASTS(CommandPool, VkCommandPool)
 		DEFINE_NONDISP_HANDLE_CASTS(Fence, VkFence)
 		DEFINE_NONDISP_HANDLE_CASTS(Semaphore, VkSemaphore)
+		DEFINE_NONDISP_HANDLE_CASTS(Event, VkEvent)
+		DEFINE_NONDISP_HANDLE_CASTS(QueryPool, VkQueryPool)
+		DEFINE_NONDISP_HANDLE_CASTS(PipelineCache, VkPipelineCache)
+		DEFINE_NONDISP_HANDLE_CASTS(DescriptorSetLayout, VkDescriptorSetLayout)
+		DEFINE_NONDISP_HANDLE_CASTS(DescriptorPool, VkDescriptorPool)
+		DEFINE_NONDISP_HANDLE_CASTS(DescriptorSet, VkDescriptorSet)
 }
 
 
