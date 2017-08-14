@@ -5,6 +5,7 @@
 #include "CommandAllocator.h"
 #include "Device.hpp"
 #include "Renderer/Context.hpp"
+#include "Common/Resource.hpp"
 
 
 namespace vulkan
@@ -694,6 +695,9 @@ namespace vulkan
 		{
 			myBuf->offset = 0;
 		}
+
+		myBuf->mem = devMem;
+
 		return VK_SUCCESS;
 	}
 
@@ -799,6 +803,9 @@ namespace vulkan
 		{
 			myImage->offset = 0;
 		}
+
+		myImage->mem = mem;
+
 		return VK_SUCCESS;
 	}
 
@@ -1200,6 +1207,76 @@ namespace vulkan
 
 		// Get our command buffer to get access to our iterator to iterate over the commands
 		GET_FROM_HANDLE(CommandBuffer, cmdBuf, *pSubmits->pCommandBuffers);
+
+		Device *device = myQueue->device;
+		sw::Context context;
+		device->swiftshaderDevice = new SwDevice(&context);
+
+		backend::Command type;
+		while (cmdBuf->cmdIterator->NextCommandId(&type)) {
+			switch (type) {
+
+			case backend::Command::BeginRenderPass:
+			{
+				backend::BeginRenderPassCmd* cmd = cmdBuf->cmdIterator->NextCommand<backend::BeginRenderPassCmd>();
+			}
+			break;
+
+			case backend::Command::CopyImageBuffer:
+			{
+				backend::CopyImageToBufferCmd *cpy = cmdBuf->cmdIterator->NextCommand<backend::CopyImageToBufferCmd>();
+				void *pixelBuf = cpy->dstBuffer->mem->map;
+				int width = cpy->srcImage->extent.width;
+				int height = cpy->srcImage->extent.height;
+				int depth = cpy->srcImage->extent.depth;
+
+				sw::Surface surface(width, height, depth, sw::Format::FORMAT_A8B8G8R8, pixelBuf, width * 4, width * height * 4);
+				sw::SliceRect rect(0, 0, width, height, 0);
+				int color = 0xFFFF00FF;
+
+				device->swiftshaderDevice->clear(&color, sw::Format::FORMAT_A8B8G8R8, &surface, rect, 0xF);
+			}
+			break;
+
+			case backend::Command::DrawArrays:
+			{
+				backend::DrawArraysCmd *draw = cmdBuf->cmdIterator->NextCommand<backend::DrawArraysCmd>();
+			}
+			break;
+
+			case backend::Command::EndRenderPass:
+			{
+				cmdBuf->cmdIterator->NextCommand<backend::EndRenderPassCmd>();
+			}
+			break;
+
+			case backend::Command::SetPipeline:
+			{
+				cmdBuf->cmdIterator->NextCommand<backend::SetRenderPipelineCmd>();
+			}
+			break;
+
+			case backend::Command::SetVertex:
+			{
+				backend::SetVertexBufferCmd *setVert = cmdBuf->cmdIterator->NextCommand<backend::SetVertexBufferCmd>();
+				sw::Resource *resource = new sw::Resource(0);
+
+				const void *buffer = (char*)setVert->buffer->mem->map + setVert->offset;
+
+				sw::Stream attribute(resource, buffer);
+
+				attribute.type = sw::StreamType::STREAMTYPE_INDICES;
+				attribute.count = 1;
+				attribute.normalized = true;
+
+				int stream = 0;
+				device->swiftshaderDevice->setInputStream(stream, attribute);
+
+				resource->destruct();
+			}
+			break;
+			}
+		}
 
 		return VK_SUCCESS;
 	}
