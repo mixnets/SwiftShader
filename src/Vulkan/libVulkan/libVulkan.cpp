@@ -9,11 +9,6 @@
 
 namespace vulkan
 {
-	struct BufferView // Implementation specific
-	{
-		const VkBufferViewCreateInfo* createInfo;
-	};
-
 	constexpr uint32_t globalExtSize = sizeof(global_ext) / sizeof(global_ext[0]);
 	constexpr uint32_t deviceExtSize = sizeof(device_extensions) / sizeof(device_extensions[0]);
 
@@ -30,7 +25,7 @@ namespace vulkan
 		}
 		else
 		{
-			object = new (pAllocator->pfnAllocation(myDevice, sizeof(T), ALIGNMENT, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT)) T;
+			object = new (pAllocator->pfnAllocation(pAllocator->pUserData, sizeof(T), ALIGNMENT, VK_SYSTEM_ALLOCATION_SCOPE_OBJECT)) T;
 		}
 
 		return object;
@@ -53,7 +48,7 @@ namespace vulkan
 		}
 		else
 		{
-			pAllocator->pfnFree(myDevice, myObject);
+			pAllocator->pfnFree(pAllocator->pUserData, myObject);
 		}
 	}
 
@@ -141,7 +136,7 @@ namespace vulkan
 		}
 		else
 		{
-			instance = reinterpret_cast<vulkan::Instance *>(pAllocator->pfnAllocation(nullptr, sizeof(*instance), ALIGNMENT, VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE));
+			instance = reinterpret_cast<vulkan::Instance *>(pAllocator->pfnAllocation(pAllocator->pUserData, sizeof(*instance), ALIGNMENT, VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE));
 		}
 
 		if (instance == NULL)
@@ -205,7 +200,7 @@ namespace vulkan
 				delete myInstance->physicalDevice;
 			}
 
-			pAllocator->pfnFree(instance, instance);
+			pAllocator->pfnFree(pAllocator->pUserData, instance);
 		}
 	}
 
@@ -477,7 +472,7 @@ namespace vulkan
 		}
 		else
 		{
-			device = reinterpret_cast<Device *>(pAllocator->pfnAllocation(physDevice, sizeof(*device), ALIGNMENT, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE));
+			device = reinterpret_cast<Device *>(pAllocator->pfnAllocation(pAllocator->pUserData, sizeof(*device), ALIGNMENT, VK_SYSTEM_ALLOCATION_SCOPE_DEVICE));
 		}
 
 		if (device == NULL)
@@ -594,9 +589,20 @@ namespace vulkan
 
 	VkResult CreateBufferView(VkDevice device, const VkBufferViewCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkBufferView* pView)
 	{
+		assert(pCreateInfo->sType == VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO);
+
 		BufferView* bufferView = AllocateObject<BufferView>(device, pAllocator);
 
-		bufferView->createInfo = pCreateInfo;
+		if(bufferView == NULL)
+		{
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+
+		bufferView->flags = pCreateInfo->flags;
+		bufferView->buffer = pCreateInfo->buffer;
+		bufferView->format = pCreateInfo->format;
+		bufferView->offset = pCreateInfo->offset;
+		bufferView->range = pCreateInfo->range;
 
 		*pView = BufferView_to_handle(bufferView);
 
@@ -782,7 +788,7 @@ namespace vulkan
 		}
 		else
 		{
-			pAllocator->pfnFree(nullptr, mem);
+			pAllocator->pfnFree(pAllocator->pUserData, mem);
 		}
 	}
 
@@ -842,7 +848,7 @@ namespace vulkan
 		else
 		{
 			free(render->attachments);
-			pAllocator->pfnFree(nullptr, render);
+			pAllocator->pfnFree(pAllocator->pUserData, render);
 		}
 	}
 
@@ -898,12 +904,16 @@ namespace vulkan
 	VkResult CreateGraphicsPipelines(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkGraphicsPipelineCreateInfo * pCreateInfos, const VkAllocationCallbacks * pAllocator, VkPipeline * pPipelines)
 	{
 		GET_FROM_HANDLE(Device, myDevice, device);
+		GET_FROM_HANDLE(PipelineCache, myPipelineCache, pipelineCache); // FIXME: use pipeline cache when available
 
-		// We do not yet support pipelineCache being enabled.
-		assert(pipelineCache == NULL);
 		assert(pCreateInfos->sType == VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO);
 
 		Pipeline *pipeline = AllocateObject<Pipeline>(device, pAllocator);
+
+		if(pipeline == NULL)
+		{
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
 
 		memset(pipeline, 0, sizeof(*pipeline));
 		pipeline->device = myDevice;
@@ -922,6 +932,50 @@ namespace vulkan
 		// Rather, we hard code the shaders for now.
 
 		*pPipelines = Pipeline_to_handle(pipeline);
+
+		return VK_SUCCESS;
+	}
+
+	VkResult CreateComputePipelines(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkComputePipelineCreateInfo* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines)
+	{
+		GET_FROM_HANDLE(Device, myDevice, device);
+		GET_FROM_HANDLE(PipelineCache, myPipelineCache, pipelineCache); // FIXME: use pipeline cache when available
+
+		assert(pCreateInfos->sType == VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO);
+
+		for(uint32_t i = 0; i < createInfoCount; ++i)
+		{
+			Pipeline *pipeline = AllocateObject<Pipeline>(device, pAllocator);
+
+			if(pipeline == NULL)
+			{
+				return VK_ERROR_OUT_OF_HOST_MEMORY;
+			}
+
+			if(pCreateInfos[i].flags & VK_PIPELINE_CREATE_DERIVATIVE_BIT)
+			{
+				if(pCreateInfos[i].basePipelineIndex == -1)
+				{
+					assert(pCreateInfos[i].basePipelineHandle == VK_NULL_HANDLE);
+					GET_FROM_HANDLE(Pipeline, basePipeline, pCreateInfos[i].basePipelineHandle);
+					memcpy(pipeline, basePipeline, sizeof(Pipeline));
+				}
+				else
+				{
+					assert(pCreateInfos[i].basePipelineIndex < (int32_t)i);
+					GET_FROM_HANDLE(Pipeline, basePipeline, pPipelines[pCreateInfos[i].basePipelineIndex]);
+					memcpy(pipeline, basePipeline, sizeof(Pipeline));
+				}
+			}
+			else
+			{
+				memset(pipeline, 0, sizeof(*pipeline));
+				pipeline->device = myDevice;
+				pipeline->layout = PipelineLayout_from_handle(pCreateInfos[i].layout);
+			}
+
+			pPipelines[i] = Pipeline_to_handle(pipeline);
+		}
 
 		return VK_SUCCESS;
 	}
@@ -1037,6 +1091,44 @@ namespace vulkan
 		assert(pBeginInfo->sType == VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
 
 		// Start recording
+
+		return VK_SUCCESS;
+	}
+
+	VkResult AllocateDescriptorSets(VkDevice device, const VkDescriptorSetAllocateInfo* pAllocateInfo, VkDescriptorSet* pDescriptorSets)
+	{
+		GET_FROM_HANDLE(Device, myDevice, device);
+		GET_FROM_HANDLE(DescriptorPool, myDescriptorPool, pAllocateInfo->descriptorPool); // FIXME: descriptor pool is ignored
+
+		assert(pAllocateInfo->sType == VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO);
+
+		for(uint32_t i = 0; i < pAllocateInfo->descriptorSetCount; ++i)
+		{
+			DescriptorSet *descriptorSet = AllocateObject<DescriptorSet>(device, nullptr);
+
+			if(descriptorSet == NULL)
+			{
+				return VK_ERROR_OUT_OF_HOST_MEMORY;
+			}
+
+			descriptorSet->pSetLayouts = pAllocateInfo->pSetLayouts;
+
+			pDescriptorSets[i] = DescriptorSet_to_handle(descriptorSet);
+		}
+
+		return VK_SUCCESS;
+	}
+
+	VkResult FreeDescriptorSets(VkDevice device, VkDescriptorPool descriptorPool, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets)
+	{
+		GET_FROM_HANDLE(Device, myDevice, device);
+		GET_FROM_HANDLE(DescriptorPool, myDescriptorPool, descriptorPool); // FIXME: descriptor pool is ignored
+
+		for(uint32_t i = 0; i < descriptorSetCount; ++i)
+		{
+			GET_FROM_HANDLE(DescriptorSet, myDescriptorSet, pDescriptorSets[i]);
+			DestroyObject(device, myDescriptorSet, nullptr);
+		}
 
 		return VK_SUCCESS;
 	}
@@ -1163,6 +1255,11 @@ namespace vulkan
 
 		Fence *fence = AllocateObject<Fence>(device, pAllocator);
 
+		if(fence == NULL)
+		{
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+
 		fence->submitted = false;
 
 		*pFence = Fence_to_handle(fence);
@@ -1176,7 +1273,11 @@ namespace vulkan
 
 		Semaphore *semaphore = AllocateObject<Semaphore>(device, pAllocator);
 
-		semaphore->sType = pCreateInfo->sType;
+		if(semaphore == NULL)
+		{
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+
 		semaphore->flags = pCreateInfo->flags;
 
 		*pSemaphore = Semaphore_to_handle(semaphore);
@@ -1187,6 +1288,131 @@ namespace vulkan
 	void DestroySemaphore(VkDevice device, VkSemaphore semaphore, const VkAllocationCallbacks* pAllocator)
 	{
 		DestroyObject(device, semaphore, pAllocator);
+	}
+
+	VkResult CreateAnEvent(VkDevice device, const VkEventCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkEvent* pEvent)
+	{
+		assert(pCreateInfo->sType == VK_STRUCTURE_TYPE_EVENT_CREATE_INFO);
+
+		Event *ev = AllocateObject<Event>(device, pAllocator);
+
+		if(ev == NULL)
+		{
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+
+		ev->flags = pCreateInfo->flags;
+
+		*pEvent = Event_to_handle(ev);
+
+		return VK_SUCCESS;
+	}
+
+	void DestroyEvent(VkDevice device, VkEvent event, const VkAllocationCallbacks* pAllocator)
+	{
+		DestroyObject(device, event, pAllocator);
+	}
+
+	VkResult CreateQueryPool(VkDevice device, const VkQueryPoolCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkQueryPool* pQueryPool)
+	{
+		assert(pCreateInfo->sType == VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO);
+
+		QueryPool *queryPool = AllocateObject<QueryPool>(device, pAllocator);
+
+		if(queryPool == NULL)
+		{
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+
+		queryPool->flags = pCreateInfo->flags;
+		queryPool->queryType = pCreateInfo->queryType;
+		queryPool->queryCount = pCreateInfo->queryCount;
+		queryPool->pipelineStatistics = pCreateInfo->pipelineStatistics;
+
+		*pQueryPool = QueryPool_to_handle(queryPool);
+
+		return VK_SUCCESS;
+	}
+
+	void DestroyQueryPool(VkDevice device, VkQueryPool queryPool, const VkAllocationCallbacks* pAllocator)
+	{
+		DestroyObject(device, queryPool, pAllocator);
+	}
+
+	VkResult CreatePipelineCache(VkDevice device, const VkPipelineCacheCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkPipelineCache* pPipelineCache)
+	{
+		assert(pCreateInfo->sType == VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO);
+
+		PipelineCache *pipelineCache = AllocateObject<PipelineCache>(device, pAllocator);
+
+		if(pipelineCache == NULL)
+		{
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+
+		pipelineCache->flags = pCreateInfo->flags;
+		pipelineCache->initialDataSize = pCreateInfo->initialDataSize;
+		pipelineCache->pInitialData = pCreateInfo->pInitialData;
+
+		*pPipelineCache = PipelineCache_to_handle(pipelineCache);
+
+		return VK_SUCCESS;
+	}
+
+	void DestroyPipelineCache(VkDevice device, VkPipelineCache pipelineCache, const VkAllocationCallbacks* pAllocator)
+	{
+		DestroyObject(device, pipelineCache, pAllocator);
+	}
+
+	VkResult CreateDescriptorSetLayout(VkDevice device, const VkDescriptorSetLayoutCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDescriptorSetLayout* pSetLayout)
+	{
+		assert(pCreateInfo->sType == VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO);
+
+		DescriptorSetLayout *descriptorSetLayout = AllocateObject<DescriptorSetLayout>(device, pAllocator);
+
+		if(descriptorSetLayout == NULL)
+		{
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+
+		descriptorSetLayout->flags = pCreateInfo->flags;
+		descriptorSetLayout->bindingCount = pCreateInfo->bindingCount;
+		descriptorSetLayout->pBindings = pCreateInfo->pBindings;
+
+		*pSetLayout = DescriptorSetLayout_to_handle(descriptorSetLayout);
+
+		return VK_SUCCESS;
+	}
+
+	void DestroyDescriptorSetLayout(VkDevice device, VkDescriptorSetLayout descriptorSetLayout, const VkAllocationCallbacks* pAllocator)
+	{
+		DestroyObject(device, descriptorSetLayout, pAllocator);
+	}
+
+	VkResult CreateDescriptorPool(VkDevice device, const VkDescriptorPoolCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDescriptorPool* pDescriptorPool)
+	{
+		assert(pCreateInfo->sType == VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO);
+
+		DescriptorPool *descriptorPool = AllocateObject<DescriptorPool>(device, pAllocator);
+
+		if(descriptorPool == NULL)
+		{
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+
+		descriptorPool->flags = pCreateInfo->flags;
+		descriptorPool->maxSets = pCreateInfo->maxSets;
+		descriptorPool->poolSizeCount = pCreateInfo->poolSizeCount;
+		descriptorPool->pPoolSizes = pCreateInfo->pPoolSizes;
+
+		*pDescriptorPool = DescriptorPool_to_handle(descriptorPool);
+
+		return VK_SUCCESS;
+	}
+
+	void DestroyDescriptorPool(VkDevice device, VkDescriptorPool descriptorPool, const VkAllocationCallbacks* pAllocator)
+	{
+		DestroyObject(device, descriptorPool, pAllocator);
 	}
 
 	VkResult QueueSubmit(VkQueue queue, uint32_t submitCount, const VkSubmitInfo * pSubmits, VkFence fence)
@@ -1215,7 +1441,7 @@ namespace vulkan
 
 		else
 		{
-			pAllocator->pfnFree(nullptr, myDevice);
+			pAllocator->pfnFree(pAllocator->pUserData, myDevice);
 		}
 	}
 
@@ -1238,6 +1464,4 @@ namespace vulkan
 		assert(memoryRangeCount == 1);
 		return VK_SUCCESS;
 	}
-
-
 }

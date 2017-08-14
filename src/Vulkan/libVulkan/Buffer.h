@@ -14,6 +14,15 @@ namespace vulkan
 		VkDeviceSize offset;
 	};
 
+	struct BufferView
+	{
+		VkBufferViewCreateFlags    flags;
+		VkBuffer                   buffer;
+		VkFormat                   format;
+		VkDeviceSize               offset;
+		VkDeviceSize               range;
+	};
+
 	struct VertexBinding
 	{
 		Buffer buffer;
@@ -65,8 +74,46 @@ namespace vulkan
 
 	struct Semaphore
 	{
-		VkStructureType sType;
 		VkSemaphoreCreateFlags flags;
+	};
+
+	struct Event
+	{
+		VkEventCreateFlags flags;
+	};
+
+	struct QueryPool
+	{
+		VkQueryPoolCreateFlags           flags;
+		VkQueryType                      queryType;
+		uint32_t                         queryCount;
+		VkQueryPipelineStatisticFlags    pipelineStatistics;
+	};
+
+	struct PipelineCache
+	{
+		VkPipelineCacheCreateFlags    flags;
+		size_t                        initialDataSize;
+		const void*                   pInitialData;
+	};
+
+	struct DescriptorSetLayout
+	{
+		VkDescriptorSetLayoutCreateFlags       flags;
+		uint32_t                               bindingCount;
+		const VkDescriptorSetLayoutBinding*    pBindings;
+	};
+
+	struct DescriptorPool {
+		VkDescriptorPoolCreateFlags    flags;
+		uint32_t                       maxSets;
+		uint32_t                       poolSizeCount;
+		const VkDescriptorPoolSize*    pPoolSizes;
+	};
+
+	struct DescriptorSet
+	{
+		const VkDescriptorSetLayout*    pSetLayouts;
 	};
 }
 #endif
