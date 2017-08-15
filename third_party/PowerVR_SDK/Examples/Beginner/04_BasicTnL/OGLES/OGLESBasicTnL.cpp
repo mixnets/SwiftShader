@@ -217,7 +217,7 @@ bool OGLESBasicTnL::RenderScene()
 	glLoadMatrixf(aModelView);
 
 	// Increments the angle of the view
-	m_fAngle += .02f;
+	m_fAngle += .0002f;
 
 	/*
 		Draw a triangle.

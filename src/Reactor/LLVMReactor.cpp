@@ -5578,6 +5578,11 @@ namespace sw
 		}
 	}
 
+	RValue<UInt> Extract(RValue<UInt4> x, int i)
+	{
+		return RValue<UInt>(Nucleus::createExtractElement(x.value, UInt::getType(), i));
+	}
+
 	RValue<UShort8> Pack(RValue<UInt4> x, RValue<UInt4> y)
 	{
 		return x86::packusdw(As<Int4>(x), As<Int4>(y));
