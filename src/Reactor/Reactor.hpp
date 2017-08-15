@@ -18,6 +18,7 @@
 #include "Nucleus.hpp"
 #include "Routine.hpp"
 
+#include <assert.h>
 #include <cstddef>
 #include <cwchar>
 #undef Bool
@@ -1535,6 +1536,7 @@ namespace sw
 	{
 	public:
 		explicit Float(RValue<Int> cast);
+		explicit Float(RValue<UInt> cast);
 
 		Float() = default;
 		Float(float x);
@@ -2305,6 +2307,8 @@ namespace sw
 	template<class T>
 	RValue<T>::RValue(Value *rvalue)
 	{
+		assert(Nucleus::createBitCast(rvalue, T::getType()) == rvalue);   // Run-time type should match T, so bitcast is no-op.
+
 		value = rvalue;
 	}
 
