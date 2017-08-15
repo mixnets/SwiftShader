@@ -87,7 +87,7 @@ namespace sw
 		{
 			state.textureType = textureType;
 			state.textureFormat = internalTextureFormat;
-			state.textureFilter = getTextureFilter();
+			state.textureFilter = /*FILTER_POINT;*/getTextureFilter();
 			state.addressingModeU = getAddressingModeU();
 			state.addressingModeV = getAddressingModeV();
 			state.addressingModeW = getAddressingModeW();
@@ -166,9 +166,9 @@ namespace sw
 					mipmap.fDepth[3] = (float)depth / 65536.0f;
 				}
 
-				short halfTexelU = 0x8000 / width;
-				short halfTexelV = 0x8000 / height;
-				short halfTexelW = 0x8000 / depth;
+				int halfTexelU = 0x80000000 / width;
+				int halfTexelV = 0x80000000 / height;
+				int halfTexelW = 0x80000000 / depth;
 
 				mipmap.uHalf[0] = halfTexelU;
 				mipmap.uHalf[1] = halfTexelU;
@@ -200,15 +200,46 @@ namespace sw
 				mipmap.depth[2] = depth;
 				mipmap.depth[3] = depth;
 
-				mipmap.onePitchP[0] = 1;
-				mipmap.onePitchP[1] = pitchP;
-				mipmap.onePitchP[2] = 1;
-				mipmap.onePitchP[3] = pitchP;
+				mipmap.onePitchP8[0] = 1;
+				mipmap.onePitchP8[1] = pitchP;
+				mipmap.onePitchP8[2] = 1;
+				mipmap.onePitchP8[3] = pitchP;
+				mipmap.onePitchP8[4] = 1;
+				mipmap.onePitchP8[5] = pitchP;
+				mipmap.onePitchP8[6] = 1;
+				mipmap.onePitchP8[7] = pitchP;
+
+				mipmap.width8[0] = width;
+				mipmap.width8[1] = width;
+				mipmap.width8[2] = width;
+				mipmap.width8[3] = width;
+				mipmap.width8[4] = width;
+				mipmap.width8[5] = width;
+				mipmap.width8[6] = width;
+				mipmap.width8[7] = width;
+
+				mipmap.height8[0] = height;
+				mipmap.height8[1] = height;
+				mipmap.height8[2] = height;
+				mipmap.height8[3] = height;
+				mipmap.height8[4] = height;
+				mipmap.height8[5] = height;
+				mipmap.height8[6] = height;
+				mipmap.height8[7] = height;
+
+				mipmap.widthHeight[0] = width;
+				mipmap.widthHeight[1] = height;
+				mipmap.widthHeight[2] = width;
+				mipmap.widthHeight[3] = height;
+				mipmap.widthHeight[4] = width;
+				mipmap.widthHeight[5] = height;
+				mipmap.widthHeight[6] = width;
+				mipmap.widthHeight[7] = height;
 
 				mipmap.sliceP[0] = sliceP;
 				mipmap.sliceP[1] = sliceP;
 
-				if(internalTextureFormat == FORMAT_YV12_BT601 ||
+				/*if(internalTextureFormat == FORMAT_YV12_BT601 ||
 				   internalTextureFormat == FORMAT_YV12_BT709 ||
 				   internalTextureFormat == FORMAT_YV12_JFIF)
 				{
@@ -232,7 +263,7 @@ namespace sw
 					texture.mipmap[1].onePitchP[1] = CStride;
 					texture.mipmap[1].onePitchP[2] = 1;
 					texture.mipmap[1].onePitchP[3] = CStride;
-				}
+				}*/
 			}
 		}
 

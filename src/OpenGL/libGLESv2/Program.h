@@ -207,7 +207,7 @@ namespace es2
 		void flagForDeletion();
 		bool isFlaggedForDeletion() const;
 
-		void validate(Device* device);
+		void validate(Device *device);
 		bool validateSamplers(bool logErrors);
 		bool isValidated() const;
 

@@ -3004,9 +3004,9 @@ namespace sw
 		}
 	}
 
-	UShort4::UShort4(RValue<Int4> cast)
+	UShort4::UShort4(RValue<UInt4> cast)
 	{
-		*this = Short4(cast);
+		*this = Short4(As<Int4>(cast));
 	}
 
 	UShort4::UShort4(RValue<Float4> cast, bool saturate)
@@ -5576,6 +5576,11 @@ namespace sw
 			RValue<UInt4> less = CmpLT(x, y);
 			return (x & less) | (y & ~less);
 		}
+	}
+
+	RValue<UInt> Extract(RValue<UInt4> x, int i)
+	{
+		return RValue<UInt>(Nucleus::createExtractElement(x.value, UInt::getType(), i));
 	}
 
 	RValue<UShort8> Pack(RValue<UInt4> x, RValue<UInt4> y)

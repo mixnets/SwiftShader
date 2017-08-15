@@ -808,7 +808,7 @@ namespace sw
 	class UShort4 : public LValue<UShort4>
 	{
 	public:
-		explicit UShort4(RValue<Int4> cast);
+		explicit UShort4(RValue<UInt4> cast);
 		explicit UShort4(RValue<Float4> cast, bool saturate = false);
 
 		UShort4() = default;
@@ -1463,6 +1463,7 @@ namespace sw
 	RValue<UInt4> Max(RValue<UInt4> x, RValue<UInt4> y);
 	RValue<UInt4> Min(RValue<UInt4> x, RValue<UInt4> y);
 //	RValue<UInt4> RoundInt(RValue<Float4> cast);
+	RValue<UInt> Extract(RValue<UInt4> x, int i);
 	RValue<UShort8> Pack(RValue<UInt4> x, RValue<UInt4> y);
 
 	template<int T>

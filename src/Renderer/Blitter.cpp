@@ -620,7 +620,7 @@ namespace sw
 		case FORMAT_A16B16G16R16:
 			if(writeRGBA)
 			{
-				*Pointer<UShort4>(element) = UShort4(RoundInt(c));
+				*Pointer<UShort4>(element) = UShort4(As<UInt4>(RoundInt(c)));
 			}
 			else
 			{
@@ -633,7 +633,7 @@ namespace sw
 		case FORMAT_X16B16G16R16UI:
 			if(writeRGBA)
 			{
-				*Pointer<UShort4>(element) = UShort4(RoundInt(c));
+				*Pointer<UShort4>(element) = UShort4(As<UInt4>(RoundInt(c)));
 			}
 			else
 			{
@@ -647,7 +647,7 @@ namespace sw
 		case FORMAT_G16R16:
 			if(writeR && writeG)
 			{
-				*Pointer<UShort2>(element) = UShort2(UShort4(RoundInt(c)));
+				*Pointer<UShort2>(element) = UShort2(UShort4(As<UInt4>(RoundInt(c))));
 			}
 			else
 			{

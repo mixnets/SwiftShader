@@ -4,7 +4,7 @@
 
  @Title        OGLES2ChameleonMan
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -576,7 +576,7 @@ bool OGLES2ChameleonMan::RenderScene()
 
 	if(iTime > m_iTimePrev)
 	{
-		float fDelta = (float) (iTime - m_iTimePrev);
+		float fDelta = 0.05f*(float) (iTime - m_iTimePrev);
 		m_fFrame += fDelta * g_fDemoFrameRate;
 
 		// Increment the counters to make sure our animation works

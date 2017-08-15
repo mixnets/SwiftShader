@@ -2424,7 +2424,7 @@ namespace sw
 				buffer = cBuffer + 4 * x;
 
 				UInt2 rgbaMask;
-				UShort4 packedCol = UShort4(As<Int4>(oC.x));
+				UShort4 packedCol = UShort4(As<UInt4>(oC.x));
 				UShort4 value = *Pointer<UShort4>(buffer);
 				UInt2 mergedMask = *Pointer<UInt2>(constants + OFFSET(Constants, maskD01Q) + xMask * 8);
 				if((rgbaWriteMask & 0x3) != 0x3)
@@ -2437,7 +2437,7 @@ namespace sw
 
 				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
 
-				packedCol = UShort4(As<Int4>(oC.y));
+				packedCol = UShort4(As<UInt4>(oC.y));
 				value = *Pointer<UShort4>(buffer);
 				mergedMask = *Pointer<UInt2>(constants + OFFSET(Constants, maskD23Q) + xMask * 8);
 				if((rgbaWriteMask & 0x3) != 0x3)
@@ -2465,7 +2465,7 @@ namespace sw
 				}
 				else
 				{
-					packedCol = As<Int2>(Pack(UShort4(As<Int4>(oC.x)), UShort4(As<Int4>(oC.y))));
+					packedCol = As<Int2>(Pack(UShort4(As<UInt4>(oC.x)), UShort4(As<UInt4>(oC.y))));
 				}
 
 				UInt2 mergedMask = *Pointer<UInt2>(constants + OFFSET(Constants, maskW4Q) + xMask * 8);
@@ -2567,7 +2567,7 @@ namespace sw
 
 				UInt4 rgbaMask;
 				UShort8 value = *Pointer<UShort8>(buffer);
-				UShort8 packedCol = UShort8(UShort4(As<Int4>(oC.x)), UShort4(As<Int4>(oC.y)));
+				UShort8 packedCol = UShort8(UShort4(As<UInt4>(oC.x)), UShort4(As<UInt4>(oC.y)));
 				UInt4 mergedMask = *Pointer<UInt4>(constants + OFFSET(Constants, maskQ01X) + xMask * 16);
 				if((rgbaWriteMask & 0xF) != 0xF)
 				{
@@ -2580,7 +2580,7 @@ namespace sw
 				buffer += *Pointer<Int>(data + OFFSET(DrawData, colorPitchB[index]));
 
 				value = *Pointer<UShort8>(buffer);
-				packedCol = UShort8(UShort4(As<Int4>(oC.z)), UShort4(As<Int4>(oC.w)));
+				packedCol = UShort8(UShort4(As<UInt4>(oC.z)), UShort4(As<UInt4>(oC.w)));
 				mergedMask = *Pointer<UInt4>(constants + OFFSET(Constants, maskQ23X) + xMask * 16);
 				if((rgbaWriteMask & 0xF) != 0xF)
 				{
@@ -2603,7 +2603,7 @@ namespace sw
 				}
 				else
 				{
-					packedCol = As<UInt2>(Pack(UShort4(As<Int4>(oC.x)), UShort4(As<Int4>(oC.y))));
+					packedCol = As<UInt2>(Pack(UShort4(As<UInt4>(oC.x)), UShort4(As<UInt4>(oC.y))));
 				}
 				value = *Pointer<UInt2>(buffer, 16);
 				mergedMask = *Pointer<UInt2>(constants + OFFSET(Constants, maskD01Q) + xMask * 8);
@@ -2621,7 +2621,7 @@ namespace sw
 				}
 				else
 				{
-					packedCol = As<UInt2>(Pack(UShort4(As<Int4>(oC.z)), UShort4(As<Int4>(oC.w))));
+					packedCol = As<UInt2>(Pack(UShort4(As<UInt4>(oC.z)), UShort4(As<UInt4>(oC.w))));
 				}
 				value = *Pointer<UInt2>(buffer, 16);
 				mergedMask = *Pointer<UInt2>(constants + OFFSET(Constants, maskD23Q) + xMask * 8);

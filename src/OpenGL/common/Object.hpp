@@ -52,7 +52,7 @@ protected:
 
 #ifndef NDEBUG
 public:
-	static sw::MutexLock instances_mutex;
+	static sw::MutexLock instancesMutex;
 	static std::set<Object*> instances;   // For leak checking
 #endif
 };
