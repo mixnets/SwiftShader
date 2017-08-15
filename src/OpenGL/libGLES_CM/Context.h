@@ -33,10 +33,11 @@
 #include <map>
 #include <string>
 
+namespace gl { class Surface; }
+
 namespace egl
 {
 class Display;
-class Surface;
 class Config;
 }
 
@@ -291,14 +292,16 @@ struct State
 	TextureUnit textureUnit[MAX_TEXTURE_UNITS];
 };
 
-class Context : public egl::Context
+class [[clang::lto_visibility_public]] Context : public egl::Context
 {
 public:
-	Context(egl::Display *display, const Context *shareContext);
+	Context(egl::Display *display, const Context *shareContext, const egl::Config *config);
 
-	virtual void makeCurrent(egl::Surface *surface);
-	virtual int getClientVersion() const;
-	virtual void finish();
+	void makeCurrent(gl::Surface *surface) override;
+	EGLint getClientVersion() const override;
+	EGLint getConfigID() const override;
+
+	void finish() override;
 
 	void markAllStateDirty();
 
@@ -506,9 +509,9 @@ public:
 
 	static int getSupportedMultisampleCount(int requested);
 
-	virtual void bindTexImage(egl::Surface *surface);
-	virtual EGLenum validateSharedImage(EGLenum target, GLuint name, GLuint textureLevel);
-	virtual egl::Image *createSharedImage(EGLenum target, GLuint name, GLuint textureLevel);
+	void bindTexImage(gl::Surface *surface) override;
+	EGLenum validateSharedImage(EGLenum target, GLuint name, GLuint textureLevel) override;
+	egl::Image *createSharedImage(EGLenum target, GLuint name, GLuint textureLevel) override;
 	egl::Image *getSharedImage(GLeglImageOES image);
 
 	Device *getDevice();
@@ -577,7 +580,7 @@ public:
 	void setPointFadeThresholdSize(float threshold);
 
 private:
-	virtual ~Context();
+	~Context() override;
 
 	bool applyRenderTarget();
 	void applyState(GLenum drawMode);
@@ -593,6 +596,8 @@ private:
 
 	bool cullSkipsDraw(GLenum drawMode);
 	bool isTriangleMode(GLenum drawMode);
+
+	const egl::Config *const config;
 
 	State mState;
 

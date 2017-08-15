@@ -19,7 +19,7 @@
 #include "libGLESv2.hpp"
 #include "Framebuffer.h"
 #include "libEGL/main.h"
-#include "libEGL/EGLSurface.h"
+#include "common/Surface.hpp"
 #include "Common/Thread.hpp"
 #include "Common/SharedLibrary.hpp"
 #include "common/debug.h"
@@ -1338,7 +1338,7 @@ void GL_APIENTRY Register(const char *licenseKey)
 }
 }
 
-egl::Context *es2CreateContext(egl::Display *display, const egl::Context *shareContext, int clientVersion);
+egl::Context *es2CreateContext(egl::Display *display, const egl::Context *shareContext, int clientVersion, const egl::Config *config);
 extern "C" __eglMustCastToProperFunctionPointerType es2GetProcAddress(const char *procname);
 egl::Image *createBackBuffer(int width, int height, const egl::Config *config);
 egl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Format format, int multiSampleDepth, bool discard);

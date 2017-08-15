@@ -35,9 +35,11 @@ namespace egl
 	const EGLDisplay PRIMARY_DISPLAY  = reinterpret_cast<EGLDisplay>((intptr_t)1);
 	const EGLDisplay HEADLESS_DISPLAY = reinterpret_cast<EGLDisplay>((intptr_t)0xFACE1E55);
 
-	class Display
+	class [[clang::lto_visibility_public]] Display
 	{
-		virtual void typeinfo();   // Dummy key method (https://gcc.gnu.org/onlinedocs/gcc/Vague-Linkage.html)
+	protected:
+		explicit Display(void *nativeDisplay);
+		virtual ~Display() = 0;
 
 	public:
 		static Display *get(EGLDisplay dpy);
@@ -72,12 +74,9 @@ namespace egl
 
 		EGLImageKHR createSharedImage(Image *image);
 		bool destroySharedImage(EGLImageKHR);
-		virtual Image *getSharedImage(EGLImageKHR name);
+		virtual Image *getSharedImage(EGLImageKHR name) = 0;
 
 	private:
-		explicit Display(void *nativeDisplay);
-		~Display();
-
 		sw::Format getDisplayFormat() const;
 
 		void *const nativeDisplay;

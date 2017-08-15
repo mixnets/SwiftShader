@@ -23,7 +23,7 @@
 #include "Framebuffer.h"
 #include "Device.hpp"
 #include "libEGL/Display.h"
-#include "libEGL/EGLSurface.h"
+#include "common/Surface.hpp"
 #include "common/debug.h"
 
 #include <algorithm>
@@ -523,8 +523,6 @@ Texture2D::Texture2D(GLuint name) : Texture(name)
 
 Texture2D::~Texture2D()
 {
-	resource->lock(sw::DESTRUCT);
-
 	for(int i = 0; i < IMPLEMENTATION_MAX_TEXTURE_LEVELS; i++)
 	{
 		if(image[i])
@@ -533,8 +531,6 @@ Texture2D::~Texture2D()
 			image[i] = nullptr;
 		}
 	}
-
-	resource->unlock();
 
 	if(mSurface)
 	{
@@ -644,7 +640,7 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 		image[level]->release();
 	}
 
-	image[level] = new egl::Image(this, width, height, format, type);
+	image[level] = egl::Image::create(this, width, height, format, type);
 
 	if(!image[level])
 	{
@@ -654,7 +650,7 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLenum form
 	Texture::setImage(format, type, unpackInfo, pixels, image[level]);
 }
 
-void Texture2D::bindTexImage(egl::Surface *surface)
+void Texture2D::bindTexImage(gl::Surface *surface)
 {
 	GLenum format;
 
@@ -712,7 +708,7 @@ void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 	}
 
 	GLenum sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[level] = new egl::Image(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[level] = egl::Image::create(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
 
 	if(!image[level])
 	{
@@ -748,7 +744,7 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 	}
 
 	GLenum sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[level] = new egl::Image(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[level] = egl::Image::create(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
 
 	if(!image[level])
 	{
@@ -919,7 +915,7 @@ void Texture2D::generateMipmaps()
 			image[i]->release();
 		}
 
-		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType());
+		image[i] = egl::Image::create(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType());
 
 		if(!image[i])
 		{
@@ -1004,8 +1000,6 @@ TextureCubeMap::TextureCubeMap(GLuint name) : Texture(name)
 
 TextureCubeMap::~TextureCubeMap()
 {
-	resource->lock(sw::DESTRUCT);
-
 	for(int f = 0; f < 6; f++)
 	{
 		for(int i = 0; i < IMPLEMENTATION_MAX_TEXTURE_LEVELS; i++)
@@ -1017,8 +1011,6 @@ TextureCubeMap::~TextureCubeMap()
 			}
 		}
 	}
-
-	resource->unlock();
 
 	for(int i = 0; i < 6; i++)
 	{
@@ -1145,7 +1137,7 @@ void TextureCubeMap::setCompressedImage(GLenum target, GLint level, GLenum forma
 	}
 
 	GLenum sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[face][level] = new egl::Image(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[face][level] = egl::Image::create(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
 
 	if(!image[face][level])
 	{
@@ -1286,7 +1278,7 @@ void TextureCubeMap::setImage(GLenum target, GLint level, GLsizei width, GLsizei
 		image[face][level]->release();
 	}
 
-	image[face][level] = new egl::Image(this, width, height, format, type);
+	image[face][level] = egl::Image::create(this, width, height, format, type);
 
 	if(!image[face][level])
 	{
@@ -1314,7 +1306,7 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 	}
 
 	GLenum sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[face][level] = new egl::Image(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[face][level] = egl::Image::create(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
 
 	if(!image[face][level])
 	{
@@ -1408,7 +1400,7 @@ void TextureCubeMap::generateMipmaps()
 				image[f][i]->release();
 			}
 
-			image[f][i] = new egl::Image(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat(), image[0][0]->getType());
+			image[f][i] = egl::Image::create(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat(), image[0][0]->getType());
 
 			if(!image[f][i])
 			{
@@ -1486,8 +1478,6 @@ Texture3D::Texture3D(GLuint name) : Texture(name)
 
 Texture3D::~Texture3D()
 {
-	resource->lock(sw::DESTRUCT);
-
 	for(int i = 0; i < IMPLEMENTATION_MAX_TEXTURE_LEVELS; i++)
 	{
 		if(image[i])
@@ -1496,8 +1486,6 @@ Texture3D::~Texture3D()
 			image[i] = nullptr;
 		}
 	}
-
-	resource->unlock();
 
 	if(mSurface)
 	{
@@ -1613,7 +1601,7 @@ void Texture3D::setImage(GLint level, GLsizei width, GLsizei height, GLsizei dep
 		image[level]->release();
 	}
 
-	image[level] = new egl::Image(this, width, height, depth, format, type);
+	image[level] = egl::Image::create(this, width, height, depth, format, type);
 
 	if(!image[level])
 	{
@@ -1623,7 +1611,7 @@ void Texture3D::setImage(GLint level, GLsizei width, GLsizei height, GLsizei dep
 	Texture::setImage(format, type, unpackInfo, pixels, image[level]);
 }
 
-void Texture3D::bindTexImage(egl::Surface *surface)
+void Texture3D::bindTexImage(gl::Surface *surface)
 {
 	GLenum format;
 
@@ -1675,7 +1663,7 @@ void Texture3D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 	}
 
 	GLenum sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[level] = new egl::Image(this, width, height, depth, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[level] = egl::Image::create(this, width, height, depth, sizedInternalFormat, GL_UNSIGNED_BYTE);
 
 	if(!image[level])
 	{
@@ -1711,7 +1699,7 @@ void Texture3D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLint z,
 	}
 
 	GLenum sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[level] = new egl::Image(this, width, height, depth, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[level] = egl::Image::create(this, width, height, depth, sizedInternalFormat, GL_UNSIGNED_BYTE);
 
 	if(!image[level])
 	{
@@ -1889,7 +1877,7 @@ void Texture3D::generateMipmaps()
 			image[i]->release();
 		}
 
-		image[i] = new egl::Image(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), std::max(image[0]->getDepth() >> i, 1), image[0]->getFormat(), image[0]->getType());
+		image[i] = egl::Image::create(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), std::max(image[0]->getDepth() >> i, 1), image[0]->getFormat(), image[0]->getType());
 
 		if(!image[i])
 		{
@@ -1988,7 +1976,7 @@ void Texture2DArray::generateMipmaps()
 
 		GLsizei w = std::max(image[0]->getWidth() >> i, 1);
 		GLsizei h = std::max(image[0]->getHeight() >> i, 1);
-		image[i] = new egl::Image(this, w, h, depth, image[0]->getFormat(), image[0]->getType());
+		image[i] = egl::Image::create(this, w, h, depth, image[0]->getFormat(), image[0]->getType());
 
 		if(!image[i])
 		{
@@ -2030,7 +2018,7 @@ egl::Image *createBackBuffer(int width, int height, const egl::Config *config)
 {
 	if(config)
 	{
-		return new egl::Image(width, height, config->mRenderTargetFormat, config->mSamples, false);
+		return egl::Image::create(width, height, config->mRenderTargetFormat, config->mSamples, false);
 	}
 
 	return nullptr;
@@ -2069,7 +2057,7 @@ egl::Image *createDepthStencil(unsigned int width, unsigned int height, sw::Form
 		UNREACHABLE(format);
 	}
 
-	egl::Image *surface = new egl::Image(width, height, format, multiSampleDepth, lockable);
+	egl::Image *surface = egl::Image::create(width, height, format, multiSampleDepth, lockable);
 
 	if(!surface)
 	{
