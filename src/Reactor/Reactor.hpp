@@ -162,7 +162,7 @@ namespace sw
 	public:
 		explicit RValue(Value *rvalue);
 
-		RValue(const T &lvalue);
+		RValue(const LValue<T> &lvalue);
 		RValue(typename IntLiteral<T>::type i);
 		RValue(typename FloatLiteral<T>::type f);
 		RValue(const Reference<T> &rhs);
@@ -2338,7 +2338,7 @@ namespace sw
 	}
 
 	template<class T>
-	RValue<T>::RValue(const T &lvalue)
+	RValue<T>::RValue(const LValue<T> &lvalue)
 	{
 		value = lvalue.loadValue();
 	}

@@ -3328,7 +3328,7 @@ namespace sw
 	{
 		storeValue(rhs.value);
 
-		return RValue<Short4>(rhs);
+		return As<Short4>(rhs);
 	}
 
 	RValue<Short4> Short4::operator=(const UShort4 &rhs)
@@ -3811,7 +3811,7 @@ namespace sw
 	{
 		storeValue(rhs.value);
 
-		return RValue<UShort4>(rhs);
+		return As<UShort4>(rhs);
 	}
 
 	RValue<UShort4> UShort4::operator=(const Short4 &rhs)
@@ -4447,7 +4447,7 @@ namespace sw
 	{
 		storeValue(rhs.value);
 
-		return RValue<Int>(rhs);
+		return As<Int>(rhs);
 	}
 
 	RValue<Int> Int::operator=(const Int &rhs)
@@ -4865,7 +4865,7 @@ namespace sw
 	{
 		storeValue(rhs.value);
 
-		return RValue<UInt>(rhs);
+		return As<UInt>(rhs);
 	}
 
 	RValue<UInt> UInt::operator=(const UInt &rhs)
