@@ -1251,7 +1251,7 @@ namespace vulkan
 				device->swiftshaderDevice->setRenderTarget(0, surface);
 
 				sw::SliceRect rect(0, 0, width, height, 0);
-				int color = 0xCCFF0000;
+				int color = 0xFFBF4020;
 
 				device->swiftshaderDevice->clear(&color, sw::Format::FORMAT_A8B8G8R8, surface, rect, 0xF);
 			}
@@ -1301,6 +1301,8 @@ namespace vulkan
 				device->swiftshaderDevice->setConstantColor(0, sw::Color<float>(1, 0, 1, 1));
 				device->swiftshaderDevice->setFirstArgument(0, sw::TextureStage::SOURCE_CONSTANT);
 				device->swiftshaderDevice->setStageOperation(0, sw::TextureStage::STAGE_SELECTARG1);
+				device->swiftshaderDevice->setFirstArgumentAlpha(0, sw::TextureStage::SOURCE_CONSTANT);
+				device->swiftshaderDevice->setStageOperationAlpha(0, sw::TextureStage::STAGE_SELECTARG1);
 
 				sw::Stream attribute(resource, buffer, 16);
 
