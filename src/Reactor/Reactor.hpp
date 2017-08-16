@@ -1304,8 +1304,32 @@ namespace sw
 
 //	RValue<UInt2> RoundInt(RValue<Float4> cast);
 
-	template<class T>
-	struct Scalar;
+	template<class Vector4>
+	class Scalar
+	{
+	public:
+		Scalar(Vector4 *parent, int component) : parent(parent), component(component)
+		{
+		}
+
+		operator RValue<typename Scalar<Vector4>::Type>()
+		{
+			return Value *vector = parent->loadValue();
+
+			return Extract(RValue<Vector4>(vector), component);
+		}
+
+		RValue<typename Scalar<Vector4>::Type> operator=(RValue<typename Scalar<Vector4>::Type> rhs)
+		{
+			*parent = Insert(*parent, rhs, component);
+
+			return rhs;
+		}
+
+	private:
+		Vector4 *const parent;
+		const int component;
+	};
 
 	template<class Vector4>
 	struct XYZW;
@@ -1749,6 +1773,11 @@ namespace sw
 			Swizzle4<Vector4, 0xFE>     zwww;
 			Swizzle4<Vector4, 0xFF>     wwww;
 		};
+
+		Scalar<Vector4> operator[](int component)
+		{
+			return Scalar<Vector4>(xyzw.parent, component);
+		}
 	};
 
 	class Int4 : public LValue<Int4>, public XYZW<Int4>

@@ -808,7 +808,7 @@ namespace sw
 		}
 	}
 
-	RValue<Pointer<Byte>> VertexProgram::uniformAddress(int bufferIndex, unsigned int index, Int& offset)
+	RValue<Pointer<Byte>> VertexProgram::uniformAddress(int bufferIndex, unsigned int index, RValue<Int> offset)
 	{
 		return uniformAddress(bufferIndex, index) + offset * sizeof(float4);
 	}
@@ -902,15 +902,10 @@ namespace sw
 
 				index = Min(As<UInt4>(index), UInt4(VERTEX_UNIFORM_VECTORS));   // Clamp to constant register range, c[VERTEX_UNIFORM_VECTORS] = {0, 0, 0, 0}
 
-				Int index0 = Extract(index, 0);
-				Int index1 = Extract(index, 1);
-				Int index2 = Extract(index, 2);
-				Int index3 = Extract(index, 3);
-
-				c.x = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index0), 16);
-				c.y = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index1), 16);
-				c.z = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index2), 16);
-				c.w = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index3), 16);
+				c.x = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index[0]), 16);
+				c.y = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index[1]), 16);
+				c.z = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index[2]), 16);
+				c.w = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index[3]), 16);
 
 				transpose4x4(c.x, c.y, c.z, c.w);
 			}
