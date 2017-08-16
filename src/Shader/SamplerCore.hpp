@@ -83,8 +83,8 @@ namespace sw
 		void convertFixed12(Short4 &ci, Float4 &cf);
 		void convertFixed12(Vector4s &cs, Vector4f &cf);
 		void convertSigned12(Float4 &cf, Short4 &ci);
-		void convertSigned15(Float4 &cf, Short4 &ci);
-		void convertUnsigned16(Float4 &cf, Short4 &ci);
+		void convertSigned15(Float4 &cf, Short4 &ci, bool is8BitNormalized);
+		void convertUnsigned16(Float4 &cf, Short4 &ci, bool is8BitNormalized);
 		void sRGBtoLinear16_8_12(Short4 &c);
 		void sRGBtoLinear16_6_12(Short4 &c);
 		void sRGBtoLinear16_5_12(Short4 &c);

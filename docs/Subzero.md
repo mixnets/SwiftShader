@@ -13,7 +13,9 @@ Subzero Development
 
 Development on Subzero itself requires setting up the NaCl environment on a Linux system to be able to run its unit tests:
 
+* Install prerequisites: ```sudo apt-get install git cmake texinfo flex bison ccache g++ g++-multilib gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf```.
 * Install Chrome's [depot_tools](http://dev.chromium.org/developers/how-tos/install-depot-tools).
 * Run ```mkdir nacl && cd nacl && fetch nacl``` ([ref](http://www.chromium.org/nativeclient/how-tos/how-to-use-git-svn-with-native-client)).
+* Run ```../tools/clang/scripts/update.py``` ([ref](https://sites.google.com/a/chromium.org/dev/nativeclient/pnacl/developing-pnacl#TOC-TL-DR-for-checking-out-PNaCl-sources-building-and-testing)).
 * Run ```native_client/toolchain_build/toolchain_build_pnacl.py --verbose --sync --clobber --install toolchain/linux_x86/pnacl_newlib_raw``` ([ref](https://sites.google.com/a/chromium.org/dev/nativeclient/pnacl/developing-pnacl#TOC-TL-DR-for-checking-out-PNaCl-sources-building-and-testing)).
 * Run all unit tests with ```make -f Makefile.standalone check``` ([ref](https://chromium.googlesource.com/native_client/pnacl-subzero/+/master/docs/README.rst)).

@@ -50,8 +50,8 @@ TEST_F(SwiftShaderTest, Initalization)
 	eglQueryString(display, EGL_VENDOR);
 	EXPECT_EQ(EGL_NOT_INITIALIZED, eglGetError());
 
-	EGLint major;
-	EGLint minor;
+	EGLint major = -1;
+	EGLint minor = -1;
 	EGLBoolean initialized = eglInitialize(display, &major, &minor);
 	EXPECT_EQ(EGL_SUCCESS, eglGetError());
 	EXPECT_EQ((EGLBoolean)EGL_TRUE, initialized);

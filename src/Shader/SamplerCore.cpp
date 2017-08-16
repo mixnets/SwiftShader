@@ -390,6 +390,7 @@ namespace sw
 					}
 					else
 					{
+						bool is8bitNormalized = false;
 						switch(state.textureFormat)
 						{
 						case FORMAT_R8I:
@@ -416,6 +417,22 @@ namespace sw
 						case FORMAT_A16B16G16R16UI:
 							c[component] = As<Float4>(Int4(As<UShort4>(cs[component])));
 							break;
+						case FORMAT_A8:
+						case FORMAT_R8:
+						case FORMAT_R8G8B8:
+						case FORMAT_B8G8R8:
+						case FORMAT_X8R8G8B8:
+						case FORMAT_A8R8G8B8:
+						case FORMAT_X8B8G8R8I_SNORM:
+						case FORMAT_X8B8G8R8:
+						case FORMAT_A8B8G8R8I_SNORM:
+						case FORMAT_A8B8G8R8:
+						case FORMAT_SRGB8_X8:
+						case FORMAT_SRGB8_A8:
+						case FORMAT_G8R8I_SNORM:
+						case FORMAT_G8R8:
+							is8bitNormalized = true;
+							// fall through
 						default:
 							// Normalized integer formats
 							if(state.sRGB && isRGBComponent(component))
@@ -427,11 +444,11 @@ namespace sw
 							{
 								if(hasUnsignedTextureComponent(component))
 								{
-									convertUnsigned16(c[component], cs[component]);
+									convertUnsigned16(c[component], cs[component], is8bitNormalized);
 								}
 								else
 								{
-									convertSigned15(c[component], cs[component]);
+									convertSigned15(c[component], cs[component], is8bitNormalized);
 								}
 							}
 							break;
@@ -875,7 +892,15 @@ namespace sw
 						}
 
 						c.x = (c0.x + c1.x) + (c2.x + c3.x);
-						if(!hasUnsignedTextureComponent(0)) c.x = AddSat(c.x, c.x);   // Correct for signed fractions
+						if(!hasUnsignedTextureComponent(0))
+						{
+							c.x = AddSat(c.x, c.x);   // Correct for signed fractions
+						}
+						else if(has8bitTextureComponents())
+						{
+							c.x = (As<UShort4>(c.x) + UShort4(0x0080)) & UShort4(0xFF00u);
+							c.x = c.x | As<Short4>(As<UShort4>(c.x) >> 8);
+						}
 					}
 				}
 
@@ -905,7 +930,15 @@ namespace sw
 						}
 
 						c.y = (c0.y + c1.y) + (c2.y + c3.y);
-						if(!hasUnsignedTextureComponent(1)) c.y = AddSat(c.y, c.y);   // Correct for signed fractions
+						if(!hasUnsignedTextureComponent(1))
+						{
+							c.y = AddSat(c.y, c.y);   // Correct for signed fractions
+						}
+						else if(has8bitTextureComponents())
+						{
+							c.y = (As<UShort4>(c.y) + UShort4(0x0080)) & UShort4(0xFF00u);
+							c.y = c.y | As<Short4>(As<UShort4>(c.y) >> 8);
+						}
 					}
 				}
 
@@ -935,7 +968,15 @@ namespace sw
 						}
 
 						c.z = (c0.z + c1.z) + (c2.z + c3.z);
-						if(!hasUnsignedTextureComponent(2)) c.z = AddSat(c.z, c.z);   // Correct for signed fractions
+						if(!hasUnsignedTextureComponent(2))
+						{
+							c.z = AddSat(c.z, c.z);   // Correct for signed fractions
+						}
+						else if(has8bitTextureComponents())
+						{
+							c.z = (As<UShort4>(c.z) + UShort4(0x0080)) & UShort4(0xFF00u);
+							c.z = c.z | As<Short4>(As<UShort4>(c.z) >> 8);
+						}
 					}
 				}
 
@@ -965,7 +1006,15 @@ namespace sw
 						}
 
 						c.w = (c0.w + c1.w) + (c2.w + c3.w);
-						if(!hasUnsignedTextureComponent(3)) c.w = AddSat(c.w, c.w);   // Correct for signed fractions
+						if(!hasUnsignedTextureComponent(3))
+						{
+							c.w = AddSat(c.w, c.w);   // Correct for signed fractions
+						}
+						else if(has8bitTextureComponents())
+						{
+							c.w = (As<UShort4>(c.w) + UShort4(0x0080)) & UShort4(0xFF00u);
+							c.w = c.w | As<Short4>(As<UShort4>(c.w) >> 8);
+						}
 					}
 				}
 			}
@@ -1093,10 +1142,50 @@ namespace sw
 			if(componentCount >= 4) c_.w = c[0][0][0].w;
 
 			// Correct for signed fractions
-			if(componentCount >= 1) if(!hasUnsignedTextureComponent(0)) c_.x = AddSat(c_.x, c_.x);
-			if(componentCount >= 2) if(!hasUnsignedTextureComponent(1)) c_.y = AddSat(c_.y, c_.y);
-			if(componentCount >= 3) if(!hasUnsignedTextureComponent(2)) c_.z = AddSat(c_.z, c_.z);
-			if(componentCount >= 4) if(!hasUnsignedTextureComponent(3)) c_.w = AddSat(c_.w, c_.w);
+			if(componentCount >= 1)
+			{
+				if(!hasUnsignedTextureComponent(0))
+				{
+					c_.x = AddSat(c_.x, c_.x);
+				}
+				else if(has8bitTextureComponents())
+				{
+					c_.x = (As<UShort4>(c_.x) + UShort4(0x007F)) & UShort4(0xFF00u);
+				}
+			}
+			if(componentCount >= 2)
+			{
+				if(!hasUnsignedTextureComponent(1))
+				{
+					c_.y = AddSat(c_.y, c_.y);
+				}
+				else if(has8bitTextureComponents())
+				{
+					c_.y = (As<UShort4>(c_.y) + UShort4(0x007F)) & UShort4(0xFF00u);
+				}
+			}
+			if(componentCount >= 3)
+			{
+				if(!hasUnsignedTextureComponent(2))
+				{
+					c_.z = AddSat(c_.z, c_.z);
+				}
+				else if(has8bitTextureComponents())
+				{
+					c_.z = (As<UShort4>(c_.z) + UShort4(0x007F)) & UShort4(0xFF00u);
+				}
+			}
+			if(componentCount >= 4)
+			{
+				if(!hasUnsignedTextureComponent(3))
+				{
+					c_.w = AddSat(c_.w, c_.w);
+				}
+				else if(has8bitTextureComponents())
+				{
+					c_.w = (As<UShort4>(c_.w) + UShort4(0x007F)) & UShort4(0xFF00u);
+				}
+			}
 		}
 	}
 
@@ -1775,6 +1864,8 @@ namespace sw
 		}
 		else if(has8bitTextureComponents())
 		{
+			Byte8 zeros(0, 0, 0, 0, 0, 0, 0, 0);
+
 			switch(textureComponentCount())
 			{
 			case 4:
@@ -1789,31 +1880,38 @@ namespace sw
 					switch(state.textureFormat)
 					{
 					case FORMAT_A8R8G8B8:
-						c.z = c.x;
-						c.z = As<Short4>(UnpackLow(c.z, c.y));
+						c.z = As<Short4>(UnpackLow(c.x, c.y));
 						c.x = As<Short4>(UnpackHigh(c.x, c.y));
 						c.y = c.z;
 						c.w = c.x;
-						c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
-						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
-						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
-						c.w = UnpackHigh(As<Byte8>(c.w), As<Byte8>(c.w));
+						c.z = UnpackLow(zeros, As<Byte8>(c.z));
+						c.y = UnpackHigh(zeros, As<Byte8>(c.y));
+						c.x = UnpackLow(zeros, As<Byte8>(c.x));
+						c.w = UnpackHigh(zeros, As<Byte8>(c.w));
 						break;
-					case FORMAT_A8B8G8R8:
 					case FORMAT_A8B8G8R8I:
-					case FORMAT_A8B8G8R8UI:
 					case FORMAT_A8B8G8R8I_SNORM:
 					case FORMAT_Q8W8V8U8:
-					case FORMAT_SRGB8_A8:
-						c.z = c.x;
+						c.z = As<Short4>(UnpackHigh(c.x, c.y));
 						c.x = As<Short4>(UnpackLow(c.x, c.y));
-						c.z = As<Short4>(UnpackHigh(c.z, c.y));
 						c.y = c.x;
 						c.w = c.z;
 						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
 						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
 						c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
 						c.w = UnpackHigh(As<Byte8>(c.w), As<Byte8>(c.w));
+						break;
+					case FORMAT_A8B8G8R8:
+					case FORMAT_A8B8G8R8UI:
+					case FORMAT_SRGB8_A8:
+						c.z = As<Short4>(UnpackHigh(c.x, c.y));
+						c.x = As<Short4>(UnpackLow(c.x, c.y));
+						c.y = c.x;
+						c.w = c.z;
+						c.x = UnpackLow(zeros, As<Byte8>(c.x));
+						c.y = UnpackHigh(zeros, As<Byte8>(c.y));
+						c.z = UnpackLow(zeros, As<Byte8>(c.z));
+						c.w = UnpackHigh(zeros, As<Byte8>(c.w));
 						break;
 					default:
 						ASSERT(false);
@@ -1836,16 +1934,12 @@ namespace sw
 						c.z = As<Short4>(UnpackLow(c.z, c.y));
 						c.x = As<Short4>(UnpackHigh(c.x, c.y));
 						c.y = c.z;
-						c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
-						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
-						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
+						c.z = UnpackLow(zeros, As<Byte8>(c.z));
+						c.y = UnpackHigh(zeros, As<Byte8>(c.y));
+						c.x = UnpackLow(zeros, As<Byte8>(c.x));
 						break;
 					case FORMAT_X8B8G8R8I_SNORM:
-					case FORMAT_X8B8G8R8UI:
 					case FORMAT_X8B8G8R8I:
-					case FORMAT_X8B8G8R8:
-					case FORMAT_X8L8V8U8:
-					case FORMAT_SRGB8_X8:
 						c.z = c.x;
 						c.x = As<Short4>(UnpackLow(c.x, c.y));
 						c.z = As<Short4>(UnpackHigh(c.z, c.y));
@@ -1853,6 +1947,18 @@ namespace sw
 						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
 						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
 						c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
+						break;
+					case FORMAT_X8B8G8R8UI:
+					case FORMAT_X8B8G8R8:
+					case FORMAT_X8L8V8U8:
+					case FORMAT_SRGB8_X8:
+						c.z = c.x;
+						c.x = As<Short4>(UnpackLow(c.x, c.y));
+						c.z = As<Short4>(UnpackHigh(c.z, c.y));
+						c.y = c.x;
+						c.x = UnpackLow(zeros, As<Byte8>(c.x));
+						c.y = UnpackHigh(zeros, As<Byte8>(c.y));
+						c.z = UnpackLow(zeros, As<Byte8>(c.z));
 						break;
 					default:
 						ASSERT(false);
@@ -1867,14 +1973,17 @@ namespace sw
 
 				switch(state.textureFormat)
 				{
-				case FORMAT_G8R8:
 				case FORMAT_G8R8I:
-				case FORMAT_G8R8UI:
 				case FORMAT_G8R8I_SNORM:
-				case FORMAT_V8U8:
-				case FORMAT_A8L8:
 					c.y = (c.x & Short4(0xFF00u)) | As<Short4>(As<UShort4>(c.x) >> 8);
 					c.x = (c.x & Short4(0x00FFu)) | (c.x << 8);
+					break;
+				case FORMAT_G8R8:
+				case FORMAT_G8R8UI:
+				case FORMAT_V8U8:
+				case FORMAT_A8L8:
+					c.y &= Short4(0xFF00u);
+					c.x <<= 8;
 					break;
 				default:
 					ASSERT(false);
@@ -1887,7 +1996,14 @@ namespace sw
 					Int c2 = Int(*Pointer<Byte>(buffer[f2] + index[2]));
 					Int c3 = Int(*Pointer<Byte>(buffer[f3] + index[3]));
 					c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-					c.x = Unpack(As<Byte4>(c0));
+					if(hasUnsignedTextureComponent(0))
+					{
+						c.x = Unpack(Byte4(zeros), As<Byte4>(c0));
+					}
+					else
+					{
+						c.x = Unpack(As<Byte4>(c0));
+					}
 				}
 				break;
 			default:
@@ -2189,14 +2305,18 @@ namespace sw
 //		convertSigned12(cf.w, cs.w);
 //	}
 
-	void SamplerCore::convertSigned15(Float4 &cf, Short4 &cs)
+	void SamplerCore::convertSigned15(Float4 &cf, Short4 &cs, bool is8BitNormalized)
 	{
-		cf = Float4(cs) * Float4(1.0f / 0x7FFF);
+		cf = is8BitNormalized ?
+		     Float4(cs & Short4(0xFF00u)) * Float4(1.0f / 0x7F00) :
+		     Float4(cs) * Float4(1.0f / 0x7FFF);
 	}
 
-	void SamplerCore::convertUnsigned16(Float4 &cf, Short4 &cs)
+	void SamplerCore::convertUnsigned16(Float4 &cf, Short4 &cs, bool is8BitNormalized)
 	{
-		cf = Float4(As<UShort4>(cs)) * Float4(1.0f / 0xFFFF);
+		cf = is8BitNormalized ?
+		     Float4(As<UShort4>(cs) & UShort4(0xFF00u)) * Float4(1.0f / 0xFF00) :
+		     Float4(As<UShort4>(cs)) * Float4(1.0f / 0xFFFF);
 	}
 
 	void SamplerCore::sRGBtoLinear16_8_12(Short4 &c)
