@@ -2504,6 +2504,13 @@ namespace sw
 		return T(llvm::VectorType::get(T(SByte::getType()), 16));
 	}
 
+	RValue<Short8> MulAdd(RValue<Byte16> x, RValue<SByte16> y)
+	{
+		llvm::Function *pmaddubsw = llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::x86_ssse3_pmadd_ub_sw_128);
+
+		return As<Short8>(V(::builder->CreateCall2(pmaddubsw, x.value, y.value)));
+	}
+
 	Short2::Short2(RValue<Short4> cast)
 	{
 		storeValue(Nucleus::createBitCast(cast.value, getType()));
@@ -5371,7 +5378,7 @@ namespace sw
 		}
 	}
 
-	RValue<Float> Frac(RValue<Float> x)
+	RValue<Float> Frac(RValue<Float> x, bool allowOne)
 	{
 		if(CPUID::supportsSSE4_1())
 		{
@@ -5379,7 +5386,7 @@ namespace sw
 		}
 		else
 		{
-			return Float4(Frac(Float4(x))).x;
+			return Float4(Frac(Float4(x), allowOne)).x;
 		}
 	}
 
@@ -5793,7 +5800,7 @@ namespace sw
 		}
 	}
 
-	RValue<Float4> Frac(RValue<Float4> x)
+	RValue<Float4> Frac(RValue<Float4> x, bool allowOne)
 	{
 		Float4 frc;
 
@@ -5809,6 +5816,11 @@ namespace sw
 		}
 
 		// x - floor(x) can be 1.0 for very small negative x.
+		if(allowOne)
+		{
+			return frc;
+		}
+
 		// Clamp against the value just below 1.0.
 		return Min(frc, As<Float4>(Int4(0x3F7FFFFF)));
 	}

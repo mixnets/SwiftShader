@@ -712,6 +712,8 @@ namespace sw
 //	RValue<SByte16> operator--(SByte16 &val, int);   // Post-decrement
 //	const SByte16 &operator--(SByte16 &val);   // Pre-decrement
 
+	RValue<Short8> MulAdd(RValue<Byte16> x, RValue<SByte16> y);
+
 	class Short2 : public LValue<Short2>
 	{
 	public:
@@ -1964,7 +1966,7 @@ namespace sw
 	RValue<Float> Sqrt(RValue<Float> x);
 	RValue<Float> Round(RValue<Float> val);
 	RValue<Float> Trunc(RValue<Float> val);
-	RValue<Float> Frac(RValue<Float> val);
+	RValue<Float> Frac(RValue<Float> val, bool allowOne = false);
 	RValue<Float> Floor(RValue<Float> val);
 	RValue<Float> Ceil(RValue<Float> val);
 
@@ -2112,7 +2114,7 @@ namespace sw
 	RValue<Int4> CmpNLE(RValue<Float4> x, RValue<Float4> y);
 	RValue<Float4> Round(RValue<Float4> x);
 	RValue<Float4> Trunc(RValue<Float4> x);
-	RValue<Float4> Frac(RValue<Float4> x);
+	RValue<Float4> Frac(RValue<Float4> x, bool allowOne = false);
 	RValue<Float4> Floor(RValue<Float4> x);
 	RValue<Float4> Ceil(RValue<Float4> x);
 
@@ -2673,7 +2675,7 @@ namespace sw
 	}
 
 	template<class T>
-	RValue<T> IfThenElse(RValue<Bool> condition, const T &ifTrue, RValue<T> ifFalse)
+	RValue<T> IfThenElse(RValue<Bool> condition, const LValue<T> &ifTrue, RValue<T> ifFalse)
 	{
 		Value *trueValue = ifTrue.loadValue();
 
@@ -2681,7 +2683,7 @@ namespace sw
 	}
 
 	template<class T>
-	RValue<T> IfThenElse(RValue<Bool> condition, RValue<T> ifTrue, const T &ifFalse)
+	RValue<T> IfThenElse(RValue<Bool> condition, RValue<T> ifTrue, const LValue<T> &ifFalse)
 	{
 		Value *falseValue = ifFalse.loadValue();
 
@@ -2689,7 +2691,7 @@ namespace sw
 	}
 
 	template<class T>
-	RValue<T> IfThenElse(RValue<Bool> condition, const T &ifTrue, const T &ifFalse)
+	RValue<T> IfThenElse(RValue<Bool> condition, const LValue<T> &ifTrue, const LValue<T> &ifFalse)
 	{
 		Value *trueValue = ifTrue.loadValue();
 		Value *falseValue = ifFalse.loadValue();

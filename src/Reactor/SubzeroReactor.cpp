@@ -6547,9 +6547,29 @@ namespace sw
 		return Float4(Trunc(Float4(x))).x;
 	}
 
-	RValue<Float> Frac(RValue<Float> x)
+	RValue<Float> Frac(RValue<Float> x, bool allowOne)
 	{
-		return Float4(Frac(Float4(x))).x;
+		Float frc;
+
+		if(CPUID::SSE4_1)
+		{
+			frc = x - Floor(x);
+		}
+		else
+		{
+			frc = x - Float(Int(x));   // Signed fractional part.
+
+			frc += IfThenElse(frc < 0.0f, Float(1.0f), Float(0.0f));   // Add 1.0 if negative.
+		}
+
+		// x - floor(x) can be 1.0 for very small negative x.
+		if(allowOne)
+		{
+			return frc;
+		}
+
+		// Clamp against the value just below 1.0.
+		return Min(frc, As<Float>(Int(0x3F7FFFFF)));
 	}
 
 	RValue<Float> Floor(RValue<Float> x)
@@ -7004,7 +7024,7 @@ namespace sw
 		}
 	}
 
-	RValue<Float4> Frac(RValue<Float4> x)
+	RValue<Float4> Frac(RValue<Float4> x, bool allowOne)
 	{
 		Float4 frc;
 
@@ -7020,6 +7040,11 @@ namespace sw
 		}
 
 		// x - floor(x) can be 1.0 for very small negative x.
+		if(allowOne)
+		{
+			return frc;
+		}
+
 		// Clamp against the value just below 1.0.
 		return Min(frc, As<Float4>(Int4(0x3F7FFFFF)));
 	}

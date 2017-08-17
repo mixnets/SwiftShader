@@ -3730,7 +3730,7 @@ namespace sw
 		case FORMAT_L8:				return FORMAT_L8;
 		case FORMAT_A4L4:			return FORMAT_A8L8;
 		case FORMAT_L16:			return FORMAT_L16;
-		case FORMAT_A8L8:			return FORMAT_A8L8;
+		case FORMAT_A8L8:			return FORMAT_A8B8G8R8;
 		case FORMAT_L16F:           return FORMAT_X32B32G32R32F;
 		case FORMAT_A16L16F:        return FORMAT_A32B32G32R32F;
 		case FORMAT_L32F:           return FORMAT_X32B32G32R32F;
