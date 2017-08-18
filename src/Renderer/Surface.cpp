@@ -3110,8 +3110,8 @@ namespace sw
 	void *Surface::allocateBuffer(int width, int height, int depth, Format format)
 	{
 		// Render targets require 2x2 quads
-		int width2 = (width + 1) & ~1;
-		int height2 = (height + 1) & ~1;
+		int width2 = (width + 3) & ~1;
+		int height2 = (height + 3) & ~1;
 
 		// FIXME: Unpacking byte4 to short4 in the sampler currently involves reading 8 bytes,
 		// and stencil operations also read 8 bytes per four 8-bit stencil values,

@@ -2499,6 +2499,15 @@ namespace sw
 		return T(llvm::VectorType::get(T(Byte::getType()), 16));
 	}
 
+	RValue<Byte16> Swizzle(RValue<Byte16> x, int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15)
+	{
+		int pshufb[16] = {i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15};
+
+		Value *shuffle = Nucleus::createShuffleVector(x.value, x.value, pshufb);
+
+		return RValue<Byte16>(shuffle);
+	}
+
 	Type *SByte16::getType()
 	{
 		return T(llvm::VectorType::get(T(SByte::getType()), 16));
@@ -2508,7 +2517,7 @@ namespace sw
 	{
 		llvm::Function *pmaddubsw = llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::x86_ssse3_pmadd_ub_sw_128);
 
-		return As<Short8>(V(::builder->CreateCall2(pmaddubsw, x.value, y.value)));
+		return As<Short8>(V(::builder->CreateCall2(pmaddubsw, As<Short8>(x).value, As<Short8>(y).value)));
 	}
 
 	Short2::Short2(RValue<Short4> cast)

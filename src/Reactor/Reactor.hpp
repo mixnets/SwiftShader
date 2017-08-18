@@ -668,6 +668,8 @@ namespace sw
 //	RValue<Byte16> operator--(Byte16 &val, int);   // Post-decrement
 //	const Byte16 &operator--(Byte16 &val);   // Pre-decrement
 
+	RValue<Byte16> Swizzle(RValue<Byte16> x, int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11, int i12, int i13, int i14, int i15);
+
 	class SByte16 : public LValue<SByte16>
 	{
 	public:
