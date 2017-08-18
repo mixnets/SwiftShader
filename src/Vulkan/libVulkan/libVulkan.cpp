@@ -106,7 +106,7 @@ namespace vulkan
 		}
 
 		// TODO: Check more precisely for version
-		if (VK_MAKE_VERSION(1, 0, 0) > ClientVersion)
+		if (VK_MAKE_VERSION(1, 60, 0) < ClientVersion || VK_MAKE_VERSION(1, 0, 0) > ClientVersion)
 		{
 			return VK_ERROR_INCOMPATIBLE_DRIVER;
 		}
@@ -120,7 +120,7 @@ namespace vulkan
 				if (strcmp(pCreateInfo->ppEnabledExtensionNames[i], global_ext[j].extensionName) == 0)
 				{
 					foundExt = true;
-					break;
+					break;  
 				}
 			}
 
@@ -1249,7 +1249,7 @@ namespace vulkan
 					device->swiftshaderDevice->clear(&color, sw::Format::FORMAT_A8B8G8R8, device->surface, rect, 0xF);
 					// END TEST CODE
 				}
-			break;
+			break; 
 
 			case backend::Command::CopyImageBuffer:
 				{
