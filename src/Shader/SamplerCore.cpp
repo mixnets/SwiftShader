@@ -784,10 +784,24 @@ namespace sw
 		}
 	}
 
-	Vector4s sampleTexel_fast(Short4 uuuu, Short4 vvvv, const Pointer<Byte> &mipmap, Pointer<Byte> buffer[4])
+	Vector4s SamplerCore::sampleQuad2D_fast(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
 	{
-		uuuu = MulHigh(As<UShort4>(uuuu), *Pointer<UShort4>(mipmap + OFFSET(Mipmap, width)));
-		vvvv = MulHigh(As<UShort4>(vvvv), *Pointer<UShort4>(mipmap + OFFSET(Mipmap, height)));
+		Pointer<Byte> mipmap;
+		Pointer<Byte> buffer[4];
+		Vector4s c;
+
+		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
+
+		Short4 uuuu = Short4(Int4(u * Float4(1 << 16)));
+		Short4 vvvv = Short4(Int4(v * Float4(1 << 16)));
+
+		Short4 uuuu0 = uuuu - *Pointer<Short4>(mipmap + OFFSET(Mipmap,uHalf));
+		Short4 vvvv0 = vvvv - *Pointer<Short4>(mipmap + OFFSET(Mipmap,vHalf));
+	//	Short4 uuuu1 = uuuu + *Pointer<Short4>(mipmap + OFFSET(Mipmap,uHalf));
+	//	Short4 vvvv1 = vvvv + *Pointer<Short4>(mipmap + OFFSET(Mipmap,vHalf));
+
+		uuuu = MulHigh(As<UShort4>(uuuu0), *Pointer<UShort4>(mipmap + OFFSET(Mipmap, width)));
+		vvvv = MulHigh(As<UShort4>(vvvv0), *Pointer<UShort4>(mipmap + OFFSET(Mipmap, height)));
 
 		Short4 uuu2 = uuuu;
 		uuuu = As<Short4>(UnpackLow(uuuu, vvvv));
@@ -801,84 +815,66 @@ namespace sw
 		index[2] = Extract(As<Int2>(uuu2), 0);
 		index[3] = Extract(As<Int2>(uuu2), 1);
 
-		Vector4s c;
+		Int4 x, y, z, w;
+		UInt pitch = *Pointer<UInt>(mipmap + OFFSET(Mipmap,pitchP));
+		x = Insert(x, Pointer<Int>(buffer[0])[index[0]], 0);
+		x = Insert(x, Pointer<Int>(buffer[0])[index[0] + 1], 1);
+		x = Insert(x, Pointer<Int>(buffer[0])[index[0] + pitch], 2);
+		x = Insert(x, Pointer<Int>(buffer[0])[index[0] + pitch + 1], 3);
 
-		Byte4 c0 = Pointer<Byte4>(buffer[0])[index[0]];
-		Byte4 c1 = Pointer<Byte4>(buffer[0])[index[1]];
-		Byte4 c2 = Pointer<Byte4>(buffer[0])[index[2]];
-		Byte4 c3 = Pointer<Byte4>(buffer[0])[index[3]];
-		c.x = Unpack(c0, c1);
-		c.y = Unpack(c2, c3);
+		y = Insert(y, Pointer<Int>(buffer[0])[index[1]], 0);
+		y = Insert(y, Pointer<Int>(buffer[0])[index[1] + 1], 1);
+		y = Insert(y, Pointer<Int>(buffer[0])[index[1] + pitch], 2);
+		y = Insert(y, Pointer<Int>(buffer[0])[index[1] + pitch + 1], 3);
 
-		c.z = As<Short4>(UnpackHigh(c.x, c.y));
-		c.x = As<Short4>(UnpackLow(c.x, c.y));
-		c.y = c.x;
-		c.w = c.z;
-		c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
-		c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
-		c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
-		c.w = UnpackHigh(As<Byte8>(c.w), As<Byte8>(c.w));
+		z = Insert(z, Pointer<Int>(buffer[0])[index[2]], 0);
+		z = Insert(z, Pointer<Int>(buffer[0])[index[2] + 1], 1);
+		z = Insert(z, Pointer<Int>(buffer[0])[index[2] + pitch], 2);
+		z = Insert(z, Pointer<Int>(buffer[0])[index[2] + pitch + 1], 3);
 
-		return c;
-	}
+		w = Insert(w, Pointer<Int>(buffer[0])[index[3]], 0);
+		w = Insert(w, Pointer<Int>(buffer[0])[index[3] + 1], 1);
+		w = Insert(w, Pointer<Int>(buffer[0])[index[3] + pitch], 2);
+		w = Insert(w, Pointer<Int>(buffer[0])[index[3] + pitch + 1], 3);
 
-	Vector4s SamplerCore::sampleQuad2D_fast(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
-	{
-		Pointer<Byte> mipmap;
-		Pointer<Byte> buffer[4];
-		Vector4s c;
+		Byte16 rgba_x = Swizzle(As<Byte16>(x), 0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15);
+		Byte16 rgba_y = Swizzle(As<Byte16>(y), 0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15);
+		Byte16 rgba_z = Swizzle(As<Byte16>(z), 0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15);
+		Byte16 rgba_w = Swizzle(As<Byte16>(w), 0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15);
 
-		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
+		Float4 f0 = As<Float4>(rgba_x);
+		Float4 f1 = As<Float4>(rgba_y);
+		Float4 f2 = As<Float4>(rgba_z);
+		Float4 f3 = As<Float4>(rgba_w);
+		transpose4x4(f0, f1, f2, f3);
+		rgba_x = As<Byte16>(f0);
+		rgba_y = As<Byte16>(f1);
+		rgba_z = As<Byte16>(f2);
+		rgba_w = As<Byte16>(f3);
 
-		Short4 uuuu = Short4(Int4(u * Float4(1 << 16)));
-		Short4 vvvv = Short4(Int4(v * Float4(1 << 16)));
+		Int4 f0u = Int4(Frac(u * *Pointer<Float4>(mipmap + OFFSET(Mipmap, fWidth)) - Float4(0.5f)) * Float4(0x40));
+		f0u = (Int4(64) - f0u) | (f0u << 8);
+		f0u = As<Int4>(Swizzle(As<UShort8>(f0u), 0, 0, 2, 2, 4, 4, 6, 6));
 
-		Short4 uuuu0 = uuuu - *Pointer<Short4>(mipmap + OFFSET(Mipmap,uHalf));
-		Short4 vvvv0 = vvvv - *Pointer<Short4>(mipmap + OFFSET(Mipmap,vHalf));
-		Short4 uuuu1 = uuuu + *Pointer<Short4>(mipmap + OFFSET(Mipmap,uHalf));
-		Short4 vvvv1 = vvvv + *Pointer<Short4>(mipmap + OFFSET(Mipmap,vHalf));
+		Int4 f0v = Int4(Frac(v * *Pointer<Float4>(mipmap + OFFSET(Mipmap, fHeight)) - Float4(0.5f)) * Float4(0x40));
+		f0v = (Int4(64) - f0v) | (f0v << 16);
 
-		Vector4s c0 = sampleTexel_fast(uuuu0, vvvv0, mipmap, buffer);
-		Vector4s c1 = sampleTexel_fast(uuuu1, vvvv0, mipmap, buffer);
-		Vector4s c2 = sampleTexel_fast(uuuu0, vvvv1, mipmap, buffer);
-		Vector4s c3 = sampleTexel_fast(uuuu1, vvvv1, mipmap, buffer);
+		Short8 xx = MulAdd(rgba_x, As<SByte16>(f0u));
+		Int4 xxxx = MulAdd(xx, As<Short8>(f0v));
 
-		// Fractions
-		UShort4 f0u = As<UShort4>(uuuu0) * *Pointer<UShort4>(mipmap + OFFSET(Mipmap,width));
-		UShort4 f0v = As<UShort4>(vvvv0) * *Pointer<UShort4>(mipmap + OFFSET(Mipmap,height));
+		Short8 yy = MulAdd(rgba_y, As<SByte16>(f0u));
+		Int4 yyyy = MulAdd(yy, As<Short8>(f0v));
 
-		UShort4 f1u = ~f0u;
-		UShort4 f1v = ~f0v;
+		Short8 zz = MulAdd(rgba_z, As<SByte16>(f0u));
+		Int4 zzzz = MulAdd(zz, As<Short8>(f0v));
 
-		UShort4 f0u0v = MulHigh(f0u, f0v);
-		UShort4 f1u0v = MulHigh(f1u, f0v);
-		UShort4 f0u1v = MulHigh(f0u, f1v);
-		UShort4 f1u1v = MulHigh(f1u, f1v);
+		Short8 ww = MulAdd(rgba_w, As<SByte16>(f0u));
+		Int4 wwww = MulAdd(ww, As<Short8>(f0v));
 
-		// Bilinear interpolation
-		c0.x = MulHigh(As<UShort4>(c0.x), f1u1v);
-		c1.x = MulHigh(As<UShort4>(c1.x), f0u1v);
-		c2.x = MulHigh(As<UShort4>(c2.x), f1u0v);
-		c3.x = MulHigh(As<UShort4>(c3.x), f0u0v);
-		c.x = (c0.x + c1.x) + (c2.x + c3.x);
-
-		c0.y = MulHigh(As<UShort4>(c0.y), f1u1v);
-		c1.y = MulHigh(As<UShort4>(c1.y), f0u1v);
-		c2.y = MulHigh(As<UShort4>(c2.y), f1u0v);
-		c3.y = MulHigh(As<UShort4>(c3.y), f0u0v);
-		c.y = (c0.y + c1.y) + (c2.y + c3.y);
-
-		c0.z = MulHigh(As<UShort4>(c0.z), f1u1v);
-		c1.z = MulHigh(As<UShort4>(c1.z), f0u1v);
-		c2.z = MulHigh(As<UShort4>(c2.z), f1u0v);
-		c3.z = MulHigh(As<UShort4>(c3.z), f0u0v);
-		c.z = (c0.z + c1.z) + (c2.z + c3.z);
-
-		c0.w = MulHigh(As<UShort4>(c0.w), f1u1v);
-		c1.w = MulHigh(As<UShort4>(c1.w), f0u1v);
-		c2.w = MulHigh(As<UShort4>(c2.w), f1u0v);
-		c3.w = MulHigh(As<UShort4>(c3.w), f0u0v);
-		c.w = (c0.w + c1.w) + (c2.w + c3.w);
+		c.x = Short4(xxxx >> 4);
+		c.y = Short4(yyyy >> 4);
+		c.z = Short4(zzzz >> 4);
+		c.w = Short4(wwww >> 4);
 
 		return c;
 	}
@@ -891,7 +887,7 @@ namespace sw
 
 		if(!gather && !texelFetch)
 		{
-			return sampleQuad2D_fast(texture, u, v, w, offset, lod, face, secondLOD, function);
+			return sampleQuad2D_fast(texture, u, v, lod, face, secondLOD, function);
 		}
 
 		Pointer<Byte> mipmap;
@@ -1560,7 +1556,7 @@ namespace sw
 		{
 			lod = lodBias + Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
 		}
-
+//lod += 2.0f;
 		lod = Max(lod, *Pointer<Float>(texture + OFFSET(Texture, minLod)));
 		lod = Min(lod, *Pointer<Float>(texture + OFFSET(Texture, maxLod)));
 	}
