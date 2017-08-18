@@ -150,17 +150,17 @@ namespace sw
 					texture.depthLOD[3] = depth * exp2LOD;
 				}
 
-				if(Surface::isFloatFormat(internalTextureFormat))
+				//if(Surface::isFloatFormat(internalTextureFormat))
 				{
-					mipmap.fWidth[0] = (float)width / 65536.0f;
-					mipmap.fWidth[1] = (float)width / 65536.0f;
-					mipmap.fWidth[2] = (float)width / 65536.0f;
-					mipmap.fWidth[3] = (float)width / 65536.0f;
+					mipmap.fWidth[0] = (float)width;// / 65536.0f;
+					mipmap.fWidth[1] = (float)width;// / 65536.0f;
+					mipmap.fWidth[2] = (float)width;// / 65536.0f;
+					mipmap.fWidth[3] = (float)width;// / 65536.0f;
 
-					mipmap.fHeight[0] = (float)height / 65536.0f;
-					mipmap.fHeight[1] = (float)height / 65536.0f;
-					mipmap.fHeight[2] = (float)height / 65536.0f;
-					mipmap.fHeight[3] = (float)height / 65536.0f;
+					mipmap.fHeight[0] = (float)height;// / 65536.0f;
+					mipmap.fHeight[1] = (float)height;// / 65536.0f;
+					mipmap.fHeight[2] = (float)height;// / 65536.0f;
+					mipmap.fHeight[3] = (float)height;// / 65536.0f;
 
 					mipmap.fDepth[0] = (float)depth / 65536.0f;
 					mipmap.fDepth[1] = (float)depth / 65536.0f;
