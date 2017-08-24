@@ -46,7 +46,7 @@
 namespace es2
 {
 Context::Context(egl::Display *display, const Context *shareContext, EGLint clientVersion, const egl::Config *config)
-	: egl::Context(display), clientVersion(clientVersion), config(config)
+	: egl::Context(display), clientVersion(clientVersion), config(config), mResourceManager(impl)
 {
 	sw::Context *context = new sw::Context();
 	device = new es2::Device(context);
@@ -124,12 +124,12 @@ Context::Context(egl::Display *display, const Context *shareContext, EGLint clie
 
 	if(shareContext)
 	{
-		mResourceManager = shareContext->mResourceManager;
+		impl = shareContext->impl;
 		mResourceManager->addRef();
 	}
 	else
 	{
-		mResourceManager = new ResourceManager();
+		impl = new ResourceManager();
 	}
 
 	// [OpenGL ES 2.0.24] section 3.7 page 83:
@@ -260,7 +260,7 @@ Context::~Context()
 	delete mVertexDataManager;
 	delete mIndexDataManager;
 
-	mResourceManager->release();
+	mResourceManager.get()->release();
 	delete device;
 }
 
@@ -4309,6 +4309,8 @@ EGLenum Context::validateSharedImage(EGLenum target, GLuint name, GLuint texture
 
 egl::Image *Context::createSharedImage(EGLenum target, GLuint name, GLuint textureLevel)
 {
+	LockGuard atomic(this);
+
 	GLenum textureTarget = GL_NONE;
 
 	switch(target)

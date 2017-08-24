@@ -709,6 +709,7 @@ void CompileShader(GLuint shader)
 
 	if(context)
 	{
+		LockGuard atomic(context);
 		es2::Shader *shaderObject = context->getShader(shader);
 
 		if(!shaderObject)
@@ -1289,6 +1290,7 @@ void DeleteShader(GLuint shader)
 
 	if(context)
 	{
+		LockGuard atomic(context);
 		if(!context->getShader(shader))
 		{
 			if(context->getProgram(shader))
@@ -4732,6 +4734,7 @@ void ShaderSource(GLuint shader, GLsizei count, const GLchar *const *string, con
 
 	if(context)
 	{
+		LockGuard atomic(context);
 		es2::Shader *shaderObject = context->getShader(shader);
 
 		if(!shaderObject)
