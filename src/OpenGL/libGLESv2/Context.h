@@ -25,6 +25,7 @@
 #include "common/Object.hpp"
 #include "common/Image.hpp"
 #include "Renderer/Sampler.hpp"
+#include "Common/MutexLock.hpp"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -429,7 +430,7 @@ struct State
 	GLint packSkipImages;
 };
 
-class [[clang::lto_visibility_public]] Context : public egl::Context
+class [[clang::lto_visibility_public]] Context : public egl::Context, public sw::MutexLock
 {
 public:
 	Context(egl::Display *display, const Context *shareContext, EGLint clientVersion, const egl::Config *config);
@@ -772,7 +773,8 @@ private:
 	bool mDitherStateDirty;
 
 	Device *device;
-	ResourceManager *mResourceManager;
+	ResourceManagerPortal mResourceManager;
+	ResourceManager *impl;
 };
 }
 
