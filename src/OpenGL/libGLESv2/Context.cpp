@@ -46,7 +46,7 @@
 namespace es2
 {
 Context::Context(egl::Display *display, const Context *shareContext, EGLint clientVersion, const egl::Config *config)
-	: egl::Context(display), clientVersion(clientVersion), config(config)
+	: egl::Context(display), clientVersion(clientVersion), config(config), mResourceManager(impl)
 {
 	sw::Context *context = new sw::Context();
 	device = new es2::Device(context);
@@ -124,12 +124,12 @@ Context::Context(egl::Display *display, const Context *shareContext, EGLint clie
 
 	if(shareContext)
 	{
-		mResourceManager = shareContext->mResourceManager;
+		impl = shareContext->impl;
 		mResourceManager->addRef();
 	}
 	else
 	{
-		mResourceManager = new ResourceManager();
+		impl = new ResourceManager();
 	}
 
 	// [OpenGL ES 2.0.24] section 3.7 page 83:
@@ -267,7 +267,7 @@ Context::~Context()
 	delete mVertexDataManager;
 	delete mIndexDataManager;
 
-	mResourceManager->release();
+	mResourceManager.get()->release();
 	delete device;
 }
 
@@ -2180,7 +2180,8 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		case GL_MAX_PROGRAM_TEXEL_OFFSET:
 			// Note: SwiftShader has no actual texel offset limit, so this limit can be modified if required.
 			// In any case, any behavior outside the specified range is valid since the spec mentions:
-			// (see OpenGL ES 3.0.5, 3.8.10.1 Scale Factor and Level of Detail, p.153)			// "If any of the offset values are outside the range of the  implementation-defined values
+			// (see OpenGL ES 3.0.5, 3.8.10.1 Scale Factor and Level of Detail, p.153)
+			// "If any of the offset values are outside the range of the  implementation-defined values
 			//  MIN_PROGRAM_TEXEL_OFFSET and MAX_PROGRAM_TEXEL_OFFSET, results of the texture lookup are
 			//  undefined."
 			*params = MAX_PROGRAM_TEXEL_OFFSET;
@@ -2221,7 +2222,8 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 		case GL_MIN_PROGRAM_TEXEL_OFFSET:
 			// Note: SwiftShader has no actual texel offset limit, so this limit can be modified if required.
 			// In any case, any behavior outside the specified range is valid since the spec mentions:
-			// (see OpenGL ES 3.0.5, 3.8.10.1 Scale Factor and Level of Detail, p.153)			// "If any of the offset values are outside the range of the  implementation-defined values
+			// (see OpenGL ES 3.0.5, 3.8.10.1 Scale Factor and Level of Detail, p.153)
+			// "If any of the offset values are outside the range of the  implementation-defined values
 			//  MIN_PROGRAM_TEXEL_OFFSET and MAX_PROGRAM_TEXEL_OFFSET, results of the texture lookup are
 			//  undefined."
 			*params = MIN_PROGRAM_TEXEL_OFFSET;
@@ -4254,6 +4256,8 @@ EGLenum Context::validateSharedImage(EGLenum target, GLuint name, GLuint texture
 
 egl::Image *Context::createSharedImage(EGLenum target, GLuint name, GLuint textureLevel)
 {
+	LockGuard atomic(this);
+
 	GLenum textureTarget = GL_NONE;
 
 	switch(target)
