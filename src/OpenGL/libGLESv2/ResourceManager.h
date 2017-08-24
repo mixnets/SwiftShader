@@ -19,6 +19,7 @@
 #define LIBGLESV2_RESOURCEMANAGER_H_
 
 #include "common/NameSpace.hpp"
+#include "Common/MutexLock.hpp"
 
 #include <GLES2/gl2.h>
 
@@ -72,20 +73,23 @@ public:
 	void deleteSampler(GLuint sampler);
 	void deleteFenceSync(GLuint fenceSync);
 
-	Buffer *getBuffer(GLuint handle);
-	Shader *getShader(GLuint handle);
-	Program *getProgram(GLuint handle);
-	Texture *getTexture(GLuint handle);
-	Renderbuffer *getRenderbuffer(GLuint handle);
-	Sampler *getSampler(GLuint handle);
-	FenceSync *getFenceSync(GLuint handle);
+	Buffer *getBuffer(GLuint handle) const;
+	Shader *getShader(GLuint handle) const;
+	Program *getProgram(GLuint handle) const;
+	Texture *getTexture(GLuint handle) const;
+	Renderbuffer *getRenderbuffer(GLuint handle) const;
+	Sampler *getSampler(GLuint handle) const;
+	FenceSync *getFenceSync(GLuint handle) const;
 
 	void checkBufferAllocation(unsigned int buffer);
 	void checkTextureAllocation(GLuint texture, TextureType type);
 	void checkRenderbufferAllocation(GLuint handle);
 	void checkSamplerAllocation(GLuint sampler);
 
-	bool isSampler(GLuint sampler);
+	bool isSampler(GLuint sampler) const;
+
+	void lock() {mutex.lock();}
+	void unlock() {mutex.unlock();}
 
 private:
 	std::size_t mRefCount;
@@ -98,6 +102,58 @@ private:
 	gl::NameSpace<Renderbuffer> mRenderbufferNameSpace;
 	gl::NameSpace<Sampler> mSamplerNameSpace;
 	gl::NameSpace<FenceSync> mFenceSyncNameSpace;
+
+	sw::MutexLock mutex;
+};
+
+class ResourceManagerProxy
+{
+public:
+	ResourceManagerProxy(ResourceManager *resourceManager)
+		: resourceManager(resourceManager)
+	{
+		resourceManager->lock();
+	}
+
+	~ResourceManagerProxy()
+	{
+		resourceManager->unlock();
+	}
+
+	ResourceManager *operator->()
+	{
+		return resourceManager;
+	}
+
+private:
+	ResourceManager *resourceManager;
+};
+
+class ResourceManagerPortal
+{
+public:
+	ResourceManagerPortal(ResourceManager *&resourceManager)
+		: resourceManager(resourceManager)
+	{
+	}
+
+	ResourceManagerProxy operator->()
+	{
+		return ResourceManagerProxy(resourceManager);
+	}
+
+	ResourceManagerProxy operator->() const
+	{
+		return ResourceManagerProxy(resourceManager);
+	}
+
+	ResourceManager *get()
+	{
+		return resourceManager;
+	}
+
+private:
+	ResourceManager *const &resourceManager;
 };
 
 }
