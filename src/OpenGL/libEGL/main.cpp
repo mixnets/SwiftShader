@@ -58,12 +58,12 @@ Current *attachThread()
 
 	return current;
 }
-
+EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx);
 void detachThread()
 {
 	TRACE("()");
 
-	eglMakeCurrent(EGL_NO_DISPLAY, EGL_NO_CONTEXT, EGL_NO_SURFACE, EGL_NO_SURFACE);
+	egl::MakeCurrent(EGL_NO_DISPLAY, EGL_NO_CONTEXT, EGL_NO_SURFACE, EGL_NO_SURFACE);
 
 	sw::Thread::freeLocalStorage(currentTLS);
 }
@@ -350,11 +350,11 @@ EGLint ClientWaitSyncKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint flags, EGLTimeK
 EGLBoolean GetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, EGLint *value);
 __eglMustCastToProperFunctionPointerType GetProcAddress(const char *procname);
 }
-
+sw::MutexLock Atomic::mutex;
 extern "C"
 {
 EGLAPI EGLint EGLAPIENTRY eglGetError(void)
-{
+{Atomic a;
 	return egl::GetError();
 }
 
@@ -394,27 +394,27 @@ EGLAPI EGLBoolean EGLAPIENTRY eglGetConfigAttrib(EGLDisplay dpy, EGLConfig confi
 }
 
 EGLAPI EGLSurface EGLAPIENTRY eglCreateWindowSurface(EGLDisplay dpy, EGLConfig config, EGLNativeWindowType window, const EGLint *attrib_list)
-{
+{Atomic a;
 	return egl::CreateWindowSurface(dpy, config, window, attrib_list);
 }
 
 EGLAPI EGLSurface EGLAPIENTRY eglCreatePbufferSurface(EGLDisplay dpy, EGLConfig config, const EGLint *attrib_list)
-{
+{Atomic a;
 	return egl::CreatePbufferSurface(dpy, config, attrib_list);
 }
 
 EGLAPI EGLSurface EGLAPIENTRY eglCreatePixmapSurface(EGLDisplay dpy, EGLConfig config, EGLNativePixmapType pixmap, const EGLint *attrib_list)
-{
+{Atomic a;
 	return egl::CreatePixmapSurface(dpy, config, pixmap, attrib_list);
 }
 
 EGLAPI EGLBoolean EGLAPIENTRY eglDestroySurface(EGLDisplay dpy, EGLSurface surface)
-{
+{Atomic a;
 	return egl::DestroySurface(dpy, surface);
 }
 
 EGLAPI EGLBoolean EGLAPIENTRY eglQuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint *value)
-{
+{Atomic a;
 	return egl::QuerySurface(dpy, surface, attribute, value);
 }
 
@@ -434,27 +434,27 @@ EGLAPI EGLBoolean EGLAPIENTRY eglWaitClient(void)
 }
 
 EGLAPI EGLBoolean EGLAPIENTRY eglReleaseThread(void)
-{
+{Atomic a;
 	return egl::ReleaseThread();
 }
 
 EGLAPI EGLSurface EGLAPIENTRY eglCreatePbufferFromClientBuffer(EGLDisplay dpy, EGLenum buftype, EGLClientBuffer buffer, EGLConfig config, const EGLint *attrib_list)
-{
+{Atomic a;
 	return egl::CreatePbufferFromClientBuffer(dpy, buftype, buffer, config, attrib_list);
 }
 
 EGLAPI EGLBoolean EGLAPIENTRY eglSurfaceAttrib(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint value)
-{
+{Atomic a;
 	return egl::SurfaceAttrib(dpy, surface, attribute, value);
 }
 
 EGLAPI EGLBoolean EGLAPIENTRY eglBindTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
-{
+{Atomic a;
 	return egl::BindTexImage(dpy, surface, buffer);
 }
 
 EGLAPI EGLBoolean EGLAPIENTRY eglReleaseTexImage(EGLDisplay dpy, EGLSurface surface, EGLint buffer)
-{
+{Atomic a;
 	return egl::ReleaseTexImage(dpy, surface, buffer);
 }
 
@@ -464,37 +464,37 @@ EGLAPI EGLBoolean EGLAPIENTRY eglSwapInterval(EGLDisplay dpy, EGLint interval)
 }
 
 EGLAPI EGLContext EGLAPIENTRY eglCreateContext(EGLDisplay dpy, EGLConfig config, EGLContext share_context, const EGLint *attrib_list)
-{
+{Atomic a;
 	return egl::CreateContext(dpy, config, share_context, attrib_list);
 }
 
 EGLAPI EGLBoolean EGLAPIENTRY eglDestroyContext(EGLDisplay dpy, EGLContext ctx)
-{
+{Atomic a;
 	return egl::DestroyContext(dpy, ctx);
 }
 
 EGLAPI EGLBoolean EGLAPIENTRY eglMakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx)
-{
+{Atomic a;
 	return egl::MakeCurrent(dpy, draw, read, ctx);
 }
 
 EGLAPI EGLContext EGLAPIENTRY eglGetCurrentContext(void)
-{
+{Atomic a;
 	return egl::GetCurrentContext();
 }
 
 EGLAPI EGLSurface EGLAPIENTRY eglGetCurrentSurface(EGLint readdraw)
-{
+{Atomic a;
 	return egl::GetCurrentSurface(readdraw);
 }
 
 EGLAPI EGLDisplay EGLAPIENTRY eglGetCurrentDisplay(void)
-{
+{Atomic a;
 	return egl::GetCurrentDisplay();
 }
 
 EGLAPI EGLBoolean EGLAPIENTRY eglQueryContext(EGLDisplay dpy, EGLContext ctx, EGLint attribute, EGLint *value)
-{
+{Atomic a;
 	return egl::QueryContext(dpy, ctx, attribute, value);
 }
 
@@ -514,17 +514,17 @@ EGLAPI EGLBoolean EGLAPIENTRY eglSwapBuffers(EGLDisplay dpy, EGLSurface surface)
 }
 
 EGLAPI EGLBoolean EGLAPIENTRY eglCopyBuffers(EGLDisplay dpy, EGLSurface surface, EGLNativePixmapType target)
-{
+{Atomic a;
 	return egl::CopyBuffers(dpy, surface, target);
 }
 
 EGLAPI EGLImageKHR EGLAPIENTRY eglCreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attrib_list)
-{
+{Atomic a;
 	return egl::CreateImageKHR(dpy, ctx, target, buffer, attrib_list);
 }
 
 EGLAPI EGLBoolean EGLAPIENTRY eglDestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
-{
+{Atomic a;
 	return egl::DestroyImageKHR(dpy, image);
 }
 
@@ -534,12 +534,12 @@ EGLAPI EGLDisplay EGLAPIENTRY eglGetPlatformDisplayEXT(EGLenum platform, void *n
 }
 
 EGLAPI EGLSurface EGLAPIENTRY eglCreatePlatformWindowSurfaceEXT(EGLDisplay dpy, EGLConfig config, void *native_window, const EGLint *attrib_list)
-{
+{Atomic a;
 	return egl::CreatePlatformWindowSurfaceEXT(dpy, config, native_window, attrib_list);
 }
 
 EGLAPI EGLSurface EGLAPIENTRY eglCreatePlatformPixmapSurfaceEXT(EGLDisplay dpy, EGLConfig config, void *native_pixmap, const EGLint *attrib_list)
-{
+{Atomic a;
 	return egl::CreatePlatformPixmapSurfaceEXT(dpy, config, native_pixmap, attrib_list);
 }
 
