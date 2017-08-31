@@ -100,9 +100,9 @@ namespace sw
 			state.swizzleA = swizzleA;
 			state.highPrecisionFiltering = highPrecisionFiltering;
 
-			#if PERF_PROFILE
+		//	#if PERF_PROFILE
 				state.compressedFormat = Surface::isCompressed(externalTextureFormat);
-			#endif
+		//	#endif
 		}
 
 		return state;
@@ -397,7 +397,7 @@ namespace sw
 	}
 
 	MipmapType Sampler::mipmapFilter() const
-	{
+	{return mipmapFilterState;
 		if(mipmapFilterState != MIPMAP_NONE)
 		{
 			for(int i = 1; i < MIPMAP_LEVELS; i++)

@@ -187,7 +187,7 @@ namespace D3D9
 		void addQuery(sw::Query *query);
 		void stretchRect(Direct3DSurface9 *sourceSurface, const RECT *sourceRect, Direct3DSurface9 *destSurface, const RECT *destRect, D3DTEXTUREFILTERTYPE filter);
 
-	private:
+	protected:
 		static int typeStride(unsigned char streamType);
 		bool instanceData();
 		bool bindResources(Direct3DIndexBuffer9 *indexBuffer);

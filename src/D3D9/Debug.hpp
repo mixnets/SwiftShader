@@ -32,7 +32,7 @@ struct Trace
 {
 	Trace(const char *format, ...)
 	{
-		if(false)
+		if(true)
 		{
 			FILE *file = fopen("debug.txt", "a");
 

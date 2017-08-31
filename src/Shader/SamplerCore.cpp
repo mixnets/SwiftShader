@@ -542,16 +542,13 @@ namespace sw
 			}
 		}
 
-		if((state.swizzleR != SWIZZLE_RED) ||
-		   (state.swizzleG != SWIZZLE_GREEN) ||
-		   (state.swizzleB != SWIZZLE_BLUE) ||
-		   (state.swizzleA != SWIZZLE_ALPHA))
+		if(state.textureFormat == FORMAT_A8R8G8B8 &&
+		   state.mipmapFilter == MIPMAP_LINEAR &&
+		   state.addressingModeU == ADDRESSING_CLAMP &&
+		   state.textureFilter == FILTER_LINEAR)
 		{
-			const Vector4f col(c);
-			applySwizzle(state.swizzleR, c.x, col);
-			applySwizzle(state.swizzleG, c.y, col);
-			applySwizzle(state.swizzleB, c.z, col);
-			applySwizzle(state.swizzleA, c.w, col);
+			c.w.x = 0.5f;
+			c.w.y = Float(c.x.x);
 		}
 	}
 

@@ -923,13 +923,13 @@ namespace D3D9
 		return D3D_OK;
 	}
 
-	HRESULT Direct3DDevice9Ex::PresentEx(const RECT *,const RECT *,HWND,const RGNDATA *,DWORD)
+	HRESULT Direct3DDevice9Ex::PresentEx(const RECT *sourceRect, const RECT *destRect, HWND destWindowOverride, const RGNDATA *dirtyRegion, DWORD flags)
 	{
 		CriticalSection cs(this);
 
-		UNIMPLEMENTED();
+		TRACE("const RECT *sourceRect = 0x%0.8p, const RECT *destRect = 0x%0.8p, HWND destWindowOverride = %d, const RGNDATA *dirtyRegion = 0x%0.8p, DWORD flags = 0x%x", sourceRect, destRect, destWindowOverride, dirtyRegion, flags);
 
-		return D3D_OK;
+		return swapChain->Present(sourceRect, destRect, destWindowOverride, dirtyRegion, 0);
 	}
 
 	HRESULT Direct3DDevice9Ex::GetGPUThreadPriority(INT *)

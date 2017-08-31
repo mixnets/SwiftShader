@@ -1994,6 +1994,11 @@ namespace D3D9
 			return INVALIDCALL();
 		}
 
+		if(sampler >= D3DVERTEXTEXTURESAMPLER0)
+		{
+			sampler = 16 + (sampler - D3DVERTEXTEXTURESAMPLER0);
+		}
+
 		*texture = this->texture[sampler];
 
 		if(this->texture[sampler])

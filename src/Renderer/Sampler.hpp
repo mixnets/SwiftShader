@@ -143,9 +143,9 @@ namespace sw
 			SwizzleType swizzleA           : BITS(SWIZZLE_LAST);
 			bool highPrecisionFiltering    : 1;
 
-			#if PERF_PROFILE
+		//	#if PERF_PROFILE
 			bool compressedFormat          : 1;
-			#endif
+		//	#endif
 		};
 
 		Sampler();

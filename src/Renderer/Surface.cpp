@@ -3553,7 +3553,7 @@ namespace sw
 		case FORMAT_A8R3G3B2:
 			return FORMAT_A8R8G8B8;
 		case FORMAT_A8:
-			return FORMAT_A8;
+			return FORMAT_A8R8G8B8;
 		case FORMAT_R8I:
 			return FORMAT_R8I;
 		case FORMAT_R8UI:
@@ -3763,9 +3763,10 @@ namespace sw
 		case FORMAT_YV12_BT709:     return FORMAT_YV12_BT709;
 		case FORMAT_YV12_JFIF:      return FORMAT_YV12_JFIF;
 		default:
+			return FORMAT_A32B32G32R32F;
 			ASSERT(false);
 		}
-
+return FORMAT_A32B32G32R32F;
 		return FORMAT_NULL;
 	}
 
