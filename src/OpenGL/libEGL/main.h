@@ -33,11 +33,11 @@ namespace egl
 
 	struct Current
 	{
-		EGLint error;
-		EGLenum API;
-		Context *context;
-		Surface *drawSurface;
-		Surface *readSurface;
+		EGLint error= EGL_SUCCESS;
+		EGLenum API = EGL_OPENGL_ES_API;
+		Context *context = nullptr;
+		Surface *drawSurface = nullptr;
+		Surface *readSurface = nullptr;
 	};
 
 	void detachThread();

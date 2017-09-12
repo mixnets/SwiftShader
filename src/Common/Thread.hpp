@@ -19,16 +19,17 @@
 	#ifndef WIN32_LEAN_AND_MEAN
 		#define WIN32_LEAN_AND_MEAN
 	#endif
-	#include <windows.h>
+	#include <Windows.h>
 	#include <intrin.h>
 #else
 	#include <pthread.h>
 	#include <sched.h>
 	#include <unistd.h>
-	#define TLS_OUT_OF_INDEXES (pthread_key_t)(~0)
 #endif
 
-#include <stdlib.h>
+#if __cplusplus < 201103L && defined(__GNUC__)
+#define thread_local __thread
+#endif
 
 namespace sw
 {
@@ -45,18 +46,6 @@ namespace sw
 
 		static void yield();
 		static void sleep(int milliseconds);
-
-		#if defined(_WIN32)
-			typedef DWORD LocalStorageKey;
-		#else
-			typedef pthread_key_t LocalStorageKey;
-		#endif
-
-		static LocalStorageKey allocateLocalStorageKey();
-		static void freeLocalStorageKey(LocalStorageKey key);
-		static void *allocateLocalStorage(LocalStorageKey key, size_t size);
-		static void *getLocalStorage(LocalStorageKey key);
-		static void freeLocalStorage(LocalStorageKey key);
 
 	private:
 		struct Entry
@@ -129,71 +118,6 @@ namespace sw
 			Sleep(milliseconds);
 		#else
 			usleep(1000 * milliseconds);
-		#endif
-	}
-
-	inline Thread::LocalStorageKey Thread::allocateLocalStorageKey()
-	{
-		#if defined(_WIN32)
-			return TlsAlloc();
-		#else
-			LocalStorageKey key;
-			pthread_key_create(&key, free);
-			return key;
-		#endif
-	}
-
-	inline void Thread::freeLocalStorageKey(LocalStorageKey key)
-	{
-		#if defined(_WIN32)
-			TlsFree(key);
-		#else
-			pthread_key_delete(key);   // Using an invalid key is an error but not undefined behavior.
-		#endif
-	}
-
-	inline void *Thread::allocateLocalStorage(LocalStorageKey key, size_t size)
-	{
-		if(key == TLS_OUT_OF_INDEXES)
-		{
-			return nullptr;
-		}
-
-		freeLocalStorage(key);
-
-		void *storage = malloc(size);
-
-		#if defined(_WIN32)
-			TlsSetValue(key, storage);
-		#else
-			pthread_setspecific(key, storage);
-		#endif
-
-		return storage;
-	}
-
-	inline void *Thread::getLocalStorage(LocalStorageKey key)
-	{
-		#if defined(_WIN32)
-			return TlsGetValue(key);
-		#else
-			if(key == TLS_OUT_OF_INDEXES)   // Avoid undefined behavior.
-			{
-				return nullptr;
-			}
-
-			return pthread_getspecific(key);
-		#endif
-	}
-
-	inline void Thread::freeLocalStorage(LocalStorageKey key)
-	{
-		free(getLocalStorage(key));
-
-		#if defined(_WIN32)
-			TlsSetValue(key, nullptr);
-		#else
-			pthread_setspecific(key, nullptr);
 		#endif
 	}
 

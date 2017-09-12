@@ -27,8 +27,6 @@
 
 #include <EGL/eglext.h>
 
-static sw::Thread::LocalStorageKey currentTLS = TLS_OUT_OF_INDEXES;
-
 #if !defined(_MSC_VER)
 #define CONSTRUCTOR __attribute__((constructor))
 #define DESTRUCTOR __attribute__((destructor))
@@ -39,24 +37,11 @@ static sw::Thread::LocalStorageKey currentTLS = TLS_OUT_OF_INDEXES;
 
 namespace egl
 {
-Current *attachThread()
+thread_local Current current;
+
+void attachThread()
 {
 	TRACE("()");
-
-	if(currentTLS == TLS_OUT_OF_INDEXES)
-	{
-		currentTLS = sw::Thread::allocateLocalStorageKey();
-	}
-
-	Current *current = (Current*)sw::Thread::allocateLocalStorage(currentTLS, sizeof(Current));
-
-	current->error = EGL_SUCCESS;
-	current->API = EGL_OPENGL_ES_API;
-	current->context = nullptr;
-	current->drawSurface = nullptr;
-	current->readSurface = nullptr;
-
-	return current;
 }
 
 void detachThread()
@@ -65,7 +50,7 @@ void detachThread()
 
 	eglMakeCurrent(EGL_NO_DISPLAY, EGL_NO_CONTEXT, EGL_NO_SURFACE, EGL_NO_SURFACE);
 
-	sw::Thread::freeLocalStorage(currentTLS);
+	current = {};
 }
 
 CONSTRUCTOR void attachProcess()
@@ -91,7 +76,6 @@ DESTRUCTOR void detachProcess()
 	TRACE("()");
 
 	detachThread();
-	sw::Thread::freeLocalStorageKey(currentTLS);
 }
 }
 
@@ -164,116 +148,84 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved
 
 namespace egl
 {
-static Current *getCurrent(void)
-{
-	Current *current = (Current*)sw::Thread::getLocalStorage(currentTLS);
-
-	if(!current)
-	{
-		current = attachThread();
-	}
-
-	return current;
-}
-
 void setCurrentError(EGLint error)
 {
-	Current *current = getCurrent();
-
-	current->error = error;
+	current.error = error;
 }
 
 EGLint getCurrentError()
 {
-	Current *current = getCurrent();
-
-	return current->error;
+	return current.error;
 }
 
 void setCurrentAPI(EGLenum API)
 {
-	Current *current = getCurrent();
-
-	current->API = API;
+	current.API = API;
 }
 
 EGLenum getCurrentAPI()
 {
-	Current *current = getCurrent();
-
-	return current->API;
+	return current.API;
 }
 
 void setCurrentContext(egl::Context *ctx)
 {
-	Current *current = getCurrent();
-
 	if(ctx)
 	{
 		ctx->addRef();
 	}
 
-	if(current->context)
+	if(current.context)
 	{
-		current->context->release();
+		current.context->release();
 	}
 
-	current->context = ctx;
+	current.context = ctx;
 }
 
 NO_SANITIZE_FUNCTION egl::Context *getCurrentContext()
 {
-	Current *current = getCurrent();
-
-	return current->context;
+	return current.context;
 }
 
 void setCurrentDrawSurface(egl::Surface *surface)
 {
-	Current *current = getCurrent();
-
 	if(surface)
 	{
 		surface->addRef();
 	}
 
-	if(current->drawSurface)
+	if(current.drawSurface)
 	{
-		current->drawSurface->release();
+		current.drawSurface->release();
 	}
 
-	current->drawSurface = surface;
+	current.drawSurface = surface;
 }
 
 egl::Surface *getCurrentDrawSurface()
 {
-	Current *current = getCurrent();
-
-	return current->drawSurface;
+	return current.drawSurface;
 }
 
 void setCurrentReadSurface(egl::Surface *surface)
 {
-	Current *current = getCurrent();
-
 	if(surface)
 	{
 		surface->addRef();
 	}
 
-	if(current->readSurface)
+	if(current.readSurface)
 	{
-		current->readSurface->release();
+		current.readSurface->release();
 	}
 
-	current->readSurface = surface;
+	current.readSurface = surface;
 }
 
 egl::Surface *getCurrentReadSurface()
 {
-	Current *current = getCurrent();
-
-	return current->readSurface;
+	return current.readSurface;
 }
 
 void error(EGLint errorCode)
