@@ -33,6 +33,10 @@ namespace egl
 
 	struct Current
 	{
+		Current();
+
+		void init();
+
 		EGLint error;
 		EGLenum API;
 		Context *context;
