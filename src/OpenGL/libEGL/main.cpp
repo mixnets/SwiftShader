@@ -52,9 +52,7 @@ Current *attachThread()
 
 	if(!current)
 	{
-		current = new Current;
-
-		sw::Thread::setLocalStorage(currentTLS, current);
+		current = (Current*)sw::Thread::allocateLocalStorage(currentTLS, sizeof(Current));
 	}
 
 	current->error = EGL_SUCCESS;
@@ -72,8 +70,7 @@ void detachThread()
 
 	eglMakeCurrent(EGL_NO_DISPLAY, EGL_NO_CONTEXT, EGL_NO_SURFACE, EGL_NO_SURFACE);
 
-	delete (Current*)sw::Thread::getLocalStorage(currentTLS);
-	sw::Thread::setLocalStorage(currentTLS, nullptr);
+	sw::Thread::freeLocalStorage(currentTLS);
 }
 
 CONSTRUCTOR void attachProcess()
