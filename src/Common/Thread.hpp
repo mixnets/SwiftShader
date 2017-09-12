@@ -28,6 +28,10 @@
 	#define TLS_OUT_OF_INDEXES (pthread_key_t)(~0)
 #endif
 
+#if defined(__GNUC__) && __GNUC__ < 5
+#define thread_local __thread
+#endif
+
 namespace sw
 {
 	class Event;
@@ -49,11 +53,6 @@ namespace sw
 		#else
 			typedef pthread_key_t LocalStorageKey;
 		#endif
-
-		static LocalStorageKey allocateLocalStorageKey();
-		static void freeLocalStorageKey(LocalStorageKey key);
-		static void setLocalStorage(LocalStorageKey key, void *value);
-		static void *getLocalStorage(LocalStorageKey key);
 
 	private:
 		struct Entry
@@ -126,52 +125,6 @@ namespace sw
 			Sleep(milliseconds);
 		#else
 			usleep(1000 * milliseconds);
-		#endif
-	}
-
-	inline Thread::LocalStorageKey Thread::allocateLocalStorageKey()
-	{
-		#if defined(_WIN32)
-			return TlsAlloc();
-		#else
-			LocalStorageKey key;
-			pthread_key_create(&key, NULL);
-			return key;
-		#endif
-	}
-
-	inline void Thread::freeLocalStorageKey(LocalStorageKey key)
-	{
-		#if defined(_WIN32)
-			TlsFree(key);
-		#else
-			pthread_key_delete(key);   // Using an invalid key is an error but not undefined behavior.
-		#endif
-	}
-
-	inline void Thread::setLocalStorage(LocalStorageKey key, void *value)
-	{
-		#if defined(_WIN32)
-			TlsSetValue(key, value);
-		#else
-			if(key != TLS_OUT_OF_INDEXES)   // Avoid undefined behavior.
-			{
-				pthread_setspecific(key, value);
-			}
-		#endif
-	}
-
-	inline void *Thread::getLocalStorage(LocalStorageKey key)
-	{
-		#if defined(_WIN32)
-			return TlsGetValue(key);
-		#else
-			if(key == TLS_OUT_OF_INDEXES)   // Avoid undefined behavior.
-			{
-				return nullptr;
-			}
-
-			return pthread_getspecific(key);
 		#endif
 	}
 
