@@ -1607,7 +1607,7 @@ namespace sw2es
 	//	case sw::FORMAT_D32_LOCKABLE:  return 0;
 	//	case sw::FORMAT_S8_LOCKABLE:   return 8;
 		default:
-			UNREACHABLE(stencilFormat);
+		//	UNREACHABLE(stencilFormat);
 			return 0;
 		}
 	}
@@ -1833,7 +1833,7 @@ namespace sw2es
 		case sw::FORMAT_D32FS8_SHADOW:
 		case sw::FORMAT_D32FS8_TEXTURE: return 32;
 		default:
-			UNREACHABLE(depthFormat);
+		//	UNREACHABLE(depthFormat);
 			return 0;
 		}
 	}

@@ -442,6 +442,9 @@ public:
     Vmvn,
     Vneg,
     Vorr,
+    Vqadd,
+    Vqsub,
+    Vpaddq,
     Vshl,
     Vshr,
     Vsqrt,
@@ -582,7 +585,7 @@ class InstARM32UnaryopFP : public InstARM32Pred {
 
 public:
   static InstARM32UnaryopFP *create(Cfg *Func, Variable *Dest, Variable *Src,
-                                    CondARM32::Cond Predicate) {
+                                    CondARM32::Cond Predicate = CondARM32::AL) {
     return new (Func->allocate<InstARM32UnaryopFP>())
         InstARM32UnaryopFP(Func, Dest, Src, Predicate);
   }
@@ -1016,6 +1019,9 @@ using InstARM32Vmul = InstARM32ThreeAddrFP<InstARM32::Vmul>;
 using InstARM32Vmvn = InstARM32UnaryopFP<InstARM32::Vmvn>;
 using InstARM32Vneg = InstARM32UnaryopSignAwareFP<InstARM32::Vneg>;
 using InstARM32Vorr = InstARM32ThreeAddrFP<InstARM32::Vorr>;
+using InstARM32Vqadd = InstARM32ThreeAddrFP<InstARM32::Vqadd>;
+using InstARM32Vqsub = InstARM32ThreeAddrFP<InstARM32::Vqsub>;
+using InstARM32Vpaddq = InstARM32UnaryopFP<InstARM32::Vpaddq>;
 using InstARM32Vshl = InstARM32ThreeAddrSignAwareFP<InstARM32::Vshl>;
 using InstARM32Vshr = InstARM32ThreeAddrSignAwareFP<InstARM32::Vshr>;
 using InstARM32Vsub = InstARM32ThreeAddrFP<InstARM32::Vsub>;

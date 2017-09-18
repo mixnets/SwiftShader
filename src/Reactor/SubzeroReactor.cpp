@@ -2723,7 +2723,7 @@ namespace sw
 
 	RValue<Byte8> AddSat(RValue<Byte8> x, RValue<Byte8> y)
 	{
-		if(emulateIntrinsics)
+		if(emulateIntrinsics && false)
 		{
 			Byte8 result;
 			result = Insert(result, Saturate(UShort(Int(Extract(x, 0))) + UShort(Int(Extract(y, 0)))), 0);
@@ -2753,7 +2753,7 @@ namespace sw
 
 	RValue<Byte8> SubSat(RValue<Byte8> x, RValue<Byte8> y)
 	{
-		if(emulateIntrinsics)
+		if(emulateIntrinsics && false)
 		{
 			Byte8 result;
 			result = Insert(result, Saturate(UShort(Int(Extract(x, 0))) - UShort(Int(Extract(y, 0)))), 0);
@@ -3050,7 +3050,7 @@ namespace sw
 
 	RValue<SByte8> AddSat(RValue<SByte8> x, RValue<SByte8> y)
 	{
-		if(emulateIntrinsics)
+		if(emulateIntrinsics && false)
 		{
 			SByte8 result;
 			result = Insert(result, Saturate(Short(Int(Extract(x, 0))) + Short(Int(Extract(y, 0)))), 0);
@@ -3080,7 +3080,7 @@ namespace sw
 
 	RValue<SByte8> SubSat(RValue<SByte8> x, RValue<SByte8> y)
 	{
-		if(emulateIntrinsics)
+		if(emulateIntrinsics && false)
 		{
 			SByte8 result;
 			result = Insert(result, Saturate(Short(Int(Extract(x, 0))) - Short(Int(Extract(y, 0)))), 0);
@@ -3527,7 +3527,7 @@ namespace sw
 
 	RValue<Short4> AddSat(RValue<Short4> x, RValue<Short4> y)
 	{
-		if(emulateIntrinsics)
+		if(emulateIntrinsics && false)
 		{
 			Short4 result;
 			result = Insert(result, Saturate(Int(Extract(x, 0)) + Int(Extract(y, 0))), 0);
@@ -3553,7 +3553,7 @@ namespace sw
 
 	RValue<Short4> SubSat(RValue<Short4> x, RValue<Short4> y)
 	{
-		if(emulateIntrinsics)
+		if(emulateIntrinsics && false)
 		{
 			Short4 result;
 			result = Insert(result, Saturate(Int(Extract(x, 0)) - Int(Extract(y, 0))), 0);
@@ -3954,7 +3954,7 @@ namespace sw
 
 	RValue<UShort4> AddSat(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		if(emulateIntrinsics)
+		if(emulateIntrinsics && false)
 		{
 			UShort4 result;
 			result = Insert(result, SaturateUShort(Int(Extract(x, 0)) + Int(Extract(y, 0))), 0);
@@ -3980,7 +3980,7 @@ namespace sw
 
 	RValue<UShort4> SubSat(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		if(emulateIntrinsics)
+		if(emulateIntrinsics && false)
 		{
 			UShort4 result;
 			result = Insert(result, SaturateUShort(Int(Extract(x, 0)) - Int(Extract(y, 0))), 0);
@@ -5973,10 +5973,26 @@ namespace sw
 
 	RValue<Int> SignMask(RValue<Int4> x)
 	{
-		if(emulateIntrinsics)
+		if(emulateIntrinsics && true)
 		{
-			Int4 xx = (x >> 31) & Int4(0x00000001, 0x00000002, 0x00000004, 0x00000008);
-			return Extract(xx, 0) | Extract(xx, 1) | Extract(xx, 2) | Extract(xx, 3);
+			RValue<Int4> xx = (x >> 31) & Int4(0x00000001, 0x00000002, 0x00000004, 0x00000008);
+			//return Extract(xx, 0) | Extract(xx, 1) | Extract(xx, 2) | Extract(xx, 3);
+
+			Ice::Variable *xxx = ::function->makeVariable(Ice::IceType_v4i32);
+			{const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::VectorPairwiseAdd, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+			auto target = ::context->getConstantUndef(Ice::IceType_i32);
+			auto vpaddq = Ice::InstIntrinsicCall::create(::function, 1, xxx, target, intrinsic);
+			vpaddq->addArg(xx.value);
+			::basicBlock->appendInst(vpaddq);}
+
+			Ice::Variable *xxxx = ::function->makeVariable(Ice::IceType_v4i32);
+			{const Ice::Intrinsics::IntrinsicInfo intrinsic2 = {Ice::Intrinsics::VectorPairwiseAdd, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+			auto target2 = ::context->getConstantUndef(Ice::IceType_i32);
+			auto vpaddq2 = Ice::InstIntrinsicCall::create(::function, 1, xxxx, target2, intrinsic2);
+			vpaddq2->addArg(xxx);
+			::basicBlock->appendInst(vpaddq2);}
+
+			return Extract(RValue<Int4>(V(xxxx)), 0);
 		}
 		else
 		{
