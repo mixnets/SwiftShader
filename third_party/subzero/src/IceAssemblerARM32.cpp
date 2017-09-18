@@ -2359,6 +2359,25 @@ void AssemblerARM32::vadds(const Operand *OpSd, const Operand *OpSn,
   emitVFPsss(Cond, VaddsOpcode, OpSd, OpSn, OpSm, Vadds);
 }
 
+void AssemblerARM32::vpaddq(const Operand *OpQd, const Operand *OpQm) {
+  // This instruction corresponds to a VPADD on sequential Dm and Dn registers.
+  // VPADD - ARM section A8.8.280, encoding A1:
+  //   vpadd.<dt> <Dd>, <Dm>, <Dn>
+  //
+  // 111100100Dssnnnndddd1011NQM1mmmm where Ddddd=<Dd>, Mmmmm=<Dm>, and
+  // Nnnnn=<Dn> and ss is the encoding of <dt>.
+  const Type ElmtTy = typeElementType(OpQd->getType());
+  assert(ElmtTy != IceType_i64 && "vpaddq doesn't allow i64!");
+  constexpr const char *Vpaddq = "vpaddq";
+  const IValueT Dd = mapQRegToDReg(encodeQRegister(OpQd, "Qd", Vpaddq));
+  const IValueT Dm = mapQRegToDReg(encodeQRegister(OpQm, "Qm", Vpaddq));
+  const IValueT Dn = Dm + 1;
+  const IValueT VpaddOpcode =
+      B25 | B11 | B9 | B8 | B4 | (encodeElmtType(ElmtTy) << 20);
+  constexpr bool UseQRegs = false;
+  emitSIMDBase(VpaddOpcode, Dd, Dm, Dn, UseQRegs, isFloatingType(ElmtTy));
+}
+
 void AssemblerARM32::vaddqi(Type ElmtTy, const Operand *OpQd,
                             const Operand *OpQm, const Operand *OpQn) {
   // VADD (integer) - ARM section A8.8.282, encoding A1:
@@ -3379,6 +3398,62 @@ void AssemblerARM32::vsubd(const Operand *OpDd, const Operand *OpDn,
   constexpr const char *Vsubd = "vsubd";
   constexpr IValueT VsubdOpcode = B21 | B20 | B6;
   emitVFPddd(Cond, VsubdOpcode, OpDd, OpDn, OpDm, Vsubd);
+}
+
+void AssemblerARM32::vqaddqi(Type ElmtTy, const Operand *OpQd,
+                            const Operand *OpQm, const Operand *OpQn) {
+  // VQADD (integer) - ARM section A8.6.369, encoding A1:
+  //   vqadd<c><q>.s<size> {<Qd>,} <Qn>, <Qm>
+  //
+  // 111100100Dssnnn0ddd00000N1M1mmm0 where Dddd=OpQd, Nnnn=OpQn, Mmmm=OpQm,
+  // size is 8, 16, 32, or 64.
+  assert(isScalarIntegerType(ElmtTy) &&
+         "vqaddqi expects vector with integer element type");
+  constexpr const char *Vsubqi = "vsubqi";
+  constexpr IValueT VsubqiOpcode = B4;
+  emitSIMDqqq(VsubqiOpcode, ElmtTy, OpQd, OpQm, OpQn, Vsubqi);
+}
+
+void AssemblerARM32::vqaddqu(Type ElmtTy, const Operand *OpQd,
+                            const Operand *OpQm, const Operand *OpQn) {
+  // VQADD (integer) - ARM section A8.6.369, encoding A1:
+  //   vqadd<c><q>.s<size> {<Qd>,} <Qn>, <Qm>
+  //
+  // 111100110Dssnnn0ddd00000N1M1mmm0 where Dddd=OpQd, Nnnn=OpQn, Mmmm=OpQm,
+  // size is 8, 16, 32, or 64.
+  assert(isScalarIntegerType(ElmtTy) &&
+         "vqaddqi expects vector with integer element type");
+  constexpr const char *Vsubqi = "vsubqi";
+  constexpr IValueT VsubqiOpcode = B24 | B4;
+  emitSIMDqqq(VsubqiOpcode, ElmtTy, OpQd, OpQm, OpQn, Vsubqi);
+}
+
+void AssemblerARM32::vqsubqi(Type ElmtTy, const Operand *OpQd,
+                            const Operand *OpQm, const Operand *OpQn) {
+  // VQSUB (integer) - ARM section A8.6.369, encoding A1:
+  //   vqsub<c><q>.s<size> {<Qd>,} <Qn>, <Qm>
+  //
+  // 111100100Dssnnn0ddd00010N1M1mmm0 where Dddd=OpQd, Nnnn=OpQn, Mmmm=OpQm,
+  // size is 8, 16, 32, or 64.
+  assert(isScalarIntegerType(ElmtTy) &&
+         "vqsubqi expects vector with integer element type");
+  constexpr const char *Vsubqi = "vqsubqi";
+  constexpr IValueT VsubqiOpcode = B9 | B4;
+  emitSIMDqqq(VsubqiOpcode, ElmtTy, OpQd, OpQm, OpQn, Vsubqi);
+}
+
+void AssemblerARM32::vqsubqu(Type ElmtTy, const Operand *OpQd,
+                            const Operand *OpQm, const Operand *OpQn) {
+  // VQSUB (integer) - ARM section A8.6.369, encoding A1:
+  //   vqsub<c><q>.s<size> {<Qd>,} <Qn>, <Qm>
+  //
+  // 111100110Dssnnn0ddd00010N1M1mmm0 where Dddd=OpQd, Nnnn=OpQn, Mmmm=OpQm,
+  // size is 8, 16, 32, or 64.
+  assert(isScalarIntegerType(ElmtTy) &&
+         "vqsubqi expects vector with integer element type");
+  constexpr const char *Vsubqi = "vqsubqu";
+  constexpr IValueT VsubqiOpcode = B24 | B9 | B4;
+  emitSIMDqqq(VsubqiOpcode, ElmtTy, OpQd, OpQm, OpQn, Vsubqi);
 }
 
 void AssemblerARM32::vsubqi(Type ElmtTy, const Operand *OpQd,

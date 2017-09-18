@@ -334,6 +334,9 @@ public:
   void vadds(const Operand *OpSd, const Operand *OpSn, const Operand *OpSm,
              CondARM32::Cond Cond);
 
+  // Pairwise add of source vector elements, stored in lower half of destination.
+  void vpaddq(const Operand *OpQd, const Operand *OpQm);
+
   // Integer vector add.
   void vaddqi(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
               const Operand *OpQn);
@@ -593,6 +596,18 @@ public:
   // Integer vector subtract.
   void vsubqi(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
               const Operand *OpQn);
+
+  // Integer vector saturating subtract.
+  void vqsubqi(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
+               const Operand *OpQn);
+  void vqsubqu(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
+               const Operand *OpQn);
+
+  // Integer vector saturating add.
+  void vqaddqi(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
+               const Operand *OpQn);
+  void vqaddqu(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
+               const Operand *OpQn);
 
   // Float vector subtract
   void vsubqf(const Operand *OpQd, const Operand *OpQm, const Operand *OpQn);

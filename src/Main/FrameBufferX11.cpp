@@ -142,7 +142,7 @@ namespace sw
 
 		libX11->XSync(x_display, False);
 
-		if(false)   // Draw the framerate on screen
+		if(true)   // Draw the framerate on screen
 		{
 			static double fpsTime = sw::Timer::seconds();
 			static int framesSec = 0;
