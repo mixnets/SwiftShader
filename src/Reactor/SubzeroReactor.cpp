@@ -63,13 +63,9 @@ namespace
 
 namespace
 {
-	#if !defined(__i386__) && defined(_M_IX86)
-		#define __i386__ 1
-	#endif
-
-	#if !defined(__x86_64__) && (defined(_M_AMD64) || defined (_M_X64))
-		#define __x86_64__ 1
-	#endif
+	#undef __i386__
+	#undef __x86_64__
+	#define __arm__ 1
 
 	class CPUID
 	{
@@ -485,8 +481,14 @@ namespace sw
 
 		void seek(uint64_t Off) override { position = Off; }
 
-		const void *getEntry() override
+		static void nop()
 		{
+			volatile int q = 0;
+			q++;
+		}
+
+		const void *getEntry() override
+		{return nop;
 			if(!entry)
 			{
 				position = std::numeric_limits<std::size_t>::max();   // Can't stream more data after this
@@ -2817,32 +2819,15 @@ namespace sw
 
 	RValue<SByte8> operator>>(RValue<SByte8> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			SByte8 result;
-			result = Insert(result, Extract(lhs, 0) >> SByte(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) >> SByte(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) >> SByte(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) >> SByte(rhs), 3);
-			result = Insert(result, Extract(lhs, 4) >> SByte(rhs), 4);
-			result = Insert(result, Extract(lhs, 5) >> SByte(rhs), 5);
-			result = Insert(result, Extract(lhs, 6) >> SByte(rhs), 6);
-			result = Insert(result, Extract(lhs, 7) >> SByte(rhs), 7);
+		#if defined(__i386__) || defined(__x86_64__)
+			// SSE2 doesn't support byte vector shifts, so shift as shorts and recombine.
+			RValue<Short4> hi = (As<Short4>(lhs) >> rhs) & Short4(0xFF00u);
+			RValue<Short4> lo = As<Short4>(As<UShort4>((As<Short4>(lhs) << 8) >> rhs) >> 8);
 
-			return result;
-		}
-		else
-		{
-			#if defined(__i386__) || defined(__x86_64__)
-				// SSE2 doesn't support byte vector shifts, so shift as shorts and recombine.
-				RValue<Short4> hi = (As<Short4>(lhs) >> rhs) & Short4(0xFF00u);
-				RValue<Short4> lo = As<Short4>(As<UShort4>((As<Short4>(lhs) << 8) >> rhs) >> 8);
-
-				return As<SByte8>(hi | lo);
-			#else
-				return RValue<SByte8>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
-			#endif
-		}
+			return As<SByte8>(hi | lo);
+		#else
+			return RValue<SByte8>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
+		#endif
 	}
 
 	RValue<Int> SignMask(RValue<Byte8> x)
@@ -3389,38 +3374,12 @@ namespace sw
 
 	RValue<Short4> operator<<(RValue<Short4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			Short4 result;
-			result = Insert(result, Extract(lhs, 0) << Short(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) << Short(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) << Short(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) << Short(rhs), 3);
-
-			return result;
-		}
-		else
-		{
-			return RValue<Short4>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<Short4>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<Short4> operator>>(RValue<Short4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			Short4 result;
-			result = Insert(result, Extract(lhs, 0) >> Short(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) >> Short(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) >> Short(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) >> Short(rhs), 3);
-
-			return result;
-		}
-		else
-		{
-			return RValue<Short4>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<Short4>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<Short4> operator+=(Short4 &lhs, RValue<Short4> rhs)
@@ -3872,38 +3831,12 @@ namespace sw
 
 	RValue<UShort4> operator<<(RValue<UShort4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			UShort4 result;
-			result = Insert(result, Extract(lhs, 0) << UShort(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) << UShort(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) << UShort(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) << UShort(rhs), 3);
-
-			return result;
-		}
-		else
-		{
-			return RValue<UShort4>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<UShort4>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<UShort4> operator>>(RValue<UShort4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			UShort4 result;
-			result = Insert(result, Extract(lhs, 0) >> UShort(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) >> UShort(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) >> UShort(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) >> UShort(rhs), 3);
-
-			return result;
-		}
-		else
-		{
-			return RValue<UShort4>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<UShort4>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<UShort4> operator<<=(UShort4 &lhs, unsigned char rhs)
@@ -4123,46 +4056,12 @@ namespace sw
 
 	RValue<Short8> operator<<(RValue<Short8> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			Short8 result;
-			result = Insert(result, Extract(lhs, 0) << Short(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) << Short(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) << Short(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) << Short(rhs), 3);
-			result = Insert(result, Extract(lhs, 4) << Short(rhs), 4);
-			result = Insert(result, Extract(lhs, 5) << Short(rhs), 5);
-			result = Insert(result, Extract(lhs, 6) << Short(rhs), 6);
-			result = Insert(result, Extract(lhs, 7) << Short(rhs), 7);
-
-			return result;
-		}
-		else
-		{
-			return RValue<Short8>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<Short8>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<Short8> operator>>(RValue<Short8> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			Short8 result;
-			result = Insert(result, Extract(lhs, 0) >> Short(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) >> Short(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) >> Short(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) >> Short(rhs), 3);
-			result = Insert(result, Extract(lhs, 4) >> Short(rhs), 4);
-			result = Insert(result, Extract(lhs, 5) >> Short(rhs), 5);
-			result = Insert(result, Extract(lhs, 6) >> Short(rhs), 6);
-			result = Insert(result, Extract(lhs, 7) >> Short(rhs), 7);
-
-			return result;
-		}
-		else
-		{
-			return RValue<Short8>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<Short8>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<Int4> MulAdd(RValue<Short8> x, RValue<Short8> y)
@@ -4257,46 +4156,12 @@ namespace sw
 
 	RValue<UShort8> operator<<(RValue<UShort8> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			UShort8 result;
-			result = Insert(result, Extract(lhs, 0) << UShort(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) << UShort(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) << UShort(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) << UShort(rhs), 3);
-			result = Insert(result, Extract(lhs, 4) << UShort(rhs), 4);
-			result = Insert(result, Extract(lhs, 5) << UShort(rhs), 5);
-			result = Insert(result, Extract(lhs, 6) << UShort(rhs), 6);
-			result = Insert(result, Extract(lhs, 7) << UShort(rhs), 7);
-
-			return result;
-		}
-		else
-		{
-			return RValue<UShort8>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<UShort8>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<UShort8> operator>>(RValue<UShort8> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			UShort8 result;
-			result = Insert(result, Extract(lhs, 0) >> UShort(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) >> UShort(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) >> UShort(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) >> UShort(rhs), 3);
-			result = Insert(result, Extract(lhs, 4) >> UShort(rhs), 4);
-			result = Insert(result, Extract(lhs, 5) >> UShort(rhs), 5);
-			result = Insert(result, Extract(lhs, 6) >> UShort(rhs), 6);
-			result = Insert(result, Extract(lhs, 7) >> UShort(rhs), 7);
-
-			return result;
-		}
-		else
-		{
-			return RValue<UShort8>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<UShort8>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<UShort8> operator+(RValue<UShort8> lhs, RValue<UShort8> rhs)
@@ -5211,34 +5076,12 @@ namespace sw
 
 	RValue<Int2> operator<<(RValue<Int2> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			Int2 result;
-			result = Insert(result, Extract(lhs, 0) << Int(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) << Int(rhs), 1);
-
-			return result;
-		}
-		else
-		{
-			return RValue<Int2>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<Int2>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<Int2> operator>>(RValue<Int2> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			Int2 result;
-			result = Insert(result, Extract(lhs, 0) >> Int(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) >> Int(rhs), 1);
-
-			return result;
-		}
-		else
-		{
-			return RValue<Int2>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<Int2>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<Int2> operator+=(Int2 &lhs, RValue<Int2> rhs)
@@ -5432,34 +5275,12 @@ namespace sw
 
 	RValue<UInt2> operator<<(RValue<UInt2> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			UInt2 result;
-			result = Insert(result, Extract(lhs, 0) << UInt(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) << UInt(rhs), 1);
-
-			return result;
-		}
-		else
-		{
-			return RValue<UInt2>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<UInt2>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<UInt2> operator>>(RValue<UInt2> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			UInt2 result;
-			result = Insert(result, Extract(lhs, 0) >> UInt(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) >> UInt(rhs), 1);
-
-			return result;
-		}
-		else
-		{
-			return RValue<UInt2>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<UInt2>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<UInt2> operator+=(UInt2 &lhs, RValue<UInt2> rhs)
@@ -5746,38 +5567,12 @@ namespace sw
 
 	RValue<Int4> operator<<(RValue<Int4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			Int4 result;
-			result = Insert(result, Extract(lhs, 0) << Int(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) << Int(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) << Int(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) << Int(rhs), 3);
-
-			return result;
-		}
-		else
-		{
-			return RValue<Int4>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<Int4>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<Int4> operator>>(RValue<Int4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			Int4 result;
-			result = Insert(result, Extract(lhs, 0) >> Int(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) >> Int(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) >> Int(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) >> Int(rhs), 3);
-
-			return result;
-		}
-		else
-		{
-			return RValue<Int4>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<Int4>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<Int4> operator<<(RValue<Int4> lhs, RValue<Int4> rhs)
@@ -6164,38 +5959,12 @@ namespace sw
 
 	RValue<UInt4> operator<<(RValue<UInt4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			UInt4 result;
-			result = Insert(result, Extract(lhs, 0) << UInt(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) << UInt(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) << UInt(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) << UInt(rhs), 3);
-
-			return result;
-		}
-		else
-		{
-			return RValue<UInt4>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<UInt4>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<UInt4> operator>>(RValue<UInt4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
-		{
-			UInt4 result;
-			result = Insert(result, Extract(lhs, 0) >> UInt(rhs), 0);
-			result = Insert(result, Extract(lhs, 1) >> UInt(rhs), 1);
-			result = Insert(result, Extract(lhs, 2) >> UInt(rhs), 2);
-			result = Insert(result, Extract(lhs, 3) >> UInt(rhs), 3);
-
-			return result;
-		}
-		else
-		{
-			return RValue<UInt4>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
-		}
+		return RValue<UInt4>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
 	}
 
 	RValue<UInt4> operator<<(RValue<UInt4> lhs, RValue<UInt4> rhs)

@@ -2442,6 +2442,10 @@ public:
     return legalizeToReg(Target, Swapped ? Src0 : Src1);
   }
 
+  Operand *src1() const {
+    return Src1;
+  }
+
 protected:
   Operand *const Src0;
   Operand *const Src1;
@@ -3436,8 +3440,13 @@ void TargetARM32::lowerArithmetic(const InstArithmetic *Instr) {
         _lsl(T, Src0R, Src1R);
       }
     } else {
-      auto *Src1R = Srcs.unswappedSrc1R(this);
-      _vshl(T, Src0R, Src1R)->setSignType(InstARM32::FS_Unsigned);
+	  if (Srcs.hasConstOperand()) {
+		ConstantInteger32 *ShAmt = llvm::cast<ConstantInteger32>(Srcs.src1());
+		_vshl(T, Src0R, ShAmt);
+	  } else {
+		  auto *Src1R = Srcs.unswappedSrc1R(this);
+        _vshl(T, Src0R, Src1R)->setSignType(InstARM32::FS_Unsigned);   // FIXME: Why set sign?
+	  }
     }
     _mov(Dest, T);
     return;
@@ -3455,10 +3464,15 @@ void TargetARM32::lowerArithmetic(const InstArithmetic *Instr) {
         _lsr(T, Src0R, Src1R);
       }
     } else {
-      auto *Src1R = Srcs.unswappedSrc1R(this);
-      auto *Src1RNeg = makeReg(Src1R->getType());
-      _vneg(Src1RNeg, Src1R);
-      _vshl(T, Src0R, Src1RNeg)->setSignType(InstARM32::FS_Unsigned);
+	  if (Srcs.hasConstOperand()) {
+		ConstantInteger32 *ShAmt = llvm::cast<ConstantInteger32>(Srcs.src1());
+		_vshr(T, Src0R, ShAmt)->setSignType(InstARM32::FS_Unsigned);
+	  } else {
+		auto *Src1R = Srcs.unswappedSrc1R(this);
+        auto *Src1RNeg = makeReg(Src1R->getType());
+        _vneg(Src1RNeg, Src1R);
+        _vshl(T, Src0R, Src1RNeg)->setSignType(InstARM32::FS_Unsigned);
+	  }
     }
     _mov(Dest, T);
     return;
@@ -3475,10 +3489,15 @@ void TargetARM32::lowerArithmetic(const InstArithmetic *Instr) {
         _asr(T, Src0R, Srcs.unswappedSrc1RShAmtImm(this));
       }
     } else {
-      auto *Src1R = Srcs.unswappedSrc1R(this);
-      auto *Src1RNeg = makeReg(Src1R->getType());
-      _vneg(Src1RNeg, Src1R);
-      _vshl(T, Src0R, Src1RNeg)->setSignType(InstARM32::FS_Signed);
+	  if (Srcs.hasConstOperand()) {
+		ConstantInteger32 *ShAmt = llvm::cast<ConstantInteger32>(Srcs.src1());
+		_vshr(T, Src0R, ShAmt)->setSignType(InstARM32::FS_Signed);
+	  } else {
+		auto *Src1R = Srcs.unswappedSrc1R(this);
+        auto *Src1RNeg = makeReg(Src1R->getType());
+        _vneg(Src1RNeg, Src1R);
+        _vshl(T, Src0R, Src1RNeg)->setSignType(InstARM32::FS_Signed);
+	  }
     }
     _mov(Dest, T);
     return;
