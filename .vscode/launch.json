@@ -6,10 +6,10 @@
             "name": "Glass",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/build/OGLESIntroducingPVRApi",
+            "program": "${workspaceRoot}/debug/OGLESIntroducingPVRApi",
             "args": ["LD_LIBRARY_PATH=./"],
             "stopAtEntry": false,
-            "cwd": "${workspaceRoot}/build/",
+            "cwd": "${workspaceRoot}/debug/",
             "environment": [],
             "externalConsole": true,
             "linux": {

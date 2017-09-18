@@ -3581,7 +3581,7 @@ void AssemblerARM32::vshrqic(Type ElmtTy, const Operand *OpQd,
   //   vshr Qd, Qm, #Imm
   //
   // 1111001U1Diiiiiidddd0101LQM1mmmm where Ddddd=Qd, Mmmmm=Qm, iiiiii=Imm6,
-  // 0=U, 1=Q, 0=L.
+  // U=0, Q=1, L=0.
   assert(isScalarIntegerType(ElmtTy) &&
          "vshr expects vector with integer element type");
   constexpr const char *Vshr = "vshr";
@@ -3597,11 +3597,11 @@ void AssemblerARM32::vshrquc(Type ElmtTy, const Operand *OpQd,
   //   vshr Qd, Qm, #Imm
   //
   // 1111001U1Diiiiiidddd0101LQM1mmmm where Ddddd=Qd, Mmmmm=Qm, iiiiii=Imm6,
-  // 0=U, 1=Q, 0=L.
+  // U=1, Q=1, L=0.
   assert(isScalarIntegerType(ElmtTy) &&
          "vshr expects vector with integer element type");
   constexpr const char *Vshr = "vshr";
-  constexpr IValueT VshrOpcode = B23 | B4;
+  constexpr IValueT VshrOpcode = B24 | B23 | B4;
   emitSIMDShiftqqc(VshrOpcode, OpQd, OpQm,
                    encodeSIMDShiftImm6(ST_Vshr, ElmtTy, Imm6), Vshr);
 }
