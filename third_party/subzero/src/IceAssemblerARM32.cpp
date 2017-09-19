@@ -606,6 +606,23 @@ void verifyRegNotPcWhenSetFlags(IValueT Reg, bool SetFlags,
                              "=pc not allowed when CC=1");
 }
 
+enum SIMDShiftType { ST_Vshl, ST_Vshr };
+IValueT encodeSIMDShiftImm6(SIMDShiftType Shift, Type ElmtTy,
+                            const IValueT Imm) {
+  assert(Imm > 0);
+  const SizeT MaxShift = getScalarIntBitWidth(ElmtTy);
+  assert(Imm < MaxShift);
+  assert(ElmtTy == IceType_i8 || ElmtTy == IceType_i16 ||
+         ElmtTy == IceType_i32);
+  const IValueT VshlImm = Imm - MaxShift;
+  const IValueT VshrImm = 2 * MaxShift - Imm;
+  return ((Shift == ST_Vshl) ? VshlImm : VshrImm) & (2 * MaxShift - 1);
+}
+IValueT encodeSIMDShiftImm6(SIMDShiftType Shift, Type ElmtTy,
+                            const ConstantInteger32 *Imm6) {
+  const IValueT Imm = Imm6->getValue();
+  return encodeSIMDShiftImm6(Shift, ElmtTy, Imm);
+}
 } // end of anonymous namespace
 
 namespace Ice {
@@ -3245,6 +3262,44 @@ void AssemblerARM32::vmulqi(Type ElmtTy, const Operand *OpQd,
   emitSIMDqqq(VmulqiOpcode, ElmtTy, OpQd, OpQn, OpQm, Vmulqi);
 }
 
+void AssemblerARM32::vmulh(Type ElmtTy, const Operand *OpQd,
+                           const Operand *OpQn, const Operand *OpQm, bool Unsigned) {
+  // VMULL (integer and polynomial) - ARM section A8.8.350, encoding A1:
+  //   vmull<c>.<dt> <Qd>, <Qn>, <Qm>
+  //
+  // 1111001U1Dssnnnndddd11o0N0M0mmmm
+  assert(isScalarIntegerType(ElmtTy) &&
+         "vmull expects vector with integer element type");
+  assert(ElmtTy != IceType_i64 && "vmull on i64 vector not allowed");
+  constexpr const char *Vmull = "vmull";
+
+  constexpr IValueT ElmtShift = 20;
+  const IValueT ElmtSize = encodeElmtType(ElmtTy);
+  assert(Utils::IsUint(2, ElmtSize));
+
+  const IValueT VmullOpcode = B25 | (Unsigned ? B24 : 0) | B23 | (B20) | B11 | B10;
+
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmull);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vmull);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vmull);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloatTy = false;
+  emitSIMDBase(VmullOpcode | (ElmtSize << ElmtShift), Dd, Dn, Dm, UseQRegs,
+               IsFloatTy);
+
+  constexpr IValueT VshrnOpcode = B25 | B23 | B11 | B4;
+  const IValueT Imm6 = encodeSIMDShiftImm6(ST_Vshr, IceType_i32, 16);
+
+  emitSIMDBase(VshrnOpcode | Imm6, Dd, 0, Dd, UseQRegs, IsFloatTy);
+
+  //emitSIMDqqq(VmulqiOpcode, ElmtTy, OpQd, OpQn, OpQm, Vmulqi);
+}
+
 void AssemblerARM32::vmulqf(const Operand *OpQd, const Operand *OpQn,
                             const Operand *OpQm) {
   // VMUL (floating-point) - ARM section A8.8.351, encoding A1:
@@ -3585,22 +3640,6 @@ void AssemblerARM32::vshlqi(Type ElmtTy, const Operand *OpQd,
   constexpr IValueT VshlOpcode = B10 | B6;
   emitSIMDqqq(VshlOpcode, ElmtTy, OpQd, OpQn, OpQm, Vshl);
 }
-
-namespace {
-enum SIMDShiftType { ST_Vshl, ST_Vshr };
-IValueT encodeSIMDShiftImm6(SIMDShiftType Shift, Type ElmtTy,
-                            const ConstantInteger32 *Imm6) {
-  const IValueT Imm = Imm6->getValue();
-  assert(Imm > 0);
-  const SizeT MaxShift = getScalarIntBitWidth(ElmtTy);
-  assert(Imm < MaxShift);
-  assert(ElmtTy == IceType_i8 || ElmtTy == IceType_i16 ||
-         ElmtTy == IceType_i32);
-  const IValueT VshlImm = Imm - MaxShift;
-  const IValueT VshrImm = 2 * MaxShift - Imm;
-  return ((Shift == ST_Vshl) ? VshlImm : VshrImm) & (2 * MaxShift - 1);
-}
-} // end of anonymous namespace
 
 void AssemblerARM32::vshlqc(Type ElmtTy, const Operand *OpQd,
                             const Operand *OpQm,

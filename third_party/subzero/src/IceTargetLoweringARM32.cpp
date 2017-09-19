@@ -5344,12 +5344,14 @@ void TargetARM32::lowerIntrinsicCall(const InstIntrinsicCall *Instr) {
     UnimplementedLoweringError(this, Instr);
     return;
   }
-  case Intrinsics::MultiplyHighSigned: {
-    UnimplementedLoweringError(this, Instr);
-    return;
-  }
+  case Intrinsics::MultiplyHighSigned:
   case Intrinsics::MultiplyHighUnsigned: {
-    UnimplementedLoweringError(this, Instr);
+    bool Unsigned = (ID == Intrinsics::MultiplyHighUnsigned);
+    Variable *Src0 = legalizeToReg(Instr->getArg(0));
+    Variable *Src1 = legalizeToReg(Instr->getArg(1));
+	Variable *T = makeReg(DestTy);
+    _vmulh(T, Src0, Src1, Unsigned);
+	_mov(Dest, T);
     return;
   }
   case Intrinsics::Nearbyint: {

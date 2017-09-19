@@ -1116,6 +1116,33 @@ template <> void InstARM32Vqmovn2::emitIAS(const Cfg *Func) const {
   assert(!Asm->needsTextFixup());
 }
 
+template <> void InstARM32Vmulh::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Operand *Src0 = getSrc(0);
+  Type SrcTy = Src0->getType();
+  bool Unsigned = true;
+  switch (SrcTy) {
+  default:
+    llvm::report_fatal_error("Vmulh not defined on type " +
+                             typeStdString(SrcTy));
+  case IceType_v8i16:
+  //case IceType_v4i32:
+    switch (Sign) {
+    case InstARM32::FS_None: // defaults to unsigned.
+    case InstARM32::FS_Unsigned:
+      Unsigned = true;
+      Asm->vmulh(typeElementType(SrcTy), Dest, getSrc(0), getSrc(1), Unsigned);
+      break;
+    case InstARM32::FS_Signed:
+      Unsigned = false;
+      Asm->vmulh(typeElementType(SrcTy), Dest, getSrc(0), getSrc(1), Unsigned);
+      break;
+    }
+    break;
+  }
+  assert(!Asm->needsTextFixup());
+}
+
 template <> void InstARM32Vmul::emitIAS(const Cfg *Func) const {
   auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
   const Variable *Dest = getDest();
@@ -1722,6 +1749,7 @@ template <> const char *InstARM32Vsub::Opcode = "vsub";
 template <> const char *InstARM32ThreeAddrFP<InstARM32::Vqadd>::Opcode = "vqadd";
 template <> const char *InstARM32ThreeAddrFP<InstARM32::Vqsub>::Opcode = "vqsub";
 template <> const char *InstARM32ThreeAddrFP<InstARM32::Vqmovn2>::Opcode = "vqmovn2";
+template <> const char *InstARM32ThreeAddrFP<InstARM32::Vmulh>::Opcode = "vmulh";
 // Four-addr ops
 template <> const char *InstARM32Mla::Opcode = "mla";
 template <> const char *InstARM32Mls::Opcode = "mls";
@@ -3215,6 +3243,7 @@ template class InstARM32ThreeAddrFP<InstARM32::Vqadd>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vqsub>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vqadd>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vqmovn2>;
+template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vmulh>;
 template class InstARM32UnaryopFP<InstARM32::Vpaddq>;
 
 template class InstARM32LoadBase<InstARM32::Ldr>;
