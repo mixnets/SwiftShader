@@ -5270,7 +5270,6 @@ void TargetARM32::lowerIntrinsicCall(const InstIntrinsicCall *Instr) {
     return;
   }
   case Intrinsics::Fabs: {
-    Type DestTy = Dest->getType();
     Variable *T = makeReg(DestTy);
     _vabs(T, legalizeToReg(Instr->getArg(0)));
     _mov(Dest, T);
@@ -5305,7 +5304,7 @@ void TargetARM32::lowerIntrinsicCall(const InstIntrinsicCall *Instr) {
     assert(isScalarFloatingType(Dest->getType()) ||
            getFlags().getApplicationBinaryInterface() != ::Ice::ABI_PNaCl);
     Variable *Src = legalizeToReg(Instr->getArg(0));
-    Variable *T = makeReg(Dest->getType());
+    Variable *T = makeReg(DestTy);
     _vsqrt(T, Src);
     _mov(Dest, T);
     return;
@@ -5325,10 +5324,12 @@ void TargetARM32::lowerIntrinsicCall(const InstIntrinsicCall *Instr) {
     return;
   case Intrinsics::AddSaturateSigned:
   case Intrinsics::AddSaturateUnsigned: {
-    bool Unsigned = (ID == Intrinsics::SubtractSaturateUnsigned);
+    bool Unsigned = (ID == Intrinsics::AddSaturateUnsigned);
     Variable *Src0 = legalizeToReg(Instr->getArg(0));
     Variable *Src1 = legalizeToReg(Instr->getArg(1));
-    _vqadd(Dest, Src0, Src1, Unsigned);
+	Variable *T = makeReg(DestTy);
+    _vqadd(T, Src0, Src1, Unsigned);
+	_mov(Dest, T);
     return;
   }
   case Intrinsics::LoadSubVector: {
@@ -5368,20 +5369,26 @@ void TargetARM32::lowerIntrinsicCall(const InstIntrinsicCall *Instr) {
     bool Unsigned = (ID == Intrinsics::SubtractSaturateUnsigned);
     Variable *Src0 = legalizeToReg(Instr->getArg(0));
     Variable *Src1 = legalizeToReg(Instr->getArg(1));
-    _vqsub(Dest, Src0, Src1, Unsigned);
+	Variable *T = makeReg(DestTy);
+    _vqsub(T, Src0, Src1, Unsigned);
+	_mov(Dest, T);
     return;
   }
-  case Intrinsics::VectorPackSigned: {
-    UnimplementedLoweringError(this, Instr);
-    return;
-  }
+  case Intrinsics::VectorPackSigned:
   case Intrinsics::VectorPackUnsigned: {
-    UnimplementedLoweringError(this, Instr);
+    bool Unsigned = (ID == Intrinsics::VectorPackUnsigned);
+    Variable *Src0 = legalizeToReg(Instr->getArg(0));
+    Variable *Src1 = legalizeToReg(Instr->getArg(1));
+	Variable *T = makeReg(DestTy);
+    _vqmovn2(T, Src0, Src1, Unsigned);
+	_mov(Dest, T);
     return;
   }
   case Intrinsics::VectorPairwiseAdd: {
     Variable *Src = legalizeToReg(Instr->getArg(0));
-    _vpaddq(Dest, Src);
+	Variable *T = makeReg(DestTy);
+    _vpaddq(T, Src);
+	_mov(Dest, T);
     return;
   }
   default: // UnknownIntrinsic
