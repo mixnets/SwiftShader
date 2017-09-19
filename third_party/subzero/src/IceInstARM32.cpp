@@ -1089,6 +1089,30 @@ template <> void InstARM32Vqsub::emitIAS(const Cfg *Func) const {
   assert(!Asm->needsTextFixup());
 }
 
+template <> void InstARM32Vqmovn2::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Operand *Src0 = getSrc(0);
+  Type SrcTy = Src0->getType();
+  switch (SrcTy) {
+  default:
+    llvm::report_fatal_error("Vqmovn2 not defined on type " +
+                             typeStdString(SrcTy));
+  case IceType_v8i16:
+  case IceType_v4i32:
+    switch (Sign) {
+    case InstARM32::FS_None: // defaults to unsigned.
+    case InstARM32::FS_Unsigned:
+      Asm->vqmovn2u(typeElementType(SrcTy), Dest, getSrc(0), getSrc(1));
+      break;
+    case InstARM32::FS_Signed:
+      Asm->vqmovn2i(typeElementType(SrcTy), Dest, getSrc(0), getSrc(1));
+      break;
+    }
+    break;
+  }
+  assert(!Asm->needsTextFixup());
+}
+
 template <> void InstARM32Vmul::emitIAS(const Cfg *Func) const {
   auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
   const Variable *Dest = getDest();
@@ -1692,8 +1716,9 @@ template <> const char *InstARM32UnaryopFP<InstARM32::Vneg>::Opcode = "vneg";
 template <> const char *InstARM32ThreeAddrFP<InstARM32::Vshl>::Opcode = "vshl";
 template <> const char *InstARM32ThreeAddrFP<InstARM32::Vshr>::Opcode = "vshr";
 template <> const char *InstARM32Vsub::Opcode = "vsub";
-template <> const char *InstARM32Vqadd::Opcode = "vqadd";
-template <> const char *InstARM32Vqsub::Opcode = "vqsub";
+template <> const char *InstARM32ThreeAddrFP<InstARM32::Vqadd>::Opcode = "vqadd";
+template <> const char *InstARM32ThreeAddrFP<InstARM32::Vqsub>::Opcode = "vqsub";
+template <> const char *InstARM32ThreeAddrFP<InstARM32::Vqmovn2>::Opcode = "vqmovn2";
 // Four-addr ops
 template <> const char *InstARM32Mla::Opcode = "mla";
 template <> const char *InstARM32Mls::Opcode = "mls";
@@ -3184,7 +3209,9 @@ template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vshl>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vshr>;
 template class InstARM32ThreeAddrFP<InstARM32::Vsub>;
 template class InstARM32ThreeAddrFP<InstARM32::Vqadd>;
-template class InstARM32ThreeAddrFP<InstARM32::Vqsub>;
+template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vqsub>;
+template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vqadd>;
+template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vqmovn2>;
 template class InstARM32UnaryopFP<InstARM32::Vpaddq>;
 
 template class InstARM32LoadBase<InstARM32::Ldr>;
