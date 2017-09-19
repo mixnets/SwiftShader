@@ -527,6 +527,10 @@ public:
   void vmulh(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
              const Operand *OpQm, bool Unsigned);
 
+  // Integer vector multiply add pairwise.
+  void vmlap(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
+             const Operand *OpQm);
+
   // Float vector multiply.
   void vmulqf(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
 

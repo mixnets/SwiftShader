@@ -3564,7 +3564,7 @@ namespace sw
 
 	RValue<Int2> MulAdd(RValue<Short4> x, RValue<Short4> y)
 	{
-		if(emulateIntrinsics)
+		if(emulateIntrinsics && false)
 		{
 			Int2 result;
 			result = Insert(result, Int(Extract(x, 0)) * Int(Extract(y, 0)) + Int(Extract(x, 1)) * Int(Extract(y, 1)), 0);
