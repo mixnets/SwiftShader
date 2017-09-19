@@ -3538,7 +3538,7 @@ namespace sw
 
 	RValue<Short4> MulHigh(RValue<Short4> x, RValue<Short4> y)
 	{
-		if(emulateIntrinsics)
+		if(emulateIntrinsics && false)
 		{
 			Short4 result;
 			result = Insert(result, Short((Int(Extract(x, 0)) * Int(Extract(y, 0))) >> 16), 0);
@@ -3969,7 +3969,7 @@ namespace sw
 
 	RValue<UShort4> MulHigh(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		if(emulateIntrinsics)
+		if(emulateIntrinsics && false)
 		{
 			UShort4 result;
 			result = Insert(result, UShort((UInt(Extract(x, 0)) * UInt(Extract(y, 0))) >> 16), 0);

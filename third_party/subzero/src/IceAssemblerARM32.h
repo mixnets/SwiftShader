@@ -523,6 +523,10 @@ public:
   void vmulqi(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
               const Operand *OpQm);
 
+  // Integer vector multiply high.
+  void vmulh(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
+             const Operand *OpQm, bool Unsigned);
+
   // Float vector multiply.
   void vmulqf(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
 
