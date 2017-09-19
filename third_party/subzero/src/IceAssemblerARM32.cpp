@@ -3302,6 +3302,65 @@ void AssemblerARM32::vmulh(Type ElmtTy, const Operand *OpQd,
   //emitSIMDqqq(VmulqiOpcode, ElmtTy, OpQd, OpQn, OpQm, Vmulqi);
 }
 
+void AssemblerARM32::vmlap(Type ElmtTy, const Operand *OpQd,
+                           const Operand *OpQn, const Operand *OpQm) {
+  // VMULL (integer and polynomial) - ARM section A8.8.350, encoding A1:
+  //   vmull<c>.<dt> <Qd>, <Qn>, <Qm>
+  //
+  // 1111001U1Dssnnnndddd11o0N0M0mmmm
+  assert(isScalarIntegerType(ElmtTy) &&
+         "vmull expects vector with integer element type");
+  assert(ElmtTy != IceType_i64 && "vmull on i64 vector not allowed");
+  constexpr const char *Vmull = "vmull";
+
+  constexpr IValueT ElmtShift = 20;
+  const IValueT ElmtSize = encodeElmtType(ElmtTy);
+  assert(Utils::IsUint(2, ElmtSize));
+
+               bool Unsigned = false;
+  const IValueT VmullOpcode = B25 | (Unsigned ? B24 : 0) | B23 | (B20) | B11 | B10;
+
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmull);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vmull);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vmull);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloatTy = false;
+  emitSIMDBase(VmullOpcode | (ElmtSize << ElmtShift), Dd, Dn, Dm, UseQRegs,
+               IsFloatTy);
+
+  // This instruction corresponds to a VPADD on sequential Dm and Dn registers.
+  // VPADD - ARM section A8.8.280, encoding A1:
+  //   vpadd.<dt> <Dd>, <Dm>, <Dn>
+  //
+  // 111100100Dssnnnndddd1011NQM1mmmm where Ddddd=<Dd>, Mmmmm=<Dm>, and
+  // Nnnnn=<Dn> and ss is the encoding of <dt>.
+  assert(ElmtTy != IceType_i64 && "vpaddq doesn't allow i64!");
+  constexpr const char *Vpaddq = "vpaddq";
+  const IValueT VpaddOpcode =
+      B25 | B11 | B9 | B8 | B4 | ((encodeElmtType(ElmtTy) + 1) << 20);
+  emitSIMDBase(VpaddOpcode, Dd, Dd, Dd + 1, UseQRegs, IsFloatTy);
+
+
+/*
+  // VPADDL - ARM section A8.8.280, encoding A1:
+  //   vpaddl.<dt> <Dd>, <Dm>, <Dn>
+  //
+  // 111100111D11ss00dddd0010UQM0mmmm
+  // 111100100Dssnnnndddd1011NQM1mmmm where Ddddd=<Dd>, Mmmmm=<Dm>, and
+  // Nnnnn=<Dn> and ss is the encoding of <dt>.
+  assert(ElmtTy != IceType_i64 && "vpaddq doesn't allow i64!");
+  constexpr const char *Vpaddq = "vpaddq";
+  const IValueT VpaddOpcode =
+      B25 | B24 | B23 | B21 | B20 | B9 | (encodeElmtType(ElmtTy) << 18);
+  emitSIMDBase(VpaddOpcode, Dd, 0, Dd, UseQRegs, IsFloatTy);
+*/
+}
+
 void AssemblerARM32::vmulqf(const Operand *OpQd, const Operand *OpQn,
                             const Operand *OpQm) {
   // VMUL (floating-point) - ARM section A8.8.351, encoding A1:

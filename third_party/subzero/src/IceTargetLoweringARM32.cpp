@@ -5341,7 +5341,11 @@ void TargetARM32::lowerIntrinsicCall(const InstIntrinsicCall *Instr) {
     return;
   }
   case Intrinsics::MultiplyAddPairs: {
-    UnimplementedLoweringError(this, Instr);
+    Variable *Src0 = legalizeToReg(Instr->getArg(0));
+    Variable *Src1 = legalizeToReg(Instr->getArg(1));
+	Variable *T = makeReg(DestTy);
+    _vmlap(T, Src0, Src1);
+	_mov(Dest, T);
     return;
   }
   case Intrinsics::MultiplyHighSigned:
