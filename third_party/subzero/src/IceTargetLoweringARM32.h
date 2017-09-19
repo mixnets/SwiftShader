@@ -918,6 +918,10 @@ protected:
     Context.insert<InstARM32Vqsub>(Dest, Src0, Src1)
         ->setSignType(Unsigned ? InstARM32::FS_Unsigned : InstARM32::FS_Signed);
   }
+  void _vqmovn2(Variable *Dest, Variable *Src0, Variable *Src1, bool Unsigned) {
+    Context.insert<InstARM32Vqmovn2>(Dest, Src0, Src1)
+        ->setSignType(Unsigned ? InstARM32::FS_Unsigned : InstARM32::FS_Signed);
+  }
   void _vpaddq(Variable *Dest, Variable *Src) {
     Context.insert<InstARM32Vpaddq>(Dest, Src);
   }

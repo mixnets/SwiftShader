@@ -3470,6 +3470,50 @@ void AssemblerARM32::vsubqi(Type ElmtTy, const Operand *OpQd,
   emitSIMDqqq(VsubqiOpcode, ElmtTy, OpQd, OpQm, OpQn, Vsubqi);
 }
 
+void AssemblerARM32::vqmovn2(Type ElmtTy, const Operand *OpQd,
+                             const Operand *OpQm, const Operand *OpQn, bool Unsigned) {
+  // VQMOVN - ARM section A8.6.369, encoding A1:
+  //   VQMOVN{U}N<c>.<type><size> <Dd>, <Qm>
+  //
+  // 111100111D11ss10dddd0010opM0mmm0 where Ddddd=OpQd, op = 10, Mmmm=OpQm,
+  // ss is 00 (16-bit), 01 (32-bit), or 10 (64-bit).
+
+  constexpr const char *Vqmovn = "vqmovn";
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloatTy = false;
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vqmovn);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vqmovn);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vqmovn);
+  IValueT VqmovnOpcode = B25 | B24 | B23 | B21 | B20 | B17 | B9 | (Unsigned ? B6 : B7);
+
+  constexpr IValueT ElmtShift = 18;
+  IValueT ElmtSize = 0;
+  switch (ElmtTy) {
+  case IceType_i16:
+    ElmtSize = 0;
+    break;
+  case IceType_i32:
+    ElmtSize = 1;
+    break;
+  case IceType_i64:
+    ElmtSize = 2;
+    break;
+  default:
+    llvm::report_fatal_error("SIMD op: Don't understand element type " +
+                             typeStdString(ElmtTy));
+    llvm::report_fatal_error(std::string(Vqmovn) + ": element type " + typeString(ElmtTy) +
+                             " not allowed");
+  }
+  VqmovnOpcode |= (ElmtSize << ElmtShift);
+
+  // Narrow first source operand to lower half of destination.
+  emitSIMDBase(VqmovnOpcode, mapQRegToDReg(Qd) + 0, 0,
+               mapQRegToDReg(Qm), UseQRegs, IsFloatTy);
+  // Narrow second source operand to upper half of destination.
+  emitSIMDBase(VqmovnOpcode, mapQRegToDReg(Qd) + 1, 0,
+               mapQRegToDReg(Qn), UseQRegs, IsFloatTy);
+}
+
 void AssemblerARM32::vsubqf(const Operand *OpQd, const Operand *OpQn,
                             const Operand *OpQm) {
   // VSUB (floating-point) - ARM section A8.8.415, Encoding A1:

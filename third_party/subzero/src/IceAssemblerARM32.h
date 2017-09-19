@@ -609,6 +609,10 @@ public:
   void vqaddqu(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
                const Operand *OpQn);
 
+  // Integer vector packing with saturation
+  void vqmovn2(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
+               const Operand *OpQn, bool Unsigned);
+
   // Float vector subtract
   void vsubqf(const Operand *OpQd, const Operand *OpQm, const Operand *OpQn);
 
