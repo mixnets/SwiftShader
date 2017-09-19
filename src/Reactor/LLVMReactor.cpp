@@ -2791,7 +2791,7 @@ namespace sw
 	RValue<Short4> RoundShort4(RValue<Float4> cast)
 	{
 		RValue<Int4> int4 = RoundInt(cast);
-		return As<Short4>(Pack(int4, int4));
+		return As<Short4>(PackSigned(int4, int4));
 	}
 
 	RValue<Short4> Max(RValue<Short4> x, RValue<Short4> y)
@@ -2899,7 +2899,7 @@ namespace sw
 			if(CPUID::supportsSSE4_1())
 			{
 				Int4 int4(Min(cast, Float4(0xFFFF)));   // packusdw takes care of 0x0000 saturation
-				*this = As<Short4>(Pack(As<UInt4>(int4), As<UInt4>(int4)));
+				*this = As<Short4>(PackUnsigned(int4, int4));
 			}
 			else
 			{
