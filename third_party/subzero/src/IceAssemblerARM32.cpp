@@ -3470,6 +3470,80 @@ void AssemblerARM32::vsubqi(Type ElmtTy, const Operand *OpQd,
   emitSIMDqqq(VsubqiOpcode, ElmtTy, OpQd, OpQm, OpQn, Vsubqi);
 }
 
+void AssemblerARM32::vqmovn2i(Type ElmtTy, const Operand *OpQd,
+                            const Operand *OpQm, const Operand *OpQn) {
+  // VQSUB (integer) - ARM section A8.6.369, encoding A1:
+  //   vqsub<c><q>.s<size> {<Qd>,} <Qn>, <Qm>
+  //
+  // 111100110Dssnnn0ddd00010N1M1mmm0 where Dddd=OpQd, Nnnn=OpQn, Mmmm=OpQm,
+  // size is 8, 16, 32, or 64.
+
+//	1111 0011 1D11 ss10 dddd 0010 opM0 mmm0
+// op = 10
+
+  assert(isScalarIntegerType(ElmtTy) &&
+         "vqsubqi expects vector with integer element type");
+  constexpr const char *Vsubqi = "vqsubqu";
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloatTy = false;
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vsubqi);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vsubqi);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vsubqi);
+  constexpr IValueT VsubqiOpcode = B25 | B24 | B23 | B21 | B20 | B17 | B9 | B7;
+
+  emitSIMDBase(VsubqiOpcode, mapQRegToDReg(Qd) + 0, 0,
+               mapQRegToDReg(Qm), UseQRegs, IsFloatTy);
+  emitSIMDBase(VsubqiOpcode, mapQRegToDReg(Qd) + 1, 0,
+               mapQRegToDReg(Qn), UseQRegs, IsFloatTy);
+
+  /*const IValueT SIMDOpcode =
+      B24 | B23 | B21 | B20 | B19 | B17 | B16 | B10 | B9 | Opcode;
+  constexpr bool UseQRegs = true;
+  constexpr bool IsFloatTy = false;
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", OpcodeName);
+  constexpr IValueT Qn = 0;
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", OpcodeName);
+  emitSIMDBase(SIMDOpcode, mapQRegToDReg(Qd), mapQRegToDReg(Qn),
+               mapQRegToDReg(Qm), UseQRegs, IsFloatTy);*/
+}
+
+void AssemblerARM32::vqmovn2u(Type ElmtTy, const Operand *OpQd,
+                            const Operand *OpQm, const Operand *OpQn) {
+  // VQSUB (integer) - ARM section A8.6.369, encoding A1:
+  //   vqsub<c><q>.s<size> {<Qd>,} <Qn>, <Qm>
+  //
+  // 111100110Dssnnn0ddd00010N1M1mmm0 where Dddd=OpQd, Nnnn=OpQn, Mmmm=OpQm,
+  // size is 8, 16, 32, or 64.
+
+//	1111 0011 1D11 ss10 dddd 0010 opM0 mmm0
+// op = 10
+
+  assert(isScalarIntegerType(ElmtTy) &&
+         "vqsubqi expects vector with integer element type");
+  constexpr const char *Vsubqi = "vqsubqu";
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloatTy = false;
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vsubqi);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vsubqi);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vsubqi);
+  constexpr IValueT VsubqiOpcode = B25 | B24 | B23 | B21 | B20 | B17 | B9 | B6;
+
+  emitSIMDBase(VsubqiOpcode, mapQRegToDReg(Qd) + 0, 0,
+               mapQRegToDReg(Qm), UseQRegs, IsFloatTy);
+  emitSIMDBase(VsubqiOpcode, mapQRegToDReg(Qd) + 1, 0,
+               mapQRegToDReg(Qn), UseQRegs, IsFloatTy);
+
+  /*const IValueT SIMDOpcode =
+      B24 | B23 | B21 | B20 | B19 | B17 | B16 | B10 | B9 | Opcode;
+  constexpr bool UseQRegs = true;
+  constexpr bool IsFloatTy = false;
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", OpcodeName);
+  constexpr IValueT Qn = 0;
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", OpcodeName);
+  emitSIMDBase(SIMDOpcode, mapQRegToDReg(Qd), mapQRegToDReg(Qn),
+               mapQRegToDReg(Qm), UseQRegs, IsFloatTy);*/
+}
+
 void AssemblerARM32::vsubqf(const Operand *OpQd, const Operand *OpQn,
                             const Operand *OpQm) {
   // VSUB (floating-point) - ARM section A8.8.415, Encoding A1:

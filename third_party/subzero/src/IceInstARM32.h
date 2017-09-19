@@ -444,6 +444,7 @@ public:
     Vorr,
     Vqadd,
     Vqsub,
+	Vqmovn2,
     Vpaddq,
     Vshl,
     Vshr,
@@ -1021,6 +1022,7 @@ using InstARM32Vneg = InstARM32UnaryopSignAwareFP<InstARM32::Vneg>;
 using InstARM32Vorr = InstARM32ThreeAddrFP<InstARM32::Vorr>;
 using InstARM32Vqadd = InstARM32ThreeAddrSignAwareFP<InstARM32::Vqadd>;
 using InstARM32Vqsub = InstARM32ThreeAddrSignAwareFP<InstARM32::Vqsub>;
+using InstARM32Vqmovn2 = InstARM32ThreeAddrSignAwareFP<InstARM32::Vqmovn2>;
 using InstARM32Vpaddq = InstARM32UnaryopFP<InstARM32::Vpaddq>;
 using InstARM32Vshl = InstARM32ThreeAddrSignAwareFP<InstARM32::Vshl>;
 using InstARM32Vshr = InstARM32ThreeAddrSignAwareFP<InstARM32::Vshr>;
