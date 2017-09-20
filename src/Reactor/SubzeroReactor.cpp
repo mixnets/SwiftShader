@@ -847,7 +847,7 @@ namespace sw
 
 		if(valueType & EmulatedBits)
 		{
-			if(emulateIntrinsics)
+			if(emulateIntrinsics && false)
 			{
 				if(typeSize(type) == 4)
 				{
@@ -900,7 +900,7 @@ namespace sw
 
 		if(valueType & EmulatedBits)
 		{
-			if(emulateIntrinsics)
+			if(emulateIntrinsics && false)
 			{
 				if(typeSize(type) == 4)
 				{
