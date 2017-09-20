@@ -451,7 +451,11 @@ public:
     Vshl,
     Vshr,
     Vsqrt,
-    Vsub
+    Vsub,
+	Vldr1d,
+	Vldr1q,
+	Vstr1d,
+	Vstr1q,
   };
 
   static constexpr size_t InstSize = sizeof(uint32_t);
@@ -1033,6 +1037,8 @@ using InstARM32Vshr = InstARM32ThreeAddrSignAwareFP<InstARM32::Vshr>;
 using InstARM32Vsub = InstARM32ThreeAddrFP<InstARM32::Vsub>;
 using InstARM32Ldr = InstARM32LoadBase<InstARM32::Ldr>;
 using InstARM32Ldrex = InstARM32LoadBase<InstARM32::Ldrex>;
+using InstARM32Vldr1d = InstARM32LoadBase<InstARM32::Vldr1d>;
+using InstARM32Vldr1q = InstARM32LoadBase<InstARM32::Vldr1q>;
 /// MovT leaves the bottom bits alone so dest is also a source. This helps
 /// indicate that a previous MovW setting dest is not dead code.
 using InstARM32Movt = InstARM32TwoAddrGPR<InstARM32::Movt>;
@@ -1636,6 +1642,8 @@ private:
 // violations and link errors.
 
 template <> void InstARM32Ldr::emit(const Cfg *Func) const;
+template <> void InstARM32Vldr1d::emit(const Cfg *Func) const;
+template <> void InstARM32Vldr1q::emit(const Cfg *Func) const;
 template <> void InstARM32Movw::emit(const Cfg *Func) const;
 template <> void InstARM32Movt::emit(const Cfg *Func) const;
 

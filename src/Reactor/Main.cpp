@@ -17,7 +17,7 @@
 #include "gtest/gtest.h"
 
 using namespace sw;
-
+/*
 int reference(int *p, int y)
 {
 	int x = p[-1];
@@ -109,7 +109,7 @@ TEST(SubzeroReactorTest, Uninitialized)
 
 	delete routine;
 }
-
+*/
 TEST(SubzeroReactorTest, SubVectorLoadStore)
 {
 	Routine *routine = nullptr;

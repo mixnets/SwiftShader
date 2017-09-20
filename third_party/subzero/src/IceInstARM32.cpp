@@ -1153,9 +1153,9 @@ template <> void InstARM32Vmlap::emitIAS(const Cfg *Func) const {
                              typeStdString(SrcTy));
   case IceType_v8i16:
   //case IceType_v4i32:
-    
+
       Asm->vmlap(typeElementType(SrcTy), Dest, getSrc(0), getSrc(1));
-    
+
     break;
   }
   assert(!Asm->needsTextFixup());
@@ -1729,6 +1729,10 @@ template <> const char *InstARM32Vpaddq::Opcode = "vpaddq";
 // Mov-like ops
 template <> const char *InstARM32Ldr::Opcode = "ldr";
 template <> const char *InstARM32Ldrex::Opcode = "ldrex";
+template <> const char *InstARM32Vldr1d::Opcode = "vldr1d";
+template <> const char *InstARM32Vldr1q::Opcode = "vldr1q";
+template <> const char *InstARM32Vstr1d::Opcode = "vstr1d";
+template <> const char *InstARM32Vstr1q::Opcode = "vstr1q";
 // Three-addr ops
 template <> const char *InstARM32Adc::Opcode = "adc";
 template <> const char *InstARM32Add::Opcode = "add";
@@ -2230,6 +2234,122 @@ template <> void InstARM32Ldr::emit(const Cfg *Func) const {
   getSrc(0)->emit(Func);
 }
 
+
+template <> void InstARM32Vldr1d::emit(const Cfg *Func) const {
+  if (!BuildDefs::dump())
+    return;
+  Ostream &Str = Func->getContext()->getStrEmit();
+  assert(getSrcSize() == 1);
+  assert(getDest()->hasReg());
+  Variable *Dest = getDest();
+  Type Ty = Dest->getType();
+  const bool IsVector = isVectorType(Ty);
+  const bool IsScalarFloat = isScalarFloatingType(Ty);
+  const char *ActualOpcode =
+      IsVector ? "vld1" : (IsScalarFloat ? "vldr" : "ldr");
+  const char *WidthString = IsVector ? "" : getWidthString(Ty);
+  Str << "\t" << ActualOpcode;
+  const bool IsVInst = IsVector || IsScalarFloat;
+  if (IsVInst) {
+    Str << getPredicate() << WidthString;
+  } else {
+    Str << WidthString << getPredicate();
+  }
+  if (IsVector)
+    Str << "." << getVecElmtBitsize(Ty);
+  Str << "\t";
+  getDest()->emit(Func);
+  Str << ", ";
+  getSrc(0)->emit(Func);
+}
+
+
+template <> void InstARM32Vldr1q::emit(const Cfg *Func) const {
+  if (!BuildDefs::dump())
+    return;
+  Ostream &Str = Func->getContext()->getStrEmit();
+  assert(getSrcSize() == 1);
+  assert(getDest()->hasReg());
+  Variable *Dest = getDest();
+  Type Ty = Dest->getType();
+  const bool IsVector = isVectorType(Ty);
+  const bool IsScalarFloat = isScalarFloatingType(Ty);
+  const char *ActualOpcode =
+      IsVector ? "vld1" : (IsScalarFloat ? "vldr" : "ldr");
+  const char *WidthString = IsVector ? "" : getWidthString(Ty);
+  Str << "\t" << ActualOpcode;
+  const bool IsVInst = IsVector || IsScalarFloat;
+  if (IsVInst) {
+    Str << getPredicate() << WidthString;
+  } else {
+    Str << WidthString << getPredicate();
+  }
+  if (IsVector)
+    Str << "." << getVecElmtBitsize(Ty);
+  Str << "\t";
+  getDest()->emit(Func);
+  Str << ", ";
+  getSrc(0)->emit(Func);
+}
+
+
+template <> void InstARM32Vstr1d::emit(const Cfg *Func) const {
+  if (!BuildDefs::dump())
+    return;
+  Ostream &Str = Func->getContext()->getStrEmit();
+  assert(getSrcSize() == 1);
+  assert(getDest()->hasReg());
+  Variable *Dest = getDest();
+  Type Ty = Dest->getType();
+  const bool IsVector = isVectorType(Ty);
+  const bool IsScalarFloat = isScalarFloatingType(Ty);
+  const char *ActualOpcode =
+      IsVector ? "vld1" : (IsScalarFloat ? "vldr" : "ldr");
+  const char *WidthString = IsVector ? "" : getWidthString(Ty);
+  Str << "\t" << ActualOpcode;
+  const bool IsVInst = IsVector || IsScalarFloat;
+  if (IsVInst) {
+    Str << getPredicate() << WidthString;
+  } else {
+    Str << WidthString << getPredicate();
+  }
+  if (IsVector)
+    Str << "." << getVecElmtBitsize(Ty);
+  Str << "\t";
+  getDest()->emit(Func);
+  Str << ", ";
+  getSrc(0)->emit(Func);
+}
+
+
+template <> void InstARM32Vstr1q::emit(const Cfg *Func) const {
+  if (!BuildDefs::dump())
+    return;
+  Ostream &Str = Func->getContext()->getStrEmit();
+  assert(getSrcSize() == 1);
+  assert(getDest()->hasReg());
+  Variable *Dest = getDest();
+  Type Ty = Dest->getType();
+  const bool IsVector = isVectorType(Ty);
+  const bool IsScalarFloat = isScalarFloatingType(Ty);
+  const char *ActualOpcode =
+      IsVector ? "vld1" : (IsScalarFloat ? "vldr" : "ldr");
+  const char *WidthString = IsVector ? "" : getWidthString(Ty);
+  Str << "\t" << ActualOpcode;
+  const bool IsVInst = IsVector || IsScalarFloat;
+  if (IsVInst) {
+    Str << getPredicate() << WidthString;
+  } else {
+    Str << WidthString << getPredicate();
+  }
+  if (IsVector)
+    Str << "." << getVecElmtBitsize(Ty);
+  Str << "\t";
+  getDest()->emit(Func);
+  Str << ", ";
+  getSrc(0)->emit(Func);
+}
+
 template <> void InstARM32Ldr::emitIAS(const Cfg *Func) const {
   assert(getSrcSize() == 1);
   auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
@@ -2261,6 +2381,34 @@ template <> void InstARM32Ldr::emitIAS(const Cfg *Func) const {
     Asm->vld1qr(getVecElmtBitsize(DestTy), Dest, getSrc(0), Func->getTarget());
     break;
   }
+}
+
+template <> void InstARM32Vldr1d::emitIAS(const Cfg *Func) const {
+  assert(getSrcSize() == 1);
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  Variable *Dest = getDest();
+  Asm->vld1qr(32, Dest, getSrc(0), Func->getTarget());
+}
+
+template <> void InstARM32Vldr1q::emitIAS(const Cfg *Func) const {
+  assert(getSrcSize() == 1);
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  Variable *Dest = getDest();
+  Asm->vld1qr(64, Dest, getSrc(0), Func->getTarget());
+}
+
+template <> void InstARM32Vstr1d::emitIAS(const Cfg *Func) const {
+  assert(getSrcSize() == 1);
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  Variable *Value = getDest();
+  Asm->vst1qr(32, Value, getSrc(0), Func->getTarget());
+}
+
+template <> void InstARM32Vstr1q::emitIAS(const Cfg *Func) const {
+  assert(getSrcSize() == 1);
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  Variable *Value = getDest();
+  Asm->vst1qr(64, Value, getSrc(0), Func->getTarget());
 }
 
 template <> void InstARM32Ldrex::emit(const Cfg *Func) const {
@@ -3268,7 +3416,10 @@ template class InstARM32UnaryopFP<InstARM32::Vpaddq>;
 
 template class InstARM32LoadBase<InstARM32::Ldr>;
 template class InstARM32LoadBase<InstARM32::Ldrex>;
-
+template class InstARM32LoadBase<InstARM32::Vldr1d>;
+template class InstARM32LoadBase<InstARM32::Vldr1q>;
+template class InstARM32LoadBase<InstARM32::Vstr1d>;
+template class InstARM32LoadBase<InstARM32::Vstr1q>;
 template class InstARM32TwoAddrGPR<InstARM32::Movt>;
 
 template class InstARM32UnaryopGPR<InstARM32::Movw, false>;

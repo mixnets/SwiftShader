@@ -5333,11 +5333,57 @@ void TargetARM32::lowerIntrinsicCall(const InstIntrinsicCall *Instr) {
     return;
   }
   case Intrinsics::LoadSubVector: {
-    UnimplementedLoweringError(this, Instr);
+    assert(llvm::isa<ConstantInteger32>(Instr->getArg(1)) &&
+           "LoadSubVector second argument must be a constant");
+    Variable *Dest = Instr->getDest();
+    Type Ty = Dest->getType();
+    auto *SubVectorSize = llvm::cast<ConstantInteger32>(Instr->getArg(1));
+    Operand *Addr = Instr->getArg(0);
+    OperandARM32Mem *Src = formMemoryOperand(Addr, Ty);
+    doMockBoundsCheck(Src);
+
+    if (Dest->isRematerializable()) {
+      Context.insert<InstFakeDef>(Dest);
+      return;
+    }
+
+    auto *T = makeReg(Ty);
+    switch (SubVectorSize->getValue()) {
+    case 4:
+      _vldr1d(T, Src);
+      break;
+    case 8:
+      _vldr1q(T, Src);
+      break;
+    default:
+      Func->setError("Unexpected size for LoadSubVector");
+      return;
+    }
+            _mov(Dest, T);   // FIXME: necessary?
     return;
   }
   case Intrinsics::StoreSubVector: {
-    UnimplementedLoweringError(this, Instr);
+    assert(llvm::isa<ConstantInteger32>(Instr->getArg(2)) &&
+           "StoreSubVector third argument must be a constant");
+    auto *SubVectorSize = llvm::cast<ConstantInteger32>(Instr->getArg(2));
+    Variable *Value = legalizeToReg(Instr->getArg(0));
+    Operand *Addr = Instr->getArg(1);
+    OperandARM32Mem *NewAddr = formMemoryOperand(Addr, Value->getType());
+    doMockBoundsCheck(NewAddr);
+
+    Value = legalizeToReg(Value);
+
+    switch (SubVectorSize->getValue()) {
+    case 4:
+      _vstr1d(Value, NewAddr);
+      break;
+    case 8:
+      _vstr1q(Value, NewAddr);
+      break;
+    default:
+      Func->setError("Unexpected size for StoreSubVector");
+      return;
+    }
     return;
   }
   case Intrinsics::MultiplyAddPairs: {
