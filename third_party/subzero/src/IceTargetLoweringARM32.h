@@ -404,6 +404,22 @@ protected:
     }
     return Ldrex;
   }
+  void _vldr1d(Variable *Dest, OperandARM32Mem *Addr,
+            CondARM32::Cond Pred = CondARM32::AL) {
+    Context.insert<InstARM32Vldr1d>(Dest, Addr, Pred);
+  }
+  void _vldr1q(Variable *Dest, OperandARM32Mem *Addr,
+            CondARM32::Cond Pred = CondARM32::AL) {
+    Context.insert<InstARM32Vldr1q>(Dest, Addr, Pred);
+  }
+void _vstr1d(Variable *Value, OperandARM32Mem *Addr,
+            CondARM32::Cond Pred = CondARM32::AL) {
+    Context.insert<InstARM32Vstr1>(Value, Addr, Pred, 32);
+  }
+  void _vstr1q(Variable *Value, OperandARM32Mem *Addr,
+            CondARM32::Cond Pred = CondARM32::AL) {
+    Context.insert<InstARM32Vstr1>(Value, Addr, Pred, 64);
+  }
   void _lsl(Variable *Dest, Variable *Src0, Operand *Src1,
             CondARM32::Cond Pred = CondARM32::AL) {
     Context.insert<InstARM32Lsl>(Dest, Src0, Src1, Pred);
