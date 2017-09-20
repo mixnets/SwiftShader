@@ -845,9 +845,9 @@ namespace sw
 		int valueType = (int)reinterpret_cast<intptr_t>(type);
 		Ice::Variable *result = ::function->makeVariable(T(type));
 
-		if(valueType & EmulatedBits)
+		if(align != 0 && valueType & EmulatedBits)
 		{
-			if(emulateIntrinsics)
+			if(emulateIntrinsics && false)
 			{
 				if(typeSize(type) == 4)
 				{
@@ -898,9 +898,9 @@ namespace sw
 	{
 		int valueType = (int)reinterpret_cast<intptr_t>(type);
 
-		if(valueType & EmulatedBits)
+		if(align != 0 && valueType & EmulatedBits)
 		{
-			if(emulateIntrinsics)
+			if(emulateIntrinsics && false)
 			{
 				if(typeSize(type) == 4)
 				{
@@ -943,7 +943,7 @@ namespace sw
 		}
 		else
 		{
-			assert(T(value->getType()) == type);
+		//	assert(T(value->getType()) == type);
 
 			auto store = Ice::InstStore::create(::function, value, ptr, align);
 			::basicBlock->appendInst(store);
