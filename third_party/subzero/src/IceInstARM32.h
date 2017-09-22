@@ -1376,6 +1376,32 @@ private:
   SizeT Size;
 };
 
+/// Store instruction. It's important for liveness that there is no Dest operand
+/// (OperandARM32Mem instead of Dest Variable).
+class InstARM32Vdup final : public InstARM32Pred {
+  InstARM32Vdup() = delete;
+  InstARM32Vdup(const InstARM32Vdup &) = delete;
+  InstARM32Vdup &operator=(const InstARM32Vdup &) = delete;
+
+public:
+  /// Value must be a register.
+  static InstARM32Vdup *create(Cfg *Func, Variable *Dest, Variable *Src,
+                               IValueT Idx) {
+    return new (Func->allocate<InstARM32Vdup>())
+        InstARM32Vdup(Func, Dest, Src, Idx);
+  }
+  void emit(const Cfg *Func) const override;
+  void emitIAS(const Cfg *Func) const override;
+  void dump(const Cfg *Func) const override;
+  static bool classof(const Inst *Instr) { return isClassof(Instr, Str); }
+
+private:
+  InstARM32Vdup(Cfg *Func, Variable *Dest, Variable *Src,
+                               IValueT Idx);
+
+  IValueT Idx;
+};
+
 class InstARM32Trap : public InstARM32 {
   InstARM32Trap() = delete;
   InstARM32Trap(const InstARM32Trap &) = delete;
