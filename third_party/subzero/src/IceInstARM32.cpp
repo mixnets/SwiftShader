@@ -1412,10 +1412,17 @@ InstARM32Strex::InstARM32Strex(Cfg *Func, Variable *Dest, Variable *Value,
 
 InstARM32Vstr1::InstARM32Vstr1(Cfg *Func, Variable *Value, OperandARM32Mem *Mem,
                                CondARM32::Cond Predicate, SizeT Size)
-    : InstARM32Pred(Func, InstARM32::Str, 2, nullptr, Predicate) {
+    : InstARM32Pred(Func, InstARM32::Vstr1, 2, nullptr, Predicate) {
   addSource(Value);
   addSource(Mem);
   this->Size = Size;
+}
+
+InstARM32Vdup::InstARM32Vdup(Cfg *Func, Variable *Dest, Variable *Src,
+                               IValueT Idx)
+    : InstARM32Pred(Func, InstARM32::Vdup, 1, Dest, Predicate) {
+  addSource(Src);
+  this->Idx = Idx;
 }
 
 InstARM32Trap::InstARM32Trap(Cfg *Func)
@@ -2876,6 +2883,52 @@ void InstARM32Vstr1::emitIAS(const Cfg *Func) const {
 }
 
 void InstARM32Vstr1::dump(const Cfg *Func) const {
+  if (!BuildDefs::dump())
+    return;
+  Ostream &Str = Func->getContext()->getStrDump();
+  Type Ty = getSrc(0)->getType();
+  dumpOpcodePred(Str, "str", Ty);
+  Str << " ";
+  getSrc(1)->dump(Func);
+  Str << ", ";
+  getSrc(0)->dump(Func);
+}
+
+void InstARM32Vdup::emit(const Cfg *Func) const {
+  if (!BuildDefs::dump())
+    return;
+  Ostream &Str = Func->getContext()->getStrEmit();
+  assert(getSrcSize() == 2);
+  Type Ty = getSrc(0)->getType();
+  const bool IsVectorStore = isVectorType(Ty);
+  const bool IsScalarFloat = isScalarFloatingType(Ty);
+  const char *Opcode =
+      IsVectorStore ? "vst1" : (IsScalarFloat ? "vstr" : "str");
+  Str << "\t" << Opcode;
+  const bool IsVInst = IsVectorStore || IsScalarFloat;
+  if (IsVInst) {
+    Str << getPredicate() << getWidthString(Ty);
+  } else {
+    Str << getWidthString(Ty) << getPredicate();
+  }
+  if (IsVectorStore)
+    Str << "." << getVecElmtBitsize(Ty);
+  Str << "\t";
+  getSrc(0)->emit(Func);
+  Str << ", ";
+  getSrc(1)->emit(Func);
+}
+
+void InstARM32Vdup::emitIAS(const Cfg *Func) const {
+  assert(getSrcSize() == 1);
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Operand *Dest = getDest();
+  const Operand *Src = getSrc(0);
+  Type DestTy = Dest->getType();
+  Asm->vdup(typeElementType(DestTy), Dest, Src, Idx);
+}
+
+void InstARM32Vdup::dump(const Cfg *Func) const {
   if (!BuildDefs::dump())
     return;
   Ostream &Str = Func->getContext()->getStrDump();

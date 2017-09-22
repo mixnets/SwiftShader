@@ -549,6 +549,10 @@ public:
   void vmlap(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
              const Operand *OpQm);
 
+    // Vector element replication.
+  void vdup(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
+             IValueT Idx);
+
   // Float vector multiply.
   void vmulqf(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
 

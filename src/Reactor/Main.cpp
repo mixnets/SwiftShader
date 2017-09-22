@@ -32,7 +32,7 @@ int reference(int *p, int y)
 
 	return sum;
 }
-
+/*
 TEST(SubzeroReactorTest, Sample)
 {
 	Routine *routine = nullptr;
@@ -261,7 +261,7 @@ TEST(SubzeroReactorTest, Concatenate)
 
 	delete routine;
 }
-
+*/
 TEST(SubzeroReactorTest, Swizzle)
 {
 	Routine *routine = nullptr;
