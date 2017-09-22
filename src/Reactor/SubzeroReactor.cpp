@@ -3711,7 +3711,7 @@ namespace sw
 	{
 		if(saturate)
 		{
-			if(CPUID::SSE4_1)
+			if(CPUID::SSE4_1 || true)
 			{
 				Int4 int4(Min(cast, Float4(0xFFFF)));   // packusdw takes care of 0x0000 saturation
 				*this = As<UShort4>(PackUnsigned(int4, int4));
@@ -5758,7 +5758,7 @@ namespace sw
 
 	RValue<UShort8> PackUnsigned(RValue<Int4> x, RValue<Int4> y)
 	{
-		if(CPUID::SSE4_1 && false)
+		if(CPUID::SSE4_1 || true)
 		{
 			Ice::Variable *result = ::function->makeVariable(Ice::IceType_v8i16);
 			const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::VectorPackUnsigned, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
@@ -5794,7 +5794,7 @@ namespace sw
 
 	RValue<Int> SignMask(RValue<Int4> x)
 	{
-		if(emulateIntrinsics && true)
+		if(true)
 		{
 			RValue<Int4> xx = (x >> 31) & Int4(0x00000001, 0x00000002, 0x00000004, 0x00000008);
 			//return Extract(xx, 0) | Extract(xx, 1) | Extract(xx, 2) | Extract(xx, 3);
