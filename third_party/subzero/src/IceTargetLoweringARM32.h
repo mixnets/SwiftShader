@@ -945,6 +945,12 @@ void _vstr1d(Variable *Value, OperandARM32Mem *Addr,
   void _vmlap(Variable *Dest, Variable *Src0, Variable *Src1) {
     Context.insert<InstARM32Vmlap>(Dest, Src0, Src1);
   }
+  void _vdup(Variable *Dest, Variable *Src, int Idx) {
+    Context.insert<InstARM32Vdup>(Dest, Src, Idx);
+  }
+  void _vzip(Variable *Dest, Variable *Src0, Variable *Src1) {
+    Context.insert<InstARM32Vzip>(Dest, Src0, Src1);
+  }
   void _vpaddq(Variable *Dest, Variable *Src) {
     Context.insert<InstARM32Vpaddq>(Dest, Src);
   }
