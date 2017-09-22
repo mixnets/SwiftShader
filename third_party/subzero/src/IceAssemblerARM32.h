@@ -547,7 +547,7 @@ public:
 
   // Integer vector multiply add pairwise.
   void vmlap(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
-             const Operand *OpQm);
+             const Operand *OpQm, bool Unsigned);
 
     // Vector element replication.
   void vdup(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,

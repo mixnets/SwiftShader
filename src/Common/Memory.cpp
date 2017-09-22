@@ -86,7 +86,9 @@ void *allocate(size_t bytes, size_t alignment)
 
 	if(memory)
 	{
-		memset(memory, 0, bytes);
+		static bool eh = false;
+		eh = !eh;
+		memset(memory, eh ? 0x00 : 0xFF, bytes);
 	}
 
 	return memory;

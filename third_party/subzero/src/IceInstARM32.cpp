@@ -1153,9 +1153,17 @@ template <> void InstARM32Vmlap::emitIAS(const Cfg *Func) const {
                              typeStdString(SrcTy));
   case IceType_v8i16:
   //case IceType_v4i32:
-
-      Asm->vmlap(typeElementType(SrcTy), Dest, getSrc(0), getSrc(1));
-
+bool Unsigned = true;
+switch (Sign) {
+    case InstARM32::FS_None: // defaults to unsigned.
+    case InstARM32::FS_Unsigned:
+      Unsigned = true;
+      Asm->vmlap(typeElementType(SrcTy), Dest, getSrc(0), getSrc(1), Unsigned);
+case InstARM32::FS_Signed:
+      Unsigned = false;
+      Asm->vmlap(typeElementType(SrcTy), Dest, getSrc(0), getSrc(1), Unsigned);
+      break;
+      }
     break;
   }
   assert(!Asm->needsTextFixup());
@@ -3536,7 +3544,7 @@ template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vqsub>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vqadd>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vqmovn2>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vmulh>;
-template class InstARM32ThreeAddrFP<InstARM32::Vmlap>;
+template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vmlap>;
 template class InstARM32UnaryopFP<InstARM32::Vpaddq>;
 
 template class InstARM32LoadBase<InstARM32::Ldr>;

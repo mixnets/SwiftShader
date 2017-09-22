@@ -3388,7 +3388,7 @@ void AssemblerARM32::vmulh(Type ElmtTy, const Operand *OpQd,
 }
 
 void AssemblerARM32::vmlap(Type ElmtTy, const Operand *OpQd,
-                           const Operand *OpQn, const Operand *OpQm) {
+                           const Operand *OpQn, const Operand *OpQm, bool Unsigned) {
   // VMULL (integer and polynomial) - ARM section A8.8.350, encoding A1:
   //   vmull<c>.<dt> <Qd>, <Qn>, <Qm>
   //
@@ -3402,7 +3402,7 @@ void AssemblerARM32::vmlap(Type ElmtTy, const Operand *OpQd,
   const IValueT ElmtSize = encodeElmtType(ElmtTy);
   assert(Utils::IsUint(2, ElmtSize));
 
-               bool Unsigned = false;
+           //    bool Unsigned = false;
   const IValueT VmullOpcode = B25 | (Unsigned ? B24 : 0) | B23 | (B20) | B11 | B10;
 
   const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmull);
@@ -3456,9 +3456,6 @@ void AssemblerARM32::vdup(Type ElmtTy, const Operand *OpQd,
 //         "vdup expects vector with integer element type");
   constexpr const char *Vdup = "vdup";
 
-  constexpr IValueT ElmtShift = 20;
-  const IValueT ElmtSize = encodeElmtType(ElmtTy);
-  assert(Utils::IsUint(2, ElmtSize));
 
         //       bool Unsigned = false;
   const IValueT VdupOpcode = B25 | B24 | B23 | B21 | B20 | B11 | B10;
@@ -3840,6 +3837,10 @@ void AssemblerARM32::vqmovn2(Type ElmtTy, const Operand *OpQd,
   const IValueT Qd = encodeQRegister(OpQd, "Qd", Vqmovn);
   const IValueT Qm = encodeQRegister(OpQm, "Qm", Vqmovn);
   const IValueT Qn = encodeQRegister(OpQn, "Qn", Vqmovn);
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+
   IValueT VqmovnOpcode = B25 | B24 | B23 | B21 | B20 | B17 | B9 | (Unsigned ? B6 : B7);
 
   constexpr IValueT ElmtShift = 18;
@@ -3862,12 +3863,32 @@ void AssemblerARM32::vqmovn2(Type ElmtTy, const Operand *OpQd,
   }
   VqmovnOpcode |= (ElmtSize << ElmtShift);
 
-  // Narrow first source operand to lower half of destination.
-  emitSIMDBase(VqmovnOpcode, mapQRegToDReg(Qd) + 0, 0,
-               mapQRegToDReg(Qm), UseQRegs, IsFloatTy);
-  // Narrow second source operand to upper half of destination.
-  emitSIMDBase(VqmovnOpcode, mapQRegToDReg(Qd) + 1, 0,
-               mapQRegToDReg(Qn), UseQRegs, IsFloatTy);
+  if(Qm != Qd)
+  {
+    // Narrow first source operand to lower half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 0, 0, Dm, UseQRegs, IsFloatTy);
+    // Narrow second source operand to upper half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 1, 0, Dn, UseQRegs, IsFloatTy);
+  }
+  else if(Qn != Qd)
+  {
+    // Narrow second source operand to upper half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 1, 0, Dn, UseQRegs, IsFloatTy);
+    // Narrow first source operand to lower half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 0, 0, Dm, UseQRegs, IsFloatTy);
+    
+  }
+  else
+  {
+    // Narrow first source operand to lower half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd, 0, Dm, UseQRegs, IsFloatTy);
+
+                       // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+    emitSIMDBase(VmovOpcode, Dd + 1, Dd, Dd, UseQRegs, IsFloatTy);
+  }
 }
 
 void AssemblerARM32::vsubqf(const Operand *OpQd, const Operand *OpQn,

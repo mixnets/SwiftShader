@@ -107,7 +107,7 @@ namespace sw
 			Float anisotropy;
 			Float4 uDelta;
 			Float4 vDelta;
-			Float lodBias = (function == Fetch) ? Float4(As<Int4>(q)).x : q.x;
+			Float lodBias = Float(0);//q.x;
 
 			if(state.textureType != TEXTURE_3D)
 			{
@@ -1397,62 +1397,14 @@ namespace sw
 		return lod;
 	}
 
-	void SamplerCore::computeLod(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &uuuu, Float4 &vvvv, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, SamplerFunction function)
+	void SamplerCore::computeLod(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &uuuu, Float4 &vvvv, const Float &lodBias2, Vector4f &dsx, Vector4f &dsy, SamplerFunction function)
 	{
-		if(function != Lod && function != Fetch)
-		{
-			Float4 duvdxy;
+		Float4 duvdxy = uuuu.yzyz - uuuu.xxxx;//Float4(uuuu.yz, vvvv.yz) - Float4(uuuu.xx, vvvv.xx);
+		
+		// Scale by texture dimensions and LOD
+		Float4 dUVdxy = duvdxy * Float4(1280.0f);//*Pointer<Float4>(texture + OFFSET(Texture,widthHeightLOD));
 
-			if(function != Grad)
-			{
-				duvdxy = Float4(uuuu.yz, vvvv.yz) - Float4(uuuu.xx, vvvv.xx);
-			}
-			else
-			{
-				Float4 dudxy = Float4(dsx.x.xx, dsy.x.xx);
-				Float4 dvdxy = Float4(dsx.y.xx, dsy.y.xx);
-
-				duvdxy = Float4(dudxy.xz, dvdxy.xz);
-			}
-
-			// Scale by texture dimensions and LOD
-			Float4 dUVdxy = duvdxy * *Pointer<Float4>(texture + OFFSET(Texture,widthHeightLOD));
-
-			Float4 dUV2dxy = dUVdxy * dUVdxy;
-			Float4 dUV2 = dUV2dxy.xy + dUV2dxy.zw;
-
-			lod = Max(Float(dUV2.x), Float(dUV2.y));   // Square length of major axis
-
-			if(state.textureFilter == FILTER_ANISOTROPIC)
-			{
-				Float det = Abs(Float(dUVdxy.x) * Float(dUVdxy.w) - Float(dUVdxy.y) * Float(dUVdxy.z));
-
-				Float4 dudx = duvdxy.xxxx;
-				Float4 dudy = duvdxy.yyyy;
-				Float4 dvdx = duvdxy.zzzz;
-				Float4 dvdy = duvdxy.wwww;
-
-				Int4 mask = As<Int4>(CmpNLT(dUV2.x, dUV2.y));
-				uDelta = As<Float4>((As<Int4>(dudx) & mask) | ((As<Int4>(dudy) & ~mask)));
-				vDelta = As<Float4>((As<Int4>(dvdx) & mask) | ((As<Int4>(dvdy) & ~mask)));
-
-				anisotropy = lod * Rcp_pp(det);
-				anisotropy = Min(anisotropy, *Pointer<Float>(texture + OFFSET(Texture,maxAnisotropy)));
-
-				lod *= Rcp_pp(anisotropy * anisotropy);
-			}
-
-			lod = log2sqrt(lod);   // log2(sqrt(lod))
-
-			if(function == Bias)
-			{
-				lod += lodBias;
-			}
-		}
-		else
-		{
-			lod = lodBias + Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
-		}
+		lod = dUVdxy.x;
 
 		lod = Max(lod, *Pointer<Float>(texture + OFFSET(Texture, minLod)));
 		lod = Min(lod, *Pointer<Float>(texture + OFFSET(Texture, maxLod)));

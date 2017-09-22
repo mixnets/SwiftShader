@@ -5387,10 +5387,11 @@ void TargetARM32::lowerIntrinsicCall(const InstIntrinsicCall *Instr) {
     return;
   }
   case Intrinsics::MultiplyAddPairs: {
+    bool Unsigned = false;
     Variable *Src0 = legalizeToReg(Instr->getArg(0));
     Variable *Src1 = legalizeToReg(Instr->getArg(1));
 	Variable *T = makeReg(DestTy);
-    _vmlap(T, Src0, Src1);
+    _vmlap(T, Src0, Src1, Unsigned);
 	_mov(Dest, T);
     return;
   }
@@ -5983,6 +5984,8 @@ void TargetARM32::lowerShuffleVector(const InstShuffleVector *Instr) {
   const Type DestTy = Dest->getType();
 
   auto *T = makeReg(DestTy);
+  // ????
+          //   Context.insert<InstFakeDef>(T);
   auto *Src0 = Instr->getSrc(0);
   auto *Src1 = Instr->getSrc(1);
   const SizeT NumElements = typeNumElements(DestTy);
@@ -6005,29 +6008,29 @@ void TargetARM32::lowerShuffleVector(const InstShuffleVector *Instr) {
  }
 
 
-             // ????
-             Context.insert<InstFakeDef>(T);
+             
 
 
   switch (DestTy) {
   case IceType_v8i1:
   case IceType_v8i16: {
-		static constexpr SizeT ExpectedNumElements = 8;
-		assert(ExpectedNumElements == Instr->getNumIndexes());
-		(void)ExpectedNumElements;
+		  static constexpr SizeT ExpectedNumElements = 8;
+		  assert(ExpectedNumElements == Instr->getNumIndexes());
+		  (void)ExpectedNumElements;
 
-		if (Instr->indexesAre(0, 0, 1, 1, 2, 2, 3, 3)) {
-		  _vzip(T, legalizeToReg(Src0), legalizeToReg(Src0));
-		  _mov(Dest, T);
-		  return;
-		}
+		  if (Instr->indexesAre(0, 0, 1, 1, 2, 2, 3, 3)) {
+		    _vzip(T, legalizeToReg(Src0), legalizeToReg(Src0));
+		    _mov(Dest, T);
+		    return;
+		  }
 
-		if (Instr->indexesAre(0, 8, 1, 9, 2, 10, 3, 11)) {
-		  _vzip(T, legalizeToReg(Src0), legalizeToReg(Src1));
-		  _mov(Dest, T);
-		  return;
-		}
+		  if (Instr->indexesAre(0, 8, 1, 9, 2, 10, 3, 11)) {
+		    _vzip(T, legalizeToReg(Src0), legalizeToReg(Src1));
+		    _mov(Dest, T);
+		    return;
+		  }
     }
+    break;
   case IceType_v16i1:
   case IceType_v16i8: {
 		static constexpr SizeT ExpectedNumElements = 16;
@@ -6054,7 +6057,7 @@ void TargetARM32::lowerShuffleVector(const InstShuffleVector *Instr) {
   }
 
   // Unoptimized shuffle. Perform a series of inserts and extracts.
-  Context.insert<InstFakeDef>(T);
+               Context.insert<InstFakeDef>(T);
   for (SizeT I = 0; I < Instr->getNumIndexes(); ++I) {
     auto *Index = Instr->getIndex(I);
     const SizeT Elem = Index->getValue();
