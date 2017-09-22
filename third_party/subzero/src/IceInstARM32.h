@@ -454,8 +454,9 @@ public:
     Vsub,
 	Vldr1d,
 	Vldr1q,
-	//Vstr1d,
-	//Vstr1q,
+	Vstr1,
+	Vdup,
+	Vzip,
   };
 
   static constexpr size_t InstSize = sizeof(uint32_t);
@@ -1031,6 +1032,7 @@ using InstARM32Vqsub = InstARM32ThreeAddrSignAwareFP<InstARM32::Vqsub>;
 using InstARM32Vqmovn2 = InstARM32ThreeAddrSignAwareFP<InstARM32::Vqmovn2>;
 using InstARM32Vmulh = InstARM32ThreeAddrSignAwareFP<InstARM32::Vmulh>;
 using InstARM32Vmlap = InstARM32ThreeAddrFP<InstARM32::Vmlap>;
+using InstARM32Vzip = InstARM32ThreeAddrFP<InstARM32::Vzip>;
 using InstARM32Vpaddq = InstARM32UnaryopFP<InstARM32::Vpaddq>;
 using InstARM32Vshl = InstARM32ThreeAddrSignAwareFP<InstARM32::Vshl>;
 using InstARM32Vshr = InstARM32ThreeAddrSignAwareFP<InstARM32::Vshr>;
@@ -1367,13 +1369,39 @@ public:
   void emit(const Cfg *Func) const override;
   void emitIAS(const Cfg *Func) const override;
   void dump(const Cfg *Func) const override;
-  static bool classof(const Inst *Instr) { return isClassof(Instr, Str); }
+  static bool classof(const Inst *Instr) { return isClassof(Instr, Vstr1); }
 
 private:
   InstARM32Vstr1(Cfg *Func, Variable *Value, OperandARM32Mem *Mem,
                CondARM32::Cond Predicate, SizeT Size);
 
   SizeT Size;
+};
+
+/// Store instruction. It's important for liveness that there is no Dest operand
+/// (OperandARM32Mem instead of Dest Variable).
+class InstARM32Vdup final : public InstARM32Pred {
+  InstARM32Vdup() = delete;
+  InstARM32Vdup(const InstARM32Vdup &) = delete;
+  InstARM32Vdup &operator=(const InstARM32Vdup &) = delete;
+
+public:
+  /// Value must be a register.
+  static InstARM32Vdup *create(Cfg *Func, Variable *Dest, Variable *Src,
+                               IValueT Idx) {
+    return new (Func->allocate<InstARM32Vdup>())
+        InstARM32Vdup(Func, Dest, Src, Idx);
+  }
+  void emit(const Cfg *Func) const override;
+  void emitIAS(const Cfg *Func) const override;
+  void dump(const Cfg *Func) const override;
+  static bool classof(const Inst *Instr) { return isClassof(Instr, Vdup); }
+
+private:
+  InstARM32Vdup(Cfg *Func, Variable *Dest, Variable *Src,
+                               IValueT Idx);
+
+  IValueT Idx;
 };
 
 class InstARM32Trap : public InstARM32 {

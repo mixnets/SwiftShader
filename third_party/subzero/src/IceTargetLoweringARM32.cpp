@@ -5983,8 +5983,74 @@ void TargetARM32::lowerShuffleVector(const InstShuffleVector *Instr) {
   const Type DestTy = Dest->getType();
 
   auto *T = makeReg(DestTy);
+  auto *Src0 = Instr->getSrc(0);
+  auto *Src1 = Instr->getSrc(1);
+  const SizeT NumElements = typeNumElements(DestTy);
+  const Type ElementType = typeElementType(DestTy);
+
+  bool Replicate = true;
+ for (SizeT I = 1; I < Instr->getNumIndexes(); ++I) {
+	 if(Instr->getIndexValue(I) != Instr->getIndexValue(0)) {
+		Replicate = false;
+		break;
+	 }
+ }
+
+ if(Replicate)
+ {
+	 Variable *Src0Var = legalizeToReg(Src0);
+	 _vdup(T, Src0Var, Instr->getIndexValue(0));
+	 _mov(Dest, T);
+	return;
+ }
+
+
+             // ????
+             Context.insert<InstFakeDef>(T);
+
 
   switch (DestTy) {
+  case IceType_v8i1:
+  case IceType_v8i16: {
+		static constexpr SizeT ExpectedNumElements = 8;
+		assert(ExpectedNumElements == Instr->getNumIndexes());
+		(void)ExpectedNumElements;
+
+		if (Instr->indexesAre(0, 0, 1, 1, 2, 2, 3, 3)) {
+      Variable *Src0R = legalizeToReg(Src0);
+		  _vzip(T, Src0R, Src0R);
+		  _mov(Dest, T);
+		  return;
+		}
+
+		if (Instr->indexesAre(0, 8, 1, 9, 2, 10, 3, 11)) {
+		  _vzip(T, legalizeToReg(Src0), legalizeToReg(Src1));
+		  _mov(Dest, T);
+		  return;
+		}
+    }
+    break;
+  case IceType_v16i1:
+  case IceType_v16i8: {
+		static constexpr SizeT ExpectedNumElements = 16;
+		assert(ExpectedNumElements == Instr->getNumIndexes());
+		(void)ExpectedNumElements;
+
+		if (Instr->indexesAre(0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7)) {
+      Variable *Src0R = legalizeToReg(Src0);
+		  _vzip(T, Src0R, Src0R);
+		  _mov(Dest, T);
+		  return;
+		}
+
+		if (Instr->indexesAre(0, 16, 1, 17, 2, 18, 3, 19, 4, 20, 5, 21, 6, 22, 7,
+							  23)) {
+		  _vzip(T, legalizeToReg(Src0), legalizeToReg(Src1));
+		  _mov(Dest, T);
+		  return;
+		}
+	  }
+    break;
   default:
     break;
     // TODO(jpp): figure out how to properly lower this without scalarization.
@@ -5992,10 +6058,6 @@ void TargetARM32::lowerShuffleVector(const InstShuffleVector *Instr) {
 
   // Unoptimized shuffle. Perform a series of inserts and extracts.
   Context.insert<InstFakeDef>(T);
-  auto *Src0 = Instr->getSrc(0);
-  auto *Src1 = Instr->getSrc(1);
-  const SizeT NumElements = typeNumElements(DestTy);
-  const Type ElementType = typeElementType(DestTy);
   for (SizeT I = 0; I < Instr->getNumIndexes(); ++I) {
     auto *Index = Instr->getIndex(I);
     const SizeT Elem = Index->getValue();

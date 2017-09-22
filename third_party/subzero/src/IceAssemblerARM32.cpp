@@ -3446,6 +3446,111 @@ void AssemblerARM32::vmlap(Type ElmtTy, const Operand *OpQd,
 */
 }
 
+void AssemblerARM32::vdup(Type ElmtTy, const Operand *OpQd,
+                           const Operand *OpQn, IValueT Idx) {
+          // VDUP (integer and polynomial) - ARM section A8.8.350, encoding A1:
+             //   vmull<c>.<dt> <Qd>, <Qn>, <Qm>
+  //
+  // 111100111D11iiiidddd11000QM0mmmm
+//  assert(isScalarIntegerType(ElmtTy) &&
+//         "vdup expects vector with integer element type");
+  constexpr const char *Vdup = "vdup";
+
+  constexpr IValueT ElmtShift = 20;
+  const IValueT ElmtSize = encodeElmtType(ElmtTy);
+  assert(Utils::IsUint(2, ElmtSize));
+
+        //       bool Unsigned = false;
+  const IValueT VdupOpcode = B25 | B24 | B23 | B21 | B20 | B11 | B10;
+
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vdup);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vdup);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+
+  constexpr bool UseQRegs = true;
+  constexpr bool IsFloatTy = false;
+
+  IValueT Imm4 = 0;
+  bool Lower = true;
+  switch(ElmtTy)
+  {
+  case IceType_i8:
+	  assert(Idx < 16);
+	  Lower = Idx < 8;
+	  Imm4 = 1 | ((Idx & 0x7) << 1);
+	  break;
+  case IceType_i16:
+	  assert(Idx < 8);
+	  Lower = Idx < 4;
+	  Imm4 = 2 | ((Idx & 0x3) << 2);
+	  break;
+  case IceType_i32:
+  case IceType_f32:
+	  assert(Idx < 4);
+	  Lower = Idx < 2;
+	  Imm4 = 4 | ((Idx & 0x1) << 3);
+	  break;
+  default:
+assert(false);
+	  break;
+  }
+
+   emitSIMDBase(VdupOpcode , Dd, Imm4, Dn + (Lower ? 0 : 1), UseQRegs,
+				   IsFloatTy);
+
+
+}
+
+void AssemblerARM32::vzip(Type ElmtTy, const Operand *OpQd,
+                           const Operand *OpQn, const Operand *OpQm) {
+		  // Vzip (integer and polynomial) - ARM section A8.8.350, encoding A1:
+		  //   vzip<c>.<dt> <Qd>, <Qn>, <Qm>
+		  //
+  // 111100111D11ss10dddd00011QM0mmmm
+  assert(isScalarIntegerType(ElmtTy) &&
+         "vzip expects vector with integer element type");
+  assert(ElmtTy != IceType_i64 && "vzip on i64 vector not allowed");
+
+  constexpr const char *Vzip = "vzip";
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vzip);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vzip);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vzip);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloatTy = false;
+
+       // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+  // Copy lower half of second source to upper half of destination.
+  emitSIMDBase(VmovOpcode, Dd + 1, Dm, Dm, UseQRegs,
+				   IsFloatTy);
+
+  // Copy lower half of first source to lower half of destination.
+  if(Dd != Dn)
+  emitSIMDBase(VmovOpcode, Dd, Dn, Dn, UseQRegs,
+				   IsFloatTy);
+
+  constexpr IValueT ElmtShift = 18;
+  const IValueT ElmtSize = encodeElmtType(ElmtTy);
+  assert(Utils::IsUint(2, ElmtSize));
+
+  const IValueT VzipOpcode = B25 | B24 | B23 | B21 | B20 | B17 | B8 | B7;
+
+  // Zip the lower and upper half of destination.
+  emitSIMDBase(VzipOpcode | (ElmtSize << ElmtShift), Dd, 0, Dd + 1, UseQRegs,
+               IsFloatTy);
+
+
+}
+
 void AssemblerARM32::vmulqf(const Operand *OpQd, const Operand *OpQn,
                             const Operand *OpQm) {
   // VMUL (floating-point) - ARM section A8.8.351, encoding A1:
