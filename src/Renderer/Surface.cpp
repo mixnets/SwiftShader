@@ -1641,7 +1641,7 @@ namespace sw
 	}
 
 	int Surface::pitchB(int width, Format format, bool target)
-	{
+	{//width+=width/3;
 		if(target || isDepth(format) || isStencil(format))
 		{
 			width = align(width, 2);
@@ -3116,7 +3116,7 @@ namespace sw
 		// FIXME: Unpacking byte4 to short4 in the sampler currently involves reading 8 bytes,
 		// and stencil operations also read 8 bytes per four 8-bit stencil values,
 		// so we have to allocate 4 extra bytes to avoid buffer overruns.
-		return allocate(size(width2, height2, depth, format) + 4);
+		return allocate(2*size(width2, height2, depth, format) + 16);
 	}
 
 	void Surface::memfill4(void *buffer, int pattern, int bytes)
@@ -3222,7 +3222,7 @@ namespace sw
 		const bool entire = x0 == 0 && y0 == 0 && width == internal.width && height == internal.height;
 		const Lock lock = entire ? LOCK_DISCARD : LOCK_WRITEONLY;
 
-		int width2 = (internal.width + 1) & ~1;
+		int width2 = internal.pitchP;// (internal.width + 1) & ~1;
 
 		int x1 = x0 + width;
 		int y1 = y0 + height;
@@ -3344,7 +3344,7 @@ namespace sw
 		if(y0 < 0) {height += y0; y0 = 0;}
 		if(y0 + height > internal.height) height = internal.height - y0;
 
-		int width2 = (internal.width + 1) & ~1;
+		int width2 = internal.pitchP;//(internal.width + 1) & ~1;
 
 		int x1 = x0 + width;
 		int y1 = y0 + height;

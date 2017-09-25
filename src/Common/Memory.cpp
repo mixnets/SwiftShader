@@ -61,6 +61,7 @@ struct Allocation
 {
 //	size_t bytes;
 	unsigned char *block;
+	int q[4];
 };
 
 inline void *allocateRaw(size_t bytes, size_t alignment)
@@ -86,7 +87,7 @@ void *allocate(size_t bytes, size_t alignment)
 
 	if(memory)
 	{
-		memset(memory, 0, bytes);
+		memset(memory, 0x00, bytes);
 	}
 
 	return memory;

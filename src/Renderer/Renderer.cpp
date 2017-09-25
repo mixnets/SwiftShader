@@ -209,7 +209,7 @@ namespace sw
 	}
 
 	void Renderer::draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update)
-	{
+	{if(count!=12)return;
 		#ifndef NDEBUG
 			if(count < minPrimitives || count > maxPrimitives)
 			{

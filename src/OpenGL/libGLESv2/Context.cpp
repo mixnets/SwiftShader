@@ -3128,11 +3128,7 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 			{
 				int surfaceLevel = mipmapLevel;
 
-				if(surfaceLevel < 0)
-				{
-					surfaceLevel = 0;
-				}
-				else if(surfaceLevel >= levelCount)
+				if(surfaceLevel >= levelCount)
 				{
 					surfaceLevel = levelCount - 1;
 				}

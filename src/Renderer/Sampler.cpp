@@ -114,7 +114,7 @@ namespace sw
 		{
 			Mipmap &mipmap = texture.mipmap[level];
 
-			mipmap.buffer[face] = surface->lockInternal(0, 0, 0, LOCK_UNLOCKED, PRIVATE);
+			mipmap.buffer[face] = surface->lockInternal(0, 0, 0, LOCK_UNLOCKED , PRIVATE);
 
 			if(face == 0)
 			{

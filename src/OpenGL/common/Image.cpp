@@ -83,7 +83,9 @@ namespace
 	template<>
 	void LoadImageRow<Bytes_4>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
 	{
-		memcpy(dest + xoffset * 4, source, width * 4);
+	//	memcpy(dest + xoffset * 4, source, width * 4);
+
+	memset(dest + xoffset * 4, 0xFF, width * 4);
 	}
 
 	template<>
