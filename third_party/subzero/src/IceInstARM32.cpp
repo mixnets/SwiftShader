@@ -829,6 +829,11 @@ template <> void InstARM32Vdiv::emitIAS(const Cfg *Func) const {
   assert(!Asm->needsTextFixup());
 }
 
+template <> void InstARM32Vrcp::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  Asm->vrcp(IceType_f32, getDest(), getSrc(0));
+}
+
 template <> void InstARM32Veor::emitIAS(const Cfg *Func) const {
   auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
   const Variable *Dest = getDest();
@@ -1170,7 +1175,9 @@ template <> void InstARM32Vqmovn2::emitIAS(const Cfg *Func) const {
   auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
   const Operand *Src0 = getSrc(0);
   Type SrcTy = Src0->getType();
+  Type DestTy = Dest->getType();
   bool Unsigned = true;
+  bool Saturating = true;
   switch (SrcTy) {
   default:
     llvm::report_fatal_error("Vqmovn2 not defined on type " +
@@ -1178,14 +1185,20 @@ template <> void InstARM32Vqmovn2::emitIAS(const Cfg *Func) const {
   case IceType_v8i16:
   case IceType_v4i32:
     switch (Sign) {
-    case InstARM32::FS_None: // defaults to unsigned.
+    case InstARM32::FS_None:
+      Unsigned = true;
+      Saturating = false;
+      Asm->vqmovn2(typeElementType(DestTy), Dest, getSrc(0), getSrc(1), Unsigned, Saturating);
+      break;
     case InstARM32::FS_Unsigned:
       Unsigned = true;
-      Asm->vqmovn2(typeElementType(SrcTy), Dest, getSrc(0), getSrc(1), Unsigned);
+      Saturating = true;
+      Asm->vqmovn2(typeElementType(DestTy), Dest, getSrc(0), getSrc(1), Unsigned, Saturating);
       break;
     case InstARM32::FS_Signed:
       Unsigned = false;
-      Asm->vqmovn2(typeElementType(SrcTy), Dest, getSrc(0), getSrc(1), Unsigned);
+      Saturating = true;
+      Asm->vqmovn2(typeElementType(DestTy), Dest, getSrc(0), getSrc(1), Unsigned, Saturating);
       break;
     }
     break;
@@ -1868,6 +1881,7 @@ template <> const char *InstARM32Vceq::Opcode = "vceq";
 template <> const char *InstARM32ThreeAddrFP<InstARM32::Vcge>::Opcode = "vcge";
 template <> const char *InstARM32ThreeAddrFP<InstARM32::Vcgt>::Opcode = "vcgt";
 template <> const char *InstARM32Vdiv::Opcode = "vdiv";
+template <> const char *InstARM32Vrcp::Opcode = "vrcp";
 template <> const char *InstARM32Veor::Opcode = "veor";
 template <> const char *InstARM32Vmla::Opcode = "vmla";
 template <> const char *InstARM32Vmls::Opcode = "vmls";
@@ -3604,6 +3618,7 @@ template class InstARM32ThreeAddrFP<InstARM32::Vadd>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vcge>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vcgt>;
 template class InstARM32ThreeAddrFP<InstARM32::Vdiv>;
+template class InstARM32UnaryopFP<InstARM32::Vrcp>;
 template class InstARM32ThreeAddrFP<InstARM32::Veor>;
 template class InstARM32FourAddrFP<InstARM32::Vmla>;
 template class InstARM32FourAddrFP<InstARM32::Vmls>;

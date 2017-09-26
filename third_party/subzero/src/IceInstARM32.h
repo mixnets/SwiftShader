@@ -434,6 +434,7 @@ public:
     Vcmp,
     Vcvt,
     Vdiv,
+    Vrcp,
     Veor,
     Vmla,
     Vmls,
@@ -1024,6 +1025,7 @@ using InstARM32Vceq = InstARM32ThreeAddrFP<InstARM32::Vceq>;
 using InstARM32Vcge = InstARM32ThreeAddrSignAwareFP<InstARM32::Vcge>;
 using InstARM32Vcgt = InstARM32ThreeAddrSignAwareFP<InstARM32::Vcgt>;
 using InstARM32Vdiv = InstARM32ThreeAddrFP<InstARM32::Vdiv>;
+using InstARM32Vrcp = InstARM32UnaryopFP<InstARM32::Vrcp>;
 using InstARM32Veor = InstARM32ThreeAddrFP<InstARM32::Veor>;
 using InstARM32Vmla = InstARM32FourAddrFP<InstARM32::Vmla>;
 using InstARM32Vmls = InstARM32FourAddrFP<InstARM32::Vmls>;

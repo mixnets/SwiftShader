@@ -421,6 +421,8 @@ public:
   void vdivs(const Operand *OpSd, const Operand *OpSn, const Operand *OpSm,
              CondARM32::Cond Cond);
 
+void vrcp(Type ElmtTy, const Operand *OpQd, const Operand *OpQm);
+
   void veord(const Operand *OpDd, const Operand *OpDn, const Operand *OpDm);
 
   void veorq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
@@ -668,7 +670,7 @@ public:
 
   // Integer vector packing with saturation
   void vqmovn2(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
-               const Operand *OpQn, bool Unsigned);
+               const Operand *OpQn, bool Unsigned, bool Saturating);
 
   // Float vector subtract
   void vsubqf(const Operand *OpQd, const Operand *OpQm, const Operand *OpQn);

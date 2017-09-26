@@ -77,6 +77,7 @@ public:
     VectorPackSigned,
     VectorPackUnsigned,
     VectorPairwiseAdd,
+    ReciprocalApproximation,
   };
 
   /// Operations that can be represented by the AtomicRMW intrinsic.

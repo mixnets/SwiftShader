@@ -162,7 +162,7 @@ namespace sw
 			}
 
 			char string[256];
-			sprintf(string, "FPS: %.1f", FPS);
+			sprintf(string, "FPS: %.2f", FPS);
 			libX11->XDrawString(x_display, x_window, x_gc, 50, 50, string, strlen(string));
 		}
 	}

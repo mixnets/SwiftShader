@@ -6613,7 +6613,16 @@ namespace sw
 
 	RValue<Float4> Rcp_pp(RValue<Float4> x, bool exactAtPow2)
 	{
-		return Float4(1.0f) / x;
+		//return Float4(1.0f) / x;
+
+		Ice::Variable *result = ::function->makeVariable(Ice::IceType_v4f32);
+		const Ice::Intrinsics::IntrinsicInfo intrinsic = {Ice::Intrinsics::ReciprocalApproximation, Ice::Intrinsics::SideEffects_F, Ice::Intrinsics::ReturnsTwice_F, Ice::Intrinsics::MemoryWrite_F};
+		auto target = ::context->getConstantUndef(Ice::IceType_i32);
+		auto rcp = Ice::InstIntrinsicCall::create(::function, 1, result, target, intrinsic);
+		rcp->addArg(x.value);
+		::basicBlock->appendInst(rcp);
+
+		return RValue<Float4>(V(result));
 	}
 
 	RValue<Float4> RcpSqrt_pp(RValue<Float4> x)
