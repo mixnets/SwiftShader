@@ -5429,10 +5429,11 @@ void TargetARM32::lowerIntrinsicCall(const InstIntrinsicCall *Instr) {
   case Intrinsics::VectorPackSigned:
   case Intrinsics::VectorPackUnsigned: {
     bool Unsigned = (ID == Intrinsics::VectorPackUnsigned);
+    bool Saturating = true;
     Variable *Src0 = legalizeToReg(Instr->getArg(0));
     Variable *Src1 = legalizeToReg(Instr->getArg(1));
 	Variable *T = makeReg(DestTy);
-    _vqmovn2(T, Src0, Src1, Unsigned);
+    _vqmovn2(T, Src0, Src1, Unsigned, Saturating);
 	_mov(Dest, T);
     return;
   }
@@ -6022,6 +6023,18 @@ void TargetARM32::lowerShuffleVector(const InstShuffleVector *Instr) {
 		  _vzip(T, legalizeToReg(Src0), legalizeToReg(Src1));
 		  _mov(Dest, T);
 		  return;
+		}
+
+    if (Instr->indexesAre(0, 2, 4, 6, 0, 2, 4, 6)) {
+    //  static int yyy =0;
+    //  yyy++;
+    //  if(yyy >= 1 && yyy <= 1)
+      {
+      Variable *Src0R = legalizeToReg(Src0);
+		  _vqmovn2(T, Src0R, Src0R, false, false);
+		  _mov(Dest, T);
+		  return;
+      }
 		}
     }
     break;

@@ -1170,7 +1170,9 @@ template <> void InstARM32Vqmovn2::emitIAS(const Cfg *Func) const {
   auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
   const Operand *Src0 = getSrc(0);
   Type SrcTy = Src0->getType();
+  Type DestTy = Dest->getType();
   bool Unsigned = true;
+  bool Saturating = true;
   switch (SrcTy) {
   default:
     llvm::report_fatal_error("Vqmovn2 not defined on type " +
@@ -1178,14 +1180,20 @@ template <> void InstARM32Vqmovn2::emitIAS(const Cfg *Func) const {
   case IceType_v8i16:
   case IceType_v4i32:
     switch (Sign) {
-    case InstARM32::FS_None: // defaults to unsigned.
+    case InstARM32::FS_None:
+      Unsigned = true;
+      Saturating = false;
+      Asm->vqmovn2(typeElementType(DestTy), Dest, getSrc(0), getSrc(1), Unsigned, Saturating);
+      break;
     case InstARM32::FS_Unsigned:
       Unsigned = true;
-      Asm->vqmovn2(typeElementType(SrcTy), Dest, getSrc(0), getSrc(1), Unsigned);
+      Saturating = true;
+      Asm->vqmovn2(typeElementType(DestTy), Dest, getSrc(0), getSrc(1), Unsigned, Saturating);
       break;
     case InstARM32::FS_Signed:
       Unsigned = false;
-      Asm->vqmovn2(typeElementType(SrcTy), Dest, getSrc(0), getSrc(1), Unsigned);
+      Saturating = true;
+      Asm->vqmovn2(typeElementType(DestTy), Dest, getSrc(0), getSrc(1), Unsigned, Saturating);
       break;
     }
     break;

@@ -3951,7 +3951,7 @@ void AssemblerARM32::vsubqi(Type ElmtTy, const Operand *OpQd,
 }
 
 void AssemblerARM32::vqmovn2(Type ElmtTy, const Operand *OpQd,
-                             const Operand *OpQm, const Operand *OpQn, bool Unsigned) {
+                             const Operand *OpQm, const Operand *OpQn, bool Unsigned, bool Saturating) {
   // VQMOVN - ARM section A8.6.369, encoding A1:
   //   VQMOVN{U}N<c>.<type><size> <Dd>, <Qm>
   //
@@ -3964,18 +3964,22 @@ void AssemblerARM32::vqmovn2(Type ElmtTy, const Operand *OpQd,
   const IValueT Qd = encodeQRegister(OpQd, "Qd", Vqmovn);
   const IValueT Qm = encodeQRegister(OpQm, "Qm", Vqmovn);
   const IValueT Qn = encodeQRegister(OpQn, "Qn", Vqmovn);
-  IValueT VqmovnOpcode = B25 | B24 | B23 | B21 | B20 | B17 | B9 | (Unsigned ? B6 : B7);
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dm = mapQRegToDReg(Qm);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  
+  IValueT VqmovnOpcode = B25 | B24 | B23 | B21 | B20 | B17 | B9 | (Saturating ? (Unsigned ? B6 : B7) : 0);
 
   constexpr IValueT ElmtShift = 18;
   IValueT ElmtSize = 0;
   switch (ElmtTy) {
-  case IceType_i16:
+  case IceType_i8:
     ElmtSize = 0;
     break;
-  case IceType_i32:
+  case IceType_i16:
     ElmtSize = 1;
     break;
-  case IceType_i64:
+  case IceType_i32:
     ElmtSize = 2;
     break;
   default:
@@ -3986,12 +3990,32 @@ void AssemblerARM32::vqmovn2(Type ElmtTy, const Operand *OpQd,
   }
   VqmovnOpcode |= (ElmtSize << ElmtShift);
 
-  // Narrow first source operand to lower half of destination.
-  emitSIMDBase(VqmovnOpcode, mapQRegToDReg(Qd) + 0, 0,
-               mapQRegToDReg(Qm), UseQRegs, IsFloatTy);
-  // Narrow second source operand to upper half of destination.
-  emitSIMDBase(VqmovnOpcode, mapQRegToDReg(Qd) + 1, 0,
-               mapQRegToDReg(Qn), UseQRegs, IsFloatTy);
+  if(Qm != Qd)
+  {
+    // Narrow first source operand to lower half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 0, 0, Dm, UseQRegs, IsFloatTy);
+    // Narrow second source operand to upper half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 1, 0, Dn, UseQRegs, IsFloatTy);
+  }
+  else if(Qn != Qd)
+  {
+    // Narrow second source operand to upper half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 1, 0, Dn, UseQRegs, IsFloatTy);
+    // Narrow first source operand to lower half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 0, 0, Dm, UseQRegs, IsFloatTy);
+    
+  }
+  else
+  {
+    // Narrow first source operand to lower half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd, 0, Dm, UseQRegs, IsFloatTy);
+
+                       // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+    emitSIMDBase(VmovOpcode, Dd + 1, Dd, Dd, UseQRegs, IsFloatTy);
+  }
 }
 
 void AssemblerARM32::vsubqf(const Operand *OpQd, const Operand *OpQn,

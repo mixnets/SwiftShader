@@ -946,9 +946,9 @@ void _vstr1d(Variable *Value, OperandARM32Mem *Addr,
     Context.insert<InstARM32Vqsub>(Dest, Src0, Src1)
         ->setSignType(Unsigned ? InstARM32::FS_Unsigned : InstARM32::FS_Signed);
   }
-  void _vqmovn2(Variable *Dest, Variable *Src0, Variable *Src1, bool Unsigned) {
+  void _vqmovn2(Variable *Dest, Variable *Src0, Variable *Src1, bool Unsigned, bool Saturating) {
     Context.insert<InstARM32Vqmovn2>(Dest, Src0, Src1)
-        ->setSignType(Unsigned ? InstARM32::FS_Unsigned : InstARM32::FS_Signed);
+        ->setSignType(Saturating ? (Unsigned ? InstARM32::FS_Unsigned : InstARM32::FS_Signed) : InstARM32::FS_None);
   }
   void _vmulh(Variable *Dest, Variable *Src0, Variable *Src1, bool Unsigned) {
     Context.insert<InstARM32Vmulh>(Dest, Src0, Src1)
