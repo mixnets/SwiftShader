@@ -6051,16 +6051,39 @@ void TargetARM32::lowerShuffleVector(const InstShuffleVector *Instr) {
 		}
 	  }
     break;
+  case IceType_v4i1:
+  case IceType_v4i32:
+  case IceType_v4f32: {
+		static constexpr SizeT ExpectedNumElements = 4;
+		assert(ExpectedNumElements == Instr->getNumIndexes());
+		(void)ExpectedNumElements;
+
+		if (Instr->indexesAre(0, 0, 1, 1)) {
+      Variable *Src0R = legalizeToReg(Src0);
+		  _vzip(T, Src0R, Src0R);
+		  _mov(Dest, T);
+		  return;
+		}
+
+		if (Instr->indexesAre(0, 4, 1, 5)) {
+		  _vzip(T, legalizeToReg(Src0), legalizeToReg(Src1));
+		  _mov(Dest, T);
+		  return;
+		}
+	  }
+    break;
   default:
     break;
     // TODO(jpp): figure out how to properly lower this without scalarization.
   }
 
   // Unoptimized shuffle. Perform a series of inserts and extracts.
+  //int xxx[16] = {};
   Context.insert<InstFakeDef>(T);
   for (SizeT I = 0; I < Instr->getNumIndexes(); ++I) {
     auto *Index = Instr->getIndex(I);
     const SizeT Elem = Index->getValue();
+ //   xxx[I]=Elem;
     auto *ExtElmt = makeReg(ElementType);
     if (Elem < NumElements) {
       lowerExtractElement(

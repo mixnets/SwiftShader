@@ -3425,7 +3425,7 @@ void AssemblerARM32::vmlap(Type ElmtTy, const Operand *OpQd,
   // 111100100Dssnnnndddd1011NQM1mmmm where Ddddd=<Dd>, Mmmmm=<Dm>, and
   // Nnnnn=<Dn> and ss is the encoding of <dt>.
   assert(ElmtTy != IceType_i64 && "vpaddq doesn't allow i64!");
-  constexpr const char *Vpaddq = "vpaddq";
+  //constexpr const char *Vpaddq = "vpaddq";
   const IValueT VpaddOpcode =
       B25 | B11 | B9 | B8 | B4 | ((encodeElmtType(ElmtTy) + 1) << 20);
   emitSIMDBase(VpaddOpcode, Dd, Dd, Dd + 1, UseQRegs, IsFloatTy);
@@ -3456,7 +3456,7 @@ void AssemblerARM32::vdup(Type ElmtTy, const Operand *OpQd,
 //         "vdup expects vector with integer element type");
   constexpr const char *Vdup = "vdup";
 
-  constexpr IValueT ElmtShift = 20;
+  //constexpr IValueT ElmtShift = 20;
   const IValueT ElmtSize = encodeElmtType(ElmtTy);
   assert(Utils::IsUint(2, ElmtSize));
 
@@ -3509,8 +3509,8 @@ void AssemblerARM32::vzip(Type ElmtTy, const Operand *OpQd,
 		  //   vzip<c>.<dt> <Qd>, <Qn>, <Qm>
 		  //
   // 111100111D11ss10dddd00011QM0mmmm
-  assert(isScalarIntegerType(ElmtTy) &&
-         "vzip expects vector with integer element type");
+  //assert(isScalarIntegerType(ElmtTy) &&
+  //       "vzip expects vector with integer element type");
   assert(ElmtTy != IceType_i64 && "vzip on i64 vector not allowed");
 
   constexpr const char *Vzip = "vzip";
@@ -3542,11 +3542,21 @@ void AssemblerARM32::vzip(Type ElmtTy, const Operand *OpQd,
   const IValueT ElmtSize = encodeElmtType(ElmtTy);
   assert(Utils::IsUint(2, ElmtSize));
 
-  const IValueT VzipOpcode = B25 | B24 | B23 | B21 | B20 | B17 | B8 | B7;
+  
 
+if(ElmtTy != IceType_i32 && ElmtTy != IceType_f32)
+{
+  constexpr IValueT VzipOpcode = B25 | B24 | B23 | B21 | B20 | B17 | B8 | B7;
   // Zip the lower and upper half of destination.
   emitSIMDBase(VzipOpcode | (ElmtSize << ElmtShift), Dd, 0, Dd + 1, UseQRegs,
                IsFloatTy);
+}
+else
+{
+  constexpr IValueT VtrnOpcode = B25 | B24 | B23 | B21 | B20 | B17 | /*B8 | */B7;
+  emitSIMDBase(VtrnOpcode | (ElmtSize << ElmtShift), Dd, 0, Dd + 1, UseQRegs,
+               IsFloatTy);
+}
 
 
 }

@@ -1001,6 +1001,15 @@ public:
     return getIndex(Pos)->getValue();
   }
 
+  inline bool indexesAre(int32_t i0, int32_t i1, int32_t i2, int32_t i3) const {
+    static constexpr SizeT ExpectedNumElements = 4;
+    assert(ExpectedNumElements == getNumIndexes());
+    (void)ExpectedNumElements;
+
+    return getIndex(0)->getValue() == i0 && getIndex(1)->getValue() == i1 &&
+           getIndex(2)->getValue() == i2 && getIndex(3)->getValue() == i3;
+  }
+
   inline bool indexesAre(int32_t i0, int32_t i1, int32_t i2, int32_t i3,
                          int32_t i4, int32_t i5, int32_t i6, int32_t i7) const {
     static constexpr SizeT ExpectedNumElements = 8;
