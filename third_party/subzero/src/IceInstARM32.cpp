@@ -903,6 +903,83 @@ template <> void InstARM32Vmvn::emitIAS(const Cfg *Func) const {
   }
 }
 
+
+template <> void InstARM32Vmovl::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Variable *Dest = getDest();
+  switch (Dest->getType()) {
+  default:
+    llvm::report_fatal_error("Vmovlq not defined on type " +
+                             typeStdString(Dest->getType()));
+  case IceType_v4i1:
+  case IceType_v8i1:
+  case IceType_v16i1:
+  case IceType_v16i8:
+  case IceType_v8i16:
+  case IceType_v4i32:
+  case IceType_v4f32: {
+    Asm->vmovlq(Dest, getSrc(0), getSrc(1));
+  } break;
+  }
+}
+
+template <> void InstARM32Vmovh::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Variable *Dest = getDest();
+  switch (Dest->getType()) {
+  default:
+    llvm::report_fatal_error("Vmovhq not defined on type " +
+                             typeStdString(Dest->getType()));
+  case IceType_v4i1:
+  case IceType_v8i1:
+  case IceType_v16i1:
+  case IceType_v16i8:
+  case IceType_v8i16:
+  case IceType_v4i32:
+  case IceType_v4f32: {
+    Asm->vmovhq(Dest, getSrc(0), getSrc(1));
+  } break;
+  }
+}
+
+template <> void InstARM32Vmovhl::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Variable *Dest = getDest();
+  switch (Dest->getType()) {
+  default:
+    llvm::report_fatal_error("Vmovhlq not defined on type " +
+                             typeStdString(Dest->getType()));
+  case IceType_v4i1:
+  case IceType_v8i1:
+  case IceType_v16i1:
+  case IceType_v16i8:
+  case IceType_v8i16:
+  case IceType_v4i32:
+  case IceType_v4f32: {
+    Asm->vmovhlq(Dest, getSrc(0), getSrc(1));
+  } break;
+  }
+}
+
+template <> void InstARM32Vmovlh::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Variable *Dest = getDest();
+  switch (Dest->getType()) {
+  default:
+    llvm::report_fatal_error("Vmovlhq not defined on type " +
+                             typeStdString(Dest->getType()));
+  case IceType_v4i1:
+  case IceType_v8i1:
+  case IceType_v16i1:
+  case IceType_v16i8:
+  case IceType_v8i16:
+  case IceType_v4i32:
+  case IceType_v4f32: {
+    Asm->vmovlhq(Dest, getSrc(0), getSrc(1));
+  } break;
+  }
+}
+
 template <> void InstARM32Vneg::emitIAS(const Cfg *Func) const {
   auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
   const Variable *Dest = getDest();
@@ -1796,6 +1873,10 @@ template <> const char *InstARM32Vmla::Opcode = "vmla";
 template <> const char *InstARM32Vmls::Opcode = "vmls";
 template <> const char *InstARM32Vmul::Opcode = "vmul";
 template <> const char *InstARM32Vmvn::Opcode = "vmvn";
+template <> const char *InstARM32Vmovl::Opcode = "vmovl";
+template <> const char *InstARM32Vmovh::Opcode = "vmovh";
+template <> const char *InstARM32Vmovhl::Opcode = "vmovhl";
+template <> const char *InstARM32Vmovlh::Opcode = "vmovlh";
 template <> const char *InstARM32Vorr::Opcode = "vorr";
 template <> const char *InstARM32UnaryopFP<InstARM32::Vneg>::Opcode = "vneg";
 template <> const char *InstARM32ThreeAddrFP<InstARM32::Vshl>::Opcode = "vshl";

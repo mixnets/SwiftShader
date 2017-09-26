@@ -3591,6 +3591,120 @@ void AssemblerARM32::vmvnq(const Operand *OpQd, const Operand *OpQm) {
                mapQRegToDReg(Qm), UseQRegs, IsFloat);
 }
 
+void AssemblerARM32::vmovlq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm) {
+             // VMOV (integer) - ARM section A8.8.354, encoding A1:
+  //   vmov <Dd>, <Dm>
+  //
+  // 111100111D110000dddd01011QM0mmmm where Dddd=Qd, Mmmm=Qm, and 1=Q.
+  // TODO(jpp) xxx: unify
+
+ constexpr const char *Vmov = "vmov";
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmov);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vmov);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vmov);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloat = false;
+
+      // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+  if(Dd != Dm)
+  emitSIMDBase(VmovOpcode, Dd, Dm, Dm, UseQRegs, IsFloat);
+  if(Dd + 1 != Dn + 1)
+  emitSIMDBase(VmovOpcode, Dd + 1, Dn + 1, Dn + 1, UseQRegs, IsFloat);
+}
+
+void AssemblerARM32::vmovhq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm) {
+             // VMOV (integer) - ARM section A8.8.354, encoding A1:
+  //   vmov <Dd>, <Dm>
+  //
+  // 111100111D110000dddd01011QM0mmmm where Dddd=Qd, Mmmm=Qm, and 1=Q.
+  // TODO(jpp) xxx: unify
+
+ constexpr const char *Vmov = "vmov";
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmov);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vmov);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vmov);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloat = false;
+
+      // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+  if(Dd != Dn)
+  emitSIMDBase(VmovOpcode, Dd, Dn, Dn, UseQRegs, IsFloat);
+  if(Dd + 1 != Dm + 1)
+  emitSIMDBase(VmovOpcode, Dd + 1, Dm + 1, Dm + 1, UseQRegs, IsFloat);
+}
+
+void AssemblerARM32::vmovhlq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm) {
+             // VMOV (integer) - ARM section A8.8.354, encoding A1:
+  //   vmov <Dd>, <Dm>
+  //
+  // 111100111D110000dddd01011QM0mmmm where Dddd=Qd, Mmmm=Qm, and 1=Q.
+  // TODO(jpp) xxx: unify
+
+ constexpr const char *Vmov = "vmov";
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmov);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vmov);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vmov);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloat = false;
+
+      // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+  if(Dd != Dm + 1)
+  emitSIMDBase(VmovOpcode, Dd, Dm + 1, Dm + 1, UseQRegs, IsFloat);
+  if(Dd + 1 != Dn + 1)
+  emitSIMDBase(VmovOpcode, Dd + 1, Dn + 1, Dn + 1, UseQRegs, IsFloat);
+}
+
+void AssemblerARM32::vmovlhq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm) {
+             // VMOV (integer) - ARM section A8.8.354, encoding A1:
+  //   vmov <Dd>, <Dm>
+  //
+  // 111100111D110000dddd01011QM0mmmm where Dddd=Qd, Mmmm=Qm, and 1=Q.
+  // TODO(jpp) xxx: unify
+
+ constexpr const char *Vmov = "vmov";
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmov);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vmov);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vmov);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloat = false;
+
+      // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+
+if(Dd + 1 != Dm)
+  emitSIMDBase(VmovOpcode, Dd + 1, Dm, Dm, UseQRegs, IsFloat);
+  if(Dd != Dn)
+  emitSIMDBase(VmovOpcode, Dd, Dn, Dn, UseQRegs, IsFloat);
+  
+}
+
 void AssemblerARM32::vnegqs(Type ElmtTy, const Operand *OpQd,
                             const Operand *OpQm) {
   // VNEG - ARM section A8.8.355, encoding A1:

@@ -6004,11 +6004,6 @@ void TargetARM32::lowerShuffleVector(const InstShuffleVector *Instr) {
 	return;
  }
 
-
-             // ????
-             Context.insert<InstFakeDef>(T);
-
-
   switch (DestTy) {
   case IceType_v8i1:
   case IceType_v8i16: {
@@ -6070,6 +6065,25 @@ void TargetARM32::lowerShuffleVector(const InstShuffleVector *Instr) {
 		  _mov(Dest, T);
 		  return;
 		}
+
+    if (Instr->indexesAre(0, 1, 4, 5)) {
+		  _vmovlh(T, legalizeToReg(Src0), legalizeToReg(Src1));
+		  _mov(Dest, T);
+		  return;
+		}
+
+    if (Instr->indexesAre(2, 3, 2, 3)) {
+      Variable *Src0R = legalizeToReg(Src0);
+		  _vmovhl(T, Src0R, Src0R);
+		  _mov(Dest, T);
+		  return;
+		}
+
+    if (Instr->indexesAre(2, 3, 6, 7)) {
+      _vmovhl(T, legalizeToReg(Src1), legalizeToReg(Src0));
+		  _mov(Dest, T);
+		  return;
+		}
 	  }
     break;
   default:
@@ -6078,12 +6092,12 @@ void TargetARM32::lowerShuffleVector(const InstShuffleVector *Instr) {
   }
 
   // Unoptimized shuffle. Perform a series of inserts and extracts.
-  //int xxx[16] = {};
+ int xxx[16] = {};
   Context.insert<InstFakeDef>(T);
   for (SizeT I = 0; I < Instr->getNumIndexes(); ++I) {
     auto *Index = Instr->getIndex(I);
     const SizeT Elem = Index->getValue();
- //   xxx[I]=Elem;
+    xxx[I]=Elem;
     auto *ExtElmt = makeReg(ElementType);
     if (Elem < NumElements) {
       lowerExtractElement(

@@ -919,6 +919,18 @@ void _vstr1d(Variable *Value, OperandARM32Mem *Addr,
   void _vmvn(Variable *Dest, Variable *Src0) {
     Context.insert<InstARM32Vmvn>(Dest, Src0, CondARM32::AL);
   }
+  void _vmovl(Variable *Dest, Variable *Src0, Variable *Src1) {
+    Context.insert<InstARM32Vmovl>(Dest, Src0, Src1);
+  }
+  void _vmovh(Variable *Dest, Variable *Src0, Variable *Src1) {
+    Context.insert<InstARM32Vmovh>(Dest, Src0, Src1);
+  }
+  void _vmovhl(Variable *Dest, Variable *Src0, Variable *Src1) {
+    Context.insert<InstARM32Vmovhl>(Dest, Src0, Src1);
+  }
+  void _vmovlh(Variable *Dest, Variable *Src0, Variable *Src1) {
+    Context.insert<InstARM32Vmovlh>(Dest, Src0, Src1);
+  }
   void _vneg(Variable *Dest, Variable *Src0) {
     Context.insert<InstARM32Vneg>(Dest, Src0, CondARM32::AL)
         ->setSignType(InstARM32::FS_Signed);

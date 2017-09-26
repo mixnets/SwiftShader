@@ -440,6 +440,10 @@ public:
     Vmrs,
     Vmul,
     Vmvn,
+    Vmovl,
+    Vmovh,
+    Vmovhl,
+    Vmovlh,
     Vneg,
     Vorr,
     Vqadd,
@@ -1025,6 +1029,10 @@ using InstARM32Vmla = InstARM32FourAddrFP<InstARM32::Vmla>;
 using InstARM32Vmls = InstARM32FourAddrFP<InstARM32::Vmls>;
 using InstARM32Vmul = InstARM32ThreeAddrFP<InstARM32::Vmul>;
 using InstARM32Vmvn = InstARM32UnaryopFP<InstARM32::Vmvn>;
+using InstARM32Vmovl = InstARM32ThreeAddrFP<InstARM32::Vmovl>;
+using InstARM32Vmovh = InstARM32ThreeAddrFP<InstARM32::Vmovh>;
+using InstARM32Vmovhl = InstARM32ThreeAddrFP<InstARM32::Vmovhl>;
+using InstARM32Vmovlh = InstARM32ThreeAddrFP<InstARM32::Vmovlh>;
 using InstARM32Vneg = InstARM32UnaryopSignAwareFP<InstARM32::Vneg>;
 using InstARM32Vorr = InstARM32ThreeAddrFP<InstARM32::Vorr>;
 using InstARM32Vqadd = InstARM32ThreeAddrSignAwareFP<InstARM32::Vqadd>;

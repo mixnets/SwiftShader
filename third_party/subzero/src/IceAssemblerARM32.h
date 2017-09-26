@@ -565,6 +565,11 @@ public:
 
   void vmvnq(const Operand *OpQd, const Operand *OpQm);
 
+  void vmovlq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
+  void vmovhq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
+  void vmovhlq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
+  void vmovlhq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
+
   void vnegqs(const Operand *OpQd, const Operand *OpQm);
 
   void vnegqs(Type ElmtTy, const Operand *OpQd, const Operand *OpQm);
