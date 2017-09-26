@@ -33,6 +33,13 @@
 #include <type_traits>
 #include <utility>
 
+#ifdef __clang__
+#define NO_SANITIZE_UNRELATED_CAST \
+  __attribute__((no_sanitize("cfi-unrelated-cast")))
+#else
+#define NO_SANITIZE_UNRELATED_CAST
+#endif
+
 namespace llvm {
 
 /// \brief CRTP base class providing obvious overloads for the core \c
@@ -75,7 +82,7 @@ public:
   // core methods.
 
   /// \brief Allocate space for a sequence of objects without constructing them.
-  template <typename T> T *Allocate(size_t Num = 1) {
+  template <typename T> NO_SANITIZE_UNRELATED_CAST T *Allocate(size_t Num = 1) {
     return static_cast<T *>(Allocate(Num * sizeof(T), alignof(T)));
   }
 
