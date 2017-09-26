@@ -3459,6 +3459,7 @@ void AssemblerARM32::vdup(Type ElmtTy, const Operand *OpQd,
   //constexpr IValueT ElmtShift = 20;
   const IValueT ElmtSize = encodeElmtType(ElmtTy);
   assert(Utils::IsUint(2, ElmtSize));
+  (ElmtSize);
 
         //       bool Unsigned = false;
   const IValueT VdupOpcode = B25 | B24 | B23 | B21 | B20 | B11 | B10;
@@ -3950,13 +3951,15 @@ void AssemblerARM32::vsubqi(Type ElmtTy, const Operand *OpQd,
   emitSIMDqqq(VsubqiOpcode, ElmtTy, OpQd, OpQm, OpQn, Vsubqi);
 }
 
-void AssemblerARM32::vqmovn2(Type ElmtTy, const Operand *OpQd,
-                             const Operand *OpQm, const Operand *OpQn, bool Unsigned) {
+void AssemblerARM32::vqmovn2(Type DestElmtTy, const Operand *OpQd,
+                             const Operand *OpQm, const Operand *OpQn, bool Unsigned, bool Saturating) {
   // VQMOVN - ARM section A8.6.369, encoding A1:
-  //   VQMOVN{U}N<c>.<type><size> <Dd>, <Qm>
+  //   V{Q}MOVN{U}N<c>.<type><size> <Dd>, <Qm>
   //
   // 111100111D11ss10dddd0010opM0mmm0 where Ddddd=OpQd, op = 10, Mmmm=OpQm,
   // ss is 00 (16-bit), 01 (32-bit), or 10 (64-bit).
+
+  assert(DestElmtTy != IceType_i64 && "vmovn doesn't allow i64 destination vector elements!");
 
   constexpr const char *Vqmovn = "vqmovn";
   constexpr bool UseQRegs = false;
@@ -3964,34 +3967,41 @@ void AssemblerARM32::vqmovn2(Type ElmtTy, const Operand *OpQd,
   const IValueT Qd = encodeQRegister(OpQd, "Qd", Vqmovn);
   const IValueT Qm = encodeQRegister(OpQm, "Qm", Vqmovn);
   const IValueT Qn = encodeQRegister(OpQn, "Qn", Vqmovn);
-  IValueT VqmovnOpcode = B25 | B24 | B23 | B21 | B20 | B17 | B9 | (Unsigned ? B6 : B7);
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dm = mapQRegToDReg(Qm);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  
+  IValueT VqmovnOpcode = B25 | B24 | B23 | B21 | B20 | B17 | B9 | (Saturating ? (Unsigned ? B6 : B7) : 0);
 
   constexpr IValueT ElmtShift = 18;
-  IValueT ElmtSize = 0;
-  switch (ElmtTy) {
-  case IceType_i16:
-    ElmtSize = 0;
-    break;
-  case IceType_i32:
-    ElmtSize = 1;
-    break;
-  case IceType_i64:
-    ElmtSize = 2;
-    break;
-  default:
-    llvm::report_fatal_error("SIMD op: Don't understand element type " +
-                             typeStdString(ElmtTy));
-    llvm::report_fatal_error(std::string(Vqmovn) + ": element type " + typeString(ElmtTy) +
-                             " not allowed");
-  }
-  VqmovnOpcode |= (ElmtSize << ElmtShift);
+  VqmovnOpcode |= (encodeElmtType(DestElmtTy) << ElmtShift);
 
-  // Narrow first source operand to lower half of destination.
-  emitSIMDBase(VqmovnOpcode, mapQRegToDReg(Qd) + 0, 0,
-               mapQRegToDReg(Qm), UseQRegs, IsFloatTy);
-  // Narrow second source operand to upper half of destination.
-  emitSIMDBase(VqmovnOpcode, mapQRegToDReg(Qd) + 1, 0,
-               mapQRegToDReg(Qn), UseQRegs, IsFloatTy);
+  if(Qm != Qd)
+  {
+    // Narrow first source operand to lower half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 0, 0, Dm, UseQRegs, IsFloatTy);
+    // Narrow second source operand to upper half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 1, 0, Dn, UseQRegs, IsFloatTy);
+  }
+  else if(Qn != Qd)
+  {
+    // Narrow second source operand to upper half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 1, 0, Dn, UseQRegs, IsFloatTy);
+    // Narrow first source operand to lower half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 0, 0, Dm, UseQRegs, IsFloatTy);
+    
+  }
+  else
+  {
+    // Narrow first source operand to lower half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd, 0, Dm, UseQRegs, IsFloatTy);
+
+                       // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+    emitSIMDBase(VmovOpcode, Dd + 1, Dd, Dd, UseQRegs, IsFloatTy);
+  }
 }
 
 void AssemblerARM32::vsubqf(const Operand *OpQd, const Operand *OpQn,
