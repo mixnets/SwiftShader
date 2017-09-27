@@ -120,6 +120,15 @@
     <ClCompile Include="Optimizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\third_party\subzero\src\IceAssemblerARM32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\subzero\src\IceInstARM32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\third_party\subzero\src\IceTargetLoweringARM32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SolutionDir)third_party\subzero\src\IceAssembler.h">
@@ -293,6 +302,18 @@
     <ClInclude Include="Optimizer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\third_party\subzero\src\IceAssemblerARM32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\subzero\src\IceConditionCodesARM32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\subzero\src\IceInstARM32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\third_party\subzero\src\IceTargetLoweringARM32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(SolutionDir)third_party\subzero\src\IceClFlags.def">
@@ -323,6 +344,15 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="$(SolutionDir)third_party\subzero\src\IceTargetLoweringX8664.def">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="..\..\third_party\subzero\src\IceInstARM32.def">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="..\..\third_party\subzero\src\IceRegistersARM32.def">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="..\..\third_party\subzero\src\IceTargetLoweringARM32.def">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

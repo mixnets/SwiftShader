@@ -63,13 +63,9 @@ namespace
 
 namespace
 {
-	#if !defined(__i386__) && defined(_M_IX86)
-		#define __i386__ 1
-	#endif
-
-	#if !defined(__x86_64__) && (defined(_M_AMD64) || defined (_M_X64))
-		#define __x86_64__ 1
-	#endif
+	#undef __i386__
+	#undef __x86_64__
+	#define __arm__ 1
 
 	class CPUID
 	{
@@ -485,8 +481,14 @@ namespace sw
 
 		void seek(uint64_t Off) override { position = Off; }
 
-		const void *getEntry() override
+		static void nop()
 		{
+			volatile int q = 0;
+			q++;
+		}
+
+		const void *getEntry() override
+		{return (void*)nop;
 			if(!entry)
 			{
 				position = std::numeric_limits<std::size_t>::max();   // Can't stream more data after this
