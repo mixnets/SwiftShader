@@ -404,6 +404,22 @@ protected:
     }
     return Ldrex;
   }
+  void _vldr1d(Variable *Dest, OperandARM32Mem *Addr,
+            CondARM32::Cond Pred = CondARM32::AL) {
+    Context.insert<InstARM32Vldr1d>(Dest, Addr, Pred);
+  }
+  void _vldr1q(Variable *Dest, OperandARM32Mem *Addr,
+            CondARM32::Cond Pred = CondARM32::AL) {
+    Context.insert<InstARM32Vldr1q>(Dest, Addr, Pred);
+  }
+void _vstr1d(Variable *Value, OperandARM32Mem *Addr,
+            CondARM32::Cond Pred = CondARM32::AL) {
+    Context.insert<InstARM32Vstr1>(Value, Addr, Pred, 32);
+  }
+  void _vstr1q(Variable *Value, OperandARM32Mem *Addr,
+            CondARM32::Cond Pred = CondARM32::AL) {
+    Context.insert<InstARM32Vstr1>(Value, Addr, Pred, 64);
+  }
   void _lsl(Variable *Dest, Variable *Src0, Operand *Src1,
             CondARM32::Cond Pred = CondARM32::AL) {
     Context.insert<InstARM32Lsl>(Dest, Src0, Src1, Pred);
@@ -877,6 +893,9 @@ protected:
   void _vdiv(Variable *Dest, Variable *Src0, Variable *Src1) {
     Context.insert<InstARM32Vdiv>(Dest, Src0, Src1);
   }
+  void _vrcp(Variable *Dest, Variable *Src0) {
+    Context.insert<InstARM32Vrcp>(Dest, Src0);
+  }
   void _vcmp(Variable *Src0, Variable *Src1,
              CondARM32::Cond Pred = CondARM32::AL) {
     Context.insert<InstARM32Vcmp>(Src0, Src1, Pred);
@@ -903,12 +922,52 @@ protected:
   void _vmvn(Variable *Dest, Variable *Src0) {
     Context.insert<InstARM32Vmvn>(Dest, Src0, CondARM32::AL);
   }
+  void _vmovl(Variable *Dest, Variable *Src0, Variable *Src1) {
+    Context.insert<InstARM32Vmovl>(Dest, Src0, Src1);
+  }
+  void _vmovh(Variable *Dest, Variable *Src0, Variable *Src1) {
+    Context.insert<InstARM32Vmovh>(Dest, Src0, Src1);
+  }
+  void _vmovhl(Variable *Dest, Variable *Src0, Variable *Src1) {
+    Context.insert<InstARM32Vmovhl>(Dest, Src0, Src1);
+  }
+  void _vmovlh(Variable *Dest, Variable *Src0, Variable *Src1) {
+    Context.insert<InstARM32Vmovlh>(Dest, Src0, Src1);
+  }
   void _vneg(Variable *Dest, Variable *Src0) {
     Context.insert<InstARM32Vneg>(Dest, Src0, CondARM32::AL)
         ->setSignType(InstARM32::FS_Signed);
   }
   void _vorr(Variable *Dest, Variable *Src0, Variable *Src1) {
     Context.insert<InstARM32Vorr>(Dest, Src0, Src1);
+  }
+  void _vqadd(Variable *Dest, Variable *Src0, Variable *Src1, bool Unsigned) {
+    Context.insert<InstARM32Vqadd>(Dest, Src0, Src1)
+        ->setSignType(Unsigned ? InstARM32::FS_Unsigned : InstARM32::FS_Signed);
+  }
+  void _vqsub(Variable *Dest, Variable *Src0, Variable *Src1, bool Unsigned) {
+    Context.insert<InstARM32Vqsub>(Dest, Src0, Src1)
+        ->setSignType(Unsigned ? InstARM32::FS_Unsigned : InstARM32::FS_Signed);
+  }
+  void _vqmovn2(Variable *Dest, Variable *Src0, Variable *Src1, bool Unsigned, bool Saturating) {
+    Context.insert<InstARM32Vqmovn2>(Dest, Src0, Src1)
+        ->setSignType(Saturating ? (Unsigned ? InstARM32::FS_Unsigned : InstARM32::FS_Signed) : InstARM32::FS_None);
+  }
+  void _vmulh(Variable *Dest, Variable *Src0, Variable *Src1, bool Unsigned) {
+    Context.insert<InstARM32Vmulh>(Dest, Src0, Src1)
+        ->setSignType(Unsigned ? InstARM32::FS_Unsigned : InstARM32::FS_Signed);
+  }
+  void _vmlap(Variable *Dest, Variable *Src0, Variable *Src1) {
+    Context.insert<InstARM32Vmlap>(Dest, Src0, Src1);
+  }
+  void _vdup(Variable *Dest, Variable *Src, int Idx) {
+    Context.insert<InstARM32Vdup>(Dest, Src, Idx);
+  }
+  void _vzip(Variable *Dest, Variable *Src0, Variable *Src1) {
+    Context.insert<InstARM32Vzip>(Dest, Src0, Src1);
+  }
+  void _vpaddq(Variable *Dest, Variable *Src) {
+    Context.insert<InstARM32Vpaddq>(Dest, Src);
   }
   InstARM32Vshl *_vshl(Variable *Dest, Variable *Src0, Variable *Src1) {
     return Context.insert<InstARM32Vshl>(Dest, Src0, Src1);
