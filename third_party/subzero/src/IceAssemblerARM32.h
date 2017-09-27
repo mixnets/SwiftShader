@@ -334,6 +334,9 @@ public:
   void vadds(const Operand *OpSd, const Operand *OpSn, const Operand *OpSm,
              CondARM32::Cond Cond);
 
+  // Pairwise add of source vector elements, stored in lower half of destination.
+  void vpaddq(const Operand *OpQd, const Operand *OpQm);
+
   // Integer vector add.
   void vaddqi(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
               const Operand *OpQn);
@@ -418,6 +421,8 @@ public:
   void vdivs(const Operand *OpSd, const Operand *OpSn, const Operand *OpSm,
              CondARM32::Cond Cond);
 
+void vrcp(Type ElmtTy, const Operand *OpQd, const Operand *OpQm);
+
   void veord(const Operand *OpDd, const Operand *OpDn, const Operand *OpDm);
 
   void veorq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
@@ -440,14 +445,32 @@ public:
     vldrs(OpSd, OpAddress, Cond, TInfo);
   }
 
+    void vldrq(const Operand *OpQd, const Operand *OpAddress,
+             CondARM32::Cond Cond, const TargetInfo &TInfo);
+
+  void vldrq(const Operand *OpQd, const Operand *OpAddress,
+             CondARM32::Cond Cond, const TargetLowering *Lowering) {
+    const TargetInfo TInfo(Lowering);
+    vldrq(OpQd, OpAddress, Cond, TInfo);
+  }
+
   // ElmtSize = #bits in vector element.
   void vld1qr(size_t ElmtSize, const Operand *OpQd, const Operand *OpRn,
+              const TargetInfo &TInfo);
+
+  void vld1(size_t ElmtSize, const Operand *OpQd, const Operand *OpRn,
               const TargetInfo &TInfo);
 
   void vld1qr(size_t ElmtSize, const Operand *OpQd, const Operand *OpRn,
               const TargetLowering *Lowering) {
     const TargetInfo TInfo(Lowering);
     vld1qr(ElmtSize, OpQd, OpRn, TInfo);
+  }
+
+    void vld1(size_t ElmtSize, const Operand *OpQd, const Operand *OpRn,
+              const TargetLowering *Lowering) {
+    const TargetInfo TInfo(Lowering);
+    vld1(ElmtSize, OpQd, OpRn, TInfo);
   }
 
   // Qn[i] = Imm for all i in vector. Returns true iff Imm can be defined as an
@@ -520,6 +543,22 @@ public:
   void vmulqi(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
               const Operand *OpQm);
 
+  // Integer vector multiply high.
+  void vmulh(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
+             const Operand *OpQm, bool Unsigned);
+
+  // Integer vector multiply add pairwise.
+  void vmlap(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
+             const Operand *OpQm);
+
+    // Vector element replication.
+  void vdup(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
+             IValueT Idx);
+
+    // Vector interleave lower halfs.
+  void vzip(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
+              const Operand *OpQm);
+
   // Float vector multiply.
   void vmulqf(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
 
@@ -527,6 +566,11 @@ public:
              CondARM32::Cond Cond);
 
   void vmvnq(const Operand *OpQd, const Operand *OpQm);
+
+  void vmovlq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
+  void vmovhq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
+  void vmovhlq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
+  void vmovlhq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
 
   void vnegqs(const Operand *OpQd, const Operand *OpQm);
 
@@ -577,6 +621,15 @@ public:
     vstrs(OpSd, OpAddress, Cond, TInfo);
   }
 
+    void vstrq(const Operand *OpQd, const Operand *OpAddress,
+             CondARM32::Cond Cond, const TargetInfo &TInfo);
+
+  void vstrq(const Operand *OpQd, const Operand *OpAddress,
+             CondARM32::Cond Cond, const TargetLowering *Lowering) {
+    const TargetInfo TInfo(Lowering);
+    vstrq(OpQd, OpAddress, Cond, TInfo);
+  }
+
   // ElmtSize = #bits in vector element.
   void vst1qr(size_t ElmtSize, const Operand *OpQd, const Operand *OpAddress,
               const TargetInfo &TInfo);
@@ -585,6 +638,15 @@ public:
               const TargetLowering *Lowering) {
     const TargetInfo TInfo(Lowering);
     vst1qr(ElmtSize, OpQd, OpRn, TInfo);
+  }
+
+  void vst1(size_t ElmtSize, const Operand *OpQd, const Operand *OpAddress,
+              const TargetInfo &TInfo);
+
+    void vst1(size_t ElmtSize, const Operand *OpQd, const Operand *OpRn,
+              const TargetLowering *Lowering) {
+    const TargetInfo TInfo(Lowering);
+    vst1(ElmtSize, OpQd, OpRn, TInfo);
   }
 
   void vsubd(const Operand *OpDd, const Operand *OpDn, const Operand *OpDm,
@@ -605,6 +667,10 @@ public:
                const Operand *OpQn);
   void vqaddqu(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
                const Operand *OpQn);
+
+  // Integer vector packing with saturation
+  void vqmovn2(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
+               const Operand *OpQn, bool Unsigned, bool Saturating);
 
   // Float vector subtract
   void vsubqf(const Operand *OpQd, const Operand *OpQm, const Operand *OpQn);
@@ -733,6 +799,13 @@ private:
   // aa=Align.
   void emitVMem1Op(IValueT Opcode, IValueT Dd, IValueT Rn, IValueT Rm,
                    DRegListSize NumDRegs, size_t ElmtSize, IValueT Align,
+                   const char *InstName);
+
+  // Pattern 111100000D00nnnnddddttttssaammmm | Opcode where Ddddd=Dd, nnnn=Rn,
+  // mmmmm=Rm, tttt=NumDRegs, ElmtSize in {8, 16, 32, 64) and defines ss, and
+  // aa=Align.
+  void emitVMem1OpR(IValueT Opcode, IValueT Dd, IValueT Rn, IValueT Rm,
+                   size_t ElmtSize, IValueT Align,
                    const char *InstName);
 
   // Pattern cccc011100x1dddd1111mmmm0001nnn where cccc=Cond,
