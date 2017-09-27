@@ -1728,17 +1728,20 @@ namespace egl
 		}
 
 		int inputPitch = ComputeCompressedPitch(width, format);
-		int rows = imageSize / inputPitch;
-		void *buffer = lock(xoffset, yoffset, sw::LOCK_WRITEONLY);
-
-		if(buffer)
+		if(inputPitch > 0)
 		{
-			for(int i = 0; i < rows; i++)
-			{
-				memcpy((void*)((GLbyte*)buffer + i * getPitch()), (void*)((GLbyte*)pixels + i * inputPitch), inputPitch);
-			}
-		}
+			int rows = imageSize / inputPitch;
+			void *buffer = lock(xoffset, yoffset, sw::LOCK_WRITEONLY);
 
-		unlock();
+			if(buffer)
+			{
+				for(int i = 0; i < rows; i++)
+				{
+					memcpy((void*)((GLbyte*)buffer + i * getPitch()), (void*)((GLbyte*)pixels + i * inputPitch), inputPitch);
+				}
+			}
+
+			unlock();
+		}
 	}
 }
