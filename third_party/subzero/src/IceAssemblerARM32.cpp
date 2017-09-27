@@ -606,6 +606,23 @@ void verifyRegNotPcWhenSetFlags(IValueT Reg, bool SetFlags,
                              "=pc not allowed when CC=1");
 }
 
+enum SIMDShiftType { ST_Vshl, ST_Vshr };
+IValueT encodeSIMDShiftImm6(SIMDShiftType Shift, Type ElmtTy,
+                            const IValueT Imm) {
+  assert(Imm > 0);
+  const SizeT MaxShift = getScalarIntBitWidth(ElmtTy);
+  assert(Imm < 2 * MaxShift);
+  assert(ElmtTy == IceType_i8 || ElmtTy == IceType_i16 ||
+         ElmtTy == IceType_i32);
+  const IValueT VshlImm = Imm - MaxShift;
+  const IValueT VshrImm = 2 * MaxShift - Imm;
+  return ((Shift == ST_Vshl) ? VshlImm : VshrImm) & (2 * MaxShift - 1);
+}
+IValueT encodeSIMDShiftImm6(SIMDShiftType Shift, Type ElmtTy,
+                            const ConstantInteger32 *Imm6) {
+  const IValueT Imm = Imm6->getValue();
+  return encodeSIMDShiftImm6(Shift, ElmtTy, Imm);
+}
 } // end of anonymous namespace
 
 namespace Ice {
@@ -2838,6 +2855,30 @@ void AssemblerARM32::vldrd(const Operand *OpDd, const Operand *OpAddress,
   emitInst(Encoding);
 }
 
+void AssemblerARM32::vldrq(const Operand *OpQd, const Operand *OpAddress,
+                           CondARM32::Cond Cond, const TargetInfo &TInfo) {
+  // VLDR - ARM section A8.8.333, encoding A1.
+  //   vldr<c> <Dd>, [<Rn>{, #+/-<imm>}]
+  //
+  // cccc1101UD01nnnndddd1011iiiiiiii where cccc=Cond, nnnn=Rn, Ddddd=Rd,
+  // iiiiiiii=abs(Imm >> 2), and U=1 if Opcode>=0.
+  constexpr const char *Vldrd = "vldrd";
+  IValueT Dd = mapQRegToDReg(encodeQRegister(OpQd, "Dd", Vldrd));
+  assert(CondARM32::isDefined(Cond));
+  IValueT Address;
+  EncodedOperand AddressEncoding =
+      encodeAddress(OpAddress, Address, TInfo, RotatedImm8Div4Address);
+  (void)AddressEncoding;
+  assert(AddressEncoding == EncodedAsImmRegOffset);
+  IValueT Encoding = B27 | B26 | B24 | B20 | B11 | B9 | B8 |
+                     (encodeCondition(Cond) << kConditionShift) |
+                     (getYInRegYXXXX(Dd) << 22) |
+                     (getXXXXInRegYXXXX(Dd) << 12) | Address;
+  emitInst(Encoding);
+}
+
+
+
 void AssemblerARM32::vldrs(const Operand *OpSd, const Operand *OpAddress,
                            CondARM32::Cond Cond, const TargetInfo &TInfo) {
   // VDLR - ARM section A8.8.333, encoding A2.
@@ -2893,6 +2934,39 @@ void AssemblerARM32::emitVMem1Op(IValueT Opcode, IValueT Dd, IValueT Rn,
   emitInst(Encoding);
 }
 
+void AssemblerARM32::emitVMem1OpR(IValueT Opcode, IValueT Dd, IValueT Rn,
+                                 IValueT Rm,
+                                 size_t ElmtSize, IValueT Align,
+                                 const char *InstName) {
+  assert(Utils::IsAbsoluteUint(2, Align));
+  IValueT EncodedElmtSize;
+  switch (ElmtSize) {
+  default: {
+    std::string Buffer;
+    llvm::raw_string_ostream StrBuf(Buffer);
+    StrBuf << InstName << ": found invalid vector element size " << ElmtSize;
+    llvm::report_fatal_error(StrBuf.str());
+  }
+  case 8:
+    EncodedElmtSize = 0;
+    break;
+  case 16:
+    EncodedElmtSize = 1;
+    break;
+  case 32:
+    EncodedElmtSize = 2;
+    break;
+  case 64:
+    EncodedElmtSize = 3;
+  }
+  const IValueT Encoding =
+      Opcode | (encodeCondition(CondARM32::kNone) << kConditionShift) |
+      (getYInRegYXXXX(Dd) << 22) | (Rn << kRnShift) |
+      (getXXXXInRegYXXXX(Dd) << kRdShift) |
+      (EncodedElmtSize << 10) | (Align << 4) | Rm;
+  emitInst(Encoding);
+}
+
 void AssemblerARM32::vld1qr(size_t ElmtSize, const Operand *OpQd,
                             const Operand *OpAddress, const TargetInfo &TInfo) {
   // VLD1 (multiple single elements) - ARM section A8.8.320, encoding A1:
@@ -2913,6 +2987,34 @@ void AssemblerARM32::vld1qr(size_t ElmtSize, const Operand *OpQd,
   constexpr IValueT Opcode = B26 | B21;
   constexpr IValueT Align = 0; // use default alignment.
   emitVMem1Op(Opcode, Dd, Rn, Rm, DRegListSize2, ElmtSize, Align, Vld1qr);
+}
+
+void AssemblerARM32::vld1(size_t ElmtSize, const Operand *OpQd,
+                            const Operand *OpAddress, const TargetInfo &TInfo) {
+
+  if(ElmtSize == 64)
+  {
+	  return vldrq(OpQd, OpAddress, Ice::CondARM32::AL, TInfo);
+  }
+
+  // VLD1 (multiple single elements) - ARM section A8.8.320, encoding A1:
+  //   vld1.<size> <Qd>, [<Rn>]
+  //
+  // 111101000D10nnnnddd0ttttssaammmm where tttt=DRegListSize2, Dddd=Qd,
+  // nnnn=Rn, aa=0 (use default alignment), size=ElmtSize, and ss is the
+  // encoding of ElmtSize.
+  constexpr const char *Vld1qr = "vld1qr";
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vld1qr);
+  const IValueT Dd = mapQRegToDReg(Qd);
+  IValueT Address;
+  if (encodeAddress(OpAddress, Address, TInfo, NoImmOffsetAddress) !=
+      EncodedAsImmRegOffset)
+    llvm::report_fatal_error(std::string(Vld1qr) + ": malform memory address");
+  const IValueT Rn = mask(Address, kRnShift, 4);
+  constexpr IValueT Rm = RegARM32::Reg_pc;
+  constexpr IValueT Opcode = B26 | B23 | B21;
+  constexpr IValueT Align = 0; // use default alignment.
+  emitVMem1OpR(Opcode, Dd, Rn, Rm, ElmtSize, Align, Vld1qr);
 }
 
 bool AssemblerARM32::vmovqc(const Operand *OpQd, const ConstantInteger32 *Imm) {
@@ -3226,6 +3328,105 @@ void AssemblerARM32::vmulqi(Type ElmtTy, const Operand *OpQd,
   emitSIMDqqq(VmulqiOpcode, ElmtTy, OpQd, OpQn, OpQm, Vmulqi);
 }
 
+void AssemblerARM32::vmulh(Type ElmtTy, const Operand *OpQd,
+                           const Operand *OpQn, const Operand *OpQm, bool Unsigned) {
+  // VMULL (integer and polynomial) - ARM section A8.8.350, encoding A1:
+  //   vmull<c>.<dt> <Qd>, <Qn>, <Qm>
+  //
+  // 1111001U1Dssnnnndddd11o0N0M0mmmm
+  assert(isScalarIntegerType(ElmtTy) &&
+         "vmull expects vector with integer element type");
+  assert(ElmtTy != IceType_i64 && "vmull on i64 vector not allowed");
+  constexpr const char *Vmull = "vmull";
+
+  constexpr IValueT ElmtShift = 20;
+  const IValueT ElmtSize = encodeElmtType(ElmtTy);
+  assert(Utils::IsUint(2, ElmtSize));
+
+  const IValueT VmullOpcode = B25 | (Unsigned ? B24 : 0) | B23 | (B20) | B11 | B10;
+
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmull);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vmull);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vmull);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloatTy = false;
+  emitSIMDBase(VmullOpcode | (ElmtSize << ElmtShift), Dd, Dn, Dm, UseQRegs,
+               IsFloatTy);
+
+  constexpr IValueT VshrnOpcode = B25 | B23 | B11 | B4;
+//fixme:
+  const IValueT Imm6 = encodeSIMDShiftImm6(ST_Vshr, IceType_i16, 16);
+  constexpr IValueT ImmShift = 16;
+
+  emitSIMDBase(VshrnOpcode | (Imm6 << ImmShift), Dd, 0, Dd, UseQRegs, IsFloatTy);
+
+  //emitSIMDqqq(VmulqiOpcode, ElmtTy, OpQd, OpQn, OpQm, Vmulqi);
+}
+
+void AssemblerARM32::vmlap(Type ElmtTy, const Operand *OpQd,
+                           const Operand *OpQn, const Operand *OpQm) {
+  // VMULL (integer and polynomial) - ARM section A8.8.350, encoding A1:
+  //   vmull<c>.<dt> <Qd>, <Qn>, <Qm>
+  //
+  // 1111001U1Dssnnnndddd11o0N0M0mmmm
+  assert(isScalarIntegerType(ElmtTy) &&
+         "vmull expects vector with integer element type");
+  assert(ElmtTy != IceType_i64 && "vmull on i64 vector not allowed");
+  constexpr const char *Vmull = "vmull";
+
+  constexpr IValueT ElmtShift = 20;
+  const IValueT ElmtSize = encodeElmtType(ElmtTy);
+  assert(Utils::IsUint(2, ElmtSize));
+
+               bool Unsigned = false;
+  const IValueT VmullOpcode = B25 | (Unsigned ? B24 : 0) | B23 | (B20) | B11 | B10;
+
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmull);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vmull);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vmull);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloatTy = false;
+  emitSIMDBase(VmullOpcode | (ElmtSize << ElmtShift), Dd, Dn, Dm, UseQRegs,
+               IsFloatTy);
+
+  // This instruction corresponds to a VPADD on sequential Dm and Dn registers.
+  // VPADD - ARM section A8.8.280, encoding A1:
+  //   vpadd.<dt> <Dd>, <Dm>, <Dn>
+  //
+  // 111100100Dssnnnndddd1011NQM1mmmm where Ddddd=<Dd>, Mmmmm=<Dm>, and
+  // Nnnnn=<Dn> and ss is the encoding of <dt>.
+  assert(ElmtTy != IceType_i64 && "vpaddq doesn't allow i64!");
+  //constexpr const char *Vpaddq = "vpaddq";
+  const IValueT VpaddOpcode =
+      B25 | B11 | B9 | B8 | B4 | ((encodeElmtType(ElmtTy) + 1) << 20);
+  emitSIMDBase(VpaddOpcode, Dd, Dd, Dd + 1, UseQRegs, IsFloatTy);
+
+
+/*
+  // VPADDL - ARM section A8.8.280, encoding A1:
+  //   vpaddl.<dt> <Dd>, <Dm>, <Dn>
+  //
+  // 111100111D11ss00dddd0010UQM0mmmm
+  // 111100100Dssnnnndddd1011NQM1mmmm where Ddddd=<Dd>, Mmmmm=<Dm>, and
+  // Nnnnn=<Dn> and ss is the encoding of <dt>.
+  assert(ElmtTy != IceType_i64 && "vpaddq doesn't allow i64!");
+  constexpr const char *Vpaddq = "vpaddq";
+  const IValueT VpaddOpcode =
+      B25 | B24 | B23 | B21 | B20 | B9 | (encodeElmtType(ElmtTy) << 18);
+  emitSIMDBase(VpaddOpcode, Dd, 0, Dd, UseQRegs, IsFloatTy);
+*/
+}
+
 void AssemblerARM32::vmulqf(const Operand *OpQd, const Operand *OpQn,
                             const Operand *OpQm) {
   // VMUL (floating-point) - ARM section A8.8.351, encoding A1:
@@ -3254,6 +3455,120 @@ void AssemblerARM32::vmvnq(const Operand *OpQd, const Operand *OpQm) {
   constexpr bool IsFloat = false;
   emitSIMDBase(VmvnOpcode, mapQRegToDReg(Qd), mapQRegToDReg(Qn),
                mapQRegToDReg(Qm), UseQRegs, IsFloat);
+}
+
+void AssemblerARM32::vmovlq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm) {
+             // VMOV (integer) - ARM section A8.8.354, encoding A1:
+  //   vmov <Dd>, <Dm>
+  //
+  // 111100111D110000dddd01011QM0mmmm where Dddd=Qd, Mmmm=Qm, and 1=Q.
+  // TODO(jpp) xxx: unify
+
+ constexpr const char *Vmov = "vmov";
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmov);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vmov);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vmov);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloat = false;
+
+      // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+  if(Dd != Dm)
+  emitSIMDBase(VmovOpcode, Dd, Dm, Dm, UseQRegs, IsFloat);
+  if(Dd + 1 != Dn + 1)
+  emitSIMDBase(VmovOpcode, Dd + 1, Dn + 1, Dn + 1, UseQRegs, IsFloat);
+}
+
+void AssemblerARM32::vmovhq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm) {
+             // VMOV (integer) - ARM section A8.8.354, encoding A1:
+  //   vmov <Dd>, <Dm>
+  //
+  // 111100111D110000dddd01011QM0mmmm where Dddd=Qd, Mmmm=Qm, and 1=Q.
+  // TODO(jpp) xxx: unify
+
+ constexpr const char *Vmov = "vmov";
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmov);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vmov);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vmov);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloat = false;
+
+      // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+  if(Dd != Dn)
+  emitSIMDBase(VmovOpcode, Dd, Dn, Dn, UseQRegs, IsFloat);
+  if(Dd + 1 != Dm + 1)
+  emitSIMDBase(VmovOpcode, Dd + 1, Dm + 1, Dm + 1, UseQRegs, IsFloat);
+}
+
+void AssemblerARM32::vmovhlq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm) {
+             // VMOV (integer) - ARM section A8.8.354, encoding A1:
+  //   vmov <Dd>, <Dm>
+  //
+  // 111100111D110000dddd01011QM0mmmm where Dddd=Qd, Mmmm=Qm, and 1=Q.
+  // TODO(jpp) xxx: unify
+
+ constexpr const char *Vmov = "vmov";
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmov);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vmov);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vmov);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloat = false;
+
+      // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+  if(Dd != Dm + 1)
+  emitSIMDBase(VmovOpcode, Dd, Dm + 1, Dm + 1, UseQRegs, IsFloat);
+  if(Dd + 1 != Dn + 1)
+  emitSIMDBase(VmovOpcode, Dd + 1, Dn + 1, Dn + 1, UseQRegs, IsFloat);
+}
+
+void AssemblerARM32::vmovlhq(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm) {
+             // VMOV (integer) - ARM section A8.8.354, encoding A1:
+  //   vmov <Dd>, <Dm>
+  //
+  // 111100111D110000dddd01011QM0mmmm where Dddd=Qd, Mmmm=Qm, and 1=Q.
+  // TODO(jpp) xxx: unify
+
+ constexpr const char *Vmov = "vmov";
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vmov);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vmov);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vmov);
+
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dn = mapQRegToDReg(Qn);
+  const IValueT Dm = mapQRegToDReg(Qm);
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloat = false;
+
+      // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+
+if(Dd + 1 != Dm)
+  emitSIMDBase(VmovOpcode, Dd + 1, Dm, Dm, UseQRegs, IsFloat);
+  if(Dd != Dn)
+  emitSIMDBase(VmovOpcode, Dd, Dn, Dn, UseQRegs, IsFloat);
+
 }
 
 void AssemblerARM32::vnegqs(Type ElmtTy, const Operand *OpQd,
@@ -3314,6 +3629,28 @@ void AssemblerARM32::vstrd(const Operand *OpDd, const Operand *OpAddress,
   emitInst(Encoding);
 }
 
+void AssemblerARM32::vstrq(const Operand *OpQd, const Operand *OpAddress,
+                           CondARM32::Cond Cond, const TargetInfo &TInfo) {
+  // VSTR - ARM section A8.8.413, encoding A1:
+  //   vstr<c> <Dd>, [<Rn>{, #+/-<Imm>}]
+  //
+  // cccc1101UD00nnnndddd1011iiiiiiii where cccc=Cond, nnnn=Rn, Ddddd=Rd,
+  // iiiiiiii=abs(Imm >> 2), and U=1 if Imm>=0.
+  constexpr const char *Vstrd = "vstrd";
+  IValueT Dd = mapQRegToDReg(encodeQRegister(OpQd, "Dd", Vstrd));
+  assert(CondARM32::isDefined(Cond));
+  IValueT Address;
+  IValueT AddressEncoding =
+      encodeAddress(OpAddress, Address, TInfo, RotatedImm8Div4Address);
+  (void)AddressEncoding;
+  assert(AddressEncoding == EncodedAsImmRegOffset);
+  IValueT Encoding = B27 | B26 | B24 | B11 | B9 | B8 |
+                     (encodeCondition(Cond) << kConditionShift) |
+                     (getYInRegYXXXX(Dd) << 22) |
+                     (getXXXXInRegYXXXX(Dd) << 12) | Address;
+  emitInst(Encoding);
+}
+
 void AssemblerARM32::vstrs(const Operand *OpSd, const Operand *OpAddress,
                            CondARM32::Cond Cond, const TargetInfo &TInfo) {
   // VSTR - ARM section A8.8.413, encoding A2:
@@ -3355,6 +3692,34 @@ void AssemblerARM32::vst1qr(size_t ElmtSize, const Operand *OpQd,
   constexpr IValueT Opcode = B26;
   constexpr IValueT Align = 0; // use default alignment.
   emitVMem1Op(Opcode, Dd, Rn, Rm, DRegListSize2, ElmtSize, Align, Vst1qr);
+}
+
+void AssemblerARM32::vst1(size_t ElmtSize, const Operand *OpQd,
+                            const Operand *OpAddress, const TargetInfo &TInfo) {
+
+	 if(ElmtSize == 64)
+  {
+	return vstrq(OpQd, OpAddress, Ice::CondARM32::AL, TInfo);
+  }
+
+  // VST1 (multiple single elements) - ARM section A8.8.404, encoding A1:
+  //   vst1.<size> <Qd>, [<Rn>]
+  //
+  // 111101001D10nnnnddd0ss00aaaammmm where tttt=DRegListSize2, Dddd=Qd,
+  // nnnn=Rn, aaaa=0 (use default alignment), size=ElmtSize, and ss is the
+  // encoding of ElmtSize.
+  constexpr const char *Vst1qr = "vst1qr";
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vst1qr);
+  const IValueT Dd = mapQRegToDReg(Qd);
+  IValueT Address;
+  if (encodeAddress(OpAddress, Address, TInfo, NoImmOffsetAddress) !=
+      EncodedAsImmRegOffset)
+    llvm::report_fatal_error(std::string(Vst1qr) + ": malform memory address");
+  const IValueT Rn = mask(Address, kRnShift, 4);
+  constexpr IValueT Rm = RegARM32::Reg_pc;
+  constexpr IValueT Opcode = B26 | B23;
+  constexpr IValueT Align = 0; // use default alignment.
+  emitVMem1OpR(Opcode, Dd, Rn, Rm, ElmtSize, Align, Vst1qr);
 }
 
 void AssemblerARM32::vsubs(const Operand *OpSd, const Operand *OpSn,
@@ -3451,6 +3816,59 @@ void AssemblerARM32::vsubqi(Type ElmtTy, const Operand *OpQd,
   emitSIMDqqq(VsubqiOpcode, ElmtTy, OpQd, OpQm, OpQn, Vsubqi);
 }
 
+void AssemblerARM32::vqmovn2(Type DestElmtTy, const Operand *OpQd,
+                             const Operand *OpQm, const Operand *OpQn, bool Unsigned, bool Saturating) {
+  // VQMOVN - ARM section A8.6.369, encoding A1:
+  //   V{Q}MOVN{U}N<c>.<type><size> <Dd>, <Qm>
+  //
+  // 111100111D11ss10dddd0010opM0mmm0 where Ddddd=OpQd, op = 10, Mmmm=OpQm,
+  // ss is 00 (16-bit), 01 (32-bit), or 10 (64-bit).
+
+  assert(DestElmtTy != IceType_i64 && "vmovn doesn't allow i64 destination vector elements!");
+
+  constexpr const char *Vqmovn = "vqmovn";
+  constexpr bool UseQRegs = false;
+  constexpr bool IsFloatTy = false;
+  const IValueT Qd = encodeQRegister(OpQd, "Qd", Vqmovn);
+  const IValueT Qm = encodeQRegister(OpQm, "Qm", Vqmovn);
+  const IValueT Qn = encodeQRegister(OpQn, "Qn", Vqmovn);
+  const IValueT Dd = mapQRegToDReg(Qd);
+  const IValueT Dm = mapQRegToDReg(Qm);
+  const IValueT Dn = mapQRegToDReg(Qn);
+
+  IValueT VqmovnOpcode = B25 | B24 | B23 | B21 | B20 | B17 | B9 | (Saturating ? (Unsigned ? B6 : B7) : 0);
+
+  constexpr IValueT ElmtShift = 18;
+  VqmovnOpcode |= (encodeElmtType(DestElmtTy) << ElmtShift);
+
+  if(Qm != Qd)
+  {
+    // Narrow first source operand to lower half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 0, 0, Dm, UseQRegs, IsFloatTy);
+    // Narrow second source operand to upper half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 1, 0, Dn, UseQRegs, IsFloatTy);
+  }
+  else if(Qn != Qd)
+  {
+    // Narrow second source operand to upper half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 1, 0, Dn, UseQRegs, IsFloatTy);
+    // Narrow first source operand to lower half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd + 0, 0, Dm, UseQRegs, IsFloatTy);
+
+  }
+  else
+  {
+    // Narrow first source operand to lower half of destination.
+    emitSIMDBase(VqmovnOpcode, Dd, 0, Dm, UseQRegs, IsFloatTy);
+
+                       // VMOV Dd, Dm
+   // 111100100D10mmmmdddd0001MQM1mmmm
+     const IValueT VmovOpcode = B25 | B21 | B8 | B4;
+
+    emitSIMDBase(VmovOpcode, Dd + 1, Dd, Dd, UseQRegs, IsFloatTy);
+  }
+}
+
 void AssemblerARM32::vsubqf(const Operand *OpQd, const Operand *OpQn,
                             const Operand *OpQm) {
   // VSUB (floating-point) - ARM section A8.8.415, Encoding A1:
@@ -3522,22 +3940,6 @@ void AssemblerARM32::vshlqi(Type ElmtTy, const Operand *OpQd,
   constexpr IValueT VshlOpcode = B10 | B6;
   emitSIMDqqq(VshlOpcode, ElmtTy, OpQd, OpQn, OpQm, Vshl);
 }
-
-namespace {
-enum SIMDShiftType { ST_Vshl, ST_Vshr };
-IValueT encodeSIMDShiftImm6(SIMDShiftType Shift, Type ElmtTy,
-                            const ConstantInteger32 *Imm6) {
-  const IValueT Imm = Imm6->getValue();
-  assert(Imm > 0);
-  const SizeT MaxShift = getScalarIntBitWidth(ElmtTy);
-  assert(Imm < MaxShift);
-  assert(ElmtTy == IceType_i8 || ElmtTy == IceType_i16 ||
-         ElmtTy == IceType_i32);
-  const IValueT VshlImm = Imm - MaxShift;
-  const IValueT VshrImm = 2 * MaxShift - Imm;
-  return ((Shift == ST_Vshl) ? VshlImm : VshrImm) & (2 * MaxShift - 1);
-}
-} // end of anonymous namespace
 
 void AssemblerARM32::vshlqc(Type ElmtTy, const Operand *OpQd,
                             const Operand *OpQm,
