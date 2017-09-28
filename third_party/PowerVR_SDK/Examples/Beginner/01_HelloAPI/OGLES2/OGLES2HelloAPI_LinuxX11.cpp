@@ -746,8 +746,65 @@ void ReleaseNativeResources(Display* nativeDisplay, Window nativeWindow)
  @Return		Result code to send to the Operating System
  @Description	Main function of the program, executes other functions.
 *******************************************************************************************************************************************/
+
+#include <arm_neon.h>
+
 int main(int /*argc*/, char **/*argv*/)
 {
+//if(ARCH EQUAL "arm")
+//        set_cpp_flag("-march=armv7-a")
+//    endif()
+
+	float32x4_t x = vrecpeq_f32(float32x4_t{1.0f, 1.0f, 1.0f, 1.0f});
+	float y = 1.0f / x[0];
+
+	int zeros = 32;
+	for(int i = 0; i < 0x00800000; i += 0x00000001)
+	{
+		int32x4_t i4 = {0x3F800000 + i, 0x40000000 + i, 0x3F800000, 0x3F800000};
+		float32x4_t a = (float32x4_t&)i4;
+		float32x4_t b = vrecpeq_f32(a);
+		int32x4_t c = (int32x4_t&)b;
+
+		volatile float r0 = y * b[0];
+		volatile float r1 = y * b[1];
+		int z = ((int&)r0 & 0xFFFFFFFF);// - ((i4[0] & 0x00007FFF) >> 0);
+		float q = (float&)z;
+		float e = 1.0f / a[0];
+
+		//int cc = ((c[0] + 0x10000) & 0xFFFF8000) - ((i4[0] & 0x00007FFF) >> 0);
+		int cc = ((c[0] + 0x10000) & 0xFFFF8000) - ((i4[0] & 0x00007FFF) >> 0);
+		float ccc = (float&)cc;
+
+		if(r0 < e)
+		{
+			z = z;
+		}
+
+		if(q < e)
+		{
+			z = z;
+		}
+
+		if(ccc < e)
+		{
+			z = z;
+		}
+
+		for(int i = 0; i < 32; i++)
+		{
+			if((z & (1 << i))  != 0)
+			{
+				if(i < zeros)
+				{
+					zeros = i;
+				}
+			}
+		}
+	}
+
+return 0;
+
 	// X11 variables
 	Display* nativeDisplay = NULL;
 	Window nativeWindow = 0;

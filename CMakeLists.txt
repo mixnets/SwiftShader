@@ -192,6 +192,8 @@ else()
     set_cpp_flag("-ffunction-sections" RELEASE)
     set_cpp_flag("-fdata-sections" RELEASE)
     set_cpp_flag("-fomit-frame-pointer" RELEASE)
+
+    set_cpp_flag("-mfpu=neon")
 endif()
 
 if( WIN32 )
