@@ -75,7 +75,9 @@ public:
     SubtractSaturateSigned,
     SubtractSaturateUnsigned,
     VectorPackSigned,
-    VectorPackUnsigned
+    VectorPackUnsigned,
+    VectorPairwiseAdd,
+    ReciprocalApproximation,
   };
 
   /// Operations that can be represented by the AtomicRMW intrinsic.

@@ -434,12 +434,17 @@ public:
     Vcmp,
     Vcvt,
     Vdiv,
+    Vrcp,
     Veor,
     Vmla,
     Vmls,
     Vmrs,
     Vmul,
     Vmvn,
+    Vmovl,
+    Vmovh,
+    Vmovhl,
+    Vmovlh,
     Vneg,
     Vorr,
     Vqadd,
@@ -447,13 +452,16 @@ public:
 	Vqmovn2,
 	Vmulh,
 	Vmlap,
+    Vpaddq,
     Vshl,
     Vshr,
     Vsqrt,
     Vsub,
 	Vldr1d,
 	Vldr1q,
-	Vstr1
+	Vstr1,
+	Vdup,
+	Vzip,
   };
 
   static constexpr size_t InstSize = sizeof(uint32_t);
@@ -590,7 +598,7 @@ class InstARM32UnaryopFP : public InstARM32Pred {
 
 public:
   static InstARM32UnaryopFP *create(Cfg *Func, Variable *Dest, Variable *Src,
-                                    CondARM32::Cond Predicate) {
+                                    CondARM32::Cond Predicate = CondARM32::AL) {
     return new (Func->allocate<InstARM32UnaryopFP>())
         InstARM32UnaryopFP(Func, Dest, Src, Predicate);
   }
@@ -1017,11 +1025,16 @@ using InstARM32Vceq = InstARM32ThreeAddrFP<InstARM32::Vceq>;
 using InstARM32Vcge = InstARM32ThreeAddrSignAwareFP<InstARM32::Vcge>;
 using InstARM32Vcgt = InstARM32ThreeAddrSignAwareFP<InstARM32::Vcgt>;
 using InstARM32Vdiv = InstARM32ThreeAddrFP<InstARM32::Vdiv>;
+using InstARM32Vrcp = InstARM32UnaryopFP<InstARM32::Vrcp>;
 using InstARM32Veor = InstARM32ThreeAddrFP<InstARM32::Veor>;
 using InstARM32Vmla = InstARM32FourAddrFP<InstARM32::Vmla>;
 using InstARM32Vmls = InstARM32FourAddrFP<InstARM32::Vmls>;
 using InstARM32Vmul = InstARM32ThreeAddrFP<InstARM32::Vmul>;
 using InstARM32Vmvn = InstARM32UnaryopFP<InstARM32::Vmvn>;
+using InstARM32Vmovl = InstARM32ThreeAddrFP<InstARM32::Vmovl>;
+using InstARM32Vmovh = InstARM32ThreeAddrFP<InstARM32::Vmovh>;
+using InstARM32Vmovhl = InstARM32ThreeAddrFP<InstARM32::Vmovhl>;
+using InstARM32Vmovlh = InstARM32ThreeAddrFP<InstARM32::Vmovlh>;
 using InstARM32Vneg = InstARM32UnaryopSignAwareFP<InstARM32::Vneg>;
 using InstARM32Vorr = InstARM32ThreeAddrFP<InstARM32::Vorr>;
 using InstARM32Vqadd = InstARM32ThreeAddrSignAwareFP<InstARM32::Vqadd>;
@@ -1029,6 +1042,8 @@ using InstARM32Vqsub = InstARM32ThreeAddrSignAwareFP<InstARM32::Vqsub>;
 using InstARM32Vqmovn2 = InstARM32ThreeAddrSignAwareFP<InstARM32::Vqmovn2>;
 using InstARM32Vmulh = InstARM32ThreeAddrSignAwareFP<InstARM32::Vmulh>;
 using InstARM32Vmlap = InstARM32ThreeAddrFP<InstARM32::Vmlap>;
+using InstARM32Vzip = InstARM32ThreeAddrFP<InstARM32::Vzip>;
+using InstARM32Vpaddq = InstARM32UnaryopFP<InstARM32::Vpaddq>;
 using InstARM32Vshl = InstARM32ThreeAddrSignAwareFP<InstARM32::Vshl>;
 using InstARM32Vshr = InstARM32ThreeAddrSignAwareFP<InstARM32::Vshr>;
 using InstARM32Vsub = InstARM32ThreeAddrFP<InstARM32::Vsub>;
@@ -1371,6 +1386,32 @@ private:
                CondARM32::Cond Predicate, SizeT Size);
 
   SizeT Size;
+};
+
+/// Store instruction. It's important for liveness that there is no Dest operand
+/// (OperandARM32Mem instead of Dest Variable).
+class InstARM32Vdup final : public InstARM32Pred {
+  InstARM32Vdup() = delete;
+  InstARM32Vdup(const InstARM32Vdup &) = delete;
+  InstARM32Vdup &operator=(const InstARM32Vdup &) = delete;
+
+public:
+  /// Value must be a register.
+  static InstARM32Vdup *create(Cfg *Func, Variable *Dest, Variable *Src,
+                               IValueT Idx) {
+    return new (Func->allocate<InstARM32Vdup>())
+        InstARM32Vdup(Func, Dest, Src, Idx);
+  }
+  void emit(const Cfg *Func) const override;
+  void emitIAS(const Cfg *Func) const override;
+  void dump(const Cfg *Func) const override;
+  static bool classof(const Inst *Instr) { return isClassof(Instr, Vdup); }
+
+private:
+  InstARM32Vdup(Cfg *Func, Variable *Dest, Variable *Src,
+                               IValueT Idx);
+
+  IValueT Idx;
 };
 
 class InstARM32Trap : public InstARM32 {

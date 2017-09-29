@@ -334,6 +334,9 @@ public:
   void vadds(const Operand *OpSd, const Operand *OpSn, const Operand *OpSm,
              CondARM32::Cond Cond);
 
+  // Pairwise add of source vector elements, stored in lower half of destination.
+  void vpaddq(const Operand *OpQd, const Operand *OpQm);
+
   // Integer vector add.
   void vaddqi(Type ElmtTy, const Operand *OpQd, const Operand *OpQm,
               const Operand *OpQn);
@@ -417,6 +420,8 @@ public:
 
   void vdivs(const Operand *OpSd, const Operand *OpSn, const Operand *OpSm,
              CondARM32::Cond Cond);
+
+void vrcp(Type ElmtTy, const Operand *OpQd, const Operand *OpQm);
 
   void veord(const Operand *OpDd, const Operand *OpDn, const Operand *OpDm);
 
@@ -545,6 +550,14 @@ public:
   // Integer vector multiply add pairwise.
   void vmlap(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
              const Operand *OpQm);
+
+    // Vector element replication.
+  void vdup(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
+             IValueT Idx);
+
+    // Vector interleave lower halfs.
+  void vzip(Type ElmtTy, const Operand *OpQd, const Operand *OpQn,
+              const Operand *OpQm);
 
   // Float vector multiply.
   void vmulqf(const Operand *OpQd, const Operand *OpQn, const Operand *OpQm);
