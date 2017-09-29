@@ -829,6 +829,11 @@ template <> void InstARM32Vdiv::emitIAS(const Cfg *Func) const {
   assert(!Asm->needsTextFixup());
 }
 
+template <> void InstARM32Vrcp::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  Asm->vrcp(IceType_f32, getDest(), getSrc(0));
+}
+
 template <> void InstARM32Veor::emitIAS(const Cfg *Func) const {
   auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
   const Variable *Dest = getDest();
@@ -899,6 +904,83 @@ template <> void InstARM32Vmvn::emitIAS(const Cfg *Func) const {
   case IceType_v4i32:
   case IceType_v4f32: {
     Asm->vmvnq(Dest, getSrc(0));
+  } break;
+  }
+}
+
+
+template <> void InstARM32Vmovl::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Variable *Dest = getDest();
+  switch (Dest->getType()) {
+  default:
+    llvm::report_fatal_error("Vmovlq not defined on type " +
+                             typeStdString(Dest->getType()));
+  case IceType_v4i1:
+  case IceType_v8i1:
+  case IceType_v16i1:
+  case IceType_v16i8:
+  case IceType_v8i16:
+  case IceType_v4i32:
+  case IceType_v4f32: {
+    Asm->vmovlq(Dest, getSrc(0), getSrc(1));
+  } break;
+  }
+}
+
+template <> void InstARM32Vmovh::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Variable *Dest = getDest();
+  switch (Dest->getType()) {
+  default:
+    llvm::report_fatal_error("Vmovhq not defined on type " +
+                             typeStdString(Dest->getType()));
+  case IceType_v4i1:
+  case IceType_v8i1:
+  case IceType_v16i1:
+  case IceType_v16i8:
+  case IceType_v8i16:
+  case IceType_v4i32:
+  case IceType_v4f32: {
+    Asm->vmovhq(Dest, getSrc(0), getSrc(1));
+  } break;
+  }
+}
+
+template <> void InstARM32Vmovhl::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Variable *Dest = getDest();
+  switch (Dest->getType()) {
+  default:
+    llvm::report_fatal_error("Vmovhlq not defined on type " +
+                             typeStdString(Dest->getType()));
+  case IceType_v4i1:
+  case IceType_v8i1:
+  case IceType_v16i1:
+  case IceType_v16i8:
+  case IceType_v8i16:
+  case IceType_v4i32:
+  case IceType_v4f32: {
+    Asm->vmovhlq(Dest, getSrc(0), getSrc(1));
+  } break;
+  }
+}
+
+template <> void InstARM32Vmovlh::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Variable *Dest = getDest();
+  switch (Dest->getType()) {
+  default:
+    llvm::report_fatal_error("Vmovlhq not defined on type " +
+                             typeStdString(Dest->getType()));
+  case IceType_v4i1:
+  case IceType_v8i1:
+  case IceType_v16i1:
+  case IceType_v16i8:
+  case IceType_v8i16:
+  case IceType_v4i32:
+  case IceType_v4f32: {
+    Asm->vmovlhq(Dest, getSrc(0), getSrc(1));
   } break;
   }
 }
@@ -1167,6 +1249,25 @@ template <> void InstARM32Vmlap::emitIAS(const Cfg *Func) const {
   assert(!Asm->needsTextFixup());
 }
 
+template <> void InstARM32Vzip::emitIAS(const Cfg *Func) const {
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Operand *Src0 = getSrc(0);
+  const Operand *Src1 = getSrc(1);
+  Type DestTy = Dest->getType();
+  //switch (SrcTy) {
+  //default:
+  //  llvm::report_fatal_error("Vmulh not defined on type " +
+   //                          typeStdString(SrcTy));
+  //case IceType_v8i16:
+  //case IceType_v4i32:
+
+      Asm->vzip(typeElementType(DestTy), Dest, Src0, Src1);
+
+  //  break;
+  //}
+  assert(!Asm->needsTextFixup());
+}
+
 template <> void InstARM32Vmul::emitIAS(const Cfg *Func) const {
   auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
   const Variable *Dest = getDest();
@@ -1422,6 +1523,13 @@ InstARM32Vstr1::InstARM32Vstr1(Cfg *Func, Variable *Value, OperandARM32Mem *Mem,
   addSource(Value);
   addSource(Mem);
   this->Size = Size;
+}
+
+InstARM32Vdup::InstARM32Vdup(Cfg *Func, Variable *Dest, Variable *Src,
+                               IValueT Idx)
+    : InstARM32Pred(Func, InstARM32::Vdup, 1, Dest, Predicate) {
+  addSource(Src);
+  this->Idx = Idx;
 }
 
 InstARM32Trap::InstARM32Trap(Cfg *Func)
@@ -1739,6 +1847,7 @@ template <> const char *InstARM32Sxt::Opcode = "sxt"; // still requires b/h
 template <> const char *InstARM32Uxt::Opcode = "uxt"; // still requires b/h
 // FP
 template <> const char *InstARM32Vsqrt::Opcode = "vsqrt";
+template <> const char *InstARM32Vpaddq::Opcode = "vpaddq";
 // Mov-like ops
 template <> const char *InstARM32Ldr::Opcode = "ldr";
 template <> const char *InstARM32Ldrex::Opcode = "ldrex";
@@ -1770,11 +1879,16 @@ template <> const char *InstARM32Vceq::Opcode = "vceq";
 template <> const char *InstARM32ThreeAddrFP<InstARM32::Vcge>::Opcode = "vcge";
 template <> const char *InstARM32ThreeAddrFP<InstARM32::Vcgt>::Opcode = "vcgt";
 template <> const char *InstARM32Vdiv::Opcode = "vdiv";
+template <> const char *InstARM32Vrcp::Opcode = "vrcp";
 template <> const char *InstARM32Veor::Opcode = "veor";
 template <> const char *InstARM32Vmla::Opcode = "vmla";
 template <> const char *InstARM32Vmls::Opcode = "vmls";
 template <> const char *InstARM32Vmul::Opcode = "vmul";
 template <> const char *InstARM32Vmvn::Opcode = "vmvn";
+template <> const char *InstARM32Vmovl::Opcode = "vmovl";
+template <> const char *InstARM32Vmovh::Opcode = "vmovh";
+template <> const char *InstARM32Vmovhl::Opcode = "vmovhl";
+template <> const char *InstARM32Vmovlh::Opcode = "vmovlh";
 template <> const char *InstARM32Vorr::Opcode = "vorr";
 template <> const char *InstARM32UnaryopFP<InstARM32::Vneg>::Opcode = "vneg";
 template <> const char *InstARM32ThreeAddrFP<InstARM32::Vshl>::Opcode = "vshl";
@@ -2598,6 +2712,24 @@ template <> void InstARM32Vsqrt::emitIAS(const Cfg *Func) const {
     emitUsingTextFixup(Func);
 }
 
+template <> void InstARM32Vpaddq::emitIAS(const Cfg *Func) const {
+  assert(getSrcSize() == 1);
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Operand *Dest = getDest();
+  switch (Dest->getType()) {
+  case IceType_v16i8:
+  case IceType_v8i16:
+  case IceType_v4i32:
+  case IceType_v4f32:
+    Asm->vpaddq(Dest, getSrc(0));
+    break;
+  default:
+    llvm::report_fatal_error("Vpaddq of non-floating type");
+  }
+  if (Asm->needsTextFixup())
+    emitUsingTextFixup(Func);
+}
+
 const char *InstARM32Pop::getGPROpcode() const { return "pop"; }
 
 const char *InstARM32Pop::getSRegOpcode() const { return "vpop"; }
@@ -2868,6 +3000,52 @@ void InstARM32Vstr1::emitIAS(const Cfg *Func) const {
 }
 
 void InstARM32Vstr1::dump(const Cfg *Func) const {
+  if (!BuildDefs::dump())
+    return;
+  Ostream &Str = Func->getContext()->getStrDump();
+  Type Ty = getSrc(0)->getType();
+  dumpOpcodePred(Str, "str", Ty);
+  Str << " ";
+  getSrc(1)->dump(Func);
+  Str << ", ";
+  getSrc(0)->dump(Func);
+}
+
+void InstARM32Vdup::emit(const Cfg *Func) const {
+  if (!BuildDefs::dump())
+    return;
+  Ostream &Str = Func->getContext()->getStrEmit();
+  assert(getSrcSize() == 2);
+  Type Ty = getSrc(0)->getType();
+  const bool IsVectorStore = isVectorType(Ty);
+  const bool IsScalarFloat = isScalarFloatingType(Ty);
+  const char *Opcode =
+      IsVectorStore ? "vst1" : (IsScalarFloat ? "vstr" : "str");
+  Str << "\t" << Opcode;
+  const bool IsVInst = IsVectorStore || IsScalarFloat;
+  if (IsVInst) {
+    Str << getPredicate() << getWidthString(Ty);
+  } else {
+    Str << getWidthString(Ty) << getPredicate();
+  }
+  if (IsVectorStore)
+    Str << "." << getVecElmtBitsize(Ty);
+  Str << "\t";
+  getSrc(0)->emit(Func);
+  Str << ", ";
+  getSrc(1)->emit(Func);
+}
+
+void InstARM32Vdup::emitIAS(const Cfg *Func) const {
+  assert(getSrcSize() == 1);
+  auto *Asm = Func->getAssembler<ARM32::AssemblerARM32>();
+  const Operand *Dest = getDest();
+  const Operand *Src = getSrc(0);
+  Type DestTy = Dest->getType();
+  Asm->vdup(typeElementType(DestTy), Dest, Src, Idx);
+}
+
+void InstARM32Vdup::dump(const Cfg *Func) const {
   if (!BuildDefs::dump())
     return;
   Ostream &Str = Func->getContext()->getStrDump();
@@ -3442,6 +3620,7 @@ template class InstARM32ThreeAddrFP<InstARM32::Vadd>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vcge>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vcgt>;
 template class InstARM32ThreeAddrFP<InstARM32::Vdiv>;
+template class InstARM32UnaryopFP<InstARM32::Vrcp>;
 template class InstARM32ThreeAddrFP<InstARM32::Veor>;
 template class InstARM32FourAddrFP<InstARM32::Vmla>;
 template class InstARM32FourAddrFP<InstARM32::Vmls>;
@@ -3455,6 +3634,7 @@ template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vqsub>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vqmovn2>;
 template class InstARM32ThreeAddrSignAwareFP<InstARM32::Vmulh>;
 template class InstARM32ThreeAddrFP<InstARM32::Vmlap>;
+template class InstARM32UnaryopFP<InstARM32::Vpaddq>;
 
 template class InstARM32LoadBase<InstARM32::Ldr>;
 template class InstARM32LoadBase<InstARM32::Ldrex>;
