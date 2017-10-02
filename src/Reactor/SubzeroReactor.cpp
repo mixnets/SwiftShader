@@ -843,9 +843,9 @@ namespace sw
 		int valueType = (int)reinterpret_cast<intptr_t>(type);
 		Ice::Variable *result = ::function->makeVariable(T(type));
 
-		if(valueType & EmulatedBits)
+		if(align != 0 && valueType & EmulatedBits)
 		{
-			if(emulateIntrinsics)
+			if(false)
 			{
 				if(typeSize(type) == 4)
 				{
@@ -896,9 +896,9 @@ namespace sw
 	{
 		int valueType = (int)reinterpret_cast<intptr_t>(type);
 
-		if(valueType & EmulatedBits)
+		if(align != 0 && valueType & EmulatedBits)
 		{
-			if(emulateIntrinsics)
+			if(false)
 			{
 				if(typeSize(type) == 4)
 				{
@@ -941,7 +941,7 @@ namespace sw
 		}
 		else
 		{
-			assert(T(value->getType()) == type);
+		//	assert(T(value->getType()) == type);
 
 			auto store = Ice::InstStore::create(::function, value, ptr, align);
 			::basicBlock->appendInst(store);
@@ -2723,7 +2723,7 @@ namespace sw
 
 	RValue<Byte8> AddSat(RValue<Byte8> x, RValue<Byte8> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Byte8 result;
 			result = Insert(result, SaturateUnsigned(Short(Int(Extract(x, 0)) + Int(Extract(y, 0)))), 0);
@@ -2753,7 +2753,7 @@ namespace sw
 
 	RValue<Byte8> SubSat(RValue<Byte8> x, RValue<Byte8> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Byte8 result;
 			result = Insert(result, SaturateUnsigned(Short(Int(Extract(x, 0)) - Int(Extract(y, 0)))), 0);
@@ -2817,7 +2817,7 @@ namespace sw
 
 	RValue<SByte8> operator>>(RValue<SByte8> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			SByte8 result;
 			result = Insert(result, Extract(lhs, 0) >> SByte(rhs), 0);
@@ -3050,7 +3050,7 @@ namespace sw
 
 	RValue<SByte8> AddSat(RValue<SByte8> x, RValue<SByte8> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			SByte8 result;
 			result = Insert(result, SaturateSigned(Short(Int(Extract(x, 0)) + Int(Extract(y, 0)))), 0);
@@ -3080,7 +3080,7 @@ namespace sw
 
 	RValue<SByte8> SubSat(RValue<SByte8> x, RValue<SByte8> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			SByte8 result;
 			result = Insert(result, SaturateSigned(Short(Int(Extract(x, 0)) - Int(Extract(y, 0)))), 0);
@@ -3389,7 +3389,7 @@ namespace sw
 
 	RValue<Short4> operator<<(RValue<Short4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Short4 result;
 			result = Insert(result, Extract(lhs, 0) << Short(rhs), 0);
@@ -3407,7 +3407,7 @@ namespace sw
 
 	RValue<Short4> operator>>(RValue<Short4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Short4 result;
 			result = Insert(result, Extract(lhs, 0) >> Short(rhs), 0);
@@ -3527,7 +3527,7 @@ namespace sw
 
 	RValue<Short4> AddSat(RValue<Short4> x, RValue<Short4> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Short4 result;
 			result = Insert(result, SaturateSigned(Int(Extract(x, 0)) + Int(Extract(y, 0))), 0);
@@ -3553,7 +3553,7 @@ namespace sw
 
 	RValue<Short4> SubSat(RValue<Short4> x, RValue<Short4> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Short4 result;
 			result = Insert(result, SaturateSigned(Int(Extract(x, 0)) - Int(Extract(y, 0))), 0);
@@ -3579,7 +3579,7 @@ namespace sw
 
 	RValue<Short4> MulHigh(RValue<Short4> x, RValue<Short4> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Short4 result;
 			result = Insert(result, Short((Int(Extract(x, 0)) * Int(Extract(y, 0))) >> 16), 0);
@@ -3605,7 +3605,7 @@ namespace sw
 
 	RValue<Int2> MulAdd(RValue<Short4> x, RValue<Short4> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Int2 result;
 			result = Insert(result, Int(Extract(x, 0)) * Int(Extract(y, 0)) + Int(Extract(x, 1)) * Int(Extract(y, 1)), 0);
@@ -3629,7 +3629,7 @@ namespace sw
 
 	RValue<SByte8> PackSigned(RValue<Short4> x, RValue<Short4> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			SByte8 result;
 			result = Insert(result, SaturateSigned(Extract(x, 0)), 0);
@@ -3659,7 +3659,7 @@ namespace sw
 
 	RValue<Byte8> PackUnsigned(RValue<Short4> x, RValue<Short4> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Byte8 result;
 			result = Insert(result, SaturateUnsigned(Extract(x, 0)), 0);
@@ -3902,7 +3902,7 @@ namespace sw
 
 	RValue<UShort4> operator<<(RValue<UShort4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			UShort4 result;
 			result = Insert(result, Extract(lhs, 0) << UShort(rhs), 0);
@@ -3920,7 +3920,7 @@ namespace sw
 
 	RValue<UShort4> operator>>(RValue<UShort4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			UShort4 result;
 			result = Insert(result, Extract(lhs, 0) >> UShort(rhs), 0);
@@ -3984,7 +3984,7 @@ namespace sw
 
 	RValue<UShort4> AddSat(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			UShort4 result;
 			result = Insert(result, SaturateUShort(Int(Extract(x, 0)) + Int(Extract(y, 0))), 0);
@@ -4010,7 +4010,7 @@ namespace sw
 
 	RValue<UShort4> SubSat(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			UShort4 result;
 			result = Insert(result, SaturateUShort(Int(Extract(x, 0)) - Int(Extract(y, 0))), 0);
@@ -4036,7 +4036,7 @@ namespace sw
 
 	RValue<UShort4> MulHigh(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			UShort4 result;
 			result = Insert(result, UShort((UInt(Extract(x, 0)) * UInt(Extract(y, 0))) >> 16), 0);
@@ -4123,7 +4123,7 @@ namespace sw
 
 	RValue<Short8> operator<<(RValue<Short8> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Short8 result;
 			result = Insert(result, Extract(lhs, 0) << Short(rhs), 0);
@@ -4145,7 +4145,7 @@ namespace sw
 
 	RValue<Short8> operator>>(RValue<Short8> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Short8 result;
 			result = Insert(result, Extract(lhs, 0) >> Short(rhs), 0);
@@ -4257,7 +4257,7 @@ namespace sw
 
 	RValue<UShort8> operator<<(RValue<UShort8> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			UShort8 result;
 			result = Insert(result, Extract(lhs, 0) << UShort(rhs), 0);
@@ -4279,7 +4279,7 @@ namespace sw
 
 	RValue<UShort8> operator>>(RValue<UShort8> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			UShort8 result;
 			result = Insert(result, Extract(lhs, 0) >> UShort(rhs), 0);
@@ -5211,7 +5211,7 @@ namespace sw
 
 	RValue<Int2> operator<<(RValue<Int2> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Int2 result;
 			result = Insert(result, Extract(lhs, 0) << Int(rhs), 0);
@@ -5227,7 +5227,7 @@ namespace sw
 
 	RValue<Int2> operator>>(RValue<Int2> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Int2 result;
 			result = Insert(result, Extract(lhs, 0) >> Int(rhs), 0);
@@ -5432,7 +5432,7 @@ namespace sw
 
 	RValue<UInt2> operator<<(RValue<UInt2> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			UInt2 result;
 			result = Insert(result, Extract(lhs, 0) << UInt(rhs), 0);
@@ -5448,7 +5448,7 @@ namespace sw
 
 	RValue<UInt2> operator>>(RValue<UInt2> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			UInt2 result;
 			result = Insert(result, Extract(lhs, 0) >> UInt(rhs), 0);
@@ -5746,7 +5746,7 @@ namespace sw
 
 	RValue<Int4> operator<<(RValue<Int4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Int4 result;
 			result = Insert(result, Extract(lhs, 0) << Int(rhs), 0);
@@ -5764,7 +5764,7 @@ namespace sw
 
 	RValue<Int4> operator>>(RValue<Int4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Int4 result;
 			result = Insert(result, Extract(lhs, 0) >> Int(rhs), 0);
@@ -5933,7 +5933,7 @@ namespace sw
 
 	RValue<Short8> PackSigned(RValue<Int4> x, RValue<Int4> y)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			Short8 result;
 			result = Insert(result, SaturateSigned(Extract(x, 0)), 0);
@@ -6190,7 +6190,7 @@ namespace sw
 
 	RValue<UInt4> operator<<(RValue<UInt4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			UInt4 result;
 			result = Insert(result, Extract(lhs, 0) << UInt(rhs), 0);
@@ -6208,7 +6208,7 @@ namespace sw
 
 	RValue<UInt4> operator>>(RValue<UInt4> lhs, unsigned char rhs)
 	{
-		if(emulateIntrinsics)
+		if(false)
 		{
 			UInt4 result;
 			result = Insert(result, Extract(lhs, 0) >> UInt(rhs), 0);

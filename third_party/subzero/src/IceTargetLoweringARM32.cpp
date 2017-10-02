@@ -5357,7 +5357,7 @@ void TargetARM32::lowerIntrinsicCall(const InstIntrinsicCall *Instr) {
       Func->setError("Unexpected size for LoadSubVector");
       return;
     }
-    _mov(Dest, T); // FIXME: necessary?
+    _mov(Dest, T);
     return;
   }
   case Intrinsics::StoreSubVector: {
