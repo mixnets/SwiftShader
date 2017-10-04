@@ -98,7 +98,7 @@ namespace glsl
 	{
 	}
 
-	BlockMemberInfo BlockLayoutEncoder::encodeType(const TType &type)
+	BlockMemberInfo BlockLayoutEncoder::encodeType(const TType &type, bool blockHasInstanceName)
 	{
 		int arrayStride;
 		int matrixStride;
@@ -108,7 +108,8 @@ namespace glsl
 		const BlockMemberInfo memberInfo(static_cast<int>(mCurrentOffset * BytesPerComponent),
 		                                 static_cast<int>(arrayStride * BytesPerComponent),
 		                                 static_cast<int>(matrixStride * BytesPerComponent),
-		                                 (matrixStride > 0) && isRowMajor);
+		                                 (matrixStride > 0) && isRowMajor,
+		                                 blockHasInstanceName);
 
 		advanceOffset(type, type.getArraySize(), isRowMajor, arrayStride, matrixStride);
 
@@ -3202,7 +3203,7 @@ namespace glsl
 		return -1;
 	}
 
-	void OutputASM::declareUniform(const TType &type, const TString &name, int registerIndex, int blockId, BlockLayoutEncoder* encoder)
+	void OutputASM::declareUniform(const TType &type, const TString &name, int registerIndex, int blockId, BlockLayoutEncoder* encoder, bool blockHasInstanceName)
 	{
 		const TStructure *structure = type.getStruct();
 		const TInterfaceBlock *block = (type.isInterfaceBlock() || (blockId == -1)) ? type.getInterfaceBlock() : nullptr;
@@ -3210,7 +3211,7 @@ namespace glsl
 		if(!structure && !block)
 		{
 			ActiveUniforms &activeUniforms = shaderObject->activeUniforms;
-			const BlockMemberInfo blockInfo = encoder ? encoder->encodeType(type) : BlockMemberInfo::getDefaultBlockInfo();
+			const BlockMemberInfo blockInfo = encoder ? encoder->encodeType(type, blockHasInstanceName) : BlockMemberInfo::getDefaultBlockInfo();
 			if(blockId >= 0)
 			{
 				blockDefinitions[blockId][registerIndex] = TypedMemberInfo(blockInfo, type);
@@ -3237,6 +3238,7 @@ namespace glsl
 
 			blockId = activeUniformBlocks.size();
 			bool isRowMajor = block->matrixPacking() == EmpRowMajor;
+			bool hasInstanceName = block->hasInstanceName();
 			activeUniformBlocks.push_back(UniformBlock(blockName.c_str(), 0, block->arraySize(),
 			                                           block->blockStorage(), isRowMajor, registerIndex, blockId));
 			blockDefinitions.push_back(BlockDefinitionIndexMap());
@@ -3252,9 +3254,9 @@ namespace glsl
 					registerIndex = fieldRegisterIndex;
 				}
 
-				const TString uniformName = block->hasInstanceName() ? blockName + "." + fieldName : fieldName;
+				const TString uniformName = hasInstanceName ? blockName + "." + fieldName : fieldName;
 
-				declareUniform(fieldType, uniformName, fieldRegisterIndex, blockId, &currentBlockEncoder);
+				declareUniform(fieldType, uniformName, fieldRegisterIndex, blockId, &currentBlockEncoder, hasInstanceName);
 				fieldRegisterIndex += fieldType.totalRegisterCount();
 			}
 			currentBlockEncoder.exitAggregateType();

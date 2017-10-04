@@ -35,24 +35,26 @@ namespace glsl
 {
 	struct BlockMemberInfo
 	{
-		BlockMemberInfo() : offset(-1), arrayStride(-1), matrixStride(-1), isRowMajorMatrix(false) {}
+		BlockMemberInfo() : offset(-1), arrayStride(-1), matrixStride(-1), isRowMajorMatrix(false), hasInstanceName(false) {}
 
-		BlockMemberInfo(int offset, int arrayStride, int matrixStride, bool isRowMajorMatrix)
+		BlockMemberInfo(int offset, int arrayStride, int matrixStride, bool isRowMajorMatrix, bool hasInstanceName)
 			: offset(offset),
 			arrayStride(arrayStride),
 			matrixStride(matrixStride),
-			isRowMajorMatrix(isRowMajorMatrix)
+			isRowMajorMatrix(isRowMajorMatrix),
+			hasInstanceName(hasInstanceName)
 		{}
 
 		static BlockMemberInfo getDefaultBlockInfo()
 		{
-			return BlockMemberInfo(-1, -1, -1, false);
+			return BlockMemberInfo(-1, -1, -1, false, false);
 		}
 
 		int offset;
 		int arrayStride;
 		int matrixStride;
 		bool isRowMajorMatrix;
+		bool hasInstanceName;
 	};
 
 	struct Uniform
@@ -95,7 +97,7 @@ namespace glsl
 		BlockLayoutEncoder(bool rowMajor);
 		virtual ~BlockLayoutEncoder() {}
 
-		BlockMemberInfo encodeType(const TType &type);
+		BlockMemberInfo encodeType(const TType &type, bool blockHasInstanceName);
 
 		size_t getBlockSize() const { return mCurrentOffset * BytesPerComponent; }
 
@@ -301,7 +303,7 @@ namespace glsl
 		int allocate(VariableArray &list, TIntermTyped *variable);
 		void free(VariableArray &list, TIntermTyped *variable);
 
-		void declareUniform(const TType &type, const TString &name, int registerIndex, int blockId = -1, BlockLayoutEncoder* encoder = nullptr);
+		void declareUniform(const TType &type, const TString &name, int registerIndex, int blockId = -1, BlockLayoutEncoder* encoder = nullptr, bool blockHasInstanceName = false);
 		GLenum glVariableType(const TType &type);
 		GLenum glVariablePrecision(const TType &type);
 

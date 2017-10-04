@@ -50,6 +50,7 @@ namespace es2
 			arrayStride = uniform.blockInfo.arrayStride;
 			matrixStride = uniform.blockInfo.matrixStride;
 			isRowMajorMatrix = uniform.blockInfo.isRowMajorMatrix;
+			hasInstanceName = uniform.blockInfo.hasInstanceName;
 		}
 		else
 		{
@@ -58,6 +59,7 @@ namespace es2
 			arrayStride = -1;
 			matrixStride = -1;
 			isRowMajorMatrix = false;
+			hasInstanceName = false;
 		}
 	}
 
@@ -65,7 +67,7 @@ namespace es2
 	                 const BlockInfo &blockInfo)
 	 : type(type), precision(precision), name(name), arraySize(arraySize), blockInfo(blockInfo)
 	{
-		if(blockInfo.index == -1)
+		if(blockInfo.index == -1 || !blockInfo.hasInstanceName)
 		{
 			size_t bytes = UniformTypeSize(type) * size();
 			data = new unsigned char[bytes];
@@ -509,6 +511,11 @@ namespace es2
 			return false;   // Attempting to write an array to a non-array uniform is an INVALID_OPERATION
 		}
 
+		if(!targetUniform->data)
+		{
+			return false;   // Attempting to write to the non default uniform block is an INVALID_OPERATION
+		}
+
 		count = std::min(size - (int)uniformIndex[location].element, count);
 
 		int index = numElements - 1;
@@ -595,6 +602,11 @@ namespace es2
 		if(targetUniform->type != type)
 		{
 			return false;
+		}
+
+		if(!targetUniform->data)
+		{
+			return false;   // Attempting to write to the non default uniform block is an INVALID_OPERATION
 		}
 
 		int size = targetUniform->size();
@@ -696,6 +708,11 @@ namespace es2
 			return false;   // Attempting to write an array to a non-array uniform is an INVALID_OPERATION
 		}
 
+		if(!targetUniform->data)
+		{
+			return false;   // Attempting to write to the non default uniform block is an INVALID_OPERATION
+		}
+
 		count = std::min(size - (int)uniformIndex[location].element, count);
 
 		if(targetUniform->type == GL_INT || targetUniform->type == GL_UNSIGNED_INT || IsSamplerUniform(targetUniform->type))
@@ -751,6 +768,11 @@ namespace es2
 		if(size == 1 && count > 1)
 		{
 			return false;   // Attempting to write an array to a non-array uniform is an INVALID_OPERATION
+		}
+
+		if(!targetUniform->data)
+		{
+			return false;   // Attempting to write to the non default uniform block is an INVALID_OPERATION
 		}
 
 		count = std::min(size - (int)uniformIndex[location].element, count);
@@ -815,6 +837,11 @@ namespace es2
 			return false;   // Attempting to write an array to a non-array uniform is an INVALID_OPERATION
 		}
 
+		if(!targetUniform->data)
+		{
+			return false;   // Attempting to write to the non default uniform block is an INVALID_OPERATION
+		}
+
 		count = std::min(size - (int)uniformIndex[location].element, count);
 
 		if(targetUniform->type == GL_INT || targetUniform->type == GL_UNSIGNED_INT || IsSamplerUniform(targetUniform->type))
@@ -870,6 +897,11 @@ namespace es2
 		if(size == 1 && count > 1)
 		{
 			return false;   // Attempting to write an array to a non-array uniform is an INVALID_OPERATION
+		}
+
+		if(!targetUniform->data)
+		{
+			return false;   // Attempting to write to the non default uniform block is an INVALID_OPERATION
 		}
 
 		count = std::min(size - (int)uniformIndex[location].element, count);
@@ -931,6 +963,11 @@ namespace es2
 		if(bufSize && static_cast<unsigned int>(*bufSize) < count * sizeof(GLfloat))
 		{
 			return false;
+		}
+
+		if(!targetUniform->data)
+		{
+			return false;   // Attempting to read a non default uniform block is an INVALID_OPERATION
 		}
 
 		switch(UniformComponentType(targetUniform->type))
@@ -1038,6 +1075,11 @@ namespace es2
 		if(bufSize && static_cast<unsigned int>(*bufSize) < count * sizeof(GLuint))
 		{
 			return false;
+		}
+
+		if(!targetUniform->data)
+		{
+			return false;   // Attempting to read a non default uniform block is an INVALID_OPERATION
 		}
 
 		switch(UniformComponentType(targetUniform->type))

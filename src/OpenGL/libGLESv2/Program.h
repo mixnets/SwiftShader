@@ -46,6 +46,7 @@ namespace es2
 			int arrayStride;
 			int matrixStride;
 			bool isRowMajorMatrix;
+			bool hasInstanceName;
 		};
 
 		Uniform(GLenum type, GLenum precision, const std::string &name, unsigned int arraySize,
