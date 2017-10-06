@@ -106,11 +106,13 @@ macro(set_target_export_map TARGET DIR)
     elseif(LINUX)
         # Both hash-style are needed, because we want both gold and
         # GNU ld to be able to read our libraries (maybe?).
+		# The version script is provided as part of an implicit linker script.
         # The version script only exports the API functions and
         # hides all the others. Gc sections is used in combination
         # with each functions being in its section, to reduce the
         # binary size.
-        set_target_properties(${TARGET} PROPERTIES LINK_FLAGS "${LINKFLAGS} -Wl,--hash-style=both,--version-script=${DIR}/exports.map,--gc-sections,--no-undefined")
+        set_target_properties(${TARGET} PROPERTIES LINK_FLAGS "${LINKFLAGS} ${DIR}/${TARGET}.lds -Wl,--hash-style=both,--gc-sections,--no-undefined")
+		set_target_properties(${TARGET} PROPERTIES LINK_DEPENDS "${DIR}/${TARGET}.lds")
     endif()
 endmacro()
 
