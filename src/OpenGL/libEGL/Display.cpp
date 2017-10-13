@@ -154,11 +154,11 @@ bool Display::initialize()
 	{
 	//	sw::FORMAT_A1R5G5B5,
 	//  sw::FORMAT_A2R10G10B10,   // The color_ramp conformance test uses ReadPixels with UNSIGNED_BYTE causing it to think that rendering skipped a colour value.
-		sw::FORMAT_A8R8G8B8,
+	//	sw::FORMAT_A8R8G8B8,
 		sw::FORMAT_A8B8G8R8,
 		sw::FORMAT_R5G6B5,
 	//  sw::FORMAT_X1R5G5B5,      // Has no compatible OpenGL ES renderbuffer format
-		sw::FORMAT_X8R8G8B8,
+	//	sw::FORMAT_X8R8G8B8,
 		sw::FORMAT_X8B8G8R8
 	};
 
@@ -650,9 +650,9 @@ Image *Display::getSharedImage(EGLImageKHR image)
 sw::Format Display::getDisplayFormat() const
 {
 	#if defined(_WIN32)
-		HDC deviceContext = GetDC(0);
+		HDC deviceContext = GetDC(NULL);
 		unsigned int bpp = ::GetDeviceCaps(deviceContext, BITSPIXEL);
-		ReleaseDC(0, deviceContext);
+		ReleaseDC(NULL, deviceContext);
 
 		switch(bpp)
 		{
@@ -666,7 +666,7 @@ sw::Format Display::getDisplayFormat() const
 		{
 			"/dev/graphics/fb0",
 			"/dev/fb0",
-			0
+			nullptr
 		};
 
 		for(int i = 0; framebuffer[i]; i++)
@@ -735,6 +735,7 @@ sw::Format Display::getDisplayFormat() const
 			case 32: return sw::FORMAT_X8R8G8B8;
 			case 24: return sw::FORMAT_R8G8B8;
 			case 16: return sw::FORMAT_R5G6B5;
+			case 30: return sw::FORMAT_A2B10G10R10;
 			default: UNREACHABLE(bpp);   // Unexpected display mode color depth
 			}
 		}

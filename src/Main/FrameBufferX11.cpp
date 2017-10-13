@@ -56,6 +56,14 @@ namespace sw
 		bool match = (status != 0 && x_visual.blue_mask == 0xFF);   // Prefer X8R8G8B8
 		Visual *visual = match ? x_visual.visual : libX11->XDefaultVisual(x_display, screen);
 
+		switch(visual->red_mask)
+		{
+		default: UNIMPLEMENTED();
+		case 0xFF0000: destFormat = FORMAT_X8R8G8B8;    break;
+		case 0x0000FF: destFormat = FORMAT_X8B8G8R8;    break;
+		case 0x0003FF: destFormat = FORMAT_A2B10G10R10; break;
+		}
+
 		mit_shm = (libX11->XShmQueryExtension && libX11->XShmQueryExtension(x_display) == True);
 
 		if(mit_shm)
