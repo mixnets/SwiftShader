@@ -524,6 +524,123 @@ namespace sw
 						}
 					}
 					break;
+				case FORMAT_A2B10G10R10:
+					{
+						Int x = x0;
+
+						switch(state.sourceFormat)
+						{
+						case FORMAT_X8R8G8B8:
+						case FORMAT_A8R8G8B8:
+							For(, x < width - 3, x += 4)
+							{
+								Int4 bgra = *Pointer<Int4>(s, sStride % 16 ? 1 : 16);
+								Int4 r = bgra & Int4(0x00FF0000);
+								Int4 g = bgra & Int4(0x0000FF00);
+								Int4 b = bgra & Int4(0x000000FF);
+
+								*Pointer<Int4>(d, 1) = (r >> 14) | (r >> 22) |
+								                       (g << 4)  | ((g & Int4(0x0000C000)) >> 4) |
+								                       (b << 22) | ((b & Int4(0x000000C0)) << 14) |
+								                       Int4(0xC0000000);
+								s += 4 * sBytes;
+								d += 4 * dBytes;
+							}
+							break;
+						case FORMAT_X8B8G8R8:
+						case FORMAT_A8B8G8R8:
+							For(, x < width - 3, x += 4)
+							{
+								Int4 bgra = *Pointer<Int4>(s, sStride % 16 ? 1 : 16);
+								Int4 b = bgra & Int4(0x00FF0000);
+								Int4 g = bgra & Int4(0x0000FF00);
+								Int4 r = bgra & Int4(0x000000FF);
+
+								*Pointer<Int4>(d, 1) = (r << 2) | (r >> 6) |
+								                       (g << 4) | ((g & Int4(0x0000C000)) >> 4) |
+								                       (b << 6) | ((b & Int4(0x00C00000)) >> 2) |
+								                       Int4(0xC0000000);
+								s += 4 * sBytes;
+								d += 4 * dBytes;
+							}
+							break;
+						case FORMAT_A16B16G16R16:
+							UNIMPLEMENTED();
+							break;
+						case FORMAT_R5G6B5:
+							For(, x < width - 3, x += 4)
+							{
+								Int4 rgb = Int4(*Pointer<Short4>(s));
+
+								*Pointer<Int4>(d) = Int4(0xC0000000) |
+                                                    (((rgb & Int4(0x001F)) << 25) | ((rgb & Int4(0x001F)) << 20)) |
+								                    (((rgb & Int4(0x07E0)) << 9)  | ((rgb & Int4(0x0780)) << 3)) |
+								                    (((rgb & Int4(0xF800)) >> 11) | ((rgb & Int4(0xF800)) >> 6));
+
+								s += 4 * sBytes;
+								d += 4 * dBytes;
+							}
+							break;
+						default:
+							ASSERT(false);
+							break;
+						}
+
+						For(, x < width, x++)
+						{
+							switch(state.sourceFormat)
+							{
+							case FORMAT_X8R8G8B8:
+							case FORMAT_A8R8G8B8:
+								{
+									Int bgra = *Pointer<Int>(s);
+									Int r = bgra & 0x00FF0000;
+									Int g = bgra & 0x0000FF00;
+									Int b = bgra & 0x000000FF;
+
+									*Pointer<Int>(d, 1) = (r >> 14) | (r >> 22) |
+									                      (g << 4)  | ((g & 0x0000C000) >> 4) |
+									                      (b << 22) | ((b & 0x000000C0) << 14) |
+									                      0xC0000000;
+								}
+								break;
+							case FORMAT_X8B8G8R8:
+							case FORMAT_A8B8G8R8:
+								{
+									Int bgra = *Pointer<Int>(s);
+									Int b = bgra & 0x00FF0000;
+									Int g = bgra & 0x0000FF00;
+									Int r = bgra & 0x000000FF;
+
+									*Pointer<Int>(d, 1) = (r << 2) | (r >> 6) |
+									                      (g << 4) | ((g & 0x0000C000) >> 4) |
+									                      (b << 6) | ((b & 0x00C00000) >> 2) |
+									                      0xC0000000;
+								}
+								break;
+							case FORMAT_A16B16G16R16:
+								UNIMPLEMENTED();
+								break;
+							case FORMAT_R5G6B5:
+								{
+									Int rgb = Int(*Pointer<Short>(s));
+
+									*Pointer<Int>(d) = 0xC0000000 |
+									                   (((rgb & 0x001F) << 25) | ((rgb & 0x001F) << 20)) |
+									                   (((rgb & 0x07E0) << 9)  | ((rgb & 0x0780) << 3)) |
+									                   (((rgb & 0xF800) >> 11) | ((rgb & 0xF800) >> 6));
+								}
+								break;
+							default:
+								ASSERT(false);
+								break;
+							}
+
+							s += sBytes;
+							d += dBytes;
+						}
+					}
+					break;
 				default:
 					ASSERT(false);
 					break;

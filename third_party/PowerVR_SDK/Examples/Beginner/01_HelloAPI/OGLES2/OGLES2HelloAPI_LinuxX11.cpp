@@ -265,6 +265,7 @@ bool ChooseEGLConfig( EGLDisplay eglDisplay, EGLConfig& eglConfig )
 	{
 		EGL_SURFACE_TYPE,		EGL_WINDOW_BIT,
 		EGL_RENDERABLE_TYPE,	EGL_OPENGL_ES2_BIT,
+		EGL_RED_SIZE,           8,
 		EGL_NONE
 	};
 
