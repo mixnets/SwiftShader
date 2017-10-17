@@ -84,16 +84,6 @@ namespace sw
 		return (int)floor(x);
 	}
 
-	inline int ceilFix4(int x)
-	{
-		return (x + 0xF) & 0xFFFFFFF0;
-	}
-
-	inline int ceilInt4(int x)
-	{
-		return (x + 0xF) >> 4;
-	}
-
 	#define BITS(x)    ( \
 	!!((x) & 0x80000000) + \
 	!!((x) & 0xC0000000) + \

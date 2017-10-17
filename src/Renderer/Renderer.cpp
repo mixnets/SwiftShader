@@ -72,6 +72,11 @@ namespace sw
 	TranscendentalPrecision rsqPrecision = ACCURATE;
 	bool perspectiveCorrection = true;
 
+	// Sub-pixel accuracy
+	int f = 8;
+	float F = float(1 << f);
+	int M = 0xFFFFFFFF >> (32 - f);
+
 	struct Parameters
 	{
 		Renderer *renderer;
@@ -574,10 +579,10 @@ namespace sw
 
 				int s = sw::log2(ss);
 
-				data->Wx16 = replicate(W * 16);
-				data->Hx16 = replicate(H * 16);
-				data->X0x16 = replicate(X0 * 16 - 8);
-				data->Y0x16 = replicate(Y0 * 16 - 8);
+				data->WxF = replicate(W * sw::F);
+				data->HxF = replicate(H * sw::F);
+				data->X0xF = replicate(X0 * sw::F - sw::F / 2);
+				data->Y0xF = replicate(Y0 * sw::F - sw::F / 2);
 				data->XXXX = replicate(X[s][q] / W);
 				data->YYYY = replicate(Y[s][q] / H);
 				data->halfPixelX = replicate(0.5f / W);
@@ -1717,8 +1722,8 @@ namespace sw
 			return false;
 		}
 
-		const float W = data.Wx16[0] * (1.0f / 16.0f);
-		const float H = data.Hx16[0] * (1.0f / 16.0f);
+		const float W = data.WxF[0] * (1.0f / F);
+		const float H = data.HxF[0] * (1.0f / F);
 
 		float dx = W * (P1.x / P1.w - P0.x / P0.w);
 		float dy = H * (P1.y / P1.w - P0.y / P0.w);
@@ -1951,8 +1956,8 @@ namespace sw
 		triangle.v1 = triangle.v0;
 		triangle.v2 = triangle.v0;
 
-		triangle.v1.X += iround(16 * 0.5f * pSize);
-		triangle.v2.Y -= iround(16 * 0.5f * pSize) * (data.Hx16[0] > 0.0f ? 1 : -1);   // Both Direct3D and OpenGL expect (0, 0) in the top-left corner
+		triangle.v1.X += iround(F * 0.5f * pSize);
+		triangle.v2.Y -= iround(F * 0.5f * pSize) * (data.HxF[0] > 0.0f ? 1 : -1);   // Both Direct3D and OpenGL expect (0, 0) in the top-left corner
 
 		Polygon polygon(P, 4);
 

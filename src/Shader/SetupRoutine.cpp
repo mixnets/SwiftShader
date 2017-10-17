@@ -26,6 +26,10 @@ namespace sw
 	extern TranscendentalPrecision logPrecision;
 	extern bool leadingVertexFirst;
 
+	extern int f;
+	extern float F;
+	extern int M;
+
 	SetupRoutine::SetupRoutine(const SetupProcessor::State &state) : state(state)
 	{
 		routine = 0;
@@ -155,8 +159,8 @@ namespace sw
 					Float w = v.w;
 					Float rhw = IfThenElse(w != 0.0f, 1.0f / w, Float(1.0f));
 
-					X[i] = RoundInt(*Pointer<Float>(data + OFFSET(DrawData,X0x16)) + v.x * rhw * *Pointer<Float>(data + OFFSET(DrawData,Wx16)));
-					Y[i] = RoundInt(*Pointer<Float>(data + OFFSET(DrawData,Y0x16)) + v.y * rhw * *Pointer<Float>(data + OFFSET(DrawData,Hx16)));
+					X[i] = RoundInt(*Pointer<Float>(data + OFFSET(DrawData,X0xF)) + v.x * rhw * *Pointer<Float>(data + OFFSET(DrawData,WxF)));
+					Y[i] = RoundInt(*Pointer<Float>(data + OFFSET(DrawData,Y0xF)) + v.y * rhw * *Pointer<Float>(data + OFFSET(DrawData,HxF)));
 
 					i++;
 				}
@@ -185,8 +189,8 @@ namespace sw
 			}
 			else
 			{
-				yMin = (yMin + 0x0F) >> 4;
-				yMax = (yMax + 0x0F) >> 4;
+				yMin = (yMin + M / 2) >> f;
+				yMax = (yMax + M + M / 2) >> f;
 			}
 
 			If(yMin == yMax)
@@ -224,7 +228,7 @@ namespace sw
 
 				if(state.multiSample > 1)
 				{
-					Short x = Short((X[0] + 0xF) >> 4);
+					Short x = Short((X[0] + M) >> f);
 
 					For(Int y = yMin - 1, y < yMax + 1, y++)
 					{
@@ -329,8 +333,8 @@ namespace sw
 				Y2 = Y1 + X0 - X1;
 			}
 
-			Float dx = Float(X0) * (1.0f / 16.0f);
-			Float dy = Float(Y0) * (1.0f / 16.0f);
+			Float dx = Float(X0) * (1.0f / F);
+			Float dy = Float(Y0) * (1.0f / F);
 
 			X1 -= X0;
 			Y1 -= Y0;
@@ -338,11 +342,11 @@ namespace sw
 			X2 -= X0;
 			Y2 -= Y0;
 
-			Float x1 = w1 * (1.0f / 16.0f) * Float(X1);
-			Float y1 = w1 * (1.0f / 16.0f) * Float(Y1);
+			Float x1 = w1 * (1.0f / F) * Float(X1);
+			Float y1 = w1 * (1.0f / F) * Float(Y1);
 
-			Float x2 = w2 * (1.0f / 16.0f) * Float(X2);
-			Float y2 = w2 * (1.0f / 16.0f) * Float(Y2);
+			Float x2 = w2 * (1.0f / F) * Float(X2);
+			Float y2 = w2 * (1.0f / F) * Float(Y2);
 
 			Float a = x1 * y2 - x2 * y1;
 
@@ -409,10 +413,10 @@ namespace sw
 
 				if(!point)
 				{
-					Float x1 = Float(X1) * (1.0f / 16.0f);
-					Float y1 = Float(Y1) * (1.0f / 16.0f);
-					Float x2 = Float(X2) * (1.0f / 16.0f);
-					Float y2 = Float(Y2) * (1.0f / 16.0f);
+					Float x1 = Float(X1) * (1.0f / F);
+					Float y1 = Float(Y1) * (1.0f / F);
+					Float x2 = Float(X2) * (1.0f / F);
+					Float y2 = Float(Y2) * (1.0f / F);
 
 					Float D = *Pointer<Float>(data + OFFSET(DrawData,depthRange)) / (x1 * y2 - x2 * y1);
 
@@ -566,8 +570,8 @@ namespace sw
 			Int Y1 = IfThenElse(swap, Yb, Ya);
 			Int Y2 = IfThenElse(swap, Ya, Yb);
 
-			Int y1 = Max((Y1 + 0x0000000F) >> 4, *Pointer<Int>(data + OFFSET(DrawData,scissorY0)));
-			Int y2 = Min((Y2 + 0x0000000F) >> 4, *Pointer<Int>(data + OFFSET(DrawData,scissorY1)));
+			Int y1 = Max((Y1 + M) >> f, *Pointer<Int>(data + OFFSET(DrawData,scissorY0)));
+			Int y2 = Min((Y2 + M) >> f, *Pointer<Int>(data + OFFSET(DrawData,scissorY1)));
 
 			If(y1 < y2)
 			{
@@ -582,11 +586,11 @@ namespace sw
 				Int DX12 = X2 - X1;
 				Int DY12 = Y2 - Y1;
 
-				Int FDX12 = DX12 << 4;
-				Int FDY12 = DY12 << 4;
+				Int FDX12 = DX12 << f;
+				Int FDY12 = DY12 << f;
 
-				Int X = DX12 * ((y1 << 4) - Y1) + (X1 & 0x0000000F) * DY12;
-				Int x = (X1 >> 4) + X / FDY12;   // Edge
+				Int X = DX12 * ((y1 << f) - Y1) + (X1 & M) * DY12;
+				Int x = (X1 >> f) + X / FDY12;   // Edge
 				Int d = X % FDY12;               // Error-term
 				Int ceil = -d >> 31;             // Ceiling division: remainder <= 0
 				x -= ceil;
