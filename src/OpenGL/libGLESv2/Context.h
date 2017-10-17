@@ -41,6 +41,8 @@ class Display;
 class Config;
 }
 
+namespace sw{class Context;}
+
 namespace es2
 {
 struct TranslatedAttribute;
@@ -71,6 +73,8 @@ class Query;
 class Sampler;
 class VertexArray;
 class TransformFeedback;
+
+
 
 enum
 {
@@ -434,7 +438,7 @@ class [[clang::lto_visibility_public]] Context : public egl::Context, public sw:
 {
 public:
 	Context(egl::Display *display, const Context *shareContext, EGLint clientVersion, const egl::Config *config);
-
+	sw::Context *context;
 	void makeCurrent(gl::Surface *surface) override;
 	EGLint getClientVersion() const override;
 	EGLint getConfigID() const override;

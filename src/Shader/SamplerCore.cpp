@@ -50,9 +50,10 @@ namespace
 
 namespace sw
 {
+	int shaderLength = 0;
 	extern bool colorsDefaultToZero;
 
-	SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler::State &state) : constants(constants), state(state)
+	SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler::State &state, int index) : constants(constants), state(state), index(index)
 	{
 	}
 
@@ -542,13 +543,16 @@ namespace sw
 			}
 		}
 
-		if(state.textureFormat == FORMAT_A8R8G8B8 &&
-		   state.mipmapFilter == MIPMAP_LINEAR &&
+		if(index == 0 &&
+		   state.textureFormat == FORMAT_A8R8G8B8 &&
+		   state.mipmapFilter == MIPMAP_NONE &&
+		   state.originalMipmapFilter == MIPMAP_LINEAR &&
 		   state.addressingModeU == ADDRESSING_CLAMP &&
-		   state.textureFilter == FILTER_LINEAR)
+		   state.textureFilter == FILTER_LINEAR &&
+		   shaderLength <= 7)
 		{
-			c.w.x = 0.5f;
-			c.w.y = Float(c.x.x);
+		//	c.w.x = 0.5f;
+		//	c.w.y = Float(c.x.x);
 		}
 	}
 

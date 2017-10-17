@@ -560,7 +560,7 @@ namespace sw
 		void append(Instruction *instruction);
 		void declareSampler(int i);
 
-		const Instruction *getInstruction(size_t i) const;
+		 Instruction *getInstruction(size_t i) const;
 		int size(unsigned long opcode) const;
 		static int size(unsigned long opcode, unsigned short version);
 

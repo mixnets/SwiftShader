@@ -61,7 +61,7 @@ struct Trace
 };
 
 #ifndef NDEBUG
-	#define TRACE(format, ...) Trace UNIQUE_IDENTIFIER(_tracer_)("[0x%0.8X]%s("format")\n", this, __FUNCTION__, __VA_ARGS__)
+	#define TRACE(format, ...) Trace UNIQUE_IDENTIFIER(_tracer_)("%s("format")\n", __FUNCTION__, __VA_ARGS__)
 	#define GTRACE(format, ...) Trace("%s("format")\n", __FUNCTION__, __VA_ARGS__)
 #else
 	#define TRACE(...) ((void)0)

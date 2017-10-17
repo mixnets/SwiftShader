@@ -19,6 +19,7 @@
 
 namespace sw
 {
+	extern int shaderLength;
 	extern bool postBlendSRGB;
 	extern bool booleanFaceRegister;
 	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
@@ -63,6 +64,9 @@ namespace sw
 
 	void PixelProgram::applyShader(Int cMask[4])
 	{
+		shaderLength = shader->getLength();
+		shader->print("PixelShader-%0.8X.txt", state.shaderID);
+
 		enableIndex = 0;
 		stackIndex = 0;
 
@@ -98,7 +102,7 @@ namespace sw
 
 		for(size_t i = 0; i < shader->getLength(); i++)
 		{
-			const Shader::Instruction *instruction = shader->getInstruction(i);
+			 Shader::Instruction *instruction = shader->getInstruction(i);
 			Shader::Opcode opcode = instruction->opcode;
 
 			if(opcode == Shader::OPCODE_DCL || opcode == Shader::OPCODE_DEF || opcode == Shader::OPCODE_DEFI || opcode == Shader::OPCODE_DEFB)
@@ -107,7 +111,7 @@ namespace sw
 			}
 
 			const Dst &dst = instruction->dst;
-			const Src &src0 = instruction->src[0];
+			 Src &src0 = instruction->src[0];
 			const Src &src1 = instruction->src[1];
 			const Src &src2 = instruction->src[2];
 			const Src &src3 = instruction->src[3];
@@ -533,6 +537,13 @@ namespace sw
 			{
 				c[i] = oC[i];
 			}
+		}
+
+		if(shader->getLength() == 7 &&
+		   shader->getInstruction(5)->opcode == Shader::OPCODE_MUL &&
+		   shader->getInstruction(5)->src[0].swizzle == 0xFF)
+		{
+		//	c[0].w = Float4(0.5f);
 		}
 	}
 

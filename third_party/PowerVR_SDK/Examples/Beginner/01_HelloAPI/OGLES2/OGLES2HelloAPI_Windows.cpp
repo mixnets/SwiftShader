@@ -4,7 +4,7 @@
 
  @Title        OpenGL ES 2.0 HelloAPI Tutorial
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -109,6 +109,61 @@ bool TestEGLError(HWND hWnd, char* pszLocation)
 	return true;
 }
 
+
+void SwiftShaderLeakTest()
+{
+  EGLint major;
+  EGLint minor;
+
+  EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+  if (display == EGL_NO_DISPLAY) {
+    //LOG(ERROR) << "eglGetDisplay() returned error " << eglGetError();
+  }
+
+  EGLBoolean success = eglInitialize(display, &major, &minor);
+  //LOG(INFO) << success << " initialized EGL. Major : " << major
+  //          << " Minor: " << minor;
+
+  const EGLint config_attr[] = {
+    // clang-format off
+    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+    EGL_SURFACE_TYPE, EGL_PBUFFER_BIT | EGL_WINDOW_BIT,
+    EGL_RED_SIZE, 8,
+    EGL_GREEN_SIZE, 8,
+    EGL_BLUE_SIZE, 8,
+    EGL_ALPHA_SIZE, 8,
+    EGL_DEPTH_SIZE, 16,
+    EGL_NONE
+    // clang-format on
+  };
+
+  EGLConfig config;
+  EGLint num_configs;
+
+  success = eglChooseConfig(display, config_attr, &config, 1, &num_configs);
+ // LOG(INFO) << success << " eglChooseConfig() error " << eglGetError();
+
+#if 1
+  const EGLint context_attr[] = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE};
+
+  EGLContext context =
+      eglCreateContext(display, config, EGL_NO_CONTEXT, context_attr);
+  if (context == EGL_NO_CONTEXT) {
+   // LOG(ERROR) << "eglCreateContext() returned error " << eglGetError();
+  }
+
+  if (context != EGL_NO_CONTEXT) {
+    if (!eglDestroyContext(display, context)) {
+    //  LOG(ERROR) << "eglDestroyContext() returned error " << eglGetError();
+    }
+  }
+#endif
+
+  success = eglTerminate(display);
+ // LOG(INFO) << "Terminated display: " << success;
+}
+
+
 /*!****************************************************************************
  @Function		WinMain
  @Input			hInstance		Application instance from OS
@@ -120,6 +175,17 @@ bool TestEGLError(HWND hWnd, char* pszLocation)
 ******************************************************************************/
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLine, int nCmdShow)
 {
+	volatile int iteration = 0;
+	while(true)
+	{
+		SwiftShaderLeakTest();
+		iteration++;
+
+		if(iteration == 0) break;
+	}
+
+
+
 	// Windows variables
 	HWND				hWnd	= 0;
 	HDC					hDC		= 0;
@@ -419,7 +485,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// We're going to draw a triangle to the screen so create a vertex buffer object for our triangle
 	GLuint	ui32Vbo; // Vertex buffer object handle
-	
+
 	// Interleaved vertex data
 	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
 								0.4f ,-0.4f,0.0f,
@@ -494,12 +560,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 	}
 
 	// Frees the OpenGL handles for the program and the 2 shaders
-	glDeleteProgram(uiProgramObject);
-	glDeleteShader(uiFragShader);
-	glDeleteShader(uiVertShader);
+//	glDeleteProgram(uiProgramObject);
+//	glDeleteShader(uiFragShader);
+//	glDeleteShader(uiVertShader);
 
 	// Delete the VBO as it is no longer needed
-	glDeleteBuffers(1, &ui32Vbo);
+//	glDeleteBuffers(1, &ui32Vbo);
 
 	/*
 		Step 10 - Terminate OpenGL ES and destroy the window (if present).
@@ -508,8 +574,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		eglDestroyContext here.
 	*/
 cleanup:
-	eglMakeCurrent(eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-	eglTerminate(eglDisplay);
+//	eglMakeCurrent(eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+	eglDestroyContext(eglDisplay, eglContext);
+	eglDestroySurface(eglDisplay, eglSurface);
+//	eglTerminate(eglDisplay);
 
 	/*
 		Step 11 - Destroy the eglWindow.

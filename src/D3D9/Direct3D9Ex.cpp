@@ -35,7 +35,7 @@ namespace D3D9
 
 	long Direct3D9Ex::QueryInterface(const IID &iid, void **object)
 	{
-		TRACE("const IID &iid = 0x%0.8p, void **object = 0x%0.8p", iid, object);
+	////TRACE("const IID &iid = 0x%0.8p, void **object = 0x%0.8p", iid, object);
 
 		if(iid == IID_IDirect3D9Ex ||
 		   iid == IID_IDirect3D9 ||
@@ -54,21 +54,21 @@ namespace D3D9
 
 	unsigned long Direct3D9Ex::AddRef()
 	{
-		TRACE("void");
+	////TRACE("void");
 
 		return Direct3D9::AddRef();
 	}
 
 	unsigned long Direct3D9Ex::Release()
 	{
-		TRACE("void");
+	//TRACE("void");
 
 		return Direct3D9::Release();
 	}
 
 	long Direct3D9Ex::RegisterSoftwareDevice(void *initializeFunction)
 	{
-		TRACE("void *initializeFunction = 0x%0.8p", initializeFunction);
+	//TRACE("void *initializeFunction = 0x%0.8p", initializeFunction);
 
 		loadSystemD3D9ex();
 
@@ -84,42 +84,42 @@ namespace D3D9
 
 	unsigned int Direct3D9Ex::GetAdapterCount()
 	{
-		TRACE("void");
+	//TRACE("void");
 
 		return Direct3D9::GetAdapterCount();
 	}
 
 	long Direct3D9Ex::GetAdapterIdentifier(unsigned int adapter, unsigned long flags, D3DADAPTER_IDENTIFIER9 *identifier)
 	{
-		TRACE("unsigned int adapter = %d, unsigned long flags = 0x%0.8X, D3DADAPTER_IDENTIFIER9 *identifier = 0x%0.8p", adapter, flags, identifier);
+	//TRACE("unsigned int adapter = %d, unsigned long flags = 0x%0.8X, D3DADAPTER_IDENTIFIER9 *identifier = 0x%0.8p", adapter, flags, identifier);
 
 		return Direct3D9::GetAdapterIdentifier(adapter, flags, identifier);
 	}
 
 	unsigned int Direct3D9Ex::GetAdapterModeCount(unsigned int adapter, D3DFORMAT format)
 	{
-		TRACE("unsigned int adapter = %d, D3DFORMAT format = %d", adapter, format);
+	//TRACE("unsigned int adapter = %d, D3DFORMAT format = %d", adapter, format);
 
 		return Direct3D9::GetAdapterModeCount(adapter, format);
 	}
 
 	long Direct3D9Ex::EnumAdapterModes(unsigned int adapter, D3DFORMAT format, unsigned int index, D3DDISPLAYMODE *mode)
 	{
-		TRACE("unsigned int adapter = %d, D3DFORMAT format = %d, unsigned int index = %d, D3DDISPLAYMODE *mode = 0x%0.8p", adapter, format, index, mode);
+	//TRACE("unsigned int adapter = %d, D3DFORMAT format = %d, unsigned int index = %d, D3DDISPLAYMODE *mode = 0x%0.8p", adapter, format, index, mode);
 
 		return Direct3D9::EnumAdapterModes(adapter, format, index, mode);
 	}
 
 	long Direct3D9Ex::GetAdapterDisplayMode(unsigned int adapter, D3DDISPLAYMODE *mode)
 	{
-		TRACE("unsigned int adapter = %d, D3DDISPLAYMODE *mode = 0x%0.8p", adapter, mode);
+	//TRACE("unsigned int adapter = %d, D3DDISPLAYMODE *mode = 0x%0.8p", adapter, mode);
 
 		return Direct3D9::GetAdapterDisplayMode(adapter, mode);
 	}
 
 	long Direct3D9Ex::CheckDeviceType(unsigned int adapter, D3DDEVTYPE checkType, D3DFORMAT displayFormat, D3DFORMAT backBufferFormat, int windowed)
 	{
-		TRACE("unsigned int adapter = %d, D3DDEVTYPE checkType = %d, D3DFORMAT displayFormat = %d, D3DFORMAT backBufferFormat = %d, int windowed = %d", adapter, checkType, displayFormat, backBufferFormat, windowed);
+	//TRACE("unsigned int adapter = %d, D3DDEVTYPE checkType = %d, D3DFORMAT displayFormat = %d, D3DFORMAT backBufferFormat = %d, int windowed = %d", adapter, checkType, displayFormat, backBufferFormat, windowed);
 
 		if(checkType != D3DDEVTYPE_HAL)
 		{
@@ -140,7 +140,7 @@ namespace D3D9
 
 	long Direct3D9Ex::CheckDeviceFormat(unsigned int adapter, D3DDEVTYPE deviceType, D3DFORMAT adapterFormat, unsigned long usage, D3DRESOURCETYPE resourceType, D3DFORMAT checkFormat)
 	{
-		TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, D3DFORMAT adapterFormat = %d, unsigned long usage = %d, D3DRESOURCETYPE resourceType = %d, D3DFORMAT checkFormat = %d", adapter, deviceType, adapterFormat, usage, resourceType, checkFormat);
+	//TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, D3DFORMAT adapterFormat = %d, unsigned long usage = %d, D3DRESOURCETYPE resourceType = %d, D3DFORMAT checkFormat = %d", adapter, deviceType, adapterFormat, usage, resourceType, checkFormat);
 
 		if(deviceType != D3DDEVTYPE_HAL)
 		{
@@ -161,7 +161,7 @@ namespace D3D9
 
 	long Direct3D9Ex::CheckDeviceMultiSampleType(unsigned int adapter, D3DDEVTYPE deviceType, D3DFORMAT surfaceFormat, int windowed, D3DMULTISAMPLE_TYPE multiSampleType, unsigned long *qualityLevels)
 	{
-		TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, D3DFORMAT surfaceFormat = %d, int windowed = %d, D3DMULTISAMPLE_TYPE multiSampleType = %d, unsigned long *qualityLevels = 0x%0.8p", adapter, deviceType, surfaceFormat, windowed, multiSampleType, qualityLevels);
+	//TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, D3DFORMAT surfaceFormat = %d, int windowed = %d, D3DMULTISAMPLE_TYPE multiSampleType = %d, unsigned long *qualityLevels = 0x%0.8p", adapter, deviceType, surfaceFormat, windowed, multiSampleType, qualityLevels);
 
 		if(deviceType != D3DDEVTYPE_HAL)
 		{
@@ -182,14 +182,14 @@ namespace D3D9
 
 	long Direct3D9Ex::CheckDepthStencilMatch(unsigned int adapter, D3DDEVTYPE deviceType, D3DFORMAT adapterFormat, D3DFORMAT renderTargetFormat, D3DFORMAT depthStencilFormat)
 	{
-		TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, D3DFORMAT adapterFormat = %d, D3DFORMAT renderTargetFormat = %d, D3DFORMAT depthStencilFormat = %d", adapter, deviceType, adapterFormat, renderTargetFormat, depthStencilFormat);
+	//TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, D3DFORMAT adapterFormat = %d, D3DFORMAT renderTargetFormat = %d, D3DFORMAT depthStencilFormat = %d", adapter, deviceType, adapterFormat, renderTargetFormat, depthStencilFormat);
 
 		return Direct3D9::CheckDepthStencilMatch(adapter, deviceType, adapterFormat, renderTargetFormat, depthStencilFormat);
 	}
 
 	long Direct3D9Ex::CheckDeviceFormatConversion(unsigned int adapter, D3DDEVTYPE deviceType, D3DFORMAT sourceFormat, D3DFORMAT targetFormat)
 	{
-		TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, D3DFORMAT sourceFormat = %d, D3DFORMAT targetFormat = %d", adapter, deviceType, sourceFormat, targetFormat);
+	//TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, D3DFORMAT sourceFormat = %d, D3DFORMAT targetFormat = %d", adapter, deviceType, sourceFormat, targetFormat);
 
 		if(deviceType != D3DDEVTYPE_HAL)
 		{
@@ -210,7 +210,7 @@ namespace D3D9
 
 	long Direct3D9Ex::GetDeviceCaps(unsigned int adapter, D3DDEVTYPE deviceType, D3DCAPS9 *capabilities)
 	{
-		TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, D3DCAPS9 *capabilities = 0x%0.8p", adapter, deviceType, capabilities);
+	//TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, D3DCAPS9 *capabilities = 0x%0.8p", adapter, deviceType, capabilities);
 
 		if(deviceType != D3DDEVTYPE_HAL)
 		{
@@ -238,14 +238,14 @@ namespace D3D9
 
 	HMONITOR Direct3D9Ex::GetAdapterMonitor(unsigned int adapter)
 	{
-		TRACE("unsigned int adapter = %d", adapter);
+	//TRACE("unsigned int adapter = %d", adapter);
 
 		return Direct3D9::GetAdapterMonitor(adapter);
 	}
 
 	long Direct3D9Ex::CreateDevice(unsigned int adapter, D3DDEVTYPE deviceType, HWND focusWindow, unsigned long behaviorFlags, D3DPRESENT_PARAMETERS *presentParameters, IDirect3DDevice9 **returnedDeviceInterface)
 	{
-		TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, HWND focusWindow = %d, unsigned long behaviorFlags = 0x%0.8X, D3DPRESENT_PARAMETERS *presentParameters = 0x%0.8p, IDirect3DDevice9 **returnedDeviceInterface = 0x%0.8p", adapter, deviceType, focusWindow, behaviorFlags, presentParameters, returnedDeviceInterface);
+	//TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, HWND focusWindow = %d, unsigned long behaviorFlags = 0x%0.8X, D3DPRESENT_PARAMETERS *presentParameters = 0x%0.8p, IDirect3DDevice9 **returnedDeviceInterface = 0x%0.8p", adapter, deviceType, focusWindow, behaviorFlags, presentParameters, returnedDeviceInterface);
 
 		if(!focusWindow || !presentParameters || !returnedDeviceInterface)
 		{
@@ -267,14 +267,14 @@ namespace D3D9
 
 	unsigned int __stdcall Direct3D9Ex::GetAdapterModeCountEx(unsigned int adapter, const D3DDISPLAYMODEFILTER *filter)
 	{
-		TRACE("unsigned int adapter = %d, const D3DDISPLAYMODEFILTER *filter = 0x%0.8p", adapter, filter);
+	//TRACE("unsigned int adapter = %d, const D3DDISPLAYMODEFILTER *filter = 0x%0.8p", adapter, filter);
 
 		return Direct3D9::GetAdapterModeCount(adapter, filter->Format);   // FIXME
 	}
 
 	long __stdcall Direct3D9Ex::EnumAdapterModesEx(unsigned int adapter, const D3DDISPLAYMODEFILTER *filter, unsigned int index, D3DDISPLAYMODEEX *modeEx)
 	{
-		TRACE("unsigned int adapter = %d, const D3DDISPLAYMODEFILTER *filter = 0x%0.8p, unsigned int index = %d, D3DDISPLAYMODEEX *modeEx = 0x%0.8p", adapter, filter, index, modeEx);
+	//TRACE("unsigned int adapter = %d, const D3DDISPLAYMODEFILTER *filter = 0x%0.8p, unsigned int index = %d, D3DDISPLAYMODEEX *modeEx = 0x%0.8p", adapter, filter, index, modeEx);
 
 		D3DDISPLAYMODE mode;
 
@@ -288,7 +288,7 @@ namespace D3D9
 
 	long __stdcall Direct3D9Ex::GetAdapterDisplayModeEx(unsigned int adapter, D3DDISPLAYMODEEX *modeEx, D3DDISPLAYROTATION *rotation)
 	{
-		TRACE("unsigned int adapter = %d, D3DDISPLAYMODEEX *modeEx = 0x%0.8p, D3DDISPLAYROTATION *rotation = 0x%0.8p", adapter, modeEx, rotation);
+	//TRACE("unsigned int adapter = %d, D3DDISPLAYMODEEX *modeEx = 0x%0.8p, D3DDISPLAYROTATION *rotation = 0x%0.8p", adapter, modeEx, rotation);
 
 		D3DDISPLAYMODE mode;
 
@@ -302,7 +302,7 @@ namespace D3D9
 
 	long __stdcall Direct3D9Ex::CreateDeviceEx(unsigned int adapter, D3DDEVTYPE deviceType, HWND focusWindow, DWORD behaviorFlags, D3DPRESENT_PARAMETERS *presentParameters, D3DDISPLAYMODEEX *fullscreenDisplayMode, IDirect3DDevice9Ex **returnedDeviceInterface)
 	{
-		TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, HWND focusWindow = %d, DWORD behaviorFlags = 0x%0.8X, D3DPRESENT_PARAMETERS *presentParameters = 0x%0.8p, D3DDISPLAYMODEEX *fullscreenDisplayMode = 0x%0.8p, IDirect3DDevice9Ex **returnedDeviceInterface = 0x%0.8p", adapter, deviceType, focusWindow, behaviorFlags, presentParameters, fullscreenDisplayMode, returnedDeviceInterface);
+	//TRACE("unsigned int adapter = %d, D3DDEVTYPE deviceType = %d, HWND focusWindow = %d, DWORD behaviorFlags = 0x%0.8X, D3DPRESENT_PARAMETERS *presentParameters = 0x%0.8p, D3DDISPLAYMODEEX *fullscreenDisplayMode = 0x%0.8p, IDirect3DDevice9Ex **returnedDeviceInterface = 0x%0.8p", adapter, deviceType, focusWindow, behaviorFlags, presentParameters, fullscreenDisplayMode, returnedDeviceInterface);
 
 		if(deviceType != D3DDEVTYPE_HAL)
 		{
@@ -337,7 +337,7 @@ namespace D3D9
 
 	long __stdcall Direct3D9Ex::GetAdapterLUID(unsigned int adapter, LUID *luid)
 	{
-		TRACE("unsigned int adapter = %d, LUID *luid = 0x%0.8p", adapter, luid);
+	//TRACE("unsigned int adapter = %d, LUID *luid = 0x%0.8p", adapter, luid);
 
 		if(adapter != D3DADAPTER_DEFAULT)
 		{

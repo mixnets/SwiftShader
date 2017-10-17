@@ -257,6 +257,7 @@ namespace D3D9
 			{
 				switch(checkFormat)
 				{
+			//	case D3DFMT_A8: return D3D_OK;
 				case D3DFMT_NULL:			if(!Capabilities::Surface::RenderTarget::NULL_)			return NOTAVAILABLE();	else return D3D_OK;
 				case D3DFMT_R8G8B8:			if(!Capabilities::Surface::RenderTarget::R8G8B8)		return NOTAVAILABLE();	else return D3D_OK;
 				case D3DFMT_R5G6B5:			if(!Capabilities::Surface::RenderTarget::R5G6B5)		return NOTAVAILABLE();	else return D3D_OK;
@@ -587,6 +588,7 @@ namespace D3D9
 			{
 				switch(checkFormat)
 				{
+			//	case D3DFMT_A8: return D3D_OK;
 				case D3DFMT_NULL:			if(!Capabilities::Texture::RenderTarget::NULL_)			return NOTAVAILABLE();	else return D3D_OK;
 				case D3DFMT_R8G8B8:			if(!Capabilities::Texture::RenderTarget::R8G8B8)		return NOTAVAILABLE();	else return D3D_OK;
 				case D3DFMT_R5G6B5:			if(!Capabilities::Texture::RenderTarget::R5G6B5)		return NOTAVAILABLE();	else return D3D_OK;

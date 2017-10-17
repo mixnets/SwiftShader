@@ -59,7 +59,7 @@ namespace sw
 
 		for(int i = 0; i < TEXTURE_IMAGE_UNITS; i++)
 		{
-			sampler[i] = new SamplerCore(constants, state.sampler[i]);
+			sampler[i] = new SamplerCore(constants, state.sampler[i], i);
 		}
 
 		const bool earlyDepthTest = !state.depthOverride && !state.alphaTestActive();

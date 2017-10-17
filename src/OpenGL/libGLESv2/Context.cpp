@@ -48,9 +48,9 @@ namespace es2
 Context::Context(egl::Display *display, const Context *shareContext, EGLint clientVersion, const egl::Config *config)
 	: egl::Context(display), clientVersion(clientVersion), config(config), mResourceManager(impl)
 {
-	sw::Context *context = new sw::Context();
-	device = new es2::Device(context);
-
+	context = new sw::Context();
+	//device = new es2::Device(context);
+/*
 	setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	mState.depthClearValue = 1.0f;
@@ -182,12 +182,12 @@ Context::Context(egl::Display *display, const Context *shareContext, EGLint clie
 
 	mHasBeenCurrent = false;
 
-	markAllStateDirty();
+	markAllStateDirty();*/
 }
 
 Context::~Context()
 {
-	if(mState.currentProgram != 0)
+/*	if(mState.currentProgram != 0)
 	{
 		Program *programObject = mResourceManager->getProgram(mState.currentProgram);
 		if(programObject)
@@ -267,8 +267,9 @@ Context::~Context()
 	delete mVertexDataManager;
 	delete mIndexDataManager;
 
-	mResourceManager.get()->release();
-	delete device;
+	mResourceManager.get()->release();*/
+	//delete device;
+	delete context;
 }
 
 void Context::makeCurrent(gl::Surface *surface)
@@ -3076,7 +3077,7 @@ void Context::applyTextures(sw::SamplerType samplerType)
 				device->setMipmapFilter(samplerType, samplerIndex, es2sw::ConvertMipMapFilter(minFilter));
 				device->setMaxAnisotropy(samplerType, samplerIndex, maxAnisotropy);
 				device->setHighPrecisionFiltering(samplerType, samplerIndex, mState.textureFilteringHint == GL_NICEST);
-
+				texture->getFormat()
 				applyTexture(samplerType, samplerIndex, texture);
 			}
 			else

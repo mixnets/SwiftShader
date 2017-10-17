@@ -136,6 +136,7 @@ namespace sw
 			AddressingMode addressingModeV : BITS(ADDRESSING_LAST);
 			AddressingMode addressingModeW : BITS(ADDRESSING_LAST);
 			MipmapType mipmapFilter        : BITS(FILTER_LAST);
+			MipmapType originalMipmapFilter : BITS(FILTER_LAST);
 			bool sRGB                      : 1;
 			SwizzleType swizzleR           : BITS(SWIZZLE_LAST);
 			SwizzleType swizzleG           : BITS(SWIZZLE_LAST);

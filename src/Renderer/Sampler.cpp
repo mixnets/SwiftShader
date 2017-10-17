@@ -93,6 +93,7 @@ namespace sw
 			state.addressingModeV = getAddressingModeV();
 			state.addressingModeW = getAddressingModeW();
 			state.mipmapFilter = mipmapFilter();
+			state.originalMipmapFilter = mipmapFilterState;
 			state.sRGB = sRGB && Surface::isSRGBreadable(externalTextureFormat);
 			state.swizzleR = swizzleR;
 			state.swizzleG = swizzleG;
@@ -397,7 +398,7 @@ namespace sw
 	}
 
 	MipmapType Sampler::mipmapFilter() const
-	{return mipmapFilterState;
+	{
 		if(mipmapFilterState != MIPMAP_NONE)
 		{
 			for(int i = 1; i < MIPMAP_LEVELS; i++)

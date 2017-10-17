@@ -136,7 +136,7 @@ namespace D3D9
 	{
 		CriticalSection cs(device);
 
-		TRACE("");
+		TRACE("unsigned long flags = %d", flags);
 
 		if(flags != D3DISSUE_BEGIN && flags != D3DISSUE_END)
 		{
@@ -247,6 +247,13 @@ namespace D3D9
 			}
 		}
 
-		return signaled ? S_OK : S_FALSE;
+		if(signaled)
+		{
+			return S_OK;
+		}
+		else
+		{
+			return S_FALSE;
+		}
 	}
 }
