@@ -26,6 +26,9 @@ namespace sw
 	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
 	extern bool symmetricNormalizedDepth;   // [-1, 1] instead of [0, 1]
 
+	extern int f;
+	extern float F;
+
 	VertexRoutine::VertexRoutine(const VertexProcessor::State &state, const VertexShader *shader)
 		: v(shader && shader->dynamicallyIndexedInput),
 		  o(shader && shader->dynamicallyIndexedOutput),
@@ -617,10 +620,10 @@ namespace sw
 		{
 			Float4 rhw = Float4(1.0f) / o[pos].w;
 
-			Float4 W = *Pointer<Float4>(data + OFFSET(DrawData,Wx16)) * Float4(1.0f / 16.0f);
-			Float4 H = *Pointer<Float4>(data + OFFSET(DrawData,Hx16)) * Float4(1.0f / 16.0f);
-			Float4 L = *Pointer<Float4>(data + OFFSET(DrawData,X0x16)) * Float4(1.0f / 16.0f);
-			Float4 T = *Pointer<Float4>(data + OFFSET(DrawData,Y0x16)) * Float4(1.0f / 16.0f);
+			Float4 W = *Pointer<Float4>(data + OFFSET(DrawData,WxF)) * Float4(1.0f / F);
+			Float4 H = *Pointer<Float4>(data + OFFSET(DrawData,HxF)) * Float4(1.0f / F);
+			Float4 L = *Pointer<Float4>(data + OFFSET(DrawData,X0xF)) * Float4(1.0f / F);
+			Float4 T = *Pointer<Float4>(data + OFFSET(DrawData,Y0xF)) * Float4(1.0f / F);
 
 			o[pos].x = (o[pos].x - L) / W * rhw;
 			o[pos].y = (o[pos].y - T) / H * rhw;
@@ -725,8 +728,8 @@ namespace sw
 		Float4 w = As<Float4>(As<Int4>(v.w) | (As<Int4>(CmpEQ(v.w, Float4(0.0f))) & As<Int4>(Float4(1.0f))));
 		Float4 rhw = Float4(1.0f) / w;
 
-		v.x = As<Float4>(RoundInt(*Pointer<Float4>(data + OFFSET(DrawData,X0x16)) + v.x * rhw * *Pointer<Float4>(data + OFFSET(DrawData,Wx16))));
-		v.y = As<Float4>(RoundInt(*Pointer<Float4>(data + OFFSET(DrawData,Y0x16)) + v.y * rhw * *Pointer<Float4>(data + OFFSET(DrawData,Hx16))));
+		v.x = As<Float4>(RoundInt(*Pointer<Float4>(data + OFFSET(DrawData,X0xF)) + v.x * rhw * *Pointer<Float4>(data + OFFSET(DrawData,WxF))));
+		v.y = As<Float4>(RoundInt(*Pointer<Float4>(data + OFFSET(DrawData,Y0xF)) + v.y * rhw * *Pointer<Float4>(data + OFFSET(DrawData,HxF))));
 		v.z = v.z * rhw;
 		v.w = rhw;
 

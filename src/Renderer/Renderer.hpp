@@ -170,10 +170,10 @@ namespace sw
 
 		TextureStage::Uniforms textureStage[8];
 
-		float4 Wx16;
-		float4 Hx16;
-		float4 X0x16;
-		float4 Y0x16;
+		float4 WxF;
+		float4 HxF;
+		float4 X0xF;
+		float4 Y0xF;
 		float4 XXXX;
 		float4 YYYY;
 		float4 halfPixelX;
