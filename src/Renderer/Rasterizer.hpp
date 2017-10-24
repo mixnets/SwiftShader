@@ -18,7 +18,7 @@
 #include "Context.hpp"
 
 #include "PixelProcessor.hpp"
-#include "Config.hpp"
+#include "Main/Config.hpp"
 
 namespace sw
 {
