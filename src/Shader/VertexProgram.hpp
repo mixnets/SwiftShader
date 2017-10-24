@@ -19,8 +19,8 @@
 #include "ShaderCore.hpp"
 #include "SamplerCore.hpp"
 
-#include "Stream.hpp"
-#include "Types.hpp"
+#include "Renderer/Stream.hpp"
+#include "Common/Types.hpp"
 
 namespace sw
 {
