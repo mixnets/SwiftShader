@@ -114,15 +114,16 @@ namespace sw
 		{
 			Mipmap &mipmap = texture.mipmap[level];
 
-			mipmap.buffer[face] = surface->lockInternal(0, 0, 0, LOCK_UNLOCKED, PRIVATE);
+			int border = surface->getBorder();
+			mipmap.buffer[face] = surface->lockInternal(-border, -border, 0, LOCK_UNLOCKED, PRIVATE);
 
 			if(face == 0)
 			{
 				externalTextureFormat = surface->getExternalFormat();
 				internalTextureFormat = surface->getInternalFormat();
 
-				int width = surface->getWidth();
-				int height = surface->getHeight();
+				int width = surface->getWidth() + 2 * border;
+				int height = surface->getHeight() + 2 * border;
 				int depth = surface->getDepth();
 				int pitchP = surface->getInternalPitchP();
 				int sliceP = surface->getInternalSliceP();
@@ -196,6 +197,12 @@ namespace sw
 				mipmap.height[1] = height;
 				mipmap.height[2] = height;
 				mipmap.height[3] = height;
+
+				// Note: It is assumed that all dimensions are identical for cube maps
+				mipmap.borderRatio[0] = (float)border / (float)width;
+				mipmap.borderRatio[1] = (float)border / (float)width;
+				mipmap.borderRatio[2] = (float)border / (float)width;
+				mipmap.borderRatio[3] = (float)border / (float)width;
 
 				mipmap.depth[0] = depth;
 				mipmap.depth[1] = depth;

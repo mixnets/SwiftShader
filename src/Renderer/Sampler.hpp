@@ -28,6 +28,7 @@ namespace sw
 		float4 fWidth;
 		float4 fHeight;
 		float4 fDepth;
+		float4 borderRatio;
 
 		short uHalf[4];
 		short vHalf[4];

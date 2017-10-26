@@ -2250,9 +2250,20 @@ namespace sw
 		{
 			return Min(Max(Short4(RoundInt(uw)), Short4(0)), *Pointer<Short4>(mipmap + OFFSET(Mipmap, depth)) - Short4(1));
 		}
-		else if(addressingMode == ADDRESSING_CLAMP)
+		else if(addressingMode == ADDRESSING_CLAMP || state.textureType == TEXTURE_CUBE) // Cube texture lookups never go out of bounds
 		{
-			Float4 clamp = Min(Max(uw, Float4(0.0f)), Float4(65535.0f / 65536.0f));
+			Float4 clamp;
+
+			if(state.textureType == TEXTURE_CUBE)
+			{
+				Float4 borderRatio = *Pointer<Float4>(mipmap + OFFSET(Mipmap, borderRatio));
+				Float4 minValue = (Ceil(Float4(65535.0f) * borderRatio)) * Float4(1.0f / 65535.0f) + Float4(0.5f / 65535.0f);
+				clamp = Min(Max((uw * (Float4(1.0f) - (Float4(2.0f) * borderRatio)) + borderRatio), minValue), Float4(65535.0f / 65536.0f) - minValue);
+			}
+			else
+			{
+				clamp = Min(Max(uw, Float4(0.0f)), Float4(65535.0f / 65536.0f));
+			}
 
 			return Short4(Int4(clamp * Float4(1 << 16)));
 		}
@@ -2306,13 +2317,25 @@ namespace sw
 			const int oneBits  = 0x3f7fffff; // Value just under 1.0f
 			const int twoBits  = 0x3fffffff; // Value just under 2.0f
 
+			if(state.textureType == TEXTURE_CUBE) { addressingMode = ADDRESSING_CLAMP; }
+
 			Float4 coord = Float4(dim);
 			switch(addressingMode)
 			{
 			case ADDRESSING_CLAMP:
 				{
 					Float4 one = As<Float4>(Int4(oneBits));
-					coord *= Min(Max(uvw, Float4(0.0f)), one);
+
+					if(state.textureType == TEXTURE_CUBE)
+					{
+						Float4 two = As<Float4>(Int4(twoBits));
+						Float4 borderRatio = *Pointer<Float4>(mipmap + OFFSET(Mipmap, borderRatio));
+						coord *= Min(Max((uvw * (one - (two * borderRatio)) + borderRatio), borderRatio), one - borderRatio);
+					}
+					else
+					{
+						coord *= Min(Max(uvw, Float4(0.0f)), one);
+					}
 				}
 				break;
 			case ADDRESSING_MIRROR:
