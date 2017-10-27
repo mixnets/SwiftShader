@@ -116,7 +116,88 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
 
 	sw::VertexProcessor::State state;
 
-	// TODO fill in the state
+	// Data layout:
+	//
+	// byte: boolean states
+	// {
+	//   byte: stream type
+	//   byte: stream count and normalized
+	// } [MAX_VERTEX_INPUTS]
+	// {
+	//   byte[32]: reserved sampler state
+	// } [VERTEX_TEXTURE_IMAGE_UNITS]
+
+	const int state_size = 1 + 2 * sw::MAX_VERTEX_INPUTS + 32 * sw::VERTEX_TEXTURE_IMAGE_UNITS;
+
+	if(size < state_size)
+	{
+		return 0;
+	}
+
+	bytecodeShader->analyze();
+	state.textureSampling = bytecodeShader->containsTextureSampling();
+	state.positionRegister = bytecodeShader->getPositionRegister();
+	state.pointSizeRegister = bytecodeShader->getPointSizeRegister();
+
+	state.preTransformed = (data[0] & 0x01) != 0;
+	state.superSampling = (data[0] & 0x02) != 0;
+	state.multiSampling = (data[0] & 0x04) != 0;
+
+	state.transformFeedbackQueryEnabled = (data[0] & 0x08) != 0;
+	state.transformFeedbackEnabled = (data[0] & 0x10) != 0;
+	state.verticesPerPrimitive = 1 + ((data[0] & 0x20) != 0) + ((data[0] & 0x40) != 0);
+
+	if((data[0] & 0x80) != 0)   // Unused/reserved.
+	{
+		return 0;
+	}
+
+	struct Stream
+	{
+		uint8_t count : BITS(sw::STREAMTYPE_LAST);
+		bool normalized;
+		uint8_t reserved : 8 - BITS(sw::STREAMTYPE_LAST) - 1;
+	};
+
+	for(int i = 0; i < sw::MAX_VERTEX_INPUTS; i++)
+	{
+		sw::StreamType type = (sw::StreamType)data[1 + 2 * i + 0];
+		Stream stream = (Stream&)data[1 + 2 * i + 1];
+
+		if(type > sw::STREAMTYPE_LAST) return 0;
+		if(stream.count > 4) return 0;
+		if(stream.reserved != 0) return 0;
+
+		state.input[i].type = type;
+		state.input[i].count = stream.count;
+		state.input[i].normalized = stream.normalized;
+		state.input[i].attribType = bytecodeShader->getAttribType(i);
+	}
+
+	for(unsigned int i = 0; i < sw::VERTEX_TEXTURE_IMAGE_UNITS; i++)
+	{
+		// TODO
+	//	if(bytecodeShader->usesSampler(i))
+	//	{
+	//		state.samplerState[i] = context->sampler[sw::TEXTURE_IMAGE_UNITS + i].samplerState();
+	//	}
+
+		for(int j = 0; j < 32; j++)
+		{
+			if(data[1 + 2 * sw::MAX_VERTEX_INPUTS + 32 * i + j] != 0)
+			{
+				return 0;
+			}
+		}
+	}
+
+	for(int i = 0; i < sw::MAX_VERTEX_OUTPUTS; i++)
+	{
+		state.output[i].xWrite = bytecodeShader->getOutput(i, 0).active();
+		state.output[i].yWrite = bytecodeShader->getOutput(i, 1).active();
+		state.output[i].zWrite = bytecodeShader->getOutput(i, 2).active();
+		state.output[i].wWrite = bytecodeShader->getOutput(i, 3).active();
+	}
 
 	const char* glslSource = "void main() {gl_Position = vec4(1.0);}";
 
