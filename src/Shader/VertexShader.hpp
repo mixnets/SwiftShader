@@ -55,8 +55,9 @@ namespace sw
 		bool isInstanceIdDeclared() const { return instanceIdDeclared; }
 		bool isVertexIdDeclared() const { return vertexIdDeclared; }
 
-	private:
 		void analyze();
+
+	private:
 		void analyzeInput();
 		void analyzeOutput();
 		void analyzeTextureSampling();
