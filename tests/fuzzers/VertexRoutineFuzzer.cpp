@@ -26,6 +26,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <cassert>
 
 namespace {
 
@@ -151,9 +152,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 
 	struct Stream
 	{
-		uint8_t count : BITS(sw::STREAMTYPE_LAST);
-		bool normalized;
-		uint8_t reserved : 8 - BITS(sw::STREAMTYPE_LAST) - 1;
+		uint8_t count : BITS(4);
+		bool normalized : 1;
+		uint8_t reserved : 8 - BITS(4) - 1;
 	};
 
 	for(int i = 0; i < sw::MAX_VERTEX_INPUTS; i++)
@@ -198,6 +199,13 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 
 	sw::VertexProgram program(state, bytecodeShader.get());
 	program.generate();
+
+	// TODO
+//	sw::Routine *routine = program(L"VertexRoutine");
+//	assert(routine);
+//	const void *entry = routine->getEntry();
+//	assert(entry);
+//	delete routine;
 
 	return 0;
 }
