@@ -26,6 +26,8 @@
 
 #include <stdlib.h>
 
+#undef min
+
 namespace glsl
 {
 	// Integer to TString conversion
