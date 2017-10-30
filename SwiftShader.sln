@@ -259,6 +259,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SubzeroLLVMDependencies", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unittests", "tests\unittests\unittests.vcxproj", "{CF8EBC89-8762-49DC-9440-6C82B3499913}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fuzzer", "fuzzer\fuzzer.vcxproj", "{3792B042-B25D-4254-8E69-B7B7C4B2191A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B5871A7A-968C-42E3-A33B-981E6F448E78} = {B5871A7A-968C-42E3-A33B-981E6F448E78}
+		{E746FCA9-64C3-433E-85E8-9A5A67AB7ED6} = {E746FCA9-64C3-433E-85E8-9A5A67AB7ED6}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -782,6 +788,18 @@ Global
 		{CF8EBC89-8762-49DC-9440-6C82B3499913}.Release|Win32.Build.0 = Release|Win32
 		{CF8EBC89-8762-49DC-9440-6C82B3499913}.Release|x64.ActiveCfg = Release|x64
 		{CF8EBC89-8762-49DC-9440-6C82B3499913}.Release|x64.Build.0 = Release|x64
+		{3792B042-B25D-4254-8E69-B7B7C4B2191A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3792B042-B25D-4254-8E69-B7B7C4B2191A}.Debug|Win32.Build.0 = Debug|Win32
+		{3792B042-B25D-4254-8E69-B7B7C4B2191A}.Debug|x64.ActiveCfg = Debug|x64
+		{3792B042-B25D-4254-8E69-B7B7C4B2191A}.Debug|x64.Build.0 = Debug|x64
+		{3792B042-B25D-4254-8E69-B7B7C4B2191A}.Profile|Win32.ActiveCfg = Release|Win32
+		{3792B042-B25D-4254-8E69-B7B7C4B2191A}.Profile|Win32.Build.0 = Release|Win32
+		{3792B042-B25D-4254-8E69-B7B7C4B2191A}.Profile|x64.ActiveCfg = Release|x64
+		{3792B042-B25D-4254-8E69-B7B7C4B2191A}.Profile|x64.Build.0 = Release|x64
+		{3792B042-B25D-4254-8E69-B7B7C4B2191A}.Release|Win32.ActiveCfg = Release|Win32
+		{3792B042-B25D-4254-8E69-B7B7C4B2191A}.Release|Win32.Build.0 = Release|Win32
+		{3792B042-B25D-4254-8E69-B7B7C4B2191A}.Release|x64.ActiveCfg = Release|x64
+		{3792B042-B25D-4254-8E69-B7B7C4B2191A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

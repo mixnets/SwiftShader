@@ -23,6 +23,7 @@
 
 #include <string>
 #include <algorithm>
+#include <time.h>
 
 namespace es2
 {
@@ -86,6 +87,41 @@ void Shader::setSource(GLsizei count, const char *const *string, const GLint *le
 	}
 
 	mSource[totalLength] = '\0';
+
+	if(getType() == GL_VERTEX_SHADER)
+	{
+		static int xxx = 0;
+		if(xxx == 0){
+			srand(GetTickCount());}
+		xxx++;
+		std::string fileName = std::string("corpus_shader_") + std::to_string(xxx) + std::to_string(rand());
+		FILE *file = fopen(fileName.c_str(), "wb");
+		if(file)
+		{
+			uint8_t state = rand() & 0x7F;
+			fputc(state, file);
+			
+			for(int i = 0; i < sw::MAX_VERTEX_INPUTS; i++)
+			{
+				uint8_t state = rand() % (sw::STREAMTYPE_LAST + 1);
+				fputc(state, file);
+
+				state = rand() % (4 + 1);
+				state = state | ((rand() % 2) << BITS(4));
+				fputc(state, file);
+			}
+
+			for(int i = 0; i < sw::VERTEX_TEXTURE_IMAGE_UNITS; i++)
+			{
+				uint8_t state[32] = {};
+				fwrite(&state, sizeof(uint8_t), sizeof(state), file);
+			}
+
+			fprintf(file, "%s", mSource);
+			fputc(0, file);
+			fclose(file);
+		}
+	}
 }
 
 size_t Shader::getInfoLogLength() const
