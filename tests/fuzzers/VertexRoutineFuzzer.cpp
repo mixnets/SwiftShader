@@ -90,7 +90,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 		return 0;
 	}
 
-	if (data[size -1] != 0)
+	if(data[size - 1] != 0)
 	{
 		return 0;
 	}
@@ -203,11 +203,30 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 	program.generate();
 
 	// TODO
-//	sw::Routine *routine = program(L"VertexRoutine");
-//	assert(routine);
-//	const void *entry = routine->getEntry();
-//	assert(entry);
-//	delete routine;
+	sw::Routine *routine = program(L"VertexRoutine");
+	assert(routine);
+	const void *entry = routine->getEntry();
+	assert(entry);
+	delete routine;
 
 	return 0;
 }
+
+#ifdef _WIN32
+int main()
+{
+	FILE *file = fopen("corpus_shader_3696", "r");
+
+	fseek(file, 0L, SEEK_END);
+	long numbytes = ftell(file);
+	fseek(file, 0L, SEEK_SET);	
+	uint8_t *buffer = (uint8_t*)calloc(numbytes, sizeof(uint8_t));	
+	fread(buffer, sizeof(char), numbytes, file);
+	fclose(file);
+
+	while(true)
+		LLVMFuzzerTestOneInput(buffer, numbytes);
+
+	free(buffer);
+}
+#endif
