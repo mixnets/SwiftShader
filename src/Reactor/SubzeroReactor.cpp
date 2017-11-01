@@ -5595,10 +5595,10 @@ namespace sw
 
 	Int4::Int4(RValue<UShort4> cast) : XYZW(this)
 	{
-		int swizzle[8] = {0, 8, 1, 9, 2, 10, 3, 11};
-		Value *c = Nucleus::createShuffleVector(cast.value, Short8(0, 0, 0, 0, 0, 0, 0, 0).loadValue(), swizzle);
-		Value *d = Nucleus::createBitCast(c, Int4::getType());
-		storeValue(d);
+		int swizzle[8] = {0, 0, 1, 1, 2, 2, 3, 3};
+		Value *c = Nucleus::createShuffleVector(cast.value, cast.value, swizzle);
+
+		*this = As<UInt4>(c) >> 16;
 	}
 
 	Int4::Int4(int xyzw) : XYZW(this)
