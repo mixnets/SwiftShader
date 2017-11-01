@@ -2388,6 +2388,18 @@ namespace sw
 		}
 	}
 
+	void Renderer::setCompareFunc(SamplerType type, int sampler, CompareFunc compFunc)
+	{
+		if(type == SAMPLER_PIXEL)
+		{
+			PixelProcessor::setCompareFunc(sampler, compFunc);
+		}
+		else
+		{
+			VertexProcessor::setCompareFunc(sampler, compFunc);
+		}
+	}
+
 	void Renderer::setBaseLevel(SamplerType type, int sampler, int baseLevel)
 	{
 		if(type == SAMPLER_PIXEL)
