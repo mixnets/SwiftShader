@@ -51,7 +51,7 @@ namespace sw
 
 		void sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy);
 		void sampleTexture(Pointer<Byte> &texture, Vector4f &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerFunction function);
-		void textureSize(Pointer<Byte> &mipmap, Vector4f &size, Float4 &lod);
+		static void textureSize(Pointer<Byte> &mipmap, Vector4f &size, Float4 &lod);
 
 	private:
 		void sampleTexture(Pointer<Byte> &texture, Vector4s &c, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerFunction function, bool fixed12);
