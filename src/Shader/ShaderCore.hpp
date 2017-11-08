@@ -350,7 +350,6 @@ namespace sw
 		void notEqual(Vector4f &dst, const Vector4f &src0, const Vector4f &src1);
 
 	private:
-		void sgn(Float4 &dst, const Float4 &src);
 		void isgn(Float4 &dst, const Float4 &src);
 		void cmp0(Float4 &dst, const Float4 &src0, const Float4 &src1, const Float4 &src2);
 		void cmp0i(Float4 &dst, const Float4 &src0, const Float4 &src1, const Float4 &src2);
