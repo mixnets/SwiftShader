@@ -324,24 +324,44 @@ namespace sw
 
 	Float4 arcsin(RValue<Float4> x, bool pp)
 	{
-		// x*(pi/2-sqrt(1-x*x)*pi/5)
-		return x * (Float4(1.57079632e+0f) - Sqrt(Float4(1.0f) - x*x) * Float4(6.28318531e-1f));
+		const Float4 half_pi(1.57079632f);
+		const Float4 a0(1.5707288f);
+		const Float4 a1(-0.2121144f);
+		const Float4 a2(0.0742610f);
+		const Float4 a3(-0.0187293f);
+		Float4 absx = Abs(x);
+		return As<Float4>(As<Int4>(half_pi - Sqrt(Float4(1.0f) - absx) * (a0 + absx * (a1 + absx * (a2 + absx * a3)))) ^
+		       (As<Int4>(x) & Int4(0x80000000)));
 	}
 
 	Float4 arctan(RValue<Float4> x, bool pp)
 	{
-		Int4 O = CmpNLT(Abs(x), Float4(1.0f));
-		Float4 y = As<Float4>((O & As<Int4>(Float4(1.0f) / x)) | (~O & As<Int4>(x)));   // FIXME: Vector select
+		Float4 absx = Abs(x);
+		Int4 O = CmpNLT(absx, Float4(1.0f));
+		Float4 y = As<Float4>((O & As<Int4>(Float4(1.0f) / absx)) | (~O & As<Int4>(absx))); // FIXME: Vector select
 
-		// Approximation of atan in [-1..1]
-		Float4 theta = y * (Float4(-0.27f) * Abs(y) + Float4(1.05539816f));
-
-		// +/-pi/2 depending on sign of x
-		Float4 sgnPi_2 = As<Float4>(As<Int4>(Float4(1.57079632e+0f)) ^ (As<Int4>(x) & Int4(0x80000000)));
-
-		theta = As<Float4>((O & As<Int4>(sgnPi_2 - theta)) | (~O & As<Int4>(theta)));   // FIXME: Vector select
-
-		return theta;
+		// Approximation of atan in [0..1]
+		Float4 theta;
+		if(pp)
+		{
+			theta = y * (Float4(-0.27f) * y + Float4(1.05539816f));
+		}
+		else
+		{
+			const Float4 a2(-0.3333314528f);
+			const Float4 a4(0.1999355085f);
+			const Float4 a6(-0.1420889944f);
+			const Float4 a8(0.1065626393f);
+			const Float4 a10(-0.0752896400f);
+			const Float4 a12(0.0429096138f);
+			const Float4 a14(-0.0161657367f);
+			const Float4 a16(0.0028662257f);
+			Float4 y2 = y * y;
+			theta = (y + y * (y2 * (a2 + y2 * (a4 + y2 * (a6 + y2 * (a8 + y2 * (a10 + y2 * (a12 + y2 * (a14 + y2 * a16)))))))));
+		}
+		const Float4 half_pi(1.57079632f);
+		return As<Float4>(((O & As<Int4>(half_pi - theta)) | (~O & As<Int4>(theta))) ^ // FIXME: Vector select
+		       (As<Int4>(x) & Int4(0x80000000)));
 	}
 
 	Float4 arctan(RValue<Float4> y, RValue<Float4> x, bool pp)
