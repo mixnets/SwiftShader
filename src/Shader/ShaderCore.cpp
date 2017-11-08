@@ -112,6 +112,13 @@ namespace sw
 		return x;
 	}
 
+	Float4 sign(const Float4 &src)
+	{
+		Int4 neg = As<Int4>(CmpLT(src, Float4(-0.0f))) & As<Int4>(Float4(-1.0f));
+		Int4 pos = As<Int4>(CmpNLE(src, Float4(+0.0f))) & As<Int4>(Float4(1.0f));
+		return As<Float4>(neg | pos);
+	}
+
 	Float4 exponential2(RValue<Float4> x, bool pp)
 	{
 		Float4 x0;
@@ -324,8 +331,13 @@ namespace sw
 
 	Float4 arcsin(RValue<Float4> x, bool pp)
 	{
-		// x*(pi/2-sqrt(1-x*x)*pi/5)
-		return x * (Float4(1.57079632e+0f) - Sqrt(Float4(1.0f) - x*x) * Float4(6.28318531e-1f));
+		const Float4 half_pi(1.57079632f);
+		const Float4 a0(1.5707288f);
+		const Float4 a1(-0.2121144f);
+		const Float4 a2(0.0742610f);
+		const Float4 a3(-0.0187293f);
+		Float4 absx = Abs(x);
+		return (half_pi - Sqrt(Float4(1.0f) - absx) * (a0 + absx * (a1 + absx * (a2 + absx * a3)))) * sign(x);
 	}
 
 	Float4 arctan(RValue<Float4> x, bool pp)
@@ -1345,10 +1357,10 @@ namespace sw
 
 	void ShaderCore::sgn(Vector4f &dst, const Vector4f &src)
 	{
-		sgn(dst.x, src.x);
-		sgn(dst.y, src.y);
-		sgn(dst.z, src.z);
-		sgn(dst.w, src.w);
+		dst.x = sign(src.x);
+		dst.y = sign(src.y);
+		dst.z = sign(src.z);
+		dst.w = sign(src.w);
 	}
 
 	void ShaderCore::isgn(Vector4f &dst, const Vector4f &src)
@@ -1596,13 +1608,6 @@ namespace sw
 		select(dst.y, CmpEQ(As<Int4>(index), Int4(1)), element, src.y);
 		select(dst.z, CmpEQ(As<Int4>(index), Int4(2)), element, src.z);
 		select(dst.w, CmpEQ(As<Int4>(index), Int4(3)), element, src.w);
-	}
-
-	void ShaderCore::sgn(Float4 &dst, const Float4 &src)
-	{
-		Int4 neg = As<Int4>(CmpLT(src, Float4(-0.0f))) & As<Int4>(Float4(-1.0f));
-		Int4 pos = As<Int4>(CmpNLE(src, Float4(+0.0f))) & As<Int4>(Float4(1.0f));
-		dst = As<Float4>(neg | pos);
 	}
 
 	void ShaderCore::isgn(Float4 &dst, const Float4 &src)
