@@ -140,19 +140,37 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		0.0f,0.0f,0.0f,1.0f
 	};
 
+#define SHADER(x) #x
+
 	// Fragment and vertex shaders code
 	char* pszFragShader = "\
+varying mediump vec4 v_color;\
 		void main (void)\
 		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+			gl_FragColor = v_color;\
 		}";
-	char* pszVertShader = "\
-		attribute highp vec4	myVertex;\
-		uniform mediump mat4	myPMVMatrix;\
-		void main(void)\
-		{\
-			gl_Position = myPMVMatrix * myVertex;\
-		}";
+	char* pszVertShader = SHADER(
+		attribute highp vec4 a_position;
+attribute highp vec4 a_coords;
+varying mediump vec4 v_color;
+
+vec2 q()
+{
+	return vec2(0.0, 0.66);
+}
+
+void main()
+{
+	gl_Position = a_position;
+	mediump float coords = float(a_coords);
+	/*mediump mat2 arr[4];
+	arr[1][1][0] = 0.5;
+	mediump float res = float(0.0);
+	mediump int i = int(a_coords.x);
+	res += arr[1 + i][1][0];*/
+	v_color = vec4(1.0, 1.0, q()[1],1.0);
+}
+	);
 
 	/*
 		Step 0 - Create a EGLNativeWindowType that we can use for OpenGL ES output

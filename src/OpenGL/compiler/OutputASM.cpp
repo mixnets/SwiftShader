@@ -680,20 +680,23 @@ namespace glsl
 		case EOpIndexDirect:
 			if(visit == PreVisit)
 			{
-				int offset = 0;
+				/*int offset = 0;
 				TIntermTyped *leftRootNode = left;
-				bool traversed = false;
 
-				// Try to concatenate indexing operations
-				traversed = rvalue(left, &leftRootNode, offset);
+				sw::Shader::DestinationParameter dst;
+				TIntermSymbol *root = left->getAsSymbolNode();
+				Temporary address(this);
+				int swizzle = lvalue(dst, root, address, node);
+				if(root)
+					dst.index -= registerIndex(root);
 
-				if(traversed)
-				{
-					assignRvalue(result, left, leftRootNode, right, offset);
+				offset = dst.index;
 
-					// Done concatenating, don't traverse the rest of the tree
-					return false;
-				}
+				assignRvalue(result, left, root, right, offset);*/
+
+				assignLvalue(result, node, true);
+
+				return false;
 			}
 			else if(visit == PostVisit)
 			{
@@ -2421,7 +2424,7 @@ namespace glsl
 		       (swizzleElement(leftSwizzle, swizzleElement(rightSwizzle, 3)) << 6);
 	}
 
-	void OutputASM::assignLvalue(TIntermTyped *dst, TIntermTyped *src)
+	void OutputASM::assignLvalue(TIntermTyped *dst, TIntermTyped *src, bool rvalue)
 	{
 		if((src->isVector() && (!dst->isVector() || (src->getNominalSize() != dst->getNominalSize()))) ||
 		   (src->isMatrix() && (!dst->isMatrix() || (src->getNominalSize() != dst->getNominalSize()) || (src->getSecondarySize() != dst->getSecondarySize()))))
@@ -2436,7 +2439,8 @@ namespace glsl
 			Instruction *insert = new Instruction(sw::Shader::OPCODE_INSERT);
 
 			Temporary address(this);
-			lvalue(insert->dst, address, dst);
+			TIntermSymbol *root;
+			lvalue(insert->dst, root, address, dst);
 
 			insert->src[0].type = insert->dst.type;
 			insert->src[0].index = insert->dst.index;
@@ -2451,11 +2455,27 @@ namespace glsl
 			Instruction *mov1 = new Instruction(sw::Shader::OPCODE_MOV);
 
 			Temporary address(this);
-			int swizzle = lvalue(mov1->dst, address, dst);
+			TIntermSymbol *root;
+			int swizzle = lvalue(mov1->dst, root, address, dst);
 
 			argument(mov1->src[0], src);
-			mov1->src[0].swizzle = swizzleSwizzle(mov1->src[0].swizzle, swizzle);
+			
+			if(!rvalue)
+			{
+				mov1->src[0].swizzle = swizzleSwizzle(mov1->src[0].swizzle, swizzle);
+			}
+			else
+			{
+				auto index = mov1->dst.index;
+				auto type = mov1->dst.type;
+				mov1->dst.mask=0xF;
+				mov1->dst.index = mov1->src[0].index;
+				mov1->dst.type = mov1->src[0].type;
 
+				mov1->src[0].swizzle = swizzle;
+				mov1->src[0].type = type;
+				mov1->src[0].index = index;
+			}
 			shader->append(mov1);
 
 			for(int offset = 1; offset < dst->totalRegisterCount(); offset++)
@@ -2473,7 +2493,7 @@ namespace glsl
 		}
 	}
 
-	int OutputASM::lvalue(sw::Shader::DestinationParameter &dst, Temporary &address, TIntermTyped *node)
+	int OutputASM::lvalue(sw::Shader::DestinationParameter &dst, TIntermSymbol *&root, Temporary &address, TIntermTyped *node)
 	{
 		TIntermTyped *result = node;
 		TIntermBinary *binary = node->getAsBinaryNode();
@@ -2484,7 +2504,7 @@ namespace glsl
 			TIntermTyped *left = binary->getLeft();
 			TIntermTyped *right = binary->getRight();
 
-			int leftSwizzle = lvalue(dst, address, left);   // Resolve the l-value of the left side
+			int leftSwizzle = lvalue(dst, root, address, left);   // Resolve the l-value of the left side
 
 			switch(binary->getOp())
 			{
@@ -2633,9 +2653,20 @@ namespace glsl
 		}
 		else if(symbol)
 		{
+			root = symbol;
+
 			dst.type = registerType(symbol);
 			dst.index = registerIndex(symbol);
 			dst.mask = writeMask(symbol);
+			return 0xE4;
+		}
+		else
+		{
+			node->traverse(this);
+
+			dst.type = registerType(node);
+			dst.index = registerIndex(node);
+			dst.mask = writeMask(node);
 			return 0xE4;
 		}
 
