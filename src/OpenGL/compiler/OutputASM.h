@@ -272,8 +272,8 @@ namespace glsl
 		void emitDeterminant(TIntermTyped *result, TIntermTyped *arg, int size, int col = -1, int row = -1, int outCol = 0, int outRow = 0);
 		void argument(sw::Shader::SourceParameter &parameter, TIntermNode *argument, int index = 0);
 		void copy(TIntermTyped *dst, TIntermNode *src, int offset = 0);
-		void assignLvalue(TIntermTyped *dst, TIntermTyped *src);
-		int lvalue(sw::Shader::DestinationParameter &dst, Temporary &address, TIntermTyped *node);
+		void assignLvalue(TIntermTyped *dst, TIntermTyped *src, bool rvalue = false);
+		int lvalue(sw::Shader::DestinationParameter &dst, TIntermSymbol *&root, Temporary &address, TIntermTyped *node);
 		void assignRvalue(TIntermTyped *result, TIntermTyped *left, TIntermTyped *leftRootNode, TIntermTyped *right, int offset);
 		bool rvalue(TIntermTyped* node, TIntermTyped** leftRootNode, int& offset);
 		sw::Shader::ParameterType registerType(TIntermTyped *operand);
