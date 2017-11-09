@@ -486,6 +486,43 @@ namespace glsl
 		}
 	}
 
+	void OutputASM::assignRvalue(TIntermTyped *result, TIntermTyped *left, TIntermTyped *leftRootNode, TIntermTyped *right, int offset)
+	{
+		int index = right->getAsConstantUnion()->getIConst(0);
+
+		if(result->isMatrix() || result->isStruct() || result->isInterfaceBlock())
+		{
+			ASSERT(left->isArray());
+			copy(result, leftRootNode, index * left->elementRegisterCount() + offset);
+		}
+		else if(result->isRegister())
+		{
+			int srcIndex = 0;
+			if(left->isRegister())
+			{
+				srcIndex = 0;
+			}
+			else if(left->isArray())
+			{
+				srcIndex = index * left->elementRegisterCount();
+			}
+			else if(left->isMatrix())
+			{
+				ASSERT(index < left->getNominalSize());   // FIXME: Report semantic error
+				srcIndex = index;
+			}
+			else UNREACHABLE(0);
+
+			Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, 0, leftRootNode, srcIndex + offset);
+
+			if(left->isRegister())
+			{
+				mov->src[0].swizzle = index;
+			}
+		}
+		else UNREACHABLE(0);
+	}
+
 	bool OutputASM::rvalue(TIntermTyped* node, TIntermTyped** leftRootNode, int& offset)
 	{
 		TIntermBinary* binary = node->getAsBinaryNode();
@@ -641,61 +678,26 @@ namespace glsl
 			}
 			return false;
 		case EOpIndexDirect:
-			if(visit == PreVisit || visit == PostVisit)
+			if(visit == PreVisit)
 			{
 				int offset = 0;
 				TIntermTyped *leftRootNode = left;
 				bool traversed = false;
-				if(visit == PreVisit)
-				{
-					// Try to concatenate indexing operations
-					traversed = rvalue(left, &leftRootNode, offset);
-					// If that's not possible, continue traversing the tree as usual
-					if(!traversed)
-					{
-						return true;
-					}
-				}
 
-				int index = right->getAsConstantUnion()->getIConst(0);
-
-				if(result->isMatrix() || result->isStruct() || result->isInterfaceBlock())
-				{
-					ASSERT(left->isArray());
-					copy(result, leftRootNode, index * left->elementRegisterCount() + offset);
-				}
-				else if(result->isRegister())
-				{
-					int srcIndex = 0;
-					if(left->isRegister())
-					{
-						srcIndex = 0;
-					}
-					else if(left->isArray())
-					{
-						srcIndex = index * left->elementRegisterCount();
-					}
-					else if(left->isMatrix())
-					{
-						ASSERT(index < left->getNominalSize());   // FIXME: Report semantic error
-						srcIndex = index;
-					}
-					else UNREACHABLE(0);
-
-					Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, 0, leftRootNode, srcIndex + offset);
-
-					if(left->isRegister())
-					{
-						mov->src[0].swizzle = index;
-					}
-				}
-				else UNREACHABLE(0);
+				// Try to concatenate indexing operations
+				traversed = rvalue(left, &leftRootNode, offset);
 
 				if(traversed)
 				{
+					assignRvalue(result, left, leftRootNode, right, offset);
+
 					// Done concatenating, don't traverse the rest of the tree
 					return false;
 				}
+			}
+			else if(visit == PostVisit)
+			{
+				assignRvalue(result, left, left, right, 0);
 			}
 			break;
 		case EOpIndexIndirect:

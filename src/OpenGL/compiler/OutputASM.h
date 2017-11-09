@@ -251,14 +251,14 @@ namespace glsl
 		void emitShader(Scope scope);
 
 		// Visit AST nodes and output their code to the body stream
-		virtual void visitSymbol(TIntermSymbol*);
-		virtual bool visitBinary(Visit visit, TIntermBinary*);
-		virtual bool visitUnary(Visit visit, TIntermUnary*);
-		virtual bool visitSelection(Visit visit, TIntermSelection*);
-		virtual bool visitAggregate(Visit visit, TIntermAggregate*);
-		virtual bool visitLoop(Visit visit, TIntermLoop*);
-		virtual bool visitBranch(Visit visit, TIntermBranch*);
-		virtual bool visitSwitch(Visit, TIntermSwitch*);
+		void visitSymbol(TIntermSymbol*) override;
+		bool visitBinary(Visit visit, TIntermBinary*) override;
+		bool visitUnary(Visit visit, TIntermUnary*) override;
+		bool visitSelection(Visit visit, TIntermSelection*) override;
+		bool visitAggregate(Visit visit, TIntermAggregate*) override;
+		bool visitLoop(Visit visit, TIntermLoop*) override;
+		bool visitBranch(Visit visit, TIntermBranch*) override;
+		bool visitSwitch(Visit, TIntermSwitch*) override;
 
 		sw::Shader::Opcode getOpcode(sw::Shader::Opcode op, TIntermTyped *in) const;
 		Instruction *emit(sw::Shader::Opcode op, TIntermTyped *dst = 0, TIntermNode *src0 = 0, TIntermNode *src1 = 0, TIntermNode *src2 = 0, TIntermNode *src3 = 0, TIntermNode *src4 = 0);
@@ -274,6 +274,7 @@ namespace glsl
 		void copy(TIntermTyped *dst, TIntermNode *src, int offset = 0);
 		void assignLvalue(TIntermTyped *dst, TIntermTyped *src);
 		int lvalue(sw::Shader::DestinationParameter &dst, Temporary &address, TIntermTyped *node);
+		void assignRvalue(TIntermTyped *result, TIntermTyped *left, TIntermTyped *leftRootNode, TIntermTyped *right, int offset);
 		bool rvalue(TIntermTyped* node, TIntermTyped** leftRootNode, int& offset);
 		sw::Shader::ParameterType registerType(TIntermTyped *operand);
 		bool hasFlatQualifier(TIntermTyped *operand);
