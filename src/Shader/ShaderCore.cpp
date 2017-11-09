@@ -112,6 +112,16 @@ namespace sw
 		return x;
 	}
 
+	Int4 IsInf(RValue<Float4> x)
+	{
+		return CmpEQ(As<Int4>(x) & Int4(0x7FFFFFFF), Int4(0x7F800000));
+	}
+
+	Int4 IsNan(RValue<Float4> x)
+	{
+		return CmpEQ(As<Int4>(x) & Int4(0x7F800000), Int4(0x7F800000)) & ~(IsInf(x));
+	}
+
 	Float4 exponential2(RValue<Float4> x, bool pp)
 	{
 		Float4 x0;
@@ -1028,6 +1038,22 @@ namespace sw
 		dst.y = src0.y * (src1.y - src2.y) + src2.y;
 		dst.z = src0.z * (src1.z - src2.z) + src2.z;
 		dst.w = src0.w * (src1.w - src2.w) + src2.w;
+	}
+
+	void ShaderCore::isinf(Vector4f &dst, const Vector4f &src)
+	{
+		dst.x = As<Float4>(IsInf(src.x));
+		dst.y = As<Float4>(IsInf(src.y));
+		dst.z = As<Float4>(IsInf(src.z));
+		dst.w = As<Float4>(IsInf(src.w));
+	}
+
+	void ShaderCore::isnan(Vector4f &dst, const Vector4f &src)
+	{
+		dst.x = As<Float4>(IsNan(src.x));
+		dst.y = As<Float4>(IsNan(src.y));
+		dst.z = As<Float4>(IsNan(src.z));
+		dst.w = As<Float4>(IsNan(src.w));
 	}
 
 	void ShaderCore::smooth(Vector4f &dst, const Vector4f &edge0, const Vector4f &edge1, const Vector4f &x)
