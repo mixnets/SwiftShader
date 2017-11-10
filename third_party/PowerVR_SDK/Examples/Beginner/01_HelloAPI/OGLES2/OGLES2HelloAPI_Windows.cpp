@@ -157,21 +157,18 @@ char* pszVertShader = SHADER(
 attribute highp vec4	myVertex;
 varying mediump vec4 v_color;
 
-struct T {
-	mediump float	a;
-	mediump vec2	b[2];
-};
-struct S {
-	mediump float	a;
-	T				b[3];
-	int				c;
-};
-uniform S s[2];
-
 void main (void)
 {
-	mediump float r = s[0].b[1].b[0].x;
-	v_color = vec4(r, 0.0, 0.0, 1.0);
+
+	mediump vec2 r;
+	r[0] = 20.0;
+	r[1] = 60.0;
+	mediump float sum = 0.0;
+	for(int i = 0; i < 2; i++)
+	{
+		sum += r[i];
+	}
+	v_color = vec4(sum / 160.0, 0.0, 0.0, 1.0);
 
 	gl_Position = myVertex;
 }
