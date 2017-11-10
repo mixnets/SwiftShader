@@ -694,7 +694,7 @@ namespace glsl
 
 				assignRvalue(result, left, root, right, offset);*/
 
-				assignLvalue(result, node, true);
+				assignRvalue(result, node);
 
 				return false;
 			}
@@ -2430,7 +2430,7 @@ namespace glsl
 		       (swizzleElement(leftSwizzle, swizzleElement(rightSwizzle, 3)) << 6);
 	}
 
-	void OutputASM::assignLvalue(TIntermTyped *dst, TIntermTyped *src, bool rvalue)
+	void OutputASM::assignLvalue(TIntermTyped *dst, TIntermTyped *src)
 	{
 		if((src->isVector() && (!dst->isVector() || (src->getNominalSize() != dst->getNominalSize()))) ||
 		   (src->isMatrix() && (!dst->isMatrix() || (src->getNominalSize() != dst->getNominalSize()) || (src->getSecondarySize() != dst->getSecondarySize()))))
@@ -2445,8 +2445,7 @@ namespace glsl
 			Instruction *insert = new Instruction(sw::Shader::OPCODE_INSERT);
 
 			Temporary address(this);
-			TIntermSymbol *root;
-			lvalue(insert->dst, root, address, dst);
+			lvalue(insert->dst, insert->dst.mask, address, dst);
 
 			insert->src[0].type = insert->dst.type;
 			insert->src[0].index = insert->dst.index;
@@ -2461,27 +2460,13 @@ namespace glsl
 			Instruction *mov1 = new Instruction(sw::Shader::OPCODE_MOV);
 
 			Temporary address(this);
-			TIntermSymbol *root;
-			int swizzle = lvalue(mov1->dst, root, address, dst);
 
-			argument(mov1->src[0], src);
 			
-			if(!rvalue)
-			{
-				mov1->src[0].swizzle = swizzleSwizzle(mov1->src[0].swizzle, swizzle);
-			}
-			else
-			{
-				auto index = mov1->dst.index;
-				auto type = mov1->dst.type;
-				mov1->dst.mask=0xF;
-				mov1->dst.index = mov1->src[0].index;
-				mov1->dst.type = mov1->src[0].type;
-
-				mov1->src[0].swizzle = swizzle;
-				mov1->src[0].type = type;
-				mov1->src[0].index = index;
-			}
+			
+			int swizzle = lvalue(mov1->dst, mov1->dst.mask, address, dst);
+			argument(mov1->src[0], src);
+			mov1->src[0].swizzle = swizzleSwizzle(mov1->src[0].swizzle, swizzle);
+			
 			shader->append(mov1);
 
 			for(int offset = 1; offset < dst->totalRegisterCount(); offset++)
@@ -2499,7 +2484,65 @@ namespace glsl
 		}
 	}
 
-	int OutputASM::lvalue(sw::Shader::DestinationParameter &dst, TIntermSymbol *&root, Temporary &address, TIntermTyped *node)
+	void OutputASM::assignRvalue(TIntermTyped *dst, TIntermTyped *src)
+	{
+		if((src->isVector() && (!dst->isVector() || (src->getNominalSize() != dst->getNominalSize()))) ||
+		   (src->isMatrix() && (!dst->isMatrix() || (src->getNominalSize() != dst->getNominalSize()) || (src->getSecondarySize() != dst->getSecondarySize()))))
+		{
+			return mContext.error(src->getLine(), "Result type should match the l-value type in compound assignment", src->isVector() ? "vector" : "matrix");
+		}
+
+		TIntermBinary *binary = dst->getAsBinaryNode();
+
+		if(binary && binary->getOp() == EOpIndexIndirect && binary->getLeft()->isVector() && dst->isScalar())
+		{
+			Instruction *insert = new Instruction(sw::Shader::OPCODE_INSERT);
+
+			Temporary address(this);
+			lvalue(insert->dst, insert->dst.mask, address, dst);
+
+			insert->src[0].type = insert->dst.type;
+			insert->src[0].index = insert->dst.index;
+			insert->src[0].rel = insert->dst.rel;
+			argument(insert->src[1], src);
+			argument(insert->src[2], binary->getRight());
+
+			shader->append(insert);
+		}
+		else
+		{
+			Instruction *mov1 = new Instruction(sw::Shader::OPCODE_MOV);
+
+			Temporary address(this);
+			unsigned char mask;
+			int swizzle = lvalue(mov1->src[0], mask, address, dst);
+
+			mov1->src[0].swizzle = swizzle;
+
+			sw::Shader::SourceParameter mov_dst;
+			argument(mov_dst, src);
+			mov1->dst.index = mov_dst.index;
+			mov1->dst.type = mov_dst.type;
+			mov1->dst.rel = mov_dst.rel;
+			
+			shader->append(mov1);
+
+			for(int offset = 1; offset < dst->totalRegisterCount(); offset++)
+			{
+				Instruction *mov = new Instruction(sw::Shader::OPCODE_MOV);
+
+				mov->dst = mov1->dst;
+				mov->dst.index += offset;
+				mov->dst.mask = writeMask(dst, offset);
+
+				argument(mov->src[0], src, offset);
+
+				shader->append(mov);
+			}
+		}
+	}
+
+	int OutputASM::lvalue(sw::Shader::Parameter &dst, unsigned char &mask, Temporary &address, TIntermTyped *node)
 	{
 		TIntermTyped *result = node;
 		TIntermBinary *binary = node->getAsBinaryNode();
@@ -2510,7 +2553,7 @@ namespace glsl
 			TIntermTyped *left = binary->getLeft();
 			TIntermTyped *right = binary->getRight();
 
-			int leftSwizzle = lvalue(dst, root, address, left);   // Resolve the l-value of the left side
+			int leftSwizzle = lvalue(dst, mask, address, left);   // Resolve the l-value of the left side
 
 			switch(binary->getOp())
 			{
@@ -2520,16 +2563,16 @@ namespace glsl
 
 					if(left->isRegister())
 					{
-						int leftMask = dst.mask;
+						int leftMask = mask;
 
-						dst.mask = 1;
-						while((leftMask & dst.mask) == 0)
+						mask = 1;
+						while((leftMask & mask) == 0)
 						{
-							dst.mask = dst.mask << 1;
+							mask = mask << 1;
 						}
 
 						int element = swizzleElement(leftSwizzle, rightIndex);
-						dst.mask = 1 << element;
+						mask = 1 << element;
 
 						return element;
 					}
@@ -2622,7 +2665,7 @@ namespace glsl
 
 					dst.type = registerType(left);
 					dst.index += fieldOffset;
-					dst.mask = writeMask(result);
+					mask = writeMask(result);
 
 					return 0xE4;
 				}
@@ -2631,7 +2674,7 @@ namespace glsl
 				{
 					ASSERT(left->isRegister());
 
-					int leftMask = dst.mask;
+					int leftMask = mask;
 
 					int swizzle = 0;
 					int rightMask = 0;
@@ -2647,7 +2690,7 @@ namespace glsl
 						swizzle = swizzle | swizzleElement(leftSwizzle, i) << (element * 2);
 					}
 
-					dst.mask = leftMask & rightMask;
+					mask = leftMask & rightMask;
 
 					return swizzle;
 				}
@@ -2659,11 +2702,11 @@ namespace glsl
 		}
 		else if(symbol)
 		{
-			root = symbol;
+		//	root = symbol;
 
 			dst.type = registerType(symbol);
 			dst.index = registerIndex(symbol);
-			dst.mask = writeMask(symbol);
+			mask = writeMask(symbol);
 			return 0xE4;
 		}
 		else
@@ -2672,7 +2715,7 @@ namespace glsl
 
 			dst.type = registerType(node);
 			dst.index = registerIndex(node);
-			dst.mask = writeMask(node);
+			mask = writeMask(node);
 			return 0xE4;
 		}
 
