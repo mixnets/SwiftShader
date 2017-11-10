@@ -704,7 +704,13 @@ namespace glsl
 			}
 			break;
 		case EOpIndexIndirect:
-			if(visit == PostVisit)
+			if(visit == PreVisit)
+			{
+				assignRvalue(result, node);
+
+				return false;
+			}
+			else if(visit == PostVisit)
 			{
 				if(left->isArray() || left->isMatrix())
 				{
@@ -1787,7 +1793,7 @@ namespace glsl
 			return false;
 		}
 
-		bool unroll = (iterations <= 4);
+		bool unroll = false;//(iterations <= 4);
 
 		if(unroll)
 		{
@@ -2492,16 +2498,19 @@ namespace glsl
 
 		if(binary && binary->getOp() == EOpIndexIndirect && binary->getLeft()->isVector() && dst->isScalar())
 		{
-			Instruction *insert = new Instruction(sw::Shader::OPCODE_INSERT);
+			Instruction *insert = new Instruction(sw::Shader::OPCODE_EXTRACT);
 
 			Temporary address(this);
-			lvalue(insert->dst, insert->dst.mask, address, dst);
+			unsigned char mask;
+			int swizzle = lvalue(insert->src[0], mask, address, dst);
 
-			insert->src[0].type = insert->dst.type;
-			insert->src[0].index = insert->dst.index;
-			insert->src[0].rel = insert->dst.rel;
-			argument(insert->src[1], src);
-			argument(insert->src[2], binary->getRight());
+			sw::Shader::SourceParameter mov_dst;
+			argument(mov_dst, src);
+			insert->dst.index = mov_dst.index;
+			insert->dst.type = mov_dst.type;
+			insert->dst.rel = mov_dst.rel;
+
+			argument(insert->src[1], binary->getRight());
 
 			shader->append(insert);
 		}
