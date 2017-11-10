@@ -149,55 +149,36 @@ varying mediump vec4 v_color;\
 		{\
 			gl_FragColor = v_color;\
 		}";
-	char* pszVertShader = SHADER(
-		attribute highp vec4	myVertex;
-		uniform mediump mat4	myPMVMatrix;
-attribute highp vec4 a_coords;
+
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+char* pszVertShader = SHADER(
+
+attribute highp vec4	myVertex;
 varying mediump vec4 v_color;
 
-vec2 q()
+struct T {
+	mediump float	a;
+	mediump vec2	b[2];
+};
+struct S {
+	mediump float	a;
+	T				b[3];
+	int				c;
+};
+uniform S s[2];
+
+void main (void)
 {
-	return vec2(0.0, 0.66);
+	mediump float r = s[0].b[1].b[0].x;
+	v_color = vec4(r, 0.0, 0.0, 1.0);
+
+	gl_Position = myVertex;
 }
 
-const int array_size = 2;
-
-void main()
-{
-	gl_Position = myVertex * myPMVMatrix;
-	/*for(mediump int i = 0; i < 2; i++)
-	{
-		gl_Position[i] =	myVertex.x * myPMVMatrix[0][i] +
-							myVertex.y * myPMVMatrix[1][i] +
-							myVertex.z * myPMVMatrix[2][i] + 
-							myVertex.w * myPMVMatrix[3][i];
-	}*/
-	/*gl_Position.y = myVertex.x * myPMVMatrix[1][0] + myVertex.y * myPMVMatrix[1][1] + myVertex.z * myPMVMatrix[1][2] + myVertex.w * myPMVMatrix[1][3];*/
-	mediump float coords = float(a_coords);
-	/*mediump mat2 arr[4];
-	arr[1][1][0] = 0.5;
-	mediump float res = float(0.0);
-	mediump int i = int(a_coords.x);
-	res += arr[1 + i][1][0];*/
-
-	const mat2 a = mat2(1.0, 2.0, 3.0, 4.0);
-	const mat2 b = mat2(5.0, 6.0, 7.0, 8.0);
-	mat2 array[array_size];
-	float gray;
-
-	array[0] = a;
-	array[1] = b;
-
-	if((array[0] == a) && (array[1] == b))
-		gray = 1.0;
-	else
-		gray = 0.0;
-
-	v_color = vec4(gray, gray, gray, 1.0);
-
-	/*v_color = vec4(1.0, 1.0, q()[1],1.0);*/
-}
-	);
+);
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 
 	/*
 		Step 0 - Create a EGLNativeWindowType that we can use for OpenGL ES output
@@ -503,6 +484,19 @@ void main()
 
 		// Then passes the matrix to that variable
 		glUniformMatrix4fv( i32Location, 1, GL_FALSE, pfIdentity);
+
+		//	mediump float r = (s[0].b[1].b[0].x + s[1].b[2].b[1].y) * s[0].b[0].a; // (z + z) * 0.5
+		//	mediump float g = s[1].b[0].b[0].y * s[0].b[2].a * s[1].b[2].a; // x * 0.25 * 4
+		//	mediump float b = (s[0].b[2].b[1].y + s[0].b[1].b[0].y + s[1].a) * s[0].b[1].a; // (w + w + w) * 0.333
+		//	mediump float a = float(s[0].c) + s[1].b[2].a - s[1].b[1].a; // 0 + 4.0 - 3.0
+
+		float z = 0.5;
+		float x = 0.5;
+		float w = 0.5;
+
+		glUniform2f(glGetUniformLocation(uiProgramObject, "s[0].b[0].b"), z, w);
+		glUniform2f(glGetUniformLocation(uiProgramObject, "s[0].b[1].b"), z, w);
+		glUniform1f(glGetUniformLocation(uiProgramObject, "s[0].b[0].a"), 0.5f);
 
 		/*
 			Enable the custom vertex attribute at index VERTEX_ARRAY.

@@ -2478,6 +2478,8 @@ namespace glsl
 				mov->dst.mask = writeMask(dst, offset);
 
 				argument(mov->src[0], src, offset);
+			//	mov->src[0] = mov1->src[0];
+			//	mov->src[0].index += offset;
 
 				shader->append(mov);
 			}
@@ -2535,7 +2537,9 @@ namespace glsl
 				mov->dst.index += offset;
 				mov->dst.mask = writeMask(dst, offset);
 
-				argument(mov->src[0], src, offset);
+				//argument(mov->src[0], src, offset);
+				mov->src[0] = mov1->src[0];
+				mov->src[0].index += offset;
 
 				shader->append(mov);
 			}
@@ -2663,7 +2667,7 @@ namespace glsl
 						fieldOffset += fields[i]->type()->totalRegisterCount();
 					}
 
-					dst.type = registerType(left);
+				//	dst.type = registerType(left);
 					dst.index += fieldOffset;
 					mask = writeMask(result);
 
@@ -2730,10 +2734,10 @@ namespace glsl
 		}
 
 		const TQualifier qualifier = operand->getQualifier();
-		if((EvqFragColor == qualifier) || (EvqFragData == qualifier))
+		if((qualifier == EvqFragColor) || (qualifier == EvqFragData))
 		{
-			if(((EvqFragData == qualifier) && (EvqFragColor == outputQualifier)) ||
-			   ((EvqFragColor == qualifier) && (EvqFragData == outputQualifier)))
+			if(((qualifier == EvqFragData) && (outputQualifier == EvqFragColor)) ||
+			   ((qualifier == EvqFragColor) && (outputQualifier == EvqFragData)))
 			{
 				mContext.error(operand->getLine(), "static assignment to both gl_FragData and gl_FragColor", "");
 			}
