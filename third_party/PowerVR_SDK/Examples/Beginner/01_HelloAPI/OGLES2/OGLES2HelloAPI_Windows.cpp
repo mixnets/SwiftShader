@@ -150,7 +150,8 @@ varying mediump vec4 v_color;\
 			gl_FragColor = v_color;\
 		}";
 	char* pszVertShader = SHADER(
-		attribute highp vec4 a_position;
+		attribute highp vec4	myVertex;
+		uniform mediump mat4	myPMVMatrix;
 attribute highp vec4 a_coords;
 varying mediump vec4 v_color;
 
@@ -159,16 +160,42 @@ vec2 q()
 	return vec2(0.0, 0.66);
 }
 
+const int array_size = 2;
+
 void main()
 {
-	gl_Position = a_position;
+	gl_Position = myVertex * myPMVMatrix;
+	/*for(mediump int i = 0; i < 2; i++)
+	{
+		gl_Position[i] =	myVertex.x * myPMVMatrix[0][i] +
+							myVertex.y * myPMVMatrix[1][i] +
+							myVertex.z * myPMVMatrix[2][i] + 
+							myVertex.w * myPMVMatrix[3][i];
+	}*/
+	/*gl_Position.y = myVertex.x * myPMVMatrix[1][0] + myVertex.y * myPMVMatrix[1][1] + myVertex.z * myPMVMatrix[1][2] + myVertex.w * myPMVMatrix[1][3];*/
 	mediump float coords = float(a_coords);
 	/*mediump mat2 arr[4];
 	arr[1][1][0] = 0.5;
 	mediump float res = float(0.0);
 	mediump int i = int(a_coords.x);
 	res += arr[1 + i][1][0];*/
-	v_color = vec4(1.0, 1.0, q()[1],1.0);
+
+	const mat2 a = mat2(1.0, 2.0, 3.0, 4.0);
+	const mat2 b = mat2(5.0, 6.0, 7.0, 8.0);
+	mat2 array[array_size];
+	float gray;
+
+	array[0] = a;
+	array[1] = b;
+
+	if((array[0] == a) && (array[1] == b))
+		gray = 1.0;
+	else
+		gray = 0.0;
+
+	v_color = vec4(gray, gray, gray, 1.0);
+
+	/*v_color = vec4(1.0, 1.0, q()[1],1.0);*/
 }
 	);
 
