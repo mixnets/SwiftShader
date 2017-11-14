@@ -3004,6 +3004,11 @@ GL_APICALL void GL_APIENTRY glDeleteSync(GLsync sync)
 
 	if(context)
 	{
+		if(sync && !context->getFenceSync(sync))
+		{
+			return error(GL_INVALID_VALUE);
+		}
+
 		context->deleteFenceSync(sync);
 	}
 }
