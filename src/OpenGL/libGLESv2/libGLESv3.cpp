@@ -3000,10 +3000,20 @@ GL_APICALL void GL_APIENTRY glDeleteSync(GLsync sync)
 {
 	TRACE("(GLsync sync = %p)", sync);
 
+	if(!sync)
+	{
+		return;
+	}
+
 	es2::Context *context = es2::getContext();
 
 	if(context)
 	{
+		if(!context->getFenceSync(sync))
+		{
+			return error(GL_INVALID_VALUE);
+		}
+
 		context->deleteFenceSync(sync);
 	}
 }
