@@ -711,7 +711,12 @@ namespace glsl
 			break;
 		case EOpIndexIndirect:
 			if(visit == PreVisit)
-			{//return true;
+			{
+			//	static int xxx = 0;
+			//	xxx++;
+			//	if(xxx < 5 || xxx > 5)
+			//		return true;
+			
 				assignRvalue(result, node);
 
 				return false;
@@ -2461,9 +2466,10 @@ namespace glsl
 			Instruction *insert = new Instruction(sw::Shader::OPCODE_INSERT);
 
 			Temporary address(this);
-			TIntermSymbol *root = nullptr;
+			TIntermTyped *root = nullptr;
 			unsigned int offset = 0;
 			lvalue(root, offset, insert->dst.rel, insert->dst.mask, address, dst);
+			assert(root);
 			sw::Shader::SourceParameter xxx;
 			argument(xxx, root, offset);
 			insert->dst.index = xxx.index;
@@ -2482,7 +2488,7 @@ namespace glsl
 			Instruction *mov1 = new Instruction(sw::Shader::OPCODE_MOV);
 
 			Temporary address(this);
-			TIntermSymbol *root = nullptr;
+			TIntermTyped *root = nullptr;
 			unsigned int offset = 0;
 			
 			int swizzle = lvalue(root, offset, mov1->dst.rel, mov1->dst.mask, address, dst);
@@ -2529,13 +2535,13 @@ namespace glsl
 
 			Temporary address(this);
 			unsigned char mask;
-			TIntermSymbol *root = nullptr;
+			TIntermTyped *root = nullptr;
 			unsigned int offset = 0;
 			int swizzle = lvalue(root, offset, insert->src[0].rel, mask, address, dst);
 			sw::Shader::SourceParameter xxx;
 			argument(xxx, root, offset);
 			insert->src[0].index = xxx.index;
-			insert->src[0].swizzle = xxx.swizzle;
+			insert->src[0].swizzle = xxx.swizzle;//swizzleSwizzle(xxx.swizzle, swizzle);
 			insert->src[0].type = registerType(root);
 			insert->src[0].bufferIndex = xxx.bufferIndex;
 
@@ -2561,14 +2567,14 @@ namespace glsl
 		//	{
 				Temporary address(this);
 				unsigned char mask;
-				TIntermSymbol *root = nullptr;
+				TIntermTyped *root = nullptr;
 				unsigned int offset = 0;
 				int swizzle = lvalue(root, offset, mov1->src[0].rel, mask, address, dst);
 				sw::Shader::SourceParameter xxx;
 				argument(xxx, root, offset);
 				mov1->src[0].index = xxx.index;
-				mov1->src[0].type = registerType(root);
-				mov1->src[0].swizzle = xxx.swizzle;
+				mov1->src[0].type = xxx.type;
+				mov1->src[0].swizzle = xxx.swizzle;//swizzleSwizzle(xxx.swizzle, swizzle);
 				mov1->src[0].bufferIndex = xxx.bufferIndex;
 		//	}
 
@@ -2585,26 +2591,28 @@ namespace glsl
 			
 			shader->append(mov1);
 
-			for(int offset = 1; offset < dst->totalRegisterCount(); offset++)
+			for(int i = 1; i < dst->totalRegisterCount(); i++)
 			{
 				Instruction *mov = new Instruction(sw::Shader::OPCODE_MOV);
 
 				mov->dst = mov1->dst;
-				mov->dst.index += offset;
-				mov->dst.mask = writeMask(dst, offset);
+				mov->dst.index += i;
+				mov->dst.mask = writeMask(dst, i);
 
 				///int stride = (argumentInfo.typedMemberInfo.matrixStride > 0) ? argumentInfo.typedMemberInfo.matrixStride : argumentInfo.typedMemberInfo.arrayStride;
 
-				//argument(mov->src[0], src, offset);
-				mov->src[0] = mov1->src[0];
-				mov->src[0].index += offset/* * stride*/;
+				//argument(mov->src[0], src, i);
+				//mov->src[0] = mov1->src[0];
+				//mov->src[0].index += i/* * stride*/;
+				argument(mov->src[0], root, offset + i);
+				mov->src[0].rel = mov1->src[0].rel;
 
 				shader->append(mov);
 			}
 		}
 	}
 
-	int OutputASM::lvalue(TIntermSymbol *&root, unsigned int &offset, sw::Shader::Relative &rel, unsigned char &mask, Temporary &address, TIntermTyped *node)
+	int OutputASM::lvalue(TIntermTyped *&root, unsigned int &offset, sw::Shader::Relative &rel, unsigned char &mask, Temporary &address, TIntermTyped *node)
 	{
 		TIntermTyped *result = node;
 		TIntermBinary *binary = node->getAsBinaryNode();
@@ -2775,6 +2783,8 @@ namespace glsl
 		else
 		{
 			node->traverse(this);
+
+			root = node;
 
 			//dst.type = registerType(node);
 			//dst.index = registerIndex(node);
