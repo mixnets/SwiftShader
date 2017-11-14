@@ -680,6 +680,10 @@ namespace glsl
 		case EOpIndexDirect:
 			if(visit == PreVisit)
 			{
+				static int xxx = 0;
+				xxx++;
+				if(xxx > 1)
+				return true;
 				/*int offset = 0;
 				TIntermTyped *leftRootNode = left;
 
@@ -695,6 +699,8 @@ namespace glsl
 				assignRvalue(result, left, root, right, offset);*/
 
 				assignRvalue(result, node);
+		
+			//	emit(sw::Shader::OPCODE_MOV, result, 0, left, 0);
 
 				return false;
 			}
@@ -705,7 +711,7 @@ namespace glsl
 			break;
 		case EOpIndexIndirect:
 			if(visit == PreVisit)
-			{
+			{//return true;
 				assignRvalue(result, node);
 
 				return false;
@@ -2414,6 +2420,10 @@ namespace glsl
 		}
 	}
 
+//	void OutputASM::argument(sw::Shader::SourceParameter &parameter, TIntermNode *argument, int index)
+//	{
+//	}
+
 	void OutputASM::copy(TIntermTyped *dst, TIntermNode *src, int offset)
 	{
 		for(int index = 0; index < dst->totalRegisterCount(); index++)
@@ -2451,7 +2461,13 @@ namespace glsl
 			Instruction *insert = new Instruction(sw::Shader::OPCODE_INSERT);
 
 			Temporary address(this);
-			lvalue(insert->dst, insert->dst.mask, address, dst);
+			TIntermSymbol *root = nullptr;
+			unsigned int offset = 0;
+			lvalue(root, offset, insert->dst.rel, insert->dst.mask, address, dst);
+			sw::Shader::SourceParameter xxx;
+			argument(xxx, root, offset);
+			insert->dst.index = xxx.index;
+			insert->dst.type = registerType(root);
 
 			insert->src[0].type = insert->dst.type;
 			insert->src[0].index = insert->dst.index;
@@ -2466,10 +2482,15 @@ namespace glsl
 			Instruction *mov1 = new Instruction(sw::Shader::OPCODE_MOV);
 
 			Temporary address(this);
+			TIntermSymbol *root = nullptr;
+			unsigned int offset = 0;
+			
+			int swizzle = lvalue(root, offset, mov1->dst.rel, mov1->dst.mask, address, dst);
+			sw::Shader::SourceParameter xxx;
+			argument(xxx, root, offset);
+			mov1->dst.index = xxx.index;
+			mov1->dst.type = registerType(root);
 
-			
-			
-			int swizzle = lvalue(mov1->dst, mov1->dst.mask, address, dst);
 			argument(mov1->src[0], src);
 			mov1->src[0].swizzle = swizzleSwizzle(mov1->src[0].swizzle, swizzle);
 			
@@ -2508,7 +2529,15 @@ namespace glsl
 
 			Temporary address(this);
 			unsigned char mask;
-			int swizzle = lvalue(insert->src[0], mask, address, dst);
+			TIntermSymbol *root = nullptr;
+			unsigned int offset = 0;
+			int swizzle = lvalue(root, offset, insert->src[0].rel, mask, address, dst);
+			sw::Shader::SourceParameter xxx;
+			argument(xxx, root, offset);
+			insert->src[0].index = xxx.index;
+			insert->src[0].swizzle = xxx.swizzle;
+			insert->src[0].type = registerType(root);
+			insert->src[0].bufferIndex = xxx.bufferIndex;
 
 			sw::Shader::SourceParameter mov_dst;
 			argument(mov_dst, src);
@@ -2524,17 +2553,35 @@ namespace glsl
 		{
 			Instruction *mov1 = new Instruction(sw::Shader::OPCODE_MOV);
 
-			Temporary address(this);
-			unsigned char mask;
-			int swizzle = lvalue(mov1->src[0], mask, address, dst);
+		//	if(binary && binary->getOp() == EOpIndexDirect && binary->getLeft()->getType().getInterfaceBlock())
+		//	{
+		//		argument(mov1->src[0], src);
+		//	}
+		//	else
+		//	{
+				Temporary address(this);
+				unsigned char mask;
+				TIntermSymbol *root = nullptr;
+				unsigned int offset = 0;
+				int swizzle = lvalue(root, offset, mov1->src[0].rel, mask, address, dst);
+				sw::Shader::SourceParameter xxx;
+				argument(xxx, root, offset);
+				mov1->src[0].index = xxx.index;
+				mov1->src[0].type = registerType(root);
+				mov1->src[0].swizzle = xxx.swizzle;
+				mov1->src[0].bufferIndex = xxx.bufferIndex;
+		//	}
 
-			mov1->src[0].swizzle = swizzle;
-
-			sw::Shader::SourceParameter mov_dst;
-			argument(mov_dst, src);
-			mov1->dst.index = mov_dst.index;
-			mov1->dst.type = mov_dst.type;
-			mov1->dst.rel = mov_dst.rel;
+		//	sw::Shader::SourceParameter mov_dst;
+		//	argument(mov_dst, src);
+		//	mov1->dst.index = mov_dst.index;
+		//	mov1->dst.type = mov_dst.type;
+		//	mov1->dst.rel = mov_dst.rel;
+		//	mov1->dst.mask = mask;
+			mov1->dst.type = registerType(dst);
+			mov1->dst.index = registerIndex(dst);// + dstIndex;
+			mov1->dst.mask = writeMask(dst);
+			mov1->dst.integer = (dst->getBasicType() == EbtInt);
 			
 			shader->append(mov1);
 
@@ -2546,16 +2593,18 @@ namespace glsl
 				mov->dst.index += offset;
 				mov->dst.mask = writeMask(dst, offset);
 
+				///int stride = (argumentInfo.typedMemberInfo.matrixStride > 0) ? argumentInfo.typedMemberInfo.matrixStride : argumentInfo.typedMemberInfo.arrayStride;
+
 				//argument(mov->src[0], src, offset);
 				mov->src[0] = mov1->src[0];
-				mov->src[0].index += offset;
+				mov->src[0].index += offset/* * stride*/;
 
 				shader->append(mov);
 			}
 		}
 	}
 
-	int OutputASM::lvalue(sw::Shader::Parameter &dst, unsigned char &mask, Temporary &address, TIntermTyped *node)
+	int OutputASM::lvalue(TIntermSymbol *&root, unsigned int &offset, sw::Shader::Relative &rel, unsigned char &mask, Temporary &address, TIntermTyped *node)
 	{
 		TIntermTyped *result = node;
 		TIntermBinary *binary = node->getAsBinaryNode();
@@ -2566,7 +2615,7 @@ namespace glsl
 			TIntermTyped *left = binary->getLeft();
 			TIntermTyped *right = binary->getRight();
 
-			int leftSwizzle = lvalue(dst, mask, address, left);   // Resolve the l-value of the left side
+			int leftSwizzle = lvalue(root, offset, rel, mask, address, left);   // Resolve the l-value of the left side
 
 			switch(binary->getOp())
 			{
@@ -2591,7 +2640,7 @@ namespace glsl
 					}
 					else if(left->isArray() || left->isMatrix())
 					{
-						dst.index += rightIndex * result->totalRegisterCount();
+						offset += rightIndex * result->totalRegisterCount() * 1;
 						return 0xE4;
 					}
 					else UNREACHABLE(0);
@@ -2609,42 +2658,42 @@ namespace glsl
 					{
 						int scale = result->totalRegisterCount();
 
-						if(dst.rel.type == sw::Shader::PARAMETER_VOID)   // Use the index register as the relative address directly
+						if(rel.type == sw::Shader::PARAMETER_VOID)   // Use the index register as the relative address directly
 						{
 							if(left->totalRegisterCount() > 1)
 							{
 								sw::Shader::SourceParameter relativeRegister;
 								argument(relativeRegister, right);
 
-								dst.rel.index = relativeRegister.index;
-								dst.rel.type = relativeRegister.type;
-								dst.rel.scale = scale;
-								dst.rel.deterministic = !(vertexShader && left->getQualifier() == EvqUniform);
+								rel.index = relativeRegister.index;
+								rel.type = relativeRegister.type;
+								rel.scale = scale;
+								rel.deterministic = !(vertexShader && left->getQualifier() == EvqUniform);
 							}
 						}
-						else if(dst.rel.index != registerIndex(&address))   // Move the previous index register to the address register
+						else if(rel.index != registerIndex(&address))   // Move the previous index register to the address register
 						{
 							if(scale == 1)
 							{
-								Constant oldScale((int)dst.rel.scale);
+								Constant oldScale((int)rel.scale);
 								Instruction *mad = emit(sw::Shader::OPCODE_IMAD, &address, &address, &oldScale, right);
-								mad->src[0].index = dst.rel.index;
-								mad->src[0].type = dst.rel.type;
+								mad->src[0].index = rel.index;
+								mad->src[0].type = rel.type;
 							}
 							else
 							{
-								Constant oldScale((int)dst.rel.scale);
+								Constant oldScale((int)rel.scale);
 								Instruction *mul = emit(sw::Shader::OPCODE_IMUL, &address, &address, &oldScale);
-								mul->src[0].index = dst.rel.index;
-								mul->src[0].type = dst.rel.type;
+								mul->src[0].index = rel.index;
+								mul->src[0].type = rel.type;
 
 								Constant newScale(scale);
 								emit(sw::Shader::OPCODE_IMAD, &address, right, &newScale, &address);
 							}
 
-							dst.rel.type = sw::Shader::PARAMETER_TEMP;
-							dst.rel.index = registerIndex(&address);
-							dst.rel.scale = 1;
+							rel.type = sw::Shader::PARAMETER_TEMP;
+							rel.index = registerIndex(&address);
+							rel.scale = 1;
 						}
 						else   // Just add the new index to the address register
 						{
@@ -2663,7 +2712,7 @@ namespace glsl
 				}
 				break;
 			case EOpIndexDirectStruct:
-			case EOpIndexDirectInterfaceBlock:
+		/**/	case EOpIndexDirectInterfaceBlock:
 				{
 					const TFieldList& fields = (binary->getOp() == EOpIndexDirectStruct) ?
 					                           left->getType().getStruct()->fields() :
@@ -2677,7 +2726,7 @@ namespace glsl
 					}
 
 				//	dst.type = registerType(left);
-					dst.index += fieldOffset;
+					offset += fieldOffset;
 					mask = writeMask(result);
 
 					return 0xE4;
@@ -2715,10 +2764,11 @@ namespace glsl
 		}
 		else if(symbol)
 		{
-		//	root = symbol;
+			root = symbol;
 
-			dst.type = registerType(symbol);
-			dst.index = registerIndex(symbol);
+			//dst.type = registerType(symbol);
+			//dst.index = registerIndex(symbol);
+			offset = 0;
 			mask = writeMask(symbol);
 			return 0xE4;
 		}
@@ -2726,8 +2776,9 @@ namespace glsl
 		{
 			node->traverse(this);
 
-			dst.type = registerType(node);
-			dst.index = registerIndex(node);
+			//dst.type = registerType(node);
+			//dst.index = registerIndex(node);
+			offset = 0;
 			mask = writeMask(node);
 			return 0xE4;
 		}
