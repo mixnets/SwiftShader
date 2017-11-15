@@ -486,83 +486,6 @@ namespace glsl
 		}
 	}
 
-	bool OutputASM::rvalue(TIntermTyped* node, TIntermTyped** leftRootNode, int& offset)
-	{
-		TIntermBinary* binary = node->getAsBinaryNode();
-		TIntermTyped* left = nullptr;
-		if(binary)
-		{
-			left = binary->getLeft();
-			TIntermTyped* right = binary->getRight();
-			const TType &leftType = left->getType();
-
-			switch(binary->getOp())
-			{
-			case EOpIndexDirect:
-				{
-					int index = right->getAsConstantUnion()->getIConst(0);
-
-					if(binary->isMatrix() || binary->isStruct() || binary->isInterfaceBlock())
-					{
-						offset += index * left->elementRegisterCount();
-					}
-					else if(binary->isRegister())
-					{
-						if(left->isArray())
-						{
-							offset += index * left->elementRegisterCount();
-						}
-						else if(left->isMatrix())
-						{
-							ASSERT(index < left->getNominalSize());   // FIXME: Report semantic error
-							offset += index;
-						}
-						else
-						{
-							offset = 0;
-							return false;
-						}
-					}
-					else
-					{
-						offset = 0;
-						return false;
-					}
-				}
-				break;
-			case EOpIndexDirectStruct:
-			case EOpIndexDirectInterfaceBlock:
-				{
-					int index = right->getAsConstantUnion()->getIConst(0);
-					const TFieldList& fields = (binary->getOp() == EOpIndexDirectStruct) ?
-					                           leftType.getStruct()->fields() :
-					                           leftType.getInterfaceBlock()->fields();
-
-					for(int i = 0; i < index; i++)
-					{
-						offset += fields[i]->type()->totalRegisterCount();
-					}
-				}
-				break;
-			default:
-				offset = 0;
-				return false;
-			}
-		}
-		else if(node->getAsSymbolNode())
-		{
-			*leftRootNode = node;
-			return true;
-		}
-		else
-		{
-			offset = 0;
-			return false;
-		}
-
-		return rvalue(left, leftRootNode, offset);
-	}
-
 	bool OutputASM::visitBinary(Visit visit, TIntermBinary *node)
 	{
 		if(currentScope != emitScope)
@@ -641,131 +564,12 @@ namespace glsl
 			}
 			return false;
 		case EOpIndexDirect:
-			if(visit == PreVisit || visit == PostVisit)
-			{
-				int offset = 0;
-				TIntermTyped *leftRootNode = left;
-				bool traversed = false;
-				if(visit == PreVisit)
-				{
-					// Try to concatenate indexing operations
-					traversed = rvalue(left, &leftRootNode, offset);
-					// If that's not possible, continue traversing the tree as usual
-					if(!traversed)
-					{
-						return true;
-					}
-				}
-
-				int index = right->getAsConstantUnion()->getIConst(0);
-
-				if(result->isMatrix() || result->isStruct() || result->isInterfaceBlock())
-				{
-					ASSERT(left->isArray());
-					copy(result, leftRootNode, index * left->elementRegisterCount() + offset);
-				}
-				else if(result->isRegister())
-				{
-					int srcIndex = 0;
-					if(left->isRegister())
-					{
-						srcIndex = 0;
-					}
-					else if(left->isArray())
-					{
-						srcIndex = index * left->elementRegisterCount();
-					}
-					else if(left->isMatrix())
-					{
-						ASSERT(index < left->getNominalSize());   // FIXME: Report semantic error
-						srcIndex = index;
-					}
-					else UNREACHABLE(0);
-
-					Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, 0, leftRootNode, srcIndex + offset);
-
-					if(left->isRegister())
-					{
-						mov->src[0].swizzle = index;
-					}
-				}
-				else UNREACHABLE(0);
-
-				if(traversed)
-				{
-					// Done concatenating, don't traverse the rest of the tree
-					return false;
-				}
-			}
-			break;
 		case EOpIndexIndirect:
-			if(visit == PostVisit)
-			{
-				if(left->isArray() || left->isMatrix())
-				{
-					for(int index = 0; index < result->totalRegisterCount(); index++)
-					{
-						Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, index, left, index);
-						mov->dst.mask = writeMask(result, index);
-
-						if(left->totalRegisterCount() > 1)
-						{
-							sw::Shader::SourceParameter relativeRegister;
-							argument(relativeRegister, right);
-
-							mov->src[0].rel.type = relativeRegister.type;
-							mov->src[0].rel.index = relativeRegister.index;
-							mov->src[0].rel.scale =	result->totalRegisterCount();
-							mov->src[0].rel.deterministic = !(vertexShader && left->getQualifier() == EvqUniform);
-						}
-					}
-				}
-				else if(left->isRegister())
-				{
-					emit(sw::Shader::OPCODE_EXTRACT, result, left, right);
-				}
-				else UNREACHABLE(0);
-			}
-			break;
 		case EOpIndexDirectStruct:
 		case EOpIndexDirectInterfaceBlock:
-			if(visit == PreVisit || visit == PostVisit)
-			{
-				ASSERT(leftType.isStruct() || (leftType.isInterfaceBlock()));
-
-				int fieldOffset = 0;
-				TIntermTyped *leftRootNode = left;
-				bool traversed = false;
-				if(visit == PreVisit)
-				{
-					// Try to concatenate indexing operations
-					traversed = rvalue(left, &leftRootNode, fieldOffset);
-					// If that's not possible, continue traversing the tree as usual
-					if(!traversed)
-					{
-						return true;
-					}
-				}
-
-				const TFieldList& fields = (node->getOp() == EOpIndexDirectStruct) ?
-				                           leftType.getStruct()->fields() :
-				                           leftType.getInterfaceBlock()->fields();
-				int index = right->getAsConstantUnion()->getIConst(0);
-
-				for(int i = 0; i < index; i++)
-				{
-					fieldOffset += fields[i]->type()->totalRegisterCount();
-				}
-
-				copy(result, leftRootNode, fieldOffset);
-
-				if(traversed)
-				{
-					// Done concatenating, don't traverse the rest of the tree
-					return false;
-				}
-			}
-			break;
+			assert(visit == PreVisit);
+			assignRvalue(result, node);
+			return false;
 		case EOpVectorSwizzle:
 			if(visit == PostVisit)
 			{
@@ -1782,7 +1586,7 @@ namespace glsl
 			return false;
 		}
 
-		bool unroll = (iterations <= 4);
+		bool unroll = false;//(iterations <= 4);
 
 		if(unroll)
 		{
@@ -2439,7 +2243,14 @@ namespace glsl
 			Instruction *insert = new Instruction(sw::Shader::OPCODE_INSERT);
 
 			Temporary address(this);
-			lvalue(insert->dst, address, dst);
+			TIntermTyped *root = nullptr;
+			unsigned int offset = 0;
+			lvalue(root, offset, insert->dst.rel, insert->dst.mask, address, dst);
+			assert(root);
+			sw::Shader::SourceParameter xxx;
+			argument(xxx, root, offset);
+			insert->dst.index = xxx.index;
+			insert->dst.type = registerType(root);
 
 			insert->src[0].type = insert->dst.type;
 			insert->src[0].index = insert->dst.index;
@@ -2454,11 +2265,18 @@ namespace glsl
 			Instruction *mov1 = new Instruction(sw::Shader::OPCODE_MOV);
 
 			Temporary address(this);
-			int swizzle = lvalue(mov1->dst, address, dst);
+			TIntermTyped *root = nullptr;
+			unsigned int offset = 0;
+			
+			int swizzle = lvalue(root, offset, mov1->dst.rel, mov1->dst.mask, address, dst);
+			sw::Shader::SourceParameter xxx;
+			argument(xxx, root, offset);
+			mov1->dst.index = xxx.index;
+			mov1->dst.type = registerType(root);
 
 			argument(mov1->src[0], src);
 			mov1->src[0].swizzle = swizzleSwizzle(mov1->src[0].swizzle, swizzle);
-
+			
 			shader->append(mov1);
 
 			for(int offset = 1; offset < dst->totalRegisterCount(); offset++)
@@ -2470,13 +2288,107 @@ namespace glsl
 				mov->dst.mask = writeMask(dst, offset);
 
 				argument(mov->src[0], src, offset);
+			//	mov->src[0] = mov1->src[0];
+			//	mov->src[0].index += offset;
 
 				shader->append(mov);
 			}
 		}
 	}
 
-	int OutputASM::lvalue(sw::Shader::DestinationParameter &dst, Temporary &address, TIntermTyped *node)
+	void OutputASM::assignRvalue(TIntermTyped *dst, TIntermTyped *src)
+	{
+		if((src->isVector() && (!dst->isVector() || (src->getNominalSize() != dst->getNominalSize()))) ||
+		   (src->isMatrix() && (!dst->isMatrix() || (src->getNominalSize() != dst->getNominalSize()) || (src->getSecondarySize() != dst->getSecondarySize()))))
+		{
+			return mContext.error(src->getLine(), "Result type should match the l-value type in compound assignment", src->isVector() ? "vector" : "matrix");
+		}
+
+		TIntermBinary *binary = dst->getAsBinaryNode();
+
+		if(binary && binary->getOp() == EOpIndexIndirect && binary->getLeft()->isVector() && dst->isScalar())
+		{
+			Instruction *insert = new Instruction(sw::Shader::OPCODE_EXTRACT);
+
+			Temporary address(this);
+			unsigned char mask;
+			TIntermTyped *root = nullptr;
+			unsigned int offset = 0;
+			int swizzle = lvalue(root, offset, insert->src[0].rel, mask, address, dst);
+			sw::Shader::SourceParameter xxx;
+			argument(xxx, root, offset);
+			insert->src[0].index = xxx.index;
+			insert->src[0].swizzle = swizzleSwizzle(xxx.swizzle, swizzle);//xxx.swizzle;//
+			insert->src[0].type = registerType(root);
+			insert->src[0].bufferIndex = xxx.bufferIndex;
+
+			sw::Shader::SourceParameter mov_dst;
+			argument(mov_dst, src);
+			insert->dst.index = mov_dst.index;
+			insert->dst.type = mov_dst.type;
+			insert->dst.rel = mov_dst.rel;
+
+			argument(insert->src[1], binary->getRight());
+
+			shader->append(insert);
+		}
+		else
+		{
+			Instruction *mov1 = new Instruction(sw::Shader::OPCODE_MOV);
+
+		//	if(binary && binary->getOp() == EOpIndexDirect && binary->getLeft()->getType().getInterfaceBlock())
+		//	{
+		//		argument(mov1->src[0], src);
+		//	}
+		//	else
+		//	{
+				Temporary address(this);
+				unsigned char mask;
+				TIntermTyped *root = nullptr;
+				unsigned int offset = 0;
+				int swizzle = lvalue(root, offset, mov1->src[0].rel, mask, address, dst);
+				sw::Shader::SourceParameter xxx;
+				argument(xxx, root, offset);
+				mov1->src[0].index = xxx.index;
+				mov1->src[0].type = xxx.type;
+				mov1->src[0].swizzle = swizzleSwizzle(xxx.swizzle, swizzle);//xxx.swizzle;//
+				mov1->src[0].bufferIndex = xxx.bufferIndex;
+		//	}
+
+		//	sw::Shader::SourceParameter mov_dst;
+		//	argument(mov_dst, src);
+		//	mov1->dst.index = mov_dst.index;
+		//	mov1->dst.type = mov_dst.type;
+		//	mov1->dst.rel = mov_dst.rel;
+		//	mov1->dst.mask = mask;
+			mov1->dst.type = registerType(dst);
+			mov1->dst.index = registerIndex(dst);// + dstIndex;
+			mov1->dst.mask = writeMask(dst);
+			
+			shader->append(mov1);
+
+			for(int i = 1; i < dst->totalRegisterCount(); i++)
+			{
+				Instruction *mov = new Instruction(sw::Shader::OPCODE_MOV);
+
+				mov->dst = mov1->dst;
+				mov->dst.index += i;
+				mov->dst.mask = writeMask(dst, i);
+
+				///int stride = (argumentInfo.typedMemberInfo.matrixStride > 0) ? argumentInfo.typedMemberInfo.matrixStride : argumentInfo.typedMemberInfo.arrayStride;
+
+				//argument(mov->src[0], src, i);
+				//mov->src[0] = mov1->src[0];
+				//mov->src[0].index += i/* * stride*/;
+				argument(mov->src[0], root, offset + i);
+				mov->src[0].rel = mov1->src[0].rel;
+
+				shader->append(mov);
+			}
+		}
+	}
+
+	int OutputASM::lvalue(TIntermTyped *&root, unsigned int &offset, sw::Shader::Relative &rel, unsigned char &mask, Temporary &address, TIntermTyped *node)
 	{
 		TIntermTyped *result = node;
 		TIntermBinary *binary = node->getAsBinaryNode();
@@ -2487,7 +2399,7 @@ namespace glsl
 			TIntermTyped *left = binary->getLeft();
 			TIntermTyped *right = binary->getRight();
 
-			int leftSwizzle = lvalue(dst, address, left);   // Resolve the l-value of the left side
+			int leftSwizzle = lvalue(root, offset, rel, mask, address, left);   // Resolve the l-value of the left side
 
 			switch(binary->getOp())
 			{
@@ -2497,22 +2409,22 @@ namespace glsl
 
 					if(left->isRegister())
 					{
-						int leftMask = dst.mask;
+						int leftMask = mask;
 
-						dst.mask = 1;
-						while((leftMask & dst.mask) == 0)
+						mask = 1;
+						while((leftMask & mask) == 0)
 						{
-							dst.mask = dst.mask << 1;
+							mask = mask << 1;
 						}
 
 						int element = swizzleElement(leftSwizzle, rightIndex);
-						dst.mask = 1 << element;
+						mask = 1 << element;
 
 						return element;
 					}
 					else if(left->isArray() || left->isMatrix())
 					{
-						dst.index += rightIndex * result->totalRegisterCount();
+						offset += rightIndex * result->totalRegisterCount() * 1;
 						return 0xE4;
 					}
 					else UNREACHABLE(0);
@@ -2530,42 +2442,42 @@ namespace glsl
 					{
 						int scale = result->totalRegisterCount();
 
-						if(dst.rel.type == sw::Shader::PARAMETER_VOID)   // Use the index register as the relative address directly
+						if(rel.type == sw::Shader::PARAMETER_VOID)   // Use the index register as the relative address directly
 						{
 							if(left->totalRegisterCount() > 1)
 							{
 								sw::Shader::SourceParameter relativeRegister;
 								argument(relativeRegister, right);
 
-								dst.rel.index = relativeRegister.index;
-								dst.rel.type = relativeRegister.type;
-								dst.rel.scale = scale;
-								dst.rel.deterministic = !(vertexShader && left->getQualifier() == EvqUniform);
+								rel.index = relativeRegister.index;
+								rel.type = relativeRegister.type;
+								rel.scale = scale;
+								rel.deterministic = !(vertexShader && left->getQualifier() == EvqUniform);
 							}
 						}
-						else if(dst.rel.index != registerIndex(&address))   // Move the previous index register to the address register
+						else if(rel.index != registerIndex(&address))   // Move the previous index register to the address register
 						{
 							if(scale == 1)
 							{
-								Constant oldScale((int)dst.rel.scale);
+								Constant oldScale((int)rel.scale);
 								Instruction *mad = emit(sw::Shader::OPCODE_IMAD, &address, &address, &oldScale, right);
-								mad->src[0].index = dst.rel.index;
-								mad->src[0].type = dst.rel.type;
+								mad->src[0].index = rel.index;
+								mad->src[0].type = rel.type;
 							}
 							else
 							{
-								Constant oldScale((int)dst.rel.scale);
+								Constant oldScale((int)rel.scale);
 								Instruction *mul = emit(sw::Shader::OPCODE_IMUL, &address, &address, &oldScale);
-								mul->src[0].index = dst.rel.index;
-								mul->src[0].type = dst.rel.type;
+								mul->src[0].index = rel.index;
+								mul->src[0].type = rel.type;
 
 								Constant newScale(scale);
 								emit(sw::Shader::OPCODE_IMAD, &address, right, &newScale, &address);
 							}
 
-							dst.rel.type = sw::Shader::PARAMETER_TEMP;
-							dst.rel.index = registerIndex(&address);
-							dst.rel.scale = 1;
+							rel.type = sw::Shader::PARAMETER_TEMP;
+							rel.index = registerIndex(&address);
+							rel.scale = 1;
 						}
 						else   // Just add the new index to the address register
 						{
@@ -2584,7 +2496,7 @@ namespace glsl
 				}
 				break;
 			case EOpIndexDirectStruct:
-			case EOpIndexDirectInterfaceBlock:
+		/**/	case EOpIndexDirectInterfaceBlock:
 				{
 					const TFieldList& fields = (binary->getOp() == EOpIndexDirectStruct) ?
 					                           left->getType().getStruct()->fields() :
@@ -2597,9 +2509,9 @@ namespace glsl
 						fieldOffset += fields[i]->type()->totalRegisterCount();
 					}
 
-					dst.type = registerType(left);
-					dst.index += fieldOffset;
-					dst.mask = writeMask(result);
+				//	dst.type = registerType(left);
+					offset += fieldOffset;
+					mask = writeMask(result);
 
 					return 0xE4;
 				}
@@ -2608,7 +2520,7 @@ namespace glsl
 				{
 					ASSERT(left->isRegister());
 
-					int leftMask = dst.mask;
+					int leftMask = mask;
 
 					int swizzle = 0;
 					int rightMask = 0;
@@ -2624,7 +2536,7 @@ namespace glsl
 						swizzle = swizzle | swizzleElement(leftSwizzle, i) << (element * 2);
 					}
 
-					dst.mask = leftMask & rightMask;
+					mask = leftMask & rightMask;
 
 					return swizzle;
 				}
@@ -2636,9 +2548,24 @@ namespace glsl
 		}
 		else if(symbol)
 		{
-			dst.type = registerType(symbol);
-			dst.index = registerIndex(symbol);
-			dst.mask = writeMask(symbol);
+			root = symbol;
+
+			//dst.type = registerType(symbol);
+			//dst.index = registerIndex(symbol);
+			offset = 0;
+			mask = writeMask(symbol);
+			return 0xE4;
+		}
+		else
+		{
+			node->traverse(this);
+
+			root = node;
+
+			//dst.type = registerType(node);
+			//dst.index = registerIndex(node);
+			offset = 0;
+			mask = writeMask(node);
 			return 0xE4;
 		}
 
@@ -2653,10 +2580,10 @@ namespace glsl
 		}
 
 		const TQualifier qualifier = operand->getQualifier();
-		if((EvqFragColor == qualifier) || (EvqFragData == qualifier))
+		if((qualifier == EvqFragColor) || (qualifier == EvqFragData))
 		{
-			if(((EvqFragData == qualifier) && (EvqFragColor == outputQualifier)) ||
-			   ((EvqFragColor == qualifier) && (EvqFragData == outputQualifier)))
+			if(((qualifier == EvqFragData) && (outputQualifier == EvqFragColor)) ||
+			   ((qualifier == EvqFragColor) && (outputQualifier == EvqFragData)))
 			{
 				mContext.error(operand->getLine(), "static assignment to both gl_FragData and gl_FragColor", "");
 			}

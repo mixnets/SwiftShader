@@ -303,7 +303,7 @@ bool TParseContext::lValueErrorCheck(const TSourceLoc &line, const char* op, TIn
 		case EOpIndexDirect:
 		case EOpIndexIndirect:
 		case EOpIndexDirectStruct:
-		case EOpIndexDirectInterfaceBlock:
+	/**/	case EOpIndexDirectInterfaceBlock:
 			return lValueErrorCheck(line, op, binaryNode->getLeft());
 		case EOpVectorSwizzle:
 			errorReturn = lValueErrorCheck(line, op, binaryNode->getLeft());

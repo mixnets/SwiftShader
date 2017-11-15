@@ -140,19 +140,42 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		0.0f,0.0f,0.0f,1.0f
 	};
 
+#define SHADER(x) #x
+
 	// Fragment and vertex shaders code
 	char* pszFragShader = "\
+varying mediump vec4 v_color;\
 		void main (void)\
 		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+			gl_FragColor = v_color;\
 		}";
-	char* pszVertShader = "\
-		attribute highp vec4	myVertex;\
-		uniform mediump mat4	myPMVMatrix;\
-		void main(void)\
-		{\
-			gl_Position = myPMVMatrix * myVertex;\
-		}";
+
+///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+char* pszVertShader = SHADER(
+
+attribute highp vec4	myVertex;
+varying mediump vec4 v_color;
+
+void main (void)
+{
+
+	mediump vec2 r;
+	r[0] = 20.0;
+	r[1] = 60.0;
+	mediump float sum = 0.0;
+	for(int i = 0; i < 2; i++)
+	{
+		sum += r[i];
+	}
+	v_color = vec4(sum / 160.0, 0.0, 0.0, 1.0);
+
+	gl_Position = myVertex;
+}
+
+);
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
 
 	/*
 		Step 0 - Create a EGLNativeWindowType that we can use for OpenGL ES output
@@ -458,6 +481,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 		// Then passes the matrix to that variable
 		glUniformMatrix4fv( i32Location, 1, GL_FALSE, pfIdentity);
+
+		//	mediump float r = (s[0].b[1].b[0].x + s[1].b[2].b[1].y) * s[0].b[0].a; // (z + z) * 0.5
+		//	mediump float g = s[1].b[0].b[0].y * s[0].b[2].a * s[1].b[2].a; // x * 0.25 * 4
+		//	mediump float b = (s[0].b[2].b[1].y + s[0].b[1].b[0].y + s[1].a) * s[0].b[1].a; // (w + w + w) * 0.333
+		//	mediump float a = float(s[0].c) + s[1].b[2].a - s[1].b[1].a; // 0 + 4.0 - 3.0
+
+		float z = 0.5;
+		float x = 0.5;
+		float w = 0.5;
+
+		glUniform2f(glGetUniformLocation(uiProgramObject, "s[0].b[0].b"), z, w);
+		glUniform2f(glGetUniformLocation(uiProgramObject, "s[0].b[1].b"), z, w);
+		glUniform1f(glGetUniformLocation(uiProgramObject, "s[0].b[0].a"), 0.5f);
 
 		/*
 			Enable the custom vertex attribute at index VERTEX_ARRAY.
