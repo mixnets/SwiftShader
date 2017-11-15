@@ -458,7 +458,7 @@ namespace sw
 				};
 			};
 
-			DestinationParameter() : mask(0xF), integer(false), saturate(false), partialPrecision(false), centroid(false), shift(0)
+			DestinationParameter() : mask(0xF), saturate(false), partialPrecision(false), centroid(false), shift(0)
 			{
 			}
 
@@ -466,7 +466,6 @@ namespace sw
 			std::string shiftString() const;
 			std::string maskString() const;
 
-			bool integer          : 1;
 			bool saturate         : 1;
 			bool partialPrecision : 1;
 			bool centroid         : 1;

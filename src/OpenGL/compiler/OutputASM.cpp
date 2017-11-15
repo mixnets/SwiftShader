@@ -1810,7 +1810,6 @@ namespace glsl
 			instruction->dst.type = registerType(dst);
 			instruction->dst.index = registerIndex(dst) + dstIndex;
 			instruction->dst.mask = writeMask(dst);
-			instruction->dst.integer = (dst->getBasicType() == EbtInt);
 		}
 
 		if(src0)
@@ -2365,7 +2364,6 @@ namespace glsl
 			mov1->dst.type = registerType(dst);
 			mov1->dst.index = registerIndex(dst);// + dstIndex;
 			mov1->dst.mask = writeMask(dst);
-			mov1->dst.integer = (dst->getBasicType() == EbtInt);
 			
 			shader->append(mov1);
 
