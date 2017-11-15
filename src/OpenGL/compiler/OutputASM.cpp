@@ -486,120 +486,6 @@ namespace glsl
 		}
 	}
 
-	void OutputASM::assignRvalue(TIntermTyped *result, TIntermTyped *left, TIntermTyped *leftRootNode, TIntermTyped *right, int offset)
-	{
-		int index = right->getAsConstantUnion()->getIConst(0);
-
-		if(result->isMatrix() || result->isStruct() || result->isInterfaceBlock())
-		{
-			ASSERT(left->isArray());
-			copy(result, leftRootNode, index * left->elementRegisterCount() + offset);
-		}
-		else if(result->isRegister())
-		{
-			int srcIndex = 0;
-			if(left->isRegister())
-			{
-				srcIndex = 0;
-			}
-			else if(left->isArray())
-			{
-				srcIndex = index * left->elementRegisterCount();
-			}
-			else if(left->isMatrix())
-			{
-				ASSERT(index < left->getNominalSize());   // FIXME: Report semantic error
-				srcIndex = index;
-			}
-			else UNREACHABLE(0);
-
-			Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, 0, leftRootNode, srcIndex + offset);
-
-			if(left->isRegister())
-			{
-				mov->src[0].swizzle = index;
-			}
-		}
-		else UNREACHABLE(0);
-	}
-
-	bool OutputASM::rvalue(TIntermTyped* node, TIntermTyped** leftRootNode, int& offset)
-	{
-		TIntermBinary* binary = node->getAsBinaryNode();
-		TIntermTyped* left = nullptr;
-		if(binary)
-		{
-			left = binary->getLeft();
-			TIntermTyped* right = binary->getRight();
-			const TType &leftType = left->getType();
-
-			switch(binary->getOp())
-			{
-			case EOpIndexDirect:
-				{
-					int index = right->getAsConstantUnion()->getIConst(0);
-
-					if(binary->isMatrix() || binary->isStruct() || binary->isInterfaceBlock())
-					{
-						offset += index * left->elementRegisterCount();
-					}
-					else if(binary->isRegister())
-					{
-						if(left->isArray())
-						{
-							offset += index * left->elementRegisterCount();
-						}
-						else if(left->isMatrix())
-						{
-							ASSERT(index < left->getNominalSize());   // FIXME: Report semantic error
-							offset += index;
-						}
-						else
-						{
-							offset = 0;
-							return false;
-						}
-					}
-					else
-					{
-						offset = 0;
-						return false;
-					}
-				}
-				break;
-			case EOpIndexDirectStruct:
-			case EOpIndexDirectInterfaceBlock:
-				{
-					int index = right->getAsConstantUnion()->getIConst(0);
-					const TFieldList& fields = (binary->getOp() == EOpIndexDirectStruct) ?
-					                           leftType.getStruct()->fields() :
-					                           leftType.getInterfaceBlock()->fields();
-
-					for(int i = 0; i < index; i++)
-					{
-						offset += fields[i]->type()->totalRegisterCount();
-					}
-				}
-				break;
-			default:
-				offset = 0;
-				return false;
-			}
-		}
-		else if(node->getAsSymbolNode())
-		{
-			*leftRootNode = node;
-			return true;
-		}
-		else
-		{
-			offset = 0;
-			return false;
-		}
-
-		return rvalue(left, leftRootNode, offset);
-	}
-
 	bool OutputASM::visitBinary(Visit visit, TIntermBinary *node)
 	{
 		if(currentScope != emitScope)
@@ -678,128 +564,12 @@ namespace glsl
 			}
 			return false;
 		case EOpIndexDirect:
-			if(visit == PreVisit)
-			{
-				//static int xxx = 0;
-				//xxx++;
-				//if(xxx > 4)
-				//if(xxx < 7 || xxx > 7)
-				//return true;
-				/*int offset = 0;
-				TIntermTyped *leftRootNode = left;
-
-				sw::Shader::DestinationParameter dst;
-				TIntermSymbol *root = left->getAsSymbolNode();
-				Temporary address(this);
-				int swizzle = lvalue(dst, root, address, node);
-				if(root)
-					dst.index -= registerIndex(root);
-
-				offset = dst.index;
-
-				assignRvalue(result, left, root, right, offset);*/
-
-				assignRvalue(result, node);
-		
-			//	emit(sw::Shader::OPCODE_MOV, result, 0, left, 0);
-
-				return false;
-			}
-			else if(visit == PostVisit)
-			{
-				assignRvalue(result, left, left, right, 0);
-			}
-			break;
 		case EOpIndexIndirect:
-			if(visit == PreVisit)
-			{
-			//	static int xxx = 0;
-			//	xxx++;
-			//	if(xxx < 5 || xxx > 5)
-			//		return true;
-			
-				assignRvalue(result, node);
-
-				return false;
-			}
-			else if(visit == PostVisit)
-			{
-				if(left->isArray() || left->isMatrix())
-				{
-					for(int index = 0; index < result->totalRegisterCount(); index++)
-					{
-						Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, index, left, index);
-						mov->dst.mask = writeMask(result, index);
-
-						if(left->totalRegisterCount() > 1)
-						{
-							sw::Shader::SourceParameter relativeRegister;
-							argument(relativeRegister, right);
-
-							mov->src[0].rel.type = relativeRegister.type;
-							mov->src[0].rel.index = relativeRegister.index;
-							mov->src[0].rel.scale =	result->totalRegisterCount();
-							mov->src[0].rel.deterministic = !(vertexShader && left->getQualifier() == EvqUniform);
-						}
-					}
-				}
-				else if(left->isRegister())
-				{
-					emit(sw::Shader::OPCODE_EXTRACT, result, left, right);
-				}
-				else UNREACHABLE(0);
-			}
-			break;
 		case EOpIndexDirectStruct:
 		case EOpIndexDirectInterfaceBlock:
-			if(visit == PreVisit)
-			{
-			//	static int xxx = 0;
-			//	xxx++;
-			//	if(xxx < 5 || xxx > 5)
-			//		return true;
-			
-				assignRvalue(result, node);
-
-				return false;
-			}
-			else if(visit == PostVisit)
-			{
-				ASSERT(leftType.isStruct() || (leftType.isInterfaceBlock()));
-
-				int fieldOffset = 0;
-				TIntermTyped *leftRootNode = left;
-				bool traversed = false;
-				if(visit == PreVisit)
-				{
-					// Try to concatenate indexing operations
-					traversed = rvalue(left, &leftRootNode, fieldOffset);
-					// If that's not possible, continue traversing the tree as usual
-					if(!traversed)
-					{
-						return true;
-					}
-				}
-
-				const TFieldList& fields = (node->getOp() == EOpIndexDirectStruct) ?
-				                           leftType.getStruct()->fields() :
-				                           leftType.getInterfaceBlock()->fields();
-				int index = right->getAsConstantUnion()->getIConst(0);
-
-				for(int i = 0; i < index; i++)
-				{
-					fieldOffset += fields[i]->type()->totalRegisterCount();
-				}
-
-				copy(result, leftRootNode, fieldOffset);
-
-				if(traversed)
-				{
-					// Done concatenating, don't traverse the rest of the tree
-					return false;
-				}
-			}
-			break;
+			assert(visit == PreVisit);
+			assignRvalue(result, node);
+			return false;
 		case EOpVectorSwizzle:
 			if(visit == PostVisit)
 			{
@@ -2436,10 +2206,6 @@ namespace glsl
 			}
 		}
 	}
-
-//	void OutputASM::argument(sw::Shader::SourceParameter &parameter, TIntermNode *argument, int index)
-//	{
-//	}
 
 	void OutputASM::copy(TIntermTyped *dst, TIntermNode *src, int offset)
 	{
