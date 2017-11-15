@@ -751,7 +751,18 @@ namespace glsl
 			break;
 		case EOpIndexDirectStruct:
 		case EOpIndexDirectInterfaceBlock:
-			if(visit == PreVisit || visit == PostVisit)
+			if(visit == PreVisit)
+			{
+			//	static int xxx = 0;
+			//	xxx++;
+			//	if(xxx < 5 || xxx > 5)
+			//		return true;
+			
+				assignRvalue(result, node);
+
+				return false;
+			}
+			else if(visit == PostVisit)
 			{
 				ASSERT(leftType.isStruct() || (leftType.isInterfaceBlock()));
 
