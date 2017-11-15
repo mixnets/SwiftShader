@@ -680,10 +680,11 @@ namespace glsl
 		case EOpIndexDirect:
 			if(visit == PreVisit)
 			{
-				static int xxx = 0;
-				xxx++;
-				if(xxx > 1)
-				return true;
+				//static int xxx = 0;
+				//xxx++;
+				//if(xxx > 4)
+				//if(xxx < 7 || xxx > 7)
+				//return true;
 				/*int offset = 0;
 				TIntermTyped *leftRootNode = left;
 
@@ -2546,7 +2547,7 @@ namespace glsl
 			sw::Shader::SourceParameter xxx;
 			argument(xxx, root, offset);
 			insert->src[0].index = xxx.index;
-			insert->src[0].swizzle = xxx.swizzle;//swizzleSwizzle(xxx.swizzle, swizzle);
+			insert->src[0].swizzle = swizzleSwizzle(xxx.swizzle, swizzle);//xxx.swizzle;//
 			insert->src[0].type = registerType(root);
 			insert->src[0].bufferIndex = xxx.bufferIndex;
 
@@ -2579,7 +2580,7 @@ namespace glsl
 				argument(xxx, root, offset);
 				mov1->src[0].index = xxx.index;
 				mov1->src[0].type = xxx.type;
-				mov1->src[0].swizzle = xxx.swizzle;//swizzleSwizzle(xxx.swizzle, swizzle);
+				mov1->src[0].swizzle = swizzleSwizzle(xxx.swizzle, swizzle);//xxx.swizzle;//
 				mov1->src[0].bufferIndex = xxx.bufferIndex;
 		//	}
 
