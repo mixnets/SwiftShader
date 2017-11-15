@@ -869,7 +869,7 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 				return error(GL_INVALID_OPERATION);
 			}
 
-			texture->setCompressedImage(level, internalformat, width, height, imageSize, data);
+			texture->setCompressedImage(level, internalformat, width, height, imageSize, context->getPixels(data, imageSize));
 		}
 		else
 		{
@@ -888,7 +888,7 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 			case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
 			case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
 			case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
-				texture->setCompressedImage(target, level, internalformat, width, height, imageSize, data);
+				texture->setCompressedImage(target, level, internalformat, width, height, imageSize, context->getPixels(data, imageSize));
 				break;
 			default: UNREACHABLE(target);
 			}
@@ -955,7 +955,7 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 
 			if(validationError == GL_NONE)
 			{
-				texture->subImageCompressed(level, xoffset, yoffset, width, height, sizedInternalFormat, imageSize, context->getPixels(data));
+				texture->subImageCompressed(level, xoffset, yoffset, width, height, sizedInternalFormat, imageSize, context->getPixels(data, imageSize));
 			}
 			else
 			{
@@ -970,7 +970,7 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 
 			if(validationError == GL_NONE)
 			{
-				texture->subImageCompressed(target, level, xoffset, yoffset, width, height, sizedInternalFormat, imageSize, context->getPixels(data));
+				texture->subImageCompressed(target, level, xoffset, yoffset, width, height, sizedInternalFormat, imageSize, context->getPixels(data, imageSize));
 			}
 			else
 			{
@@ -5106,7 +5106,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				return error(GL_INVALID_OPERATION);
 			}
 
-			texture->setImage(context, level, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
+			texture->setImage(context, level, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data, 0));
 		}
 		else
 		{
@@ -5117,7 +5117,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				return error(GL_INVALID_OPERATION);
 			}
 
-			texture->setImage(context, target, level, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
+			texture->setImage(context, target, level, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data, 0));
 		}
 	}
 }
@@ -5472,7 +5472,7 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 
 			if(validationError == GL_NONE)
 			{
-				texture->subImage(context, level, xoffset, yoffset, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
+				texture->subImage(context, level, xoffset, yoffset, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data, 0));
 			}
 			else
 			{
@@ -5487,7 +5487,7 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 
 			if(validationError == GL_NONE)
 			{
-				texture->subImage(context, target, level, xoffset, yoffset, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
+				texture->subImage(context, target, level, xoffset, yoffset, width, height, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data, 0));
 			}
 			else
 			{
@@ -6308,7 +6308,7 @@ void TexImage3DOES(GLenum target, GLint level, GLenum internalformat, GLsizei wi
 			return error(GL_INVALID_OPERATION);
 		}
 
-		texture->setImage(context, level, width, height, depth, GetSizedInternalFormat(internalformat, type), type, context->getUnpackInfo(), context->getPixels(data));
+		texture->setImage(context, level, width, height, depth, GetSizedInternalFormat(internalformat, type), type, context->getUnpackInfo(), context->getPixels(data, 0));
 	}
 }
 
@@ -6353,7 +6353,7 @@ void TexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
 		GLenum validationError = ValidateSubImageParams(false, width, height, depth, xoffset, yoffset, zoffset, target, level, sizedInternalFormat, texture);
 		if(validationError == GL_NONE)
 		{
-			texture->subImage(context, level, xoffset, yoffset, zoffset, width, height, depth, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data));
+			texture->subImage(context, level, xoffset, yoffset, zoffset, width, height, depth, sizedInternalFormat, type, context->getUnpackInfo(), context->getPixels(data, 0));
 		}
 		else
 		{
@@ -6471,7 +6471,7 @@ void CompressedTexImage3DOES(GLenum target, GLint level, GLenum internalformat, 
 			return error(GL_INVALID_OPERATION);
 		}
 
-		texture->setCompressedImage(level, internalformat, width, height, depth, imageSize, data);
+		texture->setCompressedImage(level, internalformat, width, height, depth, imageSize, context->getPixels(data, imageSize));
 	}
 }
 
@@ -6522,7 +6522,7 @@ void CompressedTexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint
 			return error(GL_INVALID_OPERATION);
 		}
 
-		texture->subImageCompressed(level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, context->getPixels(data));
+		texture->subImageCompressed(level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, context->getPixels(data, imageSize));
 	}
 }
 

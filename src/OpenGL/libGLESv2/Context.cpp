@@ -1561,9 +1561,13 @@ Buffer *Context::getGenericUniformBuffer() const
 	return mState.genericUniformBuffer;
 }
 
-const GLvoid* Context::getPixels(const GLvoid* data) const
+const GLvoid* Context::getPixels(const GLvoid* data, GLsizei imageSize) const
 {
 	es2::Buffer* unpackBuffer = getPixelUnpackBuffer();
+	if(unpackBuffer && unpackBuffer->name && (unpackBuffer->isMapped() || (unpackBuffer->size() < imageSize)))
+	{
+		return error(GL_INVALID_OPERATION, nullptr);
+	}
 	const unsigned char* unpackBufferData = unpackBuffer ? static_cast<const unsigned char*>(unpackBuffer->data()) : nullptr;
 	return unpackBufferData ? unpackBufferData + (ptrdiff_t)(data) : data;
 }
