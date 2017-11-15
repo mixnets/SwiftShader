@@ -270,14 +270,11 @@ namespace glsl
 		void emitAssign(sw::Shader::Opcode op, TIntermTyped *result, TIntermTyped *lhs, TIntermTyped *src0, TIntermTyped *src1 = 0);
 		void emitCmp(sw::Shader::Control cmpOp, TIntermTyped *dst, TIntermNode *left, TIntermNode *right, int index = 0);
 		void emitDeterminant(TIntermTyped *result, TIntermTyped *arg, int size, int col = -1, int row = -1, int outCol = 0, int outRow = 0);
-		//void argument(sw::Shader::Parameter &parameter, TIntermNode *argument, int index = 0);
 		void argument(sw::Shader::SourceParameter &parameter, TIntermNode *argument, int index = 0);
 		void copy(TIntermTyped *dst, TIntermNode *src, int offset = 0);
 		void assignLvalue(TIntermTyped *dst, TIntermTyped *src);
 		void assignRvalue(TIntermTyped *dst, TIntermTyped *src);
 		int lvalue(TIntermTyped *&root, unsigned int &offset, sw::Shader::Relative &rel, unsigned char &mask, Temporary &address, TIntermTyped *node);
-		void assignRvalue(TIntermTyped *result, TIntermTyped *left, TIntermTyped *leftRootNode, TIntermTyped *right, int offset);
-		bool rvalue(TIntermTyped* node, TIntermTyped** leftRootNode, int& offset);
 		sw::Shader::ParameterType registerType(TIntermTyped *operand);
 		bool hasFlatQualifier(TIntermTyped *operand);
 		unsigned int registerIndex(TIntermTyped *operand);
