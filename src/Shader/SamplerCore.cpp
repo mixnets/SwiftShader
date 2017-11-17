@@ -2414,66 +2414,80 @@ namespace sw
 					coord *= one - Abs(two * Frac(Min(Max(uvw, -one), two) * half) - one);
 				}
 				break;
-			default:   // Wrap (or border)
+			case ADDRESSING_BORDER:
+				{
+					coord *= uvw;
+				}
+				break;
+			default:   // Wrap
 				coord *= Frac(uvw);
 				break;
 			}
 
-			xyz0 = Int4(coord);
-
-			if(function.option == Offset)
+			if(state.textureFilter != FILTER_POINT)
 			{
-				xyz0 += As<Int4>(texOffset);
-				switch(addressingMode)
-				{
-				case ADDRESSING_MIRROR:
-				case ADDRESSING_MIRRORONCE:
-				case ADDRESSING_BORDER:
-					// FIXME: Implement ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE and ADDRESSING_BORDER. Fall through to Clamp.
-				case ADDRESSING_CLAMP:
-					xyz0 = Min(Max(xyz0, Int4(0)), maxXYZ);
-					break;
-				default:   // Wrap
-					xyz0 = (xyz0 + dim * Int4(-MIN_PROGRAM_TEXEL_OFFSET)) % dim;
-					break;
-				}
+				coord = coord - Float4(0.5f);
 			}
+
+			xyz0 = Int4(Floor(coord));
+
+			//if(function.option == Offset)
+			//{
+			//	xyz0 += As<Int4>(texOffset);
+			//	switch(addressingMode)
+			//	{
+			//	case ADDRESSING_MIRROR:
+			//	case ADDRESSING_MIRRORONCE:
+			//	case ADDRESSING_BORDER:
+			//		// FIXME: Implement ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE and ADDRESSING_BORDER. Fall through to Clamp.
+			//	case ADDRESSING_CLAMP:
+			//		xyz0 = Min(Max(xyz0, Int4(0)), maxXYZ);
+			//		break;
+			//	default:   // Wrap
+			//		xyz0 = (xyz0 + dim * Int4(-MIN_PROGRAM_TEXEL_OFFSET)) % dim;
+			//		break;
+			//	}
+			//}
 
 			if(state.textureFilter != FILTER_POINT) // Compute 2nd coordinate, if needed
 			{
-				bool gather = state.textureFilter == FILTER_GATHER;
+				//bool gather = state.textureFilter == FILTER_GATHER;
 
 				xyz1 = xyz0 + filter; // Increment
 
-				if(!gather)
-				{
-					Float4 frac = Frac(coord);
-					f = Abs(frac - Float4(0.5f));
-					xyz1 -= CmpLT(frac, Float4(0.5f)) & (filter + filter); // Decrement xyz if necessary
-				}
+				Float4 frac = Frac(coord);
+				f =  frac;
 
-				switch(addressingMode)
-				{
-				case ADDRESSING_MIRROR:
-				case ADDRESSING_MIRRORONCE:
-				case ADDRESSING_BORDER:
-					// FIXME: Implement ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE and ADDRESSING_BORDER. Fall through to Clamp.
-				case ADDRESSING_CLAMP:
-					xyz1 = gather ? Min(xyz1, maxXYZ) : Min(Max(xyz1, Int4(0)), maxXYZ);
-					break;
-				default:   // Wrap
-					{
-						// The coordinates overflow or underflow by at most 1
-						Int4 over = CmpNLT(xyz1, dim);
-						xyz1 = (over & Int4(0)) | (~over & xyz1); // xyz >= dim ? 0 : xyz
-						if(!gather)
-						{
-							Int4 under = CmpLT(xyz1, Int4(0));
-							xyz1 = (under & maxXYZ) | (~under & xyz1); // xyz < 0 ? dim - 1 : xyz
-						}
-					}
-					break;
-				}
+				//if(!gather && addressingMode != ADDRESSING_BORDER)
+				//{
+				//	Float4 frac = Frac(coord);
+				//	f = Abs(frac - Float4(0.5f));
+				//	xyz1 -= CmpLT(frac, Float4(0.5f)) & (filter + filter); // Decrement xyz if necessary
+				//}
+
+				//switch(addressingMode)
+				//{
+				//case ADDRESSING_BORDER:
+				//	break;
+				//case ADDRESSING_MIRROR:
+				//case ADDRESSING_MIRRORONCE:
+				//	// FIXME: Implement ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE and ADDRESSING_BORDER. Fall through to Clamp.
+				//case ADDRESSING_CLAMP:
+				//	xyz1 = gather ? Min(xyz1, maxXYZ) : Min(Max(xyz1, Int4(0)), maxXYZ);
+				//	break;
+				//default:   // Wrap
+				//	{
+				//		// The coordinates overflow or underflow by at most 1
+				//		Int4 over = CmpNLT(xyz1, dim);
+				//		xyz1 = (over & Int4(0)) | (~over & xyz1); // xyz >= dim ? 0 : xyz
+				//		if(!gather)
+				//		{
+				//			Int4 under = CmpLT(xyz1, Int4(0));
+				//			xyz1 = (under & maxXYZ) | (~under & xyz1); // xyz < 0 ? dim - 1 : xyz
+				//		}
+				//	}
+				//	break;
+				//}
 			}
 		}
 	}
