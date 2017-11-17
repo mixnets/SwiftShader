@@ -456,7 +456,7 @@ namespace sw
 	{
 		if(hasCubeTexture())
 		{
-			return ADDRESSING_CLAMP;
+			return ADDRESSING_BORDER;
 		}
 
 		return addressingModeU;
@@ -466,7 +466,7 @@ namespace sw
 	{
 		if(hasCubeTexture())
 		{
-			return ADDRESSING_CLAMP;
+			return ADDRESSING_BORDER;
 		}
 
 		return addressingModeV;
@@ -476,7 +476,7 @@ namespace sw
 	{
 		if(hasCubeTexture())
 		{
-			return ADDRESSING_CLAMP;
+			return ADDRESSING_BORDER;
 		}
 
 		if(textureType == TEXTURE_2D_ARRAY || textureType == TEXTURE_2D)

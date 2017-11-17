@@ -1128,7 +1128,7 @@ void TextureCubeMap::setCompressedImage(GLenum target, GLint level, GLenum forma
 	}
 
 	GLenum sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[face][level] = egl::Image::create(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[face][level] = egl::Image::create(this, width, height, 1, sizedInternalFormat, GL_UNSIGNED_BYTE, 1);
 
 	if(!image[face][level])
 	{
@@ -1136,16 +1136,19 @@ void TextureCubeMap::setCompressedImage(GLenum target, GLint level, GLenum forma
 	}
 
 	Texture::setCompressedImage(imageSize, pixels, image[face][level]);
+	updateBorders(level);
 }
 
 void TextureCubeMap::subImage(egl::Context *context, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels)
 {
 	Texture::subImage(context, xoffset, yoffset, 0, width, height, 1, format, type, unpackInfo, pixels, image[CubeFaceIndex(target)][level]);
+	updateBorders(level);
 }
 
 void TextureCubeMap::subImageCompressed(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels)
 {
 	Texture::subImageCompressed(xoffset, yoffset, 0, width, height, 1, format, imageSize, pixels, image[CubeFaceIndex(target)][level]);
+	updateBorders(level);
 }
 
 // Tests for cube map sampling completeness. [OpenGL ES 2.0.24] section 3.8.2 page 86.
@@ -1245,6 +1248,52 @@ bool TextureCubeMap::isMipmapCubeComplete() const
 	return true;
 }
 
+void TextureCubeMap::updateBorders(int level)
+{
+	egl::Image *posX = image[CubeFaceIndex(GL_TEXTURE_CUBE_MAP_POSITIVE_X)][level];
+	egl::Image *negX = image[CubeFaceIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_X)][level];
+	egl::Image *posY = image[CubeFaceIndex(GL_TEXTURE_CUBE_MAP_POSITIVE_Y)][level];
+	egl::Image *negY = image[CubeFaceIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y)][level];
+	egl::Image *posZ = image[CubeFaceIndex(GL_TEXTURE_CUBE_MAP_POSITIVE_Z)][level];
+	egl::Image *negZ = image[CubeFaceIndex(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z)][level];
+
+	if(!posX || !negX || !posY || !negY || !posZ || !negZ)
+	{
+		return;
+	}
+	
+	// Copy top / bottom first
+	egl::Image::CopyCubeEdge(negY, egl::Image::RIGHT, posX, egl::Image::BOTTOM);
+	egl::Image::CopyCubeEdge(posZ, egl::Image::TOP, posY, egl::Image::BOTTOM);
+	egl::Image::CopyCubeEdge(negY, egl::Image::TOP, posZ, egl::Image::BOTTOM);
+	egl::Image::CopyCubeEdge(negY, egl::Image::LEFT, negX, egl::Image::BOTTOM);
+	egl::Image::CopyCubeEdge(negZ, egl::Image::BOTTOM, negY, egl::Image::BOTTOM);
+	egl::Image::CopyCubeEdge(negY, egl::Image::BOTTOM, negZ, egl::Image::BOTTOM);
+
+	egl::Image::CopyCubeEdge(posY, egl::Image::RIGHT, posX, egl::Image::TOP);
+	egl::Image::CopyCubeEdge(negZ, egl::Image::TOP, posY, egl::Image::TOP);
+	egl::Image::CopyCubeEdge(posY, egl::Image::BOTTOM, posZ, egl::Image::TOP);
+	egl::Image::CopyCubeEdge(posY, egl::Image::LEFT, negX, egl::Image::TOP);
+	egl::Image::CopyCubeEdge(posZ, egl::Image::BOTTOM, negY, egl::Image::TOP);
+	egl::Image::CopyCubeEdge(posY, egl::Image::TOP, negZ, egl::Image::TOP);
+
+	// Copy left / right after top and bottom are done
+	// The corner colors will be computed assuming top / bottom are already set
+	egl::Image::CopyCubeEdge(negZ, egl::Image::LEFT, posX, egl::Image::RIGHT);
+	egl::Image::CopyCubeEdge(posX, egl::Image::TOP, posY, egl::Image::RIGHT);
+	egl::Image::CopyCubeEdge(posX, egl::Image::LEFT, posZ, egl::Image::RIGHT);
+	egl::Image::CopyCubeEdge(posZ, egl::Image::LEFT, negX, egl::Image::RIGHT);
+	egl::Image::CopyCubeEdge(posX, egl::Image::BOTTOM, negY, egl::Image::RIGHT);
+	egl::Image::CopyCubeEdge(negX, egl::Image::LEFT, negZ, egl::Image::RIGHT);
+
+	egl::Image::CopyCubeEdge(posZ, egl::Image::RIGHT, posX, egl::Image::LEFT);
+	egl::Image::CopyCubeEdge(negX, egl::Image::TOP, posY, egl::Image::LEFT);
+	egl::Image::CopyCubeEdge(negX, egl::Image::RIGHT, posZ, egl::Image::LEFT);
+	egl::Image::CopyCubeEdge(negZ, egl::Image::RIGHT, negX, egl::Image::LEFT);
+	egl::Image::CopyCubeEdge(negX, egl::Image::BOTTOM, negY, egl::Image::LEFT);
+	egl::Image::CopyCubeEdge(posX, egl::Image::RIGHT, negZ, egl::Image::LEFT);
+}
+
 bool TextureCubeMap::isCompressed(GLenum target, GLint level) const
 {
 	return IsCompressed(getFormat(target, level), egl::getClientVersion());
@@ -1269,7 +1318,7 @@ void TextureCubeMap::setImage(egl::Context *context, GLenum target, GLint level,
 		image[face][level]->release();
 	}
 
-	image[face][level] = egl::Image::create(this, width, height, format, type);
+	image[face][level] = egl::Image::create(this, width, height, 1, format, type, 1);
 
 	if(!image[face][level])
 	{
@@ -1277,6 +1326,7 @@ void TextureCubeMap::setImage(egl::Context *context, GLenum target, GLint level,
 	}
 
 	Texture::setImage(context, format, type, unpackInfo, pixels, image[face][level]);
+	updateBorders(level);
 }
 
 void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source)
@@ -1297,7 +1347,7 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 	}
 
 	GLenum sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[face][level] = egl::Image::create(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[face][level] = egl::Image::create(this, width, height, 1, sizedInternalFormat, GL_UNSIGNED_BYTE, 1);
 
 	if(!image[face][level])
 	{
@@ -1321,6 +1371,7 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 	}
 
 	renderTarget->release();
+	updateBorders(level);
 }
 
 egl::Image *TextureCubeMap::getImage(int face, unsigned int level)
@@ -1371,6 +1422,7 @@ void TextureCubeMap::copySubImage(GLenum target, GLint level, GLint xoffset, GLi
 	copy(renderTarget, sourceRect, image[face][level]->getFormat(), xoffset, yoffset, zoffset, image[face][level]);
 
 	renderTarget->release();
+	updateBorders(level);
 }
 
 void TextureCubeMap::generateMipmaps()
@@ -1391,7 +1443,7 @@ void TextureCubeMap::generateMipmaps()
 				image[f][i]->release();
 			}
 
-			image[f][i] = egl::Image::create(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), image[0][0]->getFormat(), image[0][0]->getType());
+			image[f][i] = egl::Image::create(this, std::max(image[0][0]->getWidth() >> i, 1), std::max(image[0][0]->getHeight() >> i, 1), 1, image[0][0]->getFormat(), image[0][0]->getType(), 1);
 
 			if(!image[f][i])
 			{
@@ -1400,6 +1452,11 @@ void TextureCubeMap::generateMipmaps()
 
 			getDevice()->stretchRect(image[f][i - 1], 0, image[f][i], 0, Device::ALL_BUFFERS | Device::USE_FILTER);
 		}
+	}
+
+	for(unsigned int level = 1; level <= q; level++)
+	{
+		updateBorders(level);
 	}
 }
 

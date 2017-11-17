@@ -61,9 +61,9 @@ protected:
 		parentTexture->addRef();
 	}
 
-	// 3D texture image
-	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
-		: sw::Surface(parentTexture->getResource(), width, height, depth, SelectInternalFormat(format, type), true, true),
+	// 3D/Cube texture image
+	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, int border)
+		: sw::Surface(parentTexture->getResource(), width, height, depth, SelectInternalFormat(format, type), true, true, 0, border),
 		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(depth),
 		  parentTexture(parentTexture)
 	{
@@ -97,7 +97,7 @@ public:
 	static Image *create(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type);
 
 	// 3D texture image
-	static Image *create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type);
+	static Image *create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, int border = 0);
 
 	// Native EGL image
 	static Image *create(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP);
@@ -190,6 +190,9 @@ public:
 		shared = false;
 		release();
 	}
+
+	enum Edge { TOP, BOTTOM, RIGHT, LEFT };
+	static void CopyCubeEdge(Image* src, Edge srcEdge, Image* dst, Edge dstEdge);
 
 protected:
 	const GLsizei width;

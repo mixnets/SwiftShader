@@ -1232,8 +1232,8 @@ namespace egl
 	public:
 		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
 			: Image(parentTexture, width, height, format, type) {}
-		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
-			: Image(parentTexture, width, height, depth, format, type) {}
+		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, int border)
+			: Image(parentTexture, width, height, depth, format, type, border) {}
 		ImageImplementation(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
 			: Image(width, height, format, type, pitchP) {}
 		ImageImplementation(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
@@ -1265,9 +1265,9 @@ namespace egl
 		return new ImageImplementation(parentTexture, width, height, format, type);
 	}
 
-	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type)
+	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, int border)
 	{
-		return new ImageImplementation(parentTexture, width, height, depth, format, type);
+		return new ImageImplementation(parentTexture, width, height, depth, format, type, border);
 	}
 
 	Image *Image::create(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
@@ -1751,6 +1751,75 @@ namespace egl
 			context->blit(source, sourceRect, this, destRect);
 			delete source;
 		}
+	}
+
+	void Image::CopyCubeEdge(Image* src, Edge srcEdge, Image* dst, Edge dstEdge)
+	{
+		// Figure out if the edges to be copied in reverse order respectively from one another
+		// The copy should be reversed whenever the same edges are contiguous or if we're
+		// copying top <-> right or bottom <-> left. This is explained by the layout, which is:
+		//
+		//      | +y |
+		// | -x | +z | +x | -z |
+		//      | -y |
+
+		bool reverse = (srcEdge == dstEdge) ||
+		               ((srcEdge == TOP) && (dstEdge == RIGHT)) ||
+		               ((srcEdge == RIGHT) && (dstEdge == TOP)) ||
+		               ((srcEdge == BOTTOM) && (dstEdge == LEFT)) ||
+		               ((srcEdge == LEFT) && (dstEdge == BOTTOM));
+
+		int srcBytes = src->bytes(src->Surface::getInternalFormat());
+		int srcPitch = src->getInternalPitchB();
+		int dstBytes = dst->bytes(dst->Surface::getInternalFormat());
+		int dstPitch = dst->getInternalPitchB();
+
+		int srcW = src->getWidth();
+		int srcH = src->getHeight();
+		int dstW = dst->getWidth();
+		int dstH = dst->getHeight();
+
+		ASSERT(srcW == srcH && dstW == dstH && srcW == dstW && srcBytes == dstBytes);
+
+		// Src is expressed in the regular [0, width-1], [0, height-1] space
+		int srcDelta = ((srcEdge == TOP) || (srcEdge == BOTTOM)) ? srcBytes : srcPitch;
+		int srcStart = ((srcEdge == BOTTOM) ? srcPitch * (srcH - 1) : ((srcEdge == RIGHT) ? srcBytes * (srcW - 1) : 0));
+
+		// Dst contains borders, so it is expressed in the [-1, width+1], [-1, height+1] space
+		int dstDelta = (((dstEdge == TOP) || (dstEdge == BOTTOM)) ? dstBytes : dstPitch) * (reverse ? -1 : 1);
+		int dstStart = ((dstEdge == BOTTOM) ? dstPitch * (dstH + 1) : ((dstEdge == RIGHT) ? dstBytes * (dstW + 1) : 0)) + (reverse ? dstW * -dstDelta : dstDelta);
+
+		char *srcBuf = (char*)src->lockInternal(0, 0, 0, sw::LOCK_READONLY, sw::PRIVATE) + srcStart;
+		// For LEFT and RIGHT, we will also read from the destination buffer to compute the corners
+		char *dstBuf = (char*)dst->lockInternal(-1, -1, 0, ((dstEdge == LEFT) || (dstEdge == RIGHT)) ? sw::LOCK_READWRITE : sw::LOCK_WRITEONLY, sw::PRIVATE) + dstStart;
+
+		if (!reverse && (dstEdge == TOP || dstEdge == BOTTOM) && (srcEdge == TOP || srcEdge == BOTTOM))
+		{
+			memcpy(dstBuf, srcBuf, srcW * srcBytes); // Copying TOP <-> BOTTOM can be done in a single memcpy
+		}
+		else // Othrewise, copy pixel by pixel
+		{
+			for(int i = 0; i < srcW; ++i, dstBuf += dstDelta, srcBuf += srcDelta)
+			{
+				memcpy(dstBuf, srcBuf, srcBytes);
+			}
+		}
+
+		if(dstEdge == LEFT || dstEdge == RIGHT)
+		{
+			// TOP and BOTTOM are already set, let's average out the corners
+			int x0 = (dstEdge == RIGHT) ? dstW : -1;
+			int y0 = reverse ? dstH : -1;
+			int x1 = (dstEdge == RIGHT) ? dstW - 1 : 0;
+			int y1 = reverse ? dstH - 1 : 0;
+			dst->computeCornerInternal(x0, y0, x1, y1);
+			y0 = reverse ? -1 : dstH;
+			y1 = reverse ? 0 : dstH - 1;
+			dst->computeCornerInternal(x0, y0, x1, y1);
+		}
+
+		src->unlockInternal();
+		dst->unlockInternal();
 	}
 
 	void Image::loadD24S8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer)

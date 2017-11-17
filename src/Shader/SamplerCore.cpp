@@ -316,7 +316,7 @@ namespace sw
 		{
 			// FIXME: YUV and sRGB are not supported by the floating point path
 			bool forceFloatFiltering = state.highPrecisionFiltering && !state.sRGB && !hasYuvFormat() && (state.textureFilter != FILTER_POINT);
-			if(hasFloatTexture() || hasUnnormalizedIntegerTexture() || forceFloatFiltering)   // FIXME: Mostly identical to integer sampling
+			if(hasFloatTexture() || hasUnnormalizedIntegerTexture() || forceFloatFiltering || state.textureType == TEXTURE_CUBE)   // FIXME: Mostly identical to integer sampling
 			{
 				Float4 uuuu = u;
 				Float4 vvvv = v;
@@ -1702,7 +1702,7 @@ namespace sw
 		return As<Short4>(UShort4(tmp));
 	}
 
-	void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, Vector4f &offset, const Pointer<Byte> &mipmap, SamplerFunction function)
+	void SamplerCore::computeIndices(Int index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, Vector4f &offset, const Pointer<Byte> &mipmap, SamplerFunction function)
 	{
 		bool texelFetch = (function == Fetch);
 		bool hasOffset = (function.option == Offset);
@@ -1771,27 +1771,27 @@ namespace sw
 
 			for(int i = 0; i < 4; i++)
 			{
-				index[i] = Min(Max(index[i], min), max);
+			/**///	index[i] = Min(Max(index[i], min), max);
 			}
 		}
 	}
 
-	void SamplerCore::computeIndices(UInt index[4], Int4& uuuu, Int4& vvvv, Int4& wwww, const Pointer<Byte> &mipmap, SamplerFunction function)
+	void SamplerCore::computeIndices(Int index[4], Int4& uuuu, Int4& vvvv, Int4& wwww, const Pointer<Byte> &mipmap, SamplerFunction function)
 	{
-		UInt4 indices = uuuu + vvvv;
+		Int4 indices = uuuu + vvvv;
 
 		if(hasThirdCoordinate())
 		{
-			indices += As<UInt4>(wwww);
+			indices += wwww;
 		}
 
 		for(int i = 0; i < 4; i++)
 		{
-			index[i] = Extract(As<Int4>(indices), i);
+			index[i] = Extract(indices, i);
 		}
 	}
 
-	Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer[4])
+	Vector4s SamplerCore::sampleTexel(Int index[4], Pointer<Byte> buffer[4])
 	{
 		Vector4s c;
 
@@ -2029,7 +2029,7 @@ namespace sw
 	{
 		Vector4s c;
 
-		UInt index[4];
+		Int index[4];
 		computeIndices(index, uuuu, vvvv, wwww, offset, mipmap, function);
 
 		if(hasYuvFormat())
@@ -2138,7 +2138,7 @@ namespace sw
 	{
 		Vector4f c;
 
-		UInt index[4];
+		Int index[4];
 		computeIndices(index, uuuu, vvvv, wwww, mipmap, function);
 
 		if(hasFloatTexture() || has32bitIntegerTextureComponents())
@@ -2403,66 +2403,80 @@ namespace sw
 					coord *= one - Abs(two * Frac(Min(Max(uvw, -one), two) * half) - one);
 				}
 				break;
-			default:   // Wrap (or border)
+			case ADDRESSING_BORDER:
+				{
+					coord *= uvw;
+				}
+				break;
+			default:   // Wrap
 				coord *= Frac(uvw);
 				break;
 			}
 
-			xyz0 = Int4(coord);
-
-			if(function.option == Offset)
+			if(state.textureFilter != FILTER_POINT)
 			{
-				xyz0 += As<Int4>(texOffset);
-				switch(addressingMode)
-				{
-				case ADDRESSING_MIRROR:
-				case ADDRESSING_MIRRORONCE:
-				case ADDRESSING_BORDER:
-					// FIXME: Implement ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE and ADDRESSING_BORDER. Fall through to Clamp.
-				case ADDRESSING_CLAMP:
-					xyz0 = Min(Max(xyz0, Int4(0)), maxXYZ);
-					break;
-				default:   // Wrap
-					xyz0 = (xyz0 + dim * Int4(-MIN_PROGRAM_TEXEL_OFFSET)) % dim;
-					break;
-				}
+				coord = coord - Float4(0.5f);
 			}
+
+			xyz0 = Int4(Floor(coord));
+
+			//if(function.option == Offset)
+			//{
+			//	xyz0 += As<Int4>(texOffset);
+			//	switch(addressingMode)
+			//	{
+			//	case ADDRESSING_MIRROR:
+			//	case ADDRESSING_MIRRORONCE:
+			//	case ADDRESSING_BORDER:
+			//		// FIXME: Implement ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE and ADDRESSING_BORDER. Fall through to Clamp.
+			//	case ADDRESSING_CLAMP:
+			//		xyz0 = Min(Max(xyz0, Int4(0)), maxXYZ);
+			//		break;
+			//	default:   // Wrap
+			//		xyz0 = (xyz0 + dim * Int4(-MIN_PROGRAM_TEXEL_OFFSET)) % dim;
+			//		break;
+			//	}
+			//}
 
 			if(state.textureFilter != FILTER_POINT) // Compute 2nd coordinate, if needed
 			{
-				bool gather = state.textureFilter == FILTER_GATHER;
+				//bool gather = state.textureFilter == FILTER_GATHER;
 
 				xyz1 = xyz0 + filter; // Increment
 
-				if(!gather)
-				{
-					Float4 frac = Frac(coord);
-					f = Abs(frac - Float4(0.5f));
-					xyz1 -= CmpLT(frac, Float4(0.5f)) & (filter + filter); // Decrement xyz if necessary
-				}
+				Float4 frac = Frac(coord);
+				f =  frac;
 
-				switch(addressingMode)
-				{
-				case ADDRESSING_MIRROR:
-				case ADDRESSING_MIRRORONCE:
-				case ADDRESSING_BORDER:
-					// FIXME: Implement ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE and ADDRESSING_BORDER. Fall through to Clamp.
-				case ADDRESSING_CLAMP:
-					xyz1 = gather ? Min(xyz1, maxXYZ) : Min(Max(xyz1, Int4(0)), maxXYZ);
-					break;
-				default:   // Wrap
-					{
-						// The coordinates overflow or underflow by at most 1
-						Int4 over = CmpNLT(xyz1, dim);
-						xyz1 = (over & Int4(0)) | (~over & xyz1); // xyz >= dim ? 0 : xyz
-						if(!gather)
-						{
-							Int4 under = CmpLT(xyz1, Int4(0));
-							xyz1 = (under & maxXYZ) | (~under & xyz1); // xyz < 0 ? dim - 1 : xyz
-						}
-					}
-					break;
-				}
+				//if(!gather && addressingMode != ADDRESSING_BORDER)
+				//{
+				//	Float4 frac = Frac(coord);
+				//	f = Abs(frac - Float4(0.5f));
+				//	xyz1 -= CmpLT(frac, Float4(0.5f)) & (filter + filter); // Decrement xyz if necessary
+				//}
+
+				//switch(addressingMode)
+				//{
+				//case ADDRESSING_BORDER:
+				//	break;
+				//case ADDRESSING_MIRROR:
+				//case ADDRESSING_MIRRORONCE:
+				//	// FIXME: Implement ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE and ADDRESSING_BORDER. Fall through to Clamp.
+				//case ADDRESSING_CLAMP:
+				//	xyz1 = gather ? Min(xyz1, maxXYZ) : Min(Max(xyz1, Int4(0)), maxXYZ);
+				//	break;
+				//default:   // Wrap
+				//	{
+				//		// The coordinates overflow or underflow by at most 1
+				//		Int4 over = CmpNLT(xyz1, dim);
+				//		xyz1 = (over & Int4(0)) | (~over & xyz1); // xyz >= dim ? 0 : xyz
+				//		if(!gather)
+				//		{
+				//			Int4 under = CmpLT(xyz1, Int4(0));
+				//			xyz1 = (under & maxXYZ) | (~under & xyz1); // xyz < 0 ? dim - 1 : xyz
+				//		}
+				//	}
+				//	break;
+				//}
 			}
 		}
 	}
