@@ -1415,6 +1415,15 @@ namespace sw
 		return lod;
 	}
 
+	Float SamplerCore::log2(Float lod)
+	{
+		lod *= lod;                                      // Squaring doubles the exponent and produces an extra bit of precision.
+		lod = Float(As<Int>(lod)) - Float(0x3F800000);   // Interpret as integer and subtract the exponent bias.
+		lod *= As<Float>(Int(0x33800000));               // Scale by 0.5 * 2^-23 (mantissa length).
+
+		return lod;
+	}
+
 	void SamplerCore::computeLod(Pointer<Byte> &texture, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Float4 &uuuu, Float4 &vvvv, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, SamplerFunction function)
 	{
 		if(function != Lod && function != Fetch)
@@ -1498,9 +1507,9 @@ namespace sw
 				Float4 V = v * M;
 				Float4 W = w * M;
 
-				dudxy = U.ywyw - U;
-				dvdxy = V.ywyw - V;
-				dsdxy = W.ywyw - W;
+				dudxy = Abs(U.ywyw - U);
+				dvdxy = Abs(V.ywyw - V);
+				dsdxy = Abs(W.ywyw - W);
 			}
 			else
 			{
@@ -1512,26 +1521,27 @@ namespace sw
 				dvdxy = Float4(dvdxy.xz, dvdxy.xz);
 				dsdxy = Float4(dsdxy.xz, dsdxy.xz);
 
-				dudxy *= Float4(M.x);
-				dvdxy *= Float4(M.x);
-				dsdxy *= Float4(M.x);
+				dudxy = Abs(dudxy * Float4(M.x));
+				dvdxy = Abs(dvdxy * Float4(M.x));
+				dsdxy = Abs(dsdxy * Float4(M.x));
 			}
 
-			// Scale by texture dimensions and LOD
+			// Scale by texture dimensions and LOD.
 			dudxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
 			dvdxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
 			dsdxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
 
-			dudxy *= dudxy;
-			dvdxy *= dvdxy;
-			dsdxy *= dsdxy;
+			// Compute the largest Manhattan distance in two dimensions.
+			// This takes the footprint across adjacent faces into account.
+			Float4 duvdxy = dudxy + dvdxy;
+			Float4 dusdxy = dudxy + dsdxy;
+			Float4 dvsdxy = dvdxy + dsdxy;
 
-			dudxy += dvdxy;
-			dudxy += dsdxy;
+			dudxy = Max(Max(duvdxy, dusdxy), dvsdxy);
 
 			lod = Max(Float(dudxy.x), Float(dudxy.y));   // FIXME: Max(dudxy.x, dudxy.y);
 
-			lod = log2sqrt(lod);   // log2(sqrt(lod))
+			lod = log2(lod);
 
 			if(function == Bias)
 			{
