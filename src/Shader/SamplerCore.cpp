@@ -2414,11 +2414,11 @@ namespace sw
 					coord *= one - Abs(two * Frac(Min(Max(uvw, -one), two) * half) - one);
 				}
 				break;
-			case ADDRESSING_BORDER:
+			/*case ADDRESSING_BORDER:
 				{
 					coord *= uvw;
 				}
-				break;
+				break;*/
 			default:   // Wrap
 				coord *= Frac(uvw);
 				break;
@@ -2426,7 +2426,7 @@ namespace sw
 
 			if(state.textureFilter != FILTER_POINT)
 			{
-				coord = coord - Float4(0.5f);
+				coord = coord - As<Float4>(As<Int4>(Float4(0.5f)) & -filter);
 			}
 
 			xyz0 = Int4(Floor(coord));
