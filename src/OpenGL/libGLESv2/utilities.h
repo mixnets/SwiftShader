@@ -57,6 +57,7 @@ namespace es2
 	GLsizei GetTypeSize(GLenum type);
 
 	bool IsColorRenderable(GLenum internalformat, GLint clientVersion, bool isTexture);
+	bool IsMipMappable(GLenum format, GLint clientVersion, bool isTexture);
 	bool IsDepthRenderable(GLenum internalformat, GLint clientVersion);
 	bool IsStencilRenderable(GLenum internalformat, GLint clientVersion);
 
