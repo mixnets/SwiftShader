@@ -110,9 +110,9 @@ namespace sw
 				}
 				else
 				{
-					Float4 M;
-					cubeFace(face, uuuu, vvvv, u, v, w, M);
-					computeLodCube(texture, lod, u, v, w, bias.x, dsx, dsy, M, function);
+					Float4 M, lodU, lodV;
+					cubeFace(face, uuuu, vvvv, lodU, lodV, u, v, w, M);
+					computeLodCube(texture, lod, lodU, lodV, bias.x, dsx, dsy, M, function);
 				}
 			}
 			else
@@ -337,9 +337,9 @@ namespace sw
 					}
 					else
 					{
-						Float4 M;
-						cubeFace(face, uuuu, vvvv, u, v, w, M);
-						computeLodCube(texture, lod, u, v, w, bias.x, dsx, dsy, M, function);
+						Float4 M, lodU, lodV;
+						cubeFace(face, uuuu, vvvv, lodU, lodV, u, v, w, M);
+						computeLodCube(texture, lod, lodU, lodV, bias.x, dsx, dsy, M, function);
 					}
 				}
 				else
@@ -1486,27 +1486,27 @@ namespace sw
 		lod = Min(lod, *Pointer<Float>(texture + OFFSET(Texture, maxLod)));
 	}
 
-	void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, Float4 &M, SamplerFunction function)
+	void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &lodU, Float4 &lodV, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, Float4 &M, SamplerFunction function)
 	{
 		if(function != Lod && function != Fetch)
 		{
-			Float4 dudxy, dvdxy, dsdxy;
-
 			if(function != Grad)
 			{
-				Float4 U = u * M;
-				Float4 V = v * M;
-				Float4 W = w * M;
+				Float4 duvdxy = Float4(lodU.yz, lodV.yz) - Float4(lodU.xx, lodV.xx);
 
-				dudxy = U.ywyw - U;
-				dvdxy = V.ywyw - V;
-				dsdxy = W.ywyw - W;
+				// Scale by texture dimensions and LOD
+				Float4 dUVdxy = duvdxy * *Pointer<Float4>(texture + OFFSET(Texture,widthHeightLOD));
+
+				Float4 dUV2dxy = dUVdxy * dUVdxy;
+				Float4 dUV2 = dUV2dxy.xy + dUV2dxy.zw;
+
+				lod = Max(Float(dUV2.x), Float(dUV2.y));   // Square length of major axis
 			}
 			else
 			{
-				dudxy = Float4(dsx.x.xx, dsy.x.xx);
-				dvdxy = Float4(dsx.y.xx, dsy.y.xx);
-				dsdxy = Float4(dsx.z.xx, dsy.z.xx);
+				Float4 dudxy = Float4(dsx.x.xx, dsy.x.xx);
+				Float4 dvdxy = Float4(dsx.y.xx, dsy.y.xx);
+				Float4 dsdxy = Float4(dsx.z.xx, dsy.z.xx);
 
 				dudxy = Float4(dudxy.xz, dudxy.xz);
 				dvdxy = Float4(dvdxy.xz, dvdxy.xz);
@@ -1515,21 +1515,21 @@ namespace sw
 				dudxy *= Float4(M.x);
 				dvdxy *= Float4(M.x);
 				dsdxy *= Float4(M.x);
+
+				// Scale by texture dimensions and LOD
+				dudxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
+				dvdxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
+				dsdxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
+
+				dudxy *= dudxy;
+				dvdxy *= dvdxy;
+				dsdxy *= dsdxy;
+
+				dudxy += dvdxy;
+				dudxy += dsdxy;
+
+				lod = Max(Float(dudxy.x), Float(dudxy.y));   // FIXME: Max(dudxy.x, dudxy.y);
 			}
-
-			// Scale by texture dimensions and LOD
-			dudxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
-			dvdxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
-			dsdxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
-
-			dudxy *= dudxy;
-			dvdxy *= dvdxy;
-			dsdxy *= dsdxy;
-
-			dudxy += dvdxy;
-			dudxy += dsdxy;
-
-			lod = Max(Float(dudxy.x), Float(dudxy.y));   // FIXME: Max(dudxy.x, dudxy.y);
 
 			lod = log2sqrt(lod);   // log2(sqrt(lod))
 
@@ -1626,7 +1626,7 @@ namespace sw
 		}
 	}
 
-	void SamplerCore::cubeFace(Int face[4], Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z, Float4 &M)
+	void SamplerCore::cubeFace(Int face[4], Float4 &U, Float4 &V, Float4 &lodU, Float4 &lodV, Float4 &x, Float4 &y, Float4 &z, Float4 &M)
 	{
 		Int4 xn = CmpLT(x, Float4(0.0f));   // x < 0
 		Int4 yn = CmpLT(y, Float4(0.0f));   // y < 0
@@ -1664,17 +1664,29 @@ namespace sw
 		face[3] = (face[0] >> 12) & 0x7;
 		face[0] &= 0x7;
 
-		M = Max(Max(absX, absY), absZ);
-
 		// U = xMajor ? (neg ^ -z) : (zMajor & neg) ^ x)
-		U = As<Float4>((xMajor & (n ^ As<Int4>(-z))) | (~xMajor & ((zMajor & n) ^ As<Int4>(x))));
+		U = As<Float4>((xMajor & (n ^ As<Int4>(-z))) | (~xMajor & ((zMajor & n) ^ As<Int4>(x))));   // TODO: IfThenElse()
 
 		// V = !yMajor ? -y : (n ^ z)
-		V = As<Float4>((~yMajor & As<Int4>(-y)) | (yMajor & (n ^ As<Int4>(z))));
+		V = As<Float4>((~yMajor & As<Int4>(-y)) | (yMajor & (n ^ As<Int4>(z))));   // TODO: IfThenElse()
 
+		M = Max(Max(absX, absY), absZ);
 		M = reciprocal(M) * Float4(0.5f);
 		U = U * M + Float4(0.5f);
 		V = V * M + Float4(0.5f);
+
+		// Compute U/V coordinates of whole quad projected onto first face.
+		Int4 xMajorLod = xMajor.xxxx;
+		Int4 yMajorLod = yMajor.xxxx;
+
+		lodU = As<Float4>((xMajorLod & As<Int4>(z)) | (~xMajorLod & As<Int4>(x)));   // TODO: IfThenElse()
+		lodV = As<Float4>((yMajorLod & As<Int4>(z)) | (~yMajorLod & As<Int4>(y)));   // TODO: IfThenElse()
+
+		Float4 lodM = As<Float4>((As<Int4>(x) ^ As<Int4>(y) ^ As<Int4>(z)) ^ (As<Int4>(lodU) ^ As<Int4>(lodV)));
+
+		lodM = reciprocal(lodM, true, false, false) * Float4(0.5f);
+		lodU = lodU * lodM;
+		lodV = lodV * lodM;
 	}
 
 	Short4 SamplerCore::applyOffset(Short4 &uvw, Float4 &offset, const Int4 &whd, AddressingMode mode)
