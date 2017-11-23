@@ -77,10 +77,10 @@ namespace sw
 		void computeLod3D(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, SamplerFunction function);
 		void cubeFace(Int face[4], Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z, Float4 &M);
 		Short4 applyOffset(Short4 &uvw, Float4 &offset, const Int4 &whd, AddressingMode mode);
-		void computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, Vector4f &offset, const Pointer<Byte> &mipmap, SamplerFunction function);
-		void computeIndices(UInt index[4], Int4& uuuu, Int4& vvvv, Int4& wwww, const Pointer<Byte> &mipmap, SamplerFunction function);
+		void computeIndices(Int index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, Vector4f &offset, const Pointer<Byte> &mipmap, SamplerFunction function);
+		void computeIndices(Int index[4], Int4& uuuu, Int4& vvvv, Int4& wwww, const Pointer<Byte> &mipmap, SamplerFunction function);
 		Vector4s sampleTexel(Short4 &u, Short4 &v, Short4 &s, Vector4f &offset, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function);
-		Vector4s sampleTexel(UInt index[4], Pointer<Byte> buffer[4]);
+		Vector4s sampleTexel(Int index[4], Pointer<Byte> buffer[4]);
 		Vector4f sampleTexel(Int4 &u, Int4 &v, Int4 &s, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function);
 		void selectMipmap(Pointer<Byte> &texture, Pointer<Byte> buffer[4], Pointer<Byte> &mipmap, Float &lod, Int face[4], bool secondLOD);
 		Short4 address(Float4 &uw, AddressingMode addressingMode, Pointer<Byte>& mipmap);
