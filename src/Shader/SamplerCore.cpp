@@ -1524,11 +1524,11 @@ namespace sw
 
 			// Compute the largest Manhattan distance in two dimensions.
 			// This takes the footprint across adjacent faces into account.
-			Float4 duvdxy = dudxy + dvdxy;
-			Float4 dusdxy = dudxy + dsdxy;
-			Float4 dvsdxy = dvdxy + dsdxy;
+			Float4 duvdxy = Sqrt(dudxy*dudxy + dvdxy*dvdxy) + dsdxy;
+			Float4 dusdxy = Sqrt(dudxy*dudxy + dsdxy*dsdxy) + dvdxy;
+			Float4 dvsdxy = Sqrt(dvdxy*dvdxy + dsdxy*dsdxy) + dsdxy;
 
-			dudxy = Max(Max(duvdxy, dusdxy), dvsdxy);
+			dudxy = Min(Min(duvdxy, dusdxy), dvsdxy);
 
 			lod = Max(Float(dudxy.x), Float(dudxy.z));   // FIXME: Max(dudxy.x, dudxy.z);
 
