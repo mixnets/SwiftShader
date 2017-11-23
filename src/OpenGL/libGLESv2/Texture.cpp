@@ -1136,16 +1136,19 @@ void TextureCubeMap::setCompressedImage(GLenum target, GLint level, GLenum forma
 	}
 
 	Texture::setCompressedImage(imageSize, pixels, image[face][level]);
+	updateBorders(level);
 }
 
 void TextureCubeMap::subImage(egl::Context *context, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels)
 {
 	Texture::subImage(context, xoffset, yoffset, 0, width, height, 1, format, type, unpackInfo, pixels, image[CubeFaceIndex(target)][level]);
+	updateBorders(level);
 }
 
 void TextureCubeMap::subImageCompressed(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels)
 {
 	Texture::subImageCompressed(xoffset, yoffset, 0, width, height, 1, format, imageSize, pixels, image[CubeFaceIndex(target)][level]);
+	updateBorders(level);
 }
 
 // Tests for cube map sampling completeness. [OpenGL ES 2.0.24] section 3.8.2 page 86.
@@ -1323,6 +1326,7 @@ void TextureCubeMap::setImage(egl::Context *context, GLenum target, GLint level,
 	}
 
 	Texture::setImage(context, format, type, unpackInfo, pixels, image[face][level]);
+	updateBorders(level);
 }
 
 void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source)
@@ -1367,6 +1371,7 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 	}
 
 	renderTarget->release();
+	updateBorders(level);
 }
 
 egl::Image *TextureCubeMap::getImage(int face, unsigned int level)
@@ -1417,6 +1422,7 @@ void TextureCubeMap::copySubImage(GLenum target, GLint level, GLint xoffset, GLi
 	copy(renderTarget, sourceRect, image[face][level]->getFormat(), xoffset, yoffset, zoffset, image[face][level]);
 
 	renderTarget->release();
+	updateBorders(level);
 }
 
 void TextureCubeMap::generateMipmaps()
@@ -1446,6 +1452,11 @@ void TextureCubeMap::generateMipmaps()
 
 			getDevice()->stretchRect(image[f][i - 1], 0, image[f][i], 0, Device::ALL_BUFFERS | Device::USE_FILTER);
 		}
+	}
+
+	for(unsigned int level = 1; level <= q; level++)
+	{
+		updateBorders(level);
 	}
 }
 

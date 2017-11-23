@@ -1484,15 +1484,12 @@ namespace es2sw
 		case GL_NEAREST:
 		case GL_LINEAR:
 			return sw::MIPMAP_NONE;
-			break;
 		case GL_NEAREST_MIPMAP_NEAREST:
 		case GL_LINEAR_MIPMAP_NEAREST:
 			return sw::MIPMAP_POINT;
-			break;
 		case GL_NEAREST_MIPMAP_LINEAR:
 		case GL_LINEAR_MIPMAP_LINEAR:
 			return sw::MIPMAP_LINEAR;
-			break;
 		default:
 			UNREACHABLE(minFilter);
 			return sw::MIPMAP_NONE;

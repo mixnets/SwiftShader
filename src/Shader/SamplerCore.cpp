@@ -316,7 +316,7 @@ namespace sw
 		{
 			// FIXME: YUV and sRGB are not supported by the floating point path
 			bool forceFloatFiltering = state.highPrecisionFiltering && !state.sRGB && !hasYuvFormat() && (state.textureFilter != FILTER_POINT);
-			if(hasFloatTexture() || hasUnnormalizedIntegerTexture() || forceFloatFiltering)   // FIXME: Mostly identical to integer sampling
+			if(hasFloatTexture() || hasUnnormalizedIntegerTexture() || forceFloatFiltering || state.textureType == TEXTURE_CUBE)   // FIXME: Mostly identical to integer sampling
 			{
 				Float4 uuuu = u;
 				Float4 vvvv = v;
@@ -653,7 +653,7 @@ namespace sw
 
 		Short4 borderMask;
 
-		if(state.addressingModeU == ADDRESSING_BORDER)
+	/*	if(state.addressingModeU == ADDRESSING_BORDER)
 		{
 			Short4 u0;
 
@@ -705,7 +705,7 @@ namespace sw
 			c.y = (borderMask & c.y) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture,borderColor4[1])) >> (hasUnsignedTextureComponent(1) ? 0 : 1)));
 			c.z = (borderMask & c.z) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture,borderColor4[2])) >> (hasUnsignedTextureComponent(2) ? 0 : 1)));
 			c.w = (borderMask & c.w) | (~borderMask & (*Pointer<Short4>(texture + OFFSET(Texture,borderColor4[3])) >> (hasUnsignedTextureComponent(3) ? 0 : 1)));
-		}
+		}*/
 
 		return c;
 	}
@@ -1125,7 +1125,7 @@ namespace sw
 
 		Int4 borderMask;
 
-		if(state.addressingModeU == ADDRESSING_BORDER)
+	/*	if(state.addressingModeU == ADDRESSING_BORDER)
 		{
 			Int4 u0;
 
@@ -1177,7 +1177,7 @@ namespace sw
 			c.y = As<Float4>((borderMask & As<Int4>(c.y)) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture,borderColorF[1]))));
 			c.z = As<Float4>((borderMask & As<Int4>(c.z)) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture,borderColorF[2]))));
 			c.w = As<Float4>((borderMask & As<Int4>(c.w)) | (~borderMask & *Pointer<Int4>(texture + OFFSET(Texture,borderColorF[3]))));
-		}
+		}*/
 
 		return c;
 	}
@@ -1501,15 +1501,15 @@ namespace sw
 		{
 			Float4 dudxy, dvdxy, dsdxy;
 
-			if(function != Grad)
+			if(function != Grad)   // Implicit.
 			{
 				Float4 U = u * M;
 				Float4 V = v * M;
 				Float4 W = w * M;
 
-				dudxy = Abs(U.ywyw - U);
-				dvdxy = Abs(V.ywyw - V);
-				dsdxy = Abs(W.ywyw - W);
+				dudxy = Abs(U.yyzz - U.xxxx);
+				dvdxy = Abs(V.yyzz - V.xxxx);
+				dsdxy = Abs(W.yyzz - W.xxxx);
 			}
 			else
 			{
@@ -1517,19 +1517,10 @@ namespace sw
 				dvdxy = Float4(dsx.y.xx, dsy.y.xx);
 				dsdxy = Float4(dsx.z.xx, dsy.z.xx);
 
-				dudxy = Float4(dudxy.xz, dudxy.xz);
-				dvdxy = Float4(dvdxy.xz, dvdxy.xz);
-				dsdxy = Float4(dsdxy.xz, dsdxy.xz);
-
 				dudxy = Abs(dudxy * Float4(M.x));
 				dvdxy = Abs(dvdxy * Float4(M.x));
 				dsdxy = Abs(dsdxy * Float4(M.x));
 			}
-
-			// Scale by texture dimensions and LOD.
-			dudxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
-			dvdxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
-			dsdxy *= *Pointer<Float4>(texture + OFFSET(Texture,widthLOD));
 
 			// Compute the largest Manhattan distance in two dimensions.
 			// This takes the footprint across adjacent faces into account.
@@ -1539,7 +1530,10 @@ namespace sw
 
 			dudxy = Max(Max(duvdxy, dusdxy), dvsdxy);
 
-			lod = Max(Float(dudxy.x), Float(dudxy.y));   // FIXME: Max(dudxy.x, dudxy.y);
+			lod = Max(Float(dudxy.x), Float(dudxy.z));   // FIXME: Max(dudxy.x, dudxy.z);
+
+			// Scale by texture dimensions and LOD.
+			lod *= *Pointer<Float>(texture + OFFSET(Texture,widthLOD));
 
 			lod = log2(lod);
 
@@ -1712,7 +1706,7 @@ namespace sw
 		return As<Short4>(UShort4(tmp));
 	}
 
-	void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, Vector4f &offset, const Pointer<Byte> &mipmap, SamplerFunction function)
+	void SamplerCore::computeIndices(Int index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, Vector4f &offset, const Pointer<Byte> &mipmap, SamplerFunction function)
 	{
 		bool texelFetch = (function == Fetch);
 		bool hasOffset = (function.option == Offset);
@@ -1781,27 +1775,27 @@ namespace sw
 
 			for(int i = 0; i < 4; i++)
 			{
-				index[i] = Min(Max(index[i], min), max);
+			/**///	index[i] = Min(Max(index[i], min), max);
 			}
 		}
 	}
 
-	void SamplerCore::computeIndices(UInt index[4], Int4& uuuu, Int4& vvvv, Int4& wwww, const Pointer<Byte> &mipmap, SamplerFunction function)
+	void SamplerCore::computeIndices(Int index[4], Int4& uuuu, Int4& vvvv, Int4& wwww, const Pointer<Byte> &mipmap, SamplerFunction function)
 	{
-		UInt4 indices = uuuu + vvvv;
+		Int4 indices = uuuu + vvvv;
 
 		if(hasThirdCoordinate())
 		{
-			indices += As<UInt4>(wwww);
+			indices += wwww;
 		}
 
 		for(int i = 0; i < 4; i++)
 		{
-			index[i] = Extract(As<Int4>(indices), i);
+			index[i] = Extract(indices, i);
 		}
 	}
 
-	Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer[4])
+	Vector4s SamplerCore::sampleTexel(Int index[4], Pointer<Byte> buffer[4])
 	{
 		Vector4s c;
 
@@ -2039,7 +2033,7 @@ namespace sw
 	{
 		Vector4s c;
 
-		UInt index[4];
+		Int index[4];
 		computeIndices(index, uuuu, vvvv, wwww, offset, mipmap, function);
 
 		if(hasYuvFormat())
@@ -2148,7 +2142,7 @@ namespace sw
 	{
 		Vector4f c;
 
-		UInt index[4];
+		Int index[4];
 		computeIndices(index, uuuu, vvvv, wwww, mipmap, function);
 
 		if(hasFloatTexture() || has32bitIntegerTextureComponents())
@@ -2392,6 +2386,7 @@ namespace sw
 			switch(addressingMode)
 			{
 			case ADDRESSING_CLAMP:
+			case ADDRESSING_BORDER:
 				{
 					Float4 one = As<Float4>(Int4(oneBits));
 					coord *= Min(Max(uvw, Float4(0.0f)), one);
@@ -2413,12 +2408,29 @@ namespace sw
 					coord *= one - Abs(two * Frac(Min(Max(uvw, -one), two) * half) - one);
 				}
 				break;
-			default:   // Wrap (or border)
+			/*case ADDRESSING_BORDER:
+				{
+					coord *= uvw;
+				}
+				break;*/
+			default:   // Wrap
 				coord *= Frac(uvw);
 				break;
 			}
 
+			if(state.textureType == TEXTURE_CUBE)
+			{
+				if(state.textureFilter != FILTER_POINT)
+				{
+					coord = coord - As<Float4>(As<Int4>(Float4(0.5f)) & -filter);
+				}
+	
+				xyz0 = Int4(Floor(coord));
+			}
+			else
+			{
 			xyz0 = Int4(coord);
+			}
 
 			if(function.option == Offset)
 			{
@@ -2440,6 +2452,15 @@ namespace sw
 
 			if(state.textureFilter != FILTER_POINT) // Compute 2nd coordinate, if needed
 			{
+				if(state.textureType == TEXTURE_CUBE)
+				{
+					xyz1 = xyz0 + filter; // Increment
+
+					Float4 frac = Frac(coord);
+					f =  frac;
+				}
+				else
+				{
 				bool gather = state.textureFilter == FILTER_GATHER;
 
 				xyz1 = xyz0 + filter; // Increment
@@ -2472,6 +2493,7 @@ namespace sw
 						}
 					}
 					break;
+				}
 				}
 			}
 		}
