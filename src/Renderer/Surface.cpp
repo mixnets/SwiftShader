@@ -78,22 +78,16 @@ namespace sw
 			*(unsigned char*)element = unorm<8>(color.r);
 			break;
 		case FORMAT_R8I:
-			*(char*)element = scast<8>(color.r);
-			break;
 		case FORMAT_R8UI:
-			*(unsigned char*)element = ucast<8>(color.r);
+			*(unsigned char*)element = static_cast<unsigned char>(F_as_I(color.r) & 0xFF);
 			break;
 		case FORMAT_R16I:
-			*(short*)element = scast<16>(color.r);
-			break;
 		case FORMAT_R16UI:
-			*(unsigned short*)element = ucast<16>(color.r);
+			*(unsigned short*)element = static_cast<unsigned short>(F_as_I(color.r) & 0xFFFF);
 			break;
 		case FORMAT_R32I:
-			*(int*)element = static_cast<int>(color.r);
-			break;
 		case FORMAT_R32UI:
-			*(unsigned int*)element = static_cast<unsigned int>(color.r);
+			*(int*)element = F_as_I(color.r);
 			break;
 		case FORMAT_R3G3B2:
 			*(unsigned char*)element = (unorm<3>(color.r) << 5) | (unorm<3>(color.g) << 2) | (unorm<2>(color.b) << 0);
@@ -139,13 +133,11 @@ namespace sw
 			*(unsigned int*)element = (unorm<8>(color.a) << 24) | (unorm<8>(color.b) << 16) | (unorm<8>(color.g) << 8) | (unorm<8>(color.r) << 0);
 			break;
 		case FORMAT_A8B8G8R8I:
-			*(unsigned int*)element = (static_cast<unsigned int>(scast<8>(color.a)) << 24) |
-			                          (static_cast<unsigned int>(scast<8>(color.b)) << 16) |
-			                          (static_cast<unsigned int>(scast<8>(color.g)) << 8) |
-			                          (static_cast<unsigned int>(scast<8>(color.r)) << 0);
-			break;
 		case FORMAT_A8B8G8R8UI:
-			*(unsigned int*)element = (ucast<8>(color.a) << 24) | (ucast<8>(color.b) << 16) | (ucast<8>(color.g) << 8) | (ucast<8>(color.r) << 0);
+			*(unsigned int*)element = ((F_as_I(color.a) & 0xFF) << 24) |
+			                          ((F_as_I(color.b) & 0xFF) << 16) |
+			                          ((F_as_I(color.g) & 0xFF) << 8) |
+			                          ((F_as_I(color.r) & 0xFF) << 0);
 			break;
 		case FORMAT_X8B8G8R8I_SNORM:
 			*(unsigned int*)element = 0x7F000000 |
@@ -158,12 +150,11 @@ namespace sw
 			*(unsigned int*)element = 0xFF000000 | (unorm<8>(color.b) << 16) | (unorm<8>(color.g) << 8) | (unorm<8>(color.r) << 0);
 			break;
 		case FORMAT_X8B8G8R8I:
-			*(unsigned int*)element = 0x7F000000 |
-			                          (static_cast<unsigned int>(scast<8>(color.b)) << 16) |
-			                          (static_cast<unsigned int>(scast<8>(color.g)) << 8) |
-			                          (static_cast<unsigned int>(scast<8>(color.r)) << 0);
 		case FORMAT_X8B8G8R8UI:
-			*(unsigned int*)element = 0xFF000000 | (ucast<8>(color.b) << 16) | (ucast<8>(color.g) << 8) | (ucast<8>(color.r) << 0);
+			*(unsigned int*)element = 0x01000000 |
+			                          ((F_as_I(color.b) & 0xFF) << 16) |
+			                          ((F_as_I(color.g) & 0xFF) << 8) |
+			                          ((F_as_I(color.r) & 0xFF) << 0);
 			break;
 		case FORMAT_A2R10G10B10:
 			*(unsigned int*)element = (unorm<2>(color.a) << 30) | (unorm<10>(color.r) << 20) | (unorm<10>(color.g) << 10) | (unorm<10>(color.b) << 0);
@@ -179,26 +170,21 @@ namespace sw
 			*(unsigned short*)element = (unorm<8>(color.g) << 8) | (unorm<8>(color.r) << 0);
 			break;
 		case FORMAT_G8R8I:
-			*(unsigned short*)element = (static_cast<unsigned short>(scast<8>(color.g)) << 8) |
-			                            (static_cast<unsigned short>(scast<8>(color.r)) << 0);
-			break;
 		case FORMAT_G8R8UI:
-			*(unsigned short*)element = (ucast<8>(color.g) << 8) | (ucast<8>(color.r) << 0);
-			break;
+			*(unsigned short*)element = ((F_as_I(color.g) & 0xFF) << 8) |
+			                            ((F_as_I(color.r) & 0xFF) << 0);
 		case FORMAT_G16R16:
 			*(unsigned int*)element = (unorm<16>(color.g) << 16) | (unorm<16>(color.r) << 0);
 			break;
 		case FORMAT_G16R16I:
-			*(unsigned int*)element = (static_cast<unsigned int>(scast<16>(color.g)) << 16) |
-			                          (static_cast<unsigned int>(scast<16>(color.r)) << 0);
-			break;
 		case FORMAT_G16R16UI:
-			*(unsigned int*)element = (ucast<16>(color.g) << 16) | (ucast<16>(color.r) << 0);
+			*(unsigned int*)element = ((F_as_I(color.g) & 0xFFFF) << 16) |
+			                          ((F_as_I(color.r) & 0xFFFF) << 0);
 			break;
 		case FORMAT_G32R32I:
 		case FORMAT_G32R32UI:
-			((unsigned int*)element)[0] = static_cast<unsigned int>(color.r);
-			((unsigned int*)element)[1] = static_cast<unsigned int>(color.g);
+			((unsigned int*)element)[0] = F_as_I(color.r);
+			((unsigned int*)element)[1] = F_as_I(color.g);
 			break;
 		case FORMAT_A16B16G16R16:
 			((unsigned short*)element)[0] = unorm<16>(color.r);
@@ -207,39 +193,42 @@ namespace sw
 			((unsigned short*)element)[3] = unorm<16>(color.a);
 			break;
 		case FORMAT_A16B16G16R16I:
-			((unsigned short*)element)[0] = static_cast<unsigned short>(scast<16>(color.r));
-			((unsigned short*)element)[1] = static_cast<unsigned short>(scast<16>(color.g));
-			((unsigned short*)element)[2] = static_cast<unsigned short>(scast<16>(color.b));
-			((unsigned short*)element)[3] = static_cast<unsigned short>(scast<16>(color.a));
+			((short*)element)[0] = static_cast<short>(F_as_I(color.r));
+			((short*)element)[1] = static_cast<short>(F_as_I(color.g));
+			((short*)element)[2] = static_cast<short>(F_as_I(color.b));
+			((short*)element)[3] = static_cast<short>(F_as_I(color.a));
 			break;
 		case FORMAT_A16B16G16R16UI:
-			((unsigned short*)element)[0] = static_cast<unsigned short>(ucast<16>(color.r));
-			((unsigned short*)element)[1] = static_cast<unsigned short>(ucast<16>(color.g));
-			((unsigned short*)element)[2] = static_cast<unsigned short>(ucast<16>(color.b));
-			((unsigned short*)element)[3] = static_cast<unsigned short>(ucast<16>(color.a));
+			((unsigned short*)element)[0] = static_cast<unsigned short>(F_as_I(color.r));
+			((unsigned short*)element)[1] = static_cast<unsigned short>(F_as_I(color.g));
+			((unsigned short*)element)[2] = static_cast<unsigned short>(F_as_I(color.b));
+			((unsigned short*)element)[3] = static_cast<unsigned short>(F_as_I(color.a));
 			break;
 		case FORMAT_X16B16G16R16I:
-			((unsigned short*)element)[0] = static_cast<unsigned short>(scast<16>(color.r));
-			((unsigned short*)element)[1] = static_cast<unsigned short>(scast<16>(color.g));
-			((unsigned short*)element)[2] = static_cast<unsigned short>(scast<16>(color.b));
+			((short*)element)[0] = static_cast<short>(F_as_I(color.r));
+			((short*)element)[1] = static_cast<short>(F_as_I(color.g));
+			((short*)element)[2] = static_cast<short>(F_as_I(color.b));
+			((short*)element)[3] = 1;
 			break;
 		case FORMAT_X16B16G16R16UI:
-			((unsigned short*)element)[0] = static_cast<unsigned short>(ucast<16>(color.r));
-			((unsigned short*)element)[1] = static_cast<unsigned short>(ucast<16>(color.g));
-			((unsigned short*)element)[2] = static_cast<unsigned short>(ucast<16>(color.b));
+			((unsigned short*)element)[0] = static_cast<unsigned short>(F_as_I(color.r));
+			((unsigned short*)element)[1] = static_cast<unsigned short>(F_as_I(color.g));
+			((unsigned short*)element)[2] = static_cast<unsigned short>(F_as_I(color.b));
+			((unsigned short*)element)[3] = 1;
 			break;
 		case FORMAT_A32B32G32R32I:
 		case FORMAT_A32B32G32R32UI:
-			((unsigned int*)element)[0] = static_cast<unsigned int>(color.r);
-			((unsigned int*)element)[1] = static_cast<unsigned int>(color.g);
-			((unsigned int*)element)[2] = static_cast<unsigned int>(color.b);
-			((unsigned int*)element)[3] = static_cast<unsigned int>(color.a);
+			((unsigned int*)element)[0] = F_as_I(color.r);
+			((unsigned int*)element)[1] = F_as_I(color.g);
+			((unsigned int*)element)[2] = F_as_I(color.b);
+			((unsigned int*)element)[3] = F_as_I(color.a);
 			break;
 		case FORMAT_X32B32G32R32I:
 		case FORMAT_X32B32G32R32UI:
-			((unsigned int*)element)[0] = static_cast<unsigned int>(color.r);
-			((unsigned int*)element)[1] = static_cast<unsigned int>(color.g);
-			((unsigned int*)element)[2] = static_cast<unsigned int>(color.b);
+			((unsigned int*)element)[0] = F_as_I(color.r);
+			((unsigned int*)element)[1] = F_as_I(color.g);
+			((unsigned int*)element)[2] = F_as_I(color.b);
+			((unsigned int*)element)[3] = 1;
 			break;
 		case FORMAT_V8U8:
 			*(unsigned short*)element = (snorm<8>(color.g) << 8) | (snorm<8>(color.r) << 0);
@@ -428,10 +417,10 @@ namespace sw
 			r = *(unsigned char*)element * (1.0f / 0xFF);
 			break;
 		case FORMAT_R8I:
-			r = *(signed char*)element;
+			r = I_as_F(*(signed char*)element);
 			break;
 		case FORMAT_R8UI:
-			r = *(unsigned char*)element;
+			r = I_as_F(*(unsigned char*)element);
 			break;
 		case FORMAT_R3G3B2:
 			{
@@ -563,20 +552,20 @@ namespace sw
 			{
 				signed char* abgr = (signed char*)element;
 
-				r = abgr[0];
-				g = abgr[1];
-				b = abgr[2];
-				a = abgr[3];
+				r = I_as_F(abgr[0]);
+				g = I_as_F(abgr[1]);
+				b = I_as_F(abgr[2]);
+				a = I_as_F(abgr[3]);
 			}
 			break;
 		case FORMAT_A8B8G8R8UI:
 			{
 				unsigned char* abgr = (unsigned char*)element;
 
-				r = abgr[0];
-				g = abgr[1];
-				b = abgr[2];
-				a = abgr[3];
+				r = I_as_F(abgr[0]);
+				g = I_as_F(abgr[1]);
+				b = I_as_F(abgr[2]);
+				a = I_as_F(abgr[3]);
 			}
 			break;
 		case FORMAT_X8B8G8R8I_SNORM:
@@ -602,18 +591,20 @@ namespace sw
 			{
 				signed char* bgr = (signed char*)element;
 
-				r = bgr[0];
-				g = bgr[1];
-				b = bgr[2];
+				r = I_as_F(bgr[0]);
+				g = I_as_F(bgr[1]);
+				b = I_as_F(bgr[2]);
+				a = I_as_F(1);
 			}
 			break;
 		case FORMAT_X8B8G8R8UI:
 			{
 				unsigned char* bgr = (unsigned char*)element;
 
-				r = bgr[0];
-				g = bgr[1];
-				b = bgr[2];
+				r = I_as_F(bgr[0]);
+				g = I_as_F(bgr[1]);
+				b = I_as_F(bgr[2]);
+				a = I_as_F(1);
 			}
 			break;
 		case FORMAT_G8R8I_SNORM:
@@ -636,30 +627,30 @@ namespace sw
 			{
 				signed char* gr = (signed char*)element;
 
-				r = gr[0];
-				g = gr[1];
+				r = I_as_F(gr[0]);
+				g = I_as_F(gr[1]);
 			}
 			break;
 		case FORMAT_G8R8UI:
 			{
 				unsigned char* gr = (unsigned char*)element;
 
-				r = gr[0];
-				g = gr[1];
+				r = I_as_F(gr[0]);
+				g = I_as_F(gr[1]);
 			}
 			break;
 		case FORMAT_R16I:
-			r = *((short*)element);
+			r = I_as_F(*((short*)element));
 			break;
 		case FORMAT_R16UI:
-			r = *((unsigned short*)element);
+			r = I_as_F(*((unsigned short*)element));
 			break;
 		case FORMAT_G16R16I:
 			{
 				short* gr = (short*)element;
 
-				r = gr[0];
-				g = gr[1];
+				r = I_as_F(gr[0]);
+				g = I_as_F(gr[1]);
 			}
 			break;
 		case FORMAT_G16R16:
@@ -674,8 +665,8 @@ namespace sw
 			{
 				unsigned short* gr = (unsigned short*)element;
 
-				r = gr[0];
-				g = gr[1];
+				r = I_as_F(gr[0]);
+				g = I_as_F(gr[1]);
 			}
 			break;
 		case FORMAT_A2R10G10B10:
@@ -702,10 +693,10 @@ namespace sw
 			{
 				short* abgr = (short*)element;
 
-				r = abgr[0];
-				g = abgr[1];
-				b = abgr[2];
-				a = abgr[3];
+				r = I_as_F(abgr[0]);
+				g = I_as_F(abgr[1]);
+				b = I_as_F(abgr[2]);
+				a = I_as_F(abgr[3]);
 			}
 			break;
 		case FORMAT_A16B16G16R16:
@@ -718,89 +709,93 @@ namespace sw
 			{
 				unsigned short* abgr = (unsigned short*)element;
 
-				r = abgr[0];
-				g = abgr[1];
-				b = abgr[2];
-				a = abgr[3];
+				r = I_as_F(abgr[0]);
+				g = I_as_F(abgr[1]);
+				b = I_as_F(abgr[2]);
+				a = I_as_F(abgr[3]);
 			}
 			break;
 		case FORMAT_X16B16G16R16I:
 			{
 				short* bgr = (short*)element;
 
-				r = bgr[0];
-				g = bgr[1];
-				b = bgr[2];
+				r = I_as_F(bgr[0]);
+				g = I_as_F(bgr[1]);
+				b = I_as_F(bgr[2]);
+				a = I_as_F(1);
 			}
 			break;
 		case FORMAT_X16B16G16R16UI:
 			{
 				unsigned short* bgr = (unsigned short*)element;
 
-				r = bgr[0];
-				g = bgr[1];
-				b = bgr[2];
+				r = I_as_F(bgr[0]);
+				g = I_as_F(bgr[1]);
+				b = I_as_F(bgr[2]);
+				a = I_as_F(1);
 			}
 			break;
 		case FORMAT_A32B32G32R32I:
 			{
 				int* abgr = (int*)element;
 
-				r = static_cast<float>(abgr[0]);
-				g = static_cast<float>(abgr[1]);
-				b = static_cast<float>(abgr[2]);
-				a = static_cast<float>(abgr[3]);
+				r = I_as_F(abgr[0]);
+				g = I_as_F(abgr[1]);
+				b = I_as_F(abgr[2]);
+				a = I_as_F(abgr[3]);
 			}
 			break;
 		case FORMAT_A32B32G32R32UI:
 			{
 				unsigned int* abgr = (unsigned int*)element;
 
-				r = static_cast<float>(abgr[0]);
-				g = static_cast<float>(abgr[1]);
-				b = static_cast<float>(abgr[2]);
-				a = static_cast<float>(abgr[3]);
+				r = I_as_F(abgr[0]);
+				g = I_as_F(abgr[1]);
+				b = I_as_F(abgr[2]);
+				a = I_as_F(abgr[3]);
 			}
 			break;
 		case FORMAT_X32B32G32R32I:
 			{
 				int* bgr = (int*)element;
 
-				r = static_cast<float>(bgr[0]);
-				g = static_cast<float>(bgr[1]);
-				b = static_cast<float>(bgr[2]);
+				r = I_as_F(bgr[0]);
+				g = I_as_F(bgr[1]);
+				b = I_as_F(bgr[2]);
+				a = I_as_F(1);
 			}
 			break;
 		case FORMAT_X32B32G32R32UI:
 			{
 				unsigned int* bgr = (unsigned int*)element;
 
-				r = static_cast<float>(bgr[0]);
-				g = static_cast<float>(bgr[1]);
-				b = static_cast<float>(bgr[2]);
+				r = I_as_F(bgr[0]);
+				g = I_as_F(bgr[1]);
+				b = I_as_F(bgr[2]);
+				a = I_as_F(1);
 			}
 			break;
 		case FORMAT_G32R32I:
 			{
 				int* gr = (int*)element;
 
-				r = static_cast<float>(gr[0]);
-				g = static_cast<float>(gr[1]);
+				r = I_as_F(gr[0]);
+				g = I_as_F(gr[1]);
 			}
 			break;
 		case FORMAT_G32R32UI:
 			{
 				unsigned int* gr = (unsigned int*)element;
 
-				r = static_cast<float>(gr[0]);
-				g = static_cast<float>(gr[1]);
+				r = I_as_F(gr[0]);
+				g = I_as_F(gr[1]);
 			}
 			break;
 		case FORMAT_R32I:
-			r = static_cast<float>(*((int*)element));
+			r = I_as_F(*((int*)element));
 			break;
 		case FORMAT_R32UI:
-			r = static_cast<float>(*((unsigned int*)element));
+			r = I_as_F(*((unsigned int*)element));
 			break;
 		case FORMAT_V8U8:
 			{
@@ -1866,6 +1861,8 @@ namespace sw
 
 	void Surface::genericUpdate(Buffer &destination, Buffer &source)
 	{
+		ASSERT(isNonNormalizedInteger(source.format) == isNonNormalizedInteger(destination.format));
+
 		unsigned char *sourceSlice = (unsigned char*)source.buffer;
 		unsigned char *destinationSlice = (unsigned char*)destination.buffer;
 
