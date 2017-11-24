@@ -78,6 +78,8 @@ namespace sw
 		void clear(void* pixel, sw::Format format, Surface *dest, const SliceRect &dRect, unsigned int rgbaMask);
 		void blit(Surface *source, const SliceRect &sRect, Surface *dest, const SliceRect &dRect, bool filter, bool isStencil = false);
 		void blit3D(Surface *source, Surface *dest);
+		bool blit(sw::Format srcFormat, int srcWidth, int srcHeight, int srcDepth, int srcPitchB, int srcSliceB, void* srcBuffer,
+		          sw::Format dstFormat, int dstWidth, int dstHeight, int dstDepth, int dstPitchB, int dstSliceB, void* dstBuffer);
 
 	private:
 		bool fastClear(void* pixel, sw::Format format, Surface *dest, const SliceRect &dRect, unsigned int rgbaMask);

@@ -1866,6 +1866,15 @@ namespace sw
 
 	void Surface::genericUpdate(Buffer &destination, Buffer &source)
 	{
+		Blitter blitter; // FIXME: Don't create a blitter every time
+		if(blitter.blit(source.format, source.width, source.height, source.depth,
+		                source.pitchB, source.sliceB, source.buffer,
+		                destination.format, destination.width, destination.height, destination.depth,
+		                destination.pitchB, destination.sliceB, destination.buffer))
+		{
+			return;
+		}
+
 		unsigned char *sourceSlice = (unsigned char*)source.buffer;
 		unsigned char *destinationSlice = (unsigned char*)destination.buffer;
 

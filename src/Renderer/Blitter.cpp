@@ -600,7 +600,7 @@ namespace sw
 				if(writeG) { *Pointer<Short>(element + 2) = Short(RoundInt(Float(c.y))); }
 				if(writeB) { *Pointer<Short>(element + 4) = Short(RoundInt(Float(c.z))); }
 			}
-			if(writeA) { *Pointer<Short>(element + 6) = Short(0x7F); }
+			if(writeA) { *Pointer<Short>(element + 6) = Short(0x7FFF); }
 			break;
 		case FORMAT_G16R16I:
 			if(writeR && writeG)
@@ -641,7 +641,7 @@ namespace sw
 				if(writeG) { *Pointer<UShort>(element + 2) = UShort(RoundInt(Float(c.y))); }
 				if(writeB) { *Pointer<UShort>(element + 4) = UShort(RoundInt(Float(c.z))); }
 			}
-			if(writeA) { *Pointer<UShort>(element + 6) = UShort(0xFF); }
+			if(writeA) { *Pointer<UShort>(element + 6) = UShort(0xFFFF); }
 			break;
 		case FORMAT_G16R16UI:
 		case FORMAT_G16R16:
@@ -1297,6 +1297,67 @@ namespace sw
 		}
 
 		return function(L"BlitRoutine");
+	}
+
+	bool Blitter::blit(sw::Format srcFormat, int srcWidth, int srcHeight, int srcDepth, int srcPitchB, int srcSliceB, void* srcBuffer,
+	                   sw::Format dstFormat, int dstWidth, int dstHeight, int dstDepth, int dstPitchB, int dstSliceB, void* dstBuffer)
+	{
+		BlitState state;
+
+		state.sourceFormat = srcFormat;
+		state.destFormat = dstFormat;
+		state.options = WRITE_RGBA;
+
+		criticalSection.lock();
+		Routine *blitRoutine = blitCache->query(state);
+
+		if(!blitRoutine)
+		{
+			blitRoutine = generate(state);
+
+			if(!blitRoutine)
+			{
+				criticalSection.unlock();
+				return false;
+			}
+
+			blitCache->add(state, blitRoutine);
+		}
+
+		criticalSection.unlock();
+
+		void(*blitFunction)(const BlitData *data) = (void(*)(const BlitData*))blitRoutine->getEntry();
+
+		int depth = min(dstDepth, srcDepth);
+		int height = min(dstHeight, srcHeight);
+		int width = min(dstWidth, srcWidth);
+
+		BlitData data;
+
+		data.sPitchB = srcPitchB;
+		data.dPitchB = dstPitchB;
+
+		data.w = 1.0f / dstWidth * srcWidth;
+		data.h = 1.0f / dstHeight * srcHeight;
+		data.x0 = 0.5f * data.w;
+		data.y0 = 0.5f * data.h;
+
+		data.x0d = 0;
+		data.x1d = width;
+		data.y0d = 0;
+		data.y1d = height;
+
+		data.sWidth = srcWidth;
+		data.sHeight = srcHeight;
+
+		for(int i = 0; i < depth; ++i)
+		{
+			data.source = reinterpret_cast<unsigned char*>(srcBuffer) + i * srcSliceB;
+			data.dest = reinterpret_cast<unsigned char*>(dstBuffer) + i * dstSliceB;
+			blitFunction(&data);
+		}
+
+		return true;
 	}
 
 	bool Blitter::blitReactor(Surface *source, const SliceRect &sourceRect, Surface *dest, const SliceRect &destRect, const Blitter::Options& options)
