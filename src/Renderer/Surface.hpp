@@ -453,6 +453,7 @@ namespace sw
 
 		static void update(Buffer &destination, Buffer &source);
 		static void genericUpdate(Buffer &destination, Buffer &source);
+		static void convertIfRequired(Color<float>& color, bool intSrc, bool signedIntSrc, bool intDst, bool signedIntDst);
 		static void *allocateBuffer(int width, int height, int depth, Format format);
 		static void memfill4(void *buffer, int pattern, int bytes);
 
