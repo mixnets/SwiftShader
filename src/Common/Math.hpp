@@ -321,6 +321,16 @@ namespace sw
 		}
 	}
 
+	inline float I_as_F(int x)
+	{
+		return *reinterpret_cast<float*>(&x);
+	}
+
+	inline unsigned int F_as_I(float x)
+	{
+		return *reinterpret_cast<unsigned int*>(&x);
+	}
+
 	inline float sRGBtoLinear(float c)
 	{
 		if(c <= 0.04045f)
