@@ -5834,7 +5834,7 @@ namespace sw
 		}
 	}
 
-	RValue<Float4> Frac(RValue<Float4> x)
+	RValue<Float4> Frac(RValue<Float4> x )
 	{
 		Float4 frc;
 

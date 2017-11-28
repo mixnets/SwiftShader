@@ -1284,7 +1284,7 @@ namespace egl
 	{
 		// sync() must be called in the destructor of the most derived class to ensure their vtable isn't destroyed
 		// before all threads are done using this image. Image itself is abstract so it can't be the most derived.
-		ASSERT(isUnlocked());
+	//	ASSERT(isUnlocked());
 
 		if(parentTexture)
 		{

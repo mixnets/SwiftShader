@@ -316,7 +316,8 @@ namespace sw
 		{
 			// FIXME: YUV and sRGB are not supported by the floating point path
 			bool forceFloatFiltering = state.highPrecisionFiltering && !state.sRGB && !hasYuvFormat() && (state.textureFilter != FILTER_POINT);
-			if(hasFloatTexture() || hasUnnormalizedIntegerTexture() || forceFloatFiltering)   // FIXME: Mostly identical to integer sampling
+			bool seamlessCube = (state.addressingModeU == ADDRESSING_SEAMLESS);
+			if(hasFloatTexture() || hasUnnormalizedIntegerTexture() || forceFloatFiltering || seamlessCube)   // FIXME: Mostly identical to integer sampling
 			{
 				Float4 uuuu = u;
 				Float4 vvvv = v;
@@ -1695,6 +1696,7 @@ namespace sw
 			break;
 		case ADDRESSING_TEXELFETCH:
 			break;
+		case AddressingMode::ADDRESSING_SEAMLESS:
 		default:
 			ASSERT(false);
 		}
@@ -2387,6 +2389,8 @@ namespace sw
 			switch(addressingMode)
 			{
 			case ADDRESSING_CLAMP:
+			case ADDRESSING_BORDER:
+			case ADDRESSING_SEAMLESS:
 				{
 					Float4 one = As<Float4>(Int4(oneBits));
 					coord = Min(Max(coord, Float4(0.0f)), one);
@@ -2408,7 +2412,10 @@ namespace sw
 					coord = one - Abs(two * Frac(Min(Max(coord, -one), two) * half) - one);
 				}
 				break;
-			default:   // Wrap (or border)
+		//	case ADDRESSING_SEAMLESS:
+		//		// Already in [0, 1) range.
+		//		break;
+			default:   // Wrap
 				coord = Frac(coord);
 				break;
 			}
@@ -2442,12 +2449,20 @@ namespace sw
 				xyz0 += As<Int4>(texOffset);
 			}
 
+			if(addressingMode == ADDRESSING_SEAMLESS)
+			{
+				xyz0 += Int4(1);
+			}
+
 			xyz1 = xyz0 - filter;   // Increment
 
 			if(function.option == Offset)
 			{
 				switch(addressingMode)
 				{
+				case ADDRESSING_SEAMLESS:
+					ASSERT(false);
+					break;
 				case ADDRESSING_MIRROR:
 				case ADDRESSING_MIRRORONCE:
 				case ADDRESSING_BORDER:
@@ -2467,6 +2482,8 @@ namespace sw
 			{
 				switch(addressingMode)
 				{
+				case ADDRESSING_SEAMLESS:
+					break;
 				case ADDRESSING_MIRROR:
 				case ADDRESSING_MIRRORONCE:
 				case ADDRESSING_BORDER:
@@ -2478,6 +2495,8 @@ namespace sw
 					{
 						Int4 under = CmpLT(xyz0, Int4(0));
 						xyz0 = (under & maxXYZ) | (~under & xyz0);   // xyz < 0 ? dim - 1 : xyz   // FIXME: IfThenElse()
+
+					//	Min(As<UInt4>(xyz0), As<UInt4>(xyz0 - dim));
 
 						Int4 nover = CmpLT(xyz1, dim);
 						xyz1 = nover & xyz1;   // xyz >= dim ? 0 : xyz
