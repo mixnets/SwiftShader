@@ -1260,6 +1260,16 @@ void TextureCubeMap::updateBorders(int level)
 		return;
 	}
 
+	if(posX->getBorder() == 0)
+	{
+		return;
+	}
+
+	if(!posX->hasDirtyContents() || !posY->hasDirtyContents() || !posZ->hasDirtyContents() || !negX->hasDirtyContents() || !negY->hasDirtyContents() || !negY->hasDirtyContents())
+	{
+		return;
+	}
+
 	// Copy top / bottom first.
 	posX->copyCubeEdge(sw::Surface::BOTTOM, negY, sw::Surface::RIGHT);
 	posY->copyCubeEdge(sw::Surface::BOTTOM, posZ, sw::Surface::TOP);
