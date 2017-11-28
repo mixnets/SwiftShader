@@ -117,7 +117,8 @@ namespace sw
 		{
 			Mipmap &mipmap = texture.mipmap[level];
 
-			mipmap.buffer[face] = surface->lockInternal(0, 0, 0, LOCK_UNLOCKED, PRIVATE);
+			int border = surface->getBorder();
+			mipmap.buffer[face] = surface->lockInternal(-border, -border, 0, LOCK_UNLOCKED, PRIVATE);
 
 			if(face == 0)
 			{
@@ -456,7 +457,7 @@ namespace sw
 	{
 		if(textureType == TEXTURE_CUBE)
 		{
-			return ADDRESSING_CLAMP;
+			return ADDRESSING_SEAMLESS;
 		}
 
 		return addressingModeU;
@@ -466,7 +467,7 @@ namespace sw
 	{
 		if(textureType == TEXTURE_CUBE)
 		{
-			return ADDRESSING_CLAMP;
+			return ADDRESSING_SEAMLESS;
 		}
 
 		return addressingModeV;

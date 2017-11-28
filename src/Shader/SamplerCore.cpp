@@ -316,7 +316,8 @@ namespace sw
 		{
 			// FIXME: YUV and sRGB are not supported by the floating point path
 			bool forceFloatFiltering = state.highPrecisionFiltering && !state.sRGB && !hasYuvFormat() && (state.textureFilter != FILTER_POINT);
-			if(hasFloatTexture() || hasUnnormalizedIntegerTexture() || forceFloatFiltering)   // FIXME: Mostly identical to integer sampling
+			bool seamlessCube = (state.addressingModeU == ADDRESSING_SEAMLESS);
+			if(hasFloatTexture() || hasUnnormalizedIntegerTexture() || forceFloatFiltering || seamlessCube)   // FIXME: Mostly identical to integer sampling
 			{
 				Float4 uuuu = u;
 				Float4 vvvv = v;
@@ -1666,7 +1667,7 @@ namespace sw
 
 		M = Max(Max(absX, absY), absZ);
 
-		// U = xMajor ? (neg ^ -z) : (zMajor & neg) ^ x)
+		// U = xMajor ? (neg ^ -z) : ((zMajor & neg) ^ x)
 		U = As<Float4>((xMajor & (n ^ As<Int4>(-z))) | (~xMajor & ((zMajor & n) ^ As<Int4>(x))));
 
 		// V = !yMajor ? -y : (n ^ z)
@@ -1695,6 +1696,7 @@ namespace sw
 			break;
 		case ADDRESSING_TEXELFETCH:
 			break;
+		case AddressingMode::ADDRESSING_SEAMLESS:
 		default:
 			ASSERT(false);
 		}
@@ -2387,6 +2389,8 @@ namespace sw
 			switch(addressingMode)
 			{
 			case ADDRESSING_CLAMP:
+			case ADDRESSING_BORDER:
+			case ADDRESSING_SEAMLESS:   // Face projection has numerical imprecision.
 				{
 					Float4 one = As<Float4>(Int4(oneBits));
 					coord = Min(Max(coord, Float4(0.0f)), one);
@@ -2408,7 +2412,7 @@ namespace sw
 					coord = one - Abs(two * Frac(Min(Max(coord, -one), two) * half) - one);
 				}
 				break;
-			default:   // Wrap (or border)
+			default:   // Wrap
 				coord = Frac(coord);
 				break;
 			}
@@ -2442,12 +2446,19 @@ namespace sw
 				xyz0 += As<Int4>(texOffset);
 			}
 
+			if(addressingMode == ADDRESSING_SEAMLESS)
+			{
+				xyz0 += Int4(1);
+			}
+
 			xyz1 = xyz0 - filter;   // Increment
 
 			if(function.option == Offset)
 			{
 				switch(addressingMode)
 				{
+				case ADDRESSING_SEAMLESS:
+					ASSERT(false);
 				case ADDRESSING_MIRROR:
 				case ADDRESSING_MIRRORONCE:
 				case ADDRESSING_BORDER:
@@ -2467,6 +2478,8 @@ namespace sw
 			{
 				switch(addressingMode)
 				{
+				case ADDRESSING_SEAMLESS:
+					break;
 				case ADDRESSING_MIRROR:
 				case ADDRESSING_MIRRORONCE:
 				case ADDRESSING_BORDER:

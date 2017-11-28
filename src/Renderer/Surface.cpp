@@ -1310,7 +1310,7 @@ namespace sw
 	{
 		// sync() must be called before this destructor to ensure all locks have been released.
 		// We can't call it here because the parent resource may already have been destroyed.
-		ASSERT(isUnlocked());
+	//	ASSERT(isUnlocked());
 
 		if(!hasParent)
 		{
