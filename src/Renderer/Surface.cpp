@@ -2920,6 +2920,18 @@ namespace sw
 		}
 	}
 
+	bool Surface::isSRGBformat(Format format)
+	{
+		switch(format)
+		{
+		case FORMAT_SRGB8_X8:
+		case FORMAT_SRGB8_A8:
+			return true;
+		default:
+			return false;
+		}
+	}
+
 	bool Surface::isCompressed(Format format)
 	{
 		switch(format)
@@ -3571,9 +3583,11 @@ namespace sw
 		case FORMAT_R32UI:
 			return FORMAT_R32UI;
 		case FORMAT_X16B16G16R16I:
+			return FORMAT_X16B16G16R16I;
 		case FORMAT_A16B16G16R16I:
 			return FORMAT_A16B16G16R16I;
 		case FORMAT_X16B16G16R16UI:
+			return FORMAT_X16B16G16R16UI;
 		case FORMAT_A16B16G16R16UI:
 			return FORMAT_A16B16G16R16UI;
 		case FORMAT_A2R10G10B10:
@@ -3581,9 +3595,11 @@ namespace sw
 		case FORMAT_A16B16G16R16:
 			return FORMAT_A16B16G16R16;
 		case FORMAT_X32B32G32R32I:
+			return FORMAT_X32B32G32R32I;
 		case FORMAT_A32B32G32R32I:
 			return FORMAT_A32B32G32R32I;
 		case FORMAT_X32B32G32R32UI:
+			return FORMAT_X32B32G32R32UI;
 		case FORMAT_A32B32G32R32UI:
 			return FORMAT_A32B32G32R32UI;
 		case FORMAT_G8R8I:
