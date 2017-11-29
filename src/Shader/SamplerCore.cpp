@@ -2001,6 +2001,13 @@ namespace sw
 				c.w = Pointer<Short4>(buffer[f3])[index[3]];
 				transpose4x4(c.x, c.y, c.z, c.w);
 				break;
+			case 3:
+				c.x = Pointer<Short4>(buffer[f0])[index[0]];
+				c.y = Pointer<Short4>(buffer[f1])[index[1]];
+				c.z = Pointer<Short4>(buffer[f2])[index[2]];
+				c.w = Pointer<Short4>(buffer[f3])[index[3]];
+				transpose4x3(c.x, c.y, c.z, c.w);
+				break;
 			case 2:
 				c.x = *Pointer<Short4>(buffer[f0] + 4 * index[0]);
 				c.x = As<Short4>(UnpackLow(c.x, *Pointer<Short4>(buffer[f1] + 4 * index[1])));
