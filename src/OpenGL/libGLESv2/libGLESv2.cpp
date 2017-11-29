@@ -1597,6 +1597,12 @@ void DrawArrays(GLenum mode, GLint first, GLsizei count)
 			return error(GL_INVALID_OPERATION);
 		}
 
+		es2::Framebuffer *framebuffer = context->getDrawFramebuffer();
+		if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
+		{
+			return error(GL_INVALID_FRAMEBUFFER_OPERATION);
+		}
+
 		context->drawArrays(mode, first, count);
 	}
 }
@@ -1633,6 +1639,12 @@ void DrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices
 		if(transformFeedback && transformFeedback->isActive() && !transformFeedback->isPaused())
 		{
 			return error(GL_INVALID_OPERATION);
+		}
+
+		es2::Framebuffer *framebuffer = context->getDrawFramebuffer();
+		if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
+		{
+			return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 		}
 
 		switch(type)
@@ -1683,6 +1695,12 @@ void DrawArraysInstancedEXT(GLenum mode, GLint first, GLsizei count, GLsizei ins
 			return error(GL_INVALID_OPERATION);
 		}
 
+		es2::Framebuffer *framebuffer = context->getDrawFramebuffer();
+		if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
+		{
+			return error(GL_INVALID_FRAMEBUFFER_OPERATION);
+		}
+
 		context->drawArrays(mode, first, count, instanceCount);
 	}
 }
@@ -1729,6 +1747,12 @@ void DrawElementsInstancedEXT(GLenum mode, GLsizei count, GLenum type, const voi
 		if(transformFeedback && transformFeedback->isActive() && !transformFeedback->isPaused())
 		{
 			return error(GL_INVALID_OPERATION);
+		}
+
+		es2::Framebuffer *framebuffer = context->getDrawFramebuffer();
+		if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
+		{
+			return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 		}
 
 		context->drawElements(mode, 0, MAX_ELEMENT_INDEX, count, type, indices, instanceCount);
@@ -1791,6 +1815,12 @@ void DrawArraysInstancedANGLE(GLenum mode, GLint first, GLsizei count, GLsizei i
 			return error(GL_INVALID_OPERATION);
 		}
 
+		es2::Framebuffer *framebuffer = context->getDrawFramebuffer();
+		if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
+		{
+			return error(GL_INVALID_FRAMEBUFFER_OPERATION);
+		}
+
 		context->drawArrays(mode, first, count, instanceCount);
 	}
 }
@@ -1842,6 +1872,12 @@ void DrawElementsInstancedANGLE(GLenum mode, GLsizei count, GLenum type, const v
 		if(transformFeedback && transformFeedback->isActive() && !transformFeedback->isPaused())
 		{
 			return error(GL_INVALID_OPERATION);
+		}
+
+		es2::Framebuffer *framebuffer = context->getDrawFramebuffer();
+		if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
+		{
+			return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 		}
 
 		context->drawElements(mode, 0, MAX_ELEMENT_INDEX, count, type, indices, instanceCount);

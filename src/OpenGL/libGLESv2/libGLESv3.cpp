@@ -621,6 +621,12 @@ GL_APICALL void GL_APIENTRY glDrawRangeElements(GLenum mode, GLuint start, GLuin
 			return error(GL_INVALID_OPERATION);
 		}
 
+		es2::Framebuffer *framebuffer = context->getDrawFramebuffer();
+		if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
+		{
+			return error(GL_INVALID_FRAMEBUFFER_OPERATION);
+		}
+
 		context->drawElements(mode, start, end, count, type, indices);
 	}
 }
@@ -3029,6 +3035,12 @@ GL_APICALL void GL_APIENTRY glDrawArraysInstanced(GLenum mode, GLint first, GLsi
 			return error(GL_INVALID_OPERATION);
 		}
 
+		es2::Framebuffer *framebuffer = context->getDrawFramebuffer();
+		if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
+		{
+			return error(GL_INVALID_FRAMEBUFFER_OPERATION);
+		}
+
 		context->drawArrays(mode, first, count, instanceCount);
 	}
 }
@@ -3075,6 +3087,12 @@ GL_APICALL void GL_APIENTRY glDrawElementsInstanced(GLenum mode, GLsizei count, 
 		if(transformFeedback && transformFeedback->isActive() && !transformFeedback->isPaused())
 		{
 			return error(GL_INVALID_OPERATION);
+		}
+
+		es2::Framebuffer *framebuffer = context->getDrawFramebuffer();
+		if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
+		{
+			return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 		}
 
 		context->drawElements(mode, 0, MAX_ELEMENT_INDEX, count, type, indices, instanceCount);
