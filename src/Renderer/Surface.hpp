@@ -347,6 +347,7 @@ namespace sw
 		static bool isUnsignedComponent(Format format, int component);
 		static bool isSRGBreadable(Format format);
 		static bool isSRGBwritable(Format format);
+		static bool isSRGBformat(Format format);
 		static bool isCompressed(Format format);
 		static bool isSignedNonNormalizedInteger(Format format);
 		static bool isUnsignedNonNormalizedInteger(Format format);
