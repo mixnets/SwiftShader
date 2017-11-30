@@ -600,7 +600,7 @@ namespace sw
 				if(writeG) { *Pointer<Short>(element + 2) = Short(RoundInt(Float(c.y))); }
 				if(writeB) { *Pointer<Short>(element + 4) = Short(RoundInt(Float(c.z))); }
 			}
-			if(writeA) { *Pointer<Short>(element + 6) = Short(0x7F); }
+			if(writeA) { *Pointer<Short>(element + 6) = Short(0x7FFF); }
 			break;
 		case FORMAT_G16R16I:
 			if(writeR && writeG)
@@ -641,7 +641,7 @@ namespace sw
 				if(writeG) { *Pointer<UShort>(element + 2) = UShort(RoundInt(Float(c.y))); }
 				if(writeB) { *Pointer<UShort>(element + 4) = UShort(RoundInt(Float(c.z))); }
 			}
-			if(writeA) { *Pointer<UShort>(element + 6) = UShort(0xFF); }
+			if(writeA) { *Pointer<UShort>(element + 6) = UShort(0xFFFF); }
 			break;
 		case FORMAT_G16R16UI:
 		case FORMAT_G16R16:
