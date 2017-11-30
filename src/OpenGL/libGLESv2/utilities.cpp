@@ -33,19 +33,19 @@ namespace es2
 	// format and type combinations.
 
 	typedef std::pair<GLenum, GLenum> FormatTypePair;
-	typedef std::pair<FormatTypePair, GLenum> FormatPair;
+	typedef std::pair<FormatTypePair, GLint> FormatPair;
 	typedef std::map<FormatTypePair, GLenum> FormatMap;
 
 	// A helper function to insert data into the format map with fewer characters.
-	static inline void InsertFormatMapping(FormatMap *map, GLenum format, GLenum type, GLenum internalFormat)
+	static inline void InsertFormatMapping(FormatMap *map, GLenum format, GLenum type, GLint internalFormat)
 	{
 		map->insert(FormatPair(FormatTypePair(format, type), internalFormat));
 	}
 
 	FormatMap BuildFormatMap()
 	{
-		static const GLenum GL_BGRA4_ANGLEX = 0x6ABC;
-		static const GLenum GL_BGR5_A1_ANGLEX = 0x6ABD;
+		static const GLint GL_BGRA4_ANGLEX = 0x6ABC;
+		static const GLint GL_BGR5_A1_ANGLEX = 0x6ABD;
 
 		FormatMap map;
 
@@ -146,7 +146,7 @@ namespace es2
 		return map;
 	}
 
-	GLenum GetSizedInternalFormat(GLenum internalFormat, GLenum type)
+	GLint GetSizedInternalFormat(GLint internalFormat, GLenum type)
 	{
 		switch(internalFormat)
 		{
