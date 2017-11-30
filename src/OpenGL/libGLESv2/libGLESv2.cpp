@@ -5143,7 +5143,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 			return error(GL_INVALID_ENUM);
 		}
 
-		GLenum sizedInternalFormat = GetSizedInternalFormat(format, type);
+		GLenum sizedInternalFormat = GetSizedInternalFormat(internalformat, type);
 
 		validationError = context->getPixels(&data, type, context->getRequiredBufferSize(width, height, 1, sizedInternalFormat, type));
 		if(validationError != GL_NONE)
