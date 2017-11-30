@@ -84,6 +84,7 @@ public:
 	void checkRenderbufferAllocation(GLuint handle);
 	void checkSamplerAllocation(GLuint sampler);
 
+	bool isProgramOrShader(GLuint handle);
 	bool isSampler(GLuint sampler);
 
 private:

@@ -626,6 +626,7 @@ public:
 	FenceSync *getFenceSync(GLsync handle) const;
 	Shader *getShader(GLuint handle) const;
 	Program *getProgram(GLuint handle) const;
+	bool isProgramOrShader(GLuint handle) const;
 	virtual Texture *getTexture(GLuint handle) const;
 	Framebuffer *getFramebuffer(GLuint handle) const;
 	virtual Renderbuffer *getRenderbuffer(GLuint handle) const;

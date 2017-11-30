@@ -342,6 +342,11 @@ void ResourceManager::checkSamplerAllocation(GLuint sampler)
 	}
 }
 
+bool ResourceManager::isProgramOrShader(GLuint handle)
+{
+	return mProgramShaderNameSpace.isReserved(handle);
+}
+
 bool ResourceManager::isSampler(GLuint sampler)
 {
 	return mSamplerNameSpace.isReserved(sampler);

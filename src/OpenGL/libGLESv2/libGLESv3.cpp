@@ -2382,7 +2382,7 @@ GL_APICALL void GL_APIENTRY glGetUniformuiv(GLuint program, GLint location, GLui
 
 	if(context)
 	{
-		if(program == 0)
+		if((program == 0) || !context->isProgramOrShader(program))
 		{
 			return error(GL_INVALID_VALUE);
 		}
@@ -2810,6 +2810,11 @@ GL_APICALL void GL_APIENTRY glGetUniformIndices(GLuint program, GLsizei uniformC
 
 	if(context)
 	{
+		if(!context->isProgramOrShader(program))
+		{
+			return error(GL_INVALID_VALUE);
+		}
+
 		es2::Program *programObject = context->getProgram(program);
 
 		if(!programObject)
@@ -2863,6 +2868,11 @@ GL_APICALL void GL_APIENTRY glGetActiveUniformsiv(GLuint program, GLsizei unifor
 
 	if(context)
 	{
+		if(!context->isProgramOrShader(program))
+		{
+			return error(GL_INVALID_VALUE);
+		}
+
 		es2::Program *programObject = context->getProgram(program);
 
 		if(!programObject)
@@ -2897,6 +2907,11 @@ GL_APICALL GLuint GL_APIENTRY glGetUniformBlockIndex(GLuint program, const GLcha
 
 	if(context)
 	{
+		if(!context->isProgramOrShader(program))
+		{
+			return error(GL_INVALID_VALUE, GL_INVALID_INDEX);
+		}
+
 		es2::Program *programObject = context->getProgram(program);
 
 		if(!programObject)
