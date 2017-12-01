@@ -431,21 +431,6 @@ void Texture::subImage(egl::Context *context, GLint xoffset, GLint yoffset, GLin
 		return error(GL_INVALID_OPERATION);
 	}
 
-	if(width + xoffset > image->getWidth() || height + yoffset > image->getHeight() || depth + zoffset > image->getDepth())
-	{
-		return error(GL_INVALID_VALUE);
-	}
-
-	if(IsCompressed(image->getFormat(), egl::getClientVersion()))
-	{
-		return error(GL_INVALID_OPERATION);
-	}
-
-	if(format != image->getFormat())
-	{
-		return error(GL_INVALID_OPERATION);
-	}
-
 	if(pixels)
 	{
 		image->loadImageData(context, xoffset, yoffset, zoffset, width, height, depth, format, type, unpackInfo, pixels);
@@ -455,16 +440,6 @@ void Texture::subImage(egl::Context *context, GLint xoffset, GLint yoffset, GLin
 void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *pixels, egl::Image *image)
 {
 	if(!image)
-	{
-		return error(GL_INVALID_OPERATION);
-	}
-
-	if(width + xoffset > image->getWidth() || height + yoffset > image->getHeight() || depth + zoffset > image->getDepth())
-	{
-		return error(GL_INVALID_VALUE);
-	}
-
-	if(format != image->getFormat())
 	{
 		return error(GL_INVALID_OPERATION);
 	}

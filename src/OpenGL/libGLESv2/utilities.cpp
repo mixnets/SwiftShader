@@ -520,17 +520,18 @@ namespace es2
 		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR:
 		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR:
 		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR:
-#if(ASTC_SUPPORT)
-			return ((clientVersion >= 3) && ()) ? (expectCompressedFormats ? GL_NONE : GL_INVALID_OPERATION) : GL_INVALID_ENUM;
-#else
-			return GL_INVALID_ENUM;
-#endif
+			#if(ASTC_SUPPORT)
+				return ((clientVersion >= 3) && ()) ? (expectCompressedFormats ? GL_NONE : GL_INVALID_OPERATION) : GL_INVALID_ENUM;
+			#else
+				return GL_INVALID_ENUM;
+			#endif
 		default:
 			return expectCompressedFormats ? GL_INVALID_ENUM : GL_NONE; // Not compressed format
 		}
 	}
 
-	GLenum ValidateSubImageParams(bool compressed, GLsizei width, GLsizei height, GLint xoffset, GLint yoffset, GLenum target, GLint level, GLenum sizedInternalFormat, Texture *texture)
+	GLenum ValidateSubImageParams(bool compressed, bool copy, GLenum target, GLint level, GLint xoffset, GLint yoffset,
+	                              GLsizei width, GLsizei height, GLenum format, GLenum type, Texture *texture, GLint clientVersion)
 	{
 		if(!texture)
 		{
@@ -542,9 +543,15 @@ namespace es2
 			return GL_INVALID_OPERATION;
 		}
 
-		if(sizedInternalFormat != GL_NONE && sizedInternalFormat != texture->getFormat(target, level))
+		if(!copy)
 		{
-			return GL_INVALID_OPERATION;
+			GLenum sizedInternalFormat = texture->getFormat(target, level);
+
+			GLenum validationError = ValidateTextureFormatType(format, type, sizedInternalFormat, clientVersion);
+			if(validationError != GL_NONE)
+			{
+				return validationError;
+			}
 		}
 
 		if(compressed)
@@ -565,7 +572,8 @@ namespace es2
 		return GL_NONE;
 	}
 
-	GLenum ValidateSubImageParams(bool compressed, GLsizei width, GLsizei height, GLsizei depth, GLint xoffset, GLint yoffset, GLint zoffset, GLenum target, GLint level, GLenum sizedInternalFormat, Texture *texture)
+	GLenum ValidateSubImageParams(bool compressed, bool copy, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
+	                              GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, Texture *texture, GLint clientVersion)
 	{
 		if(!texture)
 		{
@@ -577,9 +585,15 @@ namespace es2
 			return GL_INVALID_OPERATION;
 		}
 
-		if(sizedInternalFormat != GL_NONE && sizedInternalFormat != GetSizedInternalFormat(texture->getFormat(target, level), texture->getType(target, level)))
+		if(!copy)
 		{
-			return GL_INVALID_OPERATION;
+			GLenum sizedInternalFormat = texture->getFormat(target, level);
+
+			GLenum validationError = ValidateTextureFormatType(format, type, sizedInternalFormat, clientVersion);
+			if(validationError != GL_NONE)
+			{
+				return validationError;
+			}
 		}
 
 		if(compressed)
@@ -761,7 +775,7 @@ namespace es2
 		return target == GL_TEXTURE_2D || IsCubemapTextureTarget(target) || target == GL_TEXTURE_3D || target == GL_TEXTURE_2D_ARRAY;
 	}
 
-	bool ValidateTextureFormatType(GLenum format, GLenum type, GLint internalformat, GLint clientVersion)
+	GLenum ValidateTextureFormatType(GLenum format, GLenum type, GLint internalformat, GLint clientVersion)
 	{
 		switch(type)
 		{
@@ -785,11 +799,11 @@ namespace es2
 		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
 			if(clientVersion < 3)
 			{
-				return error(GL_INVALID_ENUM, false);
+				return GL_INVALID_ENUM;
 			}
 			break;
 		default:
-			return error(GL_INVALID_ENUM, false);
+			return GL_INVALID_ENUM;
 		}
 
 		switch(format)
@@ -811,22 +825,25 @@ namespace es2
 		case GL_RGBA_INTEGER:
 			if(clientVersion < 3)
 			{
-				return error(GL_INVALID_ENUM, false);
+				return GL_INVALID_ENUM;
 			}
 			break;
 		default:
-			return error(GL_INVALID_ENUM, false);
+			return GL_INVALID_ENUM;
 		}
 
 		if((GLenum)internalformat != format)
 		{
 			if(clientVersion < 3)
 			{
-				return error(GL_INVALID_OPERATION, false);
+				return GL_INVALID_OPERATION;
 			}
 
 			switch(internalformat)
 			{
+			case GL_ALPHA8_EXT:
+			case GL_LUMINANCE8_ALPHA8_EXT:
+			case GL_LUMINANCE8_EXT:
 			case GL_R8:
 			case GL_R8UI:
 			case GL_R8I:
@@ -885,7 +902,7 @@ namespace es2
 			case GL_RGB9_E5:
 				break;
 			default:
-				return error(GL_INVALID_ENUM, false);
+				return GL_INVALID_ENUM;
 			}
 		}
 
@@ -906,7 +923,7 @@ namespace es2
 			case GL_UNSIGNED_INT_2_10_10_10_REV: VALIDATE_INTERNALFORMAT(GL_RGB10_A2, GL_RGB5_A1)
 			case GL_HALF_FLOAT:                  VALIDATE_INTERNALFORMAT(GL_RGBA16F)
 			case GL_FLOAT:                       VALIDATE_INTERNALFORMAT(GL_RGBA32F, GL_RGBA16F)
-			default:                             return error(GL_INVALID_OPERATION, false);
+			default:                             return GL_INVALID_OPERATION;
 			}
 			break;
 		case GL_RGBA_INTEGER:
@@ -919,7 +936,7 @@ namespace es2
 			case GL_UNSIGNED_INT:                VALIDATE_INTERNALFORMAT(GL_RGBA32UI)
 			case GL_INT:                         VALIDATE_INTERNALFORMAT(GL_RGBA32I)
 			case GL_UNSIGNED_INT_2_10_10_10_REV: VALIDATE_INTERNALFORMAT(GL_RGB10_A2UI)
-			default:                             return error(GL_INVALID_OPERATION, false);
+			default:                             return GL_INVALID_OPERATION;
 			}
 			break;
 		case GL_RGB:
@@ -933,7 +950,7 @@ namespace es2
 			case GL_UNSIGNED_INT_5_9_9_9_REV:     VALIDATE_INTERNALFORMAT(GL_RGB9_E5)
 			case GL_HALF_FLOAT:                   VALIDATE_INTERNALFORMAT(GL_RGB16F, GL_R11F_G11F_B10F, GL_RGB9_E5)
 			case GL_FLOAT:                        VALIDATE_INTERNALFORMAT(GL_RGB32F, GL_RGB16F, GL_R11F_G11F_B10F, GL_RGB9_E5)
-			default:                              return error(GL_INVALID_OPERATION, false);
+			default:                              return GL_INVALID_OPERATION;
 			}
 			break;
 		case GL_RGB_INTEGER:
@@ -945,7 +962,7 @@ namespace es2
 			case GL_SHORT:                       VALIDATE_INTERNALFORMAT(GL_RGB16I)
 			case GL_UNSIGNED_INT:                VALIDATE_INTERNALFORMAT(GL_RGB32UI)
 			case GL_INT:                         VALIDATE_INTERNALFORMAT(GL_RGB32I)
-			default:                             return error(GL_INVALID_OPERATION, false);
+			default:                             return GL_INVALID_OPERATION;
 			}
 			break;
 		case GL_RG:
@@ -956,7 +973,7 @@ namespace es2
 			case GL_HALF_FLOAT_OES: break;
 			case GL_HALF_FLOAT:    VALIDATE_INTERNALFORMAT(GL_RG16F)
 			case GL_FLOAT:         VALIDATE_INTERNALFORMAT(GL_RG32F, GL_RG16F)
-			default:               return error(GL_INVALID_OPERATION, false);
+			default:               return GL_INVALID_OPERATION;
 			}
 			break;
 		case GL_RG_INTEGER:
@@ -968,7 +985,7 @@ namespace es2
 			case GL_SHORT:          VALIDATE_INTERNALFORMAT(GL_RG16I)
 			case GL_UNSIGNED_INT:   VALIDATE_INTERNALFORMAT(GL_RG32UI)
 			case GL_INT:            VALIDATE_INTERNALFORMAT(GL_RG32I)
-			default:                return error(GL_INVALID_OPERATION, false);
+			default:                return GL_INVALID_OPERATION;
 			}
 			break;
 		case GL_RED:
@@ -979,7 +996,7 @@ namespace es2
 			case GL_HALF_FLOAT_OES: break;
 			case GL_HALF_FLOAT:    VALIDATE_INTERNALFORMAT(GL_R16F)
 			case GL_FLOAT:         VALIDATE_INTERNALFORMAT(GL_R32F, GL_R16F)
-			default:               return error(GL_INVALID_OPERATION, false);
+			default:               return GL_INVALID_OPERATION;
 			}
 			break;
 		case GL_RED_INTEGER:
@@ -991,7 +1008,7 @@ namespace es2
 			case GL_SHORT:          VALIDATE_INTERNALFORMAT(GL_R16I)
 			case GL_UNSIGNED_INT:   VALIDATE_INTERNALFORMAT(GL_R32UI)
 			case GL_INT:            VALIDATE_INTERNALFORMAT(GL_R32I)
-			default:                return error(GL_INVALID_OPERATION, false);
+			default:                return GL_INVALID_OPERATION;
 			}
 			break;
 		case GL_DEPTH_COMPONENT:
@@ -1000,7 +1017,7 @@ namespace es2
 			case GL_UNSIGNED_SHORT: VALIDATE_INTERNALFORMAT(GL_DEPTH_COMPONENT16)
 			case GL_UNSIGNED_INT:   VALIDATE_INTERNALFORMAT(GL_DEPTH_COMPONENT24, GL_DEPTH_COMPONENT16)
 			case GL_FLOAT:          VALIDATE_INTERNALFORMAT(GL_DEPTH_COMPONENT32F)
-			default:                return error(GL_INVALID_OPERATION, false);
+			default:                return GL_INVALID_OPERATION;
 			}
 			break;
 		case GL_DEPTH_STENCIL:
@@ -1008,7 +1025,7 @@ namespace es2
 			{
 			case GL_UNSIGNED_INT_24_8:              VALIDATE_INTERNALFORMAT(GL_DEPTH24_STENCIL8)
 			case GL_FLOAT_32_UNSIGNED_INT_24_8_REV: VALIDATE_INTERNALFORMAT(GL_DEPTH32F_STENCIL8)
-			default:                                return error(GL_INVALID_OPERATION, false);
+			default:                                return GL_INVALID_OPERATION;
 			}
 			break;
 		case GL_LUMINANCE_ALPHA:
@@ -1021,28 +1038,28 @@ namespace es2
 			case GL_FLOAT:
 				break;
 			default:
-				return error(GL_INVALID_OPERATION, false);
+				return GL_INVALID_OPERATION;
 			}
 			break;
 		case GL_BGRA_EXT:
 			if(type != GL_UNSIGNED_BYTE)
 			{
-				return error(GL_INVALID_OPERATION, false);
+				return GL_INVALID_OPERATION;
 			}
 			break;
 		default:
 			UNREACHABLE(format);
-			return error(GL_INVALID_ENUM, false);
+			return GL_INVALID_ENUM;
 		}
 
 		#undef VALIDATE_INTERNALFORMAT
 
 		if((GLenum)internalformat != format && !validSizedInternalformat)
 		{
-			return error(GL_INVALID_OPERATION, false);
+			return GL_INVALID_OPERATION;
 		}
 
-		return true;
+		return GL_NONE;
 	}
 
 	GLsizei GetTypeSize(GLenum type)
