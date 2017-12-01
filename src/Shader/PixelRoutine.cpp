@@ -991,7 +991,7 @@ namespace sw
 
 	bool PixelRoutine::isSRGB(int index) const
 	{
-		return state.targetFormat[index] == FORMAT_SRGB8_A8 || state.targetFormat[index] == FORMAT_SRGB8_X8;
+		return Surface::isSRGBformat(state.targetFormat[index]);
 	}
 
 	void PixelRoutine::readPixel(int index, Pointer<Byte> &cBuffer, Int &x, Vector4s &pixel)
