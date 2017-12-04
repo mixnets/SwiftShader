@@ -497,7 +497,7 @@ GLenum Framebuffer::getImplementationColorReadFormat() const
 
 	if(colorbuffer)
 	{
-		switch(colorbuffer->getInternalFormat())
+		switch(colorbuffer->getFormat())
 		{
 		case sw::FORMAT_A8B8G8R8I:       return GL_RGBA_INTEGER;
 		case sw::FORMAT_A8B8G8R8UI:      return GL_RGBA_INTEGER;
@@ -547,7 +547,7 @@ GLenum Framebuffer::getImplementationColorReadFormat() const
 		case sw::FORMAT_A16B16G16R16F:   return GL_RGBA;
 		case sw::FORMAT_A32B32G32R32F:   return GL_RGBA;
 		default:
-			UNREACHABLE(colorbuffer->getInternalFormat());
+			UNREACHABLE(colorbuffer->getFormat());
 		}
 	}
 
@@ -560,7 +560,7 @@ GLenum Framebuffer::getImplementationColorReadType() const
 
 	if(colorbuffer)
 	{
-		switch(colorbuffer->getInternalFormat())
+		switch(colorbuffer->getFormat())
 		{
 		case sw::FORMAT_R16F:            return GL_FLOAT;
 		case sw::FORMAT_G16R16F:         return GL_FLOAT;
@@ -611,7 +611,7 @@ GLenum Framebuffer::getImplementationColorReadType() const
 		case sw::FORMAT_A1R5G5B5:        return GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT;
 		case sw::FORMAT_R5G6B5:          return GL_UNSIGNED_SHORT_5_6_5;
 		default:
-			UNREACHABLE(colorbuffer->getInternalFormat());
+			UNREACHABLE(colorbuffer->getFormat());
 		}
 	}
 
@@ -638,7 +638,7 @@ GLenum Framebuffer::getDepthReadType() const
 
 	if(depthbuffer)
 	{
-		switch(depthbuffer->getInternalFormat())
+		switch(depthbuffer->getFormat())
 		{
 		case sw::FORMAT_D16:                return GL_UNSIGNED_SHORT;
 		case sw::FORMAT_D24S8:              return GL_UNSIGNED_INT_24_8_OES;
@@ -649,7 +649,7 @@ GLenum Framebuffer::getDepthReadType() const
 		case sw::FORMAT_D32FS8_TEXTURE:
 		case sw::FORMAT_D32FS8_SHADOW:      return GL_FLOAT;
 		default:
-			UNREACHABLE(depthbuffer->getInternalFormat());
+			UNREACHABLE(depthbuffer->getFormat());
 		}
 	}
 
