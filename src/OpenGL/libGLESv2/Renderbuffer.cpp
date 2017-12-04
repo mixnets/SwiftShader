@@ -41,32 +41,32 @@ void RenderbufferInterface::releaseProxy(const Renderbuffer *proxy)
 
 GLuint RenderbufferInterface::getRedSize() const
 {
-	return sw2es::GetRedSize(getInternalFormat());
+	return GetRedSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getGreenSize() const
 {
-	return sw2es::GetGreenSize(getInternalFormat());
+	return GetGreenSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getBlueSize() const
 {
-	return sw2es::GetBlueSize(getInternalFormat());
+	return GetBlueSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getAlphaSize() const
 {
-	return sw2es::GetAlphaSize(getInternalFormat());
+	return GetAlphaSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getDepthSize() const
 {
-	return sw2es::GetDepthSize(getInternalFormat());
+	return GetDepthSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getStencilSize() const
 {
-	return sw2es::GetStencilSize(getInternalFormat());
+	return GetStencilSize(getFormat());
 }
 
 ///// RenderbufferTexture2D Implementation ////////
@@ -122,14 +122,9 @@ GLsizei RenderbufferTexture2D::getHeight() const
 	return mTexture2D->getHeight(GL_TEXTURE_2D, mLevel);
 }
 
-GLenum RenderbufferTexture2D::getFormat() const
+GLint RenderbufferTexture2D::getFormat() const
 {
 	return mTexture2D->getFormat(GL_TEXTURE_2D, mLevel);
-}
-
-sw::Format RenderbufferTexture2D::getInternalFormat() const
-{
-	return mTexture2D->getInternalFormat(GL_TEXTURE_2D, mLevel);
 }
 
 GLsizei RenderbufferTexture2D::getSamples() const
@@ -199,14 +194,9 @@ GLsizei RenderbufferTexture3D::getDepth() const
 	return mTexture3D->getDepth(mTexture3D->getTarget(), mLevel);
 }
 
-GLenum RenderbufferTexture3D::getFormat() const
+GLint RenderbufferTexture3D::getFormat() const
 {
 	return mTexture3D->getFormat(mTexture3D->getTarget(), mLevel);
-}
-
-sw::Format RenderbufferTexture3D::getInternalFormat() const
-{
-	return mTexture3D->getInternalFormat(mTexture3D->getTarget(), mLevel);
 }
 
 GLsizei RenderbufferTexture3D::getSamples() const
@@ -267,14 +257,9 @@ GLsizei RenderbufferTextureCubeMap::getHeight() const
 	return mTextureCubeMap->getHeight(mTarget, mLevel);
 }
 
-GLenum RenderbufferTextureCubeMap::getFormat() const
+GLint RenderbufferTextureCubeMap::getFormat() const
 {
 	return mTextureCubeMap->getFormat(mTarget, mLevel);
-}
-
-sw::Format RenderbufferTextureCubeMap::getInternalFormat() const
-{
-	return mTextureCubeMap->getInternalFormat(mTarget, mLevel);
 }
 
 GLsizei RenderbufferTextureCubeMap::getSamples() const
@@ -355,14 +340,9 @@ GLint Renderbuffer::getLevel() const
 	return mInstance->getLevel();
 }
 
-GLenum Renderbuffer::getFormat() const
+GLint Renderbuffer::getFormat() const
 {
 	return mInstance->getFormat();
-}
-
-sw::Format Renderbuffer::getInternalFormat() const
-{
-	return mInstance->getInternalFormat();
 }
 
 GLuint Renderbuffer::getRedSize() const
@@ -423,7 +403,6 @@ RenderbufferStorage::RenderbufferStorage()
 	mWidth = 0;
 	mHeight = 0;
 	format = GL_RGBA4;
-	internalFormat = sw::FORMAT_NULL;
 	mSamples = 0;
 }
 
@@ -441,14 +420,9 @@ GLsizei RenderbufferStorage::getHeight() const
 	return mHeight;
 }
 
-GLenum RenderbufferStorage::getFormat() const
+GLint RenderbufferStorage::getFormat() const
 {
 	return format;
-}
-
-sw::Format RenderbufferStorage::getInternalFormat() const
-{
-	return internalFormat;
 }
 
 GLsizei RenderbufferStorage::getSamples() const
@@ -464,7 +438,7 @@ Colorbuffer::Colorbuffer(egl::Image *renderTarget) : mRenderTarget(renderTarget)
 
 		mWidth = renderTarget->getWidth();
 		mHeight = renderTarget->getHeight();
-		internalFormat = renderTarget->getInternalFormat();
+		sw::Format internalFormat = renderTarget->getInternalFormat();
 		format = sw2es::ConvertBackBufferFormat(internalFormat);
 		mSamples = renderTarget->getDepth() & ~1;
 	}
@@ -491,7 +465,6 @@ Colorbuffer::Colorbuffer(int width, int height, GLenum format, GLsizei samples) 
 	mWidth = width;
 	mHeight = height;
 	this->format = format;
-	internalFormat = requestedFormat;
 	mSamples = supportedSamples;
 }
 
@@ -541,7 +514,7 @@ DepthStencilbuffer::DepthStencilbuffer(egl::Image *depthStencil) : mDepthStencil
 
 		mWidth = depthStencil->getWidth();
 		mHeight = depthStencil->getHeight();
-		internalFormat = depthStencil->getInternalFormat();
+		sw::Format internalFormat = depthStencil->getInternalFormat();
 		format = sw2es::ConvertDepthStencilFormat(internalFormat);
 		mSamples = depthStencil->getDepth() & ~1;
 	}
@@ -550,6 +523,7 @@ DepthStencilbuffer::DepthStencilbuffer(egl::Image *depthStencil) : mDepthStencil
 DepthStencilbuffer::DepthStencilbuffer(int width, int height, GLenum requestedFormat, GLsizei samples) : mDepthStencil(nullptr)
 {
 	format = requestedFormat;
+	sw::Format internalFormat = sw::FORMAT_D24S8;
 	switch(requestedFormat)
 	{
 	case GL_STENCIL_INDEX8:
