@@ -53,8 +53,7 @@ public:
 	virtual GLsizei getDepth() const { return 1; }
 	virtual GLint getLayer() const { return 0; }
 	virtual GLint getLevel() const { return 0; }
-	virtual GLenum getFormat() const = 0;
-	virtual sw::Format getInternalFormat() const = 0;
+	virtual GLint getFormat() const = 0;
 	virtual GLsizei getSamples() const = 0;
 
 	virtual void setLayer(GLint) {}
@@ -85,8 +84,7 @@ public:
 	virtual GLsizei getWidth() const;
 	virtual GLsizei getHeight() const;
 	virtual GLint getLevel() const { return mLevel; }
-	virtual GLenum getFormat() const;
-	virtual sw::Format getInternalFormat() const;
+	virtual GLint getFormat() const;
 	virtual GLsizei getSamples() const;
 
 	virtual void setLevel(GLint level) { mLevel = level; }
@@ -115,8 +113,7 @@ public:
 	virtual GLsizei getDepth() const;
 	virtual GLint getLayer() const { return mLayer; }
 	virtual GLint getLevel() const { return mLevel; }
-	virtual GLenum getFormat() const;
-	virtual sw::Format getInternalFormat() const;
+	virtual GLint getFormat() const;
 	virtual GLsizei getSamples() const;
 
 	virtual void setLayer(GLint layer) { mLayer = layer; }
@@ -145,8 +142,7 @@ public:
 	virtual GLsizei getWidth() const;
 	virtual GLsizei getHeight() const;
 	virtual GLint getLevel() const { return mLevel; }
-	virtual GLenum getFormat() const;
-	virtual sw::Format getInternalFormat() const;
+	virtual GLint getFormat() const;
 	virtual GLsizei getSamples() const;
 
 	virtual void setLevel(GLint level) { mLevel = level; }
@@ -173,15 +169,13 @@ public:
 
 	virtual GLsizei getWidth() const;
 	virtual GLsizei getHeight() const;
-	virtual GLenum getFormat() const;
-	virtual sw::Format getInternalFormat() const;
+	virtual GLint getFormat() const;
 	virtual GLsizei getSamples() const;
 
 protected:
 	GLsizei mWidth;
 	GLsizei mHeight;
 	GLenum format;
-	sw::Format internalFormat;
 	GLsizei mSamples;
 };
 
@@ -211,8 +205,7 @@ public:
 	GLsizei getDepth() const;
 	GLint getLayer() const;
 	GLint getLevel() const;
-	GLenum getFormat() const;
-	sw::Format getInternalFormat() const;
+	GLint getFormat() const;
 	GLuint getRedSize() const;
 	GLuint getGreenSize() const;
 	GLuint getBlueSize() const;
