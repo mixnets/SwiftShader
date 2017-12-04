@@ -158,12 +158,12 @@ namespace sw
 			*(unsigned int*)element = 0xFF000000 | (unorm<8>(color.b) << 16) | (unorm<8>(color.g) << 8) | (unorm<8>(color.r) << 0);
 			break;
 		case FORMAT_X8B8G8R8I:
-			*(unsigned int*)element = 0x7F000000 |
+			*(unsigned int*)element = 0x01000000 |
 			                          (static_cast<unsigned int>(scast<8>(color.b)) << 16) |
 			                          (static_cast<unsigned int>(scast<8>(color.g)) << 8) |
 			                          (static_cast<unsigned int>(scast<8>(color.r)) << 0);
 		case FORMAT_X8B8G8R8UI:
-			*(unsigned int*)element = 0xFF000000 | (ucast<8>(color.b) << 16) | (ucast<8>(color.g) << 8) | (ucast<8>(color.r) << 0);
+			*(unsigned int*)element = 0x01000000 | (ucast<8>(color.b) << 16) | (ucast<8>(color.g) << 8) | (ucast<8>(color.r) << 0);
 			break;
 		case FORMAT_A2R10G10B10:
 			*(unsigned int*)element = (unorm<2>(color.a) << 30) | (unorm<10>(color.r) << 20) | (unorm<10>(color.g) << 10) | (unorm<10>(color.b) << 0);
@@ -222,11 +222,13 @@ namespace sw
 			((unsigned short*)element)[0] = static_cast<unsigned short>(scast<16>(color.r));
 			((unsigned short*)element)[1] = static_cast<unsigned short>(scast<16>(color.g));
 			((unsigned short*)element)[2] = static_cast<unsigned short>(scast<16>(color.b));
+			((unsigned short*)element)[3] = 1;
 			break;
 		case FORMAT_X16B16G16R16UI:
 			((unsigned short*)element)[0] = static_cast<unsigned short>(ucast<16>(color.r));
 			((unsigned short*)element)[1] = static_cast<unsigned short>(ucast<16>(color.g));
 			((unsigned short*)element)[2] = static_cast<unsigned short>(ucast<16>(color.b));
+			((unsigned short*)element)[3] = 1;
 			break;
 		case FORMAT_A32B32G32R32I:
 		case FORMAT_A32B32G32R32UI:
@@ -240,6 +242,7 @@ namespace sw
 			((unsigned int*)element)[0] = static_cast<unsigned int>(color.r);
 			((unsigned int*)element)[1] = static_cast<unsigned int>(color.g);
 			((unsigned int*)element)[2] = static_cast<unsigned int>(color.b);
+			((unsigned int*)element)[3] = 1;
 			break;
 		case FORMAT_V8U8:
 			*(unsigned short*)element = (snorm<8>(color.g) << 8) | (snorm<8>(color.r) << 0);
