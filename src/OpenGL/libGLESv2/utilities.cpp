@@ -1353,6 +1353,7 @@ namespace es2
 	{
 		switch(internalformat)
 		{
+		case GL_NONE:           return 0;
 		case GL_RGBA4:          return 4;
 		case GL_RGB5_A1:        return 1;
 		case GL_RGB565:         return 0;
@@ -1401,6 +1402,7 @@ namespace es2
 	{
 		switch(internalformat)
 		{
+		case GL_NONE:           return 0;
 		case GL_RGBA4:          return 4;
 		case GL_RGB5_A1:        return 5;
 		case GL_RGB565:         return 5;
@@ -1449,6 +1451,7 @@ namespace es2
 	{
 		switch(internalformat)
 		{
+		case GL_NONE:           return 0;
 		case GL_RGBA4:          return 4;
 		case GL_RGB5_A1:        return 5;
 		case GL_RGB565:         return 6;
@@ -1497,6 +1500,7 @@ namespace es2
 	{
 		switch(internalformat)
 		{
+		case GL_NONE:           return 0;
 		case GL_RGBA4:          return 4;
 		case GL_RGB5_A1:        return 5;
 		case GL_RGB565:         return 5;
@@ -1553,7 +1557,7 @@ namespace es2
 		case GL_DEPTH24_STENCIL8:      return 24;
 		case GL_DEPTH32F_STENCIL8:     return 32;
 		default:
-			UNREACHABLE(internalformat);
+		//	UNREACHABLE(internalformat);
 			return 0;
 		}
 	}
@@ -1570,7 +1574,7 @@ namespace es2
 		case GL_DEPTH24_STENCIL8:      return 8;
 		case GL_DEPTH32F_STENCIL8:     return 8;
 		default:
-			UNREACHABLE(internalformat);
+		//	UNREACHABLE(internalformat);
 			return 0;
 		}
 	}
