@@ -2280,11 +2280,6 @@ void GenerateMipmap(GLenum target)
 			return error(GL_INVALID_ENUM);
 		}
 
-		if(texture->isCompressed(target, 0) || texture->isDepth(target, 0))
-		{
-			return error(GL_INVALID_OPERATION);
-		}
-
 		if(!IsMipmappable(texture->getFormat(target, 0), clientVersion))
 		{
 			return error(GL_INVALID_OPERATION);
@@ -3012,7 +3007,6 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 			case GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE:
 				*params = GL_NONE;
 				break;
-
 			case GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME:
 				if(clientVersion < 3)
 				{
@@ -3020,7 +3014,6 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 				}
 				*params = 0;
 				break;
-
 			default:
 				if(clientVersion < 3)
 				{
@@ -3351,7 +3344,12 @@ void GetRenderbufferParameteriv(GLenum target, GLenum pname, GLint* params)
 		{
 		case GL_RENDERBUFFER_WIDTH:           *params = renderbuffer->getWidth();       break;
 		case GL_RENDERBUFFER_HEIGHT:          *params = renderbuffer->getHeight();      break;
-		case GL_RENDERBUFFER_INTERNAL_FORMAT: *params = renderbuffer->getFormat();      break;
+		case GL_RENDERBUFFER_INTERNAL_FORMAT:
+			{
+				GLint internalformat = renderbuffer->getFormat();
+				*params = (internalformat == GL_NONE) ? GL_RGBA4 : internalformat;
+			}
+			break;
 		case GL_RENDERBUFFER_RED_SIZE:        *params = renderbuffer->getRedSize();     break;
 		case GL_RENDERBUFFER_GREEN_SIZE:      *params = renderbuffer->getGreenSize();   break;
 		case GL_RENDERBUFFER_BLUE_SIZE:       *params = renderbuffer->getBlueSize();    break;
@@ -4687,7 +4685,7 @@ void RenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum inter
 	}
 
 	if(samples > es2::IMPLEMENTATION_MAX_SAMPLES ||
-	   (sw::Surface::isNonNormalizedInteger(es2sw::ConvertRenderbufferFormat(internalformat)) && samples > 0))
+	   (IsNonNormalizedInteger(internalformat) && samples > 0))
 	{
 		return error(GL_INVALID_OPERATION);
 	}
