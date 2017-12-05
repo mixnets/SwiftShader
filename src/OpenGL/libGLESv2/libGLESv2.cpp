@@ -2756,62 +2756,62 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 			return error(GL_INVALID_ENUM);
 		}
 
-		GLint clientVersion = context->getClientVersion();
+		GLuint framebufferName = 0;
 
-		es2::Framebuffer *framebuffer = nullptr;
 		if(target == GL_READ_FRAMEBUFFER)
 		{
-			if(context->getReadFramebufferName() == 0)
-			{
-				if(clientVersion < 3)
-				{
-					return error(GL_INVALID_OPERATION);
-				}
-				else
-				{
-					switch(attachment)
-					{
-					case GL_BACK:
-					case GL_DEPTH:
-					case GL_STENCIL:
-						break;
-					default:
-						return error(GL_INVALID_ENUM);
-					}
-				}
-			}
-
-			framebuffer = context->getReadFramebuffer();
+			framebufferName = context->getReadFramebufferName();
 		}
 		else
 		{
-			if(context->getDrawFramebufferName() == 0)
+			framebufferName = context->getDrawFramebufferName();
+		}
+
+		GLint clientVersion = context->getClientVersion();
+
+		if(framebufferName == 0)   // Default framebuffer.
+		{
+			if(clientVersion < 3)
 			{
-				if(clientVersion < 3)
+				return error(GL_INVALID_OPERATION);
+			}
+		}
+
+		switch(attachment)
+		{
+		case GL_BACK:
+		case GL_DEPTH:
+		case GL_STENCIL:
+			if(framebufferName != 0)
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+			break;
+		case GL_DEPTH_ATTACHMENT:
+		case GL_STENCIL_ATTACHMENT:
+		case GL_DEPTH_STENCIL_ATTACHMENT:
+			if(framebufferName == 0)
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+			break;
+		default:
+			if((unsigned int)(attachment - GL_COLOR_ATTACHMENT0) < MAX_COLOR_ATTACHMENTS)
+			{
+				if(framebufferName == 0)
 				{
 					return error(GL_INVALID_OPERATION);
 				}
-				else
-				{
-					switch(attachment)
-					{
-					case GL_BACK:
-					case GL_DEPTH:
-					case GL_STENCIL:
-						break;
-					default:
-						return error(GL_INVALID_ENUM);
-					}
-				}
 			}
-
-			framebuffer = context->getDrawFramebuffer();
+			else return error(GL_INVALID_ENUM);
 		}
+
+		es2::Framebuffer *framebuffer = context->getFramebuffer(framebufferName);
 
 		GLenum attachmentType;
 		GLuint attachmentHandle;
 		GLint attachmentLayer;
-		Renderbuffer* renderbuffer = nullptr;
+		Renderbuffer *renderbuffer = nullptr;
 		switch(attachment)
 		{
 		case GL_BACK:
@@ -2823,47 +2823,6 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 				renderbuffer = framebuffer->getColorbuffer(0);
 			}
 			else return error(GL_INVALID_ENUM);
-			break;
-		case GL_COLOR_ATTACHMENT0:
-		case GL_COLOR_ATTACHMENT1:
-		case GL_COLOR_ATTACHMENT2:
-		case GL_COLOR_ATTACHMENT3:
-		case GL_COLOR_ATTACHMENT4:
-		case GL_COLOR_ATTACHMENT5:
-		case GL_COLOR_ATTACHMENT6:
-		case GL_COLOR_ATTACHMENT7:
-		case GL_COLOR_ATTACHMENT8:
-		case GL_COLOR_ATTACHMENT9:
-		case GL_COLOR_ATTACHMENT10:
-		case GL_COLOR_ATTACHMENT11:
-		case GL_COLOR_ATTACHMENT12:
-		case GL_COLOR_ATTACHMENT13:
-		case GL_COLOR_ATTACHMENT14:
-		case GL_COLOR_ATTACHMENT15:
-		case GL_COLOR_ATTACHMENT16:
-		case GL_COLOR_ATTACHMENT17:
-		case GL_COLOR_ATTACHMENT18:
-		case GL_COLOR_ATTACHMENT19:
-		case GL_COLOR_ATTACHMENT20:
-		case GL_COLOR_ATTACHMENT21:
-		case GL_COLOR_ATTACHMENT22:
-		case GL_COLOR_ATTACHMENT23:
-		case GL_COLOR_ATTACHMENT24:
-		case GL_COLOR_ATTACHMENT25:
-		case GL_COLOR_ATTACHMENT26:
-		case GL_COLOR_ATTACHMENT27:
-		case GL_COLOR_ATTACHMENT28:
-		case GL_COLOR_ATTACHMENT29:
-		case GL_COLOR_ATTACHMENT30:
-		case GL_COLOR_ATTACHMENT31:
-			if((attachment - GL_COLOR_ATTACHMENT0) >= MAX_COLOR_ATTACHMENTS)
-			{
-				return error(GL_INVALID_ENUM);
-			}
-			attachmentType = framebuffer->getColorbufferType(attachment - GL_COLOR_ATTACHMENT0);
-			attachmentHandle = framebuffer->getColorbufferName(attachment - GL_COLOR_ATTACHMENT0);
-			attachmentLayer = framebuffer->getColorbufferLayer(attachment - GL_COLOR_ATTACHMENT0);
-			renderbuffer = framebuffer->getColorbuffer(attachment - GL_COLOR_ATTACHMENT0);
 			break;
 		case GL_DEPTH:
 			if(clientVersion < 3)
@@ -2905,7 +2864,12 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 			else return error(GL_INVALID_ENUM);
 			break;
 		default:
-			return error(GL_INVALID_ENUM);
+			ASSERT((unsigned int)(attachment - GL_COLOR_ATTACHMENT0) < MAX_COLOR_ATTACHMENTS);
+			attachmentType = framebuffer->getColorbufferType(attachment - GL_COLOR_ATTACHMENT0);
+			attachmentHandle = framebuffer->getColorbufferName(attachment - GL_COLOR_ATTACHMENT0);
+			attachmentLayer = framebuffer->getColorbufferLayer(attachment - GL_COLOR_ATTACHMENT0);
+			renderbuffer = framebuffer->getColorbuffer(attachment - GL_COLOR_ATTACHMENT0);
+			break;
 		}
 
 		GLenum attachmentObjectType = GL_NONE;   // Type category
@@ -2939,7 +2903,7 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 			case GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL:
 				if(attachmentObjectType == GL_TEXTURE)
 				{
-					*params = clientVersion < 3 ? 0 : renderbuffer->getLevel(); // FramebufferTexture2D will not allow level to be set to anything else in GL ES 2.0
+					*params = clientVersion < 3 ? 0 : renderbuffer->getLevel();   // glFramebufferTexture2D does not allow level to be set to anything else in GL ES 2.0
 				}
 				else
 				{
@@ -3024,7 +2988,7 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 			case GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING:
 				if(clientVersion >= 3)
 				{
-					*params = GL_LINEAR; // FIXME: GL_SRGB will also be possible, when sRGB is added
+					*params = GetColorEncoding(renderbuffer->getFormat());
 				}
 				else return error(GL_INVALID_ENUM);
 				break;
