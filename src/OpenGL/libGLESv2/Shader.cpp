@@ -232,6 +232,7 @@ void Shader::compile()
 
 	int shaderVersion = compiler->getShaderVersion();
 	int clientVersion = es2::getContext()->getClientVersion();
+	getShader()->setVersion(shaderVersion);
 
 	if(shaderVersion >= 300 && clientVersion < 3)
 	{

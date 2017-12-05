@@ -23,7 +23,7 @@ namespace sw
 {
 	VertexShader::VertexShader(const VertexShader *vs) : Shader()
 	{
-		version = 0x0300;
+		version = vs ? vs->getVersion() : 0x0300;
 		positionRegister = Pos;
 		pointSizeRegister = Unused;
 		instanceIdDeclared = false;

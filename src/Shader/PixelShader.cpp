@@ -22,7 +22,7 @@ namespace sw
 {
 	PixelShader::PixelShader(const PixelShader *ps) : Shader()
 	{
-		version = 0x0300;
+		version = ps ? ps->getVersion() : 0x0300;
 		vPosDeclared = false;
 		vFaceDeclared = false;
 		centroid = false;

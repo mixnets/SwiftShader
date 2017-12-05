@@ -561,6 +561,7 @@ namespace sw
 		size_t getLength() const;
 		ShaderType getShaderType() const;
 		unsigned short getVersion() const;
+		void setVersion(unsigned short ver) { version = ver; }
 
 		void append(Instruction *instruction);
 		void declareSampler(int i);

@@ -277,26 +277,21 @@ namespace es2
 
 	void Program::bindAttributeLocation(GLuint index, const char *name)
 	{
-		if(index < MAX_VERTEX_ATTRIBS)
-		{
-			for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
-			{
-				attributeBinding[i].erase(name);
-			}
-
-			attributeBinding[index].insert(name);
-		}
+		attributeBinding[name] = index;
 	}
 
 	GLint Program::getAttributeLocation(const char *name)
 	{
 		if(name)
 		{
-			for(int index = 0; index < MAX_VERTEX_ATTRIBS; index++)
+			std::vector<glsl::Attribute>::iterator it = linkedAttribute.begin();
+			std::vector<glsl::Attribute>::iterator itEnd = linkedAttribute.end();
+			std::string strName(name);
+			for(;it != itEnd; ++it)
 			{
-				if(linkedAttribute[index].name == std::string(name))
+				if(it->name == strName)
 				{
-					return index;
+					return getAttributeBinding(*it);
 				}
 			}
 		}
@@ -1586,7 +1581,7 @@ namespace es2
 		// Link attributes that have a binding location
 		for(glsl::ActiveAttributes::iterator attribute = vertexShader->activeAttributes.begin(); attribute != vertexShader->activeAttributes.end(); ++attribute)
 		{
-			int location = getAttributeBinding(*attribute);
+			int location = attributeBinding[attribute->name];
 
 			if(location != -1)   // Set by glBindAttribLocation
 			{
@@ -1600,21 +1595,30 @@ namespace es2
 
 				// In GLSL 3.00, attribute aliasing produces a link error
 				// In GLSL 1.00, attribute aliasing is allowed
-				if(egl::getClientVersion() >= 3)
+				if(vertexBinary->getVersion() >= 0x0300)
 				{
-					for(int i = 0; i < rows; i++)
+					std::vector<glsl::Attribute>::iterator it = linkedAttribute.begin();
+					std::vector<glsl::Attribute>::iterator itEnd = linkedAttribute.end();
+					for(; it != itEnd; ++it)
 					{
-						if(!linkedAttribute[location + i].name.empty())
+						int itLocStart = getAttributeBinding(*it);
+						ASSERT(itLocStart >= 0);
+						int itLocEnd = itLocStart + VariableRegisterCount(it->type);
+						for(int i = 0; i < rows; i++)
 						{
-							appendToInfoLog("Attribute '%s' aliases attribute '%s' at location %d", attribute->name.c_str(), linkedAttribute[location].name.c_str(), location);
-							return false;
+							if((i >= itLocStart) && (i < itLocEnd))
+							{
+								appendToInfoLog("Attribute '%s' aliases attribute '%s' at location %d", attribute->name.c_str(), it->name.c_str(), location);
+								return false;
+							}
 						}
 					}
 				}
 
+				linkedAttributeLocation[attribute->name] = location;
+				linkedAttribute.push_back(*attribute);
 				for(int i = 0; i < rows; i++)
 				{
-					linkedAttribute[location + i] = *attribute;
 					usedLocations |= 1 << (location + i);
 				}
 			}
@@ -1623,7 +1627,7 @@ namespace es2
 		// Link attributes that don't have a binding location
 		for(glsl::ActiveAttributes::iterator attribute = vertexShader->activeAttributes.begin(); attribute != vertexShader->activeAttributes.end(); ++attribute)
 		{
-			int location = getAttributeBinding(*attribute);
+			int location = attributeBinding[attribute->name];
 
 			if(location == -1)   // Not set by glBindAttribLocation
 			{
@@ -1636,21 +1640,23 @@ namespace es2
 					return false;   // Fail to link
 				}
 
-				for(int i = 0; i < rows; i++)
-				{
-					linkedAttribute[availableIndex + i] = *attribute;
-				}
+				linkedAttributeLocation[attribute->name] = availableIndex;
+				linkedAttribute.push_back(*attribute);
 			}
 		}
 
-		for(int attributeIndex = 0; attributeIndex < MAX_VERTEX_ATTRIBS; )
+		std::vector<glsl::Attribute>::iterator it = linkedAttribute.begin();
+		std::vector<glsl::Attribute>::iterator itEnd = linkedAttribute.end();
+		for(; it != itEnd; ++it)
 		{
-			int index = vertexShader->getSemanticIndex(linkedAttribute[attributeIndex].name);
-			int rows = std::max(VariableRegisterCount(linkedAttribute[attributeIndex].type), 1);
+			int location = getAttributeBinding(*it);
+			ASSERT(location >= 0);
+			int index = vertexShader->getSemanticIndex(it->name);
+			int rows = std::max(VariableRegisterCount(it->type), 1);
 
 			for(int r = 0; r < rows; r++)
 			{
-				attributeStream[attributeIndex++] = index++;
+				attributeStream[r + location] = index++;
 			}
 		}
 
@@ -1664,12 +1670,10 @@ namespace es2
 			return attribute.location;
 		}
 
-		for(int location = 0; location < MAX_VERTEX_ATTRIBS; location++)
+		std::unordered_map<std::string, GLuint>::const_iterator it = linkedAttributeLocation.find(attribute.name);
+		if(it != linkedAttributeLocation.end())
 		{
-			if(attributeBinding[location].find(attribute.name.c_str()) != attributeBinding[location].end())
-			{
-				return location;
-			}
+			return it->second;
 		}
 
 		return -1;
@@ -2503,9 +2507,11 @@ namespace es2
 		delete pixelBinary;
 		pixelBinary = 0;
 
+		linkedAttribute.clear();
+		linkedAttributeLocation.clear();
+
 		for(int index = 0; index < MAX_VERTEX_ATTRIBS; index++)
 		{
-			linkedAttribute[index].name.clear();
 			attributeStream[index] = -1;
 		}
 
@@ -2641,27 +2647,13 @@ namespace es2
 
 	void Program::getActiveAttribute(GLuint index, GLsizei bufsize, GLsizei *length, GLint *size, GLenum *type, GLchar *name) const
 	{
-		// Skip over inactive attributes
-		unsigned int activeAttribute = 0;
-		unsigned int attribute;
-		for(attribute = 0; attribute < MAX_VERTEX_ATTRIBS; attribute++)
-		{
-			if(linkedAttribute[attribute].name.empty())
-			{
-				continue;
-			}
+		ASSERT(index < linkedAttribute.size());
 
-			if(activeAttribute == index)
-			{
-				break;
-			}
-
-			activeAttribute++;
-		}
+		std::vector<glsl::Attribute>::const_iterator it = linkedAttribute.begin() + index;
 
 		if(bufsize > 0)
 		{
-			const char *string = linkedAttribute[attribute].name.c_str();
+			const char *string = it->name.c_str();
 
 			strncpy(name, string, bufsize);
 			name[bufsize - 1] = '\0';
@@ -2674,34 +2666,23 @@ namespace es2
 
 		*size = 1;   // Always a single 'type' instance
 
-		*type = linkedAttribute[attribute].type;
+		*type = it->type;
 	}
 
 	size_t Program::getActiveAttributeCount() const
 	{
-		int count = 0;
-
-		for(int attributeIndex = 0; attributeIndex < MAX_VERTEX_ATTRIBS; attributeIndex++)
-		{
-			if(!linkedAttribute[attributeIndex].name.empty())
-			{
-				count++;
-			}
-		}
-
-		return count;
+		return linkedAttribute.size();
 	}
 
 	GLint Program::getActiveAttributeMaxLength() const
 	{
 		int maxLength = 0;
 
-		for(int attributeIndex = 0; attributeIndex < MAX_VERTEX_ATTRIBS; attributeIndex++)
+		std::vector<glsl::Attribute>::const_iterator it = linkedAttribute.begin();
+		std::vector<glsl::Attribute>::const_iterator itEnd = linkedAttribute.end();
+		for(; it != itEnd; ++it)
 		{
-			if(!linkedAttribute[attributeIndex].name.empty())
-			{
-				maxLength = std::max((int)(linkedAttribute[attributeIndex].name.length() + 1), maxLength);
-			}
+			maxLength = std::max((int)(it->name.length() + 1), maxLength);
 		}
 
 		return maxLength;
