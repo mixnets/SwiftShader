@@ -44,9 +44,6 @@ namespace es2
 
 	FormatMap BuildFormatMap()
 	{
-		static const GLint GL_BGRA4_ANGLEX = 0x6ABC;
-		static const GLint GL_BGR5_A1_ANGLEX = 0x6ABD;
-
 		FormatMap map;
 
 		//                       | Format | Type | Internal format |
