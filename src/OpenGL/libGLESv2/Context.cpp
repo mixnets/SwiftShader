@@ -2717,12 +2717,13 @@ bool Context::applyRenderTarget()
 		if(framebuffer->getDrawBuffer(i) != GL_NONE)
 		{
 			egl::Image *renderTarget = framebuffer->getRenderTarget(i);
-			device->setRenderTarget(i, renderTarget);
+			GLint layer = framebuffer->getColorbufferLayer(i);
+			device->setRenderTarget(i, renderTarget, layer);
 			if(renderTarget) renderTarget->release();
 		}
 		else
 		{
-			device->setRenderTarget(i, nullptr);
+			device->setRenderTarget(i, nullptr, 0);
 		}
 	}
 
@@ -3189,7 +3190,7 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 				device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D);
 			}
 		}
-		else if(baseTexture->getTarget() == GL_TEXTURE_3D_OES)
+		else if(baseTexture->getTarget() == GL_TEXTURE_3D)
 		{
 			Texture3D *texture = static_cast<Texture3D*>(baseTexture);
 

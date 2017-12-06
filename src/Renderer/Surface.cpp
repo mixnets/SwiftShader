@@ -1167,8 +1167,8 @@ namespace sw
 	public:
 		SurfaceImplementation(int width, int height, int depth, Format format, void *pixels, int pitch, int slice)
 			: Surface(width, height, depth, format, pixels, pitch, slice) {}
-		SurfaceImplementation(Resource *texture, int width, int height, int depth, int border, Format format, bool lockable, bool renderTarget, int pitchP = 0)
-			: Surface(texture, width, height, depth, border, format, lockable, renderTarget, pitchP) {}
+		SurfaceImplementation(Resource *texture, int width, int height, int depth, int border, int samples, Format format, bool lockable, bool renderTarget, int pitchP = 0)
+			: Surface(texture, width, height, depth, border, samples, format, lockable, renderTarget, pitchP) {}
 		~SurfaceImplementation() override {};
 
 		void *lockInternal(int x, int y, int z, Lock lock, Accessor client) override
@@ -1187,9 +1187,9 @@ namespace sw
 		return new SurfaceImplementation(width, height, depth, format, pixels, pitch, slice);
 	}
 
-	Surface *Surface::create(Resource *texture, int width, int height, int depth, int border, Format format, bool lockable, bool renderTarget, int pitchPprovided)
+	Surface *Surface::create(Resource *texture, int width, int height, int depth, int border, int samples, Format format, bool lockable, bool renderTarget, int pitchPprovided)
 	{
-		return new SurfaceImplementation(texture, width, height, depth, border, format, lockable, renderTarget, pitchPprovided);
+		return new SurfaceImplementation(texture, width, height, depth, border, samples, format, lockable, renderTarget, pitchPprovided);
 	}
 
 	Surface::Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice) : lockable(true), renderTarget(false)
@@ -1203,6 +1203,7 @@ namespace sw
 		external.width = width;
 		external.height = height;
 		external.depth = depth;
+		external.samples = 1;
 		external.format = format;
 		external.bytes = bytes(external.format);
 		external.pitchB = pitch;
@@ -1217,6 +1218,7 @@ namespace sw
 		internal.width = width;
 		internal.height = height;
 		internal.depth = depth;
+		internal.samples = 1;
 		internal.format = selectInternalFormat(format);
 		internal.bytes = bytes(internal.format);
 		internal.pitchB = pitchB(internal.width, 0, internal.format, false);
@@ -1231,6 +1233,7 @@ namespace sw
 		stencil.width = width;
 		stencil.height = height;
 		stencil.depth = depth;
+		stencil.samples = 1;
 		stencil.format = FORMAT_S8;
 		stencil.bytes = bytes(stencil.format);
 		stencil.pitchB = pitchB(stencil.width, 0, stencil.format, false);
@@ -1245,17 +1248,19 @@ namespace sw
 		paletteUsed = 0;
 	}
 
-	Surface::Surface(Resource *texture, int width, int height, int depth, int border, Format format, bool lockable, bool renderTarget, int pitchPprovided) : lockable(lockable), renderTarget(renderTarget)
+	Surface::Surface(Resource *texture, int width, int height, int depth, int border, int samples, Format format, bool lockable, bool renderTarget, int pitchPprovided) : lockable(lockable), renderTarget(renderTarget)
 	{
 		resource = texture ? texture : new Resource(0);
 		hasParent = texture != 0;
 		ownExternal = true;
 		depth = max(1, depth);
+		samples = max(1, samples);
 
 		external.buffer = 0;
 		external.width = width;
 		external.height = height;
 		external.depth = depth;
+		external.samples = (short)samples;
 		external.format = format;
 		external.bytes = bytes(external.format);
 		external.pitchB = pitchB(external.width, 0, external.format, renderTarget && !texture);
@@ -1270,13 +1275,14 @@ namespace sw
 		internal.width = width;
 		internal.height = height;
 		internal.depth = depth;
+		internal.samples = (short)samples;
 		internal.format = selectInternalFormat(format);
 		internal.bytes = bytes(internal.format);
 		internal.pitchB = !pitchPprovided ? pitchB(internal.width, border, internal.format, renderTarget) : pitchPprovided * internal.bytes;
 		internal.pitchP = !pitchPprovided ? pitchP(internal.width, border, internal.format, renderTarget) : pitchPprovided;
 		internal.sliceB = sliceB(internal.width, internal.height, border, internal.format, renderTarget);
 		internal.sliceP = sliceP(internal.width, internal.height, border, internal.format, renderTarget);
-		internal.border = border;
+		internal.border = (short)border;
 		internal.lock = LOCK_UNLOCKED;
 		internal.dirty = false;
 
@@ -1284,6 +1290,7 @@ namespace sw
 		stencil.width = width;
 		stencil.height = height;
 		stencil.depth = depth;
+		stencil.samples = (short)samples;
 		stencil.format = FORMAT_S8;
 		stencil.bytes = bytes(stencil.format);
 		stencil.pitchB = pitchB(stencil.width, 0, stencil.format, renderTarget);
@@ -1338,7 +1345,7 @@ namespace sw
 			}
 			else
 			{
-				external.buffer = allocateBuffer(external.width, external.height, external.depth, external.border, external.format);
+				external.buffer = allocateBuffer(external.width, external.height, external.depth, external.border, external.samples, external.format);
 			}
 		}
 
@@ -1390,7 +1397,7 @@ namespace sw
 			}
 			else
 			{
-				internal.buffer = allocateBuffer(internal.width, internal.height, internal.depth, internal.border, internal.format);
+				internal.buffer = allocateBuffer(internal.width, internal.height, internal.depth, internal.border, internal.samples, internal.format);
 			}
 		}
 
@@ -1465,7 +1472,7 @@ namespace sw
 
 		if(!stencil.buffer)
 		{
-			stencil.buffer = allocateBuffer(stencil.width, stencil.height, stencil.depth, stencil.border, stencil.format);
+			stencil.buffer = allocateBuffer(stencil.width, stencil.height, stencil.depth, stencil.border, stencil.samples, stencil.format);
 		}
 
 		return stencil.lockRect(x, y, front, LOCK_READWRITE);   // FIXME
@@ -2572,7 +2579,7 @@ namespace sw
 	{
 	}
 
-	unsigned int Surface::size(int width, int height, int depth, int border, Format format)
+	unsigned int Surface::size(int width, int height, int depth, int border, int samples, Format format)
 	{
 		width += 2 * border;
 		height += 2 * border;
@@ -2658,7 +2665,7 @@ namespace sw
 				return YSize + 2 * CSize;
 			}
 		default:
-			return bytes(format) * width * height * depth;
+			return bytes(format) * width * height * depth * samples;
 		}
 	}
 
@@ -3158,7 +3165,7 @@ namespace sw
 		return 1;
 	}
 
-	void *Surface::allocateBuffer(int width, int height, int depth, int border, Format format)
+	void *Surface::allocateBuffer(int width, int height, int depth, int border, int samples, Format format)
 	{
 		// Render targets require 2x2 quads
 		int width2 = (width + 1) & ~1;
@@ -3167,7 +3174,7 @@ namespace sw
 		// FIXME: Unpacking byte4 to short4 in the sampler currently involves reading 8 bytes,
 		// and stencil operations also read 8 bytes per four 8-bit stencil values,
 		// so we have to allocate 4 extra bytes to avoid buffer overruns.
-		return allocate(size(width2, height2, depth, border, format) + 4);
+		return allocate(size(width2, height2, depth, border, samples, format) + 4);
 	}
 
 	void Surface::memfill4(void *buffer, int pattern, int bytes)

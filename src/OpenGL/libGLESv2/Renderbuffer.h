@@ -49,20 +49,15 @@ public:
 	virtual void addProxyRef(const Renderbuffer *proxy);
     virtual void releaseProxy(const Renderbuffer *proxy);
 
-	virtual egl::Image *getRenderTarget() = 0;
-    virtual egl::Image *createSharedImage() = 0;
-    virtual bool isShared() const = 0;
+	virtual egl::Image *getRenderTarget(GLint level) = 0;
+    virtual egl::Image *createSharedImage(GLint level) = 0;
+    virtual bool isShared(GLint level) const = 0;
 
-	virtual GLsizei getWidth() const = 0;
-	virtual GLsizei getHeight() const = 0;
-	virtual GLsizei getDepth() const { return 1; }
-	virtual GLint getLayer() const { return 0; }
-	virtual GLint getLevel() const { return 0; }
-	virtual GLint getFormat() const = 0;
-	virtual GLsizei getSamples() const = 0;
-
-	virtual void setLayer(GLint) {}
-	virtual void setLevel(GLint) {}
+	virtual GLsizei getWidth(GLint level) const = 0;
+	virtual GLsizei getHeight(GLint level) const = 0;
+	virtual GLsizei getDepth(GLint level) const { return 1; }
+	virtual GLint getFormat(GLint level) const = 0;
+	virtual GLsizei getSamples(GLint level) const = 0;
 
 	GLuint getRedSize() const;
 	GLuint getGreenSize() const;
@@ -75,87 +70,72 @@ public:
 class RenderbufferTexture2D : public RenderbufferInterface
 {
 public:
-	RenderbufferTexture2D(Texture2D *texture, GLint level);
+	RenderbufferTexture2D(Texture2D *texture);
 
-	virtual ~RenderbufferTexture2D();
+	~RenderbufferTexture2D() override;
 
-	virtual void addProxyRef(const Renderbuffer *proxy);
-    virtual void releaseProxy(const Renderbuffer *proxy);
+	void addProxyRef(const Renderbuffer *proxy) override;
+    void releaseProxy(const Renderbuffer *proxy) override;
 
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	egl::Image *getRenderTarget(GLint level) override;
+    egl::Image *createSharedImage(GLint level) override;
+    bool isShared(GLint level) const override;
 
-	virtual GLsizei getWidth() const;
-	virtual GLsizei getHeight() const;
-	virtual GLint getLevel() const { return mLevel; }
-	virtual GLint getFormat() const;
-	virtual GLsizei getSamples() const;
-
-	virtual void setLevel(GLint level) { mLevel = level; }
+	GLsizei getWidth(GLint level) const override;
+	GLsizei getHeight(GLint level) const override;
+	GLint getFormat(GLint level) const override;
+	GLsizei getSamples(GLint level) const override;
 
 private:
 	gl::BindingPointer<Texture2D> mTexture2D;
-	GLint mLevel;
 };
 
 class RenderbufferTexture3D : public RenderbufferInterface
 {
 public:
-	RenderbufferTexture3D(Texture3D *texture, GLint level, GLint layer);
+	RenderbufferTexture3D(Texture3D *texture);
 
-	virtual ~RenderbufferTexture3D();
+	~RenderbufferTexture3D() override;
 
-	virtual void addProxyRef(const Renderbuffer *proxy);
-	virtual void releaseProxy(const Renderbuffer *proxy);
+	void addProxyRef(const Renderbuffer *proxy) override;
+	void releaseProxy(const Renderbuffer *proxy) override;
 
-	virtual egl::Image *getRenderTarget();
-	virtual egl::Image *createSharedImage();
-	virtual bool isShared() const;
+	egl::Image *getRenderTarget(GLint level) override;
+	egl::Image *createSharedImage(GLint level) override;
+	bool isShared(GLint level) const override;
 
-	virtual GLsizei getWidth() const;
-	virtual GLsizei getHeight() const;
-	virtual GLsizei getDepth() const;
-	virtual GLint getLayer() const { return mLayer; }
-	virtual GLint getLevel() const { return mLevel; }
-	virtual GLint getFormat() const;
-	virtual GLsizei getSamples() const;
-
-	virtual void setLayer(GLint layer) { mLayer = layer; }
-	virtual void setLevel(GLint level) { mLevel = level; }
+	GLsizei getWidth(GLint level) const override;
+	GLsizei getHeight(GLint level) const override;
+	GLsizei getDepth(GLint level) const override;
+	GLint getFormat(GLint level) const override;
+	GLsizei getSamples(GLint level) const override;
 
 private:
 	gl::BindingPointer<Texture3D> mTexture3D;
-	GLint mLevel;
-	GLint mLayer;
 };
 
 class RenderbufferTextureCubeMap : public RenderbufferInterface
 {
 public:
-	RenderbufferTextureCubeMap(TextureCubeMap *texture, GLenum target, GLint level);
+	RenderbufferTextureCubeMap(TextureCubeMap *texture, GLenum target);
 
-	virtual ~RenderbufferTextureCubeMap();
+	~RenderbufferTextureCubeMap() override;
 
-	virtual void addProxyRef(const Renderbuffer *proxy);
-    virtual void releaseProxy(const Renderbuffer *proxy);
+	void addProxyRef(const Renderbuffer *proxy) override;
+    void releaseProxy(const Renderbuffer *proxy) override;
 
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	egl::Image *getRenderTarget(GLint level) override;
+    egl::Image *createSharedImage(GLint level) override;
+    bool isShared(GLint level) const override;
 
-	virtual GLsizei getWidth() const;
-	virtual GLsizei getHeight() const;
-	virtual GLint getLevel() const { return mLevel; }
-	virtual GLint getFormat() const;
-	virtual GLsizei getSamples() const;
-
-	virtual void setLevel(GLint level) { mLevel = level; }
+	GLsizei getWidth(GLint level) const override;
+	GLsizei getHeight(GLint level) const override;
+	GLint getFormat(GLint level) const override;
+	GLsizei getSamples(GLint level) const override;
 
 private:
 	gl::BindingPointer<TextureCubeMap> mTextureCubeMap;
 	GLenum mTarget;
-	GLint mLevel;
 };
 
 // A class derived from RenderbufferStorage is created whenever glRenderbufferStorage
@@ -166,16 +146,16 @@ class RenderbufferStorage : public RenderbufferInterface
 public:
 	RenderbufferStorage();
 
-	virtual ~RenderbufferStorage() = 0;
+	~RenderbufferStorage() override = 0;
 
-	virtual egl::Image *getRenderTarget() = 0;
-    virtual egl::Image *createSharedImage() = 0;
-    virtual bool isShared() const = 0;
+	egl::Image *getRenderTarget(GLint level) override = 0;
+    egl::Image *createSharedImage(GLint level) override = 0;
+    bool isShared(GLint level) const override = 0;
 
-	virtual GLsizei getWidth() const;
-	virtual GLsizei getHeight() const;
-	virtual GLint getFormat() const;
-	virtual GLsizei getSamples() const;
+	GLsizei getWidth(GLint level) const override;
+	GLsizei getHeight(GLint level) const override;
+	GLint getFormat(GLint level) const override;
+	GLsizei getSamples(GLint level) const override;
 
 protected:
 	GLsizei mWidth;
@@ -190,16 +170,17 @@ protected:
 class Renderbuffer : public gl::NamedObject
 {
 public:
+	Renderbuffer();
 	Renderbuffer(GLuint name, RenderbufferInterface *storage);
 
-	virtual ~Renderbuffer();
+	~Renderbuffer() override;
 
 	// These functions from Object are overloaded here because
     // Textures need to maintain their own count of references to them via
     // Renderbuffers/RenderbufferTextures. These functions invoke those
     // reference counting functions on the RenderbufferInterface.
-    virtual void addRef();
-    virtual void release();
+    void addRef() override;
+    void release() override;
 
 	egl::Image *getRenderTarget();
     virtual egl::Image *createSharedImage();
@@ -208,8 +189,6 @@ public:
 	GLsizei getWidth() const;
 	GLsizei getHeight() const;
 	GLsizei getDepth() const;
-	GLint getLayer() const;
-	GLint getLevel() const;
 	GLint getFormat() const;
 	GLuint getRedSize() const;
 	GLuint getGreenSize() const;
@@ -219,12 +198,17 @@ public:
 	GLuint getStencilSize() const;
 	GLsizei getSamples() const;
 
-	void setLayer(GLint layer);
-	void setLevel(GLint level);
+	GLint getLayer() const { return mLayer; }
+	GLint getLevel() const { return mLevel; }
+
 	void setStorage(RenderbufferStorage *newStorage);
+	void setLayer(GLint layer) { mLayer = layer; }
+	void setLevel(GLint level) { mLevel = level; }
 
 private:
 	RenderbufferInterface *mInstance;
+	GLint mLevel;
+	GLint mLayer;
 };
 
 class Colorbuffer : public RenderbufferStorage
@@ -233,11 +217,11 @@ public:
 	explicit Colorbuffer(egl::Image *renderTarget);
 	Colorbuffer(GLsizei width, GLsizei height, GLenum internalformat, GLsizei samples);
 
-	virtual ~Colorbuffer();
+	~Colorbuffer() override;
 
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	egl::Image *getRenderTarget(GLint level) override;
+    egl::Image *createSharedImage(GLint level) override;
+    bool isShared(GLint level) const override;
 
 private:
 	egl::Image *mRenderTarget;
@@ -251,9 +235,9 @@ public:
 
 	~DepthStencilbuffer();
 
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
+	egl::Image *getRenderTarget(GLint level) override;
+    egl::Image *createSharedImage(GLint level) override;
+    bool isShared(GLint level) const override;
 
 protected:
 	egl::Image *mDepthStencil;
@@ -265,7 +249,7 @@ public:
 	explicit Depthbuffer(egl::Image *depthStencil);
 	Depthbuffer(GLsizei width, GLsizei height, GLenum internalformat, GLsizei samples);
 
-	virtual ~Depthbuffer();
+	~Depthbuffer() override;
 };
 
 class Stencilbuffer : public DepthStencilbuffer
@@ -274,7 +258,7 @@ public:
 	explicit Stencilbuffer(egl::Image *depthStencil);
 	Stencilbuffer(GLsizei width, GLsizei height, GLsizei samples);
 
-	virtual ~Stencilbuffer();
+	~Stencilbuffer() override;
 };
 }
 
