@@ -606,7 +606,8 @@ namespace sw
 
 					if(draw->renderTarget[index])
 					{
-						data->colorBuffer[index] = (unsigned int*)context->renderTarget[index]->lockInternal(0, 0, q * ms, LOCK_READWRITE, MANAGED);
+						unsigned int layer = context->renderTargetLayer[index];
+						data->colorBuffer[index] = (unsigned int*)context->renderTarget[index]->lockInternal(0, 0, q * ms + layer, LOCK_READWRITE, MANAGED);
 						data->colorPitchB[index] = context->renderTarget[index]->getInternalPitchB();
 						data->colorSliceB[index] = context->renderTarget[index]->getInternalSliceB();
 					}

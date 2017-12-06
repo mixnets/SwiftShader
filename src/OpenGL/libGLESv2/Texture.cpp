@@ -903,7 +903,7 @@ Renderbuffer *Texture2D::getRenderbuffer(GLenum target, GLint level, GLint layer
 
 	if(!mColorbufferProxy)
 	{
-		mColorbufferProxy = new Renderbuffer(name, new RenderbufferTexture2D(this, level));
+		mColorbufferProxy = new Renderbuffer(name, new RenderbufferTexture2D(this));
 	}
 	else
 	{
@@ -1450,7 +1450,7 @@ Renderbuffer *TextureCubeMap::getRenderbuffer(GLenum target, GLint level, GLint 
 
 	if(!mFaceProxies[face])
 	{
-		mFaceProxies[face] = new Renderbuffer(name, new RenderbufferTextureCubeMap(this, target, level));
+		mFaceProxies[face] = new Renderbuffer(name, new RenderbufferTextureCubeMap(this, target));
 	}
 	else
 	{
@@ -1887,7 +1887,7 @@ Renderbuffer *Texture3D::getRenderbuffer(GLenum target, GLint level, GLint layer
 
 	if(!mColorbufferProxy)
 	{
-		mColorbufferProxy = new Renderbuffer(name, new RenderbufferTexture3D(this, level, layer));
+		mColorbufferProxy = new Renderbuffer(name, new RenderbufferTexture3D(this));
 	}
 	else
 	{
