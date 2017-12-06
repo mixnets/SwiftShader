@@ -465,6 +465,7 @@ namespace sw
 		bool textureTransformProject[8];
 
 		Surface *renderTarget[RENDERTARGETS];
+		unsigned int renderTargetLayer[RENDERTARGETS];
 		Surface *depthBuffer;
 		Surface *stencilBuffer;
 
