@@ -4219,19 +4219,23 @@ void Hint(GLenum target, GLenum mode)
 	}
 
 	es2::Context *context = es2::getContext();
-	switch(target)
+
+	if(context)
 	{
-	case GL_GENERATE_MIPMAP_HINT:
-		if(context) context->setGenerateMipmapHint(mode);
-		break;
-	case GL_FRAGMENT_SHADER_DERIVATIVE_HINT_OES:
-		if(context) context->setFragmentShaderDerivativeHint(mode);
-		break;
-	case GL_TEXTURE_FILTERING_HINT_CHROMIUM:
-		if(context) context->setTextureFilteringHint(mode);
-		break;
-	default:
-		return error(GL_INVALID_ENUM);
+		switch(target)
+		{
+		case GL_GENERATE_MIPMAP_HINT:
+			context->setGenerateMipmapHint(mode);
+			break;
+		case GL_FRAGMENT_SHADER_DERIVATIVE_HINT_OES:
+			context->setFragmentShaderDerivativeHint(mode);
+			break;
+		case GL_TEXTURE_FILTERING_HINT_CHROMIUM:
+			context->setTextureFilteringHint(mode);
+			break;
+		default:
+			return error(GL_INVALID_ENUM);
+		}
 	}
 }
 

@@ -49,12 +49,12 @@ Framebuffer::Framebuffer()
 
 Framebuffer::~Framebuffer()
 {
-	for(int i = 0; i < MAX_COLOR_ATTACHMENTS; i++)
-	{
-		mColorbufferPointer[i] = nullptr;
-	}
-	mDepthbufferPointer = nullptr;
-	mStencilbufferPointer = nullptr;
+	//for(int i = 0; i < MAX_COLOR_ATTACHMENTS; i++)
+	//{
+	//	mColorbufferPointer[i] = {};// nullptr;
+	//}
+	//mDepthbufferPointer = {};// nullptr;
+	//mStencilbufferPointer = {};// nullptr;
 }
 
 Renderbuffer *Framebuffer::lookupRenderbuffer(GLenum type, GLuint handle, GLint level, GLint layer) const
