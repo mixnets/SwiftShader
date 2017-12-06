@@ -363,7 +363,7 @@ namespace es2
 		scissorEnable = enable;
 	}
 
-	void Device::setRenderTarget(int index, egl::Image *renderTarget)
+	void Device::setRenderTarget(int index, egl::Image *renderTarget, unsigned int layer)
 	{
 		if(renderTarget)
 		{
@@ -377,7 +377,7 @@ namespace es2
 
 		this->renderTarget[index] = renderTarget;
 
-		Renderer::setRenderTarget(index, renderTarget);
+		Renderer::setRenderTarget(index, renderTarget, layer);
 	}
 
 	void Device::setDepthBuffer(egl::Image *depthBuffer)

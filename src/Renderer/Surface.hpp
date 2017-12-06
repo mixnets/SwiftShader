@@ -239,12 +239,15 @@ namespace sw
 			int width;
 			int height;
 			int depth;
+			short border;
+			short samples;
+
 			int bytes;
 			int pitchB;
 			int pitchP;
 			int sliceB;
 			int sliceP;
-			int border;
+
 			Format format;
 			AtomicInt lock;
 
@@ -253,11 +256,11 @@ namespace sw
 
 	protected:
 		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
-		Surface(Resource *texture, int width, int height, int depth, int border, Format format, bool lockable, bool renderTarget, int pitchP = 0);
+		Surface(Resource *texture, int width, int height, int depth, int border, int samples, Format format, bool lockable, bool renderTarget, int pitchP = 0);
 
 	public:
 		static Surface *create(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
-		static Surface *create(Resource *texture, int width, int height, int depth, int border, Format format, bool lockable, bool renderTarget, int pitchP = 0);
+		static Surface *create(Resource *texture, int width, int height, int depth, int border, int samples, Format format, bool lockable, bool renderTarget, int pitchP = 0);
 
 		virtual ~Surface() = 0;
 
@@ -336,7 +339,7 @@ namespace sw
 		static int pitchP(int width, int border, Format format, bool target);
 		static int sliceB(int width, int height, int border, Format format, bool target);
 		static int sliceP(int width, int height, int border, Format format, bool target);
-		static unsigned int size(int width, int height, int depth, int border, Format format);   // FIXME: slice * depth
+		static unsigned int size(int width, int height, int depth, int border, int samples, Format format);   // FIXME: slice * depth
 
 		static bool isStencil(Format format);
 		static bool isDepth(Format format);
@@ -459,7 +462,7 @@ namespace sw
 
 		static void update(Buffer &destination, Buffer &source);
 		static void genericUpdate(Buffer &destination, Buffer &source);
-		static void *allocateBuffer(int width, int height, int depth, int border, Format format);
+		static void *allocateBuffer(int width, int height, int depth, int border, int samples, Format format);
 		static void memfill4(void *buffer, int pattern, int bytes);
 
 		bool identicalFormats() const;
@@ -612,12 +615,12 @@ namespace sw
 
 	int Surface::getMultiSampleCount() const
 	{
-		return sw::min(internal.depth, 4);
+		return sw::min((int)internal.samples, 4);
 	}
 
 	int Surface::getSuperSampleCount() const
 	{
-		return internal.depth > 4 ? internal.depth / 4 : 1;
+		return internal.samples > 4 ? internal.samples / 4 : 1;
 	}
 
 	bool Surface::isUnlocked() const
