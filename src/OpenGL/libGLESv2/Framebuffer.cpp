@@ -189,7 +189,7 @@ egl::Image *Framebuffer::getRenderTarget(GLuint index)
 egl::Image *Framebuffer::getReadRenderTarget()
 {
 	Context *context = getContext();
-	return getRenderTarget(context->getReadFramebufferColorIndex());
+	return getRenderTarget(getReadFramebufferColorIndex());
 }
 
 // Increments refcount on surface.
@@ -227,8 +227,7 @@ Renderbuffer *Framebuffer::getColorbuffer(GLuint index) const
 
 Renderbuffer *Framebuffer::getReadColorbuffer() const
 {
-	Context *context = getContext();
-	return getColorbuffer(context->getReadFramebufferColorIndex());
+	return getColorbuffer(getReadFramebufferColorIndex());
 }
 
 Renderbuffer *Framebuffer::getDepthbuffer() const
@@ -239,6 +238,11 @@ Renderbuffer *Framebuffer::getDepthbuffer() const
 Renderbuffer *Framebuffer::getStencilbuffer() const
 {
 	return mStencilbufferPointer;
+}
+
+GLenum Framebuffer::getReadColorbufferType()
+{
+	return mColorbufferType[getReadFramebufferColorIndex()];
 }
 
 GLenum Framebuffer::getColorbufferType(GLuint index)
@@ -658,6 +662,19 @@ GLenum Framebuffer::getDepthReadType() const
 
 	// If there is no depth buffer, GL_INVALID_OPERATION occurs.
 	return GL_NONE;
+}
+
+GLuint Framebuffer::getReadFramebufferColorIndex() const
+{
+	switch(readBuffer)
+	{
+	case GL_BACK:
+		return 0;
+	case GL_NONE:
+		return GL_INVALID_INDEX;
+	default:
+		return readBuffer - GL_COLOR_ATTACHMENT0;
+	}
 }
 
 DefaultFramebuffer::DefaultFramebuffer(Colorbuffer *colorbuffer, DepthStencilbuffer *depthStencil)
