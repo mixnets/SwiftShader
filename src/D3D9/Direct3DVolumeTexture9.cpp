@@ -191,11 +191,11 @@ namespace D3D9
 
 			int sWidth = source->getWidth();
 			int sHeight = source->getHeight();
-			int sDepth = source->getDepth();
+			int sDepth = source->_getDepth();
 
 			int dWidth = dest->getWidth();
 			int dHeight = dest->getHeight();
-			int dDepth = dest->getDepth();
+			int dDepth = dest->_getDepth();
 
 			D3DTEXTUREFILTERTYPE filter = GetAutoGenFilterType();
 

@@ -479,7 +479,7 @@ namespace D3D9
 			rect = &lock;
 		}
 
-		static_cast<Direct3DSurface9*>(surface)->fill(color, rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top);
+		static_cast<Direct3DSurface9*>(surface)->fill_(color, rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top);
 
 		return D3D_OK;
 	}
@@ -2660,7 +2660,7 @@ namespace D3D9
 		void *bitmap = cursorSurface->lockExternal(0, 0, 0, sw::LOCK_READONLY, sw::PUBLIC);
 
 		delete cursor;
-		cursor = sw::Surface::create(nullptr, width, height, 1, 0, sw::FORMAT_A8R8G8B8, false, false);
+		cursor = sw::Surface::create(nullptr, width, height, 1, 0, 1, sw::FORMAT_A8R8G8B8, false, false);
 
 		void *buffer = cursor->lockExternal(0, 0, 0, sw::LOCK_DISCARD, sw::PUBLIC);
 		memcpy(buffer, bitmap, width * height * sizeof(unsigned int));

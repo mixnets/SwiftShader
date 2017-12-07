@@ -99,7 +99,7 @@ namespace sw
 			return false;
 		}
 
-		uint8_t *d = (uint8_t*)dest->lockInternal(dRect.x0, dRect.y0, dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC);
+		uint8_t *d =  (uint8_t*)dest->lockInternal(dRect.x0, dRect.y0, dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC);
 
 		switch(Surface::bytes(dest->getFormat()))
 		{
@@ -169,8 +169,8 @@ namespace sw
 			swap(sRect.y0, sRect.y1);
 		}
 
-		source->lockInternal((int)sRect.x0, (int)sRect.y0, sRect.slice, sw::LOCK_READONLY, sw::PUBLIC);
-		dest->lockInternal(dRect.x0, dRect.y0, dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC);
+		 source->lockInternal((int)sRect.x0, (int)sRect.y0, sRect.slice, sw::LOCK_READONLY, sw::PUBLIC);
+		 dest->lockInternal(dRect.x0, dRect.y0, dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC);
 
 		float w = sRect.width() / dRect.width();
 		float h = sRect.height() / dRect.height();
@@ -204,16 +204,16 @@ namespace sw
 
 		float w = static_cast<float>(source->getWidth())  / static_cast<float>(dest->getWidth());
 		float h = static_cast<float>(source->getHeight()) / static_cast<float>(dest->getHeight());
-		float d = static_cast<float>(source->getDepth())  / static_cast<float>(dest->getDepth());
+		float d = static_cast<float>(source->_getDepth())  / static_cast<float>(dest->_getDepth());
 
 		float z = 0.5f * d;
-		for(int k = 0; k < dest->getDepth(); ++k)
+		for(int k = 0; k < dest->_getDepth(); k++)
 		{
 			float y = 0.5f * h;
-			for(int j = 0; j < dest->getHeight(); ++j)
+			for(int j = 0; j < dest->getHeight(); j++)
 			{
 				float x = 0.5f * w;
-				for(int i = 0; i < dest->getWidth(); ++i)
+				for(int i = 0; i < dest->getWidth(); i++)
 				{
 					dest->copyInternal(source, i, j, k, x, y, z, true);
 					x += w;

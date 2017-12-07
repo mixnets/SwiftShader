@@ -234,15 +234,15 @@ namespace sw
 	private:
 		struct Buffer
 		{
-		public:
-			void write(int x, int y, int z, const Color<float> &color);
-			void write(int x, int y, const Color<float> &color);
+			friend Surface;
+
+		private:
+			void write(const Color<float> &color, int x, int y, int z = 0, int sample = 0);
 			void write(void *element, const Color<float> &color);
-			Color<float> read(int x, int y, int z) const;
-			Color<float> read(int x, int y) const;
+			Color<float> read(int x, int y, int z = 0, int sample = 0) const;
 			Color<float> read(void *element) const;
-			Color<float> sample(float x, float y, float z) const;
-			Color<float> sample(float x, float y) const;
+			Color<float> sample(float x, float y, float z = 0, int sample = 0) const;
+			Color<float> sample(float x, float y, int sample = 0) const;
 
 			void *lockRect(int x, int y, int z, Lock lock);
 			void unlockRect();
@@ -280,7 +280,7 @@ namespace sw
 		inline void unlock(bool internal = false);
 		inline int getWidth() const;
 		inline int getHeight() const;
-		inline int getDepth() const;
+		inline int _getDepth() const;
 		inline int getBorder() const;
 		inline Format getFormat(bool internal = false) const;
 		inline int getPitchB(bool internal = false) const;
@@ -313,6 +313,7 @@ namespace sw
 		void sync();                      // Wait for lock(s) to be released.
 		inline bool isUnlocked() const;   // Only reliable after sync().
 
+		inline int getSamples() const;
 		inline int getMultiSampleCount() const;
 		inline int getSuperSampleCount() const;
 
@@ -320,7 +321,7 @@ namespace sw
 		Rect getRect() const;
 		void clearDepth(float depth, int x0, int y0, int width, int height);
 		void clearStencil(unsigned char stencil, unsigned char mask, int x0, int y0, int width, int height);
-		void fill(const Color<float> &color, int x0, int y0, int width, int height);
+		void fill_(const Color<float> &color, int x0, int y0, int width, int height);
 
 		Color<float> readExternal(int x, int y, int z) const;
 		Color<float> readExternal(int x, int y) const;
@@ -525,7 +526,7 @@ namespace sw
 		return external.height;
 	}
 
-	int Surface::getDepth() const
+	int Surface::_getDepth() const
 	{
 		return external.depth;
 	}
@@ -623,6 +624,11 @@ namespace sw
 	int Surface::getStencilSliceB() const
 	{
 		return stencil.sliceB;
+	}
+
+	int Surface::getSamples() const
+	{
+		return internal.samples;
 	}
 
 	int Surface::getMultiSampleCount() const

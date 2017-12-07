@@ -42,16 +42,9 @@ namespace sw
 	unsigned int *Surface::palette = 0;
 	unsigned int Surface::paletteID = 0;
 
-	void Surface::Buffer::write(int x, int y, int z, const Color<float> &color)
+	void Surface::Buffer::write(const Color<float> &color, int x, int y, int z, int sample)
 	{
-		void *element = (unsigned char*)buffer + (x + border) * bytes + (y + border) * pitchB + z * sliceB;
-
-		write(element, color);
-	}
-
-	void Surface::Buffer::write(int x, int y, const Color<float> &color)
-	{
-		void *element = (unsigned char*)buffer + (x + border) * bytes + (y + border) * pitchB;
+		void *element = (unsigned char*)buffer + (x + border) * bytes + (y + border) * pitchB + z * samples * sliceB + sample;
 
 		write(element, color);
 	}
@@ -360,16 +353,9 @@ namespace sw
 		}
 	}
 
-	Color<float> Surface::Buffer::read(int x, int y, int z) const
+	Color<float> Surface::Buffer::read(int x, int y, int z, int sample) const
 	{
-		void *element = (unsigned char*)buffer + (x + border) * bytes + (y + border) * pitchB + z * sliceB;
-
-		return read(element);
-	}
-
-	Color<float> Surface::Buffer::read(int x, int y) const
-	{
-		void *element = (unsigned char*)buffer + (x + border) * bytes + (y + border) * pitchB;
+		void *element = (unsigned char*)buffer + (x + border) * bytes + (y + border) * pitchB + z * samples * sliceB + sample;
 
 		return read(element);
 	}
@@ -993,7 +979,7 @@ namespace sw
 		return Color<float>(r, g, b, a);
 	}
 
-	Color<float> Surface::Buffer::sample(float x, float y, float z) const
+	Color<float> Surface::Buffer::sample(float x, float y, float z, int sample) const
 	{
 		x -= 0.5f;
 		y -= 0.5f;
@@ -1008,14 +994,14 @@ namespace sw
 		int z0 = clamp((int)z, 0, depth - 1);
 		int z1 = (z0 + 1 >= depth) ? z0 : z0 + 1;
 
-		Color<float> c000 = read(x0, y0, z0);
-		Color<float> c100 = read(x1, y0, z0);
-		Color<float> c010 = read(x0, y1, z0);
-		Color<float> c110 = read(x1, y1, z0);
-		Color<float> c001 = read(x0, y0, z1);
-		Color<float> c101 = read(x1, y0, z1);
-		Color<float> c011 = read(x0, y1, z1);
-		Color<float> c111 = read(x1, y1, z1);
+		Color<float> c000 = read(x0, y0, z0, sample);
+		Color<float> c100 = read(x1, y0, z0, sample);
+		Color<float> c010 = read(x0, y1, z0, sample);
+		Color<float> c110 = read(x1, y1, z0, sample);
+		Color<float> c001 = read(x0, y0, z1, sample);
+		Color<float> c101 = read(x1, y0, z1, sample);
+		Color<float> c011 = read(x0, y1, z1, sample);
+		Color<float> c111 = read(x1, y1, z1, sample);
 
 		float fx = x - x0;
 		float fy = y - y0;
@@ -1033,7 +1019,7 @@ namespace sw
 		return c000 + c100 + c010 + c110 + c001 + c101 + c011 + c111;
 	}
 
-	Color<float> Surface::Buffer::sample(float x, float y) const
+	Color<float> Surface::Buffer::sample(float x, float y, int sample) const
 	{
 		x -= 0.5f;
 		y -= 0.5f;
@@ -1044,10 +1030,10 @@ namespace sw
 		int y0 = clamp((int)y, 0, height - 1);
 		int y1 = (y0 + 1 >= height) ? y0 : y0 + 1;
 
-		Color<float> c00 = read(x0, y0);
-		Color<float> c10 = read(x1, y0);
-		Color<float> c01 = read(x0, y1);
-		Color<float> c11 = read(x1, y1);
+		Color<float> c00 = read(x0, y0, 0, sample);
+		Color<float> c10 = read(x1, y0, 0, sample);
+		Color<float> c01 = read(x0, y1, 0, sample);
+		Color<float> c11 = read(x1, y1, 0, sample);
 
 		float fx = x - x0;
 		float fy = y - y0;
@@ -1150,11 +1136,11 @@ namespace sw
 			case FORMAT_ATI2:
 				return (unsigned char*)buffer + 16 * (x / 4) + (y / 4) * pitchB + z * sliceB;
 			default:
-				return (unsigned char*)buffer + x * bytes + y * pitchB + z * sliceB;
+				return (unsigned char*)buffer + x * bytes + y * pitchB + z * samples * sliceB;
 			}
 		}
 
-		return 0;
+		return nullptr;
 	}
 
 	void Surface::Buffer::unlockRect()
@@ -1881,7 +1867,7 @@ namespace sw
 		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
 		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
-		int depth = min(destination.depth, source.depth);
+		int depth = min(destination.depth * destination.samples, source.depth * source.samples);
 		int height = min(destination.height, source.height);
 		int width = min(destination.width, source.width);
 		int rowBytes = width * source.bytes;
@@ -1929,17 +1915,21 @@ namespace sw
 		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
 		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
-		for(int z = 0; z < destination.depth && z < source.depth; z++)
+		int depth = min(destination.depth * destination.samples, source.depth * source.samples);
+		int height = min(destination.height, source.height);
+		int width = min(destination.width, source.width);
+
+		for(int z = 0; z < depth; z++)
 		{
 			unsigned char *sourceRow = sourceSlice;
 			unsigned char *destinationRow = destinationSlice;
 
-			for(int y = 0; y < destination.height && y < source.height; y++)
+			for(int y = 0; y < height; y++)
 			{
 				unsigned char *sourceElement = sourceRow;
 				unsigned char *destinationElement = destinationRow;
 
-				for(int x = 0; x < destination.width && x < source.width; x++)
+				for(int x = 0; x < width; x++)
 				{
 					unsigned int b = sourceElement[0];
 					unsigned int g = sourceElement[1];
@@ -1968,17 +1958,21 @@ namespace sw
 		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
 		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
-		for(int z = 0; z < destination.depth && z < source.depth; z++)
+		int depth = min(destination.depth * destination.samples, source.depth * source.samples);
+		int height = min(destination.height, source.height);
+		int width = min(destination.width, source.width);
+
+		for(int z = 0; z < depth; z++)
 		{
 			unsigned char *sourceRow = sourceSlice;
 			unsigned char *destinationRow = destinationSlice;
 
-			for(int y = 0; y < destination.height && y < source.height; y++)
+			for(int y = 0; y < height; y++)
 			{
 				unsigned char *sourceElement = sourceRow;
 				unsigned char *destinationElement = destinationRow;
 
-				for(int x = 0; x < destination.width && x < source.width; x++)
+				for(int x = 0; x < width; x++)
 				{
 					unsigned int xrgb = *(unsigned short*)sourceElement;
 
@@ -2009,17 +2003,21 @@ namespace sw
 		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
 		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
-		for(int z = 0; z < destination.depth && z < source.depth; z++)
+		int depth = min(destination.depth * destination.samples, source.depth * source.samples);
+		int height = min(destination.height, source.height);
+		int width = min(destination.width, source.width);
+
+		for(int z = 0; z < depth; z++)
 		{
 			unsigned char *sourceRow = sourceSlice;
 			unsigned char *destinationRow = destinationSlice;
 
-			for(int y = 0; y < destination.height && y < source.height; y++)
+			for(int y = 0; y < height; y++)
 			{
 				unsigned char *sourceElement = sourceRow;
 				unsigned char *destinationElement = destinationRow;
 
-				for(int x = 0; x < destination.width && x < source.width; x++)
+				for(int x = 0; x < width; x++)
 				{
 					unsigned int argb = *(unsigned short*)sourceElement;
 
@@ -2051,17 +2049,21 @@ namespace sw
 		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
 		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
-		for(int z = 0; z < destination.depth && z < source.depth; z++)
+		int depth = min(destination.depth * destination.samples, source.depth * source.samples);
+		int height = min(destination.height, source.height);
+		int width = min(destination.width, source.width);
+
+		for(int z = 0; z < depth; z++)
 		{
 			unsigned char *sourceRow = sourceSlice;
 			unsigned char *destinationRow = destinationSlice;
 
-			for(int y = 0; y < destination.height && y < source.height; y++)
+			for(int y = 0; y < height; y++)
 			{
 				unsigned char *sourceElement = sourceRow;
 				unsigned char *destinationElement = destinationRow;
 
-				for(int x = 0; x < destination.width && x < source.width; x++)
+				for(int x = 0; x < width; x++)
 				{
 					unsigned int xrgb = *(unsigned short*)sourceElement;
 
@@ -2092,17 +2094,21 @@ namespace sw
 		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
 		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
-		for(int z = 0; z < destination.depth && z < source.depth; z++)
+		int depth = min(destination.depth * destination.samples, source.depth * source.samples);
+		int height = min(destination.height, source.height);
+		int width = min(destination.width, source.width);
+
+		for(int z = 0; z < depth; z++)
 		{
 			unsigned char *sourceRow = sourceSlice;
 			unsigned char *destinationRow = destinationSlice;
 
-			for(int y = 0; y < destination.height && y < source.height; y++)
+			for(int y = 0; y < height; y++)
 			{
 				unsigned char *sourceElement = sourceRow;
 				unsigned char *destinationElement = destinationRow;
 
-				for(int x = 0; x < destination.width && x < source.width; x++)
+				for(int x = 0; x < width; x++)
 				{
 					unsigned int argb = *(unsigned short*)sourceElement;
 
@@ -2134,17 +2140,21 @@ namespace sw
 		unsigned char *sourceSlice = (unsigned char*)source.lockRect(0, 0, 0, sw::LOCK_READONLY);
 		unsigned char *destinationSlice = (unsigned char*)destination.lockRect(0, 0, 0, sw::LOCK_WRITEONLY);
 
-		for(int z = 0; z < destination.depth && z < source.depth; z++)
+		int depth = min(destination.depth * destination.samples, source.depth * source.samples);
+		int height = min(destination.height, source.height);
+		int width = min(destination.width, source.width);
+
+		for(int z = 0; z < depth; z++)
 		{
 			unsigned char *sourceRow = sourceSlice;
 			unsigned char *destinationRow = destinationSlice;
 
-			for(int y = 0; y < destination.height && y < source.height; y++)
+			for(int y = 0; y < height; y++)
 			{
 				unsigned char *sourceElement = sourceRow;
 				unsigned char *destinationElement = destinationRow;
 
-				for(int x = 0; x < destination.width && x < source.width; x++)
+				for(int x = 0; x < width; x++)
 				{
 					unsigned int abgr = palette[*(unsigned char*)sourceElement];
 
@@ -3291,7 +3301,7 @@ namespace sw
 		{
 			float *target = (float*)lockInternal(0, 0, 0, lock, PUBLIC) + x0 + width2 * y0;
 
-			for(int z = 0; z < internal.depth; z++)
+			for(int z = 0; z < internal.samples; z++)
 			{
 				for(int y = y0; y < y1; y++)
 				{
@@ -3316,7 +3326,7 @@ namespace sw
 			int evenX0 = ((x0 + 1) & ~1) * 2;
 			int evenBytes = (oddX1 - evenX0) * sizeof(float);
 
-			for(int z = 0; z < internal.depth; z++)
+			for(int z = 0; z < internal.samples; z++)
 			{
 				for(int y = y0; y < y1; y++)
 				{
@@ -3420,7 +3430,7 @@ namespace sw
 		char *buffer = (char*)lockStencil(0, 0, 0, PUBLIC);
 
 		// Stencil buffers are assumed to use quad layout
-		for(int z = 0; z < stencil.depth; z++)
+		for(int z = 0; z < stencil.samples; z++)
 		{
 			for(int y = y0; y < y1; y++)
 			{
@@ -3459,7 +3469,7 @@ namespace sw
 		unlockStencil();
 	}
 
-	void Surface::fill(const Color<float> &color, int x0, int y0, int width, int height)
+	void Surface::fill_(const Color<float> &color, int x0, int y0, int width, int height)
 	{
 		unsigned char *row;
 		Buffer *buffer;
@@ -3517,25 +3527,28 @@ namespace sw
 		}
 	}
 
-	void Surface::copyInternal(const Surface* source, int x, int y, float srcX, float srcY, bool filter)
+	void Surface::copyInternal(const Surface *source, int x, int y, float srcX, float srcY, bool filter)
 	{
 		ASSERT(internal.lock != LOCK_UNLOCKED && source && source->internal.lock != LOCK_UNLOCKED);
 
-		sw::Color<float> color;
-
-		if(!filter)
+		for(int i = 0; i < internal.samples; i++)
 		{
-			color = source->internal.read((int)srcX, (int)srcY);
-		}
-		else   // Bilinear filtering
-		{
-			color = source->internal.sample(srcX, srcY);
-		}
+			sw::Color<float> color;
 
-		internal.write(x, y, color);
+			if(!filter)
+			{
+				color = source->internal.read((int)srcX, (int)srcY, 0, i);
+			}
+			else   // Bilinear filtering
+			{
+				color = source->internal.sample(srcX, srcY, i);
+			}
+
+			internal.write(color, x, y);
+		}
 	}
 
-	void Surface::copyInternal(const Surface* source, int x, int y, int z, float srcX, float srcY, float srcZ, bool filter)
+	void Surface::copyInternal(const Surface *source, int x, int y, int z, float srcX, float srcY, float srcZ, bool filter)
 	{
 		ASSERT(internal.lock != LOCK_UNLOCKED && source && source->internal.lock != LOCK_UNLOCKED);
 
@@ -3550,7 +3563,7 @@ namespace sw
 			color = source->internal.sample(srcX, srcY, srcZ);
 		}
 
-		internal.write(x, y, z, color);
+		internal.write(color, x, y, z);
 	}
 
 	void Surface::copyCubeEdge(Edge dstEdge, Surface *src, Edge srcEdge)
@@ -3625,7 +3638,7 @@ namespace sw
 		color += internal.read(x1, y1);
 		color *= (1.0f / 3.0f);
 
-		internal.write(x0, y0, color);
+		internal.write(color, x0, y0);
 	}
 
 	bool Surface::hasStencil() const
@@ -3671,7 +3684,8 @@ namespace sw
 		       external.depth  == internal.depth &&
 		       external.pitchB == internal.pitchB &&
 		       external.sliceB == internal.sliceB &&
-		       external.border == internal.border;
+		       external.border == internal.border &&
+		       external.samples == internal.samples;
 	}
 
 	Format Surface::selectInternalFormat(Format format) const
@@ -3915,7 +3929,7 @@ namespace sw
 
 	void Surface::resolve()
 	{
-		if(internal.depth <= 1 || !internal.dirty || !renderTarget || internal.format == FORMAT_NULL)
+		if(internal.samples <= 1 || !internal.dirty || !renderTarget || internal.format == FORMAT_NULL)
 		{
 			return;
 		}
@@ -3951,7 +3965,7 @@ namespace sw
 			#if defined(__i386__) || defined(__x86_64__)
 				if(CPUID::supportsSSE2() && (width % 4) == 0)
 				{
-					if(internal.depth == 2)
+					if(internal.samples == 2)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -3969,7 +3983,7 @@ namespace sw
 							source1 += pitch;
 						}
 					}
-					else if(internal.depth == 4)
+					else if(internal.samples == 4)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -3993,7 +4007,7 @@ namespace sw
 							source3 += pitch;
 						}
 					}
-					else if(internal.depth == 8)
+					else if(internal.samples == 8)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4029,7 +4043,7 @@ namespace sw
 							source7 += pitch;
 						}
 					}
-					else if(internal.depth == 16)
+					else if(internal.samples == 16)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4096,7 +4110,7 @@ namespace sw
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7F7F7F7F) + (((x) ^ (y)) & 0x01010101))
 
-				if(internal.depth == 2)
+				if(internal.samples == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4114,7 +4128,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal.samples == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4138,7 +4152,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal.samples == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4174,7 +4188,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal.samples == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4245,7 +4259,7 @@ namespace sw
 			#if defined(__i386__) || defined(__x86_64__)
 				if(CPUID::supportsSSE2() && (width % 4) == 0)
 				{
-					if(internal.depth == 2)
+					if(internal.samples == 2)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4263,7 +4277,7 @@ namespace sw
 							source1 += pitch;
 						}
 					}
-					else if(internal.depth == 4)
+					else if(internal.samples == 4)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4287,7 +4301,7 @@ namespace sw
 							source3 += pitch;
 						}
 					}
-					else if(internal.depth == 8)
+					else if(internal.samples == 8)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4323,7 +4337,7 @@ namespace sw
 							source7 += pitch;
 						}
 					}
-					else if(internal.depth == 16)
+					else if(internal.samples == 16)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4390,7 +4404,7 @@ namespace sw
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7FFF7FFF) + (((x) ^ (y)) & 0x00010001))
 
-				if(internal.depth == 2)
+				if(internal.samples == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4408,7 +4422,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal.samples == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4432,7 +4446,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal.samples == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4468,7 +4482,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal.samples == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4538,7 +4552,7 @@ namespace sw
 			#if defined(__i386__) || defined(__x86_64__)
 				if(CPUID::supportsSSE2() && (width % 2) == 0)
 				{
-					if(internal.depth == 2)
+					if(internal.samples == 2)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4556,7 +4570,7 @@ namespace sw
 							source1 += pitch;
 						}
 					}
-					else if(internal.depth == 4)
+					else if(internal.samples == 4)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4580,7 +4594,7 @@ namespace sw
 							source3 += pitch;
 						}
 					}
-					else if(internal.depth == 8)
+					else if(internal.samples == 8)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4616,7 +4630,7 @@ namespace sw
 							source7 += pitch;
 						}
 					}
-					else if(internal.depth == 16)
+					else if(internal.samples == 16)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4683,7 +4697,7 @@ namespace sw
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7FFF7FFF) + (((x) ^ (y)) & 0x00010001))
 
-				if(internal.depth == 2)
+				if(internal.samples == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4701,7 +4715,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal.samples == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4725,7 +4739,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal.samples == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4761,7 +4775,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal.samples == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4831,7 +4845,7 @@ namespace sw
 			#if defined(__i386__) || defined(__x86_64__)
 				if(CPUID::supportsSSE() && (width % 4) == 0)
 				{
-					if(internal.depth == 2)
+					if(internal.samples == 2)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4850,7 +4864,7 @@ namespace sw
 							source1 += pitch;
 						}
 					}
-					else if(internal.depth == 4)
+					else if(internal.samples == 4)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4875,7 +4889,7 @@ namespace sw
 							source3 += pitch;
 						}
 					}
-					else if(internal.depth == 8)
+					else if(internal.samples == 8)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4912,7 +4926,7 @@ namespace sw
 							source7 += pitch;
 						}
 					}
-					else if(internal.depth == 16)
+					else if(internal.samples == 16)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -4978,7 +4992,7 @@ namespace sw
 				else
 			#endif
 			{
-				if(internal.depth == 2)
+				if(internal.samples == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -4997,7 +5011,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal.samples == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -5022,7 +5036,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal.samples == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -5059,7 +5073,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal.samples == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -5128,7 +5142,7 @@ namespace sw
 			#if defined(__i386__) || defined(__x86_64__)
 				if(CPUID::supportsSSE() && (width % 2) == 0)
 				{
-					if(internal.depth == 2)
+					if(internal.samples == 2)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -5147,7 +5161,7 @@ namespace sw
 							source1 += pitch;
 						}
 					}
-					else if(internal.depth == 4)
+					else if(internal.samples == 4)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -5172,7 +5186,7 @@ namespace sw
 							source3 += pitch;
 						}
 					}
-					else if(internal.depth == 8)
+					else if(internal.samples == 8)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -5209,7 +5223,7 @@ namespace sw
 							source7 += pitch;
 						}
 					}
-					else if(internal.depth == 16)
+					else if(internal.samples == 16)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -5275,7 +5289,7 @@ namespace sw
 				else
 			#endif
 			{
-				if(internal.depth == 2)
+				if(internal.samples == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -5294,7 +5308,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal.samples == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -5319,7 +5333,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal.samples == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -5356,7 +5370,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal.samples == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -5425,7 +5439,7 @@ namespace sw
 			#if defined(__i386__) || defined(__x86_64__)
 				if(CPUID::supportsSSE())
 				{
-					if(internal.depth == 2)
+					if(internal.samples == 2)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -5444,7 +5458,7 @@ namespace sw
 							source1 += pitch;
 						}
 					}
-					else if(internal.depth == 4)
+					else if(internal.samples == 4)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -5469,7 +5483,7 @@ namespace sw
 							source3 += pitch;
 						}
 					}
-					else if(internal.depth == 8)
+					else if(internal.samples == 8)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -5506,7 +5520,7 @@ namespace sw
 							source7 += pitch;
 						}
 					}
-					else if(internal.depth == 16)
+					else if(internal.samples == 16)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -5572,7 +5586,7 @@ namespace sw
 				else
 			#endif
 			{
-				if(internal.depth == 2)
+				if(internal.samples == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -5591,7 +5605,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal.samples == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -5616,7 +5630,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal.samples == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -5653,7 +5667,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal.samples == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -5722,7 +5736,7 @@ namespace sw
 			#if defined(__i386__) || defined(__x86_64__)
 				if(CPUID::supportsSSE2() && (width % 8) == 0)
 				{
-					if(internal.depth == 2)
+					if(internal.samples == 2)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -5751,7 +5765,7 @@ namespace sw
 							source1 += pitch;
 						}
 					}
-					else if(internal.depth == 4)
+					else if(internal.samples == 4)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -5792,7 +5806,7 @@ namespace sw
 							source3 += pitch;
 						}
 					}
-					else if(internal.depth == 8)
+					else if(internal.samples == 8)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -5857,7 +5871,7 @@ namespace sw
 							source7 += pitch;
 						}
 					}
-					else if(internal.depth == 16)
+					else if(internal.samples == 16)
 					{
 						for(int y = 0; y < height; y++)
 						{
@@ -5977,7 +5991,7 @@ namespace sw
 			{
 				#define AVERAGE(x, y) (((x) & (y)) + ((((x) ^ (y)) >> 1) & 0x7BEF) + (((x) ^ (y)) & 0x0821))
 
-				if(internal.depth == 2)
+				if(internal.samples == 2)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -5995,7 +6009,7 @@ namespace sw
 						source1 += pitch;
 					}
 				}
-				else if(internal.depth == 4)
+				else if(internal.samples == 4)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -6019,7 +6033,7 @@ namespace sw
 						source3 += pitch;
 					}
 				}
-				else if(internal.depth == 8)
+				else if(internal.samples == 8)
 				{
 					for(int y = 0; y < height; y++)
 					{
@@ -6055,7 +6069,7 @@ namespace sw
 						source7 += pitch;
 					}
 				}
-				else if(internal.depth == 16)
+				else if(internal.samples == 16)
 				{
 					for(int y = 0; y < height; y++)
 					{

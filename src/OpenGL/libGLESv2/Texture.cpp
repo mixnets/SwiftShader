@@ -894,7 +894,7 @@ egl::Image *Texture2D::getImage(unsigned int level)
 	return image[level];
 }
 
-Renderbuffer *Texture2D::getRenderbuffer(GLenum target, GLint level, GLint layer)
+Renderbuffer *Texture2D::getRenderbuffer(GLenum target, GLint level)
 {
 	if(target != GL_TEXTURE_2D)
 	{
@@ -903,7 +903,7 @@ Renderbuffer *Texture2D::getRenderbuffer(GLenum target, GLint level, GLint layer
 
 	if(!mColorbufferProxy)
 	{
-		mColorbufferProxy = new Renderbuffer(name, new RenderbufferTexture2D(this));
+		mColorbufferProxy = new Renderbuffer(name, new RenderbufferTexture2D(this, level));
 	}
 	else
 	{
@@ -1439,7 +1439,7 @@ void TextureCubeMap::generateMipmaps()
 	}
 }
 
-Renderbuffer *TextureCubeMap::getRenderbuffer(GLenum target, GLint level, GLint layer)
+Renderbuffer *TextureCubeMap::getRenderbuffer(GLenum target, GLint level)
 {
 	if(!IsCubemapTextureTarget(target))
 	{
@@ -1450,7 +1450,7 @@ Renderbuffer *TextureCubeMap::getRenderbuffer(GLenum target, GLint level, GLint 
 
 	if(!mFaceProxies[face])
 	{
-		mFaceProxies[face] = new Renderbuffer(name, new RenderbufferTextureCubeMap(this, target));
+		mFaceProxies[face] = new Renderbuffer(name, new RenderbufferTextureCubeMap(this, target, level));
 	}
 	else
 	{
@@ -1878,7 +1878,7 @@ egl::Image *Texture3D::getImage(unsigned int level)
 	return image[level];
 }
 
-Renderbuffer *Texture3D::getRenderbuffer(GLenum target, GLint level, GLint layer)
+Renderbuffer *Texture3D::getRenderbuffer(GLenum target, GLint level)
 {
 	if(target != getTarget())
 	{
@@ -1887,12 +1887,11 @@ Renderbuffer *Texture3D::getRenderbuffer(GLenum target, GLint level, GLint layer
 
 	if(!mColorbufferProxy)
 	{
-		mColorbufferProxy = new Renderbuffer(name, new RenderbufferTexture3D(this));
+		mColorbufferProxy = new Renderbuffer(name, new RenderbufferTexture3D(this, level));
 	}
 	else
 	{
 		mColorbufferProxy->setLevel(level);
-		mColorbufferProxy->setLayer(layer);
 	}
 
 	return mColorbufferProxy;
