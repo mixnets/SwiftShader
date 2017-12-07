@@ -19,7 +19,6 @@
 #define LIBGLESV2_FRAMEBUFFER_H_
 
 #include "Context.h"
-#include "Renderbuffer.h"
 #include "common/Object.hpp"
 #include "common/Image.hpp"
 
@@ -27,6 +26,7 @@
 
 namespace es2
 {
+class Renderbuffer;
 class Colorbuffer;
 class Depthbuffer;
 class Stencilbuffer;
@@ -95,16 +95,19 @@ protected:
 	GLenum drawBuffer[MAX_COLOR_ATTACHMENTS];
 
 	GLenum mColorbufferType[MAX_COLOR_ATTACHMENTS];
-	Renderbuffer mColorbufferPointer[MAX_COLOR_ATTACHMENTS];
+	gl::BindingPointer<Renderbuffer> mColorbufferPointer[MAX_COLOR_ATTACHMENTS];
+	GLint mColorbufferLayer[MAX_COLOR_ATTACHMENTS];
 
 	GLenum mDepthbufferType;
-	Renderbuffer mDepthbufferPointer;
+	gl::BindingPointer<Renderbuffer> mDepthbufferPointer;
+	GLint mDepthbufferLayer;
 
 	GLenum mStencilbufferType;
-	Renderbuffer mStencilbufferPointer;
+	gl::BindingPointer<Renderbuffer> mStencilbufferPointer;
+	GLint mStencilbufferLayer;
 
 private:
-	Renderbuffer *lookupRenderbuffer(GLenum type, GLuint handle, GLint level, GLint layer) const;
+	Renderbuffer *lookupRenderbuffer(GLenum type, GLuint handle, GLint level) const;
 };
 
 class DefaultFramebuffer : public Framebuffer

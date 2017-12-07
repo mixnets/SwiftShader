@@ -41,37 +41,37 @@ void RenderbufferInterface::releaseProxy(const Renderbuffer *proxy)
 
 GLuint RenderbufferInterface::getRedSize() const
 {
-	return GetRedSize(getFormat(0));
+	return GetRedSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getGreenSize() const
 {
-	return GetGreenSize(getFormat(0));
+	return GetGreenSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getBlueSize() const
 {
-	return GetBlueSize(getFormat(0));
+	return GetBlueSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getAlphaSize() const
 {
-	return GetAlphaSize(getFormat(0));
+	return GetAlphaSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getDepthSize() const
 {
-	return GetDepthSize(getFormat(0));
+	return GetDepthSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getStencilSize() const
 {
-	return GetStencilSize(getFormat(0));
+	return GetStencilSize(getFormat());
 }
 
 ///// RenderbufferTexture2D Implementation ////////
 
-RenderbufferTexture2D::RenderbufferTexture2D(Texture2D *texture)
+RenderbufferTexture2D::RenderbufferTexture2D(Texture2D *texture, GLint level) : mLevel(level)
 {
 	mTexture2D = texture;
 }
@@ -95,46 +95,46 @@ void RenderbufferTexture2D::releaseProxy(const Renderbuffer *proxy)
 
 // Increments refcount on image.
 // caller must release() the returned image
-egl::Image *RenderbufferTexture2D::getRenderTarget(GLint level)
+egl::Image *RenderbufferTexture2D::getRenderTarget()
 {
-	return mTexture2D->getRenderTarget(GL_TEXTURE_2D, level);
+	return mTexture2D->getRenderTarget(GL_TEXTURE_2D, mLevel);
 }
 
 // Increments refcount on image.
 // caller must release() the returned image
-egl::Image *RenderbufferTexture2D::createSharedImage(GLint level)
+egl::Image *RenderbufferTexture2D::createSharedImage()
 {
-	return mTexture2D->createSharedImage(GL_TEXTURE_2D, level);
+	return mTexture2D->createSharedImage(GL_TEXTURE_2D, mLevel);
 }
 
-bool RenderbufferTexture2D::isShared(GLint level) const
+bool RenderbufferTexture2D::isShared() const
 {
-	return mTexture2D->isShared(GL_TEXTURE_2D, level);
+	return mTexture2D->isShared(GL_TEXTURE_2D, mLevel);
 }
 
-GLsizei RenderbufferTexture2D::getWidth(GLint level) const
+GLsizei RenderbufferTexture2D::getWidth() const
 {
-	return mTexture2D->getWidth(GL_TEXTURE_2D, level);
+	return mTexture2D->getWidth(GL_TEXTURE_2D, mLevel);
 }
 
-GLsizei RenderbufferTexture2D::getHeight(GLint level) const
+GLsizei RenderbufferTexture2D::getHeight() const
 {
-	return mTexture2D->getHeight(GL_TEXTURE_2D, level);
+	return mTexture2D->getHeight(GL_TEXTURE_2D, mLevel);
 }
 
-GLint RenderbufferTexture2D::getFormat(GLint level) const
+GLint RenderbufferTexture2D::getFormat() const
 {
-	return mTexture2D->getFormat(GL_TEXTURE_2D, level);
+	return mTexture2D->getFormat(GL_TEXTURE_2D, mLevel);
 }
 
-GLsizei RenderbufferTexture2D::getSamples(GLint level) const
+GLsizei RenderbufferTexture2D::getSamples() const
 {
 	return 0;  // ???
 }
 
 ///// RenderbufferTexture3D Implementation ////////
 
-RenderbufferTexture3D::RenderbufferTexture3D(Texture3D *texture)//, GLint level, GLint layer) : mLevel(level), mLayer(layer)
+RenderbufferTexture3D::RenderbufferTexture3D(Texture3D *texture, GLint level) : mLevel(level)
 {
 	mTexture3D = texture;
 	/*if(mLayer != 0)
@@ -162,51 +162,51 @@ void RenderbufferTexture3D::releaseProxy(const Renderbuffer *proxy)
 
 // Increments refcount on image.
 // caller must release() the returned image
-egl::Image *RenderbufferTexture3D::getRenderTarget(GLint level)
+egl::Image *RenderbufferTexture3D::getRenderTarget()
 {
-	return mTexture3D->getRenderTarget(mTexture3D->getTarget(), level);
+	return mTexture3D->getRenderTarget(mTexture3D->getTarget(), mLevel);
 }
 
 // Increments refcount on image.
 // caller must release() the returned image
-egl::Image *RenderbufferTexture3D::createSharedImage(GLint level)
+egl::Image *RenderbufferTexture3D::createSharedImage()
 {
-	return mTexture3D->createSharedImage(mTexture3D->getTarget(), level);
+	return mTexture3D->createSharedImage(mTexture3D->getTarget(), mLevel);
 }
 
-bool RenderbufferTexture3D::isShared(GLint level) const
+bool RenderbufferTexture3D::isShared() const
 {
-	return mTexture3D->isShared(mTexture3D->getTarget(), level);
+	return mTexture3D->isShared(mTexture3D->getTarget(), mLevel);
 }
 
-GLsizei RenderbufferTexture3D::getWidth(GLint level) const
+GLsizei RenderbufferTexture3D::getWidth() const
 {
-	return mTexture3D->getWidth(mTexture3D->getTarget(), level);
+	return mTexture3D->getWidth(mTexture3D->getTarget(), mLevel);
 }
 
-GLsizei RenderbufferTexture3D::getHeight(GLint level) const
+GLsizei RenderbufferTexture3D::getHeight() const
 {
-	return mTexture3D->getHeight(mTexture3D->getTarget(), level);
+	return mTexture3D->getHeight(mTexture3D->getTarget(), mLevel);
 }
 
-GLsizei RenderbufferTexture3D::getDepth(GLint level) const
+GLsizei RenderbufferTexture3D::getDepth() const
 {
-	return mTexture3D->getDepth(mTexture3D->getTarget(), level);
+	return mTexture3D->getDepth(mTexture3D->getTarget(), mLevel);
 }
 
-GLint RenderbufferTexture3D::getFormat(GLint level) const
+GLint RenderbufferTexture3D::getFormat() const
 {
-	return mTexture3D->getFormat(mTexture3D->getTarget(), level);
+	return mTexture3D->getFormat(mTexture3D->getTarget(), mLevel);
 }
 
-GLsizei RenderbufferTexture3D::getSamples(GLint level) const
+GLsizei RenderbufferTexture3D::getSamples() const
 {
 	return 0;
 }
 
 ///// RenderbufferTextureCubeMap Implementation ////////
 
-RenderbufferTextureCubeMap::RenderbufferTextureCubeMap(TextureCubeMap *texture, GLenum target)/*, GLint level)*/ : mTarget(target)//, mLevel(level)
+RenderbufferTextureCubeMap::RenderbufferTextureCubeMap(TextureCubeMap *texture, GLenum target, GLint level) : mTarget(target), mLevel(level)
 {
 	mTextureCubeMap = texture;
 }
@@ -230,50 +230,44 @@ void RenderbufferTextureCubeMap::releaseProxy(const Renderbuffer *proxy)
 
 // Increments refcount on image.
 // caller must release() the returned image
-egl::Image *RenderbufferTextureCubeMap::getRenderTarget(GLint level)
+egl::Image *RenderbufferTextureCubeMap::getRenderTarget()
 {
-	return mTextureCubeMap->getRenderTarget(mTarget, level);
+	return mTextureCubeMap->getRenderTarget(mTarget, mLevel);
 }
 
 // Increments refcount on image.
 // caller must release() the returned image
-egl::Image *RenderbufferTextureCubeMap::createSharedImage(GLint level)
+egl::Image *RenderbufferTextureCubeMap::createSharedImage()
 {
-	return mTextureCubeMap->createSharedImage(mTarget, level);
+	return mTextureCubeMap->createSharedImage(mTarget, mLevel);
 }
 
-bool RenderbufferTextureCubeMap::isShared(GLint level) const
+bool RenderbufferTextureCubeMap::isShared() const
 {
-	return mTextureCubeMap->isShared(mTarget, level);
+	return mTextureCubeMap->isShared(mTarget, mLevel);
 }
 
-GLsizei RenderbufferTextureCubeMap::getWidth(GLint level) const
+GLsizei RenderbufferTextureCubeMap::getWidth() const
 {
-	return mTextureCubeMap->getWidth(mTarget, level);
+	return mTextureCubeMap->getWidth(mTarget, mLevel);
 }
 
-GLsizei RenderbufferTextureCubeMap::getHeight(GLint level) const
+GLsizei RenderbufferTextureCubeMap::getHeight() const
 {
-	return mTextureCubeMap->getHeight(mTarget, level);
+	return mTextureCubeMap->getHeight(mTarget, mLevel);
 }
 
-GLint RenderbufferTextureCubeMap::getFormat(GLint level) const
+GLint RenderbufferTextureCubeMap::getFormat() const
 {
-	return mTextureCubeMap->getFormat(mTarget, level);
+	return mTextureCubeMap->getFormat(mTarget, mLevel);
 }
 
-GLsizei RenderbufferTextureCubeMap::getSamples(GLint level) const
+GLsizei RenderbufferTextureCubeMap::getSamples() const
 {
 	return 0;
 }
 
 ////// Renderbuffer Implementation //////
-
-Renderbuffer::Renderbuffer() : NamedObject(0)
-{
-	//ASSERT(instance);
-	mInstance = nullptr;//instance;
-}
 
 Renderbuffer::Renderbuffer(GLuint name, RenderbufferInterface *instance) : NamedObject(name)
 {
@@ -306,49 +300,44 @@ void Renderbuffer::release()
 // caller must Release() the returned image
 egl::Image *Renderbuffer::getRenderTarget()
 {
-	return mInstance->getRenderTarget(mLevel);
+	return mInstance->getRenderTarget();
 }
 
 // Increments refcount on image.
 // caller must Release() the returned image
 egl::Image *Renderbuffer::createSharedImage()
 {
-	return mInstance->createSharedImage(mLevel);
+	return mInstance->createSharedImage();
 }
 
 bool Renderbuffer::isShared() const
 {
-	return mInstance->isShared(mLevel);
+	return mInstance->isShared();
 }
 
 GLsizei Renderbuffer::getWidth() const
 {
-	return mInstance->getWidth(mLevel);
+	return mInstance->getWidth();
 }
 
 GLsizei Renderbuffer::getHeight() const
 {
-	return mInstance->getHeight(mLevel);
+	return mInstance->getHeight();
 }
 
 GLsizei Renderbuffer::getDepth() const
 {
-	return mInstance->getDepth(mLevel);
-}
-/*
-GLint Renderbuffer::getLayer() const
-{
-	return mInstance->getLayer(mLevel);
+	return mInstance->getDepth();
 }
 
 GLint Renderbuffer::getLevel() const
 {
-	return mInstance->getLevel(mLevel);
+	return mInstance->getLevel();
 }
-*/
+
 GLint Renderbuffer::getFormat() const
 {
-	return mInstance->getFormat(mLevel);
+	return mInstance->getFormat();
 }
 
 GLuint Renderbuffer::getRedSize() const
@@ -383,19 +372,14 @@ GLuint Renderbuffer::getStencilSize() const
 
 GLsizei Renderbuffer::getSamples() const
 {
-	return mInstance->getSamples(mLevel);
-}
-/*
-void Renderbuffer::setLayer(GLint layer)
-{
-	return mInstance->setLayer(layer);
+	return mInstance->getSamples();
 }
 
 void Renderbuffer::setLevel(GLint level)
 {
 	return mInstance->setLevel(level);
 }
-*/
+
 void Renderbuffer::setStorage(RenderbufferStorage *newStorage)
 {
 	ASSERT(newStorage != NULL);
@@ -416,22 +400,22 @@ RenderbufferStorage::~RenderbufferStorage()
 {
 }
 
-GLsizei RenderbufferStorage::getWidth(GLint level) const
+GLsizei RenderbufferStorage::getWidth() const
 {
 	return mWidth;
 }
 
-GLsizei RenderbufferStorage::getHeight(GLint level) const
+GLsizei RenderbufferStorage::getHeight() const
 {
 	return mHeight;
 }
 
-GLint RenderbufferStorage::getFormat(GLint level) const
+GLint RenderbufferStorage::getFormat() const
 {
 	return format;
 }
 
-GLsizei RenderbufferStorage::getSamples(GLint level) const
+GLsizei RenderbufferStorage::getSamples() const
 {
 	return mSamples;
 }
@@ -485,7 +469,7 @@ Colorbuffer::~Colorbuffer()
 
 // Increments refcount on image.
 // caller must release() the returned image
-egl::Image *Colorbuffer::getRenderTarget(GLint level)
+egl::Image *Colorbuffer::getRenderTarget()
 {
 	if(mRenderTarget)
 	{
@@ -497,7 +481,7 @@ egl::Image *Colorbuffer::getRenderTarget(GLint level)
 
 // Increments refcount on image.
 // caller must release() the returned image
-egl::Image *Colorbuffer::createSharedImage(GLint level)
+egl::Image *Colorbuffer::createSharedImage()
 {
 	if(mRenderTarget)
 	{
@@ -508,7 +492,7 @@ egl::Image *Colorbuffer::createSharedImage(GLint level)
 	return mRenderTarget;
 }
 
-bool Colorbuffer::isShared(GLint level) const
+bool Colorbuffer::isShared() const
 {
 	return mRenderTarget->isShared();
 }
@@ -587,7 +571,7 @@ DepthStencilbuffer::~DepthStencilbuffer()
 
 // Increments refcount on image.
 // caller must release() the returned image
-egl::Image *DepthStencilbuffer::getRenderTarget(GLint level)
+egl::Image *DepthStencilbuffer::getRenderTarget()
 {
 	if(mDepthStencil)
 	{
@@ -599,7 +583,7 @@ egl::Image *DepthStencilbuffer::getRenderTarget(GLint level)
 
 // Increments refcount on image.
 // caller must release() the returned image
-egl::Image *DepthStencilbuffer::createSharedImage(GLint level)
+egl::Image *DepthStencilbuffer::createSharedImage()
 {
 	if(mDepthStencil)
 	{
@@ -610,7 +594,7 @@ egl::Image *DepthStencilbuffer::createSharedImage(GLint level)
 	return mDepthStencil;
 }
 
-bool DepthStencilbuffer::isShared(GLint level) const
+bool DepthStencilbuffer::isShared() const
 {
 	return mDepthStencil->isShared();
 }
