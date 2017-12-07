@@ -46,9 +46,6 @@ public:
 
 	virtual ~RenderbufferInterface() {};
 
-	virtual void addProxyRef(const Renderbuffer *proxy);
-    virtual void releaseProxy(const Renderbuffer *proxy);
-
 	virtual egl::Image *getRenderTarget() = 0;
     virtual egl::Image *createSharedImage() = 0;
     virtual bool isShared() const = 0;
@@ -72,42 +69,14 @@ public:
 	GLuint getStencilSize() const;
 };
 
-class RenderbufferTexture2D : public RenderbufferInterface
+class RenderbufferTexture : public RenderbufferInterface
 {
 public:
-	RenderbufferTexture2D(Texture2D *texture, GLint level);
+	RenderbufferTexture(Texture2D *texture, GLint level);
+	RenderbufferTexture(Texture3D *texture, GLint level, GLint layer);
+	RenderbufferTexture(TextureCubeMap *texture, int face, GLint level);
 
-	virtual ~RenderbufferTexture2D();
-
-	virtual void addProxyRef(const Renderbuffer *proxy);
-    virtual void releaseProxy(const Renderbuffer *proxy);
-
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
-
-	virtual GLsizei getWidth() const;
-	virtual GLsizei getHeight() const;
-	virtual GLint getLevel() const { return mLevel; }
-	virtual GLint getFormat() const;
-	virtual GLsizei getSamples() const;
-
-	virtual void setLevel(GLint level) { mLevel = level; }
-
-private:
-	gl::BindingPointer<Texture2D> mTexture2D;
-	GLint mLevel;
-};
-
-class RenderbufferTexture3D : public RenderbufferInterface
-{
-public:
-	RenderbufferTexture3D(Texture3D *texture, GLint level, GLint layer);
-
-	virtual ~RenderbufferTexture3D();
-
-	virtual void addProxyRef(const Renderbuffer *proxy);
-	virtual void releaseProxy(const Renderbuffer *proxy);
+	virtual ~RenderbufferTexture();
 
 	virtual egl::Image *getRenderTarget();
 	virtual egl::Image *createSharedImage();
@@ -125,37 +94,9 @@ public:
 	virtual void setLevel(GLint level) { mLevel = level; }
 
 private:
-	gl::BindingPointer<Texture3D> mTexture3D;
+	gl::BindingPointer<egl::Image> mImage;
 	GLint mLevel;
 	GLint mLayer;
-};
-
-class RenderbufferTextureCubeMap : public RenderbufferInterface
-{
-public:
-	RenderbufferTextureCubeMap(TextureCubeMap *texture, GLenum target, GLint level);
-
-	virtual ~RenderbufferTextureCubeMap();
-
-	virtual void addProxyRef(const Renderbuffer *proxy);
-    virtual void releaseProxy(const Renderbuffer *proxy);
-
-	virtual egl::Image *getRenderTarget();
-    virtual egl::Image *createSharedImage();
-    virtual bool isShared() const;
-
-	virtual GLsizei getWidth() const;
-	virtual GLsizei getHeight() const;
-	virtual GLint getLevel() const { return mLevel; }
-	virtual GLint getFormat() const;
-	virtual GLsizei getSamples() const;
-
-	virtual void setLevel(GLint level) { mLevel = level; }
-
-private:
-	gl::BindingPointer<TextureCubeMap> mTextureCubeMap;
-	GLenum mTarget;
-	GLint mLevel;
 };
 
 // A class derived from RenderbufferStorage is created whenever glRenderbufferStorage
@@ -223,7 +164,7 @@ public:
 	void setLevel(GLint level);
 	void setStorage(RenderbufferStorage *newStorage);
 
-private:
+//private:
 	RenderbufferInterface *mInstance;
 };
 
