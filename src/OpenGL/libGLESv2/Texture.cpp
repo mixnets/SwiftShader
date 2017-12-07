@@ -394,7 +394,7 @@ GLsizei Texture::getDepth(GLenum target, GLint level) const
 	return 1;
 }
 
-egl::Image *Texture::createSharedImage(GLenum target, unsigned int level)
+ egl::Image *Texture::createSharedImage(GLenum target, unsigned int level)
 {
 	egl::Image *image = getRenderTarget(target, level);   // Increments reference count
 
@@ -491,9 +491,6 @@ Texture2D::Texture2D(GLuint name) : Texture(name)
 	}
 
 	mSurface = nullptr;
-
-	mColorbufferProxy = nullptr;
-	mProxyRefs = 0;
 }
 
 Texture2D::~Texture2D()
@@ -511,29 +508,6 @@ Texture2D::~Texture2D()
 	{
 		mSurface->setBoundTexture(nullptr);
 		mSurface = nullptr;
-	}
-
-	mColorbufferProxy = nullptr;
-}
-
-// We need to maintain a count of references to renderbuffers acting as
-// proxies for this texture, so that we do not attempt to use a pointer
-// to a renderbuffer proxy which has been deleted.
-void Texture2D::addProxyRef(const Renderbuffer *proxy)
-{
-	mProxyRefs++;
-}
-
-void Texture2D::releaseProxy(const Renderbuffer *proxy)
-{
-	if(mProxyRefs > 0)
-	{
-		mProxyRefs--;
-	}
-
-	if(mProxyRefs == 0)
-	{
-		mColorbufferProxy = nullptr;
 	}
 }
 
@@ -744,7 +718,7 @@ void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 
 	if(width > 0 && height > 0)
 	{
-		egl::Image *renderTarget = source->getRenderTarget(0);
+		 egl::Image *renderTarget = source->getRenderTarget(0);
 
 		if(!renderTarget)
 		{
@@ -752,7 +726,7 @@ void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 			return error(GL_OUT_OF_MEMORY);
 		}
 
-		Renderbuffer* renderbuffer = source->getReadColorbuffer();
+		 Renderbuffer* renderbuffer = source->getReadColorbuffer();
 
 		if(!renderbuffer)
 		{
@@ -894,23 +868,14 @@ egl::Image *Texture2D::getImage(unsigned int level)
 	return image[level];
 }
 
-Renderbuffer *Texture2D::getRenderbuffer(GLenum target, GLint level, GLint layer)
+Renderbuffer *Texture2D::createRenderbuffer(GLenum target, GLint level, GLint layer)
 {
 	if(target != GL_TEXTURE_2D)
 	{
 		return error(GL_INVALID_OPERATION, (Renderbuffer*)nullptr);
 	}
 
-	if(!mColorbufferProxy)
-	{
-		mColorbufferProxy = new Renderbuffer(name, new RenderbufferTexture2D(this, level));
-	}
-	else
-	{
-		mColorbufferProxy->setLevel(level);
-	}
-
-	return mColorbufferProxy;
+	return new Renderbuffer(name, new RenderbufferTexture(this, level));
 }
 
 egl::Image *Texture2D::getRenderTarget(GLenum target, unsigned int level)
@@ -953,12 +918,6 @@ TextureCubeMap::TextureCubeMap(GLuint name) : Texture(name)
 			image[f][i] = nullptr;
 		}
 	}
-
-	for(int f = 0; f < 6; f++)
-	{
-		mFaceProxies[f] = nullptr;
-		mFaceProxyRefs[f] = 0;
-	}
 }
 
 TextureCubeMap::~TextureCubeMap()
@@ -971,46 +930,6 @@ TextureCubeMap::~TextureCubeMap()
 			{
 				image[f][i]->unbind(this);
 				image[f][i] = nullptr;
-			}
-		}
-	}
-
-	for(int i = 0; i < 6; i++)
-	{
-		mFaceProxies[i] = nullptr;
-	}
-}
-
-// We need to maintain a count of references to renderbuffers acting as
-// proxies for this texture, so that the texture is not deleted while
-// proxy references still exist. If the reference count drops to zero,
-// we set our proxy pointer null, so that a new attempt at referencing
-// will cause recreation.
-void TextureCubeMap::addProxyRef(const Renderbuffer *proxy)
-{
-	for(int f = 0; f < 6; f++)
-	{
-		if(mFaceProxies[f] == proxy)
-		{
-			mFaceProxyRefs[f]++;
-		}
-	}
-}
-
-void TextureCubeMap::releaseProxy(const Renderbuffer *proxy)
-{
-	for(int f = 0; f < 6; f++)
-	{
-		if(mFaceProxies[f] == proxy)
-		{
-			if(mFaceProxyRefs[f] > 0)
-			{
-				mFaceProxyRefs[f]--;
-			}
-
-			if(mFaceProxyRefs[f] == 0)
-			{
-				mFaceProxies[f] = nullptr;
 			}
 		}
 	}
@@ -1439,7 +1358,7 @@ void TextureCubeMap::generateMipmaps()
 	}
 }
 
-Renderbuffer *TextureCubeMap::getRenderbuffer(GLenum target, GLint level, GLint layer)
+Renderbuffer *TextureCubeMap::createRenderbuffer(GLenum target, GLint level, GLint layer)
 {
 	if(!IsCubemapTextureTarget(target))
 	{
@@ -1448,16 +1367,7 @@ Renderbuffer *TextureCubeMap::getRenderbuffer(GLenum target, GLint level, GLint 
 
 	int face = CubeFaceIndex(target);
 
-	if(!mFaceProxies[face])
-	{
-		mFaceProxies[face] = new Renderbuffer(name, new RenderbufferTextureCubeMap(this, target, level));
-	}
-	else
-	{
-		mFaceProxies[face]->setLevel(level);
-	}
-
-	return mFaceProxies[face];
+	return new Renderbuffer(name, new RenderbufferTexture(this, face, level));
 }
 
 egl::Image *TextureCubeMap::getRenderTarget(GLenum target, unsigned int level)
@@ -1498,9 +1408,6 @@ Texture3D::Texture3D(GLuint name) : Texture(name)
 	}
 
 	mSurface = nullptr;
-
-	mColorbufferProxy = nullptr;
-	mProxyRefs = 0;
 }
 
 Texture3D::~Texture3D()
@@ -1518,29 +1425,6 @@ Texture3D::~Texture3D()
 	{
 		mSurface->setBoundTexture(nullptr);
 		mSurface = nullptr;
-	}
-
-	mColorbufferProxy = nullptr;
-}
-
-// We need to maintain a count of references to renderbuffers acting as
-// proxies for this texture, so that we do not attempt to use a pointer
-// to a renderbuffer proxy which has been deleted.
-void Texture3D::addProxyRef(const Renderbuffer *proxy)
-{
-	mProxyRefs++;
-}
-
-void Texture3D::releaseProxy(const Renderbuffer *proxy)
-{
-	if(mProxyRefs > 0)
-	{
-		mProxyRefs--;
-	}
-
-	if(mProxyRefs == 0)
-	{
-		mColorbufferProxy = nullptr;
 	}
 }
 
@@ -1878,24 +1762,14 @@ egl::Image *Texture3D::getImage(unsigned int level)
 	return image[level];
 }
 
-Renderbuffer *Texture3D::getRenderbuffer(GLenum target, GLint level, GLint layer)
+Renderbuffer  *Texture3D::createRenderbuffer(GLenum target, GLint level, GLint layer)
 {
 	if(target != getTarget())
 	{
 		return error(GL_INVALID_OPERATION, (Renderbuffer*)nullptr);
 	}
 
-	if(!mColorbufferProxy)
-	{
-		mColorbufferProxy = new Renderbuffer(name, new RenderbufferTexture3D(this, level, layer));
-	}
-	else
-	{
-		mColorbufferProxy->setLevel(level);
-		mColorbufferProxy->setLayer(layer);
-	}
-
-	return mColorbufferProxy;
+	return new Renderbuffer(name, new RenderbufferTexture(this, level, layer));
 }
 
 egl::Image *Texture3D::getRenderTarget(GLenum target, unsigned int level)

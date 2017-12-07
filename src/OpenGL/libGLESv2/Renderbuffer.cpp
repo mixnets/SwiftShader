@@ -28,17 +28,6 @@ RenderbufferInterface::RenderbufferInterface()
 {
 }
 
-// The default case for classes inherited from RenderbufferInterface is not to
-// need to do anything upon the reference count to the parent Renderbuffer incrementing
-// or decrementing.
-void RenderbufferInterface::addProxyRef(const Renderbuffer *proxy)
-{
-}
-
-void RenderbufferInterface::releaseProxy(const Renderbuffer *proxy)
-{
-}
-
 GLuint RenderbufferInterface::getRedSize() const
 {
 	return GetRedSize(getFormat());
@@ -69,200 +58,76 @@ GLuint RenderbufferInterface::getStencilSize() const
 	return GetStencilSize(getFormat());
 }
 
-///// RenderbufferTexture2D Implementation ////////
+///// RenderbufferTexture Implementation ////////
 
-RenderbufferTexture2D::RenderbufferTexture2D(Texture2D *texture, GLint level) : mLevel(level)
+RenderbufferTexture::RenderbufferTexture(Texture2D *texture, GLint level) : mLevel(level), mLayer(0)
 {
-	mTexture2D = texture;
+	mImage = texture->getImage(level);
 }
 
-RenderbufferTexture2D::~RenderbufferTexture2D()
+RenderbufferTexture::RenderbufferTexture(Texture3D *texture, GLint level, GLint layer) : mLevel(level), mLayer(layer)
 {
-	mTexture2D = NULL;
-}
-
-// Textures need to maintain their own reference count for references via
-// Renderbuffers acting as proxies. Here, we notify the texture of a reference.
-void RenderbufferTexture2D::addProxyRef(const Renderbuffer *proxy)
-{
-	mTexture2D->addProxyRef(proxy);
-}
-
-void RenderbufferTexture2D::releaseProxy(const Renderbuffer *proxy)
-{
-	mTexture2D->releaseProxy(proxy);
-}
-
-// Increments refcount on image.
-// caller must release() the returned image
-egl::Image *RenderbufferTexture2D::getRenderTarget()
-{
-	return mTexture2D->getRenderTarget(GL_TEXTURE_2D, mLevel);
-}
-
-// Increments refcount on image.
-// caller must release() the returned image
-egl::Image *RenderbufferTexture2D::createSharedImage()
-{
-	return mTexture2D->createSharedImage(GL_TEXTURE_2D, mLevel);
-}
-
-bool RenderbufferTexture2D::isShared() const
-{
-	return mTexture2D->isShared(GL_TEXTURE_2D, mLevel);
-}
-
-GLsizei RenderbufferTexture2D::getWidth() const
-{
-	return mTexture2D->getWidth(GL_TEXTURE_2D, mLevel);
-}
-
-GLsizei RenderbufferTexture2D::getHeight() const
-{
-	return mTexture2D->getHeight(GL_TEXTURE_2D, mLevel);
-}
-
-GLint RenderbufferTexture2D::getFormat() const
-{
-	return mTexture2D->getFormat(GL_TEXTURE_2D, mLevel);
-}
-
-GLsizei RenderbufferTexture2D::getSamples() const
-{
-	return 0;
-}
-
-///// RenderbufferTexture3D Implementation ////////
-
-RenderbufferTexture3D::RenderbufferTexture3D(Texture3D *texture, GLint level, GLint layer) : mLevel(level), mLayer(layer)
-{
-	mTexture3D = texture;
+	mImage = texture->getImage(level);
 	if(mLayer != 0)
 	{
-		UNIMPLEMENTED();
+	    	UNIMPLEMENTED();
 	}
 }
 
-RenderbufferTexture3D::~RenderbufferTexture3D()
+RenderbufferTexture::RenderbufferTexture(TextureCubeMap *texture, int face, GLint level) : mLevel(level), mLayer(0)
 {
-	mTexture3D = NULL;
+	mImage = texture->getImage(face, level);
 }
 
-// Textures need to maintain their own reference count for references via
-// Renderbuffers acting as proxies. Here, we notify the texture of a reference.
-void RenderbufferTexture3D::addProxyRef(const Renderbuffer *proxy)
+RenderbufferTexture::~RenderbufferTexture()
 {
-	mTexture3D->addProxyRef(proxy);
-}
-
-void RenderbufferTexture3D::releaseProxy(const Renderbuffer *proxy)
-{
-	mTexture3D->releaseProxy(proxy);
+	mImage = NULL;
 }
 
 // Increments refcount on image.
 // caller must release() the returned image
-egl::Image *RenderbufferTexture3D::getRenderTarget()
+egl::Image *RenderbufferTexture::getRenderTarget()
 {
-	return mTexture3D->getRenderTarget(mTexture3D->getTarget(), mLevel);
+	mImage->addRef();
+	return mImage;
 }
 
 // Increments refcount on image.
 // caller must release() the returned image
-egl::Image *RenderbufferTexture3D::createSharedImage()
+egl::Image *RenderbufferTexture::createSharedImage()
 {
-	return mTexture3D->createSharedImage(mTexture3D->getTarget(), mLevel);
+	mImage->addRef();
+	mImage->markShared();
+
+	return mImage;
 }
 
-bool RenderbufferTexture3D::isShared() const
+bool RenderbufferTexture::isShared() const
 {
-	return mTexture3D->isShared(mTexture3D->getTarget(), mLevel);
+	return mImage->isShared();
 }
 
-GLsizei RenderbufferTexture3D::getWidth() const
+GLsizei RenderbufferTexture::getWidth() const
 {
-	return mTexture3D->getWidth(mTexture3D->getTarget(), mLevel);
+	return mImage->getWidth();
 }
 
-GLsizei RenderbufferTexture3D::getHeight() const
+GLsizei RenderbufferTexture::getHeight() const
 {
-	return mTexture3D->getHeight(mTexture3D->getTarget(), mLevel);
+	return mImage->getHeight();
 }
 
-GLsizei RenderbufferTexture3D::getDepth() const
+GLsizei RenderbufferTexture::getDepth() const
 {
-	return mTexture3D->getDepth(mTexture3D->getTarget(), mLevel);
+	return mImage->getDepth();
 }
 
-GLint RenderbufferTexture3D::getFormat() const
+GLint RenderbufferTexture::getFormat() const
 {
-	return mTexture3D->getFormat(mTexture3D->getTarget(), mLevel);
+	return mImage->getFormat();
 }
 
-GLsizei RenderbufferTexture3D::getSamples() const
-{
-	return 0;
-}
-
-///// RenderbufferTextureCubeMap Implementation ////////
-
-RenderbufferTextureCubeMap::RenderbufferTextureCubeMap(TextureCubeMap *texture, GLenum target, GLint level) : mTarget(target), mLevel(level)
-{
-	mTextureCubeMap = texture;
-}
-
-RenderbufferTextureCubeMap::~RenderbufferTextureCubeMap()
-{
-	mTextureCubeMap = NULL;
-}
-
-// Textures need to maintain their own reference count for references via
-// Renderbuffers acting as proxies. Here, we notify the texture of a reference.
-void RenderbufferTextureCubeMap::addProxyRef(const Renderbuffer *proxy)
-{
-	mTextureCubeMap->addProxyRef(proxy);
-}
-
-void RenderbufferTextureCubeMap::releaseProxy(const Renderbuffer *proxy)
-{
-	mTextureCubeMap->releaseProxy(proxy);
-}
-
-// Increments refcount on image.
-// caller must release() the returned image
-egl::Image *RenderbufferTextureCubeMap::getRenderTarget()
-{
-	return mTextureCubeMap->getRenderTarget(mTarget, mLevel);
-}
-
-// Increments refcount on image.
-// caller must release() the returned image
-egl::Image *RenderbufferTextureCubeMap::createSharedImage()
-{
-	return mTextureCubeMap->createSharedImage(mTarget, mLevel);
-}
-
-bool RenderbufferTextureCubeMap::isShared() const
-{
-	return mTextureCubeMap->isShared(mTarget, mLevel);
-}
-
-GLsizei RenderbufferTextureCubeMap::getWidth() const
-{
-	return mTextureCubeMap->getWidth(mTarget, mLevel);
-}
-
-GLsizei RenderbufferTextureCubeMap::getHeight() const
-{
-	return mTextureCubeMap->getHeight(mTarget, mLevel);
-}
-
-GLint RenderbufferTextureCubeMap::getFormat() const
-{
-	return mTextureCubeMap->getFormat(mTarget, mLevel);
-}
-
-GLsizei RenderbufferTextureCubeMap::getSamples() const
+GLsizei RenderbufferTexture::getSamples() const
 {
 	return 0;
 }
@@ -284,14 +149,14 @@ Renderbuffer::~Renderbuffer()
 // its own reference count, so we pass it on here.
 void Renderbuffer::addRef()
 {
-	mInstance->addProxyRef(this);
+	//mInstance->getRenderTarget()->addRef();
 
 	Object::addRef();
 }
 
 void Renderbuffer::release()
 {
-	mInstance->releaseProxy(this);
+//	mInstance->getRenderTarget()->release();
 
 	Object::release();
 }

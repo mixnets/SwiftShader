@@ -20,9 +20,9 @@
 #define LIBGLESV2_TEXTURE_H_
 
 #include "Renderbuffer.h"
-#include "common/Object.hpp"
 #include "utilities.h"
 #include "libEGL/Texture.hpp"
+#include "common/Object.hpp"
 #include "common/debug.h"
 
 #include <GLES2/gl2.h>
@@ -49,9 +49,6 @@ public:
 	explicit Texture(GLuint name);
 
 	sw::Resource *getResource() const override;
-
-	virtual void addProxyRef(const Renderbuffer *proxy) = 0;
-	virtual void releaseProxy(const Renderbuffer *proxy) = 0;
 
 	virtual GLenum getTarget() const = 0;
 
@@ -103,7 +100,7 @@ public:
 	virtual bool isCompressed(GLenum target, GLint level) const = 0;
 	virtual bool isDepth(GLenum target, GLint level) const = 0;
 
-	virtual Renderbuffer *getRenderbuffer(GLenum target, GLint level, GLint layer) = 0;
+	virtual Renderbuffer *createRenderbuffer(GLenum target, GLint level, GLint layer) = 0;
 	virtual egl::Image *getRenderTarget(GLenum target, unsigned int level) = 0;
 	egl::Image *createSharedImage(GLenum target, unsigned int level);
 	virtual bool isShared(GLenum target, unsigned int level) const = 0;
@@ -150,8 +147,6 @@ class Texture2D : public Texture
 public:
 	explicit Texture2D(GLuint name);
 
-	void addProxyRef(const Renderbuffer *proxy) override;
-	void releaseProxy(const Renderbuffer *proxy) override;
 	void sweep() override;
 
 	GLenum getTarget() const override;
@@ -179,7 +174,7 @@ public:
 
 	void generateMipmaps() override;
 
-	Renderbuffer *getRenderbuffer(GLenum target, GLint level, GLint layer) override;
+	Renderbuffer *createRenderbuffer(GLenum target, GLint level, GLint layer) override;
 	egl::Image *getRenderTarget(GLenum target, unsigned int level) override;
 	bool isShared(GLenum target, unsigned int level) const override;
 
@@ -193,14 +188,6 @@ protected:
 	egl::Image *image[IMPLEMENTATION_MAX_TEXTURE_LEVELS];
 
 	gl::Surface *mSurface;
-
-	// A specific internal reference count is kept for colorbuffer proxy references,
-	// because, as the renderbuffer acting as proxy will maintain a binding pointer
-	// back to this texture, there would be a circular reference if we used a binding
-	// pointer here. This reference count will cause the pointer to be set to null if
-	// the count drops to zero, but will not cause deletion of the Renderbuffer.
-	Renderbuffer *mColorbufferProxy;
-	unsigned int mProxyRefs;
 };
 
 class TextureCubeMap : public Texture
@@ -208,8 +195,6 @@ class TextureCubeMap : public Texture
 public:
 	explicit TextureCubeMap(GLuint name);
 
-	void addProxyRef(const Renderbuffer *proxy) override;
-	void releaseProxy(const Renderbuffer *proxy) override;
 	void sweep() override;
 
 	GLenum getTarget() const override;
@@ -236,7 +221,7 @@ public:
 	void generateMipmaps() override;
 	void updateBorders(int level);
 
-	Renderbuffer *getRenderbuffer(GLenum target, GLint level, GLint layer) override;
+	Renderbuffer *createRenderbuffer(GLenum target, GLint level, GLint layer) override;
 	egl::Image *getRenderTarget(GLenum target, unsigned int level) override;
 	bool isShared(GLenum target, unsigned int level) const override;
 
@@ -253,14 +238,6 @@ private:
 	egl::Image *getImage(GLenum face, unsigned int level);
 
 	egl::Image *image[6][IMPLEMENTATION_MAX_TEXTURE_LEVELS];
-
-	// A specific internal reference count is kept for colorbuffer proxy references,
-	// because, as the renderbuffer acting as proxy will maintain a binding pointer
-	// back to this texture, there would be a circular reference if we used a binding
-	// pointer here. This reference count will cause the pointer to be set to null if
-	// the count drops to zero, but will not cause deletion of the Renderbuffer.
-	Renderbuffer *mFaceProxies[6];
-	unsigned int mFaceProxyRefs[6];
 };
 
 class Texture3D : public Texture
@@ -268,8 +245,6 @@ class Texture3D : public Texture
 public:
 	explicit Texture3D(GLuint name);
 
-	void addProxyRef(const Renderbuffer *proxy) override;
-	void releaseProxy(const Renderbuffer *proxy) override;
 	void sweep() override;
 
 	GLenum getTarget() const override;
@@ -297,7 +272,7 @@ public:
 
 	void generateMipmaps() override;
 
-	Renderbuffer *getRenderbuffer(GLenum target, GLint level, GLint layer) override;
+	Renderbuffer *createRenderbuffer(GLenum target, GLint level, GLint layer) override;
 	egl::Image *getRenderTarget(GLenum target, unsigned int level) override;
 	bool isShared(GLenum target, unsigned int level) const override;
 
@@ -311,14 +286,6 @@ protected:
 	egl::Image *image[IMPLEMENTATION_MAX_TEXTURE_LEVELS];
 
 	gl::Surface *mSurface;
-
-	// A specific internal reference count is kept for colorbuffer proxy references,
-	// because, as the renderbuffer acting as proxy will maintain a binding pointer
-	// back to this texture, there would be a circular reference if we used a binding
-	// pointer here. This reference count will cause the pointer to be set to null if
-	// the count drops to zero, but will not cause deletion of the Renderbuffer.
-	Renderbuffer *mColorbufferProxy;
-	unsigned int mProxyRefs;
 };
 
 class Texture2DArray : public Texture3D

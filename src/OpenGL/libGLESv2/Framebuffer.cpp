@@ -72,7 +72,7 @@ Renderbuffer *Framebuffer::lookupRenderbuffer(GLenum type, GLuint handle, GLint 
 	}
 	else if(IsTextureTarget(type))
 	{
-		buffer = context->getTexture(handle)->getRenderbuffer(type, level, layer);
+		buffer = context->getTexture(handle)->createRenderbuffer(type, level, layer);
 	}
 	else UNREACHABLE(type);
 
@@ -472,14 +472,21 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 		}
 	}
 
-	if((egl::getClientVersion() >= 3) && depthbuffer && stencilbuffer && (depthbuffer != stencilbuffer))
+	if((egl::getClientVersion() >= 3) && depthbuffer && stencilbuffer)
 	{
+		egl::Image *db = depthbuffer->getRenderTarget();
+		egl::Image *sb = stencilbuffer->getRenderTarget();
+
+		db->release();sb->release();
+
+		if(db != sb){
+
 		// In the GLES 3.0 spec, section 4.4.4, Framebuffer Completeness:
 		// "The framebuffer object target is said to be framebuffer complete if all the following conditions are true:
 		//  [...]
 		//  Depth and stencil attachments, if present, are the same image.
 		//  { FRAMEBUFFER_UNSUPPORTED }"
-		return GL_FRAMEBUFFER_UNSUPPORTED;
+			return GL_FRAMEBUFFER_UNSUPPORTED;}
 	}
 
 	// We need to have at least one attachment to be complete
