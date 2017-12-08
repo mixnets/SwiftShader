@@ -716,7 +716,7 @@ namespace es2
 		}
 
 		// Additional third combination accepted by OpenGL ES 3.0.
-		if(internalformat == sw::FORMAT_A2B10G10R10)
+		if(internalformat == GL_RGB10_A2)
 		{
 			ASSERT(clientVersion >= 3);
 
@@ -918,6 +918,80 @@ namespace es2
 			case GL_RGB9_E5:
 				break;
 			default:
+				return GL_INVALID_ENUM;
+			}
+		}
+
+		if((GLenum)internalformat == format)
+		{
+			switch(format)
+			{
+			case GL_RGBA:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+				case GL_UNSIGNED_SHORT_4_4_4_4:
+				case GL_UNSIGNED_SHORT_5_5_5_1:
+				case GL_FLOAT:            // GL_OES_texture_float
+				case GL_HALF_FLOAT_OES:   // GL_OES_texture_half_float
+					break;
+				default:
+					return GL_INVALID_OPERATION;
+				}
+				break;
+			case GL_RGB:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+				case GL_UNSIGNED_SHORT_5_6_5:
+				case GL_FLOAT:            // GL_OES_texture_float
+				case GL_HALF_FLOAT_OES:   // GL_OES_texture_half_float
+					break;
+				default:
+					return GL_INVALID_OPERATION;
+				}
+				break;
+			case GL_LUMINANCE_ALPHA:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+				case GL_FLOAT:            // GL_OES_texture_float
+				case GL_HALF_FLOAT_OES:   // GL_OES_texture_half_float
+					break;
+				default:
+					return GL_INVALID_OPERATION;
+				}
+				break;
+			case GL_LUMINANCE:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+				case GL_FLOAT:            // GL_OES_texture_float
+				case GL_HALF_FLOAT_OES:   // GL_OES_texture_half_float
+					break;
+				default:
+					return GL_INVALID_OPERATION;
+				}
+				break;
+			case GL_ALPHA:
+				switch(type)
+				{
+				case GL_UNSIGNED_BYTE:
+				case GL_FLOAT:            // GL_OES_texture_float
+				case GL_HALF_FLOAT_OES:   // GL_OES_texture_half_float
+					break;
+				default:
+					return GL_INVALID_OPERATION;
+				}
+				break;
+		//	case GL_BGRA_EXT:
+		//		if(type != GL_UNSIGNED_BYTE)   // GL_APPLE_texture_format_BGRA8888
+		//		{
+		//			return GL_INVALID_OPERATION;
+		//		}
+		//		break;
+			default:
+				UNREACHABLE(format);
 				return GL_INVALID_ENUM;
 			}
 		}
