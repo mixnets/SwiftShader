@@ -716,7 +716,7 @@ namespace es2
 		}
 
 		// Additional third combination accepted by OpenGL ES 3.0.
-		if(internalformat == sw::FORMAT_A2B10G10R10)
+		if(internalformat == GL_RGB10_A2)
 		{
 			ASSERT(clientVersion >= 3);
 
@@ -1177,7 +1177,7 @@ namespace es2
 		case GL_RGBA16I:
 		case GL_RGBA32I:
 		case GL_RGBA32UI:
-		case GL_R11F_G11F_B10F:
+	//	case GL_R11F_G11F_B10F:   // GL_NV_packed_float
 			return clientVersion >= 3;
 		case GL_R8_SNORM:
 		case GL_RG8_SNORM:
