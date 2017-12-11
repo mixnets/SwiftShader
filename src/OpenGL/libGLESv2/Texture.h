@@ -96,7 +96,8 @@ public:
 	virtual GLsizei getHeight(GLenum target, GLint level) const = 0;
 	virtual GLsizei getDepth(GLenum target, GLint level) const;
 	virtual GLenum getFormat(GLenum target, GLint level) const = 0;
-	virtual GLenum getType(GLenum target, GLint level) const = 0;
+	/**/virtual GLenum getType(GLenum target, GLint level) const = 0;
+	virtual GLsizei getSamples(GLenum target, GLint level) const = 0;
 	virtual int getLevelCount() const = 0;
 
 	virtual bool isSamplerComplete() const = 0;
@@ -159,7 +160,8 @@ public:
 	GLsizei getWidth(GLenum target, GLint level) const override;
 	GLsizei getHeight(GLenum target, GLint level) const override;
 	GLenum getFormat(GLenum target, GLint level) const override;
-	GLenum getType(GLenum target, GLint level) const override;
+	/**/GLenum getType(GLenum target, GLint level) const override;
+	GLsizei getSamples(GLenum target, GLint level) const override;
 	int getLevelCount() const override;
 
 	void setImage(egl::Context *context, GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);
@@ -217,7 +219,8 @@ public:
 	GLsizei getWidth(GLenum target, GLint level) const override;
 	GLsizei getHeight(GLenum target, GLint level) const override;
 	GLenum getFormat(GLenum target, GLint level) const override;
-	GLenum getType(GLenum target, GLint level) const override;
+	/**/GLenum getType(GLenum target, GLint level) const override;
+	GLsizei getSamples(GLenum target, GLint level) const override;
 	int getLevelCount() const override;
 
 	void setImage(egl::Context *context, GLenum target, GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);
@@ -278,7 +281,8 @@ public:
 	GLsizei getHeight(GLenum target, GLint level) const override;
 	GLsizei getDepth(GLenum target, GLint level) const override;
 	GLenum getFormat(GLenum target, GLint level) const override;
-	GLenum getType(GLenum target, GLint level) const override;
+	/**/GLenum getType(GLenum target, GLint level) const override;
+	GLsizei getSamples(GLenum target, GLint level) const override;
 	int getLevelCount() const override;
 
 	void setImage(egl::Context *context, GLint level, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);

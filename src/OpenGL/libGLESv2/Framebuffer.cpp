@@ -396,7 +396,7 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 			return GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
 		}
 
-		if(depthbuffer->getWidth() == 0 || depthbuffer->getHeight() == 0)
+		if(depthbuffer->getWidth() == 0 || depthbuffer->getHeight() == 0 || (depthbuffer->getDepth() <= mDepthbufferLayer))
 		{
 			return GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
 		}
@@ -446,7 +446,7 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 			return GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
 		}
 
-		if(stencilbuffer->getWidth() == 0 || stencilbuffer->getHeight() == 0)
+		if(stencilbuffer->getWidth() == 0 || stencilbuffer->getHeight() == 0 || (stencilbuffer->getDepth() <= mStencilbufferLayer))
 		{
 			return GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
 		}
