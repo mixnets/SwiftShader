@@ -1230,12 +1230,12 @@ namespace egl
 	class ImageImplementation : public Image
 	{
 	public:
-		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
-			: Image(parentTexture, width, height, format, type) {}
-		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLenum format, GLenum type)
-			: Image(parentTexture, width, height, depth, border, format, type) {}
-		ImageImplementation(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
-			: Image(width, height, format, type, pitchP) {}
+		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format)
+			: Image(parentTexture, width, height, format) {}
+		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLenum format)
+			: Image(parentTexture, width, height, depth, border, format) {}
+		ImageImplementation(GLsizei width, GLsizei height, GLenum format, int pitchP)
+			: Image(width, height, format, pitchP) {}
 		ImageImplementation(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
 			: Image(width, height, internalFormat, multiSampleDepth, lockable) {}
 
@@ -1260,19 +1260,19 @@ namespace egl
 		}
 	};
 
-	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
+	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format)
 	{
-		return new ImageImplementation(parentTexture, width, height, format, type);
+		return new ImageImplementation(parentTexture, width, height, format);
 	}
 
-	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLenum format, GLenum type)
+	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLenum format)
 	{
-		return new ImageImplementation(parentTexture, width, height, depth, border, format, type);
+		return new ImageImplementation(parentTexture, width, height, depth, border, format);
 	}
 
-	Image *Image::create(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
+	Image *Image::create(GLsizei width, GLsizei height, GLenum format, int pitchP)
 	{
-		return new ImageImplementation(width, height, format, type, pitchP);
+		return new ImageImplementation(width, height, format, pitchP);
 	}
 
 	Image *Image::create(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
@@ -1349,7 +1349,7 @@ namespace egl
 		GLsizei inputHeight = (unpackInfo.imageHeight == 0) ? height : unpackInfo.imageHeight;
 		input = ((char*)input) + ComputePackingOffset(format, type, inputWidth, inputHeight, unpackInfo.alignment, unpackInfo.skipImages, unpackInfo.skipRows, unpackInfo.skipPixels);
 
-		if(selectedInternalFormat == internalFormat)
+		if(selectedInternalFormat == implementationFormat)
 		{
 			void *buffer = lock(0, 0, sw::LOCK_WRITEONLY);
 
