@@ -589,6 +589,12 @@ GLenum Texture2D::getType(GLenum target, GLint level) const
 	return image[level] ? image[level]->getType() : GL_NONE;
 }
 
+GLsizei Texture2D::getSamples(GLenum target, GLint level) const
+{
+	ASSERT(target == GL_TEXTURE_2D);
+	return image[level] ? image[level]->getSamples() : 0;
+}
+
 int Texture2D::getLevelCount() const
 {
 	ASSERT(isSamplerComplete());
@@ -1069,6 +1075,12 @@ GLenum TextureCubeMap::getType(GLenum target, GLint level) const
 {
 	int face = CubeFaceIndex(target);
 	return image[face][level] ? image[face][level]->getType() : 0;
+}
+
+GLsizei TextureCubeMap::getSamples(GLenum target, GLint level) const
+{
+	int face = CubeFaceIndex(target);
+	return image[face][level] ? image[face][level]->getSamples() : 0;
 }
 
 int TextureCubeMap::getLevelCount() const
@@ -1600,6 +1612,12 @@ GLenum Texture3D::getType(GLenum target, GLint level) const
 {
 	ASSERT(target == getTarget());
 	return image[level] ? image[level]->getType() : GL_NONE;
+}
+
+GLsizei Texture3D::getSamples(GLenum target, GLint level) const
+{
+	ASSERT(target == getTarget());
+	return image[level] ? image[level]->getSamples() : 0;
 }
 
 int Texture3D::getLevelCount() const

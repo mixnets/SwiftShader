@@ -53,7 +53,7 @@ protected:
 	// 2D texture image
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
 		: sw::Surface(parentTexture->getResource(), width, height, 1, 0, 1, SelectInternalFormat(format, type), true, true),
-		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
+		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth_(1), samples(1),
 		  parentTexture(parentTexture)
 	{
 		shared = false;
@@ -64,7 +64,7 @@ protected:
 	// 3D/Cube texture image
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLenum format, GLenum type)
 		: sw::Surface(parentTexture->getResource(), width, height, depth, border, 1, SelectInternalFormat(format, type), true, true),
-		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(depth),
+		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth_(depth), samples(1),
 		  parentTexture(parentTexture)
 	{
 		shared = false;
@@ -75,7 +75,7 @@ protected:
 	// Native EGL image
 	Image(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
 		: sw::Surface(nullptr, width, height, 1, 0, 1, SelectInternalFormat(format, type), true, true, pitchP),
-		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth(1),
+		  width(width), height(height), format(format), type(type), internalFormat(SelectInternalFormat(format, type)), depth_(1), samples(1),
 		  parentTexture(nullptr)
 	{
 		shared = true;
@@ -85,8 +85,7 @@ protected:
 	// Render target
 	Image(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
 		: sw::Surface(nullptr, width, height, 1, 0, multiSampleDepth, internalFormat, lockable, true),
-		  width(width), height(height), format(0 /*GL_NONE*/), type(0 /*GL_NONE*/), internalFormat(internalFormat),
-depth(multiSampleDepth),
+		  width(width), height(height), format(0 /*GL_NONE*/), type(0 /*GL_NONE*/), internalFormat(internalFormat), depth_(1), samples(multiSampleDepth),
 		  parentTexture(nullptr)
 	{
 		shared = false;
@@ -118,14 +117,17 @@ public:
 
 	int getDepth() const
 	{
-		// FIXME: add member if the depth dimension (for 3D textures or 2D testure arrays)
-		// and multi sample depth are ever simultaneously required.
-		return depth;
+		return depth_;
 	}
 
 	GLenum getFormat() const
 	{
 		return format;
+	}
+
+	int getSamples() const
+	{
+		return samples;
 	}
 
 	GLenum getType() const
@@ -203,7 +205,8 @@ protected:
 	const GLenum format;
 	const GLenum type;
 	const sw::Format internalFormat;
-	const int depth;
+	const int depth_;
+	const int samples;
 
 	bool shared;   // Used as an EGLImage
 
