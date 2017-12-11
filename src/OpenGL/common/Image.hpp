@@ -85,8 +85,7 @@ protected:
 	// Render target
 	Image(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
 		: sw::Surface(nullptr, width, height, 1, 0, multiSampleDepth, internalFormat, lockable, true),
-		  width(width), height(height), format(0 /*GL_NONE*/), type(0 /*GL_NONE*/), internalFormat(internalFormat),
-depth(multiSampleDepth),
+		  width(width), height(height), format(0 /*GL_NONE*/), implementationFormat(implementationFormat), depth_(1), samples(multiSampleDepth),
 		  parentTexture(nullptr)
 	{
 		shared = false;
@@ -118,14 +117,12 @@ public:
 
 	int getDepth() const
 	{
-		// FIXME: add member if the depth dimension (for 3D textures or 2D testure arrays)
-		// and multi sample depth are ever simultaneously required.
-		return depth;
+		return depth_;
 	}
 
-	GLenum getFormat() const
+	int getSamples() const
 	{
-		return format;
+		return samples;
 	}
 
 	GLenum getType() const
@@ -203,7 +200,8 @@ protected:
 	const GLenum format;
 	const GLenum type;
 	const sw::Format internalFormat;
-	const int depth;
+	const int depth_;
+	const int samples;
 
 	bool shared;   // Used as an EGLImage
 

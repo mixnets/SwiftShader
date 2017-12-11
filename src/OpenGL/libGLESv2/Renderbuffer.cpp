@@ -129,7 +129,7 @@ GLint RenderbufferTexture2D::getFormat() const
 
 GLsizei RenderbufferTexture2D::getSamples() const
 {
-	return 0;  // ???
+	return mTexture2D->getSamples(GL_TEXTURE_2D, mLevel);
 }
 
 ///// RenderbufferTexture3D Implementation ////////
@@ -137,10 +137,6 @@ GLsizei RenderbufferTexture2D::getSamples() const
 RenderbufferTexture3D::RenderbufferTexture3D(Texture3D *texture, GLint level) : mLevel(level)
 {
 	mTexture3D = texture;
-	/*if(mLayer != 0)
-	{
-		UNIMPLEMENTED();
-	}*/
 }
 
 RenderbufferTexture3D::~RenderbufferTexture3D()
