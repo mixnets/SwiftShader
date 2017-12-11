@@ -363,7 +363,7 @@ namespace es2
 		scissorEnable = enable;
 	}
 
-	void Device::setRenderTarget(int index, egl::Image *renderTarget)
+	void Device::setRenderTarget(int index, egl::Image *renderTarget, unsigned int layer)
 	{
 		if(renderTarget)
 		{
@@ -377,10 +377,10 @@ namespace es2
 
 		this->renderTarget[index] = renderTarget;
 
-		Renderer::setRenderTarget(index, renderTarget);
+		Renderer::setRenderTarget(index, renderTarget, layer);
 	}
 
-	void Device::setDepthBuffer(egl::Image *depthBuffer)
+	void Device::setDepthBuffer(egl::Image *depthBuffer, unsigned int layer)
 	{
 		if(this->depthBuffer == depthBuffer)
 		{
@@ -399,10 +399,10 @@ namespace es2
 
 		this->depthBuffer = depthBuffer;
 
-		Renderer::setDepthBuffer(depthBuffer);
+		Renderer::setDepthBuffer(depthBuffer, layer);
 	}
 
-	void Device::setStencilBuffer(egl::Image *stencilBuffer)
+	void Device::setStencilBuffer(egl::Image *stencilBuffer, unsigned int layer)
 	{
 		if(this->stencilBuffer == stencilBuffer)
 		{
@@ -421,7 +421,7 @@ namespace es2
 
 		this->stencilBuffer = stencilBuffer;
 
-		Renderer::setStencilBuffer(stencilBuffer);
+		Renderer::setStencilBuffer(stencilBuffer, layer);
 	}
 
 	void Device::setScissorRect(const sw::Rect &rect)

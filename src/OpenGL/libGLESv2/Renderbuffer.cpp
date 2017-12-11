@@ -129,18 +129,18 @@ GLint RenderbufferTexture2D::getFormat() const
 
 GLsizei RenderbufferTexture2D::getSamples() const
 {
-	return 0;
+	return 0;  // ???
 }
 
 ///// RenderbufferTexture3D Implementation ////////
 
-RenderbufferTexture3D::RenderbufferTexture3D(Texture3D *texture, GLint level, GLint layer) : mLevel(level), mLayer(layer)
+RenderbufferTexture3D::RenderbufferTexture3D(Texture3D *texture, GLint level) : mLevel(level)
 {
 	mTexture3D = texture;
-	if(mLayer != 0)
+	/*if(mLayer != 0)
 	{
 		UNIMPLEMENTED();
-	}
+	}*/
 }
 
 RenderbufferTexture3D::~RenderbufferTexture3D()
@@ -330,11 +330,6 @@ GLsizei Renderbuffer::getDepth() const
 	return mInstance->getDepth();
 }
 
-GLint Renderbuffer::getLayer() const
-{
-	return mInstance->getLayer();
-}
-
 GLint Renderbuffer::getLevel() const
 {
 	return mInstance->getLevel();
@@ -378,11 +373,6 @@ GLuint Renderbuffer::getStencilSize() const
 GLsizei Renderbuffer::getSamples() const
 {
 	return mInstance->getSamples();
-}
-
-void Renderbuffer::setLayer(GLint layer)
-{
-	return mInstance->setLayer(layer);
 }
 
 void Renderbuffer::setLevel(GLint level)
