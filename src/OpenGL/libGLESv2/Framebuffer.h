@@ -104,6 +104,8 @@ protected:
 	gl::BindingPointer<Renderbuffer> mStencilbufferPointer;
 
 private:
+	bool isColorRenderable(GLenum format) const;
+
 	Renderbuffer *lookupRenderbuffer(GLenum type, GLuint handle, GLint level, GLint layer) const;
 };
 

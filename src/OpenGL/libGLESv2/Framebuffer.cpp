@@ -306,6 +306,18 @@ bool Framebuffer::hasStencil()
 	return false;
 }
 
+bool Framebuffer::isColorRenderable(GLenum format) const
+{
+	switch(format)
+	{
+	case GL_RGB:
+	case GL_RGBA:
+		return false; // Framebuffer objects only allow sized internal formats
+	default:
+		return IsColorRenderable(format, egl::getClientVersion());
+	}
+}
+
 GLenum Framebuffer::completeness()
 {
 	int width;
@@ -339,7 +351,7 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 
 			if(IsRenderbuffer(mColorbufferType[i]))
 			{
-				if(!IsColorRenderable(colorbuffer->getFormat(), egl::getClientVersion()))
+				if(!isColorRenderable(colorbuffer->getFormat()))
 				{
 					return GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
 				}
@@ -348,7 +360,7 @@ GLenum Framebuffer::completeness(int &width, int &height, int &samples)
 			{
 				GLenum format = colorbuffer->getFormat();
 
-				if(!IsColorRenderable(format, egl::getClientVersion()))
+				if(!isColorRenderable(format))
 				{
 					return GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
 				}
