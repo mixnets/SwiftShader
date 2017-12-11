@@ -2154,7 +2154,7 @@ GL_APICALL void GL_APIENTRY glVertexAttribIPointer(GLuint index, GLint size, GLe
 			return error(GL_INVALID_OPERATION);
 		}
 
-		context->setVertexAttribState(index, context->getArrayBuffer(), size, type, false, stride, pointer);
+		context->setVertexAttribState(index, context->getArrayBuffer(), size, type, false, true, stride, pointer);
 	}
 }
 
@@ -2214,7 +2214,7 @@ GL_APICALL void GL_APIENTRY glGetVertexAttribIiv(GLuint index, GLenum pname, GLi
 			case GL_INT_2_10_10_10_REV:
 			case GL_UNSIGNED_INT:
 			case GL_FIXED:
-				*params = GL_TRUE;
+				*params = (attribState.mPureInteger ? GL_TRUE : GL_FALSE);
 				break;
 			default:
 				*params = GL_FALSE;
@@ -2285,7 +2285,7 @@ GL_APICALL void GL_APIENTRY glGetVertexAttribIuiv(GLuint index, GLenum pname, GL
 			case GL_INT_2_10_10_10_REV:
 			case GL_UNSIGNED_INT:
 			case GL_FIXED:
-				*params = GL_TRUE;
+				*params = (attribState.mPureInteger ? GL_TRUE : GL_FALSE);
 				break;
 			default:
 				*params = GL_FALSE;

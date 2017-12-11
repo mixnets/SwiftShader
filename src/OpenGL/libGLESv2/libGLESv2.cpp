@@ -4094,7 +4094,7 @@ void GetVertexAttribfv(GLuint index, GLenum pname, GLfloat* params)
 				case GL_INT_2_10_10_10_REV:
 				case GL_UNSIGNED_INT:
 				case GL_FIXED:
-					*params = (GLfloat)GL_TRUE;
+					*params = (GLfloat)(attribState.mPureInteger ? GL_TRUE : GL_FALSE);
 					break;
 				default:
 					*params = (GLfloat)GL_FALSE;
@@ -4168,7 +4168,7 @@ void GetVertexAttribiv(GLuint index, GLenum pname, GLint* params)
 				case GL_INT_2_10_10_10_REV:
 				case GL_UNSIGNED_INT:
 				case GL_FIXED:
-					*params = GL_TRUE;
+					*params = (attribState.mPureInteger ? GL_TRUE : GL_FALSE);
 					break;
 				default:
 					*params = GL_FALSE;
@@ -6187,7 +6187,7 @@ void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normal
 			return error(GL_INVALID_OPERATION);
 		}
 
-		context->setVertexAttribState(index, context->getArrayBuffer(), size, type, (normalized == GL_TRUE), stride, ptr);
+		context->setVertexAttribState(index, context->getArrayBuffer(), size, type, (normalized == GL_TRUE), false, stride, ptr);
 	}
 }
 
