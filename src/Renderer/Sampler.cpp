@@ -128,7 +128,7 @@ namespace sw
 
 				int width = surface->getWidth();
 				int height = surface->getHeight();
-				int depth = surface->getDepth();
+				int depth = surface->_getDepth();
 				int pitchP = surface->getInternalPitchP();
 				int sliceP = surface->getInternalSliceP();
 

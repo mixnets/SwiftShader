@@ -807,10 +807,10 @@ namespace es2
 
 		int sWidth  = source->getWidth();
 		int sHeight = source->getHeight();
-		int sDepth  = source->getDepth();
+		int sDepth  =  source->_getDepth();
 		int dWidth  = dest->getWidth();
 		int dHeight = dest->getHeight();
-		int dDepth  = dest->getDepth();
+		int dDepth  =  dest->_getDepth();
 
 		bool scaling = (sWidth != dWidth) || (sHeight != dHeight) || (sDepth != dDepth);
 		bool equalFormats = source->getInternalFormat() == dest->getInternalFormat();
@@ -833,6 +833,7 @@ namespace es2
 			{
 				unsigned char *sourceBytes = (unsigned char*)source->lockInternal(0, 0, z, LOCK_READONLY, PUBLIC);
 				unsigned char *destBytes = (unsigned char*)dest->lockInternal(0, 0, z, LOCK_READWRITE, PUBLIC);
+
 				for(int y = 0; y < dHeight; ++y)
 				{
 					memcpy(destBytes, sourceBytes, bytes);
@@ -848,10 +849,10 @@ namespace es2
 					sourceBytes += sourcePitch;
 					destBytes += destPitch;
 				}
-			}
 
-			source->unlockInternal();
-			dest->unlockInternal();
+				source->unlockInternal();
+				dest->unlockInternal();
+			}
 		}
 		else
 		{
