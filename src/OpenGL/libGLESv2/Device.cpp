@@ -829,17 +829,18 @@ namespace es2
 			unsigned int destPitch = dest->getInternalPitchB();
 			unsigned int bytes = dWidth * egl::Image::bytes(source->getInternalFormat());
 
-			for(int z = 0; z < dDepth; ++z)
+			for(int z = 0; z < dDepth; z++)
 			{
 				unsigned char *sourceBytes = (unsigned char*)source->lockInternal(0, 0, z, LOCK_READONLY, PUBLIC);
 				unsigned char *destBytes = (unsigned char*)dest->lockInternal(0, 0, z, LOCK_READWRITE, PUBLIC);
-				for(int y = 0; y < dHeight; ++y)
+
+				for(int y = 0; y < dHeight; y++)
 				{
 					memcpy(destBytes, sourceBytes, bytes);
 
 					if(alpha0xFF)
 					{
-						for(int x = 0; x < dWidth; ++x)
+						for(int x = 0; x < dWidth; x++)
 						{
 							destBytes[4 * x + 3] = 0xFF;
 						}
@@ -848,10 +849,10 @@ namespace es2
 					sourceBytes += sourcePitch;
 					destBytes += destPitch;
 				}
-			}
 
-			source->unlockInternal();
-			dest->unlockInternal();
+				source->unlockInternal();
+				dest->unlockInternal();
+			}
 		}
 		else
 		{
