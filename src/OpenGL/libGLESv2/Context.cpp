@@ -1213,7 +1213,7 @@ void Context::bindReadFramebuffer(GLuint framebuffer)
 {
 	if(!getFramebuffer(framebuffer))
 	{
-		mFramebufferNameSpace.insert(framebuffer, new Framebuffer());
+		mFramebufferNameSpace.insert(framebuffer, new Framebuffer(framebuffer == 0));
 	}
 
 	mState.readFramebuffer = framebuffer;
@@ -1223,7 +1223,7 @@ void Context::bindDrawFramebuffer(GLuint framebuffer)
 {
 	if(!getFramebuffer(framebuffer))
 	{
-		mFramebufferNameSpace.insert(framebuffer, new Framebuffer());
+		mFramebufferNameSpace.insert(framebuffer, new Framebuffer(framebuffer == 0));
 	}
 
 	mState.drawFramebuffer = framebuffer;

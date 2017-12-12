@@ -35,7 +35,7 @@ class DepthStencilbuffer;
 class Framebuffer
 {
 public:
-	Framebuffer();
+	Framebuffer(bool isDefault);
 
 	virtual ~Framebuffer();
 

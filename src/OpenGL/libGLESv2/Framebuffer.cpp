@@ -30,7 +30,7 @@ bool Framebuffer::IsRenderbuffer(GLenum type)
 	return type == GL_RENDERBUFFER || type == GL_FRAMEBUFFER_DEFAULT;
 }
 
-Framebuffer::Framebuffer()
+Framebuffer::Framebuffer(bool isDefault)
 {
 	for(int i = 0; i < MAX_COLOR_ATTACHMENTS; i++)
 	{
@@ -39,8 +39,8 @@ Framebuffer::Framebuffer()
 	mDepthbufferType = GL_NONE;
 	mStencilbufferType = GL_NONE;
 
-	readBuffer = GL_BACK;
-	drawBuffer[0] = GL_BACK;
+	readBuffer = isDefault ? GL_BACK : GL_COLOR_ATTACHMENT0;
+	drawBuffer[0] = isDefault ? GL_BACK : GL_COLOR_ATTACHMENT0;
 	for(int i = 1; i < MAX_COLOR_ATTACHMENTS; ++i)
 	{
 		drawBuffer[i] = GL_NONE;
@@ -678,7 +678,7 @@ GLuint Framebuffer::getReadBufferIndex() const
 	}
 }
 
-DefaultFramebuffer::DefaultFramebuffer(Colorbuffer *colorbuffer, DepthStencilbuffer *depthStencil)
+DefaultFramebuffer::DefaultFramebuffer(Colorbuffer *colorbuffer, DepthStencilbuffer *depthStencil) : Framebuffer(true)
 {
 	GLenum defaultRenderbufferType = egl::getClientVersion() < 3 ? GL_RENDERBUFFER : GL_FRAMEBUFFER_DEFAULT;
 	mColorbufferPointer[0] = new Renderbuffer(0, colorbuffer);
