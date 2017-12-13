@@ -205,7 +205,7 @@ namespace gl
 		{
 			if(format == GL_DEPTH_COMPONENT)
 			{
-				return sw::FORMAT_D32FS8_TEXTURE;
+				return sw::FORMAT_D32F;
 			}
 			else UNREACHABLE(format);
 		}
