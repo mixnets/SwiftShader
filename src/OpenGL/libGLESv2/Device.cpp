@@ -712,6 +712,11 @@ namespace es2
 		bool isStencil = (flags & Device::STENCIL_BUFFER) && Surface::isStencil(source->getInternalFormat());
 		bool isColor = (flags & Device::COLOR_BUFFER) == Device::COLOR_BUFFER;
 
+		if(!isColor && !isDepth && !isStencil)
+		{
+			return true;
+		}
+
 		int sourceSliceB = isStencil ? source->getStencilSliceB() : source->getInternalSliceB();
 		int destSliceB = isStencil ? dest->getStencilSliceB() : dest->getInternalSliceB();
 		int sourcePitchB = isStencil ? source->getStencilPitchB() : source->getInternalPitchB();
