@@ -147,7 +147,7 @@ namespace sw
 		blit(source, sRect, dest, dRect, options);
 	}
 
-	void Blitter::blit(Surface *source, const SliceRectF &sourceRect, Surface *dest, const SliceRect &destRect, const Blitter::Options& options)
+	void Blitter::blit(Surface *source, const SliceRectF &sourceRect, Surface *dest, const SliceRect &destRect, const Blitter::Options &options)
 	{
 		if(dest->getInternalFormat() == FORMAT_NULL)
 		{
@@ -175,7 +175,7 @@ namespace sw
 			swap(dRect.y0, dRect.y1);
 			swap(sRect.y0, sRect.y1);
 		}
-
+// isStencil!!!
 		source->lockInternal((int)sRect.x0, (int)sRect.y0, sRect.slice, sw::LOCK_READONLY, sw::PUBLIC);
 		dest->lockInternal(dRect.x0, dRect.y0, dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC);
 
@@ -432,7 +432,7 @@ namespace sw
 		return true;
 	}
 
-	bool Blitter::write(Float4 &c, Pointer<Byte> element, Format format, const Blitter::Options& options)
+	bool Blitter::write(Float4 &c, Pointer<Byte> element, Format format, const Blitter::Options &options)
 	{
 		bool writeR = (options & WRITE_RED) == WRITE_RED;
 		bool writeG = (options & WRITE_GREEN) == WRITE_GREEN;
@@ -861,7 +861,7 @@ namespace sw
 		return true;
 	}
 
-	bool Blitter::write(Int4 &c, Pointer<Byte> element, Format format, const Blitter::Options& options)
+	bool Blitter::write(Int4 &c, Pointer<Byte> element, Format format, const Blitter::Options &options)
 	{
 		bool writeR = (options & WRITE_RED) == WRITE_RED;
 		bool writeG = (options & WRITE_GREEN) == WRITE_GREEN;
@@ -996,7 +996,7 @@ namespace sw
 		return true;
 	}
 
-	bool Blitter::GetScale(float4& scale, Format format)
+	bool Blitter::GetScale(float4 &scale, Format format)
 	{
 		switch(format)
 		{
@@ -1085,7 +1085,7 @@ namespace sw
 		return true;
 	}
 
-	bool Blitter::ApplyScaleAndClamp(Float4& value, const BlitState& state)
+	bool Blitter::ApplyScaleAndClamp(Float4 &value, const BlitState &state)
 	{
 		float4 scale, unscale;
 		if(Surface::isNonNormalizedInteger(state.sourceFormat) &&
@@ -1134,10 +1134,18 @@ namespace sw
 		return true;
 	}
 
-	Int Blitter::ComputeOffset(Int& x, Int& y, Int& pitchB, int bytes, bool quadLayout)
+	Int Blitter::ComputeOffset(Int &x, Int &y, Int &pitchB, int bytes, bool quadLayout)
 	{
-		return (quadLayout ? (y & Int(~1)) : RValue<Int>(y)) * pitchB +
-		       (quadLayout ? ((y & Int(1)) << 1) + (x * 2) - (x & Int(1)) : RValue<Int>(x)) * bytes;
+		if(!quadLayout)
+		{
+			return y * pitchB + x * bytes;
+		}
+		else
+		{
+			// (x & ~1) * 2 + (x & 1) == (x - (x & 1)) * 2 + (x & 1) == x * 2 - (x & 1) * 2 + (x & 1) == x * 2 - (x & 1)
+			return (y & Int(~1)) * pitchB +
+			       ( (y & Int(1)) * 2 + x * 2 - (x & Int(1)) ) * bytes;
+		}
 	}
 
 	Routine *Blitter::generate(BlitState &state)
@@ -1206,11 +1214,13 @@ namespace sw
 			For(Int j = y0d, j < y1d, j++)
 			{
 				Float x = x0;
-				Pointer<Byte> destLine = dest + (dstQuadLayout ? j & Int(~1) : RValue<Int>(j)) * dPitchB;
+			//	Pointer<Byte> destLine = dest + (dstQuadLayout ? j & Int(~1) : RValue<Int>(j)) * dPitchB;
 
 				For(Int i = x0d, i < x1d, i++)
 				{
-					Pointer<Byte> d = destLine + (dstQuadLayout ? (((j & Int(1)) << 1) + (i * 2) - (i & Int(1))) : RValue<Int>(i)) * dstBytes;
+				//	Pointer<Byte> d = destLine + (dstQuadLayout ? (((j & Int(1)) << 1) + (i * 2) - (i & Int(1))) : RValue<Int>(i)) * dstBytes;
+
+					Pointer<Byte> d = dest + ComputeOffset(i, j, dPitchB, dstBytes, dstQuadLayout);
 
 					if(hasConstantColorI)
 					{
@@ -1318,7 +1328,7 @@ namespace sw
 		return function(L"BlitRoutine");
 	}
 
-	bool Blitter::blitReactor(Surface *source, const SliceRectF &sourceRect, Surface *dest, const SliceRect &destRect, const Blitter::Options& options)
+	bool Blitter::blitReactor(Surface *source, const SliceRectF &sourceRect, Surface *dest, const SliceRect &destRect, const Blitter::Options &options)
 	{
 		ASSERT(!(options & CLEAR_OPERATION) || ((source->getWidth() == 1) && (source->getHeight() == 1) && (source->getDepth() == 1)));
 

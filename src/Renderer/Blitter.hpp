@@ -85,14 +85,14 @@ namespace sw
 		bool fastClear(void *pixel, sw::Format format, Surface *dest, const SliceRect &dRect, unsigned int rgbaMask);
 
 		bool read(Float4 &color, Pointer<Byte> element, Format format);
-		bool write(Float4 &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
+		bool write(Float4 &color, Pointer<Byte> element, Format format, const Blitter::Options &options);
 		bool read(Int4 &color, Pointer<Byte> element, Format format);
-		bool write(Int4 &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
-		static bool GetScale(float4& scale, Format format);
-		static bool ApplyScaleAndClamp(Float4& value, const BlitState& state);
-		static Int ComputeOffset(Int& x, Int& y, Int& pitchB, int bytes, bool quadLayout);
-		void blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, const Blitter::Options& options);
-		bool blitReactor(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, const Blitter::Options& options);
+		bool write(Int4 &color, Pointer<Byte> element, Format format, const Blitter::Options &options);
+		static bool GetScale(float4 &scale, Format format);
+		static bool ApplyScaleAndClamp(Float4 &value, const BlitState &state);
+		static Int ComputeOffset(Int &x, Int &y, Int &pitchB, int bytes, bool quadLayout);
+		void blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, const Blitter::Options &options);
+		bool blitReactor(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, const Blitter::Options &options);
 		Routine *generate(BlitState &state);
 
 		RoutineCache<BlitState> *blitCache;

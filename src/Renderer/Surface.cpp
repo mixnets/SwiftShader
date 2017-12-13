@@ -1222,7 +1222,7 @@ namespace sw
 		external.lock = LOCK_UNLOCKED;
 		external.dirty = true;
 
-		internal.buffer = 0;
+		internal.buffer = nullptr;
 		internal.width = width;
 		internal.height = height;
 		internal.depth = depth;
@@ -1237,7 +1237,7 @@ namespace sw
 		internal.lock = LOCK_UNLOCKED;
 		internal.dirty = false;
 
-		stencil.buffer = 0;
+		stencil.buffer = nullptr;
 		stencil.width = width;
 		stencil.height = height;
 		stencil.depth = depth;
@@ -1259,12 +1259,12 @@ namespace sw
 	Surface::Surface(Resource *texture, int width, int height, int depth, int border, int samples, Format format, bool lockable, bool renderTarget, int pitchPprovided) : lockable(lockable), renderTarget(renderTarget)
 	{
 		resource = texture ? texture : new Resource(0);
-		hasParent = texture != 0;
+		hasParent = texture != nullptr;
 		ownExternal = true;
 		depth = max(1, depth);
 		samples = max(1, samples);
 
-		external.buffer = 0;
+		external.buffer = nullptr;
 		external.width = width;
 		external.height = height;
 		external.depth = depth;
@@ -1279,7 +1279,7 @@ namespace sw
 		external.lock = LOCK_UNLOCKED;
 		external.dirty = false;
 
-		internal.buffer = 0;
+		internal.buffer = nullptr;
 		internal.width = width;
 		internal.height = height;
 		internal.depth = depth;
@@ -1294,7 +1294,7 @@ namespace sw
 		internal.lock = LOCK_UNLOCKED;
 		internal.dirty = false;
 
-		stencil.buffer = 0;
+		stencil.buffer = nullptr;
 		stencil.width = width;
 		stencil.height = height;
 		stencil.depth = depth;
@@ -3206,7 +3206,7 @@ namespace sw
 		// FIXME: Unpacking byte4 to short4 in the sampler currently involves reading 8 bytes,
 		// and stencil operations also read 8 bytes per four 8-bit stencil values,
 		// so we have to allocate 4 extra bytes to avoid buffer overruns.
-		return allocate(size(width2, height2, depth, border, samples, format) + 4);
+		return allocate(size(width2, height2, depth, border, samples, format) + 8);
 	}
 
 	void Surface::memfill4(void *buffer, int pattern, int bytes)
@@ -3315,9 +3315,7 @@ namespace sw
 		int x1 = x0 + width;
 		int y1 = y0 + height;
 
-		if(internal.format == FORMAT_D32F_LOCKABLE ||
-		   internal.format == FORMAT_D32FS8_TEXTURE ||
-		   internal.format == FORMAT_D32FS8_SHADOW)
+		if(!hasQuadLayout(internal.format))
 		{
 			float *target = (float*)lockInternal(x0, y0, 0, lock, PUBLIC);
 

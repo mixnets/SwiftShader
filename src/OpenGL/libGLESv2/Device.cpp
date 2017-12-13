@@ -712,7 +712,7 @@ namespace es2
 		bool equalFormats = source->getInternalFormat() == dest->getInternalFormat();
 		bool hasQuadLayout = Surface::hasQuadLayout(source->getInternalFormat()) || Surface::hasQuadLayout(dest->getInternalFormat());
 		bool fullCopy = (sRect.x0 == 0.0f) && (sRect.y0 == 0.0f) && (dRect.x0 == 0) && (dRect.y0 == 0) &&
-		                (sRect.x1 == (float)sWidth) && (sRect.y1 == (float)sHeight) && (dRect.x1 == dWidth) && (dRect.y0 == dHeight);
+		                (sRect.x1 == (float)sWidth) && (sRect.y1 == (float)sHeight) && (dRect.x1 == dWidth) && (dRect.y1 == dHeight);
 		bool isDepth = (flags & Device::DEPTH_BUFFER) && egl::Image::isDepth(source->getInternalFormat());
 		bool isStencil = (flags & Device::STENCIL_BUFFER) && (egl::Image::isDepth(source->getInternalFormat()) || egl::Image::isStencil(source->getInternalFormat()));
 		bool isColor = (flags & Device::COLOR_BUFFER) == Device::COLOR_BUFFER;
@@ -725,7 +725,7 @@ namespace es2
 			alpha0xFF = true;
 		}
 
-		if((isDepth || isStencil) && !scaling && equalFormats && (!hasQuadLayout || fullCopy))
+		if(isDepth && !scaling && equalFormats && (!hasQuadLayout || fullCopy))
 		{
 			if(source->hasDepth() && isDepth)
 			{
@@ -736,17 +736,6 @@ namespace es2
 
 				source->unlockInternal();
 				dest->unlockInternal();
-			}
-
-			if(source->hasStencil() && isStencil)
-			{
-				sw::byte *sourceBuffer = (sw::byte*)source->lockStencil((int)sRect.x0, (int)sRect.y0, 0, PUBLIC);
-				sw::byte *destBuffer = (sw::byte*)dest->lockStencil(dRect.x0, dRect.y0, 0, PUBLIC);
-
-				copyBuffer(sourceBuffer, destBuffer, source->getWidth(), source->getHeight(), source->getStencilPitchB(), dest->getStencilPitchB(), egl::Image::bytes(source->getStencilFormat()), flipX, flipY);
-
-				source->unlockStencil();
-				dest->unlockStencil();
 			}
 		}
 		else if((flags & Device::COLOR_BUFFER) && !scaling && equalFormats && (!hasQuadLayout || fullCopy))
@@ -789,10 +778,7 @@ namespace es2
 			SliceRectF sRectF((float)sRect.x0, (float)sRect.y0, (float)sRect.x1, (float)sRect.y1, sRect.slice);
 			blit(source, sRectF, dest, dRect, scaling && (flags & Device::USE_FILTER), isStencil);
 		}
-		else
-		{
-			UNREACHABLE(false);
-		}
+		else UNREACHABLE(false);
 
 		return true;
 	}
