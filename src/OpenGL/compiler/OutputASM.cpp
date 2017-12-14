@@ -2165,7 +2165,8 @@ namespace glsl
 			parameter.type = registerType(arg);
 			parameter.bufferIndex = argumentInfo.bufferIndex;
 
-			if(arg->getAsConstantUnion() && arg->getAsConstantUnion()->getUnionArrayPointer())
+			bool isConstantUnion = arg->getAsConstantUnion() && arg->getAsConstantUnion()->getUnionArrayPointer();
+			if(isConstantUnion && !arg->isArray())
 			{
 				int component = componentCount(type, argumentInfo.clampedIndex);
 				ConstantUnion *constants = arg->getAsConstantUnion()->getUnionArrayPointer();
@@ -2184,6 +2185,52 @@ namespace glsl
 					{
 						parameter.value[i] = 0.0f;
 					}
+				}
+			}
+			else if(isConstantUnion)
+			{
+				std::vector<Temporary*> arrayTemporaries;
+
+				int component = componentCount(type, argumentInfo.clampedIndex);
+				ConstantUnion *constants = arg->getAsConstantUnion()->getUnionArrayPointer();
+
+				int arraySize = arg->getArraySize();
+				for(int j = 0; j < arraySize; j++)
+				{
+					int index = j * size;
+					Temporary* temp = new Temporary(this);
+					float value[4];
+					for(int i = 0; i < 4; i++)
+					{
+						if(size == 1)   // Replicate
+						{
+							value[i] = constants[index + component + 0].getAsFloat();
+						}
+						else if(i < size)
+						{
+							value[i] = constants[index + component + i].getAsFloat();
+						}
+						else
+						{
+							value[i] = 0.0f;
+						}
+					}
+					Constant constValue(value[0], value[1], value[2], value[3]);
+					emit(sw::Shader::OPCODE_MOV, temp, 0, &constValue, 0);
+					arrayTemporaries.push_back(temp);
+				}
+
+				parameter.index = registerIndex(arrayTemporaries[0]) + argumentInfo.clampedIndex;
+
+				if(parameter.bufferIndex != -1)
+				{
+					int stride = (argumentInfo.typedMemberInfo.matrixStride > 0) ? argumentInfo.typedMemberInfo.matrixStride : argumentInfo.typedMemberInfo.arrayStride;
+					parameter.index = argumentInfo.typedMemberInfo.offset + argumentInfo.clampedIndex * stride;
+				}
+
+				for(int j = 0; j < arraySize; j++)
+				{
+					delete arrayTemporaries[j];
 				}
 			}
 			else
@@ -2551,7 +2598,9 @@ namespace glsl
 		{
 		case EvqTemporary:           return sw::Shader::PARAMETER_TEMP;
 		case EvqGlobal:              return sw::Shader::PARAMETER_TEMP;
-		case EvqConstExpr:           return sw::Shader::PARAMETER_FLOAT4LITERAL;   // All converted to float
+		case EvqConstExpr:           return operand->isArray() ?
+									        sw::Shader::PARAMETER_TEMP :
+									        sw::Shader::PARAMETER_FLOAT4LITERAL;   // All converted to float
 		case EvqAttribute:           return sw::Shader::PARAMETER_INPUT;
 		case EvqVaryingIn:           return sw::Shader::PARAMETER_INPUT;
 		case EvqVaryingOut:          return sw::Shader::PARAMETER_OUTPUT;
