@@ -4008,8 +4008,8 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 		destRect.y1 = dstY0;
 	}
 
-	sw::Rect sourceScissoredRect = sourceRect;
-	sw::Rect destScissoredRect = destRect;
+	sw::SliceRect sourceScissoredRect = sourceRect;
+	sw::SliceRect destScissoredRect = destRect;
 
 	if(mState.scissorTestEnabled)   // Only write to parts of the destination framebuffer which pass the scissor test
 	{
@@ -4042,8 +4042,8 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 		}
 	}
 
-	sw::Rect sourceTrimmedRect = sourceScissoredRect;
-	sw::Rect destTrimmedRect = destScissoredRect;
+	sw::SliceRect sourceTrimmedRect = sourceScissoredRect;
+	sw::SliceRect destTrimmedRect = destScissoredRect;
 
 	// The source & destination rectangles also may need to be trimmed if they fall out of the bounds of
 	// the actual draw and read surfaces.
@@ -4115,7 +4115,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 	}
 
 	bool sameBounds = (srcX0 == dstX0 && srcY0 == dstY0 && srcX1 == dstX1 && srcY1 == dstY1);
-	bool blitRenderTarget = false;
+	bool blitColor = false;
 	bool blitDepth = false;
 	bool blitStencil = false;
 
@@ -4181,7 +4181,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 			return error(GL_INVALID_OPERATION);
 		}
 
-		blitRenderTarget = true;
+		blitColor = true;
 	}
 
 	if(mask & (GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT))
@@ -4255,66 +4255,63 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 		}
 	}
 
-	if(blitRenderTarget || blitDepth || blitStencil)
+	if(blitColor)
 	{
-		if(blitRenderTarget)
+		egl::Image *readRenderTarget = readFramebuffer->getReadRenderTarget();
+		egl::Image *drawRenderTarget = drawFramebuffer->getRenderTarget(0);
+
+		if(flipX)
 		{
-			egl::Image *readRenderTarget = readFramebuffer->getReadRenderTarget();
-			egl::Image *drawRenderTarget = drawFramebuffer->getRenderTarget(0);
-
-			if(flipX)
-			{
-				swap(destRect.x0, destRect.x1);
-			}
-			if(flipy)
-			{
-				swap(destRect.y0, destRect.y1);
-			}
-
-			bool success = device->stretchRect(readRenderTarget, &sourceRect, drawRenderTarget, &destRect, (filter ? Device::USE_FILTER : 0) | Device::COLOR_BUFFER);
-
-			readRenderTarget->release();
-			drawRenderTarget->release();
-
-			if(!success)
-			{
-				ERR("BlitFramebuffer failed.");
-				return;
-			}
+			swap(destRect.x0, destRect.x1);
+		}
+		if(flipy)
+		{
+			swap(destRect.y0, destRect.y1);
 		}
 
-		if(blitDepth)
+		bool success = device->stretchRect(readRenderTarget, &sourceTrimmedRect, drawRenderTarget, &destTrimmedRect, (filter ? Device::USE_FILTER : 0) | Device::COLOR_BUFFER);
+
+		readRenderTarget->release();
+		drawRenderTarget->release();
+
+		if(!success)
 		{
-			egl::Image *readRenderTarget = readFramebuffer->getDepthBuffer();
-			egl::Image *drawRenderTarget = drawFramebuffer->getDepthBuffer();
-
-			bool success = device->stretchRect(readRenderTarget, &sourceRect, drawRenderTarget, &destRect, (filter ? Device::USE_FILTER : 0) | Device::DEPTH_BUFFER);
-
-			readRenderTarget->release();
-			drawRenderTarget->release();
-
-			if(!success)
-			{
-				ERR("BlitFramebuffer failed.");
-				return;
-			}
+			ERR("BlitFramebuffer failed.");
+			return;
 		}
+	}
 
-		if(blitStencil)
+	if(blitDepth)
+	{
+		egl::Image *readRenderTarget = readFramebuffer->getDepthBuffer();
+		egl::Image *drawRenderTarget = drawFramebuffer->getDepthBuffer();
+
+		bool success = device->stretchRect(readRenderTarget, &sourceTrimmedRect, drawRenderTarget, &destTrimmedRect, (filter ? Device::USE_FILTER : 0) | Device::DEPTH_BUFFER);
+
+		readRenderTarget->release();
+		drawRenderTarget->release();
+
+		if(!success)
 		{
-			egl::Image *readRenderTarget = readFramebuffer->getStencilBuffer();
-			egl::Image *drawRenderTarget = drawFramebuffer->getStencilBuffer();
+			ERR("BlitFramebuffer failed.");
+			return;
+		}
+	}
 
-			bool success = device->stretchRect(readRenderTarget, &sourceRect, drawRenderTarget, &destRect, (filter ? Device::USE_FILTER : 0) | Device::STENCIL_BUFFER);
+	if(blitStencil)
+	{
+		egl::Image *readRenderTarget = readFramebuffer->getStencilBuffer();
+		egl::Image *drawRenderTarget = drawFramebuffer->getStencilBuffer();
 
-			readRenderTarget->release();
-			drawRenderTarget->release();
+		bool success = device->stretchRect(readRenderTarget, &sourceTrimmedRect, drawRenderTarget, &destTrimmedRect, (filter ? Device::USE_FILTER : 0) | Device::STENCIL_BUFFER);
 
-			if(!success)
-			{
-				ERR("BlitFramebuffer failed.");
-				return;
-			}
+		readRenderTarget->release();
+		drawRenderTarget->release();
+
+		if(!success)
+		{
+			ERR("BlitFramebuffer failed.");
+			return;
 		}
 	}
 }

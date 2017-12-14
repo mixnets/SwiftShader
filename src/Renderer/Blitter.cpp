@@ -1334,8 +1334,8 @@ namespace sw
 
 		BlitState state;
 
-		bool useSourceInternal = !source->isExternalDirty();
-		bool useDestInternal = !dest->isExternalDirty();
+		bool useSourceInternal = !source->isExternalDirty() || source->isExternalDirty();
+		bool useDestInternal = !dest->isExternalDirty() || dest->isExternalDirty();
 		bool isStencil = ((options & USE_STENCIL) == USE_STENCIL);
 
 		state.sourceFormat = isStencil ? source->getStencilFormat() : source->getFormat(useSourceInternal);
@@ -1381,9 +1381,9 @@ namespace sw
 		data.x0 = sRect.x0 + 0.5f * data.w;
 		data.y0 = sRect.y0 + 0.5f * data.h;
 
-		data.x0d = dRect.x0;
+		 data.x0d = dRect.x0;
 		data.x1d = dRect.x1;
-		data.y0d = dRect.y0;
+		 data.y0d = dRect.y0;
 		data.y1d = dRect.y1;
 
 		data.sWidth = source->getWidth();
