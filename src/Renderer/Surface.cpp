@@ -3034,6 +3034,18 @@ namespace sw
 		}
 	}
 
+	bool Surface::isSRGBformat(Format format)
+	{
+		switch(format)
+		{
+		case FORMAT_SRGB8_X8:
+		case FORMAT_SRGB8_A8:
+			return true;
+		default:
+			return false;
+		}
+	}
+
 	bool Surface::isCompressed(Format format)
 	{
 		switch(format)

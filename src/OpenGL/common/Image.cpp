@@ -52,8 +52,6 @@ namespace
 		RGB10A2UI,
 		R11G11B10F,
 		RGB9E5,
-		SRGB,
-		SRGBA,
 		D16,
 		D24,
 		D32,
@@ -294,36 +292,6 @@ namespace
 		{
 			sourceRGB->toRGBFloats(destF);
 			destF[3] = 1.0f;
-		}
-	}
-
-	template<>
-	void LoadImageRow<SRGB>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		dest += xoffset * 4;
-
-		for(int x = 0; x < width; x++)
-		{
-			for(int rgb = 0; rgb < 3; ++rgb)
-			{
-				*dest++ = sw::sRGB8toLinear8(*source++);
-			}
-			*dest++ = 255;
-		}
-	}
-
-	template<>
-	void LoadImageRow<SRGBA>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
-	{
-		dest += xoffset * 4;
-
-		for(int x = 0; x < width; x++)
-		{
-			for(int rgb = 0; rgb < 3; ++rgb)
-			{
-				*dest++ = sw::sRGB8toLinear8(*source++);
-			}
-			*dest++ = *source++;
 		}
 	}
 
@@ -805,16 +773,18 @@ namespace egl
 			case GL_RGB8_SNORM:
 			case GL_RGB8:
 			case GL_RGB:
-			case GL_SRGB8:
 				return sw::FORMAT_X8B8G8R8;
+			case GL_SRGB8:
+				return sw::FORMAT_SRGB8_X8;
 			case GL_RGB8UI:
 			case GL_RGB_INTEGER:
 				return sw::FORMAT_X8B8G8R8UI;
 			case GL_RGBA8_SNORM:
 			case GL_RGBA8:
 			case GL_RGBA:
-			case GL_SRGB8_ALPHA8:
 				return sw::FORMAT_A8B8G8R8;
+			case GL_SRGB8_ALPHA8:
+				return sw::FORMAT_SRGB8_A8;
 			case GL_RGBA8UI:
 			case GL_RGBA_INTEGER:
 				return sw::FORMAT_A8B8G8R8UI;
@@ -1338,8 +1308,8 @@ namespace egl
 
 	void Image::loadImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input)
 	{
-		sw::Format selectedInternalFormat = SelectInternalFormat(format, type);
-		if(selectedInternalFormat == sw::FORMAT_NULL)
+		sw::Format uploadFormat = SelectInternalFormat(format, type);
+		if(uploadFormat == sw::FORMAT_NULL)
 		{
 			return;
 		}
@@ -1349,7 +1319,9 @@ namespace egl
 		GLsizei inputHeight = (unpackInfo.imageHeight == 0) ? height : unpackInfo.imageHeight;
 		input = ((char*)input) + ComputePackingOffset(format, type, inputWidth, inputHeight, unpackInfo.alignment, unpackInfo.skipImages, unpackInfo.skipRows, unpackInfo.skipPixels);
 
-		if(selectedInternalFormat == internalFormat)
+		if(uploadFormat == internalFormat ||
+		   (uploadFormat == sw::FORMAT_A8B8G8R8 && internalFormat == sw::FORMAT_SRGB8_A8) ||
+		   (uploadFormat == sw::FORMAT_X8B8G8R8 && internalFormat == sw::FORMAT_SRGB8_X8))
 		{
 			void *buffer = lock(0, 0, sw::LOCK_WRITEONLY);
 
@@ -1427,6 +1399,7 @@ namespace egl
 					case GL_RGB8_SNORM:
 					case GL_RGB:
 					case GL_RGB_INTEGER:
+					case GL_SRGB8:
 						LoadImageData<UByteRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 						break;
 					case GL_RGBA8:
@@ -1436,13 +1409,8 @@ namespace egl
 					case GL_RGBA_INTEGER:
 					case GL_BGRA_EXT:
 					case GL_BGRA8_EXT:
-						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_SRGB8:
-						LoadImageData<SRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
 					case GL_SRGB8_ALPHA8:
-						LoadImageData<SRGBA>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 						break;
 					default: UNREACHABLE(format);
 					}

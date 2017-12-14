@@ -2238,8 +2238,13 @@ namespace sw
 
 			bool isInteger = Surface::isNonNormalizedInteger(state.textureFormat);
 			int componentCount = textureComponentCount();
-			for(int n = 0; n < componentCount; ++n)
+			for(int n = 0; n < componentCount; n++)
 			{
+				if(state.sRGB && isRGBComponent(n))
+				{
+					sRGBtoLinear16_8_16(cs[n]);   // FIXME: Perform linearization at surface level for read-only textures
+				}
+
 				if(hasUnsignedTextureComponent(n))
 				{
 					if(isInteger)
@@ -2560,6 +2565,18 @@ namespace sw
 		c = As<UShort4>(c) >> 8;
 
 		Pointer<Byte> LUT = Pointer<Byte>(constants + OFFSET(Constants,sRGBtoLinear8_12));
+
+		c = Insert(c, *Pointer<Short>(LUT + 2 * Int(Extract(c, 0))), 0);
+		c = Insert(c, *Pointer<Short>(LUT + 2 * Int(Extract(c, 1))), 1);
+		c = Insert(c, *Pointer<Short>(LUT + 2 * Int(Extract(c, 2))), 2);
+		c = Insert(c, *Pointer<Short>(LUT + 2 * Int(Extract(c, 3))), 3);
+	}
+
+	void SamplerCore::sRGBtoLinear16_8_16(Short4 &c)
+	{
+		c = As<UShort4>(c) >> 8;
+
+		Pointer<Byte> LUT = Pointer<Byte>(constants + OFFSET(Constants,sRGBtoLinear8_16));
 
 		c = Insert(c, *Pointer<Short>(LUT + 2 * Int(Extract(c, 0))), 0);
 		c = Insert(c, *Pointer<Short>(LUT + 2 * Int(Extract(c, 1))), 1);
