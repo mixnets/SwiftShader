@@ -2170,19 +2170,59 @@ namespace glsl
 				int component = componentCount(type, argumentInfo.clampedIndex);
 				ConstantUnion *constants = arg->getAsConstantUnion()->getUnionArrayPointer();
 
-				for(int i = 0; i < 4; i++)
+				if(arg->isArray())
 				{
-					if(size == 1)   // Replicate
+					std::vector<Temporary*> arrayTemporaries;
+
+					int arraySize = arg->getArraySize();
+					for(int j = 0; j < arraySize; j++)
 					{
-						parameter.value[i] = constants[component + 0].getAsFloat();
+						int index = j * size;
+						Temporary* temp = new Temporary(this);
+						float value[4];
+						for(int i = 0; i < 4; i++)
+						{
+							if(size == 1)   // Replicate
+							{
+								value[i] = constants[index + component + 0].getAsFloat();
+							}
+							else if(i < size)
+							{
+								value[i] = constants[index + component + i].getAsFloat();
+							}
+							else
+							{
+								value[i] = 0.0f;
+							}
+						}
+						Constant constValue(value[0], value[1], value[2], value[3]);
+						emit(sw::Shader::OPCODE_MOV, temp, 0, &constValue, 0);
+						arrayTemporaries.push_back(temp);
 					}
-					else if(i < size)
+
+					parameter.index = registerIndex(arrayTemporaries[0]) + argumentInfo.clampedIndex;
+
+					for(int j = 0; j < arraySize; j++)
 					{
-						parameter.value[i] = constants[component + i].getAsFloat();
+						delete arrayTemporaries[j];
 					}
-					else
+				}
+				else
+				{
+					for(int i = 0; i < 4; i++)
 					{
-						parameter.value[i] = 0.0f;
+						if(size == 1)   // Replicate
+						{
+							parameter.value[i] = constants[component + 0].getAsFloat();
+						}
+						else if(i < size)
+						{
+							parameter.value[i] = constants[component + i].getAsFloat();
+						}
+						else
+						{
+							parameter.value[i] = 0.0f;
+						}
 					}
 				}
 			}
@@ -2551,7 +2591,9 @@ namespace glsl
 		{
 		case EvqTemporary:           return sw::Shader::PARAMETER_TEMP;
 		case EvqGlobal:              return sw::Shader::PARAMETER_TEMP;
-		case EvqConstExpr:           return sw::Shader::PARAMETER_FLOAT4LITERAL;   // All converted to float
+		case EvqConstExpr:           return operand->isArray() ?
+									        sw::Shader::PARAMETER_TEMP :
+									        sw::Shader::PARAMETER_FLOAT4LITERAL;   // All converted to float
 		case EvqAttribute:           return sw::Shader::PARAMETER_INPUT;
 		case EvqVaryingIn:           return sw::Shader::PARAMETER_INPUT;
 		case EvqVaryingOut:          return sw::Shader::PARAMETER_OUTPUT;
