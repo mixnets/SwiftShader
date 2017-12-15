@@ -91,6 +91,8 @@ namespace sw
 		static bool GetScale(float4& scale, Format format);
 		static bool ApplyScaleAndClamp(Float4& value, const BlitState& state);
 		static Int ComputeOffset(Int& x, Int& y, Int& pitchB, int bytes, bool quadLayout);
+		static Float4 LinearToSRGB(Float4 &color);
+		static Float4 sRGBtoLinear(Float4 &color);
 		void blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, const Blitter::Options& options);
 		bool blitReactor(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, const Blitter::Options& options);
 		Routine *generate(BlitState &state);
