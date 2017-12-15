@@ -39,7 +39,7 @@ namespace sw
 		}
 
 		sw::Surface *color = sw::Surface::create(1, 1, 1, format, pixel, sw::Surface::bytes(format), sw::Surface::bytes(format));
-		Blitter::Options clearOptions = static_cast<sw::Blitter::Options>((rgbaMask & 0xF) | CLEAR_OPERATION | CONVERT_SRGB);
+		Blitter::Options clearOptions(rgbaMask, true);
 		SliceRectF sRect((float)dRect.x0, (float)dRect.y0, (float)dRect.x1, (float)dRect.y1, 0);
 		blit(color, sRect, dest, dRect, clearOptions);
 		delete color;
@@ -136,10 +136,10 @@ namespace sw
 
 	void Blitter::blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, bool filter, bool isStencil, bool sRGBconversion)
 	{
-		Blitter::Options options = WRITE_RGBA;
-		options = filter ? static_cast<Blitter::Options>(options | FILTER_LINEAR) : options;
-		options = isStencil ? static_cast<Blitter::Options>(options | USE_STENCIL) : options;
-		options = sRGBconversion  ? static_cast<Blitter::Options>(options | CONVERT_SRGB) : options;
+		Blitter::Options options(0xF, false);
+		options.filter = filter;
+		options.useStencil = isStencil;
+		options.convertSRGB = sRGBconversion;
 
 		blit(source, sRect, dest, dRect, options);
 	}
@@ -189,7 +189,7 @@ namespace sw
 			for(int i = dRect.x0; i < dRect.x1; i++)
 			{
 				// FIXME: Support RGBA mask
-				dest->copyInternal(source, i, j, x, y, (options & FILTER_LINEAR) == FILTER_LINEAR);
+				dest->copyInternal(source, i, j, x, y, options.filter);
 
 				x += w;
 			}
@@ -231,7 +231,7 @@ namespace sw
 		dest->unlockInternal();
 	}
 
-	bool Blitter::read(Float4 &c, Pointer<Byte> element, Format format)
+	bool Blitter::read(Float4 &c, Pointer<Byte> element, Format format, const BlitState& state)
 	{
 		c = Float4(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -424,15 +424,20 @@ namespace sw
 			return false;
 		}
 
+		if(!ApplyScaleAndClamp(c, state))
+		{
+			return false;
+		}
+
 		return true;
 	}
 
 	bool Blitter::write(Float4 &c, Pointer<Byte> element, Format format, const Blitter::Options& options)
 	{
-		bool writeR = (options & WRITE_RED) == WRITE_RED;
-		bool writeG = (options & WRITE_GREEN) == WRITE_GREEN;
-		bool writeB = (options & WRITE_BLUE) == WRITE_BLUE;
-		bool writeA = (options & WRITE_ALPHA) == WRITE_ALPHA;
+		bool writeR = options.writeRed;
+		bool writeG = options.writeGreen;
+		bool writeB = options.writeBlue;
+		bool writeA = options.writeAlpha;
 		bool writeRGBA = writeR && writeG && writeB && writeA;
 
 		switch(format)
@@ -856,10 +861,10 @@ namespace sw
 
 	bool Blitter::write(Int4 &c, Pointer<Byte> element, Format format, const Blitter::Options& options)
 	{
-		bool writeR = (options & WRITE_RED) == WRITE_RED;
-		bool writeG = (options & WRITE_GREEN) == WRITE_GREEN;
-		bool writeB = (options & WRITE_BLUE) == WRITE_BLUE;
-		bool writeA = (options & WRITE_ALPHA) == WRITE_ALPHA;
+		bool writeR = options.writeRed;
+		bool writeG = options.writeGreen;
+		bool writeB = options.writeBlue;
+		bool writeA = options.writeAlpha;
 		bool writeRGBA = writeR && writeG && writeB && writeA;
 
 		switch(format)
@@ -1087,7 +1092,7 @@ namespace sw
 		float4 scale, unscale;
 		if(Surface::isNonNormalizedInteger(state.sourceFormat) &&
 		   !Surface::isNonNormalizedInteger(state.destFormat) &&
-		   (state.options & CLEAR_OPERATION))
+		   (state.options.clearOperation))
 		{
 			// If we're clearing a buffer from an int or uint color into a normalized color,
 			// then the whole range of the int or uint color must be scaled between 0 and 1.
@@ -1116,7 +1121,7 @@ namespace sw
 		bool srcSRGB = Surface::isSRGBformat(state.sourceFormat);
 		bool dstSRGB = Surface::isSRGBformat(state.destFormat);
 
-		if((state.options & CONVERT_SRGB) && (srcSRGB ^ dstSRGB))   // One of the formats is sRGB encoded.
+		if((state.options.convertSRGB) && (srcSRGB ^ dstSRGB))   // One of the formats is sRGB encoded.
 		{
 			value = value * Float4(1.0f / unscale.x, 1.0f / unscale.y, 1.0f / unscale.z, 1.0f / unscale.w);
 
@@ -1215,7 +1220,7 @@ namespace sw
 			Int4 constantColorI;
 			bool hasConstantColorF = false;
 			Float4 constantColorF;
-			if(state.options & CLEAR_OPERATION)
+			if(state.options.clearOperation)
 			{
 				if(intBoth) // Integer types
 				{
@@ -1227,16 +1232,11 @@ namespace sw
 				}
 				else
 				{
-					if(!read(constantColorF, source, state.sourceFormat))
+					if(!read(constantColorF, source, state.sourceFormat, state))
 					{
 						return nullptr;
 					}
 					hasConstantColorF = true;
-
-					if(!ApplyScaleAndClamp(constantColorF, state))
-					{
-						return nullptr;
-					}
 				}
 			}
 
@@ -1287,14 +1287,14 @@ namespace sw
 					{
 						Float4 color;
 
-						if(!(state.options & FILTER_LINEAR) || intSrc)
+						if(!state.options.filter || intSrc)
 						{
 							Int X = Int(x);
 							Int Y = Int(y);
 
 							Pointer<Byte> s = source + ComputeOffset(X, Y, sPitchB, srcBytes, srcQuadLayout);
 
-							if(!read(color, s, state.sourceFormat))
+							if(!read(color, s, state.sourceFormat, state))
 							{
 								return nullptr;
 							}
@@ -1317,10 +1317,10 @@ namespace sw
 							Pointer<Byte> s10 = source + ComputeOffset(X0, Y1, sPitchB, srcBytes, srcQuadLayout);
 							Pointer<Byte> s11 = source + ComputeOffset(X1, Y1, sPitchB, srcBytes, srcQuadLayout);
 
-							Float4 c00; if(!read(c00, s00, state.sourceFormat)) return nullptr;
-							Float4 c01; if(!read(c01, s01, state.sourceFormat)) return nullptr;
-							Float4 c10; if(!read(c10, s10, state.sourceFormat)) return nullptr;
-							Float4 c11; if(!read(c11, s11, state.sourceFormat)) return nullptr;
+							Float4 c00; if(!read(c00, s00, state.sourceFormat, state)) return nullptr;
+							Float4 c01; if(!read(c01, s01, state.sourceFormat, state)) return nullptr;
+							Float4 c10; if(!read(c10, s10, state.sourceFormat, state)) return nullptr;
+							Float4 c11; if(!read(c11, s11, state.sourceFormat, state)) return nullptr;
 
 							Float4 fx = Float4(x0 - Float(X0));
 							Float4 fy = Float4(y0 - Float(Y0));
@@ -1329,11 +1329,6 @@ namespace sw
 
 							color = (c00 * ix + c01 * fx) * iy +
 							        (c10 * ix + c11 * fx) * fy;
-						}
-
-						if(!ApplyScaleAndClamp(color, state))
-						{
-							return nullptr;
 						}
 
 						for(int s = 0; s < state.destSamples; s++)
@@ -1359,7 +1354,7 @@ namespace sw
 
 	bool Blitter::blitReactor(Surface *source, const SliceRectF &sourceRect, Surface *dest, const SliceRect &destRect, const Blitter::Options& options)
 	{
-		ASSERT(!(options & CLEAR_OPERATION) || ((source->getWidth() == 1) && (source->getHeight() == 1) && (source->getDepth() == 1)));
+		ASSERT(!options.clearOperation || ((source->getWidth() == 1) && (source->getHeight() == 1) && (source->getDepth() == 1)));
 
 		Rect dRect = destRect;
 		RectF sRect = sourceRect;
@@ -1378,7 +1373,7 @@ namespace sw
 
 		bool useSourceInternal = !source->isExternalDirty();
 		bool useDestInternal = !dest->isExternalDirty();
-		bool isStencil = ((options & USE_STENCIL) == USE_STENCIL);
+		bool isStencil = options.useStencil;
 
 		state.sourceFormat = isStencil ? source->getStencilFormat() : source->getFormat(useSourceInternal);
 		state.destFormat = isStencil ? dest->getStencilFormat() : dest->getFormat(useDestInternal);
@@ -1407,7 +1402,7 @@ namespace sw
 
 		BlitData data;
 
-		bool isRGBA = ((options & WRITE_RGBA) == WRITE_RGBA);
+		bool isRGBA = options.writeRGBA();
 		bool isEntireDest = dest->isEntire(destRect);
 
 		data.source = isStencil ? source->lockStencil(0, 0, 0, sw::PUBLIC) :
