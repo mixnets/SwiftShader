@@ -14,6 +14,7 @@
 
 #include "Blitter.hpp"
 
+#include "Shader/ShaderCore.hpp"
 #include "Reactor/Reactor.hpp"
 #include "Common/Memory.hpp"
 #include "Common/Debug.hpp"
@@ -38,7 +39,7 @@ namespace sw
 		}
 
 		sw::Surface *color = sw::Surface::create(1, 1, 1, format, pixel, sw::Surface::bytes(format), sw::Surface::bytes(format));
-		Blitter::Options clearOptions = static_cast<sw::Blitter::Options>((rgbaMask & 0xF) | CLEAR_OPERATION);
+		Blitter::Options clearOptions = static_cast<sw::Blitter::Options>((rgbaMask & 0xF) | CLEAR_OPERATION | CONVERT_SRGB);
 		SliceRectF sRect((float)dRect.x0, (float)dRect.y0, (float)dRect.x1, (float)dRect.y1, 0);
 		blit(color, sRect, dest, dRect, clearOptions);
 		delete color;
@@ -133,17 +134,13 @@ namespace sw
 		return true;
 	}
 
-	void Blitter::blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, bool filter, bool isStencil)
+	void Blitter::blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, bool filter, bool isStencil, bool sRGBconversion)
 	{
 		Blitter::Options options = WRITE_RGBA;
-		if(filter)
-		{
-			options = static_cast<Blitter::Options>(options | FILTER_LINEAR);
-		}
-		if(isStencil)
-		{
-			options = static_cast<Blitter::Options>(options | USE_STENCIL);
-		}
+		options = filter ? static_cast<Blitter::Options>(options | FILTER_LINEAR) : options;
+		options = isStencil ? static_cast<Blitter::Options>(options | USE_STENCIL) : options;
+		options = sRGBconversion  ? static_cast<Blitter::Options>(options | CONVERT_SRGB) : options;
+
 		blit(source, sRect, dest, dRect, options);
 	}
 
@@ -1116,7 +1113,25 @@ namespace sw
 			return false;
 		}
 
-		if(unscale != scale)
+		bool srcSRGB = Surface::isSRGBformat(state.sourceFormat);
+		bool dstSRGB = Surface::isSRGBformat(state.destFormat);
+
+		if((state.options & CONVERT_SRGB) && (srcSRGB ^ dstSRGB))   // One of the formats is sRGB encoded.
+		{
+			value = value * Float4(1.0f / unscale.x, 1.0f / unscale.y, 1.0f / unscale.z, 1.0f / unscale.w);
+
+			if(srcSRGB)
+			{
+				value = sRGBtoLinear(value);
+			}
+			else   // dstSRGB
+			{
+				value = LinearToSRGB(value);
+			}
+
+			value = value * Float4(scale.x, scale.y, scale.z, scale.w);
+		}
+		else if(unscale != scale)
 		{
 			value *= Float4(scale.x / unscale.x, scale.y / unscale.y, scale.z / unscale.z, scale.w / unscale.w);
 		}
@@ -1138,6 +1153,30 @@ namespace sw
 	{
 		return (quadLayout ? (y & Int(~1)) : RValue<Int>(y)) * pitchB +
 		       (quadLayout ? ((y & Int(1)) << 1) + (x * 2) - (x & Int(1)) : RValue<Int>(x)) * bytes;
+	}
+
+	Float4 Blitter::LinearToSRGB(Float4 &c)
+	{
+		Float4 lc = Min(c, Float4(0.0031308f)) * Float4(12.92f);
+		Float4 ec = Float4(1.055f) * power(c, Float4(1.0f / 2.4f)) - Float4(0.055f);
+
+		Float4 s = c;
+		s.xyz = Max(lc, ec);
+
+		return s;
+	}
+
+	Float4 Blitter::sRGBtoLinear(Float4 &c)
+	{
+		Float4 lc = c * Float4(1.0f / 12.92f);
+		Float4 ec = power((c + Float4(0.055f)) * Float4(1.0f / 1.055f), Float4(2.4f));
+
+		Int4 linear = CmpLT(c, Float4(0.04045f));
+
+		Float4 s = c;
+		s.xyz = As<Float4>((linear & As<Int4>(lc)) | (~linear & As<Int4>(ec)));   // FIXME: IfThenElse()
+
+		return s;
 	}
 
 	Routine *Blitter::generate(BlitState &state)

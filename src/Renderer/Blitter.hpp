@@ -36,6 +36,7 @@ namespace sw
 			FILTER_LINEAR = 0x10,
 			CLEAR_OPERATION = 0x20,
 			USE_STENCIL = 0x40,
+			CONVERT_SRGB = 0x80,
 		};
 
 		struct BlitState
@@ -78,7 +79,7 @@ namespace sw
 		virtual ~Blitter();
 
 		void clear(void *pixel, sw::Format format, Surface *dest, const SliceRect &dRect, unsigned int rgbaMask);
-		void blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, bool filter, bool isStencil = false);
+		void blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, bool filter, bool isStencil = false, bool sRGBconversion = true);
 		void blit3D(Surface *source, Surface *dest);
 
 	private:
@@ -91,6 +92,8 @@ namespace sw
 		static bool GetScale(float4& scale, Format format);
 		static bool ApplyScaleAndClamp(Float4& value, const BlitState& state);
 		static Int ComputeOffset(Int& x, Int& y, Int& pitchB, int bytes, bool quadLayout);
+		static Float4 LinearToSRGB(Float4 &color);
+		static Float4 sRGBtoLinear(Float4 &color);
 		void blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, const Blitter::Options& options);
 		bool blitReactor(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, const Blitter::Options& options);
 		Routine *generate(BlitState &state);
