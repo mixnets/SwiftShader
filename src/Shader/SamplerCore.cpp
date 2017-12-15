@@ -293,8 +293,8 @@ namespace sw
 		}
 		else
 		{
-			// FIXME: YUV and sRGB are not supported by the floating point path
-			bool forceFloatFiltering = state.highPrecisionFiltering && !state.sRGB && !hasYuvFormat() && (state.textureFilter != FILTER_POINT);
+			// FIXME: YUV is not supported by the floating point path
+			bool forceFloatFiltering = state.highPrecisionFiltering && !hasYuvFormat() && (state.textureFilter != FILTER_POINT);
 			bool seamlessCube = (state.addressingModeU == ADDRESSING_SEAMLESS);
 			if(hasFloatTexture() || hasUnnormalizedIntegerTexture() || forceFloatFiltering || seamlessCube)   // FIXME: Mostly identical to integer sampling
 			{

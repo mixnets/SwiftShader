@@ -25,18 +25,37 @@ namespace sw
 {
 	class Blitter
 	{
-		enum Options : unsigned char
+		struct Options
 		{
-			FILTER_POINT = 0x00,
-			WRITE_RED = 0x01,
-			WRITE_GREEN = 0x02,
-			WRITE_BLUE = 0x04,
-			WRITE_ALPHA = 0x08,
-			WRITE_RGBA = WRITE_RED | WRITE_GREEN | WRITE_BLUE | WRITE_ALPHA,
-			FILTER_LINEAR = 0x10,
-			CLEAR_OPERATION = 0x20,
-			USE_STENCIL = 0x40,
-			CONVERT_SRGB = 0x80,
+			Options(int writeMask = 0xF, bool clearOperation = false) : writeMask(writeMask), clearOperation(clearOperation)
+			{
+				filter = false;
+				useStencil = false;
+				convertSRGB = true;
+			}
+
+			union
+			{
+				struct
+				{
+					bool writeRed : 1;
+					bool writeGreen : 1;
+					bool writeBlue : 1;
+					bool writeAlpha : 1;
+				};
+
+				unsigned char writeMask;
+			};
+
+			bool filter : 1;
+			bool clearOperation : 1;
+			bool useStencil : 1;
+			bool convertSRGB : 1;
+
+			bool writeRGBA() const
+			{
+				return writeMask == 0xF;
+			}
 		};
 
 		struct BlitState
@@ -85,7 +104,7 @@ namespace sw
 	private:
 		bool fastClear(void *pixel, sw::Format format, Surface *dest, const SliceRect &dRect, unsigned int rgbaMask);
 
-		bool read(Float4 &color, Pointer<Byte> element, Format format);
+		bool read(Float4 &color, Pointer<Byte> element, Format format, const BlitState& state);
 		bool write(Float4 &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
 		bool read(Int4 &color, Pointer<Byte> element, Format format);
 		bool write(Int4 &color, Pointer<Byte> element, Format format, const Blitter::Options& options);
