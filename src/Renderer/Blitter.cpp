@@ -268,8 +268,11 @@ namespace sw
 			break;
 		case FORMAT_A8B8G8R8:
 		case FORMAT_A8B8G8R8UI:
+			c = Float4(*Pointer<Byte4>(element));
+			break;
 		case FORMAT_SRGB8_A8:
 			c = Float4(*Pointer<Byte4>(element));
+// Unscale and linearize, unless equal dest format and not filtering
 			break;
 		case FORMAT_X8R8G8B8:
 			c = Float4(*Pointer<Byte4>(element)).zyxw;
@@ -294,7 +297,7 @@ namespace sw
 			break;
 		case FORMAT_X8B8G8R8:
 		case FORMAT_X8B8G8R8UI:
-		case FORMAT_SRGB8_X8:
+case FORMAT_SRGB8_X8:
 			c = Float4(*Pointer<Byte4>(element));
 			c.w = float(0xFF);
 			break;
@@ -413,6 +416,11 @@ namespace sw
 			return false;
 		}
 
+		if(!ApplyScaleAndClamp(c, state))
+		{
+			return false;
+		}
+
 		return true;
 	}
 
@@ -447,7 +455,7 @@ namespace sw
 			}
 			break;
 		case FORMAT_A8B8G8R8:
-		case FORMAT_SRGB8_A8:
+case FORMAT_SRGB8_A8:// scale and un-linearize, unless equal source format and not filtering
 			if(writeRGBA)
 			{
 				Short4 c0 = RoundShort4(c);
@@ -476,7 +484,7 @@ namespace sw
 			}
 			break;
 		case FORMAT_X8B8G8R8:
-		case FORMAT_SRGB8_X8:
+case FORMAT_SRGB8_X8:
 			if(writeRGBA)
 			{
 				Short4 c0 = RoundShort4(c) | Short4(0x0000, 0x0000, 0x0000, 0xFFFFu);
@@ -1221,11 +1229,6 @@ namespace sw
 						return nullptr;
 					}
 					hasConstantColorF = true;
-
-					if(!ApplyScaleAndClamp(constantColorF, state))
-					{
-						return nullptr;
-					}
 				}
 			}
 
@@ -1318,11 +1321,6 @@ namespace sw
 
 							color = (c00 * ix + c01 * fx) * iy +
 							        (c10 * ix + c11 * fx) * fy;
-						}
-
-						if(!ApplyScaleAndClamp(color, state))
-						{
-							return nullptr;
 						}
 
 						for(int s = 0; s < state.destSamples; s++)
