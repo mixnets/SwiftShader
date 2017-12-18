@@ -5174,7 +5174,7 @@ void TexParameterf(GLenum target, GLenum pname, GLfloat param)
 		case GL_TEXTURE_BASE_LEVEL:
 			if(clientVersion < 3 || !texture->setBaseLevel((GLint)(roundf(param))))
 			{
-				return error(GL_INVALID_VALUE);
+				return  error(GL_INVALID_VALUE);
 			}
 			break;
 		case GL_TEXTURE_COMPARE_FUNC:

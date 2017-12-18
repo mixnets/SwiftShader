@@ -1431,18 +1431,21 @@ namespace sw
 		}
 		else if(function == Lod)
 		{
-			lod = lodBias + Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
+			lod = lodBias;
 		}
 		else if(function == Fetch)
 		{
 			// TODO: Eliminate int-float-int conversion.
-			lod = Float(As<Int>(lodBias)) + Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
+			lod = Float(As<Int>(lodBias));
 		}
 		else if(function == Base)
 		{
-			lod = Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
+			lod = Float(0);
 		}
 		else assert(false);
+
+		// TODO: Avoid float conversion.
+		lod += Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
 
 		lod = Max(lod, *Pointer<Float>(texture + OFFSET(Texture, minLod)));
 		lod = Min(lod, *Pointer<Float>(texture + OFFSET(Texture, maxLod)));
@@ -1497,18 +1500,21 @@ namespace sw
 		}
 		else if(function == Lod)
 		{
-			lod = lodBias + Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
+			lod = lodBias;
 		}
 		else if(function == Fetch)
 		{
 			// TODO: Eliminate int-float-int conversion.
-			lod = Float(As<Int>(lodBias)) + Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
+			lod = Float(As<Int>(lodBias));
 		}
 		else if(function == Base)
 		{
-			lod = Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
+			lod = Float(0);
 		}
 		else assert(false);
+
+		// TODO: Avoid float conversion.
+		lod += Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
 
 		lod = Max(lod, *Pointer<Float>(texture + OFFSET(Texture, minLod)));
 		lod = Min(lod, *Pointer<Float>(texture + OFFSET(Texture, maxLod)));
@@ -1561,18 +1567,21 @@ namespace sw
 			}
 			else if(function == Lod)
 			{
-				lod = lodBias + Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
+				lod = lodBias;
 			}
 			else if(function == Fetch)
 			{
 				// TODO: Eliminate int-float-int conversion.
-				lod = Float(As<Int>(lodBias)) + Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
+				lod = Float(As<Int>(lodBias));
 			}
 			else if(function == Base)
 			{
-				lod = Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
+				lod = Float(0);
 			}
 			else assert(false);
+
+			// TODO: Avoid float conversion.
+			lod += Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
 
 			lod = Max(lod, *Pointer<Float>(texture + OFFSET(Texture, minLod)));
 			lod = Min(lod, *Pointer<Float>(texture + OFFSET(Texture, maxLod)));
