@@ -5077,7 +5077,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				return error(GL_INVALID_OPERATION);
 			}
 
-			texture->setImage(context, level, width, height, sizedInternalFormat, type, context->getUnpackInfo(), data);
+			texture->setImage(level, width, height, sizedInternalFormat, type, context->getUnpackInfo(), data);
 		}
 		else
 		{
@@ -5088,7 +5088,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				return error(GL_INVALID_OPERATION);
 			}
 
-			texture->setImage(context, target, level, width, height, sizedInternalFormat, type, context->getUnpackInfo(), data);
+			texture->setImage(target, level, width, height, sizedInternalFormat, type, context->getUnpackInfo(), data);
 		}
 	}
 }
@@ -5439,7 +5439,7 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 				return error(validationError);
 			}
 
-			texture->subImage(context, level, xoffset, yoffset, width, height, format, type, context->getUnpackInfo(), data);
+			texture->subImage(level, xoffset, yoffset, width, height, format, type, context->getUnpackInfo(), data);
 		}
 		else if(es2::IsCubemapTextureTarget(target))
 		{
@@ -5457,7 +5457,7 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 				return error(validationError);
 			}
 
-			texture->subImage(context, target, level, xoffset, yoffset, width, height, format, type, context->getUnpackInfo(), data);
+			texture->subImage(target, level, xoffset, yoffset, width, height, format, type, context->getUnpackInfo(), data);
 		}
 		else UNREACHABLE(target);
 	}
@@ -6300,7 +6300,7 @@ void TexImage3DOES(GLenum target, GLint level, GLenum internalformat, GLsizei wi
 			return error(validationError);
 		}
 
-		texture->setImage(context, level, width, height, depth, sizedInternalFormat, type, context->getUnpackInfo(), data);
+		texture->setImage(level, width, height, depth, sizedInternalFormat, type, context->getUnpackInfo(), data);
 	}
 }
 
@@ -6352,7 +6352,7 @@ void TexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
 			return error(validationError);
 		}
 
-		texture->subImage(context, level, xoffset, yoffset, zoffset, width, height, depth, format, type, context->getUnpackInfo(), data);
+		texture->subImage(level, xoffset, yoffset, zoffset, width, height, depth, format, type, context->getUnpackInfo(), data);
 	}
 }
 
