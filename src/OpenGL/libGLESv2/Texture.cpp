@@ -667,8 +667,7 @@ void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 		image[level]->release();
 	}
 
-	GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[level] = egl::Image::create(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[level] = egl::Image::create(this, width, height, format, GL_UNSIGNED_BYTE);
 
 	if(!image[level])
 	{
@@ -703,7 +702,7 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 		image[level]->release();
 	}
 
-	GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
+	 GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
 	image[level] = egl::Image::create(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
 
 	if(!image[level])
@@ -1093,7 +1092,7 @@ void TextureCubeMap::setCompressedImage(GLenum target, GLint level, GLenum forma
 		image[face][level]->release();
 	}
 
-	GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
+	 GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
 	int border = (egl::getClientVersion() >= 3) ? 1 : 0;
 	image[face][level] = egl::Image::create(this, width, height, 1, border, sizedInternalFormat, GL_UNSIGNED_BYTE);
 
@@ -1327,7 +1326,7 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 		image[face][level]->release();
 	}
 
-	GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
+	 GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
 	int border = (egl::getClientVersion() >= 3) ? 1 : 0;
 	image[face][level] = egl::Image::create(this, width, height, 1, border, sizedInternalFormat, GL_UNSIGNED_BYTE);
 
@@ -1644,7 +1643,7 @@ void Texture3D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 		image[level]->release();
 	}
 
-	GLenum sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
+	 GLenum sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
 	image[level] = egl::Image::create(this, width, height, depth, 0, sizedInternalFormat, GL_UNSIGNED_BYTE);
 
 	if(!image[level])
@@ -1680,8 +1679,7 @@ void Texture3D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLint z,
 		image[level]->release();
 	}
 
-	GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[level] = egl::Image::create(this, width, height, depth, 0, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[level] = egl::Image::create(this, width, height, depth, 0, format, GL_UNSIGNED_BYTE);
 
 	if(!image[level])
 	{

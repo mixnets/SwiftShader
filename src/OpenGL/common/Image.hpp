@@ -41,19 +41,18 @@ namespace egl
 
 class Context;
 
-sw::Format ConvertFormatType(GLenum format, GLenum type);
-sw::Format SelectInternalFormat(GLenum format, GLenum type);
-GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment);
+sw::Format SelectImplementationFormat(GLint internalformat);
+GLsizei ComputePitch(GLsizei width, GLint internalformat, GLint alignment);
 GLsizei ComputeCompressedSize(GLsizei width, GLsizei height, GLenum format);
-size_t ComputePackingOffset(GLenum format, GLenum type, GLsizei width, GLsizei height, GLint alignment, GLint skipImages, GLint skipRows, GLint skipPixels);
+size_t ComputePackingOffset(GLint internalformat, GLsizei width, GLsizei height, GLint alignment, GLint skipImages, GLint skipRows, GLint skipPixels);
 
 class [[clang::lto_visibility_public]] Image : public sw::Surface, public gl::Object
 {
 protected:
 	// 2D texture image
-	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
-		: sw::Surface(parentTexture->getResource(), width, height, 1, 0, 1, SelectInternalFormat(format, type), true, true),
-		  width(width), height(height), depth(1), format(format), type(type), internalFormat(SelectInternalFormat(format, type)),
+	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLint internalformat)
+		: sw::Surface(parentTexture->getResource(), width, height, 1, 0, 1, SelectImplementationFormat(internalformat), true, true),
+		  width(width), height(height), depth(1), format(format), type(type), internalFormat(SelectImplementationFormat(internalformat)),
 		  parentTexture(parentTexture)
 	{
 		shared = false;
@@ -62,9 +61,9 @@ protected:
 	}
 
 	// 3D/Cube texture image
-	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLenum format, GLenum type)
-		: sw::Surface(parentTexture->getResource(), width, height, depth, border, 1, SelectInternalFormat(format, type), true, true),
-		  width(width), height(height), depth(depth), format(format), type(type), internalFormat(SelectInternalFormat(format, type)),
+	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLint internalformat)
+		: sw::Surface(parentTexture->getResource(), width, height, depth, border, 1, SelectImplementationFormat(internalformat), true, true),
+		  width(width), height(height), depth(depth), format(format), type(type), internalFormat(SelectImplementationFormat(internalformat)),
 		  parentTexture(parentTexture)
 	{
 		shared = false;
@@ -73,9 +72,9 @@ protected:
 	}
 
 	// Native EGL image
-	Image(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
-		: sw::Surface(nullptr, width, height, 1, 0, 1, SelectInternalFormat(format, type), true, true, pitchP),
-		  width(width), height(height), depth(1), format(format), type(type), internalFormat(SelectInternalFormat(format, type)),
+	Image(GLsizei width, GLsizei height, GLint internalformat, int pitchP)
+		: sw::Surface(nullptr, width, height, 1, 0, 1, SelectImplementationFormat(internalformat), true, true, pitchP),
+		  width(width), height(height), depth(1), format(format), type(type), internalFormat(SelectImplementationFormat(internalformat)),
 		  parentTexture(nullptr)
 	{
 		shared = true;
@@ -94,13 +93,13 @@ protected:
 
 public:
 	// 2D texture image
-	static Image *create(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type);
+	static Image *create(Texture *parentTexture, GLsizei width, GLsizei height, GLint internalformat);
 
 	// 3D/Cube texture image
-	static Image *create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLenum format, GLenum type);
+	static Image *create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLint internalformat);
 
 	// Native EGL image
-	static Image *create(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP);
+	static Image *create(GLsizei width, GLsizei height, GLint internalformat, int pitchP);
 
 	// Render target
 	static Image *create(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable);
@@ -182,7 +181,7 @@ public:
 		GLint skipImages;
 	};
 
-	void loadImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input);
+	void loadImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLint internalformat, const UnpackInfo& unpackInfo, const void *input);
 	void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
 
 	void release() override = 0;
