@@ -1480,6 +1480,8 @@ namespace sw
 			{
 				lod += lodBias;
 			}
+
+			lod += Float(*Pointer<Int>(texture + OFFSET(Texture,baseLevel)));
 		}
 		else if(function == Lod)
 		{

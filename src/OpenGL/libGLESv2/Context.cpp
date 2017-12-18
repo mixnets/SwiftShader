@@ -3189,13 +3189,16 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 		{
 			Texture2D *texture = static_cast<Texture2D*>(baseTexture);
 
+		//	device->setMipmapLOD(type, sampler, 1.0f / (float)(1 << texture->getBaseLevel()));
+
 			for(int mipmapLevel = 0; mipmapLevel < sw::MIPMAP_LEVELS; mipmapLevel++)
 			{
 				int surfaceLevel = mipmapLevel;
+				int baseLevel = texture->getBaseLevel();
 
-				if(surfaceLevel < 0)
+				if(surfaceLevel < baseLevel)
 				{
-					surfaceLevel = 0;
+					surfaceLevel = baseLevel;
 				}
 				else if(surfaceLevel >= levelCount)
 				{
@@ -3213,10 +3216,11 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 			for(int mipmapLevel = 0; mipmapLevel < sw::MIPMAP_LEVELS; mipmapLevel++)
 			{
 				int surfaceLevel = mipmapLevel;
+				int baseLevel = texture->getBaseLevel();
 
-				if(surfaceLevel < 0)
+				if(surfaceLevel < baseLevel)
 				{
-					surfaceLevel = 0;
+					surfaceLevel = baseLevel;
 				}
 				else if(surfaceLevel >= levelCount)
 				{
