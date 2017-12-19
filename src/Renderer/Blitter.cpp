@@ -1268,6 +1268,12 @@ namespace sw
 						Int X = Int(x);
 						Int Y = Int(y);
 
+						if(state.allowOutOfBoundsSourceCoords)
+						{
+							X = Clamp(X, 0, sWidth - 1);
+							Y = Clamp(Y, 0, sHeight - 1);
+						}
+
 						Pointer<Byte> s = source + ComputeOffset(X, Y, sPitchB, srcBytes, srcQuadLayout);
 
 						if(!read(color, s, state))
@@ -1289,6 +1295,12 @@ namespace sw
 							Int X = Int(x);
 							Int Y = Int(y);
 
+							if(state.allowOutOfBoundsSourceCoords)
+							{
+								X = Clamp(X, 0, sWidth - 1);
+								Y = Clamp(Y, 0, sHeight - 1);
+							}
+
 							Pointer<Byte> s = source + ComputeOffset(X, Y, sPitchB, srcBytes, srcQuadLayout);
 
 							if(!read(color, s, state))
@@ -1298,8 +1310,17 @@ namespace sw
 						}
 						else   // Bilinear filtering
 						{
-							Float x0 = x - 0.5f;
-							Float y0 = y - 0.5f;
+							Float X = x;
+							Float Y = y;
+
+							if(state.allowOutOfBoundsSourceCoords)
+							{
+								X = Float(Clamp(Int(x), 0, sWidth - 1));
+								Y = Float(Clamp(Int(y), 0, sHeight - 1));
+							}
+
+							Float x0 = X - 0.5f;
+							Float y0 = Y - 0.5f;
 
 							Int X0 = Max(Int(x0), 0);
 							Int Y0 = Max(Int(y0), 0);
@@ -1372,6 +1393,10 @@ namespace sw
 		}
 
 		State state(options);
+		state.allowOutOfBoundsSourceCoords = (sourceRect.x0 < 0.0f) ||
+		                                     (sourceRect.y0 < 0.0f) ||
+		                                     (sourceRect.x1 > (float)source->getWidth()) ||
+		                                     (sourceRect.y1 > (float)source->getHeight());
 
 		bool useSourceInternal = !source->isExternalDirty();
 		bool useDestInternal = !dest->isExternalDirty();
