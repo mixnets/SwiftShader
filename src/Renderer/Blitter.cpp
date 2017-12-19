@@ -1268,6 +1268,12 @@ namespace sw
 						Int X = Int(x);
 						Int Y = Int(y);
 
+						if(state.allowOOBSourceCoords)
+						{
+							X = Clamp(X, 0, sWidth - 1);
+							Y = Clamp(Y, 0, sHeight - 1);
+						}
+
 						Pointer<Byte> s = source + ComputeOffset(X, Y, sPitchB, srcBytes, srcQuadLayout);
 
 						if(!read(color, s, state))
@@ -1289,17 +1295,32 @@ namespace sw
 							Int X = Int(x);
 							Int Y = Int(y);
 
+							if(state.allowOOBSourceCoords)
+							{
+								X = Clamp(X, 0, sWidth - 1);
+								Y = Clamp(Y, 0, sHeight - 1);
+							}
+
 							Pointer<Byte> s = source + ComputeOffset(X, Y, sPitchB, srcBytes, srcQuadLayout);
 
-							if(!read(color, s, state))
+							if(!read(color, s, state) || !ApplyScaleAndClamp(color, state))
 							{
 								return nullptr;
 							}
 						}
 						else   // Bilinear filtering
 						{
-							Float x0 = x - 0.5f;
-							Float y0 = y - 0.5f;
+							Float X = x;
+							Float Y = y;
+
+							if(state.allowOOBSourceCoords)
+							{
+								X = Float(Clamp(Int(x), 0, sWidth - 1));
+								Y = Float(Clamp(Int(y), 0, sHeight - 1));
+							}
+
+							Float x0 = X - 0.5f;
+							Float y0 = Y - 0.5f;
 
 							Int X0 = Max(Int(x0), 0);
 							Int Y0 = Max(Int(y0), 0);
@@ -1319,6 +1340,16 @@ namespace sw
 							Float4 c10; if(!read(c10, s10, state)) return nullptr;
 							Float4 c11; if(!read(c11, s11, state)) return nullptr;
 
+							bool preFilterConversion = !Surface::isSRGBformat(state.sourceFormat) &&
+							                           Surface::isSRGBformat(state.destFormat);
+							if(preFilterConversion)
+							{
+								if(!ApplyScaleAndClamp(c00, state)) return nullptr;
+								if(!ApplyScaleAndClamp(c01, state)) return nullptr;
+								if(!ApplyScaleAndClamp(c10, state)) return nullptr;
+								if(!ApplyScaleAndClamp(c11, state)) return nullptr;
+							}
+
 							Float4 fx = Float4(x0 - Float(X0));
 							Float4 fy = Float4(y0 - Float(Y0));
 							Float4 ix = Float4(1.0f) - fx;
@@ -1326,11 +1357,11 @@ namespace sw
 
 							color = (c00 * ix + c01 * fx) * iy +
 							        (c10 * ix + c11 * fx) * fy;
-						}
 
-						if(!ApplyScaleAndClamp(color, state))
-						{
-							return nullptr;
+							if(!preFilterConversion && !ApplyScaleAndClamp(color, state))
+							{
+								return nullptr;
+							}
 						}
 
 						for(int s = 0; s < state.destSamples; s++)

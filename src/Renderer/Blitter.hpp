@@ -28,10 +28,10 @@ namespace sw
 		struct Options
 		{
 			Options() {}
-			Options(bool filter, bool useStencil, bool convertSRGB)
-				: writeMask(0xF), clearOperation(false), filter(filter), useStencil(useStencil), convertSRGB(convertSRGB) {}
+			Options(bool filter, bool useStencil, bool convertSRGB, bool allowOOBSourceCoords)
+				: writeMask(0xF), clearOperation(false), filter(filter), useStencil(useStencil), convertSRGB(convertSRGB), allowOOBSourceCoords(allowOOBSourceCoords) {}
 			Options(unsigned int writeMask)
-				: writeMask(writeMask), clearOperation(true), filter(false), useStencil(false), convertSRGB(true) {}
+				: writeMask(writeMask), clearOperation(true), filter(false), useStencil(false), convertSRGB(true), allowOOBSourceCoords(false) {}
 
 			union
 			{
@@ -50,6 +50,7 @@ namespace sw
 			bool filter : 1;
 			bool useStencil : 1;
 			bool convertSRGB : 1;
+			bool allowOOBSourceCoords : 1;
 		};
 
 		struct State : Options

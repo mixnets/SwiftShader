@@ -682,9 +682,9 @@ namespace sw
 		blitter->clear(value, format, dest, clearRect, rgbaMask);
 	}
 
-	void Renderer::blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, bool filter, bool isStencil, bool sRGBconversion)
+	void Renderer::blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, bool filter, bool isStencil, bool sRGBconversion, bool allowOOBSourceCoords)
 	{
-		blitter->blit(source, sRect, dest, dRect, {filter, isStencil, sRGBconversion});
+		blitter->blit(source, sRect, dest, dRect, {filter, isStencil, sRGBconversion, allowOOBSourceCoords});
 	}
 
 	void Renderer::blit3D(Surface *source, Surface *dest)

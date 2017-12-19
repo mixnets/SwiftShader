@@ -723,7 +723,8 @@ namespace es2
 		int sourcePitchB = isStencil ? source->getStencilPitchB() : source->getInternalPitchB();
 		int destPitchB = isStencil ? dest->getStencilPitchB() : dest->getInternalPitchB();
 
-		bool scaling = (sRect.width() != (float)dRect.width()) || (sRect.height() != (float)dRect.height());
+		bool isOOB = (sRect.x0 < 0.0f) || (sRect.y0 < 0.0f) || (sRect.x1 > (float)sWidth) || (sRect.y1 > (float)sHeight);
+		bool scaling = (sRect.width() != (float)dRect.width()) || (sRect.height() != (float)dRect.height()) || isOOB;
 		bool equalFormats = source->getInternalFormat() == dest->getInternalFormat();
 		bool hasQuadLayout = Surface::hasQuadLayout(source->getInternalFormat()) || Surface::hasQuadLayout(dest->getInternalFormat());
 		bool fullCopy = (sRect.x0 == 0.0f) && (sRect.y0 == 0.0f) && (dRect.x0 == 0) && (dRect.y0 == 0) &&
@@ -796,8 +797,7 @@ namespace es2
 				swap(dRect.y0, dRect.y1);
 			}
 
-			SliceRectF sRectF((float)sRect.x0, (float)sRect.y0, (float)sRect.x1, (float)sRect.y1, sRect.slice);
-			blit(source, sRectF, dest, dRect, scaling && (flags & Device::USE_FILTER), isStencil);
+			blit(source, sRect, dest, dRect, scaling && (flags & Device::USE_FILTER) , isStencil, true, isOOB);
 		}
 		else UNREACHABLE(false);
 
@@ -1030,16 +1030,6 @@ namespace es2
 		}
 
 		if(rect->x1 <= rect->x0 || rect->y1 <= rect->y0)
-		{
-			return false;
-		}
-
-		if(rect->x0 < 0 || rect->y0 < 0)
-		{
-			return false;
-		}
-
-		if(rect->x1 >(float)surface->getWidth() || rect->y1 >(float)surface->getHeight())
 		{
 			return false;
 		}
