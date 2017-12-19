@@ -723,6 +723,7 @@ namespace es2
 		int sourcePitchB = isStencil ? source->getStencilPitchB() : source->getInternalPitchB();
 		int destPitchB = isStencil ? dest->getStencilPitchB() : dest->getInternalPitchB();
 
+		bool isOOB = (sRect.x0 < 0.0f) || (sRect.y0 < 0.0f) || (sRect.x1 > (float)sWidth) || (sRect.y1 > (float)sHeight);
 		bool scaling = (sRect.width() != (float)dRect.width()) || (sRect.height() != (float)dRect.height());
 		bool equalFormats = source->getInternalFormat() == dest->getInternalFormat();
 		bool hasQuadLayout = Surface::hasQuadLayout(source->getInternalFormat()) || Surface::hasQuadLayout(dest->getInternalFormat());
@@ -739,7 +740,7 @@ namespace es2
 			alpha0xFF = true;
 		}
 
-		if(fullCopy && !scaling && equalFormats && !alpha0xFF && equalSlice && smallMargin && !flipX && !flipY)
+		if(fullCopy && !scaling && !isOOB && equalFormats && !alpha0xFF && equalSlice && smallMargin && !flipX && !flipY)
 		{
 			byte *sourceBuffer = isStencil ? (byte*)source->lockStencil(0, 0, 0, PUBLIC) : (byte*)source->lockInternal(0, 0, 0, LOCK_READONLY, PUBLIC);
 			byte *destBuffer = isStencil ? (byte*)dest->lockStencil(0, 0, 0, PUBLIC) : (byte*)dest->lockInternal(0, 0, 0, LOCK_DISCARD, PUBLIC);
@@ -749,7 +750,7 @@ namespace es2
 			isStencil ? source->unlockStencil() : source->unlockInternal();
 			isStencil ? dest->unlockStencil() : dest->unlockInternal();
 		}
-		else if(isDepth && !scaling && equalFormats && !hasQuadLayout)
+		else if(isDepth && !scaling && !isOOB && equalFormats && !hasQuadLayout)
 		{
 			byte *sourceBuffer = (byte*)source->lockInternal((int)sRect.x0, (int)sRect.y0, 0, LOCK_READONLY, PUBLIC);
 			byte *destBuffer = (byte*)dest->lockInternal(dRect.x0, dRect.y0, 0, fullCopy ? LOCK_DISCARD : LOCK_WRITEONLY, PUBLIC);
@@ -759,7 +760,7 @@ namespace es2
 			source->unlockInternal();
 			dest->unlockInternal();
 		}
-		else if((flags & Device::COLOR_BUFFER) && !scaling && equalFormats && !hasQuadLayout)
+		else if((flags & Device::COLOR_BUFFER) && !scaling && !isOOB && equalFormats && !hasQuadLayout)
 		{
 			byte *sourceBytes = (byte*)source->lockInternal((int)sRect.x0, (int)sRect.y0, sourceRect->slice, LOCK_READONLY, PUBLIC);
 			byte *destBytes = (byte*)dest->lockInternal(dRect.x0, dRect.y0, destRect->slice, fullCopy ? LOCK_DISCARD : LOCK_WRITEONLY, PUBLIC);
@@ -796,8 +797,7 @@ namespace es2
 				swap(dRect.y0, dRect.y1);
 			}
 
-			SliceRectF sRectF((float)sRect.x0, (float)sRect.y0, (float)sRect.x1, (float)sRect.y1, sRect.slice);
-			blit(source, sRectF, dest, dRect, scaling && (flags & Device::USE_FILTER), isStencil);
+			blit(source, sRect, dest, dRect, scaling && (flags & Device::USE_FILTER) , isStencil);
 		}
 		else UNREACHABLE(false);
 
@@ -1030,16 +1030,6 @@ namespace es2
 		}
 
 		if(rect->x1 <= rect->x0 || rect->y1 <= rect->y0)
-		{
-			return false;
-		}
-
-		if(rect->x0 < 0 || rect->y0 < 0)
-		{
-			return false;
-		}
-
-		if(rect->x1 >(float)surface->getWidth() || rect->y1 >(float)surface->getHeight())
 		{
 			return false;
 		}
