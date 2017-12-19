@@ -455,11 +455,12 @@ void Texture::subImageCompressed(GLint xoffset, GLint yoffset, GLint zoffset, GL
 	}
 }
 
-bool Texture::copy(egl::Image *source, const sw::SliceRect &sourceRect, GLint xoffset, GLint yoffset, GLint zoffset, egl::Image *dest)
+bool Texture::copy(egl::Image *source, const sw::SliceRectF &sourceRect, GLint xoffset, GLint yoffset, GLint zoffset, egl::Image *dest)
 {
 	Device *device = getDevice();
 
-	sw::SliceRect destRect(xoffset, yoffset, xoffset + (sourceRect.x1 - sourceRect.x0), yoffset + (sourceRect.y1 - sourceRect.y0), zoffset);
+	sw::SliceRect destRect(xoffset, yoffset, xoffset + static_cast<int>(roundf(sourceRect.x1 - sourceRect.x0)),
+	                       yoffset + static_cast<int>(roundf(sourceRect.y1 - sourceRect.y0)), zoffset);
 	bool success = device->stretchRect(source, &sourceRect, dest, &destRect, Device::ALL_BUFFERS);
 
 	if(!success)
@@ -726,8 +727,14 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 			return;
 		}
 
-		sw::SliceRect sourceRect(x, y, x + width, y + height, 0);
-		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
+		sw::SliceRectF sourceRect(static_cast<float>(x),
+		                          static_cast<float>(y),
+		                          static_cast<float>(x + width),
+		                          static_cast<float>(y + height), 0);
+		sourceRect.clip(static_cast<float>(0),
+		                static_cast<float>(0),
+		                static_cast<float>(renderbuffer->getWidth()),
+		                static_cast<float>(renderbuffer->getHeight()));
 
 		copy(renderTarget, sourceRect, 0, 0, 0, image[level]);
 	}
@@ -765,8 +772,11 @@ void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 			return;
 		}
 
-		sw::SliceRect sourceRect(x, y, x + width, y + height, 0);
-		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
+		sw::SliceRectF sourceRect(static_cast<float>(x),
+		                          static_cast<float>(y),
+		                          static_cast<float>(x + width),
+		                          static_cast<float>(y + height), 0);
+		sourceRect.clip(0.0f, 0.0f, static_cast<float>(renderbuffer->getWidth()), static_cast<float>(renderbuffer->getHeight()));
 
 		copy(renderTarget, sourceRect, xoffset, yoffset, zoffset, image[level]);
 
@@ -1366,8 +1376,11 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 			return;
 		}
 
-		sw::SliceRect sourceRect(x, y, x + width, y + height, 0);
-		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
+		sw::SliceRectF sourceRect(static_cast<float>(x),
+		                          static_cast<float>(y),
+		                          static_cast<float>(x + width),
+		                          static_cast<float>(y + height), 0);
+		sourceRect.clip(0.0f, 0.0f, static_cast<float>(renderbuffer->getWidth()), static_cast<float>(renderbuffer->getHeight()));
 
 		copy(renderTarget, sourceRect, 0, 0, 0, image[face][level]);
 	}
@@ -1419,8 +1432,11 @@ void TextureCubeMap::copySubImage(GLenum target, GLint level, GLint xoffset, GLi
 			return;
 		}
 
-		sw::SliceRect sourceRect(x, y, x + width, y + height, 0);
-		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
+		sw::SliceRectF sourceRect(static_cast<float>(x),
+		                          static_cast<float>(y),
+		                          static_cast<float>(x + width),
+		                          static_cast<float>(y + height), 0);
+		sourceRect.clip(0.0f, 0.0f, static_cast<float>(renderbuffer->getWidth()), static_cast<float>(renderbuffer->getHeight()));
 
 		copy(renderTarget, sourceRect, xoffset, yoffset, zoffset, image[face][level]);
 
@@ -1717,9 +1733,12 @@ void Texture3D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLint z,
 			ERR("Failed to retrieve the source colorbuffer.");
 			return;
 		}
-
-		sw::SliceRect sourceRect(x, y, x + width, y + height, z);
-		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
+		
+		sw::SliceRectF sourceRect(static_cast<float>(x),
+		                          static_cast<float>(y),
+		                          static_cast<float>(x + width),
+		                          static_cast<float>(y + height), z);
+		sourceRect.clip(0.0f, 0.0f, static_cast<float>(renderbuffer->getWidth()), static_cast<float>(renderbuffer->getHeight()));
 		for(GLint sliceZ = 0; sliceZ < depth; ++sliceZ, ++sourceRect.slice)
 		{
 			copy(renderTarget, sourceRect, 0, 0, sliceZ, image[level]);
@@ -1759,8 +1778,8 @@ void Texture3D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 			return;
 		}
 
-		sw::SliceRect sourceRect = {x, y, x + width, y + height, 0};
-		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
+		sw::SliceRectF sourceRect = {static_cast<float>(x), static_cast<float>(y), static_cast<float>(x + width), static_cast<float>(y + height), 0};
+		sourceRect.clip(0.0f, 0.0f, static_cast<float>(renderbuffer->getWidth()), static_cast<float>(renderbuffer->getHeight()));
 
 		copy(renderTarget, sourceRect, xoffset, yoffset, zoffset, image[level]);
 
@@ -1997,7 +2016,7 @@ void Texture2DArray::generateMipmaps()
 		GLsizei srch = image[i - 1]->getHeight();
 		for(int z = 0; z < depth; ++z)
 		{
-			sw::SliceRect srcRect(0, 0, srcw, srch, z);
+			sw::SliceRectF srcRect(0.0f, 0.0f, static_cast<float>(srcw), static_cast<float>(srch), z);
 			sw::SliceRect dstRect(0, 0, w, h, z);
 			getDevice()->stretchRect(image[i - 1], &srcRect, image[i], &dstRect, Device::ALL_BUFFERS | Device::USE_FILTER);
 		}
