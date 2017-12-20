@@ -1290,6 +1290,7 @@ namespace sw
 					{
 						Float4 color;
 
+						bool conversionPerformed = false;
 						if(!state.filter || intSrc)
 						{
 							Int X = Int(x);
@@ -1340,6 +1341,16 @@ namespace sw
 							Float4 c10; if(!read(c10, s10, state)) return nullptr;
 							Float4 c11; if(!read(c11, s11, state)) return nullptr;
 
+							if(state.convertSRGB && !Surface::isSRGBformat(state.sourceFormat) &&
+								Surface::isSRGBformat(state.destFormat))
+							{
+								if(!ApplyScaleAndClamp(c00, state)) return nullptr;
+								if(!ApplyScaleAndClamp(c01, state)) return nullptr;
+								if(!ApplyScaleAndClamp(c10, state)) return nullptr;
+								if(!ApplyScaleAndClamp(c11, state)) return nullptr;
+								conversionPerformed = true;
+							}
+
 							Float4 fx = Float4(x0 - Float(X0));
 							Float4 fy = Float4(y0 - Float(Y0));
 							Float4 ix = Float4(1.0f) - fx;
@@ -1349,7 +1360,7 @@ namespace sw
 							        (c10 * ix + c11 * fx) * fy;
 						}
 
-						if(!ApplyScaleAndClamp(color, state))
+						if(!conversionPerformed && !ApplyScaleAndClamp(color, state))
 						{
 							return nullptr;
 						}
