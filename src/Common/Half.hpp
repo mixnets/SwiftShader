@@ -20,6 +20,7 @@ namespace sw
 	class half
 	{
 	public:
+		half() = default;
 		explicit half(float f);
 
 		operator float() const;
@@ -30,6 +31,19 @@ namespace sw
 	private:
 		unsigned short fp16i;
 	};
+
+	inline half shortAsHalf(short s)
+	{
+		union
+		{
+			half h;
+			short s;
+		} hs;
+
+		hs.s = s;
+
+		return hs.h;
+	}
 }
 
 #endif   // sw_Half_hpp
