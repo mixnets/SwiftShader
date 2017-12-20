@@ -1074,7 +1074,7 @@ namespace sw
 		return true;
 	}
 
-	bool Blitter::ApplyScaleAndClamp(Float4 &value, const State  &state)
+	bool Blitter::ApplyScaleAndClamp(Float4 &value, const State &state, bool reverseConversion)
 	{
 		float4 scale, unscale;
 		if(state.clearOperation &&
@@ -1108,11 +1108,14 @@ namespace sw
 		bool srcSRGB = Surface::isSRGBformat(state.sourceFormat);
 		bool dstSRGB = Surface::isSRGBformat(state.destFormat);
 
-		if(state.convertSRGB && (srcSRGB ^ dstSRGB))   // One of the formats is sRGB encoded.
+		if(state.convertSRGB && ((srcSRGB ^ dstSRGB) || ((srcSRGB || dstSRGB) && reverseConversion)))   // One of the formats is sRGB encoded.
 		{
-			value = value * Float4(1.0f / unscale.x, 1.0f / unscale.y, 1.0f / unscale.z, 1.0f / unscale.w);
+			if(!reverseConversion)
+			{
+				value = value * Float4(1.0f / unscale.x, 1.0f / unscale.y, 1.0f / unscale.z, 1.0f / unscale.w);
+			}
 
-			if(srcSRGB)
+			if(srcSRGB ^ reverseConversion)
 			{
 				value = sRGBtoLinear(value);
 			}
@@ -1121,7 +1124,10 @@ namespace sw
 				value = LinearToSRGB(value);
 			}
 
-			value = value * Float4(scale.x, scale.y, scale.z, scale.w);
+			if(!reverseConversion)
+			{
+				value = value * Float4(scale.x, scale.y, scale.z, scale.w);
+			}
 		}
 		else if(unscale != scale)
 		{
@@ -1297,6 +1303,8 @@ namespace sw
 					{
 						Float4 color;
 
+						bool preConversion = false;
+						bool reverseConversion = false;
 						if(!state.filter || intSrc)
 						{
 							Int X = Int(x);
@@ -1347,6 +1355,16 @@ namespace sw
 							Float4 c10; if(!read(c10, s10, state)) return nullptr;
 							Float4 c11; if(!read(c11, s11, state)) return nullptr;
 
+							preConversion = state.convertSRGB && Surface::isSRGBformat(state.destFormat);
+							reverseConversion = preConversion && Surface::isSRGBformat(state.sourceFormat);
+							if(preConversion)
+							{
+								if(!ApplyScaleAndClamp(c00, state)) return nullptr;
+								if(!ApplyScaleAndClamp(c01, state)) return nullptr;
+								if(!ApplyScaleAndClamp(c10, state)) return nullptr;
+								if(!ApplyScaleAndClamp(c11, state)) return nullptr;
+							}
+
 							Float4 fx = Float4(x0 - Float(X0));
 							Float4 fy = Float4(y0 - Float(Y0));
 							Float4 ix = Float4(1.0f) - fx;
@@ -1356,7 +1374,7 @@ namespace sw
 							        (c10 * ix + c11 * fx) * fy;
 						}
 
-						if(!ApplyScaleAndClamp(color, state))
+						if((!preConversion || reverseConversion) && !ApplyScaleAndClamp(color, state, reverseConversion))
 						{
 							return nullptr;
 						}
