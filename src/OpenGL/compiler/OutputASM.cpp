@@ -216,12 +216,12 @@ namespace glsl
 
 	sw::PixelShader *Shader::getPixelShader() const
 	{
-		return 0;
+		return nullptr;
 	}
 
 	sw::VertexShader *Shader::getVertexShader() const
 	{
-		return 0;
+		return nullptr;
 	}
 
 	OutputASM::TextureFunction::TextureFunction(const TString& nodeName) : method(IMPLICIT), proj(false), offset(false)
@@ -306,9 +306,9 @@ namespace glsl
 
 	OutputASM::OutputASM(TParseContext &context, Shader *shaderObject) : TIntermTraverser(true, true, true), shaderObject(shaderObject), mContext(context)
 	{
-		shader = 0;
-		pixelShader = 0;
-		vertexShader = 0;
+		shader = nullptr;
+		pixelShader = nullptr;
+		vertexShader = nullptr;
 
 		if(shaderObject)
 		{
@@ -317,9 +317,9 @@ namespace glsl
 			vertexShader = shaderObject->getVertexShader();
 		}
 
-		functionArray.push_back(Function(0, "main(", 0, 0));
+		functionArray.push_back(Function(0, "main(", nullptr, nullptr));
 		currentFunction = 0;
-		outputQualifier = EvqOutput; // Set outputQualifier to any value other than EvqFragColor or EvqFragData
+		outputQualifier = EvqOutput;   // Initialize outputQualifier to any value other than EvqFragColor or EvqFragData
 	}
 
 	OutputASM::~OutputASM()
@@ -1048,7 +1048,12 @@ namespace glsl
 		switch(node->getOp())
 		{
 		case EOpSequence:             break;
-		case EOpDeclaration:          break;
+		case EOpDeclaration:
+			if(visit == PostVisit)
+			{
+				visit = PostVisit;
+			}
+			break;
 		case EOpInvariantDeclaration: break;
 		case EOpPrototype:            break;
 		case EOpComma:
@@ -2170,19 +2175,59 @@ namespace glsl
 				int component = componentCount(type, argumentInfo.clampedIndex);
 				ConstantUnion *constants = arg->getAsConstantUnion()->getUnionArrayPointer();
 
-				for(int i = 0; i < 4; i++)
+				if(arg->isArray())
 				{
-					if(size == 1)   // Replicate
+					std::vector<Temporary*> arrayTemporaries;
+
+					int arraySize = arg->getArraySize();
+					for(int j = 0; j < arraySize; j++)
 					{
-						parameter.value[i] = constants[component + 0].getAsFloat();
+						int index = j * size;
+						Temporary* temp = new Temporary(this);
+						float value[4];
+						for(int i = 0; i < 4; i++)
+						{
+							if(size == 1)   // Replicate
+							{
+								value[i] = constants[index + component + 0].getAsFloat();
+							}
+							else if(i < size)
+							{
+								value[i] = constants[index + component + i].getAsFloat();
+							}
+							else
+							{
+								value[i] = 0.0f;
+							}
+						}
+						Constant constValue(value[0], value[1], value[2], value[3]);
+						emit(sw::Shader::OPCODE_MOV, temp, 0, &constValue, 0);
+						arrayTemporaries.push_back(temp);
 					}
-					else if(i < size)
+
+					parameter.index = registerIndex(arrayTemporaries[0]) + argumentInfo.clampedIndex;
+
+					for(int j = 0; j < arraySize; j++)
 					{
-						parameter.value[i] = constants[component + i].getAsFloat();
+						delete arrayTemporaries[j];
 					}
-					else
+				}
+				else
+				{
+					for(int i = 0; i < 4; i++)
 					{
-						parameter.value[i] = 0.0f;
+						if(size == 1)   // Replicate
+						{
+							parameter.value[i] = constants[component + 0].getAsFloat();
+						}
+						else if(i < size)
+						{
+							parameter.value[i] = constants[component + i].getAsFloat();
+						}
+						else
+						{
+							parameter.value[i] = 0.0f;
+						}
 					}
 				}
 			}
@@ -2551,7 +2596,9 @@ namespace glsl
 		{
 		case EvqTemporary:           return sw::Shader::PARAMETER_TEMP;
 		case EvqGlobal:              return sw::Shader::PARAMETER_TEMP;
-		case EvqConstExpr:           return sw::Shader::PARAMETER_FLOAT4LITERAL;   // All converted to float
+		case EvqConstExpr:           return operand->isArray() ?
+									        sw::Shader::PARAMETER_TEMP :
+									        sw::Shader::PARAMETER_FLOAT4LITERAL;   // All converted to float
 		case EvqAttribute:           return sw::Shader::PARAMETER_INPUT;
 		case EvqVaryingIn:           return sw::Shader::PARAMETER_INPUT;
 		case EvqVaryingOut:          return sw::Shader::PARAMETER_OUTPUT;
