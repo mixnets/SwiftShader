@@ -2474,7 +2474,7 @@ TIntermTyped *TParseContext::addIndexExpression(TIntermTyped *baseExpression, co
 
 	TIntermConstantUnion *indexConstantUnion = indexExpression->getAsConstantUnion();
 
-	if(indexExpression->getQualifier() == EvqConstExpr && indexConstantUnion)
+	if(indexExpression->getQualifier() == EvqConstExpr && indexConstantUnion)   // TODO: Qualifier check redundant?
 	{
 		int index = indexConstantUnion->getIConst(0);
 		if(index < 0)
@@ -2486,7 +2486,7 @@ TIntermTyped *TParseContext::addIndexExpression(TIntermTyped *baseExpression, co
 			recover();
 			index = 0;
 		}
-		if(baseExpression->getType().getQualifier() == EvqConstExpr)
+		if(baseExpression->getType().getQualifier() == EvqConstExpr && baseExpression->getAsConstantUnion())   // TODO: Qualifier check redundant?
 		{
 			if(baseExpression->isArray())
 			{
@@ -3536,7 +3536,7 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 		else
 		{
 			arraySize = typedThis->getArraySize();
-			if(typedThis->getAsSymbolNode() == nullptr)
+			if(!typedThis->getAsSymbolNode() && !typedThis->getAsConstantUnion())
 			{
 				// This code path can be hit with expressions like these:
 				// (a = b).length()
