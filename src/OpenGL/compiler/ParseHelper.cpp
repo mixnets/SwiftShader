@@ -1297,15 +1297,21 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
 		}
 	}
 
-	if (!variable->isConstant()) {
+	// Constants which aren't indexable arrays get propagated by value
+	// and thus don't need to initialize the symbol.
+	if (variable->isConstant() && !(type.isArray() && type.getArraySize() > 1))
+	{
+		*intermNode = nullptr;
+	}
+	else
+	{
 		TIntermSymbol* intermSymbol = intermediate.addSymbol(variable->getUniqueId(), variable->getName(), variable->getType(), line);
 		*intermNode = createAssign(EOpInitialize, intermSymbol, initializer, line);
 		if(*intermNode == nullptr) {
 			assignError(line, "=", intermSymbol->getCompleteString(), initializer->getCompleteString());
 			return true;
 		}
-	} else
-		*intermNode = nullptr;
+	}
 
 	return false;
 }
@@ -3530,7 +3536,7 @@ TIntermTyped *TParseContext::addFunctionCallOrMethod(TFunction *fnCall, TIntermN
 		else
 		{
 			arraySize = typedThis->getArraySize();
-			if(typedThis->getAsSymbolNode() == nullptr)
+			if(!typedThis->getAsSymbolNode() && !typedThis->getAsConstantUnion())
 			{
 				// This code path can be hit with expressions like these:
 				// (a = b).length()
