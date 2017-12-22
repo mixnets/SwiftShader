@@ -407,11 +407,6 @@ void BlendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
 	}
 }
 
-void BlendEquation(GLenum mode)
-{
-	glBlendEquationSeparate(mode, mode);
-}
-
 void BlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha)
 {
 	TRACE("(GLenum modeRGB = 0x%X, GLenum modeAlpha = 0x%X)", modeRGB, modeAlpha);
@@ -448,9 +443,9 @@ void BlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha)
 	}
 }
 
-void BlendFunc(GLenum sfactor, GLenum dfactor)
+void BlendEquation(GLenum mode)
 {
-	glBlendFuncSeparate(sfactor, dfactor, sfactor, dfactor);
+	BlendEquationSeparate(mode, mode);
 }
 
 void BlendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
@@ -564,6 +559,11 @@ void BlendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dst
 	{
 		context->setBlendFactors(srcRGB, dstRGB, srcAlpha, dstAlpha);
 	}
+}
+
+void BlendFunc(GLenum sfactor, GLenum dfactor)
+{
+	BlendFuncSeparate(sfactor, dfactor, sfactor, dfactor);
 }
 
 void BufferData(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage)
@@ -4809,11 +4809,6 @@ void ShaderSource(GLuint shader, GLsizei count, const GLchar *const *string, con
 	}
 }
 
-void StencilFunc(GLenum func, GLint ref, GLuint mask)
-{
-	glStencilFuncSeparate(GL_FRONT_AND_BACK, func, ref, mask);
-}
-
 void StencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask)
 {
 	TRACE("(GLenum face = 0x%X, GLenum func = 0x%X, GLint ref = %d, GLuint mask = %d)", face, func, ref, mask);
@@ -4859,9 +4854,9 @@ void StencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask)
 	}
 }
 
-void StencilMask(GLuint mask)
+void StencilFunc(GLenum func, GLint ref, GLuint mask)
 {
-	glStencilMaskSeparate(GL_FRONT_AND_BACK, mask);
+	StencilFuncSeparate(GL_FRONT_AND_BACK, func, ref, mask);
 }
 
 void StencilMaskSeparate(GLenum face, GLuint mask)
@@ -4894,9 +4889,9 @@ void StencilMaskSeparate(GLenum face, GLuint mask)
 	}
 }
 
-void StencilOp(GLenum fail, GLenum zfail, GLenum zpass)
+void StencilMask(GLuint mask)
 {
-	glStencilOpSeparate(GL_FRONT_AND_BACK, fail, zfail, zpass);
+	StencilMaskSeparate(GL_FRONT_AND_BACK, mask);
 }
 
 void StencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass)
@@ -4973,6 +4968,11 @@ void StencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass)
 			context->setStencilBackOperations(fail, zfail, zpass);
 		}
 	}
+}
+
+void StencilOp(GLenum fail, GLenum zfail, GLenum zpass)
+{
+	StencilOpSeparate(GL_FRONT_AND_BACK, fail, zfail, zpass);
 }
 
 GLboolean TestFenceNV(GLuint fence)
@@ -5247,7 +5247,7 @@ void TexParameterf(GLenum target, GLenum pname, GLfloat param)
 
 void TexParameterfv(GLenum target, GLenum pname, const GLfloat* params)
 {
-	glTexParameterf(target, pname, *params);
+	TexParameterf(target, pname, *params);
 }
 
 void TexParameteri(GLenum target, GLenum pname, GLint param)
@@ -5396,7 +5396,7 @@ void TexParameteri(GLenum target, GLenum pname, GLint param)
 
 void TexParameteriv(GLenum target, GLenum pname, const GLint* params)
 {
-	glTexParameteri(target, pname, *params);
+	TexParameteri(target, pname, *params);
 }
 
 void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height,
@@ -5471,11 +5471,6 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 	}
 }
 
-void Uniform1f(GLint location, GLfloat x)
-{
-	glUniform1fv(location, 1, &x);
-}
-
 void Uniform1fv(GLint location, GLsizei count, const GLfloat* v)
 {
 	TRACE("(GLint location = %d, GLsizei count = %d, const GLfloat* v = %p)", location, count, v);
@@ -5508,9 +5503,9 @@ void Uniform1fv(GLint location, GLsizei count, const GLfloat* v)
 	}
 }
 
-void Uniform1i(GLint location, GLint x)
+void Uniform1f(GLint location, GLfloat x)
 {
-	glUniform1iv(location, 1, &x);
+	Uniform1fv(location, 1, &x);
 }
 
 void Uniform1iv(GLint location, GLsizei count, const GLint* v)
@@ -5545,11 +5540,9 @@ void Uniform1iv(GLint location, GLsizei count, const GLint* v)
 	}
 }
 
-void Uniform2f(GLint location, GLfloat x, GLfloat y)
+void Uniform1i(GLint location, GLint x)
 {
-	GLfloat xy[2] = {x, y};
-
-	glUniform2fv(location, 1, (GLfloat*)&xy);
+	Uniform1iv(location, 1, &x);
 }
 
 void Uniform2fv(GLint location, GLsizei count, const GLfloat* v)
@@ -5584,11 +5577,11 @@ void Uniform2fv(GLint location, GLsizei count, const GLfloat* v)
 	}
 }
 
-void Uniform2i(GLint location, GLint x, GLint y)
+void Uniform2f(GLint location, GLfloat x, GLfloat y)
 {
-	GLint xy[4] = {x, y};
+	GLfloat xy[2] = {x, y};
 
-	glUniform2iv(location, 1, (GLint*)&xy);
+	Uniform2fv(location, 1, (GLfloat*)&xy);
 }
 
 void Uniform2iv(GLint location, GLsizei count, const GLint* v)
@@ -5623,11 +5616,11 @@ void Uniform2iv(GLint location, GLsizei count, const GLint* v)
 	}
 }
 
-void Uniform3f(GLint location, GLfloat x, GLfloat y, GLfloat z)
+void Uniform2i(GLint location, GLint x, GLint y)
 {
-	GLfloat xyz[3] = {x, y, z};
+	GLint xy[4] = {x, y};
 
-	glUniform3fv(location, 1, (GLfloat*)&xyz);
+	Uniform2iv(location, 1, (GLint*)&xy);
 }
 
 void Uniform3fv(GLint location, GLsizei count, const GLfloat* v)
@@ -5662,11 +5655,11 @@ void Uniform3fv(GLint location, GLsizei count, const GLfloat* v)
 	}
 }
 
-void Uniform3i(GLint location, GLint x, GLint y, GLint z)
+void Uniform3f(GLint location, GLfloat x, GLfloat y, GLfloat z)
 {
-	GLint xyz[3] = {x, y, z};
+	GLfloat xyz[3] = {x, y, z};
 
-	glUniform3iv(location, 1, (GLint*)&xyz);
+	Uniform3fv(location, 1, (GLfloat*)&xyz);
 }
 
 void Uniform3iv(GLint location, GLsizei count, const GLint* v)
@@ -5701,11 +5694,11 @@ void Uniform3iv(GLint location, GLsizei count, const GLint* v)
 	}
 }
 
-void Uniform4f(GLint location, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+void Uniform3i(GLint location, GLint x, GLint y, GLint z)
 {
-	GLfloat xyzw[4] = {x, y, z, w};
+	GLint xyz[3] = {x, y, z};
 
-	glUniform4fv(location, 1, (GLfloat*)&xyzw);
+	Uniform3iv(location, 1, (GLint*)&xyz);
 }
 
 void Uniform4fv(GLint location, GLsizei count, const GLfloat* v)
@@ -5740,11 +5733,11 @@ void Uniform4fv(GLint location, GLsizei count, const GLfloat* v)
 	}
 }
 
-void Uniform4i(GLint location, GLint x, GLint y, GLint z, GLint w)
+void Uniform4f(GLint location, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
 {
-	GLint xyzw[4] = {x, y, z, w};
+	GLfloat xyzw[4] = {x, y, z, w};
 
-	glUniform4iv(location, 1, (GLint*)&xyzw);
+	Uniform4fv(location, 1, (GLfloat*)&xyzw);
 }
 
 void Uniform4iv(GLint location, GLsizei count, const GLint* v)
@@ -5777,6 +5770,13 @@ void Uniform4iv(GLint location, GLsizei count, const GLint* v)
 			return error(GL_INVALID_OPERATION);
 		}
 	}
+}
+
+void Uniform4i(GLint location, GLint x, GLint y, GLint z, GLint w)
+{
+	GLint xyzw[4] = {x, y, z, w};
+
+	Uniform4iv(location, 1, (GLint*)&xyzw);
 }
 
 void UniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value)
