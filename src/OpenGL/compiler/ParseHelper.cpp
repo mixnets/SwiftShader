@@ -1304,8 +1304,11 @@ bool TParseContext::executeInitializer(const TSourceLoc& line, const TString& id
 			assignError(line, "=", intermSymbol->getCompleteString(), initializer->getCompleteString());
 			return true;
 		}
-	} else
+	}
+	else
+	{
 		*intermNode = nullptr;
+	}
 
 	return false;
 }
