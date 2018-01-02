@@ -3084,6 +3084,14 @@ namespace glsl
 				const char *name = sampler->getSymbol().c_str();
 				declareUniform(type, name, index);
 			}
+
+		//	if(IsSampler(type.getBasicType()))
+			{
+				for(int i = 0; i < type.totalRegisterCount(); i++)
+				{
+					shader->declareSampler(index + i);
+				}
+			}
 		}
 
 		return index;
@@ -3091,7 +3099,11 @@ namespace glsl
 
 	bool OutputASM::isSamplerRegister(TIntermTyped *operand)
 	{
-		return operand && IsSampler(operand->getBasicType()) && samplerRegister(operand) >= 0;
+		return operand && IsSampler(operand->getBasicType())
+
+			&& (operand->getQualifier() == EvqUniform);
+
+		//	&& samplerRegister(operand) >= 0;
 	}
 
 	int OutputASM::lookup(VariableArray &list, TIntermTyped *variable)
@@ -3198,6 +3210,8 @@ namespace glsl
 
 						return i;
 					}
+
+					i += j;
 				}
 			}
 
@@ -3279,13 +3293,13 @@ namespace glsl
 			int fieldRegisterIndex = encoder ? shaderObject->activeUniformBlocks[blockId].registerIndex + BlockLayoutEncoder::getBlockRegister(blockInfo) : registerIndex;
 			activeUniforms.push_back(Uniform(glVariableType(type), glVariablePrecision(type), name.c_str(), type.getArraySize(),
 			                                 fieldRegisterIndex, blockId, blockInfo));
-			if(IsSampler(type.getBasicType()))
-			{
-				for(int i = 0; i < type.totalRegisterCount(); i++)
-				{
-					shader->declareSampler(fieldRegisterIndex + i);
-				}
-			}
+		//	if(IsSampler(type.getBasicType()))
+		//	{
+		//		for(int i = 0; i < type.totalRegisterCount(); i++)
+		//		{
+		//			shader->declareSampler(fieldRegisterIndex + i);
+		//		}
+		//	}
 		}
 		else if(block)
 		{
