@@ -1042,7 +1042,7 @@ namespace sw
 			state.specularAdd = context->specularActive() && context->specularEnable;
 		}
 
-		for(unsigned int i = 0; i < 16; i++)
+		for(unsigned int i = 0; i < TEXTURE_IMAGE_UNITS; i++)
 		{
 			if(context->pixelShader)
 			{

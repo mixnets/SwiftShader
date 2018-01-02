@@ -1586,7 +1586,7 @@ namespace sw
 
 	void VertexProgram::TEXSIZE(Vector4f &dst, Float4 &lod, const Src &src1)
 	{
-		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap[16]) + src1.index * sizeof(Texture);
+		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap[TEXTURE_IMAGE_UNITS]) + shader->getSamplerIndex(src1.index) * sizeof(Texture);
 		dst = SamplerCore::textureSize(texture, lod);
 	}
 
@@ -1626,7 +1626,7 @@ namespace sw
 
 	Vector4f VertexProgram::sampleTexture(int sampler, Vector4f &uvwq, Float4 &lod, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerFunction function)
 	{
-		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap[TEXTURE_IMAGE_UNITS]) + sampler * sizeof(Texture);
+		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap[TEXTURE_IMAGE_UNITS]) + shader->getSamplerIndex(sampler) * sizeof(Texture);
 		return SamplerCore(constants, state.sampler[sampler]).sampleTexture(texture, uvwq.x, uvwq.y, uvwq.z, uvwq.w, lod, dsx, dsy, offset, function);
 	}
 }

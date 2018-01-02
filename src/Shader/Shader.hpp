@@ -582,6 +582,8 @@ namespace sw
 		bool containsLeaveInstruction() const;
 		bool containsDefineInstruction() const;
 		bool usesSampler(int i) const;
+		void setSamplerMap(const std::vector<int> &samplerMap);
+		int getSamplerIndex(int registerIndex) const;
 
 		struct Semantic
 		{
@@ -645,7 +647,8 @@ namespace sw
 
 		std::vector<Instruction*> instruction;
 
-		unsigned short usedSamplers;   // Bit flags
+		std::vector<int> usedSamplers;
+		std::vector<int> samplerMap;
 
 	private:
 		const int serialID;

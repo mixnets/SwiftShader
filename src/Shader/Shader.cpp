@@ -1131,7 +1131,6 @@ namespace sw
 
 	Shader::Shader() : serialID(serialCounter++)
 	{
-		usedSamplers = 0;
 	}
 
 	Shader::~Shader()
@@ -1418,9 +1417,27 @@ namespace sw
 		return containsDefine;
 	}
 
+	void Shader::setSamplerMap(const std::vector<int> &samplerMap)
+	{
+		this->samplerMap = samplerMap;
+	}
+
+	int Shader::getSamplerIndex(int registerIndex) const
+	{
+		std::vector<int>::const_iterator itBegin = samplerMap.begin();
+		std::vector<int>::const_iterator itEnd = samplerMap.end();
+		std::vector<int>::const_iterator it = std::find(itBegin, itEnd, registerIndex);
+		
+		ASSERT(it != itEnd);
+
+		int samplerIndex = static_cast<int>((it - itBegin) / sizeof(int));
+		return (it == itEnd) ? 0 : samplerIndex;
+	}
+
 	bool Shader::usesSampler(int index) const
 	{
-		return (usedSamplers & (1 << index)) != 0;
+		return (index >= 0) && (index < samplerMap.size()) && 
+		       (std::find(usedSamplers.begin(), usedSamplers.end(), samplerMap[index]) != usedSamplers.end());
 	}
 
 	int Shader::getSerialID() const
@@ -1474,7 +1491,10 @@ namespace sw
 
 	void Shader::declareSampler(int i)
 	{
-		usedSamplers |= 1 << i;
+		if(std::find(usedSamplers.begin(), usedSamplers.end(), i) == usedSamplers.end())
+		{
+			usedSamplers.push_back(i);
+		}
 	}
 
 	const Shader::Instruction *Shader::getInstruction(size_t i) const
@@ -1851,14 +1871,7 @@ namespace sw
 					Parameter &dst = inst->dst;
 					Parameter &src1 = inst->src[1];
 
-					if(majorVersion >= 2)
-					{
-						usedSamplers |= 1 << src1.index;
-					}
-					else
-					{
-						usedSamplers |= 1 << dst.index;
-					}
+					declareSampler((majorVersion >= 2) ? src1.index : dst.index);
 				}
 				break;
 			default:

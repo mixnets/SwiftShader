@@ -310,14 +310,14 @@ namespace es2
 	}
 
 	// Returns the texture type for a given sampler type and index (0-15 for the pixel shader and 0-3 for the vertex shader)
-	TextureType Program::getSamplerTextureType(sw::SamplerType type, unsigned int samplerIndex)
+	TextureType Program::getSamplerTextureType(sw::SamplerType type, unsigned int registerIndex)
 	{
 		switch(type)
 		{
 		case sw::SAMPLER_PIXEL:
-			return samplersPS[samplerIndex].textureType;
+			return samplersPS[registerIndex].textureType;
 		case sw::SAMPLER_VERTEX:
-			return samplersVS[samplerIndex].textureType;
+			return samplersVS[registerIndex].textureType;
 		default: UNREACHABLE(type);
 		}
 
@@ -1534,6 +1534,8 @@ namespace es2
 		{
 			return;
 		}
+
+		setSamplerMaps();
 
 		linked = true;   // Success
 	}
@@ -2951,5 +2953,22 @@ namespace es2
 		}
 
 		return true;
+	}
+
+	void Program::setSamplerMaps()
+	{
+		std::vector<int> samplerMap;
+		for(const auto &sampler : samplersPS)
+		{
+			samplerMap.push_back(sampler.first);
+		}
+		pixelBinary->setSamplerMap(samplerMap);
+
+		samplerMap.clear();
+		for(const auto &sampler : samplersVS)
+		{
+			samplerMap.push_back(sampler.first);
+		}
+		vertexBinary->setSamplerMap(samplerMap);
 	}
 }

@@ -708,7 +708,7 @@ namespace sw
 			Long texTime = Ticks();
 		#endif
 
-		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap) + samplerIndex * sizeof(Texture);
+		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap) + shader->getSamplerIndex(samplerIndex) * sizeof(Texture);
 		Vector4f c = SamplerCore(constants, state.sampler[samplerIndex]).sampleTexture(texture, uvwq.x, uvwq.y, uvwq.z, uvwq.w, bias, dsx, dsy, offset, function);
 
 		#if PERF_PROFILE
@@ -1168,7 +1168,7 @@ namespace sw
 
 	void PixelProgram::TEXSIZE(Vector4f &dst, Float4 &lod, const Src &src1)
 	{
-		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap) + src1.index * sizeof(Texture);
+		Pointer<Byte> texture = data + OFFSET(DrawData, mipmap) + shader->getSamplerIndex(src1.index) * sizeof(Texture);
 		dst = SamplerCore::textureSize(texture, lod);
 	}
 

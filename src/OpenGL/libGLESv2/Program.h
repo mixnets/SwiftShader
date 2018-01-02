@@ -143,7 +143,7 @@ namespace es2
 		int getAttributeStream(int attributeIndex);
 
 		const std::map<int, es2::Program::Sampler>& getSamplerMap(sw::SamplerType type) const;
-		TextureType getSamplerTextureType(sw::SamplerType type, unsigned int samplerIndex);
+		TextureType getSamplerTextureType(sw::SamplerType type, unsigned int registerIndex);
 
 		GLuint getUniformIndex(const std::string &name) const;
 		GLuint getUniformBlockIndex(const std::string &name) const;
@@ -233,6 +233,7 @@ namespace es2
 
 		bool linkVaryings();
 		bool linkTransformFeedback();
+		void setSamplerMaps();
 
 		bool linkAttributes();
 		int getAttributeBinding(const glsl::Attribute &attribute);
