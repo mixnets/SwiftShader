@@ -30,7 +30,8 @@ namespace sw
 			float4 position;
 			float pointSize;
 		} builtins;
-		struct
+
+		struct  // TODO: Align 16
 		{
 			int x;
 			int y;

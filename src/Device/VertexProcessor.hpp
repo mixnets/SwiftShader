@@ -25,12 +25,14 @@ namespace sw
 {
 	struct DrawData;
 
-	struct VertexCache   // FIXME: Variable size
+	struct VertexCache
 	{
+		static const int SIZE = 64;  // TODO: Variable size?
+
 		void clear();
 
-		Vertex vertex[16][4];
-		unsigned int tag[16];
+		Vertex vertex[SIZE];
+		unsigned int tag[SIZE];
 
 		int drawCall;
 	};
