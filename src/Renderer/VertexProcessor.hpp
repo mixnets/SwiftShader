@@ -28,8 +28,8 @@ namespace sw
 	{
 		void clear();
 
-		Vertex vertex[16][4];
-		unsigned int tag[16];
+		Vertex vertex[64];
+		unsigned int tag[64];
 
 		int drawCall;
 	};
@@ -50,6 +50,7 @@ namespace sw
 
 			uint64_t shaderID;
 
+			// FIXME: Eliminate by querying shader.
 			bool fixedFunction             : 1;
 			bool textureSampling           : 1;
 			unsigned int positionRegister  : BITS(MAX_VERTEX_OUTPUTS);

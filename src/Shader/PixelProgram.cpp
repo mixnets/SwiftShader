@@ -62,7 +62,7 @@ namespace sw
 		}
 	}
 
-	void PixelProgram::applyShader(Int cMask[4])
+void PixelProgram::applyShader(Int cMask[4])
 	{
 		enableIndex = 0;
 		stackIndex = 0;

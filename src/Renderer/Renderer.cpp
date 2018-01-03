@@ -1085,7 +1085,7 @@ namespace sw
 			task->vertexCache.drawCall = primitiveDrawCall;
 		}
 
-		unsigned int batch[128][3];   // FIXME: Adjust to dynamic batch size
+		unsigned int batch[128 + 1][3];   // FIXME: Adjust to dynamic batch size
 
 		switch(draw->drawType)
 		{
@@ -1511,6 +1511,11 @@ namespace sw
 		}
 
 		task->primitiveStart = start;
+
+		batch[triangleCount][0] = batch[triangleCount - 1][2];
+		batch[triangleCount][1] = batch[triangleCount - 1][2];
+		batch[triangleCount][2] = batch[triangleCount - 1][2];
+
 		task->vertexCount = triangleCount * 3;
 		vertexRoutine(&triangle->v0, (unsigned int*)&batch, task, data);
 	}

@@ -1038,12 +1038,12 @@ namespace sw
 
 		switch(control)
 		{
-		case Shader::CONTROL_GT: condition = CmpNLE(src0.x,  src1.x);	break;
-		case Shader::CONTROL_EQ: condition = CmpEQ(src0.x, src1.x);		break;
-		case Shader::CONTROL_GE: condition = CmpNLT(src0.x, src1.x);	break;
-		case Shader::CONTROL_LT: condition = CmpLT(src0.x,  src1.x);	break;
-		case Shader::CONTROL_NE: condition = CmpNEQ(src0.x, src1.x);	break;
-		case Shader::CONTROL_LE: condition = CmpLE(src0.x, src1.x);		break;
+		case Shader::CONTROL_GT: condition = CmpNLE(src0.x, src1.x); break;
+		case Shader::CONTROL_EQ: condition = CmpEQ(src0.x, src1.x);  break;
+		case Shader::CONTROL_GE: condition = CmpNLT(src0.x, src1.x); break;
+		case Shader::CONTROL_LT: condition = CmpLT(src0.x, src1.x);  break;
+		case Shader::CONTROL_NE: condition = CmpNEQ(src0.x, src1.x); break;
+		case Shader::CONTROL_LE: condition = CmpLE(src0.x, src1.x);  break;
 		default:
 			ASSERT(false);
 		}
@@ -1341,12 +1341,12 @@ namespace sw
 
 		switch(control)
 		{
-		case Shader::CONTROL_GT: condition = CmpNLE(src0.x,  src1.x);	break;
-		case Shader::CONTROL_EQ: condition = CmpEQ(src0.x, src1.x);		break;
-		case Shader::CONTROL_GE: condition = CmpNLT(src0.x, src1.x);	break;
-		case Shader::CONTROL_LT: condition = CmpLT(src0.x,  src1.x);	break;
-		case Shader::CONTROL_NE: condition = CmpNEQ(src0.x, src1.x);	break;
-		case Shader::CONTROL_LE: condition = CmpLE(src0.x, src1.x);		break;
+		case Shader::CONTROL_GT: condition = CmpNLE(src0.x, src1.x); break;
+		case Shader::CONTROL_EQ: condition = CmpEQ(src0.x, src1.x);  break;
+		case Shader::CONTROL_GE: condition = CmpNLT(src0.x, src1.x); break;
+		case Shader::CONTROL_LT: condition = CmpLT(src0.x, src1.x);  break;
+		case Shader::CONTROL_NE: condition = CmpNEQ(src0.x, src1.x); break;
+		case Shader::CONTROL_LE: condition = CmpLE(src0.x, src1.x);  break;
 		default:
 			ASSERT(false);
 		}
