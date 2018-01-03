@@ -66,10 +66,10 @@ namespace sw
 
 		typedef VertexProcessor::State::Input Stream;
 
-		Vector4f readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, const UInt &index);
-		void readInput(UInt &index);
+		Vector4f readStream(Pointer<Byte> &buffer, UInt &stride, const Stream &stream, Pointer<UInt> index);
+		void readInput(Pointer<UInt> index);
 		void computeClipFlags();
-		void writeCache(Pointer<Byte> &cacheLine);
+		void writeCache(Pointer<Byte> &cache, Pointer<UInt> index);
 		void writeVertex(const Pointer<Byte> &vertex, Pointer<Byte> &cacheLine);
 	};
 }

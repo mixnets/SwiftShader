@@ -27,7 +27,7 @@ namespace sw
 
 	void VertexCache::clear()
 	{
-		for(int i = 0; i < 16; i++)
+		for(int i = 0; i < SIZE; i++)  // TODO: Use symbolic cache size.
 		{
 			tag[i] = 0x80000000;
 		}
