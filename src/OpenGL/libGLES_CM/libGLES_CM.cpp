@@ -32,6 +32,7 @@
 #include <GLES/gl.h>
 #include <GLES/glext.h>
 
+#include <algorithm>
 #include <limits>
 
 namespace es1
@@ -4846,12 +4847,12 @@ extern "C" __eglMustCastToProperFunctionPointerType es1GetProcAddress(const char
 		FUNCTION(glIsFramebufferOES),
 		FUNCTION(glIsRenderbufferOES),
 		FUNCTION(glIsTexture),
-		FUNCTION(glLightf),
-		FUNCTION(glLightfv),
 		FUNCTION(glLightModelf),
 		FUNCTION(glLightModelfv),
 		FUNCTION(glLightModelx),
 		FUNCTION(glLightModelxv),
+		FUNCTION(glLightf),
+		FUNCTION(glLightfv),
 		FUNCTION(glLightx),
 		FUNCTION(glLightxv),
 		FUNCTION(glLineWidth),
@@ -4865,10 +4866,10 @@ extern "C" __eglMustCastToProperFunctionPointerType es1GetProcAddress(const char
 		FUNCTION(glMaterialx),
 		FUNCTION(glMaterialxv),
 		FUNCTION(glMatrixMode),
-		FUNCTION(glMultiTexCoord4f),
-		FUNCTION(glMultiTexCoord4x),
 		FUNCTION(glMultMatrixf),
 		FUNCTION(glMultMatrixx),
+		FUNCTION(glMultiTexCoord4f),
+		FUNCTION(glMultiTexCoord4x),
 		FUNCTION(glNormal3f),
 		FUNCTION(glNormal3x),
 		FUNCTION(glNormalPointer),
@@ -4928,7 +4929,7 @@ extern "C" __eglMustCastToProperFunctionPointerType es1GetProcAddress(const char
 	Function needle;
 	needle.name = procname;
 
-	if(procname && strncmp(procname, "gl", 2))
+	if(procname && strncmp("gl", procname, 2) == 0)
 	{
 		const Function *result = std::lower_bound(glFunctions, glFunctionsEnd, needle, CompareFunctor());
 		if(result != glFunctionsEnd && strcmp(procname, result->name) == 0)
