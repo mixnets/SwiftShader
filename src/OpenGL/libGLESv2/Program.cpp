@@ -1323,7 +1323,8 @@ namespace es2
 			{
 				if(output.name == input.name)
 				{
-					if(output.type != input.type || output.size() != input.size())
+					if((output.type != input.type) || (output.size() != input.size()) ||
+					   ((output.qualifier == EvqFlatOut) ^ (input.qualifier == EvqFlatIn)))
 					{
 						appendToInfoLog("Type of vertex varying %s does not match that of the fragment varying", output.name.c_str());
 
