@@ -146,7 +146,7 @@ namespace sw
 		void LABEL(int labelIndex);
 		void LOOP(const Src &integerRegister);
 		void REP(const Src &integerRegister);
-		void WHILE(const Src &temporaryRegister);
+		void WHILE(const Shader::Instruction *instruction, const Src &temporaryRegister);
 		void SWITCH();
 		void RET();
 		void LEAVE();

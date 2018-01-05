@@ -319,7 +319,7 @@ namespace sw
 			case Shader::OPCODE_LABEL:      LABEL(dst.index);                              break;
 			case Shader::OPCODE_LOOP:       LOOP(src1);                                    break;
 			case Shader::OPCODE_REP:        REP(src0);                                     break;
-			case Shader::OPCODE_WHILE:      WHILE(src0);                                   break;
+			case Shader::OPCODE_WHILE:      WHILE(instruction, src0);                                   break;
 			case Shader::OPCODE_SWITCH:     SWITCH();                                      break;
 			case Shader::OPCODE_RET:        RET();                                         break;
 			case Shader::OPCODE_LEAVE:      LEAVE();                                       break;
@@ -793,7 +793,7 @@ namespace sw
 	{
 		Int4 enable = instruction->analysisBranch ? Int4(enableStack[enableIndex]) : Int4(0xFFFFFFFF);
 
-		if(!whileTest)
+	/**/	if(!whileTest)
 		{
 			if(shader->containsBreakInstruction() && instruction->analysisBreak)
 			{
@@ -1507,7 +1507,6 @@ namespace sw
 		Nucleus::setInsertBlock(endBlock);
 
 		enableIndex--;
-		enableBreak = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 		whileTest = false;
 	}
 
@@ -1519,8 +1518,6 @@ namespace sw
 
 		Nucleus::createBr(endBlock);
 		Nucleus::setInsertBlock(endBlock);
-
-		enableBreak = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 	}
 
 	void PixelProgram::IF(const Src &src)
@@ -1685,7 +1682,7 @@ namespace sw
 		breakDepth = 0;
 	}
 
-	void PixelProgram::WHILE(const Src &temporaryRegister)
+	void PixelProgram::WHILE(const Shader::Instruction *instruction, const Src &temporaryRegister)
 	{
 		enableIndex++;
 
@@ -1706,8 +1703,13 @@ namespace sw
 
 		const Vector4f &src = fetchRegister(temporaryRegister);
 		Int4 condition = As<Int4>(src.x);
+
 		condition &= enableStack[enableIndex - 1];
 		if(shader->containsLeaveInstruction()) condition &= enableLeave;
+
+	//	/*condition &= enableStack[enableIndex - 1];
+	//	if(shader->containsLeaveInstruction()) */condition &= enableMask(instruction);
+
 		enableStack[enableIndex] = condition;
 
 		Bool notAllFalse = SignMask(condition) != 0;
@@ -1728,6 +1730,12 @@ namespace sw
 
 		loopRepTestBlock[loopRepDepth] = nullptr;
 		loopRepEndBlock[loopRepDepth] = endBlock;
+
+		Int4 restoreBreak = enableBreak;
+		BasicBlock *currentBlock = Nucleus::getInsertBlock();
+		Nucleus::setInsertBlock(endBlock);
+		enableBreak = restoreBreak;
+		Nucleus::setInsertBlock(currentBlock);
 
 		loopRepDepth++;
 		breakDepth = 0;

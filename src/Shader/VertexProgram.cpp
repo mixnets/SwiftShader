@@ -1267,7 +1267,6 @@ namespace sw
 		Nucleus::setInsertBlock(endBlock);
 
 		enableIndex--;
-		enableBreak = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 		whileTest = false;
 	}
 
@@ -1279,8 +1278,6 @@ namespace sw
 
 		Nucleus::createBr(endBlock);
 		Nucleus::setInsertBlock(endBlock);
-
-		enableBreak = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 	}
 
 	void VertexProgram::IF(const Src &src)
@@ -1489,6 +1486,12 @@ namespace sw
 
 		loopRepTestBlock[loopRepDepth] = nullptr;
 		loopRepEndBlock[loopRepDepth] = endBlock;
+
+		Int4 restoreBreak = enableBreak;
+		BasicBlock *currentBlock = Nucleus::getInsertBlock();
+		Nucleus::setInsertBlock(endBlock);
+		enableBreak = restoreBreak;
+		Nucleus::setInsertBlock(currentBlock);
 
 		loopRepDepth++;
 		breakDepth = 0;

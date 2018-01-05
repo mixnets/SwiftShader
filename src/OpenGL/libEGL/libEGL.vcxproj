@@ -145,7 +145,11 @@
       <Command>mkdir "$(SolutionDir)lib\$(Configuration)_$(Platform)\"
 copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\"
 mkdir "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\"
-copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\libEGL_translator.dll"</Command>
+copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\libEGL_translator.dll"
+
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\gles3\Release
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\gles2\Release
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\egl\Release</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -175,7 +179,11 @@ copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\trans
       <Command>mkdir "$(SolutionDir)lib\$(Configuration)_$(Platform)\"
 copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\"
 mkdir "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\"
-copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\libEGL_translator.dll"</Command>
+copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\libEGL_translator.dll"
+
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\gles3\Release
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\gles2\Release
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\egl\Release</Command>
     </PostBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN64</PreprocessorDefinitions>
@@ -210,7 +218,11 @@ copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\trans
       <Command>mkdir "$(SolutionDir)lib\$(Configuration)_$(Platform)\"
 copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\"
 mkdir "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\"
-copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\libEGL_translator.dll"</Command>
+copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\libEGL_translator.dll"
+
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\gles3\Release
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\gles2\Release
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\egl\Release</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -241,7 +253,11 @@ copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\trans
       <Command>mkdir "$(SolutionDir)lib\$(Configuration)_$(Platform)\"
 copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\"
 mkdir "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\"
-copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\libEGL_translator.dll"</Command>
+copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\libEGL_translator.dll"
+
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\gles3\Release
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\gles2\Release
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\egl\Release</Command>
     </PostBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN64</PreprocessorDefinitions>
@@ -276,7 +292,11 @@ copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\trans
       <Command>mkdir "$(SolutionDir)lib\$(Configuration)_$(Platform)\"
 copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\"
 mkdir "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\"
-copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\libEGL_translator.dll"</Command>
+copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\libEGL_translator.dll"
+
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\gles3\Release
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\gles2\Release
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\egl\Release</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
@@ -307,7 +327,11 @@ copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\trans
       <Command>mkdir "$(SolutionDir)lib\$(Configuration)_$(Platform)\"
 copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\"
 mkdir "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\"
-copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\libEGL_translator.dll"</Command>
+copy "$(OutDir)libEGL.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\translator\libEGL_translator.dll"
+
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\gles3\Release
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\gles2\Release
+copy "$(OutDir)libEGL.dll" D:\deqp-aosp\build\modules\egl\Release</Command>
     </PostBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN64</PreprocessorDefinitions>
