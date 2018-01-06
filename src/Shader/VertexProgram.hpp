@@ -127,7 +127,7 @@ namespace sw
 		bool whileTest;
 
 		BasicBlock *ifFalseBlock[24 + 24];
-		BasicBlock *loopRepTestBlock[4];
+		BasicBlock *loopRepTestBlock[5];
 		BasicBlock *loopRepEndBlock[4];
 		BasicBlock *labelBlock[2048];
 		std::vector<BasicBlock*> callRetBlock[2048];

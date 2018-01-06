@@ -1661,7 +1661,7 @@ namespace glsl
 					body->traverse(this);
 				}
 
-				emit(sw::Shader::OPCODE_TEST);
+			//	emit(sw::Shader::OPCODE_TEST);
 
 				if(expression)
 				{
