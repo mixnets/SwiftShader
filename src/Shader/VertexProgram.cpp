@@ -40,15 +40,17 @@ namespace sw
 		loopDepth = -1;
 		enableStack[0] = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 
-		if(shader && shader->containsBreakInstruction())
+	//	if(shader && shader->containsBreakInstruction())
 		{
 			enableBreak = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 		}
 
-		if(shader && shader->containsContinueInstruction())
+	//	if(shader && shader->containsContinueInstruction())
 		{
 			enableContinue = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 		}
+
+		enableLeave = Int4(-1);
 
 		if(shader->isInstanceIdDeclared())
 		{
@@ -929,21 +931,21 @@ namespace sw
 
 	Int4 VertexProgram::enableMask(const Shader::Instruction *instruction)
 	{
-		Int4 enable = instruction->analysisBranch ? Int4(enableStack[enableIndex]) : Int4(0xFFFFFFFF);
+		Int4 enable = enableStack[enableIndex];
 
-		if(!whileTest)
+	//	if(!whileTest)
 		{
-			if(shader->containsBreakInstruction() && instruction->analysisBreak)
+		//	if(shader->containsBreakInstruction() && instruction->analysisBreak)
 			{
 				enable &= enableBreak;
 			}
 
-			if(shader->containsContinueInstruction() && instruction->analysisContinue)
+			//if(shader->containsContinueInstruction() && instruction->analysisContinue)
 			{
 				enable &= enableContinue;
 			}
 
-			if(shader->containsLeaveInstruction() && instruction->analysisLeave)
+			//if(shader->containsLeaveInstruction() && instruction->analysisLeave)
 			{
 				enable &= enableLeave;
 			}
@@ -1088,6 +1090,12 @@ namespace sw
 	void VertexProgram::TEST()
 	{
 		whileTest = true;
+
+//		BasicBlock *testBlock = loopRepTestBlock[loopRepDepth - 1];
+//		BasicBlock *endBlock = loopRepEndBlock[loopRepDepth - 1];
+
+//		Nucleus::createBr(testBlock);
+//		Nucleus::setInsertBlock(testBlock);
 	}
 
 	void VertexProgram::CALL(int labelIndex, int callSiteIndex)
@@ -1267,7 +1275,7 @@ namespace sw
 		Nucleus::setInsertBlock(endBlock);
 
 		enableIndex--;
-		enableBreak = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+	//	enableBreak = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 		whileTest = false;
 	}
 
@@ -1449,7 +1457,12 @@ namespace sw
 	void VertexProgram::WHILE(const Src &temporaryRegister)
 	{
 		enableIndex++;
-
+		enableStack[enableIndex] = enableStack[enableIndex - 1];
+{
+//const Vector4f &src = fetchRegister(temporaryRegister);
+//Int4 condition = As<Int4>(src.x) & enableStack[enableIndex - 1];
+//enableStack[enableIndex] = condition;//CmpEQ(condition, Int4(0, -1));
+}
 		BasicBlock *loopBlock = Nucleus::createBasicBlock();
 		BasicBlock *testBlock = Nucleus::createBasicBlock();
 		BasicBlock *endBlock = Nucleus::createBasicBlock();
@@ -1457,25 +1470,23 @@ namespace sw
 		loopRepTestBlock[loopRepDepth] = testBlock;
 		loopRepEndBlock[loopRepDepth] = endBlock;
 
-		Int4 restoreBreak = enableBreak;
-		Int4 restoreContinue = enableContinue;
+//		Int4 restoreBreak = enableBreak;
+//		Int4 restoreContinue = enableContinue;
 
-		// FIXME: jump(testBlock)
+		// TODO: jump(testBlock)
 		Nucleus::createBr(testBlock);
 		Nucleus::setInsertBlock(testBlock);
-		enableContinue = restoreContinue;
+//		enableContinue = restoreContinue;
 
 		const Vector4f &src = fetchRegister(temporaryRegister);
-		Int4 condition = As<Int4>(src.x);
-		condition &= enableStack[enableIndex - 1];
-		if(shader->containsLeaveInstruction()) condition &= enableLeave;
-		enableStack[enableIndex] = condition;
+		Int4 condition = As<Int4>(src.x) & enableStack[enableIndex];
+		enableStack[enableIndex] = condition;//Int4(0);//Swizzle(condition, 0x00);
 
 		Bool notAllFalse = SignMask(condition) != 0;
 		branch(notAllFalse, loopBlock, endBlock);
 
 		Nucleus::setInsertBlock(endBlock);
-		enableBreak = restoreBreak;
+//		enableBreak = restoreBreak;
 
 		Nucleus::setInsertBlock(loopBlock);
 

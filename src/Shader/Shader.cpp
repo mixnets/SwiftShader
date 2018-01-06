@@ -1685,11 +1685,11 @@ namespace sw
 		for(unsigned int i = 0; i < instruction.size(); i++)
 		{
 			// If statements
-			if(instruction[i]->isBranch())
+			if(instruction[i]->isBranch() || instruction[i]->isLoop())
 			{
 				branchDepth++;
 			}
-			else if(instruction[i]->opcode == OPCODE_ENDIF)
+			else if(instruction[i]->opcode == OPCODE_ENDIF || instruction[i]->isEndLoop())
 			{
 				branchDepth--;
 			}
