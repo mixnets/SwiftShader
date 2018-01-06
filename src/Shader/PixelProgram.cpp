@@ -1507,7 +1507,6 @@ namespace sw
 		Nucleus::setInsertBlock(endBlock);
 
 		enableIndex--;
-		enableBreak = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 		whileTest = false;
 	}
 
@@ -1699,7 +1698,7 @@ namespace sw
 		Int4 restoreBreak = enableBreak;
 		Int4 restoreContinue = enableContinue;
 
-		// FIXME: jump(testBlock)
+		// TODO: jump(testBlock)
 		Nucleus::createBr(testBlock);
 		Nucleus::setInsertBlock(testBlock);
 		enableContinue = restoreContinue;
