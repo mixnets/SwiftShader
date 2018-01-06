@@ -1267,7 +1267,6 @@ namespace sw
 		Nucleus::setInsertBlock(endBlock);
 
 		enableIndex--;
-		enableBreak = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 		whileTest = false;
 	}
 
@@ -1449,6 +1448,7 @@ namespace sw
 	void VertexProgram::WHILE(const Src &temporaryRegister)
 	{
 		enableIndex++;
+		enableStack[enableIndex] = enableStack[enableIndex - 1];
 
 		BasicBlock *loopBlock = Nucleus::createBasicBlock();
 		BasicBlock *testBlock = Nucleus::createBasicBlock();
@@ -1460,14 +1460,13 @@ namespace sw
 		Int4 restoreBreak = enableBreak;
 		Int4 restoreContinue = enableContinue;
 
-		// FIXME: jump(testBlock)
+		// TODO: jump(testBlock)
 		Nucleus::createBr(testBlock);
 		Nucleus::setInsertBlock(testBlock);
 		enableContinue = restoreContinue;
 
 		const Vector4f &src = fetchRegister(temporaryRegister);
-		Int4 condition = As<Int4>(src.x);
-		condition &= enableStack[enableIndex - 1];
+		Int4 condition = As<Int4>(src.x) & enableStack[enableIndex];
 		if(shader->containsLeaveInstruction()) condition &= enableLeave;
 		enableStack[enableIndex] = condition;
 

@@ -4,7 +4,7 @@
 
  @Title        OpenGL ES 2.0 HelloAPI Tutorial
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -140,19 +140,34 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		0.0f,0.0f,0.0f,1.0f
 	};
 
+		// Interleaved vertex data
+	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
+								0.4f ,-0.4f,0.0f,
+								0.0f ,0.4f ,0.0f};
+
 	// Fragment and vertex shaders code
 	char* pszFragShader = "\
+		varying highp vec4 color;\
 		void main (void)\
 		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+			gl_FragColor = color;\
 		}";
-	char* pszVertShader = "\
-		attribute highp vec4	myVertex;\
-		uniform mediump mat4	myPMVMatrix;\
-		void main(void)\
-		{\
-			gl_Position = myPMVMatrix * myVertex;\
-		}";
+	char* pszVertShader = R"END(
+		attribute highp vec4	myVertex;
+		uniform mediump mat4	myPMVMatrix;
+		varying highp vec4 color;
+		void main(void)
+		{
+			gl_Position = myPMVMatrix * myVertex;
+
+			highp float x = sign(myVertex.x) + 1.0;
+			color = vec4(1.0, 1.0, 0.66 ,1.0);
+			for(float i = 0.0; i < x; i++)
+			{
+				color = color.yzwx;
+			}
+		}
+)END";
 
 	/*
 		Step 0 - Create a EGLNativeWindowType that we can use for OpenGL ES output
@@ -419,11 +434,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// We're going to draw a triangle to the screen so create a vertex buffer object for our triangle
 	GLuint	ui32Vbo; // Vertex buffer object handle
-	
-	// Interleaved vertex data
-	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
-								0.4f ,-0.4f,0.0f,
-								0.0f ,0.4f ,0.0f};
 
 	// Generate the vertex buffer object (VBO)
 	glGenBuffers(1, &ui32Vbo);
