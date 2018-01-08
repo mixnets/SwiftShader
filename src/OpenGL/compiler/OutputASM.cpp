@@ -1775,7 +1775,11 @@ namespace glsl
 					for(++caseIt; caseIt != sequence.end(); ++caseIt)
 					{
 						(*caseIt)->traverse(this);
-						if((*caseIt)->getAsBranchNode()) // Kill, Break, Continue or Return
+
+						// Stop if we encounter an unconditional branch (break, continue, return, or kill).
+						// TODO: This doesn't work if the statement is at a deeper scope level (e.g. {break;}).
+						// Note that this eliminates useless operations but shouldn't affect correctness.
+						if((*caseIt)->getAsBranchNode())
 						{
 							break;
 						}
