@@ -1053,6 +1053,93 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 	return success(eglImage);
 }
 
+EGLImageKHR CreateImage(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLAttrib *attrib_list)
+{
+	TRACE("(EGLDisplay dpy = %p, EGLContext ctx = %p, EGLenum target = 0x%X, buffer = %p, const EGLAttrib *attrib_list = %p)", dpy, ctx, target, buffer, attrib_list);
+
+	egl::Display *display = egl::Display::get(dpy);
+	egl::Context *context = static_cast<egl::Context*>(ctx);
+
+	if(!validateDisplay(display))
+	{
+		return error(EGL_BAD_DISPLAY, EGL_NO_IMAGE_KHR);
+	}
+
+	if(context != EGL_NO_CONTEXT && !display->isValidContext(context))
+	{
+		return error(EGL_BAD_CONTEXT, EGL_NO_IMAGE_KHR);
+	}
+
+	EGLenum imagePreserved = EGL_FALSE;
+	GLuint textureLevel = 0;
+	if(attrib_list)
+	{
+		for(const EGLAttrib *attribute = attrib_list; attribute[0] != EGL_NONE; attribute += 2)
+		{
+			if(attribute[0] == EGL_IMAGE_PRESERVED_KHR)
+			{
+				imagePreserved = attribute[1];
+			}
+			else if(attribute[0] == EGL_GL_TEXTURE_LEVEL_KHR)
+			{
+				textureLevel = attribute[1];
+			}
+			else
+			{
+				return error(EGL_BAD_ATTRIBUTE, EGL_NO_IMAGE_KHR);
+			}
+		}
+	}
+
+	#if defined(__ANDROID__)
+		if(target == EGL_NATIVE_BUFFER_ANDROID)
+		{
+			ANativeWindowBuffer *nativeBuffer = reinterpret_cast<ANativeWindowBuffer*>(buffer);
+
+			if(!nativeBuffer || GLPixelFormatFromAndroid(nativeBuffer->format) == GL_NONE)
+			{
+				ALOGW("%s badness unsupported HAL format=%x", __FUNCTION__, nativeBuffer ? nativeBuffer->format : 0);
+				return error(EGL_BAD_ATTRIBUTE, EGL_NO_IMAGE_KHR);
+			}
+
+			Image *image = new AndroidNativeImage(nativeBuffer);
+			EGLImageKHR eglImage = display->createSharedImage(image);
+
+			return success(eglImage);
+		}
+	#endif
+
+	GLuint name = static_cast<GLuint>(reinterpret_cast<uintptr_t>(buffer));
+
+	if(name == 0)
+	{
+		return error(EGL_BAD_PARAMETER, EGL_NO_IMAGE_KHR);
+	}
+
+	EGLenum validationResult = context->validateSharedImage(target, name, textureLevel);
+
+	if(validationResult != EGL_SUCCESS)
+	{
+		return error(validationResult, EGL_NO_IMAGE_KHR);
+	}
+
+	Image *image = context->createSharedImage(target, name, textureLevel);
+
+	if(!image)
+	{
+		return error(EGL_BAD_MATCH, EGL_NO_IMAGE_KHR);
+	}
+
+	if(image->getDepth() > 1)
+	{
+		return error(EGL_BAD_PARAMETER, EGL_NO_IMAGE_KHR);
+	}
+
+	EGLImageKHR eglImage = display->createSharedImage(image);
+
+	return success(eglImage);
+}
+
 EGLBoolean DestroyImageKHR(EGLDisplay dpy, EGLImageKHR image)
 {
 	TRACE("(EGLDisplay dpy = %p, EGLImageKHR image = %p)", dpy, image);
@@ -1113,9 +1200,55 @@ EGLDisplay GetPlatformDisplayEXT(EGLenum platform, void *native_display, const E
 	#endif
 }
 
+EGLDisplay GetPlatformDisplay(EGLenum platform, void *native_display, const EGLAttrib *attrib_list)
+{
+	TRACE("(EGLenum platform = 0x%X, void *native_display = %p, const EGLAttrib *attrib_list = %p)", platform, native_display, attrib_list);
+
+	#if defined(__linux__) && !defined(__ANDROID__)
+		switch(platform)
+		{
+		case EGL_PLATFORM_X11_EXT: break;
+		case EGL_PLATFORM_GBM_KHR: break;
+		default:
+			return error(EGL_BAD_PARAMETER, EGL_NO_DISPLAY);
+		}
+
+		if(platform == EGL_PLATFORM_X11_EXT)
+		{
+			if(!libX11)
+			{
+				return error(EGL_BAD_ATTRIBUTE, EGL_NO_DISPLAY);
+			}
+
+			if(native_display != (void*)EGL_DEFAULT_DISPLAY || attrib_list != NULL)
+			{
+				return error(EGL_BAD_ATTRIBUTE, EGL_NO_DISPLAY);   // Unimplemented
+			}
+		}
+		else if(platform == EGL_PLATFORM_GBM_KHR)
+		{
+			if(native_display != (void*)EGL_DEFAULT_DISPLAY || attrib_list != NULL)
+			{
+				return error(EGL_BAD_ATTRIBUTE, EGL_NO_DISPLAY);   // Unimplemented
+			}
+
+			return success(HEADLESS_DISPLAY);
+		}
+
+		return success(PRIMARY_DISPLAY);   // We only support the default display
+	#else
+		return error(EGL_BAD_PARAMETER, EGL_NO_DISPLAY);
+	#endif
+}
+
 EGLSurface CreatePlatformWindowSurfaceEXT(EGLDisplay dpy, EGLConfig config, void *native_window, const EGLint *attrib_list)
 {
 	return CreateWindowSurface(dpy, config, (EGLNativeWindowType)native_window, attrib_list);
+}
+
+EGLSurface CreatePlatformWindowSurface(EGLDisplay dpy, EGLConfig config, void *native_window, const EGLAttrib *attrib_list)
+{
+//	return CreateWindowSurface(dpy, config, (EGLNativeWindowType)native_window, attrib_list);
 }
 
 EGLSurface CreatePlatformPixmapSurfaceEXT(EGLDisplay dpy, EGLConfig config, void *native_pixmap, const EGLint *attrib_list)
@@ -1123,9 +1256,47 @@ EGLSurface CreatePlatformPixmapSurfaceEXT(EGLDisplay dpy, EGLConfig config, void
 	return CreatePixmapSurface(dpy, config, (EGLNativePixmapType)native_pixmap, attrib_list);
 }
 
+EGLSurface CreatePlatformPixmapSurface(EGLDisplay dpy, EGLConfig config, void *native_pixmap, const EGLAttrib *attrib_list)
+{
+	//return CreatePixmapSurface(dpy, config, (EGLNativePixmapType)native_pixmap, attrib_list);
+}
+
 EGLSyncKHR CreateSyncKHR(EGLDisplay dpy, EGLenum type, const EGLint *attrib_list)
 {
 	TRACE("(EGLDisplay dpy = %p, EGLunum type = %x, EGLint *attrib_list=%p)", dpy, type, attrib_list);
+
+	egl::Display *display = egl::Display::get(dpy);
+
+	if(!validateDisplay(display))
+	{
+		return error(EGL_BAD_DISPLAY, EGL_NO_SYNC_KHR);
+	}
+
+	if(type != EGL_SYNC_FENCE_KHR)
+	{
+		return error(EGL_BAD_ATTRIBUTE, EGL_NO_SYNC_KHR);
+	}
+
+	if(attrib_list && attrib_list[0] != EGL_NONE)
+	{
+		return error(EGL_BAD_ATTRIBUTE, EGL_NO_SYNC_KHR);
+	}
+
+	egl::Context *context = egl::getCurrentContext();
+
+	if(!validateContext(display, context))
+	{
+		return error(EGL_BAD_MATCH, EGL_NO_SYNC_KHR);
+	}
+
+	EGLSyncKHR sync = display->createSync(context);
+
+	return success(sync);
+}
+
+EGLSyncKHR CreateSync(EGLDisplay dpy, EGLenum type, const EGLAttrib *attrib_list)
+{
+	TRACE("(EGLDisplay dpy = %p, EGLunum type = %x, EGLAttrib *attrib_list=%p)", dpy, type, attrib_list);
 
 	egl::Display *display = egl::Display::get(dpy);
 
@@ -1240,6 +1411,40 @@ EGLBoolean GetSyncAttribKHR(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, E
 	}
 }
 
+EGLBoolean GetSyncAttrib(EGLDisplay dpy, EGLSyncKHR sync, EGLint attribute, EGLAttrib *value)
+{
+	TRACE("(EGLDisplay dpy = %p, EGLSyncKHR sync = %p, EGLint attribute = %x, EGLAttrib *value = %p)", dpy, sync, attribute, value);
+
+	egl::Display *display = egl::Display::get(dpy);
+	FenceSync *eglSync = static_cast<FenceSync*>(sync);
+
+	if(!validateDisplay(display))
+	{
+		return error(EGL_BAD_DISPLAY, EGL_FALSE);
+	}
+
+	if(!display->isValidSync(eglSync))
+	{
+		return error(EGL_BAD_PARAMETER, EGL_FALSE);
+	}
+
+	switch(attribute)
+	{
+	case EGL_SYNC_TYPE_KHR:
+		*value = EGL_SYNC_FENCE_KHR;
+		return success(EGL_TRUE);
+	case EGL_SYNC_STATUS_KHR:
+		eglSync->wait();   // TODO: Don't block. Just poll based on sw::Query.
+		*value = eglSync->isSignaled() ? EGL_SIGNALED_KHR : EGL_UNSIGNALED_KHR;
+		return success(EGL_TRUE);
+	case EGL_SYNC_CONDITION_KHR:
+		*value = EGL_SYNC_PRIOR_COMMANDS_COMPLETE_KHR;
+		return success(EGL_TRUE);
+	default:
+		return error(EGL_BAD_ATTRIBUTE, EGL_FALSE);
+	}
+}
+
 __eglMustCastToProperFunctionPointerType GetProcAddress(const char *procname)
 {
 	TRACE("(const char *procname = \"%s\")", procname);
@@ -1267,20 +1472,27 @@ __eglMustCastToProperFunctionPointerType GetProcAddress(const char *procname)
 		FUNCTION(eglBindAPI),
 		FUNCTION(eglBindTexImage),
 		FUNCTION(eglChooseConfig),
+		FUNCTION(eglClientWaitSync),
 		FUNCTION(eglClientWaitSyncKHR),
 		FUNCTION(eglCopyBuffers),
 		FUNCTION(eglCreateContext),
+		FUNCTION(eglCreateImage),
 		FUNCTION(eglCreateImageKHR),
 		FUNCTION(eglCreatePbufferFromClientBuffer),
 		FUNCTION(eglCreatePbufferSurface),
 		FUNCTION(eglCreatePixmapSurface),
+		FUNCTION(eglCreatePlatformPixmapSurface),
 		FUNCTION(eglCreatePlatformPixmapSurfaceEXT),
+		FUNCTION(eglCreatePlatformWindowSurface),
 		FUNCTION(eglCreatePlatformWindowSurfaceEXT),
+		FUNCTION(eglCreateSync),
 		FUNCTION(eglCreateSyncKHR),
 		FUNCTION(eglCreateWindowSurface),
 		FUNCTION(eglDestroyContext),
+		FUNCTION(eglDestroyImage),
 		FUNCTION(eglDestroyImageKHR),
 		FUNCTION(eglDestroySurface),
+		FUNCTION(eglDestroySync),
 		FUNCTION(eglDestroySyncKHR),
 		FUNCTION(eglGetConfigAttrib),
 		FUNCTION(eglGetConfigs),
@@ -1289,8 +1501,10 @@ __eglMustCastToProperFunctionPointerType GetProcAddress(const char *procname)
 		FUNCTION(eglGetCurrentSurface),
 		FUNCTION(eglGetDisplay),
 		FUNCTION(eglGetError),
+		FUNCTION(eglGetPlatformDisplay),
 		FUNCTION(eglGetPlatformDisplayEXT),
 		FUNCTION(eglGetProcAddress),
+		FUNCTION(eglGetSyncAttrib),
 		FUNCTION(eglGetSyncAttribKHR),
 		FUNCTION(eglInitialize),
 		FUNCTION(eglMakeCurrent),
@@ -1307,6 +1521,8 @@ __eglMustCastToProperFunctionPointerType GetProcAddress(const char *procname)
 		FUNCTION(eglWaitClient),
 		FUNCTION(eglWaitGL),
 		FUNCTION(eglWaitNative),
+		FUNCTION(eglWaitSync),
+		FUNCTION(eglWaitSyncKHR),
 
 		#undef FUNCTION
 	};

@@ -36,6 +36,18 @@ global:
 	eglWaitGL;
 	eglWaitNative;
 
+eglClientWaitSync;
+eglCreateImage;
+eglCreatePlatformPixmapSurface;
+eglCreatePlatformWindowSurface;
+eglCreateSync;
+eglDestroyImage;
+eglDestroySync;
+eglGetPlatformDisplay;
+eglGetSyncAttrib;
+eglWaitSync;
+
+
 	# Extensions
 	eglCreateImageKHR;
 	eglDestroyImageKHR;
