@@ -1254,10 +1254,33 @@ namespace glsl
 
 		switch(node->getOp())
 		{
-		case EOpSequence:             break;
-		case EOpDeclaration:          break;
-		case EOpInvariantDeclaration: break;
-		case EOpPrototype:            break;
+		case EOpSequence:
+			break;
+		case EOpDeclaration:
+		case EOpInvariantDeclaration:
+			if(visit == PreVisit)
+			{
+				// The type of vertex outputs and fragment inputs with the same name must match (validated at link time),
+				// so declare it but don't assign a register index to it yet (one will be assigned when referenced in reachable code).
+				switch(resultType.getQualifier())
+				{
+				case EvqVaryingIn:
+				case EvqVaryingOut:
+				case EvqInvariantVaryingIn:
+				case EvqInvariantVaryingOut:
+				case EvqVertexOut:
+				case EvqFragmentIn:
+					declareVarying(result, -1);
+					break;
+				default:
+					break;
+				}
+
+				return false;
+			}
+			break;
+		case EOpPrototype:
+			break;
 		case EOpComma:
 			if(visit == PostVisit)
 			{
