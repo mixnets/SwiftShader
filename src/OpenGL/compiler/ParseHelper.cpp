@@ -2121,6 +2121,12 @@ TIntermTyped* TParseContext::addConstructor(TIntermNode* arguments, const TType*
 		const TFieldList &fields = type->getStruct()->fields();
 		TIntermSequence &args = aggregateArguments->getSequence();
 
+		if(fields.size() != args.size())
+		{
+			error(line, "Number of constructor parameters does not match the number of structure fields", "constructor");
+			return nullptr;
+		}
+
 		for(size_t i = 0; i < fields.size(); i++)
 		{
 			if(args[i]->getAsTyped()->getType() != *fields[i]->type())
