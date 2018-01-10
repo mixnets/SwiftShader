@@ -297,9 +297,25 @@ public:
 	ConstantUnion operator>>(const ConstantUnion& constant) const
 	{
 		ConstantUnion returnValue;
-		assert(type == constant.type);
+		ASSERT(type == EbtInt || type == EbtUInt);
+		ASSERT(constant.type == EbtInt || constant.type == EbtUInt);
+		if(!IsValidShiftOffset(constant))
+		{
+			switch(type)
+			{
+			case EbtInt:
+				returnValue.setIConst(0);
+				break;
+			case EbtUInt:
+				returnValue.setUConst(0u);
+				break;
+			default:
+				UNREACHABLE(type);
+			}
+			return returnValue;
+		}
 		switch (type) {
-		case EbtInt: returnValue.setIConst(iConst >> constant.iConst); break;
+		case EbtInt: returnValue.setIConst(static_cast<int>(static_cast<uint32_t>(iConst) >> constant.uConst)); break;
 		case EbtUInt: returnValue.setUConst(uConst >> constant.uConst); break;
 		default:     assert(false && "Default missing");
 		}
@@ -313,9 +329,25 @@ public:
 		// The signedness of the second parameter might be different, but we
 		// don't care, since the result is undefined if the second parameter is
 		// negative, and aliasing should not be a problem with unions.
-		assert(constant.type == EbtInt || constant.type == EbtUInt);
+		ASSERT(type == EbtInt || type == EbtUInt);
+		ASSERT(constant.type == EbtInt || constant.type == EbtUInt);
+		if(!IsValidShiftOffset(constant))
+		{
+			switch(type)
+			{
+			case EbtInt:
+				returnValue.setIConst(0);
+				break;
+			case EbtUInt:
+				returnValue.setUConst(0u);
+				break;
+			default:
+				UNREACHABLE(type);
+			}
+			return returnValue;
+		}
 		switch (type) {
-		case EbtInt: returnValue.setIConst(iConst << constant.iConst); break;
+		case EbtInt: returnValue.setIConst(static_cast<int>(static_cast<uint32_t>(iConst) << constant.uConst)); break;
 		case EbtUInt: returnValue.setUConst(uConst << constant.uConst); break;
 		default:     assert(false && "Default missing");
 		}
@@ -388,6 +420,11 @@ public:
 
 	TBasicType getType() const { return type; }
 private:
+	static bool IsValidShiftOffset(const ConstantUnion &rhs)
+	{
+		return (rhs.getType() == EbtInt && (rhs.getIConst() >= 0 && rhs.getIConst() <= 31)) ||
+		       (rhs.getType() == EbtUInt && rhs.getUConst() <= 31u);
+	}
 
 	union  {
 		int iConst;  // used for ivec, scalar ints
