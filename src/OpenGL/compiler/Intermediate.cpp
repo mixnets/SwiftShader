@@ -616,17 +616,8 @@ TIntermAggregate* TIntermediate::makeAggregate(TIntermNode* node, const TSourceL
 //
 TIntermNode* TIntermediate::addSelection(TIntermTyped* cond, TIntermNodePair nodePair, const TSourceLoc &line)
 {
-	//
-	// For compile time constant selections, prune the code and
-	// test now.
-	//
-
-	if (cond->getAsTyped() && cond->getAsTyped()->getAsConstantUnion()) {
-		if (cond->getAsConstantUnion()->getBConst(0) == true)
-			return nodePair.node1 ? setAggregateOperator(nodePair.node1, EOpSequence, nodePair.node1->getLine()) : nullptr;
-		else
-			return nodePair.node2 ? setAggregateOperator(nodePair.node2, EOpSequence, nodePair.node2->getLine()) : nullptr;
-	}
+	// NOTE: If the condition is a constexpr boolean, we can't eliminate the path that is not taken,
+	// because GLSL considers varyings to be 'active' if statically referenced anywhere in the code.
 
 	TIntermSelection* node = new TIntermSelection(cond, nodePair.node1, nodePair.node2);
 	node->setLine(line);
