@@ -1697,18 +1697,26 @@ namespace glsl
 		{
 			if(constantCondition)
 			{
-				bool trueCondition = constantCondition->getUnionArrayPointer()->getBConst();
+				bool condition = constantCondition->getUnionArrayPointer()->getBConst();
+				bool previousEmit = enableEmit;
 
-				if(trueCondition)
+				// We need to traverse both blocks because GLSL checks for
+				// type mismatch of some statically referenced variables.
+				enableEmit = previousEmit && (condition == true);
+				trueBlock->traverse(this);
+				enableEmit = previousEmit && (condition == false);
+				falseBlock->traverse(this);
+
+				if(condition == true)
 				{
-					trueBlock->traverse(this);
 					copy(node, trueBlock);
 				}
 				else
 				{
-					falseBlock->traverse(this);
 					copy(node, falseBlock);
 				}
+
+				enableEmit = previousEmit;
 			}
 			else if(trivial(node, 6))   // Fast to compute both potential results and no side effects
 			{
@@ -1719,19 +1727,12 @@ namespace glsl
 			else
 			{
 				emit(sw::Shader::OPCODE_IF, 0, condition);
+				trueBlock->traverse(this);
+				copy(node, trueBlock);
 
-				if(trueBlock)
-				{
-					trueBlock->traverse(this);
-					copy(node, trueBlock);
-				}
-
-				if(falseBlock)
-				{
-					emit(sw::Shader::OPCODE_ELSE);
-					falseBlock->traverse(this);
-					copy(node, falseBlock);
-				}
+				emit(sw::Shader::OPCODE_ELSE);
+				falseBlock->traverse(this);
+				copy(node, falseBlock);
 
 				emit(sw::Shader::OPCODE_ENDIF);
 			}
@@ -1740,31 +1741,26 @@ namespace glsl
 		{
 			if(constantCondition)
 			{
-				bool trueCondition = constantCondition->getUnionArrayPointer()->getBConst();
+				bool condition = constantCondition->getUnionArrayPointer()->getBConst();
+				bool previousEmit = enableEmit;
 
-				if(trueCondition)
+				// We need to traverse both blocks because GLSL checks for
+				// type mismatch of some statically referenced variables.
+				enableEmit = previousEmit && (condition == true);
+				trueBlock->traverse(this);
+
+				if(falseBlock)
 				{
-					if(trueBlock)
-					{
-						trueBlock->traverse(this);
-					}
+					enableEmit = previousEmit && (condition == false);
+					falseBlock->traverse(this);
 				}
-				else
-				{
-					if(falseBlock)
-					{
-						falseBlock->traverse(this);
-					}
-				}
+
+				enableEmit = previousEmit;
 			}
 			else
 			{
 				emit(sw::Shader::OPCODE_IF, 0, condition);
-
-				if(trueBlock)
-				{
-					trueBlock->traverse(this);
-				}
+				trueBlock->traverse(this);
 
 				if(falseBlock)
 				{
@@ -2008,6 +2004,15 @@ namespace glsl
 		return false;
 	}
 
+	void OutputASM::emit(Instruction *instruction)
+	{
+		if(enableEmit)
+		{
+			// This should be the only instance of append, so that it's always gated by enableEmit().
+			shader->append(instruction);
+		}
+	}
+
 	Instruction *OutputASM::emit(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2, TIntermNode *src3, TIntermNode *src4)
 	{
 		return emit(op, dst, 0, src0, 0, src1, 0, src2, 0, src3, 0, src4, 0);
@@ -2035,7 +2040,7 @@ namespace glsl
 		source(instruction->src[3], src3, index3);
 		source(instruction->src[4], src4, index4);
 
-		shader->append(instruction);
+		emit(instruction);
 
 		return instruction;
 	}
@@ -2333,7 +2338,7 @@ namespace glsl
 					instruction->src[0].bufferIndex = argumentInfo.bufferIndex;
 					instruction->src[0].index = argumentInfo.typedMemberInfo.offset + argumentInfo.clampedIndex * argumentInfo.typedMemberInfo.arrayStride;
 
-					shader->append(instruction);
+					emit(instruction);
 
 					arg = &unpackedUniform;
 					index = 0;
@@ -2362,7 +2367,7 @@ namespace glsl
 						instruction->src[0].index = matrixStartOffset + j * argumentInfo.typedMemberInfo.matrixStride;
 						instruction->src[0].swizzle = srcSwizzle;
 
-						shader->append(instruction);
+						emit(instruction);
 					}
 
 					arg = &unpackedUniform;
@@ -2467,7 +2472,7 @@ namespace glsl
 			source(insert->src[1], src);
 			source(insert->src[2], binary->getRight());
 
-			shader->append(insert);
+			emit(insert);
 		}
 		else
 		{
@@ -2478,7 +2483,7 @@ namespace glsl
 			source(mov1->src[0], src);
 			mov1->src[0].swizzle = swizzleSwizzle(mov1->src[0].swizzle, swizzle);
 
-			shader->append(mov1);
+			emit(mov1);
 
 			for(int offset = 1; offset < dst->totalRegisterCount(); offset++)
 			{
@@ -2490,7 +2495,7 @@ namespace glsl
 
 				source(mov->src[0], src, offset);
 
-				shader->append(mov);
+				emit(mov);
 			}
 		}
 	}
@@ -2516,7 +2521,7 @@ namespace glsl
 
 			source(insert->src[1], binary->getRight());
 
-			shader->append(insert);
+			emit(insert);
 		}
 		else
 		{
@@ -2533,7 +2538,7 @@ namespace glsl
 			source(mov1->src[0], root, offset);
 			mov1->src[0].swizzle = swizzleSwizzle(mov1->src[0].swizzle, swizzle);
 
-			shader->append(mov1);
+			emit(mov1);
 
 			for(int i = 1; i < node->totalRegisterCount(); i++)
 			{
@@ -3485,6 +3490,11 @@ namespace glsl
 
 	void OutputASM::declareUniform(const TType &type, const TString &name, int registerIndex, bool samplersOnly, int blockId, BlockLayoutEncoder* encoder)
 	{
+		if(!enableEmit)
+		{
+			return;   // If the compiler can determine that a statement containing a uniform reference will never be executed, it can be regarded as non-active and be optimized out.
+		}
+
 		const TStructure *structure = type.getStruct();
 		const TInterfaceBlock *block = (type.isInterfaceBlock() || (blockId == -1)) ? type.getInterfaceBlock() : nullptr;
 

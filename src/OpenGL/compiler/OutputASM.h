@@ -267,6 +267,7 @@ namespace glsl
 		bool visitSwitch(Visit, TIntermSwitch*) override;
 
 		sw::Shader::Opcode getOpcode(sw::Shader::Opcode op, TIntermTyped *in) const;
+		void emit(Instruction *instruction);
 		Instruction *emit(sw::Shader::Opcode op, TIntermTyped *dst = 0, TIntermNode *src0 = 0, TIntermNode *src1 = 0, TIntermNode *src2 = 0, TIntermNode *src3 = 0, TIntermNode *src4 = 0);
 		Instruction *emit(sw::Shader::Opcode op, TIntermTyped *dst, int dstIndex, TIntermNode *src0 = 0, int index0 = 0, TIntermNode *src1 = 0, int index1 = 0,
 		                  TIntermNode *src2 = 0, int index2 = 0, TIntermNode *src3 = 0, int index3 = 0, TIntermNode *src4 = 0, int index4 = 0);
@@ -352,6 +353,7 @@ namespace glsl
 
 		Scope emitScope;
 		Scope currentScope;
+		bool enableEmit = true;
 
 		int currentFunction;
 		std::vector<Function> functionArray;
