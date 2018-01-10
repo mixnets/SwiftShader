@@ -661,16 +661,6 @@ namespace glsl
 
 	void OutputASM::visitSymbol(TIntermSymbol *symbol)
 	{
-		// Vertex varyings don't have to be actively used to successfully link
-		// against pixel shaders that use them. So make sure they're declared.
-		if(symbol->getQualifier() == EvqVaryingOut || symbol->getQualifier() == EvqInvariantVaryingOut || symbol->getQualifier() == EvqVertexOut)
-		{
-			if(symbol->getBasicType() != EbtInvariant)   // Typeless declarations are not new varyings
-			{
-				declareVarying(symbol, -1);
-			}
-		}
-
 		TInterfaceBlock* block = symbol->getType().getInterfaceBlock();
 		// OpenGL ES 3.0.4 spec, section 2.12.6 Uniform Variables:
 		// "All members of a named uniform block declared with a shared or std140 layout qualifier
@@ -1254,10 +1244,41 @@ namespace glsl
 
 		switch(node->getOp())
 		{
-		case EOpSequence:             break;
-		case EOpDeclaration:          break;
-		case EOpInvariantDeclaration: break;
-		case EOpPrototype:            break;
+		case EOpSequence:
+			break;
+		case EOpDeclaration:
+		case EOpInvariantDeclaration:
+			if(visit == PreVisit)
+			{
+				for(TIntermNode *var : arg)
+				{
+					TIntermTyped *variable = var->getAsTyped();
+
+					// The type of vertex outputs and fragment inputs with the same name must match (validated at link time),
+					// so declare them but don't assign a register index yet (one will be assigned when referenced in reachable code).
+					switch(variable->getQualifier())
+					{
+					case EvqVaryingIn:
+					case EvqVaryingOut:
+					case EvqInvariantVaryingIn:
+					case EvqInvariantVaryingOut:
+					case EvqVertexOut:
+					case EvqFragmentIn:
+						if(variable->getBasicType() != EbtInvariant)   // Typeless declarations are not new varyings
+						{
+							declareVarying(variable, -1);
+						}
+						break;
+					default:
+						break;
+					}
+				}
+
+				return false;
+			}
+			break;
+		case EOpPrototype:
+			break;
 		case EOpComma:
 			if(visit == PostVisit)
 			{
