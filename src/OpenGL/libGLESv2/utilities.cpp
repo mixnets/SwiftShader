@@ -896,6 +896,7 @@ namespace es2
 			case GL_RGB565:
 			case GL_RGB8:
 			case GL_RGBA8:
+			case GL_BGRA8_EXT:
 			case GL_R16F:
 			case GL_RG16F:
 			case GL_R11F_G11F_B10F:
@@ -1168,6 +1169,7 @@ namespace es2
 			case GL_UNSIGNED_BYTE: VALIDATE_INTERNALFORMAT(GL_BGRA8_EXT)
 			default:               return GL_INVALID_OPERATION;
 			}
+			validSizedInternalformat = true;
 			break;
 		default:
 			UNREACHABLE(format);
