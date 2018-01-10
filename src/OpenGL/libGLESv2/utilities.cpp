@@ -997,7 +997,7 @@ namespace es2
 				}
 				break;
 			case GL_BGRA_EXT:
-				if(type != GL_UNSIGNED_BYTE)   // GL_APPLE_texture_format_BGRA8888
+				if(type != GL_UNSIGNED_BYTE)   // GL_APPLE_texture_format_BGRA8888 / GL_EXT_texture_format_BGRA8888
 				{
 					return GL_INVALID_OPERATION;
 				}
@@ -1242,7 +1242,7 @@ namespace es2
 		case GL_RG32F:
 		case GL_RGB32F:
 		case GL_RGBA32F:
-		case GL_BGRA8_EXT:
+		case GL_BGRA8_EXT:   // GL_EXT_texture_format_BGRA8888
 			return true;
 		case GL_R8UI:
 		case GL_R8I:
