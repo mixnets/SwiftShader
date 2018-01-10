@@ -206,27 +206,12 @@ public:
 	TSymbolTableLevel() { }
 	~TSymbolTableLevel();
 
-	bool insert(TSymbol &symbol)
-	{
-		symbol.setUniqueId(nextUniqueId());
+	bool insert(TSymbol &symbol);
 
-		//
-		// returning true means symbol was added to the table
-		//
-		tInsertResult result;
-		result = level.insert(tLevelPair(symbol.getMangledName(), &symbol));
+    // Insert a function using its unmangled name as the key.
+    bool insertUnmangled(TFunction *function);
 
-		return result.second;
-	}
-
-	TSymbol* find(const TString& name) const
-	{
-		tLevel::const_iterator it = level.find(name);
-		if (it == level.end())
-			return 0;
-		else
-			return (*it).second;
-	}
+    TSymbol *find(const TString &name) const;
 
 	static int nextUniqueId()
 	{

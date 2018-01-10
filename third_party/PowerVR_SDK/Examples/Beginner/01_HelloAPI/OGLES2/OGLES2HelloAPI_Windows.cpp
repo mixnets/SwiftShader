@@ -4,7 +4,7 @@
 
  @Title        OpenGL ES 2.0 HelloAPI Tutorial
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -147,6 +147,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
 		}";
 	char* pszVertShader = "\
+void f(int x);\
+struct f { int x; };\
 		attribute highp vec4	myVertex;\
 		uniform mediump mat4	myPMVMatrix;\
 		void main(void)\
@@ -327,36 +329,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 	GLuint uiFragShader, uiVertShader;		/* Used to hold the fragment and vertex shader handles */
 	GLuint uiProgramObject;					/* Used to hold the program handle (made out of the two previous shaders */
 
-	// Create the fragment shader object
-	uiFragShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-	// Load the source code into it
-	glShaderSource(uiFragShader, 1, (const char**)&pszFragShader, NULL);
-
-	// Compile the source code
-	glCompileShader(uiFragShader);
-
-	// Check if compilation succeeded
 	GLint bShaderCompiled;
-    glGetShaderiv(uiFragShader, GL_COMPILE_STATUS, &bShaderCompiled);
-
-	if (!bShaderCompiled)
-	{
-
-		// An error happened, first retrieve the length of the log message
-		int i32InfoLogLength, i32CharsWritten;
-		glGetShaderiv(uiFragShader, GL_INFO_LOG_LENGTH, &i32InfoLogLength);
-
-		// Allocate enough space for the message and retrieve it
-		char* pszInfoLog = new char[i32InfoLogLength];
-        glGetShaderInfoLog(uiFragShader, i32InfoLogLength, &i32CharsWritten, pszInfoLog);
-
-		// Displays the error in a dialog box
-		MessageBox(hWnd, i32InfoLogLength ? pszInfoLog : _T(""), _T("Failed to compile fragment shader"), MB_OK|MB_ICONEXCLAMATION);
-		delete[] pszInfoLog;
-
-		goto cleanup;
-	}
 
 	// Loads the vertex shader in the same way
 	uiVertShader = glCreateShader(GL_VERTEX_SHADER);
@@ -373,6 +346,37 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 		MessageBox(hWnd, i32InfoLogLength ? pszInfoLog : _T(""), _T("Failed to compile vertex shader"), MB_OK|MB_ICONEXCLAMATION);
 
+		delete[] pszInfoLog;
+
+		goto cleanup;
+	}
+
+	// Create the fragment shader object
+	uiFragShader = glCreateShader(GL_FRAGMENT_SHADER);
+
+	// Load the source code into it
+	glShaderSource(uiFragShader, 1, (const char**)&pszFragShader, NULL);
+
+	// Compile the source code
+	glCompileShader(uiFragShader);
+
+	// Check if compilation succeeded
+
+    glGetShaderiv(uiFragShader, GL_COMPILE_STATUS, &bShaderCompiled);
+
+	if (!bShaderCompiled)
+	{
+
+		// An error happened, first retrieve the length of the log message
+		int i32InfoLogLength, i32CharsWritten;
+		glGetShaderiv(uiFragShader, GL_INFO_LOG_LENGTH, &i32InfoLogLength);
+
+		// Allocate enough space for the message and retrieve it
+		char* pszInfoLog = new char[i32InfoLogLength];
+        glGetShaderInfoLog(uiFragShader, i32InfoLogLength, &i32CharsWritten, pszInfoLog);
+
+		// Displays the error in a dialog box
+		MessageBox(hWnd, i32InfoLogLength ? pszInfoLog : _T(""), _T("Failed to compile fragment shader"), MB_OK|MB_ICONEXCLAMATION);
 		delete[] pszInfoLog;
 
 		goto cleanup;
@@ -419,7 +423,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// We're going to draw a triangle to the screen so create a vertex buffer object for our triangle
 	GLuint	ui32Vbo; // Vertex buffer object handle
-	
+
 	// Interleaved vertex data
 	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
 								0.4f ,-0.4f,0.0f,

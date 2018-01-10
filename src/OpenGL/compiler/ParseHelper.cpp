@@ -2041,6 +2041,12 @@ TFunction *TParseContext::parseFunctionDeclarator(const TSourceLoc &location, TF
 			recover();
 		}
 	}
+	else
+    {
+        // Insert the unmangled name to detect potential future redefinition as a variable.
+     //   TFunction *function = new TFunction(NewPoolTString(function->getName().c_str()), function->getReturnType());
+        symbolTable.getOuterLevel()->insertUnmangled(function);
+    }
 
 	// We're at the inner scope level of the function's arguments and body statement.
 	// Add the function prototype to the surrounding scope instead.
