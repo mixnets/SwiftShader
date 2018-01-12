@@ -967,7 +967,7 @@ namespace egl
 			case GL_RGBA:            return sizeof(unsigned char) * 4;
 			case GL_RGBA_INTEGER:    return sizeof(unsigned char) * 4;
 			case GL_BGRA_EXT:
-			case GL_BGRA8_EXT:       return sizeof(unsigned char)* 4;
+			case GL_BGRA8_EXT:       return sizeof(unsigned char) * 4;
 			default: UNREACHABLE(format);
 			}
 			break;
@@ -1353,8 +1353,6 @@ namespace egl
 					case GL_RGBA8_SNORM:
 					case GL_RGBA:
 					case GL_RGBA_INTEGER:
-					case GL_BGRA_EXT:
-					case GL_BGRA8_EXT:
 						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 						break;
 					default: UNREACHABLE(format);
