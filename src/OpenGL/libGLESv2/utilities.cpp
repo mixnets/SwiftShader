@@ -615,6 +615,71 @@ namespace es2
 		return GL_NONE;
 	}
 
+	bool ValidateCopyFormats(GLenum textureFormat, GLenum colorbufferFormat)
+	{
+		GLenum validationError = ValidateCompressedFormat(textureFormat, egl::getClientVersion(), false);
+		if(validationError != GL_NONE)
+		{
+			return error(validationError, false);
+		}
+
+		// [OpenGL ES 2.0.24] table 3.9
+		// [OpenGL ES 3.0.5] table 3.16
+		switch(textureFormat)
+		{
+		case GL_ALPHA:
+			if(colorbufferFormat != GL_ALPHA &&
+			   colorbufferFormat != GL_RGBA &&
+			   colorbufferFormat != GL_RGBA4 &&
+			   colorbufferFormat != GL_RGB5_A1 &&
+			   colorbufferFormat != GL_RGBA8_OES &&
+			   colorbufferFormat != GL_BGRA8_EXT &&
+			   colorbufferFormat != GL_RGBA16F_EXT &&
+			   colorbufferFormat != GL_RGBA32F_EXT)
+			{
+				return error(GL_INVALID_OPERATION, false);
+			}
+			break;
+		case GL_LUMINANCE:
+		case GL_RGB:
+			if(colorbufferFormat != GL_RGB &&
+			   colorbufferFormat != GL_RGB565 &&
+			   colorbufferFormat != GL_RGB8_OES &&
+			   colorbufferFormat != GL_RGBA &&
+			   colorbufferFormat != GL_RGBA4 &&
+			   colorbufferFormat != GL_RGB5_A1 &&
+			   colorbufferFormat != GL_RGBA8_OES &&
+			   colorbufferFormat != GL_RGB16F_EXT &&
+			   colorbufferFormat != GL_RGB32F_EXT &&
+			   colorbufferFormat != GL_BGRA8_EXT &&
+			   colorbufferFormat != GL_RGBA16F_EXT &&
+			   colorbufferFormat != GL_RGBA32F_EXT)
+			{
+				return error(GL_INVALID_OPERATION, false);
+			}
+			break;
+		case GL_LUMINANCE_ALPHA:
+		case GL_RGBA:
+			if(colorbufferFormat != GL_RGBA &&
+			   colorbufferFormat != GL_RGBA4 &&
+			   colorbufferFormat != GL_RGB5_A1 &&
+			   colorbufferFormat != GL_RGBA8_OES &&
+			   colorbufferFormat != GL_BGRA8_EXT &&
+			   colorbufferFormat != GL_RGBA16F_EXT &&
+			   colorbufferFormat != GL_RGBA32F_EXT)
+			{
+				return error(GL_INVALID_OPERATION, false);
+			}
+			break;
+		case GL_DEPTH_COMPONENT:
+		case GL_DEPTH_STENCIL_OES:
+			return error(GL_INVALID_OPERATION, false);
+		default:
+			return error(GL_INVALID_ENUM, false);
+		}
+		return true;
+	}
+
 	bool IsValidReadPixelsFormatType(const Framebuffer *framebuffer, GLenum format, GLenum type, GLint clientVersion)
 	{
 		// GL_NV_read_depth
