@@ -1166,7 +1166,7 @@ namespace es2
 		case GL_BGRA_EXT:   // GL_APPLE_texture_format_BGRA8888
 			switch(type)
 			{
-			case GL_UNSIGNED_BYTE: VALIDATE_INTERNALFORMAT(GL_BGRA8_EXT)
+			case GL_UNSIGNED_BYTE: VALIDATE_INTERNALFORMAT(GL_BGRA8_EXT)   // GL_APPLE_texture_format_BGRA8888 specifies GL_RGBA can be used as internalformat, but we rewrite it to GL_BGRA8_EXT in TexImage2D.
 			default:               return GL_INVALID_OPERATION;
 			}
 			break;
