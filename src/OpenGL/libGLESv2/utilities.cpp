@@ -1166,7 +1166,7 @@ namespace es2
 		case GL_BGRA_EXT:   // GL_APPLE_texture_format_BGRA8888
 			switch(type)
 			{
-			case GL_UNSIGNED_BYTE: VALIDATE_INTERNALFORMAT(GL_BGRA8_EXT)
+			case GL_UNSIGNED_BYTE: VALIDATE_INTERNALFORMAT(GL_BGRA8_EXT)   // GL_APPLE_texture_format_BGRA8888 specifies GL_RGBA can be used as internalformat, but we rewrite it to GL_BGRA8_EXT in TexImage2D.
 			default:               return GL_INVALID_OPERATION;
 			}
 			break;
@@ -2169,6 +2169,7 @@ namespace es2sw
 		case GL_RGBA8:                return sw::FORMAT_A8B8G8R8;
 		case GL_RGB565:               return sw::FORMAT_R5G6B5;
 		case GL_RGB8:                 return sw::FORMAT_X8B8G8R8;
+		case GL_BGRA8_EXT:            return sw::FORMAT_A8R8G8B8;
 		case GL_DEPTH_COMPONENT16:
 		case GL_DEPTH_COMPONENT24:
 		case GL_STENCIL_INDEX8:
@@ -2225,7 +2226,7 @@ namespace sw2es
 		switch(format)
 		{
 		case sw::FORMAT_A4R4G4B4: return GL_RGBA4;
-		case sw::FORMAT_A8R8G8B8: return GL_RGBA8;
+		case sw::FORMAT_A8R8G8B8: return GL_BGRA8_EXT;
 		case sw::FORMAT_A8B8G8R8: return GL_RGBA8;
 		case sw::FORMAT_A1R5G5B5: return GL_RGB5_A1;
 		case sw::FORMAT_R5G6B5:   return GL_RGB565;
