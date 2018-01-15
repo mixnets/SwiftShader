@@ -480,9 +480,15 @@ EGLBoolean WaitClient(void)
 {
 	TRACE("()");
 
-	UNIMPLEMENTED();   // FIXME
+	// eglWaitClient is ignored if there is no current EGL rendering context for the current rendering API.
+	egl::Context *context = egl::getCurrentContext();
 
-	return success(EGL_FALSE);
+	if(context)
+	{
+		context->finish();
+	}
+
+	return success(EGL_TRUE);
 }
 
 EGLBoolean ReleaseThread(void)
@@ -913,18 +919,30 @@ EGLBoolean WaitGL(void)
 {
 	TRACE("()");
 
-	UNIMPLEMENTED();   // FIXME
+	// glWaitGL is ignored if there is no current EGL rendering context for OpenGL ES.
+	egl::Context *context = egl::getCurrentContext();
 
-	return success(EGL_FALSE);
+	if(context)
+	{
+		context->finish();
+	}
+
+	return success(EGL_TRUE);
 }
 
 EGLBoolean WaitNative(EGLint engine)
 {
 	TRACE("(EGLint engine = %d)", engine);
 
-	UNIMPLEMENTED();   // FIXME
+	// eglWaitNative is ignored if there is no current EGL rendering context.
+	egl::Context *context = egl::getCurrentContext();
 
-	return success(EGL_FALSE);
+	if(context)
+	{
+		context->finish();
+	}
+
+	return success(EGL_TRUE);
 }
 
 EGLBoolean SwapBuffers(EGLDisplay dpy, EGLSurface surface)
