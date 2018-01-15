@@ -528,7 +528,7 @@ namespace glsl
 		{
 			emitShader(GLOBAL);
 
-			if(functionArray.size() > 1)   // Only call main() when there are other functions
+		//	if(functionArray.size() > 1)   // Only call main() when there are other functions
 			{
 				Instruction *callMain = emit(sw::Shader::OPCODE_CALL);
 				callMain->dst.type = sw::Shader::PARAMETER_LABEL;
@@ -1280,7 +1280,7 @@ namespace glsl
 
 				if(emitScope == FUNCTION)
 				{
-					if(functionArray.size() > 1)   // No need for a label when there's only main()
+				//	if(functionArray.size() > 1)   // No need for a label when there's only main()
 					{
 						Instruction *label = emit(sw::Shader::OPCODE_LABEL);
 						label->dst.type = sw::Shader::PARAMETER_LABEL;
@@ -1307,7 +1307,7 @@ namespace glsl
 			{
 				if(emitScope == FUNCTION)
 				{
-					if(functionArray.size() > 1)   // No need to return when there's only main()
+				//	if(functionArray.size() > 1)   // No need to return when there's only main()
 					{
 						emit(sw::Shader::OPCODE_RET);
 					}

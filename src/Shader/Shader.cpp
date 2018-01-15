@@ -1554,22 +1554,22 @@ namespace sw
 		}
 
 		// Optimize the entry call
-		if(instruction.size() >= 2 && instruction[0]->opcode == OPCODE_CALL && instruction[1]->opcode == OPCODE_RET)
-		{
-			if(calledFunctions.size() == 1)
-			{
-				instruction[0]->opcode = OPCODE_NULL;
-				instruction[1]->opcode = OPCODE_NULL;
+		//if(instruction.size() >= 2 && instruction[0]->opcode == OPCODE_CALL && instruction[1]->opcode == OPCODE_RET)
+		//{
+		//	if(calledFunctions.size() == 1)
+		//	{
+		//		instruction[0]->opcode = OPCODE_NULL;
+		//		instruction[1]->opcode = OPCODE_NULL;
 
-				for(size_t i = 2; i < instruction.size(); i++)
-				{
-					if(instruction[i]->opcode == OPCODE_LABEL || instruction[i]->opcode == OPCODE_RET)
-					{
-						instruction[i]->opcode = OPCODE_NULL;
-					}
-				}
-			}
-		}
+		//		for(size_t i = 2; i < instruction.size(); i++)
+		//		{
+		//			if(instruction[i]->opcode == OPCODE_LABEL || instruction[i]->opcode == OPCODE_RET)
+		//			{
+		//				instruction[i]->opcode = OPCODE_NULL;
+		//			}
+		//		}
+		//	}
+		//}
 	}
 
 	void Shader::removeNull()

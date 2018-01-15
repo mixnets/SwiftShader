@@ -3633,9 +3633,28 @@ void AssemblerX86Base<TraitsType>::j(BrCond condition,
 template <typename TraitsType>
 void AssemblerX86Base<TraitsType>::jmp(GPRRegister reg) {
   AssemblerBuffer::EnsureCapacity ensured(&Buffer);
-  emitRexB(RexTypeIrrelevant, reg);
-  emitUint8(0xFF);
-  emitRegisterOperand(4, gprEncoding(reg));
+  // Mitigation of the Spectre 'branch target injection' security vulnerability
+  // (CVE-2017-5715) by using the 'Retpoline' construct.
+  if (true) {
+    emitUint8(0xE8); emitInt32(0x00000004);   // call set_up_target
+
+	// capture_spec:
+    emitUint8(0xF3); emitUint8(0x90);   // pause
+    emitUint8(0xEB); emitUint8(0xFC);   // jmp capture_spec
+
+	// set_up_target:
+	// mov [rsp], <reg>
+    emitRexRB(IceType_i64, reg, 0x4);
+    emitUint8(0x89);
+    emitUint8((gprEncoding(reg) << 3) | 0x4);
+	emitUint8(0x24);
+
+    emitUint8(0xC3);   // ret
+  } else {
+    emitRexB(RexTypeIrrelevant, reg);
+    emitUint8(0xFF);
+    emitRegisterOperand(4, gprEncoding(reg));
+  }
 }
 
 template <typename TraitsType>

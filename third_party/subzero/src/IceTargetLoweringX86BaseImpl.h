@@ -7096,7 +7096,8 @@ void TargetX86Base<TraitsType>::lowerSwitch(const InstSwitch *Instr) {
 
   // 32-bit lowering
 
-  if (CaseClusters.size() == 1) {
+  if (false && CaseClusters.size() == 1)
+  {
     // Jump straight to default if needed. Currently a common case as jump
     // tables occur on their own.
     constexpr bool DoneCmp = false;

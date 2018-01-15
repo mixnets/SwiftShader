@@ -51,8 +51,8 @@ CaseClusterArray CaseCluster::clusterizeSwitch(Cfg *Func,
   // the types for correct wrap around behavior.
 
   // A small number of cases is more efficient without a jump table
-  if (CaseClusters.size() < Func->getTarget()->getMinJumpTableSize())
-    return CaseClusters;
+  //if (CaseClusters.size() < Func->getTarget()->getMinJumpTableSize())
+  //  return CaseClusters;
 
   // Test for a single jump table. This can be done in constant time whereas
   // finding the best set of jump table would be quadratic, too slow(?). If
@@ -66,12 +66,12 @@ CaseClusterArray CaseCluster::clusterizeSwitch(Cfg *Func,
   // Don't +1 yet to avoid (INT64_MAX-0)+1 overflow
   const uint64_t Range = MaxValue - MinValue;
 
-  // Might be too sparse for the jump table
-  if (NumCases * 2 <= Range)
-    return CaseClusters;
-  // Unlikely. Would mean can't store size of jump table.
-  if (Range == UINT64_MAX)
-    return CaseClusters;
+  //// Might be too sparse for the jump table
+  //if (NumCases * 2 <= Range)
+  //  return CaseClusters;
+  //// Unlikely. Would mean can't store size of jump table.
+  //if (Range == UINT64_MAX)
+  //  return CaseClusters;
   const uint64_t TotalRange = Range + 1;
 
   // Replace everything with a jump table

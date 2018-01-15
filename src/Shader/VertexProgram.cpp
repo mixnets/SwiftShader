@@ -1068,7 +1068,7 @@ namespace sw
 			labelBlock[labelIndex] = Nucleus::createBasicBlock();
 		}
 
-		if(callRetBlock[labelIndex].size() > 1)
+	//	if(callRetBlock[labelIndex].size() > 1)
 		{
 			callStack[stackIndex++] = UInt(callSiteIndex);
 		}
@@ -1108,7 +1108,7 @@ namespace sw
 			labelBlock[labelIndex] = Nucleus::createBasicBlock();
 		}
 
-		if(callRetBlock[labelIndex].size() > 1)
+	//	if(callRetBlock[labelIndex].size() > 1)
 		{
 			callStack[stackIndex++] = UInt(callSiteIndex);
 		}
@@ -1137,7 +1137,7 @@ namespace sw
 			labelBlock[labelIndex] = Nucleus::createBasicBlock();
 		}
 
-		if(callRetBlock[labelIndex].size() > 1)
+	//	if(callRetBlock[labelIndex].size() > 1)
 		{
 			callStack[stackIndex++] = UInt(callSiteIndex);
 		}
@@ -1477,7 +1477,7 @@ namespace sw
 		{
 			BasicBlock *unreachableBlock = Nucleus::createBasicBlock();
 
-			if(callRetBlock[currentLabel].size() > 1)   // Pop the return destination from the call stack
+			if(true/*callRetBlock[currentLabel].size() > 1*/)   // Pop the return destination from the call stack
 			{
 				// FIXME: Encapsulate
 				UInt index = callStack[--stackIndex];
