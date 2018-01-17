@@ -433,17 +433,23 @@ Colorbuffer::Colorbuffer(egl::Image *renderTarget) : mRenderTarget(renderTarget)
 
 Colorbuffer::Colorbuffer(int width, int height, GLenum internalformat, GLsizei samples) : mRenderTarget(nullptr)
 {
-	Device *device = getDevice();
-
 	sw::Format implementationFormat = es2sw::ConvertRenderbufferFormat(internalformat);
 	int supportedSamples = Context::getSupportedMultisampleCount(samples);
 
 	if(width > 0 && height > 0)
 	{
-		mRenderTarget = device->createRenderTarget(width, height, implementationFormat, supportedSamples, false);
+		if(height > sw::OUTLINE_RESOLUTION)
+		{
+			ERR("Invalid parameters: %dx%d", width, height);
+			error(GL_OUT_OF_MEMORY);
+			return;
+		}
+
+		mRenderTarget = egl::Image::create(width, height, implementationFormat, supportedSamples, false);
 
 		if(!mRenderTarget)
 		{
+			ERR("Out of memory");
 			error(GL_OUT_OF_MEMORY);
 			return;
 		}
@@ -527,16 +533,23 @@ DepthStencilbuffer::DepthStencilbuffer(int width, int height, GLenum internalfor
 		implementationFormat = sw::FORMAT_D24S8;
 	}
 
-	Device *device = getDevice();
-
 	int supportedSamples = Context::getSupportedMultisampleCount(samples);
 
 	if(width > 0 && height > 0)
 	{
-		mDepthStencil = device->createDepthStencilSurface(width, height, implementationFormat, supportedSamples, false);
+		if(height > sw::OUTLINE_RESOLUTION)
+		{
+			ERR("Invalid parameters: %dx%d", width, height);
+			error(GL_OUT_OF_MEMORY);
+			return;
+		}
+
+		bool lockable = !sw::Surface::hasQuadLayout(implementationFormat);
+		mDepthStencil = egl::Image::create(width, height, implementationFormat, supportedSamples, lockable);
 
 		if(!mDepthStencil)
 		{
+			ERR("Out of memory");
 			error(GL_OUT_OF_MEMORY);
 			return;
 		}

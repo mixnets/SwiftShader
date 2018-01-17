@@ -17,9 +17,9 @@
 #ifndef LIBGLESV2_UTILITIES_H
 #define LIBGLESV2_UTILITIES_H
 
-#include "Device.hpp"
-#include "common/Image.hpp"
 #include "Texture.h"
+#include "common/Image.hpp"
+#include "Renderer/Renderer.hpp"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -30,6 +30,7 @@ namespace es2
 {
 	struct Color;
 	class Framebuffer;
+	class Texture;
 
 	unsigned int UniformComponentCount(GLenum type);
 	GLenum UniformComponentType(GLenum type);

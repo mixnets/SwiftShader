@@ -133,7 +133,7 @@ namespace sw
 			if(interpolateW())
 			{
 				w = interpolate(xxxx, Dw, rhw, primitive + OFFSET(Primitive,w), false, false, false);
-				rhw = reciprocal(w, false, false, true);
+				rhw = reciprocal(w, false, false);
 
 				if(state.centroid)
 				{
