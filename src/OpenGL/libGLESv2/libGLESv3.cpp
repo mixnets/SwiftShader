@@ -3935,8 +3935,9 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 		switch(target)
 		{
 		case GL_TEXTURE_2D:
+		case GL_TEXTURE_RECTANGLE_ARB:
 		{
-			es2::Texture2D *texture = context->getTexture2D();
+			es2::Texture2D *texture = context->getTexture2D(target);
 			if(!texture || texture->name == 0 || texture->getImmutableFormat() == GL_TRUE)
 			{
 				return error(GL_INVALID_OPERATION);
