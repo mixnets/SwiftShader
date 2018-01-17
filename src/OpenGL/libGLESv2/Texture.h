@@ -203,6 +203,15 @@ protected:
 	unsigned int mProxyRefs;
 };
 
+class Texture2DRect : public Texture2D
+{
+public:
+	explicit Texture2DRect(GLuint name);
+
+	Renderbuffer *getRenderbuffer(GLenum target, GLint level) override;
+	GLenum getTarget() const override;
+};
+
 class TextureCubeMap : public Texture
 {
 public:
