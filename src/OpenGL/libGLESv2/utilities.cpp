@@ -20,6 +20,7 @@
 #include "main.h"
 #include "mathutil.h"
 #include "Context.h"
+#include "Shader.h"
 #include "common/debug.h"
 
 #include <limits>
@@ -771,7 +772,7 @@ namespace es2
 
 	bool IsTextureTarget(GLenum target)
 	{
-		return target == GL_TEXTURE_2D || IsCubemapTextureTarget(target) || target == GL_TEXTURE_3D || target == GL_TEXTURE_2D_ARRAY;
+		return target == GL_TEXTURE_2D || IsCubemapTextureTarget(target) || target == GL_TEXTURE_3D || target == GL_TEXTURE_2D_ARRAY || target == GL_TEXTURE_RECTANGLE_ARB;
 	}
 
 	GLenum ValidateTextureFormatType(GLenum format, GLenum type, GLint internalformat, GLint clientVersion)

@@ -1761,6 +1761,7 @@ namespace es2
 						case GL_INT_SAMPLER_3D:
 						case GL_UNSIGNED_INT_SAMPLER_3D:
 						case GL_SAMPLER_3D_OES:       samplersVS[index].textureType = TEXTURE_3D;       break;
+						case GL_SAMPLER_2D_RECT_ARB:  samplersVS[index].textureType = TEXTURE_2D_RECT;  break;
 						case GL_SAMPLER_EXTERNAL_OES: samplersVS[index].textureType = TEXTURE_EXTERNAL; break;
 						case GL_INT_SAMPLER_2D_ARRAY:
 						case GL_UNSIGNED_INT_SAMPLER_2D_ARRAY:
@@ -1796,6 +1797,7 @@ namespace es2
 						case GL_INT_SAMPLER_3D:
 						case GL_UNSIGNED_INT_SAMPLER_3D:
 						case GL_SAMPLER_3D_OES:       samplersPS[index].textureType = TEXTURE_3D;       break;
+						case GL_SAMPLER_2D_RECT_ARB:  samplersVS[index].textureType = TEXTURE_2D_RECT;  break;
 						case GL_SAMPLER_EXTERNAL_OES: samplersPS[index].textureType = TEXTURE_EXTERNAL; break;
 						case GL_INT_SAMPLER_2D_ARRAY:
 						case GL_UNSIGNED_INT_SAMPLER_2D_ARRAY:
