@@ -4397,6 +4397,7 @@ const GLubyte *Context::getExtensions(GLuint index, GLuint *numExt) const
 		"GL_KHR_texture_compression_astc_hdr",
 		"GL_KHR_texture_compression_astc_ldr",
 #endif
+		"GL_ARB_texture_rectangle",
 		"GL_ANGLE_framebuffer_blit",
 		"GL_ANGLE_framebuffer_multisample",
 		"GL_ANGLE_instanced_arrays",
