@@ -47,6 +47,7 @@ namespace
 		RGB565,
 		FloatRGB,
 		HalfFloatRGB,
+		FloatToHalfRGBA,
 		RGBA4444,
 		RGBA5551,
 		R11G11B10F,
@@ -217,6 +218,21 @@ namespace
 			destH[4 * x + 1] = sourceH[x * 3 + 1];
 			destH[4 * x + 2] = sourceH[x * 3 + 2];
 			destH[4 * x + 3] = 0x3C00; // SEEEEEMMMMMMMMMM, S = 0, E = 15, M = 0: 16bit flpt representation of 1
+		}
+	}
+
+	template<>
+	void LoadImageRow<FloatToHalfRGBA>(const unsigned char *source, unsigned char *dest, GLint xoffset, GLsizei width)
+	{
+		const float *sourceH = reinterpret_cast<const float*>(source);
+		sw::half *destH = reinterpret_cast<sw::half*>(dest + xoffset * 8);
+
+		for(int x = 0; x < width; x++)
+		{
+			destH[4 * x + 0] = sourceH[x * 4 + 0];
+			destH[4 * x + 1] = sourceH[x * 4 + 1];
+			destH[4 * x + 2] = sourceH[x * 4 + 2];
+			destH[4 * x + 3] = sourceH[x * 4 + 3];
 		}
 	}
 
@@ -1067,9 +1083,9 @@ namespace egl
 			case GL_RGBA32F:         return sizeof(float) * 4;
 			case GL_R11F_G11F_B10F:  return sizeof(int);
 			case GL_RGB9_E5:         return sizeof(int);
-			default: UNREACHABLE(format);
+			// Can upload into a half-float internal format too:
 			}
-			break;
+			// Fall through to GL_HALF_FLOAT.
 		case GL_HALF_FLOAT:
 		case GL_HALF_FLOAT_OES:
 			switch(format)
@@ -1508,7 +1524,11 @@ namespace egl
 					case GL_DEPTH_COMPONENT32F:
 						LoadImageData<D32F>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 						break;
-					default: UNREACHABLE(format);
+					case GL_RGBA16F:
+						LoadImageData<FloatToHalfRGBA>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+						break;
+					default:
+						UNREACHABLE(format);
 					}
 					break;
 				case GL_HALF_FLOAT:
