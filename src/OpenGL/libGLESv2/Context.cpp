@@ -4405,6 +4405,7 @@ const GLubyte *Context::getExtensions(GLuint index, GLuint *numExt) const
 		"GL_ANGLE_texture_compression_dxt5",
 #endif
 		//"GL_APPLE_texture_format_BGRA8888",
+		"GL_CHROMIUM_color_buffer_float_rgba", // A subset of EXT_color_buffer_float on top of OpenGL ES 2.0
 		"GL_CHROMIUM_texture_filtering_hint",
 		"GL_NV_fence",
 		"GL_NV_framebuffer_blit",
