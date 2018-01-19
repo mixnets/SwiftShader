@@ -432,6 +432,8 @@ namespace egl
 			default: UNREACHABLE(type);
 			}
 			break;
+		case GL_RGBA8:
+			return sw::FORMAT_A8B8G8R8;
 		case GL_BGRA_EXT:
 		case GL_BGRA8_EXT:
 			switch(type)
@@ -453,6 +455,8 @@ namespace egl
 			default: UNREACHABLE(type);
 			}
 			break;
+		case GL_RGB8:
+			return sw::FORMAT_B8G8R8;
 		case GL_RG:
 			switch(type)
 			{
@@ -514,6 +518,38 @@ namespace egl
 			default: UNREACHABLE(type);
 			}
 			break;
+		case GL_RGB5_A1:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:          return sw::FORMAT_A1R5G5B5;
+			case GL_UNSIGNED_SHORT_5_5_5_1: return sw::FORMAT_A1R5G5B5;
+			default: UNREACHABLE(type);
+			}
+			break;
+		case GL_RGB565:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:          return sw::FORMAT_R5G6B5;
+			case GL_UNSIGNED_SHORT_5_6_5:   return sw::FORMAT_R5G6B5;
+			default: UNREACHABLE(type);
+			}
+			break;
+		case GL_RGBA4:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:          return sw::FORMAT_R4G4B4A4;
+			case GL_UNSIGNED_SHORT_4_4_4_4: return sw::FORMAT_R4G4B4A4;
+			default: UNREACHABLE(type);
+			}
+			break;
+		case GL_R32F:
+			return sw::FORMAT_R32F;
+		case GL_RG32F:
+			return sw::FORMAT_G32R32F;
+		case GL_RGB32F:
+			return sw::FORMAT_B32G32R32F;
+		case GL_RGBA32F:
+			return sw::FORMAT_A32B32G32R32F;
 		case GL_DEPTH_COMPONENT:
 			switch(type)
 			{
@@ -782,6 +818,12 @@ namespace egl
 			case GL_ALPHA:
 			case GL_ALPHA8_EXT:
 				return sw::FORMAT_A8;
+			case GL_RGB5_A1:
+				return sw::FORMAT_A1R5G5B5;
+			case GL_RGB565:
+				return sw::FORMAT_R5G6B5;
+			case GL_RGBA4:
+				return sw::FORMAT_R4G4B4A4;
 			case SW_YV12_BT601:
 				return sw::FORMAT_YV12_BT601;
 			case SW_YV12_BT709:
@@ -967,7 +1009,10 @@ namespace egl
 			case GL_RGBA:            return sizeof(unsigned char) * 4;
 			case GL_RGBA_INTEGER:    return sizeof(unsigned char) * 4;
 			case GL_BGRA_EXT:
-			case GL_BGRA8_EXT:       return sizeof(unsigned char)* 4;
+			case GL_BGRA8_EXT:       return sizeof(unsigned char) * 4;
+			case GL_RGB5_A1:         return sizeof(unsigned char) * 2;
+			case GL_RGB565:          return sizeof(unsigned char) * 2;
+			case GL_RGBA4:           return sizeof(unsigned char) * 2;
 			default: UNREACHABLE(format);
 			}
 			break;
@@ -1067,6 +1112,10 @@ namespace egl
 			case GL_RGBA32F:         return sizeof(float) * 4;
 			case GL_R11F_G11F_B10F:  return sizeof(int);
 			case GL_RGB9_E5:         return sizeof(int);
+			case GL_R16F:            return sizeof(short);
+			case GL_RG16F:           return sizeof(short) * 2;
+			case GL_RGB16F:          return sizeof(short) * 3;
+			case GL_RGBA16F:         return sizeof(short) * 4;
 			default: UNREACHABLE(format);
 			}
 			break;
@@ -1482,12 +1531,20 @@ namespace egl
 					case GL_LUMINANCE_ALPHA32F_EXT:
 						LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 						break;
+					case GL_R16F:
+						LoadImageData<Bytes_2>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+						break;
 					case GL_RED:
 					case GL_R32F:
+					case GL_RG16F:
 						LoadImageData<Bytes_4>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+						break;
+					case GL_RGB16F:
+						LoadImageData<HalfFloatRGB>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 						break;
 					case GL_RG:
 					case GL_RG32F:
+					case GL_RGBA16F:
 						LoadImageData<Bytes_8>(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 						break;
 					case GL_RGB:
