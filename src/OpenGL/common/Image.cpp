@@ -517,17 +517,6 @@ namespace egl
 			default: UNREACHABLE(type);
 			}
 			break;
-		default:
-			UNREACHABLE(format);
-		}
-
-		return sw::FORMAT_NULL;
-	}
-
-	sw::Format SelectInternalFormat(GLenum format, GLenum type)
-	{
-		switch(format)
-		{
 		case GL_ETC1_RGB8_OES:
 			return sw::FORMAT_ETC1;
 		case GL_COMPRESSED_R11_EAC:
@@ -901,6 +890,227 @@ namespace egl
 		return sw::FORMAT_NULL;
 	}
 
+	sw::Format SelectInternalFormat(GLint format)
+	{
+		switch(format)
+		{
+		case GL_ETC1_RGB8_OES:
+			return sw::FORMAT_ETC1;
+		case GL_COMPRESSED_R11_EAC:
+			return sw::FORMAT_R11_EAC;
+		case GL_COMPRESSED_SIGNED_R11_EAC:
+			return sw::FORMAT_SIGNED_R11_EAC;
+		case GL_COMPRESSED_RG11_EAC:
+			return sw::FORMAT_RG11_EAC;
+		case GL_COMPRESSED_SIGNED_RG11_EAC:
+			return sw::FORMAT_SIGNED_RG11_EAC;
+		case GL_COMPRESSED_RGB8_ETC2:
+			return sw::FORMAT_RGB8_ETC2;
+		case GL_COMPRESSED_SRGB8_ETC2:
+			return sw::FORMAT_SRGB8_ETC2;
+		case GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+			return sw::FORMAT_RGB8_PUNCHTHROUGH_ALPHA1_ETC2;
+		case GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
+			return sw::FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2;
+		case GL_COMPRESSED_RGBA8_ETC2_EAC:
+			return sw::FORMAT_RGBA8_ETC2_EAC;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:
+			return sw::FORMAT_SRGB8_ALPHA8_ETC2_EAC;
+		case GL_COMPRESSED_RGBA_ASTC_4x4_KHR:
+			return sw::FORMAT_RGBA_ASTC_4x4_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_5x4_KHR:
+			return sw::FORMAT_RGBA_ASTC_5x4_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_5x5_KHR:
+			return sw::FORMAT_RGBA_ASTC_5x5_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_6x5_KHR:
+			return sw::FORMAT_RGBA_ASTC_6x5_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_6x6_KHR:
+			return sw::FORMAT_RGBA_ASTC_6x6_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_8x5_KHR:
+			return sw::FORMAT_RGBA_ASTC_8x5_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_8x6_KHR:
+			return sw::FORMAT_RGBA_ASTC_8x6_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_8x8_KHR:
+			return sw::FORMAT_RGBA_ASTC_8x8_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_10x5_KHR:
+			return sw::FORMAT_RGBA_ASTC_10x5_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_10x6_KHR:
+			return sw::FORMAT_RGBA_ASTC_10x6_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_10x8_KHR:
+			return sw::FORMAT_RGBA_ASTC_10x8_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_10x10_KHR:
+			return sw::FORMAT_RGBA_ASTC_10x10_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_12x10_KHR:
+			return sw::FORMAT_RGBA_ASTC_12x10_KHR;
+		case GL_COMPRESSED_RGBA_ASTC_12x12_KHR:
+			return sw::FORMAT_RGBA_ASTC_12x12_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_6x5_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_6x6_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_8x5_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_8x6_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_8x8_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_10x5_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_10x6_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_10x8_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR;
+		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR:
+			return sw::FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR;
+		#if S3TC_SUPPORT
+		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
+			return sw::FORMAT_DXT1;
+		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
+			return sw::FORMAT_DXT3;
+		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+			return sw::FORMAT_DXT5;
+		#endif
+		case GL_ALPHA32F_EXT:
+			return sw::FORMAT_A32F;
+		case GL_LUMINANCE32F_EXT:
+			return sw::FORMAT_L32F;
+		case GL_LUMINANCE_ALPHA32F_EXT:
+			return sw::FORMAT_A32L32F;
+		case GL_R32F:
+			return sw::FORMAT_R32F;
+		case GL_RG32F:
+			return sw::FORMAT_G32R32F;
+		case GL_RGB32F:
+			return sw::FORMAT_X32B32G32R32F;
+		case GL_R11F_G11F_B10F:
+		case GL_RGB9_E5:
+			return sw::FORMAT_X16B16G16R16F_UNSIGNED;
+		case GL_RGBA:
+		case GL_RGBA32F:
+			return sw::FORMAT_A32B32G32R32F;
+		case GL_R16F:
+			return sw::FORMAT_R16F;
+		case GL_RG16F:
+			return sw::FORMAT_G16R16F;
+		case GL_RGB16F:
+			return sw::FORMAT_X16B16G16R16F;
+		case GL_RGBA16F:
+			return sw::FORMAT_A16B16G16R16F;
+		case GL_DEPTH_COMPONENT32F:
+			return sw::FORMAT_D32F;
+		case GL_ALPHA16F_EXT:
+			return sw::FORMAT_A16F;
+		case GL_LUMINANCE16F_EXT:
+			return sw::FORMAT_L16F;
+		case GL_LUMINANCE_ALPHA16F_EXT:
+			return sw::FORMAT_A16L16F;
+		case GL_R8_SNORM:
+			return sw::FORMAT_R8_SNORM;
+		case GL_R8:
+			return sw::FORMAT_R8;
+		case GL_R8I:
+			return sw::FORMAT_R8I;
+		case GL_RG8_SNORM:
+			return sw::FORMAT_G8R8_SNORM;
+		case GL_RG8:
+			return sw::FORMAT_G8R8;
+		case GL_RG8I:
+			return sw::FORMAT_G8R8I;
+		case GL_RGB8_SNORM:
+			return sw::FORMAT_X8B8G8R8_SNORM;
+		case GL_RGB8:
+			return sw::FORMAT_X8B8G8R8;
+		case GL_RGB8I:
+			return sw::FORMAT_X8B8G8R8I;
+		case GL_RGBA8_SNORM:
+			return sw::FORMAT_A8B8G8R8_SNORM;
+		case GL_RGBA8:
+			return sw::FORMAT_A8B8G8R8;
+		case GL_RGBA8I:
+			return sw::FORMAT_A8B8G8R8I;
+		case GL_LUMINANCE8_EXT:
+			return sw::FORMAT_L8;
+		case GL_LUMINANCE8_ALPHA8_EXT:
+			return sw::FORMAT_A8L8;
+		case GL_RG8UI:
+			return sw::FORMAT_G8R8UI;
+		case GL_SRGB8:
+			return sw::FORMAT_SRGB8_X8;
+		case GL_RGB8UI:
+			return sw::FORMAT_X8B8G8R8UI;
+		case GL_SRGB8_ALPHA8:
+			return sw::FORMAT_SRGB8_A8;
+		case GL_RGBA8UI:
+			return sw::FORMAT_A8B8G8R8UI;
+		case GL_BGRA8_EXT:
+			return sw::FORMAT_A8R8G8B8;
+		case GL_ALPHA8_EXT:
+			return sw::FORMAT_A8;
+		case SW_YV12_BT601:
+			return sw::FORMAT_YV12_BT601;
+		case SW_YV12_BT709:
+			return sw::FORMAT_YV12_BT709;
+		case SW_YV12_JFIF:
+			return sw::FORMAT_YV12_JFIF;
+		case GL_R16I:
+			return sw::FORMAT_R16I;
+		case GL_RG16I:
+			return sw::FORMAT_G16R16I;
+		case GL_RGB16I:
+			return sw::FORMAT_X16B16G16R16I;
+		case GL_RGBA16I:
+			return sw::FORMAT_A16B16G16R16I;
+		case GL_R16UI:
+			return sw::FORMAT_R16UI;
+		case GL_RG16UI:
+			return sw::FORMAT_G16R16UI;
+		case GL_RGB16UI:
+			return sw::FORMAT_X16B16G16R16UI;
+		case GL_RGBA16UI:
+			return sw::FORMAT_A16B16G16R16UI;
+		case GL_DEPTH_COMPONENT16:
+			return sw::FORMAT_D32F_LOCKABLE;
+		case GL_R32I:
+			return sw::FORMAT_R32I;
+		case GL_RG32I:
+			return sw::FORMAT_G32R32I;
+		case GL_RGB32I:
+			return sw::FORMAT_X32B32G32R32I;
+		case GL_RGBA32I:
+			return sw::FORMAT_A32B32G32R32I;
+		case GL_R32UI:
+			return sw::FORMAT_R32UI;
+		case GL_RG32UI:
+			return sw::FORMAT_G32R32UI;
+		case GL_RGB32UI:
+			return sw::FORMAT_X32B32G32R32UI;
+		case GL_RGBA32UI:
+			return sw::FORMAT_A32B32G32R32UI;
+		case GL_DEPTH_COMPONENT24:
+		case GL_DEPTH_COMPONENT32_OES:
+			return sw::FORMAT_D32F_LOCKABLE;
+		case GL_DEPTH24_STENCIL8:
+			return sw::FORMAT_D32FS8_TEXTURE;
+		case GL_DEPTH32F_STENCIL8:
+			return sw::FORMAT_D32FS8_TEXTURE;
+		case GL_RGB10_A2UI:
+			return sw::FORMAT_A2B10G10R10UI;
+		}
+
+		return sw::FORMAT_NULL;
+	}
+
 	// Returns the size, in bytes, of a single client-side pixel.
     // OpenGL ES 3.0.5 table 3.2.
 	static int ComputePixelSize(GLenum format, GLenum type)
@@ -1096,12 +1306,12 @@ namespace egl
 	class ImageImplementation : public Image
 	{
 	public:
-		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
-			: Image(parentTexture, width, height, format, type) {}
-		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLenum format, GLenum type)
-			: Image(parentTexture, width, height, depth, border, format, type) {}
-		ImageImplementation(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
-			: Image(width, height, format, type, pitchP) {}
+		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLint format)
+			: Image(parentTexture, width, height, format) {}
+		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLint format)
+			: Image(parentTexture, width, height, depth, border, format) {}
+		ImageImplementation(GLsizei width, GLsizei height, GLint format, int pitchP)
+			: Image(width, height, format, pitchP) {}
 		ImageImplementation(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
 			: Image(width, height, internalFormat, multiSampleDepth, lockable) {}
 
@@ -1126,19 +1336,19 @@ namespace egl
 		}
 	};
 
-	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLenum format, GLenum type)
+	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLint format)
 	{
-		return new ImageImplementation(parentTexture, width, height, format, type);
+		return new ImageImplementation(parentTexture, width, height, format);
 	}
 
-	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLenum format, GLenum type)
+	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLint format)
 	{
-		return new ImageImplementation(parentTexture, width, height, depth, border, format, type);
+		return new ImageImplementation(parentTexture, width, height, depth, border, format);
 	}
 
-	Image *Image::create(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
+	Image *Image::create(GLsizei width, GLsizei height, GLint format, int pitchP)
 	{
-		return new ImageImplementation(width, height, format, type, pitchP);
+		return new ImageImplementation(width, height, format, pitchP);
 	}
 
 	Image *Image::create(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
@@ -1204,7 +1414,7 @@ namespace egl
 
 	void Image::loadImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const UnpackInfo& unpackInfo, const void *input)
 	{
-		sw::Format uploadFormat = SelectInternalFormat(format, type);
+		sw::Format uploadFormat = ConvertFormatType(format, type);
 		if(uploadFormat == sw::FORMAT_NULL)
 		{
 			return;
@@ -1425,10 +1635,15 @@ namespace egl
 		}
 		else
 		{
-			sw::Surface *source = sw::Surface::create(width, height, depth, ConvertFormatType(format, type), const_cast<void*>(input), inputPitch, inputPitch * inputHeight);
-			sw::Rect sourceRect(0, 0, width, height);
-			sw::Rect destRect(xoffset, yoffset, xoffset + width, yoffset + height);
-			context->blit(source, sourceRect, this, destRect);
+			sw::Surface *source = sw::Surface::create(width, height, depth, uploadFormat, const_cast<void*>(input), inputPitch, inputPitch * inputHeight);
+
+			for(int slice = 0; slice < depth; slice++)
+			{
+				sw::SliceRect sourceRect(0, 0, width, height, slice);
+				sw::SliceRect destRect(xoffset, yoffset, xoffset + width, yoffset + height, zoffset + slice);
+				context->blit(source, sourceRect, this, destRect);
+			}
+
 			delete source;
 		}
 	}

@@ -325,18 +325,6 @@ static FormatMapStorage BuildFormatMapStorage2D()
 	return map;
 }
 
-static bool GetStorageType(GLenum internalformat, GLenum& type)
-{
-	static const FormatMapStorage formatMap = BuildFormatMapStorage2D();
-	FormatMapStorage::const_iterator iter = formatMap.find(internalformat);
-	if(iter != formatMap.end())
-	{
-		type = iter->second;
-		return true;
-	}
-	return false;
-}
-
 static bool ValidateQueryTarget(GLenum target)
 {
 	switch(target)
@@ -3919,13 +3907,6 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 		return error(GL_INVALID_OPERATION);
 	}
 
-	GLenum type;
-	if(!GetStorageType(internalformat, type))
-	{
-		return error(GL_INVALID_ENUM);
-	}
-	GLenum sizedInternalFormat = GetSizedInternalFormat(internalformat, type);
-
 	es2::Context *context = es2::getContext();
 
 	if(context)
@@ -3942,7 +3923,7 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 
 				for(int level = 0; level < levels; level++)
 				{
-					texture->setImage(context, level, width, height, sizedInternalFormat, sizedInternalFormat, type, context->getUnpackInfo(), nullptr);
+					texture->setImage(context, level, width, height, internalformat, GL_NONE, GL_NONE, context->getUnpackInfo(), nullptr);
 					width = std::max(1, (width / 2));
 					height = std::max(1, (height / 2));
 				}
@@ -3961,7 +3942,7 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 				{
 					for(int face = GL_TEXTURE_CUBE_MAP_POSITIVE_X; face <= GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; face++)
 					{
-						texture->setImage(context, face, level, width, height, sizedInternalFormat, sizedInternalFormat, type, context->getUnpackInfo(), nullptr);
+						texture->setImage(context, face, level, width, height, internalformat, GL_NONE, GL_NONE, context->getUnpackInfo(), nullptr);
 					}
 					width = std::max(1, (width / 2));
 					height = std::max(1, (height / 2));
@@ -3985,13 +3966,6 @@ GL_APICALL void GL_APIENTRY glTexStorage3D(GLenum target, GLsizei levels, GLenum
 		return error(GL_INVALID_VALUE);
 	}
 
-	GLenum type;
-	if(!GetStorageType(internalformat, type))
-	{
-		return error(GL_INVALID_ENUM);
-	}
-	GLenum sizedInternalFormat = GetSizedInternalFormat(internalformat, type);
-
 	es2::Context *context = es2::getContext();
 
 	if(context)
@@ -4013,7 +3987,7 @@ GL_APICALL void GL_APIENTRY glTexStorage3D(GLenum target, GLsizei levels, GLenum
 
 				for(int level = 0; level < levels; level++)
 				{
-					texture->setImage(context, level, width, height, depth, sizedInternalFormat, sizedInternalFormat, type, context->getUnpackInfo(), nullptr);
+					texture->setImage(context, level, width, height, depth, internalformat, GL_NONE, GL_NONE, context->getUnpackInfo(), nullptr);
 					width = std::max(1, (width / 2));
 					height = std::max(1, (height / 2));
 					depth = std::max(1, (depth / 2));
@@ -4038,7 +4012,7 @@ GL_APICALL void GL_APIENTRY glTexStorage3D(GLenum target, GLsizei levels, GLenum
 				{
 					for(int face = GL_TEXTURE_CUBE_MAP_POSITIVE_X; face <= GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; face++)
 					{
-						texture->setImage(context, level, width, height, depth, sizedInternalFormat, sizedInternalFormat, type, context->getUnpackInfo(), nullptr);
+						texture->setImage(context, level, width, height, depth, internalformat, GL_NONE, GL_NONE, context->getUnpackInfo(), nullptr);
 					}
 					width = std::max(1, (width / 2));
 					height = std::max(1, (height / 2));
