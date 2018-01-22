@@ -435,7 +435,7 @@ GLenum Texture2D::getFormat(GLenum target, GLint level) const
 GLenum Texture2D::getType(GLenum target, GLint level) const
 {
 	ASSERT(target == GL_TEXTURE_2D);
-	return image[level] ? image[level]->getType() : GL_NONE;
+	return GL_NONE;
 }
 
 sw::Format Texture2D::getInternalFormat(GLenum target, GLint level) const
@@ -457,14 +457,14 @@ int Texture2D::getTopLevel() const
 	return level - 1;
 }
 
-void Texture2D::setImage(egl::Context *context, GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels)
+void Texture2D::setImage(egl::Context *context, GLint level, GLsizei width, GLsizei height, GLint internalformat, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels)
 {
 	if(image[level])
 	{
 		image[level]->release();
 	}
 
-	image[level] = egl::Image::create(this, width, height, format, type);
+	image[level] = egl::Image::create(this, width, height, internalformat);
 
 	if(!image[level])
 	{
@@ -522,7 +522,7 @@ void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 		image[level]->release();
 	}
 
-	image[level] = egl::Image::create(this, width, height, format, GL_UNSIGNED_BYTE);
+	image[level] = egl::Image::create(this, width, height, format);
 
 	if(!image[level])
 	{
@@ -557,7 +557,7 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 		image[level]->release();
 	}
 
-	image[level] = egl::Image::create(this, width, height, format, GL_UNSIGNED_BYTE);
+	image[level] = egl::Image::create(this, width, height, format);
 
 	if(!image[level])
 	{
@@ -662,11 +662,6 @@ bool Texture2D::isMipmapComplete() const
 			return false;
 		}
 
-		if(image[level]->getType() != image[0]->getType())
-		{
-			return false;
-		}
-
 		if(image[level]->getWidth() != std::max(1, width >> level))
 		{
 			return false;
@@ -707,7 +702,7 @@ void Texture2D::generateMipmaps()
 			image[i]->release();
 		}
 
-		image[i] = egl::Image::create(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat(), image[0]->getType());
+		image[i] = egl::Image::create(this, std::max(image[0]->getWidth() >> i, 1), std::max(image[0]->getHeight() >> i, 1), image[0]->getFormat());
 
 		if(!image[i])
 		{
