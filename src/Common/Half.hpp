@@ -45,14 +45,13 @@ namespace sw
 		return hs.h;
 	}
 
-	class RGB9E5
+	struct RGB9E5
 	{
 		unsigned int R : 9;
 		unsigned int G : 9;
 		unsigned int B : 9;
 		unsigned int E : 5;
 
-	public:
 		void toRGB16F(half rgb[3]) const
 		{
 			constexpr int offset = 24;   // Exponent bias (15) + number of mantissa bits per component (9) = 24
@@ -64,7 +63,7 @@ namespace sw
 		}
 	};
 
-	class R11G11B10F
+	struct R11G11B10F
 	{
 		unsigned int R : 11;
 		unsigned int G : 11;
@@ -80,7 +79,6 @@ namespace sw
 			return shortAsHalf(fp10 << 5);   // Sign bit 0
 		}
 
-	public:
 		void toRGB16F(half rgb[3]) const
 		{
 			rgb[0] = float11ToFloat16(R);

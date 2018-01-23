@@ -2224,10 +2224,10 @@ namespace sw2es
 	{
 		switch(format)
 		{
-		case sw::FORMAT_A4R4G4B4: return GL_RGBA4;
-		case sw::FORMAT_A8R8G8B8: return GL_RGBA8;
+		case sw::FORMAT_A4R4G4B4:  return GL_RGBA4;
+		case sw::FORMAT_A8R8G8B8:  return GL_RGBA8;
 		case sw::FORMAT_A8B8G8R8: return GL_RGBA8;
-		case sw::FORMAT_A1R5G5B5: return GL_RGB5_A1;
+		case sw::FORMAT_A1R5G5B5:  return GL_RGB5_A1;
 		case sw::FORMAT_R5G6B5:   return GL_RGB565;
 		case sw::FORMAT_X8R8G8B8: return GL_RGB8;
 		case sw::FORMAT_X8B8G8R8: return GL_RGB8;

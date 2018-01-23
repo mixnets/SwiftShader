@@ -213,6 +213,47 @@ namespace sw
 			((unsigned int*)element)[0] = static_cast<unsigned int>(r);
 			((unsigned int*)element)[1] = static_cast<unsigned int>(g);
 			break;
+		case FORMAT_B8G8R8_SNORM:
+			((short*)element)[0] = snorm<8>(r);
+			((short*)element)[1] = snorm<8>(g);
+			((short*)element)[2] = snorm<8>(b);
+			break;
+		case FORMAT_B8G8R8:
+			((unsigned short*)element)[0] = unorm<8>(r);
+			((unsigned short*)element)[1] = unorm<8>(g);
+			((unsigned short*)element)[2] = unorm<8>(b);
+			break;
+		case FORMAT_B8G8R8I:
+			((char*)element)[0] = scast<8>(r);
+			((char*)element)[1] = scast<8>(g);
+			((char*)element)[2] = scast<8>(b);
+			break;
+		case FORMAT_B8G8R8UI:
+			((unsigned short*)element)[0] = ucast<16>(r);
+			((unsigned short*)element)[1] = ucast<16>(g);
+			((unsigned short*)element)[2] = ucast<16>(b);
+			break;
+		case FORMAT_B16G16R16:
+			((unsigned short*)element)[0] = unorm<16>(r);
+			((unsigned short*)element)[1] = unorm<16>(g);
+			((unsigned short*)element)[2] = unorm<16>(b);
+			break;
+		case FORMAT_B16G16R16I:
+			((short*)element)[0] = scast<16>(r);
+			((short*)element)[1] = scast<16>(g);
+			((short*)element)[2] = scast<16>(b);
+			break;
+		case FORMAT_B16G16R16UI:
+			((unsigned short*)element)[0] = ucast<16>(r);
+			((unsigned short*)element)[1] = ucast<16>(g);
+			((unsigned short*)element)[2] = ucast<16>(b);
+			break;
+		case FORMAT_B32G32R32I:
+		case FORMAT_B32G32R32UI:
+			((unsigned int*)element)[0] = static_cast<unsigned int>(r);
+			((unsigned int*)element)[1] = static_cast<unsigned int>(g);
+			((unsigned int*)element)[2] = static_cast<unsigned int>(b);
+			break;
 		case FORMAT_A16B16G16R16:
 			((unsigned short*)element)[0] = unorm<16>(r);
 			((unsigned short*)element)[1] = unorm<16>(g);
@@ -288,11 +329,6 @@ namespace sw
 			((unsigned char*)element)[0] = unorm<8>(b);
 			((unsigned char*)element)[1] = unorm<8>(g);
 			((unsigned char*)element)[2] = unorm<8>(r);
-			break;
-		case FORMAT_B8G8R8:
-			((unsigned char*)element)[0] = unorm<8>(r);
-			((unsigned char*)element)[1] = unorm<8>(g);
-			((unsigned char*)element)[2] = unorm<8>(b);
 			break;
 		case FORMAT_R16F:
 			*(half*)element = (half)r;
@@ -704,6 +740,46 @@ namespace sw
 				g = gr[1];
 			}
 			break;
+		case FORMAT_B8G8R8I:
+			r = ((char*)element)[0];
+			g = ((char*)element)[1];
+			b = ((char*)element)[2];
+			break;
+		case FORMAT_B8G8R8UI:
+			r = ((unsigned char*)element)[0];
+			g = ((unsigned char*)element)[1];
+			b = ((unsigned char*)element)[2];
+			break;
+		case FORMAT_B8G8R8_SNORM:
+			r = ((char*)element)[0] * (1.0f / 0x7F);
+			g = ((char*)element)[1] * (1.0f / 0x7F);
+			b = ((char*)element)[2] * (1.0f / 0x7F);
+			break;
+		case FORMAT_B16G16R16:
+			r = ((unsigned short*)element)[0] * (1.0f / 0xFFFF);
+			g = ((unsigned short*)element)[1] * (1.0f / 0xFFFF);
+			b = ((unsigned short*)element)[2] * (1.0f / 0xFFFF);
+			break;
+		case FORMAT_B16G16R16I:
+			r = ((short*)element)[0];
+			g = ((short*)element)[1];
+			b = ((short*)element)[2];
+			break;
+		case FORMAT_B16G16R16UI:
+			r = ((unsigned short*)element)[0];
+			g = ((unsigned short*)element)[1];
+			b = ((unsigned short*)element)[2];
+			break;
+		case FORMAT_B32G32R32I:
+			r = static_cast<float>(((int*)element)[0]);
+			g = static_cast<float>(((int*)element)[1]);
+			b = static_cast<float>(((int*)element)[2]);
+			break;
+		case FORMAT_B32G32R32UI:
+			r = static_cast<float>(((unsigned int*)element)[0]);
+			g = static_cast<float>(((unsigned int*)element)[1]);
+			b = static_cast<float>(((unsigned int*)element)[2]);
+			break;
 		case FORMAT_A2R10G10B10:
 			{
 				unsigned int argb = *(unsigned int*)element;
@@ -978,6 +1054,25 @@ namespace sw
 			r = ((half*)element)[0];
 			g = ((half*)element)[1];
 			b = ((half*)element)[2];
+			break;
+		case FORMAT_B10G11R11F:
+			{
+				R11G11B10F c = *(R11G11B10F*)element;
+				r = R11G11B10F::float11ToFloat16(c.R);
+				g = R11G11B10F::float11ToFloat16(c.G);
+				b = R11G11B10F::float10ToFloat16(c.B);
+			}
+			break;
+		case FORMAT_E5B9G9R9:
+			{
+				RGB9E5 c = *(RGB9E5*)element;
+				constexpr int offset = 24;   // Exponent bias (15) + number of mantissa bits per component (9) = 24
+
+				const float factor = (1u << c.E) * (1.0f / (1 << offset));
+				r = c.R * factor;
+				g = c.G * factor;
+				b = c.B * factor;
+			}
 			break;
 		case FORMAT_A16B16G16R16F:
 			r = ((half*)element)[0];
@@ -1698,6 +1793,8 @@ namespace sw
 		case FORMAT_YV12_BT601:         return 1;   // Y plane only
 		case FORMAT_YV12_BT709:         return 1;   // Y plane only
 		case FORMAT_YV12_JFIF:          return 1;   // Y plane only
+		case FORMAT_B10G11R11F:         return 4;
+		case FORMAT_E5B9G9R9:           return 4;
 		default:
 			ASSERT(false);
 		}
