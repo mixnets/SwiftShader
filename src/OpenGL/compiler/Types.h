@@ -282,6 +282,12 @@ public:
 	TLayoutQualifier getLayoutQualifier() const { return layoutQualifier; }
 	void setLayoutQualifier(TLayoutQualifier lq) { layoutQualifier = lq; }
 
+	bool isRowMajor(bool blockIsRowMajor) const
+	{
+		return (layoutQualifier.matrixPacking == EmpRowMajor) ||
+		       ((layoutQualifier.matrixPacking == EmpUnspecified) && blockIsRowMajor);
+	}
+
 	// One-dimensional size of single instance type
 	int getNominalSize() const { return primarySize; }
 	void setNominalSize(int s) { primarySize = s; }

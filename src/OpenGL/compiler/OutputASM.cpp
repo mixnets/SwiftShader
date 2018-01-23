@@ -293,12 +293,7 @@ namespace glsl
 		int arrayStride;
 		int matrixStride;
 
-		bool isVariableRowMajor = isRowMajor;
-		TLayoutMatrixPacking matrixPacking = type.getLayoutQualifier().matrixPacking;
-		if(matrixPacking != EmpUnspecified)
-		{
-			isVariableRowMajor = (matrixPacking == EmpRowMajor);
-		}
+		bool isVariableRowMajor = type.isRowMajor(isRowMajor);
 		getBlockLayoutInfo(type, type.getArraySize(), isVariableRowMajor, &arrayStride, &matrixStride);
 
 		const BlockMemberInfo memberInfo(static_cast<int>(mCurrentOffset * BytesPerComponent),
@@ -2359,7 +2354,7 @@ namespace glsl
 					arg = &unpackedUniform;
 					index = 0;
 				}
-				else if((srcBlock->matrixPacking() == EmpRowMajor) && memberType.isMatrix())
+				else if(memberType.isRowMajor(srcBlock->matrixPacking() == EmpRowMajor) && memberType.isMatrix())
 				{
 					int numCols = memberType.getNominalSize();
 					int numRows = memberType.getSecondarySize();
