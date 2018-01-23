@@ -2359,7 +2359,8 @@ namespace glsl
 					arg = &unpackedUniform;
 					index = 0;
 				}
-				else if((srcBlock->matrixPacking() == EmpRowMajor) && memberType.isMatrix())
+				else if(((memberType.getLayoutQualifier().matrixPacking == EmpRowMajor) || ((memberType.getLayoutQualifier().matrixPacking == EmpUnspecified) &&
+				         (srcBlock->matrixPacking() == EmpRowMajor))) && memberType.isMatrix())
 				{
 					int numCols = memberType.getNominalSize();
 					int numRows = memberType.getSecondarySize();
