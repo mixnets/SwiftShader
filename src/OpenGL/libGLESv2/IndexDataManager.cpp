@@ -63,12 +63,14 @@ void copyIndices(GLenum type, const void *input, GLsizei count, void *output)
 	else UNREACHABLE(type);
 }
 
-inline GLsizei getNumIndices(const std::vector<GLsizei>& restartIndices, size_t i, GLsizei count)
+inline GLsizei getNumIndices(const std::vector<GLsizei>* restartIndices, size_t i, GLsizei count)
 {
-	return (i == 0) ? restartIndices[0] : ((i == restartIndices.size()) ? (count - restartIndices[i - 1] - 1) : (restartIndices[i] - restartIndices[i - 1] - 1));
+	return restartIndices ?
+	       ((i == 0) ? (*restartIndices)[0] : ((i == restartIndices->size()) ? (count - (*restartIndices)[i - 1] - 1) : ((*restartIndices)[i] - (*restartIndices)[i - 1] - 1))) :
+	       count;
 }
 
-void copyIndices(GLenum mode, GLenum type, const std::vector<GLsizei>& restartIndices, const void *input, GLsizei count, void* output)
+void copyIndices(GLenum mode, GLenum type, const std::vector<GLsizei>* restartIndices, const void *input, GLsizei count, void* output)
 {
 	size_t bytesPerIndex = 0;
 	const unsigned char* inPtr = static_cast<const unsigned char*>(input);
@@ -88,7 +90,7 @@ void copyIndices(GLenum mode, GLenum type, const std::vector<GLsizei>& restartIn
 		UNREACHABLE(type);
 	}
 
-	size_t numRestarts = restartIndices.size();
+	size_t numRestarts = restartIndices ? restartIndices->size() : 0;
 	switch(mode)
 	{
 	case GL_TRIANGLES:
@@ -226,9 +228,9 @@ void computeRange(GLenum type, const void *indices, GLsizei count, GLuint *minIn
 	else UNREACHABLE(type);
 }
 
-int recomputePrimitiveCount(GLenum mode, GLsizei count, const std::vector<GLsizei>& restartIndices, unsigned int* primitiveCount)
+int recomputePrimitiveCount(GLenum mode, GLsizei count, const std::vector<GLsizei>* restartIndices, unsigned int* primitiveCount)
 {
-	size_t numRestarts = restartIndices.size();
+	size_t numRestarts = restartIndices ? restartIndices->size() : 0;
 	*primitiveCount = 0;
 
 	unsigned int countOffset = 0;
@@ -261,7 +263,7 @@ int recomputePrimitiveCount(GLenum mode, GLsizei count, const std::vector<GLsize
 		}
 		return vertexPerPrimitive;
 	case GL_POINTS:
-		*primitiveCount = static_cast<unsigned int>(count - restartIndices.size());
+		*primitiveCount = static_cast<unsigned int>(count - (restartIndices ? restartIndices->size() : 0));
 		return 1;
 	default:
 		UNREACHABLE(mode);
@@ -300,9 +302,9 @@ GLenum IndexDataManager::prepareIndexData(GLenum mode, GLenum type, GLuint start
 
 	sw::Resource *staticBuffer = buffer ? buffer->getResource() : NULL;
 
-	if(restartIndices)
+	if(primitiveRestart)
 	{
-		int vertexPerPrimitive = recomputePrimitiveCount(mode, count, *restartIndices, &translated->primitiveCount);
+		int vertexPerPrimitive = recomputePrimitiveCount(mode, count, restartIndices, &translated->primitiveCount);
 		if(vertexPerPrimitive == -1)
 		{
 			delete restartIndices;
@@ -322,7 +324,7 @@ GLenum IndexDataManager::prepareIndexData(GLenum mode, GLenum type, GLuint start
 			return GL_OUT_OF_MEMORY;
 		}
 
-		copyIndices(mode, type, *restartIndices, staticBuffer ? buffer->data() : indices, count, output);
+		copyIndices(mode, type, restartIndices, staticBuffer ? buffer->data() : indices, count, output);
 		streamingBuffer->unmap();
 
 		translated->indexBuffer = streamingBuffer->getResource();
