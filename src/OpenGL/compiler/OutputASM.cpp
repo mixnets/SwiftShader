@@ -283,8 +283,8 @@ namespace glsl
 	{
 	}
 
-	BlockLayoutEncoder::BlockLayoutEncoder(bool rowMajor)
-		: mCurrentOffset(0), isRowMajor(rowMajor)
+	BlockLayoutEncoder::BlockLayoutEncoder()
+		: mCurrentOffset(0)
 	{
 	}
 
@@ -293,20 +293,15 @@ namespace glsl
 		int arrayStride;
 		int matrixStride;
 
-		bool isVariableRowMajor = isRowMajor;
-		TLayoutMatrixPacking matrixPacking = type.getLayoutQualifier().matrixPacking;
-		if(matrixPacking != EmpUnspecified)
-		{
-			isVariableRowMajor = (matrixPacking == EmpRowMajor);
-		}
-		getBlockLayoutInfo(type, type.getArraySize(), isVariableRowMajor, &arrayStride, &matrixStride);
+		bool isRowMajor = type.getLayoutQualifier().matrixPacking == EmpRowMajor;
+		getBlockLayoutInfo(type, type.getArraySize(), isRowMajor, &arrayStride, &matrixStride);
 
 		const BlockMemberInfo memberInfo(static_cast<int>(mCurrentOffset * BytesPerComponent),
 		                                 static_cast<int>(arrayStride * BytesPerComponent),
 		                                 static_cast<int>(matrixStride * BytesPerComponent),
-		                                 (matrixStride > 0) && isVariableRowMajor);
+		                                 (matrixStride > 0) && isRowMajor);
 
-		advanceOffset(type, type.getArraySize(), isVariableRowMajor, arrayStride, matrixStride);
+		advanceOffset(type, type.getArraySize(), isRowMajor, arrayStride, matrixStride);
 
 		return memberInfo;
 	}
@@ -328,7 +323,7 @@ namespace glsl
 		mCurrentOffset = sw::align(mCurrentOffset, ComponentsPerRegister);
 	}
 
-	Std140BlockEncoder::Std140BlockEncoder(bool rowMajor) : BlockLayoutEncoder(rowMajor)
+	Std140BlockEncoder::Std140BlockEncoder() : BlockLayoutEncoder()
 	{
 	}
 
@@ -2359,7 +2354,7 @@ namespace glsl
 					arg = &unpackedUniform;
 					index = 0;
 				}
-				else if((srcBlock->matrixPacking() == EmpRowMajor) && memberType.isMatrix())
+				else if((memberType.getLayoutQualifier().matrixPacking == EmpRowMajor) && memberType.isMatrix())
 				{
 					int numCols = memberType.getNominalSize();
 					int numRows = memberType.getSecondarySize();
@@ -3546,7 +3541,7 @@ namespace glsl
 			                                           block->blockStorage(), isRowMajor, registerIndex, blockId));
 			blockDefinitions.push_back(BlockDefinitionIndexMap());
 
-			Std140BlockEncoder currentBlockEncoder(isRowMajor);
+			Std140BlockEncoder currentBlockEncoder;
 			currentBlockEncoder.enterAggregateType();
 			for(const auto &field : fields)
 			{
