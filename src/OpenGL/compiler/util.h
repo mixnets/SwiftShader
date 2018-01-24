@@ -29,6 +29,10 @@ bool atof_clamp(const char *str, float *value);
 // Return false if overflow happens.
 bool atoi_clamp(const char *str, int *value);
 
+// If overflow happens, clamp the value to 0 or UINT_MAX.
+// Return false if overflow happens.
+bool atou_clamp(const char *str, unsigned int *value);
+
 #ifdef __cplusplus
 } // end extern "C"
 #endif

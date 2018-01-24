@@ -74,6 +74,15 @@ namespace sw
 		b = t;
 	}
 
+	template <typename destType, typename sourceType>
+	destType bitCast(const sourceType &source)
+	{
+		size_t copySize = std::min(sizeof(destType), sizeof(sourceType));
+		destType output;
+		memcpy(&output, &source, copySize);
+		return output;
+	}
+
 	inline int iround(float x)
 	{
 		return (int)floor(x + 0.5f);
