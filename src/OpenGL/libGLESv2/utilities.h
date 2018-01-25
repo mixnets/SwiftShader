@@ -42,7 +42,7 @@ namespace es2
 
 	int AllocateFirstFreeBits(unsigned int *bits, unsigned int allocationSize, unsigned int bitsSize);
 
-	bool IsCompressed(GLenum format, GLint clientVersion);
+	bool IsCompressed(GLenum format, GLint clientVersion, bool expectsCompressed);
 	GLint GetSizedInternalFormat(GLint internalFormat, GLenum type);
 	GLenum ValidateSubImageParams(bool compressed, bool copy, GLenum target, GLint level, GLint xoffset, GLint yoffset,
 	                              GLsizei width, GLsizei height, GLenum format, GLenum type, Texture *texture, GLint clientVersion);

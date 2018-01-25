@@ -739,7 +739,7 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 		return error(GL_INVALID_VALUE);
 	}
 
-	if(!IsCompressed(internalformat, egl::getClientVersion()))
+	if(!IsCompressed(internalformat, egl::getClientVersion(), true))
 	{
 		return error(GL_INVALID_ENUM);
 	}
@@ -2055,7 +2055,7 @@ void FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GL
 				return error(GL_INVALID_VALUE);
 			}
 
-			if(tex->isCompressed(textarget, level))
+			if(tex->isCompressed(textarget, level, false))
 			{
 				return error(GL_INVALID_OPERATION);
 			}
@@ -6382,7 +6382,7 @@ void CompressedTexImage3DOES(GLenum target, GLint level, GLenum internalformat, 
 		return error(GL_INVALID_VALUE);
 	}
 
-	if(!IsCompressed(internalformat, egl::getClientVersion()))
+	if(!IsCompressed(internalformat, egl::getClientVersion(), true))
 	{
 		return error(GL_INVALID_ENUM);
 	}
@@ -6439,7 +6439,7 @@ void CompressedTexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint
 		return error(GL_INVALID_VALUE);
 	}
 
-	if(!IsCompressed(format, egl::getClientVersion()))
+	if(!IsCompressed(format, egl::getClientVersion(), true))
 	{
 		return error(GL_INVALID_ENUM);
 	}
@@ -6497,7 +6497,7 @@ void FramebufferTexture3DOES(GLenum target, GLenum attachment, GLenum textarget,
 				return error(GL_INVALID_OPERATION);
 			}
 
-			if(tex->isCompressed(textarget, level))
+			if(tex->isCompressed(textarget, level, false))
 			{
 				return error(GL_INVALID_OPERATION);
 			}

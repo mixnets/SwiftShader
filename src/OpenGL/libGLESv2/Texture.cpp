@@ -871,9 +871,9 @@ bool Texture2D::isMipmapComplete() const
 	return true;
 }
 
-bool Texture2D::isCompressed(GLenum target, GLint level) const
+bool Texture2D::isCompressed(GLenum target, GLint level, bool expectsCompressed) const
 {
-	return IsCompressed(getFormat(target, level), egl::getClientVersion());
+	return IsCompressed(getFormat(target, level), egl::getClientVersion(), expectsCompressed);
 }
 
 bool Texture2D::isDepth(GLenum target, GLint level) const
@@ -1310,9 +1310,9 @@ void TextureCubeMap::updateBorders(int level)
 	negY->markContentsClean();
 }
 
-bool TextureCubeMap::isCompressed(GLenum target, GLint level) const
+bool TextureCubeMap::isCompressed(GLenum target, GLint level, bool expectsCompressed) const
 {
-	return IsCompressed(getFormat(target, level), egl::getClientVersion());
+	return IsCompressed(getFormat(target, level), egl::getClientVersion(), expectsCompressed);
 }
 
 bool TextureCubeMap::isDepth(GLenum target, GLint level) const
@@ -1879,9 +1879,9 @@ bool Texture3D::isMipmapComplete() const
 	return true;
 }
 
-bool Texture3D::isCompressed(GLenum target, GLint level) const
+bool Texture3D::isCompressed(GLenum target, GLint level, bool expectsCompressed) const
 {
-	return IsCompressed(getFormat(target, level), egl::getClientVersion());
+	return IsCompressed(getFormat(target, level), egl::getClientVersion(), expectsCompressed);
 }
 
 bool Texture3D::isDepth(GLenum target, GLint level) const

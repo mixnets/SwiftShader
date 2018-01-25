@@ -100,7 +100,7 @@ public:
 	virtual int getTopLevel() const = 0;
 
 	virtual bool isSamplerComplete() const = 0;
-	virtual bool isCompressed(GLenum target, GLint level) const = 0;
+	virtual bool isCompressed(GLenum target, GLint level, bool expectsCompressed) const = 0;
 	virtual bool isDepth(GLenum target, GLint level) const = 0;
 
 	virtual Renderbuffer *getRenderbuffer(GLenum target, GLint level) = 0;
@@ -172,7 +172,7 @@ public:
 	void setSharedImage(egl::Image *image);
 
 	bool isSamplerComplete() const override;
-	bool isCompressed(GLenum target, GLint level) const override;
+	bool isCompressed(GLenum target, GLint level, bool expectsCompressed) const override;
 	bool isDepth(GLenum target, GLint level) const override;
 	void bindTexImage(gl::Surface *surface);
 	void releaseTexImage() override;
@@ -237,7 +237,7 @@ public:
 	void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source) override;
 
 	bool isSamplerComplete() const override;
-	bool isCompressed(GLenum target, GLint level) const override;
+	bool isCompressed(GLenum target, GLint level, bool expectsCompressed) const override;
 	bool isDepth(GLenum target, GLint level) const override;
 	void releaseTexImage() override;
 
@@ -300,7 +300,7 @@ public:
 	void setSharedImage(egl::Image *image);
 
 	bool isSamplerComplete() const override;
-	bool isCompressed(GLenum target, GLint level) const override;
+	bool isCompressed(GLenum target, GLint level, bool expectsCompressed) const override;
 	bool isDepth(GLenum target, GLint level) const override;
 	void releaseTexImage() override;
 
