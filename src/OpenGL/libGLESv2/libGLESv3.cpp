@@ -264,6 +264,11 @@ static FormatMapStorage BuildFormatMapStorage2D()
 	InsertFormatStorageMapping(map, GL_RGBA32UI, GL_UNSIGNED_INT);
 	InsertFormatStorageMapping(map, GL_RGBA32I, GL_INT);
 
+	InsertFormatStorageMapping(map, GL_COMPRESSED_RGB_S3TC_DXT1_EXT, GL_UNSIGNED_BYTE);
+	InsertFormatStorageMapping(map, GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, GL_UNSIGNED_BYTE);
+	InsertFormatStorageMapping(map, GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE, GL_UNSIGNED_BYTE);
+	InsertFormatStorageMapping(map, GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE, GL_UNSIGNED_BYTE);
+
 	InsertFormatStorageMapping(map, GL_DEPTH_COMPONENT16, GL_UNSIGNED_SHORT);
 	InsertFormatStorageMapping(map, GL_DEPTH_COMPONENT24, GL_UNSIGNED_INT);
 	InsertFormatStorageMapping(map, GL_DEPTH_COMPONENT32F, GL_FLOAT);

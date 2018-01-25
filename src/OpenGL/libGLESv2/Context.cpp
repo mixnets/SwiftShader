@@ -4438,6 +4438,7 @@ const GLubyte *Context::getExtensions(GLuint index, GLuint *numExt) const
 		"GL_EXT_occlusion_query_boolean",
 		"GL_EXT_read_format_bgra",
 		"GL_EXT_texture_compression_dxt1",
+		"GL_EXT_texture_compression_s3tc",
 		"GL_EXT_texture_filter_anisotropic",
 		"GL_EXT_texture_format_BGRA8888",
 		"GL_EXT_texture_rg",

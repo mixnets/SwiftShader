@@ -475,6 +475,7 @@ namespace es2
 		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
 		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+			return GL_NONE; // GL_EXT_texture_compression_s3tc
 		case GL_ETC1_RGB8_OES:
 			return true;
 		case GL_COMPRESSED_R11_EAC:
