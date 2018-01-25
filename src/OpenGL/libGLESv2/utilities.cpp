@@ -467,7 +467,7 @@ namespace es2
 		return -1;
 	}
 
-	bool IsCompressed(GLenum format, GLint clientVersion)
+	bool IsCompressed(GLenum format, GLint clientVersion, bool expectsCompressed)
 	{
 		switch(format)
 		{
@@ -475,6 +475,8 @@ namespace es2
 		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
 		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
+			// GL_EXT_texture_compression_s3tc allows these formats in non-compressed texture functions
+			return expectsCompressed;
 		case GL_ETC1_RGB8_OES:
 			return true;
 		case GL_COMPRESSED_R11_EAC:
@@ -574,7 +576,7 @@ namespace es2
 			return GL_INVALID_OPERATION;
 		}
 
-		if(compressed != texture->isCompressed(target, level))
+		if(compressed != texture->isCompressed(target, level, compressed))
 		{
 			return GL_INVALID_OPERATION;
 		}
@@ -612,7 +614,7 @@ namespace es2
 
 	bool ValidateCopyFormats(GLenum textureFormat, GLenum colorbufferFormat)
 	{
-		if(IsCompressed(textureFormat, egl::getClientVersion()))
+		if(IsCompressed(textureFormat, egl::getClientVersion(), false))
 		{
 			return error(GL_INVALID_OPERATION, false);
 		}
@@ -1353,7 +1355,7 @@ namespace es2
 
 	bool IsColorRenderable(GLint internalformat, GLint clientVersion)
 	{
-		if(IsCompressed(internalformat, clientVersion))
+		if(IsCompressed(internalformat, clientVersion, false))
 		{
 			return false;
 		}
@@ -1424,7 +1426,7 @@ namespace es2
 
 	bool IsDepthRenderable(GLint internalformat, GLint clientVersion)
 	{
-		if(IsCompressed(internalformat, clientVersion))
+		if(IsCompressed(internalformat, clientVersion, false))
 		{
 			return false;
 		}
@@ -1495,7 +1497,7 @@ namespace es2
 
 	bool IsStencilRenderable(GLint internalformat, GLint clientVersion)
 	{
-		if(IsCompressed(internalformat, clientVersion))
+		if(IsCompressed(internalformat, clientVersion, false))
 		{
 			return false;
 		}
