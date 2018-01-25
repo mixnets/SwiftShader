@@ -63,7 +63,63 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 
 	switch(textureFormat)
 	{
+	case GL_SRGB8:
+	case GL_SRGB8_ALPHA8:
+		if(colorbufferFormat != GL_SRGB8_ALPHA8)
+		{
+			return error(GL_INVALID_OPERATION, false);
+		}
+		break;
+	case GL_R8I:
+	case GL_RG8I:
+	case GL_RGBA8I:
+		if(colorbufferFormat != GL_RGBA8I)
+		{
+			return error(GL_INVALID_OPERATION, false);
+		}
+		break;
+	case GL_R8UI:
+	case GL_RG8UI:
+	case GL_RGBA8UI:
+		if(colorbufferFormat != GL_RGBA8UI)
+		{
+			return error(GL_INVALID_OPERATION, false);
+		}
+		break;
+	case GL_R16I:
+	case GL_RG16I:
+	case GL_RGBA16I:
+		if(colorbufferFormat != GL_RGBA16I)
+		{
+			return error(GL_INVALID_OPERATION, false);
+		}
+		break;
+	case GL_R16UI:
+	case GL_RG16UI:
+	case GL_RGBA16UI:
+		if(colorbufferFormat != GL_RGBA16UI)
+		{
+			return error(GL_INVALID_OPERATION, false);
+		}
+		break;
+	case GL_R32I:
+	case GL_RG32I:
+	case GL_RGBA32I:
+		if(colorbufferFormat != GL_RGBA32I)
+		{
+			return error(GL_INVALID_OPERATION, false);
+		}
+		break;
+	case GL_R32UI:
+	case GL_RG32UI:
+	case GL_RGBA32UI:
+		if(colorbufferFormat != GL_RGBA32UI)
+		{
+			return error(GL_INVALID_OPERATION, false);
+		}
+		break;
 	case GL_ALPHA:
+	case GL_ALPHA8_EXT:
 		if(colorbufferFormat != GL_ALPHA &&
 		   colorbufferFormat != GL_RGBA &&
 		   colorbufferFormat != GL_RGBA4 &&
@@ -74,7 +130,11 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 		}
 		break;
 	case GL_LUMINANCE:
+	case GL_LUMINANCE8_EXT:
+	case GL_R8:
+	case GL_RG8:
 	case GL_RGB:
+	case GL_RGB8:
 		if(colorbufferFormat != GL_RGB &&
 		   colorbufferFormat != GL_RGB565 &&
 		   colorbufferFormat != GL_RGB8 &&
@@ -87,7 +147,9 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 		}
 		break;
 	case GL_LUMINANCE_ALPHA:
+	case GL_LUMINANCE8_ALPHA8_EXT:
 	case GL_RGBA:
+	case GL_RGBA8:
 		if(colorbufferFormat != GL_RGBA &&
 		   colorbufferFormat != GL_RGBA4 &&
 		   colorbufferFormat != GL_RGB5_A1 &&

@@ -748,34 +748,74 @@ namespace egl
 			case GL_R8:
 			case GL_RED:
 				return sw::FORMAT_R8;
+			case GL_R8I:
+				return sw::FORMAT_R8I;
 			case GL_R8UI:
 			case GL_RED_INTEGER:
 				return sw::FORMAT_R8UI;
+			case GL_R16I:
+				return sw::FORMAT_R16I;
+			case GL_R16UI:
+				return sw::FORMAT_R16UI;
+			case GL_R32I:
+				return sw::FORMAT_R32I;
+			case GL_R32UI:
+				return sw::FORMAT_R32UI;
 			case GL_RG8_SNORM:
 			case GL_RG8:
 			case GL_RG:
 				return sw::FORMAT_G8R8;
+			case GL_RG8I:
+				return sw::FORMAT_G8R8I;
 			case GL_RG8UI:
 			case GL_RG_INTEGER:
 				return sw::FORMAT_G8R8UI;
+			case GL_RG16I:
+				return sw::FORMAT_G16R16I;
+			case GL_RG16UI:
+				return sw::FORMAT_G16R16UI;
+			case GL_RG32I:
+				return sw::FORMAT_G32R32I;
+			case GL_RG32UI:
+				return sw::FORMAT_G32R32UI;
 			case GL_RGB8_SNORM:
 			case GL_RGB8:
 			case GL_RGB:
 				return sw::FORMAT_X8B8G8R8;
 			case GL_SRGB8:
 				return sw::FORMAT_SRGB8_X8;
+			case GL_RGB8I:
+				return sw::FORMAT_X8B8G8R8I;
 			case GL_RGB8UI:
 			case GL_RGB_INTEGER:
 				return sw::FORMAT_X8B8G8R8UI;
+			case GL_RGB16I:
+				return sw::FORMAT_X16B16G16R16I;
+			case GL_RGB16UI:
+				return sw::FORMAT_X16B16G16R16UI;
+			case GL_RGB32I:
+				return sw::FORMAT_X32B32G32R32I;
+			case GL_RGB32UI:
+				return sw::FORMAT_X32B32G32R32UI;
 			case GL_RGBA8_SNORM:
 			case GL_RGBA8:
 			case GL_RGBA:
 				return sw::FORMAT_A8B8G8R8;
 			case GL_SRGB8_ALPHA8:
 				return sw::FORMAT_SRGB8_A8;
+			case GL_RGBA8I:
+				return sw::FORMAT_A8B8G8R8I;
 			case GL_RGBA8UI:
 			case GL_RGBA_INTEGER:
 				return sw::FORMAT_A8B8G8R8UI;
+			case GL_RGBA16I:
+				return sw::FORMAT_A16B16G16R16I;
+			case GL_RGBA16UI:
+				return sw::FORMAT_A16B16G16R16UI;
+			case GL_RGBA32I:
+				return sw::FORMAT_A32B32G32R32I;
+			case GL_RGBA32UI:
+				return sw::FORMAT_A32B32G32R32UI;
 			case GL_BGRA_EXT:
 			case GL_BGRA8_EXT:
 				return sw::FORMAT_A8R8G8B8;
