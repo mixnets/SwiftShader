@@ -60,6 +60,7 @@ namespace sw
 		// Color outputs
 		Vector4f c[RENDERTARGETS];
 		RegisterArray<RENDERTARGETS, true> oC;
+		sw::Format dstFormat;
 
 		// Shader variables
 		Vector4f vPos;
@@ -81,6 +82,8 @@ namespace sw
 		Int4 enableBreak;
 		Int4 enableContinue;
 		Int4 enableLeave;
+
+		void selectOutputFormat(Shader::Opcode opcode, const Src &src, sw::Format &dstFormat) const;
 
 		Vector4f sampleTexture(const Src &sampler, Vector4f &uvwq, Float4 &bias, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerFunction function);
 		Vector4f sampleTexture(int samplerIndex, Vector4f &uvwq, Float4 &bias, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerFunction function);

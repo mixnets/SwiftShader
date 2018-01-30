@@ -251,6 +251,7 @@ namespace sw
 			OPCODE_ENDSWITCH,
 
 			// Integer opcodes
+			OPCODE_IMOV,
 			OPCODE_INEG,
 			OPCODE_IABS,
 			OPCODE_ISGN,
@@ -260,14 +261,21 @@ namespace sw
 			OPCODE_IDIV,
 			OPCODE_IMAD,
 			OPCODE_IMOD,
-			OPCODE_SHL,
+			OPCODE_ISHL,
 			OPCODE_ISHR,
 			OPCODE_IMIN,
 			OPCODE_IMAX,
 
 			// Unsigned integer opcodes
+			OPCODE_UMOV,
+			OPCODE_UNEG,
+			OPCODE_UADD,
+			OPCODE_USUB,
+			OPCODE_UMUL,
 			OPCODE_UDIV,
+			OPCODE_UMAD,
 			OPCODE_UMOD,
+			OPCODE_USHL,
 			OPCODE_USHR,
 			OPCODE_UMIN,
 			OPCODE_UMAX,

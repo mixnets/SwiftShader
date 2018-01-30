@@ -25,6 +25,193 @@ namespace sw
 	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
 	extern bool fullPixelPositionRegister;
 
+	void PixelProgram::selectOutputFormat(Shader::Opcode opcode, const Src &src, sw::Format &dstFormat) const
+	{
+		switch(opcode)
+		{
+		case Shader::OPCODE_F2I:
+		case Shader::OPCODE_B2I:
+		case Shader::OPCODE_IMOV:
+		case Shader::OPCODE_INEG:
+		case Shader::OPCODE_IABS:
+		case Shader::OPCODE_ISGN:
+		case Shader::OPCODE_IADD:
+		case Shader::OPCODE_ISUB:
+		case Shader::OPCODE_IMUL:
+		case Shader::OPCODE_IDIV:
+		case Shader::OPCODE_IMAD:
+		case Shader::OPCODE_IMOD:
+		case Shader::OPCODE_ISHL:
+		case Shader::OPCODE_ISHR:
+		case Shader::OPCODE_IMIN:
+		case Shader::OPCODE_IMAX:
+		case Shader::OPCODE_FLOATBITSTOINT:
+			dstFormat = sw::Format::FORMAT_A32B32G32R32I;
+			break;
+		case Shader::OPCODE_F2U:
+		case Shader::OPCODE_UMOV:
+		case Shader::OPCODE_UNEG:
+		case Shader::OPCODE_UADD:
+		case Shader::OPCODE_USUB:
+		case Shader::OPCODE_UMUL:
+		case Shader::OPCODE_UDIV:
+		case Shader::OPCODE_UMAD:
+		case Shader::OPCODE_UMOD:
+		case Shader::OPCODE_USHL:
+		case Shader::OPCODE_USHR:
+		case Shader::OPCODE_UMIN:
+		case Shader::OPCODE_UMAX:
+		case Shader::OPCODE_FLOATBITSTOUINT:
+		case Shader::OPCODE_PACKSNORM2x16:
+		case Shader::OPCODE_PACKUNORM2x16:
+		case Shader::OPCODE_PACKHALF2x16:
+			dstFormat = sw::Format::FORMAT_A32B32G32R32UI;
+			break;
+		case Shader::OPCODE_NEG:
+		case Shader::OPCODE_F2B:
+		case Shader::OPCODE_B2F:
+		case Shader::OPCODE_I2F:
+		case Shader::OPCODE_U2F:
+		case Shader::OPCODE_I2B:
+		case Shader::OPCODE_ADD:
+		case Shader::OPCODE_SUB:
+		case Shader::OPCODE_MUL:
+		case Shader::OPCODE_MAD:
+		case Shader::OPCODE_DP1:
+		case Shader::OPCODE_DP2:
+		case Shader::OPCODE_DP2ADD:
+		case Shader::OPCODE_DP3:
+		case Shader::OPCODE_DP4:
+		case Shader::OPCODE_DET2:
+		case Shader::OPCODE_DET3:
+		case Shader::OPCODE_DET4:
+		case Shader::OPCODE_CMP0:
+		case Shader::OPCODE_ICMP:
+		case Shader::OPCODE_UCMP:
+		case Shader::OPCODE_FRC:
+		case Shader::OPCODE_TRUNC:
+		case Shader::OPCODE_FLOOR:
+		case Shader::OPCODE_ROUND:
+		case Shader::OPCODE_ROUNDEVEN:
+		case Shader::OPCODE_CEIL:
+		case Shader::OPCODE_EXP2X:
+		case Shader::OPCODE_EXP2:
+		case Shader::OPCODE_LOG2X:
+		case Shader::OPCODE_LOG2:
+		case Shader::OPCODE_EXP:
+		case Shader::OPCODE_LOG:
+		case Shader::OPCODE_RCPX:
+		case Shader::OPCODE_DIV:
+		case Shader::OPCODE_MOD:
+		case Shader::OPCODE_RSQX:
+		case Shader::OPCODE_SQRT:
+		case Shader::OPCODE_RSQ:
+		case Shader::OPCODE_LEN2:
+		case Shader::OPCODE_LEN3:
+		case Shader::OPCODE_LEN4:
+		case Shader::OPCODE_DIST1:
+		case Shader::OPCODE_DIST2:
+		case Shader::OPCODE_DIST3:
+		case Shader::OPCODE_DIST4:
+		case Shader::OPCODE_MIN:
+		case Shader::OPCODE_MAX:
+		case Shader::OPCODE_LRP:
+		case Shader::OPCODE_STEP:
+		case Shader::OPCODE_SMOOTH:
+		case Shader::OPCODE_ISINF:
+		case Shader::OPCODE_ISNAN:
+		case Shader::OPCODE_INTBITSTOFLOAT:
+		case Shader::OPCODE_UINTBITSTOFLOAT:
+		case Shader::OPCODE_UNPACKSNORM2x16:
+		case Shader::OPCODE_UNPACKUNORM2x16:
+		case Shader::OPCODE_UNPACKHALF2x16:
+		case Shader::OPCODE_POWX:
+		case Shader::OPCODE_POW:
+		case Shader::OPCODE_SGN:
+		case Shader::OPCODE_CRS:
+		case Shader::OPCODE_FORWARD1:
+		case Shader::OPCODE_FORWARD2:
+		case Shader::OPCODE_FORWARD3:
+		case Shader::OPCODE_FORWARD4:
+		case Shader::OPCODE_REFLECT1:
+		case Shader::OPCODE_REFLECT2:
+		case Shader::OPCODE_REFLECT3:
+		case Shader::OPCODE_REFLECT4:
+		case Shader::OPCODE_REFRACT1:
+		case Shader::OPCODE_REFRACT2:
+		case Shader::OPCODE_REFRACT3:
+		case Shader::OPCODE_REFRACT4:
+		case Shader::OPCODE_NRM2:
+		case Shader::OPCODE_NRM3:
+		case Shader::OPCODE_NRM4:
+		case Shader::OPCODE_ABS:
+		case Shader::OPCODE_SINCOS:
+		case Shader::OPCODE_COS:
+		case Shader::OPCODE_SIN:
+		case Shader::OPCODE_TAN:
+		case Shader::OPCODE_ACOS:
+		case Shader::OPCODE_ASIN:
+		case Shader::OPCODE_ATAN:
+		case Shader::OPCODE_ATAN2:
+		case Shader::OPCODE_COSH:
+		case Shader::OPCODE_SINH:
+		case Shader::OPCODE_TANH:
+		case Shader::OPCODE_ACOSH:
+		case Shader::OPCODE_ASINH:
+		case Shader::OPCODE_ATANH:
+		case Shader::OPCODE_M4X4:
+		case Shader::OPCODE_M4X3:
+		case Shader::OPCODE_M3X4:
+		case Shader::OPCODE_M3X3:
+		case Shader::OPCODE_M3X2:
+		case Shader::OPCODE_DFDX:
+		case Shader::OPCODE_DFDY:
+		case Shader::OPCODE_FWIDTH:
+		case Shader::OPCODE_ALL:
+		case Shader::OPCODE_ANY:
+		case Shader::OPCODE_NOT:
+		case Shader::OPCODE_OR:
+		case Shader::OPCODE_XOR:
+		case Shader::OPCODE_AND:
+		case Shader::OPCODE_EQ:
+		case Shader::OPCODE_NE:
+			dstFormat = sw::Format::FORMAT_A32B32G32R32F;
+			break;
+		case Shader::OPCODE_TEX:
+		case Shader::OPCODE_TEXLDD:
+		case Shader::OPCODE_TEXLDL:
+		case Shader::OPCODE_TEXLOD:
+		case Shader::OPCODE_TEXSIZE:
+		case Shader::OPCODE_TEXKILL:
+		case Shader::OPCODE_TEXOFFSET:
+		case Shader::OPCODE_TEXLODOFFSET:
+		case Shader::OPCODE_TEXELFETCH:
+		case Shader::OPCODE_TEXELFETCHOFFSET:
+		case Shader::OPCODE_TEXGRAD:
+		case Shader::OPCODE_TEXGRADOFFSET:
+		case Shader::OPCODE_TEXBIAS:
+		case Shader::OPCODE_TEXOFFSETBIAS:
+			{
+				sw::Format textureFormat = state.sampler[src.index].textureFormat;
+				if(sw::Surface::isSignedNonNormalizedInteger(textureFormat))
+				{
+					dstFormat = sw::Format::FORMAT_A32B32G32R32I;
+				}
+				else if(sw::Surface::isUnsignedNonNormalizedInteger(textureFormat))
+				{
+					dstFormat = sw::Format::FORMAT_A32B32G32R32UI;
+				}
+				else
+				{
+					dstFormat = sw::Format::FORMAT_A32B32G32R32F;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
 	void PixelProgram::setBuiltins(Int &x, Int &y, Float4(&z)[4], Float4 &w)
 	{
 		if(shader->getShaderModel() >= 0x0300)
@@ -79,6 +266,7 @@ namespace sw
 				oC[i] = Vector4f(0.0f, 0.0f, 0.0f, 0.0f);
 			}
 		}
+		dstFormat = sw::Format::FORMAT_A32B32G32R32F;
 
 		// Create all call site return blocks up front
 		for(size_t i = 0; i < shader->getLength(); i++)
@@ -156,8 +344,11 @@ namespace sw
 			case Shader::OPCODE_DEF:                                                       break;
 			case Shader::OPCODE_DCL:                                                       break;
 			case Shader::OPCODE_NOP:                                                       break;
+			case Shader::OPCODE_IMOV:
+			case Shader::OPCODE_UMOV:
 			case Shader::OPCODE_MOV:        mov(d, s0);                                    break;
 			case Shader::OPCODE_NEG:        neg(d, s0);                                    break;
+			case Shader::OPCODE_UNEG:
 			case Shader::OPCODE_INEG:       ineg(d, s0);                                   break;
 			case Shader::OPCODE_F2B:        f2b(d, s0);                                    break;
 			case Shader::OPCODE_B2F:        b2f(d, s0);                                    break;
@@ -168,13 +359,17 @@ namespace sw
 			case Shader::OPCODE_I2B:        i2b(d, s0);                                    break;
 			case Shader::OPCODE_B2I:        b2i(d, s0);                                    break;
 			case Shader::OPCODE_ADD:        add(d, s0, s1);                                break;
-			case Shader::OPCODE_IADD:       iadd(d, s0, s1);                               break;
+			case Shader::OPCODE_IADD:
+			case Shader::OPCODE_UADD:       iadd(d, s0, s1);                               break;
 			case Shader::OPCODE_SUB:        sub(d, s0, s1);                                break;
-			case Shader::OPCODE_ISUB:       isub(d, s0, s1);                               break;
+			case Shader::OPCODE_ISUB:
+			case Shader::OPCODE_USUB:       isub(d, s0, s1);                               break;
 			case Shader::OPCODE_MUL:        mul(d, s0, s1);                                break;
-			case Shader::OPCODE_IMUL:       imul(d, s0, s1);                               break;
+			case Shader::OPCODE_IMUL:
+			case Shader::OPCODE_UMUL:       imul(d, s0, s1);                               break;
 			case Shader::OPCODE_MAD:        mad(d, s0, s1, s2);                            break;
-			case Shader::OPCODE_IMAD:       imad(d, s0, s1, s2);                           break;
+			case Shader::OPCODE_IMAD:
+			case Shader::OPCODE_UMAD:       imad(d, s0, s1, s2);                           break;
 			case Shader::OPCODE_DP1:        dp1(d, s0, s1);                                break;
 			case Shader::OPCODE_DP2:        dp2(d, s0, s1);                                break;
 			case Shader::OPCODE_DP2ADD:     dp2add(d, s0, s1, s2);                         break;
@@ -208,7 +403,8 @@ namespace sw
 			case Shader::OPCODE_MOD:        mod(d, s0, s1);                                break;
 			case Shader::OPCODE_IMOD:       imod(d, s0, s1);                               break;
 			case Shader::OPCODE_UMOD:       umod(d, s0, s1);                               break;
-			case Shader::OPCODE_SHL:        shl(d, s0, s1);                                break;
+			case Shader::OPCODE_ISHL:
+			case Shader::OPCODE_USHL:       shl(d, s0, s1);                                break;
 			case Shader::OPCODE_ISHR:       ishr(d, s0, s1);                               break;
 			case Shader::OPCODE_USHR:       ushr(d, s0, s1);                               break;
 			case Shader::OPCODE_RSQX:       rsqx(d, s0, pp);                               break;
@@ -479,6 +675,8 @@ namespace sw
 						if(dst.y) { oC[dst.index].y = d.y; }
 						if(dst.z) { oC[dst.index].z = d.z; }
 						if(dst.w) { oC[dst.index].w = d.w; }
+
+						selectOutputFormat(opcode, src1, dstFormat);
 					}
 					else
 					{
@@ -489,6 +687,8 @@ namespace sw
 						if(dst.y) { oC[a].y = d.y; }
 						if(dst.z) { oC[a].z = d.z; }
 						if(dst.w) { oC[a].w = d.w; }
+
+						selectOutputFormat(opcode, src1, dstFormat);
 					}
 					break;
 				case Shader::PARAMETER_PREDICATE:
@@ -731,6 +931,28 @@ namespace sw
 			if(!state.colorWriteActive(index) && !(index == 0 && state.alphaTestActive()))
 			{
 				continue;
+			}
+
+			bool outIsInteger = sw::Surface::isNonNormalizedInteger(dstFormat);
+			bool texIsInteger = sw::Surface::isNonNormalizedInteger(state.targetFormat[index]);
+			if(outIsInteger != texIsInteger)
+			{
+				if(outIsInteger)
+				{
+					bool isSigned = sw::Surface::isSignedNonNormalizedInteger(dstFormat);
+					oC[index].x = isSigned ? Float4(As<Int4>(oC[index].x)) : Float4(As<UInt4>(oC[index].x));
+					oC[index].y = isSigned ? Float4(As<Int4>(oC[index].y)) : Float4(As<UInt4>(oC[index].y));
+					oC[index].z = isSigned ? Float4(As<Int4>(oC[index].z)) : Float4(As<UInt4>(oC[index].z));
+					oC[index].w = isSigned ? Float4(As<Int4>(oC[index].w)) : Float4(As<UInt4>(oC[index].w));
+				}
+				else
+				{
+					bool isSigned = sw::Surface::isSignedNonNormalizedInteger(state.targetFormat[index]);
+					oC[index].x = isSigned ? As<Float4>(Int4(oC[index].x)) : As<Float4>(UInt4(oC[index].x));
+					oC[index].y = isSigned ? As<Float4>(Int4(oC[index].y)) : As<Float4>(UInt4(oC[index].y));
+					oC[index].z = isSigned ? As<Float4>(Int4(oC[index].z)) : As<Float4>(UInt4(oC[index].z));
+					oC[index].w = isSigned ? As<Float4>(Int4(oC[index].w)) : As<Float4>(UInt4(oC[index].w));
+				}
 			}
 
 			switch(state.targetFormat[index])

@@ -559,12 +559,24 @@ namespace glsl
 
 		switch(op)
 		{
+		case sw::Shader::OPCODE_MOV:
+			switch(baseType)
+			{
+			case EbtInt:
+				return sw::Shader::OPCODE_IMOV;
+			case EbtUInt:
+				return sw::Shader::OPCODE_UMOV;
+			case EbtFloat:
+			default:
+				return op;
+			}
 		case sw::Shader::OPCODE_NEG:
 			switch(baseType)
 			{
 			case EbtInt:
-			case EbtUInt:
 				return sw::Shader::OPCODE_INEG;
+			case EbtUInt:
+				return sw::Shader::OPCODE_UNEG;
 			case EbtFloat:
 			default:
 				return op;
@@ -591,8 +603,9 @@ namespace glsl
 			switch(baseType)
 			{
 			case EbtInt:
-			case EbtUInt:
 				return sw::Shader::OPCODE_IADD;
+			case EbtUInt:
+				return sw::Shader::OPCODE_UADD;
 			case EbtFloat:
 			default:
 				return op;
@@ -601,8 +614,9 @@ namespace glsl
 			switch(baseType)
 			{
 			case EbtInt:
-			case EbtUInt:
 				return sw::Shader::OPCODE_ISUB;
+			case EbtUInt:
+				return sw::Shader::OPCODE_USUB;
 			case EbtFloat:
 			default:
 				return op;
@@ -611,8 +625,9 @@ namespace glsl
 			switch(baseType)
 			{
 			case EbtInt:
-			case EbtUInt:
 				return sw::Shader::OPCODE_IMUL;
+			case EbtUInt:
+				return sw::Shader::OPCODE_UMUL;
 			case EbtFloat:
 			default:
 				return op;
@@ -632,6 +647,10 @@ namespace glsl
 			return baseType == EbtUInt ? sw::Shader::OPCODE_UMOD : op;
 		case sw::Shader::OPCODE_ISHR:
 			return baseType == EbtUInt ? sw::Shader::OPCODE_USHR : op;
+		case sw::Shader::OPCODE_ISHL:
+			return baseType == EbtUInt ? sw::Shader::OPCODE_USHL : op;
+		case sw::Shader::OPCODE_IMAD:
+			return baseType == EbtUInt ? sw::Shader::OPCODE_UMAD : op;
 		case sw::Shader::OPCODE_MIN:
 			switch(baseType)
 			{
@@ -812,7 +831,7 @@ namespace glsl
 				}
 				else UNREACHABLE(0);
 
-				Instruction *mov = emit(sw::Shader::OPCODE_MOV, result, left);
+				Instruction *mov = emit(getOpcode(sw::Shader::OPCODE_MOV, result), result, left);
 				mov->src[0].swizzle = swizzle;
 			}
 			break;
@@ -826,8 +845,8 @@ namespace glsl
 		case EOpDiv:       if(visit == PostVisit) emitBinary(getOpcode(sw::Shader::OPCODE_DIV, result), result, left, right);       break;
 		case EOpIModAssign:          if(visit == PostVisit) emitAssign(getOpcode(sw::Shader::OPCODE_IMOD, result), result, left, left, right); break;
 		case EOpIMod:                if(visit == PostVisit) emitBinary(getOpcode(sw::Shader::OPCODE_IMOD, result), result, left, right);       break;
-		case EOpBitShiftLeftAssign:  if(visit == PostVisit) emitAssign(sw::Shader::OPCODE_SHL, result, left, left, right); break;
-		case EOpBitShiftLeft:        if(visit == PostVisit) emitBinary(sw::Shader::OPCODE_SHL, result, left, right);       break;
+		case EOpBitShiftLeftAssign:  if(visit == PostVisit) emitAssign(getOpcode(sw::Shader::OPCODE_ISHL, result), result, left, left, right); break;
+		case EOpBitShiftLeft:        if(visit == PostVisit) emitBinary(getOpcode(sw::Shader::OPCODE_ISHL, result), result, left, right);       break;
 		case EOpBitShiftRightAssign: if(visit == PostVisit) emitAssign(getOpcode(sw::Shader::OPCODE_ISHR, result), result, left, left, right); break;
 		case EOpBitShiftRight:       if(visit == PostVisit) emitBinary(getOpcode(sw::Shader::OPCODE_ISHR, result), result, left, right);       break;
 		case EOpBitwiseAndAssign:    if(visit == PostVisit) emitAssign(sw::Shader::OPCODE_AND, result, left, left, right); break;
@@ -946,13 +965,13 @@ namespace glsl
 			{
 				if(visit == InVisit)
 				{
-					emit(sw::Shader::OPCODE_MOV, result, left);
+					emit(getOpcode(sw::Shader::OPCODE_MOV, result), result, left);
 					Instruction *ifnot = emit(sw::Shader::OPCODE_IF, 0, result);
 					ifnot->src[0].modifier = sw::Shader::MODIFIER_NOT;
 				}
 				else if(visit == PostVisit)
 				{
-					emit(sw::Shader::OPCODE_MOV, result, right);
+					emit(getOpcode(sw::Shader::OPCODE_MOV, result), result, right);
 					emit(sw::Shader::OPCODE_ENDIF);
 				}
 			}
@@ -970,12 +989,12 @@ namespace glsl
 			{
 				if(visit == InVisit)
 				{
-					emit(sw::Shader::OPCODE_MOV, result, left);
+					emit(getOpcode(sw::Shader::OPCODE_MOV, result), result, left);
 					emit(sw::Shader::OPCODE_IF, 0, result);
 				}
 				else if(visit == PostVisit)
 				{
-					emit(sw::Shader::OPCODE_MOV, result, right);
+					emit(getOpcode(sw::Shader::OPCODE_MOV, result), result, right);
 					emit(sw::Shader::OPCODE_ENDIF);
 				}
 			}
@@ -2112,7 +2131,7 @@ namespace glsl
 		      ((src->getBasicType() == EbtInt) && (dst->getBasicType() == EbtUInt)) ||
 		      ((src->getBasicType() == EbtUInt) && (dst->getBasicType() == EbtInt)));
 
-		return emit(sw::Shader::OPCODE_MOV, dst, dstIndex, src, srcIndex);
+		return emit(getOpcode(sw::Shader::OPCODE_MOV, dst), dst, dstIndex, src, srcIndex);
 	}
 
 	void OutputASM::emitBinary(sw::Shader::Opcode op, TIntermTyped *dst, TIntermNode *src0, TIntermNode *src1, TIntermNode *src2)
@@ -2449,7 +2468,7 @@ namespace glsl
 	{
 		for(int index = 0; index < dst->totalRegisterCount(); index++)
 		{
-			Instruction *mov = emit(sw::Shader::OPCODE_MOV, dst, index, src, offset + index);
+			Instruction *mov = emit(getOpcode(sw::Shader::OPCODE_MOV, dst), dst, index, src, offset + index);
 		}
 	}
 
@@ -2492,7 +2511,7 @@ namespace glsl
 		}
 		else
 		{
-			Instruction *mov1 = new Instruction(sw::Shader::OPCODE_MOV);
+			Instruction *mov1 = new Instruction(getOpcode(sw::Shader::OPCODE_MOV, dst));
 
 			int swizzle = lvalue(mov1->dst, dst);
 
@@ -2503,7 +2522,7 @@ namespace glsl
 
 			for(int offset = 1; offset < dst->totalRegisterCount(); offset++)
 			{
-				Instruction *mov = new Instruction(sw::Shader::OPCODE_MOV);
+				Instruction *mov = new Instruction(getOpcode(sw::Shader::OPCODE_MOV, dst));
 
 				mov->dst = mov1->dst;
 				mov->dst.index += offset;
@@ -2541,7 +2560,7 @@ namespace glsl
 		}
 		else
 		{
-			Instruction *mov1 = new Instruction(sw::Shader::OPCODE_MOV);
+			Instruction *mov1 = new Instruction(getOpcode(sw::Shader::OPCODE_MOV, node));
 
 			destination(mov1->dst, node, 0);
 
@@ -2558,7 +2577,7 @@ namespace glsl
 
 			for(int i = 1; i < node->totalRegisterCount(); i++)
 			{
-				Instruction *mov = emit(sw::Shader::OPCODE_MOV, node, i, root, offset + i);
+				Instruction *mov = emit(getOpcode(sw::Shader::OPCODE_MOV, node), node, i, root, offset + i);
 				mov->src[0].rel = mov1->src[0].rel;
 			}
 		}

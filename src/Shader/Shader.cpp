@@ -763,14 +763,20 @@ namespace sw
 		case OPCODE_NULL:            return "null";
 		case OPCODE_NOP:             return "nop";
 		case OPCODE_MOV:             return "mov";
+		case OPCODE_IMOV:            return "imov";
+		case OPCODE_UMOV:            return "umov";
 		case OPCODE_ADD:             return "add";
 		case OPCODE_IADD:            return "iadd";
+		case OPCODE_UADD:            return "uadd";
 		case OPCODE_SUB:             return "sub";
 		case OPCODE_ISUB:            return "isub";
+		case OPCODE_USUB:            return "usub";
 		case OPCODE_MAD:             return "mad";
 		case OPCODE_IMAD:            return "imad";
+		case OPCODE_UMAD:            return "umad";
 		case OPCODE_MUL:             return "mul";
 		case OPCODE_IMUL:            return "imul";
+		case OPCODE_UMUL:            return "umul";
 		case OPCODE_RCPX:            return "rcpx";
 		case OPCODE_DIV:             return "div";
 		case OPCODE_IDIV:            return "idiv";
@@ -778,7 +784,8 @@ namespace sw
 		case OPCODE_MOD:             return "mod";
 		case OPCODE_IMOD:            return "imod";
 		case OPCODE_UMOD:            return "umod";
-		case OPCODE_SHL:             return "shl";
+		case OPCODE_ISHL:            return "ishl";
+		case OPCODE_USHL:            return "ushl";
 		case OPCODE_ISHR:            return "ishr";
 		case OPCODE_USHR:            return "ushr";
 		case OPCODE_RSQX:            return "rsqx";
@@ -963,6 +970,7 @@ namespace sw
 		case OPCODE_ANY:             return "any";
 		case OPCODE_NEG:             return "neg";
 		case OPCODE_INEG:            return "ineg";
+		case OPCODE_UNEG:            return "uneg";
 		case OPCODE_ISNAN:           return "isnan";
 		case OPCODE_ISINF:           return "isinf";
 		case OPCODE_NOT:             return "not";
