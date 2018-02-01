@@ -55,18 +55,15 @@ static bool validImageSize(GLint level, GLsizei width, GLsizei height)
 
 static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFormat)
 {
-	GLenum validationError = ValidateCompressedFormat(textureFormat, egl::getClientVersion(), false);
-	if(validationError != GL_NONE)
+	if(IsCompressed(textureFormat, egl::getClientVersion()))
 	{
-		return error(validationError, false);
+		return error(GL_INVALID_OPERATION, false);
 	}
 
 	switch(textureFormat)
 	{
 	case GL_ALPHA:
-		if(colorbufferFormat != GL_ALPHA &&
-		   colorbufferFormat != GL_RGBA &&
-		   colorbufferFormat != GL_RGBA4 &&
+		if(colorbufferFormat != GL_RGBA4 &&
 		   colorbufferFormat != GL_RGB5_A1 &&
 		   colorbufferFormat != GL_RGBA8)
 		{
@@ -75,10 +72,8 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 		break;
 	case GL_LUMINANCE:
 	case GL_RGB:
-		if(colorbufferFormat != GL_RGB &&
-		   colorbufferFormat != GL_RGB565 &&
+		if(colorbufferFormat != GL_RGB565 &&
 		   colorbufferFormat != GL_RGB8 &&
-		   colorbufferFormat != GL_RGBA &&
 		   colorbufferFormat != GL_RGBA4 &&
 		   colorbufferFormat != GL_RGB5_A1 &&
 		   colorbufferFormat != GL_RGBA8)
@@ -88,8 +83,7 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 		break;
 	case GL_LUMINANCE_ALPHA:
 	case GL_RGBA:
-		if(colorbufferFormat != GL_RGBA &&
-		   colorbufferFormat != GL_RGBA4 &&
+		if(colorbufferFormat != GL_RGBA4 &&
 		   colorbufferFormat != GL_RGB5_A1 &&
 		   colorbufferFormat != GL_RGBA8)
 		{
@@ -102,6 +96,7 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 	default:
 		return error(GL_INVALID_ENUM, false);
 	}
+
 	return true;
 }
 
@@ -834,22 +829,9 @@ GL_APICALL void GL_APIENTRY glCompressedTexImage3D(GLenum target, GLint level, G
 		return error(GL_INVALID_VALUE);
 	}
 
-	switch(internalformat)
+	if(!IsCompressed(internalformat, egl::getClientVersion()))
 	{
-	case GL_DEPTH_COMPONENT:
-	case GL_DEPTH_COMPONENT16:
-	case GL_DEPTH_COMPONENT32_OES:
-	case GL_DEPTH_STENCIL:
-	case GL_DEPTH24_STENCIL8:
-		return error(GL_INVALID_OPERATION);
-	default:
-		{
-			GLenum validationError = ValidateCompressedFormat(internalformat, egl::getClientVersion(), true);
-			if(validationError != GL_NONE)
-			{
-				return error(validationError);
-			}
-		}
+		return error(GL_INVALID_ENUM);
 	}
 
 	if(imageSize != egl::ComputeCompressedSize(width, height, internalformat) * depth)
@@ -904,10 +886,9 @@ GL_APICALL void GL_APIENTRY glCompressedTexSubImage3D(GLenum target, GLint level
 		return error(GL_INVALID_VALUE);
 	}
 
-	GLenum validationError = ValidateCompressedFormat(format, egl::getClientVersion(), true);
-	if(validationError != GL_NONE)
+	if(!IsCompressed(format, egl::getClientVersion()))
 	{
-		return error(validationError);
+		return error(GL_INVALID_ENUM);
 	}
 
 	if(imageSize != egl::ComputeCompressedSize(width, height, format) * depth)
