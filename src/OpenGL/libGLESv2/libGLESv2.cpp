@@ -98,9 +98,11 @@ static bool validateColorBufferFormat(GLenum textureFormat, GLenum colorbufferFo
 		break;
 	case GL_LUMINANCE_ALPHA:
 	case GL_RGBA:
+	case GL_RGBA8:
 		if(colorbufferFormat != GL_RGBA &&
 		   colorbufferFormat != GL_RGBA4 &&
 		   colorbufferFormat != GL_RGB5_A1 &&
+		   colorbufferFormat != GL_RGB565 &&
 		   colorbufferFormat != GL_RGBA8_OES &&
 		   colorbufferFormat != GL_BGRA8_EXT &&
 		   colorbufferFormat != GL_RGBA16F_EXT &&
@@ -839,7 +841,6 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 		switch(target)
 		{
 		case GL_TEXTURE_2D:
-		case GL_TEXTURE_RECTANGLE_ARB:
 			if(width > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level) ||
 			   height > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
 			{
@@ -863,6 +864,7 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 				return error(GL_INVALID_VALUE);
 			}
 			break;
+		case GL_TEXTURE_RECTANGLE_ARB: // Rectangle textures cannot be compressed
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -1024,8 +1026,13 @@ void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, 
 	{
 		switch(target)
 		{
-		case GL_TEXTURE_2D:
 		case GL_TEXTURE_RECTANGLE_ARB:
+			if(level != 0)
+			{
+				return error(GL_INVALID_VALUE);
+			}
+			// Fall through
+		case GL_TEXTURE_2D:
 			if(width > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level) ||
 			   height > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
 			{
@@ -2123,7 +2130,7 @@ void FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GL
 				return error(GL_INVALID_ENUM);
 			}
 
-			if((level != 0) && (clientVersion < 3))
+			if((level != 0) && ((clientVersion < 3) || (textarget == GL_TEXTURE_RECTANGLE_ARB)))
 			{
 				return error(GL_INVALID_VALUE);
 			}
@@ -5061,8 +5068,13 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 
 		switch(target)
 		{
-		case GL_TEXTURE_2D:
 		case GL_TEXTURE_RECTANGLE_ARB:
+			if(level != 0)
+			{
+				return error(GL_INVALID_VALUE); // Defining level other than 0 is not allowed
+			}
+			// Fall through
+		case GL_TEXTURE_2D:
 			if(width > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level) ||
 			   height > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE >> level))
 			{
@@ -5357,6 +5369,10 @@ void TexParameteri(GLenum target, GLenum pname, GLint param)
 			}
 			break;
 		case GL_TEXTURE_BASE_LEVEL:
+			if((texture->getTarget() == GL_TEXTURE_RECTANGLE_ARB) && (param != 0))
+			{
+				return error(GL_INVALID_OPERATION); // Base level has to be 0
+			}
 			if(clientVersion < 3 || !texture->setBaseLevel(param))
 			{
 				return error(GL_INVALID_VALUE);
