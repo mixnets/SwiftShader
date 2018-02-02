@@ -650,9 +650,11 @@ namespace es2
 			break;
 		case GL_LUMINANCE_ALPHA:
 		case GL_RGBA:
+		case GL_RGBA8:
 			if(colorbufferFormat != GL_RGBA4 &&
 			   colorbufferFormat != GL_RGB5_A1 &&
 			   colorbufferFormat != GL_RGBA8 &&
+			   colorbufferFormat != GL_RGB565 &&
 			   colorbufferFormat != GL_BGRA8_EXT &&
 			   colorbufferFormat != GL_RGBA16F_EXT &&
 			   colorbufferFormat != GL_RGBA32F_EXT)
