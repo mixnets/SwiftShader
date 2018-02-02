@@ -3844,7 +3844,7 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 	TRACE("(GLenum target = 0x%X, GLsizei levels = %d, GLenum internalformat = 0x%X, GLsizei width = %d, GLsizei height = %d)",
 	      target, levels, internalformat, width, height);
 
-	if(width < 1 || height < 1 || levels < 1)
+	if(width < 1 || height < 1 || levels < 1 || ((target == GL_TEXTURE_RECTANGLE_ARB) && (levels != 1)))
 	{
 		return error(GL_INVALID_VALUE);
 	}
@@ -3870,6 +3870,12 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 		case GL_TEXTURE_2D:
 		case GL_TEXTURE_RECTANGLE_ARB:
 			{
+				if((width > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE)) ||
+				   (height > (es2::IMPLEMENTATION_MAX_TEXTURE_SIZE)))
+				{
+					return error(GL_INVALID_VALUE);
+				}
+
 				es2::Texture2D *texture = context->getTexture2D(target);
 				if(!texture || texture->name == 0 || texture->getImmutableFormat() == GL_TRUE)
 				{
@@ -3887,6 +3893,12 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 			break;
 		case GL_TEXTURE_CUBE_MAP:
 			{
+				if((width > (es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE)) ||
+				   (height > (es2::IMPLEMENTATION_MAX_CUBE_MAP_TEXTURE_SIZE)))
+				{
+					return error(GL_INVALID_VALUE);
+				}
+
 				es2::TextureCubeMap *texture = context->getTextureCubeMap();
 				if(!texture || texture->name == 0 || texture->getImmutableFormat())
 				{
