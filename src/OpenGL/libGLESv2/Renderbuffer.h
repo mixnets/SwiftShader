@@ -35,6 +35,7 @@ const GLint GL_BGR5_A1_ANGLE = 0x6ABD;
 class Texture2D;
 class Texture3D;
 class TextureCubeMap;
+class Texture2DRect;
 class Renderbuffer;
 class Colorbuffer;
 class DepthStencilbuffer;
@@ -95,6 +96,29 @@ public:
 private:
 	gl::BindingPointer<Texture2D> mTexture2D;
 	GLint mLevel;
+};
+
+class RenderbufferTexture2DRect : public RenderbufferInterface
+{
+public:
+	RenderbufferTexture2DRect(Texture2DRect *texture);
+
+	~RenderbufferTexture2DRect() override;
+
+	void addProxyRef(const Renderbuffer *proxy) override;
+	void releaseProxy(const Renderbuffer *proxy) override;
+
+	egl::Image *getRenderTarget() override;
+	egl::Image *createSharedImage() override;
+	bool isShared() const override;
+
+	GLsizei getWidth() const override;
+	GLsizei getHeight() const override;
+	GLint getFormat() const override;
+	GLsizei getSamples() const override;
+
+private:
+	gl::BindingPointer<Texture2DRect> mTexture2DRect;
 };
 
 class RenderbufferTexture3D : public RenderbufferInterface
