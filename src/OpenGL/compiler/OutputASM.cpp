@@ -3180,7 +3180,17 @@ namespace glsl
 	void OutputASM::declareFragmentOutput(TIntermTyped *fragmentOutput)
 	{
 		int requestedLocation = fragmentOutput->getType().getLayoutQualifier().location;
-		if((requestedLocation >= 0) && (requestedLocation < sw::RENDERTARGETS))
+		int currentIndex = lookup(fragmentOutputs, fragmentOutput);
+		if(requestedLocation == currentIndex)
+		{
+			return;
+		}
+
+		if(currentIndex != -1)
+		{
+			mContext.error(fragmentOutput->getLine(), "Multiple locations for fragment output", "fragment shader");
+		}
+		else if((requestedLocation >= 0) && (requestedLocation < sw::RENDERTARGETS))
 		{
 			if(fragmentOutputs.size() <= (size_t)requestedLocation)
 			{
