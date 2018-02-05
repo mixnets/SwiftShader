@@ -110,13 +110,13 @@ void *allocateExecutable(size_t bytes)
 	return allocate((bytes + pageSize - 1) & ~(pageSize - 1), pageSize);
 }
 
-void markExecutable(void *memory, size_t bytes)
+bool markExecutable(void *memory, size_t bytes)
 {
 	#if defined(_WIN32)
 		unsigned long oldProtection;
-		VirtualProtect(memory, bytes, PAGE_EXECUTE_READ, &oldProtection);
+		return VirtualProtect(memory, bytes, PAGE_EXECUTE_READ, &oldProtection) != 0;
 	#else
-		mprotect(memory, bytes, PROT_READ | PROT_EXEC);
+		return mprotect(memory, bytes, PROT_READ | PROT_EXEC) != -1;
 	#endif
 }
 
@@ -130,6 +130,15 @@ void deallocateExecutable(void *memory, size_t bytes)
 	#endif
 
 	deallocate(memory);
+}
+
+bool canAllocateExecutable()
+{
+	void *memory = allocateExecutable(memoryPageSize());
+	bool success = markExecutable(memory, memoryPageSize());
+	deallocateExecutable(memory, memoryPageSize());
+
+	return success;
 }
 
 void clear(uint16_t *memory, uint16_t element, size_t count)

@@ -24,12 +24,14 @@
 #include "common/Image.hpp"
 #include "common/debug.h"
 #include "Common/MutexLock.hpp"
+#include "Common/Memory.hpp"
 
 #ifdef __ANDROID__
 #include <system/window.h>
 #include <sys/ioctl.h>
 #include <linux/fb.h>
 #include <fcntl.h>
+#include <cutils/log.h>
 #elif defined(__linux__)
 #include "Main/libX11.hpp"
 #elif defined(__APPLE__)
@@ -139,6 +141,17 @@ bool Display::initialize()
 			return false;
 		}
 	#endif
+
+	// Reactor requires JIT-compilation memory execution priviliges.
+//	if(!sw::canAllocateExecutable())
+if(false)	
+{
+		#if defined(__ANDROID__)
+			ALOGE("Failed to allocate executable memory (%s)", strerror(errno));
+		#endif
+
+		return false;
+	}
 
 	mMinSwapInterval = 0;
 	mMaxSwapInterval = 4;
