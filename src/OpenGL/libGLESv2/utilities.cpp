@@ -146,32 +146,21 @@ namespace es2
 
 	GLint GetSizedInternalFormat(GLint internalformat, GLenum type)
 	{
-		switch(internalformat)
+		if(IsSizedInternalFormat(internalformat))
 		{
-		case GL_ALPHA:
-		case GL_LUMINANCE:
-		case GL_LUMINANCE_ALPHA:
-		case GL_RED:
-		case GL_RG:
-		case GL_RGB:
-		case GL_RGBA:
-		case GL_RED_INTEGER:
-		case GL_RG_INTEGER:
-		case GL_RGB_INTEGER:
-		case GL_RGBA_INTEGER:
-		case GL_BGRA_EXT:
-		case GL_DEPTH_COMPONENT:
-		case GL_DEPTH_STENCIL:
-		case GL_SRGB_EXT:
-		case GL_SRGB_ALPHA_EXT:
-			{
-				static const FormatMap formatMap = BuildFormatMap();
-				FormatMap::const_iterator iter = formatMap.find(FormatTypePair(internalformat, type));
-				return (iter != formatMap.end()) ? iter->second : GL_NONE;
-			}
-		default:
 			return internalformat;
 		}
+
+		static const FormatMap formatMap = BuildFormatMap();
+		FormatMap::const_iterator iter = formatMap.find(FormatTypePair(internalformat, type));
+
+		if(iter == formatMap.end())
+		{
+		//	err
+			return GL_NONE;
+		}
+
+		return iter->second;
 	}
 
 	unsigned int UniformComponentCount(GLenum type)
@@ -612,6 +601,32 @@ namespace es2
 
 	bool ValidateCopyFormats(GLenum textureFormat, GLenum colorbufferFormat)
 	{
+		ASSERT(IsSizedInternalFormat(textureFormat));
+		ASSERT(IsSizedInternalFormat(colorbufferFormat));
+
+		// [OpenGL ES 3.05] section 3.8.5:
+		// The error INVALID_OPERATION is generated if floating-point RGBA data is required; if signed integer RGBA data is required
+		// and the format of the current color buffer is not signed integer; if unsigned integer RGBA data is required and the format of the current color buffer is not unsigned
+		// integer; or if fixed-point RGBA data is required and the format of the current color buffer is not fixed-point. The error INVALID_OPERATION is also generated if the
+		// value of FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING for the framebuffer attachment corresponding to the read buffer is LINEAR (see section 6.1.13) and internalformat
+		// is one of the sRGB formats described in section 3.8.16, or if the value of FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING is SRGB and internalformat
+		// is not one of the sRGB formats.
+
+		if(GetColorComponentType(colorbufferFormat) == GL_FLOAT)
+		{
+			return error(GL_INVALID_OPERATION, false);
+		}
+
+		if(GetColorComponentType(colorbufferFormat) != GetColorComponentType(textureFormat))
+		{
+			return error(GL_INVALID_OPERATION, false);
+		}
+
+		if(GetColorEncoding(colorbufferFormat) != GetColorEncoding(textureFormat))
+		{
+			return error(GL_INVALID_OPERATION, false);
+		}
+
 		GLenum baseTexureFormat = GetBaseInternalFormat(textureFormat);
 		GLenum baseColorbufferFormat = GetBaseInternalFormat(colorbufferFormat);
 
@@ -1270,20 +1285,36 @@ namespace es2
 		return 1;
 	}
 
+	bool IsSizedInternalFormat(GLint internalformat)
+	{
+		switch(internalformat)
+		{
+		case GL_ALPHA:
+		case GL_LUMINANCE:
+		case GL_LUMINANCE_ALPHA:
+		case GL_RED:
+		case GL_RG:
+		case GL_RGB:
+		case GL_RGBA:
+		case GL_RED_INTEGER:
+		case GL_RG_INTEGER:
+		case GL_RGB_INTEGER:
+		case GL_RGBA_INTEGER:
+		case GL_BGRA_EXT:
+		case GL_DEPTH_COMPONENT:
+		case GL_DEPTH_STENCIL:
+		case GL_SRGB_EXT:
+		case GL_SRGB_ALPHA_EXT:
+			return false;
+		default:
+			return true;
+		}
+	}
+
 	GLenum GetBaseInternalFormat(GLint internalformat)
 	{
 		switch(internalformat)
 		{
-		// Unsized internal formats which are valid as the <internalformat> parameter of CopyTexImage.
-		case GL_RGB:
-		case GL_RGBA:
-		case GL_ALPHA:
-		case GL_LUMINANCE:
-		case GL_LUMINANCE_ALPHA:
-		case GL_RED_EXT:           // GL_EXT_texture_rg
-		case GL_RG_EXT:            // GL_EXT_texture_rg
-			return internalformat;
-
 		// [OpenGL ES 3.0 Table 3.13]
 		case GL_R8:       return GL_RED;
 		case GL_R8_SNORM: return GL_RED;

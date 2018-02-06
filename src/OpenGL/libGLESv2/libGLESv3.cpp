@@ -273,7 +273,7 @@ static FormatMapStorage BuildFormatMapStorage2D()
 	return map;
 }
 
-static bool GetStorageType(GLenum internalformat, GLenum& type)
+ static bool GetStorageType(GLenum internalformat, GLenum& type)
 {
 	static const FormatMapStorage formatMap = BuildFormatMapStorage2D();
 	FormatMapStorage::const_iterator iter = formatMap.find(internalformat);
@@ -749,7 +749,7 @@ GL_APICALL void GL_APIENTRY glCopyTexSubImage3D(GLenum target, GLint level, GLin
 			return;
 		}
 
-		texture->copySubImage(target, level, xoffset, yoffset, zoffset, x, y, width, height, framebuffer);
+		texture->copySubImage(target, level, xoffset, yoffset, zoffset, x, y, width, height, source);
 	}
 }
 

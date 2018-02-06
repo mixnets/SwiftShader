@@ -699,9 +699,9 @@ void Texture2D::subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GL
 	Texture::subImageCompressed(xoffset, yoffset, 0, width, height, 1, format, imageSize, pixels, image[level]);
 }
 
-void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source)
+void Texture2D::copyImage(GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, Renderbuffer *source)
 {
-	egl::Image *renderTarget = source->getRenderTarget(0);
+	 egl::Image *renderTarget = source->getRenderTarget();
 
 	if(!renderTarget)
 	{
@@ -714,8 +714,7 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 		image[level]->release();
 	}
 
-	GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[level] = egl::Image::create(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[level] = egl::Image::create(this, width, height, internalformat, GL_UNSIGNED_BYTE);
 
 	if(!image[level])
 	{
@@ -724,16 +723,8 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 
 	if(width != 0 && height != 0)
 	{
-		Renderbuffer* renderbuffer = source->getReadColorbuffer();
-
-		if(!renderbuffer)
-		{
-			ERR("Failed to retrieve the source colorbuffer.");
-			return;
-		}
-
 		sw::SliceRect sourceRect(x, y, x + width, y + height, 0);
-		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
+		sourceRect.clip(0, 0, renderTarget->getWidth(), renderTarget->getHeight());
 
 		copy(renderTarget, sourceRect, 0, 0, 0, image[level]);
 	}
@@ -741,7 +732,7 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 	renderTarget->release();
 }
 
-void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source)
+void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Renderbuffer *source)
 {
 	if(!image[level])
 	{
@@ -755,7 +746,7 @@ void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 
 	if(width > 0 && height > 0)
 	{
-		egl::Image *renderTarget = source->getRenderTarget(0);
+		egl::Image *renderTarget = source->getRenderTarget();
 
 		if(!renderTarget)
 		{
@@ -763,16 +754,8 @@ void Texture2D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 			return error(GL_OUT_OF_MEMORY);
 		}
 
-		Renderbuffer* renderbuffer = source->getReadColorbuffer();
-
-		if(!renderbuffer)
-		{
-			ERR("Failed to retrieve the source colorbuffer.");
-			return;
-		}
-
 		sw::SliceRect sourceRect(x, y, x + width, y + height, 0);
-		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
+		sourceRect.clip(0, 0, renderTarget->getWidth(), renderTarget->getHeight());
 
 		copy(renderTarget, sourceRect, xoffset, yoffset, zoffset, image[level]);
 
@@ -1345,9 +1328,9 @@ void TextureCubeMap::setImage(egl::Context *context, GLenum target, GLint level,
 	Texture::setImage(context, format, type, unpackInfo, pixels, image[face][level]);
 }
 
-void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source)
+void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, Renderbuffer *source)
 {
-	egl::Image *renderTarget = source->getRenderTarget(0);
+	egl::Image *renderTarget = source->getRenderTarget();
 
 	if(!renderTarget)
 	{
@@ -1362,9 +1345,8 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 		image[face][level]->release();
 	}
 
-	GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
 	int border = (egl::getClientVersion() >= 3) ? 1 : 0;
-	image[face][level] = egl::Image::create(this, width, height, 1, border, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[face][level] = egl::Image::create(this, width, height, 1, border, internalformat, GL_UNSIGNED_BYTE);
 
 	if(!image[face][level])
 	{
@@ -1373,16 +1355,8 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 
 	if(width != 0 && height != 0)
 	{
-		Renderbuffer* renderbuffer = source->getReadColorbuffer();
-
-		if(!renderbuffer)
-		{
-			ERR("Failed to retrieve the source colorbuffer.");
-			return;
-		}
-
 		sw::SliceRect sourceRect(x, y, x + width, y + height, 0);
-		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
+		sourceRect.clip(0, 0, renderTarget->getWidth(), renderTarget->getHeight());
 
 		copy(renderTarget, sourceRect, 0, 0, 0, image[face][level]);
 	}
@@ -1400,7 +1374,7 @@ egl::Image *TextureCubeMap::getImage(GLenum face, unsigned int level)
 	return image[CubeFaceIndex(face)][level];
 }
 
-void TextureCubeMap::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source)
+void TextureCubeMap::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Renderbuffer *source)
 {
 	int face = CubeFaceIndex(target);
 
@@ -1418,7 +1392,7 @@ void TextureCubeMap::copySubImage(GLenum target, GLint level, GLint xoffset, GLi
 
 	if(width > 0 && height > 0)
 	{
-		egl::Image *renderTarget = source->getRenderTarget(0);
+		egl::Image *renderTarget = source->getRenderTarget();
 
 		if(!renderTarget)
 		{
@@ -1426,16 +1400,8 @@ void TextureCubeMap::copySubImage(GLenum target, GLint level, GLint xoffset, GLi
 			return error(GL_OUT_OF_MEMORY);
 		}
 
-		Renderbuffer* renderbuffer = source->getReadColorbuffer();
-
-		if(!renderbuffer)
-		{
-			ERR("Failed to retrieve the source colorbuffer.");
-			return;
-		}
-
 		sw::SliceRect sourceRect(x, y, x + width, y + height, 0);
-		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
+		sourceRect.clip(0, 0, renderTarget->getWidth(), renderTarget->getHeight());
 
 		copy(renderTarget, sourceRect, xoffset, yoffset, zoffset, image[face][level]);
 
@@ -1700,9 +1666,9 @@ void Texture3D::subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GL
 	Texture::subImageCompressed(xoffset, yoffset, zoffset, width, height, depth, format, imageSize, pixels, image[level]);
 }
 
-void Texture3D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLint z, GLsizei width, GLsizei height, GLsizei depth, Framebuffer *source)
+void Texture3D::copyImage(GLint level, GLenum internalformat, GLint x, GLint y, GLint z, GLsizei width, GLsizei height, GLsizei depth, Renderbuffer *source)
 {
-	egl::Image *renderTarget = source->getRenderTarget(0);
+	egl::Image *renderTarget = source->getRenderTarget();
 
 	if(!renderTarget)
 	{
@@ -1715,8 +1681,7 @@ void Texture3D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLint z,
 		image[level]->release();
 	}
 
-	GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[level] = egl::Image::create(this, width, height, depth, 0, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[level] = egl::Image::create(this, width, height, depth, 0, internalformat, GL_UNSIGNED_BYTE);
 
 	if(!image[level])
 	{
@@ -1725,17 +1690,10 @@ void Texture3D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLint z,
 
 	if(width != 0 && height != 0 && depth != 0)
 	{
-		Renderbuffer* renderbuffer = source->getReadColorbuffer();
-
-		if(!renderbuffer)
-		{
-			ERR("Failed to retrieve the source colorbuffer.");
-			return;
-		}
-
 		sw::SliceRect sourceRect(x, y, x + width, y + height, z);
-		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
-		for(GLint sliceZ = 0; sliceZ < depth; ++sliceZ, ++sourceRect.slice)
+		sourceRect.clip(0, 0, renderTarget->getWidth(), renderTarget->getHeight());
+
+		for(GLint sliceZ = 0; sliceZ < depth; sliceZ++, sourceRect.slice++)
 		{
 			copy(renderTarget, sourceRect, 0, 0, sliceZ, image[level]);
 		}
@@ -1744,7 +1702,7 @@ void Texture3D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLint z,
 	renderTarget->release();
 }
 
-void Texture3D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source)
+void Texture3D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Renderbuffer *source)
 {
 	if(!image[level])
 	{
@@ -1758,7 +1716,7 @@ void Texture3D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 
 	if(width > 0 && height > 0)
 	{
-		egl::Image *renderTarget = source->getRenderTarget(0);
+		egl::Image *renderTarget = source->getRenderTarget();
 
 		if(!renderTarget)
 		{
@@ -1766,16 +1724,8 @@ void Texture3D::copySubImage(GLenum target, GLint level, GLint xoffset, GLint yo
 			return error(GL_OUT_OF_MEMORY);
 		}
 
-		Renderbuffer* renderbuffer = source->getReadColorbuffer();
-
-		if(!renderbuffer)
-		{
-			ERR("Failed to retrieve the source colorbuffer.");
-			return;
-		}
-
 		sw::SliceRect sourceRect = {x, y, x + width, y + height, 0};
-		sourceRect.clip(0, 0, renderbuffer->getWidth(), renderbuffer->getHeight());
+		sourceRect.clip(0, 0, renderTarget->getWidth(), renderTarget->getHeight());
 
 		copy(renderTarget, sourceRect, xoffset, yoffset, zoffset, image[level]);
 
