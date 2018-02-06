@@ -3181,7 +3181,11 @@ namespace glsl
 	{
 		int requestedLocation = fragmentOutput->getType().getLayoutQualifier().location;
 		int registerCount = fragmentOutput->totalRegisterCount();
-		if(requestedLocation < 0)
+		if(requestedLocation == -1)
+		{
+			return; // No requested location
+		}
+		else if(requestedLocation < 0)
 		{
 			mContext.error(fragmentOutput->getLine(), "Invalid fragment output location", "fragment shader");
 		}
