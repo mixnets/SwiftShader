@@ -141,32 +141,21 @@ namespace es2
 
 	GLint GetSizedInternalFormat(GLint internalformat, GLenum type)
 	{
-		switch(internalformat)
+		if(IsSizedInternalFormat(internalformat))
 		{
-		case GL_ALPHA:
-		case GL_LUMINANCE:
-		case GL_LUMINANCE_ALPHA:
-		case GL_RED:
-		case GL_RG:
-		case GL_RGB:
-		case GL_RGBA:
-		case GL_RED_INTEGER:
-		case GL_RG_INTEGER:
-		case GL_RGB_INTEGER:
-		case GL_RGBA_INTEGER:
-		case GL_BGRA_EXT:
-		case GL_DEPTH_COMPONENT:
-		case GL_DEPTH_STENCIL:
-		case GL_SRGB_EXT:
-		case GL_SRGB_ALPHA_EXT:
-			{
-				static const FormatMap formatMap = BuildFormatMap();
-				FormatMap::const_iterator iter = formatMap.find(FormatTypePair(internalformat, type));
-				return (iter != formatMap.end()) ? iter->second : GL_NONE;
-			}
-		default:
 			return internalformat;
 		}
+
+		static const FormatMap formatMap = BuildFormatMap();
+		FormatMap::const_iterator iter = formatMap.find(FormatTypePair(internalformat, type));
+
+		if(iter == formatMap.end())
+		{
+		//	err
+			return GL_NONE;
+		}
+
+		return iter->second;
 	}
 
 	unsigned int UniformComponentCount(GLenum type)
@@ -607,6 +596,19 @@ namespace es2
 
 	bool ValidateCopyFormats(GLenum textureFormat, GLenum colorbufferFormat)
 	{
+		ASSERT(IsSizedInternalFormat(textureFormat));
+		ASSERT(IsSizedInternalFormat(colorbufferFormat));
+
+		if(GetColorComponentType(colorbufferFormat) != GetColorComponentType(textureFormat))
+		{
+			return error(GL_INVALID_OPERATION, false);
+		}
+
+		if(GetColorEncoding(colorbufferFormat) != GetColorEncoding(textureFormat))
+		{
+			return error(GL_INVALID_OPERATION, false);
+		}
+
 		GLenum baseTexureFormat = GetBaseInternalFormat(textureFormat);
 		GLenum baseColorbufferFormat = GetBaseInternalFormat(colorbufferFormat);
 
@@ -1265,20 +1267,36 @@ namespace es2
 		return 1;
 	}
 
+	bool IsSizedInternalFormat(GLint internalformat)
+	{
+		switch(internalformat)
+		{
+		case GL_ALPHA:
+		case GL_LUMINANCE:
+		case GL_LUMINANCE_ALPHA:
+		case GL_RED:
+		case GL_RG:
+		case GL_RGB:
+		case GL_RGBA:
+		case GL_RED_INTEGER:
+		case GL_RG_INTEGER:
+		case GL_RGB_INTEGER:
+		case GL_RGBA_INTEGER:
+		case GL_BGRA_EXT:
+		case GL_DEPTH_COMPONENT:
+		case GL_DEPTH_STENCIL:
+		case GL_SRGB_EXT:
+		case GL_SRGB_ALPHA_EXT:
+			return false;
+		default:
+			return true;
+		}
+	}
+
 	GLenum GetBaseInternalFormat(GLint internalformat)
 	{
 		switch(internalformat)
 		{
-		// Unsized internal formats which are valid as the <internalformat> parameter of CopyTexImage.
-		case GL_RGB:
-		case GL_RGBA:
-		case GL_ALPHA:
-		case GL_LUMINANCE:
-		case GL_LUMINANCE_ALPHA:
-		case GL_RED_EXT:           // GL_EXT_texture_rg
-		case GL_RG_EXT:            // GL_EXT_texture_rg
-			return internalformat;
-
 		// [OpenGL ES 3.0 Table 3.13]
 		case GL_R8:       return GL_RED;
 		case GL_R8_SNORM: return GL_RED;

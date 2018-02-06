@@ -620,7 +620,7 @@ void Texture2D::subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GL
 	Texture::subImageCompressed(xoffset, yoffset, 0, width, height, 1, format, imageSize, pixels, image[level]);
 }
 
-void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Renderbuffer *source)
+void Texture2D::copyImage(GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, Renderbuffer *source)
 {
 	egl::Image *renderTarget = source->getRenderTarget();
 
@@ -635,8 +635,7 @@ void Texture2D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLsizei 
 		image[level]->release();
 	}
 
-	GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[level] = egl::Image::create(this, width, height, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[level] = egl::Image::create(this, width, height, internalformat, GL_UNSIGNED_BYTE);
 
 	if(!image[level])
 	{
@@ -1250,7 +1249,7 @@ void TextureCubeMap::setImage(egl::Context *context, GLenum target, GLint level,
 	Texture::setImage(context, format, type, unpackInfo, pixels, image[face][level]);
 }
 
-void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Renderbuffer *source)
+void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, Renderbuffer *source)
 {
 	egl::Image *renderTarget = source->getRenderTarget();
 
@@ -1267,9 +1266,8 @@ void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint 
 		image[face][level]->release();
 	}
 
-	GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
 	int border = (egl::getClientVersion() >= 3) ? 1 : 0;
-	image[face][level] = egl::Image::create(this, width, height, 1, border, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[face][level] = egl::Image::create(this, width, height, 1, border, internalformat, GL_UNSIGNED_BYTE);
 
 	if(!image[face][level])
 	{
@@ -1589,7 +1587,7 @@ void Texture3D::subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GL
 	Texture::subImageCompressed(xoffset, yoffset, zoffset, width, height, depth, format, imageSize, pixels, image[level]);
 }
 
-void Texture3D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLint z, GLsizei width, GLsizei height, GLsizei depth, Renderbuffer *source)
+void Texture3D::copyImage(GLint level, GLenum internalformat, GLint x, GLint y, GLint z, GLsizei width, GLsizei height, GLsizei depth, Renderbuffer *source)
 {
 	egl::Image *renderTarget = source->getRenderTarget();
 
@@ -1604,8 +1602,7 @@ void Texture3D::copyImage(GLint level, GLenum format, GLint x, GLint y, GLint z,
 		image[level]->release();
 	}
 
-	GLint sizedInternalFormat = GetSizedInternalFormat(format, GL_UNSIGNED_BYTE);
-	image[level] = egl::Image::create(this, width, height, depth, 0, sizedInternalFormat, GL_UNSIGNED_BYTE);
+	image[level] = egl::Image::create(this, width, height, depth, 0, internalformat, GL_UNSIGNED_BYTE);
 
 	if(!image[level])
 	{
