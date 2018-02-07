@@ -112,8 +112,8 @@ public:
 protected:
 	~Texture() override;
 
-	void setImage(egl::Context *context, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels, egl::Image *image);
-	void subImage(egl::Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels, egl::Image *image);
+	void setImage(egl::Context *context, GLenum format, GLenum type, const egl::Image::UnpackInfo &unpackInfo, const void *pixels, egl::Image *image);
+	void subImage(egl::Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const egl::Image::UnpackInfo &unpackInfo, const void *pixels, egl::Image *image);
 	void setCompressedImage(GLsizei imageSize, const void *pixels, egl::Image *image);
 	void subImageCompressed(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *pixels, egl::Image *image);
 
