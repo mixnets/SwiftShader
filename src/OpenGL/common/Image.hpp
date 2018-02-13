@@ -93,10 +93,10 @@ protected:
 	}
 
 	// Render target
-	Image(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
-		: sw::Surface(nullptr, width, height, 1, 0, multiSampleDepth, internalFormat, lockable, true),
+	Image(egl::Texture *parentTexture, GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
+		: sw::Surface(parentTexture ? parentTexture->getResource() : nullptr, width, height, 1, 0, multiSampleDepth, internalFormat, lockable, true),
 		  width(width), height(height), depth(1), format(0 /*GL_NONE*/), type(0 /*GL_NONE*/), internalFormat(internalFormat),
-		  parentTexture(nullptr)
+		  parentTexture(parentTexture)
 	{
 		shared = false;
 		Object::addRef();
@@ -113,7 +113,7 @@ public:
 	static Image *create(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP);
 
 	// Render target
-	static Image *create(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable);
+	static Image *create(Texture *parentTexture, GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable);
 
 	GLsizei getWidth() const
 	{

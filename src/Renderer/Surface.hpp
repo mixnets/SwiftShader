@@ -279,6 +279,8 @@ namespace sw
 		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
 		Surface(Resource *texture, int width, int height, int depth, int border, int samples, Format format, bool lockable, bool renderTarget, int pitchP = 0);
 
+		void setExternalBuffer(void* buffer) { external.buffer = buffer; }
+
 	public:
 		static Surface *create(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
 		static Surface *create(Resource *texture, int width, int height, int depth, int border, int samples, Format format, bool lockable, bool renderTarget, int pitchP = 0);

@@ -1100,8 +1100,8 @@ namespace egl
 			: Image(parentTexture, width, height, depth, border, format, type) {}
 		ImageImplementation(GLsizei width, GLsizei height, GLenum format, GLenum type, int pitchP)
 			: Image(width, height, format, type, pitchP) {}
-		ImageImplementation(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
-			: Image(width, height, internalFormat, multiSampleDepth, lockable) {}
+		ImageImplementation(Texture *parentTexture, GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
+			: Image(parentTexture, width, height, internalFormat, multiSampleDepth, lockable) {}
 
 		~ImageImplementation() override
 		{
@@ -1139,9 +1139,9 @@ namespace egl
 		return new ImageImplementation(width, height, format, type, pitchP);
 	}
 
-	Image *Image::create(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
+	Image *Image::create(Texture* parentTexture, GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
 	{
-		return new ImageImplementation(width, height, internalFormat, multiSampleDepth, lockable);
+		return new ImageImplementation(parentTexture, width, height, internalFormat, multiSampleDepth, lockable);
 	}
 
 	Image::~Image()

@@ -27,7 +27,7 @@ namespace egl
 class Texture : public gl::NamedObject
 {
 public:
-	Texture(GLuint name) : NamedObject(name) {}
+	Texture(GLuint name) : NamedObject(name), clientBuffer(nullptr), pixels(nullptr) {}
 
 	virtual void releaseTexImage() = 0;
 	virtual sw::Resource *getResource() const = 0;
@@ -47,6 +47,15 @@ public:
 			delete this;
 		}
 	}
+
+	void setClientBuffer(void* cb) { clientBuffer = cb; }
+	void* getClientBuffer() const { return clientBuffer; }
+	void setPixels(void* p) { pixels = p; }
+	void* getPixels() const { return pixels; }
+
+protected:
+	void* clientBuffer;
+	void* pixels;
 };
 }
 

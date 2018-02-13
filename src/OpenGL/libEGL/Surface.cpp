@@ -32,7 +32,9 @@
 #include <tchar.h>
 #elif defined(__APPLE__)
 #include "OSXUtils.hpp"
-#endif
+#include <CoreFoundation/CoreFoundation.h>
+#include <IOSurface/IOSurface.h>
+#endif // __APPLE__
 
 #include <algorithm>
 
@@ -49,7 +51,7 @@ Surface::~Surface()
 
 namespace egl
 {
-Surface::Surface(const Display *display, const Config *config) : display(display), config(config)
+Surface::Surface(const Display *display, const Config *config, EGLClientBuffer clientBuffer) : display(display), config(config), clientBuffer(clientBuffer)
 {
 	backBuffer = nullptr;
 	depthStencil = nullptr;
@@ -63,6 +65,8 @@ Surface::Surface(const Display *display, const Config *config) : display(display
 	swapBehavior = EGL_BUFFER_PRESERVED;
 	textureFormat = EGL_NO_TEXTURE;
 	textureTarget = EGL_NO_TEXTURE;
+	internalFormat = EGL_NO_TEXTURE;
+	textureType = EGL_NO_TEXTURE;
 	swapInterval = -1;
 	setSwapInterval(1);
 }
@@ -78,11 +82,11 @@ bool Surface::initialize()
 
 	if(libGLESv2)
 	{
-		backBuffer = libGLESv2->createBackBuffer(width, height, config->mRenderTargetFormat, config->mSamples);
+		backBuffer = libGLESv2->createBackBuffer(width, height, getInternalFormat(), config->mSamples, clientBuffer);
 	}
 	else if(libGLES_CM)
 	{
-		backBuffer = libGLES_CM->createBackBuffer(width, height, config->mRenderTargetFormat, config->mSamples);
+		backBuffer = libGLES_CM->createBackBuffer(width, height, getInternalFormat(), config->mSamples);
 	}
 
 	if(!backBuffer)
@@ -184,7 +188,7 @@ EGLenum Surface::getSurfaceType() const
 
 sw::Format Surface::getInternalFormat() const
 {
-	return config->mRenderTargetFormat;
+	return (clientBuffer && libGLESv2) ? sw::FORMAT_A8R8G8B8 : config->mRenderTargetFormat;
 }
 
 EGLint Surface::getWidth() const
@@ -229,6 +233,28 @@ EGLBoolean Surface::getLargestPBuffer() const
 
 void Surface::setBoundTexture(egl::Texture *texture)
 {
+	if(clientBuffer)
+	{
+		if((this->texture == nullptr) && (texture != nullptr))
+		{
+#if defined(__APPLE__)
+			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(clientBuffer);
+			IOSurfaceLock(ioSurface, 0, nullptr);
+			this->texture->setPixels(IOSurfaceGetBaseAddress(ioSurface));
+#else
+			texture->setPixels(clientBuffer);
+#endif // __APPLE__
+		}
+		if((this->texture != nullptr) && (texture == nullptr))
+		{
+#if defined(__APPLE__)
+			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(clientBuffer);
+			IOSurfaceUnlock(ioSurface, 0, nullptr);
+#endif // __APPLE__
+			this->texture->setPixels(nullptr);
+		}
+	}
+
 	this->texture = texture;
 }
 
@@ -354,12 +380,16 @@ bool WindowSurface::reset(int backBufferWidth, int backBufferHeight)
 	return Surface::initialize();
 }
 
-PBufferSurface::PBufferSurface(Display *display, const Config *config, EGLint width, EGLint height, EGLenum textureFormat, EGLenum textureType, EGLBoolean largestPBuffer)
-	: Surface(display, config)
+PBufferSurface::PBufferSurface(Display *display, const Config *config, EGLint width, EGLint height, EGLenum textureFormat, EGLenum textureTarget, GLenum internalFormat, GLenum textureType, EGLBoolean largestPBuffer, EGLClientBuffer clientBuffer)
+	: Surface(display, config, clientBuffer)
 {
 	this->width = width;
 	this->height = height;
 	this->largestPBuffer = largestPBuffer;
+	this->textureFormat = textureFormat;
+	this->textureTarget = textureTarget;
+	this->internalFormat = internalFormat;
+	this->textureType = textureType;
 }
 
 PBufferSurface::~PBufferSurface()
