@@ -95,7 +95,7 @@ protected:
 	// Render target
 	Image(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
 		: sw::Surface(nullptr, width, height, 1, 0, multiSampleDepth, internalFormat, lockable, true),
-		  width(width), height(height), depth(1), format(0 /*GL_NONE*/), type(0 /*GL_NONE*/), internalFormat(internalFormat),
+		  width(width), height(height), depth(1), format(getRenderTargetFormat(internalFormat)), type(0 /*GL_NONE*/), internalFormat(internalFormat),
 		  parentTexture(nullptr)
 	{
 		shared = false;
@@ -114,6 +114,8 @@ public:
 
 	// Render target
 	static Image *create(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable);
+
+	static GLenum getRenderTargetFormat(sw::Format format);
 
 	GLsizei getWidth() const
 	{

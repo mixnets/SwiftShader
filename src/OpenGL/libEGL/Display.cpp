@@ -338,7 +338,7 @@ EGLSurface Display::createWindowSurface(EGLNativeWindowType window, EGLConfig co
 	return success(surface);
 }
 
-EGLSurface Display::createPBufferSurface(EGLConfig config, const EGLint *attribList)
+EGLSurface Display::createPBufferSurface(EGLConfig config, const EGLint *attribList, EGLClientBuffer clientBuffer)
 {
 	EGLint width = 0, height = 0;
 	EGLenum textureFormat = EGL_NO_TEXTURE;
@@ -373,11 +373,30 @@ EGLSurface Display::createPBufferSurface(EGLConfig config, const EGLint *attribL
 					return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
 				}
 				break;
+			case EGL_TEXTURE_INTERNAL_FORMAT_ANGLE:
+				if(attribList[1] != GL_BGRA_EXT)
+				{
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+				}
+				break;
+			case EGL_TEXTURE_TYPE_ANGLE:
+				if(attribList[1] != GL_UNSIGNED_BYTE)
+				{
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+				}
+				break;
+			case EGL_IOSURFACE_PLANE_ANGLE:
+				if(attribList[1] != 0)
+				{
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+				}
+				break;
 			case EGL_TEXTURE_TARGET:
 				switch(attribList[1])
 				{
 				case EGL_NO_TEXTURE:
 				case EGL_TEXTURE_2D:
+				case EGL_TEXTURE_RECTANGLE_ANGLE:
 					textureTarget = attribList[1];
 					break;
 				default:
@@ -429,7 +448,7 @@ EGLSurface Display::createPBufferSurface(EGLConfig config, const EGLint *attribL
 		return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
 	}
 
-	Surface *surface = new PBufferSurface(this, configuration, width, height, textureFormat, textureTarget, largestPBuffer);
+	Surface *surface = new PBufferSurface(this, configuration, width, height, textureFormat, textureTarget, largestPBuffer, clientBuffer);
 
 	if(!surface->initialize())
 	{

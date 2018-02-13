@@ -4259,7 +4259,8 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
 void Context::bindTexImage(gl::Surface *surface)
 {
-	es2::Texture2D *textureObject = getTexture2D();
+	bool isRect = (surface->getTextureTarget() == EGL_TEXTURE_RECTANGLE_ANGLE);
+	es2::Texture2D *textureObject = isRect ? getTexture2DRect() : getTexture2D();
 
 	if(textureObject)
 	{
