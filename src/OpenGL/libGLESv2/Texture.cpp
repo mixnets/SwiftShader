@@ -1895,9 +1895,19 @@ NO_SANITIZE_FUNCTION egl::Image *createBackBuffer(int width, int height, sw::For
 		return nullptr;
 	}
 
-	GLenum internalformat = sw2es::ConvertBackBufferFormat(format);
+	return egl::Image::create(width, height, sw2es::ConvertBackBufferFormat(format), multiSampleDepth, false);
+}
 
-	return egl::Image::create(width, height, internalformat, multiSampleDepth, false);
+NO_SANITIZE_FUNCTION egl::Image *createBackBufferFromClientBuffer(const sw::ClientBuffer& clientBuffer)
+{
+	if(clientBuffer.getWidth() > es2::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE ||
+	   clientBuffer.getHeight() > es2::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE)
+	{
+		ERR("Invalid parameters: %dx%d", clientBuffer.getWidth(), clientBuffer.getHeight());
+		return nullptr;
+	}
+
+	return egl::Image::create(clientBuffer);
 }
 
 NO_SANITIZE_FUNCTION egl::Image *createDepthStencil(int width, int height, sw::Format format, int multiSampleDepth)

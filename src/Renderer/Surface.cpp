@@ -30,6 +30,11 @@
 	#include <emmintrin.h>
 #endif
 
+#if defined(__APPLE__)
+#include <CoreFoundation/CoreFoundation.h>
+#include <IOSurface/IOSurface.h>
+#endif
+
 #undef min
 #undef max
 
@@ -42,8 +47,92 @@ namespace sw
 	unsigned int *Surface::palette = 0;
 	unsigned int Surface::paletteID = 0;
 
+	int ClientBuffer::getWidth() const
+	{
+		return width;
+	}
+
+	int ClientBuffer::getHeight() const
+	{
+		return height;
+	}
+
+	Format ClientBuffer::getFormat() const
+	{
+		return format;
+	}
+
+	int ClientBuffer::getPitchB() const
+	{
+		#if defined(__APPLE__)
+			if(buffer)
+			{
+				IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(buffer);
+				return static_cast<int>(IOSurfaceGetBytesPerRowOfPlane(ioSurface, plane));
+			}
+
+			return 0;
+		#else
+			return sw::Surface::pitchB(width, 0, format, false);
+		#endif
+	}
+
+	void ClientBuffer::retain()
+	{
+		#if defined(__APPLE__)
+			if(buffer)
+			{
+				CFRetain(reinterpret_cast<IOSurfaceRef>(buffer));
+			}
+		#endif
+	}
+
+	void ClientBuffer::release()
+	{
+		#if defined(__APPLE__)
+			if(buffer)
+			{
+				CFRelease(reinterpret_cast<IOSurfaceRef>(buffer));
+				buffer = nullptr;
+			}
+		#endif
+	}
+
+	void* ClientBuffer::lock()
+	{
+		#if defined(__APPLE__)
+			if(buffer)
+			{
+				IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(buffer);
+				if(!locked)
+				{
+					IOSurfaceLock(ioSurface, 0, nullptr);
+					locked = true;
+				}
+				return IOSurfaceGetBaseAddressOfPlane(ioSurface, plane);
+			}
+
+			return nullptr;
+		#else
+			return buffer;
+		#endif
+	}
+
+	void ClientBuffer::unlock()
+	{
+		#if defined(__APPLE__)
+			if(locked && buffer)
+			{
+				IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(buffer);
+				IOSurfaceUnlock(ioSurface, 0, nullptr);
+				locked = false;
+			}
+		#endif
+	}
+
 	void Surface::Buffer::write(int x, int y, int z, const Color<float> &color)
 	{
+		ASSERT(!clientBuffer);
 		byte *element = (byte*)buffer + (x + border) * bytes + (y + border) * pitchB + z * samples * sliceB;
 
 		for(int i = 0; i < samples; i++)
@@ -55,6 +144,7 @@ namespace sw
 
 	void Surface::Buffer::write(int x, int y, const Color<float> &color)
 	{
+		ASSERT(!clientBuffer);
 		byte *element = (byte*)buffer + (x + border) * bytes + (y + border) * pitchB;
 
 		for(int i = 0; i < samples; i++)
@@ -66,6 +156,7 @@ namespace sw
 
 	inline void Surface::Buffer::write(void *element, const Color<float> &color)
 	{
+		ASSERT(!clientBuffer);
 		float r = color.r;
 		float g = color.g;
 		float b = color.b;
@@ -396,6 +487,8 @@ namespace sw
 
 	Color<float> Surface::Buffer::read(int x, int y, int z) const
 	{
+		ASSERT(!clientBuffer);
+
 		void *element = (unsigned char*)buffer + (x + border) * bytes + (y + border) * pitchB + z * samples * sliceB;
 
 		return read(element);
@@ -403,6 +496,8 @@ namespace sw
 
 	Color<float> Surface::Buffer::read(int x, int y) const
 	{
+		ASSERT(!clientBuffer);
+
 		void *element = (unsigned char*)buffer + (x + border) * bytes + (y + border) * pitchB;
 
 		return read(element);
@@ -410,6 +505,8 @@ namespace sw
 
 	inline Color<float> Surface::Buffer::read(void *element) const
 	{
+		ASSERT(!clientBuffer);
+
 		float r = 0.0f;
 		float g = 0.0f;
 		float b = 0.0f;
@@ -1129,6 +1226,8 @@ namespace sw
 			ASSERT(false);
 		}
 
+		lockClientBuffer();
+
 		if(buffer)
 		{
 			x += border;
@@ -1206,7 +1305,31 @@ namespace sw
 
 	void Surface::Buffer::unlockRect()
 	{
+		unlockClientBuffer();
+
 		lock = LOCK_UNLOCKED;
+	}
+
+	void *Surface::Buffer::lockClientBuffer()
+	{
+		if(clientBuffer)
+		{
+			ASSERT(!buffer);
+			buffer = clientBuffer->lock();
+			return buffer;
+		}
+
+		return nullptr;
+	}
+
+	void Surface::Buffer::unlockClientBuffer()
+	{
+		if(clientBuffer)
+		{
+			ASSERT(buffer);
+			clientBuffer->unlock();
+			buffer = nullptr;
+		}
 	}
 
 	class SurfaceImplementation : public Surface
@@ -1247,6 +1370,7 @@ namespace sw
 		depth = max(1, depth);
 
 		external.buffer = pixels;
+		external.clientBuffer = nullptr;
 		external.width = width;
 		external.height = height;
 		external.depth = depth;
@@ -1262,6 +1386,7 @@ namespace sw
 		external.dirty = true;
 
 		internal.buffer = nullptr;
+		internal.clientBuffer = nullptr;
 		internal.width = width;
 		internal.height = height;
 		internal.depth = depth;
@@ -1277,6 +1402,7 @@ namespace sw
 		internal.dirty = false;
 
 		stencil.buffer = nullptr;
+		stencil.clientBuffer = nullptr;
 		stencil.width = width;
 		stencil.height = height;
 		stencil.depth = depth;
@@ -1304,6 +1430,7 @@ namespace sw
 		samples = max(1, samples);
 
 		external.buffer = nullptr;
+		external.clientBuffer = nullptr;
 		external.width = width;
 		external.height = height;
 		external.depth = depth;
@@ -1319,6 +1446,7 @@ namespace sw
 		external.dirty = false;
 
 		internal.buffer = nullptr;
+		internal.clientBuffer = nullptr;
 		internal.width = width;
 		internal.height = height;
 		internal.depth = depth;
@@ -1334,6 +1462,7 @@ namespace sw
 		internal.dirty = false;
 
 		stencil.buffer = nullptr;
+		stencil.clientBuffer = nullptr;
 		stencil.width = width;
 		stencil.height = height;
 		stencil.depth = depth;
@@ -1344,6 +1473,53 @@ namespace sw
 		stencil.pitchP = pitchP(stencil.width, 0, stencil.format, renderTarget);
 		stencil.sliceB = sliceB(stencil.width, stencil.height, 0, stencil.format, renderTarget);
 		stencil.sliceP = sliceP(stencil.width, stencil.height, 0, stencil.format, renderTarget);
+		stencil.border = 0;
+		stencil.lock = LOCK_UNLOCKED;
+		stencil.dirty = false;
+
+		dirtyContents = true;
+		paletteUsed = 0;
+	}
+
+	Surface::Surface(const ClientBuffer& cb) : lockable(true), renderTarget(true)
+	{
+		resource = new Resource(0);
+		hasParent = false;
+		ownExternal = false;
+
+		external.buffer = nullptr;
+		external.clientBuffer = new sw::ClientBuffer(cb);
+		external.clientBuffer->retain();
+		external.width = external.clientBuffer->getWidth();
+		external.height = external.clientBuffer->getHeight();
+		external.depth = 1;
+		external.samples = 1;
+		external.format = external.clientBuffer->getFormat();
+		external.bytes = bytes(external.format);
+		external.pitchB = external.clientBuffer->getPitchB();
+		external.pitchP = external.bytes ? external.pitchB / external.bytes : 0;
+		external.sliceB = external.pitchB *external.height;
+		external.sliceP = external.bytes ? external.sliceB / external.bytes : 0;
+		external.border = 0;
+		external.lock = LOCK_UNLOCKED;
+		external.dirty = true;
+
+		internal = external;
+		internal.clientBuffer = nullptr;
+		internal.dirty = false;
+
+		stencil.buffer = nullptr;
+		stencil.clientBuffer = nullptr;
+		stencil.width = external.width;
+		stencil.height = external.height;
+		stencil.depth = external.depth;
+		stencil.samples = 1;
+		stencil.format = isStencil(external.format) ? FORMAT_S8 : FORMAT_NULL;
+		stencil.bytes = bytes(stencil.format);
+		stencil.pitchB = pitchB(stencil.width, 0, stencil.format, false);
+		stencil.pitchP = pitchP(stencil.width, 0, stencil.format, false);
+		stencil.sliceB = sliceB(stencil.width, stencil.height, 0, stencil.format, false);
+		stencil.sliceP = sliceP(stencil.width, stencil.height, 0, stencil.format, false);
 		stencil.border = 0;
 		stencil.lock = LOCK_UNLOCKED;
 		stencil.dirty = false;
@@ -1373,6 +1549,13 @@ namespace sw
 			deallocate(internal.buffer);
 		}
 
+		if(external.clientBuffer)
+		{
+			external.clientBuffer->release();
+			delete external.clientBuffer;
+			external.clientBuffer = nullptr;
+		}
+
 		deallocate(stencil.buffer);
 
 		external.buffer = 0;
@@ -1384,7 +1567,7 @@ namespace sw
 	{
 		resource->lock(client);
 
-		if(!external.buffer)
+		if(!external.buffer && !external.clientBuffer)
 		{
 			if(internal.buffer && identicalFormats())
 			{
@@ -1398,7 +1581,7 @@ namespace sw
 
 		if(internal.dirty)
 		{
-			if(lock != LOCK_DISCARD)
+			if((lock != LOCK_DISCARD) && !external.clientBuffer)
 			{
 				update(external, internal);
 			}
@@ -1438,7 +1621,11 @@ namespace sw
 
 		if(!internal.buffer)
 		{
-			if(external.buffer && identicalFormats())
+			if(external.clientBuffer)
+			{
+				internal.buffer = external.lockClientBuffer();
+			}
+			else if(external.buffer && identicalFormats())
 			{
 				internal.buffer = external.buffer;
 			}
@@ -1475,7 +1662,7 @@ namespace sw
 
 		if(external.dirty || (isPalette(external.format) && paletteUsed != Surface::paletteID))
 		{
-			if(lock != LOCK_DISCARD)
+			if((lock != LOCK_DISCARD) && !external.clientBuffer)
 			{
 				update(internal, external);
 			}
@@ -1509,6 +1696,17 @@ namespace sw
 	void Surface::unlockInternal()
 	{
 		internal.unlockRect();
+
+		if(external.clientBuffer)
+		{
+			// Make sure the internal buffer doesn't keep
+			// a pointer to an unlocked client buffer
+			if(internal.buffer == external.buffer)
+			{
+				internal.buffer = nullptr;
+			}
+			external.unlockClientBuffer();
+		}
 
 		resource->unlock();
 	}

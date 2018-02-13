@@ -237,6 +237,32 @@ namespace sw
 		LOCK_UPDATE   // Write access which doesn't dirty the buffer, because it's being updated with the sibling's data.
 	};
 
+	class ClientBuffer
+	{
+	public:
+		ClientBuffer(int width, int height, Format format, void* buffer, size_t plane) :
+			width(width), height(height), format(format), buffer(buffer), plane(plane), locked(false)
+		{}
+
+		int getWidth() const;
+		int getHeight() const;
+		Format getFormat() const;
+		int getPitchB() const;
+
+		void retain();
+		void release();
+		void* lock();
+		void unlock();
+
+	private:
+		int width;
+		int height;
+		Format format;
+		void* buffer;
+		size_t plane;
+		bool locked;
+	};
+
 	class [[clang::lto_visibility_public]] Surface
 	{
 	private:
@@ -257,6 +283,9 @@ namespace sw
 			void *lockRect(int x, int y, int z, Lock lock);
 			void unlockRect();
 
+			void *lockClientBuffer();
+			void unlockClientBuffer();
+
 			void *buffer;
 			int width;
 			int height;
@@ -274,11 +303,13 @@ namespace sw
 			AtomicInt lock;
 
 			bool dirty;   // Sibling internal/external buffer doesn't match.
+			sw::ClientBuffer *clientBuffer;
 		};
 
 	protected:
 		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
 		Surface(Resource *texture, int width, int height, int depth, int border, int samples, Format format, bool lockable, bool renderTarget, int pitchP = 0);
+		Surface(const ClientBuffer& clientBuffer);
 
 	public:
 		static Surface *create(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
@@ -657,7 +688,7 @@ namespace sw
 
 	bool Surface::isExternalDirty() const
 	{
-		return external.buffer && external.buffer != internal.buffer && external.dirty;
+		return (external.clientBuffer || (external.buffer && (external.buffer != internal.buffer))) && external.dirty;
 	}
 }
 
