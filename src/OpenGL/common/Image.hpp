@@ -104,6 +104,28 @@ protected:
 		Object::addRef();
 	}
 
+	// Back buffer from client buffer
+	Image(const sw::ClientBuffer& clientBuffer)
+		: sw::Surface(clientBuffer), width(clientBuffer.getWidth()), height(clientBuffer.getHeight()), depth(1),
+		  internalformat(getClientBufferInternalFormat(clientBuffer.getFormat())), parentTexture(nullptr)
+	{
+		shared = false;
+		Object::addRef();
+	}
+
+	static GLint getClientBufferInternalFormat(sw::Format format)
+	{
+		switch(format)
+		{
+		case sw::FORMAT_R8:            return GL_R8;
+		case sw::FORMAT_G8R8:          return GL_RG8;
+		case sw::FORMAT_A8R8G8B8:      return GL_BGRA8_EXT;
+		case sw::FORMAT_R16UI:         return GL_R16UI;
+		case sw::FORMAT_A16B16G16R16F: return GL_RGBA16F;
+		default:                       return GL_NONE;
+		}
+	}
+
 public:
 	// 2D texture image
 	static Image *create(Texture *parentTexture, GLsizei width, GLsizei height, GLint internalformat);
@@ -116,6 +138,9 @@ public:
 
 	// Render target
 	static Image *create(GLsizei width, GLsizei height, GLint internalformat, int multiSampleDepth, bool lockable);
+
+	// Back buffer from client buffer
+	static Image *create(const sw::ClientBuffer& clientBuffer);
 
 	GLsizei getWidth() const
 	{
