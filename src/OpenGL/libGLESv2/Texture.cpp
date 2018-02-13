@@ -572,6 +572,12 @@ void Texture2D::releaseTexImage()
 			image[level] = nullptr;
 		}
 	}
+
+	if(mSurface)
+	{
+		mSurface->setBoundTexture(nullptr);
+		mSurface = nullptr;
+	}
 }
 
 void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels)
@@ -1881,7 +1887,7 @@ GLenum TextureExternal::getTarget() const
 
 }
 
-NO_SANITIZE_FUNCTION egl::Image *createBackBuffer(int width, int height, sw::Format format, int multiSampleDepth)
+NO_SANITIZE_FUNCTION egl::Image *createBackBuffer(int width, int height, sw::Format format, GLenum clientBufferFormat, int multiSampleDepth)
 {
 	if(width > es2::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE || height > es2::IMPLEMENTATION_MAX_RENDERBUFFER_SIZE)
 	{
@@ -1889,7 +1895,7 @@ NO_SANITIZE_FUNCTION egl::Image *createBackBuffer(int width, int height, sw::For
 		return nullptr;
 	}
 
-	GLenum internalformat = sw2es::ConvertBackBufferFormat(format);
+	GLenum internalformat = (clientBufferFormat != GL_NONE) ? clientBufferFormat : sw2es::ConvertBackBufferFormat(format);
 
 	return egl::Image::create(width, height, internalformat, multiSampleDepth, false);
 }
