@@ -1428,6 +1428,12 @@ namespace sw
 		resource->unlock();
 	}
 
+	void Surface::setExternalBuffer(void* externalBuffer)
+	{
+		external.buffer = externalBuffer;
+		ownExternal = false;
+	}
+
 	void *Surface::lockInternal(int x, int y, int z, Lock lock, Accessor client)
 	{
 		if(lock != LOCK_UNLOCKED)

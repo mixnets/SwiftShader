@@ -299,6 +299,7 @@ namespace sw
 
 		void *lockExternal(int x, int y, int z, Lock lock, Accessor client);
 		void unlockExternal();
+		void setExternalBuffer(void* externalBuffer);
 		inline Format getExternalFormat() const;
 		inline int getExternalPitchB() const;
 		inline int getExternalPitchP() const;

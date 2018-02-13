@@ -44,8 +44,9 @@ public:
 
 	virtual EGLint getWidth() const = 0;
 	virtual EGLint getHeight() const = 0;
+	virtual EGLenum getTextureTarget() const = 0;
 
-	virtual void setBoundTexture(egl::Texture *texture) = 0;
+	virtual void* setBoundTexture(egl::Texture *texture) = 0;
 };
 }
 

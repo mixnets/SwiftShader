@@ -553,12 +553,17 @@ void Texture2D::setImage(egl::Context *context, GLint level, GLsizei width, GLsi
 
 void Texture2D::bindTexImage(gl::Surface *surface)
 {
+	GLenum format = GL_NONE;
+	GLenum type = GL_UNSIGNED_BYTE;
 	switch(surface->getInternalFormat())
 	{
 	case sw::FORMAT_A8R8G8B8:
 	case sw::FORMAT_A8B8G8R8:
+		format = GL_RGBA8;
+		break;
 	case sw::FORMAT_X8B8G8R8:
 	case sw::FORMAT_X8R8G8B8:
+		format = GL_RGB8;
 		break;
 	default:
 		UNIMPLEMENTED();
@@ -577,7 +582,11 @@ void Texture2D::bindTexImage(gl::Surface *surface)
 	image[0] = surface->getRenderTarget();
 
 	mSurface = surface;
-	mSurface->setBoundTexture(this);
+	void* externalBuffer = mSurface->setBoundTexture(this);
+	if(externalBuffer)
+	{
+		image[0]->setExternalBuffer(externalBuffer, format, type);
+	}
 }
 
 void Texture2D::releaseTexImage()

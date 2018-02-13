@@ -142,6 +142,13 @@ public:
 		return type;
 	}
 
+	void setExternalBuffer(void* externalBuffer, GLenum format, GLenum type)
+	{
+		sw::Surface::setExternalBuffer(externalBuffer);
+		this->format = format;
+		this->type = type;
+	}
+
 	sw::Format getInternalFormat() const
 	{
 		return internalFormat;
@@ -198,8 +205,8 @@ protected:
 	const GLsizei width;
 	const GLsizei height;
 	const int depth;
-	const GLenum format;
-	const GLenum type;
+	GLenum format;
+	GLenum type;
 	const sw::Format internalFormat;
 
 	bool shared;   // Used as an EGLImage
