@@ -553,16 +553,9 @@ void Texture2D::setImage(egl::Context *context, GLint level, GLsizei width, GLsi
 
 void Texture2D::bindTexImage(gl::Surface *surface)
 {
-	switch(surface->getInternalFormat())
+	if(egl::Image::getRenderTargetFormat(surface->getInternalFormat()) == GL_NONE)
 	{
-	case sw::FORMAT_A8R8G8B8:
-	case sw::FORMAT_A8B8G8R8:
-	case sw::FORMAT_X8B8G8R8:
-	case sw::FORMAT_X8R8G8B8:
-		break;
-	default:
 		UNIMPLEMENTED();
-		return;
 	}
 
 	for(int level = 0; level < IMPLEMENTATION_MAX_TEXTURE_LEVELS; level++)
