@@ -27,7 +27,10 @@
 #include <system/window.h>
 #elif defined(__linux__)
 #include "Main/libX11.hpp"
-#endif
+#elif defined(__APPLE__)
+#include <CoreFoundation/CoreFoundation.h>
+#include <IOSurface/IOSurface.h>
+#endif // __APPLE__
 
 #include <algorithm>
 #include <string.h>
@@ -203,6 +206,9 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 		               "EGL_KHR_gl_renderbuffer_image "
 		               "EGL_KHR_fence_sync "
 		               "EGL_KHR_image_base "
+#if defined(__APPLE__)
+		               "EGL_ANGLE_iosurface_client_buffer "
+#endif
 		               "EGL_ANDROID_framebuffer_target "
 		               "EGL_ANDROID_recordable");
 	case EGL_VENDOR:
@@ -506,9 +512,16 @@ EGLSurface CreatePbufferFromClientBuffer(EGLDisplay dpy, EGLenum buftype, EGLCli
 	      "EGLConfig config = %p, const EGLint *attrib_list = %p)",
 	      dpy, buftype, buffer, config, attrib_list);
 
-	UNIMPLEMENTED();
+	ASSERT(buftype == EGL_IOSURFACE_ANGLE);
 
-	return error(EGL_BAD_PARAMETER, EGL_NO_SURFACE);
+	egl::Display *display = egl::Display::get(dpy);
+
+	if(!validateConfig(display, config))
+	{
+		return EGL_NO_SURFACE;
+	}
+
+	return display->createPBufferSurface(config, attrib_list, buffer);
 }
 
 EGLBoolean SurfaceAttrib(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EGLint value)
@@ -807,6 +820,13 @@ EGLBoolean MakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLCont
 	   (read != EGL_NO_SURFACE && !validateSurface(display, readSurface)))
 	{
 		return EGL_FALSE;
+	}
+
+	if((draw != EGL_NO_SURFACE && drawSurface->hasClientBuffer()) ||
+	   (read != EGL_NO_SURFACE && readSurface->hasClientBuffer()))
+	{
+		// Make current is not supported on IOSurface pbuffers.
+		return error(EGL_BAD_SURFACE, EGL_FALSE);
 	}
 
 	if((draw != EGL_NO_SURFACE) ^ (read != EGL_NO_SURFACE))
