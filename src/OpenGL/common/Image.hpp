@@ -117,6 +117,8 @@ public:
 	// Render target
 	static Image *create(GLsizei width, GLsizei height, GLint internalformat, int multiSampleDepth, bool lockable);
 
+	static GLenum getRenderTargetFormat(sw::Format format);
+
 	GLsizei getWidth() const
 	{
 		return width;

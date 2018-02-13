@@ -1199,6 +1199,21 @@ namespace egl
 		return new ImageImplementation(width, height, internalformat, multiSampleDepth, lockable);
 	}
 
+	GLenum Image::getRenderTargetFormat(sw::Format format)
+	{
+		switch(format)
+		{
+		case sw::FORMAT_A8R8G8B8:
+		case sw::FORMAT_A8B8G8R8:
+			return GL_RGBA8;
+		case sw::FORMAT_X8B8G8R8:
+		case sw::FORMAT_X8R8G8B8:
+			return GL_RGB8;
+		default:
+			return GL_NONE;
+		}
+	}
+
 	Image::~Image()
 	{
 		// sync() must be called in the destructor of the most derived class to ensure their vtable isn't destroyed

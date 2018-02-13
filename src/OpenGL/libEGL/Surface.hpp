@@ -48,13 +48,15 @@ public:
 
 	EGLint getWidth() const override;
 	EGLint getHeight() const override;
+	EGLenum getTextureTarget() const override;
 	virtual EGLint getPixelAspectRatio() const;
 	virtual EGLenum getRenderBuffer() const;
 	virtual EGLenum getSwapBehavior() const;
 	virtual EGLenum getTextureFormat() const;
-	virtual EGLenum getTextureTarget() const;
 	virtual EGLBoolean getLargestPBuffer() const;
 	virtual EGLNativeWindowType getWindowHandle() const = 0;
+
+	bool hasClientBuffer() const { return clientBuffer != nullptr; }
 
 	void setBoundTexture(egl::Texture *texture) override;
 	virtual egl::Texture *getBoundTexture() const;
@@ -63,11 +65,13 @@ public:
 	virtual bool isPBufferSurface() const { return false; }
 
 protected:
-	Surface(const Display *display, const Config *config);
+	Surface(const Display *display, const Config *config, EGLClientBuffer clientBuffer = nullptr);
 
 	~Surface() override;
 
 	virtual void deleteResources();
+
+	sw::Format getBackBufferFormat() const;
 
 	const Display *const display;
 	Image *depthStencil;
@@ -77,8 +81,8 @@ protected:
 	bool reset(int backbufferWidth, int backbufferHeight);
 
 	const Config *const config;    // EGL config surface was created with
-	EGLint height;                 // Height of surface
 	EGLint width;                  // Width of surface
+	EGLint height;                 // Height of surface
 //  EGLint horizontalResolution;   // Horizontal dot pitch
 //  EGLint verticalResolution;     // Vertical dot pitch
 	EGLBoolean largestPBuffer;     // If true, create largest pbuffer possible
@@ -90,9 +94,12 @@ protected:
 	EGLenum swapBehavior;          // Buffer swap behavior
 	EGLenum textureFormat;         // Format of texture: RGB, RGBA, or no texture
 	EGLenum textureTarget;         // Type of texture: 2D or no texture
+	EGLenum clientBufferFormat;    // Format of the client buffer
+	EGLenum clientBufferType;      // Type of the client buffer
 //  EGLenum vgAlphaFormat;         // Alpha format for OpenVG
 //  EGLenum vgColorSpace;          // Color space for OpenVG
 	EGLint swapInterval;
+	EGLClientBuffer clientBuffer;
 };
 
 class WindowSurface : public Surface
@@ -120,7 +127,9 @@ private:
 class PBufferSurface : public Surface
 {
 public:
-	PBufferSurface(Display *display, const egl::Config *config, EGLint width, EGLint height, EGLenum textureFormat, EGLenum textureTarget, EGLBoolean largestPBuffer);
+	PBufferSurface(Display *display, const egl::Config *config, EGLint width, EGLint height,
+	               EGLenum textureFormat, EGLenum textureTarget, EGLenum internalFormat,
+	               EGLenum textureType, EGLBoolean largestPBuffer, EGLClientBuffer clientBuffer);
 	~PBufferSurface() override;
 
 	bool isPBufferSurface() const override { return true; }
