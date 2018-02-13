@@ -99,7 +99,12 @@ namespace sw
 			return false;
 		}
 
-		uint8_t *slice = (uint8_t*)dest->lockInternal(dRect.x0, dRect.y0, dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC);
+		bool useDestInternal = !dest->isExternalDirty();
+		uint8_t *slice = useDestInternal ?
+			(uint8_t*)dest->lockInternal(dRect.x0, dRect.y0, dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC) :
+			(uint8_t*)dest->lockExternal(dRect.x0, dRect.y0, dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC);
+		int pitchB = useDestInternal ? dest->getInternalPitchB() : dest->getExternalPitchB();
+		int sliceB = useDestInternal ? dest->getInternalSliceB() : dest->getExternalSliceB();
 
 		for(int j = 0; j < dest->getSamples(); j++)
 		{
@@ -111,24 +116,31 @@ namespace sw
 				for(int i = dRect.y0; i < dRect.y1; i++)
 				{
 					sw::clear((uint16_t*)d, packed, dRect.x1 - dRect.x0);
-					d += dest->getInternalPitchB();
+					d += pitchB;
 				}
 				break;
 			case 4:
 				for(int i = dRect.y0; i < dRect.y1; i++)
 				{
 					sw::clear((uint32_t*)d, packed, dRect.x1 - dRect.x0);
-					d += dest->getInternalPitchB();
+					d += pitchB;
 				}
 				break;
 			default:
 				assert(false);
 			}
 
-			slice += dest->getInternalSliceB();
+			slice += sliceB;
 		}
 
-		dest->unlockInternal();
+		if(useDestInternal)
+		{
+			dest->unlockInternal();
+		}
+		else
+		{
+			dest->unlockExternal();
+		}
 
 		return true;
 	}
