@@ -32,7 +32,9 @@
 #include <tchar.h>
 #elif defined(__APPLE__)
 #include "OSXUtils.hpp"
-#endif
+#include <CoreFoundation/CoreFoundation.h>
+#include <IOSurface/IOSurface.h>
+#endif // __APPLE__
 
 #include <algorithm>
 
@@ -49,7 +51,7 @@ Surface::~Surface()
 
 namespace egl
 {
-Surface::Surface(const Display *display, const Config *config) : display(display), config(config)
+Surface::Surface(const Display *display, const Config *config, EGLClientBuffer clientBuffer) : display(display), config(config), clientBuffer(clientBuffer)
 {
 	backBuffer = nullptr;
 	depthStencil = nullptr;
@@ -63,6 +65,8 @@ Surface::Surface(const Display *display, const Config *config) : display(display
 	swapBehavior = EGL_BUFFER_PRESERVED;
 	textureFormat = EGL_NO_TEXTURE;
 	textureTarget = EGL_NO_TEXTURE;
+	clientBufferFormat = EGL_NO_TEXTURE;
+	clientBufferType = EGL_NO_TEXTURE;
 	swapInterval = -1;
 	setSwapInterval(1);
 }
@@ -78,11 +82,11 @@ bool Surface::initialize()
 
 	if(libGLESv2)
 	{
-		backBuffer = libGLESv2->createBackBuffer(width, height, config->mRenderTargetFormat, config->mSamples);
+		backBuffer = libGLESv2->createBackBuffer(width, height, getBackBufferFormat(), config->mSamples);
 	}
 	else if(libGLES_CM)
 	{
-		backBuffer = libGLES_CM->createBackBuffer(width, height, config->mRenderTargetFormat, config->mSamples);
+		backBuffer = libGLES_CM->createBackBuffer(width, height, getBackBufferFormat(), config->mSamples);
 	}
 
 	if(!backBuffer)
@@ -222,8 +226,57 @@ EGLBoolean Surface::getLargestPBuffer() const
 	return largestPBuffer;
 }
 
+sw::Format Surface::getBackBufferFormat() const
+{
+	switch(clientBufferType)
+	{
+	case GL_UNSIGNED_BYTE:
+		switch(clientBufferFormat)
+		{
+		case GL_RED:
+			return sw::FORMAT_R8;
+		case GL_RG:
+			return sw::FORMAT_G8R8;
+		case GL_BGRA_EXT:
+			return sw::FORMAT_A8R8G8B8;
+		default:
+			break;
+		}
+		break;
+	case GL_UNSIGNED_SHORT:
+		return sw::FORMAT_R16UI;
+	case GL_HALF_FLOAT:
+		return sw::FORMAT_A16B16G16R16F;
+	default:
+		break;
+	}
+
+	return config->mRenderTargetFormat;
+}
+
 void Surface::setBoundTexture(egl::Texture *texture)
 {
+	if(clientBuffer && backBuffer)
+	{
+		if((this->texture == nullptr) && (texture != nullptr))
+		{
+#if defined(__APPLE__)
+			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(clientBuffer);
+			IOSurfaceLock(ioSurface, 0, nullptr);
+			backBuffer->setExternalBuffer(IOSurfaceGetBaseAddress(ioSurface));
+#else
+			backBuffer->setExternalBuffer(clientBuffer);
+#endif // __APPLE__
+		}
+		if((this->texture != nullptr) && (texture == nullptr))
+		{
+#if defined(__APPLE__)
+			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(clientBuffer);
+			IOSurfaceUnlock(ioSurface, 0, nullptr);
+#endif // __APPLE__
+		}
+	}
+
 	this->texture = texture;
 }
 
@@ -349,12 +402,25 @@ bool WindowSurface::reset(int backBufferWidth, int backBufferHeight)
 	return Surface::initialize();
 }
 
-PBufferSurface::PBufferSurface(Display *display, const Config *config, EGLint width, EGLint height, EGLenum textureFormat, EGLenum textureType, EGLBoolean largestPBuffer)
-	: Surface(display, config)
+PBufferSurface::PBufferSurface(Display *display, const Config *config, EGLint width, EGLint height,
+                               EGLenum textureFormat, EGLenum textureTarget, EGLenum clientBufferFormat,
+                               EGLenum clientBufferType, EGLBoolean largestPBuffer, EGLClientBuffer clientBuffer)
+	: Surface(display, config, clientBuffer)
 {
 	this->width = width;
 	this->height = height;
 	this->largestPBuffer = largestPBuffer;
+	this->textureFormat = textureFormat;
+	this->textureTarget = textureTarget;
+	this->clientBufferFormat = clientBufferFormat;
+	this->clientBufferType = clientBufferType;
+
+#if defined(__APPLE__)
+	if(clientBuffer)
+	{
+		CFRetain(reinterpret_cast<IOSurfaceRef>(clientBuffer));
+	}
+#endif // __APPLE__
 }
 
 PBufferSurface::~PBufferSurface()
@@ -377,6 +443,14 @@ EGLNativeWindowType PBufferSurface::getWindowHandle() const
 void PBufferSurface::deleteResources()
 {
 	Surface::deleteResources();
+
+#if defined(__APPLE__)
+	if(clientBuffer)
+	{
+		CFRelease(reinterpret_cast<IOSurfaceRef>(clientBuffer));
+		clientBuffer = nullptr;
+	}
+#endif // __APPLE__
 }
 
 }

@@ -306,6 +306,12 @@ namespace sw
 		inline int getExternalSliceB() const;
 		inline int getExternalSliceP() const;
 
+		inline void setExternalBuffer(void* externalBuffer)
+		{
+			external.buffer = externalBuffer;
+			ownExternal = false;
+		}
+
 		virtual void *lockInternal(int x, int y, int z, Lock lock, Accessor client) = 0;
 		virtual void unlockInternal() = 0;
 		inline Format getInternalFormat() const;

@@ -2102,7 +2102,7 @@ namespace sw2es
 		switch(format)
 		{
 		case sw::FORMAT_A4R4G4B4: return GL_RGBA4;
-		case sw::FORMAT_A8R8G8B8: return GL_RGBA8;
+		case sw::FORMAT_A8R8G8B8: return GL_BGRA8_EXT;
 		case sw::FORMAT_A8B8G8R8: return GL_RGBA8;
 		case sw::FORMAT_A1R5G5B5: return GL_RGB5_A1;
 		case sw::FORMAT_R5G6B5:   return GL_RGB565;
@@ -2110,6 +2110,10 @@ namespace sw2es
 		case sw::FORMAT_X8B8G8R8: return GL_RGB8;
 		case sw::FORMAT_SRGB8_A8: return GL_RGBA8;
 		case sw::FORMAT_SRGB8_X8: return GL_RGB8;
+		case sw::FORMAT_G8R8:     return GL_RG8;
+		case sw::FORMAT_R8:       return GL_R8;
+		case sw::FORMAT_R16UI:    return GL_R16UI;
+		case sw::FORMAT_A16B16G16R16F: return GL_RGBA16F;
 		default:
 			UNREACHABLE(format);
 		}
