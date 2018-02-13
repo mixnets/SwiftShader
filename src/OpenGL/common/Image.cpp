@@ -24,6 +24,11 @@
 #include <string.h>
 #include <algorithm>
 
+#if defined(__APPLE__)
+#include <CoreFoundation/CoreFoundation.h>
+#include <IOSurface/IOSurface.h>
+#endif
+
 namespace gl
 {
 	sw::Format ConvertReadFormatType(GLenum format, GLenum type)
@@ -1203,6 +1208,223 @@ namespace egl
 	Image *Image::create(GLsizei width, GLsizei height, GLint internalformat, int multiSampleDepth, bool lockable)
 	{
 		return new ImageImplementation(width, height, internalformat, multiSampleDepth, lockable);
+	}
+
+	int ClientBuffer::getWidth() const
+	{
+		return width;
+	}
+
+	int ClientBuffer::getHeight() const
+	{
+		return height;
+	}
+
+	sw::Format ClientBuffer::getFormat() const
+	{
+		return format;
+	}
+
+	int ClientBuffer::bytes() const
+	{
+		return sw::Surface::bytes(format);
+	}
+
+	int ClientBuffer::pitchB() const
+	{
+#if defined(__APPLE__)
+		if(buffer)
+		{
+			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(buffer);
+			return static_cast<int>(IOSurfaceGetBytesPerRowOfPlane(ioSurface, plane));
+		}
+
+		return 0;
+#else
+		return sw::Surface::pitchB(width, 0, format, false);
+#endif
+	}
+
+	int ClientBuffer::pitchP() const
+	{
+#if defined(__APPLE__)
+		if(buffer)
+		{
+			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(buffer);
+			int pitchB = static_cast<int>(IOSurfaceGetBytesPerRowOfPlane(ioSurface, plane));
+			int bytesPerPixel = bytes();
+			ASSERT((pitchB % bytesPerPixel) == 0);
+			return pitchB / bytesPerPixel;
+		}
+
+		return 0;
+#else
+		return sw::Surface::pitchP(width, 0, format, false);
+#endif
+	}
+
+	int ClientBuffer::sliceB() const
+	{
+#if defined(__APPLE__)
+		if(buffer)
+		{
+			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(buffer);
+			return static_cast<int>(IOSurfaceGetHeightOfPlane(ioSurface, plane)) * pitchB();
+		}
+
+		return 0;
+#else
+		return height * pitchB();
+#endif
+	}
+
+	void ClientBuffer::retain()
+	{
+#if defined(__APPLE__)
+		if(buffer)
+		{
+			CFRetain(reinterpret_cast<IOSurfaceRef>(buffer));
+		}
+#endif
+	}
+
+	void ClientBuffer::release()
+	{
+#if defined(__APPLE__)
+		if(buffer)
+		{
+			CFRelease(reinterpret_cast<IOSurfaceRef>(buffer));
+			buffer = nullptr;
+		}
+#endif
+	}
+
+	void* ClientBuffer::lock()
+	{
+#if defined(__APPLE__)
+		if(buffer)
+		{
+			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(buffer);
+			IOSurfaceLock(ioSurface, 0, nullptr);
+			return IOSurfaceGetBaseAddressOfPlane(ioSurface, plane);
+		}
+
+		return nullptr;
+#else
+		return buffer;
+#endif
+	}
+
+	void ClientBuffer::unlock()
+	{
+#if defined(__APPLE__)
+		if(buffer)
+		{
+			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(buffer);
+			IOSurfaceUnlock(ioSurface, 0, nullptr);
+		}
+#endif
+	}
+
+	class ClientBufferImage : public egl::Image
+	{
+	public:
+		explicit ClientBufferImage(const ClientBuffer& clientBuffer) :
+			egl::Image(clientBuffer.getWidth(),
+				clientBuffer.getHeight(),
+				getClientBufferInternalFormat(clientBuffer.getFormat()),
+				clientBuffer.pitchP()),
+			clientBuffer(clientBuffer)
+		{
+			shared = false;
+			this->clientBuffer.retain();
+		}
+
+	private:
+		ClientBuffer clientBuffer;
+
+		~ClientBufferImage() override
+		{
+			sync();   // Wait for any threads that use this image to finish.
+
+			clientBuffer.release();
+		}
+
+		static GLint getClientBufferInternalFormat(sw::Format format)
+		{
+			switch(format)
+			{
+			case sw::FORMAT_R8:            return GL_R8;
+			case sw::FORMAT_G8R8:          return GL_RG8;
+			case sw::FORMAT_A8R8G8B8:      return GL_BGRA8_EXT;
+			case sw::FORMAT_R16UI:         return GL_R16UI;
+			case sw::FORMAT_A16B16G16R16F: return GL_RGBA16F;
+			default:                       return GL_NONE;
+			}
+		}
+
+		void *lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client) override
+		{
+			LOGLOCK("image=%p op=%s.swsurface lock=%d", this, __FUNCTION__, lock);
+
+			// Always do this for reference counting.
+			void *data = sw::Surface::lockInternal(x, y, z, lock, client);
+
+			if(x != 0 || y != 0 || z != 0)
+			{
+				LOGLOCK("badness: %s called with unsupported parms: image=%p x=%d y=%d z=%d", __FUNCTION__, this, x, y, z);
+			}
+
+			LOGLOCK("image=%p op=%s.ani lock=%d", this, __FUNCTION__, lock);
+
+			// Lock the ClientBuffer and use its address.
+			data = (unsigned char*)clientBuffer.lock() + x * clientBuffer.bytes() + y * clientBuffer.pitchB() + z * getSamples() * clientBuffer.sliceB();
+
+			if(lock == sw::LOCK_UNLOCKED)
+			{
+				// We're never going to get a corresponding unlock, so unlock
+				// immediately. This keeps the reference counts sane.
+				clientBuffer.unlock();
+			}
+
+			return data;
+		}
+
+		void unlockInternal() override
+		{
+			LOGLOCK("image=%p op=%s.ani", this, __FUNCTION__);
+			clientBuffer.unlock();
+
+			LOGLOCK("image=%p op=%s.swsurface", this, __FUNCTION__);
+			sw::Surface::unlockInternal();
+		}
+
+		void *lock(int x, int y, int z, sw::Lock lock) override
+		{
+			LOGLOCK("image=%p op=%s lock=%d", this, __FUNCTION__, lock);
+			(void)sw::Surface::lockExternal(x, y, z, lock, sw::PUBLIC);
+
+			return clientBuffer.lock();
+		}
+
+		void unlock() override
+		{
+			LOGLOCK("image=%p op=%s.ani", this, __FUNCTION__);
+			clientBuffer.unlock();
+
+			LOGLOCK("image=%p op=%s.swsurface", this, __FUNCTION__);
+			sw::Surface::unlockExternal();
+		}
+
+		void release() override
+		{
+			Image::release();
+		}
+	};
+
+	Image *Image::create(const egl::ClientBuffer& clientBuffer)
+	{
+		return new ClientBufferImage(clientBuffer);
 	}
 
 	Image::~Image()
