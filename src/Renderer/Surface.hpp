@@ -237,6 +237,31 @@ namespace sw
 		LOCK_UPDATE   // Write access which doesn't dirty the buffer, because it's being updated with the sibling's data.
 	};
 
+	class ClientBuffer
+	{
+	public:
+		ClientBuffer(int width, int height, Format format, void* buffer, size_t plane) :
+			width(width), height(height), format(format), buffer(buffer), plane(plane)
+		{}
+
+		int getWidth() const;
+		int getHeight() const;
+		Format getFormat() const;
+		int getPitchB() const;
+
+		void retain();
+		void release();
+		void* lock();
+		void unlock();
+
+	private:
+		int width;
+		int height;
+		Format format;
+		void* buffer;
+		size_t plane;
+	};
+
 	class [[clang::lto_visibility_public]] Surface
 	{
 	private:
@@ -279,6 +304,7 @@ namespace sw
 	protected:
 		Surface(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
 		Surface(Resource *texture, int width, int height, int depth, int border, int samples, Format format, bool lockable, bool renderTarget, int pitchP = 0);
+		Surface(const ClientBuffer& clientBuffer);
 
 	public:
 		static Surface *create(int width, int height, int depth, Format format, void *pixels, int pitch, int slice);
@@ -385,6 +411,7 @@ namespace sw
 
 	private:
 		sw::Resource *resource;
+		sw::ClientBuffer *clientBuffer;
 
 		typedef unsigned char byte;
 		typedef unsigned short word;

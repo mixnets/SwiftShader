@@ -1157,6 +1157,8 @@ namespace egl
 			: Image(width, height, internalformat, pitchP) {}
 		ImageImplementation(GLsizei width, GLsizei height, GLint internalformat, int multiSampleDepth, bool lockable)
 			: Image(width, height, internalformat, multiSampleDepth, lockable) {}
+		ImageImplementation(const sw::ClientBuffer& clientBuffer)
+			: Image(clientBuffer) {}
 
 		~ImageImplementation() override
 		{
@@ -1197,6 +1199,11 @@ namespace egl
 	Image *Image::create(GLsizei width, GLsizei height, GLint internalformat, int multiSampleDepth, bool lockable)
 	{
 		return new ImageImplementation(width, height, internalformat, multiSampleDepth, lockable);
+	}
+
+	Image *Image::create(const sw::ClientBuffer& clientBuffer)
+	{
+		return new ImageImplementation(clientBuffer);
 	}
 
 	Image::~Image()
