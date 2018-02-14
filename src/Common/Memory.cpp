@@ -29,6 +29,7 @@
 #endif
 
 #include <memory.h>
+#include <stdlib.h>
 
 #undef allocate
 #undef deallocate
@@ -39,6 +40,63 @@
 
 namespace sw
 {
+namespace
+{
+
+void *allocateRaw(size_t bytes, size_t alignment)
+{
+	void *allocation;
+	// Assert power of 2 alignment.
+	ASSERT((alignment & (alignment -1)) == 0);
+	int result = posix_memalign(&allocation, alignment, bytes);
+	ASSERT(result == 0);  // TODO: graceful logging.
+	return allocation;
+}
+
+#if !defined(_WIN32)
+// Create a file descriptor for anonymous memory with the given name.
+int memfd_create(const char* name, unsigned int flags) {
+#if __aarch64__
+#define __NR_memfd_create 279
+#elif __arm__
+#define __NR_memfd_create 279
+#elif __powerpc64__
+#define __NR_memfd_create 360
+#elif __i386__
+#define __NR_memfd_create 356
+#elif __x86_64__
+#define __NR_memfd_create 319
+#endif /* __NR_memfd_create__ */
+#ifdef __NR_memfd_create
+	return syscall(__NR_memfd_create, name, flags);
+#else
+	return -1;
+#endif
+}
+
+// Returns a file descriptor for use with an anonymous mmap, if
+// memfd_create fails -1 is returned.
+int anonymousFd() {
+	static int fd = []() {
+		return memfd_create("SwiftShader Memory", 0);
+	}();
+	return fd;
+}
+
+// Ensure there is enough space in the "anonymous" fd for length.
+void ensureAnonFileSize(int anonFd, size_t length)
+{
+	static size_t fileSize = 0;
+	if (length > fileSize) {
+		ftruncate(anonFd, length);
+		fileSize = length;
+	}
+}
+
+#endif
+
+}  // anonymous namespace
+
 size_t memoryPageSize()
 {
 	static int pageSize = 0;
@@ -57,29 +115,6 @@ size_t memoryPageSize()
 	return pageSize;
 }
 
-struct Allocation
-{
-//	size_t bytes;
-	unsigned char *block;
-};
-
-inline void *allocateRaw(size_t bytes, size_t alignment)
-{
-	unsigned char *block = new unsigned char[bytes + sizeof(Allocation) + alignment];
-	unsigned char *aligned = nullptr;
-
-	if(block)
-	{
-		aligned = (unsigned char*)((uintptr_t)(block + sizeof(Allocation) + alignment - 1) & -(intptr_t)alignment);
-		Allocation *allocation = (Allocation*)(aligned - sizeof(Allocation));
-
-	//	allocation->bytes = bytes;
-		allocation->block = block;
-	}
-
-	return aligned;
-}
-
 void *allocate(size_t bytes, size_t alignment)
 {
 	void *memory = allocateRaw(bytes, alignment);
@@ -94,20 +129,33 @@ void *allocate(size_t bytes, size_t alignment)
 
 void deallocate(void *memory)
 {
-	if(memory)
-	{
-		unsigned char *aligned = (unsigned char*)memory;
-		Allocation *allocation = (Allocation*)(aligned - sizeof(Allocation));
-
-		delete[] allocation->block;
-	}
+	free(memory);
 }
 
 void *allocateExecutable(size_t bytes)
 {
 	size_t pageSize = memoryPageSize();
-
-	return allocate((bytes + pageSize - 1) & ~(pageSize - 1), pageSize);
+	size_t length = (bytes + pageSize - 1) & -pageSize;
+#if defined(_WIN32)
+	return allocate(length, pageSize);
+#else
+	int anonFd = anonymousFd();
+	void *mapping;
+	if (anonFd == -1)
+	{
+		mapping = mmap(nullptr, length, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, anonFd, 0);
+	}
+	else
+	{
+		ensureAnonFileSize(anonFd, length);
+		mapping = mmap(nullptr, length, PROT_READ|PROT_WRITE, MAP_PRIVATE, anonFd, 0);
+	}
+	if (mapping == MAP_FAILED)
+	{
+		return nullptr;
+	}
+	return mapping;
+#endif
 }
 
 void markExecutable(void *memory, size_t bytes)
@@ -125,11 +173,12 @@ void deallocateExecutable(void *memory, size_t bytes)
 	#if defined(_WIN32)
 		unsigned long oldProtection;
 		VirtualProtect(memory, bytes, PAGE_READWRITE, &oldProtection);
+		deallocate(memory);
 	#else
-		mprotect(memory, bytes, PROT_READ | PROT_WRITE);
+		size_t pageSize = memoryPageSize();
+		size_t length = (bytes + pageSize - 1) & -pageSize;
+		munmap(memory, length);
 	#endif
-
-	deallocate(memory);
 }
 
 void clear(uint16_t *memory, uint16_t element, size_t count)
