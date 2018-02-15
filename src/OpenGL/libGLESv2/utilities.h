@@ -106,10 +106,4 @@ namespace es2sw
 	sw::Format ConvertRenderbufferFormat(GLenum format);
 }
 
-namespace sw2es
-{
-	GLenum ConvertBackBufferFormat(sw::Format format);
-	GLenum ConvertDepthStencilFormat(sw::Format format);
-}
-
 #endif  // LIBGLESV2_UTILITIES_H
