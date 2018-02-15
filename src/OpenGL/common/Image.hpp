@@ -51,7 +51,7 @@ struct PixelStorageModes
 	GLint skipImages = 0;
 };
 
-sw::Format ConvertFormatType(GLenum format, GLenum type);
+sw::Format ConvertReadFormatType(GLenum format, GLenum type);
 sw::Format SelectInternalFormat(GLint format);
 GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment);
 GLsizei ComputeCompressedSize(GLsizei width, GLsizei height, GLenum format);
