@@ -53,6 +53,12 @@ namespace
 		X24S8,
 		D32FX32,
 		X56S8,
+		RGBA1010102to8888,
+		RGB8to565,
+		R32Fto16F,
+		RG32Fto16F,
+		RGB32Fto16F,
+		RGBA32Fto16F
 	};
 
 	template<DataType dataType>
@@ -181,7 +187,7 @@ namespace
 			destH[4 * x + 0] = sourceH[x * 3 + 0];
 			destH[4 * x + 1] = sourceH[x * 3 + 1];
 			destH[4 * x + 2] = sourceH[x * 3 + 2];
-			destH[4 * x + 3] = 0x3C00; // SEEEEEMMMMMMMMMM, S = 0, E = 15, M = 0: 16bit flpt representation of 1
+			destH[4 * x + 3] = 0x3C00;   // SEEEEEMMMMMMMMMM, S = 0, E = 15, M = 0: 16-bit floating-point representation of 1.0
 		}
 	}
 
@@ -205,15 +211,45 @@ namespace
 	void LoadImageRow<RGBA5551>(const unsigned char *source, unsigned char *dest, GLsizei width)
 	{
 		const unsigned short *source5551 = reinterpret_cast<const unsigned short*>(source);
-		unsigned char *dest5551 = dest;
+		unsigned char *dest8888 = dest;
 
 		for(int x = 0; x < width; x++)
 		{
 			unsigned short rgba = source5551[x];
-			dest5551[4 * x + 0] = ((rgba & 0xF800) >> 8) | ((rgba & 0xF800) >> 13);
-			dest5551[4 * x + 1] = ((rgba & 0x07C0) >> 3) | ((rgba & 0x07C0) >> 8);
-			dest5551[4 * x + 2] = ((rgba & 0x003E) << 2) | ((rgba & 0x003E) >> 3);
-			dest5551[4 * x + 3] = (rgba & 0x0001) ? 0xFF : 0;
+			dest8888[4 * x + 0] = ((rgba & 0xF800) >> 8) | ((rgba & 0xF800) >> 13);
+			dest8888[4 * x + 1] = ((rgba & 0x07C0) >> 3) | ((rgba & 0x07C0) >> 8);
+			dest8888[4 * x + 2] = ((rgba & 0x003E) << 2) | ((rgba & 0x003E) >> 3);
+			dest8888[4 * x + 3] = (rgba & 0x0001) ? 0xFF : 0;
+		}
+	}
+
+	template<>
+	void LoadImageRow<RGBA1010102to8888>(const unsigned char *source, unsigned char *dest, GLsizei width)
+	{
+		const unsigned int *source1010102 = reinterpret_cast<const unsigned int*>(source);
+		unsigned char *dest8888 = dest;
+
+		for(int x = 0; x < width; x++)
+		{
+			unsigned int rgba = source1010102[x];
+			dest8888[4 * x + 0] = sw::unorm<8>((rgba & 0x000003FF) * (1.0f / 0x000003FF));
+			dest8888[4 * x + 1] = sw::unorm<8>((rgba & 0x000FFC00) * (1.0f / 0x000FFC00));
+			dest8888[4 * x + 2] = sw::unorm<8>((rgba & 0x3FF00000) * (1.0f / 0x3FF00000));
+			dest8888[4 * x + 3] = sw::unorm<8>((rgba & 0xC0000000) * (1.0f / 0xC0000000));
+		}
+	}
+
+	template<>
+	void LoadImageRow<RGB8to565>(const unsigned char *source, unsigned char *dest, GLsizei width)
+	{
+		unsigned short *dest565 = reinterpret_cast<unsigned short*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			float r = source[3 * x + 0] * (1.0f / 0xFF);
+			float g = source[3 * x + 1] * (1.0f / 0xFF);
+			float b = source[3 * x + 2] * (1.0f / 0xFF);
+			dest565[x] = (sw::unorm<5>(r) << 11) | (sw::unorm<6>(g) << 5) | (sw::unorm<5>(b) << 0);
 		}
 	}
 
@@ -232,6 +268,59 @@ namespace
 
 	template<>
 	void LoadImageRow<RGB9E5>(const unsigned char *source, unsigned char *dest, GLsizei width)
+	{
+		const sw::RGB9E5 *sourceRGB = reinterpret_cast<const sw::RGB9E5*>(source);
+		sw::half *destF = reinterpret_cast<sw::half*>(dest);
+
+		for(int x = 0; x < width; x++, sourceRGB++, destF += 4)
+		{
+			sourceRGB->toRGB16F(destF);
+			destF[3] = 1.0f;
+		}
+	}
+
+	template<>
+	void LoadImageRow<R32Fto16F>(const unsigned char *source, unsigned char *dest, GLsizei width)
+	{
+		const float *source32F = reinterpret_cast<const float*>(source);
+		sw::half *dest16F = reinterpret_cast<sw::half*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			dest16F[x] = source32F[x];
+		}
+	}
+
+	template<>
+	void LoadImageRow<RG32Fto16F>(const unsigned char *source, unsigned char *dest, GLsizei width)
+	{
+		const float *source32F = reinterpret_cast<const float*>(source);
+		sw::half *dest16F = reinterpret_cast<sw::half*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			dest16F[2 * x + 0] = source32F[2 * x + 0];
+			dest16F[2 * x + 1] = source32F[2 * x + 1];
+		}
+	}
+
+	template<>
+	void LoadImageRow<RGB32Fto16F>(const unsigned char *source, unsigned char *dest, GLsizei width)
+	{
+		const float *source32F = reinterpret_cast<const float*>(source);
+		sw::half *dest16F = reinterpret_cast<sw::half*>(dest);
+
+		for(int x = 0; x < width; x++)
+		{
+			dest16F[4 * x + 0] = source32F[3 * x + 0];
+			dest16F[4 * x + 1] = source32F[3 * x + 1];
+			dest16F[4 * x + 2] = source32F[3 * x + 3];
+			dest16F[4 * x + 3] = 1.0f;
+		}
+	}
+
+	template<>
+	void LoadImageRow<RGBA32Fto16F>(const unsigned char *source, unsigned char *dest, GLsizei width)
 	{
 		const sw::RGB9E5 *sourceRGB = reinterpret_cast<const sw::RGB9E5*>(source);
 		sw::half *destF = reinterpret_cast<sw::half*>(dest);
@@ -349,7 +438,7 @@ namespace
 
 namespace egl
 {
-	sw::Format ConvertFormatType(GLenum format, GLenum type)
+	sw::Format ConvertReadFormatType(GLenum format, GLenum type)
 	{
 		switch(format)
 		{
@@ -363,12 +452,6 @@ namespace egl
 			default: UNREACHABLE(type);
 			}
 			break;
-	//	case GL_LUMINANCE8_EXT:
-	//		return sw::FORMAT_L8;
-	//	case GL_LUMINANCE16F_EXT:
-	//		return sw::FORMAT_L16F;
-	//	case GL_LUMINANCE32F_EXT:
-	//		return sw::FORMAT_L32F;
 		case GL_LUMINANCE_ALPHA:
 			switch(type)
 			{
@@ -379,12 +462,6 @@ namespace egl
 			default: UNREACHABLE(type);
 			}
 			break;
-	//	case GL_LUMINANCE8_ALPHA8_EXT:
-	//		return sw::FORMAT_A8L8;
-	//	case GL_LUMINANCE_ALPHA16F_EXT:
-	//		return sw::FORMAT_A16L16F;
-	//	case GL_LUMINANCE_ALPHA32F_EXT:
-			return sw::FORMAT_A32L32F;
 		case GL_RGBA:
 			switch(type)
 			{
@@ -399,7 +476,6 @@ namespace egl
 			}
 			break;
 		case GL_BGRA_EXT:
-	//	case GL_BGRA8_EXT:
 			switch(type)
 			{
 			case GL_UNSIGNED_BYTE:                  return sw::FORMAT_A8R8G8B8;
@@ -449,12 +525,6 @@ namespace egl
 			default: UNREACHABLE(type);
 			}
 			break;
-	//	case GL_ALPHA8_EXT:
-	//		return sw::FORMAT_A8;
-	//	case GL_ALPHA16F_EXT:
-	//		return sw::FORMAT_A16F;
-	//	case GL_ALPHA32F_EXT:
-	//		return sw::FORMAT_A32F;
 		case GL_RED_INTEGER:
 			switch(type)
 			{
@@ -498,372 +568,9 @@ namespace egl
 			default: UNREACHABLE(type);
 			}
 			break;
-	//	case GL_ETC1_RGB8_OES:
-	//		return sw::FORMAT_ETC1;
-	//	case GL_COMPRESSED_R11_EAC:
-	//		return sw::FORMAT_R11_EAC;
-	//	case GL_COMPRESSED_SIGNED_R11_EAC:
-	//		return sw::FORMAT_SIGNED_R11_EAC;
-	//	case GL_COMPRESSED_RG11_EAC:
-	//		return sw::FORMAT_RG11_EAC;
-	//	case GL_COMPRESSED_SIGNED_RG11_EAC:
-	//		return sw::FORMAT_SIGNED_RG11_EAC;
-	//	case GL_COMPRESSED_RGB8_ETC2:
-	//		return sw::FORMAT_RGB8_ETC2;
-	//	case GL_COMPRESSED_SRGB8_ETC2:
-	//		return sw::FORMAT_SRGB8_ETC2;
-	//	case GL_COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
-	//		return sw::FORMAT_RGB8_PUNCHTHROUGH_ALPHA1_ETC2;
-	//	case GL_COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
-	//		return sw::FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2;
-	//	case GL_COMPRESSED_RGBA8_ETC2_EAC:
-	//		return sw::FORMAT_RGBA8_ETC2_EAC;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ETC2_EAC;
-	//	case GL_COMPRESSED_RGBA_ASTC_4x4_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_4x4_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_5x4_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_5x4_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_5x5_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_5x5_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_6x5_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_6x5_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_6x6_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_6x6_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_8x5_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_8x5_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_8x6_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_8x6_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_8x8_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_8x8_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_10x5_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_10x5_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_10x6_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_10x6_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_10x8_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_10x8_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_10x10_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_10x10_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_12x10_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_12x10_KHR;
-	//	case GL_COMPRESSED_RGBA_ASTC_12x12_KHR:
-	//		return sw::FORMAT_RGBA_ASTC_12x12_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_4x4_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_5x4_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_5x5_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_6x5_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_6x6_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_8x5_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_8x6_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_8x8_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_10x5_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_10x6_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_10x8_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR;
-	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR:
-	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR;
-	//	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
-	//	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-	//		return sw::FORMAT_DXT1;
-	//	case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE:
-	//		return sw::FORMAT_DXT3;
-	//	case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
-	//		return sw::FORMAT_DXT5;
 		default:
+			UNREACHABLE(format);
 			break;
-		}
-
-		switch(type)
-		{
-		case GL_FLOAT:
-			switch(format)
-			{
-			case GL_ALPHA:
-			case GL_ALPHA32F_EXT:
-				return sw::FORMAT_A32F;
-			case GL_LUMINANCE:
-			case GL_LUMINANCE32F_EXT:
-				return sw::FORMAT_L32F;
-			case GL_LUMINANCE_ALPHA:
-			case GL_LUMINANCE_ALPHA32F_EXT:
-				return sw::FORMAT_A32L32F;
-			case GL_RED:
-			case GL_R32F:
-				return sw::FORMAT_R32F;
-			case GL_RG:
-			case GL_RG32F:
-				return sw::FORMAT_G32R32F;
-			case GL_RGB:
-			case GL_RGB32F:
-				return sw::FORMAT_X32B32G32R32F;
-			case GL_R11F_G11F_B10F:
-			case GL_RGB9_E5:
-				return sw::FORMAT_X16B16G16R16F_UNSIGNED;
-			case GL_RGBA:
-			case GL_RGBA32F:
-				return sw::FORMAT_A32B32G32R32F;
-			case GL_R16F:
-				return sw::FORMAT_R16F;
-			case GL_RG16F:
-				return sw::FORMAT_G16R16F;
-			case GL_RGB16F:
-				return sw::FORMAT_X16B16G16R16F;
-			case GL_RGBA16F:
-				return sw::FORMAT_A16B16G16R16F;
-			case GL_DEPTH_COMPONENT:
-			case GL_DEPTH_COMPONENT32F:
-				return sw::FORMAT_D32F;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_HALF_FLOAT:
-		case GL_HALF_FLOAT_OES:
-			switch(format)
-			{
-			case GL_ALPHA:
-			case GL_ALPHA16F_EXT:
-				return sw::FORMAT_A16F;
-			case GL_LUMINANCE:
-			case GL_LUMINANCE16F_EXT:
-				return sw::FORMAT_L16F;
-			case GL_LUMINANCE_ALPHA:
-			case GL_LUMINANCE_ALPHA16F_EXT:
-				return sw::FORMAT_A16L16F;
-			case GL_RED:
-			case GL_R16F:
-				return sw::FORMAT_R16F;
-			case GL_RG:
-			case GL_RG16F:
-				return sw::FORMAT_G16R16F;
-			case GL_RGBA:
-			case GL_RGBA16F:
-				return sw::FORMAT_A16B16G16R16F;
-			case GL_RGB:
-			case GL_RGB16F:
-				return sw::FORMAT_X16B16G16R16F;
-			case GL_R11F_G11F_B10F:
-			case GL_RGB9_E5:
-				return sw::FORMAT_X16B16G16R16F_UNSIGNED;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_BYTE:
-			switch(format)
-			{
-			case GL_R8_SNORM:
-			case GL_R8:
-			case GL_RED:
-				return sw::FORMAT_R8_SNORM;
-			case GL_R8I:
-			case GL_RED_INTEGER:
-				return sw::FORMAT_R8I;
-			case GL_RG8_SNORM:
-			case GL_RG8:
-			case GL_RG:
-				return sw::FORMAT_G8R8_SNORM;
-			case GL_RG8I:
-			case GL_RG_INTEGER:
-				return sw::FORMAT_G8R8I;
-			case GL_RGB8_SNORM:
-			case GL_RGB8:
-			case GL_RGB:
-				return sw::FORMAT_X8B8G8R8_SNORM;
-			case GL_RGB8I:
-			case GL_RGB_INTEGER:
-				return sw::FORMAT_X8B8G8R8I;
-			case GL_RGBA8_SNORM:
-			case GL_RGBA8:
-			case GL_RGBA:
-				return sw::FORMAT_A8B8G8R8_SNORM;
-			case GL_RGBA8I:
-			case GL_RGBA_INTEGER:
-				return sw::FORMAT_A8B8G8R8I;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_UNSIGNED_BYTE:
-			switch(format)
-			{
-			case GL_LUMINANCE:
-			case GL_LUMINANCE8_EXT:
-				return sw::FORMAT_L8;
-			case GL_LUMINANCE_ALPHA:
-			case GL_LUMINANCE8_ALPHA8_EXT:
-				return sw::FORMAT_A8L8;
-			case GL_R8_SNORM:
-				return sw::FORMAT_R8_SNORM;
-			case GL_R8:
-			case GL_RED:
-				return sw::FORMAT_R8;
-			case GL_R8UI:
-			case GL_RED_INTEGER:
-				return sw::FORMAT_R8UI;
-			case GL_RG8_SNORM:
-			case GL_RG8:
-			case GL_RG:
-				return sw::FORMAT_G8R8;
-			case GL_RG8UI:
-			case GL_RG_INTEGER:
-				return sw::FORMAT_G8R8UI;
-			case GL_RGB8_SNORM:
-			case GL_RGB8:
-			case GL_RGB:
-				return sw::FORMAT_X8B8G8R8;
-			case GL_SRGB8:
-				return sw::FORMAT_SRGB8_X8;
-			case GL_RGB8UI:
-			case GL_RGB_INTEGER:
-				return sw::FORMAT_X8B8G8R8UI;
-			case GL_RGBA8_SNORM:
-			case GL_RGBA8:
-			case GL_RGBA:
-				return sw::FORMAT_A8B8G8R8;
-			case GL_SRGB8_ALPHA8:
-				return sw::FORMAT_SRGB8_A8;
-			case GL_RGBA8UI:
-			case GL_RGBA_INTEGER:
-				return sw::FORMAT_A8B8G8R8UI;
-			case GL_BGRA_EXT:
-			case GL_BGRA8_EXT:
-				return sw::FORMAT_A8R8G8B8;
-			case GL_ALPHA:
-			case GL_ALPHA8_EXT:
-				return sw::FORMAT_A8;
-			case SW_YV12_BT601:
-				return sw::FORMAT_YV12_BT601;
-			case SW_YV12_BT709:
-				return sw::FORMAT_YV12_BT709;
-			case SW_YV12_JFIF:
-				return sw::FORMAT_YV12_JFIF;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_SHORT:
-			switch(format)
-			{
-			case GL_R16I:
-			case GL_RED_INTEGER:
-				return sw::FORMAT_R16I;
-			case GL_RG16I:
-			case GL_RG_INTEGER:
-				return sw::FORMAT_G16R16I;
-			case GL_RGB16I:
-			case GL_RGB_INTEGER:
-				return sw::FORMAT_X16B16G16R16I;
-			case GL_RGBA16I:
-			case GL_RGBA_INTEGER:
-				return sw::FORMAT_A16B16G16R16I;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_UNSIGNED_SHORT:
-			switch(format)
-			{
-			case GL_R16UI:
-			case GL_RED_INTEGER:
-				return sw::FORMAT_R16UI;
-			case GL_RG16UI:
-			case GL_RG_INTEGER:
-				return sw::FORMAT_G16R16UI;
-			case GL_RGB16UI:
-			case GL_RGB_INTEGER:
-				return sw::FORMAT_X16B16G16R16UI;
-			case GL_RGBA16UI:
-			case GL_RGBA_INTEGER:
-				return sw::FORMAT_A16B16G16R16UI;
-			case GL_DEPTH_COMPONENT:
-			case GL_DEPTH_COMPONENT16:
-				return sw::FORMAT_D32F_LOCKABLE;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_INT:
-			switch(format)
-			{
-			case GL_RED_INTEGER:
-			case GL_R32I:
-				return sw::FORMAT_R32I;
-			case GL_RG_INTEGER:
-			case GL_RG32I:
-				return sw::FORMAT_G32R32I;
-			case GL_RGB_INTEGER:
-			case GL_RGB32I:
-				return sw::FORMAT_X32B32G32R32I;
-			case GL_RGBA_INTEGER:
-			case GL_RGBA32I:
-				return sw::FORMAT_A32B32G32R32I;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_UNSIGNED_INT:
-			switch(format)
-			{
-			case GL_RED_INTEGER:
-			case GL_R32UI:
-				return sw::FORMAT_R32UI;
-			case GL_RG_INTEGER:
-			case GL_RG32UI:
-				return sw::FORMAT_G32R32UI;
-			case GL_RGB_INTEGER:
-			case GL_RGB32UI:
-				return sw::FORMAT_X32B32G32R32UI;
-			case GL_RGBA_INTEGER:
-			case GL_RGBA32UI:
-				return sw::FORMAT_A32B32G32R32UI;
-			case GL_DEPTH_COMPONENT:
-			case GL_DEPTH_COMPONENT16:
-			case GL_DEPTH_COMPONENT24:
-			case GL_DEPTH_COMPONENT32_OES:
-				return sw::FORMAT_D32F_LOCKABLE;
-			default:
-				UNREACHABLE(format);
-			}
-		case GL_UNSIGNED_INT_24_8_OES:
-			if(format == GL_DEPTH_STENCIL || format == GL_DEPTH24_STENCIL8)
-			{
-				return sw::FORMAT_D32FS8_TEXTURE;
-			}
-			else UNREACHABLE(format);
-		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
-			if(format == GL_DEPTH_STENCIL || format == GL_DEPTH32F_STENCIL8)
-			{
-				return sw::FORMAT_D32FS8_TEXTURE;
-			}
-			else UNREACHABLE(format);
-		case GL_UNSIGNED_SHORT_4_4_4_4:
-			return sw::FORMAT_A8R8G8B8;
-		case GL_UNSIGNED_SHORT_5_5_5_1:
-			return sw::FORMAT_A8R8G8B8;
-		case GL_UNSIGNED_SHORT_5_6_5:
-			return sw::FORMAT_R5G6B5;
-		case GL_UNSIGNED_INT_2_10_10_10_REV:
-			if(format == GL_RGB10_A2UI)
-			{
-				return sw::FORMAT_A2B10G10R10UI;
-			}
-			else
-			{
-				return sw::FORMAT_A2B10G10R10;
-			}
-		case GL_UNSIGNED_INT_10F_11F_11F_REV:
-		case GL_UNSIGNED_INT_5_9_9_9_REV:   // 5 is the exponent field, not alpha.
-			return sw::FORMAT_X16B16G16R16F_UNSIGNED;
-		default:
-			UNREACHABLE(type);
 		}
 
 		return sw::FORMAT_NULL;
@@ -975,67 +682,21 @@ namespace egl
 		case GL_ALPHA32F_EXT: return sw::FORMAT_A32F;
 		case GL_LUMINANCE32F_EXT: return sw::FORMAT_L32F;
 		case GL_LUMINANCE_ALPHA32F_EXT: return sw::FORMAT_A32L32F;
-	//	case GL_R32F: return sw::FORMAT_R32F;
-	//	case GL_RG32F: return sw::FORMAT_G32R32F;
-	//	case GL_RGB32F: return sw::FORMAT_X32B32G32R32F;
-	//	case GL_R11F_G11F_B10F:
 		case GL_RGB9_E5: return sw::FORMAT_X16B16G16R16F_UNSIGNED;
-	//	case GL_RGBA:
-	//	case GL_RGBA32F: return sw::FORMAT_A32B32G32R32F;
-	//	case GL_R16F: return sw::FORMAT_R16F;
-	//	case GL_RG16F: return sw::FORMAT_G16R16F;
-	//	case GL_RGB16F: return sw::FORMAT_X16B16G16R16F;
-	//	case GL_RGBA16F: return sw::FORMAT_A16B16G16R16F;
 		case GL_ALPHA16F_EXT: return sw::FORMAT_A16F;
 		case GL_LUMINANCE16F_EXT: return sw::FORMAT_L16F;
 		case GL_LUMINANCE_ALPHA16F_EXT: return sw::FORMAT_A16L16F;
 		case GL_R8_SNORM: return sw::FORMAT_R8_SNORM;
-	//	case GL_R8: return sw::FORMAT_R8;
-	//	case GL_R8I: return sw::FORMAT_R8I;
 		case GL_RG8_SNORM: return sw::FORMAT_G8R8_SNORM;
-	//	case GL_RG8: return sw::FORMAT_G8R8;
-	//	case GL_RG8I: return sw::FORMAT_G8R8I;
 		case GL_RGB8_SNORM: return sw::FORMAT_X8B8G8R8_SNORM;
-	//	case GL_RGB8: return sw::FORMAT_X8B8G8R8;
-	//	case GL_RGB8I: return sw::FORMAT_X8B8G8R8I;
 		case GL_RGBA8_SNORM: return sw::FORMAT_A8B8G8R8_SNORM;
-	//	case GL_RGBA8: return sw::FORMAT_A8B8G8R8;
-	//	case GL_RGBA8I: return sw::FORMAT_A8B8G8R8I;
 		case GL_LUMINANCE8_EXT: return sw::FORMAT_L8;
 		case GL_LUMINANCE8_ALPHA8_EXT: return sw::FORMAT_A8L8;
-	//	case GL_RG8UI: return sw::FORMAT_G8R8UI;
-	//	case GL_SRGB8: return sw::FORMAT_SRGB8_X8;
-	//	case GL_RGB8UI: return sw::FORMAT_X8B8G8R8UI;
-	//	case GL_SRGB8_ALPHA8: return sw::FORMAT_SRGB8_A8;
-	//	case GL_RGBA8UI: return sw::FORMAT_A8B8G8R8UI;
 		case GL_BGRA8_EXT: return sw::FORMAT_A8R8G8B8;
 		case GL_ALPHA8_EXT: return sw::FORMAT_A8;
 		case SW_YV12_BT601: return sw::FORMAT_YV12_BT601;
 		case SW_YV12_BT709: return sw::FORMAT_YV12_BT709;
 		case SW_YV12_JFIF: return sw::FORMAT_YV12_JFIF;
-	//	case GL_R16I: return sw::FORMAT_R16I;
-	//	case GL_RG16I: return sw::FORMAT_G16R16I;
-	//	case GL_RGB16I: return sw::FORMAT_X16B16G16R16I;
-	//	case GL_RGBA16I: return sw::FORMAT_A16B16G16R16I;
-	//	case GL_R16UI: return sw::FORMAT_R16UI;
-	//	case GL_RG16UI: return sw::FORMAT_G16R16UI;
-	//	case GL_RGB16UI: return sw::FORMAT_X16B16G16R16UI;
-	//	case GL_RGBA16UI: return sw::FORMAT_A16B16G16R16UI;
-	//	case GL_R32I: return sw::FORMAT_R32I;
-	//	case GL_RG32I: return sw::FORMAT_G32R32I;
-	//	case GL_RGB32I: return sw::FORMAT_X32B32G32R32I;
-	//	case GL_RGBA32I: return sw::FORMAT_A32B32G32R32I;
-	//	case GL_R32UI: return sw::FORMAT_R32UI;
-	//	case GL_RG32UI: return sw::FORMAT_G32R32UI;
-	//	case GL_RGB32UI: return sw::FORMAT_X32B32G32R32UI;
-	//	case GL_RGBA32UI: return sw::FORMAT_A32B32G32R32UI;
-	//	case GL_DEPTH_COMPONENT32F: return sw::FORMAT_D32F;
-	//	case GL_DEPTH_COMPONENT16: return sw::FORMAT_D32F_LOCKABLE;
-	//	case GL_DEPTH_COMPONENT24:
-	//	case GL_DEPTH_COMPONENT32_OES: return sw::FORMAT_D32F_LOCKABLE;
-	//	case GL_DEPTH24_STENCIL8: return sw::FORMAT_D32FS8_TEXTURE;
-	//	case GL_DEPTH32F_STENCIL8: return sw::FORMAT_D32FS8_TEXTURE;
-	//	case GL_RGB10_A2UI: return sw::FORMAT_A2B10G10R10UI;
 		}
 
 		return sw::FORMAT_NULL;
@@ -1361,7 +1022,17 @@ namespace egl
 				break;
 			case GL_FLOAT:
 				ASSERT(format != GL_RED_INTEGER);
-				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				switch(internalformat)
+				{
+				case GL_R32F:
+					LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				case GL_R16F:
+					LoadImageData<R32Fto16F>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				default:
+					UNREACHABLE(internalformat);
+				}
 				break;
 			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
@@ -1391,7 +1062,17 @@ namespace egl
 				break;
 			case GL_FLOAT:
 				ASSERT(format != GL_RG_INTEGER);
-				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				switch(internalformat)
+				{
+				case GL_RG32F:
+					LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				case GL_RG16F:
+					LoadImageData<RG32Fto16F>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				default:
+					UNREACHABLE(internalformat);
+				}
 				break;
 			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
@@ -1418,7 +1099,19 @@ namespace egl
 				LoadImageData<ByteRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_UNSIGNED_BYTE:
-				LoadImageData<UByteRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				switch(internalformat)
+				{
+				case GL_RGB8:
+				case GL_RGB8UI:
+				case GL_SRGB8:
+					LoadImageData<UByteRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				case GL_RGB565:
+					LoadImageData<RGB8to565>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				default:
+					UNREACHABLE(internalformat);
+				}
 				break;
 			case GL_UNSIGNED_SHORT_5_6_5:
 				ASSERT(format == GL_RGB);
@@ -1434,12 +1127,35 @@ namespace egl
 				break;
 			case GL_FLOAT:
 				ASSERT(format == GL_RGB);
-				LoadImageData<FloatRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				switch(internalformat)
+				{
+				case GL_RGB32F:
+					LoadImageData<FloatRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				case GL_RGB16F:
+				case GL_R11F_G11F_B10F:
+				case GL_RGB9_E5:
+					assert(implementationFormat == sw::FORMAT_X16B16G16R16F);
+					LoadImageData<RGB32Fto16F>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				default:
+					UNREACHABLE(internalformat);
+				}
 				break;
 			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
 				ASSERT(format == GL_RGB);
-				LoadImageData<HalfFloatRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				switch(internalformat)
+				{
+				case GL_RGB16F:
+				case GL_R11F_G11F_B10F:
+				case GL_RGB9_E5:
+					assert(implementationFormat == sw::FORMAT_X16B16G16R16F);
+					LoadImageData<HalfFloatRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				default:
+					UNREACHABLE(internalformat);
+				}
 				break;
 			case GL_SHORT:
 				LoadImageData<ShortRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
@@ -1467,8 +1183,19 @@ namespace egl
 				switch(internalformat)
 				{
 				case GL_RGBA8:
+				case GL_RGBA8I:
+				case GL_RGBA8UI:
+				case GL_RGBA8_SNORM:
+				case GL_SRGB8_ALPHA8:
 					LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 					break;
+				case GL_RGB5_A1:
+				case GL_RGBA4:
+					ASSERT(format == GL_RGBA && implementationFormat == sw::FORMAT_A8B8G8R8);
+					LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				default:
+					UNREACHABLE(internalformat);
 				}
 				break;
 			case GL_UNSIGNED_SHORT_4_4_4_4:
@@ -1489,11 +1216,33 @@ namespace egl
 		//		break;
 			case GL_UNSIGNED_INT_2_10_10_10_REV:
 				ASSERT(format != GL_BGRA_EXT);
-				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				switch(internalformat)
+				{
+				case GL_RGB10_A2:
+				case GL_RGB10_A2UI:
+					LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				case GL_RGB5_A1:
+					ASSERT(format == GL_RGBA && implementationFormat == sw::FORMAT_A8B8G8R8);
+					LoadImageData<RGBA1010102to8888>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				default:
+					UNREACHABLE(internalformat);
+				}
 				break;
 			case GL_FLOAT:
 				ASSERT(format == GL_RGBA);
-				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				switch(internalformat)
+				{
+				case GL_RGBA32F:
+					LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				case GL_RGBA16F:
+					LoadImageData<RGBA32Fto16F>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				default:
+					UNREACHABLE(internalformat);
+				}
 				break;
 			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
@@ -1559,64 +1308,31 @@ namespace egl
 
 	void Image::loadImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const PixelStorageModes &unpackParameters, const void *pixels)
 	{
-		//sw::Format uploadFormat = ConvertFormatType(format, type);
-		//if(uploadFormat == sw::FORMAT_NULL)
-		//{
-		//	return;
-		//}
-
 		GLsizei inputWidth = (unpackParameters.rowLength == 0) ? width : unpackParameters.rowLength;
 		GLsizei inputPitch = ComputePitch(inputWidth, format, type, unpackParameters.alignment);
 		GLsizei inputHeight = (unpackParameters.imageHeight == 0) ? height : unpackParameters.imageHeight;
 		char *input = ((char*)pixels) + ComputePackingOffset(format, type, inputWidth, inputHeight, unpackParameters);
 
-	/*	if(uploadFormat == internalFormat ||
-		   (uploadFormat == sw::FORMAT_A8B8G8R8 && internalFormat == sw::FORMAT_SRGB8_A8) ||
-<<<<<<< HEAD
-		   (uploadFormat == sw::FORMAT_X8B8G8R8 && internalFormat == sw::FORMAT_SRGB8_X8) ||
-		   (uploadFormat == sw::FORMAT_A2B10G10R10 && internalFormat == sw::FORMAT_A2B10G10R10UI))
+		void *buffer = lock(xoffset, yoffset, zoffset, sw::LOCK_WRITEONLY);
+
+		if(buffer)
 		{
-=======
-		   (uploadFormat == sw::FORMAT_B8G8R8 && internalFormat == sw::FORMAT_SRGB8_X8) ||
-		   (uploadFormat == sw::FORMAT_A2B10G10R10 && internalFormat == sw::FORMAT_A2B10G10R10UI) ||
-		   (uploadFormat == sw::FORMAT_D32 && internalFormat == sw::FORMAT_D32F_LOCKABLE) ||
-		   (uploadFormat == sw::FORMAT_D16 && internalFormat == sw::FORMAT_D32F_LOCKABLE))
-		{*/
-			void *buffer = lock(xoffset, yoffset, zoffset, sw::LOCK_WRITEONLY);
+			loadImageData(width, height, depth, inputPitch, inputHeight, format, type, input, buffer);
+		}
 
-			if(buffer)
-			{
-				loadImageData(width, height, depth, inputPitch, inputHeight, format, type, input, buffer);
-			}
+		unlock();
 
-			unlock();
-
-			if(type == GL_UNSIGNED_INT_24_8 ||
-			   type == GL_FLOAT_32_UNSIGNED_INT_24_8_REV)
-			{
-				unsigned char *stencil = reinterpret_cast<unsigned char*>(lockStencil(xoffset, yoffset, zoffset, sw::PUBLIC));
-
-				if(stencil)
-				{
-					loadStencilData(width, height, depth, inputPitch, inputHeight, format, type, input, stencil);
-				}
-
-				unlockStencil();
-			}
-		/*}
-		else
+		if(hasStencil())
 		{
-			sw::Surface *source = sw::Surface::create(width, height, depth, uploadFormat, input, inputPitch, inputPitch * inputHeight);
+			unsigned char *stencil = reinterpret_cast<unsigned char*>(lockStencil(xoffset, yoffset, zoffset, sw::PUBLIC));
 
-			for(int slice = 0; slice < depth; slice++)
+			if(stencil)
 			{
-				sw::SliceRect sourceRect(0, 0, width, height, slice);
-				sw::SliceRect destRect(xoffset, yoffset, xoffset + width, yoffset + height, zoffset + slice);
-				context->blit(source, sourceRect, this, destRect);
+				loadStencilData(width, height, depth, inputPitch, inputHeight, format, type, input, stencil);
 			}
 
-			delete source;
-		}*/
+			unlockStencil();
+		}
 	}
 
 	void Image::loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels)
