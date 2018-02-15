@@ -51,12 +51,12 @@ namespace
 		R11G11B10F,
 		RGB9E5,
 		D16,
-		D24,
+		D24X8,
 		D32,
 		D32F,
-		D32FS8,
-		S8,
-		S24_8,
+		X24S8,
+		D32FX32,
+		X56S8,
 	};
 
 	template<DataType dataType>
@@ -284,7 +284,7 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<D24>(const unsigned char *source, unsigned char *dest, GLsizei width)
+	void LoadImageRow<D24X8>(const unsigned char *source, unsigned char *dest, GLsizei width)
 	{
 		const unsigned int *sourceD24 = reinterpret_cast<const unsigned int*>(source);
 		float *destF = reinterpret_cast<float*>(dest);
@@ -308,7 +308,7 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<S8>(const unsigned char *source, unsigned char *dest, GLsizei width)
+	void LoadImageRow<X24S8>(const unsigned char *source, unsigned char *dest, GLsizei width)
 	{
 		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source);
 		unsigned char *destI = dest;
@@ -332,7 +332,7 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<D32FS8>(const unsigned char *source, unsigned char *dest, GLsizei width)
+	void LoadImageRow<D32FX32>(const unsigned char *source, unsigned char *dest, GLsizei width)
 	{
 		struct D32FS8 { float depth32f; unsigned int stencil24_8; };
 		const D32FS8 *sourceD32FS8 = reinterpret_cast<const D32FS8*>(source);
@@ -345,7 +345,7 @@ namespace
 	}
 
 	template<>
-	void LoadImageRow<S24_8>(const unsigned char *source, unsigned char *dest, GLsizei width)
+	void LoadImageRow<X56S8>(const unsigned char *source, unsigned char *dest, GLsizei width)
 	{
 		struct D32FS8 { float depth32f; unsigned int stencil24_8; };
 		const D32FS8 *sourceD32FS8 = reinterpret_cast<const D32FS8*>(source);
@@ -604,7 +604,6 @@ namespace egl
 	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR;
 	//	case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR:
 	//		return sw::FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR;
-	//	#if S3TC_SUPPORT
 	//	case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 	//	case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
 	//		return sw::FORMAT_DXT1;
@@ -612,7 +611,6 @@ namespace egl
 	//		return sw::FORMAT_DXT3;
 	//	case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE:
 	//		return sw::FORMAT_DXT5;
-	//	#endif
 		default:
 			break;
 		}
@@ -998,12 +996,10 @@ namespace egl
 		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR: return sw::FORMAT_SRGB8_ALPHA8_ASTC_10x10_KHR;
 		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR: return sw::FORMAT_SRGB8_ALPHA8_ASTC_12x10_KHR;
 		case GL_COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR: return sw::FORMAT_SRGB8_ALPHA8_ASTC_12x12_KHR;
-		#if S3TC_SUPPORT
 		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 		case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT: return sw::FORMAT_DXT1;
 		case GL_COMPRESSED_RGBA_S3TC_DXT3_ANGLE: return sw::FORMAT_DXT3;
 		case GL_COMPRESSED_RGBA_S3TC_DXT5_ANGLE: return sw::FORMAT_DXT5;
-		#endif
 		case GL_ALPHA32F_EXT: return sw::FORMAT_A32F;
 		case GL_LUMINANCE32F_EXT: return sw::FORMAT_L32F;
 		case GL_LUMINANCE_ALPHA32F_EXT: return sw::FORMAT_A32L32F;
@@ -1374,6 +1370,214 @@ namespace egl
 		return parentTexture == parent;
 	}
 
+	void Image::loadImageData(GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, GLenum format, GLenum type, const void *input, void *buffer)
+	{
+		// OpenGL ES 3.0.5 table 3.2.
+		switch(format)
+		{
+		case GL_RED:
+		case GL_RED_INTEGER:
+		case GL_ALPHA:
+		case GL_LUMINANCE:
+			switch(type)
+			{
+			case GL_BYTE:
+			case GL_UNSIGNED_BYTE:
+				LoadImageData<Bytes_1>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_FLOAT:
+				ASSERT(format != GL_RED_INTEGER);
+				LoadImageData<Bytes_4>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_HALF_FLOAT:
+			case GL_HALF_FLOAT_OES:
+				ASSERT(format != GL_RED_INTEGER);
+				LoadImageData<Bytes_2>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_SHORT:
+			case GL_UNSIGNED_SHORT:
+				LoadImageData<Bytes_2>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_INT:
+			case GL_UNSIGNED_INT:
+				LoadImageData<Bytes_4>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			default:
+				UNREACHABLE(type);
+			}
+			break;
+		case GL_RG:
+		case GL_RG_INTEGER:
+		case GL_LUMINANCE_ALPHA:
+			switch(type)
+			{
+			case GL_BYTE:
+			case GL_UNSIGNED_BYTE:
+				LoadImageData<Bytes_2>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_FLOAT:
+				ASSERT(format != GL_RG_INTEGER);
+				LoadImageData<Bytes_8>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_HALF_FLOAT:
+			case GL_HALF_FLOAT_OES:
+				ASSERT(format != GL_RG_INTEGER);
+				LoadImageData<Bytes_4>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_SHORT:
+			case GL_UNSIGNED_SHORT:
+				LoadImageData<Bytes_4>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_INT:
+			case GL_UNSIGNED_INT:
+				LoadImageData<Bytes_8>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			default:
+				UNREACHABLE(type);
+			}
+			break;
+		case GL_RGB:
+		case GL_RGB_INTEGER:
+			switch(type)
+			{
+			case GL_BYTE:
+				LoadImageData<ByteRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_UNSIGNED_BYTE:
+				LoadImageData<UByteRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_UNSIGNED_SHORT_5_6_5:
+				ASSERT(format == GL_RGB);
+				LoadImageData<Bytes_2>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_UNSIGNED_INT_10F_11F_11F_REV:
+				ASSERT(format == GL_RGB);
+				LoadImageData<R11G11B10F>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_UNSIGNED_INT_5_9_9_9_REV:
+				ASSERT(format == GL_RGB);
+				LoadImageData<RGB9E5>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_FLOAT:
+				ASSERT(format == GL_RGB);
+				LoadImageData<FloatRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_HALF_FLOAT:
+			case GL_HALF_FLOAT_OES:
+				ASSERT(format == GL_RGB);
+				LoadImageData<HalfFloatRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_SHORT:
+				LoadImageData<ShortRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_UNSIGNED_SHORT:
+				LoadImageData<UShortRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_INT:
+				LoadImageData<IntRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_UNSIGNED_INT:
+				LoadImageData<UIntRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			default:
+				UNREACHABLE(type);
+			}
+			break;
+		case GL_RGBA:
+		case GL_RGBA_INTEGER:
+		case GL_BGRA_EXT:
+			switch(type)
+			{
+			case GL_BYTE:
+			case GL_UNSIGNED_BYTE:
+				LoadImageData<Bytes_4>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_UNSIGNED_SHORT_4_4_4_4:
+				ASSERT(format == GL_RGBA);
+				LoadImageData<RGBA4444>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+		//	case GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT:
+		//		ASSERT(format == GL_BGRA_EXT);
+		//		LoadImageData<ABGR4444>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+		//		break;
+			case GL_UNSIGNED_SHORT_5_5_5_1:
+				ASSERT(format == GL_RGBA);
+				LoadImageData<RGBA5551>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+		//	case GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT:
+		//		ASSERT(format == GL_BGRA_EXT);
+		//		LoadImageData<ABGR5551>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+		//		break;
+			case GL_UNSIGNED_INT_2_10_10_10_REV:
+				ASSERT(format != GL_BGRA_EXT);
+				LoadImageData<Bytes_4>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_FLOAT:
+				ASSERT(format == GL_RGBA);
+				LoadImageData<Bytes_16>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_HALF_FLOAT:
+			case GL_HALF_FLOAT_OES:
+				ASSERT(format == GL_RGBA);
+				LoadImageData<Bytes_8>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_SHORT:
+			case GL_UNSIGNED_SHORT:
+				ASSERT(format != GL_BGRA_EXT);
+				LoadImageData<Bytes_8>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_INT:
+			case GL_UNSIGNED_INT:
+				ASSERT(format != GL_BGRA_EXT);
+				LoadImageData<Bytes_16>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			default:
+				UNREACHABLE(type);
+			}
+			break;
+		case GL_DEPTH_COMPONENT:
+		case GL_DEPTH_STENCIL:
+			switch(type)
+			{
+			case GL_FLOAT:
+				LoadImageData<D32F>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_UNSIGNED_SHORT:
+				LoadImageData<D16>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_UNSIGNED_INT:
+				LoadImageData<D32>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_UNSIGNED_INT_24_8:
+				LoadImageData<D24X8>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
+				LoadImageData<D32FX32>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				break;
+			default:
+				UNREACHABLE(type);
+			}
+			break;
+		default:
+			UNREACHABLE(format);
+		}
+	}
+
+	void Image::loadStencilData(GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, GLenum format, GLenum type, const void *input, void *buffer)
+	{
+		switch(type)
+		{
+		case GL_UNSIGNED_INT_24_8:
+			LoadImageData<X24S8>(width, height, depth, inputPitch, inputHeight, getStencilPitchB(), getHeight(), input, buffer);
+			break;
+		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
+			LoadImageData<X56S8>(width, height, depth, inputPitch, inputHeight, getStencilPitchB(), getHeight(), input, buffer);
+			break;
+		default:
+			UNREACHABLE(format);
+		}
+	}
+
 	void Image::loadImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const PixelStorageModes &unpackParameters, const void *pixels)
 	{
 		//sw::Format uploadFormat = ConvertFormatType(format, type);
@@ -1403,204 +1607,23 @@ namespace egl
 
 			if(buffer)
 			{
-				// OpenGL ES 3.0.5 table 3.2.
-				switch(format)
-				{
-				case GL_RED:
-				case GL_RED_INTEGER:
-				case GL_ALPHA:
-				case GL_LUMINANCE:
-					switch(type)
-					{
-					case GL_BYTE:
-					case GL_UNSIGNED_BYTE:
-						LoadImageData<Bytes_1>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_FLOAT:
-						ASSERT(format != GL_RED_INTEGER);
-						LoadImageData<Bytes_4>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_HALF_FLOAT:
-					case GL_HALF_FLOAT_OES:
-						ASSERT(format != GL_RED_INTEGER);
-						LoadImageData<Bytes_2>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_SHORT:
-					case GL_UNSIGNED_SHORT:
-						LoadImageData<Bytes_2>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_INT:
-					case GL_UNSIGNED_INT:
-						LoadImageData<Bytes_4>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					default:
-						UNREACHABLE(type);
-					}
-					break;
-				case GL_RG:
-				case GL_RG_INTEGER:
-				case GL_LUMINANCE_ALPHA:
-					switch(type)
-					{
-					case GL_BYTE:
-					case GL_UNSIGNED_BYTE:
-						LoadImageData<Bytes_2>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_FLOAT:
-						ASSERT(format != GL_RG_INTEGER);
-						LoadImageData<Bytes_8>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_HALF_FLOAT:
-					case GL_HALF_FLOAT_OES:
-						ASSERT(format != GL_RG_INTEGER);
-						LoadImageData<Bytes_4>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_SHORT:
-					case GL_UNSIGNED_SHORT:
-						LoadImageData<Bytes_4>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_INT:
-					case GL_UNSIGNED_INT:
-						LoadImageData<Bytes_8>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					default:
-						UNREACHABLE(type);
-					}
-					break;
-				case GL_RGB:
-				case GL_RGB_INTEGER:
-					switch(type)
-					{
-					case GL_BYTE:
-						LoadImageData<ByteRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_UNSIGNED_BYTE:
-						LoadImageData<UByteRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_UNSIGNED_SHORT_5_6_5:
-						ASSERT(format == GL_RGB);
-						LoadImageData<Bytes_2>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_UNSIGNED_INT_10F_11F_11F_REV:
-						ASSERT(format == GL_RGB);
-						LoadImageData<R11G11B10F>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_UNSIGNED_INT_5_9_9_9_REV:
-						ASSERT(format == GL_RGB);
-						LoadImageData<RGB9E5>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_FLOAT:
-						ASSERT(format == GL_RGB);
-						LoadImageData<FloatRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_HALF_FLOAT:
-					case GL_HALF_FLOAT_OES:
-						ASSERT(format == GL_RGB);
-						LoadImageData<HalfFloatRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_SHORT:
-						LoadImageData<ShortRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_UNSIGNED_SHORT:
-						LoadImageData<UShortRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_INT:
-						LoadImageData<IntRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_UNSIGNED_INT:
-						LoadImageData<UIntRGB>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					default:
-						UNREACHABLE(type);
-					}
-					break;
-				case GL_RGBA:
-				case GL_RGBA_INTEGER:
-				case GL_BGRA_EXT:
-					switch(type)
-					{
-					case GL_BYTE:
-					case GL_UNSIGNED_BYTE:
-						LoadImageData<Bytes_4>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_UNSIGNED_SHORT_4_4_4_4:
-						ASSERT(format == GL_RGBA);
-						LoadImageData<RGBA4444>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-				//	case GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT:
-				//		ASSERT(format == GL_BGRA_EXT);
-				//		LoadImageData<ABGR4444>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-				//		break;
-					case GL_UNSIGNED_SHORT_5_5_5_1:
-						ASSERT(format == GL_RGBA);
-						LoadImageData<RGBA5551>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-				//	case GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT:
-				//		ASSERT(format == GL_BGRA_EXT);
-				//		LoadImageData<ABGR5551>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-				//		break;
-					case GL_UNSIGNED_INT_2_10_10_10_REV:
-						ASSERT(format != GL_BGRA_EXT);
-						LoadImageData<Bytes_4>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_FLOAT:
-						ASSERT(format == GL_RGBA);
-						LoadImageData<Bytes_16>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_HALF_FLOAT:
-					case GL_HALF_FLOAT_OES:
-						ASSERT(format == GL_RGBA);
-						LoadImageData<Bytes_8>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_SHORT:
-					case GL_UNSIGNED_SHORT:
-						ASSERT(format != GL_BGRA_EXT);
-						LoadImageData<Bytes_8>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_INT:
-					case GL_UNSIGNED_INT:
-						ASSERT(format != GL_BGRA_EXT);
-						LoadImageData<Bytes_16>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					default:
-						UNREACHABLE(type);
-					}
-					break;
-				case GL_DEPTH_COMPONENT:
-					switch(type)
-					{
-					case GL_FLOAT:
-						LoadImageData<D32F>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_UNSIGNED_SHORT:
-						LoadImageData<D16>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					case GL_UNSIGNED_INT:
-						LoadImageData<D32>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-						break;
-					default:
-						UNREACHABLE(type);
-					}
-					break;
-				case GL_DEPTH_STENCIL:
-					switch(type)
-					{
-					case GL_UNSIGNED_INT_24_8:
-						loadD24S8ImageData(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, input, buffer);
-						break;
-					case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
-						loadD32FS8ImageData(xoffset, yoffset, zoffset, width, height, depth, inputPitch, inputHeight, input, buffer);
-						break;
-					default:
-						UNREACHABLE(type);
-					}
-					break;
-				default:
-					UNREACHABLE(format);
-				}
+				loadImageData(width, height, depth, inputPitch, inputHeight, format, type, input, buffer);
 			}
 
 			unlock();
+
+			if(type == GL_UNSIGNED_INT_24_8 ||
+			   type == GL_FLOAT_32_UNSIGNED_INT_24_8_REV)
+			{
+				unsigned char *stencil = reinterpret_cast<unsigned char*>(lockStencil(xoffset, yoffset, zoffset, sw::PUBLIC));
+
+				if(stencil)
+				{
+					loadStencilData(width, height, depth, inputPitch, inputHeight, format, type, input, stencil);
+				}
+
+				unlockStencil();
+			}
 		/*}
 		else
 		{
@@ -1615,34 +1638,6 @@ namespace egl
 
 			delete source;
 		}*/
-	}
-
-	void Image::loadD24S8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer)
-	{
-		LoadImageData<D24>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-
-		unsigned char *stencil = reinterpret_cast<unsigned char*>(lockStencil(0, 0, 0, sw::PUBLIC));
-
-		if(stencil)
-		{
-			LoadImageData<S8>(width, height, depth, inputPitch, inputHeight, getStencilPitchB(), getHeight(), input, stencil);
-
-			unlockStencil();
-		}
-	}
-
-	void Image::loadD32FS8ImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, const void *input, void *buffer)
-	{
-		LoadImageData<D32FS8>(width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
-
-		unsigned char *stencil = reinterpret_cast<unsigned char*>(lockStencil(0, 0, 0, sw::PUBLIC));
-
-		if(stencil)
-		{
-			LoadImageData<S24_8>(width, height, depth, inputPitch, inputHeight, getStencilPitchB(), getHeight(), input, stencil);
-
-			unlockStencil();
-		}
 	}
 
 	void Image::loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels)
