@@ -22,6 +22,8 @@
 #include "Texture.h"
 #include "utilities.h"
 
+#include "Main/Config.hpp"
+
 namespace es2
 {
 RenderbufferInterface::RenderbufferInterface()
@@ -438,7 +440,15 @@ Colorbuffer::Colorbuffer(int width, int height, GLenum internalformat, GLsizei s
 
 	if(width > 0 && height > 0)
 	{
-		mRenderTarget = device->createRenderTarget(width, height, implementationFormat, supportedSamples, false);
+	//	mRenderTarget = device->createRenderTarget(width, height, implementationFormat, supportedSamples, false);
+
+		if(height > sw::OUTLINE_RESOLUTION)
+		{
+			error(GL_OUT_OF_MEMORY);
+			return;
+		}
+
+		mRenderTarget = egl::Image::create(width, height, implementationFormat, supportedSamples, false);
 
 		if(!mRenderTarget)
 		{
@@ -529,7 +539,16 @@ DepthStencilbuffer::DepthStencilbuffer(int width, int height, GLenum internalfor
 
 	if(width > 0 && height > 0)
 	{
-		mDepthStencil = device->createDepthStencilSurface(width, height, implementationFormat, supportedSamples, false);
+		ASSERT(sw::Surface::isDepth(implementationFormat) || sw::Surface::isStencil(implementationFormat));
+
+		if(height > sw::OUTLINE_RESOLUTION)
+		{
+			error(GL_OUT_OF_MEMORY);
+			return;
+		}
+
+		bool lockable = !sw::Surface::hasQuadLayout(implementationFormat);
+		mDepthStencil = egl::Image::create(width, height, implementationFormat, supportedSamples, false);
 
 		if(!mDepthStencil)
 		{
