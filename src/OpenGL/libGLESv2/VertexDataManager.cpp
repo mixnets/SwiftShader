@@ -116,9 +116,15 @@ GLenum VertexDataManager::prepareVertexData(GLint start, GLsizei count, Translat
 		return GL_OUT_OF_MEMORY;
 	}
 
+	Program *program = mContext->getCurrentProgram();
+
+	if(!program)
+	{
+		return GL_NO_ERROR;
+	}
+
 	const VertexAttributeArray &attribs = mContext->getVertexArrayAttributes();
 	const VertexAttributeArray &currentAttribs = mContext->getCurrentVertexAttributes();
-	Program *program = mContext->getCurrentProgram();
 
 	// Determine the required storage size per used buffer
 	for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)

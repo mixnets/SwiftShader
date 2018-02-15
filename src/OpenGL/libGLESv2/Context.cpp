@@ -3017,6 +3017,11 @@ GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsize
 
 	Program *program = getCurrentProgram();
 
+	if(!program)
+	{
+		return GL_NO_ERROR;
+	}
+
 	device->resetInputStreams(false);
 
 	for(int i = 0; i < MAX_VERTEX_ATTRIBS; i++)
