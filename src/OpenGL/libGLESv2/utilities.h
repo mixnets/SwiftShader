@@ -103,7 +103,6 @@ namespace es2sw
 	sw::MipmapType ConvertMipMapFilter(GLenum minFilter);
 	sw::FilterType ConvertTextureFilter(GLenum minFilter, GLenum magFilter, float maxAnisotropy);
 	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount,  GLenum elementType, sw::DrawType &swPrimitiveType, int &primitiveCount, int &verticesPerPrimitive);
-	sw::Format ConvertRenderbufferFormat(GLenum format);
 }
 
 #endif  // LIBGLESV2_UTILITIES_H

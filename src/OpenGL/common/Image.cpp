@@ -1242,8 +1242,8 @@ namespace egl
 			: Image(parentTexture, width, height, depth, border, format) {}
 		ImageImplementation(GLsizei width, GLsizei height, GLint format, int pitchP)
 			: Image(width, height, format, pitchP) {}
-		ImageImplementation(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
-			: Image(width, height, internalFormat, multiSampleDepth, lockable) {}
+		ImageImplementation(GLsizei width, GLsizei height, GLint format, int multiSampleDepth, bool lockable)
+			: Image(width, height, format, multiSampleDepth, lockable) {}
 
 		~ImageImplementation() override
 		{
@@ -1281,9 +1281,9 @@ namespace egl
 		return new ImageImplementation(width, height, format, pitchP);
 	}
 
-	Image *Image::create(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
+	Image *Image::create(GLsizei width, GLsizei height, GLint format, int multiSampleDepth, bool lockable)
 	{
-		return new ImageImplementation(width, height, internalFormat, multiSampleDepth, lockable);
+		return new ImageImplementation(width, height, format, multiSampleDepth, lockable);
 	}
 
 	Image::~Image()
@@ -1344,6 +1344,8 @@ namespace egl
 
 	void Image::loadImageData(GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, GLenum format, GLenum type, const void *input, void *buffer)
 	{
+		GLsizei bytes = ComputePixelSize(format, type);
+
 		// OpenGL ES 3.0.5 table 3.2.
 		switch(format)
 		{
@@ -1355,24 +1357,24 @@ namespace egl
 			{
 			case GL_BYTE:
 			case GL_UNSIGNED_BYTE:
-				LoadImageData<Bytes>(1 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_FLOAT:
 				ASSERT(format != GL_RED_INTEGER);
-				LoadImageData<Bytes>(4 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
 				ASSERT(format != GL_RED_INTEGER);
-				LoadImageData<Bytes>(2 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_SHORT:
 			case GL_UNSIGNED_SHORT:
-				LoadImageData<Bytes>(2 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_INT:
 			case GL_UNSIGNED_INT:
-				LoadImageData<Bytes>(4 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			default:
 				UNREACHABLE(type);
@@ -1385,24 +1387,24 @@ namespace egl
 			{
 			case GL_BYTE:
 			case GL_UNSIGNED_BYTE:
-				LoadImageData<Bytes>(2 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_FLOAT:
 				ASSERT(format != GL_RG_INTEGER);
-				LoadImageData<Bytes>(8 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
 				ASSERT(format != GL_RG_INTEGER);
-				LoadImageData<Bytes>(4 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_SHORT:
 			case GL_UNSIGNED_SHORT:
-				LoadImageData<Bytes>(4 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_INT:
 			case GL_UNSIGNED_INT:
-				LoadImageData<Bytes>(8 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			default:
 				UNREACHABLE(type);
@@ -1420,7 +1422,7 @@ namespace egl
 				break;
 			case GL_UNSIGNED_SHORT_5_6_5:
 				ASSERT(format == GL_RGB);
-				LoadImageData<Bytes>(2 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_UNSIGNED_INT_10F_11F_11F_REV:
 				ASSERT(format == GL_RGB);
@@ -1462,7 +1464,12 @@ namespace egl
 			{
 			case GL_BYTE:
 			case GL_UNSIGNED_BYTE:
-				LoadImageData<Bytes>(4 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				switch(internalformat)
+				{
+				case GL_RGBA8:
+					LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+					break;
+				}
 				break;
 			case GL_UNSIGNED_SHORT_4_4_4_4:
 				ASSERT(format == GL_RGBA);
@@ -1482,26 +1489,26 @@ namespace egl
 		//		break;
 			case GL_UNSIGNED_INT_2_10_10_10_REV:
 				ASSERT(format != GL_BGRA_EXT);
-				LoadImageData<Bytes>(4 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_FLOAT:
 				ASSERT(format == GL_RGBA);
-				LoadImageData<Bytes>(16 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
 				ASSERT(format == GL_RGBA);
-				LoadImageData<Bytes>(8 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_SHORT:
 			case GL_UNSIGNED_SHORT:
 				ASSERT(format != GL_BGRA_EXT);
-				LoadImageData<Bytes>(8 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			case GL_INT:
 			case GL_UNSIGNED_INT:
 				ASSERT(format != GL_BGRA_EXT);
-				LoadImageData<Bytes>(16 * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
+				LoadImageData<Bytes>(bytes * width, height, depth, inputPitch, inputHeight, getPitch(), getSlice(), input, buffer);
 				break;
 			default:
 				UNREACHABLE(type);
@@ -1614,7 +1621,7 @@ namespace egl
 
 	void Image::loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels)
 	{
-		int inputPitch = ComputeCompressedPitch(width, format);
+		int inputPitch = ComputeCompressedPitch(width, internalformat);
 		int inputSlice = imageSize / depth;
 		int rows = inputSlice / inputPitch;
 

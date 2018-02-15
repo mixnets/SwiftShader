@@ -63,7 +63,7 @@ protected:
 	// 2D texture image
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLint format)
 		: sw::Surface(parentTexture->getResource(), width, height, 1, 0, 1, SelectInternalFormat(format), true, true),
-		  width(width), height(height), depth(1), format(format), internalFormat(SelectInternalFormat(format)),
+		  width(width), height(height), depth(1), internalformat(format), implementationFormat(SelectInternalFormat(format)),
 		  parentTexture(parentTexture)
 	{
 		shared = false;
@@ -72,9 +72,9 @@ protected:
 	}
 
 	// 3D/Cube texture image
-	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLenum format)
+	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLint format)
 		: sw::Surface(parentTexture->getResource(), width, height, depth, border, 1, SelectInternalFormat(format), true, true),
-		  width(width), height(height), depth(depth), format(format), internalFormat(SelectInternalFormat(format)),
+		  width(width), height(height), depth(depth), internalformat(format), implementationFormat(SelectInternalFormat(format)),
 		  parentTexture(parentTexture)
 	{
 		shared = false;
@@ -83,9 +83,9 @@ protected:
 	}
 
 	// Native EGL image
-	Image(GLsizei width, GLsizei height, GLenum format, int pitchP)
+	Image(GLsizei width, GLsizei height, GLint format, int pitchP)
 		: sw::Surface(nullptr, width, height, 1, 0, 1, SelectInternalFormat(format), true, true, pitchP),
-		  width(width), height(height), depth(1), format(format), internalFormat(SelectInternalFormat(format)),
+		  width(width), height(height), depth(1), internalformat(format), implementationFormat(SelectInternalFormat(format)),
 		  parentTexture(nullptr)
 	{
 		shared = true;
@@ -93,9 +93,9 @@ protected:
 	}
 
 	// Render target
-	Image(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable)
-		: sw::Surface(nullptr, width, height, 1, 0, multiSampleDepth, internalFormat, lockable, true),
-		  width(width), height(height), depth(1), format(0 /*GL_NONE*/), internalFormat(internalFormat),
+	Image(GLsizei width, GLsizei height, GLint format, int multiSampleDepth, bool lockable)
+		: sw::Surface(nullptr, width, height, 1, 0, multiSampleDepth, SelectInternalFormat(format), lockable, true),
+		  width(width), height(height), depth(1), internalformat(format), implementationFormat(SelectInternalFormat(format)),
 		  parentTexture(nullptr)
 	{
 		shared = false;
@@ -113,7 +113,7 @@ public:
 	static Image *create(GLsizei width, GLsizei height, GLint format, int pitchP);
 
 	// Render target
-	static Image *create(GLsizei width, GLsizei height, sw::Format internalFormat, int multiSampleDepth, bool lockable);
+	static Image *create(GLsizei width, GLsizei height, GLint internalformat, int multiSampleDepth, bool lockable);
 
 	GLsizei getWidth() const
 	{
@@ -134,12 +134,12 @@ public:
 
 	GLint getFormat() const
 	{
-		return format;
+		return internalformat;
 	}
 
 	sw::Format getInternalFormat() const
 	{
-		return internalFormat;
+		return implementationFormat;
 	}
 
 	bool isShared() const
@@ -193,8 +193,8 @@ protected:
 	const GLsizei width;
 	const GLsizei height;
 	const int depth;
-	const GLint format;
-	const sw::Format internalFormat;
+	const GLint internalformat;
+	const sw::Format implementationFormat;
 
 	bool shared;   // Used as an EGLImage
 

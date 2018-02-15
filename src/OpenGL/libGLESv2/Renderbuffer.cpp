@@ -433,20 +433,17 @@ Colorbuffer::Colorbuffer(egl::Image *renderTarget) : mRenderTarget(renderTarget)
 
 Colorbuffer::Colorbuffer(int width, int height, GLenum internalformat, GLsizei samples) : mRenderTarget(nullptr)
 {
-	sw::Format implementationFormat = es2sw::ConvertRenderbufferFormat(internalformat);
 	int supportedSamples = Context::getSupportedMultisampleCount(samples);
 
 	if(width > 0 && height > 0)
 	{
-	//	mRenderTarget = device->createRenderTarget(width, height, implementationFormat, supportedSamples, false);
-
 		if(height > sw::OUTLINE_RESOLUTION)
 		{
 			error(GL_OUT_OF_MEMORY);
 			return;
 		}
 
-		mRenderTarget = egl::Image::create(width, height, implementationFormat, supportedSamples, false);
+		mRenderTarget = egl::Image::create(width, height, internalformat, supportedSamples, false);
 
 		if(!mRenderTarget)
 		{
