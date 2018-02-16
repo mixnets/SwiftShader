@@ -1024,85 +1024,108 @@ namespace egl
 		region.destPitch = getPitch();
 		region.destSlice = getSlice();
 
-		// OpenGL ES 3.0.5 table 3.2.
+		// [OpenGL ES 3.0.5] table 3.2 and 3.3.
 		switch(format)
 		{
-		case GL_RED:
-		case GL_RED_INTEGER:
-		case GL_ALPHA:
-		case GL_LUMINANCE:
+		case GL_RGBA:
 			switch(type)
 			{
-			case GL_BYTE:
 			case GL_UNSIGNED_BYTE:
-				return Transfer<Bytes>(buffer, input, region);
-			case GL_FLOAT:
-				ASSERT(format != GL_RED_INTEGER);
 				switch(internalformat)
 				{
-				case GL_R32F:
+				case GL_RGBA8:
+				case GL_SRGB8_ALPHA8:
 					return Transfer<Bytes>(buffer, input, region);
-				case GL_R16F:
-					return Transfer<R32Fto16F>(buffer, input, region);
+				case GL_RGB5_A1:
+				case GL_RGBA4:
+					ASSERT(implementationFormat == sw::FORMAT_A8B8G8R8);
+					return Transfer<Bytes>(buffer, input, region);
+				default:
+					UNREACHABLE(internalformat);
+				}
+			case GL_BYTE:
+				ASSERT(internalformat == GL_RGBA8_SNORM && implementationFormat == sw::FORMAT_A8B8G8R8_SNORM);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_UNSIGNED_SHORT_4_4_4_4:
+				ASSERT(internalformat == GL_RGBA4 && implementationFormat == sw::FORMAT_A8B8G8R8);
+				return Transfer<RGBA4444>(buffer, input, region);
+			case GL_UNSIGNED_SHORT_5_5_5_1:
+				ASSERT(internalformat == GL_RGB5_A1 && implementationFormat == sw::FORMAT_A8B8G8R8);
+				return Transfer<RGBA5551>(buffer, input, region);
+			case GL_UNSIGNED_INT_2_10_10_10_REV:
+				switch(internalformat)
+				{
+				case GL_RGB10_A2:
+					ASSERT(implementationFormat == sw::FORMAT_A2B10G10R10);
+					return Transfer<Bytes>(buffer, input, region);
+				case GL_RGB5_A1:
+					ASSERT(implementationFormat == sw::FORMAT_A8B8G8R8);
+					return Transfer<RGBA1010102to8888>(buffer, input, region);
 				default:
 					UNREACHABLE(internalformat);
 				}
 			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
-				ASSERT(format != GL_RED_INTEGER);
+				ASSERT(internalformat == GL_RGBA16F && implementationFormat == sw::FORMAT_A16B16G16R16F);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_FLOAT:
+				switch(internalformat)
+				{
+				case GL_RGBA32F:
+					return Transfer<Bytes>(buffer, input, region);
+				case GL_RGBA16F:
+					return Transfer<RGBA32Fto16F>(buffer, input, region);
+				default:
+					UNREACHABLE(internalformat);
+				}
+			default:
+				UNREACHABLE(type);
+			}
+		case GL_RGBA_INTEGER:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				ASSERT(internalformat == GL_RGBA8UI && implementationFormat == sw::FORMAT_A8B8G8R8UI);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_BYTE:
+				ASSERT(internalformat == GL_RGBA8I && implementationFormat == sw::FORMAT_A8B8G8R8I);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_UNSIGNED_SHORT:
+				ASSERT(internalformat == GL_RGBA16UI && implementationFormat == sw::FORMAT_A16B16G16R16UI);
 				return Transfer<Bytes>(buffer, input, region);
 			case GL_SHORT:
-			case GL_UNSIGNED_SHORT:
+				ASSERT(internalformat == GL_RGBA16I && implementationFormat == sw::FORMAT_A16B16G16R16I);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_UNSIGNED_INT:
+				ASSERT(internalformat == GL_RGBA32UI && implementationFormat == sw::FORMAT_A32B32G32R32UI);
 				return Transfer<Bytes>(buffer, input, region);
 			case GL_INT:
-			case GL_UNSIGNED_INT:
+				ASSERT(internalformat == GL_RGBA32I && implementationFormat == sw::FORMAT_A32B32G32R32I);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_UNSIGNED_INT_2_10_10_10_REV:
+				ASSERT(internalformat == GL_RGB10_A2UI && implementationFormat == sw::FORMAT_A2B10G10R10UI);
 				return Transfer<Bytes>(buffer, input, region);
 			default:
 				UNREACHABLE(type);
 			}
-		case GL_RG:
-		case GL_RG_INTEGER:
-		case GL_LUMINANCE_ALPHA:
+		case GL_BGRA_EXT:
 			switch(type)
 			{
-			case GL_BYTE:
 			case GL_UNSIGNED_BYTE:
+				ASSERT(internalformat && GL_BGRA8_EXT && implementationFormat == sw::FORMAT_A8R8G8B8);
 				return Transfer<Bytes>(buffer, input, region);
-			case GL_FLOAT:
-				ASSERT(format != GL_RG_INTEGER);
-				switch(internalformat)
-				{
-				case GL_RG32F:
-					return Transfer<Bytes>(buffer, input, region);
-				case GL_RG16F:
-					return Transfer<RG32Fto16F>(buffer, input, region);
-				default:
-					UNREACHABLE(internalformat);
-				}
-			case GL_HALF_FLOAT:
-			case GL_HALF_FLOAT_OES:
-				ASSERT(format != GL_RG_INTEGER);
-				return Transfer<Bytes>(buffer, input, region);
-			case GL_SHORT:
-			case GL_UNSIGNED_SHORT:
-				return Transfer<Bytes>(buffer, input, region);
-			case GL_INT:
-			case GL_UNSIGNED_INT:
-				return Transfer<Bytes>(buffer, input, region);
+			case GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT:   // Only valid for glReadPixels calls.
+			case GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT:   // Only valid for glReadPixels calls.
 			default:
 				UNREACHABLE(type);
 			}
 		case GL_RGB:
-		case GL_RGB_INTEGER:
 			switch(type)
 			{
-			case GL_BYTE:
-				return Transfer<ByteRGB>(buffer, input, region);
 			case GL_UNSIGNED_BYTE:
 				switch(internalformat)
 				{
 				case GL_RGB8:
-				case GL_RGB8UI:
 				case GL_SRGB8:
 					return Transfer<UByteRGB>(buffer, input, region);
 				case GL_RGB565:
@@ -1110,32 +1133,20 @@ namespace egl
 				default:
 					UNREACHABLE(internalformat);
 				}
+			case GL_BYTE:
+				ASSERT(internalformat == GL_RGB8_SNORM && implementationFormat == sw::FORMAT_X8B8G8R8_SNORM);
+				return Transfer<ByteRGB>(buffer, input, region);
 			case GL_UNSIGNED_SHORT_5_6_5:
-				ASSERT(format == GL_RGB);
+				ASSERT(internalformat == GL_RGB565 && implementationFormat == sw::FORMAT_R5G6B5);
 				return Transfer<Bytes>(buffer, input, region);
 			case GL_UNSIGNED_INT_10F_11F_11F_REV:
-				ASSERT(format == GL_RGB);
+				ASSERT(internalformat == GL_R11F_G11F_B10F && implementationFormat == sw::FORMAT_X16B16G16R16F);
 				return Transfer<R11G11B10F>(buffer, input, region);
 			case GL_UNSIGNED_INT_5_9_9_9_REV:
-				ASSERT(format == GL_RGB);
+				ASSERT(internalformat == GL_RGB9_E5 && implementationFormat == sw::FORMAT_X16B16G16R16F);
 				return Transfer<RGB9E5>(buffer, input, region);
-			case GL_FLOAT:
-				ASSERT(format == GL_RGB);
-				switch(internalformat)
-				{
-				case GL_RGB32F:
-					return Transfer<FloatRGB>(buffer, input, region);
-				case GL_RGB16F:
-				case GL_R11F_G11F_B10F:
-				case GL_RGB9_E5:
-					ASSERT(implementationFormat == sw::FORMAT_X16B16G16R16F);
-					return Transfer<RGB32Fto16F>(buffer, input, region);
-				default:
-					UNREACHABLE(internalformat);
-				}
 			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
-				ASSERT(format == GL_RGB);
 				switch(internalformat)
 				{
 				case GL_RGB16F:
@@ -1146,97 +1157,184 @@ namespace egl
 				default:
 					UNREACHABLE(internalformat);
 				}
-			case GL_SHORT:
-				return Transfer<ShortRGB>(buffer, input, region);
-			case GL_UNSIGNED_SHORT:
-				return Transfer<UShortRGB>(buffer, input, region);
-			case GL_INT:
-				return Transfer<IntRGB>(buffer, input, region);
-			case GL_UNSIGNED_INT:
-				return Transfer<UIntRGB>(buffer, input, region);
+			case GL_FLOAT:
+				switch(internalformat)
+				{
+				case GL_RGB32F:
+					ASSERT(implementationFormat == sw::FORMAT_X32B32G32R32F);
+					return Transfer<FloatRGB>(buffer, input, region);
+				case GL_RGB16F:
+				case GL_R11F_G11F_B10F:
+				case GL_RGB9_E5:
+					ASSERT(implementationFormat == sw::FORMAT_X16B16G16R16F);
+					return Transfer<RGB32Fto16F>(buffer, input, region);
+				default:
+					UNREACHABLE(internalformat);
+				}
 			default:
 				UNREACHABLE(type);
 			}
-		case GL_RGBA:
-		case GL_RGBA_INTEGER:
-		case GL_BGRA_EXT:
+		case GL_RGB_INTEGER:
 			switch(type)
 			{
-			case GL_BYTE:
 			case GL_UNSIGNED_BYTE:
-				switch(internalformat)
-				{
-				case GL_RGBA8:
-				case GL_RGBA8I:
-				case GL_RGBA8UI:
-				case GL_RGBA8_SNORM:
-				case GL_SRGB8_ALPHA8:
-				case GL_BGRA8_EXT:
-					return Transfer<Bytes>(buffer, input, region);
-				case GL_RGB5_A1:
-				case GL_RGBA4:
-					ASSERT(format == GL_RGBA && implementationFormat == sw::FORMAT_A8B8G8R8);
-					return Transfer<Bytes>(buffer, input, region);
-				default:
-					UNREACHABLE(internalformat);
-				}
-			case GL_UNSIGNED_SHORT_4_4_4_4:
-				ASSERT(format == GL_RGBA);
-				return Transfer<RGBA4444>(buffer, input, region);
-			case GL_UNSIGNED_SHORT_5_5_5_1:
-				ASSERT(format == GL_RGBA);
-				return Transfer<RGBA5551>(buffer, input, region);
-			case GL_UNSIGNED_INT_2_10_10_10_REV:
-				ASSERT(format != GL_BGRA_EXT);
-				switch(internalformat)
-				{
-				case GL_RGB10_A2:
-				case GL_RGB10_A2UI:
-					return Transfer<Bytes>(buffer, input, region);
-				case GL_RGB5_A1:
-					ASSERT(format == GL_RGBA && implementationFormat == sw::FORMAT_A8B8G8R8);
-					return Transfer<RGBA1010102to8888>(buffer, input, region);
-				default:
-					UNREACHABLE(internalformat);
-				}
-			case GL_FLOAT:
-				ASSERT(format == GL_RGBA);
-				switch(internalformat)
-				{
-				case GL_RGBA32F:
-					return Transfer<Bytes>(buffer, input, region);
-				case GL_RGBA16F:
-					return Transfer<RGBA32Fto16F>(buffer, input, region);
-				default:
-					UNREACHABLE(internalformat);
-				}
+				ASSERT(internalformat == GL_RGB8UI && implementationFormat == sw::FORMAT_X8B8G8R8UI);
+				return Transfer<UByteRGB>(buffer, input, region);
+			case GL_BYTE:
+				ASSERT(internalformat == GL_RGB8I && implementationFormat == sw::FORMAT_X8B8G8R8I);
+				return Transfer<ByteRGB>(buffer, input, region);
+			case GL_UNSIGNED_SHORT:
+				ASSERT(internalformat == GL_RGB16UI && implementationFormat == sw::FORMAT_X16B16G16R16UI);
+				return Transfer<UShortRGB>(buffer, input, region);
+			case GL_SHORT:
+				ASSERT(internalformat == GL_RGB16I && implementationFormat == sw::FORMAT_X16B16G16R16I);
+				return Transfer<ShortRGB>(buffer, input, region);
+			case GL_UNSIGNED_INT:
+				ASSERT(internalformat == GL_RGB32UI && implementationFormat == sw::FORMAT_X32B32G32R32UI);
+				return Transfer<UIntRGB>(buffer, input, region);
+			case GL_INT:
+				ASSERT(internalformat == GL_RGB32I && implementationFormat == sw::FORMAT_X32B32G32R32I);
+				return Transfer<IntRGB>(buffer, input, region);
+			default:
+				UNREACHABLE(type);
+			}
+		case GL_RG:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+			case GL_BYTE:
 			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
-				ASSERT(format == GL_RGBA);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_FLOAT:
+				switch(internalformat)
+				{
+				case GL_RG32F: return Transfer<Bytes>(buffer, input, region);
+				case GL_RG16F: return Transfer<RG32Fto16F>(buffer, input, region);
+				default: UNREACHABLE(internalformat);
+				}
+			default:
+				UNREACHABLE(type);
+			}
+		case GL_RG_INTEGER:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				ASSERT(internalformat == GL_RG8UI && implementationFormat == sw::FORMAT_G8R8UI);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_BYTE:
+				ASSERT(internalformat == GL_RG8I && implementationFormat == sw::FORMAT_G8R8I);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_UNSIGNED_SHORT:
+				ASSERT(internalformat == GL_RG16UI && implementationFormat == sw::FORMAT_G16R16UI);
 				return Transfer<Bytes>(buffer, input, region);
 			case GL_SHORT:
-			case GL_UNSIGNED_SHORT:
-				ASSERT(format != GL_BGRA_EXT);
+				ASSERT(internalformat == GL_RG16I && implementationFormat == sw::FORMAT_G16R16I);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_UNSIGNED_INT:
+				ASSERT(internalformat == GL_RG32UI && implementationFormat == sw::FORMAT_G32R32UI);
 				return Transfer<Bytes>(buffer, input, region);
 			case GL_INT:
-			case GL_UNSIGNED_INT:
-				ASSERT(format != GL_BGRA_EXT);
+				ASSERT(internalformat == GL_RG32I && implementationFormat == sw::FORMAT_G32R32I);
 				return Transfer<Bytes>(buffer, input, region);
-			case GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT:   // Only valid for glReadPixels calls.
-			case GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT:   // Only valid for glReadPixels calls.
+			default:
+				UNREACHABLE(type);
+			}
+		case GL_RED:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+			case GL_BYTE:
+			case GL_HALF_FLOAT:
+			case GL_HALF_FLOAT_OES:
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_FLOAT:
+				switch(internalformat)
+				{
+				case GL_R32F: return Transfer<Bytes>(buffer, input, region);
+				case GL_R16F: return Transfer<R32Fto16F>(buffer, input, region);
+				default: UNREACHABLE(internalformat);
+				}
+			default:
+				UNREACHABLE(type);
+			}
+		case GL_RED_INTEGER:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				ASSERT(internalformat == GL_R8UI && implementationFormat == sw::FORMAT_R8UI);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_BYTE:
+				ASSERT(internalformat == GL_R8I && implementationFormat == sw::FORMAT_R8I);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_UNSIGNED_SHORT:
+				ASSERT(internalformat == GL_R16UI && implementationFormat == sw::FORMAT_R16UI);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_SHORT:
+				ASSERT(internalformat == GL_R16I && implementationFormat == sw::FORMAT_R16I);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_UNSIGNED_INT:
+				ASSERT(internalformat == GL_R32UI && implementationFormat == sw::FORMAT_R32UI);
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_INT:
+				ASSERT(internalformat == GL_R32I && implementationFormat == sw::FORMAT_R32I);
+				return Transfer<Bytes>(buffer, input, region);
 			default:
 				UNREACHABLE(type);
 			}
 		case GL_DEPTH_COMPONENT:
+			switch(type)
+			{
+			case GL_UNSIGNED_SHORT: return Transfer<D16>(buffer, input, region);
+			case GL_UNSIGNED_INT:   return Transfer<D32>(buffer, input, region);
+			case GL_FLOAT:          return Transfer<D32F>(buffer, input, region);
+			case GL_DEPTH_COMPONENT24:       // Only valid for glRenderbufferStorage calls.
+			case GL_DEPTH_COMPONENT32_OES:   // Only valid for glRenderbufferStorage calls.
+			default: UNREACHABLE(type);
+			}
 		case GL_DEPTH_STENCIL:
 			switch(type)
 			{
-			case GL_FLOAT:                          return Transfer<D32F>(buffer, input, region);
-			case GL_UNSIGNED_SHORT:                 return Transfer<D16>(buffer, input, region);
-			case GL_UNSIGNED_INT:                   return Transfer<D32>(buffer, input, region);
 			case GL_UNSIGNED_INT_24_8:              return Transfer<D24X8>(buffer, input, region);
 			case GL_FLOAT_32_UNSIGNED_INT_24_8_REV: return Transfer<D32FX32>(buffer, input, region);
 			default: UNREACHABLE(type);
+			}
+		case GL_LUMINANCE_ALPHA:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_FLOAT:
+				switch(internalformat)
+				{
+				case GL_RG32F: return Transfer<Bytes>(buffer, input, region);
+				case GL_RG16F: return Transfer<RG32Fto16F>(buffer, input, region);
+				default: UNREACHABLE(internalformat);
+				}
+			case GL_HALF_FLOAT:
+			case GL_HALF_FLOAT_OES:
+				return Transfer<Bytes>(buffer, input, region);
+			default:
+				UNREACHABLE(type);
+			}
+		case GL_LUMINANCE:
+		case GL_ALPHA:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:
+				return Transfer<Bytes>(buffer, input, region);
+			case GL_FLOAT:
+				switch(internalformat)
+				{
+				case GL_R32F: return Transfer<Bytes>(buffer, input, region);
+				case GL_R16F: return Transfer<R32Fto16F>(buffer, input, region);
+				default: UNREACHABLE(internalformat);
+				}
+			case GL_HALF_FLOAT:
+			case GL_HALF_FLOAT_OES:
+				return Transfer<Bytes>(buffer, input, region);
+			default:
+				UNREACHABLE(type);
 			}
 		default:
 			UNREACHABLE(format);
