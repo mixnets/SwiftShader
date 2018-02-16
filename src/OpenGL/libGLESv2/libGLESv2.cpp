@@ -794,6 +794,12 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 			return error(GL_INVALID_VALUE);
 		}
 
+		GLenum validationError = context->getPixels(&data, GL_UNSIGNED_BYTE, imageSize);
+		if(validationError != GL_NONE)
+		{
+			return error(validationError);
+		}
+
 		if(target == GL_TEXTURE_2D || target == GL_TEXTURE_RECTANGLE_ARB)
 		{
 			es2::Texture2D *texture = context->getTexture2D(target);
@@ -803,15 +809,9 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 				return error(GL_INVALID_OPERATION);
 			}
 
-			GLenum validationError = context->getPixels(&data, texture->getType(target, level), imageSize);
-			if(validationError != GL_NONE)
-			{
-				return error(validationError);
-			}
-
 			texture->setCompressedImage(level, internalformat, width, height, imageSize, data);
 		}
-		else
+		else if(es2::IsCubemapTextureTarget(target))
 		{
 			es2::TextureCubeMap *texture = context->getTextureCubeMap();
 
@@ -820,27 +820,9 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 				return error(GL_INVALID_OPERATION);
 			}
 
-			switch(target)
-			{
-			case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
-			case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
-			case GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
-			case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
-			case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
-			case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
-				{
-					GLenum validationError = context->getPixels(&data, texture->getType(target, level), imageSize);
-					if(validationError != GL_NONE)
-					{
-						return error(validationError);
-					}
-
-					texture->setCompressedImage(target, level, internalformat, width, height, imageSize, data);
-				}
-				break;
-			default: UNREACHABLE(target);
-			}
+			texture->setCompressedImage(target, level, internalformat, width, height, imageSize, data);
 		}
+		else UNREACHABLE(target);
 	}
 }
 
@@ -882,17 +864,17 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 			return error(GL_INVALID_OPERATION);
 		}
 
+		GLenum validationError = context->getPixels(&data, GL_UNSIGNED_BYTE, imageSize);
+		if(validationError != GL_NONE)
+		{
+			return error(validationError);
+		}
+
 		if(target == GL_TEXTURE_2D || target == GL_TEXTURE_RECTANGLE_ARB)
 		{
 			es2::Texture2D *texture = context->getTexture2D(target);
 
 			GLenum validationError = ValidateSubImageParams(true, false, target, level, xoffset, yoffset, width, height, format, GL_NONE, texture, context->getClientVersion());
-			if(validationError != GL_NONE)
-			{
-				return error(validationError);
-			}
-
-			validationError = context->getPixels(&data, texture->getType(target, level), imageSize);
 			if(validationError != GL_NONE)
 			{
 				return error(validationError);
@@ -905,12 +887,6 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 			es2::TextureCubeMap *texture = context->getTextureCubeMap();
 
 			GLenum validationError = ValidateSubImageParams(true, false, target, level, xoffset, yoffset, width, height, format, GL_NONE, texture, context->getClientVersion());
-			if(validationError != GL_NONE)
-			{
-				return error(validationError);
-			}
-
-			validationError = context->getPixels(&data, texture->getType(target, level), imageSize);
 			if(validationError != GL_NONE)
 			{
 				return error(validationError);
@@ -6419,7 +6395,7 @@ void CompressedTexImage3DOES(GLenum target, GLint level, GLenum internalformat, 
 			return error(GL_INVALID_OPERATION);
 		}
 
-		GLenum validationError = context->getPixels(&data, texture->getType(target, level), imageSize);
+		GLenum validationError = context->getPixels(&data, GL_UNSIGNED_BYTE, imageSize);
 
 		if(validationError != GL_NONE)
 		{
@@ -6476,7 +6452,7 @@ void CompressedTexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint
 			return error(GL_INVALID_OPERATION);
 		}
 
-		GLenum validationError = context->getPixels(&data, texture->getType(target, level), imageSize);
+		GLenum validationError = context->getPixels(&data, GL_UNSIGNED_BYTE, imageSize);
 		if(validationError != GL_NONE)
 		{
 			return error(validationError);
