@@ -788,7 +788,7 @@ GL_APICALL void GL_APIENTRY glCompressedTexImage3D(GLenum target, GLint level, G
 			return error(GL_INVALID_OPERATION);
 		}
 
-		GLenum validationError = context->getPixels(&data, texture->getType(target, level), imageSize);
+		GLenum validationError = context->getPixels(&data, GL_UNSIGNED_BYTE, imageSize);
 		if(validationError != GL_NONE)
 		{
 			return error(validationError);
@@ -875,7 +875,7 @@ GL_APICALL void GL_APIENTRY glCompressedTexSubImage3D(GLenum target, GLint level
 			return error(GL_INVALID_OPERATION);
 		}
 
-		GLenum validationError = context->getPixels(&data, texture->getType(target, level), imageSize);
+		GLenum validationError = context->getPixels(&data, GL_UNSIGNED_BYTE, imageSize);
 		if(validationError != GL_NONE)
 		{
 			return error(validationError);

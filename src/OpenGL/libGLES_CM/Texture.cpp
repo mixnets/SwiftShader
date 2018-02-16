@@ -426,16 +426,10 @@ GLsizei Texture2D::getHeight(GLenum target, GLint level) const
 	return image[level] ? image[level]->getHeight() : 0;
 }
 
-GLenum Texture2D::getFormat(GLenum target, GLint level) const
+GLint Texture2D::getFormat(GLenum target, GLint level) const
 {
 	ASSERT(target == GL_TEXTURE_2D);
 	return image[level] ? image[level]->getFormat() : GL_NONE;
-}
-
-GLenum Texture2D::getType(GLenum target, GLint level) const
-{
-	ASSERT(target == GL_TEXTURE_2D);
-	return GL_NONE;
 }
 
 sw::Format Texture2D::getInternalFormat(GLenum target, GLint level) const
