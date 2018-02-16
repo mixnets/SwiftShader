@@ -32,38 +32,35 @@ namespace
 		return ((w + blockSizeX - 1) / blockSizeX) * ((h + blockSizeY - 1) / blockSizeY);
 	}
 
-	enum DataType
+	enum TransferType
 	{
 		Bytes,
-		ByteRGB,
-		UByteRGB,
-		ShortRGB,
-		UShortRGB,
-		IntRGB,
-		UIntRGB,
-		FloatRGB,
-		HalfFloatRGB,
-		RGBA4444,
-		RGBA5551,
-		R11G11B10F,
-		RGB9E5,
-		D16,
-		D24X8,
-		D32,
-		D32F,
-		X24S8,
-		D32FX32,
-		X56S8,
-		RGBA1010102to8888,
-		RGB8to565,
-		R32Fto16F,
-		RG32Fto16F,
-		RGB32Fto16F,
-		RGB32Fto16F_U,
-		RGBA32Fto16F
+		RGB8toRGBX8,
+		RGB16toRGBX16,
+		RGB32toRGBX32,
+		RGB32FtoRGBX32F,
+		RGB16FtoRGBX16F,
+		RGBA4toRGBA8,
+		RGBA5_A1toRGBA8,
+		R11G11B10FtoRGBX16F,
+		RGB9_E5FtoRGBX16F,
+		D16toD32F,
+		D24X8toD32F,
+		D32toD32F,
+		D32FtoD32F_CLAMPED,
+		D32FX32toD32F,
+		X24S8toS8,
+		X56S8toS8,
+		RGBA1010102toRGBA8,
+		RGB8toRGB565,
+		R32FtoR16F,
+		RG32FtoRG16F,
+		RGB32FtoRGB16F,
+		RGB32FtoRGB16F_UNSIGNED,
+		RGBA32FtoRGBA16F
 	};
 
-	template<DataType dataType>
+	template<TransferType transferType>
 	void TransferRow(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes);
 
 	template<>
@@ -73,21 +70,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<ByteRGB>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
-	{
-		unsigned char *destB = dest;
-
-		for(int x = 0; x < width; x++)
-		{
-			destB[4 * x + 0] = source[x * 3 + 0];
-			destB[4 * x + 1] = source[x * 3 + 1];
-			destB[4 * x + 2] = source[x * 3 + 2];
-			destB[4 * x + 3] = 0x7F;
-		}
-	}
-
-	template<>
-	void TransferRow<UByteRGB>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGB8toRGBX8>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		unsigned char *destB = dest;
 
@@ -101,22 +84,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<ShortRGB>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
-	{
-		const unsigned short *sourceS = reinterpret_cast<const unsigned short*>(source);
-		unsigned short *destS = reinterpret_cast<unsigned short*>(dest);
-
-		for(int x = 0; x < width; x++)
-		{
-			destS[4 * x + 0] = sourceS[x * 3 + 0];
-			destS[4 * x + 1] = sourceS[x * 3 + 1];
-			destS[4 * x + 2] = sourceS[x * 3 + 2];
-			destS[4 * x + 3] = 0x7FFF;
-		}
-	}
-
-	template<>
-	void TransferRow<UShortRGB>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGB16toRGBX16>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const unsigned short *sourceS = reinterpret_cast<const unsigned short*>(source);
 		unsigned short *destS = reinterpret_cast<unsigned short*>(dest);
@@ -131,22 +99,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<IntRGB>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
-	{
-		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source);
-		unsigned int *destI = reinterpret_cast<unsigned int*>(dest);
-
-		for(int x = 0; x < width; x++)
-		{
-			destI[4 * x + 0] = sourceI[x * 3 + 0];
-			destI[4 * x + 1] = sourceI[x * 3 + 1];
-			destI[4 * x + 2] = sourceI[x * 3 + 2];
-			destI[4 * x + 3] = 0x7FFFFFFF;
-		}
-	}
-
-	template<>
-	void TransferRow<UIntRGB>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGB32toRGBX32>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source);
 		unsigned int *destI = reinterpret_cast<unsigned int*>(dest);
@@ -161,7 +114,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<FloatRGB>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGB32FtoRGBX32F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const float *sourceF = reinterpret_cast<const float*>(source);
 		float *destF = reinterpret_cast<float*>(dest);
@@ -176,7 +129,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<HalfFloatRGB>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGB16FtoRGBX16F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const unsigned short *sourceH = reinterpret_cast<const unsigned short*>(source);
 		unsigned short *destH = reinterpret_cast<unsigned short*>(dest);
@@ -191,7 +144,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<RGBA4444>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGBA4toRGBA8>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const unsigned short *source4444 = reinterpret_cast<const unsigned short*>(source);
 		unsigned char *dest4444 = dest;
@@ -207,7 +160,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<RGBA5551>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGBA5_A1toRGBA8>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const unsigned short *source5551 = reinterpret_cast<const unsigned short*>(source);
 		unsigned char *dest8888 = dest;
@@ -223,7 +176,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<RGBA1010102to8888>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGBA1010102toRGBA8>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const unsigned int *source1010102 = reinterpret_cast<const unsigned int*>(source);
 		unsigned char *dest8888 = dest;
@@ -239,7 +192,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<RGB8to565>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGB8toRGB565>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		unsigned short *dest565 = reinterpret_cast<unsigned short*>(dest);
 
@@ -253,7 +206,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<R11G11B10F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<R11G11B10FtoRGBX16F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const sw::R11G11B10F *sourceRGB = reinterpret_cast<const sw::R11G11B10F*>(source);
 		sw::half *destF = reinterpret_cast<sw::half*>(dest);
@@ -266,7 +219,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<RGB9E5>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGB9_E5FtoRGBX16F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const sw::RGB9E5 *sourceRGB = reinterpret_cast<const sw::RGB9E5*>(source);
 		sw::half *destF = reinterpret_cast<sw::half*>(dest);
@@ -279,7 +232,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<R32Fto16F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<R32FtoR16F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const float *source32F = reinterpret_cast<const float*>(source);
 		sw::half *dest16F = reinterpret_cast<sw::half*>(dest);
@@ -291,7 +244,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<RG32Fto16F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RG32FtoRG16F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const float *source32F = reinterpret_cast<const float*>(source);
 		sw::half *dest16F = reinterpret_cast<sw::half*>(dest);
@@ -304,7 +257,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<RGB32Fto16F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGB32FtoRGB16F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const float *source32F = reinterpret_cast<const float*>(source);
 		sw::half *dest16F = reinterpret_cast<sw::half*>(dest);
@@ -319,7 +272,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<RGB32Fto16F_U>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGB32FtoRGB16F_UNSIGNED>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const float *source32F = reinterpret_cast<const float*>(source);
 		sw::half *dest16F = reinterpret_cast<sw::half*>(dest);
@@ -334,7 +287,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<RGBA32Fto16F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<RGBA32FtoRGBA16F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const float *source32F = reinterpret_cast<const float*>(source);
 		sw::half *dest16F = reinterpret_cast<sw::half*>(dest);
@@ -349,7 +302,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<D16>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<D16toD32F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const unsigned short *sourceD16 = reinterpret_cast<const unsigned short*>(source);
 		float *destF = reinterpret_cast<float*>(dest);
@@ -361,7 +314,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<D24X8>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<D24X8toD32F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const unsigned int *sourceD24 = reinterpret_cast<const unsigned int*>(source);
 		float *destF = reinterpret_cast<float*>(dest);
@@ -373,7 +326,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<D32>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<D32toD32F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const unsigned int *sourceD32 = reinterpret_cast<const unsigned int*>(source);
 		float *destF = reinterpret_cast<float*>(dest);
@@ -385,19 +338,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<X24S8>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
-	{
-		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source);
-		unsigned char *destI = dest;
-
-		for(int x = 0; x < width; x++)
-		{
-			destI[x] = static_cast<unsigned char>(sourceI[x] & 0x000000FF);   // FIXME: Quad layout
-		}
-	}
-
-	template<>
-	void TransferRow<D32F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<D32FtoD32F_CLAMPED>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		const float *sourceF = reinterpret_cast<const float*>(source);
 		float *destF = reinterpret_cast<float*>(dest);
@@ -409,7 +350,7 @@ namespace
 	}
 
 	template<>
-	void TransferRow<D32FX32>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<D32FX32toD32F>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		struct D32FS8 { float depth32f; unsigned int stencil24_8; };
 		const D32FS8 *sourceD32FS8 = reinterpret_cast<const D32FS8*>(source);
@@ -422,7 +363,19 @@ namespace
 	}
 
 	template<>
-	void TransferRow<X56S8>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	void TransferRow<X24S8toS8>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
+	{
+		const unsigned int *sourceI = reinterpret_cast<const unsigned int*>(source);
+		unsigned char *destI = dest;
+
+		for(int x = 0; x < width; x++)
+		{
+			destI[x] = static_cast<unsigned char>(sourceI[x] & 0x000000FF);   // FIXME: Quad layout
+		}
+	}
+
+	template<>
+	void TransferRow<X56S8toS8>(unsigned char *dest, const unsigned char *source, GLsizei width, GLsizei bytes)
 	{
 		struct D32FS8 { float depth32f; unsigned int stencil24_8; };
 		const D32FS8 *sourceD32FS8 = reinterpret_cast<const D32FS8*>(source);
@@ -446,7 +399,7 @@ namespace
 		GLsizei destSlice;
 	};
 
-	template<DataType dataType>
+	template<TransferType transferType>
 	void Transfer(void *buffer, const void *input, Region region)
 	{
 		for(int z = 0; z < region.depth; z++)
@@ -458,7 +411,7 @@ namespace
 				const unsigned char *source = inputStart + y * region.inputPitch;
 				unsigned char *dest = destStart + y * region.destPitch;
 
-				TransferRow<dataType>(dest, source, region.width, region.bytes);
+				TransferRow<transferType>(dest, source, region.width, region.bytes);
 			}
 		}
 	}
@@ -1067,10 +1020,10 @@ namespace egl
 				return Transfer<Bytes>(buffer, input, region);
 			case GL_UNSIGNED_SHORT_4_4_4_4:
 				ASSERT_OR_RETURN(internalformat == GL_RGBA4 && implementationFormat == sw::FORMAT_A8B8G8R8);
-				return Transfer<RGBA4444>(buffer, input, region);
+				return Transfer<RGBA4toRGBA8>(buffer, input, region);
 			case GL_UNSIGNED_SHORT_5_5_5_1:
 				ASSERT_OR_RETURN(internalformat == GL_RGB5_A1 && implementationFormat == sw::FORMAT_A8B8G8R8);
-				return Transfer<RGBA5551>(buffer, input, region);
+				return Transfer<RGBA5_A1toRGBA8>(buffer, input, region);
 			case GL_UNSIGNED_INT_2_10_10_10_REV:
 				switch(internalformat)
 				{
@@ -1079,7 +1032,7 @@ namespace egl
 					return Transfer<Bytes>(buffer, input, region);
 				case GL_RGB5_A1:
 					ASSERT_OR_RETURN(implementationFormat == sw::FORMAT_A8B8G8R8);
-					return Transfer<RGBA1010102to8888>(buffer, input, region);
+					return Transfer<RGBA1010102toRGBA8>(buffer, input, region);
 				default:
 					UNREACHABLE(internalformat);
 				}
@@ -1091,7 +1044,7 @@ namespace egl
 				switch(internalformat)
 				{
 				case GL_RGBA32F: return Transfer<Bytes>(buffer, input, region);
-				case GL_RGBA16F: return Transfer<RGBA32Fto16F>(buffer, input, region);
+				case GL_RGBA16F: return Transfer<RGBA32FtoRGBA16F>(buffer, input, region);
 				default: UNREACHABLE(internalformat);
 				}
 			default:
@@ -1141,34 +1094,34 @@ namespace egl
 			case GL_UNSIGNED_BYTE:
 				switch(internalformat)
 				{
-				case GL_RGB8:   return Transfer<UByteRGB>(buffer, input, region);
-				case GL_SRGB8:  return Transfer<UByteRGB>(buffer, input, region);
-				case GL_RGB565: return Transfer<RGB8to565>(buffer, input, region);
+				case GL_RGB8:   return Transfer<RGB8toRGBX8>(buffer, input, region);
+				case GL_SRGB8:  return Transfer<RGB8toRGBX8>(buffer, input, region);
+				case GL_RGB565: return Transfer<RGB8toRGB565>(buffer, input, region);
 				default: UNREACHABLE(internalformat);
 				}
 			case GL_BYTE:
 				ASSERT_OR_RETURN(internalformat == GL_RGB8_SNORM && implementationFormat == sw::FORMAT_X8B8G8R8_SNORM);
-				return Transfer<ByteRGB>(buffer, input, region);
+				return Transfer<RGB8toRGBX8>(buffer, input, region);
 			case GL_UNSIGNED_SHORT_5_6_5:
 				ASSERT_OR_RETURN(internalformat == GL_RGB565 && implementationFormat == sw::FORMAT_R5G6B5);
 				return Transfer<Bytes>(buffer, input, region);
 			case GL_UNSIGNED_INT_10F_11F_11F_REV:
 				ASSERT_OR_RETURN(internalformat == GL_R11F_G11F_B10F && implementationFormat == sw::FORMAT_X16B16G16R16F_UNSIGNED);
-				return Transfer<R11G11B10F>(buffer, input, region);
+				return Transfer<R11G11B10FtoRGBX16F>(buffer, input, region);
 			case GL_UNSIGNED_INT_5_9_9_9_REV:
 				ASSERT_OR_RETURN(internalformat == GL_RGB9_E5 && implementationFormat == sw::FORMAT_X16B16G16R16F_UNSIGNED);
-				return Transfer<RGB9E5>(buffer, input, region);
+				return Transfer<RGB9_E5FtoRGBX16F>(buffer, input, region);
 			case GL_HALF_FLOAT:
 			case GL_HALF_FLOAT_OES:
 				switch(internalformat)
 				{
 				case GL_RGB16F:
 					ASSERT_OR_RETURN(implementationFormat == sw::FORMAT_X16B16G16R16F);
-					return Transfer<HalfFloatRGB>(buffer, input, region);
+					return Transfer<RGB16FtoRGBX16F>(buffer, input, region);
 				case GL_R11F_G11F_B10F:
 				case GL_RGB9_E5:
 					ASSERT_OR_RETURN(implementationFormat == sw::FORMAT_X16B16G16R16F_UNSIGNED);
-					return Transfer<HalfFloatRGB>(buffer, input, region);
+					return Transfer<RGB16FtoRGBX16F>(buffer, input, region);
 				default:
 					UNREACHABLE(internalformat);
 				}
@@ -1177,14 +1130,14 @@ namespace egl
 				{
 				case GL_RGB32F:
 					ASSERT_OR_RETURN(implementationFormat == sw::FORMAT_X32B32G32R32F);
-					return Transfer<FloatRGB>(buffer, input, region);
+					return Transfer<RGB32FtoRGBX32F>(buffer, input, region);
 				case GL_RGB16F:
 					ASSERT_OR_RETURN(implementationFormat == sw::FORMAT_X16B16G16R16F);
-					return Transfer<RGB32Fto16F>(buffer, input, region);
+					return Transfer<RGB32FtoRGB16F>(buffer, input, region);
 				case GL_R11F_G11F_B10F:
 				case GL_RGB9_E5:
 					ASSERT_OR_RETURN(implementationFormat == sw::FORMAT_X16B16G16R16F_UNSIGNED);
-					return Transfer<RGB32Fto16F_U>(buffer, input, region);
+					return Transfer<RGB32FtoRGB16F_UNSIGNED>(buffer, input, region);
 				default:
 					UNREACHABLE(internalformat);
 				}
@@ -1196,22 +1149,22 @@ namespace egl
 			{
 			case GL_UNSIGNED_BYTE:
 				ASSERT_OR_RETURN(internalformat == GL_RGB8UI && implementationFormat == sw::FORMAT_X8B8G8R8UI);
-				return Transfer<UByteRGB>(buffer, input, region);
+				return Transfer<RGB8toRGBX8>(buffer, input, region);
 			case GL_BYTE:
 				ASSERT_OR_RETURN(internalformat == GL_RGB8I && implementationFormat == sw::FORMAT_X8B8G8R8I);
-				return Transfer<ByteRGB>(buffer, input, region);
+				return Transfer<RGB8toRGBX8>(buffer, input, region);
 			case GL_UNSIGNED_SHORT:
 				ASSERT_OR_RETURN(internalformat == GL_RGB16UI && implementationFormat == sw::FORMAT_X16B16G16R16UI);
-				return Transfer<UShortRGB>(buffer, input, region);
+				return Transfer<RGB16toRGBX16>(buffer, input, region);
 			case GL_SHORT:
 				ASSERT_OR_RETURN(internalformat == GL_RGB16I && implementationFormat == sw::FORMAT_X16B16G16R16I);
-				return Transfer<ShortRGB>(buffer, input, region);
+				return Transfer<RGB16toRGBX16>(buffer, input, region);
 			case GL_UNSIGNED_INT:
 				ASSERT_OR_RETURN(internalformat == GL_RGB32UI && implementationFormat == sw::FORMAT_X32B32G32R32UI);
-				return Transfer<UIntRGB>(buffer, input, region);
+				return Transfer<RGB32toRGBX32>(buffer, input, region);
 			case GL_INT:
 				ASSERT_OR_RETURN(internalformat == GL_RGB32I && implementationFormat == sw::FORMAT_X32B32G32R32I);
-				return Transfer<IntRGB>(buffer, input, region);
+				return Transfer<RGB32toRGBX32>(buffer, input, region);
 			default:
 				UNREACHABLE(type);
 			}
@@ -1227,7 +1180,7 @@ namespace egl
 				switch(internalformat)
 				{
 				case GL_RG32F: return Transfer<Bytes>(buffer, input, region);
-				case GL_RG16F: return Transfer<RG32Fto16F>(buffer, input, region);
+				case GL_RG16F: return Transfer<RG32FtoRG16F>(buffer, input, region);
 				default: UNREACHABLE(internalformat);
 				}
 			default:
@@ -1269,7 +1222,7 @@ namespace egl
 				switch(internalformat)
 				{
 				case GL_R32F: return Transfer<Bytes>(buffer, input, region);
-				case GL_R16F: return Transfer<R32Fto16F>(buffer, input, region);
+				case GL_R16F: return Transfer<R32FtoR16F>(buffer, input, region);
 				default: UNREACHABLE(internalformat);
 				}
 			default:
@@ -1302,9 +1255,9 @@ namespace egl
 		case GL_DEPTH_COMPONENT:
 			switch(type)
 			{
-			case GL_UNSIGNED_SHORT: return Transfer<D16>(buffer, input, region);
-			case GL_UNSIGNED_INT:   return Transfer<D32>(buffer, input, region);
-			case GL_FLOAT:          return Transfer<D32F>(buffer, input, region);
+			case GL_UNSIGNED_SHORT: return Transfer<D16toD32F>(buffer, input, region);
+			case GL_UNSIGNED_INT:   return Transfer<D32toD32F>(buffer, input, region);
+			case GL_FLOAT:          return Transfer<D32FtoD32F_CLAMPED>(buffer, input, region);
 			case GL_DEPTH_COMPONENT24:       // Only valid for glRenderbufferStorage calls.
 			case GL_DEPTH_COMPONENT32_OES:   // Only valid for glRenderbufferStorage calls.
 			default: UNREACHABLE(type);
@@ -1312,8 +1265,8 @@ namespace egl
 		case GL_DEPTH_STENCIL:
 			switch(type)
 			{
-			case GL_UNSIGNED_INT_24_8:              return Transfer<D24X8>(buffer, input, region);
-			case GL_FLOAT_32_UNSIGNED_INT_24_8_REV: return Transfer<D32FX32>(buffer, input, region);
+			case GL_UNSIGNED_INT_24_8:              return Transfer<D24X8toD32F>(buffer, input, region);
+			case GL_FLOAT_32_UNSIGNED_INT_24_8_REV: return Transfer<D32FX32toD32F>(buffer, input, region);
 			default: UNREACHABLE(type);
 			}
 		case GL_LUMINANCE_ALPHA:
@@ -1325,7 +1278,7 @@ namespace egl
 				switch(internalformat)
 				{
 				case GL_RG32F: return Transfer<Bytes>(buffer, input, region);
-				case GL_RG16F: return Transfer<RG32Fto16F>(buffer, input, region);
+				case GL_RG16F: return Transfer<RG32FtoRG16F>(buffer, input, region);
 				default: UNREACHABLE(internalformat);
 				}
 			case GL_HALF_FLOAT:
@@ -1344,7 +1297,7 @@ namespace egl
 				switch(internalformat)
 				{
 				case GL_R32F: return Transfer<Bytes>(buffer, input, region);
-				case GL_R16F: return Transfer<R32Fto16F>(buffer, input, region);
+				case GL_R16F: return Transfer<R32FtoR16F>(buffer, input, region);
 				default: UNREACHABLE(internalformat);
 				}
 			case GL_HALF_FLOAT:
@@ -1372,8 +1325,8 @@ namespace egl
 
 		switch(type)
 		{
-		case GL_UNSIGNED_INT_24_8:              return Transfer<X24S8>(buffer, input, region);
-		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV: return Transfer<X56S8>(buffer, input, region);
+		case GL_UNSIGNED_INT_24_8:              return Transfer<X24S8toS8>(buffer, input, region);
+		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV: return Transfer<X56S8toS8>(buffer, input, region);
 		default: UNREACHABLE(format);
 		}
 	}
