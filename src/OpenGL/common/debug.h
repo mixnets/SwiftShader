@@ -66,6 +66,22 @@ namespace es
 #define ASSERT(expression) (void(0))
 #endif
 
+// A macro asserting a condition and outputting failures to the debug log, or return when in release mode.
+#undef ASSERT_OR_RETURN
+#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+#define ASSERT_OR_RETURN(expression) do { \
+	if(!(expression)) \
+		ERR("\t! Assert failed in %s(%d): "#expression"\n", __FUNCTION__, __LINE__); \
+		assert(expression); \
+		return; \
+	} while(0)
+#else
+#define ASSERT_OR_RETURN(expression) do { \
+	if(!(expression)) \
+		return; \
+	} while(0)
+#endif
+
 // A macro to indicate unimplemented functionality
 #undef UNIMPLEMENTED
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)

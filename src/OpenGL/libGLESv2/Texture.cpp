@@ -515,12 +515,6 @@ GLenum Texture2D::getFormat(GLenum target, GLint level) const
 	return image[level] ? image[level]->getFormat() : GL_NONE;
 }
 
-GLenum Texture2D::getType(GLenum target, GLint level) const
-{
-	ASSERT(target == GL_TEXTURE_2D);
-	return GL_NONE;
-}
-
 int Texture2D::getTopLevel() const
 {
 	ASSERT(isSamplerComplete());
@@ -989,12 +983,6 @@ GLenum TextureCubeMap::getFormat(GLenum target, GLint level) const
 {
 	int face = CubeFaceIndex(target);
 	return image[face][level] ? image[face][level]->getFormat() : 0;
-}
-
-GLenum TextureCubeMap::getType(GLenum target, GLint level) const
-{
-	int face = CubeFaceIndex(target);
-	return GL_NONE;
 }
 
 int TextureCubeMap::getTopLevel() const
@@ -1505,12 +1493,6 @@ GLenum Texture3D::getFormat(GLenum target, GLint level) const
 {
 	ASSERT(target == getTarget());
 	return image[level] ? image[level]->getFormat() : GL_NONE;
-}
-
-GLenum Texture3D::getType(GLenum target, GLint level) const
-{
-	ASSERT(target == getTarget());
-	return GL_NONE;
 }
 
 int Texture3D::getTopLevel() const
