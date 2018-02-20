@@ -39,8 +39,6 @@
 namespace egl
 {
 
-class Context;
-
 struct PixelStorageModes
 {
 	GLint rowLength = 0;
@@ -175,7 +173,7 @@ public:
 	void *lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client) override = 0;
 	void unlockInternal() override = 0;
 
-	void loadImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const PixelStorageModes &unpackParameters, const void *pixels);
+	void loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const PixelStorageModes &unpackParameters, const void *pixels);
 	void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
 
 	void release() override = 0;

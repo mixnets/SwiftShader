@@ -227,13 +227,13 @@ egl::Image *Texture::createSharedImage(GLenum target, unsigned int level)
 	return image;
 }
 
-void Texture::setImage(egl::Context *context, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, egl::Image *image)
+void Texture::setImage(GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, egl::Image *image)
 {
 	if(pixels && image)
 	{
 		egl::PixelStorageModes unpackParameters;
 		unpackParameters.alignment = unpackAlignment;
-		image->loadImageData(context, 0, 0, 0, image->getWidth(), image->getHeight(), 1, format, type, unpackParameters, pixels);
+		image->loadImageData(0, 0, 0, image->getWidth(), image->getHeight(), 1, format, type, unpackParameters, pixels);
 	}
 }
 
@@ -245,7 +245,7 @@ void Texture::setCompressedImage(GLsizei imageSize, const void *pixels, egl::Ima
 	}
 }
 
-void Texture::subImage(egl::Context *context, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, egl::Image *image)
+void Texture::subImage(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels, egl::Image *image)
 {
 	if(!image)
 	{
@@ -271,7 +271,7 @@ void Texture::subImage(egl::Context *context, GLint xoffset, GLint yoffset, GLsi
 	{
 		egl::PixelStorageModes unpackParameters;
 		unpackParameters.alignment = unpackAlignment;
-		image->loadImageData(context, xoffset, yoffset, 0, width, height, 1, format, type, unpackParameters, pixels);
+		image->loadImageData(xoffset, yoffset, 0, width, height, 1, format, type, unpackParameters, pixels);
 	}
 }
 
@@ -451,7 +451,7 @@ int Texture2D::getTopLevel() const
 	return level - 1;
 }
 
-void Texture2D::setImage(egl::Context *context, GLint level, GLsizei width, GLsizei height, GLint internalformat, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels)
+void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLint internalformat, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels)
 {
 	if(image[level])
 	{
@@ -465,7 +465,7 @@ void Texture2D::setImage(egl::Context *context, GLint level, GLsizei width, GLsi
 		return error(GL_OUT_OF_MEMORY);
 	}
 
-	Texture::setImage(context, format, type, unpackAlignment, pixels, image[level]);
+	Texture::setImage(format, type, unpackAlignment, pixels, image[level]);
 }
 
 void Texture2D::bindTexImage(gl::Surface *surface)
@@ -526,9 +526,9 @@ void Texture2D::setCompressedImage(GLint level, GLenum format, GLsizei width, GL
 	Texture::setCompressedImage(imageSize, pixels, image[level]);
 }
 
-void Texture2D::subImage(egl::Context *context, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels)
+void Texture2D::subImage(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint unpackAlignment, const void *pixels)
 {
-	Texture::subImage(context, xoffset, yoffset, width, height, format, type, unpackAlignment, pixels, image[level]);
+	Texture::subImage(xoffset, yoffset, width, height, format, type, unpackAlignment, pixels, image[level]);
 }
 
 void Texture2D::subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels)
