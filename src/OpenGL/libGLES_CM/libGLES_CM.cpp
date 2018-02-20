@@ -4293,7 +4293,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				return error(GL_INVALID_OPERATION);
 			}
 
-			texture->setImage(context, level, width, height, internalformat, format, type, context->getUnpackAlignment(), pixels);
+			texture->setImage(level, width, height, internalformat, format, type, context->getUnpackAlignment(), pixels);
 		}
 		else UNREACHABLE(target);
 	}
@@ -4530,7 +4530,7 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 
 			if(validateSubImageParams(false, width, height, xoffset, yoffset, target, level, format, texture))
 			{
-				texture->subImage(context, level, xoffset, yoffset, width, height, format, type, context->getUnpackAlignment(), pixels);
+				texture->subImage(level, xoffset, yoffset, width, height, format, type, context->getUnpackAlignment(), pixels);
 			}
 		}
 		else UNREACHABLE(target);

@@ -14,7 +14,6 @@
 
 #include "Image.hpp"
 
-#include "../libEGL/Context.hpp"
 #include "../libEGL/Texture.hpp"
 #include "../common/debug.h"
 #include "Common/Math.hpp"
@@ -1331,7 +1330,7 @@ namespace egl
 		}
 	}
 
-	void Image::loadImageData(Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const PixelStorageModes &unpackParameters, const void *pixels)
+	void Image::loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const PixelStorageModes &unpackParameters, const void *pixels)
 	{
 		GLsizei inputWidth = (unpackParameters.rowLength == 0) ? width : unpackParameters.rowLength;
 		GLsizei inputPitch = ComputePitch(inputWidth, format, type, unpackParameters.alignment);
