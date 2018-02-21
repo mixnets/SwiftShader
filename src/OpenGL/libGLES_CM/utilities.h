@@ -31,16 +31,26 @@ namespace es1
 	struct Color;
 
 	bool IsCompressed(GLenum format);
+	GLint GetSizedInternalFormat(GLint internalFormat, GLenum type);
 	bool IsDepthTexture(GLenum format);
 	bool IsStencilTexture(GLenum format);
 	bool IsCubemapTextureTarget(GLenum target);
 	int CubeFaceIndex(GLenum cubeTarget);
 	bool IsTextureTarget(GLenum target);
 	bool CheckTextureFormatType(GLenum format, GLenum type);
+	bool IsUnsizedInternalFormat(GLint internalformat);
+	GLenum GetBaseInternalFormat(GLint internalformat);
 
 	bool IsColorRenderable(GLenum internalformat);
 	bool IsDepthRenderable(GLenum internalformat);
 	bool IsStencilRenderable(GLenum internalformat);
+
+	GLuint GetAlphaSize(GLint internalformat);
+	GLuint GetRedSize(GLint internalformat);
+	GLuint GetGreenSize(GLint internalformat);
+	GLuint GetBlueSize(GLint internalformat);
+	GLuint GetDepthSize(GLint internalformat);
+	GLuint GetStencilSize(GLint internalformat);
 
 	bool IsAlpha(GLenum texFormat);
 	bool IsRGB(GLenum texFormat);
@@ -71,13 +81,6 @@ namespace es2sw
 
 namespace sw2es
 {
-	GLuint GetAlphaSize(sw::Format colorFormat);
-	GLuint GetRedSize(sw::Format colorFormat);
-	GLuint GetGreenSize(sw::Format colorFormat);
-	GLuint GetBlueSize(sw::Format colorFormat);
-	GLuint GetDepthSize(sw::Format depthFormat);
-	GLuint GetStencilSize(sw::Format stencilFormat);
-
 	GLenum ConvertBackBufferFormat(sw::Format format);
 	GLenum ConvertDepthStencilFormat(sw::Format format);
 }

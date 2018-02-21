@@ -94,15 +94,15 @@ namespace es
 #undef ASSERT_OR_RETURN
 #if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
 #define ASSERT_OR_RETURN(expression) do { \
-	if(!(expression)) \
+	if(!(expression)) { \
 		ASSERT(expression); \
 		return; \
-	} while(0)
+	} } while(0)
 #else
 #define ASSERT_OR_RETURN(expression) do { \
-	if(!(expression)) \
+	if(!(expression)) { \
 		return; \
-	} while(0)
+	} } while(0)
 #endif
 
 #endif   // COMMON_DEBUG_H_

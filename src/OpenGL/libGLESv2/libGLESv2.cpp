@@ -965,6 +965,7 @@ void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, 
 
 		GLenum colorbufferFormat = source->getFormat();
 
+		// Determine the sized internal format.
 		if(IsUnsizedInternalFormat(internalformat))
 		{
 			if(GetBaseInternalFormat(colorbufferFormat) == internalformat)
