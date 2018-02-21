@@ -889,7 +889,7 @@ void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, 
 		es1::Renderbuffer *source = framebuffer->getColorbuffer();
 		GLenum colorbufferFormat = source->getFormat();
 
-		// [OpenGL ES 2.0.24] table 3.9
+		// [OpenGL ES 1.1.12] table 3.9
 		switch(internalformat)
 		{
 		case GL_ALPHA:
@@ -931,6 +931,22 @@ void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, 
 			return error(GL_INVALID_OPERATION);
 		default:
 			return error(GL_INVALID_ENUM);
+		}
+
+		// Determine the sized internal format.
+		if(GetBaseInternalFormat(colorbufferFormat) == internalformat)
+		{
+			internalformat = colorbufferFormat;
+		}
+		else if(GetRedSize(colorbufferFormat) == 8)
+		{
+			internalformat = GetSizedInternalFormat(internalformat, GL_UNSIGNED_BYTE);
+		}
+		else
+		{
+			UNIMPLEMENTED();
+
+			return error(GL_INVALID_OPERATION);
 		}
 
 		if(target == GL_TEXTURE_2D)
@@ -4267,6 +4283,8 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 		return error(GL_INVALID_VALUE);
 	}
 
+	GLenum sizedInternalFormat = GetSizedInternalFormat(internalformat, type);
+
 	es1::Context *context = es1::getContext();
 
 	if(context)
@@ -4293,7 +4311,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 				return error(GL_INVALID_OPERATION);
 			}
 
-			texture->setImage(level, width, height, internalformat, format, type, context->getUnpackAlignment(), pixels);
+			texture->setImage(level, width, height, sizedInternalFormat, format, type, context->getUnpackAlignment(), pixels);
 		}
 		else UNREACHABLE(target);
 	}

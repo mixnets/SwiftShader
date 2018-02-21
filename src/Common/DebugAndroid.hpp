@@ -39,6 +39,8 @@
  * Enter the debugger with a memory fault iff debuggerd is set to capture this
  * process. Otherwise return.
  */
+#include <stdlib.h>
+
 void AndroidEnterDebugger();
 
 #define ASSERT(E) do { \
@@ -78,13 +80,9 @@ void AndroidEnterDebugger();
 		AndroidEnterDebugger();                                         \
 	} while(0)
 
-#ifndef NDEBUG
 	#define TRACE(format, ...)								   \
-		ALOGV("%s %s:%d (" format ")", __FUNCTION__, __FILE__, \
+		ALOGE("%s %s:%d (" format ")", __FUNCTION__, __FILE__, \
 			  __LINE__, ##__VA_ARGS__)
-#else
-	#define TRACE(...) ((void)0)
-#endif
 
 void trace(const char *format, ...);
 

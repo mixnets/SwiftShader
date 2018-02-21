@@ -34,11 +34,8 @@ namespace es
 }
 
 // A macro to output a trace of a function call and its arguments to the debugging log
-#if defined(ANGLE_DISABLE_TRACE)
-#define TRACE(message, ...) (void(0))
-#else
-#define TRACE(message, ...) es::trace("trace: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
-#endif
+
+#define TRACE(message, ...) ALOGE("trace: %s(%d): " message "\n", __FUNCTION__, __LINE__, ##__VA_ARGS__)
 
 // A macro to output a function call and its arguments to the debugging log, to denote an item in need of fixing.
 #if defined(ANGLE_DISABLE_TRACE)
@@ -90,19 +87,18 @@ namespace es
 
 #endif   // !__ANDROID__
 
+#include <stdlib.h>
+
 // A macro asserting a condition and outputting failures to the debug log, or return when in release mode.
 #undef ASSERT_OR_RETURN
-#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
 #define ASSERT_OR_RETURN(expression) do { \
-	if(!(expression)) \
+bool val = (expression); \
+	if(!val) { \
 		ASSERT(expression); \
+		ALOGE("!!! XXX not true: " #expression); \
+		abort(); \
 		return; \
+	} \
 	} while(0)
-#else
-#define ASSERT_OR_RETURN(expression) do { \
-	if(!(expression)) \
-		return; \
-	} while(0)
-#endif
 
 #endif   // COMMON_DEBUG_H_
