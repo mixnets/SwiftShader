@@ -70,7 +70,6 @@ namespace es2sw
 	sw::MipmapType ConvertMipMapFilter(GLenum minFilter);
 	sw::FilterType ConvertTextureFilter(GLenum minFilter, GLenum magFilter, float maxAnisotropy);
 	bool ConvertPrimitiveType(GLenum primitiveType, GLsizei elementCount,  GLenum elementType, sw::DrawType &swPrimitiveType, int &primitiveCount);
-	sw::Format ConvertRenderbufferFormat(GLenum format);
 	sw::TextureStage::StageOperation ConvertCombineOperation(GLenum operation);
 	sw::TextureStage::SourceArgument ConvertSourceArgument(GLenum argument);
 	sw::TextureStage::ArgumentModifier ConvertSourceOperand(GLenum operand);

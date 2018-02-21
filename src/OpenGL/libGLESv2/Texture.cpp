@@ -547,18 +547,6 @@ void Texture2D::setImage(GLint level, GLsizei width, GLsizei height, GLint inter
 
 void Texture2D::bindTexImage(gl::Surface *surface)
 {
-	switch(surface->getInternalFormat())
-	{
-	case sw::FORMAT_A8R8G8B8:
-	case sw::FORMAT_A8B8G8R8:
-	case sw::FORMAT_X8B8G8R8:
-	case sw::FORMAT_X8R8G8B8:
-		break;
-	default:
-		UNIMPLEMENTED();
-		return;
-	}
-
 	for(int level = 0; level < IMPLEMENTATION_MAX_TEXTURE_LEVELS; level++)
 	{
 		if(image[level])
@@ -1881,7 +1869,9 @@ NO_SANITIZE_FUNCTION egl::Image *createBackBuffer(int width, int height, sw::For
 		return nullptr;
 	}
 
-	return egl::Image::create(width, height, format, multiSampleDepth, false);
+	GLenum internalformat = sw2es::ConvertBackBufferFormat(format);
+
+	return egl::Image::create(width, height, internalformat, multiSampleDepth, false);
 }
 
 NO_SANITIZE_FUNCTION egl::Image *createDepthStencil(int width, int height, sw::Format format, int multiSampleDepth)
@@ -1917,7 +1907,9 @@ NO_SANITIZE_FUNCTION egl::Image *createDepthStencil(int width, int height, sw::F
 		UNREACHABLE(format);
 	}
 
-	egl::Image *surface = egl::Image::create(width, height, format, multiSampleDepth, lockable);
+	GLenum internalformat = sw2es::ConvertDepthStencilFormat(format);
+
+	egl::Image *surface = egl::Image::create(width, height, internalformat, multiSampleDepth, lockable);
 
 	if(!surface)
 	{

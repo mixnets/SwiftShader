@@ -1876,7 +1876,12 @@ void GetRenderbufferParameterivOES(GLenum target, GLenum pname, GLint* params)
 		{
 		case GL_RENDERBUFFER_WIDTH_OES:           *params = renderbuffer->getWidth();       break;
 		case GL_RENDERBUFFER_HEIGHT_OES:          *params = renderbuffer->getHeight();      break;
-		case GL_RENDERBUFFER_INTERNAL_FORMAT_OES: *params = renderbuffer->getFormat();      break;
+		case GL_RENDERBUFFER_INTERNAL_FORMAT_OES:
+			{
+				GLint internalformat = renderbuffer->getFormat();
+				*params = (internalformat == GL_NONE) ? GL_RGBA4_OES : internalformat;
+			}
+			break;
 		case GL_RENDERBUFFER_RED_SIZE_OES:        *params = renderbuffer->getRedSize();     break;
 		case GL_RENDERBUFFER_GREEN_SIZE_OES:      *params = renderbuffer->getGreenSize();   break;
 		case GL_RENDERBUFFER_BLUE_SIZE_OES:       *params = renderbuffer->getBlueSize();    break;
@@ -3441,9 +3446,6 @@ void RenderbufferStorageOES(GLenum target, GLenum internalformat, GLsizei width,
 
 		switch(internalformat)
 		{
-		case GL_DEPTH_COMPONENT16_OES:
-			context->setRenderbufferStorage(new es1::Depthbuffer(width, height, 0));
-			break;
 		case GL_RGBA4_OES:
 		case GL_RGB5_A1_OES:
 		case GL_RGB565_OES:
@@ -3451,11 +3453,14 @@ void RenderbufferStorageOES(GLenum target, GLenum internalformat, GLsizei width,
 		case GL_RGBA8_OES:
 			context->setRenderbufferStorage(new es1::Colorbuffer(width, height, internalformat, 0));
 			break;
+		case GL_DEPTH_COMPONENT16_OES:
+			context->setRenderbufferStorage(new es1::Depthbuffer(width, height, internalformat,  0));
+			break;
 		case GL_STENCIL_INDEX8_OES:
 			context->setRenderbufferStorage(new es1::Stencilbuffer(width, height, 0));
 			break;
 		case GL_DEPTH24_STENCIL8_OES:
-			context->setRenderbufferStorage(new es1::DepthStencilbuffer(width, height, 0));
+			context->setRenderbufferStorage(new es1::DepthStencilbuffer(width, height, internalformat, 0));
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
