@@ -41,32 +41,32 @@ void RenderbufferInterface::releaseProxy(const Renderbuffer *proxy)
 
 GLuint RenderbufferInterface::getRedSize() const
 {
-	return sw2es::GetRedSize(getInternalFormat());
+	return GetRedSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getGreenSize() const
 {
-	return sw2es::GetGreenSize(getInternalFormat());
+	return GetGreenSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getBlueSize() const
 {
-	return sw2es::GetBlueSize(getInternalFormat());
+	return GetBlueSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getAlphaSize() const
 {
-	return sw2es::GetAlphaSize(getInternalFormat());
+	return GetAlphaSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getDepthSize() const
 {
-	return sw2es::GetDepthSize(getInternalFormat());
+	return GetDepthSize(getFormat());
 }
 
 GLuint RenderbufferInterface::getStencilSize() const
 {
-	return sw2es::GetStencilSize(getInternalFormat());
+	return GetStencilSize(getFormat());
 }
 
 ///// RenderbufferTexture2D Implementation ////////

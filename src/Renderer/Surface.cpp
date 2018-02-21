@@ -1515,6 +1515,11 @@ namespace sw
 
 	void *Surface::lockStencil(int x, int y, int front, Accessor client)
 	{
+		if(stencil.format == FORMAT_NULL)
+		{
+			return nullptr;
+		}
+
 		resource->lock(client);
 
 		if(!stencil.buffer)
