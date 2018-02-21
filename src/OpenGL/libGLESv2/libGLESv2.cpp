@@ -789,7 +789,7 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 			return error(GL_INVALID_ENUM);
 		}
 
-		if(imageSize != egl::ComputeCompressedSize(width, height, internalformat))
+		if(imageSize != gl::ComputeCompressedSize(width, height, internalformat))
 		{
 			return error(GL_INVALID_VALUE);
 		}
@@ -849,7 +849,7 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 		return error(GL_INVALID_VALUE);
 	}
 
-	if(imageSize != egl::ComputeCompressedSize(width, height, format))
+	if(imageSize != gl::ComputeCompressedSize(width, height, format))
 	{
 		return error(GL_INVALID_VALUE);
 	}
@@ -966,15 +966,15 @@ void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, 
 		GLenum colorbufferFormat = source->getFormat();
 
 		// Determine the sized internal format.
-		if(IsUnsizedInternalFormat(internalformat))
+		if(gl::IsUnsizedInternalFormat(internalformat))
 		{
-			if(GetBaseInternalFormat(colorbufferFormat) == internalformat)
+			if(gl::GetBaseInternalFormat(colorbufferFormat) == internalformat)
 			{
 				internalformat = colorbufferFormat;
 			}
 			else if(GetRedSize(colorbufferFormat) == 8)
 			{
-				internalformat = GetSizedInternalFormat(internalformat, GL_UNSIGNED_BYTE);
+				internalformat = gl::GetSizedInternalFormat(internalformat, GL_UNSIGNED_BYTE);
 			}
 			else
 			{
@@ -4999,7 +4999,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 			return error(GL_INVALID_ENUM);
 		}
 
-		GLenum sizedInternalFormat = GetSizedInternalFormat(internalformat, type);
+		GLenum sizedInternalFormat = gl::GetSizedInternalFormat(internalformat, type);
 
 		validationError = context->getPixels(&data, type, context->getRequiredBufferSize(width, height, 1, format, type));
 		if(validationError != GL_NONE)
@@ -6244,7 +6244,7 @@ void TexImage3DOES(GLenum target, GLint level, GLenum internalformat, GLsizei wi
 			return error(validationError);
 		}
 
-		GLenum sizedInternalFormat = GetSizedInternalFormat(internalformat, type);
+		GLenum sizedInternalFormat = gl::GetSizedInternalFormat(internalformat, type);
 		texture->setImage(level, width, height, depth, sizedInternalFormat, format, type, context->getUnpackParameters(), data);
 	}
 }
@@ -6380,7 +6380,7 @@ void CompressedTexImage3DOES(GLenum target, GLint level, GLenum internalformat, 
 		return error(GL_INVALID_ENUM);
 	}
 
-	if(imageSize != egl::ComputeCompressedSize(width, height, internalformat) * depth)
+	if(imageSize != gl::ComputeCompressedSize(width, height, internalformat) * depth)
 	{
 		return error(GL_INVALID_VALUE);
 	}
@@ -6437,7 +6437,7 @@ void CompressedTexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint
 		return error(GL_INVALID_ENUM);
 	}
 
-	if(imageSize != egl::ComputeCompressedSize(width, height, format) * depth)
+	if(imageSize != gl::ComputeCompressedSize(width, height, format) * depth)
 	{
 		return error(GL_INVALID_VALUE);
 	}

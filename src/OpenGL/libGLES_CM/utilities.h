@@ -31,15 +31,12 @@ namespace es1
 	struct Color;
 
 	bool IsCompressed(GLenum format);
-	GLint GetSizedInternalFormat(GLint internalFormat, GLenum type);
 	bool IsDepthTexture(GLenum format);
 	bool IsStencilTexture(GLenum format);
 	bool IsCubemapTextureTarget(GLenum target);
 	int CubeFaceIndex(GLenum cubeTarget);
 	bool IsTextureTarget(GLenum target);
 	bool CheckTextureFormatType(GLenum format, GLenum type);
-	bool IsUnsizedInternalFormat(GLint internalformat);
-	GLenum GetBaseInternalFormat(GLint internalformat);
 
 	bool IsColorRenderable(GLenum internalformat);
 	bool IsDepthRenderable(GLenum internalformat);

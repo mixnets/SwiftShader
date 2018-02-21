@@ -43,7 +43,6 @@ namespace es2
 	int AllocateFirstFreeBits(unsigned int *bits, unsigned int allocationSize, unsigned int bitsSize);
 
 	bool IsCompressed(GLenum format, GLint clientVersion);
-	GLint GetSizedInternalFormat(GLint internalFormat, GLenum type);
 	GLenum ValidateSubImageParams(bool compressed, bool copy, GLenum target, GLint level, GLint xoffset, GLint yoffset,
 	                              GLsizei width, GLsizei height, GLenum format, GLenum type, Texture *texture, GLint clientVersion);
 	GLenum ValidateSubImageParams(bool compressed, bool copy, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
@@ -57,8 +56,6 @@ namespace es2
 	bool IsTextureTarget(GLenum target);
 	GLenum ValidateTextureFormatType(GLenum format, GLenum type, GLint internalformat, GLint clientVersion);
 	GLsizei GetTypeSize(GLenum type);
-	bool IsUnsizedInternalFormat(GLint internalformat);
-	GLenum GetBaseInternalFormat(GLint internalformat);
 
 	bool IsColorRenderable(GLint internalformat, GLint clientVersion);
 	bool IsDepthRenderable(GLint internalformat, GLint clientVersion);

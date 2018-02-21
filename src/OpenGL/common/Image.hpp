@@ -36,10 +36,10 @@
 #define SW_YV12_BT709 0x48315659   // YCrCb 4:2:0 Planar, 16-byte aligned, BT.709 color space, studio swing
 #define SW_YV12_JFIF  0x4A315659   // YCrCb 4:2:0 Planar, 16-byte aligned, BT.601 color space, full swing
 
-namespace egl
+namespace gl
 {
 
-struct PixelStorageModes
+	struct PixelStorageModes
 {
 	GLint rowLength = 0;
 	GLint skipRows = 0;
@@ -49,19 +49,27 @@ struct PixelStorageModes
 	GLint skipImages = 0;
 };
 
+GLint GetSizedInternalFormat(GLint internalFormat, GLenum type);
 sw::Format ConvertReadFormatType(GLenum format, GLenum type);
 sw::Format SelectInternalFormat(GLint format);
+bool IsUnsizedInternalFormat(GLint internalformat);
+GLenum GetBaseInternalFormat(GLint internalformat);
 GLsizei ComputePitch(GLsizei width, GLenum format, GLenum type, GLint alignment);
 GLsizei ComputeCompressedSize(GLsizei width, GLsizei height, GLenum format);
 size_t ComputePackingOffset(GLenum format, GLenum type, GLsizei width, GLsizei height, const PixelStorageModes &storageModes);
+
+}
+
+namespace egl
+{
 
 class [[clang::lto_visibility_public]] Image : public sw::Surface, public gl::Object
 {
 protected:
 	// 2D texture image
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLint format)
-		: sw::Surface(parentTexture->getResource(), width, height, 1, 0, 1, SelectInternalFormat(format), true, true),
-		  width(width), height(height), depth(1), internalformat(format), implementationFormat(SelectInternalFormat(format)),
+		: sw::Surface(parentTexture->getResource(), width, height, 1, 0, 1, gl::SelectInternalFormat(format), true, true),
+		  width(width), height(height), depth(1), internalformat(format), implementationFormat(gl::SelectInternalFormat(format)),
 		  parentTexture(parentTexture)
 	{
 		shared = false;
@@ -71,8 +79,8 @@ protected:
 
 	// 3D/Cube texture image
 	Image(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLint format)
-		: sw::Surface(parentTexture->getResource(), width, height, depth, border, 1, SelectInternalFormat(format), true, true),
-		  width(width), height(height), depth(depth), internalformat(format), implementationFormat(SelectInternalFormat(format)),
+		: sw::Surface(parentTexture->getResource(), width, height, depth, border, 1, gl::SelectInternalFormat(format), true, true),
+		  width(width), height(height), depth(depth), internalformat(format), implementationFormat(gl::SelectInternalFormat(format)),
 		  parentTexture(parentTexture)
 	{
 		shared = false;
@@ -82,8 +90,8 @@ protected:
 
 	// Native EGL image
 	Image(GLsizei width, GLsizei height, GLint format, int pitchP)
-		: sw::Surface(nullptr, width, height, 1, 0, 1, SelectInternalFormat(format), true, true, pitchP),
-		  width(width), height(height), depth(1), internalformat(format), implementationFormat(SelectInternalFormat(format)),
+		: sw::Surface(nullptr, width, height, 1, 0, 1, gl::SelectInternalFormat(format), true, true, pitchP),
+		  width(width), height(height), depth(1), internalformat(format), implementationFormat(gl::SelectInternalFormat(format)),
 		  parentTexture(nullptr)
 	{
 		shared = true;
@@ -173,7 +181,7 @@ public:
 	void *lockInternal(int x, int y, int z, sw::Lock lock, sw::Accessor client) override = 0;
 	void unlockInternal() override = 0;
 
-	void loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const PixelStorageModes &unpackParameters, const void *pixels);
+	void loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const gl::PixelStorageModes &unpackParameters, const void *pixels);
 	void loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels);
 
 	void release() override = 0;

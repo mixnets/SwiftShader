@@ -416,7 +416,7 @@ namespace
 	}
 }
 
-namespace egl
+namespace gl
 {
 	sw::Format ConvertReadFormatType(GLenum format, GLenum type)
 	{
@@ -554,6 +554,275 @@ namespace egl
 		}
 
 		return sw::FORMAT_NULL;
+	}
+
+	bool IsUnsizedInternalFormat(GLint internalformat)
+	{
+		switch(internalformat)
+		{
+		case GL_ALPHA:
+		case GL_LUMINANCE:
+		case GL_LUMINANCE_ALPHA:
+		case GL_RED:
+		case GL_RG:
+		case GL_RGB:
+		case GL_RGBA:
+		case GL_RED_INTEGER:
+		case GL_RG_INTEGER:
+		case GL_RGB_INTEGER:
+		case GL_RGBA_INTEGER:
+		case GL_BGRA_EXT:
+		case GL_DEPTH_COMPONENT:
+		case GL_DEPTH_STENCIL:
+		// GL_EXT_sRGB
+	//	case GL_SRGB_EXT:
+	//	case GL_SRGB_ALPHA_EXT:
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	GLenum GetBaseInternalFormat(GLint internalformat)
+	{
+		switch(internalformat)
+		{
+		// [OpenGL ES 3.0 Table 3.13]
+		case GL_R8:       return GL_RED;
+		case GL_R8_SNORM: return GL_RED;
+		case GL_RG8:       return GL_RG;
+		case GL_RG8_SNORM: return GL_RG;
+		case GL_RGB8:       return GL_RGB;
+		case GL_RGB8_SNORM: return GL_RGB;
+		case GL_RGB565:     return GL_RGB;
+		case GL_RGBA4:        return GL_RGBA;
+		case GL_RGB5_A1:      return GL_RGBA;
+		case GL_RGBA8:        return GL_RGBA;
+		case GL_RGBA8_SNORM:  return GL_RGBA;
+		case GL_RGB10_A2:     return GL_RGBA;
+		case GL_RGB10_A2UI:   return GL_RGBA;
+		case GL_SRGB8:        return GL_RGB;
+		case GL_SRGB8_ALPHA8: return GL_RGBA;
+		case GL_R16F:    return GL_RED;
+		case GL_RG16F:   return GL_RG;
+		case GL_RGB16F:  return GL_RGB;
+		case GL_RGBA16F: return GL_RGBA;
+		case GL_R32F:    return GL_RED;
+		case GL_RG32F:   return GL_RG;
+		case GL_RGB32F:  return GL_RGB;
+		case GL_RGBA32F: return GL_RGBA;
+		case GL_R11F_G11F_B10F: return GL_RGB;
+		case GL_RGB9_E5:        return GL_RGB;
+		case GL_R8I:      return GL_RED;
+		case GL_R8UI:     return GL_RED;
+		case GL_R16I:     return GL_RED;
+		case GL_R16UI:    return GL_RED;
+		case GL_R32I:     return GL_RED;
+		case GL_R32UI:    return GL_RED;
+		case GL_RG8I:     return GL_RG;
+		case GL_RG8UI:    return GL_RG;
+		case GL_RG16I:    return GL_RG;
+		case GL_RG16UI:   return GL_RG;
+		case GL_RG32I:    return GL_RG;
+		case GL_RG32UI:   return GL_RG;
+		case GL_RGB8I:    return GL_RGB;
+		case GL_RGB8UI:   return GL_RGB;
+		case GL_RGB16I:   return GL_RGB;
+		case GL_RGB16UI:  return GL_RGB;
+		case GL_RGB32I:   return GL_RGB;
+		case GL_RGB32UI:  return GL_RGB;
+		case GL_RGBA8I:   return GL_RGBA;
+		case GL_RGBA8UI:  return GL_RGBA;
+		case GL_RGBA16I:  return GL_RGBA;
+		case GL_RGBA16UI: return GL_RGBA;
+		case GL_RGBA32I:  return GL_RGBA;
+		case GL_RGBA32UI: return GL_RGBA;
+
+		// GL_EXT_texture_storage
+		case GL_ALPHA8_EXT:            return GL_ALPHA;
+		case GL_LUMINANCE8_ALPHA8_EXT: return GL_LUMINANCE_ALPHA;
+		case GL_LUMINANCE8_EXT:        return GL_LUMINANCE;
+
+		case GL_BGRA8_EXT: return GL_BGRA_EXT;   // GL_APPLE_texture_format_BGRA8888
+
+		case GL_DEPTH_COMPONENT24:     return GL_DEPTH_COMPONENT;
+		case GL_DEPTH_COMPONENT32_OES: return GL_DEPTH_COMPONENT;
+		case GL_DEPTH_COMPONENT32F:    return GL_DEPTH_COMPONENT;
+		case GL_DEPTH_COMPONENT16:     return GL_DEPTH_COMPONENT;
+		case GL_DEPTH32F_STENCIL8:     return GL_DEPTH_STENCIL;
+		case GL_DEPTH24_STENCIL8:      return GL_DEPTH_STENCIL;
+		case GL_STENCIL_INDEX8:        return GL_STENCIL_INDEX_OES;
+		default:
+			UNREACHABLE(internalformat);
+			break;
+		}
+
+		return GL_NONE;
+	}
+
+	GLint GetSizedInternalFormat(GLint internalformat, GLenum type)
+	{
+		if(!IsUnsizedInternalFormat(internalformat))
+		{
+			return internalformat;
+		}
+
+		switch(internalformat)
+		{
+		case GL_RGBA:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE: return GL_RGBA8;
+			case GL_BYTE:          return GL_RGBA8_SNORM;
+			case GL_UNSIGNED_SHORT_4_4_4_4:      return GL_RGBA4;
+			case GL_UNSIGNED_SHORT_5_5_5_1:      return GL_RGB5_A1;
+			case GL_UNSIGNED_INT_2_10_10_10_REV: return GL_RGB10_A2;
+			case GL_FLOAT:          return GL_RGBA32F;
+			case GL_HALF_FLOAT:     return GL_RGBA16F;
+			case GL_HALF_FLOAT_OES: return GL_RGBA16F;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_RGBA_INTEGER:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:  return GL_RGBA8UI;
+			case GL_BYTE:           return GL_RGBA8I;
+			case GL_UNSIGNED_SHORT: return GL_RGBA16UI;
+			case GL_SHORT:          return GL_RGBA16I;
+			case GL_UNSIGNED_INT:   return GL_RGBA32UI;
+			case GL_INT:            return GL_RGBA32I;
+			case GL_UNSIGNED_INT_2_10_10_10_REV: return GL_RGB10_A2UI;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_RGB:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:  return GL_RGB8;
+			case GL_BYTE:           return GL_RGB8_SNORM;
+			case GL_UNSIGNED_SHORT_5_6_5:         return GL_RGB565;
+			case GL_UNSIGNED_INT_10F_11F_11F_REV: return GL_R11F_G11F_B10F;
+			case GL_UNSIGNED_INT_5_9_9_9_REV:     return GL_RGB9_E5;
+			case GL_FLOAT:          return GL_RGB32F;
+			case GL_HALF_FLOAT:     return GL_RGB16F;
+			case GL_HALF_FLOAT_OES: return GL_RGB16F;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_RGB_INTEGER:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:  return GL_RGB8UI;
+			case GL_BYTE:           return GL_RGB8I;
+			case GL_UNSIGNED_SHORT: return GL_RGB16UI;
+			case GL_SHORT:          return GL_RGB16I;
+			case GL_UNSIGNED_INT:   return GL_RGB32UI;
+			case GL_INT:            return GL_RGB32I;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_RG:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:  return GL_RG8;
+			case GL_BYTE:           return GL_RG8_SNORM;
+			case GL_FLOAT:          return GL_RG32F;
+			case GL_HALF_FLOAT:     return GL_RG16F;
+			case GL_HALF_FLOAT_OES: return GL_RG16F;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_RG_INTEGER:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:  return GL_RG8UI;
+			case GL_BYTE:           return GL_RG8I;
+			case GL_UNSIGNED_SHORT: return GL_RG16UI;
+			case GL_SHORT:          return GL_RG16I;
+			case GL_UNSIGNED_INT:   return GL_RG32UI;
+			case GL_INT:            return GL_RG32I;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_RED:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:  return GL_R8;
+			case GL_BYTE:           return GL_R8_SNORM;
+			case GL_FLOAT:          return GL_R32F;
+			case GL_HALF_FLOAT:     return GL_R16F;
+			case GL_HALF_FLOAT_OES: return GL_R16F;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_RED_INTEGER:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:  return GL_R8UI;
+			case GL_BYTE:           return GL_R8I;
+			case GL_UNSIGNED_SHORT: return GL_R16UI;
+			case GL_SHORT:          return GL_R16I;
+			case GL_UNSIGNED_INT:   return GL_R32UI;
+			case GL_INT:            return GL_R32I;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_LUMINANCE_ALPHA:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:  return GL_LUMINANCE8_ALPHA8_EXT;
+			case GL_FLOAT:          return GL_LUMINANCE_ALPHA32F_EXT;
+			case GL_HALF_FLOAT:     return GL_LUMINANCE_ALPHA16F_EXT;
+			case GL_HALF_FLOAT_OES: return GL_LUMINANCE_ALPHA16F_EXT;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_LUMINANCE:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:  return GL_LUMINANCE8_EXT;
+			case GL_FLOAT:          return GL_LUMINANCE32F_EXT;
+			case GL_HALF_FLOAT:     return GL_LUMINANCE16F_EXT;
+			case GL_HALF_FLOAT_OES: return GL_LUMINANCE16F_EXT;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_ALPHA:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:  return GL_ALPHA8_EXT;
+			case GL_FLOAT:          return GL_ALPHA32F_EXT;
+			case GL_HALF_FLOAT:     return GL_ALPHA16F_EXT;
+			case GL_HALF_FLOAT_OES: return GL_ALPHA16F_EXT;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_BGRA_EXT:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE:                  return GL_BGRA8_EXT;
+			case GL_UNSIGNED_SHORT_4_4_4_4_REV_EXT: // Only valid for glReadPixels calls.
+			case GL_UNSIGNED_SHORT_1_5_5_5_REV_EXT: // Only valid for glReadPixels calls.
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_DEPTH_COMPONENT:
+			switch(type)
+			{
+			case GL_UNSIGNED_SHORT: return GL_DEPTH_COMPONENT16;
+			case GL_UNSIGNED_INT:   return GL_DEPTH_COMPONENT32_OES;
+			case GL_FLOAT:          return GL_DEPTH_COMPONENT32F;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+		case GL_DEPTH_STENCIL:
+			switch(type)
+			{
+			case GL_UNSIGNED_INT_24_8:              return GL_DEPTH24_STENCIL8;
+			case GL_FLOAT_32_UNSIGNED_INT_24_8_REV: return GL_DEPTH32F_STENCIL8;
+			default: UNREACHABLE(type); return GL_NONE;
+			}
+
+		// GL_OES_texture_stencil8
+	//	case GL_STENCIL_INDEX_OES / GL_UNSIGNED_BYTE: return GL_STENCIL_INDEX8;
+
+		// GL_EXT_sRGB
+	//	case GL_SRGB_EXT / GL_UNSIGNED_BYTE: return GL_SRGB8;
+	//	case GL_SRGB_ALPHA_EXT / GL_UNSIGNED_BYTE: return GL_SRGB8_ALPHA8;
+
+		default:
+			UNREACHABLE(internalformat);
+		}
+
+		return GL_NONE;
 	}
 
 	sw::Format SelectInternalFormat(GLint format)
@@ -798,7 +1067,7 @@ namespace egl
 		return (rawPitch + alignment - 1) & ~(alignment - 1);
 	}
 
-	size_t ComputePackingOffset(GLenum format, GLenum type, GLsizei width, GLsizei height, const PixelStorageModes &storageModes)
+	size_t ComputePackingOffset(GLenum format, GLenum type, GLsizei width, GLsizei height, const gl::PixelStorageModes &storageModes)
 	{
 		GLsizei pitchB = ComputePitch(width, format, type, storageModes.alignment);
 		return (storageModes.skipImages * height + storageModes.skipRows) * pitchB + storageModes.skipPixels * ComputePixelSize(format, type);
@@ -875,7 +1144,10 @@ namespace egl
 			return 0;
 		}
 	}
+}
 
+namespace egl
+{
 	class ImageImplementation : public Image
 	{
 	public:
@@ -988,7 +1260,7 @@ namespace egl
 	void Image::loadImageData(GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, GLenum format, GLenum type, const void *input, void *buffer)
 	{
 		Region region;
-		region.bytes = ComputePixelSize(format, type);
+		region.bytes = gl::ComputePixelSize(format, type);
 		region.width = width;
 		region.height = height;
 		region.depth = depth;
@@ -1315,7 +1587,7 @@ namespace egl
 	void Image::loadStencilData(GLsizei width, GLsizei height, GLsizei depth, int inputPitch, int inputHeight, GLenum format, GLenum type, const void *input, void *buffer)
 	{
 		Region region;
-		region.bytes = ComputePixelSize(format, type);
+		region.bytes = gl::ComputePixelSize(format, type);
 		region.width = width;
 		region.height = height;
 		region.depth = depth;
@@ -1332,12 +1604,12 @@ namespace egl
 		}
 	}
 
-	void Image::loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const PixelStorageModes &unpackParameters, const void *pixels)
+	void Image::loadImageData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const gl::PixelStorageModes &unpackParameters, const void *pixels)
 	{
 		GLsizei inputWidth = (unpackParameters.rowLength == 0) ? width : unpackParameters.rowLength;
-		GLsizei inputPitch = ComputePitch(inputWidth, format, type, unpackParameters.alignment);
+		GLsizei inputPitch = gl::ComputePitch(inputWidth, format, type, unpackParameters.alignment);
 		GLsizei inputHeight = (unpackParameters.imageHeight == 0) ? height : unpackParameters.imageHeight;
-		char *input = ((char*)pixels) + ComputePackingOffset(format, type, inputWidth, inputHeight, unpackParameters);
+		char *input = ((char*)pixels) + gl::ComputePackingOffset(format, type, inputWidth, inputHeight, unpackParameters);
 
 		void *buffer = lock(xoffset, yoffset, zoffset, sw::LOCK_WRITEONLY);
 
@@ -1363,7 +1635,7 @@ namespace egl
 
 	void Image::loadCompressedData(GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLsizei imageSize, const void *pixels)
 	{
-		int inputPitch = ComputeCompressedPitch(width, internalformat);
+		int inputPitch = gl::ComputeCompressedPitch(width, internalformat);
 		int inputSlice = imageSize / depth;
 		int rows = inputSlice / inputPitch;
 

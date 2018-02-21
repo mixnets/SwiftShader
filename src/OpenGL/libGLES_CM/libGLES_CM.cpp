@@ -755,7 +755,7 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 			return error(GL_INVALID_ENUM);
 		}
 
-		if(imageSize != egl::ComputeCompressedSize(width, height, internalformat))
+		if(imageSize != gl::ComputeCompressedSize(width, height, internalformat))
 		{
 			return error(GL_INVALID_VALUE);
 		}
@@ -817,7 +817,7 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 
 	if(context)
 	{
-		if(imageSize != egl::ComputeCompressedSize(width, height, format))
+		if(imageSize != gl::ComputeCompressedSize(width, height, format))
 		{
 			return error(GL_INVALID_VALUE);
 		}
@@ -934,13 +934,13 @@ void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, 
 		}
 
 		// Determine the sized internal format.
-		if(GetBaseInternalFormat(colorbufferFormat) == internalformat)
+		if(gl::GetBaseInternalFormat(colorbufferFormat) == internalformat)
 		{
 			internalformat = colorbufferFormat;
 		}
 		else if(GetRedSize(colorbufferFormat) == 8)
 		{
-			internalformat = GetSizedInternalFormat(internalformat, GL_UNSIGNED_BYTE);
+			internalformat = gl::GetSizedInternalFormat(internalformat, GL_UNSIGNED_BYTE);
 		}
 		else
 		{
@@ -4283,7 +4283,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 		return error(GL_INVALID_VALUE);
 	}
 
-	GLenum sizedInternalFormat = GetSizedInternalFormat(internalformat, type);
+	GLenum sizedInternalFormat = gl::GetSizedInternalFormat(internalformat, type);
 
 	es1::Context *context = es1::getContext();
 

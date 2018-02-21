@@ -387,7 +387,7 @@ GL_APICALL void GL_APIENTRY glTexImage3D(GLenum target, GLint level, GLint inter
 			return error(validationError);
 		}
 
-		GLenum sizedInternalFormat = GetSizedInternalFormat(internalformat, type);
+		GLenum sizedInternalFormat = gl::GetSizedInternalFormat(internalformat, type);
 		texture->setImage(level, width, height, depth, sizedInternalFormat, format, type, context->getUnpackParameters(), data);
 	}
 }
@@ -419,7 +419,7 @@ GL_APICALL void GL_APIENTRY glTexSubImage3D(GLenum target, GLint level, GLint xo
 	}
 
 	es2::Context *context = es2::getContext();
-
+	
 	if(context)
 	{
 		es2::Texture3D *texture = (target == GL_TEXTURE_3D) ? context->getTexture3D() : context->getTexture2DArray();
@@ -534,7 +534,7 @@ GL_APICALL void GL_APIENTRY glCompressedTexImage3D(GLenum target, GLint level, G
 		return error(GL_INVALID_ENUM);
 	}
 
-	if(imageSize != egl::ComputeCompressedSize(width, height, internalformat) * depth)
+	if(imageSize != gl::ComputeCompressedSize(width, height, internalformat) * depth)
 	{
 		return error(GL_INVALID_VALUE);
 	}
@@ -591,7 +591,7 @@ GL_APICALL void GL_APIENTRY glCompressedTexSubImage3D(GLenum target, GLint level
 		return error(GL_INVALID_ENUM);
 	}
 
-	if(imageSize != egl::ComputeCompressedSize(width, height, format) * depth)
+	if(imageSize != gl::ComputeCompressedSize(width, height, format) * depth)
 	{
 		return error(GL_INVALID_VALUE);
 	}
