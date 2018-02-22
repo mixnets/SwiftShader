@@ -42,7 +42,8 @@ namespace es2
 
 	int AllocateFirstFreeBits(unsigned int *bits, unsigned int allocationSize, unsigned int bitsSize);
 
-	bool IsCompressed(GLenum format, GLint clientVersion);
+	bool IsCompressed(GLint intenalformat, GLint clientVersion);
+	bool IsSizedInternalFormat(GLint internalformat);   // Not compressed.
 	GLenum ValidateSubImageParams(bool compressed, bool copy, GLenum target, GLint level, GLint xoffset, GLint yoffset,
 	                              GLsizei width, GLsizei height, GLenum format, GLenum type, Texture *texture, GLint clientVersion);
 	GLenum ValidateSubImageParams(bool compressed, bool copy, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
@@ -54,7 +55,7 @@ namespace es2
 	bool IsCubemapTextureTarget(GLenum target);
 	int CubeFaceIndex(GLenum cubeTarget);
 	bool IsTextureTarget(GLenum target);
-	GLenum ValidateTextureFormatType(GLenum format, GLenum type, GLint internalformat, GLint clientVersion);
+	GLenum ValidateTextureFormatType(GLenum format, GLenum type, GLint internalformat, GLenum target, GLint clientVersion);
 	GLsizei GetTypeSize(GLenum type);
 
 	bool IsColorRenderable(GLint internalformat, GLint clientVersion);

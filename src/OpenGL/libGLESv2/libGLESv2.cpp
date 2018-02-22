@@ -4957,7 +4957,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 			}
 		}
 
-		GLenum validationError = ValidateTextureFormatType(format, type, internalformat, context->getClientVersion());
+		GLenum validationError = ValidateTextureFormatType(format, type, internalformat, target, context->getClientVersion());
 		if(validationError != GL_NONE)
 		{
 			return error(validationError);
@@ -6205,7 +6205,7 @@ void TexImage3DOES(GLenum target, GLint level, GLenum internalformat, GLsizei wi
 		return error(GL_INVALID_OPERATION);
 	}
 
-	GLenum validationError = ValidateTextureFormatType(format, type, internalformat, egl::getClientVersion());
+	GLenum validationError = ValidateTextureFormatType(format, type, internalformat, target, egl::getClientVersion());
 	if(validationError != GL_NONE)
 	{
 		return error(validationError);
@@ -6262,11 +6262,6 @@ void TexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
 		break;
 	default:
 		return error(GL_INVALID_ENUM);
-	}
-
-	if(!ValidateTextureFormatType(format, type, format, egl::getClientVersion()))
-	{
-		return;
 	}
 
 	if((level < 0) || (level >= es2::IMPLEMENTATION_MAX_TEXTURE_LEVELS))
