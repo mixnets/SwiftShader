@@ -323,7 +323,7 @@ namespace es2
 		return -1;
 	}
 
-	bool IsCompressed(GLenum format, GLint clientVersion)
+	bool IsCompressed(GLint internalformat, GLint clientVersion)
 	{
 		switch(format)
 		{
@@ -376,6 +376,76 @@ namespace es2
 		default:
 			return false;
 		}
+	}
+
+	bool IsSizedInternalFormat(GLint internalformat)
+	{
+		switch(internalformat)
+		{
+		case GL_ALPHA8_EXT:
+		case GL_LUMINANCE8_ALPHA8_EXT:
+		case GL_LUMINANCE8_EXT:
+		case GL_R8:
+		case GL_R8UI:
+		case GL_R8I:
+		case GL_R16UI:
+		case GL_R16I:
+		case GL_R32UI:
+		case GL_R32I:
+		case GL_RG8:
+		case GL_RG8UI:
+		case GL_RG8I:
+		case GL_RG16UI:
+		case GL_RG16I:
+		case GL_RG32UI:
+		case GL_RG32I:
+		case GL_SRGB8_ALPHA8:
+		case GL_RGB8UI:
+		case GL_RGB8I:
+		case GL_RGB16UI:
+		case GL_RGB16I:
+		case GL_RGB32UI:
+		case GL_RGB32I:
+		case GL_RG8_SNORM:
+		case GL_R8_SNORM:
+		case GL_RGB10_A2:
+		case GL_RGBA8UI:
+		case GL_RGBA8I:
+		case GL_RGB10_A2UI:
+		case GL_RGBA16UI:
+		case GL_RGBA16I:
+		case GL_RGBA32I:
+		case GL_RGBA32UI:
+		case GL_RGBA4:
+		case GL_RGB5_A1:
+		case GL_RGB565:
+		case GL_RGB8:
+		case GL_RGBA8:
+		case GL_BGRA8_EXT:   // GL_APPLE_texture_format_BGRA8888
+		case GL_R16F:
+		case GL_RG16F:
+		case GL_R11F_G11F_B10F:
+		case GL_RGB16F:
+		case GL_RGBA16F:
+		case GL_R32F:
+		case GL_RG32F:
+		case GL_RGB32F:
+		case GL_RGBA32F:
+		case GL_DEPTH_COMPONENT24:
+		case GL_DEPTH_COMPONENT32_OES:
+		case GL_DEPTH_COMPONENT32F:
+		case GL_DEPTH32F_STENCIL8:
+		case GL_DEPTH_COMPONENT16:
+		case GL_STENCIL_INDEX8:
+		case GL_DEPTH24_STENCIL8_OES:
+		case GL_RGBA8_SNORM:
+		case GL_SRGB8:
+		case GL_RGB8_SNORM:
+		case GL_RGB9_E5:
+			return true;
+		default:
+			return false;
+		}		
 	}
 
 	GLenum ValidateSubImageParams(bool compressed, bool copy, GLenum target, GLint level, GLint xoffset, GLint yoffset,
@@ -760,93 +830,9 @@ namespace es2
 
 		if((GLenum)internalformat != format)
 		{
-			switch(internalformat)
+			if(!IsSizedInternalFormat(internalformat))
 			{
-			// Unsized internal formats:
-			case GL_ALPHA:
-			case GL_RGB:
-			case GL_RGBA:
-			case GL_LUMINANCE:
-			case GL_LUMINANCE_ALPHA:
-			case GL_BGRA_EXT:          // GL_EXT_texture_format_BGRA8888
-			case GL_DEPTH_STENCIL:     // GL_OES_packed_depth_stencil (GL_DEPTH_STENCIL_OES)
-			case GL_DEPTH_COMPONENT:   // GL_OES_depth_texture
-			case GL_RED:               // = GL_RED_EXT in GL_EXT_texture_rg
-			case GL_RG:                // = GL_RG_EXT in GL_EXT_texture_rg
-				break;
-			case GL_RED_INTEGER:
-			case GL_RG_INTEGER:
-			case GL_RGB_INTEGER:
-			case GL_RGBA_INTEGER:
-				if(clientVersion < 3)
-				{
-					return GL_INVALID_ENUM;
-				}
-				break;
-			// Sized internal formats:
-			case GL_ALPHA8_EXT:
-			case GL_LUMINANCE8_ALPHA8_EXT:
-			case GL_LUMINANCE8_EXT:
-			case GL_R8:
-			case GL_R8UI:
-			case GL_R8I:
-			case GL_R16UI:
-			case GL_R16I:
-			case GL_R32UI:
-			case GL_R32I:
-			case GL_RG8:
-			case GL_RG8UI:
-			case GL_RG8I:
-			case GL_RG16UI:
-			case GL_RG16I:
-			case GL_RG32UI:
-			case GL_RG32I:
-			case GL_SRGB8_ALPHA8:
-			case GL_RGB8UI:
-			case GL_RGB8I:
-			case GL_RGB16UI:
-			case GL_RGB16I:
-			case GL_RGB32UI:
-			case GL_RGB32I:
-			case GL_RG8_SNORM:
-			case GL_R8_SNORM:
-			case GL_RGB10_A2:
-			case GL_RGBA8UI:
-			case GL_RGBA8I:
-			case GL_RGB10_A2UI:
-			case GL_RGBA16UI:
-			case GL_RGBA16I:
-			case GL_RGBA32I:
-			case GL_RGBA32UI:
-			case GL_RGBA4:
-			case GL_RGB5_A1:
-			case GL_RGB565:
-			case GL_RGB8:
-			case GL_RGBA8:
-			case GL_BGRA8_EXT:   // GL_APPLE_texture_format_BGRA8888
-			case GL_R16F:
-			case GL_RG16F:
-			case GL_R11F_G11F_B10F:
-			case GL_RGB16F:
-			case GL_RGBA16F:
-			case GL_R32F:
-			case GL_RG32F:
-			case GL_RGB32F:
-			case GL_RGBA32F:
-			case GL_DEPTH_COMPONENT24:
-			case GL_DEPTH_COMPONENT32_OES:
-			case GL_DEPTH_COMPONENT32F:
-			case GL_DEPTH32F_STENCIL8:
-			case GL_DEPTH_COMPONENT16:
-			case GL_STENCIL_INDEX8:
-			case GL_DEPTH24_STENCIL8_OES:
-			case GL_RGBA8_SNORM:
-			case GL_SRGB8:
-			case GL_RGB8_SNORM:
-			case GL_RGB9_E5:
-				break;
-			default:
-				return GL_INVALID_ENUM;
+				return GL_INVALID_VALUE;
 			}
 		}
 
