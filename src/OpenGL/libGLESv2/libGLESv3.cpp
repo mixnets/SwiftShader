@@ -368,7 +368,7 @@ GL_APICALL void GL_APIENTRY glTexImage3D(GLenum target, GLint level, GLint inter
 
 	if(context)
 	{
-		GLenum validationError = ValidateTextureFormatType(format, type, internalformat, context->getClientVersion());
+		GLenum validationError = ValidateTextureFormatType(format, type, internalformat, target, context->getClientVersion());
 		if(validationError != GL_NONE)
 		{
 			return error(validationError);
@@ -3604,6 +3604,11 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 		return error(GL_INVALID_OPERATION);
 	}
 
+	if(!IsSizedInternalFormat(internalformat) && !IsCompressed(internalformat, egl::getClientVersion()))
+	{
+		return error(GL_INVALID_ENUM);
+	}
+
 	es2::Context *context = es2::getContext();
 
 	if(context)
@@ -3662,6 +3667,11 @@ GL_APICALL void GL_APIENTRY glTexStorage3D(GLenum target, GLsizei levels, GLenum
 	if(width < 1 || height < 1 || depth < 1 || levels < 1)
 	{
 		return error(GL_INVALID_VALUE);
+	}
+
+	if(!IsSizedInternalFormat(internalformat) && !IsCompressed(internalformat, egl::getClientVersion()))
+	{
+		return error(GL_INVALID_ENUM);
 	}
 
 	es2::Context *context = es2::getContext();
