@@ -432,12 +432,6 @@ GLint Texture2D::getFormat(GLenum target, GLint level) const
 	return image[level] ? image[level]->getFormat() : GL_NONE;
 }
 
-sw::Format Texture2D::getInternalFormat(GLenum target, GLint level) const
-{
-	ASSERT(target == GL_TEXTURE_2D);
-	return image[level] ? image[level]->getInternalFormat() : sw::FORMAT_NULL;
-}
-
 int Texture2D::getTopLevel() const
 {
 	ASSERT(isSamplerComplete());
@@ -782,7 +776,9 @@ egl::Image *createBackBuffer(int width, int height, sw::Format format, int multi
 		return nullptr;
 	}
 
-	return egl::Image::create(width, height, format, multiSampleDepth, false);
+	GLenum internalformat = sw2es::ConvertBackBufferFormat(format);
+
+	return egl::Image::create(width, height, internalformat, multiSampleDepth, false);
 }
 
 egl::Image *createDepthStencil(int width, int height, sw::Format format, int multiSampleDepth)
@@ -818,7 +814,9 @@ egl::Image *createDepthStencil(int width, int height, sw::Format format, int mul
 		UNREACHABLE(format);
 	}
 
-	egl::Image *surface = egl::Image::create(width, height, format, multiSampleDepth, lockable);
+	GLenum internalformat = sw2es::ConvertDepthStencilFormat(format);
+
+	egl::Image *surface = egl::Image::create(width, height, internalformat, multiSampleDepth, lockable);
 
 	if(!surface)
 	{
