@@ -800,7 +800,7 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 			return error(validationError);
 		}
 
-		if(target == GL_TEXTURE_2D || target == GL_TEXTURE_RECTANGLE_ARB)
+		if(target == GL_TEXTURE_2D)
 		{
 			es2::Texture2D *texture = context->getTexture2D(target);
 
@@ -834,7 +834,7 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 	      "GLsizei imageSize = %d, const GLvoid* data = %p)",
 	      target, level, xoffset, yoffset, width, height, format, imageSize, data);
 
-	if(!es2::IsTextureTarget(target))
+	if(!es2::IsTextureTarget(target) || target == GL_TEXTURE_RECTANGLE_ARB)
 	{
 		return error(GL_INVALID_ENUM);
 	}
@@ -870,7 +870,7 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 			return error(validationError);
 		}
 
-		if(target == GL_TEXTURE_2D || target == GL_TEXTURE_RECTANGLE_ARB)
+		if(target == GL_TEXTURE_2D)
 		{
 			es2::Texture2D *texture = context->getTexture2D(target);
 
@@ -2215,9 +2215,6 @@ void GenerateMipmap(GLenum target)
 			break;
 		case GL_TEXTURE_3D:
 			texture = context->getTexture3D();
-			break;
-		case GL_TEXTURE_RECTANGLE_ARB:
-			texture = context->getTexture2DRect();
 			break;
 		default:
 			return error(GL_INVALID_ENUM);
@@ -5132,6 +5129,10 @@ void TexParameterf(GLenum target, GLenum pname, GLfloat param)
 			}
 			break;
 		case GL_TEXTURE_BASE_LEVEL:
+			if((texture->getTarget() == GL_TEXTURE_RECTANGLE_ARB) && ((GLint)(roundf(param)) != 0.0f))
+			{
+				return error(GL_INVALID_OPERATION); // Base level has to be 0
+			}
 			if(clientVersion < 3 || !texture->setBaseLevel((GLint)(roundf(param))))
 			{
 				return error(GL_INVALID_VALUE);
@@ -6615,7 +6616,6 @@ void EGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image)
 	switch(target)
 	{
 	case GL_TEXTURE_2D:
-	case GL_TEXTURE_RECTANGLE_ARB:
 	case GL_TEXTURE_EXTERNAL_OES:
 		break;
 	default:

@@ -51,7 +51,7 @@ public:
 	virtual void addProxyRef(const Renderbuffer *proxy) = 0;
 	virtual void releaseProxy(const Renderbuffer *proxy) = 0;
 
-	virtual GLenum getTarget() const = 0;
+//	virtual GLenum getTarget() const = 0;
 
 	bool setMinFilter(GLenum filter);
 	bool setMagFilter(GLenum filter);
@@ -151,7 +151,7 @@ public:
 	void releaseProxy(const Renderbuffer *proxy) override;
 	void sweep() override;
 
-	GLenum getTarget() const override;
+//	GLenum getTarget() const override;
 
 	GLsizei getWidth(GLenum target, GLint level) const override;
 	GLsizei getHeight(GLenum target, GLint level) const override;
@@ -204,7 +204,7 @@ class Texture2DRect : public Texture2D
 public:
 	explicit Texture2DRect(GLuint name);
 
-	GLenum getTarget() const override;
+//	GLenum getTarget() const override;
 
 	Renderbuffer *getRenderbuffer(GLenum target, GLint level) override;
 };
@@ -218,7 +218,7 @@ public:
 	void releaseProxy(const Renderbuffer *proxy) override;
 	void sweep() override;
 
-	GLenum getTarget() const override;
+//	GLenum getTarget() const override;
 
 	GLsizei getWidth(GLenum target, GLint level) const override;
 	GLsizei getHeight(GLenum target, GLint level) const override;
@@ -278,7 +278,7 @@ public:
 	void releaseProxy(const Renderbuffer *proxy) override;
 	void sweep() override;
 
-	GLenum getTarget() const override;
+//	GLenum getTarget() const override;
 
 	GLsizei getWidth(GLenum target, GLint level) const override;
 	GLsizei getHeight(GLenum target, GLint level) const override;
@@ -331,7 +331,7 @@ class Texture2DArray : public Texture3D
 public:
 	explicit Texture2DArray(GLuint name);
 
-	GLenum getTarget() const override;
+//	GLenum getTarget() const override;
 	void generateMipmaps() override;
 
 protected:
@@ -343,7 +343,7 @@ class TextureExternal : public Texture2D
 public:
 	explicit TextureExternal(GLuint name);
 
-	GLenum getTarget() const override;
+//	GLenum getTarget() const override;
 
 protected:
 	~TextureExternal() override;
