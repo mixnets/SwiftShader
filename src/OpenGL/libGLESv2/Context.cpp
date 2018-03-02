@@ -3201,8 +3201,9 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 	{
 		int baseLevel = baseTexture->getBaseLevel();
 		int maxLevel = std::min(baseTexture->getTopLevel(), baseTexture->getMaxLevel());
+		GLenum target = baseTexture->getTarget();
 
-		switch(baseTexture->getTarget())
+		switch(target)
 		{
 		case GL_TEXTURE_2D:
 		case GL_TEXTURE_EXTERNAL_OES:
@@ -3220,7 +3221,8 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 					}
 
 					egl::Image *surface = texture->getImage(surfaceLevel);
-					device->setTextureLevel(sampler, 0, mipmapLevel, surface, sw::TEXTURE_2D);
+					device->setTextureLevel(sampler, 0, mipmapLevel, surface,
+					                        (target == GL_TEXTURE_RECTANGLE_ARB) ? sw::TEXTURE_2D_RECT : sw::TEXTURE_2D);
 				}
 			}
 			break;
