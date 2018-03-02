@@ -871,7 +871,7 @@ Renderbuffer *Texture2DRect::getRenderbuffer(GLenum target, GLint level)
 
 	if(!mColorbufferProxy)
 	{
-		mColorbufferProxy = new Renderbuffer(name, new RenderbufferTexture2DRect(this));
+		mColorbufferProxy = new Renderbuffer(name, new RenderbufferTexture2D(this, 0));
 	}
 
 	return mColorbufferProxy;

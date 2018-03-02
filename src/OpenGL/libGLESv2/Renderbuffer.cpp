@@ -80,7 +80,7 @@ RenderbufferTexture2D::RenderbufferTexture2D(Texture2D *texture, GLint level) : 
 
 RenderbufferTexture2D::~RenderbufferTexture2D()
 {
-	mTexture2D = NULL;
+	mTexture2D = nullptr;
 }
 
 // Textures need to maintain their own reference count for references via
@@ -99,100 +99,37 @@ void RenderbufferTexture2D::releaseProxy(const Renderbuffer *proxy)
 // caller must release() the returned image
 egl::Image *RenderbufferTexture2D::getRenderTarget()
 {
-	return mTexture2D->getRenderTarget(GL_TEXTURE_2D, mLevel);
+	return mTexture2D->getRenderTarget(mTexture2D->getTarget(), mLevel);
 }
 
 // Increments refcount on image.
 // caller must release() the returned image
 egl::Image *RenderbufferTexture2D::createSharedImage()
 {
-	return mTexture2D->createSharedImage(GL_TEXTURE_2D, mLevel);
+	return mTexture2D->createSharedImage(mTexture2D->getTarget(), mLevel);
 }
 
 bool RenderbufferTexture2D::isShared() const
 {
-	return mTexture2D->isShared(GL_TEXTURE_2D, mLevel);
+	return mTexture2D->isShared(mTexture2D->getTarget(), mLevel);
 }
 
 GLsizei RenderbufferTexture2D::getWidth() const
 {
-	return mTexture2D->getWidth(GL_TEXTURE_2D, mLevel);
+	return mTexture2D->getWidth(mTexture2D->getTarget(), mLevel);
 }
 
 GLsizei RenderbufferTexture2D::getHeight() const
 {
-	return mTexture2D->getHeight(GL_TEXTURE_2D, mLevel);
+	return mTexture2D->getHeight(mTexture2D->getTarget(), mLevel);
 }
 
 GLint RenderbufferTexture2D::getFormat() const
 {
-	return mTexture2D->getFormat(GL_TEXTURE_2D, mLevel);
+	return mTexture2D->getFormat(mTexture2D->getTarget(), mLevel);
 }
 
 GLsizei RenderbufferTexture2D::getSamples() const
-{
-	return 0;   // Core OpenGL ES 3.0 does not support multisample textures.
-}
-
-///// RenderbufferTexture2DRect Implementation ////////
-
-RenderbufferTexture2DRect::RenderbufferTexture2DRect(Texture2DRect *texture)
-{
-	mTexture2DRect = texture;
-}
-
-RenderbufferTexture2DRect::~RenderbufferTexture2DRect()
-{
-	mTexture2DRect = NULL;
-}
-
-// Textures need to maintain their own reference count for references via
-// Renderbuffers acting as proxies. Here, we notify the texture of a reference.
-void RenderbufferTexture2DRect::addProxyRef(const Renderbuffer *proxy)
-{
-	mTexture2DRect->addProxyRef(proxy);
-}
-
-void RenderbufferTexture2DRect::releaseProxy(const Renderbuffer *proxy)
-{
-	mTexture2DRect->releaseProxy(proxy);
-}
-
-// Increments refcount on image.
-// caller must release() the returned image
-egl::Image *RenderbufferTexture2DRect::getRenderTarget()
-{
-	return mTexture2DRect->getRenderTarget(GL_TEXTURE_RECTANGLE_ARB, 0);
-}
-
-// Increments refcount on image.
-// caller must release() the returned image
-egl::Image *RenderbufferTexture2DRect::createSharedImage()
-{
-	return mTexture2DRect->createSharedImage(GL_TEXTURE_RECTANGLE_ARB, 0);
-}
-
-bool RenderbufferTexture2DRect::isShared() const
-{
-	return mTexture2DRect->isShared(GL_TEXTURE_RECTANGLE_ARB, 0);
-}
-
-GLsizei RenderbufferTexture2DRect::getWidth() const
-{
-	return mTexture2DRect->getWidth(GL_TEXTURE_RECTANGLE_ARB, 0);
-}
-
-GLsizei RenderbufferTexture2DRect::getHeight() const
-{
-	return mTexture2DRect->getHeight(GL_TEXTURE_RECTANGLE_ARB, 0);
-}
-
-GLint RenderbufferTexture2DRect::getFormat() const
-{
-	return mTexture2DRect->getFormat(GL_TEXTURE_RECTANGLE_ARB, 0);
-}
-
-GLsizei RenderbufferTexture2DRect::getSamples() const
 {
 	return 0;   // Core OpenGL ES 3.0 does not support multisample textures.
 }
@@ -206,7 +143,7 @@ RenderbufferTexture3D::RenderbufferTexture3D(Texture3D *texture, GLint level) : 
 
 RenderbufferTexture3D::~RenderbufferTexture3D()
 {
-	mTexture3D = NULL;
+	mTexture3D = nullptr;
 }
 
 // Textures need to maintain their own reference count for references via
@@ -274,7 +211,7 @@ RenderbufferTextureCubeMap::RenderbufferTextureCubeMap(TextureCubeMap *texture, 
 
 RenderbufferTextureCubeMap::~RenderbufferTextureCubeMap()
 {
-	mTextureCubeMap = NULL;
+	mTextureCubeMap = nullptr;
 }
 
 // Textures need to maintain their own reference count for references via
@@ -443,7 +380,7 @@ void Renderbuffer::setLevel(GLint level)
 
 void Renderbuffer::setStorage(RenderbufferStorage *newStorage)
 {
-	ASSERT(newStorage != NULL);
+	ASSERT(newStorage != nullptr);
 
 	delete mInstance;
 	mInstance = newStorage;
