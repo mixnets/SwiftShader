@@ -3485,15 +3485,15 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 	{
 		device->setInstanceID(i);
 
+		if(!mState.currentProgram || !getCurrentProgram())
+		{
+			return;
+		}
+
 		GLenum err = applyVertexBuffer(0, first, count, i);
 		if(err != GL_NO_ERROR)
 		{
 			return error(err);
-		}
-
-		if(!mState.currentProgram)
-		{
-			return;
 		}
 
 		applyShaders();
