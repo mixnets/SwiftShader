@@ -2388,21 +2388,21 @@ namespace sw
 					}
 					break;
 				case ADDRESSING_MIRROR:
-				{
-					Float4 half = As<Float4>(Int4(halfBits));
-					Float4 one = As<Float4>(Int4(oneBits));
-					Float4 two = As<Float4>(Int4(twoBits));
-					coord = one - Abs(two * Frac(coord * half) - one);
-				}
-				break;
+					{
+						Float4 half = As<Float4>(Int4(halfBits));
+						Float4 one = As<Float4>(Int4(oneBits));
+						Float4 two = As<Float4>(Int4(twoBits));
+						coord = one - Abs(two * Frac(coord * half) - one);
+					}
+					break;
 				case ADDRESSING_MIRRORONCE:
-				{
-					Float4 half = As<Float4>(Int4(halfBits));
-					Float4 one = As<Float4>(Int4(oneBits));
-					Float4 two = As<Float4>(Int4(twoBits));
-					coord = one - Abs(two * Frac(Min(Max(coord, -one), two) * half) - one);
-				}
-				break;
+					{
+						Float4 half = As<Float4>(Int4(halfBits));
+						Float4 one = As<Float4>(Int4(oneBits));
+						Float4 two = As<Float4>(Int4(twoBits));
+						coord = one - Abs(two * Frac(Min(Max(coord, -one), two) * half) - one);
+					}
+					break;
 				default:   // Wrap
 					coord = Frac(coord);
 					break;

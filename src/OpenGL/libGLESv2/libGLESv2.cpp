@@ -2507,7 +2507,7 @@ void GetBooleanv(GLenum pname, GLboolean* params)
 						params[i] = GL_TRUE;
 				}
 
-				delete [] floatParams;
+				delete[] floatParams;
 			}
 			else if(nativeType == GL_INT)
 			{
@@ -2524,7 +2524,7 @@ void GetBooleanv(GLenum pname, GLboolean* params)
 						params[i] = GL_TRUE;
 				}
 
-				delete [] intParams;
+				delete[] intParams;
 			}
 		}
 	}
@@ -2660,7 +2660,7 @@ void GetFloatv(GLenum pname, GLfloat* params)
 						params[i] = 1.0f;
 				}
 
-				delete [] boolParams;
+				delete[] boolParams;
 			}
 			else if(nativeType == GL_INT)
 			{
@@ -2674,7 +2674,7 @@ void GetFloatv(GLenum pname, GLfloat* params)
 					params[i] = (GLfloat)intParams[i];
 				}
 
-				delete [] intParams;
+				delete[] intParams;
 			}
 		}
 	}
@@ -3033,7 +3033,7 @@ void GetIntegerv(GLenum pname, GLint* params)
 					params[i] = (boolParams[i] == GL_FALSE) ? 0 : 1;
 				}
 
-				delete [] boolParams;
+				delete[] boolParams;
 			}
 			else if(nativeType == GL_FLOAT)
 			{
@@ -3054,7 +3054,7 @@ void GetIntegerv(GLenum pname, GLint* params)
 					}
 				}
 
-				delete [] floatParams;
+				delete[] floatParams;
 			}
 		}
 	}

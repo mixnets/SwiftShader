@@ -1260,53 +1260,53 @@ namespace es2
 		switch(transformFeedbackBufferMode)
 		{
 		case GL_SEPARATE_ATTRIBS:
-		{
-			maxVaryings = sw::min(maxVaryings, (unsigned int)MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS);
-			// Attribs go to separate buffers
-			for(unsigned int index = 0; index < maxVaryings; ++index)
 			{
-				int size = transformFeedbackLinkedVaryings[index].size;
-				int rowCount = VariableRowCount(transformFeedbackLinkedVaryings[index].type);
-				int colCount = VariableColumnCount(transformFeedbackLinkedVaryings[index].type);
-				int nbRegs = rowCount > 1 ? colCount * size : size;
-				int nbComponentsPerReg = rowCount > 1 ? rowCount : colCount;
-				int componentStride = rowCount * colCount * size;
-				int baseOffset = transformFeedback->vertexOffset() * componentStride * sizeof(float);
-				device->VertexProcessor::setTransformFeedbackBuffer(index,
-					transformFeedbackBuffers[index].get()->getResource(),
-					transformFeedbackBuffers[index].getOffset() + baseOffset,
-					transformFeedbackLinkedVaryings[index].reg * 4 + transformFeedbackLinkedVaryings[index].col,
-					nbRegs, nbComponentsPerReg, componentStride);
-				enableTransformFeedback |= 1ULL << index;
+				maxVaryings = sw::min(maxVaryings, (unsigned int)MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS);
+				// Attribs go to separate buffers
+				for(unsigned int index = 0; index < maxVaryings; ++index)
+				{
+					int size = transformFeedbackLinkedVaryings[index].size;
+					int rowCount = VariableRowCount(transformFeedbackLinkedVaryings[index].type);
+					int colCount = VariableColumnCount(transformFeedbackLinkedVaryings[index].type);
+					int nbRegs = rowCount > 1 ? colCount * size : size;
+					int nbComponentsPerReg = rowCount > 1 ? rowCount : colCount;
+					int componentStride = rowCount * colCount * size;
+					int baseOffset = transformFeedback->vertexOffset() * componentStride * sizeof(float);
+					device->VertexProcessor::setTransformFeedbackBuffer(index,
+						transformFeedbackBuffers[index].get()->getResource(),
+						transformFeedbackBuffers[index].getOffset() + baseOffset,
+						transformFeedbackLinkedVaryings[index].reg * 4 + transformFeedbackLinkedVaryings[index].col,
+						nbRegs, nbComponentsPerReg, componentStride);
+					enableTransformFeedback |= 1ULL << index;
+				}
 			}
-		}
 			break;
 		case GL_INTERLEAVED_ATTRIBS:
-		{
-			// OpenGL ES 3.0.4 spec, section 2.15.2:
-			// In INTERLEAVED_ATTRIBS mode, the values of one or more output variables
-			// written by a vertex shader are written, interleaved, into the buffer object
-			// bound to the first transform feedback binding point (index = 0).
-			sw::Resource* resource = transformFeedbackBuffers[0].get()->getResource();
-			int componentStride = static_cast<int>(totalLinkedVaryingsComponents);
-			int baseOffset = transformFeedbackBuffers[0].getOffset() + (transformFeedback->vertexOffset() * componentStride * sizeof(float));
-			maxVaryings = sw::min(maxVaryings, (unsigned int)sw::MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS);
-			int totalComponents = 0;
-			for(unsigned int index = 0; index < maxVaryings; ++index)
 			{
-				int size = transformFeedbackLinkedVaryings[index].size;
-				int rowCount = VariableRowCount(transformFeedbackLinkedVaryings[index].type);
-				int colCount = VariableColumnCount(transformFeedbackLinkedVaryings[index].type);
-				int nbRegs = rowCount > 1 ? colCount * size : size;
-				int nbComponentsPerReg = rowCount > 1 ? rowCount : colCount;
-				device->VertexProcessor::setTransformFeedbackBuffer(index, resource,
-					baseOffset + (totalComponents * sizeof(float)),
-					transformFeedbackLinkedVaryings[index].reg * 4 + transformFeedbackLinkedVaryings[index].col,
-					nbRegs, nbComponentsPerReg, componentStride);
-				totalComponents += rowCount * colCount * size;
-				enableTransformFeedback |= 1ULL << index;
+				// OpenGL ES 3.0.4 spec, section 2.15.2:
+				// In INTERLEAVED_ATTRIBS mode, the values of one or more output variables
+				// written by a vertex shader are written, interleaved, into the buffer object
+				// bound to the first transform feedback binding point (index = 0).
+				sw::Resource* resource = transformFeedbackBuffers[0].get()->getResource();
+				int componentStride = static_cast<int>(totalLinkedVaryingsComponents);
+				int baseOffset = transformFeedbackBuffers[0].getOffset() + (transformFeedback->vertexOffset() * componentStride * sizeof(float));
+				maxVaryings = sw::min(maxVaryings, (unsigned int)sw::MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS);
+				int totalComponents = 0;
+				for(unsigned int index = 0; index < maxVaryings; ++index)
+				{
+					int size = transformFeedbackLinkedVaryings[index].size;
+					int rowCount = VariableRowCount(transformFeedbackLinkedVaryings[index].type);
+					int colCount = VariableColumnCount(transformFeedbackLinkedVaryings[index].type);
+					int nbRegs = rowCount > 1 ? colCount * size : size;
+					int nbComponentsPerReg = rowCount > 1 ? rowCount : colCount;
+					device->VertexProcessor::setTransformFeedbackBuffer(index, resource,
+						baseOffset + (totalComponents * sizeof(float)),
+						transformFeedbackLinkedVaryings[index].reg * 4 + transformFeedbackLinkedVaryings[index].col,
+						nbRegs, nbComponentsPerReg, componentStride);
+					totalComponents += rowCount * colCount * size;
+					enableTransformFeedback |= 1ULL << index;
+				}
 			}
-		}
 			break;
 		default:
 			UNREACHABLE(transformFeedbackBufferMode);
