@@ -2673,6 +2673,7 @@ namespace es2
 
 	void Program::release()
 	{
+        fprintf(stderr, "%s: call\n", __func__);
 		referenceCount--;
 
 		if(referenceCount == 0 && orphaned)

@@ -5866,7 +5866,7 @@ void UseProgram(GLuint program)
 			return error(GL_INVALID_OPERATION);
 		}
 
-		es2::Program *programObject = context->getProgram(program);
+		auto programObject = context->getProgramAtomic(program);
 
 		if(!programObject && program != 0)
 		{
@@ -5886,6 +5886,7 @@ void UseProgram(GLuint program)
 		}
 
 		context->useProgram(program);
+		context->useProgramObject(programObject.get());
 	}
 }
 
