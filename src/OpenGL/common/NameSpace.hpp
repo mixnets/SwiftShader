@@ -21,10 +21,31 @@
 #include "Object.hpp"
 #include "debug.h"
 
+#include "Common/MutexLock.hpp"
+
 #include <map>
 
 namespace gl
 {
+
+template<class ObjectType>
+class ScopedAtomic {
+public:
+    ScopedAtomic(sw::MutexLock* l, ObjectType* obj) :
+        lock(l), object(obj) {
+        if (lock) lock->lock();
+    }
+
+    ~ScopedAtomic() { if (lock) lock->unlock(); }
+
+    ObjectType* get() { return object; }
+    ObjectType* operator->() { return object; }
+    operator bool() const { return object != nullptr; }
+
+private:
+    sw::MutexLock* lock = nullptr;
+    ObjectType* object = nullptr;
+};
 
 template<class ObjectType, GLuint baseName = 1>
 class NameSpace
@@ -84,6 +105,13 @@ public:
 		}
 	}
 
+	void insertAtomic(GLuint name, ObjectType *object)
+	{
+        lock();
+        insert(name, object);
+        unlock();
+	}
+
 	ObjectType *remove(GLuint name)
 	{
 		auto element = map.find(name);
@@ -104,6 +132,14 @@ public:
 		return nullptr;
 	}
 
+	ObjectType *removeAtomic(GLuint name)
+	{
+        lock();
+        auto res = remove(name);
+        unlock();
+        return res;
+	}
+
 	ObjectType *find(GLuint name) const
 	{
 		auto element = map.find(name);
@@ -116,11 +152,30 @@ public:
 		return element->second;
 	}
 
+	ObjectType *findAtomic(GLuint name) const
+	{
+        lock();
+        auto res = find(name);
+        unlock();
+        return res;
+	}
+
+    ScopedAtomic<ObjectType> findScopedAtomic(GLuint name) const
+    {
+        ObjectType* o = findAtomic(name);
+        return ScopedAtomic<ObjectType>(&mapLock, o);
+    }
+
+    void lock() const { mapLock.lock(); }
+    void unlock() const { mapLock.unlock(); }
+
 private:
 	typedef std::map<GLuint, ObjectType*> Map;
+	typedef std::map<GLuint, sw::MutexLock*> LockMap;
 	Map map;
-
 	GLuint freeName;   // Lowest known potentially free name
+
+    mutable sw::MutexLock mapLock; // Protects concurrent access
 };
 
 }
