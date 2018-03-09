@@ -2681,6 +2681,16 @@ namespace es2
 		}
 	}
 
+	void Program::releaseLocked()
+	{
+		referenceCount--;
+
+		if(referenceCount == 0 && orphaned)
+		{
+			resourceManager->deleteProgramLocked(handle);
+		}
+	}
+
 	void Program::addRef()
 	{
 		referenceCount++;
