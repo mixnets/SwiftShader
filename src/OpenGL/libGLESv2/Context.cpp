@@ -132,6 +132,8 @@ Context::Context(egl::Display *display, const Context *shareContext, EGLint clie
 		mResourceManager = new ResourceManager();
 	}
 
+    mCurrentProgram = nullptr;
+
 	// [OpenGL ES 2.0.24] section 3.7 page 83:
 	// In the initial state, TEXTURE_2D and TEXTURE_CUBE_MAP have twodimensional
 	// and cube map texture state vectors respectively associated with them.
@@ -1083,6 +1085,11 @@ Program *Context::getProgram(GLuint handle) const
 	return mResourceManager->getProgram(handle);
 }
 
+gl::ScopedAtomic<Program> Context::getProgramAtomic(GLuint handle) const
+{
+	return mResourceManager->getProgramAtomic(handle);
+}
+
 Texture *Context::getTexture(GLuint handle) const
 {
 	return mResourceManager->getTexture(handle);
@@ -1269,26 +1276,14 @@ bool Context::bindSampler(GLuint unit, GLuint sampler)
 	return !!samplerObject;
 }
 
-void Context::useProgram(GLuint program)
+void Context::useProgramObjectLocked(GLuint program, Program *programObject)
 {
-	GLuint priorProgram = mState.currentProgram;
-	mState.currentProgram = program;               // Must switch before trying to delete, otherwise it only gets flagged.
-
-	if(priorProgram != program)
-	{
-		Program *newProgram = mResourceManager->getProgram(program);
-		Program *oldProgram = mResourceManager->getProgram(priorProgram);
-
-		if(newProgram)
-		{
-			newProgram->addRef();
-		}
-
-		if(oldProgram)
-		{
-			oldProgram->release();
-		}
-	}
+	mState.currentProgram = program;
+    if (mCurrentProgram != programObject) {
+        if (mCurrentProgram) mCurrentProgram->releaseLocked();
+        mCurrentProgram = programObject;
+        if (mCurrentProgram) mCurrentProgram->addRef();
+    }
 }
 
 void Context::beginQuery(GLenum target, GLuint query)
@@ -1627,7 +1622,7 @@ TransformFeedback *Context::getTransformFeedback() const
 
 Program *Context::getCurrentProgram() const
 {
-	return mResourceManager->getProgram(mState.currentProgram);
+    return mCurrentProgram;
 }
 
 Texture2D *Context::getTexture2D() const
@@ -3472,7 +3467,8 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 		return;
 	}
 
-	if(mState.currentProgram == 0)
+	if(mState.currentProgram == 0 ||
+       !getCurrentProgram())
 	{
 		return;   // Nothing to process.
 	}

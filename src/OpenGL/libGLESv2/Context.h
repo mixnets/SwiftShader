@@ -596,7 +596,7 @@ public:
 	void bindIndexedTransformFeedbackBuffer(GLuint buffer, GLuint index, GLintptr offset, GLsizeiptr size);
 	void bindTransformFeedback(GLuint transformFeedback);
 	bool bindSampler(GLuint unit, GLuint sampler);
-	void useProgram(GLuint program);
+	void useProgramObjectLocked(GLuint program, Program *programObject);
 
 	void beginQuery(GLenum target, GLuint query);
 	void endQuery(GLenum target);
@@ -614,6 +614,7 @@ public:
 	FenceSync *getFenceSync(GLsync handle) const;
 	Shader *getShader(GLuint handle) const;
 	Program *getProgram(GLuint handle) const;
+    gl::ScopedAtomic<Program> getProgramAtomic(GLuint handle) const;
 	virtual Texture *getTexture(GLuint handle) const;
 	Framebuffer *getFramebuffer(GLuint handle) const;
 	virtual Renderbuffer *getRenderbuffer(GLuint handle) const;
@@ -768,6 +769,7 @@ private:
 
 	Device *device;
 	ResourceManager *mResourceManager;
+    Program* mCurrentProgram;
 };
 }
 
