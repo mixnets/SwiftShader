@@ -111,9 +111,7 @@ GLuint ResourceManager::createShader(GLenum type)
 GLuint ResourceManager::createProgram()
 {
 	GLuint name = mProgramShaderNameSpace.allocate();
-
-	mProgramNameSpace.insert(name, new Program(this, name));
-
+	mProgramNameSpace.insertAtomic(name, new Program(this, name));
 	return name;
 }
 
@@ -179,21 +177,25 @@ void ResourceManager::deleteShader(GLuint shader)
 
 void ResourceManager::deleteProgram(GLuint program)
 {
-	Program *programObject = mProgramNameSpace.find(program);
+    auto programObject = mProgramNameSpace.findScopedAtomic(program);
+    fprintf(stderr, "%s: locked\n", __func__);
 
 	if(programObject)
 	{
 		if(programObject->getRefCount() == 0)
 		{
-			delete programObject;
+            fprintf(stderr, "%s: actual delted %u\n", __func__, program);
+			delete programObject.get();
 			mProgramNameSpace.remove(program);
 			mProgramShaderNameSpace.remove(program);
 		}
 		else
 		{
+            fprintf(stderr, "%s: flag only delted %u\n", __func__, program);
 			programObject->flagForDeletion();
 		}
 	}
+    fprintf(stderr, "%s: unlocked\n", __func__);
 }
 
 void ResourceManager::deleteTexture(GLuint texture)
@@ -254,6 +256,11 @@ Texture *ResourceManager::getTexture(unsigned int handle)
 Program *ResourceManager::getProgram(unsigned int handle)
 {
 	return mProgramNameSpace.find(handle);
+}
+
+gl::ScopedAtomic<Program> ResourceManager::getProgramAtomic(unsigned int handle)
+{
+	return mProgramNameSpace.findScopedAtomic(handle);
 }
 
 Renderbuffer *ResourceManager::getRenderbuffer(unsigned int handle)

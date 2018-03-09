@@ -768,6 +768,7 @@ private:
 
 	Device *device;
 	ResourceManager *mResourceManager;
+    Program* mCurrentProgram;
 };
 }
 

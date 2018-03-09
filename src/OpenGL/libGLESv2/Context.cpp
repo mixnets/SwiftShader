@@ -132,6 +132,9 @@ Context::Context(egl::Display *display, const Context *shareContext, EGLint clie
 		mResourceManager = new ResourceManager();
 	}
 
+    fprintf(stderr, "%s: init nul\n", __func__);
+    mCurrentProgram = nullptr;
+
 	// [OpenGL ES 2.0.24] section 3.7 page 83:
 	// In the initial state, TEXTURE_2D and TEXTURE_CUBE_MAP have twodimensional
 	// and cube map texture state vectors respectively associated with them.
@@ -1271,24 +1274,36 @@ bool Context::bindSampler(GLuint unit, GLuint sampler)
 
 void Context::useProgram(GLuint program)
 {
+    fprintf(stderr, "%s: %p %u\n", __func__, this, program);
 	GLuint priorProgram = mState.currentProgram;
 	mState.currentProgram = program;               // Must switch before trying to delete, otherwise it only gets flagged.
 
-	if(priorProgram != program)
-	{
-		Program *newProgram = mResourceManager->getProgram(program);
-		Program *oldProgram = mResourceManager->getProgram(priorProgram);
+	// if(priorProgram != program)
+    // {
+        {
+            auto newProgram = mResourceManager->getProgramAtomic(program);
+            if(newProgram)
+            {
+                fprintf(stderr, "%s: addRef %u %p\n", __func__, program, newProgram.get());
+                newProgram->addRef();
+                mCurrentProgram = newProgram.get();
+            } else {
+                fprintf(stderr, "%s: nulRef %u\n", __func__, program);
+                mState.currentProgram = 0;
+                mCurrentProgram = nullptr;
+            }
+        }
+        {
+            auto oldProgram = mResourceManager->getProgram(priorProgram);
 
-		if(newProgram)
-		{
-			newProgram->addRef();
-		}
-
-		if(oldProgram)
-		{
-			oldProgram->release();
-		}
-	}
+            if(oldProgram)
+            {
+                fprintf(stderr, "%s: release %u\n", __func__, program);
+                oldProgram->release();
+            }
+        }
+                fprintf(stderr, "%s: unlock %u %p\n", __func__, program, getCurrentProgram());
+    // }
 }
 
 void Context::beginQuery(GLenum target, GLuint query)
@@ -1627,7 +1642,8 @@ TransformFeedback *Context::getTransformFeedback() const
 
 Program *Context::getCurrentProgram() const
 {
-	return mResourceManager->getProgram(mState.currentProgram);
+    if (!mCurrentProgram) fprintf(stderr, "%s: %p wtf is nul\n", __func__, this);
+    return mCurrentProgram;
 }
 
 Texture2D *Context::getTexture2D() const
@@ -3149,10 +3165,18 @@ void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture
 
 	if(type == sw::SAMPLER_PIXEL)
 	{
+        if (!program->getPixelShader()) {
+            // TODO: multithreaded shader attachment, compilation, and linking - avoid crashes
+            fprintf(stderr, "%s goofd on pixel shader\n", __func__);
+        }
 		textureUsed = program->getPixelShader()->usesSampler(index);
 	}
 	else if(type == sw::SAMPLER_VERTEX)
 	{
+        if (!program->getVertexShader()) {
+            // TODO: multithreaded shader attachment, compilation, and linking - avoid crashes
+            fprintf(stderr, "%s goofd on vetex shader\n", __func__);
+        }
 		textureUsed = program->getVertexShader()->usesSampler(index);
 	}
 	else UNREACHABLE(type);
@@ -3467,13 +3491,16 @@ void Context::clearStencilBuffer(const GLint value)
 
 void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
 {
+    fprintf(stderr, "%s: %p start %p\n", __func__, this, getCurrentProgram());
 	if(!applyRenderTarget())
 	{
 		return;
 	}
 
-	if(mState.currentProgram == 0)
+	if(mState.currentProgram == 0 ||
+       !getCurrentProgram())
 	{
+        fprintf(stderr, "%s: end no prog\n", __func__);
 		return;   // Nothing to process.
 	}
 
@@ -3521,6 +3548,7 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 			transformFeedback->addVertexOffset(primitiveCount * verticesPerPrimitive);
 		}
 	}
+        fprintf(stderr, "%s: end\n", __func__);
 }
 
 void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLsizei instanceCount)

@@ -75,6 +75,7 @@ public:
 	Buffer *getBuffer(GLuint handle);
 	Shader *getShader(GLuint handle);
 	Program *getProgram(GLuint handle);
+    gl::ScopedAtomic<Program> getProgramAtomic(GLuint handle);
 	Texture *getTexture(GLuint handle);
 	Renderbuffer *getRenderbuffer(GLuint handle);
 	Sampler *getSampler(GLuint handle);
