@@ -596,7 +596,7 @@ public:
 	void bindIndexedTransformFeedbackBuffer(GLuint buffer, GLuint index, GLintptr offset, GLsizeiptr size);
 	void bindTransformFeedback(GLuint transformFeedback);
 	bool bindSampler(GLuint unit, GLuint sampler);
-	void useProgram(GLuint program);
+	void useProgramObjectLocked(GLuint program, Program *programObject);
 
 	void beginQuery(GLenum target, GLuint query);
 	void endQuery(GLenum target);
@@ -699,6 +699,25 @@ public:
 
 	const GLubyte *getExtensions(GLuint index, GLuint *numExt = nullptr) const;
 
+    template<class ObjectType>
+    class ScopedAtomicNamespaceObject {
+    public:
+        ScopedAtomicNamespaceObject(const Context* context, GLuint id)
+            : nameSpace(context->mResourceManager->getNamespace<ObjectType>()) {
+            nameSpace->lock();
+            object = nameSpace->find(id);
+        }
+    
+        ObjectType* get() { return object; }
+        ObjectType* operator->() { return object; }
+        operator bool() const { return object != nullptr; }
+    
+        ~ScopedAtomicNamespaceObject() { nameSpace->unlock(); }
+    private:
+        const gl::NameSpace<ObjectType>* nameSpace = nullptr;
+        ObjectType* object = nullptr;
+    };
+
 private:
 	~Context() override;
 
@@ -768,7 +787,9 @@ private:
 
 	Device *device;
 	ResourceManager *mResourceManager;
+    Program* mCurrentProgram;
 };
+
 }
 
 #endif   // INCLUDE_CONTEXT_H_

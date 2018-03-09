@@ -111,9 +111,7 @@ GLuint ResourceManager::createShader(GLenum type)
 GLuint ResourceManager::createProgram()
 {
 	GLuint name = mProgramShaderNameSpace.allocate();
-
-	mProgramNameSpace.insert(name, new Program(this, name));
-
+	mProgramNameSpace.insertAtomic(name, new Program(this, name));
 	return name;
 }
 
@@ -179,7 +177,26 @@ void ResourceManager::deleteShader(GLuint shader)
 
 void ResourceManager::deleteProgram(GLuint program)
 {
-	Program *programObject = mProgramNameSpace.find(program);
+    auto programObject = mProgramNameSpace.findScopedAtomic(program);
+
+	if(programObject)
+	{
+		if(programObject->getRefCount() == 0)
+		{
+			delete programObject.get();
+			mProgramNameSpace.remove(program);
+			mProgramShaderNameSpace.remove(program);
+		}
+		else
+		{
+			programObject->flagForDeletion();
+		}
+	}
+}
+
+void ResourceManager::deleteProgramLocked(GLuint program)
+{
+    auto programObject = mProgramNameSpace.find(program);
 
 	if(programObject)
 	{
@@ -349,6 +366,46 @@ void ResourceManager::checkSamplerAllocation(GLuint sampler)
 bool ResourceManager::isSampler(GLuint sampler)
 {
 	return mSamplerNameSpace.isReserved(sampler);
+}
+
+template<>
+const gl::NameSpace<Buffer>* ResourceManager::getNamespace() {
+    return &mBufferNameSpace;
+}
+
+template<>
+const gl::NameSpace<Program>* ResourceManager::getNamespace() {
+    return &mProgramNameSpace;
+}
+
+template<>
+const gl::NameSpace<Shader>* ResourceManager::getNamespace() {
+    return &mShaderNameSpace;
+}
+
+template<>
+const gl::NameSpace<void>* ResourceManager::getNamespace() {
+    return &mProgramShaderNameSpace;
+}
+
+template<>
+const gl::NameSpace<Texture>* ResourceManager::getNamespace() {
+    return &mTextureNameSpace;
+}
+
+template<>
+const gl::NameSpace<Renderbuffer>* ResourceManager::getNamespace() {
+    return &mRenderbufferNameSpace;
+}
+
+template<>
+const gl::NameSpace<Sampler>* ResourceManager::getNamespace() {
+    return &mSamplerNameSpace;
+}
+
+template<>
+const gl::NameSpace<FenceSync>* ResourceManager::getNamespace() {
+    return &mFenceSyncNameSpace;
 }
 
 }

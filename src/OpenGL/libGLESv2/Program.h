@@ -207,6 +207,7 @@ namespace es2
 
 		void addRef();
 		void release();
+		void releaseLocked();
 		unsigned int getRefCount() const;
 		void flagForDeletion();
 		bool isFlaggedForDeletion() const;

@@ -67,6 +67,7 @@ public:
 	void deleteBuffer(GLuint buffer);
 	void deleteShader(GLuint shader);
 	void deleteProgram(GLuint program);
+	void deleteProgramLocked(GLuint program);
 	void deleteTexture(GLuint texture);
 	void deleteRenderbuffer(GLuint renderbuffer);
 	void deleteSampler(GLuint sampler);
@@ -86,6 +87,9 @@ public:
 	void checkSamplerAllocation(GLuint sampler);
 
 	bool isSampler(GLuint sampler);
+
+    template<class ObjectType>
+    const gl::NameSpace<ObjectType>* getNamespace();
 
 private:
 	std::size_t mRefCount;
