@@ -24,28 +24,36 @@
 
 namespace sw
 {
-	static int (*PreviousXErrorHandler)(Display *display, XErrorEvent *event) = 0;
-	static bool shmBadAccess = false;
+	static int (*PreviousXErrorHandler)(Display *display, XErrorEvent *event) = nullptr;
+	static unsigned char x_error_code = Success;
 
-	// Catches BadAcces errors so we can fall back to not using MIT-SHM
-	static int XShmErrorHandler(Display *display, XErrorEvent *event)
+	static int XErrorHandler(Display *display, XErrorEvent *event)
 	{
-		if(event->error_code == BadAccess)
+		x_error_code = event->error_code;
+		return 0;
+	}
+
+	FrameBufferX11 *FrameBufferX11::create(Display *display, Window window, int width, int height)
+	{
+		FrameBufferX11 *frameBuffer = new FrameBufferX11(display, window, width, height);
+
+		if(x_error_code != Success)
 		{
-			shmBadAccess = true;
-			return 0;
+			delete frameBuffer;
+			return nullptr;
 		}
-		else
-		{
-			return PreviousXErrorHandler(display, event);
-		}
+
+		return frameBuffer;
 	}
 
 	FrameBufferX11::FrameBufferX11(Display *display, Window window, int width, int height) : FrameBuffer(width, height, false, false), ownX11(!display), x_display(display), x_window(window)
 	{
+		x_error_code = Success;
+		PreviousXErrorHandler = libX11->XSetErrorHandler(XErrorHandler);
+
 		if(!x_display)
 		{
-			x_display = libX11->XOpenDisplay(0);
+			x_display = libX11->XOpenDisplay(nullptr);
 		}
 
 		int screen = DefaultScreen(x_display);
@@ -60,26 +68,24 @@ namespace sw
 
 		if(mit_shm)
 		{
-			x_image = libX11->XShmCreateImage(x_display, visual, depth, ZPixmap, 0, &shminfo, width, height);
+			x_image = libX11->XShmCreateImage(x_display, visual, depth, ZPixmap, nullptr, &shminfo, width, height);
 
 			shminfo.shmid = shmget(IPC_PRIVATE, x_image->bytes_per_line * x_image->height, IPC_CREAT | SHM_R | SHM_W);
-			shminfo.shmaddr = x_image->data = buffer = (char*)shmat(shminfo.shmid, 0, 0);
+			shminfo.shmaddr = x_image->data = buffer = (char*)shmat(shminfo.shmid, nullptr, 0);
 			shminfo.readOnly = False;
 
-			PreviousXErrorHandler = libX11->XSetErrorHandler(XShmErrorHandler);
 			libX11->XShmAttach(x_display, &shminfo);   // May produce a BadAccess error
 			libX11->XSync(x_display, False);
-			libX11->XSetErrorHandler(PreviousXErrorHandler);
 
-			if(shmBadAccess)
+			if(x_error_code = BadAccess)
 			{
 				mit_shm = false;
 
 				XDestroyImage(x_image);
 				shmdt(shminfo.shmaddr);
-				shmctl(shminfo.shmid, IPC_RMID, 0);
+				shmctl(shminfo.shmid, IPC_RMID, nullptr);
 
-				shmBadAccess = false;
+				x_error_code = Success;
 			}
 		}
 
@@ -91,24 +97,26 @@ namespace sw
 			memset(buffer, 0, bytes_per_image);
 			x_image = libX11->XCreateImage(x_display, visual, depth, ZPixmap, 0, buffer, width, height, 32, bytes_per_line);
 		}
+
+		libX11->XSetErrorHandler(PreviousXErrorHandler);
 	}
 
 	FrameBufferX11::~FrameBufferX11()
 	{
 		if(!mit_shm)
 		{
-			x_image->data = 0;
+			x_image->data = nullptr;
 			XDestroyImage(x_image);
 
 			delete[] buffer;
-			buffer = 0;
+			buffer = nullptr;
 		}
 		else
 		{
 			libX11->XShmDetach(x_display, &shminfo);
 			XDestroyImage(x_image);
 			shmdt(shminfo.shmaddr);
-			shmctl(shminfo.shmid, IPC_RMID, 0);
+			shmctl(shminfo.shmid, IPC_RMID, nullptr);
 		}
 
 		if(ownX11)
@@ -179,5 +187,5 @@ namespace sw
 
 NO_SANITIZE_FUNCTION sw::FrameBuffer *createFrameBuffer(void *display, Window window, int width, int height)
 {
-	return new sw::FrameBufferX11((::Display*)display, window, width, height);
+	return sw::FrameBufferX11::create((::Display*)display, window, width, height);
 }

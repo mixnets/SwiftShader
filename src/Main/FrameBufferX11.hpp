@@ -27,7 +27,7 @@ namespace sw
 	class FrameBufferX11 : public FrameBuffer
 	{
 	public:
-		FrameBufferX11(Display *display, Window window, int width, int height);
+		static FrameBufferX11 *create(Display *display, Window window, int width, int height);
 
 		~FrameBufferX11() override;
 
@@ -38,6 +38,8 @@ namespace sw
 		void unlock() override;
 
 	private:
+		FrameBufferX11(Display *display, Window window, int width, int height);
+
 		bool ownX11;
 		Display *x_display;
 		Window x_window;
