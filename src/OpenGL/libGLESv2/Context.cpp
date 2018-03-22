@@ -1949,7 +1949,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 			Framebuffer *framebuffer = getDrawFramebuffer();
 			int width, height, samples;
 
-			if(framebuffer->completeness(width, height, samples) == GL_FRAMEBUFFER_COMPLETE)
+			if(framebuffer && (framebuffer->completeness(width, height, samples) == GL_FRAMEBUFFER_COMPLETE))
 			{
 				switch(pname)
 				{
@@ -2706,7 +2706,7 @@ bool Context::applyRenderTarget()
 	Framebuffer *framebuffer = getDrawFramebuffer();
 	int width, height, samples;
 
-	if(!framebuffer || framebuffer->completeness(width, height, samples) != GL_FRAMEBUFFER_COMPLETE)
+	if(!framebuffer || (framebuffer->completeness(width, height, samples) != GL_FRAMEBUFFER_COMPLETE))
 	{
 		return error(GL_INVALID_FRAMEBUFFER_OPERATION, false);
 	}
@@ -2765,9 +2765,14 @@ bool Context::applyRenderTarget()
 }
 
 // Applies the fixed-function state (culling, depth test, alpha blending, stenciling, etc)
-void Context::applyState(GLenum drawMode)
+bool Context::applyState(GLenum drawMode)
 {
 	Framebuffer *framebuffer = getDrawFramebuffer();
+
+	if(!framebuffer)
+	{
+		return false;
+	}
 
 	if(mState.cullFaceEnabled)
 	{
@@ -2972,6 +2977,8 @@ void Context::applyState(GLenum drawMode)
 	}
 
 	device->setRasterizerDiscard(mState.rasterizerDiscardEnabled);
+
+	return true;
 }
 
 GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsizei instanceId)
@@ -3270,7 +3277,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum
 	Framebuffer *framebuffer = getReadFramebuffer();
 	int framebufferWidth, framebufferHeight, framebufferSamples;
 
-	if(framebuffer->completeness(framebufferWidth, framebufferHeight, framebufferSamples) != GL_FRAMEBUFFER_COMPLETE)
+	if(!framebuffer || (framebuffer->completeness(framebufferWidth, framebufferHeight, framebufferSamples) != GL_FRAMEBUFFER_COMPLETE))
 	{
 		return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 	}
@@ -3339,7 +3346,7 @@ void Context::clear(GLbitfield mask)
 
 	Framebuffer *framebuffer = getDrawFramebuffer();
 
-	if(!framebuffer || framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
+	if(!framebuffer || (framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE))
 	{
 		return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 	}
@@ -3486,7 +3493,10 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 		return error(GL_INVALID_ENUM);
 	}
 
-	applyState(mode);
+	if(!applyState(mode))
+	{
+		return;
+	}
 
 	for(int i = 0; i < instanceCount; ++i)
 	{
@@ -3574,7 +3584,10 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 		return error(err);
 	}
 
-	applyState(internalMode);
+	if(!applyState(internalMode))
+	{
+		return;
+	}
 
 	for(int i = 0; i < instanceCount; ++i)
 	{
@@ -3931,8 +3944,8 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 	int readBufferWidth, readBufferHeight, readBufferSamples;
 	int drawBufferWidth, drawBufferHeight, drawBufferSamples;
 
-	if(!readFramebuffer || readFramebuffer->completeness(readBufferWidth, readBufferHeight, readBufferSamples) != GL_FRAMEBUFFER_COMPLETE ||
-	   !drawFramebuffer || drawFramebuffer->completeness(drawBufferWidth, drawBufferHeight, drawBufferSamples) != GL_FRAMEBUFFER_COMPLETE)
+	if(!readFramebuffer || (readFramebuffer->completeness(readBufferWidth, readBufferHeight, readBufferSamples) != GL_FRAMEBUFFER_COMPLETE) ||
+	   !drawFramebuffer || (drawFramebuffer->completeness(drawBufferWidth, drawBufferHeight, drawBufferSamples) != GL_FRAMEBUFFER_COMPLETE))
 	{
 		return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 	}
@@ -4372,6 +4385,7 @@ const GLubyte *Context::getExtensions(GLuint index, GLuint *numExt) const
 		"GL_OES_packed_depth_stencil",
 		"GL_OES_rgb8_rgba8",
 		"GL_OES_standard_derivatives",
+		"GL_OES_surfaceless_context",
 		"GL_OES_texture_float",
 		"GL_OES_texture_float_linear",
 		"GL_OES_texture_half_float",
