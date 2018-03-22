@@ -582,7 +582,7 @@ private:
 	~Context() override;
 
 	bool applyRenderTarget();
-	void applyState(GLenum drawMode);
+	bool applyState(GLenum drawMode);
 	GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count);
 	GLenum applyIndexBuffer(const void *indices, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo);
 	void applyTextures();

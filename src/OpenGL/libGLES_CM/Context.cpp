@@ -1245,7 +1245,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 			Framebuffer *framebuffer = getFramebuffer();
 			int width, height, samples;
 
-			if(framebuffer->completeness(width, height, samples) == GL_FRAMEBUFFER_COMPLETE_OES)
+			if(framebuffer && (framebuffer->completeness(width, height, samples) == GL_FRAMEBUFFER_COMPLETE_OES))
 			{
 				switch(pname)
 				{
@@ -1273,13 +1273,13 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 	case GL_IMPLEMENTATION_COLOR_READ_TYPE_OES:
 		{
 			Framebuffer *framebuffer = getFramebuffer();
-			*params = framebuffer->getImplementationColorReadType();
+			*params = framebuffer ? framebuffer->getImplementationColorReadType() : GL_UNSIGNED_BYTE;
 		}
 		break;
 	case GL_IMPLEMENTATION_COLOR_READ_FORMAT_OES:
 		{
 			Framebuffer *framebuffer = getFramebuffer();
-			*params = framebuffer->getImplementationColorReadFormat();
+			*params = framebuffer ? framebuffer->getImplementationColorReadFormat() : GL_RGBA;
 		}
 		break;
 	case GL_MAX_VIEWPORT_DIMS:
@@ -1317,7 +1317,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 	case GL_ALPHA_BITS:
 		{
 			Framebuffer *framebuffer = getFramebuffer();
-			Renderbuffer *colorbuffer = framebuffer->getColorbuffer();
+			Renderbuffer *colorbuffer = framebuffer ? framebuffer->getColorbuffer() : nullptr;
 
 			if(colorbuffer)
 			{
@@ -1338,7 +1338,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 	case GL_DEPTH_BITS:
 		{
 			Framebuffer *framebuffer = getFramebuffer();
-			Renderbuffer *depthbuffer = framebuffer->getDepthbuffer();
+			Renderbuffer *depthbuffer = framebuffer ? framebuffer->getDepthbuffer() : nullptr;
 
 			if(depthbuffer)
 			{
@@ -1353,7 +1353,7 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 	case GL_STENCIL_BITS:
 		{
 			Framebuffer *framebuffer = getFramebuffer();
-			Renderbuffer *stencilbuffer = framebuffer->getStencilbuffer();
+			Renderbuffer *stencilbuffer = framebuffer ? framebuffer->getStencilbuffer() : nullptr;
 
 			if(stencilbuffer)
 			{
@@ -1764,9 +1764,14 @@ bool Context::applyRenderTarget()
 }
 
 // Applies the fixed-function state (culling, depth test, alpha blending, stenciling, etc)
-void Context::applyState(GLenum drawMode)
+bool Context::applyState(GLenum drawMode)
 {
 	Framebuffer *framebuffer = getFramebuffer();
+
+	if(!framebuffer)
+	{
+		return false;
+	}
 
 	if(mState.cullFaceEnabled)
 	{
@@ -2011,6 +2016,8 @@ void Context::applyState(GLenum drawMode)
 	device->setLogicalOperation(es2sw::ConvertLogicalOperation(logicalOperation));
 
 	device->setNormalizeNormals(normalizeEnabled || rescaleNormalEnabled);
+
+	return false;
 }
 
 GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count)
@@ -2392,7 +2399,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 	Framebuffer *framebuffer = getFramebuffer();
 	int framebufferWidth, framebufferHeight, framebufferSamples;
 
-	if(framebuffer->completeness(framebufferWidth, framebufferHeight, framebufferSamples) != GL_FRAMEBUFFER_COMPLETE_OES)
+	if(!framebuffer || (framebuffer->completeness(framebufferWidth, framebufferHeight, framebufferSamples) != GL_FRAMEBUFFER_COMPLETE_OES))
 	{
 		return error(GL_INVALID_FRAMEBUFFER_OPERATION_OES);
 	}
@@ -2721,7 +2728,10 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count)
 		return;
 	}
 
-	applyState(mode);
+	if(!applyState(mode))
+	{
+		return;
+	}
 
 	GLenum err = applyVertexBuffer(0, first, count);
 	if(err != GL_NO_ERROR)
@@ -2760,7 +2770,10 @@ void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *
 		return;
 	}
 
-	applyState(mode);
+	if(!applyState(mode))
+	{
+		return;
+	}
 
 	TranslatedIndexData indexInfo;
 	GLenum err = applyIndexBuffer(indices, count, mode, type, &indexInfo);
@@ -2787,7 +2800,12 @@ void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *
 void Context::drawTexture(GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloat height)
 {
 	es1::Framebuffer *framebuffer = getFramebuffer();
-	es1::Renderbuffer *renderbuffer = framebuffer->getColorbuffer();
+	es1::Renderbuffer *renderbuffer = framebuffer ? framebuffer->getColorbuffer() : nullptr;
+	if(!renderbuffer)
+	{
+		return;
+	}
+
 	float targetWidth = (float)renderbuffer->getWidth();
 	float targetHeight = (float)renderbuffer->getHeight();
 	float x0 = 2.0f * x / targetWidth - 1.0f;
