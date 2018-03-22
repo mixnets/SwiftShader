@@ -4372,6 +4372,7 @@ const GLubyte *Context::getExtensions(GLuint index, GLuint *numExt) const
 		"GL_OES_packed_depth_stencil",
 		"GL_OES_rgb8_rgba8",
 		"GL_OES_standard_derivatives",
+		"GL_OES_surfaceless_context",
 		"GL_OES_texture_float",
 		"GL_OES_texture_float_linear",
 		"GL_OES_texture_half_float",
