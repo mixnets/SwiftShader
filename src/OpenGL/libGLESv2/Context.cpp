@@ -749,16 +749,24 @@ GLuint Context::getRenderbufferName() const
 
 void Context::setFramebufferReadBuffer(GLuint buf)
 {
-	getReadFramebuffer()->setReadBuffer(buf);
+	Framebuffer *framebuffer = getReadFramebuffer();
+
+	if(framebuffer)
+	{
+		getReadFramebuffer()->setReadBuffer(buf);
+	}
 }
 
 void Context::setFramebufferDrawBuffers(GLsizei n, const GLenum *bufs)
 {
 	Framebuffer *drawFramebuffer = getDrawFramebuffer();
 
-	for(int i = 0; i < MAX_COLOR_ATTACHMENTS; i++)
+	if(drawFramebuffer)
 	{
-		drawFramebuffer->setDrawBuffer(i, (i < n) ? bufs[i] : GL_NONE);
+		for(int i = 0; i < MAX_COLOR_ATTACHMENTS; i++)
+		{
+			drawFramebuffer->setDrawBuffer(i, (i < n) ? bufs[i] : GL_NONE);
+		}
 	}
 }
 
@@ -1949,7 +1957,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 			Framebuffer *framebuffer = getDrawFramebuffer();
 			int width, height, samples;
 
-			if(framebuffer->completeness(width, height, samples) == GL_FRAMEBUFFER_COMPLETE)
+			if(framebuffer && (framebuffer->completeness(width, height, samples) == GL_FRAMEBUFFER_COMPLETE))
 			{
 				switch(pname)
 				{
@@ -1977,13 +1985,13 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_IMPLEMENTATION_COLOR_READ_TYPE:
 		{
 			Framebuffer *framebuffer = getReadFramebuffer();
-			*params = framebuffer->getImplementationColorReadType();
+			*params = framebuffer ? framebuffer->getImplementationColorReadType() : GL_UNSIGNED_BYTE;
 		}
 		return true;
 	case GL_IMPLEMENTATION_COLOR_READ_FORMAT:
 		{
 			Framebuffer *framebuffer = getReadFramebuffer();
-			*params = framebuffer->getImplementationColorReadFormat();
+			*params = framebuffer ? framebuffer->getImplementationColorReadFormat() : GL_RGBA;
 		}
 		return true;
 	case GL_MAX_VIEWPORT_DIMS:
@@ -2021,7 +2029,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_ALPHA_BITS:
 		{
 			Framebuffer *framebuffer = getDrawFramebuffer();
-			Renderbuffer *colorbuffer = framebuffer->getColorbuffer(0);
+			Renderbuffer *colorbuffer = framebuffer ? framebuffer->getColorbuffer(0) : nullptr;
 
 			if(colorbuffer)
 			{
@@ -2042,7 +2050,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_DEPTH_BITS:
 		{
 			Framebuffer *framebuffer = getDrawFramebuffer();
-			Renderbuffer *depthbuffer = framebuffer->getDepthbuffer();
+			Renderbuffer *depthbuffer = framebuffer ? framebuffer->getDepthbuffer() : nullptr;
 
 			if(depthbuffer)
 			{
@@ -2057,7 +2065,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_STENCIL_BITS:
 		{
 			Framebuffer *framebuffer = getDrawFramebuffer();
-			Renderbuffer *stencilbuffer = framebuffer->getStencilbuffer();
+			Renderbuffer *stencilbuffer = framebuffer ? framebuffer->getStencilbuffer() : nullptr;
 
 			if(stencilbuffer)
 			{
@@ -2132,7 +2140,8 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_DRAW_BUFFER15:
 		if((pname - GL_DRAW_BUFFER0) < MAX_DRAW_BUFFERS)
 		{
-			*params = getDrawFramebuffer()->getDrawBuffer(pname - GL_DRAW_BUFFER0);
+			Framebuffer* framebuffer = getDrawFramebuffer();
+			*params = framebuffer ? framebuffer->getDrawBuffer(pname - GL_DRAW_BUFFER0) : GL_NONE;
 		}
 		else
 		{
@@ -2286,7 +2295,10 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 			// should be a 0 sized array, so don't write to params
 			return true;
 		case GL_READ_BUFFER:
-			*params = getReadFramebuffer()->getReadBuffer();
+			{
+				Framebuffer* framebuffer = getReadFramebuffer();
+				*params = framebuffer ? framebuffer->getReadBuffer() : GL_NONE;
+			}
 			return true;
 		case GL_SAMPLER_BINDING:
 			*params = mState.sampler[mState.activeSampler].name();
@@ -2706,7 +2718,7 @@ bool Context::applyRenderTarget()
 	Framebuffer *framebuffer = getDrawFramebuffer();
 	int width, height, samples;
 
-	if(!framebuffer || framebuffer->completeness(width, height, samples) != GL_FRAMEBUFFER_COMPLETE)
+	if(!framebuffer || (framebuffer->completeness(width, height, samples) != GL_FRAMEBUFFER_COMPLETE))
 	{
 		return error(GL_INVALID_FRAMEBUFFER_OPERATION, false);
 	}
@@ -2765,9 +2777,14 @@ bool Context::applyRenderTarget()
 }
 
 // Applies the fixed-function state (culling, depth test, alpha blending, stenciling, etc)
-void Context::applyState(GLenum drawMode)
+bool Context::applyState(GLenum drawMode)
 {
 	Framebuffer *framebuffer = getDrawFramebuffer();
+
+	if(!framebuffer)
+	{
+		return false;
+	}
 
 	if(mState.cullFaceEnabled)
 	{
@@ -2972,6 +2989,8 @@ void Context::applyState(GLenum drawMode)
 	}
 
 	device->setRasterizerDiscard(mState.rasterizerDiscardEnabled);
+
+	return true;
 }
 
 GLenum Context::applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsizei instanceId)
@@ -3270,7 +3289,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum
 	Framebuffer *framebuffer = getReadFramebuffer();
 	int framebufferWidth, framebufferHeight, framebufferSamples;
 
-	if(framebuffer->completeness(framebufferWidth, framebufferHeight, framebufferSamples) != GL_FRAMEBUFFER_COMPLETE)
+	if(!framebuffer || (framebuffer->completeness(framebufferWidth, framebufferHeight, framebufferSamples) != GL_FRAMEBUFFER_COMPLETE))
 	{
 		return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 	}
@@ -3339,7 +3358,7 @@ void Context::clear(GLbitfield mask)
 
 	Framebuffer *framebuffer = getDrawFramebuffer();
 
-	if(!framebuffer || framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE)
+	if(!framebuffer || (framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE))
 	{
 		return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 	}
@@ -3384,7 +3403,7 @@ void Context::clearColorBuffer(GLint drawbuffer, void *value, sw::Format format)
 	if(rgbaMask && !mState.rasterizerDiscardEnabled)
 	{
 		Framebuffer *framebuffer = getDrawFramebuffer();
-		egl::Image *colorbuffer = framebuffer->getRenderTarget(drawbuffer);
+		egl::Image *colorbuffer = framebuffer ? framebuffer->getRenderTarget(drawbuffer) : nullptr;
 
 		if(colorbuffer)
 		{
@@ -3422,7 +3441,7 @@ void Context::clearDepthBuffer(const GLfloat value)
 	if(mState.depthMask && !mState.rasterizerDiscardEnabled)
 	{
 		Framebuffer *framebuffer = getDrawFramebuffer();
-		egl::Image *depthbuffer = framebuffer->getDepthBuffer();
+		egl::Image *depthbuffer = framebuffer ? framebuffer->getDepthBuffer() : nullptr;
 
 		if(depthbuffer)
 		{
@@ -3446,7 +3465,7 @@ void Context::clearStencilBuffer(const GLint value)
 	if(mState.stencilWritemask && !mState.rasterizerDiscardEnabled)
 	{
 		Framebuffer *framebuffer = getDrawFramebuffer();
-		egl::Image *stencilbuffer = framebuffer->getStencilBuffer();
+		egl::Image *stencilbuffer = framebuffer ? framebuffer->getStencilBuffer() : nullptr;
 
 		if(stencilbuffer)
 		{
@@ -3486,7 +3505,10 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 		return error(GL_INVALID_ENUM);
 	}
 
-	applyState(mode);
+	if(!applyState(mode))
+	{
+		return;
+	}
 
 	for(int i = 0; i < instanceCount; ++i)
 	{
@@ -3574,7 +3596,10 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 		return error(err);
 	}
 
-	applyState(internalMode);
+	if(!applyState(internalMode))
+	{
+		return;
+	}
 
 	for(int i = 0; i < instanceCount; ++i)
 	{
@@ -3931,8 +3956,8 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 	int readBufferWidth, readBufferHeight, readBufferSamples;
 	int drawBufferWidth, drawBufferHeight, drawBufferSamples;
 
-	if(!readFramebuffer || readFramebuffer->completeness(readBufferWidth, readBufferHeight, readBufferSamples) != GL_FRAMEBUFFER_COMPLETE ||
-	   !drawFramebuffer || drawFramebuffer->completeness(drawBufferWidth, drawBufferHeight, drawBufferSamples) != GL_FRAMEBUFFER_COMPLETE)
+	if(!readFramebuffer || (readFramebuffer->completeness(readBufferWidth, readBufferHeight, readBufferSamples) != GL_FRAMEBUFFER_COMPLETE) ||
+	   !drawFramebuffer || (drawFramebuffer->completeness(drawBufferWidth, drawBufferHeight, drawBufferSamples) != GL_FRAMEBUFFER_COMPLETE))
 	{
 		return error(GL_INVALID_FRAMEBUFFER_OPERATION);
 	}
@@ -4372,6 +4397,7 @@ const GLubyte *Context::getExtensions(GLuint index, GLuint *numExt) const
 		"GL_OES_packed_depth_stencil",
 		"GL_OES_rgb8_rgba8",
 		"GL_OES_standard_derivatives",
+		"GL_OES_surfaceless_context",
 		"GL_OES_texture_float",
 		"GL_OES_texture_float_linear",
 		"GL_OES_texture_half_float",

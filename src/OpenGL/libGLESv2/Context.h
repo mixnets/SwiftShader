@@ -704,7 +704,7 @@ private:
 
 	void applyScissor(int width, int height);
 	bool applyRenderTarget();
-	void applyState(GLenum drawMode);
+	bool applyState(GLenum drawMode);
 	GLenum applyVertexBuffer(GLint base, GLint first, GLsizei count, GLsizei instanceId);
 	GLenum applyIndexBuffer(const void *indices, GLuint start, GLuint end, GLsizei count, GLenum mode, GLenum type, TranslatedIndexData *indexInfo);
 	void applyShaders();

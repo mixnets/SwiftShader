@@ -448,6 +448,11 @@ GLenum CheckFramebufferStatusOES(GLenum target)
 	{
 		es1::Framebuffer *framebuffer = context->getFramebuffer();
 
+		if(!framebuffer)
+		{
+			return GL_FRAMEBUFFER_UNDEFINED_OES;
+		}
+
 		return framebuffer->completeness();
 	}
 
@@ -837,7 +842,7 @@ void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, 
 
 		es1::Framebuffer *framebuffer = context->getFramebuffer();
 
-		if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE_OES)
+		if(!framebuffer || (framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE_OES))
 		{
 			return error(GL_INVALID_FRAMEBUFFER_OPERATION_OES);
 		}
@@ -963,10 +968,9 @@ void CopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
 
 	if(context)
 	{
-
 		es1::Framebuffer *framebuffer = context->getFramebuffer();
 
-		if(framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE_OES)
+		if(!framebuffer || (framebuffer->completeness() != GL_FRAMEBUFFER_COMPLETE_OES))
 		{
 			return error(GL_INVALID_FRAMEBUFFER_OPERATION_OES);
 		}
@@ -2069,6 +2073,11 @@ void GetFramebufferAttachmentParameterivOES(GLenum target, GLenum attachment, GL
 		}
 
 		es1::Framebuffer *framebuffer = context->getFramebuffer();
+
+		if(!framebuffer)
+		{
+			return error(GL_INVALID_OPERATION);
+		}
 
 		GLenum attachmentType;
 		GLuint attachmentHandle;
