@@ -80,7 +80,7 @@ RenderbufferTexture2D::RenderbufferTexture2D(Texture2D *texture, GLint level) : 
 
 RenderbufferTexture2D::~RenderbufferTexture2D()
 {
-	mTexture2D = NULL;
+	mTexture2D = nullptr;
 }
 
 // Textures need to maintain their own reference count for references via
@@ -443,7 +443,7 @@ void Renderbuffer::setLevel(GLint level)
 
 void Renderbuffer::setStorage(RenderbufferStorage *newStorage)
 {
-	ASSERT(newStorage != NULL);
+	ASSERT(newStorage);
 
 	delete mInstance;
 	mInstance = newStorage;

@@ -2043,7 +2043,7 @@ void FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GL
 				return error(GL_INVALID_ENUM);
 			}
 
-			if((level != 0) && ((clientVersion < 3) || (textarget == GL_TEXTURE_RECTANGLE_ARB)))
+			if((textarget == GL_TEXTURE_RECTANGLE_ARB) && (level != 0))
 			{
 				return error(GL_INVALID_VALUE);
 			}
@@ -2843,7 +2843,7 @@ void GetFramebufferAttachmentParameteriv(GLenum target, GLenum attachment, GLenu
 			case GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL:
 				if(attachmentObjectType == GL_TEXTURE)
 				{
-					*params = clientVersion < 3 ? 0 : renderbuffer->getLevel();   // glFramebufferTexture2D does not allow level to be set to anything else in GL ES 2.0
+					*params = renderbuffer->getLevel();
 				}
 				else
 				{
@@ -6524,11 +6524,6 @@ void FramebufferTexture3DOES(GLenum target, GLenum attachment, GLenum textarget,
 			default:
 				return error(GL_INVALID_ENUM);
 			}
-
-			if(level != 0)
-			{
-				return error(GL_INVALID_VALUE);
-			}
 		}
 
 		es2::Framebuffer *framebuffer = nullptr;
@@ -6594,10 +6589,10 @@ void FramebufferTexture3DOES(GLenum target, GLenum attachment, GLenum textarget,
 			{
 				return error(GL_INVALID_ENUM);
 			}
-			framebuffer->setColorbuffer(textarget, texture, attachment - GL_COLOR_ATTACHMENT0);
+			framebuffer->setColorbuffer(textarget, texture, attachment - GL_COLOR_ATTACHMENT0, level);
 			break;
-		case GL_DEPTH_ATTACHMENT:   framebuffer->setDepthbuffer(textarget, texture);   break;
-		case GL_STENCIL_ATTACHMENT: framebuffer->setStencilbuffer(textarget, texture); break;
+		case GL_DEPTH_ATTACHMENT:   framebuffer->setDepthbuffer(textarget, texture, level);   break;
+		case GL_STENCIL_ATTACHMENT: framebuffer->setStencilbuffer(textarget, texture, level); break;
 		default:
 			return error(GL_INVALID_ENUM);
 		}
