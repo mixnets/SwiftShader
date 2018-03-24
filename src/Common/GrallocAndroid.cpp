@@ -19,6 +19,23 @@
 #include <sync/sync.h>
 #endif
 
+#if defined(ANDROID_HOST_BUILD)
+int hw_get_module(const char *id, const struct hw_module_t **module)
+{
+  (id);
+  (module);
+  /* FIXME: No-op */
+  return 0;
+}
+int sync_wait(int fd, int timeout)
+{
+  (fd);
+  (timeout);
+  /* FIXME: No-op */
+  return 0;
+}
+#endif
+
 GrallocModule *GrallocModule::getInstance()
 {
 	static GrallocModule instance;
