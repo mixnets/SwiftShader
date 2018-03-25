@@ -44,7 +44,7 @@ cc_library_static {
         "lib/Support/ConvertUTF.cpp",
         "lib/Support/ConvertUTFWrapper.cpp",
         "lib/Support/Debug.cpp",
-	"lib/Support/Errno.cpp",
+        "lib/Support/Errno.cpp",
         "lib/Support/ErrorHandling.cpp",
         "lib/Support/FoldingSet.cpp",
         "lib/Support/Hashing.cpp",
