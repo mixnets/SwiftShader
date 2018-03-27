@@ -620,7 +620,7 @@ namespace es2
 		return true;
 	}
 
-	bool IsValidReadPixelsFormatType(const Framebuffer *framebuffer, GLenum format, GLenum type, GLint clientVersion)
+	bool ValidateReadPixelsFormatType(const Framebuffer *framebuffer, GLenum format, GLenum type, GLint clientVersion)
 	{
 		// GL_NV_read_depth
 		if(format == GL_DEPTH_COMPONENT)
@@ -629,17 +629,46 @@ namespace es2
 
 			if(!depthbuffer)
 			{
-				return false;
+				return error(GL_INVALID_OPERATION, false);
 			}
+
+			GLint internalformat = depthbuffer->getFormat();
 
 			switch(type)
 			{
 			case GL_UNSIGNED_SHORT:
+			case GL_UNSIGNED_INT_24_8_OES:
+				switch(internalformat)
+				{
+				case GL_DEPTH_COMPONENT16:
+				case GL_DEPTH_COMPONENT24:
+				case GL_DEPTH_COMPONENT32_OES:
+				case GL_DEPTH24_STENCIL8:
+					break;
+				case GL_DEPTH_COMPONENT32F:
+				case GL_DEPTH32F_STENCIL8:
+					return error(GL_INVALID_OPERATION, false);
+				default:
+					UNREACHABLE(internalformat);
+					return error(GL_INVALID_OPERATION, false);
+				}
 			case GL_FLOAT:
-				return true;
+				switch(internalformat)
+				{
+				case GL_DEPTH_COMPONENT32F:
+				case GL_DEPTH32F_STENCIL8:
+					break;
+				case GL_DEPTH_COMPONENT16:
+				case GL_DEPTH_COMPONENT24:
+				case GL_DEPTH_COMPONENT32_OES:
+				case GL_DEPTH24_STENCIL8:
+					return error(GL_INVALID_OPERATION, false);
+				default:
+					UNREACHABLE(internalformat);
+					return error(GL_INVALID_OPERATION, false);
+				}
 			default:
-				UNIMPLEMENTED();
-				return false;
+				return error(GL_INVALID_ENUM, false);
 			}
 		}
 
@@ -647,7 +676,7 @@ namespace es2
 
 		if(!colorbuffer)
 		{
-			return false;
+			return error(GL_INVALID_OPERATION, false);
 		}
 
 		GLint internalformat = colorbuffer->getFormat();
@@ -731,14 +760,12 @@ namespace es2
 			}
 		}
 
-		return false;
+		return error(GL_INVALID_OPERATION, false);
 	}
 
-	bool IsDepthTexture(GLenum format)
+	bool IsDepthTexture(GLint format)
 	{
-		return format == GL_DEPTH_COMPONENT ||
-		       format == GL_DEPTH_STENCIL_OES ||
-		       format == GL_DEPTH_COMPONENT16 ||
+		return format == GL_DEPTH_COMPONENT16 ||
 		       format == GL_DEPTH_COMPONENT24 ||
 		       format == GL_DEPTH_COMPONENT32_OES ||
 		       format == GL_DEPTH_COMPONENT32F ||
@@ -746,12 +773,11 @@ namespace es2
 		       format == GL_DEPTH32F_STENCIL8;
 	}
 
-	bool IsStencilTexture(GLenum format)
+	bool IsStencilTexture(GLint format)
 	{
-		return format == GL_STENCIL_INDEX_OES ||
-		       format == GL_DEPTH_STENCIL_OES ||
-		       format == GL_DEPTH24_STENCIL8 ||
-		       format == GL_DEPTH32F_STENCIL8;
+		return format == GL_DEPTH24_STENCIL8 ||
+		       format == GL_DEPTH32F_STENCIL8 ||
+		       format == GL_STENCIL_INDEX8;
 	}
 
 	bool IsCubemapTextureTarget(GLenum target)
@@ -1149,8 +1175,9 @@ namespace es2
 		case GL_UNSIGNED_INT_2_10_10_10_REV:
 		case GL_UNSIGNED_INT_10F_11F_11F_REV:
 		case GL_UNSIGNED_INT_5_9_9_9_REV:
-		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
 			return 4;
+		case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
+			return 8;
 		default:
 			UNREACHABLE(type);
 			break;
