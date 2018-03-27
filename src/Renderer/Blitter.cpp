@@ -391,7 +391,7 @@ namespace sw
 			c.x = Float(Int((*Pointer<UShort>(element))));
 			break;
 		case FORMAT_D24S8:
-			c.x = Float(Int((*Pointer<UInt>(element))));
+			c.x = Float(Int((*Pointer<UInt>(element) & UInt(0xFFFFFF00)) >> 8));
 			break;
 		case FORMAT_D32:
 			c.x = Float(Int((*Pointer<UInt>(element))));
