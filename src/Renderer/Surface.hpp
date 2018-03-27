@@ -212,6 +212,7 @@ namespace sw
 		FORMAT_D32FS8_TEXTURE,       // Linear layout, no PCF
 		FORMAT_D32F_SHADOW,          // Linear layout, PCF
 		FORMAT_D32FS8_SHADOW,        // Linear layout, PCF
+		FORMAT_D32FX24S8,
 		FORMAT_DF24S8,
 		FORMAT_DF16S8,
 		FORMAT_INTZ,

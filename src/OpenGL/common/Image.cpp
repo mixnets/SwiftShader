@@ -150,9 +150,23 @@ namespace gl
 			switch(type)
 			{
 			case GL_UNSIGNED_SHORT:        return sw::FORMAT_D16;
-			case GL_UNSIGNED_INT_24_8_OES: return sw::FORMAT_D24S8;
-			case GL_UNSIGNED_INT:          return sw::FORMAT_D32;
+			case GL_UNSIGNED_INT_24_8_OES: return sw::FORMAT_D24X8;
 			case GL_FLOAT:                 return sw::FORMAT_D32F_LOCKABLE;
+			default: UNREACHABLE(type);
+			}
+			break;
+		case GL_DEPTH_STENCIL_OES:
+			switch(type)
+			{
+			case GL_UNSIGNED_INT_24_8_OES:          return sw::FORMAT_D24S8;
+			case GL_FLOAT_32_UNSIGNED_INT_24_8_REV: return sw::FORMAT_D32FX24S8;
+			default: UNREACHABLE(type);
+			}
+			break;
+		case GL_STENCIL_INDEX_OES:
+			switch(type)
+			{
+			case GL_UNSIGNED_BYTE: return sw::FORMAT_S8;
 			default: UNREACHABLE(type);
 			}
 			break;

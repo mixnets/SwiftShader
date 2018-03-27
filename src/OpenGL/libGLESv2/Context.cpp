@@ -3329,9 +3329,9 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum
 		return error(GL_INVALID_OPERATION);
 	}
 
-	if(!IsValidReadPixelsFormatType(framebuffer, format, type, clientVersion))
+	if(!ValidateReadPixelsFormatType(framebuffer, format, type, clientVersion))
 	{
-		return error(GL_INVALID_OPERATION);
+		return;
 	}
 
 	GLsizei outputWidth = (mState.packParameters.rowLength > 0) ? mState.packParameters.rowLength : width;
@@ -3353,8 +3353,12 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum
 	egl::Image *renderTarget = nullptr;
 	switch(format)
 	{
-	case GL_DEPTH_COMPONENT:   // GL_NV_read_depth
+	case GL_DEPTH_COMPONENT:     // GL_NV_read_depth
+	case GL_DEPTH_STENCIL_OES:   // GL_NV_read_depth_stencil
 		renderTarget = framebuffer->getDepthBuffer();
+		break;
+	case GL_STENCIL_INDEX_OES:   // GL_NV_read_stencil
+		renderTarget = framebuffer->getStencilBuffer();
 		break;
 	default:
 		renderTarget = framebuffer->getReadRenderTarget();
@@ -3366,14 +3370,12 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum
 		return error(GL_INVALID_OPERATION);
 	}
 
-	sw::RectF rect((float)x, (float)y, (float)(x + width), (float)(y + height));
-	sw::Rect dstRect(0, 0, width, height);
-	rect.clip(0.0f, 0.0f, (float)renderTarget->getWidth(), (float)renderTarget->getHeight());
+	sw::SliceRectF srcRect((float)x, (float)y, (float)(x + width), (float)(y + height), 0);
+	sw::SliceRect dstRect(0, 0, width, height, 0);
+	srcRect.clip(0.0f, 0.0f, (float)renderTarget->getWidth(), (float)renderTarget->getHeight());
 
 	sw::Surface *externalSurface = sw::Surface::create(width, height, 1, gl::ConvertReadFormatType(format, type), pixels, outputPitch, outputPitch * outputHeight);
-	sw::SliceRectF sliceRect(rect);
-	sw::SliceRect dstSliceRect(dstRect);
-	device->blit(renderTarget, sliceRect, externalSurface, dstSliceRect, false, false, false);
+	device->blit(renderTarget, srcRect, externalSurface, dstRect, false, false, false);
 	delete externalSurface;
 
 	renderTarget->release();
@@ -4464,9 +4466,12 @@ const GLubyte *Context::getExtensions(GLuint index, GLuint *numExt) const
 		"GL_APPLE_texture_format_BGRA8888",
 		"GL_CHROMIUM_color_buffer_float_rgba", // A subset of EXT_color_buffer_float on top of OpenGL ES 2.0
 		"GL_CHROMIUM_texture_filtering_hint",
+		"GL_NV_depth_buffer_float2",
 		"GL_NV_fence",
 		"GL_NV_framebuffer_blit",
 		"GL_NV_read_depth",
+		"GL_NV_read_depth_stencil",
+		"GL_NV_read_stencil",
 	};
 
 	// Extensions exclusive to OpenGL ES 3.0 and above.

@@ -356,6 +356,9 @@ namespace sw
 		case FORMAT_D32FS8_SHADOW:
 			*((float*)element) = r;
 			break;
+		case FORMAT_D32FX24S8:
+			*((float*)element) = r;
+			break;
 		case FORMAT_D32F_COMPLEMENTARY:
 		case FORMAT_D32FS8_COMPLEMENTARY:
 			*((float*)element) = 1 - r;
@@ -992,6 +995,7 @@ namespace sw
 			r = *(float*)element;
 			break;
 		case FORMAT_G32R32F:
+		case FORMAT_D32FX24S8:
 			r = ((float*)element)[0];
 			g = ((float*)element)[1];
 			break;
@@ -1691,6 +1695,7 @@ namespace sw
 		case FORMAT_D32FS8_TEXTURE:		return 4;
 		case FORMAT_D32F_SHADOW:		return 4;
 		case FORMAT_D32FS8_SHADOW:		return 4;
+		case FORMAT_D32FX24S8:          return 8;
 		case FORMAT_DF24S8:				return 4;
 		case FORMAT_DF16S8:				return 2;
 		case FORMAT_INTZ:				return 4;
@@ -2750,6 +2755,7 @@ namespace sw
 		case FORMAT_D32FS8_SHADOW:
 		case FORMAT_D32FS8:
 		case FORMAT_D32FS8_COMPLEMENTARY:
+		case FORMAT_D32FX24S8:
 		case FORMAT_INTZ:
 			return true;
 		default:
@@ -2777,6 +2783,7 @@ namespace sw
 		case FORMAT_D32F_SHADOW:
 		case FORMAT_D32FS8_SHADOW:
 		case FORMAT_INTZ:
+		case FORMAT_D32FX24S8:
 			return true;
 		case FORMAT_S8:
 			return false;
@@ -2809,6 +2816,7 @@ namespace sw
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32F_SHADOW:
 		case FORMAT_D32FS8_SHADOW:
+		case FORMAT_D32FX24S8:
 		default:
 			break;
 		}
@@ -2910,6 +2918,7 @@ namespace sw
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32F_SHADOW:
 		case FORMAT_D32FS8_SHADOW:
+		case FORMAT_D32FX24S8:
 		case FORMAT_L16F:
 		case FORMAT_A16L16F:
 		case FORMAT_L32F:
@@ -2962,6 +2971,7 @@ namespace sw
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32F_SHADOW:
 		case FORMAT_D32FS8_SHADOW:
+		case FORMAT_D32FX24S8:
 		case FORMAT_A8:
 		case FORMAT_R8:
 		case FORMAT_L8:
@@ -3238,6 +3248,7 @@ namespace sw
 		case FORMAT_D32FS8_TEXTURE: return 1;
 		case FORMAT_D32F_SHADOW:    return 1;
 		case FORMAT_D32FS8_SHADOW:  return 1;
+		case FORMAT_D32FX24S8:      return 2;
 		case FORMAT_A8:             return 1;
 		case FORMAT_R8I:            return 1;
 		case FORMAT_R8:             return 1;
@@ -4001,6 +4012,7 @@ namespace sw
 		case FORMAT_D32FS8:         return FORMAT_D32FS8;
 		case FORMAT_D32F_LOCKABLE:  return FORMAT_D32F_LOCKABLE;
 		case FORMAT_D32FS8_TEXTURE: return FORMAT_D32FS8_TEXTURE;
+		case FORMAT_D32FX24S8:      return FORMAT_D32FX24S8;
 		case FORMAT_INTZ:           return FORMAT_D32FS8_TEXTURE;
 		case FORMAT_DF24S8:         return FORMAT_D32FS8_SHADOW;
 		case FORMAT_DF16S8:         return FORMAT_D32FS8_SHADOW;
