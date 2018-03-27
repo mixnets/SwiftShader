@@ -3329,9 +3329,9 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum
 		return error(GL_INVALID_OPERATION);
 	}
 
-	if(!IsValidReadPixelsFormatType(framebuffer, format, type, clientVersion))
+	if(!ValidateReadPixelsFormatType(framebuffer, format, type, clientVersion))
 	{
-		return error(GL_INVALID_OPERATION);
+		return;
 	}
 
 	GLsizei outputWidth = (mState.packParameters.rowLength > 0) ? mState.packParameters.rowLength : width;
@@ -3366,14 +3366,12 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum
 		return error(GL_INVALID_OPERATION);
 	}
 
-	sw::RectF rect((float)x, (float)y, (float)(x + width), (float)(y + height));
-	sw::Rect dstRect(0, 0, width, height);
-	rect.clip(0.0f, 0.0f, (float)renderTarget->getWidth(), (float)renderTarget->getHeight());
+	sw::SliceRectF srcRect((float)x, (float)y, (float)(x + width), (float)(y + height), 0);
+	sw::SliceRect dstRect(0, 0, width, height, 0);
+	srcRect.clip(0.0f, 0.0f, (float)renderTarget->getWidth(), (float)renderTarget->getHeight());
 
-	sw::Surface *externalSurface = sw::Surface::create(width, height, 1, gl::ConvertReadFormatType(format, type), pixels, outputPitch, outputPitch * outputHeight);
-	sw::SliceRectF sliceRect(rect);
-	sw::SliceRect dstSliceRect(dstRect);
-	device->blit(renderTarget, sliceRect, externalSurface, dstSliceRect, false, false, false);
+	sw::Surface *externalSurface = sw::Surface::create(width, height, 1, gl::ConvertReadFormatType(format, type), pixels, outputPitch, outputPitch  *  outputHeight);
+	device->blit(renderTarget, srcRect, externalSurface, dstRect, false, false, false);
 	delete externalSurface;
 
 	renderTarget->release();
