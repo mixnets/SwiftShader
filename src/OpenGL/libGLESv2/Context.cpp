@@ -2008,27 +2008,27 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_IMPLEMENTATION_COLOR_READ_TYPE:
 		{
 			Framebuffer *framebuffer = getReadFramebuffer();
-			if(framebuffer)
-			{
-				*params = framebuffer->getImplementationColorReadType();
-			}
-			else
+			int width, height, samples;
+
+			if(!framebuffer || (framebuffer->completeness(width, height, samples) != GL_FRAMEBUFFER_COMPLETE_OES))
 			{
 				return error(GL_INVALID_OPERATION, true);
 			}
+
+			*params = framebuffer->getImplementationColorReadType();
 		}
 		return true;
 	case GL_IMPLEMENTATION_COLOR_READ_FORMAT:
 		{
 			Framebuffer *framebuffer = getReadFramebuffer();
-			if(framebuffer)
-			{
-				*params = framebuffer->getImplementationColorReadFormat();
-			}
-			else
+			int width, height, samples;
+
+			if(!framebuffer || (framebuffer->completeness(width, height, samples) != GL_FRAMEBUFFER_COMPLETE_OES))
 			{
 				return error(GL_INVALID_OPERATION, true);
 			}
+
+			*params = framebuffer->getImplementationColorReadFormat();
 		}
 		return true;
 	case GL_MAX_VIEWPORT_DIMS:

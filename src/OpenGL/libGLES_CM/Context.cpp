@@ -1273,27 +1273,23 @@ bool Context::getIntegerv(GLenum pname, GLint *params)
 	case GL_IMPLEMENTATION_COLOR_READ_TYPE_OES:
 		{
 			Framebuffer *framebuffer = getFramebuffer();
-			if(framebuffer)
-			{
-				*params = framebuffer->getImplementationColorReadType();
-			}
-			else
+			int width, height, samples;
+			if(!framebuffer || (framebuffer->completeness(width, height, samples) != GL_FRAMEBUFFER_COMPLETE_OES))
 			{
 				return error(GL_INVALID_OPERATION, true);
 			}
+			*params = framebuffer->getImplementationColorReadType();
 		}
 		break;
 	case GL_IMPLEMENTATION_COLOR_READ_FORMAT_OES:
 		{
 			Framebuffer *framebuffer = getFramebuffer();
-			if(framebuffer)
-			{
-				*params = framebuffer->getImplementationColorReadFormat();
-			}
-			else
+			int width, height, samples;
+			if(!framebuffer || (framebuffer->completeness(width, height, samples) != GL_FRAMEBUFFER_COMPLETE_OES))
 			{
 				return error(GL_INVALID_OPERATION, true);
 			}
+			*params = framebuffer->getImplementationColorReadFormat();
 		}
 		break;
 	case GL_MAX_VIEWPORT_DIMS:
@@ -2801,14 +2797,15 @@ void Context::drawElements(GLenum mode, GLsizei count, GLenum type, const void *
 void Context::drawTexture(GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloat height)
 {
 	es1::Framebuffer *framebuffer = getFramebuffer();
-	es1::Renderbuffer *renderbuffer = framebuffer ? framebuffer->getColorbuffer() : nullptr;
-	if(!renderbuffer)
+	int framebufferWidth, framebufferHeight, framebufferSamples;
+
+	if(!framebuffer || (framebuffer->completeness(framebufferWidth, framebufferHeight, framebufferSamples) != GL_FRAMEBUFFER_COMPLETE_OES))
 	{
-		return;
+		return error(GL_INVALID_FRAMEBUFFER_OPERATION_OES);
 	}
 
-	float targetWidth = (float)renderbuffer->getWidth();
-	float targetHeight = (float)renderbuffer->getHeight();
+	float targetWidth = (float)framebufferWidth;
+	float targetHeight = (float)framebufferHeight;
 	float x0 = 2.0f * x / targetWidth - 1.0f;
 	float y0 = 2.0f * y / targetHeight - 1.0f;
 	float x1 = 2.0f * (x + width) / targetWidth - 1.0f;
