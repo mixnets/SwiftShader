@@ -14,7 +14,9 @@
 
 #ifndef COMPILER_OUTPUTASM_H_
 #define COMPILER_OUTPUTASM_H_
-
+#define _GDI32_
+#define GL_APICALL
+#define WINGDIAPI
 #include "intermediate.h"
 #include "ParseHelper.h"
 #include "Shader/PixelShader.hpp"

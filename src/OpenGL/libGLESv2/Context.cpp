@@ -3159,7 +3159,7 @@ void Context::applyTextures(sw::SamplerType samplerType)
 void Context::applyTexture(sw::SamplerType type, int index, Texture *baseTexture)
 {
 	Program *program = getCurrentProgram();
-	int sampler = (type == sw::SAMPLER_PIXEL) ? index : 16 + index;
+	int sampler = (type == sw::SAMPLER_PIXEL) ? index : sw::TEXTURE_IMAGE_UNITS + index;
 	bool textureUsed = false;
 
 	if(type == sw::SAMPLER_PIXEL)

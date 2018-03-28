@@ -21,7 +21,7 @@
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE==1
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
-#else	//OSX 
+#else	//OSX
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <GLES2/gl2extimg.h>
@@ -39,12 +39,18 @@
 #endif
 #include <GLES2/gl2extimg.h>
 #endif
-#elif defined(BUILD_OGLES3) 
+#elif defined(BUILD_OGLES3)
+#include <Windows.h>
+#include <GL/gl.h>
+#include <GL/glcorearb.h>
+#include <GL/glext.h>
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 #include <GLES3/gl3ext.h>
 #include <GLES2/gl2ext.h>
 #include <GLES2/gl2extimg.h>
+#include <GLES3/gl31.h>
+#include <GLES3/gl32.h>
 #endif
 
 /****************************************************************************

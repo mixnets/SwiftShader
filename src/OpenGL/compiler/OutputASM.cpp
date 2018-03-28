@@ -20,6 +20,10 @@
 
 #include "libGLESv2/Shader.h"
 
+//WINGDIAPI
+#define _GDI32_
+#include <Windows.h>
+#include <GL/gl.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <GLES3/gl3.h>

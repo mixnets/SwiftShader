@@ -16,6 +16,7 @@
 #define SharedLibrary_hpp
 
 #if defined(_WIN32)
+#define _GDI32_
 	#include <Windows.h>
 #else
 	#include <dlfcn.h>

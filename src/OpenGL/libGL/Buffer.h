@@ -22,7 +22,7 @@
 #include "Common/Resource.hpp"
 
 #define _GDI32_
-#include <windows.h>
+#include <Windows.h>
 #include <GL/GL.h>
 #include <GL/glext.h>
 

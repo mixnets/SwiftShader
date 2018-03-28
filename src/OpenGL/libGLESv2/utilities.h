@@ -21,6 +21,9 @@
 #include "common/Image.hpp"
 #include "Texture.h"
 
+#define _GDI32_
+#include <Windows.h>
+#include <GL/GL.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #include <GL/glcorearb.h>

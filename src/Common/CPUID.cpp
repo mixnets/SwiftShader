@@ -18,6 +18,7 @@
 	#ifndef WIN32_LEAN_AND_MEAN
 		#define WIN32_LEAN_AND_MEAN
 	#endif
+#define _GDI32_
 	#include <windows.h>
 	#include <intrin.h>
 	#include <float.h>
