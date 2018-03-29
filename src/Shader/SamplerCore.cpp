@@ -242,8 +242,6 @@ namespace sw
 						c.w = Short4(0x1000);
 					case FORMAT_A32B32G32R32F:
 						break;
-					case FORMAT_D32F:
-					case FORMAT_D32FS8:
 					case FORMAT_D32F_LOCKABLE:
 					case FORMAT_D32FS8_TEXTURE:
 					case FORMAT_D32F_SHADOW:
@@ -472,8 +470,6 @@ namespace sw
 					c.w = Float4(1.0f);
 				case FORMAT_A32B32G32R32F:
 					break;
-				case FORMAT_D32F:
-				case FORMAT_D32FS8:
 				case FORMAT_D32F_LOCKABLE:
 				case FORMAT_D32FS8_TEXTURE:
 				case FORMAT_D32F_SHADOW:
@@ -2635,8 +2631,6 @@ namespace sw
 		case FORMAT_R8:
 		case FORMAT_L8:
 		case FORMAT_A8L8:
-		case FORMAT_D32F:
-		case FORMAT_D32FS8:
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32F_SHADOW:
@@ -2703,8 +2697,6 @@ namespace sw
 		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_X32B32G32R32F_UNSIGNED:
-		case FORMAT_D32F:
-		case FORMAT_D32FS8:
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32F_SHADOW:
@@ -2786,8 +2778,6 @@ namespace sw
 		case FORMAT_R8:
 		case FORMAT_L8:
 		case FORMAT_A8L8:
-		case FORMAT_D32F:
-		case FORMAT_D32FS8:
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32F_SHADOW:
@@ -2868,8 +2858,6 @@ namespace sw
 		case FORMAT_R8:
 		case FORMAT_L8:
 		case FORMAT_A8L8:
-		case FORMAT_D32F:
-		case FORMAT_D32FS8:
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32F_SHADOW:
@@ -2942,8 +2930,6 @@ namespace sw
 		case FORMAT_R8:
 		case FORMAT_L8:
 		case FORMAT_A8L8:
-		case FORMAT_D32F:
-		case FORMAT_D32FS8:
 		case FORMAT_D32F_LOCKABLE:
 		case FORMAT_D32FS8_TEXTURE:
 		case FORMAT_D32F_SHADOW:
@@ -3014,8 +3000,6 @@ namespace sw
 		case FORMAT_R8:             return component < 1;
 		case FORMAT_L8:             return component < 1;
 		case FORMAT_A8L8:           return component < 1;
-		case FORMAT_D32F:           return false;
-		case FORMAT_D32FS8:         return false;
 		case FORMAT_D32F_LOCKABLE:  return false;
 		case FORMAT_D32FS8_TEXTURE: return false;
 		case FORMAT_D32F_SHADOW:    return false;
