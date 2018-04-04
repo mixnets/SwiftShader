@@ -53,6 +53,8 @@ cc_library_static {
     device_supported: false,
     host_supported: true,
 
+    stl: "libc++_static",
+
     cflags: [
         "-D_GNU_SOURCE",
         "-D__STDC_LIMIT_MACROS",

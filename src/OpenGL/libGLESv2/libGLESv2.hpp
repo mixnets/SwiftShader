@@ -284,7 +284,7 @@ private:
 				#else
 					const char *libGLESv2_lib[] = {"libGLESv2.dll", "libGLES_V2_translator.dll"};
 				#endif
-			#elif defined(__ANDROID__)
+			#elif defined(__ANDROID__) && !defined(ANDROID_HOST_BUILD)
 				#if defined(__LP64__)
 					const char *libGLESv2_lib[] = {"/vendor/lib64/egl/libGLESv2_swiftshader.so"};
 				#else
@@ -292,9 +292,9 @@ private:
 				#endif
 			#elif defined(__linux__)
 				#if defined(__LP64__)
-					const char *libGLESv2_lib[] = {"lib64GLES_V2_translator.so", "libGLESv2.so.2", "libGLESv2.so"};
+					const char *libGLESv2_lib[] = {"/usr/local/lib/libGLESv2_swiftshader.so", "lib64GLES_V2_translator.so", "libGLESv2.so.2", "libGLESv2.so"};
 				#else
-					const char *libGLESv2_lib[] = {"libGLES_V2_translator.so", "libGLESv2.so.2", "libGLESv2.so"};
+					const char *libGLESv2_lib[] = {"/usr/local/lib/libGLESv2_swiftshader.so", "libGLES_V2_translator.so", "libGLESv2.so.2", "libGLESv2.so"};
 				#endif
 			#elif defined(__APPLE__)
 				#if defined(__LP64__)

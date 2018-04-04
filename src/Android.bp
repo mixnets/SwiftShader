@@ -21,6 +21,8 @@ cc_defaults {
     host_supported: true,
     vendor: true,
 
+    stl: "libc++_static",
+
     defaults: [ "swiftshader_common" ],
 
     cflags: [

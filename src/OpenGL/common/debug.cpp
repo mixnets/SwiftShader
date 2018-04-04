@@ -34,6 +34,8 @@ namespace es
 #else
 	static void output(const char *format, va_list vararg)
 	{
+		vfprintf(stdout, format, vararg);
+
 		if(false)
 		{
 			static FILE* file = nullptr;

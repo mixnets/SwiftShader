@@ -19,18 +19,21 @@
 
 void trace(const char *format, ...)
 {
+	va_list vararg;
+
+	va_start(vararg, format);
+
+	vfprintf(stdout, format, vararg);
+
 	if(false)
 	{
 		FILE *file = fopen("debug.txt", "a");
-
 		if(file)
 		{
-			va_list vararg;
-			va_start(vararg, format);
 			vfprintf(file, format, vararg);
-			va_end(vararg);
-
 			fclose(file);
 		}
 	}
+
+	va_end(vararg);
 }
