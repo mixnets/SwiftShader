@@ -1734,9 +1734,16 @@ namespace sw
 
 		const float W = data.Wx16[0] * (1.0f / 16.0f);
 		const float H = data.Hx16[0] * (1.0f / 16.0f);
+		const float X = data.X0x16[0] * (1.0f / 16.0f);
+		const float Y = data.Y0x16[0] * (1.0f / 16.0f);
 
-		float dx = W * (P1.x / P1.w - P0.x / P0.w);
-		float dy = H * (P1.y / P1.w - P0.y / P0.w);
+		float x0 = W * P0.x / P0.w + X;
+		float y0 = H * P0.y / P0.w + Y;
+		float x1 = W * P1.x / P1.w + X;
+		float y1f = H * P1.y / P1.w + Y;
+
+		float dx = x1 - x0;
+		float dy = y1f - y0;
 
 		if(dx == 0 && dy == 0)
 		{
@@ -1810,7 +1817,7 @@ namespace sw
 			P[5] = P1;
 			P[6] = P1;
 			P[7] = P1;
-
+	lineWidth = 1;
 			float dx0 = lineWidth * 0.5f * P0.w / W;
 			float dy0 = lineWidth * 0.5f * P0.w / H;
 
@@ -1900,7 +1907,51 @@ namespace sw
 					}
 				}
 
-				return setupRoutine(&primitive, &triangle, &polygon, &data);
+				bool visible = setupRoutine(&primitive, &triangle, &polygon, &data);
+
+				if(visible)
+				{
+					float manhattan = abs(x1 - roundf(x1)) + abs(y1f - roundf(y1f));
+
+					static int score = 0;
+					static int score2 = 0;
+					score++;
+
+					if (manhattan < 0.5f)
+					{
+						score2++;
+						int y1 = dy > 0 ? primitive.yMax - 1 : primitive.yMin;
+
+						if (abs(dx) > abs(dy))   // x-major
+						{
+
+
+							if (dx > 0)
+							{
+								primitive.outline[y1].right--;  // 2
+							}
+							else
+							{
+								primitive.outline[y1].left++;   // 4
+							}
+						}
+						else   // y-major
+						{
+							if (dy > 0)
+							{
+								//	primitive.yMax -= 1;   // 1
+								primitive.outline[y1].right = primitive.outline[y1].left;
+							}
+							else
+							{
+								//	primitive.yMin += 1;   // 3
+								primitive.outline[y1].right = primitive.outline[y1].left;
+							}
+						}
+					}
+				}
+
+				return visible;
 			}
 		}
 

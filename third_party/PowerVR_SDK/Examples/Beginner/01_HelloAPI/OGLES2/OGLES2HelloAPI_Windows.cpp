@@ -21,6 +21,8 @@
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 
+#include <cmath>
+
 /******************************************************************************
  Defines
 ******************************************************************************/
@@ -29,7 +31,7 @@
 
 // Width and height of the window
 #define WINDOW_WIDTH	640
-#define WINDOW_HEIGHT	480
+#define WINDOW_HEIGHT	640
 
 // Index to bind the attributes to vertex shaders
 #define VERTEX_ARRAY	0
@@ -131,20 +133,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 	EGLContext			eglContext	= 0;
 	EGLNativeWindowType	eglWindow	= 0;
 
-	// Matrix used for projection model view (PMVMatrix)
-	float pfIdentity[] =
-	{
-		1.0f,0.0f,0.0f,0.0f,
-		0.0f,1.0f,0.0f,0.0f,
-		0.0f,0.0f,1.0f,0.0f,
-		0.0f,0.0f,0.0f,1.0f
-	};
+	
 
 	// Fragment and vertex shaders code
 	char* pszFragShader = "\
 		void main (void)\
 		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+			gl_FragColor = vec4(0.33, 0.5, 0.66 ,1.0);\
 		}";
 	char* pszVertShader = "\
 		attribute highp vec4	myVertex;\
@@ -412,7 +407,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// Sets the clear color.
 	// The colours are passed per channel (red,green,blue,alpha) as float values from 0.0 to 1.0
-	glClearColor(0.6f, 0.8f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Enable culling
 	glEnable(GL_CULL_FACE);
@@ -421,9 +416,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 	GLuint	ui32Vbo; // Vertex buffer object handle
 	
 	// Interleaved vertex data
-	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
-								0.4f ,-0.4f,0.0f,
-								0.0f ,0.4f ,0.0f};
+	GLfloat afVertices[] = {	-0.41f,-0.41f,0.0f, // Position
+								-0.41f,+0.41f,0.0f,
+								 0.41f,+0.41f,0.0f,
+								 0.41f,-0.41f ,0.0f};
 
 	// Generate the vertex buffer object (VBO)
 	glGenBuffers(1, &ui32Vbo);
@@ -432,11 +428,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 	glBindBuffer(GL_ARRAY_BUFFER, ui32Vbo);
 
 	// Set the buffer's data
-	unsigned int uiSize = 3 * (sizeof(GLfloat) * 3); // Calc afVertices size (3 vertices * stride (3 GLfloats per vertex))
+	unsigned int uiSize = 4 * (sizeof(GLfloat) * 3); // Calc afVertices size (3 vertices * stride (3 GLfloats per vertex))
 	glBufferData(GL_ARRAY_BUFFER, uiSize, afVertices, GL_STATIC_DRAW);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE);
+
 	// Draws a triangle for 800 frames
-	for(int i = 0; i < 800; ++i)
+	for(int i = 0; i < 8000000; ++i)
 	{
 		// Check if the message handler finished the demo
 		if (g_bDemoDone) break;
@@ -456,6 +455,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		// First gets the location of that variable in the shader using its name
 		int i32Location = glGetUniformLocation(uiProgramObject, "myPMVMatrix");
 
+		float t = (float)i / 20000;
+
+		// Matrix used for projection model view (PMVMatrix)
+	float pfIdentity[] =
+	{
+		cos(t),sin(t),0.0f,0.0f,
+		-sin(t),cos(t),0.0f,0.0f,
+		0.0f,0.0f,1.0f,0.0f,
+		0.0f,0.0f,0.0f,1.0f
+	};
+
 		// Then passes the matrix to that variable
 		glUniformMatrix4fv( i32Location, 1, GL_FALSE, pfIdentity);
 
@@ -473,7 +483,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 			This function allows the use of other primitive types : triangle strips, lines, ...
 			For indexed geometry, use the function glDrawElements() with an index list.
 		*/
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_LINE_LOOP, 0, 4);
 
 		/*
 			Swap Buffers.
