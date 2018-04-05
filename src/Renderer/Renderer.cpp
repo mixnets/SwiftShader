@@ -1900,7 +1900,41 @@ namespace sw
 					}
 				}
 
-				return setupRoutine(&primitive, &triangle, &polygon, &data);
+				bool visible = setupRoutine(&primitive, &triangle, &polygon, &data);
+
+				if(visible)
+				{
+			int y1 = dy > 0 ? primitive.yMax - 1 : primitive.yMin;
+
+					if(abs(dx) > abs(dy))   // x-major
+					{
+						
+
+						if(dx > 0)
+						{
+							primitive.outline[y1].right -= 1;  // 2
+						}
+						else
+						{
+							primitive.outline[y1].left++;   // 4
+						}
+					}
+					else   // y-major
+					{
+						if(dy > 0)
+						{
+						//	primitive.yMax -= 1;   // 1
+							primitive.outline[y1].right = primitive.outline[y1].left;
+						}
+						else
+						{
+						//	primitive.yMin += 1;   // 3
+							primitive.outline[y1].right = primitive.outline[y1].left;
+						}
+					}
+				}
+
+				return visible;
 			}
 		}
 
