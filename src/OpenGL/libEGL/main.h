@@ -57,6 +57,8 @@ namespace egl
 	void setCurrentReadSurface(Surface *surface);
 	Surface *getCurrentReadSurface();
 
+	void releaseCurrent(void *storage);
+
 	void error(EGLint errorCode);
 
 	template<class T>

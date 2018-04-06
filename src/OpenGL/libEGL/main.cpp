@@ -45,7 +45,7 @@ Current *attachThread()
 
 	if(currentTLS == TLS_OUT_OF_INDEXES)
 	{
-		currentTLS = sw::Thread::allocateLocalStorageKey();
+		currentTLS = sw::Thread::allocateLocalStorageKey(releaseCurrent);
 	}
 
 	Current *current = (Current*)sw::Thread::allocateLocalStorage(currentTLS, sizeof(Current));
@@ -274,6 +274,27 @@ egl::Surface *getCurrentReadSurface()
 	Current *current = getCurrent();
 
 	return current->readSurface;
+}
+
+void releaseCurrent(void *storage)
+{
+	if(storage)
+	{
+		Current *current = (Current *)storage;
+		if(current->drawSurface)
+		{
+			current->drawSurface->release();
+		}
+		if(current->readSurface)
+		{
+			current->readSurface->release();
+		}
+		if(current->context)
+		{
+			current->context->release();
+		}
+	}
+	free(storage);
 }
 
 void error(EGLint errorCode)
