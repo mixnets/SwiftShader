@@ -39,13 +39,18 @@ static sw::Thread::LocalStorageKey currentTLS = TLS_OUT_OF_INDEXES;
 
 namespace egl
 {
+void releaseCurrent(void*)
+{
+	detachThread();
+}
+
 Current *attachThread()
 {
 	TRACE("()");
 
 	if(currentTLS == TLS_OUT_OF_INDEXES)
 	{
-		currentTLS = sw::Thread::allocateLocalStorageKey();
+		currentTLS = sw::Thread::allocateLocalStorageKey(releaseCurrent);
 	}
 
 	Current *current = (Current*)sw::Thread::allocateLocalStorage(currentTLS, sizeof(Current));
