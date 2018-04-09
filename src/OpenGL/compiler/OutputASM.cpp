@@ -3031,7 +3031,14 @@ namespace glsl
 
 	int OutputASM::temporaryRegister(TIntermTyped *temporary)
 	{
-		return allocate(temporaries, temporary);
+		int index = allocate(temporaries, temporary);
+		if(index >= 4096) // Must match size of 'r' in Shader/VertexProgram.hpp
+		{
+			mContext.error(temporary->getLine(),
+				"Too many temporary registers required to compile shader",
+				pixelShader ? "pixel shader" : "vertex shader");
+		}
+		return index;
 	}
 
 	void OutputASM::setPixelShaderInputs(const TType& type, int var, bool flat)
