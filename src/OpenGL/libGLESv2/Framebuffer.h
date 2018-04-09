@@ -80,7 +80,7 @@ public:
 	GLenum completeness(int &width, int &height, int &samples);
 
 	GLenum getImplementationColorReadFormat() const;
-	GLenum getImplementationColorReadType() const;
+	GLenum getImplementationColorReadType(int clientVersion) const;
 	GLenum getDepthReadFormat() const;
 	GLenum getDepthReadType() const;
 

@@ -806,7 +806,7 @@ namespace es2
 		{
 		default:
 			implementationReadFormat = framebuffer->getImplementationColorReadFormat();
-			implementationReadType = framebuffer->getImplementationColorReadType();
+			implementationReadType = framebuffer->getImplementationColorReadType(clientVersion);
 			break;
 		case GL_DEPTH_COMPONENT:
 			implementationReadFormat = framebuffer->getDepthReadFormat();

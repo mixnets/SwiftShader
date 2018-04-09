@@ -2010,7 +2010,7 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 			Framebuffer *framebuffer = getReadFramebuffer();
 			if(framebuffer)
 			{
-				*params = framebuffer->getImplementationColorReadType();
+				*params = framebuffer->getImplementationColorReadType(clientVersion);
 			}
 			else
 			{
