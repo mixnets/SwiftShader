@@ -396,6 +396,11 @@ namespace sw
 			ANALYSIS_LEAVE    = 0x00000008,
 		};
 
+		enum
+		{
+			NUM_TEMPORARY_REGISTERS = 4096
+		};
+
 		struct Relative
 		{
 			ParameterType type : 8;
