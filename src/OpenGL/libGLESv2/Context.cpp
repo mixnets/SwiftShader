@@ -3491,7 +3491,7 @@ void Context::clearDepthBuffer(const GLfloat value)
 				clearRect.clip(mState.scissorX, mState.scissorY, mState.scissorX + mState.scissorWidth, mState.scissorY + mState.scissorHeight);
 			}
 
-			depthbuffer->clearDepth(depth, clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
+			depthbuffer->clearDepth(depth, clearRect.x0.get(), clearRect.y0.get(), clearRect.width().get(), clearRect.height().get());
 
 			depthbuffer->release();
 		}
@@ -3519,7 +3519,7 @@ void Context::clearStencilBuffer(const GLint value)
 				clearRect.clip(mState.scissorX, mState.scissorY, mState.scissorX + mState.scissorWidth, mState.scissorY + mState.scissorHeight);
 			}
 
-			stencilbuffer->clearStencil(stencil, static_cast<unsigned char>(mState.stencilWritemask), clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
+			stencilbuffer->clearStencil(stencil, static_cast<unsigned char>(mState.stencilWritemask), clearRect.x0.get(), clearRect.y0.get(), clearRect.width().get(), clearRect.height().get());
 
 			stencilbuffer->release();
 		}
@@ -3675,7 +3675,7 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 
 void Context::blit(sw::Surface *source, const sw::SliceRect &sRect, sw::Surface *dest, const sw::SliceRect &dRect)
 {
-	sw::SliceRectF sRectF((float)sRect.x0, (float)sRect.y0, (float)sRect.x1, (float)sRect.y1, sRect.slice);
+	sw::SliceRectF sRectF((float)sRect.x0.get(), (float)sRect.y0.get(), (float)sRect.x1.get(), (float)sRect.y1.get(), sRect.slice);
 	device->blit(source, sRectF, dest, dRect, false);
 }
 
@@ -4052,8 +4052,8 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 		destRect.y1 = dstY0;
 	}
 
-	sw::RectF sourceScissoredRect(static_cast<float>(sourceRect.x0), static_cast<float>(sourceRect.y0),
-	                              static_cast<float>(sourceRect.x1), static_cast<float>(sourceRect.y1));
+	sw::RectF sourceScissoredRect(static_cast<float>(sourceRect.x0.get()), static_cast<float>(sourceRect.y0.get()),
+	                              static_cast<float>(sourceRect.x1.get()), static_cast<float>(sourceRect.y1.get()));
 	sw::Rect destScissoredRect = destRect;
 
 	if(mState.scissorTestEnabled)   // Only write to parts of the destination framebuffer which pass the scissor test

@@ -88,7 +88,7 @@ void TType::buildMangledName(TString& mangledName)
 	}
 	if (isArray()) {
 		char buf[20];
-		snprintf(buf, sizeof(buf), "%d", arraySize);
+		snprintf(buf, sizeof(buf), "%d", arraySize.get());
 		mangledName += '[';
 		mangledName += buf;
 		mangledName += ']';

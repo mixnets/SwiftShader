@@ -435,12 +435,12 @@ namespace D3D9
 			if(flags & D3DCLEAR_ZBUFFER)
 			{
 				z = sw::clamp01(z);
-				depthStencil->clearDepth(z, clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
+				depthStencil->clearDepth(z, clearRect.x0.get(), clearRect.y0.get(), clearRect.width().get(), clearRect.height().get());
 			}
 
 			if(flags & D3DCLEAR_STENCIL)
 			{
-				depthStencil->clearStencil(stencil, 0xFF, clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
+				depthStencil->clearStencil(stencil, 0xFF, clearRect.x0.get(), clearRect.y0.get(), clearRect.width().get(), clearRect.height().get());
 			}
 		}
 
@@ -6293,8 +6293,8 @@ namespace D3D9
 		}
 		else if(!scaling && equalFormats)
 		{
-			unsigned char *sourceBytes = (unsigned char*)source->lockInternal(sRect.x0, sRect.y0, 0, sw::LOCK_READONLY, sw::PUBLIC);
-			unsigned char *destBytes = (unsigned char*)dest->lockInternal(dRect.x0, dRect.y0, 0, sw::LOCK_READWRITE, sw::PUBLIC);
+			unsigned char *sourceBytes = (unsigned char*)source->lockInternal(sRect.x0.get(), sRect.y0.get(), 0, sw::LOCK_READONLY, sw::PUBLIC);
+			unsigned char *destBytes = (unsigned char*)dest->lockInternal(dRect.x0.get(), dRect.y0.get(), 0, sw::LOCK_READWRITE, sw::PUBLIC);
 			unsigned int sourcePitch = source->getInternalPitchB();
 			unsigned int destPitch = dest->getInternalPitchB();
 
@@ -6323,7 +6323,7 @@ namespace D3D9
 		}
 		else
 		{
-			sw::SliceRectF sRectF((float)sRect.x0, (float)sRect.y0, (float)sRect.x1, (float)sRect.y1, 0);
+			sw::SliceRectF sRectF((float)sRect.x0.get(), (float)sRect.y0.get(), (float)sRect.x1.get(), (float)sRect.y1.get(), 0);
 			renderer->blit(source, sRectF, dest, dRect, filter >= D3DTEXF_LINEAR);
 		}
 	}

@@ -23,6 +23,8 @@
 	#include <intrin.h>
 #endif
 
+#include <limits.h>
+
 namespace sw
 {
 	using std::abs;
@@ -373,6 +375,355 @@ namespace sw
 	{
 		return static_cast<int>(min(x, 0x7FFFFFFFu));
 	}
+
+	class SafeInt {
+	public:
+		SafeInt(int si) { si_a = si; }
+
+		inline signed int get() const { return si_a; }
+
+		inline signed int operator+(const SafeInt& si) const
+		{
+			return operator+(si.si_a);
+		}
+
+		inline signed int operator+(signed int si_b) const
+		{
+			if((si_b > 0) && (si_a > (INT_MAX - si_b)))
+			{
+				return INT_MAX;
+			}
+			else if((si_b < 0) && (si_a < (INT_MIN - si_b)))
+			{
+				return INT_MIN;
+			}
+			else
+			{
+				return si_a + si_b;
+			}
+		}
+
+		inline signed int operator+=(const SafeInt& si)
+		{
+			return operator+=(si.si_a);
+		}
+
+		inline signed int operator+=(signed int si_b)
+		{
+			si_a = operator+(si_b);
+			return si_a;
+		}
+
+		inline signed int operator-(const SafeInt& si) const
+		{
+			return operator-(si.si_a);
+		}
+
+		inline signed int operator-(signed int si_b) const
+		{
+			if(si_b > 0 && si_a < INT_MIN + si_b)
+			{
+				return INT_MIN;
+			}
+			else if(si_b < 0 && si_a > INT_MAX + si_b)
+			{
+				return INT_MAX;
+			}
+			else
+			{
+				return si_a - si_b;
+			}
+		}
+
+		inline signed int operator-=(const SafeInt& si)
+		{
+			return operator-=(si.si_a);
+		}
+
+		inline signed int operator-=(signed int si_b)
+		{
+			si_a = operator-(si_b);
+			return si_a;
+		}
+
+		inline signed int operator*(const SafeInt& si) const
+		{
+			return operator*(si.si_a);
+		}
+
+		inline signed int operator*(signed int si_b) const
+		{
+			signed long long tmp = (signed long long)si_a * (signed long long)si_b;
+			if(tmp > INT_MAX)
+			{
+				return INT_MAX;
+			}
+			else if(tmp < INT_MIN)
+			{
+				return INT_MIN;
+			}
+			else
+			{
+				return (signed int)tmp;
+			}
+		}
+
+		inline signed int operator*=(const SafeInt& si)
+		{
+			return operator*=(si.si_a);
+		}
+
+		inline signed int operator*=(signed int si_b)
+		{
+			si_a = operator*(si_b);
+			return si_a;
+		}
+
+		inline signed int operator/(const SafeInt& si) const
+		{
+			return operator/(si.si_a);
+		}
+
+		inline signed int operator/(signed int si_b) const
+		{
+			if((si_b == 0) || ((si_a == INT_MIN) && (si_b == -1)))
+			{
+				return INT_MAX;
+			}
+			else
+			{
+				return si_a / si_b;
+			}
+		}
+
+		inline signed int operator/=(const SafeInt& si)
+		{
+			return operator/=(si.si_a);
+		}
+
+		inline signed int operator/=(signed int si_b)
+		{
+			si_a = operator/(si_b);
+			return si_a;
+		}
+
+		inline signed int operator%(const SafeInt& si) const
+		{
+			return operator%(si.si_a);
+		}
+
+		inline signed int operator%(signed int si_b) const
+		{
+			if((si_b == 0) || ((si_a == INT_MIN) && (si_b == -1)))
+			{
+				return INT_MAX;
+			}
+			else
+			{
+				return si_a % si_b;
+			}
+		}
+
+		inline signed int operator%=(const SafeInt& si)
+		{
+			return operator%=(si.si_a);
+		}
+
+		inline signed int operator%=(signed int si_b)
+		{
+			si_a = operator%(si_b);
+			return si_a;
+		}
+
+		inline signed int operator<<(const SafeInt& si) const
+		{
+			return operator<<(si.si_a);
+		}
+
+		inline signed int operator<<(signed int si_b) const
+		{
+			if((si_a < 0) || (si_b < 0) ||
+			   (si_b >= std::numeric_limits<signed int>::digits) ||
+			   (si_a > (INT_MAX >> si_b)))
+			{
+				return 0;
+			}
+			else
+			{
+				return si_a << si_b;
+			}
+		}
+
+		inline signed int operator<<=(const SafeInt& si)
+		{
+			return operator<<=(si.si_a);
+		}
+
+		inline signed int operator<<=(signed int si_b)
+		{
+			si_a = operator<<(si_b);
+			return si_a;
+		}
+
+		inline signed int operator>>(const SafeInt& si) const
+		{
+			return operator>>(si.si_a);
+		}
+
+		inline signed int operator>>(signed int si_b) const
+		{
+			return si_a >> si_b;
+		}
+
+		inline signed int operator>>=(const SafeInt& si)
+		{
+			return operator>>=(si.si_a);
+		}
+
+		inline signed int operator>>=(signed int si_b)
+		{
+			si_a = operator>>(si_b);
+			return si_a;
+		}
+
+		inline signed int operator-() const
+		{
+			if(si_a == INT_MIN)
+			{
+				return INT_MAX;
+			}
+			else
+			{
+				return -si_a;
+			}
+		}
+
+		inline signed int operator&(const SafeInt& si) const
+		{
+			return operator&(si.si_a);
+		}
+
+		inline signed int operator&(signed int si_b) const
+		{
+			return si_a & si_b;
+		}
+
+		inline signed int operator&=(const SafeInt& si)
+		{
+			return operator&=(si.si_a);
+		}
+
+		inline signed int operator&=(signed int si_b)
+		{
+			si_a = operator&(si_b);
+			return si_a;
+		}
+
+		inline signed int operator|(const SafeInt& si) const
+		{
+			return operator|(si.si_a);
+		}
+
+		inline signed int operator|(signed int si_b) const
+		{
+			return si_a | si_b;
+		}
+
+		inline signed int operator|=(const SafeInt& si)
+		{
+			return operator|(si.si_a);
+		}
+
+		inline signed int operator|=(signed int si_b)
+		{
+			si_a = operator|(si_b);
+			return si_a;
+		}
+
+		inline signed int operator^(const SafeInt& si) const
+		{
+			return operator^(si.si_a);
+		}
+		
+		inline signed int operator^(signed int si_b) const
+		{
+			return si_a ^ si_b;
+		}
+
+		inline signed int operator^=(const SafeInt& si)
+		{
+			return operator^=(si.si_a);
+		}
+
+		inline signed int operator^=(signed int si_b)
+		{
+			si_a = operator^(si_b);
+			return si_a;
+		}
+
+		inline signed int operator>(const SafeInt& si) const
+		{
+			return operator>(si.si_a);
+		}
+		
+		inline signed int operator>(signed int si_b) const
+		{
+			return si_a > si_b;
+		}
+
+		inline signed int operator>=(const SafeInt& si) const
+		{
+			return operator>=(si.si_a);
+		}
+		
+		inline signed int operator>=(signed int si_b) const
+		{
+			return si_a >= si_b;
+		}
+
+		inline signed int operator<(const SafeInt& si) const
+		{
+			return operator<(si.si_a);
+		}
+		
+		inline signed int operator<(signed int si_b) const
+		{
+			return si_a < si_b;
+		}
+
+		inline signed int operator<=(const SafeInt& si) const
+		{
+			return operator<=(si.si_a);
+		}
+		
+		inline signed int operator<=(signed int si_b) const
+		{
+			return si_a <= si_b;
+		}
+
+		inline signed int operator==(const SafeInt& si) const
+		{
+			return operator==(si.si_a);
+		}
+		
+		inline signed int operator==(signed int si_b) const
+		{
+			return si_a == si_b;
+		}
+
+		inline signed int operator!=(const SafeInt& si) const
+		{
+			return operator!=(si.si_a);
+		}
+		
+		inline signed int operator!=(signed int si_b) const
+		{
+			return si_a != si_b;
+		}
+
+	private:
+		signed int si_a;
+	};
 }
 
 #endif   // sw_Math_hpp

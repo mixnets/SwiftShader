@@ -382,10 +382,10 @@ bool Texture::copy(egl::Image *source, const sw::SliceRect &sourceRect, GLint xo
 	Device *device = getDevice();
 
 	sw::SliceRect destRect(xoffset, yoffset, xoffset + (sourceRect.x1 - sourceRect.x0), yoffset + (sourceRect.y1 - sourceRect.y0), zoffset);
-	sw::SliceRectF sourceRectF(static_cast<float>(sourceRect.x0),
-	                           static_cast<float>(sourceRect.y0),
-	                           static_cast<float>(sourceRect.x1),
-	                           static_cast<float>(sourceRect.y1),
+	sw::SliceRectF sourceRectF(static_cast<float>(sourceRect.x0.get()),
+	                           static_cast<float>(sourceRect.y0.get()),
+	                           static_cast<float>(sourceRect.x1.get()),
+	                           static_cast<float>(sourceRect.y1.get()),
 	                           sourceRect.slice);
 	bool success = device->stretchRect(source, &sourceRectF, dest, &destRect, Device::ALL_BUFFERS);
 

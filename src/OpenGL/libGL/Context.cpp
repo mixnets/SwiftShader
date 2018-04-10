@@ -2202,7 +2202,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 	sw::Rect rect = {x, y, x + width, y + height};
 	rect.clip(0, 0, renderTarget->getWidth(), renderTarget->getHeight());
 
-	unsigned char *source = (unsigned char*)renderTarget->lock(rect.x0, rect.y0, sw::LOCK_READONLY);
+	unsigned char *source = (unsigned char*)renderTarget->lock(rect.x0.get(), rect.y0.get(), sw::LOCK_READONLY);
 	unsigned char *dest = (unsigned char*)pixels;
 	unsigned short *dest16 = (unsigned short*)pixels;
 	int inputPitch = (int)renderTarget->getPitch();
@@ -2823,7 +2823,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 	{
 		if(destRect.x0 < mState.scissorX)
 		{
-			int xDiff = mState.scissorX - destRect.x0;
+			int xDiff = -destRect.x0 + mState.scissorX ;
 			destScissoredRect.x0 = mState.scissorX;
 			sourceScissoredRect.x0 += xDiff;
 		}
@@ -2837,7 +2837,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
 		if(destRect.y0 < mState.scissorY)
 		{
-			int yDiff = mState.scissorY - destRect.y0;
+			int yDiff = -destRect.y0 + mState.scissorY;
 			destScissoredRect.y0 = mState.scissorY;
 			sourceScissoredRect.y0 += yDiff;
 		}
@@ -2857,7 +2857,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 	// the actual draw and read surfaces.
 	if(sourceTrimmedRect.x0 < 0)
 	{
-		int xDiff = 0 - sourceTrimmedRect.x0;
+		int xDiff = -sourceTrimmedRect.x0;
 		sourceTrimmedRect.x0 = 0;
 		destTrimmedRect.x0 += xDiff;
 	}
@@ -2871,7 +2871,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
 	if(sourceTrimmedRect.y0 < 0)
 	{
-		int yDiff = 0 - sourceTrimmedRect.y0;
+		int yDiff = -sourceTrimmedRect.y0;
 		sourceTrimmedRect.y0 = 0;
 		destTrimmedRect.y0 += yDiff;
 	}
@@ -2885,7 +2885,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
 	if(destTrimmedRect.x0 < 0)
 	{
-		int xDiff = 0 - destTrimmedRect.x0;
+		int xDiff = -destTrimmedRect.x0;
 		destTrimmedRect.x0 = 0;
 		sourceTrimmedRect.x0 += xDiff;
 	}
@@ -2899,7 +2899,7 @@ void Context::blitFramebuffer(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1
 
 	if(destTrimmedRect.y0 < 0)
 	{
-		int yDiff = 0 - destTrimmedRect.y0;
+		int yDiff = -destTrimmedRect.y0;
 		destTrimmedRect.y0 = 0;
 		sourceTrimmedRect.y0 += yDiff;
 	}

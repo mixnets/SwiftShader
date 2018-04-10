@@ -638,10 +638,10 @@ namespace sw
 
 			// Scissor
 			{
-				data->scissorX0 = scissor.x0;
-				data->scissorX1 = scissor.x1;
-				data->scissorY0 = scissor.y0;
-				data->scissorY1 = scissor.y1;
+				data->scissorX0 = scissor.x0.get();
+				data->scissorX1 = scissor.x1.get();
+				data->scissorY0 = scissor.y0.get();
+				data->scissorY1 = scissor.y1.get();
 			}
 
 			draw->primitive = 0;

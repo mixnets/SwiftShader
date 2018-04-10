@@ -80,12 +80,12 @@ namespace sw
 	{
 		copy(source);
 
-		int sourceLeft = sourceRect ? sourceRect->x0 : 0;
-		int sourceTop = sourceRect ? sourceRect->y0 : 0;
+		int sourceLeft = sourceRect ? sourceRect->x0.get() : 0;
+		int sourceTop = sourceRect ? sourceRect->y0.get() : 0;
 		int sourceWidth = sourceRect ? sourceRect->x1 - sourceRect->x0 : width;
 		int sourceHeight = sourceRect ? sourceRect->y1 - sourceRect->y0 : height;
-		int destLeft = destRect ? destRect->x0 : 0;
-		int destTop = destRect ? destRect->y0 : 0;
+		int destLeft = destRect ? destRect->x0.get() : 0;
+		int destTop = destRect ? destRect->y0.get() : 0;
 		int destWidth = destRect ? destRect->x1 - destRect->x0 : bounds.right - bounds.left;
 		int destHeight = destRect ? destRect->y1 - destRect->y0 : bounds.bottom - bounds.top;
 

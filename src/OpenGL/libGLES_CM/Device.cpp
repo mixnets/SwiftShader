@@ -197,7 +197,7 @@ namespace es1
 			clearRect.clip(scissorRect.x0, scissorRect.y0, scissorRect.x1, scissorRect.y1);
 		}
 
-		depthBuffer->clearDepth(z, clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
+		depthBuffer->clearDepth(z, clearRect.x0.get(), clearRect.y0.get(), clearRect.width().get(), clearRect.height().get());
 	}
 
 	void Device::clearStencil(unsigned int stencil, unsigned int mask)
@@ -214,7 +214,7 @@ namespace es1
 			clearRect.clip(scissorRect.x0, scissorRect.y0, scissorRect.x1, scissorRect.y1);
 		}
 
-		stencilBuffer->clearStencil(stencil, mask, clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
+		stencilBuffer->clearStencil(stencil, mask, clearRect.x0.get(), clearRect.y0.get(), clearRect.width().get(), clearRect.height().get());
 	}
 
 	void Device::drawIndexedPrimitive(sw::DrawType type, unsigned int indexOffset, unsigned int primitiveCount)
@@ -413,8 +413,8 @@ namespace es1
 		}
 		else if(!scaling && equalFormats)
 		{
-			unsigned char *sourceBytes = (unsigned char*)source->lockInternal(sRect.x0, sRect.y0, sRect.slice, LOCK_READONLY, PUBLIC);
-			unsigned char *destBytes = (unsigned char*)dest->lockInternal(dRect.x0, dRect.y0, dRect.slice, LOCK_READWRITE, PUBLIC);
+			unsigned char *sourceBytes = (unsigned char*)source->lockInternal(sRect.x0.get(), sRect.y0.get(), sRect.slice, LOCK_READONLY, PUBLIC);
+			unsigned char *destBytes = (unsigned char*)dest->lockInternal(dRect.x0.get(), dRect.y0.get(), dRect.slice, LOCK_READWRITE, PUBLIC);
 			unsigned int sourcePitch = source->getInternalPitchB();
 			unsigned int destPitch = dest->getInternalPitchB();
 
@@ -443,7 +443,7 @@ namespace es1
 		}
 		else
 		{
-			sw::SliceRectF sRectF((float)sRect.x0, (float)sRect.y0, (float)sRect.x1, (float)sRect.y1, sRect.slice);
+			sw::SliceRectF sRectF((float)sRect.x0.get(), (float)sRect.y0.get(), (float)sRect.x1.get(), (float)sRect.y1.get(), sRect.slice);
 			blit(source, sRectF, dest, dRect, scaling && filter);
 		}
 
@@ -492,26 +492,26 @@ namespace es1
 
 			if(renderTarget)
 			{
-				scissor.x0 = max(scissor.x0, 0);
-				scissor.x1 = min(scissor.x1, renderTarget->getWidth());
-				scissor.y0 = max(scissor.y0, 0);
-				scissor.y1 = min(scissor.y1, renderTarget->getHeight());
+				scissor.x0 = max(scissor.x0.get(), 0);
+				scissor.x1 = min(scissor.x1.get(), renderTarget->getWidth());
+				scissor.y0 = max(scissor.y0.get(), 0);
+				scissor.y1 = min(scissor.y1.get(), renderTarget->getHeight());
 			}
 
 			if(depthBuffer)
 			{
-				scissor.x0 = max(scissor.x0, 0);
-				scissor.x1 = min(scissor.x1, depthBuffer->getWidth());
-				scissor.y0 = max(scissor.y0, 0);
-				scissor.y1 = min(scissor.y1, depthBuffer->getHeight());
+				scissor.x0 = max(scissor.x0.get(), 0);
+				scissor.x1 = min(scissor.x1.get(), depthBuffer->getWidth());
+				scissor.y0 = max(scissor.y0.get(), 0);
+				scissor.y1 = min(scissor.y1.get(), depthBuffer->getHeight());
 			}
 
 			if(stencilBuffer)
 			{
-				scissor.x0 = max(scissor.x0, 0);
-				scissor.x1 = min(scissor.x1, stencilBuffer->getWidth());
-				scissor.y0 = max(scissor.y0, 0);
-				scissor.y1 = min(scissor.y1, stencilBuffer->getHeight());
+				scissor.x0 = max(scissor.x0.get(), 0);
+				scissor.x1 = min(scissor.x1.get(), stencilBuffer->getWidth());
+				scissor.y0 = max(scissor.y0.get(), 0);
+				scissor.y1 = min(scissor.y1.get(), stencilBuffer->getHeight());
 			}
 
 			setScissor(scissor);

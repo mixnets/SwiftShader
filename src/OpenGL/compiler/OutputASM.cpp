@@ -2613,7 +2613,7 @@ namespace glsl
 			{
 			case EOpIndexDirect:
 				{
-					int rightIndex = right->getAsConstantUnion()->getIConst(0);
+					sw::SafeInt rightIndex = right->getAsConstantUnion()->getIConst(0);
 
 					if(left->isRegister())
 					{
@@ -2625,7 +2625,7 @@ namespace glsl
 							mask = mask << 1;
 						}
 
-						int element = swizzleElement(leftSwizzle, rightIndex);
+						int element = swizzleElement(leftSwizzle, rightIndex.get());
 						mask = 1 << element;
 
 						return element;
@@ -2710,14 +2710,14 @@ namespace glsl
 					                           left->getType().getStruct()->fields() :
 					                           left->getType().getInterfaceBlock()->fields();
 					int index = right->getAsConstantUnion()->getIConst(0);
-					int fieldOffset = 0;
+					sw::SafeInt fieldOffset(0);
 
 					for(int i = 0; i < index; i++)
 					{
 						fieldOffset += fields[i]->type()->totalRegisterCount();
 					}
 
-					offset += fieldOffset;
+					offset = fieldOffset + offset;
 					mask = writeMask(result);
 
 					return 0xE4;
@@ -3039,11 +3039,11 @@ namespace glsl
 		if(type.isStruct())
 		{
 			const TFieldList &fields = type.getStruct()->fields();
-			int fieldVar = var;
+			sw::SafeInt fieldVar(var);
 			for(const auto &field : fields)
 			{
 				const TType& fieldType = *(field->type());
-				setPixelShaderInputs(fieldType, fieldVar, flat);
+				setPixelShaderInputs(fieldType, fieldVar.get(), flat);
 				fieldVar += fieldType.totalRegisterCount();
 			}
 		}
@@ -3058,12 +3058,12 @@ namespace glsl
 
 	int OutputASM::varyingRegister(TIntermTyped *varying)
 	{
-		int var = lookup(varyings, varying);
+		sw::SafeInt var = lookup(varyings, varying);
 
 		if(var == -1)
 		{
 			var = allocate(varyings, varying);
-			int registerCount = varying->totalRegisterCount();
+			sw::SafeInt registerCount = varying->totalRegisterCount();
 
 			if(pixelShader)
 			{
@@ -3076,11 +3076,11 @@ namespace glsl
 				if(varying->getQualifier() == EvqPointCoord)
 				{
 					ASSERT(varying->isRegister());
-					pixelShader->setInput(var, varying->registerSize(), sw::Shader::Semantic(sw::Shader::USAGE_TEXCOORD, var));
+					pixelShader->setInput(var.get(), varying->registerSize(), sw::Shader::Semantic(sw::Shader::USAGE_TEXCOORD, var.get()));
 				}
 				else
 				{
-					setPixelShaderInputs(varying->getType(), var, hasFlatQualifier(varying));
+					setPixelShaderInputs(varying->getType(), var.get(), hasFlatQualifier(varying));
 				}
 			}
 			else if(vertexShader)
@@ -3094,12 +3094,12 @@ namespace glsl
 				if(varying->getQualifier() == EvqPosition)
 				{
 					ASSERT(varying->isRegister());
-					vertexShader->setPositionRegister(var);
+					vertexShader->setPositionRegister(var.get());
 				}
 				else if(varying->getQualifier() == EvqPointSize)
 				{
 					ASSERT(varying->isRegister());
-					vertexShader->setPointSizeRegister(var);
+					vertexShader->setPointSizeRegister(var.get());
 				}
 				else
 				{
@@ -3108,10 +3108,10 @@ namespace glsl
 			}
 			else UNREACHABLE(0);
 
-			declareVarying(varying, var);
+			declareVarying(varying, var.get());
 		}
 
-		return var;
+		return var.get();
 	}
 
 	void OutputASM::declareVarying(TIntermTyped *varying, int reg)
@@ -3131,13 +3131,13 @@ namespace glsl
 		TStructure* structure = type.getStruct();
 		if(structure)
 		{
-			int fieldRegisterIndex = registerIndex;
+			sw::SafeInt fieldRegisterIndex = registerIndex;
 
 			const TFieldList &fields = type.getStruct()->fields();
 			for(const auto &field : fields)
 			{
 				const TType& fieldType = *(field->type());
-				declareVarying(fieldType, varyingName + "." + field->name(), fieldRegisterIndex);
+				declareVarying(fieldType, varyingName + "." + field->name(), fieldRegisterIndex.get());
 				if(fieldRegisterIndex >= 0)
 				{
 					fieldRegisterIndex += fieldType.totalRegisterCount();
@@ -3167,8 +3167,8 @@ namespace glsl
 
 	void OutputASM::declareFragmentOutput(TIntermTyped *fragmentOutput)
 	{
-		int requestedLocation = fragmentOutput->getType().getLayoutQualifier().location;
-		int registerCount = fragmentOutput->totalRegisterCount();
+		sw::SafeInt requestedLocation = fragmentOutput->getType().getLayoutQualifier().location;
+		sw::SafeInt registerCount = fragmentOutput->totalRegisterCount();
 		if(requestedLocation < 0)
 		{
 			ASSERT(requestedLocation == -1); // All other negative values would have been prevented in TParseContext::parseLayoutQualifier
@@ -3189,20 +3189,20 @@ namespace glsl
 				}
 				else
 				{
-					if(fragmentOutputs.size() <= (size_t)requestedLocation)
+					if(fragmentOutputs.size() <= (size_t)requestedLocation.get())
 					{
-						while(fragmentOutputs.size() < (size_t)requestedLocation)
+						while(fragmentOutputs.size() < (size_t)requestedLocation.get())
 						{
 							fragmentOutputs.push_back(nullptr);
 						}
-						for(int i = 0; i < registerCount; i++)
+						for(int i = 0; i < registerCount.get(); i++)
 						{
 							fragmentOutputs.push_back(fragmentOutput);
 						}
 					}
 					else
 					{
-						for(int i = 0; i < registerCount; i++)
+						for(int i = 0; i < registerCount.get(); i++)
 						{
 							if(!fragmentOutputs[requestedLocation + i])
 							{
@@ -3275,7 +3275,7 @@ namespace glsl
 			{
 				index = allocate(attributes, attribute);
 				const TType &type = attribute->getType();
-				int registerCount = attribute->totalRegisterCount();
+				sw::SafeInt registerCount = attribute->totalRegisterCount();
 				sw::VertexShader::AttribType attribType = sw::VertexShader::ATTRIBTYPE_FLOAT;
 				switch(type.getBasicType())
 				{
@@ -3290,9 +3290,9 @@ namespace glsl
 					break;
 				}
 
-				if(vertexShader && (index + registerCount) <= sw::MAX_VERTEX_INPUTS)
+				if(vertexShader && (registerCount + index) <= sw::MAX_VERTEX_INPUTS)
 				{
-					for(int i = 0; i < registerCount; i++)
+					for(int i = 0; i < registerCount.get(); i++)
 					{
 						vertexShader->setInput(index + i, sw::Shader::Semantic(sw::Shader::USAGE_TEXCOORD, index + i, false), attribType);
 					}
@@ -3545,7 +3545,7 @@ namespace glsl
 			ActiveUniformBlocks &activeUniformBlocks = shaderObject->activeUniformBlocks;
 			const TFieldList& fields = block->fields();
 			const TString &blockName = block->name();
-			int fieldRegisterIndex = registerIndex;
+			sw::SafeInt fieldRegisterIndex = registerIndex;
 
 			if(!type.isInterfaceBlock())
 			{
@@ -3560,14 +3560,14 @@ namespace glsl
 							const TString &fieldName = fields[j]->name();
 							if(fieldName == name)
 							{
-								return fieldRegisterIndex;
+								return fieldRegisterIndex.get();
 							}
 
 							fieldRegisterIndex += fields[j]->type()->totalRegisterCount();
 						}
 
 						ASSERT(false);
-						return fieldRegisterIndex;
+						return fieldRegisterIndex.get();
 					}
 				}
 			}
@@ -3609,7 +3609,7 @@ namespace glsl
 			ActiveUniformBlocks &activeUniformBlocks = shaderObject->activeUniformBlocks;
 			const TFieldList& fields = block->fields();
 			const TString &blockName = block->name();
-			int fieldRegisterIndex = registerIndex;
+			sw::SafeInt fieldRegisterIndex = registerIndex;
 			bool isUniformBlockMember = !type.isInterfaceBlock() && (blockId == -1);
 
 			blockId = activeUniformBlocks.size();
@@ -3626,12 +3626,12 @@ namespace glsl
 				const TString &fieldName = field->name();
 				if(isUniformBlockMember && (fieldName == name))
 				{
-					registerIndex = fieldRegisterIndex;
+					registerIndex = fieldRegisterIndex.get();
 				}
 
 				const TString uniformName = block->hasInstanceName() ? blockName + "." + fieldName : fieldName;
 
-				declareUniform(fieldType, uniformName, fieldRegisterIndex, samplersOnly, blockId, &currentBlockEncoder);
+				declareUniform(fieldType, uniformName, fieldRegisterIndex.get(), samplersOnly, blockId, &currentBlockEncoder);
 				fieldRegisterIndex += fieldType.totalRegisterCount();
 			}
 			currentBlockEncoder.exitAggregateType();
@@ -3642,7 +3642,7 @@ namespace glsl
 			// Store struct for program link time validation
 			shaderObject->activeUniformStructs.push_back(Uniform(type, name.c_str(), registerIndex, -1, BlockMemberInfo::getDefaultBlockInfo()));
 
-			int fieldRegisterIndex = registerIndex;
+			sw::SafeInt fieldRegisterIndex = registerIndex;
 
 			const TFieldList& fields = structure->fields();
 			if(type.isArray() && (structure || type.isInterfaceBlock()))
@@ -3659,7 +3659,7 @@ namespace glsl
 						const TString &fieldName = field->name();
 						const TString uniformName = name + "[" + str(i) + "]." + fieldName;
 
-						declareUniform(fieldType, uniformName, fieldRegisterIndex, samplersOnly, blockId, encoder);
+						declareUniform(fieldType, uniformName, fieldRegisterIndex.get(), samplersOnly, blockId, encoder);
 						fieldRegisterIndex += samplersOnly ? fieldType.totalSamplerRegisterCount() : fieldType.totalRegisterCount();
 					}
 					if(encoder)
@@ -3680,7 +3680,7 @@ namespace glsl
 					const TString &fieldName = field->name();
 					const TString uniformName = name + "." + fieldName;
 
-					declareUniform(fieldType, uniformName, fieldRegisterIndex, samplersOnly, blockId, encoder);
+					declareUniform(fieldType, uniformName, fieldRegisterIndex.get(), samplersOnly, blockId, encoder);
 					fieldRegisterIndex += samplersOnly ? fieldType.totalSamplerRegisterCount() : fieldType.totalRegisterCount();
 				}
 				if(encoder)

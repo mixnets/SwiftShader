@@ -17,6 +17,7 @@
 
 #include "Color.hpp"
 #include "Main/Config.hpp"
+#include "Common/Math.hpp"
 #include "Common/Resource.hpp"
 
 namespace sw
@@ -25,7 +26,7 @@ namespace sw
 
 	template <typename T> struct RectT
 	{
-		RectT() {}
+		RectT() : x0(0), y0(0), x1(0), y1(0) {}
 		RectT(T x0i, T y0i, T x1i, T y1i) : x0(x0i), y0(y0i), x1(x1i), y1(y1i) {}
 
 		void clip(T minX, T minY, T maxX, T maxY)
@@ -45,7 +46,7 @@ namespace sw
 		T y1;   // Exclusive
 	};
 
-	typedef RectT<int> Rect;
+	typedef RectT<sw::SafeInt> Rect;
 	typedef RectT<float> RectF;
 
 	template<typename T> struct SliceRectT : public RectT<T>
@@ -57,7 +58,7 @@ namespace sw
 		int slice;
 	};
 
-	typedef SliceRectT<int> SliceRect;
+	typedef SliceRectT<sw::SafeInt> SliceRect;
 	typedef SliceRectT<float> SliceRectF;
 
 	enum Format : unsigned char

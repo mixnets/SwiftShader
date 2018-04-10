@@ -18,6 +18,7 @@
 #include "BaseTypes.h"
 #include "Common.h"
 #include "debug.h"
+#include "../../Common/Math.hpp"
 
 #include <algorithm>
 
@@ -339,7 +340,7 @@ public:
 	{
 		if(structure)
 		{
-			int registerCount = 0;
+			sw::SafeInt registerCount(0);
 
 			const TFieldList& fields = isInterfaceBlock() ? interfaceBlock->fields() : structure->fields();
 			for(size_t i = 0; i < fields.size(); i++)
@@ -347,7 +348,7 @@ public:
 				registerCount += fields[i]->type()->totalSamplerRegisterCount();
 			}
 
-			return registerCount;
+			return registerCount.get();
 		}
 
 		return IsSampler(getBasicType()) ? 1 : 0;
@@ -357,7 +358,7 @@ public:
 	{
 		if(structure || isInterfaceBlock())
 		{
-			int registerCount = 0;
+			sw::SafeInt registerCount(0);
 
 			const TFieldList& fields = isInterfaceBlock() ? interfaceBlock->fields() : structure->fields();
 			for(size_t i = 0; i < fields.size(); i++)
@@ -365,7 +366,7 @@ public:
 				registerCount += fields[i]->type()->totalRegisterCount();
 			}
 
-			return registerCount;
+			return registerCount.get();
 		}
 		else if(isMatrix())
 		{
@@ -383,14 +384,14 @@ public:
 		// Otherwise, return the register count of the current TType object
 		if(interfaceBlock && !isInterfaceBlock())
 		{
-			int registerCount = 0;
+			sw::SafeInt registerCount = 0;
 			const TFieldList& fieldList = interfaceBlock->fields();
 			for(size_t i = 0; i < fieldList.size(); i++)
 			{
 				const TType &fieldType = *(fieldList[i]->type());
 				registerCount += fieldType.totalRegisterCount();
 			}
-			return registerCount;
+			return registerCount.get();
 		}
 		return totalRegisterCount();
 	}
@@ -430,7 +431,7 @@ public:
 
 	bool isArray() const  { return array ? true : false; }
 	bool isUnsizedArray() const { return array && arraySize == 0; }
-	int getArraySize() const { return arraySize; }
+	int getArraySize() const { return arraySize.get(); }
 	void setArraySize(int s) { array = true; arraySize = s; }
 	int getMaxArraySize () const { return maxArraySize; }
 	void setMaxArraySize (int s) { maxArraySize = s; }
@@ -537,7 +538,7 @@ protected:
 	unsigned char primarySize = 0;     // size of vector or matrix, not size of array
 	unsigned char secondarySize = 0;   // 1 for vectors, > 1 for matrices
 	bool array = false;
-	int arraySize = 0;
+	sw::SafeInt arraySize;
 	int maxArraySize = 0;
 	TType *arrayInformationType = nullptr;
 

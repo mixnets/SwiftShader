@@ -39,7 +39,7 @@ namespace sw
 		}
 
 		sw::Surface *color = sw::Surface::create(1, 1, 1, format, pixel, sw::Surface::bytes(format), sw::Surface::bytes(format));
-		SliceRectF sRect((float)dRect.x0, (float)dRect.y0, (float)dRect.x1, (float)dRect.y1, 0);
+		SliceRectF sRect((float)dRect.x0.get(), (float)dRect.y0.get(), (float)dRect.x1.get(), (float)dRect.y1.get(), 0);
 		blit(color, sRect, dest, dRect, {rgbaMask});
 		delete color;
 	}
@@ -100,7 +100,7 @@ namespace sw
 		}
 
 		bool useDestInternal = !dest->isExternalDirty();
-		uint8_t *slice = (uint8_t*)dest->lock(dRect.x0, dRect.y0, dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC, useDestInternal);
+		uint8_t *slice = (uint8_t*)dest->lock(dRect.x0.get(), dRect.y0.get(), dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC, useDestInternal);
 
 		for(int j = 0; j < dest->getSamples(); j++)
 		{
@@ -109,14 +109,14 @@ namespace sw
 			switch(Surface::bytes(dest->getFormat()))
 			{
 			case 2:
-				for(int i = dRect.y0; i < dRect.y1; i++)
+				for(int i = dRect.y0.get(); i < dRect.y1.get(); i++)
 				{
 					sw::clear((uint16_t*)d, packed, dRect.x1 - dRect.x0);
 					d += dest->getPitchB(useDestInternal);
 				}
 				break;
 			case 4:
-				for(int i = dRect.y0; i < dRect.y1; i++)
+				for(int i = dRect.y0.get(); i < dRect.y1.get(); i++)
 				{
 					sw::clear((uint32_t*)d, packed, dRect.x1 - dRect.x0);
 					d += dest->getPitchB(useDestInternal);
@@ -164,19 +164,19 @@ namespace sw
 		}
 
 		source->lockInternal((int)sRect.x0, (int)sRect.y0, sRect.slice, sw::LOCK_READONLY, sw::PUBLIC);
-		dest->lockInternal(dRect.x0, dRect.y0, dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC);
+		dest->lockInternal(dRect.x0.get(), dRect.y0.get(), dRect.slice, sw::LOCK_WRITEONLY, sw::PUBLIC);
 
-		float w = sRect.width() / dRect.width();
-		float h = sRect.height() / dRect.height();
+		float w = sRect.width() / dRect.width().get();
+		float h = sRect.height() / dRect.height().get();
 
 		const float xStart = sRect.x0 + 0.5f * w;
 		float y = sRect.y0 + 0.5f * h;
 
-		for(int j = dRect.y0; j < dRect.y1; j++)
+		for(int j = dRect.y0.get(); j < dRect.y1.get(); j++)
 		{
 			float x = xStart;
 
-			for(int i = dRect.x0; i < dRect.x1; i++)
+			for(int i = dRect.x0.get(); i < dRect.x1.get(); i++)
 			{
 				// FIXME: Support RGBA mask
 				dest->copyInternal(source, i, j, x, y, options.filter);
@@ -1454,15 +1454,15 @@ namespace sw
 		data.dPitchB = isStencil ? dest->getStencilPitchB() : dest->getPitchB(useDestInternal);
 		data.dSliceB = isStencil ? dest->getStencilSliceB() : dest->getSliceB(useDestInternal);
 
-		data.w = sRect.width() / dRect.width();
-		data.h = sRect.height() / dRect.height();
+		data.w = sRect.width() / dRect.width().get();
+		data.h = sRect.height() / dRect.height().get();
 		data.x0 = sRect.x0 + 0.5f * data.w;
 		data.y0 = sRect.y0 + 0.5f * data.h;
 
-		data.x0d = dRect.x0;
-		data.x1d = dRect.x1;
-		data.y0d = dRect.y0;
-		data.y1d = dRect.y1;
+		data.x0d = dRect.x0.get();
+		data.x1d = dRect.x1.get();
+		data.y0d = dRect.y0.get();
+		data.y1d = dRect.y1.get();
 
 		data.sWidth = source->getWidth();
 		data.sHeight = source->getHeight();

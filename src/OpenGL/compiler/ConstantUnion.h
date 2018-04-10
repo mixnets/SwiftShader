@@ -21,6 +21,8 @@
 #include "../../Common/DebugAndroid.hpp"
 #endif
 
+#include "../../Common/Math.hpp"
+
 class ConstantUnion {
 public:
 	POOL_ALLOCATOR_NEW_DELETE();
@@ -96,7 +98,7 @@ public:
 	void setFConst(float f) {fConst = f; type = EbtFloat; }
 	void setBConst(bool b) {bConst = b; type = EbtBool; }
 
-	int getIConst() const { return iConst; }
+	int getIConst() const { return iConst.get(); }
 	unsigned int getUConst() const { return uConst; }
 	float getFConst() const { return fConst; }
 	bool getBConst() const { return bConst; }
@@ -117,22 +119,22 @@ public:
 
 	bool operator==(const int i) const
 	{
-		return i == iConst;
+		return iConst == i;
 	}
 
 	bool operator==(const unsigned int u) const
 	{
-		return u == uConst;
+		return uConst == u;
 	}
 
 	bool operator==(const float f) const
 	{
-		return f == fConst;
+		return fConst == f;
 	}
 
 	bool operator==(const bool b) const
 	{
-		return b == bConst;
+		return bConst == b;
 	}
 
 	bool operator==(const ConstantUnion& constant) const
@@ -390,7 +392,7 @@ public:
 private:
 
 	union  {
-		int iConst;  // used for ivec, scalar ints
+		sw::SafeInt iConst;  // used for ivec, scalar ints
 		unsigned int uConst; // used for uvec, scalar uints
 		bool bConst; // used for bvec, scalar bools
 		float fConst;   // used for vec, mat, scalar floats

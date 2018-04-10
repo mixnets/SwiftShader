@@ -2446,7 +2446,7 @@ void Context::readPixels(GLint x, GLint y, GLsizei width, GLsizei height,
 	sw::Rect rect = {x, y, x + width, y + height};
 	rect.clip(0, 0, renderTarget->getWidth(), renderTarget->getHeight());
 
-	unsigned char *source = (unsigned char*)renderTarget->lock(rect.x0, rect.y0, 0, sw::LOCK_READONLY);
+	unsigned char *source = (unsigned char*)renderTarget->lock(rect.x0.get(), rect.y0.get(), 0, sw::LOCK_READONLY);
 	unsigned char *dest = (unsigned char*)pixels;
 	int inputPitch = (int)renderTarget->getPitch();
 
@@ -2868,7 +2868,7 @@ void Context::drawTexture(GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloa
 
 void Context::blit(sw::Surface *source, const sw::SliceRect &sRect, sw::Surface *dest, const sw::SliceRect &dRect)
 {
-	sw::SliceRectF sRectF((float)sRect.x0, (float)sRect.y0, (float)sRect.x1, (float)sRect.y1, sRect.slice);
+	sw::SliceRectF sRectF((float)sRect.x0.get(), (float)sRect.y0.get(), (float)sRect.x1.get(), (float)sRect.y1.get(), sRect.slice);
 	device->blit(source, sRectF, dest, dRect, false);
 }
 

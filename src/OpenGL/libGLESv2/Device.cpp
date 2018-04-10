@@ -229,7 +229,7 @@ namespace es2
 			clearRect.clip(scissorRect.x0, scissorRect.y0, scissorRect.x1, scissorRect.y1);
 		}
 
-		depthBuffer->clearDepth(z, clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
+		depthBuffer->clearDepth(z, clearRect.x0.get(), clearRect.y0.get(), clearRect.width().get(), clearRect.height().get());
 	}
 
 	void Device::clearStencil(unsigned int stencil, unsigned int mask)
@@ -246,7 +246,7 @@ namespace es2
 			clearRect.clip(scissorRect.x0, scissorRect.y0, scissorRect.x1, scissorRect.y1);
 		}
 
-		stencilBuffer->clearStencil(stencil, mask, clearRect.x0, clearRect.y0, clearRect.width(), clearRect.height());
+		stencilBuffer->clearStencil(stencil, mask, clearRect.x0.get(), clearRect.y0.get(), clearRect.width().get(), clearRect.height().get());
 	}
 
 	void Device::drawIndexedPrimitive(sw::DrawType type, unsigned int indexOffset, unsigned int primitiveCount)
@@ -554,7 +554,7 @@ namespace es2
 		int destPitchB = isStencil ? dest->getStencilPitchB() : dest->getInternalPitchB();
 
 		bool isOutOfBounds = (sRect.x0 < 0.0f) || (sRect.y0 < 0.0f) || (sRect.x1 > (float)sWidth) || (sRect.y1 > (float)sHeight);
-		bool scaling = (sRect.width() != (float)dRect.width()) || (sRect.height() != (float)dRect.height());
+		bool scaling = (sRect.width() != (float)dRect.width().get()) || (sRect.height() != (float)dRect.height().get());
 		bool equalFormats = source->getInternalFormat() == dest->getInternalFormat();
 		bool hasQuadLayout = Surface::hasQuadLayout(source->getInternalFormat()) || Surface::hasQuadLayout(dest->getInternalFormat());
 		bool fullCopy = (sRect.x0 == 0.0f) && (sRect.y0 == 0.0f) && (dRect.x0 == 0) && (dRect.y0 == 0) &&
@@ -583,9 +583,9 @@ namespace es2
 		else if(isDepth && !scaling && !isOutOfBounds && equalFormats && !hasQuadLayout)
 		{
 			byte *sourceBuffer = (byte*)source->lockInternal((int)sRect.x0, (int)sRect.y0, 0, LOCK_READONLY, PUBLIC);
-			byte *destBuffer = (byte*)dest->lockInternal(dRect.x0, dRect.y0, 0, fullCopy ? LOCK_DISCARD : LOCK_WRITEONLY, PUBLIC);
+			byte *destBuffer = (byte*)dest->lockInternal(dRect.x0.get(), dRect.y0.get(), 0, fullCopy ? LOCK_DISCARD : LOCK_WRITEONLY, PUBLIC);
 
-			copyBuffer(sourceBuffer, destBuffer, dRect.width(), dRect.height(), sourcePitchB, destPitchB, Surface::bytes(source->getInternalFormat()), flipX, flipY);
+			copyBuffer(sourceBuffer, destBuffer, dRect.width().get(), dRect.height().get(), sourcePitchB, destPitchB, Surface::bytes(source->getInternalFormat()), flipX, flipY);
 
 			source->unlockInternal();
 			dest->unlockInternal();
@@ -593,7 +593,7 @@ namespace es2
 		else if((flags & Device::COLOR_BUFFER) && !scaling && !isOutOfBounds && equalFormats && !hasQuadLayout)
 		{
 			byte *sourceBytes = (byte*)source->lockInternal((int)sRect.x0, (int)sRect.y0, sourceRect->slice, LOCK_READONLY, PUBLIC);
-			byte *destBytes = (byte*)dest->lockInternal(dRect.x0, dRect.y0, destRect->slice, fullCopy ? LOCK_DISCARD : LOCK_WRITEONLY, PUBLIC);
+			byte *destBytes = (byte*)dest->lockInternal(dRect.x0.get(), dRect.y0.get(), destRect->slice, fullCopy ? LOCK_DISCARD : LOCK_WRITEONLY, PUBLIC);
 
 			unsigned int width = dRect.x1 - dRect.x0;
 			unsigned int height = dRect.y1 - dRect.y0;
@@ -794,27 +794,27 @@ namespace es2
 			{
 				if(renderTarget[i])
 				{
-					scissor.x0 = max(scissor.x0, 0);
-					scissor.x1 = min(scissor.x1, renderTarget[i]->getWidth());
-					scissor.y0 = max(scissor.y0, 0);
-					scissor.y1 = min(scissor.y1, renderTarget[i]->getHeight());
+					scissor.x0 = max(scissor.x0.get(), 0);
+					scissor.x1 = min(scissor.x1.get(), renderTarget[i]->getWidth());
+					scissor.y0 = max(scissor.y0.get(), 0);
+					scissor.y1 = min(scissor.y1.get(), renderTarget[i]->getHeight());
 				}
 			}
 
 			if(depthBuffer)
 			{
-				scissor.x0 = max(scissor.x0, 0);
-				scissor.x1 = min(scissor.x1, depthBuffer->getWidth());
-				scissor.y0 = max(scissor.y0, 0);
-				scissor.y1 = min(scissor.y1, depthBuffer->getHeight());
+				scissor.x0 = max(scissor.x0.get(), 0);
+				scissor.x1 = min(scissor.x1.get(), depthBuffer->getWidth());
+				scissor.y0 = max(scissor.y0.get(), 0);
+				scissor.y1 = min(scissor.y1.get(), depthBuffer->getHeight());
 			}
 
 			if(stencilBuffer)
 			{
-				scissor.x0 = max(scissor.x0, 0);
-				scissor.x1 = min(scissor.x1, stencilBuffer->getWidth());
-				scissor.y0 = max(scissor.y0, 0);
-				scissor.y1 = min(scissor.y1, stencilBuffer->getHeight());
+				scissor.x0 = max(scissor.x0.get(), 0);
+				scissor.x1 = min(scissor.x1.get(), stencilBuffer->getWidth());
+				scissor.y0 = max(scissor.y0.get(), 0);
+				scissor.y1 = min(scissor.y1.get(), stencilBuffer->getHeight());
 			}
 
 			setScissor(scissor);
@@ -877,7 +877,7 @@ namespace es2
 	{
 		if(dstRect.x0 < clipRect.x0)
 		{
-			float offset = (static_cast<float>(clipRect.x0 - dstRect.x0) / static_cast<float>(dstRect.width())) * srcRect.width();
+			float offset = (static_cast<float>(clipRect.x0 - dstRect.x0) / static_cast<float>(dstRect.width().get())) * srcRect.width();
 			if(flipX)
 			{
 				srcRect.x1 -= offset;
@@ -890,7 +890,7 @@ namespace es2
 		}
 		if(dstRect.x1 > clipRect.x1)
 		{
-			float offset = (static_cast<float>(dstRect.x1 - clipRect.x1) / static_cast<float>(dstRect.width())) * srcRect.width();
+			float offset = (static_cast<float>(dstRect.x1 - clipRect.x1) / static_cast<float>(dstRect.width().get())) * srcRect.width();
 			if(flipX)
 			{
 				srcRect.x0 += offset;
@@ -903,7 +903,7 @@ namespace es2
 		}
 		if(dstRect.y0 < clipRect.y0)
 		{
-			float offset = (static_cast<float>(clipRect.y0 - dstRect.y0) / static_cast<float>(dstRect.height())) * srcRect.height();
+			float offset = (static_cast<float>(clipRect.y0 - dstRect.y0) / static_cast<float>(dstRect.height().get())) * srcRect.height();
 			if(flipY)
 			{
 				srcRect.y1 -= offset;
@@ -916,7 +916,7 @@ namespace es2
 		}
 		if(dstRect.y1 > clipRect.y1)
 		{
-			float offset = (static_cast<float>(dstRect.y1 - clipRect.y1) / static_cast<float>(dstRect.height())) * srcRect.height();
+			float offset = (static_cast<float>(dstRect.y1 - clipRect.y1) / static_cast<float>(dstRect.height().get())) * srcRect.height();
 			if(flipY)
 			{
 				srcRect.y0 += offset;
@@ -931,10 +931,10 @@ namespace es2
 
 	void Device::ClipSrcRect(sw::RectF &srcRect, sw::Rect &dstRect, sw::Rect &clipRect, bool flipX, bool flipY)
 	{
-		if(srcRect.x0 < static_cast<float>(clipRect.x0))
+		if(srcRect.x0 < static_cast<float>(clipRect.x0.get()))
 		{
-			float ratio = static_cast<float>(dstRect.width()) / srcRect.width();
-			float offsetf = roundf((static_cast<float>(clipRect.x0) - srcRect.x0) * ratio);
+			float ratio = static_cast<float>(dstRect.width().get()) / srcRect.width();
+			float offsetf = roundf((static_cast<float>(clipRect.x0.get()) - srcRect.x0) * ratio);
 			int offset = static_cast<int>(offsetf);
 			if(flipX)
 			{
@@ -946,10 +946,10 @@ namespace es2
 			}
 			srcRect.x0 += offsetf / ratio;
 		}
-		if(srcRect.x1 > static_cast<float>(clipRect.x1))
+		if(srcRect.x1 > static_cast<float>(clipRect.x1.get()))
 		{
-			float ratio = static_cast<float>(dstRect.width()) / srcRect.width();
-			float offsetf = roundf((srcRect.x1 - static_cast<float>(clipRect.x1)) * ratio);
+			float ratio = static_cast<float>(dstRect.width().get()) / srcRect.width();
+			float offsetf = roundf((srcRect.x1 - static_cast<float>(clipRect.x1.get())) * ratio);
 			int offset = static_cast<int>(offsetf);
 			if(flipX)
 			{
@@ -961,10 +961,10 @@ namespace es2
 			}
 			srcRect.x1 -= offsetf / ratio;
 		}
-		if(srcRect.y0 < static_cast<float>(clipRect.y0))
+		if(srcRect.y0 < static_cast<float>(clipRect.y0.get()))
 		{
-			float ratio = static_cast<float>(dstRect.height()) / srcRect.height();
-			float offsetf = roundf((static_cast<float>(clipRect.y0) - srcRect.y0) * ratio);
+			float ratio = static_cast<float>(dstRect.height().get()) / srcRect.height();
+			float offsetf = roundf((static_cast<float>(clipRect.y0.get()) - srcRect.y0) * ratio);
 			int offset = static_cast<int>(offsetf);
 			if(flipY)
 			{
@@ -976,10 +976,10 @@ namespace es2
 			}
 			srcRect.y0 += offsetf / ratio;
 		}
-		if(srcRect.y1 > static_cast<float>(clipRect.y1))
+		if(srcRect.y1 > static_cast<float>(clipRect.y1.get()))
 		{
-			float ratio = static_cast<float>(dstRect.height()) / srcRect.height();
-			float offsetf = roundf((srcRect.y1 - static_cast<float>(clipRect.y1)) * ratio);
+			float ratio = static_cast<float>(dstRect.height().get()) / srcRect.height();
+			float offsetf = roundf((srcRect.y1 - static_cast<float>(clipRect.y1.get())) * ratio);
 			int offset = static_cast<int>(offsetf);
 			if(flipY)
 			{

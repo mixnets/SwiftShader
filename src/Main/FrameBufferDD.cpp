@@ -294,10 +294,10 @@ namespace sw
 
 		if(destRect)
 		{
-			dRect.bottom = bounds.top + destRect->y1;
-			dRect.left = bounds.left + destRect->x0;
-			dRect.right = bounds.left + destRect->x1;
-			dRect.top = bounds.top + destRect->y0;
+			dRect.bottom = destRect->y1 + bounds.top;
+			dRect.left = destRect->x0 + bounds.left;
+			dRect.right = destRect->x1 + bounds.left;
+			dRect.top = destRect->y0 + bounds.top;
 		}
 		else
 		{
