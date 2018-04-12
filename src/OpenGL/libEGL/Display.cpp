@@ -425,7 +425,8 @@ EGLSurface Display::createPBufferSurface(EGLConfig config, const EGLint *attribL
 			case EGL_MIPMAP_TEXTURE:
 				if(attribList[1] != EGL_FALSE)
 				{
-					return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+					UNIMPLEMENTED();
+					return error(EGL_BAD_MATCH, EGL_NO_SURFACE);
 				}
 				break;
 			case EGL_VG_COLORSPACE:

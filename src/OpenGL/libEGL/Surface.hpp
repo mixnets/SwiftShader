@@ -40,6 +40,8 @@ public:
 	egl::Image *getRenderTarget() override;
 	egl::Image *getDepthStencil() override;
 
+	void setMipmapLevel(EGLint mipmapLevel);
+	void setMultisampleResolve(EGLenum multisampleResolve);
 	void setSwapBehavior(EGLenum swapBehavior);
 	void setSwapInterval(EGLint interval);
 
@@ -49,6 +51,8 @@ public:
 	EGLint getWidth() const override;
 	EGLint getHeight() const override;
 	EGLenum getTextureTarget() const override;
+	virtual EGLint getMipmapLevel() const;
+	virtual EGLenum getMultisampleResolve() const;
 	virtual EGLint getPixelAspectRatio() const;
 	virtual EGLenum getRenderBuffer() const;
 	virtual EGLenum getSwapBehavior() const;
@@ -86,8 +90,8 @@ protected:
 //  EGLint verticalResolution;     // Vertical dot pitch
 	EGLBoolean largestPBuffer;     // If true, create largest pbuffer possible
 //  EGLBoolean mipmapTexture;      // True if texture has mipmaps
-//  EGLint mipmapLevel;            // Mipmap level to render to
-//  EGLenum multisampleResolve;    // Multisample resolve behavior
+	EGLint mipmapLevel;            // Mipmap level to render to
+	EGLenum multisampleResolve;    // Multisample resolve behavior
 	EGLint pixelAspectRatio;       // Display aspect ratio
 	EGLenum renderBuffer;          // Render buffer
 	EGLenum swapBehavior;          // Buffer swap behavior

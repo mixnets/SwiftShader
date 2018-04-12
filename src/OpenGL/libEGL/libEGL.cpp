@@ -392,10 +392,10 @@ EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EG
 	switch(attribute)
 	{
 	case EGL_VG_ALPHA_FORMAT:
-		UNIMPLEMENTED();   // FIXME
+		*value = EGL_VG_ALPHA_FORMAT_NONPRE;   // Default
 		break;
 	case EGL_VG_COLORSPACE:
-		UNIMPLEMENTED();   // FIXME
+		*value = EGL_VG_COLORSPACE_sRGB;   // Default
 		break;
 	case EGL_CONFIG_ID:
 		*value = eglSurface->getConfigID();
@@ -404,7 +404,7 @@ EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EG
 		*value = eglSurface->getHeight();
 		break;
 	case EGL_HORIZONTAL_RESOLUTION:
-		UNIMPLEMENTED();   // FIXME
+		*value = EGL_UNKNOWN;
 		break;
 	case EGL_LARGEST_PBUFFER:
 		if(eglSurface->isPBufferSurface())   // For a window or pixmap surface, the contents of *value are not modified.
@@ -413,13 +413,13 @@ EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EG
 		}
 		break;
 	case EGL_MIPMAP_TEXTURE:
-		UNIMPLEMENTED();   // FIXME
+		*value = EGL_FALSE;   // UNIMPLEMENTED
 		break;
 	case EGL_MIPMAP_LEVEL:
-		UNIMPLEMENTED();   // FIXME
+		*value = eglSurface->getMipmapLevel();
 		break;
 	case EGL_MULTISAMPLE_RESOLVE:
-		UNIMPLEMENTED();   // FIXME
+		*value = eglSurface->getMultisampleResolve();
 		break;
 	case EGL_PIXEL_ASPECT_RATIO:
 		*value = eglSurface->getPixelAspectRatio();
@@ -437,7 +437,7 @@ EGLBoolean QuerySurface(EGLDisplay dpy, EGLSurface surface, EGLint attribute, EG
 		*value = eglSurface->getTextureTarget();
 		break;
 	case EGL_VERTICAL_RESOLUTION:
-		UNIMPLEMENTED();   // FIXME
+		*value = EGL_UNKNOWN;
 		break;
 	case EGL_WIDTH:
 		*value = eglSurface->getWidth();
@@ -544,22 +544,43 @@ EGLBoolean SurfaceAttrib(EGLDisplay dpy, EGLSurface surface, EGLint attribute, E
 
 	switch(attribute)
 	{
-	case EGL_SWAP_BEHAVIOR:
-		if(value == EGL_BUFFER_PRESERVED)
+	case EGL_MIPMAP_LEVEL:
+		eglSurface->setMipmapLevel(value);
+		break;
+	case EGL_MULTISAMPLE_RESOLVE:
+		switch(value)
 		{
+		case EGL_MULTISAMPLE_RESOLVE_DEFAULT:
+			break;
+		case EGL_MULTISAMPLE_RESOLVE_BOX:
+			if(!(eglSurface->getSurfaceType() & EGL_MULTISAMPLE_RESOLVE_BOX_BIT))
+			{
+				return error(EGL_BAD_MATCH, EGL_FALSE);
+			}
+			break;
+		default:
+			return error(EGL_BAD_PARAMETER, EGL_FALSE);
+		}
+		eglSurface->setMultisampleResolve(value);
+		break;
+	case EGL_SWAP_BEHAVIOR:
+		switch(value)
+		{
+		case EGL_BUFFER_DESTROYED:
+			break;
+		case EGL_BUFFER_PRESERVED:
 			if(!(eglSurface->getSurfaceType() & EGL_SWAP_BEHAVIOR_PRESERVED_BIT))
 			{
 				return error(EGL_BAD_MATCH, EGL_FALSE);
 			}
-		}
-		else if(value != EGL_BUFFER_DESTROYED)
-		{
+			break;
+		default:
 			return error(EGL_BAD_PARAMETER, EGL_FALSE);
 		}
 		eglSurface->setSwapBehavior(value);
 		break;
 	default:
-		UNIMPLEMENTED();   // FIXME
+		return error(EGL_BAD_PARAMETER, EGL_FALSE);
 	}
 
 	return success(EGL_TRUE);

@@ -58,6 +58,7 @@ Surface::Surface(const Display *display, const Config *config) : display(display
 	width = 0;
 	height = 0;
 	largestPBuffer = EGL_FALSE;
+	multisampleResolve = EGL_MULTISAMPLE_RESOLVE_DEFAULT;
 	pixelAspectRatio = (EGLint)(1.0 * EGL_DISPLAY_SCALING);   // FIXME: Determine actual pixel aspect ratio
 	renderBuffer = EGL_BACK_BUFFER;
 	swapBehavior = EGL_BUFFER_PRESERVED;
@@ -167,6 +168,16 @@ egl::Image *Surface::getDepthStencil()
 	return depthStencil;
 }
 
+void Surface::setMipmapLevel(EGLint mipmapLevel)
+{
+	this->mipmapLevel = mipmapLevel;
+}
+
+void Surface::setMultisampleResolve(EGLenum multisampleResolve)
+{
+	this->multisampleResolve = multisampleResolve;
+}
+
 void Surface::setSwapBehavior(EGLenum swapBehavior)
 {
 	this->swapBehavior = swapBehavior;
@@ -202,6 +213,16 @@ EGLint Surface::getWidth() const
 EGLint Surface::getHeight() const
 {
 	return height;
+}
+
+EGLint Surface::getMipmapLevel() const
+{
+	return mipmapLevel;
+}
+
+EGLenum Surface::getMultisampleResolve() const
+{
+	return multisampleResolve;
 }
 
 EGLint Surface::getPixelAspectRatio() const
