@@ -117,7 +117,6 @@ namespace es1
 	{
 		switch(cubeFace)
 		{
-		case GL_TEXTURE_CUBE_MAP_OES:
 		case GL_TEXTURE_CUBE_MAP_POSITIVE_X_OES: return 0;
 		case GL_TEXTURE_CUBE_MAP_NEGATIVE_X_OES: return 1;
 		case GL_TEXTURE_CUBE_MAP_POSITIVE_Y_OES: return 2;
