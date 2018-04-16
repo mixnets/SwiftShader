@@ -1426,5 +1426,5 @@ extern "C" GL_APICALL LibGLESv2exports *libGLESv2_swiftshader()
 	return &libGLESv2;
 }
 
-LibEGL libEGL;
-LibGLES_CM libGLES_CM;
+LibEGL libEGL((void*)es2CreateContext);
+LibGLES_CM libGLES_CM((void*)es2CreateContext);

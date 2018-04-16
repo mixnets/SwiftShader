@@ -649,5 +649,5 @@ extern "C" EGLAPI LibEGLexports *libEGL_swiftshader()
 	return &libEGL;
 }
 
-LibGLES_CM libGLES_CM;
-LibGLESv2 libGLESv2;
+LibGLES_CM libGLES_CM((void*)eglGetProcAddress);
+LibGLESv2 libGLESv2((void*)eglGetProcAddress);

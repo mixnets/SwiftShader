@@ -21,17 +21,29 @@
 	#include <dlfcn.h>
 #endif
 
+#include <string>
+
 void *getLibraryHandle(const char *path);
 void *loadLibrary(const char *path);
 void freeLibrary(void *library);
 void *getProcAddress(void *library, const char *name);
 
 template<int n>
-void *loadLibrary(const char *(&names)[n], const char *mustContainSymbol = nullptr)
+void *loadLibrary(const std::string &libraryPath, const char *(&names)[n], const char *mustContainSymbol = nullptr)
 {
 	for(int i = 0; i < n; i++)
 	{
-		void *library = getLibraryHandle(names[i]);
+		void *library = nullptr;
+		if(!libraryPath.empty())
+		{
+			std::string nameWithPath = libraryPath + names[i];
+			library = getLibraryHandle(nameWithPath.c_str());
+		}
+
+		if(!library)
+		{
+			library = getLibraryHandle(names[i]);
+		}
 
 		if(library)
 		{
@@ -84,6 +96,11 @@ void *loadLibrary(const char *(&names)[n], const char *mustContainSymbol = nullp
 	{
 		return (void*)GetProcAddress((HMODULE)library, name);
 	}
+
+	inline std::string getLibraryPathFromSymbol(void* symbol)
+	{
+		return "";
+	}
 #else
 	inline void *loadLibrary(const char *path)
 	{
@@ -126,6 +143,20 @@ void *loadLibrary(const char *(&names)[n], const char *mustContainSymbol = nullp
 		}
 
 		return symbol;
+	}
+
+	inline std::string getLibraryPathFromSymbol(void* symbol)
+	{
+		Dl_info dl_info;
+		if(dladdr(symbol, &dl_info))
+		{
+			std::string path(dl_info.dli_fname);
+			return path.substr(0, path.find_last_of("\\/") + 1).c_str();
+		}
+		else
+		{
+			return "";
+		}
 	}
 #endif
 

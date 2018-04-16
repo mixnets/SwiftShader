@@ -229,10 +229,11 @@ public:
 class LibGLES_CM
 {
 public:
-	LibGLES_CM()
+	LibGLES_CM(void* symbol)
+	: libGLES_CM(nullptr),
+	  libGLES_CMexports(nullptr),
+	  libraryPath(getLibraryPathFromSymbol(symbol))
 	{
-		libGLES_CM = nullptr;
-		libGLES_CMexports = nullptr;
 	}
 
 	~LibGLES_CM()
@@ -285,7 +286,7 @@ private:
 				#error "libGLES_CM::loadExports unimplemented for this platform"
 			#endif
 
-			libGLES_CM = loadLibrary(libGLES_CM_lib, "libGLES_CM_swiftshader");
+			libGLES_CM = loadLibrary(libraryPath, libGLES_CM_lib, "libGLES_CM_swiftshader");
 
 			if(libGLES_CM)
 			{
@@ -299,6 +300,7 @@ private:
 
 	void *libGLES_CM;
 	LibGLES_CMexports *libGLES_CMexports;
+	const std::string libraryPath;
 };
 
 #endif   // libGLES_CM_hpp
