@@ -138,6 +138,26 @@ group("swiftshader") {
   ]
 }
 
+if (is_mac) {
+  # We need to copy the SwiftShader libraries so that the bundle_data
+  # dependencies have a "copy" target type. Otherwise for "shared_library"
+  # target types it will try to link things into Chromium Framework when
+  # we want to keep the SwiftShader libraries separate instead.
+  copy("library_copy") {
+    sources = [
+      "$root_out_dir/libswiftshader_libEGL.dylib",
+      "$root_out_dir/libswiftshader_libGLESv2.dylib",
+    ]
+    outputs = [
+      "$root_out_dir/egl_intermediates/{{source_file_part}}",
+    ]
+    deps = [
+      "src/OpenGL/libGLESv2:swiftshader_libGLESv2",
+      "src/OpenGL/libEGL:swiftshader_libEGL",
+    ]
+  }
+}
+
 group("swiftshader_tests") {
   testonly = true
 
