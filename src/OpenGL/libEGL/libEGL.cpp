@@ -22,6 +22,7 @@
 #include "common/Image.hpp"
 #include "common/debug.h"
 #include "Common/Version.h"
+#include "uapi/drm/drm_fourcc.h"
 
 #if defined(__ANDROID__)
 #include <system/window.h>
@@ -204,6 +205,7 @@ const char *QueryString(EGLDisplay dpy, EGLint name)
 		               "EGL_KHR_fence_sync "
 		               "EGL_KHR_image_base "
 		               "EGL_KHR_surfaceless_context "
+		               "EGL_EXT_image_dma_buf_import "
 		               "EGL_ANGLE_iosurface_client_buffer "
 		               "EGL_ANDROID_framebuffer_target "
 		               "EGL_ANDROID_recordable");
@@ -1070,27 +1072,332 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 		return error(EGL_BAD_DISPLAY, EGL_NO_IMAGE_KHR);
 	}
 
-	if(context != EGL_NO_CONTEXT && !display->isValidContext(context))
+	// If <target> is EGL_LINUX_DMA_BUF_EXT, <dpy> must be a valid display, <ctx> must be EGL_NO_CONTEXT
+	if(context != EGL_NO_CONTEXT && (!display->isValidContext(context) || (target == EGL_LINUX_DMA_BUF_EXT)))
 	{
 		return error(EGL_BAD_CONTEXT, EGL_NO_IMAGE_KHR);
 	}
 
 	EGLenum imagePreserved = EGL_FALSE;
 	GLuint textureLevel = 0;
+	EGLint width = -1, height = -1;
+	EGLint fileDescriptor[3] = { -1, -1, -1 };
+	EGLint offsetB[3] = { -1, -1, -1 };
+	EGLint pitchB[3] = { -1, -1, -1 };
+	sw::Format format = sw::FORMAT_NULL;
 	if(attrib_list)
 	{
 		for(const EGLint *attribute = attrib_list; attribute[0] != EGL_NONE; attribute += 2)
 		{
-			if(attribute[0] == EGL_IMAGE_PRESERVED_KHR)
+			switch(attribute[0])
 			{
+			case EGL_IMAGE_PRESERVED_KHR:
 				imagePreserved = attribute[1];
-			}
-			else if(attribute[0] == EGL_GL_TEXTURE_LEVEL_KHR)
-			{
+				break;
+			case EGL_GL_TEXTURE_LEVEL_KHR:
 				textureLevel = attribute[1];
-			}
-			else
-			{
+				break;
+			case EGL_WIDTH:
+				width = attribute[1];
+				break;
+			case EGL_HEIGHT:
+				height = attribute[1];
+				break;
+			case EGL_LINUX_DRM_FOURCC_EXT:
+				switch(attribute[1])
+				{
+				case DRM_FORMAT_C8:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_R8:
+					format = sw::FORMAT_R8;
+					break;
+				case DRM_FORMAT_R16:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_RG88:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_GR88:
+					format = sw::FORMAT_G8R8;
+					break;
+				case DRM_FORMAT_RG1616:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_GR1616:
+					format = sw::FORMAT_G16R16;
+					break;
+				case DRM_FORMAT_RGB332:
+					format = sw::FORMAT_R3G3B2;
+					break;
+				case DRM_FORMAT_BGR233:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_XRGB4444:
+					format = sw::FORMAT_X4R4G4B4;
+					break;
+				case DRM_FORMAT_XBGR4444:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_RGBX4444:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_BGRX4444:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_ARGB4444:
+					format = sw::FORMAT_A4R4G4B4;
+					break;
+				case DRM_FORMAT_ABGR4444:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_RGBA4444:
+					format = sw::FORMAT_R4G4B4A4;
+					break;
+				case DRM_FORMAT_BGRA4444:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_XRGB1555:
+					format = sw::FORMAT_X1R5G5B5;
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_XBGR1555:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_RGBX5551:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_BGRX5551:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_ARGB1555:
+					format = sw::FORMAT_A1R5G5B5;
+					break;
+				case DRM_FORMAT_ABGR1555:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_RGBA5551:
+					format = sw::FORMAT_R5G5B5A1;
+					break;
+				case DRM_FORMAT_BGRA5551:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_RGB565:
+					format = sw::FORMAT_R5G6B5;
+					break;
+				case DRM_FORMAT_BGR565:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_RGB888:
+					format = sw::FORMAT_R8G8B8;
+					break;
+				case DRM_FORMAT_BGR888:
+					format = sw::FORMAT_B8G8R8;
+					break;
+				case DRM_FORMAT_XRGB8888:
+					format = sw::FORMAT_X8R8G8B8;
+					break;
+				case DRM_FORMAT_XBGR8888:
+					format = sw::FORMAT_X8B8G8R8;
+					break;
+				case DRM_FORMAT_RGBX8888:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_BGRX8888:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_ARGB8888:
+					format = sw::FORMAT_A8R8G8B8;
+					break;
+				case DRM_FORMAT_ABGR8888:
+					format = sw::FORMAT_A8B8G8R8;
+					break;
+				case DRM_FORMAT_RGBA8888:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_BGRA8888:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_XRGB2101010:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_XBGR2101010:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_RGBX1010102:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_BGRX1010102:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_ARGB2101010:
+					format = sw::FORMAT_A2R10G10B10;
+					break;
+				case DRM_FORMAT_ABGR2101010:
+					format = sw::FORMAT_A2B10G10R10;
+					break;
+				case DRM_FORMAT_RGBA1010102:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_BGRA1010102:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_YUYV:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_YVYU:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_UYVY:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_VYUY:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_AYUV:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_XRGB8888_A8:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_XBGR8888_A8:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_RGBX8888_A8:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_BGRX8888_A8:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_RGB888_A8:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_BGR888_A8:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_RGB565_A8:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_BGR565_A8:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_NV12:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_NV21:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_NV16:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_NV61:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_NV24:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_NV42:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_YUV410:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_YVU410:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_YUV411:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_YVU411:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_YUV420: // The two chroma planesare sub-sampled in both the horizontal and vertical dimensions by a factor of 2
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_YVU420:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_YUV422: // The two chroma planes are sub-sampled only in the horizontal dimension, still by a factor of 2
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_YVU422:
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_YUV444: // The two chroma planesare not sub-sampled
+					UNIMPLEMENTED();
+					break;
+				case DRM_FORMAT_YVU444:
+					UNIMPLEMENTED();
+					break;
+				default:
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_IMAGE_KHR);
+				}
+				break;
+			case EGL_DMA_BUF_PLANE0_FD_EXT:
+				fileDescriptor[0] = attribute[1];
+				break;
+			case EGL_DMA_BUF_PLANE0_OFFSET_EXT:
+				offsetB[0] = attribute[1];
+				break;
+			case EGL_DMA_BUF_PLANE0_PITCH_EXT:
+				pitchB[0] = attribute[1];
+				break;
+			case EGL_DMA_BUF_PLANE1_FD_EXT:
+				fileDescriptor[1] = attribute[1];
+				break;
+			case EGL_DMA_BUF_PLANE1_OFFSET_EXT:
+				offsetB[1] = attribute[1];
+				break;
+			case EGL_DMA_BUF_PLANE1_PITCH_EXT:
+				pitchB[1] = attribute[1];
+				break;
+			case EGL_DMA_BUF_PLANE2_FD_EXT:
+				fileDescriptor[2] = attribute[1];
+				break;
+			case EGL_DMA_BUF_PLANE2_OFFSET_EXT:
+				offsetB[2] = attribute[1];
+				break;
+			case EGL_DMA_BUF_PLANE2_PITCH_EXT:
+				pitchB[2] = attribute[1];
+				break;
+			case EGL_YUV_COLOR_SPACE_HINT_EXT:
+				switch(attribute[1])
+				{
+				case EGL_ITU_REC601_EXT:
+				case EGL_ITU_REC709_EXT:
+				case EGL_ITU_REC2020_EXT:
+					break;
+				default:
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_IMAGE_KHR);
+				}
+			case EGL_SAMPLE_RANGE_HINT_EXT:
+				switch(attribute[1])
+				{
+				case EGL_YUV_FULL_RANGE_EXT:
+				case EGL_YUV_NARROW_RANGE_EXT:
+					break;
+				default:
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_IMAGE_KHR);
+				}
+			case EGL_YUV_CHROMA_HORIZONTAL_SITING_HINT_EXT:
+				switch(attribute[1])
+				{
+				case EGL_YUV_CHROMA_SITING_0_EXT:
+				case EGL_YUV_CHROMA_SITING_0_5_EXT:
+					break;
+				default:
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_IMAGE_KHR);
+				}
+			case EGL_YUV_CHROMA_VERTICAL_SITING_HINT_EXT:
+				switch(attribute[1])
+				{
+				case EGL_YUV_CHROMA_SITING_0_EXT:
+				case EGL_YUV_CHROMA_SITING_0_5_EXT:
+					break;
+				default:
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_IMAGE_KHR);
+				}
+			default:
 				return error(EGL_BAD_ATTRIBUTE, EGL_NO_IMAGE_KHR);
 			}
 		}
@@ -1116,7 +1423,14 @@ EGLImageKHR CreateImageKHR(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLCl
 
 	GLuint name = static_cast<GLuint>(reinterpret_cast<uintptr_t>(buffer));
 
-	if(name == 0)
+	if(target == EGL_LINUX_DMA_BUF_EXT)
+	{
+		if(name != 0) // If <target> is EGL_LINUX_DMA_BUF_EXT, <buffer> must be NULL
+		{
+			return error(EGL_BAD_PARAMETER, EGL_NO_IMAGE_KHR);
+		}
+	}
+	else if(name == 0)
 	{
 		return error(EGL_BAD_PARAMETER, EGL_NO_IMAGE_KHR);
 	}

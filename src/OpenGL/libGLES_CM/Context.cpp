@@ -3135,6 +3135,8 @@ EGLenum Context::validateSharedImage(EGLenum target, GLuint name, GLuint texture
 		break;
 	case EGL_GL_RENDERBUFFER_KHR:
 		break;
+	case EGL_LINUX_DMA_BUF_EXT:
+		break;
 	default:
 		return EGL_BAD_PARAMETER;
 	}
