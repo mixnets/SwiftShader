@@ -265,6 +265,7 @@ sw::Format Surface::getClientBufferFormat() const
 		}
 		break;
 	case GL_HALF_FLOAT:
+	case GL_HALF_FLOAT_OES:
 		switch(clientBufferFormat)
 		{
 		case GL_RGBA:
