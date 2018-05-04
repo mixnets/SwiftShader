@@ -1854,7 +1854,7 @@ namespace sw
 					Parameter &dst = inst->dst;
 					Parameter &src1 = inst->src[1];
 
-					if(majorVersion >= 2)
+					if(majorVersion >= 2 && src1.type == PARAMETER_SAMPLER)
 					{
 						usedSamplers |= 1 << src1.index;
 					}
