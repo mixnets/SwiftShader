@@ -1222,12 +1222,16 @@ namespace sw
 
 		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
 
-		Int4 x0, x1, y0, y1, z0;
+		Int4 x0, x1, y0, y1, z0(0);
 		Float4 fu, fv;
 		Int4 filter = computeFilterOffset(lod);
 		address(u, x0, x1, fu, mipmap, offset.x, filter, OFFSET(Mipmap, width), state.addressingModeU, function);
 		address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
-		address(w, z0, z0, fv, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
+		if(state.textureType != TEXTURE_RECTANGLE)
+		{
+			Float4 fz;
+			address(w, z0, z0, fz, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
+		}
 
 		Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
 		y0 *= pitchP;
@@ -2370,7 +2374,12 @@ namespace sw
 
 			if(state.textureType == TEXTURE_RECTANGLE)
 			{
-				coord = Min(Max(coord, Float4(0.0f)), Float4(dim - Int4(1)));
+				// According to https://www.khronos.org/registry/OpenGL/extensions/ARB/ARB_texture_rectangle.txt
+				// "CLAMP_TO_EDGE causes the s coordinate to be clamped to the range[0.5, wt - 0.5].
+				//  CLAMP_TO_EDGE causes the t coordinate to be clamped to the range[0.5, ht - 0.5]."
+				// Unless SwiftShader implements support for ADDRESSING_BORDER, other modes should be equivalent
+				// to CLAMP_TO_EDGE. Rectangle textures have no support for any MIRROR or REPEAT modes.
+				coord = Min(Max(coord, Float4(0.5f)), Float4(dim) - Float4(0.5f));
 			}
 			else
 			{
