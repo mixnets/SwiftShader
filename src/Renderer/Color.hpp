@@ -24,16 +24,16 @@ namespace sw
 	struct Color
 	{
 		Color();
-	
+
 		Color(const Color<byte> &c);
 		Color(const Color<short> &c);
 		Color(const Color<float> &c);
-		
+
 		Color(int c);
 		Color(unsigned short c);
 		Color(unsigned long c);
 		Color(unsigned int c);
-		
+
 		Color(T r, T g, T b, T a = 1);
 
 		operator unsigned int() const;
@@ -375,7 +375,7 @@ namespace sw
 		return Color<T>(c1.r + c2.r,
 		                c1.g + c2.g,
 		                c1.b + c2.b,
-		                c1.a + c2.a);	
+		                c1.a + c2.a);
 	}
 
 	template<class T>
@@ -384,7 +384,7 @@ namespace sw
 		return Color<T>(c1.r - c2.r,
 		                c1.g - c2.g,
 		                c1.b - c2.b,
-		                c1.a - c2.a);	
+		                c1.a - c2.a);
 	}
 
 	template<class T>
@@ -434,7 +434,7 @@ namespace sw
 	template<class T>
 	inline Color<T> operator/(const Color<T> &c, float l)
 	{
-		l = 1.0f / l; 
+		l = 1.0f / l;
 
 		T r = (T)(l * c.r);
 		T g = (T)(l * c.g);
@@ -447,7 +447,7 @@ namespace sw
 	template<class T>
 	inline Color<T> Color<T>::gradient(const Color<T> &c1, const Color<T> &c2, float d)
 	{
-		d = 1.0f / d; 
+		d = 1.0f / d;
 
 		T r = (c2.r - c1.r) * d;
 		T g = (c2.g - c1.g) * d;

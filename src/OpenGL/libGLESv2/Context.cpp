@@ -4478,13 +4478,16 @@ const GLubyte *Context::getExtensions(GLuint index, GLuint *numExt) const
 		"GL_EXT_color_buffer_float",
 	};
 
-	GLuint numES2extensions = sizeof(es2extensions) / sizeof(es2extensions[0]);
+	const GLuint numES2extensions = sizeof(es2extensions) / sizeof(es2extensions[0]);
+	const GLuint numES3extensions = sizeof(es3extensions) / sizeof(es3extensions[0]);
 	GLuint numExtensions = numES2extensions;
 
 	if(clientVersion >= 3)
 	{
-		numExtensions += sizeof(es3extensions) / sizeof(es3extensions[0]);
+		numExtensions += numES3extensions;
 	}
+
+	static_assert(numES2extensions == 43 && numES3extensions == 1, "Update Version.h when exposing new extensions");
 
 	if(numExt)
 	{
