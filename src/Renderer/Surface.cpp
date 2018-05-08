@@ -1709,9 +1709,10 @@ namespace sw
 	{
 		width += 2 * border;
 
+		// Render targets require 2x2 quads
 		if(target || isDepth(format) || isStencil(format))
 		{
-			width = align(width, 2);
+			width = align<2>(width);
 		}
 
 		switch(format)
@@ -1773,7 +1774,7 @@ namespace sw
 		case FORMAT_YV12_BT601:
 		case FORMAT_YV12_BT709:
 		case FORMAT_YV12_JFIF:
-			return align(width, 16);
+			return align<16>(width);
 		default:
 			return bytes(format) * width;
 		}
@@ -1790,9 +1791,10 @@ namespace sw
 	{
 		height += 2 * border;
 
+		// Render targets require 2x2 quads
 		if(target || isDepth(format) || isStencil(format))
 		{
-			height = ((height + 1) & ~1);
+			height = align<2>(height);
 		}
 
 		switch(format)
@@ -2643,7 +2645,7 @@ namespace sw
 	{
 	}
 
-	unsigned int Surface::size(int width, int height, int depth, int border, int samples, Format format)
+	unsigned int oldsize(int width, int height, int depth, int border, int samples, Format format)
 	{
 		width += 2 * border;
 		height += 2 * border;
@@ -2725,8 +2727,60 @@ namespace sw
 				return YSize + 2 * CSize;
 			}
 		default:
-			return bytes(format) * width * height * depth * samples;
+			return Surface::bytes(format) * width * height * depth * samples;
 		}
+	}
+
+	size_t newsize(int width, int height, int depth, int border, int samples, Format format)
+	{
+		switch(format)
+		{
+		default:
+			// FIXME: Unpacking byte4 to short4 in the sampler currently involves reading 8 bytes,
+			// and stencil operations also read 8 bytes per four 8-bit stencil values,
+			// so we have to allocate 4 extra bytes to avoid buffer overruns.
+			return (size_t)Surface::sliceB(width, height, border, format, true) * depth * samples + 4;
+
+		case FORMAT_YV12_BT601:
+		case FORMAT_YV12_BT709:
+		case FORMAT_YV12_JFIF:
+			{
+				size_t YStride = align<16>(width);
+				size_t YSize = YStride * height;
+				size_t CStride = align<16>(YStride / 2);
+				size_t CSize = CStride * height / 2;
+
+				return YSize + 2 * CSize;
+			}
+		}
+	}
+
+	size_t Surface::size(int width, int height, int depth, int border, int samples, Format format)
+	{
+		for(Format format = FORMAT_A8; format <= FORMAT_LAST; format = (Format)(format + 1))
+		{
+			for(int width = 3; width < 6; width++)
+			{
+				for(int height = 5; height < 9; height++)
+				{
+					for(int depth = 1; depth < 4; depth++)
+					{
+						for(int border = 0; border <= 1; border++)
+						{
+							for(int samples = 1; samples <= 3; samples++)
+							{
+								size_t o = oldsize(align<2>(width), align<2>(height), depth, border, samples, format) + 4;
+								size_t n = newsize(width, height, depth, border, samples, format);
+
+								assert(n >= o);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return newsize(width, height, depth, border, samples, format);
 	}
 
 	bool Surface::isStencil(Format format)
@@ -3260,14 +3314,7 @@ namespace sw
 
 	void *Surface::allocateBuffer(int width, int height, int depth, int border, int samples, Format format)
 	{
-		// Render targets require 2x2 quads
-		int width2 = (width + 1) & ~1;
-		int height2 = (height + 1) & ~1;
-
-		// FIXME: Unpacking byte4 to short4 in the sampler currently involves reading 8 bytes,
-		// and stencil operations also read 8 bytes per four 8-bit stencil values,
-		// so we have to allocate 4 extra bytes to avoid buffer overruns.
-		return allocate(size(width2, height2, depth, border, samples, format) + 4);
+		return allocate(size(width, height, depth, border, samples, format));
 	}
 
 	void Surface::memfill4(void *buffer, int pattern, int bytes)
