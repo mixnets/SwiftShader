@@ -2643,7 +2643,7 @@ namespace sw
 	{
 	}
 
-	unsigned int Surface::size(int width, int height, int depth, int border, int samples, Format format)
+	size_t Surface::size(int width, int height, int depth, int border, int samples, Format format)
 	{
 		width += 2 * border;
 		height += 2 * border;
@@ -2663,7 +2663,7 @@ namespace sw
 		case FORMAT_SRGB8_ETC2:
 		case FORMAT_RGB8_PUNCHTHROUGH_ALPHA1_ETC2:
 		case FORMAT_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2:
-			return width4 * height4 * depth / 2;
+			return (size_t)width4 * height4 * depth / 2;
 		case FORMAT_DXT3:
 		case FORMAT_DXT5:
 		case FORMAT_ATI2:
