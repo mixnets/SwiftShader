@@ -1226,21 +1226,41 @@ namespace egl
 
 	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLint internalformat)
 	{
+		if(size(width, height, 1, 0, 1, gl::SelectInternalFormat(internalformat)) > 0x40000000)
+		{
+			return nullptr;
+		}
+
 		return new ImageImplementation(parentTexture, width, height, internalformat);
 	}
 
 	Image *Image::create(Texture *parentTexture, GLsizei width, GLsizei height, GLsizei depth, int border, GLint internalformat)
 	{
+		if(size(width, height, depth, border, 1, gl::SelectInternalFormat(internalformat)) > 0x40000000)
+		{
+			return nullptr;
+		}
+
 		return new ImageImplementation(parentTexture, width, height, depth, border, internalformat);
 	}
 
 	Image *Image::create(GLsizei width, GLsizei height, GLint internalformat, int pitchP)
 	{
+		if(size(pitchP, height, 1, 0, 1, gl::SelectInternalFormat(internalformat)) > 0x40000000)
+		{
+			return nullptr;
+		}
+
 		return new ImageImplementation(width, height, internalformat, pitchP);
 	}
 
 	Image *Image::create(GLsizei width, GLsizei height, GLint internalformat, int multiSampleDepth, bool lockable)
 	{
+		if(size(width, height, 1, 0, multiSampleDepth, gl::SelectInternalFormat(internalformat)) > 0x40000000)
+		{
+			return nullptr;
+		}
+
 		return new ImageImplementation(width, height, internalformat, multiSampleDepth, lockable);
 	}
 
