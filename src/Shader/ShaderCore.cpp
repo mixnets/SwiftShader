@@ -418,7 +418,7 @@ namespace sw
 		Int4 inf_y = IsInf(y2); // Since x2 >= y2, this means x2 == y2 == inf, so we use 45 degrees or pi/4
 		Float4 atan2_theta = arctan_01(y2 / x2, pp);
 		theta += As<Float4>((~zero_x & ~inf_y & non_zero_y & ((O & As<Int4>(half_pi - atan2_theta)) | (~O & (As<Int4>(atan2_theta))))) | // FIXME: Vector select
-		                    (inf_y & As<Int4>(quarter_pi)));
+		                    (inf_y & As<Int4>(quarter_pi)) | (~non_zero_y & CmpLT(x, Float4(0.0)) & As<Int4>(pi)));
 
 		// Recover loss of precision for tiny theta angles
 		Int4 precision_loss = S & Q & O & ~inf_y; // This combination results in (-pi + half_pi + half_pi - atan2_theta) which is equivalent to -atan2_theta
