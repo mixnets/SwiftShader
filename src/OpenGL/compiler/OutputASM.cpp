@@ -1824,19 +1824,24 @@ namespace glsl
 			return false;
 		}
 
-		unsigned int iterations = loopCount(node);
+		LoopInfo loop = loopCount(node);
 
-		if(iterations == 0)
+		if(loop.iterations == 0)
 		{
 			return false;
 		}
 
-		bool unroll = (iterations <= 4);
+		if(loop.isDeterministic())
+		{
+			 uniformIterators.insert(loop.index->getId());
+		}
+
+		bool unroll = (loop.iterations <= 4);
 
 		if(unroll)
 		{
 			LoopUnrollable loopUnrollable;
-			unroll = loopUnrollable.traverse(node);
+			unroll = loopUnrollable.traverse(node, loop.index->getId());
 		}
 
 		TIntermNode *init = node->getInit();
@@ -1873,7 +1878,7 @@ namespace glsl
 
 			if(unroll)
 			{
-				for(unsigned int i = 0; i < iterations; i++)
+				for(unsigned int i = 0; i < loop.iterations; i++)
 				{
 				//	condition->traverse(this);   // Condition could contain statements, but not in an unrollable loop
 
@@ -1920,6 +1925,11 @@ namespace glsl
 
 				emit(sw::Shader::OPCODE_ENDWHILE);
 			}
+		}
+
+		if(loop.isDeterministic())
+		{
+			 uniformIterators.erase(loop.index->getId());
 		}
 
 		return false;
@@ -2660,7 +2670,7 @@ namespace glsl
 								rel.index = relativeRegister.index;
 								rel.type = relativeRegister.type;
 								rel.scale = scale;
-								rel.deterministic = !(vertexShader && left->getQualifier() == EvqUniform);
+								rel.dynamic = (right->getQualifier() != EvqUniform) && (uniformIterators.count(right->getAsSymbolNode() ? right->getAsSymbolNode()->getId() : 0) == 0);
 							}
 						}
 						else if(rel.index != registerIndex(&address))   // Move the previous index register to the address register
@@ -3717,15 +3727,11 @@ namespace glsl
 	}
 
 	// Returns ~0u if no loop count could be determined
-	unsigned int OutputASM::loopCount(TIntermLoop *node)
+	OutputASM::LoopInfo OutputASM::loopCount(TIntermLoop *node)
 	{
 		// Parse loops of the form:
 		// for(int index = initial; index [comparator] limit; index += increment)
-		TIntermSymbol *index = 0;
-		TOperator comparator = EOpNull;
-		int initial = 0;
-		int limit = 0;
-		int increment = 0;
+		LoopInfo loop;
 
 		// Parse index name and intial value
 		if(node->getInit())
@@ -3750,8 +3756,8 @@ namespace glsl
 						{
 							if(constant->getBasicType() == EbtInt && constant->getNominalSize() == 1)
 							{
-								index = symbol;
-								initial = constant->getUnionArrayPointer()[0].getIConst();
+								loop.index = symbol;
+								loop.initial = constant->getUnionArrayPointer()[0].getIConst();
 							}
 						}
 					}
@@ -3760,12 +3766,12 @@ namespace glsl
 		}
 
 		// Parse comparator and limit value
-		if(index && node->getCondition())
+		if(loop.index && node->getCondition())
 		{
 			TIntermBinary *test = node->getCondition()->getAsBinaryNode();
 			TIntermSymbol *left = test ? test->getLeft()->getAsSymbolNode() : nullptr;
 
-			if(left && (left->getId() == index->getId()))
+			if(left && (left->getId() == loop.index->getId()))
 			{
 				TIntermConstantUnion *constant = test->getRight()->getAsConstantUnion();
 
@@ -3773,20 +3779,20 @@ namespace glsl
 				{
 					if(constant->getBasicType() == EbtInt && constant->getNominalSize() == 1)
 					{
-						comparator = test->getOp();
-						limit = constant->getUnionArrayPointer()[0].getIConst();
+						loop.comparator = test->getOp();
+						loop.limit = constant->getUnionArrayPointer()[0].getIConst();
 					}
 				}
 			}
 		}
 
 		// Parse increment
-		if(index && comparator != EOpNull && node->getExpression())
+		if(loop.index && node->getExpression())
 		{
 			TIntermBinary *binaryTerminal = node->getExpression()->getAsBinaryNode();
 			TIntermUnary *unaryTerminal = node->getExpression()->getAsUnaryNode();
 
-			if(binaryTerminal)
+			if(binaryTerminal && binaryTerminal->getLeft() == loop.index)
 			{
 				TOperator op = binaryTerminal->getOp();
 				TIntermConstantUnion *constant = binaryTerminal->getRight()->getAsConstantUnion();
@@ -3799,75 +3805,82 @@ namespace glsl
 
 						switch(op)
 						{
-						case EOpAddAssign: increment = value;  break;
-						case EOpSubAssign: increment = -value; break;
+						case EOpAddAssign: loop.increment = value;  break;
+						case EOpSubAssign: loop.increment = -value; break;
 						default: UNIMPLEMENTED();
 						}
 					}
 				}
 			}
-			else if(unaryTerminal)
+			else if(unaryTerminal && unaryTerminal->getOperand()->getAsSymbolNode()->getId() == loop.index->getId())
 			{
+				loop.index = unaryTerminal->getOperand()->getAsSymbolNode();
 				TOperator op = unaryTerminal->getOp();
 
 				switch(op)
 				{
-				case EOpPostIncrement: increment = 1;  break;
-				case EOpPostDecrement: increment = -1; break;
-				case EOpPreIncrement:  increment = 1;  break;
-				case EOpPreDecrement:  increment = -1; break;
+				case EOpPostIncrement: loop.increment = 1;  break;
+				case EOpPostDecrement: loop.increment = -1; break;
+				case EOpPreIncrement:  loop.increment = 1;  break;
+				case EOpPreDecrement:  loop.increment = -1; break;
 				default: UNIMPLEMENTED();
 				}
 			}
 		}
 
-		if(index && comparator != EOpNull && increment != 0)
+		// FIXME: Check that the iterator does not get modified in the loop body.
+
+
+
+		if(loop.index && loop.comparator != EOpNull && loop.increment != 0)
 		{
-			if(comparator == EOpLessThanEqual)
+			if(loop.comparator == EOpLessThanEqual)
 			{
-				comparator = EOpLessThan;
-				limit += 1;
+				loop.comparator = EOpLessThan;
+				loop.limit += 1;
 			}
-			else if(comparator == EOpGreaterThanEqual)
+			else if(loop.comparator == EOpGreaterThanEqual)
 			{
-				comparator = EOpLessThan;
-				limit -= 1;
-				std::swap(initial, limit);
-				increment = -increment;
+				loop.comparator = EOpLessThan;
+				loop.limit -= 1;
+				std::swap(loop.initial, loop.limit);
+				loop.increment = -loop.increment;
 			}
-			else if(comparator == EOpGreaterThan)
+			else if(loop.comparator == EOpGreaterThan)
 			{
-				comparator = EOpLessThan;
-				std::swap(initial, limit);
-				increment = -increment;
+				loop.comparator = EOpLessThan;
+				std::swap(loop.initial, loop.limit);
+				loop.increment = -loop.increment;
 			}
 
-			if(comparator == EOpLessThan)
+			if(loop.comparator == EOpLessThan)
 			{
-				if(!(initial < limit))   // Never loops
+				if(!(loop.initial < loop.limit))   // Never loops
 				{
-					return 0;
+					loop.iterations = 0;
+					return loop;
 				}
 
-				int iterations = (limit - initial + abs(increment) - 1) / increment;   // Ceiling division
+				loop.iterations = (loop.limit - loop.initial + abs(loop.increment) - 1) / loop.increment;   // Ceiling division
 
-				if(iterations < 0)
+				if(loop.iterations < 0)
 				{
-					return ~0u;
+					loop.iterations = ~0u;
+					return loop;
 				}
-
-				return iterations;
 			}
 			else UNIMPLEMENTED();   // Falls through
 		}
 
-		return ~0u;
+		return loop;
 	}
 
-	bool LoopUnrollable::traverse(TIntermNode *node)
+	bool LoopUnrollable::traverse(TIntermNode *node, int indexId)
 	{
-		loopDepth = 0;
 		loopUnrollable = true;
+
+		loopDepth = 0;
+		loopIndexId = indexId;
 
 		node->traverse(this);
 
@@ -3886,6 +3899,46 @@ namespace glsl
 		}
 
 		return true;
+	}
+
+	void LoopUnrollable::visitSymbol(TIntermSymbol *node)
+	{
+		// Check that the loop index is not used as the argument to a function out or inout parameter.
+		if(node->getId() == loopIndexId)
+		{
+			if(node->getQualifier() == EvqOut || node->getQualifier() == EvqInOut)
+			{
+				loopUnrollable = false;
+			}
+		}
+	}
+
+	bool LoopUnrollable::visitBinary(Visit visit, TIntermBinary *node)
+	{
+		if(!loopUnrollable)
+		{
+			return false;
+		}
+
+		// Check that the loop index is not statically assigned to.
+		TIntermSymbol *symbol = node->getLeft()->getAsSymbolNode();
+		loopUnrollable = node->modifiesState() && symbol && (symbol->getId() == loopIndexId);
+
+		return loopUnrollable;
+	}
+
+	bool LoopUnrollable::visitUnary(Visit visit, TIntermUnary *node)
+	{
+		if(!loopUnrollable)
+		{
+			return false;
+		}
+
+		// Check that the loop index is not statically assigned to.
+		TIntermSymbol *symbol = node->getOperand()->getAsSymbolNode();
+		loopUnrollable = node->modifiesState() && symbol && (symbol->getId() == loopIndexId);
+
+		return loopUnrollable;
 	}
 
 	bool LoopUnrollable::visitBranch(Visit visit, TIntermBranch *node)
