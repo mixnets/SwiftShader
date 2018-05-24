@@ -2660,7 +2660,7 @@ namespace glsl
 								rel.index = relativeRegister.index;
 								rel.type = relativeRegister.type;
 								rel.scale = scale;
-								rel.deterministic = !(vertexShader && left->getQualifier() == EvqUniform);
+								rel.dynamic = (right->getQualifier() != EvqUniform);
 							}
 						}
 						else if(rel.index != registerIndex(&address))   // Move the previous index register to the address register
