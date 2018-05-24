@@ -366,14 +366,18 @@ namespace sw
 							if(dst.z) pDst.z = r[dst.index].z;
 							if(dst.w) pDst.w = r[dst.index].w;
 						}
-						else
+						else if(dst.rel.invariant)
 						{
-							Int a = relativeAddress(dst);
+							Int a = relativeAddress(dst.rel);
 
 							if(dst.x) pDst.x = r[dst.index + a].x;
 							if(dst.y) pDst.y = r[dst.index + a].y;
 							if(dst.z) pDst.z = r[dst.index + a].z;
 							if(dst.w) pDst.w = r[dst.index + a].w;
+						}
+						else
+						{
+							
 						}
 						break;
 					case Shader::PARAMETER_COLOROUT:
@@ -384,14 +388,18 @@ namespace sw
 							if(dst.z) pDst.z = oC[dst.index].z;
 							if(dst.w) pDst.w = oC[dst.index].w;
 						}
-						else
+						else if(dst.rel.invariant)
 						{
-							Int a = relativeAddress(dst) + dst.index;
+							Int a = relativeAddress(dst.rel) + dst.index;
 
 							if(dst.x) pDst.x = oC[a].x;
 							if(dst.y) pDst.y = oC[a].y;
 							if(dst.z) pDst.z = oC[a].z;
 							if(dst.w) pDst.w = oC[a].w;
+						}
+						else
+						{
+							
 						}
 						break;
 					case Shader::PARAMETER_PREDICATE:
@@ -460,14 +468,18 @@ namespace sw
 						if(dst.z) r[dst.index].z = d.z;
 						if(dst.w) r[dst.index].w = d.w;
 					}
-					else
+					else if(dst.rel.invariant)
 					{
-						Int a = relativeAddress(dst);
+						Int a = relativeAddress(dst.rel);
 
 						if(dst.x) r[dst.index + a].x = d.x;
 						if(dst.y) r[dst.index + a].y = d.y;
 						if(dst.z) r[dst.index + a].z = d.z;
 						if(dst.w) r[dst.index + a].w = d.w;
+					}
+					else
+					{
+						
 					}
 					break;
 				case Shader::PARAMETER_COLOROUT:
@@ -480,15 +492,19 @@ namespace sw
 						if(dst.z) { oC[dst.index].z = d.z; }
 						if(dst.w) { oC[dst.index].w = d.w; }
 					}
-					else
+					else if(dst.rel.invariant)
 					{
 						broadcastColor0 = false;
-						Int a = relativeAddress(dst) + dst.index;
+						Int a = relativeAddress(dst.rel) + dst.index;
 
 						if(dst.x) { oC[a].x = d.x; }
 						if(dst.y) { oC[a].y = d.y; }
 						if(dst.z) { oC[a].z = d.z; }
 						if(dst.w) { oC[a].w = d.w; }
+					}
+					else
+					{
+						
 					}
 					break;
 				case Shader::PARAMETER_PREDICATE:
@@ -826,11 +842,64 @@ namespace sw
 			{
 				reg = r[i];
 			}
-			else
+			else if(src.rel.invariant)
 			{
-				Int a = relativeAddress(src, src.bufferIndex);
+				Int a = relativeAddress(src.rel, src.bufferIndex);
 
 				reg = r[i + a];
+			}
+			else
+			{
+				int component = src.rel.swizzle & 0x03;
+				Float4 a;
+
+				switch(src.rel.type)
+				{
+			//	case Shader::PARAMETER_ADDR:     a = a0[component]; break;
+				case Shader::PARAMETER_TEMP:     a = r[src.rel.index][component]; break;
+				case Shader::PARAMETER_INPUT:    a = v[src.rel.index][component]; break;
+				case Shader::PARAMETER_OUTPUT:   a = oC[src.rel.index][component]; break;
+				case Shader::PARAMETER_CONST:    a = *Pointer<Float>(uniformAddress(src.bufferIndex, src.rel.index) + component * sizeof(float)); break;
+				case Shader::PARAMETER_MISCTYPE:
+					if(src.rel.index == Shader::VPosIndex)
+					{
+						a = vPos.x;
+					}
+					else if(src.rel.index == Shader::VFaceIndex)
+					{
+						a = vFace.x;
+					}
+					else ASSERT(false);
+					break;
+				default: ASSERT(false);
+				}
+
+				Int4 index = Int4(i) + As<Int4>(a) * Int4(src.rel.scale);
+
+				Int index0 = Extract(index, 0);
+				Int index1 = Extract(index, 1);
+				Int index2 = Extract(index, 2);
+				Int index3 = Extract(index, 3);
+
+				reg.x.x = Extract(r[index0].x, 0);
+				reg.x.y = Extract(r[index1].x, 1);
+				reg.x.z = Extract(r[index2].x, 2);
+				reg.x.w = Extract(r[index3].x, 3);
+
+				reg.y.x = Extract(r[index0].y, 0);
+				reg.y.y = Extract(r[index1].y, 1);
+				reg.y.z = Extract(r[index2].y, 2);
+				reg.y.w = Extract(r[index3].y, 3);
+
+				reg.z.x = Extract(r[index0].z, 0);
+				reg.z.y = Extract(r[index1].z, 1);
+				reg.z.z = Extract(r[index2].z, 2);
+				reg.z.w = Extract(r[index3].z, 3);
+
+				reg.w.x = Extract(r[index0].w, 0);
+				reg.w.y = Extract(r[index1].w, 1);
+				reg.w.z = Extract(r[index2].w, 2);
+				reg.w.w = Extract(r[index3].w, 3);
 			}
 			break;
 		case Shader::PARAMETER_INPUT:
@@ -839,11 +908,15 @@ namespace sw
 				{
 					reg = v[i];
 				}
-				else
+				else if(src.rel.invariant)
 				{
-					Int a = relativeAddress(src, src.bufferIndex);
+					Int a = relativeAddress(src.rel, src.bufferIndex);
 
 					reg = v[i + a];
+				}
+				else
+				{
+
 				}
 			}
 			break;
@@ -883,11 +956,15 @@ namespace sw
 			{
 				reg = oC[i];
 			}
-			else
+			else if(src.rel.invariant)
 			{
-				Int a = relativeAddress(src, src.bufferIndex);
+				Int a = relativeAddress(src.rel, src.bufferIndex);
 
 				reg = oC[i + a];
+			}
+			else
+			{
+				
 			}
 			break;
 		case Shader::PARAMETER_DEPTHOUT:
@@ -1006,9 +1083,9 @@ namespace sw
 			c.z = c.z.zzzz;
 			c.w = c.w.wwww;
 		}
-		else
+		else if(src.rel.invariant)
 		{
-			Int a = relativeAddress(src, src.bufferIndex);
+			Int a = relativeAddress(src.rel, src.bufferIndex);
 
 			c.x = c.y = c.z = c.w = *Pointer<Float4>(uniformAddress(src.bufferIndex, i, a));
 
@@ -1017,31 +1094,35 @@ namespace sw
 			c.z = c.z.zzzz;
 			c.w = c.w.wwww;
 		}
+		else
+		{
+			
+		}
 
 		return c;
 	}
 
-	Int PixelProgram::relativeAddress(const Shader::Parameter &var, int bufferIndex)
+	Int PixelProgram::relativeAddress(const Shader::Relative &rel, int bufferIndex)
 	{
-		ASSERT(var.rel.deterministic);
+		ASSERT(rel.invariant);
 
-		if(var.rel.type == Shader::PARAMETER_TEMP)
+		if(rel.type == Shader::PARAMETER_TEMP)
 		{
-			return As<Int>(Extract(r[var.rel.index].x, 0)) * var.rel.scale;
+			return As<Int>(Extract(r[rel.index].x, 0)) * rel.scale;
 		}
-		else if(var.rel.type == Shader::PARAMETER_INPUT)
+		else if(rel.type == Shader::PARAMETER_INPUT)
 		{
-			return As<Int>(Extract(v[var.rel.index].x, 0)) * var.rel.scale;
+			return As<Int>(Extract(v[rel.index].x, 0)) * rel.scale;
 		}
-		else if(var.rel.type == Shader::PARAMETER_OUTPUT)
+		else if(rel.type == Shader::PARAMETER_OUTPUT)
 		{
-			return As<Int>(Extract(oC[var.rel.index].x, 0)) * var.rel.scale;
+			return As<Int>(Extract(oC[rel.index].x, 0)) * rel.scale;
 		}
-		else if(var.rel.type == Shader::PARAMETER_CONST)
+		else if(rel.type == Shader::PARAMETER_CONST)
 		{
-			return *Pointer<Int>(uniformAddress(bufferIndex, var.rel.index)) * var.rel.scale;
+			return *Pointer<Int>(uniformAddress(bufferIndex, rel.index)) * rel.scale;
 		}
-		else if(var.rel.type == Shader::PARAMETER_LOOP)
+		else if(rel.type == Shader::PARAMETER_LOOP)
 		{
 			return aL[loopDepth];
 		}

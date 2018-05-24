@@ -557,7 +557,7 @@ namespace sw
 							if(dst.z) o[dst.index].z = d.z;
 							if(dst.w) o[dst.index].w = d.w;
 						}
-						else
+						else if(dst.rel.invariant)
 						{
 							Int a = relativeAddress(dst);
 
@@ -565,6 +565,10 @@ namespace sw
 							if(dst.y) o[dst.index + a].y = d.y;
 							if(dst.z) o[dst.index + a].z = d.z;
 							if(dst.w) o[dst.index + a].w = d.w;
+						}
+						else
+						{
+							
 						}
 					}
 					break;
@@ -837,61 +841,58 @@ namespace sw
 			c.z = c.z.zzzz;
 			c.w = c.w.wwww;
 		}
+		else if(src.rel.invariant)
+		{
+			Int a = relativeAddress(src, src.bufferIndex);
+
+			c.x = c.y = c.z = c.w = *Pointer<Float4>(uniformAddress(src.bufferIndex, i, a));
+
+			c.x = c.x.xxxx;
+			c.y = c.y.yyyy;
+			c.z = c.z.zzzz;
+			c.w = c.w.wwww;
+		}
 		else
 		{
-			if(src.rel.deterministic)
+			int component = src.rel.swizzle & 0x03;
+			Float4 a;
+
+			switch(src.rel.type)
 			{
-				Int a = relativeAddress(src, src.bufferIndex);
-
-				c.x = c.y = c.z = c.w = *Pointer<Float4>(uniformAddress(src.bufferIndex, i, a));
-
-				c.x = c.x.xxxx;
-				c.y = c.y.yyyy;
-				c.z = c.z.zzzz;
-				c.w = c.w.wwww;
-			}
-			else
-			{
-				int component = src.rel.swizzle & 0x03;
-				Float4 a;
-
-				switch(src.rel.type)
+			case Shader::PARAMETER_ADDR:     a = a0[component]; break;
+			case Shader::PARAMETER_TEMP:     a = r[src.rel.index][component]; break;
+			case Shader::PARAMETER_INPUT:    a = v[src.rel.index][component]; break;
+			case Shader::PARAMETER_OUTPUT:   a = o[src.rel.index][component]; break;
+			case Shader::PARAMETER_CONST:    a = *Pointer<Float>(uniformAddress(src.bufferIndex, src.rel.index) + component * sizeof(float)); break;
+			case Shader::PARAMETER_MISCTYPE:
+				if(src.rel.index == Shader::InstanceIDIndex)
 				{
-				case Shader::PARAMETER_ADDR:     a = a0[component]; break;
-				case Shader::PARAMETER_TEMP:     a = r[src.rel.index][component]; break;
-				case Shader::PARAMETER_INPUT:    a = v[src.rel.index][component]; break;
-				case Shader::PARAMETER_OUTPUT:   a = o[src.rel.index][component]; break;
-				case Shader::PARAMETER_CONST:    a = *Pointer<Float>(uniformAddress(src.bufferIndex, src.rel.index) + component * sizeof(float)); break;
-				case Shader::PARAMETER_MISCTYPE:
-					if(src.rel.index == Shader::InstanceIDIndex)
-					{
-						a = As<Float4>(Int4(instanceID)); break;
-					}
-					else if(src.rel.index == Shader::VertexIDIndex)
-					{
-						a = As<Float4>(vertexID); break;
-					}
-					else ASSERT(false);
-					break;
-				default: ASSERT(false);
+					a = As<Float4>(Int4(instanceID));
 				}
-
-				Int4 index = Int4(i) + As<Int4>(a) * Int4(src.rel.scale);
-
-				index = Min(As<UInt4>(index), UInt4(VERTEX_UNIFORM_VECTORS));   // Clamp to constant register range, c[VERTEX_UNIFORM_VECTORS] = {0, 0, 0, 0}
-
-				Int index0 = Extract(index, 0);
-				Int index1 = Extract(index, 1);
-				Int index2 = Extract(index, 2);
-				Int index3 = Extract(index, 3);
-
-				c.x = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index0), 16);
-				c.y = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index1), 16);
-				c.z = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index2), 16);
-				c.w = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index3), 16);
-
-				transpose4x4(c.x, c.y, c.z, c.w);
+				else if(src.rel.index == Shader::VertexIDIndex)
+				{
+					a = As<Float4>(vertexID);
+				}
+				else ASSERT(false);
+				break;
+			default: ASSERT(false);
 			}
+
+			Int4 index = Int4(i) + As<Int4>(a) * Int4(src.rel.scale);
+
+			index = Min(As<UInt4>(index), UInt4(VERTEX_UNIFORM_VECTORS));   // Clamp to constant register range, c[VERTEX_UNIFORM_VECTORS] = {0, 0, 0, 0}
+
+			Int index0 = Extract(index, 0);
+			Int index1 = Extract(index, 1);
+			Int index2 = Extract(index, 2);
+			Int index3 = Extract(index, 3);
+
+			c.x = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index0), 16);
+			c.y = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index1), 16);
+			c.z = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index2), 16);
+			c.w = *Pointer<Float4>(uniformAddress(src.bufferIndex, 0, index3), 16);
+
+			transpose4x4(c.x, c.y, c.z, c.w);
 		}
 
 		return c;
@@ -899,7 +900,7 @@ namespace sw
 
 	Int VertexProgram::relativeAddress(const Shader::Parameter &var, int bufferIndex)
 	{
-		ASSERT(var.rel.deterministic);
+		ASSERT(var.rel.invariant);
 
 		if(var.rel.type == Shader::PARAMETER_TEMP)
 		{
