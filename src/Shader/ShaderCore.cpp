@@ -560,6 +560,40 @@ namespace sw
 		}
 	}
 
+	Vector4f RegisterFile::operator[](RValue<Int4> index)
+	{
+		ASSERT(dynamic);
+
+		Int index0 = Extract(index, 0);
+		Int index1 = Extract(index, 1);
+		Int index2 = Extract(index, 2);
+		Int index3 = Extract(index, 3);
+
+		Vector4f r;
+
+		r.x.x = Extract(x[0][index0], 0);
+		r.x.y = Extract(x[0][index1], 1);
+		r.x.z = Extract(x[0][index2], 2);
+		r.x.w = Extract(x[0][index3], 3);
+
+		r.y.x = Extract(y[0][index0], 0);
+		r.y.y = Extract(y[0][index1], 1);
+		r.y.z = Extract(y[0][index2], 2);
+		r.y.w = Extract(y[0][index3], 3);
+
+		r.z.x = Extract(z[0][index0], 0);
+		r.z.y = Extract(z[0][index1], 1);
+		r.z.z = Extract(z[0][index2], 2);
+		r.z.w = Extract(z[0][index3], 3);
+
+		r.w.x = Extract(w[0][index0], 0);
+		r.w.y = Extract(w[0][index1], 1);
+		r.w.z = Extract(w[0][index2], 2);
+		r.w.w = Extract(w[0][index3], 3);
+
+		return r;
+	}
+
 	void ShaderCore::mov(Vector4f &dst, const Vector4f &src, bool integerDestination)
 	{
 		if(integerDestination)
