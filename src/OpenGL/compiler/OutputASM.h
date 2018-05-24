@@ -316,7 +316,24 @@ namespace glsl
 
 		static int dim(TIntermNode *v);
 		static int dim2(TIntermNode *m);
-		static unsigned int loopCount(TIntermLoop *node);
+
+		struct LoopInfo
+		{
+			bool cool()
+			{
+				return index && increment != 0;
+			}
+
+			TIntermSymbol *index = nullptr;
+			TOperator comparator = EOpNull;
+			int initial = 0;
+			int limit = 0;
+			int increment = 0;
+
+			int iterations = ~0u;
+		};
+
+		static LoopInfo loopCount(TIntermLoop *node);
 
 		Shader *const shaderObject;
 		sw::Shader *shader;
@@ -356,6 +373,8 @@ namespace glsl
 		std::vector<Function> functionArray;
 
 		TQualifier outputQualifier;
+
+		std::set<int> uniformIterators;
 
 		TParseContext &mContext;
 	};
