@@ -4,7 +4,7 @@
 
  @Title        OpenGL ES 2.0 HelloAPI Tutorial
 
- @Version      
+ @Version
 
  @Copyright    Copyright (c) Imagination Technologies Limited.
 
@@ -142,16 +142,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// Fragment and vertex shaders code
 	char* pszFragShader = "\
+		#version 300 es\n\
+		precision mediump float;\
+		in vec4 color;\
+		out vec4 fragColor;\
 		void main (void)\
 		{\
-			gl_FragColor = vec4(1.0, 1.0, 0.66 ,1.0);\
+			fragColor = color;\
 		}";
 	char* pszVertShader = "\
-		attribute highp vec4	myVertex;\
+		#version 300 es\n\
+		in highp vec4	myVertex;\
+		out highp vec4 color;\
 		uniform mediump mat4	myPMVMatrix;\
 		void main(void)\
 		{\
+			float a[3] = float[3](1.0, 0.75, 0.5);\
+			float b[3] = float[3](0.0, 0.0, 0.0);\
 			gl_Position = myPMVMatrix * myVertex;\
+			for(int i = 0; i < 3; i++) b[i] = a[i];\
+			int i = gl_VertexID;\
+			color = vec4(b[i], b[i], b[i], b[i]);\
 		}";
 
 	/*
@@ -295,7 +306,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		like textures will only be valid inside this context
 		(or shared contexts)
 	*/
-	EGLint ai32ContextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
+	EGLint ai32ContextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 3, EGL_NONE };
 	eglContext = eglCreateContext(eglDisplay, eglConfig, NULL, ai32ContextAttribs);
 	if (!TestEGLError(hWnd, "eglCreateContext"))
 	{
@@ -419,7 +430,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 
 	// We're going to draw a triangle to the screen so create a vertex buffer object for our triangle
 	GLuint	ui32Vbo; // Vertex buffer object handle
-	
+
 	// Interleaved vertex data
 	GLfloat afVertices[] = {	-0.4f,-0.4f,0.0f, // Position
 								0.4f ,-0.4f,0.0f,
