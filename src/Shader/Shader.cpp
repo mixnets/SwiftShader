@@ -1898,10 +1898,7 @@ namespace sw
 
 		for(const auto &inst : instruction)
 		{
-			if(inst->dst.rel.type == PARAMETER_ADDR ||
-			   inst->dst.rel.type == PARAMETER_LOOP ||
-			   inst->dst.rel.type == PARAMETER_TEMP ||
-			   inst->dst.rel.type == PARAMETER_CONST)
+			if(inst->dst.rel.type != PARAMETER_VOID && inst->dst.rel.dynamic)
 			{
 				switch(inst->dst.type)
 				{
@@ -1914,10 +1911,7 @@ namespace sw
 
 			for(int j = 0; j < 3; j++)
 			{
-				if(inst->src[j].rel.type == PARAMETER_ADDR ||
-				   inst->src[j].rel.type == PARAMETER_LOOP ||
-				   inst->src[j].rel.type == PARAMETER_TEMP ||
-				   inst->src[j].rel.type == PARAMETER_CONST)
+				if(inst->src[j].rel.type != PARAMETER_VOID && inst->src[j].rel.dynamic)
 				{
 					switch(inst->src[j].type)
 					{

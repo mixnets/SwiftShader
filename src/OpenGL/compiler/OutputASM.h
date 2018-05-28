@@ -374,6 +374,8 @@ namespace glsl
 
 		TQualifier outputQualifier;
 
+		std::set<int> uniformLoopIndexIds;
+
 		TParseContext &mContext;
 	};
 
