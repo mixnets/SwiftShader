@@ -1872,6 +1872,8 @@ namespace glsl
 
 			if(unroll)
 			{
+				mContext.info(node->getLine(), "loop unrolled", "for");
+
 				for(unsigned int i = 0; i < loop.iterations; i++)
 				{
 				//	condition->traverse(this);   // Condition could contain statements, but not in an unrollable loop
@@ -3886,30 +3888,16 @@ namespace glsl
 		}
 	}
 
-	bool LoopUnrollable::traverse(TIntermNode *node, int indexId)
+	bool LoopUnrollable::traverse(TIntermLoop *loop, int indexId)
 	{
 		loopUnrollable = true;
 
-		loopDepth = 0;
 		loopIndexId = indexId;
 
-		node->traverse(this);
+		TIntermNode *body = loop->getBody();
+		body->traverse(this);
 
 		return loopUnrollable;
-	}
-
-	bool LoopUnrollable::visitLoop(Visit visit, TIntermLoop *loop)
-	{
-		if(visit == PreVisit)
-		{
-			loopDepth++;
-		}
-		else if(visit == PostVisit)
-		{
-			loopDepth++;
-		}
-
-		return true;
 	}
 
 	void LoopUnrollable::visitSymbol(TIntermSymbol *node)
@@ -3933,7 +3921,7 @@ namespace glsl
 
 		// Check that the loop index is not statically assigned to.
 		TIntermSymbol *symbol = node->getLeft()->getAsSymbolNode();
-		loopUnrollable = node->modifiesState() && symbol && (symbol->getId() == loopIndexId);
+		loopUnrollable = !(node->modifiesState() && symbol && (symbol->getId() == loopIndexId));
 
 		return loopUnrollable;
 	}
@@ -3947,7 +3935,7 @@ namespace glsl
 
 		// Check that the loop index is not statically assigned to.
 		TIntermSymbol *symbol = node->getOperand()->getAsSymbolNode();
-		loopUnrollable = node->modifiesState() && symbol && (symbol->getId() == loopIndexId);
+		loopUnrollable = !(node->modifiesState() && symbol && (symbol->getId() == loopIndexId));
 
 		return loopUnrollable;
 	}
@@ -3959,16 +3947,10 @@ namespace glsl
 			return false;
 		}
 
-		if(!loopDepth)
-		{
-			return true;
-		}
-
 		switch(node->getFlowOp())
 		{
 		case EOpKill:
 		case EOpReturn:
-			break;
 		case EOpBreak:
 		case EOpContinue:
 			loopUnrollable = false;
