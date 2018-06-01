@@ -170,21 +170,18 @@ namespace sw
 		float h = sRect.height() / dRect.height();
 
 		const float xStart = sRect.x0 + 0.5f * w;
-		float y = sRect.y0 + 0.5f * h;
 
 		for(int j = dRect.y0; j < dRect.y1; j++)
 		{
-			float x = xStart;
+			float y = sRect.y0 + 0.5f * h + j * h;
 
 			for(int i = dRect.x0; i < dRect.x1; i++)
 			{
+				float x = xStart + i * w;
+
 				// FIXME: Support RGBA mask
 				dest->copyInternal(source, i, j, x, y, options.filter);
-
-				x += w;
 			}
-
-			y += h;
 		}
 
 		source->unlockInternal();
@@ -200,21 +197,21 @@ namespace sw
 		float h = static_cast<float>(source->getHeight()) / static_cast<float>(dest->getHeight());
 		float d = static_cast<float>(source->getDepth())  / static_cast<float>(dest->getDepth());
 
-		float z = 0.5f * d;
 		for(int k = 0; k < dest->getDepth(); k++)
 		{
-			float y = 0.5f * h;
+			float z = (k + 0.5f) * d;
+
 			for(int j = 0; j < dest->getHeight(); j++)
 			{
-				float x = 0.5f * w;
+				float y = (j + 0.5f) * h;
+
 				for(int i = 0; i < dest->getWidth(); i++)
 				{
+					float x = (i + 0.5f) * w;
+
 					dest->copyInternal(source, i, j, k, x, y, z, true);
-					x += w;
 				}
-				y += h;
 			}
-			z += d;
 		}
 
 		source->unlockInternal();
@@ -1237,15 +1234,14 @@ namespace sw
 				}
 			}
 
-			Float y = y0;
-
 			For(Int j = y0d, j < y1d, j++)
 			{
-				Float x = x0;
+				Float y = state.clearOperation ? y0 : y0 + Float(j) * h;
 				Pointer<Byte> destLine = dest + (dstQuadLayout ? j & Int(~1) : RValue<Int>(j)) * dPitchB;
 
 				For(Int i = x0d, i < x1d, i++)
 				{
+					Float x = state.clearOperation ? x0 : x0 + Float(i) * w;
 					Pointer<Byte> d = destLine + (dstQuadLayout ? (((j & Int(1)) << 1) + (i * 2) - (i & Int(1))) : RValue<Int>(i)) * dstBytes;
 
 					if(hasConstantColorI)
@@ -1379,11 +1375,7 @@ namespace sw
 							d += *Pointer<Int>(blit + OFFSET(BlitData,dSliceB));
 						}
 					}
-
-					if(!state.clearOperation) { x += w; }
 				}
-
-				if(!state.clearOperation) { y += h; }
 			}
 		}
 
