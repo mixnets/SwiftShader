@@ -67,7 +67,12 @@ class ClientBuffer
 {
 public:
 	ClientBuffer(int width, int height, sw::Format format, void* buffer, size_t plane)
-		: width(width), height(height), format(format), buffer(buffer), plane(plane)
+		: width(width), height(height), format(format), buffer(buffer), plane(plane), lock_count(0)
+	{}
+
+	ClientBuffer(const ClientBuffer& clientBuffer)
+	: width(clientBuffer.width), height(clientBuffer.height), format(clientBuffer.format),
+	  buffer(clientBuffer.buffer), plane(clientBuffer.plane), lock_count(0)
 	{}
 
 	int getWidth() const;
@@ -86,6 +91,7 @@ private:
 	sw::Format format;
 	void* buffer;
 	size_t plane;
+	sw::AtomicInt lock_count;
 };
 
 class [[clang::lto_visibility_public]] Image : public sw::Surface, public gl::Object

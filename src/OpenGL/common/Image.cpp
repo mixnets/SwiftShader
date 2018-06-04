@@ -1282,7 +1282,9 @@ namespace egl
 #if defined(__APPLE__)
 		if(buffer)
 		{
-			CFRetain(reinterpret_cast<IOSurfaceRef>(buffer));
+			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(buffer);
+			IOSurfaceIncrementUseCount(ioSurface);
+			CFRetain(ioSurface);
 		}
 #endif
 	}
@@ -1292,7 +1294,9 @@ namespace egl
 #if defined(__APPLE__)
 		if(buffer)
 		{
-			CFRelease(reinterpret_cast<IOSurfaceRef>(buffer));
+			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(buffer);
+			IOSurfaceDecrementUseCount(ioSurface);
+			CFRelease(ioSurface);
 			buffer = nullptr;
 		}
 #endif
@@ -1304,7 +1308,10 @@ namespace egl
 		if(buffer)
 		{
 			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(buffer);
-			IOSurfaceLock(ioSurface, 0, nullptr);
+			if(!lock_count) {
+				IOSurfaceLock(ioSurface, 0, nullptr);
+			}
+			lock_count++;
 			void* pixels = IOSurfaceGetBaseAddressOfPlane(ioSurface, plane);
 			int bytes = sw::Surface::bytes(format);
 			int pitchB = static_cast<int>(IOSurfaceGetBytesPerRowOfPlane(ioSurface, plane));
@@ -1327,7 +1334,9 @@ namespace egl
 		if(buffer)
 		{
 			IOSurfaceRef ioSurface = reinterpret_cast<IOSurfaceRef>(buffer);
-			IOSurfaceUnlock(ioSurface, 0, nullptr);
+			if(!lock_count--) {
+				IOSurfaceUnlock(ioSurface, 0, nullptr);
+			}
 		}
 #endif
 	}
