@@ -328,6 +328,7 @@ function_call_or_method
 
 function_call_generic
     : function_call_header_with_parameters RIGHT_PAREN {
+		$1.intermAggregate->setOp(EOpDeclaration);
         $$ = $1;
     }
     | function_call_header_no_parameters RIGHT_PAREN {
@@ -351,7 +352,7 @@ function_call_header_with_parameters
         TParameter param = { 0, new TType($2->getType()) };
         $1->addParameter(param);
         $$.function = $1;
-        $$.nodePair.node1 = $2;
+        $$.nodePair.node1 = context->intermediate.makeAggregate($2, @2);
     }
     | function_call_header_with_parameters COMMA assignment_expression {
         TParameter param = { 0, new TType($3->getType()) };
