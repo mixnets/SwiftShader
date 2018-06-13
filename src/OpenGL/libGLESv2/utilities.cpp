@@ -1185,12 +1185,13 @@ namespace es2
 		case GL_RG16F:
 		case GL_RGB16F:
 		case GL_RGBA16F:
+		case GL_BGRA8_EXT:   // GL_EXT_texture_format_BGRA8888
+			return true;
 		case GL_R32F:
 		case GL_RG32F:
 		case GL_RGB32F:
 		case GL_RGBA32F:
-		case GL_BGRA8_EXT:   // GL_EXT_texture_format_BGRA8888
-			return true;
+			return clientVersion >= 3;   // GL_EXT_color_buffer_float, OpenGL ES 3.0+ only.
 		case GL_R8UI:
 		case GL_R8I:
 		case GL_R16UI:
