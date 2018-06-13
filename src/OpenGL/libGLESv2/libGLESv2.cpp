@@ -183,8 +183,6 @@ void BindBuffer(GLenum target, GLuint buffer)
 
 	if(context)
 	{
-		GLint clientVersion = egl::getClientVersion();
-
 		switch(target)
 		{
 		case GL_ARRAY_BUFFER:
@@ -194,47 +192,23 @@ void BindBuffer(GLenum target, GLuint buffer)
 			context->bindElementArrayBuffer(buffer);
 			return;
 		case GL_COPY_READ_BUFFER:
-			if(clientVersion >= 3)
-			{
-				context->bindCopyReadBuffer(buffer);
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			context->bindCopyReadBuffer(buffer);
+			return;
 		case GL_COPY_WRITE_BUFFER:
-			if(clientVersion >= 3)
-			{
-				context->bindCopyWriteBuffer(buffer);
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			context->bindCopyWriteBuffer(buffer);
+			return;
 		case GL_PIXEL_PACK_BUFFER:
-			if(clientVersion >= 3)
-			{
-				context->bindPixelPackBuffer(buffer);
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			context->bindPixelPackBuffer(buffer);
+			return;
 		case GL_PIXEL_UNPACK_BUFFER:
-			if(clientVersion >= 3)
-			{
-				context->bindPixelUnpackBuffer(buffer);
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			context->bindPixelUnpackBuffer(buffer);
+			return;
 		case GL_TRANSFORM_FEEDBACK_BUFFER:
-			if(clientVersion >= 3)
-			{
-				context->bindTransformFeedbackBuffer(buffer);
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			context->bindTransformFeedbackBuffer(buffer);
+			return;
 		case GL_UNIFORM_BUFFER:
-			if(clientVersion >= 3)
-			{
-				context->bindGenericUniformBuffer(buffer);
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			context->bindGenericUniformBuffer(buffer);
+			return;
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -398,8 +372,6 @@ void BlendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dst
 	TRACE("(GLenum srcRGB = 0x%X, GLenum dstRGB = 0x%X, GLenum srcAlpha = 0x%X, GLenum dstAlpha = 0x%X)",
 	      srcRGB, dstRGB, srcAlpha, dstAlpha);
 
-	GLint clientVersion = egl::getClientVersion();
-
 	switch(srcRGB)
 	{
 	case GL_ZERO:
@@ -440,10 +412,6 @@ void BlendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dst
 	case GL_ONE_MINUS_CONSTANT_ALPHA:
 		break;
 	case GL_SRC_ALPHA_SATURATE:
-		if(clientVersion < 3)
-		{
-			return error(GL_INVALID_ENUM);
-		}
 		break;
 	default:
 		return error(GL_INVALID_ENUM);
@@ -489,10 +457,6 @@ void BlendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dst
 	case GL_ONE_MINUS_CONSTANT_ALPHA:
 		break;
 	case GL_SRC_ALPHA_SATURATE:
-		if(clientVersion < 3)
-		{
-			return error(GL_INVALID_ENUM);
-		}
 		break;
 	default:
 		return error(GL_INVALID_ENUM);
@@ -518,8 +482,6 @@ void BufferData(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage
 		return error(GL_INVALID_VALUE);
 	}
 
-	GLint clientVersion = egl::getClientVersion();
-
 	switch(usage)
 	{
 	case GL_STREAM_DRAW:
@@ -532,10 +494,6 @@ void BufferData(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage
 	case GL_STATIC_COPY:
 	case GL_DYNAMIC_READ:
 	case GL_DYNAMIC_COPY:
-		if(clientVersion < 3)
-		{
-			return error(GL_INVALID_ENUM);
-		}
 		break;
 	default:
 		return error(GL_INVALID_ENUM);
@@ -744,7 +702,7 @@ void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLs
 		return error(GL_INVALID_VALUE);
 	}
 
-	if(!IsCompressed(internalformat, egl::getClientVersion()))
+	if(!IsCompressed(internalformat))
 	{
 		return error(GL_INVALID_ENUM);
 	}
@@ -879,7 +837,7 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 		{
 			es2::Texture2D *texture = context->getTexture2D(target);
 
-			GLenum validationError = ValidateSubImageParams(true, false, target, level, xoffset, yoffset, width, height, format, GL_NONE, texture, context->getClientVersion());
+			GLenum validationError = ValidateSubImageParams(true, false, target, level, xoffset, yoffset, width, height, format, GL_NONE, texture);
 			if(validationError != GL_NO_ERROR)
 			{
 				return error(validationError);
@@ -891,7 +849,7 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 		{
 			es2::TextureCubeMap *texture = context->getTextureCubeMap();
 
-			GLenum validationError = ValidateSubImageParams(true, false, target, level, xoffset, yoffset, width, height, format, GL_NONE, texture, context->getClientVersion());
+			GLenum validationError = ValidateSubImageParams(true, false, target, level, xoffset, yoffset, width, height, format, GL_NONE, texture);
 			if(validationError != GL_NO_ERROR)
 			{
 				return error(validationError);
@@ -1096,7 +1054,7 @@ void CopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset,
 		}
 		else UNREACHABLE(target);
 
-		GLenum validationError = ValidateSubImageParams(false, true, target, level, xoffset, yoffset, width, height, GL_NONE, GL_NONE, texture, context->getClientVersion());
+		GLenum validationError = ValidateSubImageParams(false, true, target, level, xoffset, yoffset, width, height, GL_NONE, GL_NONE, texture);
 		if(validationError != GL_NO_ERROR)
 		{
 			return error(validationError);
@@ -2243,7 +2201,7 @@ void GenerateMipmap(GLenum target)
 			return error(GL_INVALID_ENUM);
 		}
 
-		if(!IsMipmappable(texture->getFormat(target, texture->getBaseLevel()), clientVersion))
+		if(!IsMipmappable(texture->getFormat(target, texture->getBaseLevel())))
 		{
 			return error(GL_INVALID_OPERATION);
 		}
@@ -3107,8 +3065,6 @@ void GetProgramiv(GLuint program, GLenum pname, GLint* params)
 			}
 		}
 
-		GLint clientVersion = egl::getClientVersion();
-
 		switch(pname)
 		{
 		case GL_DELETE_STATUS:
@@ -3139,54 +3095,26 @@ void GetProgramiv(GLuint program, GLenum pname, GLint* params)
 			*params = programObject->getActiveUniformMaxLength();
 			return;
 		case GL_ACTIVE_UNIFORM_BLOCKS:
-			if(clientVersion >= 3)
-			{
-				*params = (GLint)programObject->getActiveUniformBlockCount();
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			*params = (GLint)programObject->getActiveUniformBlockCount();
+			return;
 		case GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH:
-			if(clientVersion >= 3)
-			{
-				*params = programObject->getActiveUniformBlockMaxLength();
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			*params = programObject->getActiveUniformBlockMaxLength();
+			return;
 		case GL_TRANSFORM_FEEDBACK_BUFFER_MODE:
-			if(clientVersion >= 3)
-			{
-				*params = programObject->getTransformFeedbackBufferMode();
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			*params = programObject->getTransformFeedbackBufferMode();
+			return;
 		case GL_TRANSFORM_FEEDBACK_VARYINGS:
-			if(clientVersion >= 3)
-			{
-				*params = programObject->getTransformFeedbackVaryingCount();
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			*params = programObject->getTransformFeedbackVaryingCount();
+			return;
 		case GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH:
-			if(clientVersion >= 3)
-			{
-				*params = programObject->getTransformFeedbackVaryingMaxLength();
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			*params = programObject->getTransformFeedbackVaryingMaxLength();
+			return;
 		case GL_PROGRAM_BINARY_RETRIEVABLE_HINT:
-			if(clientVersion >= 3)
-			{
-				*params = programObject->getBinaryRetrievableHint();
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			*params = programObject->getBinaryRetrievableHint();
+			return;
 		case GL_PROGRAM_BINARY_LENGTH:
-			if(clientVersion >= 3)
-			{
-				*params = programObject->getBinaryLength();
-				return;
-			}
-			else return error(GL_INVALID_ENUM);
+			*params = programObject->getBinaryLength();
+			return;
 		default:
 			return error(GL_INVALID_ENUM);
 		}
@@ -4650,19 +4578,19 @@ void RenderbufferStorageMultisample(GLenum target, GLsizei samples, GLenum inter
 
 		GLint clientVersion = context->getClientVersion();
 
-		if(IsColorRenderable(internalformat, clientVersion))
+		if(IsColorRenderable(internalformat))
 		{
 			context->setRenderbufferStorage(new es2::Colorbuffer(width, height, internalformat, samples));
 		}
-		else if(IsDepthRenderable(internalformat, clientVersion) && IsStencilRenderable(internalformat, clientVersion))
+		else if(IsDepthRenderable(internalformat) && IsStencilRenderable(internalformat))
 		{
 			context->setRenderbufferStorage(new es2::DepthStencilbuffer(width, height, internalformat, samples));
 		}
-		else if(IsDepthRenderable(internalformat, clientVersion))
+		else if(IsDepthRenderable(internalformat))
 		{
 			context->setRenderbufferStorage(new es2::Depthbuffer(width, height, internalformat, samples));
 		}
-		else if(IsStencilRenderable(internalformat, clientVersion))
+		else if(IsStencilRenderable(internalformat))
 		{
 			context->setRenderbufferStorage(new es2::Stencilbuffer(width, height, samples));
 		}
@@ -4996,7 +4924,7 @@ void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width,
 			}
 		}
 
-		GLenum validationError = ValidateTextureFormatType(format, type, internalformat, target, clientVersion);
+		GLenum validationError = ValidateTextureFormatType(format, type, internalformat, target);
 		if(validationError != GL_NO_ERROR)
 		{
 			return error(validationError);
@@ -5420,7 +5348,7 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 		{
 			es2::Texture2D *texture = context->getTexture2D(target);
 
-			GLenum validationError = ValidateSubImageParams(false, false, target, level, xoffset, yoffset, width, height, format, type, texture, context->getClientVersion());
+			GLenum validationError = ValidateSubImageParams(false, false, target, level, xoffset, yoffset, width, height, format, type, texture);
 			if(validationError != GL_NO_ERROR)
 			{
 				return error(validationError);
@@ -5438,7 +5366,7 @@ void TexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLs
 		{
 			es2::TextureCubeMap *texture = context->getTextureCubeMap();
 
-			GLenum validationError = ValidateSubImageParams(false, false, target, level, xoffset, yoffset, width, height, format, type, texture, context->getClientVersion());
+			GLenum validationError = ValidateSubImageParams(false, false, target, level, xoffset, yoffset, width, height, format, type, texture);
 			if(validationError != GL_NO_ERROR)
 			{
 				return error(validationError);
@@ -6100,8 +6028,6 @@ void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normal
 		return error(GL_INVALID_VALUE);
 	}
 
-	GLint clientVersion = egl::getClientVersion();
-
 	switch(type)
 	{
 	case GL_BYTE:
@@ -6115,22 +6041,13 @@ void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normal
 		break;
 	case GL_INT_2_10_10_10_REV:
 	case GL_UNSIGNED_INT_2_10_10_10_REV:
-		if(clientVersion >= 3)
+		if (size != 4)
 		{
-			if(size != 4)
-			{
-				return error(GL_INVALID_OPERATION);
-			}
-			break;
+			return error(GL_INVALID_OPERATION);
 		}
-		else return error(GL_INVALID_ENUM);
 	case GL_INT:
 	case GL_UNSIGNED_INT:
-		if(clientVersion >= 3)
-		{
-			break;
-		}
-		else return error(GL_INVALID_ENUM);
+		break;
 	default:
 		return error(GL_INVALID_ENUM);
 	}
@@ -6253,7 +6170,7 @@ void TexImage3DOES(GLenum target, GLint level, GLenum internalformat, GLsizei wi
 		return error(GL_INVALID_OPERATION);
 	}
 
-	GLenum validationError = ValidateTextureFormatType(format, type, internalformat, target, egl::getClientVersion());
+	GLenum validationError = ValidateTextureFormatType(format, type, internalformat, target);
 	if(validationError != GL_NO_ERROR)
 	{
 		return error(validationError);
@@ -6328,7 +6245,7 @@ void TexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
 	{
 		es2::Texture3D *texture = context->getTexture3D();
 
-		GLenum validationError = ValidateSubImageParams(false, false, target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, texture, context->getClientVersion());
+		GLenum validationError = ValidateSubImageParams(false, false, target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, texture);
 		if(validationError != GL_NO_ERROR)
 		{
 			return error(validationError);
@@ -6383,7 +6300,7 @@ void CopyTexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint yoffs
 
 		es2::Texture3D *texture = context->getTexture3D();
 
-		GLenum validationError = ValidateSubImageParams(false, true, target, level, xoffset, yoffset, zoffset, width, height, 1, GL_NONE, GL_NONE, texture, context->getClientVersion());
+		GLenum validationError = ValidateSubImageParams(false, true, target, level, xoffset, yoffset, zoffset, width, height, 1, GL_NONE, GL_NONE, texture);
 		if(validationError != GL_NO_ERROR)
 		{
 			return error(validationError);
@@ -6418,7 +6335,7 @@ void CompressedTexImage3DOES(GLenum target, GLint level, GLenum internalformat, 
 		return error(GL_INVALID_VALUE);
 	}
 
-	if(!IsCompressed(internalformat, egl::getClientVersion()))
+	if(!IsCompressed(internalformat))
 	{
 		return error(GL_INVALID_ENUM);
 	}
@@ -6475,7 +6392,7 @@ void CompressedTexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint
 		return error(GL_INVALID_VALUE);
 	}
 
-	if(!IsCompressed(format, egl::getClientVersion()))
+	if(!IsCompressed(format))
 	{
 		return error(GL_INVALID_ENUM);
 	}
