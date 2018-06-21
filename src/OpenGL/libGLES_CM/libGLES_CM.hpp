@@ -261,9 +261,9 @@ private:
 				#endif
 			#elif defined(__ANDROID__)
 				#if defined(__LP64__)
-					const char *libGLES_CM_lib[] = {"/vendor/lib64/egl/libGLESv1_CM_swiftshader.so", "/system/lib64/egl/libGLESv1_CM_swiftshader.so"};
+					const char *libGLES_CM_lib[] = {"libGLESv1_CM_swiftshader.so", "libGLESv1_CM_swiftshader.so"};
 				#else
-					const char *libGLES_CM_lib[] = {"/vendor/lib/egl/libGLESv1_CM_swiftshader.so", "/system/lib/egl/libGLESv1_CM_swiftshader.so"};
+					const char *libGLES_CM_lib[] = {"libGLESv1_CM_swiftshader.so", "libGLESv1_CM_swiftshader.so"};
 				#endif
 			#elif defined(__linux__)
 				#if defined(__LP64__)
