@@ -288,7 +288,7 @@ namespace sw
 	inline void nop()
 	{
 		#if defined(_WIN32)
-			__nop();
+			_mm_pause();
 		#else
 			__asm__ __volatile__ ("nop");
 		#endif
