@@ -1001,6 +1001,10 @@ void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, 
 			{
 				internalformat = gl::GetSizedInternalFormat(internalformat, GL_HALF_FLOAT_OES);
 			}
+			else if(GetColorComponentType(colorbufferFormat) == GL_FLOAT && GetRedSize(colorbufferFormat) == 32)   // GL_EXT_color_buffer_float
+			{
+				internalformat = gl::GetSizedInternalFormat(internalformat, GL_FLOAT);
+			}
 			else
 			{
 				UNIMPLEMENTED();

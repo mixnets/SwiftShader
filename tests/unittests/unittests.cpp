@@ -186,6 +186,24 @@ protected:
 		}
 
 		EXPECT_GLENUM_EQ(GL_NO_ERROR, glGetError());
+
+		GLuint tex1 = 1;
+		glBindTexture(GL_TEXTURE_2D, tex1);
+		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, 16, 16);
+
+		GLuint fbo = 1;
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex1, 0);
+
+		GLuint tex2 = 2;
+		glBindTexture(GL_TEXTURE_2D, tex2);
+
+		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 0, 0, 1, 1, 0);
+		EXPECT_GLENUM_EQ(GL_NONE, glGetError());
+
+		unsigned char green[4] = { 0, 255, 0, 255 };
+		expectFramebufferColor(green);
+		EXPECT_GLENUM_EQ(GL_NONE, glGetError());
 	}
 
 	void Uninitialize()
