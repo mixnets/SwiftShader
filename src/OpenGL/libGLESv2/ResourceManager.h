@@ -32,7 +32,7 @@ class Program;
 class Texture;
 class Renderbuffer;
 class Sampler;
-class FenceSync;
+class FenceSyncObject;
 
 enum TextureType
 {
@@ -78,7 +78,7 @@ public:
 	Texture *getTexture(GLuint handle);
 	Renderbuffer *getRenderbuffer(GLuint handle);
 	Sampler *getSampler(GLuint handle);
-	FenceSync *getFenceSync(GLuint handle);
+	FenceSyncObject *getFenceSync(GLuint handle);
 
 	void checkBufferAllocation(unsigned int buffer);
 	void checkTextureAllocation(GLuint texture, TextureType type);
@@ -97,7 +97,7 @@ private:
 	gl::NameSpace<Texture> mTextureNameSpace;
 	gl::NameSpace<Renderbuffer> mRenderbufferNameSpace;
 	gl::NameSpace<Sampler> mSamplerNameSpace;
-	gl::NameSpace<FenceSync> mFenceSyncNameSpace;
+	gl::NameSpace<FenceSyncObject> mFenceSyncNameSpace;
 };
 
 }

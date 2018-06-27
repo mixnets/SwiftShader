@@ -140,7 +140,7 @@ GLuint ResourceManager::createFenceSync(GLenum condition, GLbitfield flags)
 {
 	GLuint name = mFenceSyncNameSpace.allocate();
 
-	FenceSync *fenceSync = new FenceSync(name, condition, flags);
+	FenceSyncObject *fenceSync = new FenceSyncObject(name, condition, flags);
 	fenceSync->addRef();
 
 	mFenceSyncNameSpace.insert(name, fenceSync);
@@ -228,7 +228,7 @@ void ResourceManager::deleteSampler(GLuint sampler)
 
 void ResourceManager::deleteFenceSync(GLuint fenceSync)
 {
-	FenceSync *fenceObject = mFenceSyncNameSpace.remove(fenceSync);
+	FenceSyncObject *fenceObject = mFenceSyncNameSpace.remove(fenceSync);
 
 	if(fenceObject)
 	{
@@ -266,7 +266,7 @@ Sampler *ResourceManager::getSampler(unsigned int handle)
 	return mSamplerNameSpace.find(handle);
 }
 
-FenceSync *ResourceManager::getFenceSync(unsigned int handle)
+FenceSyncObject *ResourceManager::getFenceSync(unsigned int handle)
 {
 	return mFenceSyncNameSpace.find(handle);
 }

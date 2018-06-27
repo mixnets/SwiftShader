@@ -439,7 +439,7 @@ void Renderbuffer::setLevel(GLint level)
 	return mInstance->setLevel(level);
 }
 
-void Renderbuffer::setStorage(RenderbufferStorage *newStorage)
+void Renderbuffer::setStorage(RenderbufferObject *newStorage)
 {
 	ASSERT(newStorage != NULL);
 
@@ -447,7 +447,7 @@ void Renderbuffer::setStorage(RenderbufferStorage *newStorage)
 	mInstance = newStorage;
 }
 
-RenderbufferStorage::RenderbufferStorage()
+RenderbufferObject::RenderbufferObject()
 {
 	mWidth = 0;
 	mHeight = 0;
@@ -455,26 +455,26 @@ RenderbufferStorage::RenderbufferStorage()
 	mSamples = 0;
 }
 
-RenderbufferStorage::~RenderbufferStorage()
+RenderbufferObject::~RenderbufferObject()
 {
 }
 
-GLsizei RenderbufferStorage::getWidth() const
+GLsizei RenderbufferObject::getWidth() const
 {
 	return mWidth;
 }
 
-GLsizei RenderbufferStorage::getHeight() const
+GLsizei RenderbufferObject::getHeight() const
 {
 	return mHeight;
 }
 
-GLint RenderbufferStorage::getFormat() const
+GLint RenderbufferObject::getFormat() const
 {
 	return format;
 }
 
-GLsizei RenderbufferStorage::getSamples() const
+GLsizei RenderbufferObject::getSamples() const
 {
 	return mSamples;
 }

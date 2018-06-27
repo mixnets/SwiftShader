@@ -41,11 +41,11 @@ private:
 	GLboolean mStatus;
 };
 
-class FenceSync : public gl::NamedObject
+class FenceSyncObject : public gl::NamedObject
 {
 public:
-	FenceSync(GLuint name, GLenum condition, GLbitfield flags);
-	virtual ~FenceSync();
+	FenceSyncObject(GLuint name, GLenum condition, GLbitfield flags);
+	virtual ~FenceSyncObject();
 
 	GLenum clientWait(GLbitfield flags, GLuint64 timeout);
 	void serverWait(GLbitfield flags, GLuint64 timeout);
