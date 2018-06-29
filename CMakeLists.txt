@@ -118,6 +118,9 @@ macro(set_target_export_map TARGET DIR)
         set_target_properties(${TARGET} PROPERTIES LINK_FLAGS "${LINKFLAGS} -Wl,--hash-style=both,--version-script=${DIR}/${TARGET}.lds,--gc-sections")
         set_target_properties(${TARGET} PROPERTIES LINK_DEPENDS "${DIR}/${TARGET}.lds")
 
+        # Don't allow symbols to be overridden by another module.
+        set_target_properties(${TARGET} PROPERTIES COMPILE_FLAGS "-fvisibility=protected")
+
         if(NOT MSAN AND NOT ASAN AND NOT TSAN AND NOT UBSAN)
             set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--no-undefined")
         endif()
@@ -162,6 +165,9 @@ else()
     set_cpp_flag("-Werror=reorder")
     set_cpp_flag("-Werror=sign-compare")
     set_cpp_flag("-fno-exceptions")
+
+    # Don't allow symbols to be overridden by another module.
+    set_cpp_flag("-fvisibility=hidden")
 
     # Remove xor, and, or and friends from the list of keywords, they are used
     # by Reactor
