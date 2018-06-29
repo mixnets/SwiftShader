@@ -51,11 +51,7 @@ option(USE_GROUP_SOURCES "Group the source files in a folder tree for Visual Stu
 option(BUILD_SAMPLES "Build sample programs" 1)
 option(BUILD_TESTS "Build test programs" 1)
 
-if(ARCH STREQUAL "arm")
-    set(DEFAULT_REACTOR_BACKEND "Subzero")
-else()
-    set(DEFAULT_REACTOR_BACKEND "LLVM")
-endif()
+set(DEFAULT_REACTOR_BACKEND "Subzero")
 
 set(REACTOR_BACKEND DEFAULT_REACTOR_BACKEND CACHE STRING "JIT compiler back-end used by Reactor")
 set_property(CACHE REACTOR_BACKEND PROPERTY STRINGS LLVM Subzero)
@@ -112,6 +108,13 @@ macro(set_target_export_map TARGET DIR)
         # binary size.
         set_target_properties(${TARGET} PROPERTIES LINK_FLAGS "${LINKFLAGS} -Wl,--hash-style=both,--version-script=${DIR}/${TARGET}.lds,--gc-sections,--no-undefined")
         set_target_properties(${TARGET} PROPERTIES LINK_DEPENDS "${DIR}/${TARGET}.lds")
+
+        # Don't allow symbols to be overridden by another module.
+        set_target_properties(${TARGET} PROPERTIES COMPILE_FLAGS "-fvisibility=protected")
+
+        if(NOT MSAN AND NOT ASAN AND NOT TSAN AND NOT UBSAN)
+            set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--no-undefined")
+        endif()
     endif()
 endmacro()
 
@@ -153,8 +156,7 @@ else()
     set_cpp_flag("-fno-exceptions")
 
     # Don't allow symbols to be overridden by another module.
-    # This enables libGLES_CM and libGLESv2 to statically link LLVM.
-    set_cpp_flag("-fvisibility=protected")
+    set_cpp_flag("-fvisibility=hidden")
 
     # Remove xor, and, or and friends from the list of keywords, they are used
     # by Reactor
@@ -999,28 +1001,5 @@ if(BUILD_SAMPLES)
         set_source_files_properties(${HELLO2_DIR}/Build/OSX/en.lproj/MainMenu.xib PROPERTIES
             MACOSX_PACKAGE_LOCATION "Resources"
         )
-    endif()
-endif()
-
-if(BUILD_TESTS AND ${REACTOR_BACKEND} STREQUAL "Subzero")
-    set(SUBZERO_TEST_LIST
-        ${SOURCE_DIR}/Reactor/Main.cpp
-        ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
-    )
-
-    set(SUBZERO_TEST_INCLUDE_DIR
-        ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/include
-        ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/
-    )
-
-    add_executable(SubzeroTest ${SUBZERO_TEST_LIST})
-    set_target_properties(SubzeroTest PROPERTIES
-        INCLUDE_DIRECTORIES "${SUBZERO_TEST_INCLUDE_DIR}"
-        FOLDER "Tests"
-    )
-    if(WIN32)
-        target_link_libraries(SubzeroTest ReactorSubzero)
-    else()
-        target_link_libraries(SubzeroTest ReactorSubzero pthread dl)
     endif()
 endif()
