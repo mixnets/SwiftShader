@@ -241,6 +241,7 @@ public:
 	void (*glGetFramebufferAttachmentParameterivOES)(GLenum target, GLenum attachment, GLenum pname, GLint* params);
 	void (*glGenerateMipmapOES)(GLenum target);
 	void (*glDrawBuffersEXT)(GLsizei n, const GLenum *bufs);
+	void (*glGetTexImage)(GLenum target, GLint level, GLenum format, GLenum type, GLvoid * img);
 
 	egl::Context *(*es2CreateContext)(egl::Display *display, const egl::Context *shareContext, int clientVersion, const egl::Config *config);
 	__eglMustCastToProperFunctionPointerType (*es2GetProcAddress)(const char *procname);
@@ -252,10 +253,8 @@ public:
 class LibGLESv2
 {
 public:
-	LibGLESv2()
+	LibGLESv2(const std::string libraryDirectory) : libraryDirectory(libraryDirectory)
 	{
-		libGLESv2 = nullptr;
-		libGLESv2exports = nullptr;
 	}
 
 	~LibGLESv2()
@@ -308,7 +307,7 @@ private:
 				#error "libGLESv2::loadExports unimplemented for this platform"
 			#endif
 
-			libGLESv2 = loadLibrary(libGLESv2_lib, "libGLESv2_swiftshader");
+			libGLESv2 = loadLibrary(libraryDirectory, libGLESv2_lib, "libGLESv2_swiftshader");
 
 			if(libGLESv2)
 			{
@@ -320,8 +319,9 @@ private:
 		return libGLESv2exports;
 	}
 
-	void *libGLESv2;
-	LibGLESv2exports *libGLESv2exports;
+	void *libGLESv2 = nullptr;
+	LibGLESv2exports *libGLESv2exports = nullptr;
+	const std::string libraryDirectory;
 };
 
 #endif   // libGLESv2_hpp
