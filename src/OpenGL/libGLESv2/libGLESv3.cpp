@@ -627,6 +627,8 @@ GL_APICALL void GL_APIENTRY glDrawRangeElements(GLenum mode, GLuint start, GLuin
 
 GL_APICALL void GL_APIENTRY glTexImage3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const void *data)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X, GLint level = %d, GLenum internalformat = 0x%X, "
 	      "GLsizei width = %d, GLsizei height = %d, GLsizei depth = %d, GLint border = %d, "
 	      "GLenum format = 0x%X, GLenum type = 0x%x, const GLvoid* data = %p)",
@@ -747,6 +749,8 @@ GL_APICALL void GL_APIENTRY glTexSubImage3D(GLenum target, GLint level, GLint xo
 
 GL_APICALL void GL_APIENTRY glCopyTexSubImage3D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X, GLint level = %d, GLint xoffset = %d, GLint yoffset = %d, "
 		"GLint zoffset = %d, GLint x = %d, GLint y = %d, GLsizei width = %d, GLsizei height = %d)",
 		target, level, xoffset, yoffset, zoffset, x, y, width, height);
@@ -810,6 +814,8 @@ GL_APICALL void GL_APIENTRY glCopyTexSubImage3D(GLenum target, GLint level, GLin
 
 GL_APICALL void GL_APIENTRY glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const void *data)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X, GLint level = %d, GLenum internalformat = 0x%X, GLsizei width = %d, "
 		"GLsizei height = %d, GLsizei depth = %d, GLint border = %d, GLsizei imageSize = %d, const GLvoid* data = %p)",
 		target, level, internalformat, width, height, depth, border, imageSize, data);
@@ -3657,6 +3663,11 @@ GL_APICALL void GL_APIENTRY glDeleteTransformFeedbacks(GLsizei n, const GLuint *
 					return error(GL_INVALID_OPERATION);
 				}
 
+				if (transformFeedbackObject &&
+					transformFeedbackObject == context->getTransformFeedback()) {
+					context->bindTransformFeedback(0);
+				}
+
 				context->deleteTransformFeedback(ids[i]);
 			}
 		}
@@ -3909,6 +3920,8 @@ GL_APICALL void GL_APIENTRY glInvalidateSubFramebuffer(GLenum target, GLsizei nu
 
 GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X, GLsizei levels = %d, GLenum internalformat = 0x%X, GLsizei width = %d, GLsizei height = %d)",
 	      target, levels, internalformat, width, height);
 
@@ -3980,6 +3993,8 @@ GL_APICALL void GL_APIENTRY glTexStorage2D(GLenum target, GLsizei levels, GLenum
 
 GL_APICALL void GL_APIENTRY glTexStorage3D(GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X, GLsizei levels = %d, GLenum internalformat = 0x%X, GLsizei width = %d, GLsizei height = %d, GLsizei depth = %d)",
 	      target, levels, internalformat, width, height, depth);
 
