@@ -41,6 +41,8 @@
 #include <cutils/log.h>
 #endif
 
+sw::MutexLock Atomic::mutex;
+
 namespace es2
 {
 
@@ -770,6 +772,7 @@ void CompileShader(GLuint shader)
 
 	if(context)
 	{
+		LockGuard atomic(context);
 		es2::Shader *shaderObject = context->getShader(shader);
 
 		if(!shaderObject)
@@ -791,6 +794,8 @@ void CompileShader(GLuint shader)
 void CompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height,
                           GLint border, GLsizei imageSize, const GLvoid* data)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X, GLint level = %d, GLenum internalformat = 0x%X, GLsizei width = %d, "
 	      "GLsizei height = %d, GLint border = %d, GLsizei imageSize = %d, const GLvoid* data = %p)",
 	      target, level, internalformat, width, height, border, imageSize, data);
@@ -1000,6 +1005,8 @@ void CompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yo
 
 void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X, GLint level = %d, GLenum internalformat = 0x%X, "
 	      "GLint x = %d, GLint y = %d, GLsizei width = %d, GLsizei height = %d, GLint border = %d)",
 	      target, level, internalformat, x, y, width, height, border);
@@ -1097,6 +1104,8 @@ void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, 
 
 void CopyTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint x, GLint y, GLsizei width, GLsizei height)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X, GLint level = %d, GLint xoffset = %d, GLint yoffset = %d, "
 	      "GLint x = %d, GLint y = %d, GLsizei width = %d, GLsizei height = %d)",
 	      target, level, xoffset, yoffset, x, y, width, height);
@@ -1364,6 +1373,7 @@ void DeleteShader(GLuint shader)
 
 	if(context)
 	{
+		LockGuard atomic(context);
 		if(!context->getShader(shader))
 		{
 			if(context->getProgram(shader))
@@ -2246,6 +2256,8 @@ void GenBuffers(GLsizei n, GLuint* buffers)
 
 void GenerateMipmap(GLenum target)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X)", target);
 
 	es2::Context *context = es2::getContext();
@@ -4792,6 +4804,7 @@ void ShaderSource(GLuint shader, GLsizei count, const GLchar *const *string, con
 
 	if(context)
 	{
+		LockGuard atomic(context);
 		es2::Shader *shaderObject = context->getShader(shader);
 
 		if(!shaderObject)
@@ -4997,9 +5010,72 @@ GLboolean TestFenceNV(GLuint fence)
 	return GL_TRUE;
 }
 
+void GetTexImage(GLenum target, GLint level, GLenum format, GLenum type, GLvoid *pixels)
+{
+	TRACE("(GLenum target = 0x%X, GLint level = %d, GLenum format = 0x%X, GLenum type = 0x%X, GLint *pixels%p)",
+	      target, level, format, type, pixels);
+
+	es2::Context *context = es2::getContext();
+
+	if(context)
+	{
+		es2::Texture *texture;
+
+		switch(target)
+		{
+		case GL_TEXTURE_2D:
+			texture = context->getTexture2D();
+			break;
+		case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
+		case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
+		case GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
+		case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
+		case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
+		case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
+			texture = context->getTextureCubeMap();
+			break;
+		default:
+			UNIMPLEMENTED();
+			return error(GL_INVALID_ENUM);
+		}
+
+		if(target == GL_TEXTURE_2D)
+		{
+			es2::Texture2D *texture = context->getTexture2D();
+
+			if(!texture)
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+
+			texture->getImage(context, level,
+				texture->getWidth(GL_TEXTURE_2D, level),
+				texture->getHeight(GL_TEXTURE_2D, level),
+				format, type,
+				context->getPackInfo(), pixels);
+		}
+		else
+		{
+			es2::TextureCubeMap *texture = context->getTextureCubeMap();
+
+			if(!texture)
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+
+			texture->getImage(context, target, level,
+				texture->getWidth(target, level),
+				texture->getHeight(target, level),
+				format, type, context->getPackInfo(), pixels);
+		}
+	}
+}
+
 void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height,
                 GLint border, GLenum format, GLenum type, const GLvoid* data)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X, GLint level = %d, GLint internalformat = %d, GLsizei width = %d, GLsizei height = %d, "
 	      "GLint border = %d, GLenum format = 0x%X, GLenum type = 0x%X, const GLvoid* data =  %p)",
 	      target, level, internalformat, width, height, border, format, type, data);
@@ -6243,6 +6319,8 @@ void BlitFramebufferANGLE(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GL
 void TexImage3DOES(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth,
                    GLint border, GLenum format, GLenum type, const GLvoid* data)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X, GLint level = %d, GLenum internalformat = 0x%X, "
 	      "GLsizei width = %d, GLsizei height = %d, GLsizei depth = %d, GLint border = %d, "
 	      "GLenum format = 0x%X, GLenum type = 0x%x, const GLvoid* data = %p)",
@@ -6367,6 +6445,8 @@ void TexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
 
 void CopyTexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X, GLint level = %d, GLint xoffset = %d, GLint yoffset = %d, "
 	      "GLint zoffset = %d, GLint x = %d, GLint y = %d, GLsizei width = %d, GLsizei height = %d)",
 	      target, level, xoffset, yoffset, zoffset, x, y, width, height);
@@ -6416,6 +6496,8 @@ void CopyTexSubImage3DOES(GLenum target, GLint level, GLint xoffset, GLint yoffs
 
 void CompressedTexImage3DOES(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const void *data)
 {
+    ATOMIC();
+
 	TRACE("(GLenum target = 0x%X, GLint level = %d, GLenum internalformat = 0x%X, GLsizei width = %d, "
 	      "GLsizei height = %d, GLsizei depth = %d, GLint border = %d, GLsizei imageSize = %d, const GLvoid* data = %p)",
 	      target, level, internalformat, width, height, depth, border, imageSize, data);
@@ -6666,6 +6748,8 @@ void FramebufferTexture3DOES(GLenum target, GLenum attachment, GLenum textarget,
 
 void EGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image)
 {
+    ATOMIC();
+
 	if(egl::getClientVersion() == 1)
 	{
 		return libGLES_CM->glEGLImageTargetTexture2DOES(target, image);
@@ -7178,6 +7262,7 @@ extern "C" NO_SANITIZE_FUNCTION __eglMustCastToProperFunctionPointerType es2GetP
 		FUNCTION(glVertexAttribPointer),
 		FUNCTION(glViewport),
 		FUNCTION(glWaitSync),
+		FUNCTION(glGetTexImage),
 
 		#undef FUNCTION
 	};

@@ -46,7 +46,7 @@
 namespace es2
 {
 Context::Context(egl::Display *display, const Context *shareContext, EGLint clientVersion, const egl::Config *config)
-	: egl::Context(display), clientVersion(clientVersion), config(config)
+	: egl::Context(display), clientVersion(clientVersion), config(config), mResourceManager(impl)
 {
 	sw::Context *context = new sw::Context();
 	device = new es2::Device(context);
@@ -124,12 +124,12 @@ Context::Context(egl::Display *display, const Context *shareContext, EGLint clie
 
 	if(shareContext)
 	{
-		mResourceManager = shareContext->mResourceManager;
+		impl = shareContext->impl;
 		mResourceManager->addRef();
 	}
 	else
 	{
-		mResourceManager = new ResourceManager();
+		impl = new ResourceManager();
 	}
 
 	// [OpenGL ES 2.0.24] section 3.7 page 83:
@@ -267,7 +267,7 @@ Context::~Context()
 	delete mVertexDataManager;
 	delete mIndexDataManager;
 
-	mResourceManager->release();
+	mResourceManager.get()->release();
 	delete device;
 }
 
@@ -851,6 +851,18 @@ void Context::setPackAlignment(GLint alignment)
 void Context::setUnpackAlignment(GLint alignment)
 {
 	mState.unpackInfo.alignment = alignment;
+}
+
+egl::Image::PackInfo Context::getPackInfo() const
+{
+	egl::Image::PackInfo packInfo;
+	packInfo.alignment = mState.packAlignment;
+	packInfo.rowLength = mState.packRowLength;
+	packInfo.imageHeight = mState.packImageHeight;
+	packInfo.skipPixels = mState.packSkipPixels;
+	packInfo.skipRows = mState.packSkipRows;
+	packInfo.skipImages = mState.packSkipImages;
+	return packInfo;
 }
 
 const egl::Image::UnpackInfo& Context::getUnpackInfo() const
@@ -3085,13 +3097,13 @@ void Context::applyTextures(sw::SamplerType samplerType)
 			TextureType textureType = programObject->getSamplerTextureType(samplerType, samplerIndex);
 
 			Texture *texture = getSamplerTexture(textureUnit, textureType);
+			Sampler *samplerObject = mState.sampler[textureUnit];
 
-			if(texture->isSamplerComplete())
+			if(texture->isSamplerComplete(samplerObject))
 			{
 				GLenum wrapS, wrapT, wrapR, minFilter, magFilter, compFunc, compMode;
 				GLfloat minLOD, maxLOD;
 
-				Sampler *samplerObject = mState.sampler[textureUnit];
 				if(samplerObject)
 				{
 					wrapS = samplerObject->getWrapS();
@@ -3469,6 +3481,16 @@ void Context::clearStencilBuffer(const GLint value)
 
 void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instanceCount)
 {
+	if(!applyRenderTarget())
+	{
+		return;
+	}
+
+	if(mState.currentProgram == 0)
+	{
+		return;   // Nothing to process.
+	}
+
 	sw::DrawType primitiveType;
 	int primitiveCount;
 	int verticesPerPrimitive;
@@ -3476,11 +3498,6 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 	if(!es2sw::ConvertPrimitiveType(mode, count, GL_NONE, primitiveType, primitiveCount, verticesPerPrimitive))
 	{
 		return error(GL_INVALID_ENUM);
-	}
-
-	if(!applyRenderTarget())
-	{
-		return;
 	}
 
 	applyState(mode);
@@ -3493,11 +3510,6 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 		if(err != GL_NO_ERROR)
 		{
 			return error(err);
-		}
-
-		if(!mState.currentProgram)
-		{
-			return;
 		}
 
 		applyShaders();
@@ -3527,6 +3539,16 @@ void Context::drawArrays(GLenum mode, GLint first, GLsizei count, GLsizei instan
 
 void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices, GLsizei instanceCount)
 {
+	if(!applyRenderTarget())
+	{
+		return;
+	}
+
+	if(mState.currentProgram == 0)
+	{
+		return;   // Nothing to process.
+	}
+
 	if(!indices && !getCurrentVertexArray()->getElementArrayBuffer())
 	{
 		return error(GL_INVALID_OPERATION);
@@ -3559,11 +3581,6 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 		return error(GL_INVALID_ENUM);
 	}
 
-	if(!applyRenderTarget())
-	{
-		return;
-	}
-
 	TranslatedIndexData indexInfo(primitiveCount);
 	GLenum err = applyIndexBuffer(indices, start, end, count, mode, type, &indexInfo);
 	if(err != GL_NO_ERROR)
@@ -3582,11 +3599,6 @@ void Context::drawElements(GLenum mode, GLuint start, GLuint end, GLsizei count,
 		if(err != GL_NO_ERROR)
 		{
 			return error(err);
-		}
-
-		if(!mState.currentProgram)
-		{
-			return;
 		}
 
 		applyShaders();
@@ -4282,12 +4294,12 @@ EGLenum Context::validateSharedImage(EGLenum target, GLuint name, GLuint texture
 			return EGL_BAD_ACCESS;
 		}
 
-		if(textureLevel != 0 && !texture->isSamplerComplete())
+		if(textureLevel != 0 && !texture->isSamplerComplete(nullptr))
 		{
 			return EGL_BAD_PARAMETER;
 		}
 
-		if(textureLevel == 0 && !(texture->isSamplerComplete() && texture->getTopLevel() == 0))
+		if(textureLevel == 0 && !(texture->isSamplerComplete(nullptr) && texture->getTopLevel() == 0))
 		{
 			return EGL_BAD_PARAMETER;
 		}
@@ -4313,6 +4325,8 @@ EGLenum Context::validateSharedImage(EGLenum target, GLuint name, GLuint texture
 
 egl::Image *Context::createSharedImage(EGLenum target, GLuint name, GLuint textureLevel)
 {
+	LockGuard atomic(this);
+
 	GLenum textureTarget = GL_NONE;
 
 	switch(target)
