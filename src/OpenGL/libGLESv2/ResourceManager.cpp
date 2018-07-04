@@ -236,37 +236,37 @@ void ResourceManager::deleteFenceSync(GLuint fenceSync)
 	}
 }
 
-Buffer *ResourceManager::getBuffer(unsigned int handle)
+Buffer *ResourceManager::getBuffer(unsigned int handle) const
 {
 	return mBufferNameSpace.find(handle);
 }
 
-Shader *ResourceManager::getShader(unsigned int handle)
+Shader *ResourceManager::getShader(unsigned int handle) const
 {
 	return mShaderNameSpace.find(handle);
 }
 
-Texture *ResourceManager::getTexture(unsigned int handle)
+Texture *ResourceManager::getTexture(unsigned int handle) const
 {
 	return mTextureNameSpace.find(handle);
 }
 
-Program *ResourceManager::getProgram(unsigned int handle)
+Program *ResourceManager::getProgram(unsigned int handle) const
 {
 	return mProgramNameSpace.find(handle);
 }
 
-Renderbuffer *ResourceManager::getRenderbuffer(unsigned int handle)
+Renderbuffer *ResourceManager::getRenderbuffer(unsigned int handle) const
 {
 	return mRenderbufferNameSpace.find(handle);
 }
 
-Sampler *ResourceManager::getSampler(unsigned int handle)
+Sampler *ResourceManager::getSampler(unsigned int handle) const
 {
 	return mSamplerNameSpace.find(handle);
 }
 
-FenceSync *ResourceManager::getFenceSync(unsigned int handle)
+FenceSync *ResourceManager::getFenceSync(unsigned int handle) const
 {
 	return mFenceSyncNameSpace.find(handle);
 }
@@ -342,7 +342,7 @@ void ResourceManager::checkSamplerAllocation(GLuint sampler)
 	}
 }
 
-bool ResourceManager::isSampler(GLuint sampler)
+bool ResourceManager::isSampler(GLuint sampler) const
 {
 	return mSamplerNameSpace.isReserved(sampler);
 }
