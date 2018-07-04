@@ -770,6 +770,7 @@ void CompileShader(GLuint shader)
 
 	if(context)
 	{
+		LockGuard atomic(context);
 		es2::Shader *shaderObject = context->getShader(shader);
 
 		if(!shaderObject)
@@ -1364,6 +1365,7 @@ void DeleteShader(GLuint shader)
 
 	if(context)
 	{
+		LockGuard atomic(context);
 		if(!context->getShader(shader))
 		{
 			if(context->getProgram(shader))
@@ -4792,6 +4794,7 @@ void ShaderSource(GLuint shader, GLsizei count, const GLchar *const *string, con
 
 	if(context)
 	{
+		LockGuard atomic(context);
 		es2::Shader *shaderObject = context->getShader(shader);
 
 		if(!shaderObject)
@@ -4995,6 +4998,67 @@ GLboolean TestFenceNV(GLuint fence)
 	}
 
 	return GL_TRUE;
+}
+
+void GetTexImage(GLenum target, GLint level, GLenum format, GLenum type, GLvoid *pixels)
+{
+	TRACE("(GLenum target = 0x%X, GLint level = %d, GLenum format = 0x%X, GLenum type = 0x%X, GLint *pixels%p)",
+	      target, level, format, type, pixels);
+
+	es2::Context *context = es2::getContext();
+
+	if(context)
+	{
+		es2::Texture *texture;
+
+		switch(target)
+		{
+		case GL_TEXTURE_2D:
+			texture = context->getTexture2D();
+			break;
+		case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
+		case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
+		case GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
+		case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
+		case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
+		case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
+			texture = context->getTextureCubeMap();
+			break;
+		default:
+			UNIMPLEMENTED();
+			return error(GL_INVALID_ENUM);
+		}
+
+		if(target == GL_TEXTURE_2D)
+		{
+			es2::Texture2D *texture = context->getTexture2D();
+
+			if(!texture)
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+
+			texture->getImage(context, level,
+				texture->getWidth(GL_TEXTURE_2D, level),
+				texture->getHeight(GL_TEXTURE_2D, level),
+				format, type,
+				context->getPackInfo(), pixels);
+		}
+		else
+		{
+			es2::TextureCubeMap *texture = context->getTextureCubeMap();
+
+			if(!texture)
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+
+			texture->getImage(context, target, level,
+				texture->getWidth(target, level),
+				texture->getHeight(target, level),
+				format, type, context->getPackInfo(), pixels);
+		}
+	}
 }
 
 void TexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height,
@@ -7178,6 +7242,7 @@ extern "C" NO_SANITIZE_FUNCTION __eglMustCastToProperFunctionPointerType es2GetP
 		FUNCTION(glVertexAttribPointer),
 		FUNCTION(glViewport),
 		FUNCTION(glWaitSync),
+		FUNCTION(glGetTexImage),
 
 		#undef FUNCTION
 	};

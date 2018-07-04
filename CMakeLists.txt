@@ -51,11 +51,7 @@ option(USE_GROUP_SOURCES "Group the source files in a folder tree for Visual Stu
 option(BUILD_SAMPLES "Build sample programs" 1)
 option(BUILD_TESTS "Build test programs" 1)
 
-if(ARCH STREQUAL "arm")
-    set(DEFAULT_REACTOR_BACKEND "Subzero")
-else()
-    set(DEFAULT_REACTOR_BACKEND "LLVM")
-endif()
+set(DEFAULT_REACTOR_BACKEND "Subzero")
 
 set(REACTOR_BACKEND DEFAULT_REACTOR_BACKEND CACHE STRING "JIT compiler back-end used by Reactor")
 set_property(CACHE REACTOR_BACKEND PROPERTY STRINGS LLVM Subzero)
