@@ -2320,12 +2320,6 @@ template<typename T> bool Context::getIntegerv(GLenum pname, T *params) const
 	case GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT:
 		*params = UNIFORM_BUFFER_OFFSET_ALIGNMENT;
 		return true;
-	case GL_UNIFORM_BUFFER_SIZE:
-		*params = static_cast<T>(mState.genericUniformBuffer->size());
-		return true;
-	case GL_UNIFORM_BUFFER_START:
-		*params = static_cast<T>(mState.genericUniformBuffer->offset());
-		return true;
 	case GL_UNPACK_IMAGE_HEIGHT:
 		*params = mState.unpackParameters.imageHeight;
 		return true;
