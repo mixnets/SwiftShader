@@ -1610,4 +1610,5 @@ extern "C" GL_API LibGLES_CMexports *libGLES_CM_swiftshader()
 	return &libGLES_CM;
 }
 
-LibEGL libEGL;
+static int libGLES_CM_swiftshader_symbol;
+LibEGL libEGL(getLibraryDirectoryFromSymbol((void*)libGLES_CM_swiftshader_symbol));

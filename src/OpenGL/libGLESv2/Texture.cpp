@@ -22,6 +22,8 @@
 #include "mathutil.h"
 #include "Framebuffer.h"
 #include "Device.hpp"
+#include "Sampler.h"
+#include "Shader.h"
 #include "libEGL/Display.h"
 #include "common/Surface.hpp"
 #include "common/debug.h"
@@ -411,6 +413,15 @@ egl::Image *Texture::createSharedImage(GLenum target, unsigned int level)
 	return image;
 }
 
+void Texture::getImage(egl::Context *context, GLenum format, GLenum type, const egl::Image::PackInfo& packInfo, void *pixels, egl::Image *image)
+{
+	if(pixels && image)
+	{
+		GLsizei depth = (getTarget() == GL_TEXTURE_3D_OES || getTarget() == GL_TEXTURE_2D_ARRAY) ? image->getDepth() : 1;
+		image->saveImageData(context, 0, 0, 0, image->getWidth(), image->getHeight(), depth, format, type, packInfo, pixels);
+	}
+}
+
 void Texture::setImage(egl::Context *context, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels, egl::Image *image)
 {
 	if(pixels && image)
@@ -475,9 +486,11 @@ bool Texture::copy(egl::Image *source, const sw::SliceRect &sourceRect, GLint xo
 	return true;
 }
 
-bool Texture::isMipmapFiltered() const
+bool Texture::isMipmapFiltered(Sampler *sampler) const
 {
-	switch(mMinFilter)
+	GLenum minFilter = sampler ? sampler->getMinFilter() : mMinFilter;
+
+	switch(minFilter)
 	{
 	case GL_NEAREST:
 	case GL_LINEAR:
@@ -487,7 +500,7 @@ bool Texture::isMipmapFiltered() const
 	case GL_NEAREST_MIPMAP_LINEAR:
 	case GL_LINEAR_MIPMAP_LINEAR:
 		return true;
-	default: UNREACHABLE(mMinFilter);
+	default: UNREACHABLE(minFilter);
 	}
 
 	return false;
@@ -601,7 +614,6 @@ GLenum Texture2D::getType(GLenum target, GLint level) const
 
 int Texture2D::getTopLevel() const
 {
-	ASSERT(isSamplerComplete());
 	int level = mBaseLevel;
 
 	while(level < IMPLEMENTATION_MAX_TEXTURE_LEVELS && image[level])
@@ -627,6 +639,16 @@ void Texture2D::setImage(egl::Context *context, GLint level, GLsizei width, GLsi
 	}
 
 	Texture::setImage(context, format, type, unpackInfo, pixels, image[level]);
+}
+
+void Texture2D::getImage(egl::Context *context, GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::PackInfo& packInfo, void *pixels)
+{
+	if(!image[level])
+	{
+		return;
+	}
+
+	Texture::getImage(context, format, type, packInfo, pixels, image[level]);
 }
 
 void Texture2D::bindTexImage(gl::Surface *surface)
@@ -797,7 +819,7 @@ void Texture2D::setSharedImage(egl::Image *sharedImage)
 }
 
 // Tests for 2D texture sampling completeness. [OpenGL ES 3.0.5] section 3.8.13 page 160.
-bool Texture2D::isSamplerComplete() const
+bool Texture2D::isSamplerComplete(Sampler *sampler) const
 {
 	if(!image[mBaseLevel])
 	{
@@ -812,7 +834,7 @@ bool Texture2D::isSamplerComplete() const
 		return false;
 	}
 
-	if(isMipmapFiltered())
+	if(isMipmapFiltered(sampler))
 	{
 		if(!isMipmapComplete())
 		{
@@ -1090,7 +1112,6 @@ GLenum TextureCubeMap::getType(GLenum target, GLint level) const
 
 int TextureCubeMap::getTopLevel() const
 {
-	ASSERT(isSamplerComplete());
 	int level = mBaseLevel;
 
 	while(level < IMPLEMENTATION_MAX_TEXTURE_LEVELS && image[0][level])
@@ -1133,7 +1154,7 @@ void TextureCubeMap::subImageCompressed(GLenum target, GLint level, GLint xoffse
 }
 
 // Tests for cube map sampling completeness. [OpenGL ES 3.0.5] section 3.8.13 page 161.
-bool TextureCubeMap::isSamplerComplete() const
+bool TextureCubeMap::isSamplerComplete(Sampler *sampler) const
 {
 	for(int face = 0; face < 6; face++)
 	{
@@ -1150,7 +1171,7 @@ bool TextureCubeMap::isSamplerComplete() const
 		return false;
 	}
 
-	if(!isMipmapFiltered())
+	if(!isMipmapFiltered(sampler))
 	{
 		if(!isCubeComplete())
 		{
@@ -1333,6 +1354,18 @@ void TextureCubeMap::setImage(egl::Context *context, GLenum target, GLint level,
 	}
 
 	Texture::setImage(context, format, type, unpackInfo, pixels, image[face][level]);
+}
+
+void TextureCubeMap::getImage(egl::Context *context, GLenum target, GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::PackInfo& packInfo, void *pixels)
+{
+	int face = CubeFaceIndex(target);
+
+	if(!image[face][level])
+	{
+		return;
+	}
+
+	Texture::getImage(context, format, type, packInfo, pixels, image[face][level]);
 }
 
 void TextureCubeMap::copyImage(GLenum target, GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source)
@@ -1629,7 +1662,6 @@ GLenum Texture3D::getType(GLenum target, GLint level) const
 
 int Texture3D::getTopLevel() const
 {
-	ASSERT(isSamplerComplete());
 	int level = mBaseLevel;
 
 	while(level < IMPLEMENTATION_MAX_TEXTURE_LEVELS && image[level])
@@ -1786,7 +1818,7 @@ void Texture3D::setSharedImage(egl::Image *sharedImage)
 }
 
 // Tests for 3D texture sampling completeness. [OpenGL ES 3.0.5] section 3.8.13 page 160.
-bool Texture3D::isSamplerComplete() const
+bool Texture3D::isSamplerComplete(Sampler *sampler) const
 {
 	if(!image[mBaseLevel])
 	{
@@ -1802,7 +1834,7 @@ bool Texture3D::isSamplerComplete() const
 		return false;
 	}
 
-	if(isMipmapFiltered())
+	if(isMipmapFiltered(sampler))
 	{
 		if(!isMipmapComplete())
 		{

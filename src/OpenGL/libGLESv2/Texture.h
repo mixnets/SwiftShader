@@ -34,6 +34,7 @@ namespace gl { class Surface; }
 namespace es2
 {
 class Framebuffer;
+class Sampler;
 
 enum
 {
@@ -99,7 +100,7 @@ public:
 	virtual GLenum getType(GLenum target, GLint level) const = 0;
 	virtual int getTopLevel() const = 0;
 
-	virtual bool isSamplerComplete() const = 0;
+	virtual bool isSamplerComplete(Sampler *sampler) const = 0;
 	virtual bool isCompressed(GLenum target, GLint level) const = 0;
 	virtual bool isDepth(GLenum target, GLint level) const = 0;
 
@@ -114,6 +115,7 @@ public:
 protected:
 	~Texture() override;
 
+	void getImage(egl::Context *context, GLenum format, GLenum type, const egl::Image::PackInfo& packInfo, void *pixels, egl::Image *image);
 	void setImage(egl::Context *context, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels, egl::Image *image);
 	void subImage(egl::Context *context, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels, egl::Image *image);
 	void setCompressedImage(GLsizei imageSize, const void *pixels, egl::Image *image);
@@ -121,7 +123,7 @@ protected:
 
 	bool copy(egl::Image *source, const sw::SliceRect &sourceRect, GLint xoffset, GLint yoffset, GLint zoffset, egl::Image *dest);
 
-	bool isMipmapFiltered() const;
+	bool isMipmapFiltered(Sampler *sampler) const;
 
 	GLenum mMinFilter;
 	GLenum mMagFilter;
@@ -163,6 +165,8 @@ public:
 	int getTopLevel() const override;
 
 	void setImage(egl::Context *context, GLint level, GLsizei width, GLsizei height, GLint internalformat, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);
+	void getImage(egl::Context *context, GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::PackInfo& packInfo, void *pixels);
+
 	void setCompressedImage(GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels);
 	void subImage(egl::Context *context, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);
 	void subImageCompressed(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const void *pixels);
@@ -171,7 +175,7 @@ public:
 
 	void setSharedImage(egl::Image *image);
 
-	bool isSamplerComplete() const override;
+	bool isSamplerComplete(Sampler *sampler) const override;
 	bool isCompressed(GLenum target, GLint level) const override;
 	bool isDepth(GLenum target, GLint level) const override;
 	void bindTexImage(gl::Surface *surface);
@@ -221,6 +225,7 @@ public:
 	int getTopLevel() const override;
 
 	void setImage(egl::Context *context, GLenum target, GLint level, GLsizei width, GLsizei height, GLint internalformat, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);
+	void getImage(egl::Context *context, GLenum target, GLint level, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::PackInfo& packInfo, void *pixels);
 	void setCompressedImage(GLenum target, GLint level, GLenum format, GLsizei width, GLsizei height, GLsizei imageSize, const void *pixels);
 
 	void subImage(egl::Context *context, GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const egl::Image::UnpackInfo& unpackInfo, const void *pixels);
@@ -228,7 +233,7 @@ public:
 	void copyImage(GLenum target, GLint level, GLenum format, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source);
 	void copySubImage(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height, Framebuffer *source) override;
 
-	bool isSamplerComplete() const override;
+	bool isSamplerComplete(Sampler *sampler) const override;
 	bool isCompressed(GLenum target, GLint level) const override;
 	bool isDepth(GLenum target, GLint level) const override;
 	void releaseTexImage() override;
@@ -291,7 +296,7 @@ public:
 
 	void setSharedImage(egl::Image *image);
 
-	bool isSamplerComplete() const override;
+	bool isSamplerComplete(Sampler *sampler) const override;
 	bool isCompressed(GLenum target, GLint level) const override;
 	bool isDepth(GLenum target, GLint level) const override;
 	void releaseTexImage() override;
