@@ -47,8 +47,6 @@ namespace sw
 
 		bool mit_shm;
 		XShmSegmentInfo shminfo;
-
-		char *buffer;
 	};
 }
 

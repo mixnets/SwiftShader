@@ -21,6 +21,7 @@
 #include <sys/shm.h>
 #include <string.h>
 #include <assert.h>
+#include <stdlib.h>
 
 namespace sw
 {
@@ -41,11 +42,20 @@ namespace sw
 		}
 	}
 
+	static bool isValidWindow()
+	{
+		XWindowAttributes windowAttributes;
+		Status status = libX11->XGetWindowAttributes(x_display, x_window, &windowAttributes);
+
+		return status == True;
+	}
+
 	FrameBufferX11::FrameBufferX11(Display *display, Window window, int width, int height) : FrameBuffer(width, height, false, false), ownX11(!display), x_display(display), x_window(window)
 	{
 		if(!x_display)
 		{
 			x_display = libX11->XOpenDisplay(0);
+			assert(x_display);
 		}
 
 		int screen = DefaultScreen(x_display);
@@ -63,7 +73,7 @@ namespace sw
 			x_image = libX11->XShmCreateImage(x_display, visual, depth, ZPixmap, 0, &shminfo, width, height);
 
 			shminfo.shmid = shmget(IPC_PRIVATE, x_image->bytes_per_line * x_image->height, IPC_CREAT | SHM_R | SHM_W);
-			shminfo.shmaddr = x_image->data = buffer = (char*)shmat(shminfo.shmid, 0, 0);
+			shminfo.shmaddr = x_image->data = shmat(shminfo.shmid, 0, 0);
 			shminfo.readOnly = False;
 
 			PreviousXErrorHandler = libX11->XSetErrorHandler(XShmErrorHandler);
@@ -87,9 +97,16 @@ namespace sw
 		{
 			int bytes_per_line = width * 4;
 			int bytes_per_image = height * bytes_per_line;
-			buffer = new char[bytes_per_image];
+			void *buffer = malloc(bytes_per_image);
 			memset(buffer, 0, bytes_per_image);
+
 			x_image = libX11->XCreateImage(x_display, visual, depth, ZPixmap, 0, buffer, width, height, 32, bytes_per_line);
+			assert(x_image);
+
+			if(!x_image)
+			{
+				free(buffer);
+			}
 		}
 	}
 
@@ -97,11 +114,7 @@ namespace sw
 	{
 		if(!mit_shm)
 		{
-			x_image->data = 0;
 			XDestroyImage(x_image);
-
-			delete[] buffer;
-			buffer = 0;
 		}
 		else
 		{
@@ -115,12 +128,17 @@ namespace sw
 		{
 			libX11->XCloseDisplay(x_display);
 		}
+
+		assert(isValidWindow());
 	}
 
 	void *FrameBufferX11::lock()
 	{
-		stride = x_image->bytes_per_line;
-		framebuffer = buffer;
+		if(x_image)
+		{
+			stride = x_image->bytes_per_line;
+			framebuffer = x_image->data;
+		}
 
 		return framebuffer;
 	}
@@ -133,6 +151,8 @@ namespace sw
 	void FrameBufferX11::blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect)
 	{
 		copy(source);
+
+		assert(isValidWindow());
 
 		if(!mit_shm)
 		{
