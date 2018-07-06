@@ -41,22 +41,7 @@ TEST(SubzeroReactorTest, Sample)
 		Function<Int(Pointer<Int>, Int)> function;
 		{
 			Pointer<Int> p = function.Arg<0>();
-			Int x = p[-1];
-			Int y = function.Arg<1>();
-			Int z = 4;
-
-			For(Int i = 0, i < 10, i++)
-			{
-				z += (2 << i) - (i / 3);
-			}
-
-			Float4 v;
-			v.z = As<Float>(z);
-			z = As<Int>(Float(Float4(v.xzxx).y));
-
-			Int sum = x + y + z;
-
-			Return(sum);
+			p[0] = 5;
 		}
 
 		routine = function(L"one");
