@@ -277,9 +277,9 @@ namespace sw
 			case R_386_32:
 				*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite);
 				break;
-		//	case R_386_PC32:
-		//		*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite);
-		//		break;
+			case R_386_PC32:
+				*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite);
+				break;
 			default:
 				assert(false && "Unsupported relocation type");
 				return nullptr;
@@ -892,8 +892,21 @@ namespace sw
 		return V(result);
 	}
 
+	static void ohhi()
+	{
+		printf("exciteballs!");
+		return;
+	}
+
 	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int align)
 	{
+	//	auto target = ::context->getConstantInt32((intptr_t&)ohhi);// ::context->getConstantExternSym(::context->getGlobalString("yow"));
+		Ice::Variable *reg = ::function->makeVariable(Ice::IceType_i64);
+		auto mov = Ice::InstAssign::create(::function, reg, ::context->getConstantInt64(reinterpret_cast<intptr_t>(ohhi)));
+		::basicBlock->appendInst(mov);
+		auto call = Ice::InstCall::create(::function, 2, nullptr, reg, false);
+		::basicBlock->appendInst(call);
+
 		int valueType = (int)reinterpret_cast<intptr_t>(type);
 
 		if((valueType & EmulatedBits) && (align != 0))   // Narrow vector not stored on stack.

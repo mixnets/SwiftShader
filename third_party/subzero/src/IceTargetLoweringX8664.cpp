@@ -685,14 +685,14 @@ Inst *TargetX8664::emitCallToTarget(Operand *CallTarget, Variable *ReturnReg) {
 
     Context.insert(ReturnAddress);
   } else {
-    if (CallTargetR != nullptr) {
-      // x86-64 in Subzero is ILP32. Therefore, CallTarget is i32, but the
-      // emitted call needs a i64 register (for textual asm.)
-      Variable *T = makeReg(IceType_i64);
-      _movzx(T, CallTargetR);
-      CallTarget = T;
-    }
-    NewCall = Context.insert<Traits::Insts::Call>(ReturnReg, CallTarget);
+    //if (CallTargetR != nullptr) {
+    //  // x86-64 in Subzero is ILP32. Therefore, CallTarget is i32, but the
+    //  // emitted call needs a i64 register (for textual asm.)
+    //  Variable *T = makeReg(IceType_i64);
+    //  _movzx(T, CallTargetR);
+    //  CallTarget = T;
+    //}
+    NewCall = Context.insert<Traits::Insts::Call>(ReturnReg, CallTargetR);
   }
   return NewCall;
 }
