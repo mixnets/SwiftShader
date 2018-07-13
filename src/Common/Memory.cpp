@@ -98,7 +98,9 @@ void deallocate(void *memory)
 	{
 		unsigned char *aligned = (unsigned char*)memory;
 		Allocation *allocation = (Allocation*)(aligned - sizeof(Allocation));
-
+#ifdef __linux__
+        madvise(allocation->block, MADV_FREE);
+#endif
 		delete[] allocation->block;
 	}
 }
