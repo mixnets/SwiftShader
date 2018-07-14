@@ -189,33 +189,33 @@ union YYSTYPE
 
     struct {
         union {
-            TString *string;
+            sh::TString *string;
             float f;
             int i;
             unsigned int u;
             bool b;
         };
-        TSymbol* symbol;
+        sh::TSymbol* symbol;
     } lex;
     struct {
-        TOperator op;
+        sh::TOperator op;
         union {
-            TIntermNode* intermNode;
-            TIntermNodePair nodePair;
-            TIntermTyped* intermTypedNode;
-            TIntermAggregate* intermAggregate;
-            TIntermSwitch* intermSwitch;
-            TIntermCase* intermCase;
+            sh::TIntermNode* intermNode;
+            sh::TIntermNodePair nodePair;
+            sh::TIntermTyped* intermTypedNode;
+            sh::TIntermAggregate* intermAggregate;
+            sh::TIntermSwitch* intermSwitch;
+            sh::TIntermCase* intermCase;
         };
         union {
-            TPublicType type;
-            TPrecision precision;
-            TLayoutQualifier layoutQualifier;
-            TQualifier qualifier;
-            TFunction* function;
-            TParameter param;
-            TField* field;
-            TFieldList* fieldList;
+            sh::TPublicType type;
+            sh::TPrecision precision;
+            sh::TLayoutQualifier layoutQualifier;
+            sh::TQualifier qualifier;
+            sh::TFunction* function;
+            sh::TParameter param;
+            sh::TField* field;
+            sh::TFieldList* fieldList;
         };
     } interm;
 
@@ -243,6 +243,6 @@ struct YYLTYPE
 
 
 
-int yyparse (TParseContext* context, void* yyscanner);
+int yyparse (sh::TParseContext* context, void* yyscanner);
 
 #endif /* !YY_YY_GLSLANG_TAB_H_INCLUDED  */

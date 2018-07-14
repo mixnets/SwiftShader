@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "ParseHelper.h"
-
+namespace sh {
 //
 // Use this class to carry along data from node to node in
 // the traversal
@@ -248,4 +248,5 @@ bool TIntermediate::parseConstTree(const TSourceLoc& line, TIntermNode* root, Co
 		return true;
 	else
 		return false;
+}
 }

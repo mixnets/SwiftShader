@@ -16,7 +16,7 @@
 #define COMPILER_DIAGNOSTICS_H_
 
 #include "preprocessor/DiagnosticsBase.h"
-
+namespace sh {
 class TInfoSink;
 
 class TDiagnostics : public pp::Diagnostics
@@ -55,5 +55,5 @@ private:
 	int mNumWarnings;
 	int mNumInfos;
 };
-
+}
 #endif  // COMPILER_DIAGNOSTICS_H_

@@ -22,6 +22,7 @@
 #include "InitializeGlobals.h"
 #include "osinclude.h"
 
+namespace sh{
 OS_TLSIndex PoolIndex = OS_INVALID_TLS_INDEX;
 
 bool InitializePoolIndex()
@@ -333,4 +334,5 @@ void TAllocation::checkAllocList() const
 {
 	for (const TAllocation* alloc = this; alloc != 0; alloc = alloc->prevAlloc)
 		alloc->check();
+}
 }

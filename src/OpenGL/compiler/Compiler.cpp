@@ -21,6 +21,9 @@
 #include "ParseHelper.h"
 #include "ValidateLimitations.h"
 
+namespace sh
+{
+
 namespace
 {
 class TScopedPoolAllocator {
@@ -270,4 +273,6 @@ void FreeCompilerGlobals()
 {
 	FreeParseContextIndex();
 	FreePoolIndex();
+}
+
 }

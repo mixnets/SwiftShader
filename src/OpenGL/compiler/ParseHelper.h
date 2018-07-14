@@ -20,7 +20,7 @@
 #include "preprocessor/Preprocessor.h"
 #include "Compiler.h"
 #include "SymbolTable.h"
-
+namespace sh {
 struct TMatrixFields {
 	bool wholeRow;
 	bool wholeCol;
@@ -277,5 +277,5 @@ private:
 
 int PaParseStrings(int count, const char* const string[], const int length[],
                    TParseContext* context);
-
+}
 #endif // _PARSER_HELPER_INCLUDED_

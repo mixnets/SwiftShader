@@ -30,6 +30,7 @@
 
 namespace
 {
+	using namespace sh;
 	GLenum glVariableType(const TType &type)
 	{
 		switch(type.getBasicType())

@@ -28,7 +28,7 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-namespace
+namespace sh
 {
 	bool IsVaryingOut(TQualifier qualifier)
 	{
@@ -97,7 +97,6 @@ namespace
 			return false;
 		}
 	}
-}
 
 //
 // Look at a '.' field selector string and change it into offsets
@@ -3729,3 +3728,4 @@ int PaParseStrings(int count, const char* const string[], const int length[],
 
 
 
+}

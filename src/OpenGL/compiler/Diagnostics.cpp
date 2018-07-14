@@ -17,7 +17,7 @@
 #include "debug.h"
 #include "InfoSink.h"
 #include "preprocessor/SourceLocation.h"
-
+namespace sh {
 TDiagnostics::TDiagnostics(TInfoSink& infoSink) :
 	mShaderVersion(100),
 	mInfoSink(infoSink),
@@ -82,4 +82,5 @@ void TDiagnostics::print(ID id,
                          const std::string& text)
 {
 	writeInfo(severity(id), loc, message(id), text, "");
+}
 }

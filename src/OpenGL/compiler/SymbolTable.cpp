@@ -30,7 +30,7 @@
 #if defined(_MSC_VER) && MSC_VER < 1900
 #define snprintf _snprintf
 #endif
-
+namespace sh {
 int TSymbolTableLevel::uniqueId = 0;
 
 TType::TType(const TPublicType &p) :
@@ -281,4 +281,5 @@ TSymbol *TSymbolTable::findBuiltIn(const TString &name, int shaderVersion) const
 TSymbol::TSymbol(const TSymbol& copyOf)
 {
 	name = NewPoolTString(copyOf.name->c_str());
+}
 }

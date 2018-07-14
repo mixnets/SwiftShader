@@ -14,7 +14,7 @@
 
 #include "Compiler.h"
 #include "intermediate.h"
-
+namespace sh {
 class TInfoSinkBase;
 
 struct TLoopInfo {
@@ -65,3 +65,4 @@ private:
 	TLoopStack mLoopStack;
 };
 
+}

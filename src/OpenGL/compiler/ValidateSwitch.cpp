@@ -15,7 +15,7 @@
 #include "ValidateSwitch.h"
 
 #include "ParseHelper.h"
-
+namespace sh{
 bool ValidateSwitch::validate(TBasicType switchType, TParseContext *context,
 	TIntermAggregate *statementList, const TSourceLoc &loc)
 {
@@ -205,4 +205,5 @@ bool ValidateSwitch::validateInternal(const TSourceLoc &loc)
 	}
 	return !mStatementBeforeCase && !mLastStatementWasCase && !mCaseInsideControlFlow &&
 		!mCaseTypeMismatch && mDefaultCount <= 1 && !mDuplicateCases;
+}
 }

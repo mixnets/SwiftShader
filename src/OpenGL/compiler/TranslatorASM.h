@@ -23,6 +23,9 @@ namespace glsl
 	class Shader;
 }
 
+namespace sh
+{
+
 class TranslatorASM : public TCompiler
 {
 public:
@@ -34,5 +37,7 @@ protected:
 private:
 	glsl::Shader *const shaderObject;
 };
+
+}
 
 #endif  // COMPILER_TRANSLATORASM_H_

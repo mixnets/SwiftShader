@@ -22,6 +22,9 @@
 
 #include "intermediate.h"
 
+namespace sh
+{
+
 void InsertBuiltInFunctions(GLenum type, const ShBuiltInResources &resources, TSymbolTable &symbolTable)
 {
 	TType *float1 = new TType(EbtFloat);
@@ -517,4 +520,6 @@ void InitExtensionBehavior(const ShBuiltInResources& resources,
 		extBehavior["GL_EXT_draw_buffers"] = EBhUndefined;
 	if(resources.ARB_texture_rectangle)
 		extBehavior["GL_ARB_texture_rectangle"] = EBhUndefined;
+}
+
 }

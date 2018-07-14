@@ -14,7 +14,7 @@
 
 #ifndef COMPILER_PRAGMA_H_
 #define COMPILER_PRAGMA_H_
-
+namespace sh {
 struct TPragma {
 	// By default optimization is turned on and debug is turned off.
 	TPragma() : optimize(true), debug(false) { }
@@ -23,5 +23,5 @@ struct TPragma {
 	bool optimize;
 	bool debug;
 };
-
+}
 #endif // COMPILER_PRAGMA_H_

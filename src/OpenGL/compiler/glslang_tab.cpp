@@ -97,7 +97,7 @@
 
 #define YYENABLE_NLS 0
 
-
+using namespace sh;
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -129,7 +129,7 @@ extern int yydebug;
 /* "%code requires" blocks.  */
 
 
-#define YYLTYPE TSourceLoc
+#define YYLTYPE sh::TSourceLoc
 #define YYLTYPE_IS_DECLARED 1
 
 
@@ -276,33 +276,33 @@ union YYSTYPE
 
     struct {
         union {
-            TString *string;
+            sh::TString *string;
             float f;
             int i;
             unsigned int u;
             bool b;
         };
-        TSymbol* symbol;
+        sh::TSymbol* symbol;
     } lex;
     struct {
-        TOperator op;
+        sh::TOperator op;
         union {
-            TIntermNode* intermNode;
-            TIntermNodePair nodePair;
-            TIntermTyped* intermTypedNode;
-            TIntermAggregate* intermAggregate;
-            TIntermSwitch* intermSwitch;
-            TIntermCase* intermCase;
+            sh::TIntermNode* intermNode;
+            sh::TIntermNodePair nodePair;
+            sh::TIntermTyped* intermTypedNode;
+            sh::TIntermAggregate* intermAggregate;
+            sh::TIntermSwitch* intermSwitch;
+            sh::TIntermCase* intermCase;
         };
         union {
-            TPublicType type;
-            TPrecision precision;
-            TLayoutQualifier layoutQualifier;
-            TQualifier qualifier;
-            TFunction* function;
-            TParameter param;
-            TField* field;
-            TFieldList* fieldList;
+            sh::TPublicType type;
+            sh::TPrecision precision;
+            sh::TLayoutQualifier layoutQualifier;
+            sh::TQualifier qualifier;
+            sh::TFunction* function;
+            sh::TParameter param;
+            sh::TField* field;
+            sh::TFieldList* fieldList;
         };
     } interm;
 
@@ -330,7 +330,7 @@ struct YYLTYPE
 
 
 
-int yyparse (TParseContext* context, void* yyscanner);
+int yyparse (sh::TParseContext* context, void* yyscanner);
 
 #endif /* !YY_YY_GLSLANG_TAB_H_INCLUDED  */
 
@@ -338,7 +338,7 @@ int yyparse (TParseContext* context, void* yyscanner);
 
 
 extern int yylex(YYSTYPE* yylval, YYLTYPE* yylloc, void* yyscanner);
-extern void yyerror(YYLTYPE* lloc, TParseContext* context, void* scanner, const char* reason);
+extern void yyerror(YYLTYPE* lloc, sh::TParseContext* context, void* scanner, const char* reason);
 
 #define YYLLOC_DEFAULT(Current, Rhs, N)                      \
   do {                                                       \
@@ -1728,7 +1728,7 @@ do {                                                                      \
 `----------------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, TParseContext* context, void* yyscanner)
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, sh::TParseContext* context, void* yyscanner)
 {
   FILE *yyo = yyoutput;
   YYUSE (yyo);
@@ -1750,7 +1750,7 @@ yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvalue
 `--------------------------------*/
 
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, TParseContext* context, void* yyscanner)
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, sh::TParseContext* context, void* yyscanner)
 {
   YYFPRINTF (yyoutput, "%s %s (",
              yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
@@ -1790,7 +1790,7 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule, TParseContext* context, void* yyscanner)
+yy_reduce_print (yytype_int16 *yyssp, YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule, sh::TParseContext* context, void* yyscanner)
 {
   unsigned long int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
@@ -2070,7 +2070,7 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 `-----------------------------------------------*/
 
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocationp, TParseContext* context, void* yyscanner)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocationp, sh::TParseContext* context, void* yyscanner)
 {
   YYUSE (yyvaluep);
   YYUSE (yylocationp);
@@ -2093,7 +2093,7 @@ yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocatio
 `----------*/
 
 int
-yyparse (TParseContext* context, void* yyscanner)
+yyparse (sh::TParseContext* context, void* yyscanner)
 {
 /* The lookahead symbol.  */
 int yychar;
@@ -2370,15 +2370,15 @@ yyreduce:
 
     {
         // The symbol table search was done in the lexical phase
-        const TVariable *variable = context->getNamedVariable((yylsp[0]), (yyvsp[0].lex).string, (yyvsp[0].lex).symbol);
+        const sh::TVariable *variable = context->getNamedVariable((yylsp[0]), (yyvsp[0].lex).string, (yyvsp[0].lex).symbol);
 
         // don't delete $1.string, it's used by error recovery, and the pool
         // pop will reclaim the memory
 
         // Constants which aren't indexable arrays can be propagated by value.
-        ConstantUnion *constArray = variable->getConstPointer();
+        sh::ConstantUnion *constArray = variable->getConstPointer();
         if (constArray && variable->getType().getArraySize() <= 1) {
-            TType t(variable->getType());
+            sh::TType t(variable->getType());
             (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(constArray, t, (yylsp[0]));
         } else
             (yyval.interm.intermTypedNode) = context->intermediate.addSymbol(variable->getUniqueId(),
@@ -2399,7 +2399,7 @@ yyreduce:
   case 4:
 
     {
-        ConstantUnion *unionArray = new ConstantUnion[1];
+        sh::ConstantUnion *unionArray = new sh::ConstantUnion[1];
         unionArray->setIConst((yyvsp[0].lex).i);
         (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtInt, EbpUndefined, EvqConstExpr), (yylsp[0]));
     }
@@ -2409,7 +2409,7 @@ yyreduce:
   case 5:
 
     {
-        ConstantUnion *unionArray = new ConstantUnion[1];
+        sh::ConstantUnion *unionArray = new sh::ConstantUnion[1];
         unionArray->setUConst((yyvsp[0].lex).u);
         (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtUInt, EbpUndefined, EvqConstExpr), (yylsp[0]));
     }
@@ -2419,7 +2419,7 @@ yyreduce:
   case 6:
 
     {
-        ConstantUnion *unionArray = new ConstantUnion[1];
+        sh::ConstantUnion *unionArray = new sh::ConstantUnion[1];
         unionArray->setFConst((yyvsp[0].lex).f);
         (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtFloat, EbpUndefined, EvqConstExpr), (yylsp[0]));
     }
@@ -2429,7 +2429,7 @@ yyreduce:
   case 7:
 
     {
-        ConstantUnion *unionArray = new ConstantUnion[1];
+        sh::ConstantUnion *unionArray = new sh::ConstantUnion[1];
         unionArray->setBConst((yyvsp[0].lex).b);
         (yyval.interm.intermTypedNode) = context->intermediate.addConstantUnion(unionArray, TType(EbtBool, EbpUndefined, EvqConstExpr), (yylsp[0]));
     }
@@ -2571,7 +2571,7 @@ yyreduce:
   case 23:
 
     {
-        TParameter param = { 0, new TType((yyvsp[0].interm.intermTypedNode)->getType()) };
+        sh::TParameter param = { 0, new TType((yyvsp[0].interm.intermTypedNode)->getType()) };
         (yyvsp[-1].interm.function)->addParameter(param);
         (yyval.interm).function = (yyvsp[-1].interm.function);
         (yyval.interm).nodePair.node1 = context->intermediate.makeAggregate((yyvsp[0].interm.intermTypedNode), (yylsp[0]));
@@ -2582,7 +2582,7 @@ yyreduce:
   case 24:
 
     {
-        TParameter param = { 0, new TType((yyvsp[0].interm.intermTypedNode)->getType()) };
+        sh::TParameter param = { 0, new TType((yyvsp[0].interm.intermTypedNode)->getType()) };
         (yyvsp[-2].interm).function->addParameter(param);
         (yyval.interm).function = (yyvsp[-2].interm).function;
         (yyval.interm).nodePair.node1 = context->intermediate.growAggregate((yyvsp[-2].interm).intermNode, (yyvsp[0].interm.intermTypedNode), (yylsp[-1]));
@@ -2614,8 +2614,8 @@ yyreduce:
     {
         if (context->reservedErrorCheck((yylsp[0]), *(yyvsp[0].lex).string))
             context->recover();
-        TType type(EbtVoid, EbpUndefined);
-        TFunction *function = new TFunction((yyvsp[0].lex).string, type);
+        sh::TType type(EbtVoid, EbpUndefined);
+        sh::TFunction *function = new TFunction((yyvsp[0].lex).string, type);
         (yyval.interm.function) = function;
     }
 
@@ -2626,8 +2626,8 @@ yyreduce:
     {
         if (context->reservedErrorCheck((yylsp[0]), *(yyvsp[0].lex).string))
             context->recover();
-        TType type(EbtVoid, EbpUndefined);
-        TFunction *function = new TFunction((yyvsp[0].lex).string, type);
+        sh::TType type(EbtVoid, EbpUndefined);
+        sh::TFunction *function = new TFunction((yyvsp[0].lex).string, type);
         (yyval.interm.function) = function;
     }
 
@@ -3081,7 +3081,7 @@ yyreduce:
   case 87:
 
     {
-        TIntermAggregate *aggNode = (yyvsp[-1].interm).intermAggregate;
+        sh::TIntermAggregate *aggNode = (yyvsp[-1].interm).intermAggregate;
         if (aggNode && aggNode->getOp() == EOpNull)
             aggNode->setOp(EOpDeclaration);
         (yyval.interm.intermNode) = aggNode;
@@ -3214,8 +3214,8 @@ yyreduce:
             context->recover();
 
         // Add the function as a prototype after parsing it (we do not support recursion)
-        TFunction *function;
-        TType type((yyvsp[-2].interm.type));
+        sh::TFunction *function;
+        sh::TType type((yyvsp[-2].interm.type));
         function = new TFunction((yyvsp[-1].lex).string, type);
         (yyval.interm.function) = function;
 
@@ -3233,7 +3233,7 @@ yyreduce:
         }
         if (context->reservedErrorCheck((yylsp[0]), *(yyvsp[0].lex).string))
             context->recover();
-        TParameter param = {(yyvsp[0].lex).string, new TType((yyvsp[-1].interm.type))};
+        sh::TParameter param = {(yyvsp[0].lex).string, new TType((yyvsp[-1].interm.type))};
         (yyval.interm).param = param;
     }
 
@@ -3254,8 +3254,8 @@ yyreduce:
             context->recover();
         (yyvsp[-4].interm.type).setArray(true, size);
 
-        TType* type = new TType((yyvsp[-4].interm.type));
-        TParameter param = { (yyvsp[-3].lex).string, type };
+        sh::TType* type = new TType((yyvsp[-4].interm.type));
+        sh::TParameter param = { (yyvsp[-3].lex).string, type };
         (yyval.interm).param = param;
     }
 
@@ -3340,7 +3340,7 @@ yyreduce:
   case 109:
 
     {
-        TParameter param = { 0, new TType((yyvsp[0].interm.type)) };
+        sh::TParameter param = { 0, new TType((yyvsp[0].interm.type)) };
         (yyval.interm).param = param;
     }
 
@@ -3580,7 +3580,7 @@ yyreduce:
         context->error((yylsp[0]), "interpolation qualifier requires a fragment 'in' or vertex 'out' storage qualifier", getQualifierString((yyvsp[0].interm.type).qualifier));
         context->recover();
 
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtVoid, qual, (yylsp[0]));
     }
 
@@ -3828,7 +3828,7 @@ yyreduce:
   case 158:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtVoid, qual, (yylsp[0]));
     }
 
@@ -3837,7 +3837,7 @@ yyreduce:
   case 159:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
     }
 
@@ -3846,7 +3846,7 @@ yyreduce:
   case 160:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtInt, qual, (yylsp[0]));
     }
 
@@ -3855,7 +3855,7 @@ yyreduce:
   case 161:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtUInt, qual, (yylsp[0]));
     }
 
@@ -3864,7 +3864,7 @@ yyreduce:
   case 162:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtBool, qual, (yylsp[0]));
     }
 
@@ -3873,7 +3873,7 @@ yyreduce:
   case 163:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
         (yyval.interm.type).setAggregate(2);
     }
@@ -3883,7 +3883,7 @@ yyreduce:
   case 164:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
         (yyval.interm.type).setAggregate(3);
     }
@@ -3893,7 +3893,7 @@ yyreduce:
   case 165:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
         (yyval.interm.type).setAggregate(4);
     }
@@ -3903,7 +3903,7 @@ yyreduce:
   case 166:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtBool, qual, (yylsp[0]));
         (yyval.interm.type).setAggregate(2);
     }
@@ -3913,7 +3913,7 @@ yyreduce:
   case 167:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtBool, qual, (yylsp[0]));
         (yyval.interm.type).setAggregate(3);
     }
@@ -3923,7 +3923,7 @@ yyreduce:
   case 168:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtBool, qual, (yylsp[0]));
         (yyval.interm.type).setAggregate(4);
     }
@@ -3933,7 +3933,7 @@ yyreduce:
   case 169:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtInt, qual, (yylsp[0]));
         (yyval.interm.type).setAggregate(2);
     }
@@ -3943,7 +3943,7 @@ yyreduce:
   case 170:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtInt, qual, (yylsp[0]));
         (yyval.interm.type).setAggregate(3);
     }
@@ -3953,7 +3953,7 @@ yyreduce:
   case 171:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtInt, qual, (yylsp[0]));
         (yyval.interm.type).setAggregate(4);
     }
@@ -3963,7 +3963,7 @@ yyreduce:
   case 172:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtUInt, qual, (yylsp[0]));
         (yyval.interm.type).setAggregate(2);
     }
@@ -3973,7 +3973,7 @@ yyreduce:
   case 173:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtUInt, qual, (yylsp[0]));
         (yyval.interm.type).setAggregate(3);
     }
@@ -3983,7 +3983,7 @@ yyreduce:
   case 174:
 
     {
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtUInt, qual, (yylsp[0]));
         (yyval.interm.type).setAggregate(4);
     }
@@ -3994,7 +3994,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("mat2", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
         (yyval.interm.type).setMatrix(2, 2);
     }
@@ -4005,7 +4005,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("mat3", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
         (yyval.interm.type).setMatrix(3, 3);
     }
@@ -4016,7 +4016,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("mat4", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
         (yyval.interm.type).setMatrix(4, 4);
     }
@@ -4027,7 +4027,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("mat2x3", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
         (yyval.interm.type).setMatrix(2, 3);
     }
@@ -4038,7 +4038,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("mat3x2", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
         (yyval.interm.type).setMatrix(3, 2);
     }
@@ -4049,7 +4049,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("mat2x4", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
         (yyval.interm.type).setMatrix(2, 4);
     }
@@ -4060,7 +4060,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("mat4x2", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
         (yyval.interm.type).setMatrix(4, 2);
     }
@@ -4071,7 +4071,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("mat3x4", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
         (yyval.interm.type).setMatrix(3, 4);
     }
@@ -4082,7 +4082,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("mat4x3", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtFloat, qual, (yylsp[0]));
         (yyval.interm.type).setMatrix(4, 3);
     }
@@ -4093,7 +4093,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("sampler2D", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtSampler2D, qual, (yylsp[0]));
     }
 
@@ -4103,7 +4103,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("samplerCube", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtSamplerCube, qual, (yylsp[0]));
     }
 
@@ -4117,7 +4117,7 @@ yyreduce:
             context->recover();
         }
         FRAG_VERT_ONLY("samplerExternalOES", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtSamplerExternalOES, qual, (yylsp[0]));
     }
 
@@ -4131,7 +4131,7 @@ yyreduce:
             context->recover();
         }
         FRAG_VERT_ONLY("sampler2DRect", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtSampler2DRect, qual, (yylsp[0]));
     }
 
@@ -4141,7 +4141,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("sampler3D", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtSampler3D, qual, (yylsp[0]));
     }
 
@@ -4151,7 +4151,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("sampler2DArray", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtSampler2DArray, qual, (yylsp[0]));
     }
 
@@ -4161,7 +4161,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("isampler2D", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtISampler2D, qual, (yylsp[0]));
     }
 
@@ -4171,7 +4171,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("isampler3D", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtISampler3D, qual, (yylsp[0]));
     }
 
@@ -4181,7 +4181,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("isamplerCube", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtISamplerCube, qual, (yylsp[0]));
     }
 
@@ -4191,7 +4191,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("isampler2DArray", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtISampler2DArray, qual, (yylsp[0]));
     }
 
@@ -4201,7 +4201,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("usampler2D", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtUSampler2D, qual, (yylsp[0]));
     }
 
@@ -4211,7 +4211,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("usampler3D", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtUSampler3D, qual, (yylsp[0]));
     }
 
@@ -4221,7 +4221,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("usamplerCube", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtUSamplerCube, qual, (yylsp[0]));
     }
 
@@ -4231,7 +4231,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("usampler2DArray", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtUSampler2DArray, qual, (yylsp[0]));
     }
 
@@ -4241,7 +4241,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("sampler2DShadow", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtSampler2DShadow, qual, (yylsp[0]));
     }
 
@@ -4251,7 +4251,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("samplerCubeShadow", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtSamplerCubeShadow, qual, (yylsp[0]));
     }
 
@@ -4261,7 +4261,7 @@ yyreduce:
 
     {
         FRAG_VERT_ONLY("sampler2DArrayShadow", (yylsp[0]));
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtSampler2DArrayShadow, qual, (yylsp[0]));
     }
 
@@ -4284,8 +4284,8 @@ yyreduce:
         // This is for user defined type names.  The lexical phase looked up the
         // type.
         //
-        TType& structure = static_cast<TVariable*>((yyvsp[0].lex).symbol)->getType();
-        TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
+        sh::TType& structure = static_cast<TVariable*>((yyvsp[0].lex).symbol)->getType();
+        sh::TQualifier qual = context->symbolTable.atGlobalLevel() ? EvqGlobal : EvqTemporary;
         (yyval.interm.type).setBasic(EbtStruct, qual, (yylsp[0]));
         (yyval.interm.type).userDef = &structure;
     }
@@ -4333,7 +4333,7 @@ yyreduce:
     {
         (yyval.interm.fieldList) = (yyvsp[-1].interm.fieldList);
         for (unsigned int i = 0; i < (yyvsp[0].interm.fieldList)->size(); ++i) {
-            TField* field = (*(yyvsp[0].interm.fieldList))[i];
+            sh::TField* field = (*(yyvsp[0].interm.fieldList))[i];
             for (unsigned int j = 0; j < (yyval.interm.fieldList)->size(); ++j) {
                 if ((*(yyval.interm.fieldList))[j]->name() == field->name()) {
                     context->error((*(yyvsp[0].interm.fieldList))[i]->line(), "duplicate field name in structure:", "struct", field->name().c_str());
@@ -4388,7 +4388,7 @@ yyreduce:
         if (context->reservedErrorCheck((yylsp[0]), *(yyvsp[0].lex).string))
             context->recover();
 
-        TType* type = new TType(EbtVoid, EbpUndefined);
+        sh::TType* type = new TType(EbtVoid, EbpUndefined);
         (yyval.interm.field) = new TField(type, (yyvsp[0].lex).string, (yylsp[0]));
     }
 
@@ -4400,7 +4400,7 @@ yyreduce:
         if (context->reservedErrorCheck((yylsp[-3]), *(yyvsp[-3].lex).string))
             context->recover();
 
-        TType* type = new TType(EbtVoid, EbpUndefined);
+        sh::TType* type = new TType(EbtVoid, EbpUndefined);
         int size = 0;
         if (context->arraySizeErrorCheck((yyvsp[-1].interm.intermTypedNode)->getLine(), (yyvsp[-1].interm.intermTypedNode), size))
             context->recover();
@@ -4663,7 +4663,7 @@ yyreduce:
   case 250:
 
     {
-        TIntermNode *intermNode;
+        sh::TIntermNode *intermNode;
         if (context->boolErrorCheck((yylsp[-2]), (yyvsp[-3].interm.type)))
             context->recover();
 
@@ -5105,8 +5105,9 @@ yyreturn:
   return yyresult;
 }
 
+namespace sh{
 
-
-int glslang_parse(TParseContext* context) {
+int glslang_parse(sh::TParseContext* context) {
     return yyparse(context, context->getScanner());
+}
 }

@@ -47,7 +47,7 @@
 #include "InfoSink.h"
 #include "intermediate.h"
 #include <set>
-
+namespace sh{
 //
 // Symbol base class.  (Can build functions or variables out of these...)
 //
@@ -530,5 +530,7 @@ protected:
 	std::set<std::string> mInvariantVaryings;
 	bool mGlobalInvariant;
 };
+
+}
 
 #endif // _SYMBOL_TABLE_INCLUDED_

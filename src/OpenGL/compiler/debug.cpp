@@ -21,7 +21,7 @@
 
 #include "InitializeParseContext.h"
 #include "ParseHelper.h"
-
+namespace sh {
 #ifdef TRACE_ENABLED
 extern "C" {
 void Trace(const char *format, ...) {
@@ -40,5 +40,6 @@ void Trace(const char *format, ...) {
 	}
 }
 }  // extern "C"
+}
 #endif  // TRACE_ENABLED
 

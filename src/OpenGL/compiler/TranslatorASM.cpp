@@ -16,6 +16,9 @@
 
 #include "InitializeParseContext.h"
 
+namespace sh
+{
+
 TranslatorASM::TranslatorASM(glsl::Shader *shaderObject, GLenum shaderType) : TCompiler(shaderType), shaderObject(shaderObject)
 {
 }
@@ -28,4 +31,6 @@ bool TranslatorASM::translate(TIntermNode* root)
 	outputASM.output();
 
 	return parseContext.numErrors() == 0;
+}
+
 }

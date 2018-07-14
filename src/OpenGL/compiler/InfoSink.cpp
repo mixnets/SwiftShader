@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "InfoSink.h"
-
+namespace sh{
 void TInfoSinkBase::prefix(TPrefixType message) {
 	switch(message) {
 		case EPrefixNone:
@@ -66,4 +66,5 @@ void TInfoSinkBase::message(TPrefixType message, const char* s, TSourceLoc loc) 
 	location(loc);
 	sink.append(s);
 	sink.append("\n");
+}
 }

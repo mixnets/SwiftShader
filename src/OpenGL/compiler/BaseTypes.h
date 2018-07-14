@@ -16,7 +16,7 @@
 #define _BASICTYPES_INCLUDED_
 
 #include "debug.h"
-
+namespace sh{
 //
 // Precision qualifiers
 //
@@ -470,5 +470,5 @@ inline const char *getQualifierString(TQualifier qualifier)
 	default: UNREACHABLE(qualifier); return "unknown qualifier";
 	}
 }
-
+}
 #endif // _BASICTYPES_INCLUDED_

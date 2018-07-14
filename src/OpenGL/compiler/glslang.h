@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+namespace sh{
 class TParseContext;
 extern int glslang_initialize(TParseContext* context);
 extern int glslang_finalize(TParseContext* context);
@@ -22,3 +22,4 @@ extern int glslang_scan(size_t count,
                         TParseContext* context);
 extern int glslang_parse(TParseContext* context);
 
+}

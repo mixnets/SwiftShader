@@ -21,6 +21,8 @@
 
 #include <algorithm>
 
+namespace sh{
+
 class TType;
 struct TPublicType;
 
@@ -490,9 +492,9 @@ public:
 		return false;
 	}
 
-	const char* getBasicString() const { return ::getBasicString(type); }
-	const char* getPrecisionString() const { return ::getPrecisionString(precision); }
-	const char* getQualifierString() const { return ::getQualifierString(qualifier); }
+	const char* getBasicString() const { return sh::getBasicString(type); }
+	const char* getPrecisionString() const { return sh::getPrecisionString(precision); }
+	const char* getQualifierString() const { return sh::getQualifierString(qualifier); }
 	TString getCompleteString() const;
 
 	// If this type is a struct, returns the deepest struct nesting of
@@ -669,5 +671,5 @@ struct TPublicType
 		return array || isMatrix() || isVector();
 	}
 };
-
+}
 #endif // _TYPES_INCLUDED_

@@ -18,7 +18,7 @@
 #include "ExtensionBehavior.h"
 #include "Pragma.h"
 #include "preprocessor/DirectiveHandlerBase.h"
-
+namespace sh {
 class TDiagnostics;
 
 class TDirectiveHandler : public pp::DirectiveHandler
@@ -53,5 +53,5 @@ private:
 	TDiagnostics& mDiagnostics;
 	int& mShaderVersion;
 };
-
+}
 #endif  // COMPILER_DIRECTIVE_HANDLER_H_

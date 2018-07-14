@@ -21,6 +21,8 @@
 #include "../../Common/DebugAndroid.hpp"
 #endif
 
+namespace sh {
+
 class ConstantUnion {
 public:
 	POOL_ALLOCATOR_NEW_DELETE();
@@ -398,5 +400,5 @@ private:
 
 	TBasicType type;
 };
-
+}
 #endif // _CONSTANT_UNION_INCLUDED_
