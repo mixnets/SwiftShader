@@ -14,6 +14,8 @@
 
 #include "InfoSink.h"
 
+namespace sh {
+
 void TInfoSinkBase::prefix(TPrefixType message) {
 	switch(message) {
 		case EPrefixNone:
@@ -67,3 +69,5 @@ void TInfoSinkBase::message(TPrefixType message, const char* s, TSourceLoc loc) 
 	sink.append(s);
 	sink.append("\n");
 }
+
+} // end namespace sh

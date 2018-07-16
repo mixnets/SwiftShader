@@ -19,6 +19,12 @@
 #include "InfoSink.h"
 #include "SymbolTable.h"
 
+typedef unsigned int GLenum;
+#define GL_FRAGMENT_SHADER                0x8B30
+#define GL_VERTEX_SHADER                  0x8B31
+
+namespace sh {
+
 enum ShCompileOptions
 {
   SH_VALIDATE                = 0,
@@ -62,10 +68,6 @@ struct ShBuiltInResources
 
 	unsigned int MaxCallStackDepth;
 };
-
-typedef unsigned int GLenum;
-#define GL_FRAGMENT_SHADER                0x8B30
-#define GL_VERTEX_SHADER                  0x8B31
 
 //
 // The base class for the machine dependent compiler to derive from
@@ -125,5 +127,7 @@ private:
 
 bool InitCompilerGlobals();
 void FreeCompilerGlobals();
+
+} // end namespace sh
 
 #endif // _COMPILER_INCLUDED_

@@ -48,6 +48,8 @@
 // never get instantiated, so won't have any impact.
 //
 
+namespace sh {
+
 class TAllocation {
 public:
 	TAllocation(size_t size, unsigned char* mem, TAllocation* prev = 0) :
@@ -310,5 +312,7 @@ public:
 protected:
 	TPoolAllocator *allocator;
 };
+
+} // end namespace sh
 
 #endif // _POOLALLOC_INCLUDED_

@@ -45,6 +45,8 @@
 
 #include "debug.h"
 
+namespace sh {
+
 //
 // Thread Local Storage Operations
 //
@@ -69,5 +71,7 @@ inline void* OS_GetTLSValue(OS_TLSIndex nIndex)
     return pthread_getspecific(nIndex);
 #endif  // ANGLE_OS_WIN
 }
+
+} // end namespace sh
 
 #endif // __OSINCLUDE_H

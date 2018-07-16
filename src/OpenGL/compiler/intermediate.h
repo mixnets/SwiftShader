@@ -28,6 +28,8 @@
 #include "Types.h"
 #include "ConstantUnion.h"
 
+namespace sh {
+
 //
 // Operators used by the high-level (parse tree) representation.
 //
@@ -754,5 +756,7 @@ private:
 	// All the code blocks from the root to the current node's parent during traversal.
 	std::vector<ParentBlock> mParentBlockStack;
 };
+
+}
 
 #endif // __INTERMEDIATE_H

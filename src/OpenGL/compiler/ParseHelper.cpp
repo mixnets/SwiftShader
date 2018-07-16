@@ -28,74 +28,73 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-namespace
+namespace sh {
+
+bool IsVaryingOut(TQualifier qualifier)
 {
-	bool IsVaryingOut(TQualifier qualifier)
+	switch(qualifier)
 	{
-		switch(qualifier)
-		{
-		case EvqVaryingOut:
-		case EvqSmoothOut:
-		case EvqFlatOut:
-		case EvqCentroidOut:
-		case EvqVertexOut:
-			return true;
+	case EvqVaryingOut:
+	case EvqSmoothOut:
+	case EvqFlatOut:
+	case EvqCentroidOut:
+	case EvqVertexOut:
+		return true;
 
-		default: break;
-		}
+	default: break;
+	}
 
+	return false;
+}
+
+bool IsVaryingIn(TQualifier qualifier)
+{
+	switch(qualifier)
+	{
+	case EvqVaryingIn:
+	case EvqSmoothIn:
+	case EvqFlatIn:
+	case EvqCentroidIn:
+	case EvqFragmentIn:
+		return true;
+
+	default: break;
+	}
+
+	return false;
+}
+
+bool IsVarying(TQualifier qualifier)
+{
+	return IsVaryingIn(qualifier) || IsVaryingOut(qualifier);
+}
+
+bool IsAssignment(TOperator op)
+{
+	switch(op)
+	{
+	case EOpPostIncrement:
+	case EOpPostDecrement:
+	case EOpPreIncrement:
+	case EOpPreDecrement:
+	case EOpAssign:
+	case EOpAddAssign:
+	case EOpSubAssign:
+	case EOpMulAssign:
+	case EOpVectorTimesMatrixAssign:
+	case EOpVectorTimesScalarAssign:
+	case EOpMatrixTimesScalarAssign:
+	case EOpMatrixTimesMatrixAssign:
+	case EOpDivAssign:
+	case EOpIModAssign:
+	case EOpBitShiftLeftAssign:
+	case EOpBitShiftRightAssign:
+	case EOpBitwiseAndAssign:
+	case EOpBitwiseXorAssign:
+	case EOpBitwiseOrAssign:
+		return true;
+	default:
 		return false;
-	}
-
-	bool IsVaryingIn(TQualifier qualifier)
-	{
-		switch(qualifier)
-		{
-		case EvqVaryingIn:
-		case EvqSmoothIn:
-		case EvqFlatIn:
-		case EvqCentroidIn:
-		case EvqFragmentIn:
-			return true;
-
-		default: break;
-		}
-
-		return false;
-	}
-
-	bool IsVarying(TQualifier qualifier)
-	{
-		return IsVaryingIn(qualifier) || IsVaryingOut(qualifier);
-	}
-
-	bool IsAssignment(TOperator op)
-	{
-		switch(op)
-		{
-		case EOpPostIncrement:
-		case EOpPostDecrement:
-		case EOpPreIncrement:
-		case EOpPreDecrement:
-		case EOpAssign:
-		case EOpAddAssign:
-		case EOpSubAssign:
-		case EOpMulAssign:
-		case EOpVectorTimesMatrixAssign:
-		case EOpVectorTimesScalarAssign:
-		case EOpMatrixTimesScalarAssign:
-		case EOpMatrixTimesMatrixAssign:
-		case EOpDivAssign:
-		case EOpIModAssign:
-		case EOpBitShiftLeftAssign:
-		case EOpBitShiftRightAssign:
-		case EOpBitwiseAndAssign:
-		case EOpBitwiseXorAssign:
-		case EOpBitwiseOrAssign:
-			return true;
-		default:
-			return false;
-		}
 	}
 }
 
@@ -3727,5 +3726,4 @@ int PaParseStrings(int count, const char* const string[], const int length[],
 	return (error == 0) && (context->numErrors() == 0) ? 0 : 1;
 }
 
-
-
+} // end namespace sh

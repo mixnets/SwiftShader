@@ -31,6 +31,8 @@
 #define snprintf _snprintf
 #endif
 
+namespace sh {
+
 int TSymbolTableLevel::uniqueId = 0;
 
 TType::TType(const TPublicType &p) :
@@ -282,3 +284,5 @@ TSymbol::TSymbol(const TSymbol& copyOf)
 {
 	name = NewPoolTString(copyOf.name->c_str());
 }
+
+} // end namespace sh

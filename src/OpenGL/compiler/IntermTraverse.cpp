@@ -14,6 +14,8 @@
 
 #include "intermediate.h"
 
+namespace sh {
+
 //
 // Traverse the intermediate representation tree, and
 // call a node type specific function for each node.
@@ -338,3 +340,4 @@ void TIntermBranch::traverse(TIntermTraverser* it)
 		it->visitBranch(PostVisit, this);
 }
 
+} // end namespace sh

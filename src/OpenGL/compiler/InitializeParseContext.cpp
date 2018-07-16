@@ -16,6 +16,8 @@
 
 #include "osinclude.h"
 
+namespace sh {
+
 OS_TLSIndex GlobalParseContextIndex = OS_INVALID_TLS_INDEX;
 
 bool InitializeParseContextIndex()
@@ -46,3 +48,4 @@ TParseContext* GetGlobalParseContext()
 	return static_cast<TParseContext*>(OS_GetTLSValue(GlobalParseContextIndex));
 }
 
+} // end namespace sh

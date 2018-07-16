@@ -33,6 +33,8 @@ typedef unsigned int GLenum;
 
 namespace glsl
 {
+	using namespace sh;
+
 	struct BlockMemberInfo
 	{
 		BlockMemberInfo() : offset(-1), arrayStride(-1), matrixStride(-1), isRowMajorMatrix(false) {}

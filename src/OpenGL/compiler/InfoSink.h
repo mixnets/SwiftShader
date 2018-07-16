@@ -18,6 +18,8 @@
 #include <math.h>
 #include "Common.h"
 
+namespace sh {
+
 // Returns the fractional part of the given floating-point number.
 inline float fractionalPart(float f) {
   float intPart = 0.0f;
@@ -120,5 +122,7 @@ public:
 	TInfoSinkBase debug;
 	TInfoSinkBase obj;
 };
+
+} // end namespace sh
 
 #endif // _INFOSINK_INCLUDED_

@@ -15,11 +15,15 @@
 #ifndef __INITIALIZE_PARSE_CONTEXT_INCLUDED_
 #define __INITIALIZE_PARSE_CONTEXT_INCLUDED_
 
+namespace sh {
+
 bool InitializeParseContextIndex();
 void FreeParseContextIndex();
 
 class TParseContext;
 extern void SetGlobalParseContext(TParseContext* context);
 extern TParseContext* GetGlobalParseContext();
+
+} // end namespace sh
 
 #endif // __INITIALIZE_PARSE_CONTEXT_INCLUDED_
