@@ -21,8 +21,15 @@
 #include "main.h"
 #include "utilities.h"
 
+#include "glslang/Public/ShaderLang.h"
+#include "StandAlone/ResourceLimits.h"
+#include "SPIRV/GlslangToSpv.h"
+#include "OGLCompilersDLL/InitializeDll.h"
+#include "SPIRV/disassemble.h"
+
 #include <string>
 #include <algorithm>
+#include <array>
 
 namespace es2
 {
@@ -242,6 +249,214 @@ void Shader::compile()
 	}
 
 	delete compiler;
+
+	//////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+
+	std::string vertexSource = mSource;
+//	std::string fragmentSource = glFragmentShader->getTranslatedSource(glContext);
+
+	// Parse attribute locations and replace them in the vertex shader.
+	// See corresponding code in OutputVulkanGLSL.cpp.
+	// TODO(jmadill): Also do the same for ESSL 3 fragment outputs.
+	//for (const sh::Attribute &attribute : programState.getAttributes())
+	//{
+	//	// Warning: If we endup supporting ES 3.0 shaders and up, Program::linkAttributes is going
+	//	// to bring us all attributes in this list instead of only the active ones.
+	//	ASSERT(attribute.active);
+
+	//	std::string locationString = "location = " + Str(attribute.location);
+	//	InsertLayoutSpecifierString(&vertexSource, attribute.name, locationString);
+	//	InsertQualifierSpecifierString(&vertexSource, attribute.name, "in");
+	//}
+
+	// The attributes in the programState could have been filled with active attributes only
+	// depending on the shader version. If there is inactive attributes left, we have to remove
+	// their @@ QUALIFIER and @@ LAYOUT markers.
+	//for (const sh::Attribute &attribute : glVertexShader->getAllAttributes(glContext))
+	//{
+	//	if (attribute.active)
+	//	{
+	//		continue;
+	//	}
+
+	//	InsertLayoutSpecifierString(&vertexSource, attribute.name, "");
+	//	InsertQualifierSpecifierString(&vertexSource, attribute.name, "");
+	//}
+
+	//// Assign varying locations.
+	//for (const gl::PackedVaryingRegister &varyingReg : resources.varyingPacking.getRegisterList())
+	//{
+	//	const auto &varying = *varyingReg.packedVarying;
+
+	//	std::string locationString = "location = " + Str(varyingReg.registerRow);
+	//	if (varyingReg.registerColumn > 0)
+	//	{
+	//		ASSERT(!varying.varying->isStruct());
+	//		ASSERT(!gl::IsMatrixType(varying.varying->type));
+	//		locationString += ", component = " + Str(varyingReg.registerColumn);
+	//	}
+
+	//	InsertLayoutSpecifierString(&vertexSource, varying.varying->name, locationString);
+	//	InsertLayoutSpecifierString(&fragmentSource, varying.varying->name, locationString);
+
+	//	ASSERT(varying.interpolation == sh::INTERPOLATION_SMOOTH);
+	//	InsertQualifierSpecifierString(&vertexSource, varying.varying->name, "out");
+	//	InsertQualifierSpecifierString(&fragmentSource, varying.varying->name, "in");
+	//}
+
+	//// Remove all the markers for unused varyings.
+	//for (const std::string &varyingName : resources.varyingPacking.getInactiveVaryingNames())
+	//{
+	//	EraseLayoutAndQualifierStrings(&vertexSource, &fragmentSource, varyingName);
+	//}
+
+	//// Bind the default uniforms for vertex and fragment shaders.
+	//// See corresponding code in OutputVulkanGLSL.cpp.
+	//std::stringstream searchStringBuilder;
+	//searchStringBuilder << "@@ DEFAULT-UNIFORMS-SET-BINDING @@";
+	//std::string searchString = searchStringBuilder.str();
+
+	//std::string vertexDefaultUniformsBinding = "set = 0, binding = 0";
+	//std::string fragmentDefaultUniformsBinding = "set = 0, binding = 1";
+
+	//angle::ReplaceSubstring(&vertexSource, searchString, vertexDefaultUniformsBinding);
+	//angle::ReplaceSubstring(&fragmentSource, searchString, fragmentDefaultUniformsBinding);
+
+	//// Assign textures to a descriptor set and binding.
+	//int textureCount = 0;
+	//const auto &uniforms = programState.getUniforms();
+	//for (unsigned int uniformIndex : programState.getSamplerUniformRange())
+	//{
+	//	const gl::LinkedUniform &samplerUniform = uniforms[uniformIndex];
+	//	std::string setBindingString = "set = 1, binding = " + Str(textureCount);
+
+	//	// Samplers in structs are extracted and renamed.
+	//	const std::string samplerName = GetMappedSamplerName(samplerUniform.name);
+
+	//	ASSERT(samplerUniform.isActive(gl::ShaderType::Vertex) ||
+	//		samplerUniform.isActive(gl::ShaderType::Fragment));
+	//	if (samplerUniform.isActive(gl::ShaderType::Vertex))
+	//	{
+	//		InsertLayoutSpecifierString(&vertexSource, samplerName, setBindingString);
+	//	}
+	//	InsertQualifierSpecifierString(&vertexSource, samplerName, kUniformQualifier);
+
+	//	if (samplerUniform.isActive(gl::ShaderType::Fragment))
+	//	{
+	//		InsertLayoutSpecifierString(&fragmentSource, samplerName, setBindingString);
+	//	}
+	//	InsertQualifierSpecifierString(&fragmentSource, samplerName, kUniformQualifier);
+
+	//	textureCount++;
+	//}
+
+	//// Start the unused sampler bindings at something ridiculously high.
+	//constexpr int kBaseUnusedSamplerBinding = 100;
+	//int unusedSamplerBinding = kBaseUnusedSamplerBinding;
+
+	//for (const gl::UnusedUniform &unusedUniform : resources.unusedUniforms)
+	//{
+	//	if (unusedUniform.isSampler)
+	//	{
+	//		// Samplers in structs are extracted and renamed.
+	//		std::string uniformName = GetMappedSamplerName(unusedUniform.name);
+
+	//		std::stringstream layoutStringStream;
+
+	//		layoutStringStream << "set = 0, binding = " << unusedSamplerBinding++;
+
+	//		std::string layoutString = layoutStringStream.str();
+
+	//		InsertLayoutSpecifierString(&vertexSource, uniformName, layoutString);
+	//		InsertLayoutSpecifierString(&fragmentSource, uniformName, layoutString);
+
+	//		InsertQualifierSpecifierString(&vertexSource, uniformName, kUniformQualifier);
+	//		InsertQualifierSpecifierString(&fragmentSource, uniformName, kUniformQualifier);
+	//	}
+	//	else
+	//	{
+	//		EraseLayoutAndQualifierStrings(&vertexSource, &fragmentSource, unusedUniform.name);
+	//	}
+	//}
+
+	//// Substitute layout and qualifier strings for the driver uniforms block.
+	//constexpr char kDriverBlockLayoutString[] = "set = 2, binding = 0";
+	//constexpr char kDriverBlockName[] = "ANGLEUniforms";
+	//InsertLayoutSpecifierString(&vertexSource, kDriverBlockName, kDriverBlockLayoutString);
+	//InsertLayoutSpecifierString(&fragmentSource, kDriverBlockName, kDriverBlockLayoutString);
+
+	//InsertQualifierSpecifierString(&vertexSource, kDriverBlockName, kUniformQualifier);
+	//InsertQualifierSpecifierString(&fragmentSource, kDriverBlockName, kUniformQualifier);
+
+//	std::array<const char *, 2> strings = { { vertexSource.c_str(), fragmentSource.c_str() } };
+//	std::array<int, 2> lengths = {
+//		{ static_cast<int>(vertexSource.length()), static_cast<int>(fragmentSource.length()) } };
+
+//glslang::InitProcess();
+ShInitialize();
+
+	std::array<const char *, 1> strings = { { vertexSource.c_str()} };
+	std::array<int, 1> lengths = {
+		{ static_cast<int>(vertexSource.length()) } };
+
+////	// Enable SPIR-V and Vulkan rules when parsing GLSL
+	EShMessages messages = EShMsgDefault;// static_cast<EShMessages>(EShMsgSpvRules | EShMsgVulkanRules);
+
+	glslang::TShader vertexShader(EShLangFragment);
+	vertexShader.setStringsWithLengths(&strings[0], &lengths[0], 1);
+	vertexShader.setEntryPoint("main");
+
+	TBuiltInResource builtInResources(glslang::DefaultTBuiltInResource);
+	//GetBuiltInResourcesFromCaps(glCaps, &builtInResources);
+
+	bool vertexResult =
+		vertexShader.parse(&builtInResources, 100, EEsProfile, false, false, messages);
+	if (!vertexResult)
+	{
+		/*return gl::InternalError() << "Internal error parsing Vulkan vertex shader:\n"
+			<< vertexShader.getInfoLog() << "\n"
+			<< vertexShader.getInfoDebugLog() << "\n";*/
+	}
+
+	/*glslang::TShader fragmentShader(EShLangFragment);
+	fragmentShader.setStringsWithLengths(&strings[1], &lengths[1], 1);
+	fragmentShader.setEntryPoint("main");
+	bool fragmentResult =
+		fragmentShader.parse(&builtInResources, 450, ECoreProfile, false, false, messages);
+	if (!fragmentResult)
+	{
+		return gl::InternalError() << "Internal error parsing Vulkan fragment shader:\n"
+			<< fragmentShader.getInfoLog() << "\n"
+			<< fragmentShader.getInfoDebugLog() << "\n";
+	}*/
+
+	glslang::TProgram program;
+	program.addShader(&vertexShader);
+	//program.addShader(&fragmentShader);
+	bool linkResult = program.link(messages);
+	if (!linkResult)
+	{
+		//return gl::InternalError() << "Internal error linking Vulkan shaders:\n"
+		//	<< program.getInfoLog() << "\n";
+	}
+
+	glslang::TIntermediate *vertexStage = program.getIntermediate(EShLangFragment);
+//	glslang::TIntermediate *fragmentStage = program.getIntermediate(EShLangFragment);
+
+	std::vector<uint32_t> vertexCodeOut;
+
+	glslang::GlslangToSpv(*vertexStage, vertexCodeOut);
+	//glslang::GlslangToSpv(*fragmentStage, *fragmentCodeOut);
+
+	std::ostringstream out;
+
+	spv::Disassemble(out, vertexCodeOut);
+	std::string s = out.str();
+	const char *a = s.c_str();
+
+	assert(a);
 }
 
 bool Shader::isCompiled()
