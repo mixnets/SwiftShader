@@ -64,11 +64,11 @@ namespace es2
 		const BlockInfo blockInfo;
 		std::vector<glsl::ShaderVariable> fields;
 
-		unsigned char *data;
-		bool dirty;
+		unsigned char *data = nullptr;
+		bool dirty = true;
 
-		short psRegisterIndex;
-		short vsRegisterIndex;
+		short psRegisterIndex = -1;
+		short vsRegisterIndex = -1;
 	};
 
 	// Helper struct representing a single shader uniform block
