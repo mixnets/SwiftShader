@@ -61,7 +61,7 @@ namespace es2
 		}
 	}
 
-	Uniform::Uniform(const glsl::Uniform &uniform, const BlockInfo &blockInfo)
+	Uniform::Uniform(const glsl::Uniform &uniform, const BlockInfo &blockInfo, GLenum  shader)
 	 : type(uniform.type), precision(uniform.precision), name(uniform.name),
 	   arraySize(uniform.arraySize), blockInfo(blockInfo), fields(uniform.fields)
 	{
@@ -71,14 +71,16 @@ namespace es2
 			data = new unsigned char[bytes];
 			memset(data, 0, bytes);
 		}
-		else
-		{
-			data = nullptr;
-		}
-		dirty = true;
 
-		psRegisterIndex = -1;
-		vsRegisterIndex = -1;
+		if(shader == GL_VERTEX_SHADER)
+		{
+			vsRegisterIndex = uniform.registerIndex;
+		}
+		else if(shader == GL_FRAGMENT_SHADER)
+		{
+			psRegisterIndex = uniform.registerIndex;
+		}
+		else UNREACHABLE(shader);
 	}
 
 	Uniform::~Uniform()
@@ -263,7 +265,7 @@ namespace es2
 			baseName = ParseUniformName(baseName, &subscript);
 			for(auto const &varying : fragmentShader->varyings)
 			{
-				if(varying.qualifier == EvqFragmentOut)
+				if(varying.qualifier == sh::EvqFragmentOut)
 				{
 					if(varying.name == baseName)
 					{
@@ -1342,7 +1344,7 @@ namespace es2
 						return false;
 					}
 
-					if((output.qualifier == EvqFlatOut) ^ (input.qualifier == EvqFlatIn))
+					if((output.qualifier == sh::EvqFlatOut) ^ (input.qualifier == sh::EvqFlatIn))
 					{
 						appendToInfoLog("Interpolation qualifiers for %s differ between vertex and fragment shaders", output.name.c_str());
 
@@ -1502,7 +1504,7 @@ namespace es2
 					   componentCount > sw::MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS)
 					{
 						appendToInfoLog("Transform feedback varying's %s components (%d) exceed the maximum separate components (%d).",
-						                varying.name.c_str(), componentCount, sw::MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS);
+										varying.name.c_str(), componentCount, sw::MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS);
 						return false;
 					}
 
@@ -1537,7 +1539,7 @@ namespace es2
 		   totalComponents > sw::MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS)
 		{
 			appendToInfoLog("Transform feedback varying total components (%d) exceed the maximum separate components (%d).",
-			                totalComponents, sw::MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS);
+							totalComponents, sw::MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS);
 			return false;
 		}
 
@@ -1737,7 +1739,7 @@ namespace es2
 	bool Program::defineUniform(GLenum shader, const glsl::Uniform &glslUniform, const Uniform::BlockInfo& blockInfo)
 	{
 		if(IsSamplerUniform(glslUniform.type))
-	    {
+		{
 			int index = glslUniform.registerIndex;
 
 			do
@@ -1819,9 +1821,9 @@ namespace es2
 				index++;
 			}
 			while(index < glslUniform.registerIndex + static_cast<int>(glslUniform.arraySize));
-	    }
+		}
 
-		Uniform *uniform = 0;
+		Uniform *uniform = nullptr;
 		GLint location = getUniformLocation(glslUniform.name);
 
 		if(location >= 0)   // Previously defined, types must match
@@ -1847,33 +1849,23 @@ namespace es2
 		}
 		else
 		{
-			uniform = new Uniform(glslUniform, blockInfo);
+			if(!isUniformDefined(glslUniform.name))
+			{
+				uniform = new Uniform(glslUniform, blockInfo, shader);
+				uniforms.push_back(uniform);
+
+				unsigned int index = (blockInfo.index == -1) ? static_cast<unsigned int>(uniforms.size() - 1) : GL_INVALID_INDEX;
+
+				for(int i = 0; i < uniform->size(); i++)
+				{
+					uniformIndex.push_back(UniformLocation(glslUniform.name, i, index));
+				}
+			}
 		}
 
 		if(!uniform)
 		{
 			return false;
-		}
-
-		if(shader == GL_VERTEX_SHADER)
-		{
-			uniform->vsRegisterIndex = glslUniform.registerIndex;
-		}
-		else if(shader == GL_FRAGMENT_SHADER)
-		{
-			uniform->psRegisterIndex = glslUniform.registerIndex;
-		}
-		else UNREACHABLE(shader);
-
-		if(!isUniformDefined(glslUniform.name))
-		{
-			uniforms.push_back(uniform);
-			unsigned int index = (blockInfo.index == -1) ? static_cast<unsigned int>(uniforms.size() - 1) : GL_INVALID_INDEX;
-
-			for(int i = 0; i < uniform->size(); i++)
-			{
-				uniformIndex.push_back(UniformLocation(glslUniform.name, i, index));
-			}
 		}
 
 		if(shader == GL_VERTEX_SHADER)
@@ -1907,7 +1899,7 @@ namespace es2
 			}
 		}
 
-		uniformStructs.push_back(Uniform(newUniformStruct, Uniform::BlockInfo(newUniformStruct, -1)));
+		uniformStructs.push_back(Uniform(newUniformStruct, Uniform::BlockInfo(newUniformStruct, -1), shader));
 
 		return true;
 	}
@@ -1938,7 +1930,7 @@ namespace es2
 			if(member1.name != member2.name)
 			{
 				appendToInfoLog("Name mismatch for field %d of interface block '%s': (in vertex: '%s', in fragment: '%s')",
-				                blockMemberIndex, block1.name.c_str(), member1.name.c_str(), member2.name.c_str());
+								blockMemberIndex, block1.name.c_str(), member1.name.c_str(), member2.name.c_str());
 				return false;
 			}
 			if(member1.arraySize != member2.arraySize)
@@ -1978,7 +1970,7 @@ namespace es2
 			if(fields1[i].name != fields2[i].name)
 			{
 				appendToInfoLog("Name mismatch for field '%d' of %s: ('%s', '%s')",
-				                i, name.c_str(), fields1[i].name.c_str(), fields2[i].name.c_str());
+								i, name.c_str(), fields1[i].name.c_str(), fields2[i].name.c_str());
 				return false;
 			}
 			if(fields1[i].type != fields2[i].type)
