@@ -28,6 +28,8 @@
 #include <set>
 #include <map>
 
+namespace glslang { class TProgram; }
+
 namespace es2
 {
 	class Device;
@@ -275,7 +277,6 @@ namespace es2
 
 		static unsigned int issueSerial();
 
-	private:
 		FragmentShader *fragmentShader;
 		VertexShader *vertexShader;
 
@@ -327,6 +328,11 @@ namespace es2
 
 		ResourceManager *resourceManager;
 		const GLuint handle;
+
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+		glslang::TProgram *program = nullptr;
 	};
 }
 

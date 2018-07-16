@@ -125,7 +125,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)/..;$(ProjectDir)/../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\third_party\glslang\;$(ProjectDir)/..;$(ProjectDir)/../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;GL_API=;GL_APICALL=;GLAPI=;GL_GLEXT_PROTOTYPES;NO_SANITIZE_FUNCTION=;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -157,7 +157,7 @@ copy "$(OutDir)libGLESv2.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\tr
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)/..;$(ProjectDir)/../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\third_party\glslang\;$(ProjectDir)/..;$(ProjectDir)/../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;GL_API=;GL_APICALL=;GLAPI=;GL_GLEXT_PROTOTYPES;NO_SANITIZE_FUNCTION=;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -191,7 +191,7 @@ copy "$(OutDir)libGLESv2.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\tr
     <ClCompile>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(ProjectDir)/..;$(ProjectDir)/../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\third_party\glslang\;$(ProjectDir)/..;$(ProjectDir)/../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;GL_API=;GL_APICALL=;GLAPI=;GL_GLEXT_PROTOTYPES;NO_SANITIZE_FUNCTION=;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;NOMINMAX;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -230,7 +230,7 @@ copy "$(OutDir)libGLESv2.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\tr
     <ClCompile>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(ProjectDir)/..;$(ProjectDir)/../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\third_party\glslang\;$(ProjectDir)/..;$(ProjectDir)/../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;GL_API=;GL_APICALL=;GLAPI=;GL_GLEXT_PROTOTYPES;NO_SANITIZE_FUNCTION=;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;NOMINMAX;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -271,7 +271,7 @@ copy "$(OutDir)libGLESv2.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\tr
     <ClCompile>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(ProjectDir)/..; $(ProjectDir)/../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\third_party\glslang\;$(ProjectDir)/..;$(ProjectDir)/../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;GL_API=;GL_APICALL=;GLAPI=;GL_GLEXT_PROTOTYPES;NO_SANITIZE_FUNCTION=;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;NOMINMAX;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -308,7 +308,7 @@ copy "$(OutDir)libGLESv2.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\tr
     <ClCompile>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(ProjectDir)/..; $(ProjectDir)/../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\third_party\glslang\;$(ProjectDir)/..;$(ProjectDir)/../..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;GL_API=;GL_APICALL=;GLAPI=;GL_GLEXT_PROTOTYPES;NO_SANITIZE_FUNCTION=;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;NOMINMAX;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -416,6 +416,9 @@ copy "$(OutDir)libGLESv2.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\tr
     </ProjectReference>
     <ProjectReference Include="..\compiler\Compiler.vcxproj">
       <Project>{5b3a6db8-1e7e-40d7-92b9-da8aae619fad}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\glslang\glslang.vcxproj">
+      <Project>{cb598b57-e832-4035-91a3-f2259b4fc655}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

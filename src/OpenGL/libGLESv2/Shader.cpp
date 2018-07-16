@@ -21,8 +21,15 @@
 #include "main.h"
 #include "utilities.h"
 
+#include "glslang/Public/ShaderLang.h"
+#include "StandAlone/ResourceLimits.h"
+#include "SPIRV/GlslangToSpv.h"
+#include "OGLCompilersDLL/InitializeDll.h"
+#include "SPIRV/disassemble.h"
+
 #include <string>
 #include <algorithm>
+#include <array>
 
 namespace es2
 {
@@ -41,6 +48,11 @@ Shader::Shader(ResourceManager *manager, GLuint handle) : mHandle(handle), mReso
 Shader::~Shader()
 {
 	delete[] mSource;
+
+	//////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+	delete shader;
 }
 
 GLuint Shader::getName() const
@@ -242,6 +254,40 @@ void Shader::compile()
 	}
 
 	delete compiler;
+
+	//////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+
+static bool initialized = false;
+if(!initialized)
+{
+	ShInitialize();
+	initialized = true;
+}
+	std::array<const char*, 1> strings = { mSource };
+	std::array<int, 1> lengths = { static_cast<int>(strlen(mSource)) };
+
+
+	EShLanguage language = getType() == GL_FRAGMENT_SHADER ? EShLangFragment : EShLangVertex;
+	assert(!shader);
+	shader = new glslang::TShader(language);
+	shader->setStringsWithLengths(&strings[0], &lengths[0], 1);
+	shader->setEntryPoint("main");
+
+	TBuiltInResource builtInResources(glslang::DefaultTBuiltInResource);
+	//GetBuiltInResourcesFromCaps(glCaps, &builtInResources);
+
+	////	// Enable SPIR-V and Vulkan rules when parsing GLSL
+	EShMessages messages = EShMsgDefault;// static_cast<EShMessages>(EShMsgSpvRules | EShMsgVulkanRules);
+
+	bool parseResult = shader->parse(&builtInResources, 100, EEsProfile, false, false, messages);
+	if(!parseResult)
+	{
+		/*return gl::InternalError() << "Internal error parsing Vulkan vertex shader:\n"
+			<< shader.getInfoLog() << "\n"
+			<< shader.getInfoDebugLog() << "\n";*/
+	}
 }
 
 bool Shader::isCompiled()

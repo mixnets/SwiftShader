@@ -26,6 +26,12 @@
 #include "Shader/PixelShader.hpp"
 #include "Shader/VertexShader.hpp"
 
+#include "glslang/Public/ShaderLang.h"
+#include "StandAlone/ResourceLimits.h"
+#include "SPIRV/GlslangToSpv.h"
+#include "OGLCompilersDLL/InitializeDll.h"
+#include "SPIRV/disassemble.h"
+
 #include <algorithm>
 #include <string>
 #include <stdlib.h>
@@ -183,6 +189,11 @@ namespace es2
 		{
 			fragmentShader->release();
 		}
+
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+		delete program;
 	}
 
 	bool Program::attachShader(Shader *shader)
@@ -1600,6 +1611,55 @@ namespace es2
 		}
 
 		linked = true;   // Success
+
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+		assert(!program);
+		program = new glslang::TProgram();
+		program->addShader(vertexShader->shader);
+		program->addShader(fragmentShader->shader);
+
+			////	// Enable SPIR-V and Vulkan rules when parsing GLSL
+	EShMessages messages = EShMsgDefault;// static_cast<EShMessages>(EShMsgSpvRules | EShMsgVulkanRules);
+
+
+		bool linkResult = program->link(messages);
+		const char *log = nullptr;
+		if(!linkResult)
+		{
+			log = program->getInfoLog();
+		}
+
+		{
+			glslang::TIntermediate *intermediate = program->getIntermediate(EShLangFragment);
+
+			std::vector<uint32_t> vertexCodeOut;
+			spv::SpvBuildLogger logger;
+			glslang::GlslangToSpv(*intermediate, vertexCodeOut, &logger);
+
+			std::ostringstream out;
+			spv::Disassemble(out, vertexCodeOut);
+			std::string s = out.str();
+			const char *a = s.c_str();
+
+			assert(a);
+		}
+
+		{
+			glslang::TIntermediate *intermediate = program->getIntermediate(EShLangVertex);
+
+			std::vector<uint32_t> vertexCodeOut;
+			spv::SpvBuildLogger logger;
+			glslang::GlslangToSpv(*intermediate, vertexCodeOut, &logger);
+
+			std::ostringstream out;
+			spv::Disassemble(out, vertexCodeOut);
+			std::string s = out.str();
+			const char *a = s.c_str();
+
+			assert(a);
+		}
 	}
 
 	// Determines the mapping between GL attributes and vertex stream usage indices

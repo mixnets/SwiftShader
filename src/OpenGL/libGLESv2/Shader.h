@@ -30,10 +30,8 @@
 #include <list>
 #include <vector>
 
-namespace glsl
-{
-	class OutputASM;
-}
+namespace glsl { class OutputASM; }
+namespace glslang { class TShader; }
 
 namespace es2
 {
@@ -77,6 +75,11 @@ protected:
 
 	char *mSource;
 	std::string infoLog;
+
+	//////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+	glslang::TShader *shader = nullptr;
 
 private:
 	virtual void createShader() = 0;
