@@ -19,6 +19,8 @@
 #include "Compiler.h"
 #include "SymbolTable.h"
 
+namespace sh {
+
 void InsertBuiltInFunctions(GLenum shaderType, const ShBuiltInResources &resources, TSymbolTable &table);
 
 void IdentifyBuiltIns(GLenum shaderType,
@@ -27,5 +29,7 @@ void IdentifyBuiltIns(GLenum shaderType,
 
 void InitExtensionBehavior(const ShBuiltInResources& resources,
                            TExtensionBehavior& extensionBehavior);
+
+} // end namespace sh
 
 #endif // _INITIALIZE_INCLUDED_

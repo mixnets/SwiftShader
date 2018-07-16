@@ -15,7 +15,11 @@
 #ifndef __INITIALIZE_GLOBALS_INCLUDED_
 #define __INITIALIZE_GLOBALS_INCLUDED_
 
+namespace sh {
+
 bool InitializePoolIndex();
 void FreePoolIndex();
+
+} // end namespace sh
 
 #endif // __INITIALIZE_GLOBALS_INCLUDED_

@@ -14,6 +14,8 @@
 
 #include "AnalyzeCallDepth.h"
 
+namespace sh {
+
 static TIntermSequence::iterator
 traverseCaseBody(AnalyzeCallDepth* analysis,
 				 TIntermSequence::iterator& start,
@@ -263,3 +265,4 @@ AnalyzeCallDepth::FunctionNode *AnalyzeCallDepth::findFunctionByName(const TStri
 	return 0;
 }
 
+} // end namespace sh

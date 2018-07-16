@@ -1170,6 +1170,8 @@ WHICH GENERATES THE GLSL ES LEXER (glslang_lex.cpp).
 #define YY_INPUT(buf, result, max_size) \
     result = string_input(buf, max_size, yyscanner);
 
+namespace sh {
+
 static yy_size_t string_input(char* buf, yy_size_t max_size, yyscan_t yyscanner);
 static int check_type(yyscan_t yyscanner);
 static int reserved_word(yyscan_t yyscanner);
@@ -1180,6 +1182,8 @@ static int uint_constant(TParseContext *context);
 static int int_constant(yyscan_t yyscanner);
 static int float_constant(yyscan_t yyscanner);
 static int floatsuffix_check(TParseContext* context);
+
+} // end namespace sh
 
 
 
@@ -2019,10 +2023,10 @@ case 132:
 case 133:
 case 134:
 YY_RULE_SETUP
-{ 
+{
     if (context->getShaderVersion() < 300) {
-		yylval->lex.string = NewPoolTString(yytext); 
-	    return check_type(yyscanner); 
+		yylval->lex.string = NewPoolTString(yytext);
+	    return check_type(yyscanner);
 	}
 	return reserved_word(yyscanner);
 }
@@ -2088,7 +2092,7 @@ YY_RULE_SETUP
 case 177:
 YY_RULE_SETUP
 {
-   yylval->lex.string = NewPoolTString(yytext); 
+   yylval->lex.string = NewPoolTString(yytext);
    return check_type(yyscanner);
 }
 	YY_BREAK
@@ -2322,9 +2326,9 @@ YY_RULE_SETUP
 	YY_BREAK
 case 235:
 YY_RULE_SETUP
-{ 
+{
     BEGIN(INITIAL);
-    yylval->lex.string = NewPoolTString(yytext); 
+    yylval->lex.string = NewPoolTString(yytext);
     return FIELD_SELECTION;
 }
 	YY_BREAK
@@ -3634,6 +3638,19 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 
 
+void yyerror(YYLTYPE* lloc, TParseContext* context, void* scanner, const char* reason) {
+    struct yyguts_t* yyg = (struct yyguts_t*) scanner;
+
+    if (context->AfterEOF) {
+        context->error(*lloc, reason, "unexpected EOF");
+    } else {
+        context->error(*lloc, reason, yytext);
+    }
+    context->recover();
+}
+
+namespace sh {
+
 yy_size_t string_input(char* buf, yy_size_t max_size, yyscan_t yyscanner) {
     pp::Token token;
     yyget_extra(yyscanner)->getPreprocessor().lex(&token);
@@ -3652,7 +3669,7 @@ yy_size_t string_input(char* buf, yy_size_t max_size, yyscan_t yyscanner) {
 
 int check_type(yyscan_t yyscanner) {
     struct yyguts_t* yyg = (struct yyguts_t*) yyscanner;
-    
+
     int token = IDENTIFIER;
     TSymbol* symbol = yyextra->symbolTable.find(yytext, yyextra->getShaderVersion());
     if (yyextra->lexAfterType == false && symbol && symbol->isVariable()) {
@@ -3763,17 +3780,6 @@ int float_constant(yyscan_t yyscanner) {
     return FLOATCONSTANT;
 }
 
-void yyerror(YYLTYPE* lloc, TParseContext* context, void* scanner, const char* reason) {
-    struct yyguts_t* yyg = (struct yyguts_t*) scanner;
-
-    if (context->AfterEOF) {
-        context->error(*lloc, reason, "unexpected EOF");
-    } else {
-        context->error(*lloc, reason, yytext);
-    }
-    context->recover();
-}
-
 int glslang_initialize(TParseContext* context) {
     yyscan_t scanner = NULL;
     if (yylex_init_extra(context, &scanner))
@@ -3786,7 +3792,7 @@ int glslang_initialize(TParseContext* context) {
 int glslang_finalize(TParseContext* context) {
     yyscan_t scanner = context->getScanner();
     if (scanner == NULL) return 0;
-    
+
     context->setScanner(NULL);
     yylex_destroy(scanner);
 
@@ -3817,4 +3823,4 @@ int glslang_scan(size_t count, const char* const string[], const int length[],
     return 0;
 }
 
-
+} // end namespace sh

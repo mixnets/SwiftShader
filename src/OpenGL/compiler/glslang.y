@@ -64,6 +64,8 @@ WHICH GENERATES THE GLSL ES PARSER (glslang_tab.cpp AND glslang_tab.h).
 %code requires {
 #define YYLTYPE TSourceLoc
 #define YYLTYPE_IS_DECLARED 1
+
+using namespace sh;
 }
 
 %union {
@@ -101,8 +103,11 @@ WHICH GENERATES THE GLSL ES PARSER (glslang_tab.cpp AND glslang_tab.h).
 }
 
 %{
+
 extern int yylex(YYSTYPE* yylval, YYLTYPE* yylloc, void* yyscanner);
 extern void yyerror(YYLTYPE* lloc, TParseContext* context, void* scanner, const char* reason);
+
+namespace sh {
 
 #define YYLLOC_DEFAULT(Current, Rhs, N)                      \
   do {                                                       \
@@ -154,6 +159,8 @@ extern void yyerror(YYLTYPE* lloc, TParseContext* context, void* scanner, const 
         context->error(LINE, REASON " supported in GLSL ES 3.00 only ", TOKEN);  \
         context->recover();  \
     }  \
+}
+
 }
 %}
 
@@ -1625,6 +1632,10 @@ function_definition
 
 %%
 
+namespace sh {
+
 int glslang_parse(TParseContext* context) {
     return yyparse(context, context->getScanner());
+}
+
 }

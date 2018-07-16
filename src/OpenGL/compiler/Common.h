@@ -22,6 +22,8 @@
 
 #include "PoolAlloc.h"
 
+namespace sh {
+
 struct TSourceLoc {
 	int first_file;
 	int first_line;
@@ -81,5 +83,7 @@ public:
 	// use correct two-stage name lookup supported in gcc 3.4 and above
 	TMap(const tAllocator& a) : std::map<K, D, CMP, tAllocator>(std::map<K, D, CMP, tAllocator>::key_compare(), a) {}
 };
+
+} // end namespace sh
 
 #endif // _COMMON_INCLUDED_

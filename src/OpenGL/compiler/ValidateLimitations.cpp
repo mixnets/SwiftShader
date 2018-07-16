@@ -17,7 +17,8 @@
 #include "InitializeParseContext.h"
 #include "ParseHelper.h"
 
-namespace {
+namespace sh {
+
 bool IsLoopIndex(const TIntermSymbol* symbol, const TLoopStack& stack) {
 	for (TLoopStack::const_iterator i = stack.begin(); i != stack.end(); ++i) {
 		if (i->index.id == symbol->getId())
@@ -106,7 +107,6 @@ private:
 	bool mUsesIntLoopIndex;
 	TLoopStack& mLoopStack;
 };
-}  // namespace
 
 ValidateLimitations::ValidateLimitations(GLenum shaderType,
                                          TInfoSinkBase& sink)
@@ -503,3 +503,4 @@ bool ValidateLimitations::validateIndexing(TIntermBinary* node)
 	return valid;
 }
 
+} // end namespace sh

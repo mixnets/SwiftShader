@@ -154,17 +154,17 @@ void Shader::getSource(GLsizei bufSize, GLsizei *length, char *source)
 	}
 }
 
-TranslatorASM *Shader::createCompiler(GLenum shaderType)
+sh::TranslatorASM *Shader::createCompiler(GLenum shaderType)
 {
 	if(!compilerInitialized)
 	{
-		InitCompilerGlobals();
+		sh::InitCompilerGlobals();
 		compilerInitialized = true;
 	}
 
-	TranslatorASM *assembler = new TranslatorASM(this, shaderType);
+	sh::TranslatorASM *assembler = new sh::TranslatorASM(this, shaderType);
 
-	ShBuiltInResources resources;
+	sh::ShBuiltInResources resources;
 	resources.MaxVertexAttribs = MAX_VERTEX_ATTRIBS;
 	resources.MaxVertexUniformVectors = MAX_VERTEX_UNIFORM_VECTORS;
 	resources.MaxVaryingVectors = MAX_VARYING_VECTORS;
@@ -202,7 +202,7 @@ void Shader::compile()
 	clear();
 
 	createShader();
-	TranslatorASM *compiler = createCompiler(getType());
+	sh::TranslatorASM *compiler = createCompiler(getType());
 
 	// Ensure we don't pass a nullptr source to the compiler
 	const char *source = "\0";
@@ -211,7 +211,7 @@ void Shader::compile()
 		source = mSource;
 	}
 
-	bool success = compiler->compile(&source, 1, SH_OBJECT_CODE);
+	bool success = compiler->compile(&source, 1, sh::SH_OBJECT_CODE);
 
 	if(false)
 	{
@@ -281,7 +281,7 @@ void Shader::flagForDeletion()
 
 void Shader::releaseCompiler()
 {
-	FreeCompilerGlobals();
+	sh::FreeCompilerGlobals();
 	compilerInitialized = false;
 }
 

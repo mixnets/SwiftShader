@@ -73,7 +73,7 @@ public:
 
 protected:
 	static bool compilerInitialized;
-	TranslatorASM *createCompiler(GLenum shaderType);
+	sh::TranslatorASM *createCompiler(GLenum shaderType);
 	void clear();
 
 	static bool compareVarying(const glsl::Varying &x, const glsl::Varying &y);

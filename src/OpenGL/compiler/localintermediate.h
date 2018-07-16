@@ -17,6 +17,8 @@
 
 #include "intermediate.h"
 
+namespace sh {
+
 struct TVectorFields {
 	int offsets[4];
 	int num;
@@ -60,5 +62,7 @@ protected:
 private:
 	void operator=(TIntermediate&); // prevent assignments
 };
+
+} // end namespace sh
 
 #endif // _LOCAL_INTERMEDIATE_INCLUDED_

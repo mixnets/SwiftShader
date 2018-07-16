@@ -263,7 +263,7 @@ namespace es2
 			baseName = ParseUniformName(baseName, &subscript);
 			for(auto const &varying : fragmentShader->varyings)
 			{
-				if(varying.qualifier == EvqFragmentOut)
+				if(varying.qualifier == sh::EvqFragmentOut)
 				{
 					if(varying.name == baseName)
 					{
@@ -1342,7 +1342,7 @@ namespace es2
 						return false;
 					}
 
-					if((output.qualifier == EvqFlatOut) ^ (input.qualifier == EvqFlatIn))
+					if((output.qualifier == sh::EvqFlatOut) ^ (input.qualifier == sh::EvqFlatIn))
 					{
 						appendToInfoLog("Interpolation qualifiers for %s differ between vertex and fragment shaders", output.name.c_str());
 
@@ -1737,7 +1737,7 @@ namespace es2
 	bool Program::defineUniform(GLenum shader, const glsl::Uniform &glslUniform, const Uniform::BlockInfo& blockInfo)
 	{
 		if(IsSamplerUniform(glslUniform.type))
-	    {
+		{
 			int index = glslUniform.registerIndex;
 
 			do
@@ -1819,9 +1819,9 @@ namespace es2
 				index++;
 			}
 			while(index < glslUniform.registerIndex + static_cast<int>(glslUniform.arraySize));
-	    }
+		}
 
-		Uniform *uniform = 0;
+		Uniform *uniform = nullptr;
 		GLint location = getUniformLocation(glslUniform.name);
 
 		if(location >= 0)   // Previously defined, types must match

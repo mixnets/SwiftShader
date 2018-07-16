@@ -15,9 +15,7 @@
 #ifndef COMPILER_UTIL_H
 #define COMPILER_UTIL_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace sh {
 
 // atof_clamp is like atof but
 //   1. it forces C locale, i.e. forcing '.' as decimal point.
@@ -33,8 +31,6 @@ bool atoi_clamp(const char *str, int *value);
 // Return false if overflow happens.
 bool atou_clamp(const char *str, unsigned int *value);
 
-#ifdef __cplusplus
-} // end extern "C"
-#endif
+} // end namespace sh
 
 #endif // COMPILER_UTIL_H

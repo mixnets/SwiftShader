@@ -21,6 +21,7 @@
 #error Trying to build a windows specific file in a non windows build.
 #endif
 
+namespace sh {
 
 //
 // Thread Local Storage Operations
@@ -63,3 +64,5 @@ bool OS_FreeTLSIndex(OS_TLSIndex nIndex)
 	else
 		return false;
 }
+
+} // end namespace sh

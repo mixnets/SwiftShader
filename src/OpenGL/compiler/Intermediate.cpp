@@ -24,6 +24,8 @@
 #include "SymbolTable.h"
 #include "Common/Math.hpp"
 
+namespace sh {
+
 bool CompareStructure(const TType& leftNodeType, ConstantUnion* rightUnionArray, ConstantUnion* leftUnionArray);
 
 static TPrecision GetHigherPrecision( TPrecision left, TPrecision right ){
@@ -2120,3 +2122,4 @@ TIntermTyped* TIntermediate::promoteConstantUnion(TBasicType promoteTo, TIntermC
 	return addConstantUnion(leftUnionArray, TType(promoteTo, t.getPrecision(), t.getQualifier(), t.getNominalSize(), t.getSecondarySize(), t.isArray()), node->getLine());
 }
 
+} // end namespace sh

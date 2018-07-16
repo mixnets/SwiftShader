@@ -18,6 +18,8 @@
 #include "intermediate.h"
 #include <set>
 
+namespace sh {
+
 class TParseContext;
 
 class ValidateSwitch : public TIntermTraverser
@@ -57,5 +59,7 @@ private:
 	std::set<unsigned int> mCasesUnsigned;
 	bool mDuplicateCases;
 };
+
+} // end namespace sh
 
 #endif // COMPILER_TRANSLATOR_VALIDATESWITCH_H_

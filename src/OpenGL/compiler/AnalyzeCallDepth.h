@@ -20,6 +20,8 @@
 #include <set>
 #include <limits.h>
 
+namespace sh {
+
 // Traverses intermediate tree to analyze call depth or detect function recursion
 class AnalyzeCallDepth : public TIntermTraverser
 {
@@ -60,5 +62,7 @@ private:
 	FunctionSet globalFunctionCalls;
 	FunctionNode *currentFunction;
 };
+
+} // end namespace sh
 
 #endif  // COMPILER_ANALYZE_CALL_DEPTH_H_

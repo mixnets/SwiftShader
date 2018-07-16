@@ -21,8 +21,9 @@
 #include "ParseHelper.h"
 #include "ValidateLimitations.h"
 
-namespace
-{
+namespace sh {
+
+namespace {
 class TScopedPoolAllocator {
 public:
 	TScopedPoolAllocator(TPoolAllocator* allocator, bool pushPop)
@@ -41,7 +42,7 @@ private:
 	TPoolAllocator* mAllocator;
 	bool mPushPopAllocator;
 };
-}  // namespace
+} // end anonymous namespace
 
 //
 // Initialize built-in resources with minimum expected values.
@@ -271,3 +272,5 @@ void FreeCompilerGlobals()
 	FreeParseContextIndex();
 	FreePoolIndex();
 }
+
+} // end namespace sh

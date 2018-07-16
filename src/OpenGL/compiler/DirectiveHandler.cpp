@@ -19,6 +19,8 @@
 #include "debug.h"
 #include "Diagnostics.h"
 
+namespace sh {
+
 static TBehavior getBehavior(const std::string& str)
 {
 	static const std::string kRequire("require");
@@ -173,3 +175,5 @@ void TDirectiveHandler::handleVersion(const pp::SourceLocation& loc,
 		                       "version number", str, "not supported");
 	}
 }
+
+} // end namespace sh

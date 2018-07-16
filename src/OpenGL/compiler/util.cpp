@@ -17,6 +17,8 @@
 #include "util.h"
 #include "preprocessor/numeric_lex.h"
 
+namespace sh {
+
 bool atof_clamp(const char *str, float *value)
 {
 	bool success = pp::numeric_lex_float(str, value);
@@ -40,3 +42,5 @@ bool atou_clamp(const char *str, unsigned int *value)
 		*value = std::numeric_limits<unsigned int>::max();
 	return success;
 }
+
+} // end namespace sh

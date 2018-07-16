@@ -18,6 +18,8 @@
 #include <map>
 #include <string>
 
+namespace sh {
+
 typedef enum
 {
 	EBhRequire,
@@ -41,5 +43,7 @@ inline const char *getBehaviorString(TBehavior b)
 
 // Mapping between extension name and behavior.
 typedef std::map<std::string, TBehavior> TExtensionBehavior;
+
+} // end namespace sh
 
 #endif // _EXTENSION_TABLE_INCLUDED_

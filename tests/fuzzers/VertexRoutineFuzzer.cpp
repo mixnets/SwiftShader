@@ -32,39 +32,48 @@ namespace {
 
 // TODO(cwallez@google.com): Like in ANGLE, disable most of the pool allocator for fuzzing
 // This is a helper class to make sure all the resources used by the compiler are initialized
-class ScopedPoolAllocatorAndTLS {
-	public:
-		ScopedPoolAllocatorAndTLS() {
-			InitializeParseContextIndex();
-			InitializePoolIndex();
-			SetGlobalPoolAllocator(&allocator);
-		}
-		~ScopedPoolAllocatorAndTLS() {
-			SetGlobalPoolAllocator(nullptr);
-			FreePoolIndex();
-			FreeParseContextIndex();
-		}
+class ScopedPoolAllocatorAndTLS
+{
+public:
+	ScopedPoolAllocatorAndTLS()
+	{
+		sh::InitializeParseContextIndex();
+		sh::InitializePoolIndex();
+		sh::SetGlobalPoolAllocator(&allocator);
+	}
 
-	private:
-		TPoolAllocator allocator;
+	~ScopedPoolAllocatorAndTLS()
+	{
+		sh::SetGlobalPoolAllocator(nullptr);
+		sh::FreePoolIndex();
+		sh::FreeParseContextIndex();
+	}
+
+private:
+	sh::TPoolAllocator allocator;
 };
 
 // Trivial implementation of the glsl::Shader interface that fakes being an API-level
 // shader object.
-class FakeVS : public glsl::Shader {
-	public:
-		FakeVS(sw::VertexShader* bytecode) : bytecode(bytecode) {
-		}
+class FakeVS : public glsl::Shader
+{
+public:
+	FakeVS(sw::VertexShader* bytecode) : bytecode(bytecode)
+	{
+	}
 
-		sw::Shader *getShader() const override {
-			return bytecode;
-		}
-		sw::VertexShader *getVertexShader() const override {
-			return bytecode;
-		}
+	sw::Shader *getShader() const override
+	{
+		return bytecode;
+	}
 
-	private:
-		sw::VertexShader* bytecode;
+	sw::VertexShader *getVertexShader() const override
+	{
+		return bytecode;
+	}
+
+private:
+	sw::VertexShader* bytecode;
 };
 
 } // anonymous namespace
@@ -98,11 +107,11 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 	std::unique_ptr<ScopedPoolAllocatorAndTLS> allocatorAndTLS(new ScopedPoolAllocatorAndTLS);
 	std::unique_ptr<sw::VertexShader> shader(new sw::VertexShader);
 	std::unique_ptr<FakeVS> fakeVS(new FakeVS(shader.get()));
-	
-	std::unique_ptr<TranslatorASM> glslCompiler(new TranslatorASM(fakeVS.get(), GL_VERTEX_SHADER));
+
+	std::unique_ptr<sh::TranslatorASM> glslCompiler(new sh::TranslatorASM(fakeVS.get(), GL_VERTEX_SHADER));
 
 	// TODO(cwallez@google.com): have a function to init to default values somewhere
-	ShBuiltInResources resources;
+	sh::ShBuiltInResources resources;
 	resources.MaxVertexAttribs = sw::MAX_VERTEX_INPUTS;
 	resources.MaxVertexUniformVectors = sw::VERTEX_UNIFORM_VECTORS - 3;
 	resources.MaxVaryingVectors = MIN(sw::MAX_VERTEX_OUTPUTS, sw::MAX_VERTEX_INPUTS);
@@ -125,7 +134,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 	glslCompiler->Init(resources);
 
 	const char* glslSource = reinterpret_cast<const char*>(data + kHeaderSize);
-	if (!glslCompiler->compile(&glslSource, 1, SH_OBJECT_CODE))
+	if (!glslCompiler->compile(&glslSource, 1, sh::SH_OBJECT_CODE))
 	{
 		return 0;
 	}
