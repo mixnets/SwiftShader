@@ -71,14 +71,6 @@ namespace es2
 			data = new unsigned char[bytes];
 			memset(data, 0, bytes);
 		}
-		else
-		{
-			data = nullptr;
-		}
-		dirty = true;
-
-		psRegisterIndex = -1;
-		vsRegisterIndex = -1;
 	}
 
 	Uniform::~Uniform()
@@ -1737,7 +1729,7 @@ namespace es2
 	bool Program::defineUniform(GLenum shader, const glsl::Uniform &glslUniform, const Uniform::BlockInfo& blockInfo)
 	{
 		if(IsSamplerUniform(glslUniform.type))
-	    {
+		{
 			int index = glslUniform.registerIndex;
 
 			do
@@ -1819,9 +1811,9 @@ namespace es2
 				index++;
 			}
 			while(index < glslUniform.registerIndex + static_cast<int>(glslUniform.arraySize));
-	    }
+		}
 
-		Uniform *uniform = 0;
+		Uniform *uniform = nullptr;
 		GLint location = getUniformLocation(glslUniform.name);
 
 		if(location >= 0)   // Previously defined, types must match
@@ -1847,7 +1839,18 @@ namespace es2
 		}
 		else
 		{
-			uniform = new Uniform(glslUniform, blockInfo);
+			if(!isUniformDefined(glslUniform.name))
+			{
+				uniform = new Uniform(glslUniform, blockInfo);
+				uniforms.push_back(uniform);
+
+				unsigned int index = (blockInfo.index == -1) ? static_cast<unsigned int>(uniforms.size() - 1) : GL_INVALID_INDEX;
+
+				for(int i = 0; i < uniform->size(); i++)
+				{
+					uniformIndex.push_back(UniformLocation(glslUniform.name, i, index));
+				}
+			}
 		}
 
 		if(!uniform)
@@ -1858,26 +1861,7 @@ namespace es2
 		if(shader == GL_VERTEX_SHADER)
 		{
 			uniform->vsRegisterIndex = glslUniform.registerIndex;
-		}
-		else if(shader == GL_FRAGMENT_SHADER)
-		{
-			uniform->psRegisterIndex = glslUniform.registerIndex;
-		}
-		else UNREACHABLE(shader);
 
-		if(!isUniformDefined(glslUniform.name))
-		{
-			uniforms.push_back(uniform);
-			unsigned int index = (blockInfo.index == -1) ? static_cast<unsigned int>(uniforms.size() - 1) : GL_INVALID_INDEX;
-
-			for(int i = 0; i < uniform->size(); i++)
-			{
-				uniformIndex.push_back(UniformLocation(glslUniform.name, i, index));
-			}
-		}
-
-		if(shader == GL_VERTEX_SHADER)
-		{
 			if(glslUniform.registerIndex + uniform->registerCount() > MAX_VERTEX_UNIFORM_VECTORS)
 			{
 				appendToInfoLog("Vertex shader active uniforms exceed GL_MAX_VERTEX_UNIFORM_VECTORS (%d)", MAX_VERTEX_UNIFORM_VECTORS);
@@ -1886,6 +1870,8 @@ namespace es2
 		}
 		else if(shader == GL_FRAGMENT_SHADER)
 		{
+			uniform->psRegisterIndex = glslUniform.registerIndex;
+
 			if(glslUniform.registerIndex + uniform->registerCount() > MAX_FRAGMENT_UNIFORM_VECTORS)
 			{
 				appendToInfoLog("Fragment shader active uniforms exceed GL_MAX_FRAGMENT_UNIFORM_VECTORS (%d)", MAX_FRAGMENT_UNIFORM_VECTORS);
