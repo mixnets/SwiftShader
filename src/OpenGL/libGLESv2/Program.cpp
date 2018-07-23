@@ -1634,12 +1634,12 @@ namespace es2
 		{
 			glslang::TIntermediate *intermediate = program->getIntermediate(EShLangFragment);
 
-			std::vector<uint32_t> vertexCodeOut;
 			spv::SpvBuildLogger logger;
-			glslang::GlslangToSpv(*intermediate, vertexCodeOut, &logger);
-
+			glslang::GlslangToSpv(*intermediate, pixelBinary->SPIRV, &logger);
+		}
+		{
 			std::ostringstream out;
-			spv::Disassemble(out, vertexCodeOut);
+			spv::Disassemble(out, pixelBinary->SPIRV);
 			std::string s = out.str();
 			const char *a = s.c_str();
 
@@ -1649,17 +1649,19 @@ namespace es2
 		{
 			glslang::TIntermediate *intermediate = program->getIntermediate(EShLangVertex);
 
-			std::vector<uint32_t> vertexCodeOut;
 			spv::SpvBuildLogger logger;
-			glslang::GlslangToSpv(*intermediate, vertexCodeOut, &logger);
-
+			glslang::GlslangToSpv(*intermediate, vertexBinary->SPIRV, &logger);
+		}
+		{
 			std::ostringstream out;
-			spv::Disassemble(out, vertexCodeOut);
+			spv::Disassemble(out, vertexBinary->SPIRV);
 			std::string s = out.str();
 			const char *a = s.c_str();
 
 			assert(a);
 		}
+
+	//	bool ok = program->buildReflection();
 	}
 
 	// Determines the mapping between GL attributes and vertex stream usage indices

@@ -60,207 +60,207 @@ namespace sw
 
 	void PixelPipeline::applyShader(Int cMask[4])
 	{
-		if(!shader)
-		{
-			fixedFunction();
-			return;
-		}
+		//if(!shader)
+		//{
+		//	fixedFunction();
+		//	return;
+		//}
 
-		int pad = 0;        // Count number of texm3x3pad instructions
-		Vector4s dPairing;   // Destination for first pairing instruction
+		//int pad = 0;        // Count number of texm3x3pad instructions
+		//Vector4s dPairing;   // Destination for first pairing instruction
 
-		for(size_t i = 0; i < shader->getLength(); i++)
-		{
-			const Shader::Instruction *instruction = shader->getInstruction(i);
-			Shader::Opcode opcode = instruction->opcode;
+		//for(size_t i = 0; i < shader->getLength(); i++)
+		//{
+		//	const Shader::Instruction *instruction = shader->getInstruction(i);
+		//	Shader::Opcode opcode = instruction->opcode;
 
-			//	#ifndef NDEBUG   // FIXME: Centralize debug output control
-			//		shader->printInstruction(i, "debug.txt");
-			//	#endif
+		//	//	#ifndef NDEBUG   // FIXME: Centralize debug output control
+		//	//		shader->printInstruction(i, "debug.txt");
+		//	//	#endif
 
-			if(opcode == Shader::OPCODE_DCL || opcode == Shader::OPCODE_DEF || opcode == Shader::OPCODE_DEFI || opcode == Shader::OPCODE_DEFB)
-			{
-				continue;
-			}
+		//	if(opcode == Shader::OPCODE_DCL || opcode == Shader::OPCODE_DEF || opcode == Shader::OPCODE_DEFI || opcode == Shader::OPCODE_DEFB)
+		//	{
+		//		continue;
+		//	}
 
-			const Dst &dst = instruction->dst;
-			const Src &src0 = instruction->src[0];
-			const Src &src1 = instruction->src[1];
-			const Src &src2 = instruction->src[2];
+		//	const Dst &dst = instruction->dst;
+		//	const Src &src0 = instruction->src[0];
+		//	const Src &src1 = instruction->src[1];
+		//	const Src &src2 = instruction->src[2];
 
-			unsigned short shaderModel = shader->getShaderModel();
-			bool pairing = i + 1 < shader->getLength() && shader->getInstruction(i + 1)->coissue;   // First instruction of pair
-			bool coissue = instruction->coissue;                                                              // Second instruction of pair
+		//	unsigned short shaderModel = shader->getShaderModel();
+		//	bool pairing = i + 1 < shader->getLength() && shader->getInstruction(i + 1)->coissue;   // First instruction of pair
+		//	bool coissue = instruction->coissue;                                                              // Second instruction of pair
 
-			Vector4s d;
-			Vector4s s0;
-			Vector4s s1;
-			Vector4s s2;
+		//	Vector4s d;
+		//	Vector4s s0;
+		//	Vector4s s1;
+		//	Vector4s s2;
 
-			if(src0.type != Shader::PARAMETER_VOID) s0 = fetchRegister(src0);
-			if(src1.type != Shader::PARAMETER_VOID) s1 = fetchRegister(src1);
-			if(src2.type != Shader::PARAMETER_VOID) s2 = fetchRegister(src2);
+		//	if(src0.type != Shader::PARAMETER_VOID) s0 = fetchRegister(src0);
+		//	if(src1.type != Shader::PARAMETER_VOID) s1 = fetchRegister(src1);
+		//	if(src2.type != Shader::PARAMETER_VOID) s2 = fetchRegister(src2);
 
-			Float4 x = shaderModel < 0x0104 ? v[2 + dst.index].x : v[2 + src0.index].x;
-			Float4 y = shaderModel < 0x0104 ? v[2 + dst.index].y : v[2 + src0.index].y;
-			Float4 z = shaderModel < 0x0104 ? v[2 + dst.index].z : v[2 + src0.index].z;
-			Float4 w = shaderModel < 0x0104 ? v[2 + dst.index].w : v[2 + src0.index].w;
+		//	Float4 x = shaderModel < 0x0104 ? v[2 + dst.index].x : v[2 + src0.index].x;
+		//	Float4 y = shaderModel < 0x0104 ? v[2 + dst.index].y : v[2 + src0.index].y;
+		//	Float4 z = shaderModel < 0x0104 ? v[2 + dst.index].z : v[2 + src0.index].z;
+		//	Float4 w = shaderModel < 0x0104 ? v[2 + dst.index].w : v[2 + src0.index].w;
 
-			switch(opcode)
-			{
-			case Shader::OPCODE_PS_1_0: break;
-			case Shader::OPCODE_PS_1_1: break;
-			case Shader::OPCODE_PS_1_2: break;
-			case Shader::OPCODE_PS_1_3: break;
-			case Shader::OPCODE_PS_1_4: break;
+		//	switch(opcode)
+		//	{
+		//	case Shader::OPCODE_PS_1_0: break;
+		//	case Shader::OPCODE_PS_1_1: break;
+		//	case Shader::OPCODE_PS_1_2: break;
+		//	case Shader::OPCODE_PS_1_3: break;
+		//	case Shader::OPCODE_PS_1_4: break;
 
-			case Shader::OPCODE_DEF:    break;
+		//	case Shader::OPCODE_DEF:    break;
 
-			case Shader::OPCODE_NOP:    break;
-			case Shader::OPCODE_MOV: MOV(d, s0);         break;
-			case Shader::OPCODE_ADD: ADD(d, s0, s1);     break;
-			case Shader::OPCODE_SUB: SUB(d, s0, s1);     break;
-			case Shader::OPCODE_MAD: MAD(d, s0, s1, s2); break;
-			case Shader::OPCODE_MUL: MUL(d, s0, s1);     break;
-			case Shader::OPCODE_DP3: DP3(d, s0, s1);     break;
-			case Shader::OPCODE_DP4: DP4(d, s0, s1);     break;
-			case Shader::OPCODE_LRP: LRP(d, s0, s1, s2); break;
-			case Shader::OPCODE_TEXCOORD:
-				if(shaderModel < 0x0104)
-				{
-					TEXCOORD(d, x, y, z, dst.index);
-			}
-				else
-				{
-					if((src0.swizzle & 0x30) == 0x20)   // .xyz
-					{
-						TEXCRD(d, x, y, z, src0.index, src0.modifier == Shader::MODIFIER_DZ || src0.modifier == Shader::MODIFIER_DW);
-					}
-					else   // .xwy
-					{
-						TEXCRD(d, x, y, w, src0.index, src0.modifier == Shader::MODIFIER_DZ || src0.modifier == Shader::MODIFIER_DW);
-					}
-				}
-				break;
-			case Shader::OPCODE_TEXKILL:
-				if(shaderModel < 0x0104)
-				{
-					TEXKILL(cMask, x, y, z);
-				}
-				else if(shaderModel == 0x0104)
-				{
-					if(dst.type == Shader::PARAMETER_TEXTURE)
-					{
-						TEXKILL(cMask, x, y, z);
-					}
-					else
-					{
-						TEXKILL(cMask, rs[dst.index]);
-					}
-				}
-				else ASSERT(false);
-				break;
-			case Shader::OPCODE_TEX:
-				if(shaderModel < 0x0104)
-				{
-					TEX(d, x, y, z, dst.index, false);
-				}
-				else if(shaderModel == 0x0104)
-				{
-					if(src0.type == Shader::PARAMETER_TEXTURE)
-					{
-						if((src0.swizzle & 0x30) == 0x20)   // .xyz
-						{
-							TEX(d, x, y, z, dst.index, src0.modifier == Shader::MODIFIER_DZ || src0.modifier == Shader::MODIFIER_DW);
-						}
-						else   // .xyw
-						{
-							TEX(d, x, y, w, dst.index, src0.modifier == Shader::MODIFIER_DZ || src0.modifier == Shader::MODIFIER_DW);
-						}
-					}
-					else
-					{
-						TEXLD(d, s0, dst.index, src0.modifier == Shader::MODIFIER_DZ || src0.modifier == Shader::MODIFIER_DW);
-					}
-				}
-				else ASSERT(false);
-				break;
-			case Shader::OPCODE_TEXBEM:       TEXBEM(d, s0, x, y, z, dst.index);                                             break;
-			case Shader::OPCODE_TEXBEML:      TEXBEML(d, s0, x, y, z, dst.index);                                            break;
-			case Shader::OPCODE_TEXREG2AR:    TEXREG2AR(d, s0, dst.index);                                                   break;
-			case Shader::OPCODE_TEXREG2GB:    TEXREG2GB(d, s0, dst.index);                                                   break;
-			case Shader::OPCODE_TEXM3X2PAD:   TEXM3X2PAD(x, y, z, s0, 0, src0.modifier == Shader::MODIFIER_SIGN);            break;
-			case Shader::OPCODE_TEXM3X2TEX:   TEXM3X2TEX(d, x, y, z, dst.index, s0, src0.modifier == Shader::MODIFIER_SIGN); break;
-			case Shader::OPCODE_TEXM3X3PAD:   TEXM3X3PAD(x, y, z, s0, pad++ % 2, src0.modifier == Shader::MODIFIER_SIGN);    break;
-			case Shader::OPCODE_TEXM3X3TEX:   TEXM3X3TEX(d, x, y, z, dst.index, s0, src0.modifier == Shader::MODIFIER_SIGN); break;
-			case Shader::OPCODE_TEXM3X3SPEC:  TEXM3X3SPEC(d, x, y, z, dst.index, s0, s1);                                    break;
-			case Shader::OPCODE_TEXM3X3VSPEC: TEXM3X3VSPEC(d, x, y, z, dst.index, s0);                                       break;
-			case Shader::OPCODE_CND:          CND(d, s0, s1, s2);                                                            break;
-			case Shader::OPCODE_TEXREG2RGB:   TEXREG2RGB(d, s0, dst.index);                                                  break;
-			case Shader::OPCODE_TEXDP3TEX:    TEXDP3TEX(d, x, y, z, dst.index, s0);                                          break;
-			case Shader::OPCODE_TEXM3X2DEPTH: TEXM3X2DEPTH(d, x, y, z, s0, src0.modifier == Shader::MODIFIER_SIGN);          break;
-			case Shader::OPCODE_TEXDP3:       TEXDP3(d, x, y, z, s0);                                                        break;
-			case Shader::OPCODE_TEXM3X3:      TEXM3X3(d, x, y, z, s0, src0.modifier == Shader::MODIFIER_SIGN);               break;
-			case Shader::OPCODE_TEXDEPTH:     TEXDEPTH();                                                                    break;
-			case Shader::OPCODE_CMP0:         CMP(d, s0, s1, s2);                                                            break;
-			case Shader::OPCODE_BEM:          BEM(d, s0, s1, dst.index);                                                     break;
-			case Shader::OPCODE_PHASE:                                                                                       break;
-			case Shader::OPCODE_END:                                                                                         break;
-			default:
-				ASSERT(false);
-			}
+		//	case Shader::OPCODE_NOP:    break;
+		//	case Shader::OPCODE_MOV: MOV(d, s0);         break;
+		//	case Shader::OPCODE_ADD: ADD(d, s0, s1);     break;
+		//	case Shader::OPCODE_SUB: SUB(d, s0, s1);     break;
+		//	case Shader::OPCODE_MAD: MAD(d, s0, s1, s2); break;
+		//	case Shader::OPCODE_MUL: MUL(d, s0, s1);     break;
+		//	case Shader::OPCODE_DP3: DP3(d, s0, s1);     break;
+		//	case Shader::OPCODE_DP4: DP4(d, s0, s1);     break;
+		//	case Shader::OPCODE_LRP: LRP(d, s0, s1, s2); break;
+		//	case Shader::OPCODE_TEXCOORD:
+		//		if(shaderModel < 0x0104)
+		//		{
+		//			TEXCOORD(d, x, y, z, dst.index);
+		//	}
+		//		else
+		//		{
+		//			if((src0.swizzle & 0x30) == 0x20)   // .xyz
+		//			{
+		//				TEXCRD(d, x, y, z, src0.index, src0.modifier == Shader::MODIFIER_DZ || src0.modifier == Shader::MODIFIER_DW);
+		//			}
+		//			else   // .xwy
+		//			{
+		//				TEXCRD(d, x, y, w, src0.index, src0.modifier == Shader::MODIFIER_DZ || src0.modifier == Shader::MODIFIER_DW);
+		//			}
+		//		}
+		//		break;
+		//	case Shader::OPCODE_TEXKILL:
+		//		if(shaderModel < 0x0104)
+		//		{
+		//			TEXKILL(cMask, x, y, z);
+		//		}
+		//		else if(shaderModel == 0x0104)
+		//		{
+		//			if(dst.type == Shader::PARAMETER_TEXTURE)
+		//			{
+		//				TEXKILL(cMask, x, y, z);
+		//			}
+		//			else
+		//			{
+		//				TEXKILL(cMask, rs[dst.index]);
+		//			}
+		//		}
+		//		else ASSERT(false);
+		//		break;
+		//	case Shader::OPCODE_TEX:
+		//		if(shaderModel < 0x0104)
+		//		{
+		//			TEX(d, x, y, z, dst.index, false);
+		//		}
+		//		else if(shaderModel == 0x0104)
+		//		{
+		//			if(src0.type == Shader::PARAMETER_TEXTURE)
+		//			{
+		//				if((src0.swizzle & 0x30) == 0x20)   // .xyz
+		//				{
+		//					TEX(d, x, y, z, dst.index, src0.modifier == Shader::MODIFIER_DZ || src0.modifier == Shader::MODIFIER_DW);
+		//				}
+		//				else   // .xyw
+		//				{
+		//					TEX(d, x, y, w, dst.index, src0.modifier == Shader::MODIFIER_DZ || src0.modifier == Shader::MODIFIER_DW);
+		//				}
+		//			}
+		//			else
+		//			{
+		//				TEXLD(d, s0, dst.index, src0.modifier == Shader::MODIFIER_DZ || src0.modifier == Shader::MODIFIER_DW);
+		//			}
+		//		}
+		//		else ASSERT(false);
+		//		break;
+		//	case Shader::OPCODE_TEXBEM:       TEXBEM(d, s0, x, y, z, dst.index);                                             break;
+		//	case Shader::OPCODE_TEXBEML:      TEXBEML(d, s0, x, y, z, dst.index);                                            break;
+		//	case Shader::OPCODE_TEXREG2AR:    TEXREG2AR(d, s0, dst.index);                                                   break;
+		//	case Shader::OPCODE_TEXREG2GB:    TEXREG2GB(d, s0, dst.index);                                                   break;
+		//	case Shader::OPCODE_TEXM3X2PAD:   TEXM3X2PAD(x, y, z, s0, 0, src0.modifier == Shader::MODIFIER_SIGN);            break;
+		//	case Shader::OPCODE_TEXM3X2TEX:   TEXM3X2TEX(d, x, y, z, dst.index, s0, src0.modifier == Shader::MODIFIER_SIGN); break;
+		//	case Shader::OPCODE_TEXM3X3PAD:   TEXM3X3PAD(x, y, z, s0, pad++ % 2, src0.modifier == Shader::MODIFIER_SIGN);    break;
+		//	case Shader::OPCODE_TEXM3X3TEX:   TEXM3X3TEX(d, x, y, z, dst.index, s0, src0.modifier == Shader::MODIFIER_SIGN); break;
+		//	case Shader::OPCODE_TEXM3X3SPEC:  TEXM3X3SPEC(d, x, y, z, dst.index, s0, s1);                                    break;
+		//	case Shader::OPCODE_TEXM3X3VSPEC: TEXM3X3VSPEC(d, x, y, z, dst.index, s0);                                       break;
+		//	case Shader::OPCODE_CND:          CND(d, s0, s1, s2);                                                            break;
+		//	case Shader::OPCODE_TEXREG2RGB:   TEXREG2RGB(d, s0, dst.index);                                                  break;
+		//	case Shader::OPCODE_TEXDP3TEX:    TEXDP3TEX(d, x, y, z, dst.index, s0);                                          break;
+		//	case Shader::OPCODE_TEXM3X2DEPTH: TEXM3X2DEPTH(d, x, y, z, s0, src0.modifier == Shader::MODIFIER_SIGN);          break;
+		//	case Shader::OPCODE_TEXDP3:       TEXDP3(d, x, y, z, s0);                                                        break;
+		//	case Shader::OPCODE_TEXM3X3:      TEXM3X3(d, x, y, z, s0, src0.modifier == Shader::MODIFIER_SIGN);               break;
+		//	case Shader::OPCODE_TEXDEPTH:     TEXDEPTH();                                                                    break;
+		//	case Shader::OPCODE_CMP0:         CMP(d, s0, s1, s2);                                                            break;
+		//	case Shader::OPCODE_BEM:          BEM(d, s0, s1, dst.index);                                                     break;
+		//	case Shader::OPCODE_PHASE:                                                                                       break;
+		//	case Shader::OPCODE_END:                                                                                         break;
+		//	default:
+		//		ASSERT(false);
+		//	}
 
-			if(dst.type != Shader::PARAMETER_VOID && opcode != Shader::OPCODE_TEXKILL)
-			{
-				if(dst.shift > 0)
-				{
-					if(dst.mask & 0x1) { d.x = AddSat(d.x, d.x); if(dst.shift > 1) d.x = AddSat(d.x, d.x); if(dst.shift > 2) d.x = AddSat(d.x, d.x); }
-					if(dst.mask & 0x2) { d.y = AddSat(d.y, d.y); if(dst.shift > 1) d.y = AddSat(d.y, d.y); if(dst.shift > 2) d.y = AddSat(d.y, d.y); }
-					if(dst.mask & 0x4) { d.z = AddSat(d.z, d.z); if(dst.shift > 1) d.z = AddSat(d.z, d.z); if(dst.shift > 2) d.z = AddSat(d.z, d.z); }
-					if(dst.mask & 0x8) { d.w = AddSat(d.w, d.w); if(dst.shift > 1) d.w = AddSat(d.w, d.w); if(dst.shift > 2) d.w = AddSat(d.w, d.w); }
-				}
-				else if(dst.shift < 0)
-				{
-					if(dst.mask & 0x1) d.x = d.x >> -dst.shift;
-					if(dst.mask & 0x2) d.y = d.y >> -dst.shift;
-					if(dst.mask & 0x4) d.z = d.z >> -dst.shift;
-					if(dst.mask & 0x8) d.w = d.w >> -dst.shift;
-				}
+		//	if(dst.type != Shader::PARAMETER_VOID && opcode != Shader::OPCODE_TEXKILL)
+		//	{
+		//		if(dst.shift > 0)
+		//		{
+		//			if(dst.mask & 0x1) { d.x = AddSat(d.x, d.x); if(dst.shift > 1) d.x = AddSat(d.x, d.x); if(dst.shift > 2) d.x = AddSat(d.x, d.x); }
+		//			if(dst.mask & 0x2) { d.y = AddSat(d.y, d.y); if(dst.shift > 1) d.y = AddSat(d.y, d.y); if(dst.shift > 2) d.y = AddSat(d.y, d.y); }
+		//			if(dst.mask & 0x4) { d.z = AddSat(d.z, d.z); if(dst.shift > 1) d.z = AddSat(d.z, d.z); if(dst.shift > 2) d.z = AddSat(d.z, d.z); }
+		//			if(dst.mask & 0x8) { d.w = AddSat(d.w, d.w); if(dst.shift > 1) d.w = AddSat(d.w, d.w); if(dst.shift > 2) d.w = AddSat(d.w, d.w); }
+		//		}
+		//		else if(dst.shift < 0)
+		//		{
+		//			if(dst.mask & 0x1) d.x = d.x >> -dst.shift;
+		//			if(dst.mask & 0x2) d.y = d.y >> -dst.shift;
+		//			if(dst.mask & 0x4) d.z = d.z >> -dst.shift;
+		//			if(dst.mask & 0x8) d.w = d.w >> -dst.shift;
+		//		}
 
-				if(dst.saturate)
-				{
-					if(dst.mask & 0x1) { d.x = Min(d.x, Short4(0x1000)); d.x = Max(d.x, Short4(0x0000)); }
-					if(dst.mask & 0x2) { d.y = Min(d.y, Short4(0x1000)); d.y = Max(d.y, Short4(0x0000)); }
-					if(dst.mask & 0x4) { d.z = Min(d.z, Short4(0x1000)); d.z = Max(d.z, Short4(0x0000)); }
-					if(dst.mask & 0x8) { d.w = Min(d.w, Short4(0x1000)); d.w = Max(d.w, Short4(0x0000)); }
-				}
+		//		if(dst.saturate)
+		//		{
+		//			if(dst.mask & 0x1) { d.x = Min(d.x, Short4(0x1000)); d.x = Max(d.x, Short4(0x0000)); }
+		//			if(dst.mask & 0x2) { d.y = Min(d.y, Short4(0x1000)); d.y = Max(d.y, Short4(0x0000)); }
+		//			if(dst.mask & 0x4) { d.z = Min(d.z, Short4(0x1000)); d.z = Max(d.z, Short4(0x0000)); }
+		//			if(dst.mask & 0x8) { d.w = Min(d.w, Short4(0x1000)); d.w = Max(d.w, Short4(0x0000)); }
+		//		}
 
-				if(pairing)
-				{
-					if(dst.mask & 0x1) dPairing.x = d.x;
-					if(dst.mask & 0x2) dPairing.y = d.y;
-					if(dst.mask & 0x4) dPairing.z = d.z;
-					if(dst.mask & 0x8) dPairing.w = d.w;
-				}
+		//		if(pairing)
+		//		{
+		//			if(dst.mask & 0x1) dPairing.x = d.x;
+		//			if(dst.mask & 0x2) dPairing.y = d.y;
+		//			if(dst.mask & 0x4) dPairing.z = d.z;
+		//			if(dst.mask & 0x8) dPairing.w = d.w;
+		//		}
 
-				if(coissue)
-				{
-					const Dst &dst = shader->getInstruction(i - 1)->dst;
+		//		if(coissue)
+		//		{
+		//			const Dst &dst = shader->getInstruction(i - 1)->dst;
 
-					writeDestination(dPairing, dst);
-				}
+		//			writeDestination(dPairing, dst);
+		//		}
 
-				if(!pairing)
-				{
-					writeDestination(d, dst);
-				}
-			}
-		}
+		//		if(!pairing)
+		//		{
+		//			writeDestination(d, dst);
+		//		}
+		//	}
+		//}
 
-		current.x = Min(current.x, Short4(0x0FFF)); current.x = Max(current.x, Short4(0x0000));
-		current.y = Min(current.y, Short4(0x0FFF)); current.y = Max(current.y, Short4(0x0000));
-		current.z = Min(current.z, Short4(0x0FFF)); current.z = Max(current.z, Short4(0x0000));
-		current.w = Min(current.w, Short4(0x0FFF)); current.w = Max(current.w, Short4(0x0000));
+		//current.x = Min(current.x, Short4(0x0FFF)); current.x = Max(current.x, Short4(0x0000));
+		//current.y = Min(current.y, Short4(0x0FFF)); current.y = Max(current.y, Short4(0x0000));
+		//current.z = Min(current.z, Short4(0x0FFF)); current.z = Max(current.z, Short4(0x0000));
+		//current.w = Min(current.w, Short4(0x0FFF)); current.w = Max(current.w, Short4(0x0000));
 	}
 
 	Bool PixelPipeline::alphaTest(Int cMask[4])

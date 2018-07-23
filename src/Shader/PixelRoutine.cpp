@@ -210,7 +210,7 @@ namespace sw
 
 				alphaPass = alphaTest(cMask);
 
-				if((shader && shader->containsKill()) || state.alphaTestActive())
+//				if((shader && shader->containsKill()) || state.alphaTestActive())
 				{
 					for(unsigned int q = 0; q < state.multiSample; q++)
 					{
@@ -394,17 +394,17 @@ namespace sw
 
 		Float4 Z = z;
 
-		if(shader && shader->depthOverride())
-		{
-			if(complementaryDepthBuffer)
-			{
-				Z = Float4(1.0f) - oDepth;
-			}
-			else
-			{
-				Z = oDepth;
-			}
-		}
+		//if(shader && shader->depthOverride())
+		//{
+		//	if(complementaryDepthBuffer)
+		//	{
+		//		Z = Float4(1.0f) - oDepth;
+		//	}
+		//	else
+		//	{
+		//		Z = oDepth;
+		//	}
+		//}
 
 		Pointer<Byte> buffer;
 		Int pitch;
@@ -665,17 +665,17 @@ namespace sw
 
 		Float4 Z = z;
 
-		if(shader && shader->depthOverride())
-		{
-			if(complementaryDepthBuffer)
-			{
-				Z = Float4(1.0f) - oDepth;
-			}
-			else
-			{
-				Z = oDepth;
-			}
-		}
+		//if(shader && shader->depthOverride())
+		//{
+		//	if(complementaryDepthBuffer)
+		//	{
+		//		Z = Float4(1.0f) - oDepth;
+		//	}
+		//	else
+		//	{
+		//		Z = oDepth;
+		//	}
+		//}
 
 		Pointer<Byte> buffer;
 		Int pitch;
