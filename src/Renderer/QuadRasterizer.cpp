@@ -340,11 +340,11 @@ namespace sw
 
 	bool QuadRasterizer::interpolateZ() const
 	{
-		return state.depthTestActive || state.pixelFogActive() || (shader && shader->isVPosDeclared() && fullPixelPositionRegister);
+		return true;// state.depthTestActive || state.pixelFogActive() || (shader && shader->isVPosDeclared() && fullPixelPositionRegister);
 	}
 
 	bool QuadRasterizer::interpolateW() const
 	{
-		return state.perspective || (shader && shader->isVPosDeclared() && fullPixelPositionRegister);
+		return true;// state.perspective || (shader && shader->isVPosDeclared() && fullPixelPositionRegister);
 	}
 }
