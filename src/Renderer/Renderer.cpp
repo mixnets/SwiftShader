@@ -322,6 +322,7 @@ namespace sw
 
 			draw->drawType = drawType;
 			draw->batchSize = batch;
+			draw->leadingVertexFirst = sw::leadingVertexFirst;
 
 			vertexRoutine->bind();
 			setupRoutine->bind();
@@ -1179,7 +1180,7 @@ namespace sw
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
-					if(leadingVertexFirst)
+					if(draw->leadingVertexFirst)
 					{
 						batch[i][0] = index + 0;
 						batch[i][1] = index + (index & 1) + 1;
@@ -1202,7 +1203,7 @@ namespace sw
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
-					if(leadingVertexFirst)
+					if(draw->leadingVertexFirst)
 					{
 						batch[i][0] = index + 1;
 						batch[i][1] = index + 2;

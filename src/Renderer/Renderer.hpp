@@ -501,6 +501,8 @@ namespace sw
 		AtomicInt count;        // Number of primitives to render
 		AtomicInt references;   // Remaining references to this draw call, 0 when done drawing, -1 when resources unlocked and slot is free
 
+		bool leadingVertexFirst;
+
 		DrawData *data;
 	};
 }
