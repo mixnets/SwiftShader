@@ -46,21 +46,16 @@ namespace sw
 		IEEE		// 2^-23
 	};
 
-	extern TranscendentalPrecision logPrecision;
-	extern TranscendentalPrecision expPrecision;
-	extern TranscendentalPrecision rcpPrecision;
-	extern TranscendentalPrecision rsqPrecision;
-	extern bool perspectiveCorrection;
-
 	struct Conventions
 	{
-		bool halfIntegerCoordinates;
-		bool symmetricNormalizedDepth;
+		bool halfIntegerCoordinates;   // Pixel centers are not at integer coordinates
+		bool symmetricNormalizedDepth; // [-1, 1] instead of [0, 1]
 		bool booleanFaceRegister;
 		bool fullPixelPositionRegister;
-		bool leadingVertexFirst;
-		bool secondaryColor;
+		bool leadingVertexFirst;       // Flat shading uses first vertex, else last
+		bool secondaryColor;           // Specular lighting is applied after texturing
 		bool colorsDefaultToZero;
+		bool exactColorRounding;
 	};
 
 	static const Conventions OpenGL =
@@ -72,6 +67,7 @@ namespace sw
 		false,   // leadingVertexFirst
 		false,   // secondaryColor
 		true,    // colorsDefaultToZero
+		true,    // exactColorRounding
 	};
 
 	static const Conventions Direct3D =
@@ -83,6 +79,7 @@ namespace sw
 		true,    // leadingVertexFirst
 		true,    // secondardyColor
 		false,   // colorsDefaultToZero
+		false,   // exactColorRounding
 	};
 
 	struct Query
@@ -263,7 +260,7 @@ namespace sw
 		};
 
 	public:
-		Renderer(Context *context, Conventions conventions, bool exactColorRounding);
+		Renderer(Context *context, const Conventions &conventions);
 
 		virtual ~Renderer();
 
@@ -279,7 +276,6 @@ namespace sw
 		void setIndexBuffer(Resource *indexBuffer);
 
 		void setMultiSampleMask(unsigned int mask);
-		void setTransparencyAntialiasing(TransparencyAntialiasing transparencyAntialiasing);
 
 		void setTextureResource(unsigned int sampler, Resource *resource);
 		void setTextureLevel(unsigned int sampler, unsigned int face, unsigned int level, Surface *surface, TextureType type);
@@ -354,6 +350,11 @@ namespace sw
 		#endif
 
 		static int getClusterCount() { return clusterCount; }
+		static const Conventions& getConventions() { return conventions; }
+		static TranscendentalPrecision getLogPrecision() { return logPrecision; }
+		static TranscendentalPrecision getExpPrecision() { return expPrecision; }
+		static TranscendentalPrecision getRcpPrecision() { return rcpPrecision; }
+		static TranscendentalPrecision getRsqPrecision() { return rsqPrecision; }
 
 	private:
 		static void threadFunction(void *parameters);
@@ -430,6 +431,11 @@ namespace sw
 
 		static AtomicInt unitCount;
 		static AtomicInt clusterCount;
+		static Conventions conventions;
+		static TranscendentalPrecision logPrecision;
+		static TranscendentalPrecision expPrecision;
+		static TranscendentalPrecision rcpPrecision;
+		static TranscendentalPrecision rsqPrecision;
 
 		MutexLock schedulerMutex;
 

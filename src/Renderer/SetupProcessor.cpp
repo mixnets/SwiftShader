@@ -24,10 +24,7 @@
 
 namespace sw
 {
-	extern bool complementaryDepthBuffer;
-	extern bool fullPixelPositionRegister;
-
-	bool precacheSetup = false;
+	bool SetupProcessor::preCache = false;
 
 	unsigned int SetupProcessor::States::computeHash()
 	{
@@ -73,7 +70,7 @@ namespace sw
 	{
 		State state;
 
-		bool vPosZW = (context->pixelShader && context->pixelShader->isVPosDeclared() && fullPixelPositionRegister);
+		bool vPosZW = (context->pixelShader && context->pixelShader->isVPosDeclared() && Renderer::getConventions().fullPixelPositionRegister);
 
 		state.isDrawPoint = context->isDrawPoint(true);
 		state.isDrawLine = context->isDrawLine(true);
@@ -243,6 +240,6 @@ namespace sw
 	void SetupProcessor::setRoutineCacheSize(int cacheSize)
 	{
 		delete routineCache;
-		routineCache = new RoutineCache<State>(clamp(cacheSize, 1, 65536), precacheSetup ? "sw-setup" : 0);
+		routineCache = new RoutineCache<State>(clamp(cacheSize, 1, 65536), preCache ? "sw-setup" : 0);
 	}
 }

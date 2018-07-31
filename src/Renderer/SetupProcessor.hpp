@@ -95,10 +95,14 @@ namespace sw
 
 		void setRoutineCacheSize(int cacheSize);
 
+		static void setPreCache(bool p) { preCache = p; }
+
 	private:
 		Context *const context;
 
 		RoutineCache<State> *routineCache;
+
+		static bool preCache;
 	};
 }
 

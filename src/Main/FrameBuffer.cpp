@@ -14,6 +14,7 @@
 
 #include "FrameBuffer.hpp"
 
+#include "Renderer/Context.hpp"
 #include "Renderer/Surface.hpp"
 #include "Reactor/Reactor.hpp"
 #include "Common/Timer.hpp"
@@ -31,8 +32,6 @@
 
 namespace sw
 {
-	extern bool forceWindowed;
-
 	FrameBuffer::Cursor FrameBuffer::cursor = {};
 	bool FrameBuffer::topLeftOrigin = false;
 
@@ -47,7 +46,7 @@ namespace sw
 		format = FORMAT_X8R8G8B8;
 		stride = 0;
 
-		windowed = !fullscreen || forceWindowed;
+		windowed = !fullscreen || Context::doForceWindowed();
 
 		blitFunction = nullptr;
 		blitRoutine = nullptr;

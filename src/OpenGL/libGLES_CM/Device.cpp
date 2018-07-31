@@ -33,7 +33,7 @@ namespace es1
 {
 	using namespace sw;
 
-	Device::Device(Context *context) : Renderer(context, OpenGL, true), context(context)
+	Device::Device(Context *context) : Renderer(context, OpenGL), context(context)
 	{
 		renderTarget = nullptr;
 		depthBuffer = nullptr;

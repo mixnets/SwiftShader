@@ -18,8 +18,6 @@
 
 namespace sw
 {
-	extern bool forceWindowed;
-
 	GUID secondaryDisplay = {0};
 
 	int __stdcall enumDisplayCallback(GUID* guid, char *driverDescription, char *driverName, void *context, HMONITOR monitor)

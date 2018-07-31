@@ -18,8 +18,6 @@
 
 namespace sw
 {
-	extern bool forceWindowed;
-
 	FrameBufferGDI::FrameBufferGDI(HWND windowHandle, int width, int height, bool fullscreen, bool topLeftOrigin) : FrameBufferWin(windowHandle, width, height, fullscreen, topLeftOrigin)
 	{
 		if(!windowed)

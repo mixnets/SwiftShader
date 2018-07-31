@@ -21,11 +21,6 @@
 
 namespace sw
 {
-	extern TranscendentalPrecision logPrecision;
-	extern TranscendentalPrecision expPrecision;
-	extern TranscendentalPrecision rcpPrecision;
-	extern TranscendentalPrecision rsqPrecision;
-
 	Vector4s::Vector4s()
 	{
 	}
@@ -188,7 +183,7 @@ namespace sw
 	{
 		Float4 rcp;
 
-		if(!pp && rcpPrecision >= WHQL)
+		if(!pp && Renderer::getRcpPrecision() >= WHQL)
 		{
 			rcp = Float4(1.0f) / x;
 		}

@@ -22,12 +22,6 @@
 
 namespace sw
 {
-	extern bool veryEarlyDepthTest;
-	extern bool complementaryDepthBuffer;
-	extern bool fullPixelPositionRegister;
-
-	extern int clusterCount;
-
 	QuadRasterizer::QuadRasterizer(const PixelProcessor::State &state, const PixelShader *pixelShader) : state(state), shader(pixelShader)
 	{
 	}
@@ -159,7 +153,7 @@ namespace sw
 				}
 			}
 
-			if(veryEarlyDepthTest && state.multiSample == 1 && !state.depthOverride)
+			if(Context::doVeryEarlyDepthTest() && state.multiSample == 1 && !state.depthOverride)
 			{
 				if(!state.stencilActive && state.depthTestActive && (state.depthCompareMode == DEPTH_LESSEQUAL || state.depthCompareMode == DEPTH_LESS))   // FIXME: Both modes ok?
 				{
@@ -197,7 +191,7 @@ namespace sw
 
 						Int4 zTest;
 
-						if(complementaryDepthBuffer)
+						if(Context::hasComplementaryDepthBuffer())
 						{
 							zTest = CmpLE(zValue, z);
 						}
@@ -340,11 +334,11 @@ namespace sw
 
 	bool QuadRasterizer::interpolateZ() const
 	{
-		return state.depthTestActive || state.pixelFogActive() || (shader && shader->isVPosDeclared() && fullPixelPositionRegister);
+		return state.depthTestActive || state.pixelFogActive() || (shader && shader->isVPosDeclared() && Renderer::getConventions().fullPixelPositionRegister);
 	}
 
 	bool QuadRasterizer::interpolateW() const
 	{
-		return state.perspective || (shader && shader->isVPosDeclared() && fullPixelPositionRegister);
+		return state.perspective || (shader && shader->isVPosDeclared() && Renderer::getConventions().fullPixelPositionRegister);
 	}
 }

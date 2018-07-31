@@ -535,6 +535,33 @@ namespace sw
 
 		bool colorLogicOpEnabled;
 		LogicalOperation logicalOperation;
+
+		static void setPerspectiveCorrection(bool perspectiveCorrection);
+		static void setForceWindowed(bool forceWindowed);
+		static void setQuadLayoutEnabled(bool quadLayoutEnabled);
+		static void setVeryEarlyDepthTest(bool veryEarlyDepthTest);
+		static void setComplementaryDepthBuffer(bool complementaryDepthBuffer);
+		static void setPostBlendSRGB(bool postBlendSRGB);
+		static void setTransparencyAntialiasing(TransparencyAntialiasing transparencyAntialiasing);
+		static void setForceClearRegisters(bool forceClearRegisters);
+
+		static bool doForceWindowed() { return forceWindowed; }
+		static bool isQuadLayoutEnabled() { return quadLayoutEnabled; }
+		static bool doVeryEarlyDepthTest() { return veryEarlyDepthTest; }
+		static bool hasComplementaryDepthBuffer() { return complementaryDepthBuffer; }
+		static bool doPostBlendSRGB() { return postBlendSRGB; }
+		static TransparencyAntialiasing getTransparencyAntialiasing() { return transparencyAntialiasing; }
+		static bool doForceClearRegisters() { return forceClearRegisters; }
+
+	private:
+		static bool perspectiveCorrection;
+		static bool forceWindowed;
+		static bool quadLayoutEnabled;
+		static bool veryEarlyDepthTest;
+		static bool complementaryDepthBuffer;
+		static bool postBlendSRGB;
+		static TransparencyAntialiasing transparencyAntialiasing;
+		static bool forceClearRegisters;
 	};
 }
 

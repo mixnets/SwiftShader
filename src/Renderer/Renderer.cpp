@@ -42,35 +42,16 @@ unsigned int maxPrimitives = 1 << 21;
 
 namespace sw
 {
-	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
-	extern bool symmetricNormalizedDepth;   // [-1, 1] instead of [0, 1]
-	extern bool booleanFaceRegister;
-	extern bool fullPixelPositionRegister;
-	extern bool leadingVertexFirst;         // Flat shading uses first vertex, else last
-	extern bool secondaryColor;             // Specular lighting is applied after texturing
-	extern bool colorsDefaultToZero;
-
-	extern bool forceWindowed;
-	extern bool complementaryDepthBuffer;
-	extern bool postBlendSRGB;
-	extern bool exactColorRounding;
-	extern TransparencyAntialiasing transparencyAntialiasing;
-	extern bool forceClearRegisters;
-
-	extern bool precacheVertex;
-	extern bool precacheSetup;
-	extern bool precachePixel;
-
 	static const int batchSize = 128;
 	AtomicInt threadCount(1);
 	AtomicInt Renderer::unitCount(1);
 	AtomicInt Renderer::clusterCount(1);
+	Conventions Renderer::conventions = { false, false, false, false, false, false, false, false };
 
-	TranscendentalPrecision logPrecision = ACCURATE;
-	TranscendentalPrecision expPrecision = ACCURATE;
-	TranscendentalPrecision rcpPrecision = ACCURATE;
-	TranscendentalPrecision rsqPrecision = ACCURATE;
-	bool perspectiveCorrection = true;
+	TranscendentalPrecision Renderer::logPrecision = ACCURATE;
+	TranscendentalPrecision Renderer::expPrecision = ACCURATE;
+	TranscendentalPrecision Renderer::rcpPrecision = ACCURATE;
+	TranscendentalPrecision Renderer::rsqPrecision = ACCURATE;
 
 	struct Parameters
 	{
@@ -103,19 +84,12 @@ namespace sw
 		deallocate(data);
 	}
 
-	Renderer::Renderer(Context *context, Conventions conventions, bool exactColorRounding) : VertexProcessor(context), PixelProcessor(context), SetupProcessor(context), context(context), viewport()
+	Renderer::Renderer(Context *context, const Conventions &conventions) : VertexProcessor(context), PixelProcessor(context), SetupProcessor(context), context(context), viewport()
 	{
-		sw::halfIntegerCoordinates = conventions.halfIntegerCoordinates;
-		sw::symmetricNormalizedDepth = conventions.symmetricNormalizedDepth;
-		sw::booleanFaceRegister = conventions.booleanFaceRegister;
-		sw::fullPixelPositionRegister = conventions.fullPixelPositionRegister;
-		sw::leadingVertexFirst = conventions.leadingVertexFirst;
-		sw::secondaryColor = conventions.secondaryColor;
-		sw::colorsDefaultToZero = conventions.colorsDefaultToZero;
-		sw::exactColorRounding = exactColorRounding;
+		Renderer::conventions = conventions;
 
 		setRenderTarget(0, 0);
-		clipper = new Clipper(symmetricNormalizedDepth);
+		clipper = new Clipper(conventions.symmetricNormalizedDepth);
 		blitter = new Blitter;
 
 		updateViewMatrix = true;
@@ -552,7 +526,7 @@ namespace sw
 					N += context->depthBias;
 				}
 
-				if(complementaryDepthBuffer)
+				if(Context::hasComplementaryDepthBuffer())
 				{
 					Z = -Z;
 					N = 1 - N;
@@ -1179,7 +1153,7 @@ namespace sw
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
-					if(leadingVertexFirst)
+					if(conventions.leadingVertexFirst)
 					{
 						batch[i][0] = index + 0;
 						batch[i][1] = index + (index & 1) + 1;
@@ -1202,7 +1176,7 @@ namespace sw
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
-					if(leadingVertexFirst)
+					if(conventions.leadingVertexFirst)
 					{
 						batch[i][0] = index + 1;
 						batch[i][1] = index + 2;
@@ -2167,11 +2141,6 @@ namespace sw
 		context->sampleMask = mask;
 	}
 
-	void Renderer::setTransparencyAntialiasing(TransparencyAntialiasing transparencyAntialiasing)
-	{
-		sw::transparencyAntialiasing = transparencyAntialiasing;
-	}
-
 	bool Renderer::isReadWriteTexture(int sampler)
 	{
 		for(int index = 0; index < RENDERTARGETS; index++)
@@ -2733,9 +2702,9 @@ namespace sw
 			SwiftConfig::Configuration configuration = {};
 			swiftConfig->getConfiguration(configuration);
 
-			precacheVertex = !newConfiguration && configuration.precache;
-			precacheSetup = !newConfiguration && configuration.precache;
-			precachePixel = !newConfiguration && configuration.precache;
+			VertexProcessor::setPreCache(!newConfiguration && configuration.precache);
+			SetupProcessor::setPreCache(!newConfiguration && configuration.precache);
+			PixelProcessor::setPreCache(!newConfiguration && configuration.precache);
 
 			VertexProcessor::setRoutineCacheSize(configuration.vertexRoutineCacheSize);
 			PixelProcessor::setRoutineCacheSize(configuration.pixelRoutineCacheSize);
@@ -2756,7 +2725,7 @@ namespace sw
 			default: Sampler::setMipmapQuality(MIPMAP_LINEAR); break;
 			}
 
-			setPerspectiveCorrection(configuration.perspectiveCorrection);
+			Context::setPerspectiveCorrection(configuration.perspectiveCorrection);
 
 			switch(configuration.transcendentalPrecision)
 			{
@@ -2800,9 +2769,9 @@ namespace sw
 
 			switch(configuration.transparencyAntialiasing)
 			{
-			case 0:  transparencyAntialiasing = TRANSPARENCY_NONE;              break;
-			case 1:  transparencyAntialiasing = TRANSPARENCY_ALPHA_TO_COVERAGE; break;
-			default: transparencyAntialiasing = TRANSPARENCY_NONE;              break;
+			case 0:  Context::setTransparencyAntialiasing(TRANSPARENCY_NONE);              break;
+			case 1:  Context::setTransparencyAntialiasing(TRANSPARENCY_ALPHA_TO_COVERAGE); break;
+			default: Context::setTransparencyAntialiasing(TRANSPARENCY_NONE);              break;
 			}
 
 			switch(configuration.threadCount)
@@ -2823,11 +2792,11 @@ namespace sw
 				optimization[pass] = configuration.optimization[pass];
 			}
 
-			forceWindowed = configuration.forceWindowed;
-			complementaryDepthBuffer = configuration.complementaryDepthBuffer;
-			postBlendSRGB = configuration.postBlendSRGB;
-			exactColorRounding = configuration.exactColorRounding;
-			forceClearRegisters = configuration.forceClearRegisters;
+			Context::setForceWindowed(configuration.forceWindowed);
+			Context::setComplementaryDepthBuffer(configuration.complementaryDepthBuffer);
+			Context::setPostBlendSRGB(configuration.postBlendSRGB);
+			conventions.exactColorRounding = configuration.exactColorRounding;
+			Context::setForceClearRegisters(configuration.forceClearRegisters);
 
 		#ifndef NDEBUG
 			minPrimitives = configuration.minPrimitives;

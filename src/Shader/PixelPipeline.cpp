@@ -18,8 +18,6 @@
 
 namespace sw
 {
-	extern bool postBlendSRGB;
-
 	void PixelPipeline::setBuiltins(Int &x, Int &y, Float4(&z)[4], Float4 &w)
 	{
 		if(state.color[0].component & 0x1) diffuse.x = convertFixed12(v[0].x); else diffuse.x = Short4(0x1000);
@@ -318,7 +316,7 @@ namespace sw
 		case FORMAT_A8:
 		case FORMAT_G16R16:
 		case FORMAT_A16B16G16R16:
-			if(!postBlendSRGB && state.writeSRGB)
+			if(!Context::doPostBlendSRGB() && state.writeSRGB)
 			{
 				linearToSRGB12_16(current);
 			}

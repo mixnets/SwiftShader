@@ -20,18 +20,13 @@
 
 namespace sw
 {
-	extern bool postBlendSRGB;
-	extern bool booleanFaceRegister;
-	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
-	extern bool fullPixelPositionRegister;
-
 	void PixelProgram::setBuiltins(Int &x, Int &y, Float4(&z)[4], Float4 &w)
 	{
 		if(shader->getShaderModel() >= 0x0300)
 		{
 			if(shader->isVPosDeclared())
 			{
-				if(!halfIntegerCoordinates)
+				if(!Renderer::getConventions().halfIntegerCoordinates)
 				{
 					vPos.x = Float4(Float(x)) + Float4(0, 1, 0, 1);
 					vPos.y = Float4(Float(y)) + Float4(0, 0, 1, 1);
@@ -42,7 +37,7 @@ namespace sw
 					vPos.y = Float4(Float(y)) + Float4(0.5f, 0.5f, 1.5f, 1.5f);
 				}
 
-				if(fullPixelPositionRegister)
+				if(Renderer::getConventions().fullPixelPositionRegister)
 				{
 					vPos.z = z[0]; // FIXME: Centroid?
 					vPos.w = w;    // FIXME: Centroid?
@@ -52,7 +47,7 @@ namespace sw
 			if(shader->isVFaceDeclared())
 			{
 				Float4 area = *Pointer<Float>(primitive + OFFSET(Primitive, area));
-				Float4 face = booleanFaceRegister ? Float4(As<Float4>(CmpNLT(area, Float4(0.0f)))) : area;
+				Float4 face = Renderer::getConventions().booleanFaceRegister ? Float4(As<Float4>(CmpNLT(area, Float4(0.0f)))) : area;
 
 				vFace.x = face;
 				vFace.y = face;
@@ -616,7 +611,7 @@ namespace sw
 				continue;
 			}
 
-			if(!postBlendSRGB && state.writeSRGB && !isSRGB(index))
+			if(!Context::doPostBlendSRGB() && state.writeSRGB && !isSRGB(index))
 			{
 				c[index].x = linearToSRGB(c[index].x);
 				c[index].y = linearToSRGB(c[index].y);

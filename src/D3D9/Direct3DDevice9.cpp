@@ -61,7 +61,7 @@ namespace D3D9
 		d3d9->AddRef();
 
 		context = new sw::Context();
-		renderer = new sw::Renderer(context, sw::Direct3D, false);
+		renderer = new sw::Renderer(context, sw::Direct3D);
 
 		swapChain = 0;
 		depthStencil = 0;
@@ -3632,12 +3632,12 @@ namespace D3D9
 				}
 				else if(value == D3DFMT_A2M1)   // ATI hack to enable transparency anti-aliasing
 				{
-					renderer->setTransparencyAntialiasing(sw::TRANSPARENCY_ALPHA_TO_COVERAGE);
+					sw::Context::setTransparencyAntialiasing(sw::TRANSPARENCY_ALPHA_TO_COVERAGE);
 					renderer->setAlphaTestEnable(true);
 				}
 				else if(value == D3DFMT_A2M0)   // ATI hack to disable transparency anti-aliasing
 				{
-					renderer->setTransparencyAntialiasing(sw::TRANSPARENCY_NONE);
+					sw::Context::setTransparencyAntialiasing(sw::TRANSPARENCY_NONE);
 					renderer->setAlphaTestEnable(false);
 				}
 				else
@@ -3736,11 +3736,11 @@ namespace D3D9
 			case D3DRS_ADAPTIVETESS_Y:
 				if(value == D3DFMT_ATOC)   // NVIDIA hack to enable transparency anti-aliasing
 				{
-					renderer->setTransparencyAntialiasing(sw::TRANSPARENCY_ALPHA_TO_COVERAGE);
+					sw::Context::setTransparencyAntialiasing(sw::TRANSPARENCY_ALPHA_TO_COVERAGE);
 				}
 				else if(value == D3DFMT_UNKNOWN)   // NVIDIA hack to disable transparency anti-aliasing
 				{
-					renderer->setTransparencyAntialiasing(sw::TRANSPARENCY_NONE);
+					sw::Context::setTransparencyAntialiasing(sw::TRANSPARENCY_NONE);
 				}
 				else
 				{

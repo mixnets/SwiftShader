@@ -33,7 +33,7 @@ namespace es2
 {
 	using namespace sw;
 
-	Device::Device(Context *context) : Renderer(context, OpenGL, true), context(context)
+	Device::Device(Context *context) : Renderer(context, OpenGL), context(context)
 	{
 		for(int i = 0; i < RENDERTARGETS; i++)
 		{

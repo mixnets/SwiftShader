@@ -1878,11 +1878,11 @@ void Context::applyState(GLenum drawMode)
 	{
 		if(mState.sampleAlphaToCoverageEnabled)
 		{
-			device->setTransparencyAntialiasing(sw::TRANSPARENCY_ALPHA_TO_COVERAGE);
+			sw::Context::setTransparencyAntialiasing(sw::TRANSPARENCY_ALPHA_TO_COVERAGE);
 		}
 		else
 		{
-			device->setTransparencyAntialiasing(sw::TRANSPARENCY_NONE);
+			sw::Context::setTransparencyAntialiasing(sw::TRANSPARENCY_NONE);
 		}
 
 		if(mState.sampleCoverageEnabled)

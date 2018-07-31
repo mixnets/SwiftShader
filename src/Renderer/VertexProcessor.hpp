@@ -290,6 +290,8 @@ namespace sw
 		bool isFixedFunction();
 		void setRoutineCacheSize(int cacheSize);
 
+		static void setPreCache(bool p) { preCache = p; }
+
 		// Shader constants
 		float4 c[VERTEX_UNIFORM_VECTORS + 1];   // One extra for indices out of range, c[VERTEX_UNIFORM_VECTORS] = {0, 0, 0, 0}
 		int4 i[16];
@@ -329,6 +331,8 @@ namespace sw
 		Context *const context;
 
 		RoutineCache<State> *routineCache;
+
+		static bool preCache;
 
 	protected:
 		Matrix M[12];      // Model/Geometry/World matrix

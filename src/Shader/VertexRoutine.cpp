@@ -23,9 +23,6 @@
 
 namespace sw
 {
-	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
-	extern bool symmetricNormalizedDepth;   // [-1, 1] instead of [0, 1]
-
 	VertexRoutine::VertexRoutine(const VertexProcessor::State &state, const VertexShader *shader)
 		: v(shader && shader->indirectAddressableInput),
 		  o(shader && shader->indirectAddressableOutput),
@@ -115,7 +112,7 @@ namespace sw
 		Int4 maxZ = CmpLT(o[pos].w, o[pos].z);
 		Int4 minX = CmpNLE(-o[pos].w, o[pos].x);
 		Int4 minY = CmpNLE(-o[pos].w, o[pos].y);
-		Int4 minZ = symmetricNormalizedDepth ? CmpNLE(-o[pos].w, o[pos].z) : CmpNLE(Float4(0.0f), o[pos].z);
+		Int4 minZ = Renderer::getConventions().symmetricNormalizedDepth ? CmpNLE(-o[pos].w, o[pos].z) : CmpNLE(Float4(0.0f), o[pos].z);
 
 		clipFlags = *Pointer<Int>(constants + OFFSET(Constants,maxX) + SignMask(maxX) * 4);   // FIXME: Array indexing
 		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,maxY) + SignMask(maxY) * 4);
@@ -628,7 +625,7 @@ namespace sw
 			o[pos].w = rhw;
 		}
 
-		if(!halfIntegerCoordinates && !state.preTransformed)
+		if(!Renderer::getConventions().halfIntegerCoordinates && !state.preTransformed)
 		{
 			o[pos].x = o[pos].x + *Pointer<Float4>(data + OFFSET(DrawData,halfPixelX)) * o[pos].w;
 			o[pos].y = o[pos].y + *Pointer<Float4>(data + OFFSET(DrawData,halfPixelY)) * o[pos].w;
@@ -717,7 +714,7 @@ namespace sw
 		v.z = o[pos].z;
 		v.w = o[pos].w;
 
-		if(symmetricNormalizedDepth)
+		if(Renderer::getConventions().symmetricNormalizedDepth)
 		{
 			v.z = (v.z + v.w) * Float4(0.5f);   // [-1, 1] -> [0, 1]
 		}

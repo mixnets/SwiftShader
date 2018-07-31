@@ -27,8 +27,6 @@
 
 namespace sw
 {
-	extern bool secondaryColor;
-
 	VertexPipeline::VertexPipeline(const VertexProcessor::State &state) : VertexRoutine(state, 0)
 	{
 	}
@@ -384,7 +382,7 @@ namespace sw
 					spec.y = Max(spec.y, Float4(0.0f));
 					spec.z = Max(spec.z, Float4(0.0f));
 
-					if(secondaryColor)
+					if(Renderer::getConventions().secondaryColor)
 					{
 						o[C1].x = o[C1].x + spec.x;
 						o[C1].y = o[C1].y + spec.y;

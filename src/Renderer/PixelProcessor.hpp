@@ -123,7 +123,7 @@ namespace sw
 
 			bool alphaTestActive() const
 			{
-				return (alphaCompareMode != ALPHA_ALWAYS) || (transparencyAntialiasing != TRANSPARENCY_NONE);
+				return (alphaCompareMode != ALPHA_ALWAYS) || (Context::getTransparencyAntialiasing() != TRANSPARENCY_NONE);
 			}
 
 			bool pixelFogActive() const
@@ -299,14 +299,13 @@ namespace sw
 		void setFogDensity(float fogDensity);
 		void setPixelFogMode(FogMode fogMode);
 
-		void setPerspectiveCorrection(bool perspectiveCorrection);
-
 		void setOcclusionEnabled(bool enable);
 
 	protected:
 		const State update() const;
 		Routine *routine(const State &state);
 		void setRoutineCacheSize(int routineCacheSize);
+		static void setPreCache(bool p) { preCache = p; }
 
 		// Shader constants
 		word4 cW[8][4];
@@ -335,6 +334,8 @@ namespace sw
 		Context *const context;
 
 		RoutineCache<State> *routineCache;
+
+		static bool preCache;
 	};
 }
 

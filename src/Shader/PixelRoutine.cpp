@@ -24,15 +24,10 @@
 
 namespace sw
 {
-	extern bool complementaryDepthBuffer;
-	extern bool postBlendSRGB;
-	extern bool exactColorRounding;
-	extern bool forceClearRegisters;
-
 	PixelRoutine::PixelRoutine(const PixelProcessor::State &state, const PixelShader *shader)
 		: QuadRasterizer(state, shader), v(shader && shader->indirectAddressableInput)
 	{
-		if(!shader || shader->getShaderModel() < 0x0200 || forceClearRegisters)
+		if(!shader || shader->getShaderModel() < 0x0200 || Context::doForceClearRegisters())
 		{
 			for(int i = 0; i < MAX_FRAGMENT_INPUTS; i++)
 			{
@@ -396,7 +391,7 @@ namespace sw
 
 		if(shader && shader->depthOverride())
 		{
-			if(complementaryDepthBuffer)
+			if(Context::hasComplementaryDepthBuffer())
 			{
 				Z = Float4(1.0f) - oDepth;
 			}
@@ -457,7 +452,7 @@ namespace sw
 			zTest = CmpNEQ(zValue, Z);
 			break;
 		case DEPTH_LESS:
-			if(complementaryDepthBuffer)
+			if(Context::hasComplementaryDepthBuffer())
 			{
 				zTest = CmpLT(zValue, Z);
 			}
@@ -467,7 +462,7 @@ namespace sw
 			}
 			break;
 		case DEPTH_GREATEREQUAL:
-			if(complementaryDepthBuffer)
+			if(Context::hasComplementaryDepthBuffer())
 			{
 				zTest = CmpNLT(zValue, Z);
 			}
@@ -477,7 +472,7 @@ namespace sw
 			}
 			break;
 		case DEPTH_LESSEQUAL:
-			if(complementaryDepthBuffer)
+			if(Context::hasComplementaryDepthBuffer())
 			{
 				zTest = CmpLE(zValue, Z);
 			}
@@ -487,7 +482,7 @@ namespace sw
 			}
 			break;
 		case DEPTH_GREATER:
-			if(complementaryDepthBuffer)
+			if(Context::hasComplementaryDepthBuffer())
 			{
 				zTest = CmpNLE(zValue, Z);
 			}
@@ -623,7 +618,7 @@ namespace sw
 			}
 			else
 			{
-				if(complementaryDepthBuffer)
+				if(Context::hasComplementaryDepthBuffer())
 				{
 					zw = Float4(1.0f) - z[0];
 				}
@@ -667,7 +662,7 @@ namespace sw
 
 		if(shader && shader->depthOverride())
 		{
-			if(complementaryDepthBuffer)
+			if(Context::hasComplementaryDepthBuffer())
 			{
 				Z = Float4(1.0f) - oDepth;
 			}
@@ -1162,7 +1157,7 @@ namespace sw
 			ASSERT(false);
 		}
 
-		if((postBlendSRGB && state.writeSRGB) || isSRGB(index))
+		if((Context::doPostBlendSRGB() && state.writeSRGB) || isSRGB(index))
 		{
 			sRGBtoLinear16_12_16(pixel);
 		}
@@ -1384,12 +1379,12 @@ namespace sw
 
 	void PixelRoutine::writeColor(int index, Pointer<Byte> &cBuffer, Int &x, Vector4s &current, Int &sMask, Int &zMask, Int &cMask)
 	{
-		if((postBlendSRGB && state.writeSRGB) || isSRGB(index))
+		if((Context::doPostBlendSRGB() && state.writeSRGB) || isSRGB(index))
 		{
 			linearToSRGB16_12_16(current);
 		}
 
-		if(exactColorRounding)
+		if(Renderer::getConventions().exactColorRounding)
 		{
 			switch(state.targetFormat[index])
 			{
@@ -2101,7 +2096,7 @@ namespace sw
 			ASSERT(false);
 		}
 
-		if((postBlendSRGB && state.writeSRGB) || isSRGB(index))
+		if((Context::doPostBlendSRGB() && state.writeSRGB) || isSRGB(index))
 		{
 			sRGBtoLinear(pixel.x);
 			sRGBtoLinear(pixel.y);

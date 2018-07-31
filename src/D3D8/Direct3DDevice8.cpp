@@ -55,7 +55,7 @@ namespace D3D8
 		d3d8->AddRef();
 
 		context = new sw::Context();
-		renderer = new sw::Renderer(context, sw::Direct3D, false);
+		renderer = new sw::Renderer(context, sw::Direct3D);
 
 		swapChain.push_back(0);
 		depthStencil = 0;

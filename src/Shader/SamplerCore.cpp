@@ -16,6 +16,7 @@
 
 #include "Constants.hpp"
 #include "Common/Debug.hpp"
+#include "Renderer/Renderer.hpp"
 
 namespace
 {
@@ -50,8 +51,6 @@ namespace
 
 namespace sw
 {
-	extern bool colorsDefaultToZero;
-
 	SamplerCore::SamplerCore(Pointer<Byte> &constants, const Sampler::State &state) : constants(constants), state(state)
 	{
 	}
@@ -160,7 +159,7 @@ namespace sw
 				if(state.textureFilter != FILTER_GATHER)
 				{
 					int componentCount = textureComponentCount();
-					short defaultColorValue = colorsDefaultToZero ? 0x0000 : 0x1000;
+					short defaultColorValue = Renderer::getConventions().colorsDefaultToZero ? 0x0000 : 0x1000;
 
 					switch(state.textureFormat)
 					{
@@ -384,7 +383,7 @@ namespace sw
 			}
 
 			int componentCount = textureComponentCount();
-			float defaultColorValue = colorsDefaultToZero ? 0.0f : 1.0f;
+			float defaultColorValue = Renderer::getConventions().colorsDefaultToZero ? 0.0f : 1.0f;
 
 			if(state.textureFilter != FILTER_GATHER)
 			{

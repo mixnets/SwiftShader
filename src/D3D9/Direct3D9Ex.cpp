@@ -14,13 +14,9 @@
 
 #include "Direct3D9Ex.hpp"
 
+#include "Context.hpp"
 #include "Direct3DDevice9Ex.hpp"
 #include "Debug.hpp"
-
-namespace sw
-{
-	extern bool postBlendSRGB;
-}
 
 namespace D3D9
 {
@@ -228,7 +224,7 @@ namespace D3D9
 
 		long result = Direct3D9::GetDeviceCaps(adapter, deviceType, capabilities);
 
-		if(sw::postBlendSRGB)
+		if(sw::Context::doPostBlendSRGB())
 		{
 			capabilities->PrimitiveMiscCaps |= D3DPMISCCAPS_POSTBLENDSRGBCONVERT;   // Indicates device can perform conversion to sRGB after blending.
 		}

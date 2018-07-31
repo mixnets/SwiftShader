@@ -26,11 +26,7 @@
 
 namespace sw
 {
-	extern bool complementaryDepthBuffer;
-	extern TransparencyAntialiasing transparencyAntialiasing;
-	extern bool perspectiveCorrection;
-
-	bool precachePixel = false;
+	bool PixelProcessor::preCache = false;
 
 	unsigned int PixelProcessor::States::computeHash()
 	{
@@ -919,11 +915,6 @@ namespace sw
 		context->pixelFogMode = fogMode;
 	}
 
-	void PixelProcessor::setPerspectiveCorrection(bool perspectiveEnable)
-	{
-		perspectiveCorrection = perspectiveEnable;
-	}
-
 	void PixelProcessor::setOcclusionEnabled(bool enable)
 	{
 		context->occlusionEnabled = enable;
@@ -932,7 +923,7 @@ namespace sw
 	void PixelProcessor::setRoutineCacheSize(int cacheSize)
 	{
 		delete routineCache;
-		routineCache = new RoutineCache<State>(clamp(cacheSize, 1, 65536), precachePixel ? "sw-pixel" : 0);
+		routineCache = new RoutineCache<State>(clamp(cacheSize, 1, 65536), preCache ? "sw-pixel" : 0);
 	}
 
 	void PixelProcessor::setFogRanges(float start, float end)
@@ -972,7 +963,7 @@ namespace sw
 		{
 			state.alphaCompareMode = context->alphaCompareMode;
 
-			state.transparencyAntialiasing = context->getMultiSampleCount() > 1 ? transparencyAntialiasing : TRANSPARENCY_NONE;
+			state.transparencyAntialiasing = context->getMultiSampleCount() > 1 ? Context::getTransparencyAntialiasing() : TRANSPARENCY_NONE;
 		}
 
 		state.depthWriteEnable = context->depthWriteActive();

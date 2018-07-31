@@ -22,10 +22,6 @@
 
 namespace sw
 {
-	extern bool complementaryDepthBuffer;
-	extern TranscendentalPrecision logPrecision;
-	extern bool leadingVertexFirst;
-
 	SetupRoutine::SetupRoutine(const SetupProcessor::State &state) : state(state)
 	{
 		routine = 0;
@@ -279,7 +275,7 @@ namespace sw
 			*Pointer<Int>(primitive + OFFSET(Primitive,yMax)) = yMax;
 
 			// Sort by minimum y
-			if(solidTriangle && logPrecision >= WHQL)
+			if(solidTriangle && Renderer::getLogPrecision() >= WHQL)
 			{
 				Float y0 = *Pointer<Float>(v0 + pos * 16 + 4);
 				Float y1 = *Pointer<Float>(v1 + pos * 16 + 4);
@@ -440,7 +436,7 @@ namespace sw
 					Float bias = Max(Abs(Float(A.x)), Abs(Float(B.x)));
 					bias *= *Pointer<Float>(data + OFFSET(DrawData,slopeDepthBias));
 
-					if(complementaryDepthBuffer)
+					if(Context::hasComplementaryDepthBuffer())
 					{
 						bias = -bias;
 					}
@@ -548,7 +544,7 @@ namespace sw
 		}
 		else
 		{
-			int leadingVertex = leadingVertexFirst ? OFFSET(Triangle,v0) : OFFSET(Triangle,v2);
+			int leadingVertex = Renderer::getConventions().leadingVertexFirst ? OFFSET(Triangle,v0) : OFFSET(Triangle,v2);
 			Float C = *Pointer<Float>(triangle + leadingVertex + attribute);
 
 			*Pointer<Float4>(primitive + planeEquation + 0, 16) = Float4(0, 0, 0, 0);

@@ -35,10 +35,6 @@
 
 namespace sw
 {
-	extern bool quadLayoutEnabled;
-	extern bool complementaryDepthBuffer;
-	extern TranscendentalPrecision logPrecision;
-
 	unsigned int *Surface::palette = 0;
 	unsigned int Surface::paletteID = 0;
 
@@ -1463,7 +1459,7 @@ namespace sw
 		}
 
 		// FIXME: WHQL requires conversion to lower external precision and back
-		if(logPrecision >= WHQL)
+		if(Renderer::getLogPrecision() >= WHQL)
 		{
 			if(internal.dirty && renderTarget && internal.format != external.format)
 			{
@@ -3363,7 +3359,7 @@ namespace sw
 		}
 		else   // Quad layout
 		{
-			if(complementaryDepthBuffer)
+			if(Context::hasComplementaryDepthBuffer())
 			{
 				depth = 1 - depth;
 			}
@@ -3812,7 +3808,7 @@ namespace sw
 		case FORMAT_G32R32UI:
 			return FORMAT_G32R32UI;
 		case FORMAT_A8R8G8B8:
-			if(lockable || !quadLayoutEnabled)
+			if(lockable || !Context::isQuadLayoutEnabled())
 			{
 				return FORMAT_A8R8G8B8;
 			}
@@ -3837,7 +3833,7 @@ namespace sw
 		case FORMAT_X4R4G4B4:
 		case FORMAT_X1R5G5B5:
 		case FORMAT_X8R8G8B8:
-			if(lockable || !quadLayoutEnabled)
+			if(lockable || !Context::isQuadLayoutEnabled())
 			{
 				return FORMAT_X8R8G8B8;
 			}
@@ -3951,7 +3947,7 @@ namespace sw
 			{
 				return FORMAT_D32F_SHADOW;
 			}
-			else if(complementaryDepthBuffer)
+			else if(Context::hasComplementaryDepthBuffer())
 			{
 				return FORMAT_D32F_COMPLEMENTARY;
 			}
@@ -3965,7 +3961,7 @@ namespace sw
 			{
 				return FORMAT_D32FS8_SHADOW;
 			}
-			else if(complementaryDepthBuffer)
+			else if(Context::hasComplementaryDepthBuffer())
 			{
 				return FORMAT_D32FS8_COMPLEMENTARY;
 			}

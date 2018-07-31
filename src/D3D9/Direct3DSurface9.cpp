@@ -23,8 +23,6 @@
 #include <malloc.h>
 #include <assert.h>
 
-extern bool quadLayoutEnabled;
-
 namespace D3D9
 {
 	sw::Resource *getParentResource(Unknown *container)

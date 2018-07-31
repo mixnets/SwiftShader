@@ -25,24 +25,14 @@
 
 namespace sw
 {
-	extern bool perspectiveCorrection;
-
-	bool halfIntegerCoordinates = false;     // Pixel centers are not at integer coordinates
-	bool symmetricNormalizedDepth = false;   // [-1, 1] instead of [0, 1]
-	bool booleanFaceRegister = false;
-	bool fullPixelPositionRegister = false;
-	bool leadingVertexFirst = false;         // Flat shading uses first vertex, else last
-	bool secondaryColor = false;             // Specular lighting is applied after texturing
-	bool colorsDefaultToZero = false;
-
-	bool forceWindowed = false;
-	bool quadLayoutEnabled = false;
-	bool veryEarlyDepthTest = true;
-	bool complementaryDepthBuffer = false;
-	bool postBlendSRGB = false;
-	bool exactColorRounding = false;
-	TransparencyAntialiasing transparencyAntialiasing = TRANSPARENCY_NONE;
-	bool forceClearRegisters = false;
+	bool Context::perspectiveCorrection = true;
+	bool Context::forceWindowed = false;
+	bool Context::quadLayoutEnabled = false;
+	bool Context::veryEarlyDepthTest = true;
+	bool Context::complementaryDepthBuffer = false;
+	bool Context::postBlendSRGB = false;
+	TransparencyAntialiasing Context::transparencyAntialiasing = TRANSPARENCY_NONE;
+	bool Context::forceClearRegisters = false;
 
 	Context::Context()
 	{
@@ -1177,6 +1167,46 @@ namespace sw
 		}
 
 		return textureStage[stage].texCoordIndex;
+	}
+
+	void Context::setPerspectiveCorrection(bool perspectiveEnable)
+	{
+		perspectiveCorrection = perspectiveEnable;
+	}
+
+	void Context::setForceWindowed(bool fw)
+	{
+		forceWindowed = fw;
+	}
+
+	void Context::setQuadLayoutEnabled(bool qle)
+	{
+		quadLayoutEnabled = qle;
+	}
+
+	void Context::setVeryEarlyDepthTest(bool vedt)
+	{
+		veryEarlyDepthTest = vedt;
+	}
+
+	void Context::setComplementaryDepthBuffer(bool cdb)
+	{
+		complementaryDepthBuffer = cdb;
+	}
+
+	void Context::setPostBlendSRGB(bool pbsrgb)
+	{
+		postBlendSRGB = pbsrgb;
+	}
+
+	void Context::setTransparencyAntialiasing(TransparencyAntialiasing ta)
+	{
+		transparencyAntialiasing = ta;
+	}
+
+	void Context::setForceClearRegisters(bool fcr)
+	{
+		forceClearRegisters = fcr;
 	}
 
 	bool Context::perspectiveActive()
