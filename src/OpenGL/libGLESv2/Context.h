@@ -57,7 +57,7 @@ class Texture2DRect;
 class TextureExternal;
 class Framebuffer;
 class Renderbuffer;
-class RenderbufferStorage;
+class RenderbufferObject;
 class Colorbuffer;
 class Depthbuffer;
 class StreamingIndexBuffer;
@@ -66,7 +66,7 @@ class DepthStencilbuffer;
 class VertexDataManager;
 class IndexDataManager;
 class Fence;
-class FenceSync;
+class FenceSyncObject;
 class Query;
 class Sampler;
 class VertexArray;
@@ -604,7 +604,7 @@ public:
 
 	void setFramebufferZero(Framebuffer *framebuffer);
 
-	void setRenderbufferStorage(RenderbufferStorage *renderbuffer);
+	void setRenderbufferStorage(RenderbufferObject *renderbuffer);
 
 	void setVertexAttrib(GLuint index, const GLfloat *values);
 	void setVertexAttrib(GLuint index, const GLint *values);
@@ -612,7 +612,7 @@ public:
 
 	Buffer *getBuffer(GLuint handle) const;
 	Fence *getFence(GLuint handle) const;
-	FenceSync *getFenceSync(GLsync handle) const;
+	FenceSyncObject *getFenceSync(GLsync handle) const;
 	Shader *getShader(GLuint handle) const;
 	Program *getProgram(GLuint handle) const;
 	virtual Texture *getTexture(GLuint handle) const;
