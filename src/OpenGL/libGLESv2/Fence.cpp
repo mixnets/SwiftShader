@@ -115,15 +115,15 @@ void Fence::getFenceiv(GLenum pname, GLint *params)
 	}
 }
 
-FenceSync::FenceSync(GLuint name, GLenum condition, GLbitfield flags) : NamedObject(name), mCondition(condition), mFlags(flags)
+FenceSyncObject::FenceSyncObject(GLuint name, GLenum condition, GLbitfield flags) : NamedObject(name), mCondition(condition), mFlags(flags)
 {
 }
 
-FenceSync::~FenceSync()
+FenceSyncObject::~FenceSyncObject()
 {
 }
 
-GLenum FenceSync::clientWait(GLbitfield flags, GLuint64 timeout)
+GLenum FenceSyncObject::clientWait(GLbitfield flags, GLuint64 timeout)
 {
 	// The current assumtion is that no matter where the fence is placed, it is
 	// done by the time it is tested, which is similar to Context::flush(), since
@@ -131,11 +131,11 @@ GLenum FenceSync::clientWait(GLbitfield flags, GLuint64 timeout)
 	return GL_ALREADY_SIGNALED;
 }
 
-void FenceSync::serverWait(GLbitfield flags, GLuint64 timeout)
+void FenceSyncObject::serverWait(GLbitfield flags, GLuint64 timeout)
 {
 }
 
-void FenceSync::getSynciv(GLenum pname, GLsizei *length, GLint *values)
+void FenceSyncObject::getSynciv(GLenum pname, GLsizei *length, GLint *values)
 {
 	switch(pname)
 	{

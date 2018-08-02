@@ -1418,7 +1418,7 @@ void Context::setFramebufferZero(Framebuffer *buffer)
 	mFramebufferNameSpace.insert(0, buffer);
 }
 
-void Context::setRenderbufferStorage(RenderbufferStorage *renderbuffer)
+void Context::setRenderbufferStorage(RenderbufferObject *renderbuffer)
 {
 	Renderbuffer *renderbufferObject = mState.renderbuffer;
 	renderbufferObject->setStorage(renderbuffer);
@@ -1434,7 +1434,7 @@ Fence *Context::getFence(unsigned int handle) const
 	return mFenceNameSpace.find(handle);
 }
 
-FenceSync *Context::getFenceSync(GLsync handle) const
+FenceSyncObject *Context::getFenceSync(GLsync handle) const
 {
 	return mResourceManager->getFenceSync(static_cast<GLuint>(reinterpret_cast<uintptr_t>(handle)));
 }

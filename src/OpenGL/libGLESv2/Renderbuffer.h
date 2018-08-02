@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // Renderbuffer.h: Defines the wrapper class Renderbuffer, as well as the
-// class hierarchy used to store its contents: RenderbufferStorage, Colorbuffer,
+// class hierarchy used to store its contents: RenderbufferObject, Colorbuffer,
 // DepthStencilbuffer, Depthbuffer and Stencilbuffer. Implements GL renderbuffer
 // objects and related functionality. [OpenGL ES 2.0.24] section 4.4.3 page 108.
 
@@ -173,15 +173,15 @@ private:
 	GLint mLevel;
 };
 
-// A class derived from RenderbufferStorage is created whenever glRenderbufferStorage
+// A class derived from RenderbufferObject is created whenever glRenderbufferStorage
 // is called. The specific concrete type depends on whether the internal format is
 // colour depth, stencil or packed depth/stencil.
-class RenderbufferStorage : public RenderbufferInterface
+class RenderbufferObject : public RenderbufferInterface
 {
 public:
-	RenderbufferStorage();
+	RenderbufferObject();
 
-	~RenderbufferStorage() override = 0;
+	~RenderbufferObject() override = 0;
 
 	egl::Image *getRenderTarget() override = 0;
     egl::Image *createSharedImage() override = 0;
@@ -234,13 +234,13 @@ public:
 	GLsizei getSamples() const;
 
 	void setLevel(GLint level);
-	void setStorage(RenderbufferStorage *newStorage);
+	void setStorage(RenderbufferObject *newStorage);
 
 private:
 	RenderbufferInterface *mInstance;
 };
 
-class Colorbuffer : public RenderbufferStorage
+class Colorbuffer : public RenderbufferObject
 {
 public:
 	explicit Colorbuffer(egl::Image *renderTarget);
@@ -256,7 +256,7 @@ private:
 	egl::Image *mRenderTarget;
 };
 
-class DepthStencilbuffer : public RenderbufferStorage
+class DepthStencilbuffer : public RenderbufferObject
 {
 public:
 	explicit DepthStencilbuffer(egl::Image *depthStencil);
