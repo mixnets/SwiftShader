@@ -27,6 +27,8 @@
 
 namespace sw
 {
+	using namespace rr;
+
 	extern bool forceWindowed;
 
 	FrameBuffer::Cursor FrameBuffer::cursor = {};
