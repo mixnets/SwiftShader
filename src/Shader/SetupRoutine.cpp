@@ -22,6 +22,8 @@
 
 namespace sw
 {
+	using namespace rr;
+
 	extern bool complementaryDepthBuffer;
 	extern TranscendentalPrecision logPrecision;
 	extern bool leadingVertexFirst;

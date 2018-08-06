@@ -1719,14 +1719,17 @@ if(${REACTOR_BACKEND} STREQUAL "Subzero")
         ${SOURCE_DIR}/Reactor/Optimizer.cpp
         ${SOURCE_DIR}/Reactor/Nucleus.hpp
         ${SOURCE_DIR}/Reactor/Routine.hpp
+		${SOURCE_DIR}/Reactor/Debug.cpp
+		${SOURCE_DIR}/Reactor/Debug.hpp
+		${SOURCE_DIR}/Reactor/Memory.cpp
+		${SOURCE_DIR}/Reactor/Memory.hpp
     )
 
     set(SUBZERO_INCLUDE_DIR
-        ${SOURCE_DIR}/
         ${SUBZERO_DIR}/
         ${SUBZERO_LLVM_DIR}/include/
         ${SUBZERO_DIR}/pnacl-llvm/include/
-     )
+    )
 
     if(WIN32)
         list(APPEND SUBZERO_INCLUDE_DIR ${SUBZERO_LLVM_DIR}/build/Windows/include/)
@@ -1813,6 +1816,12 @@ set(REACTOR_LLVM_LIST
     ${SOURCE_DIR}/Reactor/LLVMRoutine.hpp
     ${SOURCE_DIR}/Reactor/LLVMRoutineManager.cpp
     ${SOURCE_DIR}/Reactor/LLVMRoutineManager.hpp
+    ${SOURCE_DIR}/Reactor/CPUID.cpp
+    ${SOURCE_DIR}/Reactor/CPUID.hpp
+    ${SOURCE_DIR}/Reactor/Debug.cpp
+    ${SOURCE_DIR}/Reactor/Debug.hpp
+    ${SOURCE_DIR}/Reactor/Memory.cpp
+    ${SOURCE_DIR}/Reactor/Memory.hpp
 )
 
 file(GLOB_RECURSE EGL_LIST
@@ -2109,26 +2118,26 @@ if(BUILD_SAMPLES)
     endif()
 endif()
 
-if(BUILD_TESTS AND ${REACTOR_BACKEND} STREQUAL "Subzero")
-    set(SUBZERO_TEST_LIST
+if(BUILD_TESTS)
+    set(REACTOR_UNIT_TESTS_LIST
         ${SOURCE_DIR}/Reactor/Main.cpp
         ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/src/gtest-all.cc
     )
 
-    set(SUBZERO_TEST_INCLUDE_DIR
+    set(REACTOR_UNIT_TESTS_INCLUDE_DIR
         ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/include
         ${CMAKE_SOURCE_DIR}/third_party/googletest/googletest/
     )
 
-    add_executable(SubzeroTest ${SUBZERO_TEST_LIST})
-    set_target_properties(SubzeroTest PROPERTIES
-        INCLUDE_DIRECTORIES "${SUBZERO_TEST_INCLUDE_DIR}"
+    add_executable(ReactorUnitTests ${REACTOR_UNIT_TESTS_LIST})
+    set_target_properties(ReactorUnitTests PROPERTIES
+        INCLUDE_DIRECTORIES "${REACTOR_UNIT_TESTS_INCLUDE_DIR}"
         FOLDER "Tests"
     )
     if(WIN32)
-        target_link_libraries(SubzeroTest ReactorSubzero)
+        target_link_libraries(ReactorUnitTests ${Reactor})
     else()
-        target_link_libraries(SubzeroTest ReactorSubzero pthread dl)
+        target_link_libraries(ReactorUnitTests ${Reactor} pthread dl)
     endif()
 endif()
 
