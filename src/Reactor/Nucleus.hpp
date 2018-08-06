@@ -20,12 +20,20 @@
 #include <cstdint>
 #include <vector>
 
+namespace Ice
+{
+	class Operand;
+	class InstSwitch;
+	class CfgNode;
+}
+
 namespace r3
 {
 	class Type;
-	class Value;
-	class SwitchCases;
-	class BasicBlock;
+	using Value = Ice::Operand;
+	using SwitchCases = Ice::InstSwitch;
+	using BasicBlock = Ice::CfgNode;
+
 	class Routine;
 
 	enum Optimization
