@@ -133,22 +133,18 @@ namespace r3
 	enum EmulatedType
 	{
 		EmulatedShift = 16,
-		EmulatedV2 = 2 << EmulatedShift,
-		EmulatedV4 = 4 << EmulatedShift,
-		EmulatedV8 = 8 << EmulatedShift,
-		EmulatedBits = EmulatedV2 | EmulatedV4 | EmulatedV8,
+		EmulatedVec2 = 2 << EmulatedShift,
+		EmulatedVec4 = 4 << EmulatedShift,
+		EmulatedVec8 = 8 << EmulatedShift,
+		EmulatedBits = EmulatedVec2 | EmulatedVec4 | EmulatedVec8,
 
-		Type_v2i32 = Ice::IceType_v4i32 | EmulatedV2,
-		Type_v4i16 = Ice::IceType_v8i16 | EmulatedV4,
-		Type_v2i16 = Ice::IceType_v8i16 | EmulatedV2,
-		Type_v8i8 =  Ice::IceType_v16i8 | EmulatedV8,
-		Type_v4i8 =  Ice::IceType_v16i8 | EmulatedV4,
-		Type_v2f32 = Ice::IceType_v4f32 | EmulatedV2,
+		Type_v2i32 = Ice::IceType_v4i32 | EmulatedVec2,
+		Type_v4i16 = Ice::IceType_v8i16 | EmulatedVec4,
+		Type_v2i16 = Ice::IceType_v8i16 | EmulatedVec2,
+		Type_v8i8 =  Ice::IceType_v16i8 | EmulatedVec8,
+		Type_v4i8 =  Ice::IceType_v16i8 | EmulatedVec4,
+		Type_v2f32 = Ice::IceType_v4f32 | EmulatedVec2,
 	};
-
-	class Value : public Ice::Operand {};
-	class SwitchCases : public Ice::InstSwitch {};
-	class BasicBlock : public Ice::CfgNode {};
 
 	Ice::Type T(Type *t)
 	{
@@ -164,16 +160,6 @@ namespace r3
 	Type *T(EmulatedType t)
 	{
 		return reinterpret_cast<Type*>(t);
-	}
-
-	Value *V(Ice::Operand *v)
-	{
-		return reinterpret_cast<Value*>(v);
-	}
-
-	BasicBlock *B(Ice::CfgNode *b)
-	{
-		return reinterpret_cast<BasicBlock*>(b);
 	}
 
 	static size_t typeSize(Type *type)
@@ -446,7 +432,7 @@ namespace r3
 		ELFMemoryStreamer &operator=(const ELFMemoryStreamer &) = delete;
 
 	public:
-		ELFMemoryStreamer() : Routine(), entry(nullptr)
+		ELFMemoryStreamer() : Routine()
 		{
 			position = 0;
 			buffer.reserve(0x1000);
@@ -512,7 +498,7 @@ namespace r3
 		}
 
 	private:
-		void *entry;
+		void *entry = nullptr;
 		std::vector<uint8_t, ExecutableAllocator<uint8_t>> buffer;
 		std::size_t position;
 
@@ -630,17 +616,17 @@ namespace r3
 		auto alloca = Ice::InstAlloca::create(::function, address, bytes, typeSize);
 		::function->getEntryNode()->getInsts().push_front(alloca);
 
-		return V(address);
+		return address;
 	}
 
 	BasicBlock *Nucleus::createBasicBlock()
 	{
-		return B(::function->makeNode());
+		return ::function->makeNode();
 	}
 
 	BasicBlock *Nucleus::getInsertBlock()
 	{
-		return B(::basicBlock);
+		return ::basicBlock;
 	}
 
 	void Nucleus::setInsertBlock(BasicBlock *basicBlock)
@@ -668,7 +654,7 @@ namespace r3
 
 	Value *Nucleus::getArgument(unsigned int index)
 	{
-		return V(::function->getArgs()[index]);
+		return ::function->getArgs()[index];
 	}
 
 	void Nucleus::createRetVoid()
@@ -722,7 +708,7 @@ namespace r3
 		Ice::InstArithmetic *arithmetic = Ice::InstArithmetic::create(::function, op, result, swapOperands ? rhs : lhs, swapOperands ? lhs : rhs);
 		::basicBlock->appendInst(arithmetic);
 
-		return V(result);
+		return result;
 	}
 
 	Value *Nucleus::createAdd(Value *lhs, Value *rhs)
@@ -825,7 +811,7 @@ namespace r3
 		double c[4] = {-0.0, -0.0, -0.0, -0.0};
 		Value *negativeZero = Ice::isVectorType(v->getType()) ?
 		                      createConstantVector(c, T(v->getType())) :
-		                      V(::context->getConstantFloat(-0.0f));
+		                      ::context->getConstantFloat(-0.0f);
 
 		return createFSub(negativeZero, v);
 	}
@@ -834,7 +820,7 @@ namespace r3
 	{
 		if(Ice::isScalarIntegerType(v->getType()))
 		{
-			return createXor(v, V(::context->getConstantInt(v->getType(), -1)));
+			return createXor(v, ::context->getConstantInt(v->getType(), -1));
 		}
 		else   // Vector
 		{
@@ -894,7 +880,7 @@ namespace r3
 			::basicBlock->appendInst(load);
 		}
 
-		return V(result);
+		return result;
 	}
 
 	Value *Nucleus::createStore(Value *value, Value *ptr, Type *type, bool isVolatile, unsigned int align)
@@ -922,7 +908,7 @@ namespace r3
 					auto bitcast = Ice::InstCast::create(::function, Ice::InstCast::Bitcast, vector, value);
 					::basicBlock->appendInst(bitcast);
 
-					RValue<Int4> v(V(vector));
+					RValue<Int4> v(vector);
 
 					auto pointer = RValue<Pointer<Byte>>(ptr);
 					Int x = Extract(v, 0);
@@ -934,7 +920,7 @@ namespace r3
 					auto bitcast = Ice::InstCast::create(::function, Ice::InstCast::Bitcast, vector, value);
 					::basicBlock->appendInst(bitcast);
 
-					RValue<Int4> v(V(vector));
+					RValue<Int4> v(vector);
 
 					auto pointer = RValue<Pointer<Byte>>(ptr);
 					Int x = Extract(v, 0);
@@ -1018,7 +1004,7 @@ namespace r3
 		Ice::InstCast *cast = Ice::InstCast::create(::function, op, result, v);
 		::basicBlock->appendInst(cast);
 
-		return V(result);
+		return result;
 	}
 
 	Value *Nucleus::createTrunc(Value *v, Type *destType)
@@ -1088,7 +1074,7 @@ namespace r3
 		auto cmp = Ice::InstIcmp::create(::function, condition, result, lhs, rhs);
 		::basicBlock->appendInst(cmp);
 
-		return V(result);
+		return result;
 	}
 
 	Value *Nucleus::createICmpEQ(Value *lhs, Value *rhs)
@@ -1150,7 +1136,7 @@ namespace r3
 		auto cmp = Ice::InstFcmp::create(::function, condition, result, lhs, rhs);
 		::basicBlock->appendInst(cmp);
 
-		return V(result);
+		return result;
 	}
 
 	Value *Nucleus::createFCmpOEQ(Value *lhs, Value *rhs)
@@ -1229,7 +1215,7 @@ namespace r3
 		auto extract = Ice::InstExtractElement::create(::function, result, vector, ::context->getConstantInt32(index));
 		::basicBlock->appendInst(extract);
 
-		return V(result);
+		return result;
 	}
 
 	Value *Nucleus::createInsertElement(Value *vector, Value *element, int index)
@@ -1238,7 +1224,7 @@ namespace r3
 		auto insert = Ice::InstInsertElement::create(::function, result, vector, element, ::context->getConstantInt32(index));
 		::basicBlock->appendInst(insert);
 
-		return V(result);
+		return result;
 	}
 
 	Value *Nucleus::createShuffleVector(Value *V1, Value *V2, const int *select)
@@ -1256,7 +1242,7 @@ namespace r3
 
 		::basicBlock->appendInst(shuffle);
 
-		return V(result);
+		return result;
 	}
 
 	Value *Nucleus::createSelect(Value *C, Value *ifTrue, Value *ifFalse)
@@ -1267,7 +1253,7 @@ namespace r3
 		auto *select = Ice::InstSelect::create(::function, result, C, ifTrue, ifFalse);
 		::basicBlock->appendInst(select);
 
-		return V(result);
+		return result;
 	}
 
 	SwitchCases *Nucleus::createSwitch(Value *control, BasicBlock *defaultBranch, unsigned numCases)
@@ -1339,53 +1325,53 @@ namespace r3
 		}
 		else
 		{
-			return V(::context->getConstantZero(T(Ty)));
+			return ::context->getConstantZero(T(Ty));
 		}
 	}
 
 	Value *Nucleus::createConstantLong(int64_t i)
 	{
-		return V(::context->getConstantInt64(i));
+		return ::context->getConstantInt64(i);
 	}
 
 	Value *Nucleus::createConstantInt(int i)
 	{
-		return V(::context->getConstantInt32(i));
+		return ::context->getConstantInt32(i);
 	}
 
 	Value *Nucleus::createConstantInt(unsigned int i)
 	{
-		return V(::context->getConstantInt32(i));
+		return ::context->getConstantInt32(i);
 	}
 
 	Value *Nucleus::createConstantBool(bool b)
 	{
-		return V(::context->getConstantInt1(b));
+		return ::context->getConstantInt1(b);
 	}
 
 	Value *Nucleus::createConstantByte(signed char i)
 	{
-		return V(::context->getConstantInt8(i));
+		return ::context->getConstantInt8(i);
 	}
 
 	Value *Nucleus::createConstantByte(unsigned char i)
 	{
-		return V(::context->getConstantInt8(i));
+		return ::context->getConstantInt8(i);
 	}
 
 	Value *Nucleus::createConstantShort(short i)
 	{
-		return V(::context->getConstantInt16(i));
+		return ::context->getConstantInt16(i);
 	}
 
 	Value *Nucleus::createConstantShort(unsigned short i)
 	{
-		return V(::context->getConstantInt16(i));
+		return ::context->getConstantInt16(i);
 	}
 
 	Value *Nucleus::createConstantFloat(float x)
 	{
-		return V(::context->getConstantFloat(x));
+		return ::context->getConstantFloat(x);
 	}
 
 	Value *Nucleus::createNullPointer(Type *Ty)
@@ -1492,7 +1478,7 @@ namespace r3
 		auto load = Ice::InstLoad::create(::function, result, ptr, alignment);
 		::basicBlock->appendInst(load);
 
-		return V(result);
+		return result;
 	}
 
 	Value *Nucleus::createConstantVector(const double *constants, Type *type)
@@ -2649,12 +2635,12 @@ namespace r3
 
 //	RValue<Byte8> operator<<(RValue<Byte8> lhs, unsigned char rhs)
 //	{
-//		return RValue<Byte8>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
+//		return RValue<Byte8>(Nucleus::createShl(lhs.value, ::context->getConstantInt32(rhs))));
 //	}
 
 //	RValue<Byte8> operator>>(RValue<Byte8> lhs, unsigned char rhs)
 //	{
-//		return RValue<Byte8>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
+//		return RValue<Byte8>(Nucleus::createLShr(lhs.value, ::context->getConstantInt32(rhs))));
 //	}
 
 	RValue<Byte8> operator+=(Byte8 &lhs, RValue<Byte8> rhs)
@@ -2763,7 +2749,7 @@ namespace r3
 			paddusb->addArg(y.value);
 			::basicBlock->appendInst(paddusb);
 
-			return RValue<Byte8>(V(result));
+			return RValue<Byte8>(result);
 		}
 	}
 
@@ -2793,7 +2779,7 @@ namespace r3
 			psubusw->addArg(y.value);
 			::basicBlock->appendInst(psubusw);
 
-			return RValue<Byte8>(V(result));
+			return RValue<Byte8>(result);
 		}
 	}
 
@@ -2856,7 +2842,7 @@ namespace r3
 
 				return As<SByte8>(hi | lo);
 			#else
-				return RValue<SByte8>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
+				return RValue<SByte8>(Nucleus::createAShr(lhs.value, ::context->getConstantInt32(rhs))));
 			#endif
 		}
 	}
@@ -2877,7 +2863,7 @@ namespace r3
 			movmsk->addArg(x.value);
 			::basicBlock->appendInst(movmsk);
 
-			return RValue<Int>(V(result)) & 0xFF;
+			return RValue<Int>(result) & 0xFF;
 		}
 	}
 
@@ -2899,7 +2885,7 @@ namespace r3
 	SByte8::SByte8(uint8_t x0, uint8_t x1, uint8_t x2, uint8_t x3, uint8_t x4, uint8_t x5, uint8_t x6, uint8_t x7)
 	{
 		int64_t constantVector[8] = { x0, x1, x2, x3, x4, x5, x6, x7 };
-		Value *vector = V(Nucleus::createConstantVector(constantVector, getType()));
+		Value *vector = Nucleus::createConstantVector(constantVector, getType());
 
 		storeValue(Nucleus::createBitCast(vector, getType()));
 	}
@@ -2986,12 +2972,12 @@ namespace r3
 
 //	RValue<SByte8> operator<<(RValue<SByte8> lhs, unsigned char rhs)
 //	{
-//		return RValue<SByte8>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
+//		return RValue<SByte8>(Nucleus::createShl(lhs.value, ::context->getConstantInt32(rhs))));
 //	}
 
 //	RValue<SByte8> operator>>(RValue<SByte8> lhs, unsigned char rhs)
 //	{
-//		return RValue<SByte8>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
+//		return RValue<SByte8>(Nucleus::createAShr(lhs.value, ::context->getConstantInt32(rhs))));
 //	}
 
 	RValue<SByte8> operator+=(SByte8 &lhs, RValue<SByte8> rhs)
@@ -3090,7 +3076,7 @@ namespace r3
 			paddsb->addArg(y.value);
 			::basicBlock->appendInst(paddsb);
 
-			return RValue<SByte8>(V(result));
+			return RValue<SByte8>(result);
 		}
 	}
 
@@ -3120,7 +3106,7 @@ namespace r3
 			psubsb->addArg(y.value);
 			::basicBlock->appendInst(psubsb);
 
-			return RValue<SByte8>(V(result));
+			return RValue<SByte8>(result);
 		}
 	}
 
@@ -3153,7 +3139,7 @@ namespace r3
 			movmsk->addArg(x.value);
 			::basicBlock->appendInst(movmsk);
 
-			return RValue<Int>(V(result)) & 0xFF;
+			return RValue<Int>(result) & 0xFF;
 		}
 	}
 
@@ -3417,7 +3403,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<Short4>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<Short4>(Nucleus::createShl(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -3435,7 +3421,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<Short4>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<Short4>(Nucleus::createAShr(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -3520,7 +3506,7 @@ namespace r3
 		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
 		::basicBlock->appendInst(select);
 
-		return RValue<Short4>(V(result));
+		return RValue<Short4>(result);
 	}
 
 	RValue<Short4> Min(RValue<Short4> x, RValue<Short4> y)
@@ -3533,7 +3519,7 @@ namespace r3
 		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
 		::basicBlock->appendInst(select);
 
-		return RValue<Short4>(V(result));
+		return RValue<Short4>(result);
 	}
 
 	RValue<Short> SaturateSigned(RValue<Int> x)
@@ -3563,7 +3549,7 @@ namespace r3
 			paddsw->addArg(y.value);
 			::basicBlock->appendInst(paddsw);
 
-			return RValue<Short4>(V(result));
+			return RValue<Short4>(result);
 		}
 	}
 
@@ -3589,7 +3575,7 @@ namespace r3
 			psubsw->addArg(y.value);
 			::basicBlock->appendInst(psubsw);
 
-			return RValue<Short4>(V(result));
+			return RValue<Short4>(result);
 		}
 	}
 
@@ -3615,7 +3601,7 @@ namespace r3
 			pmulhw->addArg(y.value);
 			::basicBlock->appendInst(pmulhw);
 
-			return RValue<Short4>(V(result));
+			return RValue<Short4>(result);
 		}
 	}
 
@@ -3639,7 +3625,7 @@ namespace r3
 			pmaddwd->addArg(y.value);
 			::basicBlock->appendInst(pmaddwd);
 
-			return As<Int2>(V(result));
+			return As<Int2>(result);
 		}
 	}
 
@@ -3669,7 +3655,7 @@ namespace r3
 			pack->addArg(y.value);
 			::basicBlock->appendInst(pack);
 
-			return As<SByte8>(Swizzle(As<Int4>(V(result)), 0x88));
+			return As<SByte8>(Swizzle(As<Int4>(result), 0x88));
 		}
 	}
 
@@ -3699,7 +3685,7 @@ namespace r3
 			pack->addArg(y.value);
 			::basicBlock->appendInst(pack);
 
-			return As<Byte8>(Swizzle(As<Int4>(V(result)), 0x88));
+			return As<Byte8>(Swizzle(As<Int4>(result), 0x88));
 		}
 	}
 
@@ -3938,7 +3924,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<UShort4>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<UShort4>(Nucleus::createShl(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -3956,7 +3942,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<UShort4>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<UShort4>(Nucleus::createLShr(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -3985,7 +3971,7 @@ namespace r3
 		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
 		::basicBlock->appendInst(select);
 
-		return RValue<UShort4>(V(result));
+		return RValue<UShort4>(result);
 	}
 
 	RValue<UShort4> Min(RValue<UShort4> x, RValue<UShort4> y)
@@ -3998,7 +3984,7 @@ namespace r3
 		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
 		::basicBlock->appendInst(select);
 
-		return RValue<UShort4>(V(result));
+		return RValue<UShort4>(result);
 	}
 
 	RValue<UShort> SaturateUnsigned(RValue<Int> x)
@@ -4028,7 +4014,7 @@ namespace r3
 			paddusw->addArg(y.value);
 			::basicBlock->appendInst(paddusw);
 
-			return RValue<UShort4>(V(result));
+			return RValue<UShort4>(result);
 		}
 	}
 
@@ -4054,7 +4040,7 @@ namespace r3
 			psubusw->addArg(y.value);
 			::basicBlock->appendInst(psubusw);
 
-			return RValue<UShort4>(V(result));
+			return RValue<UShort4>(result);
 		}
 	}
 
@@ -4080,13 +4066,13 @@ namespace r3
 			pmulhuw->addArg(y.value);
 			::basicBlock->appendInst(pmulhuw);
 
-			return RValue<UShort4>(V(result));
+			return RValue<UShort4>(result);
 		}
 	}
 
 	RValue<UShort4> Average(RValue<UShort4> x, RValue<UShort4> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(V(nullptr));
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort4>(nullptr);
 	}
 
 	Type *UShort4::getType()
@@ -4163,7 +4149,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<Short8>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<Short8>(Nucleus::createShl(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -4185,13 +4171,13 @@ namespace r3
 		}
 		else
 		{
-			return RValue<Short8>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<Short8>(Nucleus::createAShr(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
 	RValue<Int4> MulAdd(RValue<Short8> x, RValue<Short8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Int4>(V(nullptr));
+		assert(false && "UNIMPLEMENTED"); return RValue<Int4>(nullptr);
 	}
 
 	RValue<Int4> Abs(RValue<Int4> x)
@@ -4202,7 +4188,7 @@ namespace r3
 
 	RValue<Short8> MulHigh(RValue<Short8> x, RValue<Short8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Short8>(V(nullptr));
+		assert(false && "UNIMPLEMENTED"); return RValue<Short8>(nullptr);
 	}
 
 	Type *Short8::getType()
@@ -4297,7 +4283,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<UShort8>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<UShort8>(Nucleus::createShl(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -4319,7 +4305,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<UShort8>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<UShort8>(Nucleus::createLShr(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -4345,18 +4331,18 @@ namespace r3
 
 	RValue<UShort8> Swizzle(RValue<UShort8> x, char select0, char select1, char select2, char select3, char select4, char select5, char select6, char select7)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(V(nullptr));
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(nullptr);
 	}
 
 	RValue<UShort8> MulHigh(RValue<UShort8> x, RValue<UShort8> y)
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(V(nullptr));
+		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(nullptr);
 	}
 
 	// FIXME: Implement as Shuffle(x, y, Select(i0, ..., i16)) and Shuffle(x, y, SELECT_PACK_REPEAT(element))
 //	RValue<UShort8> PackRepeat(RValue<Byte16> x, RValue<Byte16> y, int element)
 //	{
-//		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(V(nullptr));
+//		assert(false && "UNIMPLEMENTED"); return RValue<UShort8>(nullptr);
 //	}
 
 	Type *UShort8::getType()
@@ -4708,7 +4694,7 @@ namespace r3
 			nearbyint->addArg(cast.value);
 			::basicBlock->appendInst(nearbyint);
 
-			return RValue<Int>(V(result));
+			return RValue<Int>(result);
 		}
 	}
 
@@ -5112,7 +5098,7 @@ namespace r3
 
 //	RValue<UInt> RoundUInt(RValue<Float> cast)
 //	{
-//		assert(false && "UNIMPLEMENTED"); return RValue<UInt>(V(nullptr));
+//		assert(false && "UNIMPLEMENTED"); return RValue<UInt>(nullptr);
 //	}
 
 	Type *UInt::getType()
@@ -5245,7 +5231,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<Int2>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<Int2>(Nucleus::createShl(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -5261,7 +5247,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<Int2>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<Int2>(Nucleus::createAShr(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -5466,7 +5452,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<UInt2>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<UInt2>(Nucleus::createShl(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -5482,7 +5468,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<UInt2>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<UInt2>(Nucleus::createLShr(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -5568,11 +5554,11 @@ namespace r3
 		Value *e;
 		int swizzle[16] = {0, 16, 1, 17, 2, 18, 3, 19, 4, 20, 5, 21, 6, 22, 7, 23};
 		Value *b = Nucleus::createBitCast(a, Byte16::getType());
-		Value *c = Nucleus::createShuffleVector(b, V(Nucleus::createNullValue(Byte16::getType())), swizzle);
+		Value *c = Nucleus::createShuffleVector(b, Nucleus::createNullValue(Byte16::getType()), swizzle);
 
 		int swizzle2[8] = {0, 8, 1, 9, 2, 10, 3, 11};
 		Value *d = Nucleus::createBitCast(c, Short8::getType());
-		e = Nucleus::createShuffleVector(d, V(Nucleus::createNullValue(Short8::getType())), swizzle2);
+		e = Nucleus::createShuffleVector(d, Nucleus::createNullValue(Short8::getType()), swizzle2);
 
 		Value *f = Nucleus::createBitCast(e, Int4::getType());
 		storeValue(f);
@@ -5782,7 +5768,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<Int4>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<Int4>(Nucleus::createShl(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -5800,7 +5786,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<Int4>(Nucleus::createAShr(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<Int4>(Nucleus::createAShr(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -5919,7 +5905,7 @@ namespace r3
 		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
 		::basicBlock->appendInst(select);
 
-		return RValue<Int4>(V(result));
+		return RValue<Int4>(result);
 	}
 
 	RValue<Int4> Min(RValue<Int4> x, RValue<Int4> y)
@@ -5932,7 +5918,7 @@ namespace r3
 		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
 		::basicBlock->appendInst(select);
 
-		return RValue<Int4>(V(result));
+		return RValue<Int4>(result);
 	}
 
 	RValue<Int4> RoundInt(RValue<Float4> cast)
@@ -5951,7 +5937,7 @@ namespace r3
 			nearbyint->addArg(cast.value);
 			::basicBlock->appendInst(nearbyint);
 
-			return RValue<Int4>(V(result));
+			return RValue<Int4>(result);
 		}
 	}
 
@@ -5981,7 +5967,7 @@ namespace r3
 			pack->addArg(y.value);
 			::basicBlock->appendInst(pack);
 
-			return RValue<Short8>(V(result));
+			return RValue<Short8>(result);
 		}
 	}
 
@@ -6007,7 +5993,7 @@ namespace r3
 			pack->addArg(y.value);
 			::basicBlock->appendInst(pack);
 
-			return RValue<UShort8>(V(result));
+			return RValue<UShort8>(result);
 		}
 	}
 
@@ -6037,7 +6023,7 @@ namespace r3
 			movmsk->addArg(x.value);
 			::basicBlock->appendInst(movmsk);
 
-			return RValue<Int>(V(result));
+			return RValue<Int>(result);
 		}
 	}
 
@@ -6226,7 +6212,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<UInt4>(Nucleus::createShl(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<UInt4>(Nucleus::createShl(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -6244,7 +6230,7 @@ namespace r3
 		}
 		else
 		{
-			return RValue<UInt4>(Nucleus::createLShr(lhs.value, V(::context->getConstantInt32(rhs))));
+			return RValue<UInt4>(Nucleus::createLShr(lhs.value, ::context->getConstantInt32(rhs)));
 		}
 	}
 
@@ -6363,7 +6349,7 @@ namespace r3
 		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
 		::basicBlock->appendInst(select);
 
-		return RValue<UInt4>(V(result));
+		return RValue<UInt4>(result);
 	}
 
 	RValue<UInt4> Min(RValue<UInt4> x, RValue<UInt4> y)
@@ -6376,7 +6362,7 @@ namespace r3
 		auto select = Ice::InstSelect::create(::function, result, condition, y.value, x.value);
 		::basicBlock->appendInst(select);
 
-		return RValue<UInt4>(V(result));
+		return RValue<UInt4>(result);
 	}
 
 	Type *UInt4::getType()
@@ -6558,7 +6544,7 @@ namespace r3
 		sqrt->addArg(x.value);
 		::basicBlock->appendInst(sqrt);
 
-		return RValue<Float>(V(result));
+		return RValue<Float>(result);
 	}
 
 	RValue<Float> Round(RValue<Float> x)
@@ -6818,7 +6804,7 @@ namespace r3
 	{
 		Value *vector = Nucleus::createBitCast(x.value, Int4::getType());
 		int64_t constantVector[4] = {0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF};
-		Value *result = Nucleus::createAnd(vector, V(Nucleus::createConstantVector(constantVector, Int4::getType())));
+		Value *result = Nucleus::createAnd(vector, Nucleus::createConstantVector(constantVector, Int4::getType()));
 
 		return As<Float4>(result);
 	}
@@ -6833,7 +6819,7 @@ namespace r3
 		auto select = Ice::InstSelect::create(::function, result, condition, x.value, y.value);
 		::basicBlock->appendInst(select);
 
-		return RValue<Float4>(V(result));
+		return RValue<Float4>(result);
 	}
 
 	RValue<Float4> Min(RValue<Float4> x, RValue<Float4> y)
@@ -6846,7 +6832,7 @@ namespace r3
 		auto select = Ice::InstSelect::create(::function, result, condition, x.value, y.value);
 		::basicBlock->appendInst(select);
 
-		return RValue<Float4>(V(result));
+		return RValue<Float4>(result);
 	}
 
 	RValue<Float4> Rcp_pp(RValue<Float4> x, bool exactAtPow2)
@@ -6880,7 +6866,7 @@ namespace r3
 			sqrt->addArg(x.value);
 			::basicBlock->appendInst(sqrt);
 
-			return RValue<Float4>(V(result));
+			return RValue<Float4>(result);
 		}
 	}
 
@@ -6949,7 +6935,7 @@ namespace r3
 			movmsk->addArg(x.value);
 			::basicBlock->appendInst(movmsk);
 
-			return RValue<Int>(V(result));
+			return RValue<Int>(result);
 		}
 	}
 
@@ -7010,7 +6996,7 @@ namespace r3
 			round->addArg(::context->getConstantInt32(0));
 			::basicBlock->appendInst(round);
 
-			return RValue<Float4>(V(result));
+			return RValue<Float4>(result);
 		}
 		else
 		{
@@ -7030,7 +7016,7 @@ namespace r3
 			round->addArg(::context->getConstantInt32(3));
 			::basicBlock->appendInst(round);
 
-			return RValue<Float4>(V(result));
+			return RValue<Float4>(result);
 		}
 		else
 		{
@@ -7070,7 +7056,7 @@ namespace r3
 			round->addArg(::context->getConstantInt32(1));
 			::basicBlock->appendInst(round);
 
-			return RValue<Float4>(V(result));
+			return RValue<Float4>(result);
 		}
 		else
 		{
@@ -7090,7 +7076,7 @@ namespace r3
 			round->addArg(::context->getConstantInt32(2));
 			::basicBlock->appendInst(round);
 
-			return RValue<Float4>(V(result));
+			return RValue<Float4>(result);
 		}
 		else
 		{
@@ -7185,6 +7171,6 @@ namespace r3
 
 	RValue<Long> Ticks()
 	{
-		assert(false && "UNIMPLEMENTED"); return RValue<Long>(V(nullptr));
+		assert(false && "UNIMPLEMENTED"); return RValue<Long>(nullptr);
 	}
 }
