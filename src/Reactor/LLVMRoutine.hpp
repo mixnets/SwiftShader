@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef sw_LLVMRoutine_hpp
-#define sw_LLVMRoutine_hpp
+#ifndef r3_LLVMRoutine_hpp
+#define r3_LLVMRoutine_hpp
 
 #include "Routine.hpp"
 
-namespace sw
+namespace r3
 {
 	class LLVMRoutineManager;
 
@@ -50,4 +50,4 @@ namespace sw
 	};
 }
 
-#endif   // sw_LLVMRoutine_hpp
+#endif   // r3_LLVMRoutine_hpp

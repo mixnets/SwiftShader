@@ -21,6 +21,8 @@
 
 namespace sw
 {
+	using namespace r3;
+
 	class Rasterizer : public Function<Void(Pointer<Byte>, Int, Int, Pointer<Byte>)>
 	{
 	public:

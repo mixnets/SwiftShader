@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef sw_LLVMRoutineManager_hpp
-#define sw_LLVMRoutineManager_hpp
+#ifndef r3_LLVMRoutineManager_hpp
+#define r3_LLVMRoutineManager_hpp
 
 #include "llvm/GlobalValue.h"
 #include "llvm/ExecutionEngine/JITMemoryManager.h"
 
-namespace sw
+namespace r3
 {
 	class LLVMRoutine;
 
@@ -54,4 +54,4 @@ namespace sw
 	};
 }
 
-#endif   // sw_LLVMRoutineManager_hpp
+#endif   // r3_LLVMRoutineManager_hpp

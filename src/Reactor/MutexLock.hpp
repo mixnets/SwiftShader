@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef sw_MutexLock_hpp
-#define sw_MutexLock_hpp
+#ifndef r3_MutexLock_hpp
+#define r3_MutexLock_hpp
 
 #include "Thread.hpp"
 
@@ -22,7 +22,7 @@
 // at the same time it's best to just have the scheduler overhead.
 #include <pthread.h>
 
-namespace sw
+namespace r3
 {
 	class MutexLock
 	{
@@ -61,7 +61,7 @@ namespace sw
 
 #include <atomic>
 
-namespace sw
+namespace r3
 {
 	class BackoffLock
 	{
@@ -174,21 +174,4 @@ namespace sw
 
 #endif   // !__linux__
 
-class LockGuard
-{
-public:
-	explicit LockGuard(sw::MutexLock &mutex) : mutex(mutex)
-	{
-		mutex.lock();
-	}
-
-	~LockGuard()
-	{
-		mutex.unlock();
-	}
-
-protected:
-	sw::MutexLock &mutex;
-};
-
-#endif   // sw_MutexLock_hpp
+#endif   // r3_MutexLock_hpp

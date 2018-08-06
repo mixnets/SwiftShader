@@ -12,27 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef r3_Routine_hpp
-#define r3_Routine_hpp
+#ifndef r3_Memory_hpp
+#define r3_Memory_hpp
+
+#include <stddef.h>
+#include <stdint.h>
 
 namespace r3
 {
-	class Routine
-	{
-	public:
-		Routine();
+size_t memoryPageSize();
 
-		virtual ~Routine();
+void *allocate(size_t bytes, size_t alignment = 16);
+void deallocate(void *memory);
 
-		virtual const void *getEntry() = 0;
+void *allocateExecutable(size_t bytes);   // Allocates memory that can be made executable using markExecutable()
+void markExecutable(void *memory, size_t bytes);
+void deallocateExecutable(void *memory, size_t bytes);
 
-		// Reference counting
-		void bind();
-		void unbind();
-
-	private:
-		volatile int bindCount;
-	};
+void clear(uint16_t *memory, uint16_t element, size_t count);
+void clear(uint32_t *memory, uint32_t element, size_t count);
 }
 
-#endif   // r3_Routine_hpp
+#endif   // r3_Memory_hpp

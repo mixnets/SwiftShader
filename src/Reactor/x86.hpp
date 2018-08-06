@@ -17,7 +17,7 @@
 
 #include "Reactor.hpp"
 
-namespace sw
+namespace r3
 {
 	namespace x86
 	{
@@ -106,4 +106,4 @@ namespace sw
 	}
 }
 
-#endif   // sw_x86_hpp
+#endif   // r3_x86_hpp

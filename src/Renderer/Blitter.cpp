@@ -21,6 +21,8 @@
 
 namespace sw
 {
+	using namespace r3;
+
 	Blitter::Blitter()
 	{
 		blitCache = new RoutineCache<State>(1024);

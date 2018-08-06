@@ -21,6 +21,8 @@
 
 namespace sw
 {
+	using namespace r3;
+
 	class Surface;
 
 	struct BlitState

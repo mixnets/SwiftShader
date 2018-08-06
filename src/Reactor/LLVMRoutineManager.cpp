@@ -16,11 +16,11 @@
 
 #include "LLVMRoutine.hpp"
 #include "llvm/Function.h"
-#include "../Common/Memory.hpp"
-#include "../Common/Thread.hpp"
-#include "../Common/Debug.hpp"
+#include "Memory.hpp"
+#include "Thread.hpp"
+#include "Debug.hpp"
 
-namespace sw
+namespace r3
 {
 	using namespace llvm;
 
@@ -61,7 +61,7 @@ namespace sw
 		}
 		else   // Estimate was too low
 		{
-			sw::atomicIncrement(&averageInstructionSize);
+			r3::atomicIncrement(&averageInstructionSize);
 		}
 
 		// Round up to the next page size

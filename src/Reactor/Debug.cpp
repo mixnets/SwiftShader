@@ -12,27 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef r3_Routine_hpp
-#define r3_Routine_hpp
+#include "Debug.hpp"
+
+#include <stdio.h>
+#include <stdarg.h>
 
 namespace r3
 {
-	class Routine
+void trace(const char *format, ...)
+{
+	if(false)
 	{
-	public:
-		Routine();
+		FILE *file = fopen("debug.txt", "a");
 
-		virtual ~Routine();
+		if(file)
+		{
+			va_list vararg;
+			va_start(vararg, format);
+			vfprintf(file, format, vararg);
+			va_end(vararg);
 
-		virtual const void *getEntry() = 0;
-
-		// Reference counting
-		void bind();
-		void unbind();
-
-	private:
-		volatile int bindCount;
-	};
+			fclose(file);
+		}
+	}
 }
-
-#endif   // r3_Routine_hpp
+}

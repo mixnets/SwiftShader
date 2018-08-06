@@ -826,7 +826,7 @@ namespace
 	}
 }
 
-namespace sw
+namespace r3
 {
 	void optimize(Ice::Cfg *function)
 	{

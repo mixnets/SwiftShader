@@ -14,6 +14,14 @@
 
 #include "Reactor.hpp"
 
+#include "LLVMRoutine.hpp"
+#include "LLVMRoutineManager.hpp"
+#include "x86.hpp"
+#include "CPUID.hpp"
+#include "Thread.hpp"
+#include "Memory.hpp"
+#include "MutexLock.hpp"
+
 #include "llvm/Support/IRBuilder.h"
 #include "llvm/Function.h"
 #include "llvm/GlobalVariable.h"
@@ -28,14 +36,6 @@
 #include "llvm/Target/TargetOptions.h"
 #include "llvm/Support/TargetSelect.h"
 #include "../lib/ExecutionEngine/JIT/JIT.h"
-
-#include "LLVMRoutine.hpp"
-#include "LLVMRoutineManager.hpp"
-#include "x86.hpp"
-#include "Common/CPUID.hpp"
-#include "Common/Thread.hpp"
-#include "Common/Memory.hpp"
-#include "Common/MutexLock.hpp"
 
 #include <fstream>
 
@@ -64,17 +64,17 @@ namespace llvm
 
 namespace
 {
-	sw::LLVMRoutineManager *routineManager = nullptr;
+	r3::LLVMRoutineManager *routineManager = nullptr;
 	llvm::ExecutionEngine *executionEngine = nullptr;
 	llvm::IRBuilder<> *builder = nullptr;
 	llvm::LLVMContext *context = nullptr;
 	llvm::Module *module = nullptr;
 	llvm::Function *function = nullptr;
 
-	sw::MutexLock codegenMutex;
+	r3::MutexLock codegenMutex;
 }
 
-namespace sw
+namespace r3
 {
 	Optimization optimization[10] = {InstructionCombining, Disabled};
 
@@ -5971,7 +5971,7 @@ namespace sw
 	}
 }
 
-namespace sw
+namespace r3
 {
 	namespace x86
 	{

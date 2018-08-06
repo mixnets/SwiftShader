@@ -16,7 +16,7 @@
 
 #include "gtest/gtest.h"
 
-using namespace sw;
+using namespace r3;
 
 int reference(int *p, int y)
 {

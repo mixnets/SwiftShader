@@ -14,11 +14,11 @@
 
 #include "LLVMRoutine.hpp"
 
-#include "../Common/Memory.hpp"
-#include "../Common/Thread.hpp"
-#include "../Common/Types.hpp"
+#include "Memory.hpp"
+#include "Thread.hpp"
+#include "Types.hpp"
 
-namespace sw
+namespace r3
 {
 	LLVMRoutine::LLVMRoutine(int bufferSize) : bufferSize(bufferSize)
 	{
