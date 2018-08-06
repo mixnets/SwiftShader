@@ -15,8 +15,7 @@
 #include "Reactor.hpp"
 
 #include "Optimizer.hpp"
-
-#include "Common/Memory.hpp"
+#include "Memory.hpp"
 
 #include "src/IceTypes.h"
 #include "src/IceCfg.h"
@@ -49,7 +48,7 @@
 #endif
 #endif
 
-//#include <mutex>
+#include <mutex>
 #include <limits>
 #include <iostream>
 #include <cassert>
@@ -60,7 +59,7 @@ namespace
 	Ice::Cfg *function = nullptr;
 	Ice::CfgNode *basicBlock = nullptr;
 	Ice::CfgLocalAllocatorScope *allocator = nullptr;
-	sw::Routine *routine = nullptr;
+	rr::Routine *routine = nullptr;
 
 	std::mutex codegenMutex;
 
@@ -130,7 +129,7 @@ namespace
 	const bool emulateMismatchedBitCast = CPUID::ARM;
 }
 
-namespace sw
+namespace rr
 {
 	enum EmulatedType
 	{
@@ -612,7 +611,7 @@ namespace sw
 
 	void Nucleus::optimize()
 	{
-		sw::optimize(::function);
+		rr::optimize(::function);
 	}
 
 	Value *Nucleus::allocateStackVariable(Type *t, int arraySize)
