@@ -2345,7 +2345,6 @@ int GetAttribLocation(GLuint program, const GLchar* name)
 
 	if(context)
 	{
-
 		es2::Program *programObject = context->getProgram(program);
 
 		if(!programObject)
@@ -2365,7 +2364,7 @@ int GetAttribLocation(GLuint program, const GLchar* name)
 			return error(GL_INVALID_OPERATION, -1);
 		}
 
-		return programObject->getAttributeLocation(name);
+		return name ? programObject->getAttributeLocation(name) : -1;
 	}
 
 	return -1;

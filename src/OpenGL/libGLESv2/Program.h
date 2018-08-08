@@ -133,7 +133,7 @@ namespace es2
 		sw::VertexShader *getVertexShader();
 
 		void bindAttributeLocation(GLuint index, const char *name);
-		GLint getAttributeLocation(const char *name);
+		int getAttributeLocation(const std::string &name);
 		int getAttributeStream(int attributeIndex);
 
 		GLint getSamplerMapping(sw::SamplerType type, unsigned int samplerIndex);
@@ -228,7 +228,7 @@ namespace es2
 		bool linkTransformFeedback();
 
 		bool linkAttributes();
-		int getAttributeBinding(const glsl::Attribute &attribute);
+		bool linkAttribute(const glsl::Attribute &attribute, int location, unsigned int &usedLocations);
 
 		Uniform *getUniform(const std::string &name) const;
 		bool linkUniforms(const Shader *shader);
