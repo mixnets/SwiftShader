@@ -279,12 +279,11 @@ namespace es2
 	{
 		if(name)
 		{
-			std::string strName(name);
-			for(auto const &it : linkedAttribute)
+			for(auto const &attribute : linkedAttribute)
 			{
-				if(it.name == strName)
+				if(attribute.name == name)
 				{
-					return getAttributeBinding(it);
+					return getLinkedAttributeLocation(attribute);
 				}
 			}
 		}
@@ -1591,11 +1590,62 @@ namespace es2
 	// Determines the mapping between GL attributes and vertex stream usage indices
 	bool Program::linkAttributes()
 	{
+		static_assert(MAX_VERTEX_ATTRIBS <= 32, "attribute count exceeds bitfield count");
 		unsigned int usedLocations = 0;
+
+		// Link attributes that have a GLSL layout location qualifier
+		for(auto const &attribute : vertexShader->activeAttributes)
+		{
+			int location = attribute.layoutLocation;
+
+			if(location != -1)   // Set by GLSL layout location qualifier
+			{
+				int rows = VariableRegisterCount(attribute.type);
+
+				if(rows + location > MAX_VERTEX_ATTRIBS)
+				{
+					appendToInfoLog("Active attribute (%s) at location %d is too big to fit", attribute.name.c_str(), location);
+					return false;
+				}
+
+				// In GLSL 3.00, attribute aliasing produces a link error
+				// In GLSL 1.00, attribute aliasing is allowed
+				if(vertexShader->getShaderVersion() >= 300)
+				{
+					for(auto const &previousAttrib : linkedAttribute)
+					{
+						int itLocStart = getLinkedAttributeLocation(previousAttrib);
+						ASSERT(itLocStart >= 0);
+						int itLocEnd = itLocStart + VariableRegisterCount(previousAttrib.type);
+						for(int i = 0; i < rows; i++)
+						{
+							int loc = location + i;
+							if((loc >= itLocStart) && (loc < itLocEnd))
+							{
+								appendToInfoLog("Attribute '%s' aliases attribute '%s' at location %d", attribute.name.c_str(), previousAttrib.name.c_str(), location);
+								return false;
+							}
+						}
+					}
+				}
+
+				linkedAttributeLocation[attribute.name] = location;
+				linkedAttribute.push_back(attribute);
+				for(int i = 0; i < rows; i++)
+				{
+					usedLocations |= 1 << (location + i);
+				}
+			}
+		}
 
 		// Link attributes that have a binding location
 		for(auto const &attribute : vertexShader->activeAttributes)
 		{
+			if(attribute.layoutLocation != -1)
+			{
+				continue;
+			}
+
 			int location = (attributeBinding.find(attribute.name) != attributeBinding.end()) ? attributeBinding[attribute.name] : -1;
 
 			if(location != -1)   // Set by glBindAttribLocation
@@ -1612,17 +1662,17 @@ namespace es2
 				// In GLSL 1.00, attribute aliasing is allowed
 				if(vertexShader->getShaderVersion() >= 300)
 				{
-					for(auto const &it : linkedAttribute)
+					for(auto const &previousAttrib : linkedAttribute)
 					{
-						int itLocStart = getAttributeBinding(it);
+						int itLocStart = getLinkedAttributeLocation(previousAttrib);
 						ASSERT(itLocStart >= 0);
-						int itLocEnd = itLocStart + VariableRegisterCount(it.type);
+						int itLocEnd = itLocStart + VariableRegisterCount(previousAttrib.type);
 						for(int i = 0; i < rows; i++)
 						{
 							int loc = location + i;
 							if((loc >= itLocStart) && (loc < itLocEnd))
 							{
-								appendToInfoLog("Attribute '%s' aliases attribute '%s' at location %d", attribute.name.c_str(), it.name.c_str(), location);
+								appendToInfoLog("Attribute '%s' aliases attribute '%s' at location %d", attribute.name.c_str(), previousAttrib.name.c_str(), location);
 								return false;
 							}
 						}
@@ -1638,12 +1688,17 @@ namespace es2
 			}
 		}
 
-		// Link attributes that don't have a binding location
+		// Link attributes that don't have a binding location nor layout location
 		for(auto const &attribute : vertexShader->activeAttributes)
 		{
-			int location = (attributeBinding.find(attribute.name) != attributeBinding.end()) ? attributeBinding[attribute.name] : -1;
+			int location = attribute.layoutLocation;
 
-			if(location == -1)   // Not set by glBindAttribLocation
+			if(location == -1)
+			{
+				location = (attributeBinding.find(attribute.name) != attributeBinding.end()) ? attributeBinding[attribute.name] : -1;
+			}
+
+			if(location == -1)   // Not set by glBindAttribLocation nor layout location qualifier
 			{
 				int rows = VariableRegisterCount(attribute.type);
 				int availableIndex = AllocateFirstFreeBits(&usedLocations, rows, MAX_VERTEX_ATTRIBS);
@@ -1659,12 +1714,14 @@ namespace es2
 			}
 		}
 
-		for(auto const &it : linkedAttribute)
+		ASSERT(linkedAttribute.size() == vertexShader->activeAttributes.size());
+
+		for(auto const &attribute : linkedAttribute)
 		{
-			int location = getAttributeBinding(it);
+			int location = getLinkedAttributeLocation(attribute);
 			ASSERT(location >= 0);
-			int index = vertexShader->getSemanticIndex(it.name);
-			int rows = std::max(VariableRegisterCount(it.type), 1);
+			int index = vertexShader->getSemanticIndex(attribute.name);
+			int rows = std::max(VariableRegisterCount(attribute.type), 1);
 
 			for(int r = 0; r < rows; r++)
 			{
@@ -1675,11 +1732,11 @@ namespace es2
 		return true;
 	}
 
-	int Program::getAttributeBinding(const glsl::Attribute &attribute)
+	int Program::getLinkedAttributeLocation(const glsl::Attribute &attribute)
 	{
-		if(attribute.location != -1)
+		if(attribute.layoutLocation != -1)
 		{
-			return attribute.location;
+			return attribute.layoutLocation;
 		}
 
 		std::map<std::string, GLuint>::const_iterator it = linkedAttributeLocation.find(attribute.name);
