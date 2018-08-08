@@ -228,7 +228,7 @@ namespace es2
 		bool linkTransformFeedback();
 
 		bool linkAttributes();
-		int getAttributeBinding(const glsl::Attribute &attribute);
+		int getLinkedAttributeLocation(const glsl::Attribute &attribute);
 
 		Uniform *getUniform(const std::string &name) const;
 		bool linkUniforms(const Shader *shader);
