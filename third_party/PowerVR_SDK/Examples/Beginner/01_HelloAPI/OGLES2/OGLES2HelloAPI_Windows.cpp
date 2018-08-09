@@ -19,7 +19,11 @@
 #include <TCHAR.h>
 
 #include <EGL/egl.h>
-#include <GLES2/gl2.h>
+#include <EGL/eglext.h>
+#include <GLES3/gl3.h>
+
+#include <cstdint>
+#include <iostream>
 
 /******************************************************************************
  Defines
@@ -295,7 +299,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 		like textures will only be valid inside this context
 		(or shared contexts)
 	*/
-	EGLint ai32ContextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
+	EGLint ai32ContextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 3, EGL_NONE };
 	eglContext = eglCreateContext(eglDisplay, eglConfig, NULL, ai32ContextAttribs);
 	if (!TestEGLError(hWnd, "eglCreateContext"))
 	{
@@ -317,6 +321,66 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, TCHAR *lpCmdLin
 	{
 		goto cleanup;
 	}
+
+
+
+
+
+
+	{
+
+
+
+
+	// Create Texture
+    const int width = 128;
+    const int height = 128;
+    GLuint tex_id = 0;
+    glGenTextures(1, &tex_id);
+    glBindTexture(GL_TEXTURE_2D, tex_id);
+    glTexStorage2D(GL_TEXTURE_2D,
+                   1,
+                   GL_R8,
+                   width,
+                   height);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+     std::cout << "Created texture " << tex_id;
+
+    // Create FBO
+    GLuint fbo_id;
+    glGenFramebuffers(1, &fbo_id);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_id);
+    glFramebufferTexture2D(
+        GL_FRAMEBUFFER,
+        GL_COLOR_ATTACHMENT0,
+        GL_TEXTURE_2D,
+        tex_id,
+        0);
+    std::cout << "Created FBO " << fbo_id;
+
+    // Clear framebuffer
+    glViewport(0, 0, width, height);
+    glClearColor(0.0, 2.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Read framebuffer
+    uint8_t* buffer = new uint8_t[width * height];
+    glReadPixels(0, 0, width, height, GL_RED, GL_UNSIGNED_BYTE, buffer);
+
+    // Print out first 100 values (Should be all 0) ACTUAL: 171
+    for (int i = 0; i < 100; ++i) {
+        std::cout << "Buffer[" << i << "] = " << static_cast<int>(buffer[i]);
+    }
+
+
+
+
+	}
+
+
 
 	/*
 		Step 9 - Draw something with OpenGL ES.
