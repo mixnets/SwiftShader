@@ -73,6 +73,38 @@ TEST(SubzeroReactorTest, Sample)
 	delete routine;
 }
 
+TEST(SubzeroReactorTest, Brainfuck)
+{
+	const char insts[] = ">>[-]<<[->>+<<]";
+
+	Function<Void(Pointer<Byte>)> function;
+	{
+		Pointer<Byte> p = function.Arg<0>();
+		std::vector<Loop> loops;
+
+		for(char op : insts)
+		{
+			switch(op)
+			{
+			case '>': p += 1;  break;
+			case '<': p -= 1;  break;
+			case '+': *p = Byte(*p) + Byte(1); break;
+			case '-': *p = Byte(*p) - Byte(1); break;
+			case '[': loops.emplace_back(); loops.back().test(*p != Byte(0)); break;
+			case ']': loops.pop_back(); break;
+			}
+		}
+
+		Return(0);
+	}
+
+	Routine *x = function(L"yo");
+	auto y = (void(*)(char*))(x->getEntry());
+
+	char p[] = {10, 0, 5, 0};
+	y(p);
+}
+
 TEST(SubzeroReactorTest, Uninitialized)
 {
 	Routine *routine = nullptr;
