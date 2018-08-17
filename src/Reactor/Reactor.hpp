@@ -2803,6 +2803,45 @@ namespace sw
 		return ReinterpretCast<T>(val);
 	}
 
+	class Loop
+	{
+	public:
+		Loop()
+		{
+			testBB = Nucleus::createBasicBlock();
+
+			Nucleus::createBr(testBB);
+			Nucleus::setInsertBlock(testBB);
+		}
+
+		Loop(Loop &&f) :
+			testBB(f.testBB),
+			endBB(f.endBB)
+		{
+		}
+
+		~Loop()
+		{
+			Nucleus::createBr(testBB);
+			Nucleus::setInsertBlock(endBB);
+		}
+
+		bool test(RValue<Bool> cmp)
+		{
+			BasicBlock *bodyBB = Nucleus::createBasicBlock();
+			endBB = Nucleus::createBasicBlock();
+
+			Nucleus::createCondBr(cmp.value, bodyBB, endBB);
+			Nucleus::setInsertBlock(bodyBB);
+
+			return true;
+		}
+
+	private:
+		BasicBlock *testBB = nullptr;
+		BasicBlock *endBB = nullptr;
+	};
+
 	class ForData
 	{
 	public:
