@@ -16,6 +16,8 @@
 
 LOCAL_PATH := $(call my-dir)
 
+SWIFTSHADER_LLVM_VERSION := 3
+
 # Use Subzero as the Reactor JIT back-end on ARM, else LLVM.
 ifeq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),arm))
 use_subzero := true
@@ -28,8 +30,19 @@ unsupported_build := true
 endif
 endif
 
-ifndef unsupported_build
-ifeq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),x86 x86_64 arm))
-include $(call all-makefiles-under,$(LOCAL_PATH))
+ifeq ($(SWIFTSHADER_LLVM_VERSION),3)
+ifneq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),x86 x86_64 arm))
+unsupported_build := true
 endif
+endif
+
+ifeq ($(SWIFTSHADER_LLVM_VERSION),7)
+ifneq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),x86 x86_64 arm arm64))
+unsupported_build := true
+endif
+use_subzero :=
+endif
+
+ifndef unsupported_build
+include $(call all-makefiles-under,$(LOCAL_PATH))
 endif
