@@ -277,6 +277,14 @@ bool Display::getConfigAttrib(EGLConfig config, EGLint attribute, EGLint *value)
 	case EGL_MAX_PBUFFER_PIXELS:         *value = configuration->mMaxPBufferPixels;         break;
 	case EGL_RECORDABLE_ANDROID:         *value = configuration->mRecordableAndroid;        break;
 	case EGL_FRAMEBUFFER_TARGET_ANDROID: *value = configuration->mFramebufferTargetAndroid; break;
+
+	// FIXME: Android uses these extensions.
+	case EGL_COLOR_COMPONENT_TYPE_EXT:   *value = EGL_COLOR_COMPONENT_TYPE_FIXED_EXT;       break;
+	case EGL_COVERAGE_BUFFERS_NV:        *value = 0;                                        break;
+	case EGL_COVERAGE_SAMPLES_NV:        *value = 0;                                        break;
+	case EGL_IMAGE_PRESERVED_KHR:        *value = EGL_FALSE;                                break;
+	case EGL_PROTECTED_CONTENT_EXT:      *value = EGL_FALSE;                                break;
+
 	default:
 		return false;
 	}
