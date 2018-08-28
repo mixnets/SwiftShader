@@ -830,6 +830,19 @@ EGLContext CreateContext(EGLDisplay dpy, EGLConfig config, EGLContext share_cont
 					return error(EGL_BAD_ATTRIBUTE, EGL_NO_CONTEXT);
 				}
 				break;
+			case EGL_CONTEXT_PRIORITY_LEVEL_IMG:
+				switch(attribute[1])
+				{
+				case EGL_CONTEXT_PRIORITY_HIGH_IMG:
+				case EGL_CONTEXT_PRIORITY_MEDIUM_IMG:
+				case EGL_CONTEXT_PRIORITY_LOW_IMG:
+					// EGL Extension #10 EGL_IMG_context_priority.txt
+					// FIXME: Unimplemented
+					break;
+				default:
+					return error(EGL_BAD_ATTRIBUTE, EGL_NO_CONTEXT);
+				}
+				break;
 			default:
 				return error(EGL_BAD_ATTRIBUTE, EGL_NO_CONTEXT);
 			}
@@ -1037,6 +1050,9 @@ EGLBoolean QueryContext(EGLDisplay dpy, EGLContext ctx, EGLint attribute, EGLint
 		break;
 	case EGL_RENDER_BUFFER:
 		*value = EGL_BACK_BUFFER;
+		break;
+        case EGL_PROTECTED_CONTENT_EXT:
+		*value = EGL_FALSE;
 		break;
 	default:
 		return error(EGL_BAD_ATTRIBUTE, EGL_FALSE);
