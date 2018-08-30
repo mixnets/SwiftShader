@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5beb79dc_572447cd",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-08-30T21:48:47Z",
+      "side": 1,
+      "message": ":+1: I did indeed miss this, in my initial attempt. Good to have it taken care of automatically.",
+      "revId": "b83ce38ec3c0ac03b3d7e99635b203240e35f4dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
