@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "365c75a5_88647cbb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-08-30T18:57:14Z",
+      "side": 1,
+      "message": "commit db09f95ac00e44149f3894bf82c918e58277cfdb\nVersion 1.1.83\nApache License 2.0",
+      "revId": "b2b46c489825d457782d247853f335879498f8f8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
