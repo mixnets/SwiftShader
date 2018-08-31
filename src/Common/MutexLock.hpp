@@ -177,18 +177,30 @@ namespace sw
 class LockGuard
 {
 public:
-	explicit LockGuard(sw::MutexLock &mutex) : mutex(mutex)
+	explicit LockGuard(sw::MutexLock &mutex) : mutex(&mutex)
 	{
 		mutex.lock();
 	}
 
+	explicit LockGuard(sw::MutexLock *mutex) : mutex(mutex)
+	{
+		if (mutex) mutex->lock();
+	}
+
+	LockGuard(LockGuard &&guard) : mutex(guard.mutex)
+	{
+		guard.mutex = nullptr;
+	}
+
+	LockGuard(LockGuard const &) = delete;
+
 	~LockGuard()
 	{
-		mutex.unlock();
+		if (mutex) mutex->unlock();
 	}
 
 protected:
-	sw::MutexLock &mutex;
+	sw::MutexLock *mutex;
 };
 
 #endif   // sw_MutexLock_hpp
