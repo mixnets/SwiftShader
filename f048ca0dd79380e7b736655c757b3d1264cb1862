@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "90a140cc_0f7f8573",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-08-31T13:50:45Z",
+      "side": 1,
+      "message": "add \"Bug b/112184433\"",
+      "revId": "f048ca0dd79380e7b736655c757b3d1264cb1862",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
