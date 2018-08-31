@@ -86,6 +86,7 @@ void ResourceManager::release()
 // Returns an unused buffer name
 GLuint ResourceManager::createBuffer()
 {
+	LockGuard lock(mMutex);
 	return mBufferNameSpace.allocate();
 }
 
@@ -150,6 +151,7 @@ GLuint ResourceManager::createFenceSync(GLenum condition, GLbitfield flags)
 
 void ResourceManager::deleteBuffer(GLuint buffer)
 {
+	LockGuard lock(mMutex);
 	Buffer *bufferObject = mBufferNameSpace.remove(buffer);
 
 	if(bufferObject)
@@ -238,6 +240,7 @@ void ResourceManager::deleteFenceSync(GLuint fenceSync)
 
 Buffer *ResourceManager::getBuffer(unsigned int handle)
 {
+	LockGuard lock(mMutex);
 	return mBufferNameSpace.find(handle);
 }
 
@@ -273,7 +276,8 @@ FenceSync *ResourceManager::getFenceSync(unsigned int handle)
 
 void ResourceManager::checkBufferAllocation(unsigned int buffer)
 {
-	if(buffer != 0 && !getBuffer(buffer))
+	LockGuard lock(mMutex);
+	if(buffer != 0 && !mBufferNameSpace.find(buffer))
 	{
 		Buffer *bufferObject = new Buffer(buffer);
 		bufferObject->addRef();
