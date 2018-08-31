@@ -101,6 +101,7 @@ public:
   bool isDestRedefined() const { return IsDestRedefined; }
   void setDestRedefined() { IsDestRedefined = true; }
 
+  CfgNode *getNode() const { return Node; }
   Variable *getDest() const { return Dest; }
 
   SizeT getSrcSize() const { return Srcs.size(); }
@@ -158,7 +159,7 @@ public:
   /// otherwise return nullptr.
   virtual const Inst *getIntraBlockBranchTarget() const { return nullptr; }
 
-  void livenessLightweight(Cfg *Func, LivenessBV &Live);
+  void livenessLightweight(Cfg *Func, CfgNode *Node, LivenessBV &Live);
   /// Calculates liveness for this instruction. Returns true if this instruction
   /// is (tentatively) still live and should be retained, and false if this
   /// instruction is (tentatively) dead and should be deleted. The decision is
@@ -199,11 +200,8 @@ public:
     llvm::report_fatal_error("Inst unexpectedly deleted");
   }
 
-  inline void* getExternalData() const { return externalData; }
-  inline void setExternalData(void* data) { externalData = data; }
-
 protected:
-  Inst(Cfg *Func, InstKind Kind, SizeT MaxSrcs, Variable *Dest);
+  Inst(Cfg *Func, CfgNode *Node, InstKind Kind, SizeT MaxSrcs, Variable *Dest);
   void addSource(Operand *Src) {
     assert(Src);
     Srcs.push_back(Src);
@@ -239,10 +237,8 @@ protected:
   /// live range recorded in a basic block has at most one start and at most one
   /// end.
   bool IsDestRedefined = false;
-  /// External data can be set by an optimizer to compute and retain any
-  /// information related to the current instruction. All the memory used to
-  /// store this information must be managed by the optimizer.
-  void* externalData = nullptr;
+  ///
+  CfgNode *const Node;
 
   Variable *Dest;
   const SizeT MaxSrcs; // only used for assert
@@ -267,8 +263,8 @@ class InstHighLevel : public Inst {
   InstHighLevel &operator=(const InstHighLevel &) = delete;
 
 protected:
-  InstHighLevel(Cfg *Func, InstKind Kind, SizeT MaxSrcs, Variable *Dest)
-      : Inst(Func, Kind, MaxSrcs, Dest) {}
+  InstHighLevel(Cfg *Func, CfgNode *Node, InstKind Kind, SizeT MaxSrcs, Variable *Dest)
+      : Inst(Func, Node, Kind, MaxSrcs, Dest) {}
   void emit(const Cfg * /*Func*/) const override {
     llvm_unreachable("emit() called on a non-lowered instruction");
   }
@@ -286,10 +282,10 @@ class InstAlloca : public InstHighLevel {
   InstAlloca &operator=(const InstAlloca &) = delete;
 
 public:
-  static InstAlloca *create(Cfg *Func, Variable *Dest, Operand *ByteCount,
+  static InstAlloca *create(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *ByteCount,
                             uint32_t AlignInBytes) {
     return new (Func->allocate<InstAlloca>())
-        InstAlloca(Func, Dest, ByteCount, AlignInBytes);
+        InstAlloca(Func, Node, Dest, ByteCount, AlignInBytes);
   }
   uint32_t getAlignInBytes() const { return AlignInBytes; }
   Operand *getSizeInBytes() const { return getSrc(0); }
@@ -300,7 +296,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == Alloca; }
 
 private:
-  InstAlloca(Cfg *Func, Variable *Dest, Operand *ByteCount,
+  InstAlloca(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *ByteCount,
              uint32_t AlignInBytes);
 
   const uint32_t AlignInBytes;
@@ -322,10 +318,10 @@ public:
         _num
   };
 
-  static InstArithmetic *create(Cfg *Func, OpKind Op, Variable *Dest,
+  static InstArithmetic *create(Cfg *Func, CfgNode *Node, OpKind Op, Variable *Dest,
                                 Operand *Source1, Operand *Source2) {
     return new (Func->allocate<InstArithmetic>())
-        InstArithmetic(Func, Op, Dest, Source1, Source2);
+        InstArithmetic(Func, Node, Op, Dest, Source1, Source2);
   }
   OpKind getOp() const { return Op; }
 
@@ -340,7 +336,7 @@ public:
   }
 
 private:
-  InstArithmetic(Cfg *Func, OpKind Op, Variable *Dest, Operand *Source1,
+  InstArithmetic(Cfg *Func, CfgNode *Node, OpKind Op, Variable *Dest, Operand *Source1,
                  Operand *Source2);
 
   const OpKind Op;
@@ -357,8 +353,8 @@ class InstAssign : public InstHighLevel {
   InstAssign &operator=(const InstAssign &) = delete;
 
 public:
-  static InstAssign *create(Cfg *Func, Variable *Dest, Operand *Source) {
-    return new (Func->allocate<InstAssign>()) InstAssign(Func, Dest, Source);
+  static InstAssign *create(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Source) {
+    return new (Func->allocate<InstAssign>()) InstAssign(Func, Node, Dest, Source);
   }
   bool isVarAssign() const override;
   bool isMemoryWrite() const override { return false; }
@@ -366,7 +362,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == Assign; }
 
 private:
-  InstAssign(Cfg *Func, Variable *Dest, Operand *Source);
+  InstAssign(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Source);
 };
 
 /// Branch instruction. This represents both conditional and unconditional
@@ -379,14 +375,14 @@ class InstBr : public InstHighLevel {
 public:
   /// Create a conditional branch. If TargetTrue==TargetFalse, it is optimized
   /// to an unconditional branch.
-  static InstBr *create(Cfg *Func, Operand *Source, CfgNode *TargetTrue,
+  static InstBr *create(Cfg *Func, CfgNode *Node, Operand *Source, CfgNode *TargetTrue,
                         CfgNode *TargetFalse) {
     return new (Func->allocate<InstBr>())
-        InstBr(Func, Source, TargetTrue, TargetFalse);
+        InstBr(Func, Node, Source, TargetTrue, TargetFalse);
   }
   /// Create an unconditional branch.
-  static InstBr *create(Cfg *Func, CfgNode *Target) {
-    return new (Func->allocate<InstBr>()) InstBr(Func, Target);
+  static InstBr *create(Cfg *Func, CfgNode *Node, CfgNode *Target) {
+    return new (Func->allocate<InstBr>()) InstBr(Func, Node, Target);
   }
   bool isUnconditional() const { return getTargetTrue() == nullptr; }
   Operand *getCondition() const {
@@ -408,9 +404,9 @@ public:
 
 private:
   /// Conditional branch
-  InstBr(Cfg *Func, Operand *Source, CfgNode *TargetTrue, CfgNode *TargetFalse);
+  InstBr(Cfg *Func, CfgNode *Node, Operand *Source, CfgNode *TargetTrue, CfgNode *TargetFalse);
   /// Unconditional branch
-  InstBr(Cfg *Func, CfgNode *Target);
+  InstBr(Cfg *Func, CfgNode *Node, CfgNode *Target);
 
   CfgNode *TargetFalse; /// Doubles as unconditional branch target
   CfgNode *TargetTrue;  /// nullptr if unconditional branch
@@ -424,7 +420,7 @@ class InstCall : public InstHighLevel {
   InstCall &operator=(const InstCall &) = delete;
 
 public:
-  static InstCall *create(Cfg *Func, SizeT NumArgs, Variable *Dest,
+  static InstCall *create(Cfg *Func, CfgNode *Node, SizeT NumArgs, Variable *Dest,
                           Operand *CallTarget, bool HasTailCall,
                           bool IsTargetHelperCall = false) {
     /// Set HasSideEffects to true so that the call instruction can't be
@@ -433,7 +429,7 @@ public:
     constexpr bool HasSideEffects = true;
     constexpr InstKind Kind = Inst::Call;
     return new (Func->allocate<InstCall>())
-        InstCall(Func, NumArgs, Dest, CallTarget, HasTailCall,
+        InstCall(Func, Node, NumArgs, Dest, CallTarget, HasTailCall,
                  IsTargetHelperCall, HasSideEffects, Kind);
   }
   void addArg(Operand *Arg) { addSource(Arg); }
@@ -448,10 +444,10 @@ public:
   Type getReturnType() const;
 
 protected:
-  InstCall(Cfg *Func, SizeT NumArgs, Variable *Dest, Operand *CallTarget,
+  InstCall(Cfg *Func, CfgNode *Node, SizeT NumArgs, Variable *Dest, Operand *CallTarget,
            bool HasTailCall, bool IsTargetHelperCall, bool HasSideEff,
            InstKind Kind)
-      : InstHighLevel(Func, Kind, NumArgs + 1, Dest), HasTailCall(HasTailCall),
+      : InstHighLevel(Func, Node, Kind, NumArgs + 1, Dest), HasTailCall(HasTailCall),
         IsTargetHelperCall(IsTargetHelperCall) {
     HasSideEffects = HasSideEff;
     addSource(CallTarget);
@@ -478,10 +474,10 @@ public:
 
   static const char *getCastName(OpKind Kind);
 
-  static InstCast *create(Cfg *Func, OpKind CastKind, Variable *Dest,
+  static InstCast *create(Cfg *Func, CfgNode *Node, OpKind CastKind, Variable *Dest,
                           Operand *Source) {
     return new (Func->allocate<InstCast>())
-        InstCast(Func, CastKind, Dest, Source);
+        InstCast(Func, Node, CastKind, Dest, Source);
   }
   OpKind getCastKind() const { return CastKind; }
   bool isMemoryWrite() const override { return false; }
@@ -489,7 +485,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == Cast; }
 
 private:
-  InstCast(Cfg *Func, OpKind CastKind, Variable *Dest, Operand *Source);
+  InstCast(Cfg *Func, CfgNode *Node, OpKind CastKind, Variable *Dest, Operand *Source);
 
   const OpKind CastKind;
 };
@@ -501,10 +497,10 @@ class InstExtractElement : public InstHighLevel {
   InstExtractElement &operator=(const InstExtractElement &) = delete;
 
 public:
-  static InstExtractElement *create(Cfg *Func, Variable *Dest, Operand *Source1,
+  static InstExtractElement *create(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Source1,
                                     Operand *Source2) {
     return new (Func->allocate<InstExtractElement>())
-        InstExtractElement(Func, Dest, Source1, Source2);
+        InstExtractElement(Func, Node, Dest, Source1, Source2);
   }
 
   bool isMemoryWrite() const override { return false; }
@@ -514,7 +510,7 @@ public:
   }
 
 private:
-  InstExtractElement(Cfg *Func, Variable *Dest, Operand *Source1,
+  InstExtractElement(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Source1,
                      Operand *Source2);
 };
 
@@ -533,10 +529,10 @@ public:
         _num
   };
 
-  static InstFcmp *create(Cfg *Func, FCond Condition, Variable *Dest,
+  static InstFcmp *create(Cfg *Func, CfgNode *Node, FCond Condition, Variable *Dest,
                           Operand *Source1, Operand *Source2) {
     return new (Func->allocate<InstFcmp>())
-        InstFcmp(Func, Condition, Dest, Source1, Source2);
+        InstFcmp(Func, Node, Condition, Dest, Source1, Source2);
   }
   FCond getCondition() const { return Condition; }
   bool isMemoryWrite() const override { return false; }
@@ -544,7 +540,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == Fcmp; }
 
 private:
-  InstFcmp(Cfg *Func, FCond Condition, Variable *Dest, Operand *Source1,
+  InstFcmp(Cfg *Func, CfgNode *Node, FCond Condition, Variable *Dest, Operand *Source1,
            Operand *Source2);
 
   const FCond Condition;
@@ -565,10 +561,10 @@ public:
         _num
   };
 
-  static InstIcmp *create(Cfg *Func, ICond Condition, Variable *Dest,
+  static InstIcmp *create(Cfg *Func, CfgNode *Node, ICond Condition, Variable *Dest,
                           Operand *Source1, Operand *Source2) {
     return new (Func->allocate<InstIcmp>())
-        InstIcmp(Func, Condition, Dest, Source1, Source2);
+        InstIcmp(Func, Node, Condition, Dest, Source1, Source2);
   }
   ICond getCondition() const { return Condition; }
   void reverseConditionAndOperands();
@@ -577,7 +573,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == Icmp; }
 
 private:
-  InstIcmp(Cfg *Func, ICond Condition, Variable *Dest, Operand *Source1,
+  InstIcmp(Cfg *Func, CfgNode *Node, ICond Condition, Variable *Dest, Operand *Source1,
            Operand *Source2);
 
   ICond Condition;
@@ -590,10 +586,10 @@ class InstInsertElement : public InstHighLevel {
   InstInsertElement &operator=(const InstInsertElement &) = delete;
 
 public:
-  static InstInsertElement *create(Cfg *Func, Variable *Dest, Operand *Source1,
+  static InstInsertElement *create(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Source1,
                                    Operand *Source2, Operand *Source3) {
     return new (Func->allocate<InstInsertElement>())
-        InstInsertElement(Func, Dest, Source1, Source2, Source3);
+        InstInsertElement(Func, Node, Dest, Source1, Source2, Source3);
   }
 
   bool isMemoryWrite() const override { return false; }
@@ -603,7 +599,7 @@ public:
   }
 
 private:
-  InstInsertElement(Cfg *Func, Variable *Dest, Operand *Source1,
+  InstInsertElement(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Source1,
                     Operand *Source2, Operand *Source3);
 };
 
@@ -615,11 +611,11 @@ class InstIntrinsicCall : public InstCall {
   InstIntrinsicCall &operator=(const InstIntrinsicCall &) = delete;
 
 public:
-  static InstIntrinsicCall *create(Cfg *Func, SizeT NumArgs, Variable *Dest,
+  static InstIntrinsicCall *create(Cfg *Func, CfgNode *Node, SizeT NumArgs, Variable *Dest,
                                    Operand *CallTarget,
                                    const Intrinsics::IntrinsicInfo &Info) {
     return new (Func->allocate<InstIntrinsicCall>())
-        InstIntrinsicCall(Func, NumArgs, Dest, CallTarget, Info);
+        InstIntrinsicCall(Func, Node, NumArgs, Dest, CallTarget, Info);
   }
   static bool classof(const Inst *Instr) {
     return Instr->getKind() == IntrinsicCall;
@@ -631,9 +627,9 @@ public:
   }
 
 private:
-  InstIntrinsicCall(Cfg *Func, SizeT NumArgs, Variable *Dest,
+  InstIntrinsicCall(Cfg *Func, CfgNode *Node, SizeT NumArgs, Variable *Dest,
                     Operand *CallTarget, const Intrinsics::IntrinsicInfo &Info)
-      : InstCall(Func, NumArgs, Dest, CallTarget, false, false,
+      : InstCall(Func, Node, NumArgs, Dest, CallTarget, false, false,
                  Info.HasSideEffects, Inst::IntrinsicCall),
         Info(Info) {}
 
@@ -647,11 +643,11 @@ class InstLoad : public InstHighLevel {
   InstLoad &operator=(const InstLoad &) = delete;
 
 public:
-  static InstLoad *create(Cfg *Func, Variable *Dest, Operand *SourceAddr,
+  static InstLoad *create(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *SourceAddr,
                           uint32_t Align = 1) {
     // TODO(kschimpf) Stop ignoring alignment specification.
     (void)Align;
-    return new (Func->allocate<InstLoad>()) InstLoad(Func, Dest, SourceAddr);
+    return new (Func->allocate<InstLoad>()) InstLoad(Func, Node, Dest, SourceAddr);
   }
   Operand *getSourceAddress() const { return getSrc(0); }
   bool isMemoryWrite() const override { return false; }
@@ -659,7 +655,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == Load; }
 
 private:
-  InstLoad(Cfg *Func, Variable *Dest, Operand *SourceAddr);
+  InstLoad(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *SourceAddr);
 };
 
 /// Phi instruction. For incoming edge I, the node is Labels[I] and the Phi
@@ -670,8 +666,8 @@ class InstPhi : public InstHighLevel {
   InstPhi &operator=(const InstPhi &) = delete;
 
 public:
-  static InstPhi *create(Cfg *Func, SizeT MaxSrcs, Variable *Dest) {
-    return new (Func->allocate<InstPhi>()) InstPhi(Func, MaxSrcs, Dest);
+  static InstPhi *create(Cfg *Func, CfgNode *Node, SizeT MaxSrcs, Variable *Dest) {
+    return new (Func->allocate<InstPhi>()) InstPhi(Func, Node, MaxSrcs, Dest);
   }
   void addArgument(Operand *Source, CfgNode *Label);
   Operand *getOperandForTarget(CfgNode *Target) const;
@@ -686,7 +682,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == Phi; }
 
 private:
-  InstPhi(Cfg *Func, SizeT MaxSrcs, Variable *Dest);
+  InstPhi(Cfg *Func, CfgNode *Node, SizeT MaxSrcs, Variable *Dest);
   void destroy(Cfg *Func) override { Inst::destroy(Func); }
 
   /// Labels[] duplicates the InEdges[] information in the enclosing CfgNode,
@@ -704,8 +700,8 @@ class InstRet : public InstHighLevel {
   InstRet &operator=(const InstRet &) = delete;
 
 public:
-  static InstRet *create(Cfg *Func, Operand *RetValue = nullptr) {
-    return new (Func->allocate<InstRet>()) InstRet(Func, RetValue);
+  static InstRet *create(Cfg *Func, CfgNode *Node, Operand *RetValue = nullptr) {
+    return new (Func->allocate<InstRet>()) InstRet(Func, Node, RetValue);
   }
   bool hasRetValue() const { return getSrcSize(); }
   Operand *getRetValue() const {
@@ -718,7 +714,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == Ret; }
 
 private:
-  InstRet(Cfg *Func, Operand *RetValue);
+  InstRet(Cfg *Func, CfgNode *Node, Operand *RetValue);
 };
 
 /// Select instruction.  The condition, true, and false operands are captured.
@@ -728,10 +724,10 @@ class InstSelect : public InstHighLevel {
   InstSelect &operator=(const InstSelect &) = delete;
 
 public:
-  static InstSelect *create(Cfg *Func, Variable *Dest, Operand *Condition,
+  static InstSelect *create(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Condition,
                             Operand *SourceTrue, Operand *SourceFalse) {
     return new (Func->allocate<InstSelect>())
-        InstSelect(Func, Dest, Condition, SourceTrue, SourceFalse);
+        InstSelect(Func, Node, Dest, Condition, SourceTrue, SourceFalse);
   }
   Operand *getCondition() const { return getSrc(0); }
   Operand *getTrueOperand() const { return getSrc(1); }
@@ -741,7 +737,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == Select; }
 
 private:
-  InstSelect(Cfg *Func, Variable *Dest, Operand *Condition, Operand *Source1,
+  InstSelect(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Condition, Operand *Source1,
              Operand *Source2);
 };
 
@@ -753,11 +749,11 @@ class InstStore : public InstHighLevel {
   InstStore &operator=(const InstStore &) = delete;
 
 public:
-  static InstStore *create(Cfg *Func, Operand *Data, Operand *Addr,
+  static InstStore *create(Cfg *Func, CfgNode *Node, Operand *Data, Operand *Addr,
                            uint32_t Align = 1) {
     // TODO(kschimpf) Stop ignoring alignment specification.
     (void)Align;
-    return new (Func->allocate<InstStore>()) InstStore(Func, Data, Addr);
+    return new (Func->allocate<InstStore>()) InstStore(Func, Node, Data, Addr);
   }
   Operand *getAddr() const { return getSrc(1); }
   Operand *getData() const { return getSrc(0); }
@@ -768,7 +764,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == Store; }
 
 private:
-  InstStore(Cfg *Func, Operand *Data, Operand *Addr);
+  InstStore(Cfg *Func, CfgNode *Node, Operand *Data, Operand *Addr);
 };
 
 /// Switch instruction. The single source operand is captured as getSrc(0).
@@ -778,10 +774,10 @@ class InstSwitch : public InstHighLevel {
   InstSwitch &operator=(const InstSwitch &) = delete;
 
 public:
-  static InstSwitch *create(Cfg *Func, SizeT NumCases, Operand *Source,
+  static InstSwitch *create(Cfg *Func, CfgNode *Node, SizeT NumCases, Operand *Source,
                             CfgNode *LabelDefault) {
     return new (Func->allocate<InstSwitch>())
-        InstSwitch(Func, NumCases, Source, LabelDefault);
+        InstSwitch(Func, Node, NumCases, Source, LabelDefault);
   }
   Operand *getComparison() const { return getSrc(0); }
   CfgNode *getLabelDefault() const { return LabelDefault; }
@@ -802,7 +798,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == Switch; }
 
 private:
-  InstSwitch(Cfg *Func, SizeT NumCases, Operand *Source, CfgNode *LabelDefault);
+  InstSwitch(Cfg *Func, CfgNode *Node, SizeT NumCases, Operand *Source, CfgNode *LabelDefault);
   void destroy(Cfg *Func) override {
     Func->deallocateArrayOf<uint64_t>(Values);
     Func->deallocateArrayOf<CfgNode *>(Labels);
@@ -822,8 +818,8 @@ class InstUnreachable : public InstHighLevel {
   InstUnreachable &operator=(const InstUnreachable &) = delete;
 
 public:
-  static InstUnreachable *create(Cfg *Func) {
-    return new (Func->allocate<InstUnreachable>()) InstUnreachable(Func);
+  static InstUnreachable *create(Cfg *Func, CfgNode *Node) {
+    return new (Func->allocate<InstUnreachable>()) InstUnreachable(Func, Node);
   }
   NodeList getTerminatorEdges() const override { return NodeList(); }
   bool isMemoryWrite() const override { return false; }
@@ -833,7 +829,7 @@ public:
   }
 
 private:
-  explicit InstUnreachable(Cfg *Func);
+  explicit InstUnreachable(Cfg *Func, CfgNode *Node);
 };
 
 /// BundleLock instruction.  There are no operands. Contains an option
@@ -845,9 +841,9 @@ class InstBundleLock : public InstHighLevel {
 
 public:
   enum Option { Opt_None, Opt_AlignToEnd, Opt_PadToEnd };
-  static InstBundleLock *create(Cfg *Func, Option BundleOption) {
+  static InstBundleLock *create(Cfg *Func, CfgNode *Node, Option BundleOption) {
     return new (Func->allocate<InstBundleLock>())
-        InstBundleLock(Func, BundleOption);
+        InstBundleLock(Func, Node, BundleOption);
   }
   void emit(const Cfg *Func) const override;
   void emitIAS(const Cfg * /* Func */) const override {}
@@ -860,7 +856,7 @@ public:
 
 private:
   Option BundleOption;
-  InstBundleLock(Cfg *Func, Option BundleOption);
+  InstBundleLock(Cfg *Func, CfgNode *Node, Option BundleOption);
 };
 
 /// BundleUnlock instruction. There are no operands.
@@ -870,8 +866,8 @@ class InstBundleUnlock : public InstHighLevel {
   InstBundleUnlock &operator=(const InstBundleUnlock &) = delete;
 
 public:
-  static InstBundleUnlock *create(Cfg *Func) {
-    return new (Func->allocate<InstBundleUnlock>()) InstBundleUnlock(Func);
+  static InstBundleUnlock *create(Cfg *Func, CfgNode *Node) {
+    return new (Func->allocate<InstBundleUnlock>()) InstBundleUnlock(Func, Node);
   }
   void emit(const Cfg *Func) const override;
   void emitIAS(const Cfg * /* Func */) const override {}
@@ -882,7 +878,7 @@ public:
   }
 
 private:
-  explicit InstBundleUnlock(Cfg *Func);
+  explicit InstBundleUnlock(Cfg *Func, CfgNode *Node);
 };
 
 /// FakeDef instruction. This creates a fake definition of a variable, which is
@@ -902,9 +898,9 @@ class InstFakeDef : public InstHighLevel {
   InstFakeDef &operator=(const InstFakeDef &) = delete;
 
 public:
-  static InstFakeDef *create(Cfg *Func, Variable *Dest,
+  static InstFakeDef *create(Cfg *Func, CfgNode *Node, Variable *Dest,
                              Variable *Src = nullptr) {
-    return new (Func->allocate<InstFakeDef>()) InstFakeDef(Func, Dest, Src);
+    return new (Func->allocate<InstFakeDef>()) InstFakeDef(Func, Node, Dest, Src);
   }
   void emit(const Cfg *Func) const override;
   void emitIAS(const Cfg * /* Func */) const override {}
@@ -913,7 +909,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == FakeDef; }
 
 private:
-  InstFakeDef(Cfg *Func, Variable *Dest, Variable *Src);
+  InstFakeDef(Cfg *Func, CfgNode *Node, Variable *Dest, Variable *Src);
 };
 
 /// FakeUse instruction. This creates a fake use of a variable, to keep the
@@ -929,8 +925,8 @@ class InstFakeUse : public InstHighLevel {
   InstFakeUse &operator=(const InstFakeUse &) = delete;
 
 public:
-  static InstFakeUse *create(Cfg *Func, Variable *Src, uint32_t Weight = 1) {
-    return new (Func->allocate<InstFakeUse>()) InstFakeUse(Func, Src, Weight);
+  static InstFakeUse *create(Cfg *Func, CfgNode *Node, Variable *Src, uint32_t Weight = 1) {
+    return new (Func->allocate<InstFakeUse>()) InstFakeUse(Func, Node, Src, Weight);
   }
   void emit(const Cfg *Func) const override;
   void emitIAS(const Cfg * /* Func */) const override {}
@@ -939,7 +935,7 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() == FakeUse; }
 
 private:
-  InstFakeUse(Cfg *Func, Variable *Src, uint32_t Weight);
+  InstFakeUse(Cfg *Func, CfgNode *Node, Variable *Src, uint32_t Weight);
 };
 
 /// FakeKill instruction. This "kills" a set of variables by modeling a trivial
@@ -957,8 +953,8 @@ class InstFakeKill : public InstHighLevel {
   InstFakeKill &operator=(const InstFakeKill &) = delete;
 
 public:
-  static InstFakeKill *create(Cfg *Func, const Inst *Linked) {
-    return new (Func->allocate<InstFakeKill>()) InstFakeKill(Func, Linked);
+  static InstFakeKill *create(Cfg *Func, CfgNode *Node, const Inst *Linked) {
+    return new (Func->allocate<InstFakeKill>()) InstFakeKill(Func, Node, Linked);
   }
   const Inst *getLinked() const { return Linked; }
   void emit(const Cfg *Func) const override;
@@ -970,7 +966,7 @@ public:
   }
 
 private:
-  InstFakeKill(Cfg *Func, const Inst *Linked);
+  InstFakeKill(Cfg *Func, CfgNode *Node, const Inst *Linked);
 
   /// This instruction is ignored if Linked->isDeleted() is true.
   const Inst *Linked;
@@ -986,10 +982,10 @@ class InstShuffleVector : public InstHighLevel {
   InstShuffleVector &operator=(const InstShuffleVector &) = delete;
 
 public:
-  static InstShuffleVector *create(Cfg *Func, Variable *Dest, Operand *Src0,
+  static InstShuffleVector *create(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Src0,
                                    Operand *Src1) {
     return new (Func->allocate<InstShuffleVector>())
-        InstShuffleVector(Func, Dest, Src0, Src1);
+        InstShuffleVector(Func, Node, Dest, Src0, Src1);
   }
 
   SizeT getNumIndexes() const { return NumIndexes; }
@@ -1052,7 +1048,7 @@ public:
   }
 
 private:
-  InstShuffleVector(Cfg *Func, Variable *Dest, Operand *Src0, Operand *Src1);
+  InstShuffleVector(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Src0, Operand *Src1);
 
   void destroy(Cfg *Func) override {
     Func->deallocateArrayOf<ConstantInteger32 *>(Indexes);
@@ -1073,9 +1069,9 @@ class InstJumpTable : public InstHighLevel {
   InstJumpTable &operator=(const InstJumpTable &) = delete;
 
 public:
-  static InstJumpTable *create(Cfg *Func, SizeT NumTargets, CfgNode *Default) {
+  static InstJumpTable *create(Cfg *Func, CfgNode *Node, SizeT NumTargets, CfgNode *Default) {
     return new (Func->allocate<InstJumpTable>())
-        InstJumpTable(Func, NumTargets, Default);
+        InstJumpTable(Func, Node, NumTargets, Default);
   }
   void addTarget(SizeT TargetIndex, CfgNode *Target) {
     assert(TargetIndex < NumTargets);
@@ -1112,7 +1108,7 @@ public:
   }
 
 private:
-  InstJumpTable(Cfg *Func, SizeT NumTargets, CfgNode *Default);
+  InstJumpTable(Cfg *Func, CfgNode *Node, SizeT NumTargets, CfgNode *Default);
   void destroy(Cfg *Func) override {
     Func->deallocateArrayOf<CfgNode *>(Targets);
     Inst::destroy(Func);
@@ -1165,8 +1161,8 @@ public:
   static bool classof(const Inst *Instr) { return Instr->getKind() >= Target; }
 
 protected:
-  InstTarget(Cfg *Func, InstKind Kind, SizeT MaxSrcs, Variable *Dest)
-      : Inst(Func, Kind, MaxSrcs, Dest) {
+  InstTarget(Cfg *Func, CfgNode *Node, InstKind Kind, SizeT MaxSrcs, Variable *Dest)
+      : Inst(Func, Node, Kind, MaxSrcs, Dest) {
     assert(Kind >= Target);
     assert(Kind <= Target_Max);
   }

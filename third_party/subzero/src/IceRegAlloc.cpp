@@ -438,11 +438,11 @@ void LinearScan::addSpillFill(IterationState &Iter) {
   // is correctly identified as !isMultiBlock(), reducing stack frame size.
   Variable *SpillLoc = Func->makeVariable(Iter.Cur->getType());
   // Add "reg=FakeDef;spill=reg" before SpillPoint
-  Target->lowerInst(Node, SpillPoint, InstFakeDef::create(Func, Preg));
-  Target->lowerInst(Node, SpillPoint, InstAssign::create(Func, SpillLoc, Preg));
+  Target->lowerInst(Node, SpillPoint, InstFakeDef::create(Func, Node, Preg));
+  Target->lowerInst(Node, SpillPoint, InstAssign::create(Func, Node, SpillLoc, Preg));
   // add "reg=spill;FakeUse(reg)" before FillPoint
-  Target->lowerInst(Node, FillPoint, InstAssign::create(Func, Preg, SpillLoc));
-  Target->lowerInst(Node, FillPoint, InstFakeUse::create(Func, Preg));
+  Target->lowerInst(Node, FillPoint, InstAssign::create(Func, Node, Preg, SpillLoc));
+  Target->lowerInst(Node, FillPoint, InstFakeUse::create(Func, Node, Preg));
 }
 
 void LinearScan::handleActiveRangeExpiredOrInactive(const Variable *Cur) {

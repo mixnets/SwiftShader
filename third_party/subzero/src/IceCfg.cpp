@@ -205,7 +205,7 @@ void Cfg::addCallToProfileSummary() {
   constexpr Variable *Void = nullptr;
   constexpr bool HasTailCall = false;
   auto *Call =
-      InstCall::create(this, NumArgs, Void, ProfileSummarySym, HasTailCall);
+      InstCall::create(this, getEntryNode(), NumArgs, Void, ProfileSummarySym, HasTailCall);
   getEntryNode()->getInsts().push_front(Call);
 }
 
@@ -877,7 +877,7 @@ void Cfg::floatConstantCSE() {
           auto *NewVar = makeVariable(Pair.first->getType());
           // NewVar->setLinkedTo(Pair.first);
           // TODO(manasijm): Plumbing for linking to an Operand.
-          auto *Assign = InstAssign::create(Node->getCfg(), NewVar, Pair.first);
+          auto *Assign = InstAssign::create(Node->getCfg(), Node, NewVar, Pair.first);
           Insts.insert(Pair.second[0], Assign);
           ConstCache[Pair.first] = NewVar;
         }
@@ -885,7 +885,7 @@ void Cfg::floatConstantCSE() {
         auto *NewVar = makeVariable(Pair.first->getType());
         NewVar->setLinkedTo(ConstCache[Pair.first]);
         auto *Assign =
-            InstAssign::create(Node->getCfg(), NewVar, ConstCache[Pair.first]);
+            InstAssign::create(Node->getCfg(), Node, NewVar, ConstCache[Pair.first]);
 
         Insts.insert(Pair.second[0], Assign);
         for (auto InstUse : Pair.second) {

@@ -78,9 +78,6 @@ namespace
 		void setUses(Ice::Operand*, Optimizer::Uses*);
 		bool hasUses(Ice::Operand*) const;
 
-		Ice::CfgNode* getNode(Ice::Inst*);
-		void setNode(Ice::Inst*, Ice::CfgNode*);
-
 		Ice::Inst* getDefinition(Ice::Variable*);
 		void setDefinition(Ice::Variable*, Ice::Inst*);
 
@@ -341,12 +338,12 @@ namespace
 				continue;
 			}
 
-			Ice::CfgNode *singleBasicBlock = getNode(addressUses.stores[0]);
+			Ice::CfgNode *singleBasicBlock = addressUses.stores[0]->getNode();
 
 			for(size_t i = 1; i < addressUses.stores.size(); i++)
 			{
 				Ice::Inst *store = addressUses.stores[i];
-				if(getNode(store) != singleBasicBlock)
+				if(store->getNode() != singleBasicBlock)
 				{
 					singleBasicBlock = nullptr;
 					break;
@@ -438,7 +435,6 @@ namespace
 					continue;
 				}
 
-				setNode(&instruction, basicBlock);
 				if(instruction.getDest())
 				{
 					setDefinition(instruction.getDest(), &instruction);
@@ -727,16 +723,6 @@ namespace
 	bool Optimizer::hasUses(Ice::Operand* operand) const
 	{
 		return operand->Ice::Operand::getExternalData() != nullptr;
-	}
-
-	Ice::CfgNode* Optimizer::getNode(Ice::Inst* inst)
-	{
-		return (Ice::CfgNode*)inst->Ice::Inst::getExternalData();
-	}
-
-	void Optimizer::setNode(Ice::Inst* inst, Ice::CfgNode* node)
-	{
-		inst->Ice::Inst::setExternalData(node);
 	}
 
 	Ice::Inst* Optimizer::getDefinition(Ice::Variable* var)

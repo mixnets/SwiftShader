@@ -95,7 +95,7 @@ public:
   InstList::iterator getEnd() const { return End; }
   void insert(Inst *Instr);
   template <typename Inst, typename... Args> Inst *insert(Args &&... A) {
-    auto *New = Inst::create(Node->getCfg(), std::forward<Args>(A)...);
+    auto *New = Inst::create(Node->getCfg(), Node, std::forward<Args>(A)...);
     insert(New);
     return New;
   }

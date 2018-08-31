@@ -76,7 +76,7 @@ CaseClusterArray CaseCluster::clusterizeSwitch(Cfg *Func,
 
   // Replace everything with a jump table
   auto *JumpTable =
-      InstJumpTable::create(Func, TotalRange, Instr->getLabelDefault());
+      InstJumpTable::create(Func, Instr->getNode(), TotalRange, Instr->getLabelDefault());
   for (const CaseCluster &Case : CaseClusters) {
     // Case.High could be UINT64_MAX which makes the loop awkward. Unwrap the
     // last iteration to avoid wrap around problems.

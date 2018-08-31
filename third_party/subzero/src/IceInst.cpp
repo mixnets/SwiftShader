@@ -76,8 +76,8 @@ const struct InstIcmpAttributes_ {
 
 } // end of anonymous namespace
 
-Inst::Inst(Cfg *Func, InstKind Kind, SizeT MaxSrcs, Variable *Dest)
-    : Kind(Kind), Number(Func->newInstNumber()), Dest(Dest), MaxSrcs(MaxSrcs),
+Inst::Inst(Cfg *Func, CfgNode *Node, InstKind Kind, SizeT MaxSrcs, Variable *Dest)
+    : Kind(Kind), Number(Func->newInstNumber()), Node(Node), Dest(Dest), MaxSrcs(MaxSrcs),
       LiveRangesEnded(0) {
   Srcs.reserve(MaxSrcs);
 }
@@ -196,7 +196,7 @@ bool Inst::isMemoryWrite() const {
   llvm::report_fatal_error("Attempt to call base Inst::isMemoryWrite() method");
 }
 
-void Inst::livenessLightweight(Cfg *Func, LivenessBV &Live) {
+void Inst::livenessLightweight(Cfg *Func, CfgNode *Node, LivenessBV &Live) {
   assert(!isDeleted());
   resetLastUses();
   VariablesMetadata *VMetadata = Func->getVMetadata();
@@ -270,17 +270,17 @@ bool Inst::liveness(InstNumberT InstNumber, LivenessBV &Live,
   return true;
 }
 
-InstAlloca::InstAlloca(Cfg *Func, Variable *Dest, Operand *ByteCount,
+InstAlloca::InstAlloca(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *ByteCount,
                        uint32_t AlignInBytes)
-    : InstHighLevel(Func, Inst::Alloca, 1, Dest), AlignInBytes(AlignInBytes) {
+    : InstHighLevel(Func, Node, Inst::Alloca, 1, Dest), AlignInBytes(AlignInBytes) {
   // Verify AlignInBytes is 0 or a power of 2.
   assert(AlignInBytes == 0 || llvm::isPowerOf2_32(AlignInBytes));
   addSource(ByteCount);
 }
 
-InstArithmetic::InstArithmetic(Cfg *Func, OpKind Op, Variable *Dest,
+InstArithmetic::InstArithmetic(Cfg *Func, CfgNode *Node, OpKind Op, Variable *Dest,
                                Operand *Source1, Operand *Source2)
-    : InstHighLevel(Func, Inst::Arithmetic, 2, Dest), Op(Op) {
+    : InstHighLevel(Func, Node, Inst::Arithmetic, 2, Dest), Op(Op) {
   addSource(Source1);
   addSource(Source2);
 }
@@ -301,8 +301,8 @@ bool InstArithmetic::isCommutative() const {
   return InstArithmeticAttributes[getOp()].IsCommutative;
 }
 
-InstAssign::InstAssign(Cfg *Func, Variable *Dest, Operand *Source)
-    : InstHighLevel(Func, Inst::Assign, 1, Dest) {
+InstAssign::InstAssign(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Source)
+    : InstHighLevel(Func, Node, Inst::Assign, 1, Dest) {
   addSource(Source);
 }
 
@@ -311,9 +311,9 @@ bool InstAssign::isVarAssign() const { return llvm::isa<Variable>(getSrc(0)); }
 // If TargetTrue==TargetFalse, we turn it into an unconditional branch. This
 // ensures that, along with the 'switch' instruction semantics, there is at
 // most one edge from one node to another.
-InstBr::InstBr(Cfg *Func, Operand *Source, CfgNode *TargetTrue_,
+InstBr::InstBr(Cfg *Func, CfgNode *Node, Operand *Source, CfgNode *TargetTrue_,
                CfgNode *TargetFalse_)
-    : InstHighLevel(Func, Inst::Br, 1, nullptr), TargetFalse(TargetFalse_),
+    : InstHighLevel(Func, Node, Inst::Br, 1, nullptr), TargetFalse(TargetFalse_),
       TargetTrue(TargetTrue_) {
   if (auto *Constant = llvm::dyn_cast<ConstantInteger32>(Source)) {
     int32_t C32 = Constant->getValue();
@@ -328,8 +328,8 @@ InstBr::InstBr(Cfg *Func, Operand *Source, CfgNode *TargetTrue_,
   }
 }
 
-InstBr::InstBr(Cfg *Func, CfgNode *Target)
-    : InstHighLevel(Func, Inst::Br, 0, nullptr), TargetFalse(Target),
+InstBr::InstBr(Cfg *Func, CfgNode *Node, CfgNode *Target)
+    : InstHighLevel(Func, Node, Inst::Br, 0, nullptr), TargetFalse(Target),
       TargetTrue(nullptr) {}
 
 NodeList InstBr::getTerminatorEdges() const {
@@ -354,48 +354,48 @@ bool InstBr::repointEdges(CfgNode *OldNode, CfgNode *NewNode) {
   return Found;
 }
 
-InstCast::InstCast(Cfg *Func, OpKind CastKind, Variable *Dest, Operand *Source)
-    : InstHighLevel(Func, Inst::Cast, 1, Dest), CastKind(CastKind) {
+InstCast::InstCast(Cfg *Func, CfgNode *Node, OpKind CastKind, Variable *Dest, Operand *Source)
+    : InstHighLevel(Func, Node, Inst::Cast, 1, Dest), CastKind(CastKind) {
   addSource(Source);
 }
 
-InstExtractElement::InstExtractElement(Cfg *Func, Variable *Dest,
+InstExtractElement::InstExtractElement(Cfg *Func, CfgNode *Node, Variable *Dest,
                                        Operand *Source1, Operand *Source2)
-    : InstHighLevel(Func, Inst::ExtractElement, 2, Dest) {
+    : InstHighLevel(Func, Node, Inst::ExtractElement, 2, Dest) {
   addSource(Source1);
   addSource(Source2);
 }
 
-InstFcmp::InstFcmp(Cfg *Func, FCond Condition, Variable *Dest, Operand *Source1,
+InstFcmp::InstFcmp(Cfg *Func, CfgNode *Node, FCond Condition, Variable *Dest, Operand *Source1,
                    Operand *Source2)
-    : InstHighLevel(Func, Inst::Fcmp, 2, Dest), Condition(Condition) {
+    : InstHighLevel(Func, Node, Inst::Fcmp, 2, Dest), Condition(Condition) {
   addSource(Source1);
   addSource(Source2);
 }
 
-InstIcmp::InstIcmp(Cfg *Func, ICond Condition, Variable *Dest, Operand *Source1,
+InstIcmp::InstIcmp(Cfg *Func, CfgNode *Node, ICond Condition, Variable *Dest, Operand *Source1,
                    Operand *Source2)
-    : InstHighLevel(Func, Inst::Icmp, 2, Dest), Condition(Condition) {
+    : InstHighLevel(Func, Node, Inst::Icmp, 2, Dest), Condition(Condition) {
   addSource(Source1);
   addSource(Source2);
 }
 
-InstInsertElement::InstInsertElement(Cfg *Func, Variable *Dest,
+InstInsertElement::InstInsertElement(Cfg *Func, CfgNode *Node, Variable *Dest,
                                      Operand *Source1, Operand *Source2,
                                      Operand *Source3)
-    : InstHighLevel(Func, Inst::InsertElement, 3, Dest) {
+    : InstHighLevel(Func, Node, Inst::InsertElement, 3, Dest) {
   addSource(Source1);
   addSource(Source2);
   addSource(Source3);
 }
 
-InstLoad::InstLoad(Cfg *Func, Variable *Dest, Operand *SourceAddr)
-    : InstHighLevel(Func, Inst::Load, 1, Dest) {
+InstLoad::InstLoad(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *SourceAddr)
+    : InstHighLevel(Func, Node, Inst::Load, 1, Dest) {
   addSource(SourceAddr);
 }
 
-InstPhi::InstPhi(Cfg *Func, SizeT MaxSrcs, Variable *Dest)
-    : InstHighLevel(Func, Phi, MaxSrcs, Dest) {
+InstPhi::InstPhi(Cfg *Func, CfgNode *Node, SizeT MaxSrcs, Variable *Dest)
+    : InstHighLevel(Func, Node, Phi, MaxSrcs, Dest) {
   Labels.reserve(MaxSrcs);
 }
 
@@ -468,26 +468,26 @@ Inst *InstPhi::lower(Cfg *Func) {
   if (auto *NewSrc64On32 = llvm::dyn_cast<Variable64On32>(NewSrc))
     NewSrc64On32->initHiLo(Func);
   this->Dest = NewSrc;
-  return InstAssign::create(Func, Dest, NewSrc);
+  return InstAssign::create(Func, Node, Dest, NewSrc);
 }
 
-InstRet::InstRet(Cfg *Func, Operand *RetValue)
-    : InstHighLevel(Func, Ret, RetValue ? 1 : 0, nullptr) {
+InstRet::InstRet(Cfg *Func, CfgNode *Node, Operand *RetValue)
+    : InstHighLevel(Func, Node, Ret, RetValue ? 1 : 0, nullptr) {
   if (RetValue)
     addSource(RetValue);
 }
 
-InstSelect::InstSelect(Cfg *Func, Variable *Dest, Operand *Condition,
+InstSelect::InstSelect(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Condition,
                        Operand *SourceTrue, Operand *SourceFalse)
-    : InstHighLevel(Func, Inst::Select, 3, Dest) {
+    : InstHighLevel(Func, Node, Inst::Select, 3, Dest) {
   assert(typeElementType(Condition->getType()) == IceType_i1);
   addSource(Condition);
   addSource(SourceTrue);
   addSource(SourceFalse);
 }
 
-InstStore::InstStore(Cfg *Func, Operand *Data, Operand *Addr)
-    : InstHighLevel(Func, Inst::Store, 3, nullptr) {
+InstStore::InstStore(Cfg *Func, CfgNode *Node, Operand *Data, Operand *Addr)
+    : InstHighLevel(Func, Node, Inst::Store, 3, nullptr) {
   addSource(Data);
   addSource(Addr);
   // The 3rd operand is a dummy placeholder for the RMW beacon.
@@ -503,9 +503,9 @@ void InstStore::setRmwBeacon(Variable *Beacon) {
   Srcs[2] = Beacon;
 }
 
-InstSwitch::InstSwitch(Cfg *Func, SizeT NumCases, Operand *Source,
+InstSwitch::InstSwitch(Cfg *Func, CfgNode *Node, SizeT NumCases, Operand *Source,
                        CfgNode *LabelDefault)
-    : InstHighLevel(Func, Inst::Switch, 1, nullptr), LabelDefault(LabelDefault),
+    : InstHighLevel(Func, Node, Inst::Switch, 1, nullptr), LabelDefault(LabelDefault),
       NumCases(NumCases) {
   addSource(Source);
   Values = Func->allocateArrayOf<uint64_t>(NumCases);
@@ -556,36 +556,36 @@ bool InstSwitch::repointEdges(CfgNode *OldNode, CfgNode *NewNode) {
   return Found;
 }
 
-InstUnreachable::InstUnreachable(Cfg *Func)
-    : InstHighLevel(Func, Inst::Unreachable, 0, nullptr) {}
+InstUnreachable::InstUnreachable(Cfg *Func, CfgNode *Node)
+    : InstHighLevel(Func, Node, Inst::Unreachable, 0, nullptr) {}
 
-InstBundleLock::InstBundleLock(Cfg *Func, InstBundleLock::Option BundleOption)
-    : InstHighLevel(Func, Inst::BundleLock, 0, nullptr),
+InstBundleLock::InstBundleLock(Cfg *Func, CfgNode *Node, InstBundleLock::Option BundleOption)
+    : InstHighLevel(Func, Node, Inst::BundleLock, 0, nullptr),
       BundleOption(BundleOption) {}
 
-InstBundleUnlock::InstBundleUnlock(Cfg *Func)
-    : InstHighLevel(Func, Inst::BundleUnlock, 0, nullptr) {}
+InstBundleUnlock::InstBundleUnlock(Cfg *Func, CfgNode *Node)
+    : InstHighLevel(Func, Node, Inst::BundleUnlock, 0, nullptr) {}
 
-InstFakeDef::InstFakeDef(Cfg *Func, Variable *Dest, Variable *Src)
-    : InstHighLevel(Func, Inst::FakeDef, Src ? 1 : 0, Dest) {
+InstFakeDef::InstFakeDef(Cfg *Func, CfgNode *Node, Variable *Dest, Variable *Src)
+    : InstHighLevel(Func, Node, Inst::FakeDef, Src ? 1 : 0, Dest) {
   assert(Dest);
   if (Src)
     addSource(Src);
 }
 
-InstFakeUse::InstFakeUse(Cfg *Func, Variable *Src, uint32_t Weight)
-    : InstHighLevel(Func, Inst::FakeUse, Weight, nullptr) {
+InstFakeUse::InstFakeUse(Cfg *Func, CfgNode *Node, Variable *Src, uint32_t Weight)
+    : InstHighLevel(Func, Node, Inst::FakeUse, Weight, nullptr) {
   assert(Src);
   for (uint32_t i = 0; i < Weight; ++i)
     addSource(Src);
 }
 
-InstFakeKill::InstFakeKill(Cfg *Func, const Inst *Linked)
-    : InstHighLevel(Func, Inst::FakeKill, 0, nullptr), Linked(Linked) {}
+InstFakeKill::InstFakeKill(Cfg *Func, CfgNode *Node, const Inst *Linked)
+    : InstHighLevel(Func, Node, Inst::FakeKill, 0, nullptr), Linked(Linked) {}
 
-InstShuffleVector::InstShuffleVector(Cfg *Func, Variable *Dest, Operand *Src0,
+InstShuffleVector::InstShuffleVector(Cfg *Func, CfgNode *Node, Variable *Dest, Operand *Src0,
                                      Operand *Src1)
-    : InstHighLevel(Func, Inst::ShuffleVector, 2, Dest),
+    : InstHighLevel(Func, Node, Inst::ShuffleVector, 2, Dest),
       NumIndexes(typeNumElements(Dest->getType())) {
   addSource(Src0);
   addSource(Src1);
@@ -593,7 +593,7 @@ InstShuffleVector::InstShuffleVector(Cfg *Func, Variable *Dest, Operand *Src0,
 }
 
 namespace {
-GlobalString makeName(Cfg *Func, const SizeT Id) {
+GlobalString makeName(Cfg *Func, CfgNode *Node, const SizeT Id) {
   const auto FuncName = Func->getFunctionName();
   auto *Ctx = Func->getContext();
   if (FuncName.hasStdString())
@@ -604,10 +604,10 @@ GlobalString makeName(Cfg *Func, const SizeT Id) {
 }
 } // end of anonymous namespace
 
-InstJumpTable::InstJumpTable(Cfg *Func, SizeT NumTargets, CfgNode *Default)
-    : InstHighLevel(Func, Inst::JumpTable, 1, nullptr),
+InstJumpTable::InstJumpTable(Cfg *Func, CfgNode *Node, SizeT NumTargets, CfgNode *Default)
+    : InstHighLevel(Func, Node, Inst::JumpTable, 1, nullptr),
       Id(Func->getTarget()->makeNextJumpTableNumber()), NumTargets(NumTargets),
-      Name(makeName(Func, Id)), FuncName(Func->getFunctionName()) {
+      Name(makeName(Func, Node, Id)), FuncName(Func->getFunctionName()) {
   Targets = Func->allocateArrayOf<CfgNode *>(NumTargets);
   for (SizeT I = 0; I < NumTargets; ++I) {
     Targets[I] = Default;
@@ -1084,7 +1084,7 @@ void InstTarget::dump(const Cfg *Func) const {
 }
 
 InstBreakpoint::InstBreakpoint(Cfg *Func)
-    : InstHighLevel(Func, Inst::Breakpoint, 0, nullptr) {}
+    : InstHighLevel(Func, Node, Inst::Breakpoint, 0, nullptr) {}
 
 void InstIcmp::reverseConditionAndOperands() {
   Condition = InstIcmpAttributes[Condition].Reverse;
