@@ -699,6 +699,7 @@ public:
 	Device *getDevice();
 
 	const GLubyte *getExtensions(GLuint index, GLuint *numExt = nullptr) const;
+	sw::MutexLock *getLock() { return mResourceManager->getLock(); }
 
 private:
 	~Context() override;
@@ -769,6 +770,19 @@ private:
 	Device *device;
 	ResourceManager *mResourceManager;
 };
+
+// ptr to a context, which also holds the context's resource manager's lock.
+class ContextPtr {
+public:
+	explicit ContextPtr(Context *context) : ptr(context), lock(context ? context->getLock() : nullptr) {}
+	Context *operator ->() { return ptr; }
+	operator bool() const { return ptr != nullptr; }
+
+private:
+	Context *ptr;
+	LockGuard lock;
+};
+
 }
 
 #endif   // INCLUDE_CONTEXT_H_
