@@ -51,6 +51,22 @@ inline void destroy(VkT vkObject, const VkAllocationCallbacks* pAllocator)
 	}
 }
 
+template<typename T>
+inline VkResult CheckAndSet(T* object, typename T::VkType* vkObject, const VkAllocationCallbacks* pAllocator)
+{
+	if(object)
+	{
+		*vkObject = *object;
+		if(object->validate())
+		{
+			return VK_SUCCESS;
+		}
+		vk::destroy(*vkObject, pAllocator);
+	}
+
+	*vkObject = VK_NULL_HANDLE;
+	return VK_ERROR_OUT_OF_HOST_MEMORY;
+}
 } // namespace vk
 
 #endif // VK_MEMORY_HPP_

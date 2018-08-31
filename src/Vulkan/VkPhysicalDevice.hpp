@@ -20,11 +20,12 @@
 namespace vk
 {
 
-class PhysicalDevice : public VkObject<PhysicalDevice, VkPhysicalDevice>
+class PhysicalDevice : public VkDispatchableObject<PhysicalDevice, VkPhysicalDevice>
 {
 public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_DEVICE; }
 
+	PhysicalDevice();
 	~PhysicalDevice() = delete;
 
 	const VkPhysicalDeviceFeatures& getFeatures() const;
@@ -38,22 +39,23 @@ public:
 	void getQueueFamilyProperties(uint32_t pQueueFamilyPropertyCount,
 	                              VkQueueFamilyProperties* pQueueFamilyProperties) const;
 	const VkPhysicalDeviceMemoryProperties& getMemoryProperties() const;
+	void getSparseImageFormatProperties(VkFormat format, VkImageType type,
+	                                    VkSampleCountFlagBits samples,
+	                                    VkImageUsageFlags usage,
+	                                    VkImageTiling tiling,
+	                                    uint32_t* pPropertyCount,
+	                                    VkSparseImageFormatProperties* pProperties) const;
 
 private:
-	// Dispatchable objects have private constructors
-	PhysicalDevice();
-	// Only the base class may instantiate this object
-	friend class VkObject<PhysicalDevice, VkPhysicalDevice>;
-
 	const VkPhysicalDeviceLimits& getLimits() const;
 	VkSampleCountFlags getSampleCounts() const;
 
 	const char *const name = nullptr;
 };
 
-static PhysicalDevice* Cast(VkPhysicalDevice physicalDevice)
+static inline PhysicalDevice* Cast(VkPhysicalDevice object)
 {
-	return reinterpret_cast<PhysicalDevice::DispatchableType*>(physicalDevice)->get();
+	return PhysicalDevice::Cast(object);
 }
 
 } // namespace vk

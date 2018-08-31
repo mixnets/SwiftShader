@@ -25,64 +25,15 @@ namespace vk
 // For use in the placement new to make it verbose that we're allocating an object using internal memory
 static constexpr VkAllocationCallbacks* INTERNAL_MEMORY = nullptr;
 
-// Wrapper around dispatchable objects (Instance, PhysicalDevice, Device, CommandBuffer and Queue)
-template<typename T, typename VkT>
-class VkDispatchableObject
-{
-	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
-public:
-	VkDispatchableObject(T* pDispatchableObject) : dispatchableObject(pDispatchableObject)
-	{
-	}
-
-	operator VkT()
-	{
-		return reinterpret_cast<VkT>(this);
-	}
-
-	void destroy(const VkAllocationCallbacks* pAllocator)
-	{
-		if(dispatchableObject)
-		{
-			vk::destroy(dispatchableObject, pAllocator);
-			dispatchableObject = nullptr;
-		}
-	}
-
-	void* operator new(size_t count, const VkAllocationCallbacks* pAllocator)
-	{
-		return vk::allocate(count, pAllocator, T::GetAllocationScope());
-	}
-
-	void operator delete(void* ptr, const VkAllocationCallbacks* pAllocator)
-	{
-		// Does nothing, objects are deleted through the destroy function
-		ASSERT(false);
-	}
-
-	T* get()
-	{
-		return dispatchableObject;
-	}
-private:
-	T* dispatchableObject = nullptr;
-};
-
 template<typename T, typename VkT>
 class VkObject
 {
 public:
-	typedef VkDispatchableObject<T, VkT> DispatchableType;
+	typedef VkT VkType;
 
-	operator VkT()
+	virtual operator VkT()
 	{
 		return reinterpret_cast<VkT>(this);
-	}
-
-	template<class ...Args>
-	static VkT newDispatchable(const VkAllocationCallbacks* pAllocator, Args... args)
-	{
-		return *new (pAllocator) DispatchableType(new (pAllocator) T(args...));
 	}
 
 	virtual void destroy(const VkAllocationCallbacks* pAllocator) {} // Method overridden by objects to delete their content, if necessary
@@ -98,11 +49,37 @@ public:
 		ASSERT(false);
 	}
 
+	virtual bool validate() const
+	{
+		return true;
+	}
+
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_OBJECT; }
 
 protected:
 	// All derived classes should have deleted destructors
 	~VkObject() {}
+};
+
+template<typename T, typename VkT>
+class VkDispatchableObject : public VkObject<T, VkT>
+{
+	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
+
+	static int loaderDataOffset()
+	{
+		return (int)(size_t)&reinterpret_cast<const volatile char&>((((T*)0)->loaderData));
+	}
+public:
+	static T* Cast(VkT vkObject)
+	{
+		return vkObject ? reinterpret_cast<T*>(reinterpret_cast<char*>(vkObject) - loaderDataOffset()) : nullptr;
+	}
+
+	operator VkT() override
+	{
+		return reinterpret_cast<VkT>(&loaderData);
+	}
 };
 
 } // namespace vk

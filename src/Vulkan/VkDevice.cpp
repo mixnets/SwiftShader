@@ -14,6 +14,7 @@
 
 #include "VkDevice.hpp"
 #include "VkConfig.h"
+#include "VkImage.hpp"
 #include "VkPhysicalDevice.hpp"
 #include "VkQueue.hpp"
 
@@ -32,20 +33,36 @@ Device::Device(const VkAllocationCallbacks* pAllocator, VkPhysicalDevice pPhysic
 
 	queues = reinterpret_cast<VkQueue*>(vk::allocate(sizeof(Queue*) * queueCount, pAllocator));
 
-	uint32_t queueID = 0;
-	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
+	if(queues)
 	{
-		const VkDeviceQueueCreateInfo& queueCreateInfo = pCreateInfo->pQueueCreateInfos[i];
-
-		for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++, queueID++)
+		uint32_t queueID = 0;
+		for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
 		{
-			queues[queueID] = vk::Queue::newDispatchable(pAllocator,
-				queueCreateInfo.queueFamilyIndex, queueCreateInfo.pQueuePriorities[j]);
-		}
-	}
+			const VkDeviceQueueCreateInfo& queueCreateInfo = pCreateInfo->pQueueCreateInfos[i];
 
-	// Keep this->queueCount to 0 until all queues are constructed
-	this->queueCount = queueCount;
+			if(queueCreateInfo.flags)
+			{
+				UNIMPLEMENTED();
+			}
+
+			for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++, queueID++)
+			{
+				vk::Queue* queue = new (pAllocator) vk::Queue(
+					queueCreateInfo.queueFamilyIndex, queueCreateInfo.pQueuePriorities[j]);
+				if(queue)
+				{
+					queues[queueID] = *queue;
+				}
+				else
+				{
+					queues[queueID] = VK_NULL_HANDLE;
+				}
+			}
+		}
+
+		// Keep this->queueCount to 0 until all queues are constructed
+		this->queueCount = queueCount;
+	}
 }
 
 void Device::destroy(const VkAllocationCallbacks* pAllocator)
@@ -59,9 +76,53 @@ void Device::destroy(const VkAllocationCallbacks* pAllocator)
 	queueCount = 0;
 }
 
+bool Device::validate() const
+{
+	for(uint32_t i = 0; i < queueCount; i++)
+	{
+		if(!queues[i] || !vk::Cast(queues[i])->validate())
+		{
+			return false;
+		}
+	}
+
+	return !!queues;
+}
+
 VkQueue Device::getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const
 {
 	return queues[queueIndex];
+}
+
+void Device::waitForFences(uint32_t fenceCount, const VkFence* pFences, VkBool32 waitAll, uint64_t timeout)
+{
+	// noop
+}
+
+void Device::waitIdle()
+{
+	for(uint32_t i = 0; i < queueCount; i++)
+	{
+		vk::Cast(queues[i])->waitIdle();
+	}
+}
+
+void Device::getImageSparseMemoryRequirements(VkImage pImage, uint32_t* pSparseMemoryRequirementCount,
+	                                          VkSparseImageMemoryRequirements* pSparseMemoryRequirements) const
+{
+	if(!pSparseMemoryRequirements)
+	{
+		*pSparseMemoryRequirementCount = 1;
+	}
+	else
+	{
+		auto image = vk::Cast(pImage);
+		uint32_t propertyCount = 1;
+		vk::Cast(physicalDevice)->getSparseImageFormatProperties(
+			image->getFormat(), image->getImageType(), image->getSamples(), image->getUsage(),
+			image->getTiling(), &propertyCount, &(pSparseMemoryRequirements->formatProperties));
+		image->getImageMipTailInfo(pSparseMemoryRequirements);
+	}
 }
 
 } // namespace vk

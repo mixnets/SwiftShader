@@ -12,27 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_OBJECT_HPP_
-#define VK_OBJECT_HPP_
+#ifndef VK_BUFFER_VIEW_HPP_
+#define VK_BUFFER_VIEW_HPP_
 
 #include "VkConfig.h"
-#include "VkMemory.h"
+#include "VkObject.hpp"
 
 namespace vk
 {
 
-void* allocate(size_t count, const VkAllocationCallbacks* pAllocator, VkSystemAllocationScope allocationScope)
+class BufferView : public VkObject<BufferView, VkBufferView>
 {
-	return pAllocator ?
-		pAllocator->pfnAllocation(nullptr, count, REQUIRED_MEMORY_ALIGNMENT, allocationScope) :
-		sw::allocate(count, REQUIRED_MEMORY_ALIGNMENT);
-}
+public:
+	BufferView(const VkBufferViewCreateInfo* pCreateInfo) :
+		buffer(pCreateInfo->buffer), format(pCreateInfo->format), offset(pCreateInfo->offset), range(pCreateInfo->range)
+	{
+	}
 
-void deallocate(void* ptr, const VkAllocationCallbacks* pAllocator)
+	~BufferView() = delete;
+
+private:
+	VkBuffer                   buffer;
+	VkFormat                   format;
+	VkDeviceSize               offset;
+	VkDeviceSize               range;
+};
+
+static inline BufferView* Cast(VkBufferView object)
 {
-	pAllocator ? pAllocator->pfnFree(nullptr, ptr) : sw::deallocate(ptr);
+	return reinterpret_cast<BufferView*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_OBJECT_HPP_
+#endif // VK_BUFFER_VIEW_HPP_

@@ -12,27 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_OBJECT_HPP_
-#define VK_OBJECT_HPP_
+#ifndef VK_FENCE_HPP_
+#define VK_FENCE_HPP_
 
-#include "VkConfig.h"
-#include "VkMemory.h"
+#include "VkObject.hpp"
 
 namespace vk
 {
 
-void* allocate(size_t count, const VkAllocationCallbacks* pAllocator, VkSystemAllocationScope allocationScope)
+class Fence : public VkObject<Fence, VkFence>
 {
-	return pAllocator ?
-		pAllocator->pfnAllocation(nullptr, count, REQUIRED_MEMORY_ALIGNMENT, allocationScope) :
-		sw::allocate(count, REQUIRED_MEMORY_ALIGNMENT);
-}
+public:
+	Fence(const VkFenceCreateInfo* pCreateInfo) : flags(pCreateInfo->flags) {}
 
-void deallocate(void* ptr, const VkAllocationCallbacks* pAllocator)
+	~Fence() = delete;
+
+	void signal()
+	{
+		isSignaled = true;
+	}
+
+	void reset()
+	{
+		isSignaled = false;
+	}
+
+	VkResult getStatus() const
+	{
+		return isSignaled ? VK_SUCCESS : VK_NOT_READY;
+	}
+
+private:
+	VkFenceCreateFlags flags = 0;
+	bool isSignaled = false;
+};
+
+static inline Fence* Cast(VkFence object)
 {
-	pAllocator ? pAllocator->pfnFree(nullptr, ptr) : sw::deallocate(ptr);
+	return reinterpret_cast<Fence*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_OBJECT_HPP_
+#endif // VK_FENCE_HPP_

@@ -12,27 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_OBJECT_HPP_
-#define VK_OBJECT_HPP_
+#ifndef VK_DESCRIPTOR_SET_LAYOUT_HPP_
+#define VK_DESCRIPTOR_SET_LAYOUT_HPP_
 
-#include "VkConfig.h"
-#include "VkMemory.h"
+#include "VkObject.hpp"
 
 namespace vk
 {
 
-void* allocate(size_t count, const VkAllocationCallbacks* pAllocator, VkSystemAllocationScope allocationScope)
+class DescriptorSetLayout : public VkObject<DescriptorSetLayout, VkDescriptorSetLayout>
 {
-	return pAllocator ?
-		pAllocator->pfnAllocation(nullptr, count, REQUIRED_MEMORY_ALIGNMENT, allocationScope) :
-		sw::allocate(count, REQUIRED_MEMORY_ALIGNMENT);
-}
+public:
+	DescriptorSetLayout(const VkDescriptorSetLayoutCreateInfo* pCreateInfo)
+	{
+	}
 
-void deallocate(void* ptr, const VkAllocationCallbacks* pAllocator)
+	~DescriptorSetLayout() = delete;
+
+	void destroy(const VkAllocationCallbacks* pAllocator) override
+	{
+	}
+
+private:
+};
+
+static inline DescriptorSetLayout* Cast(VkDescriptorSetLayout object)
 {
-	pAllocator ? pAllocator->pfnFree(nullptr, ptr) : sw::deallocate(ptr);
+	return reinterpret_cast<DescriptorSetLayout*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_OBJECT_HPP_
+#endif // VK_DESCRIPTOR_SET_LAYOUT_HPP_

@@ -21,24 +21,49 @@
 namespace vk
 {
 
-class CommandBuffer : public VkObject<CommandBuffer, VkCommandBuffer>
+class CommandBuffer : public VkDispatchableObject<CommandBuffer, VkCommandBuffer>
 {
 public:
+	CommandBuffer(VkCommandBufferLevel pLevel);
 	~CommandBuffer() = delete;
 
-private:
-	// Dispatchable objects have private constructors
-	CommandBuffer(VkCommandBufferLevel pLevel);
-	// Only the base class may instantiate this object
-	friend class VkObject<CommandBuffer, VkCommandBuffer>;
+	void destroy(const VkAllocationCallbacks* pAllocator);
+	void begin(VkCommandBufferUsageFlags flags, const VkCommandBufferInheritanceInfo* pInheritanceInfo);
+	void end();
+	void beginRenderPass(VkRenderPass renderPass, VkFramebuffer framebuffer, VkRect2D renderArea,
+	                     uint32_t clearValueCount, const VkClearValue* pClearValues, VkSubpassContents contents);
+	void endRenderPass();
+	void pipelineBarrier(VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkDependencyFlags dependencyFlags,
+	                     uint32_t memoryBarrierCount, const VkMemoryBarrier* pMemoryBarriers,
+	                     uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier* pBufferMemoryBarriers,
+	                     uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier* pImageMemoryBarriers);
+	void bindPipeline(VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline);
+	void bindVertexBuffers(uint32_t firstBinding, uint32_t bindingCount,
+	                       const VkBuffer* pBuffers, const VkDeviceSize* pOffsets);
 
+	void draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance);
+	void drawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance);
+	void drawIndirect(VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride);
+	void drawIndexedIndirect(VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride);
+	void copyImageToBuffer(VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer,
+	                       uint32_t regionCount, const VkBufferImageCopy* pRegions);
+	void submit();
+
+private:
 	VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	VkPipeline pipelines[VK_PIPELINE_BIND_POINT_RANGE_SIZE];
+
+	struct VertexInputBindings
+	{
+		VkBuffer buffer;
+		VkDeviceSize offset;
+	};
+	VertexInputBindings vertexInputBindings[MaxVertexInputBindings];
 };
 
-static CommandBuffer* Cast(VkCommandBuffer commandBuffer)
+static inline CommandBuffer* Cast(VkCommandBuffer object)
 {
-	return reinterpret_cast<CommandBuffer::DispatchableType*>(commandBuffer)->get();
+	return CommandBuffer::Cast(object);
 }
 
 } // namespace vk

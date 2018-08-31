@@ -20,31 +20,32 @@
 namespace vk
 {
 
-class Device : public VkObject<Device, VkDevice>
+class Device : public VkDispatchableObject<Device, VkDevice>
 {
 public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_DEVICE; }
 
-	~Device() = delete;
-	void destroy(const VkAllocationCallbacks* pAllocator);
-
-	VkQueue getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const;
-
-private:
-	// Dispatchable objects have private constructors
 	Device(const VkAllocationCallbacks* pAllocator, VkPhysicalDevice pPhysicalDevice,
 	       const VkDeviceCreateInfo* pCreateInfo);
-	// Only the base class may instantiate this object
-	friend class VkObject<Device, VkDevice>;
+	~Device() = delete;
+	void destroy(const VkAllocationCallbacks* pAllocator);
+	bool validate() const override;
 
+	VkQueue getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const;
+	void waitForFences(uint32_t fenceCount, const VkFence* pFences, VkBool32 waitAll, uint64_t timeout);
+	void waitIdle();
+	void getImageSparseMemoryRequirements(VkImage image, uint32_t* pSparseMemoryRequirementCount,
+	                                      VkSparseImageMemoryRequirements* pSparseMemoryRequirements) const;
+
+private:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkQueue* queues = nullptr;
 	uint32_t queueCount = 0;
 };
 
-static Device* Cast(VkDevice device)
+static inline Device* Cast(VkDevice object)
 {
-	return reinterpret_cast<Device::DispatchableType*>(device)->get();
+	return Device::Cast(object);
 }
 
 } // namespace vk

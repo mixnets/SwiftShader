@@ -12,27 +12,49 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_OBJECT_HPP_
-#define VK_OBJECT_HPP_
+#ifndef VK_EVENT_HPP_
+#define VK_EVENT_HPP_
 
-#include "VkConfig.h"
-#include "VkMemory.h"
+#include "VkObject.hpp"
 
 namespace vk
 {
 
-void* allocate(size_t count, const VkAllocationCallbacks* pAllocator, VkSystemAllocationScope allocationScope)
+class Event : public VkObject<Event, VkEvent>
 {
-	return pAllocator ?
-		pAllocator->pfnAllocation(nullptr, count, REQUIRED_MEMORY_ALIGNMENT, allocationScope) :
-		sw::allocate(count, REQUIRED_MEMORY_ALIGNMENT);
-}
+public:
+	Event( const VkEventCreateInfo* pCreateInfo) :
+		flags(pCreateInfo->flags)
+	{
+	}
 
-void deallocate(void* ptr, const VkAllocationCallbacks* pAllocator)
+	~Event() = delete;
+
+	void signal()
+	{
+		isSignaled = true;
+	}
+
+	void reset()
+	{
+		isSignaled = false;
+	}
+
+	VkResult getStatus() const
+	{
+		return isSignaled ? VK_EVENT_SET : VK_EVENT_RESET;
+	}
+
+private:
+	VkEventCreateFlags flags;
+	bool isSignaled = false;
+};
+
+static inline Event* Cast(VkEvent object)
 {
-	pAllocator ? pAllocator->pfnFree(nullptr, ptr) : sw::deallocate(ptr);
+	return reinterpret_cast<Event*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_OBJECT_HPP_
+#endif // VK_EVENT_HPP_

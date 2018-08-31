@@ -20,13 +20,15 @@
 namespace vk
 {
 
-class Instance : public VkObject<Instance, VkInstance>
+class Instance : public VkDispatchableObject<Instance, VkInstance>
 {
 public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE; }
 
+	Instance(const VkAllocationCallbacks* pAllocator);
 	~Instance() = delete;
 	void destroy(const VkAllocationCallbacks* pAllocator);
+	bool validate() const override;
 
 	uint32_t getPhysicalDeviceCount() const;
 	void getPhysicalDevices(uint32_t pPhysicalDeviceCount, VkPhysicalDevice* pPhysicalDevices) const;
@@ -34,18 +36,13 @@ public:
 	void getPhysicalDeviceGroups(uint32_t pPhysicalDeviceGroupCount,
                                  VkPhysicalDeviceGroupProperties* pPhysicalDeviceGroupProperties) const;
 private:
-	// Dispatchable objects have private constructors
-	Instance(const VkAllocationCallbacks* pAllocator);
-	// Only the base class may instantiate this object
-	friend class VkObject<Instance, VkInstance>;
-
 	uint32_t physicalDeviceCount = 0;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 };
 
-static Instance* Cast(VkInstance instance)
+static inline Instance* Cast(VkInstance object)
 {
-	return reinterpret_cast<Instance::DispatchableType*>(instance)->get();
+	return Instance::Cast(object);
 }
 
 } // namespace vk

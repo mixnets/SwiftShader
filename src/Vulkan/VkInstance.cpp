@@ -18,15 +18,25 @@
 namespace vk
 {
 
-Instance::Instance(const VkAllocationCallbacks* pAllocator) :
-	physicalDeviceCount(1), physicalDevice(vk::PhysicalDevice::newDispatchable(pAllocator))
+Instance::Instance(const VkAllocationCallbacks* pAllocator)
 {
+	vk::PhysicalDevice* physDevice = new (pAllocator) vk::PhysicalDevice();
+	if(physDevice)
+	{
+		physicalDevice = *physDevice;
+		physicalDeviceCount = 1;
+	}
 }
 
 void Instance::destroy(const VkAllocationCallbacks* pAllocator)
 {
 	vk::destroy(physicalDevice, pAllocator);
 	physicalDeviceCount = 0;
+}
+
+bool Instance::validate() const
+{
+	return physicalDevice && vk::Cast(physicalDevice)->validate();
 }
 
 uint32_t Instance::getPhysicalDeviceCount() const

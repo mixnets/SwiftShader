@@ -20,24 +20,26 @@
 namespace vk
 {
 
-class Queue : public VkObject<Queue, VkQueue>
+class Queue : public VkDispatchableObject<Queue, VkQueue>
 {
 public:
+	Queue(uint32_t pFamilyIndex, float pPriority);
 	~Queue() = delete;
 
+	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
+	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
+	void waitIdle();
+
 private:
-	// Dispatchable objects have private constructors
-	Queue(uint32_t pFamilyIndex, float pPriority);
-	// Only the base class may instantiate this object
-	friend class VkObject<Queue, VkQueue>;
+	void signal(VkFence fence);
 
 	uint32_t familyIndex = 0;
 	float    priority = 0.0f;
 };
 
-static Queue* Cast(VkQueue queue)
+static inline Queue* Cast(VkQueue object)
 {
-	return reinterpret_cast<Queue::DispatchableType*>(queue)->get();
+	return Queue::Cast(object);
 }
 
 } // namespace vk
