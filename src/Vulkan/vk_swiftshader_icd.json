@@ -1,0 +1,7 @@
+{
+  "file_format_version": "1.0.0",
+  "ICD": {
+    "library_path": "/swift_shader/lib/Debug_x64/vk_swiftshader.dll",
+    "api_version": "1.0.5"
+  }
+}
