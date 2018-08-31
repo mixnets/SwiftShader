@@ -163,15 +163,46 @@ copy "$(OutDir)vk_swiftshader.dll" "$(SolutionDir)lib\$(Configuration)_$(Platfor
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Common\Debug.cpp" />
+    <ClCompile Include="..\Common\Memory.cpp" />
+    <ClCompile Include="VkDebug.cpp" />
     <ClCompile Include="libVulkan.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="VkDebug.cpp" />
+    <ClCompile Include="VkDevice.cpp" />
     <ClCompile Include="VkGetProcAddress.cpp" />
+    <ClCompile Include="VkImage.cpp" />
+    <ClCompile Include="VkMemory.cpp" />
+    <ClCompile Include="VkPhysicalDevice.cpp" />
+    <ClCompile Include="VkQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="VkBufferView.hpp" />
+    <ClInclude Include="VkQueryPool.hpp" />
+    <ClInclude Include="VkCommandBuffer.hpp" />
+    <ClInclude Include="VkCommandPool.hpp" />
+    <ClInclude Include="VkConfig.h" />
+    <ClInclude Include="VkEvent.hpp" />
+    <ClInclude Include="VkFence.hpp" />
+    <ClInclude Include="VkFramebuffer.hpp" />
+    <ClInclude Include="VkGetProcAddress.h" />
+    <ClInclude Include="VkImageView.hpp" />
+    <ClInclude Include="VkBuffer.hpp" />
     <ClInclude Include="VkDebug.hpp" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="VkGetProcAddress.h" />
+    <ClInclude Include="VkDevice.hpp" />
+    <ClInclude Include="VkImage.hpp" />
+    <ClInclude Include="VkInstance.hpp" />
+    <ClInclude Include="VkDeviceMemory.hpp" />
+    <ClInclude Include="VkMemory.h" />
+    <ClInclude Include="VkObject.hpp" />
+    <ClInclude Include="VkPhysicalDevice.hpp" />
+    <ClInclude Include="VkPipeline.hpp" />
+    <ClInclude Include="VkPipelineLayout.hpp" />
+    <ClInclude Include="VkQueue.hpp" />
+    <ClInclude Include="VkRenderPass.hpp" />
+    <ClInclude Include="VkSampler.hpp" />
+    <ClInclude Include="VkSemaphore.hpp" />
+    <ClInclude Include="VkShaderModule.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="swiftshader_icd.def" />
