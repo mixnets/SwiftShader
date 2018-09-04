@@ -704,6 +704,11 @@ void Texture2D::setSharedImage(egl::Image *sharedImage)
 // Tests for 2D texture sampling completeness. [OpenGL ES 3.0.5] section 3.8.13 page 160.
 bool Texture2D::isSamplerComplete() const
 {
+	if(mBaseLevel >= IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return false;
+	}
+
 	if(!image[mBaseLevel])
 	{
 		return false;
@@ -731,6 +736,11 @@ bool Texture2D::isSamplerComplete() const
 // Tests for 2D texture (mipmap) completeness. [OpenGL ES 3.0.5] section 3.8.13 page 160.
 bool Texture2D::isMipmapComplete() const
 {
+	if(mBaseLevel >= IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return false;
+	}
+
 	if(mBaseLevel > mMaxLevel)
 	{
 		return false;
@@ -740,7 +750,7 @@ bool Texture2D::isMipmapComplete() const
 	GLsizei height = image[mBaseLevel]->getHeight();
 	int maxsize = std::max(width, height);
 	int p = log2(maxsize) + mBaseLevel;
-	int q = std::min(p, mMaxLevel);
+	int q = std::min(std::min(p, mMaxLevel), IMPLEMENTATION_MAX_TEXTURE_LEVELS - 1);
 
 	for(int level = mBaseLevel + 1; level <= q; level++)
 	{
@@ -782,6 +792,11 @@ bool Texture2D::isDepth(GLenum target, GLint level) const
 
 void Texture2D::generateMipmaps()
 {
+	if(mBaseLevel >= IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return;
+	}
+
 	if(!image[mBaseLevel])
 	{
 		return;   // Image unspecified. Not an error.
@@ -794,7 +809,7 @@ void Texture2D::generateMipmaps()
 
 	int maxsize = std::max(image[mBaseLevel]->getWidth(), image[mBaseLevel]->getHeight());
 	int p = log2(maxsize) + mBaseLevel;
-	int q = std::min(p, mMaxLevel);
+	int q = std::min(std::min(p, mMaxLevel), IMPLEMENTATION_MAX_TEXTURE_LEVELS - 1);
 
 	for(int i = mBaseLevel + 1; i <= q; i++)
 	{
@@ -1022,6 +1037,11 @@ GLint TextureCubeMap::getFormat(GLenum target, GLint level) const
 int TextureCubeMap::getTopLevel() const
 {
 	ASSERT(isSamplerComplete());
+	if(mBaseLevel >= IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return 0;
+	}
+
 	int level = mBaseLevel;
 
 	while(level < IMPLEMENTATION_MAX_TEXTURE_LEVELS && image[0][level])
@@ -1080,6 +1100,11 @@ void TextureCubeMap::subImageCompressed(GLenum target, GLint level, GLint xoffse
 // Tests for cube map sampling completeness. [OpenGL ES 3.0.5] section 3.8.13 page 161.
 bool TextureCubeMap::isSamplerComplete() const
 {
+	if(mBaseLevel >= IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return false;
+	}
+
 	for(int face = 0; face < 6; face++)
 	{
 		if(!image[face][mBaseLevel])
@@ -1116,6 +1141,11 @@ bool TextureCubeMap::isSamplerComplete() const
 // Tests for cube texture completeness. [OpenGL ES 3.0.5] section 3.8.13 page 160.
 bool TextureCubeMap::isCubeComplete() const
 {
+	if(mBaseLevel >= IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return false;
+	}
+
 	if(image[0][mBaseLevel]->getWidth() <= 0 || image[0][mBaseLevel]->getHeight() != image[0][mBaseLevel]->getWidth())
 	{
 		return false;
@@ -1136,6 +1166,11 @@ bool TextureCubeMap::isCubeComplete() const
 
 bool TextureCubeMap::isMipmapCubeComplete() const
 {
+	if(mBaseLevel >= IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return false;
+	}
+
 	if(mBaseLevel > mMaxLevel)
 	{
 		return false;
@@ -1546,6 +1581,11 @@ GLint Texture3D::getFormat(GLenum target, GLint level) const
 int Texture3D::getTopLevel() const
 {
 	ASSERT(isSamplerComplete());
+	if(mBaseLevel >= IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return 0;
+	}
+
 	int level = mBaseLevel;
 
 	while(level < IMPLEMENTATION_MAX_TEXTURE_LEVELS && image[level])
@@ -1700,6 +1740,11 @@ void Texture3D::setSharedImage(egl::Image *sharedImage)
 // Tests for 3D texture sampling completeness. [OpenGL ES 3.0.5] section 3.8.13 page 160.
 bool Texture3D::isSamplerComplete() const
 {
+	if(mBaseLevel >= IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return false;
+	}
+
 	if(!image[mBaseLevel])
 	{
 		return false;
@@ -1728,6 +1773,11 @@ bool Texture3D::isSamplerComplete() const
 // Tests for 3D texture (mipmap) completeness. [OpenGL ES 3.0.5] section 3.8.13 page 160.
 bool Texture3D::isMipmapComplete() const
 {
+	if(mBaseLevel >= IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return false;
+	}
+
 	if(mBaseLevel > mMaxLevel)
 	{
 		return false;
@@ -1740,7 +1790,7 @@ bool Texture3D::isMipmapComplete() const
 
 	int maxsize = isTexture2DArray ? std::max(width, height) : std::max(std::max(width, height), depth);
 	int p = log2(maxsize) + mBaseLevel;
-	int q = std::min(p, mMaxLevel);
+	int q = std::min(std::min(p, mMaxLevel), IMPLEMENTATION_MAX_TEXTURE_LEVELS - 1);
 
 	for(int level = mBaseLevel + 1; level <= q; level++)
 	{
@@ -1788,6 +1838,11 @@ bool Texture3D::isDepth(GLenum target, GLint level) const
 
 void Texture3D::generateMipmaps()
 {
+	if(mBaseLevel >= IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return;
+	}
+
 	if(!image[mBaseLevel])
 	{
 		return;   // Image unspecified. Not an error.
@@ -1890,6 +1945,11 @@ GLenum Texture2DArray::getTarget() const
 
 void Texture2DArray::generateMipmaps()
 {
+	if(mBaseLevel >= IMPLEMENTATION_MAX_TEXTURE_LEVELS)
+	{
+		return;
+	}
+
 	if(!image[mBaseLevel])
 	{
 		return;   // Image unspecified. Not an error.
@@ -1903,7 +1963,7 @@ void Texture2DArray::generateMipmaps()
 	int depth = image[mBaseLevel]->getDepth();
 	int maxsize = std::max(image[mBaseLevel]->getWidth(), image[mBaseLevel]->getHeight());
 	int p = log2(maxsize) + mBaseLevel;
-	int q = std::min(p, mMaxLevel);
+	int q = std::min(std::min(p, mMaxLevel), IMPLEMENTATION_MAX_TEXTURE_LEVELS - 1);
 
 	for(int i = mBaseLevel + 1; i <= q; i++)
 	{
