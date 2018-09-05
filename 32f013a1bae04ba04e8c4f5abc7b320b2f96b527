@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a85bff49_7ae2d718",
+        "filename": "src/OpenGL/libGLESv2/Texture.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-05T18:30:35Z",
+      "side": 1,
+      "message": "Let\u0027s add a constructor which initializes all images to nullptr (or even use an in-class initializer), and remove that initialization from the Texture2D etc. constructors.\n\nLikewise the destructor can make the unbind() calls.",
+      "revId": "32f013a1bae04ba04e8c4f5abc7b320b2f96b527",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e8e89ff_cb249aec",
+        "filename": "src/OpenGL/libGLESv2/Texture.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-05T18:30:35Z",
+      "side": 1,
+      "message": "Nicely observed that this should repeatedly be reset to null.\n\nI think we can add an UNREACHABLE() here? The operator[] above would be called to check if a level exists, and it\u0027s \u0027valid\u0027 to be out of bounds, but this one is used for setting the image, and I believe we should have validated the bounds prior to attempting that?",
+      "range": {
+        "startLine": 62,
+        "startChar": 2,
+        "endLine": 62,
+        "endChar": 22
+      },
+      "revId": "32f013a1bae04ba04e8c4f5abc7b320b2f96b527",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
