@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b061f94d_0c610534",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-05T16:26:28Z",
+      "side": 1,
+      "message": "nit: This is an implementation detail. I suggest something like \"Fix GL resource access thread safety.\" and then in the body of the message put the implementation details.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 66
+      },
+      "revId": "e7ff9108b5fd3a057c8fec24adede229adb87626",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3768947_7fe5b956",
+        "filename": "src/Common/MutexLock.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-05T16:26:28Z",
+      "side": 1,
+      "message": "No changes needed here if we make ContextPtr do the locking/unlocking explicitly (see Context.h comment).",
+      "range": {
+        "startLine": 180,
+        "startChar": 1,
+        "endLine": 203,
+        "endChar": 22
+      },
+      "revId": "e7ff9108b5fd3a057c8fec24adede229adb87626",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2142479_5ec5da2e",
+        "filename": "src/OpenGL/libGLESv2/Context.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 702,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-05T16:26:28Z",
+      "side": 1,
+      "message": "nit: Could probably name this \"getResourceLock\", to be a little more explicit about what this lock is for?",
+      "range": {
+        "startLine": 702,
+        "startChar": 16,
+        "endLine": 702,
+        "endChar": 23
+      },
+      "revId": "e7ff9108b5fd3a057c8fec24adede229adb87626",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "410ab1da_4163e3e6",
+        "filename": "src/OpenGL/libGLESv2/Context.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 783,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-05T16:26:28Z",
+      "side": 1,
+      "message": "This is intertwining two semantics for LockGuard. Previously it was solely used for explicit scope-based lock guarding. Here it\u0027s implicitly taking ownership of the context\u0027s lock. I don\u0027t think we need that. The ContextPtr constructor can call lock() explicitly, while its destructor can call unlock() explicitly. That would make the real function of this class clearer in my opinion, without tagging the responsibility onto LockGuard.",
+      "range": {
+        "startLine": 783,
+        "startChar": 1,
+        "endLine": 783,
+        "endChar": 16
+      },
+      "revId": "e7ff9108b5fd3a057c8fec24adede229adb87626",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
