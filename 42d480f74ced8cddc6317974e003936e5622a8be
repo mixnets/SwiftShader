@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6a5800aa_bf96d139",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-05T17:04:13Z",
+      "side": 1,
+      "message": "Are the failing tests in the mustpass set? If not then it might mean not all implementations agree with this extra test expectation.",
+      "range": {
+        "startLine": 16,
+        "startChar": 9,
+        "endLine": 16,
+        "endChar": 42
+      },
+      "revId": "42d480f74ced8cddc6317974e003936e5622a8be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
