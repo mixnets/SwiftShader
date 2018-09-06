@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0246bada_452e5137",
+        "filename": "src/OpenGL/libEGL/Config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-06T15:30:32Z",
+      "side": 1,
+      "message": "Note that we already have the map without duplicates at this point. Anyway, this way is fine too.",
+      "range": {
+        "startLine": 265,
+        "startChar": 5,
+        "endLine": 265,
+        "endChar": 62
+      },
+      "revId": "a8e1dd13b9c09e2906f95e8f6c4d03f85c6047dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "542d31f2_384b9f0a",
+        "filename": "src/OpenGL/libEGL/Config.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-06T15:30:32Z",
+      "side": 1,
+      "message": "nit: We use Allman style brace placement (except for external code that uses another style).",
+      "range": {
+        "startLine": 354,
+        "startChar": 33,
+        "endLine": 354,
+        "endChar": 35
+      },
+      "revId": "a8e1dd13b9c09e2906f95e8f6c4d03f85c6047dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
