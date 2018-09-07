@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "020e1c75_86c38826",
+        "filename": "src/OpenGL/libEGL/Display.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-07T16:57:50Z",
+      "side": 1,
+      "message": "This is part of EXT_pixel_format_float, which we don\u0027t currently support. I\u0027m not sure if Android demands it as part of the CDD or if it\u0027s making a false assumption about it being available in all implementations?\n\nTo what degree is this required for successfully booting?",
+      "range": {
+        "startLine": 282,
+        "startChar": 6,
+        "endLine": 282,
+        "endChar": 34
+      },
+      "revId": "30b3270b997821200532b880ad4e840a504c1bc4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c6da692b_d1c28dd1",
+        "filename": "src/OpenGL/libEGL/Display.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-07T16:57:50Z",
+      "side": 1,
+      "message": "These are part of an NVIDIA-specific extension, so I doubt it\u0027s demanded by the CDD. Looks like an Android-side bug to me to try to use these attributes, or, it\u0027s expected to just fall through silently.",
+      "range": {
+        "startLine": 283,
+        "startChar": 1,
+        "endLine": 284,
+        "endChar": 29
+      },
+      "revId": "30b3270b997821200532b880ad4e840a504c1bc4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "71be83d7_71607fac",
+        "filename": "src/OpenGL/libEGL/Display.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-07T16:57:50Z",
+      "side": 1,
+      "message": "This is an attribute for eglCreateImage(), which as far as I know shouldn\u0027t be used for surface configs. Could also be an Android-side bug.",
+      "range": {
+        "startLine": 285,
+        "startChar": 6,
+        "endLine": 285,
+        "endChar": 29
+      },
+      "revId": "30b3270b997821200532b880ad4e840a504c1bc4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
