@@ -165,9 +165,11 @@ copy "$(OutDir)vulkan-1.dll" "$(SolutionDir)lib\$(Configuration)_$(Platform)\"</
     <ClCompile Include="..\common\debug.cpp" />
     <ClCompile Include="libVulkan.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="vkutils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="vkutils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="libVulkan.def" />
