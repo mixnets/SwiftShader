@@ -97,11 +97,13 @@ namespace egl
 
 		typedef std::set<Surface*> SurfaceSet;
 		SurfaceSet mSurfaceSet;
+		sw::MutexLock mSurfaceSetMutex;
 
 		ConfigSet mConfigSet;
 
 		typedef std::set<Context*> ContextSet;
 		ContextSet mContextSet;
+		sw::MutexLock mContextSetMutex;
 
 		typedef std::set<FenceSync*> SyncSet;
 		sw::MutexLock mSyncSetMutex;

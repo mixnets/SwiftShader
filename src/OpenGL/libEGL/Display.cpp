@@ -215,14 +215,20 @@ bool Display::initialize()
 
 void Display::terminate()
 {
-	while(!mSurfaceSet.empty())
 	{
-		destroySurface(*mSurfaceSet.begin());
+		LockGuard lock(mSurfaceSetMutex);
+		while(!mSurfaceSet.empty())
+		{
+			destroySurface(*mSurfaceSet.begin());
+		}
 	}
 
-	while(!mContextSet.empty())
 	{
-		destroyContext(*mContextSet.begin());
+		LockGuard lock(mContextSetMutex);
+		while(!mContextSet.empty())
+		{
+			destroyContext(*mContextSet.begin());
+		}
 	}
 
 	while(!mSharedImageNameSpace.empty())
@@ -331,6 +337,7 @@ EGLSurface Display::createWindowSurface(EGLNativeWindowType window, EGLConfig co
 	}
 
 	surface->addRef();
+	LockGuard lock(mSurfaceSetMutex);
 	mSurfaceSet.insert(surface);
 
 	return success(surface);
@@ -554,6 +561,7 @@ EGLSurface Display::createPBufferSurface(EGLConfig config, const EGLint *attribL
 	}
 
 	surface->addRef();
+	LockGuard lock(mSurfaceSetMutex);
 	mSurfaceSet.insert(surface);
 
 	return success(surface);
@@ -590,6 +598,7 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 	}
 
 	context->addRef();
+	LockGuard lock(mContextSetMutex);
 	mContextSet.insert(context);
 
 	return success(context);
@@ -606,7 +615,10 @@ EGLSyncKHR Display::createSync(Context *context)
 void Display::destroySurface(egl::Surface *surface)
 {
 	surface->release();
-	mSurfaceSet.erase(surface);
+	{
+		LockGuard lock(mSurfaceSetMutex);
+		mSurfaceSet.erase(surface);
+	}
 
 	if(surface == getCurrentDrawSurface())
 	{
@@ -622,7 +634,10 @@ void Display::destroySurface(egl::Surface *surface)
 void Display::destroyContext(egl::Context *context)
 {
 	context->release();
-	mContextSet.erase(context);
+	{
+		LockGuard lock(mContextSetMutex);
+		mContextSet.erase(context);
+	}
 
 	if(context == getCurrentContext())
 	{
@@ -653,11 +668,13 @@ bool Display::isValidConfig(EGLConfig config)
 
 bool Display::isValidContext(egl::Context *context)
 {
+	LockGuard lock(mContextSetMutex);
 	return mContextSet.find(context) != mContextSet.end();
 }
 
 bool Display::isValidSurface(egl::Surface *surface)
 {
+	LockGuard lock(mSurfaceSetMutex);
 	return mSurfaceSet.find(surface) != mSurfaceSet.end();
 }
 
@@ -701,6 +718,7 @@ bool Display::isValidWindow(EGLNativeWindowType window)
 
 bool Display::hasExistingWindowSurface(EGLNativeWindowType window)
 {
+	LockGuard lock(mSurfaceSetMutex);
 	for(const auto &surface : mSurfaceSet)
 	{
 		if(surface->isWindowSurface())
