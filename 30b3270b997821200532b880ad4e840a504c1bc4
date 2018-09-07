@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "90cc848a_dc472269",
+        "filename": "src/OpenGL/libEGL/Display.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-09-07T17:15:40Z",
+      "side": 1,
+      "message": "9.0 CDD requires this if the device advertises wide color gamut.",
+      "parentUuid": "020e1c75_86c38826",
+      "range": {
+        "startLine": 282,
+        "startChar": 6,
+        "endLine": 282,
+        "endChar": 34
+      },
+      "revId": "30b3270b997821200532b880ad4e840a504c1bc4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c6da692b_d1c28dd1",
         "filename": "src/OpenGL/libEGL/Display.cpp",
         "patchSetId": 6
