@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "c7eb3f13_a4ad16f4",
+        "filename": "src/OpenGL/libEGL/Display.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-07T17:40:29Z",
+      "side": 1,
+      "message": "Ah, yes, I see it now, section 7.1.4.5. It\u0027s a bit of work to fully support floating-point EGL surfaces, so we\u0027ll probably need a temporary workaround like this. I\u0027ll make sure it\u0027s on our roadmap.",
+      "parentUuid": "90cc848a_dc472269",
+      "range": {
+        "startLine": 282,
+        "startChar": 6,
+        "endLine": 282,
+        "endChar": 34
+      },
+      "revId": "30b3270b997821200532b880ad4e840a504c1bc4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c6da692b_d1c28dd1",
         "filename": "src/OpenGL/libEGL/Display.cpp",
         "patchSetId": 6
