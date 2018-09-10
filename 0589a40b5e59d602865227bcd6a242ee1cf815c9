@@ -22,6 +22,30 @@
       "revId": "0589a40b5e59d602865227bcd6a242ee1cf815c9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a5b67164_0d8f1151",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-09-10T20:02:52Z",
+      "side": 1,
+      "message": "From offline discussion with Alexis -- \n\n1/ Continue interposing vulkan-1.dll for now.\n2/ chrisforbes@ to prepare instructions for doing this \"properly\", making use of validation layers etc with SS possible.",
+      "parentUuid": "426649b1_cfe73e3c",
+      "range": {
+        "startLine": 10,
+        "startChar": 13,
+        "endLine": 10,
+        "endChar": 32
+      },
+      "revId": "0589a40b5e59d602865227bcd6a242ee1cf815c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
