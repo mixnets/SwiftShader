@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "426649b1_cfe73e3c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-09-10T19:36:48Z",
+      "side": 1,
+      "message": "Please don\u0027t interpose vulkan-1.dll. Be an ICD instead.",
+      "range": {
+        "startLine": 10,
+        "startChar": 13,
+        "endLine": 10,
+        "endChar": 32
+      },
+      "revId": "0589a40b5e59d602865227bcd6a242ee1cf815c9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
