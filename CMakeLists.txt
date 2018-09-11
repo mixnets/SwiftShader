@@ -1609,7 +1609,7 @@ set(LLVM_LIST
 set(LLVM_INCLUDE_DIR "")
 
 if(WIN32)
-    # list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/include)
+    list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/windows/include)
 elseif(LINUX)
     list(APPEND LLVM_INCLUDE_DIR ${LLVM_CONFIG_DIR}/linux/include)
 elseif(APPLE)
