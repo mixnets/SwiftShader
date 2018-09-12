@@ -108,6 +108,7 @@ namespace egl
 		SyncSet mSyncSet;
 
 		gl::NameSpace<Image> mSharedImageNameSpace;
+        sw::MutexLock mApiMutex;
 	};
 }
 

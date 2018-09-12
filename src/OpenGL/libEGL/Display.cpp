@@ -286,6 +286,7 @@ bool Display::getConfigAttrib(EGLConfig config, EGLint attribute, EGLint *value)
 
 EGLSurface Display::createWindowSurface(EGLNativeWindowType window, EGLConfig config, const EGLAttrib *attribList)
 {
+    LockGuard lock(mApiMutex);
 	const Config *configuration = mConfigSet.get(config);
 
 	if(attribList)
@@ -338,6 +339,7 @@ EGLSurface Display::createWindowSurface(EGLNativeWindowType window, EGLConfig co
 
 EGLSurface Display::createPBufferSurface(EGLConfig config, const EGLint *attribList, EGLClientBuffer clientBuffer)
 {
+    LockGuard lock(mApiMutex);
 	EGLint width = -1, height = -1, ioSurfacePlane = -1;
 	EGLenum textureFormat = EGL_NO_TEXTURE;
 	EGLenum textureTarget = EGL_NO_TEXTURE;
@@ -561,6 +563,7 @@ EGLSurface Display::createPBufferSurface(EGLConfig config, const EGLint *attribL
 
 EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *shareContext, EGLint clientVersion)
 {
+    LockGuard lock(mApiMutex);
 	const egl::Config *config = mConfigSet.get(configHandle);
 	egl::Context *context = nullptr;
 
@@ -597,6 +600,7 @@ EGLContext Display::createContext(EGLConfig configHandle, const egl::Context *sh
 
 EGLSyncKHR Display::createSync(Context *context)
 {
+    LockGuard lock2(mApiMutex); // TODO: fold in mSyncSetMutex
 	FenceSync *fenceSync = new egl::FenceSync(context);
 	LockGuard lock(mSyncSetMutex);
 	mSyncSet.insert(fenceSync);
@@ -605,6 +609,7 @@ EGLSyncKHR Display::createSync(Context *context)
 
 void Display::destroySurface(egl::Surface *surface)
 {
+    LockGuard lock(mApiMutex);
 	surface->release();
 	mSurfaceSet.erase(surface);
 
@@ -621,6 +626,7 @@ void Display::destroySurface(egl::Surface *surface)
 
 void Display::destroyContext(egl::Context *context)
 {
+    LockGuard lock(mApiMutex);
 	context->release();
 	mContextSet.erase(context);
 
@@ -634,6 +640,7 @@ void Display::destroyContext(egl::Context *context)
 
 void Display::destroySync(FenceSync *sync)
 {
+    LockGuard lock(mApiMutex);
 	{
 		LockGuard lock(mSyncSetMutex);
 		mSyncSet.erase(sync);
@@ -653,6 +660,7 @@ bool Display::isValidConfig(EGLConfig config)
 
 bool Display::isValidContext(egl::Context *context)
 {
+    LockGuard lock(mApiMutex);
 	return mContextSet.find(context) != mContextSet.end();
 }
 
@@ -743,11 +751,13 @@ void *Display::getNativeDisplay() const
 
 EGLImageKHR Display::createSharedImage(Image *image)
 {
+    LockGuard lock(mApiMutex);
 	return reinterpret_cast<EGLImageKHR>((intptr_t)mSharedImageNameSpace.allocate(image));
 }
 
 bool Display::destroySharedImage(EGLImageKHR image)
 {
+    LockGuard lock(mApiMutex);
 	GLuint name = (GLuint)reinterpret_cast<intptr_t>(image);
 	Image *eglImage = mSharedImageNameSpace.find(name);
 
@@ -764,6 +774,7 @@ bool Display::destroySharedImage(EGLImageKHR image)
 
 Image *Display::getSharedImage(EGLImageKHR image)
 {
+    LockGuard lock(mApiMutex);
 	GLuint name = (GLuint)reinterpret_cast<intptr_t>(image);
 	return mSharedImageNameSpace.find(name);
 }
