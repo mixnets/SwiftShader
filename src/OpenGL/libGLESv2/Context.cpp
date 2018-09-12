@@ -4542,5 +4542,7 @@ const GLubyte *Context::getExtensions(GLuint index, GLuint *numExt) const
 
 NO_SANITIZE_FUNCTION egl::Context *es2CreateContext(egl::Display *display, const egl::Context *shareContext, const egl::Config *config)
 {
+	/* Grab locks required to share with this context */
+	es2::ContextPtr shareContextPtr((es2::Context *)shareContext);
 	return new es2::Context(display, static_cast<const es2::Context*>(shareContext), config);
 }
