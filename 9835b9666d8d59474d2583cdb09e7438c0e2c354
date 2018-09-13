@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6bb0d658_4312975a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-13T14:55:23Z",
+      "side": 1,
+      "message": "nit: Information like this is super useful but I would add it to the bug tracker instead of the commit message since it would allow to have a centralized conversation about it. It\u0027s essentially a TODO, but could easily be forgotten about or be hard to find a while after the change lands. In the bug tracker we get reminded about it before closing it, and it\u0027s easy to dig it up again.",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 56
+      },
+      "revId": "9835b9666d8d59474d2583cdb09e7438c0e2c354",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f38345c_fb03aa9e",
+        "filename": "src/OpenGL/libGLESv2/Context.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 779,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-13T14:55:23Z",
+      "side": 1,
+      "message": "nit: double semicolon",
+      "range": {
+        "startLine": 779,
+        "startChar": 44,
+        "endLine": 779,
+        "endChar": 45
+      },
+      "revId": "9835b9666d8d59474d2583cdb09e7438c0e2c354",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
