@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a90863d_71f1fa22",
+        "filename": "src/Common/MutexLock.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-15T05:54:24Z",
+      "side": 1,
+      "message": "C++ requires references to refer to a valid object, so their address can\u0027t be null.",
+      "range": {
+        "startLine": 182,
+        "startChar": 2,
+        "endLine": 182,
+        "endChar": 19
+      },
+      "revId": "f1a9cbcbfb93eb783f635151b3c20d308c7c8c93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "27fe8b48_cad4a41d",
+        "filename": "src/OpenGL/libEGL/main.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-15T05:54:24Z",
+      "side": 1,
+      "message": "Since getDisplayLock() can return null, this would result in null dereference, which is UD.",
+      "range": {
+        "startLine": 410,
+        "startChar": 16,
+        "endLine": 410,
+        "endChar": 17
+      },
+      "revId": "f1a9cbcbfb93eb783f635151b3c20d308c7c8c93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "19484d84_ab712b2d",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 4546,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-15T05:54:24Z",
+      "side": 1,
+      "message": "Without the comment it\u0027s not clear at all what this line does. It\u0027s preferable to have code that is self-explanatory to at least some degree.\n\nI think the underlying problem this is trying to solve is that the es2::Context constructor accesses the resource manager objects without locking it. Most other context uses are safe because it is retrieved from TLS, at which point we lock it, but in the case of eglCreateContext() we get a raw context pointer as an argument. In fact we get an EGLContext, and static_cast\u003cegl::Context*\u003e it in egl::CreateContext, which is the real root of the problem. If instead we use a ContextPtr at that point, it would be safe. Likewise a few other EGL functions take a EGLContext argument that we should not cast directly to a concrete Context object pointer.\n\nPerhaps this can be addressed in a separate CL so the rest of this CL can already land once the minor issues are addressed.",
+      "range": {
+        "startLine": 4546,
+        "startChar": 1,
+        "endLine": 4546,
+        "endChar": 63
+      },
+      "revId": "f1a9cbcbfb93eb783f635151b3c20d308c7c8c93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
