@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "869b9c50_655680a9",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-09-17T19:55:08Z",
+      "side": 1,
+      "message": "This is weird... why?",
+      "revId": "0601b72223f0a9a75884b4c90d9585fa39d0a288",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
