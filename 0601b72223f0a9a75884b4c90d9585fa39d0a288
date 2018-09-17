@@ -34,6 +34,40 @@
       "revId": "0601b72223f0a9a75884b4c90d9585fa39d0a288",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f145b95_640c19d3",
+        "filename": "src/Vulkan/main.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1736,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-09-17T20:29:59Z",
+      "side": 1,
+      "message": "GOOGLE_display_timing is implemented by Android libvulkan, not the driver.",
+      "revId": "0601b72223f0a9a75884b4c90d9585fa39d0a288",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7a121182_859a5b01",
+        "filename": "src/Vulkan/main.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 1821,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-09-17T20:29:59Z",
+      "side": 1,
+      "message": "VK_EXT_validation_cache functions are intended to be implemented by layers, not the ICD. You don\u0027t need these.",
+      "revId": "0601b72223f0a9a75884b4c90d9585fa39d0a288",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
