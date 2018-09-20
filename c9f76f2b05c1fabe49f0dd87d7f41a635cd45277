@@ -48,6 +48,40 @@
     },
     {
       "key": {
+        "uuid": "71f1baba_a366f880",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T21:32:32Z",
+      "side": 1,
+      "message": "nit: I think the logic breaks down for lower levels actually. Sorry for the wrong pointer earlier. It should be +2 on every levels separately.",
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d8409e17_eda4280d",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T21:32:32Z",
+      "side": 1,
+      "message": "nit: MaxImageArrayLayers is not our responsibility.",
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "15fcc314_027bd0b4",
         "filename": "src/Vulkan/VkObject.hpp",
         "patchSetId": 9

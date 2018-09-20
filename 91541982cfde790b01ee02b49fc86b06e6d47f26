@@ -304,6 +304,24 @@
     },
     {
       "key": {
+        "uuid": "7452384a_2d15e90b",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T21:32:32Z",
+      "side": 1,
+      "message": "Sorry I was unclear, what you could do is store just the pointer to the beginning of the buffer, so pDeviceMemory-\u003egetBasePointer() + pMemoryOffset.",
+      "parentUuid": "2d505117_118ff27b",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4fdd0936_077ed522",
         "filename": "src/Vulkan/VkBuffer.hpp",
         "patchSetId": 8
@@ -350,6 +368,30 @@
     },
     {
       "key": {
+        "uuid": "2d8d51da_5bc5558e",
+        "filename": "src/Vulkan/VkCommandPool.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T21:32:32Z",
+      "side": 1,
+      "message": "This allocates using the \"nullptr\" allocation callbacks so that vk::allocate knows to use malloc. I think ^^",
+      "parentUuid": "580a4f13_b5017b69",
+      "range": {
+        "startLine": 35,
+        "startChar": 34,
+        "endLine": 35,
+        "endChar": 41
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2e42c505_96a7c3a0",
         "filename": "src/Vulkan/VkCommandPool.hpp",
         "patchSetId": 8
@@ -379,6 +421,24 @@
       "side": 1,
       "message": "Noted. I\u0027ll add a destroy function and a comment . Is there a maximum number of command buffers?",
       "parentUuid": "2e42c505_96a7c3a0",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "01ca9ca5_684bbc03",
+        "filename": "src/Vulkan/VkCommandPool.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T21:32:32Z",
+      "side": 1,
+      "message": "I don\u0027t think so, you can created them until OOM happens.",
+      "parentUuid": "bb5ee23b_3354003f",
       "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
@@ -461,6 +521,24 @@
       "side": 1,
       "message": "Yes, that\u0027s done in GetPhysicalDeviceQueueFamilyProperties(), but I\u0027m trying to write this as future proof as possible.",
       "parentUuid": "f567dccc_4afebdcb",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "58938e42_87b09a92",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T21:32:32Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "cbfde303_3ae9ddc5",
       "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
@@ -566,6 +644,24 @@
       "side": 1,
       "message": "I\u0027m not sure if it would simplify things to have no conversion at all and just use Vulkan enums everywhere.",
       "parentUuid": "580e2551_b4260835",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "90ab1ebf_2d528ace",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T21:32:32Z",
+      "side": 1,
+      "message": "ANGLE had that with GLenum which was worse because of type-safety too (not a problem here because Vulkan uses enums). We still had a bunch of formats that were purely internal. It mostly depends on whether you expect \"emulation\" of certain features to happen in Swiftshader or not, meaning RGB implemented as RGBA and the like.",
+      "parentUuid": "e2c740a1_59a74fbf",
       "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
@@ -922,6 +1018,24 @@
     },
     {
       "key": {
+        "uuid": "ee770614_401c45a7",
+        "filename": "src/Vulkan/VkMemory.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T21:32:32Z",
+      "side": 1,
+      "message": "Is there a specific constraint on ::memcpy and friends? I\u0027m not sure I understand.",
+      "parentUuid": "3937485d_173eff1e",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c5da07de_989f1941",
         "filename": "src/Vulkan/VkMemory.cpp",
         "patchSetId": 8
@@ -1091,6 +1205,24 @@
       "side": 1,
       "message": "No, we can\u0027t delete a base class\u0027 destructor, that prevents constructing any derived objects.\nInstead, I marked every derived class\u0027 destructor \u003d delete, which is less convenient, but accomplishes the same goal.",
       "parentUuid": "aede2a10_6554429d",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "785cf0a9_e5015aac",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T21:32:32Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9454ac9d_a0cbf68c",
       "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
@@ -1772,6 +1904,24 @@
       "side": 1,
       "message": "The goal of all these checks is to know if someone is trying to use an extension that we don\u0027t support yet.\nSome pNext structures are allowed to be extension structures, if I understand correctly.",
       "parentUuid": "dbe3bfdf_8953f67b",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3c8d0f3e_6e737a11",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1274,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T21:32:32Z",
+      "side": 1,
+      "message": "Makes sense. How about ASSERT(pNext \u003d\u003d nullptr) ?",
+      "parentUuid": "46da6eaf_bd83116a",
       "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
