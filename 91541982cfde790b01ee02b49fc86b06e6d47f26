@@ -2,6 +2,167 @@
   "comments": [
     {
       "key": {
+        "uuid": "af6fe582_bbac25c3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "While according to LunarG there are \"no rules about the name of the ICD shared library files\", it appears common to include the vendor name. While \"vk_google\" wouldn\u0027t make sense here, I think \"vk_swiftshader\" works well.\n\nI\u0027d also like to produce a vulkan-1.dll, so we can run things without requiring the Loader and related setup. But that can be taken care of in future patches.",
+      "range": {
+        "startLine": 10,
+        "startChar": 20,
+        "endLine": 10,
+        "endChar": 26
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc932392_364c119e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "We don\u0027t need this if the only use is for VK_ICD_FILENAMES.",
+      "range": {
+        "startLine": 14,
+        "startChar": 10,
+        "endLine": 14,
+        "endChar": 26
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a846b257_e37cb942",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "suggestion: Add a link to https://vulkan.lunarg.com/doc/view/1.0.21.0/windows/LoaderAndLayerInterface.html#user-content-using-pre-production-icds",
+      "range": {
+        "startLine": 15,
+        "startChar": 10,
+        "endLine": 15,
+        "endChar": 26
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7981e970_889e26bb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "nit: It appears that these manifest files are typically named *_icd.json",
+      "range": {
+        "startLine": 15,
+        "startChar": 60,
+        "endLine": 15,
+        "endChar": 74
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0966bb9_0288762d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "We can use a relative path in the manifest file, so editing it shouldn\u0027t be needed.",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 91
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f7b50a6_218a4a25",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Let\u0027s use Allman/ANSI-style braces throughout.",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 18
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d9a63710_4f607997",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Initialize with \u003d {}\n\nEven though VkMemoryRequirements only has three fields, and they\u0027re all set below, it requires checking the definition to verify that. Initializing to {} doesn\u0027t cost anything because the compiler will optimize it out.",
+      "range": {
+        "startLine": 44,
+        "startChar": 23,
+        "endLine": 44,
+        "endChar": 41
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b051b309_e9c4fe3a",
         "filename": "src/Vulkan/VkBuffer.hpp",
         "patchSetId": 8
@@ -34,6 +195,24 @@
       "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bc06bd1c_ec5ae2ec",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Agreed. We need something like a Config.hpp file which centralizes these constants for easy modification.",
+      "parentUuid": "b051b309_e9c4fe3a",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     },
     {
       "key": {
@@ -72,6 +251,24 @@
     },
     {
       "key": {
+        "uuid": "c48184d1_2695607a",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Let\u0027s do that if/when we implement that.",
+      "parentUuid": "1d93fd4d_75b22078",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7a08eb5f_67783b9f",
         "filename": "src/Vulkan/VkBuffer.hpp",
         "patchSetId": 8
@@ -101,6 +298,52 @@
       "side": 1,
       "message": "Hum... Isn\u0027t that what I\u0027m doing? I\u0027m treating VkDeviceMemory as a pointer.",
       "parentUuid": "7a08eb5f_67783b9f",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4fdd0936_077ed522",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "initialize",
+      "range": {
+        "startLine": 62,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 42
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "580a4f13_b5017b69",
+        "filename": "src/Vulkan/VkCommandPool.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Is this legal? What\u0027s the purpose?",
+      "range": {
+        "startLine": 35,
+        "startChar": 34,
+        "endLine": 35,
+        "endChar": 41
+      },
       "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
@@ -1181,6 +1424,29 @@
     },
     {
       "key": {
+        "uuid": "4853897e_5d54b958",
+        "filename": "src/Vulkan/VkUtils.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "I\u0027m not a fan of having a generic \u0027utils\u0027 file. For our OpenGL ES implementation it became the place where we do ES to SW translation/abstraction, but we won\u0027t need that for Vulkan since we want our lower layers to also be Vulkan-specific.\n\nInstead move this functionality to the appropriate files/classes. For implementation constants we can have a Config.hpp instead.",
+      "range": {
+        "startLine": 15,
+        "startChar": 11,
+        "endLine": 15,
+        "endChar": 16
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7c705281_b5a75130",
         "filename": "src/Vulkan/VkUtils.h",
         "patchSetId": 8
@@ -1225,6 +1491,115 @@
       "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "17c154ff_f285d3c2",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Use UNIX line endings.\n\nAlso all the other new .cpp/.hpp files. For Windows-specific files (e.g. .def, .vcxproj), keep CRLF.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12cc86a3_c80806d2",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Don\u0027t indent namespaces. Their purpose is to avoid name clashes between independently developed code bases, so it doesn\u0027t add semantic or readability value to indent the namespace block.\n\nI\u0027ll document this in the style guide.",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 1
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cbe1d4bc_06fbf440",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "This and many other functions are already more than an empty implementation, so let\u0027s move all that to facilitate reviewing. I\u0027ve already commented on a few things that would belong in separate patches.",
+      "range": {
+        "startLine": 38,
+        "startChar": 2,
+        "endLine": 49,
+        "endChar": 4
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d25526e8_68e17c40",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "nit: This is a spec quote and not a SwiftShader-specific comment, so let\u0027s add a spec chapter reference to clarify that.",
+      "range": {
+        "startLine": 56,
+        "startChar": 33,
+        "endLine": 56,
+        "endChar": 46
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "00f142cd_0696b011",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "initialize",
+      "range": {
+        "startLine": 65,
+        "startChar": 12,
+        "endLine": 65,
+        "endChar": 22
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     },
     {
       "key": {
@@ -1473,6 +1848,155 @@
     },
     {
       "key": {
+        "uuid": "57dbb2e9_0de85d73",
+        "filename": "src/Vulkan/libVulkan.def",
+        "patchSetId": 8
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Let\u0027s name this file swiftshader_icd.def, since it\u0027s ICD specific.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a843807b_723b9a13",
+        "filename": "src/Vulkan/libVulkan.def",
+        "patchSetId": 8
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "blank line",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3c6de02_0f3d777e",
+        "filename": "src/Vulkan/libVulkan.def",
+        "patchSetId": 8
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "\"The LIBRARY statement is followed by the name of the DLL.\"",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 7
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb64477d_abd37dc8",
+        "filename": "src/Vulkan/libVulkan.def",
+        "patchSetId": 8
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Entry function names are typically indented.",
+      "range": {
+        "startLine": 4,
+        "startChar": 0,
+        "endLine": 4,
+        "endChar": 25
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad9b8bb3_001ecf97",
+        "filename": "src/Vulkan/main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "There\u0027s no thread-local data in Vulkan.",
+      "range": {
+        "startLine": 15,
+        "startChar": 33,
+        "endLine": 15,
+        "endChar": 64
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c08c8428_863a2039",
+        "filename": "src/Vulkan/main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Unused except for tracing, but we can use layers for that so this can be removed entirely.",
+      "range": {
+        "startLine": 22,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 1
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c51223d2_d5084008",
+        "filename": "src/Vulkan/main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "We don\u0027t need these trampoline functions. We needed them for OpenGL because on Linux the apps can directly link the shared libraries and the system\u0027s dynamic linker resolves the symbols in an order-dependent way with a possibility of preemption and platform-specific behavior, and having the trampolines gave us non-preemptable symbols. With Vulkan the Loader takes care of manually resolving the entry function symbols, without dynamic linking.",
+      "range": {
+        "startLine": 121,
+        "startChar": 0,
+        "endLine": 123,
+        "endChar": 24
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2b813ca9_1bf1276c",
         "filename": "src/Vulkan/main.cpp",
         "patchSetId": 8
@@ -1505,6 +2029,52 @@
       "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "954ff231_db7973c3",
+        "filename": "src/Vulkan/swiftshader_vk.json",
+        "patchSetId": 8
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Tabs are not allowed in JSON files.",
+      "range": {
+        "startLine": 3,
+        "startChar": 0,
+        "endLine": 3,
+        "endChar": 1
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68835321_6a86744e",
+        "filename": "src/Vulkan/swiftshader_vk.json",
+        "patchSetId": 8
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Let\u0027s use a relative pathname. According to the LunarG documentation:\n\n\"If the ICD is specified via a relative pathname, it is relative to the path of the manifest file. Relative pathnames are those that do not start with a drive specifier (e.g. \"C:\"), nor with a directory separator (i.e. the \u0027\\\u0027 character), but do contain at least one directory separator.\"",
+      "range": {
+        "startLine": 4,
+        "startChar": 19,
+        "endLine": 4,
+        "endChar": 33
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }

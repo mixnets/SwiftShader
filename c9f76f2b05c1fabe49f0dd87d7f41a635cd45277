@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1f38f69b_90b869d9",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "The \u0027static\u0027 makes the variable take up binary space, even though it\u0027s a constant (i.e. you can take its address). Also, it would have to be redefined at file scope in a .cpp file (can only be omitted in C++17, we target C++11). I think just \u0027constexpr\u0027 would work fine.",
+      "range": {
+        "startLine": 25,
+        "startChar": 1,
+        "endLine": 25,
+        "endChar": 17
+      },
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb9e0197_3ad75c90",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "Note that we won\u0027t really have a centralized Renderer any more. The closest thing will be a Device Queue.",
+      "range": {
+        "startLine": 77,
+        "startChar": 19,
+        "endLine": 77,
+        "endChar": 28
+      },
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "15fcc314_027bd0b4",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T21:22:01Z",
+      "side": 1,
+      "message": "an",
+      "range": {
+        "startLine": 22,
+        "startChar": 72,
+        "endLine": 22,
+        "endChar": 75
+      },
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
