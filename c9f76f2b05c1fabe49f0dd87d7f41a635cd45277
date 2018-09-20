@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "84d7a3b0_a66ea409",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-09-20T21:35:12Z",
+      "side": 1,
+      "message": "What\u0027s the idea with the deleted destructors?",
+      "range": {
+        "startLine": 33,
+        "startChar": 20,
+        "endLine": 33,
+        "endChar": 26
+      },
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bb9e0197_3ad75c90",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 9
@@ -45,6 +68,40 @@
       "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "206befa7_6619bb13",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-09-20T21:35:12Z",
+      "side": 1,
+      "message": "buffer, offset ?",
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1954514_c3200a14",
+        "filename": "src/Vulkan/VkCommandPool.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-09-20T21:35:12Z",
+      "side": 1,
+      "message": "Missing newline here?",
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     },
     {
       "key": {
