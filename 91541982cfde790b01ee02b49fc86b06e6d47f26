@@ -1,0 +1,736 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b051b309_e9c4fe3a",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Please have constants defined for memory types, here and for Image too.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d93fd4d_75b22078",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Maybe also reserve space for a header containing the size of the buffer (for robust buffer access)",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7a08eb5f_67783b9f",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Just store a pointer.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2e42c505_96a7c3a0",
+        "filename": "src/Vulkan/VkCommandPool.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "I think command buffers should also be freed in destroy().",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3db48206_51d47ce2",
+        "filename": "src/Vulkan/VkDebug.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Replace ANGLE by SWIFTSHADER? ^^",
+      "range": {
+        "startLine": 34,
+        "startChar": 12,
+        "endLine": 34,
+        "endChar": 17
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f567dccc_4afebdcb",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "I don\u0027t remember, would it be possible to expose only one queue family with only one queue? It would make things simpler for now.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "28d1c815_36317b17",
+        "filename": "src/Vulkan/VkDeviceMemory.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "I\u0027m not sure if we want to do that or use malloc instead. This is GPU memory so you are allowed to bypass the callback.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3af2da17_ec5b18a4",
+        "filename": "src/Vulkan/VkFramebuffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "nit: indentation? Do you want to add a clang-format file?",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "580e2551_b4260835",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Is there an internal Swiftshader format enum for example used to compile the routines? Maybe the format should be converted to the Swiftshader specific one before hand. This would allow having format emulation in one place.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0eca5733_c7ccd67c",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "I think you\u0027ll want to avoid unaligned formats because ARM doesn\u0027t have unaligned loads. These should be optional or emulatable.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9483c5a1_5ae4990d",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Typo: MaxImageLevels1D should be 3D\n\nAlso do we shouldn\u0027t care because the app is doing something wrong if it does this.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "48190cd0_5f998b29",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "3D should be 1D",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f74c2cc1_46feb266",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "arrayLayers is shared between 2D and cubemap so you can multiply unconditionnally.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "023cde26_1b30bdba",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "No need to multiply by 6. This should already be accounted for by the application in arrayLayers. Cube Compatible just means that the 2D array will be use as a cubemap view.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0d2d9100_901c60be",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "I\u0027m not sure how Swiftshader does seamless cubemaps, but if you add an extra border of pixels, that should be accounted for earlier by adding 2 to width and height. (before the multiplication)",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1de7ff18_37606e0a",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Should be 8 for 64bit formats on ARM64.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9a337a11_37311b2e",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Right now it only computes space for the pixel storage. Do you want to reserve space for the \"descriptor structure\" that shaders will read?",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc2aec17_1ee04621",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Just store a pointer to the base of the image.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ca34a7c8_2fc73d80",
+        "filename": "src/Vulkan/VkMemory.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Maybe src memcpy could be left to be handled by the called. Right now it doesn\u0027t seem to safe a lot of code.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5da07de_989f1941",
+        "filename": "src/Vulkan/VkMemory.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Please use std::alignof() and have a template allocate function that extracts alignof and passes to the allocateImpl. Right now I think this is wrong on ARM 64 because IIRC where pointers are aligned to 8. Allocate would look like this:\n\n template\u003ctypename T\u003e\n T* allocate(size_t count, pAllocator, scope) {\n     return reinterpret_cast\u003cT*\u003e(allocateImpl(count*sizeof(T), alignof(T), pAllocatore, scope));\n }",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4844ef0_4846cb51",
+        "filename": "src/Vulkan/VkMemory.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "The reasons for having destroy is a bit complicated. Can we have either a large comment section or a small design doc describing the constraints and how you got to the destroy mechanism (preference for comments) ? Mechanism LGTM though.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6cb249c_feb1214c",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "In Dawn we use an overloaded function to do something similar. Like ToImpl(vulkan type) -\u003e swiftshader type",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0cb04b55_5759589b",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "That\u0027s not needed thanks to operator VkT below.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aede2a10_6554429d",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Can we have a deleted default destructor so that we get a compile error if it gets called?\n\n ~VkObject() \u003d delete;",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fff0d457_0acff791",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "You shouldn\u0027t need to copy all of it, instead everything should get \"linked\" with the shader module and only the resulting function be stored. Some things will stay dynamic and can be copied in members.\n\nRight now I\u0027d suggest taking the argument and doing nothing with them until you work towards HelloTriangle.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a439648_a0a902a8",
+        "filename": "src/Vulkan/VkSampler.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Maybe this could get the VkSamplerCreateInfo and extract it itself? This would work better for eventual extension and you don\u0027t need to support everything at first. Same for other objects.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dbb6e478_c6267289",
+        "filename": "src/Vulkan/VkSampler.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Inconsistent indentation.",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 55
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3a003d5_bedc33ff",
+        "filename": "src/Vulkan/VkSampler.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Could use this instead (with the required change in VkObject)\n\n constexpr static kAllocationScope \u003d VK_SYSTEM_ALLOCATION_SCOPE_OBJECT;",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "584b5240_9ca57614",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "nit: I personally like to have all implementation in cpp files instead of headers. Except for templates.\n\nDitto for all other files.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2c300e0a_89f2dd8d",
+        "filename": "src/Vulkan/VkUtils.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "this should be at least 1 \u003c\u003c 27 too.\nThere\u0027s probably other limits that aren\u0027t big enough, but dEQP will warn you about it.\nAt first I\u0027d suggest just copying the limits required by the spec and not going over.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e1ca8d1_bb37c150",
+        "filename": "src/Vulkan/VkUtils.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "This should be 0 since Swiftshader doesn\u0027t support this feature.\n\nSee the \"unsupported limit\" column of table 32 of the Vulkan spec here https://kai.graphics/vkspec/#features-limits",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7cd85b57_036aa394",
+        "filename": "src/Vulkan/VkUtils.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "This looks good for now, but you\u0027ll want to implement the most common features. See https://vulkan.gpuinfo.org/listfeatures.php I\u0027d suggest aiming for everything up to drawIndirectFirstInstance when ordered by most supported.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd07d848_de5764dc",
+        "filename": "src/Vulkan/VkUtils.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Can we do this with a global constructor or some DLL entry point onload? Here it isn\u0027t multithread safe.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c705281_b5a75130",
+        "filename": "src/Vulkan/VkUtils.h",
+        "patchSetId": 8
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "nit: no need for const for return by-value. Same thing below.",
+      "range": {
+        "startLine": 30,
+        "startChar": 1,
+        "endLine": 30,
+        "endChar": 6
+      },
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb8f587d_049cfbb9",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "nit: whitespace",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31f96108_50ae748a",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 978,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "nit: whitespace.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec5ba7e0_4204f959",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 995,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "ditto: not our responsibility.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d932445_ea082154",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1223,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "nit: below I suggest auto-generating stuff. TRACE calls could also be autogenerated in main.cpp",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dbe3bfdf_8953f67b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1274,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "No need to handle this case, it is the application\u0027s responsibility.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db15d041_dd096835",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1278,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "nit: here and in other places, consider sending the \"Info\" structures to the objects instead of unpacking in this file.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49333844_cd8b9a63",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1424,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "Aren\u0027t sType and pNext filled by the application instead? Ditto in all other places.",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b813ca9_1bf1276c",
+        "filename": "src/Vulkan/main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1856,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-20T16:29:55Z",
+      "side": 1,
+      "message": "No need for the extension procs. Could these be autogenerated along with the unordered_map for GetProc?",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
