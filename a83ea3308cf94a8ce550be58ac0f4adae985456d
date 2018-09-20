@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0f9cc09a_9016f9d3",
+        "filename": "src/OpenGL/libGLESv2/Context.h",
+        "patchSetId": 4
+      },
+      "lineNbr": 779,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-20T15:27:51Z",
+      "side": 1,
+      "message": "nit: Double semicolon.",
+      "range": {
+        "startLine": 779,
+        "startChar": 43,
+        "endLine": 779,
+        "endChar": 45
+      },
+      "revId": "a83ea3308cf94a8ce550be58ac0f4adae985456d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
