@@ -124,7 +124,7 @@ bool TConstTraverser::visitAggregate(Visit visit, TIntermAggregate* node)
 
 		if (node->getType().isMatrix()) {
 			isMatrix = true;
-			matrixSize = node->getType().getNominalSize();
+			matrixSize = node->getType().getSecondarySize();
 		}
 	}
 
