@@ -544,6 +544,24 @@
     },
     {
       "key": {
+        "uuid": "cbd457d6_9972e6b9",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-21T18:51:46Z",
+      "side": 1,
+      "message": "For swiftshader mapping and unmapping shouldn\u0027t do anything to the VkDeviceMemory",
+      "parentUuid": "b4bd0e13_d9096f4b",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4fdd0936_077ed522",
         "filename": "src/Vulkan/VkBuffer.hpp",
         "patchSetId": 8
