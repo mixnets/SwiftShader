@@ -277,6 +277,24 @@
     },
     {
       "key": {
+        "uuid": "7e6b8c9d_f1efb93a",
+        "filename": "src/Vulkan/swiftshader_icd.def",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-09-21T21:27:43Z",
+      "side": 1,
+      "message": "Android\u0027s loader doesn\u0027t understand vk_icdGetPhysicalDeviceProcAddr",
+      "parentUuid": "8df8f9bb_290e7194",
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ebdeb327_aa6b38a9",
         "filename": "src/Vulkan/vk_swiftshader_icd.json",
         "patchSetId": 1
