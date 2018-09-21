@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d3aeb9e5_aff882b0",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-21T20:47:52Z",
+      "side": 1,
+      "message": "whitespace",
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f6e045c_317bad23",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-21T20:47:52Z",
+      "side": 1,
+      "message": "whitespace",
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0bb26eca_cdbf6ebf",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-21T20:47:52Z",
+      "side": 1,
+      "message": "ditto (get a clang-format file!)",
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0733108c_d1ea09a0",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1739,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-21T20:47:52Z",
+      "side": 1,
+      "message": "Was already on the original CL, but it is unlikely we ever implement this extension. Overall we should not have entry points for extensions except for the KHR extensions that make up Vulkan 1.1 and the debug report ones. (and the WSI ones)\n\nWhen Android or developers require new extensions then we can add the entrypoint.",
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ebdeb327_aa6b38a9",
+        "filename": "src/Vulkan/vk_swiftshader_icd.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-21T20:47:52Z",
+      "side": 1,
+      "message": "the _ is weird. Also should we call Swiftshader Vulkan \"Pastel\"? ^^",
+      "range": {
+        "startLine": 4,
+        "startChar": 22,
+        "endLine": 4,
+        "endChar": 34
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
