@@ -2,6 +2,109 @@
   "comments": [
     {
       "key": {
+        "uuid": "e6700a91_2167b1dd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-21T21:17:58Z",
+      "side": 1,
+      "message": "Needs a bug to investigate why a relative path doesn\u0027t work. Make it a blocker of b/116336664",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 103
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d0e2ffb5_ec472c30",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-21T21:17:58Z",
+      "side": 1,
+      "message": "Bug b/116336664",
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "40dad1b5_dadd85c0",
+        "filename": "src/Vulkan/VkDebug.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-21T21:17:58Z",
+      "side": 1,
+      "message": "Let\u0027s remove this for now. The Android-specific logging was never very cleanly integrated in the OGLES implementation. We can add it once we start targeting Android.",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 6
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "af8f0e39_c7bc305f",
+        "filename": "src/Vulkan/VkDebug.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-21T21:17:58Z",
+      "side": 1,
+      "message": "Let\u0027s put this in the vk namespace.",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 37
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b50c78a_dae634ee",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-21T21:17:58Z",
+      "side": 1,
+      "message": "Use LF line endings instead. Also probably other files.",
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d3aeb9e5_aff882b0",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 1
@@ -53,6 +156,70 @@
     },
     {
       "key": {
+        "uuid": "69ea955b_8d591d2d",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-21T21:17:58Z",
+      "side": 1,
+      "message": "On my TODO. :)",
+      "parentUuid": "0bb26eca_cdbf6ebf",
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fcf98cb2_395091ac",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1676,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-21T21:17:58Z",
+      "side": 1,
+      "message": "Part of VK_KHR_draw_indirect_count, which we don\u0027t have to support yet. Only functions from extensions which have been \u0027Promoted\u0027 to Vulkan 1.1 should be added now.",
+      "range": {
+        "startLine": 1676,
+        "startChar": 27,
+        "endLine": 1676,
+        "endChar": 52
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60272b09_a8fbc9c6",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1688,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-21T21:17:58Z",
+      "side": 1,
+      "message": "Deprecated: https://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#VK_EXT_debug_report",
+      "range": {
+        "startLine": 1688,
+        "startChar": 31,
+        "endLine": 1688,
+        "endChar": 61
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0733108c_d1ea09a0",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 1
@@ -67,6 +234,46 @@
       "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "64266a94_45c54a35",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1739,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-21T21:17:58Z",
+      "side": 1,
+      "message": "Don\u0027t need any vendor-specific extensions for now.",
+      "range": {
+        "startLine": 1739,
+        "startChar": 49,
+        "endLine": 1739,
+        "endChar": 52
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8df8f9bb_290e7194",
+        "filename": "src/Vulkan/swiftshader_icd.def",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-21T21:17:58Z",
+      "side": 1,
+      "message": "We might need vk_icdGetPhysicalDeviceProcAddr soon as well in case it\u0027s the cause of dEQP crashes: https://vulkan.lunarg.com/doc/view/1.0.61.1/windows/LoaderAndLayerInterface.html#user-content-icd-unknown-physical-device-extensions\n\nAnyway, let\u0027s first try without it. Just wanted to have this mentioned here.",
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -86,6 +293,29 @@
         "startChar": 22,
         "endLine": 4,
         "endChar": 34
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "31be87bc_2f44d27d",
+        "filename": "src/Vulkan/vk_swiftshader_icd.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-21T21:17:58Z",
+      "side": 1,
+      "message": "Same as my commit message comment; would be great to know why a relative path doesn\u0027t work, and involve LunarG in case it\u0027s their bug. Note that it has specific requirements to be recognized as relative path:\n\n\"If the ICD is specified via a relative pathname, it is relative to the path of the manifest file. Relative pathnames are those that do not start with a drive specifier (e.g. \"C:\"), nor with a directory separator (i.e. the \u0027\\\u0027 character), but do contain at least one directory separator.\"\n\nFor starters, have you tried \u0027\\\u0027 separators instead of \u0027/\u0027 ?",
+      "range": {
+        "startLine": 4,
+        "startChar": 21,
+        "endLine": 4,
+        "endChar": 22
       },
       "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
