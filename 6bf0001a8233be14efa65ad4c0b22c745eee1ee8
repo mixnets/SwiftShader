@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9dba0d23_01cd4ae6",
+        "filename": "src/OpenGL/compiler/parseConst.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-21T18:39:42Z",
+      "side": 1,
+      "message": "Let\u0027s rename this to \u0027matrixRows\u0027 and adjust the comment following the member\u0027s declaration?",
+      "range": {
+        "startLine": 127,
+        "startChar": 3,
+        "endLine": 127,
+        "endChar": 13
+      },
+      "revId": "6bf0001a8233be14efa65ad4c0b22c745eee1ee8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
