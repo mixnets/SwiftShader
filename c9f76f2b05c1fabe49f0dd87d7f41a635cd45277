@@ -230,6 +230,24 @@
     },
     {
       "key": {
+        "uuid": "41fd4d7d_c9b0e8ee",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-09-21T18:29:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "71f1baba_a366f880",
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d8409e17_eda4280d",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 9
@@ -244,6 +262,24 @@
       "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "faf79de9_9c822d2f",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-09-21T18:29:12Z",
+      "side": 1,
+      "message": "Ack. I just want to prevent ridiculous attempts at crazy large memory allocations, if possible.",
+      "parentUuid": "d8409e17_eda4280d",
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
