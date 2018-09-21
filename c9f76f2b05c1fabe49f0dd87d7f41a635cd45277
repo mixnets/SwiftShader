@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b7bba6c1_cd321037",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-09-21T17:58:42Z",
+      "side": 1,
+      "message": "Since 95% of those are VK_SYSTEM_ALLOCATION_SCOPE_OBJECT, I\u0027ll revert back to this being a static function with a default implementation in VkObject.",
+      "parentUuid": "1f38f69b_90b869d9",
+      "range": {
+        "startLine": 25,
+        "startChar": 1,
+        "endLine": 25,
+        "endChar": 17
+      },
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "84d7a3b0_a66ea409",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 9
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "82afa84c_41177344",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-09-21T17:58:42Z",
+      "side": 1,
+      "message": "tl;dr: We don\u0027t want to call the destructor by mistake, since it\u0027s allocated using a placement new and placement delete does nothing.\n\nSee comment here I\u0027m adding in VkMemory.h",
+      "parentUuid": "84d7a3b0_a66ea409",
+      "range": {
+        "startLine": 33,
+        "startChar": 20,
+        "endLine": 33,
+        "endChar": 26
+      },
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bb9e0197_3ad75c90",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 9
@@ -59,6 +107,30 @@
       "writtenOn": "2018-09-20T21:22:01Z",
       "side": 1,
       "message": "Note that we won\u0027t really have a centralized Renderer any more. The closest thing will be a Device Queue.",
+      "range": {
+        "startLine": 77,
+        "startChar": 19,
+        "endLine": 77,
+        "endChar": 28
+      },
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa97404a_4c9334f3",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-09-21T17:58:42Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "bb9e0197_3ad75c90",
       "range": {
         "startLine": 77,
         "startChar": 19,
@@ -88,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "a8e46699_96c540d2",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-09-21T17:58:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "206befa7_6619bb13",
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e1954514_c3200a14",
         "filename": "src/Vulkan/VkCommandPool.hpp",
         "patchSetId": 9
@@ -102,6 +192,24 @@
       "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4f8fe334_b8480144",
+        "filename": "src/Vulkan/VkCommandPool.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-09-21T17:58:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e1954514_c3200a14",
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -159,6 +267,30 @@
       "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "063a8ad9_93b8a4c3",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-09-21T17:58:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "15fcc314_027bd0b4",
+      "range": {
+        "startLine": 22,
+        "startChar": 72,
+        "endLine": 22,
+        "endChar": 75
+      },
+      "revId": "c9f76f2b05c1fabe49f0dd87d7f41a635cd45277",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
