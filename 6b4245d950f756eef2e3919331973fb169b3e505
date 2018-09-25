@@ -300,6 +300,282 @@
     },
     {
       "key": {
+        "uuid": "9b6a5d6b_23d46234",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1427,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_get_physical_device_properties2, which was promoted to Vulkan 1.1 and need to be implemented (as aliases).",
+      "range": {
+        "startLine": 1386,
+        "startChar": 0,
+        "endLine": 1427,
+        "endChar": 2
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5113469e_59087df4",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1445,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_device_group, which was promoted to Vulkan 1.1 and need to be implemented (as aliases).",
+      "range": {
+        "startLine": 1429,
+        "startChar": 0,
+        "endLine": 1445,
+        "endChar": 2
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b36669c1_c63a5537",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1451,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_maintenance1, which was promoted to Vulkan 1.1. and needs to be implemented (as alias of vkTrimCommandPool).",
+      "range": {
+        "startLine": 1447,
+        "startChar": 0,
+        "endLine": 1451,
+        "endChar": 2
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5629018a_02e1c15c",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1458,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_device_group_creation, which was promoted to Vulkan 1.1 and needs to be implemented (as alias).",
+      "range": {
+        "startLine": 1453,
+        "startChar": 0,
+        "endLine": 1458,
+        "endChar": 2
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5c23e02_3070e273",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1464,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_external_memory_capabilities, which was promoted to Vulkan 1.1 and needs to be implemented (as alias of vkGetPhysicalDeviceExternalBufferProperties).",
+      "range": {
+        "startLine": 1460,
+        "startChar": 0,
+        "endLine": 1464,
+        "endChar": 2
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f8178cf9_063958a3",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1484,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_external_semaphore_capabilities, which was promoted to Vulkan 1.1 and needs to be implemented (as alias of vkGetPhysicalDeviceExternalSemaphoreProperties).",
+      "range": {
+        "startLine": 1480,
+        "startChar": 0,
+        "endLine": 1484,
+        "endChar": 2
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4160c277_04c5ce41",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1529,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_descriptor_update_template, which was promoted to Vulkan 1.1 and must be implemented (as aliases).",
+      "range": {
+        "startLine": 1506,
+        "startChar": 0,
+        "endLine": 1529,
+        "endChar": 2
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ed70481_1753b5c9",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1567,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_external_fence_capabilities, which was promoted to Vulkan 1.1 and needs to be implemented (as alias of vkGetPhysicalDeviceExternalFenceProperties).",
+      "range": {
+        "startLine": 1563,
+        "startChar": 0,
+        "endLine": 1567,
+        "endChar": 2
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7130bad_7961b906",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1641,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_get_memory_requirements2, which was promoted to Vulkan 1.1 and need to be implemented (as aliases).",
+      "range": {
+        "startLine": 1625,
+        "startChar": 0,
+        "endLine": 1641,
+        "endChar": 2
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2f02926f_4f365f2b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1654,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_sampler_ycbcr_conversion, which was Promoted to Vulkan 1.1 and needs to be implemented (as aliases).",
+      "range": {
+        "startLine": 1643,
+        "startChar": 0,
+        "endLine": 1654,
+        "endChar": 2
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1d768be_1e7f1d73",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1668,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_bind_memory2, which was promoted to Vulkan 1.1 and need to be implemented (as aliases).",
+      "range": {
+        "startLine": 1656,
+        "startChar": 0,
+        "endLine": 1668,
+        "endChar": 2
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4d886ef_f5b9a5b2",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1674,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_maintenance3, which was promoted to Vulkan 1.1 and needs to be implemented (as alias of vkGetDescriptorSetLayoutSupport).",
+      "range": {
+        "startLine": 1670,
+        "startChar": 0,
+        "endLine": 1674,
+        "endChar": 2
+      },
+      "revId": "6b4245d950f756eef2e3919331973fb169b3e505",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "fcf98cb2_395091ac",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 1

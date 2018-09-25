@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "38cd8e9d_43df3936",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1267,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_surface, which is implemented by the platform, not the driver. Can be removed, unless dEQP on desktop demands it?",
+      "range": {
+        "startLine": 1235,
+        "startChar": 0,
+        "endLine": 1267,
+        "endChar": 1
+      },
+      "revId": "e3dc9de3bbcb089223ae630e37af99c1071c49c1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c616b4bd_5ea6b1d7",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1329,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_swapchain, which is implemented by the Android platform, not the driver. Can be removed, unless dEQP demands it?",
+      "range": {
+        "startLine": 1269,
+        "startChar": 0,
+        "endLine": 1329,
+        "endChar": 1
+      },
+      "revId": "e3dc9de3bbcb089223ae630e37af99c1071c49c1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "16f088dc_39eba1f4",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1378,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T15:29:50Z",
+      "side": 1,
+      "message": "Part of VK_KHR_display, which we don\u0027t require (unless dEQP demands it)?",
+      "range": {
+        "startLine": 1331,
+        "startChar": 0,
+        "endLine": 1378,
+        "endChar": 1
+      },
+      "revId": "e3dc9de3bbcb089223ae630e37af99c1071c49c1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
