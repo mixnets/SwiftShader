@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "928c1015_812ab5a1",
+        "filename": "src/OpenGL/libGLESv2/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 4546,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-25T17:59:23Z",
+      "side": 1,
+      "message": "Copying my comment from the parent CL to resume the conversation:\n\nI think the underlying problem this is trying to solve is that the es2::Context constructor accesses the resource manager objects without locking it. Most other context uses are safe because it is retrieved from TLS, at which point we lock it, but in the case of eglCreateContext() we get a raw context pointer as an argument. In fact we get an EGLContext, and static_cast\u003cegl::Context*\u003e it in egl::CreateContext, which is the real root of the problem. If instead we use a ContextPtr at that point, it would be safe. Likewise a few other EGL functions take a EGLContext argument that we should not cast directly to a concrete Context object pointer.",
+      "range": {
+        "startLine": 4545,
+        "startChar": 1,
+        "endLine": 4546,
+        "endChar": 63
+      },
+      "revId": "51f396ff92615d4e938e47a8191a0a951344e4ec",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
