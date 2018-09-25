@@ -179,7 +179,7 @@ namespace
 		return ::builder->CreateSelect(::builder->CreateFCmp(pred, x, y), x, y);
 	}
 
-	// Packed add/sub saturatation
+	// Packed add/sub saturation
 	llvm::Value *lowerPSAT(llvm::Intrinsic::ID intrinsic, llvm::Value *x, llvm::Value *y)
 	{
 		llvm::Function *func = llvm::Intrinsic::getDeclaration(
@@ -190,22 +190,38 @@ namespace
 
 	llvm::Value *lowerPUADDSAT(llvm::Value *x, llvm::Value *y)
 	{
-		return lowerPSAT(llvm::Intrinsic::uadd_with_overflow, x, y);
+		llvm::Function *func = llvm::Intrinsic::getDeclaration(
+			::module, llvm::Intrinsic::aarch64_neon_uqadd, {x->getType(), y->getType()});
+		return ::builder->CreateCall(func, ARGS(x, y));
+
+		//return lowerPSAT(, x, y);
 	}
 
 	llvm::Value *lowerPSADDSAT(llvm::Value *x, llvm::Value *y)
 	{
-		return lowerPSAT(llvm::Intrinsic::sadd_with_overflow, x, y);
+		llvm::Function *func = llvm::Intrinsic::getDeclaration(
+			::module, llvm::Intrinsic::aarch64_neon_sqadd, {x->getType(), y->getType()});
+		return ::builder->CreateCall(func, ARGS(x, y));
+
+	//	return lowerPSAT(llvm::Intrinsic::sadd_with_overflow, x, y);
 	}
 
 	llvm::Value *lowerPUSUBSAT(llvm::Value *x, llvm::Value *y)
 	{
-		return lowerPSAT(llvm::Intrinsic::usub_with_overflow, x, y);
+		llvm::Function *func = llvm::Intrinsic::getDeclaration(
+			::module, llvm::Intrinsic::aarch64_neon_uqsub, {x->getType(), y->getType()});
+		return ::builder->CreateCall(func, ARGS(x, y));
+
+	//	return lowerPSAT(llvm::Intrinsic::usub_with_overflow, x, y);
 	}
 
 	llvm::Value *lowerPSSUBSAT(llvm::Value *x, llvm::Value *y)
 	{
-		return lowerPSAT(llvm::Intrinsic::ssub_with_overflow, x, y);
+		llvm::Function *func = llvm::Intrinsic::getDeclaration(
+			::module, llvm::Intrinsic::aarch64_neon_sqsub, {x->getType(), y->getType()});
+		return ::builder->CreateCall(func, ARGS(x, y));
+
+	//	return lowerPSAT(llvm::Intrinsic::ssub_with_overflow, x, y);
 	}
 
 	llvm::Value *lowerSQRT(llvm::Value *x)
