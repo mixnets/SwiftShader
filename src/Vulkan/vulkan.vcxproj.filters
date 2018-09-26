@@ -21,13 +21,37 @@
     <ClCompile Include="libVulkan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\Memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VkPhysicalDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="VkGetProcAddress.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="VkDebug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Common\Debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VkDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="VkPromotedExtensions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VkInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VkMemory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VkCommandBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VkQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,7 +62,31 @@
     <ClInclude Include="VkDebug.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VkPhysicalDevice.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VkInstance.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VkDevice.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VkConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="VkGetProcAddress.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VkMemory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VkQueue.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VkCommandBuffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VkObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
