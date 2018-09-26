@@ -4430,7 +4430,7 @@ namespace sw
 #if defined(__i386__) || defined(__x86_64__)
 		return x86::cvtss2si(cast);
 #else
-		return IfThenElse(cast > 0.0f, Int(cast + 0.5f), Int(cast - 0.5f));
+		return As<Int>(V(::builder->CreateFPToSI(V(cast.value), T(Int::getType()))));
 #endif
 	}
 
