@@ -12,44 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_QUEUE_HPP_
-#define VK_QUEUE_HPP_
+#ifndef VK_FRAMEBUFFER_HPP_
+#define VK_FRAMEBUFFER_HPP_
 
 #include "VkObject.hpp"
-#include <vulkan/vk_icd.h>
 
 namespace vk
 {
 
-class Queue
+class Framebuffer : public Object<Framebuffer, VkFramebuffer>
 {
-	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
-
 public:
-	Queue(uint32_t pFamilyIndex, float pPriority);
-	~Queue() = delete;
+	Framebuffer(const VkFramebufferCreateInfo* pCreateInfo, void* mem);
+	~Framebuffer() = delete;
+	void destroy(const VkAllocationCallbacks* pAllocator);
 
-	operator VkQueue()
-	{
-		return reinterpret_cast<VkQueue>(this);
-	}
-
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
-	void waitIdle();
+	static size_t ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo);
 
 private:
-	void signal(VkFence fence);
-
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+	VkRenderPass renderPass = VK_NULL_HANDLE;
+	uint32_t     attachmentCount = 0;
+	VkImageView* attachments = nullptr;
+	uint32_t     width = 0;
+	uint32_t     height = 0;
+	uint32_t     layers = 0;
 };
 
-static inline Queue* Cast(VkQueue object)
+static inline Framebuffer* Cast(VkFramebuffer object)
 {
-	return reinterpret_cast<Queue*>(object);
+	return reinterpret_cast<Framebuffer*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_QUEUE_HPP_
+#endif // VK_FRAMEBUFFER_HPP_
