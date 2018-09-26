@@ -102,13 +102,18 @@ copy "$(OutDir)vk_swiftshader.dll" "$(SolutionDir)out\$(Configuration)_$(Platfor
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VkBuffer.cpp" />
     <ClCompile Include="VkCommandBuffer.cpp" />
+    <ClCompile Include="VkCommandPool.cpp" />
     <ClCompile Include="VkDebug.cpp" />
+    <ClCompile Include="VkDescriptorPool.cpp" />
     <ClCompile Include="VkDevice.cpp" />
     <ClCompile Include="VkDeviceMemory.cpp" />
+    <ClCompile Include="VkFramebuffer.cpp" />
     <ClCompile Include="VkGetProcAddress.cpp" />
+    <ClCompile Include="VkImage.cpp" />
     <ClCompile Include="VkInstance.cpp" />
     <ClCompile Include="VkMemory.cpp" />
     <ClCompile Include="VkPhysicalDevice.cpp" />
+    <ClCompile Include="VkPipelineLayout.cpp" />
     <ClCompile Include="VkPromotedExtensions.cpp" />
     <ClCompile Include="VkQueue.cpp" />
     <ClCompile Include="..\Device\Blitter.cpp" />
@@ -178,6 +183,8 @@ copy "$(OutDir)vk_swiftshader.dll" "$(SolutionDir)out\$(Configuration)_$(Platfor
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="VkRenderPass.cpp" />
+    <ClCompile Include="VkShaderModule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -185,20 +192,36 @@ copy "$(OutDir)vk_swiftshader.dll" "$(SolutionDir)out\$(Configuration)_$(Platfor
     <ClInclude Include="VkBuffer.hpp" />
     <ClInclude Include="VkBufferView.hpp" />
     <ClInclude Include="VkCommandBuffer.hpp" />
+    <ClInclude Include="VkCommandPool.hpp" />
     <ClInclude Include="VkConfig.h" />
     <ClInclude Include="VkDebug.hpp" />
+    <ClInclude Include="VkDescriptorPool.hpp" />
+    <ClInclude Include="VkDescriptorSet.hpp" />
+    <ClInclude Include="VkDescriptorSetLayout.hpp" />
+    <ClInclude Include="VkDescriptorUpdateTemplate.hpp" />
     <ClInclude Include="VkDestroy.h" />
     <ClInclude Include="VkDevice.hpp" />
     <ClInclude Include="VkDeviceMemory.hpp" />
     <ClInclude Include="VkEvent.hpp" />
     <ClInclude Include="VkFence.hpp" />
+    <ClInclude Include="VkFramebuffer.hpp" />
     <ClInclude Include="VkGetProcAddress.h" />
+    <ClInclude Include="VkImage.hpp" />
+    <ClInclude Include="VkImageView.hpp" />
     <ClInclude Include="VkInstance.hpp" />
     <ClInclude Include="VkMemory.h" />
     <ClInclude Include="VkObject.hpp" />
     <ClInclude Include="VkPhysicalDevice.hpp" />
+    <ClInclude Include="VkPipeline.hpp" />
+    <ClInclude Include="VkPipelineCache.hpp" />
+    <ClInclude Include="VkPipelineLayout.hpp" />
+    <ClInclude Include="VkQueryPool.hpp" />
     <ClInclude Include="VkQueue.hpp" />
+    <ClInclude Include="VkRenderPass.hpp" />
+    <ClInclude Include="VkSampler.hpp" />
+    <ClInclude Include="VkSamplerYcbcrConversion.hpp" />
     <ClInclude Include="VkSemaphore.hpp" />
+    <ClInclude Include="VkShaderModule.hpp" />
     <ClInclude Include="..\Device\Blitter.hpp" />
     <ClInclude Include="..\Device\Clipper.hpp" />
     <ClInclude Include="..\Device\Color.hpp" />
