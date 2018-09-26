@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "3c2000e4_2a6ef09a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-26T17:06:37Z",
+      "side": 1,
+      "message": "Needs bug ID. b/116336664 still seems appropriate.",
+      "revId": "4e7e0bb4939478c2ad7065c9ee4dcc6b656bb672",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "726545fe_3023079d",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 1
