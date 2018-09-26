@@ -12,44 +12,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_QUEUE_HPP_
-#define VK_QUEUE_HPP_
+#ifndef VK_DESCRIPTOR_SET_HPP_
+#define VK_DESCRIPTOR_SET_HPP_
 
 #include "VkObject.hpp"
-#include <vulkan/vk_icd.h>
 
 namespace vk
 {
 
-class Queue
+// Note: this class should eventually disappear and be replaced
+//       by a memory chunk of the proper layout in DescriptorPool
+class DescriptorSet
 {
-	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
-
 public:
-	Queue(uint32_t pFamilyIndex, float pPriority);
-	~Queue() = delete;
-
-	operator VkQueue()
+	DescriptorSet()
 	{
-		return reinterpret_cast<VkQueue>(this);
 	}
 
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
-	void waitIdle();
+	operator VkDescriptorSet()
+	{
+		return reinterpret_cast<VkDescriptorSet>(this);
+	}
+
+	void init(VkDescriptorSetLayout pLayout)
+	{
+		layout = pLayout;
+	}
+
+	~DescriptorSet() = delete;
 
 private:
-	void signal(VkFence fence);
-
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+	VkDescriptorSetLayout layout;
 };
 
-static inline Queue* Cast(VkQueue object)
+static inline DescriptorSet* Cast(VkDescriptorSet object)
 {
-	return reinterpret_cast<Queue*>(object);
+	return reinterpret_cast<DescriptorSet*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_QUEUE_HPP_
+#endif // VK_DESCRIPTOR_SET_HPP_
