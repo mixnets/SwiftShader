@@ -15,8 +15,6 @@
 #ifndef VK_CONFIG_HPP_
 #define VK_CONFIG_HPP_
 
-#include "vulkan/vulkan.h"
-
 namespace vk
 {
 

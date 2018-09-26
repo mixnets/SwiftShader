@@ -29,7 +29,7 @@ template <typename T>
 T* allocate(size_t count, const VkAllocationCallbacks* pAllocator)
 {
 	return reinterpret_cast<T*>(pAllocator ?
-		pAllocator->pfnAllocation(nullptr, count, alignof(T), T::GetAllocationScope()) :
+		pAllocator->pfnAllocation(pAllocator->pUserData, count, alignof(T), T::GetAllocationScope()) :
 		sw::allocate(count, alignof(T)));
 }
 

@@ -12,27 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_OBJECT_HPP_
-#define VK_OBJECT_HPP_
+#ifndef VK_SEMAPHORE_HPP_
+#define VK_SEMAPHORE_HPP_
 
-#include "VkConfig.h"
-#include "VkMemory.h"
+#include "VkObject.hpp"
 
 namespace vk
 {
 
-void* allocate(size_t count, const VkAllocationCallbacks* pAllocator, VkSystemAllocationScope allocationScope)
+class Semaphore : public VkObject<Semaphore, VkSemaphore>
 {
-	return pAllocator ?
-		pAllocator->pfnAllocation(pAllocator->pUserData, count, REQUIRED_MEMORY_ALIGNMENT, allocationScope) :
-		sw::allocate(count, REQUIRED_MEMORY_ALIGNMENT);
-}
+public:
+	Semaphore(const VkSemaphoreCreateInfo* pCreateInfo) :
+		flags(pCreateInfo->flags)
+	{
+	}
 
-void deallocate(void* ptr, const VkAllocationCallbacks* pAllocator)
+	~Semaphore() = delete;
+
+private:
+	VkSemaphoreCreateFlags flags;
+};
+
+static inline Semaphore* Cast(VkSemaphore object)
 {
-	pAllocator ? pAllocator->pfnFree(pAllocator->pUserData, ptr) : sw::deallocate(ptr);
+	return reinterpret_cast<Semaphore*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_OBJECT_HPP_
+#endif // VK_SEMAPHORE_HPP_

@@ -12,37 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_QUEUE_HPP_
-#define VK_QUEUE_HPP_
+#ifndef VK_FRAMEBUFFER_HPP_
+#define VK_FRAMEBUFFER_HPP_
 
 #include "VkObject.hpp"
 
 namespace vk
 {
 
-class Queue : public VkDispatchableObject<Queue, VkQueue>
+class Framebuffer : public VkObject<Framebuffer, VkFramebuffer>
 {
 public:
-	Queue();
-	~Queue() = delete;
+	Framebuffer(const VkFramebufferCreateInfo* pCreateInfo, const Memory& mem);
+	~Framebuffer() = delete;
+	void destroy(const VkAllocationCallbacks* pAllocator) override;
 
-	void init(uint32_t pFamilyIndex, float pPriority);
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
-	void waitIdle();
+	static MemorySize ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo);
 
 private:
-	void signal(VkFence fence);
-
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+	VkRenderPass renderPass = VK_NULL_HANDLE;
+	uint32_t     attachmentCount = 0;
+	VkImageView* attachments = nullptr;
+	uint32_t     width = 0;
+	uint32_t     height = 0;
+	uint32_t     layers = 0;
 };
 
-static inline Queue* Cast(VkQueue object)
+static inline Framebuffer* Cast(VkFramebuffer object)
 {
-	return Queue::Cast(object);
+	return reinterpret_cast<Framebuffer*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_QUEUE_HPP_
+#endif // VK_FRAMEBUFFER_HPP_

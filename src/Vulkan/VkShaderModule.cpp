@@ -12,27 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_OBJECT_HPP_
-#define VK_OBJECT_HPP_
-
-#include "VkConfig.h"
-#include "VkMemory.h"
+#include "VkShaderModule.hpp"
+#include <memory.h>
 
 namespace vk
 {
 
-void* allocate(size_t count, const VkAllocationCallbacks* pAllocator, VkSystemAllocationScope allocationScope)
+ShaderModule::ShaderModule(const VkShaderModuleCreateInfo* pCreateInfo, const Memory& mem) : code(mem.host)
 {
-	return pAllocator ?
-		pAllocator->pfnAllocation(pAllocator->pUserData, count, REQUIRED_MEMORY_ALIGNMENT, allocationScope) :
-		sw::allocate(count, REQUIRED_MEMORY_ALIGNMENT);
+	memcpy(code, pCreateInfo->pCode, pCreateInfo->codeSize);
 }
 
-void deallocate(void* ptr, const VkAllocationCallbacks* pAllocator)
+void ShaderModule::destroy(const VkAllocationCallbacks* pAllocator)
 {
-	pAllocator ? pAllocator->pfnFree(pAllocator->pUserData, ptr) : sw::deallocate(ptr);
+	vk::deallocate(code, pAllocator);
+}
+
+MemorySize ShaderModule::ComputeRequiredAllocationSize(const VkShaderModuleCreateInfo* pCreateInfo)
+{
+	return MemorySize(pCreateInfo->codeSize, 0);
 }
 
 } // namespace vk
-
-#endif // VK_OBJECT_HPP_
