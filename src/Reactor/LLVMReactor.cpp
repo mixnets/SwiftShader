@@ -4377,11 +4377,11 @@ namespace sw
 
 	RValue<Int> RoundInt(RValue<Float> cast)
 	{
-#if defined(__i386__) || defined(__x86_64__)
-		return x86::cvtss2si(cast);
-#else
-		return IfThenElse(cast > 0.0f, Int(cast + 0.5f), Int(cast - 0.5f));
-#endif
+		#if defined(__i386__) || defined(__x86_64__)
+			return x86::cvtss2si(cast);
+		#else
+			return IfThenElse(cast > 0.0f, Int(cast + 0.5f), Int(cast - 0.5f));
+		#endif
 	}
 
 	Type *Int::getType()
@@ -5609,35 +5609,47 @@ namespace sw
 
 	RValue<Int4> Min(RValue<Int4> x, RValue<Int4> y)
 	{
-#if defined(__i386__) || defined(__x86_64__)
-		if(CPUID::supportsSSE4_1())
-		{
-			return x86::pminsd(x, y);
-		}
-		else
-#endif
-		{
-			RValue<Int4> less = CmpLT(x, y);
-			return (x & less) | (y & ~less);
-		}
+		#if defined(__i386__) || defined(__x86_64__)
+			if(CPUID::supportsSSE4_1())
+			{
+				return x86::pminsd(x, y);
+			}
+		#endif
+		
+		RValue<Int4> less = CmpLT(x, y);
+		return (x & less) | (y & ~less);
 	}
 
 	RValue<Int4> RoundInt(RValue<Float4> cast)
 	{
-#if defined(__i386__) || defined(__x86_64__)
-		return x86::cvtps2dq(cast);
-#else
-		return As<Int4>(V(::builder->CreateFPToSI(V(cast.value), T(Int4::getType()))));
-#endif
+		#if defined(__i386__) || defined(__x86_64__)
+			return x86::cvtps2dq(cast);
+		#else
+
+		//	return As<Int4>(V(::builder->CreateFPToSI(V(cast.value), T(Int4::getType()))));
+
+		// TODO: Vector IfThenElse
+		//		return IfThenElse(cast > 0.0f, Int(cast + 0.5f), Int(cast - 0.5f));
+
+			const double zero[4] = {0.0, 0.0, 0.0, 0.0};
+			Value *zeroV = Nucleus::createConstantVector(zero, Float4::getType());
+			RValue<Int4> up = Int4(cast + Float4(0.5f));
+			RValue<Int4> down = Int4(cast - Float4(0.5f));
+
+	
+			return RValue<Int4>(V(::builder->CreateSelect(::builder->CreateFCmpOGT(V(cast.value), V(zeroV)), V(up.value), V(down.value))));
+
+			
+		#endif
 	}
 
 	RValue<Short8> PackSigned(RValue<Int4> x, RValue<Int4> y)
 	{
-#if defined(__i386__) || defined(__x86_64__)
-		return x86::packssdw(x, y);
-#else
-		return As<Short8>(V(lowerPack(V(x.value), V(y.value), true)));
-#endif
+		#if defined(__i386__) || defined(__x86_64__)
+			return x86::packssdw(x, y);
+		#else
+			return As<Short8>(V(lowerPack(V(x.value), V(y.value), true)));
+		#endif
 	}
 
 	RValue<UShort8> PackUnsigned(RValue<Int4> x, RValue<Int4> y)
@@ -6652,30 +6664,26 @@ namespace sw
 
 	RValue<Float4> Round(RValue<Float4> x)
 	{
-#if defined(__i386__) || defined(__x86_64__)
-		if(CPUID::supportsSSE4_1())
-		{
-			return x86::roundps(x, 0);
-		}
-		else
-#endif
-		{
-			return Float4(RoundInt(x));
-		}
+		#if defined(__i386__) || defined(__x86_64__)
+			if(CPUID::supportsSSE4_1())
+			{
+				return x86::roundps(x, 0);
+			}
+		#endif
+
+		return Float4(RoundInt(x));
 	}
 
 	RValue<Float4> Trunc(RValue<Float4> x)
 	{
-#if defined(__i386__) || defined(__x86_64__)
-		if(CPUID::supportsSSE4_1())
-		{
-			return x86::roundps(x, 3);
-		}
-		else
-#endif
-		{
-			return Float4(Int4(x));
-		}
+		#if defined(__i386__) || defined(__x86_64__)
+			if(CPUID::supportsSSE4_1())
+			{
+				return x86::roundps(x, 3);
+			}
+		#endif
+		
+		return Float4(Int4(x));
 	}
 
 	RValue<Float4> Frac(RValue<Float4> x)
