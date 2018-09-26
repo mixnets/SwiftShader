@@ -14,6 +14,8 @@
 
 #include "VkPhysicalDevice.hpp"
 #include "VkConfig.h"
+#include "VkImage.hpp"
+#include <memory.h>
 
 #include <cstring>
 
@@ -28,7 +30,7 @@ const VkPhysicalDeviceFeatures& PhysicalDevice::getFeatures() const
 {
 	static const VkPhysicalDeviceFeatures features
 	{
-		true,  // robustBufferAccess
+		true, // robustBufferAccess
 		false, // fullDrawIndexUint32
 		false, // imageCubeArray
 		false, // independentBlend
@@ -667,7 +669,7 @@ const VkPhysicalDeviceMemoryProperties& PhysicalDevice::getMemoryProperties() co
 			// vk::MEMORY_TYPE_GENERIC_BIT
 			{
 				VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT |
-				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+		  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
 				VK_MEMORY_PROPERTY_HOST_COHERENT_BIT |
 				VK_MEMORY_PROPERTY_HOST_CACHED_BIT, // propertyFlags
 				0 // heapIndex
@@ -683,6 +685,54 @@ const VkPhysicalDeviceMemoryProperties& PhysicalDevice::getMemoryProperties() co
 	};
 
 	return properties;
+}
+
+void PhysicalDevice::getSparseImageFormatProperties(
+	VkFormat format, VkImageType type, VkSampleCountFlagBits samples, VkImageUsageFlags usage,
+	VkImageTiling tiling, uint32_t* pPropertyCount, VkSparseImageFormatProperties* pProperties) const
+{
+	if(!pProperties)
+	{
+		*pPropertyCount = 1;
+	}
+	else
+	{
+		pProperties->aspectMask = Image::getImageAspect(format);
+		pProperties->flags = VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT;
+		pProperties->imageGranularity.width = 1;
+		pProperties->imageGranularity.height = 1;
+		pProperties->imageGranularity.depth = 1;
+	}
+}
+
+void PhysicalDevice::getExternalBufferProperties(const VkPhysicalDeviceExternalBufferInfo* pExternalBufferInfo,
+                                                 VkExternalBufferProperties* pExternalBufferProperties) const
+{
+	// FIXME: currently ignoring pExternalBufferInfo
+
+	pExternalBufferProperties->externalMemoryProperties.compatibleHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT;
+	pExternalBufferProperties->externalMemoryProperties.exportFromImportedHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT;
+	pExternalBufferProperties->externalMemoryProperties.externalMemoryFeatures = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT;
+}
+
+void PhysicalDevice::getExternalFenceProperties(const VkPhysicalDeviceExternalFenceInfo* pExternalFenceInfo,
+                                                VkExternalFenceProperties* pExternalFenceProperties) const
+{
+	// FIXME: currently ignoring pExternalFenceInfo
+
+	pExternalFenceProperties->compatibleHandleTypes = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT;
+	pExternalFenceProperties->exportFromImportedHandleTypes = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT;
+	pExternalFenceProperties->externalFenceFeatures = VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT;
+}
+
+void PhysicalDevice::getExternalSemaphoreProperties(const VkPhysicalDeviceExternalSemaphoreInfo* pExternalSemaphoreInfo,
+                                                    VkExternalSemaphoreProperties* pExternalSemaphoreProperties) const
+{
+	// FIXME: currently ignoring pExternalSemaphoreInfo
+
+	pExternalSemaphoreProperties->compatibleHandleTypes = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT;
+	pExternalSemaphoreProperties->exportFromImportedHandleTypes = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT;
+	pExternalSemaphoreProperties->externalSemaphoreFeatures = VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT;
 }
 
 } // namespace vk

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkCommandBuffer.hpp"
+#include "VkPipeline.hpp"
 
 namespace vk
 {
@@ -381,7 +382,8 @@ void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, Vk
 	uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
 	uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets)
 {
-	UNIMPLEMENTED();
+	vk::Cast(pipelines[pipelineBindPoint])->bindDescriptorSets(layout, firstSet,
+		descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets);
 }
 
 void CommandBuffer::bindIndexBuffer(VkBuffer buffer, VkDeviceSize offset, VkIndexType indexType)

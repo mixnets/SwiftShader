@@ -15,7 +15,9 @@
 #ifndef VK_COMMAND_POOL_HPP_
 #define VK_COMMAND_POOL_HPP_
 
-#include "VkObject.hpp"
+#include "VkCommandBuffer.hpp"
+#include <algorithm>
+#include <vector>
 
 namespace vk
 {
@@ -29,7 +31,15 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkCommandPoolCreateInfo* pCreateInfo);
 
+	VkResult allocateCommandBuffers(VkCommandBufferLevel level, uint32_t commandBufferCount, VkCommandBuffer* pCommandBuffers);
+	void freeCommandBuffers(uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers);
+	void reset(VkCommandPoolResetFlags flags);
+	void trim();
+
 private:
+	VkCommandPoolCreateFlags     flags = 0;
+	uint32_t                     queueFamilyIndex = 0;
+	std::vector<VkCommandBuffer> commandBuffers;
 };
 
 static inline CommandPool* Cast(VkCommandPool object)
