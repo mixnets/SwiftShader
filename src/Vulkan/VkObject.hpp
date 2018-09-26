@@ -25,6 +25,19 @@ namespace vk
 // For use in the placement new to make it verbose that we're allocating an object using device memory
 static constexpr VkAllocationCallbacks* DEVICE_MEMORY = nullptr;
 
+struct MemorySize
+{
+	MemorySize(size_t pHost, size_t pDevice) : host(pHost), device(pDevice) {}
+	size_t host = 0;
+	size_t device = 0;
+};
+
+struct Memory
+{
+	char* host = nullptr;
+	char* device = nullptr;
+};
+
 template<typename T, typename VkT>
 class VkObjectBase
 {
@@ -42,6 +55,48 @@ public:
 	{
 		// Should never happen
 		ASSERT(false);
+	}
+
+	template<typename CreateInfo>
+	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject)
+	{
+		*outObject = VK_NULL_HANDLE;
+
+		MemorySize sizes = T::ComputeRequiredAllocationSize(pCreateInfo);
+		Memory mem;
+		if(sizes.device)
+		{
+			mem.device = static_cast<char*>(vk::allocate(
+				sizes.device, REQUIRED_MEMORY_ALIGNMENT, DEVICE_MEMORY, GetAllocationScope()));
+			if(!mem.device)
+			{
+				return VK_ERROR_OUT_OF_DEVICE_MEMORY;
+			}
+		}
+
+		if(sizes.host)
+		{
+			mem.host = static_cast<char*>(vk::allocate(
+				sizes.host, REQUIRED_MEMORY_ALIGNMENT, pAllocator, GetAllocationScope()));
+			if(!mem.host)
+			{
+				vk::deallocate(mem.device, DEVICE_MEMORY);
+				return VK_ERROR_OUT_OF_HOST_MEMORY;
+			}
+		}
+
+		auto object = new (pAllocator) T(pCreateInfo, mem);
+
+		if(!object)
+		{
+			vk::deallocate(mem.device, DEVICE_MEMORY);
+			vk::deallocate(mem.host, pAllocator);
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+
+		*outObject = *object;
+
+		return VK_SUCCESS;
 	}
 
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_OBJECT; }

@@ -15,81 +15,89 @@
 #include "VkConfig.h"
 #include "VkDebug.hpp"
 #include "VkDevice.hpp"
+#include "VkConfig.h"
+#include "VkImage.hpp"
+#include "VkPhysicalDevice.hpp"
 #include "VkQueue.hpp"
 
 namespace vk
 {
 
-Device::Device(VkPhysicalDevice pPhysicalDevice, uint32_t pQueueCount, VkQueue* pQueues)
-	: physicalDevice(pPhysicalDevice), queueCount(pQueueCount), queues(pQueues)
+Device::Device(const Device::DeviceCreateInfo* info, const Memory& mem)
+	: physicalDevice(info->pPhysicalDevice), queues(reinterpret_cast<VkQueue*>(mem.host))
 {
+	const auto* pCreateInfo = info->pCreateInfo;
+	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
+	{
+		const VkDeviceQueueCreateInfo& queueCreateInfo = pCreateInfo->pQueueCreateInfos[i];
+		queueCount += info->pCreateInfo->pQueueCreateInfos[i].queueCount;
+	}
+
+	char* hostMemory = mem.host + sizeof(Queue*) * queueCount;
+
+	uint32_t queueID = 0;
+	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
+	{
+		const VkDeviceQueueCreateInfo& queueCreateInfo = pCreateInfo->pQueueCreateInfos[i];
+
+		for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++, queueID++, hostMemory += sizeof(Queue))
+		{
+			queues[queueID] = reinterpret_cast<VkQueue>(hostMemory);
+			vk::Cast(queues[queueID])->init(queueCreateInfo.queueFamilyIndex, queueCreateInfo.pQueuePriorities[j]);
+		}
+	}
 }
 
 void Device::destroy(const VkAllocationCallbacks* pAllocator)
 {
-	DestroyQueues(pAllocator, queueCount, queues);
+	vk::deallocate(queues, pAllocator); // All individual queue objects are in the same allocation
 }
 
-VkResult Device::AllocateQueues(const VkAllocationCallbacks* pAllocator, const VkDeviceCreateInfo* pCreateInfo,
-							    uint32_t& queueCount, VkQueue** queues)
+MemorySize Device::ComputeRequiredAllocationSize(const Device::DeviceCreateInfo* info)
 {
-	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
+	uint32_t queueCount = 0;
+	for(uint32_t i = 0; i < info->pCreateInfo->queueCreateInfoCount; i++)
 	{
-		queueCount += pCreateInfo->pQueueCreateInfos[i].queueCount;
+		queueCount += info->pCreateInfo->pQueueCreateInfos[i].queueCount;
 	}
 
-	*queues = reinterpret_cast<VkQueue*>(vk::allocate(sizeof(Queue*) * queueCount, REQUIRED_MEMORY_ALIGNMENT, pAllocator));
-
-	if(*queues)
-	{
-		uint32_t queueID = 0;
-		for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
-		{
-			const VkDeviceQueueCreateInfo& queueCreateInfo = pCreateInfo->pQueueCreateInfos[i];
-
-			if(queueCreateInfo.flags)
-			{
-				UNIMPLEMENTED();
-			}
-
-			for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++, queueID++)
-			{
-				vk::Queue* queue = new (pAllocator) vk::Queue(
-					queueCreateInfo.queueFamilyIndex, queueCreateInfo.pQueuePriorities[j]);
-				if(queue)
-				{
-					(*queues)[queueID] = *queue;
-				}
-				else // OOM
-				{
-					DestroyQueues(pAllocator, queueID, *queues);
-					return VK_ERROR_OUT_OF_HOST_MEMORY;
-				}
-			}
-		}
-	}
-	else
-	{
-		return VK_ERROR_OUT_OF_HOST_MEMORY;
-	}
-
-	return VK_SUCCESS;
-}
-
-void Device::DestroyQueues(const VkAllocationCallbacks* pAllocator, const uint32_t& queuesToDestroy, VkQueue* queues)
-{
-	// Release queues
-	for(uint32_t q = 0; q < queuesToDestroy; ++q)
-	{
-		vk::destroy(queues[q], pAllocator);
-	}
-	// Release queue array
-	vk::deallocate(queues, pAllocator);
+	return MemorySize((sizeof(Queue*) + sizeof(Queue)) * queueCount, 0);
 }
 
 VkQueue Device::getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const
 {
 	return queues[queueIndex];
+}
+
+void Device::waitForFences(uint32_t fenceCount, const VkFence* pFences, VkBool32 waitAll, uint64_t timeout)
+{
+	// noop
+}
+
+void Device::waitIdle()
+{
+	for(uint32_t i = 0; i < queueCount; i++)
+	{
+		vk::Cast(queues[i])->waitIdle();
+	}
+}
+
+void Device::getImageSparseMemoryRequirements(VkImage pImage, uint32_t* pSparseMemoryRequirementCount,
+	                                          VkSparseImageMemoryRequirements* pSparseMemoryRequirements) const
+{
+	if(!pSparseMemoryRequirements)
+	{
+		*pSparseMemoryRequirementCount = 1;
+	}
+	else
+	{
+		auto image = vk::Cast(pImage);
+		uint32_t propertyCount = 1;
+		vk::Cast(physicalDevice)->getSparseImageFormatProperties(
+			image->getFormat(), image->getImageType(), image->getSamples(), image->getUsage(),
+			image->getTiling(), &propertyCount, &(pSparseMemoryRequirements->formatProperties));
+		image->getImageMipTailInfo(pSparseMemoryRequirements);
+	}
 }
 
 } // namespace vk

@@ -24,13 +24,13 @@ namespace vk
 void* allocate(size_t count, size_t alignment, const VkAllocationCallbacks* pAllocator, VkSystemAllocationScope allocationScope)
 {
 	return pAllocator ?
-		pAllocator->pfnAllocation(nullptr, count, alignment, allocationScope) :
+		pAllocator->pfnAllocation(pAllocator->pUserData, count, alignment, allocationScope) :
 		sw::allocate(count, alignment);
 }
 
 void deallocate(void* ptr, const VkAllocationCallbacks* pAllocator)
 {
-	pAllocator ? pAllocator->pfnFree(nullptr, ptr) : sw::deallocate(ptr);
+	pAllocator ? pAllocator->pfnFree(pAllocator->pUserData, ptr) : sw::deallocate(ptr);
 }
 
 } // namespace vk

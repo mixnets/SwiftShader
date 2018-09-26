@@ -12,37 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_QUEUE_HPP_
-#define VK_QUEUE_HPP_
+#ifndef VK_FENCE_HPP_
+#define VK_FENCE_HPP_
 
 #include "VkObject.hpp"
 
 namespace vk
 {
 
-class Queue : public VkDispatchableObject<Queue, VkQueue>
+class Fence : public VkObject<Fence, VkFence>
 {
 public:
-	Queue();
-	~Queue() = delete;
+	Fence(const VkFenceCreateInfo* pCreateInfo) : flags(pCreateInfo->flags) {}
 
-	void init(uint32_t pFamilyIndex, float pPriority);
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
-	void waitIdle();
+	~Fence() = delete;
+
+	void signal()
+	{
+		isSignaled = true;
+	}
+
+	void reset()
+	{
+		isSignaled = false;
+	}
+
+	VkResult getStatus() const
+	{
+		return isSignaled ? VK_SUCCESS : VK_NOT_READY;
+	}
 
 private:
-	void signal(VkFence fence);
-
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+	VkFenceCreateFlags flags = 0;
+	bool isSignaled = false;
 };
 
-static inline Queue* Cast(VkQueue object)
+static inline Fence* Cast(VkFence object)
 {
-	return Queue::Cast(object);
+	return reinterpret_cast<Fence*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_QUEUE_HPP_
+#endif // VK_FENCE_HPP_

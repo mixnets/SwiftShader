@@ -14,6 +14,7 @@
 
 #include "VkPhysicalDevice.hpp"
 #include "VkConfig.h"
+#include "VkImage.hpp"
 #include <memory.h>
 
 namespace vk
@@ -380,6 +381,24 @@ const VkPhysicalDeviceMemoryProperties& PhysicalDevice::getMemoryProperties() co
 	};
 
 	return properties;
+}
+
+void PhysicalDevice::getSparseImageFormatProperties(
+	VkFormat format, VkImageType type, VkSampleCountFlagBits samples, VkImageUsageFlags usage,
+	VkImageTiling tiling, uint32_t* pPropertyCount, VkSparseImageFormatProperties* pProperties) const
+{
+	if(!pProperties)
+	{
+		*pPropertyCount = 1;
+	}
+	else
+	{
+		pProperties->aspectMask = Image::getImageAspect(format);
+		pProperties->flags = VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT;
+		pProperties->imageGranularity.width = 1;
+		pProperties->imageGranularity.height = 1;
+		pProperties->imageGranularity.depth = 1;
+	}
 }
 
 } // namespace vk
