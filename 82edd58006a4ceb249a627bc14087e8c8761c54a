@@ -1,0 +1,282 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8d1c6d41_204d6e1e",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "nit: These could be static constexpr and follow the kCamelCase naming convention to match Chrome\u0027s convention.",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d0468c1_b1fae3ec",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "Any idea on how we can make this more fool-proof? Right now we get a valid pointer to a Queue before it is initialized, which is a bit scary.",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "800389d4_855ee896",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "nit: comment to point out that this is different than the usual.",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d8cf04d3_e81d77a0",
+        "filename": "src/Vulkan/VkMemory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "Now would be a good time to do that :)",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "13332019_53e3549f",
+        "filename": "src/Vulkan/VkMemory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "Same comment as before that the memcpy should be done by the caller.",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "587d8e86_e9596531",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "Could we remove this macro? It would be ok to have the slightly more verbose, but less magical:\n\n class Device : public ObjectBase\u003cVkDevice, Device\u003e {\n };\n\n using ImplObject\u003cVkDevice\u003e \u003d Device;",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5626c427_4b2743ea",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "Thoughts on how we can make sure that we don\u0027t forget to call destroy?",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bcebe1ab_a8301b54",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "This could be based on the commit hash.",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "65ef3260_b5f46864",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "Same as for vkCreateDevice below.",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "294d2146_d5cde35a",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "No need for all of this, here\u0027s the relevant spec part:\n\n\u003e Vulkan 1.0 implementations were required to return VK_ERROR_INCOMPATIBLE_DRIVER if apiVersion was larger than 1.0. Implementations that support Vulkan 1.1 or later must not return VK_ERROR_INCOMPATIBLE_DRIVER for any value of apiVersion.",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ea21dce_d79607e8",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "Would it make sense to have a helper function for this type of pattern? It happens all the time.",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9205e4c1_cc86774b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "I think we should use the same scheme as Mesa: https://github.com/mesa3d/mesa/blob/master/src/intel/vulkan/anv_image.c#L564\nwith vk_find_struct_const. Since we are C++ it could be vk::FindSubStruct\u003cvkStructBlahInfo\u003e(struct, sType);\n\nThis way we only have to care about the things we support, and not the things we don\u0027t support (it is the application\u0027s responsibility to not send us stuff we don\u0027t support).",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b653f35_67667194",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "It is the application\u0027s responsibility.\n\n\u003e queueCreateInfoCount must be greater than 0",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8c36d4d2_ecb4306b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "Could this be stored in the physical device and accessed directly instead of re-entering the Vulkan API?",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e48c3a4_9e9ab61c",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "This is the application\u0027s responsibility\n\n\u003e queueFamilyIndex must be less than pQueueFamilyPropertyCount returned by vkGetPhysicalDeviceQueueFamilyProperties",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "812c15a3_f62b4325",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-26T17:58:06Z",
+      "side": 1,
+      "message": "nit: nullptr here and in other places.",
+      "range": {
+        "startLine": 326,
+        "startChar": 19,
+        "endLine": 326,
+        "endChar": 23
+      },
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
