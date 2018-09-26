@@ -12,13 +12,108 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "VkBuffer.hpp"
+#include "VkCommandBuffer.hpp"
+#include "VkImage.hpp"
 #include "VkQueue.hpp"
+#include "VkFence.hpp"
+#include "VkSemaphore.hpp"
 
 namespace vk
 {
 
 Queue::Queue(uint32_t pFamilyIndex, float pPriority) : familyIndex(pFamilyIndex), priority(pPriority)
 {
+}
+
+void Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence)
+{
+	for(uint32_t i = 0; i < submitCount; i++)
+	{
+		auto& submitInfo = pSubmits[i];
+		for(uint32_t j = 0; j < submitInfo.waitSemaphoreCount; j++)
+		{
+			vk::Cast(submitInfo.pWaitSemaphores[j])->wait(submitInfo.pWaitDstStageMask[j]);
+		}
+
+		for(uint32_t j = 0; j < submitInfo.commandBufferCount; j++)
+		{
+			vk::Cast(submitInfo.pCommandBuffers[j])->submit();
+		}
+
+		for(uint32_t j = 0; j < submitInfo.signalSemaphoreCount; j++)
+		{
+			vk::Cast(submitInfo.pSignalSemaphores[j])->signal();
+		}
+	}
+
+	signal(fence);
+}
+
+void Queue::bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence)
+{
+	for(uint32_t i = 0; i < bindInfoCount; i++)
+	{
+		auto& bindInfo = pBindInfo[i];
+		for(uint32_t j = 0; j < bindInfo.waitSemaphoreCount; j++)
+		{
+			vk::Cast(bindInfo.pWaitSemaphores[j])->wait();
+		}
+
+		for(uint32_t j = 0; j < bindInfo.bufferBindCount; j++)
+		{
+			auto& bufferBinds = bindInfo.pBufferBinds[j];
+			auto buffer = vk::Cast(bufferBinds.buffer);
+			for(uint32_t k = 0; k < bufferBinds.bindCount; k++)
+			{
+				auto& sparseMemoryBind = bufferBinds.pBinds[k];
+				UNIMPLEMENTED();
+			}
+		}
+
+		for(uint32_t j = 0; j < bindInfo.imageBindCount; j++)
+		{
+			auto& imageBinds = bindInfo.pImageBinds[j];
+			auto image = vk::Cast(imageBinds.image);
+			for(uint32_t k = 0; k < imageBinds.bindCount; k++)
+			{
+				auto& sparseImageMemoryBind = imageBinds.pBinds[k];
+				UNIMPLEMENTED();
+			}
+		}
+
+		for(uint32_t j = 0; j < bindInfo.imageOpaqueBindCount; j++)
+		{
+			auto& imageOpaqueBinds = bindInfo.pImageOpaqueBinds[j];
+			auto image = vk::Cast(imageOpaqueBinds.image);
+			for(uint32_t k = 0; k < imageOpaqueBinds.bindCount; k++)
+			{
+				auto& sparseMemoryBind = imageOpaqueBinds.pBinds[k];
+				UNIMPLEMENTED();
+			}
+		}
+
+		for(uint32_t i = 0; i < bindInfo.signalSemaphoreCount; i++)
+		{
+			vk::Cast(bindInfo.pSignalSemaphores[i])->signal();
+		}
+	}
+
+	signal(fence);
+}
+
+void Queue::signal(VkFence fence)
+{
+	// FIXME: signal the fence only once the work is completed
+	if(fence != VK_NULL_HANDLE)
+	{
+		vk::Cast(fence)->signal();
+	}
+}
+
+void Queue::waitIdle()
+{
+	// noop
 }
 
 } // namespace vk

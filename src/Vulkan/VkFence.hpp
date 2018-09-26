@@ -12,44 +12,53 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_QUEUE_HPP_
-#define VK_QUEUE_HPP_
+#ifndef VK_FENCE_HPP_
+#define VK_FENCE_HPP_
 
 #include "VkObject.hpp"
-#include <vulkan/vk_icd.h>
 
 namespace vk
 {
 
-class Queue
+class Fence : public Object<Fence, VkFence>
 {
-	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
-
 public:
-	Queue(uint32_t pFamilyIndex, float pPriority);
-	~Queue() = delete;
-
-	operator VkQueue()
+	Fence(const VkFenceCreateInfo* pCreateInfo, void* mem) :
+		status((pCreateInfo->flags & VK_FENCE_CREATE_SIGNALED_BIT) ? VK_SUCCESS : VK_NOT_READY)
 	{
-		return reinterpret_cast<VkQueue>(this);
 	}
 
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
-	void waitIdle();
+	~Fence() = delete;
+
+	static size_t ComputeRequiredAllocationSize(const VkFenceCreateInfo* pCreateInfo)
+	{
+		return 0;
+	}
+
+	void signal()
+	{
+		status = VK_SUCCESS;
+	}
+
+	void reset()
+	{
+		status = VK_NOT_READY;
+	}
+
+	VkResult getStatus() const
+	{
+		return status;
+	}
 
 private:
-	void signal(VkFence fence);
-
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+	VkResult status = VK_NOT_READY;
 };
 
-static inline Queue* Cast(VkQueue object)
+static inline Fence* Cast(VkFence object)
 {
-	return reinterpret_cast<Queue*>(object);
+	return reinterpret_cast<Fence*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_QUEUE_HPP_
+#endif // VK_FENCE_HPP_

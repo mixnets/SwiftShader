@@ -12,44 +12,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_QUEUE_HPP_
-#define VK_QUEUE_HPP_
+#ifndef VK_BUFFER_VIEW_HPP_
+#define VK_BUFFER_VIEW_HPP_
 
 #include "VkObject.hpp"
-#include <vulkan/vk_icd.h>
 
 namespace vk
 {
 
-class Queue
+class BufferView : public Object<BufferView, VkBufferView>
 {
-	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
-
 public:
-	Queue(uint32_t pFamilyIndex, float pPriority);
-	~Queue() = delete;
-
-	operator VkQueue()
+	BufferView(const VkBufferViewCreateInfo* pCreateInfo, void* mem) :
+		buffer(pCreateInfo->buffer), format(pCreateInfo->format), offset(pCreateInfo->offset), range(pCreateInfo->range)
 	{
-		return reinterpret_cast<VkQueue>(this);
 	}
 
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
-	void waitIdle();
+	~BufferView() = delete;
+
+	static size_t ComputeRequiredAllocationSize(const VkBufferViewCreateInfo* pCreateInfo)
+	{
+		return 0;
+	}
 
 private:
-	void signal(VkFence fence);
-
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+	VkBuffer                   buffer;
+	VkFormat                   format;
+	VkDeviceSize               offset;
+	VkDeviceSize               range;
 };
 
-static inline Queue* Cast(VkQueue object)
+static inline BufferView* Cast(VkBufferView object)
 {
-	return reinterpret_cast<Queue*>(object);
+	return reinterpret_cast<BufferView*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_QUEUE_HPP_
+#endif // VK_BUFFER_VIEW_HPP_

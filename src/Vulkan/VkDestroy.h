@@ -12,11 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "VkBuffer.hpp"
+#include "VkBufferView.hpp"
 #include "VkCommandBuffer.hpp"
+#include "VkCommandPool.hpp"
+#include "VkDescriptorPool.hpp"
+#include "VkDescriptorSetLayout.hpp"
+#include "VkDescriptorUpdateTemplate.hpp"
 #include "VkDevice.hpp"
+#include "VkDeviceMemory.hpp"
+#include "VkEvent.hpp"
+#include "VkFence.hpp"
+#include "VkFramebuffer.hpp"
+#include "VkImage.hpp"
+#include "VkImageView.hpp"
 #include "VkInstance.hpp"
 #include "VkPhysicalDevice.hpp"
+#include "VkPipeline.hpp"
+#include "VkPipelineCache.hpp"
+#include "VkPipelineLayout.hpp"
+#include "VkQueryPool.hpp"
 #include "VkQueue.hpp"
+#include "VkSampler.hpp"
+#include "VkSamplerYcbcrConversion.hpp"
+#include "VkSemaphore.hpp"
+#include "VkShaderModule.hpp"
+#include "VkRenderPass.hpp"
 
 namespace vk
 {
