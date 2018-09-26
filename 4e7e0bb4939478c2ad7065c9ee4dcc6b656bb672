@@ -39,6 +39,30 @@
       "revId": "4e7e0bb4939478c2ad7065c9ee4dcc6b656bb672",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e761bb66_29028503",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-09-26T18:16:44Z",
+      "side": 1,
+      "message": "We\u0027ll probably need it very soon, so looks fine to me to keep it.",
+      "parentUuid": "726545fe_3023079d",
+      "range": {
+        "startLine": 18,
+        "startChar": 0,
+        "endLine": 18,
+        "endChar": 17
+      },
+      "revId": "4e7e0bb4939478c2ad7065c9ee4dcc6b656bb672",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
