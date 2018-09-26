@@ -12,38 +12,49 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_QUEUE_HPP_
-#define VK_QUEUE_HPP_
+#ifndef VK_EVENT_HPP_
+#define VK_EVENT_HPP_
 
 #include "VkObject.hpp"
 
 namespace vk
 {
 
-class Queue
+class Event : public VkObject<Event, VkEvent>
 {
-	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
-
 public:
-	Queue();
+	Event( const VkEventCreateInfo* pCreateInfo) :
+		flags(pCreateInfo->flags)
+	{
+	}
 
-	void init(uint32_t pFamilyIndex, float pPriority);
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
-	void waitIdle();
+	~Event() = delete;
+
+	void signal()
+	{
+		isSignaled = true;
+	}
+
+	void reset()
+	{
+		isSignaled = false;
+	}
+
+	VkResult getStatus() const
+	{
+		return isSignaled ? VK_EVENT_SET : VK_EVENT_RESET;
+	}
 
 private:
-	void signal(VkFence fence);
-
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+	VkEventCreateFlags flags;
+	bool isSignaled = false;
 };
 
-static inline Queue* Cast(VkQueue object)
+static inline Event* Cast(VkEvent object)
 {
-	return reinterpret_cast<Queue*>(object);
+	return reinterpret_cast<Event*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_QUEUE_HPP_
+#endif // VK_EVENT_HPP_

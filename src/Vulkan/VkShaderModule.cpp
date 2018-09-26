@@ -12,38 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_QUEUE_HPP_
-#define VK_QUEUE_HPP_
-
-#include "VkObject.hpp"
+#include "VkShaderModule.hpp"
+#include <memory.h>
 
 namespace vk
 {
 
-class Queue
+ShaderModule::ShaderModule(const VkShaderModuleCreateInfo* pCreateInfo, const Memory& mem) : code(mem.host)
 {
-	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
+	memcpy(code, pCreateInfo->pCode, pCreateInfo->codeSize);
+}
 
-public:
-	Queue();
-
-	void init(uint32_t pFamilyIndex, float pPriority);
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
-	void waitIdle();
-
-private:
-	void signal(VkFence fence);
-
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
-};
-
-static inline Queue* Cast(VkQueue object)
+void ShaderModule::destroy(const VkAllocationCallbacks* pAllocator)
 {
-	return reinterpret_cast<Queue*>(object);
+	vk::deallocate(code, pAllocator);
+}
+
+MemorySize ShaderModule::ComputeRequiredAllocationSize(const VkShaderModuleCreateInfo* pCreateInfo)
+{
+	return MemorySize(pCreateInfo->codeSize, 0);
 }
 
 } // namespace vk
-
-#endif // VK_QUEUE_HPP_
