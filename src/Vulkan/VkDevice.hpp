@@ -37,6 +37,18 @@ public:
 	static MemorySize ComputeRequiredAllocationSize(const CreateInfo* info);
 
 	VkQueue getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const;
+	void waitForFences(uint32_t fenceCount, const VkFence* pFences, VkBool32 waitAll, uint64_t timeout);
+	void waitIdle();
+	void getImageSparseMemoryRequirements(VkImage image, uint32_t* pSparseMemoryRequirementCount,
+	                                      VkSparseImageMemoryRequirements* pSparseMemoryRequirements) const;
+	void getGroupPeerMemoryFeatures(uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex,
+	                                VkPeerMemoryFeatureFlags* pPeerMemoryFeatures) const;
+	void updateDescriptorSets(uint32_t descriptorWriteCount, const VkWriteDescriptorSet* pDescriptorWrites,
+	                          uint32_t descriptorCopyCount, const VkCopyDescriptorSet* pDescriptorCopies);
+	void updateDescriptorSetWithTemplate(VkDescriptorSet descriptorSet,
+	                                     VkDescriptorUpdateTemplate descriptorUpdateTemplate, const void* pData);
+	void getDescriptorSetLayoutSupport(const VkDescriptorSetLayoutCreateInfo* pCreateInfo,
+	                                   VkDescriptorSetLayoutSupport* pSupport) const;
 
 private:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;

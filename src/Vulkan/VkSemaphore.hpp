@@ -12,38 +12,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_QUEUE_HPP_
-#define VK_QUEUE_HPP_
+#ifndef VK_SEMAPHORE_HPP_
+#define VK_SEMAPHORE_HPP_
 
 #include "VkObject.hpp"
 
 namespace vk
 {
 
-class Queue
+class Semaphore : public VkObject<Semaphore, VkSemaphore>
 {
-	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
-
 public:
-	Queue();
+	Semaphore(const VkSemaphoreCreateInfo* pCreateInfo) :
+		flags(pCreateInfo->flags)
+	{
+	}
 
-	void init(uint32_t pFamilyIndex, float pPriority);
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
-	void waitIdle();
+	~Semaphore() = delete;
+
+	void wait()
+	{
+		// Semaphores are noop for now
+	}
+
+	void wait(const VkPipelineStageFlags& flag)
+	{
+		// Semaphores are noop for now
+	}
+
+	void signal()
+	{
+		// Semaphores are noop for now
+	}
 
 private:
-	void signal(VkFence fence);
-
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+	VkSemaphoreCreateFlags flags;
 };
 
-static inline Queue* Cast(VkQueue object)
+static inline Semaphore* Cast(VkSemaphore object)
 {
-	return reinterpret_cast<Queue*>(object);
+	return reinterpret_cast<Semaphore*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_QUEUE_HPP_
+#endif // VK_SEMAPHORE_HPP_
