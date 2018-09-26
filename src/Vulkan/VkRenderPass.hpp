@@ -27,12 +27,20 @@ public:
 	~RenderPass() = delete;
 	void destroy(const VkAllocationCallbacks* pAllocator);
 
+	void getRenderAreaGranularity(VkExtent2D* pGranularity) const;
+
 	static size_t ComputeRequiredAllocationSize(const VkRenderPassCreateInfo* pCreateInfo);
 
 	void begin();
 	void end();
 
 private:
+	uint32_t                 attachmentCount = 0;
+	VkAttachmentDescription* attachments = nullptr;
+	uint32_t                 subpassCount = 0;
+	VkSubpassDescription*    subpasses = nullptr;
+	uint32_t                 dependencyCount = 0;
+	VkSubpassDependency*     dependencies = nullptr;
 };
 
 static inline RenderPass* Cast(VkRenderPass object)

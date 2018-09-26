@@ -13,21 +13,51 @@
 // limitations under the License.
 
 #include "VkRenderPass.hpp"
+#include <cstring>
 
 namespace vk
 {
 
-RenderPass::RenderPass(const VkRenderPassCreateInfo* pCreateInfo, void* mem)
+RenderPass::RenderPass(const VkRenderPassCreateInfo* pCreateInfo, void* mem) :
+	attachmentCount(pCreateInfo->attachmentCount),
+	subpassCount(pCreateInfo->subpassCount),
+	dependencyCount(pCreateInfo->dependencyCount)
 {
+	char* hostMemory = reinterpret_cast<char*>(mem);
+
+	size_t attachmentSize = pCreateInfo->attachmentCount * sizeof(VkAttachmentDescription);
+	attachments = reinterpret_cast<VkAttachmentDescription*>(hostMemory);
+	memcpy(attachments, pCreateInfo->pAttachments, attachmentSize);
+	hostMemory += attachmentSize;
+
+	size_t subpassesSize = pCreateInfo->subpassCount * sizeof(VkSubpassDescription);
+	subpasses = reinterpret_cast<VkSubpassDescription*>(hostMemory);
+	memcpy(subpasses, pCreateInfo->pSubpasses, subpassesSize);
+	hostMemory += subpassesSize;
+
+	size_t dependenciesSize = pCreateInfo->dependencyCount * sizeof(VkSubpassDependency);
+	dependencies = reinterpret_cast<VkSubpassDependency*>(hostMemory);
+	memcpy(dependencies, pCreateInfo->pDependencies, dependenciesSize);
 }
 
 void RenderPass::destroy(const VkAllocationCallbacks* pAllocator)
 {
+	vk::deallocate(attachments, pAllocator); // subpasses and dependencies are in the same allocation
+}
+
+void RenderPass::getRenderAreaGranularity(VkExtent2D* pGranularity) const
+{
+	pGranularity->height = 1;
+	pGranularity->width = 1;
 }
 
 size_t RenderPass::ComputeRequiredAllocationSize(const VkRenderPassCreateInfo* pCreateInfo)
 {
-	return 0;
+	size_t attachmentSize = pCreateInfo->attachmentCount * sizeof(VkAttachmentDescription);
+	size_t subpassesSize = pCreateInfo->subpassCount * sizeof(VkSubpassDescription);
+	size_t dependenciesSize = pCreateInfo->dependencyCount * sizeof(VkSubpassDependency);
+
+	return attachmentSize + subpassesSize + dependenciesSize;
 }
 
 void RenderPass::begin()

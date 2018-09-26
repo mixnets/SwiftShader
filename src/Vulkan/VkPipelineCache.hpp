@@ -16,31 +16,59 @@
 #define VK_PIPELINE_CACHE_HPP_
 
 #include "VkObject.hpp"
+#include <memory.h>
 
 namespace vk
 {
 
+class PipelineCache;
+
+static inline PipelineCache* Cast(VkPipelineCache object)
+{
+	return reinterpret_cast<PipelineCache*>(object);
+}
+
 class PipelineCache : public Object<PipelineCache, VkPipelineCache>
 {
 public:
-	PipelineCache(const VkPipelineCacheCreateInfo* pCreateInfo, void* mem)
+	PipelineCache(const VkPipelineCacheCreateInfo* pCreateInfo, void* mem) :
+		dataSize(pCreateInfo->initialDataSize), data(mem)
 	{
+		memcpy(data, pCreateInfo->pInitialData, dataSize);
 	}
 
 	~PipelineCache() = delete;
 
 	static size_t ComputeRequiredAllocationSize(const VkPipelineCacheCreateInfo* pCreateInfo)
 	{
-		return 0;
+		return pCreateInfo->initialDataSize;
+	}
+
+	size_t getDataSize() const
+	{
+		return dataSize;
+	}
+
+	void copyData(size_t size, void* pData) const
+	{
+		memcpy(pData, data, size);
+	}
+
+	void merge(uint32_t srcCacheCount, const VkPipelineCache* pSrcCaches)
+	{
+		for(uint32_t i = 0; i < srcCacheCount; i++)
+		{
+			if(Cast(pSrcCaches[i])->dataSize > 0)
+			{
+				UNIMPLEMENTED();
+			}
+		}
 	}
 
 private:
+	size_t dataSize = 0;
+	void* data = nullptr;
 };
-
-static inline PipelineCache* Cast(VkPipelineCache object)
-{
-	return reinterpret_cast<PipelineCache*>(object);
-}
 
 } // namespace vk
 

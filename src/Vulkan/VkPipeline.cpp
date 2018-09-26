@@ -383,6 +383,17 @@ void GraphicsPipeline::compileShaders(const VkAllocationCallbacks* pAllocator, c
 	fragmentRoutine = Cast(pCreateInfo->pStages[1].module)->compile(pAllocator);
 }
 
+void GraphicsPipeline::bindDescriptorSets(VkPipelineLayout layout, uint32_t firstSet,
+	uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
+	uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets)
+{
+	/*for(uint32_t i = 0; i < descriptorSetCount; i++)
+	{
+		uint32_t setIndex = i + firstSet;
+		pDescriptorSets[i];
+	}*/
+}
+
 uint32_t GraphicsPipeline::computePrimitiveCount(uint32_t vertexCount) const
 {
 	switch(context.drawType)

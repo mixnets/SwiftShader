@@ -113,11 +113,6 @@ public:
 
 	~DispatchableObject() = delete;
 
-	void destroy(const VkAllocationCallbacks* pAllocator)
-	{
-		object.destroy(pAllocator);
-	}
-
 	void* operator new(size_t count, const VkAllocationCallbacks* pAllocator)
 	{
 		return vk::allocate(count, alignof(T), pAllocator, T::GetAllocationScope());
@@ -143,7 +138,8 @@ public:
 
 	static inline T* Cast(VkT vkObject)
 	{
-		return &(reinterpret_cast<DispatchableObject<T, VkT>*>(vkObject)->object);
+		return (vkObject == VK_NULL_HANDLE) ? nullptr :
+			&(reinterpret_cast<DispatchableObject<T, VkT>*>(vkObject)->object);
 	}
 
 	operator VkT()

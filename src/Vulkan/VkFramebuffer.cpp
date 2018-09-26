@@ -20,8 +20,9 @@ namespace vk
 {
 
 Framebuffer::Framebuffer(const VkFramebufferCreateInfo* pCreateInfo, void* mem) :
-	attachmentCount(pCreateInfo->attachmentCount),
-	attachments(reinterpret_cast<ImageView**>(mem))
+	renderPass(pCreateInfo->renderPass), attachmentCount(pCreateInfo->attachmentCount),
+	attachments(reinterpret_cast<ImageView**>(mem)), width(pCreateInfo->width),
+	height(pCreateInfo->height), layers(pCreateInfo->layers)
 {
 	for(uint32_t i = 0; i < attachmentCount; i++)
 	{

@@ -14,6 +14,7 @@
 
 #include "VkDeviceMemory.hpp"
 #include "VkBuffer.hpp"
+#include "VkConfig.h"
 #include "VkImage.hpp"
 #include "Device/Blitter.hpp"
 #include "Device/Surface.hpp"
@@ -30,17 +31,25 @@ Image::Image(const VkImageCreateInfo* pCreateInfo, void* mem) :
 	mipLevels(pCreateInfo->mipLevels),
 	arrayLayers(pCreateInfo->arrayLayers),
 	samples(pCreateInfo->samples),
-	tiling(pCreateInfo->tiling)
+	tiling(pCreateInfo->tiling),
+	usage(pCreateInfo->usage),
+	sharingMode(pCreateInfo->sharingMode),
+	initialLayout(pCreateInfo->initialLayout),
+	queueFamilyIndexCount(pCreateInfo->queueFamilyIndexCount),
+	queueFamilyIndices(reinterpret_cast<uint32_t*>(mem))
 {
+	size_t queueFamilyIndicesSize = sizeof(uint32_t) *pCreateInfo->queueFamilyIndexCount;
+	memcpy(queueFamilyIndices, pCreateInfo->pQueueFamilyIndices, queueFamilyIndicesSize);
 }
 
 void Image::destroy(const VkAllocationCallbacks* pAllocator)
 {
+	vk::deallocate(queueFamilyIndices, pAllocator);
 }
 
 size_t Image::ComputeRequiredAllocationSize(const VkImageCreateInfo* pCreateInfo)
 {
-	return 0;
+	return sizeof(uint32_t) *pCreateInfo->queueFamilyIndexCount;
 }
 
 const VkMemoryRequirements Image::getMemoryRequirements() const
@@ -56,6 +65,72 @@ void Image::bind(VkDeviceMemory pDeviceMemory, VkDeviceSize pMemoryOffset)
 {
 	deviceMemory = pDeviceMemory;
 	memoryOffset = pMemoryOffset;
+}
+
+void Image::getImageMipTailInfo(VkSparseImageMemoryRequirements* pSparseMemoryRequirements)
+{
+	pSparseMemoryRequirements->imageMipTailFirstLod = 1;
+	pSparseMemoryRequirements->imageMipTailSize = getStorageSize();
+	pSparseMemoryRequirements->imageMipTailOffset = getStorageSize();
+	pSparseMemoryRequirements->imageMipTailStride = 0;
+}
+
+void Image::getSubresourceLayout(const VkImageSubresource* pSubresource, VkSubresourceLayout* pLayout) const
+{
+	if(pSubresource->arrayLayer >= arrayLayers)
+	{
+		pLayout->offset = getStorageSize();
+		pLayout->size = 0;
+		pLayout->rowPitch = 0;
+		pLayout->depthPitch = 0;
+		pLayout->arrayPitch = 0;
+	}
+	else
+	{
+		if(pSubresource->mipLevel > 0 || pSubresource->arrayLayer > 0)
+		{
+			UNIMPLEMENTED();
+		}
+
+		uint32_t bpp = bytesPerTexel();
+		pLayout->offset = 0;
+		pLayout->size = computeNumberOfPixels(extent.width, extent.height, extent.depth) * bpp;
+		pLayout->rowPitch = extent.width * bpp;
+		pLayout->depthPitch = pLayout->rowPitch * extent.height;
+		pLayout->arrayPitch = pLayout->depthPitch * extent.depth;
+	}
+}
+
+VkDeviceSize Image::computeNumberOfPixels(uint32_t width, uint32_t height, uint32_t depth) const
+{
+	uint32_t levels = mipLevels;
+
+	bool isCube = (flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (imageType == VK_IMAGE_TYPE_2D);
+	if(isCube)
+	{
+		width += 2; // For seamless cube border
+		height += 2; // For seamless cube border
+	}
+
+	VkDeviceSize numPixels = samples *
+		(arrayLayers > MAX_IMAGE_ARRAY_LAYERS) ? MAX_IMAGE_ARRAY_LAYERS : arrayLayers;
+
+	switch(imageType)
+	{
+	case VK_IMAGE_TYPE_3D:
+		numPixels *= width * height * depth;
+		break;
+	case VK_IMAGE_TYPE_2D:
+		numPixels *= width * height;
+		break;
+	case VK_IMAGE_TYPE_1D:
+		numPixels *= width;
+		break;
+	default:
+		UNIMPLEMENTED();
+	}
+
+	return numPixels;
 }
 
 void Image::copyTo(VkImage dstImage, const VkImageCopy& pRegion)
@@ -212,16 +287,6 @@ int Image::getBorder() const
 	return ((flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (imageType == VK_IMAGE_TYPE_2D)) ? 1 : 0;
 }
 
-VkDeviceSize Image::getStorageSize() const
-{
-	if(mipLevels > 1)
-	{
-		UNIMPLEMENTED();
-	}
-
-	return extent.depth * slicePitchBytes();
-}
-
 void Image::clear(const VkClearValue& clearValue, const VkRect2D& renderArea, const VkImageSubresourceRange& subresourceRange)
 {
 	if((subresourceRange.aspectMask != VK_IMAGE_ASPECT_COLOR_BIT) ||
@@ -255,6 +320,103 @@ void Image::clear(const VkClearValue& clearValue, const VkRect2D& renderArea, co
 	sw::Blitter blitter;
 	blitter.clear((void*)clearValue.color.float32, clearFormat, surface, dRect, 0xF);
 	delete surface;
+}
+
+VkDeviceSize Image::getStorageSize() const
+{
+	VkDeviceSize numPixels = 0;
+
+	uint32_t levels = mipLevels;
+	bool isCube = (flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (imageType == VK_IMAGE_TYPE_2D);
+	if(isCube)
+	{
+		// Add border at each level
+		numPixels += computeNumberOfPixels(extent.width + 2, extent.height + 2, extent.depth);
+		if(levels > MAX_IMAGE_LEVELS_CUBE) { levels = MAX_IMAGE_LEVELS_CUBE; }
+	}
+	else
+	{
+		numPixels += computeNumberOfPixels(extent.width, extent.height, extent.depth);
+	}
+
+	switch(imageType)
+	{
+	case VK_IMAGE_TYPE_3D:
+		if(levels > MAX_IMAGE_LEVELS_3D) { levels = MAX_IMAGE_LEVELS_3D;  }
+		break;
+	case VK_IMAGE_TYPE_2D:
+		if(levels > MAX_IMAGE_LEVELS_2D) { levels = MAX_IMAGE_LEVELS_2D; }
+		break;
+	case VK_IMAGE_TYPE_1D:
+		if(levels > MAX_IMAGE_LEVELS_1D) { levels = MAX_IMAGE_LEVELS_1D; }
+		break;
+	default:
+		UNIMPLEMENTED();
+	}
+
+	uint32_t width = extent.width;
+	uint32_t height = extent.height;
+	uint32_t depth = extent.depth;
+	while(levels > 1)
+	{
+		bool zeroSized = false;
+		switch(imageType)
+		{
+		case VK_IMAGE_TYPE_3D:
+			depth >>= 1;
+			height >>= 1;
+			width >>= 1;
+			zeroSized = (!width || !height || !depth);
+			break;
+		case VK_IMAGE_TYPE_2D:
+			height >>= 1;
+			width >>= 1;
+			zeroSized = (!width || !height);
+			break;
+		case VK_IMAGE_TYPE_1D:
+			width >>= 1;
+			zeroSized = (!width);
+			break;
+		}
+
+		if(zeroSized)
+		{
+			break;
+		}
+
+		if(isCube)
+		{
+			// Add border at each level
+			numPixels += computeNumberOfPixels(width + 2, height + 2, depth);
+		}
+		else
+		{
+			numPixels += computeNumberOfPixels(width, height, depth);
+		}
+		--levels;
+	}
+
+	// Note: We may need to reserve space for a "descriptor structure" that shaders will read
+	return numPixels * bytesPerTexel();
+}
+
+VkImageAspectFlags Image::getImageAspect(VkFormat format)
+{
+	switch(format)
+	{
+	case VK_FORMAT_D16_UNORM:
+	case VK_FORMAT_X8_D24_UNORM_PACK32:
+	case VK_FORMAT_D32_SFLOAT:
+		return VK_IMAGE_ASPECT_DEPTH_BIT;
+	case VK_FORMAT_S8_UINT:
+		return VK_IMAGE_ASPECT_STENCIL_BIT;
+	case VK_FORMAT_D16_UNORM_S8_UINT:
+	case VK_FORMAT_D24_UNORM_S8_UINT:
+	case VK_FORMAT_D32_SFLOAT_S8_UINT:
+		return VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+	default:
+		return VK_IMAGE_ASPECT_COLOR_BIT;
+	}
 }
 
 } // namespace vk

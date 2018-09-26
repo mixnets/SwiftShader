@@ -202,6 +202,33 @@ private:
 	const VkBufferImageCopy region;
 };
 
+struct BindDescriptorSets : public CommandBuffer::Command
+{
+	BindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, VkPipelineLayout layout,
+		uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
+		uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets) :
+		pipelineBindPoint(pipelineBindPoint), layout(layout), firstSet(firstSet),
+		descriptorSetCount(descriptorSetCount), pDescriptorSets(pDescriptorSets),
+		dynamicOffsetCount(dynamicOffsetCount), pDynamicOffsets(pDynamicOffsets)
+	{
+	}
+
+	void play(CommandBuffer::ExecutionState& executionState)
+	{
+		static_cast<GraphicsPipeline*>(vk::Cast(executionState.pipelines[pipelineBindPoint]))->bindDescriptorSets(
+			layout, firstSet, descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets);
+	}
+
+private:
+	VkPipelineBindPoint pipelineBindPoint;
+	VkPipelineLayout layout;
+	uint32_t firstSet;
+	uint32_t descriptorSetCount;
+	const VkDescriptorSet* pDescriptorSets;
+	uint32_t dynamicOffsetCount;
+	const uint32_t* pDynamicOffsets;
+};
+
 struct PipelineBarrier : public CommandBuffer::Command
 {
 	PipelineBarrier()
@@ -466,7 +493,8 @@ void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, Vk
 	uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
 	uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets)
 {
-	UNIMPLEMENTED();
+	commands->push_back(std::make_unique<BindDescriptorSets>(pipelineBindPoint, layout,
+		firstSet, descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets));
 }
 
 void CommandBuffer::bindIndexBuffer(VkBuffer buffer, VkDeviceSize offset, VkIndexType indexType)

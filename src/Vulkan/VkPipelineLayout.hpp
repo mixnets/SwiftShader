@@ -16,6 +16,7 @@
 #define VK_PIPELINE_LAYOUT_HPP_
 
 #include "VkObject.hpp"
+#include <memory.h>
 
 namespace vk
 {
@@ -30,6 +31,10 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkPipelineLayoutCreateInfo* pCreateInfo);
 
 private:
+	uint32_t               setLayoutCount = 0;
+	VkDescriptorSetLayout* setLayouts = nullptr;
+	uint32_t               pushConstantRangeCount = 0;
+	VkPushConstantRange*   pushConstantRanges = nullptr;
 };
 
 static inline PipelineLayout* Cast(VkPipelineLayout object)

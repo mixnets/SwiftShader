@@ -16,6 +16,8 @@
 
 #include "VkConfig.h"
 #include "VkDebug.hpp"
+#include "VkImage.hpp"
+#include "VkPhysicalDevice.hpp"
 #include "VkQueue.hpp"
 
 #include <new> // Must #include this to use "placement new"
@@ -82,6 +84,57 @@ VkQueue Device::getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const
 void Device::waitForFences(uint32_t fenceCount, const VkFence* pFences, VkBool32 waitAll, uint64_t timeout)
 {
 	// FIXME(b/117835459) : noop
+}
+
+void Device::waitIdle()
+{
+	for(uint32_t i = 0; i < queueCount; i++)
+	{
+		queues[i].waitIdle();
+	}
+}
+
+void Device::getImageSparseMemoryRequirements(VkImage pImage, uint32_t* pSparseMemoryRequirementCount,
+	                                          VkSparseImageMemoryRequirements* pSparseMemoryRequirements) const
+{
+	if(!pSparseMemoryRequirements)
+	{
+		*pSparseMemoryRequirementCount = 1;
+	}
+	else
+	{
+		auto image = vk::Cast(pImage);
+		uint32_t propertyCount = 1;
+		vk::Cast(physicalDevice)->getSparseImageFormatProperties(
+			image->getFormat(), image->getImageType(), image->getSamples(), image->getUsage(),
+			image->getTiling(), &propertyCount, &(pSparseMemoryRequirements->formatProperties));
+		image->getImageMipTailInfo(pSparseMemoryRequirements);
+	}
+}
+
+void Device::getGroupPeerMemoryFeatures(uint32_t heapIndex, uint32_t localDeviceIndex, uint32_t remoteDeviceIndex,
+                                        VkPeerMemoryFeatureFlags* pPeerMemoryFeatures) const
+{
+}
+
+void Device::updateDescriptorSets(uint32_t descriptorWriteCount, const VkWriteDescriptorSet* pDescriptorWrites,
+                                  uint32_t descriptorCopyCount, const VkCopyDescriptorSet* pDescriptorCopies)
+{
+	for(uint32_t i = 0; i < descriptorWriteCount; i++)
+	{
+		// pDescriptorWrites[i];
+	}
+
+	for(uint32_t i = 0; i < descriptorCopyCount; i++)
+	{
+		// pDescriptorCopies[i];
+	}
+}
+
+void Device::updateDescriptorSetWithTemplate(VkDescriptorSet descriptorSet,
+                                             VkDescriptorUpdateTemplate descriptorUpdateTemplate,
+                                             const void* pData)
+{
 }
 
 void Device::getDescriptorSetLayoutSupport(const VkDescriptorSetLayoutCreateInfo* pCreateInfo,

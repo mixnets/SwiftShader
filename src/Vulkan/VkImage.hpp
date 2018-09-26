@@ -40,13 +40,21 @@ public:
 	void copyTo(VkImage dstImage, const VkImageCopy& pRegion);
 	void copyTo(VkBuffer dstBuffer, const VkBufferImageCopy& pRegion);
 	void copyFrom(VkBuffer srcBuffer, const VkBufferImageCopy& pRegion);
+	void getImageMipTailInfo(VkSparseImageMemoryRequirements* pSparseMemoryRequirements);
+	void getSubresourceLayout(const VkImageSubresource* pSubresource, VkSubresourceLayout* pLayout) const;
 
 	void clear(const VkClearValue& clearValue, const VkRect2D& renderArea, const VkImageSubresourceRange& subresourceRange);
 
 	VkImageType              getImageType() const { return imageType; }
 	VkFormat                 getFormat() const { return format; }
+	VkSampleCountFlagBits    getSamples() const { return samples; }
+	VkImageTiling            getTiling() const { return tiling; }
+	VkImageUsageFlags        getUsage() const { return usage; }
+
+	static VkImageAspectFlags getImageAspect(VkFormat format);
 
 private:
+	VkDeviceSize computeNumberOfPixels(uint32_t width, uint32_t height, uint32_t depth) const;
 	void* getTexelPointer(const VkOffset3D& offset) const;
 	VkDeviceSize texelOffsetBytesInStorage(const VkOffset3D& offset) const;
 	int rowPitchBytes() const;
@@ -64,6 +72,11 @@ private:
 	uint32_t                 arrayLayers = 0;
 	VkSampleCountFlagBits    samples = VK_SAMPLE_COUNT_1_BIT;
 	VkImageTiling            tiling = VK_IMAGE_TILING_OPTIMAL;
+	VkImageUsageFlags        usage = 0;
+	VkSharingMode            sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	VkImageLayout            initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	uint32_t                 queueFamilyIndexCount = 0;
+	uint32_t*                queueFamilyIndices = nullptr;
 };
 
 static inline Image* Cast(VkImage object)

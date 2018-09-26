@@ -34,8 +34,12 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo);
 
 private:
-	uint32_t    attachmentCount = 0;
+	VkRenderPass renderPass = VK_NULL_HANDLE;
+	uint32_t     attachmentCount = 0;
 	ImageView** attachments = nullptr;
+	uint32_t     width = 0;
+	uint32_t     height = 0;
+	uint32_t     layers = 0;
 };
 
 static inline Framebuffer* Cast(VkFramebuffer object)

@@ -32,9 +32,12 @@ public:
 
 	VkResult allocateCommandBuffers(VkCommandBufferLevel level, uint32_t commandBufferCount, VkCommandBuffer* pCommandBuffers);
 	void freeCommandBuffers(uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers);
+	void reset(VkCommandPoolResetFlags flags);
+	void trim();
 
 private:
 	std::set<VkCommandBuffer>* commandBuffers;
+	uint32_t                     queueFamilyIndex = 0;
 };
 
 static inline CommandPool* Cast(VkCommandPool object)

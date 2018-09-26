@@ -79,4 +79,17 @@ void CommandPool::freeCommandBuffers(uint32_t commandBufferCount, const VkComman
 	}
 }
 
+void CommandPool::reset(VkCommandPoolResetFlags flags)
+{
+	// Resetting a command pool recycles all of the resources from all
+	// of the command buffers allocated from the command pool back to
+	// the command pool. All command buffers that have been allocated
+	// from the command pool are put in the initial state.
+}
+
+void CommandPool::trim()
+{
+	// Release unused memory here
+}
+
 } // namespace vk

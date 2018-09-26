@@ -57,6 +57,9 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkGraphicsPipelineCreateInfo* pCreateInfo);
 
 	void compileShaders(const VkAllocationCallbacks* pAllocator, const VkGraphicsPipelineCreateInfo* pCreateInfo);
+	void bindDescriptorSets(VkPipelineLayout layout, uint32_t firstSet,
+		uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
+		uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets);
 
 	uint32_t computePrimitiveCount(uint32_t vertexCount) const;
 	const sw::Context& getContext() const;
