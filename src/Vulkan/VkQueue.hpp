@@ -35,8 +35,12 @@ public:
 	}
 
 	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
+	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
+	void waitIdle();
 
 private:
+	void signal(VkFence fence);
+
 	uint32_t familyIndex = 0;
 	float    priority = 0.0f;
 };

@@ -13,21 +13,87 @@
 // limitations under the License.
 
 #include "VkCommandPool.hpp"
+#include "VkDestroy.h"
 
 namespace vk
 {
 
-CommandPool::CommandPool(const VkCommandPoolCreateInfo* pCreateInfo, void* mem)
+CommandPool::CommandPool(const VkCommandPoolCreateInfo* pCreateInfo, void* mem) :
+                         flags(pCreateInfo->flags), queueFamilyIndex(pCreateInfo->queueFamilyIndex)
 {
 }
 
 void CommandPool::destroy(const VkAllocationCallbacks* pAllocator)
 {
+	// Free command Buffers allocated in allocateCommandBuffers
+	for(auto commandBuffer : commandBuffers)
+	{
+		vk::destroy(commandBuffer, DEVICE_MEMORY);
+	}
+
+	// Force commandBuffers to release all of its memory
+	std::vector<VkCommandBuffer> tmp;
+	commandBuffers.swap(tmp);
 }
 
 size_t CommandPool::ComputeRequiredAllocationSize(const VkCommandPoolCreateInfo* pCreateInfo)
 {
 	return 0;
+}
+
+VkResult CommandPool::allocateCommandBuffers(VkCommandBufferLevel level, uint32_t commandBufferCount, VkCommandBuffer* pCommandBuffers)
+{
+	for(uint32_t i = 0; i < commandBufferCount; i++)
+	{
+		DispatchableCommandBuffer* commandBuffer = new (DEVICE_MEMORY) DispatchableCommandBuffer(level);
+		if(commandBuffer)
+		{
+			pCommandBuffers[i] = *commandBuffer;
+		}
+		else
+		{
+			for(uint32_t j = 0; j < i; j++)
+			{
+				vk::destroy(pCommandBuffers[j], DEVICE_MEMORY);
+			}
+			for(uint32_t j = 0; j < i; j++)
+			{
+				pCommandBuffers[j] = VK_NULL_HANDLE;
+			}
+			return VK_ERROR_OUT_OF_DEVICE_MEMORY;
+		}
+	}
+
+	// Insert successfully created command buffers
+	commandBuffers.insert(commandBuffers.end(), pCommandBuffers, pCommandBuffers + commandBufferCount);
+
+	return VK_SUCCESS;
+}
+
+void CommandPool::freeCommandBuffers(uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers)
+{
+	for(uint32_t i = 0; i < commandBufferCount; ++i)
+	{
+		// Use erase-remove idiom to remove the element and resize the vector
+		commandBuffers.erase(
+			std::remove(commandBuffers.begin(), commandBuffers.end(), pCommandBuffers[i]),
+			commandBuffers.end());
+
+		vk::destroy(pCommandBuffers[i], DEVICE_MEMORY);
+	}
+}
+
+void CommandPool::reset(VkCommandPoolResetFlags flags)
+{
+	// Resetting a command pool recycles all of the resources from all
+	// of the command buffers allocated from the command pool back to
+	// the command pool. All command buffers that have been allocated
+	// from the command pool are put in the initial state.
+}
+
+void CommandPool::trim()
+{
+	// Release unused memory here
 }
 
 } // namespace vk
