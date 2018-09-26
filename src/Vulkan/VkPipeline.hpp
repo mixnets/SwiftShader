@@ -20,47 +20,55 @@
 namespace vk
 {
 
-class Pipeline
+class Pipeline : public Object<Pipeline, VkPipeline>
 {
 public:
-	virtual void destroy(const VkAllocationCallbacks* pAllocator) = 0;
-#ifndef NDEBUG
-	virtual VkPipelineBindPoint bindPoint() const = 0;
-#endif
-};
-
-class GraphicsPipeline : public Pipeline, public Object<GraphicsPipeline, VkPipeline>
-{
-public:
-	GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem);
-	~GraphicsPipeline() = delete;
-	void destroy(const VkAllocationCallbacks* pAllocator) override;
-
-#ifndef NDEBUG
-	VkPipelineBindPoint bindPoint() const override
+	Pipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem) :
+		graphicsInfo(reinterpret_cast<VkGraphicsPipelineCreateInfo*>(mem))
 	{
-		return VK_PIPELINE_BIND_POINT_GRAPHICS;
+		// FIXME(sugoi): link pCreateInfo with the shader module
+		*graphicsInfo = *pCreateInfo;
 	}
-#endif
 
-	static size_t ComputeRequiredAllocationSize(const VkGraphicsPipelineCreateInfo* pCreateInfo);
-};
-
-class ComputePipeline : public Pipeline, public Object<ComputePipeline, VkPipeline>
-{
-public:
-	ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem);
-	~ComputePipeline() = delete;
-	void destroy(const VkAllocationCallbacks* pAllocator) override;
-
-#ifndef NDEBUG
-	VkPipelineBindPoint bindPoint() const override
+	Pipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem) :
+		computeInfo(reinterpret_cast<VkComputePipelineCreateInfo*>(mem))
 	{
-		return VK_PIPELINE_BIND_POINT_COMPUTE;
+		// FIXME(sugoi): link pCreateInfo with the shader module
+		*computeInfo = *pCreateInfo;
 	}
-#endif
 
-	static size_t ComputeRequiredAllocationSize(const VkComputePipelineCreateInfo* pCreateInfo);
+	~Pipeline() = delete;
+
+	void destroy(const VkAllocationCallbacks* pAllocator)
+	{
+		vk::deallocate(graphicsInfo, pAllocator);
+		vk::deallocate(computeInfo, pAllocator);
+	}
+
+	static size_t ComputeRequiredAllocationSize(const VkGraphicsPipelineCreateInfo* pCreateInfo)
+	{
+		return sizeof(VkGraphicsPipelineCreateInfo);
+	}
+
+	static size_t ComputeRequiredAllocationSize(const VkComputePipelineCreateInfo* pCreateInfo)
+	{
+		return sizeof(VkComputePipelineCreateInfo);
+	}
+
+	void bindDescriptorSets(VkPipelineLayout layout, uint32_t firstSet,
+		uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
+		uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets)
+	{
+		/*for(uint32_t i = 0; i < descriptorSetCount; i++)
+		{
+			uint32_t setIndex = i + firstSet;
+			pDescriptorSets[i];
+		}*/
+	}
+
+private:
+	VkGraphicsPipelineCreateInfo* graphicsInfo = nullptr;
+	VkComputePipelineCreateInfo* computeInfo = nullptr;
 };
 
 static inline Pipeline* Cast(VkPipeline object)

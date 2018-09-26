@@ -13,21 +13,28 @@
 // limitations under the License.
 
 #include "VkFramebuffer.hpp"
+#include <memory.h>
 
 namespace vk
 {
 
-Framebuffer::Framebuffer(const VkFramebufferCreateInfo* pCreateInfo, void* mem)
+Framebuffer::Framebuffer(const VkFramebufferCreateInfo* pCreateInfo, void* mem) :
+	renderPass(pCreateInfo->renderPass), attachmentCount(pCreateInfo->attachmentCount),
+	attachments(reinterpret_cast<VkImageView*>(mem)), width(pCreateInfo->width),
+	height(pCreateInfo->height), layers(pCreateInfo->layers)
 {
+	size_t attachmentsSize = pCreateInfo->attachmentCount * sizeof(VkImageView);
+	memcpy(attachments, pCreateInfo->pAttachments, attachmentsSize);
 }
 
 void Framebuffer::destroy(const VkAllocationCallbacks* pAllocator)
 {
+	vk::deallocate(attachments, pAllocator);
 }
 
 size_t Framebuffer::ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo)
 {
-	return 0;
+	return pCreateInfo->attachmentCount * sizeof(VkImageView);
 }
 
 } // namespace vk

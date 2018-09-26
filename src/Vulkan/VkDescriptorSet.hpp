@@ -12,37 +12,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_FRAMEBUFFER_HPP_
-#define VK_FRAMEBUFFER_HPP_
+#ifndef VK_DESCRIPTOR_SET_HPP_
+#define VK_DESCRIPTOR_SET_HPP_
 
 #include "VkObject.hpp"
 
 namespace vk
 {
 
-class Framebuffer : public Object<Framebuffer, VkFramebuffer>
+// Note: this class should eventually disappear and be replaced
+//       by a memory chunk of the proper layout in DescriptorPool
+class DescriptorSet
 {
 public:
-	Framebuffer(const VkFramebufferCreateInfo* pCreateInfo, void* mem);
-	~Framebuffer() = delete;
-	void destroy(const VkAllocationCallbacks* pAllocator);
+	DescriptorSet()
+	{
+	}
 
-	static size_t ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo);
+	operator VkDescriptorSet()
+	{
+		return reinterpret_cast<VkDescriptorSet>(this);
+	}
+
+	void init(VkDescriptorSetLayout pLayout)
+	{
+		layout = pLayout;
+	}
+
+	~DescriptorSet() = delete;
 
 private:
-	VkRenderPass renderPass = VK_NULL_HANDLE;
-	uint32_t     attachmentCount = 0;
-	VkImageView* attachments = nullptr;
-	uint32_t     width = 0;
-	uint32_t     height = 0;
-	uint32_t     layers = 0;
+	VkDescriptorSetLayout layout;
 };
 
-static inline Framebuffer* Cast(VkFramebuffer object)
+static inline DescriptorSet* Cast(VkDescriptorSet object)
 {
-	return reinterpret_cast<Framebuffer*>(object);
+	return reinterpret_cast<DescriptorSet*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_FRAMEBUFFER_HPP_
+#endif // VK_DESCRIPTOR_SET_HPP_
