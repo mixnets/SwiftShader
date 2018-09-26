@@ -20,14 +20,21 @@
 namespace vk
 {
 
-class Instance : public VkDispatchableObject<Instance, VkInstance>
+class Instance
 {
 public:
+	struct CreateInfo
+	{
+		const VkInstanceCreateInfo* pCreateInfo;
+		VkPhysicalDevice pPhysicalDevice;
+	};
+
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE; }
 
-	Instance(PhysicalDevice* pPhysicalDevice);
-	~Instance() = delete;
+	Instance(const CreateInfo* pCreateInfo, const Memory& mem);
 	void destroy(const VkAllocationCallbacks* pAllocator);
+
+	static MemorySize ComputeRequiredAllocationSize(const CreateInfo*) { return { 0, 0 }; }
 
 	uint32_t getPhysicalDeviceCount() const;
 	void getPhysicalDevices(uint32_t pPhysicalDeviceCount, VkPhysicalDevice* pPhysicalDevices) const;
@@ -40,9 +47,11 @@ private:
 	uint32_t physicalDeviceGroupCount = 1;
 };
 
+using DispatchableInstance = VkDispatchableObject<Instance, VkInstance>;
+
 static inline Instance* Cast(VkInstance object)
 {
-	return Instance::Cast(object);
+	return DispatchableInstance::Cast(object);
 }
 
 } // namespace vk

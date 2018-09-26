@@ -12,13 +12,70 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "VkCommandBuffer.hpp"
 #include "VkQueue.hpp"
+#include "VkFence.hpp"
 
 namespace vk
 {
 
-Queue::Queue(uint32_t pFamilyIndex, float pPriority) : familyIndex(pFamilyIndex), priority(pPriority)
+Queue::Queue()
 {
+}
+
+void Queue::init(uint32_t pFamilyIndex, float pPriority)
+{
+	loaderData = { ICD_LOADER_MAGIC };
+	familyIndex = pFamilyIndex;
+	priority = pPriority;
+}
+
+void Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence)
+{
+	for(uint32_t i = 0; i < submitCount; i++)
+	{
+		const VkSubmitInfo& submitInfo = pSubmits[i];
+		if(submitInfo.waitSemaphoreCount || submitInfo.signalSemaphoreCount)
+		{
+			UNIMPLEMENTED();
+		}
+
+		for(uint32_t j = 0; j < submitInfo.commandBufferCount; j++)
+		{
+			vk::Cast(submitInfo.pCommandBuffers[j])->submit();
+		}
+	}
+
+	signal(fence);
+}
+
+void Queue::bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence)
+{
+	for(uint32_t i = 0; i < bindInfoCount; i++)
+	{
+		const VkBindSparseInfo& bindInfo = pBindInfo[i];
+		if(bindInfo.waitSemaphoreCount || bindInfo.signalSemaphoreCount || bindInfo.signalSemaphoreCount ||
+		   bindInfo.signalSemaphoreCount || bindInfo.signalSemaphoreCount)
+		{
+			UNIMPLEMENTED();
+		}
+	}
+
+	signal(fence);
+}
+
+void Queue::signal(VkFence fence)
+{
+	// FIXME: signal the fence only once the work is completed
+	if(fence != VK_NULL_HANDLE)
+	{
+		vk::Cast(fence)->signal();
+	}
+}
+
+void Queue::waitIdle()
+{
+	// noop
 }
 
 } // namespace vk

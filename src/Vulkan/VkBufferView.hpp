@@ -12,38 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_QUEUE_HPP_
-#define VK_QUEUE_HPP_
+#ifndef VK_BUFFER_VIEW_HPP_
+#define VK_BUFFER_VIEW_HPP_
 
+#include "VkConfig.h"
 #include "VkObject.hpp"
 
 namespace vk
 {
 
-class Queue
+class BufferView : public VkObject<BufferView, VkBufferView>
 {
-	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
-
 public:
-	Queue();
+	BufferView(const VkBufferViewCreateInfo* pCreateInfo) :
+		buffer(pCreateInfo->buffer), format(pCreateInfo->format), offset(pCreateInfo->offset), range(pCreateInfo->range)
+	{
+	}
 
-	void init(uint32_t pFamilyIndex, float pPriority);
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
-	void waitIdle();
+	~BufferView() = delete;
 
 private:
-	void signal(VkFence fence);
-
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+	VkBuffer                   buffer;
+	VkFormat                   format;
+	VkDeviceSize               offset;
+	VkDeviceSize               range;
 };
 
-static inline Queue* Cast(VkQueue object)
+static inline BufferView* Cast(VkBufferView object)
 {
-	return reinterpret_cast<Queue*>(object);
+	return reinterpret_cast<BufferView*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_QUEUE_HPP_
+#endif // VK_BUFFER_VIEW_HPP_

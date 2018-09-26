@@ -20,21 +20,27 @@
 namespace vk
 {
 
-class Device : public VkDispatchableObject<Device, VkDevice>
+class Device
 {
 public:
+	struct CreateInfo
+	{
+		const VkDeviceCreateInfo* pCreateInfo;
+		VkPhysicalDevice pPhysicalDevice;
+	};
+
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_DEVICE; }
 
-	Device(VkPhysicalDevice pPhysicalDevice, uint32_t pQueueCount, VkQueue* pQueues);
-	~Device() = delete;
+	Device(const CreateInfo* info, const Memory& mem);
 	void destroy(const VkAllocationCallbacks* pAllocator);
 
-	static VkResult AllocateQueues(const VkAllocationCallbacks* pAllocator,
-		const VkDeviceCreateInfo* pCreateInfo, uint32_t& queueCount, VkQueue** queues);
-	static void DestroyQueues(const VkAllocationCallbacks* pAllocator,
-		const uint32_t& queuesToDestroy, VkQueue* queues);
+	static MemorySize ComputeRequiredAllocationSize(const CreateInfo* info);
 
 	VkQueue getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const;
+	void waitForFences(uint32_t fenceCount, const VkFence* pFences, VkBool32 waitAll, uint64_t timeout);
+	void waitIdle();
+	void getImageSparseMemoryRequirements(VkImage image, uint32_t* pSparseMemoryRequirementCount,
+	                                      VkSparseImageMemoryRequirements* pSparseMemoryRequirements) const;
 
 private:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -42,9 +48,11 @@ private:
 	uint32_t queueCount = 0;
 };
 
+using DispatchableDevice = VkDispatchableObject<Device, VkDevice>;
+
 static inline Device* Cast(VkDevice object)
 {
-	return Device::Cast(object);
+	return DispatchableDevice::Cast(object);
 }
 
 } // namespace vk

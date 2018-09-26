@@ -17,11 +17,11 @@
 namespace vk
 {
 
-Instance::Instance(PhysicalDevice* pPhysicalDevice)
+Instance::Instance(const CreateInfo* pCreateInfo, const Memory& mem)
 {
-	if(pPhysicalDevice)
+	if(pCreateInfo->pPhysicalDevice)
 	{
-		physicalDevice = *pPhysicalDevice;
+		physicalDevice = pCreateInfo->pPhysicalDevice;
 		physicalDeviceCount = 1;
 	}
 }

@@ -45,7 +45,10 @@ inline void destroy(VkT vkObject, const VkAllocationCallbacks* pAllocator)
 	if(object)
 	{
 		object->destroy(pAllocator);
-		vk::deallocate(object, pAllocator);
+		// object may not point to the same pointer as vkObject, for dispatchable objects,
+		// for example, so make sure to deallocate based on the vkObject pointer, which
+		// should always point to the beginning of the allocated memory
+		vk::deallocate(vkObject, pAllocator);
 	}
 }
 

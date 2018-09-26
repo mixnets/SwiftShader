@@ -20,13 +20,15 @@
 namespace vk
 {
 
-class PhysicalDevice : public VkDispatchableObject<PhysicalDevice, VkPhysicalDevice>
+class PhysicalDevice
 {
 public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_DEVICE; }
 
-	PhysicalDevice();
-	~PhysicalDevice() = delete;
+	PhysicalDevice(const void*, const Memory& mem);
+	void destroy(const VkAllocationCallbacks* pAllocator) {}
+
+	static MemorySize ComputeRequiredAllocationSize(const void*) { return { 0, 0 }; }
 
 	const VkPhysicalDeviceFeatures& getFeatures() const;
 	bool hasFeatures(const VkPhysicalDeviceFeatures& requestedFeatures) const;
@@ -39,15 +41,20 @@ public:
 	void getQueueFamilyProperties(uint32_t pQueueFamilyPropertyCount,
 	                              VkQueueFamilyProperties* pQueueFamilyProperties) const;
 	const VkPhysicalDeviceMemoryProperties& getMemoryProperties() const;
+	void getSparseImageFormatProperties(VkFormat format, VkImageType type,
+	    VkSampleCountFlagBits samples, VkImageUsageFlags usage, VkImageTiling tiling,
+	    uint32_t* pPropertyCount, VkSparseImageFormatProperties* pProperties) const;
 
 private:
 	const VkPhysicalDeviceLimits& getLimits() const;
 	VkSampleCountFlags getSampleCounts() const;
 };
 
+using DispatchablePhysicalDevice = VkDispatchableObject<PhysicalDevice, VkPhysicalDevice>;
+
 static inline PhysicalDevice* Cast(VkPhysicalDevice object)
 {
-	return PhysicalDevice::Cast(object);
+	return DispatchablePhysicalDevice::Cast(object);
 }
 
 } // namespace vk
