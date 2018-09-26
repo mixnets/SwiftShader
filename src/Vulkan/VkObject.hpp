@@ -49,6 +49,29 @@ public:
 		ASSERT(false);
 	}
 
+	template<typename CreateInfo>
+	static VkResult Create(const VkAllocationCallbacks* pAllocator, const CreateInfo* pCreateInfo, VkT* outObject)
+	{
+		size_t size = T::ComputeRequiredAllocationSize(pCreateInfo);
+		char* requiredMemory = static_cast<char*>(vk::allocate(size, pAllocator, GetAllocationScope()));
+		if(!requiredMemory)
+		{
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+
+		auto object = new (pAllocator) T(pCreateInfo, requiredMemory);
+
+		if(!object)
+		{
+			vk::deallocate(requiredMemory, pAllocator);
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+
+		*outObject = *object;
+
+		return VK_SUCCESS;
+	}
+
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_OBJECT; }
 
 protected:

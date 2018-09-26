@@ -12,37 +12,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_QUEUE_HPP_
-#define VK_QUEUE_HPP_
+#ifndef VK_PIPELINE_HPP_
+#define VK_PIPELINE_HPP_
 
 #include "VkObject.hpp"
 
 namespace vk
 {
 
-class Queue : public VkDispatchableObject<Queue, VkQueue>
+class Pipeline : public VkObject<Pipeline, VkPipeline>
 {
 public:
-	Queue();
-	~Queue() = delete;
+	Pipeline(const VkGraphicsPipelineCreateInfo& pCreateInfo) :
+		graphicsInfo(&pCreateInfo)
+	{
+		// FIXME(sugoi): link pCreateInfo with the shader module
+	}
 
-	void init(uint32_t pFamilyIndex, float pPriority);
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
-	void waitIdle();
+	Pipeline(const VkComputePipelineCreateInfo& pCreateInfo) :
+		computeInfo(&pCreateInfo)
+	{
+		// FIXME(sugoi): link pCreateInfo with the shader module
+	}
+
+	~Pipeline() = delete;
 
 private:
-	void signal(VkFence fence);
-
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
+	const VkGraphicsPipelineCreateInfo* graphicsInfo = nullptr;
+	const VkComputePipelineCreateInfo* computeInfo = nullptr;
 };
 
-static inline Queue* Cast(VkQueue object)
+static inline Pipeline* Cast(VkPipeline object)
 {
-	return Queue::Cast(object);
+	return reinterpret_cast<Pipeline*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_QUEUE_HPP_
+#endif // VK_PIPELINE_HPP_

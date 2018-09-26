@@ -12,37 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef VK_QUEUE_HPP_
-#define VK_QUEUE_HPP_
+#ifndef VK_DESCRIPTOR_SET_LAYOUT_HPP_
+#define VK_DESCRIPTOR_SET_LAYOUT_HPP_
 
 #include "VkObject.hpp"
 
 namespace vk
 {
 
-class Queue : public VkDispatchableObject<Queue, VkQueue>
+class DescriptorSetLayout : public VkObject<DescriptorSetLayout, VkDescriptorSetLayout>
 {
 public:
-	Queue();
-	~Queue() = delete;
+	DescriptorSetLayout(const VkDescriptorSetLayoutCreateInfo* pCreateInfo)
+	{
+	}
 
-	void init(uint32_t pFamilyIndex, float pPriority);
-	void submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence fence);
-	void bindSparse(uint32_t bindInfoCount, const VkBindSparseInfo* pBindInfo, VkFence fence);
-	void waitIdle();
+	~DescriptorSetLayout() = delete;
+
+	void destroy(const VkAllocationCallbacks* pAllocator) override
+	{
+	}
 
 private:
-	void signal(VkFence fence);
-
-	uint32_t familyIndex = 0;
-	float    priority = 0.0f;
 };
 
-static inline Queue* Cast(VkQueue object)
+static inline DescriptorSetLayout* Cast(VkDescriptorSetLayout object)
 {
-	return Queue::Cast(object);
+	return reinterpret_cast<DescriptorSetLayout*>(object);
 }
 
 } // namespace vk
 
-#endif // VK_QUEUE_HPP_
+#endif // VK_DESCRIPTOR_SET_LAYOUT_HPP_
