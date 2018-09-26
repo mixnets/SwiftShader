@@ -163,16 +163,29 @@ copy "$(OutDir)vk_swiftshader.dll" "$(SolutionDir)lib\$(Configuration)_$(Platfor
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Common\Debug.cpp" />
+    <ClCompile Include="..\Common\Memory.cpp" />
     <ClCompile Include="libVulkan.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VkDebug.cpp" />
+    <ClCompile Include="VkDevice.cpp" />
     <ClCompile Include="VkGetProcAddress.cpp" />
+    <ClCompile Include="VkInstance.cpp" />
+    <ClCompile Include="VkMemory.cpp" />
+    <ClCompile Include="VkPhysicalDevice.cpp" />
     <ClCompile Include="VkPromotedExtensions.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="VkConfig.h" />
     <ClInclude Include="VkDebug.hpp" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="VkDevice.hpp" />
     <ClInclude Include="VkGetProcAddress.h" />
+    <ClInclude Include="VkInstance.hpp" />
+    <ClInclude Include="VkMemory.h" />
+    <ClInclude Include="VkObject.hpp" />
+    <ClInclude Include="VkPhysicalDevice.hpp" />
+    <ClInclude Include="VkQueue.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="swiftshader_icd.def" />
