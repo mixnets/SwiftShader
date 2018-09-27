@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "59c3f81f_2970714a",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 6771,
+      "author": {
+        "id": 7038
+      },
+      "writtenOn": "2018-09-27T12:08:22Z",
+      "side": 1,
+      "message": "Probably we need this step for generic path as well.  Need to check.",
+      "range": {
+        "startLine": 6770,
+        "startChar": 2,
+        "endLine": 6771,
+        "endChar": 0
+      },
+      "revId": "c2c67bd545ae04c8a0ab18d0e49f2595907079b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
