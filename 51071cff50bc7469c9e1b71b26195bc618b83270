@@ -45,6 +45,30 @@
       "revId": "51071cff50bc7469c9e1b71b26195bc618b83270",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d564eff_6ae13507",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 4433,
+      "author": {
+        "id": 7038
+      },
+      "writtenOn": "2018-09-27T01:51:17Z",
+      "side": 1,
+      "message": "You are right.  This commit breaks several tests in dEQP-GLES3.functional.shaders.texture_functions.\n\nI was confused when I was fixing `Trunc()` quality warnings.  I should fix 5680 instead.",
+      "parentUuid": "136be3b2_d5cff1fc",
+      "range": {
+        "startLine": 4433,
+        "startChar": 9,
+        "endLine": 4433,
+        "endChar": 79
+      },
+      "revId": "51071cff50bc7469c9e1b71b26195bc618b83270",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
