@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "4dd95747_7bde21ba",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-28T16:49:29Z",
+      "side": 1,
+      "message": "It looks correct right now, but I worry that we could forget to call placement new in the future.",
+      "parentUuid": "89288c7f_38901ee7",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "800389d4_855ee896",
         "filename": "src/Vulkan/VkDevice.hpp",
         "patchSetId": 2
@@ -416,6 +434,24 @@
       "side": 1,
       "message": "As mentioned below, these enums \"do not have corresponding Vulkan structures\", so there is no corresponding struct for those, making the \"find struct\" logic a bit hard to use here.",
       "parentUuid": "9205e4c1_cc86774b",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "90a18677_bb1e3566",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-09-28T16:49:29Z",
+      "side": 1,
+      "message": "Sorry I wasn\u0027t clear: it is the application\u0027s responsibility to not chain structures that we don\u0027t know (or for which the extension isn\u0027t enabled). vk::FindSubStruct is a positive check that the structure is somewhere in the chain, but ignores unknown chained structures, and we don\u0027t need to have negative checks like this one.\n\nSo basically, assuming future code will use vk::FindSubStruct, this check and checks similar to it are never needed.",
+      "parentUuid": "21bfc590_3ed543aa",
       "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
