@@ -473,6 +473,24 @@
     },
     {
       "key": {
+        "uuid": "dad85004_c7e187c2",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-09-28T22:28:59Z",
+      "side": 1,
+      "message": "Nicolas: for your planning, this is a mandatory feature (see 34.1.1 Feature Requirements in the spec)",
+      "parentUuid": "c577b9ff_96a02179",
+      "revId": "91541982cfde790b01ee02b49fc86b06e6d47f26",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a08eb5f_67783b9f",
         "filename": "src/Vulkan/VkBuffer.hpp",
         "patchSetId": 8
