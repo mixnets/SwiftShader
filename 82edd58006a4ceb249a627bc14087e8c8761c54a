@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "81fd60cd_d51a5aeb",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-09-28T17:12:37Z",
+      "side": 1,
+      "message": "I added a special allocation function for dispatchable objects in the newer patch.",
+      "parentUuid": "4dd95747_7bde21ba",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "800389d4_855ee896",
         "filename": "src/Vulkan/VkDevice.hpp",
         "patchSetId": 2
@@ -452,6 +470,24 @@
       "side": 1,
       "message": "Sorry I wasn\u0027t clear: it is the application\u0027s responsibility to not chain structures that we don\u0027t know (or for which the extension isn\u0027t enabled). vk::FindSubStruct is a positive check that the structure is somewhere in the chain, but ignores unknown chained structures, and we don\u0027t need to have negative checks like this one.\n\nSo basically, assuming future code will use vk::FindSubStruct, this check and checks similar to it are never needed.",
       "parentUuid": "21bfc590_3ed543aa",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ed3909b_81838915",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-09-28T17:12:37Z",
+      "side": 1,
+      "message": "Noted. I would still like to use this code for now, if possible, and optimize it later, when we start using vk::FindSubStruct. I understand that many things are the caller\u0027s responsibility in this case, but I\u0027d like to have some debuggability at this stage, until the API layer is a bit more settled.",
+      "parentUuid": "90a18677_bb1e3566",
       "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
