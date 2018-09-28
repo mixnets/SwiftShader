@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b7c2523f_70a3b81b",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-09-28T22:18:32Z",
+      "side": 1,
+      "message": "This might be overkill. I suspect we\u0027ll want to support exactly one queue family, and exactly one instance of it in each device?",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 2
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
