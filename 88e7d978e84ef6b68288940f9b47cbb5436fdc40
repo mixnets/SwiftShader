@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d4ca54c0_6414c327",
+        "filename": ".travis.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-01T01:29:28Z",
+      "side": 1,
+      "message": "Fixes newlines.",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 21
+      },
+      "revId": "88e7d978e84ef6b68288940f9b47cbb5436fdc40",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9d09653_817395e8",
+        "filename": "src/Common/Resource.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-01T01:29:28Z",
+      "side": 1,
+      "message": "This would have caught the bug much earlier.",
+      "range": {
+        "startLine": 110,
+        "startChar": 2,
+        "endLine": 110,
+        "endChar": 20
+      },
+      "revId": "88e7d978e84ef6b68288940f9b47cbb5436fdc40",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
