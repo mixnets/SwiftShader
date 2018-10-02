@@ -2,6 +2,98 @@
   "comments": [
     {
       "key": {
+        "uuid": "cd37a25f_06e1b3c9",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "Three styles for constants are used throughout this file. I prefer all-caps style because that makes them stand out more.",
+      "range": {
+        "startLine": 23,
+        "startChar": 26,
+        "endLine": 23,
+        "endChar": 27
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "39521c18_f980a573",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "Static causes internal linkage for each compilation unit, i.e. each .cpp including this header.",
+      "range": {
+        "startLine": 23,
+        "startChar": 0,
+        "endLine": 23,
+        "endChar": 6
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "27bf4501_65b10c36",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "nit: Allman/ANSI style. Also below.",
+      "range": {
+        "startLine": 27,
+        "startChar": 4,
+        "endLine": 27,
+        "endChar": 6
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84e2dab4_daa17919",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "These should depend on our lower-level constants.",
+      "range": {
+        "startLine": 33,
+        "startChar": 20,
+        "endLine": 33,
+        "endChar": 22
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b7c2523f_70a3b81b",
         "filename": "src/Vulkan/VkDevice.cpp",
         "patchSetId": 3
@@ -18,6 +110,322 @@
         "startChar": 0,
         "endLine": 45,
         "endChar": 2
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2428bbd6_37dffdb0",
+        "filename": "src/Vulkan/VkInstance.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "I\u0027d avoid initializing to a constant in the constructor initializer list if already initialized inline in the class definition. If we wanted to change it after all members have been initialized, it belongs in the constructor body.",
+      "range": {
+        "startLine": 22,
+        "startChar": 1,
+        "endLine": 22,
+        "endChar": 23
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "27aaba65_b2a1c3c0",
+        "filename": "src/Vulkan/VkInstance.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "Seems unnecessary?",
+      "range": {
+        "startLine": 29,
+        "startChar": 1,
+        "endLine": 29,
+        "endChar": 25
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2cf95c50_d725ad87",
+        "filename": "src/Vulkan/VkInstance.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "Why is this a literal while physicalDeviceCount is a member?",
+      "range": {
+        "startLine": 46,
+        "startChar": 8,
+        "endLine": 46,
+        "endChar": 9
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "778be70c_d396becf",
+        "filename": "src/Vulkan/VkMemory.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "Needs LF line endings.",
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c81b31d3_4de53ede",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "Why not make this a non-pointer member, i.e. use direct composition?",
+      "range": {
+        "startLine": 68,
+        "startChar": 2,
+        "endLine": 68,
+        "endChar": 3
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7f0484b_8d925af4",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "Must be supported. See 34.1.1. Feature Requirements.",
+      "range": {
+        "startLine": 29,
+        "startChar": 2,
+        "endLine": 29,
+        "endChar": 7
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9fbce2ae_a720fefd",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "Allman/ANSI",
+      "range": {
+        "startLine": 98,
+        "startChar": 45,
+        "endLine": 98,
+        "endChar": 47
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1fcdf28_82e66376",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "Also set as \u0027name\u0027 member variable. Can we avoid having two literals?",
+      "range": {
+        "startLine": 224,
+        "startChar": 2,
+        "endLine": 224,
+        "endChar": 37
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cbe1505a_c8c030c8",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "Must be a \"universally unique identifier for the device\"",
+      "range": {
+        "startLine": 225,
+        "startChar": 12,
+        "endLine": 225,
+        "endChar": 29
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4c43b4bd_8967eda6",
+        "filename": "src/Vulkan/VkQueue.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "I don\u0027t think we need to keep track of these if we only have a single family.",
+      "range": {
+        "startLine": 34,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 26
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2048e1b3_ab4f80b6",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "It\u0027s not obvious to understand what this is for, and a big comment to explain it would probably be a cure worse than the disease.\n\nI think we don\u0027t need it in the first place. Also see comment below in Patchset 2.",
+      "range": {
+        "startLine": 28,
+        "startChar": 7,
+        "endLine": 28,
+        "endChar": 20
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bed51a2c_0edcfd29",
+        "filename": "src/Vulkan/vulkan.vcxproj",
+        "patchSetId": 3
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "See vulkan.vcxproj.filters comment.",
+      "range": {
+        "startLine": 166,
+        "startChar": 4,
+        "endLine": 167,
+        "endChar": 49
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5387e0a_fb9ff0d0",
+        "filename": "src/Vulkan/vulkan.vcxproj.filters",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "We shouldn\u0027t depend on this as it could link behavior of our GLES and VK implementations. Let\u0027s first land https://swiftshader-review.googlesource.com/21188 and my upcoming patch to duplicate everything...",
+      "range": {
+        "startLine": 24,
+        "startChar": 24,
+        "endLine": 24,
+        "endChar": 44
+      },
+      "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6142250a_73b79951",
+        "filename": "src/Vulkan/vulkan.vcxproj.filters",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 36,
+        "startChar": 24,
+        "endLine": 36,
+        "endChar": 43
       },
       "revId": "aeea3cd9e9563ad61418913d977d632060b8482a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",

@@ -423,6 +423,24 @@
     },
     {
       "key": {
+        "uuid": "aaee53ae_824a42a4",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "This code looked much more readable than the new code. The repetitiveness doesn\u0027t really hurt us in my opinion.",
+      "parentUuid": "b5cbad35_22d5c3a4",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9205e4c1_cc86774b",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 2
@@ -494,6 +512,24 @@
     },
     {
       "key": {
+        "uuid": "2096d20a_97da3db9",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "As discussed, let\u0027s keep UNIMPLEMENTED for when we\u0027re not currently handling something but would like to get notified directly if we do encounter a case that needs it.",
+      "parentUuid": "7ed3909b_81838915",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7b653f35_67667194",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 2
@@ -526,6 +562,24 @@
       "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f88aa691_33284661",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "An ASSERT could be used here to test it in debug mode, so we catch it early in case the application does something unexpected (e.g. in this case it could imaging the parameter to be 0 in case we passed the application an invalid queue count earlier).",
+      "parentUuid": "94799bdc_a559add4",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     },
     {
       "key": {
@@ -596,6 +650,24 @@
       "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "479532c6_b7bd46de",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-02T15:32:13Z",
+      "side": 1,
+      "message": "ASSERT",
+      "parentUuid": "0838a92a_5351d863",
+      "revId": "82edd58006a4ceb249a627bc14087e8c8761c54a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     },
     {
       "key": {
