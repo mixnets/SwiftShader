@@ -3594,7 +3594,7 @@ void StencilMask(GLuint mask)
 
 void StencilOp(GLenum fail, GLenum zfail, GLenum zpass)
 {
-	TRACE("(GLenum fail = 0x%X, GLenum zfail = 0x%X, GLenum zpas = 0x%Xs)", fail, zfail, zpass);
+	TRACE("(GLenum fail = 0x%X, GLenum zfail = 0x%X, GLenum zpass = 0x%X)", fail, zfail, zpass);
 
 	switch(fail)
 	{

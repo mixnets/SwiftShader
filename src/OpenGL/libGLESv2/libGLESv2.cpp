@@ -203,7 +203,7 @@ void BeginQueryEXT(GLenum target, GLuint name)
 
 void BindAttribLocation(GLuint program, GLuint index, const GLchar* name)
 {
-	TRACE("(GLuint program = %d, GLuint index = %d, const GLchar* name = %s)", program, index, name);
+	TRACE("(GLuint program = %d, GLuint index = %d, const GLchar* name = \"%s\")", program, index, name);
 
 	if(index >= es2::MAX_VERTEX_ATTRIBS)
 	{
@@ -681,10 +681,10 @@ GLenum CheckFramebufferStatus(GLenum target)
 			framebuffer = context->getDrawFramebuffer();
 		}
 
-		return framebuffer->completeness();
+		return  framebuffer->completeness();
 	}
 
-	return 0;
+	return  0;
 }
 
 void Clear(GLbitfield mask)
@@ -2419,7 +2419,7 @@ void GetActiveAttrib(GLuint program, GLuint index, GLsizei bufsize, GLsizei *len
 void GetActiveUniform(GLuint program, GLuint index, GLsizei bufsize, GLsizei* length, GLint* size, GLenum* type, GLchar* name)
 {
 	TRACE("(GLuint program = %d, GLuint index = %d, GLsizei bufsize = %d, "
-	      "GLsizei* length = %p, GLint* size = %p, GLenum* type = %p, GLchar* name = %s)",
+	      "GLsizei* length = %p, GLint* size = %p, GLenum* type = %p, GLchar* name = \"%s\")",
 	      program, index, bufsize, length, size, type, name);
 
 	if(bufsize < 0)
@@ -2488,7 +2488,7 @@ void GetAttachedShaders(GLuint program, GLsizei maxcount, GLsizei* count, GLuint
 
 int GetAttribLocation(GLuint program, const GLchar* name)
 {
-	TRACE("(GLuint program = %d, const GLchar* name = %s)", program, name);
+	TRACE("(GLuint program = %d, const GLchar* name = \n%s\n)", program, name);
 
 	es2::Context *context = es2::getContext();
 
@@ -4019,7 +4019,7 @@ void GetUniformiv(GLuint program, GLint location, GLint* params)
 
 int GetUniformLocation(GLuint program, const GLchar* name)
 {
-	TRACE("(GLuint program = %d, const GLchar* name = %s)", program, name);
+	TRACE("(GLuint program = %d, const GLchar* name = \n%s\n)", program, name);
 
 	es2::Context *context = es2::getContext();
 
@@ -4929,7 +4929,7 @@ void StencilOp(GLenum fail, GLenum zfail, GLenum zpass)
 
 void StencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass)
 {
-	TRACE("(GLenum face = 0x%X, GLenum fail = 0x%X, GLenum zfail = 0x%X, GLenum zpas = 0x%Xs)",
+	TRACE("(GLenum face = 0x%X, GLenum fail = 0x%X, GLenum zfail = 0x%X, GLenum zpass = 0x%X)",
 	      face, fail, zfail, zpass);
 
 	switch(face)

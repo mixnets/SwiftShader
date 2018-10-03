@@ -4126,7 +4126,7 @@ void APIENTRY glStencilOp(GLenum fail, GLenum zfail, GLenum zpass)
 
 void APIENTRY glStencilOpSeparate(GLenum face, GLenum fail, GLenum zfail, GLenum zpass)
 {
-	TRACE("(GLenum face = 0x%X, GLenum fail = 0x%X, GLenum zfail = 0x%X, GLenum zpas = 0x%Xs)",
+	TRACE("(GLenum face = 0x%X, GLenum fail = 0x%X, GLenum zfail = 0x%X, GLenum zpass = 0x%X)",
 	      face, fail, zfail, zpass);
 
 	switch(face)

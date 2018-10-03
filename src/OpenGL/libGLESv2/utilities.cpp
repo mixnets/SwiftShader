@@ -1827,7 +1827,7 @@ namespace sw2es
 	//	case sw::FORMAT_S8_LOCKABLE:    return 0;
 		case sw::FORMAT_D32FS8_SHADOW:
 		case sw::FORMAT_D32FS8_TEXTURE: return 32;
-		default:                        return 0;
+		default:     UNIMPLEMENTED();   return 32;
 		}
 	}
 

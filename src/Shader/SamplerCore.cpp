@@ -308,6 +308,18 @@ namespace sw
 			}
 		#endif
 
+		if(true)
+		{
+			Float lod;
+			Float anisotropy;
+			Float4 uDelta;
+			Float4 vDelta;
+			Float lodBias = (function == Fetch) ? Float4(As<Int4>(q)).x : q.x;
+			computeLod(texture, lod, anisotropy, uDelta, vDelta, u, v, lodBias, dsx, dsy, function);
+			c = sampleQuad2D_fast(texture, u, v, lod);
+			return;
+		}
+
 		if(state.textureType == TEXTURE_NULL)
 		{
 			c.x = Float4(0.0f);
@@ -784,13 +796,14 @@ namespace sw
 		}
 	}
 
-	Vector4s SamplerCore::sampleQuad2D_fast(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
+	Vector4f SamplerCore::sampleQuad2D_fast(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float &lod)
 	{
 		Pointer<Byte> mipmap;
 		Pointer<Byte> buffer[4];
-		Vector4s c;
+		Int face[4];
+		Vector4f c;
 
-		selectMipmap(texture, buffer, mipmap, lod, face, secondLOD);
+		selectMipmap(texture, buffer, mipmap, lod, face, false);
 
 		Short4 uuuu = Short4(Int4(u * Float4(1 << 16)));
 		Short4 vvvv = Short4(Int4(v * Float4(1 << 16)));
@@ -852,11 +865,11 @@ namespace sw
 		rgba_z = As<Byte16>(f2);
 		rgba_w = As<Byte16>(f3);
 
-		Int4 f0u = Int4(Frac(u * *Pointer<Float4>(mipmap + OFFSET(Mipmap, fWidth)) - Float4(0.5f)) * Float4(0x40));
+		Int4 f0u = Int4(Frac(u * *Pointer<Float4>(mipmap + OFFSET(Mipmap, fWidth), 16) - Float4(0.5f)) * Float4(0x40));
 		f0u = (Int4(64) - f0u) | (f0u << 8);
 		f0u = As<Int4>(Swizzle(As<UShort8>(f0u), 0, 0, 2, 2, 4, 4, 6, 6));
 
-		Int4 f0v = Int4(Frac(v * *Pointer<Float4>(mipmap + OFFSET(Mipmap, fHeight)) - Float4(0.5f)) * Float4(0x40));
+		Int4 f0v = Int4(Frac(v * *Pointer<Float4>(mipmap + OFFSET(Mipmap, fHeight), 16) - Float4(0.5f)) * Float4(0x40));
 		f0v = (Int4(64) - f0v) | (f0v << 16);
 
 		Short8 xx = MulAdd(rgba_x, As<SByte16>(f0u));
@@ -871,10 +884,10 @@ namespace sw
 		Short8 ww = MulAdd(rgba_w, As<SByte16>(f0u));
 		Int4 wwww = MulAdd(ww, As<Short8>(f0v));
 
-		c.x = Short4(xxxx >> 4);
-		c.y = Short4(yyyy >> 4);
-		c.z = Short4(zzzz >> 4);
-		c.w = Short4(wwww >> 4);
+		c.x = Float4(xxxx) * Float4(1.0f / 0xFF000);
+		c.y = Float4(yyyy) * Float4(1.0f / 0xFF000);
+		c.z = Float4(zzzz) * Float4(1.0f / 0xFF000);
+		c.w = Float4(wwww) * Float4(1.0f / 0xFF000);
 
 		return c;
 	}
@@ -884,11 +897,6 @@ namespace sw
 		int componentCount = textureComponentCount();
 		bool gather = state.textureFilter == FILTER_GATHER;
 		bool texelFetch = (function == Fetch);
-
-		if(!gather && !texelFetch)
-		{
-			return sampleQuad2D_fast(texture, u, v, lod, face, secondLOD, function);
-		}
 
 		Pointer<Byte> mipmap;
 		Pointer<Byte> buffer[4];
