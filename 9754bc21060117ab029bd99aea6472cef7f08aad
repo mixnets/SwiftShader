@@ -1,0 +1,266 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "53b144f8_ac4c4d10",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "Pastel software rasterization?",
+      "range": {
+        "startLine": 25,
+        "startChar": 33,
+        "endLine": 25,
+        "endChar": 44
+      },
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b50f384_25ad5be0",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "Can we have a TODO to include the commit hash in this UUID?",
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bfe1b438_32b7de5a",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "nit: this could use the templated allocate.",
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c65b3aa_fb7d7b6c",
+        "filename": "src/Vulkan/VkInstance.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "nit: override, here and for Device, and for other virtual functions.",
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "df34f254_f9233b33",
+        "filename": "src/Vulkan/VkMemory.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "There is duplication between this, and the non-templated allocate. Could we add an \"alignof\" argument to the non-template one, and call it inside the template version?",
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "09841281_89c325a4",
+        "filename": "src/Vulkan/VkMemory.h",
+        "patchSetId": 5
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "Since this is a template, maybe we don\u0027t need for destroy to be virtual? I\u0027m not actually sure.",
+      "range": {
+        "startLine": 41,
+        "startChar": 41,
+        "endLine": 41,
+        "endChar": 69
+      },
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05399611_e0cd7c14",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "ultra-nit: I like \"using VkType \u003d VkT;\"",
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd864a94_9461f865",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "Maybe we could have VkNonDispatchableObject with this so we don\u0027t need to make it virtual?",
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ac02ab39_90185e27",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "nit: Comment should say \"Should never happen\" instead because we have ASSERT(false) below.",
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d56b4a7_39efa965",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "uber-nit: this could be a ptrdiff_t",
+      "range": {
+        "startLine": 64,
+        "startChar": 8,
+        "endLine": 64,
+        "endChar": 11
+      },
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d7dbaa3_e610efea",
+        "filename": "src/Vulkan/VkPhysicalDevice.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "this is unused.",
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f7dff2ee_fa8a2c7e",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "nit: maybe this logic could be put in Instance.cpp?",
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "04d1a76d_ab1dbe73",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "Using Cast overloads will break down for non-dispatchable types on 32bit systems. You could use Dawn\u0027s hack to preserve overloadability: https://dawn.googlesource.com/dawn/+/master/src/common/vulkan_platform.h",
+      "range": {
+        "startLine": 97,
+        "startChar": 30,
+        "endLine": 97,
+        "endChar": 44
+      },
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47ec0bf1_6efe9409",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-04T17:15:45Z",
+      "side": 1,
+      "message": "nit: this could be in Device.cpp",
+      "revId": "9754bc21060117ab029bd99aea6472cef7f08aad",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
