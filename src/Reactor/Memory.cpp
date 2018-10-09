@@ -14,7 +14,6 @@
 
 #include "Memory.hpp"
 
-#include "Types.hpp"
 #include "Debug.hpp"
 
 #if defined(_WIN32)
