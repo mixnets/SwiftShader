@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b0e4b906_61020f47",
+        "filename": "src/Vulkan/VkMemory.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-11T05:14:25Z",
+      "side": 1,
+      "message": "pAllocator-\u003epUserData\n\n\"pUserData is a value to be interpreted by the implementation of the callbacks. When any of the callbacks in VkAllocationCallbacks are called, the Vulkan implementation will pass this value as the first parameter to the callback.\"",
+      "range": {
+        "startLine": 27,
+        "startChar": 28,
+        "endLine": 27,
+        "endChar": 35
+      },
+      "revId": "e29439c7b3a22947b079b4b4d5e723bd3df613dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "211c1072_7ed34dcb",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-11T05:14:25Z",
+      "side": 1,
+      "message": "While this is a nifty way to ensure that our dispatchable handles point to the loader\u0027s dispatch table pointer, I\u0027m concerned about them not being at offset zero of the object.\n\nFirst off, I think it\u0027s feasible to have it at offset zero instead: https://swiftshader-review.googlesource.com/21408\n\nTo further justify making that change, first a quote from https://vulkan.lunarg.com/doc/view/1.0.57.0/windows/LoaderAndLayerInterface.html#user-content-icd-dispatchable-object-creation:\n\n\"The specific requirements on all dispatchable objects created by ICDs are as follows:\n\n* All dispatchable objects created by an ICD can be cast to void **\n* The loader will replace the first entry with a pointer to the dispatch table which is owned by the loader. This implies three things for ICD drivers\n1) The ICD must return a pointer for the opaque dispatchable object handle\n2) This pointer points to a regular C structure with the first entry being a pointer.\nNOTE: For any C++ ICD\u0027s that implement VK objects directly as C++ classes.\nThe C++ compiler may put a vtable at offset zero if your class is non- POD due to the use of a virtual function.\nIn this case use a regular C structure (see below).\"\n\nHence the expectation is that the dispatch table is at the very beginning of the entire object. This is also reinforced by the comment in vk_icd.h:\n\n/*\n * The ICD must reserve space for a pointer for the loader\u0027s dispatch\n * table, at the start of \u003ceach object\u003e.\n * The ICD must initialize this variable using the SET_LOADER_MAGIC_VALUE macro.\n */\n\nBased on this it seems valid for a layer or the application to provide a custom allocator, create an object, and clobber any memory between the start of their memory pool and the handle pointer. They may also expect to be able to use the allocation pointer and handle interchangeably, instead of having to keep a mapping between the two. Note also that Mesa implements dispatchable objects as C structs with the loader data at offset zero.\n\nGiven Vulkan\u0027s delicate nature of exposing raw memory to the application, I\u0027d rather not deviate from the expectation.",
+      "range": {
+        "startLine": 74,
+        "startChar": 1,
+        "endLine": 82,
+        "endChar": 2
+      },
+      "revId": "e29439c7b3a22947b079b4b4d5e723bd3df613dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
