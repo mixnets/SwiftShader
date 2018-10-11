@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cfc321d5_7c2c0b83",
+        "filename": "src/Reactor/Routine.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-11T14:01:38Z",
+      "side": 1,
+      "message": "Why not take the opportunity to change bindCount to an AtomicInt?",
+      "range": {
+        "startLine": 25,
+        "startChar": 2,
+        "endLine": 25,
+        "endChar": 11
+      },
+      "revId": "8f70bbac0bfb8540b4f19b01d04885dc207194ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
