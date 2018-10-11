@@ -226,7 +226,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 		return result;
 	}
 
-	auto device = new (pAllocator) vk::Device(physicalDevice, queueCount, queues);
+	auto device = new (pAllocator) vk::DispatchableDevice(physicalDevice, queueCount, queues);
 	if(!device)
 	{
 		vk::Device::DestroyQueues(pAllocator, queueCount, queues);

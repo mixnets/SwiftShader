@@ -70,6 +70,7 @@ class VkDispatchableObject : public VkObjectBase<T, VkT>
 	{
 		return (ptrdiff_t)&reinterpret_cast<const volatile char&>((((T*)0)->loaderData));
 	}
+
 public:
 	static inline T* Cast(VkT vkObject)
 	{
@@ -79,6 +80,38 @@ public:
 	operator VkT()
 	{
 		return reinterpret_cast<VkT>(&loaderData);
+	}
+};
+
+template<typename T, typename VkT>
+class VkDispatchableObject2 : public VkObjectBase<T, VkT>
+{
+private:
+	// Must be at the start of dispatchable objects.
+	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
+
+	T object;
+
+public:
+	template<typename ...Args>
+	VkDispatchableObject2(Args... args) : object(args...)
+	{
+	}
+
+	~VkDispatchableObject2() = delete;
+
+	using type = VkDispatchableObject2;
+
+	static inline T* Cast(VkT vkObject)
+	{
+		//return vkObject ? reinterpret_cast<T*>(reinterpret_cast<char*>(vkObject) - loaderDataOffset()) : nullptr;
+		return &reinterpret_cast<type*>(vkObject)->object;
+	}
+
+	operator VkT()
+	{
+		//return reinterpret_cast<VkT>(&loaderData);
+		return reinterpret_cast<VkT>(this);
 	}
 };
 

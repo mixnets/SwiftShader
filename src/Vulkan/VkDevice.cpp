@@ -92,4 +92,9 @@ VkQueue Device::getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const
 	return queues[queueIndex];
 }
 
+int Device::virtualFunctionToForceCreatingVTable()
+{
+	return 77;
+}
+
 } // namespace vk

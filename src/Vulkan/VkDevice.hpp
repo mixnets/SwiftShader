@@ -20,13 +20,13 @@
 namespace vk
 {
 
-class Device : public VkDispatchableObject<Device, VkDevice>
+class Device
 {
 public:
 	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_DEVICE; }
 
 	Device(VkPhysicalDevice pPhysicalDevice, uint32_t pQueueCount, VkQueue* pQueues);
-	~Device() = delete;
+//	~Device() = delete;
 	void destroy(const VkAllocationCallbacks* pAllocator);
 
 	static VkResult AllocateQueues(const VkAllocationCallbacks* pAllocator,
@@ -36,15 +36,19 @@ public:
 
 	VkQueue getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const;
 
+	virtual int virtualFunctionToForceCreatingVTable();
+
 private:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkQueue* queues = nullptr;
 	uint32_t queueCount = 0;
 };
 
+using DispatchableDevice = VkDispatchableObject2<Device, VkDevice>;
+
 static inline Device* Cast(VkDevice object)
 {
-	return Device::Cast(object);
+	return DispatchableDevice::Cast(object);
 }
 
 } // namespace vk

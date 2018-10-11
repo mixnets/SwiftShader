@@ -14,6 +14,8 @@
 
 // main.cpp: DLL entry point.
 
+#include "VkDevice.hpp"
+
 #if defined(_WIN32)
 #include "resource.h"
 #include <windows.h>
@@ -57,22 +59,44 @@ static void WaitForDebugger(HINSTANCE instance)
 }
 #endif
 
-extern "C" BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
+void *VKAPI_PTR allocate(
+	void*                                       pUserData,
+	size_t                                      size,
+	size_t                                      alignment,
+	VkSystemAllocationScope                     allocationScope)
 {
-	switch(reason)
-	{
-	case DLL_PROCESS_ATTACH:
-#ifdef DEBUGGER_WAIT_DIALOG
-		WaitForDebugger(instance);
-#endif
-		break;
-	case DLL_THREAD_ATTACH:
-	case DLL_THREAD_DETACH:
-	case DLL_PROCESS_DETACH:
-	default:
-		break;
-	}
+	auto *x = new uint8_t[size];
+	memset(x, 0x11, size);
+	return x;
+}
 
-	return TRUE;
+int main()
+{
+	VkAllocationCallbacks callback;
+
+	callback.pUserData = (void*)1;
+	callback.pfnAllocation = allocate;
+	callback.pfnFree = nullptr;
+	//callback.
+
+	auto x = sizeof(vk::Device);
+	auto y = sizeof(vk::DispatchableDevice);
+
+	vk::DispatchableDevice *device = new (&callback) vk::DispatchableDevice(nullptr, 0, nullptr);
+
+	VkDevice handle = *device;
+
+	vk::Device *cast = vk::DispatchableDevice::Cast(handle);
+
+	assert(cast->virtualFunctionToForceCreatingVTable() == 77);
+
+	//device->destroy(nullptr);
+
+	//device->~vk::DispatchableDevice();
+	//::operator delete(device);
+
+//	delete device;
+
+	return 0;
 }
 #endif
