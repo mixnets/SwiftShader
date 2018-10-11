@@ -47,6 +47,37 @@ static inline Device* Cast(VkDevice object)
 	return Device::Cast(object);
 }
 
+class Device2
+{
+public:
+	static constexpr VkSystemAllocationScope GetAllocationScope() { return VK_SYSTEM_ALLOCATION_SCOPE_DEVICE; }
+
+	Device2(VkPhysicalDevice pPhysicalDevice, uint32_t pQueueCount, VkQueue* pQueues);
+//	~Device2() = delete;
+	void destroy(const VkAllocationCallbacks* pAllocator);
+
+	static VkResult AllocateQueues(const VkAllocationCallbacks* pAllocator,
+		const VkDeviceCreateInfo* pCreateInfo, uint32_t& queueCount, VkQueue** queues);
+	static void DestroyQueues(const VkAllocationCallbacks* pAllocator,
+		const uint32_t& queuesToDestroy, VkQueue* queues);
+
+	VkQueue getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const;
+
+	virtual int virtualFunctionToForceCreatingVTable();
+
+private:
+	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+	VkQueue* queues = nullptr;
+	uint32_t queueCount = 0;
+};
+
+using DispatchableDevice = VkDispatchableObject2<Device2, VkDevice>;
+
+//static inline Device* Cast(VkDevice object)
+//{
+//	return Device::Cast(object);
+//}
+
 } // namespace vk
 
 #endif // VK_DEVICE_HPP_

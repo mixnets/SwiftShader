@@ -455,6 +455,12 @@
     <ClInclude Include="..\System\Types.hpp">
       <Filter>Header Files\System</Filter>
     </ClInclude>
+    <ClInclude Include="VkDebug.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VkGetProcAddress.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="swiftshader_icd.def" />
