@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "bba799aa_96134e7d",
+        "filename": "src/Vulkan/VkMemory.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-11T20:00:47Z",
+      "side": 1,
+      "message": "Had already fixed this in my WIP patch, will fix it here instead.",
+      "parentUuid": "b0e4b906_61020f47",
+      "range": {
+        "startLine": 27,
+        "startChar": 28,
+        "endLine": 27,
+        "endChar": 35
+      },
+      "revId": "e29439c7b3a22947b079b4b4d5e723bd3df613dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "211c1072_7ed34dcb",
         "filename": "src/Vulkan/VkObject.hpp",
         "patchSetId": 6
