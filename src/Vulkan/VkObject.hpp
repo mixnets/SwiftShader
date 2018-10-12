@@ -136,7 +136,7 @@ public:
 	{
 	}
 
-	~VkDispatchableObject() = delete;
+	//~VkDispatchableObject() = delete;
 
 	void destroy(const VkAllocationCallbacks* pAllocator)
 	{

@@ -22,21 +22,34 @@ namespace vk
 
 class Queue
 {
-	VK_LOADER_DATA loaderData = { ICD_LOADER_MAGIC };
-
 public:
-	Queue();
-
-	void init(uint32_t pFamilyIndex, float pPriority);
+	Queue(uint32_t pFamilyIndex, float pPriority);
 
 private:
 	uint32_t familyIndex = 0;
 	float    priority = 0.0f;
 };
 
+class DispatchableQueue : public VkDispatchableObject<Queue, VkQueue>
+{
+public:
+	DispatchableQueue(uint32_t pFamilyIndex, float pPriority) : VkDispatchableObject(pFamilyIndex, pPriority)
+	{
+	}
+
+	~DispatchableQueue()
+	{
+	}
+
+	void* operator new(size_t count, DispatchableQueue* mem)
+	{
+		return mem;
+	}
+};
+
 static inline Queue* Cast(VkQueue object)
 {
-	return reinterpret_cast<Queue*>(object);
+	return DispatchableQueue::Cast(object);
 }
 
 } // namespace vk

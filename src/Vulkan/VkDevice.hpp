@@ -16,6 +16,7 @@
 #define VK_DEVICE_HPP_
 
 #include "VkObject.hpp"
+#include "VkQueue.hpp"
 
 namespace vk
 {
@@ -40,7 +41,7 @@ public:
 
 private:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-	VkQueue* queues = nullptr;
+	DispatchableQueue* queues = nullptr;
 	uint32_t queueCount = 0;
 };
 
