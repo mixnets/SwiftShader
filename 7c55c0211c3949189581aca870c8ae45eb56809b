@@ -1,0 +1,326 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e7e34e29_48976aa9",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "DispatchableQueue",
+      "range": {
+        "startLine": 24,
+        "startChar": 66,
+        "endLine": 24,
+        "endChar": 73
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "08b7e1e5_ed389823",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "Here you can do placement construction of the DispatchableQueue objects.",
+      "range": {
+        "startLine": 42,
+        "startChar": 3,
+        "endLine": 43,
+        "endChar": 106
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e3f4aa4_f3d99ad5",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "Why both a pointer and object? This can just be sizeof(DispatchableQueue) instead.",
+      "range": {
+        "startLine": 61,
+        "startChar": 19,
+        "endLine": 61,
+        "endChar": 51
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c9290512_4d5cc325",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "assert 0",
+      "range": {
+        "startLine": 64,
+        "startChar": 34,
+        "endLine": 64,
+        "endChar": 50
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90d6f88d_ad1ceec3",
+        "filename": "src/Vulkan/VkDevice.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "This can be a DispatchableQueue. See other comments.",
+      "range": {
+        "startLine": 43,
+        "startChar": 1,
+        "endLine": 43,
+        "endChar": 8
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ddc86791_06da0d9a",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "I don\u0027t think we need this. Vulkan objects can all be in host memory. Only their data storage would logically be in device memory.\n\nThe spec states for Host Memory: \"This memory may be used to store the implementation’s representation and state of Vulkan objects.\"\n\nI have to double-check, but that might even include their data storage (e.g. image and buffer backing memory). We\u0027ll definitely have only one heap (which the spec explicitly mentions as a possibility. I\u0027m not sure if that means there\u0027s no concept of device memory at all. For the sake of creating a normative implementation that won\u0027t surprise applications too much we may still have to represent it that way.\n\nEither way that distinction is not necessary at all for the object creation that this CL deals with, as far as I can tell.",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 2
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "625141a5_d1a69ea0",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "As described above, I don\u0027t think this could ever happen during vkCreate* calls in our implementation. Even if we created a logical concept of device memory, we wouldn\u0027t allocate anything extra in there for objects already represented in host memory.\n\nvkAllocateMemory returns a VkDeviceMemory so that can return VK_ERROR_OUT_OF_DEVICE_MEMORY, but the spec also lists VK_ERROR_OUT_OF_HOST_MEMORY as a possible error value. When you have a single heap I think the distinction is moot except that with VK_ERROR_OUT_OF_HOST_MEMORY you\u0027d expect an allocation to succeed when you\u0027re freeing more application resources.",
+      "range": {
+        "startLine": 54,
+        "startChar": 10,
+        "endLine": 54,
+        "endChar": 39
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd3b71b0_ccf49cbb",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "Remove Vk. We don\u0027t want these to be confused with types defined in the Vulkan headers.",
+      "range": {
+        "startLine": 84,
+        "startChar": 6,
+        "endLine": 84,
+        "endChar": 8
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7e13960_08eecba8",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "Remove",
+      "range": {
+        "startLine": 116,
+        "startChar": 6,
+        "endLine": 116,
+        "endChar": 8
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53910116_9185af4e",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 126,
+        "startChar": 6,
+        "endLine": 126,
+        "endChar": 8
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9bb4f51_107a1dac",
+        "filename": "src/Vulkan/VkQueue.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "This can be like the other DispatchableObject objects by adding a placement new operator which takes raw memory instead of an allocator object so we can construct queues in-place during Device construction.",
+      "range": {
+        "startLine": 25,
+        "startChar": 1,
+        "endLine": 25,
+        "endChar": 50
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0668c4eb_1586bdbe",
+        "filename": "src/Vulkan/VkQueue.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "Can use regular constructor when using placement new into raw memory.",
+      "range": {
+        "startLine": 30,
+        "startChar": 6,
+        "endLine": 30,
+        "endChar": 10
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5edd23be_a476de5c",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 1284,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "assert that pFeatures-\u003epNext is null, so we get alerted if we\u0027re expected to implement an extension.\n\nSame for similar ones below.",
+      "range": {
+        "startLine": 1284,
+        "startChar": 47,
+        "endLine": 1284,
+        "endChar": 66
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b52a91a5_18e353d9",
+        "filename": "src/Vulkan/vulkan.vcxproj.filters",
+        "patchSetId": 8
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-12T15:27:32Z",
+      "side": 1,
+      "message": "nit: I think we also need VkDebug.h here. Otherwise it\u0027s in the global Vulkan project instead of in the Header Files of the Vulkan layer folder. Just dragging the file in there in the IDE, and saving all the projects should do the job.",
+      "range": {
+        "startLine": 251,
+        "startChar": 24,
+        "endLine": 251,
+        "endChar": 42
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
