@@ -17,13 +17,8 @@
 namespace vk
 {
 
-Queue::Queue()
+Queue::Queue(uint32_t pFamilyIndex, float pPriority)
 {
-}
-
-void Queue::init(uint32_t pFamilyIndex, float pPriority)
-{
-	loaderData = { ICD_LOADER_MAGIC };
 	familyIndex = pFamilyIndex;
 	priority = pPriority;
 }

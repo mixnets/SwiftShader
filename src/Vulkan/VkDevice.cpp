@@ -21,7 +21,7 @@ namespace vk
 {
 
 Device::Device(const Device::CreateInfo* info, const Memory& mem)
-	: physicalDevice(info->pPhysicalDevice), queues(reinterpret_cast<VkQueue*>(mem.host))
+	: physicalDevice(info->pPhysicalDevice), queues(reinterpret_cast<DispatchableQueue*>(mem.host))
 {
 	const auto* pCreateInfo = info->pCreateInfo;
 	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
@@ -37,10 +37,9 @@ Device::Device(const Device::CreateInfo* info, const Memory& mem)
 	{
 		const VkDeviceQueueCreateInfo& queueCreateInfo = pCreateInfo->pQueueCreateInfos[i];
 
-		for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++, queueID++, hostMemory += sizeof(Queue))
+		for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++, queueID++, hostMemory += sizeof(DispatchableQueue))
 		{
-			queues[queueID] = reinterpret_cast<VkQueue>(hostMemory);
-			vk::Cast(queues[queueID])->init(queueCreateInfo.queueFamilyIndex, queueCreateInfo.pQueuePriorities[j]);
+			new (hostMemory) DispatchableQueue(queueCreateInfo.queueFamilyIndex, queueCreateInfo.pQueuePriorities[j]);
 		}
 	}
 }
@@ -58,7 +57,7 @@ MemorySize Device::ComputeRequiredAllocationSize(const Device::CreateInfo* info)
 		queueCount += info->pCreateInfo->pQueueCreateInfos[i].queueCount;
 	}
 
-	return MemorySize((sizeof(Queue*) + sizeof(Queue)) * queueCount, 0);
+	return MemorySize((sizeof(DispatchableQueue*) + sizeof(DispatchableQueue)) * queueCount, 0);
 }
 
 VkQueue Device::getQueue(uint32_t queueFamilyIndex, uint32_t queueIndex) const
