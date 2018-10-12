@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef rr_Thread_hpp
-#define rr_Thread_hpp
+#ifndef sw_Thread_hpp
+#define sw_Thread_hpp
 
 #if defined(_WIN32)
 	#ifndef WIN32_LEAN_AND_MEAN
@@ -114,9 +114,9 @@ namespace rr
 
 	#if PERF_PROFILE
 	int64_t atomicExchange(int64_t volatile *target, int64_t value);
+	int atomicExchange(int volatile *target, int value);
 	#endif
 
-	int atomicExchange(int volatile *target, int value);
 	int atomicIncrement(int volatile *value);
 	int atomicDecrement(int volatile *value);
 	int atomicAdd(int volatile *target, int value);
@@ -241,11 +241,10 @@ namespace rr
 			return InterlockedExchange64(target, value);
 		#else
 			int ret;
-			__asm__ __volatile__("lock; xchg8 %0,(%1)" : "=r" (ret) :"r" (target), "0" (value) : "memory" );
+			__asm__ __volatile__("lock; xchg8 %x0,(%x1)" : "=r" (ret) :"r" (target), "0" (value) : "memory" );
 			return ret;
 		#endif
 	}
-	#endif
 
 	inline int atomicExchange(volatile int *target, int value)
 	{
@@ -253,10 +252,11 @@ namespace rr
 			return InterlockedExchange((volatile long*)target, (long)value);
 		#else
 			int ret;
-			__asm__ __volatile__("lock; xchgl %0,(%1)" : "=r" (ret) :"r" (target), "0" (value) : "memory" );
+			__asm__ __volatile__("lock; xchgl %x0,(%x1)" : "=r" (ret) :"r" (target), "0" (value) : "memory" );
 			return ret;
 		#endif
 	}
+	#endif
 
 	inline int atomicIncrement(volatile int *value)
 	{
@@ -321,18 +321,18 @@ namespace rr
 			AtomicInt(int i) : vi(i) {}
 
 			inline operator int() const { return vi; } // Note: this isn't a guaranteed atomic operation
-			inline void operator=(const AtomicInt& i) { atomicExchange(&vi, i.vi); }
-			inline void operator=(int i) { atomicExchange(&vi, i); }
-			inline void operator--() { atomicDecrement(&vi); }
-			inline void operator++() { atomicIncrement(&vi); }
-			inline int operator--(int) { return atomicDecrement(&vi); }
-			inline int operator++(int) { return atomicIncrement(&vi); }
-			inline void operator-=(int i) { atomicAdd(&vi, -i); }
-			inline void operator+=(int i) { atomicAdd(&vi, i); }
+			inline void operator=(const AtomicInt& i) { sw::atomicExchange(&vi, i.vi); }
+			inline void operator=(int i) { sw::atomicExchange(&vi, i); }
+			inline void operator--() { sw::atomicDecrement(&vi); }
+			inline void operator++() { sw::atomicIncrement(&vi); }
+			inline int operator--(int) { return sw::atomicDecrement(&vi); }
+			inline int operator++(int) { return sw::atomicIncrement(&vi); }
+			inline void operator-=(int i) { sw::atomicAdd(&vi, -i); }
+			inline void operator+=(int i) { sw::atomicAdd(&vi, i); }
 		private:
 			volatile int vi;
 		};
 	#endif
 }
 
-#endif   // rr_Thread_hpp
+#endif   // sw_Thread_hpp

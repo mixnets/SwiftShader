@@ -15,7 +15,7 @@
 import("../swiftshader.gni")
 
 declare_args() {
-  use_swiftshader_with_subzero = true
+  use_swiftshader_with_subzero = (target_cpu == "x86" || target_cpu == "x64")
 }
 
 # Need a separate config to ensure the warnings are added to the end.
@@ -287,7 +287,11 @@ swiftshader_source_set("swiftshader_reactor") {
     include_dirs = [
     ]
   } else {
-    deps += [ "../../third_party/LLVM:swiftshader_llvm" ]
+    #deps += [ "../../third_party/LLVM:swiftshader_llvm" ]
+
+    deps += [ "../../third_party/llvm-7.0:swiftshader_llvm" ]
+
+    defines = [ "REACTOR_LLVM_VERSION=7" ]
 
     sources += [
       "LLVMReactor.cpp",
@@ -299,7 +303,17 @@ swiftshader_source_set("swiftshader_reactor") {
     configs = [ ":swiftshader_reactor_private_config" ]
 
     include_dirs = [
-      "../../third_party/LLVM/include/",
+      "../../third_party/llvm-7.0/llvm/include/",
+      "../../third_party/llvm-7.0/configs/linux/include/",
+      "../../third_party/llvm-7.0/lib/Target/AArch64/",
+      "../../third_party/llvm-7.0/lib/Target/ARM/",
+      "../../third_party/llvm-7.0/lib/Target/X86/",
+      "../../third_party/llvm-7.0/configs/common/include/",
+      "../../third_party/llvm-7.0/configs/common/lib/IR/",
+      "../../third_party/llvm-7.0/configs/common/lib/Target/AArch64/",
+      "../../third_party/llvm-7.0/configs/common/lib/Target/ARM/",
+      "../../third_party/llvm-7.0/configs/common/lib/Target/X86/",
+      "../../third_party/llvm-7.0/configs/common/lib/Transforms/InstCombine/",
     ]
   }
 }
