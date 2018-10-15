@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b259f827_a2865b8c",
+        "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 6844
+      },
+      "writtenOn": "2018-10-15T22:46:33Z",
+      "side": 1,
+      "message": "posix_fallocate() is not really implemented. It\u0027s only an empty stub that returns ENOSYS: https://fuchsia.googlesource.com/zircon/+/HEAD/third_party/ulib/musl/stubs/iostubs.c#469\n\nIn either case it shouldn\u0027t make any difference as swiftshader shouldn\u0027t need to access FS directly.",
+      "range": {
+        "startLine": 137,
+        "startChar": 8,
+        "endLine": 137,
+        "endChar": 28
+      },
+      "revId": "05cf3fa8a43afdf0bec0653e865f3f46e492536e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "27d157a8_bf9e0216",
+        "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 6844
+      },
+      "writtenOn": "2018-10-15T22:46:33Z",
+      "side": 1,
+      "message": "Same as above: CPU affinity isn\u0027t really supported, see https://fuchsia.googlesource.com/zircon/+/HEAD/third_party/ulib/musl/src/sched/affinity.c",
+      "range": {
+        "startLine": 167,
+        "startChar": 7,
+        "endLine": 167,
+        "endChar": 30
+      },
+      "revId": "05cf3fa8a43afdf0bec0653e865f3f46e492536e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9653ae08_04d8de70",
+        "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 6844
+      },
+      "writtenOn": "2018-10-15T22:46:33Z",
+      "side": 1,
+      "message": "Same as above\nhttps://fuchsia.googlesource.com/zircon/+/HEAD/third_party/ulib/musl/src/signal/sigaltstack.c",
+      "range": {
+        "startLine": 176,
+        "startChar": 0,
+        "endLine": 176,
+        "endChar": 26
+      },
+      "revId": "05cf3fa8a43afdf0bec0653e865f3f46e492536e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1793605b_860dfb98",
+        "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 6844
+      },
+      "writtenOn": "2018-10-15T22:46:33Z",
+      "side": 1,
+      "message": "The file is there, but signals in general are not supported.",
+      "range": {
+        "startLine": 179,
+        "startChar": 0,
+        "endLine": 179,
+        "endChar": 21
+      },
+      "revId": "05cf3fa8a43afdf0bec0653e865f3f46e492536e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6ca5c67c_83f09d8b",
+        "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 6844
+      },
+      "writtenOn": "2018-10-15T22:46:33Z",
+      "side": 1,
+      "message": "Fuchsia doesn\u0027t support 32-bit platforms, so I don\u0027t think we need these.",
+      "range": {
+        "startLine": 296,
+        "startChar": 0,
+        "endLine": 299,
+        "endChar": 58
+      },
+      "revId": "05cf3fa8a43afdf0bec0653e865f3f46e492536e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
