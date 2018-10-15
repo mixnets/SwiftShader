@@ -18,7 +18,7 @@ LOCAL_PATH := $(call my-dir)
 swiftshader_root := $(LOCAL_PATH)
 
 # LLVM version for SwiftShader
-REACTOR_LLVM_VERSION ?= 3
+REACTOR_LLVM_VERSION ?= 7
 
 
 ifeq ($(REACTOR_LLVM_VERSION),3)
