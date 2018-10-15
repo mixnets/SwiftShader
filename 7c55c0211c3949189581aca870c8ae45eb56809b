@@ -284,6 +284,30 @@
     },
     {
       "key": {
+        "uuid": "80379a3c_df1e92f8",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-10-15T17:01:22Z",
+      "side": 1,
+      "message": "One heap (that is DEVICE_LOCAL | HOST_VISIBLE | HOST_COHERENT) is fine. Trying to \u0027hide\u0027 image/buffer backing memory in \u0027host\u0027 allocations is no good -- apps would never be able to map it!",
+      "parentUuid": "ffc55677_0628a5be",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 2
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "625141a5_d1a69ea0",
         "filename": "src/Vulkan/VkObject.hpp",
         "patchSetId": 8
