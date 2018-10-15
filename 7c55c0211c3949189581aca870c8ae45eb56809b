@@ -308,6 +308,30 @@
     },
     {
       "key": {
+        "uuid": "beca4268_0c5efccc",
+        "filename": "src/Vulkan/VkObject.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-15T17:17:37Z",
+      "side": 1,
+      "message": "Yes, that\u0027s the preliminary conclusion we came to last Friday as well: Put everything in host memory, except backing memory. I\u0027ll send an e-mail so we can discuss things in more detail before writing it down in the design doc.",
+      "parentUuid": "80379a3c_df1e92f8",
+      "range": {
+        "startLine": 27,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 2
+      },
+      "revId": "7c55c0211c3949189581aca870c8ae45eb56809b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "625141a5_d1a69ea0",
         "filename": "src/Vulkan/VkObject.hpp",
         "patchSetId": 8
