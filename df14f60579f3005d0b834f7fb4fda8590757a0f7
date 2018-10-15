@@ -22,6 +22,30 @@
       "revId": "df14f60579f3005d0b834f7fb4fda8590757a0f7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f59f8cba_bb146817",
+        "filename": "src/Reactor/BUILD.gn",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-15T14:11:31Z",
+      "side": 1,
+      "message": "No, if we\u0027re ever going to have to ship Chrome with SwiftShader on ARM devices, it would probably require a small binary and thus Subzero (which requires writing a new ARMv8 assembler). Until then we want to at least make sure it works well with ARMv7.",
+      "parentUuid": "328f5304_bce9d6cf",
+      "range": {
+        "startLine": 19,
+        "startChar": 48,
+        "endLine": 19,
+        "endChar": 55
+      },
+      "revId": "df14f60579f3005d0b834f7fb4fda8590757a0f7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
