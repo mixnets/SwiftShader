@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "328f5304_bce9d6cf",
+        "filename": "src/Reactor/BUILD.gn",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-15T14:05:38Z",
+      "side": 1,
+      "message": "Should we use LLVM for all versions of ARM?",
+      "range": {
+        "startLine": 19,
+        "startChar": 48,
+        "endLine": 19,
+        "endChar": 55
+      },
+      "revId": "df14f60579f3005d0b834f7fb4fda8590757a0f7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
