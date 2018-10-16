@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2f8e1d7d_37d563e8",
+        "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-16T14:59:07Z",
+      "side": 1,
+      "message": "Thanks for pointing that out! It looks like LLVM won\u0027t deal correctly with ENOSYS being returned, so it seems best to disable it altogether.",
+      "parentUuid": "b259f827_a2865b8c",
+      "range": {
+        "startLine": 137,
+        "startChar": 8,
+        "endLine": 137,
+        "endChar": 28
+      },
+      "revId": "05cf3fa8a43afdf0bec0653e865f3f46e492536e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "27d157a8_bf9e0216",
         "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "05cf3fa8a43afdf0bec0653e865f3f46e492536e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ead77f2_84b91d5c",
+        "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-16T14:59:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "27d157a8_bf9e0216",
+      "range": {
+        "startLine": 167,
+        "startChar": 7,
+        "endLine": 167,
+        "endChar": 30
+      },
+      "revId": "05cf3fa8a43afdf0bec0653e865f3f46e492536e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "34a10b81_ea996a7e",
+        "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-16T14:59:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9653ae08_04d8de70",
+      "range": {
+        "startLine": 176,
+        "startChar": 0,
+        "endLine": 176,
+        "endChar": 26
+      },
+      "revId": "05cf3fa8a43afdf0bec0653e865f3f46e492536e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1793605b_860dfb98",
         "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
         "patchSetId": 1
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "2efd988c_0e9366a2",
+        "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-16T14:59:07Z",
+      "side": 1,
+      "message": "I think this is fine since it\u0027s only used for including \u003csignal.h\u003e or not.",
+      "parentUuid": "1793605b_860dfb98",
+      "range": {
+        "startLine": 179,
+        "startChar": 0,
+        "endLine": 179,
+        "endChar": 21
+      },
+      "revId": "05cf3fa8a43afdf0bec0653e865f3f46e492536e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6ca5c67c_83f09d8b",
         "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
         "patchSetId": 1
@@ -114,6 +210,30 @@
       "revId": "05cf3fa8a43afdf0bec0653e865f3f46e492536e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a589c328_86df103d",
+        "filename": "third_party/llvm-7.0/configs/fuchsia/include/llvm/Config/config.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-16T14:59:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6ca5c67c_83f09d8b",
+      "range": {
+        "startLine": 296,
+        "startChar": 0,
+        "endLine": 299,
+        "endChar": 58
+      },
+      "revId": "05cf3fa8a43afdf0bec0653e865f3f46e492536e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
