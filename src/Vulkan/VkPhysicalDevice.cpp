@@ -213,7 +213,10 @@ const VkPhysicalDeviceLimits& PhysicalDevice::getLimits() const
 const VkPhysicalDeviceProperties& PhysicalDevice::getProperties() const
 {
 	uint32_t apiVersion;
-	VkResult result = vkEnumerateInstanceVersion(&apiVersion);
+#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
+	VkResult result =
+#endif
+	vkEnumerateInstanceVersion(&apiVersion);
 	ASSERT(result == VK_SUCCESS);
 
 	static const VkPhysicalDeviceProperties properties

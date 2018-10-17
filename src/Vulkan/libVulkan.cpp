@@ -15,6 +15,7 @@
 #include "VkConfig.h"
 #include "VkCommandBuffer.hpp"
 #include "VkDebug.hpp"
+#include "VkDestroy.h"
 #include "VkDevice.hpp"
 #include "VkGetProcAddress.h"
 #include "VkInstance.hpp"
@@ -211,7 +212,9 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 		return VK_ERROR_FEATURE_NOT_PRESENT;
 	}
 
+#if !defined(NDEBUG) || defined(DCHECK_ALWAYS_ON)
 	uint32_t queueFamilyPropertyCount = vk::Cast(physicalDevice)->getQueueFamilyPropertyCount();
+#endif
 
 	for(uint32_t i = 0; i < pCreateInfo->queueCreateInfoCount; i++)
 	{
