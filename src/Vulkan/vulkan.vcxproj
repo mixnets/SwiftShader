@@ -270,6 +270,7 @@ copy "$(OutDir)vk_swiftshader.dll" "$(SolutionDir)out\$(Configuration)_$(Platfor
     <ClInclude Include="VkCommandBuffer.hpp" />
     <ClInclude Include="VkConfig.h" />
     <ClInclude Include="VkDebug.hpp" />
+    <ClInclude Include="VkDestroy.h" />
     <ClInclude Include="VkDevice.hpp" />
     <ClInclude Include="VkGetProcAddress.h" />
     <ClInclude Include="VkInstance.hpp" />
