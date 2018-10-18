@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "89efcd5b_ec8e8a9a",
+        "filename": "src/Vulkan/VkEvent.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-18T15:17:20Z",
+      "side": 1,
+      "message": "Should probably be an std::atomic\u003cVkResult\u003e. Can deal with that later. Same for other sync object state.",
+      "range": {
+        "startLine": 53,
+        "startChar": 1,
+        "endLine": 53,
+        "endChar": 10
+      },
+      "revId": "2641996762ce3e5e5918e1f92ceef61bde27bc21",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
