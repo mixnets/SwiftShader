@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "607e1089_c5a7209e",
+        "filename": "src/Vulkan/vulkan.vcxproj",
+        "patchSetId": 6
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-18T14:08:50Z",
+      "side": 1,
+      "message": "Could use this in all the other projects too.",
+      "range": {
+        "startLine": 103,
+        "startChar": 25,
+        "endLine": 103,
+        "endChar": 36
+      },
+      "revId": "2bb0df858b4c08795aee16d3233c4663bcd4e4f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
