@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "VkBuffer.hpp"
+#include "VkBufferView.hpp"
 #include "VkConfig.h"
 #include "VkCommandBuffer.hpp"
 #include "VkDebug.hpp"
 #include "VkDestroy.h"
 #include "VkDevice.hpp"
+#include "VkDeviceMemory.hpp"
 #include "VkEvent.hpp"
 #include "VkFence.hpp"
 #include "VkGetProcAddress.h"
@@ -374,9 +377,26 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 	TRACE("(VkDevice device = 0x%X, const VkMemoryAllocateInfo* pAllocateInfo = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X, VkDeviceMemory* pMemory = 0x%X)",
 		    device, pAllocateInfo, pAllocator, pMemory);
 
-	UNIMPLEMENTED();
+	if(pAllocateInfo->pNext)
+	{
+		UNIMPLEMENTED();
+	}
 
-	return VK_SUCCESS;
+	VkResult result = vk::DeviceMemory::Create(pAllocator, pAllocateInfo, pMemory);
+	if(result != VK_SUCCESS)
+	{
+		return result;
+	}
+
+	// Make sure the memory allocation is done now so that OOM errors can be checked now
+	result = vk::Cast(*pMemory)->map();
+	if(result != VK_SUCCESS)
+	{
+		vk::destroy(*pMemory, pAllocator);
+		*pMemory = VK_NULL_HANDLE;
+	}
+
+	return result;
 }
 
 VKAPI_ATTR void VKAPI_CALL vkFreeMemory(VkDevice device, VkDeviceMemory memory, const VkAllocationCallbacks* pAllocator)
@@ -384,7 +404,7 @@ VKAPI_ATTR void VKAPI_CALL vkFreeMemory(VkDevice device, VkDeviceMemory memory, 
 	TRACE("(VkDevice device = 0x%X, VkDeviceMemory memory = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X)",
 		    device, memory, pAllocator);
 
-	UNIMPLEMENTED();
+	vk::destroy(memory, pAllocator);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkMapMemory(VkDevice device, VkDeviceMemory memory, VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void** ppData)
@@ -392,16 +412,14 @@ VKAPI_ATTR VkResult VKAPI_CALL vkMapMemory(VkDevice device, VkDeviceMemory memor
 	TRACE("(VkDevice device = 0x%X, VkDeviceMemory memory = 0x%X, VkDeviceSize offset = %d, VkDeviceSize size = %d, VkMemoryMapFlags flags = 0x%X, void** ppData = 0x%X)",
 		    device, memory, offset, size, flags, ppData);
 
-	UNIMPLEMENTED();
-
-	return VK_SUCCESS;
+	return vk::Cast(memory)->map(offset, size, ppData);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkUnmapMemory(VkDevice device, VkDeviceMemory memory)
 {
 	TRACE("(VkDevice device = 0x%X, VkDeviceMemory memory = 0x%X)", device, memory);
 
-	UNIMPLEMENTED();
+	vk::Cast(memory)->unmap();
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkFlushMappedMemoryRanges(VkDevice device, uint32_t memoryRangeCount, const VkMappedMemoryRange* pMemoryRanges)
@@ -409,7 +427,10 @@ VKAPI_ATTR VkResult VKAPI_CALL vkFlushMappedMemoryRanges(VkDevice device, uint32
 	TRACE("(VkDevice device = 0x%X, uint32_t memoryRangeCount = %d, const VkMappedMemoryRange* pMemoryRanges = 0x%X)",
 		    device, memoryRangeCount, pMemoryRanges);
 
-	UNIMPLEMENTED();
+	for(uint32_t i = 0; i < memoryRangeCount; i++)
+	{
+		vk::Cast(pMemoryRanges[i].memory)->flush();
+	}
 
 	return VK_SUCCESS;
 }
@@ -419,15 +440,20 @@ VKAPI_ATTR VkResult VKAPI_CALL vkInvalidateMappedMemoryRanges(VkDevice device, u
 	TRACE("(VkDevice device = 0x%X, uint32_t memoryRangeCount = %d, const VkMappedMemoryRange* pMemoryRanges = 0x%X)",
 		    device, memoryRangeCount, pMemoryRanges);
 
-	UNIMPLEMENTED();
+	for(uint32_t i = 0; i < memoryRangeCount; i++)
+	{
+		vk::Cast(pMemoryRanges[i].memory)->invalidate();
+	}
 
 	return VK_SUCCESS;
 }
 
 VKAPI_ATTR void VKAPI_CALL vkGetDeviceMemoryCommitment(VkDevice device, VkDeviceMemory memory, VkDeviceSize* pCommittedMemoryInBytes)
 {
-	TRACE("()");
-	UNIMPLEMENTED();
+	TRACE("(VkDevice device = 0x%X, VkDeviceMemory memory = 0x%X, VkDeviceSize* pCommittedMemoryInBytes = 0x%X)",
+	      device, memory, pCommittedMemoryInBytes);
+
+	*pCommittedMemoryInBytes = vk::Cast(memory)->getCommittedMemoryInBytes();
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory(VkDevice device, VkBuffer buffer, VkDeviceMemory memory, VkDeviceSize memoryOffset)
@@ -435,7 +461,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory(VkDevice device, VkBuffer buff
 	TRACE("(VkDevice device = 0x%X, VkBuffer buffer = 0x%X, VkDeviceMemory memory = 0x%X, VkDeviceSize memoryOffset = %d)",
 		    device, buffer, memory, memoryOffset);
 
-	UNIMPLEMENTED();
+	vk::Cast(buffer)->bind(memory, memoryOffset);
 
 	return VK_SUCCESS;
 }
@@ -455,7 +481,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetBufferMemoryRequirements(VkDevice device, VkBuff
 	TRACE("(VkDevice device = 0x%X, VkBuffer buffer = 0x%X, VkMemoryRequirements* pMemoryRequirements = 0x%X)",
 		    device, buffer, pMemoryRequirements);
 
-	UNIMPLEMENTED();
+	*pMemoryRequirements = vk::Cast(buffer)->getMemoryRequirements();
 }
 
 VKAPI_ATTR void VKAPI_CALL vkGetImageMemoryRequirements(VkDevice device, VkImage image, VkMemoryRequirements* pMemoryRequirements)
@@ -626,9 +652,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateBuffer(VkDevice device, const VkBufferCre
 	TRACE("(VkDevice device = 0x%X, const VkBufferCreateInfo* pCreateInfo = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X, VkBuffer* pBuffer = 0x%X)",
 		    device, pCreateInfo, pAllocator, pBuffer);
 
-	UNIMPLEMENTED();
+	if(pCreateInfo->pNext)
+	{
+		UNIMPLEMENTED();
+	}
 
-	return VK_SUCCESS;
+	return vk::Buffer::Create(pAllocator, pCreateInfo, pBuffer);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyBuffer(VkDevice device, VkBuffer buffer, const VkAllocationCallbacks* pAllocator)
@@ -636,20 +665,28 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyBuffer(VkDevice device, VkBuffer buffer, con
 	TRACE("(VkDevice device = 0x%X, VkBuffer buffer = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X)",
 		    device, buffer, pAllocator);
 
-	UNIMPLEMENTED();
+	vk::destroy(buffer, pAllocator);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateBufferView(VkDevice device, const VkBufferViewCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkBufferView* pView)
 {
-	TRACE("()");
-	UNIMPLEMENTED();
-	return VK_SUCCESS;
+	TRACE("(VkDevice device, const VkBufferViewCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkBufferView* pView)",
+		device, pCreateInfo, pAllocator, pView);
+
+	if(pCreateInfo->pNext || pCreateInfo->flags)
+	{
+		UNIMPLEMENTED();
+	}
+
+	return vk::BufferView::Create(pAllocator, pCreateInfo, pView);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyBufferView(VkDevice device, VkBufferView bufferView, const VkAllocationCallbacks* pAllocator)
 {
-	TRACE("()");
-	UNIMPLEMENTED();
+	TRACE("(VkDevice device, VkBufferView bufferView, const VkAllocationCallbacks* pAllocator)",
+	      device, bufferView, pAllocator);
+
+	vk::destroy(bufferView, pAllocator);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkImage* pImage)
@@ -1235,9 +1272,9 @@ VKAPI_ATTR void VKAPI_CALL vkCmdPipelineBarrier(VkCommandBuffer commandBuffer, V
 		    commandBuffer, srcStageMask, dstStageMask, dependencyFlags, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
 
 	vk::Cast(commandBuffer)->pipelineBarrier(srcStageMask, dstStageMask, dependencyFlags,
-	                                         memoryBarrierCount, pMemoryBarriers,
-	                                         bufferMemoryBarrierCount, pBufferMemoryBarriers,
-	                                         imageMemoryBarrierCount, pImageMemoryBarriers);
+		                                    memoryBarrierCount, pMemoryBarriers,
+		                                    bufferMemoryBarrierCount, pBufferMemoryBarriers,
+		                                    imageMemoryBarrierCount, pImageMemoryBarriers);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkCmdBeginQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags)
@@ -1299,8 +1336,8 @@ VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass(VkCommandBuffer commandBuffer, c
 	}
 
 	vk::Cast(commandBuffer)->beginRenderPass(pRenderPassBegin->renderPass, pRenderPassBegin->framebuffer,
-	                                         pRenderPassBegin->renderArea, pRenderPassBegin->clearValueCount,
-	                                         pRenderPassBegin->pClearValues, contents);
+		                                    pRenderPassBegin->renderArea, pRenderPassBegin->clearValueCount,
+		                                    pRenderPassBegin->pClearValues, contents);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkCmdNextSubpass(VkCommandBuffer commandBuffer, VkSubpassContents contents)
@@ -1335,8 +1372,19 @@ VKAPI_ATTR VkResult VKAPI_CALL vkEnumerateInstanceVersion(uint32_t* pApiVersion)
 
 VKAPI_ATTR VkResult VKAPI_CALL vkBindBufferMemory2(VkDevice device, uint32_t bindInfoCount, const VkBindBufferMemoryInfo* pBindInfos)
 {
-	TRACE("()");
-	UNIMPLEMENTED();
+	TRACE("(VkDevice device = 0x%X, uint32_t bindInfoCount = %d, const VkBindBufferMemoryInfo* pBindInfos = 0x%X)",
+	      device, bindInfoCount, pBindInfos);
+
+	for(uint32_t i = 0; i < bindInfoCount; i++)
+	{
+		if(pBindInfos[i].pNext)
+		{
+			UNIMPLEMENTED();
+		}
+
+		vkBindBufferMemory(device, pBindInfos[i].buffer, pBindInfos[i].memory, pBindInfos[i].memoryOffset);
+	}
+
 	return VK_SUCCESS;
 }
 
