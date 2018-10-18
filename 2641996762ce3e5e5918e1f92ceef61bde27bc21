@@ -22,6 +22,30 @@
       "revId": "2641996762ce3e5e5918e1f92ceef61bde27bc21",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd48cb3b_039f7cf4",
+        "filename": "src/Vulkan/VkEvent.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-18T15:29:30Z",
+      "side": 1,
+      "message": "Agreed. We\u0027ll need this as soon as we have a non noop implementation.",
+      "parentUuid": "89efcd5b_ec8e8a9a",
+      "range": {
+        "startLine": 53,
+        "startChar": 1,
+        "endLine": 53,
+        "endChar": 10
+      },
+      "revId": "2641996762ce3e5e5918e1f92ceef61bde27bc21",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
