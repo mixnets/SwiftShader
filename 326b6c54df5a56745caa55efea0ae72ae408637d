@@ -48,6 +48,40 @@
     },
     {
       "key": {
+        "uuid": "f328ef61_3c5dcb5c",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 479,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-10-18T15:52:31Z",
+      "side": 1,
+      "message": "EXTERNAL_FENCE_HANDLE_TYPE",
+      "revId": "326b6c54df5a56745caa55efea0ae72ae408637d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76fba472_9e002f4d",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 489,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-10-18T15:52:31Z",
+      "side": 1,
+      "message": "EXTERNAL_SEMAPHORE_HANDLE_TYPE",
+      "revId": "326b6c54df5a56745caa55efea0ae72ae408637d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "98cbd688_47914152",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 4
