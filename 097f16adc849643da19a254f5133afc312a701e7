@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7af91579_c9e338e1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-18T13:08:50Z",
+      "side": 1,
+      "message": "Bug swiftshader:120\n\nCan we also set permissive- in the Visual Studio projects so we\u0027d catch these things earlier?",
+      "revId": "097f16adc849643da19a254f5133afc312a701e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
