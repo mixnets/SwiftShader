@@ -16,6 +16,75 @@
       "revId": "097f16adc849643da19a254f5133afc312a701e7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "36e22530_61fb831a",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-18T13:15:24Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 216,
+        "startChar": 0,
+        "endLine": 216,
+        "endChar": 49
+      },
+      "revId": "097f16adc849643da19a254f5133afc312a701e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "35543dab_9bd7cb89",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-18T13:15:24Z",
+      "side": 1,
+      "message": "Instead of this, you can create a reference to queueFamilyPropertyCount in non-debug builds. Suggestion below.",
+      "range": {
+        "startLine": 215,
+        "startChar": 0,
+        "endLine": 215,
+        "endChar": 49
+      },
+      "revId": "097f16adc849643da19a254f5133afc312a701e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e68b465_a9740b78",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-18T13:15:24Z",
+      "side": 1,
+      "message": "ASSERT(queueCreateInfo.queueFamilyIndex \u003c queueFamilyPropertyCount); (void)queueFamilyPropertyCount;\n\nShould keep the warnings away. Using preprocessor conditional code code lead to subtle bugs.",
+      "range": {
+        "startLine": 227,
+        "startChar": 2,
+        "endLine": 227,
+        "endChar": 70
+      },
+      "revId": "097f16adc849643da19a254f5133afc312a701e7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
