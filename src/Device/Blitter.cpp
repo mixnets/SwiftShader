@@ -225,13 +225,6 @@ namespace sw
 
 		switch(state.sourceFormat)
 		{
-		case FORMAT_L8:
-			c.xyz = Float(Int(*Pointer<Byte>(element)));
-			c.w = float(0xFF);
-			break;
-		case FORMAT_A8:
-			c.w = Float(Int(*Pointer<Byte>(element)));
-			break;
 		case FORMAT_R8I:
 		case FORMAT_R8_SNORM:
 			c.x = Float(Int(*Pointer<SByte>(element)));
@@ -272,18 +265,6 @@ namespace sw
 			break;
 		case FORMAT_X8R8G8B8:
 			c = Float4(*Pointer<Byte4>(element)).zyxw;
-			c.w = float(0xFF);
-			break;
-		case FORMAT_R8G8B8:
-			c.z = Float(Int(*Pointer<Byte>(element + 0)));
-			c.y = Float(Int(*Pointer<Byte>(element + 1)));
-			c.x = Float(Int(*Pointer<Byte>(element + 2)));
-			c.w = float(0xFF);
-			break;
-		case FORMAT_B8G8R8:
-			c.x = Float(Int(*Pointer<Byte>(element + 0)));
-			c.y = Float(Int(*Pointer<Byte>(element + 1)));
-			c.z = Float(Int(*Pointer<Byte>(element + 2)));
 			c.w = float(0xFF);
 			break;
 		case FORMAT_X8B8G8R8I:
@@ -363,8 +344,6 @@ namespace sw
 			c = *Pointer<Float4>(element);
 			break;
 		case FORMAT_X32B32G32R32F:
-		case FORMAT_X32B32G32R32F_UNSIGNED:
-		case FORMAT_B32G32R32F:
 			c.z = *Pointer<Float>(element + 8);
 		case FORMAT_G32R32F:
 			c.x = *Pointer<Float>(element + 0);
@@ -392,19 +371,8 @@ namespace sw
 		case FORMAT_D24X8:
 			c.x = Float(Int((*Pointer<UInt>(element) & UInt(0xFFFFFF00)) >> 8));
 			break;
-		case FORMAT_D32:
-			c.x = Float(Int((*Pointer<UInt>(element))));
-			break;
-		case FORMAT_D32F_COMPLEMENTARY:
-		case FORMAT_D32FS8_COMPLEMENTARY:
-			c.x = 1.0f - *Pointer<Float>(element);
-			break;
 		case FORMAT_D32F:
 		case FORMAT_D32FS8:
-		case FORMAT_D32F_LOCKABLE:
-		case FORMAT_D32FS8_TEXTURE:
-		case FORMAT_D32F_SHADOW:
-		case FORMAT_D32FS8_SHADOW:
 			c.x = *Pointer<Float>(element);
 			break;
 		case FORMAT_S8:
@@ -427,12 +395,6 @@ namespace sw
 
 		switch(state.destFormat)
 		{
-		case FORMAT_L8:
-			*Pointer<Byte>(element) = Byte(RoundInt(Float(c.x)));
-			break;
-		case FORMAT_A8:
-			if(writeA) { *Pointer<Byte>(element) = Byte(RoundInt(Float(c.w))); }
-			break;
 		case FORMAT_A8R8G8B8:
 			if(writeRGBA)
 			{
@@ -491,16 +453,6 @@ namespace sw
 				if(writeA) { *Pointer<Byte>(element + 3) = Byte(0xFF); }
 			}
 			break;
-		case FORMAT_R8G8B8:
-			if(writeR) { *Pointer<Byte>(element + 2) = Byte(RoundInt(Float(c.x))); }
-			if(writeG) { *Pointer<Byte>(element + 1) = Byte(RoundInt(Float(c.y))); }
-			if(writeB) { *Pointer<Byte>(element + 0) = Byte(RoundInt(Float(c.z))); }
-			break;
-		case FORMAT_B8G8R8:
-			if(writeR) { *Pointer<Byte>(element + 0) = Byte(RoundInt(Float(c.x))); }
-			if(writeG) { *Pointer<Byte>(element + 1) = Byte(RoundInt(Float(c.y))); }
-			if(writeB) { *Pointer<Byte>(element + 2) = Byte(RoundInt(Float(c.z))); }
-			break;
 		case FORMAT_A32B32G32R32F:
 			if(writeRGBA)
 			{
@@ -515,13 +467,7 @@ namespace sw
 			}
 			break;
 		case FORMAT_X32B32G32R32F:
-		case FORMAT_X32B32G32R32F_UNSIGNED:
 			if(writeA) { *Pointer<Float>(element + 12) = 1.0f; }
-		case FORMAT_B32G32R32F:
-			if(writeR) { *Pointer<Float>(element) = c.x; }
-			if(writeG) { *Pointer<Float>(element + 4) = c.y; }
-			if(writeB) { *Pointer<Float>(element + 8) = c.z; }
-			break;
 		case FORMAT_G32R32F:
 			if(writeR && writeG)
 			{
@@ -759,19 +705,8 @@ namespace sw
 		case FORMAT_D24X8:
 			*Pointer<UInt>(element) = UInt(RoundInt(Float(c.x)) << 8);
 			break;
-		case FORMAT_D32:
-			*Pointer<UInt>(element) = UInt(RoundInt(Float(c.x)));
-			break;
-		case FORMAT_D32F_COMPLEMENTARY:
-		case FORMAT_D32FS8_COMPLEMENTARY:
-			*Pointer<Float>(element) = 1.0f - c.x;
-			break;
 		case FORMAT_D32F:
 		case FORMAT_D32FS8:
-		case FORMAT_D32F_LOCKABLE:
-		case FORMAT_D32FS8_TEXTURE:
-		case FORMAT_D32F_SHADOW:
-		case FORMAT_D32FS8_SHADOW:
 			*Pointer<Float>(element) = c.x;
 			break;
 		case FORMAT_S8:
@@ -985,14 +920,10 @@ namespace sw
 	{
 		switch(format)
 		{
-		case FORMAT_L8:
-		case FORMAT_A8:
 		case FORMAT_A8R8G8B8:
 		case FORMAT_X8R8G8B8:
 		case FORMAT_R8:
 		case FORMAT_G8R8:
-		case FORMAT_R8G8B8:
-		case FORMAT_B8G8R8:
 		case FORMAT_X8B8G8R8:
 		case FORMAT_A8B8G8R8:
 		case FORMAT_SRGB8_X8:
@@ -1035,8 +966,6 @@ namespace sw
 		case FORMAT_A32B32G32R32UI:
 		case FORMAT_A32B32G32R32F:
 		case FORMAT_X32B32G32R32F:
-		case FORMAT_X32B32G32R32F_UNSIGNED:
-		case FORMAT_B32G32R32F:
 		case FORMAT_G32R32F:
 		case FORMAT_R32F:
 		case FORMAT_A2B10G10R10UI:
@@ -1055,17 +984,8 @@ namespace sw
 		case FORMAT_D24X8:
 			scale = vector(0xFFFFFF, 0.0f, 0.0f, 0.0f);
 			break;
-		case FORMAT_D32:
-			scale = vector(static_cast<float>(0xFFFFFFFF), 0.0f, 0.0f, 0.0f);
-			break;
 		case FORMAT_D32F:
 		case FORMAT_D32FS8:
-		case FORMAT_D32F_COMPLEMENTARY:
-		case FORMAT_D32FS8_COMPLEMENTARY:
-		case FORMAT_D32F_LOCKABLE:
-		case FORMAT_D32FS8_TEXTURE:
-		case FORMAT_D32F_SHADOW:
-		case FORMAT_D32FS8_SHADOW:
 		case FORMAT_S8:
 			scale = vector(1.0f, 1.0f, 1.0f, 1.0f);
 			break;
@@ -1122,11 +1042,7 @@ namespace sw
 			value *= Float4(scale.x / unscale.x, scale.y / unscale.y, scale.z / unscale.z, scale.w / unscale.w);
 		}
 
-		if(state.destFormat == FORMAT_X32B32G32R32F_UNSIGNED)
-		{
-			value = Max(value, Float4(0.0f));  // TODO: Only necessary if source is signed.
-		}
-		else if(Surface::isFloatFormat(state.sourceFormat) && !Surface::isFloatFormat(state.destFormat))
+		if(Surface::isFloatFormat(state.sourceFormat) && !Surface::isFloatFormat(state.destFormat))
 		{
 			value = Min(value, Float4(scale.x, scale.y, scale.z, scale.w));
 
