@@ -107,7 +107,7 @@ namespace sw
 		void LABEL(int labelIndex);
 		void LOOP(const Src &integerRegister);
 		void REP(const Src &integerRegister);
-		void WHILE(const Src &temporaryRegister);
+		void WHILE(const Src &temporaryRegister, const Shader::Instruction *instruction);
 		void SWITCH();
 		void RET();
 		void LEAVE();

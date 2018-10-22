@@ -313,7 +313,7 @@ namespace sw
 			case Shader::OPCODE_LABEL:      LABEL(dst.index);               break;
 			case Shader::OPCODE_LOOP:       LOOP(src1);                     break;
 			case Shader::OPCODE_REP:        REP(src0);                      break;
-			case Shader::OPCODE_WHILE:      WHILE(src0);                    break;
+			case Shader::OPCODE_WHILE:      WHILE(src0, instruction);       break;
 			case Shader::OPCODE_SWITCH:     SWITCH();                       break;
 			case Shader::OPCODE_RET:        RET();                          break;
 			case Shader::OPCODE_LEAVE:      LEAVE();                        break;
@@ -1475,7 +1475,7 @@ namespace sw
 		loopRepDepth++;
 	}
 
-	void VertexProgram::WHILE(const Src &temporaryRegister)
+	void VertexProgram::WHILE(const Src &temporaryRegister, const Shader::Instruction *instruction)
 	{
 		enableIndex++;
 
@@ -1495,9 +1495,7 @@ namespace sw
 
 		const Vector4f &src = fetchRegister(temporaryRegister);
 		Int4 condition = As<Int4>(src.x);
-		condition &= enableStack[Min(enableIndex - 1, Int(MAX_SHADER_ENABLE_STACK_SIZE))];
-		if(shader->containsLeaveInstruction()) condition &= enableLeave;
-		if(shader->containsBreakInstruction()) condition &= enableBreak;
+		condition &= enableMask(instruction);
 		enableStack[Min(enableIndex, Int(MAX_SHADER_ENABLE_STACK_SIZE))] = condition;
 
 		Bool notAllFalse = SignMask(condition) != 0;
