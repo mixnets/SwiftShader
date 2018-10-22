@@ -221,32 +221,6 @@ namespace sw
 				mipmap.sliceP[1] = sliceP;
 				mipmap.sliceP[2] = sliceP;
 				mipmap.sliceP[3] = sliceP;
-
-				if(internalTextureFormat == FORMAT_YV12_BT601 ||
-				   internalTextureFormat == FORMAT_YV12_BT709 ||
-				   internalTextureFormat == FORMAT_YV12_JFIF)
-				{
-					unsigned int YStride = pitchP;
-					unsigned int YSize = YStride * height;
-					unsigned int CStride = align<16>(YStride / 2);
-					unsigned int CSize = CStride * height / 2;
-
-					mipmap.buffer[1] = (byte*)mipmap.buffer[0] + YSize;
-					mipmap.buffer[2] = (byte*)mipmap.buffer[1] + CSize;
-
-					texture.mipmap[1].width[0] = width / 2;
-					texture.mipmap[1].width[1] = width / 2;
-					texture.mipmap[1].width[2] = width / 2;
-					texture.mipmap[1].width[3] = width / 2;
-					texture.mipmap[1].height[0] = height / 2;
-					texture.mipmap[1].height[1] = height / 2;
-					texture.mipmap[1].height[2] = height / 2;
-					texture.mipmap[1].height[3] = height / 2;
-					texture.mipmap[1].onePitchP[0] = 1;
-					texture.mipmap[1].onePitchP[1] = CStride;
-					texture.mipmap[1].onePitchP[2] = 1;
-					texture.mipmap[1].onePitchP[3] = CStride;
-				}
 			}
 		}
 
@@ -502,11 +476,6 @@ namespace sw
 		if(getTextureFilter() == FILTER_GATHER)
 		{
 			return COMPARE_BYPASS;
-		}
-
-		if(internalTextureFormat == FORMAT_D32FS8_SHADOW)
-		{
-			return COMPARE_LESSEQUAL;
 		}
 
 		return compare;

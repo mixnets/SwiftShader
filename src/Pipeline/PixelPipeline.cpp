@@ -311,11 +311,8 @@ namespace sw
 		switch(state.targetFormat[0])
 		{
 		case FORMAT_R5G6B5:
-		case FORMAT_X8R8G8B8:
-		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:
 		case FORMAT_A8B8G8R8:
-		case FORMAT_A8:
 		case FORMAT_G16R16:
 		case FORMAT_A16B16G16R16:
 			if(!postBlendSRGB && state.writeSRGB)
@@ -354,7 +351,6 @@ namespace sw
 			break;
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
-		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
 	//	case FORMAT_X32B32G32R32F_UNSIGNED:   // Not renderable in any fixed-function API.
 			convertSigned12(oC, current);
