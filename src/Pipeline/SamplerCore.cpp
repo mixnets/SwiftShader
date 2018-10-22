@@ -166,7 +166,6 @@ namespace sw
 					{
 					case FORMAT_R8_SNORM:
 					case FORMAT_G8R8_SNORM:
-					case FORMAT_X8B8G8R8_SNORM:
 					case FORMAT_A8B8G8R8_SNORM:
 					case FORMAT_R8:
 					case FORMAT_R5G6B5:
@@ -175,8 +174,6 @@ namespace sw
 					case FORMAT_R8UI:
 					case FORMAT_G8R8I:
 					case FORMAT_G8R8UI:
-					case FORMAT_X8B8G8R8I:
-					case FORMAT_X8B8G8R8UI:
 					case FORMAT_A8B8G8R8I:
 					case FORMAT_A8B8G8R8UI:
 					case FORMAT_R16I:
@@ -184,8 +181,6 @@ namespace sw
 					case FORMAT_G16R16:
 					case FORMAT_G16R16I:
 					case FORMAT_G16R16UI:
-					case FORMAT_X16B16G16R16I:
-					case FORMAT_X16B16G16R16UI:
 					case FORMAT_A16B16G16R16:
 					case FORMAT_A16B16G16R16I:
 					case FORMAT_A16B16G16R16UI:
@@ -193,62 +188,21 @@ namespace sw
 					case FORMAT_R32UI:
 					case FORMAT_G32R32I:
 					case FORMAT_G32R32UI:
-					case FORMAT_X32B32G32R32I:
-					case FORMAT_X32B32G32R32UI:
 					case FORMAT_A32B32G32R32I:
 					case FORMAT_A32B32G32R32UI:
-					case FORMAT_X8R8G8B8:
-					case FORMAT_X8B8G8R8:
 					case FORMAT_A8R8G8B8:
 					case FORMAT_A8B8G8R8:
-					case FORMAT_SRGB8_X8:
 					case FORMAT_SRGB8_A8:
-					case FORMAT_V8U8:
-					case FORMAT_Q8W8V8U8:
-					case FORMAT_X8L8V8U8:
-					case FORMAT_V16U16:
-					case FORMAT_A16W16V16U16:
-					case FORMAT_Q16W16V16U16:
-					case FORMAT_YV12_BT601:
-					case FORMAT_YV12_BT709:
-					case FORMAT_YV12_JFIF:
 						if(componentCount < 2) c.y = Short4(defaultColorValue);
 						if(componentCount < 3) c.z = Short4(defaultColorValue);
 						if(componentCount < 4) c.w = Short4(0x1000);
-						break;
-					case FORMAT_A8:
-						c.w = c.x;
-						c.x = Short4(0x0000);
-						c.y = Short4(0x0000);
-						c.z = Short4(0x0000);
-						break;
-					case FORMAT_L8:
-					case FORMAT_L16:
-						c.y = c.x;
-						c.z = c.x;
-						c.w = Short4(0x1000);
-						break;
-					case FORMAT_A8L8:
-						c.w = c.y;
-						c.y = c.x;
-						c.z = c.x;
 						break;
 					case FORMAT_R32F:
 						c.y = Short4(defaultColorValue);
 					case FORMAT_G32R32F:
 						c.z = Short4(defaultColorValue);
-					case FORMAT_X32B32G32R32F:
-					case FORMAT_X32B32G32R32F_UNSIGNED:
 						c.w = Short4(0x1000);
 					case FORMAT_A32B32G32R32F:
-						break;
-					case FORMAT_D32F_LOCKABLE:
-					case FORMAT_D32FS8_TEXTURE:
-					case FORMAT_D32F_SHADOW:
-					case FORMAT_D32FS8_SHADOW:
-						c.y = c.x;
-						c.z = c.x;
-						c.w = c.x;
 						break;
 					default:
 						ASSERT(false);
@@ -295,7 +249,7 @@ namespace sw
 		else
 		{
 			// FIXME: YUV is not supported by the floating point path
-			bool forceFloatFiltering = state.highPrecisionFiltering && !hasYuvFormat() && (state.textureFilter != FILTER_POINT);
+			bool forceFloatFiltering = state.highPrecisionFiltering && (state.textureFilter != FILTER_POINT);
 			bool seamlessCube = (state.addressingModeU == ADDRESSING_SEAMLESS);
 			bool rectangleTexture = (state.textureType == TEXTURE_RECTANGLE);
 			if(hasFloatTexture() || hasUnnormalizedIntegerTexture() || forceFloatFiltering || seamlessCube || rectangleTexture)   // FIXME: Mostly identical to integer sampling
@@ -402,13 +356,6 @@ namespace sw
 				case FORMAT_G32R32I:
 				case FORMAT_G32R32UI:
 					c.z = As<Float4>(UInt4(0));
-				case FORMAT_X8B8G8R8I:
-				case FORMAT_X8B8G8R8UI:
-				case FORMAT_X16B16G16R16I:
-				case FORMAT_X16B16G16R16UI:
-				case FORMAT_X32B32G32R32I:
-				case FORMAT_X32B32G32R32UI:
-					c.w = As<Float4>(UInt4(1));
 				case FORMAT_A8B8G8R8I:
 				case FORMAT_A8B8G8R8UI:
 				case FORMAT_A16B16G16R16I:
@@ -418,65 +365,25 @@ namespace sw
 					break;
 				case FORMAT_R8_SNORM:
 				case FORMAT_G8R8_SNORM:
-				case FORMAT_X8B8G8R8_SNORM:
 				case FORMAT_A8B8G8R8_SNORM:
 				case FORMAT_R8:
 				case FORMAT_R5G6B5:
 				case FORMAT_G8R8:
 				case FORMAT_G16R16:
 				case FORMAT_A16B16G16R16:
-				case FORMAT_X8R8G8B8:
-				case FORMAT_X8B8G8R8:
 				case FORMAT_A8R8G8B8:
 				case FORMAT_A8B8G8R8:
-				case FORMAT_SRGB8_X8:
 				case FORMAT_SRGB8_A8:
-				case FORMAT_V8U8:
-				case FORMAT_Q8W8V8U8:
-				case FORMAT_X8L8V8U8:
-				case FORMAT_V16U16:
-				case FORMAT_A16W16V16U16:
-				case FORMAT_Q16W16V16U16:
-				case FORMAT_YV12_BT601:
-				case FORMAT_YV12_BT709:
-				case FORMAT_YV12_JFIF:
 					if(componentCount < 2) c.y = Float4(defaultColorValue);
 					if(componentCount < 3) c.z = Float4(defaultColorValue);
 					if(componentCount < 4) c.w = Float4(1.0f);
-					break;
-				case FORMAT_A8:
-					c.w = c.x;
-					c.x = Float4(0.0f);
-					c.y = Float4(0.0f);
-					c.z = Float4(0.0f);
-					break;
-				case FORMAT_L8:
-				case FORMAT_L16:
-					c.y = c.x;
-					c.z = c.x;
-					c.w = Float4(1.0f);
-					break;
-				case FORMAT_A8L8:
-					c.w = c.y;
-					c.y = c.x;
-					c.z = c.x;
 					break;
 				case FORMAT_R32F:
 					c.y = Float4(defaultColorValue);
 				case FORMAT_G32R32F:
 					c.z = Float4(defaultColorValue);
-				case FORMAT_X32B32G32R32F:
-				case FORMAT_X32B32G32R32F_UNSIGNED:
 					c.w = Float4(1.0f);
 				case FORMAT_A32B32G32R32F:
-					break;
-				case FORMAT_D32F_LOCKABLE:
-				case FORMAT_D32FS8_TEXTURE:
-				case FORMAT_D32F_SHADOW:
-				case FORMAT_D32FS8_SHADOW:
-					c.y = Float4(0.0f);
-					c.z = Float4(0.0f);
-					c.w = Float4(1.0f);
 					break;
 				default:
 					ASSERT(false);
@@ -1796,7 +1703,6 @@ namespace sw
 					case FORMAT_A8B8G8R8:
 					case FORMAT_A8B8G8R8I:
 					case FORMAT_A8B8G8R8_SNORM:
-					case FORMAT_Q8W8V8U8:
 					case FORMAT_SRGB8_A8:
 						c.z = As<Short4>(UnpackHigh(c.x, c.y));
 						c.x = As<Short4>(UnpackLow(c.x, c.y));
@@ -1830,57 +1736,6 @@ namespace sw
 					}
 				}
 				break;
-			case 3:
-				{
-					Byte4 c0 = Pointer<Byte4>(buffer[f0])[index[0]];
-					Byte4 c1 = Pointer<Byte4>(buffer[f1])[index[1]];
-					Byte4 c2 = Pointer<Byte4>(buffer[f2])[index[2]];
-					Byte4 c3 = Pointer<Byte4>(buffer[f3])[index[3]];
-					c.x = Unpack(c0, c1);
-					c.y = Unpack(c2, c3);
-
-					switch(state.textureFormat)
-					{
-					case FORMAT_X8R8G8B8:
-						c.z = As<Short4>(UnpackLow(c.x, c.y));
-						c.x = As<Short4>(UnpackHigh(c.x, c.y));
-						c.y = c.z;
-						c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
-						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
-						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
-						break;
-					case FORMAT_X8B8G8R8_SNORM:
-					case FORMAT_X8B8G8R8I:
-					case FORMAT_X8B8G8R8:
-					case FORMAT_X8L8V8U8:
-					case FORMAT_SRGB8_X8:
-						c.z = As<Short4>(UnpackHigh(c.x, c.y));
-						c.x = As<Short4>(UnpackLow(c.x, c.y));
-						c.y = c.x;
-						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(c.x));
-						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(c.y));
-						c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(c.z));
-						// Propagate sign bit
-						if(state.textureFormat == FORMAT_X8B8G8R8I)
-						{
-							c.x >>= 8;
-							c.y >>= 8;
-							c.z >>= 8;
-						}
-						break;
-					case FORMAT_X8B8G8R8UI:
-						c.z = As<Short4>(UnpackHigh(c.x, c.y));
-						c.x = As<Short4>(UnpackLow(c.x, c.y));
-						c.y = c.x;
-						c.x = UnpackLow(As<Byte8>(c.x), As<Byte8>(Short4(0)));
-						c.y = UnpackHigh(As<Byte8>(c.y), As<Byte8>(Short4(0)));
-						c.z = UnpackLow(As<Byte8>(c.z), As<Byte8>(Short4(0)));
-						break;
-					default:
-						ASSERT(false);
-					}
-				}
-				break;
 			case 2:
 				c.x = Insert(c.x, Pointer<Short>(buffer[f0])[index[0]], 0);
 				c.x = Insert(c.x, Pointer<Short>(buffer[f1])[index[1]], 1);
@@ -1891,8 +1746,6 @@ namespace sw
 				{
 				case FORMAT_G8R8:
 				case FORMAT_G8R8_SNORM:
-				case FORMAT_V8U8:
-				case FORMAT_A8L8:
 					c.y = (c.x & Short4(0xFF00u)) | As<Short4>(As<UShort4>(c.x) >> 8);
 					c.x = (c.x & Short4(0x00FFu)) | (c.x << 8);
 					break;
@@ -2009,106 +1862,7 @@ namespace sw
 		UInt index[4];
 		computeIndices(index, uuuu, vvvv, wwww, offset, mipmap, function);
 
-		if(hasYuvFormat())
-		{
-			// Generic YPbPr to RGB transformation
-			// R = Y                               +           2 * (1 - Kr) * Pr
-			// G = Y - 2 * Kb * (1 - Kb) / Kg * Pb - 2 * Kr * (1 - Kr) / Kg * Pr
-			// B = Y +           2 * (1 - Kb) * Pb
-
-			float Kb = 0.114f;
-			float Kr = 0.299f;
-			int studioSwing = 1;
-
-			switch(state.textureFormat)
-			{
-			case FORMAT_YV12_BT601:
-				Kb = 0.114f;
-				Kr = 0.299f;
-				studioSwing = 1;
-				break;
-			case FORMAT_YV12_BT709:
-				Kb = 0.0722f;
-				Kr = 0.2126f;
-				studioSwing = 1;
-				break;
-			case FORMAT_YV12_JFIF:
-				Kb = 0.114f;
-				Kr = 0.299f;
-				studioSwing = 0;
-				break;
-			default:
-				ASSERT(false);
-			}
-
-			const float Kg = 1.0f - Kr - Kb;
-
-			const float Rr = 2 * (1 - Kr);
-			const float Gb = -2 * Kb * (1 - Kb) / Kg;
-			const float Gr = -2 * Kr * (1 - Kr) / Kg;
-			const float Bb = 2 * (1 - Kb);
-
-			// Scaling and bias for studio-swing range: Y = [16 .. 235], U/V = [16 .. 240]
-			const float Yy = studioSwing ? 255.0f / (235 - 16) : 1.0f;
-			const float Uu = studioSwing ? 255.0f / (240 - 16) : 1.0f;
-			const float Vv = studioSwing ? 255.0f / (240 - 16) : 1.0f;
-
-			const float Rv = Vv *  Rr;
-			const float Gu = Uu *  Gb;
-			const float Gv = Vv *  Gr;
-			const float Bu = Uu *  Bb;
-
-			const float R0 = (studioSwing * -16 * Yy - 128 * Rv) / 255;
-			const float G0 = (studioSwing * -16 * Yy - 128 * Gu - 128 * Gv) / 255;
-			const float B0 = (studioSwing * -16 * Yy - 128 * Bu) / 255;
-
-			Int c0 = Int(buffer[0][index[0]]);
-			Int c1 = Int(buffer[0][index[1]]);
-			Int c2 = Int(buffer[0][index[2]]);
-			Int c3 = Int(buffer[0][index[3]]);
-			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-			UShort4 Y = As<UShort4>(Unpack(As<Byte4>(c0)));
-
-			computeIndices(index, uuuu, vvvv, wwww, offset, mipmap + sizeof(Mipmap), function);
-			c0 = Int(buffer[1][index[0]]);
-			c1 = Int(buffer[1][index[1]]);
-			c2 = Int(buffer[1][index[2]]);
-			c3 = Int(buffer[1][index[3]]);
-			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-			UShort4 V = As<UShort4>(Unpack(As<Byte4>(c0)));
-
-			c0 = Int(buffer[2][index[0]]);
-			c1 = Int(buffer[2][index[1]]);
-			c2 = Int(buffer[2][index[2]]);
-			c3 = Int(buffer[2][index[3]]);
-			c0 = c0 | (c1 << 8) | (c2 << 16) | (c3 << 24);
-			UShort4 U = As<UShort4>(Unpack(As<Byte4>(c0)));
-
-			const UShort4 yY = UShort4(iround(Yy * 0x4000));
-			const UShort4 rV = UShort4(iround(Rv * 0x4000));
-			const UShort4 gU = UShort4(iround(-Gu * 0x4000));
-			const UShort4 gV = UShort4(iround(-Gv * 0x4000));
-			const UShort4 bU = UShort4(iround(Bu * 0x4000));
-
-			const UShort4 r0 = UShort4(iround(-R0 * 0x4000));
-			const UShort4 g0 = UShort4(iround(G0 * 0x4000));
-			const UShort4 b0 = UShort4(iround(-B0 * 0x4000));
-
-			UShort4 y = MulHigh(Y, yY);
-			UShort4 r = SubSat(y + MulHigh(V, rV), r0);
-			UShort4 g = SubSat(y + g0, MulHigh(U, gU) + MulHigh(V, gV));
-			UShort4 b = SubSat(y + MulHigh(U, bU), b0);
-
-			c.x = Min(r, UShort4(0x3FFF)) << 2;
-			c.y = Min(g, UShort4(0x3FFF)) << 2;
-			c.z = Min(b, UShort4(0x3FFF)) << 2;
-		}
-		else
-		{
-			return sampleTexel(index, buffer);
-		}
-
-		return c;
+		return sampleTexel(index, buffer);
 	}
 
 	Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
@@ -2195,8 +1949,6 @@ namespace sw
 		}
 		else
 		{
-			ASSERT(!hasYuvFormat());
-
 			Vector4s cs = sampleTexel(index, buffer);
 
 			bool isInteger = Surface::isNonNormalizedInteger(state.textureFormat);
@@ -2256,12 +2008,6 @@ namespace sw
 		if(state.textureType != TEXTURE_CUBE)
 		{
 			buffer[0] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[0]));
-
-			if(hasYuvFormat())
-			{
-				buffer[1] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[1]));
-				buffer[2] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer[2]));
-			}
 		}
 		else
 		{
@@ -2599,64 +2345,35 @@ namespace sw
 			return true;
 		case FORMAT_R8_SNORM:
 		case FORMAT_G8R8_SNORM:
-		case FORMAT_X8B8G8R8_SNORM:
 		case FORMAT_A8B8G8R8_SNORM:
 		case FORMAT_R8I:
 		case FORMAT_R8UI:
 		case FORMAT_G8R8I:
 		case FORMAT_G8R8UI:
-		case FORMAT_X8B8G8R8I:
-		case FORMAT_X8B8G8R8UI:
 		case FORMAT_A8B8G8R8I:
 		case FORMAT_A8B8G8R8UI:
 		case FORMAT_R32I:
 		case FORMAT_R32UI:
 		case FORMAT_G32R32I:
 		case FORMAT_G32R32UI:
-		case FORMAT_X32B32G32R32I:
-		case FORMAT_X32B32G32R32UI:
 		case FORMAT_A32B32G32R32I:
 		case FORMAT_A32B32G32R32UI:
 		case FORMAT_G8R8:
-		case FORMAT_X8R8G8B8:
-		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:
 		case FORMAT_A8B8G8R8:
-		case FORMAT_SRGB8_X8:
 		case FORMAT_SRGB8_A8:
-		case FORMAT_V8U8:
-		case FORMAT_Q8W8V8U8:
-		case FORMAT_X8L8V8U8:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
-		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
-		case FORMAT_X32B32G32R32F_UNSIGNED:
-		case FORMAT_A8:
 		case FORMAT_R8:
-		case FORMAT_L8:
-		case FORMAT_A8L8:
-		case FORMAT_D32F_LOCKABLE:
-		case FORMAT_D32FS8_TEXTURE:
-		case FORMAT_D32F_SHADOW:
-		case FORMAT_D32FS8_SHADOW:
-		case FORMAT_L16:
 		case FORMAT_G16R16:
 		case FORMAT_A16B16G16R16:
-		case FORMAT_V16U16:
-		case FORMAT_A16W16V16U16:
-		case FORMAT_Q16W16V16U16:
 		case FORMAT_R16I:
 		case FORMAT_R16UI:
 		case FORMAT_G16R16I:
 		case FORMAT_G16R16UI:
-		case FORMAT_X16B16G16R16I:
-		case FORMAT_X16B16G16R16UI:
 		case FORMAT_A16B16G16R16I:
 		case FORMAT_A16B16G16R16UI:
-		case FORMAT_YV12_BT601:
-		case FORMAT_YV12_BT709:
-		case FORMAT_YV12_JFIF:
 			return false;
 		default:
 			ASSERT(false);
@@ -2670,67 +2387,38 @@ namespace sw
 		switch(state.textureFormat)
 		{
 		case FORMAT_G8R8:
-		case FORMAT_X8R8G8B8:
-		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:
 		case FORMAT_A8B8G8R8:
-		case FORMAT_SRGB8_X8:
 		case FORMAT_SRGB8_A8:
-		case FORMAT_V8U8:
-		case FORMAT_Q8W8V8U8:
-		case FORMAT_X8L8V8U8:
-		case FORMAT_A8:
 		case FORMAT_R8:
-		case FORMAT_L8:
-		case FORMAT_A8L8:
 		case FORMAT_R8_SNORM:
 		case FORMAT_G8R8_SNORM:
-		case FORMAT_X8B8G8R8_SNORM:
 		case FORMAT_A8B8G8R8_SNORM:
 		case FORMAT_R8I:
 		case FORMAT_R8UI:
 		case FORMAT_G8R8I:
 		case FORMAT_G8R8UI:
-		case FORMAT_X8B8G8R8I:
-		case FORMAT_X8B8G8R8UI:
 		case FORMAT_A8B8G8R8I:
 		case FORMAT_A8B8G8R8UI:
 			return true;
 		case FORMAT_R5G6B5:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
-		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
-		case FORMAT_X32B32G32R32F_UNSIGNED:
-		case FORMAT_D32F_LOCKABLE:
-		case FORMAT_D32FS8_TEXTURE:
-		case FORMAT_D32F_SHADOW:
-		case FORMAT_D32FS8_SHADOW:
-		case FORMAT_L16:
 		case FORMAT_G16R16:
 		case FORMAT_A16B16G16R16:
-		case FORMAT_V16U16:
-		case FORMAT_A16W16V16U16:
-		case FORMAT_Q16W16V16U16:
 		case FORMAT_R32I:
 		case FORMAT_R32UI:
 		case FORMAT_G32R32I:
 		case FORMAT_G32R32UI:
-		case FORMAT_X32B32G32R32I:
-		case FORMAT_X32B32G32R32UI:
 		case FORMAT_A32B32G32R32I:
 		case FORMAT_A32B32G32R32UI:
 		case FORMAT_R16I:
 		case FORMAT_R16UI:
 		case FORMAT_G16R16I:
 		case FORMAT_G16R16UI:
-		case FORMAT_X16B16G16R16I:
-		case FORMAT_X16B16G16R16UI:
 		case FORMAT_A16B16G16R16I:
 		case FORMAT_A16B16G16R16UI:
-		case FORMAT_YV12_BT601:
-		case FORMAT_YV12_BT709:
-		case FORMAT_YV12_JFIF:
 			return false;
 		default:
 			ASSERT(false);
@@ -2746,65 +2434,36 @@ namespace sw
 		case FORMAT_R5G6B5:
 		case FORMAT_R8_SNORM:
 		case FORMAT_G8R8_SNORM:
-		case FORMAT_X8B8G8R8_SNORM:
 		case FORMAT_A8B8G8R8_SNORM:
 		case FORMAT_R8I:
 		case FORMAT_R8UI:
 		case FORMAT_G8R8I:
 		case FORMAT_G8R8UI:
-		case FORMAT_X8B8G8R8I:
-		case FORMAT_X8B8G8R8UI:
 		case FORMAT_A8B8G8R8I:
 		case FORMAT_A8B8G8R8UI:
 		case FORMAT_R32I:
 		case FORMAT_R32UI:
 		case FORMAT_G32R32I:
 		case FORMAT_G32R32UI:
-		case FORMAT_X32B32G32R32I:
-		case FORMAT_X32B32G32R32UI:
 		case FORMAT_A32B32G32R32I:
 		case FORMAT_A32B32G32R32UI:
 		case FORMAT_G8R8:
-		case FORMAT_X8R8G8B8:
-		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:
 		case FORMAT_A8B8G8R8:
-		case FORMAT_SRGB8_X8:
 		case FORMAT_SRGB8_A8:
-		case FORMAT_V8U8:
-		case FORMAT_Q8W8V8U8:
-		case FORMAT_X8L8V8U8:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
-		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
-		case FORMAT_X32B32G32R32F_UNSIGNED:
-		case FORMAT_A8:
 		case FORMAT_R8:
-		case FORMAT_L8:
-		case FORMAT_A8L8:
-		case FORMAT_D32F_LOCKABLE:
-		case FORMAT_D32FS8_TEXTURE:
-		case FORMAT_D32F_SHADOW:
-		case FORMAT_D32FS8_SHADOW:
-		case FORMAT_YV12_BT601:
-		case FORMAT_YV12_BT709:
-		case FORMAT_YV12_JFIF:
 			return false;
-		case FORMAT_L16:
 		case FORMAT_G16R16:
 		case FORMAT_A16B16G16R16:
 		case FORMAT_R16I:
 		case FORMAT_R16UI:
 		case FORMAT_G16R16I:
 		case FORMAT_G16R16UI:
-		case FORMAT_X16B16G16R16I:
-		case FORMAT_X16B16G16R16UI:
 		case FORMAT_A16B16G16R16I:
 		case FORMAT_A16B16G16R16UI:
-		case FORMAT_V16U16:
-		case FORMAT_A16W16V16U16:
-		case FORMAT_Q16W16V16U16:
 			return true;
 		default:
 			ASSERT(false);
@@ -2820,140 +2479,37 @@ namespace sw
 		case FORMAT_R5G6B5:
 		case FORMAT_R8_SNORM:
 		case FORMAT_G8R8_SNORM:
-		case FORMAT_X8B8G8R8_SNORM:
 		case FORMAT_A8B8G8R8_SNORM:
 		case FORMAT_R8I:
 		case FORMAT_R8UI:
 		case FORMAT_G8R8I:
 		case FORMAT_G8R8UI:
-		case FORMAT_X8B8G8R8I:
-		case FORMAT_X8B8G8R8UI:
 		case FORMAT_A8B8G8R8I:
 		case FORMAT_A8B8G8R8UI:
 		case FORMAT_G8R8:
-		case FORMAT_X8R8G8B8:
-		case FORMAT_X8B8G8R8:
 		case FORMAT_A8R8G8B8:
 		case FORMAT_A8B8G8R8:
-		case FORMAT_SRGB8_X8:
 		case FORMAT_SRGB8_A8:
-		case FORMAT_V8U8:
-		case FORMAT_Q8W8V8U8:
-		case FORMAT_X8L8V8U8:
-		case FORMAT_L16:
 		case FORMAT_G16R16:
 		case FORMAT_A16B16G16R16:
 		case FORMAT_R16I:
 		case FORMAT_R16UI:
 		case FORMAT_G16R16I:
 		case FORMAT_G16R16UI:
-		case FORMAT_X16B16G16R16I:
-		case FORMAT_X16B16G16R16UI:
 		case FORMAT_A16B16G16R16I:
 		case FORMAT_A16B16G16R16UI:
-		case FORMAT_V16U16:
-		case FORMAT_A16W16V16U16:
-		case FORMAT_Q16W16V16U16:
 		case FORMAT_R32F:
 		case FORMAT_G32R32F:
-		case FORMAT_X32B32G32R32F:
 		case FORMAT_A32B32G32R32F:
-		case FORMAT_X32B32G32R32F_UNSIGNED:
-		case FORMAT_A8:
 		case FORMAT_R8:
-		case FORMAT_L8:
-		case FORMAT_A8L8:
-		case FORMAT_D32F_LOCKABLE:
-		case FORMAT_D32FS8_TEXTURE:
-		case FORMAT_D32F_SHADOW:
-		case FORMAT_D32FS8_SHADOW:
-		case FORMAT_YV12_BT601:
-		case FORMAT_YV12_BT709:
-		case FORMAT_YV12_JFIF:
 			return false;
 		case FORMAT_R32I:
 		case FORMAT_R32UI:
 		case FORMAT_G32R32I:
 		case FORMAT_G32R32UI:
-		case FORMAT_X32B32G32R32I:
-		case FORMAT_X32B32G32R32UI:
 		case FORMAT_A32B32G32R32I:
 		case FORMAT_A32B32G32R32UI:
 			return true;
-		default:
-			ASSERT(false);
-		}
-
-		return false;
-	}
-
-	bool SamplerCore::hasYuvFormat() const
-	{
-		switch(state.textureFormat)
-		{
-		case FORMAT_YV12_BT601:
-		case FORMAT_YV12_BT709:
-		case FORMAT_YV12_JFIF:
-			return true;
-		case FORMAT_R5G6B5:
-		case FORMAT_R8_SNORM:
-		case FORMAT_G8R8_SNORM:
-		case FORMAT_X8B8G8R8_SNORM:
-		case FORMAT_A8B8G8R8_SNORM:
-		case FORMAT_R8I:
-		case FORMAT_R8UI:
-		case FORMAT_G8R8I:
-		case FORMAT_G8R8UI:
-		case FORMAT_X8B8G8R8I:
-		case FORMAT_X8B8G8R8UI:
-		case FORMAT_A8B8G8R8I:
-		case FORMAT_A8B8G8R8UI:
-		case FORMAT_R32I:
-		case FORMAT_R32UI:
-		case FORMAT_G32R32I:
-		case FORMAT_G32R32UI:
-		case FORMAT_X32B32G32R32I:
-		case FORMAT_X32B32G32R32UI:
-		case FORMAT_A32B32G32R32I:
-		case FORMAT_A32B32G32R32UI:
-		case FORMAT_G8R8:
-		case FORMAT_X8R8G8B8:
-		case FORMAT_X8B8G8R8:
-		case FORMAT_A8R8G8B8:
-		case FORMAT_A8B8G8R8:
-		case FORMAT_SRGB8_X8:
-		case FORMAT_SRGB8_A8:
-		case FORMAT_V8U8:
-		case FORMAT_Q8W8V8U8:
-		case FORMAT_X8L8V8U8:
-		case FORMAT_R32F:
-		case FORMAT_G32R32F:
-		case FORMAT_X32B32G32R32F:
-		case FORMAT_A32B32G32R32F:
-		case FORMAT_X32B32G32R32F_UNSIGNED:
-		case FORMAT_A8:
-		case FORMAT_R8:
-		case FORMAT_L8:
-		case FORMAT_A8L8:
-		case FORMAT_D32F_LOCKABLE:
-		case FORMAT_D32FS8_TEXTURE:
-		case FORMAT_D32F_SHADOW:
-		case FORMAT_D32FS8_SHADOW:
-		case FORMAT_L16:
-		case FORMAT_G16R16:
-		case FORMAT_A16B16G16R16:
-		case FORMAT_R16I:
-		case FORMAT_R16UI:
-		case FORMAT_G16R16I:
-		case FORMAT_G16R16UI:
-		case FORMAT_X16B16G16R16I:
-		case FORMAT_X16B16G16R16UI:
-		case FORMAT_A16B16G16R16I:
-		case FORMAT_A16B16G16R16UI:
-		case FORMAT_V16U16:
-		case FORMAT_A16W16V16U16:
-		case FORMAT_Q16W16V16U16:
-			return false;
 		default:
 			ASSERT(false);
 		}
@@ -2968,64 +2524,35 @@ namespace sw
 		case FORMAT_R5G6B5:         return component < 3;
 		case FORMAT_R8_SNORM:      return component < 1;
 		case FORMAT_G8R8_SNORM:    return component < 2;
-		case FORMAT_X8B8G8R8_SNORM: return component < 3;
 		case FORMAT_A8B8G8R8_SNORM: return component < 3;
 		case FORMAT_R8I:            return component < 1;
 		case FORMAT_R8UI:           return component < 1;
 		case FORMAT_G8R8I:          return component < 2;
 		case FORMAT_G8R8UI:         return component < 2;
-		case FORMAT_X8B8G8R8I:      return component < 3;
-		case FORMAT_X8B8G8R8UI:     return component < 3;
 		case FORMAT_A8B8G8R8I:      return component < 3;
 		case FORMAT_A8B8G8R8UI:     return component < 3;
 		case FORMAT_R32I:           return component < 1;
 		case FORMAT_R32UI:          return component < 1;
 		case FORMAT_G32R32I:        return component < 2;
 		case FORMAT_G32R32UI:       return component < 2;
-		case FORMAT_X32B32G32R32I:  return component < 3;
-		case FORMAT_X32B32G32R32UI: return component < 3;
 		case FORMAT_A32B32G32R32I:  return component < 3;
 		case FORMAT_A32B32G32R32UI: return component < 3;
 		case FORMAT_G8R8:           return component < 2;
-		case FORMAT_X8R8G8B8:       return component < 3;
-		case FORMAT_X8B8G8R8:       return component < 3;
 		case FORMAT_A8R8G8B8:       return component < 3;
 		case FORMAT_A8B8G8R8:       return component < 3;
-		case FORMAT_SRGB8_X8:       return component < 3;
 		case FORMAT_SRGB8_A8:       return component < 3;
-		case FORMAT_V8U8:           return false;
-		case FORMAT_Q8W8V8U8:       return false;
-		case FORMAT_X8L8V8U8:       return false;
 		case FORMAT_R32F:           return component < 1;
 		case FORMAT_G32R32F:        return component < 2;
-		case FORMAT_X32B32G32R32F:  return component < 3;
 		case FORMAT_A32B32G32R32F:  return component < 3;
-		case FORMAT_X32B32G32R32F_UNSIGNED: return component < 3;
-		case FORMAT_A8:             return false;
 		case FORMAT_R8:             return component < 1;
-		case FORMAT_L8:             return component < 1;
-		case FORMAT_A8L8:           return component < 1;
-		case FORMAT_D32F_LOCKABLE:  return false;
-		case FORMAT_D32FS8_TEXTURE: return false;
-		case FORMAT_D32F_SHADOW:    return false;
-		case FORMAT_D32FS8_SHADOW:  return false;
-		case FORMAT_L16:            return component < 1;
 		case FORMAT_G16R16:         return component < 2;
 		case FORMAT_A16B16G16R16:   return component < 3;
 		case FORMAT_R16I:           return component < 1;
 		case FORMAT_R16UI:          return component < 1;
 		case FORMAT_G16R16I:        return component < 2;
 		case FORMAT_G16R16UI:       return component < 2;
-		case FORMAT_X16B16G16R16I:  return component < 3;
-		case FORMAT_X16B16G16R16UI: return component < 3;
 		case FORMAT_A16B16G16R16I:  return component < 3;
 		case FORMAT_A16B16G16R16UI: return component < 3;
-		case FORMAT_V16U16:         return false;
-		case FORMAT_A16W16V16U16:   return false;
-		case FORMAT_Q16W16V16U16:   return false;
-		case FORMAT_YV12_BT601:     return component < 3;
-		case FORMAT_YV12_BT709:     return component < 3;
-		case FORMAT_YV12_JFIF:      return component < 3;
 		default:
 			ASSERT(false);
 		}
