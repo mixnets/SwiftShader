@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ecddade9_542ae9f0",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-23T19:10:07Z",
+      "side": 0,
+      "message": "Keep. These are not equivalent to X8*** formats. The spec states \"specifies a three-component, 24-bit unsigned normalized format\".\n\nThey\u0027re not mandatory though.",
+      "range": {
+        "startLine": 82,
+        "startChar": 2,
+        "endLine": 83,
+        "endChar": 16
+      },
+      "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "be9178c2_97e0eba7",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-23T19:10:07Z",
+      "side": 0,
+      "message": "This is used to implement E5B9G9R9 and B10F_G11F_R11F currently. We need to figure out if it\u0027s reasonable to support all mandatory formats natively (and support other expected formats in the future), or whether we need to keep the internal/external conversion.\n\nEither way for now there seems no harm in keeping this one.",
+      "range": {
+        "startLine": 175,
+        "startChar": 2,
+        "endLine": 175,
+        "endChar": 32
+      },
+      "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c44ed80_3a939c95",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-23T19:10:07Z",
+      "side": 0,
+      "message": "same",
+      "range": {
+        "startLine": 182,
+        "startChar": 2,
+        "endLine": 182,
+        "endChar": 31
+      },
+      "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
