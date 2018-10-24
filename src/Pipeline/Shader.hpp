@@ -22,6 +22,33 @@
 
 namespace sw
 {
+	namespace SPIR_V
+	{
+		class Module
+		{
+		public:
+			const uint32_t &word(size_t index)
+			{
+				return stream[index];
+			}
+
+			const std::vector<uint32_t> &getStream() const
+			{
+				return stream;
+			}
+
+			// Read/write access to the binary stream. Should only be used once to populate it.
+			std::vector<uint32_t> &getStream()
+			{
+				// assert(stream.size() == 0);
+				return stream;
+			}
+
+		private:
+			std::vector<uint32_t> stream;
+		};
+	}
+
 	class Shader
 	{
 	public:
@@ -646,6 +673,13 @@ namespace sw
 		std::vector<Instruction*> instruction;
 
 		unsigned short usedSamplers;   // Bit flags
+
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////
+	public:   // FIXME
+	//	std::vector<uint32_t> SPIRV;
+		SPIR_V::Module binary;
 
 	private:
 		const int serialID;

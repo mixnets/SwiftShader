@@ -50,6 +50,7 @@ public:
 	VkSampleCountFlagBits    getSamples() const { return samples; }
 	VkImageTiling            getTiling() const { return tiling; }
 	VkImageUsageFlags        getUsage() const { return usage; }
+	VkImageLayout            getImageLayout() const { return initialLayout; }
 
 	static VkImageAspectFlags getImageAspect(VkFormat format);
 

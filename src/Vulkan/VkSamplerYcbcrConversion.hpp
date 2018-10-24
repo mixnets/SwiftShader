@@ -45,13 +45,7 @@ namespace vk
 		VkFormat                         format = VK_FORMAT_UNDEFINED;
 		VkSamplerYcbcrModelConversion    ycbcrModel = VK_SAMPLER_YCBCR_MODEL_CONVERSION_RGB_IDENTITY;
 		VkSamplerYcbcrRange              ycbcrRange = VK_SAMPLER_YCBCR_RANGE_ITU_FULL;
-		VkComponentMapping               components =
-		{
-			VK_COMPONENT_SWIZZLE_R,
-			VK_COMPONENT_SWIZZLE_G,
-			VK_COMPONENT_SWIZZLE_B,
-			VK_COMPONENT_SWIZZLE_A,
-		};
+		VkComponentMapping               components = {};
 		VkChromaLocation                 xChromaOffset = VK_CHROMA_LOCATION_COSITED_EVEN;
 		VkChromaLocation                 yChromaOffset = VK_CHROMA_LOCATION_COSITED_EVEN;
 		VkFilter                         chromaFilter = VK_FILTER_NEAREST;

@@ -18,6 +18,12 @@
 #include "Device/Primitive.hpp"
 #include "Device/Renderer.hpp"
 
+#include "SPIRV/spirv.hpp"
+
+#include <string.h>
+#include <memory>
+#undef OUT
+
 namespace sw
 {
 	extern bool postBlendSRGB;
@@ -27,54 +33,127 @@ namespace sw
 
 	void PixelProgram::setBuiltins(Int &x, Int &y, Float4(&z)[4], Float4 &w)
 	{
-		if(shader->getShaderModel() >= 0x0300)
-		{
-			if(shader->isVPosDeclared())
-			{
-				if(!halfIntegerCoordinates)
-				{
-					vPos.x = Float4(Float(x)) + Float4(0, 1, 0, 1);
-					vPos.y = Float4(Float(y)) + Float4(0, 0, 1, 1);
-				}
-				else
-				{
-					vPos.x = Float4(Float(x)) + Float4(0.5f, 1.5f, 0.5f, 1.5f);
-					vPos.y = Float4(Float(y)) + Float4(0.5f, 0.5f, 1.5f, 1.5f);
-				}
+		//if(shader->getShaderModel() >= 0x0300)
+		//{
+		//	if(shader->isVPosDeclared())
+		//	{
+		//		if(!halfIntegerCoordinates)
+		//		{
+		//			vPos.x = Float4(Float(x)) + Float4(0, 1, 0, 1);
+		//			vPos.y = Float4(Float(y)) + Float4(0, 0, 1, 1);
+		//		}
+		//		else
+		//		{
+		//			vPos.x = Float4(Float(x)) + Float4(0.5f, 1.5f, 0.5f, 1.5f);
+		//			vPos.y = Float4(Float(y)) + Float4(0.5f, 0.5f, 1.5f, 1.5f);
+		//		}
 
-				if(fullPixelPositionRegister)
-				{
-					vPos.z = z[0]; // FIXME: Centroid?
-					vPos.w = w;    // FIXME: Centroid?
-				}
-			}
+		//		if(fullPixelPositionRegister)
+		//		{
+		//			vPos.z = z[0]; // FIXME: Centroid?
+		//			vPos.w = w;    // FIXME: Centroid?
+		//		}
+		//	}
 
-			if(shader->isVFaceDeclared())
-			{
-				Float4 face = *Pointer<Float>(primitive + OFFSET(Primitive, area));
+		//	if(shader->isVFaceDeclared())
+		//	{
+		//		Float4 area = *Pointer<Float>(primitive + OFFSET(Primitive, area));
+		//		Float4 face = booleanFaceRegister ? Float4(As<Float4>(CmpNLT(area, Float4(0.0f)))) : area;
 
-				if(booleanFaceRegister)
-				{
-					face = As<Float4>(state.frontFaceCCW ? CmpNLT(face, Float4(0.0f)) : CmpLT(face, Float4(0.0f)));
-				}
-
-				vFace.x = face;
-				vFace.y = face;
-				vFace.z = face;
-				vFace.w = face;
-			}
-		}
+		//		vFace.x = face;
+		//		vFace.y = face;
+		//		vFace.z = face;
+		//		vFace.w = face;
+		//	}
+		//}
 	}
+
+	inline spv::Op opcode(uint32_t instructionWord)
+	{
+		return static_cast<spv::Op>(instructionWord & spv::OpCodeMask);
+	}
+
+	inline uint32_t wordCount(uint32_t instructionWord)
+	{
+		return instructionWord >> spv::WordCountShift;
+	}
+
+	inline const char *string(const uint32_t &instructionWord)
+	{
+		return reinterpret_cast<const char*>(&instructionWord);
+	}
+
+	inline size_t stringWordCount(const char *string, size_t maxWords)
+	{
+		return (strnlen(string, maxWords * sizeof(uint32_t)) + 4) / 4;
+	}
+
+
+
+	enum ShaderType
+	{
+		TYPE_VOID,
+
+		TYPE_FLOAT,
+		TYPE_FLOAT2,
+		TYPE_FLOAT3,
+		TYPE_FLOAT4,
+
+		//TYPE_POINTER_FLOAT4,
+
+		//TYPE_LITERAL_FLOAT,
+		//TYPE_LITERAL_FLOAT2,
+		//TYPE_LITERAL_FLOAT3,
+		//TYPE_LITERAL_FLOAT4,
+	};
+
+	//enum ShaderStorage
+	//{
+	//	CLASS_TYPE,
+	//	CLASS_POINTER,
+	//	CLASS_LITERAL,
+	//};
+
+	//enum ShaderVariable   // TODO: Output? Can only be a destination parameter.
+	//{
+	//	OUT,
+	//	OUT0 = OUT,
+	//	OUT1,
+	//	OUT2,
+	//	OUT3,
+	//};
+
+	struct Object
+	{
+		uint32_t definition = 0;  // TODO: Need this?
+
+	//	ShaderStorage storage;
+
+		union
+		{
+			ShaderType type;
+		//	ShaderVariable var;
+		};
+
+		// Constants
+		union
+		{
+			uint32_t scalar;
+			uint32_t value[4];
+			int32_t intValue[4];
+			float floatValue[4];
+		};
+
+		spv::StorageClass storageClass;
+
+		// Debug information.
+		const char *name = nullptr;
+	};
 
 	void PixelProgram::applyShader(Int cMask[4])
 	{
 		enableIndex = 0;
 		stackIndex = 0;
-
-		if(shader->containsLeaveInstruction())
-		{
-			enableLeave = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
-		}
 
 		for(int i = 0; i < RENDERTARGETS; i++)
 		{
@@ -84,488 +163,1041 @@ namespace sw
 			}
 		}
 
-		// Create all call site return blocks up front
-		for(size_t i = 0; i < shader->getLength(); i++)
+	//	const std::vector<uint32_t> &word = shader->SPIRV;
+		const std::vector<uint32_t> &word = shader->binary.getStream();
+		std::size_t bound = 0;
+
 		{
-			const Shader::Instruction *instruction = shader->getInstruction(i);
-			Shader::Opcode opcode = instruction->opcode;
-
-			if(opcode == Shader::OPCODE_CALL || opcode == Shader::OPCODE_CALLNZ)
+			if(word.size() < 5 + 1)   // Header and first instruction word.
 			{
-				const Dst &dst = instruction->dst;
-
-				ASSERT(callRetBlock[dst.label].size() == dst.callSite);
-				callRetBlock[dst.label].push_back(Nucleus::createBasicBlock());
+				assert(false);
+				return;
 			}
+
+			if(word[0] != spv::MagicNumber)
+			{
+				assert(false);
+				return;
+			}
+
+			(void)word[1];   // Version number.
+
+			(void)word[2];   // Generator's magic number.
+
+			bound = word[3];
+
+			uint32_t schema = word[4];
+
+			assert(schema == 0);   // Reserved.
 		}
 
-		bool broadcastColor0 = true;
+	//	std::unique_ptr<Object[]> object(new Object[bound]);
 
-		for(size_t i = 0; i < shader->getLength(); i++)
+		Object *object = new Object[bound];
+		std::unique_ptr<Object[]> objects(object);
+
+		uint32_t i = 5;
+
+		while(i < word.size() && opcode(word[i]) == spv::OpCapability)
 		{
-			const Shader::Instruction *instruction = shader->getInstruction(i);
-			Shader::Opcode opcode = instruction->opcode;
+		//	spv::Op op = opcode(word[i]);
+			uint32_t count = wordCount(word[i]);
 
-			if(opcode == Shader::OPCODE_DCL || opcode == Shader::OPCODE_DEF || opcode == Shader::OPCODE_DEFI || opcode == Shader::OPCODE_DEFB)
+			assert(count == 2);
+
+			switch(word[i + 1])
 			{
-				continue;
-			}
-
-			const Dst &dst = instruction->dst;
-			const Src &src0 = instruction->src[0];
-			const Src &src1 = instruction->src[1];
-			const Src &src2 = instruction->src[2];
-			const Src &src3 = instruction->src[3];
-			const Src &src4 = instruction->src[4];
-
-			bool predicate = instruction->predicate;
-			Control control = instruction->control;
-			bool pp = dst.partialPrecision;
-			bool project = instruction->project;
-			bool bias = instruction->bias;
-
-			Vector4f d;
-			Vector4f s0;
-			Vector4f s1;
-			Vector4f s2;
-			Vector4f s3;
-			Vector4f s4;
-
-			if(opcode == Shader::OPCODE_TEXKILL)   // Takes destination as input
-			{
-				if(dst.type == Shader::PARAMETER_TEXTURE)
-				{
-					d.x = v[2 + dst.index].x;
-					d.y = v[2 + dst.index].y;
-					d.z = v[2 + dst.index].z;
-					d.w = v[2 + dst.index].w;
-				}
-				else
-				{
-					d = r[dst.index];
-				}
-			}
-
-			if(src0.type != Shader::PARAMETER_VOID) s0 = fetchRegister(src0);
-			if(src1.type != Shader::PARAMETER_VOID) s1 = fetchRegister(src1);
-			if(src2.type != Shader::PARAMETER_VOID) s2 = fetchRegister(src2);
-			if(src3.type != Shader::PARAMETER_VOID) s3 = fetchRegister(src3);
-			if(src4.type != Shader::PARAMETER_VOID) s4 = fetchRegister(src4);
-
-			switch(opcode)
-			{
-			case Shader::OPCODE_PS_2_0:                                                    break;
-			case Shader::OPCODE_PS_2_x:                                                    break;
-			case Shader::OPCODE_PS_3_0:                                                    break;
-			case Shader::OPCODE_DEF:                                                       break;
-			case Shader::OPCODE_DCL:                                                       break;
-			case Shader::OPCODE_NOP:                                                       break;
-			case Shader::OPCODE_MOV:        mov(d, s0);                                    break;
-			case Shader::OPCODE_NEG:        neg(d, s0);                                    break;
-			case Shader::OPCODE_INEG:       ineg(d, s0);                                   break;
-			case Shader::OPCODE_F2B:        f2b(d, s0);                                    break;
-			case Shader::OPCODE_B2F:        b2f(d, s0);                                    break;
-			case Shader::OPCODE_F2I:        f2i(d, s0);                                    break;
-			case Shader::OPCODE_I2F:        i2f(d, s0);                                    break;
-			case Shader::OPCODE_F2U:        f2u(d, s0);                                    break;
-			case Shader::OPCODE_U2F:        u2f(d, s0);                                    break;
-			case Shader::OPCODE_I2B:        i2b(d, s0);                                    break;
-			case Shader::OPCODE_B2I:        b2i(d, s0);                                    break;
-			case Shader::OPCODE_ADD:        add(d, s0, s1);                                break;
-			case Shader::OPCODE_IADD:       iadd(d, s0, s1);                               break;
-			case Shader::OPCODE_SUB:        sub(d, s0, s1);                                break;
-			case Shader::OPCODE_ISUB:       isub(d, s0, s1);                               break;
-			case Shader::OPCODE_MUL:        mul(d, s0, s1);                                break;
-			case Shader::OPCODE_IMUL:       imul(d, s0, s1);                               break;
-			case Shader::OPCODE_MAD:        mad(d, s0, s1, s2);                            break;
-			case Shader::OPCODE_IMAD:       imad(d, s0, s1, s2);                           break;
-			case Shader::OPCODE_DP1:        dp1(d, s0, s1);                                break;
-			case Shader::OPCODE_DP2:        dp2(d, s0, s1);                                break;
-			case Shader::OPCODE_DP2ADD:     dp2add(d, s0, s1, s2);                         break;
-			case Shader::OPCODE_DP3:        dp3(d, s0, s1);                                break;
-			case Shader::OPCODE_DP4:        dp4(d, s0, s1);                                break;
-			case Shader::OPCODE_DET2:       det2(d, s0, s1);                               break;
-			case Shader::OPCODE_DET3:       det3(d, s0, s1, s2);                           break;
-			case Shader::OPCODE_DET4:       det4(d, s0, s1, s2, s3);                       break;
-			case Shader::OPCODE_CMP0:       cmp0(d, s0, s1, s2);                           break;
-			case Shader::OPCODE_ICMP:       icmp(d, s0, s1, control);                      break;
-			case Shader::OPCODE_UCMP:       ucmp(d, s0, s1, control);                      break;
-			case Shader::OPCODE_SELECT:     select(d, s0, s1, s2);                         break;
-			case Shader::OPCODE_EXTRACT:    extract(d.x, s0, s1.x);                        break;
-			case Shader::OPCODE_INSERT:     insert(d, s0, s1.x, s2.x);                     break;
-			case Shader::OPCODE_FRC:        frc(d, s0);                                    break;
-			case Shader::OPCODE_TRUNC:      trunc(d, s0);                                  break;
-			case Shader::OPCODE_FLOOR:      floor(d, s0);                                  break;
-			case Shader::OPCODE_ROUND:      round(d, s0);                                  break;
-			case Shader::OPCODE_ROUNDEVEN:  roundEven(d, s0);                              break;
-			case Shader::OPCODE_CEIL:       ceil(d, s0);                                   break;
-			case Shader::OPCODE_EXP2X:      exp2x(d, s0, pp);                              break;
-			case Shader::OPCODE_EXP2:       exp2(d, s0, pp);                               break;
-			case Shader::OPCODE_LOG2X:      log2x(d, s0, pp);                              break;
-			case Shader::OPCODE_LOG2:       log2(d, s0, pp);                               break;
-			case Shader::OPCODE_EXP:        exp(d, s0, pp);                                break;
-			case Shader::OPCODE_LOG:        log(d, s0, pp);                                break;
-			case Shader::OPCODE_RCPX:       rcpx(d, s0, pp);                               break;
-			case Shader::OPCODE_DIV:        div(d, s0, s1);                                break;
-			case Shader::OPCODE_IDIV:       idiv(d, s0, s1);                               break;
-			case Shader::OPCODE_UDIV:       udiv(d, s0, s1);                               break;
-			case Shader::OPCODE_MOD:        mod(d, s0, s1);                                break;
-			case Shader::OPCODE_IMOD:       imod(d, s0, s1);                               break;
-			case Shader::OPCODE_UMOD:       umod(d, s0, s1);                               break;
-			case Shader::OPCODE_SHL:        shl(d, s0, s1);                                break;
-			case Shader::OPCODE_ISHR:       ishr(d, s0, s1);                               break;
-			case Shader::OPCODE_USHR:       ushr(d, s0, s1);                               break;
-			case Shader::OPCODE_RSQX:       rsqx(d, s0, pp);                               break;
-			case Shader::OPCODE_SQRT:       sqrt(d, s0, pp);                               break;
-			case Shader::OPCODE_RSQ:        rsq(d, s0, pp);                                break;
-			case Shader::OPCODE_LEN2:       len2(d.x, s0, pp);                             break;
-			case Shader::OPCODE_LEN3:       len3(d.x, s0, pp);                             break;
-			case Shader::OPCODE_LEN4:       len4(d.x, s0, pp);                             break;
-			case Shader::OPCODE_DIST1:      dist1(d.x, s0, s1, pp);                        break;
-			case Shader::OPCODE_DIST2:      dist2(d.x, s0, s1, pp);                        break;
-			case Shader::OPCODE_DIST3:      dist3(d.x, s0, s1, pp);                        break;
-			case Shader::OPCODE_DIST4:      dist4(d.x, s0, s1, pp);                        break;
-			case Shader::OPCODE_MIN:        min(d, s0, s1);                                break;
-			case Shader::OPCODE_IMIN:       imin(d, s0, s1);                               break;
-			case Shader::OPCODE_UMIN:       umin(d, s0, s1);                               break;
-			case Shader::OPCODE_MAX:        max(d, s0, s1);                                break;
-			case Shader::OPCODE_IMAX:       imax(d, s0, s1);                               break;
-			case Shader::OPCODE_UMAX:       umax(d, s0, s1);                               break;
-			case Shader::OPCODE_LRP:        lrp(d, s0, s1, s2);                            break;
-			case Shader::OPCODE_STEP:       step(d, s0, s1);                               break;
-			case Shader::OPCODE_SMOOTH:     smooth(d, s0, s1, s2);                         break;
-			case Shader::OPCODE_ISINF:      isinf(d, s0);                                  break;
-			case Shader::OPCODE_ISNAN:      isnan(d, s0);                                  break;
-			case Shader::OPCODE_FLOATBITSTOINT:
-			case Shader::OPCODE_FLOATBITSTOUINT:
-			case Shader::OPCODE_INTBITSTOFLOAT:
-			case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                                   break;
-			case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d, s0);                     break;
-			case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d, s0);                     break;
-			case Shader::OPCODE_PACKHALF2x16:    packHalf2x16(d, s0);                      break;
-			case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0);                   break;
-			case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0);                   break;
-			case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0);                    break;
-			case Shader::OPCODE_POWX:       powx(d, s0, s1, pp);                           break;
-			case Shader::OPCODE_POW:        pow(d, s0, s1, pp);                            break;
-			case Shader::OPCODE_SGN:        sgn(d, s0);                                    break;
-			case Shader::OPCODE_ISGN:       isgn(d, s0);                                   break;
-			case Shader::OPCODE_CRS:        crs(d, s0, s1);                                break;
-			case Shader::OPCODE_FORWARD1:   forward1(d, s0, s1, s2);                       break;
-			case Shader::OPCODE_FORWARD2:   forward2(d, s0, s1, s2);                       break;
-			case Shader::OPCODE_FORWARD3:   forward3(d, s0, s1, s2);                       break;
-			case Shader::OPCODE_FORWARD4:   forward4(d, s0, s1, s2);                       break;
-			case Shader::OPCODE_REFLECT1:   reflect1(d, s0, s1);                           break;
-			case Shader::OPCODE_REFLECT2:   reflect2(d, s0, s1);                           break;
-			case Shader::OPCODE_REFLECT3:   reflect3(d, s0, s1);                           break;
-			case Shader::OPCODE_REFLECT4:   reflect4(d, s0, s1);                           break;
-			case Shader::OPCODE_REFRACT1:   refract1(d, s0, s1, s2.x);                     break;
-			case Shader::OPCODE_REFRACT2:   refract2(d, s0, s1, s2.x);                     break;
-			case Shader::OPCODE_REFRACT3:   refract3(d, s0, s1, s2.x);                     break;
-			case Shader::OPCODE_REFRACT4:   refract4(d, s0, s1, s2.x);                     break;
-			case Shader::OPCODE_NRM2:       nrm2(d, s0, pp);                               break;
-			case Shader::OPCODE_NRM3:       nrm3(d, s0, pp);                               break;
-			case Shader::OPCODE_NRM4:       nrm4(d, s0, pp);                               break;
-			case Shader::OPCODE_ABS:        abs(d, s0);                                    break;
-			case Shader::OPCODE_IABS:       iabs(d, s0);                                   break;
-			case Shader::OPCODE_SINCOS:     sincos(d, s0, pp);                             break;
-			case Shader::OPCODE_COS:        cos(d, s0, pp);                                break;
-			case Shader::OPCODE_SIN:        sin(d, s0, pp);                                break;
-			case Shader::OPCODE_TAN:        tan(d, s0, pp);                                break;
-			case Shader::OPCODE_ACOS:       acos(d, s0, pp);                               break;
-			case Shader::OPCODE_ASIN:       asin(d, s0, pp);                               break;
-			case Shader::OPCODE_ATAN:       atan(d, s0, pp);                               break;
-			case Shader::OPCODE_ATAN2:      atan2(d, s0, s1, pp);                          break;
-			case Shader::OPCODE_COSH:       cosh(d, s0, pp);                               break;
-			case Shader::OPCODE_SINH:       sinh(d, s0, pp);                               break;
-			case Shader::OPCODE_TANH:       tanh(d, s0, pp);                               break;
-			case Shader::OPCODE_ACOSH:      acosh(d, s0, pp);                              break;
-			case Shader::OPCODE_ASINH:      asinh(d, s0, pp);                              break;
-			case Shader::OPCODE_ATANH:      atanh(d, s0, pp);                              break;
-			case Shader::OPCODE_M4X4:       M4X4(d, s0, src1);                             break;
-			case Shader::OPCODE_M4X3:       M4X3(d, s0, src1);                             break;
-			case Shader::OPCODE_M3X4:       M3X4(d, s0, src1);                             break;
-			case Shader::OPCODE_M3X3:       M3X3(d, s0, src1);                             break;
-			case Shader::OPCODE_M3X2:       M3X2(d, s0, src1);                             break;
-			case Shader::OPCODE_TEX:        TEX(d, s0, src1, project, bias);               break;
-			case Shader::OPCODE_TEXLDD:     TEXGRAD(d, s0, src1, s2, s3);                  break;
-			case Shader::OPCODE_TEXLDL:     TEXLOD(d, s0, src1, s0.w);                     break;
-			case Shader::OPCODE_TEXLOD:     TEXLOD(d, s0, src1, s2.x);                     break;
-			case Shader::OPCODE_TEXSIZE:    TEXSIZE(d, s0.x, src1);                        break;
-			case Shader::OPCODE_TEXKILL:    TEXKILL(cMask, d, dst.mask);                   break;
-			case Shader::OPCODE_TEXOFFSET:  TEXOFFSET(d, s0, src1, s2);                    break;
-			case Shader::OPCODE_TEXLODOFFSET: TEXLODOFFSET(d, s0, src1, s2, s3.x);         break;
-			case Shader::OPCODE_TEXELFETCH: TEXELFETCH(d, s0, src1, s2.x);                 break;
-			case Shader::OPCODE_TEXELFETCHOFFSET: TEXELFETCHOFFSET(d, s0, src1, s2, s3.x); break;
-			case Shader::OPCODE_TEXGRAD:    TEXGRAD(d, s0, src1, s2, s3);                  break;
-			case Shader::OPCODE_TEXGRADOFFSET: TEXGRADOFFSET(d, s0, src1, s2, s3, s4);     break;
-			case Shader::OPCODE_TEXBIAS:    TEXBIAS(d, s0, src1, s2.x);                    break;
-			case Shader::OPCODE_TEXOFFSETBIAS: TEXOFFSETBIAS(d, s0, src1, s2, s3.x);       break;
-			case Shader::OPCODE_DISCARD:    DISCARD(cMask, instruction);                   break;
-			case Shader::OPCODE_DFDX:       DFDX(d, s0);                                   break;
-			case Shader::OPCODE_DFDY:       DFDY(d, s0);                                   break;
-			case Shader::OPCODE_FWIDTH:     FWIDTH(d, s0);                                 break;
-			case Shader::OPCODE_BREAK:      BREAK();                                       break;
-			case Shader::OPCODE_BREAKC:     BREAKC(s0, s1, control);                       break;
-			case Shader::OPCODE_BREAKP:     BREAKP(src0);                                  break;
-			case Shader::OPCODE_CONTINUE:   CONTINUE();                                    break;
-			case Shader::OPCODE_TEST:       TEST();                                        break;
-			case Shader::OPCODE_CALL:       CALL(dst.label, dst.callSite);                 break;
-			case Shader::OPCODE_CALLNZ:     CALLNZ(dst.label, dst.callSite, src0);         break;
-			case Shader::OPCODE_ELSE:       ELSE();                                        break;
-			case Shader::OPCODE_ENDIF:      ENDIF();                                       break;
-			case Shader::OPCODE_ENDLOOP:    ENDLOOP();                                     break;
-			case Shader::OPCODE_ENDREP:     ENDREP();                                      break;
-			case Shader::OPCODE_ENDWHILE:   ENDWHILE();                                    break;
-			case Shader::OPCODE_ENDSWITCH:  ENDSWITCH();                                   break;
-			case Shader::OPCODE_IF:         IF(src0);                                      break;
-			case Shader::OPCODE_IFC:        IFC(s0, s1, control);                          break;
-			case Shader::OPCODE_LABEL:      LABEL(dst.index);                              break;
-			case Shader::OPCODE_LOOP:       LOOP(src1);                                    break;
-			case Shader::OPCODE_REP:        REP(src0);                                     break;
-			case Shader::OPCODE_WHILE:      WHILE(src0);                                   break;
-			case Shader::OPCODE_SWITCH:     SWITCH();                                      break;
-			case Shader::OPCODE_RET:        RET();                                         break;
-			case Shader::OPCODE_LEAVE:      LEAVE();                                       break;
-			case Shader::OPCODE_CMP:        cmp(d, s0, s1, control);                       break;
-			case Shader::OPCODE_ALL:        all(d.x, s0);                                  break;
-			case Shader::OPCODE_ANY:        any(d.x, s0);                                  break;
-			case Shader::OPCODE_NOT:        bitwise_not(d, s0);                            break;
-			case Shader::OPCODE_OR:         bitwise_or(d, s0, s1);                         break;
-			case Shader::OPCODE_XOR:        bitwise_xor(d, s0, s1);                        break;
-			case Shader::OPCODE_AND:        bitwise_and(d, s0, s1);                        break;
-			case Shader::OPCODE_EQ:         equal(d, s0, s1);                              break;
-			case Shader::OPCODE_NE:         notEqual(d, s0, s1);                           break;
-			case Shader::OPCODE_END:                                                       break;
+			case spv::CapabilityShader:
+				break;
 			default:
-				ASSERT(false);
+				assert(false);
 			}
 
-			if(dst.type != Shader::PARAMETER_VOID && dst.type != Shader::PARAMETER_LABEL && opcode != Shader::OPCODE_TEXKILL && opcode != Shader::OPCODE_NOP)
+			i += count;
+		}
+
+		while(i < word.size() && opcode(word[i]) == spv::OpExtension)
+		{
+		//	spv::Op op = opcode(word[i]);
+			uint32_t count = wordCount(word[i]);
+
+			i += count;
+		}
+
+		// Extended instruction set imports.
+		while(i < word.size() && opcode(word[i]) == spv::OpExtInstImport)
+		{
+		//	spv::Op op = opcode(word[i]);
+			uint32_t count = wordCount(word[i]);
+
+			if(strncmp(string(word[i + 2]), "GLSL.std.450", (count - 2) * sizeof(uint32_t)) == 0)
 			{
-				if(dst.saturate)
-				{
-					if(dst.x) d.x = Max(d.x, Float4(0.0f));
-					if(dst.y) d.y = Max(d.y, Float4(0.0f));
-					if(dst.z) d.z = Max(d.z, Float4(0.0f));
-					if(dst.w) d.w = Max(d.w, Float4(0.0f));
+				// Expected instruction set extension for all versions of GLSL <= 4.50, including ES.
+			}
+			else
+			{
+				assert(false);   // Unexpected extended instruction set.
+			}
 
-					if(dst.x) d.x = Min(d.x, Float4(1.0f));
-					if(dst.y) d.y = Min(d.y, Float4(1.0f));
-					if(dst.z) d.z = Min(d.z, Float4(1.0f));
-					if(dst.w) d.w = Min(d.w, Float4(1.0f));
+			i += count;
+		}
+
+		// A single OpMemoryModel is mandatory.
+		{
+			if(i >= word.size() || opcode(word[i]) != spv::OpMemoryModel)
+			{
+				assert(false);
+				return;
+			}
+
+			uint32_t count = wordCount(word[i]);
+			assert(count == 3);
+
+			spv::AddressingModel addressingMode = static_cast<spv::AddressingModel>(word[i + 1]);
+			spv::MemoryModel memoryModel = static_cast<spv::MemoryModel>(word[i + 2]);
+
+			assert(addressingMode == spv::AddressingModelLogical);
+			assert(memoryModel == spv::MemoryModelGLSL450);
+
+			i += count;
+		}
+
+		while(i < word.size() && opcode(word[i]) == spv::OpEntryPoint)
+		{
+		//	spv::Op op = opcode(word[i]);
+			uint32_t count = wordCount(word[i]);
+			assert(count >= 4);
+
+			uint32_t executionModel = static_cast<spv::ExecutionModel>(word[i + 1]);
+			uint32_t entryPoint = word[i + 2];
+			const char *name = string(word[i + 3]);
+			size_t nameCount = stringWordCount(name, count - 3);
+
+			{
+				std::vector<uint32_t> interface;
+
+				for(size_t j = 3 + nameCount; j < count; j++)
+				{
+					interface.push_back(word[i + j]);
 				}
+			}
 
-				if(instruction->isPredicated())
+			i += count;
+		}
+
+		// Execution mode declarations for entry points.
+		// TODO: Also OpExecutionModeId?
+		while(i < word.size() && opcode(word[i]) == spv::OpExecutionMode)
+		{
+		//	spv::Op op = opcode(word[i]);
+			uint32_t count = wordCount(word[i]);
+			assert(count >= 3);
+
+			uint32_t entryPoint = word[i + 1];
+			spv::ExecutionMode executionMode = static_cast<spv::ExecutionMode>(word[i + 2]);
+
+			switch(executionMode)
+			{
+			case spv::ExecutionModeOriginLowerLeft:
+				assert(count == 3);
+				// TODO: Validate that <entryPoint>'s executionModel == Fragment.
+				break;
+			default:
+				assert(false);
+			}
+
+			i += count;
+		}
+
+		// Debug instructions.
+		{
+			while(i < word.size())
+			{
+				spv::Op op = opcode(word[i]);
+				uint32_t count = wordCount(word[i]);
+
+				switch(op)
 				{
-					Vector4f pDst;   // FIXME: Rename
-
-					switch(dst.type)
+				case spv::OpString:
+				case spv::OpSourceExtension:
+					UNIMPLEMENTED();
+					break;
+				case spv::OpSource:
 					{
-					case Shader::PARAMETER_TEMP:
-						if(dst.rel.type == Shader::PARAMETER_VOID)
+						assert(count >= 3);
+						spv::SourceLanguage sourceLanguage = static_cast<spv::SourceLanguage>(word[i + 1]);
+						uint32_t version = word[i + 2];
+
+						if(count > 3)
 						{
-							if(dst.x) pDst.x = r[dst.index].x;
-							if(dst.y) pDst.y = r[dst.index].y;
-							if(dst.z) pDst.z = r[dst.index].z;
-							if(dst.w) pDst.w = r[dst.index].w;
+							uint32_t file = word[i + 3];
+
+							if(count > 4)
+							{
+								const char *source = string(word[i + 4]);
+							}
 						}
-						else if(!dst.rel.dynamic)
-						{
-							Int a = dst.index + relativeAddress(dst.rel);
 
-							if(dst.x) pDst.x = r[a].x;
-							if(dst.y) pDst.y = r[a].y;
-							if(dst.z) pDst.z = r[a].z;
-							if(dst.w) pDst.w = r[a].w;
-						}
-						else
-						{
-							Int4 a = dst.index + dynamicAddress(dst.rel);
-
-							if(dst.x) pDst.x = r[a].x;
-							if(dst.y) pDst.y = r[a].y;
-							if(dst.z) pDst.z = r[a].z;
-							if(dst.w) pDst.w = r[a].w;
-						}
-						break;
-					case Shader::PARAMETER_COLOROUT:
-						if(dst.rel.type == Shader::PARAMETER_VOID)
-						{
-							if(dst.x) pDst.x = oC[dst.index].x;
-							if(dst.y) pDst.y = oC[dst.index].y;
-							if(dst.z) pDst.z = oC[dst.index].z;
-							if(dst.w) pDst.w = oC[dst.index].w;
-						}
-						else if(!dst.rel.dynamic)
-						{
-							Int a = dst.index + relativeAddress(dst.rel);
-
-							if(dst.x) pDst.x = oC[a].x;
-							if(dst.y) pDst.y = oC[a].y;
-							if(dst.z) pDst.z = oC[a].z;
-							if(dst.w) pDst.w = oC[a].w;
-						}
-						else
-						{
-							Int4 a = dst.index + dynamicAddress(dst.rel);
-
-							if(dst.x) pDst.x = oC[a].x;
-							if(dst.y) pDst.y = oC[a].y;
-							if(dst.z) pDst.z = oC[a].z;
-							if(dst.w) pDst.w = oC[a].w;
-						}
-						break;
-					case Shader::PARAMETER_PREDICATE:
-						if(dst.x) pDst.x = p0.x;
-						if(dst.y) pDst.y = p0.y;
-						if(dst.z) pDst.z = p0.z;
-						if(dst.w) pDst.w = p0.w;
-						break;
-					case Shader::PARAMETER_DEPTHOUT:
-						pDst.x = oDepth;
-						break;
-					default:
-						ASSERT(false);
-					}
-
-					Int4 enable = enableMask(instruction);
-
-					Int4 xEnable = enable;
-					Int4 yEnable = enable;
-					Int4 zEnable = enable;
-					Int4 wEnable = enable;
-
-					if(predicate)
-					{
-						unsigned char pSwizzle = instruction->predicateSwizzle;
-
-						Float4 xPredicate = p0[(pSwizzle >> 0) & 0x03];
-						Float4 yPredicate = p0[(pSwizzle >> 2) & 0x03];
-						Float4 zPredicate = p0[(pSwizzle >> 4) & 0x03];
-						Float4 wPredicate = p0[(pSwizzle >> 6) & 0x03];
-
-						if(!instruction->predicateNot)
-						{
-							if(dst.x) xEnable = xEnable & As<Int4>(xPredicate);
-							if(dst.y) yEnable = yEnable & As<Int4>(yPredicate);
-							if(dst.z) zEnable = zEnable & As<Int4>(zPredicate);
-							if(dst.w) wEnable = wEnable & As<Int4>(wPredicate);
-						}
-						else
-						{
-							if(dst.x) xEnable = xEnable & ~As<Int4>(xPredicate);
-							if(dst.y) yEnable = yEnable & ~As<Int4>(yPredicate);
-							if(dst.z) zEnable = zEnable & ~As<Int4>(zPredicate);
-							if(dst.w) wEnable = wEnable & ~As<Int4>(wPredicate);
-						}
-					}
-
-					if(dst.x) d.x = As<Float4>(As<Int4>(d.x) & xEnable);
-					if(dst.y) d.y = As<Float4>(As<Int4>(d.y) & yEnable);
-					if(dst.z) d.z = As<Float4>(As<Int4>(d.z) & zEnable);
-					if(dst.w) d.w = As<Float4>(As<Int4>(d.w) & wEnable);
-
-					if(dst.x) d.x = As<Float4>(As<Int4>(d.x) | (As<Int4>(pDst.x) & ~xEnable));
-					if(dst.y) d.y = As<Float4>(As<Int4>(d.y) | (As<Int4>(pDst.y) & ~yEnable));
-					if(dst.z) d.z = As<Float4>(As<Int4>(d.z) | (As<Int4>(pDst.z) & ~zEnable));
-					if(dst.w) d.w = As<Float4>(As<Int4>(d.w) | (As<Int4>(pDst.w) & ~wEnable));
-				}
-
-				switch(dst.type)
-				{
-				case Shader::PARAMETER_TEMP:
-					if(dst.rel.type == Shader::PARAMETER_VOID)
-					{
-						if(dst.x) r[dst.index].x = d.x;
-						if(dst.y) r[dst.index].y = d.y;
-						if(dst.z) r[dst.index].z = d.z;
-						if(dst.w) r[dst.index].w = d.w;
-					}
-					else if(!dst.rel.dynamic)
-					{
-						Int a = dst.index + relativeAddress(dst.rel);
-
-						if(dst.x) r[a].x = d.x;
-						if(dst.y) r[a].y = d.y;
-						if(dst.z) r[a].z = d.z;
-						if(dst.w) r[a].w = d.w;
-					}
-					else
-					{
-						Int4 a = dst.index + dynamicAddress(dst.rel);
-
-						if(dst.x) r.scatter_x(a, d.x);
-						if(dst.y) r.scatter_y(a, d.y);
-						if(dst.z) r.scatter_z(a, d.z);
-						if(dst.w) r.scatter_w(a, d.w);
+						assert(sourceLanguage == spv::SourceLanguageESSL);
+						assert(version == 100);
 					}
 					break;
-				case Shader::PARAMETER_COLOROUT:
-					if(dst.rel.type == Shader::PARAMETER_VOID)
-					{
-						broadcastColor0 = (dst.index == 0) && broadcastColor0;
-
-						if(dst.x) oC[dst.index].x = d.x;
-						if(dst.y) oC[dst.index].y = d.y;
-						if(dst.z) oC[dst.index].z = d.z;
-						if(dst.w) oC[dst.index].w = d.w;
-					}
-					else if(!dst.rel.dynamic)
-					{
-						broadcastColor0 = false;
-						Int a = dst.index + relativeAddress(dst.rel);
-
-						if(dst.x) oC[a].x = d.x;
-						if(dst.y) oC[a].y = d.y;
-						if(dst.z) oC[a].z = d.z;
-						if(dst.w) oC[a].w = d.w;
-					}
-					else
-					{
-						broadcastColor0 = false;
-						Int4 a = dst.index + dynamicAddress(dst.rel);
-
-						if(dst.x) oC.scatter_x(a, d.x);
-						if(dst.y) oC.scatter_y(a, d.y);
-						if(dst.z) oC.scatter_z(a, d.z);
-						if(dst.w) oC.scatter_w(a, d.w);
-					}
-					break;
-				case Shader::PARAMETER_PREDICATE:
-					if(dst.x) p0.x = d.x;
-					if(dst.y) p0.y = d.y;
-					if(dst.z) p0.z = d.z;
-					if(dst.w) p0.w = d.w;
-					break;
-				case Shader::PARAMETER_DEPTHOUT:
-					oDepth = d.x;
+				case spv::OpSourceContinued:
+					UNIMPLEMENTED();
 					break;
 				default:
-					ASSERT(false);
+					goto breakWhile0;
 				}
+
+				i += count;
+			}
+		breakWhile0:
+
+			while(i < word.size())
+			{
+				spv::Op op = opcode(word[i]);
+				uint32_t count = wordCount(word[i]);
+
+				switch(op)
+				{
+				case spv::OpName:
+					{
+						assert(count >= 3);
+						uint32_t target = word[i + 1];
+
+						object[target].name = string(word[i + 2]);
+					}
+					break;
+				case spv::OpMemberName:
+					UNIMPLEMENTED();
+					break;
+				default:
+					goto breakWhile;
+				}
+
+				i += count;
+			}
+		breakWhile:
+
+			while(i < word.size() && opcode(word[i]) == spv::OpModuleProcessed)
+			{
+			//	spv::Op op = opcode(word[i]);
+				uint32_t count = wordCount(word[i]);
+
+				i += count;
 			}
 		}
 
-		if(currentLabel != -1)
+		// Annotation instructions.
+		while(i < word.size())
 		{
-			Nucleus::setInsertBlock(returnBlock);
+			spv::Op op = opcode(word[i]);
+			uint32_t count = wordCount(word[i]);
+
+			switch(op)
+			{
+			case spv::OpDecorate:
+				{
+					uint32_t target = word[i + 1];
+					spv::Decoration decoration = static_cast<spv::Decoration>(word[i + 2]);
+
+					switch(decoration)
+					{
+					case spv::DecorationRelaxedPrecision:
+						// Ignored. Operate at full precision.
+						break;
+					default:
+						UNIMPLEMENTED();
+					}
+				}
+				break;
+			case spv::OpMemberDecorate:
+			case spv::OpGroupDecorate:
+			case spv::OpGroupMemberDecorate:
+			case spv::OpDecorationGroup:
+				UNIMPLEMENTED();
+				break;
+			default:
+				goto breakWhile2;
+			}
+
+			i += count;
+		}
+	breakWhile2:
+
+		// Type, constant, and variable declarations.
+		while(i < word.size())
+		{
+			spv::Op op = opcode(word[i]);
+			uint32_t count = wordCount(word[i]);
+
+			switch(op)
+			{
+			// Types.
+			case spv::OpTypeVoid:
+				{
+					assert(count == 2);
+					uint32_t result = word[i + 1];
+
+					object[result].definition = i;
+					object[result].type = TYPE_VOID;
+				}
+				break;
+			case spv::OpTypeBool:
+			case spv::OpTypeInt:
+				UNIMPLEMENTED();
+				break;
+			case spv::OpTypeFloat:
+				{
+					assert(count == 3);
+					uint32_t result = word[i + 1];
+					uint32_t width = word[i + 2];
+					assert(width == 32);
+
+					object[result].definition = i;
+					object[result].type = TYPE_FLOAT;
+				}
+				break;
+			case spv::OpTypeVector:
+				{
+					assert(count == 4);
+					uint32_t result = word[i + 1];
+					uint32_t componentType = word[i + 2];
+					uint32_t componentCount = word[i + 3];
+
+					object[result].definition = i;
+
+					switch(object[componentType].type)
+					{
+					case TYPE_FLOAT:
+						switch(componentCount)
+						{
+						case 2: object[result].type = TYPE_FLOAT2; break;
+						case 3: object[result].type = TYPE_FLOAT3; break;
+						case 4: object[result].type = TYPE_FLOAT4; break;
+						default: ASSERT(false);
+						}
+						break;
+					default:
+						UNIMPLEMENTED();
+						break;
+					}
+				}
+				break;
+			case spv::OpTypeMatrix:
+			case spv::OpTypeImage:
+			case spv::OpTypeSampler:
+			case spv::OpTypeSampledImage:
+			case spv::OpTypeArray:
+			case spv::OpTypeRuntimeArray:
+			case spv::OpTypeStruct:
+			case spv::OpTypeOpaque:
+				UNIMPLEMENTED();
+				break;
+			case spv::OpTypePointer:
+				{
+					assert(count == 4);
+					uint32_t result = word[i + 1];
+					spv::StorageClass storageClass = static_cast<spv::StorageClass>(word[i + 2]);
+					uint32_t type = word[i + 3];
+
+					object[result].definition = i;
+					object[result].storageClass = storageClass;
+				//	object[result].storage = CLASS_POINTER;
+				}
+				break;
+			case spv::OpTypeFunction:
+				// TODO
+				break;
+			case spv::OpTypeEvent:
+			case spv::OpTypeDeviceEvent:
+			case spv::OpTypeReserveId:
+			case spv::OpTypeQueue:
+			case spv::OpTypePipe:
+			case spv::OpTypeForwardPointer:
+				UNIMPLEMENTED();
+				break;
+
+			// Constants.
+			case spv::OpConstantTrue:
+			case spv::OpConstantFalse:
+				UNIMPLEMENTED();
+				break;
+			case spv::OpConstant:
+				{
+					assert(count >= 3 + 1);
+					uint32_t resultType = word[i + 1];
+					uint32_t result = word[i + 2];
+
+					object[result].definition = i;
+					object[result].type = object[resultType].type;
+					object[result].scalar = word[i + 3];
+
+				//	switch(object[resultType].type)
+				//	{
+				//	case TYPE_FLOAT:  object[result].type = TYPE_LITERAL_FLOAT;   break;
+				//	case TYPE_FLOAT2: object[result].type = TYPE_LITERAL_FLOAT2;  break;
+				//	case TYPE_FLOAT3: object[result].type = TYPE_LITERAL_FLOAT3;  break;
+				//	case TYPE_FLOAT4: object[result].type = TYPE_LITERAL_FLOAT4;  break;
+				//	default:
+				//		UNIMPLEMENTED();
+				//	}
+
+					assert(count == 4);   // 32-bit types only.
+				}
+				break;
+			case spv::OpConstantComposite:
+				{
+					assert(count >= 3);
+					uint32_t resultType = word[i + 1];
+					uint32_t result = word[i + 2];
+
+					object[result].definition = i;
+					object[result].type = object[resultType].type;
+
+					uint32_t elementCount = count - 3;
+
+					switch(elementCount)
+					{
+					case 4: object[result].value[3] = object[word[i + 6]].scalar; /* Fall through. */
+					case 3: object[result].value[2] = object[word[i + 5]].scalar; /* Fall through. */
+					case 2: object[result].value[1] = object[word[i + 4]].scalar; /* Fall through. */
+					case 1: object[result].value[0] = object[word[i + 3]].scalar; break;
+					default:
+						UNIMPLEMENTED();
+					}
+
+				//	switch(elementCount)
+				//	{
+				//	case 4: object[result].type = TYPE_LITERAL_FLOAT4; break;
+				//	default:
+				//		UNIMPLEMENTED();
+				//	}
+				}
+				break;
+			case spv::OpConstantSampler:
+			case spv::OpConstantNull:
+				UNIMPLEMENTED();
+				break;
+
+			// Variables.
+			case spv::OpVariable:
+				{
+					assert(count >= 4);
+					uint32_t resultType = word[i + 1];
+					uint32_t result = word[i + 2];
+					spv::StorageClass storageClass = static_cast<spv::StorageClass>(word[i + 3]);
+					assert(storageClass != spv::StorageClassFunction);
+					assert(storageClass != spv::StorageClassGeneric);
+					assert(object[resultType].storageClass == storageClass);
+
+					object[result].definition = i;
+					object[result].storageClass = storageClass;
+
+					assert(count == 4);   // Unimplemented.
+				}
+				break;
+
+			// Objects with undefined value.
+			case spv::OpUndef:
+
+			// Source-level location information.
+			case spv::OpLine:
+				UNIMPLEMENTED();
+				break;
+			default:
+				goto breakWhile3;
+			}
+
+			i += count;
+		}
+	breakWhile3:
+
+		// Function declarations and definitions.
+		while(i < word.size() && opcode(word[i]) == spv::OpFunction)
+		{
+		//	spv::Op op = opcode(word[i]);
+			uint32_t count = wordCount(word[i]);
+			assert(count == 5);
+			uint32_t resultType = word[i + 1];
+			uint32_t result = word[i + 2];
+			uint32_t functionControl = word[i + 3];
+			uint32_t functionType = word[i + 4];
+
+			object[result].definition = i;
+
+			i += count;
+
+			while(i < word.size() && opcode(word[i]) == spv::OpLabel)
+			{
+			//	spv::Op op = opcode(word[i]);
+				uint32_t count = wordCount(word[i]);
+				assert(count == 2);
+
+				uint32_t result = word[i + 1];
+
+				i += count;
+
+				while(i < word.size() && opcode(word[i] != spv::OpFunctionEnd))
+				{
+					spv::Op op = opcode(word[i]);
+					uint32_t count = wordCount(word[i]);
+
+					switch(op)
+					{
+					case spv::OpStore:
+						{
+							assert(count == 3 || count == 4);
+							uint32_t pointer = word[i + 1];
+							uint32_t storeObject = word[i + 2];
+							uint32_t memoryAccess = spv::MemoryAccessMaskNone;
+
+							if(count > 3)
+							{
+								memoryAccess = word[i + 3];
+							}
+
+							switch(object[pointer].storageClass)
+							{
+							case spv::StorageClassOutput:
+								{
+									assert(object[storeObject].type == TYPE_FLOAT4);
+
+									uint32_t def = object[storeObject].definition;
+									spv::Op op = opcode(word[def]);
+
+									Vector4f out;
+
+									switch(op)
+									{
+									case spv::OpConstantComposite:
+										out.x = Float4(object[storeObject].floatValue[0]);
+										out.y = Float4(object[storeObject].floatValue[1]);
+										out.z = Float4(object[storeObject].floatValue[2]);
+										out.w = Float4(object[storeObject].floatValue[3]);
+										break;
+									default:
+										UNIMPLEMENTED();
+									}
+
+									c[0] = out;
+								}
+								break;
+							default:
+								UNIMPLEMENTED();
+							}
+						}
+						break;
+					case spv::OpReturn:
+						// TODO
+						break;
+					case spv::OpFunctionEnd:
+						// TODO
+						break;
+					case spv::OpUndef:
+						UNIMPLEMENTED();
+						break;
+					default:
+						UNIMPLEMENTED();
+					}
+
+					i += count;
+				}
+
+				assert(opcode(word[i - 1]) == spv::OpFunctionEnd && wordCount(word[i - 1]) == 1);
+			}
 		}
 
-		if(broadcastColor0)
-		{
-			for(int i = 0; i < RENDERTARGETS; i++)
-			{
-				c[i] = oC[0];
-			}
-		}
-		else
-		{
-			for(int i = 0; i < RENDERTARGETS; i++)
-			{
-				c[i] = oC[i];
-			}
-		}
+		assert(i == word.size());
+
+
+		//if(shader->containsLeaveInstruction())
+		//{
+		//	enableLeave = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+		//}
+
+		//// Create all call site return blocks up front
+		//for(size_t i = 0; i < shader->getLength(); i++)
+		//{
+		//	const Shader::Instruction *instruction = shader->getInstruction(i);
+		//	Shader::Opcode opcode = instruction->opcode;
+
+		//	if(opcode == Shader::OPCODE_CALL || opcode == Shader::OPCODE_CALLNZ)
+		//	{
+		//		const Dst &dst = instruction->dst;
+
+		//		ASSERT(callRetBlock[dst.label].size() == dst.callSite);
+		//		callRetBlock[dst.label].push_back(Nucleus::createBasicBlock());
+		//	}
+		//}
+
+		//bool broadcastColor0 = true;
+
+		//for(size_t i = 0; i < shader->getLength(); i++)
+		//{
+		//	const Shader::Instruction *instruction = shader->getInstruction(i);
+		//	Shader::Opcode opcode = instruction->opcode;
+
+		//	if(opcode == Shader::OPCODE_DCL || opcode == Shader::OPCODE_DEF || opcode == Shader::OPCODE_DEFI || opcode == Shader::OPCODE_DEFB)
+		//	{
+		//		continue;
+		//	}
+
+		//	const Dst &dst = instruction->dst;
+		//	const Src &src0 = instruction->src[0];
+		//	const Src &src1 = instruction->src[1];
+		//	const Src &src2 = instruction->src[2];
+		//	const Src &src3 = instruction->src[3];
+		//	const Src &src4 = instruction->src[4];
+
+		//	bool predicate = instruction->predicate;
+		//	Control control = instruction->control;
+		//	bool pp = dst.partialPrecision;
+		//	bool project = instruction->project;
+		//	bool bias = instruction->bias;
+
+		//	Vector4f d;
+		//	Vector4f s0;
+		//	Vector4f s1;
+		//	Vector4f s2;
+		//	Vector4f s3;
+		//	Vector4f s4;
+
+		//	if(opcode == Shader::OPCODE_TEXKILL)   // Takes destination as input
+		//	{
+		//		if(dst.type == Shader::PARAMETER_TEXTURE)
+		//		{
+		//			d.x = v[2 + dst.index].x;
+		//			d.y = v[2 + dst.index].y;
+		//			d.z = v[2 + dst.index].z;
+		//			d.w = v[2 + dst.index].w;
+		//		}
+		//		else
+		//		{
+		//			d = r[dst.index];
+		//		}
+		//	}
+
+		//	if(src0.type != Shader::PARAMETER_VOID) s0 = fetchRegister(src0);
+		//	if(src1.type != Shader::PARAMETER_VOID) s1 = fetchRegister(src1);
+		//	if(src2.type != Shader::PARAMETER_VOID) s2 = fetchRegister(src2);
+		//	if(src3.type != Shader::PARAMETER_VOID) s3 = fetchRegister(src3);
+		//	if(src4.type != Shader::PARAMETER_VOID) s4 = fetchRegister(src4);
+
+		//	switch(opcode)
+		//	{
+		//	case Shader::OPCODE_PS_2_0:                                                    break;
+		//	case Shader::OPCODE_PS_2_x:                                                    break;
+		//	case Shader::OPCODE_PS_3_0:                                                    break;
+		//	case Shader::OPCODE_DEF:                                                       break;
+		//	case Shader::OPCODE_DCL:                                                       break;
+		//	case Shader::OPCODE_NOP:                                                       break;
+		//	case Shader::OPCODE_MOV:        mov(d, s0);                                    break;
+		//	case Shader::OPCODE_NEG:        neg(d, s0);                                    break;
+		//	case Shader::OPCODE_INEG:       ineg(d, s0);                                   break;
+		//	case Shader::OPCODE_F2B:        f2b(d, s0);                                    break;
+		//	case Shader::OPCODE_B2F:        b2f(d, s0);                                    break;
+		//	case Shader::OPCODE_F2I:        f2i(d, s0);                                    break;
+		//	case Shader::OPCODE_I2F:        i2f(d, s0);                                    break;
+		//	case Shader::OPCODE_F2U:        f2u(d, s0);                                    break;
+		//	case Shader::OPCODE_U2F:        u2f(d, s0);                                    break;
+		//	case Shader::OPCODE_I2B:        i2b(d, s0);                                    break;
+		//	case Shader::OPCODE_B2I:        b2i(d, s0);                                    break;
+		//	case Shader::OPCODE_ADD:        add(d, s0, s1);                                break;
+		//	case Shader::OPCODE_IADD:       iadd(d, s0, s1);                               break;
+		//	case Shader::OPCODE_SUB:        sub(d, s0, s1);                                break;
+		//	case Shader::OPCODE_ISUB:       isub(d, s0, s1);                               break;
+		//	case Shader::OPCODE_MUL:        mul(d, s0, s1);                                break;
+		//	case Shader::OPCODE_IMUL:       imul(d, s0, s1);                               break;
+		//	case Shader::OPCODE_MAD:        mad(d, s0, s1, s2);                            break;
+		//	case Shader::OPCODE_IMAD:       imad(d, s0, s1, s2);                           break;
+		//	case Shader::OPCODE_DP1:        dp1(d, s0, s1);                                break;
+		//	case Shader::OPCODE_DP2:        dp2(d, s0, s1);                                break;
+		//	case Shader::OPCODE_DP2ADD:     dp2add(d, s0, s1, s2);                         break;
+		//	case Shader::OPCODE_DP3:        dp3(d, s0, s1);                                break;
+		//	case Shader::OPCODE_DP4:        dp4(d, s0, s1);                                break;
+		//	case Shader::OPCODE_DET2:       det2(d, s0, s1);                               break;
+		//	case Shader::OPCODE_DET3:       det3(d, s0, s1, s2);                           break;
+		//	case Shader::OPCODE_DET4:       det4(d, s0, s1, s2, s3);                       break;
+		//	case Shader::OPCODE_CMP0:       cmp0(d, s0, s1, s2);                           break;
+		//	case Shader::OPCODE_ICMP:       icmp(d, s0, s1, control);                      break;
+		//	case Shader::OPCODE_UCMP:       ucmp(d, s0, s1, control);                      break;
+		//	case Shader::OPCODE_SELECT:     select(d, s0, s1, s2);                         break;
+		//	case Shader::OPCODE_EXTRACT:    extract(d.x, s0, s1.x);                        break;
+		//	case Shader::OPCODE_INSERT:     insert(d, s0, s1.x, s2.x);                     break;
+		//	case Shader::OPCODE_FRC:        frc(d, s0);                                    break;
+		//	case Shader::OPCODE_TRUNC:      trunc(d, s0);                                  break;
+		//	case Shader::OPCODE_FLOOR:      floor(d, s0);                                  break;
+		//	case Shader::OPCODE_ROUND:      round(d, s0);                                  break;
+		//	case Shader::OPCODE_ROUNDEVEN:  roundEven(d, s0);                              break;
+		//	case Shader::OPCODE_CEIL:       ceil(d, s0);                                   break;
+		//	case Shader::OPCODE_EXP2X:      exp2x(d, s0, pp);                              break;
+		//	case Shader::OPCODE_EXP2:       exp2(d, s0, pp);                               break;
+		//	case Shader::OPCODE_LOG2X:      log2x(d, s0, pp);                              break;
+		//	case Shader::OPCODE_LOG2:       log2(d, s0, pp);                               break;
+		//	case Shader::OPCODE_EXP:        exp(d, s0, pp);                                break;
+		//	case Shader::OPCODE_LOG:        log(d, s0, pp);                                break;
+		//	case Shader::OPCODE_RCPX:       rcpx(d, s0, pp);                               break;
+		//	case Shader::OPCODE_DIV:        div(d, s0, s1);                                break;
+		//	case Shader::OPCODE_IDIV:       idiv(d, s0, s1);                               break;
+		//	case Shader::OPCODE_UDIV:       udiv(d, s0, s1);                               break;
+		//	case Shader::OPCODE_MOD:        mod(d, s0, s1);                                break;
+		//	case Shader::OPCODE_IMOD:       imod(d, s0, s1);                               break;
+		//	case Shader::OPCODE_UMOD:       umod(d, s0, s1);                               break;
+		//	case Shader::OPCODE_SHL:        shl(d, s0, s1);                                break;
+		//	case Shader::OPCODE_ISHR:       ishr(d, s0, s1);                               break;
+		//	case Shader::OPCODE_USHR:       ushr(d, s0, s1);                               break;
+		//	case Shader::OPCODE_RSQX:       rsqx(d, s0, pp);                               break;
+		//	case Shader::OPCODE_SQRT:       sqrt(d, s0, pp);                               break;
+		//	case Shader::OPCODE_RSQ:        rsq(d, s0, pp);                                break;
+		//	case Shader::OPCODE_LEN2:       len2(d.x, s0, pp);                             break;
+		//	case Shader::OPCODE_LEN3:       len3(d.x, s0, pp);                             break;
+		//	case Shader::OPCODE_LEN4:       len4(d.x, s0, pp);                             break;
+		//	case Shader::OPCODE_DIST1:      dist1(d.x, s0, s1, pp);                        break;
+		//	case Shader::OPCODE_DIST2:      dist2(d.x, s0, s1, pp);                        break;
+		//	case Shader::OPCODE_DIST3:      dist3(d.x, s0, s1, pp);                        break;
+		//	case Shader::OPCODE_DIST4:      dist4(d.x, s0, s1, pp);                        break;
+		//	case Shader::OPCODE_MIN:        min(d, s0, s1);                                break;
+		//	case Shader::OPCODE_IMIN:       imin(d, s0, s1);                               break;
+		//	case Shader::OPCODE_UMIN:       umin(d, s0, s1);                               break;
+		//	case Shader::OPCODE_MAX:        max(d, s0, s1);                                break;
+		//	case Shader::OPCODE_IMAX:       imax(d, s0, s1);                               break;
+		//	case Shader::OPCODE_UMAX:       umax(d, s0, s1);                               break;
+		//	case Shader::OPCODE_LRP:        lrp(d, s0, s1, s2);                            break;
+		//	case Shader::OPCODE_STEP:       step(d, s0, s1);                               break;
+		//	case Shader::OPCODE_SMOOTH:     smooth(d, s0, s1, s2);                         break;
+		//	case Shader::OPCODE_ISINF:      isinf(d, s0);                                  break;
+		//	case Shader::OPCODE_ISNAN:      isnan(d, s0);                                  break;
+		//	case Shader::OPCODE_FLOATBITSTOINT:
+		//	case Shader::OPCODE_FLOATBITSTOUINT:
+		//	case Shader::OPCODE_INTBITSTOFLOAT:
+		//	case Shader::OPCODE_UINTBITSTOFLOAT: d = s0;                                   break;
+		//	case Shader::OPCODE_PACKSNORM2x16:   packSnorm2x16(d, s0);                     break;
+		//	case Shader::OPCODE_PACKUNORM2x16:   packUnorm2x16(d, s0);                     break;
+		//	case Shader::OPCODE_PACKHALF2x16:    packHalf2x16(d, s0);                      break;
+		//	case Shader::OPCODE_UNPACKSNORM2x16: unpackSnorm2x16(d, s0);                   break;
+		//	case Shader::OPCODE_UNPACKUNORM2x16: unpackUnorm2x16(d, s0);                   break;
+		//	case Shader::OPCODE_UNPACKHALF2x16:  unpackHalf2x16(d, s0);                    break;
+		//	case Shader::OPCODE_POWX:       powx(d, s0, s1, pp);                           break;
+		//	case Shader::OPCODE_POW:        pow(d, s0, s1, pp);                            break;
+		//	case Shader::OPCODE_SGN:        sgn(d, s0);                                    break;
+		//	case Shader::OPCODE_ISGN:       isgn(d, s0);                                   break;
+		//	case Shader::OPCODE_CRS:        crs(d, s0, s1);                                break;
+		//	case Shader::OPCODE_FORWARD1:   forward1(d, s0, s1, s2);                       break;
+		//	case Shader::OPCODE_FORWARD2:   forward2(d, s0, s1, s2);                       break;
+		//	case Shader::OPCODE_FORWARD3:   forward3(d, s0, s1, s2);                       break;
+		//	case Shader::OPCODE_FORWARD4:   forward4(d, s0, s1, s2);                       break;
+		//	case Shader::OPCODE_REFLECT1:   reflect1(d, s0, s1);                           break;
+		//	case Shader::OPCODE_REFLECT2:   reflect2(d, s0, s1);                           break;
+		//	case Shader::OPCODE_REFLECT3:   reflect3(d, s0, s1);                           break;
+		//	case Shader::OPCODE_REFLECT4:   reflect4(d, s0, s1);                           break;
+		//	case Shader::OPCODE_REFRACT1:   refract1(d, s0, s1, s2.x);                     break;
+		//	case Shader::OPCODE_REFRACT2:   refract2(d, s0, s1, s2.x);                     break;
+		//	case Shader::OPCODE_REFRACT3:   refract3(d, s0, s1, s2.x);                     break;
+		//	case Shader::OPCODE_REFRACT4:   refract4(d, s0, s1, s2.x);                     break;
+		//	case Shader::OPCODE_NRM2:       nrm2(d, s0, pp);                               break;
+		//	case Shader::OPCODE_NRM3:       nrm3(d, s0, pp);                               break;
+		//	case Shader::OPCODE_NRM4:       nrm4(d, s0, pp);                               break;
+		//	case Shader::OPCODE_ABS:        abs(d, s0);                                    break;
+		//	case Shader::OPCODE_IABS:       iabs(d, s0);                                   break;
+		//	case Shader::OPCODE_SINCOS:     sincos(d, s0, pp);                             break;
+		//	case Shader::OPCODE_COS:        cos(d, s0, pp);                                break;
+		//	case Shader::OPCODE_SIN:        sin(d, s0, pp);                                break;
+		//	case Shader::OPCODE_TAN:        tan(d, s0, pp);                                break;
+		//	case Shader::OPCODE_ACOS:       acos(d, s0, pp);                               break;
+		//	case Shader::OPCODE_ASIN:       asin(d, s0, pp);                               break;
+		//	case Shader::OPCODE_ATAN:       atan(d, s0, pp);                               break;
+		//	case Shader::OPCODE_ATAN2:      atan2(d, s0, s1, pp);                          break;
+		//	case Shader::OPCODE_COSH:       cosh(d, s0, pp);                               break;
+		//	case Shader::OPCODE_SINH:       sinh(d, s0, pp);                               break;
+		//	case Shader::OPCODE_TANH:       tanh(d, s0, pp);                               break;
+		//	case Shader::OPCODE_ACOSH:      acosh(d, s0, pp);                              break;
+		//	case Shader::OPCODE_ASINH:      asinh(d, s0, pp);                              break;
+		//	case Shader::OPCODE_ATANH:      atanh(d, s0, pp);                              break;
+		//	case Shader::OPCODE_M4X4:       M4X4(d, s0, src1);                             break;
+		//	case Shader::OPCODE_M4X3:       M4X3(d, s0, src1);                             break;
+		//	case Shader::OPCODE_M3X4:       M3X4(d, s0, src1);                             break;
+		//	case Shader::OPCODE_M3X3:       M3X3(d, s0, src1);                             break;
+		//	case Shader::OPCODE_M3X2:       M3X2(d, s0, src1);                             break;
+		//	case Shader::OPCODE_TEX:        TEX(d, s0, src1, project, bias);               break;
+		//	case Shader::OPCODE_TEXLDD:     TEXGRAD(d, s0, src1, s2, s3);                  break;
+		//	case Shader::OPCODE_TEXLDL:     TEXLOD(d, s0, src1, s0.w);                     break;
+		//	case Shader::OPCODE_TEXLOD:     TEXLOD(d, s0, src1, s2.x);                     break;
+		//	case Shader::OPCODE_TEXSIZE:    TEXSIZE(d, s0.x, src1);                        break;
+		//	case Shader::OPCODE_TEXKILL:    TEXKILL(cMask, d, dst.mask);                   break;
+		//	case Shader::OPCODE_TEXOFFSET:  TEXOFFSET(d, s0, src1, s2);                    break;
+		//	case Shader::OPCODE_TEXLODOFFSET: TEXLODOFFSET(d, s0, src1, s2, s3.x);         break;
+		//	case Shader::OPCODE_TEXELFETCH: TEXELFETCH(d, s0, src1, s2.x);                 break;
+		//	case Shader::OPCODE_TEXELFETCHOFFSET: TEXELFETCHOFFSET(d, s0, src1, s2, s3.x); break;
+		//	case Shader::OPCODE_TEXGRAD:    TEXGRAD(d, s0, src1, s2, s3);                  break;
+		//	case Shader::OPCODE_TEXGRADOFFSET: TEXGRADOFFSET(d, s0, src1, s2, s3, s4);     break;
+		//	case Shader::OPCODE_TEXBIAS:    TEXBIAS(d, s0, src1, s2.x);                    break;
+		//	case Shader::OPCODE_TEXOFFSETBIAS: TEXOFFSETBIAS(d, s0, src1, s2, s3.x);       break;
+		//	case Shader::OPCODE_DISCARD:    DISCARD(cMask, instruction);                   break;
+		//	case Shader::OPCODE_DFDX:       DFDX(d, s0);                                   break;
+		//	case Shader::OPCODE_DFDY:       DFDY(d, s0);                                   break;
+		//	case Shader::OPCODE_FWIDTH:     FWIDTH(d, s0);                                 break;
+		//	case Shader::OPCODE_BREAK:      BREAK();                                       break;
+		//	case Shader::OPCODE_BREAKC:     BREAKC(s0, s1, control);                       break;
+		//	case Shader::OPCODE_BREAKP:     BREAKP(src0);                                  break;
+		//	case Shader::OPCODE_CONTINUE:   CONTINUE();                                    break;
+		//	case Shader::OPCODE_TEST:       TEST();                                        break;
+		//	case Shader::OPCODE_CALL:       CALL(dst.label, dst.callSite);                 break;
+		//	case Shader::OPCODE_CALLNZ:     CALLNZ(dst.label, dst.callSite, src0);         break;
+		//	case Shader::OPCODE_ELSE:       ELSE();                                        break;
+		//	case Shader::OPCODE_ENDIF:      ENDIF();                                       break;
+		//	case Shader::OPCODE_ENDLOOP:    ENDLOOP();                                     break;
+		//	case Shader::OPCODE_ENDREP:     ENDREP();                                      break;
+		//	case Shader::OPCODE_ENDWHILE:   ENDWHILE();                                    break;
+		//	case Shader::OPCODE_ENDSWITCH:  ENDSWITCH();                                   break;
+		//	case Shader::OPCODE_IF:         IF(src0);                                      break;
+		//	case Shader::OPCODE_IFC:        IFC(s0, s1, control);                          break;
+		//	case Shader::OPCODE_LABEL:      LABEL(dst.index);                              break;
+		//	case Shader::OPCODE_LOOP:       LOOP(src1);                                    break;
+		//	case Shader::OPCODE_REP:        REP(src0);                                     break;
+		//	case Shader::OPCODE_WHILE:      WHILE(src0);                                   break;
+		//	case Shader::OPCODE_SWITCH:     SWITCH();                                      break;
+		//	case Shader::OPCODE_RET:        RET();                                         break;
+		//	case Shader::OPCODE_LEAVE:      LEAVE();                                       break;
+		//	case Shader::OPCODE_CMP:        cmp(d, s0, s1, control);                       break;
+		//	case Shader::OPCODE_ALL:        all(d.x, s0);                                  break;
+		//	case Shader::OPCODE_ANY:        any(d.x, s0);                                  break;
+		//	case Shader::OPCODE_NOT:        bitwise_not(d, s0);                            break;
+		//	case Shader::OPCODE_OR:         bitwise_or(d, s0, s1);                         break;
+		//	case Shader::OPCODE_XOR:        bitwise_xor(d, s0, s1);                        break;
+		//	case Shader::OPCODE_AND:        bitwise_and(d, s0, s1);                        break;
+		//	case Shader::OPCODE_EQ:         equal(d, s0, s1);                              break;
+		//	case Shader::OPCODE_NE:         notEqual(d, s0, s1);                           break;
+		//	case Shader::OPCODE_END:                                                       break;
+		//	default:
+		//		ASSERT(false);
+		//	}
+
+		//	if(dst.type != Shader::PARAMETER_VOID && dst.type != Shader::PARAMETER_LABEL && opcode != Shader::OPCODE_TEXKILL && opcode != Shader::OPCODE_NOP)
+		//	{
+		//		if(dst.saturate)
+		//		{
+		//			if(dst.x) d.x = Max(d.x, Float4(0.0f));
+		//			if(dst.y) d.y = Max(d.y, Float4(0.0f));
+		//			if(dst.z) d.z = Max(d.z, Float4(0.0f));
+		//			if(dst.w) d.w = Max(d.w, Float4(0.0f));
+
+		//			if(dst.x) d.x = Min(d.x, Float4(1.0f));
+		//			if(dst.y) d.y = Min(d.y, Float4(1.0f));
+		//			if(dst.z) d.z = Min(d.z, Float4(1.0f));
+		//			if(dst.w) d.w = Min(d.w, Float4(1.0f));
+		//		}
+
+		//		if(instruction->isPredicated())
+		//		{
+		//			Vector4f pDst;   // FIXME: Rename
+
+		//			switch(dst.type)
+		//			{
+		//			case Shader::PARAMETER_TEMP:
+		//				if(dst.rel.type == Shader::PARAMETER_VOID)
+		//				{
+		//					if(dst.x) pDst.x = r[dst.index].x;
+		//					if(dst.y) pDst.y = r[dst.index].y;
+		//					if(dst.z) pDst.z = r[dst.index].z;
+		//					if(dst.w) pDst.w = r[dst.index].w;
+		//				}
+		//				else if(!dst.rel.dynamic)
+		//				{
+		//					Int a = dst.index + relativeAddress(dst.rel);
+
+		//					if(dst.x) pDst.x = r[a].x;
+		//					if(dst.y) pDst.y = r[a].y;
+		//					if(dst.z) pDst.z = r[a].z;
+		//					if(dst.w) pDst.w = r[a].w;
+		//				}
+		//				else
+		//				{
+		//					Int4 a = dst.index + dynamicAddress(dst.rel);
+
+		//					if(dst.x) pDst.x = r[a].x;
+		//					if(dst.y) pDst.y = r[a].y;
+		//					if(dst.z) pDst.z = r[a].z;
+		//					if(dst.w) pDst.w = r[a].w;
+		//				}
+		//				break;
+		//			case Shader::PARAMETER_COLOROUT:
+		//				if(dst.rel.type == Shader::PARAMETER_VOID)
+		//				{
+		//					if(dst.x) pDst.x = oC[dst.index].x;
+		//					if(dst.y) pDst.y = oC[dst.index].y;
+		//					if(dst.z) pDst.z = oC[dst.index].z;
+		//					if(dst.w) pDst.w = oC[dst.index].w;
+		//				}
+		//				else if(!dst.rel.dynamic)
+		//				{
+		//					Int a = dst.index + relativeAddress(dst.rel);
+
+		//					if(dst.x) pDst.x = oC[a].x;
+		//					if(dst.y) pDst.y = oC[a].y;
+		//					if(dst.z) pDst.z = oC[a].z;
+		//					if(dst.w) pDst.w = oC[a].w;
+		//				}
+		//				else
+		//				{
+		//					Int4 a = dst.index + dynamicAddress(dst.rel);
+
+		//					if(dst.x) pDst.x = oC[a].x;
+		//					if(dst.y) pDst.y = oC[a].y;
+		//					if(dst.z) pDst.z = oC[a].z;
+		//					if(dst.w) pDst.w = oC[a].w;
+		//				}
+		//				break;
+		//			case Shader::PARAMETER_PREDICATE:
+		//				if(dst.x) pDst.x = p0.x;
+		//				if(dst.y) pDst.y = p0.y;
+		//				if(dst.z) pDst.z = p0.z;
+		//				if(dst.w) pDst.w = p0.w;
+		//				break;
+		//			case Shader::PARAMETER_DEPTHOUT:
+		//				pDst.x = oDepth;
+		//				break;
+		//			default:
+		//				ASSERT(false);
+		//			}
+
+		//			Int4 enable = enableMask(instruction);
+
+		//			Int4 xEnable = enable;
+		//			Int4 yEnable = enable;
+		//			Int4 zEnable = enable;
+		//			Int4 wEnable = enable;
+
+		//			if(predicate)
+		//			{
+		//				unsigned char pSwizzle = instruction->predicateSwizzle;
+
+		//				Float4 xPredicate = p0[(pSwizzle >> 0) & 0x03];
+		//				Float4 yPredicate = p0[(pSwizzle >> 2) & 0x03];
+		//				Float4 zPredicate = p0[(pSwizzle >> 4) & 0x03];
+		//				Float4 wPredicate = p0[(pSwizzle >> 6) & 0x03];
+
+		//				if(!instruction->predicateNot)
+		//				{
+		//					if(dst.x) xEnable = xEnable & As<Int4>(xPredicate);
+		//					if(dst.y) yEnable = yEnable & As<Int4>(yPredicate);
+		//					if(dst.z) zEnable = zEnable & As<Int4>(zPredicate);
+		//					if(dst.w) wEnable = wEnable & As<Int4>(wPredicate);
+		//				}
+		//				else
+		//				{
+		//					if(dst.x) xEnable = xEnable & ~As<Int4>(xPredicate);
+		//					if(dst.y) yEnable = yEnable & ~As<Int4>(yPredicate);
+		//					if(dst.z) zEnable = zEnable & ~As<Int4>(zPredicate);
+		//					if(dst.w) wEnable = wEnable & ~As<Int4>(wPredicate);
+		//				}
+		//			}
+
+		//			if(dst.x) d.x = As<Float4>(As<Int4>(d.x) & xEnable);
+		//			if(dst.y) d.y = As<Float4>(As<Int4>(d.y) & yEnable);
+		//			if(dst.z) d.z = As<Float4>(As<Int4>(d.z) & zEnable);
+		//			if(dst.w) d.w = As<Float4>(As<Int4>(d.w) & wEnable);
+
+		//			if(dst.x) d.x = As<Float4>(As<Int4>(d.x) | (As<Int4>(pDst.x) & ~xEnable));
+		//			if(dst.y) d.y = As<Float4>(As<Int4>(d.y) | (As<Int4>(pDst.y) & ~yEnable));
+		//			if(dst.z) d.z = As<Float4>(As<Int4>(d.z) | (As<Int4>(pDst.z) & ~zEnable));
+		//			if(dst.w) d.w = As<Float4>(As<Int4>(d.w) | (As<Int4>(pDst.w) & ~wEnable));
+		//		}
+
+		//		switch(dst.type)
+		//		{
+		//		case Shader::PARAMETER_TEMP:
+		//			if(dst.rel.type == Shader::PARAMETER_VOID)
+		//			{
+		//				if(dst.x) r[dst.index].x = d.x;
+		//				if(dst.y) r[dst.index].y = d.y;
+		//				if(dst.z) r[dst.index].z = d.z;
+		//				if(dst.w) r[dst.index].w = d.w;
+		//			}
+		//			else if(!dst.rel.dynamic)
+		//			{
+		//				Int a = dst.index + relativeAddress(dst.rel);
+
+		//				if(dst.x) r[a].x = d.x;
+		//				if(dst.y) r[a].y = d.y;
+		//				if(dst.z) r[a].z = d.z;
+		//				if(dst.w) r[a].w = d.w;
+		//			}
+		//			else
+		//			{
+		//				Int4 a = dst.index + dynamicAddress(dst.rel);
+
+		//				if(dst.x) r.scatter_x(a, d.x);
+		//				if(dst.y) r.scatter_y(a, d.y);
+		//				if(dst.z) r.scatter_z(a, d.z);
+		//				if(dst.w) r.scatter_w(a, d.w);
+		//			}
+		//			break;
+		//		case Shader::PARAMETER_COLOROUT:
+		//			if(dst.rel.type == Shader::PARAMETER_VOID)
+		//			{
+		//				broadcastColor0 = (dst.index == 0) && broadcastColor0;
+
+		//				if(dst.x) oC[dst.index].x = d.x;
+		//				if(dst.y) oC[dst.index].y = d.y;
+		//				if(dst.z) oC[dst.index].z = d.z;
+		//				if(dst.w) oC[dst.index].w = d.w;
+		//			}
+		//			else if(!dst.rel.dynamic)
+		//			{
+		//				broadcastColor0 = false;
+		//				Int a = dst.index + relativeAddress(dst.rel);
+
+		//				if(dst.x) oC[a].x = d.x;
+		//				if(dst.y) oC[a].y = d.y;
+		//				if(dst.z) oC[a].z = d.z;
+		//				if(dst.w) oC[a].w = d.w;
+		//			}
+		//			else
+		//			{
+		//				broadcastColor0 = false;
+		//				Int4 a = dst.index + dynamicAddress(dst.rel);
+
+		//				if(dst.x) oC.scatter_x(a, d.x);
+		//				if(dst.y) oC.scatter_y(a, d.y);
+		//				if(dst.z) oC.scatter_z(a, d.z);
+		//				if(dst.w) oC.scatter_w(a, d.w);
+		//			}
+		//			break;
+		//		case Shader::PARAMETER_PREDICATE:
+		//			if(dst.x) p0.x = d.x;
+		//			if(dst.y) p0.y = d.y;
+		//			if(dst.z) p0.z = d.z;
+		//			if(dst.w) p0.w = d.w;
+		//			break;
+		//		case Shader::PARAMETER_DEPTHOUT:
+		//			oDepth = d.x;
+		//			break;
+		//		default:
+		//			ASSERT(false);
+		//		}
+		//	}
+		//}
+
+		//if(currentLabel != -1)
+		//{
+		//	Nucleus::setInsertBlock(returnBlock);
+		//}
+
+		//if(broadcastColor0)
+		//{
+		//	for(int i = 0; i < RENDERTARGETS; i++)
+		//	{
+		//		c[i] = oC[0];
+		//	}
+		//}
+		//else
+		//{
+		//	for(int i = 0; i < RENDERTARGETS; i++)
+		//	{
+		//		c[i] = oC[i];
+		//	}
+		//}
 
 		clampColor(c);
 
@@ -718,7 +1350,7 @@ namespace sw
 
 			for(int i = 0; i < TEXTURE_IMAGE_UNITS; i++)
 			{
-				if(shader->usesSampler(i))
+			//	if(shader->usesSampler(i))
 				{
 					If(index == i)
 					{
@@ -814,17 +1446,17 @@ namespace sw
 
 		if(!whileTest)
 		{
-			if(shader->containsBreakInstruction() && instruction->analysisBreak)
+		//	if(shader->containsBreakInstruction() && instruction->analysisBreak)
 			{
 				enable &= enableBreak;
 			}
 
-			if(shader->containsContinueInstruction() && instruction->analysisContinue)
+		//	if(shader->containsContinueInstruction() && instruction->analysisContinue)
 			{
 				enable &= enableContinue;
 			}
 
-			if(shader->containsLeaveInstruction() && instruction->analysisLeave)
+		//	if(shader->containsLeaveInstruction() && instruction->analysisLeave)
 			{
 				enable &= enableLeave;
 			}
@@ -997,26 +1629,26 @@ namespace sw
 			c.z = c.z.zzzz;
 			c.w = c.w.wwww;
 
-			if(shader->containsDefineInstruction())   // Constant may be known at compile time
-			{
-				for(size_t j = 0; j < shader->getLength(); j++)
-				{
-					const Shader::Instruction &instruction = *shader->getInstruction(j);
+		//	if(shader->containsDefineInstruction())   // Constant may be known at compile time
+			//{
+			//	for(size_t j = 0; j < shader->getLength(); j++)
+			//	{
+			//		const Shader::Instruction &instruction = *shader->getInstruction(j);
 
-					if(instruction.opcode == Shader::OPCODE_DEF)
-					{
-						if(instruction.dst.index == i)
-						{
-							c.x = Float4(instruction.src[0].value[0]);
-							c.y = Float4(instruction.src[0].value[1]);
-							c.z = Float4(instruction.src[0].value[2]);
-							c.w = Float4(instruction.src[0].value[3]);
+			//		if(instruction.opcode == Shader::OPCODE_DEF)
+			//		{
+			//			if(instruction.dst.index == i)
+			//			{
+			//				c.x = Float4(instruction.src[0].value[0]);
+			//				c.y = Float4(instruction.src[0].value[1]);
+			//				c.z = Float4(instruction.src[0].value[2]);
+			//				c.w = Float4(instruction.src[0].value[3]);
 
-							break;
-						}
-					}
-				}
-			}
+			//				break;
+			//			}
+			//		}
+			//	}
+			//}
 		}
 		else if(!src.rel.dynamic || src.rel.type == Shader::PARAMETER_LOOP)
 		{
@@ -1288,10 +1920,10 @@ namespace sw
 	{
 		Int kill = 0;
 
-		if(shader->containsDynamicBranching())
-		{
-			kill = ~SignMask(enableMask(instruction));
-		}
+		//if(shader->containsDynamicBranching())
+		//{
+		//	kill = ~SignMask(enableMask(instruction));
+		//}
 
 		for(unsigned int q = 0; q < state.multiSample; q++)
 		{
@@ -1749,8 +2381,8 @@ namespace sw
 		const Vector4f &src = fetchRegister(temporaryRegister);
 		Int4 condition = As<Int4>(src.x);
 		condition &= enableStack[enableIndex - 1];
-		if(shader->containsLeaveInstruction()) condition &= enableLeave;
-		if(shader->containsBreakInstruction()) condition &= enableBreak;
+//		if(shader->containsLeaveInstruction()) condition &= enableLeave;
+//		if(shader->containsBreakInstruction()) condition &= enableBreak;
 		enableStack[enableIndex] = condition;
 
 		Bool notAllFalse = SignMask(condition) != 0;

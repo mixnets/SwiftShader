@@ -19,6 +19,7 @@
 #include "VkObject.hpp"
 #include <memory>
 #include <vector>
+#undef DrawState
 
 namespace sw
 {
@@ -132,12 +133,13 @@ public:
 	void submit(CommandBuffer::ExecutionState& executionState);
 
 	class Command;
-private:
-	void resetState();
 
+private:
 	enum State { INITIAL, RECORDING, EXECUTABLE, PENDING, INVALID };
 	State state = INITIAL;
 	VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+
+	void resetState();
 
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
 	std::vector<std::unique_ptr<Command>>* commands;

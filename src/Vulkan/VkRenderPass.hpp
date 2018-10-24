@@ -34,6 +34,36 @@ public:
 	void begin();
 	void end();
 
+	uint32_t getAttachmentCount() const
+	{
+		return attachmentCount;
+	}
+
+	VkAttachmentDescription getAttachment(uint32_t i) const
+	{
+		return attachments[i];
+	}
+
+	uint32_t getSubpassCount() const
+	{
+		return subpassCount;
+	}
+
+	VkSubpassDescription getSubpass(uint32_t i) const
+	{
+		return subpasses[i];
+	}
+
+	uint32_t getDependencyCount() const
+	{
+		return dependencyCount;
+	}
+
+	VkSubpassDependency getDependency(uint32_t i) const
+	{
+		return dependencies[i];
+	}
+
 private:
 	uint32_t                 attachmentCount = 0;
 	VkAttachmentDescription* attachments = nullptr;

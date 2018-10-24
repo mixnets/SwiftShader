@@ -15,6 +15,7 @@
 #include "VkDeviceMemory.hpp"
 #include "VkBuffer.hpp"
 #include "VkConfig.h"
+#include "VkDeviceMemory.hpp"
 #include "VkImage.hpp"
 #include "Device/Blitter.hpp"
 #include "Device/Surface.hpp"
@@ -94,10 +95,10 @@ void Image::getSubresourceLayout(const VkImageSubresource* pSubresource, VkSubre
 
 		uint32_t bpp = bytesPerTexel();
 		pLayout->offset = 0;
-		pLayout->size = computeNumberOfPixels(extent.width, extent.height, extent.depth) * bpp;
-		pLayout->rowPitch = extent.width * bpp;
-		pLayout->depthPitch = pLayout->rowPitch * extent.height;
+		pLayout->rowPitch = rowPitchBytes();
+		pLayout->depthPitch = slicePitchBytes();
 		pLayout->arrayPitch = pLayout->depthPitch * extent.depth;
+		pLayout->size = pLayout->arrayPitch;
 	}
 }
 
@@ -105,12 +106,8 @@ VkDeviceSize Image::computeNumberOfPixels(uint32_t width, uint32_t height, uint3
 {
 	uint32_t levels = mipLevels;
 
-	bool isCube = (flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (imageType == VK_IMAGE_TYPE_2D);
-	if(isCube)
-	{
-		width += 2; // For seamless cube border
-		height += 2; // For seamless cube border
-	}
+	width += 2 * getBorder(); // For seamless cube border
+	height += 2 * getBorder(); // For seamless cube border
 
 	VkDeviceSize numPixels = samples *
 		(arrayLayers > MAX_IMAGE_ARRAY_LAYERS) ? MAX_IMAGE_ARRAY_LAYERS : arrayLayers;
@@ -327,16 +324,10 @@ VkDeviceSize Image::getStorageSize() const
 	VkDeviceSize numPixels = 0;
 
 	uint32_t levels = mipLevels;
-	bool isCube = (flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (imageType == VK_IMAGE_TYPE_2D);
-	if(isCube)
+	numPixels += computeNumberOfPixels(extent.width + 2 * getBorder(), extent.height + 2 * getBorder(), extent.depth);
+	if((flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (imageType == VK_IMAGE_TYPE_2D) && (levels > MAX_IMAGE_LEVELS_CUBE))
 	{
-		// Add border at each level
-		numPixels += computeNumberOfPixels(extent.width + 2, extent.height + 2, extent.depth);
-		if(levels > MAX_IMAGE_LEVELS_CUBE) { levels = MAX_IMAGE_LEVELS_CUBE; }
-	}
-	else
-	{
-		numPixels += computeNumberOfPixels(extent.width, extent.height, extent.depth);
+		levels = MAX_IMAGE_LEVELS_CUBE;
 	}
 
 	switch(imageType)
@@ -384,15 +375,7 @@ VkDeviceSize Image::getStorageSize() const
 			break;
 		}
 
-		if(isCube)
-		{
-			// Add border at each level
-			numPixels += computeNumberOfPixels(width + 2, height + 2, depth);
-		}
-		else
-		{
-			numPixels += computeNumberOfPixels(width, height, depth);
-		}
+		numPixels += computeNumberOfPixels(width + 2 * getBorder(), height + 2 * getBorder(), depth);
 		--levels;
 	}
 

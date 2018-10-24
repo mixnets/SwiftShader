@@ -69,9 +69,19 @@ void Buffer::copyTo(void* dstMemory, VkDeviceSize pSize, VkDeviceSize pOffset) c
 	memcpy(dstMemory, map(pOffset), pSize);
 }
 
+void Buffer::copyTo(Buffer* dstBuffer, const VkBufferCopy& pRegion) const
+{
+	copyTo(dstBuffer->map(pRegion.dstOffset), pRegion.size, pRegion.srcOffset);
+}
+
 void* Buffer::map(VkDeviceSize offset) const
 {
 	return reinterpret_cast<char*>(memory) + offset;
+}
+
+VkDeviceSize Buffer::getSize() const
+{
+	return size;
 }
 
 } // namespace vk
