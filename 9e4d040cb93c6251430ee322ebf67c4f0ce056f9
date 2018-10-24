@@ -68,6 +68,23 @@
       "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4a98651_8f22b956",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-24T09:32:32Z",
+      "side": 0,
+      "message": "Does this mean we won\u0027t support DXT or is it just cleanup? I think Vulkan as DXT at least as an extension, or maybe as a core optional features.",
+      "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
