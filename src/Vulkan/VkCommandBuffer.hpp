@@ -19,6 +19,7 @@
 #include "VkObject.hpp"
 #include <memory>
 #include <vector>
+#undef DrawState
 
 namespace vk
 {
@@ -111,24 +112,35 @@ public:
 
 	void submit();
 
-	class Command;
-private:
-	void deleteCommands();
+	struct DrawState
+	{
+		VkPipeline pipelines[VK_PIPELINE_BIND_POINT_RANGE_SIZE] = {};
 
+		struct VertexInputBindings
+		{
+			VkBuffer buffer;
+			VkDeviceSize offset;
+		};
+		VertexInputBindings vertexInputBindings[MAX_VERTEX_INPUT_BINDINGS] = {};
+	};
+
+	class Command
+	{
+	public:
+		// FIXME (b/119421344): change the commandBuffer argument to a CommandBuffer state
+		virtual void play(CommandBuffer::DrawState& commandBufferState) = 0;
+		virtual ~Command() {}
+	};
+private:
 	enum State { INITIAL, RECORDING, EXECUTABLE, PENDING, INVALID };
 	State state = INITIAL;
 	VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	VkPipeline pipelines[VK_PIPELINE_BIND_POINT_RANGE_SIZE];
+	DrawState drawState;
 
-	struct VertexInputBindings
-	{
-		VkBuffer buffer;
-		VkDeviceSize offset;
-	};
-	VertexInputBindings vertexInputBindings[MAX_VERTEX_INPUT_BINDINGS];
+	void resetState();
 
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
-	std::vector<std::unique_ptr<Command>> commands;
+	std::vector<std::unique_ptr<Command> > commands;
 };
 
 using DispatchableCommandBuffer = DispatchableObject<CommandBuffer, VkCommandBuffer>;

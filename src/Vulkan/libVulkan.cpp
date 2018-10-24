@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#define VK_USE_PLATFORM_ANDROID_KHR
+
 #include "VkBuffer.hpp"
 #include "VkBufferView.hpp"
 #include "VkCommandBuffer.hpp"
@@ -407,9 +409,110 @@ VKAPI_ATTR VkResult VKAPI_CALL vkAllocateMemory(VkDevice device, const VkMemoryA
 	TRACE("(VkDevice device = 0x%X, const VkMemoryAllocateInfo* pAllocateInfo = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X, VkDeviceMemory* pMemory = 0x%X)",
 		    device, pAllocateInfo, pAllocator, pMemory);
 
-	if(pAllocateInfo->pNext)
+	const void* pNext = pAllocateInfo->pNext;
+	while(pNext)
 	{
-		UNIMPLEMENTED();
+		switch(*reinterpret_cast<const VkStructureType*>(pNext))
+		{
+#if VK_KHR_external_memory_win32
+		case VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_KHR:
+		{
+			auto& memory = *reinterpret_cast<const VkImportMemoryWin32HandleInfoKHR*>(pNext);
+			UNIMPLEMENTED();
+			pNext = memory.pNext;
+		}
+		break;
+#endif
+		case VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR:
+		{
+			auto& memory = *reinterpret_cast<const VkImportMemoryFdInfoKHR*>(pNext);
+			UNIMPLEMENTED();
+			pNext = memory.pNext;
+		}
+		break;
+		case VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT: // UNTESTED
+		{
+			auto& memory = *reinterpret_cast<const VkImportMemoryHostPointerInfoEXT*>(pNext);
+			UNIMPLEMENTED();
+			pNext = memory.pNext;
+		}
+		break;
+#if VK_ANDROID_external_memory_android_hardware_buffer
+		case VK_STRUCTURE_TYPE_IMPORT_ANDROID_HARDWARE_BUFFER_INFO_ANDROID:
+		{
+			auto& memory = *reinterpret_cast<const VkImportAndroidHardwareBufferInfoANDROID*>(pNext);
+			UNIMPLEMENTED();
+			pNext = memory.pNext;
+		}
+		break;
+#endif
+#if VK_NV_dedicated_allocation
+		case VK_STRUCTURE_TYPE_DEDICATED_ALLOCATION_MEMORY_ALLOCATE_INFO_NV: // UNTESTED
+		{
+			auto& memory = *reinterpret_cast<const VkDedicatedAllocationMemoryAllocateInfoNV*>(pNext);
+			UNIMPLEMENTED();
+			pNext = memory.pNext;
+		}
+		break;
+#endif
+		case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO:
+		{
+			auto& memory = *reinterpret_cast<const VkExportMemoryAllocateInfo*>(pNext);
+			UNIMPLEMENTED();
+			pNext = memory.pNext;
+		}
+		break;
+#if VK_NV_external_memory
+		case VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_NV: // UNTESTED
+		{
+			auto& memory = *reinterpret_cast<const VkExportMemoryAllocateInfoNV*>(pNext);
+			UNIMPLEMENTED();
+			pNext = memory.pNext;
+		}
+		break;
+#endif
+#if VK_KHR_external_memory_win32
+		case VK_STRUCTURE_TYPE_EXPORT_MEMORY_WIN32_HANDLE_INFO_KHR:
+		{
+			auto& memory = *reinterpret_cast<const VkExportMemoryWin32HandleInfoKHR*>(pNext);
+			UNIMPLEMENTED();
+			pNext = memory.pNext;
+		}
+		break;
+#endif
+#if VK_NV_external_memory_win32
+		case VK_STRUCTURE_TYPE_EXPORT_MEMORY_WIN32_HANDLE_INFO_NV: // UNTESTED
+		{
+			auto& memory = *reinterpret_cast<const VkExportMemoryWin32HandleInfoNV*>(pNext);
+			UNIMPLEMENTED();
+			pNext = memory.pNext;
+		}
+		break;
+		case VK_STRUCTURE_TYPE_IMPORT_MEMORY_WIN32_HANDLE_INFO_NV: // UNTESTED
+		{
+			auto& memory = *reinterpret_cast<const VkImportMemoryWin32HandleInfoNV*>(pNext);
+			UNIMPLEMENTED();
+			pNext = memory.pNext;
+		}
+		break;
+#endif
+		case VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_FLAGS_INFO:
+		{
+			auto& memory = *reinterpret_cast<const VkMemoryAllocateFlagsInfo*>(pNext);
+			UNIMPLEMENTED();
+			pNext = memory.pNext;
+		}
+		break;
+		case VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO:
+		{
+			auto& memory = *reinterpret_cast<const VkMemoryDedicatedAllocateInfo*>(pNext);
+			UNIMPLEMENTED();
+			pNext = memory.pNext;
+		}
+		break;
+		default:
+			UNIMPLEMENTED();
+		}
 	}
 
 	VkResult result = vk::DeviceMemory::Create(pAllocator, pAllocateInfo, pMemory);
@@ -869,10 +972,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateGraphicsPipelines(VkDevice device, VkPipe
 	TRACE("(VkDevice device = 0x%X, VkPipelineCache pipelineCache = 0x%X, uint32_t createInfoCount = %d, const VkGraphicsPipelineCreateInfo* pCreateInfos, const VkAllocationCallbacks* pAllocator = 0x%X, VkPipeline* pPipelines = 0x%X)",
 		    device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
 
-	if(pipelineCache != VK_NULL_HANDLE)
-	{
-		UNIMPLEMENTED();
-	}
+	// TODO: Optimize based on pipelineCache.
 
 	for(uint32_t i = 0; i < createInfoCount; i++)
 	{
@@ -899,10 +999,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateComputePipelines(VkDevice device, VkPipel
 	TRACE("(VkDevice device = 0x%X, VkPipelineCache pipelineCache = 0x%X, uint32_t createInfoCount = %d, const VkComputePipelineCreateInfo* pCreateInfos, const VkAllocationCallbacks* pAllocator = 0x%X, VkPipeline* pPipelines = 0x%X)",
 		device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
 
-	if(pipelineCache != VK_NULL_HANDLE)
-	{
-		UNIMPLEMENTED();
-	}
+	// TODO: Optimize based on pipelineCache.
 
 	for(uint32_t i = 0; i < createInfoCount; i++)
 	{
@@ -1661,7 +1758,7 @@ VKAPI_ATTR void VKAPI_CALL vkGetBufferMemoryRequirements2(VkDevice device, const
 	TRACE("(VkDevice device = 0x%X, const VkBufferMemoryRequirementsInfo2* pInfo = 0x%X, VkMemoryRequirements2* pMemoryRequirements = 0x%X)",
 	      device, pInfo, pMemoryRequirements);
 
-	if(pInfo->pNext || pMemoryRequirements->pNext)
+	if(pInfo->pNext)
 	{
 		UNIMPLEMENTED();
 	}
@@ -1802,6 +1899,84 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceProperties2(VkPhysicalDevice physi
 				vk::Cast(physicalDevice)->getProperties(&properties);
 			}
 			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BLEND_OPERATION_ADVANCED_PROPERTIES_EXT:
+			{
+				auto& properties = *reinterpret_cast<VkPhysicalDeviceBlendOperationAdvancedPropertiesEXT*>(extensionProperties);
+				UNIMPLEMENTED();
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT:
+			{
+				auto& properties = *reinterpret_cast<VkPhysicalDeviceConservativeRasterizationPropertiesEXT*>(extensionProperties);
+				UNIMPLEMENTED();
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_INDEXING_PROPERTIES_EXT:
+			{
+				auto& properties = *reinterpret_cast<VkPhysicalDeviceDescriptorIndexingPropertiesEXT*>(extensionProperties);
+				UNIMPLEMENTED();
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DISCARD_RECTANGLE_PROPERTIES_EXT:
+			{
+				auto& properties = *reinterpret_cast<VkPhysicalDeviceDiscardRectanglePropertiesEXT*>(extensionProperties);
+				UNIMPLEMENTED();
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT:
+			{
+				auto& properties = *reinterpret_cast<VkPhysicalDeviceExternalMemoryHostPropertiesEXT*>(extensionProperties);
+				UNIMPLEMENTED();
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PER_VIEW_ATTRIBUTES_PROPERTIES_NVX:
+			{
+				auto& properties = *reinterpret_cast<VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX*>(extensionProperties);
+				UNIMPLEMENTED();
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR:
+			{
+				auto& properties = *reinterpret_cast<VkPhysicalDevicePushDescriptorPropertiesKHR*>(extensionProperties);
+				UNIMPLEMENTED();
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLE_LOCATIONS_PROPERTIES_EXT:
+			{
+				auto& properties = *reinterpret_cast<VkPhysicalDeviceSampleLocationsPropertiesEXT*>(extensionProperties);
+				UNIMPLEMENTED();
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_FILTER_MINMAX_PROPERTIES_EXT:
+			{
+				auto& properties = *reinterpret_cast<VkPhysicalDeviceSamplerFilterMinmaxPropertiesEXT*>(extensionProperties);
+				UNIMPLEMENTED();
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD:
+			{
+				auto& properties = *reinterpret_cast<VkPhysicalDeviceShaderCorePropertiesAMD*>(extensionProperties);
+				UNIMPLEMENTED();
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VERTEX_ATTRIBUTE_DIVISOR_PROPERTIES_EXT:
+			{
+				auto& properties = *reinterpret_cast<VkPhysicalDeviceVertexAttributeDivisorPropertiesEXT*>(extensionProperties);
+				UNIMPLEMENTED();
+			}
+			break;
+		// case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR:
+		// VkPhysicalDeviceDriverPropertiesKHR;
+		// case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_INLINE_UNIFORM_BLOCK_PROPERTIES_EXT:
+		// VkPhysicalDeviceInlineUniformBlockPropertiesEXT;
+		// case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_PROPERTIES_NV:
+		// VkPhysicalDeviceMeshShaderPropertiesNV;
+		// case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PCI_BUS_INFO_PROPERTIES_EXT:
+		// VkPhysicalDevicePCIBusInfoPropertiesEXT;
+		// case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAYTRACING_PROPERTIES_NVX:
+		// VkPhysicalDeviceRaytracingPropertiesNVX;
+		// case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_TRANSFORM_FEEDBACK_PROPERTIES_EXT:
+		// VkPhysicalDeviceTransformFeedbackPropertiesEXT;
 		default:
 			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
 			UNIMPLEMENTED();   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.

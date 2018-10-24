@@ -14,7 +14,9 @@
 
 #include "VkBuffer.hpp"
 #include "VkConfig.h"
+#include "VkDeviceMemory.hpp"
 #include "VkImage.hpp"
+#include "Device/Blitter.hpp"
 #include <memory.h>
 
 namespace vk
@@ -53,7 +55,7 @@ const VkMemoryRequirements Image::getMemoryRequirements() const
 {
 	VkMemoryRequirements memoryRequirements;
 	memoryRequirements.alignment = vk::REQUIRED_MEMORY_ALIGNMENT;
-	memoryRequirements.memoryTypeBits = vk::REQUIRED_MEMORY_TYPE_BITS;
+	memoryRequirements.memoryTypeBits = vk::MEMORY_TYPE_GENERIC_BIT;
 	memoryRequirements.size = getSize();
 	return memoryRequirements;
 }
@@ -64,18 +66,32 @@ void Image::bind(VkDeviceMemory pDeviceMemory, VkDeviceSize pMemoryOffset)
 	memoryOffset = pMemoryOffset;
 }
 
-void Image::copyTo(VkImageLayout srcImageLayout, VkBuffer dstBuffer,
-	uint32_t regionCount, const VkBufferImageCopy* pRegions)
-{
-	for(uint32_t i = 0; i < regionCount; i++)
-	{
-		copyTo(srcImageLayout, dstBuffer, pRegions[i]);
-	}
-}
-
-void Image::copyTo(VkImageLayout srcImageLayout, VkBuffer dstBuffer, const VkBufferImageCopy& pRegion)
+void Image::copyTo(VkBuffer dstBuffer, const VkBufferImageCopy& pRegion)
 {
 	// FIXME : This is where we would use the blitter
+
+	if((pRegion.imageExtent.width != extent.width) ||
+	   (pRegion.imageExtent.height != extent.height) ||
+	   (pRegion.imageExtent.depth != extent.depth) ||
+	   !((pRegion.imageSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
+		 (pRegion.imageSubresource.aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT) ||
+		 (pRegion.imageSubresource.aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT)) ||
+	   (pRegion.imageSubresource.baseArrayLayer != 0) ||
+	   (pRegion.imageSubresource.layerCount != 1) ||
+	   (pRegion.imageSubresource.mipLevel != 0) ||
+	   (pRegion.imageOffset.x != 0) ||
+	   (pRegion.imageOffset.y != 0) ||
+	   (pRegion.imageOffset.z != 0) ||
+	   (pRegion.bufferRowLength != extent.width) ||
+	   (pRegion.bufferImageHeight != extent.height))
+	{
+		UNIMPLEMENTED();
+	}
+
+	Cast(dstBuffer)->copyTo(Cast(deviceMemory)->getOffsetPointer(0),
+		sw::Surface::sliceB(pRegion.imageExtent.width, pRegion.imageExtent.height,
+		                    getBorder(), static_cast<sw::Format>(format), false) * pRegion.imageExtent.depth,
+		pRegion.bufferOffset);
 }
 
 void Image::getImageMipTailInfo(VkSparseImageMemoryRequirements* pSparseMemoryRequirements)
@@ -103,12 +119,12 @@ void Image::getSubresourceLayout(const VkImageSubresource* pSubresource, VkSubre
 			UNIMPLEMENTED();
 		}
 
-		uint32_t bpp = getBytesPerPixel();
+		sw::Format swFormat = static_cast<sw::Format>(format);
 		pLayout->offset = 0;
-		pLayout->size = computeNumberOfPixels(extent.width, extent.height, extent.depth) * bpp;
-		pLayout->rowPitch = extent.width * bpp;
-		pLayout->depthPitch = pLayout->rowPitch * extent.height;
+		pLayout->rowPitch = sw::Surface::pitchB(extent.width, getBorder(), swFormat, false);
+		pLayout->depthPitch = sw::Surface::sliceB(extent.width, extent.height, getBorder(), swFormat, false);
 		pLayout->arrayPitch = pLayout->depthPitch * extent.depth;
+		pLayout->size = pLayout->arrayPitch;
 	}
 }
 
@@ -116,12 +132,8 @@ VkDeviceSize Image::computeNumberOfPixels(uint32_t width, uint32_t height, uint3
 {
 	uint32_t levels = mipLevels;
 
-	bool isCube = (flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (imageType == VK_IMAGE_TYPE_2D);
-	if(isCube)
-	{
-		width += 2; // For seamless cube border
-		height += 2; // For seamless cube border
-	}
+	width += 2 * getBorder(); // For seamless cube border
+	height += 2 * getBorder(); // For seamless cube border
 
 	VkDeviceSize numPixels = samples *
 		(arrayLayers > MAX_IMAGE_ARRAY_LAYERS) ? MAX_IMAGE_ARRAY_LAYERS : arrayLayers;
@@ -144,251 +156,9 @@ VkDeviceSize Image::computeNumberOfPixels(uint32_t width, uint32_t height, uint3
 	return numPixels;
 }
 
-uint32_t Image::getBytesPerPixel() const
+int Image::getBorder() const
 {
-	switch(format)
-	{
-	case VK_FORMAT_R4G4_UNORM_PACK8:
-	case VK_FORMAT_R8_UNORM:
-	case VK_FORMAT_R8_SNORM:
-	case VK_FORMAT_R8_USCALED:
-	case VK_FORMAT_R8_SSCALED:
-	case VK_FORMAT_R8_UINT:
-	case VK_FORMAT_R8_SINT:
-	case VK_FORMAT_R8_SRGB:
-	case VK_FORMAT_S8_UINT:
-		return 1;
-	case VK_FORMAT_R4G4B4A4_UNORM_PACK16:
-	case VK_FORMAT_B4G4R4A4_UNORM_PACK16:
-	case VK_FORMAT_R5G6B5_UNORM_PACK16:
-	case VK_FORMAT_B5G6R5_UNORM_PACK16:
-	case VK_FORMAT_R5G5B5A1_UNORM_PACK16:
-	case VK_FORMAT_B5G5R5A1_UNORM_PACK16:
-	case VK_FORMAT_A1R5G5B5_UNORM_PACK16:
-	case VK_FORMAT_R8G8_UNORM:
-	case VK_FORMAT_R8G8_SNORM:
-	case VK_FORMAT_R8G8_USCALED:
-	case VK_FORMAT_R8G8_SSCALED:
-	case VK_FORMAT_R8G8_UINT:
-	case VK_FORMAT_R8G8_SINT:
-	case VK_FORMAT_R8G8_SRGB:
-	case VK_FORMAT_R16_UNORM:
-	case VK_FORMAT_R16_SNORM:
-	case VK_FORMAT_R16_USCALED:
-	case VK_FORMAT_R16_SSCALED:
-	case VK_FORMAT_R16_UINT:
-	case VK_FORMAT_R16_SINT:
-	case VK_FORMAT_R16_SFLOAT:
-	case VK_FORMAT_D16_UNORM:
-		return 2;
-	case VK_FORMAT_R8G8B8_UNORM:
-	case VK_FORMAT_R8G8B8_SNORM:
-	case VK_FORMAT_R8G8B8_USCALED:
-	case VK_FORMAT_R8G8B8_SSCALED:
-	case VK_FORMAT_R8G8B8_UINT:
-	case VK_FORMAT_R8G8B8_SINT:
-	case VK_FORMAT_R8G8B8_SRGB:
-	case VK_FORMAT_B8G8R8_UNORM:
-	case VK_FORMAT_B8G8R8_SNORM:
-	case VK_FORMAT_B8G8R8_USCALED:
-	case VK_FORMAT_B8G8R8_SSCALED:
-	case VK_FORMAT_B8G8R8_UINT:
-	case VK_FORMAT_B8G8R8_SINT:
-	case VK_FORMAT_B8G8R8_SRGB:
-	case VK_FORMAT_D16_UNORM_S8_UINT:
-		return 3;
-	case VK_FORMAT_R8G8B8A8_UNORM:
-	case VK_FORMAT_R8G8B8A8_SNORM:
-	case VK_FORMAT_R8G8B8A8_USCALED:
-	case VK_FORMAT_R8G8B8A8_SSCALED:
-	case VK_FORMAT_R8G8B8A8_UINT:
-	case VK_FORMAT_R8G8B8A8_SINT:
-	case VK_FORMAT_R8G8B8A8_SRGB:
-	case VK_FORMAT_B8G8R8A8_UNORM:
-	case VK_FORMAT_B8G8R8A8_SNORM:
-	case VK_FORMAT_B8G8R8A8_USCALED:
-	case VK_FORMAT_B8G8R8A8_SSCALED:
-	case VK_FORMAT_B8G8R8A8_UINT:
-	case VK_FORMAT_B8G8R8A8_SINT:
-	case VK_FORMAT_B8G8R8A8_SRGB:
-	case VK_FORMAT_A8B8G8R8_UNORM_PACK32:
-	case VK_FORMAT_A8B8G8R8_SNORM_PACK32:
-	case VK_FORMAT_A8B8G8R8_USCALED_PACK32:
-	case VK_FORMAT_A8B8G8R8_SSCALED_PACK32:
-	case VK_FORMAT_A8B8G8R8_UINT_PACK32:
-	case VK_FORMAT_A8B8G8R8_SINT_PACK32:
-	case VK_FORMAT_A8B8G8R8_SRGB_PACK32:
-	case VK_FORMAT_A2R10G10B10_UNORM_PACK32:
-	case VK_FORMAT_A2R10G10B10_SNORM_PACK32:
-	case VK_FORMAT_A2R10G10B10_USCALED_PACK32:
-	case VK_FORMAT_A2R10G10B10_SSCALED_PACK32:
-	case VK_FORMAT_A2R10G10B10_UINT_PACK32:
-	case VK_FORMAT_A2R10G10B10_SINT_PACK32:
-	case VK_FORMAT_A2B10G10R10_UNORM_PACK32:
-	case VK_FORMAT_A2B10G10R10_SNORM_PACK32:
-	case VK_FORMAT_A2B10G10R10_USCALED_PACK32:
-	case VK_FORMAT_A2B10G10R10_SSCALED_PACK32:
-	case VK_FORMAT_A2B10G10R10_UINT_PACK32:
-	case VK_FORMAT_A2B10G10R10_SINT_PACK32:
-	case VK_FORMAT_R16G16_UNORM:
-	case VK_FORMAT_R16G16_SNORM:
-	case VK_FORMAT_R16G16_USCALED:
-	case VK_FORMAT_R16G16_SSCALED:
-	case VK_FORMAT_R16G16_UINT:
-	case VK_FORMAT_R16G16_SINT:
-	case VK_FORMAT_R16G16_SFLOAT:
-	case VK_FORMAT_R32_UINT:
-	case VK_FORMAT_R32_SINT:
-	case VK_FORMAT_R32_SFLOAT:
-	case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
-	case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
-	case VK_FORMAT_X8_D24_UNORM_PACK32:
-	case VK_FORMAT_D32_SFLOAT:
-	case VK_FORMAT_D24_UNORM_S8_UINT:
-		return 4;
-	case VK_FORMAT_D32_SFLOAT_S8_UINT:
-		return 5;
-	case VK_FORMAT_R16G16B16_UNORM:
-	case VK_FORMAT_R16G16B16_SNORM:
-	case VK_FORMAT_R16G16B16_USCALED:
-	case VK_FORMAT_R16G16B16_SSCALED:
-	case VK_FORMAT_R16G16B16_UINT:
-	case VK_FORMAT_R16G16B16_SINT:
-	case VK_FORMAT_R16G16B16_SFLOAT:
-		return 6;
-	case VK_FORMAT_R16G16B16A16_UNORM:
-	case VK_FORMAT_R16G16B16A16_SNORM:
-	case VK_FORMAT_R16G16B16A16_USCALED:
-	case VK_FORMAT_R16G16B16A16_SSCALED:
-	case VK_FORMAT_R16G16B16A16_UINT:
-	case VK_FORMAT_R16G16B16A16_SINT:
-	case VK_FORMAT_R16G16B16A16_SFLOAT:
-	case VK_FORMAT_R32G32_UINT:
-	case VK_FORMAT_R32G32_SINT:
-	case VK_FORMAT_R32G32_SFLOAT:
-	case VK_FORMAT_R64_UINT:
-	case VK_FORMAT_R64_SINT:
-	case VK_FORMAT_R64_SFLOAT:
-		return 8;
-	case VK_FORMAT_R32G32B32_UINT:
-	case VK_FORMAT_R32G32B32_SINT:
-	case VK_FORMAT_R32G32B32_SFLOAT:
-		return 12;
-	case VK_FORMAT_R32G32B32A32_UINT:
-	case VK_FORMAT_R32G32B32A32_SINT:
-	case VK_FORMAT_R32G32B32A32_SFLOAT:
-	case VK_FORMAT_R64G64_UINT:
-	case VK_FORMAT_R64G64_SINT:
-	case VK_FORMAT_R64G64_SFLOAT:
-		return 16;
-	case VK_FORMAT_R64G64B64_UINT:
-	case VK_FORMAT_R64G64B64_SINT:
-	case VK_FORMAT_R64G64B64_SFLOAT:
-		return 24;
-	case VK_FORMAT_R64G64B64A64_UINT:
-	case VK_FORMAT_R64G64B64A64_SINT:
-	case VK_FORMAT_R64G64B64A64_SFLOAT:
-		return 32;
-	case VK_FORMAT_BC1_RGB_UNORM_BLOCK:
-	case VK_FORMAT_BC1_RGB_SRGB_BLOCK:
-	case VK_FORMAT_BC1_RGBA_UNORM_BLOCK:
-	case VK_FORMAT_BC1_RGBA_SRGB_BLOCK:
-	case VK_FORMAT_BC2_UNORM_BLOCK:
-	case VK_FORMAT_BC2_SRGB_BLOCK:
-	case VK_FORMAT_BC3_UNORM_BLOCK:
-	case VK_FORMAT_BC3_SRGB_BLOCK:
-	case VK_FORMAT_BC4_UNORM_BLOCK:
-	case VK_FORMAT_BC4_SNORM_BLOCK:
-	case VK_FORMAT_BC5_UNORM_BLOCK:
-	case VK_FORMAT_BC5_SNORM_BLOCK:
-	case VK_FORMAT_BC6H_UFLOAT_BLOCK:
-	case VK_FORMAT_BC6H_SFLOAT_BLOCK:
-	case VK_FORMAT_BC7_UNORM_BLOCK:
-	case VK_FORMAT_BC7_SRGB_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8_UNORM_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8_SRGB_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8A1_UNORM_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8A1_SRGB_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8A8_UNORM_BLOCK:
-	case VK_FORMAT_ETC2_R8G8B8A8_SRGB_BLOCK:
-	case VK_FORMAT_EAC_R11_UNORM_BLOCK:
-	case VK_FORMAT_EAC_R11_SNORM_BLOCK:
-	case VK_FORMAT_EAC_R11G11_UNORM_BLOCK:
-	case VK_FORMAT_EAC_R11G11_SNORM_BLOCK:
-	case VK_FORMAT_ASTC_4x4_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_4x4_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_5x4_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_5x4_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_5x5_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_5x5_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_6x5_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_6x5_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_6x6_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_6x6_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_8x5_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_8x5_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_8x6_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_8x6_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_8x8_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_8x8_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_10x5_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_10x5_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_10x6_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_10x6_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_10x8_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_10x8_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_10x10_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_10x10_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_12x10_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_12x10_SRGB_BLOCK:
-	case VK_FORMAT_ASTC_12x12_UNORM_BLOCK:
-	case VK_FORMAT_ASTC_12x12_SRGB_BLOCK:
-	case VK_FORMAT_G8B8G8R8_422_UNORM:
-	case VK_FORMAT_B8G8R8G8_422_UNORM:
-	case VK_FORMAT_G8_B8_R8_3PLANE_420_UNORM:
-	case VK_FORMAT_G8_B8R8_2PLANE_420_UNORM:
-	case VK_FORMAT_G8_B8_R8_3PLANE_422_UNORM:
-	case VK_FORMAT_G8_B8R8_2PLANE_422_UNORM:
-	case VK_FORMAT_G8_B8_R8_3PLANE_444_UNORM:
-	case VK_FORMAT_R10X6_UNORM_PACK16:
-	case VK_FORMAT_R10X6G10X6_UNORM_2PACK16:
-	case VK_FORMAT_R10X6G10X6B10X6A10X6_UNORM_4PACK16:
-	case VK_FORMAT_G10X6B10X6G10X6R10X6_422_UNORM_4PACK16:
-	case VK_FORMAT_B10X6G10X6R10X6G10X6_422_UNORM_4PACK16:
-	case VK_FORMAT_G10X6_B10X6_R10X6_3PLANE_420_UNORM_3PACK16:
-	case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_420_UNORM_3PACK16:
-	case VK_FORMAT_G10X6_B10X6_R10X6_3PLANE_422_UNORM_3PACK16:
-	case VK_FORMAT_G10X6_B10X6R10X6_2PLANE_422_UNORM_3PACK16:
-	case VK_FORMAT_G10X6_B10X6_R10X6_3PLANE_444_UNORM_3PACK16:
-	case VK_FORMAT_R12X4_UNORM_PACK16:
-	case VK_FORMAT_R12X4G12X4_UNORM_2PACK16:
-	case VK_FORMAT_R12X4G12X4B12X4A12X4_UNORM_4PACK16:
-	case VK_FORMAT_G12X4B12X4G12X4R12X4_422_UNORM_4PACK16:
-	case VK_FORMAT_B12X4G12X4R12X4G12X4_422_UNORM_4PACK16:
-	case VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_420_UNORM_3PACK16:
-	case VK_FORMAT_G12X4_B12X4R12X4_2PLANE_420_UNORM_3PACK16:
-	case VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_422_UNORM_3PACK16:
-	case VK_FORMAT_G12X4_B12X4R12X4_2PLANE_422_UNORM_3PACK16:
-	case VK_FORMAT_G12X4_B12X4_R12X4_3PLANE_444_UNORM_3PACK16:
-	case VK_FORMAT_G16B16G16R16_422_UNORM:
-	case VK_FORMAT_B16G16R16G16_422_UNORM:
-	case VK_FORMAT_G16_B16_R16_3PLANE_420_UNORM:
-	case VK_FORMAT_G16_B16R16_2PLANE_420_UNORM:
-	case VK_FORMAT_G16_B16_R16_3PLANE_422_UNORM:
-	case VK_FORMAT_G16_B16R16_2PLANE_422_UNORM:
-	case VK_FORMAT_G16_B16_R16_3PLANE_444_UNORM:
-	case VK_FORMAT_PVRTC1_2BPP_UNORM_BLOCK_IMG:
-	case VK_FORMAT_PVRTC1_4BPP_UNORM_BLOCK_IMG:
-	case VK_FORMAT_PVRTC2_2BPP_UNORM_BLOCK_IMG:
-	case VK_FORMAT_PVRTC2_4BPP_UNORM_BLOCK_IMG:
-	case VK_FORMAT_PVRTC1_2BPP_SRGB_BLOCK_IMG:
-	case VK_FORMAT_PVRTC1_4BPP_SRGB_BLOCK_IMG:
-	case VK_FORMAT_PVRTC2_2BPP_SRGB_BLOCK_IMG:
-	case VK_FORMAT_PVRTC2_4BPP_SRGB_BLOCK_IMG:
-	default:
-		UNIMPLEMENTED();
-		return 0;
-	}
+	return ((flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (imageType == VK_IMAGE_TYPE_2D)) ? 1 : 0;
 }
 
 VkDeviceSize Image::getSize() const
@@ -396,16 +166,10 @@ VkDeviceSize Image::getSize() const
 	VkDeviceSize numPixels = 0;
 
 	uint32_t levels = mipLevels;
-	bool isCube = (flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (imageType == VK_IMAGE_TYPE_2D);
-	if(isCube)
+	numPixels += computeNumberOfPixels(extent.width + 2 * getBorder(), extent.height + 2 * getBorder(), extent.depth);
+	if((flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT) && (imageType == VK_IMAGE_TYPE_2D) && (levels > MAX_IMAGE_LEVELS_CUBE))
 	{
-		// Add border at each level
-		numPixels += computeNumberOfPixels(extent.width + 2, extent.height + 2, extent.depth);
-		if(levels > MAX_IMAGE_LEVELS_CUBE) { levels = MAX_IMAGE_LEVELS_CUBE; }
-	}
-	else
-	{
-		numPixels += computeNumberOfPixels(extent.width, extent.height, extent.depth);
+		levels = MAX_IMAGE_LEVELS_CUBE;
 	}
 
 	switch(imageType)
@@ -453,20 +217,12 @@ VkDeviceSize Image::getSize() const
 			break;
 		}
 
-		if(isCube)
-		{
-			// Add border at each level
-			numPixels += computeNumberOfPixels(width + 2, height + 2, depth);
-		}
-		else
-		{
-			numPixels += computeNumberOfPixels(width, height, depth);
-		}
+		numPixels += computeNumberOfPixels(width + 2 * getBorder(), height + 2 * getBorder(), depth);
 		--levels;
 	}
 
 	// Note: We may need to reserve space for a "descriptor structure" that shaders will read
-	return numPixels * getBytesPerPixel();
+	return numPixels * sw::Surface::bytes(static_cast<sw::Format>(format));
 }
 
 VkImageAspectFlags Image::getImageAspect(VkFormat format)
@@ -486,6 +242,44 @@ VkImageAspectFlags Image::getImageAspect(VkFormat format)
 	default:
 		return VK_IMAGE_ASPECT_COLOR_BIT;
 	}
+}
+
+void Image::clear(const VkClearValue& pClearValue, const VkRect2D& pRenderArea, unsigned int rgbaMask)
+{
+	sw::Format clearFormat = sw::FORMAT_A32B32G32R32F;
+	sw::Format swFormat = static_cast<sw::Format>(format);
+	if(sw::Surface::isSignedNonNormalizedInteger(swFormat))
+	{
+		clearFormat = sw::FORMAT_A32B32G32R32I;
+	}
+	else if(sw::Surface::isUnsignedNonNormalizedInteger(swFormat))
+	{
+		clearFormat = sw::FORMAT_A32B32G32R32UI;
+	}
+
+	const sw::Rect rect(
+		pRenderArea.offset.x, pRenderArea.offset.y,
+		pRenderArea.offset.x + pRenderArea.extent.width,
+		pRenderArea.offset.y + pRenderArea.extent.height);
+	const sw::SliceRect dRect(rect);
+
+	ScopedSurface scopedSurface(this);
+	sw::Blitter blitter;
+	blitter.clear((void*)pClearValue.color.float32, clearFormat, scopedSurface.get(), dRect, rgbaMask);
+}
+
+Image::ScopedSurface::ScopedSurface(Image* image)
+{
+	sw::Format swFormat = static_cast<sw::Format>(image->format);
+	surface = sw::Surface::create(
+		image->extent.width, image->extent.height, image->extent.depth, swFormat, Cast(image->deviceMemory)->getOffsetPointer(0),
+		sw::Surface::pitchB(image->extent.width, image->getBorder(), swFormat, false),
+		sw::Surface::sliceB(image->extent.width, image->extent.height, image->getBorder(), swFormat, false));
+}
+
+Image::ScopedSurface::~ScopedSurface()
+{
+	delete surface;
 }
 
 } // namespace vk

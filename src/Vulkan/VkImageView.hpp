@@ -15,7 +15,9 @@
 #ifndef VK_IMAGE_VIEW_HPP_
 #define VK_IMAGE_VIEW_HPP_
 
+#include "VkDebug.hpp"
 #include "VkObject.hpp"
+#include "VkImage.hpp"
 
 namespace vk
 {
@@ -23,31 +25,19 @@ namespace vk
 class ImageView : public Object<ImageView, VkImageView>
 {
 public:
-	ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem) :
-		image(pCreateInfo->image), viewType(pCreateInfo->viewType), format(pCreateInfo->format),
-		components(pCreateInfo->components), subresourceRange(pCreateInfo->subresourceRange)
-	{
-	}
-
+	ImageView(const VkImageViewCreateInfo* pCreateInfo, void* mem);
 	~ImageView() = delete;
+	void destroy(const VkAllocationCallbacks* pAllocator);
 
-	static size_t ComputeRequiredAllocationSize(const VkImageViewCreateInfo* pCreateInfo)
-	{
-		return 0;
-	}
+	static size_t ComputeRequiredAllocationSize(const VkImageViewCreateInfo* pCreateInfo);
 
-	void destroy(const VkAllocationCallbacks* pAllocator)
-	{
-	}
+	void clear(const VkClearValue& pClearValues, const VkRect2D& pRenderArea);
 
 private:
 	VkImage                    image = VK_NULL_HANDLE;
 	VkImageViewType            viewType = VK_IMAGE_VIEW_TYPE_2D;
 	VkFormat                   format = VK_FORMAT_UNDEFINED;
-	VkComponentMapping         components = { VK_COMPONENT_SWIZZLE_R,
-	                                          VK_COMPONENT_SWIZZLE_G,
-	                                          VK_COMPONENT_SWIZZLE_B,
-	                                          VK_COMPONENT_SWIZZLE_A };
+	VkComponentMapping         components = {};
 	VkImageSubresourceRange    subresourceRange = {};
 };
 

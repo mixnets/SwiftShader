@@ -291,6 +291,12 @@
     <ClCompile Include="VkCommandPool.cpp">
       <Filter>Source Files\Vulkan</Filter>
     </ClCompile>
+    <ClCompile Include="VkPipeline.cpp">
+      <Filter>Source Files\Vulkan</Filter>
+    </ClCompile>
+    <ClCompile Include="VkImageView.cpp">
+      <Filter>Source Files\Vulkan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
