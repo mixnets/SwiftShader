@@ -31,6 +31,7 @@ public:
 
 private:
 	uint32_t* code = nullptr;
+	size_t codeSize;
 };
 
 static inline ShaderModule* Cast(VkShaderModule object)

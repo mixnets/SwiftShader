@@ -27,6 +27,8 @@ public:
 	~Framebuffer() = delete;
 	void destroy(const VkAllocationCallbacks* pAllocator);
 
+	void clear(uint32_t pClearValueCount, const VkClearValue* pClearValues, const VkRect2D& pRenderArea);
+
 	static size_t ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo);
 
 private:
