@@ -31,6 +31,11 @@ public:
 
 	const VkMemoryRequirements getMemoryRequirements() const;
 	void bind(VkDeviceMemory pDeviceMemory, VkDeviceSize pMemoryOffset);
+	void copyFrom(const void* srcMemory, VkDeviceSize size, VkDeviceSize offset);
+	void copyTo(void* dstMemory, VkDeviceSize size, VkDeviceSize offset) const;
+	void copyTo(Buffer* dstBuffer, const VkBufferCopy& pRegion) const;
+	void* map(VkDeviceSize offset) const;
+	VkDeviceSize getSize() const;
 
 private:
 	void*                 memory = nullptr;
