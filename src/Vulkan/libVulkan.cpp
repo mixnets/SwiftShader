@@ -14,8 +14,8 @@
 
 #include "VkBuffer.hpp"
 #include "VkBufferView.hpp"
-#include "VkConfig.h"
 #include "VkCommandBuffer.hpp"
+#include "VkConfig.h"
 #include "VkDebug.hpp"
 #include "VkDestroy.h"
 #include "VkDevice.hpp"
@@ -25,8 +25,11 @@
 #include "VkGetProcAddress.h"
 #include "VkInstance.hpp"
 #include "VkPhysicalDevice.hpp"
+#include "VkPipeline.hpp"
+#include "VkPipelineLayout.hpp"
 #include "VkQueue.hpp"
 #include "VkSemaphore.hpp"
+#include "VkShaderModule.hpp"
 #include <cstring>
 #include <string>
 
@@ -739,9 +742,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateShaderModule(VkDevice device, const VkSha
 	TRACE("(VkDevice device = 0x%X, const VkShaderModuleCreateInfo* pCreateInfo = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X, VkShaderModule* pShaderModule = 0x%X)",
 		    device, pCreateInfo, pAllocator, pShaderModule);
 
-	UNIMPLEMENTED();
+	if(pCreateInfo->pNext || pCreateInfo->flags)
+	{
+		UNIMPLEMENTED();
+	}
 
-	return VK_SUCCESS;
+	return vk::ShaderModule::Create(pAllocator, pCreateInfo, pShaderModule);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyShaderModule(VkDevice device, VkShaderModule shaderModule, const VkAllocationCallbacks* pAllocator)
@@ -749,7 +755,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyShaderModule(VkDevice device, VkShaderModule
 	TRACE("(VkDevice device = 0x%X, VkShaderModule shaderModule = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X)",
 		    device, shaderModule, pAllocator);
 
-	UNIMPLEMENTED();
+	vk::destroy(shaderModule, pAllocator);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineCache(VkDevice device, const VkPipelineCacheCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkPipelineCache* pPipelineCache)
@@ -784,9 +790,31 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateGraphicsPipelines(VkDevice device, VkPipe
 	TRACE("(VkDevice device = 0x%X, VkPipelineCache pipelineCache = 0x%X, uint32_t createInfoCount = %d, const VkGraphicsPipelineCreateInfo* pCreateInfos, const VkAllocationCallbacks* pAllocator = 0x%X, VkPipeline* pPipelines = 0x%X)",
 		    device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
 
-	UNIMPLEMENTED();
+	if(pipelineCache != VK_NULL_HANDLE)
+	{
+		UNIMPLEMENTED();
+	}
 
-	return VK_SUCCESS;
+	VkResult errorResult = VK_SUCCESS;
+	for(uint32_t i = 0; i < createInfoCount; i++)
+	{
+		VkResult result = vk::Pipeline::Create(pAllocator, pCreateInfos + i, pPipelines + i);
+		if(result != VK_SUCCESS)
+		{
+			// According to the Vulkan spec, section 9.4. Multiple Pipeline Creation
+			// "When an application attempts to create many pipelines in a single command,
+			//  it is possible that some subset may fail creation. In that case, the
+			//  corresponding entries in the pPipelines output array will be filled with
+			//  VK_NULL_HANDLE values. If any pipeline fails creation (for example, due to
+			//  out of memory errors), the vkCreate*Pipelines commands will return an
+			//  error code. The implementation will attempt to create all pipelines, and
+			//  only return VK_NULL_HANDLE values for those that actually failed."
+			pPipelines[i] = VK_NULL_HANDLE;
+			errorResult = result;
+		}
+	}
+
+	return errorResult;
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateComputePipelines(VkDevice device, VkPipelineCache pipelineCache, uint32_t createInfoCount, const VkComputePipelineCreateInfo* pCreateInfos, const VkAllocationCallbacks* pAllocator, VkPipeline* pPipelines)
@@ -794,7 +822,29 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateComputePipelines(VkDevice device, VkPipel
 	TRACE("(VkDevice device = 0x%X, VkPipelineCache pipelineCache = 0x%X, uint32_t createInfoCount = %d, const VkComputePipelineCreateInfo* pCreateInfos, const VkAllocationCallbacks* pAllocator = 0x%X, VkPipeline* pPipelines = 0x%X)",
 		device, pipelineCache, createInfoCount, pCreateInfos, pAllocator, pPipelines);
 
-	UNIMPLEMENTED();
+	if(pipelineCache != VK_NULL_HANDLE)
+	{
+		UNIMPLEMENTED();
+	}
+
+	VkResult errorResult = VK_SUCCESS;
+	for(uint32_t i = 0; i < createInfoCount; i++)
+	{
+		VkResult result = vk::Pipeline::Create(pAllocator, pCreateInfos + i, pPipelines + i);
+		if(result != VK_SUCCESS)
+		{
+			// According to the Vulkan spec, section 9.4. Multiple Pipeline Creation
+			// "When an application attempts to create many pipelines in a single command,
+			//  it is possible that some subset may fail creation. In that case, the
+			//  corresponding entries in the pPipelines output array will be filled with
+			//  VK_NULL_HANDLE values. If any pipeline fails creation (for example, due to
+			//  out of memory errors), the vkCreate*Pipelines commands will return an
+			//  error code. The implementation will attempt to create all pipelines, and
+			//  only return VK_NULL_HANDLE values for those that actually failed."
+			pPipelines[i] = VK_NULL_HANDLE;
+			errorResult = result;
+		}
+	}
 
 	return VK_SUCCESS;
 }
@@ -804,7 +854,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyPipeline(VkDevice device, VkPipeline pipelin
 	TRACE("(VkDevice device = 0x%X, VkPipeline pipeline = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X)",
 		    device, pipeline, pAllocator);
 
-	UNIMPLEMENTED();
+	vk::destroy(pipeline, pAllocator);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineLayout(VkDevice device, const VkPipelineLayoutCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkPipelineLayout* pPipelineLayout)
@@ -812,9 +862,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreatePipelineLayout(VkDevice device, const VkP
 	TRACE("(VkDevice device = 0x%X, const VkPipelineLayoutCreateInfo* pCreateInfo = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X, VkPipelineLayout* pPipelineLayout = 0x%X)",
 		    device, pCreateInfo, pAllocator, pPipelineLayout);
 
-	UNIMPLEMENTED();
+	if(pCreateInfo->pNext || pCreateInfo->flags)
+	{
+		UNIMPLEMENTED();
+	}
 
-	return VK_SUCCESS;
+	return vk::PipelineLayout::Create(pAllocator, pCreateInfo, pPipelineLayout);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyPipelineLayout(VkDevice device, VkPipelineLayout pipelineLayout, const VkAllocationCallbacks* pAllocator)
@@ -822,7 +875,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroyPipelineLayout(VkDevice device, VkPipelineLa
 	TRACE("(VkDevice device = 0x%X, VkPipelineLayout pipelineLayout = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X)",
 		    device, pipelineLayout, pAllocator);
 
-	UNIMPLEMENTED();
+	vk::destroy(pipelineLayout, pAllocator);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSampler* pSampler)
@@ -1273,13 +1326,13 @@ VKAPI_ATTR void VKAPI_CALL vkCmdWaitEvents(VkCommandBuffer commandBuffer, uint32
 VKAPI_ATTR void VKAPI_CALL vkCmdPipelineBarrier(VkCommandBuffer commandBuffer, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask, VkDependencyFlags dependencyFlags, uint32_t memoryBarrierCount, const VkMemoryBarrier* pMemoryBarriers, uint32_t bufferMemoryBarrierCount, const VkBufferMemoryBarrier* pBufferMemoryBarriers, uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier* pImageMemoryBarriers)
 {
 	TRACE("(VkCommandBuffer commandBuffer = 0x%X, VkPipelineStageFlags srcStageMask = 0x%X, VkPipelineStageFlags dstStageMask = 0x%X, VkDependencyFlags dependencyFlags = %d, uint32_t memoryBarrierCount = %d, onst VkMemoryBarrier* pMemoryBarriers = 0x%X,"
-	      " uint32_t bufferMemoryBarrierCount = %d, const VkBufferMemoryBarrier* pBufferMemoryBarriers = 0x%X, uint32_t imageMemoryBarrierCount = %d, const VkImageMemoryBarrier* pImageMemoryBarriers = 0x%X)",
-	      commandBuffer, srcStageMask, dstStageMask, dependencyFlags, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
+		    " uint32_t bufferMemoryBarrierCount = %d, const VkBufferMemoryBarrier* pBufferMemoryBarriers = 0x%X, uint32_t imageMemoryBarrierCount = %d, const VkImageMemoryBarrier* pImageMemoryBarriers = 0x%X)",
+		    commandBuffer, srcStageMask, dstStageMask, dependencyFlags, memoryBarrierCount, pMemoryBarriers, bufferMemoryBarrierCount, pBufferMemoryBarriers, imageMemoryBarrierCount, pImageMemoryBarriers);
 
 	vk::Cast(commandBuffer)->pipelineBarrier(srcStageMask, dstStageMask, dependencyFlags,
-	                                         memoryBarrierCount, pMemoryBarriers,
-	                                         bufferMemoryBarrierCount, pBufferMemoryBarriers,
-	                                         imageMemoryBarrierCount, pImageMemoryBarriers);
+		                                    memoryBarrierCount, pMemoryBarriers,
+		                                    bufferMemoryBarrierCount, pBufferMemoryBarriers,
+		                                    imageMemoryBarrierCount, pImageMemoryBarriers);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkCmdBeginQuery(VkCommandBuffer commandBuffer, VkQueryPool queryPool, uint32_t query, VkQueryControlFlags flags)
@@ -1333,7 +1386,7 @@ VKAPI_ATTR void VKAPI_CALL vkCmdPushConstants(VkCommandBuffer commandBuffer, VkP
 VKAPI_ATTR void VKAPI_CALL vkCmdBeginRenderPass(VkCommandBuffer commandBuffer, const VkRenderPassBeginInfo* pRenderPassBegin, VkSubpassContents contents)
 {
 	TRACE("(VkCommandBuffer commandBuffer = 0x%X, const VkRenderPassBeginInfo* pRenderPassBegin = 0x%X, VkSubpassContents contents = %d)",
-	      commandBuffer, pRenderPassBegin, contents);
+		    commandBuffer, pRenderPassBegin, contents);
 
 	if(pRenderPassBegin->pNext)
 	{
