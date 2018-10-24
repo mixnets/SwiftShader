@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkFramebuffer.hpp"
+#include "VkImageView.hpp"
 #include <memory.h>
 
 namespace vk
@@ -30,6 +31,16 @@ Framebuffer::Framebuffer(const VkFramebufferCreateInfo* pCreateInfo, void* mem) 
 void Framebuffer::destroy(const VkAllocationCallbacks* pAllocator)
 {
 	vk::deallocate(attachments, pAllocator);
+}
+
+void Framebuffer::clear(uint32_t pClearValueCount, const VkClearValue* pClearValues, const VkRect2D& pRenderArea)
+{
+	ASSERT(pClearValueCount <= attachmentCount);
+
+	for(uint32_t i = 0; i < pClearValueCount; i++)
+	{
+		Cast(attachments[i])->clear(pClearValues[i], pRenderArea);
+	}
 }
 
 size_t Framebuffer::ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo)
