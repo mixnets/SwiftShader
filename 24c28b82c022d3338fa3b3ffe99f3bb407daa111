@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1dce4a10_9258fea6",
+        "filename": "third_party/llvm-7.0/configs/common/include/llvm/Support/VCSRevision.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-24T19:03:56Z",
+      "side": 1,
+      "message": "This is a SwiftShader repository revision, not an LLVM revision, so I think it\u0027s best to leave the old value.",
+      "range": {
+        "startLine": 1,
+        "startChar": 27,
+        "endLine": 1,
+        "endChar": 34
+      },
+      "revId": "24c28b82c022d3338fa3b3ffe99f3bb407daa111",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
