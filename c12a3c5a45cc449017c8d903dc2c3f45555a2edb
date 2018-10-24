@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d67d669_abb4607d",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-24T19:28:57Z",
+      "side": 1,
+      "message": "Shouldn\u0027t have to call this any more. vkAllocateMemory already allocated the memory (committed or not). Could use an ASSERT(buffer) here though.",
+      "range": {
+        "startLine": 55,
+        "startChar": 1,
+        "endLine": 55,
+        "endChar": 30
+      },
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "75ac21e8_496e9c45",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1335,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-24T19:28:57Z",
+      "side": 1,
+      "message": "nit: alignment change",
+      "range": {
+        "startLine": 1335,
+        "startChar": 1,
+        "endLine": 1335,
+        "endChar": 2
+      },
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

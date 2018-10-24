@@ -178,6 +178,30 @@
     },
     {
       "key": {
+        "uuid": "6af04c47_acc7b00f",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-24T19:28:57Z",
+      "side": 1,
+      "message": "note: Looks good to me, but after reading the spec some more I realized that VK_ERROR_OUT_OF_DEVICE_MEMORY can happen during mapping if virtual memory was reserved but not committed yet (cf. vkGetDeviceMemoryCommitment). For now I think we can always allocate and commit immediately (i.e. regular malloc).",
+      "parentUuid": "c31d9617_174f905f",
+      "range": {
+        "startLine": 46,
+        "startChar": 9,
+        "endLine": 46,
+        "endChar": 38
+      },
+      "revId": "be1981d979c315f2e48dfd09ab707473f210a29f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "11d260ad_91d502da",
         "filename": "src/Vulkan/VkDeviceMemory.cpp",
         "patchSetId": 1
