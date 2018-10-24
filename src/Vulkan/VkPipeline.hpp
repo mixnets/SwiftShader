@@ -16,6 +16,7 @@
 #define VK_PIPELINE_HPP_
 
 #include "VkObject.hpp"
+#include "Device/Renderer.hpp"
 
 namespace vk
 {
@@ -23,52 +24,30 @@ namespace vk
 class Pipeline : public Object<Pipeline, VkPipeline>
 {
 public:
-	Pipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem) :
-		graphicsInfo(reinterpret_cast<VkGraphicsPipelineCreateInfo*>(mem))
-	{
-		// FIXME(sugoi): link pCreateInfo with the shader module
-		*graphicsInfo = *pCreateInfo;
-	}
-
-	Pipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem) :
-		computeInfo(reinterpret_cast<VkComputePipelineCreateInfo*>(mem))
-	{
-		// FIXME(sugoi): link pCreateInfo with the shader module
-		*computeInfo = *pCreateInfo;
-	}
-
+	Pipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem);
+	Pipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem);
 	~Pipeline() = delete;
+	void destroy(const VkAllocationCallbacks* pAllocator);
 
-	void destroy(const VkAllocationCallbacks* pAllocator)
-	{
-		vk::deallocate(graphicsInfo, pAllocator);
-		vk::deallocate(computeInfo, pAllocator);
-	}
-
-	static size_t ComputeRequiredAllocationSize(const VkGraphicsPipelineCreateInfo* pCreateInfo)
-	{
-		return sizeof(VkGraphicsPipelineCreateInfo);
-	}
-
-	static size_t ComputeRequiredAllocationSize(const VkComputePipelineCreateInfo* pCreateInfo)
-	{
-		return sizeof(VkComputePipelineCreateInfo);
-	}
+	static size_t ComputeRequiredAllocationSize(const VkGraphicsPipelineCreateInfo* pCreateInfo);
+	static size_t ComputeRequiredAllocationSize(const VkComputePipelineCreateInfo* pCreateInfo);
 
 	void bindDescriptorSets(VkPipelineLayout layout, uint32_t firstSet,
 		uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
-		uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets)
-	{
-		/*for(uint32_t i = 0; i < descriptorSetCount; i++)
-		{
-			uint32_t setIndex = i + firstSet;
-			pDescriptorSets[i];
-		}*/
-	}
+		uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets);
+	uint32_t computePrimitiveCount(uint32_t vertexCount) const;
+	const sw::Context& getContext() const;
+	const sw::Rect& getScissor() const;
+	const VkViewport& getViewport() const;
+	const sw::Color<float>& getBlendConstants() const;
 
 private:
-	VkGraphicsPipelineCreateInfo* graphicsInfo = nullptr;
-	VkComputePipelineCreateInfo* computeInfo = nullptr;
+	VkShaderModule vertexModule;
+	VkShaderModule fragmentModule;
+	sw::Context context;
+	sw::Rect scissor;
+	VkViewport viewport;
+	sw::Color<float> blendConstants;
 };
 
 static inline Pipeline* Cast(VkPipeline object)

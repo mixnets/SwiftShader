@@ -17,6 +17,11 @@
 
 #include "VkObject.hpp"
 
+namespace sw
+{
+	class Surface;
+};
+
 namespace vk
 {
 
@@ -32,23 +37,41 @@ public:
 	VkDeviceSize getSize() const;
 	const VkMemoryRequirements getMemoryRequirements() const;
 	void bind(VkDeviceMemory pDeviceMemory, VkDeviceSize pMemoryOffset);
-	void copyTo(VkImageLayout srcImageLayout, VkBuffer dstBuffer,
-		uint32_t regionCount, const VkBufferImageCopy* pRegions);
-	void copyTo(VkImageLayout srcImageLayout, VkBuffer dstBuffer, const VkBufferImageCopy& pRegion);
+	void copyTo(VkImage dstImage, const VkImageCopy& pRegion);
+	void copyTo(VkBuffer dstBuffer, const VkBufferImageCopy& pRegion);
+	void copyFrom(VkBuffer srcBuffer, const VkBufferImageCopy& pRegion);
 	void getImageMipTailInfo(VkSparseImageMemoryRequirements* pSparseMemoryRequirements);
 	void getSubresourceLayout(const VkImageSubresource* pSubresource, VkSubresourceLayout* pLayout) const;
+
+	void clear(const VkClearValue& pClearValue, const VkRect2D& pRenderArea, unsigned int rgbaMask);
 
 	VkImageType              getImageType() const { return imageType; }
 	VkFormat                 getFormat() const { return format; }
 	VkSampleCountFlagBits    getSamples() const { return samples; }
 	VkImageTiling            getTiling() const { return tiling; }
 	VkImageUsageFlags        getUsage() const { return usage; }
+	VkImageLayout            getImageLayout() const { return initialLayout; }
 
 	static VkImageAspectFlags getImageAspect(VkFormat format);
 
 private:
 	VkDeviceSize computeNumberOfPixels(uint32_t width, uint32_t height, uint32_t depth) const;
-	uint32_t getBytesPerPixel() const;
+	int getBorder() const;
+
+	class ScopedSurface
+	{
+	public:
+		ScopedSurface(Image* image);
+		~ScopedSurface();
+
+		sw::Surface* get() const
+		{
+			return surface;
+		}
+
+	private:
+		sw::Surface* surface;
+	};
 
 	VkDeviceMemory           deviceMemory = nullptr;
 	VkDeviceSize             memoryOffset = 0;

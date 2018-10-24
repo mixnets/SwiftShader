@@ -163,6 +163,7 @@ namespace sw
 		inline int getSuperSampleCount() const;
 
 		bool isEntire(const Rect& rect) const;
+		bool hasSameLayout(const Surface* other) const;
 		Rect getRect() const;
 		void clearDepth(float depth, int x0, int y0, int width, int height);
 		void clearStencil(unsigned char stencil, unsigned char mask, int x0, int y0, int width, int height);

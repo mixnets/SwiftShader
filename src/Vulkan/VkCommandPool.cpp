@@ -32,8 +32,7 @@ void CommandPool::destroy(const VkAllocationCallbacks* pAllocator)
 	}
 
 	// Force commandBuffers to release all of its memory
-	std::vector<VkCommandBuffer> tmp;
-	commandBuffers.swap(tmp);
+	std::vector<VkCommandBuffer>().swap(commandBuffers);
 }
 
 size_t CommandPool::ComputeRequiredAllocationSize(const VkCommandPoolCreateInfo* pCreateInfo)
