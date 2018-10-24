@@ -1,0 +1,182 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9088d254_bf44da9e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-24T15:22:02Z",
+      "side": 1,
+      "message": "Needs new tracker issue.",
+      "revId": "be1981d979c315f2e48dfd09ab707473f210a29f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "558e8512_a583ec01",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-24T15:22:02Z",
+      "side": 1,
+      "message": "Add TODO here, else it appears to document the current implementation.",
+      "range": {
+        "startLine": 46,
+        "startChar": 35,
+        "endLine": 46,
+        "endChar": 36
+      },
+      "revId": "be1981d979c315f2e48dfd09ab707473f210a29f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3114550c_9994b1f2",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-24T15:22:02Z",
+      "side": 1,
+      "message": "style: Separate unrelated conditional statement with a blank line. Helps avoid confusing this for an \u0027if else\u0027.",
+      "range": {
+        "startLine": 43,
+        "startChar": 1,
+        "endLine": 44,
+        "endChar": 3
+      },
+      "revId": "be1981d979c315f2e48dfd09ab707473f210a29f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d886ce5b_b450af31",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-24T15:22:02Z",
+      "side": 1,
+      "message": "While the spec states that vkMapMemory can return this error, I don\u0027t think it makes much sense, since the allocation already took place during vkAllocateMemory. Of course since you\u0027re actually calling this from vkAllocateMemory it would never happen on vkMapMemory, but that\u0027s not clear from this end of the code.\n\nI suggest to create an allocate() method to do the actual allocation instead of making map() serve double duty.",
+      "range": {
+        "startLine": 46,
+        "startChar": 9,
+        "endLine": 46,
+        "endChar": 38
+      },
+      "revId": "be1981d979c315f2e48dfd09ab707473f210a29f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "11d260ad_91d502da",
+        "filename": "src/Vulkan/VkDeviceMemory.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-24T15:22:02Z",
+      "side": 1,
+      "message": "I don\u0027t think we should even have these.",
+      "range": {
+        "startLine": 56,
+        "startChar": 0,
+        "endLine": 69,
+        "endChar": 1
+      },
+      "revId": "be1981d979c315f2e48dfd09ab707473f210a29f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55f726c6_d4ce018a",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-24T15:22:02Z",
+      "side": 1,
+      "message": "allocate\n\nSee comments in DeviceMemory.cpp",
+      "range": {
+        "startLine": 392,
+        "startChar": 30,
+        "endLine": 392,
+        "endChar": 33
+      },
+      "revId": "be1981d979c315f2e48dfd09ab707473f210a29f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "839309ac_eee0d385",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1275,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-24T15:22:02Z",
+      "side": 1,
+      "message": "Alignment with spaces was fine before. Same below.",
+      "range": {
+        "startLine": 1275,
+        "startChar": 1,
+        "endLine": 1275,
+        "endChar": 2
+      },
+      "revId": "be1981d979c315f2e48dfd09ab707473f210a29f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8dff8c6e_d478d918",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1385,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-24T15:22:02Z",
+      "side": 1,
+      "message": "Don\u0027t call other entry functions directly. This can cause linking issues and the symbol may be substituted (e.g. call a layer\u0027s implementation of it).",
+      "range": {
+        "startLine": 1385,
+        "startChar": 2,
+        "endLine": 1385,
+        "endChar": 20
+      },
+      "revId": "be1981d979c315f2e48dfd09ab707473f210a29f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
