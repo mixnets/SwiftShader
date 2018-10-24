@@ -30,6 +30,16 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkPipelineLayoutCreateInfo* pCreateInfo);
 
+	uint32_t getSetLayoutCount() const
+	{
+		return setLayoutCount;
+	}
+
+	uint32_t getPushConstantRangeCount() const
+	{
+		return pushConstantRangeCount;
+	}
+
 private:
 	uint32_t               setLayoutCount = 0;
 	VkDescriptorSetLayout* setLayouts = nullptr;
