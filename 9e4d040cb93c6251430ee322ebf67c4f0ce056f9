@@ -48,6 +48,30 @@
     },
     {
       "key": {
+        "uuid": "ba7f93c0_dace4e66",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-10-24T16:36:35Z",
+      "side": 0,
+      "message": "Strongly suggest we support E5B9G9R9 and B10F_G11F_R11F (and anything else we\u0027re currently missing) natively. Making sure the app can never see behind the curtain is harder than just making these work.",
+      "parentUuid": "be9178c2_97e0eba7",
+      "range": {
+        "startLine": 175,
+        "startChar": 2,
+        "endLine": 175,
+        "endChar": 32
+      },
+      "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6c44ed80_3a939c95",
         "filename": "src/Device/Surface.hpp",
         "patchSetId": 1
@@ -82,6 +106,24 @@
       "writtenOn": "2018-10-24T09:32:32Z",
       "side": 0,
       "message": "Does this mean we won\u0027t support DXT or is it just cleanup? I think Vulkan as DXT at least as an extension, or maybe as a core optional features.",
+      "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4744718_7bc9b125",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-10-24T16:36:35Z",
+      "side": 0,
+      "message": "It\u0027s an optional core feature. The requirement is that we have to pick one family (of BC, ETC, ASTC) of compressed formats and support every format in that family.",
+      "parentUuid": "b4a98651_8f22b956",
       "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
