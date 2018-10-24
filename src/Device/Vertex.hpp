@@ -16,7 +16,7 @@
 #define Vertex_hpp
 
 #include "Color.hpp"
-#include "Common/Types.hpp"
+#include "System/Types.hpp"
 #include "Main/Config.hpp"
 
 namespace sw

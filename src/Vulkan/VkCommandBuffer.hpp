@@ -17,6 +17,7 @@
 
 #include "VkConfig.h"
 #include "VkObject.hpp"
+#include <vector>
 
 namespace vk
 {
@@ -109,18 +110,90 @@ public:
 
 	void submit();
 
+	struct DrawState
+	{
+		VkPipeline pipelines[VK_PIPELINE_BIND_POINT_RANGE_SIZE] = {};
+
+		struct VertexInputBindings
+		{
+			VkBuffer buffer;
+			VkDeviceSize offset;
+		};
+		VertexInputBindings vertexInputBindings[MaxVertexInputBindings] = {};
+	};
+
 private:
 	enum State { INITIAL, RECORDING, EXECUTABLE, PENDING, INVALID };
 	State state = INITIAL;
 	VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	VkPipeline pipelines[VK_PIPELINE_BIND_POINT_RANGE_SIZE];
+	DrawState drawState;
 
-	struct VertexInputBindings
+	void resetState();
+
+	struct Command
 	{
-		VkBuffer buffer;
-		VkDeviceSize offset;
+		virtual void play(CommandBuffer* commandBuffer) = 0;
 	};
-	VertexInputBindings vertexInputBindings[MaxVertexInputBindings];
+	std::vector<Command*> commands;
+
+	struct PipelineBind : public Command
+	{
+		PipelineBind(VkPipelineBindPoint pPipelineBindPoint, VkPipeline pPipeline) :
+			pipelineBindPoint(pPipelineBindPoint), pipeline(pPipeline)
+		{}
+
+		void play(CommandBuffer* commandBuffer) override;
+
+		VkPipelineBindPoint pipelineBindPoint;
+		VkPipeline pipeline;
+	};
+
+	struct VertexBufferBind : public Command
+	{
+		VertexBufferBind(uint32_t pBinding, const VkBuffer pBuffer, const VkDeviceSize pOffset) :
+			binding(pBinding), buffer(pBuffer), offset(pOffset)
+		{}
+
+		void play(CommandBuffer* commandBuffer) override;
+
+		uint32_t binding;
+		const VkBuffer buffer;
+		const VkDeviceSize offset;
+	};
+
+	struct Draw : public Command
+	{
+		Draw(uint32_t pVertexCount) : vertexCount(pVertexCount)
+		{}
+
+		void play(CommandBuffer* commandBuffer) override;
+
+		uint32_t vertexCount;
+	};
+
+	struct ImageToBufferCopy : public Command
+	{
+		ImageToBufferCopy(VkImage pSrcImage, VkBuffer pDstBuffer, const VkBufferImageCopy& pRegion) :
+			srcImage(pSrcImage), dstBuffer(pDstBuffer), region(pRegion)
+		{}
+
+		void play(CommandBuffer* commandBuffer) override;
+
+		VkImage srcImage;
+		VkBuffer dstBuffer;
+		const VkBufferImageCopy& region;
+	};
+
+	struct ExecuteSecondary : public Command
+	{
+		ExecuteSecondary(const VkCommandBuffer& pCommandBuffer) : secondaryCommandBuffer(pCommandBuffer)
+		{
+		}
+
+		void play(CommandBuffer* commandBuffer) override;
+
+		const VkCommandBuffer& secondaryCommandBuffer;
+	};
 };
 
 using DispatchableCommandBuffer = DispatchableObject<CommandBuffer, VkCommandBuffer>;

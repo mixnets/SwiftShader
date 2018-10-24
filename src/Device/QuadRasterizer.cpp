@@ -16,9 +16,9 @@
 
 #include "Primitive.hpp"
 #include "Renderer.hpp"
-#include "Shader/Constants.hpp"
-#include "Common/Math.hpp"
-#include "Common/Debug.hpp"
+#include "Pipeline/Constants.hpp"
+#include "System/Math.hpp"
+#include "System/Debug.hpp"
 
 namespace sw
 {

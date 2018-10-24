@@ -14,7 +14,9 @@
 
 #include "VkBuffer.hpp"
 #include "VkConfig.h"
+#include "VkDeviceMemory.hpp"
 #include "VkImage.hpp"
+#include "Device/Blitter.hpp"
 #include <memory.h>
 
 namespace vk
@@ -64,18 +66,32 @@ void Image::bind(VkDeviceMemory pDeviceMemory, VkDeviceSize pMemoryOffset)
 	memoryOffset = pMemoryOffset;
 }
 
-void Image::copyTo(VkImageLayout srcImageLayout, VkBuffer dstBuffer,
-	uint32_t regionCount, const VkBufferImageCopy* pRegions)
-{
-	for(uint32_t i = 0; i < regionCount; i++)
-	{
-		copyTo(srcImageLayout, dstBuffer, pRegions[i]);
-	}
-}
-
-void Image::copyTo(VkImageLayout srcImageLayout, VkBuffer dstBuffer, const VkBufferImageCopy& pRegion)
+void Image::copyTo(VkBuffer dstBuffer, const VkBufferImageCopy& pRegion)
 {
 	// FIXME : This is where we would use the blitter
+
+	if((pRegion.imageExtent.width != extent.width) ||
+	   (pRegion.imageExtent.height != extent.height) ||
+	   (pRegion.imageExtent.depth != extent.depth) ||
+	   (pRegion.imageSubresource.aspectMask != VK_IMAGE_ASPECT_COLOR_BIT) ||
+	   (pRegion.imageSubresource.baseArrayLayer != 0) ||
+	   (pRegion.imageSubresource.layerCount != 1) ||
+	   (pRegion.imageSubresource.mipLevel != 0) ||
+	   (pRegion.imageOffset.x != 0) ||
+	   (pRegion.imageOffset.y != 0) ||
+	   (pRegion.imageOffset.z != 0) ||
+	   (pRegion.bufferRowLength != extent.width) ||
+	   (pRegion.bufferImageHeight != extent.height))
+	{
+		UNIMPLEMENTED();
+	}
+
+	uint32_t bpp = 4; // FIXME
+	void* imageData = nullptr;
+	Cast(deviceMemory)->map(0, 0, &imageData);
+	Cast(dstBuffer)->copyTo(imageData,
+		pRegion.imageExtent.width * pRegion.imageExtent.height * pRegion.imageExtent.depth * bpp,
+		pRegion.bufferOffset);
 }
 
 void Image::getImageMipTailInfo(VkSparseImageMemoryRequirements* pSparseMemoryRequirements)
@@ -486,6 +502,81 @@ VkImageAspectFlags Image::getImageAspect(VkFormat format)
 	default:
 		return VK_IMAGE_ASPECT_COLOR_BIT;
 	}
+}
+
+void Image::clear(const VkClearValue& pClearValues, const VkRect2D& pRenderArea, unsigned int rgbaMask)
+{
+	sw::Format clearFormat = sw::FORMAT_A32B32G32R32F;
+	switch(format)
+	{
+	case VK_FORMAT_R8_UINT:
+	case VK_FORMAT_R8G8_UINT:
+	case VK_FORMAT_R8G8B8_UINT:
+	case VK_FORMAT_B8G8R8_UINT:
+	case VK_FORMAT_R8G8B8A8_UINT:
+	case VK_FORMAT_B8G8R8A8_UINT:
+	case VK_FORMAT_A8B8G8R8_UINT_PACK32:
+	case VK_FORMAT_A2R10G10B10_UINT_PACK32:
+	case VK_FORMAT_A2B10G10R10_UINT_PACK32:
+	case VK_FORMAT_R16_UINT:
+	case VK_FORMAT_R16G16_UINT:
+	case VK_FORMAT_R16G16B16_UINT:
+	case VK_FORMAT_R16G16B16A16_UINT:
+	case VK_FORMAT_R32_UINT:
+	case VK_FORMAT_R32G32_UINT:
+	case VK_FORMAT_R32G32B32_UINT:
+	case VK_FORMAT_R32G32B32A32_UINT:
+	case VK_FORMAT_R64_UINT:
+	case VK_FORMAT_R64G64_UINT:
+	case VK_FORMAT_R64G64B64_UINT:
+	case VK_FORMAT_R64G64B64A64_UINT:
+	case VK_FORMAT_S8_UINT:
+	case VK_FORMAT_D16_UNORM_S8_UINT:
+	case VK_FORMAT_D24_UNORM_S8_UINT:
+	case VK_FORMAT_D32_SFLOAT_S8_UINT:
+		clearFormat = sw::FORMAT_A32B32G32R32UI;
+		break;
+	case VK_FORMAT_R8_SINT:
+	case VK_FORMAT_R8G8_SINT:
+	case VK_FORMAT_R8G8B8_SINT:
+	case VK_FORMAT_B8G8R8_SINT:
+	case VK_FORMAT_R8G8B8A8_SINT:
+	case VK_FORMAT_B8G8R8A8_SINT:
+	case VK_FORMAT_A8B8G8R8_SINT_PACK32:
+	case VK_FORMAT_A2R10G10B10_SINT_PACK32:
+	case VK_FORMAT_A2B10G10R10_SINT_PACK32:
+	case VK_FORMAT_R16_SINT:
+	case VK_FORMAT_R16G16_SINT:
+	case VK_FORMAT_R16G16B16_SINT:
+	case VK_FORMAT_R16G16B16A16_SINT:
+	case VK_FORMAT_R32_SINT:
+	case VK_FORMAT_R32G32_SINT:
+	case VK_FORMAT_R32G32B32_SINT:
+	case VK_FORMAT_R32G32B32A32_SINT:
+	case VK_FORMAT_R64_SINT:
+	case VK_FORMAT_R64G64_SINT:
+	case VK_FORMAT_R64G64B64_SINT:
+	case VK_FORMAT_R64G64B64A64_SINT:
+		clearFormat = sw::FORMAT_A32B32G32R32I;
+		break;
+	default:
+		break;
+	}
+
+	uint32_t bpp = 4; // FIXME
+	sw::Format swFormat = sw::FORMAT_A8B8G8R8; // FIXME
+
+	void* pixels = nullptr;
+	Cast(deviceMemory)->map(0, 0, &pixels);
+	sw::Surface* dest = sw::Surface::create(
+		extent.width, extent.height, extent.depth, swFormat, pixels, extent.width * bpp, extent.width * extent.height * bpp);
+	const sw::Rect rect(
+		pRenderArea.offset.x, pRenderArea.offset.y,
+		pRenderArea.offset.x + pRenderArea.extent.width,
+		pRenderArea.offset.y + pRenderArea.extent.height);
+	const sw::SliceRect dRect(rect);
+	sw::Blitter blitter;
+	blitter.clear((void*)pClearValues.color.float32, clearFormat, dest, dRect, rgbaMask);
 }
 
 } // namespace vk

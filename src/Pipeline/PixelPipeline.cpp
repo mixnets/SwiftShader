@@ -14,7 +14,7 @@
 
 #include "PixelPipeline.hpp"
 #include "SamplerCore.hpp"
-#include "Renderer/Renderer.hpp"
+#include "Device/Renderer.hpp"
 
 namespace sw
 {

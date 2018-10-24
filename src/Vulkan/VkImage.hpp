@@ -32,17 +32,18 @@ public:
 	VkDeviceSize getSize() const;
 	const VkMemoryRequirements getMemoryRequirements() const;
 	void bind(VkDeviceMemory pDeviceMemory, VkDeviceSize pMemoryOffset);
-	void copyTo(VkImageLayout srcImageLayout, VkBuffer dstBuffer,
-		uint32_t regionCount, const VkBufferImageCopy* pRegions);
-	void copyTo(VkImageLayout srcImageLayout, VkBuffer dstBuffer, const VkBufferImageCopy& pRegion);
+	void copyTo(VkBuffer dstBuffer, const VkBufferImageCopy& pRegion);
 	void getImageMipTailInfo(VkSparseImageMemoryRequirements* pSparseMemoryRequirements);
 	void getSubresourceLayout(const VkImageSubresource* pSubresource, VkSubresourceLayout* pLayout) const;
+
+	void clear(const VkClearValue& pClearValues, const VkRect2D& pRenderArea, unsigned int rgbaMask);
 
 	VkImageType              getImageType() const { return imageType; }
 	VkFormat                 getFormat() const { return format; }
 	VkSampleCountFlagBits    getSamples() const { return samples; }
 	VkImageTiling            getTiling() const { return tiling; }
 	VkImageUsageFlags        getUsage() const { return usage; }
+	VkImageLayout            getImageLayout() const { return initialLayout; }
 
 	static VkImageAspectFlags getImageAspect(VkFormat format);
 

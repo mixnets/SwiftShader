@@ -17,7 +17,7 @@
 
 #include "Color.hpp"
 #include "Main/Config.hpp"
-#include "Common/Resource.hpp"
+#include "System/Resource.hpp"
 
 namespace sw
 {

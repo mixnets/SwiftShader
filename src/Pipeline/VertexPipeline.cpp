@@ -14,9 +14,9 @@
 
 #include "VertexPipeline.hpp"
 
-#include "Renderer/Vertex.hpp"
-#include "Renderer/Renderer.hpp"
-#include "Common/Debug.hpp"
+#include "Device/Vertex.hpp"
+#include "Device/Renderer.hpp"
+#include "System/Debug.hpp"
 
 #include <string.h>
 #include <stdlib.h>

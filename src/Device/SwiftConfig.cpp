@@ -15,8 +15,8 @@
 #include "SwiftConfig.hpp"
 
 #include "Config.hpp"
-#include "Common/Configurator.hpp"
-#include "Common/Debug.hpp"
+#include "System/Configurator.hpp"
+#include "System/Debug.hpp"
 #include "Common/Version.h"
 
 #include <sstream>
