@@ -18,9 +18,10 @@
 namespace vk
 {
 
-ShaderModule::ShaderModule(const VkShaderModuleCreateInfo* pCreateInfo, void* mem) : code(reinterpret_cast<char*>(mem))
+ShaderModule::ShaderModule(const VkShaderModuleCreateInfo* pCreateInfo, void* mem) :
+	code(reinterpret_cast<char*>(mem)), codeSize(pCreateInfo->codeSize)
 {
-	memcpy(code, pCreateInfo->pCode, pCreateInfo->codeSize);
+	memcpy(code, pCreateInfo->pCode, codeSize);
 }
 
 void ShaderModule::destroy(const VkAllocationCallbacks* pAllocator)

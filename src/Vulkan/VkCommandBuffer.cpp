@@ -12,36 +12,60 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "VkBuffer.hpp"
 #include "VkCommandBuffer.hpp"
+#include "VkFramebuffer.hpp"
+#include "VkImage.hpp"
 #include "VkPipeline.hpp"
+#include "VkRenderPass.hpp"
+#include "Device/Renderer.hpp"
 
 namespace vk
 {
 
 CommandBuffer::CommandBuffer(VkCommandBufferLevel pLevel) : level(pLevel)
 {
-	pipelines[VK_PIPELINE_BIND_POINT_GRAPHICS] = VK_NULL_HANDLE;
-	pipelines[VK_PIPELINE_BIND_POINT_COMPUTE] = VK_NULL_HANDLE;
 }
 
 void CommandBuffer::destroy(const VkAllocationCallbacks* pAllocator)
 {
+	resetState();
+}
+
+void CommandBuffer::resetState()
+{
+	// Free all commands
+	for(auto command : commands)
+	{
+		delete command;
+	}
+
+	// Force the commandBuffer to release all of its memory
+	std::vector<Command*> tmp;
+	commands.swap(tmp);
+
+	state = INITIAL;
 }
 
 VkResult CommandBuffer::begin(VkCommandBufferUsageFlags flags, const VkCommandBufferInheritanceInfo* pInheritanceInfo)
 {
-	state = RECORDING;
+	ASSERT((state != RECORDING) && (state != PENDING));
 
-	UNIMPLEMENTED();
+	if((flags != VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT) || pInheritanceInfo)
+	{
+		UNIMPLEMENTED();
+	}
+
+	state = RECORDING;
 
 	return VK_SUCCESS;
 }
 
 VkResult CommandBuffer::end()
 {
-	state = EXECUTABLE;
+	ASSERT(state == RECORDING);
 
-	UNIMPLEMENTED();
+	state = EXECUTABLE;
 
 	return VK_SUCCESS;
 }
@@ -50,33 +74,40 @@ VkResult CommandBuffer::reset(VkCommandPoolResetFlags flags)
 {
 	ASSERT(state != PENDING);
 
-	UNIMPLEMENTED();
-
-	// FIXME: put command buffer back to the initial state
-	state = INITIAL;
+	resetState();
 
 	return VK_SUCCESS;
 }
 
-void CommandBuffer::beginRenderPass(VkRenderPass renderPass, VkFramebuffer framebuffer, VkRect2D renderArea,
-                                    uint32_t clearValueCount, const VkClearValue* pClearValues, VkSubpassContents contents)
+void CommandBuffer::beginRenderPass(VkRenderPass pRenderPass, VkFramebuffer pFramebuffer, VkRect2D pRenderArea,
+                                    uint32_t pClearValueCount, const VkClearValue* pClearValues, VkSubpassContents pContents)
 {
-	UNIMPLEMENTED();
+	if(pContents != VK_SUBPASS_CONTENTS_INLINE)
+	{
+		UNIMPLEMENTED();
+	}
+
+	// FIXME: RenderPass information is currently ignored
+
+	Cast(pFramebuffer)->clear(pClearValueCount, pClearValues, pRenderArea);
 }
 
 void CommandBuffer::nextSubpass(VkSubpassContents contents)
 {
-	UNIMPLEMENTED();
+	// FIXME: RenderPass information is currently ignored
 }
 
 void CommandBuffer::endRenderPass()
 {
-	UNIMPLEMENTED();
+	// FIXME: RenderPass information is currently ignored
 }
 
 void CommandBuffer::executeCommands(uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers)
 {
-	UNIMPLEMENTED();
+	for(uint32_t i = 0; i < commandBufferCount; i++)
+	{
+		commands.push_back(new ExecuteSecondary(pCommandBuffers[i]));
+	}
 }
 
 void CommandBuffer::setDeviceMask(uint32_t deviceMask)
@@ -97,13 +128,16 @@ void CommandBuffer::pipelineBarrier(VkPipelineStageFlags srcStageMask, VkPipelin
                                     uint32_t imageMemoryBarrierCount, const VkImageMemoryBarrier* pImageMemoryBarriers)
 {
 	// FIXME: memory barriers are currently ignored
-
-	UNIMPLEMENTED();
 }
 
 void CommandBuffer::bindPipeline(VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline)
 {
-	pipelines[pipelineBindPoint] = pipeline;
+	if(pipelineBindPoint != VK_PIPELINE_BIND_POINT_GRAPHICS)
+	{
+		UNIMPLEMENTED();
+	}
+
+	commands.push_back(new PipelineBind(pipelineBindPoint, pipeline));
 }
 
 void CommandBuffer::bindVertexBuffers(uint32_t firstBinding, uint32_t bindingCount,
@@ -111,8 +145,7 @@ void CommandBuffer::bindVertexBuffers(uint32_t firstBinding, uint32_t bindingCou
 {
 	for(uint32_t i = firstBinding; i < (firstBinding + bindingCount); ++i)
 	{
-		vertexInputBindings[i].buffer = pBuffers[i];
-		vertexInputBindings[i].offset = pOffsets[i];
+		commands.push_back(new VertexBufferBind(i, pBuffers[i], pOffsets[i]));
 	}
 }
 
@@ -235,7 +268,8 @@ void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, Vk
 	uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
 	uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets)
 {
-	vk::Cast(pipelines[pipelineBindPoint])->bindDescriptorSets(layout, firstSet,
+	// FIXME: record the command
+	vk::Cast(drawState.pipelines[pipelineBindPoint])->bindDescriptorSets(layout, firstSet,
 		descriptorSetCount, pDescriptorSets, dynamicOffsetCount, pDynamicOffsets);
 }
 
@@ -280,7 +314,12 @@ void CommandBuffer::copyBufferToImage(VkBuffer srcBuffer, VkImage dstImage, VkIm
 void CommandBuffer::copyImageToBuffer(VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer,
 	uint32_t regionCount, const VkBufferImageCopy* pRegions)
 {
-	UNIMPLEMENTED();
+	ASSERT(srcImageLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+
+	for(uint32_t i = 0; i < regionCount; i++)
+	{
+		commands.push_back(new ImageToBufferCopy(srcImage, dstBuffer, pRegions[i]));
+	}
 }
 
 void CommandBuffer::updateBuffer(VkBuffer dstBuffer, VkDeviceSize dstOffset, VkDeviceSize dataSize, const void* pData)
@@ -337,7 +376,12 @@ void CommandBuffer::waitEvents(uint32_t eventCount, const VkEvent* pEvents, VkPi
 
 void CommandBuffer::draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance)
 {
-	UNIMPLEMENTED();
+	if(instanceCount > 1 || firstVertex != 0 || firstInstance != 0)
+	{
+		UNIMPLEMENTED();
+	}
+
+	commands.push_back(new Draw(vertexCount));
 }
 
 void CommandBuffer::drawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance)
@@ -360,10 +404,53 @@ void CommandBuffer::submit()
 	// Perform recorded work
 	state = PENDING;
 
-	UNIMPLEMENTED();
+	for(auto command : commands)
+	{
+		command->play(this);
+	}
 
 	// After work is completed
 	state = EXECUTABLE;
+}
+
+void CommandBuffer::PipelineBind::play(CommandBuffer* commandBuffer)
+{
+	commandBuffer->drawState.pipelines[pipelineBindPoint] = pipeline;
+}
+
+void CommandBuffer::VertexBufferBind::play(CommandBuffer* commandBuffer)
+{
+	commandBuffer->drawState.vertexInputBindings[binding] = { buffer, offset };
+}
+
+void CommandBuffer::Draw::play(CommandBuffer* commandBuffer)
+{
+	auto pipeline = Cast(commandBuffer->drawState.pipelines[VK_PIPELINE_BIND_POINT_GRAPHICS]);
+
+	sw::Context context = pipeline->getContext();
+	for(uint32_t i = 0; i < MaxVertexInputBindings; i++)
+	{
+		const auto& vertexInput = commandBuffer->drawState.vertexInputBindings[i];
+		auto buffer = Cast(commandBuffer->drawState.vertexInputBindings[i].buffer);
+		context.input[i].buffer = buffer ? buffer->map(vertexInput.offset) : nullptr;
+	}
+
+	sw::Renderer renderer(&context, sw::OpenGL, true);
+	renderer.setScissor(pipeline->getScissor());
+	renderer.setViewport(pipeline->getViewport());
+	renderer.setBlendConstant(pipeline->getBlendConstants());
+
+	renderer.draw(context.drawType, 0, pipeline->computePrimitiveCount(vertexCount));
+}
+
+void CommandBuffer::ImageToBufferCopy::play(CommandBuffer* commandBuffer)
+{
+	Cast(srcImage)->copyTo(dstBuffer, region);
+}
+
+void CommandBuffer::ExecuteSecondary::play(CommandBuffer* commandBuffer)
+{
+	Cast(secondaryCommandBuffer)->submit();
 }
 
 } // namespace vk
