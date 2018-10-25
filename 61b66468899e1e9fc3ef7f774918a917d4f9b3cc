@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0a217920_4359797d",
+        "filename": "SwiftShader.sln",
+        "patchSetId": 2
+      },
+      "lineNbr": 764,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-25T19:16:40Z",
+      "side": 1,
+      "message": "Same question as patch 1",
+      "range": {
+        "startLine": 764,
+        "startChar": 47,
+        "endLine": 764,
+        "endChar": 52
+      },
+      "revId": "61b66468899e1e9fc3ef7f774918a917d4f9b3cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
