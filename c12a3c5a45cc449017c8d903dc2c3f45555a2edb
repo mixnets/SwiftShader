@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "c4a8f047_64238ff2",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-10-25T15:55:43Z",
+      "side": 1,
+      "message": "This TODO isn\u0027t workable. You can require alignment, and if you must, you can have some slop on the _end_, but the first byte of the buffer contents is at the offset you bind to.\n\nAnything needing to enforce robustness should have access to the size information (via a descriptor if in the shader, or directly from this object if used directly from a CB).",
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6d15ce69_f792b6cf",
         "filename": "src/Vulkan/VkBuffer.cpp",
         "patchSetId": 2
