@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "169f1dc2_3e9c6f0a",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-25T16:04:34Z",
+      "side": 1,
+      "message": "I would have imagined that doing this: |size|padding for alignement|buffer content| with \u0026size aligned would have been ok. Is there some additional constraints because of memory aliasing between buffers?",
+      "parentUuid": "c4a8f047_64238ff2",
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6d15ce69_f792b6cf",
         "filename": "src/Vulkan/VkBuffer.cpp",
         "patchSetId": 2
