@@ -109,6 +109,24 @@
     },
     {
       "key": {
+        "uuid": "1487bf39_59f3d111",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-10-25T16:24:08Z",
+      "side": 1,
+      "message": "Yeah, I see what you\u0027re saying -- and you /do/ have more flexibility for images; for optimal tiled, the driver does whatever it wants; for linear tiled, it describes the exact layout to the app.\n\nThere is another possible issue with putting anything you need for robustness in here -- you can\u0027t rely on the app not stomping on it from the host. They can map and stomp on the whole underlying VkDeviceMemory, not just the range you want them to use. Anything you need them not to break shouldn\u0027t be in VkDeviceMemory.",
+      "parentUuid": "45ba6c4d_d5d028d3",
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6d15ce69_f792b6cf",
         "filename": "src/Vulkan/VkBuffer.cpp",
         "patchSetId": 2
