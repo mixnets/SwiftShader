@@ -5597,7 +5597,37 @@ void TargetMIPS32::lowerSelect(const InstSelect *Instr) {
 }
 
 void TargetMIPS32::lowerShuffleVector(const InstShuffleVector *Instr) {
-  UnimplementedLoweringError(this, Instr);
+  auto *Dest = Instr->getDest();
+  const Type DestTy = Dest->getType();
+
+  auto *T = makeReg(DestTy);
+  auto *Src0 = Instr->getSrc(0);
+  auto *Src1 = Instr->getSrc(1);
+  const SizeT NumElements = typeNumElements(DestTy);
+  const Type ElementType = typeElementType(DestTy);
+
+  auto *NewTV = llvm::dyn_cast<VariableVecOn32>(T);
+  NewTV->initVecElement(Func);
+
+  Context.insert<InstFakeDef>(T);
+  for (SizeT I = 0; I < Instr->getNumIndexes(); ++I) {
+    auto *Index = Instr->getIndex(I);
+    const SizeT Elem = Index->getValue();
+    auto *ExtElmt = makeReg(ElementType);
+    if (Elem < NumElements) {
+      lowerExtractElement(
+          InstExtractElement::create(Func, ExtElmt, Src0, Index));
+    } else {
+      lowerExtractElement(InstExtractElement::create(
+          Func, ExtElmt, Src1,
+          Ctx->getConstantInt32(Index->getValue() - NumElements)));
+    }
+    auto *NewT = makeReg(DestTy);
+    lowerInsertElement(InstInsertElement::create(Func, NewT, T, ExtElmt,
+                                                 Ctx->getConstantInt32(I)));
+    T = NewT;
+  }
+  _mov(Dest, T);
 }
 
 void TargetMIPS32::lowerStore(const InstStore *Instr) {
