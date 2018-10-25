@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e1f7fb43_6d7b1e8e",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-25T18:26:18Z",
+      "side": 1,
+      "message": "extensionProperties?",
+      "range": {
+        "startLine": 253,
+        "startChar": 30,
+        "endLine": 253,
+        "endChar": 40
+      },
+      "revId": "e4b36c5a9ad995d5f4f1bc7a8f6b60ae31606340",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4fbc0c71_0d58dbf5",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-25T18:26:18Z",
+      "side": 1,
+      "message": "extensionPropertiesCount?",
+      "range": {
+        "startLine": 262,
+        "startChar": 6,
+        "endLine": 262,
+        "endChar": 20
+      },
+      "revId": "e4b36c5a9ad995d5f4f1bc7a8f6b60ae31606340",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db906398_914eed90",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-25T18:26:18Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 282,
+        "startChar": 30,
+        "endLine": 282,
+        "endChar": 40
+      },
+      "revId": "e4b36c5a9ad995d5f4f1bc7a8f6b60ae31606340",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d27c9aeb_bd2f83f6",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-25T18:26:18Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 304,
+        "startChar": 6,
+        "endLine": 304,
+        "endChar": 20
+      },
+      "revId": "e4b36c5a9ad995d5f4f1bc7a8f6b60ae31606340",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
