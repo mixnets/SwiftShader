@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "8222e9d6_68fdc3e1",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-10-25T16:15:36Z",
+      "side": 1,
+      "message": "The good news is you don\u0027t need it -- everywhere you need to enforce bounds checking, you can get the information easily enough.",
+      "parentUuid": "0316c433_e3c8b1f7",
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6d15ce69_f792b6cf",
         "filename": "src/Vulkan/VkBuffer.cpp",
         "patchSetId": 2
