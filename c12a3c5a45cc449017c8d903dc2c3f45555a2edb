@@ -132,6 +132,30 @@
     },
     {
       "key": {
+        "uuid": "6fc9715e_1e1738b3",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-25T15:52:32Z",
+      "side": 1,
+      "message": "Ack. I\u0027ll make sure I cleanse all unused parameters once we\u0027ve implemented multiple uses of the Buffer object (or any other object) and we realize that some parameters are irrelevant to SwiftShader, but I\u0027m afraid of the opposite thing, which is forgetting to implement support for some of the parameters because a class looks \"clean\".",
+      "parentUuid": "22e0198a_5581d034",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 52
+      },
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dd34e4d8_a5aeca2d",
         "filename": "src/Vulkan/VkBufferView.hpp",
         "patchSetId": 2
@@ -315,6 +339,24 @@
       "side": 1,
       "message": "I\u0027m ambivalent about it in this particular case, so don\u0027t worry about it, but in general it\u0027s a slippery slope to start implementing things partially even when known to be required. If that reasoning was applied to every layer of the implementation it\u0027s easy to end up with something large that is still practically untested and when issues are found it becomes a very big task to refactor. So we do need some of the functionality tested full-stack relatively early on even if that means ignoring (i.e. stubbing/hacking) parts that aren\u0027t ready yet.\n\nThat said, we definitely also need some breadth-first work like this too because otherwise we might end up with completely customized objects that have no consistency between them. So it\u0027s a bit of a balancing act between these two uncertainties. :-) Doing lots of spec reading, research, and diligent design work can help avoid mistakes.",
       "parentUuid": "c2ddfd4c_f9b718ff",
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5fdebefc_f2c6c57c",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 677,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-25T15:52:32Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ca7d8ade_36b84470",
       "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false

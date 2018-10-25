@@ -16,6 +16,24 @@
       "revId": "4fe48a8162dc3d67f20ce30de79b84875a85c706",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5168b5d1_b3590331",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-25T15:52:32Z",
+      "side": 1,
+      "message": "Is it the driver\u0027s responsibility to check that that bit is set?\nIf not, then  I\u0027d say it\u0027s ok as it is.",
+      "parentUuid": "85890769_21bc106a",
+      "revId": "4fe48a8162dc3d67f20ce30de79b84875a85c706",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
