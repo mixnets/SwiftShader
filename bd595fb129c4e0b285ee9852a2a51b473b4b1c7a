@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d4de523c_a546de3a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-25T18:35:31Z",
+      "side": 1,
+      "message": "Bug b/116336664",
+      "revId": "bd595fb129c4e0b285ee9852a2a51b473b4b1c7a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
