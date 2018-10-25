@@ -2036,10 +2036,16 @@ void FramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GL
 			framebuffer->setStencilbuffer(textarget, texture, level);
 			break;
 		default:
-			if((attachment - GL_COLOR_ATTACHMENT0) >= MAX_COLOR_ATTACHMENTS)
+			if(attachment < GL_COLOR_ATTACHMENT0 || attachment > GL_COLOR_ATTACHMENT31)
 			{
 				return error(GL_INVALID_ENUM);
 			}
+
+			if((attachment - GL_COLOR_ATTACHMENT0) >= MAX_COLOR_ATTACHMENTS)
+			{
+				return error(GL_INVALID_OPERATION);
+			}
+
 			framebuffer->setColorbuffer(textarget, texture, attachment - GL_COLOR_ATTACHMENT0, level);
 			break;
 		}
