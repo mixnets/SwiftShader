@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "66e13e0a_c9496c37",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 792,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-10-25T16:05:29Z",
+      "side": 1,
+      "message": "This is broken -- Create*Pipelines can _partially_ fail. See 9.4 for exactly how this is supposed to work.",
+      "revId": "d674dbd46d91a898a06b77bab34ed3cc8de39cdb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
