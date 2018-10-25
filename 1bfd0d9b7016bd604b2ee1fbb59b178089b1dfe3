@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "56bf91e6_16b5e5ab",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-25T14:26:10Z",
+      "side": 1,
+      "message": "nit: Could add a \"Bug b/117854176\" line here.",
+      "revId": "1bfd0d9b7016bd604b2ee1fbb59b178089b1dfe3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
