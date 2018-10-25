@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "65ed9a23_5fc5d0e8",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-25T03:14:59Z",
+      "side": 1,
+      "message": "Generally agreed, but see my VkBufferView.cpp comment.",
+      "parentUuid": "0be21a34_a83f944e",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 52
+      },
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "dd34e4d8_a5aeca2d",
         "filename": "src/Vulkan/VkBufferView.hpp",
         "patchSetId": 2
@@ -53,6 +77,30 @@
       "writtenOn": "2018-10-24T21:55:11Z",
       "side": 1,
       "message": "I think for buffer views you would only care about the offseted pointer, sixe and format, not the rest.",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 21
+      },
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "badeb742_66397ffa",
+        "filename": "src/Vulkan/VkBufferView.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-25T03:14:59Z",
+      "side": 1,
+      "message": "For debugging purposes it seems valuable to track the original creation/binding info. Perhaps we should do that consistently across all objects by adding Vk*CreateInfo members, within #ifndef NDEBUG, then separately have the strictly necessary data. There would be some duplication for debug builds, but that\u0027s fine.\n\nLet\u0027s discuss this further in b/118401597. For now I\u0027m ok with this part of the CL as-is since already existing objects don\u0027t necessarily follow this yet either.",
+      "parentUuid": "dd34e4d8_a5aeca2d",
       "range": {
         "startLine": 39,
         "startChar": 0,
@@ -99,6 +147,24 @@
       "writtenOn": "2018-10-24T21:55:11Z",
       "side": 1,
       "message": "Buffer views are only used for the very advanced feature of texel buffers, where a buffer is seen as a linear 1D texture. You won\u0027t be able to use it before you do a vast amount of improvements to the shader compiler so I think it could be skipped for now.",
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "efe081d9_13fe8ecf",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 677,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-25T03:14:59Z",
+      "side": 1,
+      "message": "Alexis, I\u0027m assuming this is exercised by dEQP early on? If not I would agree with Corentin and usually recommend to not implement anything yet, even for seemingly simple stuff, although in this case it seems trivial enough to keep it.",
+      "parentUuid": "058affab_82af7c9d",
       "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
