@@ -91,6 +91,24 @@
     },
     {
       "key": {
+        "uuid": "45ba6c4d_d5d028d3",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-10-25T16:18:46Z",
+      "side": 1,
+      "message": "What I meant is we can actually ask for more space in the memory requirements and then pad things like in the previous comment. The only thing I\u0027d see wouldn\u0027t work is maybe because of buffer aliasing. But this way the size would be directly inline with the buffer allocation. I suspect some drivers do this for textures but maybe not for buffers.",
+      "parentUuid": "8222e9d6_68fdc3e1",
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6d15ce69_f792b6cf",
         "filename": "src/Vulkan/VkBuffer.cpp",
         "patchSetId": 2
