@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "85890769_21bc106a",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-10-25T15:43:51Z",
+      "side": 1,
+      "message": "You don\u0027t actually have to do this unless we have a memory type with VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT. It\u0027s invalid to query device memory commitment for a VkDeviceMemory created using a memory type lacking that bit.",
+      "revId": "4fe48a8162dc3d67f20ce30de79b84875a85c706",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
