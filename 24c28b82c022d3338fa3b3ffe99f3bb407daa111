@@ -22,6 +22,30 @@
       "revId": "24c28b82c022d3338fa3b3ffe99f3bb407daa111",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae6aeec7_f00521b5",
+        "filename": "third_party/llvm-7.0/configs/common/include/llvm/Support/VCSRevision.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 7064
+      },
+      "writtenOn": "2018-10-25T13:24:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1dce4a10_9258fea6",
+      "range": {
+        "startLine": 1,
+        "startChar": 27,
+        "endLine": 1,
+        "endChar": 34
+      },
+      "revId": "24c28b82c022d3338fa3b3ffe99f3bb407daa111",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
