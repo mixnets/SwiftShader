@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "891335e0_f23588e4",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-25T15:46:26Z",
+      "side": 0,
+      "message": "Done. This raises the question of whether we should keep any of the FORMAT_X* formats, but that can be answered later.",
+      "parentUuid": "ecddade9_542ae9f0",
+      "range": {
+        "startLine": 82,
+        "startChar": 2,
+        "endLine": 83,
+        "endChar": 16
+      },
+      "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "be9178c2_97e0eba7",
         "filename": "src/Device/Surface.hpp",
         "patchSetId": 1
@@ -72,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "ae984a32_a0810b1a",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-25T15:46:26Z",
+      "side": 0,
+      "message": "I would also prefer implementing E5B9G9R9 and B10F_G11F_R11F natively. There\u0027s no harm in keeping these formats around for now, but I\u0027ll do my beast not to use them.",
+      "parentUuid": "ba7f93c0_dace4e66",
+      "range": {
+        "startLine": 175,
+        "startChar": 2,
+        "endLine": 175,
+        "endChar": 32
+      },
+      "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6c44ed80_3a939c95",
         "filename": "src/Device/Surface.hpp",
         "patchSetId": 1
@@ -92,6 +140,30 @@
       "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5527a41_f261d0b1",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-25T15:46:26Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "6c44ed80_3a939c95",
+      "range": {
+        "startLine": 182,
+        "startChar": 2,
+        "endLine": 182,
+        "endChar": 31
+      },
+      "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -127,6 +199,24 @@
       "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ffc1debf_d1e0c19a",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-25T15:46:26Z",
+      "side": 0,
+      "message": "We can re-add them later, but for now, to keep this as lightweight as possible, we\u0027ll just aim for ETC2 support. We\u0027re looking into making every format natively supported by the sampler code, so getting rid of unnecessary formats simplifies the work. Most likely, if these formats get supported in Vulkan, they won\u0027t be implemented the same way they are now.",
+      "parentUuid": "a4744718_7bc9b125",
+      "revId": "9e4d040cb93c6251430ee322ebf67c4f0ce056f9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
