@@ -108,6 +108,30 @@
     },
     {
       "key": {
+        "uuid": "22e0198a_5581d034",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-25T15:25:30Z",
+      "side": 1,
+      "message": "The problem is that it\u0027s extremely easy to forget about these. This can lead to death-by-a-thousand-cuts or even simply become a maintenance burden (e.g. after a while these variables might become used for something unimportant, but when a refactoring needs to happen people don\u0027t remember the full history and are overly careful not to remove them - just painting one possible scenario here, and it might seem minor in isolation but does add up when doing these things across the code base).\n\nIt\u0027s impossible to forget about things when only adding them when absolutely needed.\n\nAnyway, we have b/118401597 to remind us about this, which, hopefully, doesn\u0027t get lowered in priority because we start passing tests and then seems no longer worth it due to things becoming harder to refactor as time passes.",
+      "parentUuid": "f44f5c9e_670ccfb1",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 44,
+        "endChar": 52
+      },
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dd34e4d8_a5aeca2d",
         "filename": "src/Vulkan/VkBufferView.hpp",
         "patchSetId": 2
@@ -273,6 +297,24 @@
       "side": 1,
       "message": "I understand the point, but it is required in Vulkan 1.1, so I\u0027m not sure what is to gain by holding off implementing this as a simple object for now. It\u0027s a part of vkUpdateDescriptorSets, for example, and I\u0027d like to have all objects available ASAP so that I can at least choose to ignore these objects within these calls rather than have to implement the whole thing the day I need them, if that\u0027s ok.",
       "parentUuid": "efe081d9_13fe8ecf",
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ca7d8ade_36b84470",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 677,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-10-25T15:25:30Z",
+      "side": 1,
+      "message": "I\u0027m ambivalent about it in this particular case, so don\u0027t worry about it, but in general it\u0027s a slippery slope to start implementing things partially even when known to be required. If that reasoning was applied to every layer of the implementation it\u0027s easy to end up with something large that is still practically untested and when issues are found it becomes a very big task to refactor. So we do need some of the functionality tested full-stack relatively early on even if that means ignoring (i.e. stubbing/hacking) parts that aren\u0027t ready yet.\n\nThat said, we definitely also need some breadth-first work like this too because otherwise we might end up with completely customized objects that have no consistency between them. So it\u0027s a bit of a balancing act between these two uncertainties. :-) Doing lots of spec reading, research, and diligent design work can help avoid mistakes.",
+      "parentUuid": "c2ddfd4c_f9b718ff",
       "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
