@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "0316c433_e3c8b1f7",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-10-25T16:14:21Z",
+      "side": 1,
+      "message": "There is no mechanism to tell the app that you\u0027ve done that. There\u0027s no initial padding at the start of the buffer -- the app is responsible for choosing vkBindBufferMemory\u0027s memoryOffset parameter to satisfy VkMemoryREquirements::alignment, but the first byte is always at that offset.",
+      "parentUuid": "169f1dc2_3e9c6f0a",
+      "revId": "c12a3c5a45cc449017c8d903dc2c3f45555a2edb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6d15ce69_f792b6cf",
         "filename": "src/Vulkan/VkBuffer.cpp",
         "patchSetId": 2
