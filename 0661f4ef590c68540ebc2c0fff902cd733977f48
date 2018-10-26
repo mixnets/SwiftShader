@@ -46,6 +46,30 @@
       "revId": "0661f4ef590c68540ebc2c0fff902cd733977f48",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5743c9c1_6539edc6",
+        "filename": "SwiftShader.sln",
+        "patchSetId": 1
+      },
+      "lineNbr": 764,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-10-26T00:40:42Z",
+      "side": 1,
+      "message": "Ok, as long as it was verified, it\u0027s fine.",
+      "parentUuid": "f37fe217_feacabfc",
+      "range": {
+        "startLine": 764,
+        "startChar": 47,
+        "endLine": 764,
+        "endChar": 52
+      },
+      "revId": "0661f4ef590c68540ebc2c0fff902cd733977f48",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
