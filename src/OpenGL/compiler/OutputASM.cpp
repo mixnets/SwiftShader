@@ -2691,6 +2691,8 @@ namespace glsl
 								rel.type = relativeRegister.type;
 								rel.scale = scale;
 								rel.dynamic = (right->getQualifier() != EvqUniform) && (deterministicVariables.count(indexId) == 0);
+
+								right->getAsSymbolNode()->getSymbol().c_str
 							}
 						}
 						else if(rel.index != registerIndex(&address))   // Move the previous index register to the address register

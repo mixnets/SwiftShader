@@ -32,6 +32,8 @@
 #include <string.h>
 #include <cstdint>
 
+#include "../src/Common/Math.hpp"
+
 #define EXPECT_GLENUM_EQ(expected, actual) EXPECT_EQ(static_cast<GLenum>(expected), static_cast<GLenum>(actual))
 
 class SwiftShaderTest : public testing::Test
@@ -39,6 +41,21 @@ class SwiftShaderTest : public testing::Test
 protected:
 	void SetUp() override
 	{
+		float a = sw::clamp_s(10.0f, 2.0f, 3.0f);
+		float b = sw::clamp_s(-10.0f, -3.0f, -2.0f);
+		float c = sw::clamp_s(10.0f, -3.0f, -2.0f);
+		float d = sw::clamp_s(-1.0f, -3.0f, -2.0f);
+		float e = sw::clamp_s(-0.0f, 0.0f, 1.0f);
+
+		float a2 = sw::clamp(10.0f, 2.0f, 3.0f);
+		float b2 = sw::clamp(-10.0f, -3.0f, -2.0f);
+		float c2 = sw::clamp(10.0f, -3.0f, -2.0f);
+		float d2 = sw::clamp(-1.0f, -3.0f, -2.0f);
+		float e2 = sw::clamp(-0.0f, 0.0f, 1.0f);
+
+		
+		float de = sw::clamp_s(-0.0f, 0.0f, 1.0f);
+
 		#if defined(_WIN32) && !defined(STANDALONE)
 			// The DLLs are delay loaded (see BUILD.gn), so we can load
 			// the correct ones from Chrome's swiftshader subdirectory.

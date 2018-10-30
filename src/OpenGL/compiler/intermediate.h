@@ -417,7 +417,7 @@ public:
 	int getId() const { return id; }
 	const TString& getSymbol() const { return symbol; }
 
-	void setId(int newId) { id = newId; }
+	//void setId(int newId) { id = newId; }
 
 	virtual void traverse(TIntermTraverser*);
 	virtual TIntermSymbol* getAsSymbolNode() { return this; }

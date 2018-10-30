@@ -33,6 +33,11 @@
 
 int TSymbolTableLevel::uniqueId = 0;
 
+TSymbol::TSymbol(const TString *n)
+    : name(n), uniqueId(TSymbolTableLevel::nextUniqueId())
+{
+}
+
 TType::TType(const TPublicType &p) :
 	type(p.type), precision(p.precision), qualifier(p.qualifier),
 	primarySize(p.primarySize), secondarySize(p.secondarySize), array(p.array), arraySize(p.arraySize), maxArraySize(0),
@@ -200,8 +205,6 @@ TSymbolTableLevel::~TSymbolTableLevel()
 
 bool TSymbolTableLevel::insert(TSymbol *symbol)
 {
-	symbol->setUniqueId(nextUniqueId());
-
 	// returning true means symbol was added to the table
 	tInsertResult result = level.insert(tLevelPair(symbol->getMangledName(), symbol));
 
@@ -210,8 +213,6 @@ bool TSymbolTableLevel::insert(TSymbol *symbol)
 
 bool TSymbolTableLevel::insertUnmangled(TFunction *function)
 {
-	function->setUniqueId(nextUniqueId());
-
 	// returning true means symbol was added to the table
 	tInsertResult result = level.insert(tLevelPair(function->getName(), function));
 

@@ -1439,8 +1439,7 @@ TIntermAggregate *TParseContext::parseSingleDeclaration(TPublicType &publicType,
 	const TSourceLoc &identifierOrTypeLocation,
 	const TString &identifier)
 {
-	TIntermSymbol *symbol = intermediate.addSymbol(0, identifier, TType(publicType), identifierOrTypeLocation);
-
+	TVariable *variable = nullptr;
 	bool emptyDeclaration = (identifier == "");
 
 	mDeferredSingleDeclarationErrorCheck = emptyDeclaration;
@@ -1462,13 +1461,11 @@ TIntermAggregate *TParseContext::parseSingleDeclaration(TPublicType &publicType,
 		if(nonInitErrorCheck(identifierOrTypeLocation, identifier, publicType))
 			recover();
 
-		TVariable *variable = nullptr;
 		if(!declareVariable(identifierOrTypeLocation, identifier, TType(publicType), &variable))
 			recover();
-
-		if(variable && symbol)
-			symbol->setId(variable->getUniqueId());
 	}
+
+	TIntermSymbol *symbol = intermediate.addSymbol(variable ? variable->getUniqueId() : 0, identifier, TType(publicType), identifierOrTypeLocation);
 
 	return intermediate.makeAggregate(symbol, identifierOrTypeLocation);
 }
@@ -1507,9 +1504,7 @@ TIntermAggregate *TParseContext::parseSingleArrayDeclaration(TPublicType &public
 	if(!declareVariable(identifierLocation, identifier, arrayType, &variable))
 		recover();
 
-	TIntermSymbol *symbol = intermediate.addSymbol(0, identifier, arrayType, identifierLocation);
-	if(variable && symbol)
-		symbol->setId(variable->getUniqueId());
+	TIntermSymbol *symbol = intermediate.addSymbol(variable ? variable->getUniqueId() : 0, identifier, arrayType, identifierLocation);
 
 	return intermediate.makeAggregate(symbol, identifierLocation);
 }
@@ -1643,9 +1638,7 @@ TIntermAggregate *TParseContext::parseDeclarator(TPublicType &publicType, TInter
 	if(!declareVariable(identifierLocation, identifier, TType(publicType), &variable))
 		recover();
 
-	TIntermSymbol *symbol = intermediate.addSymbol(0, identifier, TType(publicType), identifierLocation);
-	if(variable && symbol)
-		symbol->setId(variable->getUniqueId());
+	TIntermSymbol *symbol = intermediate.addSymbol(variable ? variable->getUniqueId() : 0, identifier, TType(publicType), identifierLocation);
 
 	return intermediate.growAggregate(aggregateDeclaration, symbol, identifierLocation);
 }
@@ -1686,9 +1679,7 @@ TIntermAggregate *TParseContext::parseArrayDeclarator(TPublicType &publicType, T
 		if(!declareVariable(identifierLocation, identifier, arrayType, &variable))
 			recover();
 
-		TIntermSymbol *symbol = intermediate.addSymbol(0, identifier, arrayType, identifierLocation);
-		if(variable && symbol)
-			symbol->setId(variable->getUniqueId());
+		TIntermSymbol *symbol = intermediate.addSymbol(variable ? variable->getUniqueId() : 0, identifier, arrayType, identifierLocation);
 
 		return intermediate.growAggregate(aggregateDeclaration, symbol, identifierLocation);
 	}
@@ -1927,12 +1918,6 @@ void TParseContext::parseFunctionPrototype(const TSourceLoc &location, TFunction
 		recover();
 	}
 	prevDec->setDefined();
-	//
-	// Overload the unique ID of the definition to be the same unique ID as the declaration.
-	// Eventually we will probably want to have only a single definition and just swap the
-	// arguments to be the definition's arguments.
-	//
-	function->setUniqueId(prevDec->getUniqueId());
 
 	// Raise error message if main function takes any parameters or return anything other than void
 	if(function->getName() == "main")
