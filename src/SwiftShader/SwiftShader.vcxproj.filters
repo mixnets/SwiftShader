@@ -56,9 +56,6 @@
     <ClCompile Include="..\Shader\ShaderCore.cpp">
       <Filter>Source Files\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="..\Shader\VertexPipeline.cpp">
-      <Filter>Source Files\Shader</Filter>
-    </ClCompile>
     <ClCompile Include="..\Shader\VertexProgram.cpp">
       <Filter>Source Files\Shader</Filter>
     </ClCompile>
@@ -105,9 +102,6 @@
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Renderer\Surface.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Renderer\TextureStage.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="..\Renderer\Vector.cpp">
@@ -163,9 +157,6 @@
     </ClCompile>
     <ClCompile Include="..\Main\FrameBufferWin.cpp">
       <Filter>Source Files\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Shader\PixelPipeline.cpp">
-      <Filter>Source Files\Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\Shader\PixelProgram.cpp">
       <Filter>Source Files\Shader</Filter>

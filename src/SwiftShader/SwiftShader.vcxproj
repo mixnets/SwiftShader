@@ -340,7 +340,6 @@
     <ClCompile Include="..\Main\FrameBufferWin.cpp" />
     <ClCompile Include="..\Renderer\ETC_Decoder.cpp" />
     <ClCompile Include="..\Shader\Constants.cpp" />
-    <ClCompile Include="..\Shader\PixelPipeline.cpp" />
     <ClCompile Include="..\Shader\PixelProgram.cpp" />
     <ClCompile Include="..\Shader\PixelRoutine.cpp" />
     <ClCompile Include="..\Shader\PixelShader.cpp" />
@@ -348,7 +347,6 @@
     <ClCompile Include="..\Shader\SetupRoutine.cpp" />
     <ClCompile Include="..\Shader\Shader.cpp" />
     <ClCompile Include="..\Shader\ShaderCore.cpp" />
-    <ClCompile Include="..\Shader\VertexPipeline.cpp" />
     <ClCompile Include="..\Shader\VertexProgram.cpp" />
     <ClCompile Include="..\Shader\VertexRoutine.cpp" />
     <ClCompile Include="..\Shader\VertexShader.cpp" />
@@ -384,7 +382,6 @@
     <ClCompile Include="..\Renderer\Sampler.cpp" />
     <ClCompile Include="..\Renderer\SetupProcessor.cpp" />
     <ClCompile Include="..\Renderer\Surface.cpp" />
-    <ClCompile Include="..\Renderer\TextureStage.cpp" />
     <ClCompile Include="..\Renderer\Vector.cpp" />
     <ClCompile Include="..\Renderer\VertexProcessor.cpp" />
     <ClCompile Include="..\Main\FrameBuffer.cpp" />
