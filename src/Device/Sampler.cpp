@@ -16,8 +16,8 @@
 
 #include "Context.hpp"
 #include "Surface.hpp"
-#include "Shader/PixelRoutine.hpp"
-#include "Common/Debug.hpp"
+#include "Pipeline/PixelRoutine.hpp"
+#include "System/Debug.hpp"
 
 #include <memory.h>
 #include <string.h>
@@ -399,16 +399,6 @@ namespace sw
 	bool Sampler::hasVolumeTexture() const
 	{
 		return textureType == TEXTURE_3D || textureType == TEXTURE_2D_ARRAY;
-	}
-
-	void Sampler::setSyncRequired(bool isSyncRequired)
-	{
-		syncRequired = isSyncRequired;
-	}
-
-	bool Sampler::requiresSync() const
-	{
-		return syncRequired;
 	}
 
 	const Texture &Sampler::getTextureData()

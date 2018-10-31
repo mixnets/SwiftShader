@@ -15,8 +15,8 @@
 #include "PixelProgram.hpp"
 
 #include "SamplerCore.hpp"
-#include "Renderer/Primitive.hpp"
-#include "Renderer/Renderer.hpp"
+#include "Device/Primitive.hpp"
+#include "Device/Renderer.hpp"
 
 namespace sw
 {
@@ -625,11 +625,6 @@ namespace sw
 				c[index].x = linearToSRGB(c[index].x);
 				c[index].y = linearToSRGB(c[index].y);
 				c[index].z = linearToSRGB(c[index].z);
-			}
-
-			if(index == 0)
-			{
-				fogBlend(c[index], fog);
 			}
 
 			switch(state.targetFormat[index])
