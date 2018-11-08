@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8332dc49_cb4b252a",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-08T17:48:19Z",
+      "side": 1,
+      "message": "nit: \"// TODO: Mandatory\"\n\nFor all the ones that are mandatory but not yet implemented. Helps keep track of remaining work.",
+      "range": {
+        "startLine": 116,
+        "startChar": 30,
+        "endLine": 116,
+        "endChar": 42
+      },
+      "revId": "684fb5be3e7a42ab27fe5cd3d25d7429fc31bc5b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d0fe39d_2e1be98f",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-08T17:48:19Z",
+      "side": 1,
+      "message": "Note that these would not be TODO. For images, they\u0027re optional.",
+      "range": {
+        "startLine": 136,
+        "startChar": 40,
+        "endLine": 136,
+        "endChar": 58
+      },
+      "revId": "684fb5be3e7a42ab27fe5cd3d25d7429fc31bc5b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}

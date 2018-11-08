@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1cbcdcd7_e9246019",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-08T17:48:19Z",
+      "side": 0,
+      "message": "Corresponds with YCbCr format and conversions that we have to support, namely VK_FORMAT_G8_B8R8_2PLANE_420_UNORM with VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_709, VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_601, and VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_2020.\n\nI\u0027m not sure yet if we want to keep the color space as part of the format enum, but it seems prudent to keep these for now.",
+      "range": {
+        "startLine": 223,
+        "startChar": 2,
+        "endLine": 225,
+        "endChar": 18
+      },
+      "revId": "825d344daa31be19cc62d86b0c7f6ff308c1d0ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "268327d9_a34887e5",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-08T17:48:19Z",
+      "side": 0,
+      "message": "These will likely be needed in the future. I don\u0027t think it hurts to keep them.",
+      "range": {
+        "startLine": 395,
+        "startChar": 2,
+        "endLine": 427,
+        "endChar": 4
+      },
+      "revId": "825d344daa31be19cc62d86b0c7f6ff308c1d0ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "45dc88ae_40647ca3",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 466,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-08T17:48:19Z",
+      "side": 0,
+      "message": "I think these might correspond to BC4 and BC5.",
+      "range": {
+        "startLine": 429,
+        "startChar": 2,
+        "endLine": 466,
+        "endChar": 4
+      },
+      "revId": "825d344daa31be19cc62d86b0c7f6ff308c1d0ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c938659_a9c8605d",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 479,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-08T17:48:19Z",
+      "side": 0,
+      "message": "keep",
+      "range": {
+        "startLine": 475,
+        "startChar": 2,
+        "endLine": 479,
+        "endChar": 61
+      },
+      "revId": "825d344daa31be19cc62d86b0c7f6ff308c1d0ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
