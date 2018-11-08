@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2bfb24bc_f291853c",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-08T20:34:52Z",
+      "side": 0,
+      "message": "I\u0027ll move them down to the bottom until the rest of the logic fits Vulkan better.",
+      "parentUuid": "1cbcdcd7_e9246019",
+      "range": {
+        "startLine": 223,
+        "startChar": 2,
+        "endLine": 225,
+        "endChar": 18
+      },
+      "revId": "825d344daa31be19cc62d86b0c7f6ff308c1d0ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "268327d9_a34887e5",
         "filename": "src/Device/Surface.hpp",
         "patchSetId": 6
@@ -45,6 +69,30 @@
       "revId": "825d344daa31be19cc62d86b0c7f6ff308c1d0ab",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ef757d7_7f7d79ec",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-08T20:34:52Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "268327d9_a34887e5",
+      "range": {
+        "startLine": 395,
+        "startChar": 2,
+        "endLine": 427,
+        "endChar": 4
+      },
+      "revId": "825d344daa31be19cc62d86b0c7f6ff308c1d0ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "9dd59d06_3ba69669",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 466,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-08T20:34:52Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "45dc88ae_40647ca3",
+      "range": {
+        "startLine": 429,
+        "startChar": 2,
+        "endLine": 466,
+        "endChar": 4
+      },
+      "revId": "825d344daa31be19cc62d86b0c7f6ff308c1d0ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9c938659_a9c8605d",
         "filename": "src/Device/Surface.hpp",
         "patchSetId": 6
@@ -91,6 +163,30 @@
       "revId": "825d344daa31be19cc62d86b0c7f6ff308c1d0ab",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c095599c_65e6ad5b",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 479,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-08T20:34:52Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "9c938659_a9c8605d",
+      "range": {
+        "startLine": 475,
+        "startChar": 2,
+        "endLine": 479,
+        "endChar": 61
+      },
+      "revId": "825d344daa31be19cc62d86b0c7f6ff308c1d0ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }

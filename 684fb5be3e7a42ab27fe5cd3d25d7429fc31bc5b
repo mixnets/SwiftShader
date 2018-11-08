@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "0ea5de4d_787558e0",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-08T20:34:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8332dc49_cb4b252a",
+      "range": {
+        "startLine": 116,
+        "startChar": 30,
+        "endLine": 116,
+        "endChar": 42
+      },
+      "revId": "684fb5be3e7a42ab27fe5cd3d25d7429fc31bc5b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9d0fe39d_2e1be98f",
         "filename": "src/Device/Surface.hpp",
         "patchSetId": 6
@@ -36,6 +60,30 @@
       "writtenOn": "2018-11-08T17:48:19Z",
       "side": 1,
       "message": "Note that these would not be TODO. For images, they\u0027re optional.",
+      "range": {
+        "startLine": 136,
+        "startChar": 40,
+        "endLine": 136,
+        "endChar": 58
+      },
+      "revId": "684fb5be3e7a42ab27fe5cd3d25d7429fc31bc5b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e48020fa_f595cf38",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-08T20:34:52Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "9d0fe39d_2e1be98f",
       "range": {
         "startLine": 136,
         "startChar": 40,
