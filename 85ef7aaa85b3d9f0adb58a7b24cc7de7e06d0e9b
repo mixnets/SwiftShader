@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d9f0faa7_62f239f5",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-09T17:12:12Z",
+      "side": 1,
+      "message": "If we run out of memory, we must report it to from vkEndCommandBuffer. This can happen both on Command creation and when growing this vector. I suggest encapsulating this so that we can detect attempts to record a nullptr. Unfortunately std::vector\u0027s only way to report out-of-memory is to throw an exception, and exceptions are disabled. Let\u0027s add a FIXME for that for now, and I\u0027ll investigate.",
+      "range": {
+        "startLine": 129,
+        "startChar": 1,
+        "endLine": 129,
+        "endChar": 32
+      },
+      "revId": "85ef7aaa85b3d9f0adb58a7b24cc7de7e06d0e9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
