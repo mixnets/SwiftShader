@@ -22,6 +22,30 @@
       "revId": "85ef7aaa85b3d9f0adb58a7b24cc7de7e06d0e9b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "92f74b38_4cae83d0",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-09T21:14:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d9f0faa7_62f239f5",
+      "range": {
+        "startLine": 129,
+        "startChar": 1,
+        "endLine": 129,
+        "endChar": 32
+      },
+      "revId": "85ef7aaa85b3d9f0adb58a7b24cc7de7e06d0e9b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
