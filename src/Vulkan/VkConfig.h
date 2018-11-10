@@ -21,7 +21,7 @@ namespace vk
 // Note: Constant array initialization requires a string literal.
 //       constexpr char* or char[] does not work for that purpose.
 #define SWIFTSHADER_DEVICE_NAME "SwiftShader Device" // Max length: VK_MAX_PHYSICAL_DEVICE_NAME_SIZE
-#define SWIFTSHADER_UUID "SwiftShaderUUID" // Max length: VK_UUID_SIZE
+#define SWIFTSHADER_UUID "SwiftShaderUUID"  // Max length: VK_UUID_SIZE
 
 enum
 {
@@ -45,8 +45,9 @@ enum
 	MAX_IMAGE_ARRAY_LAYERS = 11,
 };
 
-enum {
-	MaxVertexInputBindings = 16,
+enum
+{
+	MAX_VERTEX_INPUT_BINDINGS = 16,
 };
 
 }
