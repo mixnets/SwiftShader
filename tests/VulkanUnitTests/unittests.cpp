@@ -1,4 +1,4 @@
-// Copyright 2017 The SwiftShader Authors. All Rights Reserved.
+// Copyright 2018 The SwiftShader Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// OpenGL ES unit tests that provide coverage for functionality not tested by
+// Vulkan unit tests that provide coverage for functionality not tested by
 // the dEQP test suite. Also used as a smoke test.
 
 #include "gtest/gtest.h"
@@ -39,16 +39,12 @@ protected:
 
 		#if defined(_WIN64)
 			#if defined(NDEBUG)
-				libVulkanName = "..\\..\\..\\vulkan\\x64\\Release\\vk_swiftshader.dll";
+				libVulkanName = "..\\..\\out\\Release_x64\\vk_swiftshader.dll";
 			#else
-				libVulkanName = "..\\..\\..\\vulkan\\x64\\Debug\\vk_swiftshader.dll";
+				libVulkanName = "..\\..\\out\\Debug_x64\\vk_swiftshader.dll";
 			#endif
-		#elif defined(_WIN32)
-			#if defined(NDEBUG)
-				libVulkanName = "..\\..\\..\\vulkan\\Win32\\Release\\vk_swiftshader.dll";
-			#else
-				libVulkanName = "..\\..\\..\\vulkan\\Win32\\Debug\\vk_swiftshader.dll";
-			#endif
+		#else
+			#error Unimplemented platform
 		#endif
 
 		#if defined(_WIN32)
@@ -287,7 +283,7 @@ TEST_F(SwiftShaderVulkanTest, Version)
 		auto vkCreateInstance = (PFN_vkCreateInstance)vk_icdGetInstanceProcAddr(VK_NULL_HANDLE, "vkCreateInstance");
 		EXPECT_NE(vkCreateInstance, nullptr);
 
-		const VkInstanceCreateInfo createInfo = 
+		const VkInstanceCreateInfo createInfo =
 		{
 				VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, // sType
 				nullptr, // pNext
