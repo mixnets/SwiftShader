@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8ec943bc_279c32b1",
+        "filename": "src/OpenGL/libEGL/libEGL.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-12T19:24:18Z",
+      "side": 1,
+      "message": "Seems like this can never be non-null when loadLibraryAttempted is false, so it\u0027s a bit redundant. Anyway, no harm in leaving it in.",
+      "range": {
+        "startLine": 93,
+        "startChar": 31,
+        "endLine": 93,
+        "endChar": 37
+      },
+      "revId": "91d22715531426f73ecf87d4cf15c4a16eaf81b4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
