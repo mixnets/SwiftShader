@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "69f038ea_cb7d113f",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-12T20:46:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c267fdfa_3b5ee9f2",
+      "range": {
+        "startLine": 23,
+        "startChar": 19,
+        "endLine": 23,
+        "endChar": 47
+      },
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "67e92bea_e24f416b",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 4
@@ -220,6 +244,24 @@
     },
     {
       "key": {
+        "uuid": "fae28f40_cb5f8026",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-12T20:46:50Z",
+      "side": 1,
+      "message": "commands.clear() would cause a memory leak because it doesn\u0027t release the memory allocated by the vector (size becomes 0, but not capacity). Since this isn\u0027t a destructor, the memory allocated by the vector would never be released. Swapping with an empty vector forces the allocated memory to be released when the temporary object goes out of scope.",
+      "parentUuid": "ec2e9b61_bb021d49",
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8969d868_6a2c3f0b",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 4
@@ -275,6 +317,30 @@
       "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8b2c37e0_62b5863a",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-12T20:46:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1d5f580b_922c5e37",
+      "range": {
+        "startLine": 129,
+        "startChar": 4,
+        "endLine": 129,
+        "endChar": 9
+      },
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
