@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "210844af_ce2ab124",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-12T18:38:31Z",
+      "side": 1,
+      "message": "Add FIXME(b/119409619) comment",
+      "range": {
+        "startLine": 35,
+        "startChar": 16,
+        "endLine": 35,
+        "endChar": 19
+      },
+      "revId": "e99b4660397397f414245c1e807a794611707bb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

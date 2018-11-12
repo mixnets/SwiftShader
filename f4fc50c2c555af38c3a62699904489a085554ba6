@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "c267fdfa_3b5ee9f2",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-12T18:38:31Z",
+      "side": 1,
+      "message": "Please file a bug for it.",
+      "parentUuid": "0334b317_001342ad",
+      "range": {
+        "startLine": 23,
+        "startChar": 19,
+        "endLine": 23,
+        "endChar": 47
+      },
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "67e92bea_e24f416b",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 4
@@ -178,6 +202,24 @@
     },
     {
       "key": {
+        "uuid": "ec2e9b61_bb021d49",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-12T18:38:31Z",
+      "side": 1,
+      "message": "b/119409619 for follow-up. Not critical right now but it could hurt us in the longer term if this isn\u0027t done more efficiently. Note that deallocating a list of pointers is really bad for cache locality and the effects may be hard to detect during profiling (we\u0027d observe the cache misses later on but not where they originate from).\n\nAnyway, that said, this syntax looks really weird to me with \u0027commands\u0027 at the right hand side. Shouldn\u0027t commands.clear() work fine here and delete each element since they\u0027re unique_ptr\u0027s?",
+      "parentUuid": "0c9acc1d_fc03abc6",
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8969d868_6a2c3f0b",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 4
@@ -210,6 +252,29 @@
       "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1d5f580b_922c5e37",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-12T18:38:31Z",
+      "side": 1,
+      "message": "FIXME(b/119409619)\n\nThis could use a custom allocator (i.e. vector\u003cT, Allocator\u003e), with the command pool acting as the allocator. However, I\u0027m not sure how to specify a specific pool instance. Can follow up in b/119409619.",
+      "range": {
+        "startLine": 129,
+        "startChar": 4,
+        "endLine": 129,
+        "endChar": 9
+      },
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     },
     {
       "key": {
