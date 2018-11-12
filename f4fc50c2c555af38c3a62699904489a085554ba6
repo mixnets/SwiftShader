@@ -1,0 +1,124 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ff764127_d0f9e10f",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-12T08:51:40Z",
+      "side": 1,
+      "message": "I suggest having a separate CommandState class/struct for this, otherwise CommandBuffer will have a tendency to grow without limits. It will also help when secondary command buffers are supported and need to inherit state.",
+      "range": {
+        "startLine": 23,
+        "startChar": 19,
+        "endLine": 23,
+        "endChar": 47
+      },
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67e92bea_e24f416b",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-12T08:51:40Z",
+      "side": 1,
+      "message": "This needs to be a copy, the pointer isn\u0027t valid after the initial allocation.",
+      "range": {
+        "startLine": 32,
+        "startChar": 37,
+        "endLine": 32,
+        "endChar": 61
+      },
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e3120156_d04603bf",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-12T08:51:40Z",
+      "side": 1,
+      "message": "ditto.",
+      "range": {
+        "startLine": 103,
+        "startChar": 46,
+        "endLine": 103,
+        "endChar": 61
+      },
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99622925_b05a1475",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-12T08:51:40Z",
+      "side": 1,
+      "message": "commands.clear(). The reservation staying around shouldn\u0027t be a problem since there is a TODO to use an allocator.",
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8969d868_6a2c3f0b",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-12T08:51:40Z",
+      "side": 1,
+      "message": "You\u0027ll also need to implement this.",
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "65334b6b_211177f2",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-12T08:51:40Z",
+      "side": 1,
+      "message": "unique_ptr\u003cCommand\u003e instead of Command*?",
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
