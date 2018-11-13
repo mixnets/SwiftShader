@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e2c11b77_bb550702",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-13T19:10:12Z",
+      "side": 1,
+      "message": "Bug b/116336664\n\nSince this is ICD related.",
+      "revId": "2206e5690e7d7a5bf7bb5c07af715109c42dd216",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
