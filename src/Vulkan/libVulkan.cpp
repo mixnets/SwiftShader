@@ -1492,57 +1492,54 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceFeatures2(VkPhysicalDevice physica
 
 	pFeatures->features = vk::Cast(physicalDevice)->getFeatures();
 
-	void* pNext = pFeatures->pNext;
+	VkBaseOutStructure* pNext = reinterpret_cast<VkBaseOutStructure*>(pFeatures->pNext);
 	while(pNext)
 	{
-		switch(*reinterpret_cast<const VkStructureType*>(pNext))
+		switch(pNext->sType)
 		{
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SAMPLER_YCBCR_CONVERSION_FEATURES:
 			{
 				auto& features = *reinterpret_cast<VkPhysicalDeviceSamplerYcbcrConversionFeatures*>(pNext);
 				vk::Cast(physicalDevice)->getFeatures(&features);
-				pNext = features.pNext;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_16BIT_STORAGE_FEATURES:
 			{
 				auto& features = *reinterpret_cast<VkPhysicalDevice16BitStorageFeatures*>(pNext);
 				vk::Cast(physicalDevice)->getFeatures(&features);
-				pNext = features.pNext;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VARIABLE_POINTER_FEATURES:
 			{
 				auto& features = *reinterpret_cast<VkPhysicalDeviceVariablePointerFeatures*>(pNext);
 				vk::Cast(physicalDevice)->getFeatures(&features);
-				pNext = features.pNext;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_8BIT_STORAGE_FEATURES_KHR:
 			{
 				auto& features = *reinterpret_cast<VkPhysicalDevice8BitStorageFeaturesKHR*>(pNext);
 				vk::Cast(physicalDevice)->getFeatures(&features);
-				pNext = features.pNext;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_FEATURES:
 			{
 				auto& features = *reinterpret_cast<VkPhysicalDeviceMultiviewFeatures*>(pNext);
 				vk::Cast(physicalDevice)->getFeatures(&features);
-				pNext = features.pNext;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_FEATURES:
 			{
 				auto& features = *reinterpret_cast<VkPhysicalDeviceProtectedMemoryFeatures*>(pNext);
 				vk::Cast(physicalDevice)->getFeatures(&features);
-				pNext = features.pNext;
 			}
 			break;
 		default:
-			// FIXME: We will eventually simply ignore unsupported pNext structures
-			UNIMPLEMENTED();
+			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
+			UNIMPLEMENTED();   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
+			break;
 		}
+
+		pNext = pNext->pNext;
 	}
 }
 
@@ -1552,57 +1549,54 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceProperties2(VkPhysicalDevice physi
 
 	pProperties->properties = vk::Cast(physicalDevice)->getProperties();
 
-	void* pNext = pProperties->pNext;
+	VkBaseOutStructure* pNext = reinterpret_cast<VkBaseOutStructure*>(pProperties->pNext);
 	while(pNext)
 	{
-		switch(*reinterpret_cast<const VkStructureType*>(pNext))
+		switch(pNext->sType)
 		{
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES:
 			{
 				auto& properties = *reinterpret_cast<VkPhysicalDeviceIDProperties*>(pNext);
 				vk::Cast(physicalDevice)->getProperties(&properties);
-				pNext = properties.pNext;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MAINTENANCE_3_PROPERTIES:
 			{
 				auto& properties = *reinterpret_cast<VkPhysicalDeviceMaintenance3Properties*>(pNext);
 				vk::Cast(physicalDevice)->getProperties(&properties);
-				pNext = properties.pNext;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MULTIVIEW_PROPERTIES:
 			{
 				auto& properties = *reinterpret_cast<VkPhysicalDeviceMultiviewProperties*>(pNext);
 				vk::Cast(physicalDevice)->getProperties(&properties);
-				pNext = properties.pNext;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_POINT_CLIPPING_PROPERTIES:
 			{
 				auto& properties = *reinterpret_cast<VkPhysicalDevicePointClippingProperties*>(pNext);
 				vk::Cast(physicalDevice)->getProperties(&properties);
-				pNext = properties.pNext;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROTECTED_MEMORY_PROPERTIES:
 			{
 				auto& properties = *reinterpret_cast<VkPhysicalDeviceProtectedMemoryProperties*>(pNext);
 				vk::Cast(physicalDevice)->getProperties(&properties);
-				pNext = properties.pNext;
 			}
 			break;
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES:
 			{
 				auto& properties = *reinterpret_cast<VkPhysicalDeviceSubgroupProperties*>(pNext);
 				vk::Cast(physicalDevice)->getProperties(&properties);
-				pNext = properties.pNext;
 			}
 			break;
 		default:
-			// FIXME: We will eventually simply ignore unsupported pNext structures
-			UNIMPLEMENTED();
+			// "the [driver] must skip over, without processing (other than reading the sType and pNext members) any structures in the chain with sType values not defined by [supported extenions]"
+			UNIMPLEMENTED();   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
+			break;
 		}
+
+		pNext = pNext->pNext;
 	}
 }
 
