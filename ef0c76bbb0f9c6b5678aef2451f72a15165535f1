@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a8a8f8c_32f2d3d7",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 372,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-13T20:53:20Z",
+      "side": 1,
+      "message": "Fixes line endings.",
+      "range": {
+        "startLine": 371,
+        "startChar": 45,
+        "endLine": 372,
+        "endChar": 0
+      },
+      "revId": "ef0c76bbb0f9c6b5678aef2451f72a15165535f1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
