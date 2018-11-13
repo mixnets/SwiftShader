@@ -16,6 +16,7 @@
 #define VK_CONFIG_HPP_
 
 #include "Version.h"
+#include "Device/Config.hpp"
 
 #include <vulkan/vulkan_core.h>
 
@@ -37,8 +38,8 @@ enum
 
 enum
 {
-	REQUIRED_MEMORY_ALIGNMENT = 8, // For 64 bit formats on ARM64
-	REQUIRED_MEMORY_TYPE_BITS = 1,
+	REQUIRED_MEMORY_ALIGNMENT = 8,  // For 64 bit formats on ARM64
+	MEMORY_TYPE_GENERIC_BIT = 0x1,  // Generic system memory.
 };
 
 enum
@@ -47,12 +48,12 @@ enum
 	MAX_IMAGE_LEVELS_2D = 14,
 	MAX_IMAGE_LEVELS_3D = 11,
 	MAX_IMAGE_LEVELS_CUBE = 14,
-	MAX_IMAGE_ARRAY_LAYERS = 11,
+	MAX_IMAGE_ARRAY_LAYERS = 256,   // min 256
 };
 
 enum
 {
-	MAX_VERTEX_INPUT_BINDINGS = 16,
+	MAX_VERTEX_INPUT_BINDINGS = 16,   // min 16
 };
 
 }

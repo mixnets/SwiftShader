@@ -286,8 +286,8 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceMaintenance3Properties* prope
 
 void PhysicalDevice::getProperties(VkPhysicalDeviceMultiviewProperties* properties) const
 {
-	properties->maxMultiviewInstanceIndex = (1 << 27) - 1;
-	properties->maxMultiviewViewCount = 6;
+	properties->maxMultiviewViewCount = 0;
+	properties->maxMultiviewInstanceIndex = 0;
 }
 
 void PhysicalDevice::getProperties(VkPhysicalDevicePointClippingProperties* properties) const
@@ -310,63 +310,20 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceSubgroupProperties* propertie
 
 bool PhysicalDevice::hasFeatures(const VkPhysicalDeviceFeatures& requestedFeatures) const
 {
-	const VkPhysicalDeviceFeatures& availableFeatures = getFeatures();
+	const VkPhysicalDeviceFeatures& supportedFeatures = getFeatures();
+	const VkBool32* supportedFeature = reinterpret_cast<const VkBool32*>(&supportedFeatures);
+	const VkBool32* requestedFeature = reinterpret_cast<const VkBool32*>(&requestedFeatures);
+	constexpr auto featureCount = sizeof(VkPhysicalDeviceFeatures) / sizeof(VkBool32);
 
-	return (!requestedFeatures.robustBufferAccess || availableFeatures.robustBufferAccess) &&
-	       (!requestedFeatures.fullDrawIndexUint32 || availableFeatures.fullDrawIndexUint32) &&
-	       (!requestedFeatures.imageCubeArray || availableFeatures.imageCubeArray) &&
-	       (!requestedFeatures.independentBlend || availableFeatures.independentBlend) &&
-	       (!requestedFeatures.geometryShader || availableFeatures.geometryShader) &&
-	       (!requestedFeatures.tessellationShader || availableFeatures.tessellationShader) &&
-	       (!requestedFeatures.sampleRateShading || availableFeatures.sampleRateShading) &&
-	       (!requestedFeatures.dualSrcBlend || availableFeatures.dualSrcBlend) &&
-	       (!requestedFeatures.logicOp || availableFeatures.logicOp) &&
-	       (!requestedFeatures.multiDrawIndirect || availableFeatures.multiDrawIndirect) &&
-	       (!requestedFeatures.drawIndirectFirstInstance || availableFeatures.drawIndirectFirstInstance) &&
-	       (!requestedFeatures.depthClamp || availableFeatures.depthClamp) &&
-	       (!requestedFeatures.depthBiasClamp || availableFeatures.depthBiasClamp) &&
-	       (!requestedFeatures.fillModeNonSolid || availableFeatures.fillModeNonSolid) &&
-	       (!requestedFeatures.depthBounds || availableFeatures.depthBounds) &&
-	       (!requestedFeatures.wideLines || availableFeatures.wideLines) &&
-	       (!requestedFeatures.largePoints || availableFeatures.largePoints) &&
-	       (!requestedFeatures.alphaToOne || availableFeatures.alphaToOne) &&
-	       (!requestedFeatures.multiViewport || availableFeatures.multiViewport) &&
-	       (!requestedFeatures.samplerAnisotropy || availableFeatures.samplerAnisotropy) &&
-	       (!requestedFeatures.textureCompressionETC2 || availableFeatures.textureCompressionETC2) &&
-	       (!requestedFeatures.textureCompressionASTC_LDR || availableFeatures.textureCompressionASTC_LDR) &&
-	       (!requestedFeatures.textureCompressionBC || availableFeatures.textureCompressionBC) &&
-	       (!requestedFeatures.occlusionQueryPrecise || availableFeatures.occlusionQueryPrecise) &&
-	       (!requestedFeatures.pipelineStatisticsQuery || availableFeatures.pipelineStatisticsQuery) &&
-	       (!requestedFeatures.vertexPipelineStoresAndAtomics || availableFeatures.vertexPipelineStoresAndAtomics) &&
-	       (!requestedFeatures.fragmentStoresAndAtomics || availableFeatures.fragmentStoresAndAtomics) &&
-	       (!requestedFeatures.shaderTessellationAndGeometryPointSize || availableFeatures.shaderTessellationAndGeometryPointSize) &&
-	       (!requestedFeatures.shaderImageGatherExtended || availableFeatures.shaderImageGatherExtended) &&
-	       (!requestedFeatures.shaderStorageImageExtendedFormats || availableFeatures.shaderStorageImageExtendedFormats) &&
-	       (!requestedFeatures.shaderStorageImageMultisample || availableFeatures.shaderStorageImageMultisample) &&
-	       (!requestedFeatures.shaderStorageImageReadWithoutFormat || availableFeatures.shaderStorageImageReadWithoutFormat) &&
-	       (!requestedFeatures.shaderStorageImageWriteWithoutFormat || availableFeatures.shaderStorageImageWriteWithoutFormat) &&
-	       (!requestedFeatures.shaderUniformBufferArrayDynamicIndexing || availableFeatures.shaderUniformBufferArrayDynamicIndexing) &&
-	       (!requestedFeatures.shaderSampledImageArrayDynamicIndexing || availableFeatures.shaderSampledImageArrayDynamicIndexing) &&
-	       (!requestedFeatures.shaderStorageBufferArrayDynamicIndexing || availableFeatures.shaderStorageBufferArrayDynamicIndexing) &&
-	       (!requestedFeatures.shaderStorageImageArrayDynamicIndexing || availableFeatures.shaderStorageImageArrayDynamicIndexing) &&
-	       (!requestedFeatures.shaderClipDistance || availableFeatures.shaderClipDistance) &&
-	       (!requestedFeatures.shaderCullDistance || availableFeatures.shaderCullDistance) &&
-	       (!requestedFeatures.shaderFloat64 || availableFeatures.shaderFloat64) &&
-	       (!requestedFeatures.shaderInt64 || availableFeatures.shaderInt64) &&
-	       (!requestedFeatures.shaderInt16 || availableFeatures.shaderInt16) &&
-	       (!requestedFeatures.shaderResourceResidency || availableFeatures.shaderResourceResidency) &&
-	       (!requestedFeatures.shaderResourceMinLod || availableFeatures.shaderResourceMinLod) &&
-	       (!requestedFeatures.sparseBinding || availableFeatures.sparseBinding) &&
-	       (!requestedFeatures.sparseResidencyBuffer || availableFeatures.sparseResidencyBuffer) &&
-	       (!requestedFeatures.sparseResidencyImage2D || availableFeatures.sparseResidencyImage2D) &&
-	       (!requestedFeatures.sparseResidencyImage3D || availableFeatures.sparseResidencyImage3D) &&
-	       (!requestedFeatures.sparseResidency2Samples || availableFeatures.sparseResidency2Samples) &&
-	       (!requestedFeatures.sparseResidency4Samples || availableFeatures.sparseResidency4Samples) &&
-	       (!requestedFeatures.sparseResidency8Samples || availableFeatures.sparseResidency8Samples) &&
-	       (!requestedFeatures.sparseResidency16Samples || availableFeatures.sparseResidency16Samples) &&
-	       (!requestedFeatures.sparseResidencyAliased || availableFeatures.sparseResidencyAliased) &&
-	       (!requestedFeatures.variableMultisampleRate || availableFeatures.variableMultisampleRate) &&
-	       (!requestedFeatures.inheritedQueries || availableFeatures.inheritedQueries);
+	for(unsigned int i = 0; i < featureCount; i++)
+	{
+		if((requestedFeature[i] == VK_TRUE) && (supportedFeature[i] != VK_TRUE))
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 void PhysicalDevice::getFormatProperties(VkFormat format, VkFormatProperties* pFormatProperties) const
@@ -446,46 +403,26 @@ const VkPhysicalDeviceMemoryProperties& PhysicalDevice::getMemoryProperties() co
 	static const VkPhysicalDeviceMemoryProperties properties
 	{
 		1, // memoryTypeCount
-		{{VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT |
-		  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-		  VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-		  0}}, // heapIndex
+		{
+			// vk::MEMORY_TYPE_GENERIC_BIT
+			{
+				VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT |
+					VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+					VK_MEMORY_PROPERTY_HOST_COHERENT_BIT |
+					VK_MEMORY_PROPERTY_HOST_CACHED_BIT, // propertyFlags
+				0 // heapIndex
+			},
+		},
 		1, // memoryHeapCount
-		{{1ull << 31, // size, FIXME(sugoi): This could be configurable based on available RAM
-		  VK_MEMORY_HEAP_DEVICE_LOCAL_BIT}},
+		{
+			{
+				1ull << 31, // size, FIXME(sugoi): This should be configurable based on available RAM
+				VK_MEMORY_HEAP_DEVICE_LOCAL_BIT // flags
+			},
+		}
 	};
 
 	return properties;
-}
-
-void PhysicalDevice::getExternalBufferProperties(const VkPhysicalDeviceExternalBufferInfo* pExternalBufferInfo,
-                                                 VkExternalBufferProperties* pExternalBufferProperties) const
-{
-	// FIXME: currently ignoring pExternalBufferInfo
-
-	pExternalBufferProperties->externalMemoryProperties.compatibleHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT;
-	pExternalBufferProperties->externalMemoryProperties.exportFromImportedHandleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT;
-	pExternalBufferProperties->externalMemoryProperties.externalMemoryFeatures = VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT;
-}
-
-void PhysicalDevice::getExternalFenceProperties(const VkPhysicalDeviceExternalFenceInfo* pExternalFenceInfo,
-                                                VkExternalFenceProperties* pExternalFenceProperties) const
-{
-	// FIXME: currently ignoring pExternalFenceInfo
-
-	pExternalFenceProperties->compatibleHandleTypes = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT;
-	pExternalFenceProperties->exportFromImportedHandleTypes = VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT;
-	pExternalFenceProperties->externalFenceFeatures = VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT;
-}
-
-void PhysicalDevice::getExternalSemaphoreProperties(const VkPhysicalDeviceExternalSemaphoreInfo* pExternalSemaphoreInfo,
-                                                    VkExternalSemaphoreProperties* pExternalSemaphoreProperties) const
-{
-	// FIXME: currently ignoring pExternalSemaphoreInfo
-
-	pExternalSemaphoreProperties->compatibleHandleTypes = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT;
-	pExternalSemaphoreProperties->exportFromImportedHandleTypes = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT;
-	pExternalSemaphoreProperties->externalSemaphoreFeatures = VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT;
 }
 
 } // namespace vk
