@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b1d3ca81_e2a9c85f",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-14T08:54:57Z",
+      "side": 1,
+      "message": "nit: size_t",
+      "range": {
+        "startLine": 316,
+        "startChar": 11,
+        "endLine": 316,
+        "endChar": 15
+      },
+      "revId": "ae2fb8a49bc0099959964c5edaa5f41b5506c089",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c25c91ce_91f98f3f",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-14T08:54:57Z",
+      "side": 1,
+      "message": "nit: size_t here too",
+      "range": {
+        "startLine": 318,
+        "startChar": 5,
+        "endLine": 318,
+        "endChar": 17
+      },
+      "revId": "ae2fb8a49bc0099959964c5edaa5f41b5506c089",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
