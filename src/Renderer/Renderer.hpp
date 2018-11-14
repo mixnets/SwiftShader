@@ -89,26 +89,20 @@ namespace sw
 	{
 		enum Type { FRAGMENTS_PASSED, TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN };
 
-		Query(Type type) : building(false), reference(0), data(0), type(type)
-		{
-		}
+		Query(Type type);
 
-		void begin()
-		{
-			building = true;
-			data = 0;
-		}
-
-		void end()
-		{
-			building = false;
-		}
+		void begin();
+		void end();
+		void addRef();
+		void release();
+		bool isReady() const;
 
 		bool building;
-		AtomicInt reference;
 		AtomicInt data;
 
 		const Type type;
+	private:
+		AtomicInt reference;
 	};
 
 	struct DrawData

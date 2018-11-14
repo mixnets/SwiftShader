@@ -96,6 +96,43 @@ namespace sw
 		int threadIndex;
 	};
 
+	Query::Query(Type type) : building(false), data(0), type(type), reference(1)
+	{
+	}
+
+	void Query::begin()
+	{
+		building = true;
+		data = 0;
+	}
+
+	void Query::end()
+	{
+		building = false;
+	}
+
+	void Query::addRef()
+	{
+		++reference; // Atomic
+	}
+
+	void Query::release()
+	{
+		int ref = reference--; // Atomic
+
+		ASSERT(ref >= 0);
+
+		if(ref == 0)
+		{
+			delete this;
+		}
+	}
+
+	bool Query::isReady() const
+	{
+		return (reference == 1);
+	}
+
 	DrawCall::DrawCall()
 	{
 		queries = 0;
@@ -325,7 +362,7 @@ namespace sw
 				{
 					if(includePrimitivesWrittenQueries || (query->type != Query::TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN))
 					{
-						++query->reference; // Atomic
+						query->addRef();
 						draw->queries->push_back(query);
 					}
 				}
@@ -1013,7 +1050,7 @@ namespace sw
 							break;
 						}
 
-						--query->reference; // Atomic
+						query->release();
 					}
 
 					delete draw.queries;
