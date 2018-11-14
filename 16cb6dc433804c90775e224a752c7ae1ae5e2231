@@ -22,6 +22,30 @@
       "revId": "16cb6dc433804c90775e224a752c7ae1ae5e2231",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9bec385_5053e9a9",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-14T05:42:03Z",
+      "side": 1,
+      "message": "The intention was to make it clear that these were continuations of the first line, and not separate field initializations. Anyway, you\u0027re right it looks weird and probably causes more confusion than it prevents.",
+      "parentUuid": "53920229_49fc47f8",
+      "range": {
+        "startLine": 453,
+        "startChar": 0,
+        "endLine": 455,
+        "endChar": 57
+      },
+      "revId": "16cb6dc433804c90775e224a752c7ae1ae5e2231",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
