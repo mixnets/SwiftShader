@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "526044fb_6f12eeca",
+        "filename": "src/Renderer/Renderer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-14T18:14:40Z",
+      "side": 1,
+      "message": "nit: isReady() is part of the logical state machine, together with begin() and end(), so could you move them together and separate addRef() and release()? It\u0027s only an implementation detail that we conflate \u0027reference\u0027 for both reference counting and readiness.\n\nI would also leave these as inline functions. The call overhead is otherwise probably larger than what the body does.",
+      "range": {
+        "startLine": 98,
+        "startChar": 2,
+        "endLine": 98,
+        "endChar": 23
+      },
+      "revId": "392f0619012bf05d43934a2b0816696ff8574917",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d8edd952_e4a822bb",
+        "filename": "src/Renderer/Renderer.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-14T18:14:40Z",
+      "side": 1,
+      "message": "Make an empty private destructor to ensure we don\u0027t call it elsewhere any more.\n\nSee Direct3DQuery9::~Direct3DQuery9()",
+      "revId": "392f0619012bf05d43934a2b0816696ff8574917",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
