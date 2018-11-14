@@ -325,7 +325,7 @@ namespace sw
 				{
 					if(includePrimitivesWrittenQueries || (query->type != Query::TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN))
 					{
-						++query->reference; // Atomic
+						query->ref();
 						draw->queries->push_back(query);
 					}
 				}
@@ -1013,7 +1013,7 @@ namespace sw
 							break;
 						}
 
-						--query->reference; // Atomic
+						query->unref();
 					}
 
 					delete draw.queries;
