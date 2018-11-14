@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3c25cb6e_e84af7d8",
+        "filename": "src/Renderer/Renderer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-14T16:26:26Z",
+      "side": 1,
+      "message": "nit: We use addRef() / release() in other classes.",
+      "range": {
+        "startLine": 107,
+        "startChar": 2,
+        "endLine": 112,
+        "endChar": 14
+      },
+      "revId": "868e418a8e06bd595a17a2f04f43e95ff33f1843",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49722e55_8174e3b5",
+        "filename": "src/Renderer/Renderer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-14T16:26:26Z",
+      "side": 1,
+      "message": "Add assert here to make sure ref is never negative. It once took me several days to find a bug caused by a case like that.",
+      "revId": "868e418a8e06bd595a17a2f04f43e95ff33f1843",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c66cd66a_76fd559d",
+        "filename": "src/Renderer/Renderer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-14T16:26:26Z",
+      "side": 1,
+      "message": "Please make sure this change is tested with dEQP\u0027s occlusion tests.",
+      "range": {
+        "startLine": 124,
+        "startChar": 11,
+        "endLine": 124,
+        "endChar": 25
+      },
+      "revId": "868e418a8e06bd595a17a2f04f43e95ff33f1843",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
