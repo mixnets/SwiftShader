@@ -280,6 +280,24 @@
     },
     {
       "key": {
+        "uuid": "3a359175_300d4f9a",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-14T21:59:20Z",
+      "side": 1,
+      "message": "I already explained this offline to Nicolas, but for anyone not here:\n1) The CommandBuffer object isn\u0027t destructed, it is deallocated, so the vector object gets deallocated, not destructed, so it needs to purge any allocated memory in the destroy() function, otherwise there is indeed a memory leak here.\n2) There isn\u0027t a simpler known way than the swap trick to force a vector to deallocate its content.\nFor now, AFAIK, this is the simplest way to get this working properly.\nWe\u0027ll need a proper command allocator soon, but I\u0027d really like that to be its own separate cl.\nI honestly think this should stay this way for now, so we can move forward.",
+      "parentUuid": "d611b66e_659f8b49",
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8969d868_6a2c3f0b",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 4
