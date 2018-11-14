@@ -22,6 +22,30 @@
       "revId": "e5b88c1d6e85755c746f2d27e50fc16f1ef26812",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "716c546e_31e64845",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1495,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-14T05:51:05Z",
+      "side": 1,
+      "message": "While Herb Sutter recommends using \"Auto Almost Always\", I believe this is arguably one of the exceptions. Auto is great for ensuring that when you change a type somewhere, all dependent code automatically adjusts. However, in this case we *must* ensure that the left-hand side is of type VkBaseOutStructure*, because it is rigidly defined by the spec. Of course the right-hand side guarantees that too, but in my opinion it\u0027s easier to spot it at a glance when it\u0027s on the left-hand side.",
+      "parentUuid": "f643cb2c_fecbd118",
+      "range": {
+        "startLine": 1495,
+        "startChar": 1,
+        "endLine": 1495,
+        "endChar": 20
+      },
+      "revId": "e5b88c1d6e85755c746f2d27e50fc16f1ef26812",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
