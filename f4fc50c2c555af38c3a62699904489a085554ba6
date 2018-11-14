@@ -262,6 +262,24 @@
     },
     {
       "key": {
+        "uuid": "d611b66e_659f8b49",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-14T17:51:22Z",
+      "side": 1,
+      "message": "I don\u0027t think there\u0027s any memory leak here. The reserved memory will still be freed on destruction of the vector, which happens when CommandBuffer is destructed. Note that there\u0027s some reserved memory even on initial creation of the vector, and thus a swap() also leaves that same amount allocated. Also note that shrink_to_fit() is a \"non-binding request\". Thus there\u0027s never any guarantee that you\u0027re freeing all the memory.\n\nThis function is only called by destroy(), which seems redundant, and by vkResetCommandBuffer. The latter takes a flags parameter which can include the VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT which signifies that \"most or all\" memory should be returned to the command pool.\n\nI think deleteCommands() should be removed from destroy(), and it should be deleted and its functionality placed in reset() instead, by calling vector::clear() and when the flag is set also call shrink_to_fit(). This way we\u0027re less likely to forget about it when we implement it with a real memory pool.\n\nI really dislike the swap() because it\u0027s hard to see what\u0027s going on exactly, and it constructs a new object which probably isn\u0027t as efficient as a clear+shrink.",
+      "parentUuid": "fae28f40_cb5f8026",
+      "revId": "f4fc50c2c555af38c3a62699904489a085554ba6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8969d868_6a2c3f0b",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 4
