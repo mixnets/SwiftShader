@@ -16,6 +16,24 @@
       "revId": "a85d343b634296fed35e41405ace1857fd4952c7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b653dbd5_ba22939b",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-15T17:45:55Z",
+      "side": 1,
+      "message": "Oh, this is just here because I don\u0027t plan on making other functions virtual, so this will allow us to know if we cast this to GraphicsPipeline or to ComputePipeline later on and then we\u0027ll use those objects directly.",
+      "parentUuid": "5dc8fad5_4cef9b07",
+      "revId": "a85d343b634296fed35e41405ace1857fd4952c7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
