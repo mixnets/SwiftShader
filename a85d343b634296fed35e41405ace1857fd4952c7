@@ -34,6 +34,24 @@
       "revId": "a85d343b634296fed35e41405ace1857fd4952c7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "784f7e42_aefed71c",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-15T17:48:10Z",
+      "side": 1,
+      "message": "Sorry I didn\u0027t give enough details: the only other place pipelines are used are inside command buffer, and at that point the application explicitly tells you which bind point it goes to, so you don\u0027t really need to query this information from the object.",
+      "parentUuid": "b653dbd5_ba22939b",
+      "revId": "a85d343b634296fed35e41405ace1857fd4952c7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
