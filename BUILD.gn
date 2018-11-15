@@ -148,6 +148,11 @@ source_set("vertex_routine_fuzzer") {
       "/wd4065",  # switch statement contains 'default' but no 'case' labels
       "/wd5030",  # attribute is not recognized
     ]
+  } else if (is_mac) {
+    libs = [
+      "CoreFoundation.framework",
+      "IOSurface.framework",
+    ]
   }
   include_dirs = [
     "src/",
