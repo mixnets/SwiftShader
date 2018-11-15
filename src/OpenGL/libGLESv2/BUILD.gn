@@ -90,6 +90,13 @@ swiftshader_static_library("swiftshader_libGLESv2_static") {
     "utilities.cpp",
   ]
 
+  if (is_mac) {
+    libs = [
+      "CoreFoundation.framework",
+      "IOSurface.framework",
+    ]
+  }
+
   configs = [ ":swiftshader_libGLESv2_private_config" ]
 
   include_dirs = [
