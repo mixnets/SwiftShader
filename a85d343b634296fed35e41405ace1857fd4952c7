@@ -106,6 +106,24 @@
       "revId": "a85d343b634296fed35e41405ace1857fd4952c7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6c3f0821_8ef23c43",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-15T22:27:26Z",
+      "side": 1,
+      "message": "I think having some data/functionality for sanity checking purposes is valuable. See b/118401597#3 for starters. Despite the existence of validation layers, there can be application code paths that aren\u0027t exercised unless they\u0027re running on SwiftShader. For example say they\u0027ve never encountered an implementation that doesn\u0027t have a separate queue for compute, and they\u0027re basing their bind point on the queue type, thus sending their compute shader to the graphics queue with a graphics bind point. Of course such a bug would also be caught by re-running the application on SwiftShader with validation layers enabled, but the bug reports we\u0027ll get may not show any indication that it might be an application bug so we could be looking in the wrong places for a long time. Also, setting up the validation layers on each of the platforms that SwiftShader could be used on seems like a huge hassle. Bugs may also only reproduce under specific situations where it\u0027s hard to get the validation layer information precisely when and where we need it. Granted, it\u0027s very unlikely that we\u0027ll run into this particular case, but I do encourage making it a habit to do some validation when it\u0027s easy to write, so that bugs are unlikely to slip through the cracks. It also helps ensure to rule out certain causes of issues, without having to double-check that the validation layer checked for it.\n\nThat said, this should definitely go in an #ifndef NDEBUG block to both avoid the run-time cost and prevent unjustified use of it in release code.",
+      "parentUuid": "1fc9851c_d7022379",
+      "revId": "a85d343b634296fed35e41405ace1857fd4952c7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
