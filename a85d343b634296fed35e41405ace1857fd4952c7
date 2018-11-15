@@ -52,6 +52,24 @@
       "revId": "a85d343b634296fed35e41405ace1857fd4952c7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bfff0c93_daab902c",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-15T18:08:53Z",
+      "side": 1,
+      "message": "I was also thinking of having a debug assert when a pipeline is bound to make sure that it\u0027s of the correct type. I know Vulkan doesn\u0027t require any validation here, so would you recommend just not verifying this at all and removing the function?",
+      "parentUuid": "784f7e42_aefed71c",
+      "revId": "a85d343b634296fed35e41405ace1857fd4952c7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
