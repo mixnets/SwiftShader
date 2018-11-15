@@ -70,6 +70,24 @@
       "revId": "a85d343b634296fed35e41405ace1857fd4952c7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fef89333_bb93047f",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-15T18:37:57Z",
+      "side": 1,
+      "message": "In general I wouldn\u0027t verify anything that\u0027s not valid usage of the API because it is more code in swiftshader that will never be used if applications are tested with validation layers. That said we already had precedent in previous code reviews of keeping some data for debugging while we bring up swiftshader (and I hope it will be simplified in the future). Either way is fine, your call :)",
+      "parentUuid": "bfff0c93_daab902c",
+      "revId": "a85d343b634296fed35e41405ace1857fd4952c7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
