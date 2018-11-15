@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5dc8fad5_4cef9b07",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-15T17:13:14Z",
+      "side": 1,
+      "message": "I don\u0027t think that\u0027s ever needed because it\u0027s the application\u0027s responsibility to use the correct bind point for pipelines.",
+      "revId": "a85d343b634296fed35e41405ace1857fd4952c7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
