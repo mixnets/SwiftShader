@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "4fb9e481_9e80b611",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-15T16:32:10Z",
+      "side": 1,
+      "message": "We need to be able to cast a VkPipeline handle into an internal object. We don\u0027t know which type of Pipeline we have when we receive a VkPipeline handle.\nIf Pipeline is a base class, then we can cast a VkPipeline handle to it, and it would need at least one function to tell us what kind of pipeline it is so we can cast it to the proper derived class when needed. I think that\u0027s the simplest solution, but I\u0027m open to other ideas.",
+      "parentUuid": "ac540eb6_6524cf09",
+      "range": {
+        "startLine": 26,
+        "startChar": 1,
+        "endLine": 27,
+        "endChar": 69
+      },
+      "revId": "156dca51a88238f82dab37cafca2fa0cfd2bd6bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8e112720_c8585221",
         "filename": "src/Vulkan/VkPipeline.hpp",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2018-11-14T19:38:27Z",
       "side": 1,
       "message": "The data this points to doesn\u0027t survive after the create call (nor do the pointers inside, so you can\u0027t copy this by value).",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 52
+      },
+      "revId": "156dca51a88238f82dab37cafca2fa0cfd2bd6bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ded029d1_4e9854b9",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-15T16:32:10Z",
+      "side": 1,
+      "message": "Yes, these were just reminders/placeholders for future class members. I can just delete them or change them into comments.",
+      "parentUuid": "8e112720_c8585221",
       "range": {
         "startLine": 39,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "d55c677c_561c4d77",
+        "filename": "src/Vulkan/VkPipelineLayout.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-15T16:32:10Z",
+      "side": 1,
+      "message": "Yes, these were just reminders/placeholders for future class members. I can just delete them or change them into comments.",
+      "parentUuid": "99b4022b_c2021068",
+      "range": {
+        "startLine": 34,
+        "startChar": 1,
+        "endLine": 37,
+        "endChar": 53
+      },
+      "revId": "156dca51a88238f82dab37cafca2fa0cfd2bd6bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "88c629b7_a11a29ec",
         "filename": "src/Vulkan/VkShaderModule.hpp",
         "patchSetId": 5
@@ -91,6 +163,30 @@
       "revId": "156dca51a88238f82dab37cafca2fa0cfd2bd6bd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67667c61_ed291d55",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-15T16:32:10Z",
+      "side": 1,
+      "message": "Ok",
+      "parentUuid": "88c629b7_a11a29ec",
+      "range": {
+        "startLine": 23,
+        "startChar": 6,
+        "endLine": 23,
+        "endChar": 19
+      },
+      "revId": "156dca51a88238f82dab37cafca2fa0cfd2bd6bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "54d98b2d_a8013388",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-15T16:32:10Z",
+      "side": 1,
+      "message": "Ack. Will fix in separate cl.",
+      "parentUuid": "ef43f226_d08930cc",
+      "range": {
+        "startLine": 33,
+        "startChar": 1,
+        "endLine": 33,
+        "endChar": 5
+      },
+      "revId": "156dca51a88238f82dab37cafca2fa0cfd2bd6bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3841b900_9aa780d7",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 5
@@ -137,6 +257,30 @@
       "revId": "156dca51a88238f82dab37cafca2fa0cfd2bd6bd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db8c31cd_06dd6e8d",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 806,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-15T16:32:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3841b900_9aa780d7",
+      "range": {
+        "startLine": 806,
+        "startChar": 53,
+        "endLine": 806,
+        "endChar": 85
+      },
+      "revId": "156dca51a88238f82dab37cafca2fa0cfd2bd6bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "2b361e4a_f3f7440d",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 838,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-15T16:32:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "21d0d159_1030e97e",
+      "range": {
+        "startLine": 838,
+        "startChar": 53,
+        "endLine": 838,
+        "endChar": 85
+      },
+      "revId": "156dca51a88238f82dab37cafca2fa0cfd2bd6bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ad8a3b5c_f9003181",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 5
@@ -186,6 +354,30 @@
     },
     {
       "key": {
+        "uuid": "53c7d8da_b55507ff",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1340,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-15T16:32:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ad8a3b5c_f9003181",
+      "range": {
+        "startLine": 1334,
+        "startChar": 1,
+        "endLine": 1340,
+        "endChar": 3
+      },
+      "revId": "156dca51a88238f82dab37cafca2fa0cfd2bd6bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "866ce83f_6e4a1399",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 5
@@ -206,6 +398,30 @@
       "revId": "156dca51a88238f82dab37cafca2fa0cfd2bd6bd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b67d2a92_b79a6ec3",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 1394,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-15T16:32:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "866ce83f_6e4a1399",
+      "range": {
+        "startLine": 1394,
+        "startChar": 1,
+        "endLine": 1394,
+        "endChar": 2
+      },
+      "revId": "156dca51a88238f82dab37cafca2fa0cfd2bd6bd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
