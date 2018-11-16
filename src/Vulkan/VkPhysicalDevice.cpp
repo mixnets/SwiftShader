@@ -141,7 +141,7 @@ const VkPhysicalDeviceLimits& PhysicalDevice::getLimits() const
 		(1 << vk::MAX_IMAGE_LEVELS_2D), // maxImageDimension2D
 		(1 << vk::MAX_IMAGE_LEVELS_3D), // maxImageDimension3D
 		(1 << vk::MAX_IMAGE_LEVELS_CUBE), // maxImageDimensionCube
-		(1 << vk::MAX_IMAGE_ARRAY_LAYERS), // maxImageArrayLayers
+		MAX_IMAGE_ARRAY_LAYERS, // maxImageArrayLayers
 		65536, // maxTexelBufferElements
 		16384, // maxUniformBufferRange
 		(1ul << 27), // maxStorageBufferRange

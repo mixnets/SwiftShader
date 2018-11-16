@@ -16,6 +16,7 @@
 #define VK_CONFIG_HPP_
 
 #include "Version.h"
+#include "Device/Config.hpp"
 
 #include <vulkan/vulkan_core.h>
 
@@ -43,11 +44,11 @@ enum
 
 enum
 {
-	MAX_IMAGE_LEVELS_1D = 14,
-	MAX_IMAGE_LEVELS_2D = 14,
-	MAX_IMAGE_LEVELS_3D = 11,
-	MAX_IMAGE_LEVELS_CUBE = 14,
-	MAX_IMAGE_ARRAY_LAYERS = 11,
+	MAX_IMAGE_LEVELS_1D = sw::MIPMAP_LEVELS,
+	MAX_IMAGE_LEVELS_2D = sw::MIPMAP_LEVELS,
+	MAX_IMAGE_LEVELS_3D = sw::MIPMAP_LEVELS,
+	MAX_IMAGE_LEVELS_CUBE = sw::MIPMAP_LEVELS,
+	MAX_IMAGE_ARRAY_LAYERS = 256, // 256 min
 };
 
 enum
