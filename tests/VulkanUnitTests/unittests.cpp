@@ -278,6 +278,10 @@ TEST_F(SwiftShaderVulkanTest, API_Check)
 
 TEST_F(SwiftShaderVulkanTest, Version)
 {
+	uint32_t apiVersion = 0;
+	VkResult result = vkEnumerateInstanceVersion(&apiVersion);
+	EXPECT_EQ(apiVersion, VK_API_VERSION_1_1);
+
 	const VkInstanceCreateInfo createInfo =
 	{
 		VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO, // sType
@@ -289,8 +293,8 @@ TEST_F(SwiftShaderVulkanTest, Version)
 		0,       // enabledExtensionCount
 		nullptr, // ppEnabledExtensionNames
 	};
-	VkInstance instance;
-	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
+	VkInstance instance = VK_NULL_HANDLE;
+	result = vkCreateInstance(&createInfo, nullptr, &instance);
 	EXPECT_EQ(result, VK_SUCCESS);
 
 	uint32_t pPhysicalDeviceCount = 0;
@@ -310,4 +314,14 @@ TEST_F(SwiftShaderVulkanTest, Version)
 	EXPECT_EQ(physicalDeviceProperties.deviceType, VK_PHYSICAL_DEVICE_TYPE_CPU);
 
 	EXPECT_EQ(strncmp(physicalDeviceProperties.deviceName, "SwiftShader Device", VK_MAX_PHYSICAL_DEVICE_NAME_SIZE), 0);
+
+	VkPhysicalDeviceProperties2 physicalDeviceProperties2;
+	VkPhysicalDeviceDriverPropertiesKHR physicalDeviceDriverProperties;
+	physicalDeviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+	physicalDeviceProperties2.pNext = &physicalDeviceDriverProperties;
+	physicalDeviceDriverProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR;
+	physicalDeviceDriverProperties.pNext = nullptr;
+	physicalDeviceDriverProperties.driverID = (VkDriverIdKHR)0;
+	vkGetPhysicalDeviceProperties2(pPhysicalDevice, &physicalDeviceProperties2);
+	EXPECT_EQ(physicalDeviceDriverProperties.driverID, VK_DRIVER_ID_AMD_OPEN_SOURCE_KHR);   // FIXME: Stealing an ID until https://github.com/KhronosGroup/Vulkan-Docs/pull/856 lands and dEQP is updated.
 }

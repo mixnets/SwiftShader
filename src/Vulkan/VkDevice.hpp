@@ -47,6 +47,9 @@ private:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	Queue* queues = nullptr;
 	uint32_t queueCount = 0;
+
+	// Extensions
+	bool KHR_driver_properties = false;
 };
 
 using DispatchableDevice = DispatchableObject<Device, VkDevice>;
