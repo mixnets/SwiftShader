@@ -103,6 +103,16 @@ TEST_F(SwiftShaderVulkanTest, Version)
     EXPECT_EQ(physicalDeviceProperties.deviceType, VK_PHYSICAL_DEVICE_TYPE_CPU);
 
     EXPECT_EQ(strncmp(physicalDeviceProperties.deviceName, "SwiftShader Device", VK_MAX_PHYSICAL_DEVICE_NAME_SIZE), 0);
+
+	VkPhysicalDeviceProperties2 physicalDeviceProperties2;
+	VkPhysicalDeviceDriverPropertiesKHR physicalDeviceDriverProperties;
+	physicalDeviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+	physicalDeviceProperties2.pNext = &physicalDeviceDriverProperties;
+	physicalDeviceDriverProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR;
+	physicalDeviceDriverProperties.pNext = nullptr;
+	physicalDeviceDriverProperties.driverID = (VkDriverIdKHR)0;
+	driver.vkGetPhysicalDeviceProperties2(pPhysicalDevice, &physicalDeviceProperties2);
+	EXPECT_EQ(physicalDeviceDriverProperties.driverID, VK_DRIVER_ID_GOOGLE_PASTEL_KHR);
 }
 
 std::vector<uint32_t> compileSpirv(const char* assembly)

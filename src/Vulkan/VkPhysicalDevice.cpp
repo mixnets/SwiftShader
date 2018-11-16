@@ -311,6 +311,14 @@ void PhysicalDevice::getProperties(VkPhysicalDeviceSubgroupProperties* propertie
 	properties->quadOperationsInAllStages = VK_FALSE;
 }
 
+void PhysicalDevice::getProperties(VkPhysicalDeviceDriverPropertiesKHR* properties) const
+{
+	properties->driverID = VK_DRIVER_ID_GOOGLE_PASTEL_KHR;
+	strcpy(properties->driverName, "Pastel driver");
+	strcpy(properties->driverInfo, "");
+	properties->conformanceVersion = {0, 0, 0, 0};
+}
+
 bool PhysicalDevice::hasFeatures(const VkPhysicalDeviceFeatures& requestedFeatures) const
 {
 	const VkPhysicalDeviceFeatures& supportedFeatures = getFeatures();
