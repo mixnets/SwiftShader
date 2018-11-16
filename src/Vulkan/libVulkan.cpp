@@ -82,6 +82,8 @@ static const VkExtensionProperties instanceExtensionProperties[] =
 
 static const VkExtensionProperties deviceExtensionProperties[] =
 {
+	{ VK_KHR_DRIVER_PROPERTIES_EXTENSION_NAME, VK_KHR_DRIVER_PROPERTIES_SPEC_VERSION },
+	// Vulkan 1.1 promoted extensions
 	{ VK_KHR_16BIT_STORAGE_EXTENSION_NAME, VK_KHR_16BIT_STORAGE_SPEC_VERSION },
 	{ VK_KHR_BIND_MEMORY_2_EXTENSION_NAME, VK_KHR_BIND_MEMORY_2_SPEC_VERSION },
 	{ VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME, VK_KHR_DEDICATED_ALLOCATION_SPEC_VERSION },
@@ -1927,6 +1929,12 @@ VKAPI_ATTR void VKAPI_CALL vkGetPhysicalDeviceProperties2(VkPhysicalDevice physi
 		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SUBGROUP_PROPERTIES:
 			{
 				auto& properties = *reinterpret_cast<VkPhysicalDeviceSubgroupProperties*>(extensionProperties);
+				vk::Cast(physicalDevice)->getProperties(&properties);
+			}
+			break;
+		case VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES_KHR:
+			{
+				auto& properties = *reinterpret_cast<VkPhysicalDeviceDriverPropertiesKHR*>(extensionProperties);
 				vk::Cast(physicalDevice)->getProperties(&properties);
 			}
 			break;
