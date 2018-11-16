@@ -18,6 +18,7 @@
 #include "VkQueue.hpp"
 
 #include <new> // Must #include this to use "placement new"
+#include <cstring>
 
 namespace vk
 {
@@ -40,6 +41,24 @@ Device::Device(const Device::CreateInfo* info, void* mem)
 		for(uint32_t j = 0; j < queueCreateInfo.queueCount; j++, queueID++)
 		{
 			new (&queues[queueID]) Queue(queueCreateInfo.queueFamilyIndex, queueCreateInfo.pQueuePriorities[j]);
+		}
+	}
+
+	if(pCreateInfo->enabledLayerCount)
+	{
+		// "The ppEnabledLayerNames and enabledLayerCount members of VkDeviceCreateInfo are deprecated and their values must be ignored by implementations."
+		UNIMPLEMENTED();   // TODO(b/119321052): UNIMPLEMENTED() should be used only for features that must still be implemented. Use a more informational macro here.
+	}
+
+	for(uint32_t i = 0; i < pCreateInfo->enabledExtensionCount; i++)
+	{
+		if(strcmp(pCreateInfo->ppEnabledExtensionNames[i], VK_KHR_DRIVER_PROPERTIES_EXTENSION_NAME) == 0)
+		{
+			// VK_KHR_driver_properties is a physical-device extension which can be used before before vkCreateDevice is called.
+		}
+		else
+		{
+			UNIMPLEMENTED();
 		}
 	}
 

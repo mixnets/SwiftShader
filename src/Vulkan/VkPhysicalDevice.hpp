@@ -46,6 +46,7 @@ public:
 	void getProperties(VkPhysicalDevicePointClippingProperties* properties) const;
 	void getProperties(VkPhysicalDeviceProtectedMemoryProperties* properties) const;
 	void getProperties(VkPhysicalDeviceSubgroupProperties* properties) const;
+	void getProperties(VkPhysicalDeviceDriverPropertiesKHR* properties) const;
 
 	void getFormatProperties(VkFormat format, VkFormatProperties* pFormatProperties) const;
 	void getImageFormatProperties(VkFormat format, VkImageType type, VkImageTiling tiling,
