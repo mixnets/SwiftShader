@@ -41,6 +41,11 @@ public:
 	void copyTo(VkBuffer dstBuffer, const VkBufferImageCopy& pRegion);
 	void copyFrom(VkBuffer srcBuffer, const VkBufferImageCopy& pRegion);
 
+	void clear(const VkClearValue& pClearValue, const VkRect2D& pRenderArea, unsigned int rgbaMask);
+
+	VkImageType              getImageType() const { return imageType; }
+	VkFormat                 getFormat() const { return format; }
+
 private:
 	VkDeviceSize computeOffsetB(VkOffset3D offset) const;
 	int pitchB() const;

@@ -212,4 +212,9 @@ VkDeviceSize Image::getSize() const
 	return extent.depth * sliceB();
 }
 
+void Image::clear(const VkClearValue& pClearValue, const VkRect2D& pRenderArea, unsigned int rgbaMask)
+{
+	UNIMPLEMENTED();
+}
+
 } // namespace vk
