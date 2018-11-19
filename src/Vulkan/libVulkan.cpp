@@ -38,6 +38,14 @@
 #include <cstring>
 #include <string>
 
+namespace vk
+{
+inline VkResult ERROR_FEATURE_NOT_PRESENT()
+{
+	return VkResult::VK_ERROR_FEATURE_NOT_PRESENT;
+}
+}
+
 extern "C"
 {
 VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vk_icdGetInstanceProcAddr(VkInstance instance, const char* pName)
@@ -228,7 +236,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDevice(VkPhysicalDevice physicalDevice, c
 
 				if(!vk::Cast(physicalDevice)->hasFeatures(physicalDeviceFeatures2->features))
 				{
-					return VK_ERROR_FEATURE_NOT_PRESENT;
+					return vk::ERROR_FEATURE_NOT_PRESENT();
 				}
 			}
 			break;
