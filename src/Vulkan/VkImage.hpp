@@ -29,7 +29,14 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkImageCreateInfo* pCreateInfo);
 
+	void clear(const VkClearValue& pClearValue, const VkRect2D& pRenderArea, unsigned int rgbaMask);
+
+	VkImageType              getImageType() const { return imageType; }
+	VkFormat                 getFormat() const { return format; }
+
 private:
+	VkImageType              imageType = VK_IMAGE_TYPE_2D;
+	VkFormat                 format = VK_FORMAT_UNDEFINED;
 };
 
 static inline Image* Cast(VkImage object)

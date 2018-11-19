@@ -17,7 +17,9 @@
 namespace vk
 {
 
-Image::Image(const VkImageCreateInfo* pCreateInfo, void* mem)
+Image::Image(const VkImageCreateInfo* pCreateInfo, void* mem) :
+	imageType(pCreateInfo->imageType),
+	format(pCreateInfo->format)
 {
 }
 
@@ -28,6 +30,11 @@ void Image::destroy(const VkAllocationCallbacks* pAllocator)
 size_t Image::ComputeRequiredAllocationSize(const VkImageCreateInfo* pCreateInfo)
 {
 	return 0;
+}
+
+void Image::clear(const VkClearValue& pClearValue, const VkRect2D& pRenderArea, unsigned int rgbaMask)
+{
+	UNIMPLEMENTED();
 }
 
 } // namespace vk

@@ -20,6 +20,8 @@
 namespace vk
 {
 
+class ImageView;
+
 class Framebuffer : public Object<Framebuffer, VkFramebuffer>
 {
 public:
@@ -27,9 +29,13 @@ public:
 	~Framebuffer() = delete;
 	void destroy(const VkAllocationCallbacks* pAllocator);
 
+	void clear(uint32_t pClearValueCount, const VkClearValue* pClearValues, const VkRect2D& pRenderArea);
+
 	static size_t ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo);
 
 private:
+	uint32_t    attachmentCount = 0;
+	ImageView** attachments = nullptr;
 };
 
 static inline Framebuffer* Cast(VkFramebuffer object)
