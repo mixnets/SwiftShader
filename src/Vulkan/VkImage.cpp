@@ -221,4 +221,9 @@ VkDeviceSize Image::getStorageSize() const
 	return extent.depth * slicePitchBytes();
 }
 
+void Image::clear(const VkClearValue& clearValue, const VkRect2D& renderArea)
+{
+	UNIMPLEMENTED();
+}
+
 } // namespace vk
