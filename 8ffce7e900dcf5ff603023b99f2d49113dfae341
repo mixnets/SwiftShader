@@ -46,6 +46,30 @@
       "revId": "8ffce7e900dcf5ff603023b99f2d49113dfae341",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2c819a21_dd3b1ccc",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-20T16:59:04Z",
+      "side": 1,
+      "message": "I meant decompression of textures in compressed formats such as ETC2",
+      "parentUuid": "bbe85320_2a60c624",
+      "range": {
+        "startLine": 159,
+        "startChar": 51,
+        "endLine": 159,
+        "endChar": 89
+      },
+      "revId": "8ffce7e900dcf5ff603023b99f2d49113dfae341",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
