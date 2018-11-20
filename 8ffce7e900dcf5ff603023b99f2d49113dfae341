@@ -22,6 +22,30 @@
       "revId": "8ffce7e900dcf5ff603023b99f2d49113dfae341",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bbe85320_2a60c624",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-20T16:57:59Z",
+      "side": 1,
+      "message": "Do you mean texture decompression or do you actually mean texture compression?",
+      "parentUuid": "6c5a76a7_3c5cfe56",
+      "range": {
+        "startLine": 159,
+        "startChar": 51,
+        "endLine": 159,
+        "endChar": 89
+      },
+      "revId": "8ffce7e900dcf5ff603023b99f2d49113dfae341",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
