@@ -70,6 +70,30 @@
       "revId": "1959bda9dfcdbe4f3998ecc20919d01215d9ee4c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "838cd134_f1b8235f",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-20T21:23:53Z",
+      "side": 1,
+      "message": "I see, yes, it could confuse our later selfs to have it in both places and still hit an UNIMPLEMENTED even when implemented in the other place.\n\nIn a later patch I did implement an extension, and handled it in this constructor, so it felt weird to have various bits of create info  \"handled\" in different places. I think we can move all of it to the constructor? Probably should be a separate patch...",
+      "parentUuid": "e73380ba_50ce1f5a",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 2
+      },
+      "revId": "1959bda9dfcdbe4f3998ecc20919d01215d9ee4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
