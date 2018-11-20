@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f74a6b5b_b0a622e7",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-20T16:09:40Z",
+      "side": 1,
+      "message": "Why does this need to be handled twice?",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 2
+      },
+      "revId": "1959bda9dfcdbe4f3998ecc20919d01215d9ee4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
