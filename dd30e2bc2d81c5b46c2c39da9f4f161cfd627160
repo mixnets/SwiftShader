@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1d77a556_813a8dee",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-20T09:20:12Z",
+      "side": 1,
+      "message": "nit: core -\u003e instance? These functions pointers are instance function pointers because their are specific to the instance.",
+      "range": {
+        "startLine": 33,
+        "startChar": 20,
+        "endLine": 33,
+        "endChar": 24
+      },
+      "revId": "dd30e2bc2d81c5b46c2c39da9f4f161cfd627160",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5d6bdf0_c07a8a85",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-20T09:20:12Z",
+      "side": 1,
+      "message": "All of these look more like device functions because they use child objects of the device.",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 64
+      },
+      "revId": "dd30e2bc2d81c5b46c2c39da9f4f161cfd627160",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
