@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "54e169ed_90bbe90b",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-20T15:23:26Z",
+      "side": 1,
+      "message": "Right, I\u0027ll rename the ones above as GLOBAL, so that these can be INSTANCE.\n\nhttps://www.khronos.org/registry/vulkan/specs/1.1-extensions/man/html/vkGetInstanceProcAddr.html specifies that aside from the ones above, \"core Vulkan command\" function pointers are returned when \u0027instance\u0027 is valid. So I should consider core \u003d instance + device.",
+      "parentUuid": "1d77a556_813a8dee",
+      "range": {
+        "startLine": 33,
+        "startChar": 20,
+        "endLine": 33,
+        "endChar": 24
+      },
+      "revId": "dd30e2bc2d81c5b46c2c39da9f4f161cfd627160",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f5d6bdf0_c07a8a85",
         "filename": "src/Vulkan/VkGetProcAddress.cpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "dd30e2bc2d81c5b46c2c39da9f4f161cfd627160",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b8319949_14ea9de9",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-20T15:23:26Z",
+      "side": 1,
+      "message": "Yes, I think they\u0027re intended to be device functions which should only be exposed when the corresponding extension has been enabled, even though these are promoted extensions.\n\nLet\u0027s fix that in a separate patch (and perhaps catch this in a dEQP test).",
+      "parentUuid": "f5d6bdf0_c07a8a85",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 64
+      },
+      "revId": "dd30e2bc2d81c5b46c2c39da9f4f161cfd627160",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
