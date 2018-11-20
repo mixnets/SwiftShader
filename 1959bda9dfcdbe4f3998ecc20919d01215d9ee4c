@@ -22,6 +22,30 @@
       "revId": "1959bda9dfcdbe4f3998ecc20919d01215d9ee4c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25bd728e_3719b135",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-20T19:53:44Z",
+      "side": 1,
+      "message": "It\u0027s not entirely clear at this point whether it is best handled in the entry function or here in the constructor (or parts of it in both). Either way we can\u0027t accidentally miss this so I think the duplication is harmless for now.",
+      "parentUuid": "f74a6b5b_b0a622e7",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 2
+      },
+      "revId": "1959bda9dfcdbe4f3998ecc20919d01215d9ee4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
