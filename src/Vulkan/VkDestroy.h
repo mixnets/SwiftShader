@@ -27,6 +27,7 @@
 #include "VkPipelineLayout.hpp"
 #include "VkPhysicalDevice.hpp"
 #include "VkQueue.hpp"
+#include "VkSampler.hpp"
 #include "VkSemaphore.hpp"
 #include "VkShaderModule.hpp"
 #include "VkRenderPass.hpp"

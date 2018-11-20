@@ -31,6 +31,7 @@
 #include "VkPipeline.hpp"
 #include "VkPipelineLayout.hpp"
 #include "VkQueue.hpp"
+#include "VkSampler.hpp"
 #include "VkSemaphore.hpp"
 #include "VkShaderModule.hpp"
 #include "VkRenderPass.hpp"
@@ -904,9 +905,12 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateSampler(VkDevice device, const VkSamplerC
 	TRACE("(VkDevice device = 0x%X, const VkSamplerCreateInfo* pCreateInfo = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X, VkSampler* pSampler = 0x%X)",
 		    device, pCreateInfo, pAllocator, pSampler);
 
-	UNIMPLEMENTED();
+	if(pCreateInfo->pNext || pCreateInfo->flags)
+	{
+		UNIMPLEMENTED();
+	}
 
-	return VK_SUCCESS;
+	return vk::Sampler::Create(pAllocator, pCreateInfo, pSampler);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroySampler(VkDevice device, VkSampler sampler, const VkAllocationCallbacks* pAllocator)
@@ -914,7 +918,7 @@ VKAPI_ATTR void VKAPI_CALL vkDestroySampler(VkDevice device, VkSampler sampler, 
 	TRACE("(VkDevice device = 0x%X, VkSampler sampler = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X)",
 		    device, sampler, pAllocator);
 
-	UNIMPLEMENTED();
+	vk::destroy(sampler, pAllocator);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateDescriptorSetLayout(VkDevice device, const VkDescriptorSetLayoutCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDescriptorSetLayout* pSetLayout)
