@@ -22,6 +22,30 @@
       "revId": "8f7615d1d13ab24ff6bd919b6c65bfa0ea14e968",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3017819b_c6d17cc8",
+        "filename": "src/Device/Surface.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1072,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-21T19:40:13Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "4e501d9a_510b1fe7",
+      "range": {
+        "startLine": 1072,
+        "startChar": 27,
+        "endLine": 1072,
+        "endChar": 29
+      },
+      "revId": "8f7615d1d13ab24ff6bd919b6c65bfa0ea14e968",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
