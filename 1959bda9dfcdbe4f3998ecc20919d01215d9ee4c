@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "8fecbcb0_6a624ad8",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-11-21T22:41:37Z",
+      "side": 1,
+      "message": "Just delete this. A correct implementation ignores pCreateInfo-\u003eenabledLayerCount. There is nothing to do here.",
+      "revId": "1959bda9dfcdbe4f3998ecc20919d01215d9ee4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f74a6b5b_b0a622e7",
         "filename": "src/Vulkan/VkDevice.cpp",
         "patchSetId": 1
