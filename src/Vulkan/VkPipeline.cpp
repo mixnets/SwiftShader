@@ -61,87 +61,6 @@ sw::Viewport Convert(const VkViewport& viewport)
 	return { viewport.x, viewport.y, viewport.width, viewport.height, viewport.minDepth, viewport.maxDepth };
 }
 
-sw::StencilOperation Convert(VkStencilOp stencilOp)
-{
-	switch(stencilOp)
-	{
-	case VK_STENCIL_OP_KEEP:
-		return sw::OPERATION_KEEP;
-	case VK_STENCIL_OP_ZERO:
-		return sw::OPERATION_ZERO;
-	case VK_STENCIL_OP_REPLACE:
-		return sw::OPERATION_REPLACE;
-	case VK_STENCIL_OP_INCREMENT_AND_CLAMP:
-		return sw::OPERATION_INCRSAT;
-	case VK_STENCIL_OP_DECREMENT_AND_CLAMP:
-		return sw::OPERATION_DECRSAT;
-	case VK_STENCIL_OP_INVERT:
-		return sw::OPERATION_INVERT;
-	case VK_STENCIL_OP_INCREMENT_AND_WRAP:
-		return sw::OPERATION_INCR;
-	case VK_STENCIL_OP_DECREMENT_AND_WRAP:
-		return sw::OPERATION_DECR;
-	default:
-		UNIMPLEMENTED();
-	}
-
-	return sw::OPERATION_KEEP;
-}
-
-sw::StencilCompareMode ConvertStencil(VkCompareOp compareOp)
-{
-	switch(compareOp)
-	{
-	case VK_COMPARE_OP_NEVER:
-		return sw::STENCIL_NEVER;
-	case VK_COMPARE_OP_LESS:
-		return sw::STENCIL_LESS;
-	case VK_COMPARE_OP_EQUAL:
-		return sw::STENCIL_EQUAL;
-	case VK_COMPARE_OP_LESS_OR_EQUAL:
-		return sw::STENCIL_LESSEQUAL;
-	case VK_COMPARE_OP_GREATER:
-		return sw::STENCIL_GREATER;
-	case VK_COMPARE_OP_NOT_EQUAL:
-		return sw::STENCIL_NOTEQUAL;
-	case VK_COMPARE_OP_GREATER_OR_EQUAL:
-		return sw::STENCIL_GREATEREQUAL;
-	case VK_COMPARE_OP_ALWAYS:
-		return sw::STENCIL_ALWAYS;
-	default:
-		UNIMPLEMENTED();
-	}
-
-	return sw::STENCIL_NEVER;
-}
-
-sw::DepthCompareMode ConvertDepth(VkCompareOp compareOp)
-{
-	switch(compareOp)
-	{
-	case VK_COMPARE_OP_NEVER:
-		return sw::DEPTH_NEVER;
-	case VK_COMPARE_OP_LESS:
-		return sw::DEPTH_LESS;
-	case VK_COMPARE_OP_EQUAL:
-		return sw::DEPTH_EQUAL;
-	case VK_COMPARE_OP_LESS_OR_EQUAL:
-		return sw::DEPTH_LESSEQUAL;
-	case VK_COMPARE_OP_GREATER:
-		return sw::DEPTH_GREATER;
-	case VK_COMPARE_OP_NOT_EQUAL:
-		return sw::DEPTH_NOTEQUAL;
-	case VK_COMPARE_OP_GREATER_OR_EQUAL:
-		return sw::DEPTH_GREATEREQUAL;
-	case VK_COMPARE_OP_ALWAYS:
-		return sw::DEPTH_ALWAYS;
-	default:
-		UNIMPLEMENTED();
-	}
-
-	return sw::DEPTH_NEVER;
-}
-
 sw::LogicalOperation Convert(VkLogicOp logicOp)
 {
 	switch(logicOp)
@@ -610,24 +529,24 @@ GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateIn
 
 	context.depthBufferEnable = depthStencilState->depthTestEnable;
 	context.depthWriteEnable = depthStencilState->depthWriteEnable;
-	context.depthCompareMode = ConvertDepth(depthStencilState->depthCompareOp);
+	context.depthCompareMode = depthStencilState->depthCompareOp;
 
 	context.stencilEnable = context.twoSidedStencil = depthStencilState->stencilTestEnable;
 	if(context.stencilEnable)
 	{
 		context.stencilMask = depthStencilState->front.compareMask;
-		context.stencilCompareMode = ConvertStencil(depthStencilState->front.compareOp);
-		context.stencilZFailOperation = Convert(depthStencilState->front.depthFailOp);
-		context.stencilFailOperation = Convert(depthStencilState->front.failOp);
-		context.stencilPassOperation = Convert(depthStencilState->front.passOp);
+		context.stencilCompareMode = depthStencilState->front.compareOp;
+		context.stencilZFailOperation = depthStencilState->front.depthFailOp;
+		context.stencilFailOperation = depthStencilState->front.failOp;
+		context.stencilPassOperation = depthStencilState->front.passOp;
 		context.stencilReference = depthStencilState->front.reference;
 		context.stencilWriteMask = depthStencilState->front.writeMask;
 
 		context.stencilMaskCCW = depthStencilState->back.compareMask;
-		context.stencilCompareModeCCW = ConvertStencil(depthStencilState->back.compareOp);
-		context.stencilZFailOperationCCW = Convert(depthStencilState->back.depthFailOp);
-		context.stencilFailOperationCCW = Convert(depthStencilState->back.failOp);
-		context.stencilPassOperationCCW = Convert(depthStencilState->back.passOp);
+		context.stencilCompareModeCCW = depthStencilState->back.compareOp;
+		context.stencilZFailOperationCCW = depthStencilState->back.depthFailOp;
+		context.stencilFailOperationCCW = depthStencilState->back.failOp;
+		context.stencilPassOperationCCW = depthStencilState->back.passOp;
 		context.stencilReferenceCCW = depthStencilState->back.reference;
 		context.stencilWriteMaskCCW = depthStencilState->back.writeMask;
 	}
