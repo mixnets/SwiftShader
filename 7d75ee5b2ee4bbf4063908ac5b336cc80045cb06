@@ -84,6 +84,30 @@
     },
     {
       "key": {
+        "uuid": "df29ab6f_2cfc934c",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-22T16:34:18Z",
+      "side": 1,
+      "message": "VkImageViews aren\u0027t tied to the frambuffer and are released separately. In general only command buffer pools and maybe descriptor set pools free other objects.",
+      "parentUuid": "369199dc_aa38e666",
+      "range": {
+        "startLine": 40,
+        "startChar": 2,
+        "endLine": 40,
+        "endChar": 22
+      },
+      "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5c7cbb6f_27b4e44a",
         "filename": "src/Vulkan/VkImageView.cpp",
         "patchSetId": 1
@@ -113,6 +137,24 @@
       "side": 1,
       "message": "What about the clearing which happens in vkCmdBeginRenderPass. Does it also ignore the swizzle? I guess it would make sense to ignore it when clearing, otherwise it can get confusing.",
       "parentUuid": "5c7cbb6f_27b4e44a",
+      "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95579bf7_0e60b4c2",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-22T16:34:18Z",
+      "side": 1,
+      "message": "VK_ATTACHMENT_LOAD_OP_CLEAR is only used by beginRenderPass so that\u0027s what I meant, that beginRenderPass would ignore the swizzling. Like you said this wouldn\u0027t really make sense for the API to do swizzled clears like that.",
+      "parentUuid": "7fbe3f38_0b591102",
       "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
