@@ -90,6 +90,91 @@ namespace sw
 		}
 	}
 
+	template<typename T>
+	bool setBatchIndices(unsigned int batch[128][3], VkPrimitiveTopology topology, const void* indices, unsigned int start, unsigned int triangleCount)
+	{
+		const T *index = nullptr;
+
+		switch(topology)
+		{
+		case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
+			index = (const T*)indices + start;
+
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = *index;
+				batch[i][1] = *index;
+				batch[i][2] = *index;
+
+				index += 1;
+			}
+			break;
+		case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
+			index = (const T*)indices + 2 * start;
+
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = index[0];
+				batch[i][1] = index[1];
+				batch[i][2] = index[1];
+
+				index += 2;
+			}
+			break;
+		case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
+			index = (const T*)indices + start;
+
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = index[0];
+				batch[i][1] = index[1];
+				batch[i][2] = index[1];
+
+				index += 1;
+			}
+			break;
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
+			index = (const T*)indices + 3 * start;
+
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = index[0];
+				batch[i][1] = index[1];
+				batch[i][2] = index[2];
+
+				index += 3;
+			}
+			break;
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
+			index = (const T*)indices + start;
+
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = index[0];
+				batch[i][1] = index[((start + i) & 1) + 1];
+				batch[i][2] = index[(~(start + i) & 1) + 1];
+
+				index += 1;
+			}
+			break;
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
+			index = (const T*)indices;
+
+			for(unsigned int i = 0; i < triangleCount; i++)
+			{
+				batch[i][0] = index[start + i + 1];
+				batch[i][1] = index[start + i + 2];
+				batch[i][2] = index[0];
+			}
+			break;
+		default:
+			ASSERT(false);
+			return false;
+		}
+
+		return true;
+	}
+
 	struct Parameters
 	{
 		Renderer *renderer;
@@ -216,7 +301,7 @@ namespace sw
 		sw::deallocate(mem);
 	}
 
-	void Renderer::draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update)
+	void Renderer::draw(VkPrimitiveTopology topology, VkIndexType indexType, unsigned int indexOffset, unsigned int count, bool update)
 	{
 		#ifndef NDEBUG
 			if(count < minPrimitives || count > maxPrimitives)
@@ -225,7 +310,7 @@ namespace sw
 			}
 		#endif
 
-		context->drawType = drawType;
+		context->topology = topology;
 
 		updateConfiguration();
 		updateClipper();
@@ -243,7 +328,7 @@ namespace sw
 
 		if(update || oldMultiSampleMask != context->multiSampleMask)
 		{
-			vertexState = VertexProcessor::update(drawType);
+			vertexState = VertexProcessor::update(topology);
 			setupState = SetupProcessor::update();
 			pixelState = PixelProcessor::update();
 
@@ -307,7 +392,8 @@ namespace sw
 			}
 		}
 
-		draw->drawType = drawType;
+		draw->topology = topology;
+		draw->indexType = indexType;
 		draw->batchSize = batch;
 
 		vertexRoutine->bind();
@@ -338,6 +424,10 @@ namespace sw
 		if(context->indexBuffer)
 		{
 			data->indices = (unsigned char*)context->indexBuffer->lock(PUBLIC, PRIVATE) + indexOffset;
+		}
+		else
+		{
+			data->indices = nullptr;
 		}
 
 		draw->indexBuffer = context->indexBuffer;
@@ -1007,13 +1097,15 @@ namespace sw
 		}
 
 		unsigned int batch[128][3];   // FIXME: Adjust to dynamic batch size
+		VkPrimitiveTopology topology = static_cast<VkPrimitiveTopology>(static_cast<int>(draw->topology));
 
-		switch(draw->drawType)
+		if(!indices)
 		{
-		case DRAW_POINTLIST:
-			{
-				unsigned int index = start;
+			unsigned int index = start;
 
+			switch(topology)
+			{
+			case VK_PRIMITIVE_TOPOLOGY_POINT_LIST:
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
 					batch[i][0] = index;
@@ -1022,11 +1114,9 @@ namespace sw
 
 					index += 1;
 				}
-			}
-			break;
-		case DRAW_LINELIST:
-			{
-				unsigned int index = 2 * start;
+				break;
+			case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
+				index = 2 * start;
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
@@ -1036,12 +1126,8 @@ namespace sw
 
 					index += 2;
 				}
-			}
-			break;
-		case DRAW_LINESTRIP:
-			{
-				unsigned int index = start;
-
+				break;
+			case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
 					batch[i][0] = index + 0;
@@ -1050,11 +1136,9 @@ namespace sw
 
 					index += 1;
 				}
-			}
-			break;
-		case DRAW_TRIANGLELIST:
-			{
-				unsigned int index = 3 * start;
+				break;
+			case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
+				index = 3 * start;
 
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
@@ -1064,12 +1148,8 @@ namespace sw
 
 					index += 3;
 				}
-			}
-			break;
-		case DRAW_TRIANGLESTRIP:
-			{
-				unsigned int index = start;
-
+				break;
+			case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
 					if(leadingVertexFirst)
@@ -1087,12 +1167,8 @@ namespace sw
 
 					index += 1;
 				}
-			}
-			break;
-		case DRAW_TRIANGLEFAN:
-			{
-				unsigned int index = start;
-
+				break;
+			case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
 				for(unsigned int i = 0; i < triangleCount; i++)
 				{
 					if(leadingVertexFirst)
@@ -1110,175 +1186,33 @@ namespace sw
 
 					index += 1;
 				}
+				break;
+			default:
+				ASSERT(false);
+				return;
 			}
-			break;
-		case DRAW_INDEXEDPOINTLIST16:
+		}
+		else
+		{
+			switch(draw->indexType)
 			{
-				const unsigned short *index = (const unsigned short*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
+			case VK_INDEX_TYPE_UINT16:
+				if(!setBatchIndices<unsigned short>(batch, topology, indices, start, triangleCount))
 				{
-					batch[i][0] = *index;
-					batch[i][1] = *index;
-					batch[i][2] = *index;
-
-					index += 1;
+					return;
 				}
-			}
-			break;
-		case DRAW_INDEXEDPOINTLIST32:
-			{
-				const unsigned int *index = (const unsigned int*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
+				break;
+			case VK_INDEX_TYPE_UINT32:
+				if(!setBatchIndices<unsigned int>(batch, topology, indices, start, triangleCount))
 				{
-					batch[i][0] = *index;
-					batch[i][1] = *index;
-					batch[i][2] = *index;
-
-					index += 1;
+					return;
 				}
-			}
+				break;
 			break;
-		case DRAW_INDEXEDLINELIST16:
-			{
-				const unsigned short *index = (const unsigned short*)indices + 2 * start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[1];
-
-					index += 2;
-				}
+			default:
+				ASSERT(false);
+				return;
 			}
-			break;
-		case DRAW_INDEXEDLINELIST32:
-			{
-				const unsigned int *index = (const unsigned int*)indices + 2 * start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[1];
-
-					index += 2;
-				}
-			}
-			break;
-		case DRAW_INDEXEDLINESTRIP16:
-			{
-				const unsigned short *index = (const unsigned short*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[1];
-
-					index += 1;
-				}
-			}
-			break;
-		case DRAW_INDEXEDLINESTRIP32:
-			{
-				const unsigned int *index = (const unsigned int*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[1];
-
-					index += 1;
-				}
-			}
-			break;
-		case DRAW_INDEXEDTRIANGLELIST16:
-			{
-				const unsigned short *index = (const unsigned short*)indices + 3 * start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[2];
-
-					index += 3;
-				}
-			}
-			break;
-		case DRAW_INDEXEDTRIANGLELIST32:
-			{
-				const unsigned int *index = (const unsigned int*)indices + 3 * start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[1];
-					batch[i][2] = index[2];
-
-					index += 3;
-				}
-			}
-			break;
-		case DRAW_INDEXEDTRIANGLESTRIP16:
-			{
-				const unsigned short *index = (const unsigned short*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[((start + i) & 1) + 1];
-					batch[i][2] = index[(~(start + i) & 1) + 1];
-
-					index += 1;
-				}
-			}
-			break;
-		case DRAW_INDEXEDTRIANGLESTRIP32:
-			{
-				const unsigned int *index = (const unsigned int*)indices + start;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[0];
-					batch[i][1] = index[((start + i) & 1) + 1];
-					batch[i][2] = index[(~(start + i) & 1) + 1];
-
-					index += 1;
-				}
-			}
-			break;
-		case DRAW_INDEXEDTRIANGLEFAN16:
-			{
-				const unsigned short *index = (const unsigned short*)indices;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[start + i + 1];
-					batch[i][1] = index[start + i + 2];
-					batch[i][2] = index[0];
-				}
-			}
-			break;
-		case DRAW_INDEXEDTRIANGLEFAN32:
-			{
-				const unsigned int *index = (const unsigned int*)indices;
-
-				for(unsigned int i = 0; i < triangleCount; i++)
-				{
-					batch[i][0] = index[start + i + 1];
-					batch[i][1] = index[start + i + 2];
-					batch[i][2] = index[0];
-				}
-			}
-			break;
-		default:
-			ASSERT(false);
-			return;
 		}
 
 		task->primitiveStart = start;
