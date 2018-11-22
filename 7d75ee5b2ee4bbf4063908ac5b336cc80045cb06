@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "87dbbc25_81171a08",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-22T14:59:43Z",
+      "side": 1,
+      "message": "I encountered this fairly early, because clearing the framebuffer(s) happens in vkCmdBeginRenderPass command. I just need the command buffer up and running to test this properly.",
+      "parentUuid": "e85c1bb8_7d711d9a",
+      "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "912bb500_32789198",
         "filename": "src/Vulkan/VkFramebuffer.cpp",
         "patchSetId": 1
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "369199dc_aa38e666",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-22T14:59:43Z",
+      "side": 1,
+      "message": "I can do this, but I first wanted to ask: should the Framebuffer object destroy all of its VkImageView attachments when it gets destroyed or are those VkImageView objects always manually released by vkDestroyImageView calls.",
+      "parentUuid": "912bb500_32789198",
+      "range": {
+        "startLine": 40,
+        "startChar": 2,
+        "endLine": 40,
+        "endChar": 22
+      },
+      "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5c7cbb6f_27b4e44a",
         "filename": "src/Vulkan/VkImageView.cpp",
         "patchSetId": 1
@@ -53,6 +95,24 @@
       "writtenOn": "2018-11-22T09:18:37Z",
       "side": 1,
       "message": "VK_ATTACHMENT_LOAD_OP_CLEAR doesn\u0027t take the image view component swizzling into account.",
+      "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7fbe3f38_0b591102",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-22T14:59:43Z",
+      "side": 1,
+      "message": "What about the clearing which happens in vkCmdBeginRenderPass. Does it also ignore the swizzle? I guess it would make sense to ignore it when clearing, otherwise it can get confusing.",
+      "parentUuid": "5c7cbb6f_27b4e44a",
       "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
