@@ -58,98 +58,32 @@ namespace sw
 
 	bool Context::isDrawPoint() const
 	{
-		switch(drawType)
-		{
-		case DRAW_POINTLIST:
-		case DRAW_INDEXEDPOINTLIST16:
-		case DRAW_INDEXEDPOINTLIST32:
-			return true;
-		case DRAW_LINELIST:
-		case DRAW_LINESTRIP:
-		case DRAW_INDEXEDLINELIST16:
-		case DRAW_INDEXEDLINESTRIP16:
-		case DRAW_INDEXEDLINELIST32:
-		case DRAW_INDEXEDLINESTRIP32:
-			return false;
-		case DRAW_TRIANGLELIST:
-		case DRAW_TRIANGLESTRIP:
-		case DRAW_TRIANGLEFAN:
-		case DRAW_INDEXEDTRIANGLELIST16:
-		case DRAW_INDEXEDTRIANGLESTRIP16:
-		case DRAW_INDEXEDTRIANGLEFAN16:
-		case DRAW_INDEXEDTRIANGLELIST32:
-		case DRAW_INDEXEDTRIANGLESTRIP32:
-		case DRAW_INDEXEDTRIANGLEFAN32:
-			return false;
-		default:
-			ASSERT(false);
-		}
-
-		return false;
+		return topology == VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 	}
 
 	bool Context::isDrawLine() const
 	{
-		switch(drawType)
+		switch(topology)
 		{
-		case DRAW_POINTLIST:
-		case DRAW_INDEXEDPOINTLIST16:
-		case DRAW_INDEXEDPOINTLIST32:
-			return false;
-		case DRAW_LINELIST:
-		case DRAW_LINESTRIP:
-		case DRAW_INDEXEDLINELIST16:
-		case DRAW_INDEXEDLINESTRIP16:
-		case DRAW_INDEXEDLINELIST32:
-		case DRAW_INDEXEDLINESTRIP32:
+		case VK_PRIMITIVE_TOPOLOGY_LINE_LIST:
+		case VK_PRIMITIVE_TOPOLOGY_LINE_STRIP:
 			return true;
-		case DRAW_TRIANGLELIST:
-		case DRAW_TRIANGLESTRIP:
-		case DRAW_TRIANGLEFAN:
-		case DRAW_INDEXEDTRIANGLELIST16:
-		case DRAW_INDEXEDTRIANGLESTRIP16:
-		case DRAW_INDEXEDTRIANGLEFAN16:
-		case DRAW_INDEXEDTRIANGLELIST32:
-		case DRAW_INDEXEDTRIANGLESTRIP32:
-		case DRAW_INDEXEDTRIANGLEFAN32:
-			return false;
 		default:
-			ASSERT(false);
+			return false;
 		}
-
-		return false;
 	}
 
 	bool Context::isDrawTriangle() const
 	{
-		switch(drawType)
+		switch(topology)
 		{
-		case DRAW_POINTLIST:
-		case DRAW_INDEXEDPOINTLIST16:
-		case DRAW_INDEXEDPOINTLIST32:
-			return false;
-		case DRAW_LINELIST:
-		case DRAW_LINESTRIP:
-		case DRAW_INDEXEDLINELIST16:
-		case DRAW_INDEXEDLINESTRIP16:
-		case DRAW_INDEXEDLINELIST32:
-		case DRAW_INDEXEDLINESTRIP32:
-			return false;
-		case DRAW_TRIANGLELIST:
-		case DRAW_TRIANGLESTRIP:
-		case DRAW_TRIANGLEFAN:
-		case DRAW_INDEXEDTRIANGLELIST16:
-		case DRAW_INDEXEDTRIANGLESTRIP16:
-		case DRAW_INDEXEDTRIANGLEFAN16:
-		case DRAW_INDEXEDTRIANGLELIST32:
-		case DRAW_INDEXEDTRIANGLESTRIP32:
-		case DRAW_INDEXEDTRIANGLEFAN32:
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST:
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP:
+		case VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN:
 			return true;
 		default:
-			ASSERT(false);
+			return true;
 		}
-
-		return true;
 	}
 
 	void Context::init()
