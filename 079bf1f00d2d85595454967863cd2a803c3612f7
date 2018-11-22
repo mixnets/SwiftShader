@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "027510ab_1997e924",
+        "filename": "src/Reactor/SubzeroReactor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-22T20:28:40Z",
+      "side": 1,
+      "message": "Nit: Can these lines be moved below the if statement, just before the switch statement?",
+      "range": {
+        "startLine": 220,
+        "startChar": 0,
+        "endLine": 221,
+        "endChar": 79
+      },
+      "revId": "079bf1f00d2d85595454967863cd2a803c3612f7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b0d33dfe_b714137e",
         "filename": "src/Reactor/SubzeroReactor.cpp",
         "patchSetId": 1
