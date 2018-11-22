@@ -261,13 +261,13 @@ namespace rr
 				{
 					uint32_t thumb = 0;   // Calls to Thumb code not supported.
 					uint32_t lo = (uint32_t)(intptr_t)symbolValue | thumb;
-					*patchSite = (*patchSite & 0xFFF0F000) | ((lo & 0xF000) << 4) | (lo & 0x0FFF);
+					unaligned_write(patchSite, (unaligned_read(patchSite) & 0xFFF0F000) | ((lo & 0xF000) << 4) | (lo & 0x0FFF));
 				}
 				break;
 			case R_ARM_MOVT_ABS:
 				{
 					uint32_t hi = (uint32_t)(intptr_t)(symbolValue) >> 16;
-					*patchSite = (*patchSite & 0xFFF0F000) | ((hi & 0xF000) << 4) | (hi & 0x0FFF);
+					unaligned_write(patchSite, (unaligned_read(patchSite) & 0xFFF0F000) | ((hi & 0xF000) << 4) | (hi & 0x0FFF));
 				}
 				break;
 			default:
@@ -283,10 +283,10 @@ namespace rr
 				// No relocation
 				break;
 			case R_386_32:
-				*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite);
+				unaligned_write(patchSite, (int32_t)((intptr_t)symbolValue + unaligned_read(patchSite)));
 				break;
 		//	case R_386_PC32:
-		//		*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite);
+		//		unaligned_write(patchSite, (int32_t)((intptr_t)symbolValue + unaligned_read(patchSite) - (intptr_t)patchSite));
 		//		break;
 			default:
 				assert(false && "Unsupported relocation type");
@@ -340,13 +340,13 @@ namespace rr
 			// No relocation
 			break;
 		case R_X86_64_64:
-			*(int64_t*)patchSite = (int64_t)((intptr_t)symbolValue + *(int64_t*)patchSite) + relocation.r_addend;
+			unaligned_write((int64_t*)patchSite, (int64_t)((intptr_t)symbolValue + unaligned_read((int64_t*)patchSite) + relocation.r_addend));
 			break;
 		case R_X86_64_PC32:
-			*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite - (intptr_t)patchSite) + relocation.r_addend;
+			unaligned_write(patchSite, (int32_t)((intptr_t)symbolValue + unaligned_read(patchSite) - (intptr_t)patchSite + relocation.r_addend));
 			break;
 		case R_X86_64_32S:
-			*patchSite = (int32_t)((intptr_t)symbolValue + *patchSite) + relocation.r_addend;
+			unaligned_write(patchSite, (int32_t)((intptr_t)symbolValue + unaligned_read(patchSite) + relocation.r_addend));
 			break;
 		default:
 			assert(false && "Unsupported relocation type");
