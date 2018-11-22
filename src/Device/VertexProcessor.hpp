@@ -167,7 +167,7 @@ namespace sw
 		void enableTransformFeedback(uint64_t enable);
 
 	protected:
-		const State update(DrawType drawType);
+		const State update(VkPrimitiveTopology topology);
 		Routine *routine(const State &state);
 
 		void setRoutineCacheSize(int cacheSize);

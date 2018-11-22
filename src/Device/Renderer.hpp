@@ -260,7 +260,7 @@ namespace sw
 		void *operator new(size_t size);
 		void operator delete(void * mem);
 
-		void draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update = true);
+		void draw(VkPrimitiveTopology topology, VkIndexType indexType, unsigned int indexOffset, unsigned int count, bool update = true);
 
 		void clear(void *value, VkFormat format, Surface *dest, const Rect &rect, unsigned int rgbaMask);
 		void blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, bool filter, bool isStencil = false, bool sRGBconversion = true);
@@ -446,7 +446,8 @@ namespace sw
 
 		~DrawCall();
 
-		AtomicInt drawType;
+		AtomicInt topology;
+		AtomicInt indexType;
 		AtomicInt batchSize;
 
 		Routine *vertexRoutine;
