@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "56f0557d_edf14861",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-11-23T19:54:32Z",
+      "side": 1,
+      "message": "These are all device functions. Whether you end up gating them on versions or extensions or not, they need to be accessible via GDPA so in the block below.",
+      "range": {
+        "startLine": 59,
+        "startChar": 1,
+        "endLine": 70,
+        "endChar": 68
+      },
+      "revId": "d382836cf0b778bc88bcce4ab83e92677ea659fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0c5c8c57_16e332cf",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-11-23T19:54:32Z",
+      "side": 1,
+      "message": "These are instance / physical device functions. They should be in the previous block.",
+      "range": {
+        "startLine": 223,
+        "startChar": 1,
+        "endLine": 238,
+        "endChar": 78
+      },
+      "revId": "d382836cf0b778bc88bcce4ab83e92677ea659fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
