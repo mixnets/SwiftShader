@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7b1aa3fa_39c64100",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 4
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-23T18:23:09Z",
+      "side": 1,
+      "message": "nit: whitespace",
+      "range": {
+        "startLine": 92,
+        "startChar": 16,
+        "endLine": 92,
+        "endChar": 19
+      },
+      "revId": "9ce021ba3bb0d23ecdaa17c232f040f41803615b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b8da0940_957261ce",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 4
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-23T18:23:09Z",
+      "side": 1,
+      "message": "nit: whitespace",
+      "range": {
+        "startLine": 97,
+        "startChar": 46,
+        "endLine": 97,
+        "endChar": 49
+      },
+      "revId": "9ce021ba3bb0d23ecdaa17c232f040f41803615b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "347233c4_f7397367",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 4
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-23T18:23:09Z",
+      "side": 1,
+      "message": "nit: whitespace",
+      "range": {
+        "startLine": 109,
+        "startChar": 65,
+        "endLine": 109,
+        "endChar": 68
+      },
+      "revId": "9ce021ba3bb0d23ecdaa17c232f040f41803615b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
