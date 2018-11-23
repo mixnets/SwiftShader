@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "a0a6c6d0_df8c2953",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-11-23T19:01:25Z",
+      "side": 1,
+      "message": "So leave a comment here, but don\u0027t be nonconformant in debug builds?",
+      "parentUuid": "9e80f184_06713403",
+      "revId": "1959bda9dfcdbe4f3998ecc20919d01215d9ee4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f74a6b5b_b0a622e7",
         "filename": "src/Vulkan/VkDevice.cpp",
         "patchSetId": 1
