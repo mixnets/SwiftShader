@@ -153,6 +153,30 @@
       "revId": "1959bda9dfcdbe4f3998ecc20919d01215d9ee4c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "10192ffc_1b715d5c",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-23T18:19:57Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c7e3b762_36754c7d",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 2
+      },
+      "revId": "1959bda9dfcdbe4f3998ecc20919d01215d9ee4c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
