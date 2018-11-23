@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "6b75ece6_935f6880",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-23T21:46:51Z",
+      "side": 1,
+      "message": "Done. Thanks!",
+      "parentUuid": "56f0557d_edf14861",
+      "range": {
+        "startLine": 59,
+        "startChar": 1,
+        "endLine": 70,
+        "endChar": 68
+      },
+      "revId": "d382836cf0b778bc88bcce4ab83e92677ea659fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0c5c8c57_16e332cf",
         "filename": "src/Vulkan/VkGetProcAddress.cpp",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "d382836cf0b778bc88bcce4ab83e92677ea659fc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a5c14d0b_849398e4",
+        "filename": "src/Vulkan/VkGetProcAddress.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-23T21:46:51Z",
+      "side": 1,
+      "message": "Done. Thanks!\n\nNote that dEQP-VK.api.version_check.entry_points didn\u0027t catch this.",
+      "parentUuid": "0c5c8c57_16e332cf",
+      "range": {
+        "startLine": 223,
+        "startChar": 1,
+        "endLine": 238,
+        "endChar": 78
+      },
+      "revId": "d382836cf0b778bc88bcce4ab83e92677ea659fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
