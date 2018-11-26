@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f6a10d23_e958e6e5",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-26T20:48:12Z",
+      "side": 1,
+      "message": "I\u0027m curious just how how we\u0027ll be able to get away with that. 8-)",
+      "range": {
+        "startLine": 331,
+        "startChar": 1,
+        "endLine": 331,
+        "endChar": 44
+      },
+      "revId": "81479e79e2fb91e4413d6d7f01e5197976b01ac0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6dd2b586_481d65ba",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-26T20:48:12Z",
+      "side": 1,
+      "message": "\"Formats that are required to support VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT must also support VK_FORMAT_FEATURE_TRANSFER_SRC_BIT and VK_FORMAT_FEATURE_TRANSFER_DST_BIT\"",
+      "range": {
+        "startLine": 384,
+        "startChar": 46,
+        "endLine": 384,
+        "endChar": 82
+      },
+      "revId": "81479e79e2fb91e4413d6d7f01e5197976b01ac0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7e591ee_162d6a6e",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-26T20:48:12Z",
+      "side": 1,
+      "message": "Even though redundant because of the above switch, let\u0027s also set VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT at the time we\u0027re setting VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT",
+      "range": {
+        "startLine": 427,
+        "startChar": 46,
+        "endLine": 427,
+        "endChar": 95
+      },
+      "revId": "81479e79e2fb91e4413d6d7f01e5197976b01ac0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0af35ebc_43da489c",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 457,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-26T20:48:12Z",
+      "side": 1,
+      "message": "combine with VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT",
+      "range": {
+        "startLine": 457,
+        "startChar": 46,
+        "endLine": 457,
+        "endChar": 88
+      },
+      "revId": "81479e79e2fb91e4413d6d7f01e5197976b01ac0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c32e297_fa7cf0d5",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 521,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-26T20:48:12Z",
+      "side": 1,
+      "message": "combine with VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT",
+      "range": {
+        "startLine": 521,
+        "startChar": 46,
+        "endLine": 521,
+        "endChar": 90
+      },
+      "revId": "81479e79e2fb91e4413d6d7f01e5197976b01ac0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
