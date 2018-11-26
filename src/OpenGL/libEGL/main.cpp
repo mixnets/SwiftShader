@@ -758,5 +758,23 @@ extern "C" EGLAPI LibEGLexports *libEGL_swiftshader()
 	return &libEGL;
 }
 
+int* LibEGL::getAddressInModule()
+{
+	static int dummy_symbol = 0;
+	return &dummy_symbol;
+}
+
+int* LibGLES_CM::getAddressInModule()
+{
+	static int dummy_symbol = 0;
+	return &dummy_symbol;
+}
+
+int* LibGLESv2::getAddressInModule()
+{
+	static int dummy_symbol = 0;
+	return &dummy_symbol;
+}
+
 LibGLES_CM libGLES_CM;
 LibGLESv2 libGLESv2;

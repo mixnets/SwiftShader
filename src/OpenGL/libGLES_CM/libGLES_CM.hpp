@@ -279,7 +279,7 @@ private:
 				#error "libGLES_CM::loadExports unimplemented for this platform"
 			#endif
 
-			std::string directory = getModuleDirectory();
+			std::string directory = getModuleDirectory(getAddressInModule());
 			libGLES_CM = loadLibrary(directory, libGLES_CM_lib, "libGLES_CM_swiftshader");
 
 			if(libGLES_CM)
@@ -293,6 +293,8 @@ private:
 
 		return libGLES_CMexports;
 	}
+
+	static int* getAddressInModule();
 
 	void *libGLES_CM = nullptr;
 	LibGLES_CMexports *libGLES_CMexports = nullptr;

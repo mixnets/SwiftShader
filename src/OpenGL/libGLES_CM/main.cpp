@@ -1605,4 +1605,16 @@ extern "C" GL_API LibGLES_CMexports *libGLES_CM_swiftshader()
 	return &libGLES_CM;
 }
 
+int* LibEGL::getAddressInModule()
+{
+	static int dummy_symbol = 0;
+	return &dummy_symbol;
+}
+
+int* LibGLES_CM::getAddressInModule()
+{
+	static int dummy_symbol = 0;
+	return &dummy_symbol;
+}
+
 LibEGL libEGL;

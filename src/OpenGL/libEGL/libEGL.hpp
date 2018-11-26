@@ -118,7 +118,7 @@ private:
 				#error "libEGL::loadExports unimplemented for this platform"
 			#endif
 
-			std::string directory = getModuleDirectory();
+			std::string directory = getModuleDirectory(getAddressInModule());
 			libEGL = loadLibrary(directory, libEGL_lib, "libEGL_swiftshader");
 
 			if(libEGL)
@@ -132,6 +132,8 @@ private:
 
 		return libEGLexports;
 	}
+
+	static int* getAddressInModule();
 
 	void *libEGL = nullptr;
 	LibEGLexports *libEGLexports = nullptr;
