@@ -91,7 +91,7 @@ void *loadLibrary(const std::string &libraryDirectory, const char *(&names)[n], 
 
 	inline std::string getModuleDirectory()
 	{
-		static int dummy_symbol = 0;
+		int dummy_symbol = 0;
 
 		HMODULE module = NULL;
 		GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)&dummy_symbol, &module);
@@ -153,7 +153,7 @@ void *loadLibrary(const std::string &libraryDirectory, const char *(&names)[n], 
 
 	inline std::string getModuleDirectory()
 	{
-		static int dummy_symbol = 0;
+		int dummy_symbol = 0;
 
 		Dl_info dl_info;
 		if(dladdr(&dummy_symbol, &dl_info) != 0)
