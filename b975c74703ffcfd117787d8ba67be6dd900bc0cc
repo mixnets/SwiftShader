@@ -70,6 +70,30 @@
       "revId": "b975c74703ffcfd117787d8ba67be6dd900bc0cc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "929b9901_206a1f85",
+        "filename": "tests/VulkanUnitTests/unittests.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-26T15:48:30Z",
+      "side": 0,
+      "message": "It\u0027s tested by dEQP-VK.api.version_check.entry_points. Only vk_icdGetInstanceProcAddr isn\u0027t tested by it, so it\u0027s valuable to keep this unit test for it.",
+      "parentUuid": "1b46b5db_3816da9e",
+      "range": {
+        "startLine": 68,
+        "startChar": 2,
+        "endLine": 68,
+        "endChar": 31
+      },
+      "revId": "b975c74703ffcfd117787d8ba67be6dd900bc0cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
