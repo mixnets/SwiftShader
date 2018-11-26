@@ -94,6 +94,30 @@
       "revId": "b975c74703ffcfd117787d8ba67be6dd900bc0cc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "803b830d_834ba362",
+        "filename": "tests/VulkanUnitTests/unittests.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-11-26T15:50:27Z",
+      "side": 0,
+      "message": "Fair enough.",
+      "parentUuid": "929b9901_206a1f85",
+      "range": {
+        "startLine": 68,
+        "startChar": 2,
+        "endLine": 68,
+        "endChar": 31
+      },
+      "revId": "b975c74703ffcfd117787d8ba67be6dd900bc0cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
