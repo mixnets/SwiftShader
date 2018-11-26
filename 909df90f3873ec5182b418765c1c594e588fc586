@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d5814cb1_719f7268",
+        "filename": "src/System/SharedLibrary.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5755
+      },
+      "writtenOn": "2018-11-26T22:30:16Z",
+      "side": 1,
+      "message": "This won\u0027t work. It needs an address from within the module\u0027s mapped range. However, you can do the same trick here by putting the static var in a function implemented on the .cpp side.",
+      "revId": "909df90f3873ec5182b418765c1c594e588fc586",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
