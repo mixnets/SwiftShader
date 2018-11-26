@@ -29,6 +29,7 @@ endif
 COMMON_SRC_FILES := \
 	Config.cpp \
 	Display.cpp \
+	SharedLibrary.cpp \
 	Surface.cpp \
 	libEGL.cpp \
 	main.cpp
@@ -38,6 +39,7 @@ COMMON_C_INCLUDES := \
 	$(LOCAL_PATH)/../../../include \
 	$(LOCAL_PATH)/../ \
 	$(LOCAL_PATH)/../../
+	$(LOCAL_PATH)/../../Common/ \
 
 COMMON_SHARED_LIBRARIES := \
 	libdl \

@@ -42,6 +42,7 @@ COMMON_SRC_FILES := \
 	main.cpp \
 	Renderbuffer.cpp \
 	ResourceManager.cpp \
+	SharedLibrary.cpp \
 	Texture.cpp \
 	utilities.cpp \
 	VertexDataManager.cpp

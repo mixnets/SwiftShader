@@ -49,6 +49,7 @@ COMMON_SRC_FILES := \
 	Renderbuffer.cpp \
 	ResourceManager.cpp \
 	Shader.cpp \
+	SharedLibrary.cpp \
 	Texture.cpp \
 	TransformFeedback.cpp \
 	utilities.cpp \
