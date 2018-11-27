@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ce17df75_5223b7b0",
+        "filename": "src/OpenGL/libEGL/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 777,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-27T16:15:06Z",
+      "side": 1,
+      "message": "Even though this never gets called, I\u0027m really not a fan of having functions that don\u0027t deliver what they promise.\n\nI think the cleaner solution would be to add SharedLibrary.cpp files that implement getModuleDirectory() with a local static variable (i.e. exactly as it was in the SharedLibrary.hpp before but moved to the .cpp). It requires an update to the various build files, but that\u0027s straightforward and elegant.",
+      "range": {
+        "startLine": 767,
+        "startChar": 0,
+        "endLine": 777,
+        "endChar": 1
+      },
+      "revId": "5a6a96a5e4ab6deb2a554b8162b10f8446914898",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
