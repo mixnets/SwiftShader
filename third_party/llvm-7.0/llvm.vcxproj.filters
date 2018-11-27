@@ -880,9 +880,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="$(SolutionDir)CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{D95BB26E-2550-379E-8B3F-5A07ECF11CFA}</UniqueIdentifier>
     </Filter>
