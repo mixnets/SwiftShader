@@ -252,7 +252,7 @@ namespace sw
 
 		void draw(DrawType drawType, unsigned int indexOffset, unsigned int count, bool update = true);
 
-		void clear(void *value, VkFormat format, Surface *dest, const Rect &rect, unsigned int rgbaMask);
+		void clear(void *value, VkFormat format, Surface *dest, const VkRect2D &rect, unsigned int rgbaMask);
 		void blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, bool filter, bool isStencil = false, bool sRGBconversion = true);
 		void blit3D(Surface *source, Surface *dest);
 
@@ -306,7 +306,7 @@ namespace sw
 
 		// Viewport & Clipper
 		void setViewport(const VkViewport &viewport);
-		void setScissor(const Rect &scissor);
+		void setScissor(const VkRect2D &scissor);
 		void setClipFlags(int flags);
 		void setClipPlane(unsigned int index, const float plane[4]);
 
@@ -363,7 +363,7 @@ namespace sw
 		Clipper *clipper;
 		Blitter *blitter;
 		VkViewport viewport;
-		Rect scissor;
+		VkRect2D scissor;
 		int clipFlags;
 
 		Triangle *triangleBatch[16];

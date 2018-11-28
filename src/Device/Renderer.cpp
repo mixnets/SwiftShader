@@ -560,10 +560,10 @@ namespace sw
 
 		// Scissor
 		{
-			data->scissorX0 = scissor.x0;
-			data->scissorX1 = scissor.x1;
-			data->scissorY0 = scissor.y0;
-			data->scissorY1 = scissor.y1;
+			data->scissorX0 = scissor.offset.x;
+			data->scissorX1 = scissor.offset.x + scissor.extent.width;
+			data->scissorY0 = scissor.offset.y;
+			data->scissorY1 = scissor.offset.y + scissor.extent.height;
 		}
 
 		draw->primitive = 0;
@@ -598,9 +598,15 @@ namespace sw
 		}
 	}
 
-	void Renderer::clear(void *value, VkFormat format, Surface *dest, const Rect &clearRect, unsigned int rgbaMask)
+	void Renderer::clear(void *value, VkFormat format, Surface *dest, const VkRect2D &clearRect, unsigned int rgbaMask)
 	{
-		blitter->clear(value, format, dest, clearRect, rgbaMask);
+		const SliceRect sliceRect(
+			clearRect.offset.x,
+			clearRect.offset.y,
+			clearRect.offset.x + clearRect.extent.width,
+			clearRect.offset.y + clearRect.extent.height,
+			0);
+		blitter->clear(value, format, dest, sliceRect, rgbaMask);
 	}
 
 	void Renderer::blit(Surface *source, const SliceRectF &sRect, Surface *dest, const SliceRect &dRect, bool filter, bool isStencil, bool sRGBconversion)
@@ -2296,7 +2302,7 @@ namespace sw
 		this->viewport = viewport;
 	}
 
-	void Renderer::setScissor(const Rect &scissor)
+	void Renderer::setScissor(const VkRect2D &scissor)
 	{
 		this->scissor = scissor;
 	}

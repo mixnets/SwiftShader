@@ -45,7 +45,7 @@ namespace sw
 		virtual ~FrameBuffer() = 0;
 
 		virtual void flip(sw::Surface *source) = 0;
-		virtual void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) = 0;
+		virtual void blit(sw::Surface *source, const VkRect2D *sourceRect, const VkRect2D *destRect) = 0;
 
 		virtual void *lock() = 0;
 		virtual void unlock() = 0;

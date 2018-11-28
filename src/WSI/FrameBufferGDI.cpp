@@ -76,18 +76,18 @@ namespace sw
 		blit(source, nullptr, nullptr);
 	}
 
-	void FrameBufferGDI::blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect)
+	void FrameBufferGDI::blit(sw::Surface *source, const VkRect2D *sourceRect, const VkRect2D *destRect)
 	{
 		copy(source);
 
-		int sourceLeft = sourceRect ? sourceRect->x0 : 0;
-		int sourceTop = sourceRect ? sourceRect->y0 : 0;
-		int sourceWidth = sourceRect ? sourceRect->x1 - sourceRect->x0 : width;
-		int sourceHeight = sourceRect ? sourceRect->y1 - sourceRect->y0 : height;
-		int destLeft = destRect ? destRect->x0 : 0;
-		int destTop = destRect ? destRect->y0 : 0;
-		int destWidth = destRect ? destRect->x1 - destRect->x0 : bounds.right - bounds.left;
-		int destHeight = destRect ? destRect->y1 - destRect->y0 : bounds.bottom - bounds.top;
+		int sourceLeft = sourceRect ? sourceRect->offset.x : 0;
+		int sourceTop = sourceRect ? sourceRect->offset.y : 0;
+		int sourceWidth = sourceRect ? sourceRect->extent.width : width;
+		int sourceHeight = sourceRect ? sourceRect->extent.height : height;
+		int destLeft = destRect ? destRect->offset.x : 0;
+		int destTop = destRect ? destRect->offset.y : 0;
+		int destWidth = destRect ? destRect->extent.width : bounds.right - bounds.left;
+		int destHeight = destRect ? destRect->extent.height : bounds.bottom - bounds.top;
 
 		StretchBlt(windowContext, destLeft, destTop, destWidth, destHeight, bitmapContext, sourceLeft, sourceTop, sourceWidth, sourceHeight, SRCCOPY);
 	}
@@ -97,7 +97,7 @@ namespace sw
 		blit(windowOverride, source, nullptr, nullptr);
 	}
 
-	void FrameBufferGDI::blit(HWND windowOverride, sw::Surface *source, const Rect *sourceRect, const Rect *destRect)
+	void FrameBufferGDI::blit(HWND windowOverride, sw::Surface *source, const VkRect2D *sourceRect, const VkRect2D *destRect)
 	{
 		if(windowed && windowOverride != 0 && windowOverride != bitmapWindow)
 		{

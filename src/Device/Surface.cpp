@@ -2394,9 +2394,9 @@ namespace sw
 		return (rect.x0 == 0 && rect.y0 == 0 && rect.x1 == internal.width && rect.y1 == internal.height && internal.depth == 1);
 	}
 
-	Rect Surface::getRect() const
+	VkRect2D Surface::getRect() const
 	{
-		return Rect(0, 0, internal.width, internal.height);
+		return { { 0, 0 }, { static_cast<uint32_t>(internal.width), static_cast<uint32_t>(internal.height) } };
 	}
 
 	void Surface::clearDepth(float depth, int x0, int y0, int width, int height)

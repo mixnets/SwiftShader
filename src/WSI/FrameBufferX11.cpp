@@ -139,7 +139,7 @@ namespace sw
 		framebuffer = nullptr;
 	}
 
-	void FrameBufferX11::blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect)
+	void FrameBufferX11::blit(sw::Surface *source, const VkRect2D *sourceRect, const VkRect2D *destRect)
 	{
 		copy(source);
 

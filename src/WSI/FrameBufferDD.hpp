@@ -29,10 +29,10 @@ namespace sw
 		~FrameBufferDD() override;
 
 		void flip(sw::Surface *source) override;
-		void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
+		void blit(sw::Surface *source, const VkRect2D *sourceRect, const VkRect2D *destRect) override;
 
 		void flip(HWND windowOverride, sw::Surface *source) override;
-		void blit(HWND windowOverride, sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override;
+		void blit(HWND windowOverride, sw::Surface *source, const VkRect2D *sourceRect, const VkRect2D *destRect) override;
 
 		void *lock() override;
 		void unlock() override;

@@ -34,10 +34,10 @@ namespace sw
 		~FrameBufferWin() override;
 
 		void flip(sw::Surface *source) override = 0;
-		void blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect) override = 0;
+		void blit(sw::Surface *source, const VkRect2D *sourceRect, const VkRect2D *destRect) override = 0;
 
 		virtual void flip(HWND windowOverride, sw::Surface *source) = 0;
-		virtual void blit(HWND windowOverride, sw::Surface *source, const Rect *sourceRect, const Rect *destRect) = 0;
+		virtual void blit(HWND windowOverride, sw::Surface *source, const VkRect2D *sourceRect, const VkRect2D *destRect) = 0;
 
 		virtual void setGammaRamp(GammaRamp *gammaRamp, bool calibrate) = 0;
 		virtual void getGammaRamp(GammaRamp *gammaRamp) = 0;
