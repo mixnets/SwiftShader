@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="GN|x64">
+      <Configuration>GN</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3F78DD40-6CB0-948F-086E-BE2CFB956E96}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>swiftshader_llvm_support</RootNamespace>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <CharacterSet>Unicode</CharacterSet>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Label="Locals">
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="PropertySheets">
+    <Import Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OutDir>../../../../../../../out/msvc/</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <TargetPath>$(OutDir)\obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support.stamp</TargetPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/include;../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64;../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM;../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips;../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86;../../../../../../../third_party/swiftshader/third_party/llvm-7.0/configs/common/include;../../../../../../../third_party/swiftshader/third_party/llvm-7.0/configs/common/lib/IR;../../../../../../../third_party/swiftshader/third_party/llvm-7.0/configs/common/lib/Target/AArch64;../../../../../../../third_party/swiftshader/third_party/llvm-7.0/configs/common/lib/Target/ARM;../../../../../../../third_party/swiftshader/third_party/llvm-7.0/configs/common/lib/Target/Mips;../../../../../../../third_party/swiftshader/third_party/llvm-7.0/configs/common/lib/Target/X86;../../../../../../../third_party/swiftshader/third_party/llvm-7.0/configs/common/lib/Transforms/InstCombine;../../../../../../../third_party/swiftshader/third_party/llvm-7.0/configs/windows/include;../../../../../../..;../../../../../../../out/msvc/gen;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\shared;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\um;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0\winrt;$(VSInstallDir)\VC\atlmfc\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 /X -Wno-builtin-macro-redefined -D__DATE__= -D__TIME__= -D__TIMESTAMP__= -fcolor-diagnostics -fmerge-all-constants -Xclang -mllvm -Xclang -instcombine-lower-dbg-declare=0 -no-canonical-prefixes -fcomplete-member-pointers /Gy /FS /bigobj /d2FastFail /Zc:sizedDealloc- -fmsc-version=1911 /Zc:dllexportInlines- -m64 /Brepro -Wno-undefined-bool-conversion -Wno-tautological-undefined-compare /Z7 -fno-standalone-debug /GR- -Xclang -add-plugin -Xclang find-bad-constructs -Xclang -plugin-arg-find-bad-constructs -Xclang enforce-in-thirdparty-webkit -Xclang -plugin-arg-find-bad-constructs -Xclang check-enum-max-value -Wheader-hygiene -Wstring-conversion -Wtautological-overlap-compare /Ob2 /Oy- /Zc:inline /Gw /Oi -Wno-unused-variable -Wno-missing-field-initializers -Wno-unused-parameter -Wno-c++11-narrowing -Wno-unneeded-internal-declaration -Wno-undefined-var-template -Wno-null-pointer-arithmetic -Wno-nonportable-include-path -Wno-ignored-pragma-optimize /Zc:wchar_t /EHs-c- /nologo /Gd -Wno-format -Wno-sign-compare -Wno-macro-redefined -Wno-header-hygiene -msse2 -Wno-attributes -Wno-deprecated-declarations -Wno-enum-compare -Wno-unused-function -Wno-unused-local-typedef -Wno-unused-private-field -Wno-unused-result -Wno-unused-variable -Wno-error=header-hygiene %(AdditionalOptions)</AdditionalOptions>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4800;4267;4996;4091;4127;4251;4275;4312;4324;4351;4355;4503;4589;4611;4100;4121;4244;4505;4510;4512;4610;4838;4995;4996;4456;4457;4458;4459;4200;4201;4204;4221;4245;4267;4305;4389;4702;4701;4703;4661;4706;4715;4577;4005;4065;4146;4245;4267;4310;4319;4334;4389;4624;4701;4702;4703;4706;4800;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling>false</ExceptionHandling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PreprocessorDefinitions>V8_DEPRECATION_WARNINGS;USE_AURA=1;NO_TCMALLOC;FULL_SAFE_BROWSING;SAFE_BROWSING_CSD;SAFE_BROWSING_DB_LOCAL;CHROMIUM_BUILD;FIELDTRIAL_TESTING_ENABLED;CR_CLANG_REVISION=&quot;346388-1&quot;;_HAS_EXCEPTIONS=0;COMPONENT_BUILD;__STD_C;_CRT_RAND_S;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_ATL_NO_OPENGL;_WINDOWS;CERT_CHAIN_PARA_HAS_EXTRA_FIELDS;PSAPI_VERSION=1;WIN32;_SECURE_ATL;_USING_V110_SDK71_;WINAPI_FAMILY=WINAPI_FAMILY_DESKTOP_APP;WIN32_LEAN_AND_MEAN;NOMINMAX;NTDDI_VERSION=0x0A000002;_WIN32_WINNT=0x0A00;WINVER=0x0A00;_DEBUG;DYNAMIC_ANNOTATIONS_ENABLED=1;WTF_USE_DYNAMIC_ANNOTATIONS=1;_HAS_ITERATOR_DEBUGGING=0;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_DEPRECATE;NOMINMAX;_WINDLL;NO_SANITIZE_FUNCTION=;__STDC_CONSTANT_MACROS;__STDC_LIMIT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Link />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/AMDGPUMetadata.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/AMDGPUMetadata.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/AMDGPUMetadata.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/APFloat.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/APFloat.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/APFloat.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/APInt.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/APInt.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/APInt.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/APSInt.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/APSInt.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/APSInt.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ARMAttributeParser.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ARMAttributeParser.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ARMAttributeParser.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ARMBuildAttrs.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ARMBuildAttrs.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ARMBuildAttrs.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ARMWinEH.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ARMWinEH.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ARMWinEH.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Allocator.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Allocator.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Allocator.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Atomic.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Atomic.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Atomic.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/BinaryStreamError.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/BinaryStreamError.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/BinaryStreamError.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/BinaryStreamReader.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/BinaryStreamReader.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/BinaryStreamReader.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/BinaryStreamRef.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/BinaryStreamRef.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/BinaryStreamRef.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/BinaryStreamWriter.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/BinaryStreamWriter.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/BinaryStreamWriter.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/BlockFrequency.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/BlockFrequency.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/BlockFrequency.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/BranchProbability.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/BranchProbability.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/BranchProbability.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/COM.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/COM.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/COM.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/CachePruning.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/CachePruning.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/CachePruning.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Chrono.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Chrono.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Chrono.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/CodeGenCoverage.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/CodeGenCoverage.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/CodeGenCoverage.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/CommandLine.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/CommandLine.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/CommandLine.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Compression.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Compression.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Compression.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ConvertUTF.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ConvertUTF.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ConvertUTF.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ConvertUTFWrapper.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ConvertUTFWrapper.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ConvertUTFWrapper.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/CrashRecoveryContext.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/CrashRecoveryContext.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/CrashRecoveryContext.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/DAGDeltaAlgorithm.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/DAGDeltaAlgorithm.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/DAGDeltaAlgorithm.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/DJB.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/DJB.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/DJB.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/DataExtractor.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/DataExtractor.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/DataExtractor.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Debug.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Debug.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Debug.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/DebugCounter.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/DebugCounter.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/DebugCounter.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/DeltaAlgorithm.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/DeltaAlgorithm.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/DeltaAlgorithm.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/DynamicLibrary.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/DynamicLibrary.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/DynamicLibrary.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Errno.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Errno.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Errno.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Error.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Error.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Error.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ErrorHandling.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ErrorHandling.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ErrorHandling.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/FileOutputBuffer.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/FileOutputBuffer.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/FileOutputBuffer.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/FileUtilities.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/FileUtilities.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/FileUtilities.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/FoldingSet.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/FoldingSet.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/FoldingSet.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/FormatVariadic.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/FormatVariadic.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/FormatVariadic.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/FormattedStream.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/FormattedStream.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/FormattedStream.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/GlobPattern.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/GlobPattern.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/GlobPattern.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/GraphWriter.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/GraphWriter.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/GraphWriter.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Hashing.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Hashing.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Hashing.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Host.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Host.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Host.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/InitLLVM.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/InitLLVM.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/InitLLVM.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/IntEqClasses.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/IntEqClasses.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/IntEqClasses.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/IntervalMap.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/IntervalMap.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/IntervalMap.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/JSON.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/JSON.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/JSON.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/JamCRC.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/JamCRC.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/JamCRC.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/KnownBits.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/KnownBits.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/KnownBits.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/LEB128.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/LEB128.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/LEB128.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/LineIterator.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/LineIterator.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/LineIterator.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Locale.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Locale.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Locale.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/LockFileManager.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/LockFileManager.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/LockFileManager.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/LowLevelType.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/LowLevelType.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/LowLevelType.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/MD5.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/MD5.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/MD5.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ManagedStatic.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ManagedStatic.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ManagedStatic.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/MathExtras.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/MathExtras.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/MathExtras.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Memory.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Memory.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Memory.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/MemoryBuffer.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/MemoryBuffer.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/MemoryBuffer.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Mutex.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Mutex.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Mutex.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/NativeFormatting.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/NativeFormatting.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/NativeFormatting.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Options.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Options.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Options.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Parallel.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Parallel.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Parallel.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Path.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Path.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Path.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/PluginLoader.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/PluginLoader.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/PluginLoader.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/PrettyStackTrace.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/PrettyStackTrace.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/PrettyStackTrace.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Process.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Process.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Process.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Program.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Program.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Program.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/RWMutex.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/RWMutex.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/RWMutex.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/RandomNumberGenerator.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/RandomNumberGenerator.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/RandomNumberGenerator.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Regex.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Regex.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Regex.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/SHA1.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/SHA1.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/SHA1.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ScaledNumber.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ScaledNumber.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ScaledNumber.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ScopedPrinter.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ScopedPrinter.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ScopedPrinter.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Signals.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Signals.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Signals.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/SmallPtrSet.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/SmallPtrSet.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/SmallPtrSet.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/SmallVector.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/SmallVector.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/SmallVector.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/SourceMgr.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/SourceMgr.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/SourceMgr.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/SpecialCaseList.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/SpecialCaseList.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/SpecialCaseList.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Statistic.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Statistic.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Statistic.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/StringExtras.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/StringExtras.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/StringExtras.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/StringMap.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/StringMap.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/StringMap.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/StringPool.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/StringPool.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/StringPool.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/StringRef.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/StringRef.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/StringRef.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/StringSaver.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/StringSaver.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/StringSaver.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/SystemUtils.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/SystemUtils.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/SystemUtils.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/TarWriter.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/TarWriter.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/TarWriter.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/TargetParser.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/TargetParser.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/TargetParser.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/TargetRegistry.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/TargetRegistry.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/TargetRegistry.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ThreadLocal.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ThreadLocal.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ThreadLocal.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ThreadPool.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ThreadPool.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ThreadPool.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Threading.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Threading.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Threading.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Timer.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Timer.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Timer.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ToolOutputFile.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ToolOutputFile.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/ToolOutputFile.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/TrigramIndex.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/TrigramIndex.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/TrigramIndex.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Triple.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Triple.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Triple.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Twine.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Twine.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Twine.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Unicode.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Unicode.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Unicode.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/UnicodeCaseFold.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/UnicodeCaseFold.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/UnicodeCaseFold.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Valgrind.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Valgrind.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Valgrind.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/VersionTuple.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/VersionTuple.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/VersionTuple.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Watchdog.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Watchdog.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/Watchdog.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/WithColor.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/WithColor.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/WithColor.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/YAMLParser.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/YAMLParser.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/YAMLParser.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/YAMLTraits.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/YAMLTraits.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/YAMLTraits.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/circular_raw_ostream.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/circular_raw_ostream.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/circular_raw_ostream.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/raw_os_ostream.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/raw_os_ostream.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/raw_os_ostream.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/raw_ostream.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/raw_ostream.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/raw_ostream.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/regcomp.c">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/regcomp.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/regcomp.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/regerror.c">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/regerror.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/regerror.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/regexec.c">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/regexec.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/regexec.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/regfree.c">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/regfree.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/regfree.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/regstrlcpy.c">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/regstrlcpy.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/regstrlcpy.obj</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/xxhash.cpp">
+      <Command>call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/xxhash.obj</Command>
+      <Outputs>$(OutDir)obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support/xxhash.obj</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+  <Target Name="Build">
+    <Exec Command="call ninja.exe -C $(OutDir)  obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support.stamp" />
+  </Target>
+  <Target Name="Clean">
+    <Exec Command="call ninja.exe -C $(OutDir) -tclean obj/third_party/swiftshader/third_party/llvm-7.0/swiftshader_llvm_support.stamp" />
+  </Target>
+</Project>
