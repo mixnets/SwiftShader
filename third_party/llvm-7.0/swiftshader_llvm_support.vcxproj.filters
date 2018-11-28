@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="llvm\lib\Support">
+      <UniqueIdentifier>{FB79AE71-F6A7-A7F8-03A9-8D21961DD6EE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib">
+      <UniqueIdentifier>{696C9BEB-C27E-91F3-DDB1-C771E7B11415}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm">
+      <UniqueIdentifier>{ADE0501B-35E6-C95E-38A5-649C8B2A7C47}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/AMDGPUMetadata.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/APFloat.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/APInt.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/APSInt.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ARMAttributeParser.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ARMBuildAttrs.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ARMWinEH.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Allocator.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Atomic.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/BinaryStreamError.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/BinaryStreamReader.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/BinaryStreamRef.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/BinaryStreamWriter.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/BlockFrequency.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/BranchProbability.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/COM.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/CachePruning.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Chrono.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/CodeGenCoverage.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/CommandLine.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Compression.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ConvertUTF.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ConvertUTFWrapper.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/CrashRecoveryContext.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/DAGDeltaAlgorithm.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/DJB.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/DataExtractor.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Debug.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/DebugCounter.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/DeltaAlgorithm.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/DynamicLibrary.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Errno.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Error.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ErrorHandling.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/FileOutputBuffer.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/FileUtilities.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/FoldingSet.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/FormatVariadic.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/FormattedStream.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/GlobPattern.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/GraphWriter.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Hashing.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Host.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/InitLLVM.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/IntEqClasses.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/IntervalMap.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/JSON.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/JamCRC.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/KnownBits.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/LEB128.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/LineIterator.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Locale.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/LockFileManager.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/LowLevelType.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/MD5.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ManagedStatic.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/MathExtras.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Memory.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/MemoryBuffer.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Mutex.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/NativeFormatting.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Options.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Parallel.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Path.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/PluginLoader.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/PrettyStackTrace.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Process.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Program.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/RWMutex.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/RandomNumberGenerator.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Regex.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/SHA1.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ScaledNumber.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ScopedPrinter.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Signals.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/SmallPtrSet.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/SmallVector.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/SourceMgr.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/SpecialCaseList.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Statistic.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/StringExtras.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/StringMap.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/StringPool.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/StringRef.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/StringSaver.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/SystemUtils.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/TarWriter.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/TargetParser.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/TargetRegistry.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ThreadLocal.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ThreadPool.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Threading.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Timer.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/ToolOutputFile.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/TrigramIndex.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Triple.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Twine.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Unicode.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/UnicodeCaseFold.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Valgrind.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/VersionTuple.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/Watchdog.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/WithColor.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/YAMLParser.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/YAMLTraits.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/circular_raw_ostream.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/raw_os_ostream.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/raw_ostream.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/regcomp.c">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/regerror.c">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/regexec.c">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/regfree.c">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/regstrlcpy.c">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Support/xxhash.cpp">
+      <Filter>llvm\lib\Support</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

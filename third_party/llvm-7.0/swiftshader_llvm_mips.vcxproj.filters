@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="llvm\lib\Target\Mips\AsmParser">
+      <UniqueIdentifier>{C0E03C2A-5D4F-887C-65B6-9FB7CB2D8EAB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\Mips">
+      <UniqueIdentifier>{DD369290-AFBA-05A2-3E12-3A3865EFD26A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target">
+      <UniqueIdentifier>{364CDF9E-A083-E314-BF2F-3B217A137600}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib">
+      <UniqueIdentifier>{696C9BEB-C27E-91F3-DDB1-C771E7B11415}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm">
+      <UniqueIdentifier>{ADE0501B-35E6-C95E-38A5-649C8B2A7C47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\Mips\InstPrinter">
+      <UniqueIdentifier>{3D80A3CD-7CEC-DB64-373F-E15685A504F4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\Mips\MCTargetDesc">
+      <UniqueIdentifier>{49863619-6DCC-E7B4-AAE1-45C578BA83D5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\Mips\TargetInfo">
+      <UniqueIdentifier>{1EDC76C0-5DF8-0445-9086-4FCBF76B00C6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/AsmParser/MipsAsmParser.cpp">
+      <Filter>llvm\lib\Target\Mips\AsmParser</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/InstPrinter/MipsInstPrinter.cpp">
+      <Filter>llvm\lib\Target\Mips\InstPrinter</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MCTargetDesc/MipsABIFlagsSection.cpp">
+      <Filter>llvm\lib\Target\Mips\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MCTargetDesc/MipsABIInfo.cpp">
+      <Filter>llvm\lib\Target\Mips\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MCTargetDesc/MipsAsmBackend.cpp">
+      <Filter>llvm\lib\Target\Mips\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MCTargetDesc/MipsELFStreamer.cpp">
+      <Filter>llvm\lib\Target\Mips\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MCTargetDesc/MipsMCAsmInfo.cpp">
+      <Filter>llvm\lib\Target\Mips\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MCTargetDesc/MipsMCCodeEmitter.cpp">
+      <Filter>llvm\lib\Target\Mips\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MCTargetDesc/MipsMCTargetDesc.cpp">
+      <Filter>llvm\lib\Target\Mips\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MCTargetDesc/MipsOptionRecord.cpp">
+      <Filter>llvm\lib\Target\Mips\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MCTargetDesc/MipsTargetStreamer.cpp">
+      <Filter>llvm\lib\Target\Mips\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MCTargetDesc/MipsELFObjectWriter.cpp">
+      <Filter>llvm\lib\Target\Mips\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MCTargetDesc/MipsMCExpr.cpp">
+      <Filter>llvm\lib\Target\Mips\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MCTargetDesc/MipsNaClELFStreamer.cpp">
+      <Filter>llvm\lib\Target\Mips\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/Mips16FrameLowering.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/Mips16HardFloat.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/Mips16HardFloatInfo.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/Mips16InstrInfo.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/Mips16ISelDAGToDAG.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/Mips16ISelLowering.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/Mips16RegisterInfo.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsAnalyzeImmediate.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsAsmPrinter.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsCallLowering.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsCCState.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsConstantIslandPass.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsDelaySlotFiller.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsExpandPseudo.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsFastISel.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsInstrInfo.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsInstructionSelector.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsISelDAGToDAG.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsISelLowering.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsFrameLowering.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsLegalizerInfo.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsBranchExpansion.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsMCInstLower.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsMachineFunction.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsModuleISelDAGToDAG.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsOptimizePICCall.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsOs16.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsRegisterBankInfo.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsRegisterInfo.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsSEFrameLowering.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsSEInstrInfo.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsSEISelDAGToDAG.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsSEISelLowering.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsSERegisterInfo.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsSubtarget.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsTargetMachine.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MipsTargetObjectFile.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/MicroMipsSizeReduction.cpp">
+      <Filter>llvm\lib\Target\Mips</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/Mips/TargetInfo/MipsTargetInfo.cpp">
+      <Filter>llvm\lib\Target\Mips\TargetInfo</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

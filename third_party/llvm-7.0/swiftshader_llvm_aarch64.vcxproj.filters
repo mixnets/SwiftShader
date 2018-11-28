@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="llvm\lib\Target\AArch64\MCTargetDesc">
+      <UniqueIdentifier>{0E6D009F-0088-0DFA-832C-1D8C6FE11E4D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\AArch64">
+      <UniqueIdentifier>{36A9735F-37DA-B5AB-12F1-CECA281F839F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target">
+      <UniqueIdentifier>{364CDF9E-A083-E314-BF2F-3B217A137600}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib">
+      <UniqueIdentifier>{696C9BEB-C27E-91F3-DDB1-C771E7B11415}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm">
+      <UniqueIdentifier>{ADE0501B-35E6-C95E-38A5-649C8B2A7C47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\AArch64\Utils">
+      <UniqueIdentifier>{EB81BE26-AFDC-B649-BEC5-09F05E8AF0E3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\AArch64\Disassembler">
+      <UniqueIdentifier>{4A821F94-DC2A-0F79-9AF3-1A0C8C23FA12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\AArch64\TargetInfo">
+      <UniqueIdentifier>{867CFAD9-F71A-8ADC-4EDA-ED776FE01B62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\AArch64\InstPrinter">
+      <UniqueIdentifier>{FC4FEBF8-B2DF-70F6-A239-EC465BCFA099}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\AArch64\AsmParser">
+      <UniqueIdentifier>{D463E2C3-F195-AAF8-B9BD-392BB6D5FAC2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/MCTargetDesc/AArch64ELFObjectWriter.cpp">
+      <Filter>llvm\lib\Target\AArch64\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/MCTargetDesc/AArch64MCTargetDesc.cpp">
+      <Filter>llvm\lib\Target\AArch64\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/MCTargetDesc/AArch64WinCOFFStreamer.cpp">
+      <Filter>llvm\lib\Target\AArch64\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/MCTargetDesc/AArch64WinCOFFObjectWriter.cpp">
+      <Filter>llvm\lib\Target\AArch64\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/MCTargetDesc/AArch64TargetStreamer.cpp">
+      <Filter>llvm\lib\Target\AArch64\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/MCTargetDesc/AArch64MachObjectWriter.cpp">
+      <Filter>llvm\lib\Target\AArch64\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/MCTargetDesc/AArch64MCCodeEmitter.cpp">
+      <Filter>llvm\lib\Target\AArch64\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/MCTargetDesc/AArch64MCAsmInfo.cpp">
+      <Filter>llvm\lib\Target\AArch64\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/MCTargetDesc/AArch64ELFStreamer.cpp">
+      <Filter>llvm\lib\Target\AArch64\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/MCTargetDesc/AArch64AsmBackend.cpp">
+      <Filter>llvm\lib\Target\AArch64\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/MCTargetDesc/AArch64MCExpr.cpp">
+      <Filter>llvm\lib\Target\AArch64\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64ISelLowering.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64A57FPLoadBalancing.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64FastISel.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64InstrInfo.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64PromoteConstant.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64FalkorHWPFFix.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/Utils/AArch64BaseInfo.cpp">
+      <Filter>llvm\lib\Target\AArch64\Utils</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64InstructionSelector.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64SelectionDAGInfo.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64A53Fix835769.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64TargetMachine.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64CallLowering.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64SIMDInstrOpt.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64Subtarget.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64TargetObjectFile.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64RegisterInfo.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64ConditionOptimizer.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/Disassembler/AArch64Disassembler.cpp">
+      <Filter>llvm\lib\Target\AArch64\Disassembler</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/Disassembler/AArch64ExternalSymbolizer.cpp">
+      <Filter>llvm\lib\Target\AArch64\Disassembler</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/TargetInfo/AArch64TargetInfo.cpp">
+      <Filter>llvm\lib\Target\AArch64\TargetInfo</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64AdvSIMDScalarPass.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64ConditionalCompares.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64DeadRegisterDefinitionsPass.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64LegalizerInfo.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64StorePairSuppress.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64PBQPRegAlloc.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/InstPrinter/AArch64InstPrinter.cpp">
+      <Filter>llvm\lib\Target\AArch64\InstPrinter</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64CleanupLocalDynamicTLSPass.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AsmParser/AArch64AsmParser.cpp">
+      <Filter>llvm\lib\Target\AArch64\AsmParser</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64MCInstLower.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64TargetTransformInfo.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64RedundantCopyElimination.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64ExpandPseudoInsts.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64CollectLOH.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64AsmPrinter.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64LoadStoreOptimizer.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64RegisterBankInfo.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64CondBrTuning.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64ISelDAGToDAG.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64FrameLowering.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64MacroFusion.cpp">
+      <Filter>llvm\lib\Target\AArch64</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

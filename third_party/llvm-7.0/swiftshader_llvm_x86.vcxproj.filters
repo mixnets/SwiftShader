@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="llvm\lib\Target\X86\AsmParser">
+      <UniqueIdentifier>{7E04F9A9-6FA0-40BF-FEDF-7A0FDF8FD1F2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\X86">
+      <UniqueIdentifier>{89574BFB-EC82-ED4E-17F2-313C359A5E65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target">
+      <UniqueIdentifier>{364CDF9E-A083-E314-BF2F-3B217A137600}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib">
+      <UniqueIdentifier>{696C9BEB-C27E-91F3-DDB1-C771E7B11415}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm">
+      <UniqueIdentifier>{ADE0501B-35E6-C95E-38A5-649C8B2A7C47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\X86\InstPrinter">
+      <UniqueIdentifier>{3CF9EC08-A040-23F9-B287-F503F275F508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\X86\MCTargetDesc">
+      <UniqueIdentifier>{DAAFFC3C-8A41-E25A-150E-3813ED9526E8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\X86\TargetInfo">
+      <UniqueIdentifier>{3A5D064F-868E-A72E-BF20-BE7F1F2A6B39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="llvm\lib\Target\X86\Utils">
+      <UniqueIdentifier>{828E9DCF-025A-1B37-7B8D-CD236380D770}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/AsmParser/X86AsmInstrumentation.cpp">
+      <Filter>llvm\lib\Target\X86\AsmParser</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/AsmParser/X86AsmParser.cpp">
+      <Filter>llvm\lib\Target\X86\AsmParser</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/InstPrinter/X86ATTInstPrinter.cpp">
+      <Filter>llvm\lib\Target\X86\InstPrinter</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/InstPrinter/X86InstComments.cpp">
+      <Filter>llvm\lib\Target\X86\InstPrinter</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/InstPrinter/X86InstPrinterCommon.cpp">
+      <Filter>llvm\lib\Target\X86\InstPrinter</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/InstPrinter/X86IntelInstPrinter.cpp">
+      <Filter>llvm\lib\Target\X86\InstPrinter</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/MCTargetDesc/X86AsmBackend.cpp">
+      <Filter>llvm\lib\Target\X86\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/MCTargetDesc/X86ELFObjectWriter.cpp">
+      <Filter>llvm\lib\Target\X86\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/MCTargetDesc/X86MCAsmInfo.cpp">
+      <Filter>llvm\lib\Target\X86\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/MCTargetDesc/X86MCCodeEmitter.cpp">
+      <Filter>llvm\lib\Target\X86\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/MCTargetDesc/X86MCTargetDesc.cpp">
+      <Filter>llvm\lib\Target\X86\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/MCTargetDesc/X86MachObjectWriter.cpp">
+      <Filter>llvm\lib\Target\X86\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/MCTargetDesc/X86WinCOFFObjectWriter.cpp">
+      <Filter>llvm\lib\Target\X86\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/MCTargetDesc/X86WinCOFFStreamer.cpp">
+      <Filter>llvm\lib\Target\X86\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/MCTargetDesc/X86WinCOFFTargetStreamer.cpp">
+      <Filter>llvm\lib\Target\X86\MCTargetDesc</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/ShadowCallStack.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/TargetInfo/X86TargetInfo.cpp">
+      <Filter>llvm\lib\Target\X86\TargetInfo</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/Utils/X86ShuffleDecode.cpp">
+      <Filter>llvm\lib\Target\X86\Utils</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86AsmPrinter.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86AvoidStoreForwardingBlocks.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86CallFrameOptimization.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86CallLowering.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86CallingConv.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86CmovConversion.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86DomainReassignment.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86EvexToVex.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86ExpandPseudo.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86FastISel.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86FixupBWInsts.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86FixupLEAs.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86FixupSetCC.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86FlagsCopyLowering.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86FloatingPoint.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86FrameLowering.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86ISelDAGToDAG.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86ISelLowering.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86IndirectBranchTracking.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86InstrFMA3Info.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86InstrFoldTables.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86InstrInfo.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86InstructionSelector.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86InterleavedAccess.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86LegalizerInfo.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86MCInstLower.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86MachineFunctionInfo.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86MacroFusion.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86OptimizeLEAs.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86PadShortFunction.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86RegisterBankInfo.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86RegisterInfo.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86RetpolineThunks.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86SelectionDAGInfo.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86ShuffleDecodeConstantPool.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86SpeculativeLoadHardening.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86Subtarget.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86TargetMachine.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86TargetObjectFile.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86TargetTransformInfo.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86VZeroUpper.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86WinAllocaExpander.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/X86/X86WinEHState.cpp">
+      <Filter>llvm\lib\Target\X86</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>
