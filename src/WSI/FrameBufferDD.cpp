@@ -274,7 +274,7 @@ namespace sw
 		}
 	}
 
-	void FrameBufferDD::blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect)
+	void FrameBufferDD::blit(sw::Surface *source, const VkRect2D *sourceRect, const VkRect2D *destRect)
 	{
 		copy(source);
 
@@ -287,10 +287,10 @@ namespace sw
 
 		if(destRect)
 		{
-			dRect.bottom = bounds.top + destRect->y1;
-			dRect.left = bounds.left + destRect->x0;
-			dRect.right = bounds.left + destRect->x1;
-			dRect.top = bounds.top + destRect->y0;
+			dRect.bottom = bounds.top + destRect->offset.y + destRect->extent.height;
+			dRect.left = bounds.left + destRect->offset.x;
+			dRect.right = bounds.left + destRect->offset.x + destRect->extent.width;
+			dRect.top = bounds.top + destRect->offset.y;
 		}
 		else
 		{
@@ -321,7 +321,7 @@ namespace sw
 		flip(source);
 	}
 
-	void FrameBufferDD::blit(HWND windowOverride, sw::Surface *source, const Rect *sourceRect, const Rect *destRect)
+	void FrameBufferDD::blit(HWND windowOverride, sw::Surface *source, const VkRect2D *sourceRect, const VkRect2D *destRect)
 	{
 		updateClipper(windowOverride);
 		updateBounds(windowOverride);

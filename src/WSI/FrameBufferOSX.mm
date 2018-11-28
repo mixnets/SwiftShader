@@ -50,7 +50,7 @@ namespace sw {
 		blit(source, nullptr, nullptr);
 	}
 
-	void FrameBufferOSX::blit(sw::Surface *source, const Rect *sourceRect, const Rect *destRect)
+	void FrameBufferOSX::blit(sw::Surface *source, const VkRect2D *sourceRect, const VkRect2D *destRect)
 	{
 		copy(source);
 
