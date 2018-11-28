@@ -306,8 +306,23 @@
     <ClInclude Include="x86.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\third_party\llvm-7.0\llvm.vcxproj">
-      <Project>{16045f6e-2947-3435-a869-cd5a8e3be988}</Project>
+    <ProjectReference Include="..\..\third_party\llvm-7.0\swiftshader_llvm.vcxproj">
+      <Project>{318b0a2a-65da-7b60-9c41-08e935b8a869}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\third_party\llvm-7.0\swiftshader_llvm_codegen.vcxproj">
+      <Project>{a1c3093a-1be1-95f2-3581-0db0811ee26d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\third_party\llvm-7.0\swiftshader_llvm_ir.vcxproj">
+      <Project>{376fb780-3253-2e8b-abe9-a2456a690b42}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\third_party\llvm-7.0\swiftshader_llvm_support.vcxproj">
+      <Project>{3f78dd40-6cb0-948f-086e-be2cfb956e96}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\third_party\llvm-7.0\swiftshader_llvm_transforms.vcxproj">
+      <Project>{5a7de4b3-8278-1ebe-348e-60238f8f71a9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\third_party\llvm-7.0\swiftshader_llvm_x86.vcxproj">
+      <Project>{316784b5-fdbb-8eee-740b-10478674d541}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

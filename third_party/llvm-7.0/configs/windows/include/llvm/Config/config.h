@@ -245,7 +245,7 @@
 /* #undef HAVE___ASHRDI3 */
 
 /* Have host's __chkstk */
-#define HAVE___CHKSTK 1
+/* #undef HAVE___CHKSTK */
 
 /* Have host's __chkstk_ms */
 /* #undef HAVE___CHKSTK_MS */

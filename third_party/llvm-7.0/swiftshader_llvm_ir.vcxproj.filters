@@ -12,158 +12,158 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/AsmWriter.cpp">
+    <ClCompile Include="llvm/lib/IR/ConstantFold.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Attributes.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/ConstantRange.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/AutoUpgrade.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Constants.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/BasicBlock.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Core.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Comdat.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/DIBuilder.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/ConstantFold.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/DataLayout.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/ConstantRange.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/DebugInfo.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Constants.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/DebugInfoMetadata.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Core.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/DebugLoc.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/DIBuilder.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/DiagnosticHandler.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/DataLayout.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/DiagnosticInfo.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/DebugInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/DiagnosticPrinter.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/DebugInfoMetadata.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/DomTreeUpdater.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/DebugLoc.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Dominators.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/DiagnosticHandler.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Function.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/DiagnosticInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/GVMaterializer.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/DiagnosticPrinter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Globals.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/DomTreeUpdater.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/IRBuilder.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Dominators.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/IRPrintingPasses.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Function.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/InlineAsm.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/GVMaterializer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Instruction.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Globals.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Instructions.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/IRBuilder.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/IntrinsicInst.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/IRPrintingPasses.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/LLVMContext.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/InlineAsm.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/LLVMContextImpl.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Instruction.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/LegacyPassManager.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Instructions.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/MDBuilder.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/IntrinsicInst.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Mangler.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/LLVMContext.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Metadata.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/LLVMContextImpl.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Module.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/LegacyPassManager.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/ModuleSummaryIndex.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/MDBuilder.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Operator.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Mangler.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/OptBisect.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Metadata.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Pass.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Module.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/PassManager.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/ModuleSummaryIndex.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/PassRegistry.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Operator.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/ProfileSummary.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/OptBisect.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/SafepointIRVerifier.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Pass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Statepoint.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/PassManager.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Type.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/PassRegistry.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/TypeFinder.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/ProfileSummary.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Use.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/SafepointIRVerifier.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/User.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Statepoint.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Value.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Type.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/ValueSymbolTable.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/TypeFinder.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/AsmWriter.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Use.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Attributes.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/User.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/AutoUpgrade.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Value.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/BasicBlock.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/ValueSymbolTable.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Comdat.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/IR/Verifier.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/IR/Verifier.cpp">
       <Filter>llvm\lib\IR</Filter>
-    </CustomBuild>
+    </ClCompile>
   </ItemGroup>
 </Project>

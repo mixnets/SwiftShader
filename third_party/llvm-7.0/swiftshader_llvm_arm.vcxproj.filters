@@ -33,173 +33,173 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMConstantIslandPass.cpp">
+    <ClCompile Include="llvm/lib/Target/ARM/ARMConstantIslandPass.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMMachObjectWriter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMMachObjectWriter.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMWinCOFFObjectWriter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMWinCOFFObjectWriter.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMMCAsmInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMMCAsmInfo.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMMCCodeEmitter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMMCCodeEmitter.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMTargetStreamer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMTargetStreamer.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMMachORelocationInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMMachORelocationInfo.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMMCExpr.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMMCExpr.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMELFObjectWriter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMELFObjectWriter.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMAsmBackend.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMAsmBackend.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMWinCOFFStreamer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMWinCOFFStreamer.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMELFStreamer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMELFStreamer.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMMCTargetDesc.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMMCTargetDesc.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MCTargetDesc/ARMUnwindOpAsm.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MCTargetDesc/ARMUnwindOpAsm.cpp">
       <Filter>llvm\lib\Target\ARM\MCTargetDesc</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ThumbRegisterInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ThumbRegisterInfo.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMMachineFunctionInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMMachineFunctionInfo.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMFrameLowering.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMFrameLowering.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMBaseRegisterInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMBaseRegisterInfo.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMCallLowering.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMCallLowering.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMTargetMachine.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMTargetMachine.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMBaseInstrInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMBaseInstrInfo.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/Thumb1FrameLowering.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/Thumb1FrameLowering.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMRegisterBankInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMRegisterBankInfo.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/Utils/ARMBaseInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/Utils/ARMBaseInfo.cpp">
       <Filter>llvm\lib\Target\ARM\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMComputeBlockSize.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMComputeBlockSize.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMSelectionDAGInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMSelectionDAGInfo.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMInstructionSelector.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMInstructionSelector.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMLoadStoreOptimizer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMLoadStoreOptimizer.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMTargetObjectFile.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMTargetObjectFile.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMISelLowering.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMISelLowering.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/Disassembler/ARMDisassembler.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/Disassembler/ARMDisassembler.cpp">
       <Filter>llvm\lib\Target\ARM\Disassembler</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMExpandPseudoInsts.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMExpandPseudoInsts.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/TargetInfo/ARMTargetInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/TargetInfo/ARMTargetInfo.cpp">
       <Filter>llvm\lib\Target\ARM\TargetInfo</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMInstrInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMInstrInfo.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/MLxExpansionPass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/MLxExpansionPass.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/Thumb2SizeReduction.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/Thumb2SizeReduction.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMConstantPoolValue.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMConstantPoolValue.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/Thumb2InstrInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/Thumb2InstrInfo.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMRegisterInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMRegisterInfo.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/InstPrinter/ARMInstPrinter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/InstPrinter/ARMInstPrinter.cpp">
       <Filter>llvm\lib\Target\ARM\InstPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMSubtarget.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMSubtarget.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/AsmParser/ARMAsmParser.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/AsmParser/ARMAsmParser.cpp">
       <Filter>llvm\lib\Target\ARM\AsmParser</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMParallelDSP.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMParallelDSP.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMISelDAGToDAG.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMISelDAGToDAG.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/A15SDOptimizer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/A15SDOptimizer.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/Thumb2ITBlockPass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/Thumb2ITBlockPass.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMFastISel.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMFastISel.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMMacroFusion.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMMacroFusion.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMAsmPrinter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMAsmPrinter.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMMCInstLower.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMMCInstLower.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMHazardRecognizer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMHazardRecognizer.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMCodeGenPrepare.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMCodeGenPrepare.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMTargetTransformInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMTargetTransformInfo.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/Thumb1InstrInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/Thumb1InstrInfo.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMLegalizerInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMLegalizerInfo.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Target/ARM/ARMOptimizeBarriersPass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Target/ARM/ARMOptimizeBarriersPass.cpp">
       <Filter>llvm\lib\Target\ARM</Filter>
-    </CustomBuild>
+    </ClCompile>
   </ItemGroup>
 </Project>

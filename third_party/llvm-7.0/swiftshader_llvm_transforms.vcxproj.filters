@@ -21,425 +21,425 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstCombineAddSub.cpp">
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstCombineLoadStoreAlloca.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstCombineAndOrXor.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstCombineMulDivRem.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstCombineCalls.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstCombinePHI.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstCombineCasts.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstCombineSelect.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstCombineCompares.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstCombineShifts.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstCombineLoadStoreAlloca.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstCombineSimplifyDemanded.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstCombineMulDivRem.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstCombineVectorOps.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstCombinePHI.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/CallSiteSplitting.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/ConstantHoisting.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/ConstantProp.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/CorrelatedValuePropagation.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/DCE.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/DeadStoreElimination.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/DivRemPairs.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/EarlyCSE.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/FlattenCFGPass.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/Float2Int.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/GVN.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/GVNHoist.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/GVNSink.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/GuardWidening.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/IVUsersPrinter.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/IndVarSimplify.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/InductiveRangeCheckElimination.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/InferAddressSpaces.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/InstSimplifyPass.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/JumpThreading.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LICM.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopAccessAnalysisPrinter.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopDataPrefetch.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopDeletion.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopDistribute.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopIdiomRecognize.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopInstSimplify.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopInterchange.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopLoadElimination.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopPassManager.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopPredication.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopRerollPass.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopRotation.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopSimplifyCFG.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopSink.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopStrengthReduce.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopUnrollAndJamPass.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopUnrollPass.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopUnswitch.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LoopVersioningLICM.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LowerAtomic.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LowerExpectIntrinsic.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/LowerGuardIntrinsic.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/MemCpyOptimizer.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/MergeICmps.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/MergedLoadStoreMotion.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/NaryReassociate.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/NewGVN.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/PartiallyInlineLibCalls.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/PlaceSafepoints.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/Reassociate.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/Reg2Mem.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/RewriteStatepointsForGC.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/SCCP.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/SROA.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/Scalar.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/Scalarizer.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/SeparateConstOffsetFromGEP.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/SimpleLoopUnswitch.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/SimplifyCFGPass.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/Sink.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/SpeculateAroundPHIs.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/SpeculativeExecution.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/StraightLineStrengthReduce.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/StructurizeCFG.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/BuildLibCalls.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/BypassSlowDivision.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/CallPromotionUtils.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/CloneFunction.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/CloneModule.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/CodeExtractor.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/CtorUtils.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/DemoteRegToStack.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/EntryExitInstrumenter.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/EscapeEnumerator.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/Evaluator.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/FlattenCFG.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/FunctionComparator.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/FunctionImportUtils.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/GlobalStatus.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/ImportedFunctionsInliningStatistics.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/InlineFunction.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/InstructionNamer.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/IntegerDivision.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LCSSA.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LibCallsShrinkWrap.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/Local.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LoopRotationUtils.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LoopSimplify.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LoopUnroll.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LoopUnrollAndJam.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LoopUnrollPeel.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LoopUnrollRuntime.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LoopUtils.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LoopVersioning.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LowerInvoke.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LowerMemIntrinsics.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/LowerSwitch.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/Mem2Reg.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/MetaRenamer.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/ModuleUtils.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/NameAnonGlobals.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/OrderedInstructions.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/PredicateInfo.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/PromoteMemoryToRegister.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/SSAUpdater.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/SSAUpdaterBulk.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/SanitizerStats.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/SimplifyCFG.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/SimplifyIndVar.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/SimplifyLibCalls.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/SplitModule.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/StripGCRelocates.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/StripNonLineTableDebugInfo.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/SymbolRewriter.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/UnifyFunctionExitNodes.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/Utils.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/VNCoercion.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/ValueMapper.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/ADCE.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/AddDiscriminators.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/AlignmentFromAssumptions.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/ASanStackFrameLayout.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/BasicBlockUtils.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/BDCE.cpp">
+      <Filter>llvm\lib\Transforms\Scalar</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Utils/BreakCriticalEdges.cpp">
+      <Filter>llvm\lib\Transforms\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstCombineAddSub.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstCombineSelect.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstCombineAndOrXor.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstCombineShifts.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstCombineCalls.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstCombineSimplifyDemanded.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstCombineCasts.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstCombineVectorOps.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstCombineCompares.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/InstCombine/InstructionCombining.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/InstCombine/InstructionCombining.cpp">
       <Filter>llvm\lib\Transforms\InstCombine</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/ADCE.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/Transforms/Scalar/TailRecursionElimination.cpp">
       <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/AlignmentFromAssumptions.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/BDCE.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/CallSiteSplitting.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/ConstantHoisting.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/ConstantProp.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/CorrelatedValuePropagation.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/DCE.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/DeadStoreElimination.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/DivRemPairs.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/EarlyCSE.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/FlattenCFGPass.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/Float2Int.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/GVN.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/GVNHoist.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/GVNSink.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/GuardWidening.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/IVUsersPrinter.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/IndVarSimplify.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/InductiveRangeCheckElimination.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/InferAddressSpaces.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/InstSimplifyPass.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/JumpThreading.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LICM.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopAccessAnalysisPrinter.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopDataPrefetch.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopDeletion.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopDistribute.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopIdiomRecognize.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopInstSimplify.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopInterchange.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopLoadElimination.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopPassManager.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopPredication.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopRerollPass.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopRotation.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopSimplifyCFG.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopSink.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopStrengthReduce.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopUnrollAndJamPass.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopUnrollPass.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopUnswitch.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LoopVersioningLICM.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LowerAtomic.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LowerExpectIntrinsic.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/LowerGuardIntrinsic.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/MemCpyOptimizer.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/MergeICmps.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/MergedLoadStoreMotion.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/NaryReassociate.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/NewGVN.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/PartiallyInlineLibCalls.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/PlaceSafepoints.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/Reassociate.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/Reg2Mem.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/RewriteStatepointsForGC.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/SCCP.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/SROA.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/Scalar.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/Scalarizer.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/SeparateConstOffsetFromGEP.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/SimpleLoopUnswitch.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/SimplifyCFGPass.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/Sink.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/SpeculateAroundPHIs.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/SpeculativeExecution.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/StraightLineStrengthReduce.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/StructurizeCFG.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Scalar/TailRecursionElimination.cpp">
-      <Filter>llvm\lib\Transforms\Scalar</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/ASanStackFrameLayout.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/AddDiscriminators.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/BasicBlockUtils.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/BreakCriticalEdges.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/BuildLibCalls.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/BypassSlowDivision.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/CallPromotionUtils.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/CloneFunction.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/CloneModule.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/CodeExtractor.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/CtorUtils.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/DemoteRegToStack.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/EntryExitInstrumenter.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/EscapeEnumerator.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/Evaluator.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/FlattenCFG.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/FunctionComparator.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/FunctionImportUtils.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/GlobalStatus.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/ImportedFunctionsInliningStatistics.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/InlineFunction.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/InstructionNamer.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/IntegerDivision.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LCSSA.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LibCallsShrinkWrap.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/Local.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LoopRotationUtils.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LoopSimplify.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LoopUnroll.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LoopUnrollAndJam.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LoopUnrollPeel.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LoopUnrollRuntime.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LoopUtils.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LoopVersioning.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LowerInvoke.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LowerMemIntrinsics.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/LowerSwitch.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/Mem2Reg.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/MetaRenamer.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/ModuleUtils.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/NameAnonGlobals.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/OrderedInstructions.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/PredicateInfo.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/PromoteMemoryToRegister.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/SSAUpdater.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/SSAUpdaterBulk.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/SanitizerStats.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/SimplifyCFG.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/SimplifyIndVar.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/SimplifyLibCalls.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/SplitModule.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/StripGCRelocates.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/StripNonLineTableDebugInfo.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/SymbolRewriter.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/UnifyFunctionExitNodes.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/Utils.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/VNCoercion.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/Transforms/Utils/ValueMapper.cpp">
-      <Filter>llvm\lib\Transforms\Utils</Filter>
-    </CustomBuild>
+    </ClCompile>
   </ItemGroup>
 </Project>

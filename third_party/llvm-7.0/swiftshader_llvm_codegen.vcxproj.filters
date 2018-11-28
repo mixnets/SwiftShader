@@ -21,692 +21,692 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AggressiveAntiDepBreaker.cpp">
-      <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AllocationOrder.cpp">
-      <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/Analysis.cpp">
-      <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/ARMException.cpp">
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/AsmPrinter.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/AccelTable.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/AsmPrinterDwarf.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/AddressPool.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/AsmPrinterInlineAsm.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/AsmPrinter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/CodeViewDebug.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/AsmPrinterDwarf.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/DIE.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/AsmPrinterInlineAsm.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/DIEHash.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/CodeViewDebug.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/DbgValueHistoryCalculator.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/DIE.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/DebugHandlerBase.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/DIEHash.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/DebugLocStream.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/DbgValueHistoryCalculator.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/DwarfCFIException.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/DebugHandlerBase.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/DwarfCompileUnit.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/DebugLocStream.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/DwarfDebug.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/DwarfCFIException.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/DwarfExpression.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/DwarfCompileUnit.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/DwarfFile.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/DwarfDebug.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/DwarfStringPool.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/DwarfExpression.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/DwarfUnit.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/DwarfFile.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/EHStreamer.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/DwarfStringPool.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/ErlangGCPrinter.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/DwarfUnit.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/OcamlGCPrinter.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/EHStreamer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/WinCFGuard.cpp">
       <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/ErlangGCPrinter.cpp">
-      <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/OcamlGCPrinter.cpp">
-      <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/WinCFGuard.cpp">
-      <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AsmPrinter/WinException.cpp">
-      <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/AtomicExpandPass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/BreakFalseDeps.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/BasicTargetTransformInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/BuiltinGCs.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/BranchFolding.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/CFIInstrInserter.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/BranchRelaxation.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/CalcSpillWeights.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/BreakFalseDeps.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/CallingConvLower.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/BuiltinGCs.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/CodeGen.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/CFIInstrInserter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/CodeGenPrepare.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/CalcSpillWeights.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/CriticalAntiDepBreaker.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/CallingConvLower.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/DFAPacketizer.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/CodeGen.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/DeadMachineInstructionElim.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/CodeGenPrepare.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/DetectDeadLanes.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/CriticalAntiDepBreaker.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/DwarfEHPrepare.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/DFAPacketizer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/EarlyIfConversion.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/DeadMachineInstructionElim.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/EdgeBundles.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/DetectDeadLanes.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ExecutionDomainFix.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/DwarfEHPrepare.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ExpandISelPseudos.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/EarlyIfConversion.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ExpandMemCmp.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/EdgeBundles.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ExpandPostRAPseudos.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ExecutionDomainFix.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ExpandReductions.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ExpandISelPseudos.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/FEntryInserter.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ExpandMemCmp.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/FaultMaps.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ExpandPostRAPseudos.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/FuncletLayout.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ExpandReductions.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GCMetadata.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/FEntryInserter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GCMetadataPrinter.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/FaultMaps.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GCRootLowering.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/FuncletLayout.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GCStrategy.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GCMetadata.cpp">
-      <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GCMetadataPrinter.cpp">
-      <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GCRootLowering.cpp">
-      <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GCStrategy.cpp">
-      <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/CallLowering.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/IRTranslator.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/Combiner.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/InstructionSelect.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/CombinerHelper.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/InstructionSelector.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/GlobalISel.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/LegalityPredicates.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/IRTranslator.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/LegalizeMutations.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/InstructionSelect.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/Legalizer.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/InstructionSelector.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/LegalizerHelper.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/LegalityPredicates.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/LegalizerInfo.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/LegalizeMutations.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/Localizer.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/Legalizer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/MachineIRBuilder.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/LegalizerHelper.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/RegBankSelect.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/LegalizerInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/RegisterBank.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/Localizer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/RegisterBankInfo.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/MachineIRBuilder.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/Utils.cpp">
       <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/RegBankSelect.cpp">
-      <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/RegisterBank.cpp">
-      <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/RegisterBankInfo.cpp">
-      <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalISel/Utils.cpp">
-      <Filter>llvm\lib\CodeGen\GlobalISel</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/GlobalMerge.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalMerge.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/IfConversion.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/IfConversion.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ImplicitNullChecks.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ImplicitNullChecks.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/IndirectBrExpandPass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/IndirectBrExpandPass.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/InlineSpiller.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/InlineSpiller.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/InterferenceCache.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/InterferenceCache.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/InterleavedAccessPass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/InterleavedAccessPass.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/IntrinsicLowering.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/IntrinsicLowering.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LLVMTargetMachine.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LLVMTargetMachine.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LatencyPriorityQueue.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LatencyPriorityQueue.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LazyMachineBlockFrequencyInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LazyMachineBlockFrequencyInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LexicalScopes.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LexicalScopes.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LiveDebugValues.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LiveDebugValues.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LiveDebugVariables.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LiveDebugVariables.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LiveInterval.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LiveInterval.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LiveIntervalUnion.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LiveIntervalUnion.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LiveIntervals.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LiveIntervals.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LivePhysRegs.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LivePhysRegs.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LiveRangeCalc.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LiveRangeCalc.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LiveRangeEdit.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LiveRangeEdit.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LiveRangeShrink.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LiveRangeShrink.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LiveRegMatrix.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LiveRegMatrix.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LiveRegUnits.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LiveRegUnits.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LiveStacks.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LiveStacks.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LiveVariables.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LiveVariables.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LocalStackSlotAllocation.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LocalStackSlotAllocation.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LoopTraversal.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LoopTraversal.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LowLevelType.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LowLevelType.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/LowerEmuTLS.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/LowerEmuTLS.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MIRCanonicalizerPass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MIRCanonicalizerPass.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MIRPrinter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MIRPrinter.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MIRPrintingPass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MIRPrintingPass.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineBasicBlock.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineBasicBlock.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineBlockFrequencyInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineBlockFrequencyInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineBlockPlacement.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineBlockPlacement.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineBranchProbabilityInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineBranchProbabilityInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineCSE.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineCSE.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineCombiner.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineCombiner.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineCopyPropagation.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineCopyPropagation.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineDominanceFrontier.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineDominanceFrontier.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineDominators.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineDominators.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineFrameInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineFrameInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineFunction.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineFunction.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineFunctionPass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineFunctionPass.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineFunctionPrinterPass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineFunctionPrinterPass.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineInstr.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineInstr.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineInstrBundle.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineInstrBundle.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineLICM.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineLICM.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineLoopInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineLoopInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineModuleInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineModuleInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineModuleInfoImpls.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineModuleInfoImpls.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineOperand.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineOperand.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineOptimizationRemarkEmitter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineOptimizationRemarkEmitter.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineOutliner.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineOutliner.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachinePassRegistry.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachinePassRegistry.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachinePipeliner.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachinePipeliner.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachinePostDominators.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachinePostDominators.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineRegionInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineRegionInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineRegisterInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineRegisterInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineSSAUpdater.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineSSAUpdater.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineScheduler.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineScheduler.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineSink.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineSink.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineTraceMetrics.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineTraceMetrics.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MachineVerifier.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MachineVerifier.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/MacroFusion.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/MacroFusion.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/OptimizePHIs.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/OptimizePHIs.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/PHIElimination.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/PHIElimination.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/PHIEliminationUtils.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/PHIEliminationUtils.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ParallelCG.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ParallelCG.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/PatchableFunction.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/PatchableFunction.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/PeepholeOptimizer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/PeepholeOptimizer.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/PostRAHazardRecognizer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/PostRAHazardRecognizer.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/PostRASchedulerList.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/PostRASchedulerList.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/PreISelIntrinsicLowering.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/PreISelIntrinsicLowering.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ProcessImplicitDefs.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ProcessImplicitDefs.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/PrologEpilogInserter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/PrologEpilogInserter.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/PseudoSourceValue.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/PseudoSourceValue.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ReachingDefAnalysis.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ReachingDefAnalysis.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RegAllocBase.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RegAllocBase.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RegAllocBasic.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RegAllocBasic.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RegAllocFast.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RegAllocFast.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RegAllocGreedy.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RegAllocGreedy.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RegAllocPBQP.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RegAllocPBQP.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RegUsageInfoCollector.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RegUsageInfoCollector.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RegUsageInfoPropagate.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RegUsageInfoPropagate.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RegisterClassInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RegisterClassInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RegisterCoalescer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RegisterCoalescer.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RegisterPressure.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RegisterPressure.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RegisterScavenging.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RegisterScavenging.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RegisterUsageInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RegisterUsageInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/RenameIndependentSubregs.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/RenameIndependentSubregs.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ResetMachineFunctionPass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ResetMachineFunctionPass.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SafeStack.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SafeStack.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SafeStackColoring.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SafeStackColoring.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SafeStackLayout.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SafeStackLayout.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ScalarizeMaskedMemIntrin.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ScalarizeMaskedMemIntrin.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ScheduleDAG.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ScheduleDAG.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ScheduleDAGInstrs.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ScheduleDAGInstrs.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ScheduleDAGPrinter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ScheduleDAGPrinter.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ScoreboardHazardRecognizer.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ScoreboardHazardRecognizer.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/FastISel.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/FastISel.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/FunctionLoweringInfo.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/FunctionLoweringInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/InstrEmitter.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/InstrEmitter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/LegalizeDAG.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/LegalizeFloatTypes.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/LegalizeFloatTypes.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/LegalizeIntegerTypes.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/LegalizeIntegerTypes.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/LegalizeTypes.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/LegalizeTypes.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/LegalizeTypesGeneric.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/LegalizeTypesGeneric.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/LegalizeVectorOps.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/LegalizeVectorOps.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/LegalizeVectorTypes.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/LegalizeVectorTypes.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/ResourcePriorityQueue.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/ResourcePriorityQueue.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/ScheduleDAGFast.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/ScheduleDAGFast.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/ScheduleDAGRRList.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/ScheduleDAGRRList.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/ScheduleDAGSDNodes.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/ScheduleDAGSDNodes.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/ScheduleDAGVLIW.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/ScheduleDAGVLIW.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/SelectionDAG.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/SelectionDAG.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/SelectionDAGAddressAnalysis.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/SelectionDAGAddressAnalysis.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/SelectionDAGDumper.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/SelectionDAGDumper.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/SelectionDAGISel.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/SelectionDAGISel.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/SelectionDAGPrinter.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/SelectionDAGPrinter.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/SelectionDAGTargetInfo.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/SelectionDAGTargetInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/StatepointLowering.cpp">
       <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/StatepointLowering.cpp">
-      <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SelectionDAG/TargetLowering.cpp">
-      <Filter>llvm\lib\CodeGen\SelectionDAG</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ShadowStackGCLowering.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ShadowStackGCLowering.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ShrinkWrap.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ShrinkWrap.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SjLjEHPrepare.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SjLjEHPrepare.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SlotIndexes.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SlotIndexes.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SpillPlacement.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SpillPlacement.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/SplitKit.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SplitKit.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/StackColoring.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/StackColoring.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/StackMapLivenessAnalysis.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/StackMapLivenessAnalysis.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/StackMaps.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/StackMaps.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/StackProtector.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/StackProtector.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/StackSlotColoring.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/StackSlotColoring.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/TailDuplication.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/TailDuplication.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/TailDuplicator.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/TailDuplicator.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/TargetFrameLoweringImpl.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/TargetFrameLoweringImpl.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/TargetInstrInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/TargetInstrInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/TargetLoweringBase.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/TargetLoweringBase.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/TargetLoweringObjectFileImpl.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/TargetLoweringObjectFileImpl.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/TargetOptionsImpl.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/TargetOptionsImpl.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/TargetPassConfig.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/TargetPassConfig.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/TargetRegisterInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/TargetRegisterInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/TargetSchedule.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/TargetSchedule.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/TargetSubtargetInfo.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/TargetSubtargetInfo.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/TwoAddressInstructionPass.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/TwoAddressInstructionPass.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/UnreachableBlockElim.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/UnreachableBlockElim.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/ValueTypes.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/ValueTypes.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/VirtRegMap.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/VirtRegMap.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/WasmEHPrepare.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/WasmEHPrepare.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/WinEHPrepare.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/WinEHPrepare.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
-    <CustomBuild Include="../../../../../../../third_party/swiftshader/third_party/llvm-7.0/llvm/lib/CodeGen/XRayInstrumentation.cpp">
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AggressiveAntiDepBreaker.cpp">
       <Filter>llvm\lib\CodeGen</Filter>
-    </CustomBuild>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AllocationOrder.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/Analysis.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/ARMException.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AtomicExpandPass.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/BasicTargetTransformInfo.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/BranchFolding.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/BranchRelaxation.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/CallLowering.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/Combiner.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/CombinerHelper.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/GlobalISel/GlobalISel.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/SelectionDAG/TargetLowering.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/WinException.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/XRayInstrumentation.cpp">
+      <Filter>llvm\lib\CodeGen</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/AccelTable.cpp">
+      <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
+    </ClCompile>
+    <ClCompile Include="llvm/lib/CodeGen/AsmPrinter/AddressPool.cpp">
+      <Filter>llvm\lib\CodeGen\AsmPrinter</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
