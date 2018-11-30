@@ -207,3 +207,7 @@ EXPORTS
 	; VK_KHR_sampler_ycbcr_conversion
 	vkCreateSamplerYcbcrConversionKHR
 	vkDestroySamplerYcbcrConversionKHR
+
+	vkDestroySurfaceKHR
+
+	vkCreateWin32SurfaceKHR

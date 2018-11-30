@@ -41,8 +41,79 @@
 #include <cstring>
 #include <string>
 
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_win32.h>
+
 extern "C"
 {
+VKAPI_ATTR void VKAPI_CALL vkDestroySurfaceKHR(
+	VkInstance                                  instance,
+	VkSurfaceKHR                                surface,
+	const VkAllocationCallbacks*                pAllocator)
+{
+	UNIMPLEMENTED();
+	return;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceSupportKHR(
+	VkPhysicalDevice                            physicalDevice,
+	uint32_t                                    queueFamilyIndex,
+	VkSurfaceKHR                                surface,
+	VkBool32*                                   pSupported)
+{
+	UNIMPLEMENTED();
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceCapabilitiesKHR(
+	VkPhysicalDevice                            physicalDevice,
+	VkSurfaceKHR                                surface,
+	VkSurfaceCapabilitiesKHR*                   pSurfaceCapabilities)
+{
+	UNIMPLEMENTED();
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfaceFormatsKHR(
+	VkPhysicalDevice                            physicalDevice,
+	VkSurfaceKHR                                surface,
+	uint32_t*                                   pSurfaceFormatCount,
+	VkSurfaceFormatKHR*                         pSurfaceFormats)
+{
+	UNIMPLEMENTED();
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfacePresentModesKHR(
+	VkPhysicalDevice                            physicalDevice,
+	VkSurfaceKHR                                surface,
+	uint32_t*                                   pPresentModeCount,
+	VkPresentModeKHR*                           pPresentModes)
+{
+	UNIMPLEMENTED();
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateWin32SurfaceKHR(
+	VkInstance                                  instance,
+	const VkWin32SurfaceCreateInfoKHR*          pCreateInfo,
+	const VkAllocationCallbacks*                pAllocator,
+	VkSurfaceKHR*                               pSurface)
+{
+	UNIMPLEMENTED();
+	return VK_SUCCESS;
+}
+
+VKAPI_ATTR VkBool32 VKAPI_CALL vkGetPhysicalDeviceWin32PresentationSupportKHR(
+	VkPhysicalDevice                            physicalDevice,
+	uint32_t                                    queueFamilyIndex)
+{
+	UNIMPLEMENTED();
+	return VK_TRUE;
+}
+
 VKAPI_ATTR PFN_vkVoidFunction VKAPI_CALL vk_icdGetInstanceProcAddr(VkInstance instance, const char* pName)
 {
 	return vk::GetProcAddr(pName);

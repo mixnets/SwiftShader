@@ -293,21 +293,50 @@ TEST_F(SwiftShaderVulkanTest, Version)
 	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
 	EXPECT_EQ(result, VK_SUCCESS);
 
-	uint32_t pPhysicalDeviceCount = 0;
-	result = vkEnumeratePhysicalDevices(instance, &pPhysicalDeviceCount, nullptr);
+	uint32_t physicalDeviceCount = 0;
+	result = vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, nullptr);
 	EXPECT_EQ(result, VK_SUCCESS);
-	EXPECT_EQ(pPhysicalDeviceCount, 1);
+	EXPECT_EQ(physicalDeviceCount, 1);
 
-	VkPhysicalDevice pPhysicalDevice = VK_NULL_HANDLE;
-	result = vkEnumeratePhysicalDevices(instance, &pPhysicalDeviceCount, &pPhysicalDevice);
+	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+	result = vkEnumeratePhysicalDevices(instance, &physicalDeviceCount, &physicalDevice);
 	EXPECT_EQ(result, VK_SUCCESS);
-	EXPECT_NE(pPhysicalDevice, (VkPhysicalDevice)VK_NULL_HANDLE);
+	EXPECT_NE(physicalDevice, (VkPhysicalDevice)VK_NULL_HANDLE);
 
 	VkPhysicalDeviceProperties physicalDeviceProperties;
-	vkGetPhysicalDeviceProperties(pPhysicalDevice, &physicalDeviceProperties);
+	vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
 	EXPECT_EQ(physicalDeviceProperties.apiVersion, VK_API_VERSION_1_1);
 	EXPECT_EQ(physicalDeviceProperties.deviceID, 0xC0DE);
 	EXPECT_EQ(physicalDeviceProperties.deviceType, VK_PHYSICAL_DEVICE_TYPE_CPU);
 
 	EXPECT_EQ(strncmp(physicalDeviceProperties.deviceName, "SwiftShader Device", VK_MAX_PHYSICAL_DEVICE_NAME_SIZE), 0);
+
+	float queuePriority = 0.0f;
+	VkDeviceQueueCreateInfo queueCreateInfo =
+	{
+		VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+		nullptr,
+		0,
+		0,
+		1,
+		&queuePriority
+	};
+
+	VkDevice device = VK_NULL_HANDLE;
+	VkDeviceCreateInfo deviceCreateInfo =
+	{
+		VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+		nullptr,
+		0,
+		1,
+		&queueCreateInfo,
+		0,
+		nullptr,
+		0,
+		nullptr,
+		nullptr
+	};
+	vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device);
+
+
 }
