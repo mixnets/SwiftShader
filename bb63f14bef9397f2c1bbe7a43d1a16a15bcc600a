@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "78b7874e_26d3e6b3",
+        "filename": "src/Vulkan/VkCommandPool.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-30T18:59:00Z",
+      "side": 1,
+      "message": "Must set all entries to NULL, not just the previous ones.",
+      "range": {
+        "startLine": 61,
+        "startChar": 23,
+        "endLine": 61,
+        "endChar": 28
+      },
+      "revId": "bb63f14bef9397f2c1bbe7a43d1a16a15bcc600a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b9a4c627_6eac4b0f",
+        "filename": "src/Vulkan/VkCommandPool.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-30T18:59:00Z",
+      "side": 1,
+      "message": "Also should remove the already inserted buffers from commandBuffers before returning, or probably better to not insert them before we know all allocations were successful.",
+      "range": {
+        "startLine": 65,
+        "startChar": 3,
+        "endLine": 65,
+        "endChar": 9
+      },
+      "revId": "bb63f14bef9397f2c1bbe7a43d1a16a15bcc600a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
