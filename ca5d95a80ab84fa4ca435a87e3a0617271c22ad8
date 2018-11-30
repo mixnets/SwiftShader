@@ -50,6 +50,24 @@
       "revId": "ca5d95a80ab84fa4ca435a87e3a0617271c22ad8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1572e4e_6c540447",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-30T15:36:46Z",
+      "side": 1,
+      "message": "Thanks for pointing that out! Indeed it seems fine for just using the compiled pipeline, but this will bite us when using the shader afterwards for debugging purposes.\n\nI suggest we do a deep copy for the debugging. Doesn\u0027t have to be done now. Alexis, could you make a note about it in b/118401597?\n\nI suggest passing the shader module as arguments to where we need it, while it\u0027s valid. I\u0027d rather not store a pointer here that\u0027s going to point to stale memory.",
+      "parentUuid": "5a52a318_eb67df0e",
+      "revId": "ca5d95a80ab84fa4ca435a87e3a0617271c22ad8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
