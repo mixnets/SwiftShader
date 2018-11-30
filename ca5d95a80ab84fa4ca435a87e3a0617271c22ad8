@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e1a778a6_b9409d2f",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-30T14:39:20Z",
+      "side": 1,
+      "message": "nit: don\u0027t you need a \"bool normalized\" as well?\n\nI suggest having one structure {sw::StreamType type, uint32_t numChannels, bool normalized} and have a single conversion function that does things like return {sw::STREAMTYPE_BYTE, 1, false};",
+      "revId": "ca5d95a80ab84fa4ca435a87e3a0617271c22ad8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1623868f_e6596dd9",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-30T14:39:20Z",
+      "side": 1,
+      "message": "nit: I would spell out the types explicitly since they\u0027re simple types (even if they are long). Also we could have a block per sub-descriptor of pCreateInfo to delimitate things more clearly.",
+      "revId": "ca5d95a80ab84fa4ca435a87e3a0617271c22ad8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a52a318_eb67df0e",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-30T14:39:20Z",
+      "side": 1,
+      "message": "Be careful about this part of the spec: \"A shader module can be destroyed while pipelines created using its shaders are still in use.\"\n\nI assume this will be fine in the end because we\u0027ll generate the routine in vkCreatePipeline, but we can\u0027t rely on VkShaderModule living after the end of the call.",
+      "revId": "ca5d95a80ab84fa4ca435a87e3a0617271c22ad8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
