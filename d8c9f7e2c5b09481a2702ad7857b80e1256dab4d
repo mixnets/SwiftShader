@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "588f823a_58d48fac",
+        "filename": "src/Vulkan/VkCommandPool.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-11-30T15:08:37Z",
+      "side": 1,
+      "message": "Yes, exactly. I had a closer look a the STL spec, and there\u0027s no guarantee that there won\u0027t be a dangling heap allocation when the container is emptied but the destructor hasn\u0027t been called. Likewise a new container may eagerly reserve some space, so swapping doesn\u0027t work either.\n\nI suggest making commandBuffers a pointer to a vector so we can just call delete and set it to null. It\u0027s another pointer indirection, but we\u0027ve already made several compromises there and all this code needs to be replaced anyway once we focus on performance.\n\nIt\u0027s cleaner than calling the destructor explicitly since it doesn\u0027t leave the member object stale. I wouldn\u0027t recommend making the CommandPool destructor accessible since that makes it tempting to do the same for other objects and just allocate heap objects at will. Using a vector for the CommandBuffer is a compromise that\u0027s acceptable only because it\u0027s definitely temporary.",
+      "parentUuid": "5022e67e_54f7934d",
+      "revId": "d8c9f7e2c5b09481a2702ad7857b80e1256dab4d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5a06ba66_652e556d",
         "filename": "src/Vulkan/VkCommandPool.hpp",
         "patchSetId": 2
