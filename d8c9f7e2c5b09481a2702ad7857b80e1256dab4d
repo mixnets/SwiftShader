@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5022e67e_54f7934d",
+        "filename": "src/Vulkan/VkCommandPool.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-30T14:26:51Z",
+      "side": 1,
+      "message": "Oh I just understood why we do this, it is because CommandPool\u0027s destructor is never called. That\u0027s unfortunate and I assume that if we use the std, what we\u0027re doing is technically UB. Can we do commandBuffers-\u003e~std::vector\u003cVkCommandBuffer\u003e(); instead?\n\nAlternatively we could reinstate the destructor as a private member of CommandPool (and protected member of Object) and call (*this)-\u003e~CommandPool();",
+      "revId": "d8c9f7e2c5b09481a2702ad7857b80e1256dab4d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a06ba66_652e556d",
+        "filename": "src/Vulkan/VkCommandPool.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-11-30T14:26:51Z",
+      "side": 1,
+      "message": "Maybe we could use std::set?",
+      "revId": "d8c9f7e2c5b09481a2702ad7857b80e1256dab4d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
