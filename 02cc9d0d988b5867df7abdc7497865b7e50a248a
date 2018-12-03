@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dcf8bf03_9d602778",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-03T15:55:34Z",
+      "side": 1,
+      "message": "LGTM for now as a sketch, but in the future I\u0027d expect something more intertwined because the routines will use info about vertex inputs, fragment outputs, etc.",
+      "revId": "02cc9d0d988b5867df7abdc7497865b7e50a248a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
