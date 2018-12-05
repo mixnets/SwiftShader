@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "0acd8e58_fdb279a2",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-05T10:32:20Z",
+      "side": 1,
+      "message": "With capn\u0027s email this probably needs to be changed to store all the data needed to set up the context but not set up anything on the context itself.",
+      "revId": "02cc9d0d988b5867df7abdc7497865b7e50a248a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "dcf8bf03_9d602778",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 9
@@ -34,6 +51,23 @@
       "revId": "02cc9d0d988b5867df7abdc7497865b7e50a248a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2bbaa62b_c9dd00c3",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-05T10:32:20Z",
+      "side": 1,
+      "message": "Based on capn\u0027s recent email about dynamic recompilation because of textures and samplers, I suggest making this a shared_ptr\u003cvector\u003cuint32_t\u003e\u003e and just copy the shared_ptr in the pipeline so we know it isn\u0027t destroyed until the pipeline is.",
+      "revId": "02cc9d0d988b5867df7abdc7497865b7e50a248a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
