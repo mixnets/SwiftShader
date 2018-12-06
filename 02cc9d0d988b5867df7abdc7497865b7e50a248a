@@ -19,6 +19,40 @@
     },
     {
       "key": {
+        "uuid": "e2ff28ac_2a5988a7",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-06T00:26:38Z",
+      "side": 1,
+      "message": "Stages need not appear in pipeline order in this array, but this isn\u0027t too bad to unpick.",
+      "revId": "02cc9d0d988b5867df7abdc7497865b7e50a248a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0a78a528_8dc9478e",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-06T00:26:38Z",
+      "side": 1,
+      "message": "This VF wiring is all kinds of weird, but will unpick later...",
+      "revId": "02cc9d0d988b5867df7abdc7497865b7e50a248a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "dcf8bf03_9d602778",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 9
