@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "137cb57c_355eb88f",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-06T14:52:16Z",
+      "side": 1,
+      "message": "Yes, I know this, but this is the order in which they appear in the triangle example. This is REALLY the minimal amount of work required to pass the triangle example.",
+      "parentUuid": "e2ff28ac_2a5988a7",
+      "revId": "02cc9d0d988b5867df7abdc7497865b7e50a248a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0a78a528_8dc9478e",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 9
@@ -50,6 +68,24 @@
       "revId": "02cc9d0d988b5867df7abdc7497865b7e50a248a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ce462bd0_e10a64da",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-06T14:52:16Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "0a78a528_8dc9478e",
+      "revId": "02cc9d0d988b5867df7abdc7497865b7e50a248a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
