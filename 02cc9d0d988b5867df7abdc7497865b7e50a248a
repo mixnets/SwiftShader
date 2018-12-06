@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a6942e26_9f148754",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-06T14:56:24Z",
+      "side": 1,
+      "message": "The context is used to store the data. It\u0027s a struct containing a state.",
+      "parentUuid": "0acd8e58_fdb279a2",
+      "revId": "02cc9d0d988b5867df7abdc7497865b7e50a248a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e2ff28ac_2a5988a7",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 9
@@ -138,6 +156,24 @@
       "revId": "02cc9d0d988b5867df7abdc7497865b7e50a248a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4c3e521_4322cab5",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-06T14:56:24Z",
+      "side": 1,
+      "message": "Agreed, but let\u0027s make this a part of the cl which adds compilation, so that the goal is clear.",
+      "parentUuid": "2bbaa62b_c9dd00c3",
+      "revId": "02cc9d0d988b5867df7abdc7497865b7e50a248a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
