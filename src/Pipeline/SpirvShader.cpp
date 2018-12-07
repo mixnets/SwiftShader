@@ -25,6 +25,7 @@ namespace sw
         // - Input / Output interface blocks, builtin or otherwise, have been split.
         // - The only input/output OpVariables present are those used by the entrypoint
 
+        // Phase 1: objects themselves.
         for (auto insn : *this) {
             switch (insn.opcode()) {
                 case spv::OpExecutionMode:
@@ -61,7 +62,33 @@ namespace sw
                     auto & object = defs[resultId];
                     object.kind = Object::Kind::Variable;
                     object.definition = insn;
+                    object.storageClass = storageClass;
                 } break;
+            }
+        }
+
+        // Phase 2: decorations, which appear BEFORE objects in the insn stream
+        // We're mostly interested in building the builtin interfaces here.
+        for (auto insn : *this) {
+            switch(insn.opcode()) {
+                case spv::OpDecorate: {
+                    auto targetId = insn.word(1);
+                    auto decoration = static_cast<spv::Decoration>(insn.word(2));
+
+                    switch (decoration) {
+                        case spv::DecorationLocation:
+                            defs[targetId].location = static_cast<int32_t>(insn.word(3));
+                            break;
+                        case spv::DecorationBuiltIn: {
+                            auto & object = defs[targetId];
+                            auto builtIn = static_cast<spv::BuiltIn>(insn.word(3));
+                            if (object.storageClass == spv::StorageClassInput)
+                                inputBuiltins[builtIn] = targetId;
+                            else if (object.storageClass == spv::StorageClassOutput)
+                                outputBuiltins[builtIn] = targetId;
+                        } break;
+                    }
+                }
             }
         }
     }

@@ -60,12 +60,15 @@ namespace sw
         class Object {
         public:
             InsnIterator definition;
+            int32_t location = -1;
+            spv::StorageClass storageClass;
 
             enum class Kind {
+                Unknown,        /* for paranoia -- if we get left with an object in this state, the module was broken */
                 Type,
                 Variable,
                 Value,
-            } kind;
+            } kind = Kind::Unknown;
         };
 
         int getSerialID() const { return serialID; }
@@ -90,6 +93,8 @@ namespace sw
         static volatile int serialCounter;
         Modes modes;
         std::unordered_map<uint32_t, Object> defs;
+        std::unordered_map<spv::BuiltIn, uint32_t> inputBuiltins;
+        std::unordered_map<spv::BuiltIn, uint32_t> outputBuiltins;
 
         void ProcessExecutionMode(InsnIterator it);
     };
