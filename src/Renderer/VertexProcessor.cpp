@@ -904,24 +904,6 @@ namespace sw
 
 	const VertexProcessor::State VertexProcessor::update(DrawType drawType)
 	{
-		if(isFixedFunction())
-		{
-			updateTransform();
-
-			if(updateLighting)
-			{
-				for(int i = 0; i < 8; i++)
-				{
-					if(context->vertexLightActive(i))
-					{
-						// Light position in camera coordinates
-						setLightViewPosition(i, B * V * context->getLightPosition(i));
-					}
-				}
-
-				updateLighting = false;
-			}
-		}
 
 		State state;
 
@@ -988,26 +970,7 @@ namespace sw
 			state.input[i].attribType = context->vertexShader ? context->vertexShader->getAttribType(i) : VertexShader::ATTRIBTYPE_FLOAT;
 		}
 
-		if(!context->vertexShader)
-		{
-			for(int i = 0; i < 8; i++)
-			{
-			//	state.textureState[i].vertexTextureActive = context->vertexTextureActive(i, 0);
-				state.textureState[i].texGenActive = context->texGenActive(i);
-				state.textureState[i].textureTransformCountActive = context->textureTransformCountActive(i);
-				state.textureState[i].texCoordIndexActive = context->texCoordIndexActive(i);
-			}
-		}
-		else
-		{
-			for(unsigned int i = 0; i < VERTEX_TEXTURE_IMAGE_UNITS; i++)
-			{
-				if(context->vertexShader->usesSampler(i))
-				{
-					state.sampler[i] = context->sampler[TEXTURE_IMAGE_UNITS + i].samplerState();
-				}
-			}
-		}
+		// TODO: something about descriptors in use and their formats
 
 		if(context->vertexShader)   // FIXME: Also when pre-transformed?
 		{
@@ -1018,70 +981,6 @@ namespace sw
 				state.output[i].zWrite = context->vertexShader->getOutput(i, 2).active();
 				state.output[i].wWrite = context->vertexShader->getOutput(i, 3).active();
 			}
-		}
-		else if(!context->preTransformed || context->pixelShaderModel() < 0x0300)
-		{
-			state.output[Pos].write = 0xF;
-
-			if(context->diffuseActive() && (context->lightingEnable || context->input[Color0]))
-			{
-				state.output[C0].write = 0xF;
-			}
-
-			if(context->specularActive())
-			{
-				state.output[C1].write = 0xF;
-			}
-
-			for(int stage = 0; stage < 8; stage++)
-			{
-				if(context->texCoordActive(stage, 0)) state.output[T0 + stage].write |= 0x01;
-				if(context->texCoordActive(stage, 1)) state.output[T0 + stage].write |= 0x02;
-				if(context->texCoordActive(stage, 2)) state.output[T0 + stage].write |= 0x04;
-				if(context->texCoordActive(stage, 3)) state.output[T0 + stage].write |= 0x08;
-			}
-
-			if(context->fogActive())
-			{
-				state.output[Fog].xWrite = true;
-			}
-
-			if(context->pointSizeActive())
-			{
-				state.output[Pts].yWrite = true;
-			}
-		}
-		else
-		{
-			state.output[Pos].write = 0xF;
-
-			for(int i = 0; i < 2; i++)
-			{
-				if(context->input[Color0 + i])
-				{
-					state.output[C0 + i].write = 0xF;
-				}
-			}
-
-			for(int i = 0; i < 8; i++)
-			{
-				if(context->input[TexCoord0 + i])
-				{
-					state.output[T0 + i].write = 0xF;
-				}
-			}
-
-			if(context->input[PointSize])
-			{
-				state.output[Pts].yWrite = true;
-			}
-		}
-
-		if(context->vertexShaderModel() < 0x0300)
-		{
-			state.output[C0].clamp = 0xF;
-			state.output[C1].clamp = 0xF;
-			state.output[Fog].xClamp = true;
 		}
 
 		state.hash = state.computeHash();
