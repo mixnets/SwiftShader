@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8a35129c_3ee49b5d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-07T20:58:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "81d4cdb0_661499d2",
+      "range": {
+        "startLine": 13,
+        "startChar": 5,
+        "endLine": 13,
+        "endChar": 6
+      },
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d10c96b8_ebfccf79",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2018-12-07T18:34:09Z",
       "side": 1,
       "message": "Just a general note, but this looks very object-oriented-y. Vulkan is a data-oriented API, meaning there are objects for holding data, and entities for performing operations on them and controlling the flow between them.\n\nAdding actions to the objects themselves like done here tends to decentralize things. In Vulkan, all commands are ultimately executed by the device.\n\nNot sure if this warrants any changes to this CL, but I just wanted to point this out as we want future versions to be efficient and not necessarily very object-oriented.",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 69
+      },
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0e0872c0_8e01c0ce",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-07T20:58:10Z",
+      "side": 1,
+      "message": "Understood. I get how this would be very relevant to a system with multiple physical devices.\nI\u0027m trying to think of a case where the SwiftShader implementation would suffer from being object-oriented and I honestly can\u0027t think of one right now.\nI\u0027d rather not handle memory pointers outside of objects to keep any code handling memory pointers small and readable, for now.",
+      "parentUuid": "d10c96b8_ebfccf79",
       "range": {
         "startLine": 40,
         "startChar": 0,
