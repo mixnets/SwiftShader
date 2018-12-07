@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkCommandBuffer.hpp"
+#include "VkImage.hpp"
 
 namespace vk
 {
@@ -123,6 +124,24 @@ struct Draw : public CommandBuffer::Command
 	uint32_t vertexCount;
 };
 
+struct ImageToImageCopy : public CommandBuffer::Command
+{
+	ImageToImageCopy(VkImage pSrcImage, VkImage pDstImage, const VkImageCopy& pRegion) :
+		srcImage(pSrcImage), dstImage(pDstImage), region(pRegion)
+	{
+	}
+
+	void play(CommandBuffer* commandBuffer)
+	{
+		Cast(srcImage)->copyTo(dstImage, region);
+	}
+
+private:
+	VkImage srcImage;
+	VkImage dstImage;
+	const VkImageCopy region;
+};
+
 struct ImageToBufferCopy : public CommandBuffer::Command
 {
 	ImageToBufferCopy(VkImage pSrcImage, VkBuffer pDstBuffer, const VkBufferImageCopy& pRegion) :
@@ -132,12 +151,30 @@ struct ImageToBufferCopy : public CommandBuffer::Command
 
 	void play(CommandBuffer* commandBuffer)
 	{
-		UNIMPLEMENTED();
+		Cast(srcImage)->copyTo(dstBuffer, region);
 	}
 
 private:
 	VkImage srcImage;
 	VkBuffer dstBuffer;
+	const VkBufferImageCopy region;
+};
+
+struct BufferToImageCopy : public CommandBuffer::Command
+{
+	BufferToImageCopy(VkBuffer pSrcBuffer, VkImage pDstImage, const VkBufferImageCopy& pRegion) :
+		srcBuffer(pSrcBuffer), dstImage(pDstImage), region(pRegion)
+	{
+	}
+
+	void play(CommandBuffer* commandBuffer)
+	{
+		Cast(dstImage)->copyFrom(srcBuffer, region);
+	}
+
+private:
+	VkBuffer srcBuffer;
+	VkImage dstImage;
 	const VkBufferImageCopy region;
 };
 
@@ -173,22 +210,30 @@ CommandBuffer::CommandBuffer(VkCommandBufferLevel pLevel) : level(pLevel)
 
 void CommandBuffer::destroy(const VkAllocationCallbacks* pAllocator)
 {
-	deleteCommands();
+	delete commands;
 }
 
-void CommandBuffer::deleteCommands()
+void CommandBuffer::resetState()
 {
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
-	delete commands;
+	commands->clear();
+
+	state = INITIAL;
 }
 
 VkResult CommandBuffer::begin(VkCommandBufferUsageFlags flags, const VkCommandBufferInheritanceInfo* pInheritanceInfo)
 {
 	ASSERT((state != RECORDING) && (state != PENDING));
 
-	if((flags != VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT) || pInheritanceInfo)
+	if(!((flags == 0) || (flags == VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT)) || pInheritanceInfo)
 	{
 		UNIMPLEMENTED();
+	}
+
+	if(state != INITIAL)
+	{
+		// Implicit reset
+		resetState();
 	}
 
 	state = RECORDING;
@@ -209,9 +254,7 @@ VkResult CommandBuffer::reset(VkCommandPoolResetFlags flags)
 {
 	ASSERT(state != PENDING);
 
-	deleteCommands();
-
-	state = INITIAL;
+	resetState();
 
 	return VK_SUCCESS;
 }
@@ -428,7 +471,16 @@ void CommandBuffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, uint32_t 
 void CommandBuffer::copyImage(VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout,
 	uint32_t regionCount, const VkImageCopy* pRegions)
 {
-	UNIMPLEMENTED();
+	ASSERT(state == RECORDING);
+	ASSERT(srcImageLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL ||
+	       srcImageLayout == VK_IMAGE_LAYOUT_GENERAL);
+	ASSERT(dstImageLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL ||
+	       dstImageLayout == VK_IMAGE_LAYOUT_GENERAL);
+
+	for(uint32_t i = 0; i < regionCount; i++)
+	{
+		commands->push_back(std::make_unique<ImageToImageCopy>(srcImage, dstImage, pRegions[i]));
+	}
 }
 
 void CommandBuffer::blitImage(VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout,
@@ -440,12 +492,18 @@ void CommandBuffer::blitImage(VkImage srcImage, VkImageLayout srcImageLayout, Vk
 void CommandBuffer::copyBufferToImage(VkBuffer srcBuffer, VkImage dstImage, VkImageLayout dstImageLayout,
 	uint32_t regionCount, const VkBufferImageCopy* pRegions)
 {
-	UNIMPLEMENTED();
+	ASSERT(state == RECORDING);
+
+	for(uint32_t i = 0; i < regionCount; i++)
+	{
+		commands->push_back(std::make_unique<BufferToImageCopy>(srcBuffer, dstImage, pRegions[i]));
+	}
 }
 
 void CommandBuffer::copyImageToBuffer(VkImage srcImage, VkImageLayout srcImageLayout, VkBuffer dstBuffer,
 	uint32_t regionCount, const VkBufferImageCopy* pRegions)
 {
+	ASSERT(state == RECORDING);
 	ASSERT(srcImageLayout == VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
 
 	for(uint32_t i = 0; i < regionCount; i++)
