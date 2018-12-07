@@ -13,9 +13,12 @@
 // limitations under the License.
 
 #include "VkCommandBuffer.hpp"
+#include "VkBuffer.hpp"
 #include "VkFramebuffer.hpp"
 #include "VkImage.hpp"
+#include "VkPipeline.hpp"
 #include "VkRenderpass.hpp"
+#include "Device/Renderer.hpp"
 
 #include <cstring>
 
@@ -123,7 +126,23 @@ struct Draw : public CommandBuffer::Command
 
 	void play(CommandBuffer::RenderingState& renderingState)
 	{
-		UNIMPLEMENTED();
+		GraphicsPipeline* pipeline = static_cast<GraphicsPipeline*>(
+			Cast(renderingState.pipelines[VK_PIPELINE_BIND_POINT_GRAPHICS]));
+
+		sw::Context context = pipeline->getContext();
+		for(uint32_t i = 0; i < MAX_VERTEX_INPUT_BINDINGS; i++)
+		{
+			const auto& vertexInput = renderingState.vertexInputBindings[i];
+			Buffer* buffer = Cast(renderingState.vertexInputBindings[i].buffer);
+			context.input[i].buffer = buffer ? buffer->map(vertexInput.offset) : nullptr;
+		}
+
+		sw::Renderer renderer(&context, sw::OpenGL, true);
+		renderer.setScissor(pipeline->getScissor());
+		renderer.setViewport(pipeline->getViewport());
+		renderer.setBlendConstant(pipeline->getBlendConstants());
+
+		renderer.draw(context.drawType, 0, pipeline->computePrimitiveCount(vertexCount));
 	}
 
 	uint32_t vertexCount;
