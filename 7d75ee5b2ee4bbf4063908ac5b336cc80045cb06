@@ -37,6 +37,41 @@
     },
     {
       "key": {
+        "uuid": "bf7c9245_358a5166",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-07T23:04:18Z",
+      "side": 1,
+      "message": "`pClearValueCount` that isn\u0027t a pointer is jarring.",
+      "parentUuid": "87dbbc25_81171a08",
+      "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b10f931a_13cfdd70",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-07T23:04:18Z",
+      "side": 1,
+      "message": "This is weird if intended to be used during CmdBeginRenderPass -- spurious elements in this array are fine; insufficient elements are not (if the i\u0027th attachment in the renderpass uses a clear load op, then this array must be at least length i.\n\nI would consider moving this out of Framebuffer entirely into a command? -- you don\u0027t have enough information here.",
+      "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "912bb500_32789198",
         "filename": "src/Vulkan/VkFramebuffer.cpp",
         "patchSetId": 1
@@ -132,6 +167,23 @@
     },
     {
       "key": {
+        "uuid": "fcfe41b7_fcab1a9f",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-07T23:04:18Z",
+      "side": 1,
+      "message": "This smells off. You want to clear particular subresources (ranges of levels or layers). For attachments this is driven by the imageview. You don\u0027t have enough information here.\n\nPossible: pass a VkSubresourceRange here ?",
+      "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5c7cbb6f_27b4e44a",
         "filename": "src/Vulkan/VkImageView.cpp",
         "patchSetId": 1
@@ -197,6 +249,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "95579bf7_0e60b4c2",
+      "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3b96a14f_0f6df254",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-07T23:04:18Z",
+      "side": 1,
+      "message": "Relevant VU in VkFramebufferCreateInfo:\n\n* Each element of pAttachments must have been created with the identity swizzle",
+      "parentUuid": "0b936096_75fc5dd1",
       "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
