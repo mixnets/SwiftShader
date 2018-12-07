@@ -20,6 +20,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <cstdint>
 #include <spirv/unified1/spirv.hpp>
 
@@ -37,12 +38,10 @@ namespace sw
         class InsnIterator
         {
             InsnStore::const_iterator iter;
-            InsnStore::const_iterator zero;     /* for determining offset */
 
         public:
             spv::Op opcode() const { return static_cast<spv::Op>(*iter & spv::OpCodeMask); }
             uint32_t wordCount() const { return *iter >> spv::WordCountShift; }
-            uint32_t offset() const { return static_cast<uint32_t>(iter - zero); }
             uint32_t word(uint32_t n) const { ASSERT(n < wordCount()); return iter[n]; }
 
             bool operator != (InsnIterator const & other) const { return iter == other.iter; }
@@ -50,20 +49,49 @@ namespace sw
             InsnIterator& operator++ () { iter += wordCount(); return *this; }
             InsnIterator const operator++ (int) { InsnIterator ret{*this}; iter += wordCount(); return ret; }
             InsnIterator(InsnIterator const & other) = default;
-            InsnIterator(InsnStore::const_iterator iter, InsnStore::const_iterator zero) : iter{iter}, zero{zero} {}
+            InsnIterator() = default;
+            explicit InsnIterator(InsnStore::const_iterator iter) : iter{iter} {}
         };
 
         /* range-based-for interface */
-        InsnIterator begin() const { return InsnIterator{insns.cbegin(), insns.cbegin()}; }
-        InsnIterator end() const { return InsnIterator{insns.cend(), insns.cbegin()}; }
+        InsnIterator begin() const { return InsnIterator{insns.cbegin()}; }
+        InsnIterator end() const { return InsnIterator{insns.cend()}; }
+
+        class Object {
+        public:
+            InsnIterator definition;
+
+            enum class Kind {
+                Type,
+                Variable,
+                Value,
+            } kind;
+        };
 
         int getSerialID() const { return serialID; }
 
         explicit SpirvShader(InsnStore const & insns);
 
+        struct Modes {
+            bool EarlyFragmentTests : 1;
+            bool DepthReplacing : 1;
+            bool DepthGreater : 1;
+            bool DepthLess : 1;
+            bool DepthUnchanged : 1;
+
+            // Compute workgroup dimensions
+            int LocalSizeX, LocalSizeY, LocalSizeZ;
+        };
+
+        Modes const & getModes() const { return modes; }
+
     private:
         const int serialID;
         static volatile int serialCounter;
+        Modes modes;
+        std::unordered_map<uint32_t, Object> defs;
+
+        void ProcessExecutionMode(InsnIterator it);
     };
 }
 

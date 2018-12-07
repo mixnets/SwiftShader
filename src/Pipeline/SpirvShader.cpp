@@ -18,7 +18,79 @@
 
 namespace sw
 {
-    SpirvShader::SpirvShader(InsnStore const & insns) : insns{insns}, serialID{serialCounter++}
+    SpirvShader::SpirvShader(InsnStore const & insns) : insns{insns}, serialID{serialCounter++}, modes{}
     {
+        // Simplifying assumptions (to be satisfied by earlier transformations)
+        // - There is exactly one extrypoint in the module, and it's the one we want
+        // - Input / Output interface blocks, builtin or otherwise, have been split.
+        // - The only input/output OpVariables present are those used by the entrypoint
+
+        for (auto insn : *this) {
+            switch (insn.opcode()) {
+                case spv::OpExecutionMode:
+                    ProcessExecutionMode(insn);
+                    break;
+
+                case spv::OpTypeVoid:
+                case spv::OpTypeBool:
+                case spv::OpTypeInt:
+                case spv::OpTypeFloat:
+                case spv::OpTypeVector:
+                case spv::OpTypeMatrix:
+                case spv::OpTypeImage:
+                case spv::OpTypeSampler:
+                case spv::OpTypeSampledImage:
+                case spv::OpTypeArray:
+                case spv::OpTypeRuntimeArray:
+                case spv::OpTypeStruct:
+                case spv::OpTypePointer:
+                case spv::OpTypeFunction: {
+                    auto resultId = insn.word(1);
+                    auto & object = defs[resultId];
+                    object.kind = Object::Kind::Type;
+                    object.definition = insn;
+                } break;
+
+                case spv::OpVariable: {
+                    auto typeId = insn.word(1);
+                    auto resultId = insn.word(2);
+                    auto storageClass = static_cast<spv::StorageClass>(insn.word(3));
+                    if (insn.wordCount() > 4)
+                        UNIMPLEMENTED("Variable initializers not yet supported");
+
+                    auto & object = defs[resultId];
+                    object.kind = Object::Kind::Variable;
+                    object.definition = insn;
+                } break;
+            }
+        }
+    }
+
+    void SpirvShader::ProcessExecutionMode(InsnIterator insn) {
+        auto mode = static_cast<spv::ExecutionMode>(insn.word(2));
+        switch (mode) {
+            case spv::ExecutionModeEarlyFragmentTests:
+                modes.EarlyFragmentTests = true;
+                break;
+            case spv::ExecutionModeDepthReplacing:
+                modes.DepthReplacing = true;
+                break;
+            case spv::ExecutionModeDepthGreater:
+                modes.DepthGreater = true;
+                break;
+            case spv::ExecutionModeDepthLess:
+                modes.DepthLess = true;
+                break;
+            case spv::ExecutionModeDepthUnchanged:
+                modes.DepthUnchanged = true;
+                break;
+            case spv::ExecutionModeLocalSize:
+                modes.LocalSizeX = insn.word(3);
+                modes.LocalSizeZ = insn.word(5);
+                modes.LocalSizeY = insn.word(4);
+                break;
+            default:
+                UNIMPLEMENTED("No other execution modes are permitted");
+        }
     }
 }
