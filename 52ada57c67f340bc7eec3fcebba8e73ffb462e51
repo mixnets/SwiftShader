@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6a20db15_0847307b",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-07T23:08:59Z",
+      "side": 1,
+      "message": "Why not unique_ptr\u003csw::Surface\u003e ? This class doesn\u0027t do anything else interesting?",
+      "revId": "52ada57c67f340bc7eec3fcebba8e73ffb462e51",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
