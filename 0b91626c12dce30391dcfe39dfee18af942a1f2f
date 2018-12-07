@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4dd3cb92_e6544c0a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-12-07T15:52:06Z",
+      "side": 1,
+      "message": "Add tracker bug.",
+      "revId": "0b91626c12dce30391dcfe39dfee18af942a1f2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30cfa6c5_6134c459",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-12-07T15:52:06Z",
+      "side": 1,
+      "message": "Needs a definition at namespace scope in this source file. I suggest initializing it to 1 so that 0 can be identified as an invalid shader.",
+      "range": {
+        "startLine": 21,
+        "startChar": 79,
+        "endLine": 21,
+        "endChar": 92
+      },
+      "revId": "0b91626c12dce30391dcfe39dfee18af942a1f2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aee0da7b_f1fefc70",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-12-07T15:52:06Z",
+      "side": 1,
+      "message": "style nit: We use tabs instead of spaces, for indentation.",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 4
+      },
+      "revId": "0b91626c12dce30391dcfe39dfee18af942a1f2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a6f77af2_187f2630",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-12-07T15:52:06Z",
+      "side": 1,
+      "message": "nit: I think \"inst\" is a more common abbreviation of instruction. See e.g. llvm-7.0/llvm/lib/Transforms/InstCombine and subzero/src/IceInst.cpp",
+      "range": {
+        "startLine": 33,
+        "startChar": 14,
+        "endLine": 33,
+        "endChar": 18
+      },
+      "revId": "0b91626c12dce30391dcfe39dfee18af942a1f2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53198f0f_c74c9f7b",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-12-07T15:52:06Z",
+      "side": 1,
+      "message": "nit: This seems a bit overly qualitative and potentially derogatory. If all we need it for is range-based-for, then this code is **perfect**.\n\nI suggest simply replacing it with a factual \"supports range-badsed-for\".",
+      "range": {
+        "startLine": 36,
+        "startChar": 52,
+        "endLine": 36,
+        "endChar": 70
+      },
+      "revId": "0b91626c12dce30391dcfe39dfee18af942a1f2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
