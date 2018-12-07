@@ -24,18 +24,28 @@ namespace vk
 class Pipeline
 {
 public:
-	virtual void destroy(const VkAllocationCallbacks* pAllocator) = 0;
+	operator VkPipeline()
+	{
+		return reinterpret_cast<VkPipeline>(this);
+	}
+
+	void destroy(const VkAllocationCallbacks* pAllocator)
+	{
+		destroyPipeline(pAllocator);
+	}
+
+	virtual void destroyPipeline(const VkAllocationCallbacks* pAllocator) = 0;
 #ifndef NDEBUG
 	virtual VkPipelineBindPoint bindPoint() const = 0;
 #endif
 };
 
-class GraphicsPipeline : public Pipeline, public Object<GraphicsPipeline, VkPipeline>
+class GraphicsPipeline : public Pipeline, public ObjectBase<GraphicsPipeline, VkPipeline>
 {
 public:
 	GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem);
 	~GraphicsPipeline() = delete;
-	void destroy(const VkAllocationCallbacks* pAllocator) override;
+	void destroyPipeline(const VkAllocationCallbacks* pAllocator) override;
 
 #ifndef NDEBUG
 	VkPipelineBindPoint bindPoint() const override
@@ -48,6 +58,7 @@ public:
 
 	void compileShaders(const VkAllocationCallbacks* pAllocator, const VkGraphicsPipelineCreateInfo* pCreateInfo);
 
+	uint32_t computePrimitiveCount(uint32_t vertexCount) const;
 	const sw::Context& getContext() const;
 	const sw::Rect& getScissor() const;
 	const VkViewport& getViewport() const;
@@ -62,12 +73,12 @@ private:
 	sw::Color<float> blendConstants;
 };
 
-class ComputePipeline : public Pipeline, public Object<ComputePipeline, VkPipeline>
+class ComputePipeline : public Pipeline, public ObjectBase<ComputePipeline, VkPipeline>
 {
 public:
 	ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem);
 	~ComputePipeline() = delete;
-	void destroy(const VkAllocationCallbacks* pAllocator) override;
+	void destroyPipeline(const VkAllocationCallbacks* pAllocator) override;
 
 #ifndef NDEBUG
 	VkPipelineBindPoint bindPoint() const override
