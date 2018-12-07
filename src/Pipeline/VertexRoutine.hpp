@@ -52,6 +52,7 @@ namespace sw
 		RegisterArray<MAX_VERTEX_OUTPUTS> o;   // Output registers
 
 		const VertexProcessor::State &state;
+		SpirvShader const * const spirvShader;
 
 	private:
 		virtual void program(UInt &index) = 0;
