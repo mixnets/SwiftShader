@@ -86,15 +86,17 @@ namespace sw
 
         Modes const & getModes() const { return modes; }
 
-    private:
+		std::unordered_map<uint32_t, Object> defs;
+		std::unordered_map<spv::BuiltIn, uint32_t> inputBuiltins;
+		std::unordered_map<spv::BuiltIn, uint32_t> outputBuiltins;
+
+	private:
         const int serialID;
         static volatile int serialCounter;
-        Modes modes;
-        std::unordered_map<uint32_t, Object> defs;
-        std::unordered_map<spv::BuiltIn, uint32_t> inputBuiltins;
-        std::unordered_map<spv::BuiltIn, uint32_t> outputBuiltins;
 
-        void ProcessExecutionMode(InsnIterator it);
+        Modes modes;
+		void ProcessExecutionMode(InsnIterator it);
+
     };
 }
 

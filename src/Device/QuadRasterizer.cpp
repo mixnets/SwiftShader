@@ -28,7 +28,7 @@ namespace sw
 
 	extern int clusterCount;
 
-	QuadRasterizer::QuadRasterizer(const PixelProcessor::State &state, const PixelShader *pixelShader) : state(state), shader(pixelShader)
+	QuadRasterizer::QuadRasterizer(const PixelProcessor::State &state, const PixelShader *pixelShader, SpirvShader const *spirvShader) : state(state), shader(pixelShader), spirvShader{spirvShader}
 	{
 	}
 

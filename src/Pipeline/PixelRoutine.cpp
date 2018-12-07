@@ -29,8 +29,8 @@ namespace sw
 	extern bool exactColorRounding;
 	extern bool forceClearRegisters;
 
-	PixelRoutine::PixelRoutine(const PixelProcessor::State &state, const PixelShader *shader)
-		: QuadRasterizer(state, shader), v(shader && shader->indirectAddressableInput)
+	PixelRoutine::PixelRoutine(const PixelProcessor::State &state, const PixelShader *shader, SpirvShader const *spirvShader)
+		: QuadRasterizer(state, shader, spirvShader), v(shader && shader->indirectAddressableInput)
 	{
 		if(!shader || shader->getShaderModel() < 0x0200 || forceClearRegisters)
 		{
@@ -142,6 +142,7 @@ namespace sw
 				}
 			}
 
+			// TODO: rethink what we want to do here for pull-mode interpolation
 			for(int interpolant = 0; interpolant < MAX_FRAGMENT_INPUTS; interpolant++)
 			{
 				for(int component = 0; component < 4; component++)

@@ -310,12 +310,6 @@ namespace sw
 		void setClipFlags(int flags);
 		void setClipPlane(unsigned int index, const float plane[4]);
 
-		// Partial transform
-		void setModelMatrix(const Matrix &M, int i = 0);
-		void setViewMatrix(const Matrix &V);
-		void setBaseMatrix(const Matrix &B);
-		void setProjectionMatrix(const Matrix &P);
-
 		void addQuery(Query *query);
 		void removeQuery(Query *query);
 
@@ -355,9 +349,6 @@ namespace sw
 		void updateConfiguration(bool initialUpdate = false);
 		void initializeThreads();
 		void terminateThreads();
-
-		void loadConstants(const VertexShader *vertexShader);
-		void loadConstants(const PixelShader *pixelShader);
 
 		Context *context;
 		Clipper *clipper;
@@ -458,15 +449,6 @@ namespace sw
 		Resource *texture[TOTAL_IMAGE_UNITS];
 		Resource* pUniformBuffers[MAX_UNIFORM_BUFFER_BINDINGS];
 		Resource* vUniformBuffers[MAX_UNIFORM_BUFFER_BINDINGS];
-		Resource* transformFeedbackBuffers[MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS];
-
-		unsigned int vsDirtyConstF;
-		unsigned int vsDirtyConstI;
-		unsigned int vsDirtyConstB;
-
-		unsigned int psDirtyConstF;
-		unsigned int psDirtyConstI;
-		unsigned int psDirtyConstB;
 
 		std::list<Query*> *queries;
 

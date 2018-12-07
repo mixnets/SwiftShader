@@ -709,20 +709,9 @@ namespace sw
 
 		state.frontFaceCCW = context->frontFacingCCW;
 
-
-		for(unsigned int i = 0; i < 16; i++)
-		{
-			if(context->pixelShader)
-			{
-				if(context->pixelShader->usesSampler(i))
-				{
-					state.sampler[i] = context->sampler[i].samplerState();
-				}
-			}
-		}
-
 		const bool point = context->isDrawPoint();
 
+		/* TODO: bring back interpolants by some mechanism */
 		for(int interpolant = 0; interpolant < MAX_FRAGMENT_INPUTS; interpolant++)
 		{
 			for(int component = 0; component < 4; component++)
@@ -771,8 +760,8 @@ namespace sw
 
 		if(!routine)
 		{
-			const bool integerPipeline = (context->pixelShaderModel() <= 0x0104);
-			QuadRasterizer *generator = new PixelProgram(state, context->pixelShader);
+		    // TODO: SpirvShader param here MUST be real
+			QuadRasterizer *generator = new PixelProgram(state, context->pixelShader, nullptr);
 			generator->generate();
 			routine = (*generator)(L"PixelRoutine_%0.8X", state.shaderID);
 			delete generator;
