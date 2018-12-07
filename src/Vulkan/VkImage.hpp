@@ -17,6 +17,11 @@
 
 #include "VkObject.hpp"
 
+namespace sw
+{
+	class Surface;
+};
+
 namespace vk
 {
 
@@ -29,7 +34,33 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkImageCreateInfo* pCreateInfo);
 
+	VkDeviceSize getSize() const;
+	const VkMemoryRequirements getMemoryRequirements() const;
+	void bind(VkDeviceMemory pDeviceMemory, VkDeviceSize pMemoryOffset);
+	void copyTo(VkImage dstImage, const VkImageCopy& pRegion);
+	void copyTo(VkBuffer dstBuffer, const VkBufferImageCopy& pRegion);
+	void copyFrom(VkBuffer srcBuffer, const VkBufferImageCopy& pRegion);
+
 private:
+	VkDeviceSize computeOffsetB(VkOffset3D offset) const;
+	int pitchB() const;
+	int sliceB() const;
+	int bytes() const;
+	int getBorder() const;
+
+	VkDeviceMemory           deviceMemory = nullptr;
+	VkDeviceSize             memoryOffset = 0;
+	VkImageCreateFlags       flags = 0;
+	VkImageType              imageType = VK_IMAGE_TYPE_2D;
+	VkFormat                 format = VK_FORMAT_UNDEFINED;
+	VkExtent3D               extent = {0, 0, 0};
+	uint32_t                 mipLevels = 0;
+	uint32_t                 arrayLayers = 0;
+	VkSampleCountFlagBits    samples = VK_SAMPLE_COUNT_1_BIT;
+	VkImageTiling            tiling = VK_IMAGE_TILING_OPTIMAL;
+	VkImageUsageFlags        usage = 0;
+	VkSharingMode            sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	VkImageLayout            initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 };
 
 static inline Image* Cast(VkImage object)
