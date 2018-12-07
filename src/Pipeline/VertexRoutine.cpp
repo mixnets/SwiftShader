@@ -29,7 +29,8 @@ namespace sw
 	VertexRoutine::VertexRoutine(const VertexProcessor::State &state, const VertexShader *shader)
 		: v(shader && shader->indirectAddressableInput),
 		  o(shader && shader->indirectAddressableOutput),
-		  state(state)
+		  state(state),
+		  spirvShader(spirvShader)
 	{
 	}
 
