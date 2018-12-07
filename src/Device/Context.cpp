@@ -16,10 +16,9 @@
 
 #include "Primitive.hpp"
 #include "Surface.hpp"
-#include "Pipeline/PixelShader.hpp"
-#include "Pipeline/VertexShader.hpp"
 #include "System/Memory.hpp"
 #include "System/Debug.hpp"
+#include "Pipeline/SpirvShader.hpp"
 
 #include <string.h>
 
@@ -27,8 +26,6 @@ namespace sw
 {
 	extern bool perspectiveCorrection;
 
-	bool halfIntegerCoordinates = false;     // Pixel centers are not at integer coordinates
-	bool symmetricNormalizedDepth = false;   // [-1, 1] instead of [0, 1]
 	bool booleanFaceRegister = false;
 	bool fullPixelPositionRegister = false;
 	bool leadingVertexFirst = false;         // Flat shading uses first vertex, else last
@@ -725,16 +722,6 @@ namespace sw
 		return true;
 	}
 
-	unsigned short Context::pixelShaderModel() const
-	{
-		return pixelShader ? pixelShader->getShaderModel() : 0x0000;
-	}
-
-	unsigned short Context::vertexShaderModel() const
-	{
-		return vertexShader ? vertexShader->getShaderModel() : 0x0000;
-	}
-
 	int Context::getMultiSampleCount() const
 	{
 		return renderTarget[0] ? renderTarget[0]->getMultiSampleCount() : 1;
@@ -775,6 +762,6 @@ namespace sw
 
 	bool Context::colorUsed()
 	{
-		return colorWriteActive() || alphaTestActive() || (pixelShader && pixelShader->containsKill());
+		return colorWriteActive() || alphaTestActive() || (pixelShader && pixelShader->getModes().ContainsKill);
 	}
 }
