@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3aa241a9_bab2c593",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-07T23:06:51Z",
+      "side": 1,
+      "message": "s/VertexInputBindings/VertexInputBinding/ ? This type represents exactly one of these.",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "27f90000_a5c4cb85",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-07T23:06:51Z",
+      "side": 1,
+      "message": "Still something a little weird here having \"state for a particular execution of a CB\" stored in the CB itself?",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
