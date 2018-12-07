@@ -49,6 +49,23 @@
     },
     {
       "key": {
+        "uuid": "66582b27_2dc0c3e0",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-07T22:48:49Z",
+      "side": 1,
+      "message": "These guards don\u0027t seem quite adequate -- this code will misbehave when copying just the DEPTH aspect from a DEPTH+STENCIL image, as far as I can see?",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "d10c96b8_ebfccf79",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 3
