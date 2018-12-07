@@ -18,6 +18,7 @@
 #include "Rasterizer.hpp"
 #include "Pipeline/ShaderCore.hpp"
 #include "Pipeline/PixelShader.hpp"
+#include "Pipeline/SpirvShader.hpp"
 #include "System/Types.hpp"
 
 namespace sw
@@ -25,7 +26,7 @@ namespace sw
 	class QuadRasterizer : public Rasterizer
 	{
 	public:
-		QuadRasterizer(const PixelProcessor::State &state, const PixelShader *shader);
+		QuadRasterizer(const PixelProcessor::State &state, const PixelShader *shader, SpirvShader const *spirvShader);
 		virtual ~QuadRasterizer();
 
 		void generate();
@@ -52,6 +53,7 @@ namespace sw
 
 		const PixelProcessor::State &state;
 		const PixelShader *const shader;
+		const SpirvShader *const spirvShader;
 
 	private:
 		void rasterize(Int &yMin, Int &yMax);

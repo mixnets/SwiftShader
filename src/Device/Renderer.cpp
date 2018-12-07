@@ -296,14 +296,11 @@ namespace sw
 		if(queries.size() != 0)
 		{
 			draw->queries = new std::list<Query*>();
-			bool includePrimitivesWrittenQueries = vertexState.transformFeedbackQueryEnabled && vertexState.transformFeedbackEnabled;
 			for(auto &query : queries)
 			{
-				if(includePrimitivesWrittenQueries || (query->type != Query::TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN))
-				{
-					++query->reference; // Atomic
-					draw->queries->push_back(query);
-				}
+				// TODO: remove TF query types completely.
+				++query->reference; // Atomic
+				draw->queries->push_back(query);
 			}
 		}
 
@@ -423,7 +420,6 @@ namespace sw
 		}
 
 		VertexProcessor::lockUniformBuffers(data->vs.u, draw->vUniformBuffers);
-		VertexProcessor::lockTransformFeedbackBuffers(data->vs.t, data->vs.reg, data->vs.row, data->vs.col, data->vs.str, draw->transformFeedbackBuffers);
 
 		if(pixelState.stencilActive)
 		{

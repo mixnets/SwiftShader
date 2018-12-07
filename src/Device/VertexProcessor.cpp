@@ -63,16 +63,6 @@ namespace sw
 		return memcmp(static_cast<const States*>(this), static_cast<const States*>(&state), sizeof(States)) == 0;
 	}
 
-	VertexProcessor::TransformFeedbackInfo::TransformFeedbackInfo()
-	{
-		buffer = nullptr;
-		offset = 0;
-		reg = 0;
-		row = 0;
-		col = 0;
-		stride = 0;
-	}
-
 	VertexProcessor::UniformBufferInfo::UniformBufferInfo()
 	{
 		buffer = nullptr;
@@ -149,29 +139,6 @@ namespace sw
 		{
 			u[i] = uniformBufferInfo[i].buffer ? static_cast<byte*>(uniformBufferInfo[i].buffer->lock(PUBLIC, PRIVATE)) + uniformBufferInfo[i].offset : nullptr;
 			uniformBuffers[i] = uniformBufferInfo[i].buffer;
-		}
-	}
-
-	void VertexProcessor::setTransformFeedbackBuffer(int index, sw::Resource* buffer, int offset, unsigned int reg, unsigned int row, unsigned int col, unsigned int stride)
-	{
-		transformFeedbackInfo[index].buffer = buffer;
-		transformFeedbackInfo[index].offset = offset;
-		transformFeedbackInfo[index].reg = reg;
-		transformFeedbackInfo[index].row = row;
-		transformFeedbackInfo[index].col = col;
-		transformFeedbackInfo[index].stride = stride;
-	}
-
-	void VertexProcessor::lockTransformFeedbackBuffers(byte** t, unsigned int* v, unsigned int* r, unsigned int* c, unsigned int* s, sw::Resource* transformFeedbackBuffers[])
-	{
-		for(int i = 0; i < MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS; ++i)
-		{
-			t[i] = transformFeedbackInfo[i].buffer ? static_cast<byte*>(transformFeedbackInfo[i].buffer->lock(PUBLIC, PRIVATE)) + transformFeedbackInfo[i].offset : nullptr;
-			transformFeedbackBuffers[i] = transformFeedbackInfo[i].buffer;
-			v[i] = transformFeedbackInfo[i].reg;
-			r[i] = transformFeedbackInfo[i].row;
-			c[i] = transformFeedbackInfo[i].col;
-			s[i] = transformFeedbackInfo[i].stride;
 		}
 	}
 
@@ -370,16 +337,6 @@ namespace sw
 		this->pointSizeMax = pointSizeMax;
 	}
 
-	void VertexProcessor::setTransformFeedbackQueryEnabled(bool enable)
-	{
-		context->transformFeedbackQueryEnabled = enable;
-	}
-
-	void VertexProcessor::enableTransformFeedback(uint64_t enable)
-	{
-		context->transformFeedbackEnabled = enable;
-	}
-
 	void VertexProcessor::setRoutineCacheSize(int cacheSize)
 	{
 		delete routineCache;
@@ -392,15 +349,11 @@ namespace sw
 
 		state.shaderID = context->vertexShader->getSerialID();
 
-		state.fixedFunction = !context->vertexShader && context->pixelShaderModel() < 0x0300;
 		state.textureSampling = context->vertexShader ? context->vertexShader->containsTextureSampling() : false;
 		state.positionRegister = context->vertexShader ? context->vertexShader->getPositionRegister() : Pos;
 		state.pointSizeRegister = context->vertexShader ? context->vertexShader->getPointSizeRegister() : Pts;
 
 		state.multiSampling = context->getMultiSampleCount() > 1;
-
-		state.transformFeedbackQueryEnabled = context->transformFeedbackQueryEnabled;
-		state.transformFeedbackEnabled = context->transformFeedbackEnabled;
 
 		// Note: Quads aren't handled for verticesPerPrimitive, but verticesPerPrimitive is used for transform feedback,
 		//       which is an OpenGL ES 3.0 feature, and OpenGL ES 3.0 doesn't support quads as a primitive type.
@@ -445,7 +398,8 @@ namespace sw
 
 		if(!routine)   // Create one
 		{
-			VertexRoutine *generator = new VertexProgram(state, context->vertexShader);
+		    // TODO: SpirvShader final parameter here needs to be real
+			VertexRoutine *generator = new VertexProgram(state, context->vertexShader, nullptr);
 			generator->generate();
 			routine = (*generator)(L"VertexRoutine_%0.8X", state.shaderID);
 			delete generator;
