@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a158213_49de6c04",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-07T22:50:59Z",
+      "side": 1,
+      "message": "Seems there\u0027s 2 ideas in this patch.",
+      "revId": "86a048696e3ffcea352e26f751b45a53292730bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
