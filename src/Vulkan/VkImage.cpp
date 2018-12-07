@@ -15,6 +15,7 @@
 #include "VkDeviceMemory.hpp"
 #include "VkBuffer.hpp"
 #include "VkImage.hpp"
+#include "Device/Blitter.hpp"
 #include "Device/Surface.hpp"
 #include <cstring>
 
@@ -145,7 +146,7 @@ void Image::copyTo(VkBuffer dstBuffer, const VkBufferImageCopy& pRegion)
 		UNIMPLEMENTED();
 	}
 
-	Cast(dstBuffer)->copyFrom(Cast(deviceMemory)->getOffsetPointer(0),
+	Cast(dstBuffer)->copyFrom(Cast(deviceMemory)->getOffsetPointer(memoryOffset),
 		sw::Surface::sliceB(pRegion.imageExtent.width, pRegion.imageExtent.height,
 			getBorder(), format, false) * pRegion.imageExtent.depth,
 		pRegion.bufferOffset);
@@ -171,7 +172,7 @@ void Image::copyFrom(VkBuffer srcBuffer, const VkBufferImageCopy& pRegion)
 		UNIMPLEMENTED();
 	}
 
-	Cast(srcBuffer)->copyTo(Cast(deviceMemory)->getOffsetPointer(0),
+	Cast(srcBuffer)->copyTo(Cast(deviceMemory)->getOffsetPointer(memoryOffset),
 		sw::Surface::sliceB(pRegion.imageExtent.width, pRegion.imageExtent.height,
 			getBorder(), format, false) * pRegion.imageExtent.depth,
 		pRegion.bufferOffset);
@@ -179,7 +180,7 @@ void Image::copyFrom(VkBuffer srcBuffer, const VkBufferImageCopy& pRegion)
 
 VkDeviceSize Image::computeOffsetB(VkOffset3D offset) const
 {
-	return offset.z * sliceB() + offset.y * pitchB() + offset.x * bytes();
+	return offset.z * sliceB() + offset.y * pitchB() + offset.x * bytes() + memoryOffset;
 }
 
 int Image::pitchB() const
@@ -214,7 +215,36 @@ VkDeviceSize Image::getSize() const
 
 void Image::clear(const VkClearValue& pClearValue, const VkRect2D& pRenderArea, unsigned int rgbaMask)
 {
-	UNIMPLEMENTED();
+	VkFormat clearFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
+	if(sw::Surface::isSignedNonNormalizedInteger(format))
+	{
+		clearFormat = VK_FORMAT_R32G32B32A32_SINT;
+	}
+	else if(sw::Surface::isUnsignedNonNormalizedInteger(format))
+	{
+		clearFormat = VK_FORMAT_R32G32B32A32_UINT;
+	}
+
+	const sw::Rect rect(pRenderArea.offset.x, pRenderArea.offset.y,
+	                    pRenderArea.offset.x + pRenderArea.extent.width,
+	                    pRenderArea.offset.y + pRenderArea.extent.height);
+	const sw::SliceRect dRect(rect);
+
+	ScopedSurface scopedSurface(this);
+	sw::Blitter blitter;
+	blitter.clear((void*)pClearValue.color.float32, clearFormat, scopedSurface.get(), dRect, rgbaMask);
+}
+
+Image::ScopedSurface::ScopedSurface(Image* image)
+{
+	surface = sw::Surface::create(
+		image->extent.width, image->extent.height, image->extent.depth, image->format,
+		Cast(image->deviceMemory)->getOffsetPointer(image->memoryOffset), image->pitchB(), image->sliceB());
+}
+
+Image::ScopedSurface::~ScopedSurface()
+{
+	delete surface;
 }
 
 } // namespace vk

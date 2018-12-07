@@ -53,6 +53,21 @@ private:
 	int bytes() const;
 	int getBorder() const;
 
+	class ScopedSurface
+	{
+	public:
+		ScopedSurface(Image* image);
+		~ScopedSurface();
+
+		sw::Surface* get() const
+		{
+			return surface;
+		}
+
+	private:
+		sw::Surface* surface;
+	};
+
 	VkDeviceMemory           deviceMemory = nullptr;
 	VkDeviceSize             memoryOffset = 0;
 	VkImageCreateFlags       flags = 0;
