@@ -109,7 +109,20 @@ public:
 	void drawIndirect(VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride);
 	void drawIndexedIndirect(VkBuffer buffer, VkDeviceSize offset, uint32_t drawCount, uint32_t stride);
 
-	void submit();
+	struct RenderingState
+	{
+		VkRenderPass renderpass = VK_NULL_HANDLE;
+		VkPipeline pipelines[VK_PIPELINE_BIND_POINT_RANGE_SIZE] = {};
+
+		struct VertexInputBinding
+		{
+			VkBuffer buffer;
+			VkDeviceSize offset;
+		};
+		VertexInputBinding vertexInputBindings[MAX_VERTEX_INPUT_BINDINGS] = {};
+	};
+
+	void submit(CommandBuffer::RenderingState& renderingState);
 
 	class Command;
 private:
@@ -118,14 +131,6 @@ private:
 	enum State { INITIAL, RECORDING, EXECUTABLE, PENDING, INVALID };
 	State state = INITIAL;
 	VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-	VkPipeline pipelines[VK_PIPELINE_BIND_POINT_RANGE_SIZE];
-
-	struct VertexInputBindings
-	{
-		VkBuffer buffer;
-		VkDeviceSize offset;
-	};
-	VertexInputBindings vertexInputBindings[MAX_VERTEX_INPUT_BINDINGS];
 
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
 	std::vector<std::unique_ptr<Command>>* commands;
