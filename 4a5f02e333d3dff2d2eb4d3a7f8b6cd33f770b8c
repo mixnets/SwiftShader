@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "81d4cdb0_661499d2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-12-07T18:34:09Z",
+      "side": 1,
+      "message": "/",
+      "range": {
+        "startLine": 13,
+        "startChar": 5,
+        "endLine": 13,
+        "endChar": 6
+      },
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d10c96b8_ebfccf79",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-12-07T18:34:09Z",
+      "side": 1,
+      "message": "Just a general note, but this looks very object-oriented-y. Vulkan is a data-oriented API, meaning there are objects for holding data, and entities for performing operations on them and controlling the flow between them.\n\nAdding actions to the objects themselves like done here tends to decentralize things. In Vulkan, all commands are ultimately executed by the device.\n\nNot sure if this warrants any changes to this CL, but I just wanted to point this out as we want future versions to be efficient and not necessarily very object-oriented.",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 69
+      },
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
