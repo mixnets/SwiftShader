@@ -16,6 +16,7 @@
 #define VK_SHADER_MODULE_HPP_
 
 #include "VkObject.hpp"
+#include <vector>
 
 namespace rr
 {
@@ -32,12 +33,13 @@ public:
 	~ShaderModule() = delete;
 	void destroy(const VkAllocationCallbacks* pAllocator);
 
-	rr::Routine* compile(const VkAllocationCallbacks* pAllocator);
-
 	static size_t ComputeRequiredAllocationSize(const VkShaderModuleCreateInfo* pCreateInfo);
+	// HACK
+	std::vector<uint32_t> GetCode() const { return std::vector<uint32_t>{ code, code + wordCount };}
 
 private:
 	uint32_t* code = nullptr;
+	uint32_t wordCount = 0;
 };
 
 static inline ShaderModule* Cast(VkShaderModule object)
