@@ -34,9 +34,12 @@ void Queue::submit(uint32_t submitCount, const VkSubmitInfo* pSubmits, VkFence f
 			vk::Cast(submitInfo.pWaitSemaphores[j])->wait(submitInfo.pWaitDstStageMask[j]);
 		}
 
-		for(uint32_t j = 0; j < submitInfo.commandBufferCount; j++)
 		{
-			vk::Cast(submitInfo.pCommandBuffers[j])->submit();
+			CommandBuffer::RenderingState drawState;
+			for(uint32_t j = 0; j < submitInfo.commandBufferCount; j++)
+			{
+				vk::Cast(submitInfo.pCommandBuffers[j])->submit(drawState);
+			}
 		}
 
 		for(uint32_t j = 0; j < submitInfo.signalSemaphoreCount; j++)
