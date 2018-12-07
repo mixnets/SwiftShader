@@ -13,7 +13,9 @@
 // limitations under the License.
 
 #include "VkCommandBuffer.hpp"
+#include "VkFramebuffer.hpp"
 #include "VkImage.hpp"
+#include "VkRenderpass.hpp"
 
 namespace vk
 {
@@ -22,7 +24,7 @@ class CommandBuffer::Command
 {
 public:
 	// FIXME (b/119421344): change the commandBuffer argument to a CommandBuffer state
-	virtual void play(CommandBuffer* commandBuffer) = 0;
+	virtual void play(CommandBuffer::RenderingState& commandBufferState) = 0;
 	virtual ~Command() {}
 };
 
@@ -45,9 +47,10 @@ public:
 	}
 
 protected:
-	void play(CommandBuffer* commandBuffer)
+	void play(CommandBuffer::RenderingState& commandBufferState)
 	{
-		UNIMPLEMENTED();
+		Cast(renderPass)->begin();
+		Cast(framebuffer)->clear(clearValueCount, clearValues, renderArea);
 	}
 
 private:
@@ -66,9 +69,9 @@ public:
 	}
 
 protected:
-	void play(CommandBuffer* commandBuffer)
+	void play(CommandBuffer::RenderingState& commandBufferState)
 	{
-		UNIMPLEMENTED();
+		Cast(commandBufferState.renderpass)->end();
 	}
 
 private:
@@ -83,9 +86,9 @@ public:
 	}
 
 protected:
-	void play(CommandBuffer* commandBuffer)
+	void play(CommandBuffer::RenderingState& commandBufferState)
 	{
-		UNIMPLEMENTED();
+		commandBufferState.pipelines[pipelineBindPoint] = pipeline;
 	}
 
 private:
@@ -100,9 +103,9 @@ struct VertexBufferBind : public CommandBuffer::Command
 	{
 	}
 
-	void play(CommandBuffer* commandBuffer)
+	void play(CommandBuffer::RenderingState& commandBufferState)
 	{
-		UNIMPLEMENTED();
+		commandBufferState.vertexInputBindings[binding] = { buffer, offset };
 	}
 
 	uint32_t binding;
@@ -116,7 +119,7 @@ struct Draw : public CommandBuffer::Command
 	{
 	}
 
-	void play(CommandBuffer* commandBuffer)
+	void play(CommandBuffer::RenderingState& commandBufferState)
 	{
 		UNIMPLEMENTED();
 	}
@@ -131,7 +134,7 @@ struct ImageToImageCopy : public CommandBuffer::Command
 	{
 	}
 
-	void play(CommandBuffer* commandBuffer)
+	void play(CommandBuffer::RenderingState& commandBufferState)
 	{
 		Cast(srcImage)->copyTo(dstImage, region);
 	}
@@ -149,7 +152,7 @@ struct ImageToBufferCopy : public CommandBuffer::Command
 	{
 	}
 
-	void play(CommandBuffer* commandBuffer)
+	void play(CommandBuffer::RenderingState& commandBufferState)
 	{
 		Cast(srcImage)->copyTo(dstBuffer, region);
 	}
@@ -167,7 +170,7 @@ struct BufferToImageCopy : public CommandBuffer::Command
 	{
 	}
 
-	void play(CommandBuffer* commandBuffer)
+	void play(CommandBuffer::RenderingState& commandBufferState)
 	{
 		Cast(dstImage)->copyFrom(srcBuffer, region);
 	}
@@ -184,7 +187,7 @@ struct PipelineBarrier : public CommandBuffer::Command
 	{
 	}
 
-	void play(CommandBuffer* commandBuffer)
+	void play(CommandBuffer::RenderingState& commandBufferState)
 	{
 		// This can currently be a noop. The sw::Surface locking/unlocking mechanism used by the renderer already takes care of
 		// making sure the read/writes always happen in order. Eventually, if we remove this synchronization mechanism, we can
@@ -203,9 +206,6 @@ CommandBuffer::CommandBuffer(VkCommandBufferLevel pLevel) : level(pLevel)
 {
 	// FIXME (b/119409619): replace this vector by an allocator so we can control all memory allocations
 	commands = new std::vector<std::unique_ptr<Command> >();
-
-	pipelines[VK_PIPELINE_BIND_POINT_GRAPHICS] = VK_NULL_HANDLE;
-	pipelines[VK_PIPELINE_BIND_POINT_COMPUTE] = VK_NULL_HANDLE;
 }
 
 void CommandBuffer::destroy(const VkAllocationCallbacks* pAllocator)
@@ -596,7 +596,7 @@ void CommandBuffer::submit()
 
 	for(auto& command : *commands)
 	{
-		command->play(this);
+		command->play(drawState);
 	}
 
 	// After work is completed
