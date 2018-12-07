@@ -79,6 +79,7 @@ namespace sw
             bool DepthGreater : 1;
             bool DepthLess : 1;
             bool DepthUnchanged : 1;
+            bool ContainsKill : 1;
 
             // Compute workgroup dimensions
             int LocalSizeX, LocalSizeY, LocalSizeZ;
@@ -86,15 +87,28 @@ namespace sw
 
         Modes const & getModes() const { return modes; }
 
-    private:
+		std::unordered_map<uint32_t, Object> defs;
+		std::unordered_map<spv::BuiltIn, uint32_t> inputBuiltins;
+		std::unordered_map<spv::BuiltIn, uint32_t> outputBuiltins;
+
+		enum AttribType : unsigned char
+		{
+			ATTRIBTYPE_FLOAT,
+			ATTRIBTYPE_INT,
+			ATTRIBTYPE_UINT,
+
+			ATTRIBTYPE_LAST = ATTRIBTYPE_UINT
+		};
+
+		bool hasBuiltinInput(spv::BuiltIn b) const { return inputBuiltins.find(b) != inputBuiltins.end(); }
+
+	private:
         const int serialID;
         static volatile int serialCounter;
-        Modes modes;
-        std::unordered_map<uint32_t, Object> defs;
-        std::unordered_map<spv::BuiltIn, uint32_t> inputBuiltins;
-        std::unordered_map<spv::BuiltIn, uint32_t> outputBuiltins;
 
-        void ProcessExecutionMode(InsnIterator it);
+        Modes modes;
+		void ProcessExecutionMode(InsnIterator it);
+
     };
 }
 
