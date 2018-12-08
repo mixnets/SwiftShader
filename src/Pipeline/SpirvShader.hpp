@@ -93,6 +93,7 @@ namespace sw
 		public:
 			InsnIterator definition;
 			spv::StorageClass storageClass;
+			uint32_t sizeInComponents = 0;
 
 			enum class Kind
 			{
@@ -145,6 +146,8 @@ namespace sw
 		std::unordered_map<spv::BuiltIn, uint32_t> outputBuiltins;
 
 		void ProcessExecutionMode(InsnIterator it);
+
+		uint32_t ComputeTypeSize(InsnIterator insn);
 	};
 }
 
