@@ -110,6 +110,30 @@
       "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8b005049_7fdbf5ee",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-12-08T14:55:21Z",
+      "side": 1,
+      "message": "It\u0027s quite easy for an object-oriented approach to start hurting us. Say we separate the implementation into a client and a server process. One image lives on the client side, the other on the server side (i.e. a \u0027staging\u0027 image and a \u0027device memory\u0027 image). So one might create a StagingImage and a DeviceImage subclass, with additional methods for copying between each of them, and make these methods virtual, and attempt to use IPC for calling them across the process boundary... While really it\u0027s still just a dumb memcpy() between buffers, from a data-oriented perspective.\n\nIf we just let Device handle the copy command by exposing the data pointers, it\u0027s less likely to become overly complex. Encapsulation only helps for implementation details that are not supposed to matter. Note that our sampler Reactor code also has direct access to the data, so I don\u0027t think it\u0027s very useful to hide it for copy operations.\n\nAnyway, I\u0027m not advocating for C spaghetti code where anything can access everything either. Object-oriented design has many valuable concepts and has its place in SwiftShader. I just think we have to be careful about the trade-offs and not blindly consider it the default go-to paradigm.",
+      "parentUuid": "0e0872c0_8e01c0ce",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 69
+      },
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
