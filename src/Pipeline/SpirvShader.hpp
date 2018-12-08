@@ -60,6 +60,7 @@ namespace sw
             InsnIterator definition;
             int32_t location = -1;
             spv::StorageClass storageClass;
+            uint32_t sizeInComponents = 0;
 
             enum class Kind {
                 Unknown,        /* for paranoia -- if we get left with an object in this state, the module was broken */
@@ -108,6 +109,7 @@ namespace sw
 
         Modes modes;
 		void ProcessExecutionMode(InsnIterator it);
+		uint32_t ComputeTypeSize(InsnIterator insn);
 
     };
 }
