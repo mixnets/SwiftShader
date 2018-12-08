@@ -241,9 +241,9 @@ namespace sw
 		}
 	}
 
-	Int4 PixelProgram::enableMask(const Shader::Instruction *instruction)
+	Int4 PixelProgram::enableMask()
 	{
-		Int4 enable = instruction->analysisBranch ? Int4(enableStack[enableIndex]) : Int4(0xFFFFFFFF);
+		Int4 enable = true ? Int4(enableStack[enableIndex]) : Int4(0xFFFFFFFF);
 		return enable;
 	}
 

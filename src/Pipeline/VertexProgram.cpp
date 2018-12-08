@@ -89,9 +89,9 @@ namespace sw
 		return uniformAddress(bufferIndex, index) + offset * sizeof(float4);
 	}
 
-	Int4 VertexProgram::enableMask(const Shader::Instruction *instruction)
+	Int4 VertexProgram::enableMask()
 	{
-		Int4 enable = instruction->analysisBranch ? Int4(enableStack[enableIndex]) : Int4(0xFFFFFFFF);
+		Int4 enable = true ? Int4(enableStack[enableIndex]) : Int4(0xFFFFFFFF);
 		return enable;
 	}
 

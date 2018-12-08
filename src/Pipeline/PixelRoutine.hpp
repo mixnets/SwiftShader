@@ -39,9 +39,6 @@ namespace sw
 		// Depth output
 		Float4 oDepth;
 
-		typedef Shader::SourceParameter Src;
-		typedef Shader::DestinationParameter Dst;
-
 		virtual void setBuiltins(Int &x, Int &y, Float4(&z)[4], Float4 &w) = 0;
 		virtual void applyShader(Int cMask[4]) = 0;
 		virtual Bool alphaTest(Int cMask[4]) = 0;

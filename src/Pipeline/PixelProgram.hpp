@@ -48,7 +48,7 @@ namespace sw
 		// Raster operations
 		void clampColor(Vector4f oC[RENDERTARGETS]);
 
-		Int4 enableMask(const Shader::Instruction *instruction);
+		Int4 enableMask();
 
 		Float4 linearToSRGB(const Float4 &x);
 	};

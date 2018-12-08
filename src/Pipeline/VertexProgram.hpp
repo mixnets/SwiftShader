@@ -40,15 +40,10 @@ namespace sw
 		Int instanceID;
 		Int4 vertexID;
 
-		typedef Shader::DestinationParameter Dst;
-		typedef Shader::SourceParameter Src;
-		typedef Shader::Control Control;
-		typedef Shader::Usage Usage;
-
 		void program(UInt &index) override;
 		RValue<Pointer<Byte>> uniformAddress(int bufferIndex, unsigned int index);
 		RValue<Pointer<Byte>> uniformAddress(int bufferIndex, unsigned int index, Int &offset);
-		Int4 enableMask(const Shader::Instruction *instruction);
+		Int4 enableMask();
 
 		int ifDepth;
 		int loopRepDepth;
