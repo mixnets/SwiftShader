@@ -21,8 +21,6 @@
 namespace sw
 {
 	extern bool postBlendSRGB;
-	extern bool booleanFaceRegister;
-	extern bool fullPixelPositionRegister;
 
 	void PixelProgram::setBuiltins(Int &x, Int &y, Float4(&z)[4], Float4 &w)
 	{
