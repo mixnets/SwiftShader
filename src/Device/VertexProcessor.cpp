@@ -15,8 +15,6 @@
 #include "VertexProcessor.hpp"
 
 #include "Pipeline/VertexProgram.hpp"
-#include "Pipeline/VertexShader.hpp"
-#include "Pipeline/PixelShader.hpp"
 #include "Pipeline/Constants.hpp"
 #include "System/Math.hpp"
 #include "System/Debug.hpp"
@@ -348,44 +346,12 @@ namespace sw
 		State state;
 
 		state.shaderID = context->vertexShader->getSerialID();
-
-		state.textureSampling = context->vertexShader ? context->vertexShader->containsTextureSampling() : false;
-		state.positionRegister = context->vertexShader ? context->vertexShader->getPositionRegister() : Pos;
-		state.pointSizeRegister = context->vertexShader ? context->vertexShader->getPointSizeRegister() : Pts;
-
 		state.multiSampling = context->getMultiSampleCount() > 1;
 
 		// Note: Quads aren't handled for verticesPerPrimitive, but verticesPerPrimitive is used for transform feedback,
 		//       which is an OpenGL ES 3.0 feature, and OpenGL ES 3.0 doesn't support quads as a primitive type.
 		DrawType type = static_cast<DrawType>(static_cast<unsigned int>(drawType) & 0xF);
 		state.verticesPerPrimitive = 1 + (type >= DRAW_LINELIST) + (type >= DRAW_TRIANGLELIST);
-
-		for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
-		{
-			state.input[i].type = context->input[i].type;
-			state.input[i].count = context->input[i].count;
-			state.input[i].normalized = context->input[i].normalized;
-			state.input[i].attribType = context->vertexShader ? context->vertexShader->getAttribType(i) : VertexShader::ATTRIBTYPE_FLOAT;
-		}
-
-		for(unsigned int i = 0; i < VERTEX_TEXTURE_IMAGE_UNITS; i++)
-		{
-			if(context->vertexShader->usesSampler(i))
-			{
-				state.sampler[i] = context->sampler[TEXTURE_IMAGE_UNITS + i].samplerState();
-			}
-		}
-
-		if(context->vertexShader)   // FIXME: Also when pre-transformed?
-		{
-			for(int i = 0; i < MAX_VERTEX_OUTPUTS; i++)
-			{
-				state.output[i].xWrite = context->vertexShader->getOutput(i, 0).active();
-				state.output[i].yWrite = context->vertexShader->getOutput(i, 1).active();
-				state.output[i].zWrite = context->vertexShader->getOutput(i, 2).active();
-				state.output[i].wWrite = context->vertexShader->getOutput(i, 3).active();
-			}
-		}
 
 		state.hash = state.computeHash();
 
@@ -398,8 +364,7 @@ namespace sw
 
 		if(!routine)   // Create one
 		{
-		    // TODO: SpirvShader final parameter here needs to be real
-			VertexRoutine *generator = new VertexProgram(state, context->vertexShader, nullptr);
+			VertexRoutine *generator = new VertexProgram(state, context->vertexShader);
 			generator->generate();
 			routine = (*generator)(L"VertexRoutine_%0.8X", state.shaderID);
 			delete generator;

@@ -18,7 +18,6 @@
 #include "Device/Color.hpp"
 #include "Device/VertexProcessor.hpp"
 #include "ShaderCore.hpp"
-#include "VertexShader.hpp"
 #include "SpirvShader.hpp"
 
 namespace sw
@@ -39,7 +38,7 @@ namespace sw
 	class VertexRoutine : public VertexRoutinePrototype
 	{
 	public:
-		VertexRoutine(const VertexProcessor::State &state, const VertexShader *shader, SpirvShader const *spirvShader);
+		VertexRoutine(const VertexProcessor::State &state, SpirvShader const *spirvShader);
 		virtual ~VertexRoutine();
 
 		void generate();

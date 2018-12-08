@@ -25,18 +25,15 @@
 namespace sw
 {
 	struct Stream;
-	class VertexShader;
 
 	class VertexProgram : public VertexRoutine, public ShaderCore
 	{
 	public:
-		VertexProgram(const VertexProcessor::State &state, const VertexShader *vertexShader, SpirvShader const *spirvShader);
+		VertexProgram(const VertexProcessor::State &state, SpirvShader const *spirvShader);
 
 		virtual ~VertexProgram();
 
 	private:
-		const VertexShader *const shader;
-
 		Int enableIndex;
 		Array<Int4, 1 + 24> enableStack;
 

@@ -30,6 +30,7 @@
 #include "System/Math.hpp"
 #include "System/Timer.hpp"
 #include "System/Debug.hpp"
+#include "Pipeline/SpirvShader.hpp"
 
 #undef max
 
@@ -42,8 +43,6 @@ unsigned int maxPrimitives = 1 << 21;
 
 namespace sw
 {
-	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
-	extern bool symmetricNormalizedDepth;   // [-1, 1] instead of [0, 1]
 	extern bool booleanFaceRegister;
 	extern bool fullPixelPositionRegister;
 	extern bool leadingVertexFirst;         // Flat shading uses first vertex, else last
@@ -78,8 +77,6 @@ namespace sw
 
 		if(!initialized)
 		{
-			sw::halfIntegerCoordinates = conventions.halfIntegerCoordinates;
-			sw::symmetricNormalizedDepth = conventions.symmetricNormalizedDepth;
 			sw::booleanFaceRegister = conventions.booleanFaceRegister;
 			sw::fullPixelPositionRegister = conventions.fullPixelPositionRegister;
 			sw::leadingVertexFirst = conventions.leadingVertexFirst;
@@ -118,7 +115,7 @@ namespace sw
 		setGlobalRenderingSettings(conventions, exactColorRounding);
 
 		setRenderTarget(0, nullptr);
-		clipper = new Clipper(symmetricNormalizedDepth);
+		clipper = new Clipper(false);
 		blitter = new Blitter;
 
 		updateClipPlanes = true;
@@ -370,7 +367,7 @@ namespace sw
 			}
 		}
 
-		if(context->vertexShader->isInstanceIdDeclared())
+		if(context->vertexShader->hasBuiltinInput(spv::BuiltInInstanceId))
 		{
 			data->instanceID = context->instanceID;
 		}
@@ -1991,12 +1988,12 @@ namespace sw
 		context->rasterizerDiscard = rasterizerDiscard;
 	}
 
-	void Renderer::setPixelShader(const PixelShader *shader)
+	void Renderer::setPixelShader(const SpirvShader *shader)
 	{
 		context->pixelShader = shader;
 	}
 
-	void Renderer::setVertexShader(const VertexShader *shader)
+	void Renderer::setVertexShader(const SpirvShader *shader)
 	{
 		context->vertexShader = shader;
 	}

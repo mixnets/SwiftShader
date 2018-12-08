@@ -17,7 +17,6 @@
 
 #include "Rasterizer.hpp"
 #include "Pipeline/ShaderCore.hpp"
-#include "Pipeline/PixelShader.hpp"
 #include "Pipeline/SpirvShader.hpp"
 #include "System/Types.hpp"
 
@@ -26,7 +25,7 @@ namespace sw
 	class QuadRasterizer : public Rasterizer
 	{
 	public:
-		QuadRasterizer(const PixelProcessor::State &state, const PixelShader *shader, SpirvShader const *spirvShader);
+		QuadRasterizer(const PixelProcessor::State &state, SpirvShader const *spirvShader);
 		virtual ~QuadRasterizer();
 
 		void generate();
@@ -52,7 +51,6 @@ namespace sw
 		Float4 interpolate(Float4 &x, Float4 &D, Float4 &rhw, Pointer<Byte> planeEquation, bool flat, bool perspective, bool clamp);
 
 		const PixelProcessor::State &state;
-		const PixelShader *const shader;
 		const SpirvShader *const spirvShader;
 
 	private:

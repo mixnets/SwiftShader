@@ -14,7 +14,6 @@
 
 #include "VertexProgram.hpp"
 
-#include "VertexShader.hpp"
 #include "SamplerCore.hpp"
 #include "Device/Renderer.hpp"
 #include "Device/Vertex.hpp"
@@ -23,8 +22,8 @@
 
 namespace sw
 {
-	VertexProgram::VertexProgram(const VertexProcessor::State &state, const VertexShader *shader, SpirvShader const *spirvShader)
-		: VertexRoutine(state, shader, spirvShader), shader(shader)
+	VertexProgram::VertexProgram(const VertexProcessor::State &state, SpirvShader const *spirvShader)
+		: VertexRoutine(state, spirvShader)
 	{
 		ifDepth = 0;
 		loopRepDepth = 0;
@@ -33,10 +32,11 @@ namespace sw
 
 		enableStack[0] = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 
-		if(shader->isInstanceIdDeclared())
-		{
-			instanceID = *Pointer<Int>(data + OFFSET(DrawData,instanceID));
-		}
+		// TODO: wire up builtins
+		//if(shader->isInstanceIdDeclared())
+		//{
+		//	instanceID = *Pointer<Int>(data + OFFSET(DrawData,instanceID));
+		//}
 	}
 
 	VertexProgram::~VertexProgram()
@@ -49,20 +49,20 @@ namespace sw
 
 		enableIndex = 0;
 
-		if(shader->isVertexIdDeclared())
-		{
-			if(state.textureSampling)
-			{
-				vertexID = Int4(index);
-			}
-			else
-			{
-				vertexID = Insert(vertexID, As<Int>(index), 0);
-				vertexID = Insert(vertexID, As<Int>(index + 1), 1);
-				vertexID = Insert(vertexID, As<Int>(index + 2), 2);
-				vertexID = Insert(vertexID, As<Int>(index + 3), 3);
-			}
-		}
+		//if(shader->isVertexIdDeclared())
+		//{
+		//	if(state.textureSampling)
+		//	{
+		//		vertexID = Int4(index);
+		//	}
+		//	else
+		//	{
+		//		vertexID = Insert(vertexID, As<Int>(index), 0);
+		//		vertexID = Insert(vertexID, As<Int>(index + 1), 1);
+		//		vertexID = Insert(vertexID, As<Int>(index + 2), 2);
+		//		vertexID = Insert(vertexID, As<Int>(index + 3), 3);
+		//	}
+		//}
 
 		// Actually emit code here
 

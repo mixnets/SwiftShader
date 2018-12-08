@@ -14,8 +14,6 @@
 
 #include "Shader.hpp"
 
-#include "VertexShader.hpp"
-#include "PixelShader.hpp"
 #include "System/Math.hpp"
 #include "System/Debug.hpp"
 
@@ -1140,44 +1138,6 @@ namespace sw
 		{
 			delete inst;
 			inst = 0;
-		}
-	}
-
-	void Shader::parse(const unsigned long *token)
-	{
-		minorVersion = (unsigned char)(token[0] & 0x000000FF);
-		majorVersion = (unsigned char)((token[0] & 0x0000FF00) >> 8);
-		shaderType = (ShaderType)((token[0] & 0xFFFF0000) >> 16);
-
-		int length = 0;
-
-		if(shaderType == SHADER_VERTEX)
-		{
-			length = VertexShader::validate(token);
-		}
-		else if(shaderType == SHADER_PIXEL)
-		{
-			length = PixelShader::validate(token);
-		}
-		else ASSERT(false);
-
-		ASSERT(length != 0);
-		instruction.resize(length);
-
-		for(int i = 0; i < length; i++)
-		{
-			while((*token & 0x0000FFFF) == 0x0000FFFE)   // Comment token
-			{
-				int length = (*token & 0x7FFF0000) >> 16;
-
-				token += length + 1;
-			}
-
-			int tokenCount = size(*token);
-
-			instruction[i] = new Instruction(token, tokenCount, majorVersion);
-
-			token += 1 + tokenCount;
 		}
 	}
 

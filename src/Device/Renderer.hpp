@@ -293,16 +293,8 @@ namespace sw
 		void setRasterizerDiscard(bool rasterizerDiscard);
 
 		// Programmable pipelines
-		void setPixelShader(const PixelShader *shader);
-		void setVertexShader(const VertexShader *shader);
-
-		void setPixelShaderConstantF(unsigned int index, const float value[4], unsigned int count = 1);
-		void setPixelShaderConstantI(unsigned int index, const int value[4], unsigned int count = 1);
-		void setPixelShaderConstantB(unsigned int index, const int *boolean, unsigned int count = 1);
-
-		void setVertexShaderConstantF(unsigned int index, const float value[4], unsigned int count = 1);
-		void setVertexShaderConstantI(unsigned int index, const int value[4], unsigned int count = 1);
-		void setVertexShaderConstantB(unsigned int index, const int *boolean, unsigned int count = 1);
+		void setPixelShader(const SpirvShader *shader);
+		void setVertexShader(const SpirvShader *shader);
 
 		// Viewport & Clipper
 		void setViewport(const VkViewport &viewport);

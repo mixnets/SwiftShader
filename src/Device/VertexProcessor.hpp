@@ -18,7 +18,6 @@
 #include "Matrix.hpp"
 #include "Context.hpp"
 #include "RoutineCache.hpp"
-#include "Pipeline/VertexShader.hpp"
 
 namespace sw
 {
@@ -69,7 +68,7 @@ namespace sw
 				StreamType type    : BITS(STREAMTYPE_LAST);
 				unsigned int count : 3;
 				bool normalized    : 1;
-				unsigned int attribType : BITS(VertexShader::ATTRIBTYPE_LAST);
+				unsigned int attribType : 16;	// HACK HACK
 			};
 
 			struct Output

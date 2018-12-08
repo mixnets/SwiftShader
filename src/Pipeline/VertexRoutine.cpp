@@ -14,7 +14,6 @@
 
 #include "VertexRoutine.hpp"
 
-#include "VertexShader.hpp"
 #include "Constants.hpp"
 #include "Device/Vertex.hpp"
 #include "Device/Renderer.hpp"
@@ -23,9 +22,9 @@
 
 namespace sw
 {
-	VertexRoutine::VertexRoutine(const VertexProcessor::State &state, const VertexShader *shader, SpirvShader const *spirvShader)
-		: v(shader && shader->indirectAddressableInput),
-		  o(shader && shader->indirectAddressableOutput),
+	VertexRoutine::VertexRoutine(const VertexProcessor::State &state, SpirvShader const *spirvShader)
+		: v(true),		/* TODO: indirect addressable */
+		  o(true),
 		  state(state),
 		  spirvShader(spirvShader)
 	{
@@ -128,7 +127,7 @@ namespace sw
 		Pointer<Byte> source2 = source1 + (!textureSampling ? stride : 0);
 		Pointer<Byte> source3 = source2 + (!textureSampling ? stride : 0);
 
-		bool isNativeFloatAttrib = (stream.attribType == VertexShader::ATTRIBTYPE_FLOAT) || stream.normalized;
+		bool isNativeFloatAttrib = (stream.attribType == SpirvShader::ATTRIBTYPE_FLOAT) || stream.normalized;
 
 		switch(stream.type)
 		{
@@ -159,13 +158,13 @@ namespace sw
 
 					switch(stream.attribType)
 					{
-					case VertexShader::ATTRIBTYPE_INT:
+					case SpirvShader::ATTRIBTYPE_INT:
 						if(stream.count >= 1) v.x = As<Float4>(Int4(v.x));
 						if(stream.count >= 2) v.x = As<Float4>(Int4(v.y));
 						if(stream.count >= 3) v.x = As<Float4>(Int4(v.z));
 						if(stream.count >= 4) v.x = As<Float4>(Int4(v.w));
 						break;
-					case VertexShader::ATTRIBTYPE_UINT:
+					case SpirvShader::ATTRIBTYPE_UINT:
 						if(stream.count >= 1) v.x = As<Float4>(UInt4(v.x));
 						if(stream.count >= 2) v.x = As<Float4>(UInt4(v.y));
 						if(stream.count >= 3) v.x = As<Float4>(UInt4(v.z));

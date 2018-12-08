@@ -29,10 +29,10 @@ namespace sw
 	extern bool exactColorRounding;
 	extern bool forceClearRegisters;
 
-	PixelRoutine::PixelRoutine(const PixelProcessor::State &state, const PixelShader *shader, SpirvShader const *spirvShader)
-		: QuadRasterizer(state, shader, spirvShader), v(shader && shader->indirectAddressableInput)
+	PixelRoutine::PixelRoutine(const PixelProcessor::State &state, SpirvShader const *spirvShader)
+		: QuadRasterizer(state, spirvShader), v(true)	/* addressing */
 	{
-		if(!shader || shader->getShaderModel() < 0x0200 || forceClearRegisters)
+		if(forceClearRegisters)
 		{
 			for(int i = 0; i < MAX_FRAGMENT_INPUTS; i++)
 			{
@@ -211,7 +211,7 @@ namespace sw
 
 				alphaPass = alphaTest(cMask);
 
-				if((shader && shader->containsKill()) || state.alphaTestActive())
+				if((spirvShader && spirvShader->getModes().ContainsKill) || state.alphaTestActive())
 				{
 					for(unsigned int q = 0; q < state.multiSample; q++)
 					{
@@ -395,7 +395,7 @@ namespace sw
 
 		Float4 Z = z;
 
-		if(shader && shader->depthOverride())
+		if(spirvShader && spirvShader->getModes().DepthReplacing)
 		{
 			if(complementaryDepthBuffer)
 			{
@@ -593,7 +593,7 @@ namespace sw
 
 		Float4 Z = z;
 
-		if(shader && shader->depthOverride())
+		if(spirvShader && spirvShader->getModes().DepthReplacing)
 		{
 			if(complementaryDepthBuffer)
 			{
