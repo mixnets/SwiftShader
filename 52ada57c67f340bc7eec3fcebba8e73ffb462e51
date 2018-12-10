@@ -2,6 +2,63 @@
   "comments": [
     {
       "key": {
+        "uuid": "1082500d_71886e75",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:46:30Z",
+      "side": 1,
+      "message": "This should be in the original \"Image copy\" patch.",
+      "revId": "52ada57c67f340bc7eec3fcebba8e73ffb462e51",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4f09682_92f517da",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:46:30Z",
+      "side": 1,
+      "message": "Based on the discussion we had on a previous CL, I don\u0027t believe rgbaMask will be needed.",
+      "range": {
+        "startLine": 216,
+        "startChar": 93,
+        "endLine": 216,
+        "endChar": 101
+      },
+      "revId": "52ada57c67f340bc7eec3fcebba8e73ffb462e51",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8dca5c0b_a432f55f",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:46:30Z",
+      "side": 1,
+      "message": "This method seems to make assumptions on \"format\" can we have them spelled out and have explanations of why we don\u0027t pass \"format\" to the blitter directly?",
+      "revId": "52ada57c67f340bc7eec3fcebba8e73ffb462e51",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6a20db15_0847307b",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 2
