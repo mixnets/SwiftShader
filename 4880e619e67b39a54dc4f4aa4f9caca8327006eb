@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "4adfc69d_f30ac4f9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-10T15:53:45Z",
+      "side": 1,
+      "message": "Unlikely that this would make anything pass by itself. Still need the shaders (and that support is built on top of here)",
+      "parentUuid": "29071ad8_9163b247",
+      "revId": "4880e619e67b39a54dc4f4aa4f9caca8327006eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "eb4b633c_9de48507",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 1
