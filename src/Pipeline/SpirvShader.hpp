@@ -59,6 +59,7 @@ namespace sw
         public:
             InsnIterator definition;
             int32_t location = -1;
+            int32_t component = 0;
             spv::StorageClass storageClass;
             uint32_t sizeInComponents = 0;
 
@@ -86,20 +87,49 @@ namespace sw
             int LocalSizeX, LocalSizeY, LocalSizeZ;
         };
 
+		enum AttribType : unsigned char
+		{
+			ATTRIBTYPE_FLOAT,
+			ATTRIBTYPE_INT,
+			ATTRIBTYPE_UINT,
+			ATTRIBTYPE_UNUSED,
+
+			ATTRIBTYPE_LAST = ATTRIBTYPE_UINT
+		};
+
         Modes const & getModes() const { return modes; }
 
 		std::unordered_map<uint32_t, Object> defs;
 		std::unordered_map<spv::BuiltIn, uint32_t> inputBuiltins;
 		std::unordered_map<spv::BuiltIn, uint32_t> outputBuiltins;
 
-		enum AttribType : unsigned char
-		{
-			ATTRIBTYPE_FLOAT,
-			ATTRIBTYPE_INT,
-			ATTRIBTYPE_UINT,
+		struct Decorations {
+			int32_t Location;
+			int32_t Component;
+			spv::BuiltIn BuiltIn;
+			bool HasLocation : 1;
+			bool HasComponent : 1;
+			bool HasBuiltIn : 1;
+			bool Flat : 1;
+			bool Centroid : 1;
+			bool Noperspective : 1;
+			bool Block : 1;
+			bool BufferBlock : 1;
 
-			ATTRIBTYPE_LAST = ATTRIBTYPE_UINT
+			Decorations()
+				: Location{-1}, Component{0}, BuiltIn{}, HasLocation{false}, HasComponent{false}, HasBuiltIn{false}, Flat{false},
+				Centroid{false}, Noperspective{false}, Block{false},
+				BufferBlock{false}
+			{}
+
+			Decorations(Decorations const &) = default;
+
+			void Apply(Decorations const & src);
+			void Apply(spv::Decoration decoration, uint32_t arg);
 		};
+
+		std::unordered_map<uint32_t, Decorations> decorations;
+		std::unordered_map<uint32_t, std::vector<Decorations>> memberDecorations;
 
 		bool hasBuiltinInput(spv::BuiltIn b) const { return inputBuiltins.find(b) != inputBuiltins.end(); }
 
