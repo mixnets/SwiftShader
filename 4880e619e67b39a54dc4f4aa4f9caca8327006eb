@@ -33,6 +33,24 @@
       "revId": "4880e619e67b39a54dc4f4aa4f9caca8327006eb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72cad165_6ac81648",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-10T15:51:25Z",
+      "side": 1,
+      "message": "Renderer needs a longer lifetime than this. It owns the routine caches etc, which we apparently have to use now so we can support specializing on image formats. Creating a new Renderer each draw call would mean constant recompiles.",
+      "parentUuid": "eb4b633c_9de48507",
+      "revId": "4880e619e67b39a54dc4f4aa4f9caca8327006eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
