@@ -49,6 +49,40 @@
     },
     {
       "key": {
+        "uuid": "851ccebb_b39b756f",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:16:56Z",
+      "side": 1,
+      "message": "Note: a number of these are probably not useful in the long-trem like initialiLayout, usage or sharingMode. Ok to keep them for now for debugging.",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0e713aa_0af491f6",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:16:56Z",
+      "side": 1,
+      "message": "nit: same rename for bytes as for the function name.",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "66582b27_2dc0c3e0",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 3
@@ -60,6 +94,194 @@
       "writtenOn": "2018-12-07T22:48:49Z",
       "side": 1,
       "message": "These guards don\u0027t seem quite adequate -- this code will misbehave when copying just the DEPTH aspect from a DEPTH+STENCIL image, as far as I can see?",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "131d5989_da7335b8",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:16:56Z",
+      "side": 1,
+      "message": "We could have a getTexelPointer(VkOffset3D) on Image.",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f1e8bbc9_895dd69e",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:16:56Z",
+      "side": 1,
+      "message": "nit: same rename for these as the function name.",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f6278d3_687f32c7",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:16:56Z",
+      "side": 1,
+      "message": "This is very difficult to understand. Can we have cases handled one by one: isEntirePlane, isEntireLine \u0026\u0026 isSinglePlane and isSingleLine?\n\nI didn\u0027t find a way to factor them without having to add conditions to compute the memcpy size.",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8175d526_30dcc0d2",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:16:56Z",
+      "side": 1,
+      "message": "nit: texelOffsetBytesInStorage()? (or just texelOffsetBytes)",
+      "range": {
+        "startLine": 180,
+        "startChar": 20,
+        "endLine": 180,
+        "endChar": 34
+      },
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a24688d_c6236321",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:16:56Z",
+      "side": 1,
+      "message": "nit:rowPitchBytes?",
+      "range": {
+        "startLine": 185,
+        "startChar": 11,
+        "endLine": 185,
+        "endChar": 17
+      },
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1dc8f011_1afa68eb",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:16:56Z",
+      "side": 1,
+      "message": "nit: slicePitchBytes?",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1c8c4000_83953a3e",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:16:56Z",
+      "side": 1,
+      "message": "nit: bytesPerTexel.",
+      "range": {
+        "startLine": 195,
+        "startChar": 11,
+        "endLine": 195,
+        "endChar": 16
+      },
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "63df4f1d_0b4b8f12",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:16:56Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be \"bool hasBorder()\" and sw::Surface updated to take a boolean since borders don\u0027t have a width in Vulkan?",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c169ec9b_91fbb10c",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:16:56Z",
+      "side": 1,
+      "message": "nit: get[Storage|Content]Size.",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cfd6ddaf_57dc22c0",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:16:56Z",
+      "side": 1,
+      "message": "I thought we implemented this in a previous CL were I commented about cube-map border, etc?",
       "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
