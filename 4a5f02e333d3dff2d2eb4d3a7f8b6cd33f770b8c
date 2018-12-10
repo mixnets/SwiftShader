@@ -66,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "88361e49_0711bf6a",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "I\u0027ll just remove the usage, sharingMode and initialLayout for now.",
+      "parentUuid": "851ccebb_b39b756f",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b0e713aa_0af491f6",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 3
@@ -80,6 +98,24 @@
       "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4fd9ec1_1ec3c0d6",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b0e713aa_0af491f6",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -100,6 +136,24 @@
     },
     {
       "key": {
+        "uuid": "7eadef0d_ae1d9795",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "Hopefully, this would make some dEQP tests fail and we can address corner cases later. I\u0027m ok with not having all the tests pass right on the first implementation of a feature.",
+      "parentUuid": "66582b27_2dc0c3e0",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "131d5989_da7335b8",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 3
@@ -114,6 +168,24 @@
       "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84ad4421_7940f35b",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "131d5989_da7335b8",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -134,6 +206,24 @@
     },
     {
       "key": {
+        "uuid": "c38615c5_9a3ccd90",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f1e8bbc9_895dd69e",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7f6278d3_687f32c7",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 3
@@ -148,6 +238,24 @@
       "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aae15812_f7be2a23",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7f6278d3_687f32c7",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -174,6 +282,30 @@
     },
     {
       "key": {
+        "uuid": "624c39a6_807319b9",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8175d526_30dcc0d2",
+      "range": {
+        "startLine": 180,
+        "startChar": 20,
+        "endLine": 180,
+        "endChar": 34
+      },
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a24688d_c6236321",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 3
@@ -197,6 +329,30 @@
     },
     {
       "key": {
+        "uuid": "e57e9fcf_65374781",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a24688d_c6236321",
+      "range": {
+        "startLine": 185,
+        "startChar": 11,
+        "endLine": 185,
+        "endChar": 17
+      },
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1dc8f011_1afa68eb",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 3
@@ -211,6 +367,24 @@
       "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "188c1523_e9d8720a",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1dc8f011_1afa68eb",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -237,6 +411,30 @@
     },
     {
       "key": {
+        "uuid": "728f8332_ba38e15d",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1c8c4000_83953a3e",
+      "range": {
+        "startLine": 195,
+        "startChar": 11,
+        "endLine": 195,
+        "endChar": 16
+      },
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "63df4f1d_0b4b8f12",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 3
@@ -251,6 +449,24 @@
       "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "48e9c9a5_aced234e",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "For now, this is more user friendly as is, but I\u0027ll make that change by itself as a follow up.",
+      "parentUuid": "63df4f1d_0b4b8f12",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -271,6 +487,24 @@
     },
     {
       "key": {
+        "uuid": "bbc486ee_56be308c",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "Done (used getStorageSize)",
+      "parentUuid": "c169ec9b_91fbb10c",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cfd6ddaf_57dc22c0",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 3
@@ -285,6 +519,24 @@
       "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f3b89e2_9e4e4ff3",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "Yes, that was in the WIP cl. This is a much simpler version which supports a smaller subset of parameters.\nIt will be updated bin a change by itself later to take more parameters into account.",
+      "parentUuid": "cfd6ddaf_57dc22c0",
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -347,6 +599,30 @@
       "side": 1,
       "message": "It\u0027s quite easy for an object-oriented approach to start hurting us. Say we separate the implementation into a client and a server process. One image lives on the client side, the other on the server side (i.e. a \u0027staging\u0027 image and a \u0027device memory\u0027 image). So one might create a StagingImage and a DeviceImage subclass, with additional methods for copying between each of them, and make these methods virtual, and attempt to use IPC for calling them across the process boundary... While really it\u0027s still just a dumb memcpy() between buffers, from a data-oriented perspective.\n\nIf we just let Device handle the copy command by exposing the data pointers, it\u0027s less likely to become overly complex. Encapsulation only helps for implementation details that are not supposed to matter. Note that our sampler Reactor code also has direct access to the data, so I don\u0027t think it\u0027s very useful to hide it for copy operations.\n\nAnyway, I\u0027m not advocating for C spaghetti code where anything can access everything either. Object-oriented design has many valuable concepts and has its place in SwiftShader. I just think we have to be careful about the trade-offs and not blindly consider it the default go-to paradigm.",
       "parentUuid": "0e0872c0_8e01c0ce",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 69
+      },
+      "revId": "4a5f02e333d3dff2d2eb4d3a7f8b6cd33f770b8c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0fe234e6_00a2a48c",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T19:29:31Z",
+      "side": 1,
+      "message": "Noted, I\u0027ll try not to paint myself in a corner here. Those all represent \"atomic\" command buffer operations, so they should be easy to move.\n\nSide note: I think these operations would be allowed to live as is in both the server side or the client side. Only compiling executable would have to be on the server side, IIUC, so either only the API calls resides in the client and all objects reside on the server side OR everything but the compiler resides in the client. In both cases, we shouldn\u0027t have that many objects having to go through the client-server channel, I think.",
+      "parentUuid": "8b005049_7fdbf5ee",
       "range": {
         "startLine": 40,
         "startChar": 0,
