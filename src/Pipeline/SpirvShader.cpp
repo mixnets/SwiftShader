@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <spirv/unified1/spirv.hpp>
 #include "SpirvShader.hpp"
 #include "System/Math.hpp"
 #include "System/Debug.hpp"
+#include "Device/Config.hpp"
 
 namespace sw
 {
