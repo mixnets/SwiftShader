@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "84fd3cf5_88a4dfcf",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:49:26Z",
+      "side": 1,
+      "message": "This could be moved in the triangle draw patch.",
+      "revId": "e5e7bbc934fe4202fb585a881c29fcb45cb48a08",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98267fa5_a9b2b178",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:49:26Z",
+      "side": 1,
+      "message": "Why is this rename needed?",
+      "revId": "e5e7bbc934fe4202fb585a881c29fcb45cb48a08",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
