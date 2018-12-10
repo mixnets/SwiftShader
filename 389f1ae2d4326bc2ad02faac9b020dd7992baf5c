@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "bc1fd214_641e0970",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:32:10Z",
+      "side": 1,
+      "message": "nit: ExecutionState since it will probably be used outside render passes for compute commands.",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3aa241a9_bab2c593",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 1
@@ -30,6 +47,40 @@
       "writtenOn": "2018-12-07T23:06:51Z",
       "side": 1,
       "message": "Still something a little weird here having \"state for a particular execution of a CB\" stored in the CB itself?",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5d59c912_2979530f",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:32:10Z",
+      "side": 1,
+      "message": "+1 I think it could be created as a stack variable inside submit()",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aae9e9da_2522003f",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:32:10Z",
+      "side": 1,
+      "message": "I imagined this and end() would always be noops and renderpasses would just be a bag of parameters. Do you see these methods doing something at some point?",
       "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
