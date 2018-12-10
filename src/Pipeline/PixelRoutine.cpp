@@ -2480,6 +2480,6 @@ namespace sw
 
 	bool PixelRoutine::colorUsed()
 	{
-		return state.colorWriteMask || state.alphaTestActive() || state.shaderContainsKill;
+		return state.colorWriteMask || state.alphaTestActive() || (spirvShader && spirvShader->getModes().ContainsKill);
 	}
 }

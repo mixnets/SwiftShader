@@ -634,7 +634,6 @@ namespace sw
 		}
 
 		state.depthOverride = context->pixelShader ? context->pixelShader->getModes().DepthReplacing : false;
-		state.shaderContainsKill = context->pixelShader ? context->pixelShader->getModes().ContainsKill : false;
 
 		if(context->alphaTestActive())
 		{
