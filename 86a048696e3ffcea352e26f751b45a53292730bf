@@ -2,6 +2,80 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a2371a5_551f914f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:24:20Z",
+      "side": 1,
+      "message": "It also implements the buffer \u003c-\u003e image copies.",
+      "revId": "86a048696e3ffcea352e26f751b45a53292730bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "20f00de9_ca4324f6",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:24:20Z",
+      "side": 1,
+      "message": "I think this should be assert state \u003d initial.",
+      "revId": "86a048696e3ffcea352e26f751b45a53292730bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e1aabac3_ab131a41",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:24:20Z",
+      "side": 1,
+      "message": "this is just equivalent to commands-\u003eclear()",
+      "range": {
+        "startLine": 233,
+        "startChar": 0,
+        "endLine": 238,
+        "endChar": 0
+      },
+      "revId": "86a048696e3ffcea352e26f751b45a53292730bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b6323e09_9e3a79f3",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:24:20Z",
+      "side": 1,
+      "message": "nit: being in the proper layout is the apps\u0027 responsibility.",
+      "revId": "86a048696e3ffcea352e26f751b45a53292730bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "1a158213_49de6c04",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 3
@@ -13,6 +87,24 @@
       "writtenOn": "2018-12-07T22:50:59Z",
       "side": 1,
       "message": "Seems there\u0027s 2 ideas in this patch.",
+      "revId": "86a048696e3ffcea352e26f751b45a53292730bf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "51fd33da_e4f17fa9",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T10:24:20Z",
+      "side": 1,
+      "message": "+1 I think it could be more logical to have the command buffer state fixes in a first patch, then the implementation of the commands in the \"Image copy\" patch to that \"Image copy\" is tested in the same patch it is implemented.",
+      "parentUuid": "1a158213_49de6c04",
       "revId": "86a048696e3ffcea352e26f751b45a53292730bf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
