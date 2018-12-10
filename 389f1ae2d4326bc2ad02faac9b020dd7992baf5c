@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f87ea918_1cda3b47",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T20:17:46Z",
+      "side": 1,
+      "message": "Agreed. This object will move out of here when it becomes more complete. This is here for now simply for convenience.",
+      "parentUuid": "bc1fd214_641e0970",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3aa241a9_bab2c593",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84eeb1a1_795ac5ef",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T20:17:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3aa241a9_bab2c593",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -70,6 +106,42 @@
     },
     {
       "key": {
+        "uuid": "285f11dd_9526b355",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T20:17:46Z",
+      "side": 1,
+      "message": "That makes sense. Done.",
+      "parentUuid": "5d59c912_2979530f",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a3f340f8_7654dc0d",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T20:17:46Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "27f90000_a5c4cb85",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aae9e9da_2522003f",
         "filename": "src/Vulkan/VkRenderPass.cpp",
         "patchSetId": 1
@@ -84,6 +156,24 @@
       "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "83c0f359_0d0f079a",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T20:17:46Z",
+      "side": 1,
+      "message": "Not at the moment.\nI\u0027ll remove the FIXMEs once I\u0027ve taken the RenderPass parameters into account.",
+      "parentUuid": "aae9e9da_2522003f",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
