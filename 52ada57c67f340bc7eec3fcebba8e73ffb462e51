@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "bf41017f_4f8d5fe9",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T21:28:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1082500d_71886e75",
+      "revId": "52ada57c67f340bc7eec3fcebba8e73ffb462e51",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f4f09682_92f517da",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 2
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "f11ab6b2_46cb03bc",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T21:28:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f4f09682_92f517da",
+      "range": {
+        "startLine": 216,
+        "startChar": 93,
+        "endLine": 216,
+        "endChar": 101
+      },
+      "revId": "52ada57c67f340bc7eec3fcebba8e73ffb462e51",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8dca5c0b_a432f55f",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 2
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "c42c6c55_6db959c5",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T21:28:34Z",
+      "side": 1,
+      "message": "\u0027format\u0027 is passed as a member of the sw::Surface created below.\nVkClearColorValue can only be one of float32, uint32 or int32 when clearing colors, as described here:\nhttps://www.khronos.org/registry/vulkan/specs/1.1-extensions/html/vkspec.html#clears-values",
+      "parentUuid": "8dca5c0b_a432f55f",
+      "revId": "52ada57c67f340bc7eec3fcebba8e73ffb462e51",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6a20db15_0847307b",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 2
@@ -73,6 +133,24 @@
       "revId": "52ada57c67f340bc7eec3fcebba8e73ffb462e51",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fe33eedf_62fb56e6",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T21:28:34Z",
+      "side": 1,
+      "message": "It automatically bundles an Image into a Surface. I\u0027ll write it some other way for now.",
+      "parentUuid": "6a20db15_0847307b",
+      "revId": "52ada57c67f340bc7eec3fcebba8e73ffb462e51",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
