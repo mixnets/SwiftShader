@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "92e0669e_4086d1c2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T21:50:43Z",
+      "side": 1,
+      "message": "Yes, still missing SPIR-V.",
+      "parentUuid": "4adfc69d_f30ac4f9",
+      "revId": "4880e619e67b39a54dc4f4aa4f9caca8327006eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "eb4b633c_9de48507",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 1
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "Renderer needs a longer lifetime than this. It owns the routine caches etc, which we apparently have to use now so we can support specializing on image formats. Creating a new Renderer each draw call would mean constant recompiles.",
       "parentUuid": "eb4b633c_9de48507",
+      "revId": "4880e619e67b39a54dc4f4aa4f9caca8327006eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "21d77a79_cc78b881",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-10T21:50:43Z",
+      "side": 1,
+      "message": "The context is just a struct with a state specific to a draw call.\nThe renderer has functionality to perform draw calls.\nYou are correct that the renderer needs to live longer. I\u0027ll look into this.",
+      "parentUuid": "72cad165_6ac81648",
       "revId": "4880e619e67b39a54dc4f4aa4f9caca8327006eb",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
