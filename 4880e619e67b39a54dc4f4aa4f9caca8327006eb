@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "29071ad8_9163b247",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T11:11:20Z",
+      "side": 1,
+      "message": "Does this enable any dEQP tests?",
+      "revId": "4880e619e67b39a54dc4f4aa4f9caca8327006eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb4b633c_9de48507",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-10T11:11:20Z",
+      "side": 1,
+      "message": "What\u0027s the difference between the renderer and the context. Can we keep the context alive across multiple draws?",
+      "revId": "4880e619e67b39a54dc4f4aa4f9caca8327006eb",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
