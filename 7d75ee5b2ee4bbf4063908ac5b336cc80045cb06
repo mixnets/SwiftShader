@@ -274,6 +274,24 @@
     },
     {
       "key": {
+        "uuid": "e9edf227_6340a4ee",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-11T19:21:52Z",
+      "side": 1,
+      "message": "Ah, ok, sorry I misunderstood that. I\u0027ll try to add the subresource range in the cl that actually implements the clearing operation.",
+      "parentUuid": "0fcf5416_a87740db",
+      "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5c7cbb6f_27b4e44a",
         "filename": "src/Vulkan/VkImageView.cpp",
         "patchSetId": 1
