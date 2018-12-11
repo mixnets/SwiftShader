@@ -256,6 +256,24 @@
     },
     {
       "key": {
+        "uuid": "0fcf5416_a87740db",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-11T12:14:36Z",
+      "side": 1,
+      "message": "Yes, I believe Chris is suggesting this function should take a subresource range when it is called from vkCmdBeginRenderPass, it would be the subresource range of the texture view in the framebuffer.",
+      "parentUuid": "e2b16794_833e505e",
+      "revId": "7d75ee5b2ee4bbf4063908ac5b336cc80045cb06",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5c7cbb6f_27b4e44a",
         "filename": "src/Vulkan/VkImageView.cpp",
         "patchSetId": 1
