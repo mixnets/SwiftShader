@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "24de8679_d1cee566",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-11T12:10:40Z",
+      "side": 1,
+      "message": "I was suggesting renaming it to ExecutionState.",
+      "parentUuid": "f87ea918_1cda3b47",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3aa241a9_bab2c593",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 1
