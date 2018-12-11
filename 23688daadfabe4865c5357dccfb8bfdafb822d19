@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7f25712c_4222473e",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-11T04:11:33Z",
+      "side": 1,
+      "message": "I\u0027d be surprised if you really need to do anything differently with the flags... the intent here is to allow inline patching of the CB etc on (frustrating) hardware that prefers that.",
+      "revId": "23688daadfabe4865c5357dccfb8bfdafb822d19",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
