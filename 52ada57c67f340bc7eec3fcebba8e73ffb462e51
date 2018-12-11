@@ -119,6 +119,23 @@
     },
     {
       "key": {
+        "uuid": "179e5ca4_0a328e38",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-11T12:08:55Z",
+      "side": 1,
+      "message": "Ok, can we have a comment explaining this is the format the blitters uses as a \"copy source\" format to interpret the Vulkan clear values?",
+      "revId": "52ada57c67f340bc7eec3fcebba8e73ffb462e51",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6a20db15_0847307b",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 2
