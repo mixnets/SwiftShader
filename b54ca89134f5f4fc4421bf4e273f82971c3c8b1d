@@ -22,6 +22,30 @@
       "revId": "b54ca89134f5f4fc4421bf4e273f82971c3c8b1d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "611c12ef_2fa0f7c0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 6
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-11T18:56:20Z",
+      "side": 1,
+      "message": "The image specific portion of this implementation was landed here:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/23070\n\nThat being said, I can certainly put both bug IDs here.",
+      "parentUuid": "57ceee45_2b364f6f",
+      "range": {
+        "startLine": 17,
+        "startChar": 6,
+        "endLine": 17,
+        "endChar": 15
+      },
+      "revId": "b54ca89134f5f4fc4421bf4e273f82971c3c8b1d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
