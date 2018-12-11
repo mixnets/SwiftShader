@@ -58,8 +58,6 @@ namespace sw
         class Object {
         public:
             InsnIterator definition;
-            int32_t location = -1;
-            int32_t component = 0;
             spv::StorageClass storageClass;
             uint32_t sizeInComponents = 0;
 
@@ -131,6 +129,20 @@ namespace sw
 		std::unordered_map<uint32_t, Decorations> decorations;
 		std::unordered_map<uint32_t, std::vector<Decorations>> memberDecorations;
 
+		struct InterfaceComponent {
+			AttribType Type;
+			bool Flat : 1;
+			bool Centroid : 1;
+			bool Noperspective : 1;
+
+			InterfaceComponent()
+				: Type{ATTRIBTYPE_UNUSED}, Flat{false}, Centroid{false}, Noperspective{false}
+			{}
+		};
+
+		std::vector<InterfaceComponent> inputs;
+		std::vector<InterfaceComponent> outputs;
+
 		bool hasBuiltinInput(spv::BuiltIn b) const { return inputBuiltins.find(b) != inputBuiltins.end(); }
 
 	private:
@@ -140,6 +152,10 @@ namespace sw
         Modes modes;
 		void ProcessExecutionMode(InsnIterator it);
 		uint32_t ComputeTypeSize(InsnIterator insn);
+
+		void PopulateInterfaceSlot(std::vector<InterfaceComponent> &iface, Decorations const & d, AttribType type);
+		int PopulateInterfaceInner(std::vector<InterfaceComponent> &iface, uint32_t id, Decorations d);
+		void PopulateInterface(std::vector<InterfaceComponent> &iface, uint32_t id);
 
     };
 }
