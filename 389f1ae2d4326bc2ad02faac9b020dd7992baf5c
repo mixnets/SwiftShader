@@ -142,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "845c5122_3b1d804f",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-11T04:26:09Z",
+      "side": 1,
+      "message": "It\u0027s going to have to outlive that sooner or later, right?",
+      "parentUuid": "285f11dd_9526b355",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aae9e9da_2522003f",
         "filename": "src/Vulkan/VkRenderPass.cpp",
         "patchSetId": 1
