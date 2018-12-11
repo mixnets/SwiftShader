@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "f6755b8d_e457ff22",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-11T19:58:32Z",
+      "side": 1,
+      "message": "Then why not move both the Renderer and the ExecutionState to the Queue instead?\nIt would probably be an easier route going forward if we ever want to emulate multiple queues without having to deal with all sorts of sync issues in the Renderer.",
+      "parentUuid": "cc20b07d_0c8b2e89",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3aa241a9_bab2c593",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 1
