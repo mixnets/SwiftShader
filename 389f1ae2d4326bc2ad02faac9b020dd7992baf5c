@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "cc20b07d_0c8b2e89",
+        "filename": "src/Vulkan/VkCommandBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-12-11T13:52:27Z",
+      "side": 1,
+      "message": "Probably best to add a TODO to move this to the Device (one ExecutionState per queue, although we only have one for now).",
+      "parentUuid": "24de8679_d1cee566",
+      "revId": "389f1ae2d4326bc2ad02faac9b020dd7992baf5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3aa241a9_bab2c593",
         "filename": "src/Vulkan/VkCommandBuffer.hpp",
         "patchSetId": 1
