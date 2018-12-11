@@ -87,6 +87,24 @@
       "revId": "e5e7bbc934fe4202fb585a881c29fcb45cb48a08",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "52cb80dc_84a52e80",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-11T13:39:20Z",
+      "side": 1,
+      "message": "Because of how the objects are cast from the handle. Most objects are cast directly to their exact type (like VkImage is a vk::Image), but this is not the case for pipeline. A VkPipeline points to a vk::Pipeline, which is either a vk::GraphicsPipeline or a vk::ComputePipeline. When the memory is released, we call vk::Pipeline::destroy, which will forward the call to the proper derived class. I used a different name to make sure we knew this function wasn\u0027t called directly by vk::destroy (in VkDestroy.h). I can most likely do it with an abstract virtual function here, as you mention, I just thought the 2 mechanisms should be distinct and not look too much like each other, to avoid confusion. I have no problem changing it if you think it\u0027s clearer with the virtual abstract function.",
+      "parentUuid": "5b513da5_69c88845",
+      "revId": "e5e7bbc934fe4202fb585a881c29fcb45cb48a08",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
