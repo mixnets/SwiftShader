@@ -16,6 +16,24 @@
       "revId": "5b5787122ffee8bec21435f9a2f8cbe5a5ca818a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47473f64_e29dfa92",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 399,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-12T13:01:57Z",
+      "side": 1,
+      "message": "Right now, in OpenGL, we pre-handle restart by cutting the draw into multiple draw calls with each section of the index buffer separately. We will have to modify this to handle primitive restart directly in the Renderer at draw time for Vulkan. For now, this ignores restart.",
+      "parentUuid": "c68e5aa6_400d0eef",
+      "revId": "5b5787122ffee8bec21435f9a2f8cbe5a5ca818a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
