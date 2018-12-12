@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c68e5aa6_400d0eef",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 399,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-12T01:32:05Z",
+      "side": 1,
+      "message": "What exactly does this mean in the presence of restart?",
+      "revId": "5b5787122ffee8bec21435f9a2f8cbe5a5ca818a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
