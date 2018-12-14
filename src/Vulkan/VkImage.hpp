@@ -34,7 +34,6 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkImageCreateInfo* pCreateInfo);
 
-	VkDeviceSize getStorageSize() const;
 	const VkMemoryRequirements getMemoryRequirements() const;
 	void bind(VkDeviceMemory pDeviceMemory, VkDeviceSize pMemoryOffset);
 	void copyTo(VkImage dstImage, const VkImageCopy& pRegion);
@@ -47,8 +46,9 @@ public:
 	VkFormat                 getFormat() const { return format; }
 
 private:
-	void* getTexelPointer(const VkOffset3D& offset) const;
-	VkDeviceSize texelOffsetBytesInStorage(const VkOffset3D& offset) const;
+	VkDeviceSize getStorageSize() const;
+	void* getTexelPointer(const VkOffset3D& offset, uint32_t baseArrayLayer) const;
+	VkDeviceSize texelOffsetBytesInStorage(const VkOffset3D& offset, uint32_t baseArrayLayer) const;
 	int rowPitchBytes() const;
 	int slicePitchBytes() const;
 	int bytesPerTexel() const;
