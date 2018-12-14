@@ -135,65 +135,147 @@ void Image::copyTo(VkImage dstImage, const VkImageCopy& pRegion)
 
 void Image::copyTo(VkBuffer dstBuffer, const VkBufferImageCopy& pRegion)
 {
-	if((pRegion.imageExtent.width != extent.width) ||
-	   (pRegion.imageExtent.height != extent.height) ||
-	   (pRegion.imageExtent.depth != extent.depth) ||
-	   !((pRegion.imageSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
+	if(!((pRegion.imageSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
 	     (pRegion.imageSubresource.aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT) ||
 	     (pRegion.imageSubresource.aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT)) ||
-	   (pRegion.imageSubresource.mipLevel != 0) ||
-	   (pRegion.imageOffset.x != 0) ||
-	   (pRegion.imageOffset.y != 0) ||
-	   (pRegion.imageOffset.z != 0) ||
-	   (pRegion.bufferRowLength != extent.width) ||
-	   (pRegion.bufferImageHeight != extent.height))
+	   (pRegion.imageSubresource.mipLevel != 0))
 	{
 		UNIMPLEMENTED();
 	}
 
+	bool isSinglePlane = (pRegion.imageExtent.depth == 1);
+	bool isSingleLine  = (pRegion.imageExtent.height == 1) && isSinglePlane;
+	bool isEntireLine  = (pRegion.imageExtent.width == extent.width);
+	bool isEntirePlane = isEntireLine && (pRegion.imageExtent.height == extent.height);
+
 	Buffer* dst = Cast(dstBuffer);
 	DeviceMemory* srcMem = Cast(deviceMemory);
-	VkDeviceSize size = slicePitchBytes(pRegion.imageSubresource.aspectMask) * pRegion.imageExtent.depth;
+	int imageBytesPerTexel = bytesPerTexel(pRegion.imageSubresource.aspectMask);
+	int imageRowPitchBytes = rowPitchBytes(pRegion.imageSubresource.aspectMask);
+	int imageSlicePitchBytes = slicePitchBytes(pRegion.imageSubresource.aspectMask);
+
 	VkDeviceSize layerSize = slicePitchBytes(pRegion.imageSubresource.aspectMask) * extent.depth;
-	VkDeviceSize srcOffset = getMemoryOffset(pRegion.imageSubresource.aspectMask);
+	VkDeviceSize srcOffset = texelOffsetBytesInStorage(pRegion.imageOffset, pRegion.imageSubresource.baseArrayLayer, pRegion.imageSubresource.aspectMask) +
+	                         getMemoryOffset(pRegion.imageSubresource.aspectMask);
 	VkDeviceSize dstOffset = pRegion.bufferOffset;
 
 	uint32_t lastLayer = pRegion.imageSubresource.baseArrayLayer + pRegion.imageSubresource.layerCount - 1;
 	for(uint32_t layer = pRegion.imageSubresource.baseArrayLayer; layer <= lastLayer; layer++, srcOffset += layerSize, dstOffset += layerSize)
 	{
-		dst->copyFrom(srcMem->getOffsetPointer(srcOffset), size, dstOffset);
+		if(isSingleLine)
+		{
+			dst->copyFrom(srcMem->getOffsetPointer(srcOffset), pRegion.imageExtent.width * imageBytesPerTexel, dstOffset);
+		}
+		else if(isEntireLine && isSinglePlane)
+		{
+			dst->copyFrom(srcMem->getOffsetPointer(srcOffset), pRegion.imageExtent.height * imageRowPitchBytes, dstOffset); // Copy one plane
+		}
+		else if(isEntirePlane)
+		{
+			dst->copyFrom(srcMem->getOffsetPointer(srcOffset), pRegion.imageExtent.depth * imageSlicePitchBytes, dstOffset); // Copy multiple planes
+		}
+		else if(isEntireLine) // Copy plane by plane
+		{
+			VkDeviceSize sOffset = srcOffset;
+			VkDeviceSize dOffset = dstOffset;
+			VkDeviceSize copySize = pRegion.imageExtent.height * imageRowPitchBytes;
+			VkDeviceSize bufferSlicePitchBytes = ((pRegion.bufferImageHeight == 0) || (pRegion.bufferRowLength == 0)) ?
+				copySize : pRegion.bufferImageHeight * pRegion.bufferRowLength * imageBytesPerTexel;
+
+			for(uint32_t z = 0; z < pRegion.imageExtent.depth; z++, dOffset += bufferSlicePitchBytes, sOffset += imageSlicePitchBytes)
+			{
+				dst->copyFrom(srcMem->getOffsetPointer(sOffset), copySize, dOffset);
+			}
+		}
+		else // Copy line by line
+		{
+			VkDeviceSize sOffset = srcOffset;
+			VkDeviceSize dOffset = dstOffset;
+			VkDeviceSize copySize = pRegion.imageExtent.width * imageBytesPerTexel;
+			VkDeviceSize bufferPitchBytes =
+				(pRegion.bufferRowLength == 0) ? copySize : pRegion.bufferRowLength * imageBytesPerTexel;
+
+			for(uint32_t z = 0; z < pRegion.imageExtent.depth; z++)
+			{
+				for(uint32_t y = 0; y < pRegion.imageExtent.height; y++, dOffset += bufferPitchBytes, sOffset += imageRowPitchBytes)
+				{
+					dst->copyFrom(srcMem->getOffsetPointer(sOffset), copySize, dOffset);
+				}
+			}
+		}
 	}
 }
 
 void Image::copyFrom(VkBuffer srcBuffer, const VkBufferImageCopy& pRegion)
 {
-	if((pRegion.imageExtent.width != extent.width) ||
-	   (pRegion.imageExtent.height != extent.height) ||
-	   (pRegion.imageExtent.depth != extent.depth) ||
-	   !((pRegion.imageSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
+	if(!((pRegion.imageSubresource.aspectMask == VK_IMAGE_ASPECT_COLOR_BIT) ||
 	     (pRegion.imageSubresource.aspectMask == VK_IMAGE_ASPECT_DEPTH_BIT) ||
 	     (pRegion.imageSubresource.aspectMask == VK_IMAGE_ASPECT_STENCIL_BIT)) ||
-	   (pRegion.imageSubresource.mipLevel != 0) ||
-	   (pRegion.imageOffset.x != 0) ||
-	   (pRegion.imageOffset.y != 0) ||
-	   (pRegion.imageOffset.z != 0) ||
-	   (pRegion.bufferRowLength != extent.width) ||
-	   (pRegion.bufferImageHeight != extent.height))
+	   (pRegion.imageSubresource.mipLevel != 0))
 	{
 		UNIMPLEMENTED();
 	}
 
+	bool isSinglePlane = (pRegion.imageExtent.depth == 1);
+	bool isSingleLine = (pRegion.imageExtent.height == 1) && isSinglePlane;
+	bool isEntireLine = (pRegion.imageExtent.width == extent.width);
+	bool isEntirePlane = isEntireLine && (pRegion.imageExtent.height == extent.height);
+
 	Buffer* src = Cast(srcBuffer);
 	DeviceMemory* dstMem = Cast(deviceMemory);
-	VkDeviceSize size = slicePitchBytes(pRegion.imageSubresource.aspectMask) * pRegion.imageExtent.depth;
+	int imageBytesPerTexel = bytesPerTexel(pRegion.imageSubresource.aspectMask);
+	int imageRowPitchBytes = rowPitchBytes(pRegion.imageSubresource.aspectMask);
+	int imageSlicePitchBytes = slicePitchBytes(pRegion.imageSubresource.aspectMask);
+
 	VkDeviceSize layerSize = slicePitchBytes(pRegion.imageSubresource.aspectMask) * extent.depth;
 	VkDeviceSize srcOffset = pRegion.bufferOffset;
-	VkDeviceSize dstOffset = getMemoryOffset(pRegion.imageSubresource.aspectMask);
+	VkDeviceSize dstOffset = texelOffsetBytesInStorage(pRegion.imageOffset, pRegion.imageSubresource.baseArrayLayer, pRegion.imageSubresource.aspectMask) +
+	                         getMemoryOffset(pRegion.imageSubresource.aspectMask);
 
 	uint32_t lastLayer = pRegion.imageSubresource.baseArrayLayer + pRegion.imageSubresource.layerCount - 1;
 	for(uint32_t layer = pRegion.imageSubresource.baseArrayLayer; layer <= lastLayer; layer++, srcOffset += layerSize, dstOffset += layerSize)
 	{
-		src->copyTo(dstMem->getOffsetPointer(dstOffset), size, srcOffset);
+		if(isSingleLine)
+		{
+			src->copyTo(dstMem->getOffsetPointer(dstOffset), pRegion.imageExtent.width * imageBytesPerTexel, srcOffset);
+		}
+		else if(isEntireLine && isSinglePlane)
+		{
+			src->copyTo(dstMem->getOffsetPointer(dstOffset), pRegion.imageExtent.height * imageRowPitchBytes, srcOffset); // Copy one plane
+		}
+		else if(isEntirePlane)
+		{
+			src->copyTo(dstMem->getOffsetPointer(dstOffset), pRegion.imageExtent.depth * imageSlicePitchBytes, srcOffset); // Copy multiple planes
+		}
+		else if(isEntireLine) // Copy plane by plane
+		{
+			VkDeviceSize sOffset = srcOffset;
+			VkDeviceSize dOffset = dstOffset;
+			VkDeviceSize copySize = pRegion.imageExtent.height * imageRowPitchBytes;
+			VkDeviceSize bufferSlicePitchBytes = ((pRegion.bufferImageHeight == 0) || (pRegion.bufferRowLength == 0)) ?
+				copySize : pRegion.bufferImageHeight * pRegion.bufferRowLength * imageBytesPerTexel;
+
+			for(uint32_t z = 0; z < pRegion.imageExtent.depth; z++, dOffset += imageSlicePitchBytes, sOffset += bufferSlicePitchBytes)
+			{
+				src->copyTo(dstMem->getOffsetPointer(dOffset), copySize, sOffset);
+			}
+		}
+		else // Copy line by line
+		{
+			VkDeviceSize sOffset = srcOffset;
+			VkDeviceSize dOffset = dstOffset;
+			VkDeviceSize copySize = pRegion.imageExtent.width * imageBytesPerTexel;
+			VkDeviceSize bufferPitchBytes =
+				(pRegion.bufferRowLength == 0) ? copySize : pRegion.bufferRowLength * imageBytesPerTexel;
+
+			for(uint32_t z = 0; z < pRegion.imageExtent.depth; z++)
+			{
+				for(uint32_t y = 0; y < pRegion.imageExtent.height; y++, dOffset += imageRowPitchBytes, sOffset += bufferPitchBytes)
+				{
+					src->copyTo(dstMem->getOffsetPointer(dOffset), copySize, sOffset);
+				}
+			}
+		}
 	}
 }
 
