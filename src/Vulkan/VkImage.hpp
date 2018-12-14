@@ -46,12 +46,14 @@ public:
 	VkFormat                 getFormat() const { return format; }
 
 private:
-	VkDeviceSize getStorageSize() const;
-	void* getTexelPointer(const VkOffset3D& offset, uint32_t baseArrayLayer) const;
-	VkDeviceSize texelOffsetBytesInStorage(const VkOffset3D& offset, uint32_t baseArrayLayer) const;
-	int rowPitchBytes() const;
-	int slicePitchBytes() const;
-	int bytesPerTexel() const;
+	VkDeviceSize getStorageSize(const VkImageAspectFlags& flags) const;
+	void* getTexelPointer(const VkOffset3D& offset, uint32_t baseArrayLayer, const VkImageAspectFlags& flags) const;
+	VkDeviceSize texelOffsetBytesInStorage(const VkOffset3D& offset, uint32_t baseArrayLayer, const VkImageAspectFlags& flags) const;
+	VkDeviceSize getMemoryOffset(const VkImageAspectFlags& flags) const;
+	int rowPitchBytes(const VkImageAspectFlags& flags) const;
+	int slicePitchBytes(const VkImageAspectFlags& flags) const;
+	int bytesPerTexel(const VkImageAspectFlags& flags) const;
+	VkFormat getFormat(const VkImageAspectFlags& flags) const;
 	int getBorder() const;
 
 	VkDeviceMemory           deviceMemory = nullptr;
