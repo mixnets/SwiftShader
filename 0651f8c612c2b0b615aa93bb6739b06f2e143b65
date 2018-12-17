@@ -59,6 +59,24 @@
     },
     {
       "key": {
+        "uuid": "c1d032e4_d584e5a4",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:17:56Z",
+      "side": 1,
+      "message": "Ah I see what the problem is. It is because it is a depth-stencil format on 4bytes that you transform in 5 bytes per texel. I think that\u0027s ok for now. For speed this should eventually be an interleaved format but it can be fixed much later.",
+      "parentUuid": "f0758b12_abf2a6c3",
+      "revId": "0651f8c612c2b0b615aa93bb6739b06f2e143b65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "da9121cc_f8985b5c",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 1
