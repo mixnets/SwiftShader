@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cb9805f1_33f6c8ad",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:01:36Z",
+      "side": 1,
+      "message": "The code here is significantly the same as copyFrom(VkBuffer). Can they be factored via a boolean parameter (template or not) or computing a list of copies then performing them?",
+      "revId": "b528c0ee23fb94c84eb1a34ef1f87ad1e26f2320",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e414177_883a1f8b",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:01:36Z",
+      "side": 1,
+      "message": "We also need to check that the bufferRowLength * imageBytesPerTexels is rowPitchBytes do know the data is packed in the buffer.",
+      "revId": "b528c0ee23fb94c84eb1a34ef1f87ad1e26f2320",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e85a983_2ea2d4d2",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:01:36Z",
+      "side": 1,
+      "message": "Ditto for bufferImageHeight.",
+      "revId": "b528c0ee23fb94c84eb1a34ef1f87ad1e26f2320",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ff3d080_e6127cb3",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:01:36Z",
+      "side": 1,
+      "message": "instead of doing the defaulting here, could we do have local variable bufferRowLength and bufferImageHeight declared at the top of the function and modify them if they are 0? This would make the rest of the computations easier to understand.",
+      "range": {
+        "startLine": 182,
+        "startChar": 40,
+        "endLine": 183,
+        "endChar": 66
+      },
+      "revId": "b528c0ee23fb94c84eb1a34ef1f87ad1e26f2320",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
