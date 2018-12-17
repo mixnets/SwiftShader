@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7ab65fe0_d66aaf88",
+        "filename": "BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-12-17T18:49:26Z",
+      "side": 1,
+      "message": "Perhaps you want an else clause here with an assert to catch any attempt to compile with a different variant?",
+      "range": {
+        "startLine": 115,
+        "startChar": 6,
+        "endLine": 115,
+        "endChar": 7
+      },
+      "revId": "fea47379a969b6b2e3160fd46ba6f303bb2b9f57",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
