@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fae96fa7_7cd77f95",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:16:10Z",
+      "side": 1,
+      "message": "When I read this I thought the two planes would be interleaved at the slice level: one slice of depth, then one slice of stencil, etc. Maybe say two contiguous allocations/memory regions?",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 57
+      },
+      "revId": "0651f8c612c2b0b615aa93bb6739b06f2e143b65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e950ea1a_cb3d05bf",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:16:10Z",
+      "side": 1,
+      "message": "This is cool :D",
+      "revId": "0651f8c612c2b0b615aa93bb6739b06f2e143b65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0758b12_abf2a6c3",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:16:10Z",
+      "side": 1,
+      "message": "This isn\u0027t actually a problem: the X8 represents unused bytes of memory.",
+      "revId": "0651f8c612c2b0b615aa93bb6739b06f2e143b65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "da9121cc_f8985b5c",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:16:10Z",
+      "side": 1,
+      "message": "nit: and assert this isn\u0027t a depth-stencil format.",
+      "revId": "0651f8c612c2b0b615aa93bb6739b06f2e143b65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b961e84f_e8bc0b6d",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:16:10Z",
+      "side": 1,
+      "message": "nit: and assert this isn\u0027t a depth-stencil format.",
+      "revId": "0651f8c612c2b0b615aa93bb6739b06f2e143b65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
