@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ec926a2a_cec08eb4",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:09:32Z",
+      "side": 1,
+      "message": "Same comments here as for copyFrom.",
+      "revId": "5295ee146df15b2e3b856da661988b2407c32d53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c5769a04_34d6c959",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:09:32Z",
+      "side": 1,
+      "message": "deviceMemory is a member of Image so it could use \"DeviceMemory*\" instead of VkDeviceMemory.",
+      "range": {
+        "startLine": 185,
+        "startChar": 0,
+        "endLine": 185,
+        "endChar": 43
+      },
+      "revId": "5295ee146df15b2e3b856da661988b2407c32d53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2bfb63ab_52a89d4d",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:09:32Z",
+      "side": 1,
+      "message": "nit: put this in a local variable.",
+      "range": {
+        "startLine": 191,
+        "startChar": 47,
+        "endLine": 191,
+        "endChar": 61
+      },
+      "revId": "5295ee146df15b2e3b856da661988b2407c32d53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ddc770f1_984853b3",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-17T10:09:32Z",
+      "side": 1,
+      "message": "nit: I personally like to put these types of increments at the end of the loop body so that reading the code we can see: \"for each index in [baseArrayLayer, lastLayer] do the copy then increment offsets\".",
+      "range": {
+        "startLine": 192,
+        "startChar": 91,
+        "endLine": 192,
+        "endChar": 138
+      },
+      "revId": "5295ee146df15b2e3b856da661988b2407c32d53",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
