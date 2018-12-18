@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9865e3de_e4bd4ee4",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-18T09:55:08Z",
+      "side": 1,
+      "message": "Instead of this I think I would have made srcMemory a const char** that points either to bufferMemory and imageMemory, then the loops would have been updating bufferMemory and imageMemory directly.\n\nI\u0027m not sure if it would simplify the code that much though. The nice part would have been that the memcpy could have been done in the first \"if elseif elseif\" block.",
+      "range": {
+        "startLine": 155,
+        "startChar": 0,
+        "endLine": 159,
+        "endChar": 0
+      },
+      "revId": "665115f2b1de0f8caf0b0d5fafc0ac28913563b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ea33d11_74f70657",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-18T09:55:08Z",
+      "side": 1,
+      "message": "Cab we have a small comment that explains why we need to check both width and rowPitch match?",
+      "revId": "665115f2b1de0f8caf0b0d5fafc0ac28913563b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "432a1d9e_3ebbff71",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-18T09:55:08Z",
+      "side": 1,
+      "message": "nit: The places where these comments are is inconsistent, and it would be nice to have one for each case.",
+      "range": {
+        "startLine": 185,
+        "startChar": 62,
+        "endLine": 185,
+        "endChar": 85
+      },
+      "revId": "665115f2b1de0f8caf0b0d5fafc0ac28913563b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
