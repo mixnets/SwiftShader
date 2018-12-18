@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "69fc1967_40ec0269",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-18T16:40:53Z",
+      "side": 1,
+      "message": "Ack. Noted. This could be true of all commands, though, so I can refactor this in a separate cl.",
+      "parentUuid": "f6ae9413_66bd08bf",
+      "range": {
+        "startLine": 225,
+        "startChar": 11,
+        "endLine": 225,
+        "endChar": 45
+      },
+      "revId": "9aa85d0ec35b749b6db11a10932a72ef843c96d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f962b214_77a72355",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 2
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "3296507b_81625d84",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-18T16:40:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f962b214_77a72355",
+      "range": {
+        "startLine": 384,
+        "startChar": 9,
+        "endLine": 384,
+        "endChar": 17
+      },
+      "revId": "9aa85d0ec35b749b6db11a10932a72ef843c96d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8e7c2fe1_b831752f",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 2
@@ -62,6 +110,24 @@
       "revId": "9aa85d0ec35b749b6db11a10932a72ef843c96d6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bad009c8_e29da6b4",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-18T16:40:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8e7c2fe1_b831752f",
+      "revId": "9aa85d0ec35b749b6db11a10932a72ef843c96d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -85,6 +151,30 @@
       "revId": "9aa85d0ec35b749b6db11a10932a72ef843c96d6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3aea8b0c_032dd1cc",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 396,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-18T16:40:53Z",
+      "side": 1,
+      "message": "I don\u0027t think so, but I\u0027ll investigate those later.",
+      "parentUuid": "3ee4dabf_62a16f7a",
+      "range": {
+        "startLine": 395,
+        "startChar": 22,
+        "endLine": 396,
+        "endChar": 109
+      },
+      "revId": "9aa85d0ec35b749b6db11a10932a72ef843c96d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
