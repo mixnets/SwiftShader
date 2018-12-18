@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f6ae9413_66bd08bf",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-18T09:30:13Z",
+      "side": 1,
+      "message": "nit: these could be pre-cast to Image*",
+      "range": {
+        "startLine": 225,
+        "startChar": 11,
+        "endLine": 225,
+        "endChar": 45
+      },
+      "revId": "9aa85d0ec35b749b6db11a10932a72ef843c96d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f962b214_77a72355",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-18T09:30:13Z",
+      "side": 1,
+      "message": "nit: that\u0027s a frenchism, numSlices instead.",
+      "range": {
+        "startLine": 384,
+        "startChar": 9,
+        "endLine": 384,
+        "endChar": 17
+      },
+      "revId": "9aa85d0ec35b749b6db11a10932a72ef843c96d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8e7c2fe1_b831752f",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 387,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-18T09:30:13Z",
+      "side": 1,
+      "message": "Not necessarily in this patch but it would be nice to have sw::Surface creation as a helper method on Image since it is used in several places.",
+      "revId": "9aa85d0ec35b749b6db11a10932a72ef843c96d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3ee4dabf_62a16f7a",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 396,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-18T09:30:13Z",
+      "side": 1,
+      "message": "Could the off-by-ones come from the blitter taking floats here instead of integers?",
+      "range": {
+        "startLine": 395,
+        "startChar": 22,
+        "endLine": 396,
+        "endChar": 109
+      },
+      "revId": "9aa85d0ec35b749b6db11a10932a72ef843c96d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
