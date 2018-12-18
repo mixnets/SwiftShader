@@ -113,6 +113,40 @@
     },
     {
       "key": {
+        "uuid": "d83b25ed_fff36e43",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-18T09:49:05Z",
+      "side": 1,
+      "message": "nit: UNREAHABLE()",
+      "revId": "0651f8c612c2b0b615aa93bb6739b06f2e143b65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e91365c_63f9068c",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-18T09:49:05Z",
+      "side": 1,
+      "message": "nit: UNREACHABLE()",
+      "revId": "0651f8c612c2b0b615aa93bb6739b06f2e143b65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "da9121cc_f8985b5c",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 1
@@ -148,6 +182,24 @@
     },
     {
       "key": {
+        "uuid": "78464a47_ec32e1ec",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-18T09:49:05Z",
+      "side": 1,
+      "message": "We could add more code to special case when the stencil and depth mask are both set, but might not be worth the extra code for an assert.",
+      "parentUuid": "8154978f_8c3236ca",
+      "revId": "0651f8c612c2b0b615aa93bb6739b06f2e143b65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b961e84f_e8bc0b6d",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 1
@@ -177,6 +229,24 @@
       "side": 1,
       "message": "Not sure how that\u0027s possible. These formats are handled above.",
       "parentUuid": "b961e84f_e8bc0b6d",
+      "revId": "0651f8c612c2b0b615aa93bb6739b06f2e143b65",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f890eb2_ef67cadf",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-18T09:49:05Z",
+      "side": 1,
+      "message": "That\u0027s so the ASSERT triggers when we add support for more depth-stencil formats.",
+      "parentUuid": "028a5139_107b7fef",
       "revId": "0651f8c612c2b0b615aa93bb6739b06f2e143b65",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
