@@ -22,6 +22,30 @@
       "revId": "fea47379a969b6b2e3160fd46ba6f303bb2b9f57",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a49612bf_b981a9af",
+        "filename": "BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 6790
+      },
+      "writtenOn": "2018-12-18T15:06:46Z",
+      "side": 1,
+      "message": "Adding assert would brake Chromium build for r6 and loongson3 variants, since those are also supported, as per:\nhttps://cs.chromium.org/chromium/src/build/config/mips.gni?type\u003dcs\u0026q\u003dmips_arch_variant+file:%5Esrc/+package:%5Echromium$\u0026g\u003d0\u0026l\u003d19.\n\nI uploaded new patch set, which keeps -mcpu\u003dmips32r2 as default option and makes exception only for r1 variant, since it does not support all r2 instructions, so this way r6 and loongson3 variants will not be affected.",
+      "parentUuid": "7ab65fe0_d66aaf88",
+      "range": {
+        "startLine": 115,
+        "startChar": 6,
+        "endLine": 115,
+        "endChar": 7
+      },
+      "revId": "fea47379a969b6b2e3160fd46ba6f303bb2b9f57",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
