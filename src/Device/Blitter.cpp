@@ -328,6 +328,19 @@ namespace sw
 		case VK_FORMAT_R16_SFLOAT:
 			c.x = Float(*Pointer<Half>(element));
 			break;
+		case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
+			c.x = Float(As<Half>((*Pointer<UShort>(element + 0) & UShort(0x07FF)) << UShort(4)));
+			c.y = Float(As<Half>((*Pointer<UShort>(element + 1) & UShort(0x3FF8)) << UShort(1)));
+			c.z = Float(As<Half>((*Pointer<UShort>(element + 2) & UShort(0xFFC0)) >> UShort(1)));
+			break;
+		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
+			c.x = Float(*Pointer<UInt>(element) & UInt(0x000001FF)); // R
+			c.y = Float((*Pointer<UInt>(element) & UInt(0x0003FE00)) >> 9); // G
+			c.z = Float((*Pointer<UInt>(element) & UInt(0x07FC0000)) >> 18); // B
+			// Exponent bias (15) + number of mantissa bits per component (9) = 24
+			c *= Float4(Float(UInt(1) << ((*Pointer<UInt>(element) & UInt(0xF8000000)) >> 27)) * Float(1.0f / (1 << 24))); // E
+			c.w = 1.0f;
+			break;
 		case VK_FORMAT_R5G6B5_UNORM_PACK16:
 			c.x = Float(Int((*Pointer<UShort>(element) & UShort(0xF800)) >> UShort(11)));
 			c.y = Float(Int((*Pointer<UShort>(element) & UShort(0x07E0)) >> UShort(5)));
@@ -891,6 +904,8 @@ namespace sw
 		case VK_FORMAT_R16G16B16_SFLOAT:
 		case VK_FORMAT_R16G16_SFLOAT:
 		case VK_FORMAT_R16_SFLOAT:
+		case VK_FORMAT_B10G11R11_UFLOAT_PACK32:
+		case VK_FORMAT_E5B9G9R9_UFLOAT_PACK32:
 		case VK_FORMAT_A2B10G10R10_UINT_PACK32:
 			scale = vector(1.0f, 1.0f, 1.0f, 1.0f);
 			break;
