@@ -16,6 +16,24 @@
       "revId": "0ffd2235c64286b7717a6b91c364732df58902df",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b7b4745_899e69dd",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-20T15:47:28Z",
+      "side": 1,
+      "message": "All the formats in this group are RGBA8. The BGRA8 format is at line 79 below.\nFor some reason, the *_PACK* formats write their channel ordering in the opposite order from the other formats in the format enum name. The 3 formats here are all:\nbyte 0 : r\nbyte 1 : g\nbyte 2 : b\nbyte 3 : a",
+      "parentUuid": "3104874b_9b61a791",
+      "revId": "0ffd2235c64286b7717a6b91c364732df58902df",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
