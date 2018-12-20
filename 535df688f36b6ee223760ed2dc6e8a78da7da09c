@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "84fe95dc_3de23b02",
+        "filename": "src/Device/Surface.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1996,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-20T13:16:44Z",
+      "side": 1,
+      "message": "Not now but in the future it would be nice to have this be a map from format to a format info structure, just so we know we don\u0027t forget a format by accident in any of these functions.",
+      "revId": "535df688f36b6ee223760ed2dc6e8a78da7da09c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
