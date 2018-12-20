@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3104874b_9b61a791",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-20T13:14:22Z",
+      "side": 1,
+      "message": "Oh, RGBA8 is the same as BGRA8 in swiftshader? If not there is going to be an issue for clears with different values on each components.",
+      "revId": "0ffd2235c64286b7717a6b91c364732df58902df",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
