@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "68990e77_bcc757f2",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 776,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-21T17:17:45Z",
+      "side": 1,
+      "message": "May be working too hard here... there are no signed \u003c-\u003e unsigned conversions.\n\nSpec: \n\"Integer formats can only be converted to other integer formats with the same signedness.\"",
+      "revId": "51feec3e40dec1a19cb2c824a1459dcc4f94cbc8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
