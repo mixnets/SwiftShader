@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c94691a8_2efecd1f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-21T16:05:18Z",
+      "side": 1,
+      "message": "Used \"low-bitdepth\"",
+      "parentUuid": "421a05b3_37020476",
+      "range": {
+        "startLine": 7,
+        "startChar": 20,
+        "endLine": 7,
+        "endChar": 24
+      },
+      "revId": "0e33f5ec78ee49496957f1eeacdb36958dac36d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "042cc502_da68ed95",
         "filename": "src/Device/Blitter.cpp",
         "patchSetId": 2
@@ -39,6 +63,24 @@
       "revId": "0e33f5ec78ee49496957f1eeacdb36958dac36d8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c325c77_e5ffe82b",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-21T16:05:18Z",
+      "side": 1,
+      "message": "I\u0027ll add a comment explaining everything here.",
+      "parentUuid": "042cc502_da68ed95",
+      "revId": "0e33f5ec78ee49496957f1eeacdb36958dac36d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "35278ec2_df58dd59",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-21T16:05:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3aab263e_daa85df3",
+      "range": {
+        "startLine": 332,
+        "startChar": 82,
+        "endLine": 332,
+        "endChar": 85
+      },
+      "revId": "0e33f5ec78ee49496957f1eeacdb36958dac36d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "321bd289_600f7e94",
         "filename": "src/Device/Blitter.cpp",
         "patchSetId": 2
@@ -85,6 +151,30 @@
       "revId": "0e33f5ec78ee49496957f1eeacdb36958dac36d8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd394571_4a19e214",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-21T16:05:18Z",
+      "side": 1,
+      "message": "I can reformat this using multiple lines and add some comments.",
+      "parentUuid": "321bd289_600f7e94",
+      "range": {
+        "startLine": 341,
+        "startChar": 0,
+        "endLine": 341,
+        "endChar": 118
+      },
+      "revId": "0e33f5ec78ee49496957f1eeacdb36958dac36d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
