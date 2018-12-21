@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "18cf61ba_fdd7bbe8",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1930,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-21T12:34:33Z",
+      "side": 1,
+      "message": "Can we have an explanation of how this fits in reactor? Right now I don\u0027t understand how LLVM knows to treat read/writes between memory to halfs as 16bit reads and not 32.\n\nMaybe we could have helper functions that are called \"Float AsHalfFloat(Short)\" and vice versa?",
+      "revId": "afee5aa2acc43431544a81fa174312c99d27c284",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
