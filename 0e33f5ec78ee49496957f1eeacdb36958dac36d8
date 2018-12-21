@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "b3e2201a_271b43f7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-21T16:10:09Z",
+      "side": 1,
+      "message": "I saw that Khronos uses \"Low-bitdepth floats\" here:\nhttps://www.khronos.org/opengl/wiki/Small_Float_Formats",
+      "parentUuid": "806c76ec_e00c768d",
+      "range": {
+        "startLine": 7,
+        "startChar": 20,
+        "endLine": 7,
+        "endChar": 24
+      },
+      "revId": "0e33f5ec78ee49496957f1eeacdb36958dac36d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "042cc502_da68ed95",
         "filename": "src/Device/Blitter.cpp",
         "patchSetId": 2
