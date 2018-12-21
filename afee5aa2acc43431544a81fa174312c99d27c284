@@ -34,6 +34,24 @@
       "revId": "afee5aa2acc43431544a81fa174312c99d27c284",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "55b04048_bfb6221c",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1930,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-21T15:16:50Z",
+      "side": 1,
+      "message": "Mmmh this would involve writing all operators on Half with fallbacks to performing operations with Float when there are no instructions. K.",
+      "parentUuid": "df103b5d_9b33221e",
+      "revId": "afee5aa2acc43431544a81fa174312c99d27c284",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
