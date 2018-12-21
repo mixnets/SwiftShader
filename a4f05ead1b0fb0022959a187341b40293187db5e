@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2a279ac7_c7d4dba4",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-21T16:34:08Z",
+      "side": 1,
+      "message": "Thanks for the detailed comments.",
+      "revId": "a4f05ead1b0fb0022959a187341b40293187db5e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90df330c_721298e1",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-21T16:34:08Z",
+      "side": 1,
+      "message": "With the comment it\u0027s easier to assume what this is doing, but there is still some parenthesis overload when you try to look at the details. Could we introduce some temporaries?",
+      "revId": "a4f05ead1b0fb0022959a187341b40293187db5e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38ef8781_db05f88a",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-21T16:34:08Z",
+      "side": 1,
+      "message": "Same here.",
+      "revId": "a4f05ead1b0fb0022959a187341b40293187db5e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
