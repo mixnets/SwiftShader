@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "d80aa53a_7537f8d6",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 6090,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-12-21T15:53:21Z",
+      "side": 1,
+      "message": "Can you duplicate this implementation into SubzeroReactor.cpp ?\n\nI have an open bug to move all common implementations to Reactor.cpp (http://crbug.com/swiftshader/21) but that\u0027s probably not worth the effort right now.",
+      "range": {
+        "startLine": 6089,
+        "startChar": 1,
+        "endLine": 6090,
+        "endChar": 2
+      },
+      "revId": "afee5aa2acc43431544a81fa174312c99d27c284",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "18cf61ba_fdd7bbe8",
         "filename": "src/Reactor/Reactor.hpp",
         "patchSetId": 2
