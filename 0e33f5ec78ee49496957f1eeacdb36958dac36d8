@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "421a05b3_37020476",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-21T12:26:50Z",
+      "side": 1,
+      "message": "nit:exotic? packed?",
+      "range": {
+        "startLine": 7,
+        "startChar": 20,
+        "endLine": 7,
+        "endChar": 24
+      },
+      "revId": "0e33f5ec78ee49496957f1eeacdb36958dac36d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "042cc502_da68ed95",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-21T12:26:50Z",
+      "side": 1,
+      "message": "To help with readability can we store the whole texel in a temporary Int then extract the bits and then convert to Halfs/Float?",
+      "revId": "0e33f5ec78ee49496957f1eeacdb36958dac36d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3aab263e_daa85df3",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-21T12:26:50Z",
+      "side": 1,
+      "message": "This needs much comments to explain that the 11bit unsigned float is a 5bit mantissa and 6bit exponent, so we can place it in the middle of the bits of a half-float for the same result (and not overwrite the sign bit)",
+      "range": {
+        "startLine": 332,
+        "startChar": 82,
+        "endLine": 332,
+        "endChar": 85
+      },
+      "revId": "0e33f5ec78ee49496957f1eeacdb36958dac36d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "321bd289_600f7e94",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 341,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2018-12-21T12:26:50Z",
+      "side": 1,
+      "message": "Can we seperate this in multiple parts and explain what\u0027s happening? It\u0027s a bit of a parenthesis overload right now.",
+      "range": {
+        "startLine": 341,
+        "startChar": 0,
+        "endLine": 341,
+        "endChar": 118
+      },
+      "revId": "0e33f5ec78ee49496957f1eeacdb36958dac36d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
