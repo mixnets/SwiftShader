@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "b1e1fc4a_3095fc35",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-21T18:32:17Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "2a279ac7_c7d4dba4",
+      "revId": "a4f05ead1b0fb0022959a187341b40293187db5e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "90df330c_721298e1",
         "filename": "src/Device/Blitter.cpp",
         "patchSetId": 4
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "7c10a154_7ba9d895",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-21T18:32:17Z",
+      "side": 1,
+      "message": "Looking at the other format below, like R5G6B5 or A1R5G5B5, they all look pretty much like this one.\nUnless we change the style in this file, I feel like this reflect the style used elsewhere in this file.",
+      "parentUuid": "90df330c_721298e1",
+      "revId": "a4f05ead1b0fb0022959a187341b40293187db5e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "38ef8781_db05f88a",
         "filename": "src/Device/Blitter.cpp",
         "patchSetId": 4
@@ -50,6 +86,24 @@
       "revId": "a4f05ead1b0fb0022959a187341b40293187db5e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72104aba_30cf7a1f",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2018-12-21T18:32:17Z",
+      "side": 1,
+      "message": "Same.",
+      "parentUuid": "38ef8781_db05f88a",
+      "revId": "a4f05ead1b0fb0022959a187341b40293187db5e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
