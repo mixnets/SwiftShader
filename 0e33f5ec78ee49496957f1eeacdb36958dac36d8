@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "806c76ec_e00c768d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2018-12-21T16:06:24Z",
+      "side": 1,
+      "message": "https://en.wikipedia.org/wiki/Minifloat is perfectly correct.",
+      "parentUuid": "c94691a8_2efecd1f",
+      "range": {
+        "startLine": 7,
+        "startChar": 20,
+        "endLine": 7,
+        "endChar": 24
+      },
+      "revId": "0e33f5ec78ee49496957f1eeacdb36958dac36d8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "042cc502_da68ed95",
         "filename": "src/Device/Blitter.cpp",
         "patchSetId": 2
