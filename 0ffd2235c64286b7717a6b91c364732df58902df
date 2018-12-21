@@ -34,6 +34,24 @@
       "revId": "0ffd2235c64286b7717a6b91c364732df58902df",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1f2d2649_8b3e5bc7",
+        "filename": "src/Device/Blitter.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-21T20:30:38Z",
+      "side": 1,
+      "message": "Well, they are on a LE machine. They diverge if someone decides to make this work on a BE machine sometime..",
+      "parentUuid": "2b7b4745_899e69dd",
+      "revId": "0ffd2235c64286b7717a6b91c364732df58902df",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
