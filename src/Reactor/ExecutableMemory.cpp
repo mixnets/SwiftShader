@@ -22,6 +22,10 @@
 	#endif
 	#include <windows.h>
 	#include <intrin.h>
+#elif defined(__Fuchsia__)
+	#include <unistd.h>
+	#include <zircon/process.h>
+	#include <zircon/syscalls.h>
 #else
 	#include <errno.h>
 	#include <sys/mman.h>
@@ -172,10 +176,14 @@ void deallocate(void *memory)
 	#endif
 }
 
+inline uintptr_t roundUp(uintptr_t x, uintptr_t m) {
+	return (x + m - 1) & ~(m - 1);
+}
+
 void *allocateExecutable(size_t bytes)
 {
 	size_t pageSize = memoryPageSize();
-	size_t length = (bytes + pageSize - 1) & ~(pageSize - 1);
+	size_t length = roundUp(bytes, pageSize);
 	void *mapping;
 
 	#if defined(LINUX_ENABLE_NAMED_MMAP)
@@ -198,6 +206,40 @@ void *allocateExecutable(size_t bytes)
 		{
 			mapping = nullptr;
 		}
+	#elif defined(__Fuchsia__)
+		zx_handle_t vmo;
+		if (zx_vmo_create(length, ZX_VMO_NON_RESIZABLE, &vmo) != ZX_OK) {
+			return nullptr;
+		}
+		zx_vaddr_t reservation;
+		zx_status_t status = zx_vmar_map(
+			zx_vmar_root_self(), ZX_VM_FLAG_PERM_READ | ZX_VM_FLAG_PERM_WRITE,
+			0, vmo, 0, length, &reservation);
+		zx_handle_close(vmo);
+		if (status != ZX_OK) {
+			return nullptr;
+		}
+
+		zx_vaddr_t alignedReservation =
+		    (reservation + pageSize - 1) & ~(pageSize - 1);
+		mapping = reinterpret_cast<void*>(alignedReservation);
+
+		// Unmap extra memory reserved before the block.
+		if (alignedReservation != reservation) {
+			size_t prefix_size = alignedReservation - reservation;
+			status =
+				zx_vmar_unmap(zx_vmar_root_self(), reservation, prefix_size);
+			ASSERT(status == ZX_OK);
+			length -= prefix_size;
+		}
+
+		// Unmap extra memory at the end.
+		if (length > bytes) {
+			status = zx_vmar_unmap(
+				zx_vmar_root_self(), alignedReservation + bytes,
+				length - bytes);
+			ASSERT(status == ZX_OK);
+		}
 	#else
 		mapping = allocate(length, pageSize);
 	#endif
@@ -210,6 +252,11 @@ void markExecutable(void *memory, size_t bytes)
 	#if defined(_WIN32)
 		unsigned long oldProtection;
 		VirtualProtect(memory, bytes, PAGE_EXECUTE_READ, &oldProtection);
+	#elif defined(__Fuchsia__)
+	    zx_status_t status = zx_vmar_protect(
+			zx_vmar_root_self(), ZX_VM_FLAG_PERM_READ | ZX_VM_FLAG_PERM_EXECUTE,
+			reinterpret_cast<zx_vaddr_t>(memory), bytes);
+	    ASSERT(status != ZX_OK);
 	#else
 		mprotect(memory, bytes, PROT_READ | PROT_EXEC);
 	#endif
@@ -225,6 +272,9 @@ void deallocateExecutable(void *memory, size_t bytes)
 		size_t pageSize = memoryPageSize();
 		size_t length = (bytes + pageSize - 1) & ~(pageSize - 1);
 		munmap(memory, length);
+	#elif defined(__Fuchsia__)
+	    zx_vmar_unmap(zx_vmar_root_self(), reinterpret_cast<zx_vaddr_t>(memory),
+			          bytes);
 	#else
 		mprotect(memory, bytes, PROT_READ | PROT_WRITE);
 		deallocate(memory);
