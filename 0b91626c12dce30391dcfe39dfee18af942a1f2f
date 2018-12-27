@@ -107,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "31c59cdb_40aae840",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-27T22:15:09Z",
+      "side": 1,
+      "message": "Fixed throughout.",
+      "parentUuid": "aee0da7b_f1fefc70",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 4
+      },
+      "revId": "0b91626c12dce30391dcfe39dfee18af942a1f2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a6f77af2_187f2630",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 1
@@ -142,6 +166,30 @@
       "side": 1,
       "message": "My gcc might be showing. If you feel strongly about this, I will change it everywhere...",
       "parentUuid": "a6f77af2_187f2630",
+      "range": {
+        "startLine": 33,
+        "startChar": 14,
+        "endLine": 33,
+        "endChar": 18
+      },
+      "revId": "0b91626c12dce30391dcfe39dfee18af942a1f2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd4b1cfa_bf22c716",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2018-12-27T22:15:09Z",
+      "side": 1,
+      "message": "I would actually prefer to leave this. I know it\u0027s not the llvm convention, but there\u0027s potential confusion with `inst` and this is also widespread enough in the new code that it\u0027s a bit of a nightmare to fix throughout the stack of patches.",
+      "parentUuid": "17258e81_fe75f1aa",
       "range": {
         "startLine": 33,
         "startChar": 14,
