@@ -18,7 +18,7 @@
 #include "Matrix.hpp"
 #include "Context.hpp"
 #include "RoutineCache.hpp"
-#include "Pipeline/VertexShader.hpp"
+#include "Pipeline/SpirvShader.hpp"
 
 namespace sw
 {
@@ -50,13 +50,9 @@ namespace sw
 
 			uint64_t shaderID;
 
-			bool fixedFunction             : 1;   // TODO: Eliminate by querying shader.
 			bool textureSampling           : 1;   // TODO: Eliminate by querying shader.
 			unsigned int positionRegister  : BITS(MAX_VERTEX_OUTPUTS);   // TODO: Eliminate by querying shader.
 			unsigned int pointSizeRegister : BITS(MAX_VERTEX_OUTPUTS);   // TODO: Eliminate by querying shader.
-
-			bool transformFeedbackQueryEnabled                : 1;
-			uint64_t transformFeedbackEnabled                 : 64;
 			unsigned char verticesPerPrimitive                : 2; // 1 (points), 2 (lines) or 3 (triangles)
 
 			bool multiSampling  : 1;
@@ -73,7 +69,7 @@ namespace sw
 				StreamType type    : BITS(STREAMTYPE_LAST);
 				unsigned int count : 3;
 				bool normalized    : 1;
-				unsigned int attribType : BITS(VertexShader::ATTRIBTYPE_LAST);
+				unsigned int attribType : BITS(SpirvShader::ATTRIBTYPE_LAST);
 			};
 
 			struct Output
@@ -163,9 +159,6 @@ namespace sw
 		void setPointSizeMin(float pointSizeMin);
 		void setPointSizeMax(float pointSizeMax);
 
-		void setTransformFeedbackQueryEnabled(bool enable);
-		void enableTransformFeedback(uint64_t enable);
-
 	protected:
 		const State update(DrawType drawType);
 		Routine *routine(const State &state);
@@ -189,19 +182,6 @@ namespace sw
 			int offset;
 		};
 		UniformBufferInfo uniformBufferInfo[MAX_UNIFORM_BUFFER_BINDINGS];
-
-		struct TransformFeedbackInfo
-		{
-			TransformFeedbackInfo();
-
-			Resource* buffer;
-			unsigned int offset;
-			unsigned int reg;
-			unsigned int row;
-			unsigned int col;
-			unsigned int stride;
-		};
-		TransformFeedbackInfo transformFeedbackInfo[MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS];
 
 		Context *const context;
 
