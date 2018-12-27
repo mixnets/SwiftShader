@@ -14,7 +14,6 @@
 
 #include "VertexRoutine.hpp"
 
-#include "VertexShader.hpp"
 #include "Constants.hpp"
 #include "Device/Vertex.hpp"
 #include "Device/Renderer.hpp"
@@ -23,13 +22,11 @@
 
 namespace sw
 {
-	extern bool halfIntegerCoordinates;     // Pixel centers are not at integer coordinates
-	extern bool symmetricNormalizedDepth;   // [-1, 1] instead of [0, 1]
-
-	VertexRoutine::VertexRoutine(const VertexProcessor::State &state, const VertexShader *shader)
-		: v(shader && shader->indirectAddressableInput),
-		  o(shader && shader->indirectAddressableOutput),
-		  state(state)
+	VertexRoutine::VertexRoutine(const VertexProcessor::State &state, SpirvShader const *spirvShader)
+		: v(true),		/* TODO: indirect addressable */
+		  o(true),
+		  state(state),
+		  spirvShader(spirvShader)
 	{
 	}
 
@@ -63,7 +60,6 @@ namespace sw
 
 				readInput(indexQ);
 				program(indexQ);
-				postTransform();
 				computeClipFlags();
 
 				Pointer<Byte> cacheLine0 = vertexCache + tagIndex * UInt((int)sizeof(Vertex));
@@ -73,18 +69,6 @@ namespace sw
 			UInt cacheIndex = index & 0x0000003F;
 			Pointer<Byte> cacheLine = vertexCache + cacheIndex * UInt((int)sizeof(Vertex));
 			writeVertex(vertex, cacheLine);
-
-			if(state.transformFeedbackEnabled != 0)
-			{
-				transformFeedback(vertex, primitiveNumber, indexInPrimitive);
-
-				indexInPrimitive++;
-				If(indexInPrimitive == 3)
-				{
-					primitiveNumber++;
-					indexInPrimitive = 0;
-				}
-			}
 
 			vertex += sizeof(Vertex);
 			batch += sizeof(unsigned int);
@@ -115,7 +99,7 @@ namespace sw
 		Int4 maxZ = CmpLT(o[pos].w, o[pos].z);
 		Int4 minX = CmpNLE(-o[pos].w, o[pos].x);
 		Int4 minY = CmpNLE(-o[pos].w, o[pos].y);
-		Int4 minZ = symmetricNormalizedDepth ? CmpNLE(-o[pos].w, o[pos].z) : CmpNLE(Float4(0.0f), o[pos].z);
+		Int4 minZ = CmpNLE(Float4(0.0f), o[pos].z);
 
 		clipFlags = *Pointer<Int>(constants + OFFSET(Constants,maxX) + SignMask(maxX) * 4);   // FIXME: Array indexing
 		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,maxY) + SignMask(maxY) * 4);
@@ -143,7 +127,7 @@ namespace sw
 		Pointer<Byte> source2 = source1 + (!textureSampling ? stride : 0);
 		Pointer<Byte> source3 = source2 + (!textureSampling ? stride : 0);
 
-		bool isNativeFloatAttrib = (stream.attribType == VertexShader::ATTRIBTYPE_FLOAT) || stream.normalized;
+		bool isNativeFloatAttrib = (stream.attribType == SpirvShader::ATTRIBTYPE_FLOAT) || stream.normalized;
 
 		switch(stream.type)
 		{
@@ -174,13 +158,13 @@ namespace sw
 
 					switch(stream.attribType)
 					{
-					case VertexShader::ATTRIBTYPE_INT:
+					case SpirvShader::ATTRIBTYPE_INT:
 						if(stream.count >= 1) v.x = As<Float4>(Int4(v.x));
 						if(stream.count >= 2) v.x = As<Float4>(Int4(v.y));
 						if(stream.count >= 3) v.x = As<Float4>(Int4(v.z));
 						if(stream.count >= 4) v.x = As<Float4>(Int4(v.w));
 						break;
-					case VertexShader::ATTRIBTYPE_UINT:
+					case SpirvShader::ATTRIBTYPE_UINT:
 						if(stream.count >= 1) v.x = As<Float4>(UInt4(v.x));
 						if(stream.count >= 2) v.x = As<Float4>(UInt4(v.y));
 						if(stream.count >= 3) v.x = As<Float4>(UInt4(v.z));
@@ -603,17 +587,6 @@ namespace sw
 		return v;
 	}
 
-	void VertexRoutine::postTransform()
-	{
-		int pos = state.positionRegister;
-
-		if(!halfIntegerCoordinates)
-		{
-			o[pos].x = o[pos].x + *Pointer<Float4>(data + OFFSET(DrawData,halfPixelX)) * o[pos].w;
-			o[pos].y = o[pos].y + *Pointer<Float4>(data + OFFSET(DrawData,halfPixelY)) * o[pos].w;
-		}
-	}
-
 	void VertexRoutine::writeCache(Pointer<Byte> &cacheLine)
 	{
 		Vector4f v;
@@ -690,11 +663,6 @@ namespace sw
 		v.z = o[pos].z;
 		v.w = o[pos].w;
 
-		if(symmetricNormalizedDepth)
-		{
-			v.z = (v.z + v.w) * Float4(0.5f);   // [-1, 1] -> [0, 1]
-		}
-
 		Float4 w = As<Float4>(As<Int4>(v.w) | (As<Int4>(CmpEQ(v.w, Float4(0.0f))) & As<Int4>(Float4(1.0f))));
 		Float4 rhw = Float4(1.0f) / w;
 
@@ -723,39 +691,5 @@ namespace sw
 
 		*Pointer<Int4>(vertex + OFFSET(Vertex,X)) = *Pointer<Int4>(cache + OFFSET(Vertex,X));
 		*Pointer<Int>(vertex + OFFSET(Vertex,clipFlags)) = *Pointer<Int>(cache + OFFSET(Vertex,clipFlags));
-	}
-
-	void VertexRoutine::transformFeedback(const Pointer<Byte> &vertex, const UInt &primitiveNumber, const UInt &indexInPrimitive)
-	{
-		If(indexInPrimitive < state.verticesPerPrimitive)
-		{
-			UInt tOffset = primitiveNumber * state.verticesPerPrimitive + indexInPrimitive;
-
-			for(int i = 0; i < MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS; i++)
-			{
-				if(state.transformFeedbackEnabled & (1ULL << i))
-				{
-					UInt reg = *Pointer<UInt>(data + OFFSET(DrawData, vs.reg[i]));
-					UInt row = *Pointer<UInt>(data + OFFSET(DrawData, vs.row[i]));
-					UInt col = *Pointer<UInt>(data + OFFSET(DrawData, vs.col[i]));
-					UInt str = *Pointer<UInt>(data + OFFSET(DrawData, vs.str[i]));
-
-					Pointer<Byte> t = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData, vs.t[i])) + (tOffset * str * sizeof(float));
-					Pointer<Byte> v = vertex + OFFSET(Vertex, v) + reg * sizeof(float);
-
-					For(UInt r = 0, r < row, r++)
-					{
-						UInt rOffsetX = r * col * sizeof(float);
-						UInt rOffset4 = r * sizeof(float4);
-
-						For(UInt c = 0, c < col, c++)
-						{
-							UInt cOffset = c * sizeof(float);
-							*Pointer<Float>(t + rOffsetX + cOffset) = *Pointer<Float>(v + rOffset4 + cOffset);
-						}
-					}
-				}
-			}
-		}
 	}
 }
