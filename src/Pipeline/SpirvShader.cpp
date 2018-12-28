@@ -222,11 +222,11 @@ namespace sw
 				// Vectors and matrices both consume element count * element size.
 				return defs[insn.word(2)].sizeInComponents * insn.word(3);
 
-			case spv::OpTypeArray:
-				// This should be the element count * element size. Array sizes come from constant ids,
-				// which we haven't yet implemented.
-				UNIMPLEMENTED("Need constant support to get array size");
-				return 1;
+			case spv::OpTypeArray: {
+				// Element count * element size. Array sizes come from constant ids.
+				auto arraySize = GetConstantInt(insn.word(3));
+				return defs[insn.word(2)].sizeInComponents * arraySize;
+			}
 
 			case spv::OpTypeStruct: {
 				uint32_t size = 0;
@@ -300,7 +300,13 @@ namespace sw
 				}
 				return d.Location;
 			}
-				// TODO: array
+			case spv::OpTypeArray: {
+				auto arraySize = GetConstantInt(obj.definition.word(3));
+				for (auto i = 0u; i < arraySize; i++) {
+					d.Location = PopulateInterfaceInner(iface, obj.definition.word(2), d);
+				}
+				return d.Location;
+			}
 			default:
 				// Intentionally partial; most opcodes do not participate in type hierarchies
 				return 0;
