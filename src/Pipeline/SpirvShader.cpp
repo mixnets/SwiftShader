@@ -28,10 +28,7 @@ namespace sw
 			  serialID{serialCounter++}, modes{}
 	{
 		// Simplifying assumptions (to be satisfied by earlier transformations)
-		// - There is exactly one extrypoint in the module, and it's the one we want
-		// - Builtin interface blocks have been split. [Splitting user-defined interface blocks
-		//   without changing layout is impossible in the general case because splitting an array
-		//   of structs produces a weirdly-strided array, which SPIRV can't represent.
+		// - There is exactly one entrypoint in the module, and it's the one we want
 		// - The only input/output OpVariables present are those used by the entrypoint
 
 		for (auto insn : *this) {
@@ -107,6 +104,22 @@ namespace sw
 					object.kind = Object::Kind::Type;
 					object.definition = insn;
 					object.sizeInComponents = ComputeTypeSize(insn);
+
+					if (insn.opcode() == spv::OpTypeStruct) {
+						auto d = memberDecorations.find(resultId);
+						if (d != memberDecorations.end()) {
+							for (auto & m : d->second) {
+								if (m.HasBuiltIn) {
+									object.isBuiltInBlock = true;
+									break;
+								}
+							}
+						}
+					}
+					else if (insn.opcode() == spv::OpTypePointer){
+						auto pointeeType = insn.word(3);
+						object.isBuiltInBlock = defs[pointeeType].isBuiltInBlock;
+					}
 					break;
 				}
 
@@ -121,25 +134,16 @@ namespace sw
 					object.kind = Object::Kind::Variable;
 					object.definition = insn;
 					object.storageClass = storageClass;
-					object.sizeInComponents = defs[typeId].sizeInComponents;
+
+					auto &type = defs[typeId];
+
+					object.sizeInComponents = type.sizeInComponents;
+					object.isBuiltInBlock = type.isBuiltInBlock;
 
 					// Register builtins
 
-					// TODO: detect the builtin block!
-					auto &d = decorations[resultId];
-					if (storageClass == spv::StorageClassInput) {
-						if (d.HasBuiltIn) {
-							inputBuiltins[d.BuiltIn] = resultId;
-						} else {
-							PopulateInterface(inputs, resultId);
-						}
-					}
-					if (storageClass == spv::StorageClassOutput) {
-						if (d.HasBuiltIn) {
-							outputBuiltins[d.BuiltIn] = resultId;
-						} else {
-							PopulateInterface(outputs, resultId);
-						}
+					if (storageClass == spv::StorageClassInput || storageClass == spv::StorageClassOutput) {
+						ProcessInterfaceVariable(object);
 					}
 					break;
 				}
@@ -158,9 +162,53 @@ namespace sw
 					break;
 				}
 
+				case spv::OpCapability:
+					// Various capabilities will be declared, but none affect our code generation at this point.
+				case spv::OpMemoryModel:
+					// Memory model does not affect our code generation until we decide to do Vulkan Memory Model support.
+				case spv::OpEntryPoint:
+					// Due to preprocessing, the entrypoint provides no value.
+					break;
+
 				default:
 					break;    // This is OK, these passes are intentionally partial
 			}
+		}
+	}
+
+	void SpirvShader::ProcessInterfaceVariable(Object const & object)
+	{
+		auto & builtinInterface = (object.storageClass == spv::StorageClassInput) ? inputBuiltins : outputBuiltins;
+		auto & userDefinedInterface = (object.storageClass == spv::StorageClassInput) ? inputs : outputs;
+
+		auto resultId = object.definition.word(2);
+		if (object.isBuiltInBlock) {
+			// walk the builtin block, registering each of its members separately.
+			auto ptrType = defs[object.definition.word(1)].definition;
+			assert(ptrType.opcode() == spv::OpTypePointer);
+			auto m = memberDecorations.find(ptrType.word(3));
+			auto structType = defs[ptrType.word(3)].definition;
+			assert(m != memberDecorations.end());        // otherwise we wouldn't have marked the type chain
+			auto offset = 0u;
+			auto word = 2u;
+			for (auto &member : m->second) {
+				auto &memberType = defs[structType.word(word)];
+
+				if (member.HasBuiltIn) {
+					builtinInterface[member.BuiltIn] = {resultId, offset, memberType.sizeInComponents};
+				}
+
+				offset += memberType.sizeInComponents;
+				++word;
+			}
+			return;
+		}
+
+		auto d = decorations.find(resultId);
+		if (d != decorations.end() && d->second.HasBuiltIn) {
+			builtinInterface[d->second.BuiltIn] = { resultId, 0, object.sizeInComponents };
+		} else {
+			PopulateInterface(userDefinedInterface, resultId);
 		}
 	}
 
