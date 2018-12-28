@@ -81,6 +81,8 @@
 
 #include <numeric>
 #include <fstream>
+#include <codecvt>
+#include <locale>
 
 #if defined(__i386__) || defined(__x86_64__)
 #include <xmmintrin.h>
@@ -932,7 +934,8 @@ namespace rr
 #else
 			std::error_code error;
 #endif
-			llvm::raw_fd_ostream file("llvm-dump-unopt.txt", error);
+			std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+			llvm::raw_fd_ostream file(conv.to_bytes(name) + "-llvm-dump-unopt.txt", error);
 			::module->print(file, 0);
 		}
 
@@ -948,7 +951,8 @@ namespace rr
 #else
 			std::error_code error;
 #endif
-			llvm::raw_fd_ostream file("llvm-dump-opt.txt", error);
+			std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+			llvm::raw_fd_ostream file(conv.to_bytes(name) + "-llvm-dump-opt.txt", error);
 			::module->print(file, 0);
 		}
 
