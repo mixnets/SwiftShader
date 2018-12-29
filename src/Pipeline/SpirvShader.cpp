@@ -173,6 +173,7 @@ namespace sw
 					break;
 
 				default:
+					printf("Warning: ignored opcode %u\n", insn.opcode());
 					break;    // This is OK, these passes are intentionally partial
 			}
 		}
@@ -305,7 +306,13 @@ namespace sw
 	void
 	SpirvShader::PopulateInterfaceSlot(std::vector<InterfaceComponent> &iface, Decorations const &d, AttribType type)
 	{
-		auto &c = iface[(d.Location << 2) | d.Component];
+		auto scalarSlot = (d.Location << 2) | d.Component;
+		if (scalarSlot < 0 || scalarSlot >= static_cast<int32_t>(iface.size())) {
+			printf("Warning: tried to place interface var at scalar slot %d, dropped\n", scalarSlot);
+			return;
+		}
+
+		auto &c = iface[scalarSlot];
 		c.Type = type;
 		c.Flat = d.Flat;
 		c.Noperspective = d.Noperspective;
