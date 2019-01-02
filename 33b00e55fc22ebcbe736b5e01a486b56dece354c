@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "27018c4a_4f930149",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T17:35:15Z",
+      "side": 1,
+      "message": "I expect most of them to evaporate. There are a few cases:\n\n- values formed by OpVariable in non-descriptor-backed storage classes\n  - Translate to lvalue of sizeInComponents scalars (per lane, when nonuniform)\n\n- values formed by OpVariable in descriptor-backed storage classes\n  - compile-time notion only.\n\n- values formed by Op*AccessChain or OpTexelPointer\n  - GEP, with first N indices handled specially, if descriptor-backed storage class\n  - the only \u0027real\u0027 pointers.",
+      "parentUuid": "5e44274f_95972038",
+      "revId": "33b00e55fc22ebcbe736b5e01a486b56dece354c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3b9c8201_d15b34e5",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 12
