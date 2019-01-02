@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "24ca0c7f_c6fca6ab",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:57:02Z",
+      "side": 1,
+      "message": "I\u0027m just modeling on the existing shader classes. This should be an atomic.",
+      "parentUuid": "1ddc0a42_aa349418",
+      "range": {
+        "startLine": 23,
+        "startChar": 1,
+        "endLine": 23,
+        "endChar": 9
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c46c8747_f17e31a4",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 12
@@ -60,6 +84,30 @@
       "writtenOn": "2019-01-02T10:11:51Z",
       "side": 1,
       "message": "entrypoint",
+      "range": {
+        "startLine": 28,
+        "startChar": 28,
+        "endLine": 28,
+        "endChar": 38
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "caa46eb3_a028d0d7",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:57:02Z",
+      "side": 1,
+      "message": "I\u0027m sure I fixed this at some point :). Ack.",
+      "parentUuid": "c46c8747_f17e31a4",
       "range": {
         "startLine": 28,
         "startChar": 28,
@@ -135,6 +183,24 @@
     },
     {
       "key": {
+        "uuid": "4cf6b801_f1b2be00",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:57:02Z",
+      "side": 1,
+      "message": "You have the type right here -- spv::ExecutionMode. This is one of the cases I strongly disagree with spelling out the type. Some of the others, OK...",
+      "parentUuid": "3c61ed0c_8bdab60f",
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c63ae86a_0f8c77e9",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 12
@@ -146,6 +212,30 @@
       "writtenOn": "2019-01-02T10:11:51Z",
       "side": 1,
       "message": "I didn\u0027t know SPIRV instructions encoded their length, that makes everything so much easier! :D",
+      "range": {
+        "startLine": 47,
+        "startChar": 21,
+        "endLine": 47,
+        "endChar": 40
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "99d4ebb3_d038b9aa",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:57:02Z",
+      "side": 1,
+      "message": "Sure does :)",
+      "parentUuid": "c63ae86a_0f8c77e9",
       "range": {
         "startLine": 47,
         "startChar": 21,
@@ -215,6 +305,24 @@
     },
     {
       "key": {
+        "uuid": "f03defbc_46169baf",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:57:02Z",
+      "side": 1,
+      "message": "See patch 3ish, which wires this on to the pipeline. I could move this later.",
+      "parentUuid": "1dccf7db_b6a0a356",
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "b69156f2_35a801b4",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 12
@@ -255,6 +363,24 @@
     },
     {
       "key": {
+        "uuid": "9b370769_364d2549",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:57:02Z",
+      "side": 1,
+      "message": "Yes, I think this can go to the cpp, or go away completely. I wanted to hold the shaders on :71, :72 by unique_ptr but the weird destruction behavior of our Vulkan objects ruins that.",
+      "parentUuid": "62dd23a1_9889329e",
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9fdf5ba1_d222c009",
         "filename": "src/Vulkan/VkShaderModule.cpp",
         "patchSetId": 12
@@ -278,6 +404,30 @@
     },
     {
       "key": {
+        "uuid": "a4d78c06_28af5002",
+        "filename": "src/Vulkan/VkShaderModule.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:57:02Z",
+      "side": 1,
+      "message": "OK.",
+      "parentUuid": "9fdf5ba1_d222c009",
+      "range": {
+        "startLine": 25,
+        "startChar": 56,
+        "endLine": 25,
+        "endChar": 61
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e6bac7df_e0d57a30",
         "filename": "src/Vulkan/VkShaderModule.hpp",
         "patchSetId": 12
@@ -289,6 +439,30 @@
       "writtenOn": "2019-01-02T06:40:57Z",
       "side": 1,
       "message": "Please describe what\u0027s wrong with this and what needs to happen.",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 8
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad022d73_02ffbbf0",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:57:02Z",
+      "side": 1,
+      "message": "Mostly just excessive copies.",
+      "parentUuid": "e6bac7df_e0d57a30",
       "range": {
         "startLine": 37,
         "startChar": 4,
@@ -335,6 +509,24 @@
       "writtenOn": "2019-01-02T10:11:51Z",
       "side": 1,
       "message": "nit: I assume this is making a copy on purpose because we currently store a copy of the whole code in pipelines?",
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7bce60e0_37b9c83e",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:57:02Z",
+      "side": 1,
+      "message": "This copy can go away eventually. We need to feed SPIRV-Opt this shader, and then construct the SpirvShader over the post-{optimization,specialization} blob.",
+      "parentUuid": "b4c14fc8_b5babaf4",
       "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
