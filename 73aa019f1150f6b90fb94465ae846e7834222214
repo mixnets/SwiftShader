@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "847d58ac_04b8fb93",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:17:16Z",
+      "side": 1,
+      "message": "How do you plan to deal with primitive types and vector/matrices of them vs. user-defined types?",
+      "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0f41dcff_db569f21",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:17:16Z",
+      "side": 1,
+      "message": "nit: can we spell out autos?",
+      "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8251719d_84a309a4",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 3
@@ -42,6 +76,23 @@
         "endLine": 103,
         "endChar": 26
       },
+      "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f4f77bbf_4686cb01",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:17:16Z",
+      "side": 1,
+      "message": "Would it make sense to have a map for types, a map for variables / values? Then we could have a getter that ASSERTs that the id queried is in the map.",
       "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
