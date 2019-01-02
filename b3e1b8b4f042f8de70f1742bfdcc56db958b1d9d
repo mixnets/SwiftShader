@@ -48,6 +48,23 @@
     },
     {
       "key": {
+        "uuid": "1a28d61f_166e7a68",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T15:52:22Z",
+      "side": 1,
+      "message": "Nicolas: should we translate these enums to our own set, so the SPIRV header doesn\u0027t have to leak into everywhere?",
+      "revId": "b3e1b8b4f042f8de70f1742bfdcc56db958b1d9d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8f12acf3_aa4ced9d",
         "filename": "src/Device/VertexProcessor.hpp",
         "patchSetId": 12
