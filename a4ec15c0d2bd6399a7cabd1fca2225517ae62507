@@ -1,0 +1,147 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4cf3fd3e_793f241d",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:28:21Z",
+      "side": 1,
+      "message": "nit: same as usual for auto",
+      "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6518711c_01daabe6",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:28:21Z",
+      "side": 1,
+      "message": "nit: decorations?",
+      "range": {
+        "startLine": 49,
+        "startChar": 11,
+        "endLine": 49,
+        "endChar": 12
+      },
+      "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d2eeefc_920fd1da",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:28:21Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 77,
+        "startChar": 12,
+        "endLine": 77,
+        "endChar": 13
+      },
+      "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8a8e5a9e_6bc7c632",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:28:21Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 122,
+        "startChar": 11,
+        "endLine": 122,
+        "endChar": 12
+      },
+      "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b85acd40_81959d34",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:28:21Z",
+      "side": 1,
+      "message": "Having a whitelist of these decorations we don\u0027t care about and default:UNREACHABLE() would let us know if we miss anything. The whitelist doesn\u0027t need to be complete at first.",
+      "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5d6a29ed_ae1cd848",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:28:21Z",
+      "side": 1,
+      "message": "nit: these can be default initializers on the members.",
+      "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30f261a5_645d0de7",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:28:21Z",
+      "side": 1,
+      "message": "nit: add?",
+      "range": {
+        "startLine": 164,
+        "startChar": 8,
+        "endLine": 164,
+        "endChar": 13
+      },
+      "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
