@@ -25,6 +25,86 @@
     },
     {
       "key": {
+        "uuid": "b375ef18_68c656e1",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:37:23Z",
+      "side": 1,
+      "message": "same as usual for auto and one-letter variables.",
+      "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd5b5031_04649e2a",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:37:23Z",
+      "side": 1,
+      "message": "what\u0027s this?",
+      "range": {
+        "startLine": 241,
+        "startChar": 8,
+        "endLine": 241,
+        "endChar": 9
+      },
+      "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d61b28db_8c0c8a90",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:37:23Z",
+      "side": 1,
+      "message": "Can we have a comment explaining what this does in detail? After 1 minute it still isn\u0027t clear to me what this function does.",
+      "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eccd0968_a24d7ffd",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:37:23Z",
+      "side": 1,
+      "message": "nit: pass by pointer since it is being mutated.",
+      "range": {
+        "startLine": 303,
+        "startChar": 37,
+        "endLine": 303,
+        "endChar": 70
+      },
+      "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a4c77b56_59d2f5ff",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 8
@@ -42,6 +122,23 @@
         "endLine": 180,
         "endChar": 75
       },
+      "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30666b51_770bc83e",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:37:23Z",
+      "side": 1,
+      "message": "nit:Can we use default initializers on members instead of a constructor?",
       "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
