@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8fe14a2e_b7fe9d23",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T07:09:07Z",
+      "side": 1,
+      "message": "I think we can just remove the parameter from the clipper class altogether.",
+      "range": {
+        "startLine": 118,
+        "startChar": 24,
+        "endLine": 118,
+        "endChar": 29
+      },
+      "revId": "b3e1b8b4f042f8de70f1742bfdcc56db958b1d9d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5149fbc8_c98dceb9",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T07:09:07Z",
+      "side": 1,
+      "message": "These remaining ones are not transform feedback ones (did you intend to add this comment elsewhere)?",
+      "range": {
+        "startLine": 290,
+        "startChar": 4,
+        "endLine": 290,
+        "endChar": 46
+      },
+      "revId": "b3e1b8b4f042f8de70f1742bfdcc56db958b1d9d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8f12acf3_aa4ced9d",
+        "filename": "src/Device/VertexProcessor.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T07:09:07Z",
+      "side": 1,
+      "message": "Please add a description here of what\u0027s wrong and what\u0027s needed to fix it.",
+      "range": {
+        "startLine": 71,
+        "startChar": 33,
+        "endLine": 71,
+        "endChar": 46
+      },
+      "revId": "b3e1b8b4f042f8de70f1742bfdcc56db958b1d9d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
