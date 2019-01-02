@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "5cb22c05_fb6a2328",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T15:48:44Z",
+      "side": 1,
+      "message": "I\u0027d rather not shadow the member `decorations`, but OK..",
+      "parentUuid": "6518711c_01daabe6",
+      "range": {
+        "startLine": 49,
+        "startChar": 11,
+        "endLine": 49,
+        "endChar": 12
+      },
+      "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9d2eeefc_920fd1da",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 10
@@ -122,6 +146,24 @@
     },
     {
       "key": {
+        "uuid": "9db5d788_84bfc4c2",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T15:48:44Z",
+      "side": 1,
+      "message": "The nonbitfields can.",
+      "parentUuid": "5d6a29ed_ae1cd848",
+      "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "30f261a5_645d0de7",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 10
@@ -133,6 +175,30 @@
       "writtenOn": "2019-01-02T10:28:21Z",
       "side": 1,
       "message": "nit: add?",
+      "range": {
+        "startLine": 164,
+        "startChar": 8,
+        "endLine": 164,
+        "endChar": 13
+      },
+      "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2193001b_f3c4e32f",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T15:48:44Z",
+      "side": 1,
+      "message": "Sure, if you prefer that.",
+      "parentUuid": "30f261a5_645d0de7",
       "range": {
         "startLine": 164,
         "startChar": 8,
