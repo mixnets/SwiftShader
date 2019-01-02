@@ -142,6 +142,24 @@
       "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "22afa309_3b7cbf0e",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T15:41:47Z",
+      "side": 1,
+      "message": "At the cost of losing the bit packing.\n\nBitfields can\u0027t have initializers until C++20 (?)",
+      "parentUuid": "30666b51_770bc83e",
+      "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
