@@ -25,6 +25,53 @@
     },
     {
       "key": {
+        "uuid": "1ddc0a42_aa349418",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:11:51Z",
+      "side": 1,
+      "message": "I believe this was for multithreading reasons. It should be an atomic variable on the logical device instead (or the instance).",
+      "parentUuid": "ea009012_785fd3f9",
+      "range": {
+        "startLine": 23,
+        "startChar": 1,
+        "endLine": 23,
+        "endChar": 9
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c46c8747_f17e31a4",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:11:51Z",
+      "side": 1,
+      "message": "entrypoint",
+      "range": {
+        "startLine": 28,
+        "startChar": 28,
+        "endLine": 28,
+        "endChar": 38
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "bc507aef_198f8a7b",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 12
@@ -71,6 +118,29 @@
     },
     {
       "key": {
+        "uuid": "c63ae86a_0f8c77e9",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:11:51Z",
+      "side": 1,
+      "message": "I didn\u0027t know SPIRV instructions encoded their length, that makes everything so much easier! :D",
+      "range": {
+        "startLine": 47,
+        "startChar": 21,
+        "endLine": 47,
+        "endChar": 40
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "09e84372_bc1fa6b8",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 12
@@ -88,6 +158,80 @@
         "endLine": 81,
         "endChar": 5
       },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0f38055_bd3b2ce3",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:11:51Z",
+      "side": 1,
+      "message": "All of these should be initialized to false.",
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1dccf7db_b6a0a356",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:11:51Z",
+      "side": 1,
+      "message": "What is this serial used for? Can it be introduced in a later patch when it is used?",
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b69156f2_35a801b4",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:11:51Z",
+      "side": 1,
+      "message": "nit: for auto here and in other places, I\u0027m not sure what the swiftshader style is, but Chromium asks we spell out types when they aren\u0027t insanely long. (like iterators for a map of vector insanely long)",
+      "range": {
+        "startLine": 386,
+        "startChar": 2,
+        "endLine": 386,
+        "endChar": 6
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "62dd23a1_9889329e",
+        "filename": "src/Vulkan/VkPipeline.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:11:51Z",
+      "side": 1,
+      "message": "Why is that include needed? I don\u0027t see anything in the header, maybe it could be moved to the .cpp",
       "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
@@ -157,6 +301,23 @@
         "endLine": 38,
         "endChar": 30
       },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b4c14fc8_b5babaf4",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-02T10:11:51Z",
+      "side": 1,
+      "message": "nit: I assume this is making a copy on purpose because we currently store a copy of the whole code in pipelines?",
       "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
