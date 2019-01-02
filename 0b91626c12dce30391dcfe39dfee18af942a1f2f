@@ -202,6 +202,30 @@
     },
     {
       "key": {
+        "uuid": "31b5e3cd_0c0c6474",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T06:40:57Z",
+      "side": 1,
+      "message": "What\u0027s the potential confusion with \u0027inst\u0027 you mention? Note that SPIR-V itself also has an OpExtInst instruction. So \u0027insn\u0027 seems to be highly GCC specific. In fact http://gcc.gnu.org/onlinedocs/gcc-4.5.2/gccint/Insns.html defines it as its own type of object and not as an abbreviation of \u0027instruction\u0027 (but some insns represent instructions). Whereas in the SPIR-V spec there\u0027s no mention of insn and instead after the first few words \"all remaining words are a linear sequence of instructions\".\n\nSorry about the nitpickery, but I feel it\u0027s important not to have it confused with the GCC object and just use the common abbreviation of instruction.\n\nUnderstood that this would be a pain to replace in the current patch stack. Feel free to change it in a follow-up patch.",
+      "parentUuid": "cd4b1cfa_bf22c716",
+      "range": {
+        "startLine": 33,
+        "startChar": 14,
+        "endLine": 33,
+        "endChar": 18
+      },
+      "revId": "0b91626c12dce30391dcfe39dfee18af942a1f2f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "53198f0f_c74c9f7b",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 1

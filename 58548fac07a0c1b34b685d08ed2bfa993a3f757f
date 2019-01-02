@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ea009012_785fd3f9",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T06:40:57Z",
+      "side": 1,
+      "message": "nit: I don\u0027t think this needs to be volatile. It would mean that in the code below it gets read from memory, written into serialID, then read again to be incremented and written.",
+      "range": {
+        "startLine": 23,
+        "startChar": 1,
+        "endLine": 23,
+        "endChar": 9
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bc507aef_198f8a7b",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T06:40:57Z",
+      "side": 1,
+      "message": "style: We always put the open brace on the next line (except for small compound statements that go on one line).",
+      "range": {
+        "startLine": 32,
+        "startChar": 25,
+        "endLine": 32,
+        "endChar": 27
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b76c9837_1a311bcd",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T06:40:57Z",
+      "side": 1,
+      "message": "style: We put case labels one indentation level back (like goto labels).",
+      "range": {
+        "startLine": 34,
+        "startChar": 4,
+        "endLine": 34,
+        "endChar": 30
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "09e84372_bc1fa6b8",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T06:40:57Z",
+      "side": 1,
+      "message": "style nit: Constructors (and destructors) are typically declared near the top of the class.",
+      "range": {
+        "startLine": 76,
+        "startChar": 3,
+        "endLine": 81,
+        "endChar": 5
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9fdf5ba1_d222c009",
+        "filename": "src/Vulkan/VkShaderModule.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T06:40:57Z",
+      "side": 1,
+      "message": "nit: It\u0027s preferable to express this as \"codeSize / sizeof(uint32_t)\".\n\nIt\u0027s clearer what it does, and any optimizing compiler will lower it to a shift anyway.",
+      "range": {
+        "startLine": 25,
+        "startChar": 56,
+        "endLine": 25,
+        "endChar": 61
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e6bac7df_e0d57a30",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T06:40:57Z",
+      "side": 1,
+      "message": "Please describe what\u0027s wrong with this and what needs to happen.",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 8
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9cf507b9_b6fb991e",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T06:40:57Z",
+      "side": 1,
+      "message": "style: We tend to start static functions with a capital letter, but not non-static ones.",
+      "range": {
+        "startLine": 38,
+        "startChar": 23,
+        "endLine": 38,
+        "endChar": 30
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
