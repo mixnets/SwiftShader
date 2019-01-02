@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d8a1836a_9b6396d4",
+        "filename": "src/Device/Config.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T07:54:54Z",
+      "side": 1,
+      "message": "These can be removed now?",
+      "range": {
+        "startLine": 85,
+        "startChar": 2,
+        "endLine": 87,
+        "endChar": 27
+      },
+      "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a4c77b56_59d2f5ff",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-02T07:54:54Z",
+      "side": 1,
+      "message": "nit: Spec uses capitalized P",
+      "range": {
+        "startLine": 180,
+        "startChar": 62,
+        "endLine": 180,
+        "endChar": 75
+      },
+      "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
