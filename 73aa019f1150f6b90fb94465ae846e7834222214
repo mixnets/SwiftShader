@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "66fa35df_860e796e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:02:49Z",
+      "side": 1,
+      "message": "I want to lower every object to Object::sizeInComponents scalars (per lane, for nonuniform objects).",
+      "parentUuid": "847d58ac_04b8fb93",
+      "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0f41dcff_db569f21",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2019-01-02T10:17:16Z",
       "side": 1,
       "message": "nit: can we spell out autos?",
+      "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "14330db3_2d092414",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:02:49Z",
+      "side": 1,
+      "message": "Not keen. In this case it\u0027s not painful, but elsewhere there\u0027s plenty of iterator types etc.\n\nNicolas: we\u0027ve only just introduced c++11 in swiftshader -- what are your thoughts on use of auto?",
+      "parentUuid": "0f41dcff_db569f21",
       "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
@@ -82,6 +118,30 @@
     },
     {
       "key": {
+        "uuid": "0d1b4d35_9f7c33a0",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:02:49Z",
+      "side": 1,
+      "message": "OK.",
+      "parentUuid": "c7ad1337_84d28645",
+      "range": {
+        "startLine": 103,
+        "startChar": 3,
+        "endLine": 103,
+        "endChar": 26
+      },
+      "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f4f77bbf_4686cb01",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 3
@@ -93,6 +153,24 @@
       "writtenOn": "2019-01-02T10:17:16Z",
       "side": 1,
       "message": "Would it make sense to have a map for types, a map for variables / values? Then we could have a getter that ASSERTs that the id queried is in the map.",
+      "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f73f0e92_65956e11",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T16:02:49Z",
+      "side": 1,
+      "message": "I could split this, yes. Do you want just types vs values, or more fine-grained?",
+      "parentUuid": "f4f77bbf_4686cb01",
       "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
