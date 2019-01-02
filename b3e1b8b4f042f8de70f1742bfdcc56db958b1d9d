@@ -85,6 +85,30 @@
       "revId": "b3e1b8b4f042f8de70f1742bfdcc56db958b1d9d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c655e9a7_a8f4dd42",
+        "filename": "src/Device/VertexProcessor.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T15:53:33Z",
+      "side": 1,
+      "message": "I think I can actually just undo this now.",
+      "parentUuid": "8f12acf3_aa4ced9d",
+      "range": {
+        "startLine": 71,
+        "startChar": 33,
+        "endLine": 71,
+        "endChar": 46
+      },
+      "revId": "b3e1b8b4f042f8de70f1742bfdcc56db958b1d9d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
