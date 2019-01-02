@@ -63,6 +63,30 @@
       "revId": "33b00e55fc22ebcbe736b5e01a486b56dece354c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9dec45b6_f8c557ed",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-02T15:50:09Z",
+      "side": 1,
+      "message": "Ack. There\u0027s lots of stuff that would be nice as static helpers but they end up needing to look at other instructions",
+      "parentUuid": "7bbdaa7b_19b49df0",
+      "range": {
+        "startLine": 150,
+        "startChar": 11,
+        "endLine": 150,
+        "endChar": 26
+      },
+      "revId": "33b00e55fc22ebcbe736b5e01a486b56dece354c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
