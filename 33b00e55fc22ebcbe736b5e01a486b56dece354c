@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "b050864d_b5da4cac",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-03T09:11:53Z",
+      "side": 1,
+      "message": "I see, and we could distinguish the third class using the storage class.\n\nCan we have a comment that explains this?",
+      "parentUuid": "27018c4a_4f930149",
+      "revId": "33b00e55fc22ebcbe736b5e01a486b56dece354c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3b9c8201_d15b34e5",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 12
