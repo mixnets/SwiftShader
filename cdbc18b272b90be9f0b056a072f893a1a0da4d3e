@@ -16,6 +16,24 @@
       "revId": "cdbc18b272b90be9f0b056a072f893a1a0da4d3e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3c4b6360_e4b24c30",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-03T09:21:46Z",
+      "side": 1,
+      "message": "Also would it be possible to assert that the type is a 32bit int?",
+      "parentUuid": "b9781637_86c9effd",
+      "revId": "cdbc18b272b90be9f0b056a072f893a1a0da4d3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
