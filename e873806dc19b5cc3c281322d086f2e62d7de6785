@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76fa75c8_052dd3f2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-03T03:55:00Z",
+      "side": 1,
+      "message": "This is a bug from 2011 that seems unrelated.",
+      "range": {
+        "startLine": 18,
+        "startChar": 5,
+        "endLine": 18,
+        "endChar": 19
+      },
+      "revId": "e873806dc19b5cc3c281322d086f2e62d7de6785",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2b00914_71e44003",
+        "filename": "src/OpenGL/libEGL/Display.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-03T03:55:00Z",
+      "side": 1,
+      "message": "Note at line 141 that this is currently only called on x86, so I don\u0027t think it\u0027s necessary to prevent compiling this in its entirety.\n\nI prefer to keep it since that makes it less likely to break the build when working on a different platform, and also if we wanted to check CPU feature requirements for ARM we might want to use similar functions/structure and not duplicate everything.\n\nAnyway, if this is causing an issue I overlooked then the change is fine.",
+      "range": {
+        "startLine": 108,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 44
+      },
+      "revId": "e873806dc19b5cc3c281322d086f2e62d7de6785",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f2fcfaed_344b855b",
+        "filename": "third_party/llvm-7.0/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-03T03:55:00Z",
+      "side": 1,
+      "message": "Could use extra parenthesis to avoid misreading this.",
+      "range": {
+        "startLine": 416,
+        "startChar": 6,
+        "endLine": 416,
+        "endChar": 37
+      },
+      "revId": "e873806dc19b5cc3c281322d086f2e62d7de6785",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
