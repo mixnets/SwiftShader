@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "ef7d968e_1afa9b1b",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-03T03:27:54Z",
+      "side": 1,
+      "message": "I think https://google.github.io/styleguide/cppguide.html#auto offers sound advice in this case. Auto is great to avoid the unnecessary verbosity often encountered with templated types (which hurt readability), but in other cases repeating the type can also improve readability and make the intent more explicit.\n\nNote that SwiftShader is a fairly low-level project, and many types are set in stone by the API spec, so we generally don\u0027t want the \"hide all implementation details\" properties of Sutter\u0027s AAA style.\n\nThat said, I don\u0027t think your relatively liberal use of auto has been harmful thus far. Just keep practicing judgement for each individual case, with a focus on readability.",
+      "parentUuid": "14330db3_2d092414",
+      "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "8251719d_84a309a4",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 3
