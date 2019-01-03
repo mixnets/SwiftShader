@@ -66,6 +66,30 @@
     },
     {
       "key": {
+        "uuid": "bb3a6116_34bff159",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-03T09:13:31Z",
+      "side": 1,
+      "message": "Mmmh I\u0027m not sure what would be a good choice then.",
+      "parentUuid": "5cb22c05_fb6a2328",
+      "range": {
+        "startLine": 49,
+        "startChar": 11,
+        "endLine": 49,
+        "endChar": 12
+      },
+      "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9d2eeefc_920fd1da",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 10
@@ -158,6 +182,24 @@
       "side": 1,
       "message": "The nonbitfields can.",
       "parentUuid": "5d6a29ed_ae1cd848",
+      "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e8a91b88_f3ff134f",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-03T09:13:31Z",
+      "side": 1,
+      "message": "TIL C++ can\u0027t have default initializers for bitfields, nvm.",
+      "parentUuid": "9db5d788_84bfc4c2",
       "revId": "a4ec15c0d2bd6399a7cabd1fca2225517ae62507",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
