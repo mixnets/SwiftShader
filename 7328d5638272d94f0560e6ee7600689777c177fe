@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ade3c660_5034dd1a",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-03T10:42:16Z",
+      "side": 1,
+      "message": "Are there constraints like all members of a structure must be builtins or all of them most not be builtins? Can we add a comment explaining that a structure is a builtin as soon as one of its members is?",
+      "revId": "7328d5638272d94f0560e6ee7600689777c177fe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1d29a319_95e337cd",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-03T10:42:16Z",
+      "side": 1,
+      "message": "nit: ASSERT the storage class is input or output.",
+      "revId": "7328d5638272d94f0560e6ee7600689777c177fe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5fca3d80_f171cd3e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-03T10:42:16Z",
+      "side": 1,
+      "message": "nit: uint32_t pointeeType \u003d ptrType.word(3)",
+      "range": {
+        "startLine": 189,
+        "startChar": 35,
+        "endLine": 189,
+        "endChar": 50
+      },
+      "revId": "7328d5638272d94f0560e6ee7600689777c177fe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "96be6341_d19a5c09",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-03T10:42:16Z",
+      "side": 1,
+      "message": "nit: assert just after the definition of m",
+      "revId": "7328d5638272d94f0560e6ee7600689777c177fe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
