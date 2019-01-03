@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5763b19d_c78ef7fc",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 7127
+      },
+      "writtenOn": "2019-01-03T06:22:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76fa75c8_052dd3f2",
+      "range": {
+        "startLine": 18,
+        "startChar": 5,
+        "endLine": 18,
+        "endChar": 19
+      },
+      "revId": "e873806dc19b5cc3c281322d086f2e62d7de6785",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e2b00914_71e44003",
         "filename": "src/OpenGL/libEGL/Display.cpp",
         "patchSetId": 1
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "bf27709b_05feb541",
+        "filename": "src/OpenGL/libEGL/Display.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 7127
+      },
+      "writtenOn": "2019-01-03T06:22:03Z",
+      "side": 1,
+      "message": "The unused functions trigger compilation warning.",
+      "parentUuid": "e2b00914_71e44003",
+      "range": {
+        "startLine": 108,
+        "startChar": 0,
+        "endLine": 108,
+        "endChar": 44
+      },
+      "revId": "e873806dc19b5cc3c281322d086f2e62d7de6785",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f2fcfaed_344b855b",
         "filename": "third_party/llvm-7.0/BUILD.gn",
         "patchSetId": 1
@@ -68,6 +116,30 @@
       "revId": "e873806dc19b5cc3c281322d086f2e62d7de6785",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f0559c25_70c41e12",
+        "filename": "third_party/llvm-7.0/BUILD.gn",
+        "patchSetId": 1
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 7127
+      },
+      "writtenOn": "2019-01-03T06:22:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f2fcfaed_344b855b",
+      "range": {
+        "startLine": 416,
+        "startChar": 6,
+        "endLine": 416,
+        "endChar": 37
+      },
+      "revId": "e873806dc19b5cc3c281322d086f2e62d7de6785",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
