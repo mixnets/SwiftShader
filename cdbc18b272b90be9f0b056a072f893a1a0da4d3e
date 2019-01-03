@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b9781637_86c9effd",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-03T09:18:58Z",
+      "side": 1,
+      "message": "Can we comment this as a hack? Long-term I imagine constants would store their aggregate value as a bunch of scalar values instead of having to re-parse SPIRV.",
+      "revId": "cdbc18b272b90be9f0b056a072f893a1a0da4d3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
