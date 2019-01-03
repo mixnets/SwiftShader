@@ -192,6 +192,24 @@
       "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "26024987_25292b6c",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-03T09:09:52Z",
+      "side": 1,
+      "message": "I think types vs values gives the most bang for buck right now. Do you think variable vs. constants is important? I\u0027m not 100% sure.",
+      "parentUuid": "f73f0e92_65956e11",
+      "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
