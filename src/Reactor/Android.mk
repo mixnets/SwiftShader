@@ -112,7 +112,6 @@ LOCAL_CFLAGS += \
 	-DLOG_TAG=\"libsubzero\" \
 	-Wall \
 	-Werror \
-	-Wno-undefined-var-template \
 	-Wno-unused-lambda-capture \
 	-Wno-unused-parameter \
 	-Wno-implicit-exception-spec-mismatch \

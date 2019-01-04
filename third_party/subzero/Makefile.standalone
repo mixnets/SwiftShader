@@ -279,7 +279,7 @@ endif
 # TODO(stichnot,jpp): Restructure static fields in template classes to avoid
 # needing -Wno-undefined-var-template .
 CXXFLAGS := $(LLVM_CXXFLAGS) $(BASE_CXXFLAGS) $(CXX_DEFINES) $(HOST_FLAGS) \
-  $(STDLIB_FLAGS) -Wno-undefined-var-template
+  $(STDLIB_FLAGS)
 SB_CXXFLAGS := $(SB_LLVM_CXXFLAGS) $(BASE_CXXFLAGS) $(BASE_CXX_DEFINES) \
                -Wno-unknown-pragmas -I$(NACL_ROOT) -I$(NACL_ROOT)/..
 

@@ -47,7 +47,6 @@ else()
   -DALLOW_WASM=0
   -DPNACL_BROWSER_TRANSLATOR=0
   )
-  add_compile_options(-Wno-undefined-var-template)
 endif()
 
 execute_process(COMMAND git rev-parse HEAD
