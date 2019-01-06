@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "90075a6e_18534ffd",
+        "filename": "src/Reactor/ExecutableMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-06T21:27:02Z",
+      "side": 1,
+      "message": "nit: Note that this is actually a round-up-to-nearest-multiple-of-power-of-two. Could be misused if not clarified.",
+      "range": {
+        "startLine": 179,
+        "startChar": 17,
+        "endLine": 179,
+        "endChar": 24
+      },
+      "revId": "7d1f259abfaab0237d1d23e0e640d769ba38f72d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "97fcb856_f1111890",
+        "filename": "src/Reactor/ExecutableMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-06T21:27:02Z",
+      "side": 1,
+      "message": "style: We place the opening bracket on the next line.",
+      "range": {
+        "startLine": 179,
+        "startChar": 51,
+        "endLine": 179,
+        "endChar": 52
+      },
+      "revId": "7d1f259abfaab0237d1d23e0e640d769ba38f72d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85f86203_f1da600f",
+        "filename": "src/Reactor/ExecutableMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-06T21:27:02Z",
+      "side": 1,
+      "message": "nit: Did you intend to use the utility function here?",
+      "range": {
+        "startLine": 224,
+        "startChar": 3,
+        "endLine": 224,
+        "endChar": 50
+      },
+      "revId": "7d1f259abfaab0237d1d23e0e640d769ba38f72d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
