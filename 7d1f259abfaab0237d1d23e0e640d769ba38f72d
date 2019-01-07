@@ -72,6 +72,54 @@
     },
     {
       "key": {
+        "uuid": "6b0fc90e_2e477132",
+        "filename": "src/Reactor/ExecutableMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 6844
+      },
+      "writtenOn": "2019-01-07T18:30:55Z",
+      "side": 1,
+      "message": "I\u0027ve added a comment and assert to ensure that it\u0027s called only with m\u003d2^n.\n\nIt\u0027s used on all platforms, so it can\u0027t be wrapped with defined(__Fuchsia__)",
+      "parentUuid": "040c12ec_9c1571b5",
+      "range": {
+        "startLine": 179,
+        "startChar": 17,
+        "endLine": 179,
+        "endChar": 24
+      },
+      "revId": "7d1f259abfaab0237d1d23e0e640d769ba38f72d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a5a5814_3b971f59",
+        "filename": "src/Reactor/ExecutableMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 6844
+      },
+      "writtenOn": "2019-01-07T18:30:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "97fcb856_f1111890",
+      "range": {
+        "startLine": 179,
+        "startChar": 51,
+        "endLine": 179,
+        "endChar": 52
+      },
+      "revId": "7d1f259abfaab0237d1d23e0e640d769ba38f72d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "85f86203_f1da600f",
         "filename": "src/Reactor/ExecutableMemory.cpp",
         "patchSetId": 5
@@ -92,6 +140,30 @@
       "revId": "7d1f259abfaab0237d1d23e0e640d769ba38f72d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c59b2e74_3c064151",
+        "filename": "src/Reactor/ExecutableMemory.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 6844
+      },
+      "writtenOn": "2019-01-07T18:30:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "85f86203_f1da600f",
+      "range": {
+        "startLine": 224,
+        "startChar": 3,
+        "endLine": 224,
+        "endChar": 50
+      },
+      "revId": "7d1f259abfaab0237d1d23e0e640d769ba38f72d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
