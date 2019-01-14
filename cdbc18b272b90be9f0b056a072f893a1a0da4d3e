@@ -34,6 +34,24 @@
       "revId": "cdbc18b272b90be9f0b056a072f893a1a0da4d3e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7dbc80be_f28b842d",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-14T16:12:58Z",
+      "side": 1,
+      "message": "I\u0027m not certain this goes away when we do real support -- the Reactor representation of a constant is indeed as you say; this is much earlier than that, though.\nAs for asserting: yes, I will do that.",
+      "parentUuid": "3c4b6360_e4b24c30",
+      "revId": "cdbc18b272b90be9f0b056a072f893a1a0da4d3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
