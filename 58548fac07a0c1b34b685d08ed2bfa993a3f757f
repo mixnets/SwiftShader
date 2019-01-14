@@ -540,6 +540,30 @@
     },
     {
       "key": {
+        "uuid": "9be8db84_b4128e1e",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-14T22:59:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b4fc27ab_37fe5be2",
+      "range": {
+        "startLine": 37,
+        "startChar": 4,
+        "endLine": 37,
+        "endChar": 8
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9cf507b9_b6fb991e",
         "filename": "src/Vulkan/VkShaderModule.hpp",
         "patchSetId": 12
@@ -595,6 +619,48 @@
       "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f3b73842_06021d55",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-14T22:59:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9cf507b9_b6fb991e",
+      "range": {
+        "startLine": 38,
+        "startChar": 23,
+        "endLine": 38,
+        "endChar": 30
+      },
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b3fbaa1c_3ad816d0",
+        "filename": "src/Vulkan/VkShaderModule.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-14T22:59:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7bce60e0_37b9c83e",
+      "revId": "58548fac07a0c1b34b685d08ed2bfa993a3f757f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
