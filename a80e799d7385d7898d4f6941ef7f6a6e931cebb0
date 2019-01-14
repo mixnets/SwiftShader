@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "281028a7_912e64a8",
+        "filename": "src/Device/VertexProcessor.hpp",
+        "patchSetId": 17
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-14T21:47:39Z",
+      "side": 1,
+      "message": "Hack here is now gone.",
+      "revId": "a80e799d7385d7898d4f6941ef7f6a6e931cebb0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
