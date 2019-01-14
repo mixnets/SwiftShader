@@ -210,6 +210,24 @@
       "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa2d21c9_2bcb60b6",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-14T22:34:44Z",
+      "side": 1,
+      "message": "Until we want to flatten constants early, I don\u0027t think it\u0027s super interesting.\n\nI want labels separate. (but not touching labels here yet, so won\u0027t do it now).",
+      "parentUuid": "26024987_25292b6c",
+      "revId": "73aa019f1150f6b90fb94465ae846e7834222214",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
