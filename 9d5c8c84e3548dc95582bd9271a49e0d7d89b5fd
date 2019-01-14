@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1d0d1d4a_6880af59",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-14T21:47:03Z",
+      "side": 1,
+      "message": "This was including System/Debug.hpp before, which contains a different TRACE() macro which assumed it is called from a member function. Fixed.",
+      "revId": "9d5c8c84e3548dc95582bd9271a49e0d7d89b5fd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
