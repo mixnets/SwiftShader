@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "60645010_22f1e55d",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-14T22:37:38Z",
+      "side": 1,
+      "message": "This is the one case where we\u0027ll insert into the map.",
+      "revId": "5fac52a812c3714db79dd3f86712db5d2d124544",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b4a85f9_e45961c1",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-14T22:37:38Z",
+      "side": 1,
+      "message": "Maybe long-term this won\u0027t be the Object type, but there\u0027s so meaningful difference yet.",
+      "revId": "5fac52a812c3714db79dd3f86712db5d2d124544",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
