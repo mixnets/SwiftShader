@@ -100,7 +100,7 @@ namespace sw
 				case spv::OpTypePointer:
 				case spv::OpTypeFunction: {
 					auto resultId = insn.word(1);
-					auto &object = defs[resultId];
+					auto &object = types[resultId];
 					object.kind = Object::Kind::Type;
 					object.definition = insn;
 					object.sizeInComponents = ComputeTypeSize(insn);
@@ -120,7 +120,7 @@ namespace sw
 					}
 					else if (insn.opcode() == spv::OpTypePointer){
 						auto pointeeType = insn.word(3);
-						object.isBuiltInBlock = defs[pointeeType].isBuiltInBlock;
+						object.isBuiltInBlock = getType(pointeeType).isBuiltInBlock;
 					}
 					break;
 				}
@@ -137,7 +137,7 @@ namespace sw
 					object.definition = insn;
 					object.storageClass = storageClass;
 
-					auto &type = defs[typeId];
+					auto &type = getType(typeId);
 
 					object.sizeInComponents = type.sizeInComponents;
 					object.isBuiltInBlock = type.isBuiltInBlock;
@@ -160,7 +160,7 @@ namespace sw
 					auto &object = defs[resultId];
 					object.kind = Object::Kind::Constant;
 					object.definition = insn;
-					object.sizeInComponents = defs[typeId].sizeInComponents;
+					object.sizeInComponents = getType(typeId).sizeInComponents;
 					break;
 				}
 
@@ -189,16 +189,16 @@ namespace sw
 		auto resultId = object.definition.word(2);
 		if (object.isBuiltInBlock) {
 			// walk the builtin block, registering each of its members separately.
-			auto ptrType = defs[object.definition.word(1)].definition;
+			auto ptrType = getType(object.definition.word(1)).definition;
 			assert(ptrType.opcode() == spv::OpTypePointer);
 			auto pointeeType = ptrType.word(3);
 			auto m = memberDecorations.find(pointeeType);
 			assert(m != memberDecorations.end());        // otherwise we wouldn't have marked the type chain
-			auto structType = defs[pointeeType].definition;
+			auto &structType = getType(pointeeType).definition;
 			auto offset = 0u;
 			auto word = 2u;
 			for (auto &member : m->second) {
-				auto &memberType = defs[structType.word(word)];
+				auto &memberType = getType(structType.word(word));
 
 				if (member.HasBuiltIn) {
 					builtinInterface[member.BuiltIn] = {resultId, offset, memberType.sizeInComponents};
@@ -277,25 +277,26 @@ namespace sw
 			case spv::OpTypeVector:
 			case spv::OpTypeMatrix:
 				// Vectors and matrices both consume element count * element size.
-				return defs[insn.word(2)].sizeInComponents * insn.word(3);
+				return getType(insn.word(2)).sizeInComponents * insn.word(3);
 
 			case spv::OpTypeArray: {
 				// Element count * element size. Array sizes come from constant ids.
 				auto arraySize = GetConstantInt(insn.word(3));
-				return defs[insn.word(2)].sizeInComponents * arraySize;
+				return getType(insn.word(2)).sizeInComponents * arraySize;
 			}
 
 			case spv::OpTypeStruct: {
 				uint32_t size = 0;
 				for (uint32_t i = 2u; i < insn.wordCount(); i++) {
-					size += defs[insn.word(i)].sizeInComponents;
+					size += getType(insn.word(i)).sizeInComponents;
 				}
 				return size;
 			}
 
 			case spv::OpTypePointer:
 				// Pointer 'size' is just pointee size
-				return defs[insn.word(3)].sizeInComponents;
+				// TODO: this isn't really correct. we should look through pointers as appropriate.
+				return getType(insn.word(3)).sizeInComponents;
 
 			default:
 				// Some other random insn.
@@ -327,7 +328,7 @@ namespace sw
 			d.Apply(it->second);
 		}
 
-		auto const &obj = defs[id];
+		auto const &obj = getType(id);
 		switch (obj.definition.opcode()) {
 			case spv::OpVariable:
 				return PopulateInterfaceInner(iface, obj.definition.word(1), d);
@@ -457,7 +458,7 @@ namespace sw
 		// but is possible to construct integer constant 0 via OpConstantNull.
 		auto insn = defs[id].definition;
 		assert(insn.opcode() == spv::OpConstant);
-		assert(defs[insn.word(1)].definition.opcode() == spv::OpTypeInt);
+		assert(getType(insn.word(1)).definition.opcode() == spv::OpTypeInt);
 		return insn.word(3);
 	}
 }
