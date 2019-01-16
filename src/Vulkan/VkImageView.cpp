@@ -41,7 +41,24 @@ void ImageView::clear(const VkClearValue& clearValue, const VkRect2D& renderArea
 
 	if(imageObject->getImageType() != viewType)
 	{
-		UNIMPLEMENTED();
+		if(imageObject->getArrayLayers() > 1)
+		{
+			switch(imageObject->getImageType())
+			{
+			case VK_IMAGE_VIEW_TYPE_1D:
+				if(viewType == VK_IMAGE_VIEW_TYPE_1D_ARRAY) break;
+			case VK_IMAGE_VIEW_TYPE_2D:
+				if(viewType == VK_IMAGE_VIEW_TYPE_2D_ARRAY) break;
+			case VK_IMAGE_VIEW_TYPE_CUBE:
+				if(viewType == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY) break;
+			default:
+				UNIMPLEMENTED();
+			}
+		}
+		else
+		{
+			UNIMPLEMENTED();
+		}
 	}
 
 	if(imageObject->getFormat() != format)
