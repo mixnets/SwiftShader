@@ -16,6 +16,24 @@
       "revId": "a4afa24ff9099d9343f082c5a5a77898aaf98511",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa17f348_139cf88b",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-16T22:26:02Z",
+      "side": 0,
+      "message": "You\u0027re correct, I used the wrong enums, but they just happen to have the same values :/\nI\u0027ll fix it.",
+      "parentUuid": "955d378b_6e6154ec",
+      "revId": "a4afa24ff9099d9343f082c5a5a77898aaf98511",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
