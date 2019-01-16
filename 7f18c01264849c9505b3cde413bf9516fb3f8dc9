@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c6fc6e14_46bd4900",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-16T19:28:18Z",
+      "side": 1,
+      "message": "This seems really weird. Why do you want a blitter cache hanging around in every image? This seems more like device or queue state.",
+      "revId": "7f18c01264849c9505b3cde413bf9516fb3f8dc9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
