@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "955d378b_6e6154ec",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-16T22:05:36Z",
+      "side": 0,
+      "message": "This code seems confused (although might work by accident): VkImageType is not the same thing as VkImageViewType.",
+      "revId": "a4afa24ff9099d9343f082c5a5a77898aaf98511",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
