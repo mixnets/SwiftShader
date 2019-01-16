@@ -16,6 +16,24 @@
       "revId": "7f18c01264849c9505b3cde413bf9516fb3f8dc9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "37bac535_a8772941",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-16T19:39:15Z",
+      "side": 1,
+      "message": "Agreed, but the blitter is currently at the Renderer level in SwiftShader.\nIt\u0027ll need a bit more refactoring to share one blitter everywhere.\nThis is an intermediate state.",
+      "parentUuid": "c6fc6e14_46bd4900",
+      "revId": "7f18c01264849c9505b3cde413bf9516fb3f8dc9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
