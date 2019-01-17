@@ -34,6 +34,24 @@
       "revId": "507e9aff51fad83e102cc6bde3efc7361e60c8fa",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e2c38434_b9981810",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-17T20:05:29Z",
+      "side": 1,
+      "message": "Ok, removed array checks for now. Thanks",
+      "parentUuid": "eee71772_6a32b765",
+      "revId": "507e9aff51fad83e102cc6bde3efc7361e60c8fa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
