@@ -36,10 +36,10 @@ public:
 class BeginRenderPass : public CommandBuffer::Command
 {
 public:
-	BeginRenderPass(VkRenderPass pRenderPass, VkFramebuffer pFramebuffer, VkRect2D pRenderArea,
-	                uint32_t pClearValueCount, const VkClearValue* pClearValues) :
-		renderPass(pRenderPass), framebuffer(pFramebuffer), renderArea(pRenderArea),
-		clearValueCount(pClearValueCount)
+	BeginRenderPass(VkRenderPass renderPass, VkFramebuffer framebuffer, VkRect2D renderArea,
+	                uint32_t clearValueCount, const VkClearValue* pClearValues) :
+		renderPass(renderPass), framebuffer(framebuffer), renderArea(renderArea),
+		clearValueCount(clearValueCount)
 	{
 		// FIXME (b/119409619): use an allocator here so we can control all memory allocations
 		clearValues = new VkClearValue[clearValueCount];
@@ -54,6 +54,8 @@ public:
 protected:
 	void play(CommandBuffer::ExecutionState& executionState)
 	{
+		executionState.renderPass = renderPass;
+		executionState.renderPassFramebuffer = framebuffer;
 		Cast(renderPass)->begin();
 		Cast(framebuffer)->clear(clearValueCount, clearValues, renderArea);
 	}
@@ -66,6 +68,23 @@ private:
 	VkClearValue* clearValues;
 };
 
+class NextSubpass : public CommandBuffer::Command
+{
+public:
+	NextSubpass()
+	{
+	}
+
+protected:
+	void play(CommandBuffer::ExecutionState& executionState)
+	{
+		Cast(executionState.renderPass)->nextSubpass();
+	}
+
+private:
+};
+
+
 class EndRenderPass : public CommandBuffer::Command
 {
 public:
@@ -76,7 +95,9 @@ public:
 protected:
 	void play(CommandBuffer::ExecutionState& executionState)
 	{
-		Cast(executionState.renderpass)->end();
+		Cast(executionState.renderPass)->end();
+		executionState.renderPass = VK_NULL_HANDLE;
+		executionState.renderPassFramebuffer = VK_NULL_HANDLE;
 	}
 
 private:
@@ -256,6 +277,23 @@ private:
 	const VkImageSubresourceRange range;
 };
 
+struct ClearAttachment : public CommandBuffer::Command
+{
+	ClearAttachment(const VkClearAttachment& attachment, const VkClearRect& rect) :
+		attachment(attachment), rect(rect)
+	{
+	}
+
+	void play(CommandBuffer::ExecutionState& executionState)
+	{
+		Cast(executionState.renderPassFramebuffer)->clear(attachment, rect);
+	}
+
+private:
+	const VkClearAttachment attachment;
+	const VkClearRect rect;
+};
+
 struct BlitImage : public CommandBuffer::Command
 {
 	BlitImage(VkImage srcImage, VkImage dstImage, const VkImageBlit& region, VkFilter filter) :
@@ -374,7 +412,14 @@ void CommandBuffer::beginRenderPass(VkRenderPass renderPass, VkFramebuffer frame
 
 void CommandBuffer::nextSubpass(VkSubpassContents contents)
 {
-	UNIMPLEMENTED();
+	ASSERT(state == RECORDING);
+
+	if(contents != VK_SUBPASS_CONTENTS_INLINE)
+	{
+		UNIMPLEMENTED();
+	}
+
+	addCommand<NextSubpass>();
 }
 
 void CommandBuffer::endRenderPass()
@@ -661,7 +706,15 @@ void CommandBuffer::clearDepthStencilImage(VkImage image, VkImageLayout imageLay
 void CommandBuffer::clearAttachments(uint32_t attachmentCount, const VkClearAttachment* pAttachments,
 	uint32_t rectCount, const VkClearRect* pRects)
 {
-	UNIMPLEMENTED();
+	ASSERT(state == RECORDING);
+
+	for(uint32_t i = 0; i < attachmentCount; i++)
+	{
+		for(uint32_t j = 0; j < rectCount; j++)
+		{
+			addCommand<ClearAttachment>(pAttachments[i], pRects[j]);
+		}
+	}
 }
 
 void CommandBuffer::resolveImage(VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout,
