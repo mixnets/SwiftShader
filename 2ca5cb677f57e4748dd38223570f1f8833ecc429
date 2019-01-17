@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d822fb46_c0f5f94c",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-17T22:34:15Z",
+      "side": 1,
+      "message": "\\o/",
+      "revId": "2ca5cb677f57e4748dd38223570f1f8833ecc429",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd65fa7f_ac4731a7",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-17T22:34:15Z",
+      "side": 1,
+      "message": "This isn\u0027t right.\n\nVkClearAttachment::colorAttachment is only meaningful if VkClearAttachment::aspectMask is VK_IMAGE_ASPECT_COLOR_BIT. For other aspects, the attachment selected is the current subpass\u0027s depth/stencil attachment.\n\nAlso, VkClearAttachment::colorAttachment is an index into the *current subpass\u0027s* color attachments, not the entire pool for the renderpass. There\u0027s another level of indirection before you get to the framebuffer\u0027s attachments array :)",
+      "revId": "2ca5cb677f57e4748dd38223570f1f8833ecc429",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
