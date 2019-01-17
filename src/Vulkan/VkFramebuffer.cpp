@@ -44,6 +44,11 @@ void Framebuffer::clear(uint32_t clearValueCount, const VkClearValue* pClearValu
 	}
 }
 
+void Framebuffer::clear(const VkClearAttachment& attachment, const VkClearRect& rect)
+{
+	attachments[attachment.colorAttachment]->clear(attachment.clearValue, attachment.aspectMask, rect);
+}
+
 size_t Framebuffer::ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo)
 {
 	return pCreateInfo->attachmentCount * sizeof(void*);

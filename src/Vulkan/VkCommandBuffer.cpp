@@ -36,10 +36,10 @@ public:
 class BeginRenderPass : public CommandBuffer::Command
 {
 public:
-	BeginRenderPass(VkRenderPass pRenderPass, VkFramebuffer pFramebuffer, VkRect2D pRenderArea,
-	                uint32_t pClearValueCount, const VkClearValue* pClearValues) :
-		renderPass(pRenderPass), framebuffer(pFramebuffer), renderArea(pRenderArea),
-		clearValueCount(pClearValueCount)
+	BeginRenderPass(VkRenderPass renderPass, VkFramebuffer framebuffer, VkRect2D renderArea,
+	                uint32_t clearValueCount, const VkClearValue* pClearValues) :
+		renderPass(renderPass), framebuffer(framebuffer), renderArea(renderArea),
+		clearValueCount(clearValueCount)
 	{
 		// FIXME (b/119409619): use an allocator here so we can control all memory allocations
 		clearValues = new VkClearValue[clearValueCount];
@@ -54,6 +54,8 @@ public:
 protected:
 	void play(CommandBuffer::ExecutionState& executionState)
 	{
+		executionState.renderPass = renderPass;
+		executionState.renderPassFramebuffer = framebuffer;
 		Cast(renderPass)->begin();
 		Cast(framebuffer)->clear(clearValueCount, clearValues, renderArea);
 	}
@@ -76,7 +78,9 @@ public:
 protected:
 	void play(CommandBuffer::ExecutionState& executionState)
 	{
-		Cast(executionState.renderpass)->end();
+		Cast(executionState.renderPass)->end();
+		executionState.renderPass = VK_NULL_HANDLE;
+		executionState.renderPassFramebuffer = VK_NULL_HANDLE;
 	}
 
 private:
@@ -254,6 +258,23 @@ private:
 	VkImage image;
 	const VkClearDepthStencilValue depthStencil;
 	const VkImageSubresourceRange range;
+};
+
+struct ClearAttachment : public CommandBuffer::Command
+{
+	ClearAttachment(const VkClearAttachment& attachment, const VkClearRect& rect) :
+		attachment(attachment), rect(rect)
+	{
+	}
+
+	void play(CommandBuffer::ExecutionState& executionState)
+	{
+		Cast(executionState.renderPassFramebuffer)->clear(attachment, rect);
+	}
+
+private:
+	const VkClearAttachment attachment;
+	const VkClearRect rect;
 };
 
 struct BlitImage : public CommandBuffer::Command
@@ -655,7 +676,15 @@ void CommandBuffer::clearDepthStencilImage(VkImage image, VkImageLayout imageLay
 void CommandBuffer::clearAttachments(uint32_t attachmentCount, const VkClearAttachment* pAttachments,
 	uint32_t rectCount, const VkClearRect* pRects)
 {
-	UNIMPLEMENTED();
+	ASSERT(state == RECORDING);
+
+	for(uint32_t i = 0; i < attachmentCount; i++)
+	{
+		for(uint32_t j = 0; j < rectCount; j++)
+		{
+			commands->push_back(std::make_unique<ClearAttachment>(pAttachments[i], pRects[j]));
+		}
+	}
 }
 
 void CommandBuffer::resolveImage(VkImage srcImage, VkImageLayout srcImageLayout, VkImage dstImage, VkImageLayout dstImageLayout,
