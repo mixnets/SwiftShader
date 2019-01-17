@@ -118,7 +118,8 @@ public:
 	struct ExecutionState
 	{
 		sw::Renderer* renderer = nullptr;
-		VkRenderPass renderpass = VK_NULL_HANDLE;
+		VkRenderPass renderPass = VK_NULL_HANDLE;
+		VkFramebuffer renderPassFramebuffer = VK_NULL_HANDLE;
 		VkPipeline pipelines[VK_PIPELINE_BIND_POINT_RANGE_SIZE] = {};
 
 		struct VertexInputBinding

@@ -30,6 +30,7 @@ public:
 	void destroy(const VkAllocationCallbacks* pAllocator);
 
 	void clear(uint32_t clearValueCount, const VkClearValue* pClearValues, const VkRect2D& renderArea);
+	void clear(const VkClearAttachment& attachment, const VkClearRect& rect);
 
 	static size_t ComputeRequiredAllocationSize(const VkFramebufferCreateInfo* pCreateInfo);
 
