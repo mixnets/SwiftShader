@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "abe6f01d_dee0b8bb",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 445,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-17T20:25:12Z",
+      "side": 1,
+      "message": "Yes, the point isn\u0027t that it isn\u0027t easy. I only remove these once they get exercised by a dEQP test. Once I\u0027m done, if any of these are left, we\u0027ll know there are coverage gaps in dEQP.",
+      "parentUuid": "b254b762_bb95ef82",
+      "range": {
+        "startLine": 442,
+        "startChar": 0,
+        "endLine": 445,
+        "endChar": 46
+      },
+      "revId": "143fce04b1a8f97de8c353342cc80729a87959e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0d025bf3_1f5daeee",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 2
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "d75037c2_9ddbbb0e",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 509,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-17T20:25:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0d025bf3_1f5daeee",
+      "revId": "143fce04b1a8f97de8c353342cc80729a87959e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fbdd56b1_b25210f3",
         "filename": "src/Vulkan/VkImage.hpp",
         "patchSetId": 2
@@ -56,6 +98,24 @@
       "revId": "143fce04b1a8f97de8c353342cc80729a87959e2",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e3a6106_8dadd869",
+        "filename": "src/Vulkan/VkImage.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-17T20:25:12Z",
+      "side": 1,
+      "message": "It doesn\u0027t really help since I would still have to dispose of it manually through Image::destroy and I don\u0027t want to leave it here long term, so I\u0027ll leave it as it is for now.",
+      "parentUuid": "fbdd56b1_b25210f3",
+      "revId": "143fce04b1a8f97de8c353342cc80729a87959e2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
