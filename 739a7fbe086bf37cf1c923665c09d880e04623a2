@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ce32ed5c_f20c37ee",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-17T19:03:17Z",
+      "side": 0,
+      "message": "Not a new problem in this patch, but I\u0027m concerned that the border trick here for sampling around the face boundary is going to be messy to hide...",
+      "revId": "739a7fbe086bf37cf1c923665c09d880e04623a2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
