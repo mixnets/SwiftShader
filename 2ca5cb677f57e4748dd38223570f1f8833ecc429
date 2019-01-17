@@ -33,6 +33,24 @@
       "revId": "2ca5cb677f57e4748dd38223570f1f8833ecc429",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38b8a3bd_90c8e355",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-17T22:35:42Z",
+      "side": 1,
+      "message": "While you\u0027re in here:: if VkClearAttachment::aspectMask \u003d\u003d VK_IMAGE_ASPECT_COLOR_BIT and VkClearAttachment::colorAttachment \u003d\u003d VK_ATTACHMENT_UNUSED, make sure you throw away the clear operation.",
+      "parentUuid": "dd65fa7f_ac4731a7",
+      "revId": "2ca5cb677f57e4748dd38223570f1f8833ecc429",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
