@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "b29bbb8c_9b0d44af",
+        "filename": "src/Device/Config.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-17T18:39:32Z",
+      "side": 1,
+      "message": "Ack. Let\u0027s have a later change that cleans up all the limits that don\u0027t make sense for Vulkan?",
+      "parentUuid": "bbf43ba5_cf4c91e8",
+      "range": {
+        "startLine": 85,
+        "startChar": 2,
+        "endLine": 87,
+        "endChar": 27
+      },
+      "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b375ef18_68c656e1",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 8
@@ -202,6 +226,30 @@
       "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "558ff3cd_f5e0c533",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-17T18:39:32Z",
+      "side": 1,
+      "message": "Fixed throughout.",
+      "parentUuid": "a4c77b56_59d2f5ff",
+      "range": {
+        "startLine": 180,
+        "startChar": 62,
+        "endLine": 180,
+        "endChar": 75
+      },
+      "revId": "14f4b59482e0e4578f773a5bad115683cf84ad3c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
