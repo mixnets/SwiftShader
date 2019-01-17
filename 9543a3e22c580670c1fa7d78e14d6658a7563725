@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "09b76339_966df37e",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 483,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-17T20:43:39Z",
+      "side": 1,
+      "message": "AHB is going to ruin this, but sounds good for now.",
+      "revId": "9543a3e22c580670c1fa7d78e14d6658a7563725",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
