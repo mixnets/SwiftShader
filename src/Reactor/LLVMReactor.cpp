@@ -904,7 +904,7 @@ namespace rr
 			}
 		}
 
-		if(false)
+		if(true)
 		{
 			#if REACTOR_LLVM_VERSION < 7
 				std::string error;
@@ -922,7 +922,7 @@ namespace rr
 			optimize();
 		}
 
-		if(false)
+		if(true)
 		{
 			#if REACTOR_LLVM_VERSION < 7
 				std::string error;
