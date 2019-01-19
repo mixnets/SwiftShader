@@ -81,6 +81,7 @@
 
 #include <numeric>
 #include <fstream>
+#include <cstdlib>
 
 #if defined(__i386__) || defined(__x86_64__)
 #include <xmmintrin.h>
@@ -116,6 +117,14 @@ namespace
 	llvm::Function *function = nullptr;
 
 	rr::MutexLock codegenMutex;
+
+	bool GetEnvSwitch(char const *name)
+	{
+		char const *value = getenv(name);
+		return value && value[0] != '0';
+	}
+
+	static const bool ShouldDumpLlvmIr = GetEnvSwitch("SWIFTSHADER_DUMP_LLVM_IR");
 
 #if REACTOR_LLVM_VERSION >= 7
 	llvm::Value *lowerPAVG(llvm::Value *x, llvm::Value *y)
@@ -904,7 +913,7 @@ namespace rr
 			}
 		}
 
-		if(false)
+		if(ShouldDumpLlvmIr)
 		{
 			#if REACTOR_LLVM_VERSION < 7
 				std::string error;
@@ -922,7 +931,7 @@ namespace rr
 			optimize();
 		}
 
-		if(false)
+		if(ShouldDumpLlvmIr)
 		{
 			#if REACTOR_LLVM_VERSION < 7
 				std::string error;
