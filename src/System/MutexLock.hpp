@@ -17,7 +17,7 @@
 
 #include "Thread.hpp"
 
-#if defined(__linux__)
+#ifndef _WIN32
 // Use a pthread mutex on Linux. Since many processes may use SwiftShader
 // at the same time it's best to just have the scheduler overhead.
 #include <pthread.h>
@@ -57,7 +57,7 @@ namespace sw
 	};
 }
 
-#else   // !__linux__
+#else   // _WIN32
 
 #include <atomic>
 
