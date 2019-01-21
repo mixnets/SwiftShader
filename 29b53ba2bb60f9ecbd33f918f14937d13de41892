@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3f1006b1_bb2de323",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 585,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-21T18:10:24Z",
+      "side": 1,
+      "message": "nit: I think the baseMipLevel can be handled but you are guaranteed to have levelCount \u003d 1 because this code is only hit through vkCmdClearAttachments and vkCmdBeginRenderPass (or nextSubpass).",
+      "revId": "29b53ba2bb60f9ecbd33f918f14937d13de41892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
