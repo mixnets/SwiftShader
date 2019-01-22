@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2cdb71d_82d39356",
+        "filename": "src/Vulkan/VkQueryPool.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-22T17:26:18Z",
+      "side": 1,
+      "message": "My understanding is that the Vulkan spec is made such that it is possible for VkQueryPools to just be a pointer to the memory region that will contain the query results (that\u0027s why vkQueryGetResults takes a device as an argument).",
+      "revId": "f243dd25986ecb9488af38392059701d2eb1d815",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd2cd93f_d838a2dd",
+        "filename": "src/Vulkan/VkQueryPool.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-22T17:26:18Z",
+      "side": 1,
+      "message": "nit: implementation could go in a .cpp.",
+      "revId": "f243dd25986ecb9488af38392059701d2eb1d815",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
