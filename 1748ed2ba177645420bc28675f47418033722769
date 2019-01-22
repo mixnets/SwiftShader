@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d441c0c5_4d8dc0d8",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 24
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-22T05:54:07Z",
+      "side": 1,
+      "message": "No longer needed?",
+      "range": {
+        "startLine": 84,
+        "startChar": 9,
+        "endLine": 84,
+        "endChar": 17
+      },
+      "revId": "1748ed2ba177645420bc28675f47418033722769",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
