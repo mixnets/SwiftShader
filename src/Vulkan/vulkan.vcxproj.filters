@@ -320,6 +320,9 @@
     <ClInclude Include="VkPhysicalDevice.hpp">
       <Filter>Header Files\Vulkan</Filter>
     </ClInclude>
+    <ClInclude Include="VkQueryPool.hpp">
+      <Filter>Header Files\Vulkan</Filter>
+    </ClInclude>
     <ClInclude Include="VkQueue.hpp">
       <Filter>Header Files\Vulkan</Filter>
     </ClInclude>
