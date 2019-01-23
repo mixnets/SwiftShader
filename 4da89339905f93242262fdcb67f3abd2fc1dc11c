@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "f6f5121f_178ace12",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-23T05:56:22Z",
+      "side": 1,
+      "message": "On perf note from last comment -- if that turns out to be interesting, pipeline cache objects are a good place to stash things like post-optimization SPIRV :)",
+      "parentUuid": "435c2bc4_80ea9ff8",
+      "range": {
+        "startLine": 12,
+        "startChar": 57,
+        "endLine": 13,
+        "endChar": 40
+      },
+      "revId": "4da89339905f93242262fdcb67f3abd2fc1dc11c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "54d404f0_f62cc64e",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
