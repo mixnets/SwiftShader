@@ -16,6 +16,41 @@
       "revId": "878d4b04e1c0c0061d15330f3e4d6df99a6628a0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "79fa042b_478094b4",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-24T22:05:27Z",
+      "side": 0,
+      "message": "Spec: \n\nclearValueCount must be greater than the largest attachment index in renderPass that specifies a loadOp (or stencilLoadOp, if the attachment has a depth/stencil format) of VK_ATTACHMENT_LOAD_OP_CLEAR",
+      "parentUuid": "40809e88_2427db20",
+      "revId": "878d4b04e1c0c0061d15330f3e4d6df99a6628a0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3eec05ba_e7e3713a",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-24T22:05:27Z",
+      "side": 0,
+      "message": "(sketch) if (renderpass-\u003eloadOp[i] \u003d\u003d VK_LOAD_OP_CLEAR)",
+      "revId": "878d4b04e1c0c0061d15330f3e4d6df99a6628a0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
