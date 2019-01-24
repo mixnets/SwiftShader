@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "68f9daa4_1d802557",
+        "filename": ".gitmodules",
+        "patchSetId": 3
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-24T12:15:43Z",
+      "side": 1,
+      "message": "We actually use https://github.com/google/googletest.git for unit tests in SwiftShader.\nI don\u0027t seem to have access to https://github.googlesource.com/google/googletest.\nThis is going to be an issue.",
+      "range": {
+        "startLine": 3,
+        "startChar": 7,
+        "endLine": 3,
+        "endChar": 56
+      },
+      "revId": "36e63710ce621d7c8255711d07c0a9a8f9c41fed",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
