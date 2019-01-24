@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0969c336_1b764739",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-24T22:21:40Z",
+      "side": 1,
+      "message": "nit: primitive count is instance-invariant",
+      "revId": "71b6785c5caa522b04751f28817c0f786225d50a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
