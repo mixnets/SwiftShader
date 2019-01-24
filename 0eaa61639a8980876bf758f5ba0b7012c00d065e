@@ -16,6 +16,24 @@
       "revId": "0eaa61639a8980876bf758f5ba0b7012c00d065e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ac63192_020d0191",
+        "filename": "kokoro/ubuntu/continuous.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7047
+      },
+      "writtenOn": "2019-01-24T02:21:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "43fcbf40_bd9b9995",
+      "revId": "0eaa61639a8980876bf758f5ba0b7012c00d065e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
