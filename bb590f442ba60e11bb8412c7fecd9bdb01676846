@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5373edab_458133bb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-24T20:09:19Z",
+      "side": 1,
+      "message": "Please add a bug ID to keep track of all Kokoro related changes.",
+      "revId": "bb590f442ba60e11bb8412c7fecd9bdb01676846",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d701b61e_a046ff7f",
+        "filename": "kokoro/gcp_ubuntu/continuous.cfg",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-24T20:09:19Z",
+      "side": 1,
+      "message": "I it useful to keep this? Looks like SwiftShader\u0027s setup would be a bit different than the typical codelab example, and always will be.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 52
+      },
+      "revId": "bb590f442ba60e11bb8412c7fecd9bdb01676846",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f143f002_efe90e12",
+        "filename": "kokoro/gcp_ubuntu/continuous.sh",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-24T20:09:19Z",
+      "side": 1,
+      "message": "I\u0027m not sure Kokoro jobs run on machines with lots of cores. You could do something like --jobs $(nproc) here instead.",
+      "range": {
+        "startLine": 15,
+        "startChar": 5,
+        "endLine": 15,
+        "endChar": 14
+      },
+      "revId": "bb590f442ba60e11bb8412c7fecd9bdb01676846",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
