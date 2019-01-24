@@ -16,6 +16,24 @@
       "revId": "29b53ba2bb60f9ecbd33f918f14937d13de41892",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cf8df5c9_2afab530",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 585,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-24T16:41:07Z",
+      "side": 1,
+      "message": "Ok, I\u0027ll still leave this here and fix it once I have a test exercising this path.\nIf no test exercises this path, I\u0027ll log an issue in dEQP when I fix it.",
+      "parentUuid": "3f1006b1_bb2de323",
+      "revId": "29b53ba2bb60f9ecbd33f918f14937d13de41892",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
