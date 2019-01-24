@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "12d5994d_d1c74f53",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-24T15:01:13Z",
+      "side": 1,
+      "message": "The SPIRV-Tools repo contains the necessary BUILD.gn file. When compiling in Chromium we should use the copy of SPIRV-Tools in chromium\u0027s src/third_party/SPIRV-Tools directory.",
+      "parentUuid": "80f081bb_0f2352b1",
+      "range": {
+        "startLine": 10,
+        "startChar": 28,
+        "endLine": 10,
+        "endChar": 37
+      },
+      "revId": "4da89339905f93242262fdcb67f3abd2fc1dc11c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cd103c6f_727bdd9e",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
