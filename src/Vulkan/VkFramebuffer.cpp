@@ -15,6 +15,8 @@
 #include "VkFramebuffer.hpp"
 #include "VkImageView.hpp"
 #include "VkRenderPass.hpp"
+#include "Device/Surface.hpp"
+#include <algorithm>
 #include <memory.h>
 
 namespace vk
@@ -38,11 +40,15 @@ void Framebuffer::destroy(const VkAllocationCallbacks* pAllocator)
 
 void Framebuffer::clear(uint32_t clearValueCount, const VkClearValue* pClearValues, const VkRect2D& renderArea)
 {
-	ASSERT(clearValueCount >= attachmentCount);
-
-	for(uint32_t i = 0; i < attachmentCount; i++)
+	const uint32_t count = std::min(std::min(clearValueCount, renderPass->getAttachmentCount()), attachmentCount);
+	for(uint32_t i = 0; i < count; i++)
 	{
-		attachments[i]->clear(pClearValues[i], renderArea);
+		const VkAttachmentDescription attachment = renderPass->getAttachment(i);
+		if(((sw::Surface::isDepth(attachment.format) || sw::Surface::isStencil(attachment.format)) ?
+		    attachment.stencilLoadOp : attachment.loadOp) == VK_ATTACHMENT_LOAD_OP_CLEAR)
+		{
+			attachments[i]->clear(pClearValues[i], renderArea);
+		}
 	}
 }
 
