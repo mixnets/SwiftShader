@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "40809e88_2427db20",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-24T21:57:39Z",
+      "side": 0,
+      "message": "No... excess clearValues are fine, at least in some paths.",
+      "revId": "878d4b04e1c0c0061d15330f3e4d6df99a6628a0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
