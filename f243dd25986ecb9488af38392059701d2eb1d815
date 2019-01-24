@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "36ec4ea8_98a3daa4",
+        "filename": "src/Vulkan/VkQueryPool.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-24T17:28:48Z",
+      "side": 1,
+      "message": "Ack. When we get a proper implementation of queries, I\u0027ll keep this in mind as a potential refactor.",
+      "parentUuid": "f2cdb71d_82d39356",
+      "revId": "f243dd25986ecb9488af38392059701d2eb1d815",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fd2cd93f_d838a2dd",
         "filename": "src/Vulkan/VkQueryPool.hpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "f243dd25986ecb9488af38392059701d2eb1d815",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55d4aab9_97d90486",
+        "filename": "src/Vulkan/VkQueryPool.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-24T17:28:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fd2cd93f_d838a2dd",
+      "revId": "f243dd25986ecb9488af38392059701d2eb1d815",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
