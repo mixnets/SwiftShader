@@ -36,9 +36,9 @@ void Framebuffer::destroy(const VkAllocationCallbacks* pAllocator)
 
 void Framebuffer::clear(uint32_t clearValueCount, const VkClearValue* pClearValues, const VkRect2D& renderArea)
 {
-	ASSERT(clearValueCount >= attachmentCount);
+	ASSERT(clearValueCount <= attachmentCount);
 
-	for(uint32_t i = 0; i < attachmentCount; i++)
+	for(uint32_t i = 0; i < clearValueCount; i++)
 	{
 		attachments[i]->clear(pClearValues[i], renderArea);
 	}
