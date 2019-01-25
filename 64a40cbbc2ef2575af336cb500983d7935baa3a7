@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6a813877_f22eecdf",
+        "filename": "src/Vulkan/VkRenderPass.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-25T00:43:56Z",
+      "side": 1,
+      "message": "nit: stray extra `s`",
+      "revId": "64a40cbbc2ef2575af336cb500983d7935baa3a7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
