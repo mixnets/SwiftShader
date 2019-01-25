@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "3b224636_6541e986",
+        "filename": "src/Vulkan/VkFramebuffer.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-25T23:14:43Z",
+      "side": 1,
+      "message": "Yes. the framebuffer contains exactly one VkImageView for each attachment in the renderpass. Spec (VU for VkFramebufferCreateInfo):\n\n`attachmentCount must be equal to the attachment count specified in renderPass`",
+      "parentUuid": "bc5a7e0a_6dcc0d41",
+      "range": {
+        "startLine": 43,
+        "startChar": 59,
+        "endLine": 43,
+        "endChar": 109
+      },
+      "revId": "f3c2bbfbb2f1c52ab907e76e9c6624e5170157a0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ef9a79fd_e8503c08",
         "filename": "src/Vulkan/VkFramebuffer.cpp",
         "patchSetId": 2
