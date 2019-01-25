@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71dceaa2_a3ba74fb",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-25T03:29:16Z",
+      "side": 1,
+      "message": "And also right now the queue submission is synchronous.",
+      "revId": "560b8d235137d2fe8c40e1668717fda5839c2aaa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
