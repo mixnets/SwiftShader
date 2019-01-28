@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "6ac6fa8f_c52188f2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7047
+      },
+      "writtenOn": "2019-01-28T23:30:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5373edab_458133bb",
+      "revId": "bb590f442ba60e11bb8412c7fecd9bdb01676846",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d701b61e_a046ff7f",
         "filename": "kokoro/gcp_ubuntu/continuous.cfg",
         "patchSetId": 5
@@ -66,6 +84,30 @@
     },
     {
       "key": {
+        "uuid": "b302ee94_64dbb0b7",
+        "filename": "kokoro/gcp_ubuntu/continuous.cfg",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 7047
+      },
+      "writtenOn": "2019-01-28T23:30:45Z",
+      "side": 1,
+      "message": "I agree with Chris.  I don\u0027t mind taking it out, but it\u0027s potentially helpful.",
+      "parentUuid": "fb9340a7_d7bda34c",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 52
+      },
+      "revId": "bb590f442ba60e11bb8412c7fecd9bdb01676846",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "f143f002_efe90e12",
         "filename": "kokoro/gcp_ubuntu/continuous.sh",
         "patchSetId": 5
@@ -86,6 +128,30 @@
       "revId": "bb590f442ba60e11bb8412c7fecd9bdb01676846",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d0e21128_33261d46",
+        "filename": "kokoro/gcp_ubuntu/continuous.sh",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 7047
+      },
+      "writtenOn": "2019-01-28T23:30:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f143f002_efe90e12",
+      "range": {
+        "startLine": 15,
+        "startChar": 5,
+        "endLine": 15,
+        "endChar": 14
+      },
+      "revId": "bb590f442ba60e11bb8412c7fecd9bdb01676846",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
