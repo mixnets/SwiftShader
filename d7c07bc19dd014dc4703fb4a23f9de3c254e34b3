@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3fad1e3b_dfa48bab",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 919,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-28T22:08:35Z",
+      "side": 1,
+      "message": "Please create a new bug for PipelineCache, and add TODO(b/###) here. That way this and any other related work (like vkCreatePipelineCache once we hit it) can be tracked centrally.",
+      "range": {
+        "startLine": 919,
+        "startChar": 4,
+        "endLine": 919,
+        "endChar": 8
+      },
+      "revId": "d7c07bc19dd014dc4703fb4a23f9de3c254e34b3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
