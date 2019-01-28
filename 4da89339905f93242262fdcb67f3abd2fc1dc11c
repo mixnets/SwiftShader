@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "a762b9da_c5e4b6d5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-28T20:54:44Z",
+      "side": 1,
+      "message": "@Chris: Indeed it\u0027s not the first submodule, but googletest is not essential to building SwiftShader libraries, and every platform where we currently run the unit tests have it available (although I notice there was a little hickup for Kokoro).\n\nThere are many advantages to using a subtree:\n- Universally supported\n- Single checkout (independence of external repo availability)\n- Single setup (no separate approach for Android, Chrome, Piper, etc.)\n- Supports temporarily diverging (or permanently if justified)\n\nThat said, if SPIRV-Tools would be used for non-essential development tools then a submodule seems appropriate to me.\n\n@Corentin: I\u0027m hesitant adding that kind of dependency. SwiftShader is used in many projects (and more to come), and the maintenance burden can get significant if we don\u0027t have a unified approach for dependency handling. For example how do we update them all at the same time without breakages? Also what if Chrome can\u0027t update to a newer version for a while, while we need the latest revision? With a subtree these aren\u0027t an issue.",
+      "parentUuid": "12d5994d_d1c74f53",
+      "range": {
+        "startLine": 10,
+        "startChar": 28,
+        "endLine": 10,
+        "endChar": 37
+      },
+      "revId": "4da89339905f93242262fdcb67f3abd2fc1dc11c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "cd103c6f_727bdd9e",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
@@ -132,6 +156,30 @@
       "side": 1,
       "message": "On perf note from last comment -- if that turns out to be interesting, pipeline cache objects are a good place to stash things like post-optimization SPIRV :)",
       "parentUuid": "435c2bc4_80ea9ff8",
+      "range": {
+        "startLine": 12,
+        "startChar": 57,
+        "endLine": 13,
+        "endChar": 40
+      },
+      "revId": "4da89339905f93242262fdcb67f3abd2fc1dc11c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "32febc84_17562f0b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-28T20:54:44Z",
+      "side": 1,
+      "message": "Thanks for elaborating. As a follow-up question, do we actually need SPIRV-Tools at this point? I see it \"includes an assembler, binary module parser, disassembler, validator, and optimizer\". Aside from a parser I don\u0027t think Pastel 1.0 strictly needs these parts, and this parser might be much more specialized for these other purposes than what we need.\n\nFor future optimization work we could pick the parts we need instead of including the whole thing, which still seems to me like it\u0027s aimed primarily at software above the driver level.",
+      "parentUuid": "f6f5121f_178ace12",
       "range": {
         "startLine": 12,
         "startChar": 57,
