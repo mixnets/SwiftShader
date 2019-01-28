@@ -192,6 +192,30 @@
     },
     {
       "key": {
+        "uuid": "4346ca0f_03cfb136",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-28T21:10:01Z",
+      "side": 1,
+      "message": "I need some optimization passes to normalize the SPIRV before our backend sees it. The first obvious case is specialization constant substitution, freezing, and constant propagation. The second is exhaustive inlining, so we don\u0027t have to care about functions on day 1.",
+      "parentUuid": "32febc84_17562f0b",
+      "range": {
+        "startLine": 12,
+        "startChar": 57,
+        "endLine": 13,
+        "endChar": 40
+      },
+      "revId": "4da89339905f93242262fdcb67f3abd2fc1dc11c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "54d404f0_f62cc64e",
         "filename": "/COMMIT_MSG",
         "patchSetId": 2
