@@ -156,6 +156,9 @@ macro(set_shared_library_export_map TARGET DIR)
         if(NOT MSAN AND NOT ASAN AND NOT TSAN AND NOT UBSAN)
             set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--no-undefined")
         endif()
+
+	# HACK HACK
+	set_property(TARGET ${TARGET} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--no-as-needed -ldl")
     endif()
 endmacro()
 
