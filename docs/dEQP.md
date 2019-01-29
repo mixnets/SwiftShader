@@ -144,3 +144,41 @@ Differences to the steps above:
 1. Instead of copying the .dll files, you need to set LD_LIBRARY_PATH to point to SwiftShader's build directory.
 2. Use `make` instead of Visual Studio.
 3. There are no Debug/Release directories or .exe suffixes, so remove them from DeviceConfig in data.go.
+
+Running dEQP Vulkan tests on Linux
+----------------------------------
+
+1. Get dEQP source code.
+
+   `git clone https://android.googlesource.com/platform/external/deqp`
+
+2. Get dEQP's dependencies.
+
+   `cd deqp`
+   `pyhton external/fetch_sources.py`
+
+3. Run cmake and generate Makefiles.
+
+   `mkdir build`
+   `cd build`
+   `cmake -DCMAKE_BUILD_TYPE=Debug ..`    # Assuming DEBUG build
+
+4. Build dEQP
+
+   `make`
+
+5. dEQP assumes the name of a vulkan driver in Linux to be libvulkan.so.1
+   Specify the path of any directory containing a libvulkan.so.1 in the LD_LIBRARY_PATH variable.
+
+   `export LD_LIBRARY_PATH=/home/test/SwiftShader/build/:${LD_LIBRARY_PATH}`
+
+   Assuming there is one at /home/test/SwiftShader/build/libvulkan.so.1 -> libvk_swiftshader.so
+   If there isn't, build the SwiftShader first, then make a soft link.
+
+   `ln -s libvk_swiftshader.so libvulkan.so.1`
+
+6. Run dEQP using SwiftShader's vulkan driver
+
+   `cd external/vulkancts/modules/vulkan`
+   `./deqp-vk`
+
