@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (ec061d Setup Kokoro linux build)
 # Ignored folders #
 /lib/
 /obj/
@@ -29,3 +30,7 @@
 *.opendb
 *.db
 *~
+=======
+build
+out
+>>>>>>> BRANCH (069a6b Squashed 'third_party/SPIRV-Headers/' content from commit 79)
