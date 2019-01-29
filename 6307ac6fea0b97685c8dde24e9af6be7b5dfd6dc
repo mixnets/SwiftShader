@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "98d4b67c_c5366816",
+        "filename": "src/Vulkan/VkDescriptorPool.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-29T14:25:10Z",
+      "side": 1,
+      "message": "The Vulkan spec\u0027s intent is that the descriptor pool contains a single allocation that will contain both descriptor set \"headers\" and descriptors themselves. Since Swiftshader is bindless a descriptor set should purely be a pointer to where the descriptor data starts. There are two modes depending on VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT:\n - if it isn\u0027t set, the pool is just a linear allocator that is reset in bulk. The pool would need to be sized by \"sum(descriptorSize(type) * descriptorCount) for each pPoolSizes element\". Then we just keep a pointer that increments by the the descriptor set size at each allocation.\n - if the free descriptor bit is set, then the pool is supposed to use a freelist. The allocation needs an extra \"sizeof(freeListPrefix) * maxSets\". Allocation then uses a freelist and like malloc stores the freeListPrefix just before the pointer it returns.\n\nhttps://github.com/intel/external-mesa/blob/master/src/intel/vulkan/anv_descriptor_set.c#L386 could be a good reference though Swiftshader is more bindless than Intel hardware.",
+      "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "46687582_9a483bc9",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-29T14:25:10Z",
+      "side": 1,
+      "message": "With a pointer to immutable sampler storage this could just be indexing it like an array and increment an immutableSamplerCount.",
+      "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ddee3a29_11ec68fb",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-29T14:25:10Z",
+      "side": 1,
+      "message": "I was confused by this because we didn\u0027t implement samplers yet. This would break as soon as samplers contain an allocation, such as a sampling routine.",
+      "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ceec69fd_1b700149",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-29T14:25:10Z",
+      "side": 1,
+      "message": "This is an extension and we shouldn\u0027t need to implement it.",
+      "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1955c469_68e7fda2",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-29T14:25:10Z",
+      "side": 1,
+      "message": "this seems to only be used in DescriptorSetLayout.cpp so maybe it could be in an anonymous namespace in that file?",
+      "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b967cc22_f5c59110",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-01-29T14:25:10Z",
+      "side": 1,
+      "message": "nit: maybe we could store a pointer to immutable samplers too so it is easy to retrieve them later.",
+      "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
