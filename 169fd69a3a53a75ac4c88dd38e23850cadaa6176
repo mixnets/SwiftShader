@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a212a600_e3e7b340",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-30T17:33:30Z",
+      "side": 1,
+      "message": "Please append this auto-generated message with some additional info about the purpose. For example here\u0027s my initial LLVM 7.0 subtree commit: https://swiftshader-review.googlesource.com/c/SwiftShader/+/21449 Thanks!",
+      "range": {
+        "startLine": 8,
+        "startChar": 0,
+        "endLine": 8,
+        "endChar": 84
+      },
+      "revId": "169fd69a3a53a75ac4c88dd38e23850cadaa6176",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
