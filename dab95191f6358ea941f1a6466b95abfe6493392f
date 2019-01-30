@@ -22,6 +22,30 @@
       "revId": "dab95191f6358ea941f1a6466b95abfe6493392f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9858ceea_2094d287",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-30T17:40:38Z",
+      "side": 1,
+      "message": "Note that this is consumed by SPIRV-Tools (for instruction tables etc)",
+      "parentUuid": "e581f203_d6154a1b",
+      "range": {
+        "startLine": 8,
+        "startChar": 72,
+        "endLine": 8,
+        "endChar": 85
+      },
+      "revId": "dab95191f6358ea941f1a6466b95abfe6493392f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
