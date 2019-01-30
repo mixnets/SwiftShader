@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (ddcbdc Add SPIRV-Headers as git subtree)
 # Ignored folders #
 /lib/
 /obj/
@@ -29,3 +30,30 @@
 *.opendb
 *.db
 *~
+=======
+.clang_complete
+.ycm_extra_conf.py*
+*.pyc
+compile_commands.json
+/build/
+/buildtools/
+/external/googletest
+/external/SPIRV-Headers
+/external/spirv-headers
+/external/effcee
+/external/re2
+/out
+/TAGS
+/third_party/llvm-build/
+/testing
+/tools/clang/
+/utils/clang-format-diff.py
+
+# Vim
+[._]*.s[a-w][a-z]
+*~
+
+# C-Lion
+.idea
+cmake-build-debug
+>>>>>>> BRANCH (cc5697 Squashed 'third_party/SPIRV-Tools/' content from commit d14d)
