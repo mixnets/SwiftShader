@@ -46,6 +46,30 @@
       "revId": "dab95191f6358ea941f1a6466b95abfe6493392f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "548a0b4f_3196830a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-01-30T17:41:58Z",
+      "side": 1,
+      "message": "Also- *not* an interface we expose. This is an implementation detail. Apps are not expected to use the SPIRV headers themselves unless they are implementing a compiler.",
+      "parentUuid": "9858ceea_2094d287",
+      "range": {
+        "startLine": 8,
+        "startChar": 72,
+        "endLine": 8,
+        "endChar": 85
+      },
+      "revId": "dab95191f6358ea941f1a6466b95abfe6493392f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
