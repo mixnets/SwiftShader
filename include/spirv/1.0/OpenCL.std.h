@@ -1,9 +1,5 @@
 /*
-<<<<<<< HEAD   (cda0cf vkQueueWaitIdle and vkDeviceWaitIdle as noops)
 ** Copyright (c) 2015-2017 The Khronos Group Inc.
-=======
-** Copyright (c) 2015-2019 The Khronos Group Inc.
->>>>>>> BRANCH (670217 Squashed 'third_party/SPIRV-Headers/' content from commit 79)
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy
 ** of this software and/or associated documentation files (the "Materials"),
@@ -27,9 +23,6 @@
 ** FROM,OUT OF OR IN CONNECTION WITH THE MATERIALS OR THE USE OR OTHER DEALINGS
 ** IN THE MATERIALS.
 */
-
-#ifndef OPENCLstd_H
-#define OPENCLstd_H
 
 namespace OpenCLLIB {
 
@@ -215,5 +208,3 @@ enum Entrypoints {
 };
 
 } // end namespace OpenCLLIB
-
-#endif  // #ifndef OPENCLstd_H

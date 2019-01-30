@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (cda0cf vkQueueWaitIdle and vkDeviceWaitIdle as noops)
 # Ignored folders #
 /lib/
 /obj/
@@ -29,3 +30,7 @@
 *.opendb
 *.db
 *~
+=======
+build
+out
+>>>>>>> BRANCH (670217 Squashed 'third_party/SPIRV-Headers/' content from commit 79)
