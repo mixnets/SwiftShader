@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e581f203_d6154a1b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-30T17:34:30Z",
+      "side": 1,
+      "message": "I\u0027m not sure we want the SPIR-V headers as a subtree. I have a preference to keep them in the top-level include directory. The reasoning is that, this is the interface we implement and expose, and not just some external component we use internally as part of the build. Note that other Khronos headers are also in the /include directory. Also note that we don\u0027t have to update these often (not unless we implement a new version or a recently added extension), and we don\u0027t want to diverge from the official Khronos headers at all so just overwriting them when we update to the latest ones works well, thus avoiding the need for maintaining a subtree.",
+      "range": {
+        "startLine": 8,
+        "startChar": 72,
+        "endLine": 8,
+        "endChar": 85
+      },
+      "revId": "dab95191f6358ea941f1a6466b95abfe6493392f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
