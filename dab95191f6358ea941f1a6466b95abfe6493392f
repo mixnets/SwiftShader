@@ -70,6 +70,30 @@
       "revId": "dab95191f6358ea941f1a6466b95abfe6493392f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d4f1c95f_6b0c0c5a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-01-30T18:58:31Z",
+      "side": 1,
+      "message": "Ah, yes, SPIRV-Tools\u0027 dependency on this repo makes it necessary.\n\nAlthough that settles it, I\u0027d like to point out that in general it makes no difference to the driver whether it\u0027s an app or a framework or a compiler that\u0027s interfacing with it. Not many apps, in the stricter sense, are expected to use the Vulkan API headers themselves directly either. Reversely it is perfectly valid for someone to generate their own SPIRV using whatever means other than the common high-level shader compilers, using the SPIRV headers (I can imagine a specialized computing framework doing this, also any kind of binary SPIRV patching tools an app may incorporate).\n\nHistorically it was valuable to have the API headers in /include to quickly compare for any differences with the headers an app was built with that can cause breakage (I recall at least one instance where a parameter was changed from GLuint to void* without introducing a new function). Anyway, I don\u0027t think SPIRV will realistically fall victim to that.",
+      "parentUuid": "548a0b4f_3196830a",
+      "range": {
+        "startLine": 8,
+        "startChar": 72,
+        "endLine": 8,
+        "endChar": 85
+      },
+      "revId": "dab95191f6358ea941f1a6466b95abfe6493392f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
