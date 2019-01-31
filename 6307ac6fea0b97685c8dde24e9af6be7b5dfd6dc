@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d583e89b_71933924",
+        "filename": "src/Vulkan/VkDescriptorPool.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-31T16:02:52Z",
+      "side": 1,
+      "message": "Ack. I will take this into consideration in the next CL. For now, freeing individual DescriptorSets is always allowed.\nI used a set of nodes for the memory allocator for simplicity.",
+      "parentUuid": "98d4b67c_c5366816",
+      "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "46687582_9a483bc9",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -33,6 +51,24 @@
       "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2b65ec76_935e6009",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-31T16:02:52Z",
+      "side": 1,
+      "message": "I think it\u0027s easier to keep them here.\nThe DescriptorSet will most likely include a VkSampler (which is a pointer) and this will just be used to provide a default value at allocation time.",
+      "parentUuid": "46687582_9a483bc9",
+      "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "3ca64a4d_d4d0a788",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-31T16:02:52Z",
+      "side": 1,
+      "message": "Remember that VkSampler is a pointer itself. This is just copying an array of pointers. If the Sampler object contains other allocations, this would still work.",
+      "parentUuid": "ddee3a29_11ec68fb",
+      "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ceec69fd_1b700149",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -67,6 +121,24 @@
       "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c314e913_42a31fc6",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-31T16:02:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ceec69fd_1b700149",
+      "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "a06a6c3d_e7e2216f",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-31T16:02:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1955c469_68e7fda2",
+      "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b967cc22_f5c59110",
         "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
         "patchSetId": 2
@@ -101,6 +191,24 @@
       "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95a7aef3_47c518dc",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-01-31T16:02:52Z",
+      "side": 1,
+      "message": "As far as I understand, the immutable samplers are just the initialization values of regular samplers.\nI think they can simply be kept within the binding and used to initialize the DescriptorSet in the pool at allocation time.\nI\u0027m not sure an extra structure simplifies this task.\nIf I\u0027m wrong, I can always change it once I implement this feature.",
+      "parentUuid": "b967cc22_f5c59110",
+      "revId": "6307ac6fea0b97685c8dde24e9af6be7b5dfd6dc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
