@@ -23,9 +23,7 @@
 namespace sw
 {
 	VertexRoutine::VertexRoutine(const VertexProcessor::State &state, SpirvShader const *spirvShader)
-		: v(true),		/* TODO: indirect addressable */
-		  o(true),
-		  state(state),
+		: state(state),
 		  spirvShader(spirvShader)
 	{
 	}
@@ -81,25 +79,44 @@ namespace sw
 
 	void VertexRoutine::readInput(UInt &index)
 	{
-		for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
+		// TODO: tidy this up; consider vertex fetch state + VS input interface together.
+
+		for(int i = 0; i < MAX_INTERFACE_COMPONENTS / 4; i++)
 		{
+			if (spirvShader->inputs[4*i].Type == SpirvShader::ATTRIBTYPE_UNUSED &&
+				spirvShader->inputs[4*i+1].Type == SpirvShader::ATTRIBTYPE_UNUSED &&
+				spirvShader->inputs[4*i+2].Type == SpirvShader::ATTRIBTYPE_UNUSED &&
+				spirvShader->inputs[4*i+3].Type == SpirvShader::ATTRIBTYPE_UNUSED)
+			{
+				// Avoid generating any fetching code for attributes the shader doesn't use.
+				continue;
+			}
+
 			Pointer<Byte> input = *Pointer<Pointer<Byte>>(data + OFFSET(DrawData,input) + sizeof(void*) * i);
 			UInt stride = *Pointer<UInt>(data + OFFSET(DrawData,stride) + sizeof(unsigned int) * i);
 
-			v[i] = readStream(input, stride, state.input[i], index);
+			auto vec = readStream(input, stride, state.input[i], index);
+			(*routine.inputs)[i * 4] = vec.x;
+			(*routine.inputs)[i * 4 + 1] = vec.y;
+			(*routine.inputs)[i * 4 + 2] = vec.z;
+			(*routine.inputs)[i * 4 + 3] = vec.w;
 		}
 	}
 
 	void VertexRoutine::computeClipFlags()
 	{
-		int pos = state.positionRegister;
+		// TODO: this is completely wrong, should come from builtins instead!
+		auto posX = (*routine.outputs)[0];
+		auto posY = (*routine.outputs)[1];
+		auto posZ = (*routine.outputs)[2];
+		auto posW = (*routine.outputs)[3];
 
-		Int4 maxX = CmpLT(o[pos].w, o[pos].x);
-		Int4 maxY = CmpLT(o[pos].w, o[pos].y);
-		Int4 maxZ = CmpLT(o[pos].w, o[pos].z);
-		Int4 minX = CmpNLE(-o[pos].w, o[pos].x);
-		Int4 minY = CmpNLE(-o[pos].w, o[pos].y);
-		Int4 minZ = CmpNLE(Float4(0.0f), o[pos].z);
+		Int4 maxX = CmpLT(posW, posX);
+		Int4 maxY = CmpLT(posW, posY);
+		Int4 maxZ = CmpLT(posW, posZ);
+		Int4 minX = CmpNLE(-posW, posX);
+		Int4 minY = CmpNLE(-posW, posY);
+		Int4 minZ = CmpNLE(Float4(0.0f), posZ);
 
 		clipFlags = *Pointer<Int>(constants + OFFSET(Constants,maxX) + SignMask(maxX) * 4);   // FIXME: Array indexing
 		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,maxY) + SignMask(maxY) * 4);
@@ -108,9 +125,9 @@ namespace sw
 		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,minY) + SignMask(minY) * 4);
 		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,minZ) + SignMask(minZ) * 4);
 
-		Int4 finiteX = CmpLE(Abs(o[pos].x), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
-		Int4 finiteY = CmpLE(Abs(o[pos].y), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
-		Int4 finiteZ = CmpLE(Abs(o[pos].z), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
+		Int4 finiteX = CmpLE(Abs(posX), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
+		Int4 finiteY = CmpLE(Abs(posY), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
+		Int4 finiteZ = CmpLE(Abs(posZ), *Pointer<Float4>(constants + OFFSET(Constants,maxPos)));
 
 		Int4 finiteXYZ = finiteX & finiteY & finiteZ;
 		clipFlags |= *Pointer<Int>(constants + OFFSET(Constants,fini) + SignMask(finiteXYZ) * 4);
@@ -658,10 +675,11 @@ namespace sw
 		// Viewport transform
 		int pos = state.positionRegister;
 
-		v.x = o[pos].x;
-		v.y = o[pos].y;
-		v.z = o[pos].z;
-		v.w = o[pos].w;
+		// TODO: completely wrong, this should come from builtins, not output file.
+		v.x = (*routine.outputs)[0];
+		v.y = (*routine.outputs)[1];
+		v.z = (*routine.outputs)[2];
+		v.w = (*routine.outputs)[3];
 
 		Float4 w = As<Float4>(As<Int4>(v.w) | (As<Int4>(CmpEQ(v.w, Float4(0.0f))) & As<Int4>(Float4(1.0f))));
 		Float4 rhw = Float4(1.0f) / w;
