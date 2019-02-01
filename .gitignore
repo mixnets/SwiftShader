@@ -3,8 +3,8 @@
 /obj/
 /bin/
 /out/
-/build/
 .vs
+CMakeFiles/
 
 # Ignored files #
 *.obj
@@ -29,3 +29,4 @@
 *.opendb
 *.db
 *~
+CMakeCache.txt
