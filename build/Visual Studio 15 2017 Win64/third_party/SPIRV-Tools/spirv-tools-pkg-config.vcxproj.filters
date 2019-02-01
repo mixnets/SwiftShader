@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Nicolas\Development\SwiftShader\build\Visual Studio 15 2017 Win64\CMakeFiles\f93669d33fd8505cdc43fca4af74eac5\spirv-tools-pkg-config.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Nicolas\Development\SwiftShader\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\CMakeFiles\spirv-tools-pkg-config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{FF33C4B6-2A4C-3DC4-BA7B-B45DA9740DD2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

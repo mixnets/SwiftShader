@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\ReactorUnitTests.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\googletest\googletest\src\gtest-all.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{24579C20-8122-3F4D-8E95-E29073F80675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{3014F807-857D-390F-9E14-609D13C66783}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Reactor">
+      <UniqueIdentifier>{F28116C3-12D5-3B76-A8F9-EF7A9FBAD3A1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

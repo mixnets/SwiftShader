@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\change_operand_reduction_opportunity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\change_operand_to_undef_reduction_opportunity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\operand_to_const_reduction_pass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\operand_to_undef_reduction_pass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\operand_to_dominating_id_reduction_pass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\reducer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\reduction_opportunity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\reduction_pass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\reduction_util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\remove_instruction_reduction_opportunity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\remove_unreferenced_instruction_reduction_pass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\remove_opname_instruction_reduction_pass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\structured_loop_to_selection_reduction_opportunity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\structured_loop_to_selection_reduction_pass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\pch_source_reduce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\change_operand_reduction_opportunity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\change_operand_to_undef_reduction_opportunity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\operand_to_const_reduction_pass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\operand_to_undef_reduction_pass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\operand_to_dominating_id_reduction_pass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\reducer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\reduction_opportunity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\reduction_pass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\reduction_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\remove_instruction_reduction_opportunity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\remove_opname_instruction_reduction_pass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\remove_unreferenced_instruction_reduction_pass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\structured_loop_to_selection_reduction_opportunity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\third_party\SPIRV-Tools\source\reduce\structured_loop_to_selection_reduction_pass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{5246F7CC-9FB2-325C-9C7F-CAF6AA16A243}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{24579C20-8122-3F4D-8E95-E29073F80675}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

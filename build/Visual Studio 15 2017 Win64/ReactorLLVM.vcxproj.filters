@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\LLVMReactor.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\Routine.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\LLVMRoutine.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\LLVMRoutineManager.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\CPUID.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\Debug.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\ExecutableMemory.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\Nucleus.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\Routine.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\LLVMRoutine.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\LLVMRoutineManager.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\CPUID.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\Debug.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\Reactor\ExecutableMemory.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{3014F807-857D-390F-9E14-609D13C66783}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Reactor">
+      <UniqueIdentifier>{F28116C3-12D5-3B76-A8F9-EF7A9FBAD3A1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

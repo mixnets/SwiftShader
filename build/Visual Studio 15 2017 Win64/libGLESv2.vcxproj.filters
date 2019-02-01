@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\Common\SharedLibrary.cpp">
+      <Filter>src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\common\Image.cpp">
+      <Filter>src\OpenGL\common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\common\MatrixStack.cpp">
+      <Filter>src\OpenGL\common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\common\Object.cpp">
+      <Filter>src\OpenGL\common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\common\debug.cpp">
+      <Filter>src\OpenGL\common</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Buffer.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Context.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Device.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Fence.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Framebuffer.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\IndexDataManager.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Program.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Query.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Renderbuffer.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\ResourceManager.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Shader.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Texture.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\TransformFeedback.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\VertexArray.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\VertexDataManager.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\entry_points.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\libGLESv2.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\libGLESv3.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\main.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\utilities.cpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\include\GLES2\gl2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\include\GLES2\gl2ext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\include\GLES2\gl2platform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\include\GLES3\gl3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\include\GLES3\gl3platform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\include\KHR\khrplatform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\Common\SharedLibrary.hpp">
+      <Filter>src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\common\Image.hpp">
+      <Filter>src\OpenGL\common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\common\MatrixStack.hpp">
+      <Filter>src\OpenGL\common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\common\NameSpace.hpp">
+      <Filter>src\OpenGL\common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\common\Object.hpp">
+      <Filter>src\OpenGL\common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\common\Surface.hpp">
+      <Filter>src\OpenGL\common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\common\debug.h">
+      <Filter>src\OpenGL\common</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Buffer.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Context.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Device.hpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Fence.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Framebuffer.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\IndexDataManager.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Program.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Query.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Renderbuffer.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\ResourceManager.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Sampler.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Shader.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\Texture.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\TransformFeedback.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\VertexArray.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\VertexDataManager.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\entry_points.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\libGLESv2.hpp">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\main.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\mathutil.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\resource.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\utilities.h">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="C:\Users\Nicolas\Development\SwiftShader\src\OpenGL\libGLESv2\libGLESv2.rc">
+      <Filter>src\OpenGL\libGLESv2</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{5246F7CC-9FB2-325C-9C7F-CAF6AA16A243}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{3014F807-857D-390F-9E14-609D13C66783}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Common">
+      <UniqueIdentifier>{AC25BBDD-FB3D-3C22-B094-9A292C58C5E5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\OpenGL">
+      <UniqueIdentifier>{F89B9B8A-3DD6-3F85-A397-C26965240595}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\OpenGL\common">
+      <UniqueIdentifier>{653E4397-ADBE-379F-B303-109AF7FED480}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\OpenGL\libGLESv2">
+      <UniqueIdentifier>{AF7A857A-9530-3DC3-8FE2-64953CC8DE1A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

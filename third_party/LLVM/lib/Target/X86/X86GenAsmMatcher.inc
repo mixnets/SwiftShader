@@ -26,12 +26,12 @@
 
 // Flags for subtarget features that participate in instruction matching.
 enum SubtargetFeatureFlag {
+  Feature_IsNaCl = (1 << 2),
+  Feature_NotNaCl = (1 << 5),
+  Feature_IsNaCl32 = (1 << 3),
   Feature_In32BitMode = (1 << 0),
   Feature_In64BitMode = (1 << 1),
-  Feature_IsNaCl = (1 << 2),
-  Feature_IsNaCl32 = (1 << 3),
   Feature_IsNaCl64 = (1 << 4),
-  Feature_NotNaCl = (1 << 5),
   Feature_None = 0
 };
 
@@ -2093,23 +2093,34 @@ enum MatchClassKind {
   MCK_ps, // 'ps'
   MCK_sd, // 'sd'
   MCK_ss, // 'ss'
-  MCK_AL, // register class 'AL'
-  MCK_CL, // register class 'CL'
+  MCK_VR256, // register class 'VR256'
+  MCK_DEBUG_REG, // register class 'DEBUG_REG'
+  MCK_ES, // register class 'ES'
+  MCK_SS, // register class 'SS'
+  MCK_SEGMENT_REG, // register class 'SEGMENT_REG'
+  MCK_CONTROL_REG, // register class 'CONTROL_REG'
+  MCK_RST, // register class 'RST'
+  MCK_FR32, // register class 'FR32,FR64,VR128'
+  MCK_FS, // register class 'FS'
+  MCK_GS, // register class 'GS'
+  MCK_ST0, // register class 'ST0'
+  MCK_DS, // register class 'DS'
+  MCK_CS, // register class 'CS'
+  MCK_CCR, // register class 'CCR'
   MCK_GR8_ABCD_L, // register class 'GR8_ABCD_L'
   MCK_GR8_ABCD_H, // register class 'GR8_ABCD_H'
   MCK_GR8_NOREX, // register class 'GR8_NOREX'
   MCK_GR8, // register class 'GR8'
-  MCK_AX, // register class 'AX'
   MCK_DX, // register class 'DX'
   MCK_GR16_ABCD, // register class 'GR16_ABCD'
   MCK_GR16_NOREX, // register class 'GR16_NOREX'
   MCK_GR16, // register class 'GR16'
   MCK_EAX, // register class 'EAX'
   MCK_EDX, // register class 'EDX'
-  MCK_Reg20, // derived register class
-  MCK_Reg21, // derived register class
-  MCK_Reg22, // derived register class
-  MCK_Reg24, // derived register class
+  MCK_Reg35, // derived register class
+  MCK_Reg31, // derived register class
+  MCK_Reg33, // derived register class
+  MCK_Reg34, // derived register class
   MCK_GR32_AD, // register class 'GR32_AD'
   MCK_ECX, // register class 'ECX'
   MCK_GR32_TC, // register class 'GR32_TC'
@@ -2119,38 +2130,27 @@ enum MatchClassKind {
   MCK_GR32_NOREX, // register class 'GR32_NOREX'
   MCK_GR32_NOSP, // register class 'GR32_NOSP'
   MCK_GR32, // register class 'GR32'
-  MCK_RAX, // register class 'RAX'
+  MCK_AL, // register class 'AL'
+  MCK_AX, // register class 'AX'
+  MCK_CL, // register class 'CL'
   MCK_RDX, // register class 'RDX'
-  MCK_RCX, // register class 'RCX'
-  MCK_Reg27, // derived register class
-  MCK_Reg35, // derived register class
-  MCK_GR64_ABCD, // register class 'GR64_ABCD'
-  MCK_GR64_NOREX_NOSP, // register class 'GR64_NOREX_NOSP'
-  MCK_Reg30, // derived register class
-  MCK_Reg31, // derived register class
-  MCK_GR64_NOREX, // register class 'GR64_NOREX'
-  MCK_GR64_TCW64, // register class 'GR64_TCW64'
-  MCK_Reg36, // derived register class
-  MCK_Reg38, // derived register class
+  MCK_Reg49, // derived register class
+  MCK_Reg45, // derived register class
   MCK_GR64_NOSP, // register class 'GR64_NOSP'
-  MCK_GR64_TC, // register class 'GR64_TC'
+  MCK_Reg41, // derived register class
   MCK_GR64, // register class 'GR64'
   MCK_VR64, // register class 'VR64'
   MCK_RFP32, // register class 'RFP32,RFP64,RFP80'
-  MCK_FR32, // register class 'FR32,FR64,VR128'
-  MCK_VR256, // register class 'VR256'
-  MCK_ST0, // register class 'ST0'
-  MCK_RST, // register class 'RST'
-  MCK_CCR, // register class 'CCR'
-  MCK_CS, // register class 'CS'
-  MCK_DS, // register class 'DS'
-  MCK_SS, // register class 'SS'
-  MCK_ES, // register class 'ES'
-  MCK_FS, // register class 'FS'
-  MCK_GS, // register class 'GS'
-  MCK_SEGMENT_REG, // register class 'SEGMENT_REG'
-  MCK_DEBUG_REG, // register class 'DEBUG_REG'
-  MCK_CONTROL_REG, // register class 'CONTROL_REG'
+  MCK_RAX, // register class 'RAX'
+  MCK_RCX, // register class 'RCX'
+  MCK_Reg54, // derived register class
+  MCK_GR64_NOREX_NOSP, // register class 'GR64_NOREX_NOSP'
+  MCK_Reg48, // derived register class
+  MCK_Reg51, // derived register class
+  MCK_GR64_ABCD, // register class 'GR64_ABCD'
+  MCK_GR64_NOREX, // register class 'GR64_NOREX'
+  MCK_GR64_TCW64, // register class 'GR64_TCW64'
+  MCK_GR64_TC, // register class 'GR64_TC'
   MCK_ImmSExti64i8, // user defined class 'ImmSExti64i8AsmOperand'
   MCK_ImmSExti16i8, // user defined class 'ImmSExti16i8AsmOperand'
   MCK_ImmSExti32i8, // user defined class 'ImmSExti32i8AsmOperand'
@@ -2207,21 +2207,26 @@ static bool IsSubclass(MatchClassKind A, MatchClassKind B) {
   default:
     return false;
 
-  case MCK_AL:
-    switch (B) {
-    default: return false;
-    case MCK_GR8_ABCD_L: return true;
-    case MCK_GR8_NOREX: return true;
-    case MCK_GR8: return true;
-    }
+  case MCK_ES:
+    return B == MCK_SEGMENT_REG;
 
-  case MCK_CL:
-    switch (B) {
-    default: return false;
-    case MCK_GR8_ABCD_L: return true;
-    case MCK_GR8_NOREX: return true;
-    case MCK_GR8: return true;
-    }
+  case MCK_SS:
+    return B == MCK_SEGMENT_REG;
+
+  case MCK_FS:
+    return B == MCK_SEGMENT_REG;
+
+  case MCK_GS:
+    return B == MCK_SEGMENT_REG;
+
+  case MCK_ST0:
+    return B == MCK_RST;
+
+  case MCK_DS:
+    return B == MCK_SEGMENT_REG;
+
+  case MCK_CS:
+    return B == MCK_SEGMENT_REG;
 
   case MCK_GR8_ABCD_L:
     switch (B) {
@@ -2239,14 +2244,6 @@ static bool IsSubclass(MatchClassKind A, MatchClassKind B) {
 
   case MCK_GR8_NOREX:
     return B == MCK_GR8;
-
-  case MCK_AX:
-    switch (B) {
-    default: return false;
-    case MCK_GR16_ABCD: return true;
-    case MCK_GR16_NOREX: return true;
-    case MCK_GR16: return true;
-    }
 
   case MCK_DX:
     switch (B) {
@@ -2281,10 +2278,10 @@ static bool IsSubclass(MatchClassKind A, MatchClassKind B) {
   case MCK_EDX:
     switch (B) {
     default: return false;
-    case MCK_Reg20: return true;
-    case MCK_Reg21: return true;
-    case MCK_Reg22: return true;
-    case MCK_Reg24: return true;
+    case MCK_Reg35: return true;
+    case MCK_Reg31: return true;
+    case MCK_Reg33: return true;
+    case MCK_Reg34: return true;
     case MCK_GR32_AD: return true;
     case MCK_GR32_TC: return true;
     case MCK_GR32_ABCD: return true;
@@ -2295,12 +2292,12 @@ static bool IsSubclass(MatchClassKind A, MatchClassKind B) {
     case MCK_GR32: return true;
     }
 
-  case MCK_Reg20:
+  case MCK_Reg35:
     switch (B) {
     default: return false;
-    case MCK_Reg21: return true;
-    case MCK_Reg22: return true;
-    case MCK_Reg24: return true;
+    case MCK_Reg31: return true;
+    case MCK_Reg33: return true;
+    case MCK_Reg34: return true;
     case MCK_GR32_ABCD: return true;
     case MCK_GR32_NOAX: return true;
     case MCK_GR32_NOREX_NOSP: return true;
@@ -2309,11 +2306,11 @@ static bool IsSubclass(MatchClassKind A, MatchClassKind B) {
     case MCK_GR32: return true;
     }
 
-  case MCK_Reg21:
+  case MCK_Reg31:
     switch (B) {
     default: return false;
-    case MCK_Reg22: return true;
-    case MCK_Reg24: return true;
+    case MCK_Reg33: return true;
+    case MCK_Reg34: return true;
     case MCK_GR32_NOAX: return true;
     case MCK_GR32_NOREX_NOSP: return true;
     case MCK_GR32_NOREX: return true;
@@ -2321,19 +2318,19 @@ static bool IsSubclass(MatchClassKind A, MatchClassKind B) {
     case MCK_GR32: return true;
     }
 
-  case MCK_Reg22:
-    switch (B) {
-    default: return false;
-    case MCK_GR32_NOAX: return true;
-    case MCK_GR32_NOREX: return true;
-    case MCK_GR32: return true;
-    }
-
-  case MCK_Reg24:
+  case MCK_Reg33:
     switch (B) {
     default: return false;
     case MCK_GR32_NOAX: return true;
     case MCK_GR32_NOSP: return true;
+    case MCK_GR32: return true;
+    }
+
+  case MCK_Reg34:
+    switch (B) {
+    default: return false;
+    case MCK_GR32_NOAX: return true;
+    case MCK_GR32_NOREX: return true;
     case MCK_GR32: return true;
     }
 
@@ -2351,10 +2348,10 @@ static bool IsSubclass(MatchClassKind A, MatchClassKind B) {
   case MCK_ECX:
     switch (B) {
     default: return false;
-    case MCK_Reg20: return true;
-    case MCK_Reg21: return true;
-    case MCK_Reg22: return true;
-    case MCK_Reg24: return true;
+    case MCK_Reg35: return true;
+    case MCK_Reg31: return true;
+    case MCK_Reg33: return true;
+    case MCK_Reg34: return true;
     case MCK_GR32_TC: return true;
     case MCK_GR32_ABCD: return true;
     case MCK_GR32_NOAX: return true;
@@ -2400,122 +2397,170 @@ static bool IsSubclass(MatchClassKind A, MatchClassKind B) {
   case MCK_GR32_NOSP:
     return B == MCK_GR32;
 
-  case MCK_RAX:
+  case MCK_AL:
     switch (B) {
     default: return false;
-    case MCK_Reg27: return true;
-    case MCK_Reg35: return true;
-    case MCK_GR64_ABCD: return true;
-    case MCK_GR64_NOREX_NOSP: return true;
-    case MCK_Reg30: return true;
-    case MCK_Reg31: return true;
-    case MCK_GR64_NOREX: return true;
-    case MCK_GR64_TCW64: return true;
-    case MCK_Reg36: return true;
-    case MCK_Reg38: return true;
-    case MCK_GR64_NOSP: return true;
-    case MCK_GR64_TC: return true;
-    case MCK_GR64: return true;
+    case MCK_GR8_ABCD_L: return true;
+    case MCK_GR8_NOREX: return true;
+    case MCK_GR8: return true;
+    }
+
+  case MCK_AX:
+    switch (B) {
+    default: return false;
+    case MCK_GR16_ABCD: return true;
+    case MCK_GR16_NOREX: return true;
+    case MCK_GR16: return true;
+    }
+
+  case MCK_CL:
+    switch (B) {
+    default: return false;
+    case MCK_GR8_ABCD_L: return true;
+    case MCK_GR8_NOREX: return true;
+    case MCK_GR8: return true;
     }
 
   case MCK_RDX:
     switch (B) {
     default: return false;
-    case MCK_Reg27: return true;
-    case MCK_Reg35: return true;
-    case MCK_GR64_ABCD: return true;
+    case MCK_Reg49: return true;
+    case MCK_Reg45: return true;
+    case MCK_GR64_NOSP: return true;
+    case MCK_Reg41: return true;
+    case MCK_GR64: return true;
+    case MCK_Reg54: return true;
     case MCK_GR64_NOREX_NOSP: return true;
-    case MCK_Reg30: return true;
-    case MCK_Reg31: return true;
+    case MCK_Reg48: return true;
+    case MCK_Reg51: return true;
+    case MCK_GR64_ABCD: return true;
     case MCK_GR64_NOREX: return true;
     case MCK_GR64_TCW64: return true;
-    case MCK_Reg36: return true;
-    case MCK_Reg38: return true;
-    case MCK_GR64_NOSP: return true;
     case MCK_GR64_TC: return true;
+    }
+
+  case MCK_Reg49:
+    switch (B) {
+    default: return false;
+    case MCK_Reg45: return true;
+    case MCK_GR64_NOSP: return true;
+    case MCK_Reg41: return true;
     case MCK_GR64: return true;
+    case MCK_GR64_NOREX_NOSP: return true;
+    case MCK_Reg48: return true;
+    case MCK_Reg51: return true;
+    case MCK_GR64_NOREX: return true;
+    case MCK_GR64_TC: return true;
+    }
+
+  case MCK_Reg45:
+    switch (B) {
+    default: return false;
+    case MCK_GR64_NOSP: return true;
+    case MCK_Reg41: return true;
+    case MCK_GR64: return true;
+    case MCK_GR64_TC: return true;
+    }
+
+  case MCK_GR64_NOSP:
+    switch (B) {
+    default: return false;
+    case MCK_Reg41: return true;
+    case MCK_GR64: return true;
+    }
+
+  case MCK_Reg41:
+    return B == MCK_GR64;
+
+  case MCK_RAX:
+    switch (B) {
+    default: return false;
+    case MCK_Reg49: return true;
+    case MCK_Reg45: return true;
+    case MCK_GR64_NOSP: return true;
+    case MCK_Reg41: return true;
+    case MCK_GR64: return true;
+    case MCK_Reg54: return true;
+    case MCK_GR64_NOREX_NOSP: return true;
+    case MCK_Reg48: return true;
+    case MCK_Reg51: return true;
+    case MCK_GR64_ABCD: return true;
+    case MCK_GR64_NOREX: return true;
+    case MCK_GR64_TCW64: return true;
+    case MCK_GR64_TC: return true;
     }
 
   case MCK_RCX:
     switch (B) {
     default: return false;
-    case MCK_Reg27: return true;
-    case MCK_Reg35: return true;
-    case MCK_GR64_ABCD: return true;
+    case MCK_Reg49: return true;
+    case MCK_Reg45: return true;
+    case MCK_GR64_NOSP: return true;
+    case MCK_Reg41: return true;
+    case MCK_GR64: return true;
+    case MCK_Reg54: return true;
     case MCK_GR64_NOREX_NOSP: return true;
-    case MCK_Reg30: return true;
-    case MCK_Reg31: return true;
+    case MCK_Reg48: return true;
+    case MCK_Reg51: return true;
+    case MCK_GR64_ABCD: return true;
     case MCK_GR64_NOREX: return true;
     case MCK_GR64_TCW64: return true;
-    case MCK_Reg36: return true;
-    case MCK_Reg38: return true;
-    case MCK_GR64_NOSP: return true;
     case MCK_GR64_TC: return true;
-    case MCK_GR64: return true;
     }
 
-  case MCK_Reg27:
+  case MCK_Reg54:
     switch (B) {
     default: return false;
-    case MCK_Reg35: return true;
-    case MCK_GR64_ABCD: return true;
+    case MCK_Reg49: return true;
+    case MCK_Reg45: return true;
+    case MCK_GR64_NOSP: return true;
+    case MCK_Reg41: return true;
+    case MCK_GR64: return true;
     case MCK_GR64_NOREX_NOSP: return true;
-    case MCK_Reg30: return true;
-    case MCK_Reg31: return true;
+    case MCK_Reg48: return true;
+    case MCK_Reg51: return true;
+    case MCK_GR64_ABCD: return true;
     case MCK_GR64_NOREX: return true;
     case MCK_GR64_TCW64: return true;
-    case MCK_Reg36: return true;
-    case MCK_Reg38: return true;
-    case MCK_GR64_NOSP: return true;
     case MCK_GR64_TC: return true;
-    case MCK_GR64: return true;
-    }
-
-  case MCK_Reg35:
-    switch (B) {
-    default: return false;
-    case MCK_GR64_NOREX_NOSP: return true;
-    case MCK_Reg30: return true;
-    case MCK_Reg31: return true;
-    case MCK_GR64_NOREX: return true;
-    case MCK_Reg36: return true;
-    case MCK_Reg38: return true;
-    case MCK_GR64_NOSP: return true;
-    case MCK_GR64_TC: return true;
-    case MCK_GR64: return true;
-    }
-
-  case MCK_GR64_ABCD:
-    switch (B) {
-    default: return false;
-    case MCK_GR64_NOREX_NOSP: return true;
-    case MCK_Reg30: return true;
-    case MCK_Reg31: return true;
-    case MCK_GR64_NOREX: return true;
-    case MCK_GR64_NOSP: return true;
-    case MCK_GR64: return true;
     }
 
   case MCK_GR64_NOREX_NOSP:
     switch (B) {
     default: return false;
-    case MCK_Reg30: return true;
-    case MCK_Reg31: return true;
-    case MCK_GR64_NOREX: return true;
     case MCK_GR64_NOSP: return true;
+    case MCK_Reg41: return true;
     case MCK_GR64: return true;
+    case MCK_Reg48: return true;
+    case MCK_GR64_NOREX: return true;
     }
 
-  case MCK_Reg30:
+  case MCK_Reg48:
     switch (B) {
     default: return false;
-    case MCK_Reg31: return true;
-    case MCK_GR64_NOREX: return true;
+    case MCK_Reg41: return true;
     case MCK_GR64: return true;
+    case MCK_GR64_NOREX: return true;
     }
 
-  case MCK_Reg31:
-    return B == MCK_GR64;
+  case MCK_Reg51:
+    switch (B) {
+    default: return false;
+    case MCK_GR64: return true;
+    case MCK_GR64_NOREX: return true;
+    case MCK_GR64_TC: return true;
+    }
+
+  case MCK_GR64_ABCD:
+    switch (B) {
+    default: return false;
+    case MCK_GR64_NOSP: return true;
+    case MCK_Reg41: return true;
+    case MCK_GR64: return true;
+    case MCK_GR64_NOREX_NOSP: return true;
+    case MCK_Reg48: return true;
+    case MCK_GR64_NOREX: return true;
+    }
 
   case MCK_GR64_NOREX:
     return B == MCK_GR64;
@@ -2523,60 +2568,15 @@ static bool IsSubclass(MatchClassKind A, MatchClassKind B) {
   case MCK_GR64_TCW64:
     switch (B) {
     default: return false;
-    case MCK_Reg31: return true;
-    case MCK_Reg36: return true;
+    case MCK_Reg45: return true;
     case MCK_GR64_NOSP: return true;
+    case MCK_Reg41: return true;
+    case MCK_GR64: return true;
     case MCK_GR64_TC: return true;
-    case MCK_GR64: return true;
-    }
-
-  case MCK_Reg36:
-    switch (B) {
-    default: return false;
-    case MCK_Reg31: return true;
-    case MCK_GR64_NOSP: return true;
-    case MCK_GR64_TC: return true;
-    case MCK_GR64: return true;
-    }
-
-  case MCK_Reg38:
-    switch (B) {
-    default: return false;
-    case MCK_GR64_NOREX: return true;
-    case MCK_GR64_TC: return true;
-    case MCK_GR64: return true;
-    }
-
-  case MCK_GR64_NOSP:
-    switch (B) {
-    default: return false;
-    case MCK_Reg31: return true;
-    case MCK_GR64: return true;
     }
 
   case MCK_GR64_TC:
     return B == MCK_GR64;
-
-  case MCK_ST0:
-    return B == MCK_RST;
-
-  case MCK_CS:
-    return B == MCK_SEGMENT_REG;
-
-  case MCK_DS:
-    return B == MCK_SEGMENT_REG;
-
-  case MCK_SS:
-    return B == MCK_SEGMENT_REG;
-
-  case MCK_ES:
-    return B == MCK_SEGMENT_REG;
-
-  case MCK_FS:
-    return B == MCK_SEGMENT_REG;
-
-  case MCK_GS:
-    return B == MCK_SEGMENT_REG;
 
   case MCK_ImmSExti64i8:
     switch (B) {
@@ -2620,161 +2620,161 @@ static bool ValidateOperandClass(MCParsedAsmOperand *GOp, MatchClassKind Kind) {
     MatchClassKind OpKind;
     switch (Operand.getReg()) {
     default: OpKind = InvalidMatchClass; break;
-    case X86::AL: OpKind = MCK_AL; break;
-    case X86::DL: OpKind = MCK_GR8_ABCD_L; break;
-    case X86::CL: OpKind = MCK_CL; break;
-    case X86::BL: OpKind = MCK_GR8_ABCD_L; break;
-    case X86::SIL: OpKind = MCK_GR8; break;
-    case X86::DIL: OpKind = MCK_GR8; break;
-    case X86::BPL: OpKind = MCK_GR8; break;
-    case X86::SPL: OpKind = MCK_GR8; break;
-    case X86::R8B: OpKind = MCK_GR8; break;
-    case X86::R9B: OpKind = MCK_GR8; break;
-    case X86::R10B: OpKind = MCK_GR8; break;
-    case X86::R11B: OpKind = MCK_GR8; break;
-    case X86::R12B: OpKind = MCK_GR8; break;
-    case X86::R13B: OpKind = MCK_GR8; break;
-    case X86::R14B: OpKind = MCK_GR8; break;
-    case X86::R15B: OpKind = MCK_GR8; break;
-    case X86::AH: OpKind = MCK_GR8_ABCD_H; break;
-    case X86::DH: OpKind = MCK_GR8_ABCD_H; break;
-    case X86::CH: OpKind = MCK_GR8_ABCD_H; break;
-    case X86::BH: OpKind = MCK_GR8_ABCD_H; break;
-    case X86::AX: OpKind = MCK_AX; break;
-    case X86::DX: OpKind = MCK_DX; break;
-    case X86::CX: OpKind = MCK_GR16_ABCD; break;
-    case X86::BX: OpKind = MCK_GR16_ABCD; break;
-    case X86::SI: OpKind = MCK_GR16_NOREX; break;
-    case X86::DI: OpKind = MCK_GR16_NOREX; break;
-    case X86::BP: OpKind = MCK_GR16_NOREX; break;
-    case X86::SP: OpKind = MCK_GR16_NOREX; break;
-    case X86::R8W: OpKind = MCK_GR16; break;
-    case X86::R9W: OpKind = MCK_GR16; break;
-    case X86::R10W: OpKind = MCK_GR16; break;
-    case X86::R11W: OpKind = MCK_GR16; break;
-    case X86::R12W: OpKind = MCK_GR16; break;
-    case X86::R13W: OpKind = MCK_GR16; break;
-    case X86::R14W: OpKind = MCK_GR16; break;
-    case X86::R15W: OpKind = MCK_GR16; break;
-    case X86::EAX: OpKind = MCK_EAX; break;
-    case X86::EDX: OpKind = MCK_EDX; break;
-    case X86::ECX: OpKind = MCK_ECX; break;
-    case X86::EBX: OpKind = MCK_Reg20; break;
-    case X86::ESI: OpKind = MCK_Reg21; break;
-    case X86::EDI: OpKind = MCK_Reg21; break;
-    case X86::EBP: OpKind = MCK_Reg21; break;
-    case X86::ESP: OpKind = MCK_Reg22; break;
-    case X86::R8D: OpKind = MCK_Reg24; break;
-    case X86::R9D: OpKind = MCK_Reg24; break;
-    case X86::R10D: OpKind = MCK_Reg24; break;
-    case X86::R11D: OpKind = MCK_Reg24; break;
-    case X86::R12D: OpKind = MCK_Reg24; break;
-    case X86::R13D: OpKind = MCK_Reg24; break;
-    case X86::R14D: OpKind = MCK_Reg24; break;
-    case X86::R15D: OpKind = MCK_Reg24; break;
-    case X86::RAX: OpKind = MCK_RAX; break;
-    case X86::RDX: OpKind = MCK_RDX; break;
-    case X86::RCX: OpKind = MCK_RCX; break;
-    case X86::RBX: OpKind = MCK_GR64_ABCD; break;
-    case X86::RSI: OpKind = MCK_Reg35; break;
-    case X86::RDI: OpKind = MCK_Reg35; break;
-    case X86::RBP: OpKind = MCK_GR64_NOREX_NOSP; break;
-    case X86::RSP: OpKind = MCK_Reg30; break;
-    case X86::R8: OpKind = MCK_GR64_TCW64; break;
-    case X86::R9: OpKind = MCK_GR64_TCW64; break;
-    case X86::R10: OpKind = MCK_GR64_NOSP; break;
-    case X86::R11: OpKind = MCK_GR64_TCW64; break;
-    case X86::R12: OpKind = MCK_GR64_NOSP; break;
-    case X86::R13: OpKind = MCK_GR64_NOSP; break;
-    case X86::R14: OpKind = MCK_GR64_NOSP; break;
-    case X86::R15: OpKind = MCK_GR64_NOSP; break;
-    case X86::RIP: OpKind = MCK_Reg38; break;
-    case X86::MM0: OpKind = MCK_VR64; break;
-    case X86::MM1: OpKind = MCK_VR64; break;
-    case X86::MM2: OpKind = MCK_VR64; break;
-    case X86::MM3: OpKind = MCK_VR64; break;
-    case X86::MM4: OpKind = MCK_VR64; break;
-    case X86::MM5: OpKind = MCK_VR64; break;
-    case X86::MM6: OpKind = MCK_VR64; break;
-    case X86::MM7: OpKind = MCK_VR64; break;
-    case X86::FP0: OpKind = MCK_RFP32; break;
-    case X86::FP1: OpKind = MCK_RFP32; break;
-    case X86::FP2: OpKind = MCK_RFP32; break;
-    case X86::FP3: OpKind = MCK_RFP32; break;
-    case X86::FP4: OpKind = MCK_RFP32; break;
-    case X86::FP5: OpKind = MCK_RFP32; break;
-    case X86::FP6: OpKind = MCK_RFP32; break;
-    case X86::XMM0: OpKind = MCK_FR32; break;
-    case X86::XMM1: OpKind = MCK_FR32; break;
-    case X86::XMM2: OpKind = MCK_FR32; break;
-    case X86::XMM3: OpKind = MCK_FR32; break;
-    case X86::XMM4: OpKind = MCK_FR32; break;
-    case X86::XMM5: OpKind = MCK_FR32; break;
-    case X86::XMM6: OpKind = MCK_FR32; break;
-    case X86::XMM7: OpKind = MCK_FR32; break;
-    case X86::XMM8: OpKind = MCK_FR32; break;
-    case X86::XMM9: OpKind = MCK_FR32; break;
-    case X86::XMM10: OpKind = MCK_FR32; break;
-    case X86::XMM11: OpKind = MCK_FR32; break;
-    case X86::XMM12: OpKind = MCK_FR32; break;
-    case X86::XMM13: OpKind = MCK_FR32; break;
-    case X86::XMM14: OpKind = MCK_FR32; break;
-    case X86::XMM15: OpKind = MCK_FR32; break;
-    case X86::YMM0: OpKind = MCK_VR256; break;
-    case X86::YMM1: OpKind = MCK_VR256; break;
-    case X86::YMM2: OpKind = MCK_VR256; break;
-    case X86::YMM3: OpKind = MCK_VR256; break;
-    case X86::YMM4: OpKind = MCK_VR256; break;
-    case X86::YMM5: OpKind = MCK_VR256; break;
     case X86::YMM6: OpKind = MCK_VR256; break;
-    case X86::YMM7: OpKind = MCK_VR256; break;
-    case X86::YMM8: OpKind = MCK_VR256; break;
-    case X86::YMM9: OpKind = MCK_VR256; break;
-    case X86::YMM10: OpKind = MCK_VR256; break;
-    case X86::YMM11: OpKind = MCK_VR256; break;
-    case X86::YMM12: OpKind = MCK_VR256; break;
-    case X86::YMM13: OpKind = MCK_VR256; break;
-    case X86::YMM14: OpKind = MCK_VR256; break;
-    case X86::YMM15: OpKind = MCK_VR256; break;
-    case X86::ST0: OpKind = MCK_ST0; break;
-    case X86::ST1: OpKind = MCK_RST; break;
-    case X86::ST2: OpKind = MCK_RST; break;
-    case X86::ST3: OpKind = MCK_RST; break;
-    case X86::ST4: OpKind = MCK_RST; break;
-    case X86::ST5: OpKind = MCK_RST; break;
-    case X86::ST6: OpKind = MCK_RST; break;
-    case X86::ST7: OpKind = MCK_RST; break;
-    case X86::EFLAGS: OpKind = MCK_CCR; break;
-    case X86::CS: OpKind = MCK_CS; break;
-    case X86::DS: OpKind = MCK_DS; break;
-    case X86::SS: OpKind = MCK_SS; break;
-    case X86::ES: OpKind = MCK_ES; break;
-    case X86::FS: OpKind = MCK_FS; break;
-    case X86::GS: OpKind = MCK_GS; break;
-    case X86::DR0: OpKind = MCK_DEBUG_REG; break;
-    case X86::DR1: OpKind = MCK_DEBUG_REG; break;
-    case X86::DR2: OpKind = MCK_DEBUG_REG; break;
     case X86::DR3: OpKind = MCK_DEBUG_REG; break;
+    case X86::DR7: OpKind = MCK_DEBUG_REG; break;
+    case X86::YMM15: OpKind = MCK_VR256; break;
+    case X86::ES: OpKind = MCK_ES; break;
+    case X86::YMM10: OpKind = MCK_VR256; break;
     case X86::DR4: OpKind = MCK_DEBUG_REG; break;
     case X86::DR5: OpKind = MCK_DEBUG_REG; break;
-    case X86::DR6: OpKind = MCK_DEBUG_REG; break;
-    case X86::DR7: OpKind = MCK_DEBUG_REG; break;
-    case X86::CR0: OpKind = MCK_CONTROL_REG; break;
-    case X86::CR1: OpKind = MCK_CONTROL_REG; break;
+    case X86::SS: OpKind = MCK_SS; break;
     case X86::CR2: OpKind = MCK_CONTROL_REG; break;
-    case X86::CR3: OpKind = MCK_CONTROL_REG; break;
+    case X86::YMM5: OpKind = MCK_VR256; break;
+    case X86::ST5: OpKind = MCK_RST; break;
+    case X86::XMM15: OpKind = MCK_FR32; break;
+    case X86::YMM8: OpKind = MCK_VR256; break;
+    case X86::YMM2: OpKind = MCK_VR256; break;
+    case X86::FS: OpKind = MCK_FS; break;
+    case X86::GS: OpKind = MCK_GS; break;
+    case X86::DR1: OpKind = MCK_DEBUG_REG; break;
+    case X86::YMM11: OpKind = MCK_VR256; break;
+    case X86::ST2: OpKind = MCK_RST; break;
     case X86::CR4: OpKind = MCK_CONTROL_REG; break;
-    case X86::CR5: OpKind = MCK_CONTROL_REG; break;
+    case X86::ST1: OpKind = MCK_RST; break;
+    case X86::YMM3: OpKind = MCK_VR256; break;
     case X86::CR6: OpKind = MCK_CONTROL_REG; break;
-    case X86::CR7: OpKind = MCK_CONTROL_REG; break;
-    case X86::CR8: OpKind = MCK_CONTROL_REG; break;
-    case X86::CR9: OpKind = MCK_CONTROL_REG; break;
-    case X86::CR10: OpKind = MCK_CONTROL_REG; break;
-    case X86::CR11: OpKind = MCK_CONTROL_REG; break;
     case X86::CR12: OpKind = MCK_CONTROL_REG; break;
     case X86::CR13: OpKind = MCK_CONTROL_REG; break;
+    case X86::ST0: OpKind = MCK_ST0; break;
+    case X86::YMM13: OpKind = MCK_VR256; break;
     case X86::CR14: OpKind = MCK_CONTROL_REG; break;
+    case X86::CR7: OpKind = MCK_CONTROL_REG; break;
     case X86::CR15: OpKind = MCK_CONTROL_REG; break;
+    case X86::CR3: OpKind = MCK_CONTROL_REG; break;
+    case X86::YMM7: OpKind = MCK_VR256; break;
+    case X86::DS: OpKind = MCK_DS; break;
+    case X86::YMM14: OpKind = MCK_VR256; break;
+    case X86::ST4: OpKind = MCK_RST; break;
+    case X86::DR2: OpKind = MCK_DEBUG_REG; break;
+    case X86::XMM14: OpKind = MCK_FR32; break;
+    case X86::YMM0: OpKind = MCK_VR256; break;
+    case X86::YMM1: OpKind = MCK_VR256; break;
+    case X86::ST7: OpKind = MCK_RST; break;
+    case X86::CS: OpKind = MCK_CS; break;
+    case X86::CR0: OpKind = MCK_CONTROL_REG; break;
+    case X86::CR1: OpKind = MCK_CONTROL_REG; break;
+    case X86::YMM4: OpKind = MCK_VR256; break;
+    case X86::YMM12: OpKind = MCK_VR256; break;
+    case X86::DR6: OpKind = MCK_DEBUG_REG; break;
+    case X86::CR5: OpKind = MCK_CONTROL_REG; break;
+    case X86::CR8: OpKind = MCK_CONTROL_REG; break;
+    case X86::CR11: OpKind = MCK_CONTROL_REG; break;
+    case X86::CR10: OpKind = MCK_CONTROL_REG; break;
+    case X86::ST3: OpKind = MCK_RST; break;
+    case X86::DR0: OpKind = MCK_DEBUG_REG; break;
+    case X86::YMM9: OpKind = MCK_VR256; break;
+    case X86::ST6: OpKind = MCK_RST; break;
+    case X86::EFLAGS: OpKind = MCK_CCR; break;
+    case X86::CR9: OpKind = MCK_CONTROL_REG; break;
+    case X86::R12B: OpKind = MCK_GR8; break;
+    case X86::R11B: OpKind = MCK_GR8; break;
+    case X86::BL: OpKind = MCK_GR8_ABCD_L; break;
+    case X86::BH: OpKind = MCK_GR8_ABCD_H; break;
+    case X86::DX: OpKind = MCK_DX; break;
+    case X86::CX: OpKind = MCK_GR16_ABCD; break;
+    case X86::SP: OpKind = MCK_GR16_NOREX; break;
+    case X86::DIL: OpKind = MCK_GR8; break;
+    case X86::R13W: OpKind = MCK_GR16; break;
+    case X86::R14B: OpKind = MCK_GR8; break;
+    case X86::R10W: OpKind = MCK_GR16; break;
+    case X86::DH: OpKind = MCK_GR8_ABCD_H; break;
+    case X86::R9W: OpKind = MCK_GR16; break;
+    case X86::R14W: OpKind = MCK_GR16; break;
+    case X86::SI: OpKind = MCK_GR16_NOREX; break;
+    case X86::EAX: OpKind = MCK_EAX; break;
+    case X86::EDX: OpKind = MCK_EDX; break;
+    case X86::AL: OpKind = MCK_AL; break;
+    case X86::R8W: OpKind = MCK_GR16; break;
+    case X86::R10B: OpKind = MCK_GR8; break;
+    case X86::R12W: OpKind = MCK_GR16; break;
+    case X86::SIL: OpKind = MCK_GR8; break;
+    case X86::SPL: OpKind = MCK_GR8; break;
+    case X86::R15W: OpKind = MCK_GR16; break;
+    case X86::ESI: OpKind = MCK_Reg31; break;
+    case X86::EDI: OpKind = MCK_Reg31; break;
+    case X86::R9B: OpKind = MCK_GR8; break;
+    case X86::R8B: OpKind = MCK_GR8; break;
+    case X86::DL: OpKind = MCK_GR8_ABCD_L; break;
+    case X86::R15B: OpKind = MCK_GR8; break;
+    case X86::CH: OpKind = MCK_GR8_ABCD_H; break;
+    case X86::R13B: OpKind = MCK_GR8; break;
+    case X86::AH: OpKind = MCK_GR8_ABCD_H; break;
+    case X86::AX: OpKind = MCK_AX; break;
+    case X86::BX: OpKind = MCK_GR16_ABCD; break;
+    case X86::DI: OpKind = MCK_GR16_NOREX; break;
+    case X86::BPL: OpKind = MCK_GR8; break;
+    case X86::BP: OpKind = MCK_GR16_NOREX; break;
+    case X86::ECX: OpKind = MCK_ECX; break;
+    case X86::EBX: OpKind = MCK_Reg35; break;
+    case X86::CL: OpKind = MCK_CL; break;
+    case X86::EBP: OpKind = MCK_Reg31; break;
+    case X86::R11W: OpKind = MCK_GR16; break;
+    case X86::R10: OpKind = MCK_GR64_NOSP; break;
+    case X86::MM3: OpKind = MCK_VR64; break;
+    case X86::XMM4: OpKind = MCK_FR32; break;
+    case X86::XMM7: OpKind = MCK_FR32; break;
+    case X86::R13: OpKind = MCK_GR64_NOSP; break;
+    case X86::MM1: OpKind = MCK_VR64; break;
+    case X86::MM4: OpKind = MCK_VR64; break;
+    case X86::FP4: OpKind = MCK_RFP32; break;
+    case X86::XMM10: OpKind = MCK_FR32; break;
+    case X86::XMM11: OpKind = MCK_FR32; break;
+    case X86::R10D: OpKind = MCK_Reg33; break;
+    case X86::ESP: OpKind = MCK_Reg34; break;
+    case X86::XMM12: OpKind = MCK_FR32; break;
+    case X86::XMM13: OpKind = MCK_FR32; break;
+    case X86::FP5: OpKind = MCK_RFP32; break;
+    case X86::R8D: OpKind = MCK_Reg33; break;
+    case X86::MM2: OpKind = MCK_VR64; break;
+    case X86::FP6: OpKind = MCK_RFP32; break;
+    case X86::RSI: OpKind = MCK_Reg49; break;
+    case X86::XMM1: OpKind = MCK_FR32; break;
+    case X86::R14D: OpKind = MCK_Reg33; break;
+    case X86::MM6: OpKind = MCK_VR64; break;
+    case X86::MM7: OpKind = MCK_VR64; break;
+    case X86::R15D: OpKind = MCK_Reg33; break;
+    case X86::FP0: OpKind = MCK_RFP32; break;
+    case X86::XMM5: OpKind = MCK_FR32; break;
+    case X86::RDX: OpKind = MCK_RDX; break;
+    case X86::RDI: OpKind = MCK_Reg49; break;
+    case X86::R12: OpKind = MCK_GR64_NOSP; break;
+    case X86::R13D: OpKind = MCK_Reg33; break;
+    case X86::FP2: OpKind = MCK_RFP32; break;
+    case X86::R8: OpKind = MCK_GR64_TCW64; break;
+    case X86::R11: OpKind = MCK_GR64_TCW64; break;
+    case X86::R9: OpKind = MCK_GR64_TCW64; break;
+    case X86::R12D: OpKind = MCK_Reg33; break;
+    case X86::RSP: OpKind = MCK_Reg48; break;
+    case X86::RAX: OpKind = MCK_RAX; break;
+    case X86::R9D: OpKind = MCK_Reg33; break;
+    case X86::MM5: OpKind = MCK_VR64; break;
+    case X86::RCX: OpKind = MCK_RCX; break;
+    case X86::FP1: OpKind = MCK_RFP32; break;
+    case X86::RBX: OpKind = MCK_GR64_ABCD; break;
+    case X86::FP3: OpKind = MCK_RFP32; break;
+    case X86::XMM0: OpKind = MCK_FR32; break;
+    case X86::XMM3: OpKind = MCK_FR32; break;
+    case X86::RIP: OpKind = MCK_Reg51; break;
+    case X86::XMM6: OpKind = MCK_FR32; break;
+    case X86::XMM2: OpKind = MCK_FR32; break;
+    case X86::R11D: OpKind = MCK_Reg33; break;
+    case X86::XMM8: OpKind = MCK_FR32; break;
+    case X86::XMM9: OpKind = MCK_FR32; break;
+    case X86::RBP: OpKind = MCK_GR64_NOREX_NOSP; break;
+    case X86::R14: OpKind = MCK_GR64_NOSP; break;
+    case X86::R15: OpKind = MCK_GR64_NOSP; break;
+    case X86::MM0: OpKind = MCK_VR64; break;
     }
     return IsSubclass(OpKind, Kind);
   }
@@ -2825,18 +2825,18 @@ static bool ValidateOperandClass(MCParsedAsmOperand *GOp, MatchClassKind Kind) {
 unsigned X86ATTAsmParser::
 ComputeAvailableFeatures(uint64_t FB) const {
   unsigned Features = 0;
+  if (((FB & X86::ModeNaCl) != 0))
+    Features |= Feature_IsNaCl;
+  if (((FB & X86::ModeNaCl) == 0))
+    Features |= Feature_NotNaCl;
+  if (((FB & X86::ModeNaCl) != 0) && ((FB & X86::Mode64Bit) == 0))
+    Features |= Feature_IsNaCl32;
   if (((FB & X86::Mode64Bit) == 0))
     Features |= Feature_In32BitMode;
   if (((FB & X86::Mode64Bit) != 0))
     Features |= Feature_In64BitMode;
-  if (((FB & X86::ModeNaCl) != 0))
-    Features |= Feature_IsNaCl;
-  if (((FB & X86::ModeNaCl) != 0) && ((FB & X86::Mode64Bit) == 0))
-    Features |= Feature_IsNaCl32;
   if (((FB & X86::ModeNaCl) != 0) && ((FB & X86::Mode64Bit) != 0))
     Features |= Feature_IsNaCl64;
-  if (((FB & X86::ModeNaCl) == 0))
-    Features |= Feature_NotNaCl;
   return Features;
 }
 
@@ -3506,9 +3506,9 @@ static const MatchEntry MatchTable[3300] = {
   { X86::FNSTCW16m, "fnstcw", Convert__Mem5_0, { MCK_Mem }, 0},
   { X86::FSTENVm, "fnstenv", Convert__Mem5_0, { MCK_Mem }, 0},
   { X86::FNSTSW8r, "fnstsw", Convert, {  }, 0},
+  { X86::FNSTSW8r, "fnstsw", Convert, { MCK_EAX }, 0},
   { X86::FNSTSW8r, "fnstsw", Convert, { MCK_AL }, 0},
   { X86::FNSTSW8r, "fnstsw", Convert, { MCK_AX }, 0},
-  { X86::FNSTSW8r, "fnstsw", Convert, { MCK_EAX }, 0},
   { X86::FNSTSWm, "fnstsw", Convert__Mem5_0, { MCK_Mem }, 0},
   { X86::FPATAN, "fpatan", Convert, {  }, 0},
   { X86::FPREM, "fprem", Convert, {  }, 0},
@@ -3847,19 +3847,6 @@ static const MatchEntry MatchTable[3300] = {
   { X86::MOVBE64rm, "movbeq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR64 }, 0},
   { X86::MOVBE16mr, "movbew", Convert__Mem5_1__Reg1_0, { MCK_GR16, MCK_Mem }, 0},
   { X86::MOVBE16rm, "movbew", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR16 }, 0},
-  { X86::MMX_MOVD64rr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_VR64 }, 0},
-  { X86::MMX_MOVZDI2PDIrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_VR64 }, 0},
-  { X86::MOVDI2PDIrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_FR32 }, 0},
-  { X86::MOVDI2SSrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_FR32 }, 0},
-  { X86::MOVZDI2PDIrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_FR32 }, 0},
-  { X86::MMX_MOVD64rrv164, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_VR64 }, 0},
-  { X86::MMX_MOVD64to64rr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_VR64 }, 0},
-  { X86::MOV64toPQIrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
-  { X86::MOV64toSDrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
-  { X86::MOVZQI2PQIrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
-  { X86::MMX_MOVD64grr, "movd", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_GR32 }, 0},
-  { X86::MMX_MOVD64from64rr, "movd", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_GR64 }, 0},
-  { X86::MMX_MOVD64mr, "movd", Convert__Mem5_1__Reg1_0, { MCK_VR64, MCK_Mem }, 0},
   { X86::MOVPDI2DIrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR32 }, 0},
   { X86::MOVSS2DIrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR32 }, 0},
   { X86::MOVPQIto64rr, "movd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
@@ -3867,11 +3854,24 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VMOVPQIto64rr, "movd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, Feature_In64BitMode},
   { X86::MOVPDI2DImr, "movd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::MOVSS2DImr, "movd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
-  { X86::MMX_MOVD64rm, "movd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
-  { X86::MMX_MOVZDI2PDIrm, "movd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MOVDI2PDIrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_FR32 }, 0},
+  { X86::MOVDI2SSrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_FR32 }, 0},
+  { X86::MOVZDI2PDIrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_FR32 }, 0},
+  { X86::MMX_MOVD64rr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_VR64 }, 0},
+  { X86::MMX_MOVZDI2PDIrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_VR64 }, 0},
+  { X86::MOV64toPQIrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
+  { X86::MOV64toSDrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
+  { X86::MOVZQI2PQIrr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
+  { X86::MMX_MOVD64rrv164, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_VR64 }, 0},
+  { X86::MMX_MOVD64to64rr, "movd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_VR64 }, 0},
+  { X86::MMX_MOVD64grr, "movd", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_GR32 }, 0},
+  { X86::MMX_MOVD64from64rr, "movd", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_GR64 }, 0},
+  { X86::MMX_MOVD64mr, "movd", Convert__Mem5_1__Reg1_0, { MCK_VR64, MCK_Mem }, 0},
   { X86::MOVDI2PDIrm, "movd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::MOVDI2SSrm, "movd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::MOVZDI2PDIrm, "movd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_MOVD64rm, "movd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_MOVZDI2PDIrm, "movd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::MOVDDUPrr, "movddup", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::MOVDDUPrm, "movddup", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::MMX_MOVDQ2Qrr, "movdq2q", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_VR64 }, 0},
@@ -3887,21 +3887,21 @@ static const MatchEntry MatchTable[3300] = {
   { X86::MOVHPDrm, "movhpd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::MOVHPSmr, "movhps", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::MOVHPSrm, "movhps", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MOV32ao32, "movl", Convert__AbsMem1_1, { MCK_EAX, MCK_AbsMem }, Feature_In32BitMode},
-  { X86::MOV32rr, "movl", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_GR32 }, 0},
-  { X86::MOV32sr, "movl", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_SEGMENT_REG }, 0},
-  { X86::MOV32dr, "movl", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_DEBUG_REG }, 0},
-  { X86::MOV32cr, "movl", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_CONTROL_REG }, 0},
-  { X86::MOV32mr, "movl", Convert__Mem5_1__Reg1_0, { MCK_GR32, MCK_Mem }, 0},
+  { X86::MOV32rd, "movl", Convert__Reg1_1__Reg1_0, { MCK_DEBUG_REG, MCK_GR32 }, 0},
   { X86::MOV32rs, "movl", Convert__Reg1_1__Reg1_0, { MCK_SEGMENT_REG, MCK_GR32 }, 0},
   { X86::MOV32ms, "movl", Convert__Mem5_1__Reg1_0, { MCK_SEGMENT_REG, MCK_Mem }, 0},
-  { X86::MOV32rd, "movl", Convert__Reg1_1__Reg1_0, { MCK_DEBUG_REG, MCK_GR32 }, 0},
   { X86::MOV32rc, "movl", Convert__Reg1_1__Reg1_0, { MCK_CONTROL_REG, MCK_GR32 }, 0},
+  { X86::MOV32ao32, "movl", Convert__AbsMem1_1, { MCK_EAX, MCK_AbsMem }, Feature_In32BitMode},
+  { X86::MOV32dr, "movl", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_DEBUG_REG }, 0},
+  { X86::MOV32sr, "movl", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_SEGMENT_REG }, 0},
+  { X86::MOV32cr, "movl", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_CONTROL_REG }, 0},
+  { X86::MOV32rr, "movl", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_GR32 }, 0},
+  { X86::MOV32mr, "movl", Convert__Mem5_1__Reg1_0, { MCK_GR32, MCK_Mem }, 0},
   { X86::MOV32ri, "movl", Convert__Reg1_1__Imm1_0, { MCK_Imm, MCK_GR32 }, 0},
   { X86::MOV32mi, "movl", Convert__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem }, 0},
   { X86::MOV32o32a, "movl", Convert__AbsMem1_0, { MCK_AbsMem, MCK_EAX }, Feature_In32BitMode},
-  { X86::MOV32rm, "movl", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR32 }, 0},
   { X86::MOV32sm, "movl", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_SEGMENT_REG }, 0},
+  { X86::MOV32rm, "movl", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR32 }, 0},
   { X86::MOVLHPSrr, "movlhps", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::MOVLPDmr, "movlpd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::MOVLPDrm, "movlpd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
@@ -3919,40 +3919,40 @@ static const MatchEntry MatchTable[3300] = {
   { X86::MOVNTPDmr, "movntpd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::MOVNTPSmr, "movntps", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::MMX_MOVNTQmr, "movntq", Convert__Mem5_1__Reg1_0, { MCK_VR64, MCK_Mem }, 0},
-  { X86::MOV64rr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_GR64 }, 0},
-  { X86::MMX_MOVD64to64rr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_VR64 }, 0},
+  { X86::MOV64rd, "movq", Convert__Reg1_1__Reg1_0, { MCK_DEBUG_REG, MCK_GR64 }, 0},
+  { X86::MOV64rs, "movq", Convert__Reg1_1__Reg1_0, { MCK_SEGMENT_REG, MCK_GR64 }, 0},
+  { X86::MOV64ms, "movq", Convert__Mem5_1__Reg1_0, { MCK_SEGMENT_REG, MCK_Mem }, 0},
+  { X86::MOV64rc, "movq", Convert__Reg1_1__Reg1_0, { MCK_CONTROL_REG, MCK_GR64 }, 0},
+  { X86::MOVQxrxr, "movq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::MOVZPQILo2PQIrr, "movq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::MOVPQIto64rr, "movq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
+  { X86::MOVSDto64rr, "movq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
+  { X86::MOVLQ128mr, "movq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
+  { X86::MOVPQI2QImr, "movq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
+  { X86::MOVSDto64mr, "movq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
+  { X86::MOV64dr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_DEBUG_REG }, 0},
+  { X86::MOV64sr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_SEGMENT_REG }, 0},
+  { X86::MOV64cr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_CONTROL_REG }, 0},
   { X86::MOV64toPQIrr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
   { X86::MOV64toSDrr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
   { X86::VMOVZQI2PQIrr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
   { X86::MOVZQI2PQIrr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
-  { X86::MOV64sr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_SEGMENT_REG }, 0},
-  { X86::MOV64dr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_DEBUG_REG }, 0},
-  { X86::MOV64cr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_CONTROL_REG }, 0},
+  { X86::MOV64rr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_GR64 }, 0},
+  { X86::MMX_MOVD64to64rr, "movq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_VR64 }, 0},
   { X86::MOV64mr, "movq", Convert__Mem5_1__Reg1_0, { MCK_GR64, MCK_Mem }, 0},
   { X86::MMX_MOVD64from64rr, "movq", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_GR64 }, 0},
   { X86::MMX_MOVQ64rr, "movq", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::MMX_MOVQ64mr, "movq", Convert__Mem5_1__Reg1_0, { MCK_VR64, MCK_Mem }, 0},
-  { X86::MOVPQIto64rr, "movq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
-  { X86::MOVSDto64rr, "movq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
-  { X86::MOVQxrxr, "movq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MOVZPQILo2PQIrr, "movq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MOVLQ128mr, "movq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
-  { X86::MOVPQI2QImr, "movq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
-  { X86::MOVSDto64mr, "movq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
-  { X86::MOV64rs, "movq", Convert__Reg1_1__Reg1_0, { MCK_SEGMENT_REG, MCK_GR64 }, 0},
-  { X86::MOV64ms, "movq", Convert__Mem5_1__Reg1_0, { MCK_SEGMENT_REG, MCK_Mem }, 0},
-  { X86::MOV64rd, "movq", Convert__Reg1_1__Reg1_0, { MCK_DEBUG_REG, MCK_GR64 }, 0},
-  { X86::MOV64rc, "movq", Convert__Reg1_1__Reg1_0, { MCK_CONTROL_REG, MCK_GR64 }, 0},
   { X86::MOV64ri32, "movq", Convert__Reg1_1__ImmSExti64i321_0, { MCK_ImmSExti64i32, MCK_GR64 }, 0},
   { X86::MOV64mi32, "movq", Convert__Mem5_1__ImmSExti64i321_0, { MCK_ImmSExti64i32, MCK_Mem }, 0},
   { X86::MOV64ri, "movq", Convert__Reg1_1__Imm1_0, { MCK_Imm, MCK_GR64 }, 0},
-  { X86::MOV64rm, "movq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR64 }, 0},
-  { X86::MMX_MOVQ64rm, "movq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MOV64sm, "movq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_SEGMENT_REG }, 0},
   { X86::MOV64toSDrm, "movq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::MOVQI2PQIrm, "movq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::MOVZPQILo2PQIrm, "movq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::MOVZQI2PQIrm, "movq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MOV64sm, "movq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_SEGMENT_REG }, 0},
+  { X86::MOV64rm, "movq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR64 }, 0},
+  { X86::MMX_MOVQ64rm, "movq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::MMX_MOVQ2DQrr, "movq2dq", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_FR32 }, 0},
   { X86::MMX_MOVQ2FR64rr, "movq2dq", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_FR32 }, 0},
   { X86::MOVSB, "movsb", Convert, {  }, 0},
@@ -3995,17 +3995,17 @@ static const MatchEntry MatchTable[3300] = {
   { X86::MOVUPSrr, "movups", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::MOVUPSmr, "movups", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::MOVUPSrm, "movups", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MOV16ao16, "movw", Convert__AbsMem1_1, { MCK_AX, MCK_AbsMem }, Feature_In32BitMode},
-  { X86::MOV16rr, "movw", Convert__Reg1_1__Reg1_0, { MCK_GR16, MCK_GR16 }, 0},
-  { X86::MOV16sr, "movw", Convert__Reg1_1__Reg1_0, { MCK_GR16, MCK_SEGMENT_REG }, 0},
-  { X86::MOV16mr, "movw", Convert__Mem5_1__Reg1_0, { MCK_GR16, MCK_Mem }, 0},
   { X86::MOV16rs, "movw", Convert__Reg1_1__Reg1_0, { MCK_SEGMENT_REG, MCK_GR16 }, 0},
   { X86::MOV16ms, "movw", Convert__Mem5_1__Reg1_0, { MCK_SEGMENT_REG, MCK_Mem }, 0},
+  { X86::MOV16ao16, "movw", Convert__AbsMem1_1, { MCK_AX, MCK_AbsMem }, Feature_In32BitMode},
+  { X86::MOV16sr, "movw", Convert__Reg1_1__Reg1_0, { MCK_GR16, MCK_SEGMENT_REG }, 0},
+  { X86::MOV16rr, "movw", Convert__Reg1_1__Reg1_0, { MCK_GR16, MCK_GR16 }, 0},
+  { X86::MOV16mr, "movw", Convert__Mem5_1__Reg1_0, { MCK_GR16, MCK_Mem }, 0},
   { X86::MOV16ri, "movw", Convert__Reg1_1__Imm1_0, { MCK_Imm, MCK_GR16 }, 0},
   { X86::MOV16mi, "movw", Convert__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem }, 0},
   { X86::MOV16o16a, "movw", Convert__AbsMem1_0, { MCK_AbsMem, MCK_AX }, Feature_In32BitMode},
-  { X86::MOV16rm, "movw", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR16 }, 0},
   { X86::MOV16sm, "movw", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_SEGMENT_REG }, 0},
+  { X86::MOV16rm, "movw", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR16 }, 0},
   { X86::MOVZX32_NOREXrr8, "movzbl", Convert__Reg1_1__Reg1_0, { MCK_GR8_NOREX, MCK_GR32_NOREX }, 0},
   { X86::MOVZX32rr8, "movzbl", Convert__Reg1_1__Reg1_0, { MCK_GR8, MCK_GR32 }, 0},
   { X86::MOVZX32_NOREXrm8, "movzbl", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR32_NOREX }, 0},
@@ -4117,87 +4117,87 @@ static const MatchEntry MatchTable[3300] = {
   { X86::OUT16ir, "outw", Convert__Imm1_0, { MCK_Imm }, 0},
   { X86::OUT16rr, "outw", Convert, { MCK_AX, MCK_DX }, 0},
   { X86::OUT16ir, "outw", Convert__Imm1_1, { MCK_AX, MCK_Imm }, 0},
-  { X86::MMX_PABSBrr64, "pabsb", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PABSBrr128, "pabsb", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PABSBrm64, "pabsb", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PABSBrr64, "pabsb", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PABSBrm128, "pabsb", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PABSDrr64, "pabsd", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PABSBrm64, "pabsb", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PABSDrr128, "pabsd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PABSDrm64, "pabsd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PABSDrr64, "pabsd", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PABSDrm128, "pabsd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PABSWrr64, "pabsw", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PABSDrm64, "pabsd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PABSWrr128, "pabsw", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PABSWrm64, "pabsw", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PABSWrr64, "pabsw", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PABSWrm128, "pabsw", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PACKSSDWirr, "packssdw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PABSWrm64, "pabsw", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PACKSSDWrr, "packssdw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PACKSSDWirm, "packssdw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PACKSSDWirr, "packssdw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PACKSSDWrm, "packssdw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PACKSSWBirr, "packsswb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PACKSSDWirm, "packssdw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PACKSSWBrr, "packsswb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PACKSSWBirm, "packsswb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PACKSSWBirr, "packsswb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PACKSSWBrm, "packsswb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PACKSSWBirm, "packsswb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PACKUSDWrr, "packusdw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PACKUSDWrm, "packusdw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PACKUSWBirr, "packuswb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PACKUSWBrr, "packuswb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PACKUSWBirm, "packuswb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PACKUSWBirr, "packuswb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PACKUSWBrm, "packuswb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PADDBirr, "paddb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PACKUSWBirm, "packuswb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PADDBrr, "paddb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PADDBirm, "paddb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PADDBirr, "paddb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PADDBrm, "paddb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PADDDirr, "paddd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PADDBirm, "paddb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PADDDrr, "paddd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PADDDirm, "paddd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PADDDirr, "paddd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PADDDrm, "paddd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PADDQirr, "paddq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PADDDirm, "paddd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PADDQrr, "paddq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PADDQirm, "paddq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PADDQirr, "paddq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PADDQrm, "paddq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PADDSBirr, "paddsb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PADDQirm, "paddq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PADDSBrr, "paddsb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PADDSBirm, "paddsb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PADDSBirr, "paddsb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PADDSBrm, "paddsb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PADDSWirr, "paddsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PADDSBirm, "paddsb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PADDSWrr, "paddsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PADDSWirm, "paddsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PADDSWirr, "paddsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PADDSWrm, "paddsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PADDUSBirr, "paddusb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PADDSWirm, "paddsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PADDUSBrr, "paddusb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PADDUSBirm, "paddusb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PADDUSBirr, "paddusb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PADDUSBrm, "paddusb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PADDUSWirr, "paddusw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PADDUSBirm, "paddusb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PADDUSWrr, "paddusw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PADDUSWirm, "paddusw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PADDUSWirr, "paddusw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PADDUSWrm, "paddusw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PADDWirr, "paddw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PADDUSWirm, "paddusw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PADDWrr, "paddw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PADDWirm, "paddw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PADDWirr, "paddw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PADDWrm, "paddw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PALIGNR64irr, "palignr", Convert__Reg1_2__Tie0__Reg1_1__Imm1_0, { MCK_Imm, MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PADDWirm, "paddw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PALIGNR128rr, "palignr", Convert__Reg1_2__Tie0__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PALIGNR64irm, "palignr", Convert__Reg1_2__Tie0__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PALIGNR64irr, "palignr", Convert__Reg1_2__Tie0__Reg1_1__Imm1_0, { MCK_Imm, MCK_VR64, MCK_VR64 }, 0},
   { X86::PALIGNR128rm, "palignr", Convert__Reg1_2__Tie0__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PANDirr, "pand", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PALIGNR64irm, "palignr", Convert__Reg1_2__Tie0__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_VR64 }, 0},
   { X86::PANDrr, "pand", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PANDirm, "pand", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PANDirr, "pand", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PANDrm, "pand", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PANDNirr, "pandn", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PANDirm, "pand", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PANDNrr, "pandn", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PANDNirm, "pandn", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PANDNirr, "pandn", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PANDNrm, "pandn", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PANDNirm, "pandn", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PAUSE, "pause", Convert, {  }, 0},
-  { X86::MMX_PAVGBirr, "pavgb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PAVGBrr, "pavgb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PAVGBirm, "pavgb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PAVGBirr, "pavgb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PAVGBrm, "pavgb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PAVGBirm, "pavgb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PAVGUSBrr, "pavgusb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PAVGUSBrm, "pavgusb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
-  { X86::MMX_PAVGWirr, "pavgw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PAVGWrr, "pavgw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PAVGWirm, "pavgw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PAVGWirr, "pavgw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PAVGWrm, "pavgw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PAVGWirm, "pavgw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PBLENDVBrr0, "pblendvb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PBLENDVBrm0, "pblendvb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::PBLENDWrri, "pblendw", Convert__Reg1_2__Tie0__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_FR32, MCK_FR32 }, 0},
@@ -4212,20 +4212,20 @@ static const MatchEntry MatchTable[3300] = {
   { X86::PCLMULQDQrm, "pclmullqlqdq", Convert__Reg1_1__Tie0__Mem5_0__imm0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::PCLMULQDQrr, "pclmulqdq", Convert__Reg1_2__Tie0__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
   { X86::PCLMULQDQrm, "pclmulqdq", Convert__Reg1_2__Tie0__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PCMPEQBirr, "pcmpeqb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PCMPEQBrr, "pcmpeqb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PCMPEQBirm, "pcmpeqb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PCMPEQBirr, "pcmpeqb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PCMPEQBrm, "pcmpeqb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PCMPEQDirr, "pcmpeqd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PCMPEQBirm, "pcmpeqb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PCMPEQDrr, "pcmpeqd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PCMPEQDirm, "pcmpeqd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PCMPEQDirr, "pcmpeqd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PCMPEQDrm, "pcmpeqd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PCMPEQDirm, "pcmpeqd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PCMPEQQrr, "pcmpeqq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PCMPEQQrm, "pcmpeqq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PCMPEQWirr, "pcmpeqw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PCMPEQWrr, "pcmpeqw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PCMPEQWirm, "pcmpeqw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PCMPEQWirr, "pcmpeqw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PCMPEQWrm, "pcmpeqw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PCMPEQWirm, "pcmpeqw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PCMPESTRIArr, "pcmpestri", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
   { X86::PCMPESTRICrr, "pcmpestri", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
   { X86::PCMPESTRIOrr, "pcmpestri", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
@@ -4240,20 +4240,20 @@ static const MatchEntry MatchTable[3300] = {
   { X86::PCMPESTRIrm, "pcmpestri", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32 }, 0},
   { X86::PCMPESTRM128rr, "pcmpestrm", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
   { X86::PCMPESTRM128rm, "pcmpestrm", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PCMPGTBirr, "pcmpgtb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PCMPGTBrr, "pcmpgtb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PCMPGTBirm, "pcmpgtb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PCMPGTBirr, "pcmpgtb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PCMPGTBrm, "pcmpgtb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PCMPGTDirr, "pcmpgtd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PCMPGTBirm, "pcmpgtb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PCMPGTDrr, "pcmpgtd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PCMPGTDirm, "pcmpgtd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PCMPGTDirr, "pcmpgtd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PCMPGTDrm, "pcmpgtd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PCMPGTDirm, "pcmpgtd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PCMPGTQrr, "pcmpgtq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PCMPGTQrm, "pcmpgtq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PCMPGTWirr, "pcmpgtw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PCMPGTWrr, "pcmpgtw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PCMPGTWirm, "pcmpgtw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PCMPGTWirr, "pcmpgtw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PCMPGTWrm, "pcmpgtw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PCMPGTWirm, "pcmpgtw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PCMPISTRIArr, "pcmpistri", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
   { X86::PCMPISTRICrr, "pcmpistri", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
   { X86::PCMPISTRIOrr, "pcmpistri", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
@@ -4274,9 +4274,9 @@ static const MatchEntry MatchTable[3300] = {
   { X86::PEXTRDmr, "pextrd", Convert__Mem5_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_Mem }, 0},
   { X86::PEXTRQrr, "pextrq", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_GR64 }, 0},
   { X86::PEXTRQmr, "pextrq", Convert__Mem5_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_Mem }, 0},
-  { X86::MMX_PEXTRWirri, "pextrw", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64, MCK_GR32 }, 0},
   { X86::PEXTRWri, "pextrw", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_GR32 }, 0},
   { X86::PEXTRWmr, "pextrw", Convert__Mem5_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_Mem }, 0},
+  { X86::MMX_PEXTRWirri, "pextrw", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64, MCK_GR32 }, 0},
   { X86::PF2IDrr, "pf2id", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PF2IDrm, "pf2id", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PF2IWrr, "pf2iw", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
@@ -4315,32 +4315,32 @@ static const MatchEntry MatchTable[3300] = {
   { X86::PFSUBrm, "pfsub", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PFSUBRrr, "pfsubr", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PFSUBRrm, "pfsubr", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
-  { X86::MMX_PHADDrr64, "phaddd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PHADDDrr128, "phaddd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PHADDrm64, "phaddd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PHADDrr64, "phaddd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PHADDDrm128, "phaddd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PHADDSWrr64, "phaddsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PHADDrm64, "phaddd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PHADDSWrr128, "phaddsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PHADDSWrm64, "phaddsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PHADDSWrr64, "phaddsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PHADDSWrm128, "phaddsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PHADDWrr64, "phaddw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PHADDSWrm64, "phaddsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PHADDWrr128, "phaddw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PHADDWrm64, "phaddw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PHADDWrr64, "phaddw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PHADDWrm128, "phaddw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PHADDWrm64, "phaddw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PHMINPOSUWrr128, "phminposuw", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PHMINPOSUWrm128, "phminposuw", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PHSUBDrr64, "phsubd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PHSUBDrr128, "phsubd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PHSUBDrm64, "phsubd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PHSUBDrr64, "phsubd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PHSUBDrm128, "phsubd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PHSUBSWrr64, "phsubsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PHSUBDrm64, "phsubd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PHSUBSWrr128, "phsubsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PHSUBSWrm64, "phsubsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PHSUBSWrr64, "phsubsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PHSUBSWrm128, "phsubsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PHSUBWrr64, "phsubw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PHSUBSWrm64, "phsubsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PHSUBWrr128, "phsubw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PHSUBWrm64, "phsubw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PHSUBWrr64, "phsubw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PHSUBWrm128, "phsubw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PHSUBWrm64, "phsubw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PI2FDrr, "pi2fd", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PI2FDrm, "pi2fd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PI2FWrr, "pi2fw", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
@@ -4351,30 +4351,30 @@ static const MatchEntry MatchTable[3300] = {
   { X86::PINSRDrm, "pinsrd", Convert__Reg1_2__Tie0__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32 }, 0},
   { X86::PINSRQrr, "pinsrq", Convert__Reg1_2__Tie0__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_GR64, MCK_FR32 }, 0},
   { X86::PINSRQrm, "pinsrq", Convert__Reg1_2__Tie0__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PINSRWirri, "pinsrw", Convert__Reg1_2__Tie0__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_GR32, MCK_VR64 }, 0},
   { X86::PINSRWrri, "pinsrw", Convert__Reg1_2__Tie0__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_GR32, MCK_FR32 }, 0},
-  { X86::MMX_PINSRWirmi, "pinsrw", Convert__Reg1_2__Tie0__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PINSRWirri, "pinsrw", Convert__Reg1_2__Tie0__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_GR32, MCK_VR64 }, 0},
   { X86::PINSRWrmi, "pinsrw", Convert__Reg1_2__Tie0__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PMADDUBSWrr64, "pmaddubsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PINSRWirmi, "pinsrw", Convert__Reg1_2__Tie0__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_VR64 }, 0},
   { X86::PMADDUBSWrr128, "pmaddubsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PMADDUBSWrm64, "pmaddubsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PMADDUBSWrr64, "pmaddubsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMADDUBSWrm128, "pmaddubsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PMADDWDirr, "pmaddwd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PMADDUBSWrm64, "pmaddubsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PMADDWDrr, "pmaddwd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PMADDWDirm, "pmaddwd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PMADDWDirr, "pmaddwd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMADDWDrm, "pmaddwd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PMADDWDirm, "pmaddwd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PMAXSBrr, "pmaxsb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PMAXSBrm, "pmaxsb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::PMAXSDrr, "pmaxsd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PMAXSDrm, "pmaxsd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PMAXSWirr, "pmaxsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMAXSWrr, "pmaxsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PMAXSWirm, "pmaxsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PMAXSWirr, "pmaxsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMAXSWrm, "pmaxsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PMAXUBirr, "pmaxub", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PMAXSWirm, "pmaxsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PMAXUBrr, "pmaxub", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PMAXUBirm, "pmaxub", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PMAXUBirr, "pmaxub", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMAXUBrm, "pmaxub", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PMAXUBirm, "pmaxub", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PMAXUDrr, "pmaxud", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PMAXUDrm, "pmaxud", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::PMAXUWrr, "pmaxuw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
@@ -4383,20 +4383,20 @@ static const MatchEntry MatchTable[3300] = {
   { X86::PMINSBrm, "pminsb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::PMINSDrr, "pminsd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PMINSDrm, "pminsd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PMINSWirr, "pminsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMINSWrr, "pminsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PMINSWirm, "pminsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PMINSWirr, "pminsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMINSWrm, "pminsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PMINUBirr, "pminub", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PMINSWirm, "pminsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PMINUBrr, "pminub", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PMINUBirm, "pminub", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PMINUBirr, "pminub", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMINUBrm, "pminub", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PMINUBirm, "pminub", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PMINUDrr, "pminud", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PMINUDrm, "pminud", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::PMINUWrr, "pminuw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PMINUWrm, "pminuw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PMOVMSKBrr, "pmovmskb", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_GR32 }, 0},
   { X86::PMOVMSKBrr, "pmovmskb", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR32 }, 0},
+  { X86::MMX_PMOVMSKBrr, "pmovmskb", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_GR32 }, 0},
   { X86::PMOVSXBDrr, "pmovsxbd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PMOVSXBDrm, "pmovsxbd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::PMOVSXBQrr, "pmovsxbq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
@@ -4423,30 +4423,30 @@ static const MatchEntry MatchTable[3300] = {
   { X86::PMOVZXWQrm, "pmovzxwq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::PMULDQrr, "pmuldq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PMULDQrm, "pmuldq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PMULHRSWrr64, "pmulhrsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMULHRSWrr128, "pmulhrsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PMULHRSWrm64, "pmulhrsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PMULHRSWrr64, "pmulhrsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMULHRSWrm128, "pmulhrsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PMULHRSWrm64, "pmulhrsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PMULHRWrr, "pmulhrw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMULHRWrm, "pmulhrw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
-  { X86::MMX_PMULHUWirr, "pmulhuw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMULHUWrr, "pmulhuw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PMULHUWirm, "pmulhuw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PMULHUWirr, "pmulhuw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMULHUWrm, "pmulhuw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PMULHWirr, "pmulhw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PMULHUWirm, "pmulhuw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PMULHWrr, "pmulhw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PMULHWirm, "pmulhw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PMULHWirr, "pmulhw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMULHWrm, "pmulhw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PMULHWirm, "pmulhw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PMULLDrr, "pmulld", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PMULLDrm, "pmulld", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PMULLWirr, "pmullw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMULLWrr, "pmullw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PMULLWirm, "pmullw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PMULLWirr, "pmullw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMULLWrm, "pmullw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PMULUDQirr, "pmuludq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PMULLWirm, "pmullw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PMULUDQrr, "pmuludq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PMULUDQirm, "pmuludq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PMULUDQirr, "pmuludq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PMULUDQrm, "pmuludq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PMULUDQirm, "pmuludq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::POPA32, "popal", Convert, {  }, Feature_In32BitMode},
   { X86::POPCNT32rr, "popcntl", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_GR32 }, 0},
   { X86::POPCNT32rm, "popcntl", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR32 }, 0},
@@ -4457,45 +4457,45 @@ static const MatchEntry MatchTable[3300] = {
   { X86::POPF32, "popfl", Convert, {  }, Feature_In32BitMode},
   { X86::POPF64, "popfq", Convert, {  }, Feature_In64BitMode},
   { X86::POPF16, "popfw", Convert, {  }, 0},
-  { X86::POP32r, "popl", Convert__Reg1_0, { MCK_GR32 }, 0},
-  { X86::POP32rmr, "popl", Convert__Reg1_0, { MCK_GR32 }, 0},
-  { X86::POPDS32, "popl", Convert, { MCK_DS }, Feature_In32BitMode},
-  { X86::POPSS32, "popl", Convert, { MCK_SS }, Feature_In32BitMode},
   { X86::POPES32, "popl", Convert, { MCK_ES }, Feature_In32BitMode},
+  { X86::POPSS32, "popl", Convert, { MCK_SS }, Feature_In32BitMode},
   { X86::POPFS32, "popl", Convert, { MCK_FS }, Feature_In32BitMode},
   { X86::POPGS32, "popl", Convert, { MCK_GS }, Feature_In32BitMode},
+  { X86::POPDS32, "popl", Convert, { MCK_DS }, Feature_In32BitMode},
+  { X86::POP32r, "popl", Convert__Reg1_0, { MCK_GR32 }, 0},
+  { X86::POP32rmr, "popl", Convert__Reg1_0, { MCK_GR32 }, 0},
   { X86::POP32rmm, "popl", Convert__Mem5_0, { MCK_Mem }, 0},
-  { X86::POP64r, "popq", Convert__Reg1_0, { MCK_GR64 }, 0},
-  { X86::POP64rmr, "popq", Convert__Reg1_0, { MCK_GR64 }, 0},
   { X86::POPFS64, "popq", Convert, { MCK_FS }, 0},
   { X86::POPGS64, "popq", Convert, { MCK_GS }, 0},
+  { X86::POP64r, "popq", Convert__Reg1_0, { MCK_GR64 }, 0},
+  { X86::POP64rmr, "popq", Convert__Reg1_0, { MCK_GR64 }, 0},
   { X86::POP64rmm, "popq", Convert__Mem5_0, { MCK_Mem }, 0},
-  { X86::POP16r, "popw", Convert__Reg1_0, { MCK_GR16 }, 0},
-  { X86::POP16rmr, "popw", Convert__Reg1_0, { MCK_GR16 }, 0},
-  { X86::POPDS16, "popw", Convert, { MCK_DS }, Feature_In32BitMode},
-  { X86::POPSS16, "popw", Convert, { MCK_SS }, Feature_In32BitMode},
   { X86::POPES16, "popw", Convert, { MCK_ES }, Feature_In32BitMode},
+  { X86::POPSS16, "popw", Convert, { MCK_SS }, Feature_In32BitMode},
   { X86::POPFS16, "popw", Convert, { MCK_FS }, 0},
   { X86::POPGS16, "popw", Convert, { MCK_GS }, 0},
+  { X86::POPDS16, "popw", Convert, { MCK_DS }, Feature_In32BitMode},
+  { X86::POP16r, "popw", Convert__Reg1_0, { MCK_GR16 }, 0},
+  { X86::POP16rmr, "popw", Convert__Reg1_0, { MCK_GR16 }, 0},
   { X86::POP16rmm, "popw", Convert__Mem5_0, { MCK_Mem }, 0},
-  { X86::MMX_PORirr, "por", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PORrr, "por", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PORirm, "por", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PORirr, "por", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PORrm, "por", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PORirm, "por", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PREFETCH, "prefetch", Convert__Mem5_0, { MCK_Mem }, 0},
   { X86::PREFETCHNTA, "prefetchnta", Convert__Mem5_0, { MCK_Mem }, 0},
   { X86::PREFETCHT0, "prefetcht0", Convert__Mem5_0, { MCK_Mem }, 0},
   { X86::PREFETCHT1, "prefetcht1", Convert__Mem5_0, { MCK_Mem }, 0},
   { X86::PREFETCHT2, "prefetcht2", Convert__Mem5_0, { MCK_Mem }, 0},
   { X86::PREFETCHW, "prefetchw", Convert__Mem5_0, { MCK_Mem }, 0},
-  { X86::MMX_PSADBWirr, "psadbw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSADBWrr, "psadbw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSADBWirm, "psadbw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSADBWirr, "psadbw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSADBWrm, "psadbw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSHUFBrr64, "pshufb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSADBWirm, "psadbw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSHUFBrr128, "pshufb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSHUFBrm64, "pshufb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSHUFBrr64, "pshufb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSHUFBrm128, "pshufb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PSHUFBrm64, "pshufb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSHUFDri, "pshufd", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
   { X86::PSHUFDmi, "pshufd", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32 }, 0},
   { X86::PSHUFHWri, "pshufhw", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
@@ -4504,169 +4504,169 @@ static const MatchEntry MatchTable[3300] = {
   { X86::PSHUFLWmi, "pshuflw", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32 }, 0},
   { X86::MMX_PSHUFWri, "pshufw", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_VR64, MCK_VR64 }, 0},
   { X86::MMX_PSHUFWmi, "pshufw", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_VR64 }, 0},
-  { X86::MMX_PSIGNBrr64, "psignb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSIGNBrr128, "psignb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSIGNBrm64, "psignb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSIGNBrr64, "psignb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSIGNBrm128, "psignb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSIGNDrr64, "psignd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSIGNBrm64, "psignb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSIGNDrr128, "psignd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSIGNDrm64, "psignd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSIGNDrr64, "psignd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSIGNDrm128, "psignd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSIGNWrr64, "psignw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSIGNDrm64, "psignd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSIGNWrr128, "psignw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSIGNWrm64, "psignw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSIGNWrr64, "psignw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSIGNWrm128, "psignw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSLLDrr, "pslld", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSIGNWrm64, "psignw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSLLDrr, "pslld", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSLLDri, "pslld", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
+  { X86::MMX_PSLLDrr, "pslld", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSLLDri, "pslld", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32 }, 0},
-  { X86::MMX_PSLLDrm, "pslld", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSLLDri, "pslld", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
   { X86::PSLLDrm, "pslld", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PSLLDrm, "pslld", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSLLDQri, "pslldq", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32 }, 0},
-  { X86::MMX_PSLLQrr, "psllq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSLLQrr, "psllq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSLLQri, "psllq", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
+  { X86::MMX_PSLLQrr, "psllq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSLLQri, "psllq", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32 }, 0},
-  { X86::MMX_PSLLQrm, "psllq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSLLQri, "psllq", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
   { X86::PSLLQrm, "psllq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSLLWrr, "psllw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSLLQrm, "psllq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSLLWrr, "psllw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSLLWri, "psllw", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
+  { X86::MMX_PSLLWrr, "psllw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSLLWri, "psllw", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32 }, 0},
-  { X86::MMX_PSLLWrm, "psllw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSLLWri, "psllw", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
   { X86::PSLLWrm, "psllw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSRADrr, "psrad", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSLLWrm, "psllw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSRADrr, "psrad", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSRADri, "psrad", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
+  { X86::MMX_PSRADrr, "psrad", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSRADri, "psrad", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32 }, 0},
-  { X86::MMX_PSRADrm, "psrad", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSRADri, "psrad", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
   { X86::PSRADrm, "psrad", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSRAWrr, "psraw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSRADrm, "psrad", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSRAWrr, "psraw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSRAWri, "psraw", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
+  { X86::MMX_PSRAWrr, "psraw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSRAWri, "psraw", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32 }, 0},
-  { X86::MMX_PSRAWrm, "psraw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSRAWri, "psraw", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
   { X86::PSRAWrm, "psraw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSRLDrr, "psrld", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSRAWrm, "psraw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSRLDrr, "psrld", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSRLDri, "psrld", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
+  { X86::MMX_PSRLDrr, "psrld", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSRLDri, "psrld", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32 }, 0},
-  { X86::MMX_PSRLDrm, "psrld", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSRLDri, "psrld", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
   { X86::PSRLDrm, "psrld", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PSRLDrm, "psrld", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSRLDQri, "psrldq", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32 }, 0},
-  { X86::MMX_PSRLQrr, "psrlq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSRLQrr, "psrlq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSRLQri, "psrlq", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
+  { X86::MMX_PSRLQrr, "psrlq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSRLQri, "psrlq", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32 }, 0},
-  { X86::MMX_PSRLQrm, "psrlq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSRLQri, "psrlq", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
   { X86::PSRLQrm, "psrlq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSRLWrr, "psrlw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSRLQrm, "psrlq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSRLWrr, "psrlw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSRLWri, "psrlw", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
+  { X86::MMX_PSRLWrr, "psrlw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSRLWri, "psrlw", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32 }, 0},
-  { X86::MMX_PSRLWrm, "psrlw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSRLWri, "psrlw", Convert__Reg1_1__Tie0__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR64 }, 0},
   { X86::PSRLWrm, "psrlw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSUBBirr, "psubb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSRLWrm, "psrlw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSUBBrr, "psubb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSUBBirm, "psubb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSUBBirr, "psubb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSUBBrm, "psubb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSUBDirr, "psubd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSUBBirm, "psubb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSUBDrr, "psubd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSUBDirm, "psubd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSUBDirr, "psubd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSUBDrm, "psubd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSUBQirr, "psubq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSUBDirm, "psubd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSUBQrr, "psubq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSUBQirm, "psubq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSUBQirr, "psubq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSUBQrm, "psubq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSUBSBirr, "psubsb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSUBQirm, "psubq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSUBSBrr, "psubsb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSUBSBirm, "psubsb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSUBSBirr, "psubsb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSUBSBrm, "psubsb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSUBSWirr, "psubsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSUBSBirm, "psubsb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSUBSWrr, "psubsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSUBSWirm, "psubsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSUBSWirr, "psubsw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSUBSWrm, "psubsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSUBUSBirr, "psubusb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSUBSWirm, "psubsw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSUBUSBrr, "psubusb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSUBUSBirm, "psubusb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSUBUSBirr, "psubusb", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSUBUSBrm, "psubusb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSUBUSWirr, "psubusw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSUBUSBirm, "psubusb", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSUBUSWrr, "psubusw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSUBUSWirm, "psubusw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSUBUSWirr, "psubusw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSUBUSWrm, "psubusw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PSUBWirr, "psubw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PSUBUSWirm, "psubusw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSUBWrr, "psubw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PSUBWirm, "psubw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PSUBWirr, "psubw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSUBWrm, "psubw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PSUBWirm, "psubw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PSWAPDrr, "pswapd", Convert__Reg1_1__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PSWAPDrm, "pswapd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PTESTrr, "ptest", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PTESTrm, "ptest", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PUNPCKHBWirr, "punpckhbw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PUNPCKHBWrr, "punpckhbw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PUNPCKHBWirm, "punpckhbw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PUNPCKHBWirr, "punpckhbw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PUNPCKHBWrm, "punpckhbw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PUNPCKHDQirr, "punpckhdq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PUNPCKHBWirm, "punpckhbw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PUNPCKHDQrr, "punpckhdq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PUNPCKHDQirm, "punpckhdq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PUNPCKHDQirr, "punpckhdq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PUNPCKHDQrm, "punpckhdq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PUNPCKHDQirm, "punpckhdq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PUNPCKHQDQrr, "punpckhqdq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PUNPCKHQDQrm, "punpckhqdq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PUNPCKHWDirr, "punpckhwd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PUNPCKHWDrr, "punpckhwd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PUNPCKHWDirm, "punpckhwd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PUNPCKHWDirr, "punpckhwd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PUNPCKHWDrm, "punpckhwd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PUNPCKLBWirr, "punpcklbw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PUNPCKHWDirm, "punpckhwd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PUNPCKLBWrr, "punpcklbw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PUNPCKLBWirm, "punpcklbw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PUNPCKLBWirr, "punpcklbw", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PUNPCKLBWrm, "punpcklbw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PUNPCKLDQirr, "punpckldq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
+  { X86::MMX_PUNPCKLBWirm, "punpcklbw", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PUNPCKLDQrr, "punpckldq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PUNPCKLDQirm, "punpckldq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PUNPCKLDQirr, "punpckldq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PUNPCKLDQrm, "punpckldq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PUNPCKLDQirm, "punpckldq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PUNPCKLQDQrr, "punpcklqdq", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::PUNPCKLQDQrm, "punpcklqdq", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::MMX_PUNPCKLWDirr, "punpcklwd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PUNPCKLWDrr, "punpcklwd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PUNPCKLWDirm, "punpcklwd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PUNPCKLWDirr, "punpcklwd", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PUNPCKLWDrm, "punpcklwd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PUNPCKLWDirm, "punpcklwd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::PUSHA32, "pushal", Convert, {  }, Feature_In32BitMode},
   { X86::PUSHF32, "pushfl", Convert, {  }, Feature_In32BitMode},
   { X86::PUSHF64, "pushfq", Convert, {  }, Feature_In64BitMode},
   { X86::PUSHF16, "pushfw", Convert, {  }, 0},
-  { X86::PUSH32r, "pushl", Convert__Reg1_0, { MCK_GR32 }, 0},
-  { X86::PUSH32rmr, "pushl", Convert__Reg1_0, { MCK_GR32 }, 0},
-  { X86::PUSHCS32, "pushl", Convert, { MCK_CS }, Feature_In32BitMode},
-  { X86::PUSHDS32, "pushl", Convert, { MCK_DS }, Feature_In32BitMode},
-  { X86::PUSHSS32, "pushl", Convert, { MCK_SS }, Feature_In32BitMode},
   { X86::PUSHES32, "pushl", Convert, { MCK_ES }, Feature_In32BitMode},
+  { X86::PUSHSS32, "pushl", Convert, { MCK_SS }, Feature_In32BitMode},
   { X86::PUSHFS32, "pushl", Convert, { MCK_FS }, Feature_In32BitMode},
   { X86::PUSHGS32, "pushl", Convert, { MCK_GS }, Feature_In32BitMode},
+  { X86::PUSHDS32, "pushl", Convert, { MCK_DS }, Feature_In32BitMode},
+  { X86::PUSHCS32, "pushl", Convert, { MCK_CS }, Feature_In32BitMode},
+  { X86::PUSH32r, "pushl", Convert__Reg1_0, { MCK_GR32 }, 0},
+  { X86::PUSH32rmr, "pushl", Convert__Reg1_0, { MCK_GR32 }, 0},
   { X86::PUSHi8, "pushl", Convert__ImmSExti32i81_0, { MCK_ImmSExti32i8 }, 0},
   { X86::PUSHi32, "pushl", Convert__Imm1_0, { MCK_Imm }, 0},
   { X86::PUSH32rmm, "pushl", Convert__Mem5_0, { MCK_Mem }, 0},
-  { X86::PUSH64r, "pushq", Convert__Reg1_0, { MCK_GR64 }, 0},
-  { X86::PUSH64rmr, "pushq", Convert__Reg1_0, { MCK_GR64 }, 0},
   { X86::PUSHFS64, "pushq", Convert, { MCK_FS }, 0},
   { X86::PUSHGS64, "pushq", Convert, { MCK_GS }, 0},
+  { X86::PUSH64r, "pushq", Convert__Reg1_0, { MCK_GR64 }, 0},
+  { X86::PUSH64rmr, "pushq", Convert__Reg1_0, { MCK_GR64 }, 0},
   { X86::PUSH64i8, "pushq", Convert__ImmSExti64i81_0, { MCK_ImmSExti64i8 }, 0},
   { X86::PUSH64i32, "pushq", Convert__ImmSExti64i321_0, { MCK_ImmSExti64i32 }, 0},
   { X86::PUSH64i16, "pushq", Convert__Imm1_0, { MCK_Imm }, 0},
   { X86::PUSH64rmm, "pushq", Convert__Mem5_0, { MCK_Mem }, 0},
-  { X86::PUSH16r, "pushw", Convert__Reg1_0, { MCK_GR16 }, 0},
-  { X86::PUSH16rmr, "pushw", Convert__Reg1_0, { MCK_GR16 }, 0},
-  { X86::PUSHCS16, "pushw", Convert, { MCK_CS }, Feature_In32BitMode},
-  { X86::PUSHDS16, "pushw", Convert, { MCK_DS }, Feature_In32BitMode},
-  { X86::PUSHSS16, "pushw", Convert, { MCK_SS }, Feature_In32BitMode},
   { X86::PUSHES16, "pushw", Convert, { MCK_ES }, Feature_In32BitMode},
+  { X86::PUSHSS16, "pushw", Convert, { MCK_SS }, Feature_In32BitMode},
   { X86::PUSHFS16, "pushw", Convert, { MCK_FS }, 0},
   { X86::PUSHGS16, "pushw", Convert, { MCK_GS }, 0},
+  { X86::PUSHDS16, "pushw", Convert, { MCK_DS }, Feature_In32BitMode},
+  { X86::PUSHCS16, "pushw", Convert, { MCK_CS }, Feature_In32BitMode},
+  { X86::PUSH16r, "pushw", Convert__Reg1_0, { MCK_GR16 }, 0},
+  { X86::PUSH16rmr, "pushw", Convert__Reg1_0, { MCK_GR16 }, 0},
   { X86::PUSHi16, "pushw", Convert__Imm1_0, { MCK_Imm }, 0},
   { X86::PUSH16rmm, "pushw", Convert__Mem5_0, { MCK_Mem }, 0},
-  { X86::MMX_PXORirr, "pxor", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PXORrr, "pxor", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::MMX_PXORirm, "pxor", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
+  { X86::MMX_PXORirr, "pxor", Convert__Reg1_1__Tie0__Reg1_0, { MCK_VR64, MCK_VR64 }, 0},
   { X86::PXORrm, "pxor", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::MMX_PXORirm, "pxor", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_VR64 }, 0},
   { X86::RCL8r1, "rclb", Convert__Reg1_0__Tie0, { MCK_GR8 }, 0},
   { X86::RCL8m1, "rclb", Convert__Mem5_0, { MCK_Mem }, 0},
   { X86::RCL8rCL, "rclb", Convert__Reg1_1__Tie0, { MCK_CL, MCK_GR8 }, 0},
@@ -5101,26 +5101,26 @@ static const MatchEntry MatchTable[3300] = {
   { X86::UNPCKLPDrm, "unpcklpd", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::UNPCKLPSrr, "unpcklps", Convert__Reg1_1__Tie0__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::UNPCKLPSrm, "unpcklps", Convert__Reg1_1__Tie0__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::VADDPDrr, "vaddpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VADDPDYrr, "vaddpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VADDPDrm, "vaddpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VADDPDrr, "vaddpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VADDPDYrm, "vaddpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VADDPSrr, "vaddps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VADDPDrm, "vaddpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VADDPSYrr, "vaddps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VADDPSrm, "vaddps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VADDPSrr, "vaddps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VADDPSYrm, "vaddps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VADDPSrm, "vaddps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VADDSDrr, "vaddsd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VADDSDrm, "vaddsd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VADDSSrr, "vaddss", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VADDSSrm, "vaddss", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VADDSUBPDrr, "vaddsubpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VADDSUBPDYrr, "vaddsubpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VADDSUBPDrm, "vaddsubpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VADDSUBPDrr, "vaddsubpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VADDSUBPDYrm, "vaddsubpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VADDSUBPSrr, "vaddsubps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VADDSUBPDrm, "vaddsubpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VADDSUBPSYrr, "vaddsubps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VADDSUBPSrm, "vaddsubps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VADDSUBPSrr, "vaddsubps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VADDSUBPSYrm, "vaddsubps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VADDSUBPSrm, "vaddsubps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VAESDECrr, "vaesdec", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VAESDECrm, "vaesdec", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VAESDECLASTrr, "vaesdeclast", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
@@ -5133,70 +5133,70 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VAESIMCrm, "vaesimc", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VAESKEYGENASSIST128rr, "vaeskeygenassist", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
   { X86::VAESKEYGENASSIST128rm, "vaeskeygenassist", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32 }, 0},
+  { X86::VANDNPDYrr, "vandnpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
   { X86::VANDNPDrr, "vandnpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFsANDNPDrr, "vandnpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VANDNPDYrr, "vandnpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VANDNPDYrm, "vandnpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
   { X86::VANDNPDrm, "vandnpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFsANDNPDrm, "vandnpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VANDNPDYrm, "vandnpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VANDNPSYrr, "vandnps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
   { X86::VANDNPSrr, "vandnps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFsANDNPSrr, "vandnps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VANDNPSYrr, "vandnps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VANDNPSYrm, "vandnps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
   { X86::VANDNPSrm, "vandnps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFsANDNPSrm, "vandnps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VANDNPSYrm, "vandnps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VANDPDYrr, "vandpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
   { X86::VANDPDrr, "vandpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFsANDPDrr, "vandpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VANDPDYrr, "vandpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VANDPDYrm, "vandpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
   { X86::VANDPDrm, "vandpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFsANDPDrm, "vandpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VANDPDYrm, "vandpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VANDPSYrr, "vandps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
   { X86::VANDPSrr, "vandps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFsANDPSrr, "vandps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VANDPSYrr, "vandps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VANDPSYrm, "vandps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
   { X86::VANDPSrm, "vandps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFsANDPSrm, "vandps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VANDPSYrm, "vandps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VBLENDPDrri, "vblendpd", Convert__Reg1_3__Reg1_2__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VBLENDPDYrri, "vblendpd", Convert__Reg1_3__Reg1_2__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VBLENDPDrmi, "vblendpd", Convert__Reg1_3__Reg1_2__Mem5_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VBLENDPDrri, "vblendpd", Convert__Reg1_3__Reg1_2__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VBLENDPDYrmi, "vblendpd", Convert__Reg1_3__Reg1_2__Mem5_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VBLENDPSrri, "vblendps", Convert__Reg1_3__Reg1_2__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VBLENDPDrmi, "vblendpd", Convert__Reg1_3__Reg1_2__Mem5_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VBLENDPSYrri, "vblendps", Convert__Reg1_3__Reg1_2__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VBLENDPSrmi, "vblendps", Convert__Reg1_3__Reg1_2__Mem5_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VBLENDPSrri, "vblendps", Convert__Reg1_3__Reg1_2__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VBLENDPSYrmi, "vblendps", Convert__Reg1_3__Reg1_2__Mem5_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VBLENDVPDrr, "vblendvpd", Convert__Reg1_3__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VBLENDVPDrm, "vblendvpd", Convert__Reg1_3__Reg1_2__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VBLENDPSrmi, "vblendps", Convert__Reg1_3__Reg1_2__Mem5_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VBLENDVPDYrr, "vblendvpd", Convert__Reg1_3__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
   { X86::VBLENDVPDYrm, "vblendvpd", Convert__Reg1_3__Reg1_2__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VBLENDVPSrr, "vblendvps", Convert__Reg1_3__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VBLENDVPSrm, "vblendvps", Convert__Reg1_3__Reg1_2__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VBLENDVPDrr, "vblendvpd", Convert__Reg1_3__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VBLENDVPDrm, "vblendvpd", Convert__Reg1_3__Reg1_2__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VBLENDVPSYrr, "vblendvps", Convert__Reg1_3__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
   { X86::VBLENDVPSYrm, "vblendvps", Convert__Reg1_3__Reg1_2__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VBLENDVPSrr, "vblendvps", Convert__Reg1_3__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VBLENDVPSrm, "vblendvps", Convert__Reg1_3__Reg1_2__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VBROADCASTF128, "vbroadcastf128", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
   { X86::VBROADCASTSD, "vbroadcastsd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VBROADCASTSS, "vbroadcastss", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VBROADCASTSSY, "vbroadcastss", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VCMPPDrri, "vcmp", Convert__Reg1_4__Reg1_3__Reg1_2__Imm1_0, { MCK_Imm, MCK_pd, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VBROADCASTSS, "vbroadcastss", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VCMPPDYrri, "vcmp", Convert__Reg1_4__Reg1_3__Reg1_2__Imm1_0, { MCK_Imm, MCK_pd, MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VCMPPDrmi, "vcmp", Convert__Reg1_4__Reg1_3__Mem5_2__Imm1_0, { MCK_Imm, MCK_pd, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VCMPPDrri, "vcmp", Convert__Reg1_4__Reg1_3__Reg1_2__Imm1_0, { MCK_Imm, MCK_pd, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPPDYrmi, "vcmp", Convert__Reg1_4__Reg1_3__Mem5_2__Imm1_0, { MCK_Imm, MCK_pd, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VCMPPSrri, "vcmp", Convert__Reg1_4__Reg1_3__Reg1_2__Imm1_0, { MCK_Imm, MCK_ps, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VCMPPDrmi, "vcmp", Convert__Reg1_4__Reg1_3__Mem5_2__Imm1_0, { MCK_Imm, MCK_pd, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPPSYrri, "vcmp", Convert__Reg1_4__Reg1_3__Reg1_2__Imm1_0, { MCK_Imm, MCK_ps, MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VCMPPSrmi, "vcmp", Convert__Reg1_4__Reg1_3__Mem5_2__Imm1_0, { MCK_Imm, MCK_ps, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VCMPPSrri, "vcmp", Convert__Reg1_4__Reg1_3__Reg1_2__Imm1_0, { MCK_Imm, MCK_ps, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPPSYrmi, "vcmp", Convert__Reg1_4__Reg1_3__Mem5_2__Imm1_0, { MCK_Imm, MCK_ps, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VCMPPSrmi, "vcmp", Convert__Reg1_4__Reg1_3__Mem5_2__Imm1_0, { MCK_Imm, MCK_ps, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPSDrr, "vcmp", Convert__Reg1_4__Reg1_3__Reg1_2__Imm1_0, { MCK_Imm, MCK_sd, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPSDrm, "vcmp", Convert__Reg1_4__Reg1_3__Mem5_2__Imm1_0, { MCK_Imm, MCK_sd, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPSSrr, "vcmp", Convert__Reg1_4__Reg1_3__Reg1_2__Imm1_0, { MCK_Imm, MCK_ss, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPSSrm, "vcmp", Convert__Reg1_4__Reg1_3__Mem5_2__Imm1_0, { MCK_Imm, MCK_ss, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VCMPPDrri_alt, "vcmppd", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPPDYrri_alt, "vcmppd", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VCMPPDrmi_alt, "vcmppd", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VCMPPDrri_alt, "vcmppd", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPPDYrmi_alt, "vcmppd", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VCMPPSrri_alt, "vcmpps", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VCMPPDrmi_alt, "vcmppd", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPPSYrri_alt, "vcmpps", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VCMPPSrmi_alt, "vcmpps", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VCMPPSrri_alt, "vcmpps", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPPSYrmi_alt, "vcmpps", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VCMPPSrmi_alt, "vcmpps", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPSDrr_alt, "vcmpsd", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPSDrm_alt, "vcmpsd", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VCMPSSrr_alt, "vcmpss", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
@@ -5205,42 +5205,42 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VCOMISDrm, "vcomisd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VCOMISSrr, "vcomiss", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCOMISSrm, "vcomiss", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::VCVTDQ2PDrr, "vcvtdq2pd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTDQ2PDYrr, "vcvtdq2pd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_VR256 }, 0},
-  { X86::VCVTDQ2PDrm, "vcvtdq2pd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VCVTDQ2PDrr, "vcvtdq2pd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTDQ2PDYrm, "vcvtdq2pd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VCVTDQ2PSrr, "vcvtdq2ps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VCVTDQ2PDrm, "vcvtdq2pd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VCVTDQ2PSYrr, "vcvtdq2ps", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VCVTDQ2PSrm, "vcvtdq2ps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VCVTDQ2PSrr, "vcvtdq2ps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTDQ2PSYrm, "vcvtdq2ps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VCVTPD2DQrr, "vcvtpd2dq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VCVTDQ2PSrm, "vcvtdq2ps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VCVTPD2DQXrYr, "vcvtpd2dq", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_FR32 }, 0},
+  { X86::VCVTPD2DQrr, "vcvtpd2dq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTPD2DQXrr, "vcvtpd2dqx", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTPD2DQXrm, "vcvtpd2dqx", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VCVTPD2DQYrr, "vcvtpd2dqy", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_FR32 }, 0},
   { X86::VCVTPD2DQYrm, "vcvtpd2dqy", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::VCVTPD2PSrr, "vcvtpd2ps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTPD2PSXrYr, "vcvtpd2ps", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_FR32 }, 0},
+  { X86::VCVTPD2PSrr, "vcvtpd2ps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTPD2PSXrr, "vcvtpd2psx", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTPD2PSXrm, "vcvtpd2psx", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VCVTPD2PSYrr, "vcvtpd2psy", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_FR32 }, 0},
   { X86::VCVTPD2PSYrm, "vcvtpd2psy", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::VCVTPH2PSrr, "vcvtph2ps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTPH2PSYrr, "vcvtph2ps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_VR256 }, 0},
-  { X86::VCVTPH2PSrm, "vcvtph2ps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VCVTPH2PSrr, "vcvtph2ps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTPH2PSYrm, "vcvtph2ps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VCVTPS2DQrr, "vcvtps2dq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VCVTPH2PSrm, "vcvtph2ps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VCVTPS2DQYrr, "vcvtps2dq", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VCVTPS2DQrm, "vcvtps2dq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VCVTPS2DQrr, "vcvtps2dq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTPS2DQYrm, "vcvtps2dq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VCVTPS2PDrr, "vcvtps2pd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VCVTPS2DQrm, "vcvtps2dq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VCVTPS2PDYrr, "vcvtps2pd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_VR256 }, 0},
-  { X86::VCVTPS2PDrm, "vcvtps2pd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VCVTPS2PDrr, "vcvtps2pd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTPS2PDYrm, "vcvtps2pd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VCVTPS2PHrr, "vcvtps2ph", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VCVTPS2PHmr, "vcvtps2ph", Convert__Mem5_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_Mem }, 0},
+  { X86::VCVTPS2PDrm, "vcvtps2pd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VCVTPS2PHYrr, "vcvtps2ph", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR256, MCK_FR32 }, 0},
   { X86::VCVTPS2PHYmr, "vcvtps2ph", Convert__Mem5_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR256, MCK_Mem }, 0},
+  { X86::VCVTPS2PHrr, "vcvtps2ph", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VCVTPS2PHmr, "vcvtps2ph", Convert__Mem5_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_Mem }, 0},
   { X86::VCVTSD2SIrr, "vcvtsd2si", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR32 }, 0},
   { X86::VCVTSD2SI64rr, "vcvtsd2si", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
   { X86::VCVTSD2SIrm, "vcvtsd2si", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR32 }, 0},
@@ -5263,16 +5263,16 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VCVTSS2SI64rm, "vcvtss2si", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR64 }, 0},
   { X86::VCVTSS2SIrr, "vcvtss2sil", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR32 }, 0},
   { X86::VCVTSS2SIrm, "vcvtss2sil", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR32 }, 0},
-  { X86::VCVTTPD2DQrr, "vcvttpd2dq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTTPD2DQXrYr, "vcvttpd2dq", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_FR32 }, 0},
+  { X86::VCVTTPD2DQrr, "vcvttpd2dq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTTPD2DQXrr, "vcvttpd2dqx", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTTPD2DQXrm, "vcvttpd2dqx", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VCVTTPD2DQYrr, "vcvttpd2dqy", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_FR32 }, 0},
   { X86::VCVTTPD2DQYrm, "vcvttpd2dqy", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::VCVTTPS2DQrr, "vcvttps2dq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTTPS2DQYrr, "vcvttps2dq", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VCVTTPS2DQrm, "vcvttps2dq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VCVTTPS2DQrr, "vcvttps2dq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VCVTTPS2DQYrm, "vcvttps2dq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
+  { X86::VCVTTPS2DQrm, "vcvttps2dq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VCVTTSD2SIrr, "vcvttsd2si", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR32 }, 0},
   { X86::VCVTTSD2SI64rr, "vcvttsd2si", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
   { X86::VCVTTSD2SIrm, "vcvttsd2si", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR32 }, 0},
@@ -5281,24 +5281,24 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VCVTTSS2SI64rr, "vcvttss2si", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
   { X86::VCVTTSS2SIrm, "vcvttss2si", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR32 }, 0},
   { X86::VCVTTSS2SI64rm, "vcvttss2si", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR64 }, 0},
-  { X86::VDIVPDrr, "vdivpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VDIVPDYrr, "vdivpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VDIVPDrm, "vdivpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VDIVPDrr, "vdivpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VDIVPDYrm, "vdivpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VDIVPSrr, "vdivps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VDIVPDrm, "vdivpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VDIVPSYrr, "vdivps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VDIVPSrm, "vdivps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VDIVPSrr, "vdivps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VDIVPSYrm, "vdivps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VDIVPSrm, "vdivps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VDIVSDrr, "vdivsd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VDIVSDrm, "vdivsd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VDIVSSrr, "vdivss", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VDIVSSrm, "vdivss", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VDPPDrri, "vdppd", Convert__Reg1_3__Reg1_2__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VDPPDrmi, "vdppd", Convert__Reg1_3__Reg1_2__Mem5_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VDPPSrri, "vdpps", Convert__Reg1_3__Reg1_2__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VDPPSYrri, "vdpps", Convert__Reg1_3__Reg1_2__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VDPPSrmi, "vdpps", Convert__Reg1_3__Reg1_2__Mem5_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VDPPSrri, "vdpps", Convert__Reg1_3__Reg1_2__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VDPPSYrmi, "vdpps", Convert__Reg1_3__Reg1_2__Mem5_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VDPPSrmi, "vdpps", Convert__Reg1_3__Reg1_2__Mem5_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VERRr, "verr", Convert__Reg1_0, { MCK_GR16 }, 0},
   { X86::VERRm, "verr", Convert__Mem5_0, { MCK_Mem }, 0},
   { X86::VERWr, "verw", Convert__Reg1_0, { MCK_GR16 }, 0},
@@ -5308,255 +5308,255 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VEXTRACTPSrr, "vextractps", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_GR32 }, 0},
   { X86::VEXTRACTPSrr64, "vextractps", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_GR64 }, 0},
   { X86::VEXTRACTPSmr, "vextractps", Convert__Mem5_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_Mem }, 0},
-  { X86::VFMADDPDr132r, "vfmadd132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDPDr132rY, "vfmadd132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDPDr132m, "vfmadd132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDPDr132r, "vfmadd132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDPDr132mY, "vfmadd132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDPSr132r, "vfmadd132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDPDr132m, "vfmadd132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDPSr132rY, "vfmadd132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDPSr132m, "vfmadd132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDPSr132r, "vfmadd132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDPSr132mY, "vfmadd132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDPDr213r, "vfmadd213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDPSr132m, "vfmadd132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDPDr213rY, "vfmadd213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDPDr213m, "vfmadd213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDPDr213r, "vfmadd213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDPDr213mY, "vfmadd213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDPSr213r, "vfmadd213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDPDr213m, "vfmadd213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDPSr213rY, "vfmadd213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDPSr213m, "vfmadd213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDPSr213r, "vfmadd213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDPSr213mY, "vfmadd213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDPDr231r, "vfmadd231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDPSr213m, "vfmadd213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDPDr231rY, "vfmadd231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDPDr231m, "vfmadd231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDPDr231r, "vfmadd231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDPDr231mY, "vfmadd231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDPSr231r, "vfmadd231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDPDr231m, "vfmadd231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDPSr231rY, "vfmadd231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDPSr231m, "vfmadd231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDPSr231r, "vfmadd231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDPSr231mY, "vfmadd231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDSUBPDr132r, "vfmaddsub132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDPSr231m, "vfmadd231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDSUBPDr132rY, "vfmaddsub132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDSUBPDr132m, "vfmaddsub132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDSUBPDr132r, "vfmaddsub132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDSUBPDr132mY, "vfmaddsub132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDSUBPSr132r, "vfmaddsub132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDSUBPDr132m, "vfmaddsub132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDSUBPSr132rY, "vfmaddsub132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDSUBPSr132m, "vfmaddsub132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDSUBPSr132r, "vfmaddsub132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDSUBPSr132mY, "vfmaddsub132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDSUBPDr213r, "vfmaddsub213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDSUBPSr132m, "vfmaddsub132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDSUBPDr213rY, "vfmaddsub213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDSUBPDr213m, "vfmaddsub213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDSUBPDr213r, "vfmaddsub213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDSUBPDr213mY, "vfmaddsub213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDSUBPSr213r, "vfmaddsub213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDSUBPDr213m, "vfmaddsub213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDSUBPSr213rY, "vfmaddsub213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDSUBPSr213m, "vfmaddsub213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDSUBPSr213r, "vfmaddsub213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDSUBPSr213mY, "vfmaddsub213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDSUBPDr231r, "vfmaddsub231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDSUBPSr213m, "vfmaddsub213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDSUBPDr231rY, "vfmaddsub231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDSUBPDr231m, "vfmaddsub231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDSUBPDr231r, "vfmaddsub231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDSUBPDr231mY, "vfmaddsub231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDSUBPSr231r, "vfmaddsub231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDSUBPDr231m, "vfmaddsub231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDSUBPSr231rY, "vfmaddsub231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMADDSUBPSr231m, "vfmaddsub231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDSUBPSr231r, "vfmaddsub231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMADDSUBPSr231mY, "vfmaddsub231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBPDr132r, "vfmsub132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMADDSUBPSr231m, "vfmaddsub231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBPDr132rY, "vfmsub132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBPDr132m, "vfmsub132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBPDr132r, "vfmsub132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBPDr132mY, "vfmsub132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBPSr132r, "vfmsub132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBPDr132m, "vfmsub132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBPSr132rY, "vfmsub132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBPSr132m, "vfmsub132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBPSr132r, "vfmsub132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBPSr132mY, "vfmsub132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBPDr213r, "vfmsub213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBPSr132m, "vfmsub132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBPDr213rY, "vfmsub213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBPDr213m, "vfmsub213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBPDr213r, "vfmsub213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBPDr213mY, "vfmsub213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBPSr213r, "vfmsub213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBPDr213m, "vfmsub213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBPSr213rY, "vfmsub213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBPSr213m, "vfmsub213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBPSr213r, "vfmsub213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBPSr213mY, "vfmsub213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBPDr231r, "vfmsub231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBPSr213m, "vfmsub213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBPDr231rY, "vfmsub231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBPDr231m, "vfmsub231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBPDr231r, "vfmsub231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBPDr231mY, "vfmsub231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBPSr231r, "vfmsub231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBPDr231m, "vfmsub231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBPSr231rY, "vfmsub231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBPSr231m, "vfmsub231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBPSr231r, "vfmsub231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBPSr231mY, "vfmsub231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBADDPDr132r, "vfmsubadd132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBPSr231m, "vfmsub231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBADDPDr132rY, "vfmsubadd132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBADDPDr132m, "vfmsubadd132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBADDPDr132r, "vfmsubadd132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBADDPDr132mY, "vfmsubadd132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBADDPSr132r, "vfmsubadd132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBADDPDr132m, "vfmsubadd132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBADDPSr132rY, "vfmsubadd132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBADDPSr132m, "vfmsubadd132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBADDPSr132r, "vfmsubadd132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBADDPSr132mY, "vfmsubadd132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBADDPDr213r, "vfmsubadd213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBADDPSr132m, "vfmsubadd132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBADDPDr213rY, "vfmsubadd213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBADDPDr213m, "vfmsubadd213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBADDPDr213r, "vfmsubadd213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBADDPDr213mY, "vfmsubadd213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBADDPSr213r, "vfmsubadd213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBADDPDr213m, "vfmsubadd213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBADDPSr213rY, "vfmsubadd213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBADDPSr213m, "vfmsubadd213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBADDPSr213r, "vfmsubadd213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBADDPSr213mY, "vfmsubadd213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBADDPDr231r, "vfmsubadd231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBADDPSr213m, "vfmsubadd213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBADDPDr231rY, "vfmsubadd231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBADDPDr231m, "vfmsubadd231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBADDPDr231r, "vfmsubadd231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBADDPDr231mY, "vfmsubadd231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBADDPSr231r, "vfmsubadd231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBADDPDr231m, "vfmsubadd231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBADDPSr231rY, "vfmsubadd231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFMSUBADDPSr231m, "vfmsubadd231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBADDPSr231r, "vfmsubadd231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFMSUBADDPSr231mY, "vfmsubadd231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMADDPDr132r, "vfnmadd132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFMSUBADDPSr231m, "vfmsubadd231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMADDPDr132rY, "vfnmadd132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMADDPDr132m, "vfnmadd132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMADDPDr132r, "vfnmadd132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMADDPDr132mY, "vfnmadd132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMADDPSr132r, "vfnmadd132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMADDPDr132m, "vfnmadd132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMADDPSr132rY, "vfnmadd132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMADDPSr132m, "vfnmadd132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMADDPSr132r, "vfnmadd132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMADDPSr132mY, "vfnmadd132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMADDPDr213r, "vfnmadd213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMADDPSr132m, "vfnmadd132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMADDPDr213rY, "vfnmadd213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMADDPDr213m, "vfnmadd213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMADDPDr213r, "vfnmadd213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMADDPDr213mY, "vfnmadd213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMADDPSr213r, "vfnmadd213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMADDPDr213m, "vfnmadd213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMADDPSr213rY, "vfnmadd213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMADDPSr213m, "vfnmadd213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMADDPSr213r, "vfnmadd213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMADDPSr213mY, "vfnmadd213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMADDPDr231r, "vfnmadd231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMADDPSr213m, "vfnmadd213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMADDPDr231rY, "vfnmadd231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMADDPDr231m, "vfnmadd231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMADDPDr231r, "vfnmadd231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMADDPDr231mY, "vfnmadd231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMADDPSr231r, "vfnmadd231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMADDPDr231m, "vfnmadd231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMADDPSr231rY, "vfnmadd231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMADDPSr231m, "vfnmadd231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMADDPSr231r, "vfnmadd231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMADDPSr231mY, "vfnmadd231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMSUBPDr132r, "vfnmsub132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMADDPSr231m, "vfnmadd231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMSUBPDr132rY, "vfnmsub132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMSUBPDr132m, "vfnmsub132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMSUBPDr132r, "vfnmsub132pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMSUBPDr132mY, "vfnmsub132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMSUBPSr132r, "vfnmsub132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMSUBPDr132m, "vfnmsub132pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMSUBPSr132rY, "vfnmsub132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMSUBPSr132m, "vfnmsub132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMSUBPSr132r, "vfnmsub132ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMSUBPSr132mY, "vfnmsub132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMSUBPDr213r, "vfnmsub213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMSUBPSr132m, "vfnmsub132ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMSUBPDr213rY, "vfnmsub213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMSUBPDr213m, "vfnmsub213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMSUBPDr213r, "vfnmsub213pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMSUBPDr213mY, "vfnmsub213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMSUBPSr213r, "vfnmsub213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMSUBPDr213m, "vfnmsub213pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMSUBPSr213rY, "vfnmsub213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMSUBPSr213m, "vfnmsub213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMSUBPSr213r, "vfnmsub213ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMSUBPSr213mY, "vfnmsub213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMSUBPDr231r, "vfnmsub231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMSUBPSr213m, "vfnmsub213ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMSUBPDr231rY, "vfnmsub231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMSUBPDr231m, "vfnmsub231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMSUBPDr231r, "vfnmsub231pd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMSUBPDr231mY, "vfnmsub231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMSUBPSr231r, "vfnmsub231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMSUBPDr231m, "vfnmsub231pd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMSUBPSr231rY, "vfnmsub231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VFNMSUBPSr231m, "vfnmsub231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMSUBPSr231r, "vfnmsub231ps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VFNMSUBPSr231mY, "vfnmsub231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VHADDPDrr, "vhaddpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VFNMSUBPSr231m, "vfnmsub231ps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VHADDPDYrr, "vhaddpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VHADDPDrm, "vhaddpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VHADDPDrr, "vhaddpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VHADDPDYrm, "vhaddpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VHADDPSrr, "vhaddps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VHADDPDrm, "vhaddpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VHADDPSYrr, "vhaddps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VHADDPSrm, "vhaddps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VHADDPSrr, "vhaddps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VHADDPSYrm, "vhaddps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VHSUBPDrr, "vhsubpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VHADDPSrm, "vhaddps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VHSUBPDYrr, "vhsubpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VHSUBPDrm, "vhsubpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VHSUBPDrr, "vhsubpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VHSUBPDYrm, "vhsubpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VHSUBPSrr, "vhsubps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VHSUBPDrm, "vhsubpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VHSUBPSYrr, "vhsubps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VHSUBPSrm, "vhsubps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VHSUBPSrr, "vhsubps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VHSUBPSYrm, "vhsubps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VHSUBPSrm, "vhsubps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VINSERTF128rr, "vinsertf128", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_VR256, MCK_VR256 }, 0},
   { X86::VINSERTF128rm, "vinsertf128", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
   { X86::VINSERTPSrr, "vinsertps", Convert__Reg1_3__Reg1_2__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VINSERTPSrm, "vinsertps", Convert__Reg1_3__Reg1_2__Mem5_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VLDDQUrm, "vlddqu", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VLDDQUYrm, "vlddqu", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
+  { X86::VLDDQUrm, "vlddqu", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VLDMXCSR, "vldmxcsr", Convert__Mem5_0, { MCK_Mem }, 0},
   { X86::VMASKMOVDQU, "vmaskmovdqu", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VMASKMOVDQU64, "vmaskmovdqu", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::VMASKMOVPDmr, "vmaskmovpd", Convert__Mem5_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_Mem }, 0},
   { X86::VMASKMOVPDYmr, "vmaskmovpd", Convert__Mem5_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_Mem }, 0},
-  { X86::VMASKMOVPDrm, "vmaskmovpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMASKMOVPDmr, "vmaskmovpd", Convert__Mem5_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_Mem }, 0},
   { X86::VMASKMOVPDYrm, "vmaskmovpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMASKMOVPSmr, "vmaskmovps", Convert__Mem5_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_Mem }, 0},
+  { X86::VMASKMOVPDrm, "vmaskmovpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMASKMOVPSYmr, "vmaskmovps", Convert__Mem5_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_Mem }, 0},
-  { X86::VMASKMOVPSrm, "vmaskmovps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMASKMOVPSmr, "vmaskmovps", Convert__Mem5_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_Mem }, 0},
   { X86::VMASKMOVPSYrm, "vmaskmovps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMAXPDrr, "vmaxpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMASKMOVPSrm, "vmaskmovps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMAXPDYrr, "vmaxpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMAXPDrm, "vmaxpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMAXPDrr, "vmaxpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMAXPDYrm, "vmaxpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMAXPSrr, "vmaxps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMAXPDrm, "vmaxpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMAXPSYrr, "vmaxps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMAXPSrm, "vmaxps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMAXPSrr, "vmaxps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMAXPSYrm, "vmaxps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VMAXPSrm, "vmaxps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMAXSDrr, "vmaxsd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMAXSDrm, "vmaxsd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMAXSSrr, "vmaxss", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMAXSSrm, "vmaxss", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMCALL, "vmcall", Convert, {  }, 0},
   { X86::VMCLEARm, "vmclear", Convert__Mem5_0, { MCK_Mem }, 0},
-  { X86::VMINPDrr, "vminpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMINPDYrr, "vminpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMINPDrm, "vminpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMINPDrr, "vminpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMINPDYrm, "vminpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMINPSrr, "vminps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMINPDrm, "vminpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMINPSYrr, "vminps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMINPSrm, "vminps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMINPSrr, "vminps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMINPSYrm, "vminps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VMINPSrm, "vminps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMINSDrr, "vminsd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMINSDrm, "vminsd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMINSSrr, "vminss", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMINSSrm, "vminss", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMLAUNCH, "vmlaunch", Convert, {  }, 0},
+  { X86::VMOVAPDYrr, "vmovapd", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
+  { X86::VMOVAPDYmr, "vmovapd", Convert__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem }, 0},
   { X86::FsVMOVAPDrr, "vmovapd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VMOVAPDrr, "vmovapd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VMOVAPDmr, "vmovapd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
-  { X86::VMOVAPDYrr, "vmovapd", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMOVAPDYmr, "vmovapd", Convert__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem }, 0},
-  { X86::VMOVAPDrm, "vmovapd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVAPDYrm, "vmovapd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
+  { X86::VMOVAPDrm, "vmovapd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VMOVAPSYrr, "vmovaps", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
+  { X86::VMOVAPSYmr, "vmovaps", Convert__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem }, 0},
   { X86::FsVMOVAPSrr, "vmovaps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VMOVAPSrr, "vmovaps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VMOVAPSmr, "vmovaps", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
-  { X86::VMOVAPSYrr, "vmovaps", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMOVAPSYmr, "vmovaps", Convert__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem }, 0},
-  { X86::VMOVAPSrm, "vmovaps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVAPSYrm, "vmovaps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VMOVDI2PDIrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_FR32 }, 0},
-  { X86::VMOVDI2SSrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_FR32 }, 0},
-  { X86::VMOVZDI2PDIrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_FR32 }, 0},
-  { X86::VMOV64toPQIrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
-  { X86::VMOV64toSDrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
-  { X86::VMOVZQI2PQIrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
+  { X86::VMOVAPSrm, "vmovaps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVPDI2DIrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR32 }, 0},
   { X86::VMOVSS2DIrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR32 }, 0},
   { X86::VMOVQd64rr_alt, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
   { X86::VMOVSDto64rr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
   { X86::VMOVPDI2DImr, "vmovd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVSS2DImr, "vmovd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
+  { X86::VMOVDI2PDIrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_FR32 }, 0},
+  { X86::VMOVDI2SSrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_FR32 }, 0},
+  { X86::VMOVZDI2PDIrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_GR32, MCK_FR32 }, 0},
+  { X86::VMOV64toPQIrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
+  { X86::VMOV64toSDrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
+  { X86::VMOVZQI2PQIrr, "vmovd", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
   { X86::VMOVDI2PDIrm, "vmovd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVDI2SSrm, "vmovd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVZDI2PDIrm, "vmovd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::VMOVDDUPrr, "vmovddup", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VMOVDDUPYrr, "vmovddup", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMOVDDUPrm, "vmovddup", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VMOVDDUPrr, "vmovddup", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VMOVDDUPYrm, "vmovddup", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VMOVDQArr, "vmovdqa", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::VMOVDQAmr, "vmovdqa", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
+  { X86::VMOVDDUPrm, "vmovddup", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVDQAYrr, "vmovdqa", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
   { X86::VMOVDQAYmr, "vmovdqa", Convert__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem }, 0},
-  { X86::VMOVDQArm, "vmovdqa", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VMOVDQArr, "vmovdqa", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMOVDQAmr, "vmovdqa", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVDQAYrm, "vmovdqa", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VMOVDQUrr, "vmovdqu", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::VMOVDQUmr, "vmovdqu", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
+  { X86::VMOVDQArm, "vmovdqa", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVDQUYrr, "vmovdqu", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
   { X86::VMOVDQUYmr, "vmovdqu", Convert__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem }, 0},
-  { X86::VMOVDQUrm, "vmovdqu", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VMOVDQUrr, "vmovdqu", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMOVDQUmr, "vmovdqu", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVDQUYrm, "vmovdqu", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
+  { X86::VMOVDQUrm, "vmovdqu", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVHLPSrr, "vmovhlps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMOVHPDmr, "vmovhpd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVHPDrm, "vmovhpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
@@ -5567,34 +5567,34 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VMOVLPDrm, "vmovlpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMOVLPSmr, "vmovlps", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVLPSrm, "vmovlps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VMOVMSKPDrr32, "vmovmskpd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR32 }, 0},
-  { X86::VMOVMSKPDr64r, "vmovmskpd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
-  { X86::VMOVMSKPDrr64, "vmovmskpd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
   { X86::VMOVMSKPDYrr32, "vmovmskpd", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_GR32 }, 0},
   { X86::VMOVMSKPDYr64r, "vmovmskpd", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_GR64 }, 0},
   { X86::VMOVMSKPDYrr64, "vmovmskpd", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_GR64 }, 0},
-  { X86::VMOVMSKPSrr32, "vmovmskps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR32 }, 0},
-  { X86::VMOVMSKPSr64r, "vmovmskps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
-  { X86::VMOVMSKPSrr64, "vmovmskps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
+  { X86::VMOVMSKPDrr32, "vmovmskpd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR32 }, 0},
+  { X86::VMOVMSKPDr64r, "vmovmskpd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
+  { X86::VMOVMSKPDrr64, "vmovmskpd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
   { X86::VMOVMSKPSYrr32, "vmovmskps", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_GR32 }, 0},
   { X86::VMOVMSKPSYr64r, "vmovmskps", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_GR64 }, 0},
   { X86::VMOVMSKPSYrr64, "vmovmskps", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_GR64 }, 0},
-  { X86::VMOVNTDQ_64mr, "vmovntdq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
-  { X86::VMOVNTDQmr, "vmovntdq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
+  { X86::VMOVMSKPSrr32, "vmovmskps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR32 }, 0},
+  { X86::VMOVMSKPSr64r, "vmovmskps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
+  { X86::VMOVMSKPSrr64, "vmovmskps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
   { X86::VMOVNTDQY_64mr, "vmovntdq", Convert__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem }, 0},
   { X86::VMOVNTDQYmr, "vmovntdq", Convert__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem }, 0},
+  { X86::VMOVNTDQ_64mr, "vmovntdq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
+  { X86::VMOVNTDQmr, "vmovntdq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVNTDQArm, "vmovntdqa", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::VMOVNTPDmr, "vmovntpd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVNTPDYmr, "vmovntpd", Convert__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem }, 0},
-  { X86::VMOVNTPSmr, "vmovntps", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
+  { X86::VMOVNTPDmr, "vmovntpd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVNTPSYmr, "vmovntps", Convert__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem }, 0},
-  { X86::VMOVQs64rr, "vmovq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
-  { X86::VMOVQd64rr, "vmovq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
+  { X86::VMOVNTPSmr, "vmovntps", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVQxrxr, "vmovq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VMOVZPQILo2PQIrr, "vmovq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMOVQd64rr, "vmovq", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_GR64 }, 0},
   { X86::VMOVLQ128mr, "vmovq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVPQI2QImr, "vmovq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVSDto64mr, "vmovq", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
+  { X86::VMOVQs64rr, "vmovq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_FR32 }, 0},
   { X86::VMOV64toSDrm, "vmovq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVQI2PQIrm, "vmovq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVZPQILo2PQIrm, "vmovq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
@@ -5602,29 +5602,29 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VMOVSDmr, "vmovsd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVSDrm, "vmovsd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVSDrr, "vmovsd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VMOVSHDUPrr, "vmovshdup", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VMOVSHDUPYrr, "vmovshdup", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMOVSHDUPrm, "vmovshdup", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VMOVSHDUPrr, "vmovshdup", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VMOVSHDUPYrm, "vmovshdup", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VMOVSLDUPrr, "vmovsldup", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMOVSHDUPrm, "vmovshdup", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVSLDUPYrr, "vmovsldup", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMOVSLDUPrm, "vmovsldup", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VMOVSLDUPrr, "vmovsldup", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VMOVSLDUPYrm, "vmovsldup", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
+  { X86::VMOVSLDUPrm, "vmovsldup", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVSSmr, "vmovss", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVSSrm, "vmovss", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVSSrr, "vmovss", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VMOVUPDrr, "vmovupd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::VMOVUPDmr, "vmovupd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVUPDYrr, "vmovupd", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
   { X86::VMOVUPDYmr, "vmovupd", Convert__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem }, 0},
-  { X86::VMOVUPDrm, "vmovupd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VMOVUPDrr, "vmovupd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMOVUPDmr, "vmovupd", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVUPDYrm, "vmovupd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VMOVUPSrr, "vmovups", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
-  { X86::VMOVUPSmr, "vmovups", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
+  { X86::VMOVUPDrm, "vmovupd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMOVUPSYrr, "vmovups", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
   { X86::VMOVUPSYmr, "vmovups", Convert__Mem5_1__Reg1_0, { MCK_VR256, MCK_Mem }, 0},
-  { X86::VMOVUPSrm, "vmovups", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VMOVUPSrr, "vmovups", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMOVUPSmr, "vmovups", Convert__Mem5_1__Reg1_0, { MCK_FR32, MCK_Mem }, 0},
   { X86::VMOVUPSYrm, "vmovups", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
+  { X86::VMOVUPSrm, "vmovups", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VMPSADBWrri, "vmpsadbw", Convert__Reg1_3__Reg1_2__Reg1_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMPSADBWrmi, "vmpsadbw", Convert__Reg1_3__Reg1_2__Mem5_1__ImmZExtu32u81_0, { MCK_ImmZExtu32u8, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMPTRLDm, "vmptrld", Convert__Mem5_0, { MCK_Mem }, 0},
@@ -5634,14 +5634,14 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VMREAD64rr, "vmreadq", Convert__Reg1_1__Reg1_0, { MCK_GR64, MCK_GR64 }, 0},
   { X86::VMREAD64rm, "vmreadq", Convert__Mem5_1__Reg1_0, { MCK_GR64, MCK_Mem }, 0},
   { X86::VMRESUME, "vmresume", Convert, {  }, 0},
-  { X86::VMULPDrr, "vmulpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMULPDYrr, "vmulpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMULPDrm, "vmulpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMULPDrr, "vmulpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMULPDYrm, "vmulpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMULPSrr, "vmulps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMULPDrm, "vmulpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMULPSYrr, "vmulps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VMULPSrm, "vmulps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VMULPSrr, "vmulps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMULPSYrm, "vmulps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VMULPSrm, "vmulps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMULSDrr, "vmulsd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMULSDrm, "vmulsd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VMULSSrr, "vmulss", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
@@ -5652,18 +5652,18 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VMWRITE64rm, "vmwriteq", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_GR64 }, 0},
   { X86::VMXOFF, "vmxoff", Convert, {  }, 0},
   { X86::VMXON, "vmxon", Convert__Mem5_0, { MCK_Mem }, 0},
+  { X86::VORPDYrr, "vorpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
   { X86::VFsORPDrr, "vorpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VORPDrr, "vorpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VORPDYrr, "vorpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VORPDYrm, "vorpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
   { X86::VFsORPDrm, "vorpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VORPDrm, "vorpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VORPDYrm, "vorpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VORPSYrr, "vorps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
   { X86::VFsORPSrr, "vorps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VORPSrr, "vorps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VORPSYrr, "vorps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VORPSYrm, "vorps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
   { X86::VFsORPSrm, "vorps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VORPSrm, "vorps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VORPSYrm, "vorps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
   { X86::VPABSBrr128, "vpabsb", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VPABSBrm128, "vpabsb", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VPABSDrr128, "vpabsd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
@@ -5764,22 +5764,22 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VPCMPISTRM128rm, "vpcmpistrm", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32 }, 0},
   { X86::VPERM2F128rr, "vperm2f128", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
   { X86::VPERM2F128rm, "vperm2f128", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VPERMILPDrr, "vpermilpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPERMILPDYrr, "vpermilpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VPERMILPDri, "vpermilpd", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VPERMILPDrr, "vpermilpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPERMILPDYri, "vpermilpd", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VPERMILPDmi, "vpermilpd", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32 }, 0},
+  { X86::VPERMILPDri, "vpermilpd", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPERMILPDYmi, "vpermilpd", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_VR256 }, 0},
-  { X86::VPERMILPDrm, "vpermilpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VPERMILPDmi, "vpermilpd", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32 }, 0},
   { X86::VPERMILPDYrm, "vpermilpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VPERMILPSrr, "vpermilps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VPERMILPDrm, "vpermilpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPERMILPSYrr, "vpermilps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VPERMILPSri, "vpermilps", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VPERMILPSrr, "vpermilps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPERMILPSYri, "vpermilps", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VPERMILPSmi, "vpermilps", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32 }, 0},
+  { X86::VPERMILPSri, "vpermilps", Convert__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPERMILPSYmi, "vpermilps", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_VR256 }, 0},
-  { X86::VPERMILPSrm, "vpermilps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VPERMILPSmi, "vpermilps", Convert__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32 }, 0},
   { X86::VPERMILPSYrm, "vpermilps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VPERMILPSrm, "vpermilps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPEXTRBrr, "vpextrb", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_GR32 }, 0},
   { X86::VPEXTRBrr64, "vpextrb", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_GR64 }, 0},
   { X86::VPEXTRBmr, "vpextrb", Convert__Mem5_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_Mem }, 0},
@@ -5940,10 +5940,10 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VPSUBUSWrm, "vpsubusw", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPSUBWrr, "vpsubw", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPSUBWrm, "vpsubw", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VPTESTrr, "vptest", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VPTESTYrr, "vptest", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VPTESTrm, "vptest", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VPTESTrr, "vptest", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VPTESTYrm, "vptest", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
+  { X86::VPTESTrm, "vptest", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VPUNPCKHBWrr, "vpunpckhbw", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPUNPCKHBWrm, "vpunpckhbw", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPUNPCKHDQrr, "vpunpckhdq", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
@@ -5962,28 +5962,28 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VPUNPCKLWDrm, "vpunpcklwd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPXORrr, "vpxor", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VPXORrm, "vpxor", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VRCPPSr, "vrcpps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VRCPPSYr, "vrcpps", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VRCPPSm, "vrcpps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VRCPPSr, "vrcpps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VRCPPSYm, "vrcpps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
+  { X86::VRCPPSm, "vrcpps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VRCPSSr, "vrcpss", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VRCPSSm, "vrcpss", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VROUNDPDr, "vroundpd", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VROUNDPDr_AVX, "vroundpd", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32 }, 0},
   { X86::VROUNDYPDr, "vroundpd", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR256, MCK_VR256 }, 0},
   { X86::VROUNDYPDr_AVX, "vroundpd", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VROUNDPDm, "vroundpd", Convert__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32 }, 0},
-  { X86::VROUNDPDm_AVX, "vroundpd", Convert__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32 }, 0},
+  { X86::VROUNDPDr, "vroundpd", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VROUNDPDr_AVX, "vroundpd", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32 }, 0},
   { X86::VROUNDYPDm, "vroundpd", Convert__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_VR256 }, 0},
   { X86::VROUNDYPDm_AVX, "vroundpd", Convert__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_VR256 }, 0},
-  { X86::VROUNDPSr, "vroundps", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VROUNDPSr_AVX, "vroundps", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VROUNDPDm, "vroundpd", Convert__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32 }, 0},
+  { X86::VROUNDPDm_AVX, "vroundpd", Convert__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32 }, 0},
   { X86::VROUNDYPSr, "vroundps", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR256, MCK_VR256 }, 0},
   { X86::VROUNDYPSr_AVX, "vroundps", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VROUNDPSm, "vroundps", Convert__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32 }, 0},
-  { X86::VROUNDPSm_AVX, "vroundps", Convert__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32 }, 0},
+  { X86::VROUNDPSr, "vroundps", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VROUNDPSr_AVX, "vroundps", Convert__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32 }, 0},
   { X86::VROUNDYPSm, "vroundps", Convert__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_VR256 }, 0},
   { X86::VROUNDYPSm_AVX, "vroundps", Convert__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_VR256 }, 0},
+  { X86::VROUNDPSm, "vroundps", Convert__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32 }, 0},
+  { X86::VROUNDPSm_AVX, "vroundps", Convert__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32 }, 0},
   { X86::VROUNDSDr, "vroundsd", Convert__Reg1_3__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VROUNDSDr_AVX, "vroundsd", Convert__Reg1_3__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VROUNDSDm, "vroundsd", Convert__Reg1_3__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
@@ -5992,85 +5992,85 @@ static const MatchEntry MatchTable[3300] = {
   { X86::VROUNDSSr_AVX, "vroundss", Convert__Reg1_3__Reg1_2__Reg1_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VROUNDSSm, "vroundss", Convert__Reg1_3__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VROUNDSSm_AVX, "vroundss", Convert__Reg1_3__Reg1_2__Mem5_1__ImmSExti32i81_0, { MCK_ImmSExti32i8, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VRSQRTPSr, "vrsqrtps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VRSQRTPSYr, "vrsqrtps", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VRSQRTPSm, "vrsqrtps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VRSQRTPSr, "vrsqrtps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VRSQRTPSYm, "vrsqrtps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
+  { X86::VRSQRTPSm, "vrsqrtps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VRSQRTSSr, "vrsqrtss", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VRSQRTSSm, "vrsqrtss", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VSHUFPDrri, "vshufpd", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSHUFPDYrri, "vshufpd", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VSHUFPDrmi, "vshufpd", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VSHUFPDrri, "vshufpd", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSHUFPDYrmi, "vshufpd", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VSHUFPSrri, "vshufps", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VSHUFPDrmi, "vshufpd", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSHUFPSYrri, "vshufps", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VSHUFPSrmi, "vshufps", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VSHUFPSrri, "vshufps", Convert__Reg1_3__Reg1_2__Reg1_1__Imm1_0, { MCK_Imm, MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSHUFPSYrmi, "vshufps", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VSQRTPDr, "vsqrtpd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VSHUFPSrmi, "vshufps", Convert__Reg1_3__Reg1_2__Mem5_1__Imm1_0, { MCK_Imm, MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSQRTPDYr, "vsqrtpd", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VSQRTPDm, "vsqrtpd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VSQRTPDr, "vsqrtpd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VSQRTPDYm, "vsqrtpd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VSQRTPSr, "vsqrtps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VSQRTPDm, "vsqrtpd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VSQRTPSYr, "vsqrtps", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VSQRTPSm, "vsqrtps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VSQRTPSr, "vsqrtps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VSQRTPSYm, "vsqrtps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
+  { X86::VSQRTPSm, "vsqrtps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VSQRTSDr, "vsqrtsd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSQRTSDm, "vsqrtsd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSQRTSSr, "vsqrtss", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSQRTSSm, "vsqrtss", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSTMXCSR, "vstmxcsr", Convert__Mem5_0, { MCK_Mem }, 0},
-  { X86::VSUBPDrr, "vsubpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSUBPDYrr, "vsubpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VSUBPDrm, "vsubpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VSUBPDrr, "vsubpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSUBPDYrm, "vsubpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VSUBPSrr, "vsubps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VSUBPDrm, "vsubpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSUBPSYrr, "vsubps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VSUBPSrm, "vsubps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VSUBPSrr, "vsubps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSUBPSYrm, "vsubps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VSUBPSrm, "vsubps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSUBSDrr, "vsubsd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSUBSDrm, "vsubsd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSUBSSrr, "vsubss", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VSUBSSrm, "vsubss", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VTESTPDrr, "vtestpd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VTESTPDYrr, "vtestpd", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VTESTPDrm, "vtestpd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VTESTPDrr, "vtestpd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VTESTPDYrm, "vtestpd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
-  { X86::VTESTPSrr, "vtestps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
+  { X86::VTESTPDrm, "vtestpd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VTESTPSYrr, "vtestps", Convert__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256 }, 0},
-  { X86::VTESTPSrm, "vtestps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
+  { X86::VTESTPSrr, "vtestps", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VTESTPSYrm, "vtestps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256 }, 0},
+  { X86::VTESTPSrm, "vtestps", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VUCOMISDrr, "vucomisd", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VUCOMISDrm, "vucomisd", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
   { X86::VUCOMISSrr, "vucomiss", Convert__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32 }, 0},
   { X86::VUCOMISSrm, "vucomiss", Convert__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32 }, 0},
-  { X86::VUNPCKHPDrr, "vunpckhpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VUNPCKHPDYrr, "vunpckhpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VUNPCKHPDrm, "vunpckhpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VUNPCKHPDrr, "vunpckhpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VUNPCKHPDYrm, "vunpckhpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VUNPCKHPSrr, "vunpckhps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VUNPCKHPDrm, "vunpckhpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VUNPCKHPSYrr, "vunpckhps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VUNPCKHPSrm, "vunpckhps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VUNPCKHPSrr, "vunpckhps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VUNPCKHPSYrm, "vunpckhps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VUNPCKLPDrr, "vunpcklpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VUNPCKHPSrm, "vunpckhps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VUNPCKLPDYrr, "vunpcklpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VUNPCKLPDrm, "vunpcklpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VUNPCKLPDrr, "vunpcklpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VUNPCKLPDYrm, "vunpcklpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VUNPCKLPSrr, "vunpcklps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VUNPCKLPDrm, "vunpcklpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VUNPCKLPSYrr, "vunpcklps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
-  { X86::VUNPCKLPSrm, "vunpcklps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VUNPCKLPSrr, "vunpcklps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VUNPCKLPSYrm, "vunpcklps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VUNPCKLPSrm, "vunpcklps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
+  { X86::VXORPDYrr, "vxorpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
   { X86::VFsXORPDrr, "vxorpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VXORPDrr, "vxorpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VXORPDYrr, "vxorpd", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VXORPDYrm, "vxorpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
   { X86::VFsXORPDrm, "vxorpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VXORPDrm, "vxorpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VXORPDYrm, "vxorpd", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VXORPSYrr, "vxorps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
   { X86::VFsXORPSrr, "vxorps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
   { X86::VXORPSrr, "vxorps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_FR32, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VXORPSYrr, "vxorps", Convert__Reg1_2__Reg1_1__Reg1_0, { MCK_VR256, MCK_VR256, MCK_VR256 }, 0},
+  { X86::VXORPSYrm, "vxorps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
   { X86::VFsXORPSrm, "vxorps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
   { X86::VXORPSrm, "vxorps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_FR32, MCK_FR32 }, 0},
-  { X86::VXORPSYrm, "vxorps", Convert__Reg1_2__Reg1_1__Mem5_0, { MCK_Mem, MCK_VR256, MCK_VR256 }, 0},
   { X86::VZEROALL, "vzeroall", Convert, {  }, 0},
   { X86::VZEROUPPER, "vzeroupper", Convert, {  }, 0},
   { X86::WAIT, "wait", Convert, {  }, 0},
