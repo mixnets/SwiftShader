@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# exit when any command fails
+set -e
+
+if [[ "$OSTYPE" != "msys" ]]; then
+    echo This script is meant for generation of path relative Visual Studio project
+    echo files from CMake. It should be run from an MSYS/MinGW bash shell, such as
+    echo the one that comes with Git for Windows.
+    exit 1
+fi
+
+CMAKE_GENERATOR="Visual Studio 15 2017 Win64"
+
+CMAKE_BUILD_PATH="build/$CMAKE_GENERATOR"
+
+if [ ! -d "$CMAKE_BUILD_PATH" ]; then
+    mkdir -p "$CMAKE_BUILD_PATH"
+fi
+cd "$CMAKE_BUILD_PATH"
+
+cmake -B"$CMAKE_BUILD_PATH" -G"$CMAKE_GENERATOR" -Thost=x64 -DSPIRV-Headers_SOURCE_DIR="${CMAKE_HOME_DIRECTORY}/third_party/SPIRV-Headers" -DCMAKE_CONFIGURATION_TYPES="Debug;Release" -DSKIP_SPIRV_TOOLS_INSTALL=true -DSPIRV_SKIP_EXECUTABLES=true -DSPIRV_SKIP_TESTS=true ../..
+
+cd ../..
+
+echo Making project files path relative. This might take a minute.
+
+# Current directory
+CD=$(pwd -W)/
+
+find . -type f \( -name \*.vcxproj -o -name \*.vcxproj.filters -o -name \*.sln \) -execdir sed -i -b -e "s?$CD?\$(SolutionDir)?g" {} \;
+
+# Current directory with (escaped) backslashes
+CD2=$(echo $(pwd -W) | sed 's?/?\\\\?g')\\\\
+
+find . -type f \( -name \*.vcxproj -o -name \*.vcxproj.filters -o -name \*.sln \) -execdir sed -i -b -e "s?$CD2?\$(SolutionDir)?g" {} \;
