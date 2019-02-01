@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(SolutionDir)\src\Reactor\ReactorUnitTests.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\third_party\googletest\googletest\src\gtest-all.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{68F041AE-41CD-3A1E-A3C5-3B3C209FB72D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{08B7505B-AD5B-33C9-8FD3-25204CEA9D87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Reactor">
+      <UniqueIdentifier>{7A002C87-DF77-3354-9C28-B296246E79E0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

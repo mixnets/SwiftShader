@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{40173893-11F1-359E-A29D-865AAF7F6B35}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>extinst_tables</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>$(SolutionDir)\third_party\SPIRV-Tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>$(SolutionDir)\third_party\SPIRV-Tools;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\CMakeFiles\cd8b0c6283d13d4239ab6d1ab9bcea2f\opencl.std.insts.inc.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generate info tables for OpenCL extended instructions and operands vunified1.</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+C:\Python27\python.exe $(SolutionDir)/third_party/SPIRV-Tools/utils/generate_grammar_tables.py --extinst-opencl-grammar=$(SolutionDir)/third_party/SPIRV-Headers/include/spirv/unified1/extinst.opencl.std.100.grammar.json "--opencl-insts-output=$(SolutionDir)/build/Visual Studio 15 2017 Win64/third_party/SPIRV-Tools/opencl.std.insts.inc"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)/build/Visual Studio 15 2017 Win64/CMakeFiles/cd8b0c6283d13d4239ab6d1ab9bcea2f/opencl.std.insts.inc.rule;$(SolutionDir)\third_party\SPIRV-Tools\utils\generate_grammar_tables.py;$(SolutionDir)\third_party\SPIRV-Headers\include\spirv\unified1\spirv.core.grammar.json;$(SolutionDir)\third_party\SPIRV-Headers\include\spirv\unified1\extinst.opencl.std.100.grammar.json;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\opencl.std.insts.inc</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generate info tables for OpenCL extended instructions and operands vunified1.</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+C:\Python27\python.exe $(SolutionDir)/third_party/SPIRV-Tools/utils/generate_grammar_tables.py --extinst-opencl-grammar=$(SolutionDir)/third_party/SPIRV-Headers/include/spirv/unified1/extinst.opencl.std.100.grammar.json "--opencl-insts-output=$(SolutionDir)/build/Visual Studio 15 2017 Win64/third_party/SPIRV-Tools/opencl.std.insts.inc"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)/build/Visual Studio 15 2017 Win64/CMakeFiles/cd8b0c6283d13d4239ab6d1ab9bcea2f/opencl.std.insts.inc.rule;$(SolutionDir)\third_party\SPIRV-Tools\utils\generate_grammar_tables.py;$(SolutionDir)\third_party\SPIRV-Headers\include\spirv\unified1\spirv.core.grammar.json;$(SolutionDir)\third_party\SPIRV-Headers\include\spirv\unified1\extinst.opencl.std.100.grammar.json;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\opencl.std.insts.inc</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\CMakeFiles\cd8b0c6283d13d4239ab6d1ab9bcea2f\glsl.std.450.insts.inc.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generate info tables for GLSL extended instructions and operands vunified1.</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+C:\Python27\python.exe $(SolutionDir)/third_party/SPIRV-Tools/utils/generate_grammar_tables.py --extinst-glsl-grammar=$(SolutionDir)/third_party/SPIRV-Headers/include/spirv/unified1/extinst.glsl.std.450.grammar.json "--glsl-insts-output=$(SolutionDir)/build/Visual Studio 15 2017 Win64/third_party/SPIRV-Tools/glsl.std.450.insts.inc"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)/build/Visual Studio 15 2017 Win64/CMakeFiles/cd8b0c6283d13d4239ab6d1ab9bcea2f/glsl.std.450.insts.inc.rule;$(SolutionDir)\third_party\SPIRV-Tools\utils\generate_grammar_tables.py;$(SolutionDir)\third_party\SPIRV-Headers\include\spirv\unified1\spirv.core.grammar.json;$(SolutionDir)\third_party\SPIRV-Headers\include\spirv\unified1\extinst.glsl.std.450.grammar.json;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\glsl.std.450.insts.inc</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Generate info tables for GLSL extended instructions and operands vunified1.</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+C:\Python27\python.exe $(SolutionDir)/third_party/SPIRV-Tools/utils/generate_grammar_tables.py --extinst-glsl-grammar=$(SolutionDir)/third_party/SPIRV-Headers/include/spirv/unified1/extinst.glsl.std.450.grammar.json "--glsl-insts-output=$(SolutionDir)/build/Visual Studio 15 2017 Win64/third_party/SPIRV-Tools/glsl.std.450.insts.inc"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)/build/Visual Studio 15 2017 Win64/CMakeFiles/cd8b0c6283d13d4239ab6d1ab9bcea2f/glsl.std.450.insts.inc.rule;$(SolutionDir)\third_party\SPIRV-Tools\utils\generate_grammar_tables.py;$(SolutionDir)\third_party\SPIRV-Headers\include\spirv\unified1\spirv.core.grammar.json;$(SolutionDir)\third_party\SPIRV-Headers\include\spirv\unified1\extinst.glsl.std.450.grammar.json;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\glsl.std.450.insts.inc</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\CMakeFiles\b25e4b5eae42884275912eed070351e3\extinst_tables.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)/build/Visual Studio 15 2017 Win64/CMakeFiles/b25e4b5eae42884275912eed070351e3/extinst_tables.rule;$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\opencl.std.insts.inc;$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\glsl.std.450.insts.inc;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\CMakeFiles\extinst_tables</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'"></Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)/build/Visual Studio 15 2017 Win64/CMakeFiles/b25e4b5eae42884275912eed070351e3/extinst_tables.rule;$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\opencl.std.insts.inc;$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\glsl.std.450.insts.inc;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\CMakeFiles\extinst_tables</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\CMakeFiles\extinst_tables" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\spirv-tools-debuginfo.vcxproj">
+      <Project>{871EFA8A-718F-3C86-BC39-7478BAD39FEC}</Project>
+      <Name>spirv-tools-debuginfo</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\spirv-tools-header-DebugInfo.vcxproj">
+      <Project>{5F6A69B3-B3E5-361F-9ECB-48540FC024B3}</Project>
+      <Name>spirv-tools-header-DebugInfo</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\spirv-tools-spv-amd-gcn-shader.vcxproj">
+      <Project>{87247450-2996-3C13-87ED-9CA7BF151159}</Project>
+      <Name>spirv-tools-spv-amd-gcn-shader</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\spirv-tools-spv-amd-shader-ballot.vcxproj">
+      <Project>{0D3E6FEA-4B16-3DA3-BC23-650D595D1C61}</Project>
+      <Name>spirv-tools-spv-amd-shader-ballot</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\spirv-tools-spv-amd-shader-explicit-vertex-parameter.vcxproj">
+      <Project>{FD71E29E-97CE-3526-AF37-E7A38A65D0E6}</Project>
+      <Name>spirv-tools-spv-amd-shader-explicit-vertex-parameter</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\spirv-tools-spv-amd-shader-trinary-minmax.vcxproj">
+      <Project>{F1948E81-FFD6-3B6B-A46D-F0341A07930C}</Project>
+      <Name>spirv-tools-spv-amd-shader-trinary-minmax</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

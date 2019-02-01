@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4FC7E13D-997A-3A65-B986-3E69129AD4C8}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\GLCompiler.vcxproj">
+      <Project>{EB6408F4-6342-35CD-9EC5-15FA091EADC5}</Project>
+      <Name>GLCompiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\OGLES2HelloAPI.vcxproj">
+      <Project>{F895CC7A-ED27-30BA-9EE3-413DFC07667C}</Project>
+      <Name>OGLES2HelloAPI</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\ReactorLLVM.vcxproj">
+      <Project>{8A727CA9-0F35-3D2C-88D7-40A4F49A65A1}</Project>
+      <Name>ReactorLLVM</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\ReactorUnitTests.vcxproj">
+      <Project>{A720BBBE-DF2C-311E-8CB5-03B77C905CAC}</Project>
+      <Name>ReactorUnitTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\SPIRV-Tools.vcxproj">
+      <Project>{573284B2-5667-3B80-9052-93D9720609C2}</Project>
+      <Name>SPIRV-Tools</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\link\SPIRV-Tools-link.vcxproj">
+      <Project>{44B79A20-366C-3BC8-AA40-6FE60E7B23AF}</Project>
+      <Name>SPIRV-Tools-link</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\opt\SPIRV-Tools-opt.vcxproj">
+      <Project>{40283CA1-7B71-30B2-8B0B-E7A434565EE7}</Project>
+      <Name>SPIRV-Tools-opt</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\reduce\SPIRV-Tools-reduce.vcxproj">
+      <Project>{C00CCBAC-9E19-35AD-8B90-53616A5B9590}</Project>
+      <Name>SPIRV-Tools-reduce</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\source\SPIRV-Tools-shared.vcxproj">
+      <Project>{A8B7B8BF-55C2-36E0-B617-B920AD24EDDA}</Project>
+      <Name>SPIRV-Tools-shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\SwiftShader.vcxproj">
+      <Project>{B31E005D-FE4E-3FBE-A86A-06B5964A9DC4}</Project>
+      <Name>SwiftShader</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\libEGL.vcxproj">
+      <Project>{8425CA0E-32B1-3746-A497-84880665E05B}</Project>
+      <Name>libEGL</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\libGLES_CM.vcxproj">
+      <Project>{4D8DF7BD-967F-30EE-8AD1-AAF9B6D11CFB}</Project>
+      <Name>libGLES_CM</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\libGLESv2.vcxproj">
+      <Project>{06B767DC-AFF4-331A-BC88-13439EEDF636}</Project>
+      <Name>libGLESv2</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\libvk_swiftshader.vcxproj">
+      <Project>{623C5299-AF8B-313C-BFE5-64CE2A060C3F}</Project>
+      <Name>libvk_swiftshader</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\llvm.vcxproj">
+      <Project>{F06C9D15-FB7C-379C-BE60-7C524B40A2A2}</Project>
+      <Name>llvm</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\spirv-tools-pkg-config.vcxproj">
+      <Project>{63D113F0-816F-3C3C-80DE-9B226A41EE02}</Project>
+      <Name>spirv-tools-pkg-config</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\third_party\SPIRV-Tools\spirv-tools-shared-pkg-config.vcxproj">
+      <Project>{36281514-EB3B-30B3-9E13-29F45A8F0F75}</Project>
+      <Name>spirv-tools-shared-pkg-config</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\build\Visual Studio 15 2017 Win64\unittests.vcxproj">
+      <Project>{25EADCB7-4140-3E51-8D25-D4EBE314306D}</Project>
+      <Name>unittests</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
