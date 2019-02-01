@@ -1744,6 +1744,11 @@ set_target_properties(llvm PROPERTIES
     FOLDER "LLVM"
 )
 
+# Add required libraries for LLVM
+if(LINUX)
+    target_link_libraries(llvm dl)
+endif(LINUX)
+
 ###########################################################
 # Subzero
 ###########################################################
