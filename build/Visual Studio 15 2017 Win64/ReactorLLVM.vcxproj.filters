@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(SolutionDir)\src\Reactor\LLVMReactor.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\src\Reactor\Routine.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\src\Reactor\LLVMRoutine.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\src\Reactor\LLVMRoutineManager.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\src\Reactor\CPUID.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\src\Reactor\Debug.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)\src\Reactor\ExecutableMemory.cpp">
+      <Filter>src\Reactor</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(SolutionDir)\src\Reactor\Nucleus.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\src\Reactor\Routine.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\src\Reactor\LLVMRoutine.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\src\Reactor\LLVMRoutineManager.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\src\Reactor\CPUID.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\src\Reactor\Debug.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SolutionDir)\src\Reactor\ExecutableMemory.hpp">
+      <Filter>src\Reactor</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{08B7505B-AD5B-33C9-8FD3-25204CEA9D87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Reactor">
+      <UniqueIdentifier>{7A002C87-DF77-3354-9C28-B296246E79E0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

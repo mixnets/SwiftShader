@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 2.8)
 
 project(SwiftShader C CXX)
 
+# Disable automatically regenerating project files on CMakeLists.txt changes.
+set(CMAKE_SUPPRESS_REGENERATION true)
+
 ###########################################################
 # Detect system
 ###########################################################
@@ -97,7 +100,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Initialize submodules
 ###########################################################
 
-if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest)
+if(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest)
     message(WARNING "
   third_party/googletest submodule missing.
   Running 'git submodule update --init' to download it:
@@ -202,6 +205,7 @@ endmacro()
 if(MSVC)
     set_cpp_flag("/MP")
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+	add_definitions(-D_SBCS)  # Single Byte Character Set (ASCII)
 else()
     set_cpp_flag("--std=c++11")
     set_cpp_flag("-Wall")
@@ -2179,6 +2183,8 @@ if(BUILD_VULKAN)
     # This variable is also used by SPIRV-Tools to locate SPIRV-Headers
     set(SPIRV-Headers_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/SPIRV-Headers")
     list(APPEND VULKAN_INCLUDE_DIR "${SPIRV-Headers_SOURCE_DIR}/include")
+
+	add_subdirectory(third_party/SPIRV-Tools)
 
     add_library(libvk_swiftshader SHARED ${VULKAN_LIST})
     set_target_properties(libvk_swiftshader PROPERTIES
