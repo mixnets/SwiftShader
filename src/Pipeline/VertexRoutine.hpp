@@ -19,6 +19,7 @@
 #include "Device/VertexProcessor.hpp"
 #include "ShaderCore.hpp"
 #include "SpirvShader.hpp"
+#include <memory>
 
 namespace sw
 {
@@ -35,6 +36,18 @@ namespace sw
 		Pointer<Byte> data;
 	};
 
+	class SpirvRoutine
+	{
+	public:
+		// lvalue space is as follows:
+		// - user defined interface in the input & output storage classes are flat arrays, one entry per component.
+		// - any other OpVariable is in the lvalues map, keyed by the spirv id of the definition. some of these are
+
+		std::unique_ptr<Array<Float4>> inputs = std::unique_ptr<Array<Float4>>{new Array<Float4>(MAX_INTERFACE_COMPONENTS)};
+		std::unique_ptr<Array<Float4>> outputs = std::unique_ptr<Array<Float4>>{new Array<Float4>(MAX_INTERFACE_COMPONENTS)};
+		std::unordered_map<uint32_t, Array<Float4>> lvalues;
+	};
+
 	class VertexRoutine : public VertexRoutinePrototype
 	{
 	public:
@@ -48,8 +61,11 @@ namespace sw
 
 		Int clipFlags;
 
-		RegisterArray<MAX_VERTEX_INPUTS> v;    // Input registers
-		RegisterArray<MAX_VERTEX_OUTPUTS> o;   // Output registers
+		// TODO: remove: replaced by routine.inputs and routine.outputs
+		//RegisterArray<MAX_VERTEX_INPUTS> v;    // Input registers
+		//RegisterArray<MAX_VERTEX_OUTPUTS> o;   // Output registers
+
+		SpirvRoutine routine;
 
 		const VertexProcessor::State &state;
 		SpirvShader const * const spirvShader;
