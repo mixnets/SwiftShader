@@ -70,12 +70,6 @@ namespace sw
 				float y;
 				float z;
 				float w;
-
-				float4 C[2];   // Diffuse and specular color
-
-				UVWQ T[8];           // Texture coordinates
-
-				float f;             // Fog
 				float pSize;         // Point size
 			};
 
