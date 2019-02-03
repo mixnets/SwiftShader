@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5cbe614c_1a060312",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-03T03:16:41Z",
+      "side": 1,
+      "message": "I\u0027m not sure what I think about these speculative fast paths. Do you have evidence that these are a good idea?",
+      "revId": "19e96089408b892a5be493b7b2b8c640ce2dfc6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "97cb7035_20c08974",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-03T03:16:41Z",
+      "side": 1,
+      "message": "At first glance it looks like you\u0027re calling the standard library free function here, which would end badly. I see there\u0027s actually a member function. Maybe find another name for it so this doesn\u0027t set off alarm bells for future readers?",
+      "revId": "19e96089408b892a5be493b7b2b8c640ce2dfc6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "43fafefa_e99ab6fa",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-03T03:16:41Z",
+      "side": 1,
+      "message": "VK_ERROR_FRAGMENTED_POOL may be more precise in this case?",
+      "revId": "19e96089408b892a5be493b7b2b8c640ce2dfc6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
