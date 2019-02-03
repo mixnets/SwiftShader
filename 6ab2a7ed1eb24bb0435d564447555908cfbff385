@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0882927b_d640bddb",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-03T02:32:32Z",
+      "side": 1,
+      "message": "I don\u0027t really like how verbose this is, but wanted to feel out a few examples before building an abstraction.",
+      "revId": "6ab2a7ed1eb24bb0435d564447555908cfbff385",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
