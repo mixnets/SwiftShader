@@ -451,19 +451,16 @@ namespace sw
 				*Pointer<Float4>(primitive + OFFSET(Primitive,z.C), 16) = C;
 			}
 
-			for(int interpolant = 0; interpolant < MAX_FRAGMENT_INPUTS; interpolant++)
+			for (int interpolant = 0; interpolant < MAX_INTERFACE_COMPONENTS; interpolant++)
 			{
-				for(int component = 0; component < 4; component++)
-				{
-					int attribute = state.gradient[interpolant][component].attribute;
-					bool flat = state.gradient[interpolant][component].flat;
-					bool wrap = state.gradient[interpolant][component].wrap;
-
-					if(attribute != Unused)
-					{
-						setupGradient(primitive, tri, w012, M, v0, v1, v2, OFFSET(Vertex,v[attribute][component]), OFFSET(Primitive,V[interpolant][component]), flat, point, state.perspective, wrap, component);
-					}
-				}
+				// TODO: fix point, perspective, etc. Not convinced various edge cases are really correct here for either VK or GL.
+				if (state.gradient[interpolant].Type != SpirvShader::ATTRIBTYPE_UNUSED)
+					setupGradient(primitive, tri, w012, M, v0, v1, v2,
+							OFFSET(Vertex, v[interpolant]),
+							OFFSET(Primitive, V[interpolant]),
+							state.gradient[interpolant].Flat,
+							point,
+							state.perspective, 0);
 			}
 
 			Return(true);
@@ -472,7 +469,7 @@ namespace sw
 		routine = function("SetupRoutine");
 	}
 
-	void SetupRoutine::setupGradient(Pointer<Byte> &primitive, Pointer<Byte> &triangle, Float4 &w012, Float4 (&m)[3], Pointer<Byte> &v0, Pointer<Byte> &v1, Pointer<Byte> &v2, int attribute, int planeEquation, bool flat, bool sprite, bool perspective, bool wrap, int component)
+	void SetupRoutine::setupGradient(Pointer<Byte> &primitive, Pointer<Byte> &triangle, Float4 &w012, Float4 (&m)[3], Pointer<Byte> &v0, Pointer<Byte> &v1, Pointer<Byte> &v2, int attribute, int planeEquation, bool flat, bool sprite, bool perspective, int component)
 	{
 		Float4 i;
 
@@ -503,21 +500,6 @@ namespace sw
 				if(component == 3) i.z = 1.0f;
 
 				i.w = 0;
-			}
-
-			if(wrap)
-			{
-				Float m;
-
-				m = *Pointer<Float>(v0 + attribute);
-				m = Max(m, *Pointer<Float>(v1 + attribute));
-				m = Max(m, *Pointer<Float>(v2 + attribute));
-				m -= 0.5f;
-
-				// TODO: Vectorize
-				If(Float(i.x) < m) i.x = i.x + 1.0f;
-				If(Float(i.y) < m) i.y = i.y + 1.0f;
-				If(Float(i.z) < m) i.z = i.z + 1.0f;
 			}
 
 			if(!perspective)
