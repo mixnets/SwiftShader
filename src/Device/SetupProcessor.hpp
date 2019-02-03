@@ -15,6 +15,7 @@
 #ifndef sw_SetupProcessor_hpp
 #define sw_SetupProcessor_hpp
 
+#include <Pipeline/SpirvShader.hpp>
 #include "Context.hpp"
 #include "RoutineCache.hpp"
 #include "System/Types.hpp"
@@ -50,14 +51,7 @@ namespace sw
 			unsigned int multiSample       : 3;   // 1, 2 or 4
 			bool rasterizerDiscard         : 1;
 
-			struct Gradient
-			{
-				unsigned char attribute : BITS(VERTEX_OUTPUT_LAST);
-				bool flat               : 1;
-				bool wrap               : 1;
-			};
-
-			Gradient gradient[MAX_FRAGMENT_INPUTS][4];
+			SpirvShader::InterfaceComponent gradient[MAX_INTERFACE_COMPONENTS];
 		};
 
 		struct State : States
