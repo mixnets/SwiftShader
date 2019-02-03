@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8f1c16bc_bd00171f",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-03T02:30:08Z",
+      "side": 1,
+      "message": "Nicolas: I think this falls out OK being component-oriented. What do you think?",
+      "revId": "b891a1a553dea07f9af89db06f32a9a15576e612",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf23b9e6_f8a49e0f",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 456,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-03T02:30:08Z",
+      "side": 1,
+      "message": "Hmmn -- I see now that ESSL 3.0 doesn\u0027t have the noperspective qualifier. That explains how this is OK in GLES :)",
+      "revId": "b891a1a553dea07f9af89db06f32a9a15576e612",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
