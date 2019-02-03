@@ -97,49 +97,12 @@ namespace sw
 		state.positionRegister = 0;//context->vertexShader->getPositionRegister();
 		state.pointSizeRegister = 1;//context->vertexShader->getPointSizeRegister();
 
-		for(int interpolant = 0; interpolant < MAX_FRAGMENT_INPUTS; interpolant++)
+		for (int interpolant = 0; interpolant < MAX_INTERFACE_COMPONENTS; interpolant++)
 		{
-			for(int component = 0; component < 4; component++)
-			{
-				state.gradient[interpolant][component].attribute = Unused;
-				state.gradient[interpolant][component].flat = false;
-				state.gradient[interpolant][component].wrap = false;
-			}
+			state.gradient[interpolant] = context->pixelShader->inputs[interpolant];
 		}
 
 		const bool point = context->isDrawPoint();
-
-//		for(int interpolant = 0; interpolant < MAX_FRAGMENT_INPUTS; interpolant++)
-//		{
-//			for(int component = 0; component < 4; component++)
-//			{
-//				const Shader::Semantic& semantic = context->pixelShader->getInput(interpolant, component);
-//
-//				if(semantic.active())
-//				{
-//					int input = interpolant;
-//					for(int i = 0; i < MAX_VERTEX_OUTPUTS; i++)
-//					{
-//						if(semantic == context->vertexShader->getOutput(i, component))
-//						{
-//							input = i;
-//							break;
-//						}
-//					}
-//
-//					bool flat = point;
-//
-//					switch(semantic.usage)
-//					{
-//					case Shader::USAGE_TEXCOORD: flat = false;                  break;
-//					case Shader::USAGE_COLOR:    flat = semantic.flat || point; break;
-//					}
-//
-//					state.gradient[interpolant][component].attribute = input;
-//					state.gradient[interpolant][component].flat = flat;
-//				}
-//			}
-//		}
 
 		state.hash = state.computeHash();
 
