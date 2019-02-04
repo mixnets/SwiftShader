@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "23ee40de_aa65d93f",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-04T19:54:47Z",
+      "side": 1,
+      "message": "The intent is to not strictly depend on gtest (or any other submodule) for building the graphics libraries. So these \"getting started\" instructions only mention the basic setup to keep things succinct.\n\nIt seems worth mentioning in the Testing section though.",
+      "range": {
+        "startLine": 18,
+        "startChar": 10,
+        "endLine": 18,
+        "endChar": 20
+      },
+      "revId": "c46017acba23bffbb25b06315e9d5d894d48e570",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

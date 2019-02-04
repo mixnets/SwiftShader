@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "34921a9c_6235c616",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-04T19:54:47Z",
+      "side": 0,
+      "message": "Double spaces should not be removed. They are line breaks in .md files.",
+      "range": {
+        "startLine": 13,
+        "startChar": 68,
+        "endLine": 13,
+        "endChar": 71
+      },
+      "revId": "debaacab10b59cdd5a6e636be23e9ab560a7cec7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
