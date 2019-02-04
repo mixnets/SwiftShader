@@ -60,7 +60,8 @@ namespace sw
 					As<Float4>(Int4(index) + Int4(0, 1, 2, 3));
 		}
 
-		spirvShader->emit(&routine);
+		VkPipelineLayout layout = nullptr; // TODO
+		spirvShader->emit(&routine, vk::Cast(layout));
 
 		if(currentLabel != -1)
 		{

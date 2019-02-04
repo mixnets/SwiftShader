@@ -17,6 +17,8 @@
 
 #include "System/Types.hpp"
 #include "Vulkan/VkDebug.hpp"
+#include "Vulkan/VkDescriptorSetLayout.hpp"
+#include "Vulkan/VkPipelineLayout.hpp"
 #include "ShaderCore.hpp"
 #include "SpirvID.hpp"
 
@@ -147,6 +149,7 @@ namespace sw
 				InterfaceVariable,
 				Constant,
 				Value,
+				PhysicalPointer,
 			} kind = Kind::Unknown;
 		};
 
@@ -265,7 +268,7 @@ namespace sw
 		std::vector<InterfaceComponent> outputs;
 
 		void emitProlog(SpirvRoutine *routine) const;
-		void emit(SpirvRoutine *routine) const;
+		void emit(SpirvRoutine *routine, vk::PipelineLayout* pipelineLayout) const;
 		void emitEpilog(SpirvRoutine *routine) const;
 
 		using BuiltInHash = std::hash<std::underlying_type<spv::BuiltIn>::type>;
@@ -318,7 +321,7 @@ namespace sw
 
 		// EmitVariable emits the code for a OpVariable instruction.
 		// Called from the emit() pass.
-		void EmitVariable(InsnIterator insn, SpirvRoutine *routine) const;
+		void EmitVariable(InsnIterator insn, SpirvRoutine *routine, vk::PipelineLayout* pipelineLayout) const;
 
 		// EmitLoad emits the code for a OpLoad instruction.
 		// Called from the emit() pass.
@@ -396,8 +399,12 @@ namespace sw
 
 		std::unordered_map<SpirvShader::ObjectID, Intermediate> intermediates;
 
+		std::unordered_map<SpirvShader::ObjectID, Pointer<Byte> > physicalPointers;
+
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
+
+		Array< Pointer<Byte> > descriptorSets = Array< Pointer<Byte> >(vk::MAX_BOUND_DESCRIPTOR_SETS);
 
 		void createLvalue(SpirvShader::ObjectID id, uint32_t size)
 		{
@@ -422,6 +429,13 @@ namespace sw
 		{
 			auto it = intermediates.find(id);
 			assert(it != intermediates.end());
+			return it->second;
+		}
+
+		Pointer<Byte>& getPhysicalPointer(SpirvShader::ObjectID id)
+		{
+			auto it = physicalPointers.find(id);
+			assert(it != physicalPointers.end());
 			return it->second;
 		}
 	};

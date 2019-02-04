@@ -34,5 +34,13 @@ void trace(const char *format, ...)
 			fclose(file);
 		}
 	}
+	/*
+	{
+		va_list vararg;
+		va_start(vararg, format);
+		vprintf(format, vararg);
+		va_end(vararg);
+	}
+	*/
 }
 }

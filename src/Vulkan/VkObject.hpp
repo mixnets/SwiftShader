@@ -22,6 +22,17 @@
 #include <vulkan/vulkan_core.h>
 #include <vulkan/vk_icd.h>
 
+// Undefine any nasty X11 defines.
+#ifdef None
+#undef None
+#endif
+#ifdef Status
+#undef Status
+#endif
+#ifdef Bool
+#undef Bool
+#endif
+
 namespace vk
 {
 // For use in the placement new to make it verbose that we're allocating an object using device memory
