@@ -17,6 +17,8 @@
 
 #include "System/Types.hpp"
 #include "Vulkan/VkDebug.hpp"
+#include "Vulkan/VkDescriptorSetLayout.hpp"
+#include "Vulkan/VkPipelineLayout.hpp"
 #include "ShaderCore.hpp"
 #include "SpirvID.hpp"
 
@@ -31,55 +33,15 @@
 
 namespace sw
 {
-	// Incrementally constructed complex bundle of rvalues
-	// Effectively a restricted vector, supporting only:
-	// - allocation to a (runtime-known) fixed size
-	// - in-place construction of elements
-	// - const operator[]
-	class Intermediate
-	{
-	public:
-		using Scalar = RValue<Float4>;
-
-		Intermediate(uint32_t size) : contents(new ContentsType[size]), size(size) {}
-
-		~Intermediate()
-		{
-			for (auto i = 0u; i < size; i++)
-				reinterpret_cast<Scalar *>(&contents[i])->~Scalar();
-			delete [] contents;
-		}
-
-		void emplace(uint32_t n, Scalar&& value)
-		{
-			assert(n < size);
-			new (&contents[n]) Scalar(value);
-		}
-
-		Scalar const & operator[](uint32_t n) const
-		{
-			assert(n < size);
-			return *reinterpret_cast<Scalar const *>(&contents[n]);
-		}
-
-		// No copy/move construction or assignment
-		Intermediate(Intermediate const &) = delete;
-		Intermediate(Intermediate &&) = delete;
-		Intermediate & operator=(Intermediate const &) = delete;
-		Intermediate & operator=(Intermediate &&) = delete;
-
-	private:
-		using ContentsType = std::aligned_storage<sizeof(Scalar), alignof(Scalar)>::type;
-
-		ContentsType *contents;
-		uint32_t size;
-	};
-
 	class SpirvRoutine;
 
 	class SpirvShader
 	{
 	public:
+		static constexpr int NumLanes = 4; // Number of lanes.
+		using FloatL = Float4; // Float per lane.
+		using IntL = Int4; // Int per lane.
+
 		using InsnStore = std::vector<uint32_t>;
 		InsnStore insns;
 
@@ -187,6 +149,7 @@ namespace sw
 				InterfaceVariable,
 				Constant,
 				Value,
+				PhysicalPointer,
 			} kind = Kind::Unknown;
 		};
 
@@ -249,9 +212,11 @@ namespace sw
 
 		struct Decorations
 		{
-			int32_t Location;
-			int32_t Component;
-			spv::BuiltIn BuiltIn;
+			int32_t Location = -1;
+			int32_t Component = -1;
+			int32_t DescriptorSet = -1;
+			int32_t Binding = -1;
+			spv::BuiltIn BuiltIn = (spv::BuiltIn)-1;
 			bool HasLocation : 1;
 			bool HasComponent : 1;
 			bool HasBuiltIn : 1;
@@ -262,9 +227,9 @@ namespace sw
 			bool BufferBlock : 1;
 
 			Decorations()
-					: Location{-1}, Component{0}, BuiltIn{}, HasLocation{false}, HasComponent{false}, HasBuiltIn{false},
-					  Flat{false},
-					  Centroid{false}, NoPerspective{false}, Block{false},
+					: Location{-1}, Component{0}, DescriptorSet{-1}, Binding{-1},
+					  BuiltIn{}, HasLocation{false}, HasComponent{false}, HasBuiltIn{false},
+					  Flat{false}, Centroid{false}, NoPerspective{false}, Block{false},
 					  BufferBlock{false}
 			{
 			}
@@ -303,7 +268,7 @@ namespace sw
 		std::vector<InterfaceComponent> outputs;
 
 		void emitProlog(SpirvRoutine *routine) const;
-		void emit(SpirvRoutine *routine) const;
+		void emit(SpirvRoutine *routine, vk::PipelineLayout* pipelineLayout) const;
 		void emitEpilog(SpirvRoutine *routine) const;
 
 		using BuiltInHash = std::hash<std::underlying_type<spv::BuiltIn>::type>;
@@ -351,16 +316,71 @@ namespace sw
 		Int4 WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
 	};
 
+	// Incrementally constructed complex bundle of rvalues
+	// Effectively a restricted vector, supporting only:
+	// - allocation to a (runtime-known) fixed size
+	// - in-place construction of elements
+	// - const operator[]
+	class Intermediate
+	{
+	public:
+		using Scalar = RValue<SpirvShader::FloatL>;
+
+		Intermediate(uint32_t size) : contents(new ContentsType[size]), size(size) {}
+
+		~Intermediate()
+		{
+			for (auto i = 0u; i < size; i++)
+				reinterpret_cast<Scalar *>(&contents[i])->~Scalar();
+			delete [] contents;
+		}
+
+		void emplace(uint32_t n, Scalar&& value)
+		{
+			assert(n < size);
+			new (&contents[n]) Scalar(value);
+		}
+
+		void emplace(uint32_t n, const Scalar& value)
+		{
+			assert(n < size);
+			new (&contents[n]) Scalar(value);
+		}
+
+		Scalar const & operator[](uint32_t n) const
+		{
+			assert(n < size);
+			return *reinterpret_cast<Scalar const *>(&contents[n]);
+		}
+
+		// No copy/move construction or assignment
+		Intermediate(Intermediate const &) = delete;
+		Intermediate(Intermediate &&) = delete;
+		Intermediate & operator=(Intermediate const &) = delete;
+		Intermediate & operator=(Intermediate &&) = delete;
+
+	private:
+		using ContentsType = std::aligned_storage<sizeof(Scalar), alignof(Scalar)>::type;
+
+		ContentsType *contents;
+		uint32_t size;
+	};
+
 	class SpirvRoutine
 	{
 	public:
-		using Value = Array<Float4>;
+		using Value = Array<SpirvShader::FloatL>;
+
 		std::unordered_map<SpirvShader::ObjectID, Value> lvalues;
 
 		std::unordered_map<SpirvShader::ObjectID, Intermediate> intermediates;
 
+		std::unordered_map<SpirvShader::ObjectID, Pointer<Byte> > physicalPointers;
+
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
+
+		Array< Pointer<Byte> > descriptorSets = Array< Pointer<Byte> >(vk::MAX_BOUND_DESCRIPTOR_SETS);
 
 		void createLvalue(SpirvShader::ObjectID id, uint32_t size)
 		{
@@ -385,6 +405,13 @@ namespace sw
 		{
 			auto it = intermediates.find(id);
 			assert(it != intermediates.end());
+			return it->second;
+		}
+
+		Pointer<Byte>& getPhysicalPointer(SpirvShader::ObjectID id)
+		{
+			auto it = physicalPointers.find(id);
+			assert(it != physicalPointers.end());
 			return it->second;
 		}
 	};

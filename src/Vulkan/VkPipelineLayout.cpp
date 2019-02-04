@@ -15,6 +15,8 @@
 #include "VkPipelineLayout.hpp"
 #include <cstring>
 
+#include <cstring>
+
 namespace vk
 {
 
@@ -42,6 +44,12 @@ size_t PipelineLayout::ComputeRequiredAllocationSize(const VkPipelineLayoutCreat
 {
 	return (pCreateInfo->setLayoutCount * sizeof(DescriptorSetLayout*)) +
 	       (pCreateInfo->pushConstantRangeCount * sizeof(VkPushConstantRange));
+}
+
+const DescriptorSetLayout* PipelineLayout::getDescriptorSetLayout(uint32_t index) const
+{
+	ASSERT(index < setLayoutCount);
+	return setLayouts[index];
 }
 
 } // namespace vk

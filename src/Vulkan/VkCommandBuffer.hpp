@@ -28,6 +28,7 @@ namespace sw
 namespace vk
 {
 
+class DescriptorSet;
 class Framebuffer;
 class Pipeline;
 class RenderPass;
