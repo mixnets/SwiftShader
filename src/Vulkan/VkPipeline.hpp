@@ -16,6 +16,7 @@
 #define VK_PIPELINE_HPP_
 
 #include "VkObject.hpp"
+#include "Pipeline/ComputeRoutine.hpp"
 #include "Device/Renderer.hpp"
 
 namespace sw { class SpirvShader; }
@@ -40,6 +41,11 @@ public:
 #ifndef NDEBUG
 	virtual VkPipelineBindPoint bindPoint() const = 0;
 #endif
+
+	void bindDescriptorSets(uint32_t start, uint32_t count, VkDescriptorSet* sets);
+
+private:
+	VkDescriptorSet descriptorSets[MAX_BOUND_DESCRIPTOR_SETS] = {};
 };
 
 class GraphicsPipeline : public Pipeline, public ObjectBase<GraphicsPipeline, VkPipeline>
@@ -91,6 +97,14 @@ public:
 #endif
 
 	static size_t ComputeRequiredAllocationSize(const VkComputePipelineCreateInfo* pCreateInfo);
+
+	void compileShaders(const VkAllocationCallbacks* pAllocator, const VkComputePipelineCreateInfo* pCreateInfo);
+
+	void run(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ);
+
+protected:
+	sw::SpirvShader *shader = nullptr;
+	sw::ComputeRoutine *routine = nullptr;
 };
 
 static inline Pipeline* Cast(VkPipeline object)
