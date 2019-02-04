@@ -28,6 +28,10 @@ public:
     // returns true on success, false on failure.
     bool loadSwiftShader();
 
+    // loadSystem attempts to load the system's vulkan driver.
+    // returns true on success, false on failure.
+    bool loadSystem();
+
     // load attempts to load the vulkan driver from the given path.
     // returns true on success, false on failure.
     bool load(const char* path);
@@ -42,7 +46,7 @@ public:
     // resolve all the functions for the given VkInstance.
     bool resolve(VkInstance);
 
-    VKAPI_ATTR PFN_vkVoidFunction (VKAPI_CALL *vk_icdGetInstanceProcAddr)(VkInstance instance, const char* pName);
+    VKAPI_ATTR PFN_vkVoidFunction(VKAPI_CALL* vk_icdGetInstanceProcAddr)(VkInstance instance, const char* pName);
 
     // Global vulkan function pointers.
 #define VK_GLOBAL(N, R, ...) R (*N)(__VA_ARGS__);

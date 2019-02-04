@@ -27,6 +27,8 @@
 #    error Unimplemented platform
 #endif
 
+#include "stdio.h"
+
 Driver::Driver() : vk_icdGetInstanceProcAddr(nullptr), dll(nullptr)
 {
 #define VK_GLOBAL(N, R, ...) N = nullptr;
@@ -60,11 +62,20 @@ bool Driver::loadSwiftShader()
 #endif
 }
 
+bool Driver::loadSystem()
+{
+#if OS_LINUX
+    return load("libvulkan.so.1");
+#else
+#    error Unimplemented platform
+#endif
+}
+
 bool Driver::load(const char* path)
 {
 #if OS_WINDOWS
     dll = LoadLibraryA(path);
-#elif (OS_MAC || OS_LINUX)
+#elif(OS_MAC || OS_LINUX)
     dll = dlopen(path, RTLD_LAZY | RTLD_LOCAL);
 #else
     return false;
@@ -74,19 +85,25 @@ bool Driver::load(const char* path)
         return false;
     }
 
+    // Is the driver an ICD?
     if(!lookup(&vk_icdGetInstanceProcAddr, "vk_icdGetInstanceProcAddr"))
     {
-        return false;
+        // Nope, attmept to use the loader version.
+        if(!lookup(&vk_icdGetInstanceProcAddr, "vkGetInstanceProcAddr"))
+        {
+            return false;
+        }
     }
 
-#define VK_GLOBAL(N, R, ...)                              \
-    if(auto pfn = vk_icdGetInstanceProcAddr(nullptr, #N)) \
-    {                                                     \
-        N = reinterpret_cast<decltype(N)>(pfn);           \
-    }                                                     \
-    else                                                  \
-    {                                                     \
-        return false;                                     \
+#define VK_GLOBAL(N, R, ...)                                             \
+    if(auto pfn = vk_icdGetInstanceProcAddr(nullptr, #N))                \
+    {                                                                    \
+        printf("Resolved instance proc address for '%s'\n", #N);         \
+        N = reinterpret_cast<decltype(N)>(pfn);                          \
+    }                                                                    \
+    else                                                                 \
+    {                                                                    \
+        printf("Couldn't resolve instance proc address for '%s'\n", #N); \
     }
 #include "VkGlobalFuncs.hpp"
 #undef VK_GLOBAL
@@ -147,7 +164,7 @@ void* Driver::lookup(const char* name)
 {
 #if OS_WINDOWS
     return GetProcAddress((HMODULE)dll, name);
-#elif (OS_MAC || OS_LINUX)
+#elif(OS_MAC || OS_LINUX)
     return dlsym(dll, name);
 #else
     return nullptr;

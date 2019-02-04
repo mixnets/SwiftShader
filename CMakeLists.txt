@@ -2176,6 +2176,9 @@ if(BUILD_GLES_CM)
 endif()
 
 if(BUILD_VULKAN)
+    set(SPIRV-Headers_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/SPIRV-Headers")
+    list(APPEND VULKAN_INCLUDE_DIR "${SPIRV-Headers_SOURCE_DIR}/include")
+    add_subdirectory(third_party/SPIRV-Tools)
     add_library(libvk_swiftshader SHARED ${VULKAN_LIST})
     set_target_properties(libvk_swiftshader PROPERTIES
         INCLUDE_DIRECTORIES "${VULKAN_INCLUDE_DIR}"
@@ -2295,6 +2298,7 @@ if(BUILD_TESTS AND BUILD_VULKAN)
         ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/include/
         ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googlemock/include/
         ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/SPIRV-Tools/include
         ${CMAKE_CURRENT_SOURCE_DIR}/include/
     )
 
@@ -2305,5 +2309,5 @@ if(BUILD_TESTS AND BUILD_VULKAN)
         COMPILE_DEFINITIONS "STANDALONE"
     )
 
-    target_link_libraries(vk-unittests ${OS_LIBS})
+    target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools)
 endif()
