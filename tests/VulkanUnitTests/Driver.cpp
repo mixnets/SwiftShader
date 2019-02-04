@@ -14,6 +14,8 @@
 
 #include "Driver.hpp"
 
+#include "stdio.h"
+
 #if defined(_WIN64)
 #    include "Windows.h"
 #    define OS_WINDOWS 1
@@ -80,6 +82,7 @@ bool Driver::load(const char* path)
 #endif
     if(dll == nullptr)
     {
+    printf("%s",dlerror());
         return false;
     }
 
