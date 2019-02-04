@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "00df80c8_4c909bac",
+        "filename": ".gitignore",
+        "patchSetId": 7
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-04T23:05:18Z",
+      "side": 0,
+      "message": "This messes up the Linux situation when building into build/ [as the docs encourage].\n\nSuggest building the generated VS projects into a different directory?",
+      "revId": "be80fbe0db29289f335e9b31e904c072c4e0d836",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

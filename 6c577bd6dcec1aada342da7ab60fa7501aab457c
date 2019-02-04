@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b3a33da5_8c3a466f",
+        "filename": "build/cmake.sh",
+        "patchSetId": 7
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-04T23:05:18Z",
+      "side": 1,
+      "message": "Combination of \"you should rerun this and check in the results\" and \"this only works on Windows\" is a recipe for transient build breakages. What if this was expected to be run after checking out the code, for Windows folks?",
+      "revId": "6c577bd6dcec1aada342da7ab60fa7501aab457c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
