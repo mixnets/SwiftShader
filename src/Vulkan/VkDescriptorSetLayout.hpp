@@ -16,6 +16,7 @@
 #define VK_DESCRIPTOR_SET_LAYOUT_HPP_
 
 #include "VkObject.hpp"
+#include <unordered_map>
 
 namespace vk
 {
@@ -30,13 +31,19 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkDescriptorSetLayoutCreateInfo* pCreateInfo);
 
 	static size_t GetDescriptorSize(VkDescriptorType type);
+	static void UpdateDescriptorSet(const VkWriteDescriptorSet& descriptorWrites);
+	static void UpdateDescriptorSet(const VkCopyDescriptorSet& descriptorCopies);
 
+	void initialize(VkDescriptorSet descriptorSet);
 	size_t getSize() const;
+
+	const VkDescriptorSetLayoutBinding& getBindingInfo(uint32_t binding, size_t* byteOffset) const;
 
 private:
 	VkDescriptorSetLayoutCreateFlags flags;
 	uint32_t                         bindingCount;
 	VkDescriptorSetLayoutBinding*    bindings;
+	size_t*							 bindingOffsets;
 };
 
 static inline DescriptorSetLayout* Cast(VkDescriptorSetLayout object)
