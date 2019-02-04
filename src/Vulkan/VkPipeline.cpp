@@ -190,7 +190,20 @@ uint32_t getNumberOfChannels(VkFormat format)
 namespace vk
 {
 
+Pipeline::Pipeline(VkPipelineLayout layout) : layout(layout) {}
+
+void Pipeline::bindDescriptorSets(uint32_t start, uint32_t count, VkDescriptorSet* sets)
+{
+	ASSERT(start + count <= MAX_BOUND_DESCRIPTOR_SETS);
+
+	for (uint32_t i = 0; i < count; i++)
+	{
+		descriptorSets[start + i] = sets[i];
+	}
+}
+
 GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem)
+	: Pipeline(pCreateInfo->layout)
 {
 	if((pCreateInfo->flags != 0) ||
 	   (pCreateInfo->stageCount != 2) ||
@@ -489,16 +502,56 @@ const sw::Color<float>& GraphicsPipeline::getBlendConstants() const
 }
 
 ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem)
+	: Pipeline(pCreateInfo->layout)
 {
 }
 
 void ComputePipeline::destroyPipeline(const VkAllocationCallbacks* pAllocator)
 {
+	delete shader;
 }
 
 size_t ComputePipeline::ComputeRequiredAllocationSize(const VkComputePipelineCreateInfo* pCreateInfo)
 {
 	return 0;
+}
+
+void ComputePipeline::compileShaders(const VkAllocationCallbacks* pAllocator, const VkComputePipelineCreateInfo* pCreateInfo)
+{
+	auto module = Cast(pCreateInfo->stage.module);
+
+	// TODO: apply prep passes using SPIRV-Opt here.
+	// - Apply and freeze specializations, etc.
+	auto code = module->getCode();
+
+	// TODO: pass in additional information here:
+	// - any NOS from pCreateInfo which we'll actually need
+	ASSERT(shader == nullptr);
+	// FIXME (b/119409619): use allocator.
+	shader = new sw::SpirvShader{code};
+
+	program = new sw::ComputeProgram(shader, layout);
+
+	program->generate();
+
+	// TODO: Cache program
+}
+
+void ComputePipeline::run(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ)
+{
+	typedef void (FUNC)(void*);
+	auto routine = (*program)("ComputeRoutine");
+	auto f = reinterpret_cast<FUNC*>(routine->getEntry());
+
+	sw::ComputeProgram::Data data;
+	for (int i = 0; i < MAX_BOUND_DESCRIPTOR_SETS; i++)
+	{
+		printf("descriptorSets[i]: %p\n", descriptorSets[i]);
+		data.descriptorSets[i] = descriptorSets[i];
+	}
+
+	printf("ComputePipeline::run - data: %p\n", &data);
+	f(&data);
 }
 
 } // namespace vk

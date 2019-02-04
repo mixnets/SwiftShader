@@ -114,6 +114,8 @@ namespace rr
 
 		RValue<T> operator+=(RValue<T> rhs) const;
 
+		RValue<Pointer<T>> operator&() const { return RValue<Pointer<T>>(address); }
+
 		Value *loadValue() const;
 		int getAlignment() const;
 
@@ -3020,6 +3022,17 @@ namespace rr
 		static constexpr const char* fmt = "%p";
 		static std::vector<Value*> val(const RValue<Pointer<T>>& v) { return {v.value}; }
 	};
+	template <typename T> struct PrintValue::Ty< Reference<T> >
+	{
+		static constexpr const char* fmt = PrintValue::Ty<T>::fmt;
+		static std::vector<Value*> val(const Reference<T>& v) { return PrintValue::Ty<T>::val(v); }
+	};
+	template <typename T> struct PrintValue::Ty< RValue<T> >
+	{
+		static constexpr const char* fmt = PrintValue::Ty<T>::fmt;
+		static std::vector<Value*> val(const RValue<T>& v) { return PrintValue::Ty<T>::val(v); }
+	};
+
 
 	// Printv emits a call to printf() using the function, file and line,
 	// message and optional values.

@@ -123,6 +123,77 @@ private:
 	VkPipeline pipeline;
 };
 
+class DescriptorBind : public CommandBuffer::Command
+{
+public:
+	DescriptorBind(VkPipelineBindPoint pPipelineBindPoint, VkPipelineLayout pLayout,
+		uint32_t pFirstSet, uint32_t pDescriptorSetCount, const VkDescriptorSet* ppDescriptorSets,
+		uint32_t pDynamicOffsetCount, const uint32_t* ppDynamicOffsets) :
+			pipelineBindPoint(pPipelineBindPoint), layout(pLayout), firstSet(pFirstSet),
+			descriptorSetCount(pDescriptorSetCount), dynamicOffsetCount(pDynamicOffsetCount)
+	{
+		// FIXME (b/119409619): use an allocator here so we can control all memory allocations
+		pDescriptorSets = new VkDescriptorSet[descriptorSetCount];
+		memcpy(pDescriptorSets, ppDescriptorSets, descriptorSetCount * sizeof(VkDescriptorSet));
+		pDynamicOffsets = new uint32_t[pDynamicOffsetCount];
+		memcpy(pDynamicOffsets, ppDynamicOffsets, pDynamicOffsetCount * sizeof(uint32_t));
+	}
+
+	~DescriptorBind() override
+	{
+		delete [] pDescriptorSets;
+		delete [] pDynamicOffsets;
+	}
+
+protected:
+	void play(CommandBuffer::ExecutionState& executionState) override
+	{
+		ASSERT(pipelineBindPoint <= VK_PIPELINE_BIND_POINT_END_RANGE);
+
+		auto pipeline = executionState.pipelines[pipelineBindPoint];
+		ASSERT(pipeline != nullptr);
+
+		pipeline->bindDescriptorSets(firstSet, descriptorSetCount, pDescriptorSets);
+
+		if (dynamicOffsetCount > 0)
+		{
+			UNIMPLEMENTED();
+		}
+	}
+
+private:
+	VkPipelineBindPoint pipelineBindPoint;
+	VkPipelineLayout layout;
+	uint32_t firstSet;
+	uint32_t descriptorSetCount;
+	VkDescriptorSet* pDescriptorSets;
+	uint32_t dynamicOffsetCount;
+	uint32_t* pDynamicOffsets;
+};
+
+
+class Dispatch : public CommandBuffer::Command
+{
+public:
+	Dispatch(uint32_t pGroupCountX, uint32_t pGroupCountY, uint32_t pGroupCountZ) :
+			groupCountX(pGroupCountX), groupCountY(pGroupCountY), groupCountZ(pGroupCountZ)
+	{
+	}
+
+protected:
+	void play(CommandBuffer::ExecutionState& executionState) override
+	{
+		ComputePipeline* pipeline = static_cast<ComputePipeline*>(
+			executionState.pipelines[VK_PIPELINE_BIND_POINT_COMPUTE]);
+		pipeline->run(groupCountX, groupCountY, groupCountZ);
+	}
+
+private:
+	uint32_t groupCountX;
+	uint32_t groupCountY;
+	uint32_t groupCountZ;
+};
+
 struct VertexBufferBind : public CommandBuffer::Command
 {
 	VertexBufferBind(uint32_t pBinding, const VkBuffer pBuffer, const VkDeviceSize pOffset) :
@@ -556,12 +627,14 @@ void CommandBuffer::pipelineBarrier(VkPipelineStageFlags srcStageMask, VkPipelin
 
 void CommandBuffer::bindPipeline(VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline)
 {
-	if(pipelineBindPoint != VK_PIPELINE_BIND_POINT_GRAPHICS)
-	{
-		UNIMPLEMENTED();
+	switch(pipelineBindPoint) {
+		case VK_PIPELINE_BIND_POINT_COMPUTE:
+		case VK_PIPELINE_BIND_POINT_GRAPHICS:
+			addCommand<PipelineBind>(pipelineBindPoint, pipeline);
+			break;
+		default:
+			UNIMPLEMENTED();
 	}
-
-	addCommand<PipelineBind>(pipelineBindPoint, pipeline);
 }
 
 void CommandBuffer::bindVertexBuffers(uint32_t firstBinding, uint32_t bindingCount,
@@ -692,7 +765,15 @@ void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, Vk
 	uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
 	uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets)
 {
-	UNIMPLEMENTED();
+	switch(pipelineBindPoint) {
+		case VK_PIPELINE_BIND_POINT_COMPUTE:
+		case VK_PIPELINE_BIND_POINT_GRAPHICS:
+			addCommand<DescriptorBind>(pipelineBindPoint, layout, firstSet, descriptorSetCount,
+				pDescriptorSets, dynamicOffsetCount, pDynamicOffsets);
+			break;
+		default:
+			UNIMPLEMENTED();
+	}
 }
 
 void CommandBuffer::bindIndexBuffer(VkBuffer buffer, VkDeviceSize offset, VkIndexType indexType)
@@ -702,7 +783,7 @@ void CommandBuffer::bindIndexBuffer(VkBuffer buffer, VkDeviceSize offset, VkInde
 
 void CommandBuffer::dispatch(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ)
 {
-	UNIMPLEMENTED();
+	addCommand<Dispatch>(groupCountX, groupCountY, groupCountZ);
 }
 
 void CommandBuffer::dispatchIndirect(VkBuffer buffer, VkDeviceSize offset)
