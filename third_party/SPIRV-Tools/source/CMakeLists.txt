@@ -35,7 +35,8 @@ macro(spvtools_core_tables CONFIG_VERSION)
       --extinst-debuginfo-grammar=${DEBUGINFO_GRAMMAR_JSON_FILE}
       --core-insts-output=${GRAMMAR_INSTS_INC_FILE}
       --operand-kinds-output=${GRAMMAR_KINDS_INC_FILE}
-    DEPENDS ${GRAMMAR_PROCESSING_SCRIPT} ${GRAMMAR_JSON_FILE} ${DEBUGINFO_GRAMMAR_JSON_FILE}
+    MAIN_DEPENDENCY ${DEBUGINFO_GRAMMAR_JSON_FILE}
+    DEPENDS ${GRAMMAR_PROCESSING_SCRIPT} ${GRAMMAR_JSON_FILE}
     COMMENT "Generate info tables for SPIR-V v${CONFIG_VERSION} core instructions and operands.")
   list(APPEND OPCODE_CPP_DEPENDS ${GRAMMAR_INSTS_INC_FILE})
   list(APPEND OPERAND_CPP_DEPENDS ${GRAMMAR_KINDS_INC_FILE})
@@ -52,6 +53,7 @@ macro(spvtools_enum_string_mapping CONFIG_VERSION)
       --extinst-debuginfo-grammar=${DEBUGINFO_GRAMMAR_JSON_FILE}
       --extension-enum-output=${GRAMMAR_EXTENSION_ENUM_INC_FILE}
       --enum-string-mapping-output=${GRAMMAR_ENUM_STRING_MAPPING_INC_FILE}
+    MAIN_DEPENDENCY ${GRAMMAR_EXTENSION_ENUM_INC_FILE}
     DEPENDS ${GRAMMAR_PROCESSING_SCRIPT} ${GRAMMAR_JSON_FILE} ${DEBUGINFO_GRAMMAR_JSON_FILE}
     COMMENT "Generate enum-string mapping for SPIR-V v${CONFIG_VERSION}.")
   list(APPEND EXTENSION_H_DEPENDS ${GRAMMAR_EXTENSION_ENUM_INC_FILE})
@@ -70,8 +72,8 @@ macro(spvtools_vimsyntax CONFIG_VERSION CLVERSION)
       --extinst-glsl-grammar=${GLSL_GRAMMAR_JSON_FILE}
       --extinst-opencl-grammar=${OPENCL_GRAMMAR_JSON_FILE}
       >${VIMSYNTAX_FILE}
-    DEPENDS ${VIMSYNTAX_PROCESSING_SCRIPT} ${GRAMMAR_JSON_FILE}
-            ${GLSL_GRAMMAR_JSON_FILE} ${OPENCL_GRAMMAR_JSON_FILE} ${DEBUGINFO_GRAMMAR_JSON_FILE}
+    MAIN_DEPENDENCY ${VIMSYNTAX_PROCESSING_SCRIPT}
+    DEPENDS ${GRAMMAR_JSON_FILE} ${GLSL_GRAMMAR_JSON_FILE} ${OPENCL_GRAMMAR_JSON_FILE} ${DEBUGINFO_GRAMMAR_JSON_FILE}
     COMMENT "Generate spvasm.vim: Vim syntax file for SPIR-V assembly.")
 endmacro(spvtools_vimsyntax)
 
@@ -83,7 +85,8 @@ macro(spvtools_glsl_tables CONFIG_VERSION)
     COMMAND ${PYTHON_EXECUTABLE} ${GRAMMAR_PROCESSING_SCRIPT}
       --extinst-glsl-grammar=${GLSL_GRAMMAR_JSON_FILE}
       --glsl-insts-output=${GRAMMAR_INC_FILE}
-    DEPENDS ${GRAMMAR_PROCESSING_SCRIPT} ${CORE_GRAMMAR_JSON_FILE} ${GLSL_GRAMMAR_JSON_FILE}
+    MAIN_DEPENDENCY ${GLSL_GRAMMAR_JSON_FILE}
+    DEPENDS ${GRAMMAR_PROCESSING_SCRIPT} ${CORE_GRAMMAR_JSON_FILE}
     COMMENT "Generate info tables for GLSL extended instructions and operands v${CONFIG_VERSION}.")
   list(APPEND EXTINST_CPP_DEPENDS ${GRAMMAR_INC_FILE})
 endmacro(spvtools_glsl_tables)
@@ -96,7 +99,8 @@ macro(spvtools_opencl_tables CONFIG_VERSION)
     COMMAND ${PYTHON_EXECUTABLE} ${GRAMMAR_PROCESSING_SCRIPT}
       --extinst-opencl-grammar=${OPENCL_GRAMMAR_JSON_FILE}
       --opencl-insts-output=${GRAMMAR_INC_FILE}
-    DEPENDS ${GRAMMAR_PROCESSING_SCRIPT} ${CORE_GRAMMAR_JSON_FILE} ${OPENCL_GRAMMAR_JSON_FILE}
+    MAIN_DEPENDENCY ${OPENCL_GRAMMAR_JSON_FILE}
+    DEPENDS ${GRAMMAR_PROCESSING_SCRIPT} ${CORE_GRAMMAR_JSON_FILE}
     COMMENT "Generate info tables for OpenCL extended instructions and operands v${CONFIG_VERSION}.")
   list(APPEND EXTINST_CPP_DEPENDS ${GRAMMAR_INC_FILE})
 endmacro(spvtools_opencl_tables)
@@ -108,7 +112,8 @@ macro(spvtools_vendor_tables VENDOR_TABLE)
     COMMAND ${PYTHON_EXECUTABLE} ${GRAMMAR_PROCESSING_SCRIPT}
       --extinst-vendor-grammar=${GRAMMAR_FILE}
       --vendor-insts-output=${INSTS_FILE}
-    DEPENDS ${GRAMMAR_PROCESSING_SCRIPT} ${GRAMMAR_FILE}
+    MAIN_DEPENDENCY ${GRAMMAR_FILE}
+    DEPENDS ${GRAMMAR_PROCESSING_SCRIPT}
     COMMENT "Generate extended instruction tables for ${VENDOR_TABLE}.")
   add_custom_target(spirv-tools-${VENDOR_TABLE} DEPENDS ${INSTS_FILE})
   set_property(TARGET spirv-tools-${VENDOR_TABLE} PROPERTY FOLDER "SPIRV-Tools build")
@@ -123,7 +128,8 @@ macro(spvtools_extinst_lang_headers NAME GRAMMAR_FILE)
       --extinst-name=${NAME}
       --extinst-grammar=${GRAMMAR_FILE}
       --extinst-output-base=${OUTBASE}
-    DEPENDS ${LANG_HEADER_PROCESSING_SCRIPT} ${GRAMMAR_FILE}
+    MAIN_DEPENDENCY ${GRAMMAR_FILE}
+    DEPENDS ${LANG_HEADER_PROCESSING_SCRIPT}
     COMMENT "Generate language specific header for ${NAME}.")
   add_custom_target(spirv-tools-header-${NAME} DEPENDS ${OUT_H})
   set_property(TARGET spirv-tools-header-${NAME} PROPERTY FOLDER "SPIRV-Tools build")

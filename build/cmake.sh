@@ -39,9 +39,19 @@ echo Making project files path relative. This might take a minute.
 CD=$(pwd -W)/
 # Current directory with (escaped) backslashes
 CD2=$(echo $(pwd -W) | sed 's?/?\\\\?g')\\\\
+# Phython executable path
+PYTHON=$(where python | head --lines=1 | sed 's?\\?\\\\?g')
+# CMake executable path
+CMAKE=$(where cmake | head --lines=1 | sed 's?\\?\\\\?g')
 
 find . -type f \( -name \*.vcxproj -o -name \*.vcxproj.filters -o -name \*.sln \) \
-     -execdir sed -i -b -e "s?$CD?\$(SolutionDir)?g" {} \;
+     -execdir sed --in-place --binary --expression="s?$CD?\$(SolutionDir)?g" {} \;
 
 find . -type f \( -name \*.vcxproj -o -name \*.vcxproj.filters -o -name \*.sln \) \
-     -execdir sed -i -b -e "s?$CD2?\$(SolutionDir)?g" {} \;
+     -execdir sed --in-place --binary --expression="s?$CD2?\$(SolutionDir)?g" {} \;
+
+find . -type f \( -name \*.vcxproj -o -name \*.vcxproj.filters -o -name \*.sln \) \
+     -execdir sed --in-place --binary --expression="s?$PYTHON?python?g" {} \;
+    
+find . -type f \( -name \*.vcxproj -o -name \*.vcxproj.filters -o -name \*.sln \) \
+     -execdir sed --in-place --binary --expression="s?$CMAKE?cmake?g" {} \;
