@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include "VkDescriptorSetLayout.hpp"
+#include "VkDescriptorSet.hpp"
+
 #include <cstring>
 
 namespace
@@ -89,17 +91,27 @@ size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 	switch(type)
 	{
 	case VK_DESCRIPTOR_TYPE_SAMPLER:
+		return sizeof(DescriptorSet::Sampler);
 	case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+		return sizeof(DescriptorSet::CombinedImageSampler);
 	case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
+		return sizeof(DescriptorSet::SampledImage);
 	case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+		return sizeof(DescriptorSet::StorageImage);
 	case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
+		return sizeof(DescriptorSet::UniformTexelBuffer);
 	case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
+		return sizeof(DescriptorSet::StorageTexelBuffer);
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+		return sizeof(DescriptorSet::UniformBuffer);
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+		return sizeof(DescriptorSet::StorageBuffer);
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
+		return sizeof(DescriptorSet::UniformBufferDynamic);
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
+		return sizeof(DescriptorSet::StorageBufferDynamic);
 	case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
-		return sizeof(void*); // FIXME(b/123244275) : Compute actual required size for each desciptor type
+		return sizeof(DescriptorSet::InputAttachment);
 	default:
 		UNIMPLEMENTED("Unsupported Descriptor Type");
 	}
@@ -107,9 +119,30 @@ size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 	return 0;
 }
 
+ptrdiff_t DescriptorSetLayout::bindingOffset(VkDescriptorType type, uint32_t bindingIndex)
+{
+	size_t offset = sizeof(DescriptorSet::Header);
+
+	for(uint32_t i = 0; i < bindingCount; i++)
+	{
+		const auto& binding = bindings[i];
+		if (binding.descriptorType == type) {
+			if (bindingIndex < binding.descriptorCount) {
+				return offset + bindingIndex * GetDescriptorSize(binding.descriptorType);
+			}
+			bindingIndex -= binding.descriptorCount;
+		}
+
+		offset += binding.descriptorCount * GetDescriptorSize(binding.descriptorType);
+	}
+
+	UNREACHABLE("Binding not found");
+	return 0;
+}
+
 size_t DescriptorSetLayout::getSize() const
 {
-	size_t size = 0;
+	size_t size = sizeof(DescriptorSet::Header);
 	for(uint32_t i = 0; i < bindingCount; i++)
 	{
 		size += bindings[i].descriptorCount * GetDescriptorSize(bindings[i].descriptorType);

@@ -18,6 +18,392 @@
 #include "Vulkan/VkDebug.hpp"
 #include "Device/Config.hpp"
 
+namespace
+{
+
+	const char* opcodeName(spv::Op op) {
+		switch(op){
+		case spv::Op::OpNop: return "Nop";
+		case spv::Op::OpUndef: return "Undef";
+		case spv::Op::OpSourceContinued: return "SourceContinued";
+		case spv::Op::OpSource: return "Source";
+		case spv::Op::OpSourceExtension: return "SourceExtension";
+		case spv::Op::OpName: return "Name";
+		case spv::Op::OpMemberName: return "MemberName";
+		case spv::Op::OpString: return "String";
+		case spv::Op::OpLine: return "Line";
+		case spv::Op::OpExtension: return "Extension";
+		case spv::Op::OpExtInstImport: return "ExtInstImport";
+		case spv::Op::OpExtInst: return "ExtInst";
+		case spv::Op::OpMemoryModel: return "MemoryModel";
+		case spv::Op::OpEntryPoint: return "EntryPoint";
+		case spv::Op::OpExecutionMode: return "ExecutionMode";
+		case spv::Op::OpCapability: return "Capability";
+		case spv::Op::OpTypeVoid: return "TypeVoid";
+		case spv::Op::OpTypeBool: return "TypeBool";
+		case spv::Op::OpTypeInt: return "TypeInt";
+		case spv::Op::OpTypeFloat: return "TypeFloat";
+		case spv::Op::OpTypeVector: return "TypeVector";
+		case spv::Op::OpTypeMatrix: return "TypeMatrix";
+		case spv::Op::OpTypeImage: return "TypeImage";
+		case spv::Op::OpTypeSampler: return "TypeSampler";
+		case spv::Op::OpTypeSampledImage: return "TypeSampledImage";
+		case spv::Op::OpTypeArray: return "TypeArray";
+		case spv::Op::OpTypeRuntimeArray: return "TypeRuntimeArray";
+		case spv::Op::OpTypeStruct: return "TypeStruct";
+		case spv::Op::OpTypeOpaque: return "TypeOpaque";
+		case spv::Op::OpTypePointer: return "TypePointer";
+		case spv::Op::OpTypeFunction: return "TypeFunction";
+		case spv::Op::OpTypeEvent: return "TypeEvent";
+		case spv::Op::OpTypeDeviceEvent: return "TypeDeviceEvent";
+		case spv::Op::OpTypeReserveId: return "TypeReserveId";
+		case spv::Op::OpTypeQueue: return "TypeQueue";
+		case spv::Op::OpTypePipe: return "TypePipe";
+		case spv::Op::OpTypeForwardPointer: return "TypeForwardPointer";
+		case spv::Op::OpConstantTrue: return "ConstantTrue";
+		case spv::Op::OpConstantFalse: return "ConstantFalse";
+		case spv::Op::OpConstant: return "Constant";
+		case spv::Op::OpConstantComposite: return "ConstantComposite";
+		case spv::Op::OpConstantSampler: return "ConstantSampler";
+		case spv::Op::OpConstantNull: return "ConstantNull";
+		case spv::Op::OpSpecConstantTrue: return "SpecConstantTrue";
+		case spv::Op::OpSpecConstantFalse: return "SpecConstantFalse";
+		case spv::Op::OpSpecConstant: return "SpecConstant";
+		case spv::Op::OpSpecConstantComposite: return "SpecConstantComposite";
+		case spv::Op::OpSpecConstantOp: return "SpecConstantOp";
+		case spv::Op::OpFunction: return "Function";
+		case spv::Op::OpFunctionParameter: return "FunctionParameter";
+		case spv::Op::OpFunctionEnd: return "FunctionEnd";
+		case spv::Op::OpFunctionCall: return "FunctionCall";
+		case spv::Op::OpVariable: return "Variable";
+		case spv::Op::OpImageTexelPointer: return "ImageTexelPointer";
+		case spv::Op::OpLoad: return "Load";
+		case spv::Op::OpStore: return "Store";
+		case spv::Op::OpCopyMemory: return "CopyMemory";
+		case spv::Op::OpCopyMemorySized: return "CopyMemorySized";
+		case spv::Op::OpAccessChain: return "AccessChain";
+		case spv::Op::OpInBoundsAccessChain: return "InBoundsAccessChain";
+		case spv::Op::OpPtrAccessChain: return "PtrAccessChain";
+		case spv::Op::OpArrayLength: return "ArrayLength";
+		case spv::Op::OpGenericPtrMemSemantics: return "GenericPtrMemSemantics";
+		case spv::Op::OpInBoundsPtrAccessChain: return "InBoundsPtrAccessChain";
+		case spv::Op::OpDecorate: return "Decorate";
+		case spv::Op::OpMemberDecorate: return "MemberDecorate";
+		case spv::Op::OpDecorationGroup: return "DecorationGroup";
+		case spv::Op::OpGroupDecorate: return "GroupDecorate";
+		case spv::Op::OpGroupMemberDecorate: return "GroupMemberDecorate";
+		case spv::Op::OpVectorExtractDynamic: return "VectorExtractDynamic";
+		case spv::Op::OpVectorInsertDynamic: return "VectorInsertDynamic";
+		case spv::Op::OpVectorShuffle: return "VectorShuffle";
+		case spv::Op::OpCompositeConstruct: return "CompositeConstruct";
+		case spv::Op::OpCompositeExtract: return "CompositeExtract";
+		case spv::Op::OpCompositeInsert: return "CompositeInsert";
+		case spv::Op::OpCopyObject: return "CopyObject";
+		case spv::Op::OpTranspose: return "Transpose";
+		case spv::Op::OpSampledImage: return "SampledImage";
+		case spv::Op::OpImageSampleImplicitLod: return "ImageSampleImplicitLod";
+		case spv::Op::OpImageSampleExplicitLod: return "ImageSampleExplicitLod";
+		case spv::Op::OpImageSampleDrefImplicitLod: return "ImageSampleDrefImplicitLod";
+		case spv::Op::OpImageSampleDrefExplicitLod: return "ImageSampleDrefExplicitLod";
+		case spv::Op::OpImageSampleProjImplicitLod: return "ImageSampleProjImplicitLod";
+		case spv::Op::OpImageSampleProjExplicitLod: return "ImageSampleProjExplicitLod";
+		case spv::Op::OpImageSampleProjDrefImplicitLod: return "ImageSampleProjDrefImplicitLod";
+		case spv::Op::OpImageSampleProjDrefExplicitLod: return "ImageSampleProjDrefExplicitLod";
+		case spv::Op::OpImageFetch: return "ImageFetch";
+		case spv::Op::OpImageGather: return "ImageGather";
+		case spv::Op::OpImageDrefGather: return "ImageDrefGather";
+		case spv::Op::OpImageRead: return "ImageRead";
+		case spv::Op::OpImageWrite: return "ImageWrite";
+		case spv::Op::OpImage: return "Image";
+		case spv::Op::OpImageQueryFormat: return "ImageQueryFormat";
+		case spv::Op::OpImageQueryOrder: return "ImageQueryOrder";
+		case spv::Op::OpImageQuerySizeLod: return "ImageQuerySizeLod";
+		case spv::Op::OpImageQuerySize: return "ImageQuerySize";
+		case spv::Op::OpImageQueryLod: return "ImageQueryLod";
+		case spv::Op::OpImageQueryLevels: return "ImageQueryLevels";
+		case spv::Op::OpImageQuerySamples: return "ImageQuerySamples";
+		case spv::Op::OpConvertFToU: return "ConvertFToU";
+		case spv::Op::OpConvertFToS: return "ConvertFToS";
+		case spv::Op::OpConvertSToF: return "ConvertSToF";
+		case spv::Op::OpConvertUToF: return "ConvertUToF";
+		case spv::Op::OpUConvert: return "UConvert";
+		case spv::Op::OpSConvert: return "SConvert";
+		case spv::Op::OpFConvert: return "FConvert";
+		case spv::Op::OpQuantizeToF16: return "QuantizeToF16";
+		case spv::Op::OpConvertPtrToU: return "ConvertPtrToU";
+		case spv::Op::OpSatConvertSToU: return "SatConvertSToU";
+		case spv::Op::OpSatConvertUToS: return "SatConvertUToS";
+		case spv::Op::OpConvertUToPtr: return "ConvertUToPtr";
+		case spv::Op::OpPtrCastToGeneric: return "PtrCastToGeneric";
+		case spv::Op::OpGenericCastToPtr: return "GenericCastToPtr";
+		case spv::Op::OpGenericCastToPtrExplicit: return "GenericCastToPtrExplicit";
+		case spv::Op::OpBitcast: return "Bitcast";
+		case spv::Op::OpSNegate: return "SNegate";
+		case spv::Op::OpFNegate: return "FNegate";
+		case spv::Op::OpIAdd: return "IAdd";
+		case spv::Op::OpFAdd: return "FAdd";
+		case spv::Op::OpISub: return "ISub";
+		case spv::Op::OpFSub: return "FSub";
+		case spv::Op::OpIMul: return "IMul";
+		case spv::Op::OpFMul: return "FMul";
+		case spv::Op::OpUDiv: return "UDiv";
+		case spv::Op::OpSDiv: return "SDiv";
+		case spv::Op::OpFDiv: return "FDiv";
+		case spv::Op::OpUMod: return "UMod";
+		case spv::Op::OpSRem: return "SRem";
+		case spv::Op::OpSMod: return "SMod";
+		case spv::Op::OpFRem: return "FRem";
+		case spv::Op::OpFMod: return "FMod";
+		case spv::Op::OpVectorTimesScalar: return "VectorTimesScalar";
+		case spv::Op::OpMatrixTimesScalar: return "MatrixTimesScalar";
+		case spv::Op::OpVectorTimesMatrix: return "VectorTimesMatrix";
+		case spv::Op::OpMatrixTimesVector: return "MatrixTimesVector";
+		case spv::Op::OpMatrixTimesMatrix: return "MatrixTimesMatrix";
+		case spv::Op::OpOuterProduct: return "OuterProduct";
+		case spv::Op::OpDot: return "Dot";
+		case spv::Op::OpIAddCarry: return "IAddCarry";
+		case spv::Op::OpISubBorrow: return "ISubBorrow";
+		case spv::Op::OpUMulExtended: return "UMulExtended";
+		case spv::Op::OpSMulExtended: return "SMulExtended";
+		case spv::Op::OpAny: return "Any";
+		case spv::Op::OpAll: return "All";
+		case spv::Op::OpIsNan: return "IsNan";
+		case spv::Op::OpIsInf: return "IsInf";
+		case spv::Op::OpIsFinite: return "IsFinite";
+		case spv::Op::OpIsNormal: return "IsNormal";
+		case spv::Op::OpSignBitSet: return "SignBitSet";
+		case spv::Op::OpLessOrGreater: return "LessOrGreater";
+		case spv::Op::OpOrdered: return "Ordered";
+		case spv::Op::OpUnordered: return "Unordered";
+		case spv::Op::OpLogicalEqual: return "LogicalEqual";
+		case spv::Op::OpLogicalNotEqual: return "LogicalNotEqual";
+		case spv::Op::OpLogicalOr: return "LogicalOr";
+		case spv::Op::OpLogicalAnd: return "LogicalAnd";
+		case spv::Op::OpLogicalNot: return "LogicalNot";
+		case spv::Op::OpSelect: return "Select";
+		case spv::Op::OpIEqual: return "IEqual";
+		case spv::Op::OpINotEqual: return "INotEqual";
+		case spv::Op::OpUGreaterThan: return "UGreaterThan";
+		case spv::Op::OpSGreaterThan: return "SGreaterThan";
+		case spv::Op::OpUGreaterThanEqual: return "UGreaterThanEqual";
+		case spv::Op::OpSGreaterThanEqual: return "SGreaterThanEqual";
+		case spv::Op::OpULessThan: return "ULessThan";
+		case spv::Op::OpSLessThan: return "SLessThan";
+		case spv::Op::OpULessThanEqual: return "ULessThanEqual";
+		case spv::Op::OpSLessThanEqual: return "SLessThanEqual";
+		case spv::Op::OpFOrdEqual: return "FOrdEqual";
+		case spv::Op::OpFUnordEqual: return "FUnordEqual";
+		case spv::Op::OpFOrdNotEqual: return "FOrdNotEqual";
+		case spv::Op::OpFUnordNotEqual: return "FUnordNotEqual";
+		case spv::Op::OpFOrdLessThan: return "FOrdLessThan";
+		case spv::Op::OpFUnordLessThan: return "FUnordLessThan";
+		case spv::Op::OpFOrdGreaterThan: return "FOrdGreaterThan";
+		case spv::Op::OpFUnordGreaterThan: return "FUnordGreaterThan";
+		case spv::Op::OpFOrdLessThanEqual: return "FOrdLessThanEqual";
+		case spv::Op::OpFUnordLessThanEqual: return "FUnordLessThanEqual";
+		case spv::Op::OpFOrdGreaterThanEqual: return "FOrdGreaterThanEqual";
+		case spv::Op::OpFUnordGreaterThanEqual: return "FUnordGreaterThanEqual";
+		case spv::Op::OpShiftRightLogical: return "ShiftRightLogical";
+		case spv::Op::OpShiftRightArithmetic: return "ShiftRightArithmetic";
+		case spv::Op::OpShiftLeftLogical: return "ShiftLeftLogical";
+		case spv::Op::OpBitwiseOr: return "BitwiseOr";
+		case spv::Op::OpBitwiseXor: return "BitwiseXor";
+		case spv::Op::OpBitwiseAnd: return "BitwiseAnd";
+		case spv::Op::OpNot: return "Not";
+		case spv::Op::OpBitFieldInsert: return "BitFieldInsert";
+		case spv::Op::OpBitFieldSExtract: return "BitFieldSExtract";
+		case spv::Op::OpBitFieldUExtract: return "BitFieldUExtract";
+		case spv::Op::OpBitReverse: return "BitReverse";
+		case spv::Op::OpBitCount: return "BitCount";
+		case spv::Op::OpDPdx: return "DPdx";
+		case spv::Op::OpDPdy: return "DPdy";
+		case spv::Op::OpFwidth: return "Fwidth";
+		case spv::Op::OpDPdxFine: return "DPdxFine";
+		case spv::Op::OpDPdyFine: return "DPdyFine";
+		case spv::Op::OpFwidthFine: return "FwidthFine";
+		case spv::Op::OpDPdxCoarse: return "DPdxCoarse";
+		case spv::Op::OpDPdyCoarse: return "DPdyCoarse";
+		case spv::Op::OpFwidthCoarse: return "FwidthCoarse";
+		case spv::Op::OpEmitVertex: return "EmitVertex";
+		case spv::Op::OpEndPrimitive: return "EndPrimitive";
+		case spv::Op::OpEmitStreamVertex: return "EmitStreamVertex";
+		case spv::Op::OpEndStreamPrimitive: return "EndStreamPrimitive";
+		case spv::Op::OpControlBarrier: return "ControlBarrier";
+		case spv::Op::OpMemoryBarrier: return "MemoryBarrier";
+		case spv::Op::OpAtomicLoad: return "AtomicLoad";
+		case spv::Op::OpAtomicStore: return "AtomicStore";
+		case spv::Op::OpAtomicExchange: return "AtomicExchange";
+		case spv::Op::OpAtomicCompareExchange: return "AtomicCompareExchange";
+		case spv::Op::OpAtomicCompareExchangeWeak: return "AtomicCompareExchangeWeak";
+		case spv::Op::OpAtomicIIncrement: return "AtomicIIncrement";
+		case spv::Op::OpAtomicIDecrement: return "AtomicIDecrement";
+		case spv::Op::OpAtomicIAdd: return "AtomicIAdd";
+		case spv::Op::OpAtomicISub: return "AtomicISub";
+		case spv::Op::OpAtomicSMin: return "AtomicSMin";
+		case spv::Op::OpAtomicUMin: return "AtomicUMin";
+		case spv::Op::OpAtomicSMax: return "AtomicSMax";
+		case spv::Op::OpAtomicUMax: return "AtomicUMax";
+		case spv::Op::OpAtomicAnd: return "AtomicAnd";
+		case spv::Op::OpAtomicOr: return "AtomicOr";
+		case spv::Op::OpAtomicXor: return "AtomicXor";
+		case spv::Op::OpPhi: return "Phi";
+		case spv::Op::OpLoopMerge: return "LoopMerge";
+		case spv::Op::OpSelectionMerge: return "SelectionMerge";
+		case spv::Op::OpLabel: return "Label";
+		case spv::Op::OpBranch: return "Branch";
+		case spv::Op::OpBranchConditional: return "BranchConditional";
+		case spv::Op::OpSwitch: return "Switch";
+		case spv::Op::OpKill: return "Kill";
+		case spv::Op::OpReturn: return "Return";
+		case spv::Op::OpReturnValue: return "ReturnValue";
+		case spv::Op::OpUnreachable: return "Unreachable";
+		case spv::Op::OpLifetimeStart: return "LifetimeStart";
+		case spv::Op::OpLifetimeStop: return "LifetimeStop";
+		case spv::Op::OpGroupAsyncCopy: return "GroupAsyncCopy";
+		case spv::Op::OpGroupWaitEvents: return "GroupWaitEvents";
+		case spv::Op::OpGroupAll: return "GroupAll";
+		case spv::Op::OpGroupAny: return "GroupAny";
+		case spv::Op::OpGroupBroadcast: return "GroupBroadcast";
+		case spv::Op::OpGroupIAdd: return "GroupIAdd";
+		case spv::Op::OpGroupFAdd: return "GroupFAdd";
+		case spv::Op::OpGroupFMin: return "GroupFMin";
+		case spv::Op::OpGroupUMin: return "GroupUMin";
+		case spv::Op::OpGroupSMin: return "GroupSMin";
+		case spv::Op::OpGroupFMax: return "GroupFMax";
+		case spv::Op::OpGroupUMax: return "GroupUMax";
+		case spv::Op::OpGroupSMax: return "GroupSMax";
+		case spv::Op::OpReadPipe: return "ReadPipe";
+		case spv::Op::OpWritePipe: return "WritePipe";
+		case spv::Op::OpReservedReadPipe: return "ReservedReadPipe";
+		case spv::Op::OpReservedWritePipe: return "ReservedWritePipe";
+		case spv::Op::OpReserveReadPipePackets: return "ReserveReadPipePackets";
+		case spv::Op::OpReserveWritePipePackets: return "ReserveWritePipePackets";
+		case spv::Op::OpCommitReadPipe: return "CommitReadPipe";
+		case spv::Op::OpCommitWritePipe: return "CommitWritePipe";
+		case spv::Op::OpIsValidReserveId: return "IsValidReserveId";
+		case spv::Op::OpGetNumPipePackets: return "GetNumPipePackets";
+		case spv::Op::OpGetMaxPipePackets: return "GetMaxPipePackets";
+		case spv::Op::OpGroupReserveReadPipePackets: return "GroupReserveReadPipePackets";
+		case spv::Op::OpGroupReserveWritePipePackets: return "GroupReserveWritePipePackets";
+		case spv::Op::OpGroupCommitReadPipe: return "GroupCommitReadPipe";
+		case spv::Op::OpGroupCommitWritePipe: return "GroupCommitWritePipe";
+		case spv::Op::OpEnqueueMarker: return "EnqueueMarker";
+		case spv::Op::OpEnqueueKernel: return "EnqueueKernel";
+		case spv::Op::OpGetKernelNDrangeSubGroupCount: return "GetKernelNDrangeSubGroupCount";
+		case spv::Op::OpGetKernelNDrangeMaxSubGroupSize: return "GetKernelNDrangeMaxSubGroupSize";
+		case spv::Op::OpGetKernelWorkGroupSize: return "GetKernelWorkGroupSize";
+		case spv::Op::OpGetKernelPreferredWorkGroupSizeMultiple: return "GetKernelPreferredWorkGroupSizeMultiple";
+		case spv::Op::OpRetainEvent: return "RetainEvent";
+		case spv::Op::OpReleaseEvent: return "ReleaseEvent";
+		case spv::Op::OpCreateUserEvent: return "CreateUserEvent";
+		case spv::Op::OpIsValidEvent: return "IsValidEvent";
+		case spv::Op::OpSetUserEventStatus: return "SetUserEventStatus";
+		case spv::Op::OpCaptureEventProfilingInfo: return "CaptureEventProfilingInfo";
+		case spv::Op::OpGetDefaultQueue: return "GetDefaultQueue";
+		case spv::Op::OpBuildNDRange: return "BuildNDRange";
+		case spv::Op::OpImageSparseSampleImplicitLod: return "ImageSparseSampleImplicitLod";
+		case spv::Op::OpImageSparseSampleExplicitLod: return "ImageSparseSampleExplicitLod";
+		case spv::Op::OpImageSparseSampleDrefImplicitLod: return "ImageSparseSampleDrefImplicitLod";
+		case spv::Op::OpImageSparseSampleDrefExplicitLod: return "ImageSparseSampleDrefExplicitLod";
+		case spv::Op::OpImageSparseSampleProjImplicitLod: return "ImageSparseSampleProjImplicitLod";
+		case spv::Op::OpImageSparseSampleProjExplicitLod: return "ImageSparseSampleProjExplicitLod";
+		case spv::Op::OpImageSparseSampleProjDrefImplicitLod: return "ImageSparseSampleProjDrefImplicitLod";
+		case spv::Op::OpImageSparseSampleProjDrefExplicitLod: return "ImageSparseSampleProjDrefExplicitLod";
+		case spv::Op::OpImageSparseFetch: return "ImageSparseFetch";
+		case spv::Op::OpImageSparseGather: return "ImageSparseGather";
+		case spv::Op::OpImageSparseDrefGather: return "ImageSparseDrefGather";
+		case spv::Op::OpImageSparseTexelsResident: return "ImageSparseTexelsResident";
+		case spv::Op::OpNoLine: return "NoLine";
+		case spv::Op::OpAtomicFlagTestAndSet: return "AtomicFlagTestAndSet";
+		case spv::Op::OpAtomicFlagClear: return "AtomicFlagClear";
+		case spv::Op::OpImageSparseRead: return "ImageSparseRead";
+		case spv::Op::OpSizeOf: return "SizeOf";
+		case spv::Op::OpTypePipeStorage: return "TypePipeStorage";
+		case spv::Op::OpConstantPipeStorage: return "ConstantPipeStorage";
+		case spv::Op::OpCreatePipeFromPipeStorage: return "CreatePipeFromPipeStorage";
+		case spv::Op::OpGetKernelLocalSizeForSubgroupCount: return "GetKernelLocalSizeForSubgroupCount";
+		case spv::Op::OpGetKernelMaxNumSubgroups: return "GetKernelMaxNumSubgroups";
+		case spv::Op::OpTypeNamedBarrier: return "TypeNamedBarrier";
+		case spv::Op::OpNamedBarrierInitialize: return "NamedBarrierInitialize";
+		case spv::Op::OpMemoryNamedBarrier: return "MemoryNamedBarrier";
+		case spv::Op::OpModuleProcessed: return "ModuleProcessed";
+		case spv::Op::OpExecutionModeId: return "ExecutionModeId";
+		case spv::Op::OpDecorateId: return "DecorateId";
+		case spv::Op::OpGroupNonUniformElect: return "GroupNonUniformElect";
+		case spv::Op::OpGroupNonUniformAll: return "GroupNonUniformAll";
+		case spv::Op::OpGroupNonUniformAny: return "GroupNonUniformAny";
+		case spv::Op::OpGroupNonUniformAllEqual: return "GroupNonUniformAllEqual";
+		case spv::Op::OpGroupNonUniformBroadcast: return "GroupNonUniformBroadcast";
+		case spv::Op::OpGroupNonUniformBroadcastFirst: return "GroupNonUniformBroadcastFirst";
+		case spv::Op::OpGroupNonUniformBallot: return "GroupNonUniformBallot";
+		case spv::Op::OpGroupNonUniformInverseBallot: return "GroupNonUniformInverseBallot";
+		case spv::Op::OpGroupNonUniformBallotBitExtract: return "GroupNonUniformBallotBitExtract";
+		case spv::Op::OpGroupNonUniformBallotBitCount: return "GroupNonUniformBallotBitCount";
+		case spv::Op::OpGroupNonUniformBallotFindLSB: return "GroupNonUniformBallotFindLSB";
+		case spv::Op::OpGroupNonUniformBallotFindMSB: return "GroupNonUniformBallotFindMSB";
+		case spv::Op::OpGroupNonUniformShuffle: return "GroupNonUniformShuffle";
+		case spv::Op::OpGroupNonUniformShuffleXor: return "GroupNonUniformShuffleXor";
+		case spv::Op::OpGroupNonUniformShuffleUp: return "GroupNonUniformShuffleUp";
+		case spv::Op::OpGroupNonUniformShuffleDown: return "GroupNonUniformShuffleDown";
+		case spv::Op::OpGroupNonUniformIAdd: return "GroupNonUniformIAdd";
+		case spv::Op::OpGroupNonUniformFAdd: return "GroupNonUniformFAdd";
+		case spv::Op::OpGroupNonUniformIMul: return "GroupNonUniformIMul";
+		case spv::Op::OpGroupNonUniformFMul: return "GroupNonUniformFMul";
+		case spv::Op::OpGroupNonUniformSMin: return "GroupNonUniformSMin";
+		case spv::Op::OpGroupNonUniformUMin: return "GroupNonUniformUMin";
+		case spv::Op::OpGroupNonUniformFMin: return "GroupNonUniformFMin";
+		case spv::Op::OpGroupNonUniformSMax: return "GroupNonUniformSMax";
+		case spv::Op::OpGroupNonUniformUMax: return "GroupNonUniformUMax";
+		case spv::Op::OpGroupNonUniformFMax: return "GroupNonUniformFMax";
+		case spv::Op::OpGroupNonUniformBitwiseAnd: return "GroupNonUniformBitwiseAnd";
+		case spv::Op::OpGroupNonUniformBitwiseOr: return "GroupNonUniformBitwiseOr";
+		case spv::Op::OpGroupNonUniformBitwiseXor: return "GroupNonUniformBitwiseXor";
+		case spv::Op::OpGroupNonUniformLogicalAnd: return "GroupNonUniformLogicalAnd";
+		case spv::Op::OpGroupNonUniformLogicalOr: return "GroupNonUniformLogicalOr";
+		case spv::Op::OpGroupNonUniformLogicalXor: return "GroupNonUniformLogicalXor";
+		case spv::Op::OpGroupNonUniformQuadBroadcast: return "GroupNonUniformQuadBroadcast";
+		case spv::Op::OpGroupNonUniformQuadSwap: return "GroupNonUniformQuadSwap";
+		case spv::Op::OpSubgroupBallotKHR: return "SubgroupBallotKHR";
+		case spv::Op::OpSubgroupFirstInvocationKHR: return "SubgroupFirstInvocationKHR";
+		case spv::Op::OpSubgroupAllKHR: return "SubgroupAllKHR";
+		case spv::Op::OpSubgroupAnyKHR: return "SubgroupAnyKHR";
+		case spv::Op::OpSubgroupAllEqualKHR: return "SubgroupAllEqualKHR";
+		case spv::Op::OpSubgroupReadInvocationKHR: return "SubgroupReadInvocationKHR";
+		case spv::Op::OpGroupIAddNonUniformAMD: return "GroupIAddNonUniformAMD";
+		case spv::Op::OpGroupFAddNonUniformAMD: return "GroupFAddNonUniformAMD";
+		case spv::Op::OpGroupFMinNonUniformAMD: return "GroupFMinNonUniformAMD";
+		case spv::Op::OpGroupUMinNonUniformAMD: return "GroupUMinNonUniformAMD";
+		case spv::Op::OpGroupSMinNonUniformAMD: return "GroupSMinNonUniformAMD";
+		case spv::Op::OpGroupFMaxNonUniformAMD: return "GroupFMaxNonUniformAMD";
+		case spv::Op::OpGroupUMaxNonUniformAMD: return "GroupUMaxNonUniformAMD";
+		case spv::Op::OpGroupSMaxNonUniformAMD: return "GroupSMaxNonUniformAMD";
+		case spv::Op::OpFragmentMaskFetchAMD: return "FragmentMaskFetchAMD";
+		case spv::Op::OpFragmentFetchAMD: return "FragmentFetchAMD";
+		case spv::Op::OpImageSampleFootprintNV: return "ImageSampleFootprintNV";
+		case spv::Op::OpGroupNonUniformPartitionNV: return "GroupNonUniformPartitionNV";
+		case spv::Op::OpWritePackedPrimitiveIndices4x8NV: return "WritePackedPrimitiveIndices4x8NV";
+		case spv::Op::OpReportIntersectionNV: return "ReportIntersectionNV";
+		case spv::Op::OpIgnoreIntersectionNV: return "IgnoreIntersectionNV";
+		case spv::Op::OpTerminateRayNV: return "TerminateRayNV";
+		case spv::Op::OpTraceNV: return "TraceNV";
+		case spv::Op::OpTypeAccelerationStructureNV: return "TypeAccelerationStructureNV";
+		case spv::Op::OpExecuteCallableNV: return "ExecuteCallableNV";
+		case spv::Op::OpSubgroupShuffleINTEL: return "SubgroupShuffleINTEL";
+		case spv::Op::OpSubgroupShuffleDownINTEL: return "SubgroupShuffleDownINTEL";
+		case spv::Op::OpSubgroupShuffleUpINTEL: return "SubgroupShuffleUpINTEL";
+		case spv::Op::OpSubgroupShuffleXorINTEL: return "SubgroupShuffleXorINTEL";
+		case spv::Op::OpSubgroupBlockReadINTEL: return "SubgroupBlockReadINTEL";
+		case spv::Op::OpSubgroupBlockWriteINTEL: return "SubgroupBlockWriteINTEL";
+		case spv::Op::OpSubgroupImageBlockReadINTEL: return "SubgroupImageBlockReadINTEL";
+		case spv::Op::OpSubgroupImageBlockWriteINTEL: return "SubgroupImageBlockWriteINTEL";
+		case spv::Op::OpDecorateStringGOOGLE: return "DecorateStringGOOGLE";
+		case spv::Op::OpMemberDecorateStringGOOGLE: return "MemberDecorateStringGOOGLE";
+		case spv::Op::OpMax: return "Max";
+		default: return "<UNKNOWN>";
+		}
+	}
+}
+
 namespace sw
 {
 	volatile int SpirvShader::serialCounter = 1;    // Start at 1, 0 is invalid shader.
@@ -140,8 +526,12 @@ namespace sw
 				}
 				else if (insn.opcode() == spv::OpTypePointer)
 				{
-					TypeID pointeeType = insn.word(3);
-					type.isBuiltInBlock = getType(pointeeType).isBuiltInBlock;
+					auto storageClass = static_cast<spv::StorageClass>(insn.word(2));
+					auto elementTypeId = insn.word(3);
+					auto &elementTy = getType(elementTypeId);
+					type.element = elementTypeId;
+					type.isBuiltInBlock = elementTy.isBuiltInBlock;
+					type.storageClass = storageClass;
 				}
 				break;
 			}
@@ -157,21 +547,21 @@ namespace sw
 				auto &object = defs[resultId];
 				object.kind = Object::Kind::Variable;
 				object.definition = insn;
-				object.storageClass = storageClass;
-
-				auto &type = getType(typeId);
-				auto &pointeeType = getType(type.definition.word(3));
-
-				// OpVariable's "size" is the size of the allocation required (the size of the pointee)
-				object.sizeInComponents = pointeeType.sizeInComponents;
-				object.isBuiltInBlock = type.isBuiltInBlock;
+				object.type = typeId;
 				object.pointerBase = insn.word(2);	// base is itself
 
-				// Register builtins
+				ASSERT(getType(typeId).storageClass == storageClass);
 
-				if (storageClass == spv::StorageClassInput || storageClass == spv::StorageClassOutput)
+				// Register builtins
+				switch (storageClass)
 				{
-					ProcessInterfaceVariable(object);
+					case spv::StorageClassInput:
+					case spv::StorageClassOutput:
+						ProcessInterfaceVariable(object);
+					case spv::StorageClassUniform:
+						break;
+					default:
+						UNIMPLEMENTED("Unhandled storage class %d for OpVariable", (int)storageClass);
 				}
 				break;
 			}
@@ -188,8 +578,9 @@ namespace sw
 			case spv::OpConstantNull:
 			{
 				// OpConstantNull forms a constant of arbitrary type, all zeros.
-				auto & object = CreateConstant(insn);
-				for (auto i = 0u; i < object.sizeInComponents; i++)
+				auto &object = CreateConstant(insn);
+				auto &objectTy = getType(object.type);
+				for (auto i = 0u; i < objectTy.sizeInComponents; i++)
 				{
 					object.constantValue[i] = 0;
 				}
@@ -201,15 +592,12 @@ namespace sw
 				auto offset = 0u;
 				for (auto i = 0u; i < insn.wordCount() - 3; i++)
 				{
-					auto & constituent = getObject(insn.word(i + 3));
-					for (auto j = 0u; j < constituent.sizeInComponents; j++)
+					auto &constituent = getObject(insn.word(i + 3));
+					auto &constituentTy = getType(constituent.type);
+					for (auto j = 0u; j < constituentTy.sizeInComponents; j++)
 						object.constantValue[offset++] = constituent.constantValue[j];
 				}
-				break;
 			}
-
-			case spv::OpCapability:
-				// Various capabilities will be declared, but none affect our code generation at this point.
 			case spv::OpMemoryModel:
 				// Memory model does not affect our code generation until we decide to do Vulkan Memory Model support.
 			case spv::OpEntryPoint:
@@ -241,9 +629,9 @@ namespace sw
 				TypeID typeId = insn.word(1);
 				ObjectID resultId = insn.word(2);
 				auto &object = defs[resultId];
+				object.type = typeId;
 				object.kind = Object::Kind::Value;
 				object.definition = insn;
-				object.sizeInComponents = getType(typeId).sizeInComponents;
 
 				if (insn.opcode() == spv::OpAccessChain)
 				{
@@ -265,7 +653,7 @@ namespace sw
 				break;
 
 			default:
-				printf("Warning: ignored opcode %u\n", insn.opcode());
+				printf("Warning: ignored opcode %s\n", opcodeName(insn.opcode()));
 				break;    // This is OK, these passes are intentionally partial
 			}
 		}
@@ -276,22 +664,24 @@ namespace sw
 		TypeID typeId = insn.word(1);
 		ObjectID resultId = insn.word(2);
 		auto &object = defs[resultId];
+		auto &objectTy = getType(typeId);
+		object.type = typeId;
 		object.kind = Object::Kind::Constant;
 		object.definition = insn;
-		object.sizeInComponents = getType(typeId).sizeInComponents;
-		object.constantValue = std::unique_ptr<uint32_t[]>(new uint32_t[object.sizeInComponents]);
+		object.constantValue = std::unique_ptr<uint32_t[]>(new uint32_t[objectTy.sizeInComponents]);
 		return object;
 	}
 
 	void SpirvShader::ProcessInterfaceVariable(Object &object)
 	{
-		assert(object.storageClass == spv::StorageClassInput || object.storageClass == spv::StorageClassOutput);
+		auto &objectTy = getType(object.type);
+		assert(objectTy.storageClass == spv::StorageClassInput || objectTy.storageClass == spv::StorageClassOutput);
 
-		auto &builtinInterface = (object.storageClass == spv::StorageClassInput) ? inputBuiltins : outputBuiltins;
-		auto &userDefinedInterface = (object.storageClass == spv::StorageClassInput) ? inputs : outputs;
+		auto &builtinInterface = (objectTy.storageClass == spv::StorageClassInput) ? inputBuiltins : outputBuiltins;
+		auto &userDefinedInterface = (objectTy.storageClass == spv::StorageClassInput) ? inputs : outputs;
 
 		ObjectID resultId = object.definition.word(2);
-		if (object.isBuiltInBlock)
+		if (objectTy.isBuiltInBlock)
 		{
 			// walk the builtin block, registering each of its members separately.
 			auto ptrType = getType(object.definition.word(1)).definition;
@@ -320,7 +710,7 @@ namespace sw
 		auto d = decorations.find(resultId);
 		if (d != decorations.end() && d->second.HasBuiltIn)
 		{
-			builtinInterface[d->second.BuiltIn] = {resultId, 0, object.sizeInComponents};
+			builtinInterface[d->second.BuiltIn] = {resultId, 0, objectTy.sizeInComponents};
 		}
 		else
 		{
@@ -606,6 +996,12 @@ namespace sw
 		case spv::DecorationBufferBlock:
 			BufferBlock = true;
 			break;
+		case spv::DecorationDescriptorSet:
+			DescriptorSet = arg;
+			break;
+		case spv::DecorationBinding:
+			Binding = arg;
+			break;
 		default:
 			// Intentionally partial, there are many decorations we just don't care about.
 			break;
@@ -631,6 +1027,18 @@ namespace sw
 		{
 			HasComponent = true;
 			Component = src.Component;
+		}
+
+		if (src.DescriptorSet >= 0)
+		{
+			ASSERT(DescriptorSet < 0 || DescriptorSet == src.DescriptorSet);
+			DescriptorSet = src.DescriptorSet;
+		}
+
+		if (src.Binding >= 0)
+		{
+			ASSERT(Binding < 0 || Binding == src.Binding);
+			Binding = src.Binding;
 		}
 
 		Flat |= src.Flat;
@@ -682,10 +1090,11 @@ namespace sw
 			{
 				ObjectID resultId = insn.word(2);
 				auto &object = getObject(resultId);
+				auto &objectTy = getType(object.type);
 				// TODO: what to do about zero-slot objects?
-				if (object.sizeInComponents > 0)
+				if (objectTy.sizeInComponents > 0)
 				{
-					routine->createLvalue(insn.word(2), object.sizeInComponents);
+					routine->createLvalue(insn.word(2), objectTy.sizeInComponents);
 				}
 				break;
 			}
@@ -706,40 +1115,85 @@ namespace sw
 			{
 				ObjectID resultId = insn.word(2);
 				auto &object = getObject(resultId);
-				if (object.kind == Object::Kind::InterfaceVariable && object.storageClass == spv::StorageClassInput)
+				auto &objectTy = getType(object.type);
+				switch (object.kind)
 				{
-					auto &dst = routine->getValue(resultId);
-					int offset = 0;
-					VisitInterface(resultId,
-								   [&](Decorations const &d, AttribType type) {
-									   auto scalarSlot = d.Location << 2 | d.Component;
-									   dst[offset++] = routine->inputs[scalarSlot];
-								   });
+				case Object::Kind::InterfaceVariable:
+					if (objectTy.storageClass == spv::StorageClassInput)
+					{
+						auto &dst = routine->getValue(resultId);
+						int offset = 0;
+						VisitInterface(resultId,
+									[&](Decorations const &d, AttribType type) {
+										auto scalarSlot = d.Location << 2 | d.Component;
+										dst[offset++] = routine->inputs[scalarSlot];
+									});
+					}
+					break;
+				case Object::Kind::Variable:
+				{
+					switch (objectTy.storageClass)
+					{
+					case spv::StorageClassUniform:
+					{
+						Decorations d{};
+						ApplyDecorationsForId(&d, resultId);
+						ASSERT(d.DescriptorSet >= 0);
+						ASSERT(d.Binding >= 0);
+						Pointer<Byte> setPtr = routine->descriptorSets[d.DescriptorSet];
+						if (d.BufferBlock)
+						{
+							Pointer<Byte> bindingPtr = Pointer<Byte>(setPtr + d.Binding * sizeof(VkDescriptorBufferInfo));
+						    Int buffer = *Pointer<Int>(bindingPtr + OFFSET(VkDescriptorBufferInfo, buffer));
+							Int offset = *Pointer<Int>(bindingPtr + OFFSET(VkDescriptorBufferInfo, offset));
+							Int address = buffer + offset;
+							Float4 v;
+							for (int j = 0; j < 4; j++)
+							{
+								v = Insert(v, Float(address), j);
+							}
+							auto &dst = routine->getValue(resultId);
+							dst[0] = v;
+						} else {
+							UNIMPLEMENTED("Uniform type implemented");
+						}
+						break;
+					}
+					default:
+						UNIMPLEMENTED("Variable storage class %d not yet implemented", (int)objectTy.storageClass);
+					}
+					break;
 				}
-				break;
+				default:
+					UNIMPLEMENTED("Object kind %d not yet implemented", (int)object.kind);
+					break;
 				}
+			}
 			case spv::OpLoad:
 			{
 				auto &object = getObject(insn.word(2));
+				auto &objectTy = getType(object.type);
+				auto &elementTy = getType(objectTy.element);
 				auto &type = getType(insn.word(1));
 				auto &pointer = getObject(insn.word(3));
 				routine->createIntermediate(insn.word(2), type.sizeInComponents);
 				auto &pointerBase = getObject(pointer.pointerBase);
+				auto &pointerBaseTy = getType(pointerBase.type);
 
-				if (pointerBase.storageClass == spv::StorageClassImage ||
-					pointerBase.storageClass == spv::StorageClassUniform ||
-					pointerBase.storageClass == spv::StorageClassUniformConstant)
+				if (pointerBaseTy.storageClass == spv::StorageClassImage ||
+					pointerBaseTy.storageClass == spv::StorageClassUniform ||
+					pointerBaseTy.storageClass == spv::StorageClassUniformConstant)
 				{
 					UNIMPLEMENTED("Descriptor-backed load not yet implemented");
 				}
 
-				SpirvRoutine::Value& ptrBase = routine->getValue(pointer.pointerBase);
-				auto & dst = routine->getIntermediate(insn.word(2));
+				auto &ptrBase = routine->getValue(pointer.pointerBase);
+				auto &dst = routine->getIntermediate(insn.word(2));
 
 				if (pointer.kind == Object::Kind::Value)
 				{
 					auto offsets = As<Int4>(routine->getIntermediate(insn.word(3))[0]);
-					for (auto i = 0u; i < object.sizeInComponents; i++)
+					for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 					{
 						// i wish i had a Float,Float,Float,Float constructor here..
 						Float4 v;
@@ -751,7 +1205,7 @@ namespace sw
 				else
 				{
 					// no divergent offsets to worry about
-					for (auto i = 0u; i < object.sizeInComponents; i++)
+					for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 					{
 						dst.emplace(i, ptrBase[i]);
 					}
@@ -765,12 +1219,13 @@ namespace sw
 				auto &base = getObject(insn.word(3));
 				routine->createIntermediate(insn.word(2), type.sizeInComponents);
 				auto &pointerBase = getObject(object.pointerBase);
+				auto &pointerBaseTy = getType(pointerBase.type);
 				assert(type.sizeInComponents == 1);
 				assert(base.pointerBase == object.pointerBase);
 
-				if (pointerBase.storageClass == spv::StorageClassImage ||
-					pointerBase.storageClass == spv::StorageClassUniform ||
-					pointerBase.storageClass == spv::StorageClassUniformConstant)
+				if (pointerBaseTy.storageClass == spv::StorageClassImage ||
+					pointerBaseTy.storageClass == spv::StorageClassUniform ||
+					pointerBaseTy.storageClass == spv::StorageClassUniformConstant)
 				{
 					UNIMPLEMENTED("Descriptor-backed OpAccessChain not yet implemented");
 				}
@@ -782,17 +1237,20 @@ namespace sw
 			case spv::OpStore:
 			{
 				auto &object = getObject(insn.word(2));
+				auto &objectTy = getType(object.type);
+				auto &elementTy = getType(objectTy.element);
 				auto &pointer = getObject(insn.word(1));
 				auto &pointerBase = getObject(pointer.pointerBase);
+				auto &pointerBaseTy = getType(pointerBase.type);
 
-				if (pointerBase.storageClass == spv::StorageClassImage ||
-					pointerBase.storageClass == spv::StorageClassUniform ||
-					pointerBase.storageClass == spv::StorageClassUniformConstant)
+				if (pointerBaseTy.storageClass == spv::StorageClassImage ||
+					pointerBaseTy.storageClass == spv::StorageClassUniform ||
+					pointerBaseTy.storageClass == spv::StorageClassUniformConstant)
 				{
 					UNIMPLEMENTED("Descriptor-backed store not yet implemented");
 				}
 
-				SpirvRoutine::Value& ptrBase = routine->getValue(pointer.pointerBase);
+				auto &ptrBase = routine->getValue(pointer.pointerBase);
 
 				if (object.kind == Object::Kind::Constant)
 				{
@@ -801,7 +1259,7 @@ namespace sw
 					if (pointer.kind == Object::Kind::Value)
 					{
 						auto offsets = As<Int4>(routine->getIntermediate(insn.word(1))[0]);
-						for (auto i = 0u; i < object.sizeInComponents; i++)
+						for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 						{
 							// Scattered store
 							for (int j = 0; j < 4; j++)
@@ -814,7 +1272,7 @@ namespace sw
 					else
 					{
 						// no divergent offsets
-						for (auto i = 0u; i < object.sizeInComponents; i++)
+						for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 						{
 							ptrBase[i] = RValue<Float4>(src[i]);
 						}
@@ -827,7 +1285,7 @@ namespace sw
 					if (pointer.kind == Object::Kind::Value)
 					{
 						auto offsets = As<Int4>(routine->getIntermediate(insn.word(1))[0]);
-						for (auto i = 0u; i < object.sizeInComponents; i++)
+						for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 						{
 							// Scattered store
 							for (int j = 0; j < 4; j++)
@@ -840,7 +1298,7 @@ namespace sw
 					else
 					{
 						// no divergent offsets
-						for (auto i = 0u; i < object.sizeInComponents; i++)
+						for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 						{
 							ptrBase[i] = src[i];
 						}
@@ -848,8 +1306,28 @@ namespace sw
 				}
 				break;
 			}
+			case spv::OpCapability:
+			case spv::OpMemoryModel:
+			case spv::OpExecutionMode:
+			case spv::OpDecorate:
+			case spv::OpMemberDecorate:
+			case spv::OpTypeVoid:
+			case spv::OpTypeBool:
+			case spv::OpTypeInt:
+			case spv::OpTypeFloat:
+			case spv::OpTypeVector:
+			case spv::OpTypeMatrix:
+			case spv::OpTypeImage:
+			case spv::OpTypeSampler:
+			case spv::OpTypeSampledImage:
+			case spv::OpTypeArray:
+			case spv::OpTypeRuntimeArray:
+			case spv::OpTypeStruct:
+			case spv::OpTypePointer:
+			case spv::OpTypeFunction:
+				break; // Handled by earlier passes.
 			default:
-				printf("emit: ignoring opcode %d\n", insn.opcode());
+				printf("emit: ignoring opcode %s\n", opcodeName(insn.opcode()));
 				break;
 			}
 		}
@@ -865,7 +1343,8 @@ namespace sw
 			{
 				ObjectID resultId = insn.word(2);
 				auto &object = getObject(resultId);
-				if (object.kind == Object::Kind::InterfaceVariable && object.storageClass == spv::StorageClassOutput)
+				auto &objectTy = getType(object.type);
+				if (object.kind == Object::Kind::InterfaceVariable && objectTy.storageClass == spv::StorageClassOutput)
 				{
 					auto &dst = routine->getValue(resultId);
 					int offset = 0;

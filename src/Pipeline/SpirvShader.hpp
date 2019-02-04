@@ -17,6 +17,7 @@
 
 #include "System/Types.hpp"
 #include "Vulkan/VkDebug.hpp"
+#include "Vulkan/VkDescriptorSetLayout.hpp"
 #include "ShaderCore.hpp"
 #include "ID.hpp"
 
@@ -155,23 +156,28 @@ namespace sw
 			return InsnIterator{insns.cend()};
 		}
 
+		class Type;
+		using TypeID = ID<Type>;
+
 		class Type
 		{
 		public:
 			InsnIterator definition;
-			spv::StorageClass storageClass;
+			spv::StorageClass storageClass = (spv::StorageClass)-1;
 			uint32_t sizeInComponents = 0;
 			bool isBuiltInBlock = false;
+			TypeID element = -1; // Pointee type if a pointer.
 		};
+
+		class Object;
+		using ObjectID = ID<Object>;
 
 		class Object
 		{
 		public:
 			InsnIterator definition;
-			spv::StorageClass storageClass;
-			uint32_t sizeInComponents = 0;
-			bool isBuiltInBlock = false;
-			uint32_t pointerBase = 0;
+			TypeID type = -1;
+			ObjectID pointerBase = 0;
 			std::unique_ptr<uint32_t[]> constantValue = nullptr;
 
 			enum class Kind
@@ -184,8 +190,6 @@ namespace sw
 			} kind = Kind::Unknown;
 		};
 
-		using TypeID = ID<Type>;
-		using ObjectID = ID<Object>;
 
 		struct TypeOrObject {}; // Dummy struct to represent a Type or Object.
 
@@ -248,6 +252,8 @@ namespace sw
 		{
 			int32_t Location;
 			int32_t Component;
+			int32_t DescriptorSet;
+			int32_t Binding;
 			spv::BuiltIn BuiltIn;
 			bool HasLocation : 1;
 			bool HasComponent : 1;
@@ -259,9 +265,9 @@ namespace sw
 			bool BufferBlock : 1;
 
 			Decorations()
-					: Location{-1}, Component{0}, BuiltIn{}, HasLocation{false}, HasComponent{false}, HasBuiltIn{false},
-					  Flat{false},
-					  Centroid{false}, NoPerspective{false}, Block{false},
+					: Location{-1}, Component{0}, DescriptorSet{-1}, Binding{-1},
+					  BuiltIn{}, HasLocation{false}, HasComponent{false}, HasBuiltIn{false},
+					  Flat{false}, Centroid{false}, NoPerspective{false}, Block{false},
 					  BufferBlock{false}
 			{
 			}
@@ -358,6 +364,8 @@ namespace sw
 
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
+
+		Array< Pointer<Byte> > descriptorSets = Array< Pointer<Byte> >(MAX_DESCRIPTOR_SETS);
 
 		void createLvalue(SpirvShader::ObjectID id, uint32_t size)
 		{
