@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f3b2e722_b4cc69d1",
+        "filename": "src/Device/PixelProcessor.cpp",
+        "patchSetId": 37
+      },
+      "lineNbr": 712,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-04T15:48:56Z",
+      "side": 1,
+      "message": "Add a bug ID here:\nTODO(b/\u003cbug id\u003e): ...",
+      "range": {
+        "startLine": 712,
+        "startChar": 5,
+        "endLine": 712,
+        "endChar": 9
+      },
+      "revId": "c92bc50e1b65373a42a7fb04af96c19e2a8eb858",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f6aab78c_28b8ee5e",
+        "filename": "src/Device/SetupProcessor.cpp",
+        "patchSetId": 37
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-04T15:48:56Z",
+      "side": 1,
+      "message": "Add bug ID",
+      "range": {
+        "startLine": 96,
+        "startChar": 4,
+        "endLine": 96,
+        "endChar": 8
+      },
+      "revId": "c92bc50e1b65373a42a7fb04af96c19e2a8eb858",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
