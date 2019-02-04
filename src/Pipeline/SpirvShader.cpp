@@ -20,6 +20,16 @@
 #include "Vulkan/VkPipelineLayout.hpp"
 #include "Device/Config.hpp"
 
+#include <sstream>
+
+#define DBG_ENABLED 0
+
+#if DBG_ENABLED
+#define DBG(msg, ...)
+#else
+#define DBG(msg, ...)
+#endif
+
 namespace sw
 {
 	volatile int SpirvShader::serialCounter = 1;    // Start at 1, 0 is invalid shader.
@@ -35,8 +45,11 @@ namespace sw
 		// - There is exactly one entrypoint in the module, and it's the one we want
 		// - The only input/output OpVariables present are those used by the entrypoint
 
+		DBG("SpirvShader::SpirvShader()");
 		for (auto insn : *this)
 		{
+			DBG("%s", OpcodeName(insn.opcode()).c_str());
+
 			switch (insn.opcode())
 			{
 			case spv::OpExecutionMode:
@@ -260,6 +273,7 @@ namespace sw
 			case spv::OpFUnordLessThanEqual:
 			case spv::OpFOrdGreaterThanEqual:
 			case spv::OpFUnordGreaterThanEqual:
+			case spv::OpSMod:
 			case spv::OpUMod:
 			case spv::OpIEqual:
 			case spv::OpINotEqual:
@@ -671,7 +685,9 @@ namespace sw
 			case spv::OpTypeVector:
 			case spv::OpTypeMatrix:
 			case spv::OpTypeArray:
+			case spv::OpTypeRuntimeArray:
 			{
+				// TODO: Bounds checking.
 				auto stride = getType(type.element).sizeInComponents;
 				auto & obj = getObject(indexIds[i]);
 				if (obj.kind == Object::Kind::Constant)
@@ -850,6 +866,9 @@ namespace sw
 
 	void SpirvShader::emitProlog(SpirvRoutine *routine) const
 	{
+		DBG("SpirvShader::emitProlog()");
+		// RR_LOG("SpirvShader::emitProlog()");
+
 		for (auto insn : *this)
 		{
 			switch (insn.opcode())
@@ -863,7 +882,7 @@ namespace sw
 				// TODO: what to do about zero-slot objects?
 				if (pointeeTy.sizeInComponents > 0)
 				{
-					routine->createLvalue(insn.word(2), pointeeTy.sizeInComponents);
+					routine->createLvalue(resultId, pointeeTy.sizeInComponents);
 				}
 				break;
 			}
@@ -876,8 +895,24 @@ namespace sw
 
 	void SpirvShader::emit(SpirvRoutine *routine) const
 	{
+		DBG("SpirvShader::emit()");
+		// RR_LOG("SpirvShader::emit()");
+
 		for (auto insn : *this)
 		{
+#if DBG_ENABLED
+			{
+				std::stringstream str;
+				str << OpcodeName(insn.opcode()).c_str();
+				for (uint32_t i = 1; i < insn.wordCount(); i++)
+				{
+					str << " %" << insn.word(i);
+				}
+				DBG(str.str().c_str());
+				// RR_WATCH(OpcodeName(insn.opcode()));
+			}
+#endif // DBG_ENABLED
+
 			switch (insn.opcode())
 			{
 			case spv::OpTypeVoid:
@@ -982,6 +1017,7 @@ namespace sw
 			case spv::OpFUnordLessThanEqual:
 			case spv::OpFOrdGreaterThanEqual:
 			case spv::OpFUnordGreaterThanEqual:
+			case spv::OpSMod:
 			case spv::OpUMod:
 			case spv::OpIEqual:
 			case spv::OpINotEqual:
@@ -1059,6 +1095,7 @@ namespace sw
 			Int offset = *Pointer<Int>(binding + OFFSET(VkDescriptorBufferInfo, offset));
 			Pointer<Byte> address = data + offset;
 			routine->physicalPointers[resultId] = address;
+			// RR_WATCH(d.DescriptorSet, d.Binding, set, binding, data, offset, address, resultId.value());
 			break;
 		}
 		default:
@@ -1112,6 +1149,7 @@ namespace sw
 					if (interleavedByLane) { offset = offset * SIMD::Width + j; }
 					v = Insert(v, ptrBase[offset], j);
 				}
+				// RR_WATCH(objectId.value(), offsets, As<IntL>(v));
 				dst.emplace(i, v);
 			}
 		}
@@ -1411,6 +1449,9 @@ namespace sw
 				break;
 			case spv::OpUDiv:
 				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) / As<SIMD::UInt>(rhs)));
+				break;
+			case spv::OpSMod:
+				dst.emplace(i, As<SIMD::Float>(As<SIMD::Int>(lhs) % As<SIMD::Int>(rhs)));
 				break;
 			case spv::OpUMod:
 				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) % As<SIMD::UInt>(rhs)));

@@ -14,6 +14,7 @@
 
 #include "VkPipeline.hpp"
 #include "VkPipelineLayout.hpp"
+#include "VkDescriptorSetLayout.hpp"
 #include "VkShaderModule.hpp"
 #include "Pipeline/SpirvShader.hpp"
 
@@ -230,6 +231,9 @@ std::vector<uint32_t> preprocessSpirv(
 	// Freeze specialization constants into normal constants, and propagate through
 	opt.RegisterPass(spvtools::CreateFreezeSpecConstantValuePass());
 	opt.RegisterPass(spvtools::CreateFoldSpecConstantOpAndCompositePass());
+
+	// Strip debug opcodes
+	opt.RegisterPass(spvtools::CreateStripDebugInfoPass());
 
 	std::vector<uint32_t> optimized;
 	opt.Run(code.data(), code.size(), &optimized);
@@ -538,11 +542,49 @@ ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo,
 
 void ComputePipeline::destroyPipeline(const VkAllocationCallbacks* pAllocator)
 {
+	delete shader;
 }
 
 size_t ComputePipeline::ComputeRequiredAllocationSize(const VkComputePipelineCreateInfo* pCreateInfo)
 {
 	return 0;
+}
+
+void ComputePipeline::compileShaders(const VkAllocationCallbacks* pAllocator, const VkComputePipelineCreateInfo* pCreateInfo)
+{
+	auto module = Cast(pCreateInfo->stage.module);
+
+	auto code = preprocessSpirv(module->getCode(), pCreateInfo->stage.pSpecializationInfo);
+
+	ASSERT(shader == nullptr);
+
+	if (code.size() == 0)
+	{
+		ERR("No SPIR-V code produced");
+		return;
+	}
+
+	// FIXME (b/119409619): use allocator.
+	shader = new sw::SpirvShader(code);
+
+	sw::ComputeProgram program(shader, layout);
+
+	program.generate();
+
+	// TODO(bclayton): Cache program
+	routine = program("ComputeRoutine");
+}
+
+void ComputePipeline::run(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
+	size_t numDescriptorSets, VkDescriptorSet* descriptorSets)
+{
+	if (routine != nullptr)
+	{
+		sw::ComputeProgram::run(
+			routine,
+			groupCountX, groupCountY, groupCountZ,
+			numDescriptorSets, reinterpret_cast<void**>(descriptorSets));
+	}
 }
 
 } // namespace vk
