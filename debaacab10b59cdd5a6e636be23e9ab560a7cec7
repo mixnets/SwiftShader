@@ -22,6 +22,30 @@
       "revId": "debaacab10b59cdd5a6e636be23e9ab560a7cec7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "795c3c8f_7c303fd0",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-04T21:16:25Z",
+      "side": 0,
+      "message": "Ohhh, that\u0027s new to me - I\u0027ve always used double newlines for line breaks.\nWhitespace at the end of a line is highlighted as a mistake by many code editors (as these are typically hidden), and is often automatically stripped (like with my VSCode settings).\nWould you be happy for me to transform these to a double newline instead?",
+      "parentUuid": "34921a9c_6235c616",
+      "range": {
+        "startLine": 13,
+        "startChar": 68,
+        "endLine": 13,
+        "endChar": 71
+      },
+      "revId": "debaacab10b59cdd5a6e636be23e9ab560a7cec7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
