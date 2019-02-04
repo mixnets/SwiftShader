@@ -491,12 +491,14 @@ void CommandBuffer::pipelineBarrier(VkPipelineStageFlags srcStageMask, VkPipelin
 
 void CommandBuffer::bindPipeline(VkPipelineBindPoint pipelineBindPoint, VkPipeline pipeline)
 {
-	if(pipelineBindPoint != VK_PIPELINE_BIND_POINT_GRAPHICS)
-	{
-		UNIMPLEMENTED();
+	switch(pipelineBindPoint) {
+		case VK_PIPELINE_BIND_POINT_COMPUTE:
+		case VK_PIPELINE_BIND_POINT_GRAPHICS:
+			addCommand<PipelineBind>(pipelineBindPoint, pipeline);
+			break;
+		default:
+			UNIMPLEMENTED();
 	}
-
-	addCommand<PipelineBind>(pipelineBindPoint, pipeline);
 }
 
 void CommandBuffer::bindVertexBuffers(uint32_t firstBinding, uint32_t bindingCount,

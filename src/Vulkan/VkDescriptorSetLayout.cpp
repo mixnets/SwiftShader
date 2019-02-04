@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include "VkDescriptorSetLayout.hpp"
+#include "VkDescriptorSet.hpp"
+
 #include <cstring>
 
 namespace
@@ -89,17 +91,27 @@ size_t DescriptorSetLayout::GetDescriptorSize(VkDescriptorType type)
 	switch(type)
 	{
 	case VK_DESCRIPTOR_TYPE_SAMPLER:
+		return sizeof(ds::Sampler);
 	case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+		return sizeof(ds::CombinedImageSampler);
 	case VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
+		return sizeof(ds::SampledImage);
 	case VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+		return sizeof(ds::StorageImage);
 	case VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER:
+		return sizeof(ds::UniformTexelBuffer);
 	case VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER:
+		return sizeof(ds::StorageTexelBuffer);
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+		return sizeof(ds::UniformBuffer);
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+		return sizeof(ds::StorageBuffer);
 	case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
+		return sizeof(ds::UniformBufferDynamic);
 	case VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
+		return sizeof(ds::StorageBufferDynamic);
 	case VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT:
-		return sizeof(void*); // FIXME(b/123244275) : Compute actual required size for each desciptor type
+		return sizeof(ds::InputAttachment);
 	default:
 		UNIMPLEMENTED("Unsupported Descriptor Type");
 	}

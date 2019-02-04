@@ -7,7 +7,9 @@
             "request": "launch",
             "preLaunchTask": "make",
             "program": "${workspaceRoot}/debug/OGLESIntroducingPVRApi",
-            "args": ["LD_LIBRARY_PATH=./"],
+            "args": [
+                "LD_LIBRARY_PATH=./"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}/debug/",
             "environment": [],
@@ -42,7 +44,9 @@
             "request": "launch",
             "preLaunchTask": "make",
             "program": "${workspaceRoot}/debug/OGLESGlass",
-            "args": ["LD_LIBRARY_PATH=./"],
+            "args": [
+                "LD_LIBRARY_PATH=./"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}/debug/",
             "environment": [],
@@ -105,6 +109,15 @@
                     }
                 ]
             }
+        },
+        {
+            "name": "vk-unittests",
+            "type": "lldb",
+            "request": "launch",
+            "preLaunchTask": "make",
+            "program": "${workspaceRoot}/build/vk-unittests",
+            "args": [],
+            "cwd": "${workspaceRoot}"
         },
         {
             "name": "OGLES2HelloAPI",
