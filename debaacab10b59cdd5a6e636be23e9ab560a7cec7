@@ -46,6 +46,30 @@
       "revId": "debaacab10b59cdd5a6e636be23e9ab560a7cec7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4aa42ab8_b1f8d3b3",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-04T22:09:26Z",
+      "side": 0,
+      "message": "Double newline essentially starts a new paragraph, which adds spacing between the lines. I\u0027d like to be able to keep closely related lines together (e.g. in the \u0027Contact\u0027 section the bug trackers are listed together while the mailing list is separate).\n\nIf there\u0027s another syntax for achieving that which makes it come out fine on both https://github.com/google/swiftshader and google3/third_party/swiftshader, go for it. It\u0027s indeed an annoying issue when using editors that strip trailing whitespace.\n\nOtherwise I\u0027d prefer to keep these. Sorry to be bike-shedding, but the cure seems a bit worse than the disease.",
+      "parentUuid": "795c3c8f_7c303fd0",
+      "range": {
+        "startLine": 13,
+        "startChar": 68,
+        "endLine": 13,
+        "endChar": 71
+      },
+      "revId": "debaacab10b59cdd5a6e636be23e9ab560a7cec7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
