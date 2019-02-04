@@ -16,6 +16,7 @@
 #define VK_PIPELINE_HPP_
 
 #include "VkObject.hpp"
+#include "Pipeline/ComputeProgram.hpp"
 #include "Device/Renderer.hpp"
 
 namespace sw { class SpirvShader; }
@@ -100,6 +101,15 @@ public:
 #endif
 
 	static size_t ComputeRequiredAllocationSize(const VkComputePipelineCreateInfo* pCreateInfo);
+
+	void compileShaders(const VkAllocationCallbacks* pAllocator, const VkComputePipelineCreateInfo* pCreateInfo);
+
+	void run(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
+		size_t numDescriptorSets, VkDescriptorSet* descriptorSets);
+
+protected:
+	sw::SpirvShader *shader = nullptr;
+	sw::ComputeProgram *program = nullptr;
 };
 
 static inline Pipeline* Cast(VkPipeline object)

@@ -16,6 +16,7 @@
 #include "SpirvShader.hpp"
 #include "DescriptorSetsLayout.hpp"
 #include "System/Math.hpp"
+#include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Device/Config.hpp"
 
@@ -32,8 +33,11 @@ namespace sw
 		// - There is exactly one entrypoint in the module, and it's the one we want
 		// - The only input/output OpVariables present are those used by the entrypoint
 
+		printf("SpirvShader::SpirvShader()\n");
 		for (auto insn : *this)
 		{
+			printf("%s\n", OpcodeName(insn.opcode()).c_str());
+
 			switch (insn.opcode())
 			{
 			case spv::OpExecutionMode:
@@ -133,12 +137,17 @@ namespace sw
 				object.type = typeId;
 				object.pointerBase = insn.word(2);	// base is itself
 
+				ASSERT(getType(typeId).storageClass == storageClass);
+
 				// Register builtins
 				switch (storageClass)
 				{
 					case spv::StorageClassInput:
 					case spv::StorageClassOutput:
 						ProcessInterfaceVariable(object);
+						break;
+					case spv::StorageClassUniform:
+						object.kind = Object::Kind::PhysicalPointer;
 						break;
 					default:
 						UNIMPLEMENTED("Unhandled storage class %d for OpVariable", (int)storageClass);
@@ -602,7 +611,9 @@ namespace sw
 			case spv::OpTypeVector:
 			case spv::OpTypeMatrix:
 			case spv::OpTypeArray:
+			case spv::OpTypeRuntimeArray:
 			{
+				// TODO: Bounds checking.
 				auto stride = getType(type.element).sizeInComponents;
 				auto & obj = getObject(indexIds[i]);
 				if (obj.kind == Object::Kind::Constant)
@@ -781,6 +792,9 @@ namespace sw
 
 	void SpirvShader::emitProlog(SpirvRoutine *routine) const
 	{
+		printf("SpirvShader::emitProlog()\n");
+		// RR_LOG("SpirvShader::emitProlog()");
+
 		for (auto insn : *this)
 		{
 			switch (insn.opcode())
@@ -794,7 +808,7 @@ namespace sw
 				// TODO: what to do about zero-slot objects?
 				if (pointeeTy.sizeInComponents > 0)
 				{
-					routine->createLvalue(insn.word(2), pointeeTy.sizeInComponents);
+					routine->createLvalue(resultId, pointeeTy.sizeInComponents);
 				}
 				break;
 			}
@@ -807,8 +821,14 @@ namespace sw
 
 	void SpirvShader::emit(SpirvRoutine *routine) const
 	{
+		printf("SpirvShader::emit()\n");
+		// RR_LOG("SpirvShader::emit()");
+
 		for (auto insn : *this)
 		{
+			printf("%s\n", OpcodeName(insn.opcode()).c_str());
+			// RR_WATCH(OpcodeName(insn.opcode()));
+
 			switch (insn.opcode())
 			{
 			case spv::OpTypeVoid:
@@ -893,15 +913,45 @@ namespace sw
 		ObjectID resultId = insn.word(2);
 		auto &object = getObject(resultId);
 		auto &objectTy = getType(object.type);
-		if (object.kind == Object::Kind::InterfaceVariable && objectTy.storageClass == spv::StorageClassInput)
+		switch (objectTy.storageClass)
 		{
-			auto &dst = routine->getValue(resultId);
-			int offset = 0;
-			VisitInterface(resultId,
+		case spv::StorageClassInput:
+		{
+			if (object.kind == Object::Kind::InterfaceVariable)
+			{
+				auto &dst = routine->getValue(resultId);
+				int offset = 0;
+				VisitInterface(resultId,
 							[&](Decorations const &d, AttribType type) {
 								auto scalarSlot = d.Location << 2 | d.Component;
 								dst[offset++] = routine->inputs[scalarSlot];
 							});
+			}
+			break;
+		}
+		case spv::StorageClassUniform:
+		{
+			auto layout = routine->descriptorSetsLayout;
+
+			Decorations d{};
+			ApplyDecorationsForId(&d, resultId);
+			ASSERT(d.DescriptorSet >= 0);
+			ASSERT(d.Binding >= 0);
+
+			size_t bindingOffset = layout->getBindingOffset(d.DescriptorSet, d.Binding);
+
+			Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet]; // DescriptorSet*
+			Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset); // VkDescriptorBufferInfo*
+			Pointer<Byte> buffer = *Pointer<Pointer<Byte>>(binding + OFFSET(VkDescriptorBufferInfo, buffer)); // vk::Buffer*
+			Pointer<Byte> data = *Pointer<Pointer<Byte>>(buffer + vk::Buffer::DataOffset); // void*
+			Int offset = *Pointer<Int>(binding + OFFSET(VkDescriptorBufferInfo, offset));
+			Pointer<Byte> address = data + offset;
+			routine->physicalPointers[resultId] = address;
+			// RR_WATCH(d.DescriptorSet, d.Binding, set, binding, data, offset, address, resultId.value());
+			break;
+		}
+		default:
+			break;
 		}
 	}
 
@@ -918,11 +968,9 @@ namespace sw
 		ASSERT(getType(pointer.type).element == object.type);
 		ASSERT(TypeID(insn.word(1)) == object.type);
 
-		if (pointerBaseTy.storageClass == spv::StorageClassImage ||
-			pointerBaseTy.storageClass == spv::StorageClassUniform ||
-			pointerBaseTy.storageClass == spv::StorageClassUniformConstant)
+		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
-			UNIMPLEMENTED("Descriptor-backed load not yet implemented");
+			UNIMPLEMENTED("StorageClassImage load not yet implemented");
 		}
 
 		Pointer<Float> ptrBase;
@@ -953,6 +1001,7 @@ namespace sw
 					if (interleavedByLane) { offset = offset * SIMD::Width + j; }
 					v = Insert(v, ptrBase[offset], j);
 				}
+				// RR_WATCH(objectId.value(), offsets, As<IntL>(v));
 				dst.emplace(i, v);
 			}
 		}
@@ -987,11 +1036,9 @@ namespace sw
 		ASSERT(type.sizeInComponents == 1);
 		ASSERT(getObject(baseId).pointerBase == object.pointerBase);
 
-		if (pointerBaseTy.storageClass == spv::StorageClassImage ||
-			pointerBaseTy.storageClass == spv::StorageClassUniform ||
-			pointerBaseTy.storageClass == spv::StorageClassUniformConstant)
+		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
-			UNIMPLEMENTED("Descriptor-backed OpAccessChain not yet implemented");
+			UNIMPLEMENTED("OpAccessChain for StorageClassImage not yet implemented");
 		}
 		auto &dst = routine->createIntermediate(objectId, type.sizeInComponents);
 		dst.emplace(0, As<SIMD::Float>(WalkAccessChain(baseId, insn.wordCount() - 4, insn.wordPointer(4), routine)));
@@ -1008,11 +1055,9 @@ namespace sw
 		auto &pointerBase = getObject(pointer.pointerBase);
 		auto &pointerBaseTy = getType(pointerBase.type);
 
-		if (pointerBaseTy.storageClass == spv::StorageClassImage ||
-			pointerBaseTy.storageClass == spv::StorageClassUniform ||
-			pointerBaseTy.storageClass == spv::StorageClassUniformConstant)
+		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
-			UNIMPLEMENTED("Descriptor-backed store not yet implemented");
+			UNIMPLEMENTED("StorageClassImage store not yet implemented");
 		}
 
 		Pointer<Float> ptrBase;

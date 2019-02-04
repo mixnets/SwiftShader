@@ -777,26 +777,6 @@ namespace rr
 		return reinterpret_cast<BasicBlock*>(t);
 	}
 
-	static size_t typeSize(Type *type)
-	{
-		uintptr_t t = reinterpret_cast<uintptr_t>(type);
-		if(t < EmulatedTypeCount)
-		{
-			switch(t)
-			{
-			case Type_v2i32: return 8;
-			case Type_v4i16: return 8;
-			case Type_v2i16: return 4;
-			case Type_v8i8:  return 8;
-			case Type_v4i8:  return 4;
-			case Type_v2f32: return 8;
-			default: assert(false);
-			}
-		}
-
-		return T(type)->getPrimitiveSizeInBits() / 8;
-	}
-
 	static unsigned int elementCount(Type *type)
 	{
 		uintptr_t t = reinterpret_cast<uintptr_t>(type);
@@ -1246,28 +1226,7 @@ namespace rr
 
 	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index, bool unsignedIndex)
 	{
-		if(sizeof(void*) == 8)
-		{
-			if(unsignedIndex)
-			{
-				index = createZExt(index, Long::getType());
-			}
-			else
-			{
-				index = createSExt(index, Long::getType());
-			}
-
-			index = createMul(index, createConstantLong((int64_t)typeSize(type)));
-		}
-		else
-		{
-			index = createMul(index, createConstantInt((int)typeSize(type)));
-		}
-
-		assert(V(ptr)->getType()->getContainedType(0) == T(type));
-		return createBitCast(
-			V(::builder->CreateGEP(V(createBitCast(ptr, T(llvm::PointerType::get(T(Byte::getType()), 0)))), V(index))),
-			T(llvm::PointerType::get(T(type), 0)));
+		return V(::builder->CreateGEP(V(ptr), V(index)));
 	}
 
 	Value *Nucleus::createAtomicAdd(Value *ptr, Value *value)
