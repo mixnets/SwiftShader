@@ -44,14 +44,21 @@ size_t PipelineLayout::ComputeRequiredAllocationSize(const VkPipelineLayoutCreat
 	       (pCreateInfo->pushConstantRangeCount * sizeof(VkPushConstantRange));
 }
 
+const DescriptorSetLayout* PipelineLayout::getDescriptorSetLayout(uint32_t index) const
+{
+	ASSERT(index < setLayoutCount);
+	return setLayouts[index];
+}
+
 size_t PipelineLayout::getNumDescriptorSets() const
 {
-	return 0; // TODO(bclayton): Waiting on https://swiftshader-review.googlesource.com/c/SwiftShader/+/24910
+	return setLayoutCount;
 }
 
 size_t PipelineLayout::getBindingOffset(size_t descriptorSet, size_t binding) const
 {
-	return 0; // TODO(bclayton): Waiting on https://swiftshader-review.googlesource.com/c/SwiftShader/+/24910
+	auto setLayout = getDescriptorSetLayout(descriptorSet);
+	return setLayout->getBindingOffset(binding);
 }
 
 } // namespace vk

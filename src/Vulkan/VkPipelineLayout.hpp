@@ -33,6 +33,8 @@ public:
 	size_t getBindingOffset(size_t descriptorSet, size_t binding) const;
 
 private:
+	const DescriptorSetLayout* getDescriptorSetLayout(uint32_t index) const;
+
 	uint32_t              setLayoutCount = 0;
 	DescriptorSetLayout** setLayouts = nullptr;
 	uint32_t              pushConstantRangeCount = 0;
