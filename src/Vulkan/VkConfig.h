@@ -58,6 +58,11 @@ enum
 	MAX_VERTEX_INPUT_BINDINGS = 16,
 };
 
+enum
+{
+	MAX_BOUND_DESCRIPTOR_SETS = 4,
+};
+
 }
 
 #endif // VK_CONFIG_HPP_
