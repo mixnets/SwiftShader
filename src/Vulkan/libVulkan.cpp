@@ -19,6 +19,7 @@
 #include "VkConfig.h"
 #include "VkDebug.hpp"
 #include "VkDescriptorPool.hpp"
+#include "VkDescriptorSet.hpp"
 #include "VkDescriptorSetLayout.hpp"
 #include "VkDestroy.h"
 #include "VkDevice.hpp"
@@ -1006,7 +1007,11 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateComputePipelines(VkDevice device, VkPipel
 	for(uint32_t i = 0; i < createInfoCount; i++)
 	{
 		VkResult result = vk::ComputePipeline::Create(pAllocator, &pCreateInfos[i], &pPipelines[i]);
-		if(result != VK_SUCCESS)
+		if(result == VK_SUCCESS)
+		{
+			static_cast<vk::ComputePipeline*>(vk::Cast(pPipelines[i]))->compileShaders(pAllocator, &pCreateInfos[i]);
+		}
+		else
 		{
 			// According to the Vulkan spec, section 9.4. Multiple Pipeline Creation
 			// "When an application attempts to create many pipelines in a single command,
@@ -1155,8 +1160,18 @@ VKAPI_ATTR VkResult VKAPI_CALL vkFreeDescriptorSets(VkDevice device, VkDescripto
 
 VKAPI_ATTR void VKAPI_CALL vkUpdateDescriptorSets(VkDevice device, uint32_t descriptorWriteCount, const VkWriteDescriptorSet* pDescriptorWrites, uint32_t descriptorCopyCount, const VkCopyDescriptorSet* pDescriptorCopies)
 {
-	TRACE("()");
-	UNIMPLEMENTED();
+	TRACE("(VkDevice device = 0x%X, uint32_t descriptorWriteCount = %d, const VkWriteDescriptorSet* pDescriptorWrites = 0x%X, uint32_t descriptorCopyCount = %d, const VkCopyDescriptorSet* pDescriptorCopies = 0x%X)",
+		device, descriptorWriteCount, pDescriptorWrites, descriptorCopyCount, pDescriptorCopies);
+
+	for (uint32_t i = 0; i < descriptorWriteCount; i++)
+	{
+		vk::DescriptorSet::Write(pDescriptorWrites[i]);
+	}
+
+	for (uint32_t i = 0; i < descriptorCopyCount; i++)
+	{
+		vk::DescriptorSet::Copy(pDescriptorCopies[i]);
+	}
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateFramebuffer(VkDevice device, const VkFramebufferCreateInfo* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkFramebuffer* pFramebuffer)

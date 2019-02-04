@@ -2330,6 +2330,7 @@ if(BUILD_TESTS AND BUILD_VULKAN)
         ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/include/
         ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googlemock/include/
         ${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/googletest/
+        ${CMAKE_CURRENT_SOURCE_DIR}/third_party/SPIRV-Tools/include
         ${CMAKE_CURRENT_SOURCE_DIR}/include/
     )
 
@@ -2340,5 +2341,5 @@ if(BUILD_TESTS AND BUILD_VULKAN)
         COMPILE_DEFINITIONS "STANDALONE"
     )
 
-    target_link_libraries(vk-unittests ${OS_LIBS})
+    target_link_libraries(vk-unittests ${OS_LIBS} SPIRV-Tools)
 endif()
