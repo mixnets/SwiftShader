@@ -70,6 +70,30 @@
       "revId": "c46017acba23bffbb25b06315e9d5d894d48e570",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7ac4c3bb_129e4958",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-04T22:45:08Z",
+      "side": 1,
+      "message": "Fix for the submodule test here:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/24408",
+      "parentUuid": "d4569893_0165bd30",
+      "range": {
+        "startLine": 18,
+        "startChar": 10,
+        "endLine": 18,
+        "endChar": 20
+      },
+      "revId": "c46017acba23bffbb25b06315e9d5d894d48e570",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
