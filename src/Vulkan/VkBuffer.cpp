@@ -26,6 +26,9 @@ Buffer::Buffer(const VkBufferCreateInfo* pCreateInfo, void* mem) :
 	sharingMode(pCreateInfo->sharingMode), queueFamilyIndexCount(pCreateInfo->queueFamilyIndexCount),
 	queueFamilyIndices(reinterpret_cast<uint32_t*>(mem))
 {
+	// Check DataOffset is correct.
+	static_assert(Buffer::DataOffset == offsetof(Buffer, memory));
+
 	size_t queueFamilyIndicesSize = sizeof(uint32_t) * queueFamilyIndexCount;
 	memcpy(queueFamilyIndices, pCreateInfo->pQueueFamilyIndices, queueFamilyIndicesSize);
 }

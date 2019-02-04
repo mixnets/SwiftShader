@@ -14,6 +14,7 @@
 
 #include "VkPipeline.hpp"
 #include "VkPipelineLayout.hpp"
+#include "VkDescriptorSetLayout.hpp"
 #include "VkShaderModule.hpp"
 #include "Pipeline/SpirvShader.hpp"
 
@@ -499,11 +500,40 @@ ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo,
 
 void ComputePipeline::destroyPipeline(const VkAllocationCallbacks* pAllocator)
 {
+	delete shader;
 }
 
 size_t ComputePipeline::ComputeRequiredAllocationSize(const VkComputePipelineCreateInfo* pCreateInfo)
 {
 	return 0;
+}
+
+void ComputePipeline::compileShaders(const VkAllocationCallbacks* pAllocator, const VkComputePipelineCreateInfo* pCreateInfo)
+{
+	auto module = Cast(pCreateInfo->stage.module);
+
+	// TODO: apply prep passes using SPIRV-Opt here.
+	// - Apply and freeze specializations, etc.
+	auto code = module->getCode();
+
+	// TODO: pass in additional information here:
+	// - any NOS from pCreateInfo which we'll actually need
+	ASSERT(shader == nullptr);
+	// FIXME (b/119409619): use allocator.
+	shader = new sw::SpirvShader{code};
+
+	program = new sw::ComputeProgram(shader, layout);
+
+	program->generate();
+
+	// TODO: Cache program
+}
+
+void ComputePipeline::run(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
+	size_t numDescriptorSets, VkDescriptorSet* descriptorSets)
+{
+	program->run(groupCountX, groupCountY, groupCountZ,
+		numDescriptorSets, reinterpret_cast<void**>(descriptorSets));
 }
 
 } // namespace vk
