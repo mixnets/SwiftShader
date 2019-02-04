@@ -17,6 +17,7 @@
 
 #include "System/Types.hpp"
 #include "Vulkan/VkDebug.hpp"
+#include "Vulkan/VkDescriptorSetLayout.hpp"
 #include "ShaderCore.hpp"
 #include "ID.hpp"
 
@@ -52,6 +53,12 @@ namespace sw
 		}
 
 		void emplace(uint32_t n, Scalar&& value)
+		{
+			assert(n < size);
+			new (&contents[n]) Scalar(value);
+		}
+
+		void emplace(uint32_t n, const Scalar& value)
 		{
 			assert(n < size);
 			new (&contents[n]) Scalar(value);
@@ -155,23 +162,28 @@ namespace sw
 			return InsnIterator{insns.cend()};
 		}
 
+		class Type;
+		using TypeID = ID<Type>;
+
 		class Type
 		{
 		public:
 			InsnIterator definition;
-			spv::StorageClass storageClass;
+			spv::StorageClass storageClass = (spv::StorageClass)-1;
 			uint32_t sizeInComponents = 0;
 			bool isBuiltInBlock = false;
+			TypeID element = -1; // Pointee type if a pointer.
 		};
+
+		class Object;
+		using ObjectID = ID<Object>;
 
 		class Object
 		{
 		public:
 			InsnIterator definition;
-			spv::StorageClass storageClass;
-			uint32_t sizeInComponents = 0;
-			bool isBuiltInBlock = false;
-			uint32_t pointerBase = 0;
+			TypeID type = -1;
+			ObjectID pointerBase = 0;
 			std::unique_ptr<uint32_t[]> constantValue = nullptr;
 
 			enum class Kind
@@ -181,11 +193,10 @@ namespace sw
 				InterfaceVariable,
 				Constant,
 				Value,
+				PhysicalPointer,
 			} kind = Kind::Unknown;
 		};
 
-		using TypeID = ID<Type>;
-		using ObjectID = ID<Object>;
 
 		struct TypeOrObject {}; // Dummy struct to represent a Type or Object.
 
@@ -246,9 +257,11 @@ namespace sw
 
 		struct Decorations
 		{
-			int32_t Location;
-			int32_t Component;
-			spv::BuiltIn BuiltIn;
+			int32_t Location = -1;
+			int32_t Component = -1;
+			int32_t DescriptorSet = -1;
+			int32_t Binding = -1;
+			spv::BuiltIn BuiltIn = (spv::BuiltIn)-1;
 			bool HasLocation : 1;
 			bool HasComponent : 1;
 			bool HasBuiltIn : 1;
@@ -259,9 +272,9 @@ namespace sw
 			bool BufferBlock : 1;
 
 			Decorations()
-					: Location{-1}, Component{0}, BuiltIn{}, HasLocation{false}, HasComponent{false}, HasBuiltIn{false},
-					  Flat{false},
-					  Centroid{false}, NoPerspective{false}, Block{false},
+					: Location{-1}, Component{0}, DescriptorSet{-1}, Binding{-1},
+					  BuiltIn{}, HasLocation{false}, HasComponent{false}, HasBuiltIn{false},
+					  Flat{false}, Centroid{false}, NoPerspective{false}, Block{false},
 					  BufferBlock{false}
 			{
 			}
@@ -356,8 +369,12 @@ namespace sw
 
 		std::unordered_map<SpirvShader::ObjectID, Intermediate> intermediates;
 
+		std::unordered_map<SpirvShader::ObjectID, Pointer<Byte> > physicalPointers;
+
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
+
+		Array< Pointer<Byte> > descriptorSets = Array< Pointer<Byte> >(MAX_DESCRIPTOR_SETS);
 
 		void createLvalue(SpirvShader::ObjectID id, uint32_t size)
 		{
@@ -382,6 +399,13 @@ namespace sw
 		{
 			auto it = intermediates.find(id);
 			assert(it != intermediates.end());
+			return it->second;
+		}
+
+		Pointer<Byte>& getPhysicalPointer(SpirvShader::ObjectID id)
+		{
+			auto it = physicalPointers.find(id);
+			assert(it != physicalPointers.end());
 			return it->second;
 		}
 	};
