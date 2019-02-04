@@ -32,6 +32,7 @@ public:
 	static size_t GetDescriptorSize(VkDescriptorType type);
 
 	size_t getSize() const;
+	ptrdiff_t bindingOffset(VkDescriptorType type, uint32_t bindingIndex);
 
 private:
 	VkDescriptorSetLayoutCreateFlags flags;
