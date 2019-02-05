@@ -16,6 +16,24 @@
       "revId": "be80fbe0db29289f335e9b31e904c072c4e0d836",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd3aa924_02e01f3f",
+        "filename": ".gitignore",
+        "patchSetId": 7
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-05T17:22:49Z",
+      "side": 0,
+      "message": "This works fine (*) for me on my gLinux workstation, and Kokoro didn\u0027t find any issues either. The \u0027mkdir build\u0027 command now fails though, but Kokoro\u0027s script uses \u0027mkdir -p build\u0027, which doesn\u0027t complain. I can update the doc accordingly.\n\n(*) Actually I\u0027m getting warnings about \u0027-Werror\u003dunused-lambda-capture\u0027 and \u0027-s\u0027, which are treated as errors because of SPIRV-Tools\u0027 build settings. Easy to avoid by removing them from CMakeLists.txt, but I\u0027ll look into the root cause.",
+      "parentUuid": "00df80c8_4c909bac",
+      "revId": "be80fbe0db29289f335e9b31e904c072c4e0d836",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
