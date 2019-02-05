@@ -104,6 +104,24 @@
       "revId": "19e96089408b892a5be493b7b2b8c640ce2dfc6c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60cba4c8_2bfafbb7",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-05T22:19:23Z",
+      "side": 1,
+      "message": "Meh, computing the size is easy enough. I added it and now return the correct return value.",
+      "parentUuid": "61500f3f_87d3a37f",
+      "revId": "19e96089408b892a5be493b7b2b8c640ce2dfc6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
