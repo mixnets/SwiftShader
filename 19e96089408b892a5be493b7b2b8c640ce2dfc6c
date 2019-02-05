@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "e19fc946_e2991d46",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-05T21:54:18Z",
+      "side": 1,
+      "message": "Yes, without any optimization, dEQP-VK.api.descriptor_pool.repeated_reset_long times out.\nAssuming linearly initialized descriptor sets makes it run fast enough to pass, even in Debug.",
+      "parentUuid": "5cbe614c_1a060312",
+      "revId": "19e96089408b892a5be493b7b2b8c640ce2dfc6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "97cb7035_20c08974",
         "filename": "src/Vulkan/VkDescriptorPool.cpp",
         "patchSetId": 6
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "b1caf9e3_52bd8449",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-05T21:54:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "97cb7035_20c08974",
+      "revId": "19e96089408b892a5be493b7b2b8c640ce2dfc6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "43fafefa_e99ab6fa",
         "filename": "src/Vulkan/VkDescriptorPool.cpp",
         "patchSetId": 6
@@ -47,6 +83,24 @@
       "writtenOn": "2019-02-03T03:16:41Z",
       "side": 1,
       "message": "VK_ERROR_FRAGMENTED_POOL may be more precise in this case?",
+      "revId": "19e96089408b892a5be493b7b2b8c640ce2dfc6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "61500f3f_87d3a37f",
+        "filename": "src/Vulkan/VkDescriptorPool.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-05T21:54:18Z",
+      "side": 1,
+      "message": "I actually don\u0027t know at this point if the pool is fragmented or if we really ran out of pool memory. I would need to compute the amount of fragmented free space in the pool to know this. Do you think it\u0027s worth the effort to return the proper error code?",
+      "parentUuid": "43fafefa_e99ab6fa",
       "revId": "19e96089408b892a5be493b7b2b8c640ce2dfc6c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
