@@ -34,6 +34,24 @@
       "revId": "be80fbe0db29289f335e9b31e904c072c4e0d836",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5e386035_1421a43b",
+        "filename": ".gitignore",
+        "patchSetId": 7
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-05T19:11:10Z",
+      "side": 0,
+      "message": "Have a look at the git state after building. All the build products are untracked and not ignored.",
+      "parentUuid": "bd3aa924_02e01f3f",
+      "revId": "be80fbe0db29289f335e9b31e904c072c4e0d836",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
