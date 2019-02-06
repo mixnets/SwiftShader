@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a9f2623_e5469a59",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2208,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-06T00:58:53Z",
+      "side": 1,
+      "message": "This isn\u0027t quite enough to be useful.\n\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/24132",
+      "revId": "720b77c0c723498cb56d590fa67a8a3e8cc67012",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
