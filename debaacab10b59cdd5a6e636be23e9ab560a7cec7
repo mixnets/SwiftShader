@@ -94,6 +94,30 @@
       "revId": "debaacab10b59cdd5a6e636be23e9ab560a7cec7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4f41f24c_dc75cbac",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-06T05:12:22Z",
+      "side": 0,
+      "message": "Indeed it looks like a traling backslash is now widely supported for line breaks. Let\u0027s keep it in mind for the next .md file edit. Thanks!",
+      "parentUuid": "3ee2cc4f_ee781f2a",
+      "range": {
+        "startLine": 13,
+        "startChar": 68,
+        "endLine": 13,
+        "endChar": 71
+      },
+      "revId": "debaacab10b59cdd5a6e636be23e9ab560a7cec7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
