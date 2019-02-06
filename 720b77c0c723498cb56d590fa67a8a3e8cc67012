@@ -16,6 +16,24 @@
       "revId": "720b77c0c723498cb56d590fa67a8a3e8cc67012",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5c4ce21_bdb81af8",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2208,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-06T01:02:19Z",
+      "side": 1,
+      "message": "I see, the other bits are in another patch.",
+      "parentUuid": "1a9f2623_e5469a59",
+      "revId": "720b77c0c723498cb56d590fa67a8a3e8cc67012",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
