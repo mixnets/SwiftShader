@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1e1efb75_fdbff2aa",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-06T19:45:25Z",
+      "side": 1,
+      "message": "s/pyhton/python",
+      "range": {
+        "startLine": 158,
+        "startChar": 4,
+        "endLine": 158,
+        "endChar": 10
+      },
+      "revId": "c8a4048075f996caa29d0766f877036a33ada610",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "89e0422b_ac20c557",
+        "filename": "docs/dEQP.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-06T19:45:25Z",
+      "side": 1,
+      "message": "With https://swiftshader-review.googlesource.com/c/SwiftShader/+/24470 you might be able to just point VK_ICD_FILENAMES to the generated vk_swiftshader_icd.json file.\nIf you don\u0027t beat me to it, I\u0027ll give this a test tomorrow to check.",
+      "range": {
+        "startLine": 175,
+        "startChar": 3,
+        "endLine": 178,
+        "endChar": 47
+      },
+      "revId": "c8a4048075f996caa29d0766f877036a33ada610",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
