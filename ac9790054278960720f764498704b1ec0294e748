@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "262fe554_a4f25d92",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-06T19:27:05Z",
+      "side": 1,
+      "message": "Let\u0027s associate this with \"Bug b/116336664\"",
+      "revId": "ac9790054278960720f764498704b1ec0294e748",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
