@@ -22,6 +22,30 @@
       "revId": "d0cab171277bcd6d608881730885749ccb373177",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7eb9faf_0dc58f00",
+        "filename": ".vscode/tasks.json",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-08T15:44:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e6794e01_4ee30251",
+      "range": {
+        "startLine": 22,
+        "startChar": 17,
+        "endLine": 22,
+        "endChar": 21
+      },
+      "revId": "d0cab171277bcd6d608881730885749ccb373177",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
