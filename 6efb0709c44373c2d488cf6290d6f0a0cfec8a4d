@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2866f900_d9240be8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-09T01:37:23Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "c6eec757_d1066f93",
+      "range": {
+        "startLine": 9,
+        "startChar": 36,
+        "endLine": 9,
+        "endChar": 46
+      },
+      "revId": "6efb0709c44373c2d488cf6290d6f0a0cfec8a4d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ae91f0ca_ca790ec9",
         "filename": "/COMMIT_MSG",
         "patchSetId": 9
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "240d43ce_0fc26bb3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 9
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-09T01:37:23Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "ae91f0ca_ca790ec9",
+      "revId": "6efb0709c44373c2d488cf6290d6f0a0cfec8a4d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "33ba25da_7ebf4a22",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 9
@@ -53,6 +95,30 @@
       "writtenOn": "2019-02-07T19:33:04Z",
       "side": 1,
       "message": "What is NOS?",
+      "range": {
+        "startLine": 416,
+        "startChar": 11,
+        "endLine": 416,
+        "endChar": 14
+      },
+      "revId": "6efb0709c44373c2d488cf6290d6f0a0cfec8a4d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c598be8b_d6076a4c",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-09T01:37:23Z",
+      "side": 1,
+      "message": "in driver land, non-orthogonal state: the pipeline state bits that end up having to be baked in to the shader.",
+      "parentUuid": "33ba25da_7ebf4a22",
       "range": {
         "startLine": 416,
         "startChar": 11,
