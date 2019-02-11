@@ -375,6 +375,51 @@ TEST_F(SwiftShaderTest, ClearIncomplete)
 	Uninitialize();
 }
 
+// Test fragment shader file
+TEST_F(SwiftShaderTest, TestFS)
+{
+	Initialize(3, false);
+
+	unsigned char green[4] = { 0, 255, 0, 255 };
+
+	const std::string vs =
+		"#version 300 es\n"
+		"in vec4 position;\n"
+		"out vec4 color;\n"
+		"void main()\n"
+		"{\n"
+		"   for(int i = 0; i < 4; i++)\n"
+		"   {\n"
+		"       color[i] = (i % 2 == 0) ? 0.0 : 1.0;\n"
+		"   }\n"
+		"	gl_Position = vec4(position.xy, 0.0, 1.0);\n"
+		"}\n";
+
+	auto f = fopen("tests/GLESUnitTests/test.fs", "rb");
+	fseek(f, 0, SEEK_END);
+	auto len = ftell(f);
+	fseek(f, 0, SEEK_SET);
+	char* fs = new char[len];
+	fread(fs, len, 1, f);
+	fclose(f);
+
+	const ProgramHandles ph = createProgram(vs, fs);
+
+	glUseProgram(ph.program);
+
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	EXPECT_GLENUM_EQ(GL_NONE, glGetError());
+
+	drawQuad(ph.program);
+
+	deleteProgram(ph);
+
+	EXPECT_GLENUM_EQ(GL_NONE, glGetError());
+
+	Uninitialize();
+}
+
 // Test unrolling of a loop
 TEST_F(SwiftShaderTest, UnrollLoop)
 {
