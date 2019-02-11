@@ -128,6 +128,30 @@
       "revId": "6efb0709c44373c2d488cf6290d6f0a0cfec8a4d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59d98258_af242963",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-11T18:18:37Z",
+      "side": 1,
+      "message": "Thanks! It appears to be fairly Intel-specific parlance. Feel free to spell it out.",
+      "parentUuid": "c598be8b_d6076a4c",
+      "range": {
+        "startLine": 416,
+        "startChar": 11,
+        "endLine": 416,
+        "endChar": 14
+      },
+      "revId": "6efb0709c44373c2d488cf6290d6f0a0cfec8a4d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
