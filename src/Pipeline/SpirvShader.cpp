@@ -234,7 +234,7 @@ namespace sw
 					// interior ptr has two parts:
 					// - logical base ptr, common across all lanes and known at compile time
 					// - per-lane offset
-					object.pointerBase = insn.word(3);
+					object.pointerBase = getObject(insn.word(3)).pointerBase;
 				}
 				break;
 			}
