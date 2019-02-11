@@ -142,6 +142,24 @@
             }
         },
         {
+            "name": "fuzz",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/build/fuzz",
+            "args": ["corpus/", "corpus-in/"],
+            "cwd": "${workspaceRoot}/build",
+            "environment": [
+                {
+                    "name": "LD_LIBRARY_PATH",
+                    "value": "/usr/local/google/home/bclayton/bin/clang/lib:/usr/local/google/home/bclayton/bin/clang/lib/clang/7.0.1/lib/linux",
+                },
+                {
+                    "name": "ASAN_OPTIONS",
+                    "value": "detect_container_overflow=0",
+                }
+            ],
+        },
+        {
             "name": "C++ Attach",
             "type": "cppdbg",
             "request": "attach",

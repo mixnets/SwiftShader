@@ -2217,6 +2217,31 @@ if(BUILD_VULKAN)
 endif()
 
 ###########################################################
+# Fuzzing
+###########################################################
+
+if(FUZZ)
+    set(FUZZ_LIST
+        ${GLES2_LIST}
+        ${OPENGL_COMPILER_LIST}
+        ${REACTOR_LLVM_LIST}
+        ${SWIFTSHADER_LIST}
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/fuzzers/GLESFuzzer.cpp
+    )
+    # set_target_properties()
+    add_executable(fuzz ${FUZZ_LIST})
+    set_target_properties(fuzz PROPERTIES
+        INCLUDE_DIRECTORIES "${OPENGL_INCLUDE_DIR}"
+        FOLDER "Fuzz"
+        COMPILE_DEFINITIONS "NO_SANITIZE_FUNCTION="
+        COMPILE_FLAGS "-fsanitize=fuzzer,address"
+        LINK_FLAGS "-fsanitize=fuzzer,address"
+        PREFIX ""
+    )
+    target_link_libraries(fuzz llvm libEGL ${OS_LIBS})
+endif()
+
+###########################################################
 # Sample programs
 ###########################################################
 
