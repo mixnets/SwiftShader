@@ -46,6 +46,30 @@
       "revId": "4dcd812d0c2f8147a61433505314ae79ae4e97ac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2499de96_d20b8f97",
+        "filename": "src/Renderer/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-12T18:02:24Z",
+      "side": 1,
+      "message": "Looking at the source of Resource::destruct(), I don\u0027t see anything that would block until the worker threads have finished:\n\n\tvoid Resource::destruct()\n\t{\n\t\tcriticalSection.lock();\n\n\t\tif(count \u003d\u003d 0 \u0026\u0026 !blocked)\n\t\t{\n\t\t\tcriticalSection.unlock();\n\n\t\t\tdelete this;\n\n\t\t\treturn;\n\t\t}\n\n\t\torphaned \u003d true;\n\n\t\tcriticalSection.unlock();\n\t}\n\nIt looks like if there are worker threads, orphaned will get set to true and the resource will be freed when next unlocked. Am I missing something?",
+      "parentUuid": "28a132bf_cd39a58a",
+      "range": {
+        "startLine": 214,
+        "startChar": 2,
+        "endLine": 214,
+        "endChar": 19
+      },
+      "revId": "4dcd812d0c2f8147a61433505314ae79ae4e97ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
