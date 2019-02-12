@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee5ec9a2_04091059",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-12T20:51:43Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be \u0027y\u0027?",
+      "range": {
+        "startLine": 283,
+        "startChar": 69,
+        "endLine": 283,
+        "endChar": 70
+      },
+      "revId": "f4c95d1acb13305b91de0e7b7b4285df9b9ad67b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dbcfb116_05c28f89",
+        "filename": "src/Pipeline/VertexProgram.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-12T20:51:43Z",
+      "side": 1,
+      "message": "Nicolas: Should this be ASSERT()? Can you give us the rules on what we should use and where?",
+      "range": {
+        "startLine": 39,
+        "startChar": 3,
+        "endLine": 39,
+        "endChar": 9
+      },
+      "revId": "f4c95d1acb13305b91de0e7b7b4285df9b9ad67b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "257d9879_bcfd04ea",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-12T20:51:43Z",
+      "side": 1,
+      "message": "nit: unnecessary parenthesis.",
+      "range": {
+        "startLine": 101,
+        "startChar": 14,
+        "endLine": 101,
+        "endChar": 15
+      },
+      "revId": "f4c95d1acb13305b91de0e7b7b4285df9b9ad67b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "63b982f2_67534e73",
+        "filename": "src/Pipeline/VertexRoutine.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 672,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-12T20:51:43Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 672,
+        "startChar": 14,
+        "endLine": 672,
+        "endChar": 15
+      },
+      "revId": "f4c95d1acb13305b91de0e7b7b4285df9b9ad67b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
