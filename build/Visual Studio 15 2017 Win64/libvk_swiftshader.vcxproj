@@ -66,7 +66,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level3</WarningLevel>
@@ -128,7 +128,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <UseFullPaths>false</UseFullPaths>
       <WarningLevel>Level3</WarningLevel>
@@ -233,14 +233,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="$(SolutionDir)src\Pipeline\PixelProgram.hpp" />
     <ClCompile Include="$(SolutionDir)src\Pipeline\PixelRoutine.cpp" />
     <ClInclude Include="$(SolutionDir)src\Pipeline\PixelRoutine.hpp" />
-    <ClCompile Include="$(SolutionDir)src\Pipeline\PixelShader.cpp" />
-    <ClInclude Include="$(SolutionDir)src\Pipeline\PixelShader.hpp" />
     <ClCompile Include="$(SolutionDir)src\Pipeline\SamplerCore.cpp" />
     <ClInclude Include="$(SolutionDir)src\Pipeline\SamplerCore.hpp" />
     <ClCompile Include="$(SolutionDir)src\Pipeline\SetupRoutine.cpp" />
     <ClInclude Include="$(SolutionDir)src\Pipeline\SetupRoutine.hpp" />
-    <ClCompile Include="$(SolutionDir)src\Pipeline\Shader.cpp" />
-    <ClInclude Include="$(SolutionDir)src\Pipeline\Shader.hpp" />
     <ClCompile Include="$(SolutionDir)src\Pipeline\ShaderCore.cpp" />
     <ClInclude Include="$(SolutionDir)src\Pipeline\ShaderCore.hpp" />
     <ClCompile Include="$(SolutionDir)src\Pipeline\SpirvShader.cpp" />
@@ -249,8 +245,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="$(SolutionDir)src\Pipeline\VertexProgram.hpp" />
     <ClCompile Include="$(SolutionDir)src\Pipeline\VertexRoutine.cpp" />
     <ClInclude Include="$(SolutionDir)src\Pipeline\VertexRoutine.hpp" />
-    <ClCompile Include="$(SolutionDir)src\Pipeline\VertexShader.cpp" />
-    <ClInclude Include="$(SolutionDir)src\Pipeline\VertexShader.hpp" />
     <ClCompile Include="$(SolutionDir)src\System\CPUID.cpp" />
     <ClInclude Include="$(SolutionDir)src\System\CPUID.hpp" />
     <ClCompile Include="$(SolutionDir)src\System\Configurator.cpp" />
@@ -282,6 +276,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="$(SolutionDir)src\Vulkan\VkConfig.h" />
     <ClCompile Include="$(SolutionDir)src\Vulkan\VkDebug.cpp" />
     <ClInclude Include="$(SolutionDir)src\Vulkan\VkDebug.hpp" />
+    <ClCompile Include="$(SolutionDir)src\Vulkan\VkDescriptorPool.cpp" />
+    <ClInclude Include="$(SolutionDir)src\Vulkan\VkDescriptorPool.hpp" />
+    <ClCompile Include="$(SolutionDir)src\Vulkan\VkDescriptorSetLayout.cpp" />
+    <ClInclude Include="$(SolutionDir)src\Vulkan\VkDescriptorSetLayout.hpp" />
     <ClInclude Include="$(SolutionDir)src\Vulkan\VkDestroy.h" />
     <ClCompile Include="$(SolutionDir)src\Vulkan\VkDevice.cpp" />
     <ClInclude Include="$(SolutionDir)src\Vulkan\VkDevice.hpp" />
