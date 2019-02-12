@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0660e5e_cfe1eee5",
+        "filename": "src/Renderer/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-12T16:15:08Z",
+      "side": 1,
+      "message": "This is actually supposed to ensure that all worker threads are idle before we continue. Renderer::draw() increments the lock count and the last worker processing it decrements it in Renderer::finishRendering(). I suppose there could be a race when a new draw comes in right after sync-\u003edestruct(), but that\u0027s only possible if it\u0027s submitted from another thread than the one that\u0027s destroying the renderer.\n\nI thought that wasn\u0027t valid with OpenGL ES. Also note that we create a Renderer per es2::Context, and shared contexts merely share their resource manager. Also, you found this running the unit tests, which don\u0027t use multiple contexts/threads to my knowledge.\n\nSo I\u0027m quite curious about the root cause of this. There might be something else going on that isn\u0027t working as intended, which this patch may improve on but not fix properly.",
+      "range": {
+        "startLine": 214,
+        "startChar": 2,
+        "endLine": 214,
+        "endChar": 19
+      },
+      "revId": "4dcd812d0c2f8147a61433505314ae79ae4e97ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
