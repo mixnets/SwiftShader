@@ -518,7 +518,7 @@ namespace sw
 				if (obj.kind == Object::Kind::Constant)
 					res += Int4(stride * GetConstantInt(indexIds[i]));
 				else
-					res += Int4(stride) * As<Int4>((*(routine->lvalues)[indexIds[i]])[0]);
+					res += Int4(stride) * As<Int4>(routine->getValue(indexIds[i])[0]);
 				break;
 			}
 
@@ -678,12 +678,12 @@ namespace sw
 					UNIMPLEMENTED("Descriptor-backed load not yet implemented");
 				}
 
-				SpirvRoutine::Value& ptrBase = *(routine->lvalues)[pointer.pointerBase];
-				auto & dst = *(routine->lvalues)[insn.word(2)];
+				SpirvRoutine::Value& ptrBase = routine->getValue(pointer.pointerBase);
+				auto & dst = routine->getValue(insn.word(2));
 
 				if (pointerBase.kind == Object::Kind::Value)
 				{
-					auto offsets = As<Int4>(*(routine->lvalues)[insn.word(3)]);
+					auto offsets = As<Int4>(routine->getValue(insn.word(3)));
 					for (auto i = 0u; i < object.sizeInComponents; i++)
 					{
 						// i wish i had a Float,Float,Float,Float constructor here..
@@ -725,7 +725,7 @@ namespace sw
 					UNIMPLEMENTED("Descriptor-backed OpAccessChain not yet implemented");
 				}
 
-				auto & dst = *(routine->lvalues)[insn.word(2)];
+				auto & dst = routine->getValue(insn.word(2));
 				dst[0] = As<Float4>(WalkAccessChain(insn.word(3), insn.wordCount() - 4, insn.wordPointer(4), routine));
 				break;
 			}
@@ -748,12 +748,12 @@ namespace sw
 					UNIMPLEMENTED("Descriptor-backed store not yet implemented");
 				}
 
-				SpirvRoutine::Value& ptrBase = *(routine->lvalues)[pointer.pointerBase];
-				auto & src = *(routine->lvalues)[insn.word(2)];
+				SpirvRoutine::Value& ptrBase = routine->getValue(pointer.pointerBase);
+				auto & src = routine->getValue(insn.word(2));;
 
 				if (pointerBase.kind == Object::Kind::Value)
 				{
-					auto offsets = As<Int4>(*(routine->lvalues)[insn.word(1)]);
+					auto offsets = As<Int4>(routine->getValue(insn.word(1)));
 					for (auto i = 0u; i < object.sizeInComponents; i++)
 					{
 						// Scattered store
