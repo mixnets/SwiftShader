@@ -22,6 +22,30 @@
       "revId": "4dcd812d0c2f8147a61433505314ae79ae4e97ac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "28a132bf_cd39a58a",
+        "filename": "src/Renderer/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-12T17:02:29Z",
+      "side": 1,
+      "message": "Interesting - I\u0027ll investigate further.\nI encountered a deadlock about 2 hours into the dEQP tests with this change, so I\u0027ll definitely try to get to the bottom of this.",
+      "parentUuid": "a0660e5e_cfe1eee5",
+      "range": {
+        "startLine": 214,
+        "startChar": 2,
+        "endLine": 214,
+        "endChar": 19
+      },
+      "revId": "4dcd812d0c2f8147a61433505314ae79ae4e97ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
