@@ -72,6 +72,12 @@ namespace sw
 				return iter[n];
 			}
 
+			uint32_t const * wordPointer(uint32_t n) const
+			{
+				ASSERT(n < wordCount());
+				return &iter[n];
+			}
+
 			bool operator!=(InsnIterator const &other) const
 			{
 				return iter != other.iter;
@@ -263,8 +269,8 @@ namespace sw
 		void ProcessExecutionMode(InsnIterator it);
 
 		uint32_t ComputeTypeSize(InsnIterator insn);
-		void ApplyDecorationsForId(Decorations *d, uint32_t id);
-		void ApplyDecorationsForIdMember(Decorations *d, uint32_t id, uint32_t member);
+		void ApplyDecorationsForId(Decorations *d, uint32_t id) const;
+		void ApplyDecorationsForIdMember(Decorations *d, uint32_t id, uint32_t member) const;
 
 		void PopulateInterfaceSlot(std::vector<InterfaceComponent> *iface, Decorations const &d, AttribType type);
 
@@ -272,9 +278,11 @@ namespace sw
 
 		void PopulateInterface(std::vector<InterfaceComponent> *iface, uint32_t id);
 
-		uint32_t GetConstantInt(uint32_t id);
+		uint32_t GetConstantInt(uint32_t id) const;
 
 		void ProcessInterfaceVariable(Object &object);
+
+		Int4 WalkAccessChain(uint32_t id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
 	};
 }
 
