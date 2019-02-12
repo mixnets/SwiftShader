@@ -491,7 +491,11 @@ namespace sw
 		// TODO: avoid doing per-lane work in some cases if we can?
 
 		Int4 res = Int4(0);
-		auto typeId = getObject(id).definition.word(1);
+		auto & baseObject = getObject(id);
+		auto typeId = baseObject.definition.word(1);
+
+		if (baseObject.kind == Object::Kind::Value)
+			res += As<Int4>(routine->getValue(id)[0]);
 
 		for (auto i = 0u; i < numIndexes; i++)
 		{
