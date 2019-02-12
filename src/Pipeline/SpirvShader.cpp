@@ -485,6 +485,52 @@ namespace sw
 		PopulateInterfaceInner(iface, def.word(1), d);
 	}
 
+	Int4 SpirvShader::WalkAccessChain(uint32_t id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	{
+		// TODO: think about decorations, to make this work on location based interfaces
+		// TODO: think about explicit layout (UBO/SSBO) storage classes
+		// TODO: avoid doing per-lane work in some cases if we can?
+
+		Int4 res = Int4(0);
+		auto typeId = getObject(id).definition.word(1);
+
+		for (auto i = 0u; i < numIndexes; i++)
+		{
+			auto & type = getType(typeId);
+			switch (type.definition.opcode())
+			{
+			case spv::OpTypeStruct:
+			{
+				int memberIndex = GetConstantInt(indexIds[i]);
+				int offsetIntoStruct = 0;
+				for (auto j = 0; j < memberIndex; j++) {
+					offsetIntoStruct += getType(type.definition.word(2 + memberIndex)).sizeInComponents;
+				}
+				res += Int4(offsetIntoStruct);
+				break;
+			}
+
+			case spv::OpTypeVector:
+			case spv::OpTypeMatrix:
+			case spv::OpTypeArray:
+			{
+				auto stride = getType(type.definition.word(2)).sizeInComponents;
+				auto & obj = getObject(indexIds[i]);
+				if (obj.kind == Object::Kind::Constant)
+					res += Int4(stride * GetConstantInt(indexIds[i]));
+				else
+					res += Int4(stride) * As<Int4>((*(routine->lvalues)[indexIds[i]])[0]);
+				break;
+			}
+
+			default:
+				UNIMPLEMENTED("Unexpected type in WalkAccessChain");
+			}
+		}
+
+		return res;
+	}
+
 	void SpirvShader::Decorations::Apply(spv::Decoration decoration, uint32_t arg)
 	{
 		switch (decoration)
@@ -550,14 +596,14 @@ namespace sw
 		BufferBlock |= src.BufferBlock;
 	}
 
-	void SpirvShader::ApplyDecorationsForId(Decorations *d, uint32_t id)
+	void SpirvShader::ApplyDecorationsForId(Decorations *d, uint32_t id) const
 	{
 		auto it = decorations.find(id);
 		if (it != decorations.end())
 			d->Apply(it->second);
 	}
 
-	void SpirvShader::ApplyDecorationsForIdMember(Decorations *d, uint32_t id, uint32_t member)
+	void SpirvShader::ApplyDecorationsForIdMember(Decorations *d, uint32_t id, uint32_t member) const
 	{
 		auto it = memberDecorations.find(id);
 		if (it != memberDecorations.end() && member < it->second.size())
@@ -566,7 +612,7 @@ namespace sw
 		}
 	}
 
-	uint32_t SpirvShader::GetConstantInt(uint32_t id)
+	uint32_t SpirvShader::GetConstantInt(uint32_t id) const
 	{
 		// Slightly hackish access to constants very early in translation.
 		// General consumption of constants by other instructions should
@@ -574,7 +620,7 @@ namespace sw
 
 		// TODO: not encountered yet since we only use this for array sizes etc,
 		// but is possible to construct integer constant 0 via OpConstantNull.
-		auto insn = defs[id].definition;
+		auto insn = getObject(id).definition;
 		assert(insn.opcode() == spv::OpConstant);
 		assert(getType(insn.word(1)).definition.opcode() == spv::OpTypeInt);
 		return insn.word(3);
@@ -656,6 +702,32 @@ namespace sw
 						dst[i] = ptrBase[i];
 					}
 				}
+				break;
+			}
+			case spv::OpAccessChain:
+			{
+				auto &object = getObject(insn.word(2));
+				auto &type = getType(insn.word(1));
+				auto &base = getObject(insn.word(3));
+				routine->createLvalue(insn.word(2), type.sizeInComponents);		// TODO: this should be an ssavalue!
+				auto &pointerBase = getObject(object.pointerBase);
+				assert(type.sizeInComponents == 1);
+				assert(base.pointerBase == object.pointerBase);
+
+				if (pointerBase.kind == Object::Kind::InterfaceVariable)
+				{
+					UNIMPLEMENTED("Location-based OpAccessChain not yet implemented");
+				}
+
+				if (pointerBase.storageClass == spv::StorageClassImage ||
+					pointerBase.storageClass == spv::StorageClassUniform ||
+					pointerBase.storageClass == spv::StorageClassUniformConstant)
+				{
+					UNIMPLEMENTED("Descriptor-backed OpAccessChain not yet implemented");
+				}
+
+				auto & dst = *(routine->lvalues)[insn.word(2)];
+				dst[0] = As<Float4>(WalkAccessChain(insn.word(3), insn.wordCount() - 4, insn.wordPointer(4), routine));
 				break;
 			}
 			case spv::OpStore:
