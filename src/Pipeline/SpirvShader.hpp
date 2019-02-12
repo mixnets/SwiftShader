@@ -263,6 +263,8 @@ namespace sw
 		void ProcessExecutionMode(InsnIterator it);
 
 		uint32_t ComputeTypeSize(InsnIterator insn);
+		void ApplyDecorationsForId(Decorations *d, uint32_t id);
+		void ApplyDecorationsForIdMember(Decorations *d, uint32_t id, uint32_t member);
 
 		void PopulateInterfaceSlot(std::vector<InterfaceComponent> *iface, Decorations const &d, AttribType type);
 
