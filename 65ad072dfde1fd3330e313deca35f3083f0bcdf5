@@ -16,6 +16,24 @@
       "revId": "65ad072dfde1fd3330e313deca35f3083f0bcdf5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d2d9766c_690c95a3",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-13T16:44:51Z",
+      "side": 1,
+      "message": "At the toplevel? I think we could probably do that. Anything deeper is asking for trouble.",
+      "parentUuid": "a1c52368_1f5fef23",
+      "revId": "65ad072dfde1fd3330e313deca35f3083f0bcdf5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
