@@ -22,6 +22,30 @@
       "revId": "d22825217e868bf78355bfd792463f1df6f66c7f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c8f86907_9f2501b3",
+        "filename": "src/Device/Surface.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-02-13T21:25:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "452c0dca_518aba6f",
+      "range": {
+        "startLine": 21,
+        "startChar": 16,
+        "endLine": 21,
+        "endChar": 17
+      },
+      "revId": "d22825217e868bf78355bfd792463f1df6f66c7f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
