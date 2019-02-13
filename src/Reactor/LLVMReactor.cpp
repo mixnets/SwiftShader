@@ -117,6 +117,16 @@ namespace
 
 	rr::MutexLock codegenMutex;
 
+	std::string replace(std::string str, const std::string& substr, const std::string& replacement)
+	{
+		size_t pos = 0;
+		while((pos = str.find(substr, pos)) != std::string::npos) {
+			str.replace(pos, substr.length(), replacement);
+			pos += replacement.length();
+		}
+		return str;
+	}
+
 #if REACTOR_LLVM_VERSION >= 7
 	llvm::Value *lowerPAVG(llvm::Value *x, llvm::Value *y)
 	{
@@ -538,6 +548,7 @@ namespace rr
 			func_.emplace("floorf", reinterpret_cast<void*>(floorf));
 			func_.emplace("nearbyintf", reinterpret_cast<void*>(nearbyintf));
 			func_.emplace("truncf", reinterpret_cast<void*>(truncf));
+			func_.emplace("_printf", reinterpret_cast<void*>(printf));
 		}
 
 		void *findSymbol(const std::string &name) const
@@ -2695,6 +2706,11 @@ namespace rr
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
+	}
+
+	RValue<Byte> Extract(RValue<Byte4> val, int i)
+	{
+		return RValue<Byte>(Nucleus::createExtractElement(val.value, Byte::getType(), i));
 	}
 
 	Type *Byte4::getType()
@@ -7512,4 +7528,26 @@ namespace rr
 		}
 	}
 #endif  // defined(__i386__) || defined(__x86_64__)
+
+	void Printv(const char* fmt, std::initializer_list<PrintValue> args)
+	{
+		auto funcTy = ::llvm::FunctionType::get(::llvm::Type::getInt8PtrTy(*::context), true);
+		auto func = ::module->getOrInsertFunction("printf", funcTy);
+		::llvm::SmallVector<::llvm::Value*, 8> vals;
+		std::string str = fmt;
+		int i = 0;
+		for (const PrintValue& arg : args)
+		{
+			str = replace(str, "{" + std::to_string(i++) + "}", arg.format);
+		}
+		vals.push_back(::builder->CreateGlobalString(str));
+		for (const PrintValue& arg : args)
+		{
+			for (auto val : arg.values)
+			{
+				vals.push_back(V(val));
+			}
+		}
+		::builder->CreateCall(func, vals);
+	}
 }
