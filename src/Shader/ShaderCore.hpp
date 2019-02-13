@@ -381,4 +381,20 @@ namespace sw
 	};
 }
 
+namespace rr {
+	template <> struct PrintValue::Ty<sw::Vector4f>
+	{
+		static constexpr const char* fmt =
+			"[x: <%f, %f, %f, %f>,"
+			" y: <%f, %f, %f, %f>,"
+			" z: <%f, %f, %f, %f>,"
+			" w: <%f, %f, %f, %f>]";
+
+		static std::vector<rr::Value*> val(const sw::Vector4f& v)
+		{
+			return PrintValue::vals(v.x, v.y, v.z, v.w);
+		}
+	};
+}
+
 #endif   // sw_ShaderCore_hpp
