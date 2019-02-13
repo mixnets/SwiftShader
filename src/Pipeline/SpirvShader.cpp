@@ -297,7 +297,18 @@ namespace sw
 		else
 		{
 			object.kind = Object::Kind::InterfaceVariable;
-			PopulateInterface(&userDefinedInterface, resultId);
+			PopulateInterface(resultId,
+							  [&userDefinedInterface](Decorations const &d, AttribType type) {
+								  // Populate a single scalar slot in the interface from a collection of decorations and the intended component type.
+								  auto scalarSlot = (d.Location << 2) | d.Component;
+								  assert(scalarSlot >= 0 && scalarSlot < static_cast<int32_t>(userDefinedInterface.size()));
+
+								  auto &slot = userDefinedInterface[scalarSlot];
+								  slot.Type = type;
+								  slot.Flat = d.Flat;
+								  slot.NoPerspective = d.NoPerspective;
+								  slot.Centroid = d.Centroid;
+							  });
 		}
 	}
 
@@ -392,20 +403,8 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::PopulateInterfaceSlot(std::vector<InterfaceComponent> *iface, Decorations const &d, AttribType type)
-	{
-		// Populate a single scalar slot in the interface from a collection of decorations and the intended component type.
-		auto scalarSlot = (d.Location << 2) | d.Component;
-		assert(scalarSlot >= 0 && scalarSlot < static_cast<int32_t>(iface->size()));
-
-		auto &slot = (*iface)[scalarSlot];
-		slot.Type = type;
-		slot.Flat = d.Flat;
-		slot.NoPerspective = d.NoPerspective;
-		slot.Centroid = d.Centroid;
-	}
-
-	int SpirvShader::PopulateInterfaceInner(std::vector<InterfaceComponent> *iface, uint32_t id, Decorations d)
+	template<typename F>
+	int SpirvShader::PopulateInterfaceInner(uint32_t id, Decorations d, F f)
 	{
 		// Recursively walks variable definition and its type tree, taking into account
 		// any explicit Location or Component decorations encountered; where explicit
@@ -423,29 +422,29 @@ namespace sw
 		switch (obj.definition.opcode())
 		{
 		case spv::OpTypePointer:
-			return PopulateInterfaceInner(iface, obj.definition.word(3), d);
+			return PopulateInterfaceInner<F>(obj.definition.word(3), d, f);
 		case spv::OpTypeMatrix:
 			for (auto i = 0u; i < obj.definition.word(3); i++, d.Location++)
 			{
 				// consumes same components of N consecutive locations
-				PopulateInterfaceInner(iface, obj.definition.word(2), d);
+				PopulateInterfaceInner<F>(obj.definition.word(2), d, f);
 			}
 			return d.Location;
 		case spv::OpTypeVector:
 			for (auto i = 0u; i < obj.definition.word(3); i++, d.Component++)
 			{
 				// consumes N consecutive components in the same location
-				PopulateInterfaceInner(iface, obj.definition.word(2), d);
+				PopulateInterfaceInner<F>(obj.definition.word(2), d, f);
 			}
 			return d.Location + 1;
 		case spv::OpTypeFloat:
-			PopulateInterfaceSlot(iface, d, ATTRIBTYPE_FLOAT);
+			f(d, ATTRIBTYPE_FLOAT);
 			return d.Location + 1;
 		case spv::OpTypeInt:
-			PopulateInterfaceSlot(iface, d, obj.definition.word(3) ? ATTRIBTYPE_INT : ATTRIBTYPE_UINT);
+			f(d, obj.definition.word(3) ? ATTRIBTYPE_INT : ATTRIBTYPE_UINT);
 			return d.Location + 1;
 		case spv::OpTypeBool:
-			PopulateInterfaceSlot(iface, d, ATTRIBTYPE_UINT);
+			f(d, ATTRIBTYPE_UINT);
 			return d.Location + 1;
 		case spv::OpTypeStruct:
 		{
@@ -453,7 +452,7 @@ namespace sw
 			for (auto i = 0u; i < obj.definition.wordCount() - 2; i++)
 			{
 				ApplyDecorationsForIdMember(&d, id, i);
-				d.Location = PopulateInterfaceInner(iface, obj.definition.word(i + 2), d);
+				d.Location = PopulateInterfaceInner<F>(obj.definition.word(i + 2), d, f);
 				d.Component = 0;    // Implicit locations always have component=0
 			}
 			return d.Location;
@@ -463,7 +462,7 @@ namespace sw
 			auto arraySize = GetConstantInt(obj.definition.word(3));
 			for (auto i = 0u; i < arraySize; i++)
 			{
-				d.Location = PopulateInterfaceInner(iface, obj.definition.word(2), d);
+				d.Location = PopulateInterfaceInner<F>(obj.definition.word(2), d, f);
 			}
 			return d.Location;
 		}
@@ -473,7 +472,8 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::PopulateInterface(std::vector<InterfaceComponent> *iface, uint32_t id)
+	template<typename F>
+	void SpirvShader::PopulateInterface(uint32_t id, F f)
 	{
 		// Walk a variable definition and populate the interface from it.
 		Decorations d{};
@@ -481,7 +481,7 @@ namespace sw
 
 		auto def = getObject(id).definition;
 		assert(def.opcode() == spv::OpVariable);
-		PopulateInterfaceInner(iface, def.word(1), d);
+		PopulateInterfaceInner<F>(def.word(1), d, f);
 	}
 
 	Int4 SpirvShader::WalkAccessChain(uint32_t id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
