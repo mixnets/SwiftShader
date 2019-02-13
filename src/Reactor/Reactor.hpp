@@ -74,6 +74,7 @@ namespace rr
 	class Variable
 	{
 	protected:
+		friend class PrintValue;
 		Value *address;
 	};
 
@@ -474,6 +475,8 @@ namespace rr
 //	const Byte4 &operator++(Byte4 &val);   // Pre-increment
 //	RValue<Byte4> operator--(Byte4 &val, int);   // Post-decrement
 //	const Byte4 &operator--(Byte4 &val);   // Pre-decrement
+
+	RValue<Byte> Extract(RValue<Byte4> val, int i);
 
 	class SByte4 : public LValue<SByte4>
 	{
@@ -2812,6 +2815,24 @@ namespace rr
 	{
 		return ReinterpretCast<T>(val);
 	}
+
+	class PrintValue
+	{
+	public:
+		const char* const format;
+		const std::vector<Value*> values;
+
+		template<typename T>
+		inline PrintValue(const Pointer<T>& ptr) : format("%p"), values({ptr.address}) {}
+
+		inline PrintValue(const Byte4& v) : format("[%d, %d, %d, %d]"),
+			values({Extract(v, 0).value, Extract(v, 1).value, Extract(v, 2).value, Extract(v, 3).value}) {}
+	};
+
+	void Printv(const char* msg, std::initializer_list<PrintValue> vals);
+
+	template <typename ... ARGS>
+	void Print(const char* msg, ARGS ... vals) { Printv(msg, {vals...}); }
 
 	class ForData
 	{

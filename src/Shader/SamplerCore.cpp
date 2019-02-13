@@ -1774,10 +1774,13 @@ namespace sw
 			{
 			case 4:
 				{
+					Print("buffer[f0]={0}, buffer[f1]={1}, buffer[f2]={2}, buffer[f3]={3}\n",
+						buffer[f0], buffer[f1], buffer[f2], buffer[f3]);
 					Byte4 c0 = Pointer<Byte4>(buffer[f0])[index[0]];
 					Byte4 c1 = Pointer<Byte4>(buffer[f1])[index[1]];
 					Byte4 c2 = Pointer<Byte4>(buffer[f2])[index[2]];
 					Byte4 c3 = Pointer<Byte4>(buffer[f3])[index[3]];
+					Print("c0={0}, c1={1}, c2={2}, c3={3}\n", c0, c1, c2, c3);
 					c.x = Unpack(c0, c1);
 					c.y = Unpack(c2, c3);
 
