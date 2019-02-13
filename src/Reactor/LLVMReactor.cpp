@@ -117,6 +117,16 @@ namespace
 
 	rr::MutexLock codegenMutex;
 
+	std::string replace(std::string str, const std::string& substr, const std::string& replacement)
+	{
+		size_t pos = 0;
+		while((pos = str.find(substr, pos)) != std::string::npos) {
+			str.replace(pos, substr.length(), replacement);
+			pos += replacement.length();
+		}
+		return str;
+	}
+
 #if REACTOR_LLVM_VERSION >= 7
 	llvm::Value *lowerPAVG(llvm::Value *x, llvm::Value *y)
 	{
@@ -538,12 +548,20 @@ namespace rr
 			func_.emplace("floorf", reinterpret_cast<void*>(floorf));
 			func_.emplace("nearbyintf", reinterpret_cast<void*>(nearbyintf));
 			func_.emplace("truncf", reinterpret_cast<void*>(truncf));
+			func_.emplace("printf", reinterpret_cast<void*>(printf));
+			func_.emplace("puts", reinterpret_cast<void*>(puts));
 		}
 
 		void *findSymbol(const std::string &name) const
 		{
-			FunctionMap::const_iterator it = func_.find(name);
-			return (it != func_.end()) ? it->second : nullptr;
+			// Trim off any underscores from the start of the symbol. LLVM likes
+			// to append these on macOS.
+			const char* trimmed = name.c_str();
+			while (trimmed[0] == '_') { trimmed++; }
+
+			FunctionMap::const_iterator it = func_.find(trimmed);
+			assert(it != func_.end()); // Missing functions will likely make the module fail in exciting non-obvious ways.
+			return it->second;
 		}
 	};
 
@@ -2695,6 +2713,11 @@ namespace rr
 	{
 		Value *value = rhs.loadValue();
 		storeValue(value);
+	}
+
+	RValue<Byte> Extract(RValue<Byte4> val, int i)
+	{
+		return RValue<Byte>(Nucleus::createExtractElement(val.value, Byte::getType(), i));
 	}
 
 	Type *Byte4::getType()
@@ -7512,4 +7535,60 @@ namespace rr
 		}
 	}
 #endif  // defined(__i386__) || defined(__x86_64__)
+
+	static std::vector<Value*> extractAll(Value* vec, int n)
+	{
+		std::vector<Value*> elements;
+		elements.reserve(n);
+		for (int i = 0; i < n; i++)
+		{
+			auto el = V(::builder->CreateExtractElement(V(vec), i));
+			elements.push_back(el);
+		}
+		return elements;
+	}
+
+	static std::vector<Value*> toDouble(const std::vector<Value*>& vals)
+	{
+		auto doubleTy = ::llvm::Type::getDoubleTy(*::context);
+		std::vector<Value*> elements;
+		elements.reserve(vals.size());
+		for (auto v : vals)
+		{
+			elements.push_back(V(::builder->CreateFPExt(V(v), doubleTy)));
+		}
+		return elements;
+	}
+
+	std::vector<Value*> PrintValue::Ty<Byte4>::val(const RValue<Byte4>& v) { return extractAll(v.value, 4); }
+	std::vector<Value*> PrintValue::Ty<Int4>::val(const RValue<Int4>& v) { return extractAll(v.value, 4); }
+	std::vector<Value*> PrintValue::Ty<UInt4>::val(const RValue<UInt4>& v) { return extractAll(v.value, 4); }
+	std::vector<Value*> PrintValue::Ty<Short4>::val(const RValue<Short4>& v) { return extractAll(v.value, 4); }
+	std::vector<Value*> PrintValue::Ty<UShort4>::val(const RValue<UShort4>& v) { return extractAll(v.value, 4); }
+	std::vector<Value*> PrintValue::Ty<Float>::val(const RValue<Float>& v) { return toDouble({v.value}); }
+	std::vector<Value*> PrintValue::Ty<Float4>::val(const RValue<Float4>& v) { return toDouble(extractAll(v.value, 4)); }
+
+	void Printv(const char* fmt, std::initializer_list<PrintValue> args)
+	{
+		auto funcTy = ::llvm::FunctionType::get(
+			::llvm::Type::getInt32Ty(*::context),
+			{::llvm::Type::getInt8PtrTy(*::context)}, true);
+		auto func = ::module->getOrInsertFunction("printf", funcTy);
+		::llvm::SmallVector<::llvm::Value*, 8> vals;
+		std::string str = fmt;
+		int i = 0;
+		for (const PrintValue& arg : args)
+		{
+			str = replace(str, "{" + std::to_string(i++) + "}", arg.format);
+		}
+		vals.push_back(::builder->CreateGlobalStringPtr(str));
+		for (const PrintValue& arg : args)
+		{
+			for (auto val : arg.values)
+			{
+				vals.push_back(V(val));
+			}
+		}
+		::builder->CreateCall(func, vals);
+	}
 }

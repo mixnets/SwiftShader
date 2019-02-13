@@ -21,6 +21,9 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdio>
+
+#include <string>
+
 #undef Bool
 
 namespace rr
@@ -74,6 +77,7 @@ namespace rr
 	class Variable
 	{
 	protected:
+		friend class PrintValue;
 		Value *address;
 	};
 
@@ -474,6 +478,8 @@ namespace rr
 //	const Byte4 &operator++(Byte4 &val);   // Pre-increment
 //	RValue<Byte4> operator--(Byte4 &val, int);   // Post-decrement
 //	const Byte4 &operator--(Byte4 &val);   // Pre-decrement
+
+	RValue<Byte> Extract(RValue<Byte4> val, int i);
 
 	class SByte4 : public LValue<SByte4>
 	{
@@ -2812,6 +2818,153 @@ namespace rr
 	{
 		return ReinterpretCast<T>(val);
 	}
+
+	class PrintValue
+	{
+		template <typename T> struct Ty {};
+
+		template <typename T>
+		static std::vector<Value*> val(const LValue<T>& v) { return val(RValue<T>(v.loadValue())); };
+
+		template <typename T>
+		static std::vector<Value*> val(const RValue<T>& v) { return Ty<T>::val(v); };
+
+		template <typename T>
+		static std::vector<Value*> val(const T& v) { return Ty<T>::val(v); };
+
+		template <typename T>
+		static std::vector<Value*> val(const T* list, int count) {
+			std::vector<Value*> values;
+			values.reserve(count);
+			for (int i = 0; i < count; i++)
+			{
+				auto v = val(list[i]);
+				values.insert(values.end(), v.begin(), v.end());
+			}
+			return values;
+		};
+
+		static std::string fmt(const char* el, int count)
+		{
+			std::string out = "[";
+			for (int i = 0; i < count; i++)
+			{
+				if (i > 0) { out += ", "; }
+				out += el;
+			}
+			return out + "]";
+		}
+
+	public:
+		const std::string format;
+		const std::vector<Value*> values;
+
+		template <typename T>
+		PrintValue(const T& v) : format(Ty<T>::fmt), values(val(v)) {}
+
+		template <typename T, int N>
+		PrintValue(const T (&v)[N]) : format(fmt(Ty<T>::fmt, N)), values(val(&v[0], N)) {}
+
+		template <typename T>
+		PrintValue(const T* arr, int len) : format(fmt(Ty<T>::fmt, len)), values(val(arr, len)) {}
+
+		PrintValue(bool v) : format(v ? "true" : "false") {}
+		PrintValue(int8_t v) : format(std::to_string(v)) {}
+		PrintValue(uint8_t v) : format(std::to_string(v)) {}
+		PrintValue(int16_t v) : format(std::to_string(v)) {}
+		PrintValue(uint16_t v) : format(std::to_string(v)) {}
+		PrintValue(int32_t v) : format(std::to_string(v)) {}
+		PrintValue(uint32_t v) : format(std::to_string(v)) {}
+		PrintValue(int64_t v) : format(std::to_string(v)) {}
+		PrintValue(uint64_t v) : format(std::to_string(v)) {}
+		PrintValue(float v) : format(std::to_string(v)) {}
+		PrintValue(double v) : format(std::to_string(v)) {}
+
+		template<typename ... ARGS>
+		static std::vector<Value*> vals(ARGS... args)
+		{
+			std::vector< std::vector<Value*> > lists = {val(args)...};
+			std::vector<Value*> joined;
+			for (const auto& list : lists)
+			{
+				joined.insert(joined.end(), list.begin(), list.end());
+			}
+			return joined;
+		}
+	};
+
+
+	template <> struct PrintValue::Ty<Byte>
+	{
+		static constexpr const char* fmt = "%d";
+		static std::vector<Value*> val(const RValue<Byte>& v) { return {v.value}; }
+	};
+	template <> struct PrintValue::Ty<Byte4>
+	{
+		static constexpr const char* fmt = "[%d, %d, %d, %d]";
+		static std::vector<Value*> val(const RValue<Byte4>& v);
+	};
+	template <> struct PrintValue::Ty<Int>
+	{
+		static constexpr const char* fmt = "%d";
+		static std::vector<Value*> val(const RValue<Int>& v) { return {v.value}; }
+	};
+	template <> struct PrintValue::Ty<Int4>
+	{
+		static constexpr const char* fmt = "[%d, %d, %d, %d]";
+		static std::vector<Value*> val(const RValue<Int4>& v);
+	};
+	template <> struct PrintValue::Ty<UInt>
+	{
+		static constexpr const char* fmt = "%u";
+		static std::vector<Value*> val(const RValue<UInt>& v) { return {v.value}; }
+	};
+	template <> struct PrintValue::Ty<UInt4>
+	{
+		static constexpr const char* fmt = "[%u, %u, %u, %u]";
+		static std::vector<Value*> val(const RValue<UInt4>& v);
+	};
+	template <> struct PrintValue::Ty<Short>
+	{
+		static constexpr const char* fmt = "%d";
+		static std::vector<Value*> val(const RValue<Short>& v) { return {v.value}; }
+	};
+	template <> struct PrintValue::Ty<Short4>
+	{
+		static constexpr const char* fmt = "[%d, %d, %d, %d]";
+		static std::vector<Value*> val(const RValue<Short4>& v);
+	};
+	template <> struct PrintValue::Ty<UShort>
+	{
+		static constexpr const char* fmt = "%u";
+		static std::vector<Value*> val(const RValue<UShort>& v) { return {v.value}; }
+	};
+	template <> struct PrintValue::Ty<UShort4>
+	{
+		static constexpr const char* fmt = "[%u, %u, %u, %u]";
+		static std::vector<Value*> val(const RValue<UShort4>& v);
+	};
+	template <> struct PrintValue::Ty<Float>
+	{
+		static constexpr const char* fmt = "[%f]";
+		static std::vector<Value*> val(const RValue<Float>& v);
+	};
+	template <> struct PrintValue::Ty<Float4>
+	{
+		static constexpr const char* fmt = "[%f, %f, %f, %f]";
+		static std::vector<Value*> val(const RValue<Float4>& v);
+	};
+	template <typename T> struct PrintValue::Ty< Pointer<T> >
+	{
+		static constexpr const char* fmt = "%p";
+		static std::vector<Value*> val(const Pointer<T>& v) { return { v.address }; };
+	};
+
+
+	void Printv(const char* msg, std::initializer_list<PrintValue> vals);
+
+	template <typename ... ARGS>
+	void Print(const char* msg, const ARGS& ... vals) { Printv(msg, {vals...}); }
 
 	class ForData
 	{
