@@ -1,0 +1,153 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1869b57f_67c52fa2",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 8
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-14T14:24:58Z",
+      "side": 1,
+      "message": "Admittedly only learning this myself right now, but apparently the add_definitions() function is a better way of setting a global definition, and appending the target-specific COMPILE_DEFINITIONS would be even better to reduce the scope of it: https://cmake.org/cmake/help/v3.0/prop_tgt/COMPILE_DEFINITIONS.html#prop_tgt:COMPILE_DEFINITIONS\n\nAnyway, since the line above was added by a predecessor and has the same flaws this doesn\u0027t make things worse, so LGTM.",
+      "range": {
+        "startLine": 258,
+        "startChar": 8,
+        "endLine": 258,
+        "endChar": 50
+      },
+      "revId": "7e465a50015dbb1bd6d472d50ee4a6a5cec5c940",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3ff6266c_2bda9a0e",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-14T14:24:58Z",
+      "side": 1,
+      "message": "nit: stray newline",
+      "revId": "7e465a50015dbb1bd6d472d50ee4a6a5cec5c940",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "38c14835_25c6409b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-14T14:24:58Z",
+      "side": 1,
+      "message": "can/should be const too? (I notice extensionProperties[] wasn\u0027t const before either, but probably should have been, unless I\u0027m missing something)",
+      "range": {
+        "startLine": 58,
+        "startChar": 0,
+        "endLine": 58,
+        "endChar": 6
+      },
+      "revId": "7e465a50015dbb1bd6d472d50ee4a6a5cec5c940",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "116de050_660338b5",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-14T14:24:58Z",
+      "side": 1,
+      "message": "We don\u0027t support these yet, so they shouldn\u0027t be advertised. If there\u0027s a strong reason we need this then a FIXME comment with a bug number is highly desired.",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 74
+      },
+      "revId": "7e465a50015dbb1bd6d472d50ee4a6a5cec5c940",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4821dc38_cae9af16",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-14T14:24:58Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 73,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 6
+      },
+      "revId": "7e465a50015dbb1bd6d472d50ee4a6a5cec5c940",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bac3ec60_98ad5545",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-14T14:24:58Z",
+      "side": 1,
+      "message": "note: These tables are wedged in between the definition of functions. The one above is an ICD function and the rest are core functions, so I guess separating them isn\u0027t so bad. In fact vk_icdGetInstanceProcAddr may even belong in a different file. LGTM for now.",
+      "range": {
+        "startLine": 93,
+        "startChar": 0,
+        "endLine": 93,
+        "endChar": 2
+      },
+      "revId": "7e465a50015dbb1bd6d472d50ee4a6a5cec5c940",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cca8cfdc_ac44544c",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-14T14:24:58Z",
+      "side": 1,
+      "message": "nit: Double newline",
+      "revId": "7e465a50015dbb1bd6d472d50ee4a6a5cec5c940",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
