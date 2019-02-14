@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "99774bf7_94891b57",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-14T09:31:12Z",
+      "side": 1,
+      "message": "Is it ever expected for ApplyDecorationsForId and ApplyDecorationsForIdMember to be handed an id / member index that is not recognised, or is this just playing safe with invalid SPIR-V input?\n\nIf it is not expected, maybe we should have a debug-only warning?\n\nIf it is expected, please can we have a comment here explaining when this can occur?",
+      "range": {
+        "startLine": 554,
+        "startChar": 6,
+        "endLine": 554,
+        "endChar": 29
+      },
+      "revId": "fbcedf6974eeee7ac66f628f5cf365b7a5ef8df6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
