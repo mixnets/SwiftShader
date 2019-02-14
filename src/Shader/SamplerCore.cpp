@@ -2380,14 +2380,15 @@ namespace sw
 				case ADDRESSING_CLAMP:
 				case ADDRESSING_BORDER:
 				case ADDRESSING_SEAMLESS:
-					// Linear filtering of cube doesn't require clamping because the coordinates
-					// are already in [0, 1] range and numerical imprecision is tolerated.
-					if(addressingMode != ADDRESSING_SEAMLESS || pointFilter)
-					{
-						Float4 one = As<Float4>(Int4(oneBits));
-						coord = Min(Max(coord, Float4(0.0f)), one);
-					}
-					break;
+				{
+					// Always clamp to [0, 1].
+					// While most coordinates are typically in this range, the
+					// clamp prevents infs, NaNs and numerical imprecision from
+					// causing out-of-bound reads of texels.
+					Float4 one = As<Float4>(Int4(oneBits));
+					coord = Min(Max(coord, Float4(0.0f)), one);
+				}
+				break;
 				case ADDRESSING_MIRROR:
 				{
 					Float4 half = As<Float4>(Int4(halfBits));
