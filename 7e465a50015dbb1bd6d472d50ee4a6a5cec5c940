@@ -88,6 +88,30 @@
     },
     {
       "key": {
+        "uuid": "73f75e8d_5a5ca203",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-14T19:28:52Z",
+      "side": 1,
+      "message": "We shouldn\u0027t be claiming to support these. These extensions are intended to be implemented by layers above the ICD, not the ICD itself.",
+      "parentUuid": "116de050_660338b5",
+      "range": {
+        "startLine": 66,
+        "startChar": 0,
+        "endLine": 67,
+        "endChar": 74
+      },
+      "revId": "7e465a50015dbb1bd6d472d50ee4a6a5cec5c940",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "4821dc38_cae9af16",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 8
