@@ -110,6 +110,7 @@ namespace sw
 				}
 				else
 				{
+					Print("fljksdjflsjdglkasj\n");
 					Float4 M;
 					cubeFace(face, uuuu, vvvv, u, v, w, M);
 					computeLodCube(texture, lod, u, v, w, bias.x, dsx, dsy, M, function);
@@ -756,6 +757,7 @@ namespace sw
 
 		if(state.textureFilter == FILTER_POINT || texelFetch)
 		{
+			Print("state.textureFilter == FILTER_POINT || texelFetch\n");
 			c = sampleTexel(uuuu, vvvv, wwww, offset, mipmap, buffer, function);
 		}
 		else
@@ -765,6 +767,7 @@ namespace sw
 			Short4 uuuu1 = offsetSample(uuuu, mipmap, OFFSET(Mipmap,uHalf), state.addressingModeU == ADDRESSING_WRAP, gather ? 2 : +1, lod);
 			Short4 vvvv1 = offsetSample(vvvv, mipmap, OFFSET(Mipmap,vHalf), state.addressingModeV == ADDRESSING_WRAP, gather ? 2 : +1, lod);
 
+			Print("fsdfkhsdks\n");
 			Vector4s c0 = sampleTexel(uuuu0, vvvv0, wwww, offset, mipmap, buffer, function);
 			Vector4s c1 = sampleTexel(uuuu1, vvvv0, wwww, offset, mipmap, buffer, function);
 			Vector4s c2 = sampleTexel(uuuu0, vvvv1, wwww, offset, mipmap, buffer, function);
@@ -951,6 +954,7 @@ namespace sw
 
 		if(state.textureFilter == FILTER_POINT || texelFetch)
 		{
+			Print("dlsdlfslk\n");
 			c_ = sampleTexel(uuuu, vvvv, wwww, offset, mipmap, buffer, function);
 		}
 		else
@@ -1451,6 +1455,10 @@ namespace sw
 
 	void SamplerCore::computeLodCube(Pointer<Byte> &texture, Float &lod, Float4 &u, Float4 &v, Float4 &w, const Float &lodBias, Vector4f &dsx, Vector4f &dsy, Float4 &M, SamplerFunction function)
 	{
+		Print("computeLodCube(texture: {0}, lod: {1}, u: {2}, v: {3}, w: {4}, lodBias: {5}, dsx: {6}, dsy: {7}, M: {8})\n",
+			texture, lod, u, v, w, lodBias, dsx, dsy, M);
+		Print("lod: {0}\n", lod);
+
 		if(function != Lod && function != Fetch)
 		{
 			Float4 dudxy, dvdxy, dsdxy;
@@ -1576,6 +1584,8 @@ namespace sw
 
 	void SamplerCore::cubeFace(Int face[4], Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z, Float4 &M)
 	{
+		Print("cubeFace\n");
+
 		Int4 xn = CmpLT(x, Float4(0.0f));   // x < 0
 		Int4 yn = CmpLT(y, Float4(0.0f));   // y < 0
 		Int4 zn = CmpLT(z, Float4(0.0f));   // z < 0
@@ -1654,8 +1664,13 @@ namespace sw
 
 	void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, Vector4f &offset, const Pointer<Byte> &mipmap, SamplerFunction function)
 	{
+		Print("computeIndices(index: {0}, uuuu: {1}, vvvv: {2}, wwww: {3}, <offset, mipmap, function>)\n",
+			PrintValue(index, 4), uuuu, vvvv, wwww);
+
 		bool texelFetch = (function == Fetch);
 		bool hasOffset = (function.option == Offset);
+
+		Print("texelFetch: {0}, hasOffset: {1}\n", texelFetch, hasOffset);
 
 		if(!texelFetch)
 		{
@@ -1728,6 +1743,9 @@ namespace sw
 
 	void SamplerCore::computeIndices(UInt index[4], Int4& uuuu, Int4& vvvv, Int4& wwww, const Pointer<Byte> &mipmap, SamplerFunction function)
 	{
+		Print("computeIndices(index: {0}, uuuu: {1}, vvvv: {2}, wwww: {3} <mipmap, function>)\n",
+			PrintValue(index, 4), uuuu, vvvv, wwww);
+
 		UInt4 indices = uuuu + vvvv;
 
 		if(hasThirdCoordinate())
@@ -1743,6 +1761,8 @@ namespace sw
 
 	Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer[4])
 	{
+		Print("sampleTexel(index: {0}, buffer: {1})\n", PrintValue{index, 4}, PrintValue{buffer, 4});
+
 		Vector4s c;
 
 		int f0 = state.textureType == TEXTURE_CUBE ? 0 : 0;
@@ -1774,12 +1794,16 @@ namespace sw
 			{
 			case 4:
 				{
+					Print("buffer[f0]={0}, buffer[f1]={1}, buffer[f2]={2}, buffer[f3]={3}\n",
+						buffer[f0], buffer[f1], buffer[f2], buffer[f3]);
 					Byte4 c0 = Pointer<Byte4>(buffer[f0])[index[0]];
 					Byte4 c1 = Pointer<Byte4>(buffer[f1])[index[1]];
 					Byte4 c2 = Pointer<Byte4>(buffer[f2])[index[2]];
 					Byte4 c3 = Pointer<Byte4>(buffer[f3])[index[3]];
+					Print("c0={0}, c1={1}, c2={2}, c3={3}\n", c0, c1, c2, c3);
 					c.x = Unpack(c0, c1);
 					c.y = Unpack(c2, c3);
+					Print("c.x={0}, c.y={1}\n", c.x, c.y);
 
 					switch(state.textureFormat)
 					{
@@ -2113,6 +2137,9 @@ namespace sw
 
 	Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
 	{
+		Print("<X> sampleTexel(uuuu: {0}, vvvv: {1}, wwww: {2}, z: {3}, mipmap: {4}, buffer: {5}, <function>)\n",
+			uuuu, vvvv, wwww, z, mipmap, PrintValue(buffer, 4));
+
 		Vector4f c;
 
 		UInt index[4];
