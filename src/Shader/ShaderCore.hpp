@@ -395,6 +395,19 @@ namespace rr {
 			return PrintValue::vals(v.x, v.y, v.z, v.w);
 		}
 	};
+	template <> struct PrintValue::Ty<sw::Vector4s>
+	{
+		static constexpr const char* fmt =
+			"[x: <%d, %d, %d, %d>,"
+			" y: <%d, %d, %d, %d>,"
+			" z: <%d, %d, %d, %d>,"
+			" w: <%d, %d, %d, %d>]";
+
+		static std::vector<rr::Value*> val(const sw::Vector4s& v)
+		{
+			return PrintValue::vals(v.x, v.y, v.z, v.w);
+		}
+	};
 }
 
 #endif   // sw_ShaderCore_hpp

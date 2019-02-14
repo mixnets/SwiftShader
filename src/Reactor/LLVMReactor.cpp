@@ -79,8 +79,9 @@
 	#include <unordered_map>
 #endif
 
-#include <numeric>
 #include <fstream>
+#include <numeric>
+#include <thread>
 
 #if defined(__i386__) || defined(__x86_64__)
 #include <xmmintrin.h>
@@ -7563,20 +7564,28 @@ namespace rr
 	std::vector<Value*> PrintValue::Ty<Float>::val(const RValue<Float>& v) { return toDouble({v.value}); }
 	std::vector<Value*> PrintValue::Ty<Float4>::val(const RValue<Float4>& v) { return toDouble(extractAll(v.value, 4)); }
 
-	void Printv(const char* fmt, std::initializer_list<PrintValue> args)
+	void Printv(const char* function, const char* file, int line, const char* fmt, std::initializer_list<PrintValue> args)
 	{
-		auto funcTy = ::llvm::FunctionType::get(
-			::llvm::Type::getInt32Ty(*::context),
-			{::llvm::Type::getInt8PtrTy(*::context)}, true);
+		std::string str = std::string("%s:%d %s") + fmt;
+
+		auto i32Ty = ::llvm::Type::getInt32Ty(*::context);
+		auto intTy = ::llvm::Type::getInt64Ty(*::context); // TODO: Natural int width.
+		auto i8PtrTy = ::llvm::Type::getInt8PtrTy(*::context);
+		auto funcTy = ::llvm::FunctionType::get(i32Ty, {i8PtrTy}, true);
+
 		auto func = ::module->getOrInsertFunction("printf", funcTy);
-		::llvm::SmallVector<::llvm::Value*, 8> vals;
-		std::string str = fmt;
+
 		int i = 0;
 		for (const PrintValue& arg : args)
 		{
 			str = replace(str, "{" + std::to_string(i++) + "}", arg.format);
 		}
+
+		::llvm::SmallVector<::llvm::Value*, 8> vals;
 		vals.push_back(::builder->CreateGlobalStringPtr(str));
+		vals.push_back(::builder->CreateGlobalStringPtr(file));
+		vals.push_back(::llvm::ConstantInt::get(intTy, line));
+		vals.push_back(::builder->CreateGlobalStringPtr(function));
 		for (const PrintValue& arg : args)
 		{
 			for (auto val : arg.values)

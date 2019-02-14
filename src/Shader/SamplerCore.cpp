@@ -17,6 +17,9 @@
 #include "Constants.hpp"
 #include "Common/Debug.hpp"
 
+// #undef WATCH
+// #define WATCH(...)
+
 namespace
 {
 	void applySwizzle(sw::SwizzleType swizzle, sw::Short4& s, const sw::Vector4s& c)
@@ -58,11 +61,14 @@ namespace sw
 
 	Vector4s SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Float4 &bias, Vector4f &dsx, Vector4f &dsy)
 	{
+		// WATCH(texture, u, v, w, q);
 		return sampleTexture(texture, u, v, w, q, q, dsx, dsy, (dsx), Implicit, true);
 	}
 
 	Vector4s SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Float4 &bias, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerFunction function, bool fixed12)
 	{
+		// WATCH(texture, u, v, w, q);
+
 		Vector4s c;
 
 		#if PERF_PROFILE
@@ -112,6 +118,7 @@ namespace sw
 				{
 					Float4 M;
 					cubeFace(face, uuuu, vvvv, u, v, w, M);
+					// WATCH(face[0], face[1], face[2], face[3], uuuu, vvvv, u, v, w, M);
 					computeLodCube(texture, lod, u, v, w, bias.x, dsx, dsy, M, function);
 				}
 			}
@@ -274,6 +281,8 @@ namespace sw
 
 	Vector4f SamplerCore::sampleTexture(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Float4 &bias, Vector4f &dsx, Vector4f &dsy, Vector4f &offset, SamplerFunction function)
 	{
+		// WATCH(u, v, w, q, (int)function);
+
 		Vector4f c;
 
 		#if PERF_PROFILE
@@ -321,6 +330,7 @@ namespace sw
 					{
 						Float4 M;
 						cubeFace(face, uuuu, vvvv, u, v, w, M);
+						// WATCH(face[0], face[1], face[2], face[3], uuuu, vvvv, u, v, w, M);
 						computeLodCube(texture, lod, u, v, w, bias.x, dsx, dsy, M, function);
 					}
 				}
@@ -330,6 +340,8 @@ namespace sw
 				}
 
 				c = sampleFloatFilter(texture, uuuu, vvvv, wwww, qqqq, offset, lod, anisotropy, uDelta, vDelta, face, function);
+
+				// WATCH(hasFloatTexture(), hasUnnormalizedIntegerTexture(), has16bitTextureFormat());
 
 				if(!hasFloatTexture() && !hasUnnormalizedIntegerTexture())
 				{
@@ -1058,6 +1070,9 @@ namespace sw
 
 	Vector4f SamplerCore::sampleFloatFilter(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], SamplerFunction function)
 	{
+		// WATCH(texture, u, v, w, q, offset, lod, anisotropy, uDelta, vDelta);
+		// WATCH(face[0], face[1], face[2], face[3]);
+
 		Vector4f c = sampleFloatAniso(texture, u, v, w, q, offset, lod, anisotropy, uDelta, vDelta, face, false, function);
 
 		if(function == Fetch)
@@ -1138,6 +1153,8 @@ namespace sw
 
 	Vector4f SamplerCore::sampleFloatAniso(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Float &anisotropy, Float4 &uDelta, Float4 &vDelta, Int face[4], bool secondLOD, SamplerFunction function)
 	{
+		// WATCH(texture, u, v, w, q, offset, lod, anisotropy, uDelta, vDelta);
+
 		Vector4f c;
 
 		if(state.textureFilter != FILTER_ANISOTROPIC || function == Lod || function == Fetch)
@@ -1196,6 +1213,8 @@ namespace sw
 
 	Vector4f SamplerCore::sampleFloat(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
 	{
+		// WATCH(texture, u, v, w, q, offset, lod);
+
 		if(state.textureType != TEXTURE_3D)
 		{
 			return sampleFloat2D(texture, u, v, w, q, offset, lod, face, secondLOD, function);
@@ -1208,6 +1227,8 @@ namespace sw
 
 	Vector4f SamplerCore::sampleFloat2D(Pointer<Byte> &texture, Float4 &u, Float4 &v, Float4 &w, Float4 &q, Vector4f &offset, Float &lod, Int face[4], bool secondLOD, SamplerFunction function)
 	{
+		// WATCH(texture, u, v, w, q, offset, lod);
+
 		Vector4f c;
 
 		int componentCount = textureComponentCount();
@@ -1225,6 +1246,8 @@ namespace sw
 		address(v, y0, y1, fv, mipmap, offset.y, filter, OFFSET(Mipmap, height), state.addressingModeV, function);
 		address(w, z0, z0, fv, mipmap, offset.z, filter, OFFSET(Mipmap, depth), state.addressingModeW, function);
 
+		WATCH(fu, fv);
+
 		Int4 pitchP = *Pointer<Int4>(mipmap + OFFSET(Mipmap, pitchP), 16);
 		y0 *= pitchP;
 		if(hasThirdCoordinate())
@@ -1236,6 +1259,7 @@ namespace sw
 		if(state.textureFilter == FILTER_POINT || (function == Fetch))
 		{
 			c = sampleTexel(x0, y0, z0, q, mipmap, buffer, function);
+			WATCH(c);
 		}
 		else
 		{
@@ -1272,6 +1296,7 @@ namespace sw
 			}
 		}
 
+		WATCH(c);
 		return c;
 	}
 
@@ -1576,6 +1601,9 @@ namespace sw
 
 	void SamplerCore::cubeFace(Int face[4], Float4 &U, Float4 &V, Float4 &x, Float4 &y, Float4 &z, Float4 &M)
 	{
+
+		// WATCH(x, y, z);
+
 		Int4 xn = CmpLT(x, Float4(0.0f));   // x < 0
 		Int4 yn = CmpLT(y, Float4(0.0f));   // y < 0
 		Int4 zn = CmpLT(z, Float4(0.0f));   // z < 0
@@ -1612,6 +1640,8 @@ namespace sw
 		face[3] = (face[0] >> 12) & 0x7;
 		face[0] &= 0x7;
 
+		// WATCH(face[0], face[1], face[2], face[3]);
+
 		M = Max(Max(absX, absY), absZ);
 
 		// U = xMajor ? (neg ^ -z) : ((zMajor & neg) ^ x)
@@ -1620,9 +1650,13 @@ namespace sw
 		// V = !yMajor ? -y : (n ^ z)
 		V = As<Float4>((~yMajor & As<Int4>(-y)) | (yMajor & (n ^ As<Int4>(z))));
 
+		WATCH(M);
 		M = reciprocal(M) * Float4(0.5f);
+		WATCH(M);
 		U = U * M + Float4(0.5f);
 		V = V * M + Float4(0.5f);
+
+		// WATCH(U, V);
 	}
 
 	Short4 SamplerCore::applyOffset(Short4 &uvw, Float4 &offset, const Int4 &whd, AddressingMode mode)
@@ -1654,6 +1688,8 @@ namespace sw
 
 	void SamplerCore::computeIndices(UInt index[4], Short4 uuuu, Short4 vvvv, Short4 wwww, Vector4f &offset, const Pointer<Byte> &mipmap, SamplerFunction function)
 	{
+		// WATCH(uuuu, vvvv, wwww);
+
 		bool texelFetch = (function == Fetch);
 		bool hasOffset = (function.option == Offset);
 
@@ -1728,6 +1764,7 @@ namespace sw
 
 	void SamplerCore::computeIndices(UInt index[4], Int4& uuuu, Int4& vvvv, Int4& wwww, const Pointer<Byte> &mipmap, SamplerFunction function)
 	{
+		// WATCH(uuuu, vvvv, wwww);
 		UInt4 indices = uuuu + vvvv;
 
 		if(hasThirdCoordinate())
@@ -1739,6 +1776,7 @@ namespace sw
 		{
 			index[i] = Extract(As<Int4>(indices), i);
 		}
+		// WATCH(index[0], index[1], index[2], index[3]);
 	}
 
 	Vector4s SamplerCore::sampleTexel(UInt index[4], Pointer<Byte> buffer[4])
@@ -1749,6 +1787,9 @@ namespace sw
 		int f1 = state.textureType == TEXTURE_CUBE ? 1 : 0;
 		int f2 = state.textureType == TEXTURE_CUBE ? 2 : 0;
 		int f3 = state.textureType == TEXTURE_CUBE ? 3 : 0;
+
+		// WATCH(buffer[f0], buffer[f1], buffer[f2], buffer[f3]);
+		// WATCH(index[0], index[1], index[2], index[3]);
 
 		if(has16bitTextureFormat())
 		{
@@ -1999,11 +2040,14 @@ namespace sw
 			}
 		}
 
+		WATCH(c);
+
 		return c;
 	}
 
 	Vector4s SamplerCore::sampleTexel(Short4 &uuuu, Short4 &vvvv, Short4 &wwww, Vector4f &offset, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
 	{
+		// WATCH(uuuu, vvvv, wwww);
 		Vector4s c;
 
 		UInt index[4];
@@ -2113,6 +2157,8 @@ namespace sw
 
 	Vector4f SamplerCore::sampleTexel(Int4 &uuuu, Int4 &vvvv, Int4 &wwww, Float4 &z, Pointer<Byte> &mipmap, Pointer<Byte> buffer[4], SamplerFunction function)
 	{
+		// WATCH(uuuu, vvvv, wwww);
+
 		Vector4f c;
 
 		UInt index[4];
@@ -2228,6 +2274,8 @@ namespace sw
 			}
 		}
 
+		WATCH(c);
+
 		return c;
 	}
 
@@ -2265,10 +2313,12 @@ namespace sw
 		}
 		else
 		{
+			// WATCH(face[0], face[1], face[2], face[3]);
 			for(int i = 0; i < 4; i++)
 			{
 				buffer[i] = *Pointer<Pointer<Byte> >(mipmap + OFFSET(Mipmap,buffer) + face[i] * sizeof(void*));
 			}
+			// WATCH(buffer[0], buffer[1], buffer[2], buffer[3]);
 		}
 	}
 
@@ -2341,8 +2391,12 @@ namespace sw
 			return;   // Unused
 		}
 
+		// WATCH(uvw, f, mipmap, texOffset, filter, whd, (int)function, (int)addressingMode, (int)state.textureType, (int)state.textureFilter);
+
 		Int4 dim = Int4(*Pointer<Short4>(mipmap + whd, 16));
 		Int4 maxXYZ = dim - Int4(1);
+
+		// WATCH(dim, maxXYZ);
 
 		if(function == Fetch)
 		{
@@ -2363,6 +2417,7 @@ namespace sw
 			                   state.textureFilter == FILTER_MIN_LINEAR_MAG_POINT;
 
 			Float4 coord = uvw;
+			// WATCH(coord);
 
 			if(state.textureType == TEXTURE_RECTANGLE)
 			{
@@ -2410,12 +2465,14 @@ namespace sw
 				}
 
 				coord = coord * Float4(dim);
+				// WATCH(coord);
 			}
 
 			if(state.textureFilter == FILTER_POINT ||
 			   state.textureFilter == FILTER_GATHER)
 			{
 				xyz0 = Int4(coord);
+				// WATCH(coord, xyz0);
 			}
 			else
 			{
@@ -2423,29 +2480,36 @@ namespace sw
 				   state.textureFilter == FILTER_MIN_LINEAR_MAG_POINT)
 				{
 					coord -= As<Float4>(As<Int4>(Float4(0.5f)) & filter);
+					// WATCH(coord);
 				}
 				else
 				{
 					coord -= Float4(0.5f);
+					// WATCH(coord);
 				}
 
 				Float4 floor = Floor(coord);
 				xyz0 = Int4(floor);
 				f = coord - floor;
+				// WATCH(floor, xyz0, f);
 			}
 
 			if(function.option == Offset)
 			{
 				xyz0 += As<Int4>(texOffset);
+				// WATCH(xyz0, texOffset);
 			}
 
 			if(addressingMode == ADDRESSING_SEAMLESS)
 			{
 				xyz0 += Int4(1);
+				// WATCH(xyz0);
 			}
 
 			xyz1 = xyz0 - filter;   // Increment
+			// WATCH(xyz1);
 
+			// WATCH((int)function.option, (int)addressingMode);
 			if(function.option == Offset)
 			{
 				switch(addressingMode)
@@ -2458,12 +2522,16 @@ namespace sw
 					// FIXME: Implement ADDRESSING_MIRROR, ADDRESSING_MIRRORONCE, and ADDRESSING_BORDER.
 					// Fall through to Clamp.
 				case ADDRESSING_CLAMP:
+					// WATCH(xyz0, xyz1);
 					xyz0 = Min(Max(xyz0, Int4(0)), maxXYZ);
 					xyz1 = Min(Max(xyz1, Int4(0)), maxXYZ);
+					// WATCH(xyz0, xyz1, maxXYZ);
 					break;
 				default:   // Wrap
+					// WATCH(xyz0, xyz1);
 					xyz0 = (xyz0 + dim * Int4(-MIN_PROGRAM_TEXEL_OFFSET)) % dim;
 					xyz1 = (xyz1 + dim * Int4(-MIN_PROGRAM_TEXEL_OFFSET)) % dim;
+					// WATCH(xyz0, xyz1, dim, (int)MIN_PROGRAM_TEXEL_OFFSET);
 					break;
 				}
 			}
@@ -2472,26 +2540,42 @@ namespace sw
 				switch(addressingMode)
 				{
 				case ADDRESSING_SEAMLESS:
+					// WATCH(xyz0, xyz1);
+					xyz0 = Min(Max(xyz0, Int4(0)), maxXYZ);
+					xyz1 = Min(Max(xyz1, Int4(0)), maxXYZ);
 					break;
 				case ADDRESSING_MIRROR:
 				case ADDRESSING_MIRRORONCE:
 				case ADDRESSING_BORDER:
 				case ADDRESSING_CLAMP:
+					// WATCH(xyz0, xyz1);
 					xyz0 = Max(xyz0, Int4(0));
 					xyz1 = Min(xyz1, maxXYZ);
+					// WATCH(maxXYZ, xyz0, xyz1);
 					break;
 				default:   // Wrap
 					{
+						// WATCH(xyz0, xyz1);
 						Int4 under = CmpLT(xyz0, Int4(0));
 						xyz0 = (under & maxXYZ) | (~under & xyz0);   // xyz < 0 ? dim - 1 : xyz   // FIXME: IfThenElse()
+						// WATCH(under, maxXYZ);
 
 						Int4 nover = CmpLT(xyz1, dim);
 						xyz1 = nover & xyz1;   // xyz >= dim ? 0 : xyz
+						// WATCH(nover, dim, xyz0, xyz1);
 					}
 					break;
 				}
 			}
+			else
+			{
+				// WATCH(xyz0, xyz1);
+				xyz0 = Min(Max(xyz0, Int4(0)), maxXYZ);
+				xyz1 = Min(Max(xyz1, Int4(0)), maxXYZ);
+			}
 		}
+
+		// WATCH(xyz0, xyz1);
 	}
 
 	void SamplerCore::convertFixed12(Short4 &cs, Float4 &cf)

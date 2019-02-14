@@ -2955,14 +2955,51 @@ namespace rr
 	template <typename T> struct PrintValue::Ty< Pointer<T> >
 	{
 		static constexpr const char* fmt = "%p";
-		static std::vector<Value*> val(const Pointer<T>& v) { return { v.address }; };
+		static std::vector<Value*> val(const RValue<Pointer<T>>& v) { return {v.value}; }
 	};
 
 
-	void Printv(const char* msg, std::initializer_list<PrintValue> vals);
+	void Printv(const char* function, const char* file, int line, const char* msg, std::initializer_list<PrintValue> vals);
 
 	template <typename ... ARGS>
-	void Print(const char* msg, const ARGS& ... vals) { Printv(msg, {vals...}); }
+	void Print(const char* function, const char* file, int line, const char* msg, const ARGS& ... vals)
+	{
+		Printv(function, file, line, msg, {vals...});
+	}
+
+	#define PRINT(msg, ...) Print(__FUNCTION__, __FILE__, __LINE__, msg, ##__VA_ARGS__)
+	#define LOG(msg, ...)   PRINT(msg "\n", ##__VA_ARGS__)
+
+	// Macro magic to perform variadic dispatch.
+	// See: https://renenyffenegger.ch/notes/development/languages/C-C-plus-plus/preprocessor/macros/__VA_ARGS__/count-arguments
+	// Note, this doesn't attempt to use the ##__VA_ARGS__ trick to handle 0
+	// args as this appears to still be broken on certain compilers.
+	#define GET_NTH_ARG(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, N, ...) N
+	#define COUNT_ARGUMENTS(...) GET_NTH_ARG(__VA_ARGS__, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+	static_assert(1 == COUNT_ARGUMENTS(a)); // Sanity checks.
+	static_assert(2 == COUNT_ARGUMENTS(a, b));
+	static_assert(3 == COUNT_ARGUMENTS(a, b, c));
+
+	// WATCH_FMT(...) resolves to a string literal that lists all the arguments
+	// by name. This string can be passed to LOG() to print each of the
+	// arguments.
+	//
+	// WATCH_FMT(...) uses the COUNT_ARGUMENTS helper macro to delegate to a
+	// corresponding WATCH_FMT_n specialization macro below.
+	#define WATCH_CONCAT(a, b) a ## b
+	#define WATCH_CONCAT2(a, b) WATCH_CONCAT(a, b)
+	#define WATCH_FMT(...) WATCH_CONCAT2(WATCH_FMT_, COUNT_ARGUMENTS(__VA_ARGS__))(__VA_ARGS__)
+	#define WATCH_FMT_1(_1) "\n  " #_1 ": {0}"
+	#define WATCH_FMT_2(_1, _2)                                   WATCH_FMT_1(_1) "\n  " #_2 ": {1}"
+	#define WATCH_FMT_3(_1, _2, _3)                               WATCH_FMT_2(_1, _2) "\n  " #_3 ": {2}"
+	#define WATCH_FMT_4(_1, _2, _3, _4)                           WATCH_FMT_3(_1, _2, _3) "\n  " #_4 ": {3}"
+	#define WATCH_FMT_5(_1, _2, _3, _4, _5)                       WATCH_FMT_4(_1, _2, _3, _4) "\n  " #_5 ": {4}"
+	#define WATCH_FMT_6(_1, _2, _3, _4, _5, _6)                   WATCH_FMT_5(_1, _2, _3, _4, _5) "\n  " #_6 ": {5}"
+	#define WATCH_FMT_7(_1, _2, _3, _4, _5, _6, _7)               WATCH_FMT_6(_1, _2, _3, _4, _5, _6) "\n  " #_7 ": {6}"
+	#define WATCH_FMT_8(_1, _2, _3, _4, _5, _6, _7, _8)           WATCH_FMT_7(_1, _2, _3, _4, _5, _6, _7) "\n  " #_8 ": {7}"
+	#define WATCH_FMT_9(_1, _2, _3, _4, _5, _6, _7, _8, _9)       WATCH_FMT_8(_1, _2, _3, _4, _5, _6, _7, _8) "\n  " #_9 ": {8}"
+	#define WATCH_FMT_10(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10) WATCH_FMT_9(_1, _2, _3, _4, _5, _6, _7, _8, _9) "\n  " #_10 ": {9}"
+	#define WATCH(...) LOG(WATCH_FMT(__VA_ARGS__), __VA_ARGS__)
 
 	class ForData
 	{

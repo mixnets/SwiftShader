@@ -1648,6 +1648,7 @@ namespace sw
 		v_ = Float4(0.0f);
 		w_ = Float4(0.0f);
 
+		WATCH(stage, u_, v_, w_, w_);
 		dst = sampleTexture(stage, u_, v_, w_, w_);
 	}
 
@@ -1676,6 +1677,7 @@ namespace sw
 
 	void PixelPipeline::TEX(Vector4s &dst, Float4 &u, Float4 &v, Float4 &s, int sampler, bool project)
 	{
+		WATCH(sampler, u, v, s, s, project);
 		dst = sampleTexture(sampler, u, v, s, s, project);
 	}
 
@@ -1685,6 +1687,7 @@ namespace sw
 		Float4 v = Float4(src.y) * Float4(1.0f / 0x0FFE);
 		Float4 s = Float4(src.z) * Float4(1.0f / 0x0FFE);
 
+		WATCH(sampler, u, v, s, s, project);
 		dst = sampleTexture(sampler, u, v, s, s, project);
 	}
 
@@ -1706,6 +1709,7 @@ namespace sw
 		Float4 u_ = u + du;
 		Float4 v_ = v + dv;
 
+		WATCH(stage, u_, v_, s, s);
 		dst = sampleTexture(stage, u_, v_, s, s);
 	}
 
@@ -1727,6 +1731,7 @@ namespace sw
 		Float4 u_ = u + du;
 		Float4 v_ = v + dv;
 
+		WATCH(stage, u_, v_, s, s);
 		dst = sampleTexture(stage, u_, v_, s, s);
 
 		Short4 L;
@@ -1749,6 +1754,7 @@ namespace sw
 		Float4 v = Float4(src0.x) * Float4(1.0f / 0x0FFE);
 		Float4 s = Float4(src0.z) * Float4(1.0f / 0x0FFE);
 
+		WATCH(stage, u, v, s, s);
 		dst = sampleTexture(stage, u, v, s, s);
 	}
 
@@ -1758,6 +1764,7 @@ namespace sw
 		Float4 v = Float4(src0.z) * Float4(1.0f / 0x0FFE);
 		Float4 s = v;
 
+		WATCH(stage, u, v, s, s);
 		dst = sampleTexture(stage, u, v, s, s);
 	}
 
@@ -1767,6 +1774,7 @@ namespace sw
 		Float4 v = Float4(src0.y) * Float4(1.0f / 0x0FFE);
 		Float4 s = Float4(src0.z) * Float4(1.0f / 0x0FFE);
 
+		WATCH(stage, u, v, s, s);
 		dst = sampleTexture(stage, u, v, s, s);
 	}
 
@@ -1791,6 +1799,7 @@ namespace sw
 
 		w_ = Float4(0.0f);
 
+		WATCH(stage, u_, v_, w_, w_);
 		dst = sampleTexture(stage, u_, v_, w_, w_);
 	}
 
@@ -1862,6 +1871,7 @@ namespace sw
 		v__ -= E[1] * u_;
 		w__ -= E[2] * u_;
 
+		WATCH(stage, u__, v__, w__, w__);
 		dst = sampleTexture(stage, u__, v__, w__, w__);
 	}
 
@@ -1869,6 +1879,7 @@ namespace sw
 	{
 		TEXM3X3PAD(u, v, s, src0, 2, signedScaling);
 
+		WATCH(stage, u_, v_, w_, w_);
 		dst = sampleTexture(stage, u_, v_, w_, w_);
 	}
 
@@ -1906,6 +1917,7 @@ namespace sw
 		v__ -= E[1] * u_;
 		w__ -= E[2] * u_;
 
+		WATCH(stage, u__, v__, w__, w__);
 		dst = sampleTexture(stage, u__, v__, w__, w__);
 	}
 

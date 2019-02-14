@@ -2153,12 +2153,13 @@ namespace sw
 			default: transparencyAntialiasing = TRANSPARENCY_NONE;              break;
 			}
 
-			switch(configuration.threadCount)
-			{
-			case -1: threadCount = CPUID::coreCount();        break;
-			case 0:  threadCount = CPUID::processAffinity();  break;
-			default: threadCount = configuration.threadCount; break;
-			}
+threadCount = 1;
+			// switch(configuration.threadCount)
+			// {
+			// case -1: threadCount = CPUID::coreCount();        break;
+			// case 0:  threadCount = CPUID::processAffinity();  break;
+			// default: threadCount = configuration.threadCount; break;
+			// }
 
 			CPUID::setEnableSSE4_1(configuration.enableSSE4_1);
 			CPUID::setEnableSSSE3(configuration.enableSSSE3);

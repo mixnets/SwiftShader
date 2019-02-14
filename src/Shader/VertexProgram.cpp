@@ -1568,41 +1568,55 @@ namespace sw
 
 	void VertexProgram::TEX(Vector4f &dst, Vector4f &src0, const Src &src1)
 	{
+		WATCH(src0);
 		dst = sampleTexture(src1, src0, (src0.x), (src0), (src0), (src0), Base);
 	}
 
 	void VertexProgram::TEXOFFSET(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &offset)
 	{
+		WATCH(src0, offset);
 		dst = sampleTexture(src1, src0, (src0.x), (src0), (src0), offset, {Base, Offset});
 	}
 
 	void VertexProgram::TEXLOD(Vector4f &dst, Vector4f &src0, const Src& src1, Float4 &lod)
 	{
+		// WATCH(src0);
+		src0.x = As<Float4>(As<Int4>(src0.x) & ~(IsInf(src0.x) | IsNan(src0.x)));
+		src0.y = As<Float4>(As<Int4>(src0.y) & ~(IsInf(src0.y) | IsNan(src0.y)));
+		src0.z = As<Float4>(As<Int4>(src0.z) & ~(IsInf(src0.z) | IsNan(src0.z)));
+		src0.w = As<Float4>(As<Int4>(src0.w) & ~(IsInf(src0.w) | IsNan(src0.w)));
+		WATCH(src0);
 		dst = sampleTexture(src1, src0, lod, (src0), (src0), (src0), Lod);
+		WATCH(dst);
 	}
 
 	void VertexProgram::TEXLODOFFSET(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &offset, Float4 &lod)
 	{
+		WATCH(src0, lod, offset);
 		dst = sampleTexture(src1, src0, lod, (src0), (src0), offset, {Lod, Offset});
 	}
 
 	void VertexProgram::TEXELFETCH(Vector4f &dst, Vector4f &src0, const Src& src1, Float4 &lod)
 	{
+		WATCH(src0, lod);
 		dst = sampleTexture(src1, src0, lod, (src0), (src0), (src0), Fetch);
 	}
 
 	void VertexProgram::TEXELFETCHOFFSET(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &offset, Float4 &lod)
 	{
+		WATCH(src0, offset);
 		dst = sampleTexture(src1, src0, lod, (src0), (src0), offset, {Fetch, Offset});
 	}
 
 	void VertexProgram::TEXGRAD(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &dsx, Vector4f &dsy)
 	{
+		WATCH(src0, dsx, dsy);
 		dst = sampleTexture(src1, src0, (src0.x), dsx, dsy, src0, Grad);
 	}
 
 	void VertexProgram::TEXGRADOFFSET(Vector4f &dst, Vector4f &src0, const Src& src1, Vector4f &dsx, Vector4f &dsy, Vector4f &offset)
 	{
+		WATCH(src0, dsx, dsy, offset);
 		dst = sampleTexture(src1, src0, (src0.x), dsx, dsy, offset, {Grad, Offset});
 	}
 
