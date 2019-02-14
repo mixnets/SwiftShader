@@ -22,6 +22,30 @@
       "revId": "0bc2873b6f53c83536ca28ec6a4e9a9b5ceddfd0",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c25d3e2b_e1d7228f",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-14T19:27:24Z",
+      "side": 1,
+      "message": "I suppose.. i need to build a bit more plumbing to support fishing the string out. Do you mind if I do that in a separate patch?",
+      "parentUuid": "9ba15763_1476b113",
+      "range": {
+        "startLine": 202,
+        "startChar": 7,
+        "endLine": 202,
+        "endChar": 27
+      },
+      "revId": "0bc2873b6f53c83536ca28ec6a4e9a9b5ceddfd0",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
