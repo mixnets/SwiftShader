@@ -34,6 +34,24 @@
       "revId": "65ad072dfde1fd3330e313deca35f3083f0bcdf5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e649715e_a8632810",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-14T09:17:53Z",
+      "side": 1,
+      "message": "Yes. I\u0027m just weary of publicly assignable container fields.",
+      "parentUuid": "d2d9766c_690c95a3",
+      "revId": "65ad072dfde1fd3330e313deca35f3083f0bcdf5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
