@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d564eed7_e61aba0f",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-15T21:31:56Z",
+      "side": 1,
+      "message": "The way this was spec\u0027d, it was supposed to be OK for an implementation to just blast out descriptor contents with a single memcpy.\n\nValidation must be (and is) careful about checking if you\u0027re following the rules, but the driver isn\u0027t supposed to have to think much.",
+      "revId": "5b462b132e644c720c25c6849cf73cc762799a55",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
