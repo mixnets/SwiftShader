@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "57cac64b_344e6eef",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 679,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-15T19:26:53Z",
+      "side": 0,
+      "message": "Removed because they\u0027re essentially no different, I assume?",
+      "range": {
+        "startLine": 676,
+        "startChar": 4,
+        "endLine": 679,
+        "endChar": 5
+      },
+      "revId": "d88a12b61f298edd8c0375d44764174cd259f08b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "24b43502_0f837cb0",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 647,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-15T19:26:53Z",
+      "side": 1,
+      "message": "Which objects are zero-size? Arrays of [0] ?\n\nnit: Could add an assert for such todo\u0027s to be alerted when we encounter them and not skip them silently.",
+      "range": {
+        "startLine": 647,
+        "startChar": 13,
+        "endLine": 647,
+        "endChar": 48
+      },
+      "revId": "a5e21c29192d382418cc8c638d2cbc583691bbe3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
