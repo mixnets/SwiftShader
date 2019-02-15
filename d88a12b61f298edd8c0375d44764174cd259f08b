@@ -22,6 +22,30 @@
       "revId": "d88a12b61f298edd8c0375d44764174cd259f08b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "38f9b816_9b800838",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 679,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-15T19:28:16Z",
+      "side": 0,
+      "message": "Yes -- this change allows treating them exactly the same as other variables.",
+      "parentUuid": "57cac64b_344e6eef",
+      "range": {
+        "startLine": 676,
+        "startChar": 4,
+        "endLine": 679,
+        "endChar": 5
+      },
+      "revId": "d88a12b61f298edd8c0375d44764174cd259f08b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
