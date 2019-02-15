@@ -30,8 +30,18 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkDescriptorSetLayoutCreateInfo* pCreateInfo);
 
 	static size_t GetDescriptorSize(VkDescriptorType type);
+	static void UpdateDescriptorSet(const VkWriteDescriptorSet& descriptorWrites);
+	static void UpdateDescriptorSet(const VkCopyDescriptorSet& descriptorCopies);
 
+	void initialize(VkDescriptorSet descriptorSet);
 	size_t getSize() const;
+
+	struct BindingHeader
+	{
+		uint32_t         binding;
+		VkDescriptorType descriptorType;
+		uint32_t         descriptorCount;
+	};
 
 private:
 	VkDescriptorSetLayoutCreateFlags flags;

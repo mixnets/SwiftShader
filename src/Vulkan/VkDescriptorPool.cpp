@@ -33,11 +33,13 @@ void DescriptorPool::destroy(const VkAllocationCallbacks* pAllocator)
 
 size_t DescriptorPool::ComputeRequiredAllocationSize(const VkDescriptorPoolCreateInfo* pCreateInfo)
 {
-	size_t size = 0;
+	size_t size = sizeof(uint32_t);
 
 	for(uint32_t i = 0; i < pCreateInfo->poolSizeCount; i++)
 	{
-		size += pCreateInfo->pPoolSizes[i].descriptorCount * DescriptorSetLayout::GetDescriptorSize(pCreateInfo->pPoolSizes[i].type);
+		size += pCreateInfo->pPoolSizes[i].descriptorCount *
+		        (sizeof(DescriptorSetLayout::BindingHeader) +
+		         DescriptorSetLayout::GetDescriptorSize(pCreateInfo->pPoolSizes[i].type));
 	}
 
 	return size;
@@ -52,7 +54,15 @@ VkResult DescriptorPool::allocateSets(uint32_t descriptorSetCount, const VkDescr
 		layoutSizes[i] = Cast(pSetLayouts[i])->getSize();
 	}
 
-	return allocateSets(&(layoutSizes[0]), descriptorSetCount, pDescriptorSets);
+	VkResult result = allocateSets(&(layoutSizes[0]), descriptorSetCount, pDescriptorSets);
+	if(result == VK_SUCCESS)
+	{
+		for(uint32_t i = 0; i < descriptorSetCount; i++)
+		{
+			Cast(pSetLayouts[i])->initialize(pDescriptorSets[i]);
+		}
+	}
+	return result;
 }
 
 VkDescriptorSet DescriptorPool::findAvailableMemory(size_t size)
