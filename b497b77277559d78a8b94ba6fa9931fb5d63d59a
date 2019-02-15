@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "13760be8_00bd0786",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 526,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-15T18:02:24Z",
+      "side": 1,
+      "message": "nit: Would be more efficient to accumulate all constant offsets at compile time to avoid giving the back-end more work doing constant folding (if I recall correctly Subzero doesn\u0027t have constant vector folding). We can keep this for post-1.0 though.",
+      "range": {
+        "startLine": 526,
+        "startChar": 5,
+        "endLine": 526,
+        "endChar": 55
+      },
+      "revId": "b497b77277559d78a8b94ba6fa9931fb5d63d59a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
