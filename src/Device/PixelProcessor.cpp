@@ -76,39 +76,6 @@ namespace sw
 		routineCache = nullptr;
 	}
 
-	void PixelProcessor::setFloatConstant(unsigned int index, const float value[4])
-	{
-		if(index < FRAGMENT_UNIFORM_VECTORS)
-		{
-			c[index][0] = value[0];
-			c[index][1] = value[1];
-			c[index][2] = value[2];
-			c[index][3] = value[3];
-		}
-		else ASSERT(false);
-	}
-
-	void PixelProcessor::setIntegerConstant(unsigned int index, const int value[4])
-	{
-		if(index < 16)
-		{
-			i[index][0] = value[0];
-			i[index][1] = value[1];
-			i[index][2] = value[2];
-			i[index][3] = value[3];
-		}
-		else ASSERT(false);
-	}
-
-	void PixelProcessor::setBooleanConstant(unsigned int index, int boolean)
-	{
-		if(index < 16)
-		{
-			b[index] = boolean != 0;
-		}
-		else ASSERT(false);
-	}
-
 	void PixelProcessor::setUniformBuffer(int index, sw::Resource* buffer, int offset)
 	{
 		uniformBufferInfo[index].buffer = buffer;
@@ -633,8 +600,6 @@ namespace sw
 			state.shaderID = 0;
 		}
 
-		state.depthOverride = context->pixelShader ? context->pixelShader->getModes().DepthReplacing : false;
-
 		if(context->alphaTestActive())
 		{
 			state.alphaCompareMode = context->alphaCompareMode;
@@ -702,50 +667,10 @@ namespace sw
 
 		if(state.multiSample > 1 && context->pixelShader)
 		{
-			state.centroid = false;//context->pixelShader->containsCentroid();
+			state.centroid = context->pixelShader->getModes().NeedsCentroid;
 		}
 
 		state.frontFaceCCW = context->frontFacingCCW;
-
-		const bool point = context->isDrawPoint();
-
-		/* TODO: bring back interpolants by some mechanism */
-//		for(int interpolant = 0; interpolant < MAX_FRAGMENT_INPUTS; interpolant++)
-//		{
-//			for(int component = 0; component < 4; component++)
-//			{
-//				const Shader::Semantic &semantic = context->pixelShader->getInput(interpolant, component);
-//
-//				if(semantic.active())
-//				{
-//					bool flat = point;
-//
-//					switch(semantic.usage)
-//					{
-//					case Shader::USAGE_TEXCOORD: flat = false;                  break;
-//					case Shader::USAGE_COLOR:    flat = semantic.flat || point; break;
-//					}
-//
-//					state.interpolant[interpolant].component |= 1 << component;
-//
-//					if(flat)
-//					{
-//						state.interpolant[interpolant].flat |= 1 << component;
-//					}
-//				}
-//			}
-//		}
-//
-//		if(state.centroid)
-//		{
-//			for(int interpolant = 0; interpolant < MAX_FRAGMENT_INPUTS; interpolant++)
-//			{
-//				for(int component = 0; component < 4; component++)
-//				{
-//					state.interpolant[interpolant].centroid = context->pixelShader->getInput(interpolant, 0).centroid;
-//				}
-//			}
-//		}
 
 		state.hash = state.computeHash();
 

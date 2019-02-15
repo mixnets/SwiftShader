@@ -30,16 +30,15 @@ namespace sw
 	extern bool forceClearRegisters;
 
 	PixelRoutine::PixelRoutine(const PixelProcessor::State &state, SpirvShader const *spirvShader)
-		: QuadRasterizer(state, spirvShader), v(true)	/* addressing */
+		: QuadRasterizer(state, spirvShader)	/* addressing */
 	{
-		if(forceClearRegisters)
+		spirvShader->emitEarly(&routine);
+
+		if (forceClearRegisters)
 		{
-			for(int i = 0; i < MAX_FRAGMENT_INPUTS; i++)
+			for (int i = 0; i < MAX_INTERFACE_COMPONENTS; i++)
 			{
-				v[i].x = Float4(0.0f);
-				v[i].y = Float4(0.0f);
-				v[i].z = Float4(0.0f);
-				v[i].w = Float4(0.0f);
+				(*routine.inputs)[i] = Float4(0.0f);
 			}
 		}
 	}
@@ -54,7 +53,7 @@ namespace sw
 			Long pipeTime = Ticks();
 		#endif
 
-		const bool earlyDepthTest = !state.depthOverride && !state.alphaTestActive();
+		const bool earlyDepthTest = !spirvShader->getModes().DepthReplacing && !state.alphaTestActive();
 
 		Int zMask[4];   // Depth mask
 		Int sMask[4];   // Stencil mask
@@ -142,51 +141,26 @@ namespace sw
 				}
 			}
 
-			// TODO: rethink what we want to do here for pull-mode interpolation
-			for(int interpolant = 0; interpolant < MAX_FRAGMENT_INPUTS; interpolant++)
+			for (int interpolant = 0; interpolant < MAX_INTERFACE_COMPONENTS; interpolant++)
 			{
-				for(int component = 0; component < 4; component++)
+				auto const & input = spirvShader->inputs[interpolant];
+				if (input.Type != SpirvShader::ATTRIBTYPE_UNUSED)
 				{
-					if(state.interpolant[interpolant].component & (1 << component))
+					if (input.Centroid)
 					{
-						if(!state.interpolant[interpolant].centroid)
-						{
-							v[interpolant][component] = interpolate(xxxx, Dv[interpolant][component], rhw, primitive + OFFSET(Primitive, V[interpolant][component]), (state.interpolant[interpolant].flat & (1 << component)) != 0, state.perspective, false);
-						}
-						else
-						{
-							v[interpolant][component] = interpolateCentroid(XXXX, YYYY, rhwCentroid, primitive + OFFSET(Primitive, V[interpolant][component]), (state.interpolant[interpolant].flat & (1 << component)) != 0, state.perspective);
-						}
+						(*routine.inputs)[interpolant] =
+								interpolateCentroid(XXXX, YYYY, rhwCentroid,
+													primitive + OFFSET(Primitive, V[interpolant]),
+													input.Flat, state.perspective);
+					}
+					else
+					{
+						(*routine.inputs)[interpolant] =
+								interpolate(xxxx, Dv[interpolant], rhw,
+											primitive + OFFSET(Primitive, V[interpolant]),
+											input.Flat, state.perspective, false);
 					}
 				}
-
-				Float4 rcp;
-
-				switch(state.interpolant[interpolant].project)
-				{
-				case 0:
-					break;
-				case 1:
-					rcp = reciprocal(v[interpolant].y);
-					v[interpolant].x = v[interpolant].x * rcp;
-					break;
-				case 2:
-					rcp = reciprocal(v[interpolant].z);
-					v[interpolant].x = v[interpolant].x * rcp;
-					v[interpolant].y = v[interpolant].y * rcp;
-					break;
-				case 3:
-					rcp = reciprocal(v[interpolant].w);
-					v[interpolant].x = v[interpolant].x * rcp;
-					v[interpolant].y = v[interpolant].y * rcp;
-					v[interpolant].z = v[interpolant].z * rcp;
-					break;
-				}
-			}
-
-			if(state.fog.component)
-			{
-				f = interpolate(xxxx, Df, rhw, primitive + OFFSET(Primitive,f), state.fog.flat & 0x01, state.perspective, false);
 			}
 
 			setBuiltins(x, y, z, w);
@@ -256,7 +230,7 @@ namespace sw
 							AddAtomic(Pointer<Long>(&profiler.ropOperations), 4);
 						#endif
 
-						rasterOperation(f, cBuffer, x, sMask, zMask, cMask);
+						rasterOperation(cBuffer, x, sMask, zMask, cMask);
 					}
 				}
 

@@ -34,8 +34,6 @@ namespace sw
 
 			int shaderID;
 
-			bool depthOverride                        : 1;   // TODO: Eliminate by querying shader.
-
 			VkCompareOp depthCompareMode              : BITS(VK_COMPARE_OP_END_RANGE);
 			VkCompareOp alphaCompareMode              : BITS(VK_COMPARE_OP_END_RANGE);
 			bool depthWriteEnable                     : 1;
@@ -83,26 +81,6 @@ namespace sw
 			VkLogicOp logicalOperation : BITS(VK_LOGIC_OP_END_RANGE);
 
 			Sampler::State sampler[TEXTURE_IMAGE_UNITS];
-
-			struct Interpolant
-			{
-				unsigned char component : 4;
-				unsigned char flat : 4;
-				unsigned char project : 2;
-				bool centroid : 1;
-			};
-
-			union
-			{
-				struct
-				{
-					Interpolant color[2];
-					Interpolant texture[8];
-					Interpolant fog;
-				};
-
-				Interpolant interpolant[MAX_FRAGMENT_INPUTS];
-			};
 		};
 
 		struct State : States
@@ -258,11 +236,6 @@ namespace sw
 		Routine *routine(const State &state);
 		void setRoutineCacheSize(int routineCacheSize);
 
-		// Shader constants
-		float4 c[FRAGMENT_UNIFORM_VECTORS];
-		int4 i[16];
-		bool b[16];
-
 		// Other semi-constants
 		Stencil stencil;
 		Stencil stencilCCW;
@@ -277,8 +250,6 @@ namespace sw
 			int offset;
 		};
 		UniformBufferInfo uniformBufferInfo[MAX_UNIFORM_BUFFER_BINDINGS];
-
-		void setFogRanges(float start, float end);
 
 		Context *const context;
 

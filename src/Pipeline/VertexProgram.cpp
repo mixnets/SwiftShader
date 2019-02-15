@@ -32,11 +32,14 @@ namespace sw
 
 		enableStack[0] = Int4(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 
-		// TODO: wire up builtins
-		//if(shader->isInstanceIdDeclared())
-		//{
-		//	instanceID = *Pointer<Int>(data + OFFSET(DrawData,instanceID));
-		//}
+		auto it = spirvShader->inputBuiltins.find(spv::BuiltInInstanceIndex);
+		if (it != spirvShader->inputBuiltins.end())
+		{
+			// TODO: we could do better here; we know InstanceIndex is uniform across all lanes
+			assert(it->second.SizeInComponents == 1);
+			routine.getValue(it->second.Id)[it->second.FirstComponent] =
+					As<Float4>(Int4((*Pointer<Int>(data + OFFSET(DrawData, instanceID)))));
+		}
 	}
 
 	VertexProgram::~VertexProgram()
@@ -49,22 +52,15 @@ namespace sw
 
 		enableIndex = 0;
 
-		//if(shader->isVertexIdDeclared())
-		//{
-		//	if(state.textureSampling)
-		//	{
-		//		vertexID = Int4(index);
-		//	}
-		//	else
-		//	{
-		//		vertexID = Insert(vertexID, As<Int>(index), 0);
-		//		vertexID = Insert(vertexID, As<Int>(index + 1), 1);
-		//		vertexID = Insert(vertexID, As<Int>(index + 2), 2);
-		//		vertexID = Insert(vertexID, As<Int>(index + 3), 3);
-		//	}
-		//}
+		auto it = spirvShader->inputBuiltins.find(spv::BuiltInVertexIndex);
+		if (it != spirvShader->inputBuiltins.end())
+		{
+			assert(it->second.SizeInComponents == 1);
+			routine.getValue(it->second.Id)[it->second.FirstComponent] =
+					As<Float4>(Int4(index) + Int4(0, 1, 2, 3));
+		}
 
-		// Actually emit code here
+		spirvShader->emit(&routine);
 
 		if(currentLabel != -1)
 		{

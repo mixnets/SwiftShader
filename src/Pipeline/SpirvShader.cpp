@@ -42,9 +42,13 @@ namespace sw
 			case spv::OpDecorate:
 			{
 				auto targetId = insn.word(1);
+				auto decoration = static_cast<spv::Decoration>(insn.word(2));
 				decorations[targetId].Apply(
-						static_cast<spv::Decoration>(insn.word(2)),
+						decoration,
 						insn.wordCount() > 3 ? insn.word(3) : 0);
+
+				if (decoration == spv::DecorationCentroid)
+					modes.NeedsCentroid = true;
 				break;
 			}
 
@@ -55,9 +59,13 @@ namespace sw
 				auto &d = memberDecorations[targetId];
 				if (memberIndex >= d.size())
 					d.resize(memberIndex + 1);    // on demand; exact size would require another pass...
+				auto decoration = static_cast<spv::Decoration>(insn.word(3));
 				d[memberIndex].Apply(
-						static_cast<spv::Decoration>(insn.word(3)),
+						decoration,
 						insn.wordCount() > 4 ? insn.word(4) : 0);
+
+				if (decoration == spv::DecorationCentroid)
+					modes.NeedsCentroid = true;
 				break;
 			}
 
@@ -153,9 +161,12 @@ namespace sw
 				object.storageClass = storageClass;
 
 				auto &type = getType(typeId);
+				auto &pointeeType = getType(type.definition.word(3));
 
-				object.sizeInComponents = type.sizeInComponents;
+				// OpVariable's "size" is the size of the allocation required (the size of the pointee)
+				object.sizeInComponents = pointeeType.sizeInComponents;
 				object.isBuiltInBlock = type.isBuiltInBlock;
+				object.pointerBase = insn.word(2);	// base is itself
 
 				// Register builtins
 
@@ -186,7 +197,55 @@ namespace sw
 			case spv::OpMemoryModel:
 				// Memory model does not affect our code generation until we decide to do Vulkan Memory Model support.
 			case spv::OpEntryPoint:
-				// Due to preprocessing, the entrypoint provides no value.
+			case spv::OpFunction:
+			case spv::OpFunctionEnd:
+				// Due to preprocessing, the entrypoint and its function provide no value.
+				break;
+			case spv::OpExtInstImport:
+				// We will only support the GLSL 450 extended instruction set, so no point in tracking the ID we assign it.
+				// Valid shaders will not attempt to import any other instruction sets.
+				break;
+
+			case spv::OpFunctionParameter:
+			case spv::OpFunctionCall:
+			case spv::OpSpecConstant:
+			case spv::OpSpecConstantComposite:
+			case spv::OpSpecConstantFalse:
+			case spv::OpSpecConstantOp:
+			case spv::OpSpecConstantTrue:
+				// These should have all been removed by preprocessing passes. If we see them here,
+				// our assumptions are wrong and we will probably generate wrong code.
+				UNIMPLEMENTED("These instructions should have already been lowered.");
+				break;
+
+			case spv::OpLoad:
+			case spv::OpAccessChain:
+				// Instructions that yield an ssavalue.
+			{
+				auto typeId = insn.word(1);
+				auto resultId = insn.word(2);
+				auto &object = defs[resultId];
+				object.kind = Object::Kind::Value;
+				object.definition = insn;
+				object.sizeInComponents = getType(typeId).sizeInComponents;
+
+				if (insn.opcode() == spv::OpAccessChain)
+				{
+					// interior ptr has two parts:
+					// - logical base ptr, common across all lanes and known at compile time
+					// - per-lane offset
+					object.pointerBase = getObject(insn.word(3)).pointerBase;
+				}
+				break;
+			}
+
+			case spv::OpStore:
+			case spv::OpReturn:
+				// Don't need to do anything during analysis pass
+				break;
+
+			case spv::OpKill:
+				modes.ContainsKill = true;
 				break;
 
 			default:
@@ -238,7 +297,19 @@ namespace sw
 		else
 		{
 			object.kind = Object::Kind::InterfaceVariable;
-			PopulateInterface(&userDefinedInterface, resultId);
+			VisitInterface(resultId,
+						   [&userDefinedInterface](Decorations const &d, AttribType type) {
+							   // Populate a single scalar slot in the interface from a collection of decorations and the intended component type.
+							   auto scalarSlot = (d.Location << 2) | d.Component;
+							   assert(scalarSlot >= 0 &&
+									  scalarSlot < static_cast<int32_t>(userDefinedInterface.size()));
+
+							   auto &slot = userDefinedInterface[scalarSlot];
+							   slot.Type = type;
+							   slot.Flat = d.Flat;
+							   slot.NoPerspective = d.NoPerspective;
+							   slot.Centroid = d.Centroid;
+						   });
 		}
 	}
 
@@ -323,9 +394,9 @@ namespace sw
 		}
 
 		case spv::OpTypePointer:
-			// Pointer 'size' is just pointee size
-			// TODO: this isn't really correct. we should look through pointers as appropriate.
-			return getType(insn.word(3)).sizeInComponents;
+			// Runtime representation of a pointer is a per-lane index.
+			// Note: clients are expected to look through the pointer if they want the pointee size instead.
+			return 1;
 
 		default:
 			// Some other random insn.
@@ -333,20 +404,8 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::PopulateInterfaceSlot(std::vector<InterfaceComponent> *iface, Decorations const &d, AttribType type)
-	{
-		// Populate a single scalar slot in the interface from a collection of decorations and the intended component type.
-		auto scalarSlot = (d.Location << 2) | d.Component;
-		assert(scalarSlot >= 0 && scalarSlot < static_cast<int32_t>(iface->size()));
-
-		auto &slot = (*iface)[scalarSlot];
-		slot.Type = type;
-		slot.Flat = d.Flat;
-		slot.NoPerspective = d.NoPerspective;
-		slot.Centroid = d.Centroid;
-	}
-
-	int SpirvShader::PopulateInterfaceInner(std::vector<InterfaceComponent> *iface, uint32_t id, Decorations d)
+	template<typename F>
+	int SpirvShader::VisitInterfaceInner(uint32_t id, Decorations d, F f) const
 	{
 		// Recursively walks variable definition and its type tree, taking into account
 		// any explicit Location or Component decorations encountered; where explicit
@@ -354,56 +413,49 @@ namespace sw
 		// Collected decorations are carried down toward the leaves and across
 		// siblings; Effect of decorations intentionally does not flow back up the tree.
 		//
-		// Returns the next available location.
+		// F is a functor to be called with the effective decoration set for every component.
+		//
+		// Returns the next available location, and calls f().
 
 		// This covers the rules in Vulkan 1.1 spec, 14.1.4 Location Assignment.
 
-		auto const it = decorations.find(id);
-		if (it != decorations.end())
-		{
-			d.Apply(it->second);
-		}
+		ApplyDecorationsForId(&d, id);
 
 		auto const &obj = getType(id);
 		switch (obj.definition.opcode())
 		{
 		case spv::OpTypePointer:
-			return PopulateInterfaceInner(iface, obj.definition.word(3), d);
+			return VisitInterfaceInner<F>(obj.definition.word(3), d, f);
 		case spv::OpTypeMatrix:
 			for (auto i = 0u; i < obj.definition.word(3); i++, d.Location++)
 			{
 				// consumes same components of N consecutive locations
-				PopulateInterfaceInner(iface, obj.definition.word(2), d);
+				VisitInterfaceInner<F>(obj.definition.word(2), d, f);
 			}
 			return d.Location;
 		case spv::OpTypeVector:
 			for (auto i = 0u; i < obj.definition.word(3); i++, d.Component++)
 			{
 				// consumes N consecutive components in the same location
-				PopulateInterfaceInner(iface, obj.definition.word(2), d);
+				VisitInterfaceInner<F>(obj.definition.word(2), d, f);
 			}
 			return d.Location + 1;
 		case spv::OpTypeFloat:
-			PopulateInterfaceSlot(iface, d, ATTRIBTYPE_FLOAT);
+			f(d, ATTRIBTYPE_FLOAT);
 			return d.Location + 1;
 		case spv::OpTypeInt:
-			PopulateInterfaceSlot(iface, d, obj.definition.word(3) ? ATTRIBTYPE_INT : ATTRIBTYPE_UINT);
+			f(d, obj.definition.word(3) ? ATTRIBTYPE_INT : ATTRIBTYPE_UINT);
 			return d.Location + 1;
 		case spv::OpTypeBool:
-			PopulateInterfaceSlot(iface, d, ATTRIBTYPE_UINT);
+			f(d, ATTRIBTYPE_UINT);
 			return d.Location + 1;
 		case spv::OpTypeStruct:
 		{
-			auto const memberDecorationsIt = memberDecorations.find(id);
 			// iterate over members, which may themselves have Location/Component decorations
 			for (auto i = 0u; i < obj.definition.wordCount() - 2; i++)
 			{
-				// Apply any member decorations for this member to the carried state.
-				if (memberDecorationsIt != memberDecorations.end() && i < memberDecorationsIt->second.size())
-				{
-					d.Apply(memberDecorationsIt->second[i]);
-				}
-				d.Location = PopulateInterfaceInner(iface, obj.definition.word(i + 2), d);
+				ApplyDecorationsForIdMember(&d, id, i);
+				d.Location = VisitInterfaceInner<F>(obj.definition.word(i + 2), d, f);
 				d.Component = 0;    // Implicit locations always have component=0
 			}
 			return d.Location;
@@ -413,7 +465,7 @@ namespace sw
 			auto arraySize = GetConstantInt(obj.definition.word(3));
 			for (auto i = 0u; i < arraySize; i++)
 			{
-				d.Location = PopulateInterfaceInner(iface, obj.definition.word(2), d);
+				d.Location = VisitInterfaceInner<F>(obj.definition.word(2), d, f);
 			}
 			return d.Location;
 		}
@@ -423,20 +475,66 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::PopulateInterface(std::vector<InterfaceComponent> *iface, uint32_t id)
+	template<typename F>
+	void SpirvShader::VisitInterface(uint32_t id, F f) const
 	{
-		// Walk a variable definition and populate the interface from it.
+		// Walk a variable definition and call f for each component in it.
 		Decorations d{};
-
-		auto const it = decorations.find(id);
-		if (it != decorations.end())
-		{
-			d.Apply(it->second);
-		}
+		ApplyDecorationsForId(&d, id);
 
 		auto def = getObject(id).definition;
 		assert(def.opcode() == spv::OpVariable);
-		PopulateInterfaceInner(iface, def.word(1), d);
+		VisitInterfaceInner<F>(def.word(1), d, f);
+	}
+
+	Int4 SpirvShader::WalkAccessChain(uint32_t id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	{
+		// TODO: think about decorations, to make this work on location based interfaces
+		// TODO: think about explicit layout (UBO/SSBO) storage classes
+		// TODO: avoid doing per-lane work in some cases if we can?
+
+		Int4 res = Int4(0);
+		auto & baseObject = getObject(id);
+		auto typeId = baseObject.definition.word(1);
+
+		if (baseObject.kind == Object::Kind::Value)
+			res += As<Int4>(routine->getValue(id)[0]);
+
+		for (auto i = 0u; i < numIndexes; i++)
+		{
+			auto & type = getType(typeId);
+			switch (type.definition.opcode())
+			{
+			case spv::OpTypeStruct:
+			{
+				int memberIndex = GetConstantInt(indexIds[i]);
+				int offsetIntoStruct = 0;
+				for (auto j = 0; j < memberIndex; j++) {
+					offsetIntoStruct += getType(type.definition.word(2 + memberIndex)).sizeInComponents;
+				}
+				res += Int4(offsetIntoStruct);
+				break;
+			}
+
+			case spv::OpTypeVector:
+			case spv::OpTypeMatrix:
+			case spv::OpTypeArray:
+			{
+				auto stride = getType(type.definition.word(2)).sizeInComponents;
+				auto & obj = getObject(indexIds[i]);
+				if (obj.kind == Object::Kind::Constant)
+					res += Int4(stride * GetConstantInt(indexIds[i]));
+				else
+					res += Int4(stride) * As<Int4>(routine->getValue(indexIds[i])[0]);
+				break;
+			}
+
+			default:
+				UNIMPLEMENTED("Unexpected type in WalkAccessChain");
+			}
+		}
+
+		return res;
 	}
 
 	void SpirvShader::Decorations::Apply(spv::Decoration decoration, uint32_t arg)
@@ -504,7 +602,23 @@ namespace sw
 		BufferBlock |= src.BufferBlock;
 	}
 
-	uint32_t SpirvShader::GetConstantInt(uint32_t id)
+	void SpirvShader::ApplyDecorationsForId(Decorations *d, uint32_t id) const
+	{
+		auto it = decorations.find(id);
+		if (it != decorations.end())
+			d->Apply(it->second);
+	}
+
+	void SpirvShader::ApplyDecorationsForIdMember(Decorations *d, uint32_t id, uint32_t member) const
+	{
+		auto it = memberDecorations.find(id);
+		if (it != memberDecorations.end() && member < it->second.size())
+		{
+			d->Apply(it->second[member]);
+		}
+	}
+
+	uint32_t SpirvShader::GetConstantInt(uint32_t id) const
 	{
 		// Slightly hackish access to constants very early in translation.
 		// General consumption of constants by other instructions should
@@ -512,9 +626,164 @@ namespace sw
 
 		// TODO: not encountered yet since we only use this for array sizes etc,
 		// but is possible to construct integer constant 0 via OpConstantNull.
-		auto insn = defs[id].definition;
+		auto insn = getObject(id).definition;
 		assert(insn.opcode() == spv::OpConstant);
 		assert(getType(insn.word(1)).definition.opcode() == spv::OpTypeInt);
 		return insn.word(3);
+	}
+
+	// emit-time
+
+	void SpirvShader::emitEarly(SpirvRoutine *routine) const
+	{
+		for (auto insn : *this)
+		{
+			switch (insn.opcode())
+			{
+			case spv::OpVariable:
+			{
+				auto resultId = insn.word(2);
+				auto &object = getObject(resultId);
+				// TODO: what to do about zero-slot objects?
+				if (object.sizeInComponents > 0)
+				{
+					routine->createLvalue(insn.word(2), object.sizeInComponents);
+				}
+				break;
+			}
+			default:
+				// Nothing else produces interface variables, so can all be safely ignored.
+				break;
+			}
+		}
+	}
+
+	void SpirvShader::emit(SpirvRoutine *routine) const
+	{
+		for (auto insn : *this)
+		{
+			switch (insn.opcode())
+			{
+			case spv::OpVariable:
+			{
+				auto resultId = insn.word(2);
+				auto &object = getObject(resultId);
+				if (object.kind == Object::Kind::InterfaceVariable && object.storageClass == spv::StorageClassInput)
+				{
+					auto &dst = routine->getValue(resultId);
+					int offset = 0;
+					VisitInterface(resultId,
+								   [&](Decorations const &d, AttribType type) {
+									   auto scalarSlot = d.Location << 2 | d.Component;
+									   dst[offset++] = (*routine->inputs)[scalarSlot];
+								   });
+				}
+				break;
+			}
+			case spv::OpLoad:
+			{
+				auto &object = getObject(insn.word(2));
+				auto &type = getType(insn.word(1));
+				auto &pointer = getObject(insn.word(3));
+				routine->createLvalue(insn.word(2), type.sizeInComponents);		// TODO: this should be an ssavalue!
+				auto &pointerBase = getObject(pointer.pointerBase);
+
+				if (pointerBase.storageClass == spv::StorageClassImage ||
+					pointerBase.storageClass == spv::StorageClassUniform ||
+					pointerBase.storageClass == spv::StorageClassUniformConstant)
+				{
+					UNIMPLEMENTED("Descriptor-backed load not yet implemented");
+				}
+
+				SpirvRoutine::Value& ptrBase = routine->getValue(pointer.pointerBase);
+				auto & dst = routine->getValue(insn.word(2));
+
+				if (pointer.kind == Object::Kind::Value)
+				{
+					auto offsets = As<Int4>(routine->getValue(insn.word(3)));
+					for (auto i = 0u; i < object.sizeInComponents; i++)
+					{
+						// i wish i had a Float,Float,Float,Float constructor here..
+						Float4 v;
+						for (int j = 0; j < 4; j++)
+							v = Insert(v, Extract(ptrBase[Int(i) + Extract(offsets, j)], j), j);
+						dst[i] = v;
+					}
+				}
+				else
+				{
+					// no divergent offsets to worry about
+					for (auto i = 0u; i < object.sizeInComponents; i++)
+					{
+						dst[i] = ptrBase[i];
+					}
+				}
+				break;
+			}
+			case spv::OpAccessChain:
+			{
+				auto &object = getObject(insn.word(2));
+				auto &type = getType(insn.word(1));
+				auto &base = getObject(insn.word(3));
+				routine->createLvalue(insn.word(2), type.sizeInComponents);		// TODO: this should be an ssavalue!
+				auto &pointerBase = getObject(object.pointerBase);
+				assert(type.sizeInComponents == 1);
+				assert(base.pointerBase == object.pointerBase);
+
+				if (pointerBase.storageClass == spv::StorageClassImage ||
+					pointerBase.storageClass == spv::StorageClassUniform ||
+					pointerBase.storageClass == spv::StorageClassUniformConstant)
+				{
+					UNIMPLEMENTED("Descriptor-backed OpAccessChain not yet implemented");
+				}
+
+				auto & dst = routine->getValue(insn.word(2));
+				dst[0] = As<Float4>(WalkAccessChain(insn.word(3), insn.wordCount() - 4, insn.wordPointer(4), routine));
+				break;
+			}
+			case spv::OpStore:
+			{
+				auto &object = getObject(insn.word(2));
+				auto &pointer = getObject(insn.word(1));
+				auto &pointerBase = getObject(pointer.pointerBase);
+
+				if (pointerBase.storageClass == spv::StorageClassImage ||
+					pointerBase.storageClass == spv::StorageClassUniform ||
+					pointerBase.storageClass == spv::StorageClassUniformConstant)
+				{
+					UNIMPLEMENTED("Descriptor-backed store not yet implemented");
+				}
+
+				SpirvRoutine::Value& ptrBase = routine->getValue(pointer.pointerBase);
+				auto & src = routine->getValue(insn.word(2));;
+
+				if (pointer.kind == Object::Kind::Value)
+				{
+					auto offsets = As<Int4>(routine->getValue(insn.word(1)));
+					for (auto i = 0u; i < object.sizeInComponents; i++)
+					{
+						// Scattered store
+						for (int j = 0; j < 4; j++)
+						{
+							auto dst = ptrBase[Int(i) + Extract(offsets, j)];
+							dst = Insert(dst, Extract(src[i], j), j);
+						}
+					}
+				}
+				else
+				{
+					// no divergent offsets
+					for (auto i = 0u; i < object.sizeInComponents; i++)
+					{
+						ptrBase[i] = src[i];
+					}
+				}
+				break;
+			}
+			default:
+				printf("emit: ignoring opcode %d\n", insn.opcode());
+				break;
+			}
+		}
 	}
 }

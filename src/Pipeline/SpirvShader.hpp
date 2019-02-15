@@ -17,16 +17,40 @@
 
 #include "System/Types.hpp"
 #include "Vulkan/VkDebug.hpp"
+#include "ShaderCore.hpp"
 
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include <cstdint>
 #include <type_traits>
+#include <memory>
 #include <spirv/unified1/spirv.hpp>
+#include <Device/Config.hpp>
 
 namespace sw
 {
+	class SpirvRoutine
+	{
+	public:
+		using Value = Array<Float4>;
+		std::unordered_map<uint32_t, std::unique_ptr<Value>> lvalues;
+		std::unique_ptr<Value> inputs = std::unique_ptr<Value>(new Value(MAX_INTERFACE_COMPONENTS));
+		std::unique_ptr<Value> outputs = std::unique_ptr<Value>(new Value(MAX_INTERFACE_COMPONENTS));
+
+		void createLvalue(uint32_t id, uint32_t size)
+		{
+			lvalues.emplace(id, std::unique_ptr<Value>(new Value(size)));
+		}
+
+		Value& getValue(uint32_t id)
+		{
+			auto it = lvalues.find(id);
+			assert(it != lvalues.end());
+			return *it->second;
+		}
+	};
+
 	class SpirvShader
 	{
 	public:
@@ -53,6 +77,12 @@ namespace sw
 			{
 				ASSERT(n < wordCount());
 				return iter[n];
+			}
+
+			uint32_t const * wordPointer(uint32_t n) const
+			{
+				ASSERT(n < wordCount());
+				return &iter[n];
 			}
 
 			bool operator!=(InsnIterator const &other) const
@@ -105,6 +135,7 @@ namespace sw
 			spv::StorageClass storageClass;
 			uint32_t sizeInComponents = 0;
 			bool isBuiltInBlock = false;
+			uint32_t pointerBase = 0;
 
 			enum class Kind
 			{
@@ -132,6 +163,7 @@ namespace sw
 			bool DepthLess : 1;
 			bool DepthUnchanged : 1;
 			bool ContainsKill : 1;
+			bool NeedsCentroid : 1;
 
 			// Compute workgroup dimensions
 			int LocalSizeX, LocalSizeY, LocalSizeZ;
@@ -212,12 +244,9 @@ namespace sw
 		std::vector<InterfaceComponent> inputs;
 		std::vector<InterfaceComponent> outputs;
 
-	private:
-		const int serialID;
-		static volatile int serialCounter;
-		Modes modes;
-		std::unordered_map<uint32_t, Object> types;
-		std::unordered_map<uint32_t, Object> defs;
+		void emitEarly(SpirvRoutine *routine) const;
+
+		void emit(SpirvRoutine *routine) const;
 
 		using BuiltInHash = std::hash<std::underlying_type<spv::BuiltIn>::type>;
 		std::unordered_map<spv::BuiltIn, BuiltinMapping, BuiltInHash> inputBuiltins;
@@ -230,25 +259,37 @@ namespace sw
 			return it->second;
 		}
 
-		Object const &getObject(uint32_t id) const {
+		Object const &getObject(uint32_t id) const
+		{
 			auto it = defs.find(id);
 			assert(it != defs.end());
 			return it->second;
 		}
 
+	private:
+		const int serialID;
+		static volatile int serialCounter;
+		Modes modes;
+		std::unordered_map<uint32_t, Object> types;
+		std::unordered_map<uint32_t, Object> defs;
+
 		void ProcessExecutionMode(InsnIterator it);
 
 		uint32_t ComputeTypeSize(InsnIterator insn);
+		void ApplyDecorationsForId(Decorations *d, uint32_t id) const;
+		void ApplyDecorationsForIdMember(Decorations *d, uint32_t id, uint32_t member) const;
 
-		void PopulateInterfaceSlot(std::vector<InterfaceComponent> *iface, Decorations const &d, AttribType type);
+		template<typename F>
+		int VisitInterfaceInner(uint32_t id, Decorations d, F f) const;
 
-		int PopulateInterfaceInner(std::vector<InterfaceComponent> *iface, uint32_t id, Decorations d);
+		template<typename F>
+		void VisitInterface(uint32_t id, F f) const;
 
-		void PopulateInterface(std::vector<InterfaceComponent> *iface, uint32_t id);
-
-		uint32_t GetConstantInt(uint32_t id);
+		uint32_t GetConstantInt(uint32_t id) const;
 
 		void ProcessInterfaceVariable(Object &object);
+
+		Int4 WalkAccessChain(uint32_t id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
 	};
 }
 
