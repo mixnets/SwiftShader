@@ -94,6 +94,30 @@
       "revId": "fbcedf6974eeee7ac66f628f5cf365b7a5ef8df6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb8b92d9_06128309",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-15T16:41:17Z",
+      "side": 1,
+      "message": "Missed your earlier comment (had to reload). Makes sense now, thanks! Clarification can be added to the code later if you prefer.",
+      "parentUuid": "8eac201a_da345756",
+      "range": {
+        "startLine": 554,
+        "startChar": 6,
+        "endLine": 554,
+        "endChar": 29
+      },
+      "revId": "fbcedf6974eeee7ac66f628f5cf365b7a5ef8df6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
