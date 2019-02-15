@@ -133,6 +133,12 @@ size_t RenderPass::ComputeRequiredAllocationSize(const VkRenderPassCreateInfo* p
 	return attachmentSize + subpassesSize + dependenciesSize;
 }
 
+void RenderPass::getRenderAreaGranularity(VkExtent2D* pGranularity) const
+{
+	pGranularity->height = 1;
+	pGranularity->width = 1;
+}
+
 void RenderPass::begin()
 {
 	currentSubpass = 0;
