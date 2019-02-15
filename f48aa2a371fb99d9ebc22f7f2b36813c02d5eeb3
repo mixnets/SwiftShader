@@ -46,6 +46,53 @@
       "revId": "f48aa2a371fb99d9ebc22f7f2b36813c02d5eeb3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "531136dd_4a651cdd",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-15T17:34:23Z",
+      "side": 1,
+      "message": "Actually I find it great to have this here as well. A comment for a prototype should be mostly about \"what\" it is and a comment for the definition about \"how\" it\u0027s implemented. It\u0027s fine if only one or the other is required when it\u0027s entirely obvious/self-documenting.",
+      "parentUuid": "3856a9b9_711957d7",
+      "range": {
+        "startLine": 409,
+        "startChar": 2,
+        "endLine": 409,
+        "endChar": 4
+      },
+      "revId": "f48aa2a371fb99d9ebc22f7f2b36813c02d5eeb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5b621017_04c5bdaa",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-15T17:34:23Z",
+      "side": 1,
+      "message": "nit: While it\u0027s common for template arguments to use short names if they can be any type, in this case it\u0027s really useful information that it must be a \u0027Functor\u0027. Also the argument name can be used to further clarify what the functor is for.",
+      "range": {
+        "startLine": 264,
+        "startChar": 54,
+        "endLine": 264,
+        "endChar": 57
+      },
+      "revId": "f48aa2a371fb99d9ebc22f7f2b36813c02d5eeb3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
