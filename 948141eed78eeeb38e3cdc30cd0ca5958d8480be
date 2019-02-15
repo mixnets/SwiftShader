@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "48e35d0d_87205cfb",
+        "filename": "src/Shader/PixelProgram.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-15T15:07:12Z",
+      "side": 1,
+      "message": "Nit: maybe also #include \u003cvector\u003e for completeness",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 24
+      },
+      "revId": "948141eed78eeeb38e3cdc30cd0ca5958d8480be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
