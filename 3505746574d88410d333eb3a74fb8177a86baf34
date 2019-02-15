@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f6f03972_ab35e66b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-15T16:06:44Z",
+      "side": 1,
+      "message": "nit: Should we be calling them ssavalues? SPIR-V spec avoids the use of \u0027value\u0027 as any kind of variable, reserving it to talk about their run-time content as the value. Instead they\u0027re commonly referred to as \u0027intermediate results\u0027.\n\nOK to keep this here if you prefer, but I think we should adopt the SPIR-V terms going forward.",
+      "range": {
+        "startLine": 9,
+        "startChar": 45,
+        "endLine": 9,
+        "endChar": 54
+      },
+      "revId": "3505746574d88410d333eb3a74fb8177a86baf34",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
