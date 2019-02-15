@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "c7bfd72c_d8b5268d",
+        "filename": "src/Pipeline/VertexProgram.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-15T15:09:51Z",
+      "side": 1,
+      "message": "ASSERT() is just an assert() with optional logging. But since it\u0027s only active in debug builds, the logging isn\u0027t that useful to be honest. The other debug macros have proven to be a little more useful if only because they clarify the purpose of the check and they\u0027re very LOUD (i.e. UNIMPLEMENTED/UNREACHABLE). But there\u0027s work to be done to clean up their usage (b/73656151) so I don\u0027t think we need to enforce their usage yet. It\u0027s easy to search for assert() or unimplemented later to replace them with the macros.",
+      "parentUuid": "dbcfb116_05c28f89",
+      "range": {
+        "startLine": 39,
+        "startChar": 3,
+        "endLine": 39,
+        "endChar": 9
+      },
+      "revId": "f4c95d1acb13305b91de0e7b7b4285df9b9ad67b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "257d9879_bcfd04ea",
         "filename": "src/Pipeline/VertexRoutine.cpp",
         "patchSetId": 18
