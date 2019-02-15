@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8848a6d4_b3040c9b",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-15T15:38:39Z",
+      "side": 1,
+      "message": "Probably not required: \"Any input value to a shader stage is well-defined as long as the preceding stages writes to a matching output\"\n\nBut OK to keep it for now and look into whether we should eliminated it post-1.0",
+      "range": {
+        "startLine": 37,
+        "startChar": 2,
+        "endLine": 43,
+        "endChar": 3
+      },
+      "revId": "c0ecaaebc3be4a15e9519f5a162f46ccadacfc38",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
