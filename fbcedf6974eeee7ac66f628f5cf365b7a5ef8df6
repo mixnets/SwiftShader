@@ -22,6 +22,30 @@
       "revId": "fbcedf6974eeee7ac66f628f5cf365b7a5ef8df6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cd721bfb_9ab6815f",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-15T16:09:27Z",
+      "side": 1,
+      "message": "This can occur all the time. Decorations are sparse. This is \"apply any decorations you happen to have for this id\" and occurs at multiple levels in variable/type walking etc.",
+      "parentUuid": "99774bf7_94891b57",
+      "range": {
+        "startLine": 554,
+        "startChar": 6,
+        "endLine": 554,
+        "endChar": 29
+      },
+      "revId": "fbcedf6974eeee7ac66f628f5cf365b7a5ef8df6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
