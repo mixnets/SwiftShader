@@ -22,6 +22,30 @@
       "revId": "b497b77277559d78a8b94ba6fa9931fb5d63d59a",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ae8c47da_0a6a8229",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 526,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-15T18:03:47Z",
+      "side": 1,
+      "message": "Right, I can do this as a followup. It\u0027s a reasonably small change. I wasn\u0027t sure how hard I could lean on the constant folding.",
+      "parentUuid": "13760be8_00bd0786",
+      "range": {
+        "startLine": 526,
+        "startChar": 5,
+        "endLine": 526,
+        "endChar": 55
+      },
+      "revId": "b497b77277559d78a8b94ba6fa9931fb5d63d59a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
