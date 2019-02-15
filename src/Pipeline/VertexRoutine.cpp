@@ -108,7 +108,7 @@ namespace sw
 		assert(it != spirvShader->outputBuiltins.end());
 		assert(it->second.SizeInComponents == 4);
 		auto &pos = routine.getValue(it->second.Id);
-		auto posX = pos[it->second.FirstComponent];
+		auto posX = pos[it->second.FirstComponent + 0];
 		auto posY = pos[it->second.FirstComponent + 1];
 		auto posZ = pos[it->second.FirstComponent + 2];
 		auto posW = pos[it->second.FirstComponent + 3];
@@ -641,7 +641,7 @@ namespace sw
 		assert(it != spirvShader->outputBuiltins.end());
 		assert(it->second.SizeInComponents == 4);
 		auto &pos = routine.getValue(it->second.Id);
-		auto posX = pos[it->second.FirstComponent];
+		auto posX = pos[it->second.FirstComponent + 0];
 		auto posY = pos[it->second.FirstComponent + 1];
 		auto posZ = pos[it->second.FirstComponent + 2];
 		auto posW = pos[it->second.FirstComponent + 3];
@@ -651,7 +651,7 @@ namespace sw
 		v.z = posZ;
 		v.w = posW;
 
-		// Write the builtin pos into the vertex; it's not going to be consumed by the FS, but may need to reproject if we have to clip.
+		// Write the posisition into the vertex; it's not going to be consumed by the fragment shader, but may need to reproject if we have to clip.
 		Vector4f v2 = v;
 		transpose4x4(v2.x, v2.y, v2.z, v2.w);
 

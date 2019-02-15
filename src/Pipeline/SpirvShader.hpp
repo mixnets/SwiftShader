@@ -34,11 +34,12 @@ namespace sw
 	{
 	public:
 		using Value = Array<Float4>;
-		std::unordered_map<uint32_t, std::unique_ptr<Value>> lvalues;
+		// TODO: const https://swiftshader-review.googlesource.com/c/SwiftShader/+/24591/5/src/Pipeline/SpirvShader.hpp#37
+		std::unordered_map<uint32_t, std::unique_ptr<Value>> lvalues;//variables
 		std::unique_ptr<Value> inputs = std::unique_ptr<Value>(new Value(MAX_INTERFACE_COMPONENTS));
 		std::unique_ptr<Value> outputs = std::unique_ptr<Value>(new Value(MAX_INTERFACE_COMPONENTS));
 
-		void createLvalue(uint32_t id, uint32_t size)
+		void createLvalue(uint32_t id, uint32_t size) //variable
 		{
 			lvalues.emplace(id, std::unique_ptr<Value>(new Value(size)));
 		}
@@ -57,7 +58,7 @@ namespace sw
 		using InsnStore = std::vector<uint32_t>;
 		InsnStore insns;
 
-		/* Pseudo-iterator over SPIRV instructions, designed to support range-based-for. */
+		// Pseudo-iterator over SPIRV instructions, designed to support range-based-for.
 		class InsnIterator
 		{
 			InsnStore::const_iterator iter;
@@ -155,9 +156,9 @@ namespace sw
 
 		explicit SpirvShader(InsnStore const &insns);
 
-		struct Modes
+		struct Modes // good name?
 		{
-			bool EarlyFragmentTests : 1;
+			bool EarlyFragmentTests : 1;  // Useful to be bitfield?
 			bool DepthReplacing : 1;
 			bool DepthGreater : 1;
 			bool DepthLess : 1;
@@ -166,7 +167,7 @@ namespace sw
 			bool NeedsCentroid : 1;
 
 			// Compute workgroup dimensions
-			int LocalSizeX, LocalSizeY, LocalSizeZ;
+			int LocalSizeX, LocalSizeY, LocalSizeZ;   // keep together with boolean states?
 		};
 
 		Modes const &getModes() const

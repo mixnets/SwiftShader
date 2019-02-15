@@ -450,16 +450,18 @@ namespace sw
 				*Pointer<Float4>(primitive + OFFSET(Primitive,z.C), 16) = C;
 			}
 
-			for (int interpolant = 0; interpolant < MAX_INTERFACE_COMPONENTS; interpolant++)
+			for(int interpolant = 0; interpolant < MAX_INTERFACE_COMPONENTS; interpolant++)
 			{
-				// TODO: fix point, perspective, etc. Not convinced various edge cases are really correct here for either VK or GL.
-				if (state.gradient[interpolant].Type != SpirvShader::ATTRIBTYPE_UNUSED)
+				// TODO(): fix point, perspective, etc.  various edge cases are really correct here for either VK or GL.
+				if(state.gradient[interpolant].Type != SpirvShader::ATTRIBTYPE_UNUSED)
+				{
 					setupGradient(primitive, tri, w012, M, v0, v1, v2,
-							OFFSET(Vertex, v[interpolant]),
-							OFFSET(Primitive, V[interpolant]),
-							state.gradient[interpolant].Flat,
-							point,
-							state.perspective, 0);
+					              OFFSET(Vertex, v[interpolant]),
+					              OFFSET(Primitive, V[interpolant]),
+					              state.gradient[interpolant].Flat,
+					              point,
+					              state.perspective, 0);
+				}
 			}
 
 			Return(true);

@@ -40,34 +40,38 @@ namespace sw
 				break;
 
 			case spv::OpDecorate:
-			{
-				auto targetId = insn.word(1);
-				auto decoration = static_cast<spv::Decoration>(insn.word(2));
-				decorations[targetId].Apply(
-						decoration,
-						insn.wordCount() > 3 ? insn.word(3) : 0);
+				{
+					auto targetId = insn.word(1);
+					auto decoration = static_cast<spv::Decoration>(insn.word(2));
+					decorations[targetId].Apply(
+							decoration,
+							insn.wordCount() > 3 ? insn.word(3) : 0);
 
-				if (decoration == spv::DecorationCentroid)
-					modes.NeedsCentroid = true;
+					if (decoration == spv::DecorationCentroid)
+					{
+						modes.NeedsCentroid = true; // or NeedsCentroid = (decoration == spv::DecorationCentroid) ?
+					}
+				}
 				break;
-			}
 
 			case spv::OpMemberDecorate:
-			{
-				auto targetId = insn.word(1);
-				auto memberIndex = insn.word(2);
-				auto &d = memberDecorations[targetId];
-				if (memberIndex >= d.size())
-					d.resize(memberIndex + 1);    // on demand; exact size would require another pass...
-				auto decoration = static_cast<spv::Decoration>(insn.word(3));
-				d[memberIndex].Apply(
-						decoration,
-						insn.wordCount() > 4 ? insn.word(4) : 0);
+				{
+					auto targetId = insn.word(1);
+					auto memberIndex = insn.word(2);
+					auto &d = memberDecorations[targetId];
+					if (memberIndex >= d.size())
+					{
+						d.resize(memberIndex + 1);    // On demand; exact size would require another pass...
+					}
+					auto decoration = static_cast<spv::Decoration>(insn.word(3));
+					d[memberIndex].Apply(decoration, insn.wordCount() > 4 ? insn.word(4) : 0);
 
-				if (decoration == spv::DecorationCentroid)
-					modes.NeedsCentroid = true;
+					if (decoration == spv::DecorationCentroid)
+					{
+						modes.NeedsCentroid = true; // or NeedsCentroid = (decoration == spv::DecorationCentroid) ?
+					}
+				}
 				break;
-			}
 
 			case spv::OpDecorationGroup:
 				// Nothing to do here. We don't need to record the definition of the group; we'll just have
@@ -76,30 +80,32 @@ namespace sw
 				break;
 
 			case spv::OpGroupDecorate:
-			{
-				auto const &srcDecorations = decorations[insn.word(1)];
-				for (auto i = 2u; i < insn.wordCount(); i++)
 				{
-					// remaining operands are targets to apply the group to.
-					decorations[insn.word(i)].Apply(srcDecorations);
+					auto const &srcDecorations = decorations[insn.word(1)];
+					for (auto i = 2u; i < insn.wordCount(); i++)
+					{
+						// remaining operands are targets to apply the group to.
+						decorations[insn.word(i)].Apply(srcDecorations);
+					}
 				}
 				break;
-			}
 
 			case spv::OpGroupMemberDecorate:
-			{
-				auto const &srcDecorations = decorations[insn.word(1)];
-				for (auto i = 2u; i < insn.wordCount(); i += 2)
 				{
-					// remaining operands are pairs of <id>, literal for members to apply to.
-					auto &d = memberDecorations[insn.word(i)];
-					auto memberIndex = insn.word(i + 1);
-					if (memberIndex >= d.size())
-						d.resize(memberIndex + 1);    // on demand resize, see above...
-					d[memberIndex].Apply(srcDecorations);
+					auto const &srcDecorations = decorations[insn.word(1)];
+					for (auto i = 2u; i < insn.wordCount(); i += 2)
+					{
+						// remaining operands are pairs of <id>, literal for members to apply to.
+						auto &d = memberDecorations[insn.word(i)];
+						auto memberIndex = insn.word(i + 1);
+						if (memberIndex >= d.size())
+						{
+							d.resize(memberIndex + 1);    // on demand resize, see above...
+						}
+						d[memberIndex].Apply(srcDecorations);
+					}
 				}
 				break;
-			}
 
 			case spv::OpTypeVoid:
 			case spv::OpTypeBool:
@@ -166,7 +172,7 @@ namespace sw
 				// OpVariable's "size" is the size of the allocation required (the size of the pointee)
 				object.sizeInComponents = pointeeType.sizeInComponents;
 				object.isBuiltInBlock = type.isBuiltInBlock;
-				object.pointerBase = insn.word(2);	// base is itself
+				object.pointerBase = insn.word(2);  // base is itself
 
 				// Register builtins
 
@@ -204,6 +210,7 @@ namespace sw
 			case spv::OpExtInstImport:
 				// We will only support the GLSL 450 extended instruction set, so no point in tracking the ID we assign it.
 				// Valid shaders will not attempt to import any other instruction sets.
+				UNIMPLEMENTED();
 				break;
 
 			case spv::OpFunctionParameter:
@@ -220,7 +227,7 @@ namespace sw
 
 			case spv::OpLoad:
 			case spv::OpAccessChain:
-				// Instructions that yield an ssavalue.
+				// Instructions that yield an ssavalue.  // ssavalue = temporary
 			{
 				auto typeId = insn.word(1);
 				auto resultId = insn.word(2);
@@ -231,8 +238,8 @@ namespace sw
 
 				if (insn.opcode() == spv::OpAccessChain)
 				{
-					// interior ptr has two parts:
-					// - logical base ptr, common across all lanes and known at compile time
+					// Interior pointer has two parts:
+					// - logical base pointer, common across all lanes and known at compile time
 					// - per-lane offset
 					object.pointerBase = getObject(insn.word(3)).pointerBase;
 				}
@@ -249,7 +256,7 @@ namespace sw
 				break;
 
 			default:
-				printf("Warning: ignored opcode %u\n", insn.opcode());
+				printf("Warning: ignored opcode %u\n", insn.opcode()); // no printfs!
 				break;    // This is OK, these passes are intentionally partial
 			}
 		}
@@ -297,8 +304,9 @@ namespace sw
 		else
 		{
 			object.kind = Object::Kind::InterfaceVariable;
-			VisitInterface(resultId,
-						   [&userDefinedInterface](Decorations const &d, AttribType type) {
+
+			auto x = [&userDefinedInterface](Decorations const &d, AttribType type)
+			  {
 							   // Populate a single scalar slot in the interface from a collection of decorations and the intended component type.
 							   auto scalarSlot = (d.Location << 2) | d.Component;
 							   assert(scalarSlot >= 0 &&
@@ -309,7 +317,9 @@ namespace sw
 							   slot.Flat = d.Flat;
 							   slot.NoPerspective = d.NoPerspective;
 							   slot.Centroid = d.Centroid;
-						   });
+						   };
+
+			VisitInterface(resultId, x);
 		}
 	}
 
@@ -509,7 +519,8 @@ namespace sw
 			{
 				int memberIndex = GetConstantInt(indexIds[i]);
 				int offsetIntoStruct = 0;
-				for (auto j = 0; j < memberIndex; j++) {
+				for (auto j = 0; j < memberIndex; j++)
+				{
 					offsetIntoStruct += getType(type.definition.word(2 + memberIndex)).sizeInComponents;
 				}
 				res += Int4(offsetIntoStruct);
@@ -522,10 +533,14 @@ namespace sw
 			{
 				auto stride = getType(type.definition.word(2)).sizeInComponents;
 				auto & obj = getObject(indexIds[i]);
-				if (obj.kind == Object::Kind::Constant)
+				if (obj.kind == Object::Kind::Constant)  // TODO: collect all constants at compile time
+				{
 					res += Int4(stride * GetConstantInt(indexIds[i]));
+				}
 				else
+				{
 					res += Int4(stride) * As<Int4>(routine->getValue(indexIds[i])[0]);
+				}
 				break;
 			}
 

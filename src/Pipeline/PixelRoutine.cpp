@@ -34,7 +34,7 @@ namespace sw
 	{
 		spirvShader->emitEarly(&routine);
 
-		if (forceClearRegisters)
+		if (forceClearRegisters)  // ???
 		{
 			for (int i = 0; i < MAX_INTERFACE_COMPONENTS; i++)
 			{

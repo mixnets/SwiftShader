@@ -241,9 +241,12 @@ namespace sw
 				for (int interpolant = 0; interpolant < MAX_INTERFACE_COMPONENTS; interpolant++)
 				{
 					if (spirvShader->inputs[interpolant].Type == SpirvShader::ATTRIBTYPE_UNUSED)
+					{
 						continue;
+					}
 
 					Dv[interpolant] = *Pointer<Float4>(primitive + OFFSET(Primitive, V[interpolant].C), 16);
+
 					if (!spirvShader->inputs[interpolant].Flat)
 					{
 						Dv[interpolant] += yyyy * *Pointer<Float4>(primitive + OFFSET(Primitive, V[interpolant].B), 16);

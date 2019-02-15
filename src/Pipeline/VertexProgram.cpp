@@ -35,8 +35,9 @@ namespace sw
 		auto it = spirvShader->inputBuiltins.find(spv::BuiltInInstanceIndex);
 		if (it != spirvShader->inputBuiltins.end())
 		{
-			// TODO: we could do better here; we know InstanceIndex is uniform across all lanes
+			// TODO(): we could do better here; we know InstanceIndex is uniform across all lanes
 			assert(it->second.SizeInComponents == 1);
+
 			routine.getValue(it->second.Id)[it->second.FirstComponent] =
 					As<Float4>(Int4((*Pointer<Int>(data + OFFSET(DrawData, instanceID)))));
 		}
@@ -56,6 +57,7 @@ namespace sw
 		if (it != spirvShader->inputBuiltins.end())
 		{
 			assert(it->second.SizeInComponents == 1);
+
 			routine.getValue(it->second.Id)[it->second.FirstComponent] =
 					As<Float4>(Int4(index) + Int4(0, 1, 2, 3));
 		}

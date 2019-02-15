@@ -667,7 +667,7 @@ namespace sw
 
 		if(state.multiSample > 1 && context->pixelShader)
 		{
-			state.centroid = context->pixelShader->getModes().NeedsCentroid;
+			state.centroid = context->pixelShader->getModes().NeedsCentroid;  // eliminate getModes(). ?
 		}
 
 		state.frontFaceCCW = context->frontFacingCCW;
