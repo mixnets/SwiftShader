@@ -16,6 +16,24 @@
       "revId": "5b462b132e644c720c25c6849cf73cc762799a55",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "edc35f38_11356f75",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-15T21:46:24Z",
+      "side": 1,
+      "message": "Fair enough, I\u0027ll see if I can remove all header information and just pack descriptor data contiguously.",
+      "parentUuid": "d564eed7_e61aba0f",
+      "revId": "5b462b132e644c720c25c6849cf73cc762799a55",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
