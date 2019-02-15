@@ -70,6 +70,30 @@
       "revId": "fbcedf6974eeee7ac66f628f5cf365b7a5ef8df6",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8eac201a_da345756",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-15T16:25:12Z",
+      "side": 1,
+      "message": "The SPIR-V spec\u0027s validation rules state that: \"Each \u003cid\u003e must appear exactly once as the Result \u003cid\u003e of an instruction.\" also \"The definition of an SSA \u003cid\u003e should dominate all uses of it\"\n\nSo we shouldn\u0027t encounter any unknown id\u0027s. The spec lists a couple of exceptions, but as far as I can tell you can\u0027t decorate id\u0027s that haven\u0027t been declared yet.\n\nSo an assert indeed seems much better than dropping it on the floor silently.",
+      "parentUuid": "99774bf7_94891b57",
+      "range": {
+        "startLine": 554,
+        "startChar": 6,
+        "endLine": 554,
+        "endChar": 29
+      },
+      "revId": "fbcedf6974eeee7ac66f628f5cf365b7a5ef8df6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
