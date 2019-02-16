@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "082f48b7_37879ef2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-16T19:20:52Z",
+      "side": 1,
+      "message": "Bug b/124388146",
+      "revId": "8bbae70a32c5f606056777ff6f219bb386c05dcf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "08f59b4c_8444ab93",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 496,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-16T19:20:52Z",
+      "side": 1,
+      "message": "Rename to something like \u0027dynamicOffset\u0027?",
+      "range": {
+        "startLine": 496,
+        "startChar": 7,
+        "endLine": 496,
+        "endChar": 10
+      },
+      "revId": "8bbae70a32c5f606056777ff6f219bb386c05dcf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
