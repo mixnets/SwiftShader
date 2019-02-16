@@ -492,6 +492,7 @@ namespace sw
 		// TODO: think about explicit layout (UBO/SSBO) storage classes
 		// TODO: avoid doing per-lane work in some cases if we can?
 
+		int constantOffset = 0;
 		Int4 res = Int4(0);
 		auto & baseObject = getObject(id);
 		auto typeId = baseObject.definition.word(1);
@@ -513,7 +514,7 @@ namespace sw
 				for (auto j = 0; j < memberIndex; j++) {
 					offsetIntoStruct += getType(type.definition.word(2 + memberIndex)).sizeInComponents;
 				}
-				res += Int4(offsetIntoStruct);
+				constantOffset += offsetIntoStruct;
 				break;
 			}
 
@@ -524,7 +525,7 @@ namespace sw
 				auto stride = getType(type.definition.word(2)).sizeInComponents;
 				auto & obj = getObject(indexIds[i]);
 				if (obj.kind == Object::Kind::Constant)
-					res += Int4(stride * GetConstantInt(indexIds[i]));
+					constantOffset += stride * GetConstantInt(indexIds[i]);
 				else
 					res += Int4(stride) * As<Int4>(*routine->getIntermediate(indexIds[i])[0]);
 				break;
@@ -535,7 +536,7 @@ namespace sw
 			}
 		}
 
-		return res;
+		return res + Int4(constantOffset);
 	}
 
 	void SpirvShader::Decorations::Apply(spv::Decoration decoration, uint32_t arg)
