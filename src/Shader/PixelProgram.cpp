@@ -1216,6 +1216,7 @@ namespace sw
 
 	void PixelProgram::TEX(Vector4f &dst, Vector4f &src0, const Src &src1, bool project, bool bias)
 	{
+		/* BREAK SOME STUFF
 		if(project)
 		{
 			Vector4f proj;
@@ -1230,6 +1231,7 @@ namespace sw
 		{
 			dst = sampleTexture(src1, src0, src0.x, (src0), (src0), (src0), bias ? Bias : Implicit);
 		}
+		*/
 	}
 
 	void PixelProgram::TEXOFFSET(Vector4f &dst, Vector4f &src0, const Src &src1, Vector4f &offset)
