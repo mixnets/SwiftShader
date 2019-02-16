@@ -22,6 +22,30 @@
       "revId": "10ddaba037d2e716427215ce84215759f519ecd8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68854ec4_f761cc44",
+        "filename": "src/Shader/SamplerCore.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2385,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-16T00:29:20Z",
+      "side": 1,
+      "message": "Done, and thanks for the suggestion!",
+      "parentUuid": "dab50e96_5ef0d69b",
+      "range": {
+        "startLine": 2385,
+        "startChar": 14,
+        "endLine": 2385,
+        "endChar": 19
+      },
+      "revId": "10ddaba037d2e716427215ce84215759f519ecd8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
