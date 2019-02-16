@@ -499,7 +499,7 @@ namespace sw
 		auto typeId = baseObject.definition.word(1);
 
 		if (baseObject.kind == Object::Kind::Value)
-			dynamicOffset += As<Int4>(routine->getValue(id)[0]);
+			dynamicOffset += As<Int4>(*routine->getIntermediate(id)[0]);
 
 		for (auto i = 0u; i < numIndexes; i++)
 		{
@@ -526,7 +526,7 @@ namespace sw
 				if (obj.kind == Object::Kind::Constant)
 					constantOffset += stride * GetConstantInt(indexIds[i]);
 				else
-					dynamicOffset += Int4(stride) * As<Int4>(routine->getValue(indexIds[i])[0]);
+					dynamicOffset += Int4(stride) * As<Int4>(*routine->getIntermediate(indexIds[i])[0]);
 				break;
 			}
 
