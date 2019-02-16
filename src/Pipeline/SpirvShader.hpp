@@ -34,20 +34,45 @@ namespace sw
 	{
 	public:
 		using Value = Array<Float4>;
-		std::unordered_map<uint32_t, std::unique_ptr<Value>> lvalues;
-		std::unique_ptr<Value> inputs = std::unique_ptr<Value>(new Value(MAX_INTERFACE_COMPONENTS));
-		std::unique_ptr<Value> outputs = std::unique_ptr<Value>(new Value(MAX_INTERFACE_COMPONENTS));
+		std::unordered_map<uint32_t, Value> lvalues;
+
+		// Ick! I would like to use RValue<Float4>[] here,
+		// but actually constructing this object is problematic -- C++ wants to call constructors
+		// on the elements, but there is no default ctor, and the number of elements is not fixed at
+		// compile time. As a horrible w/a while trying to preserve proper lifetime handling,
+		// I've ended up holding the RValue<Float4> by unique_ptr, and aggregating those into a vector.
+		// I can then construct them iteratively.
+		// This whole situation is not satisfying, and the amount of STL involved makes the error
+		// messages inscrutable when something is subtly wrong.
+
+		using Intermediate = std::vector<std::unique_ptr<RValue<Float4>>>;
+		std::unordered_map<uint32_t, Intermediate> intermediates;
+
+		std::unique_ptr<Value> const inputs = std::unique_ptr<Value>(new Value(MAX_INTERFACE_COMPONENTS));
+		std::unique_ptr<Value> const outputs = std::unique_ptr<Value>(new Value(MAX_INTERFACE_COMPONENTS));
 
 		void createLvalue(uint32_t id, uint32_t size)
 		{
-			lvalues.emplace(id, std::unique_ptr<Value>(new Value(size)));
+			lvalues.emplace(id, Value(size));
+		}
+
+		void createIntermediate(uint32_t id, uint32_t size)
+		{
+			intermediates.emplace(id, Intermediate(size));
 		}
 
 		Value& getValue(uint32_t id)
 		{
 			auto it = lvalues.find(id);
 			assert(it != lvalues.end());
-			return *it->second;
+			return it->second;
+		}
+
+		Intermediate& getIntermediate(uint32_t id)
+		{
+			auto it = intermediates.find(id);
+			assert(it != intermediates.end());
+			return it->second;
 		}
 	};
 
