@@ -1,0 +1,11 @@
+[
+    {
+        "name": "vulkan",
+        "api": "vulkan",
+        "tests": "vk-master.txt"
+    }, {
+        "name": "gles3",
+        "api": "gles3",
+        "tests": "gles3-master.txt"
+    }
+]
