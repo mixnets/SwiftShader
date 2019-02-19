@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "58872e99_f40ebe8e",
+        "filename": "src/Common/Types.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-19T18:57:59Z",
+      "side": 1,
+      "message": "Good point. Checking at the index instead of the container felt a bit backwards to me though. I think we can rely on bounds checking from the STL implementation now. It\u0027s already configured for the Visual Studio projects, but I don\u0027t think we have -D_GLIBCXX_DEBUG anywhere yet. Can be a separate patch since it covers more than just this bug.",
+      "parentUuid": "031f53e3_c30f9bca",
+      "range": {
+        "startLine": 155,
+        "startChar": 1,
+        "endLine": 155,
+        "endChar": 19
+      },
+      "revId": "948141eed78eeeb38e3cdc30cd0ca5958d8480be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b291fd54_beea78e5",
         "filename": "src/OpenGL/libGLESv2/Context.h",
         "patchSetId": 6
