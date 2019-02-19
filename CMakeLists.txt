@@ -266,6 +266,12 @@ else()
         set_cpp_flag("-s" RELEASE)
     endif()
 
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        set_cpp_flag("-Wno-ignored-attributes") # ignoring attributes on template argument 'X'
+        set_cpp_flag("-Wno-comment")            # multi-line comment
+        set_cpp_flag("-Wno-noexcept-type")      # mangled name for ‘X’ will change in C++17 because the exception specification is part of a function type
+    endif()
+
     # For distribution it is more important to be slim than super optimized
     set_cpp_flag("-Os" RELEASE)
     set_cpp_flag("-Os" RELWITHDEBINFO)
