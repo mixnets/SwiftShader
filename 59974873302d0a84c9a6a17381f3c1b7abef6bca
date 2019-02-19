@@ -1,0 +1,118 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1c4f0c2a_0606077a",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7531
+      },
+      "writtenOn": "2019-02-19T18:20:24Z",
+      "side": 1,
+      "message": "Flags should either be true globals, or on a NewFlagSet, declaring globals within a function (even main) is considered bad form. And yes, I know everyone does it...",
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02dc86f9_64e3e3cc",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 7531
+      },
+      "writtenOn": "2019-02-19T18:20:24Z",
+      "side": 1,
+      "message": "Use os.ExpandEnv instead",
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84048e35_207254ea",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 7531
+      },
+      "writtenOn": "2019-02-19T18:20:24Z",
+      "side": 1,
+      "message": "You could put this right at the top, you could also just build tag this file so that it does not even build for other platforms...",
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "95073e13_c4f8ce36",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 7531
+      },
+      "writtenOn": "2019-02-19T18:20:24Z",
+      "side": 1,
+      "message": "I think you could write this much cleaner in terms of a select some tickers and an pending channel.\nIf you don\u0027t really need exact timing, and you are happy to \"synchronize\" detection across all active changes, then you just need the two tickers and it would be nice and simple.",
+      "range": {
+        "startLine": 219,
+        "startChar": 0,
+        "endLine": 255,
+        "endChar": 0
+      },
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "329de742_de703f9e",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 794,
+      "author": {
+        "id": 7531
+      },
+      "writtenOn": "2019-02-19T18:20:24Z",
+      "side": 1,
+      "message": "For something like this I would encourage you to implement fmt.Formatter rather than String",
+      "range": {
+        "startLine": 794,
+        "startChar": 20,
+        "endLine": 794,
+        "endChar": 26
+      },
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "01b2a316_79cbb4da",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 954,
+      "author": {
+        "id": 7531
+      },
+      "writtenOn": "2019-02-19T18:20:24Z",
+      "side": 1,
+      "message": "You should probably instead use CommandContext, and build a context.WithTimeout right up at the runTests level.",
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
