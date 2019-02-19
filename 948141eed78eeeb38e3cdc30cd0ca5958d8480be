@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "01c0807e_b1b9a51c",
+        "filename": "src/Common/Types.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-19T19:01:24Z",
+      "side": 1,
+      "message": "Yeah, fair point. I think the non-VS STLs also check this on debug builds already. I thought there were places where these indices were used to directly index a reactor array, but I\u0027ve just looked and can\u0027t find any.\nJust ignore me for now.",
+      "parentUuid": "58872e99_f40ebe8e",
+      "range": {
+        "startLine": 155,
+        "startChar": 1,
+        "endLine": 155,
+        "endChar": 19
+      },
+      "revId": "948141eed78eeeb38e3cdc30cd0ca5958d8480be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b291fd54_beea78e5",
         "filename": "src/OpenGL/libGLESv2/Context.h",
         "patchSetId": 6
