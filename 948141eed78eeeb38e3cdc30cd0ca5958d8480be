@@ -22,6 +22,30 @@
       "revId": "948141eed78eeeb38e3cdc30cd0ca5958d8480be",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1341ad8b_128d9a0b",
+        "filename": "src/Shader/PixelProgram.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-19T17:55:19Z",
+      "side": 1,
+      "message": "Good catch. Done.",
+      "parentUuid": "48e35d0d_87205cfb",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 24
+      },
+      "revId": "948141eed78eeeb38e3cdc30cd0ca5958d8480be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
