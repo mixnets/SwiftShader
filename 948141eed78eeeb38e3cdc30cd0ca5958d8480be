@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "5c6e640a_6190562a",
+        "filename": "src/Common/Types.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-19T18:35:01Z",
+      "side": 1,
+      "message": "We should be able to entirely eliminate the use of this class when the arrays are correctly dynamically sized. Let\u0027s have a follow-up patch which gets rid of it (for easy blame/revert in case something goes wrong).",
+      "range": {
+        "startLine": 155,
+        "startChar": 1,
+        "endLine": 155,
+        "endChar": 19
+      },
+      "revId": "948141eed78eeeb38e3cdc30cd0ca5958d8480be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b291fd54_beea78e5",
+        "filename": "src/OpenGL/libGLESv2/Context.h",
+        "patchSetId": 6
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-19T18:35:01Z",
+      "side": 1,
+      "message": "Should not revert back to being hard-coded.",
+      "range": {
+        "startLine": 108,
+        "startChar": 30,
+        "endLine": 108,
+        "endChar": 32
+      },
+      "revId": "948141eed78eeeb38e3cdc30cd0ca5958d8480be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "48e35d0d_87205cfb",
         "filename": "src/Shader/PixelProgram.hpp",
         "patchSetId": 6
@@ -46,6 +92,29 @@
       "revId": "948141eed78eeeb38e3cdc30cd0ca5958d8480be",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "68fa8390_aa844ab8",
+        "filename": "src/Shader/PixelProgram.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-19T18:35:01Z",
+      "side": 1,
+      "message": "nit: Actually this is called the \u0027loop counter register\u0027: https://docs.microsoft.com/en-us/windows/desktop/direct3dhlsl/dx9-graphics-reference-asm-ps-registers-ps-3-0",
+      "range": {
+        "startLine": 51,
+        "startChar": 20,
+        "endLine": 51,
+        "endChar": 39
+      },
+      "revId": "948141eed78eeeb38e3cdc30cd0ca5958d8480be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
