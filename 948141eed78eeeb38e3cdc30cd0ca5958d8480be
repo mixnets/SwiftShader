@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "031f53e3_c30f9bca",
+        "filename": "src/Common/Types.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-19T18:51:35Z",
+      "side": 1,
+      "message": "Done (https://swiftshader-review.googlesource.com/c/SwiftShader/+/25016), although my personal feeling is that debug assert seatbelts here would be nice given that the index limits are known. I do agree that the value clamping should be removed.",
+      "parentUuid": "5c6e640a_6190562a",
+      "range": {
+        "startLine": 155,
+        "startChar": 1,
+        "endLine": 155,
+        "endChar": 19
+      },
+      "revId": "948141eed78eeeb38e3cdc30cd0ca5958d8480be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b291fd54_beea78e5",
         "filename": "src/OpenGL/libGLESv2/Context.h",
         "patchSetId": 6
@@ -95,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "8aaacd2d_9f5528c2",
+        "filename": "src/Shader/PixelProgram.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-19T18:51:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1341ad8b_128d9a0b",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 24
+      },
+      "revId": "948141eed78eeeb38e3cdc30cd0ca5958d8480be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "68fa8390_aa844ab8",
         "filename": "src/Shader/PixelProgram.hpp",
         "patchSetId": 6
@@ -106,6 +154,30 @@
       "writtenOn": "2019-02-19T18:35:01Z",
       "side": 1,
       "message": "nit: Actually this is called the \u0027loop counter register\u0027: https://docs.microsoft.com/en-us/windows/desktop/direct3dhlsl/dx9-graphics-reference-asm-ps-registers-ps-3-0",
+      "range": {
+        "startLine": 51,
+        "startChar": 20,
+        "endLine": 51,
+        "endChar": 39
+      },
+      "revId": "948141eed78eeeb38e3cdc30cd0ca5958d8480be",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a3fb560e_72337a3e",
+        "filename": "src/Shader/PixelProgram.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-19T18:51:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "68fa8390_aa844ab8",
       "range": {
         "startLine": 51,
         "startChar": 20,
