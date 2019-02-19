@@ -17,6 +17,7 @@
 
 #include "Color.hpp"
 #include "Main/Config.hpp"
+#include "Common/LTO.hpp"
 #include "Common/Resource.hpp"
 
 namespace sw
@@ -237,7 +238,8 @@ namespace sw
 		LOCK_UPDATE   // Write access which doesn't dirty the buffer, because it's being updated with the sibling's data.
 	};
 
-	class [[clang::lto_visibility_public]] Surface
+
+	class LTO_VISIBILITY_PUBLIC Surface
 	{
 	private:
 		struct Buffer

@@ -17,6 +17,7 @@
 
 #include "libEGL/Texture.hpp"
 #include "Renderer/Surface.hpp"
+#include "Common/LTO.hpp"
 
 #include <GLES3/gl3.h>
 #include <GLES2/gl2ext.h>
@@ -91,7 +92,7 @@ private:
 	size_t plane;
 };
 
-class [[clang::lto_visibility_public]] Image : public sw::Surface, public gl::Object
+class LTO_VISIBILITY_PUBLIC Image : public sw::Surface, public gl::Object
 {
 protected:
 	// 2D texture image
