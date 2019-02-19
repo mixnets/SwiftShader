@@ -18,6 +18,7 @@
 #include "Reactor/Reactor.hpp"
 #include "Renderer/Surface.hpp"
 #include "Common/Thread.hpp"
+#include "Common/LTO.hpp"
 
 namespace sw
 {
@@ -37,7 +38,7 @@ namespace sw
 		int cursorHeight;
 	};
 
-	class [[clang::lto_visibility_public]] FrameBuffer
+	class LTO_VISIBILITY_PUBLIC FrameBuffer
 	{
 	public:
 		FrameBuffer(int width, int height, bool fullscreen, bool topLeftOrigin);

@@ -25,6 +25,7 @@
 #include "common/Image.hpp"
 #include "Renderer/Sampler.hpp"
 #include "common/MatrixStack.hpp"
+#include "Common/LTO.hpp"
 
 #include <GLES/gl.h>
 #include <GLES/glext.h>
@@ -290,7 +291,7 @@ struct State
 	TextureUnit textureUnit[MAX_TEXTURE_UNITS];
 };
 
-class [[clang::lto_visibility_public]] Context : public egl::Context
+class LTO_VISIBILITY_PUBLIC Context : public egl::Context
 {
 public:
 	Context(egl::Display *display, const Context *shareContext, const egl::Config *config);

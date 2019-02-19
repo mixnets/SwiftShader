@@ -21,6 +21,7 @@
 
 #include "common/debug.h"
 #include "Common/MutexLock.hpp"
+#include "Common/LTO.hpp"
 
 #include <set>
 
@@ -29,7 +30,7 @@ typedef unsigned int GLuint;
 namespace gl
 {
 
-class [[clang::lto_visibility_public]] Object
+class LTO_VISIBILITY_PUBLIC Object
 {
 public:
 	Object();

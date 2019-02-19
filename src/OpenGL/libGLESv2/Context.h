@@ -25,6 +25,7 @@
 #include "common/Object.hpp"
 #include "common/Image.hpp"
 #include "Renderer/Sampler.hpp"
+#include "Common/LTO.hpp"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
@@ -428,7 +429,7 @@ struct State
 	gl::PixelStorageModes packParameters;
 };
 
-class [[clang::lto_visibility_public]] Context : public egl::Context
+class LTO_VISIBILITY_PUBLIC Context : public egl::Context
 {
 public:
 	Context(egl::Display *display, const Context *shareContext, const egl::Config *config);

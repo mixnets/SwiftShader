@@ -19,6 +19,7 @@
 #define INCLUDE_SURFACE_H_
 
 #include "Renderer/Surface.hpp"
+#include "Common/LTO.hpp"
 
 #include <EGL/egl.h>
 
@@ -30,7 +31,7 @@ class Image;
 
 namespace gl
 {
-class [[clang::lto_visibility_public]] Surface
+class LTO_VISIBILITY_PUBLIC Surface
 {
 protected:
 	Surface();
