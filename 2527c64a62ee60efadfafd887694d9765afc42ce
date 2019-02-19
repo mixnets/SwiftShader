@@ -101,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "d064fb08_6b1874cf",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-19T21:38:58Z",
+      "side": 1,
+      "message": "The other thing I was thinking about here is (for debug) tracking the next index we should be initializing, and complaining loudly if we hit anything twice or skip anything.",
+      "parentUuid": "e7695a8a_dafb16a2",
+      "revId": "2527c64a62ee60efadfafd887694d9765afc42ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bf9046c9_a1ce9eed",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 8
