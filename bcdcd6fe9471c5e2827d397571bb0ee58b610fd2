@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ef4981b5_79abf36e",
+        "filename": "src/OpenGL/libGLES_CM/Device.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-19T15:08:45Z",
+      "side": 1,
+      "message": "nit: Might as well remove these. It\u0027s not anyone would scratch their heads trying to figure out how to get the width if we need it in the future. :)",
+      "range": {
+        "startLine": 377,
+        "startChar": 4,
+        "endLine": 377,
+        "endChar": 47
+      },
+      "revId": "bcdcd6fe9471c5e2827d397571bb0ee58b610fd2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
