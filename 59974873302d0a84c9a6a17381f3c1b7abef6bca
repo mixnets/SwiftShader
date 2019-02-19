@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "267a17fe_65bb0d44",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-19T23:50:43Z",
+      "side": 1,
+      "message": "I don\u0027t want them as globals:\n* Many of these flags are transformed (paths expanded, env vars resolved, etc) so I do not want them to be scoped globally.\n* They aren\u0027t flags in \"--exec\" mode, so must not be declared before then.",
+      "parentUuid": "1c4f0c2a_0606077a",
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "02dc86f9_64e3e3cc",
         "filename": "tests/regres/main.go",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2019-02-19T18:20:24Z",
       "side": 1,
       "message": "Use os.ExpandEnv instead",
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8b60c833_bd2753e6",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-19T23:50:43Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "02dc86f9_64e3e3cc",
       "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "4fa424f2_e6dd5b9b",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-19T23:50:43Z",
+      "side": 1,
+      "message": "I was a little unsure if build tags applied to go files run directly from `go run`. I\u0027ll give it a try.",
+      "parentUuid": "84048e35_207254ea",
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "95073e13_c4f8ce36",
         "filename": "tests/regres/main.go",
         "patchSetId": 6
@@ -64,6 +118,30 @@
       "writtenOn": "2019-02-19T18:20:24Z",
       "side": 1,
       "message": "I think you could write this much cleaner in terms of a select some tickers and an pending channel.\nIf you don\u0027t really need exact timing, and you are happy to \"synchronize\" detection across all active changes, then you just need the two tickers and it would be nice and simple.",
+      "range": {
+        "startLine": 219,
+        "startChar": 0,
+        "endLine": 255,
+        "endChar": 0
+      },
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "acb394b6_12089b7c",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-19T23:50:43Z",
+      "side": 1,
+      "message": "I\u0027ll consider this - however I\u0027m uncertain whether spinning up more goroutines just for the sake of using a select makes things more readable here.",
+      "parentUuid": "95073e13_c4f8ce36",
       "range": {
         "startLine": 219,
         "startChar": 0,
@@ -99,6 +177,30 @@
     },
     {
       "key": {
+        "uuid": "510ccfe9_2ac5cd89",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 794,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-19T23:50:43Z",
+      "side": 1,
+      "message": "We had a lovely long debate over this via IM and I\u0027m still not sold on the benefits of Format() over String(). It has occurred to me though that this function is unused, so I might just remove it instead.",
+      "parentUuid": "329de742_de703f9e",
+      "range": {
+        "startLine": 794,
+        "startChar": 20,
+        "endLine": 794,
+        "endChar": 26
+      },
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "01b2a316_79cbb4da",
         "filename": "tests/regres/main.go",
         "patchSetId": 6
@@ -110,6 +212,24 @@
       "writtenOn": "2019-02-19T18:20:24Z",
       "side": 1,
       "message": "You should probably instead use CommandContext, and build a context.WithTimeout right up at the runTests level.",
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "80336837_3c7d6bc9",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 954,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-19T23:50:43Z",
+      "side": 1,
+      "message": "Oh cool. Is CommandContext new? I don\u0027t recall ever seeing it before!\nThere\u0027s code in GAPID that could be cleaned up with this.\n\n\u003e right up at the runTests level\n\nI probably don\u0027t want it that high. The timeout is per-test, not entire batch. But yes, using CommandContext seems better than rolling my own. Mind you, it doesn\u0027t look like this approach gives a clear indication of timeout. Do I have to check the context after getting some generic error type out of Wait()?",
+      "parentUuid": "01b2a316_79cbb4da",
       "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
