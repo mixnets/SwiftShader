@@ -22,6 +22,23 @@
       "revId": "bc27fc373d725290b85ccd3ca941cc62bcd1cf43",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c99bccd7_a6091804",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-20T08:27:34Z",
+      "side": 1,
+      "message": "nit: Might be cleaner to have this as field as a Scalar*, and change the constructor to:\n\n  Intermediate(uint32_t size) : contents(reinterpret_cast\u003cScalar *\u003e(new ContentsType[size])), size(size) {}\n\nThen the field matches the element type, and you can drop the two other casts on usage.",
+      "revId": "bc27fc373d725290b85ccd3ca941cc62bcd1cf43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
