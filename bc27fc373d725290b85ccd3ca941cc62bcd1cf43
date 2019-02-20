@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d7d7944a_9a86e38a",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-20T16:05:31Z",
+      "side": 1,
+      "message": "This was only intended to be generic over the choice of ctor, not over types. RValue\u003cT\u003e has:\n\n- RValue(T const \u0026)\n- RValue(typename IntLiteral\u003cT\u003e::type)\n- RValue(typename FloatLiteral\u003cT\u003e::type)\n- RValue(Reference\u003cT\u003e const \u0026)\n\n(+ RValue(Value*) which we don\u0027t want to call ourselves.)",
+      "parentUuid": "d7c07c3b_0773fc4a",
+      "range": {
+        "startLine": 53,
+        "startChar": 27,
+        "endLine": 53,
+        "endChar": 41
+      },
+      "revId": "bc27fc373d725290b85ccd3ca941cc62bcd1cf43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c99bccd7_a6091804",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 10
@@ -36,6 +60,24 @@
       "writtenOn": "2019-02-20T08:27:34Z",
       "side": 1,
       "message": "nit: Might be cleaner to have this as field as a Scalar*, and change the constructor to:\n\n  Intermediate(uint32_t size) : contents(reinterpret_cast\u003cScalar *\u003e(new ContentsType[size])), size(size) {}\n\nThen the field matches the element type, and you can drop the two other casts on usage.",
+      "revId": "bc27fc373d725290b85ccd3ca941cc62bcd1cf43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "65b29890_57f7f3e8",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-20T16:05:31Z",
+      "side": 1,
+      "message": "I think what you\u0027re proposing is shorter but worse. When you touch this thing, you *should* think carefully about it and the cast is a good mental speed bump.\n\nIf I go with your proposal, it\u0027s very tempting to make ~Intermediate() be just `delete [] contents;` which would then call the dtors, but we then have unbalanced manual construction / automatic destruction which is nasty. (And the alternative, casting back to ContentsType* just for delete [], is also nasty)",
+      "parentUuid": "c99bccd7_a6091804",
       "revId": "bc27fc373d725290b85ccd3ca941cc62bcd1cf43",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
