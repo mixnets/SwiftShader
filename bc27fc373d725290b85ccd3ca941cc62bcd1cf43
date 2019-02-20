@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "ed1ec0ac_c42b1dba",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-20T16:21:07Z",
+      "side": 1,
+      "message": "I don\u0027t think we should allow these to be constructed from an IntLiteral or FloatLiteral. Those are true scalars and I think they would end up being automatically replicated to the Float4 rvalue. That\u0027s *probably* what we want in that case, but I\u0027d rather err on the safe side for now and require replications to be done explicitly so we can keep track of where we incur this minor cost. Likewise I\u0027m not sure if we need construction from Reference without something unintended happening behind our backs.\n\nHappy to be proven wrong if these do end up being useful, but for now I\u0027d like to stick to constructing from another Scalar if there\u0027s no immediately obvious need for more.",
+      "parentUuid": "d7d7944a_9a86e38a",
+      "range": {
+        "startLine": 53,
+        "startChar": 27,
+        "endLine": 53,
+        "endChar": 41
+      },
+      "revId": "bc27fc373d725290b85ccd3ca941cc62bcd1cf43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c99bccd7_a6091804",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 10
