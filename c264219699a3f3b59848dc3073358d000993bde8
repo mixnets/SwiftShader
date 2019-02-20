@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "08735066_9e337ea3",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-20T17:37:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "71431284_a6638ba6",
+      "revId": "c264219699a3f3b59848dc3073358d000993bde8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "77933d10_345dfd4e",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "67ad57fc_fcc68c30",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-20T17:37:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "77933d10_345dfd4e",
+      "revId": "c264219699a3f3b59848dc3073358d000993bde8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b19a1b95_3c0b96ca",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2019-02-20T16:42:50Z",
       "side": 1,
       "message": "Moving this while other patches are reworking it is unpleasant...",
+      "revId": "c264219699a3f3b59848dc3073358d000993bde8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "995e00e0_dc8eb71c",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-20T17:37:08Z",
+      "side": 1,
+      "message": "Yeah, sorry about that. It\u0027s hard to avoid moving the class, unless I move ObjectID and TypeID out of SpirvShader, which also has dependencies on Object and Type.",
+      "parentUuid": "b19a1b95_3c0b96ca",
       "revId": "c264219699a3f3b59848dc3073358d000993bde8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
