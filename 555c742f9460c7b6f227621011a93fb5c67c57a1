@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9265bdc1_6261ccc5",
+        "filename": "src/OpenGL/compiler/ConstantUnion.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-20T15:02:37Z",
+      "side": 1,
+      "message": "nit: Since this inserts new and delete operator declarations, it\u0027s a bit weird not to end the statement(s) with a semicolon. That said, it\u0027s weird to have a function-style macro here as well...\n\nIt\u0027s legacy code that will be deprecated at some point, so I don\u0027t care too much either way. FWIW the equivalent ANGLE code uses just \"POOL_ALLOCATOR_NEW_DELETE\". I wonder if there\u0027s an elegant way to require adding a semicolon, without causing confusing errors when it\u0027s forgotten.\n\nProbably the most elegant solution is to eliminate the macro altogether by using the \u0027curiously recurring template pattern\u0027.",
+      "range": {
+        "startLine": 26,
+        "startChar": 1,
+        "endLine": 26,
+        "endChar": 28
+      },
+      "revId": "555c742f9460c7b6f227621011a93fb5c67c57a1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
