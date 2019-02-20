@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d7c07c3b_0773fc4a",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-20T04:15:04Z",
+      "side": 1,
+      "message": "I understand you meant to make this look like std::vector::emplace(), but in this case we actually know the type of the contained elements, so I think we should avoid generalizing this. Wrong usage will at best result in a cryptic error, and at worst silently do something unexpected. So I suggest only accepting what we really want here. I think a const Scalar\u0026\u0026 suffices.",
+      "range": {
+        "startLine": 53,
+        "startChar": 27,
+        "endLine": 53,
+        "endChar": 41
+      },
+      "revId": "bc27fc373d725290b85ccd3ca941cc62bcd1cf43",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
