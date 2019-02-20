@@ -66,6 +66,8 @@ namespace sw
 		{
 			Nucleus::setInsertBlock(returnBlock);
 		}
+
+		spirvShader->emitLate(&routine);
 	}
 
 	RValue<Pointer<Byte>> VertexProgram::uniformAddress(int bufferIndex, unsigned int index)
