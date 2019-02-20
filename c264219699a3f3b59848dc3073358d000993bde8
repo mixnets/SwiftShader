@@ -122,6 +122,24 @@
       "revId": "c264219699a3f3b59848dc3073358d000993bde8",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6896d037_dbd8e720",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-20T17:49:48Z",
+      "side": 1,
+      "message": "No worries, I\u0027ll wait for this to land and rebase.",
+      "parentUuid": "727fbf09_634e0b5d",
+      "revId": "c264219699a3f3b59848dc3073358d000993bde8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
