@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "79c00a93_5f183788",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-20T10:20:09Z",
+      "side": 1,
+      "message": "But I now see you mention NewFlagSet. I\u0027ll give that a try.",
+      "parentUuid": "267a17fe_65bb0d44",
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "02dc86f9_64e3e3cc",
         "filename": "tests/regres/main.go",
         "patchSetId": 6
