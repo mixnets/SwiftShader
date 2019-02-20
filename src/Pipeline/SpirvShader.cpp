@@ -41,7 +41,7 @@ namespace sw
 
 			case spv::OpDecorate:
 			{
-				auto targetId = insn.word(1);
+				TypeOrObjectID targetId = insn.word(1);
 				auto decoration = static_cast<spv::Decoration>(insn.word(2));
 				decorations[targetId].Apply(
 						decoration,
@@ -54,7 +54,7 @@ namespace sw
 
 			case spv::OpMemberDecorate:
 			{
-				auto targetId = insn.word(1);
+				TypeID targetId = insn.word(1);
 				auto memberIndex = insn.word(2);
 				auto &d = memberDecorations[targetId];
 				if (memberIndex >= d.size())
@@ -116,7 +116,7 @@ namespace sw
 			case spv::OpTypePointer:
 			case spv::OpTypeFunction:
 			{
-				auto resultId = insn.word(1);
+				TypeID resultId = insn.word(1);
 				auto &type = types[resultId];
 				type.definition = insn;
 				type.sizeInComponents = ComputeTypeSize(insn);
@@ -148,8 +148,8 @@ namespace sw
 
 			case spv::OpVariable:
 			{
-				auto typeId = insn.word(1);
-				auto resultId = insn.word(2);
+				TypeID typeId = insn.word(1);
+				ObjectID resultId = insn.word(2);
 				auto storageClass = static_cast<spv::StorageClass>(insn.word(3));
 				if (insn.wordCount() > 4)
 					UNIMPLEMENTED("Variable initializers not yet supported");
@@ -182,8 +182,8 @@ namespace sw
 			case spv::OpConstantTrue:
 			case spv::OpConstantNull:
 			{
-				auto typeId = insn.word(1);
-				auto resultId = insn.word(2);
+				TypeID typeId = insn.word(1);
+				ObjectID resultId = insn.word(2);
 				auto &object = defs[resultId];
 				object.kind = Object::Kind::Constant;
 				object.definition = insn;
@@ -221,8 +221,8 @@ namespace sw
 			case spv::OpAccessChain:
 				// Instructions that yield an ssavalue.
 			{
-				auto typeId = insn.word(1);
-				auto resultId = insn.word(2);
+				TypeID typeId = insn.word(1);
+				ObjectID resultId = insn.word(2);
 				auto &object = defs[resultId];
 				object.kind = Object::Kind::Value;
 				object.definition = insn;
@@ -261,13 +261,13 @@ namespace sw
 		auto &builtinInterface = (object.storageClass == spv::StorageClassInput) ? inputBuiltins : outputBuiltins;
 		auto &userDefinedInterface = (object.storageClass == spv::StorageClassInput) ? inputs : outputs;
 
-		auto resultId = object.definition.word(2);
+		ObjectID resultId = object.definition.word(2);
 		if (object.isBuiltInBlock)
 		{
 			// walk the builtin block, registering each of its members separately.
 			auto ptrType = getType(object.definition.word(1)).definition;
 			assert(ptrType.opcode() == spv::OpTypePointer);
-			auto pointeeType = ptrType.word(3);
+			TypeID pointeeType = ptrType.word(3);
 			auto m = memberDecorations.find(pointeeType);
 			assert(m != memberDecorations.end());        // otherwise we wouldn't have marked the type chain
 			auto &structType = getType(pointeeType).definition;
@@ -404,7 +404,7 @@ namespace sw
 	}
 
 	template<typename F>
-	int SpirvShader::VisitInterfaceInner(uint32_t id, Decorations d, F f) const
+	int SpirvShader::VisitInterfaceInner(TypeID id, Decorations d, F f) const
 	{
 		// Recursively walks variable definition and its type tree, taking into account
 		// any explicit Location or Component decorations encountered; where explicit
@@ -475,7 +475,7 @@ namespace sw
 	}
 
 	template<typename F>
-	void SpirvShader::VisitInterface(uint32_t id, F f) const
+	void SpirvShader::VisitInterface(ObjectID id, F f) const
 	{
 		// Walk a variable definition and call f for each component in it.
 		Decorations d{};
@@ -486,7 +486,7 @@ namespace sw
 		VisitInterfaceInner<F>(def.word(1), d, f);
 	}
 
-	Int4 SpirvShader::WalkAccessChain(uint32_t id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	Int4 SpirvShader::WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
 	{
 		// TODO: think about decorations, to make this work on location based interfaces
 		// TODO: think about explicit layout (UBO/SSBO) storage classes
@@ -495,7 +495,7 @@ namespace sw
 		int constantOffset = 0;
 		Int4 dynamicOffset = Int4(0);
 		auto & baseObject = getObject(id);
-		auto typeId = baseObject.definition.word(1);
+		TypeID typeId = baseObject.definition.word(1);
 
 		if (baseObject.kind == Object::Kind::Value)
 			dynamicOffset += As<Int4>(routine->getValue(id)[0]);
@@ -602,14 +602,14 @@ namespace sw
 		BufferBlock |= src.BufferBlock;
 	}
 
-	void SpirvShader::ApplyDecorationsForId(Decorations *d, uint32_t id) const
+	void SpirvShader::ApplyDecorationsForId(Decorations *d, TypeOrObjectID id) const
 	{
 		auto it = decorations.find(id);
 		if (it != decorations.end())
 			d->Apply(it->second);
 	}
 
-	void SpirvShader::ApplyDecorationsForIdMember(Decorations *d, uint32_t id, uint32_t member) const
+	void SpirvShader::ApplyDecorationsForIdMember(Decorations *d, TypeID id, uint32_t member) const
 	{
 		auto it = memberDecorations.find(id);
 		if (it != memberDecorations.end() && member < it->second.size())
@@ -618,7 +618,7 @@ namespace sw
 		}
 	}
 
-	uint32_t SpirvShader::GetConstantInt(uint32_t id) const
+	uint32_t SpirvShader::GetConstantInt(ObjectID id) const
 	{
 		// Slightly hackish access to constants very early in translation.
 		// General consumption of constants by other instructions should
@@ -642,7 +642,7 @@ namespace sw
 			{
 			case spv::OpVariable:
 			{
-				auto resultId = insn.word(2);
+				ObjectID resultId = insn.word(2);
 				auto &object = getObject(resultId);
 				// TODO: what to do about zero-slot objects?
 				if (object.sizeInComponents > 0)
@@ -666,20 +666,20 @@ namespace sw
 			{
 			case spv::OpVariable:
 			{
-				auto resultId = insn.word(2);
+				ObjectID resultId = insn.word(2);
 				auto &object = getObject(resultId);
 				if (object.kind == Object::Kind::InterfaceVariable && object.storageClass == spv::StorageClassInput)
 				{
 					auto &dst = routine->getValue(resultId);
 					int offset = 0;
 					VisitInterface(resultId,
-								   [&](Decorations const &d, AttribType type) {
-									   auto scalarSlot = d.Location << 2 | d.Component;
-									   dst[offset++] = (*routine->inputs)[scalarSlot];
-								   });
+								[&](Decorations const &d, AttribType type) {
+									auto scalarSlot = d.Location << 2 | d.Component;
+									dst[offset++] = (*routine->inputs)[scalarSlot];
+								});
 				}
 				break;
-			}
+				}
 			case spv::OpLoad:
 			{
 				auto &object = getObject(insn.word(2));
