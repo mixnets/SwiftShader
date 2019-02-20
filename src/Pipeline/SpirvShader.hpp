@@ -306,8 +306,8 @@ namespace sw
 		std::vector<InterfaceComponent> outputs;
 
 		void emitEarly(SpirvRoutine *routine) const;
-
 		void emit(SpirvRoutine *routine) const;
+		void emitLate(SpirvRoutine *routine) const;
 
 		using BuiltInHash = std::hash<std::underlying_type<spv::BuiltIn>::type>;
 		std::unordered_map<spv::BuiltIn, BuiltinMapping, BuiltInHash> inputBuiltins;
