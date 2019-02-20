@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6030f1fe_9539ec0b",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-20T15:31:52Z",
+      "side": 1,
+      "message": "Note: eventually this should just go away for Vulkan since the pipeline state is immutable, except for sampler state (for now - see g/swiftshader-team/-KTc7kBQ7OI for detailed discussion).",
+      "range": {
+        "startLine": 31,
+        "startChar": 2,
+        "endLine": 31,
+        "endChar": 15
+      },
+      "revId": "af64c9ab090c69e305adc8b0e106bccd8c1e809c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
