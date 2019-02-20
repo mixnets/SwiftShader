@@ -450,6 +450,11 @@ void Texture2D::bindTexImage(gl::Surface *surface)
 
 	image[0] = surface->getRenderTarget();
 
+	if(mSurface)
+	{
+		mSurface->setBoundTexture(nullptr);
+	}
+
 	mSurface = surface;
 	mSurface->setBoundTexture(this);
 }
