@@ -404,7 +404,7 @@ namespace sw
 	}
 
 	template<typename F>
-	int SpirvShader::VisitInterfaceInner(uint32_t id, Decorations d, F f) const
+	int SpirvShader::VisitInterfaceInner(TypeID id, Decorations d, F f) const
 	{
 		// Recursively walks variable definition and its type tree, taking into account
 		// any explicit Location or Component decorations encountered; where explicit
@@ -475,7 +475,7 @@ namespace sw
 	}
 
 	template<typename F>
-	void SpirvShader::VisitInterface(uint32_t id, F f) const
+	void SpirvShader::VisitInterface(ObjectID id, F f) const
 	{
 		// Walk a variable definition and call f for each component in it.
 		Decorations d{};
@@ -486,7 +486,7 @@ namespace sw
 		VisitInterfaceInner<F>(def.word(1), d, f);
 	}
 
-	Int4 SpirvShader::WalkAccessChain(uint32_t id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
+	Int4 SpirvShader::WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const
 	{
 		// TODO: think about decorations, to make this work on location based interfaces
 		// TODO: think about explicit layout (UBO/SSBO) storage classes
@@ -602,14 +602,14 @@ namespace sw
 		BufferBlock |= src.BufferBlock;
 	}
 
-	void SpirvShader::ApplyDecorationsForId(Decorations *d, uint32_t id) const
+	void SpirvShader::ApplyDecorationsForId(Decorations *d, TypeOrObjectID id) const
 	{
 		auto it = decorations.find(id);
 		if (it != decorations.end())
 			d->Apply(it->second);
 	}
 
-	void SpirvShader::ApplyDecorationsForIdMember(Decorations *d, uint32_t id, uint32_t member) const
+	void SpirvShader::ApplyDecorationsForIdMember(Decorations *d, TypeID id, uint32_t member) const
 	{
 		auto it = memberDecorations.find(id);
 		if (it != memberDecorations.end() && member < it->second.size())
@@ -673,13 +673,13 @@ namespace sw
 					auto &dst = routine->getValue(resultId);
 					int offset = 0;
 					VisitInterface(resultId,
-								   [&](Decorations const &d, AttribType type) {
-									   auto scalarSlot = d.Location << 2 | d.Component;
-									   dst[offset++] = (*routine->inputs)[scalarSlot];
-								   });
+								[&](Decorations const &d, AttribType type) {
+									auto scalarSlot = d.Location << 2 | d.Component;
+									dst[offset++] = (*routine->inputs)[scalarSlot];
+								});
 				}
 				break;
-			}
+				}
 			case spv::OpLoad:
 			{
 				auto &object = getObject(insn.word(2));
