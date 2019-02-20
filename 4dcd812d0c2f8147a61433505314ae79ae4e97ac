@@ -70,6 +70,30 @@
       "revId": "4dcd812d0c2f8147a61433505314ae79ae4e97ac",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f480f8f7_f59ddc76",
+        "filename": "src/Renderer/Renderer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-20T17:48:08Z",
+      "side": 1,
+      "message": "You\u0027re totally right. Resource::destruct() is asynchronous so it doesn\u0027t block. The proper way to destruct it synchronously is to obtain an \u0027EXCLUSIVE\u0027 lock, destruct() it, then unlock. Might even be a single method (merging the critical sections into one) if that\u0027s not less understandable.\n\nI think waiting on sync, then terminating the threads feels cleaner than the other way around, since it\u0027s not obvious that terminateThreads() waits for the threads to go idle (might change at some point). Mind flipping this back around and doing the synchronous destruct?",
+      "parentUuid": "2499de96_d20b8f97",
+      "range": {
+        "startLine": 214,
+        "startChar": 2,
+        "endLine": 214,
+        "endChar": 19
+      },
+      "revId": "4dcd812d0c2f8147a61433505314ae79ae4e97ac",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
