@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9e14b07c_c042f2aa",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-20T15:38:10Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "0e82fc56_3762b902",
+      "range": {
+        "startLine": 309,
+        "startChar": 7,
+        "endLine": 309,
+        "endChar": 16
+      },
+      "revId": "3fec0e0c7b551629efb80c48e46bed88f7bf4401",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ad4cc63_22008051",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "3fec0e0c7b551629efb80c48e46bed88f7bf4401",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7db6719d_552db149",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-20T15:38:10Z",
+      "side": 1,
+      "message": "I will go with emitProlog/emitEpilog. I think the roles might yet shift around a bit wrt inputs etc, but those names will remain truthful.",
+      "parentUuid": "5ad4cc63_22008051",
+      "range": {
+        "startLine": 311,
+        "startChar": 7,
+        "endLine": 311,
+        "endChar": 15
+      },
+      "revId": "3fec0e0c7b551629efb80c48e46bed88f7bf4401",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
