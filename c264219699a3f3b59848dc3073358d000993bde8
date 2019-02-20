@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71431284_a6638ba6",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-20T16:42:50Z",
+      "side": 1,
+      "message": "using!",
+      "revId": "c264219699a3f3b59848dc3073358d000993bde8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "77933d10_345dfd4e",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-20T16:42:50Z",
+      "side": 1,
+      "message": "using!",
+      "revId": "c264219699a3f3b59848dc3073358d000993bde8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b19a1b95_3c0b96ca",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 332,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-20T16:42:50Z",
+      "side": 1,
+      "message": "Moving this while other patches are reworking it is unpleasant...",
+      "revId": "c264219699a3f3b59848dc3073358d000993bde8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
