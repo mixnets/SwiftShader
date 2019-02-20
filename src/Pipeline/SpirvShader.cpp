@@ -511,9 +511,10 @@ namespace sw
 				int memberIndex = GetConstantInt(indexIds[i]);
 				int offsetIntoStruct = 0;
 				for (auto j = 0; j < memberIndex; j++) {
-					offsetIntoStruct += getType(type.definition.word(2 + memberIndex)).sizeInComponents;
+					offsetIntoStruct += getType(type.definition.word(2u + memberIndex)).sizeInComponents;
 				}
 				constantOffset += offsetIntoStruct;
+				typeId = type.definition.word(2u + memberIndex);
 				break;
 			}
 
@@ -527,8 +528,13 @@ namespace sw
 					constantOffset += stride * GetConstantInt(indexIds[i]);
 				else
 					dynamicOffset += Int4(stride) * As<Int4>(routine->getIntermediate(indexIds[i])[0]);
+				typeId = type.definition.word(2);
 				break;
 			}
+
+			case spv::OpTypePointer:
+				typeId = type.definition.word(3);
+				break;
 
 			default:
 				UNIMPLEMENTED("Unexpected type in WalkAccessChain");
