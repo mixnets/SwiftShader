@@ -22,6 +22,30 @@
       "revId": "555c742f9460c7b6f227621011a93fb5c67c57a1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "83602d70_bf8630a9",
+        "filename": "src/OpenGL/compiler/ConstantUnion.h",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 6725
+      },
+      "writtenOn": "2019-02-20T15:08:12Z",
+      "side": 1,
+      "message": "This expands to function definitions, so this expands to\n\n   void foo() {};\n\nessentially, which is not a statement. The semicolon here will warn (see bug).\n\nThe macro might be a function-style macro because that gives you a better error message when the macro is not defined for some reason (.h that defines it not included).",
+      "parentUuid": "9265bdc1_6261ccc5",
+      "range": {
+        "startLine": 26,
+        "startChar": 1,
+        "endLine": 26,
+        "endChar": 28
+      },
+      "revId": "555c742f9460c7b6f227621011a93fb5c67c57a1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
