@@ -16,6 +16,24 @@
       "revId": "8e95a26a487df29b6027d1661e31d0769ae49b02",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bcca75ba_187dc7a1",
+        "filename": "src/OpenGL/common/Image.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-20T05:26:24Z",
+      "side": 1,
+      "message": "See https://bugs.chromium.org/p/chromium/issues/detail?id\u003d720933",
+      "parentUuid": "de060f33_0d8bf66c",
+      "revId": "8e95a26a487df29b6027d1661e31d0769ae49b02",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
