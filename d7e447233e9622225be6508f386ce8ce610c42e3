@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "f158f313_9e62c9b3",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-20T18:08:25Z",
+      "side": 1,
+      "message": "Well, no, actually. This is wrong, and I have fixed it to do the right thing :)",
+      "parentUuid": "3bf4ac50_4e6eed0f",
+      "range": {
+        "startLine": 514,
+        "startChar": 33,
+        "endLine": 514,
+        "endChar": 71
+      },
+      "revId": "d7e447233e9622225be6508f386ce8ce610c42e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3dff7437_a00904af",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 4
