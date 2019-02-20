@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3bf4ac50_4e6eed0f",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-20T17:59:34Z",
+      "side": 1,
+      "message": "Yes.",
+      "parentUuid": "02e32444_b618e722",
+      "range": {
+        "startLine": 514,
+        "startChar": 33,
+        "endLine": 514,
+        "endChar": 71
+      },
+      "revId": "d7e447233e9622225be6508f386ce8ce610c42e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3dff7437_a00904af",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 4
@@ -45,6 +69,30 @@
       "revId": "d7e447233e9622225be6508f386ce8ce610c42e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6d50772c_570928ae",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 525,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-20T17:59:34Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "3dff7437_a00904af",
+      "range": {
+        "startLine": 525,
+        "startChar": 26,
+        "endLine": 525,
+        "endChar": 49
+      },
+      "revId": "d7e447233e9622225be6508f386ce8ce610c42e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
