@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "3bea4009_d88020ef",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-20T15:15:02Z",
+      "side": 1,
+      "message": "nit: Since SwiftShader is in its own repo, this is probably redundant.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 12
+      },
+      "revId": "555c742f9460c7b6f227621011a93fb5c67c57a1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9265bdc1_6261ccc5",
         "filename": "src/OpenGL/compiler/ConstantUnion.h",
         "patchSetId": 3
