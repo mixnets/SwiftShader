@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9822df44_2113bbca",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6725
+      },
+      "writtenOn": "2019-02-20T15:19:09Z",
+      "side": 1,
+      "message": "Yes, but bugdroid will (hopefully) copy the CL description to the mentioned bug, and without this I\u0027d have to click through to every \"Remove semicolons\" cl to see which repo it was in.",
+      "parentUuid": "3bea4009_d88020ef",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 12
+      },
+      "revId": "555c742f9460c7b6f227621011a93fb5c67c57a1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9265bdc1_6261ccc5",
         "filename": "src/OpenGL/compiler/ConstantUnion.h",
         "patchSetId": 3
