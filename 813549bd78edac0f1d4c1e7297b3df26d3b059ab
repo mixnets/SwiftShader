@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "486da63e_9e695dfe",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-20T22:21:47Z",
+      "side": 1,
+      "message": "Could you quote a bit of spec text that supports this behavior?\n\nIs there a dEQP test for this?",
+      "revId": "813549bd78edac0f1d4c1e7297b3df26d3b059ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
