@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fee87926_be26c8e9",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-21T06:13:56Z",
+      "side": 1,
+      "message": "On the GLSL ES side we implemented booleans as 32-bit values with all-0 and all-1 bits for false and true respectively. This allows to do things like implement the ternary operator (OpSelect in SPIR-V) using simple bitwise logical instructions. Also some x86 vector instructions use the most significant bit (sign bit) of each element (would be used for OpGroup* implementations).\n\nI think we should represent booleans the same way for SPIR-V.",
+      "range": {
+        "startLine": 186,
+        "startChar": 44,
+        "endLine": 186,
+        "endChar": 45
+      },
+      "revId": "27e44fb3c77e31f6e79980e78ffee999dece4aa6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
