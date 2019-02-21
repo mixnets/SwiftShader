@@ -22,6 +22,30 @@
       "revId": "8c16dd66d4da45ca86ddbac2864a1a2883f76be9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6fc28394_77a342d2",
+        "filename": "src/Device/VertexProcessor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 328,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-21T18:59:40Z",
+      "side": 1,
+      "message": "Yes, it absolutely should be. Thanks.",
+      "parentUuid": "bbc02ff9_b1a6c89d",
+      "range": {
+        "startLine": 328,
+        "startChar": 54,
+        "endLine": 328,
+        "endChar": 65
+      },
+      "revId": "8c16dd66d4da45ca86ddbac2864a1a2883f76be9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
