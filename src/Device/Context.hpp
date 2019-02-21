@@ -177,10 +177,7 @@ namespace sw
 		int stencilWriteMaskCCW;
 
 		// Pixel processor states
-		VkCompareOp alphaCompareMode;
-		bool alphaTestEnable;
-
-		CullMode cullMode;
+		VkCullModeFlags cullMode;
 		bool frontFacingCCW;
 		float alphaReference;
 

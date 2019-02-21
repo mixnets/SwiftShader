@@ -94,13 +94,14 @@ namespace sw
 							 *Pointer<Int>(v1 + OFFSET(Vertex, builtins.position.w)) ^
 							 *Pointer<Int>(v2 + OFFSET(Vertex, builtins.position.w));
 
-				A = IfThenElse(w0w1w2 < 0, -A, A);
+				A = IfThenElse((w0w1w2 < 0) ^ Bool(!state.frontFacingCCW), -A, A);
 
-				if(state.cullMode == CULL_CLOCKWISE)
+
+				if(state.cullMode & VK_CULL_MODE_FRONT_BIT)
 				{
 					If(A >= 0.0f) Return(false);
 				}
-				else if(state.cullMode == CULL_COUNTERCLOCKWISE)
+				if(state.cullMode & VK_CULL_MODE_BACK_BIT)
 				{
 					If(A <= 0.0f) Return(false);
 				}
