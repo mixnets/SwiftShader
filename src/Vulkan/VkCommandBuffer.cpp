@@ -17,6 +17,7 @@
 #include "VkEvent.hpp"
 #include "VkFramebuffer.hpp"
 #include "VkImage.hpp"
+#include "VkImageView.hpp"
 #include "VkPipeline.hpp"
 #include "VkRenderPass.hpp"
 #include "Device/Renderer.hpp"
@@ -164,6 +165,16 @@ struct Draw : public CommandBuffer::Command
 		executionState.renderer->setViewport(pipeline->getViewport());
 		executionState.renderer->setBlendConstant(pipeline->getBlendConstants());
 
+		for (auto i = 0u; i < executionState.renderPass->getCurrentSubpass().colorAttachmentCount; i++)
+		{
+			auto attachmentReference = executionState.renderPass->getCurrentSubpass().pColorAttachments[i];
+			if (attachmentReference.attachment != VK_ATTACHMENT_UNUSED)
+			{
+				auto attachment = executionState.renderPassFramebuffer->getAttachment(attachmentReference.attachment);
+				executionState.renderer->setRenderTarget(i, attachment->asSurface(), 0);
+			}
+		}
+
 		const uint32_t primitiveCount = pipeline->computePrimitiveCount(vertexCount);
 		const uint32_t lastInstance = firstInstance + instanceCount - 1;
 		for(uint32_t instance = firstInstance; instance <= lastInstance; instance++)
@@ -171,6 +182,9 @@ struct Draw : public CommandBuffer::Command
 			executionState.renderer->setInstanceID(instance);
 			executionState.renderer->draw(context.drawType, 0, primitiveCount);
 		}
+
+		// Wait for completion. We should be able to get rid of this eventually.
+		executionState.renderer->synchronize();
 	}
 
 	uint32_t vertexCount;
