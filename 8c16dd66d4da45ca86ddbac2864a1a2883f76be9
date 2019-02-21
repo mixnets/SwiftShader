@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bbc02ff9_b1a6c89d",
+        "filename": "src/Device/VertexProcessor.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 328,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-21T18:56:59Z",
+      "side": 1,
+      "message": "Should this be inputs[i * 4], since the interface is scalars and the others are vector attributes? I think it\u0027s worth ensuring in this CL that MAX_INTERFACE_COMPONENTS \u003d MAX_VERTEX_INPUTS * 4 too.",
+      "range": {
+        "startLine": 328,
+        "startChar": 54,
+        "endLine": 328,
+        "endChar": 65
+      },
+      "revId": "8c16dd66d4da45ca86ddbac2864a1a2883f76be9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
