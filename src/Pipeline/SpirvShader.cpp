@@ -576,6 +576,49 @@ namespace sw
 		return dynamicOffset + Int4(constantOffset);
 	}
 
+	uint32_t SpirvShader::WalkLiteralAccessChain(uint32_t id, uint32_t numIndexes, uint32_t const *indexes) const
+	{
+		uint32_t constantOffset = 0;
+		auto & baseObject = getObject(id);
+		auto typeId = baseObject.definition.word(1);
+
+		for (auto i = 0u; i < numIndexes; i++)
+		{
+			auto & type = getType(typeId);
+			switch (type.definition.opcode())
+			{
+			case spv::OpTypeStruct:
+			{
+				int memberIndex = indexes[i];
+				int offsetIntoStruct = 0;
+				for (auto j = 0; j < memberIndex; j++) {
+					auto memberType = type.definition.word(2u + j);
+					offsetIntoStruct += getType(memberType).sizeInComponents;
+				}
+				constantOffset += offsetIntoStruct;
+				typeId = type.definition.word(2u + memberIndex);
+				break;
+			}
+
+			case spv::OpTypeVector:
+			case spv::OpTypeMatrix:
+			case spv::OpTypeArray:
+			{
+				auto elementType = type.definition.word(2);
+				auto stride = getType(elementType).sizeInComponents;
+				constantOffset += stride * indexes[i];
+				typeId = elementType;
+				break;
+			}
+
+			default:
+				UNIMPLEMENTED("Unexpected type in WalkLiteralAccessChain");
+			}
+		}
+
+		return constantOffset;
+	}
+
 	void SpirvShader::Decorations::Apply(spv::Decoration decoration, uint32_t arg)
 	{
 		switch (decoration)
