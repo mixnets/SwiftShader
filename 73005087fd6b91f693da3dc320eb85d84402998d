@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "cf230b30_c1ebb513",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-22T21:17:37Z",
+      "side": 1,
+      "message": "I can work on getting Events working properly to remove the synchronize call below and work on replacing sw::Surface with Image and ImageView objects where appropriate in the Renderer to get this to work as intended, but for now, please don\u0027t leak sw::Surface objects. I can deal with the rest and fix the underlying code while making sure I don\u0027t break the test once you land this and I\u0027ll remove this code when it\u0027s no longer used.\n\nSo please fix the leak and I\u0027ll take it from there.",
+      "parentUuid": "0daf218c_5b3dec0f",
+      "range": {
+        "startLine": 174,
+        "startChar": 48,
+        "endLine": 174,
+        "endChar": 71
+      },
+      "revId": "73005087fd6b91f693da3dc320eb85d84402998d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "42f5b5f3_c8f2f6c6",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 6
