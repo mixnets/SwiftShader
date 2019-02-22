@@ -19,6 +19,29 @@
     },
     {
       "key": {
+        "uuid": "55e6c539_2d36fa21",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-22T16:24:44Z",
+      "side": 1,
+      "message": "Please split into two changes.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 55
+      },
+      "revId": "2bc2ab9344d9951370a836e079d77184e8459daf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3448ea00_b680a657",
         "filename": "src/Pipeline/SetupRoutine.cpp",
         "patchSetId": 1
@@ -30,6 +53,24 @@
       "writtenOn": "2019-02-22T12:57:58Z",
       "side": 1,
       "message": "This seems like it will also change the front face for stencil operations. The Vulkan spec says \"frontFace is a VkFrontFace value specifying the front-facing triangle orientation to be used for culling.\" so it looks we should only use it to modify the semantics of state.cullMode?\n\nThis might be a spec bug too, because it seems weird that frontFace would apply only to cullMode, because applications could simply switch the cull mode.",
+      "revId": "2bc2ab9344d9951370a836e079d77184e8459daf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "639b4c52_5a9727d1",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-22T16:24:44Z",
+      "side": 1,
+      "message": "It looks suspicious to me as well. The spec states that for stencil operations \"Whether a polygon is front- or back-facing is determined in the same manner used for face culling\".\n\nThe confusing bit is that, for culling, the legacy code uses CW/CCW cull state like DX does and so our OpenGL implementation has to figure out which one to use based on both GL_CULL_FACE and GL_FRONT_FACE, while for the gl_FrontFacing shader variable only GL_FRONT_FACE affects it: https://swiftshader-review.googlesource.com/c/SwiftShader/+/20068\n\nI have some fondness for DX\u0027s simpler approach and it\u0027s sad that Vulkan just copied GL\u0027s approach to put a configurable semantical name on a winding order, but as a Vulkan-only implementation it makes sense for Pastel\u0027s triangle setup code to reflect the spec directly.\n\nThat said, \u0027A\u0027 represents the unadultered area of the triangle (or rather twice the area). So I\u0027d rather not have that affected by VkFrontFace directly. Chris, can we instead use something along the lines of:\n\nBool frontFacing \u003d (frontFace \u003d\u003d VK_FRONT_FACE_COUNTER_CLOCKWISE) ? A \u003e 0.0 : A \u003c 0.0;",
+      "parentUuid": "3448ea00_b680a657",
       "revId": "2bc2ab9344d9951370a836e079d77184e8459daf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
