@@ -16,6 +16,29 @@
       "revId": "40d4d70e25c9948d6875e9965268ee1b03c94d30",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb35b939_08978076",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 900,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-22T12:46:26Z",
+      "side": 1,
+      "message": "I haven\u0027t reviewed previous code producing a routine from SPIRV. I assume here this is a Float4 because it will represent the values for 4 invocations?",
+      "range": {
+        "startLine": 900,
+        "startChar": 29,
+        "endLine": 900,
+        "endChar": 43
+      },
+      "revId": "40d4d70e25c9948d6875e9965268ee1b03c94d30",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
