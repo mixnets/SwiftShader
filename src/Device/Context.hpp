@@ -184,14 +184,11 @@ namespace sw
 		float depthBias;
 		float slopeDepthBias;
 
-		Sampler sampler[TOTAL_IMAGE_UNITS];
-
 		VkFormat renderTargetInternalFormat(int index);
 		int colorWriteActive();
 		int colorWriteActive(int index);
 		bool colorUsed();
 
-		Resource *texture[TOTAL_IMAGE_UNITS];
 		Stream input[MAX_VERTEX_INPUTS];
 		void *indexBuffer;
 
