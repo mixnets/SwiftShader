@@ -70,6 +70,24 @@
       "revId": "a6e0973d302a3043dd9608954ca5bbb7cb4b14b9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6d8783e4_decd72ce",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-22T18:12:57Z",
+      "side": 1,
+      "message": "Ben: I could do, but the short version (which we should all probably be aware of now) is that almost everything moves out of Draw::play().",
+      "parentUuid": "881a84d2_b6b7499a",
+      "revId": "a6e0973d302a3043dd9608954ca5bbb7cb4b14b9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
