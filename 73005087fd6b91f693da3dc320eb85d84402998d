@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "0daf218c_5b3dec0f",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-22T21:03:24Z",
+      "side": 1,
+      "message": "Nowhere. I\u0027m leaking it, that\u0027s one of the many sins here.",
+      "parentUuid": "87026ad0_42a3c644",
+      "range": {
+        "startLine": 174,
+        "startChar": 48,
+        "endLine": 174,
+        "endChar": 71
+      },
+      "revId": "73005087fd6b91f693da3dc320eb85d84402998d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "42f5b5f3_c8f2f6c6",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 6
