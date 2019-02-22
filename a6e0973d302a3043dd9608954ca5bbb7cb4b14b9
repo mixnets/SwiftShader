@@ -16,6 +16,24 @@
       "revId": "a6e0973d302a3043dd9608954ca5bbb7cb4b14b9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "71d17afa_76d96d9f",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-22T02:43:54Z",
+      "side": 1,
+      "message": "Alexis: OK to make this slightly worse here in the short term and then perhaps we work together on fixing this?",
+      "parentUuid": "f618569f_cb5c2bef",
+      "revId": "a6e0973d302a3043dd9608954ca5bbb7cb4b14b9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
