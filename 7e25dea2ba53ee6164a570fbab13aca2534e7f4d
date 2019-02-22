@@ -115,6 +115,30 @@
       "revId": "7e25dea2ba53ee6164a570fbab13aca2534e7f4d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90fb5f61_ae9ba171",
+        "filename": "src/WSI/VkSurfaceKHR.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-22T21:53:28Z",
+      "side": 1,
+      "message": "These files (src/WSI/VkSurfaceKHR.*) are not in a platform specific section of your CMakefile change, so either it has to be platform specific in the CMakefile change or not platform specific in the C++ code, right?",
+      "parentUuid": "d6617df3_706f892a",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 21
+      },
+      "revId": "7e25dea2ba53ee6164a570fbab13aca2534e7f4d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
