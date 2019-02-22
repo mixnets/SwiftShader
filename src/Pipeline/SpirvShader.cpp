@@ -259,6 +259,7 @@ namespace sw
 
 			case spv::OpLoad:
 			case spv::OpAccessChain:
+			case spv::OpCompositeConstruct:
 				// Instructions that yield an ssavalue.
 			{
 				TypeID typeId = insn.word(1);
@@ -924,6 +925,34 @@ namespace sw
 						{
 							ptrBase[i] = src[i];
 						}
+					}
+				}
+				break;
+			}
+			case spv::OpCompositeConstruct:
+			{
+				auto &type = getType(insn.word(1));
+				auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+				auto offset = 0u;
+
+				for (auto i = 0u; i < insn.wordCount() - 3; i++)
+				{
+					ObjectID srcObjectId = insn.word(3u + i);
+					auto & srcObject = getObject(srcObjectId);
+					auto & srcObjectTy = getType(srcObject.type);
+
+					if (srcObject.kind == Object::Kind::Constant)
+					{
+						auto src = reinterpret_cast<float *>(srcObject.constantValue.get());
+						for (auto j = 0u; j < srcObjectTy.sizeInComponents; j++)
+							dst.emplace(offset++, RValue<Float4>(src[j]));
+					}
+					else
+					{
+						// is an intermediate value
+						auto & src = routine->getIntermediate(srcObjectId);
+						for (auto j = 0u; j < srcObjectTy.sizeInComponents; j++)
+							dst.emplace(offset++, As<Float4>(src[j]));
 					}
 				}
 				break;
