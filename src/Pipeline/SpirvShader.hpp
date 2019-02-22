@@ -361,6 +361,7 @@ namespace sw
 		void ProcessInterfaceVariable(Object &object);
 
 		Int4 WalkAccessChain(uint32_t id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
+		uint32_t WalkLiteralAccessChain(uint32_t id, uint32_t numIndexes, uint32_t const *indexes) const;
 	};
 }
 
