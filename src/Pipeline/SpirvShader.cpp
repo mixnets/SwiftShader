@@ -261,6 +261,7 @@ namespace sw
 			case spv::OpAccessChain:
 			case spv::OpCompositeConstruct:
 			case spv::OpCompositeInsert:
+			case spv::OpCompositeExtract:
 				// Instructions that yield an ssavalue.
 			{
 				TypeID typeId = insn.word(1);
@@ -1040,6 +1041,28 @@ namespace sw
 					auto & src = routine->getIntermediate(insn.word(3));
 					for (auto i = 0u; i < newPartObjectTy.sizeInComponents; i++)
 						dst.emplace(firstNewComponent + i, As<Float4>(src[i]));
+				}
+				break;
+			}
+			case spv::OpCompositeExtract:
+			{
+				auto &type = getType(insn.word(1));
+				auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+				auto &compositeObject = getObject(insn.word(3));
+				TypeID compositeTypeId = compositeObject.definition.word(1);
+				auto firstComponent = WalkLiteralAccessChain(compositeTypeId, insn.wordCount() - 4, insn.wordPointer(4));
+
+				if (compositeObject.kind == Object::Kind::Constant)
+				{
+					auto src = reinterpret_cast<float *>(compositeObject.constantValue.get());
+					for (auto i = 0u; i < type.sizeInComponents; i++)
+						dst.emplace(i, RValue<Float4>(src[firstComponent + i]));
+				}
+				else
+				{
+					auto & src = routine->getIntermediate(insn.word(3));
+					for (auto i = 0u; i < type.sizeInComponents; i++)
+						dst.emplace(i, As<Float4>(src[firstComponent + i]));
 				}
 				break;
 			}
