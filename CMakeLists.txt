@@ -2043,6 +2043,8 @@ file(GLOB_RECURSE VULKAN_LIST
     ${SOURCE_DIR}/Device/*.hpp
     ${SOURCE_DIR}/Pipeline/*.cpp
     ${SOURCE_DIR}/Pipeline/*.hpp
+    ${SOURCE_DIR}/WSI/VkSurfaceKHR.cpp
+    ${SOURCE_DIR}/WSI/VkSurfaceKHR.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/vulkan/*.h}
 )
 
@@ -2078,6 +2080,11 @@ elseif(LINUX)
     )
     list(APPEND OPENGL_COMPILER_LIST
         ${OPENGL_COMPILER_DIR}/ossource_posix.cpp
+    )
+
+    list(APPEND VULKAN_LIST
+        ${SOURCE_DIR}/WSI/libX11.cpp
+        ${SOURCE_DIR}/WSI/libX11.hpp
     )
 elseif(APPLE)
     list(APPEND SWIFTSHADER_LIST
@@ -2213,7 +2220,7 @@ if(BUILD_VULKAN)
 
     add_subdirectory(third_party/SPIRV-Tools)
 
-    add_library(libvk_swiftshader SHARED ${VULKAN_LIST})
+    add_library(libvk_swiftshader SHARED ${VULKAN_LIST} src/WSI/VkSurfaceKHR.cpp)
     set_target_properties(libvk_swiftshader PROPERTIES
         INCLUDE_DIRECTORIES "${VULKAN_INCLUDE_DIR}"
         FOLDER "Vulkan"
