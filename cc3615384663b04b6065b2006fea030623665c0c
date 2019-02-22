@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "662e8196_822f1cf9",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 579,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-22T13:06:54Z",
+      "side": 1,
+      "message": "What wouldn\u0027t be a literalAccessChain? A constantAccessChain?\n\nAlso this could have a more explicit name such as \"AccessChainOffsetFromBase\"?",
+      "revId": "cc3615384663b04b6065b2006fea030623665c0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "240e3432_f94223be",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 615,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-22T13:06:54Z",
+      "side": 1,
+      "message": "The rest of the code looks like it is handling accesses into aggregates by value because we are computing an offset. Accessing a pointer seems wrong because it isn\u0027t clear how the offset should be updated. Maybe I\u0027m missing something about how pointers are implemented though.",
+      "revId": "cc3615384663b04b6065b2006fea030623665c0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "60530ff9_09674efa",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 3
