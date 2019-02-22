@@ -34,6 +34,24 @@
       "revId": "a6e0973d302a3043dd9608954ca5bbb7cb4b14b9",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6ef65e1c_e47dfaf5",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-22T10:19:33Z",
+      "side": 1,
+      "message": "Can we add a TODO to this code to say it is temporary, and a minimal description of how things should be in the future?",
+      "parentUuid": "71d17afa_76d96d9f",
+      "revId": "a6e0973d302a3043dd9608954ca5bbb7cb4b14b9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
