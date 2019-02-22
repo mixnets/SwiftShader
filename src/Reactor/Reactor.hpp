@@ -203,6 +203,7 @@ namespace rr
 	RValue<Bool> operator!(RValue<Bool> val);
 	RValue<Bool> operator&&(RValue<Bool> lhs, RValue<Bool> rhs);
 	RValue<Bool> operator||(RValue<Bool> lhs, RValue<Bool> rhs);
+	RValue<Bool> operator^(RValue<Bool> lhs, RValue<Bool> rhs);
 
 	class Byte : public LValue<Byte>
 	{

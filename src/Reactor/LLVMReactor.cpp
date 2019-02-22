@@ -1676,6 +1676,11 @@ namespace rr
 		return RValue<Bool>(Nucleus::createOr(lhs.value, rhs.value));
 	}
 
+	RValue<Bool> operator^(RValue<Bool> lhs, RValue<Bool> rhs)
+	{
+		return RValue<Bool>(Nucleus::createXor(lhs.value, rhs.value));
+	}
+
 	Type *Bool::getType()
 	{
 		return T(llvm::Type::getInt1Ty(*::context));
