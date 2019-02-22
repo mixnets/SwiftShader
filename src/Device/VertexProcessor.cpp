@@ -61,12 +61,6 @@ namespace sw
 		return memcmp(static_cast<const States*>(this), static_cast<const States*>(&state), sizeof(States)) == 0;
 	}
 
-	VertexProcessor::UniformBufferInfo::UniformBufferInfo()
-	{
-		buffer = nullptr;
-		offset = 0;
-	}
-
 	VertexProcessor::VertexProcessor(Context *context) : context(context)
 	{
 		routineCache = nullptr;
