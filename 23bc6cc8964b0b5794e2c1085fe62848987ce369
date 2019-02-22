@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "65d175f2_4b2e77fe",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 967,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-22T13:12:04Z",
+      "side": 1,
+      "message": "Maybe this could be returned by routine-\u003ecreateIntermediate?",
+      "range": {
+        "startLine": 967,
+        "startChar": 4,
+        "endLine": 967,
+        "endChar": 56
+      },
+      "revId": "23bc6cc8964b0b5794e2c1085fe62848987ce369",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c38d2982_c7832696",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 970,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-22T13:12:04Z",
+      "side": 1,
+      "message": "Like you said in a previous patch, we could have a helper function to paper over constant vs. intermediate.",
+      "revId": "23bc6cc8964b0b5794e2c1085fe62848987ce369",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
