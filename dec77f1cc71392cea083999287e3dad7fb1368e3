@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c8f1ab52_dfa8791c",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-22T21:29:13Z",
+      "side": 1,
+      "message": "Noted, will fix.",
+      "parentUuid": "85a6c634_8a91e193",
+      "range": {
+        "startLine": 37,
+        "startChar": 7,
+        "endLine": 37,
+        "endChar": 18
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9b27df26_08e540ca",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -36,6 +60,24 @@
       "writtenOn": "2019-02-22T11:42:46Z",
       "side": 1,
       "message": "I\u0027m thinking we could simplify a some of the pointer arithmetic here with something like:\n\nstruct DescriptorSet\n{\n    DescriptorSetLayout* layout;\n    uint8_t data[];\n};\n\nthen this code becomes a bit more followable:\n\n\tDescriptorSet* srcSet \u003d reinterpret_cast\u003cDescriptorSet*\u003e(descriptorCopies.srcSet);\n\tDescriptorSetLayout* srcLayout \u003d srcSet-\u003elayout;\n\tASSERT(srcLayout !\u003d nullptr);\n\n\tsize_t srcByteOffset \u003d 0;\n\tconst VkDescriptorSetLayoutBinding\u0026 srcBinding \u003d srcLayout-\u003egetBindingInfo(descriptorCopies.srcBinding, \u0026srcByteOffset);\n\tsize_t srcTypeSize \u003d GetDescriptorSize(srcBinding.descriptorType);\n\tsrcByteOffset +\u003d srcTypeSize * descriptorCopies.srcArrayElement; // Offset to the element.\n\tuint8_t* memToRead \u003d \u0026srcSet-\u003edata[srcByteOffset];\n\n\t...\n\nThis also gives a nice datatype for our implementation of VkDescriptorSet, and we could have a Cast() for it.\n\nIf we did go this way, then maybe these Update methods would have a more natural home on DescriptorSet?\n\nJust a suggestion, feel free to disagree.",
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0734d218_25706c63",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-22T21:29:13Z",
+      "side": 1,
+      "message": "Thanks for the suggestion! I\u0027ll definitely look into doing it this way. I\u0027m always for improving code readability.",
+      "parentUuid": "9b27df26_08e540ca",
       "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "7b10c909_e1db7df1",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-22T21:29:13Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "e1cf8886_d22d2f67",
+      "range": {
+        "startLine": 214,
+        "startChar": 1,
+        "endLine": 214,
+        "endChar": 7
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "85f6eb1f_0146e38a",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -85,6 +151,30 @@
       "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8ee1d19d_d7e6c0e1",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-22T21:29:13Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "85f6eb1f_0146e38a",
+      "range": {
+        "startLine": 243,
+        "startChar": 1,
+        "endLine": 243,
+        "endChar": 7
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
