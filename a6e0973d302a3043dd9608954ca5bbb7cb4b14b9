@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f618569f_cb5c2bef",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-22T00:13:00Z",
+      "side": 1,
+      "message": "I would like to be able to do this at BeginRenderPass / NextSubpass time. However, we stomp on the entire context just above with Renderer::setContext().",
+      "revId": "a6e0973d302a3043dd9608954ca5bbb7cb4b14b9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
