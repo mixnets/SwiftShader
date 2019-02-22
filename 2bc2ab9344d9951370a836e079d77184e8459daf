@@ -74,6 +74,24 @@
       "revId": "2bc2ab9344d9951370a836e079d77184e8459daf",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bdb8a7ba_28bed27d",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-22T18:03:20Z",
+      "side": 1,
+      "message": "OK, will do. This also allows dropping the xor plumbing changes.",
+      "parentUuid": "639b4c52_5a9727d1",
+      "revId": "2bc2ab9344d9951370a836e079d77184e8459daf",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
