@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "87026ad0_42a3c644",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-22T20:55:24Z",
+      "side": 1,
+      "message": "This creates a sw::Surface object. Where does it get deleted?",
+      "range": {
+        "startLine": 174,
+        "startChar": 48,
+        "endLine": 174,
+        "endChar": 71
+      },
+      "revId": "73005087fd6b91f693da3dc320eb85d84402998d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "42f5b5f3_c8f2f6c6",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-22T20:55:24Z",
+      "side": 1,
+      "message": "Ok for now, but AFAIK, this should no longer be necessary if we properly store events in the Renderer and signal these events in Renderer::finishRendering().",
+      "range": {
+        "startLine": 187,
+        "startChar": 2,
+        "endLine": 187,
+        "endChar": 41
+      },
+      "revId": "73005087fd6b91f693da3dc320eb85d84402998d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
