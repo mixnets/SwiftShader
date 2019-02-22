@@ -260,6 +260,7 @@ namespace sw
 			case spv::OpLoad:
 			case spv::OpAccessChain:
 			case spv::OpCompositeConstruct:
+			case spv::OpCompositeInsert:
 				// Instructions that yield an ssavalue.
 			{
 				TypeID typeId = insn.word(1);
@@ -998,6 +999,51 @@ namespace sw
 						for (auto j = 0u; j < srcObjectTy.sizeInComponents; j++)
 							dst.emplace(offset++, As<Float4>(src[j]));
 					}
+				}
+				break;
+			}
+			case spv::OpCompositeInsert:
+			{
+				TypeID resultTypeId = insn.word(1);
+				auto &type = getType(resultTypeId);
+				routine->createIntermediate(insn.word(2), type.sizeInComponents);
+				auto &newPartObject = getObject(insn.word(3));
+				auto &newPartObjectTy = getType(newPartObject.type);
+				auto &srcObject = getObject(insn.word(4));
+				auto firstNewComponent = WalkLiteralAccessChain(resultTypeId, insn.wordCount() - 5, insn.wordPointer(5));
+				auto & dst = routine->getIntermediate(insn.word(2));
+
+				// old parts copied
+				if (srcObject.kind == Object::Kind::Constant)
+				{
+					auto src = reinterpret_cast<float *>(srcObject.constantValue.get());
+					for (auto i = 0u; i < firstNewComponent; i++)
+						dst.emplace(i, RValue<Float4>(src[i]));
+					for (auto i = firstNewComponent + newPartObjectTy.sizeInComponents; i < type.sizeInComponents; i++)
+						dst.emplace(i, RValue<Float4>(src[i]));
+				}
+				else
+				{
+					// is an intermediate value
+					auto & src = routine->getIntermediate(insn.word(4));
+					for (auto i = 0u; i < firstNewComponent; i++)
+						dst.emplace(i, As<Float4>(src[i]));
+					for (auto i = firstNewComponent + newPartObjectTy.sizeInComponents; i < type.sizeInComponents; i++)
+						dst.emplace(i, As<Float4>(src[i]));
+				}
+
+				// new part in the gap
+				if (newPartObject.kind == Object::Kind::Constant)
+				{
+					auto src = reinterpret_cast<float *>(newPartObject.constantValue.get());
+					for (auto i = 0u; i < newPartObjectTy.sizeInComponents; i++)
+						dst.emplace(firstNewComponent + i, RValue<Float4>(src[i]));
+				}
+				else
+				{
+					auto & src = routine->getIntermediate(insn.word(3));
+					for (auto i = 0u; i < newPartObjectTy.sizeInComponents; i++)
+						dst.emplace(firstNewComponent + i, As<Float4>(src[i]));
 				}
 				break;
 			}
