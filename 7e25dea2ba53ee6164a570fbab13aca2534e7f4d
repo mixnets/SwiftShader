@@ -139,6 +139,30 @@
       "revId": "7e25dea2ba53ee6164a570fbab13aca2534e7f4d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a2a2082e_3051d6c2",
+        "filename": "src/WSI/VkSurfaceKHR.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-02-22T22:13:51Z",
+      "side": 1,
+      "message": "That\u0027s a more sensible temporary solution",
+      "parentUuid": "90fb5f61_ae9ba171",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 21
+      },
+      "revId": "7e25dea2ba53ee6164a570fbab13aca2534e7f4d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
