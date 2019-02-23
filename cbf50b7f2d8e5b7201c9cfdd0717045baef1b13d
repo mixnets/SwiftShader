@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "40f84b6a_7d9bb4eb",
+        "filename": "src/Pipeline/ID.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-23T10:24:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "91d5ccf5_7330312c",
+      "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5eb9ab52_dbafef4a",
         "filename": "src/Pipeline/ID.hpp",
         "patchSetId": 5
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "0dd841b8_466edc60",
+        "filename": "src/Pipeline/ID.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-23T10:24:07Z",
+      "side": 1,
+      "message": "I experienced a compiler once that would vomit without explicit inline, and this has been muscle memory since. Fixed.",
+      "parentUuid": "5eb9ab52_dbafef4a",
+      "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ecec1eaa_05878b8d",
         "filename": "src/Pipeline/ID.hpp",
         "patchSetId": 5
@@ -47,6 +83,24 @@
       "writtenOn": "2019-02-23T00:12:18Z",
       "side": 1,
       "message": "OK :)",
+      "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "41e0f4b3_8d8b6067",
+        "filename": "src/Pipeline/ID.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-23T10:24:07Z",
+      "side": 1,
+      "message": "?",
+      "parentUuid": "ecec1eaa_05878b8d",
       "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "ef46f637_22b9cd7d",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-23T10:24:07Z",
+      "side": 1,
+      "message": "Less typing this way, and helps with Nicolas\u0027 aversion to auto.",
+      "parentUuid": "a100c5e8_a3ff9fd4",
+      "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dfa201db_3c0596c3",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 5
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "7e8bc33e_6a7c0105",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-23T10:24:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dfa201db_3c0596c3",
+      "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9d4dd7b4_3704efa6",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 5
@@ -101,6 +191,24 @@
       "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3287e21_b362ca1b",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-23T10:24:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9d4dd7b4_3704efa6",
+      "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
