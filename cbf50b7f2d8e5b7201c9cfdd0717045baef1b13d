@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "91d5ccf5_7330312c",
+        "filename": "src/Pipeline/ID.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-23T00:12:18Z",
+      "side": 1,
+      "message": "stray semicolons after ctors",
+      "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5eb9ab52_dbafef4a",
+        "filename": "src/Pipeline/ID.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-23T00:12:18Z",
+      "side": 1,
+      "message": "You don\u0027t need `inline` here.",
+      "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ecec1eaa_05878b8d",
+        "filename": "src/Pipeline/ID.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-23T00:12:18Z",
+      "side": 1,
+      "message": "OK :)",
+      "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a100c5e8_a3ff9fd4",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-23T00:12:18Z",
+      "side": 1,
+      "message": "Alternative: explicit construction, and move this to RHS.",
+      "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dfa201db_3c0596c3",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-23T00:12:18Z",
+      "side": 1,
+      "message": "stray",
+      "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9d4dd7b4_3704efa6",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-23T00:12:18Z",
+      "side": 1,
+      "message": "using",
+      "revId": "cbf50b7f2d8e5b7201c9cfdd0717045baef1b13d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
