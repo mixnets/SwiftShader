@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b2ed0775_ab5a1723",
+        "filename": "third_party/llvm-7.0/llvm/lib/Target/AArch64/AArch64ISelLowering.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 11002,
+      "author": {
+        "id": 5200
+      },
+      "writtenOn": "2019-02-23T00:35:53Z",
+      "side": 1,
+      "message": "This one does change the control flow, but it\u0027s also upstream in r345864:\n\nr345864 | rnk | 2018-11-01 11:02:27 -0700 (Thu, 01 Nov 2018) | 8 lines\n\n[AArch64] Fix unintended fallthrough and strengthen cast\n\nThis was added in r330630. GCC\u0027s -Wimplicit-fallthrough seems to not\nfire when the previous case contains a switch itself.\n\nThis fallthrough was bening because the helper function implementing the\ncase used dyn_cast to re-check the type of the node in question. After\nfixing the fallthrough, we can strengthen the cast.",
+      "range": {
+        "startLine": 11002,
+        "startChar": 4,
+        "endLine": 11002,
+        "endChar": 9
+      },
+      "revId": "ebcba2eea5f87794433740bf0dddb20cca57bb91",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
