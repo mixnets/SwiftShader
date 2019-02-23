@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a3dadabf_0158a59d",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-23T01:54:42Z",
+      "side": 1,
+      "message": "nit: TODO",
+      "range": {
+        "startLine": 186,
+        "startChar": 2,
+        "endLine": 186,
+        "endChar": 4
+      },
+      "revId": "0cffa793b8009c8bedd927701037e8c8f2fd5d55",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fc418c6d_3df8c5e7",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-23T01:54:42Z",
+      "side": 1,
+      "message": "nit: TODO",
+      "range": {
+        "startLine": 190,
+        "startChar": 2,
+        "endLine": 190,
+        "endChar": 4
+      },
+      "revId": "0cffa793b8009c8bedd927701037e8c8f2fd5d55",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
