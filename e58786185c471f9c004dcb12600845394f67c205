@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0f77156d_44557341",
+        "filename": "src/Device/VertexProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-24T21:59:35Z",
+      "side": 0,
+      "message": "Well observed. Could you also remove it from Renderer/VertexProcessor.hpp? superSampling affects vertex processing, but not multiSampling.",
+      "range": {
+        "startLine": 56,
+        "startChar": 3,
+        "endLine": 56,
+        "endChar": 27
+      },
+      "revId": "e58786185c471f9c004dcb12600845394f67c205",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
