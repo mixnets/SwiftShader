@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f8164a41_20a6edb2",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-24T21:32:53Z",
+      "side": 0,
+      "message": "Their definitions were already deleted?\n\nWe\u0027ll actually want to bring back this sort of functionality to implement push constants and buffers with dynamic offsets. Anyway, would look a bit different and it\u0027s best to clean up these declarations now if the definitions were already gone anyway.",
+      "range": {
+        "startLine": 148,
+        "startChar": 0,
+        "endLine": 150,
+        "endChar": 59
+      },
+      "revId": "778d3515fd1d1caea39e4dd01849e57aea25e2e1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
