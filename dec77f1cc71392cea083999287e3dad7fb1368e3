@@ -49,6 +49,46 @@
     },
     {
       "key": {
+        "uuid": "5434e621_b4dec830",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-02-24T14:58:57Z",
+      "side": 1,
+      "message": "I think you have the last two types around the wrong way - this should be sizeof(VkBufferView)",
+      "range": {
+        "startLine": 105,
+        "startChar": 16,
+        "endLine": 105,
+        "endChar": 38
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5bc44c84_45c354db",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-02-24T14:58:57Z",
+      "side": 1,
+      "message": "And this should be sizeof(VkDescriptorBufferInfo)",
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "9b27df26_08e540ca",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
