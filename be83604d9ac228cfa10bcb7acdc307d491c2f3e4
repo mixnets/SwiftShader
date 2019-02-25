@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "c2dd7746_ac9c7d92",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-25T16:29:12Z",
+      "side": 1,
+      "message": "C++-style cast",
+      "revId": "be83604d9ac228cfa10bcb7acdc307d491c2f3e4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "7c5af141_50e42659",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 2
