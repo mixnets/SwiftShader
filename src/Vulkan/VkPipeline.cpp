@@ -192,6 +192,16 @@ namespace vk
 
 Pipeline::Pipeline(VkPipelineLayout layout) : layout(layout) {}
 
+void Pipeline::bindDescriptorSets(uint32_t start, uint32_t count, VkDescriptorSet* sets)
+{
+	ASSERT(start + count <= MAX_BOUND_DESCRIPTOR_SETS);
+
+	for (uint32_t i = 0; i < count; i++)
+	{
+		descriptorSets[start + i] = sets[i];
+	}
+}
+
 GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem)
 	: Pipeline(pCreateInfo->layout)
 {

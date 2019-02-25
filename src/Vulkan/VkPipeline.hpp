@@ -43,8 +43,11 @@ public:
 	virtual VkPipelineBindPoint bindPoint() const = 0;
 #endif
 
+	void bindDescriptorSets(uint32_t start, uint32_t count, VkDescriptorSet* sets);
+
 protected:
 	VkPipelineLayout layout = nullptr;
+	VkDescriptorSet descriptorSets[MAX_BOUND_DESCRIPTOR_SETS] = {};
 };
 
 class GraphicsPipeline : public Pipeline, public ObjectBase<GraphicsPipeline, VkPipeline>

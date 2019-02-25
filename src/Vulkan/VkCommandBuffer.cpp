@@ -123,6 +123,54 @@ private:
 	VkPipeline pipeline;
 };
 
+class DescriptorBind : public CommandBuffer::Command
+{
+public:
+	DescriptorBind(VkPipelineBindPoint pPipelineBindPoint, VkPipelineLayout pLayout,
+		uint32_t pFirstSet, uint32_t pDescriptorSetCount, const VkDescriptorSet* ppDescriptorSets,
+		uint32_t pDynamicOffsetCount, const uint32_t* ppDynamicOffsets) :
+			pipelineBindPoint(pPipelineBindPoint), layout(pLayout), firstSet(pFirstSet),
+			descriptorSetCount(pDescriptorSetCount), dynamicOffsetCount(pDynamicOffsetCount)
+	{
+		// FIXME (b/119409619): use an allocator here so we can control all memory allocations
+		pDescriptorSets = new VkDescriptorSet[descriptorSetCount];
+		memcpy(pDescriptorSets, ppDescriptorSets, descriptorSetCount * sizeof(VkDescriptorSet));
+		pDynamicOffsets = new uint32_t[pDynamicOffsetCount];
+		memcpy(pDynamicOffsets, ppDynamicOffsets, pDynamicOffsetCount * sizeof(uint32_t));
+	}
+
+	~DescriptorBind() override
+	{
+		delete [] pDescriptorSets;
+		delete [] pDynamicOffsets;
+	}
+
+protected:
+	void play(CommandBuffer::ExecutionState& executionState) override
+	{
+		ASSERT(pipelineBindPoint <= VK_PIPELINE_BIND_POINT_END_RANGE);
+
+		auto pipeline = executionState.pipelines[pipelineBindPoint];
+		ASSERT(pipeline != nullptr);
+
+		pipeline->bindDescriptorSets(firstSet, descriptorSetCount, pDescriptorSets);
+
+		if (dynamicOffsetCount > 0)
+		{
+			UNIMPLEMENTED();
+		}
+	}
+
+private:
+	VkPipelineBindPoint pipelineBindPoint;
+	VkPipelineLayout layout;
+	uint32_t firstSet;
+	uint32_t descriptorSetCount;
+	VkDescriptorSet* pDescriptorSets;
+	uint32_t dynamicOffsetCount;
+	uint32_t* pDynamicOffsets;
+};
+
 struct VertexBufferBind : public CommandBuffer::Command
 {
 	VertexBufferBind(uint32_t pBinding, const VkBuffer pBuffer, const VkDeviceSize pOffset) :
@@ -692,7 +740,17 @@ void CommandBuffer::bindDescriptorSets(VkPipelineBindPoint pipelineBindPoint, Vk
 	uint32_t firstSet, uint32_t descriptorSetCount, const VkDescriptorSet* pDescriptorSets,
 	uint32_t dynamicOffsetCount, const uint32_t* pDynamicOffsets)
 {
-	UNIMPLEMENTED();
+	switch(pipelineBindPoint) {
+	case VK_PIPELINE_BIND_POINT_COMPUTE:
+	case VK_PIPELINE_BIND_POINT_GRAPHICS:
+		ASSERT(firstSet + descriptorSetCount <= MAX_BOUND_DESCRIPTOR_SETS);
+		addCommand<DescriptorBind>(pipelineBindPoint, layout, firstSet, descriptorSetCount,
+			pDescriptorSets, dynamicOffsetCount, pDynamicOffsets);
+		break;
+	default:
+		UNIMPLEMENTED();
+		break;
+	}
 }
 
 void CommandBuffer::bindIndexBuffer(VkBuffer buffer, VkDeviceSize offset, VkIndexType indexType)
