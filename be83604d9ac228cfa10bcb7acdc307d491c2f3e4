@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7186bfa9_f9804a29",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-25T16:28:55Z",
+      "side": 1,
+      "message": "This has got out of control, switch within switch on the same thing. Do you want to do the same thing I did with CreateConstant to tame it?",
+      "revId": "be83604d9ac228cfa10bcb7acdc307d491c2f3e4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c5af141_50e42659",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-25T16:28:55Z",
+      "side": 1,
+      "message": "0 is fine. It\u0027s guaranteed to not be a real SPIRV object.",
+      "revId": "be83604d9ac228cfa10bcb7acdc307d491c2f3e4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
