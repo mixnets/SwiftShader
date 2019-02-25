@@ -558,6 +558,9 @@ namespace sw
 		if (baseObject.kind == Object::Kind::Value)
 			dynamicOffset += As<Int4>(routine->getIntermediate(id)[0]);
 
+		// Strip off ptr
+		typeId = getType(typeId).definition.word(3);
+
 		for (auto i = 0u; i < numIndexes; i++)
 		{
 			auto & type = getType(typeId);
@@ -589,10 +592,6 @@ namespace sw
 				typeId = type.element;
 				break;
 			}
-
-			case spv::OpTypePointer:
-				typeId = type.element;
-				break;
 
 			default:
 				UNIMPLEMENTED("Unexpected type in WalkAccessChain");
