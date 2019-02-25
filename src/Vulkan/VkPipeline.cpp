@@ -190,7 +190,10 @@ uint32_t getNumberOfChannels(VkFormat format)
 namespace vk
 {
 
+Pipeline::Pipeline(VkPipelineLayout layout) : layout(layout) {}
+
 GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem)
+	: Pipeline(pCreateInfo->layout)
 {
 	if((pCreateInfo->flags != 0) ||
 	   (pCreateInfo->stageCount != 2) ||
@@ -489,6 +492,7 @@ const sw::Color<float>& GraphicsPipeline::getBlendConstants() const
 }
 
 ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem)
+	: Pipeline(pCreateInfo->layout)
 {
 }
 

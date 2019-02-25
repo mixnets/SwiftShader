@@ -14,11 +14,17 @@
 
 #include "VkPipelineLayout.hpp"
 
+#include <cstring>
+
 namespace vk
 {
 
 PipelineLayout::PipelineLayout(const VkPipelineLayoutCreateInfo* pCreateInfo, void* mem)
 {
+	setLayoutCount = pCreateInfo->setLayoutCount;
+	memcpy(&setLayouts[0], pCreateInfo->pSetLayouts, sizeof(VkDescriptorSetLayout) * setLayoutCount);
+
+	// TODO: push constants
 }
 
 void PipelineLayout::destroy(const VkAllocationCallbacks* pAllocator)
@@ -27,7 +33,14 @@ void PipelineLayout::destroy(const VkAllocationCallbacks* pAllocator)
 
 size_t PipelineLayout::ComputeRequiredAllocationSize(const VkPipelineLayoutCreateInfo* pCreateInfo)
 {
-	return 0;
+	return sizeof(PipelineLayout) +
+		pCreateInfo->setLayoutCount * sizeof(setLayouts[0]);
+}
+
+VkDescriptorSetLayout PipelineLayout::getDescriptorSetLayout(uint32_t index) const
+{
+	ASSERT(index < setLayoutCount);
+	return setLayouts[index];
 }
 
 } // namespace vk

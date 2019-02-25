@@ -29,7 +29,11 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkPipelineLayoutCreateInfo* pCreateInfo);
 
+	VkDescriptorSetLayout getDescriptorSetLayout(uint32_t index) const;
+
 private:
+	uint32_t setLayoutCount;
+	VkDescriptorSetLayout setLayouts[];
 };
 
 static inline PipelineLayout* Cast(VkPipelineLayout object)

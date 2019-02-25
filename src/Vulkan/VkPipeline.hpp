@@ -26,6 +26,8 @@ namespace vk
 class Pipeline
 {
 public:
+	Pipeline(VkPipelineLayout layout);
+
 	operator VkPipeline()
 	{
 		return reinterpret_cast<VkPipeline>(this);
@@ -40,6 +42,9 @@ public:
 #ifndef NDEBUG
 	virtual VkPipelineBindPoint bindPoint() const = 0;
 #endif
+
+protected:
+	VkPipelineLayout layout = nullptr;
 };
 
 class GraphicsPipeline : public Pipeline, public ObjectBase<GraphicsPipeline, VkPipeline>
