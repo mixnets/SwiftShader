@@ -154,23 +154,30 @@ namespace sw
 			return InsnIterator{insns.cend()};
 		}
 
+		class Type;
+		using TypeID = ID<Type>;
+
 		class Type
 		{
 		public:
 			InsnIterator definition;
-			spv::StorageClass storageClass;
+			spv::StorageClass storageClass = (spv::StorageClass)-1;
 			uint32_t sizeInComponents = 0;
 			bool isBuiltInBlock = false;
+
+			// Inner element type for pointers, arrays, vectors and matrices.
+			TypeID element = -1;
 		};
+
+		class Object;
+		using ObjectID = ID<Object>;
 
 		class Object
 		{
 		public:
 			InsnIterator definition;
-			spv::StorageClass storageClass;
-			uint32_t sizeInComponents = 0;
-			bool isBuiltInBlock = false;
-			uint32_t pointerBase = 0;
+			TypeID type = -1;
+			ObjectID pointerBase = 0;
 			std::unique_ptr<uint32_t[]> constantValue = nullptr;
 
 			enum class Kind
@@ -183,8 +190,6 @@ namespace sw
 			} kind = Kind::Unknown;
 		};
 
-		using TypeID = ID<Type>;
-		using ObjectID = ID<Object>;
 
 		struct TypeOrObject {}; // Dummy struct to represent a Type or Object.
 
