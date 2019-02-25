@@ -58,6 +58,11 @@ enum
 	MAX_VERTEX_INPUT_BINDINGS = 16,
 };
 
+enum
+{
+	MAX_POINT_SIZE = 64,
+};
+
 }
 
 #endif // VK_CONFIG_HPP_
