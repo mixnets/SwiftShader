@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "28079202_f56ed538",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2046,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-25T18:56:34Z",
+      "side": 1,
+      "message": "nit: Could be in an SI/ folder as there are system-specific extensions for sharing memory and fences too.",
+      "range": {
+        "startLine": 2046,
+        "startChar": 18,
+        "endLine": 2046,
+        "endChar": 21
+      },
+      "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2fdc6f90_af0bff71",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2086,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-25T18:56:34Z",
+      "side": 1,
+      "message": "This file wasn\u0027t added.",
+      "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c811e50e_0d070a36",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2067,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-25T18:56:34Z",
+      "side": 1,
+      "message": "On Linux there are both xlib and xcb so the application should have the choice of which to use. I suggest having a helper function in SurfaceKHR.cpp/h that looks at \"sType\" and decide which implementation to use. This would also move the platform-specific logic out of this file and into SurfaceKHR.cpp",
+      "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72ea0f8a_1df0c3da",
+        "filename": "src/WSI/VkSurfaceKHR.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-25T18:56:34Z",
+      "side": 1,
+      "message": "nit: this could be a bit more generous and include transfer_dst",
+      "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
