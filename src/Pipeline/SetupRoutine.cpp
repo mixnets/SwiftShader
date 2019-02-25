@@ -460,7 +460,7 @@ namespace sw
 							OFFSET(Vertex, v[interpolant]),
 							OFFSET(Primitive, V[interpolant]),
 							state.gradient[interpolant].Flat,
-							point,
+							false /* is pointcoord */,
 							state.perspective, 0);
 			}
 
