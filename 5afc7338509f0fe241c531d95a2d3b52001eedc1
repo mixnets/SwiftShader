@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d3e6bb93_248a399a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-25T09:37:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "00df453d_d1b8646d",
+      "revId": "5afc7338509f0fe241c531d95a2d3b52001eedc1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "76022875_5fa993cb",
         "filename": "src/Pipeline/ID.hpp",
         "patchSetId": 7
@@ -30,6 +48,30 @@
       "writtenOn": "2019-02-25T02:39:37Z",
       "side": 1,
       "message": "This doesn\u0027t appear to actually be used, and all ID\u0027s in SPIR-V are uint32 so it\u0027s unlikely this will ever have a use. Hence I\u0027d rather see this eliminated and explicitly represent SPIR-V ID\u0027s (maybe even rename to SpirvID).",
+      "range": {
+        "startLine": 28,
+        "startChar": 23,
+        "endLine": 28,
+        "endChar": 34
+      },
+      "revId": "5afc7338509f0fe241c531d95a2d3b52001eedc1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c0f658c3_25331762",
+        "filename": "src/Pipeline/ID.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-25T09:37:23Z",
+      "side": 1,
+      "message": "I actually was pushing the other way in that I didn\u0027t want this strongly tied to the SPIR-V identifier case.\n\nThe documentation on ID currently documents exactly what it does and its intended usage. There is no need for the reader of this class to know anything about SPIR-V identifiers.\n\nWhile I\u0027m against writing broadly flexible library functions that only have one use, in this particular case, there is no additional overhead in its API or documentation to be able to easily understand this and use this elsewhere.\n\nI was even going to go so far as to propose that we drop the default template value for I, and move this to src/Common. If you then want a SpirvID type, we can alias SprivID \u003d ID\u003cT, uint32\u003e.\n\nHowever, if you feel particularly strongly I\u0027ll make the changes as you requested.",
+      "parentUuid": "76022875_5fa993cb",
       "range": {
         "startLine": 28,
         "startChar": 23,
