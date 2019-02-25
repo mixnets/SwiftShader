@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "00df453d_d1b8646d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-25T02:39:37Z",
+      "side": 1,
+      "message": "Bug number please.",
+      "revId": "5afc7338509f0fe241c531d95a2d3b52001eedc1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76022875_5fa993cb",
+        "filename": "src/Pipeline/ID.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-25T02:39:37Z",
+      "side": 1,
+      "message": "This doesn\u0027t appear to actually be used, and all ID\u0027s in SPIR-V are uint32 so it\u0027s unlikely this will ever have a use. Hence I\u0027d rather see this eliminated and explicitly represent SPIR-V ID\u0027s (maybe even rename to SpirvID).",
+      "range": {
+        "startLine": 28,
+        "startChar": 23,
+        "endLine": 28,
+        "endChar": 34
+      },
+      "revId": "5afc7338509f0fe241c531d95a2d3b52001eedc1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
