@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ed9eeb0c_5d7122bf",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2046,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-02-25T21:18:14Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "28079202_f56ed538",
+      "range": {
+        "startLine": 2046,
+        "startChar": 18,
+        "endLine": 2046,
+        "endChar": 21
+      },
+      "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2fdc6f90_af0bff71",
         "filename": "CMakeLists.txt",
         "patchSetId": 5
@@ -36,6 +60,24 @@
       "writtenOn": "2019-02-25T18:56:34Z",
       "side": 1,
       "message": "This file wasn\u0027t added.",
+      "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "731b964f_4f4d9f32",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2086,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-02-25T21:18:14Z",
+      "side": 1,
+      "message": "I am not entirely sure what you mean. That file should already be in master. I got it from my initial clone.",
+      "parentUuid": "2fdc6f90_af0bff71",
       "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "fd6cda1e_dbcd2f3b",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2067,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-02-25T21:18:14Z",
+      "side": 1,
+      "message": "The application is responsible for picking which library to use as well as which kind of surface to use. Hence why there is a vkCreateXlibSurfaceKHR (as implemented) as well as vkCreateXcbSurfaceKHR (future CL)",
+      "parentUuid": "c811e50e_0d070a36",
+      "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "72ea0f8a_1df0c3da",
         "filename": "src/WSI/VkSurfaceKHR.cpp",
         "patchSetId": 5
@@ -70,6 +130,24 @@
       "writtenOn": "2019-02-25T18:56:34Z",
       "side": 1,
       "message": "nit: this could be a bit more generous and include transfer_dst",
+      "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "10eae0bf_cac74e67",
+        "filename": "src/WSI/VkSurfaceKHR.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-02-25T21:18:14Z",
+      "side": 1,
+      "message": "I will add this. Note that this is a minimal implementation and might not have everything to make a usable surface. Feel free to add to it in the future.",
+      "parentUuid": "72ea0f8a_1df0c3da",
       "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
