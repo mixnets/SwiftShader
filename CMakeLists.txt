@@ -58,7 +58,7 @@ endif()
 ###########################################################
 
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "The type of build: Debug Release MinSizeRel RelWithDebInfo." FORCE)
+    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "The type of build: Debug Release MinSizeRel RelWithDebInfo." FORCE)
 endif()
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release MinSizeRel RelWithDebInfo)
 
@@ -77,11 +77,11 @@ option (ASAN "Build with address sanitizer" 0)
 option (TSAN "Build with thread sanitizer" 0)
 option (UBSAN "Build with undefined behavior sanitizer" 0)
 
-if(ARCH STREQUAL "arm")
+#if(ARCH STREQUAL "arm")
     set(DEFAULT_REACTOR_BACKEND "Subzero")
-else()
-    set(DEFAULT_REACTOR_BACKEND "LLVM")
-endif()
+#else()
+#    set(DEFAULT_REACTOR_BACKEND "LLVM")
+#endif()
 
 set(REACTOR_BACKEND ${DEFAULT_REACTOR_BACKEND} CACHE STRING "JIT compiler back-end used by Reactor")
 set_property(CACHE REACTOR_BACKEND PROPERTY STRINGS LLVM Subzero)
