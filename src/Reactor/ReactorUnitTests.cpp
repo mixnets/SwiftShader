@@ -992,6 +992,94 @@ TEST(ReactorUnitTests, MulAdd)
 	delete routine;
 }
 
+TEST(ReactorUnitTests, PreserveRegisters)
+{
+    Routine *routine = nullptr;
+
+    {
+        Function<Void(Pointer<Byte>, Pointer<Byte>)> function;
+        {
+            Pointer<Byte> in = function.Arg<0>();
+            Pointer<Byte> out = function.Arg<1>();
+
+            Float4 a = *Pointer<Float4>(in + 16 * 0);
+            Float4 b = *Pointer<Float4>(in + 16 * 1);
+            Float4 c = *Pointer<Float4>(in + 16 * 2);
+            Float4 d = *Pointer<Float4>(in + 16 * 3);
+            Float4 e = *Pointer<Float4>(in + 16 * 4);
+            Float4 f = *Pointer<Float4>(in + 16 * 5);
+            Float4 g = *Pointer<Float4>(in + 16 * 6);
+            Float4 h = *Pointer<Float4>(in + 16 * 7);
+
+            Float4 ab = a + b;
+            Float4 cd = c + d;
+            Float4 ef = e + f;
+            Float4 gh = g + h;
+
+            Float4 abcd = ab + cd;
+            Float4 efgh = ef + gh;
+
+            Float4 sum = abcd + efgh;
+            *Pointer<Float4>(out) = sum;
+            Return();
+        }
+
+        routine = function("one");
+        assert(routine);
+
+        float input[32] = { 1.0f, 0.0f,  0.0f, 0.0f,
+                           -1.0f, 1.0f, -1.0f, 0.0f,
+                            1.0f, 2.0f, -2.0f, 0.0f,
+                           -1.0f, 3.0f, -3.0f, 0.0f,
+                            1.0f, 4.0f, -4.0f, 0.0f,
+                           -1.0f, 5.0f, -5.0f, 0.0f,
+                            1.0f, 6.0f, -6.0f, 0.0f,
+                           -1.0f, 7.0f, -7.0f, 0.0f };
+
+        float result[4];
+        void (*callable)(float*, float*) = (void(*)(float*,float*))routine->getEntry();
+
+#if defined(__SSE2__)
+        float data[8] = { 1000.0f, 2000.0f, 3000.0f, 4000.0f, 5000.0f, 6000.0f, 7000.0f, 8000.0f };
+        register float* rax asm("rax") = data;
+
+        asm("movss (%rax),    %xmm0");
+        asm("movss 4(%rax),   %xmm1");
+        asm("movss 8(%rax),   %xmm2");
+        asm("movss 12(%rax),  %xmm3");
+        asm("movss 16(%rax),  %xmm4");
+        asm("movss 20(%rax),  %xmm5");
+        asm("movss 24(%rax),  %xmm6");
+        asm("movss 28(%rax),  %xmm7");
+#endif
+
+        callable(input, result);
+
+#if defined(__SSE2__)
+        float results[8];
+        register float* rbx asm("rbx") = results;
+        asm("movss %xmm0,     (%rbx)");
+        asm("movss %xmm1,     4(%rbx)");
+        asm("movss %xmm2,     8(%rbx)");
+        asm("movss %xmm3,     12(%rbx)");
+        asm("movss %xmm4,     16(%rbx)");
+        asm("movss %xmm5,     20(%rbx)");
+        asm("movss %xmm6,     24(%rbx)");
+        asm("movss %xmm7,     28(%rbx)");
+        EXPECT_EQ(results[0], data[0]);
+        EXPECT_EQ(results[1], data[1]);
+        EXPECT_EQ(results[2], data[2]);
+        EXPECT_EQ(results[3], data[3]);
+        EXPECT_EQ(results[4], data[4]);
+        EXPECT_EQ(results[5], data[5]);
+        EXPECT_EQ(results[6], data[6]);
+        EXPECT_EQ(results[7], data[7]);
+#endif
+    }
+
+    delete routine;
+}
+
 int main(int argc, char **argv)
 {
 	::testing::InitGoogleTest(&argc, argv);
