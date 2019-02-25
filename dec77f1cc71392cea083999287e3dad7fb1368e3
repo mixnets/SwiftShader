@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "79a3aec8_cc96a0fc",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-25T20:18:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c8f1ab52_dfa8791c",
+      "range": {
+        "startLine": 37,
+        "startChar": 7,
+        "endLine": 37,
+        "endChar": 18
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5434e621_b4dec830",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -95,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "0897ef92_97b0c16e",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-25T20:18:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5434e621_b4dec830",
+      "range": {
+        "startLine": 105,
+        "startChar": 16,
+        "endLine": 105,
+        "endChar": 38
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5bc44c84_45c354db",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -109,6 +157,24 @@
       "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e518d84f_aee26505",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-25T20:18:42Z",
+      "side": 1,
+      "message": "Done. Good catch.",
+      "parentUuid": "5bc44c84_45c354db",
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -147,6 +213,24 @@
     },
     {
       "key": {
+        "uuid": "be5dea31_19c5373e",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-25T20:18:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0734d218_25706c63",
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "333c11cf_77f13e37",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -161,6 +245,24 @@
       "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8db42d1a_ce0b7a3d",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-25T20:18:42Z",
+      "side": 1,
+      "message": "I think it\u0027s clearer/more explicit this way and, since the pointers are not explicitly in a union and the spec does mention: \"Only one of pImageInfo, pBufferInfo, or pTexelBufferView members is used according to the descriptor type specified in the descriptorType member of the containing VkWriteDescriptorSet structure\". I would prefer not to rely on things that aren\u0027t clearly mentioned in the spec (unless it is there and I didn\u0027t see it).",
+      "parentUuid": "333c11cf_77f13e37",
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -211,6 +313,30 @@
     },
     {
       "key": {
+        "uuid": "1e432358_bb7343dd",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-25T20:18:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7b10c909_e1db7df1",
+      "range": {
+        "startLine": 214,
+        "startChar": 1,
+        "endLine": 214,
+        "endChar": 7
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9df3081e_a373c6b6",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -231,6 +357,30 @@
       "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a75d2678_97acef22",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-25T20:18:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9df3081e_a373c6b6",
+      "range": {
+        "startLine": 222,
+        "startChar": 0,
+        "endLine": 228,
+        "endChar": 66
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -298,6 +448,24 @@
     },
     {
       "key": {
+        "uuid": "156044b5_6fd65048",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-25T20:18:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "312e2a1b_5471e46f",
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4cb26643_a0963d8e",
         "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
         "patchSetId": 2
@@ -321,6 +489,30 @@
     },
     {
       "key": {
+        "uuid": "4e255dd1_9577ab8f",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-25T20:18:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4cb26643_a0963d8e",
+      "range": {
+        "startLine": 46,
+        "startChar": 8,
+        "endLine": 46,
+        "endChar": 15
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2632220d_496aa297",
         "filename": "src/Vulkan/VkDevice.cpp",
         "patchSetId": 2
@@ -341,6 +533,30 @@
       "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e8175d49_1c788e35",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-25T20:18:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2632220d_496aa297",
+      "range": {
+        "startLine": 113,
+        "startChar": 23,
+        "endLine": 113,
+        "endChar": 42
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
