@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "53c5b30c_05c030cb",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-25T09:34:47Z",
+      "side": 1,
+      "message": "nit: I\u0027d say they are the raw Vulkan structure and not converted to an internal representation. bindlessness is independent and means that binding a descriptor sets is the cost of updating a pointer in O(1) instead of updating in O(number of resources in the descriptor set).",
+      "range": {
+        "startLine": 16,
+        "startChar": 18,
+        "endLine": 16,
+        "endChar": 36
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "85a6c634_8a91e193",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -124,6 +147,23 @@
     },
     {
       "key": {
+        "uuid": "333c11cf_77f13e37",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-25T09:34:47Z",
+      "side": 1,
+      "message": "nit: I\u0027m fairly sure all these pointers are the same, maybe we could static_assert it and take a pointer to descriptorWrites directly?\n\nOr we just assume the compiler will notice all cases of the switch do the same thing.",
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e1cf8886_d22d2f67",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -171,6 +211,29 @@
     },
     {
       "key": {
+        "uuid": "9df3081e_a373c6b6",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-25T09:34:47Z",
+      "side": 1,
+      "message": "Could we have a helper function on the layout to do this? Like getBindingOffset(binding, arrayElement) or maybe even getBindingPointer? It could also be used in initialize to write immutable samplers at the correct position and in WriteDescrtiproSets as well.",
+      "range": {
+        "startLine": 222,
+        "startChar": 0,
+        "endLine": 228,
+        "endChar": 66
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "85f6eb1f_0146e38a",
         "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
         "patchSetId": 2
@@ -215,6 +278,69 @@
       "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "312e2a1b_5471e46f",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-25T09:34:47Z",
+      "side": 1,
+      "message": "this isn\u0027t used in this header.",
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4cb26643_a0963d8e",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-25T09:34:47Z",
+      "side": 1,
+      "message": "nit: mismatched indentation style with the rest of the file.",
+      "range": {
+        "startLine": 46,
+        "startChar": 8,
+        "endLine": 46,
+        "endChar": 15
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2632220d_496aa297",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-25T09:34:47Z",
+      "side": 1,
+      "message": "nit: use different function names instead of overloads?",
+      "range": {
+        "startLine": 113,
+        "startChar": 23,
+        "endLine": 113,
+        "endChar": 42
+      },
+      "revId": "dec77f1cc71392cea083999287e3dad7fb1368e3",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
