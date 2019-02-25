@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e7bb5c5f_5eb7f2f3",
+        "filename": "src/OpenGL/libGLES_CM/Texture.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 453,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-25T15:29:22Z",
+      "side": 1,
+      "message": "nit: This is fine if it\u0027s the first call. Anyway, probably won\u0027t make anyone scratch their heads when they encounter this, and I can\u0027t think of a technically correct way to write this that is still sufficiently succinct and helpful.",
+      "range": {
+        "startLine": 453,
+        "startChar": 23,
+        "endLine": 453,
+        "endChar": 71
+      },
+      "revId": "c230a8ba2b7e9f83addf61e9680862f6a20375d6",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
