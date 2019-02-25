@@ -83,7 +83,7 @@ static const std::unordered_map<std::string, PFN_vkVoidFunction> instanceFunctio
 	MAKE_VULKAN_INSTANCE_ENTRY(vkGetPhysicalDeviceSurfaceFormatsKHR),
 	MAKE_VULKAN_INSTANCE_ENTRY(vkGetPhysicalDeviceSurfacePresentModesKHR),
 };
-#undef MAKE_VULKAN_GLOBAL_ENTRY
+#undef MAKE_VULKAN_INSTANCE_ENTRY
 
 #define MAKE_VULKAN_DEVICE_ENTRY(aFunction) { #aFunction, reinterpret_cast<PFN_vkVoidFunction>(aFunction) }
 static const std::unordered_map<std::string, PFN_vkVoidFunction> deviceFunctionPointers =
