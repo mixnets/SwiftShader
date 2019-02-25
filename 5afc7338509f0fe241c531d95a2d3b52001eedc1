@@ -81,6 +81,30 @@
       "revId": "5afc7338509f0fe241c531d95a2d3b52001eedc1",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "59aaeaab_4bca9fe7",
+        "filename": "src/Pipeline/ID.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-25T15:23:56Z",
+      "side": 1,
+      "message": "I fear it\u0027s a slippery slope that can lead to over-engineering. While indeed there is no run-time overhead in this case right now, when we regard it as a generic utility class there\u0027s a risk other functionality will be bolted on and it can incur an unintended cost at run-time or for readability and future maintenance.\n\nAll we really need for SPIR-V is a safer uint32. The spec defines ID\u0027s to \"always consumes one word\", and the word is defined as 32 bits. This is cast in stone for the foreseeable future. So any other potential use of ID\u003cT, I\u003e would most likely be for something entirely different, which likely has its own semantics (i.e. it\u0027s not an identifier as in SPIR-V) and different technical requirements. Instead we\u0027d most likely be better off copy-pasting this class and customizing it for the other use.\n\nIf and when we run into another use that matches this class perfectly with only the addition of a second template parameter, we can still trivially refactor this.",
+      "parentUuid": "c0f658c3_25331762",
+      "range": {
+        "startLine": 28,
+        "startChar": 23,
+        "endLine": 28,
+        "endChar": 34
+      },
+      "revId": "5afc7338509f0fe241c531d95a2d3b52001eedc1",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
