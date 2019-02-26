@@ -31,49 +31,18 @@
 
 namespace sw
 {
-	// Incrementally constructed complex bundle of rvalues
-	// Effectively a restricted vector, supporting only:
-	// - allocation to a (runtime-known) fixed size
-	// - in-place construction of elements
-	// - const operator[]
-	class Intermediate
+	// SIMD contains types that represent multiple scalars packed into a single
+	// vector data type. Types in the SIMD namespace provide a semantic hint
+	// that the data should be treated as a per-execution-lane scalar instead of
+	// a typical euclidean-style vector type.
+	namespace SIMD
 	{
-	public:
-		using Scalar = RValue<Float4>;
+		// Width is the number of per-lane scalars packed into each SIMD vector.
+		static constexpr int Width = 4;
 
-		Intermediate(uint32_t size) : contents(new ContentsType[size]), size(size) {}
-
-		~Intermediate()
-		{
-			for (auto i = 0u; i < size; i++)
-				reinterpret_cast<Scalar *>(&contents[i])->~Scalar();
-			delete [] contents;
-		}
-
-		void emplace(uint32_t n, Scalar&& value)
-		{
-			assert(n < size);
-			new (&contents[n]) Scalar(value);
-		}
-
-		Scalar const & operator[](uint32_t n) const
-		{
-			assert(n < size);
-			return *reinterpret_cast<Scalar const *>(&contents[n]);
-		}
-
-		// No copy/move construction or assignment
-		Intermediate(Intermediate const &) = delete;
-		Intermediate(Intermediate &&) = delete;
-		Intermediate & operator=(Intermediate const &) = delete;
-		Intermediate & operator=(Intermediate &&) = delete;
-
-	private:
-		using ContentsType = std::aligned_storage<sizeof(Scalar), alignof(Scalar)>::type;
-
-		ContentsType *contents;
-		uint32_t size;
-	};
+		using Float = rr::Float4;
+		using Int = rr::Int4;
+	}
 
 	class SpirvRoutine;
 
@@ -348,13 +317,64 @@ namespace sw
 
 		void ProcessInterfaceVariable(Object &object);
 
-		Int4 WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
+		SIMD::Int WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
+	};
+
+	// Incrementally constructed complex bundle of rvalues
+	// Effectively a restricted vector, supporting only:
+	// - allocation to a (runtime-known) fixed size
+	// - in-place construction of elements
+	// - const operator[]
+	class Intermediate
+	{
+	public:
+		using Scalar = RValue<SIMD::Float>;
+
+		Intermediate(uint32_t size) : contents(new ContentsType[size]), size(size) {}
+
+		~Intermediate()
+		{
+			for (auto i = 0u; i < size; i++)
+				reinterpret_cast<Scalar *>(&contents[i])->~Scalar();
+			delete [] contents;
+		}
+
+		void emplace(uint32_t n, Scalar&& value)
+		{
+			assert(n < size);
+			new (&contents[n]) Scalar(value);
+		}
+
+		void emplace(uint32_t n, const Scalar& value)
+		{
+			assert(n < size);
+			new (&contents[n]) Scalar(value);
+		}
+
+		Scalar const & operator[](uint32_t n) const
+		{
+			assert(n < size);
+			return *reinterpret_cast<Scalar const *>(&contents[n]);
+		}
+
+		// No copy/move construction or assignment
+		Intermediate(Intermediate const &) = delete;
+		Intermediate(Intermediate &&) = delete;
+		Intermediate & operator=(Intermediate const &) = delete;
+		Intermediate & operator=(Intermediate &&) = delete;
+
+	private:
+		using ContentsType = std::aligned_storage<sizeof(Scalar), alignof(Scalar)>::type;
+
+		ContentsType *contents;
+		uint32_t size;
 	};
 
 	class SpirvRoutine
 	{
 	public:
-		using Value = Array<Float4>;
+		using Value = Array<SIMD::Float>;
+
 		std::unordered_map<SpirvShader::ObjectID, Value> lvalues;
 
 		std::unordered_map<SpirvShader::ObjectID, Intermediate> intermediates;
