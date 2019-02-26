@@ -633,6 +633,12 @@ namespace sw
 		case spv::DecorationBufferBlock:
 			BufferBlock = true;
 			break;
+		case spv::DecorationDescriptorSet:
+			DescriptorSet = arg;
+			break;
+		case spv::DecorationBinding:
+			Binding = arg;
+			break;
 		default:
 			// Intentionally partial, there are many decorations we just don't care about.
 			break;
@@ -658,6 +664,18 @@ namespace sw
 		{
 			HasComponent = true;
 			Component = src.Component;
+		}
+
+		if (src.DescriptorSet >= 0)
+		{
+			ASSERT(DescriptorSet < 0 || DescriptorSet == src.DescriptorSet);
+			DescriptorSet = src.DescriptorSet;
+		}
+
+		if (src.Binding >= 0)
+		{
+			ASSERT(Binding < 0 || Binding == src.Binding);
+			Binding = src.Binding;
 		}
 
 		Flat |= src.Flat;
