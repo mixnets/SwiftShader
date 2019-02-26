@@ -696,6 +696,9 @@ protected:
   void _push_reg(Variable *Reg) {
     dispatchToConcrete(&Traits::ConcreteTarget::_push_reg, std::move(Reg));
   }
+  void _pop_reg(RegNumT RegNum) {
+    dispatchToConcrete(&Traits::ConcreteTarget::_pop_reg, std::move(RegNum));
+  }
   void _mfence() { Context.insert<typename Traits::Insts::Mfence>(); }
   /// Moves can be used to redefine registers, creating "partial kills" for
   /// liveness.  Mark where moves are used in this way.

@@ -992,6 +992,64 @@ TEST(ReactorUnitTests, MulAdd)
 	delete routine;
 }
 
+TEST(ReactorUnitTests, PreserveRegisters)
+{
+    Routine *routine = nullptr;
+
+    {
+        Function<Void(Pointer<Byte>, Pointer<Byte>)> function;
+        {
+            Pointer<Byte> in = function.Arg<0>();
+            Pointer<Byte> out = function.Arg<1>();
+
+            Float4 a = *Pointer<Float4>(in + 16 * 0);
+            Float4 b = *Pointer<Float4>(in + 16 * 1);
+            Float4 c = *Pointer<Float4>(in + 16 * 2);
+            Float4 d = *Pointer<Float4>(in + 16 * 3);
+            Float4 e = *Pointer<Float4>(in + 16 * 4);
+            Float4 f = *Pointer<Float4>(in + 16 * 5);
+            Float4 g = *Pointer<Float4>(in + 16 * 6);
+            Float4 h = *Pointer<Float4>(in + 16 * 7);
+
+            Float4 ab = a + b;
+            Float4 cd = c + d;
+            Float4 ef = e + f;
+            Float4 gh = g + h;
+
+            Float4 abcd = ab + cd;
+            Float4 efgh = ef + gh;
+
+            Float4 sum = abcd + efgh;
+            *Pointer<Float4>(out) = sum;
+            Return();
+        }
+
+        routine = function("one");
+        assert(routine);
+
+        float input[32] = { 1.0f, 0.0f,  0.0f, 0.0f,
+                           -1.0f, 1.0f, -1.0f, 0.0f,
+                            1.0f, 2.0f, -2.0f, 0.0f,
+                           -1.0f, 3.0f, -3.0f, 0.0f,
+                            1.0f, 4.0f, -4.0f, 0.0f,
+                           -1.0f, 5.0f, -5.0f, 0.0f,
+                            1.0f, 6.0f, -6.0f, 0.0f,
+                           -1.0f, 7.0f, -7.0f, 0.0f };
+
+        float result[4];
+        void (*callable)(float*, float*) = (void(*)(float*,float*))routine->getEntry();
+
+        callable(input, result);
+
+        EXPECT_EQ(result[0], 0.0f);
+        EXPECT_EQ(result[1], 28.0f);
+        EXPECT_EQ(result[2], -28.0f);
+        EXPECT_EQ(result[3], 0.0f);
+    }
+
+    delete routine;
+}
+
 int main(int argc, char **argv)
 {
 	::testing::InitGoogleTest(&argc, argv);

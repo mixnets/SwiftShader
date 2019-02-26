@@ -56,6 +56,7 @@ protected:
   void _link_bp();
   void _unlink_bp();
   void _push_reg(Variable *Reg);
+  void _pop_reg(RegNumT RegNum);
 
   void initRebasePtr();
   void initSandbox();

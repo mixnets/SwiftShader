@@ -1359,7 +1359,7 @@ void TargetX86Base<TraitsType>::addEpilog(CfgNode *Node) {
       continue;
     const auto RegNum = RegNumT::fromInt(i);
     assert(RegNum == Traits::getBaseReg(RegNum));
-    _pop(getPhysicalRegister(RegNum, Traits::WordType));
+    _pop_reg(RegNum);
   }
 
   if (!NeedSandboxing) {
