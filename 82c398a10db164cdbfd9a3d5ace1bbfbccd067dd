@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "4d462975_e111f918",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-26T04:45:10Z",
+      "side": 1,
+      "message": "This only binds one set",
+      "range": {
+        "startLine": 379,
+        "startChar": 24,
+        "endLine": 379,
+        "endChar": 25
+      },
+      "revId": "82c398a10db164cdbfd9a3d5ace1bbfbccd067dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "6f166781_0d45e3e0",
         "filename": "src/Vulkan/VkCommandBuffer.cpp",
         "patchSetId": 1
@@ -13,6 +36,24 @@
       "writtenOn": "2019-02-25T12:08:30Z",
       "side": 1,
       "message": "Would be nice to have some ASSERTs that these don\u0027t spill the static arrays.",
+      "revId": "82c398a10db164cdbfd9a3d5ace1bbfbccd067dd",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bf93fbfe_8276f21d",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-26T04:45:10Z",
+      "side": 1,
+      "message": "seconded",
+      "parentUuid": "6f166781_0d45e3e0",
       "revId": "82c398a10db164cdbfd9a3d5ace1bbfbccd067dd",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
