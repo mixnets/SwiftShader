@@ -84,6 +84,24 @@
     },
     {
       "key": {
+        "uuid": "00845aa6_97d8a4d8",
+        "filename": "CMakeLists.txt",
+        "patchSetId": 5
+      },
+      "lineNbr": 2086,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-26T08:42:29Z",
+      "side": 1,
+      "message": "Whoops I didn\u0027t realize this was a preexisting file.",
+      "parentUuid": "731b964f_4f4d9f32",
+      "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "c811e50e_0d070a36",
         "filename": "src/Vulkan/libVulkan.cpp",
         "patchSetId": 5
@@ -116,6 +134,24 @@
       "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4fb829d9_b3f2f8d0",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 2067,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-26T08:42:29Z",
+      "side": 1,
+      "message": "Thanks for the explanation, sgtm",
+      "parentUuid": "fd6cda1e_dbcd2f3b",
+      "revId": "5c52a65838418f067e507d3f203fa9b1b527b845",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
