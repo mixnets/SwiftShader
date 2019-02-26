@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "37bfe59a_b19892b5",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-26T20:57:36Z",
+      "side": 1,
+      "message": "Can we remove this, then?",
+      "range": {
+        "startLine": 214,
+        "startChar": 40,
+        "endLine": 214,
+        "endChar": 64
+      },
+      "revId": "34ef88ab4a4a4f7a8202c12937d28a473e50bc55",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
