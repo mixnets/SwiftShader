@@ -209,9 +209,11 @@ namespace sw
 
 		struct Decorations
 		{
-			int32_t Location;
-			int32_t Component;
-			spv::BuiltIn BuiltIn;
+			int32_t Location = -1;
+			int32_t Component = -1;
+			int32_t DescriptorSet = -1;
+			int32_t Binding = -1;
+			spv::BuiltIn BuiltIn = (spv::BuiltIn)-1;
 			bool HasLocation : 1;
 			bool HasComponent : 1;
 			bool HasBuiltIn : 1;
@@ -222,9 +224,9 @@ namespace sw
 			bool BufferBlock : 1;
 
 			Decorations()
-					: Location{-1}, Component{0}, BuiltIn{}, HasLocation{false}, HasComponent{false}, HasBuiltIn{false},
-					  Flat{false},
-					  Centroid{false}, NoPerspective{false}, Block{false},
+					: Location{-1}, Component{0}, DescriptorSet{-1}, Binding{-1},
+					  BuiltIn{}, HasLocation{false}, HasComponent{false}, HasBuiltIn{false},
+					  Flat{false}, Centroid{false}, NoPerspective{false}, Block{false},
 					  BufferBlock{false}
 			{
 			}
