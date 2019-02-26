@@ -48,6 +48,7 @@
 #include <algorithm>
 #include <cstring>
 #include <string>
+#include <WSI/VkSwapchainKHR.hpp>
 
 extern "C"
 {
@@ -2137,6 +2138,22 @@ VKAPI_ATTR VkResult VKAPI_CALL vkGetPhysicalDeviceSurfacePresentModesKHR(VkPhysi
 	}
 
 	return vk::Cast(surface)->getPresentModes(pPresentModeCount, pPresentModes);
+}
+
+VKAPI_ATTR VkResult VKAPI_CALL vkCreateSwapchainKHR(VkDevice device, const VkSwapchainCreateInfoKHR* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkSwapchainKHR* pSwapchain)
+{
+	TRACE("(VkDevice device = 0x%X, const VkSwapchainCreateInfoKHR* pCreateInfo = 0x%X, const VkAllocationCallbacks* pAllocator = 0x%X, VkSwapchainKHR* pSwapchain = 0x%X)",
+			device, pCreateInfo, pAllocator, pSwapchain);
+
+	return vk::SwapchainKHR::Create(pAllocator, pCreateInfo, pSwapchain);
+}
+
+VKAPI_ATTR void VKAPI_CALL vkDestroySwapchainKHR(VkDevice device, VkSwapchainKHR swapchain, const VkAllocationCallbacks* pAllocator)
+{
+	TRACE("(VkDevice device, VkSwapchainKHR swapchain, const VkAllocationCallbacks* pAllocator)",
+			device, swapchain, pAllocator);
+
+	vk::destroy(swapchain, pAllocator);
 }
 
 }
