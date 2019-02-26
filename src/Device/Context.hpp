@@ -28,6 +28,7 @@ namespace vk
 
 namespace sw
 {
+	class DescriptorSetsLayout;
 	class Sampler;
 	class PixelShader;
 	class VertexShader;
@@ -205,6 +206,8 @@ namespace sw
 		unsigned int depthBufferLayer;
 		vk::ImageView *stencilBuffer;
 		unsigned int stencilBufferLayer;
+
+		DescriptorSetsLayout const *layout;
 
 		// Shaders
 		const SpirvShader *pixelShader;
