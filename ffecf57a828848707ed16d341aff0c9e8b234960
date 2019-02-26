@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a43cd4d8_f846a4ed",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-26T17:45:54Z",
+      "side": 1,
+      "message": "Maybe, maybe not. They don\u0027t propagate through the codebase like the other identifiers, and so there is little room for confusion / mistakes here. Adding an ID for each requires adding a dummy T type, which might be a little heavy-handed right now.\nFinally, it\u0027s called SpirvID\u003c\u003e now, and these aren\u0027t the right data type anymore. If it were ID\u003c\u003e with a template parameter for backing type, then I\u0027d probably be more keen :)\n\nI\u0027ll keep an eye on these, if I find them being copied around the place as int32_t\u0027s, I\u0027ll reconsider changing them.",
+      "parentUuid": "0eca3de8_b04a2a81",
+      "range": {
+        "startLine": 212,
+        "startChar": 3,
+        "endLine": 215,
+        "endChar": 19
+      },
+      "revId": "ffecf57a828848707ed16d341aff0c9e8b234960",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "187593b6_1db35ed8",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2019-02-26T17:22:18Z",
       "side": 1,
       "message": "Can be initialized inline.",
+      "range": {
+        "startLine": 227,
+        "startChar": 7,
+        "endLine": 227,
+        "endChar": 66
+      },
+      "revId": "ffecf57a828848707ed16d341aff0c9e8b234960",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "477f1f39_8add8bc0",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-26T17:45:54Z",
+      "side": 1,
+      "message": "I don\u0027t think Chris did this due to the bit-field specifiers on the bools. If you try to inline initialize these, you\u0027ll either get an error or a warning like:\n\n  warning: default member initializers for bit-fields only available with -std\u003dc++2a or -std\u003dgnu++2a\n\nIMO it is nicer to have all initialized inline or in a constructor, not mixed.",
+      "parentUuid": "187593b6_1db35ed8",
       "range": {
         "startLine": 227,
         "startChar": 7,
