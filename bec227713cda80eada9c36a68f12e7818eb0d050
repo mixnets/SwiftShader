@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22090ced_dd3f0079",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-26T17:26:38Z",
+      "side": 1,
+      "message": "I was thinking of calling these FloatN and IntN instead. That way it\u0027s still somewhat explicit that these are vectors of N elements. L for lane could be confused to mean a single-lane element (i.e. scalar Float and Int).",
+      "range": {
+        "startLine": 40,
+        "startChar": 2,
+        "endLine": 41,
+        "endChar": 37
+      },
+      "revId": "bec227713cda80eada9c36a68f12e7818eb0d050",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
