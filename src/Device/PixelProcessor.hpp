@@ -20,6 +20,7 @@
 
 namespace sw
 {
+	class DescriptorSetsLayout;
 	class PixelShader;
 	class Rasterizer;
 	struct Texture;
@@ -80,6 +81,8 @@ namespace sw
 			VkLogicOp logicalOperation;
 
 			Sampler::State sampler[TEXTURE_IMAGE_UNITS];
+
+			DescriptorSetsLayout const *layout;
 		};
 
 		struct State : States
