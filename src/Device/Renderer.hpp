@@ -254,7 +254,6 @@ namespace sw
 		void blit3D(Surface *source, Surface *dest);
 
 		void setContext(const sw::Context& context);
-		void setIndexBuffer(Resource *indexBuffer);
 
 		void setMultiSampleMask(unsigned int mask);
 		void setTransparencyAntialiasing(TransparencyAntialiasing transparencyAntialiasing);
@@ -423,8 +422,6 @@ namespace sw
 		int (Renderer::*setupPrimitives)(int batch, int count);
 		SetupProcessor::State setupState;
 
-		Resource *vertexStream[MAX_VERTEX_INPUTS];
-		Resource *indexBuffer;
 		Surface *renderTarget[RENDERTARGETS];
 		Surface *depthBuffer;
 		Surface *stencilBuffer;
