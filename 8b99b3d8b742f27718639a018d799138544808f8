@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0c4916e_3f7f2cb0",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-26T20:19:22Z",
+      "side": 1,
+      "message": "A comment here explaining why we don\u0027t want to use the \"sprite\" mode would be nice.",
+      "range": {
+        "startLine": 463,
+        "startChar": 7,
+        "endLine": 463,
+        "endChar": 12
+      },
+      "revId": "8b99b3d8b742f27718639a018d799138544808f8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
