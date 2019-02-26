@@ -22,6 +22,8 @@
 
 namespace sw
 {
+	class DescriptorSetsLayout;
+
 	class VertexRoutinePrototype : public Function<Void(Pointer<Byte>, Pointer<Byte>, Pointer<Byte>, Pointer<Byte>)>
 	{
 	public:
