@@ -243,7 +243,7 @@ namespace sw
 				break;
 
 			default:
-				printf("Warning: ignored opcode %u\n", insn.opcode());
+				printf("Warning: ignored opcode %s\n", OpcodeName(insn.opcode()).c_str());
 				break;    // This is OK, these passes are intentionally partial
 			}
 		}
@@ -595,7 +595,7 @@ namespace sw
 			}
 
 			default:
-				UNIMPLEMENTED("Unexpected type in WalkAccessChain");
+				UNIMPLEMENTED("Unexpected type '%s' in WalkAccessChain", OpcodeName(type.definition.opcode()).c_str());
 			}
 		}
 
@@ -955,7 +955,7 @@ namespace sw
 				break;
 			}
 			default:
-				printf("emit: ignoring opcode %d\n", insn.opcode());
+				printf("emit: ignoring opcode %s\n", OpcodeName(insn.opcode()).c_str());
 				break;
 			}
 		}
