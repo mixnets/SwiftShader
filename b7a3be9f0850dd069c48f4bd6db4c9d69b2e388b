@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ec46f8fa_71e26085",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-26T19:51:13Z",
+      "side": 1,
+      "message": "The gotcha I see is that you assume that if there\u0027s an attachment, it\u0027s attachment 0. That seems a fine thing to deal with in a follow-up thought.",
+      "revId": "b7a3be9f0850dd069c48f4bd6db4c9d69b2e388b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "94927224_249d49bd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-26T19:51:13Z",
+      "side": 1,
+      "message": "This is fine, VkFramebufferCreateInfo VU requires:\n\n`Each element of pAttachments must only specify a single mip level`",
+      "revId": "b7a3be9f0850dd069c48f4bd6db4c9d69b2e388b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "51859675_4b929807",
+        "filename": "src/Vulkan/VkImageView.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-26T19:51:13Z",
+      "side": 1,
+      "message": "This is weird. The image always has exactly one bit set, just return that.",
+      "revId": "b7a3be9f0850dd069c48f4bd6db4c9d69b2e388b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
