@@ -16,6 +16,9 @@
 #define SWIFTSHADER_VKSWAPCHAINKHR_HPP
 
 #include "VkObject.hpp"
+#include "VkImage.hpp"
+
+#include <vector>
 
 namespace vk
 {
@@ -29,8 +32,14 @@ public:
 
 	static size_t ComputeRequiredAllocationSize(const VkSwapchainCreateInfoKHR* pCreateInfo);
 
+	uint32_t getImageCount() const;
+	VkResult getImages(uint32_t* pSwapchainImageCount, VkImage* pSwapchainImages) const;
+
 private:
 	VkSwapchainCreateInfoKHR createInfo;
+	VkImage images[2];
+	uint32_t imageCount;
+	uint32_t currentImage;
 };
 
 static inline SwapchainKHR* Cast(VkSwapchainKHR object)
