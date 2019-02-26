@@ -22,6 +22,30 @@
       "revId": "bec227713cda80eada9c36a68f12e7818eb0d050",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f99178e7_9935358f",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-26T17:35:31Z",
+      "side": 1,
+      "message": "On the other hand, FloatN and IntN have nothing in their name to suggest it has anything to do with the number of lanes ;-)\nI\u0027ve worked on many codebases where FloatN is a vector template class that takes an int template parameter for N. If we had that, then: `using FloatL \u003d FloatN\u003cNumLanes\u003e`\n\nWill change if you feel strongly.",
+      "parentUuid": "22090ced_dd3f0079",
+      "range": {
+        "startLine": 40,
+        "startChar": 2,
+        "endLine": 41,
+        "endChar": 37
+      },
+      "revId": "bec227713cda80eada9c36a68f12e7818eb0d050",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
