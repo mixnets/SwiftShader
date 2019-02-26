@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "544c587c_c7ce3e8e",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-26T05:14:51Z",
+      "side": 1,
+      "message": "Fair enough if the point tests are very isolated and they all pass. If there are other tests that use points which don\u0027t pass yet then I\u0027d rather play it safe.",
+      "parentUuid": "d184cc47_6445051b",
+      "range": {
+        "startLine": 47,
+        "startChar": 2,
+        "endLine": 47,
+        "endChar": 7
+      },
+      "revId": "fbad35345a19235993ab0f28725db831e9c720f7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e16cf5a6_6cb7f012",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 1
