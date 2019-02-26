@@ -317,6 +317,22 @@ namespace sw
 
 		Int4 WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
 
+		// EmitVariable emits the code for a OpVariable instruction.
+		// Called from the emit() pass.
+		void EmitVariable(InsnIterator insn, SpirvRoutine *routine) const;
+
+		// EmitLoad emits the code for a OpLoad instruction.
+		// Called from the emit() pass.
+		void EmitLoad(InsnIterator insn, SpirvRoutine *routine) const;
+
+		// EmitStore emits the code for a OpStore instruction.
+		// Called from the emit() pass.
+		void EmitStore(InsnIterator insn, SpirvRoutine *routine) const;
+
+		// EmitAccessChain emits the code for a OpAccessChain instruction.
+		// Called from the emit() pass.
+		void EmitAccessChain(InsnIterator insn, SpirvRoutine *routine) const;
+
 		// OpcodeName returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName will only return the numerical code.
 		static std::string OpcodeName(spv::Op op);
