@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "VkPipeline.hpp"
+#include "VkPipelineLayout.hpp"
 #include "VkShaderModule.hpp"
 #include "Pipeline/SpirvShader.hpp"
 
@@ -190,7 +191,10 @@ uint32_t getNumberOfChannels(VkFormat format)
 namespace vk
 {
 
+Pipeline::Pipeline(PipelineLayout const *layout) : layout(layout) {}
+
 GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem)
+	: Pipeline(Cast(pCreateInfo->layout))
 {
 	if((pCreateInfo->flags != 0) ||
 	   (pCreateInfo->stageCount != 2) ||
@@ -489,6 +493,7 @@ const sw::Color<float>& GraphicsPipeline::getBlendConstants() const
 }
 
 ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem)
+	: Pipeline(Cast(pCreateInfo->layout))
 {
 }
 
