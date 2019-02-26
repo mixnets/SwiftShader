@@ -107,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "00bb9d46_4480da8b",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-26T17:53:11Z",
+      "side": 1,
+      "message": "Ah, yes, carry on!\n\n(If there are any SPIR-V ID\u0027s that a aren\u0027t SpirvID\u003c\u003e at the moment then we should probably change them)",
+      "parentUuid": "6035ed9a_ea14b10b",
+      "range": {
+        "startLine": 212,
+        "startChar": 3,
+        "endLine": 215,
+        "endChar": 19
+      },
+      "revId": "ffecf57a828848707ed16d341aff0c9e8b234960",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "187593b6_1db35ed8",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 3
