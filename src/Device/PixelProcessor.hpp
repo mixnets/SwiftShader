@@ -18,6 +18,11 @@
 #include "Context.hpp"
 #include "RoutineCache.hpp"
 
+namespace vk
+{
+	class PipelineLayout;
+} // namespace vk
+
 namespace sw
 {
 	class PixelShader;
