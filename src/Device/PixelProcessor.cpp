@@ -555,6 +555,8 @@ namespace sw
 	{
 		State state;
 
+		state.layout = context->layout;
+
 		if(context->pixelShader)
 		{
 			state.shaderID = context->pixelShader->getSerialID();
