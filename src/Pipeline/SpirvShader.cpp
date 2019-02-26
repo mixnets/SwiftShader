@@ -14,6 +14,7 @@
 
 #include <spirv/unified1/spirv.hpp>
 #include "SpirvShader.hpp"
+#include "DescriptorSetsLayout.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Device/Config.hpp"
@@ -1153,4 +1154,12 @@ namespace sw
 			}
 		}
 	}
+
+	SpirvRoutine::SpirvRoutine(DescriptorSetsLayout const *layout) :
+		descriptorSetsLayout(layout),
+		numDescriptorSets(layout->getNumDescriptorSets()),
+		descriptorSets(numDescriptorSets) // numDescriptorSets must be initialized first!
+	{
+	}
+
 }
