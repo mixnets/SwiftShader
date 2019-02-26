@@ -44,4 +44,14 @@ size_t PipelineLayout::ComputeRequiredAllocationSize(const VkPipelineLayoutCreat
 	       (pCreateInfo->pushConstantRangeCount * sizeof(VkPushConstantRange));
 }
 
+size_t PipelineLayout::getNumDescriptorSets() const
+{
+	return 0; // TODO(bclayton): Waiting on https://swiftshader-review.googlesource.com/c/SwiftShader/+/24910
+}
+
+size_t PipelineLayout::getBindingOffset(size_t descriptorSet, size_t binding) const
+{
+	return 0; // TODO(bclayton): Waiting on https://swiftshader-review.googlesource.com/c/SwiftShader/+/24910
+}
+
 } // namespace vk

@@ -31,6 +31,9 @@
 
 namespace sw
 {
+	class DescriptorSetsLayout;
+	class SpirvRoutine;
+
 	// SIMD contains types that represent multiple scalars packed into a single
 	// vector data type. Types in the SIMD namespace provide a semantic hint
 	// that the data should be treated as a per-execution-lane scalar instead of
@@ -43,8 +46,6 @@ namespace sw
 		using Float = rr::Float4;
 		using Int = rr::Int4;
 	}
-
-	class SpirvRoutine;
 
 	class SpirvShader
 	{
@@ -393,7 +394,11 @@ namespace sw
 	class SpirvRoutine
 	{
 	public:
+		SpirvRoutine(DescriptorSetsLayout const *layout);
+
 		using Value = Array<SIMD::Float>;
+
+		DescriptorSetsLayout const * const descriptorSetsLayout;
 
 		std::unordered_map<SpirvShader::ObjectID, Value> lvalues;
 
@@ -401,6 +406,9 @@ namespace sw
 
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
+
+		const size_t numDescriptorSets;
+		Array< Pointer<Byte> > descriptorSets;
 
 		void createLvalue(SpirvShader::ObjectID id, uint32_t size)
 		{

@@ -25,7 +25,8 @@
 namespace sw
 {
 	VertexRoutine::VertexRoutine(const VertexProcessor::State &state, SpirvShader const *spirvShader)
-		: state(state),
+		: routine(state.layout),
+		  state(state),
 		  spirvShader(spirvShader)
 	{
 	  	spirvShader->emitProlog(&routine);
