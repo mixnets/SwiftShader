@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "128fceb4_80c48bf0",
+        "filename": "src/Vulkan/VkPhysicalDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-26T05:22:55Z",
+      "side": 1,
+      "message": "There are more tests that don\u0027t pass yet. The tests that I was intentionally fixing use size-1 points.\n\nI will disable this for now, and set the limit appropriately, but intend to enable it toward the end of the project.",
+      "parentUuid": "544c587c_c7ce3e8e",
+      "range": {
+        "startLine": 47,
+        "startChar": 2,
+        "endLine": 47,
+        "endChar": 7
+      },
+      "revId": "fbad35345a19235993ab0f28725db831e9c720f7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e16cf5a6_6cb7f012",
         "filename": "src/Vulkan/VkPhysicalDevice.cpp",
         "patchSetId": 1
