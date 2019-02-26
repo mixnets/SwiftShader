@@ -281,6 +281,7 @@ namespace sw
 	{
 		State state;
 
+		state.layout = context->layout;
 		state.shaderID = context->vertexShader->getSerialID();
 
 		// Note: Quads aren't handled for verticesPerPrimitive, but verticesPerPrimitive is used for transform feedback,
