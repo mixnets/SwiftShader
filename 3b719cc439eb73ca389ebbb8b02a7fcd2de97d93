@@ -22,6 +22,30 @@
       "revId": "3b719cc439eb73ca389ebbb8b02a7fcd2de97d93",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70a3e4c7_75ee2791",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 540,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-26T20:19:58Z",
+      "side": 1,
+      "message": "OK, I will adjust the commit message to match :)",
+      "parentUuid": "31778f53_3c17119e",
+      "range": {
+        "startLine": 539,
+        "startChar": 2,
+        "endLine": 540,
+        "endChar": 46
+      },
+      "revId": "3b719cc439eb73ca389ebbb8b02a7fcd2de97d93",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
