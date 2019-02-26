@@ -31,55 +31,15 @@
 
 namespace sw
 {
-	// Incrementally constructed complex bundle of rvalues
-	// Effectively a restricted vector, supporting only:
-	// - allocation to a (runtime-known) fixed size
-	// - in-place construction of elements
-	// - const operator[]
-	class Intermediate
-	{
-	public:
-		using Scalar = RValue<Float4>;
-
-		Intermediate(uint32_t size) : contents(new ContentsType[size]), size(size) {}
-
-		~Intermediate()
-		{
-			for (auto i = 0u; i < size; i++)
-				reinterpret_cast<Scalar *>(&contents[i])->~Scalar();
-			delete [] contents;
-		}
-
-		void emplace(uint32_t n, Scalar&& value)
-		{
-			assert(n < size);
-			new (&contents[n]) Scalar(value);
-		}
-
-		Scalar const & operator[](uint32_t n) const
-		{
-			assert(n < size);
-			return *reinterpret_cast<Scalar const *>(&contents[n]);
-		}
-
-		// No copy/move construction or assignment
-		Intermediate(Intermediate const &) = delete;
-		Intermediate(Intermediate &&) = delete;
-		Intermediate & operator=(Intermediate const &) = delete;
-		Intermediate & operator=(Intermediate &&) = delete;
-
-	private:
-		using ContentsType = std::aligned_storage<sizeof(Scalar), alignof(Scalar)>::type;
-
-		ContentsType *contents;
-		uint32_t size;
-	};
-
 	class SpirvRoutine;
 
 	class SpirvShader
 	{
 	public:
+		static constexpr int NumLanes = 4; // Number of lanes.
+		using FloatL = Float4; // Float per lane.
+		using IntL = Int4; // Int per lane.
+
 		using InsnStore = std::vector<uint32_t>;
 		InsnStore insns;
 
@@ -351,10 +311,61 @@ namespace sw
 		Int4 WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
 	};
 
+	// Incrementally constructed complex bundle of rvalues
+	// Effectively a restricted vector, supporting only:
+	// - allocation to a (runtime-known) fixed size
+	// - in-place construction of elements
+	// - const operator[]
+	class Intermediate
+	{
+	public:
+		using Scalar = RValue<SpirvShader::FloatL>;
+
+		Intermediate(uint32_t size) : contents(new ContentsType[size]), size(size) {}
+
+		~Intermediate()
+		{
+			for (auto i = 0u; i < size; i++)
+				reinterpret_cast<Scalar *>(&contents[i])->~Scalar();
+			delete [] contents;
+		}
+
+		void emplace(uint32_t n, Scalar&& value)
+		{
+			assert(n < size);
+			new (&contents[n]) Scalar(value);
+		}
+
+		void emplace(uint32_t n, const Scalar& value)
+		{
+			assert(n < size);
+			new (&contents[n]) Scalar(value);
+		}
+
+		Scalar const & operator[](uint32_t n) const
+		{
+			assert(n < size);
+			return *reinterpret_cast<Scalar const *>(&contents[n]);
+		}
+
+		// No copy/move construction or assignment
+		Intermediate(Intermediate const &) = delete;
+		Intermediate(Intermediate &&) = delete;
+		Intermediate & operator=(Intermediate const &) = delete;
+		Intermediate & operator=(Intermediate &&) = delete;
+
+	private:
+		using ContentsType = std::aligned_storage<sizeof(Scalar), alignof(Scalar)>::type;
+
+		ContentsType *contents;
+		uint32_t size;
+	};
+
 	class SpirvRoutine
 	{
 	public:
-		using Value = Array<Float4>;
+		using Value = Array<SpirvShader::FloatL>;
+
 		std::unordered_map<SpirvShader::ObjectID, Value> lvalues;
 
 		std::unordered_map<SpirvShader::ObjectID, Intermediate> intermediates;
