@@ -70,6 +70,30 @@
       "revId": "7b554c659f16cc81bba7f822146e00bc0490aad5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a5a2ea05_137b2ee8",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-26T20:52:57Z",
+      "side": 0,
+      "message": "Shouldn\u0027t need to do anything differently.",
+      "parentUuid": "3d3e9894_a18e9eb2",
+      "range": {
+        "startLine": 53,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 2
+      },
+      "revId": "7b554c659f16cc81bba7f822146e00bc0490aad5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
