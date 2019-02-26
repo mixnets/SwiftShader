@@ -193,7 +193,7 @@ namespace sw
 
 		Resource *texture[TOTAL_IMAGE_UNITS];
 		Stream input[MAX_VERTEX_INPUTS];
-		Resource *indexBuffer;
+		void *indexBuffer;
 
 		Surface *renderTarget[RENDERTARGETS];
 		unsigned int renderTargetLayer[RENDERTARGETS];

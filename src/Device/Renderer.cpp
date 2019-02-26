@@ -314,22 +314,14 @@ namespace sw
 
 		for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
 		{
-			draw->vertexStream[i] = context->input[i].resource;
 			data->input[i] = context->input[i].buffer;
 			data->stride[i] = context->input[i].stride;
-
-			if(draw->vertexStream[i])
-			{
-				draw->vertexStream[i]->lock(PUBLIC, PRIVATE);
-			}
 		}
 
 		if(context->indexBuffer)
 		{
-			data->indices = (unsigned char*)context->indexBuffer->lock(PUBLIC, PRIVATE) + indexOffset;
+			data->indices = context->indexBuffer;
 		}
-
-		draw->indexBuffer = context->indexBuffer;
 
 		for(int sampler = 0; sampler < TOTAL_IMAGE_UNITS; sampler++)
 		{
@@ -861,19 +853,6 @@ namespace sw
 					{
 						draw.texture[i]->unlock();
 					}
-				}
-
-				for(int i = 0; i < MAX_VERTEX_INPUTS; i++)
-				{
-					if(draw.vertexStream[i])
-					{
-						draw.vertexStream[i]->unlock();
-					}
-				}
-
-				if(draw.indexBuffer)
-				{
-					draw.indexBuffer->unlock();
 				}
 
 				draw.vertexRoutine->unbind();
@@ -1607,11 +1586,6 @@ namespace sw
 			deallocate(primitiveBatch[i]);
 			primitiveBatch[i] = 0;
 		}
-	}
-
-	void Renderer::setIndexBuffer(Resource *indexBuffer)
-	{
-		context->indexBuffer = indexBuffer;
 	}
 
 	void Renderer::setMultiSampleMask(unsigned int mask)
