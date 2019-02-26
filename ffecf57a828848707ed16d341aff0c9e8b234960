@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "6f89e15a_e87ac4f9",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 669,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-26T17:49:27Z",
+      "side": 1,
+      "message": "The other decorations which carry a value use a HasXxx bit rather than magic -1 values. I\u0027m not particularly attached to either approach, but we should be consistent?",
+      "revId": "ffecf57a828848707ed16d341aff0c9e8b234960",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53c6019f_9b46a236",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 671,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-26T17:49:27Z",
+      "side": 1,
+      "message": "You don\u0027t want these asserts. Last wins, which is what your code does.",
+      "revId": "ffecf57a828848707ed16d341aff0c9e8b234960",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "0eca3de8_b04a2a81",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 3
@@ -36,6 +70,30 @@
       "writtenOn": "2019-02-26T17:45:54Z",
       "side": 1,
       "message": "Maybe, maybe not. They don\u0027t propagate through the codebase like the other identifiers, and so there is little room for confusion / mistakes here. Adding an ID for each requires adding a dummy T type, which might be a little heavy-handed right now.\nFinally, it\u0027s called SpirvID\u003c\u003e now, and these aren\u0027t the right data type anymore. If it were ID\u003c\u003e with a template parameter for backing type, then I\u0027d probably be more keen :)\n\nI\u0027ll keep an eye on these, if I find them being copied around the place as int32_t\u0027s, I\u0027ll reconsider changing them.",
+      "parentUuid": "0eca3de8_b04a2a81",
+      "range": {
+        "startLine": 212,
+        "startChar": 3,
+        "endLine": 215,
+        "endChar": 19
+      },
+      "revId": "ffecf57a828848707ed16d341aff0c9e8b234960",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6035ed9a_ea14b10b",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-26T17:49:27Z",
+      "side": 1,
+      "message": "They are literal integers, not spirv ids.",
       "parentUuid": "0eca3de8_b04a2a81",
       "range": {
         "startLine": 212,
