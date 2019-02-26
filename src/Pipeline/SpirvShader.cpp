@@ -16,6 +16,7 @@
 #include "SpirvShader.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkDebug.hpp"
+#include "Vulkan/VkPipelineLayout.hpp"
 #include "Device/Config.hpp"
 
 namespace sw
@@ -1362,4 +1363,10 @@ namespace sw
 			}
 		}
 	}
+
+	SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout) :
+		pipelineLayout(pipelineLayout)
+	{
+	}
+
 }
