@@ -18,6 +18,11 @@
 #include "Context.hpp"
 #include "RoutineCache.hpp"
 
+namespace vk
+{
+	class PipelineLayout;
+} // namespace vk
+
 namespace sw
 {
 	class PixelShader;
@@ -78,6 +83,8 @@ namespace sw
 			bool frontFaceCCW;
 
 			Sampler::State sampler[TEXTURE_IMAGE_UNITS];
+
+			vk::PipelineLayout const *pipelineLayout;
 		};
 
 		struct State : States

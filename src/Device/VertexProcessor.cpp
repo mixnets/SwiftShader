@@ -101,6 +101,7 @@ namespace sw
 	{
 		State state;
 
+		state.pipelineLayout = context->pipelineLayout;
 		state.shaderID = context->vertexShader->getSerialID();
 
 		// Note: Quads aren't handled for verticesPerPrimitive, but verticesPerPrimitive is used for transform feedback,
