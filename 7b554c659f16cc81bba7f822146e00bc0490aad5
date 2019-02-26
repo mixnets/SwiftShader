@@ -46,6 +46,30 @@
       "revId": "7b554c659f16cc81bba7f822146e00bc0490aad5",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d3e9894_a18e9eb2",
+        "filename": "src/Vulkan/VkDevice.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-26T17:42:30Z",
+      "side": 0,
+      "message": "Sorry, I think it\u0027s fine. My question stemmed from Vulkan extensions requiring to be enabled before there can be any behavioral change. This is in contrast with OpenGL where extensions are always enabled and merely queryable. But when Vulkan extensions only enable new functionality and don\u0027t change any core behavior, then it would have been UB to try to use it without enabling them, so actually implementing the extension\u0027s behavior is also valid UB. 8-)\n\nHence the ICD only needs to track whether extensions are enabled if they change core behavior. I don\u0027t think this one does? I\u0027ll let others double-check.",
+      "parentUuid": "edc7369a_3c98eede",
+      "range": {
+        "startLine": 53,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 2
+      },
+      "revId": "7b554c659f16cc81bba7f822146e00bc0490aad5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
