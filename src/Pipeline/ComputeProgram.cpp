@@ -1,4 +1,4 @@
-// Copyright 2016 The SwiftShader Authors. All Rights Reserved.
+// Copyright 2019 The SwiftShader Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@
 
 namespace sw
 {
-	ComputeProgram::ComputeProgram(SpirvShader const *spirvShader, VkPipelineLayout pipelineLayout)
-		: data(Arg<0>())
-		, shader(spirvShader)
-		, pipelineLayout(pipelineLayout)
-
+	ComputeProgram::ComputeProgram(SpirvShader const *shader, DescriptorSetsLayout const *layout)
+		: data(Arg<0>()),
+		  routine(layout),
+		  shader(shader),
+		  layout(layout)
 	{
 	}
 
@@ -39,11 +39,10 @@ namespace sw
 
 	void ComputeProgram::emit()
 	{
-		static_assert(sizeof(VkDescriptorSet) == sizeof(void*));
-		Pointer<Pointer<Byte>> setsArray = data + OFFSET(Data, descriptorSets[0]);
-		For(Int i = 0, i < vk::MAX_BOUND_DESCRIPTOR_SETS, i++)
+		Pointer<Pointer<Byte>> descriptorSetsIn = *Pointer<Pointer<Pointer<Byte>>>(data + OFFSET(Data, descriptorSets));
+		for(unsigned int i = 0; i < routine.numDescriptorSets; i++)
 		{
-			routine.descriptorSets[i] = setsArray[i];
+			routine.descriptorSets[i] = descriptorSetsIn[i];
 		}
 
 		auto &modes = shader->getModes();
@@ -112,8 +111,7 @@ namespace sw
 						Int4(Extract(workgroupSize, component)) +
 						localInvocationID[component];
 					value[builtin.FirstComponent + component] = As<Float4>(globalInvocationID);
-
-					RR_WATCH(component, globalInvocationID);
+					// RR_WATCH(component, globalInvocationID);
 				}
 			});
 
@@ -121,7 +119,7 @@ namespace sw
 			// Int4 enabledLanes = invocationIDs < Int4(numInvocations);
 
 			// Process numLanes of the workgroup.
-			shader->emit(&routine, vk::Cast(pipelineLayout));
+			shader->emit(&routine);
 		}
 	}
 
@@ -137,18 +135,16 @@ namespace sw
 	}
 
 	void ComputeProgram::run(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
-		uint32_t descriptorSetCount, VkDescriptorSet* descriptorSets)
+		uint32_t numDescriptorSets, DescriptorSet* descriptorSets)
 	{
+		ASSERT(numDescriptorSets >= routine.numDescriptorSets);
+
 		typedef void (FUNC)(void*);
 		auto routine = (*this)("ComputeRoutine");
 		auto runWorkgroup = reinterpret_cast<FUNC*>(routine->getEntry());
 
 		Data data;
-		for (uint32_t i = 0U; i < descriptorSetCount; i++)
-		{
-			data.descriptorSets[i] = (i < vk::MAX_BOUND_DESCRIPTOR_SETS) ? descriptorSets[i] : nullptr;
-		}
-
+		data.descriptorSets = descriptorSets;
 		data.numWorkgroups[0] = groupCountX;
 		data.numWorkgroups[1] = groupCountY;
 		data.numWorkgroups[2] = groupCountZ;

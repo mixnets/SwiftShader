@@ -20,6 +20,7 @@
 
 namespace sw
 {
+	class DescriptorSetsLayout;
 	class PixelShader;
 	class Rasterizer;
 	struct Texture;
@@ -99,6 +100,8 @@ namespace sw
 			}
 
 			unsigned int hash;
+
+			DescriptorSetsLayout const *layout;
 		};
 
 		struct Stencil

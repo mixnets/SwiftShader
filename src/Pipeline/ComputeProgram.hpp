@@ -15,6 +15,7 @@
 #ifndef sw_ComputeProgram_hpp
 #define sw_ComputeProgram_hpp
 
+#include "DescriptorSet.hpp"
 #include "SpirvShader.hpp"
 
 #include "Reactor/Reactor.hpp"
@@ -25,17 +26,19 @@ namespace sw
 {
 	using namespace rr;
 
+	class DescriptorSetsLayout;
+
 	class ComputeProgram : public Function<Void(Pointer<Byte>)>
 	{
 	public:
-		ComputeProgram(SpirvShader const *spirvShader, VkPipelineLayout pipelineLayout);
+		ComputeProgram(SpirvShader const *spirvShader, DescriptorSetsLayout const *layout);
 
 		virtual ~ComputeProgram();
 
 	    void generate();
 
 		void run(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ,
-			uint32_t descriptorSetCount, VkDescriptorSet* descriptorSets);
+			uint32_t numDescriptorSets, DescriptorSet* descriptorSets);
 
 	protected:
 		void emit();
@@ -46,14 +49,14 @@ namespace sw
 
 		struct Data
 		{
-			VkDescriptorSet descriptorSets[vk::MAX_BOUND_DESCRIPTOR_SETS];
+			DescriptorSet* descriptorSets;
 			uint4 numWorkgroups;
 			uint4 workgroupID;
 		};
 
 		SpirvRoutine routine;
 		SpirvShader const * const shader;
-		VkPipelineLayout const pipelineLayout;
+		DescriptorSetsLayout const * const layout;
 	};
 }
 

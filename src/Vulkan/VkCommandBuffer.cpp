@@ -19,6 +19,7 @@
 #include "VkImage.hpp"
 #include "VkImageView.hpp"
 #include "VkPipeline.hpp"
+#include "VkPipelineLayout.hpp"
 #include "VkRenderPass.hpp"
 #include "Device/Renderer.hpp"
 
@@ -224,6 +225,7 @@ struct Draw : public CommandBuffer::Command
 			executionState.pipelines[VK_PIPELINE_BIND_POINT_GRAPHICS]);
 
 		sw::Context context = pipeline->getContext();
+		context.layout = pipeline->getLayout();
 		for(uint32_t i = 0; i < MAX_VERTEX_INPUT_BINDINGS; i++)
 		{
 			const auto& vertexInput = executionState.vertexInputBindings[i];

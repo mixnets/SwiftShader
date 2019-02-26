@@ -17,8 +17,6 @@
 
 #include "System/Types.hpp"
 #include "Vulkan/VkDebug.hpp"
-#include "Vulkan/VkDescriptorSetLayout.hpp"
-#include "Vulkan/VkPipelineLayout.hpp"
 #include "ShaderCore.hpp"
 #include "SpirvID.hpp"
 
@@ -33,6 +31,7 @@
 
 namespace sw
 {
+	class DescriptorSetsLayout;
 	class SpirvRoutine;
 
 	class SpirvShader
@@ -268,7 +267,7 @@ namespace sw
 		std::vector<InterfaceComponent> outputs;
 
 		void emitProlog(SpirvRoutine *routine) const;
-		void emit(SpirvRoutine *routine, vk::PipelineLayout* pipelineLayout) const;
+		void emit(SpirvRoutine *routine) const;
 		void emitEpilog(SpirvRoutine *routine) const;
 
 		using BuiltInHash = std::hash<std::underlying_type<spv::BuiltIn>::type>;
@@ -321,7 +320,7 @@ namespace sw
 
 		// EmitVariable emits the code for a OpVariable instruction.
 		// Called from the emit() pass.
-		void EmitVariable(InsnIterator insn, SpirvRoutine *routine, vk::PipelineLayout* pipelineLayout) const;
+		void EmitVariable(InsnIterator insn, SpirvRoutine *routine) const;
 
 		// EmitLoad emits the code for a OpLoad instruction.
 		// Called from the emit() pass.
@@ -393,7 +392,11 @@ namespace sw
 	class SpirvRoutine
 	{
 	public:
+		SpirvRoutine(DescriptorSetsLayout const *layout);
+
 		using Value = Array<SpirvShader::FloatL>;
+
+		DescriptorSetsLayout const * const descriptorSetsLayout;
 
 		std::unordered_map<SpirvShader::ObjectID, Value> lvalues;
 
@@ -404,7 +407,8 @@ namespace sw
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
 
-		Array< Pointer<Byte> > descriptorSets = Array< Pointer<Byte> >(vk::MAX_BOUND_DESCRIPTOR_SETS);
+		const size_t numDescriptorSets;
+		Array< Pointer<Byte> > descriptorSets;
 
 		void createLvalue(SpirvShader::ObjectID id, uint32_t size)
 		{

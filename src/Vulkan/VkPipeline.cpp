@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include "VkPipeline.hpp"
+#include "VkPipelineLayout.hpp"
+#include "VkDescriptorSetLayout.hpp"
 #include "VkShaderModule.hpp"
 #include "Pipeline/SpirvShader.hpp"
 
@@ -190,7 +192,7 @@ uint32_t getNumberOfChannels(VkFormat format)
 namespace vk
 {
 
-Pipeline::Pipeline(VkPipelineLayout layout) : layout(layout) {}
+Pipeline::Pipeline(PipelineLayout const *layout) : layout(layout) {}
 
 void Pipeline::bindDescriptorSets(uint32_t start, uint32_t count, VkDescriptorSet* sets)
 {
@@ -203,7 +205,7 @@ void Pipeline::bindDescriptorSets(uint32_t start, uint32_t count, VkDescriptorSe
 }
 
 GraphicsPipeline::GraphicsPipeline(const VkGraphicsPipelineCreateInfo* pCreateInfo, void* mem)
-	: Pipeline(pCreateInfo->layout)
+	: Pipeline(Cast(pCreateInfo->layout))
 {
 	if((pCreateInfo->flags != 0) ||
 	   (pCreateInfo->stageCount != 2) ||
@@ -502,7 +504,7 @@ const sw::Color<float>& GraphicsPipeline::getBlendConstants() const
 }
 
 ComputePipeline::ComputePipeline(const VkComputePipelineCreateInfo* pCreateInfo, void* mem)
-	: Pipeline(pCreateInfo->layout)
+	: Pipeline(Cast(pCreateInfo->layout))
 {
 }
 
@@ -539,7 +541,9 @@ void ComputePipeline::compileShaders(const VkAllocationCallbacks* pAllocator, co
 
 void ComputePipeline::run(uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ)
 {
-	program->run(groupCountX, groupCountY, groupCountZ, MAX_BOUND_DESCRIPTOR_SETS, descriptorSets);
+	program->run(groupCountX, groupCountY, groupCountZ,
+		MAX_BOUND_DESCRIPTOR_SETS,
+		reinterpret_cast<sw::DescriptorSet*>(descriptorSets));
 }
 
 } // namespace vk

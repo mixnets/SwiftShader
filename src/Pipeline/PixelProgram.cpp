@@ -31,8 +31,7 @@ namespace sw
 	{
 		enableIndex = 0;
 
-		VkPipelineLayout layout = nullptr; // TODO
-		spirvShader->emit(&routine, vk::Cast(layout));
+		spirvShader->emit(&routine);
 		spirvShader->emitEpilog(&routine);
 
 		for(int i = 0; i < RENDERTARGETS; i++)

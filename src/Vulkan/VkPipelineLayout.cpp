@@ -50,4 +50,23 @@ const DescriptorSetLayout* PipelineLayout::getDescriptorSetLayout(uint32_t index
 	return setLayouts[index];
 }
 
+
+size_t PipelineLayout::getNumDescriptorSets() const
+{
+	return setLayoutCount;
+}
+
+size_t PipelineLayout::getBindingOffset(size_t descriptorSet, size_t binding) const
+{
+	auto setLayout = getDescriptorSetLayout(descriptorSet);
+	size_t bindingOffset = 0;
+	setLayout->getBindingInfo(binding, &bindingOffset);
+
+	// each set has a header of a VkDescriptorSetLayout.
+	// TODO: Clean this up.
+	bindingOffset += sizeof(VkDescriptorSetLayout);
+
+	return bindingOffset;
+}
+
 } // namespace vk

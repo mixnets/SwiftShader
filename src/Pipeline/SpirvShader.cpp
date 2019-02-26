@@ -14,6 +14,7 @@
 
 #include <spirv/unified1/spirv.hpp>
 #include "SpirvShader.hpp"
+#include "DescriptorSetsLayout.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkDebug.hpp"
@@ -762,15 +763,15 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::emit(SpirvRoutine *routine, vk::PipelineLayout* pipelineLayout) const
+	void SpirvShader::emit(SpirvRoutine *routine) const
 	{
 		printf("SpirvShader::emit()\n");
-		RR_LOG("SpirvShader::emit()");
+		// RR_LOG("SpirvShader::emit()");
 
 		for (auto insn : *this)
 		{
 			printf("%s\n", OpcodeName(insn.opcode()).c_str());
-			// RR_WATCH(opcodeName(insn.opcode()));
+			// RR_WATCH(OpcodeName(insn.opcode()));
 
 			switch (insn.opcode())
 			{
@@ -813,7 +814,7 @@ namespace sw
 				break;
 
 			case spv::OpVariable:
-				EmitVariable(insn, routine, pipelineLayout);
+				EmitVariable(insn, routine);
 				break;
 
 			case spv::OpLoad:
@@ -835,7 +836,7 @@ namespace sw
 		}
 	}
 
-	void SpirvShader::EmitVariable(InsnIterator insn, SpirvRoutine *routine, vk::PipelineLayout* pipelineLayout) const
+	void SpirvShader::EmitVariable(InsnIterator insn, SpirvRoutine *routine) const
 	{
 		ObjectID resultId = insn.word(2);
 		auto &object = getObject(resultId);
@@ -858,17 +859,14 @@ namespace sw
 		}
 		case spv::StorageClassUniform:
 		{
+			auto layout = routine->descriptorSetsLayout;
+
 			Decorations d{};
 			ApplyDecorationsForId(&d, resultId);
 			ASSERT(d.DescriptorSet >= 0);
 			ASSERT(d.Binding >= 0);
 
-			auto setLayout = pipelineLayout->getDescriptorSetLayout(d.DescriptorSet);
-			size_t bindingOffset = 0;
-			setLayout->getBindingInfo(d.Binding, &bindingOffset);
-			// each set has a header of a VkDescriptorSetLayout.
-			// TODO: Clean this up.
-			bindingOffset += sizeof(VkDescriptorSetLayout);
+			size_t bindingOffset = layout->getBindingOffset(d.DescriptorSet, d.Binding);
 
 			Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet]; // DescriptorSet*
 			Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset); // VkDescriptorBufferInfo*
@@ -1106,4 +1104,12 @@ namespace sw
 			}
 		}
 	}
+
+	SpirvRoutine::SpirvRoutine(DescriptorSetsLayout const *layout) :
+		descriptorSetsLayout(layout),
+		numDescriptorSets(layout->getNumDescriptorSets()),
+		descriptorSets(numDescriptorSets) // numDescriptorSets must be initialized first!
+	{
+	}
+
 }

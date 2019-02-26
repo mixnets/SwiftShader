@@ -22,6 +22,8 @@
 
 namespace sw
 {
+	class DescriptorSetsLayout;
+
 	class VertexRoutinePrototype : public Function<Void(Pointer<Byte>, Pointer<Byte>, Pointer<Byte>, Pointer<Byte>)>
 	{
 	public:
@@ -39,6 +41,7 @@ namespace sw
 	{
 	public:
 		VertexRoutine(const VertexProcessor::State &state, SpirvShader const *spirvShader);
+
 		virtual ~VertexRoutine();
 
 		void generate();

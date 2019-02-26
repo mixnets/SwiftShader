@@ -23,6 +23,7 @@
 
 namespace sw
 {
+	class DescriptorSetsLayout;
 	class Sampler;
 	class Surface;
 	class PixelShader;
@@ -201,6 +202,8 @@ namespace sw
 		unsigned int depthBufferLayer;
 		Surface *stencilBuffer;
 		unsigned int stencilBufferLayer;
+
+		DescriptorSetsLayout const *layout;
 
 		// Shaders
 		const SpirvShader *pixelShader;

@@ -17,10 +17,14 @@
 
 #include "VkDescriptorSetLayout.hpp"
 
+#include "Pipeline/DescriptorSetsLayout.hpp"
+
 namespace vk
 {
 
-class PipelineLayout : public Object<PipelineLayout, VkPipelineLayout>
+class PipelineLayout :
+	public Object<PipelineLayout, VkPipelineLayout>,
+	public ::sw::DescriptorSetsLayout
 {
 public:
 	PipelineLayout(const VkPipelineLayoutCreateInfo* pCreateInfo, void* mem);
@@ -30,6 +34,11 @@ public:
 	static size_t ComputeRequiredAllocationSize(const VkPipelineLayoutCreateInfo* pCreateInfo);
 
 	const DescriptorSetLayout* getDescriptorSetLayout(uint32_t index) const;
+
+	// sw::DescriptorSetLayout compliance
+	virtual size_t getNumDescriptorSets() const override;
+	virtual size_t getBindingOffset(size_t descriptorSet, size_t binding) const override;
+
 private:
 	uint32_t              setLayoutCount = 0;
 	DescriptorSetLayout** setLayouts = nullptr;

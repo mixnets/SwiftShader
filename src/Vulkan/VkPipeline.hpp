@@ -24,10 +24,12 @@ namespace sw { class SpirvShader; }
 namespace vk
 {
 
+class PipelineLayout;
+
 class Pipeline
 {
 public:
-	Pipeline(VkPipelineLayout layout);
+	Pipeline(PipelineLayout const *layout);
 
 	operator VkPipeline()
 	{
@@ -44,10 +46,12 @@ public:
 	virtual VkPipelineBindPoint bindPoint() const = 0;
 #endif
 
+	PipelineLayout const * getLayout() const { return layout; }
+
 	void bindDescriptorSets(uint32_t start, uint32_t count, VkDescriptorSet* sets);
 
 protected:
-	VkPipelineLayout layout = nullptr;
+	PipelineLayout const *layout = nullptr;
 	VkDescriptorSet descriptorSets[MAX_BOUND_DESCRIPTOR_SETS] = {};
 };
 

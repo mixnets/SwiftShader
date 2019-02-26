@@ -69,6 +69,7 @@ namespace sw
 			};
 
 			Input input[MAX_VERTEX_INPUTS];
+			DescriptorSetsLayout const *layout;
 		};
 
 		struct State : States
