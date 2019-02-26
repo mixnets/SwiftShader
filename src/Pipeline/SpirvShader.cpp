@@ -16,6 +16,7 @@
 #include "SpirvShader.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkDebug.hpp"
+#include "Vulkan/VkPipelineLayout.hpp"
 #include "Device/Config.hpp"
 
 namespace sw
@@ -1153,4 +1154,12 @@ namespace sw
 			}
 		}
 	}
+
+	SpirvRoutine::SpirvRoutine(vk::PipelineLayout const *pipelineLayout) :
+		pipelineLayout(pipelineLayout),
+		numDescriptorSets(pipelineLayout->getNumDescriptorSets()),
+		descriptorSets(numDescriptorSets) // numDescriptorSets must be initialized first!
+	{
+	}
+
 }

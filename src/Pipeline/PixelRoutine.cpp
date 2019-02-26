@@ -30,7 +30,8 @@ namespace sw
 	extern bool forceClearRegisters;
 
 	PixelRoutine::PixelRoutine(const PixelProcessor::State &state, SpirvShader const *spirvShader)
-		: QuadRasterizer(state, spirvShader)	/* addressing */
+		: QuadRasterizer(state, spirvShader),	/* addressing */
+		  routine(state.pipelineLayout)
 	{
 		spirvShader->emitProlog(&routine);
 

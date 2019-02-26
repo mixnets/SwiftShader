@@ -69,6 +69,8 @@ namespace sw
 			};
 
 			Input input[MAX_VERTEX_INPUTS];
+
+			vk::PipelineLayout const *pipelineLayout;
 		};
 
 		struct State : States

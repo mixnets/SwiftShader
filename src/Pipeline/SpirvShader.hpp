@@ -29,6 +29,11 @@
 #include <spirv/unified1/spirv.hpp>
 #include <Device/Config.hpp>
 
+namespace vk
+{
+	class PipelineLayout;
+} // namespace vk
+
 namespace sw
 {
 	// Forward declarations.
@@ -399,7 +404,11 @@ namespace sw
 	class SpirvRoutine
 	{
 	public:
+		SpirvRoutine(vk::PipelineLayout const *pipelineLayout);
+
 		using Value = Array<SIMD::Float>;
+
+		vk::PipelineLayout const * const pipelineLayout;
 
 		std::unordered_map<SpirvShader::ObjectID, Value> lvalues;
 
@@ -407,6 +416,9 @@ namespace sw
 
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
+
+		const size_t numDescriptorSets;
+		Array< Pointer<Byte> > descriptorSets;
 
 		void createLvalue(SpirvShader::ObjectID id, uint32_t size)
 		{
