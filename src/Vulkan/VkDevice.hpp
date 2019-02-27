@@ -17,6 +17,11 @@
 
 #include "VkObject.hpp"
 
+namespace sw
+{
+	class Blitter;
+};
+
 namespace vk
 {
 
@@ -44,11 +49,13 @@ public:
 	void getDescriptorSetLayoutSupport(const VkDescriptorSetLayoutCreateInfo* pCreateInfo,
 	                                   VkDescriptorSetLayoutSupport* pSupport) const;
 	VkPhysicalDevice getPhysicalDevice() const { return physicalDevice; }
+	sw::Blitter* getBlitter() const { return blitter; }
 
 private:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	Queue* queues = nullptr;
 	uint32_t queueCount = 0;
+	sw::Blitter* blitter = nullptr;
 };
 
 using DispatchableDevice = DispatchableObject<Device, VkDevice>;
