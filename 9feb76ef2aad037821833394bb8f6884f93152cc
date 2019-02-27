@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0d0a2cbc_7a3a24a7",
+        "filename": "third_party/subzero/src/IceTargetLoweringX8664.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-27T16:25:27Z",
+      "side": 1,
+      "message": "Looked into how to do this properly. There\u0027s an IsXmm field in the elements of the X8664RegTable lookup table in IceTargetLoweringX8664Traits.h",
+      "range": {
+        "startLine": 299,
+        "startChar": 6,
+        "endLine": 299,
+        "endChar": 113
+      },
+      "revId": "9feb76ef2aad037821833394bb8f6884f93152cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
