@@ -794,7 +794,14 @@ namespace rr
 			}
 		}
 
-		return T(type)->getPrimitiveSizeInBits() / 8;
+		llvm::Type *t = T(type);
+
+		if(t->isPointerTy())
+		{
+			ret
+		}
+
+		return t->getPrimitiveSizeInBits() / 8;
 	}
 
 	static unsigned int elementCount(Type *type)
@@ -1246,6 +1253,8 @@ namespace rr
 
 	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index, bool unsignedIndex)
 	{
+		assert(V(ptr)->getType()->getContainedType(0) == T(type));
+
 		if(sizeof(void*) == 8)
 		{
 			if(unsignedIndex)
@@ -1264,7 +1273,27 @@ namespace rr
 			index = createMul(index, createConstantInt((int)typeSize(type)));
 		}
 
-		assert(V(ptr)->getType()->getContainedType(0) == T(type));
+		return createBitCast(
+			V(::builder->CreateGEP(V(createBitCast(ptr, T(llvm::PointerType::get(T(Byte::getType()), 0)))), V(index))),
+			T(llvm::PointerType::get(T(type), 0)));
+
+		if(sizeof(void*) == 8)
+		{
+			// TODO: Are these extensions necessary for CreateGEP?
+			index = unsignedIndex ?
+				createZExt(index, Long::getType()) :
+				createSExt(index, Long::getType());
+		}
+
+		if (reinterpret_cast<uintptr_t>(type) >= EmulatedTypeCount)
+		{
+			return V(::builder->CreateGEP(V(ptr), V(index)));
+		}
+
+		index = (sizeof(void*) == 8) ?
+			createMul(index, createConstantLong((int64_t)typeSize(type))) :
+			createMul(index, createConstantInt((int)typeSize(type)));
+
 		return createBitCast(
 			V(::builder->CreateGEP(V(createBitCast(ptr, T(llvm::PointerType::get(T(Byte::getType()), 0)))), V(index))),
 			T(llvm::PointerType::get(T(type), 0)));
