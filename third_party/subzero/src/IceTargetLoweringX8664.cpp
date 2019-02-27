@@ -292,13 +292,34 @@ void TargetX8664::_unlink_bp() {
   }
 }
 
-void TargetX8664::_push_reg(Variable *Reg) {
+void TargetX8664::_push_reg(RegNumT RegNum) {
   Variable *rbp =
       getPhysicalRegister(Traits::RegisterSet::Reg_rbp, Traits::WordType);
-  if (Reg != rbp || !NeedSandboxing) {
-    _push(Reg);
+
+  if ((int) RegNum >= (int) Traits::RegisterSet::Reg_xmm0 && (int) RegNum <= (int) Traits::RegisterSet::Reg_xmm15) {
+    Variable *rsp =
+        getPhysicalRegister(Traits::RegisterSet::Reg_rsp, Traits::WordType);
+    auto* address = Traits::X86OperandMem::create(Func, IceType_v4f32, rsp, nullptr);
+    _sub_sp(Ctx->getConstantInt32(16));
+    _storep(getPhysicalRegister(RegNum, IceType_v4f32), address);
+  } else if (RegNum != Traits::RegisterSet::Reg_rbp || !NeedSandboxing) {
+    _push(getPhysicalRegister(RegNum, Traits::WordType));
   } else {
     _push_rbp();
+  }
+}
+
+void TargetX8664::_pop_reg(RegNumT RegNum) {
+  if ((int) RegNum >= (int) Traits::RegisterSet::Reg_xmm0 && (int) RegNum <= (int) Traits::RegisterSet::Reg_xmm15) {
+    Variable *reg =
+        getPhysicalRegister(RegNum, IceType_v4f32);
+    Variable *rsp =
+        getPhysicalRegister(Traits::RegisterSet::Reg_rsp, Traits::WordType);
+    auto* address = Traits::X86OperandMem::create(Func, reg->getType(), rsp, nullptr);
+    _movp(reg, address);
+    _add_sp(Ctx->getConstantInt32(16));
+  } else {
+    _pop(getPhysicalRegister(RegNum, Traits::WordType));
   }
 }
 
