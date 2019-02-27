@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fe8807ae_f28183f5",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-27T16:54:08Z",
+      "side": 1,
+      "message": "I\u0027m not opposed to shuffling all the names around so this can be called Value.",
+      "parentUuid": "5a3a2b55_4a7f82ae",
+      "range": {
+        "startLine": 393,
+        "startChar": 7,
+        "endLine": 393,
+        "endChar": 19
+      },
+      "revId": "bc73e7b2bb01af2070be0fae5b560437350b3a6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c1443981_7149a203",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 3
@@ -68,6 +92,30 @@
       "revId": "bc73e7b2bb01af2070be0fae5b560437350b3a6c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "88a45700_05a48a7a",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-27T16:54:08Z",
+      "side": 1,
+      "message": "I think we definitely want something along those lines.",
+      "parentUuid": "b489c9d4_280d4685",
+      "range": {
+        "startLine": 408,
+        "startChar": 2,
+        "endLine": 408,
+        "endChar": 27
+      },
+      "revId": "bc73e7b2bb01af2070be0fae5b560437350b3a6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
