@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e5f76bb4_0436bd54",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 4
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-27T13:01:38Z",
+      "side": 1,
+      "message": "Okay, changing this to -1 makes everything catch fire as nothing actually checks for HasComponent. Reverting that change.",
+      "range": {
+        "startLine": 229,
+        "startChar": 31,
+        "endLine": 229,
+        "endChar": 33
+      },
+      "revId": "be667592933c4f77122174bcf063b1b21268109f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
