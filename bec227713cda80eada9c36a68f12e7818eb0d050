@@ -70,6 +70,30 @@
       "revId": "bec227713cda80eada9c36a68f12e7818eb0d050",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9420b8fd_2ebb8a99",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-27T08:46:18Z",
+      "side": 1,
+      "message": "\u003e Anyway, what\u0027s your take on SIMD::Float?\n\nAssuming it complements and not replaces the existing vector types, I think this is good. However, I\u0027m not sure how you\u0027d mix both (SIMD vs SISD) without explicitly using fully qualified names (SIMD::Float vs SISD::Float), which does seem particularly verbose.\n\nI guess you could \u0027using SIMD\u0027 to default to SIMD, and be explicit about SISD types (or vice-versa), but I\u0027m not sure that works with your argument to clarify representation of SIMD lanes.\n\nGoing back to the original goals with this change:\n\nI feel a clear distinction here needs to be made between a:\n * Type that denotes per-lane scalars.\n * Type that denotes a non-per-lane vector.\n\nThe per-lane types should be readable (mostly) as if they were scalar, without the reader knowing or caring about the underlying number of lanes (vector width here is an implementation detail).\n\n  FloatL x, y, z;\n  return x + y * z;\n\nI read this ^ and my brain says: per shader invocation, x, y and z can be treated as a single scalar float.\n\nWhen I see Float4, my brain says: This is a 4-element wide vector and some cognitive work needs to be done to transform this to/from per-lane scalars.\nWhen I see FloatN, my brain says: This looks like an N-element wide vector, with no indication of vector width, nor anything to suggest that it represents per-lane data.\n\nFor that reason, I do not feel that FloatN is much better than Float4 in terms of distinction.\n\nIf the disagreement here is purely about the \u0027L\u0027 suffix, then maybe we can meet in the middle with a name we both agree on?\n\nLaneF? WarpF?\n\nI do like the idea of the SIMD namespace, but SIMD::Float is a whole lot of typing.\n\nAny other suggestions?",
+      "parentUuid": "6c8f39e1_b02c42ae",
+      "range": {
+        "startLine": 40,
+        "startChar": 2,
+        "endLine": 41,
+        "endChar": 37
+      },
+      "revId": "bec227713cda80eada9c36a68f12e7818eb0d050",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
