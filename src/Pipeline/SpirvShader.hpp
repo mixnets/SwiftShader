@@ -153,10 +153,11 @@ namespace sw
 			enum class Kind
 			{
 				Unknown,        /* for paranoia -- if we get left with an object in this state, the module was broken */
-				Variable,
-				InterfaceVariable,
-				Constant,
-				Value,
+				Variable,          // TODO: Document
+				InterfaceVariable, // TODO: Document
+				Constant,          // Values held by Object::constantValue
+				Value,             // Values held by SpirvRoutine::intermediates
+				PhysicalPointer,   // Pointer held by SpirvRoutine::physicalPointers
 			} kind = Kind::Unknown;
 		};
 
@@ -317,6 +318,10 @@ namespace sw
 		void ApplyDecorationsForId(Decorations *d, TypeOrObjectID id) const;
 		void ApplyDecorationsForIdMember(Decorations *d, TypeID id, uint32_t member) const;
 
+		// Returns true if data in the given storage class is word-interleaved
+		// by each lane, otherwise data is linerally stored.
+		static bool IsStorageInterleavedByLane(spv::StorageClass storageClass);
+
 		template<typename F>
 		int VisitInterfaceInner(TypeID id, Decorations d, F f) const;
 
@@ -404,6 +409,8 @@ namespace sw
 
 		std::unordered_map<SpirvShader::ObjectID, Intermediate> intermediates;
 
+		std::unordered_map<SpirvShader::ObjectID, Pointer<Byte> > physicalPointers;
+
 		Value inputs = Value{MAX_INTERFACE_COMPONENTS};
 		Value outputs = Value{MAX_INTERFACE_COMPONENTS};
 
@@ -433,6 +440,13 @@ namespace sw
 		{
 			auto it = intermediates.find(id);
 			assert(it != intermediates.end());
+			return it->second;
+		}
+
+		Pointer<Byte>& getPhysicalPointer(SpirvShader::ObjectID id)
+		{
+			auto it = physicalPointers.find(id);
+			assert(it != physicalPointers.end());
 			return it->second;
 		}
 	};
