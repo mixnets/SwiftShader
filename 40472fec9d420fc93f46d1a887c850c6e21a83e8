@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9c18baa5_b6f58ee1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 7628
+      },
+      "writtenOn": "2019-02-27T16:16:19Z",
+      "side": 1,
+      "message": "Fixed.",
+      "parentUuid": "cbc11a99_2fbd7037",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 57
+      },
+      "revId": "40472fec9d420fc93f46d1a887c850c6e21a83e8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "69add13e_e0c50805",
         "filename": "src/Reactor/ReactorUnitTests.cpp",
         "patchSetId": 5
