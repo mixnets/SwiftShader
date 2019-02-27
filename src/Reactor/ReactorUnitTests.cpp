@@ -16,6 +16,8 @@
 
 #include "gtest/gtest.h"
 
+#include <tuple>
+
 using namespace rr;
 
 int reference(int *p, int y)
@@ -986,6 +988,68 @@ TEST(ReactorUnitTests, MulAdd)
 
 			EXPECT_EQ(out[0][0], 0x000AE34Au);
 			EXPECT_EQ(out[0][1], 0x009D5254u);
+		}
+	}
+
+	delete routine;
+}
+
+template <typename T>
+class GEPTest : public ::testing::Test {
+public:
+};
+
+using GEPTestTypes = ::testing::Types
+	<
+		std::pair<uint8_t, Byte>,
+		std::pair<int,     Int>,
+		std::pair<float,   Float>,
+		std::pair<void*,   Pointer<Int> >
+	>;
+
+TYPED_TEST_CASE(GEPTest, GEPTestTypes);
+
+TYPED_TEST(GEPTest, PtrOffsets) {
+	using CType = typename std::tuple_element<0, TypeParam>::type;
+	using ReactorType = typename std::tuple_element<1, TypeParam>::type;
+
+	Routine *routine = nullptr;
+
+	{
+		// T* F(T* pointer, int index)
+		Function<Pointer<ReactorType>(Pointer<ReactorType>, Int)> function;
+		{
+			Pointer<ReactorType> pointer = function.Arg<0>();
+			Int index = function.Arg<1>();
+			Return(&pointer[index]);
+		}
+
+		routine = function("one");
+
+		if(routine)
+		{
+			auto callable = (CType*(*)(CType*, unsigned int))routine->getEntry();
+
+			union PtrInt {
+				CType* p;
+				size_t i;
+			};
+
+			PtrInt base;
+			base.i = 0x10000;
+
+			for (int i = 0; i < 5; i++)
+			{
+				PtrInt element;
+				element.p = &base.p[i];
+
+				PtrInt got;
+				got.p = callable(base.p, i);
+
+				auto expect = element.i - base.i;
+
+				EXPECT_EQ(got.i, expect) << "i:" << i;
+			}
 		}
 	}
 
