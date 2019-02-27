@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "53db7845_2d457fbe",
+        "filename": "src/OpenGL/libGLES_CM/libGLES_CM.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2107,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-27T16:52:45Z",
+      "side": 1,
+      "message": "GL_NONE",
+      "range": {
+        "startLine": 2107,
+        "startChar": 32,
+        "endLine": 2107,
+        "endChar": 33
+      },
+      "revId": "e37b5cd00e59f665fbd060e8db50610668cb92c8",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
