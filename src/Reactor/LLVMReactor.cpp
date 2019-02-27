@@ -1246,25 +1246,25 @@ namespace rr
 
 	Value *Nucleus::createGEP(Value *ptr, Type *type, Value *index, bool unsignedIndex)
 	{
+		assert(V(ptr)->getType()->getContainedType(0) == T(type));
+
 		if(sizeof(void*) == 8)
 		{
-			if(unsignedIndex)
-			{
-				index = createZExt(index, Long::getType());
-			}
-			else
-			{
-				index = createSExt(index, Long::getType());
-			}
-
-			index = createMul(index, createConstantLong((int64_t)typeSize(type)));
+			// TODO: Are these extensions necessary for CreateGEP?
+			index = unsignedIndex ?
+				createZExt(index, Long::getType()) :
+				createSExt(index, Long::getType());
 		}
-		else
+
+		if (reinterpret_cast<uintptr_t>(type) >= EmulatedTypeCount)
 		{
-			index = createMul(index, createConstantInt((int)typeSize(type)));
+			return V(::builder->CreateGEP(V(ptr), V(index)));
 		}
 
-		assert(V(ptr)->getType()->getContainedType(0) == T(type));
+		index = (sizeof(void*) == 8) ?
+			createMul(index, createConstantLong((int64_t)typeSize(type))) :
+			createMul(index, createConstantInt((int)typeSize(type)));
+
 		return createBitCast(
 			V(::builder->CreateGEP(V(createBitCast(ptr, T(llvm::PointerType::get(T(Byte::getType()), 0)))), V(index))),
 			T(llvm::PointerType::get(T(type), 0)));
