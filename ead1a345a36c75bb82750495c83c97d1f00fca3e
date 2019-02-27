@@ -22,6 +22,30 @@
       "revId": "ead1a345a36c75bb82750495c83c97d1f00fca3e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b015273_4f843ed4",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-27T15:15:19Z",
+      "side": 0,
+      "message": "Nothing impedes that.\n\n- input and stride for each attribute are captured into the DrawCall\n- everything else is baked into the vertex routine\n- app is required to guarantee that the buffers remain valid until it can prove the draw is no longer in flight.",
+      "parentUuid": "c435d4a0_17ac4197",
+      "range": {
+        "startLine": 318,
+        "startChar": 3,
+        "endLine": 318,
+        "endChar": 54
+      },
+      "revId": "ead1a345a36c75bb82750495c83c97d1f00fca3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
