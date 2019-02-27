@@ -12,24 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This file contains code used to aid debugging.
-
 #include <spirv/unified1/spirv.hpp>
 #include "SpirvShader.hpp"
+#include "SpirvShader.inl"
+#include "System/Math.hpp"
+#include "Vulkan/VkDebug.hpp"
+#include "Device/Config.hpp"
 
 namespace sw
 {
-	std::string SpirvShader::OpcodeName(spv::Op op)
-	{
-		switch(op){
-#ifndef NDEBUG
-#define OPCODE(op) case spv::op: return #op;
-#include "SpirvShader_opcodes.hpp"
-#undef OPCODE
-#endif // NDEBUG
-		default:
-			return "Opcode<" + std::to_string(static_cast<int>(op)) + ">";
-		}
-	}
+
+void SpirvShader::EmitPrologPass::OpVariable(InsnIterator insn)
+{
+    ObjectID resultId = insn.word(2);
+    auto &object = getObject(resultId);
+    auto &objectTy = getType(object.type);
+    auto &pointeeTy = getType(objectTy.element);
+    // TODO: what to do about zero-slot objects?
+    if (pointeeTy.sizeInComponents > 0)
+    {
+        routine->createLvalue(insn.word(2), pointeeTy.sizeInComponents);
+    }
+}
+
+void SpirvShader::emitProlog(SpirvRoutine *routine) const
+{
+    EmitPrologPass(this, routine).run();
+}
 
 } // namespace sw

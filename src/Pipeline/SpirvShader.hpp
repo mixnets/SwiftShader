@@ -297,9 +297,137 @@ namespace sw
 		HandleMap<Type> types;
 		HandleMap<Object> defs;
 
-		// DeclareType creates a Type for the given OpTypeX instruction, storing
-		// it into the types map. It is called from the analysis pass (constructor).
-		void DeclareType(InsnIterator insn);
+		// Base class for all shader passes.
+		// T is the derived pass type.
+		// SHADER is either SpirvShader* or SpirvShader const*.
+		// Pass::run() will dispatch each opcode to a member function with the same name.
+		template <typename T, typename SHADER>
+		class Pass
+		{
+		public:
+			Pass(SHADER *shader, SpirvRoutine *routine) : shader(shader), routine(routine) {}
+			// run the pass.
+			void run()
+			{
+				for (auto insn : *shader)
+				{
+					// Dispatch each opcode to a corresponding function with the
+					// same name as the opcode.
+					switch (insn.opcode())
+					{
+#define OPCODE(op) case spv::op: static_cast<T*>(this)->op(insn); break;
+#include "SpirvShader_opcodes.hpp"
+#undef OPCODE
+					}
+				}
+			}
+		protected:
+#define OPCODE(op) inline void op(InsnIterator insn) { static_cast<T*>(this)->UnhandledOp(insn); }
+#include "SpirvShader_opcodes.hpp"
+#undef OPCODE
+
+			// Helpers to simplify calling commonly used functions on SpirvShader.
+			Type const &getType(TypeID id) const { return shader->getType(id); }
+			Object const &getObject(ObjectID id) const { return shader->getObject(id); }
+
+			// UnhandledOp is called whenever an opcode is not handled by the
+			// derived Pass. You can replace this with custom behavior.
+			void UnhandledOp(InsnIterator insn) {}
+			SHADER * const shader;
+			SpirvRoutine * const routine;
+		};
+
+		// AnalysisPass is the pass performed on the instructions prior to
+		// emitting for a specific SpirvRoutine.
+		class AnalysisPass : public SpirvShader::Pass<AnalysisPass, SpirvShader>
+		{
+		public:
+			AnalysisPass(SpirvShader *shader) :
+				SpirvShader::Pass<AnalysisPass, SpirvShader>(shader, nullptr) {}
+
+			void OpExecutionMode(InsnIterator insn);
+			void OpDecorate(InsnIterator insn);
+			void OpMemberDecorate(InsnIterator insn);
+			void OpDecorationGroup(InsnIterator insn);
+			void OpGroupDecorate(InsnIterator insn);
+			void OpGroupMemberDecorate(InsnIterator insn);
+			void OpTypeVoid(InsnIterator insn);
+			void OpTypeBool(InsnIterator insn);
+			void OpTypeInt(InsnIterator insn);
+			void OpTypeFloat(InsnIterator insn);
+			void OpTypeVector(InsnIterator insn);
+			void OpTypeMatrix(InsnIterator insn);
+			void OpTypeImage(InsnIterator insn);
+			void OpTypeSampler(InsnIterator insn);
+			void OpTypeSampledImage(InsnIterator insn);
+			void OpTypeArray(InsnIterator insn);
+			void OpTypeRuntimeArray(InsnIterator insn);
+			void OpTypeStruct(InsnIterator insn);
+			void OpTypePointer(InsnIterator insn);
+			void OpTypeFunction(InsnIterator insn);
+			void OpVariable(InsnIterator insn);
+			void OpConstant(InsnIterator insn);
+			void OpConstantFalse(InsnIterator insn);
+			void OpConstantTrue(InsnIterator insn);
+			void OpConstantNull(InsnIterator insn);
+			void OpConstantComposite(InsnIterator insn);
+			void OpCapability(InsnIterator insn);
+			void OpMemoryModel(InsnIterator insn);
+			void OpExtInstImport(InsnIterator insn);
+			void OpFunctionParameter(InsnIterator insn);
+			void OpFunctionCall(InsnIterator insn);
+			void OpSpecConstant(InsnIterator insn);
+			void OpSpecConstantComposite(InsnIterator insn);
+			void OpSpecConstantFalse(InsnIterator insn);
+			void OpSpecConstantOp(InsnIterator insn);
+			void OpSpecConstantTrue(InsnIterator insn);
+			void OpLoad(InsnIterator insn);
+			void OpAccessChain(InsnIterator insn);
+			void OpKill(InsnIterator insn);
+
+		private:
+			// DeclareType creates a Type for the given OpTypeX instruction,
+			// storing it into the shader types map.
+			void DeclareType(InsnIterator insn);
+
+			SpirvShader::Object& SsaInst(InsnIterator insn);
+		};
+
+		// EmitPrologPass processes instructions for the emitProlog() pass,
+		// generating code for a given SpirvRoutine.
+		class EmitPrologPass : public SpirvShader::Pass<EmitPrologPass, const SpirvShader>
+		{
+		public:
+			EmitPrologPass(SpirvShader const *shader, SpirvRoutine *routine) :
+				SpirvShader::Pass<EmitPrologPass, const SpirvShader>(shader, routine) {}
+
+			void OpVariable(InsnIterator insn);
+		};
+
+		// EmitPass processes instructions for the emit() pass, generating code
+		// for a given SpirvRoutine.
+		class EmitPass : public SpirvShader::Pass<EmitPass, const SpirvShader>
+		{
+		public:
+			EmitPass(SpirvShader const *shader, SpirvRoutine *routine) :
+				SpirvShader::Pass<EmitPass, const SpirvShader>(shader, routine) {}
+
+			void OpVariable(InsnIterator insn);
+			void OpLoad(InsnIterator insn);
+			void OpStore(InsnIterator insn);
+			void OpAccessChain(InsnIterator insn);
+		};
+
+		// EmitEpilogPass processes instructions for the emitEpilog() pass,
+		// generating code for a given SpirvRoutine.
+		class EmitEpilogPass : public SpirvShader::Pass<EmitEpilogPass, const SpirvShader>
+		{
+		public:
+			EmitEpilogPass(SpirvShader const *shader, SpirvRoutine *routine) :
+				SpirvShader::Pass<EmitEpilogPass, const SpirvShader>(shader, routine) {}
+
+			void OpVariable(InsnIterator insn);
+		};
 
 		void ProcessExecutionMode(InsnIterator it);
 
@@ -319,12 +447,6 @@ namespace sw
 		void ProcessInterfaceVariable(Object &object);
 
 		Int4 WalkAccessChain(ObjectID id, uint32_t numIndexes, uint32_t const *indexIds, SpirvRoutine *routine) const;
-
-		// Emit pass instructions:
-		void EmitVariable(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitLoad(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitStore(InsnIterator insn, SpirvRoutine *routine) const;
-		void EmitAccessChain(InsnIterator insn, SpirvRoutine *routine) const;
 
 		// OpcodeName returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName will only return the numerical code.
@@ -419,7 +541,6 @@ namespace sw
 			return it->second;
 		}
 	};
-
 }
 
 #endif  // sw_SpirvShader_hpp
