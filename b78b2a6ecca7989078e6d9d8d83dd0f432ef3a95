@@ -46,6 +46,30 @@
       "revId": "b78b2a6ecca7989078e6d9d8d83dd0f432ef3a95",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9aefa148_ec1e6459",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-27T09:56:07Z",
+      "side": 1,
+      "message": "Okay will remove.\n\nWhat are your thoughts on something like this:\n\nclass SpirvShader {\n...\nprivate:\n    // Base class for all shader passes.\n    // T is the derived pass type.\n    // Pass::run() will dispatch each opcode to a member function with the same name.\n    template \u003ctypename T\u003e\n    class PassBase\n    {\n    public:\n        PassBase\u003cT\u003e(SpirvShader *shader, SpirvRoutine *routine) : shader(shader), routine(routine) {}\n\n        // run the pass.\n        void run()\n        {\n            for (auto insn : *shader)\n            {\n                // Dispatch each opcode to a corresponding function with the\n                // same name as the opcode.\n                switch (insn.opcode())\n                {\n#define OPCODE(op) case spv::op: static_cast\u003cT*\u003e(this)-\u003eop(insn); break;\n#include \"SpirvShader_opcodes.hpp\"\n#undef OPCODE\n                }\n            }\n        }\n\n    protected:\n#define OPCODE(op) inline void op(InsnIterator insn) { static_cast\u003cT*\u003e(this)-\u003eUnhandledOp(insn); }\n#include \"SpirvShader_opcodes.hpp\"\n#undef OPCODE\n\n        // UnhandledOp is called whenever an opcode is not handled by the\n        // derived Pass. You can replace this with custom behavior.\n        void UnhandledOp(InsnIterator insn) {}\n\n        SpirvShader *shader;\n        SpirvRoutine *routine;\n    };\n\n    // EmitPass processes instructions for the emit() pass.\n    class EmitPass : public PassBase\u003cEmitPass\u003e\n    {\n    public:\n        EmitPass(SpirvShader *shader, SpirvRoutine *routine) : PassBase\u003cEmitPass\u003e(shader, routine) {}\n\n        void OpVariable(InsnIterator insn);\n        void OpLoad(InsnIterator insn);\n        void OpStore(InsnIterator insn);\n        void OpAccessChain(InsnIterator insn);\n    };\n}\n\nvoid SpirvShader::emit(SpirvRoutine *routine) const\n{\n    EmitPass(this, routine).run();\n}\n\nI see some pros and cons to this approach.\n\nPros:\n  * Removes the boiler-plate of for-loops and switch cases for each pass x opcode.\n  * All functions are scoped by their pass. No need for overly verbose documentation (\u0027Called from the emit() pass\u0027) or function naming conventions (\u0027EmitXXX\u0027), yet it is still very clear what functions belong to which pass.\n  * Forces finer-grain implementation of opcodes (also helps with things like stack traces).\n  * Sensible places to document each pass, and what each opcode does in that pass.\n\nCons:\n  * Template and macro magic.\n  * Fallthrough cases (i.e. single impl for all types) are more tedious (but more explicit).\n  * Access to shader members needs to be done via \u0027shader-\u003e\u0027, unless forwarding helpers are placed on PassBase.\n\nWhat do you guys think?",
+      "parentUuid": "f949b971_8727889d",
+      "range": {
+        "startLine": 320,
+        "startChar": 2,
+        "endLine": 321,
+        "endChar": 33
+      },
+      "revId": "b78b2a6ecca7989078e6d9d8d83dd0f432ef3a95",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
