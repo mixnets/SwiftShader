@@ -22,6 +22,30 @@
       "revId": "df69326bcb16ebd9c0ad8443daf9b02fef61b156",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "834d8f32_fc7f469b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-27T14:54:41Z",
+      "side": 1,
+      "message": "If this is actually calling into X11, then it isn\u0027t impossible that this is a regres issue, and I need to fiddle with DISPLAY env vars or something.\nI had to do this for GLES, although I\u0027d imagine what works there _should_ work here.",
+      "parentUuid": "9a097416_bf9c2841",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 33
+      },
+      "revId": "df69326bcb16ebd9c0ad8443daf9b02fef61b156",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
