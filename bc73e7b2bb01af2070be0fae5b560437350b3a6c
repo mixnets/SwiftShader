@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a3a2b55_4a7f82ae",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-27T12:21:32Z",
+      "side": 1,
+      "message": "This is great, I\u0027ve been thinking about doing something similar. It\u0027s a shame that \u0027Value\u0027 is already taken.",
+      "range": {
+        "startLine": 393,
+        "startChar": 7,
+        "endLine": 393,
+        "endChar": 19
+      },
+      "revId": "bc73e7b2bb01af2070be0fae5b560437350b3a6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c1443981_7149a203",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 404,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-27T12:21:32Z",
+      "side": 1,
+      "message": "This could work well with https://swiftshader-review.googlesource.com/c/SwiftShader/+/25688 - in that you could have a Value(SpirvShader::ObjectID objId) function on SpirvShader::Pass that automatically fills in the first two parameters of this constructor.",
+      "range": {
+        "startLine": 404,
+        "startChar": 2,
+        "endLine": 404,
+        "endChar": 99
+      },
+      "revId": "bc73e7b2bb01af2070be0fae5b560437350b3a6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b489c9d4_280d4685",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-27T12:21:32Z",
+      "side": 1,
+      "message": "As you\u0027ve seen, I\u0027m likely to end up adding PhysicalPointers at another unique type, which means logic also has to branch between Logical and Physical pointers (see: https://swiftshader.googlesource.com/SwiftShader/+/refs/changes/30/24430/16/src/Pipeline/SpirvShader.cpp#908).\nThis wrapper seems to be a nice way to clean that up, however operator overloads fixes the type to RValue\u003cFloat4\u003e. For the pointer case I want something that returns a RValue\u003cPointer\u003cFloat\u003e\u003e.\n\nWe could either create a another helper - GenericPointer, or perhaps change this to wrap intermediates, constants, logical \u0026 physical pointers. If we did this, we can ASSERT that the value is of the expected type, avoiding more cryptic error messages.\n\nWhat are your thoughts?\n\nNo need to change this, just want to start a discussion.",
+      "range": {
+        "startLine": 408,
+        "startChar": 2,
+        "endLine": 408,
+        "endChar": 27
+      },
+      "revId": "bc73e7b2bb01af2070be0fae5b560437350b3a6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
