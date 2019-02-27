@@ -46,6 +46,30 @@
       "revId": "9feb76ef2aad037821833394bb8f6884f93152cc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9c372c05_6a58b282",
+        "filename": "third_party/subzero/src/IceTargetLoweringX8664.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-27T17:41:21Z",
+      "side": 1,
+      "message": "OK, thanks for checking. Since it\u0027s not readily available it\u0027s fine to keep it for a future refactor.",
+      "parentUuid": "b91fb08e_ff6c3296",
+      "range": {
+        "startLine": 299,
+        "startChar": 6,
+        "endLine": 299,
+        "endChar": 113
+      },
+      "revId": "9feb76ef2aad037821833394bb8f6884f93152cc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
