@@ -46,6 +46,30 @@
       "revId": "ead1a345a36c75bb82750495c83c97d1f00fca3e",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2589b598_20c59d4d",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-27T16:06:22Z",
+      "side": 0,
+      "message": "Yep, I was just confusing myself with the handling of dynamic offsets. Those are basically like push constants and need to \u0027propagate\u0027 between draws so they can execute in parallel without it being the apps responsibility. Doesn\u0027t affect this code at the moment.",
+      "parentUuid": "6b015273_4f843ed4",
+      "range": {
+        "startLine": 318,
+        "startChar": 3,
+        "endLine": 318,
+        "endChar": 54
+      },
+      "revId": "ead1a345a36c75bb82750495c83c97d1f00fca3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
