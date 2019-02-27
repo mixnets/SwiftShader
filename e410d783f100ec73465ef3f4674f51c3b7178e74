@@ -22,6 +22,30 @@
       "revId": "e410d783f100ec73465ef3f4674f51c3b7178e74",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ebdfd8b_36cfcd33",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-27T18:48:24Z",
+      "side": 1,
+      "message": "Sure thing. Done.",
+      "parentUuid": "b8c6132c_4fc67e33",
+      "range": {
+        "startLine": 7,
+        "startChar": 11,
+        "endLine": 7,
+        "endChar": 16
+      },
+      "revId": "e410d783f100ec73465ef3f4674f51c3b7178e74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
