@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8c6132c_4fc67e33",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-27T18:19:30Z",
+      "side": 1,
+      "message": "In the Chromium code base and go/loglevels, a CHECK() always aborts while a DCHECK() is for debug builds or when using the a build flag like this. Any objection to adding a D here to make it consistent with what that? Also makes it read less like it would check that something is always on, vs. DCHECK-like macros being enabled always.",
+      "range": {
+        "startLine": 7,
+        "startChar": 11,
+        "endLine": 7,
+        "endChar": 16
+      },
+      "revId": "e410d783f100ec73465ef3f4674f51c3b7178e74",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
