@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c435d4a0_17ac4197",
+        "filename": "src/Device/Renderer.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-27T14:26:13Z",
+      "side": 0,
+      "message": "Hang on here, how are we ensuring that multiple draws can execute in parallel?",
+      "range": {
+        "startLine": 318,
+        "startChar": 3,
+        "endLine": 318,
+        "endChar": 54
+      },
+      "revId": "ead1a345a36c75bb82750495c83c97d1f00fca3e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
