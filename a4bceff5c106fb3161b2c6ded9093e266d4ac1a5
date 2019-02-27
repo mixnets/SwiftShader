@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "886349d0_bcefd94b",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1043,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-27T20:52:11Z",
+      "side": 1,
+      "message": "Noted as a future optimization opportunity.",
+      "range": {
+        "startLine": 1042,
+        "startChar": 6,
+        "endLine": 1043,
+        "endChar": 23
+      },
+      "revId": "a4bceff5c106fb3161b2c6ded9093e266d4ac1a5",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
