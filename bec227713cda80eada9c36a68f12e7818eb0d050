@@ -94,6 +94,30 @@
       "revId": "bec227713cda80eada9c36a68f12e7818eb0d050",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ef68d769_834c7517",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-27T15:28:28Z",
+      "side": 1,
+      "message": "If we\u0027re bikeshedding the naming, I\u0027m still quite fond of PerLane\u003cFloat\u003e",
+      "parentUuid": "9420b8fd_2ebb8a99",
+      "range": {
+        "startLine": 40,
+        "startChar": 2,
+        "endLine": 41,
+        "endChar": 37
+      },
+      "revId": "bec227713cda80eada9c36a68f12e7818eb0d050",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
