@@ -44,6 +44,7 @@ public:
 	void copyTo(VkBuffer dstBuffer, const VkBufferImageCopy& region);
 	void copyFrom(VkBuffer srcBuffer, const VkBufferImageCopy& region);
 
+	void setBlitter(sw::Blitter* blitter) { this->blitter = blitter; }
 	void blit(VkImage dstImage, const VkImageBlit& region, VkFilter filter);
 	void clear(const VkClearValue& clearValue, const VkRect2D& renderArea, const VkImageSubresourceRange& subresourceRange);
 	void clear(const VkClearColorValue& color, const VkImageSubresourceRange& subresourceRange);

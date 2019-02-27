@@ -32,12 +32,10 @@ Image::Image(const VkImageCreateInfo* pCreateInfo, void* mem) :
 	samples(pCreateInfo->samples),
 	tiling(pCreateInfo->tiling)
 {
-	blitter = new sw::Blitter();
 }
 
 void Image::destroy(const VkAllocationCallbacks* pAllocator)
 {
-	delete blitter;
 }
 
 size_t Image::ComputeRequiredAllocationSize(const VkImageCreateInfo* pCreateInfo)

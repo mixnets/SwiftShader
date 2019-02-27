@@ -872,7 +872,13 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateImage(VkDevice device, const VkImageCreat
 		UNIMPLEMENTED();
 	}
 
-	return vk::Image::Create(pAllocator, pCreateInfo, pImage);
+	VkResult result = vk::Image::Create(pAllocator, pCreateInfo, pImage);
+	if(result == VK_SUCCESS)
+	{
+		vk::Cast(*pImage)->setBlitter(vk::Cast(device)->getBlitter());
+	}
+
+	return result;
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyImage(VkDevice device, VkImage image, const VkAllocationCallbacks* pAllocator)

@@ -17,6 +17,7 @@
 #include "VkConfig.h"
 #include "VkDebug.hpp"
 #include "VkQueue.hpp"
+#include "Device/Blitter.hpp"
 
 #include <new> // Must #include this to use "placement new"
 
@@ -54,6 +55,8 @@ Device::Device(const Device::CreateInfo* info, void* mem)
 	{
 		UNIMPLEMENTED();
 	}
+
+	blitter = new sw::Blitter();
 }
 
 void Device::destroy(const VkAllocationCallbacks* pAllocator)
@@ -64,6 +67,8 @@ void Device::destroy(const VkAllocationCallbacks* pAllocator)
 	}
 
 	vk::deallocate(queues, pAllocator);
+
+	delete blitter;
 }
 
 size_t Device::ComputeRequiredAllocationSize(const Device::CreateInfo* info)
