@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0c3e7f9f_1b7ce11a",
+        "filename": "src/Vulkan/VkCommandBuffer.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-27T03:25:34Z",
+      "side": 1,
+      "message": "You should be able to remove this now. Sorry for changing this while you were working on it.",
+      "range": {
+        "startLine": 273,
+        "startChar": 0,
+        "endLine": 275,
+        "endChar": 41
+      },
+      "revId": "438b3f943e1be57cab52d3699eaa00c8aeea2629",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
