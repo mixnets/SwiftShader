@@ -116,6 +116,30 @@
       "revId": "bc73e7b2bb01af2070be0fae5b560437350b3a6c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4ef5e40b_3872eb19",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-27T19:54:37Z",
+      "side": 1,
+      "message": "Let\u0027s address that when some of these new value types show up.",
+      "parentUuid": "88a45700_05a48a7a",
+      "range": {
+        "startLine": 408,
+        "startChar": 2,
+        "endLine": 408,
+        "endChar": 27
+      },
+      "revId": "bc73e7b2bb01af2070be0fae5b560437350b3a6c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
