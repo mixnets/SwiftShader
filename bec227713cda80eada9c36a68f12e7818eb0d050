@@ -46,6 +46,30 @@
       "revId": "bec227713cda80eada9c36a68f12e7818eb0d050",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6c8f39e1_b02c42ae",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-27T07:07:17Z",
+      "side": 1,
+      "message": "Actually my plan for Reactor 2.0 is to have a SIMD::Float so that people can write methods in a namespace containing \"using SIMD;\" entirely as if it was scalar code (i.e. like a shader). SIMD::Float4 would then be a vector of N-wide SIMD vectors, the equivalent of vec4 in GLSL.\n\nSo I wouldn\u0027t mind replacing Float4 with SIMD::Float in these files (note, not SpirvShader::SIMD::Float).\n\nBarring that I do prefer FloatN over FloatL a fair bit. For now this implementation will deal explicitly with the vectorization of SPIR-V. So it shouldn\u0027t be hidden that it\u0027s really a vector as that would just cause confusion between FloatL and Float. In my opinion FloatL just doesn\u0027t clarify that it represents SIMD lanes. It reads like a random letter suffix to me, and the comment doesn\u0027t help much to stop it from looking weird, sorry.\n\nAnyway, what\u0027s your take on SIMD::Float?",
+      "parentUuid": "f99178e7_9935358f",
+      "range": {
+        "startLine": 40,
+        "startChar": 2,
+        "endLine": 41,
+        "endChar": 37
+      },
+      "revId": "bec227713cda80eada9c36a68f12e7818eb0d050",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
