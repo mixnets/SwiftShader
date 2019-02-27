@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "518637cf_d98cc138",
+        "filename": "src/Pipeline/SpirvShader_dbg.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-27T00:38:43Z",
+      "side": 1,
+      "message": "remove the Op::, this is not a scoped enum (if we wanted, we could use spirv/unified1/spirv.hpp11 where it *is*, and the names are shorter..)",
+      "revId": "c5d5c41b34e3862c9503a9578608525100128006",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
