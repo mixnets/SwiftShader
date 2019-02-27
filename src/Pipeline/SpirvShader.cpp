@@ -465,6 +465,19 @@ namespace sw
 		}
 	}
 
+	bool SpirvShader::IsStorageInterleavedByLane(spv::StorageClass storageClass)
+	{
+		switch (storageClass)
+		{
+		case spv::StorageClassUniform:
+		case spv::StorageClassUniformConstant:
+		case spv::StorageClassStorageBuffer:
+			return false;
+		default:
+			return true;
+		}
+	}
+
 	template<typename F>
 	int SpirvShader::VisitInterfaceInner(TypeID id, Decorations d, F f) const
 	{
@@ -852,12 +865,24 @@ namespace sw
 			UNIMPLEMENTED("Descriptor-backed load not yet implemented");
 		}
 
-		auto &ptrBase = routine->getValue(pointer.pointerBase);
+		Pointer<Float> ptrBase;
+		if (pointerBase.kind == Object::Kind::PhysicalPointer)
+		{
+			ptrBase = routine->getPhysicalPointer(pointer.pointerBase);
+		}
+		else
+		{
+			ptrBase = &routine->getValue(pointer.pointerBase)[0];
+		}
+
+		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
+
 		auto &dst = routine->getIntermediate(objectId);
 
 		if (pointer.kind == Object::Kind::Value)
 		{
-			auto offsets = As<IntL>(routine->getIntermediate(insn.word(3))[0]);
+			// Divergent offsets.
+			auto offsets = As<IntL>(routine->getIntermediate(pointerId)[0]);
 			for (auto i = 0u; i < objectTy.sizeInComponents; i++)
 			{
 				// i wish i had a Float,Float,Float,Float constructor here..
@@ -865,17 +890,27 @@ namespace sw
 				for (int j = 0; j < NumLanes; j++)
 				{
 					Int offset = Int(i) + Extract(offsets, j);
-					v = Insert(v, Extract(ptrBase[offset], j), j);
+					if (interleavedByLane) { offset = offset * NumLanes + j; }
+					v = Insert(v, ptrBase[offset], j);
 				}
 				dst.emplace(i, v);
 			}
 		}
-		else
+		else if (interleavedByLane)
 		{
-			// no divergent offsets to worry about
+			// Lane-interleaved data. No divergent offsets.
+			Pointer<FloatL> src = As<Pointer<FloatL>>(ptrBase);
 			for (auto i = 0u; i < objectTy.sizeInComponents; i++)
 			{
-				dst.emplace(i, ptrBase[i]);
+				dst.emplace(i, src[i]);
+			}
+		}
+		else
+		{
+			// Non-interleaved data. No divergent offsets.
+			for (auto i = 0u; i < objectTy.sizeInComponents; i++)
+			{
+				dst.emplace(i, RValue<FloatL>(ptrBase[i]));
 			}
 		}
 	}
@@ -898,7 +933,17 @@ namespace sw
 			UNIMPLEMENTED("Descriptor-backed store not yet implemented");
 		}
 
-		auto &ptrBase = routine->getValue(pointer.pointerBase);
+		Pointer<Float> ptrBase;
+		if (pointerBase.kind == Object::Kind::PhysicalPointer)
+		{
+			ptrBase = routine->getPhysicalPointer(pointer.pointerBase);
+		}
+		else
+		{
+			ptrBase = &routine->getValue(pointer.pointerBase)[0];
+		}
+
+		bool interleavedByLane = IsStorageInterleavedByLane(pointerBaseTy.storageClass);
 
 		if (object.kind == Object::Kind::Constant)
 		{
@@ -906,23 +951,25 @@ namespace sw
 
 			if (pointer.kind == Object::Kind::Value)
 			{
+				// Constant source data. Divergent offsets.
 				auto offsets = As<IntL>(routine->getIntermediate(pointerId)[0]);
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
-					// Scattered store
 					for (int j = 0; j < NumLanes; j++)
 					{
-						auto dst = ptrBase[Int(i) + Extract(offsets, j)];
-						dst = Insert(dst, Float(src[i]), j);
+						Int offset = Int(i) + Extract(offsets, j);
+						if (interleavedByLane) { offset = offset * NumLanes + j; }
+						ptrBase[offset] = RValue<Float>(src[i]);
 					}
 				}
 			}
 			else
 			{
-				// no divergent offsets
+				// Constant source data. No divergent offsets.
+				Pointer<FloatL> dst = As<Pointer<FloatL>>(ptrBase);
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
-					ptrBase[i] = RValue<FloatL>(src[i]);
+					dst[i] = RValue<FloatL>(src[i]);
 				}
 			}
 		}
@@ -932,23 +979,34 @@ namespace sw
 
 			if (pointer.kind == Object::Kind::Value)
 			{
+				// Intermediate source data. Divergent offsets.
 				auto offsets = As<IntL>(routine->getIntermediate(pointerId)[0]);
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
-					// Scattered store
 					for (int j = 0; j < NumLanes; j++)
 					{
-						auto dst = ptrBase[Int(i) + Extract(offsets, j)];
-						dst = Insert(dst, Extract(src[i], j), j);
+						Int offset = Int(i) + Extract(offsets, j);
+						if (interleavedByLane) { offset = offset * NumLanes + j; }
+						ptrBase[offset] = Extract(src[i], j);
 					}
+				}
+			}
+			else if (interleavedByLane)
+			{
+				// Intermediate source data. Lane-interleaved data. No divergent offsets.
+				Pointer<FloatL> dst = As<Pointer<FloatL>>(ptrBase);
+				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
+				{
+					dst[i] = src[i];
 				}
 			}
 			else
 			{
-				// no divergent offsets
+				// Intermediate source data. Non-interleaved data. No divergent offsets.
+				Pointer<FloatL> dst = As<Pointer<FloatL>>(ptrBase);
 				for (auto i = 0u; i < elementTy.sizeInComponents; i++)
 				{
-					ptrBase[i] = src[i];
+					dst[i] = FloatL(src[i]);
 				}
 			}
 		}
