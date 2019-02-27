@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a097416_bf9c2841",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 7
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-27T14:39:37Z",
+      "side": 1,
+      "message": "Regres report doesn\u0027t seem to agree. Preferably the commit message should be accurate about this so we don\u0027t have to peruse Gerrit comments. Anyway, no strong objection to landing this as a partial implementation.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 33
+      },
+      "revId": "df69326bcb16ebd9c0ad8443daf9b02fef61b156",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
