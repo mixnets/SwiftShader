@@ -33,6 +33,24 @@
       "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a676e06c_456fe450",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1176,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-28T22:14:04Z",
+      "side": 1,
+      "message": "On second thought, this is fine.",
+      "parentUuid": "6e89c35c_a7e3a0db",
+      "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
