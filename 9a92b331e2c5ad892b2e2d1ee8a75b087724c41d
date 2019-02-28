@@ -22,6 +22,30 @@
       "revId": "9a92b331e2c5ad892b2e2d1ee8a75b087724c41d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0b9ecb1_4b6b39da",
+        "filename": "src/Device/Stream.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-28T04:01:56Z",
+      "side": 1,
+      "message": "OK",
+      "parentUuid": "909919db_8162f507",
+      "range": {
+        "startLine": 46,
+        "startChar": 30,
+        "endLine": 46,
+        "endChar": 31
+      },
+      "revId": "9a92b331e2c5ad892b2e2d1ee8a75b087724c41d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }

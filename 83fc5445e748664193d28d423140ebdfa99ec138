@@ -69,6 +69,30 @@
       "revId": "83fc5445e748664193d28d423140ebdfa99ec138",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9f540231_dcbbc321",
+        "filename": "src/Device/Stream.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-28T04:01:56Z",
+      "side": 0,
+      "message": "OK, results of investigation --\n\n- mapping for VK_FORMAT_A2B10G10R10_UNORM_PACK32 looks OK.\n- we\u0027ve fouled up VK_FORMAT_B8G8R8A8_UNORM, and are accidentally treating it as R8G8B8A8. I will remap that to use STREAMTYPE_COLOR which does the right thing.\n- anyone trying to use Pastel on a BE machine is going to have fun with the _PACK32 formats (and probably many other things)",
+      "parentUuid": "dd4f0ea4_2745c971",
+      "range": {
+        "startLine": 28,
+        "startChar": 2,
+        "endLine": 28,
+        "endChar": 60
+      },
+      "revId": "83fc5445e748664193d28d423140ebdfa99ec138",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
