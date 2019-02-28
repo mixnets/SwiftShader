@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2d3c3418_8d1f7093",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T05:08:11Z",
+      "side": 1,
+      "message": "C++11 conformant standard library.\n\nOur Vulkan implementation can go all-out C++11, but Reactor is still shared with the OpenGL ES implementation, which unfortunately should support old Android build toolsets for just a bit longer. See https://swiftshader.googlesource.com/SwiftShader/+/refs/heads/master/third_party/stlport-cpp11-extension for what we had to do to modernize the code base even a tiny bit.",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 3
+      },
+      "revId": "5ed24c93dbcd02a5f226da1f0b13973908252d8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db8b4480_c131ed91",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T05:08:11Z",
+      "side": 1,
+      "message": "Pretty sure this was working at one point.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 114
+      },
+      "revId": "5ed24c93dbcd02a5f226da1f0b13973908252d8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
