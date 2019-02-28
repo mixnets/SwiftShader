@@ -45,6 +45,30 @@
       "revId": "83fc5445e748664193d28d423140ebdfa99ec138",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dd4f0ea4_2745c971",
+        "filename": "src/Device/Stream.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-28T03:55:34Z",
+      "side": 0,
+      "message": "VkPipeline.cpp:getStreamType() maps all the required vertex buffer formats without using these. I\u0027ll take another look and see if we\u0027re buggy.",
+      "parentUuid": "1e1ff3cc_4b20b255",
+      "range": {
+        "startLine": 28,
+        "startChar": 2,
+        "endLine": 28,
+        "endChar": 60
+      },
+      "revId": "83fc5445e748664193d28d423140ebdfa99ec138",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
