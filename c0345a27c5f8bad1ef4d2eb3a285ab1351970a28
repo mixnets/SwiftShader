@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8303fa8c_42f16c7b",
+        "filename": "build/Visual Studio 15 2017 Win64/libvk_swiftshader.vcxproj",
+        "patchSetId": 6
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T03:39:48Z",
+      "side": 1,
+      "message": "Actually I meant src/Vulkan/vulkan.vcxproj[.filters], but this one too, yes. :)",
+      "range": {
+        "startLine": 321,
+        "startChar": 0,
+        "endLine": 322,
+        "endChar": 69
+      },
+      "revId": "c0345a27c5f8bad1ef4d2eb3a285ab1351970a28",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a5532c1f_84e6ef1f",
+        "filename": "src/Vulkan/libVulkan.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T03:39:48Z",
+      "side": 1,
+      "message": "double newline",
+      "revId": "c0345a27c5f8bad1ef4d2eb3a285ab1351970a28",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a458c78_1b93bc33",
+        "filename": "src/WSI/VkSwapchainKHR.hpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T03:39:48Z",
+      "side": 1,
+      "message": "stray newline",
+      "revId": "c0345a27c5f8bad1ef4d2eb3a285ab1351970a28",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
