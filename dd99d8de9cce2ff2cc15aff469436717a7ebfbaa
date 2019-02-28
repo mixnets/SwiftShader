@@ -140,6 +140,23 @@
       "revId": "dd99d8de9cce2ff2cc15aff469436717a7ebfbaa",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30d79916_192d8484",
+        "filename": "src/Pipeline/DescriptorSetsLayout.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5065
+      },
+      "writtenOn": "2019-02-28T10:03:58Z",
+      "side": 1,
+      "message": "More concretely, the pipeline layout contains a lot of information that\u0027s essential to compile SPIR-V shaders and more than just the binding offsets. It will also have:\n - Push constant ranges for each stage.\n - Offsets for dynamic buffer offsets.\n - Push descriptors when that extension is supported\n - More stuff for bindless?\n\nWhat do you think of having an interchange structure that contains all this information that is contained in the pipeline layout and passed into Pipeline? (PipelineLayout would just be a small wrapper around it that does the parsing of the createInfo).",
+      "revId": "dd99d8de9cce2ff2cc15aff469436717a7ebfbaa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
