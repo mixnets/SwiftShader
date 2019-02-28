@@ -217,6 +217,12 @@ namespace sw
 			case spv::OpCompositeInsert:
 			case spv::OpCompositeExtract:
 			case spv::OpVectorShuffle:
+			case spv::OpNot: // Unary ops
+			case spv::OpIAdd: // Binary ops
+			case spv::OpISub:
+			case spv::OpIMul:
+			case spv::OpSDiv:
+			case spv::OpUDiv:
 				// Instructions that yield an ssavalue.
 			{
 				TypeID typeId = insn.word(1);
@@ -867,6 +873,18 @@ namespace sw
 				EmitVectorShuffle(insn, routine);
 				break;
 
+			case spv::OpNot:
+				EmitUnaryOp(insn, routine);
+				break;
+
+			case spv::OpIAdd:
+			case spv::OpISub:
+			case spv::OpIMul:
+			case spv::OpSDiv:
+			case spv::OpUDiv:
+				EmitBinaryOp(insn, routine);
+				break;
+
 			default:
 				printf("emit: ignoring opcode %s\n", OpcodeName(insn.opcode()).c_str());
 				break;
@@ -1121,6 +1139,62 @@ namespace sw
 			else
 			{
 				dst.emplace(i, secondHalfAccess[selector - type.sizeInComponents]);
+			}
+		}
+	}
+
+	void SpirvShader::EmitUnaryOp(InsnIterator insn, SpirvRoutine *routine) const
+	{
+		auto &type = getType(insn.word(1));
+		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto src = GenericValue(this, routine, insn.word(3));
+
+		for (auto i = 0u; i < type.sizeInComponents; i++)
+		{
+			auto val = src[i];
+
+			switch (insn.opcode())
+			{
+			case spv::OpNot:
+				dst.emplace(i, As<SIMD::Float>(~As<SIMD::Int>(val)));
+				break;
+			default:
+				UNIMPLEMENTED("Unhandled unary operator %s", OpcodeName(insn.opcode()));
+			}
+		}
+	}
+
+	void SpirvShader::EmitBinaryOp(InsnIterator insn, SpirvRoutine *routine) const
+	{
+		auto &type = getType(insn.word(1));
+		auto &dst = routine->createIntermediate(insn.word(2), type.sizeInComponents);
+		auto srcLHS = GenericValue(this, routine, insn.word(3));
+		auto srcRHS = GenericValue(this, routine, insn.word(4));
+
+		for (auto i = 0u; i < type.sizeInComponents; i++)
+		{
+			auto lhs = srcLHS[i];
+			auto rhs = srcRHS[i];
+
+			switch (insn.opcode())
+			{
+			case spv::OpIAdd:
+				dst.emplace(i, As<SIMD::Float>(As<SIMD::Int>(lhs) + As<SIMD::Int>(rhs)));
+				break;
+			case spv::OpISub:
+				dst.emplace(i, As<SIMD::Float>(As<SIMD::Int>(lhs) - As<SIMD::Int>(rhs)));
+				break;
+			case spv::OpIMul:
+				dst.emplace(i, As<SIMD::Float>(As<SIMD::Int>(lhs) * As<SIMD::Int>(rhs)));
+				break;
+			case spv::OpSDiv:
+				dst.emplace(i, As<SIMD::Float>(As<SIMD::Int>(lhs) / As<SIMD::Int>(rhs)));
+				break;
+			case spv::OpUDiv:
+				dst.emplace(i, As<SIMD::Float>(As<SIMD::UInt>(lhs) / As<SIMD::UInt>(rhs)));
+				break;
+			default:
+				UNIMPLEMENTED("Unhandled binary operator %s", OpcodeName(insn.opcode()));
 			}
 		}
 	}
