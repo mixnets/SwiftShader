@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3fc79a3a_d7a2e01f",
+        "filename": "src/Device/Context.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 736,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T17:40:37Z",
+      "side": 1,
+      "message": "style: I prefer to have curly braces for nearly every control statement. It prevents mistakes like adding another statement that was meant to go in the body but is outside of it without braces. It also separates the condition more clearly from the body\u0027s logic, which in my opinion helps readability (especially for long conditions or long single-statement bodies that are split over multiple lines it\u0027s hard to see where one ends and the other begins, at a glance).\n\nI haven\u0027t been enforcing this style in the newly written Pastel code to prevent slowing people down and causing annoyance while I don\u0027t have this written down in a style doc yet, and I want to give people a chance to debate it, but for this legacy code it\u0027s a fairly glaring style break so I\u0027d prefer to retain as much consistency as possible for now.",
+      "range": {
+        "startLine": 736,
+        "startChar": 2,
+        "endLine": 736,
+        "endChar": 3
+      },
+      "revId": "5a871727f11066b2b61b0bf65e64d622379b097b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
