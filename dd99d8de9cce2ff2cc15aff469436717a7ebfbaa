@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b4629156_47ac390a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T06:30:43Z",
+      "side": 1,
+      "message": "You mean SPIR-V?",
+      "range": {
+        "startLine": 9,
+        "startChar": 87,
+        "endLine": 9,
+        "endChar": 93
+      },
+      "revId": "dd99d8de9cce2ff2cc15aff469436717a7ebfbaa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8dc2a769_1101c7c5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T06:30:43Z",
+      "side": 1,
+      "message": "Why not use PipelineLayout?",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 40
+      },
+      "revId": "dd99d8de9cce2ff2cc15aff469436717a7ebfbaa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60fcc0bd_885dcba9",
+        "filename": "src/Pipeline/DescriptorSetsLayout.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T06:30:43Z",
+      "side": 1,
+      "message": "\u0027descriptor set\u0027 is a thing, \u0027descriptor set layout\u0027 is a thing, so \u0027descriptor sets\u0027 is a thing, \u0027descriptor set layouts\u0027 is thing, but \u0027descriptor sets layout\u0027 is not (I searched the spec).",
+      "range": {
+        "startLine": 24,
+        "startChar": 7,
+        "endLine": 24,
+        "endChar": 27
+      },
+      "revId": "dd99d8de9cce2ff2cc15aff469436717a7ebfbaa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
