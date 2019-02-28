@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "33bf31ab_12696825",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-28T18:37:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "55586740_a9ad6f22",
+      "range": {
+        "startLine": 12,
+        "startChar": 7,
+        "endLine": 12,
+        "endChar": 16
+      },
+      "revId": "1074f34ada2afd63270b5a7befa5428a61f155ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1e69b132_b768d5af",
         "filename": "src/Vulkan/VkPipeline.cpp",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-02-28T18:33:05Z",
       "side": 1,
       "message": "Nit: AFAIK, SwiftShader also already supports 2 samples.",
+      "range": {
+        "startLine": 301,
+        "startChar": 2,
+        "endLine": 301,
+        "endChar": 29
+      },
+      "revId": "1074f34ada2afd63270b5a7befa5428a61f155ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "40167682_27f87d44",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-28T18:37:30Z",
+      "side": 1,
+      "message": "Internally, perhaps. You only advertise 1 and 4, though:\n\nVkSampleCountFlags PhysicalDevice::getSampleCounts() const\n{\n\treturn VK_SAMPLE_COUNT_1_BIT | VK_SAMPLE_COUNT_4_BIT;\n}",
+      "parentUuid": "1e69b132_b768d5af",
       "range": {
         "startLine": 301,
         "startChar": 2,
