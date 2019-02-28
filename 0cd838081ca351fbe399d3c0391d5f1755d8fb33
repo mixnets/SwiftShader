@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "abdcc991_2c1cf80c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-28T22:27:28Z",
+      "side": 1,
+      "message": "Ack. Will open them tomorrow.",
+      "parentUuid": "13e15163_ea388cf8",
+      "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e76cf8a5_542a434e",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5c0ca2aa_1ea09292",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1168,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-28T22:27:28Z",
+      "side": 1,
+      "message": "Glad you approve!",
+      "parentUuid": "e76cf8a5_542a434e",
+      "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -83,6 +119,24 @@
       "side": 1,
       "message": "It can be confusing at times, but is very common nomenclature: https://softwareengineering.stackexchange.com/questions/209922/formal-name-for-left-right-hand-side-of-an-expression",
       "parentUuid": "a676e06c_456fe450",
+      "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "06271c5d_3abd6e81",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1176,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-28T22:27:28Z",
+      "side": 1,
+      "message": "Heh, Chris had me digging through compiler source with that comment. I\u0027ve written dozens of compiler frontends using LHS and RHS for binaryop values, and had always considered this standard nomenclature. Tonight I actually struggled to back this up.\n\nFor most languages, assignment is a binary op, so you\u0027re not wrong that result is a LHS. :-)\n\nAnyway, if this is going to confuse you in the slightest, I\u0027m more than happy to rename to something else. Just suggest two names.",
+      "parentUuid": "633c097c_8cc7fd2e",
       "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
