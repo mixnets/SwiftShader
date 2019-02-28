@@ -48,6 +48,54 @@
     },
     {
       "key": {
+        "uuid": "f03bbee1_8d230cef",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-28T09:54:57Z",
+      "side": 1,
+      "message": "No I mean something in \"src/Pipeline\" #including and using stuff from \"src/Vulkan\".",
+      "parentUuid": "b4629156_47ac390a",
+      "range": {
+        "startLine": 9,
+        "startChar": 87,
+        "endLine": 9,
+        "endChar": 93
+      },
+      "revId": "dd99d8de9cce2ff2cc15aff469436717a7ebfbaa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "47280933_2d05c709",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-28T09:54:57Z",
+      "side": 1,
+      "message": "I\u0027m not sure if you\u0027re asking:\na) Why not `#include \"Vulkan/VkPipelineLayout.hpp\"`, and drop the interface, or...\nb) Why not name it PipelineLayout.\n\nFor (a), because I\u0027ll be introducing the first proper Pipeline -\u003e Vulkan dependency, and I had assumed we still wanted Pipeline \u0026 Device abstracted from the graphics API(s).\nHowever, I have just noticed that Device/Renderer depends on VkImageView, so we already have a Device -\u003e Vulkan dependency there.\n\nI guess I\u0027m just unsure on what\u0027s the major architectural design here?\nAre we allowing Pipeline and Device to directly use Vulkan types? If so, is there a major gain to be had keeping separate directories, namespaces \u0026 abstractions?\n\nIf you meant (b), I can rename to match.",
+      "parentUuid": "8dc2a769_1101c7c5",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 40
+      },
+      "revId": "dd99d8de9cce2ff2cc15aff469436717a7ebfbaa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "60fcc0bd_885dcba9",
         "filename": "src/Pipeline/DescriptorSetsLayout.hpp",
         "patchSetId": 10
@@ -59,6 +107,30 @@
       "writtenOn": "2019-02-28T06:30:43Z",
       "side": 1,
       "message": "\u0027descriptor set\u0027 is a thing, \u0027descriptor set layout\u0027 is a thing, so \u0027descriptor sets\u0027 is a thing, \u0027descriptor set layouts\u0027 is thing, but \u0027descriptor sets layout\u0027 is not (I searched the spec).",
+      "range": {
+        "startLine": 24,
+        "startChar": 7,
+        "endLine": 24,
+        "endChar": 27
+      },
+      "revId": "dd99d8de9cce2ff2cc15aff469436717a7ebfbaa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84dc4dd3_7ba2aa0f",
+        "filename": "src/Pipeline/DescriptorSetsLayout.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-28T09:54:57Z",
+      "side": 1,
+      "message": "I can rename to DescriptorSetLayout.",
+      "parentUuid": "60fcc0bd_885dcba9",
       "range": {
         "startLine": 24,
         "startChar": 7,
