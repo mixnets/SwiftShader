@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bb8d470c_293a7e7b",
+        "filename": "src/Device/Stream.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T03:29:32Z",
+      "side": 0,
+      "message": "Doesn\u0027t this correspond to VK_FORMAT_B8G8R8A8_UNORM, which is a mandatory vertex buffer attribute format?",
+      "range": {
+        "startLine": 26,
+        "startChar": 2,
+        "endLine": 26,
+        "endChar": 66
+      },
+      "revId": "83fc5445e748664193d28d423140ebdfa99ec138",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1e1ff3cc_4b20b255",
+        "filename": "src/Device/Stream.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T03:29:32Z",
+      "side": 0,
+      "message": "VK_FORMAT_A2B10G10R10_UNORM_PACK32 is a normalized unsigned format close to this.",
+      "range": {
+        "startLine": 28,
+        "startChar": 2,
+        "endLine": 28,
+        "endChar": 60
+      },
+      "revId": "83fc5445e748664193d28d423140ebdfa99ec138",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

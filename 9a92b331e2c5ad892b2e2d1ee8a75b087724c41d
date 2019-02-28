@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "909919db_8162f507",
+        "filename": "src/Device/Stream.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T03:29:32Z",
+      "side": 1,
+      "message": "nit: Seems like a good time to replace this with nullptr.",
+      "range": {
+        "startLine": 46,
+        "startChar": 30,
+        "endLine": 46,
+        "endChar": 31
+      },
+      "revId": "9a92b331e2c5ad892b2e2d1ee8a75b087724c41d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
