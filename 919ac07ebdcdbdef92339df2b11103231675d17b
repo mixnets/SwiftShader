@@ -22,6 +22,30 @@
       "revId": "919ac07ebdcdbdef92339df2b11103231675d17b",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "635e1724_0921f285",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 929,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-28T10:27:23Z",
+      "side": 1,
+      "message": "Not yet, but it will be in the next set of changes.\nI wanted to land this first as it is changing the way we load and store logical pointers so the logic is consistent for both physical and logical pointers.",
+      "parentUuid": "d1561e00_789f2e67",
+      "range": {
+        "startLine": 929,
+        "startChar": 40,
+        "endLine": 929,
+        "endChar": 55
+      },
+      "revId": "919ac07ebdcdbdef92339df2b11103231675d17b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
