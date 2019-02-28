@@ -93,6 +93,30 @@
       "revId": "1074f34ada2afd63270b5a7befa5428a61f155ce",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a5943f7_63e95ed9",
+        "filename": "src/Vulkan/VkPipeline.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-02-28T18:42:41Z",
+      "side": 1,
+      "message": "Right, I wasn\u0027t sure if we needed to allow it here anyways to be more \"futureproof\", but I guess it makes more sense to follow what we advertise for now. Let\u0027s keep it this way. Thanks.",
+      "parentUuid": "40167682_27f87d44",
+      "range": {
+        "startLine": 301,
+        "startChar": 2,
+        "endLine": 301,
+        "endChar": 29
+      },
+      "revId": "1074f34ada2afd63270b5a7befa5428a61f155ce",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
