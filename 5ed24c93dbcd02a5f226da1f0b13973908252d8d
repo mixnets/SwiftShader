@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "55bc2e52_d494dbb5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-28T09:34:37Z",
+      "side": 1,
+      "message": "Fair enough, although I\u0027d be interested to know who still hasn\u0027t switched to libc++. It became the recommended STL in NDK 16b (December 2017), and then the default in r17c (June 2018). More info: https://android-developers.googleblog.com/2017/09/introducing-android-native-development.html\n\nDo you have a list of clients are that are still using stlport? Perhaps we can get them to switch so we can clean up legacy cruft.",
+      "parentUuid": "2d3c3418_8d1f7093",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 3
+      },
+      "revId": "5ed24c93dbcd02a5f226da1f0b13973908252d8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "db8b4480_c131ed91",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2019-02-28T05:08:11Z",
       "side": 1,
       "message": "Pretty sure this was working at one point.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 114
+      },
+      "revId": "5ed24c93dbcd02a5f226da1f0b13973908252d8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0412af4a_d4a620fd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-02-28T09:34:37Z",
+      "side": 1,
+      "message": "Probably was at one point. It tries to call `Function\u003c\u003e::arg()` which seemingly does not exist.",
+      "parentUuid": "db8b4480_c131ed91",
       "range": {
         "startLine": 11,
         "startChar": 0,
