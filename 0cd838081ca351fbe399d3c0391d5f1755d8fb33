@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e76cf8a5_542a434e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1168,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-28T21:44:11Z",
+      "side": 1,
+      "message": "This looks pretty nice.",
+      "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6e89c35c_a7e3a0db",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1176,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-02-28T21:44:11Z",
+      "side": 1,
+      "message": "Not a fan of calling anything other than a result \u0027lhs\u0027.",
+      "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
