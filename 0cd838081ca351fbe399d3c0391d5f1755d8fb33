@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "13e15163_ea388cf8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T22:16:12Z",
+      "side": 1,
+      "message": "Bug ID",
+      "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "e76cf8a5_542a434e",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 1
@@ -48,6 +65,24 @@
       "side": 1,
       "message": "On second thought, this is fine.",
       "parentUuid": "6e89c35c_a7e3a0db",
+      "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "633c097c_8cc7fd2e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1176,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T22:16:12Z",
+      "side": 1,
+      "message": "It can be confusing at times, but is very common nomenclature: https://softwareengineering.stackexchange.com/questions/209922/formal-name-for-left-right-hand-side-of-an-expression",
+      "parentUuid": "a676e06c_456fe450",
       "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
