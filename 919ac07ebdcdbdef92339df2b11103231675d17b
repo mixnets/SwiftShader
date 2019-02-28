@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d1561e00_789f2e67",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 5
+      },
+      "lineNbr": 929,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-02-28T05:49:54Z",
+      "side": 1,
+      "message": "I\u0027m either overlooking it or missing something fundamental, but I don\u0027t see this ever being set as the object type?",
+      "range": {
+        "startLine": 929,
+        "startChar": 40,
+        "endLine": 929,
+        "endChar": 55
+      },
+      "revId": "919ac07ebdcdbdef92339df2b11103231675d17b",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
