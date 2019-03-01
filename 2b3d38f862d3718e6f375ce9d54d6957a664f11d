@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "625bd99d_f762d3c2",
+        "filename": "src/WSI/VkSurfaceKHR.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-01T18:52:47Z",
+      "side": 1,
+      "message": "This header isn\u0027t used currently, while SurfaceKHR should probably derive from VkObject. But that\u0027s a separate issue.",
+      "range": {
+        "startLine": 18,
+        "startChar": 17,
+        "endLine": 18,
+        "endChar": 29
+      },
+      "revId": "2b3d38f862d3718e6f375ce9d54d6957a664f11d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
