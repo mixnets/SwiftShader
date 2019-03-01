@@ -172,6 +172,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+<!-- FILE LIST BEGIN -->
     <ClCompile Include="$(SolutionDir)src\OpenGL\libGLES_CM\Buffer.cpp"  />
     <ClCompile Include="$(SolutionDir)src\OpenGL\libGLES_CM\Context.cpp"  />
     <ClCompile Include="$(SolutionDir)src\OpenGL\libGLES_CM\Device.cpp"  />
@@ -214,6 +215,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="$(SolutionDir)include\GLES\gl.h" />
     <ClInclude Include="$(SolutionDir)include\GLES\glext.h" />
     <ClInclude Include="$(SolutionDir)include\GLES\glplatform.h" />
+<!-- FILE LIST END -->
     <ResourceCompile Include="$(SolutionDir)src\OpenGL\libGLES_CM\libGLES_CM.rc"  />
   </ItemGroup>
   <ItemGroup>
