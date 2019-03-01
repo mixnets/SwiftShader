@@ -1097,14 +1097,14 @@ namespace rr
 
 	RValue<Long> operator+(RValue<Long> lhs, RValue<Long> rhs);
 	RValue<Long> operator-(RValue<Long> lhs, RValue<Long> rhs);
-//	RValue<Long> operator*(RValue<Long> lhs, RValue<Long> rhs);
+	RValue<Long> operator*(RValue<Long> lhs, RValue<Long> rhs);
 //	RValue<Long> operator/(RValue<Long> lhs, RValue<Long> rhs);
 //	RValue<Long> operator%(RValue<Long> lhs, RValue<Long> rhs);
 //	RValue<Long> operator&(RValue<Long> lhs, RValue<Long> rhs);
 //	RValue<Long> operator|(RValue<Long> lhs, RValue<Long> rhs);
 //	RValue<Long> operator^(RValue<Long> lhs, RValue<Long> rhs);
 //	RValue<Long> operator<<(RValue<Long> lhs, RValue<Long> rhs);
-//	RValue<Long> operator>>(RValue<Long> lhs, RValue<Long> rhs);
+	RValue<Long> operator>>(RValue<Long> lhs, RValue<Long> rhs);
 	RValue<Long> operator+=(Long &lhs, RValue<Long> rhs);
 	RValue<Long> operator-=(Long &lhs, RValue<Long> rhs);
 //	RValue<Long> operator*=(Long &lhs, RValue<Long> rhs);
@@ -1868,7 +1868,7 @@ namespace rr
 		UInt4(int x, int yzw);
 		UInt4(int x, int y, int zw);
 		UInt4(int x, int y, int z, int w);
-		UInt4(unsigned int x, unsigned int y, unsigned int z, unsigned int w);
+//		UInt4(unsigned int x, unsigned int y, unsigned int z, unsigned int w);
 		UInt4(RValue<UInt4> rhs);
 		UInt4(const UInt4 &rhs);
 		UInt4(const Reference<UInt4> &rhs);
