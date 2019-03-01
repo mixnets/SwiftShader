@@ -1063,6 +1063,7 @@ namespace rr
 	RValue<Int> Min(RValue<Int> x, RValue<Int> y);
 	RValue<Int> Clamp(RValue<Int> x, RValue<Int> min, RValue<Int> max);
 	RValue<Int> RoundInt(RValue<Float> cast);
+	RValue<Int> MulHigh(RValue<Int> x, RValue<Int> y);
 
 	class Long : public LValue<Long>
 	{
@@ -1199,6 +1200,7 @@ namespace rr
 	RValue<UInt> Max(RValue<UInt> x, RValue<UInt> y);
 	RValue<UInt> Min(RValue<UInt> x, RValue<UInt> y);
 	RValue<UInt> Clamp(RValue<UInt> x, RValue<UInt> min, RValue<UInt> max);
+	RValue<UInt> MulHigh(RValue<UInt> x, RValue<UInt> y);
 //	RValue<UInt> RoundUInt(RValue<Float> cast);
 
 	class Int2 : public LValue<Int2>
