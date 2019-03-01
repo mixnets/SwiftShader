@@ -16,3 +16,6 @@ make --jobs=$(nproc) VERBOSE=1
 
 # Run the GLES unit tests.
 ./unittests
+
+# Run the Vulkan unit tests.
+./vk-unittests
