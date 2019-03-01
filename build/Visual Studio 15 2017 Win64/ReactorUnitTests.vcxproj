@@ -142,8 +142,10 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+<!-- FILE LIST BEGIN -->
     <ClCompile Include="$(SolutionDir)src\Reactor\ReactorUnitTests.cpp"  />
     <ClCompile Include="$(SolutionDir)third_party\googletest\googletest\src\gtest-all.cc"  />
+<!-- FILE LIST END -->
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\ReactorLLVM.vcxproj">

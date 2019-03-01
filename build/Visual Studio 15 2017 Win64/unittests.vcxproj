@@ -142,9 +142,11 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+<!-- FILE LIST BEGIN -->
     <ClCompile Include="$(SolutionDir)tests\GLESUnitTests\main.cpp"  />
     <ClCompile Include="$(SolutionDir)tests\GLESUnitTests\unittests.cpp"  />
     <ClCompile Include="$(SolutionDir)third_party\googletest\googletest\src\gtest-all.cc"  />
+<!-- FILE LIST END -->
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\GLCompiler.vcxproj">

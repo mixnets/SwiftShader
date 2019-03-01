@@ -118,20 +118,32 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="$(SolutionDir)src\Reactor\LLVMReactor.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\Reactor\Nucleus.hpp" />
-    <ClCompile Include="$(SolutionDir)src\Reactor\Routine.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\Reactor\Routine.hpp" />
-    <ClCompile Include="$(SolutionDir)src\Reactor\LLVMRoutine.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\Reactor\LLVMRoutine.hpp" />
-    <ClCompile Include="$(SolutionDir)src\Reactor\LLVMRoutineManager.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\Reactor\LLVMRoutineManager.hpp" />
+<!-- FILE LIST BEGIN -->
     <ClCompile Include="$(SolutionDir)src\Reactor\CPUID.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\Reactor\CPUID.hpp" />
     <ClCompile Include="$(SolutionDir)src\Reactor\Debug.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\Reactor\Debug.hpp" />
+    <ClCompile Include="$(SolutionDir)src\Reactor\DebugAndroid.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Reactor\ExecutableMemory.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Reactor\LLVMReactor.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Reactor\LLVMRoutine.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Reactor\LLVMRoutineManager.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Reactor\Optimizer.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Reactor\Routine.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Reactor\SubzeroReactor.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Reactor\Thread.cpp"  />
+    <ClInclude Include="$(SolutionDir)src\Reactor\CPUID.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Reactor\Debug.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Reactor\DebugAndroid.hpp" />
     <ClInclude Include="$(SolutionDir)src\Reactor\ExecutableMemory.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Reactor\LLVMRoutine.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Reactor\LLVMRoutineManager.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Reactor\MutexLock.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Reactor\Nucleus.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Reactor\Optimizer.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Reactor\Reactor.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Reactor\Routine.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Reactor\Thread.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Reactor\x86.hpp" />
+<!-- FILE LIST END -->
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\llvm.vcxproj">

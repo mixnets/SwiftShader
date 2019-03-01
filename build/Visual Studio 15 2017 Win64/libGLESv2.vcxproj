@@ -180,6 +180,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+<!-- FILE LIST BEGIN -->
     <ClCompile Include="$(SolutionDir)src\OpenGL\libGLESv2\Buffer.cpp"  />
     <ClCompile Include="$(SolutionDir)src\OpenGL\libGLESv2\Context.cpp"  />
     <ClCompile Include="$(SolutionDir)src\OpenGL\libGLESv2\Device.cpp"  />
@@ -240,6 +241,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="$(SolutionDir)include\GLES2\gl2platform.h" />
     <ClInclude Include="$(SolutionDir)include\GLES3\gl3.h" />
     <ClInclude Include="$(SolutionDir)include\GLES3\gl3platform.h" />
+<!-- FILE LIST END -->
     <ResourceCompile Include="$(SolutionDir)src\OpenGL\libGLESv2\libGLESv2.rc"  />
   </ItemGroup>
   <ItemGroup>
