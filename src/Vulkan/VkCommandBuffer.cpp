@@ -199,8 +199,6 @@ struct Draw : public CommandBuffer::Command
 			}
 		}
 
-		executionState.renderer->synchronize();
-
 		const uint32_t primitiveCount = pipeline->computePrimitiveCount(vertexCount);
 		const uint32_t lastInstance = firstInstance + instanceCount - 1;
 		for(uint32_t instance = firstInstance; instance <= lastInstance; instance++)
@@ -208,8 +206,6 @@ struct Draw : public CommandBuffer::Command
 			executionState.renderer->setInstanceID(instance);
 			executionState.renderer->draw(context.drawType, primitiveCount);
 		}
-
-		executionState.renderer->synchronize();
 	}
 
 	uint32_t vertexCount;

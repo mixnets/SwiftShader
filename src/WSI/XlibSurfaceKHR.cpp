@@ -11,7 +11,7 @@
 
 #include "XlibSurfaceKHR.hpp"
 
-#include "VkDeviceMemory.hpp"
+#include "Vulkan/VkDeviceMemory.hpp"
 
 #include <string.h>
 
