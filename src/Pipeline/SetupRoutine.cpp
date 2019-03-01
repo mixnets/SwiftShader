@@ -96,7 +96,7 @@ namespace sw
 
 				A = IfThenElse(w0w1w2 < 0, -A, A);
 
-				Bool frontFacing = state.frontFacingCCW ? A > 0.0f : A < 0.0f;
+				Bool frontFacing = state.frontFacingCCW ? A < 0.0f : A > 0.0f;
 
 				if(state.cullMode & VK_CULL_MODE_FRONT_BIT)
 				{

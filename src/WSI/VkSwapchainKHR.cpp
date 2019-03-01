@@ -146,4 +146,28 @@ VkResult SwapchainKHR::getImages(uint32_t *pSwapchainImageCount, VkImage *pSwapc
 	return VK_SUCCESS;
 }
 
+VkResult SwapchainKHR::getNextImage(uint64_t timeout, VkSemaphore semaphore, VkFence fence, uint32_t *pImageIndex)
+{
+	for(uint32_t i = 0; i < getImageCount(); i++)
+	{
+		PresentImage& currentImage = images[i];
+		if(currentImage.imageStatus == AVAILABLE)
+		{
+			currentImage.imageStatus = DRAWING;
+			*pImageIndex = i;
+			vk::Cast(semaphore)->signal();
+			return VK_SUCCESS;
+		}
+	}
+
+	return VK_NOT_READY;
+}
+
+void SwapchainKHR::present(const uint32_t* index)
+{
+	images[*index].imageStatus = PRESENTING;
+	vk::Cast(createInfo.surface)->draw(images[*index].image, images[*index].imageMemory);
+	images[*index].imageStatus = AVAILABLE;
+}
+
 }
