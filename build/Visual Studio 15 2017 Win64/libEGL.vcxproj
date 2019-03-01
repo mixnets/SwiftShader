@@ -180,6 +180,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+<!-- FILE LIST BEGIN -->
     <ClCompile Include="$(SolutionDir)src\OpenGL\libEGL\Config.cpp"  />
     <ClCompile Include="$(SolutionDir)src\OpenGL\libEGL\Display.cpp"  />
     <ClCompile Include="$(SolutionDir)src\OpenGL\libEGL\Surface.cpp"  />
@@ -247,6 +248,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="$(SolutionDir)include\vulkan\vulkan_xcb.h" />
     <ClInclude Include="$(SolutionDir)include\vulkan\vulkan_xlib.h" />
     <ClInclude Include="$(SolutionDir)include\vulkan\vulkan_xlib_xrandr.h" />
+<!-- FILE LIST END -->
     <ResourceCompile Include="$(SolutionDir)src\OpenGL\libEGL\libEGL.rc"  />
   </ItemGroup>
   <ItemGroup>

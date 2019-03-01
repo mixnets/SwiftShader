@@ -118,6 +118,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+<!-- FILE LIST BEGIN -->
     <ClCompile Include="$(SolutionDir)src\Common\CPUID.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Common\Configurator.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Common\Debug.cpp"  />
@@ -143,6 +144,19 @@
     <ClInclude Include="$(SolutionDir)src\Common\Thread.hpp" />
     <ClInclude Include="$(SolutionDir)src\Common\Timer.hpp" />
     <ClInclude Include="$(SolutionDir)src\Common\Types.hpp" />
+    <ClCompile Include="$(SolutionDir)src\Main\Config.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Main\FrameBuffer.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Main\FrameBufferDD.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Main\FrameBufferGDI.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Main\FrameBufferWin.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Main\SwiftConfig.cpp"  />
+    <ClInclude Include="$(SolutionDir)src\Main\Config.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Main\FrameBuffer.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Main\FrameBufferDD.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Main\FrameBufferGDI.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Main\FrameBufferOSX.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Main\FrameBufferWin.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Main\SwiftConfig.hpp" />
     <ClCompile Include="$(SolutionDir)src\Renderer\Blitter.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Renderer\Clipper.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Renderer\Color.cpp"  />
@@ -211,18 +225,7 @@
     <ClInclude Include="$(SolutionDir)src\Shader\VertexProgram.hpp" />
     <ClInclude Include="$(SolutionDir)src\Shader\VertexRoutine.hpp" />
     <ClInclude Include="$(SolutionDir)src\Shader\VertexShader.hpp" />
-    <ClCompile Include="$(SolutionDir)src\Main\Config.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\Main\Config.hpp" />
-    <ClCompile Include="$(SolutionDir)src\Main\FrameBuffer.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\Main\FrameBuffer.hpp" />
-    <ClCompile Include="$(SolutionDir)src\Main\SwiftConfig.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\Main\SwiftConfig.hpp" />
-    <ClCompile Include="$(SolutionDir)src\Main\FrameBufferDD.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\Main\FrameBufferDD.hpp" />
-    <ClCompile Include="$(SolutionDir)src\Main\FrameBufferGDI.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\Main\FrameBufferGDI.hpp" />
-    <ClCompile Include="$(SolutionDir)src\Main\FrameBufferWin.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\Main\FrameBufferWin.hpp" />
+<!-- FILE LIST END -->
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
