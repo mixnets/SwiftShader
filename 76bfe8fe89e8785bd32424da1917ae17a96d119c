@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9f154f70_3302db36",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1276,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-01T17:21:57Z",
+      "side": 1,
+      "message": "Are low and high around the wrong way? I only spotted this because I was about to make the following nit:\n\nI\u0027d structure this into low and high parts:\n\n// Low\ndst.emplace(i, As\u003cSIMD::Float\u003e(As\u003cSIMD::Int\u003e(lhs) * As\u003cSIMD::Int\u003e(rhs)));\n\nSIMD::Float high;\nfor (int j \u003d 0; j \u003c SIMD::Width; j++)\n{\n\tv \u003d Insert(v, As\u003cFloat\u003e(MulHigh(\n\t\t\t\tExtract(As\u003cSIMD::Int\u003e(lhs), j),\n\t\t\t\tExtract(As\u003cSIMD::Int\u003e(rhs), j))), j);\n\tdst.emplace(i, As\u003cSIMD::Float\u003e(As\u003cSIMD::Int\u003e(lhs) * As\u003cSIMD::Int\u003e(rhs)));\n}",
+      "range": {
+        "startLine": 1270,
+        "startChar": 0,
+        "endLine": 1276,
+        "endChar": 49
+      },
+      "revId": "76bfe8fe89e8785bd32424da1917ae17a96d119c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
