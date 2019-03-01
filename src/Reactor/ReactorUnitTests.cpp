@@ -923,12 +923,19 @@ TEST(ReactorUnitTests, MulHigh)
 		{
 			Pointer<Byte> out = function.Arg<0>();
 
-			*Pointer<Short4>(out + 8 * 0) =
+			*Pointer<Short4>(out + 16 * 0) =
 				MulHigh(Short4(0x1aa, 0x2dd, 0x3ee, 0xF422),
 					Short4(0x1bb, 0x2cc, 0x3ff, 0xF411));
-			*Pointer<UShort4>(out + 8 * 1) =
+			*Pointer<UShort4>(out + 16 * 1) =
 				MulHigh(UShort4(0x1aa, 0x2dd, 0x3ee, 0xF422),
 					UShort4(0x1bb, 0x2cc, 0x3ff, 0xF411));
+
+			*Pointer<Int4>(out + 16 * 2) =
+			    MulHigh(Int4(0x1aa, 0x2dd, 0xc8000000, 0xf8000000),
+						Int4(0x1bb, 0x84000000, 0x3ee, 0xd7000000));
+			*Pointer<UInt4>(out + 16 * 3) =
+					MulHigh(UInt4(0x1aa, 0x2dd, 0xc8000000, 0xf8000000),
+							UInt4(0x1bb, 0x84000000, 0x3ee, 0xd7000000));
 
 			// (U)Short8 variants are mentioned but unimplemented
 			Return(0);
@@ -938,7 +945,7 @@ TEST(ReactorUnitTests, MulHigh)
 
 		if(routine)
 		{
-			unsigned int out[2][2];
+			unsigned int out[4][4];
 
 			memset(&out, 0, sizeof(out));
 
@@ -950,6 +957,16 @@ TEST(ReactorUnitTests, MulHigh)
 
 			EXPECT_EQ(out[1][0], 0x00080002u);
 			EXPECT_EQ(out[1][1], 0xe8C0000Fu);
+
+			EXPECT_EQ(out[2][0], 0x00000000u);
+			EXPECT_EQ(out[2][1], 0xfffffe9cu);
+			EXPECT_EQ(out[2][2], 0xffffff23u);
+			EXPECT_EQ(out[2][3], 0x01480000u);
+
+			EXPECT_EQ(out[3][0], 0x00000000u);
+			EXPECT_EQ(out[3][1], 0x00000179u);
+			EXPECT_EQ(out[3][2], 0x000003eeu);
+			EXPECT_EQ(out[3][3], 0xd0480000u);
 		}
 	}
 
