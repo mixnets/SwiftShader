@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0a778982_1420259c",
+        "filename": "src/WSI/VkSwapchainKHR.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-01T18:31:20Z",
+      "side": 1,
+      "message": "Missing Vulkan/ directory here too.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 19,
+        "endChar": 22
+      },
+      "revId": "3f264a42138dabd49d9e7076daa188a93f526576",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4327ec41_70a40420",
+        "filename": "src/WSI/VkSwapchainKHR.hpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-01T18:31:20Z",
+      "side": 1,
+      "message": "Please include the Vulkan/ directory so that it compiles on Windows:\n#include \"Vulkan/VkObject.hpp\"\n\nAlso make the change in VkSurfaceKHR.*, since you added it to the list of files compiled on Windows.",
+      "range": {
+        "startLine": 18,
+        "startChar": 10,
+        "endLine": 18,
+        "endChar": 22
+      },
+      "revId": "3f264a42138dabd49d9e7076daa188a93f526576",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
