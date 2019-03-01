@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "463143c9_3229c92b",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1280,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-01T21:45:28Z",
+      "side": 1,
+      "message": "Compute lhs.x * rhs.x here, then add remaining products in the loop below? Avoids requiring the JIT to optimize it out.",
+      "range": {
+        "startLine": 1280,
+        "startChar": 23,
+        "endLine": 1280,
+        "endChar": 27
+      },
+      "revId": "c17620e6b5bb61dbb6bcfdd4a6bac6d5eb11a13e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
