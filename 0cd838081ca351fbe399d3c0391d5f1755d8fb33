@@ -140,6 +140,24 @@
       "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3faf0525_7c278b1e",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1176,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-01T05:34:22Z",
+      "side": 1,
+      "message": "To be clear: i\u0027m fine with the naming.",
+      "parentUuid": "06271c5d_3abd6e81",
+      "revId": "0cd838081ca351fbe399d3c0391d5f1755d8fb33",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
