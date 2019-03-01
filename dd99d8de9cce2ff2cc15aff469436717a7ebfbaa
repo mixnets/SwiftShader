@@ -193,6 +193,24 @@
       "revId": "dd99d8de9cce2ff2cc15aff469436717a7ebfbaa",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b638d985_c812628c",
+        "filename": "src/Pipeline/DescriptorSetsLayout.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-01T06:28:02Z",
+      "side": 1,
+      "message": "Yes, just use vk::PipelineLayout. We\u0027re not trying to avoid dependencies between the logical layers. Quoting the design doc: \"Another consequence of becoming Vulkan-only is that it will not require abstractions to support other APIs\"",
+      "parentUuid": "ee871eca_af4d470f",
+      "revId": "dd99d8de9cce2ff2cc15aff469436717a7ebfbaa",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
