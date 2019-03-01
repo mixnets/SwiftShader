@@ -1856,6 +1856,7 @@ namespace rr
 	RValue<Int4> Insert(RValue<Int4> val, RValue<Int> element, int i);
 	RValue<Int> SignMask(RValue<Int4> x);
 	RValue<Int4> Swizzle(RValue<Int4> x, unsigned char select);
+	RValue<Int4> MulHigh(RValue<Int4> x, RValue<Int4> y);
 
 	class UInt4 : public LValue<UInt4>, public XYZW<UInt4>
 	{
@@ -1867,7 +1868,7 @@ namespace rr
 		UInt4(int x, int yzw);
 		UInt4(int x, int y, int zw);
 		UInt4(int x, int y, int z, int w);
-		UInt4(unsigned int x, unsigned int y, unsigned int z, unsigned int w);
+//		UInt4(unsigned int x, unsigned int y, unsigned int z, unsigned int w);
 		UInt4(RValue<UInt4> rhs);
 		UInt4(const UInt4 &rhs);
 		UInt4(const Reference<UInt4> &rhs);
@@ -1930,6 +1931,7 @@ namespace rr
 	RValue<UInt4> CmpNLE(RValue<UInt4> x, RValue<UInt4> y);
 	RValue<UInt4> Max(RValue<UInt4> x, RValue<UInt4> y);
 	RValue<UInt4> Min(RValue<UInt4> x, RValue<UInt4> y);
+	RValue<UInt4> MulHigh(RValue<UInt4> x, RValue<UInt4> y);
 //	RValue<UInt4> RoundInt(RValue<Float4> cast);
 
 	class Half : public LValue<Half>
