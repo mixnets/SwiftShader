@@ -145,6 +145,30 @@
       "revId": "0447dfc7ee063055e64c7a2dbdb8e6038b0dbffc",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6b6e48f6_13887138",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 1280,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-01T20:45:59Z",
+      "side": 1,
+      "message": "V5: Added comments on reactor side for intrinsics work to be done later. Removed reference to specific ARM implementation option -- it\u0027s not *quite* the right thing as there\u0027s an extra doubling of the result thrown in.",
+      "parentUuid": "55a7c018_19fba818",
+      "range": {
+        "startLine": 1275,
+        "startChar": 4,
+        "endLine": 1280,
+        "endChar": 5
+      },
+      "revId": "0447dfc7ee063055e64c7a2dbdb8e6038b0dbffc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
