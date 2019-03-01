@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "c89ac3df_d1f39668",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-01T04:58:49Z",
+      "side": 1,
+      "message": "At the system level libc++ has only become available since Marshmallow. Some apps teams still need testing support for Lollipop and Kitkat, which account for 25% of devices.",
+      "parentUuid": "55bc2e52_d494dbb5",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 9,
+        "endChar": 3
+      },
+      "revId": "5ed24c93dbcd02a5f226da1f0b13973908252d8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "db8b4480_c131ed91",
         "filename": "/COMMIT_MSG",
         "patchSetId": 1
@@ -93,6 +117,30 @@
       "revId": "5ed24c93dbcd02a5f226da1f0b13973908252d8d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "014f15b5_0b672eb7",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-01T04:58:49Z",
+      "side": 1,
+      "message": "Yeah, I now recall that I was undecided about which form to support and had both for a bit to play with in the Reactor2 repo, then settled on function.Arg(i) syntax within the SwiftShader repo and didn\u0027t properly remove the Arg\u003ci\u003e(function) variant. Never noticed it since. Nice find!\n\nhttps://swiftshader-review.googlesource.com/c/Reactor2/+/2021\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/1970",
+      "parentUuid": "0412af4a_d4a620fd",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 114
+      },
+      "revId": "5ed24c93dbcd02a5f226da1f0b13973908252d8d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
