@@ -1,0 +1,114 @@
+[
+    {
+        "Output": "ReactorLLVM.vcxproj",
+        "Template": "vcxproj.tmpl",
+        "Source": [
+            {"Include": "src/Reactor/*.cpp"},
+            {"Include": "src/Reactor/*.hpp"},
+
+            {"Exclude": "src/Reactor/Subzero*.cpp"},
+            {"Exclude": "src/Reactor/*Tests.cpp"},
+            {"Exclude": "src/*/*Android.*"}
+        ]
+    }, {
+        "Output": "ReactorUnitTests.vcxproj",
+        "Template": "vcxproj.tmpl",
+        "Source": [
+            {"Include": "src/Reactor/*Tests.cpp"},
+            {"Include": "third_party/googletest/googletest/src/gtest-all.cc"}
+        ]
+    }, {
+        "Output": "SwiftShader.vcxproj",
+        "Template": "vcxproj.tmpl",
+        "Source": [
+            {"Include": "src/Common/*.cpp"},
+            {"Include": "src/Common/*.h"},
+            {"Include": "src/Common/*.hpp"},
+            {"Include": "src/Renderer/*.cpp"},
+            {"Include": "src/Renderer/*.hpp"},
+            {"Include": "src/Shader/*.cpp"},
+            {"Include": "src/Shader/*.hpp"},
+            {"Include": "src/Main/*.cpp"},
+            {"Include": "src/Main/*.hpp"},
+
+            {"Exclude": "src/*/*Android.*"},
+            {"Exclude": "src/*/*OSX.*"},
+            {"Exclude": "src/*/*Ozone.*"},
+            {"Exclude": "src/*/*X11.*"}
+        ]
+    }, {
+        "Output": "libEGL.vcxproj",
+        "Template": "vcxproj.tmpl",
+        "Source": [
+            {"Include": "src/OpenGL/libEGL/*.cpp"},
+            {"Include": "src/OpenGL/libEGL/*.h"},
+            {"Include": "src/OpenGL/libEGL/*.hpp"},
+            {"Include": "src/OpenGL/common/Object.*"},
+            {"Include": "src/OpenGL/common/debug.*"},
+            {"Include": "src/Common/SharedLibrary.*"},
+            {"Include": "include/Android/*/*.h"},
+            {"Include": "include/Direct3D/*.h"},
+            {"Include": "include/EGL/*.h"},
+            {"Include": "include/GL/*.h"},
+            {"Include": "include/GLES/*.h"},
+            {"Include": "include/GLES2/*.h"},
+            {"Include": "include/GLES3/*.h"},
+            {"Include": "include/KHR/*.h"},
+            {"Include": "include/vulkan/*.h"}
+        ]
+    }, {
+        "Output": "libGLES_CM.vcxproj",
+        "Template": "vcxproj.tmpl",
+        "Source": [
+            {"Include": "src/OpenGL/libGLES_CM/*.cpp"},
+            {"Include": "src/OpenGL/libGLES_CM/*.h"},
+            {"Include": "src/OpenGL/libGLES_CM/*.hpp"},
+            {"Include": "src/OpenGL/common/*.cpp"},
+            {"Include": "src/OpenGL/common/*.h"},
+            {"Include": "src/OpenGL/common/*.hpp"},
+            {"Include": "src/Common/SharedLibrary.*"},
+            {"Include": "include/KHR/*.h"},
+            {"Include": "include/GLES/*.h"}
+        ]
+    }, {
+        "Output": "libGLESv2.vcxproj",
+        "Template": "vcxproj.tmpl",
+        "Source": [
+            {"Include": "src/OpenGL/libGLESv2/*.cpp"},
+            {"Include": "src/OpenGL/libGLESv2/*.h"},
+            {"Include": "src/OpenGL/libGLESv2/*.hpp"},
+            {"Include": "src/OpenGL/common/*.cpp"},
+            {"Include": "src/OpenGL/common/*.h"},
+            {"Include": "src/OpenGL/common/*.hpp"},
+            {"Include": "src/Common/SharedLibrary.*"},
+            {"Include": "include/KHR/*.h"},
+            {"Include": "include/GLES2/*.h"},
+            {"Include": "include/GLES3/*.h"}
+        ]
+    }, {
+        "Output": "libvk_swiftshader.vcxproj",
+        "Template": "vcxproj.tmpl",
+        "Source": [
+            {"Include": "src/Vulkan/*.cpp"},
+            {"Include": "src/Vulkan/*.h"},
+            {"Include": "src/Vulkan/*.hpp"},
+            {"Include": "src/System/*.cpp"},
+            {"Include": "src/System/*.h"},
+            {"Include": "src/System/*.hpp"},
+            {"Include": "src/Device/*.cpp"},
+            {"Include": "src/Device/*.h"},
+            {"Include": "src/Device/*.hpp"},
+            {"Include": "src/Pipeline/*.cpp"},
+            {"Include": "src/Pipeline/*.h"},
+            {"Include": "src/Pipeline/*.hpp"},
+            {"Exclude": "src/*/*Android.*"}
+        ]
+    }, {
+        "Output": "unittests.vcxproj",
+        "Template": "vcxproj.tmpl",
+        "Source": [
+            {"Include": "tests/GLESUnitTests/*.cpp"},
+            {"Include": "third_party/googletest/googletest/src/gtest-all.cc"}
+        ]
+    }
+]

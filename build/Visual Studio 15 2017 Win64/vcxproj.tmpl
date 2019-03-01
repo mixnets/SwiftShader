@@ -1,0 +1,7 @@
+{{range $.SourceFiles}}
+    {{if HasExt . ".h" ".hpp"}}
+      ¶••••<ClInclude•Include="$(SolutionDir){{.}}"•/>
+    {{else}}
+      ¶••••<ClCompile•Include="$(SolutionDir){{.}}"••/>
+    {{end}}
+{{end}}

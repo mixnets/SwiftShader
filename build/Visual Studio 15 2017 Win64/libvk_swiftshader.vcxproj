@@ -180,6 +180,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+<!-- FILE LIST BEGIN -->
     <ClCompile Include="$(SolutionDir)src\Vulkan\VkBuffer.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Vulkan\VkCommandBuffer.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Vulkan\VkCommandPool.cpp"  />
@@ -237,25 +238,28 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="$(SolutionDir)src\Vulkan\VkSemaphore.hpp" />
     <ClInclude Include="$(SolutionDir)src\Vulkan\VkShaderModule.hpp" />
     <ClCompile Include="$(SolutionDir)src\System\CPUID.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\System\CPUID.hpp" />
     <ClCompile Include="$(SolutionDir)src\System\Configurator.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\System\Configurator.hpp" />
     <ClCompile Include="$(SolutionDir)src\System\Debug.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\System\Debug.hpp" />
     <ClCompile Include="$(SolutionDir)src\System\Half.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\System\Half.hpp" />
     <ClCompile Include="$(SolutionDir)src\System\Math.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\System\Math.hpp" />
     <ClCompile Include="$(SolutionDir)src\System\Memory.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\System\Memory.hpp" />
     <ClCompile Include="$(SolutionDir)src\System\Resource.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\System\Resource.hpp" />
     <ClCompile Include="$(SolutionDir)src\System\Socket.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\System\Socket.hpp" />
     <ClCompile Include="$(SolutionDir)src\System\Thread.cpp"  />
-    <ClInclude Include="$(SolutionDir)src\System\Thread.hpp" />
     <ClCompile Include="$(SolutionDir)src\System\Timer.cpp"  />
+    <ClInclude Include="$(SolutionDir)src\System\CPUID.hpp" />
+    <ClInclude Include="$(SolutionDir)src\System\Configurator.hpp" />
+    <ClInclude Include="$(SolutionDir)src\System\Debug.hpp" />
+    <ClInclude Include="$(SolutionDir)src\System\Half.hpp" />
+    <ClInclude Include="$(SolutionDir)src\System\Math.hpp" />
+    <ClInclude Include="$(SolutionDir)src\System\Memory.hpp" />
+    <ClInclude Include="$(SolutionDir)src\System\MutexLock.hpp" />
+    <ClInclude Include="$(SolutionDir)src\System\Resource.hpp" />
+    <ClInclude Include="$(SolutionDir)src\System\SharedLibrary.hpp" />
+    <ClInclude Include="$(SolutionDir)src\System\Socket.hpp" />
+    <ClInclude Include="$(SolutionDir)src\System\Thread.hpp" />
     <ClInclude Include="$(SolutionDir)src\System\Timer.hpp" />
+    <ClInclude Include="$(SolutionDir)src\System\Types.hpp" />
     <ClCompile Include="$(SolutionDir)src\Device\Blitter.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Device\Clipper.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Device\Color.cpp"  />
@@ -307,6 +311,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="$(SolutionDir)src\Pipeline\SetupRoutine.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Pipeline\ShaderCore.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Pipeline\SpirvShader.cpp"  />
+    <ClCompile Include="$(SolutionDir)src\Pipeline\SpirvShader_dbg.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Pipeline\VertexProgram.cpp"  />
     <ClCompile Include="$(SolutionDir)src\Pipeline\VertexRoutine.cpp"  />
     <ClInclude Include="$(SolutionDir)src\Pipeline\Constants.hpp" />
@@ -315,9 +320,11 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="$(SolutionDir)src\Pipeline\SamplerCore.hpp" />
     <ClInclude Include="$(SolutionDir)src\Pipeline\SetupRoutine.hpp" />
     <ClInclude Include="$(SolutionDir)src\Pipeline\ShaderCore.hpp" />
+    <ClInclude Include="$(SolutionDir)src\Pipeline\SpirvID.hpp" />
     <ClInclude Include="$(SolutionDir)src\Pipeline\SpirvShader.hpp" />
     <ClInclude Include="$(SolutionDir)src\Pipeline\VertexProgram.hpp" />
     <ClInclude Include="$(SolutionDir)src\Pipeline\VertexRoutine.hpp" />
+<!-- FILE LIST END -->
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)build\Visual Studio 15 2017 Win64\ReactorLLVM.vcxproj">
