@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "809b4707_af697d54",
+        "filename": "src/Vulkan/vulkan.vcxproj",
+        "patchSetId": 9
+      },
+      "lineNbr": 286,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-02T05:10:05Z",
+      "side": 1,
+      "message": "Unresolved merge conflict.",
+      "range": {
+        "startLine": 285,
+        "startChar": 0,
+        "endLine": 286,
+        "endChar": 8
+      },
+      "revId": "5cb95165924049ec5825e51b9d967b88f94c0a27",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
