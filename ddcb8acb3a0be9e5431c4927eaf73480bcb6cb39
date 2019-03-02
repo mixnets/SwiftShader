@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cae86a4c_e2c6c574",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-02T17:48:13Z",
+      "side": 1,
+      "message": "Will split this back out into its own patch -- Nicolas wants me to do it slightly differently.",
+      "revId": "ddcb8acb3a0be9e5431c4927eaf73480bcb6cb39",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
