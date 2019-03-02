@@ -137,4 +137,16 @@ void *ImageView::getOffsetPointer(const VkOffset3D& offset) const
 	return image->getTexelPointer(offset, imageSubresourceLayers);
 }
 
+void *ImageView::getOffsetPointer(const VkOffset3D& offset, VkImageAspectFlags aspect) const
+{
+	VkImageSubresourceLayers imageSubresourceLayers =
+	{
+		aspect,
+		subresourceRange.baseMipLevel,
+		subresourceRange.baseArrayLayer,
+		subresourceRange.layerCount
+	};
+	return image->getTexelPointer(offset, imageSubresourceLayers);
+}
+
 }
