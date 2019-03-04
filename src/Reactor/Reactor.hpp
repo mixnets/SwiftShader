@@ -2146,6 +2146,12 @@ namespace rr
 	RValue<Float4> Floor(RValue<Float4> x);
 	RValue<Float4> Ceil(RValue<Float4> x);
 
+	template <typename T>
+	inline RValue<T> CmpGT(RValue<T> x, RValue<T> y) { return CmpLT(y, x); }
+
+	template <typename T>
+	inline RValue<T> CmpGE(RValue<T> x, RValue<T> y) { return CmpLE(y, x); }
+
 	template<class T>
 	class Pointer : public LValue<Pointer<T>>
 	{
