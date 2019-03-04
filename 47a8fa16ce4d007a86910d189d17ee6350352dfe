@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4c618c3d_0686ac33",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-04T16:57:06Z",
+      "side": 1,
+      "message": "This won\u0027t work as expected. This struct is used as the key to look up a routine to be used at draw-time. So it only works when the context contains all of the corresponding state at that time. This is the case for OpenGL, but not for Vulkan where the pipeline is created before the draw commands are recorded. As coded in this patch another pipeline layout could be used during the lookup than when the pipeline was created.\n\nNote that this struct will have to almost be eliminated eventually. Only the sampler state should remain. It\u0027s probably best to pass the pipeline layout as an extra parameter during pipeline/shader creation/compilation than as part of the state struct.",
+      "range": {
+        "startLine": 87,
+        "startChar": 3,
+        "endLine": 87,
+        "endChar": 44
+      },
+      "revId": "47a8fa16ce4d007a86910d189d17ee6350352dfe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}

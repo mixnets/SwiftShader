@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1df5765a_1a549392",
+        "filename": "src/Pipeline/DescriptorSet.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-04T16:57:06Z",
+      "side": 1,
+      "message": "Has a definition now in https://swiftshader-review.googlesource.com/c/SwiftShader/+/24910/4/src/Vulkan/VkDescriptorSetLayout.cpp\n\nLet\u0027s move it to this header.",
+      "range": {
+        "startLine": 20,
+        "startChar": 4,
+        "endLine": 20,
+        "endChar": 32
+      },
+      "revId": "4852da239b187a647ad037f96b294912205643fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5512ee46_78c8232e",
+        "filename": "src/Pipeline/PixelRoutine.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-04T16:57:06Z",
+      "side": 1,
+      "message": "I\u0027m not sure what this comment means. Chris added it in https://swiftshader-review.googlesource.com/c/24593\nLet\u0027s remove or clarify it.",
+      "range": {
+        "startLine": 33,
+        "startChar": 39,
+        "endLine": 33,
+        "endChar": 56
+      },
+      "revId": "4852da239b187a647ad037f96b294912205643fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "45fc66b5_0ceceb07",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 420,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-04T16:57:06Z",
+      "side": 1,
+      "message": "Not used currently, and we should look it up from the pipeline layout if/when we need it.\nPlease remove.",
+      "range": {
+        "startLine": 420,
+        "startChar": 2,
+        "endLine": 420,
+        "endChar": 33
+      },
+      "revId": "4852da239b187a647ad037f96b294912205643fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90c4f404_f1a37628",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-04T16:57:06Z",
+      "side": 1,
+      "message": "The SPIR-V DescriptorSet decoration can only be a literal, so this doesn\u0027t have to be a run-time indexably array. Instead a C-array of descriptor sets is fine and relieves the JIT compile back-end from optimizing the indexing.",
+      "range": {
+        "startLine": 421,
+        "startChar": 2,
+        "endLine": 421,
+        "endChar": 8
+      },
+      "revId": "4852da239b187a647ad037f96b294912205643fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b5eb3f0a_b956cdb4",
+        "filename": "src/Vulkan/VkPipelineLayout.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-04T16:57:06Z",
+      "side": 1,
+      "message": "Landed.",
+      "range": {
+        "startLine": 49,
+        "startChar": 11,
+        "endLine": 49,
+        "endChar": 106
+      },
+      "revId": "4852da239b187a647ad037f96b294912205643fc",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
