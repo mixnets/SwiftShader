@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "88933626_72e0b8df",
+        "filename": "src/Reactor/Reactor.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 2153,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-04T17:43:03Z",
+      "side": 1,
+      "message": "I\u0027d prefer not to use templates here since that would lead to errors that are hard to interpret when used incorrectly. Note that these intrinsics only work on vectors, and only some of them. So having it spelled out in the header which ones are available is useful, especially when we eventually make Reactor available to a wider audience.",
+      "range": {
+        "startLine": 2149,
+        "startChar": 0,
+        "endLine": 2153,
+        "endChar": 74
+      },
+      "revId": "9c258b2aeca32893a30dcab48a8926bf4935646f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
