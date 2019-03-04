@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a55c9649_e9d3d1ac",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-04T17:17:07Z",
+      "side": 1,
+      "message": "Note: `flags` here is VkImageCreateFlags which is not what you wanted at all :)",
+      "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
