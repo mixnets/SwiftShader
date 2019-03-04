@@ -22,6 +22,30 @@
       "revId": "47a8fa16ce4d007a86910d189d17ee6350352dfe",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "82132b14_19b42064",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-04T18:56:37Z",
+      "side": 1,
+      "message": "Removed and passed down. Note this is still held by Context::pipelineLayout. That okay?",
+      "parentUuid": "4c618c3d_0686ac33",
+      "range": {
+        "startLine": 87,
+        "startChar": 3,
+        "endLine": 87,
+        "endChar": 44
+      },
+      "revId": "47a8fa16ce4d007a86910d189d17ee6350352dfe",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
