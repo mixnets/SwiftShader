@@ -46,6 +46,30 @@
       "revId": "bb983bb61c34932723d6288cc7f6879a129e4c02",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e9ae8c77_4f1aadba",
+        "filename": "src/Pipeline/SetupRoutine.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-04T17:15:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9298b88d_510112a4",
+      "range": {
+        "startLine": 99,
+        "startChar": 9,
+        "endLine": 99,
+        "endChar": 65
+      },
+      "revId": "bb983bb61c34932723d6288cc7f6879a129e4c02",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
