@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "647bdf5b_7a09abcd",
+        "filename": "src/WSI/VkSwapchainKHR.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-04T23:56:09Z",
+      "side": 1,
+      "message": "Also signal the fence? (even if it does nothing)",
+      "revId": "791fe1035ecbf4ea4170a2238091850775627904",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ebd817f5_b4d373ae",
+        "filename": "src/WSI/VkSwapchainKHR.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-04T23:56:09Z",
+      "side": 1,
+      "message": "There\u0027s a lot of `images[*index]` here -- do we want to do something like:\n\n`auto \u0026 image \u003d images[*index];`\n\nupfront here?",
+      "revId": "791fe1035ecbf4ea4170a2238091850775627904",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "65af9161_ee45d258",
+        "filename": "src/WSI/VkSwapchainKHR.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-04T23:56:09Z",
+      "side": 1,
+      "message": "s/draw/present/ ?",
+      "revId": "791fe1035ecbf4ea4170a2238091850775627904",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fcecf04a_09823b18",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-04T23:56:09Z",
+      "side": 1,
+      "message": "I thought you removed this allocation?",
+      "revId": "791fe1035ecbf4ea4170a2238091850775627904",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "de41c4eb_99418952",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-04T23:56:09Z",
+      "side": 1,
+      "message": "Is it acceptable to call XCreateImage with data\u003dnull?",
+      "revId": "791fe1035ecbf4ea4170a2238091850775627904",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f7e8b8a6_81825613",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-04T23:56:09Z",
+      "side": 1,
+      "message": "This may not point to the allocation from :37 if you have presented through the image.\n\nIs it acceptable to null this out before destroying the image?\n\nMissing call to XDestroyImage, which is why you haven\u0027t discovered this problem?",
+      "revId": "791fe1035ecbf4ea4170a2238091850775627904",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "93864682_9abd3561",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 7
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-04T23:56:09Z",
+      "side": 1,
+      "message": "The allocation on :37 is leaked after this.",
+      "revId": "791fe1035ecbf4ea4170a2238091850775627904",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
