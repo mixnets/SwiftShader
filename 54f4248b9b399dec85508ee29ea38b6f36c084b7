@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "93023285_662a2022",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-05T14:31:00Z",
+      "side": 1,
+      "message": "So the real bug here is the assumption that it\u0027s a Vulkan 1.1 shader? Sounds good to properly catch it first in this CL, and have a second one to fix it. Please open a Buganizer issue.",
+      "range": {
+        "startLine": 9,
+        "startChar": 34,
+        "endLine": 9,
+        "endChar": 52
+      },
+      "revId": "54f4248b9b399dec85508ee29ea38b6f36c084b7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
