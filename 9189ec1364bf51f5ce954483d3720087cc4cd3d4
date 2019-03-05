@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d14925eb_600318e8",
+        "filename": "src/Vulkan/VkDescriptorSetLayout.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-05T04:56:04Z",
+      "side": 1,
+      "message": "Perhaps we should only bind the data[] array at vkCmdBindDescriptorSets so we can avoid having to take this into account. The layout member of the descriptor set is only used during that call anyway. No need to change it now. I\u0027ll make a note of it.",
+      "range": {
+        "startLine": 184,
+        "startChar": 32,
+        "endLine": 184,
+        "endChar": 38
+      },
+      "revId": "9189ec1364bf51f5ce954483d3720087cc4cd3d4",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
