@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5d65a280_701a0046",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-03-05T19:07:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0db2b368_fbfd357a",
+      "revId": "20666e38b691b60ec16b50afac1aa29546717b0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a0b44ec_9d66ee70",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "20666e38b691b60ec16b50afac1aa29546717b0c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec21135e_57c4f857",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1045,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-03-05T19:07:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a0b44ec_9d66ee70",
+      "revId": "20666e38b691b60ec16b50afac1aa29546717b0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "601dd0ae_7bbd86e8",
+        "filename": "src/Vulkan/VkBuffer.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-03-05T19:07:42Z",
+      "side": 1,
+      "message": "This is going to be EOL whitespace or /r/n crap. If I revert this now, it\u0027ll only come back later...",
+      "parentUuid": "4884f83b_ac04d9c2",
+      "revId": "20666e38b691b60ec16b50afac1aa29546717b0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5f872b76_e5aa15de",
         "filename": "src/Vulkan/VkBuffer.hpp",
         "patchSetId": 1
@@ -67,6 +121,24 @@
       "revId": "20666e38b691b60ec16b50afac1aa29546717b0c",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a4c5dff_a9644cf3",
+        "filename": "src/Vulkan/VkBuffer.hpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 7184
+      },
+      "writtenOn": "2019-03-05T19:07:42Z",
+      "side": 1,
+      "message": "offsetof(Buffer, memory):\n\nerror: invalid use of incomplete type ‘class vk::Buffer’\n  static constexpr size_t DataOffset \u003d offsetof(Buffer, memory);\n\nOFFSET() cannot be used wherever this will DataOffset is used as memory is private.\n\n---\n\nHowever, I can make DataOffset a static const, and define DataOffset to use offsetof() in the .cpp (I thought I tried this and also had the private issue).\n\nFixed.",
+      "parentUuid": "5f872b76_e5aa15de",
+      "revId": "20666e38b691b60ec16b50afac1aa29546717b0c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
