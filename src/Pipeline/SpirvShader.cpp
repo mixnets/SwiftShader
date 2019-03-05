@@ -357,7 +357,7 @@ namespace sw
 				break;
 
 			default:
-				UNIMPLEMENTED(OpcodeName(insn.opcode()).c_str());
+				UNIMPLEMENTED("%s", OpcodeName(insn.opcode()).c_str());
 			}
 		}
 	}
@@ -1067,7 +1067,7 @@ namespace sw
 				break;
 
 			default:
-				UNIMPLEMENTED(OpcodeName(insn.opcode()).c_str());
+				UNIMPLEMENTED("%s", OpcodeName(insn.opcode()).c_str());
 				break;
 			}
 		}
