@@ -15,6 +15,7 @@
 #include <spirv/unified1/spirv.hpp>
 #include "SpirvShader.hpp"
 #include "System/Math.hpp"
+#include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkDebug.hpp"
 #include "Vulkan/VkPipelineLayout.hpp"
 #include "Device/Config.hpp"
@@ -135,10 +136,22 @@ namespace sw
 				object.type = typeId;
 				object.pointerBase = insn.word(2);	// base is itself
 
+				ASSERT(getType(typeId).storageClass == storageClass);
+
 				// Register builtins
-				if (storageClass == spv::StorageClassInput || storageClass == spv::StorageClassOutput)
+				switch (storageClass)
 				{
-					ProcessInterfaceVariable(object);
+					case spv::StorageClassInput:
+					case spv::StorageClassOutput:
+						ProcessInterfaceVariable(object);
+						break;
+					case spv::StorageClassUniform:
+					case spv::StorageClassUniformConstant:
+					case spv::StorageClassStorageBuffer:
+						object.kind = Object::Kind::PhysicalPointer;
+						break;
+					default:
+						break;
 				}
 				break;
 			}
@@ -1012,15 +1025,44 @@ namespace sw
 		ObjectID resultId = insn.word(2);
 		auto &object = getObject(resultId);
 		auto &objectTy = getType(object.type);
-		if (object.kind == Object::Kind::InterfaceVariable && objectTy.storageClass == spv::StorageClassInput)
+		switch (objectTy.storageClass)
 		{
-			auto &dst = routine->getValue(resultId);
-			int offset = 0;
-			VisitInterface(resultId,
-							[&](Decorations const &d, AttribType type) {
-								auto scalarSlot = d.Location << 2 | d.Component;
-								dst[offset++] = routine->inputs[scalarSlot];
-							});
+		case spv::StorageClassInput:
+		{
+			if (object.kind == Object::Kind::InterfaceVariable)
+			{
+				auto &dst = routine->getValue(resultId);
+				int offset = 0;
+				VisitInterface(resultId,
+								[&](Decorations const &d, AttribType type) {
+									auto scalarSlot = d.Location << 2 | d.Component;
+									dst[offset++] = routine->inputs[scalarSlot];
+								});
+			}
+			break;
+		}
+		case spv::StorageClassUniform:
+		case spv::StorageClassUniformConstant:
+		case spv::StorageClassStorageBuffer:
+		{
+			Decorations d{};
+			ApplyDecorationsForId(&d, resultId);
+			ASSERT(d.DescriptorSet >= 0);
+			ASSERT(d.Binding >= 0);
+
+			size_t bindingOffset = routine->pipelineLayout->getBindingOffset(d.DescriptorSet, d.Binding);
+
+			Pointer<Byte> set = routine->descriptorSets[d.DescriptorSet]; // DescriptorSet*
+			Pointer<Byte> binding = Pointer<Byte>(set + bindingOffset); // VkDescriptorBufferInfo*
+			Pointer<Byte> buffer = *Pointer<Pointer<Byte>>(binding + OFFSET(VkDescriptorBufferInfo, buffer)); // vk::Buffer*
+			Pointer<Byte> data = *Pointer<Pointer<Byte>>(buffer + vk::Buffer::DataOffset); // void*
+			Int offset = *Pointer<Int>(binding + OFFSET(VkDescriptorBufferInfo, offset));
+			Pointer<Byte> address = data + offset;
+			routine->physicalPointers[resultId] = address;
+			break;
+		}
+		default:
+			break;
 		}
 	}
 
@@ -1037,11 +1079,9 @@ namespace sw
 		ASSERT(getType(pointer.type).element == object.type);
 		ASSERT(TypeID(insn.word(1)) == object.type);
 
-		if (pointerBaseTy.storageClass == spv::StorageClassImage ||
-			pointerBaseTy.storageClass == spv::StorageClassUniform ||
-			pointerBaseTy.storageClass == spv::StorageClassUniformConstant)
+		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
-			UNIMPLEMENTED("Descriptor-backed load not yet implemented");
+			UNIMPLEMENTED("StorageClassImage load not yet implemented");
 		}
 
 		Pointer<Float> ptrBase;
@@ -1106,11 +1146,9 @@ namespace sw
 		ASSERT(type.sizeInComponents == 1);
 		ASSERT(getObject(baseId).pointerBase == object.pointerBase);
 
-		if (pointerBaseTy.storageClass == spv::StorageClassImage ||
-			pointerBaseTy.storageClass == spv::StorageClassUniform ||
-			pointerBaseTy.storageClass == spv::StorageClassUniformConstant)
+		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
-			UNIMPLEMENTED("Descriptor-backed OpAccessChain not yet implemented");
+			UNIMPLEMENTED("OpAccessChain for StorageClassImage not yet implemented");
 		}
 		auto &dst = routine->createIntermediate(objectId, type.sizeInComponents);
 		dst.emplace(0, As<SIMD::Float>(WalkAccessChain(baseId, insn.wordCount() - 4, insn.wordPointer(4), routine)));
@@ -1127,11 +1165,9 @@ namespace sw
 		auto &pointerBase = getObject(pointer.pointerBase);
 		auto &pointerBaseTy = getType(pointerBase.type);
 
-		if (pointerBaseTy.storageClass == spv::StorageClassImage ||
-			pointerBaseTy.storageClass == spv::StorageClassUniform ||
-			pointerBaseTy.storageClass == spv::StorageClassUniformConstant)
+		if (pointerBaseTy.storageClass == spv::StorageClassImage)
 		{
-			UNIMPLEMENTED("Descriptor-backed store not yet implemented");
+			UNIMPLEMENTED("StorageClassImage store not yet implemented");
 		}
 
 		Pointer<Float> ptrBase;
