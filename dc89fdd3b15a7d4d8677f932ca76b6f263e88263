@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7b1ffdea_75cd6ee4",
+        "filename": "src/Vulkan/VkQueue.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-03-06T18:49:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5b7aaf3f_0562efa9",
+      "revId": "dc89fdd3b15a7d4d8677f932ca76b6f263e88263",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0645ee3f_ef993592",
         "filename": "src/WSI/VkSwapchainKHR.hpp",
         "patchSetId": 8
@@ -33,6 +51,24 @@
       "revId": "dc89fdd3b15a7d4d8677f932ca76b6f263e88263",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d18297b7_2ae184e3",
+        "filename": "src/WSI/VkSwapchainKHR.hpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-03-06T18:49:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0645ee3f_ef993592",
+      "revId": "dc89fdd3b15a7d4d8677f932ca76b6f263e88263",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
