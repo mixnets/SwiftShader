@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "9beb84e7_7111e98d",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-06T19:06:29Z",
+      "side": 1,
+      "message": "So this one is still wrong, right?",
+      "range": {
+        "startLine": 59,
+        "startChar": 43,
+        "endLine": 59,
+        "endChar": 48
+      },
+      "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2699bb83_7af4589f",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-06T19:06:29Z",
+      "side": 1,
+      "message": "nit: we use {} even for single line if/else statements elsewhere in this file",
+      "range": {
+        "startLine": 56,
+        "startChar": 44,
+        "endLine": 59,
+        "endChar": 50
+      },
+      "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "a55c9649_e9d3d1ac",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 2
@@ -13,6 +59,93 @@
       "writtenOn": "2019-03-04T17:17:07Z",
       "side": 1,
       "message": "Note: `flags` here is VkImageCreateFlags which is not what you wanted at all :)",
+      "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e5c973a_dd3638ed",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-06T19:06:29Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "a55c9649_e9d3d1ac",
+      "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "af05e130_34fe3d87",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-06T19:06:29Z",
+      "side": 1,
+      "message": "nit: new line",
+      "range": {
+        "startLine": 421,
+        "startChar": 70,
+        "endLine": 421,
+        "endChar": 72
+      },
+      "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84010e07_aa25ed36",
+        "filename": "src/Vulkan/VkImageView.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-06T19:06:29Z",
+      "side": 1,
+      "message": "Do we still need these?",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 123
+      },
+      "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9854df2_4b1ff122",
+        "filename": "src/Vulkan/VkImageView.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-06T19:06:29Z",
+      "side": 1,
+      "message": "Do we still need this?",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 56
+      },
       "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
