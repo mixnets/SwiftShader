@@ -14,8 +14,9 @@
 
 #include "SpirvShader.hpp"
 #include "SpirvUnsupported.hpp"
-
 #include "SamplerCore.hpp"
+
+#include "Reactor/Coroutine.hpp"
 #include "System/Math.hpp"
 #include "Vulkan/VkBuffer.hpp"
 #include "Vulkan/VkBufferView.hpp"
@@ -878,9 +879,12 @@ namespace sw
 			case spv::OpStore:
 			case spv::OpAtomicStore:
 			case spv::OpImageWrite:
+				// Don't need to do anything during analysis pass
+				break;
+
 			case spv::OpControlBarrier:
 			case spv::OpMemoryBarrier:
-				// Don't need to do anything during analysis pass
+				modes.ContainsBarriers = true;
 				break;
 
 			case spv::OpExtension:
@@ -4716,6 +4720,11 @@ namespace sw
 		return ptr;
 	}
 
+	void SpirvShader::Yield(YieldResult res) const
+	{
+		rr::Yield(RValue<Int>(int(res)));
+	}
+
 	SpirvShader::EmitResult SpirvShader::EmitImageRead(InsnIterator insn, EmitState *state) const
 	{
 		auto &resultType = getType(Type::ID(insn.word(1)));
@@ -5226,8 +5235,15 @@ namespace sw
 
 		switch (executionScope)
 		{
+		case spv::ScopeDevice:
+			Yield(YieldResult::DeviceControlBarrier);
+			break;
+		case spv::ScopeWorkgroup:
+			Yield(YieldResult::WorkgroupControlBarrier);
+			break;
 		case spv::ScopeSubgroup:
-			break; // TODO
+			Yield(YieldResult::SubgroupControlBarrier);
+			break;
 		default:
 			UNIMPLEMENTED("executionScope: %d", int(executionScope));
 		}
@@ -5244,7 +5260,14 @@ namespace sw
 
 		switch (scope)
 		{
+		case spv::ScopeDevice:
+			Yield(YieldResult::DeviceMemoryBarrier);
+			break;
+		case spv::ScopeWorkgroup:
+			Yield(YieldResult::WorkgroupMemoryBarrier);
+			break;
 		case spv::ScopeSubgroup:
+			Yield(YieldResult::SubgroupMemoryBarrier);
 			break; // TODO
 		default:
 			UNIMPLEMENTED("scope: %d", int(scope));

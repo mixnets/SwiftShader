@@ -261,6 +261,17 @@ namespace sw
 		using ImageSampler = void(void* image, void* uvsIn, void* texelOut, void* constants);
 		using GetImageSampler = ImageSampler*(const vk::ImageView *imageView, const vk::Sampler *sampler);
 
+		enum class YieldResult
+		{
+			Complete,
+			DeviceControlBarrier,
+			WorkgroupControlBarrier,
+			SubgroupControlBarrier,
+			DeviceMemoryBarrier,
+			WorkgroupMemoryBarrier,
+			SubgroupMemoryBarrier
+		};
+
 		/* Pseudo-iterator over SPIRV instructions, designed to support range-based-for. */
 		class InsnIterator
 		{
@@ -516,6 +527,7 @@ namespace sw
 			bool DepthLess : 1;
 			bool DepthUnchanged : 1;
 			bool ContainsKill : 1;
+			bool ContainsBarriers : 1;
 			bool NeedsCentroid : 1;
 
 			// Compute workgroup dimensions
@@ -908,6 +920,8 @@ namespace sw
 		EmitResult EmitGroupNonUniform(InsnIterator insn, EmitState *state) const;
 
 		SIMD::Pointer GetTexelAddress(SpirvRoutine const * routine, SIMD::Pointer base, GenericValue const & coordinate, Type const & imageType, Pointer<Byte> descriptor, int texelSize) const;
+
+		void Yield(YieldResult res) const;
 
 		// OpcodeName() returns the name of the opcode op.
 		// If NDEBUG is defined, then OpcodeName() will only return the numerical code.
