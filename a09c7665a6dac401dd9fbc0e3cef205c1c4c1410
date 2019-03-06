@@ -22,6 +22,30 @@
       "revId": "a09c7665a6dac401dd9fbc0e3cef205c1c4c1410",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "25991014_920ab629",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-06T20:11:59Z",
+      "side": 1,
+      "message": "Good spot. Probably chaff left over from the many rebases. Will remove.",
+      "parentUuid": "295342d4_c6416ff1",
+      "range": {
+        "startLine": 21,
+        "startChar": 1,
+        "endLine": 25,
+        "endChar": 0
+      },
+      "revId": "a09c7665a6dac401dd9fbc0e3cef205c1c4c1410",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
