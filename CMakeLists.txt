@@ -1030,6 +1030,12 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Target/TargetLoweringObjectFile.cpp
     ${LLVM_DIR}/lib/Target/TargetMachine.cpp
     ${LLVM_DIR}/lib/Target/TargetMachineC.cpp
+    ${LLVM_DIR}/lib/Transforms/Coroutines/CoroCleanup.cpp
+    ${LLVM_DIR}/lib/Transforms/Coroutines/CoroEarly.cpp
+    ${LLVM_DIR}/lib/Transforms/Coroutines/CoroElide.cpp
+    ${LLVM_DIR}/lib/Transforms/Coroutines/CoroFrame.cpp
+    ${LLVM_DIR}/lib/Transforms/Coroutines/CoroSplit.cpp
+    ${LLVM_DIR}/lib/Transforms/Coroutines/Coroutines.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineAddSub.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineAndOrXor.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineCalls.cpp
@@ -1043,6 +1049,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineSimplifyDemanded.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineVectorOps.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstructionCombining.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/BarrierNoopPass.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/ADCE.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/AlignmentFromAssumptions.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/BDCE.cpp
@@ -1170,6 +1177,7 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/Utils/Utils.cpp
     ${LLVM_DIR}/lib/Transforms/Utils/VNCoercion.cpp
     ${LLVM_DIR}/lib/Transforms/Utils/ValueMapper.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/llvm-7.0/stubs/Stubs.cpp
 )
 
 if(ARCH STREQUAL "x86" OR ARCH STREQUAL "x86_64")
