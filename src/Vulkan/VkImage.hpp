@@ -61,6 +61,7 @@ public:
 	VkSampleCountFlagBits    getSampleCountFlagBits() const { return samples; }
 	int                      rowPitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
 	int                      slicePitchBytes(VkImageAspectFlagBits aspect, uint32_t mipLevel) const;
+	VkExtent3D               getExtent() const { return extent; }
 	void*                    getTexelPointer(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const;
 	bool                     isCube() const;
 
