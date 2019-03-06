@@ -176,15 +176,12 @@ namespace sw
 	}
 
 	void ComputeProgram::run(
-		Routine *routine,
 		vk::DescriptorSet::Bindings const &descriptorSets,
 		vk::DescriptorSet::DynamicOffsets const &descriptorDynamicOffsets,
 		PushConstantStorage const &pushConstants,
 		uint8_t *workgroupMemory,
 		uint32_t groupCountX, uint32_t groupCountY, uint32_t groupCountZ)
 	{
-		auto runWorkgroup = (void(*)(void*))(routine->getEntry());
-
 		Data data;
 		data.descriptorSets = descriptorSets;
 		data.descriptorDynamicOffsets = descriptorDynamicOffsets;
@@ -197,6 +194,9 @@ namespace sw
 		data.workgroupMemory = workgroupMemory;
 
 		// TODO(bclayton): Split work across threads.
+		using InFlight = std::unique_ptr<rr::Stream<SpirvShader::YieldResult>>;
+		std::vector<InFlight> inFlight[2];
+
 		for (uint32_t groupZ = 0; groupZ < groupCountZ; groupZ++)
 		{
 			data.workgroupID[Z] = groupZ;
@@ -206,9 +206,27 @@ namespace sw
 				for (uint32_t groupX = 0; groupX < groupCountX; groupX++)
 				{
 					data.workgroupID[X] = groupX;
-					runWorkgroup(&data);
+					auto coroutine = (*this)(&data);
+					inFlight[0].push_back(std::move(coroutine));
 				}
 			}
 		}
+
+		auto current = &inFlight[0];
+		auto pending = &inFlight[1];
+		while (current->size() > 0)
+		{
+			for (auto &coroutine : *current)
+			{
+				SpirvShader::YieldResult result = SpirvShader::YieldResult::Complete;
+				if (coroutine->await(result))
+				{
+					pending->push_back(std::move(coroutine));
+				}
+			}
+			current->clear();
+			std::swap(current, pending);
+		}
+
 	}
-}
+} // namespace sw
