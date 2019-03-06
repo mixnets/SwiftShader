@@ -27,24 +27,15 @@ XlibSurfaceKHR::XlibSurfaceKHR(const VkXlibSurfaceCreateInfoKHR *pCreateInfo, vo
 	XVisualInfo xVisual;
 	Status status = libX11->XMatchVisualInfo(pDisplay, screen, 32, TrueColor, &xVisual);
 	bool match = (status != 0 && xVisual.blue_mask ==0xFF);
-	Visual *visual = match ? xVisual.visual : libX11->XDefaultVisual(pDisplay, screen);
-
-	XWindowAttributes attr;
-	libX11->XGetWindowAttributes(pDisplay, window, &attr);
-
-	int bytes_per_line = attr.width * 4;
-	int bytes_per_image = attr.height * bytes_per_line;
-
-	xImage = libX11->XCreateImage(pDisplay, visual, attr.depth, ZPixmap, 0, nullptr, attr.width, attr.height, 32, bytes_per_line);
-
+	visual = match ? xVisual.visual : libX11->XDefaultVisual(pDisplay, screen);
 }
 
 void XlibSurfaceKHR::destroySurface(const VkAllocationCallbacks *pAllocator)
 {
-	if(xImage)
-	{
-		XDestroyImage(xImage);
-	}
+//	if(xImage)
+//	{
+//		XDestroyImage(xImage);
+//	}
 }
 
 size_t XlibSurfaceKHR::ComputeRequiredAllocationSize(const VkXlibSurfaceCreateInfoKHR *pCreateInfo)
@@ -65,16 +56,38 @@ void XlibSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCa
 	pSurfaceCapabilities->maxImageExtent = extent;
 }
 
-void XlibSurfaceKHR::present(VkImage image, VkDeviceMemory imageData)
+void XlibSurfaceKHR::attachImage(VkImage image, VkDeviceMemory imageData)
 {
-	xImage->data = static_cast<char*>(vk::Cast(imageData)->getOffsetPointer(0));
-
 	XWindowAttributes attr;
 	libX11->XGetWindowAttributes(pDisplay, window, &attr);
 
-	libX11->XPutImage(pDisplay, window, gc, xImage, 0, 0, 0, 0, attr.width, attr.height);
+	VkExtent3D extent = vk::Cast(image)->getExtent();
 
-	xImage->data = nullptr;
+	int bytes_per_line = extent.width * 4;
+	char* buffer = static_cast<char*>(vk::Cast(imageData)->getOffsetPointer(0));
+
+	XImage* xImage = libX11->XCreateImage(pDisplay, visual, attr.depth, ZPixmap, 0, buffer, extent.width, extent.height, 32, bytes_per_line);
+
+	imageMap[image] = xImage;
+}
+
+void XlibSurfaceKHR::detachImage(VkImage image)
+{
+	if(imageMap.at(image))
+	{
+		XImage* xImage = imageMap[image];
+		xImage->data = nullptr; // Data should have already been freed in swap chain
+		XDestroyImage(xImage);
+	}
+	imageMap.erase(image);
+}
+
+void XlibSurfaceKHR::present(VkImage image)
+{
+	XImage* xImage = imageMap[image];
+
+	VkExtent3D extent = vk::Cast(image)->getExtent();
+	libX11->XPutImage(pDisplay, window, gc, xImage, 0, 0, 0, 0, extent.width, extent.height);
 }
 
 }

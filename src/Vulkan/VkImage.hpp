@@ -53,6 +53,7 @@ public:
 	VkFormat                 getFormat() const { return format; }
 	uint32_t                 getArrayLayers() const { return arrayLayers; }
 	VkSampleCountFlagBits    getSampleCountFlagBits() const { return samples; }
+	VkExtent3D				 getExtent() const { return extent; }
 	int                      rowPitchBytes(const VkImageAspectFlags& flags, uint32_t mipLevel) const;
 	int                      slicePitchBytes(const VkImageAspectFlags& flags, uint32_t mipLevel) const;
 	void*                    getTexelPointer(const VkOffset3D& offset, const VkImageSubresourceLayers& subresource) const;
