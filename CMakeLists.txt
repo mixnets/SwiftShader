@@ -1374,6 +1374,12 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineSimplifyDemanded.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstCombineVectorOps.cpp
     ${LLVM_DIR}/lib/Transforms/InstCombine/InstructionCombining.cpp
+    ${LLVM_DIR}/lib/Transforms/Coroutines/CoroCleanup.cpp
+    ${LLVM_DIR}/lib/Transforms/Coroutines/CoroEarly.cpp
+    ${LLVM_DIR}/lib/Transforms/Coroutines/CoroElide.cpp
+    ${LLVM_DIR}/lib/Transforms/Coroutines/CoroFrame.cpp
+    ${LLVM_DIR}/lib/Transforms/Coroutines/CoroSplit.cpp
+    ${LLVM_DIR}/lib/Transforms/Coroutines/Coroutines.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/ADCE.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/AlignmentFromAssumptions.cpp
     ${LLVM_DIR}/lib/Transforms/Scalar/BDCE.cpp
@@ -1501,6 +1507,67 @@ set(LLVM_LIST
     ${LLVM_DIR}/lib/Transforms/Utils/Utils.cpp
     ${LLVM_DIR}/lib/Transforms/Utils/VNCoercion.cpp
     ${LLVM_DIR}/lib/Transforms/Utils/ValueMapper.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/ExtractGV.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/GlobalDCE.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/PruneEH.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/MergeFunctions.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/IPConstantPropagation.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/SCCP.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/ConstantMerge.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/GlobalSplit.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/FunctionAttrs.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/BarrierNoopPass.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/StripSymbols.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/Internalize.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/StripDeadPrototypes.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/InferFunctionAttrs.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/SyntheticCountsPropagation.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/AlwaysInliner.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/WholeProgramDevirt.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/DeadArgumentElimination.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/ArgumentPromotion.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/PassManagerBuilder.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/BlockExtractor.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/LoopExtractor.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/LowerTypeTests.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/ThinLTOBitcodeWriter.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/Inliner.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/SampleProfile.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/FunctionImport.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/CrossDSOCFI.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/ForceFunctionAttrs.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/InlineSimple.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/PartialInlining.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/ElimAvailExtern.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/IPO.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/GlobalOpt.cpp
+    ${LLVM_DIR}/lib/Transforms/IPO/CalledValuePropagation.cpp
+    ${LLVM_DIR}/lib/Transforms/AggressiveInstCombine/AggressiveInstCombine.cpp
+    ${LLVM_DIR}/lib/Transforms/AggressiveInstCombine/TruncInstCombine.cpp
+    ${LLVM_DIR}/lib/Transforms/Vectorize/LoopVectorize.cpp
+    ${LLVM_DIR}/lib/Transforms/Vectorize/VPlanHCFGTransforms.cpp
+    ${LLVM_DIR}/lib/Transforms/Vectorize/LoopVectorizationLegality.cpp
+    ${LLVM_DIR}/lib/Transforms/Vectorize/SLPVectorizer.cpp
+    ${LLVM_DIR}/lib/Transforms/Vectorize/VPlanVerifier.cpp
+    ${LLVM_DIR}/lib/Transforms/Vectorize/VPlan.cpp
+    ${LLVM_DIR}/lib/Transforms/Vectorize/Vectorize.cpp
+    ${LLVM_DIR}/lib/Transforms/Vectorize/VPlanHCFGBuilder.cpp
+    ${LLVM_DIR}/lib/Transforms/Vectorize/LoadStoreVectorizer.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/PGOMemOPSizeOpt.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/ThreadSanitizer.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/CGProfile.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/Instrumentation.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/DataFlowSanitizer.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/MemorySanitizer.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/AddressSanitizer.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/SanitizerCoverage.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/HWAddressSanitizer.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/BoundsChecking.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/EfficiencySanitizer.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/InstrProfiling.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/PGOInstrumentation.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/GCOVProfiling.cpp
+    ${LLVM_DIR}/lib/Transforms/Instrumentation/IndirectCallPromotion.cpp
 )
 
 if(ARCH STREQUAL "x86" OR ARCH STREQUAL "x86_64")
