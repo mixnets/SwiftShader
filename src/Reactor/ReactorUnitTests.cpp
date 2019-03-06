@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "Reactor.hpp"
+#include "Coroutine.hpp"
 
 #include "gtest/gtest.h"
 
@@ -1367,6 +1368,41 @@ TYPED_TEST(GEPTest, PtrOffsets)
 	}
 
 	delete routine;
+}
+
+TEST(ReactorUnitTests, Coroutines)
+{
+	if (!rr::Caps.CoroutinesSupported)
+	{
+		SUCCEED() << "Coroutines not supported";
+		return;
+	}
+
+	Coroutine<uint8_t(uint8_t* data, int count)> function;
+	{
+		Pointer<Byte> data = function.Arg<0>();
+		Int count = function.Arg<1>();
+
+		For(Int i = 0, i < count, i++)
+		{
+			Yield(data[i]);
+		}
+	}
+
+	uint8_t data[] = {10, 20, 30};
+	auto coroutine = function(&data[0], 3);
+
+	uint8_t out = 0;
+	EXPECT_EQ(coroutine->await(out), true);
+	EXPECT_EQ(out, 10); out = 0;
+	EXPECT_EQ(coroutine->await(out), true);
+	EXPECT_EQ(out, 20); out = 0;
+	EXPECT_EQ(coroutine->await(out), true);
+	EXPECT_EQ(out, 30);
+	EXPECT_EQ(coroutine->await(out), false);
+	EXPECT_EQ(out, 30);
+	EXPECT_EQ(coroutine->await(out), false);
+	EXPECT_EQ(out, 30);
 }
 
 int main(int argc, char **argv)
