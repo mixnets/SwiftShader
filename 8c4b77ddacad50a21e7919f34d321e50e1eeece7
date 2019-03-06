@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "185c16ff_e86c2209",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-06T23:52:48Z",
+      "side": 1,
+      "message": "Sorry, you actually want:\n\nrowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);\n\nNote https://swiftshader-review.googlesource.com/c/SwiftShader/+/26011/9/src/Vulkan/VkImage.hpp",
+      "parentUuid": "291d8459_41e2f27c",
+      "revId": "8c4b77ddacad50a21e7919f34d321e50e1eeece7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "276885da_30b9aa62",
         "filename": "src/WSI/XlibSurfaceKHR.cpp",
         "patchSetId": 1
