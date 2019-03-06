@@ -492,8 +492,9 @@ namespace rr
 
 		void seek(uint64_t Off) override { position = Off; }
 
-		const void *getEntry() override
+		const void *getEntry(int index) override
 		{
+			ASSERT(index == 0); // Subzero does not support multiple entry points per routine yet.
 			if(!entry)
 			{
 				position = std::numeric_limits<std::size_t>::max();   // Can't stream more data after this

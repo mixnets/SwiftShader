@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "defines": ["REACTOR_LLVM_VERSION=7"],
+            "macFrameworkPath": [
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk/System/Library/Frameworks"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64",
+            "includePath": [
+                "${default}",
+                "${workspaceFolder}/third_party/llvm-7.0/llvm/include",
+                "${workspaceFolder}/third_party/llvm-7.0/configs/darwin/include",
+                "${workspaceFolder}/third_party/llvm-7.0/configs/common/include"
+            ]
+        }
+    ],
+    "version": 4
+}

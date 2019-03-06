@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "Reactor.hpp"
+#include "Coroutine.hpp"
 
 #include "gtest/gtest.h"
 
@@ -995,7 +996,7 @@ TEST(ReactorUnitTests, MulAdd)
 // Check that a complex generated function which utilizes all 8 or 16 XMM
 // registers computes the correct result.
 // (Note that due to MSC's lack of support for inline assembly in x64,
-// this test does not actually check that the register contents are 
+// this test does not actually check that the register contents are
 // preserved, just that the generated function computes the correct value.
 // It's necessary to inspect the registers in a debugger to actually verify.)
 TEST(ReactorUnitTests, PreserveXMMRegisters)
@@ -1078,6 +1079,36 @@ TEST(ReactorUnitTests, PreserveXMMRegisters)
     }
 
     delete routine;
+}
+
+
+TEST(ReactorUnitTests, Coroutines)
+{
+	Coroutine<Byte(Pointer<Byte>, Int count)> function;
+	{
+		Pointer<Byte> data = function.Arg<0>();
+		Int count = function.Arg<1>();
+
+		For(Int i = 0, i < count, i++)
+		{
+			Yield(data[i]);
+		}
+	}
+
+	uint8_t data[] = {10, 20, 30};
+	auto coroutine = function(&data[0], 3);
+
+	uint8_t out = 0;
+	EXPECT_EQ(coroutine->await(out), true);
+	EXPECT_EQ(out, 10); out = 0;
+	EXPECT_EQ(coroutine->await(out), true);
+	EXPECT_EQ(out, 20); out = 0;
+	EXPECT_EQ(coroutine->await(out), true);
+	EXPECT_EQ(out, 30);
+	EXPECT_EQ(coroutine->await(out), false);
+	EXPECT_EQ(out, 30);
+	EXPECT_EQ(coroutine->await(out), false);
+	EXPECT_EQ(out, 30);
 }
 
 int main(int argc, char **argv)
