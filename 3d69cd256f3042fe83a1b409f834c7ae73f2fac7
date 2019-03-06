@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ebb16103_27c50469",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-06T19:18:01Z",
+      "side": 1,
+      "message": "This could be:\nxImage-\u003edata \u003d static_cast\u003cchar*\u003e(vk::Cast(imageData)-\u003egetOffsetPointer(0));\n\n... and be called just before XPutImage() below, if you don\u0027t need it before that.",
+      "range": {
+        "startLine": 70,
+        "startChar": 1,
+        "endLine": 73,
+        "endChar": 43
+      },
+      "revId": "3d69cd256f3042fe83a1b409f834c7ae73f2fac7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
