@@ -4,10 +4,6 @@
         "api": "vulkan",
         "tests": "vk-master.txt"
     }, {
-        "name": "vulkan-risky",
-        "api": "vulkan",
-        "tests": "vk-master-risky.txt"
-    }, {
         "name": "vulkan-wsi",
         "api": "vulkan",
         "tests": "vk-wsi.txt"
