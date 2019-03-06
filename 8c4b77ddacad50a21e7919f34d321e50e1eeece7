@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "291d8459_41e2f27c",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-03-06T23:49:18Z",
+      "side": 1,
+      "message": "Do you mean vk::Cast(image)-\u003erowPitchBytes(0,0)? What you suggested doesn\u0027t exist",
+      "parentUuid": "008c4738_6b97e678",
+      "revId": "8c4b77ddacad50a21e7919f34d321e50e1eeece7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "276885da_30b9aa62",
         "filename": "src/WSI/XlibSurfaceKHR.cpp",
         "patchSetId": 1
