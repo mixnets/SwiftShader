@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bd71c6d5_5f24b0c3",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 6
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-06T20:27:34Z",
+      "side": 1,
+      "message": "I think you can figure this out correctly using sw::Surface::isDepth(format) and sw::Surface::isStencil(format).\n\nSomething like:\ngetStorageSize(isStencil || isDepth ? ((isStencil ? VK_IMAGE_ASPECT_STENCIL_BIT : 0) | (isDepth ? VK_IMAGE_ASPECT_DEPTH_BIT : 0)) : VK_IMAGE_ASPECT_COLOR_BIT);",
+      "range": {
+        "startLine": 61,
+        "startChar": 1,
+        "endLine": 68,
+        "endChar": 2
+      },
+      "revId": "2767fd2bb060a33b2027f35f82c324c79c71a0ab",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
