@@ -16,6 +16,57 @@
       "revId": "8c4b77ddacad50a21e7919f34d321e50e1eeece7",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "276885da_30b9aa62",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-06T23:48:44Z",
+      "side": 1,
+      "message": "This isn\u0027t how map::at works. It *throws* on not found. We build with -fno-exceptions, so you can\u0027t use that.\n\nUse map::find (and as a sanity check, assert that the returned iterator is not imageMap.end())",
+      "revId": "8c4b77ddacad50a21e7919f34d321e50e1eeece7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "871da30f_82d0edc3",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-06T23:48:44Z",
+      "side": 1,
+      "message": "This isn\u0027t quite what you mean, I think -- more that the XImage *does not own the buffer* ?",
+      "revId": "8c4b77ddacad50a21e7919f34d321e50e1eeece7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c7d78c15_443cc85d",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-06T23:48:44Z",
+      "side": 1,
+      "message": "Surprise map insertion here -- perhaps find() instead?",
+      "revId": "8c4b77ddacad50a21e7919f34d321e50e1eeece7",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
