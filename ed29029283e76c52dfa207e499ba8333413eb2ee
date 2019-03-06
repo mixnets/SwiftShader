@@ -48,6 +48,54 @@
     },
     {
       "key": {
+        "uuid": "af0aa538_69e6b54f",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-06T20:21:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2699bb83_7af4589f",
+      "range": {
+        "startLine": 56,
+        "startChar": 44,
+        "endLine": 59,
+        "endChar": 50
+      },
+      "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ae2b69f1_8a046a61",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-06T20:21:38Z",
+      "side": 1,
+      "message": "Yes :(",
+      "parentUuid": "9beb84e7_7111e98d",
+      "range": {
+        "startLine": 59,
+        "startChar": 43,
+        "endLine": 59,
+        "endChar": 48
+      },
+      "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a55c9649_e9d3d1ac",
         "filename": "src/Vulkan/VkImage.cpp",
         "patchSetId": 2
@@ -106,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "a963b992_1e74368e",
+        "filename": "src/Vulkan/VkImage.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 421,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-06T20:21:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "af05e130_34fe3d87",
+      "range": {
+        "startLine": 421,
+        "startChar": 70,
+        "endLine": 421,
+        "endChar": 72
+      },
+      "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "84010e07_aa25ed36",
         "filename": "src/Vulkan/VkImageView.hpp",
         "patchSetId": 2
@@ -129,6 +201,30 @@
     },
     {
       "key": {
+        "uuid": "1ceb7cd0_a8ea40a4",
+        "filename": "src/Vulkan/VkImageView.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-06T20:21:38Z",
+      "side": 1,
+      "message": "No. These are only used in color attachment binding, and we can just call the aspect-aware version there.",
+      "parentUuid": "84010e07_aa25ed36",
+      "range": {
+        "startLine": 38,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 123
+      },
+      "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e9854df2_4b1ff122",
         "filename": "src/Vulkan/VkImageView.hpp",
         "patchSetId": 2
@@ -149,6 +245,30 @@
       "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cdccc109_fca94cc7",
+        "filename": "src/Vulkan/VkImageView.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-06T20:21:38Z",
+      "side": 1,
+      "message": "Maybe not. We only use this for color attachments now. I will adjust that to specify the color aspect.",
+      "parentUuid": "e9854df2_4b1ff122",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 56
+      },
+      "revId": "ed29029283e76c52dfa207e499ba8333413eb2ee",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
