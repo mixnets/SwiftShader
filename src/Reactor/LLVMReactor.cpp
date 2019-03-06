@@ -69,6 +69,10 @@
 	#include "llvm/Transforms/InstCombine/InstCombine.h"
 	#include "llvm/Transforms/Scalar.h"
 	#include "llvm/Transforms/Scalar/GVN.h"
+	#include "llvm/Transforms/Coroutines.h"
+	#include "llvm/IR/IRPrintingPasses.h"
+	#include "llvm/Transforms/IPO/PassManagerBuilder.h"
+	#include "llvm/Transforms/IPO.h"
 
 	#include "LLVMRoutine.hpp"
 
@@ -82,6 +86,7 @@
 #include <fstream>
 #include <numeric>
 #include <thread>
+#include <iostream>
 
 #if defined(__i386__) || defined(__x86_64__)
 #include <xmmintrin.h>
@@ -554,6 +559,9 @@ namespace rr
 			func_.emplace("printf", reinterpret_cast<void*>(printf));
 			func_.emplace("puts", reinterpret_cast<void*>(puts));
 			func_.emplace("fmodf", reinterpret_cast<void*>(fmodf));
+			// FIXME (b/119409619): use an allocator here so we can control all memory allocations
+			func_.emplace("coroutine_alloc_frame", reinterpret_cast<void*>(malloc));
+			func_.emplace("coroutine_free_frame", reinterpret_cast<void*>(free));
 		}
 
 		void *findSymbol(const std::string &name) const
@@ -635,36 +643,47 @@ namespace rr
 			::module = nullptr;
 		}
 
-		LLVMRoutine *acquireRoutine(llvm::Function *func)
+		LLVMRoutine *acquireRoutine(llvm::Function **funcs, size_t count)
 		{
-			std::string name = "f" + llvm::Twine(emittedFunctionsNum++).str();
-			func->setName(name);
-			func->setLinkage(llvm::GlobalValue::ExternalLinkage);
-			func->setDoesNotThrow();
+			std::vector<std::string> mangledNames(count);
+			for (size_t i = 0; i < count; i++)
+			{
+				auto func = funcs[i];
+				std::string name = "f" + llvm::Twine(emittedFunctionsNum++).str();
+				func->setName(name);
+				func->setLinkage(llvm::GlobalValue::ExternalLinkage);
+				func->setDoesNotThrow();
 
+				llvm::raw_string_ostream mangledNameStream(mangledNames[i]);
+				llvm::Mangler::getNameWithPrefix(mangledNameStream, name, dataLayout);
+			}
+
+			// Compile the module - after this the llvm::Functions will have
+			// been freed.
 			std::unique_ptr<llvm::Module> mod(::module);
 			::module = nullptr;
 			mod->setDataLayout(dataLayout);
 
 			auto moduleKey = session.allocateVModule();
 			llvm::cantFail(compileLayer.addModule(moduleKey, std::move(mod)));
+			funcs = nullptr; // Now points to released memory.
 
-			std::string mangledName;
+			// Resolve the function addresses.
+			std::vector<void*> addresses(count);
+			for (size_t i = 0; i < count; i++)
 			{
-				llvm::raw_string_ostream mangledNameStream(mangledName);
-				llvm::Mangler::getNameWithPrefix(mangledNameStream, name, dataLayout);
+				llvm::JITSymbol symbol = compileLayer.findSymbolIn(moduleKey, mangledNames[i], false);
+
+				llvm::Expected<llvm::JITTargetAddress> expectAddr = symbol.getAddress();
+				if(!expectAddr)
+				{
+					return nullptr;
+				}
+
+				addresses[i] = reinterpret_cast<void *>(static_cast<intptr_t>(expectAddr.get()));
 			}
 
-			llvm::JITSymbol symbol = compileLayer.findSymbolIn(moduleKey, mangledName, false);
-
-			llvm::Expected<llvm::JITTargetAddress> expectAddr = symbol.getAddress();
-			if(!expectAddr)
-			{
-				return nullptr;
-			}
-
-			void *addr = reinterpret_cast<void *>(static_cast<intptr_t>(expectAddr.get()));
-			return new LLVMRoutine(addr, releaseRoutineCallback, this, moduleKey);
+			return new LLVMRoutine(addresses.data(), count, releaseRoutineCallback, this, moduleKey);
 		}
 
 		void optimize(llvm::Module *module)
@@ -1000,7 +1019,7 @@ namespace rr
 			::module->print(file, 0);
 		}
 
-		LLVMRoutine *routine = ::reactorJIT->acquireRoutine(::function);
+		LLVMRoutine *routine = ::reactorJIT->acquireRoutine(&::function, 1);
 
 		return routine;
 	}
@@ -3716,4 +3735,300 @@ namespace rr
 	}
 #endif // ENABLE_RR_PRINT
 
+
+} // namespace rr
+
+// ------------------------------  Coroutines ------------------------------
+
+namespace {
+
+	struct CoroutineState
+	{
+		llvm::Function *await = nullptr;
+		llvm::Function *terminate = nullptr;
+		llvm::Value *handle = nullptr;
+		llvm::Value *id = nullptr;
+		llvm::Value *promise = nullptr;
+		llvm::BasicBlock *suspendBlock = nullptr;
+		llvm::BasicBlock *endBlock = nullptr;
+		llvm::BasicBlock *destroyBlock = nullptr;
+	};
+	CoroutineState coroutine;
+
+	// Magic values retuned by llvm.coro.suspend.
+	// See: https://llvm.org/docs/Coroutines.html#llvm-coro-suspend-intrinsic
+	enum SuspendAction
+	{
+		SuspendActionSuspend = -1,
+		SuspendActionResume = 0,
+		SuspendActionDestroy = 1
+	};
+
+} // anonymous namespace
+
+namespace rr {
+
+void Nucleus::createCoroutine(Type *YieldType, std::vector<Type*> &Params)
+{
+	// Types
+	auto voidTy = ::llvm::Type::getVoidTy(*::context);
+	auto i1Ty = ::llvm::Type::getInt1Ty(*::context);
+	auto i8Ty = ::llvm::Type::getInt8Ty(*::context);
+	auto i32Ty = ::llvm::Type::getInt32Ty(*::context);
+	auto i8PtrTy = ::llvm::Type::getInt8PtrTy(*::context);
+	auto promiseTy = T(YieldType);
+	auto promisePtrTy = promiseTy->getPointerTo();
+	auto handleTy = i8PtrTy;
+	auto boolTy = i1Ty;
+
+	// LLVM intrinsics
+	auto coro_id = ::llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::coro_id);
+	auto coro_size = ::llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::coro_size, {i32Ty});
+	auto coro_begin = ::llvm::Intrinsic::getDeclaration(::module, llvm::Intrinsic::coro_begin);
+	auto coro_resume = ::llvm::Intrinsic::getDeclaration(::module, ::llvm::Intrinsic::coro_resume);
+	auto coro_end = ::llvm::Intrinsic::getDeclaration(::module, ::llvm::Intrinsic::coro_end);
+	auto coro_free = ::llvm::Intrinsic::getDeclaration(::module, ::llvm::Intrinsic::coro_free);
+	auto coro_destroy = ::llvm::Intrinsic::getDeclaration(::module, ::llvm::Intrinsic::coro_destroy);
+	auto coro_promise = ::llvm::Intrinsic::getDeclaration(::module, ::llvm::Intrinsic::coro_promise);
+	auto coro_done = ::llvm::Intrinsic::getDeclaration(::module, ::llvm::Intrinsic::coro_done);
+	auto coro_suspend = ::llvm::Intrinsic::getDeclaration(::module, ::llvm::Intrinsic::coro_suspend);
+
+	auto allocFrameTy = ::llvm::FunctionType::get(i8PtrTy, {i32Ty}, false);
+	auto allocFrame = ::module->getOrInsertFunction("coroutine_alloc_frame", allocFrameTy);
+	auto freeFrameTy = ::llvm::FunctionType::get(voidTy, {i8PtrTy}, false);
+	auto freeFrame = ::module->getOrInsertFunction("coroutine_free_frame", freeFrameTy);
+
+	// Build the coroutine_await() function:
+	//
+	//    bool coroutine_await(CoroutineHandle* handle, YieldType* out)
+	//    {
+	//        if (llvm.coro.done(handle))
+	//        {
+	//            return false;
+	//        }
+	//        else
+	//        {
+	//            *value = (T*)llvm.coro.promise(handle);
+	//            llvm.coro.resume(handle);
+	//            return true;
+	//        }
+	//    }
+	//
+	llvm::FunctionType *coroutineAwaitTy = llvm::FunctionType::get(boolTy, {handleTy, promisePtrTy}, false);
+	::coroutine.await = llvm::Function::Create(coroutineAwaitTy, llvm::GlobalValue::InternalLinkage, "coroutine_await", ::module);
+	::coroutine.await->setCallingConv(llvm::CallingConv::C);
+	{
+		auto args = ::coroutine.await->arg_begin();
+		auto handle = args++;
+		auto outPtr = args++;
+		::builder->SetInsertPoint(llvm::BasicBlock::Create(*::context, "co_await", ::coroutine.await));
+		auto doneBlock = llvm::BasicBlock::Create(*::context, "done", ::coroutine.await);
+		auto resumeBlock = llvm::BasicBlock::Create(*::context, "resume", ::coroutine.await);
+
+		auto done = ::builder->CreateCall(coro_done, {handle}, "done");
+		::builder->CreateCondBr(done, doneBlock, resumeBlock);
+
+		::builder->SetInsertPoint(doneBlock);
+		::builder->CreateRet(::llvm::ConstantInt::getFalse(i1Ty));
+
+		::builder->SetInsertPoint(resumeBlock);
+		auto promiseAlignment = ::llvm::ConstantInt::get(i32Ty, 4); // TODO: Get correct alignment.
+		auto promisePtr = ::builder->CreateCall(coro_promise, {handle, promiseAlignment, ::llvm::ConstantInt::get(i1Ty, 0)});
+		auto promise = ::builder->CreateLoad(::builder->CreatePointerCast(promisePtr, promisePtrTy));
+		::builder->CreateStore(promise, outPtr);
+		::builder->CreateCall(coro_resume, {handle});
+		::builder->CreateRet(::llvm::ConstantInt::getTrue(i1Ty));
+	}
+
+	// Build the coroutine_terminate() function:
+	//
+	//    void coroutine_terminate(CoroutineHandle* handle)
+	//    {
+	//        llvm.coro.destroy(handle);
+	//    }
+	//
+	llvm::FunctionType *coroutineTerminateTy = llvm::FunctionType::get(voidTy, handleTy, false);
+	::coroutine.terminate = llvm::Function::Create(coroutineTerminateTy, llvm::GlobalValue::InternalLinkage, "coroutine_terminate", ::module);
+	::coroutine.terminate->setCallingConv(llvm::CallingConv::C);
+	{
+		auto handle = ::coroutine.terminate->arg_begin();
+		::builder->SetInsertPoint(llvm::BasicBlock::Create(*::context, "", ::coroutine.terminate));
+		::builder->CreateCall(coro_destroy, {handle});
+		::builder->CreateRetVoid();
+	}
+
+	// Begin building the main coroutine_begin() function.
+	//
+	//    CoroutineHandle* coroutine_begin(<Arguments>)
+	//    {
+	//        YieldType promise;
+	//        auto id = llvm.coro.id(0, &promise, nullptr, nullptr);
+	//        void* frame = coroutine_alloc_frame(llvm.coro.size.i32());
+	//        CoroutineHandle *handle = llvm.coro.begin(id, frame);
+	//
+	//        ... <REACTOR CODE> ...
+	//
+	//    end:
+	//        SuspendAction action = llvm.coro.suspend(none, true /* final */);  // <-- RESUME POINT
+	//        switch (action)
+	//        {
+	//        case SuspendActionResume:
+	//            UNREACHABLE(); // Illegal to resume after final suspend.
+	//        case SuspendActionDestroy:
+	//            goto destroy;
+	//        default: // (SuspendActionSuspend)
+	//            goto suspend;
+	//        }
+	//
+	//    destroy:
+	//        coroutine_free_frame(llvm.coro.free(id, handle));
+	//        goto suspend;
+	//
+	//    suspend:
+	//        llvm.coro.end(handle, false);
+	//        return handle;
+	//    }
+	//
+	llvm::FunctionType *functionType = llvm::FunctionType::get(handleTy, T(Params), false);
+	::function = llvm::Function::Create(functionType, llvm::GlobalValue::InternalLinkage, "coroutine_begin", ::module);
+	::function->setCallingConv(llvm::CallingConv::C);
+
+	auto entryBlock = llvm::BasicBlock::Create(*::context, "coroutine", ::function);
+	::coroutine.suspendBlock = llvm::BasicBlock::Create(*::context, "suspend", ::function);
+	::coroutine.endBlock = llvm::BasicBlock::Create(*::context, "end", ::function);
+	::coroutine.destroyBlock = llvm::BasicBlock::Create(*::context, "terminate", ::function);
+
+	::builder->SetInsertPoint(entryBlock);
+	::coroutine.promise = ::builder->CreateAlloca(T(YieldType), nullptr, "promise");
+	::coroutine.id = ::builder->CreateCall(coro_id, {
+		::llvm::ConstantInt::get(i32Ty, 0),
+		::builder->CreatePointerCast(::coroutine.promise, i8PtrTy),
+		::llvm::ConstantPointerNull::get(i8PtrTy),
+		::llvm::ConstantPointerNull::get(i8PtrTy),
+	});
+	auto size = ::builder->CreateCall(coro_size, {});
+	auto frame = ::builder->CreateCall(allocFrame, {size});
+	::coroutine.handle = ::builder->CreateCall(coro_begin, {::coroutine.id, frame});
+
+	// Build the suspend block
+	::builder->SetInsertPoint(::coroutine.suspendBlock);
+	::builder->CreateCall(coro_end, {::coroutine.handle, ::llvm::ConstantInt::get(i1Ty, 0)});
+	::builder->CreateRet(::coroutine.handle);
+
+	// Build the end block
+	::builder->SetInsertPoint(::coroutine.endBlock);
+	auto action = ::builder->CreateCall(coro_suspend, {
+		::llvm::ConstantTokenNone::get(*::context),
+		::llvm::ConstantInt::get(i1Ty, 1), // final: true
+	});
+	auto switch_ = ::builder->CreateSwitch(action, ::coroutine.suspendBlock, 3);
+	// switch_->addCase(::llvm::ConstantInt::get(i8Ty, SuspendActionResume), trapBlock); // TODO: Trap attempting to resume after final suspend
+	switch_->addCase(::llvm::ConstantInt::get(i8Ty, SuspendActionDestroy), ::coroutine.destroyBlock);
+
+	// Build the destroy block
+	::builder->SetInsertPoint(::coroutine.destroyBlock);
+	auto memory = ::builder->CreateCall(coro_free, {::coroutine.id, ::coroutine.handle});
+	::builder->CreateCall(freeFrame, {memory});
+	::builder->CreateBr(::coroutine.suspendBlock);
+
+	// Switch back to the entry block for reactor codegen.
+	::builder->SetInsertPoint(entryBlock);
+
+	#if defined(_WIN32) && REACTOR_LLVM_VERSION >= 7
+		// FIXME(capn):
+		// On Windows, stack memory is committed in increments of 4 kB pages, with the last page
+		// having a trap which allows the OS to grow the stack. For functions with a stack frame
+		// larger than 4 kB this can cause an issue when a variable is accessed beyond the guard
+		// page. Therefore the compiler emits a call to __chkstk in the function prolog to probe
+		// the stack and ensure all pages have been committed. This is currently broken in LLVM
+		// JIT, but we can prevent emitting the stack probe call:
+		::function->addFnAttr("stack-probe-size", "1048576");
+	#endif
 }
+
+void Yield(Value* val)
+{
+	//      promise = val;
+	//
+	//      auto action = llvm.coro.suspend(none, false /* final */); // <-- RESUME POINT
+	//      switch (action)
+	//      {
+	//      case SuspendActionResume:
+	//          goto resume;
+	//      case SuspendActionDestroy:
+	//          goto destroy;
+	//      default: // (SuspendActionSuspend)
+	//          goto suspend;
+	//      }
+	//  resume:
+	//
+
+	// Types
+	auto i1Ty = ::llvm::Type::getInt1Ty(*::context);
+	auto i8Ty = ::llvm::Type::getInt8Ty(*::context);
+
+	// Intrinsics
+	auto coro_suspend = ::llvm::Intrinsic::getDeclaration(::module, ::llvm::Intrinsic::coro_suspend);
+
+	// Create a block to resume execution.
+	auto resumeBlock = llvm::BasicBlock::Create(*::context, "resume", ::function);
+
+	// Store the promise (yield value)
+	::builder->CreateStore(V(val), ::coroutine.promise);
+	auto action = ::builder->CreateCall(coro_suspend, {
+		::llvm::ConstantTokenNone::get(*::context),
+		::llvm::ConstantInt::get(i1Ty, 0), // final: true
+	});
+	auto switch_ = ::builder->CreateSwitch(action, ::coroutine.suspendBlock, 3);
+	switch_->addCase(::llvm::ConstantInt::get(i8Ty, SuspendActionResume), resumeBlock);
+	switch_->addCase(::llvm::ConstantInt::get(i8Ty, SuspendActionDestroy), ::coroutine.destroyBlock);
+
+	// Continue building in the resume block.
+	::builder->SetInsertPoint(resumeBlock);
+}
+
+Routine* Nucleus::acquireCoroutine(const char *name, bool runOptimizations)
+{
+	::builder->CreateBr(::coroutine.endBlock);
+
+	if(false)
+	{
+		std::error_code error;
+		llvm::raw_fd_ostream file(std::string(name) + "-llvm-dump-unopt.txt", error);
+		::module->print(file, 0);
+	}
+
+	// Run manadory coroutine transforms.
+	llvm::legacy::PassManager pm;
+	pm.add(llvm::createCoroEarlyPass());
+	pm.add(llvm::createCoroSplitPass());
+	pm.add(llvm::createCoroElidePass());
+	pm.add(llvm::createBarrierNoopPass());
+	pm.add(llvm::createCoroCleanupPass());
+	pm.run(*::module);
+
+	if(runOptimizations)
+	{
+		optimize();
+	}
+
+	if(false)
+	{
+		std::error_code error;
+		llvm::raw_fd_ostream file(std::string(name) + "-llvm-dump-opt.txt", error);
+		::module->print(file, 0);
+	}
+
+	llvm::Function *funcs[Nucleus::CoroutineEntryCount];
+	funcs[Nucleus::CoroutineEntryBegin] = ::function;
+	funcs[Nucleus::CoroutineEntryAwait] = ::coroutine.await;
+	funcs[Nucleus::CoroutineEntryTerminate] = ::coroutine.terminate;
+	Routine *routine = ::reactorJIT->acquireRoutine(funcs, Nucleus::CoroutineEntryCount);
+
+	coroutine = CoroutineState{};
+
+	return routine;
+}
+
+
+} // namespace rr

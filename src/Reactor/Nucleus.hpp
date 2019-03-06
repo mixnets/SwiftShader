@@ -64,6 +64,25 @@ namespace rr
 		static void createFunction(Type *ReturnType, std::vector<Type*> &Params);
 		static Value *getArgument(unsigned int index);
 
+		// Coroutines
+		using CoroutineHandle = void*;
+
+		template <typename... ARGS>
+		using CoroutineBegin = CoroutineHandle(ARGS...);
+		using CoroutineAwait = bool(CoroutineHandle, void* yieldValue);
+		using CoroutineTerminate = void(CoroutineHandle);
+
+		enum CoroutineEntries
+		{
+			CoroutineEntryBegin = 0,
+			CoroutineEntryAwait,
+			CoroutineEntryTerminate,
+			CoroutineEntryCount
+		};
+
+		static void createCoroutine(Type *ReturnType, std::vector<Type*> &Params);
+		Routine *acquireCoroutine(const char *name, bool runOptimizations = true);
+
 		// Terminators
 		static void createRetVoid();
 		static void createRet(Value *V);
