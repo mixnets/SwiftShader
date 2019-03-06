@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "295342d4_c6416ff1",
+        "filename": "src/Device/PixelProcessor.hpp",
+        "patchSetId": 16
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-06T15:52:12Z",
+      "side": 1,
+      "message": "Nit: PipelineLayout is unused in this file. Should this be moved to where it is needed?",
+      "range": {
+        "startLine": 21,
+        "startChar": 1,
+        "endLine": 25,
+        "endChar": 0
+      },
+      "revId": "a09c7665a6dac401dd9fbc0e3cef205c1c4c1410",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
