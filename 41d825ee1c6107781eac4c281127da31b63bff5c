@@ -1,0 +1,208 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3eabfe67_e771daa3",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 447,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:52:49Z",
+      "side": 1,
+      "message": "Why do these fail?",
+      "revId": "41d825ee1c6107781eac4c281127da31b63bff5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "558c70d6_4fed1818",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 502,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:52:49Z",
+      "side": 1,
+      "message": "We don\u0027t have any real support for d16_unorm in the pipeline. We should probably make these assert if we\u0027re not going to fix it immediately.",
+      "revId": "41d825ee1c6107781eac4c281127da31b63bff5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e0563ade_5d082f8a",
+        "filename": "tests/regres/testlists/vk-master-FAIL.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 721,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:52:49Z",
+      "side": 1,
+      "message": "Stencil is still messed up :)",
+      "revId": "41d825ee1c6107781eac4c281127da31b63bff5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "872e0f72_2853e15c",
+        "filename": "tests/regres/testlists/vk-master-NOT_SUPPORTED.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 98607,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:52:49Z",
+      "side": 1,
+      "message": "Expected not-supported.",
+      "revId": "41d825ee1c6107781eac4c281127da31b63bff5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7009c086_34c75643",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 6462,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:52:49Z",
+      "side": 1,
+      "message": "Expected fixes :)",
+      "revId": "41d825ee1c6107781eac4c281127da31b63bff5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "366b284e_8cf0f29d",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 7646,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:52:49Z",
+      "side": 1,
+      "message": "Expected fixes :)",
+      "revId": "41d825ee1c6107781eac4c281127da31b63bff5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c0f00d8e_35c69334",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 11388,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:52:49Z",
+      "side": 1,
+      "message": "May be a benign dEQP bug here -- \"sparse is not supported\" should really be skip here rather than pass.",
+      "revId": "41d825ee1c6107781eac4c281127da31b63bff5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1fff4e85_cdbda486",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 13506,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:52:49Z",
+      "side": 1,
+      "message": "Expected fixes :)",
+      "revId": "41d825ee1c6107781eac4c281127da31b63bff5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "be3c1633_3bec8b92",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 15585,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:52:49Z",
+      "side": 1,
+      "message": "dEQP-VK.pipeline.depth.* expected fixes.",
+      "revId": "41d825ee1c6107781eac4c281127da31b63bff5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d13c388f_432192f4",
+        "filename": "tests/regres/testlists/vk-master-PASS.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 15765,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:52:49Z",
+      "side": 1,
+      "message": "Expected change, but these will *probably* flap, sorry.",
+      "revId": "41d825ee1c6107781eac4c281127da31b63bff5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "600240de_b4742151",
+        "filename": "tests/regres/testlists/vk-master-TIMEOUT.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:52:49Z",
+      "side": 1,
+      "message": "I\u0027m concerned that these are timing out. They *work*.",
+      "revId": "41d825ee1c6107781eac4c281127da31b63bff5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "75037543_f3f360c0",
+        "filename": "tests/regres/testlists/vk-master-TIMEOUT.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:52:49Z",
+      "side": 1,
+      "message": "Missing assert somewhere?",
+      "revId": "41d825ee1c6107781eac4c281127da31b63bff5c",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
