@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e5006415_4bb7f908",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-07T20:26:24Z",
+      "side": 1,
+      "message": "Should we ifdef this for ARM64 or just always use 16?",
+      "range": {
+        "startLine": 40,
+        "startChar": 36,
+        "endLine": 40,
+        "endChar": 112
+      },
+      "revId": "ccde63d62f185bdbe52b71af2cae0bf42e8cbd88",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
