@@ -451,6 +451,13 @@ namespace
 
 namespace rr
 {
+
+	int XXCOUNT()
+	{
+		static int count = 0;
+		return count++;
+	}
+
 #if REACTOR_LLVM_VERSION < 7
 	class LLVMReactorJIT
 	{

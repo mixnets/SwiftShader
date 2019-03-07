@@ -2613,10 +2613,20 @@ namespace rr
 		return RValue<Pointer<T>>(value);
 	}
 
+	int XXCOUNT();
+
 	template<class T>
 	Reference<T> Pointer<T>::operator*()
 	{
-		return Reference<T>(LValue<Pointer<T>>::loadValue(), alignment);
+		int count = XXCOUNT();
+		if (count < atoi(getenv("SW_DEREF_NUMBER")))
+		{
+			if (alignment > 1)
+				printf("deref %d alignment %d substituted as 1\n", count, alignment);
+			return Reference<T>(LValue<Pointer<T>>::loadValue(), 1);
+		}
+		else
+			return Reference<T>(LValue<Pointer<T>>::loadValue(), alignment);
 	}
 
 	template<class T>
