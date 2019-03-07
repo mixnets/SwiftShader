@@ -70,6 +70,30 @@
       "revId": "ccde63d62f185bdbe52b71af2cae0bf42e8cbd88",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e9aff74d_cc13d8ac",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T20:31:42Z",
+      "side": 1,
+      "message": "[In all kinds of places in the code we promise that pointers are 16B-aligned. We should be keeping that promise, even if the underlying platform would have been happy with 8B-alignment for the instructions we end up emitting]",
+      "parentUuid": "8f70e9cc_3dd2d9a3",
+      "range": {
+        "startLine": 40,
+        "startChar": 36,
+        "endLine": 40,
+        "endChar": 112
+      },
+      "revId": "ccde63d62f185bdbe52b71af2cae0bf42e8cbd88",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
