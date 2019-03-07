@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "315740db_171da859",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 11
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-07T16:46:43Z",
+      "side": 1,
+      "message": "Yes, I agree, this is a terrible name, and I really struggled to find a nice way to describe it.\n\nI drew a pretty ascii diagram to try and visualize this:\n\n\nA \u0027lane\u0027 is a component of a SIMD vector register (.x, .y, .z, .w). \nGiven 4 consecutive loads/stores of 4 SIMD vector registers:\n\n\n \"Lane-interleaved\":\n -------------------\n\n  Ptr+0:Reg0.x | Ptr+1:Reg0.y | Ptr+2:Reg0.z | Ptr+3:Reg0.w\n --------------+--------------+--------------+--------------\n  Ptr+4:Reg1.x | Ptr+5:Reg1.y | Ptr+6:Reg1.z | Ptr+7:Reg1.w\n --------------+--------------+--------------+--------------\n  Ptr+8:Reg2.x | Ptr+9:Reg2.y | Ptr+a:Reg2.z | Ptr+b:Reg2.w\n --------------+--------------+--------------+--------------\n  Ptr+c:Reg3.x | Ptr+d:Reg3.y | Ptr+e:Reg3.z | Ptr+f:Reg3.w\n\n \"Non-Lane-interleaved\":\n -----------------------\n\n  Ptr+0:Reg0.x | Ptr+0:Reg1.x | Ptr+0:Reg2.x | Ptr+0:Reg3.x\n --------------+--------------+--------------+--------------\n  Ptr+1:Reg0.y | Ptr+1:Reg1.y | Ptr+1:Reg2.y | Ptr+1:Reg3.y\n --------------+--------------+--------------+--------------\n  Ptr+2:Reg0.z | Ptr+2:Reg1.z | Ptr+2:Reg2.z | Ptr+2:Reg3.z\n --------------+--------------+--------------+--------------\n  Ptr+3:Reg0.w | Ptr+3:Reg1.w | Ptr+3:Reg2.w | Ptr+3:Reg3.w\n\n\nLooking at this, it\u0027s apparent that it isn\u0027t really about interleaving, more to do with replication into each of the registers.\n\nHappy to rename if you have something better.",
+      "parentUuid": "0170e138_95668f36",
+      "range": {
+        "startLine": 9,
+        "startChar": 40,
+        "endLine": 9,
+        "endChar": 60
+      },
+      "revId": "f05c797c3bcb4b0d8d556afc8f5f81f6ded907e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "763fac8f_2998b6ec",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 11
@@ -36,6 +60,30 @@
       "writtenOn": "2019-03-07T15:41:18Z",
       "side": 1,
       "message": "I think this name is very confusing because \"physical pointers\" is referred to by the SPIR-V spec as part of non-Logical addressing models, while Appendix A of the Vulkan spec states that \"The Logical addressing model must be selected.\"\n\nAnyway, since this is easy to refactor once we find a better name I\u0027m fine with landing it as-is.",
+      "range": {
+        "startLine": 227,
+        "startChar": 4,
+        "endLine": 227,
+        "endChar": 19
+      },
+      "revId": "f05c797c3bcb4b0d8d556afc8f5f81f6ded907e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0a4d7530_9ba25397",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-07T16:46:43Z",
+      "side": 1,
+      "message": "It\u0027s not selected by the SPIR-V, but equates to almost exactly the same thing.\nAgain, happy to rename if you can think of a better name.",
+      "parentUuid": "763fac8f_2998b6ec",
       "range": {
         "startLine": 227,
         "startChar": 4,
