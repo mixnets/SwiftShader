@@ -299,6 +299,8 @@ namespace sw
 			case spv::OpBitcast:
 			case spv::OpSelect:
 			case spv::OpExtInst:
+			case spv::OpIsInf:
+			case spv::OpIsNan:
 				// Instructions that yield an intermediate value
 			{
 				TypeID typeId = insn.word(1);
@@ -964,6 +966,8 @@ namespace sw
 			case spv::OpConvertSToF:
 			case spv::OpConvertUToF:
 			case spv::OpBitcast:
+			case spv::OpIsInf:
+			case spv::OpIsNan:
 				EmitUnaryOp(insn, routine);
 				break;
 
@@ -1317,6 +1321,12 @@ namespace sw
 				break;
 			case spv::OpBitcast:
 				dst.emplace(i, val);
+				break;
+			case spv::OpIsInf:
+				dst.emplace(i, As<SIMD::Float>(IsInf(val)));
+				break;
+			case spv::OpIsNan:
+				dst.emplace(i, As<SIMD::Float>(IsNan(val)));
 				break;
 			default:
 				UNIMPLEMENTED("Unhandled unary operator %s", OpcodeName(insn.opcode()).c_str());
