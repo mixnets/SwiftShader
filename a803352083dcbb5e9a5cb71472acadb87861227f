@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9972bbd5_2e5fb0d3",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 825,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-07T20:24:28Z",
+      "side": 1,
+      "message": "Isn\u0027t this confusing (looking at the shader)? Maybe \"must be within the [0, MAX_INT] range\" or anything with a similar meaning?",
+      "range": {
+        "startLine": 825,
+        "startChar": 60,
+        "endLine": 825,
+        "endChar": 80
+      },
+      "revId": "a803352083dcbb5e9a5cb71472acadb87861227f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
