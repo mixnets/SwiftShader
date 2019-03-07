@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "97d285c0_c7169d16",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 14
+      },
+      "lineNbr": 550,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-07T17:17:04Z",
+      "side": 1,
+      "message": "Note: I\u0027ve removed StorageClassUniformConstant here.",
+      "revId": "4a4b4557f13d134884546b47641fc5191fcbbc5e",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
