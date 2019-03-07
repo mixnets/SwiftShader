@@ -22,6 +22,30 @@
       "revId": "a803352083dcbb5e9a5cb71472acadb87861227f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c42d2ee_ce6476cb",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 825,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-07T21:40:27Z",
+      "side": 1,
+      "message": "OpenGL ES will be replaced with ANGLE+Vulkan, so this won\u0027t matter for long, and practically nobody is developing their apps with SwiftShader expecting very helpful shader compilation error messages.",
+      "parentUuid": "9972bbd5_2e5fb0d3",
+      "range": {
+        "startLine": 825,
+        "startChar": 60,
+        "endLine": 825,
+        "endChar": 80
+      },
+      "revId": "a803352083dcbb5e9a5cb71472acadb87861227f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
