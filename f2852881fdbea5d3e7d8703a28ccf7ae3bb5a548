@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "96051289_ff2a7430",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:21:13Z",
+      "side": 1,
+      "message": "Well, Private/Function should just do nothing.",
+      "parentUuid": "9a877b76_6832962f",
+      "range": {
+        "startLine": 156,
+        "startChar": 3,
+        "endLine": 156,
+        "endChar": 4
+      },
+      "revId": "f2852881fdbea5d3e7d8703a28ccf7ae3bb5a548",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c6e5db71_bd2e42a9",
         "filename": "src/Pipeline/SpirvShader.cpp",
         "patchSetId": 2
@@ -84,6 +108,30 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "c6e5db71_bd2e42a9",
+      "range": {
+        "startLine": 1149,
+        "startChar": 2,
+        "endLine": 1152,
+        "endChar": 3
+      },
+      "revId": "f2852881fdbea5d3e7d8703a28ccf7ae3bb5a548",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2fe7e6fb_9b80af44",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1152,
+      "author": {
+        "id": 6982
+      },
+      "writtenOn": "2019-03-07T17:21:13Z",
+      "side": 1,
+      "message": "I agree, this can\u0027t happen.",
+      "parentUuid": "d1704157_4830bca7",
       "range": {
         "startLine": 1149,
         "startChar": 2,
