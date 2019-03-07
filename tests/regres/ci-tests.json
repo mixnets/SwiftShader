@@ -6,7 +6,6 @@
     { "name": "gles3-master-risky", "api": "gles3", "tests": "testlists/gles3-master-risky-PASS.txt" },
     { "name": "gles3-master", "api": "gles3", "tests": "testlists/gles3-master-PASS.txt" },
 
-    { "name": "vulkan-wsi", "api": "vulkan", "tests": "testlists/vk-wsi-PASS.txt" },
     { "name": "vulkan-master", "api": "vulkan", "tests": "testlists/vk-master-PASS.txt" },
     { "name": "vulkan-master-risky", "api": "vulkan", "tests": "testlists/vk-master-risky-PASS.txt" }
 ]
