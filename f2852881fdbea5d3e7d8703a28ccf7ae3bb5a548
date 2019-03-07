@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2a128bc7_685424d2",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-07T15:42:03Z",
+      "side": 1,
+      "message": "Let\u0027s add UNREACHABLE() here with a comment referencing Appendix A of the Vulkan spec, and cases for PushConstant, Workgroup, Private, Function, and Image that are UNIMPLEMENTED(). That way we\u0027ll quickly notice what we need to implement when hit by a new test.",
+      "range": {
+        "startLine": 156,
+        "startChar": 3,
+        "endLine": 156,
+        "endChar": 4
+      },
+      "revId": "f2852881fdbea5d3e7d8703a28ccf7ae3bb5a548",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c6e5db71_bd2e42a9",
+        "filename": "src/Pipeline/SpirvShader.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1152,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-07T15:42:03Z",
+      "side": 1,
+      "message": "I don\u0027t think we can ever hit this. The image layout is opaque to the shader code so you can\u0027t do pointer arithmetic to access neighboring texels. Instead the coordinates of the desired texel are passed to OpImageTexelPointer, for each individual one, to do the addressing. The pointer produced by OpImageTexelPointer points to type \u0027Image\u0027, and AccessChain only operates on pointers to composite objects.\n\nSo let\u0027s remove this.",
+      "range": {
+        "startLine": 1149,
+        "startChar": 2,
+        "endLine": 1152,
+        "endChar": 3
+      },
+      "revId": "f2852881fdbea5d3e7d8703a28ccf7ae3bb5a548",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
