@@ -69,6 +69,30 @@
       "revId": "a957717c739eeb6fb2ac3e890ff725d4001b310d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7c41c44e_7543593e",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-07T18:38:59Z",
+      "side": 1,
+      "message": "Ok. It\u0027s a bit weird to me that this adds an intermediate state which will be removed in an already written future cl. I\u0027m all for creating small cls usually, but since they aren\u0027t huge, maybe in this case it would be clearer to see the big picture in a single cl, without any intermediate state that gets removed in the next cl. Anyway, this is just me finding it a bit hard to read through this, but if Nicolas is ok with the set of patches, I\u0027m ok with landing all of them together.",
+      "parentUuid": "506b61d1_10789d58",
+      "range": {
+        "startLine": 68,
+        "startChar": 29,
+        "endLine": 68,
+        "endChar": 68
+      },
+      "revId": "a957717c739eeb6fb2ac3e890ff725d4001b310d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
