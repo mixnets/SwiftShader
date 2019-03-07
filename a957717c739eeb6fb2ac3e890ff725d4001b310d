@@ -45,6 +45,30 @@
       "revId": "a957717c739eeb6fb2ac3e890ff725d4001b310d",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "506b61d1_10789d58",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 7146
+      },
+      "writtenOn": "2019-03-07T18:05:12Z",
+      "side": 1,
+      "message": "In a later CL, the problem is flipped. This is why I have that PresentImage CL:\nhttps://swiftshader-review.googlesource.com/c/SwiftShader/+/26369",
+      "parentUuid": "fa612348_fefc48a5",
+      "range": {
+        "startLine": 68,
+        "startChar": 29,
+        "endLine": 68,
+        "endChar": 68
+      },
+      "revId": "a957717c739eeb6fb2ac3e890ff725d4001b310d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
