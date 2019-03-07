@@ -36,16 +36,16 @@ public:
 
 	void getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCapabilities) const override;
 
-	virtual void attachImage(VkImage image, VkDeviceMemory imageData) override;
-	virtual void detachImage(VkImage image) override;
-	void present(VkImage image) override;
+	virtual void attachImage(PresentImage* image) override;
+	virtual void detachImage(PresentImage* image) override;
+	void present(PresentImage* image) override;
 
 private:
 	Display *pDisplay;
 	Window window;
 	GC gc;
 	Visual *visual = nullptr;
-	std::map<VkImage, XImage*> imageMap;
+	std::map<PresentImage*, XImage*> imageMap;
 };
 
 }

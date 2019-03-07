@@ -53,22 +53,22 @@ void XlibSurfaceKHR::getSurfaceCapabilities(VkSurfaceCapabilitiesKHR *pSurfaceCa
 	pSurfaceCapabilities->maxImageExtent = extent;
 }
 
-void XlibSurfaceKHR::attachImage(VkImage image, VkDeviceMemory imageData)
+void XlibSurfaceKHR::attachImage(PresentImage* image)
 {
 	XWindowAttributes attr;
 	libX11->XGetWindowAttributes(pDisplay, window, &attr);
 
-	VkExtent3D extent = vk::Cast(image)->getExtent();
+	VkExtent3D extent = vk::Cast(image->image)->getExtent();
 
-	int bytes_per_line = vk::Cast(image)->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
-	char* buffer = static_cast<char*>(vk::Cast(imageData)->getOffsetPointer(0));
+	int bytes_per_line = vk::Cast(image->image)->rowPitchBytes(VK_IMAGE_ASPECT_COLOR_BIT, 0);
+	char* buffer = static_cast<char*>(vk::Cast(image->imageMemory)->getOffsetPointer(0));
 
 	XImage* xImage = libX11->XCreateImage(pDisplay, visual, attr.depth, ZPixmap, 0, buffer, extent.width, extent.height, 32, bytes_per_line);
 
 	imageMap[image] = xImage;
 }
 
-void XlibSurfaceKHR::detachImage(VkImage image)
+void XlibSurfaceKHR::detachImage(PresentImage* image)
 {
 	auto it = imageMap.find(image);
 	if(it != imageMap.end())
@@ -80,7 +80,7 @@ void XlibSurfaceKHR::detachImage(VkImage image)
 	}
 }
 
-void XlibSurfaceKHR::present(VkImage image)
+void XlibSurfaceKHR::present(PresentImage* image)
 {
 	auto it = imageMap.find(image);
 	if(it != imageMap.end())
@@ -89,11 +89,10 @@ void XlibSurfaceKHR::present(VkImage image)
 
 		if(xImage->data)
 		{
-			VkExtent3D extent = vk::Cast(image)->getExtent();
+			VkExtent3D extent = vk::Cast(image->image)->getExtent();
 			libX11->XPutImage(pDisplay, window, gc, xImage, 0, 0, 0, 0, extent.width, extent.height);
 		}
 	}
-
 }
 
 }
