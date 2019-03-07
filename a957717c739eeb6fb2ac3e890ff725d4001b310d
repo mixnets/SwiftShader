@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9fe7543d_b25cbddf",
+        "filename": "src/WSI/VkSwapchainKHR.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-07T14:10:57Z",
+      "side": 1,
+      "message": "I think image and imageData are redundant, since imageData is bound to the image object, right?\nIsn\u0027t it possible to have just image and retrieve imageData through some function (something like getDeviceMemory()) from the image object?",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 38,
+        "endChar": 28
+      },
+      "revId": "a957717c739eeb6fb2ac3e890ff725d4001b310d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fa612348_fefc48a5",
+        "filename": "src/WSI/XlibSurfaceKHR.cpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5050
+      },
+      "writtenOn": "2019-03-07T14:10:57Z",
+      "side": 1,
+      "message": "Just realized the \u0027image\u0027 argument is unused. Could one of these arguments be removed?",
+      "range": {
+        "startLine": 68,
+        "startChar": 29,
+        "endLine": 68,
+        "endChar": 68
+      },
+      "revId": "a957717c739eeb6fb2ac3e890ff725d4001b310d",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
