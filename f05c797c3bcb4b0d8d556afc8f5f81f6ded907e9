@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "08d3e486_6f8238b4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 11
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-07T17:12:55Z",
+      "side": 1,
+      "message": "Sorry, I\u0027ve just gone and confused the issue even more with a broken diagram.\n\nWill just put this (corrected) into the function\u0027s documentation.",
+      "parentUuid": "315740db_171da859",
+      "range": {
+        "startLine": 9,
+        "startChar": 40,
+        "endLine": 9,
+        "endChar": 60
+      },
+      "revId": "f05c797c3bcb4b0d8d556afc8f5f81f6ded907e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "763fac8f_2998b6ec",
         "filename": "src/Pipeline/SpirvShader.hpp",
         "patchSetId": 11
@@ -107,6 +131,30 @@
       "writtenOn": "2019-03-07T15:41:18Z",
       "side": 1,
       "message": "linearly?",
+      "range": {
+        "startLine": 389,
+        "startChar": 37,
+        "endLine": 389,
+        "endChar": 46
+      },
+      "revId": "f05c797c3bcb4b0d8d556afc8f5f81f6ded907e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "38f1a212_82a705f0",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 389,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-07T17:12:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "997573e1_4c9162ac",
       "range": {
         "startLine": 389,
         "startChar": 37,
