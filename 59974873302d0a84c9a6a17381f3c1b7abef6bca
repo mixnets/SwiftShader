@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "2cdbab24_a12d433a",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-07T21:04:48Z",
+      "side": 1,
+      "message": "Moved the --exec nastiness to the init() of a new shell sub-package.\nFlags are now globals.",
+      "parentUuid": "79c00a93_5f183788",
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "02dc86f9_64e3e3cc",
         "filename": "tests/regres/main.go",
         "patchSetId": 6
@@ -90,6 +108,24 @@
     },
     {
       "key": {
+        "uuid": "6f698a41_09147840",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-07T21:04:48Z",
+      "side": 1,
+      "message": "Neat function. Done.",
+      "parentUuid": "8b60c833_bd2753e6",
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "84048e35_207254ea",
         "filename": "tests/regres/main.go",
         "patchSetId": 6
@@ -122,6 +158,24 @@
       "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5c2b7c54_248c284d",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-07T21:04:48Z",
+      "side": 1,
+      "message": "Build tags when using \u0027go run \u003cfile.go\u003e\u0027 do not seem to be respected. Moved this runtime check to the top of main instead.",
+      "parentUuid": "4fa424f2_e6dd5b9b",
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
@@ -172,6 +226,30 @@
     },
     {
       "key": {
+        "uuid": "e7be1e54_9b5eaf13",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-07T21:04:48Z",
+      "side": 1,
+      "message": "Now that we\u0027re doing two passes here, I\u0027ve respectfully decided to keep this as a bog-basic update loop. It\u0027s reassuring to see in the logs that there\u0027s activity, even if it is repeatedly saying \u0027I\u0027m idle\u0027 every now and then.",
+      "parentUuid": "acb394b6_12089b7c",
+      "range": {
+        "startLine": 219,
+        "startChar": 0,
+        "endLine": 255,
+        "endChar": 0
+      },
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "329de742_de703f9e",
         "filename": "tests/regres/main.go",
         "patchSetId": 6
@@ -216,6 +294,30 @@
       "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "98def814_1ff92b3d",
+        "filename": "tests/regres/main.go",
+        "patchSetId": 6
+      },
+      "lineNbr": 794,
+      "author": {
+        "id": 7183
+      },
+      "writtenOn": "2019-03-07T21:04:48Z",
+      "side": 1,
+      "message": "Keeping just for debugging\u0027s sake.",
+      "parentUuid": "510ccfe9_2ac5cd89",
+      "range": {
+        "startLine": 794,
+        "startChar": 20,
+        "endLine": 794,
+        "endChar": 26
+      },
+      "revId": "59974873302d0a84c9a6a17381f3c1b7abef6bca",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     },
     {
       "key": {
