@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b886d1cb_21ad0199",
+        "filename": "src/Reactor/LLVMReactor.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 1253,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-07T22:15:08Z",
+      "side": 1,
+      "message": "LLVM manual: \"When indexing into an array, pointer or vector, integers of any width are allowed, and they are not required to be constant. These integers are treated as signed values where relevant.\"\n\nThus if we want indexes to be treated as unsigned we have to zero-extend them ourselves.\n\nNote that this is not because we want to address anywhere near 4 GB of data. Instead this is important for performance because x86 supports automatic zero-extending of 32-bit registers to 64-bit. Thus when indexing into an array using a uint32 is actually faster than an int32.",
+      "range": {
+        "startLine": 1253,
+        "startChar": 3,
+        "endLine": 1253,
+        "endChar": 57
+      },
+      "revId": "9dc97ac704fcd14982f66ede0340c1766dfd4f8a",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
