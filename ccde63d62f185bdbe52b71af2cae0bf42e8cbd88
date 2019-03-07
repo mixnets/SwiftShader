@@ -46,6 +46,30 @@
       "revId": "ccde63d62f185bdbe52b71af2cae0bf42e8cbd88",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e8c0a0db_166e4a45",
+        "filename": "src/Vulkan/VkConfig.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-07T20:30:35Z",
+      "side": 1,
+      "message": "Always 16, since NEON on aarch64 also requires it for best performance.",
+      "parentUuid": "e5006415_4bb7f908",
+      "range": {
+        "startLine": 40,
+        "startChar": 36,
+        "endLine": 40,
+        "endChar": 112
+      },
+      "revId": "ccde63d62f185bdbe52b71af2cae0bf42e8cbd88",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
     }
   ]
 }
