@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0170e138_95668f36",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 11
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-07T15:41:18Z",
+      "side": 1,
+      "message": "I find this highly confusing. When people refer to interleaved data in vertex buffers they mean position, texture coordinates, etc. are in array-of-structures layout. In other words data from each attribute is interleaved into one buffer. Non-interleaved would correspond to structure-of-arrays layout.\n\nThe latter maps to how we\u0027d process vertices in SIMD fashion. But it appears you\u0027re referring to non-lane-interleaved as meaning, well, interleaved.\n\nOrthogonal to this is how we actually pick the elements to process. For vertices, we currently process four consecutive indices, even if the index buffer doesn\u0027t contain consecutive indices. We cache the results and pick only the ones actually in the index buffer. The advantage is that we don\u0027t have to perform gather operations to read the attributes, but can use fixed-stride vector loads or even packed vector loads in case of non-interleaved vertex data. The disadvantages are that we need to avoid buffer overrun, and we still essentially perform a gather when reading out the cache and don\u0027t gain much from fixed-stride loads either. Also processing undefined vertex data gets tricky, so we may want to just do explicit gather operations: https://swiftshader-review.googlesource.com/4893\n\nAnyway, this confusion might be purely mine, and we can refactor later (where applicable to the code/comments) in case we agree on better jargon. Naming things is hard!",
+      "range": {
+        "startLine": 9,
+        "startChar": 40,
+        "endLine": 9,
+        "endChar": 60
+      },
+      "revId": "f05c797c3bcb4b0d8d556afc8f5f81f6ded907e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "763fac8f_2998b6ec",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-07T15:41:18Z",
+      "side": 1,
+      "message": "I think this name is very confusing because \"physical pointers\" is referred to by the SPIR-V spec as part of non-Logical addressing models, while Appendix A of the Vulkan spec states that \"The Logical addressing model must be selected.\"\n\nAnyway, since this is easy to refactor once we find a better name I\u0027m fine with landing it as-is.",
+      "range": {
+        "startLine": 227,
+        "startChar": 4,
+        "endLine": 227,
+        "endChar": 19
+      },
+      "revId": "f05c797c3bcb4b0d8d556afc8f5f81f6ded907e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "997573e1_4c9162ac",
+        "filename": "src/Pipeline/SpirvShader.hpp",
+        "patchSetId": 11
+      },
+      "lineNbr": 389,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-07T15:41:18Z",
+      "side": 1,
+      "message": "linearly?",
+      "range": {
+        "startLine": 389,
+        "startChar": 37,
+        "endLine": 389,
+        "endChar": 46
+      },
+      "revId": "f05c797c3bcb4b0d8d556afc8f5f81f6ded907e9",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": false
+    }
+  ]
+}
