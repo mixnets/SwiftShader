@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "563f8370_1ea8202a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-08T18:48:55Z",
+      "side": 1,
+      "message": "Fixes dEQP-VK.glsl.operator.unary_operator.plus.highp_vec2_vertex ?",
+      "revId": "e3890124f29f10c667f0bd4f468af6d8373c35b2",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
+    }
+  ]
+}
