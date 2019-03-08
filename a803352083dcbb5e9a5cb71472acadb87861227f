@@ -70,6 +70,30 @@
       "revId": "a803352083dcbb5e9a5cb71472acadb87861227f",
       "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7458d2dd_dd6b4b0a",
+        "filename": "tests/GLESUnitTests/unittests.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 825,
+      "author": {
+        "id": 5005
+      },
+      "writtenOn": "2019-03-08T15:17:36Z",
+      "side": 1,
+      "message": "There is a secondary bug here in that 0x86868686u is treated as a negative signed integer instead of an unsigned one that is within range. We need an extra overload of parseLayoutQualifier() for that. However, I\u0027d like to first fix the more urgent issue of using the non-existing string.",
+      "parentUuid": "e9d298d4_8a44aef4",
+      "range": {
+        "startLine": 825,
+        "startChar": 60,
+        "endLine": 825,
+        "endChar": 80
+      },
+      "revId": "a803352083dcbb5e9a5cb71472acadb87861227f",
+      "serverId": "aea13c4a-0b89-3eca-aee9-e193b1b77aa4",
+      "unresolved": true
     }
   ]
 }
